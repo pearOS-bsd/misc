@@ -35,6 +35,7 @@ static ws_server *srv;
 static ws_surface *screen;
 static int running = 1;
 static int dirty;
+static int test_mode;          /* -t: enables the private test requests (screenshot to a file, input injection, quit) */
 static uint8_t rbuf[WS_IPC_RECV_CAP];        /* receive buffer: requests are parsed in place, nothing is allocated per message */
 
 typedef struct { int fd; uint32_t id; int efd; int pid; char app[64]; int handshaken; } conn;
@@ -570,6 +571,8 @@ static int do_private(conn *c, const uint8_t *buf, size_t len)
 	fill_reply_header(&r.h, h, sizeof r, 0);
 	r.ndr = WS_NDR;
 	int32_t *a = q.a;
+	if (!test_mode && (h->msgh_id == WSX_SCREENSHOT || h->msgh_id == WSX_INJECT_MOUSE || h->msgh_id == WSX_INJECT_KEY || h->msgh_id == WSX_QUIT))
+		return reply_mig_error(c->fd, h, MIG_BAD_ID);          /* a client must not write files, forge input or stop the server */
 	switch (h->msgh_id) {
 	case WSX_FLUSH: r.retcode = holds_rights(c, (uint32_t)a[0]) ? 0 : CGS_ERROR_FAILURE; if (!r.retcode) ws_window_damage(srv, (ws_wid)a[0], NULL); break;
 	case WSX_SCREENSHOT:
@@ -633,6 +636,7 @@ int main(int argc, char **argv)
 		else if (!strcmp(argv[i], "-c") && i + 1 < argc) card = argv[++i];
 		else if (!strcmp(argv[i], "-r") && i + 1 < argc) renderer = argv[++i];          /* sw | gl */
 		else if (!strcmp(argv[i], "-n") && i + 1 < argc) render_node = argv[++i];
+		else if (!strcmp(argv[i], "-t")) test_mode = 1;
 	}
 #ifdef WS_KMS
 	ws_kms *kms = NULL;

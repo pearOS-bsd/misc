@@ -5,6 +5,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
 #include <sys/un.h>
 
 #ifdef __APPLE__
@@ -31,7 +32,10 @@ int ws_ipc_listen(const char *path)
 	int s = socket(AF_UNIX, WS_SOCKTYPE, 0);
 	if (s < 0) return -1;
 	unlink(path);
-	if (bind(s, (struct sockaddr *)&sa, sizeof sa) < 0 || listen(s, 32) < 0) { close(s); return -1; }
+	mode_t old = umask(0177);                                   /* only the owner may connect: the socket is the access control */
+	int b = bind(s, (struct sockaddr *)&sa, sizeof sa);
+	umask(old);
+	if (b < 0 || listen(s, 32) < 0) { close(s); return -1; }
 	return s;
 }
 

@@ -40,6 +40,7 @@ int ws_surface_bind_buffer(ws_conn *, ws_win *, uint32_t sid, const ws_cbuf *); 
 int ws_surface_unbind(ws_conn *, ws_win *, uint32_t sid);         /* BindSurface kind 0 */
 int ws_surface_binding(ws_conn *, ws_win *, uint32_t sid, int *kind, uint32_t *a, uint32_t *b); /* GetSurfaceBinding (30109) */
 int ws_surface_flush(ws_conn *, ws_win *, uint32_t sid, const ws_rect *dirty); /* FlushSurface (30097); NULL = whole surface */
+int ws_conn_fd(ws_conn *);                                      /* the request socket (robustness tests send raw messages on it) */
 int ws_conn_id(ws_conn *);                                      /* the id returned by the NewConnectionPort handshake */
 int ws_conn_event_fd(ws_conn *);                                /* the event channel from the handshake (poll it) */
 /* Waits up to timeout_ms (0 = just check) for an event pushed on the event channel. 1 if one was returned. */
