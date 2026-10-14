@@ -1,0 +1,87 @@
+name: wsbsd
+
+on:
+  push:
+    paths: ['wsbsd/**', '.github/workflows/wsbsd.yml']
+  pull_request:
+    paths: ['wsbsd/**', '.github/workflows/wsbsd.yml']
+  workflow_dispatch:
+
+jobs:
+  # The real target: FreeBSD on x86_64 (QEMU). Runs the whole test suite and renders the test window with the software compositor.
+  freebsd:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build, test and render on FreeBSD x86_64
+        uses: vmactions/freebsd-vm@v1
+        with:
+          release: "14.2"
+          arch: x86_64
+          usesh: true
+          prepare: |
+            pkg install -y gmake pkgconf python3
+          run: |
+            set -e
+            uname -a
+            cd wsbsd
+            gmake
+            gmake check
+            gmake demo OUT=freebsd-sw
+            ls -l *.png *.ppm || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: freebsd-screenshots
+          path: wsbsd/*.png
+          if-no-files-found: warn
+
+  # The OpenGL ES compositor on FreeBSD with Mesa software rendering (EGL surfaceless): compiles the GL, GBM and EGL paths and runs them.
+  # Experimental: the compositor has never run on a real EGL implementation, so a failure here is information, not a broken build.
+  freebsd-gl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and run the GL compositor on FreeBSD x86_64
+        uses: vmactions/freebsd-vm@v1
+        with:
+          release: "14.2"
+          arch: x86_64
+          usesh: true
+          prepare: |
+            pkg install -y gmake pkgconf python3 libdrm mesa-libs mesa-dri libglvnd
+          run: |
+            set -e
+            cd wsbsd
+            pkg-config --modversion egl gbm glesv2 libdrm || true
+            gmake gl
+            export LIBGL_ALWAYS_SOFTWARE=1 EGL_PLATFORM=surfaceless
+            WSD_ARGS="-r gl" OUT=freebsd-gl sh test/run_demo.sh
+            ls -l *.png *.ppm || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: freebsd-gl-screenshots
+          path: wsbsd/*.png
+          if-no-files-found: warn
+
+  # The development machine's platform (arm64 macOS): the same suite, headless.
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build, test and render
+        run: |
+          cd wsbsd
+          make
+          make check
+          make demo OUT=macos
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: macos-screenshots
+          path: wsbsd/*.png
+          if-no-files-found: warn

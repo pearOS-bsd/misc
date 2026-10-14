@@ -1,0 +1,173 @@
+/* FreeBSD display (DRM/KMS via drm-kmod + libdrm) and input (evdev) backends. UNTESTED, see ws_backend.h.
+ * Display: two dumb buffers, mode set once on the first connected connector's preferred mode, page flips afterwards.
+ * Input: raw evdev; relative pointer motion is accumulated into an absolute position, key codes are passed through
+ * as evdev codes. The compositor stays the CPU one; a GL compositor would render to GBM buffers instead. */
+#ifdef WS_KMS
+#include "ws_backend.h"
+#include <dirent.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/mman.h>
+#include <xf86drm.h>
+#include <xf86drmMode.h>
+#include <dev/evdev/input.h>
+
+struct ws_kms {
+	int fd;
+	uint32_t crtc, conn;
+	drmModeModeInfo mode;
+	struct { uint32_t handle, fb; ws_surface *s; } buf[2];
+	int front, flip_pending;
+	drmModeCrtc *saved;
+};
+
+static int make_buf(ws_kms *k, int i)
+{
+	struct drm_mode_create_dumb c = { .width = k->mode.hdisplay, .height = k->mode.vdisplay, .bpp = 32 };
+	if (drmIoctl(k->fd, DRM_IOCTL_MODE_CREATE_DUMB, &c)) return -1;
+	k->buf[i].handle = c.handle;
+	if (drmModeAddFB(k->fd, c.width, c.height, 24, 32, c.pitch, c.handle, &k->buf[i].fb)) return -1;
+	struct drm_mode_map_dumb m = { .handle = c.handle };
+	if (drmIoctl(k->fd, DRM_IOCTL_MODE_MAP_DUMB, &m)) return -1;
+	void *p = mmap(NULL, c.size, PROT_READ | PROT_WRITE, MAP_SHARED, k->fd, (off_t)m.offset);
+	if (p == MAP_FAILED) return -1;
+	ws_surface *s = calloc(1, sizeof *s);
+	if (!s) return -1;
+	s->w = (int)c.width; s->h = (int)c.height; s->stride = c.pitch; s->px = p; s->map = p; s->maplen = c.size;
+	k->buf[i].s = s;
+	return 0;
+}
+
+ws_kms *ws_kms_open(const char *card, int *w, int *h)
+{
+	ws_kms *k = calloc(1, sizeof *k);
+	if (!k) return NULL;
+	k->fd = open(card, O_RDWR | O_CLOEXEC);
+	if (k->fd < 0) { free(k); return NULL; }
+	drmModeRes *res = drmModeGetResources(k->fd);
+	if (!res) goto fail;
+	drmModeConnector *conn = NULL;
+	for (int i = 0; i < res->count_connectors && !conn; i++) {
+		drmModeConnector *c = drmModeGetConnector(k->fd, res->connectors[i]);
+		if (c && c->connection == DRM_MODE_CONNECTED && c->count_modes > 0) conn = c; else if (c) drmModeFreeConnector(c);
+	}
+	if (!conn) { drmModeFreeResources(res); goto fail; }
+	k->conn = conn->connector_id;
+	k->mode = conn->modes[0];                                   /* the first mode is the preferred one */
+	drmModeEncoder *enc = conn->encoder_id ? drmModeGetEncoder(k->fd, conn->encoder_id) : NULL;
+	k->crtc = enc ? enc->crtc_id : (uint32_t)res->crtcs[0];
+	if (enc) drmModeFreeEncoder(enc);
+	drmModeFreeConnector(conn);
+	drmModeFreeResources(res);
+	k->saved = drmModeGetCrtc(k->fd, k->crtc);
+	if (make_buf(k, 0) || make_buf(k, 1)) goto fail;
+	if (drmModeSetCrtc(k->fd, k->crtc, k->buf[0].fb, 0, 0, &k->conn, 1, &k->mode)) goto fail;
+	k->front = 0;
+	*w = k->mode.hdisplay; *h = k->mode.vdisplay;
+	return k;
+fail:
+	if (k->fd >= 0) close(k->fd);
+	free(k);
+	return NULL;
+}
+
+int ws_kms_fd(ws_kms *k) { return k->fd; }
+ws_surface *ws_kms_back(ws_kms *k) { return k->buf[1 - k->front].s; }
+
+int ws_kms_present(ws_kms *k)
+{
+	if (k->flip_pending) return 0;                              /* previous flip not finished: skip this frame */
+	if (drmModePageFlip(k->fd, k->crtc, k->buf[1 - k->front].fb, DRM_MODE_PAGE_FLIP_EVENT, k)) return -1;
+	k->flip_pending = 1;
+	return 0;
+}
+
+static void on_flip(int fd, unsigned seq, unsigned sec, unsigned usec, void *data)
+{
+	(void)fd; (void)seq; (void)sec; (void)usec;
+	ws_kms *k = data;
+	k->front = 1 - k->front; k->flip_pending = 0;
+}
+
+int ws_kms_handle_events(ws_kms *k)
+{
+	drmEventContext ctx = { .version = 2, .page_flip_handler = on_flip };
+	return drmHandleEvent(k->fd, &ctx);
+}
+
+void ws_kms_close(ws_kms *k)
+{
+	if (!k) return;
+	if (k->saved) { drmModeSetCrtc(k->fd, k->saved->crtc_id, k->saved->buffer_id, k->saved->x, k->saved->y, &k->conn, 1, &k->saved->mode); drmModeFreeCrtc(k->saved); }
+	for (int i = 0; i < 2; i++) if (k->buf[i].s) { drmModeRmFB(k->fd, k->buf[i].fb); ws_surface_free(k->buf[i].s); }
+	close(k->fd);
+	free(k);
+}
+
+/* ---- evdev ---- */
+#define MAXDEV 16
+struct ws_evdev { int n, fd[MAXDEV]; int x, y, buttons; int init; };
+
+ws_evdev *ws_evdev_open(const char *dir)
+{
+	ws_evdev *e = calloc(1, sizeof *e);
+	DIR *d = e ? opendir(dir) : NULL;
+	if (!d) { free(e); return NULL; }
+	struct dirent *de;
+	while ((de = readdir(d)) && e->n < MAXDEV) {
+		if (strncmp(de->d_name, "event", 5)) continue;
+		char path[512];
+		snprintf(path, sizeof path, "%s/%s", dir, de->d_name);
+		int fd = open(path, O_RDONLY | O_NONBLOCK | O_CLOEXEC);
+		if (fd >= 0) e->fd[e->n++] = fd;
+	}
+	closedir(d);
+	return e;
+}
+
+int ws_evdev_count(ws_evdev *e) { return e->n; }
+int ws_evdev_fd(ws_evdev *e, int i) { return e->fd[i]; }
+
+int ws_evdev_dispatch(ws_evdev *e, int i, ws_server *srv, int sw, int sh)
+{
+	struct input_event ev[32];
+	if (!e->init) { e->x = sw / 2; e->y = sh / 2; e->init = 1; }
+	for (;;) {
+		ssize_t n = read(e->fd[i], ev, sizeof ev);
+		if (n < 0) return errno == EAGAIN ? 0 : -1;
+		if (n == 0) return -1;
+		int moved = 0;
+		for (size_t j = 0; j < (size_t)n / sizeof ev[0]; j++) {
+			if (ev[j].type == EV_REL) {
+				if (ev[j].code == REL_X) { e->x += ev[j].value; moved = 1; }
+				else if (ev[j].code == REL_Y) { e->y += ev[j].value; moved = 1; }
+			} else if (ev[j].type == EV_KEY) {
+				int c = ev[j].code;
+				if (c >= BTN_LEFT && c <= BTN_MIDDLE) {
+					int bit = c == BTN_LEFT ? 1 : c == BTN_RIGHT ? 2 : 4;
+					e->buttons = ev[j].value ? (e->buttons | bit) : (e->buttons & ~bit);
+					moved = 1;
+				} else if (ev[j].value != 2) {                     /* ignore autorepeat */
+					ws_server_key(srv, c, ev[j].value);
+				}
+			}
+		}
+		if (moved) {
+			e->x = e->x < 0 ? 0 : e->x >= sw ? sw - 1 : e->x;
+			e->y = e->y < 0 ? 0 : e->y >= sh ? sh - 1 : e->y;
+			ws_server_mouse(srv, e->x, e->y, e->buttons);
+		}
+	}
+}
+
+void ws_evdev_close(ws_evdev *e)
+{
+	if (!e) return;
+	for (int i = 0; i < e->n; i++) close(e->fd[i]);
+	free(e);
+}
+#endif
