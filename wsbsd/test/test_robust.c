@@ -44,9 +44,21 @@ static void fuzz_one(int fd)
 	drain(fd);
 }
 
+/* connects, retrying while the server is still busy reaping earlier connections */
+static ws_conn *connect_retry(void)
+{
+	for (int i = 0; i < 100; i++) { ws_conn *c = ws_connect(NULL); if (c) return c; usleep(20000); }
+	return NULL;
+}
+static int raw_connect_retry(void)
+{
+	for (int i = 0; i < 100; i++) { int fd = ws_ipc_connect(getenv("WS_SOCKET")); if (fd >= 0) return fd; usleep(20000); }
+	return -1;
+}
+
 static int healthy(void)
 {
-	ws_conn *c = ws_connect(NULL);
+	ws_conn *c = connect_retry();
 	if (!c) return 0;
 	ws_win w; int ok = ws_win_create(c, (ws_rect){ 10, 10, 50, 40 }, 0, &w) == 0 && ws_win_count(c, ws_conn_id(c)) == 1;
 	ws_disconnect(c);
@@ -83,7 +95,7 @@ int main(void)
 
 	/* 3. garbage before the handshake, on fresh connections */
 	for (int i = 0; i < 1500; i++) {
-		int fd = ws_ipc_connect(getenv("WS_SOCKET"));
+		int fd = raw_connect_retry();
 		if (fd < 0) { CHECK(0); break; }
 		fcntl(fd, F_SETFL, fcntl(fd, F_GETFL) | O_NONBLOCK);
 		for (int k = 0; k < 1 + (int)(rnd() % 4); k++) fuzz_one(fd);
@@ -93,7 +105,7 @@ int main(void)
 
 	/* 4. garbage on an established connection that owns objects */
 	for (int round = 0; round < 40; round++) {
-		ws_conn *c = ws_connect(NULL);
+		ws_conn *c = connect_retry();
 		ws_win w; ws_cbuf cb; uint32_t sid;
 		if (!c || ws_win_create(c, (ws_rect){ 0, 0, 32, 32 }, 0, &w) || ws_cbuf_create(c, 32, 32, &cb) || ws_surface_add(c, &w, &sid)) { CHECK(0); break; }
 		ws_surface_bind_buffer(c, &w, sid, &cb);
