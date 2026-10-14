@@ -1,0 +1,37 @@
+name: macos-research
+
+# Probes the hosted macOS runner: is SIP off, do we have root, is a WindowServer/GUI session there, which debuggers exist.
+# Used for black-box experiments against the real WindowServer (the runner is a throw-away VM).
+on:
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: macos-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Environment
+        run: |
+          set -x
+          sw_vers; uname -a; arch
+          csrutil status || true
+          sudo -n true && echo "passwordless sudo: yes"
+          sudo nvram -p 2>&1 | head -5 || true
+          sysctl kern.bootargs 2>&1 || true
+          pgrep -lf WindowServer || echo "no WindowServer"
+          launchctl managername 2>&1 || true
+          id; who
+          which lldb dtrace dtruss fs_usage 2>&1 || true
+          ls -la /System/Library/PrivateFrameworks/SkyLight.framework 2>&1 | head
+          ls /System/Library/dyld 2>&1 | head
+          ls /System/Volumes/Preboot/Cryptexes 2>&1 | head || true
+      - name: Can a client talk to the WindowServer?
+        run: |
+          cat > /tmp/p.c <<'EOC'
+          #include <dlfcn.h>
+          #include <stdio.h>
+          int main(void){ void *h=dlopen("/System/Library/PrivateFrameworks/SkyLight.framework/SkyLight",RTLD_NOW);
+            int (*mc)(void)=dlsym(h,"SLSMainConnectionID"); printf("main connection id: %d\n", mc?mc():-1); return 0; }
+          EOC
+          cc -o /tmp/p /tmp/p.c && /tmp/p || true
