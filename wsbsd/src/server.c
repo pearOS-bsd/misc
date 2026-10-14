@@ -44,6 +44,8 @@ struct ws_server {
 	ws_event_sink sink; void *sink_ctx;
 	uint64_t gen;
 	ws_surface *cursor_img; int cursor_hx, cursor_hy; uint32_t cursor_serial;
+	struct kf { uint32_t cid; int ids[8]; int n; } kf[32]; int nkf; int kf_next;      /* key focus list, [0] is the holder */
+	struct { uint32_t cid; int count; } hide[64]; int nhide; int obscured;
 };
 
 ws_server *ws_server_new(int w, int h)
@@ -65,6 +67,7 @@ void ws_server_free(ws_server *s)
 void ws_server_set_compositor(ws_server *s, ws_compositor *c) { if (s && c) s->comp = c; }
 
 static void bump(ws_server *s) { s->gen++; }
+static void kf_remove_at_fwd(ws_server *s, int i);
 uint64_t ws_server_generation(const ws_server *s) { return s->gen; }
 
 static window *get(ws_server *s, ws_wid id)
@@ -212,6 +215,8 @@ int ws_count_owned(ws_server *s, uint32_t owner) { int n = 0; for (size_t i = 0;
 
 void ws_release_owner(ws_server *s, uint32_t owner)
 {
+	for (int i = 0; i < s->nkf;) { if (s->kf[i].cid == owner) kf_remove_at_fwd(s, i); else i++; }       /* a dying connection loses key focus ... */
+	for (int i = 0; i < s->nhide; i++) if (s->hide[i].cid == owner && s->hide[i].count) { s->hide[i].count = 0; s->cursor_serial++; }   /* ... and its cursor hides */
 	for (size_t i = 0; i < s->n;) {
 		if (s->win[i].owner == owner && owner) ws_release_window(s, s->win[i].id);
 		else i++;
@@ -381,6 +386,7 @@ void ws_server_mouse(ws_server *s, int x, int y, int buttons)
 	y = y < 0 ? 0 : y >= s->h ? s->h - 1 : y;
 	int moved = x != s->cx || y != s->cy, pressed = buttons & ~s->buttons, released = s->buttons & ~buttons;
 	s->cx = x; s->cy = y;
+	if (moved && s->obscured) { s->obscured = 0; s->cursor_serial++; }       /* an obscured cursor comes back when the mouse moves */
 	ws_wid target = s->grab ? s->grab : ws_find_window(s, x, y);
 	if (pressed && !s->grab && target) {                       /* click: raise within its level, focus, grab */
 		ws_order_window(s, target, WS_ABOVE, 0);
@@ -414,7 +420,7 @@ int ws_window_event_mask(ws_server *s, ws_wid id, int *m) { window *w = get(s, i
 
 void ws_cursor_pos(ws_server *s, int *x, int *y) { *x = s->cx; *y = s->cy; }
 ws_wid ws_key_window(ws_server *s) { return s->key_win; }
-void ws_cursor_show(ws_server *s, int v) { s->cursor_visible = v != 0; }
+void ws_cursor_show(ws_server *s, int v) { if ((v != 0) != s->cursor_visible) s->cursor_serial++; s->cursor_visible = v != 0; }
 
 /* ---- cursor: an image with a hotspot, independent of every window buffer ---- */
 static int in_poly(const float *px, const float *py, int n, float x, float y)
@@ -466,7 +472,8 @@ const ws_surface *ws_cursor_image(ws_server *s, int *hx, int *hy)
 }
 
 uint32_t ws_cursor_serial(const ws_server *s) { return s->cursor_serial; }
-int ws_cursor_visible(const ws_server *s) { return s->cursor_visible; }
+static int hidden_total(const ws_server *s) { int t = 0; for (int i = 0; i < s->nhide; i++) t += s->hide[i].count; return t; }
+int ws_cursor_visible(const ws_server *s) { return s->cursor_visible && !s->obscured && hidden_total(s) == 0; }
 
 void ws_server_set_cursor_image(ws_server *s, const ws_surface *img, int hx, int hy)
 {
@@ -529,7 +536,7 @@ void ws_window_damage(ws_server *s, ws_wid id, const ws_rect *r)
 
 void ws_server_clear_damage(ws_server *s) { for (size_t i = 0; i < s->n; i++) { s->win[i].has_dmg = 0; s->win[i].full_dmg = 0; } }
 void ws_server_desktop_color(ws_server *s, float rgb[3]) { (void)s; rgb[0] = 0.10f; rgb[1] = 0.12f; rgb[2] = 0.16f; }
-void ws_draw_cursor(ws_server *s, ws_surface *screen) { if (s->cursor_visible) draw_cursor(s, screen); }
+void ws_draw_cursor(ws_server *s, ws_surface *screen) { if (ws_cursor_visible(s)) draw_cursor(s, screen); }
 
 void ws_server_walk(ws_server *s, ws_visit_fn fn, void *ctx)
 {
@@ -574,5 +581,77 @@ void ws_compose_scene(ws_server *s, ws_surface *screen)
 void ws_compose(ws_server *s, ws_surface *screen)
 {
 	ws_compose_scene(s, screen);
-	if (s->cursor_visible) draw_cursor(s, screen);
+	if (ws_cursor_visible(s)) draw_cursor(s, screen);
 }
+
+/* ---- key focus ---- */
+static struct kf *kf_find(ws_server *s, uint32_t cid) { for (int i = 0; i < s->nkf; i++) if (s->kf[i].cid == cid) return &s->kf[i]; return NULL; }
+static void kf_remove_at(ws_server *s, int i) { memmove(&s->kf[i], &s->kf[i + 1], (size_t)(s->nkf - i - 1) * sizeof s->kf[0]); s->nkf--; }
+
+int ws_keyfocus_steal(ws_server *s, uint32_t cid, int options, int want_id, int *id_out)
+{
+	if (id_out) *id_out = 0;
+	if (!cid) return -600;
+	if (!want_id && s->nkf && s->kf[0].cid == cid) return (options >> 9) & 1 ? 1010 : 0;       /* already the holder */
+	if (!s->nkf) {                                                                              /* nobody stole it: the key window's owner has it */
+		ws_wid kw = s->key_win;
+		if (kw && ws_window_owner(s, kw) == cid) return 1010;
+	}
+	struct kf e = { cid, { 0 }, 0 };
+	struct kf *old = kf_find(s, cid);
+	if (old) { e = *old; kf_remove_at(s, (int)(old - s->kf)); }
+	else if (s->nkf == 32) return 1010;
+	int id = 0;
+	if (want_id) { id = s->kf_next ? (s->kf_next == 0x7fffffff ? WS_KEYFOCUS_FIRST_ID : s->kf_next + 1) : WS_KEYFOCUS_FIRST_ID; s->kf_next = id; }
+	int have = 0;
+	for (int i = 0; i < e.n; i++) have |= e.ids[i] == id && !want_id;
+	if (!have && e.n < 8) memmove(&e.ids[1], &e.ids[0], (size_t)e.n++ * sizeof e.ids[0]), e.ids[0] = id;
+	memmove(&s->kf[1], &s->kf[0], (size_t)s->nkf * sizeof s->kf[0]);                            /* the thief becomes the holder */
+	s->kf[0] = e; s->nkf++;
+	if (id_out) *id_out = id;
+	bump(s);
+	return 0;
+}
+
+int ws_keyfocus_release(ws_server *s, uint32_t cid, int id)
+{
+	for (int i = 0; i < s->nkf; i++) {
+		struct kf *e = &s->kf[i];
+		if (id ? 1 : e->cid == cid)
+			for (int k = 0; k < e->n; k++) if (e->ids[k] == id) {
+				memmove(&e->ids[k], &e->ids[k + 1], (size_t)(e->n - k - 1) * sizeof e->ids[0]);
+				if (--e->n == 0) kf_remove_at(s, i);
+				bump(s);
+				return 0;
+			}
+	}
+	return 0;
+}
+
+uint32_t ws_keyfocus_holder(ws_server *s, int *is_default)
+{
+	if (s->nkf) { if (is_default) *is_default = 0; return s->kf[0].cid; }
+	if (is_default) *is_default = 1;
+	return s->key_win ? ws_window_owner(s, s->key_win) : 0;
+}
+
+/* ---- cursor hide / obscure ---- */
+static int *hide_slot(ws_server *s, uint32_t cid, int create)
+{
+	for (int i = 0; i < s->nhide; i++) if (s->hide[i].cid == cid) return &s->hide[i].count;
+	if (!create || s->nhide == 64) return NULL;
+	s->hide[s->nhide].cid = cid; s->hide[s->nhide].count = 0;
+	return &s->hide[s->nhide++].count;
+}
+static void cursor_changed(ws_server *s) { s->cursor_serial++; }
+void ws_cursor_hide(ws_server *s, uint32_t cid) { int *c = hide_slot(s, cid, 1); if (c) { (*c)++; cursor_changed(s); } }
+void ws_cursor_unhide(ws_server *s, uint32_t cid, int force)
+{
+	int *c = hide_slot(s, cid, 0);
+	if (c) { if (force) *c = 0; else if (*c > 0) (*c)--; }
+	cursor_changed(s);
+}
+void ws_cursor_obscure(ws_server *s, uint32_t cid) { (void)cid; if (!s->obscured) { s->obscured = 1; cursor_changed(s); } }
+void ws_cursor_reveal(ws_server *s, uint32_t cid) { (void)cid; if (s->obscured) { s->obscured = 0; cursor_changed(s); } }
+
+static void kf_remove_at_fwd(ws_server *s, int i) { kf_remove_at(s, i); bump(s); }

@@ -367,6 +367,51 @@ static int do_simple(conn *c, const uint8_t *buf, size_t len)
 		float one = 1.0f; uint32_t bits; memcpy(&bits, &one, 4);
 		return reply_value(c->fd, h, (int32_t)bits);
 	}
+	case SLS_MSG_ModifyKeyFocus: {
+		if (!simple_ok(h, len, sizeof(sls_two_req))) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
+		const sls_two_req *q = (const void *)buf;
+		if ((uint8_t)q->a == 1) { ws_keyfocus_release(srv, c->id, 0); return reply_simple(c->fd, h, 0); }
+		return reply_simple(c->fd, h, ws_keyfocus_steal(srv, c->id, q->b, 0, NULL));
+	}
+	case SLS_MSG_StealKeyFocusReturningID: {
+		if (!simple_ok(h, len, sizeof(sls_terminate_req))) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
+		int id = 0, rc = ws_keyfocus_steal(srv, c->id, (int)((const sls_terminate_req *)buf)->wid, 1, &id);
+		return rc ? reply_simple(c->fd, h, rc) : reply_value(c->fd, h, id);          /* success replies are 0x28 long with the id */
+	}
+	case SLS_MSG_ReleaseKeyFocusWithID: {
+		if (!simple_ok(h, len, sizeof(sls_terminate_req))) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
+		return reply_simple(c->fd, h, ws_keyfocus_release(srv, c->id, (int)((const sls_terminate_req *)buf)->wid));
+	}
+	case SLS_MSG_GetKeyFocusProcess: {
+		if (!simple_ok(h, len, sizeof(sls_header_only_req))) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
+		int dflt = 0; uint32_t holder = ws_keyfocus_holder(srv, &dflt);
+		if (!holder) return reply_simple(c->fd, h, -600);                       /* procNotFound */
+		sls_keyproc_reply r; memset(&r, 0, sizeof r);
+		fill_reply_header(&r.h, h, sizeof r, 0);
+		r.ndr = WS_NDR; r.psn_lo = holder; r.is_default = dflt;                   /* no PSNs here: the connection id stands in for the low word */
+		struct iovec v = { &r, sizeof r };
+		return ws_ipc_send(c->fd, &v, 1, NULL, 0);
+	}
+	case SLS_MSG_GetTypingFocusProcess: {
+		if (!simple_ok(h, len, sizeof(sls_header_only_req))) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
+		conn *t = conn_by_id(ws_keyfocus_holder(srv, NULL));
+		return t ? reply_value(c->fd, h, t->pid) : reply_simple(c->fd, h, -600);
+	}
+	case SLS_MSG_HideCursor: case SLS_MSG_ObscureCursor: case SLS_MSG_RevealCursor: {
+		if (!simple_ok(h, len, sizeof(sls_terminate_req))) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
+		uint32_t cid = ((const sls_terminate_req *)buf)->wid;
+		int known = conn_by_id(cid) != NULL;
+		if (h->msgh_id == SLS_MSG_RevealCursor) { if (known) ws_cursor_reveal(srv, cid); return reply_simple(c->fd, h, 0); }
+		if (!known) return reply_simple(c->fd, h, h->msgh_id == SLS_MSG_HideCursor ? 1000 : 1001);
+		if (h->msgh_id == SLS_MSG_HideCursor) ws_cursor_hide(srv, cid); else ws_cursor_obscure(srv, cid);
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_ShowCursor: {
+		if (!simple_ok(h, len, sizeof(sls_two_req))) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
+		const sls_two_req *q = (const void *)buf;
+		if (conn_by_id((uint32_t)q->a)) ws_cursor_unhide(srv, (uint32_t)q->a, (uint8_t)q->b);
+		return reply_simple(c->fd, h, 0);                                        /* always 0, even for an unknown connection */
+	}
 	case SLS_MSG_AddSurface: {
 		if (!simple_ok(h, len, sizeof(sls_wid_req))) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
 		uint32_t wid = ((const sls_wid_req *)buf)->wid;
@@ -739,9 +784,9 @@ int main(int argc, char **argv)
 			int hx = 0, hy = 0, cx, cy;
 			const ws_surface *cimg = ws_cursor_image(srv, &hx, &hy);
 			ws_cursor_pos(srv, &cx, &cy);
-			if (!hw_cursor && cimg && ws_kms_cursor_supported(kms) && ws_kms_cursor_set(kms, cimg, hx, hy) == 0) { hw_cursor = 1; last_cursor_serial = ws_cursor_serial(srv); }
+			if (!hw_cursor && cimg && ws_kms_cursor_supported(kms) && ws_kms_cursor_set(kms, ws_cursor_visible(srv) ? cimg : NULL, hx, hy) == 0) { hw_cursor = 1; last_cursor_serial = ws_cursor_serial(srv); }
 			if (hw_cursor) {
-				if (ws_cursor_serial(srv) != last_cursor_serial) { if (ws_kms_cursor_set(kms, cimg, hx, hy)) hw_cursor = 0; last_cursor_serial = ws_cursor_serial(srv); }
+				if (ws_cursor_serial(srv) != last_cursor_serial) { if (ws_kms_cursor_set(kms, ws_cursor_visible(srv) ? cimg : NULL, hx, hy)) hw_cursor = 0; last_cursor_serial = ws_cursor_serial(srv); last_cx = -1; }     /* a new image or visibility: place it again */
 				if (hw_cursor && (cx != last_cx || cy != last_cy)) ws_kms_cursor_move(kms, cx - hx, cy - hy);    /* no recomposition */
 			}
 			uint64_t gen = ws_server_generation(srv);

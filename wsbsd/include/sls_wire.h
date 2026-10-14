@@ -26,6 +26,13 @@ typedef struct { mach_msg_header_t h; NDR_record_t ndr; int32_t retcode; int32_t
 typedef struct { mach_msg_header_t h; NDR_record_t ndr; uint32_t wid, unk24; int32_t x, y; uint32_t unk30, unk34; } sls_find_req; /* 56 */
 typedef struct { mach_msg_header_t h; NDR_record_t ndr; int32_t retcode; uint64_t zero; uint32_t wid, owner; } __attribute__((packed)) sls_find_reply; /* 52 */
 
+/* key focus and cursor visibility (decompiled __X routines):
+ * ModifyKeyFocus 30136 (0x28): release flag@0x20, options@0x24 -- the connection is msgh_local_port; StealKeyFocusReturningID 30137 (0x24): options@0x20,
+ * reply 0x28 with the theft id@0x24 on success; ReleaseKeyFocusWithID 30138 (0x24): theft id@0x20; GetKeyFocusProcess 30139 (header only), reply 0x30:
+ * PSN hi@0x24, PSN lo@0x28, "nobody stole it" byte@0x2c; GetTypingFocusProcess 30140, reply 0x28: pid@0x24.
+ * Hide/Reveal/ObscureCursor 32016/32019/32018 (0x24): connection id@0x20; ShowCursor 32017 (0x28): connection id@0x20, force byte@0x24 */
+typedef struct { mach_msg_header_t h; NDR_record_t ndr; int32_t a, b; } sls_two_req;                                    /* 0x28 */
+typedef struct { mach_msg_header_t h; NDR_record_t ndr; int32_t retcode; uint32_t psn_hi, psn_lo; uint8_t is_default, pad[3]; } sls_keyproc_reply; /* 0x30 */
 typedef struct { mach_msg_header_t h; NDR_record_t ndr; int32_t retcode; int32_t x, y, w, ht; } sls_shape_bounds_reply;  /* 52: GetWindowShapeBounds */
 typedef sls_level_req sls_sublevel_req;                                                                           /* 40: SetWindowSubLevel (value cast to short) */
 /* variable length: MoveWindowList = header, NDR, i32 dx, i32 dy, u32 n, n window ids (size 0x2c + 4n, n <= 0x400);

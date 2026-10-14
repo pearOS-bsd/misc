@@ -67,6 +67,30 @@ static void test_walk(void)
 		CHECK(got != NULL && got->w == 8 && hx == 3 && hy == 4 && ws_cursor_serial(srv) != s1 && ws_server_generation(srv) == g1);
 		ws_surface_free(ci);
 	}
+	/* key focus: theft ids count up from 0x65, release by id hands focus back, a dying connection loses it */
+	{
+		int id1 = 0, id2 = 0, dflt = 9;
+		CHECK(ws_keyfocus_steal(srv, 5, 0, 1, &id1) == 0 && id1 == 0x65);
+		CHECK(ws_keyfocus_steal(srv, 6, 0, 1, &id2) == 0 && id2 == 0x66);
+		CHECK(ws_keyfocus_holder(srv, &dflt) == 6 && dflt == 0);
+		CHECK(ws_keyfocus_release(srv, 6, id2) == 0 && ws_keyfocus_holder(srv, &dflt) == 5);        /* back to the previous holder */
+		CHECK(ws_keyfocus_steal(srv, 5, 0x200, 0, NULL) == 1010 && ws_keyfocus_steal(srv, 5, 0, 0, NULL) == 0);
+		CHECK(ws_keyfocus_steal(srv, 0, 0, 0, NULL) == -600);
+		ws_release_owner(srv, 5);
+		CHECK(ws_keyfocus_holder(srv, &dflt) != 5);
+	}
+	/* cursor hide counts are per connection; force show clears one; obscure ends with the next mouse move */
+	{
+		CHECK(ws_cursor_visible(srv));
+		ws_cursor_hide(srv, 7); ws_cursor_hide(srv, 7); ws_cursor_hide(srv, 8);
+		ws_cursor_unhide(srv, 7, 0); CHECK(!ws_cursor_visible(srv));
+		ws_cursor_unhide(srv, 7, 1); CHECK(!ws_cursor_visible(srv));                                 /* 8 still hides it */
+		ws_cursor_unhide(srv, 8, 0); CHECK(ws_cursor_visible(srv));
+		ws_cursor_unhide(srv, 8, 0); CHECK(ws_cursor_visible(srv));                                  /* never below zero */
+		ws_cursor_obscure(srv, 7); CHECK(!ws_cursor_visible(srv));
+		ws_server_mouse(srv, 11, 12, 0); CHECK(ws_cursor_visible(srv));
+		ws_cursor_hide(srv, 9); ws_release_owner(srv, 9); CHECK(ws_cursor_visible(srv));             /* its hides die with it */
+	}
 	ws_server_drop_content(srv, content);
 	memset(&l, 0, sizeof l); ws_server_walk(srv, on_visit, &l);
 	CHECK(l.v[1].pixels != content && l.v[1].buffer_id == 0);

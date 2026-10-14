@@ -107,7 +107,9 @@ int ws_kms_cursor_supported(ws_kms *k)
 
 int ws_kms_cursor_set(ws_kms *k, const ws_surface *img, int hot_x, int hot_y)
 {
-	if (!ws_kms_cursor_supported(k) || !img || !img->px || (uint32_t)img->w > k->cur.w || (uint32_t)img->h > k->cur.h) return -1;
+	if (!ws_kms_cursor_supported(k)) return -1;
+	if (!img) { k->cur.on = 0; return drmModeSetCursor(k->fd, k->crtc, 0, 0, 0); }        /* hidden: the plane shows nothing */
+	if (!img->px || (uint32_t)img->w > k->cur.w || (uint32_t)img->h > k->cur.h) return -1;
 	memset(k->cur.map, 0, k->cur.size);
 	for (int y = 0; y < img->h; y++) memcpy(k->cur.map + (size_t)y * k->cur.w * 4, img->px + (size_t)y * img->stride, (size_t)img->w * 4);
 	if (drmModeSetCursor2(k->fd, k->crtc, k->cur.handle, k->cur.w, k->cur.h, hot_x, hot_y) &&

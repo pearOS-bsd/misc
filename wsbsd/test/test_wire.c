@@ -132,6 +132,46 @@ int main(void)
 		sls_value_reply csr;
 		CHECK(xchg(cfd, &cs, sizeof cs, &csr, sizeof csr, NULL, NULL) == (int)sizeof csr && csr.retcode == 0 && csr.value == 0x3f800000 && csr.h.msgh_size == 0x28);
 
+		/* key focus (theft ids from 0x65), typing/key focus process, cursor hide counts -- layouts from the decompiled __X routines */
+		{
+			uint32_t me = rep.connection_id;
+			sls_wid_req kq; memset(&kq, 0, sizeof kq); sls_value_reply kr; sls_keyproc_reply pr2;
+			sls_header_only_req ho; hdr(&ho, sizeof ho, SLS_MSG_GetKeyFocusProcess, 0);
+			CHECK(xchg(cfd, &ho, sizeof ho, &pr2, sizeof pr2, NULL, NULL) == (int)sizeof(sls_simple_reply) && ((sls_simple_reply *)&pr2)->retcode == -600);   /* nobody has focus */
+			hdr(&kq.h, sizeof kq, SLS_MSG_StealKeyFocusReturningID, 0); kq.ndr = WS_NDR; kq.wid = 0;
+			CHECK(xchg(cfd, &kq, sizeof kq, &kr, sizeof kr, NULL, NULL) == (int)sizeof kr && kr.retcode == 0 && kr.h.msgh_size == 0x28 && kr.value == 0x65);
+			CHECK(xchg(cfd, &ho, sizeof ho, &pr2, sizeof pr2, NULL, NULL) == (int)sizeof pr2 && pr2.retcode == 0 && pr2.h.msgh_size == 0x30 && pr2.psn_lo == me && pr2.is_default == 0);
+			hdr(&ho, sizeof ho, SLS_MSG_GetTypingFocusProcess, 0);
+			CHECK(xchg(cfd, &ho, sizeof ho, &kr, sizeof kr, NULL, NULL) == (int)sizeof kr && kr.retcode == 0 && kr.h.msgh_size == 0x28);
+			hdr(&kq.h, sizeof kq, SLS_MSG_StealKeyFocusReturningID, 0);
+			CHECK(xchg(cfd, &kq, sizeof kq, &kr, sizeof kr, NULL, NULL) == (int)sizeof kr && kr.value == 0x66);          /* the counter moves on */
+			hdr(&kq.h, sizeof kq, SLS_MSG_ReleaseKeyFocusWithID, 0); kq.wid = 0x65;
+			CHECK(rc_of(cfd, &kq, sizeof kq, SLS_MSG_ReleaseKeyFocusWithID + 100) == 0);
+			kq.wid = 0x66;
+			CHECK(rc_of(cfd, &kq, sizeof kq, SLS_MSG_ReleaseKeyFocusWithID + 100) == 0);
+			hdr(&ho, sizeof ho, SLS_MSG_GetKeyFocusProcess, 0);
+			CHECK(xchg(cfd, &ho, sizeof ho, &pr2, sizeof pr2, NULL, NULL) == (int)sizeof(sls_simple_reply) && ((sls_simple_reply *)&pr2)->retcode == -600);   /* released */
+			sls_two_req mq; memset(&mq, 0, sizeof mq); hdr(&mq.h, sizeof mq, SLS_MSG_ModifyKeyFocus, 0); mq.ndr = WS_NDR; mq.a = 0; mq.b = 0;
+			CHECK(rc_of(cfd, &mq, sizeof mq, SLS_MSG_ModifyKeyFocus + 100) == 0);                                          /* plain steal */
+			CHECK(rc_of(cfd, &mq, sizeof mq, SLS_MSG_ModifyKeyFocus + 100) == 0);                                          /* already the holder */
+			mq.b = 0x200; CHECK(rc_of(cfd, &mq, sizeof mq, SLS_MSG_ModifyKeyFocus + 100) == 1010);                          /* ... and says so when asked */
+			mq.a = 1; mq.b = 0; CHECK(rc_of(cfd, &mq, sizeof mq, SLS_MSG_ModifyKeyFocus + 100) == 0);
+			hdr(&kq.h, sizeof kq, SLS_MSG_StealKeyFocusReturningID, 0); kq.wid = 0; mq.a = 0;
+			CHECK(rc_of(cfd, &kq, 0x20, 71) == MIG_BAD_ARGUMENTS);                                                 /* wrong size: a MIG error reply (id 71) */
+
+			sls_wid_req cq; memset(&cq, 0, sizeof cq); cq.ndr = WS_NDR; cq.wid = me;
+			hdr(&cq.h, sizeof cq, SLS_MSG_HideCursor, 0);
+			CHECK(rc_of(cfd, &cq, sizeof cq, SLS_MSG_HideCursor + 100) == 0);
+			cq.wid = 77777; CHECK(rc_of(cfd, &cq, sizeof cq, SLS_MSG_HideCursor + 100) == 1000);                           /* unknown connection */
+			hdr(&cq.h, sizeof cq, SLS_MSG_ObscureCursor, 0);
+			CHECK(rc_of(cfd, &cq, sizeof cq, SLS_MSG_ObscureCursor + 100) == 1001);
+			cq.wid = me; CHECK(rc_of(cfd, &cq, sizeof cq, SLS_MSG_ObscureCursor + 100) == 0);
+			hdr(&cq.h, sizeof cq, SLS_MSG_RevealCursor, 0); CHECK(rc_of(cfd, &cq, sizeof cq, SLS_MSG_RevealCursor + 100) == 0);
+			sls_two_req sq; memset(&sq, 0, sizeof sq); hdr(&sq.h, sizeof sq, SLS_MSG_ShowCursor, 0); sq.ndr = WS_NDR; sq.a = (int32_t)me; sq.b = 1;
+			CHECK(rc_of(cfd, &sq, sizeof sq, SLS_MSG_ShowCursor + 100) == 0);                                              /* force: back to zero */
+			sq.a = 77777; CHECK(rc_of(cfd, &sq, sizeof sq, SLS_MSG_ShowCursor + 100) == 0);                                /* always 0 */
+		}
+
 		/* window event mask by the owner; events for the owner's window arrive asynchronously on its event channel */
 		int wfd = -1, wrc = 0;
 		uint32_t cw = create(cfd, (ws_rect){ 10, 10, 100, 80 }, 2, &wfd, &wrc);
