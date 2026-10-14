@@ -1,0 +1,366 @@
+new_window a 100 200 300 150
+new_window b 50 60 80 40
+# 30384 __XPackagesAssignDraggedWindowToDestinationSpace size=0x30
+raw 30384 ndr u32:0 u32:0 u32:0 u32:0
+raw 30384 ndr wid:a u32:0 u32:0 u32:0
+raw 30384 ndr cid u32:0 u32:0 u32:0
+# 30388 __XServerMightHaveAcceleration size=0x18
+raw 30388 
+# 30389 __XCopyManagedDisplays size=0x18
+raw 30389 
+# 30391 __XActuateDeviceWithPattern size=0x38
+raw 30391 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30391 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30391 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0
+# 30396 __XStructuralRegionMove size=0x38
+raw 30396 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30396 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30396 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0
+# 30397 __XStructuralRegionSetLevel size=0x30
+raw 30397 ndr u32:0 u32:0 u32:0 u32:0
+raw 30397 ndr wid:a u32:0 u32:0 u32:0
+raw 30397 ndr cid u32:0 u32:0 u32:0
+# 30398 __XStructuralRegionSetEventMask size=0x2c
+raw 30398 ndr u32:0 u32:0 u32:0
+raw 30398 ndr wid:a u32:0 u32:0
+raw 30398 ndr cid u32:0 u32:0
+# 30399 __XStructuralRegionSetClippedByWindow size=0x2c
+raw 30399 ndr u32:0 u32:0 u32:0
+raw 30399 ndr wid:a u32:0 u32:0
+raw 30399 ndr cid u32:0 u32:0
+# 30400 __XStructuralRegionSetChildRegionTransform size=0x40
+raw 30400 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30400 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30400 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+# 30401 __XTrackingRegionSetIsEnabled size=0x2c
+raw 30401 ndr u32:0 u32:0 u32:0
+raw 30401 ndr wid:a u32:0 u32:0
+raw 30401 ndr cid u32:0 u32:0
+# 30404 __XWindowRoutingRecordsForScreenLocation size=0x28
+raw 30404 ndr u32:0 u32:0
+raw 30404 ndr wid:a u32:0
+raw 30404 ndr cid u32:0
+# 30407 __XPackagesSetWindowConstraints size=0x54
+raw 30407 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30407 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30407 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+# 30408 __XPackagesGetWindowConstraints size=0x24
+raw 30408 ndr u32:0
+raw 30408 ndr wid:a
+raw 30408 ndr cid
+# 30409 __XPackagesSetWindowDragTransform size=0x4c
+raw 30409 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30409 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30409 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+# 30411 __XSpaceSetOrderingWeight size=0x2c
+raw 30411 ndr u32:0 u32:0 u32:0
+raw 30411 ndr wid:a u32:0 u32:0
+raw 30411 ndr cid u32:0 u32:0
+# 30412 __XSpaceGetRect size=0x28
+raw 30412 ndr u32:0 u32:0
+raw 30412 ndr wid:a u32:0
+raw 30412 ndr cid u32:0
+# 30413 __XWindowGetPrimarySpaceRect size=0x24
+raw 30413 ndr u32:0
+raw 30413 ndr wid:a
+raw 30413 ndr cid
+# 30415 __XSpaceSetEdgeReservation size=0x40
+raw 30415 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30415 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30415 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+# 30416 __XSpaceGetInterTileSpacing size=0x28
+raw 30416 ndr u32:0 u32:0
+raw 30416 ndr wid:a u32:0
+raw 30416 ndr cid u32:0
+# 30417 __XSpaceSetInterTileSpacing size=0x30
+raw 30417 ndr u32:0 u32:0 u32:0 u32:0
+raw 30417 ndr wid:a u32:0 u32:0 u32:0
+raw 30417 ndr cid u32:0 u32:0 u32:0
+# 30418 __XSpaceTileMoveToSpaceAtIndex size=0x38
+raw 30418 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30418 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30418 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0
+# 30419 __XSpaceCanCreateTile size=0x38
+raw 30419 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30419 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30419 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0
+# 30420 __XSpaceGetSpacersAtPoint size=0x38
+raw 30420 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30420 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30420 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0
+# 30422 __XSpaceFinishedResizeForRect size=0x48
+raw 30422 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30422 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30422 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+# 30423 __XSpaceCopyTileSpaces size=0x28
+raw 30423 ndr u32:0 u32:0
+raw 30423 ndr wid:a u32:0
+raw 30423 ndr cid u32:0
+# 30427 __XGetSpacePermittedResizeDirections size=0x38
+raw 30427 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30427 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30427 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0
+# 30428 __XInterruptMenuBarReveal size=0x18
+raw 30428 
+# 30434 __XSetWindowSubLevel size=0x28
+raw 30434 ndr u32:0 u32:0
+raw 30434 ndr wid:a u32:0
+raw 30434 ndr cid u32:0
+# 30435 __XGetWindowSubLevel size=0x24
+raw 30435 ndr u32:0
+raw 30435 ndr wid:a
+raw 30435 ndr cid
+# 30443 __XSpaceSetAlpha size=0x2c
+raw 30443 ndr u32:0 u32:0 u32:0
+raw 30443 ndr wid:a u32:0 u32:0
+raw 30443 ndr cid u32:0 u32:0
+# 30444 __XWindowSetActiveShadowLegacy size=0x28
+raw 30444 ndr u32:0 u32:0
+raw 30444 ndr wid:a u32:0
+raw 30444 ndr cid u32:0
+# 30445 __XReserveStructuralRegionIDRange size=0x28
+raw 30445 ndr u32:0 u32:0
+raw 30445 ndr wid:a u32:0
+raw 30445 ndr cid u32:0
+# 30446 __XGetTileSpaceDividerDirections size=0x28
+raw 30446 ndr u32:0 u32:0
+raw 30446 ndr wid:a u32:0
+raw 30446 ndr cid u32:0
+# 30447 __XTileSpaceSetDividerWindow size=0x34
+raw 30447 ndr u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30447 ndr wid:a u32:0 u32:0 u32:0 u32:0
+raw 30447 ndr cid u32:0 u32:0 u32:0 u32:0
+# 30449 __XStall size=0x28
+raw 30449 ndr u32:0 u32:0
+raw 30449 ndr wid:a u32:0
+raw 30449 ndr cid u32:0
+# 30450 __XEnsureSpaceSwitchToActiveProcess size=0x18
+raw 30450 
+# 30451 __XTileSpaceReplaceWithSnapshotWindow size=0x28
+raw 30451 ndr u32:0 u32:0
+raw 30451 ndr wid:a u32:0
+raw 30451 ndr cid u32:0
+# 30456 __XGetDevices size=0x18
+raw 30456 
+# 30460 __XCopyWindowsWithOptionsAndTagsAndSpaceOptions size=0x3c
+raw 30460 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30460 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30460 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+# 30461 __XTrackingRegionSetRespectsSystemAlphaThreshold size=0x2c
+raw 30461 ndr u32:0 u32:0 u32:0
+raw 30461 ndr wid:a u32:0 u32:0
+raw 30461 ndr cid u32:0 u32:0
+# 30466 __XHMDCopyByID size=0x24
+raw 30466 ndr u32:0
+raw 30466 ndr wid:a
+raw 30466 ndr cid
+# 30467 __XHMDCopyList size=0x18
+raw 30467 
+# 30468 __XHMDGetSurfaceForIndex size=0x28
+raw 30468 ndr u32:0 u32:0
+raw 30468 ndr wid:a u32:0
+raw 30468 ndr cid u32:0
+# 30470 __XHMDQueryStatus size=0x28
+raw 30470 ndr u32:0 u32:0
+raw 30470 ndr wid:a u32:0
+raw 30470 ndr cid u32:0
+# 30473 __XDisplayChangedSeedCheckValidity size=0x24
+raw 30473 ndr u32:0
+raw 30473 ndr wid:a
+raw 30473 ndr cid
+# 30477 __XReenableCursorObscure size=0x18
+raw 30477 
+# 30478 __XUpdateLastEventTime size=0x24
+raw 30478 ndr u32:0
+raw 30478 ndr wid:a
+raw 30478 ndr cid
+# 30479 __XValidateUnobscuredRemoteRegionSecurityToken size=0x2c
+raw 30479 ndr u32:0 u32:0 u32:0
+raw 30479 ndr wid:a u32:0 u32:0
+raw 30479 ndr cid u32:0 u32:0
+# 30480 __XWindowSetTrustedForObscuring size=0x28
+raw 30480 ndr u32:0 u32:0
+raw 30480 ndr wid:a u32:0
+raw 30480 ndr cid u32:0
+# 30481 __XPostCoordinatedDistributedNotification size=0x2c
+raw 30481 ndr u32:0 u32:0 u32:0
+raw 30481 ndr wid:a u32:0 u32:0
+raw 30481 ndr cid u32:0 u32:0
+# 30482 __XCoordinatedDistributedNotificationMarkCompletion size=0x28
+raw 30482 ndr u32:0 u32:0
+raw 30482 ndr wid:a u32:0
+raw 30482 ndr cid u32:0
+# 30483 __XGetSurfaceFrontBufferID size=0x28
+raw 30483 ndr u32:0 u32:0
+raw 30483 ndr wid:a u32:0
+raw 30483 ndr cid u32:0
+# 30484 __XWindowSetSurfaceContext size=0x2c
+raw 30484 ndr u32:0 u32:0 u32:0
+raw 30484 ndr wid:a u32:0 u32:0
+raw 30484 ndr cid u32:0 u32:0
+# 30485 __XGetSpaceMenuBarReveal size=0x28
+raw 30485 ndr u32:0 u32:0
+raw 30485 ndr wid:a u32:0
+raw 30485 ndr cid u32:0
+# 30487 __XGetZoomDisplay size=0x18
+raw 30487 
+# 30488 __XIsAccessibilityDisplay size=0x24
+raw 30488 ndr u32:0
+raw 30488 ndr wid:a
+raw 30488 ndr cid
+# 30491 __XGetAppearanceThemeSwitchesAutomatically size=0x18
+raw 30491 
+# 30495 __XDisplayStreamSidecarTouchBar size=0x4c
+raw 30495 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30495 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30495 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+# 30501 __XCopySystemStatusBarMetrics size=0x18
+raw 30501 
+# 30502 __XDisplaysCurrentState_SL size=0x18
+raw 30502 
+# 30504 __XGetRealtimeDisplayDataShmemPort size=0x24
+raw 30504 ndr u32:0
+raw 30504 ndr wid:a
+raw 30504 ndr cid
+# 30505 __XDisplaySupportsHDRMode size=0x24
+raw 30505 ndr u32:0
+raw 30505 ndr wid:a
+raw 30505 ndr cid
+# 30506 __XDisplayIsHDRModeEnabled size=0x24
+raw 30506 ndr u32:0
+raw 30506 ndr wid:a
+raw 30506 ndr cid
+# 30507 __XDisplaySetHDRModeEnabled size=0x28
+raw 30507 ndr u32:0 u32:0
+raw 30507 ndr wid:a u32:0
+raw 30507 ndr cid u32:0
+# 30520 __XDisplayIsThermallyLimited size=0x24
+raw 30520 ndr u32:0
+raw 30520 ndr wid:a
+raw 30520 ndr cid
+# 30522 __XDisplayCopyUserAdjustment size=0x24
+raw 30522 ndr u32:0
+raw 30522 ndr wid:a
+raw 30522 ndr cid
+# 30526 __XDisplayIsUserAdjustmentSupported size=0x24
+raw 30526 ndr u32:0
+raw 30526 ndr wid:a
+raw 30526 ndr cid
+# 30527 __XDisplayIsUserAdjustmentValid size=0x24
+raw 30527 ndr u32:0
+raw 30527 ndr wid:a
+raw 30527 ndr cid
+# 30530 __XDisplayCopyCalibrationInfo size=0x24
+raw 30530 ndr u32:0
+raw 30530 ndr wid:a
+raw 30530 ndr cid
+# 30531 __XSetUnderscanValue size=0x28
+raw 30531 ndr u32:0 u32:0
+raw 30531 ndr wid:a u32:0
+raw 30531 ndr cid u32:0
+# 30532 __XGetUnderscanValue size=0x24
+raw 30532 ndr u32:0
+raw 30532 ndr wid:a
+raw 30532 ndr cid
+# 30533 __XCopyCoordinatedDistributedNotificationFencePort size=0x28
+raw 30533 ndr u32:0 u32:0
+raw 30533 ndr wid:a u32:0
+raw 30533 ndr cid u32:0
+# 30534 __XSetChameleonParentWindow size=0x28
+raw 30534 ndr u32:0 u32:0
+raw 30534 ndr wid:a u32:0
+raw 30534 ndr cid u32:0
+# 30535 __XDisplayGetPreferHDR10 size=0x24
+raw 30535 ndr u32:0
+raw 30535 ndr wid:a
+raw 30535 ndr cid
+# 30540 __XSelectiveSharingContextCopyMainContext size=0x18
+raw 30540 
+# 30542 __XSelectiveSharingContextCopyState size=0x30
+raw 30542 ndr u32:0 u32:0 u32:0 u32:0
+raw 30542 ndr wid:a u32:0 u32:0 u32:0
+raw 30542 ndr cid u32:0 u32:0 u32:0
+# 30543 __XSelectiveSharingContextStart size=0x30
+raw 30543 ndr u32:0 u32:0 u32:0 u32:0
+raw 30543 ndr wid:a u32:0 u32:0 u32:0
+raw 30543 ndr cid u32:0 u32:0 u32:0
+# 30546 __XSetSarlaccPathShow size=0x24
+raw 30546 ndr u32:0
+raw 30546 ndr wid:a
+raw 30546 ndr cid
+# 30547 __XDumpSarlaccPath size=0x18
+raw 30547 
+# 30550 __XResignActiveAppearanceWhileActive size=0x18
+raw 30550 
+# 30551 __XSoftwareCursorRequested size=0x18
+raw 30551 
+# 30552 __XCopyWindowCornerMask size=0x24
+raw 30552 ndr u32:0
+raw 30552 ndr wid:a
+raw 30552 ndr cid
+# 30553 __XCopySessionSpaceState size=0x18
+raw 30553 
+# 30554 __XGetUnifiedKeyMapping size=0x18
+raw 30554 
+# 30555 __XSetUnifiedKeyMapping size=0x24
+raw 30555 ndr u32:0
+raw 30555 ndr wid:a
+raw 30555 ndr cid
+# 30556 __XSelectiveSharingContextCopy size=0x30
+raw 30556 ndr u32:0 u32:0 u32:0 u32:0
+raw 30556 ndr wid:a u32:0 u32:0 u32:0
+raw 30556 ndr cid u32:0 u32:0 u32:0
+# 30557 __XSelectiveSharingContextShowPicker size=0x30
+raw 30557 ndr u32:0 u32:0 u32:0 u32:0
+raw 30557 ndr wid:a u32:0 u32:0 u32:0
+raw 30557 ndr cid u32:0 u32:0 u32:0
+# 30559 __XSelectiveSharingManagerCopyAllSessions size=0x18
+raw 30559 
+# 30560 __XPersistenceSetSessionStatus size=0x24
+raw 30560 ndr u32:0
+raw 30560 ndr wid:a
+raw 30560 ndr cid
+# 30561 __XPersistenceSetSessionBitmapKey size=0x30
+raw 30561 ndr u32:0 u32:0 u32:0 u32:0
+raw 30561 ndr wid:a u32:0 u32:0 u32:0
+raw 30561 ndr cid u32:0 u32:0 u32:0
+# 30562 __XGetLastUsedKeyboardID size=0x18
+raw 30562 
+# 30563 __XTileSpaceTakeOwnership size=0x28
+raw 30563 ndr u32:0 u32:0
+raw 30563 ndr wid:a u32:0
+raw 30563 ndr cid u32:0
+# 30564 __XSetWindowPrefersCurrentSpace size=0x28
+raw 30564 ndr u32:0 u32:0
+raw 30564 ndr wid:a u32:0
+raw 30564 ndr cid u32:0
+# 30565 __XGetSpaceNeedsAuxiliaryScale size=0x28
+raw 30565 ndr u32:0 u32:0
+raw 30565 ndr wid:a u32:0
+raw 30565 ndr cid u32:0
+# 30566 __XHMDSetEnabled size=0x28
+raw 30566 ndr u32:0 u32:0
+raw 30566 ndr wid:a u32:0
+raw 30566 ndr cid u32:0
+# 30567 __XHMDEnabled size=0x24
+raw 30567 ndr u32:0
+raw 30567 ndr wid:a
+raw 30567 ndr cid
+# 30569 __XSetSpaceWindowManagementCapabilities size=0x28
+raw 30569 ndr u32:0 u32:0
+raw 30569 ndr wid:a u32:0
+raw 30569 ndr cid u32:0
+# 30572 __XGetWindowTransform3D size=0x24
+raw 30572 ndr u32:0
+raw 30572 ndr wid:a
+raw 30572 ndr cid
+# 30574 __XGetSessionUID size=0x18
+raw 30574 
+# 30579 __XGetWindowBackingStoreOverrideResolution size=0x24
+raw 30579 ndr u32:0
+raw 30579 ndr wid:a
+raw 30579 ndr cid
+# 30580 __XSelectiveSharingContextSetPresentationDisplay size=0x38
+raw 30580 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30580 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30580 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0

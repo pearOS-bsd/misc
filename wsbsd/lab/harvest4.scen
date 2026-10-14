@@ -1,0 +1,362 @@
+new_window a 100 200 300 150
+new_window b 50 60 80 40
+# 30582 __XDisplayCalibrationBegin size=0x24
+raw 30582 ndr u32:0
+raw 30582 ndr wid:a
+raw 30582 ndr cid
+# 30583 __XDisplayCalibrationEnd size=0x24
+raw 30583 ndr u32:0
+raw 30583 ndr wid:a
+raw 30583 ndr cid
+# 30585 __XDisplaySupportsDynamicGeometry size=0x24
+raw 30585 ndr u32:0
+raw 30585 ndr wid:a
+raw 30585 ndr cid
+# 30586 __XDisplayIsDynamicGeometryEnabled size=0x24
+raw 30586 ndr u32:0
+raw 30586 ndr wid:a
+raw 30586 ndr cid
+# 30588 __XSetPhotosensitivityProcessingEnabled size=0x24
+raw 30588 ndr u32:0
+raw 30588 ndr wid:a
+raw 30588 ndr cid
+# 30589 __XSetEventInterpolation size=0x24
+raw 30589 ndr u32:0
+raw 30589 ndr wid:a
+raw 30589 ndr cid
+# 30590 __XGetZoomParametersForDisplay size=0x24
+raw 30590 ndr u32:0
+raw 30590 ndr wid:a
+raw 30590 ndr cid
+# 30591 __XSetZoomParametersForDisplay size=0x3c
+raw 30591 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30591 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30591 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+# 30594 __XSetSuppressPrivacyIndicatorOnExternalDisplays size=0x24
+raw 30594 ndr u32:0
+raw 30594 ndr wid:a
+raw 30594 ndr cid
+# 30595 __XAllowPrivacyIndicatorSuppression size=0x18
+raw 30595 
+# 30596 __XGetSuppressPrivacyIndicatorOnExternalDisplays size=0x18
+raw 30596 
+# 30597 __XGetWindowBackingStorePixelDimensionsHint size=0x24
+raw 30597 ndr u32:0
+raw 30597 ndr wid:a
+raw 30597 ndr cid
+# 30598 __XTakeMouseFocusTracking size=0x40
+raw 30598 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30598 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30598 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+# 30610 __XSetPresentationDisplay size=0x2c
+raw 30610 ndr u32:0 u32:0 u32:0
+raw 30610 ndr wid:a u32:0 u32:0
+raw 30610 ndr cid u32:0 u32:0
+# 30611 __XSetWindowClientPerceivedType size=0x28
+raw 30611 ndr u32:0 u32:0
+raw 30611 ndr wid:a u32:0
+raw 30611 ndr cid u32:0
+# 30612 __XSetPresentationDisplayAlwaysHD size=0x28
+raw 30612 ndr u32:0 u32:0
+raw 30612 ndr wid:a u32:0
+raw 30612 ndr cid u32:0
+# 30615 __XGetMenuAppearanceThemeOnSpace size=0x28
+raw 30615 ndr u32:0 u32:0
+raw 30615 ndr wid:a u32:0
+raw 30615 ndr cid u32:0
+# 30616 __XIsPresentationDisplay size=0x24
+raw 30616 ndr u32:0
+raw 30616 ndr wid:a
+raw 30616 ndr cid
+# 30617 __XSetZoomScreenShare size=0x24
+raw 30617 ndr u32:0
+raw 30617 ndr wid:a
+raw 30617 ndr cid
+# 30619 __XSetTVConnectDefaultPolicy size=0x24
+raw 30619 ndr u32:0
+raw 30619 ndr wid:a
+raw 30619 ndr cid
+# 30621 __XGetAvailableDisplayWallGroups size=0x24
+raw 30621 ndr u32:0
+raw 30621 ndr wid:a
+raw 30621 ndr cid
+# 30622 __XValidateDisplayWallConfiguration size=0x48
+raw 30622 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30622 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30622 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+# 30623 __XEnableDisplayWallWithConfiguration size=0x48
+raw 30623 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30623 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30623 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+# 30625 __XIsDisplayWall size=0x24
+raw 30625 ndr u32:0
+raw 30625 ndr wid:a
+raw 30625 ndr cid
+# 30626 __XDisplayGetUserAdjustmentRange size=0x5c
+raw 30626 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30626 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30626 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+# 30627 __XSymbolicHotKeyName size=0x24
+raw 30627 ndr u32:0
+raw 30627 ndr wid:a
+raw 30627 ndr cid
+# 30628 __XUpdatePermittedFrontPSNList size=0x30
+raw 30628 ndr u32:0 u32:0 u32:0 u32:0
+raw 30628 ndr wid:a u32:0 u32:0 u32:0
+raw 30628 ndr cid u32:0 u32:0 u32:0
+# 30630 __XSetMenuBarUseBlurredAppearance size=0x24
+raw 30630 ndr u32:0
+raw 30630 ndr wid:a
+raw 30630 ndr cid
+# 30634 __XDisplayIsLiveUserAdjustmentSupported size=0x24
+raw 30634 ndr u32:0
+raw 30634 ndr wid:a
+raw 30634 ndr cid
+# 30636 __XRegisterAXCursorColor size=0x40
+raw 30636 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30636 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30636 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+# 30637 __XSidecarGestureEventsSupported size=0x18
+raw 30637 
+# 30638 __XRegisterMenuBarAgent size=0x24
+raw 30638 ndr u32:0
+raw 30638 ndr wid:a
+raw 30638 ndr cid
+# 30639 __XDisplayCopyCADisplayUniqueID size=0x24
+raw 30639 ndr u32:0
+raw 30639 ndr wid:a
+raw 30639 ndr cid
+# 30640 __XGetSpecifiedWindowPath size=0x28
+raw 30640 ndr u32:0 u32:0
+raw 30640 ndr wid:a u32:0
+raw 30640 ndr cid u32:0
+# 30644 __XMenuBarPrivacyIndicatorInset size=0x24
+raw 30644 ndr u32:0
+raw 30644 ndr wid:a
+raw 30644 ndr cid
+# 30645 __XWindowRegisterForSystemGestures size=0x24
+raw 30645 ndr u32:0
+raw 30645 ndr wid:a
+raw 30645 ndr cid
+# 32001 __XConnectionGetPIDAndVersion size=0x24
+raw 32001 ndr u32:0
+raw 32001 ndr wid:a
+raw 32001 ndr cid
+# 32005 __XGLCompositorSettings size=0x28
+raw 32005 ndr u32:0 u32:0
+raw 32005 ndr wid:a u32:0
+raw 32005 ndr cid u32:0
+# 32006 __XGetEventShmem size=0x18
+raw 32006 
+# 32007 __XGetRealtimeDisplayInfoShmem size=0x18
+raw 32007 
+# 32008 __XSavePerUserConfigurationData size=0x18
+raw 32008 
+# 32010 __XInitialEnableOfDisplayUpdates size=0x18
+raw 32010 
+# 32011 __XGetSymbolicHotKeyValue size=0x24
+raw 32011 ndr u32:0
+raw 32011 ndr wid:a
+raw 32011 ndr cid
+# 32012 __XSetSymbolicHotKeyValue size=0x30
+raw 32012 ndr u32:0 u32:0 u32:0 u32:0
+raw 32012 ndr wid:a u32:0 u32:0 u32:0
+raw 32012 ndr cid u32:0 u32:0 u32:0
+# 32013 __XIsSymbolicHotKeyEnabled size=0x24
+raw 32013 ndr u32:0
+raw 32013 ndr wid:a
+raw 32013 ndr cid
+# 32014 __XSetSymbolicHotKeyEnabled size=0x28
+raw 32014 ndr u32:0 u32:0
+raw 32014 ndr wid:a u32:0
+raw 32014 ndr cid u32:0
+# 32016 __XHideCursor size=0x24
+raw 32016 ndr u32:0
+raw 32016 ndr wid:a
+raw 32016 ndr cid
+# 32017 __XShowCursor size=0x28
+raw 32017 ndr u32:0 u32:0
+raw 32017 ndr wid:a u32:0
+raw 32017 ndr cid u32:0
+# 32018 __XObscureCursor size=0x24
+raw 32018 ndr u32:0
+raw 32018 ndr wid:a
+raw 32018 ndr cid
+# 32019 __XRevealCursor size=0x24
+raw 32019 ndr u32:0
+raw 32019 ndr wid:a
+raw 32019 ndr cid
+# 32022 __XGetSymbolicHotKeyRepresentation size=0x24
+raw 32022 ndr u32:0
+raw 32022 ndr wid:a
+raw 32022 ndr cid
+# 32023 __XSetSymbolicHotKeyRepresentation size=0x58
+raw 32023 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 32023 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 32023 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+# 32024 __XGetSessionReadOnceData size=0x18
+raw 32024 
+# 32031 __XEnableEventTap size=0x28
+raw 32031 ndr u32:0 u32:0
+raw 32031 ndr wid:a u32:0
+raw 32031 ndr cid u32:0
+# 32032 __XEventTapIsEnabled size=0x24
+raw 32032 ndr u32:0
+raw 32032 ndr wid:a
+raw 32032 ndr cid
+# 32033 __XEventTapSendDataProcessedAck size=0x2c
+raw 32033 ndr u32:0 u32:0 u32:0
+raw 32033 ndr wid:a u32:0 u32:0
+raw 32033 ndr cid u32:0 u32:0
+# 32034 __XConnectionsForPSN size=0x28
+raw 32034 ndr u32:0 u32:0
+raw 32034 ndr wid:a u32:0
+raw 32034 ndr cid u32:0
+# 32035 __XGetEventTapList size=0x18
+raw 32035 
+# 32036 __XSetEventTapTimeout size=0x24
+raw 32036 ndr u32:0
+raw 32036 ndr wid:a
+raw 32036 ndr cid
+# 32038 __XCreateEventSourceState size=0x18
+raw 32038 
+# 32039 __XGetEventSourceState size=0x24
+raw 32039 ndr u32:0
+raw 32039 ndr wid:a
+raw 32039 ndr cid
+# 32040 __XSetEventTapOption size=0x2c
+raw 32040 ndr u32:0 u32:0 u32:0
+raw 32040 ndr wid:a u32:0 u32:0
+raw 32040 ndr cid u32:0 u32:0
+# 32041 __XCopyWindowDescriptionList size=0x50
+raw 32041 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 32041 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 32041 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+# 32043 __XWindowListCreate size=0x28
+raw 32043 ndr u32:0 u32:0
+raw 32043 ndr wid:a u32:0
+raw 32043 ndr cid u32:0
+# 32046 __XGetSymbolicHotKeyRepresentationList size=0x24
+raw 32046 ndr u32:0
+raw 32046 ndr wid:a
+raw 32046 ndr cid
+# 32050 __XGetDisplayMaxOpenGLSurfaceSize size=0x24
+raw 32050 ndr u32:0
+raw 32050 ndr wid:a
+raw 32050 ndr cid
+# 32051 __XCreateWindowDebugInfo size=0x28
+raw 32051 ndr u32:0 u32:0
+raw 32051 ndr wid:a u32:0
+raw 32051 ndr cid u32:0
+# 32052 __XCreateShadowCacheDebugInfo size=0x18
+raw 32052 
+# 32054 __XCopyColorSpace size=0x24
+raw 32054 ndr u32:0
+raw 32054 ndr wid:a
+raw 32054 ndr cid
+# 32056 __XConnectionsForPid size=0x24
+raw 32056 ndr u32:0
+raw 32056 ndr wid:a
+raw 32056 ndr cid
+# 32061 __XWindowListIsDefaultScreenCapturable size=0x48
+raw 32061 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 32061 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 32061 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+# 32062 __XConsoleSetUpdatesAllowed size=0x24
+raw 32062 ndr u32:0
+raw 32062 ndr wid:a
+raw 32062 ndr cid
+# 32063 __XGetWindowServerTimebase size=0x18
+raw 32063 
+# 32064 __XGetDebugInfo size=0x24
+raw 32064 ndr u32:0
+raw 32064 ndr wid:a
+raw 32064 ndr cid
+# 32065 __XSetWindowBackingStoreOverrideResolution size=0x28
+raw 32065 ndr u32:0 u32:0
+raw 32065 ndr wid:a u32:0
+raw 32065 ndr cid u32:0
+# 32066 __XSetZoomAllowCursorCrossDisplay size=0x24
+raw 32066 ndr u32:0
+raw 32066 ndr wid:a
+raw 32066 ndr cid
+# 32068 __XSetWindowBackingStorePixelDimensionsHint size=0x34
+raw 32068 ndr u32:0 u32:0 u32:0 u32:0 u32:0
+raw 32068 ndr wid:a u32:0 u32:0 u32:0 u32:0
+raw 32068 ndr cid u32:0 u32:0 u32:0 u32:0
+# 32072 __XCopyGlobalLightOptions size=0x18
+raw 32072 
+# 33003 __XEnableAmbientDisplay size=0x24
+raw 33003 ndr u32:0
+raw 33003 ndr wid:a
+raw 33003 ndr cid
+# 33006 __XSetDisplayIntentionWiper size=0x28
+raw 33006 ndr u32:0 u32:0
+raw 33006 ndr wid:a u32:0
+raw 33006 ndr cid u32:0
+# 33010 __XDisplayVisualBell size=0x3c
+raw 33010 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 33010 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 33010 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+# 33013 __XGetDisplayMaximumHDRValue size=0x24
+raw 33013 ndr u32:0
+raw 33013 ndr wid:a
+raw 33013 ndr cid
+# 33014 __XEnableHDR size=0x24
+raw 33014 ndr u32:0
+raw 33014 ndr wid:a
+raw 33014 ndr cid
+# 33015 __XIsHDREnabled size=0x18
+raw 33015 
+# 33016 __XIsHDRSupported size=0x18
+raw 33016 
+# 33017 __XAcquireDisplayFadeReservation size=0x24
+raw 33017 ndr u32:0
+raw 33017 ndr wid:a
+raw 33017 ndr cid
+# 33020 __XSetDisplayContrast size=0x24
+raw 33020 ndr u32:0
+raw 33020 ndr wid:a
+raw 33020 ndr cid
+# 33023 __XDisplayGetRefreshTiming size=0x24
+raw 33023 ndr u32:0
+raw 33023 ndr wid:a
+raw 33023 ndr cid
+# 33027 __XCopyDisplayInfoDictionary size=0x24
+raw 33027 ndr u32:0
+raw 33027 ndr wid:a
+raw 33027 ndr cid
+# 34000 __XGetSizeOfDisplayTransfer size=0x24
+raw 34000 ndr u32:0
+raw 34000 ndr wid:a
+raw 34000 ndr cid
+# 34001 __XGetDisplayTransferByTable size=0x24
+raw 34001 ndr u32:0
+raw 34001 ndr wid:a
+raw 34001 ndr cid
+# 34002 __XGetDisplayTransferByFormula size=0x24
+raw 34002 ndr u32:0
+raw 34002 ndr wid:a
+raw 34002 ndr cid
+# 34003 __XGetDisplaySystemState size=0x28
+raw 34003 ndr u32:0 u32:0
+raw 34003 ndr wid:a u32:0
+raw 34003 ndr cid u32:0
+# 34004 __XServiceForDisplayNumber size=0x28
+raw 34004 ndr u32:0 u32:0
+raw 34004 ndr wid:a u32:0
+raw 34004 ndr cid u32:0
+# 34005 __XAcceleratorForDisplayNumber size=0x28
+raw 34005 ndr u32:0 u32:0
+raw 34005 ndr wid:a u32:0
+raw 34005 ndr cid u32:0
+# 34006 __XGetDisplayShmem size=0x18
+raw 34006 
+# 34007 __XInvoke77298158 size=0x24
+raw 34007 ndr u32:0
+raw 34007 ndr wid:a
+raw 34007 ndr cid
+# 34008 __XAcceleratorForHMD size=0x24
+raw 34008 ndr u32:0
+raw 34008 ndr wid:a
+raw 34008 ndr cid

@@ -1,0 +1,386 @@
+new_window a 100 200 300 150
+new_window b 50 60 80 40
+# 30169 __XOrderFrontConditionally size=0x34
+raw 30169 ndr u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30169 ndr wid:a u32:0 u32:0 u32:0 u32:0
+raw 30169 ndr cid u32:0 u32:0 u32:0 u32:0
+# 30171 __XSetMenuBarDrawingStyle size=0x24
+raw 30171 ndr u32:0
+raw 30171 ndr wid:a
+raw 30171 ndr cid
+# 30173 __XSetMenuBarAutohideEnabled size=0x24
+raw 30173 ndr u32:0
+raw 30173 ndr wid:a
+raw 30173 ndr cid
+# 30175 __XSetAppearanceTheme size=0x28
+raw 30175 ndr u32:0 u32:0
+raw 30175 ndr wid:a u32:0
+raw 30175 ndr cid u32:0
+# 30177 __XSetFrontWindow size=0x24
+raw 30177 ndr u32:0
+raw 30177 ndr wid:a
+raw 30177 ndr cid
+# 30178 __XSetWindowHasKeyAppearance size=0x28
+raw 30178 ndr u32:0 u32:0
+raw 30178 ndr wid:a u32:0
+raw 30178 ndr cid u32:0
+# 30179 __XSetWindowHasMainAppearance size=0x28
+raw 30179 ndr u32:0 u32:0
+raw 30179 ndr wid:a u32:0
+raw 30179 ndr cid u32:0
+# 30180 __XReorderWindows size=0x18
+raw 30180 
+# 30183 __XPackagesDragWindowRelativeToMouse size=0x34
+raw 30183 ndr u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30183 ndr wid:a u32:0 u32:0 u32:0 u32:0
+raw 30183 ndr cid u32:0 u32:0 u32:0 u32:0
+# 30186 __XSetWindowOriginRelativeToWindow size=0x34
+raw 30186 ndr u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30186 ndr wid:a u32:0 u32:0 u32:0 u32:0
+raw 30186 ndr cid u32:0 u32:0 u32:0 u32:0
+# 30187 __XGetWindowMovementGroup size=0x24
+raw 30187 ndr u32:0
+raw 30187 ndr wid:a
+raw 30187 ndr cid
+# 30188 __XGetWindowOrderingGroup size=0x24
+raw 30188 ndr u32:0
+raw 30188 ndr wid:a
+raw 30188 ndr cid
+# 30189 __XClearWindowMovementGroup size=0x24
+raw 30189 ndr u32:0
+raw 30189 ndr wid:a
+raw 30189 ndr cid
+# 30190 __XAddWindowToWindowMovementGroup size=0x28
+raw 30190 ndr u32:0 u32:0
+raw 30190 ndr wid:a u32:0
+raw 30190 ndr cid u32:0
+# 30192 __XClearWindowOrderingGroup size=0x24
+raw 30192 ndr u32:0
+raw 30192 ndr wid:a
+raw 30192 ndr cid
+# 30193 __XAddWindowToWindowOrderingGroup size=0x2c
+raw 30193 ndr u32:0 u32:0 u32:0
+raw 30193 ndr wid:a u32:0 u32:0
+raw 30193 ndr cid u32:0 u32:0
+# 30195 __XSetWindowLevelForGroup size=0x28
+raw 30195 ndr u32:0 u32:0
+raw 30195 ndr wid:a u32:0
+raw 30195 ndr cid u32:0
+# 30197 __XCycleWindows size=0x28
+raw 30197 ndr u32:0 u32:0
+raw 30197 ndr wid:a u32:0
+raw 30197 ndr cid u32:0
+# 30198 __XTrackDirtyScreenRegion size=0x24
+raw 30198 ndr u32:0
+raw 30198 ndr wid:a
+raw 30198 ndr cid
+# 30199 __XGetHotKey size=0x28
+raw 30199 ndr u32:0 u32:0
+raw 30199 ndr wid:a u32:0
+raw 30199 ndr cid u32:0
+# 30200 __XSetHotKey size=0x38
+raw 30200 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30200 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30200 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0
+# 30201 __XGetHotKeyEnabled size=0x28
+raw 30201 ndr u32:0 u32:0
+raw 30201 ndr wid:a u32:0
+raw 30201 ndr cid u32:0
+# 30202 __XSetHotKeyEnabled size=0x2c
+raw 30202 ndr u32:0 u32:0 u32:0
+raw 30202 ndr wid:a u32:0 u32:0
+raw 30202 ndr cid u32:0 u32:0
+# 30208 __XCoalesceEventsInMask size=0x24
+raw 30208 ndr u32:0
+raw 30208 ndr wid:a
+raw 30208 ndr cid
+# 30209 __XSetSymbolicHotKeyWithOption size=0x30
+raw 30209 ndr u32:0 u32:0 u32:0 u32:0
+raw 30209 ndr wid:a u32:0 u32:0 u32:0
+raw 30209 ndr cid u32:0 u32:0 u32:0
+# 30210 __XSetGlobalHotKeyOperatingMode size=0x24
+raw 30210 ndr u32:0
+raw 30210 ndr wid:a
+raw 30210 ndr cid
+# 30211 __XGetGlobalHotKeyOperatingMode size=0x18
+raw 30211 
+# 30212 __XGetSpecifiedWindowShape size=0x28
+raw 30212 ndr u32:0 u32:0
+raw 30212 ndr wid:a u32:0
+raw 30212 ndr cid u32:0
+# 30213 __XAckNotification size=0x24
+raw 30213 ndr u32:0
+raw 30213 ndr wid:a
+raw 30213 ndr cid
+# 30215 __XGetHotKeyRepresentation size=0x28
+raw 30215 ndr u32:0 u32:0
+raw 30215 ndr wid:a u32:0
+raw 30215 ndr cid u32:0
+# 30216 __XSetHotKeyRepresentation size=0x60
+raw 30216 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30216 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30216 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+# 30218 __XInvokeTransition size=0x28
+raw 30218 ndr u32:0 u32:0
+raw 30218 ndr wid:a u32:0
+raw 30218 ndr cid u32:0
+# 30220 __XSetPrimaryConnection size=0x24
+raw 30220 ndr u32:0
+raw 30220 ndr wid:a
+raw 30220 ndr cid
+# 30224 __XSetWindowCIFilter size=0x2c
+raw 30224 ndr u32:0 u32:0 u32:0
+raw 30224 ndr wid:a u32:0 u32:0
+raw 30224 ndr cid u32:0 u32:0
+# 30229 __XGetHotKeyType size=0x28
+raw 30229 ndr u32:0 u32:0
+raw 30229 ndr wid:a u32:0
+raw 30229 ndr cid u32:0
+# 30230 __XSetHotKeyType size=0x2c
+raw 30230 ndr u32:0 u32:0 u32:0
+raw 30230 ndr wid:a u32:0 u32:0
+raw 30230 ndr cid u32:0 u32:0
+# 30234 __XSetTrackingAreaOption size=0x38
+raw 30234 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30234 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30234 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0
+# 30235 __XGetConnectionPSN size=0x24
+raw 30235 ndr u32:0
+raw 30235 ndr wid:a
+raw 30235 ndr cid
+# 30236 __XGetProcessValidity size=0x28
+raw 30236 ndr u32:0 u32:0
+raw 30236 ndr wid:a u32:0
+raw 30236 ndr cid u32:0
+# 30240 __XSetNotificationConnectionForWorkspaces size=0x24
+raw 30240 ndr u32:0
+raw 30240 ndr wid:a
+raw 30240 ndr cid
+# 30243 __XCreateLayerContext size=0x18
+raw 30243 
+# 30244 __XSetSymbolicHotKeyEnabledForConnection size=0x28
+raw 30244 ndr u32:0 u32:0
+raw 30244 ndr wid:a u32:0
+raw 30244 ndr cid u32:0
+# 30245 __XGetSymbolicHotKeyEnabledForConnection size=0x24
+raw 30245 ndr u32:0
+raw 30245 ndr wid:a
+raw 30245 ndr cid
+# 30248 __XDequeueHideOrShowServiceReq size=0x18
+raw 30248 
+# 30249 __XSetWindowParent size=0x28
+raw 30249 ndr u32:0 u32:0
+raw 30249 ndr wid:a u32:0
+raw 30249 ndr cid u32:0
+# 30250 __XSetWindowShadowParametersWithStretch size=0x40
+raw 30250 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30250 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30250 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+# 30251 __XSetGestureEventSubmask size=0x28
+raw 30251 ndr u32:0 u32:0
+raw 30251 ndr wid:a u32:0
+raw 30251 ndr cid u32:0
+# 30252 __XSetWindowColorProfile size=0x28
+raw 30252 ndr u32:0 u32:0
+raw 30252 ndr wid:a u32:0
+raw 30252 ndr cid u32:0
+# 30253 __XGetWindowColorProfile size=0x24
+raw 30253 ndr u32:0
+raw 30253 ndr wid:a
+raw 30253 ndr cid
+# 30254 __XSetSurfaceColorProfile size=0x2c
+raw 30254 ndr u32:0 u32:0 u32:0
+raw 30254 ndr wid:a u32:0 u32:0
+raw 30254 ndr cid u32:0 u32:0
+# 30255 __XGetSurfaceColorProfile size=0x28
+raw 30255 ndr u32:0 u32:0
+raw 30255 ndr wid:a u32:0
+raw 30255 ndr cid u32:0
+# 30261 __XSessionHasExcludeShapes size=0x18
+raw 30261 
+# 30264 __XSetWindowLayerContext size=0x28
+raw 30264 ndr u32:0 u32:0
+raw 30264 ndr wid:a u32:0
+raw 30264 ndr cid u32:0
+# 30269 __XPersistenceAnnounceAllAppsReady size=0x18
+raw 30269 
+# 30270 __XPackagesEnableConnectionOcclusionNotifications size=0x24
+raw 30270 ndr u32:0
+raw 30270 ndr wid:a
+raw 30270 ndr cid
+# 30271 __XPackagesEnableWindowOcclusionNotifications size=0x28
+raw 30271 ndr u32:0 u32:0
+raw 30271 ndr wid:a u32:0
+raw 30271 ndr cid u32:0
+# 30272 __XPackagesEnableConnectionWindowModificationNotifications size=0x24
+raw 30272 ndr u32:0
+raw 30272 ndr wid:a
+raw 30272 ndr cid
+# 30275 __XCompleteWindowRightsGrant size=0x2c
+raw 30275 ndr u32:0 u32:0 u32:0
+raw 30275 ndr wid:a u32:0 u32:0
+raw 30275 ndr cid u32:0 u32:0
+# 30276 __XGetHeldWindowRights size=0x24
+raw 30276 ndr u32:0
+raw 30276 ndr wid:a
+raw 30276 ndr cid
+# 30277 __XWindowRightsRelinquish size=0x28
+raw 30277 ndr u32:0 u32:0
+raw 30277 ndr wid:a u32:0
+raw 30277 ndr cid u32:0
+# 30279 __XSetWindowResolution size=0x28
+raw 30279 ndr u32:0 u32:0
+raw 30279 ndr wid:a u32:0
+raw 30279 ndr cid u32:0
+# 30281 __XSetSurfaceResolution size=0x2c
+raw 30281 ndr u32:0 u32:0 u32:0
+raw 30281 ndr wid:a u32:0 u32:0
+raw 30281 ndr cid u32:0 u32:0
+# 30282 __XGetSurfaceResolution size=0x28
+raw 30282 ndr u32:0 u32:0
+raw 30282 ndr wid:a u32:0
+raw 30282 ndr cid u32:0
+# 30285 __XGetMagicZoomState size=0x24
+raw 30285 ndr u32:0
+raw 30285 ndr wid:a
+raw 30285 ndr cid
+# 30286 __XGetMagicZoomWindowID size=0x24
+raw 30286 ndr u32:0
+raw 30286 ndr wid:a
+raw 30286 ndr cid
+# 30287 __XGetProcessMenuBarWindowList size=0x24
+raw 30287 ndr u32:0
+raw 30287 ndr wid:a
+raw 30287 ndr cid
+# 30291 __XSetMenuBarCompanionWindow size=0x30
+raw 30291 ndr u32:0 u32:0 u32:0 u32:0
+raw 30291 ndr wid:a u32:0 u32:0 u32:0
+raw 30291 ndr cid u32:0 u32:0 u32:0
+# 30292 __XIsMenuBarVisibleOnSpace size=0x28
+raw 30292 ndr u32:0 u32:0
+raw 30292 ndr wid:a u32:0
+raw 30292 ndr cid u32:0
+# 30306 __XSetChameleonOverrideColor size=0x34
+raw 30306 ndr u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30306 ndr wid:a u32:0 u32:0 u32:0 u32:0
+raw 30306 ndr cid u32:0 u32:0 u32:0 u32:0
+# 30308 __XTakeCinematicBootWindows size=0x18
+raw 30308 
+# 30309 __XWasBootApplePreserved size=0x18
+raw 30309 
+# 30310 __XSetMenuBarSystemOverrideAlpha size=0x30
+raw 30310 ndr u32:0 u32:0 u32:0 u32:0
+raw 30310 ndr wid:a u32:0 u32:0 u32:0
+raw 30310 ndr cid u32:0 u32:0 u32:0
+# 30311 __XWindowIsOrderedIn size=0x24
+raw 30311 ndr u32:0
+raw 30311 ndr wid:a
+raw 30311 ndr cid
+# 30324 __XCopySpaces size=0x24
+raw 30324 ndr u32:0
+raw 30324 ndr wid:a
+raw 30324 ndr cid
+# 30327 __XCopyAssociatedWindows size=0x24
+raw 30327 ndr u32:0
+raw 30327 ndr wid:a
+raw 30327 ndr cid
+# 30330 __XSpaceCopyValues size=0x28
+raw 30330 ndr u32:0 u32:0
+raw 30330 ndr wid:a u32:0
+raw 30330 ndr cid u32:0
+# 30333 __XSpaceCopyName size=0x28
+raw 30333 ndr u32:0 u32:0
+raw 30333 ndr wid:a u32:0
+raw 30333 ndr cid u32:0
+# 30335 __XSpaceGetType size=0x28
+raw 30335 ndr u32:0 u32:0
+raw 30335 ndr wid:a u32:0
+raw 30335 ndr cid u32:0
+# 30339 __XSpaceCopyOwners size=0x28
+raw 30339 ndr u32:0 u32:0
+raw 30339 ndr wid:a u32:0
+raw 30339 ndr cid u32:0
+# 30341 __XSpaceAddOwner size=0x2c
+raw 30341 ndr u32:0 u32:0 u32:0
+raw 30341 ndr wid:a u32:0 u32:0
+raw 30341 ndr cid u32:0 u32:0
+# 30343 __XSpaceCopyShape size=0x28
+raw 30343 ndr u32:0 u32:0
+raw 30343 ndr wid:a u32:0
+raw 30343 ndr cid u32:0
+# 30345 __XSpaceGetTransform size=0x28
+raw 30345 ndr u32:0 u32:0
+raw 30345 ndr wid:a u32:0
+raw 30345 ndr cid u32:0
+# 30346 __XSpaceSetTransform size=0x44
+raw 30346 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30346 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30346 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+# 30347 __XSpaceGetAbsoluteLevel size=0x28
+raw 30347 ndr u32:0 u32:0
+raw 30347 ndr wid:a u32:0
+raw 30347 ndr cid u32:0
+# 30348 __XSpaceSetAbsoluteLevel size=0x2c
+raw 30348 ndr u32:0 u32:0 u32:0
+raw 30348 ndr wid:a u32:0 u32:0
+raw 30348 ndr cid u32:0 u32:0
+# 30351 __XSpaceSetFrontPSN size=0x30
+raw 30351 ndr u32:0 u32:0 u32:0 u32:0
+raw 30351 ndr wid:a u32:0 u32:0 u32:0
+raw 30351 ndr cid u32:0 u32:0 u32:0
+# 30353 __XProcessAssignToAllSpaces size=0x24
+raw 30353 ndr u32:0
+raw 30353 ndr wid:a
+raw 30353 ndr cid
+# 30354 __XSetSpaceManagementMode size=0x28
+raw 30354 ndr u32:0 u32:0
+raw 30354 ndr wid:a u32:0
+raw 30354 ndr cid u32:0
+# 30356 __XCopyManagedDisplaySpaces size=0x18
+raw 30356 
+# 30359 __XManagedDisplaySetCurrentSpace size=0x38
+raw 30359 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30359 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30359 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0
+# 30361 __XManagedDisplaySetIsAnimating size=0x34
+raw 30361 ndr u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30361 ndr wid:a u32:0 u32:0 u32:0 u32:0
+raw 30361 ndr cid u32:0 u32:0 u32:0 u32:0
+# 30362 __XSpaceCopyManagedShape size=0x28
+raw 30362 ndr u32:0 u32:0
+raw 30362 ndr wid:a u32:0
+raw 30362 ndr cid u32:0
+# 30363 __XCopyPackagesPersistenceDictionary size=0x18
+raw 30363 
+# 30369 __XCopyBestManagedDisplayForPoint size=0x30
+raw 30369 ndr u32:0 u32:0 u32:0 u32:0
+raw 30369 ndr wid:a u32:0 u32:0 u32:0
+raw 30369 ndr cid u32:0 u32:0 u32:0
+# 30370 __XCopyBestManagedDisplayForRect size=0x40
+raw 30370 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30370 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30370 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+# 30371 __XCopyManagedDisplayForWindow size=0x24
+raw 30371 ndr u32:0
+raw 30371 ndr wid:a
+raw 30371 ndr cid
+# 30372 __XCopyManagedDisplayForSpace size=0x28
+raw 30372 ndr u32:0 u32:0
+raw 30372 ndr wid:a u32:0
+raw 30372 ndr cid u32:0
+# 30373 __XManagedDisplayCurrentSpaceAllowsWindow size=0x34
+raw 30373 ndr u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30373 ndr wid:a u32:0 u32:0 u32:0 u32:0
+raw 30373 ndr cid u32:0 u32:0 u32:0 u32:0
+# 30380 __XDeferWindowMoveEvents size=0x24
+raw 30380 ndr u32:0
+raw 30380 ndr wid:a
+raw 30380 ndr cid
+# 30382 __XConnectionSetSpinning size=0x24
+raw 30382 ndr u32:0
+raw 30382 ndr wid:a
+raw 30382 ndr cid
+# 30383 __XSpacePreferCurrentDisplay size=0x28
+raw 30383 ndr u32:0 u32:0
+raw 30383 ndr wid:a u32:0
+raw 30383 ndr cid u32:0
