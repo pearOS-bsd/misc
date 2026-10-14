@@ -1,0 +1,13 @@
+# window routines against a real, never-ordered window
+new_window a 100 200 300 150
+new_window b 50 60 80 40
+raw 30311 ndr wid:a
+raw 30013 ndr wid:a
+raw 30052 ndr wid:a
+order a above
+raw 30311 ndr wid:a
+raw 30264 ndr wid:a u32:0
+raw 30264 ndr wid:a u32:12345
+raw 30552 ndr wid:a
+raw 30325 ndr wid:a
+raw 30048 ndr wid:a
