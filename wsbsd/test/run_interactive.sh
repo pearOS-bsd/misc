@@ -6,7 +6,7 @@ OUT="${OUT:-interactive}"
 SOCK="${TMPDIR:-/tmp}/wsd-inter.$$.sock"
 export WS_SOCKET="$SOCK"
 # shellcheck disable=SC2086
-./wsd -g 1280x800 ${WSD_ARGS:-} &
+./wsd -t -g 1280x800 ${WSD_ARGS:-} &
 WSD=$!
 trap 'kill $WSD 2>/dev/null || true; rm -f "$SOCK"' EXIT
 i=0; while [ ! -S "$SOCK" ] && [ $i -lt 50 ]; do i=$((i+1)); sleep 0.1; done

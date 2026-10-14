@@ -11,13 +11,16 @@ EXTRA_SRC    =
 EXTRA_CFLAGS =
 EXTRA_LIBS   =
 
-all: wsd test_window test_interactive test_compose test_region test_wire test_evrec test_buffer test_diff
+all: wsd test_window test_interactive test_robust test_compose test_region test_wire test_evrec test_buffer test_diff
 
 wsd: $(CORE) $(EXTRA_SRC) src/wsd.c $(HDRS)
 	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ $(CORE) $(EXTRA_SRC) src/wsd.c $(EXTRA_LIBS) $(LDLIBS)
 
 test_interactive: src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_interactive.c $(HDRS)
 	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_interactive.c $(EXTRA_LIBS) $(LDLIBS)
+
+test_robust: src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_robust.c $(HDRS)
+	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_robust.c $(EXTRA_LIBS) $(LDLIBS)
 
 test_window: src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_window.c $(HDRS)
 	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_window.c $(EXTRA_LIBS) $(LDLIBS)
@@ -46,13 +49,13 @@ test_wire: src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c t
 
 # GPU compositor (OpenGL ES 2 on EGL/GBM, Mesa): needs the mesa-libs and libdrm packages. UNTESTED, see docs/FREEBSD.md.
 gl: clean
-	$(MAKE) wsd test_window test_interactive EXTRA_SRC=src/compositor_gl.c EXTRA_CFLAGS="-DWS_GL -DWS_GBM -DWS_EGL `pkg-config --cflags egl gbm glesv2`" EXTRA_LIBS="`pkg-config --libs egl gbm glesv2`"
+	$(MAKE) wsd test_window test_interactive test_robust EXTRA_SRC=src/compositor_gl.c EXTRA_CFLAGS="-DWS_GL -DWS_GBM -DWS_EGL `pkg-config --cflags egl gbm glesv2`" EXTRA_LIBS="`pkg-config --libs egl gbm glesv2`"
 
 # display, input and GPU compositor together
 full: clean
 	$(MAKE) wsd test_window EXTRA_SRC="src/backend_kms.c src/compositor_gl.c" EXTRA_CFLAGS="-DWS_KMS -DWS_GL -DWS_GBM -DWS_EGL `pkg-config --cflags libdrm egl gbm glesv2`" EXTRA_LIBS="`pkg-config --libs libdrm egl gbm glesv2`"
 
-check: test_compose test_region test_evrec test_buffer test_diff wsd test_wire test_interactive
+check: test_compose test_region test_evrec test_buffer test_diff wsd test_wire test_interactive test_robust
 	./test_compose
 	./test_region
 	./test_evrec
@@ -60,10 +63,11 @@ check: test_compose test_region test_evrec test_buffer test_diff wsd test_wire t
 	./test_diff
 	sh test/run_wire.sh
 	sh test/run_interactive.sh
+	sh test/run_robust.sh
 
 # start wsd, draw the test window through the protocol, save window.ppm (window.png on macOS), stop wsd
 demo: wsd test_window
 	OUT="$(OUT)" sh test/run_demo.sh
 
 clean:
-	rm -f wsd test_window test_interactive test_compose test_region test_wire test_evrec test_buffer test_diff out.ppm window.ppm window.png
+	rm -f wsd test_window test_interactive test_robust test_compose test_region test_wire test_evrec test_buffer test_diff out.ppm window.ppm window.png

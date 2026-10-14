@@ -227,6 +227,7 @@ int ws_win_get_level(ws_conn *c, ws_win *w, int *level) { int32_t v = 0; int rc 
 int ws_win_get_alpha(ws_conn *c, ws_win *w, float *alpha) { int32_t v = 0; int rc = wid_value(c, SLS_MSG_GetWindowAlpha, w->id, &v); if (!rc) memcpy(alpha, &v, 4); return rc; }
 int ws_win_count(ws_conn *c, int cid) { int32_t v = 0; return wid_value(c, SLS_MSG_GetWindowCount, (uint32_t)cid, &v) ? -1 : v; }
 int ws_conn_id(ws_conn *c) { return c->cid; }
+int ws_conn_fd(ws_conn *c) { return c->fd; }
 
 int ws_win_get_bounds(ws_conn *c, ws_win *w, ws_rect *out)
 {
