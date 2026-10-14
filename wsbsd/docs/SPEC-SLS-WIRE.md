@@ -126,3 +126,19 @@ Everything else in the subsystem (about 640 routines), the Core Animation remote
 windows normally receive pixels), the shared-window-state memory layout, shadow property plists, the event shared memory, and the
 bootstrap/connection handshake. wsbsd's pixel backing store, flush, screenshot, input injection, event polling and the pushed-event datagrams
 (`WSX_EVENT_PUSH` = 39100, sent on the handshake's event channel) use private message ids from 39000 (not SkyLight ids) and a plain BGRA shared-memory buffer instead of the CA path.
+
+## Key focus and cursor visibility (decompiled `__X` routines + `CGXStealKeyFocusReturningID` / `CGXReleaseKeyFocusWithID`)
+
+| id | routine | request | reply |
+|---|---|---|---|
+| 30136 | ModifyKeyFocus | 0x28: release byte@0x20 (1 = release theft-id 0), options@0x24; connection = `msgh_local_port` | simple |
+| 30137 | StealKeyFocusReturningID | 0x24: options@0x20 | 0x28 with the theft id@0x24 on success, 0x24 simple on error |
+| 30138 | ReleaseKeyFocusWithID | 0x24: theft id@0x20 (0 = the connection's own plain focus) | simple |
+| 30139 | GetKeyFocusProcess | header only | 0x30: PSN hi@0x24, PSN lo@0x28, byte@0x2c = nobody stole it; -600 if none |
+| 30140 | GetTypingFocusProcess | header only | 0x28: pid@0x24; -600 if none |
+| 32016/32017/32018/32019 | Hide / Show / Obscure / RevealCursor | 0x24: connection id@0x20 (Show: 0x28, force byte@0x24) | simple; Hide 1000 and Obscure 1001 for an unknown connection, Show/Reveal always 0 |
+
+Theft ids come from one counter shared by all connections: 0x65, 0x66, ... wrapping from 0x7fffffff to 0x65. Steal returns 1010 when the caller already
+holds key focus and asks for it (options bit 9) or when it already has it by default; -600 when the connection is unknown. Hide counts are per connection,
+force-show clears the connection's count, obscure lasts until the mouse moves. Unknown (not modelled): the "lost key focus" notifications sent to the previous
+holder, the process-front permission check, PSNs (the connection id stands in for the low word).

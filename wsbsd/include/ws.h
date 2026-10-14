@@ -106,6 +106,20 @@ int ws_set_window_event_mask(ws_server *, ws_wid, int mask);
 int ws_window_event_mask(ws_server *, ws_wid, int *mask);
 void ws_cursor_show(ws_server *, int visible);
 
+/* Key focus, the theft model of CGXStealKeyFocusReturningID / CGXReleaseKeyFocusWithID (decompiled). A connection takes key focus either
+ * plainly (theft id 0) or with a theft id (>= 0x65, a counter shared by all connections that wraps at 0x7fffffff back to 0x65); releasing
+ * by id hands focus back to the previous holder. Returns 0, 1010 (nothing to do / not permitted) or -600 (unknown connection). */
+#define WS_KEYFOCUS_FIRST_ID 0x65
+int ws_keyfocus_steal(ws_server *, uint32_t cid, int options, int want_id, int *id_out);
+int ws_keyfocus_release(ws_server *, uint32_t cid, int id);
+uint32_t ws_keyfocus_holder(ws_server *, int *is_default);        /* connection holding key focus, 0 if none; default: nobody stole it */
+/* Cursor visibility as the real routines keep it: a hide count per connection, a "force show" that clears one connection's count, and
+ * obscure/reveal (hidden until the mouse moves). The cursor is drawn when no count is set, it is not obscured and ws_cursor_show is on. */
+void ws_cursor_hide(ws_server *, uint32_t cid);
+void ws_cursor_unhide(ws_server *, uint32_t cid, int force);
+void ws_cursor_obscure(ws_server *, uint32_t cid);
+void ws_cursor_reveal(ws_server *, uint32_t cid);
+
 /* Renderer interface for GPU compositors: a back-to-front walk over the on-screen windows with everything a renderer needs to draw one
  * (geometry, opacity, corner radius, pixels, shadow layer, damage since the last frame). */
 typedef struct {
