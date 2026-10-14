@@ -149,5 +149,6 @@ Exact layouts are in `include/sls_wire.h`. Summary: name requests carry `{offset
 OOL descriptor holds BGRA premultiplied pixels (`cols * rows * frames`, frames stacked), followed by the name and eleven u32 fields (global, set-now, cols, rows,
 width/height in points, hotspot in pixels, pixel count, frames, frame duration). Errors: -304 bad size, -300 bad descriptor type or pixel-count mismatch, 1001 invalid
 dimensions (points > 0x400, zero, more pixels than supplied), 1007 unknown name (Set/GetSize/GetData), 1000 for removing `com.apple.coregraphics.*` names.
-Set shows the first frame scaled to its size in points; animation is not played. Not yet verified live: the order of the hotspot/size pairs in the GetData reply (taken
-from the client stub's output parameters), and the meaning of the cursor seed returned by Register (the cursor serial stands in).
+Set shows the first frame scaled to its size in points; animation is not played. Verified live on the macOS runner (`lab/cursor_probe.c`, SIP off): the GetData reply order is size in points, then hotspot in points; pixels are stored BGRA
+(caller supplies A,R,G,B bytes, premultiplied unless flags bit 0); rowbytes = cols*4; frames are stacked vertically (an 8x8 two-frame cursor reads back 8x16 with
+frames = 2); the duration is a float; the seed returned by Register is 0 when the cursor is not set at once (the cursor serial stands in otherwise).
