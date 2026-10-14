@@ -231,10 +231,11 @@ static float bits2f(uint32_t v) { float f; memcpy(&f, &v, sizeof f); return f; }
 /* ---- replies ---- */
 void fill_reply_header(mach_msg_header_t *r, const mach_msg_header_t *req, uint32_t size, int complex)
 {
-	r->msgh_bits = (complex ? MACH_MSGH_BITS_COMPLEX : 0) | MACH_MSG_TYPE_MOVE_SEND_ONCE;
+	/* as a Mach receiver sees a MIG reply (recorded from the real server): remote disposition 0, local disposition 0x12 (the consumed send-once right) */
+	r->msgh_bits = (complex ? MACH_MSGH_BITS_COMPLEX : 0) | (MACH_MSG_TYPE_MOVE_SEND_ONCE << 8);
 	r->msgh_size = size;
-	r->msgh_remote_port = req->msgh_local_port;
-	r->msgh_local_port = 0; r->msgh_voucher_port = 0;
+	r->msgh_remote_port = 0; r->msgh_local_port = 0; r->msgh_voucher_port = 0;
+	(void)req;
 	r->msgh_id = req->msgh_id + 100;
 }
 
