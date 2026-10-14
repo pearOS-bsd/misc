@@ -35,6 +35,7 @@ static ws_server *srv;
 static ws_surface *screen;
 static int running = 1;
 static int dirty;
+static void cursors_owner_cleanup(uint32_t owner);
 static int test_mode;          /* -t: enables the private test requests (screenshot to a file, input injection, quit) */
 static uint8_t rbuf[WS_IPC_RECV_CAP];        /* receive buffer: requests are parsed in place, nothing is allocated per message */
 
@@ -86,8 +87,113 @@ static void buf_release(ws_buffer *b)
 }
 static void owner_cleanup(uint32_t owner)
 {
+	cursors_owner_cleanup(owner);
 	for (int i = 0; i < MAXSURF; i++) if (surfs[i].used && surfs[i].owner == owner) surfs[i].used = 0;
 	for (int i = 0; i < MAXBUF; i++) if (bufs[i].id && bufs[i].owner == owner) buf_release(&bufs[i]);
+}
+
+
+static int reply_simple(int fd, const mach_msg_header_t *req, int32_t retcode);
+static int reply_value(int fd, const mach_msg_header_t *req, int32_t value);
+static void fill_reply_header(mach_msg_header_t *r, const mach_msg_header_t *req, uint32_t size, int complex);
+
+/* ---- registered cursors (SetRegisteredCursor & co.): named cursors, per connection or global; the image is BGRA premultiplied ---- */
+typedef struct {
+	int used, global; uint32_t owner;
+	char name[SLS_CURSOR_NAME_MAX + 1];
+	uint32_t cols, rows, frames, wpts, hpts, duration; int hotx_px, hoty_px;
+	uint8_t *px;                                                  /* cols * rows * frames pixels, frames stacked vertically */
+} cursor_entry;
+#define MAXCURSORS 64
+static cursor_entry cursors[MAXCURSORS];
+
+static cursor_entry *cursor_find(uint32_t owner, const char *name)
+{
+	cursor_entry *g = NULL;
+	for (int i = 0; i < MAXCURSORS; i++) if (cursors[i].used && !strcmp(cursors[i].name, name)) {
+		if (!cursors[i].global && cursors[i].owner == owner) return &cursors[i];          /* the connection's own cursor first */
+		if (cursors[i].global) g = &cursors[i];
+	}
+	return g;
+}
+static void cursor_free(cursor_entry *e) { free(e->px); memset(e, 0, sizeof *e); }
+static void cursors_owner_cleanup(uint32_t owner) { for (int i = 0; i < MAXCURSORS; i++) if (cursors[i].used && !cursors[i].global && cursors[i].owner == owner) cursor_free(&cursors[i]); }
+
+/* the cursor image the screen shows: the first frame, scaled to its size in points, hotspot converted from pixels to points */
+static void cursor_apply(const cursor_entry *e)
+{
+	int w = (int)e->wpts, h = (int)e->hpts;
+	ws_surface *img = ws_surface_new(w, h);
+	if (!img) return;
+	for (int y = 0; y < h; y++)
+		for (int x = 0; x < w; x++) {
+			uint32_t sx = (uint32_t)((uint64_t)x * e->cols / (uint32_t)w), sy = (uint32_t)((uint64_t)y * e->rows / (uint32_t)h);
+			memcpy(img->px + (size_t)y * img->stride + (size_t)x * 4, e->px + ((size_t)sy * e->cols + sx) * 4, 4);
+		}
+	ws_server_set_cursor_image(srv, img, (int)((double)e->hotx_px / e->cols * w), (int)((double)e->hoty_px / e->rows * h));
+	ws_surface_free(img);
+}
+
+/* the name in a name request: offset@0x20 ignored, length@0x24, bytes@0x28; size must be pad4(length) + extra */
+static int cursor_name(const mach_msg_header_t *h, const uint8_t *buf, size_t len, uint32_t extra, char *out)
+{
+	if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size < 0x28 || h->msgh_size > 0xa8 + extra) return 0;
+	uint32_t n; memcpy(&n, buf + 0x24, 4);
+	if (n > SLS_CURSOR_NAME_MAX || h->msgh_size != ((n + 3) & ~3u) + 0x28 + extra) return 0;
+	memcpy(out, buf + 0x28, n); out[n] = 0;
+	out[strnlen(out, n)] = 0;
+	return 1;
+}
+
+static int do_cursor_register(conn *c, const uint8_t *buf, size_t len)
+{
+	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
+	if (!(h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len < 0x68 || h->msgh_size < 0x68 || h->msgh_size > 0xe8 || len < h->msgh_size) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
+	uint32_t count, nlen, oolsize; uint8_t otype = buf[0x27];
+	memcpy(&count, buf + 0x18, 4); memcpy(&oolsize, buf + 0x28, 4); memcpy(&nlen, buf + 0x38, 4);
+	if (count != 1) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
+	if (otype != MACH_MSG_OOL_DESCRIPTOR) return reply_simple(c->fd, h, MIG_TYPE_ERROR);
+	if (nlen > SLS_CURSOR_NAME_MAX) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
+	uint32_t P = (nlen + 3) & ~3u;
+	if (h->msgh_size != P + 0x68 || len != (size_t)h->msgh_size + oolsize) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
+	uint32_t f[11]; memcpy(f, buf + 0x3c + P, sizeof f);                  /* global, set_now, cols, rows, wpts, hpts, hotx, hoty, npix, frames, duration */
+	if (f[8] != oolsize / 4) return reply_simple(c->fd, h, MIG_TYPE_ERROR);
+	uint32_t cols = f[2], rows = f[3], wpts = f[4], hpts = f[5], frames = f[9], npix = f[8];
+	if (wpts > 0x400 || hpts > 0x400 || !wpts || !hpts || !cols || !rows || !frames || (uint64_t)cols * rows * frames > npix) return reply_simple(c->fd, h, CGS_ERROR_ILLEGAL_ARGUMENT);   /* 1001 */
+	char name[SLS_CURSOR_NAME_MAX + 1]; memcpy(name, buf + 0x3c, nlen); name[nlen] = 0; name[strnlen(name, nlen)] = 0;
+	cursor_entry tmp = { .used = 1, .global = (uint8_t)f[0], .owner = c->id, .cols = cols, .rows = rows, .frames = frames, .wpts = wpts, .hpts = hpts,
+	                     .duration = f[10], .hotx_px = (int)f[6], .hoty_px = (int)f[7] };
+	snprintf(tmp.name, sizeof tmp.name, "%s", name);
+	tmp.px = malloc((size_t)cols * rows * frames * 4);
+	if (!tmp.px) return reply_simple(c->fd, h, CGS_ERROR_FAILURE);
+	memcpy(tmp.px, buf + h->msgh_size, (size_t)cols * rows * frames * 4);
+	if (name[0]) {                                                        /* replaces an entry of the same name and scope */
+		for (int i = 0; i < MAXCURSORS; i++) if (cursors[i].used && !strcmp(cursors[i].name, name) && cursors[i].global == tmp.global && (tmp.global || cursors[i].owner == c->id)) cursor_free(&cursors[i]);
+		cursor_entry *slot = NULL;
+		for (int i = 0; i < MAXCURSORS && !slot; i++) if (!cursors[i].used) slot = &cursors[i];
+		if (!slot) { free(tmp.px); return reply_simple(c->fd, h, CGS_ERROR_FAILURE); }
+		*slot = tmp;
+		if (f[1]) cursor_apply(slot);
+	} else if (f[1]) { cursor_apply(&tmp); free(tmp.px); }
+	else { free(tmp.px); return reply_simple(c->fd, h, 1001); }           /* an unnamed cursor must be set at once */
+	return reply_value(c->fd, h, f[1] ? (int32_t)ws_cursor_serial(srv) : 0);
+}
+
+static int do_cursor_get_data(conn *c, const mach_msg_header_t *h, const cursor_entry *e)
+{
+	uint32_t bytes = e->cols * e->rows * e->frames * 4;
+	uint8_t m[0x58]; memset(m, 0, sizeof m);
+	mach_msg_header_t *r = (mach_msg_header_t *)m;
+	fill_reply_header(r, h, sizeof m, 1);
+	uint32_t one = 1; memcpy(m + 0x18, &one, 4);                          /* descriptor count */
+	m[0x24] = 0; m[0x25] = 1; m[0x26] = 0; m[0x27] = MACH_MSG_OOL_DESCRIPTOR;
+	memcpy(m + 0x28, &bytes, 4);
+	memcpy(m + 0x2c, &WS_NDR, 8);
+	uint32_t v[9] = { e->cols, e->rows * e->frames, (uint32_t)((double)e->hotx_px / e->cols * e->wpts), (uint32_t)((double)e->hoty_px / e->rows * e->hpts),
+	                  e->wpts, e->hpts, bytes, e->frames, e->duration };
+	memcpy(m + 0x34, v, sizeof v);
+	struct iovec iov[2] = { { m, sizeof m }, { e->px, bytes } };         /* out-of-line data follows the message in the same datagram */
+	return ws_ipc_send(c->fd, iov, 2, NULL, 0);
 }
 
 static int peer_pid(int fd)
@@ -411,6 +517,26 @@ static int do_simple(conn *c, const uint8_t *buf, size_t len)
 		const sls_two_req *q = (const void *)buf;
 		if (conn_by_id((uint32_t)q->a)) ws_cursor_unhide(srv, (uint32_t)q->a, (uint8_t)q->b);
 		return reply_simple(c->fd, h, 0);                                        /* always 0, even for an unknown connection */
+	}
+	case SLS_MSG_RegisterCursorWithData: return do_cursor_register(c, buf, len);
+	case SLS_MSG_SetRegisteredCursor: case SLS_MSG_IsCursorRegistered: case SLS_MSG_GetRegisteredCursorDataSize: case SLS_MSG_GetRegisteredCursorData: {
+		char name[SLS_CURSOR_NAME_MAX + 1];
+		if (!cursor_name(h, buf, len, 0, name)) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
+		cursor_entry *e = cursor_find(c->id, name);
+		if (h->msgh_id == SLS_MSG_IsCursorRegistered) { sls_value_reply r; memset(&r, 0, sizeof r); fill_reply_header(&r.h, h, sizeof r, 0); r.ndr = WS_NDR; r.value = e != NULL; struct iovec v = { &r, sizeof r }; return ws_ipc_send(c->fd, &v, 1, NULL, 0); }
+		if (!e) return reply_simple(c->fd, h, 0x3ef);                    /* 1007 */
+		if (h->msgh_id == SLS_MSG_SetRegisteredCursor) { cursor_apply(e); return reply_simple(c->fd, h, 0); }
+		if (h->msgh_id == SLS_MSG_GetRegisteredCursorDataSize) return reply_value(c->fd, h, (int32_t)(e->cols * e->rows * e->frames * 4));
+		return do_cursor_get_data(c, h, e);
+	}
+	case SLS_MSG_RemoveRegisteredCursor: {
+		char name[SLS_CURSOR_NAME_MAX + 1];
+		if (!cursor_name(h, buf, len, 4, name)) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
+		if (!name[0] || !strncmp(name, "com.apple.coregraphics.", 0x17)) return reply_simple(c->fd, h, 1000);   /* the system's own names are not removable */
+		uint32_t n; memcpy(&n, buf + 0x24, 4);
+		int global = buf[0x28 + ((n + 3) & ~3u)] != 0;
+		for (int i = 0; i < MAXCURSORS; i++) if (cursors[i].used && !strcmp(cursors[i].name, name) && ((!cursors[i].global && cursors[i].owner == c->id) || (global && cursors[i].global))) cursor_free(&cursors[i]);
+		return reply_simple(c->fd, h, 0);
 	}
 	case SLS_MSG_AddSurface: {
 		if (!simple_ok(h, len, sizeof(sls_wid_req))) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);

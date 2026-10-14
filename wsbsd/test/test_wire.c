@@ -172,6 +172,83 @@ int main(void)
 			sq.a = 77777; CHECK(rc_of(cfd, &sq, sizeof sq, SLS_MSG_ShowCursor + 100) == 0);                                /* always 0 */
 		}
 
+		/* registered cursors: register with pixel data (OOL), query, read back, set it, see it on screen, remove */
+		{
+			const char *nm = "wsbsd.test.cursor"; uint32_t nl = (uint32_t)strlen(nm), P = (nl + 3) & ~3u;
+			uint8_t pix[4 * 4 * 4]; for (int i = 0; i < 16; i++) { pix[i * 4] = 0; pix[i * 4 + 1] = 0; pix[i * 4 + 2] = 255; pix[i * 4 + 3] = 255; }   /* BGRA red */
+			uint8_t m[0x68 + 32 + sizeof pix]; memset(m, 0, sizeof m);
+			uint32_t size = P + 0x68;
+			hdr((mach_msg_header_t *)m, size, SLS_MSG_RegisterCursorWithData, 1);
+			uint32_t one = 1, osz = sizeof pix;
+			memcpy(m + 0x18, &one, 4); m[0x25] = 1; m[0x27] = MACH_MSG_OOL_DESCRIPTOR; memcpy(m + 0x28, &osz, 4); memcpy(m + 0x2c, &WS_NDR, 8);
+			memcpy(m + 0x38, &nl, 4); memcpy(m + 0x3c, nm, nl);
+			uint32_t f[11] = { 0, 1, 4, 4, 4, 4, 1, 1, 16, 1, 0 };                       /* not global, set now, 4x4 px, 4x4 pt, hotspot (1,1), 16 px, 1 frame */
+			memcpy(m + 0x3c + P, f, sizeof f);
+			memcpy(m + size, pix, sizeof pix);
+			sls_value_reply vr;
+			CHECK(xchg(cfd, m, size + sizeof pix, &vr, sizeof vr, NULL, NULL) == (int)sizeof vr && vr.retcode == 0 && vr.h.msgh_size == 0x28 && vr.h.msgh_id == SLS_MSG_RegisterCursorWithData + 100);
+
+			/* the name requests */
+			uint8_t nq[0x28 + 32]; memset(nq, 0, sizeof nq);
+			uint32_t nsz = P + 0x28;
+			#define NAMEREQ(id) do { memset(nq, 0, sizeof nq); hdr((mach_msg_header_t *)nq, nsz, id, 0); memcpy(nq + 0x18, &WS_NDR, 8); memcpy(nq + 0x24, &nl, 4); memcpy(nq + 0x28, nm, nl); } while (0)
+			NAMEREQ(SLS_MSG_IsCursorRegistered);
+			CHECK(xchg(cfd, nq, nsz, &vr, sizeof vr, NULL, NULL) == (int)sizeof vr && vr.retcode == 0 && vr.h.msgh_size == 0x28 && vr.value == 1);
+			NAMEREQ(SLS_MSG_GetRegisteredCursorDataSize);
+			CHECK(xchg(cfd, nq, nsz, &vr, sizeof vr, NULL, NULL) == (int)sizeof vr && vr.retcode == 0 && vr.value == 64);
+			NAMEREQ(SLS_MSG_GetRegisteredCursorData);
+			uint8_t gb[0x58 + 64]; uint32_t g[0x58 / 4];
+			CHECK(xchg(cfd, nq, nsz, gb, sizeof gb, NULL, NULL) == (int)sizeof gb);
+			memcpy(g, gb, 0x58);
+			CHECK(g[1] == 0x58 && (g[0] & 0x80000000u) && g[6] == 1 && g[10] == 64 && g[13] == 4 && g[14] == 4 && g[15] == 1 && g[16] == 1 && g[17] == 4 && g[18] == 4 && g[19] == 64 && g[20] == 1);
+			CHECK(memcmp(gb + 0x58, pix, 64) == 0);
+			NAMEREQ(SLS_MSG_SetRegisteredCursor);
+			CHECK(rc_of(cfd, nq, nsz, SLS_MSG_SetRegisteredCursor + 100) == 0);
+			{	/* warp the pointer and look at the screen: the red square sits at pointer - hotspot */
+				sls_warp_req w2; memset(&w2, 0, sizeof w2); hdr(&w2.h, sizeof w2, SLS_MSG_WarpCursorPosition, 0); w2.ndr = WS_NDR; w2.x = 300; w2.y = 300;
+				CHECK(rc_of(cfd, &w2, sizeof w2, SLS_MSG_WarpCursorPosition + 100) == 0);
+				wsx_req sr; memset(&sr, 0, sizeof sr); hdr(&sr.h, sizeof sr, WSX_SCREENSHOT, 0); sr.ndr = WS_NDR; sr.a[0] = 0;
+				snprintf(sr.s, sizeof sr.s, "%s/wsbsd-cursor-%d.ppm", getenv("TMPDIR") ? getenv("TMPDIR") : "/tmp", (int)getpid());
+				wsx_rep srp;
+				CHECK(xchg(cfd, &sr, sizeof sr, &srp, sizeof srp, NULL, NULL) == (int)sizeof srp && srp.retcode == 0);
+				FILE *pf = fopen(sr.s, "rb"); int pw = 0, ph = 0, mx = 0;
+				if (pf && fscanf(pf, "P6 %d %d %d", &pw, &ph, &mx) == 3 && fgetc(pf) >= 0) {
+					uint8_t *rgb = malloc((size_t)pw * ph * 3);
+					if (rgb && fread(rgb, 3, (size_t)pw * ph, pf) == (size_t)pw * ph) {
+						const uint8_t *a = rgb + ((size_t)299 * pw + 299) * 3, *b = rgb + ((size_t)302 * pw + 302) * 3, *o = rgb + ((size_t)298 * pw + 298) * 3;
+						CHECK(a[0] == 255 && a[1] == 0 && a[2] == 0 && b[0] == 255 && b[1] == 0);        /* inside the 4x4 square */
+						CHECK(!(o[0] == 255 && o[1] == 0 && o[2] == 0));                                  /* just outside */
+					} else CHECK(0);
+					free(rgb);
+				} else CHECK(0);
+				if (pf) fclose(pf);
+				unlink(sr.s);
+			}
+			/* errors: unknown name 1007, system names cannot be removed (1000), removal then makes it unknown */
+			uint8_t uq[0x28 + 8]; memset(uq, 0, sizeof uq); hdr((mach_msg_header_t *)uq, 0x2c, SLS_MSG_SetRegisteredCursor, 0);
+			memcpy(uq + 0x18, &WS_NDR, 8); { uint32_t l = 3; memcpy(uq + 0x24, &l, 4); memcpy(uq + 0x28, "xyz", 3); }
+			((mach_msg_header_t *)uq)->msgh_size = 0x2c;
+			CHECK(rc_of(cfd, uq, 0x2c, SLS_MSG_SetRegisteredCursor + 100) == 0x3ef);
+			uint8_t rq[0x28 + 32 + 4]; memset(rq, 0, sizeof rq);
+			uint32_t rsz = P + 0x2c;
+			hdr((mach_msg_header_t *)rq, rsz, SLS_MSG_RemoveRegisteredCursor, 0); memcpy(rq + 0x18, &WS_NDR, 8); memcpy(rq + 0x24, &nl, 4); memcpy(rq + 0x28, nm, nl);
+			CHECK(rc_of(cfd, rq, rsz, SLS_MSG_RemoveRegisteredCursor + 100) == 0);
+			NAMEREQ(SLS_MSG_IsCursorRegistered);
+			CHECK(xchg(cfd, nq, nsz, &vr, sizeof vr, NULL, NULL) == (int)sizeof vr && vr.value == 0);
+			NAMEREQ(SLS_MSG_GetRegisteredCursorData);
+			CHECK(rc_of(cfd, nq, nsz, SLS_MSG_GetRegisteredCursorData + 100) == 0x3ef);
+			{ const char *sys = "com.apple.coregraphics.Arrow"; uint32_t sl = (uint32_t)strlen(sys), sp = (sl + 3) & ~3u, ss = sp + 0x2c;
+			  uint8_t sq[0x28 + 64]; memset(sq, 0, sizeof sq); hdr((mach_msg_header_t *)sq, ss, SLS_MSG_RemoveRegisteredCursor, 0);
+			  memcpy(sq + 0x18, &WS_NDR, 8); memcpy(sq + 0x24, &sl, 4); memcpy(sq + 0x28, sys, sl);
+			  CHECK(rc_of(cfd, sq, ss, SLS_MSG_RemoveRegisteredCursor + 100) == 1000); }
+			/* a bad registration: pixel count mismatch -> type error, zero size -> 1001 */
+			f[8] = 15; memcpy(m + 0x3c + P, f, sizeof f);
+			CHECK(rc_of(cfd, m, size + sizeof pix, SLS_MSG_RegisterCursorWithData + 100) == MIG_TYPE_ERROR);
+			f[8] = 16; f[4] = 0; memcpy(m + 0x3c + P, f, sizeof f);
+			CHECK(rc_of(cfd, m, size + sizeof pix, SLS_MSG_RegisterCursorWithData + 100) == 1001);
+			#undef NAMEREQ
+		}
+
 		/* window event mask by the owner; events for the owner's window arrive asynchronously on its event channel */
 		int wfd = -1, wrc = 0;
 		uint32_t cw = create(cfd, (ws_rect){ 10, 10, 100, 80 }, 2, &wfd, &wrc);
