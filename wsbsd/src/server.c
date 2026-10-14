@@ -178,28 +178,55 @@ int ws_move_window(ws_server *s, ws_wid id, int x, int y)
 	return 0;
 }
 
+static int key_cmp(const window *x, const window *y)
+{
+	if (x->level != y->level) return x->level < y->level ? -1 : 1;
+	if (x->sublevel != y->sublevel) return x->sublevel < y->sublevel ? -1 : 1;
+	return 0;
+}
+
+static int by_key(const void *a, const void *b)
+{
+	const window *x = *(window *const *)a, *y = *(window *const *)b;
+	int c = key_cmp(x, y);
+	if (c) return c;
+	if (x->order != y->order) return x->order < y->order ? -1 : 1;
+	return x->id < y->id ? -1 : 1;
+}
+
+/* Places w among the on-screen windows and renumbers the order field (1 = rearmost) so that it is strictly increasing.
+ * Behaviour verified against the real WindowServer (see test/test_diff.c): without a usable relative window the window goes to the
+ * front (WS_ABOVE) or to the back (WS_BELOW) of its own level group; a relative window that is out, unknown, itself or at another level
+ * is treated as "no relative window"; the window never adopts the relative window's level. */
+static void place(ws_server *s, window *w, int mode, window *rel)
+{
+	window **v = malloc((s->n + 1) * sizeof *v);
+	if (!v) return;
+	size_t n = 0;
+	for (size_t i = 0; i < s->n; i++) if (s->win[i].on_screen && &s->win[i] != w) v[n++] = &s->win[i];
+	qsort(v, n, sizeof *v, by_key);
+	size_t at = 0;
+	if (rel && rel != w && rel->on_screen && rel->level == w->level) {
+		for (size_t i = 0; i < n; i++) if (v[i] == rel) { at = mode == WS_ABOVE ? i + 1 : i; break; }
+	} else if (mode == WS_ABOVE) {
+		at = 0; for (size_t i = 0; i < n; i++) if (key_cmp(v[i], w) <= 0) at = i + 1;
+	} else {
+		at = n; for (size_t i = n; i-- > 0;) if (key_cmp(v[i], w) >= 0) at = i;
+	}
+	uint64_t k = 1;
+	for (size_t i = 0; i < at; i++) v[i]->order = k++;
+	w->order = k++; w->on_screen = 1;
+	for (size_t i = at; i < n; i++) v[i]->order = k++;
+	s->clock = k;
+	free(v);
+}
+
 int ws_order_window(ws_server *s, ws_wid id, int mode, ws_wid rel)
 {
-	window *w = get(s, id), *r = rel ? get(s, rel) : NULL;
-	if (!w || (rel && !r)) return -1;
+	window *w = get(s, id);
+	if (!w) return -1;
 	if (mode == WS_OUT) { w->on_screen = 0; return 0; }
-	w->on_screen = 1;
-	if (!r) {
-		/* no relative window: above = frontmost of its level, below = rearmost */
-		if (mode == WS_ABOVE) w->order = ++s->clock;
-		else { uint64_t lo = s->clock; for (size_t i = 0; i < s->n; i++) if (s->win[i].level == w->level && s->win[i].order < lo) lo = s->win[i].order; w->order = lo ? lo - 1 : 0; }
-		return 0;
-	}
-	w->level = r->level;
-	/* give every window above r a bigger gap: renumber to keep a strict order */
-	if (mode == WS_ABOVE) {
-		for (size_t i = 0; i < s->n; i++) if (s->win[i].order > r->order) s->win[i].order++;
-		w->order = r->order + 1;
-	} else {
-		for (size_t i = 0; i < s->n; i++) if (s->win[i].order >= r->order) s->win[i].order++;
-		w->order = r->order - 1;   /* just under r, whose order was bumped above */
-	}
-	s->clock++;
+	place(s, w, mode == WS_BELOW ? WS_BELOW : WS_ABOVE, rel ? get(s, rel) : NULL);
 	return 0;
 }
 
@@ -212,7 +239,13 @@ int ws_set_window_shadow(ws_server *s, ws_wid id, int cr, int on)
 	return 0;
 }
 
-int ws_set_window_level(ws_server *s, ws_wid id, int level) { window *w = get(s, id); if (!w) return -1; w->level = level; return 0; }
+int ws_set_window_level(ws_server *s, ws_wid id, int level)
+{
+	window *w = get(s, id);
+	if (!w) return -1;
+	if (w->level != level) { w->level = level; if (w->on_screen) place(s, w, WS_ABOVE, NULL); }   /* the real server brings it to the front of the new level */
+	return 0;
+}
 int ws_set_window_alpha(ws_server *s, ws_wid id, float a) { window *w = get(s, id); if (!w) return -1; w->alpha = a < 0 ? 0 : a > 1 ? 1 : a; return 0; }
 
 static int back_to_front(const void *a, const void *b)
