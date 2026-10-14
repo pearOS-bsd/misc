@@ -4,10 +4,12 @@
 cd "$(dirname "$0")"
 mkdir -p ../lab-out
 N="$1"
-cc -g -O0 -o "../lab-out/$N" "$N.c" -framework CoreGraphics -framework CoreFoundation -framework ApplicationServices 2>&1 | tee "../lab-out/$N.build.txt"
-"../lab-out/$N" 2>&1 | tee "../lab-out/$N.txt"
-rc=$?
-if [ "$rc" -ge 128 ] || grep -q "Segmentation\|Bus error" "../lab-out/$N.txt"; then
+cc -g -O0 -o "../lab-out/$N" "$N.c" -framework CoreGraphics -framework CoreFoundation -framework ApplicationServices > "../lab-out/$N.build.txt" 2>&1; cat "../lab-out/$N.build.txt"
+"../lab-out/$N" > "../lab-out/$N.txt" 2>&1; rc=$?
+cat "../lab-out/$N.txt"
+echo "exit code $rc"
+if [ "$rc" -ge 128 ]; then
   echo "--- crashed, lldb backtrace ---"
-  sudo lldb -b -o run -o "bt 12" -o "register read" "../lab-out/$N" 2>&1 | tail -60 | tee -a "../lab-out/$N.txt"
+  sudo lldb -b -o run -o "bt 12" -o "register read" "../lab-out/$N" 2>&1 | tail -70 | tee -a "../lab-out/$N.txt"
 fi
+exit 0
