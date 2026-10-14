@@ -11,7 +11,7 @@ EXTRA_SRC    =
 EXTRA_CFLAGS =
 EXTRA_LIBS   =
 
-all: wsd test_window test_compose test_region test_wire test_evrec test_buffer
+all: wsd test_window test_compose test_region test_wire test_evrec test_buffer test_diff
 
 wsd: $(CORE) $(EXTRA_SRC) src/wsd.c $(HDRS)
 	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ $(CORE) $(EXTRA_SRC) src/wsd.c $(EXTRA_LIBS) $(LDLIBS)
@@ -32,6 +32,9 @@ test_region: $(CORE) test/test_region.c $(HDRS)
 test_buffer: src/buffer.c src/compositor_sw.c test/test_buffer.c $(HDRS)
 	$(CC) $(CFLAGS) -o $@ src/buffer.c src/compositor_sw.c test/test_buffer.c $(LDLIBS)
 
+test_diff: $(CORE) test/test_diff.c $(HDRS)
+	$(CC) $(CFLAGS) -o $@ $(CORE) test/test_diff.c $(LDLIBS)
+
 test_evrec: src/evrec.c test/test_evrec.c $(HDRS)
 	$(CC) $(CFLAGS) -o $@ src/evrec.c test/test_evrec.c $(LDLIBS)
 
@@ -46,11 +49,12 @@ gl: clean
 full: clean
 	$(MAKE) wsd test_window EXTRA_SRC="src/backend_kms.c src/compositor_gl.c" EXTRA_CFLAGS="-DWS_KMS -DWS_GL -DWS_GBM -DWS_EGL `pkg-config --cflags libdrm egl gbm glesv2`" EXTRA_LIBS="`pkg-config --libs libdrm egl gbm glesv2`"
 
-check: test_compose test_region test_evrec test_buffer wsd test_wire
+check: test_compose test_region test_evrec test_buffer test_diff wsd test_wire
 	./test_compose
 	./test_region
 	./test_evrec
 	./test_buffer
+	./test_diff
 	sh test/run_wire.sh
 
 # start wsd, draw the test window through the protocol, save window.ppm (window.png on macOS), stop wsd
@@ -58,4 +62,4 @@ demo: wsd test_window
 	OUT="$(OUT)" sh test/run_demo.sh
 
 clean:
-	rm -f wsd test_window test_compose test_region test_wire test_evrec test_buffer out.ppm window.ppm window.png
+	rm -f wsd test_window test_compose test_region test_wire test_evrec test_buffer test_diff out.ppm window.ppm window.png
