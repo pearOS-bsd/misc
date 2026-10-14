@@ -35,7 +35,7 @@ int ws_ipc_listen(const char *path)
 	mode_t old = umask(0177);                                   /* only the owner may connect: the socket is the access control */
 	int b = bind(s, (struct sockaddr *)&sa, sizeof sa);
 	umask(old);
-	if (b < 0 || listen(s, 32) < 0) { close(s); return -1; }
+	if (b < 0 || listen(s, 128) < 0) { close(s); return -1; }
 	return s;
 }
 
