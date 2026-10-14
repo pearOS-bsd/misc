@@ -8,7 +8,7 @@ HDRS = include/ws_gl.h include/ws_buffer.h include/ws_evrec.h include/ws.h inclu
 OUT          = window
 # set by the `kms` target
 EXTRA_SRC    =
-FAMILIES     = src/sls_ext.c src/sls_session.c
+FAMILIES     = src/sls_ext.c src/sls_session.c src/sls_golden.c
 EXTRA_CFLAGS =
 EXTRA_LIBS   =
 
@@ -19,6 +19,9 @@ wsd: $(CORE) $(EXTRA_SRC) $(FAMILIES) src/wsd.c $(HDRS)
 
 test_interactive: src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_interactive.c $(HDRS)
 	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_interactive.c $(EXTRA_LIBS) $(LDLIBS)
+
+test_golden: src/ipc.c test/test_golden.c $(HDRS)
+	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ src/ipc.c test/test_golden.c $(LDLIBS)
 
 test_robust: src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_robust.c $(HDRS)
 	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_robust.c $(EXTRA_LIBS) $(LDLIBS)
@@ -56,7 +59,7 @@ gl: clean
 full: clean
 	$(MAKE) wsd test_window EXTRA_SRC="src/backend_kms.c src/compositor_gl.c" EXTRA_CFLAGS="-DWS_KMS -DWS_GL -DWS_GBM -DWS_EGL `pkg-config --cflags libdrm egl gbm glesv2`" EXTRA_LIBS="`pkg-config --libs libdrm egl gbm glesv2`"
 
-check: test_compose test_region test_evrec test_buffer test_diff wsd test_wire test_interactive test_robust
+check: test_compose test_region test_evrec test_buffer test_diff wsd test_wire test_interactive test_robust test_golden
 	./test_compose
 	./test_region
 	./test_evrec
@@ -65,10 +68,11 @@ check: test_compose test_region test_evrec test_buffer test_diff wsd test_wire t
 	sh test/run_wire.sh
 	sh test/run_interactive.sh
 	sh test/run_robust.sh
+	sh test/run_golden.sh
 
 # start wsd, draw the test window through the protocol, save window.ppm (window.png on macOS), stop wsd
 demo: wsd test_window
 	OUT="$(OUT)" sh test/run_demo.sh
 
 clean:
-	rm -f wsd test_window test_interactive test_robust test_compose test_region test_wire test_evrec test_buffer test_diff out.ppm window.ppm window.png
+	rm -f wsd test_window test_interactive test_robust test_golden test_compose test_region test_wire test_evrec test_buffer test_diff out.ppm window.ppm window.png

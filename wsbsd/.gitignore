@@ -17,3 +17,4 @@ test_interactive
 interactive-*.ppm
 test_robust
 lab-out/
+test_golden
