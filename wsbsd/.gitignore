@@ -12,3 +12,4 @@ test_window
 # raw tables of Apple routine names and addresses are generated locally from the developer's own macOS and are not published
 docs/skylight-server-routines.txt
 docs/skylight-msgid-table.txt
+test_diff
