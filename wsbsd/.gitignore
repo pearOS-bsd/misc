@@ -13,3 +13,5 @@ test_window
 docs/skylight-server-routines.txt
 docs/skylight-msgid-table.txt
 test_diff
+test_interactive
+interactive-*.ppm

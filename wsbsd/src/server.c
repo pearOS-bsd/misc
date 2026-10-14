@@ -23,6 +23,7 @@ typedef struct {
 	uint32_t owner;
 	int sublevel, event_mask;
 	ws_surface *content;        /* borrowed */
+	ws_surface *front;          /* committed copy of the content: what is shown */
 	uint32_t content_id;
 	int committed;
 	ws_rect dmg; int has_dmg, full_dmg;
@@ -41,6 +42,8 @@ struct ws_server {
 	int cx, cy, buttons, cursor_visible;
 	ws_wid grab, key_win;
 	ws_event_sink sink; void *sink_ctx;
+	uint64_t gen;
+	ws_surface *cursor_img; int cursor_hx, cursor_hy; uint32_t cursor_serial;
 };
 
 ws_server *ws_server_new(int w, int h)
@@ -54,11 +57,15 @@ ws_server *ws_server_new(int w, int h)
 void ws_server_free(ws_server *s)
 {
 	if (!s) return;
+	ws_surface_free(s->cursor_img);
 	for (size_t i = 0; i < s->n; i++) { ws_surface_free(s->win[i].backing); ws_surface_free(s->win[i].shadow); if (s->win[i].shm[0]) ws_shm_unlink(s->win[i].shm); }
 	free(s->win); free(s);
 }
 
 void ws_server_set_compositor(ws_server *s, ws_compositor *c) { if (s && c) s->comp = c; }
+
+static void bump(ws_server *s) { s->gen++; }
+uint64_t ws_server_generation(const ws_server *s) { return s->gen; }
 
 static window *get(ws_server *s, ws_wid id)
 {
@@ -104,6 +111,7 @@ static ws_wid add_window(ws_server *s, ws_rect f, ws_surface *b, const char *shm
 	window *w = &s->win[s->n++];
 	*w = (window){ .id = s->next_id++, .frame = f, .alpha = 1.0f, .backing = b, .full_dmg = 1 };
 	strncpy(w->shm, shm, sizeof w->shm - 1);
+	bump(s);
 	return w->id;
 }
 
@@ -113,7 +121,8 @@ int ws_release_window(ws_server *s, ws_wid id)
 	if (!w) return -1;
 	if (s->grab == id) s->grab = 0;
 	if (s->key_win == id) s->key_win = 0;
-	ws_surface_free(w->backing); ws_surface_free(w->shadow); free(w->shape);
+	ws_surface_free(w->backing); ws_surface_free(w->shadow); ws_surface_free(w->front); free(w->shape);
+	bump(s);
 	if (w->shm[0]) ws_shm_unlink(w->shm);
 	*w = s->win[--s->n];
 	return 0;
@@ -135,7 +144,7 @@ void ws_set_window_shape(ws_server *s, ws_wid id, const ws_rect *r, int n)
 uint32_t ws_window_owner(ws_server *s, ws_wid id) { window *w = get(s, id); return w ? w->owner : 0; }
 int ws_window_frame(ws_server *s, ws_wid id, ws_rect *out) { window *w = get(s, id); if (!w) return -1; *out = w->frame; return 0; }
 
-int ws_set_window_sublevel(ws_server *s, ws_wid id, int v) { window *w = get(s, id); if (!w) return -1; w->sublevel = (short)v; return 0; }
+int ws_set_window_sublevel(ws_server *s, ws_wid id, int v) { window *w = get(s, id); if (!w) return -1; w->sublevel = (short)v; bump(s); return 0; }
 int ws_window_sublevel(ws_server *s, ws_wid id, int *v) { window *w = get(s, id); if (!w) return -1; *v = w->sublevel; return 0; }
 int ws_window_shape_bounds(ws_server *s, ws_wid id, ws_rect *out)       /* window-relative bounds of the shape */
 {
@@ -154,9 +163,48 @@ int ws_window_shape_bounds(ws_server *s, ws_wid id, ws_rect *out)       /* windo
 }
 int ws_count_onscreen_owned(ws_server *s, uint32_t owner) { int n = 0; for (size_t i = 0; i < s->n; i++) n += s->win[i].owner == owner && s->win[i].on_screen; return n; }
 
-int ws_window_set_content(ws_server *s, ws_wid id, ws_surface *c, uint32_t buffer_id) { window *w = get(s, id); if (!w) return -1; w->content = c; w->content_id = c ? buffer_id : 0; w->committed = 0; w->full_dmg = 1; return 0; }
-int ws_window_commit(ws_server *s, ws_wid id) { window *w = get(s, id); if (!w || !w->content) return -1; if (!w->committed) w->full_dmg = 1; w->committed = 1; return 0; }
-void ws_server_drop_content(ws_server *s, const ws_surface *c) { for (size_t i = 0; i < s->n; i++) if (s->win[i].content == c) { s->win[i].content = NULL; s->win[i].content_id = 0; s->win[i].committed = 0; s->win[i].full_dmg = 1; } }
+int ws_window_set_content(ws_server *s, ws_wid id, ws_surface *c, uint32_t buffer_id)
+{
+	window *w = get(s, id);
+	if (!w) return -1;
+	ws_surface_free(w->front); w->front = NULL;
+	w->content = c; w->content_id = c ? buffer_id : 0; w->committed = 0; w->full_dmg = 1;
+	bump(s);
+	return 0;
+}
+
+/* Copies the flushed rectangle of the bound content into the committed image; what is shown is always that image. */
+int ws_window_flush_rect(ws_server *s, ws_wid id, const ws_rect *dirty)
+{
+	window *w = get(s, id);
+	if (!w || !w->content) return -1;
+	const ws_surface *c = w->content;
+	if (c->px) {                                          /* a CPU-visible buffer; a GPU-only one is read by the GL compositor itself */
+		int fresh = !w->front || w->front->w != c->w || w->front->h != c->h;
+		if (fresh) { ws_surface_free(w->front); w->front = ws_surface_new(c->w, c->h); if (!w->front) return -1; }
+		ws_rect r = (fresh || !dirty) ? (ws_rect){ 0, 0, c->w, c->h } : *dirty;
+		int x0 = r.x < 0 ? 0 : r.x, y0 = r.y < 0 ? 0 : r.y, x1 = r.x + r.w > c->w ? c->w : r.x + r.w, y1 = r.y + r.h > c->h ? c->h : r.y + r.h;
+		for (int y = y0; y < y1; y++)
+			memcpy(w->front->px + (size_t)y * w->front->stride + (size_t)x0 * 4, c->px + (size_t)y * c->stride + (size_t)x0 * 4, (size_t)(x1 > x0 ? x1 - x0 : 0) * 4);
+		if (fresh) w->full_dmg = 1;
+	}
+	if (!w->committed) w->full_dmg = 1;
+	w->committed = 1;
+	ws_window_damage(s, id, dirty);
+	bump(s);
+	return 0;
+}
+
+int ws_window_commit(ws_server *s, ws_wid id) { return ws_window_flush_rect(s, id, NULL); }
+
+void ws_server_drop_content(ws_server *s, const ws_surface *c)
+{
+	for (size_t i = 0; i < s->n; i++) if (s->win[i].content == c) {
+		ws_surface_free(s->win[i].front); s->win[i].front = NULL;
+		s->win[i].content = NULL; s->win[i].content_id = 0; s->win[i].committed = 0; s->win[i].full_dmg = 1;
+		bump(s);
+	}
+}
 
 int ws_window_level(ws_server *s, ws_wid id, int *l) { window *w = get(s, id); if (!w) return -1; *l = w->level; return 0; }
 int ws_window_alpha(ws_server *s, ws_wid id, float *a) { window *w = get(s, id); if (!w) return -1; *a = w->alpha; return 0; }
@@ -175,6 +223,7 @@ int ws_move_window(ws_server *s, ws_wid id, int x, int y)
 	window *w = get(s, id);
 	if (!w) return -1;
 	w->frame.x = x; w->frame.y = y;
+	bump(s);
 	return 0;
 }
 
@@ -213,6 +262,7 @@ static void place(ws_server *s, window *w, int mode, window *rel)
 	} else {
 		at = n; for (size_t i = n; i-- > 0;) if (key_cmp(v[i], w) >= 0) at = i;
 	}
+	bump(s);
 	uint64_t k = 1;
 	for (size_t i = 0; i < at; i++) v[i]->order = k++;
 	w->order = k++; w->on_screen = 1;
@@ -225,7 +275,7 @@ int ws_order_window(ws_server *s, ws_wid id, int mode, ws_wid rel)
 {
 	window *w = get(s, id);
 	if (!w) return -1;
-	if (mode == WS_OUT) { w->on_screen = 0; return 0; }
+	if (mode == WS_OUT) { w->on_screen = 0; bump(s); return 0; }
 	place(s, w, mode == WS_BELOW ? WS_BELOW : WS_ABOVE, rel ? get(s, rel) : NULL);
 	return 0;
 }
@@ -234,7 +284,7 @@ int ws_set_window_shadow(ws_server *s, ws_wid id, int cr, int on)
 {
 	window *w = get(s, id);
 	if (!w) return -1;
-	w->shadow_on = on; w->shadow_cr = cr;
+	w->shadow_on = on; w->shadow_cr = cr; bump(s);
 	ws_surface_free(w->shadow); w->shadow = NULL;
 	return 0;
 }
@@ -243,10 +293,10 @@ int ws_set_window_level(ws_server *s, ws_wid id, int level)
 {
 	window *w = get(s, id);
 	if (!w) return -1;
-	if (w->level != level) { w->level = level; if (w->on_screen) place(s, w, WS_ABOVE, NULL); }   /* the real server brings it to the front of the new level */
+	if (w->level != level) { w->level = level; bump(s); if (w->on_screen) place(s, w, WS_ABOVE, NULL); }   /* the real server brings it to the front of the new level */
 	return 0;
 }
-int ws_set_window_alpha(ws_server *s, ws_wid id, float a) { window *w = get(s, id); if (!w) return -1; w->alpha = a < 0 ? 0 : a > 1 ? 1 : a; return 0; }
+int ws_set_window_alpha(ws_server *s, ws_wid id, float a) { window *w = get(s, id); if (!w) return -1; w->alpha = a < 0 ? 0 : a > 1 ? 1 : a; bump(s); return 0; }
 
 static int back_to_front(const void *a, const void *b)
 {
@@ -366,7 +416,7 @@ void ws_cursor_pos(ws_server *s, int *x, int *y) { *x = s->cx; *y = s->cy; }
 ws_wid ws_key_window(ws_server *s) { return s->key_win; }
 void ws_cursor_show(ws_server *s, int v) { s->cursor_visible = v != 0; }
 
-/* software cursor: classic arrow, black with a white outline, 4x4 supersampled */
+/* ---- cursor: an image with a hotspot, independent of every window buffer ---- */
 static int in_poly(const float *px, const float *py, int n, float x, float y)
 {
 	int c = 0;
@@ -375,30 +425,70 @@ static int in_poly(const float *px, const float *py, int n, float x, float y)
 	return c;
 }
 
-static void draw_cursor(ws_server *s, ws_surface *scr)
+#define CURSOR_SIZE 24
+/* the default arrow: black with a white outline, 4x4 supersampled, premultiplied BGRA, hotspot at the tip */
+static ws_surface *make_default_cursor(void)
 {
 	static const float ax[] = { 0, 0, 4, 7, 9, 6.2f, 11 }, ay[] = { 0, 16, 12.5f, 18.5f, 17.5f, 11.5f, 11.5f };
 	float ox[7], oy[7];
 	for (int i = 0; i < 7; i++) { ox[i] = (ax[i] - 4.5f) * 1.18f + 4.5f; oy[i] = (ay[i] - 9.0f) * 1.18f + 9.0f; }
-	for (int y = -2; y < 22; y++)
-		for (int x = -2; x < 15; x++) {
+	ws_surface *img = ws_surface_new(CURSOR_SIZE, CURSOR_SIZE);
+	if (!img) return NULL;
+	for (int y = 0; y < CURSOR_SIZE; y++)
+		for (int x = 0; x < CURSOR_SIZE; x++) {
 			int fill = 0, outline = 0;
 			for (int sy = 0; sy < 4; sy++)
 				for (int sx = 0; sx < 4; sx++) {
-					float fx = x + (sx + 0.5f) / 4, fy = y + (sy + 0.5f) / 4;
+					float fx = x - 2 + (sx + 0.5f) / 4, fy = y - 2 + (sy + 0.5f) / 4;     /* the polygon is offset by 2 so the outline fits */
 					if (in_poly(ax, ay, 7, fx, fy)) fill++;
 					else if (in_poly(ox, oy, 7, fx, fy)) outline++;
 				}
-			if (!fill && !outline) continue;
-			int px = s->cx + x, py = s->cy + y;
-			if (px < 0 || py < 0 || px >= scr->w || py >= scr->h) continue;
-			uint8_t *d = scr->px + (size_t)py * scr->stride + (size_t)px * 4;
 			float fo = fill / 16.0f, ou = outline / 16.0f;
-			for (int k = 0; k < 3; k++) {           /* white outline first, black fill on top */
-				float v = d[k] * (1 - ou) + 255.0f * ou;
-				d[k] = (uint8_t)(v * (1 - fo) + 0.0f * fo + 0.5f);
-			}
+			uint8_t *d = img->px + (size_t)y * img->stride + (size_t)x * 4;
+			uint8_t a = (uint8_t)((fo + ou) * 255.0f + 0.5f), white = (uint8_t)(ou * 255.0f + 0.5f);   /* premultiplied: black fill, white outline */
+			d[0] = d[1] = d[2] = white; d[3] = a;
 		}
+	return img;
+}
+
+static int default_hot_x(void) { return 2; }                       /* the arrow's tip is at (0,0) of the polygon, drawn 2 px into the image */
+
+const ws_surface *ws_cursor_image(ws_server *s, int *hx, int *hy)
+{
+	if (!s->cursor_img) {
+		s->cursor_img = make_default_cursor();
+		s->cursor_hx = s->cursor_hy = default_hot_x();
+		s->cursor_serial++;
+	}
+	if (hx) *hx = s->cursor_hx;
+	if (hy) *hy = s->cursor_hy;
+	return s->cursor_img;
+}
+
+uint32_t ws_cursor_serial(const ws_server *s) { return s->cursor_serial; }
+int ws_cursor_visible(const ws_server *s) { return s->cursor_visible; }
+
+void ws_server_set_cursor_image(ws_server *s, const ws_surface *img, int hx, int hy)
+{
+	ws_surface_free(s->cursor_img); s->cursor_img = NULL;
+	if (img && img->px) {
+		s->cursor_img = ws_surface_new(img->w, img->h);
+		if (s->cursor_img) {
+			for (int y = 0; y < img->h; y++) memcpy(s->cursor_img->px + (size_t)y * s->cursor_img->stride, img->px + (size_t)y * img->stride, (size_t)img->w * 4);
+			s->cursor_hx = hx; s->cursor_hy = hy;
+		}
+	}
+	s->cursor_serial++;                                              /* a NULL image falls back to the default arrow on the next query */
+}
+
+/* software path: blend the cursor image onto a finished frame */
+static void draw_cursor(ws_server *s, ws_surface *scr)
+{
+	int hx, hy;
+	const ws_surface *img = ws_cursor_image(s, &hx, &hy);
+	if (!img) return;
+	ws_rect all = { 0, 0, scr->w, scr->h };
+	s->comp->over(s->comp, scr, s->cx - hx, s->cy - hy, img, 1.0f, all);
 }
 
 static void ensure_shadow(ws_server *s, window *w, int active)
@@ -425,6 +515,7 @@ void ws_window_damage(ws_server *s, ws_wid id, const ws_rect *r)
 {
 	window *w = get(s, id);
 	if (!w) return;
+	bump(s);
 	if (!r) { w->full_dmg = 1; return; }
 	int x0 = r->x < 0 ? 0 : r->x, y0 = r->y < 0 ? 0 : r->y;                  /* clip to the window */
 	int x1 = r->x + r->w > w->frame.w ? w->frame.w : r->x + r->w, y1 = r->y + r->h > w->frame.h ? w->frame.h : r->y + r->h;
@@ -452,7 +543,7 @@ void ws_server_walk(ws_server *s, ws_visit_fn fn, void *ctx)
 		ws_visit vis;
 		memset(&vis, 0, sizeof vis);
 		vis.id = w->id; vis.frame = w->frame; vis.alpha = w->alpha; vis.corner_radius = w->shadow_on ? w->shadow_cr : 0; vis.active = w->id == act;
-		vis.pixels = (w->content && w->committed) ? w->content : w->backing;
+		vis.pixels = (w->content && w->committed) ? (w->front ? w->front : w->content) : w->backing;
 		vis.buffer_id = (w->content && w->committed) ? w->content_id : 0;
 		if (w->shadow_on && w->shadow) {
 			vis.shadow = w->shadow; vis.shadow_x = w->frame.x - w->shadow_pad; vis.shadow_y = w->frame.y - w->shadow_pad; vis.shadow_gen = w->shadow_gen;
@@ -463,7 +554,7 @@ void ws_server_walk(ws_server *s, ws_visit_fn fn, void *ctx)
 	free(v);
 }
 
-void ws_compose(ws_server *s, ws_surface *screen)
+void ws_compose_scene(ws_server *s, ws_surface *screen)
 {
 	window **v = malloc((s->n + 1) * sizeof *v);
 	if (!v) return;
@@ -472,11 +563,16 @@ void ws_compose(ws_server *s, ws_surface *screen)
 	s->comp->fill(s->comp, screen, all, 0.10f, 0.12f, 0.16f, 1.0f);   /* desktop */
 	size_t n = sorted(s, v);
 	for (size_t i = 0; i < n; i++) {
-		s->comp->over(s->comp, screen, v[i]->frame.x, v[i]->frame.y, (v[i]->content && v[i]->committed) ? v[i]->content : v[i]->backing, v[i]->alpha, all);
+		s->comp->over(s->comp, screen, v[i]->frame.x, v[i]->frame.y, (v[i]->content && v[i]->committed) ? (v[i]->front ? v[i]->front : v[i]->content) : v[i]->backing, v[i]->alpha, all);
 		/* the shadow layer is rendered above its window (it is cut out of the window shape; the inner rim lies inside it) */
 		if (v[i]->shadow_on) draw_shadow(s, v[i], screen, v[i]->id == act);
 	}
-	if (s->cursor_visible) draw_cursor(s, screen);
 	if (s->comp->flush) s->comp->flush(s->comp);
 	free(v);
+}
+
+void ws_compose(ws_server *s, ws_surface *screen)
+{
+	ws_compose_scene(s, screen);
+	if (s->cursor_visible) draw_cursor(s, screen);
 }

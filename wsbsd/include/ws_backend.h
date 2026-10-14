@@ -9,7 +9,12 @@ typedef struct ws_kms ws_kms;
 ws_kms *ws_kms_open(const char *card, int *w, int *h);      /* e.g. /dev/dri/card0; NULL on failure */
 int ws_kms_fd(ws_kms *);                                    /* poll this for page-flip completion */
 ws_surface *ws_kms_back(ws_kms *);                          /* surface to compose into (maps a dumb buffer) */
-int ws_kms_present(ws_kms *);                               /* queue a page flip of the back buffer */
+int ws_kms_present_ready(ws_kms *);                         /* 1 if no flip is pending (a new frame may be queued) */
+int ws_kms_present(ws_kms *);                               /* queue a page flip of the back buffer: 0 queued, 1 skipped (flip pending), -1 error */
+/* Hardware cursor plane. The image is premultiplied BGRA (ARGB8888); only moving it needs no new frame. */
+int ws_kms_cursor_supported(ws_kms *);
+int ws_kms_cursor_set(ws_kms *, const ws_surface *img, int hot_x, int hot_y);
+int ws_kms_cursor_move(ws_kms *, int x, int y);              /* x, y: the top-left corner of the image on screen */
 int ws_kms_handle_events(ws_kms *);                         /* call when ws_kms_fd is readable */
 void ws_kms_close(ws_kms *);
 

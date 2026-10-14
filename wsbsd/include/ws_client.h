@@ -55,6 +55,7 @@ int ws_win_count(ws_conn *, int connection_id);                 /* GetWindowCoun
 int ws_inject_mouse(ws_conn *, int x, int y, int buttons);
 int ws_inject_key(ws_conn *, int key, int down);
 int ws_poll_event(ws_conn *, ws_win *, ws_event *out);   /* 1 if an event was returned */
-int ws_screenshot(ws_conn *, const char *path);
+int ws_screenshot(ws_conn *, const char *path);                       /* with the cursor */
+int ws_screenshot_scene(ws_conn *, const char *path);                 /* windows only, no cursor (for pixel comparisons) */
 int ws_server_quit(ws_conn *);
 #endif

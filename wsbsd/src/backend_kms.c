@@ -23,6 +23,7 @@ struct ws_kms {
 	struct { uint32_t handle, fb; ws_surface *s; } buf[2];
 	int front, flip_pending;
 	drmModeCrtc *saved;
+	struct { uint32_t handle; uint8_t *map; size_t size; uint32_t w, h; int on; } cur;   /* hardware cursor buffer */
 };
 
 static int make_buf(ws_kms *k, int i)
@@ -78,13 +79,44 @@ fail:
 int ws_kms_fd(ws_kms *k) { return k->fd; }
 ws_surface *ws_kms_back(ws_kms *k) { return k->buf[1 - k->front].s; }
 
+int ws_kms_present_ready(ws_kms *k) { return !k->flip_pending; }
+
 int ws_kms_present(ws_kms *k)
 {
-	if (k->flip_pending) return 0;                              /* previous flip not finished: skip this frame */
+	if (k->flip_pending) return 1;                              /* previous flip not finished: the caller keeps the frame pending */
 	if (drmModePageFlip(k->fd, k->crtc, k->buf[1 - k->front].fb, DRM_MODE_PAGE_FLIP_EVENT, k)) return -1;
 	k->flip_pending = 1;
 	return 0;
 }
+
+/* ---- hardware cursor (legacy cursor ioctls; an atomic cursor plane is the next step) ---- */
+int ws_kms_cursor_supported(ws_kms *k)
+{
+	uint64_t w = 0, h = 0;
+	if (k->cur.handle) return 1;
+	if (drmGetCap(k->fd, DRM_CAP_CURSOR_WIDTH, &w) || drmGetCap(k->fd, DRM_CAP_CURSOR_HEIGHT, &h) || !w || !h) { w = 64; h = 64; }   /* the usual size */
+	struct drm_mode_create_dumb c = { .width = (uint32_t)w, .height = (uint32_t)h, .bpp = 32 };
+	if (drmIoctl(k->fd, DRM_IOCTL_MODE_CREATE_DUMB, &c)) return 0;
+	struct drm_mode_map_dumb m = { .handle = c.handle };
+	void *p = MAP_FAILED;
+	if (!drmIoctl(k->fd, DRM_IOCTL_MODE_MAP_DUMB, &m)) p = mmap(NULL, c.size, PROT_READ | PROT_WRITE, MAP_SHARED, k->fd, (off_t)m.offset);
+	if (p == MAP_FAILED) { struct drm_mode_destroy_dumb d = { .handle = c.handle }; drmIoctl(k->fd, DRM_IOCTL_MODE_DESTROY_DUMB, &d); return 0; }
+	k->cur.handle = c.handle; k->cur.map = p; k->cur.size = c.size; k->cur.w = c.width; k->cur.h = c.height;
+	return 1;
+}
+
+int ws_kms_cursor_set(ws_kms *k, const ws_surface *img, int hot_x, int hot_y)
+{
+	if (!ws_kms_cursor_supported(k) || !img || !img->px || (uint32_t)img->w > k->cur.w || (uint32_t)img->h > k->cur.h) return -1;
+	memset(k->cur.map, 0, k->cur.size);
+	for (int y = 0; y < img->h; y++) memcpy(k->cur.map + (size_t)y * k->cur.w * 4, img->px + (size_t)y * img->stride, (size_t)img->w * 4);
+	if (drmModeSetCursor2(k->fd, k->crtc, k->cur.handle, k->cur.w, k->cur.h, hot_x, hot_y) &&
+	    drmModeSetCursor(k->fd, k->crtc, k->cur.handle, k->cur.w, k->cur.h)) return -1;
+	k->cur.on = 1;
+	return 0;
+}
+
+int ws_kms_cursor_move(ws_kms *k, int x, int y) { return k->cur.on ? drmModeMoveCursor(k->fd, k->crtc, x, y) : -1; }
 
 static void on_flip(int fd, unsigned seq, unsigned sec, unsigned usec, void *data)
 {
@@ -103,6 +135,8 @@ void ws_kms_close(ws_kms *k)
 {
 	if (!k) return;
 	if (k->saved) { drmModeSetCrtc(k->fd, k->saved->crtc_id, k->saved->buffer_id, k->saved->x, k->saved->y, &k->conn, 1, &k->saved->mode); drmModeFreeCrtc(k->saved); }
+	if (k->cur.on) drmModeSetCursor(k->fd, k->crtc, 0, 0, 0);
+	if (k->cur.map) { munmap(k->cur.map, k->cur.size); struct drm_mode_destroy_dumb d = { .handle = k->cur.handle }; drmIoctl(k->fd, DRM_IOCTL_MODE_DESTROY_DUMB, &d); }
 	for (int i = 0; i < 2; i++) if (k->buf[i].s) { drmModeRmFB(k->fd, k->buf[i].fb); ws_surface_free(k->buf[i].s); }
 	close(k->fd);
 	free(k);

@@ -46,16 +46,19 @@ static gl_compositor *glc;           /* NULL: the software compositor renders */
 static int gl_failures;
 #endif
 
-/* Renders the current scene into dst: GL when available (with a software fallback for a failed frame), else software. */
-static void render_frame(ws_surface *dst)
+/* Renders the scene (windows only) into dst: GL when available (with a software fallback for a failed frame), else software.
+ * The cursor is separate: it is blended afterwards when with_cursor is set (screenshots, no hardware cursor plane). */
+static void render_frame(ws_surface *dst, int with_cursor)
 {
+	int done = 0;
 #ifdef WS_GL
 	if (glc) {
-		if (compositor_render_frame(glc, srv) == 0 && glc_read_pixels(glc, dst) == 0) { gl_failures = 0; ws_draw_cursor(srv, dst); return; }
-		if (++gl_failures >= 3) { fprintf(stderr, "wsd: GL compositor keeps failing, falling back to software\n"); glc_destroy(glc); glc = NULL; }
+		if (compositor_render_frame(glc, srv) == 0 && glc_read_pixels(glc, dst) == 0) { gl_failures = 0; done = 1; }
+		else if (++gl_failures >= 3) { fprintf(stderr, "wsd: GL compositor keeps failing, falling back to software\n"); glc_destroy(glc); glc = NULL; }
 	}
 #endif
-	ws_compose(srv, dst);
+	if (!done) ws_compose_scene(srv, dst);
+	if (with_cursor) ws_draw_cursor(srv, dst);
 }
 
 /* shared buffers registered by clients (the IOSurface counterpart) and the surface slots bound to them */
@@ -440,10 +443,7 @@ static int do_flush_surface(conn *c, const uint8_t *buf, size_t len)
 		free(r);
 		has_region = 1;
 	}
-	if (sf->kind == SLS_BIND_CONTEXT) {
-		ws_window_commit(srv, sf->wid);
-		ws_window_damage(srv, sf->wid, has_region ? &bb : NULL);   /* the GL compositor uploads only this rectangle */
-	}
+	if (sf->kind == SLS_BIND_CONTEXT) ws_window_flush_rect(srv, sf->wid, has_region ? &bb : NULL);   /* copies and marks only this rectangle */
 	return reply_simple(c->fd, h, 0);
 }
 
@@ -574,7 +574,7 @@ static int do_private(conn *c, const uint8_t *buf, size_t len)
 	case WSX_FLUSH: r.retcode = holds_rights(c, (uint32_t)a[0]) ? 0 : CGS_ERROR_FAILURE; if (!r.retcode) ws_window_damage(srv, (ws_wid)a[0], NULL); break;
 	case WSX_SCREENSHOT:
 		q.s[sizeof q.s - 1] = 0;
-		render_frame(screen);
+		render_frame(screen, !(a[0] & 1));                       /* a[0] bit 0: leave the cursor out */
 		r.retcode = ws_write_ppm(screen, q.s) ? CGS_ERROR_FAILURE : 0;
 		break;
 	case WSX_INJECT_MOUSE: ws_server_mouse(srv, a[0], a[1], a[2]); break;
@@ -637,6 +637,8 @@ int main(int argc, char **argv)
 #ifdef WS_KMS
 	ws_kms *kms = NULL;
 	ws_evdev *input = NULL;
+	int hw_cursor = 0;                          /* the cursor lives on the hardware plane: moving it needs no frame */
+	uint64_t last_gen = ~0ULL; uint32_t last_cursor_serial = ~0u; int last_cx = -1, last_cy = -1;
 	if (!strcmp(backend, "kms")) {
 		kms = ws_kms_open(card, &w, &h);
 		if (!kms) { fprintf(stderr, "wsd: cannot open KMS device %s\n", card); return 1; }
@@ -686,7 +688,7 @@ int main(int argc, char **argv)
 		struct kevent out[16];
 		struct timespec frame = { 0, 16 * 1000 * 1000 }, *to = NULL;
 #ifdef WS_KMS
-		if (kms && dirty) to = &frame;
+		if (kms && (ws_server_generation(srv) != last_gen || !hw_cursor)) to = &frame;
 #else
 		(void)frame;
 #endif
@@ -729,9 +731,21 @@ int main(int argc, char **argv)
 			}
 		}
 #ifdef WS_KMS
-		if (kms && dirty) {
-			render_frame(ws_kms_back(kms));
-			if (ws_kms_present(kms) == 0) dirty = 0;
+		if (kms) {
+			int hx = 0, hy = 0, cx, cy;
+			const ws_surface *cimg = ws_cursor_image(srv, &hx, &hy);
+			ws_cursor_pos(srv, &cx, &cy);
+			if (!hw_cursor && cimg && ws_kms_cursor_supported(kms) && ws_kms_cursor_set(kms, cimg, hx, hy) == 0) { hw_cursor = 1; last_cursor_serial = ws_cursor_serial(srv); }
+			if (hw_cursor) {
+				if (ws_cursor_serial(srv) != last_cursor_serial) { if (ws_kms_cursor_set(kms, cimg, hx, hy)) hw_cursor = 0; last_cursor_serial = ws_cursor_serial(srv); }
+				if (hw_cursor && (cx != last_cx || cy != last_cy)) ws_kms_cursor_move(kms, cx - hx, cy - hy);    /* no recomposition */
+			}
+			uint64_t gen = ws_server_generation(srv);
+			int need = gen != last_gen || (!hw_cursor && (cx != last_cx || cy != last_cy || ws_cursor_serial(srv) != last_cursor_serial));
+			if (need && ws_kms_present_ready(kms)) {
+				render_frame(ws_kms_back(kms), !hw_cursor && ws_cursor_visible(srv));
+				if (ws_kms_present(kms) == 0) { last_gen = gen; last_cx = cx; last_cy = cy; last_cursor_serial = ws_cursor_serial(srv); }
+			} else if (hw_cursor) { last_cx = cx; last_cy = cy; }
 		}
 #endif
 	}

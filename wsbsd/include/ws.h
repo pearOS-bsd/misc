@@ -70,6 +70,10 @@ int ws_window_shape_bounds(ws_server *, ws_wid, ws_rect *out);
 /* Bound content (a shared buffer's CPU view, borrowed): composed in place of the backing store once committed. */
 int ws_window_set_content(ws_server *, ws_wid, ws_surface *content, uint32_t buffer_id); /* NULL unbinds; clears the committed state */
 int ws_window_commit(ws_server *, ws_wid);                               /* the client finished a frame: content is ready to compose */
+/* FlushSurface: copies the dirty rectangle (NULL = everything) of the bound content into the window's committed image and marks it dirty.
+ * Only what was flushed is shown: a change to the buffer that was not flushed does not appear. */
+int ws_window_flush_rect(ws_server *, ws_wid, const ws_rect *dirty);
+uint64_t ws_server_generation(const ws_server *);                       /* increases whenever anything that affects the rendered scene changes */
 void ws_server_drop_content(ws_server *, const ws_surface *content);     /* a buffer is going away */                                      /* windows held by a connection */
 void ws_release_owner(ws_server *, uint32_t owner);                                  /* a connection went away */
 int ws_set_window_shadow(ws_server *, ws_wid, int corner_radius, int enabled);
@@ -123,6 +127,13 @@ void ws_server_walk(ws_server *, ws_visit_fn fn, void *ctx);              /* bot
 void ws_window_damage(ws_server *, ws_wid, const ws_rect *r);            /* r = NULL: the whole content changed */
 void ws_server_clear_damage(ws_server *);                                /* after a frame was rendered */
 void ws_draw_cursor(ws_server *, ws_surface *screen);                    /* software cursor onto a rendered frame */
+/* The cursor is independent of every window buffer: an image with a hotspot and a position. A KMS backend puts the image on the hardware
+ * cursor plane and only moves it; the software path blends it onto the finished frame. */
+const ws_surface *ws_cursor_image(ws_server *, int *hot_x, int *hot_y);
+uint32_t ws_cursor_serial(const ws_server *);                            /* changes when the image changes */
+int ws_cursor_visible(const ws_server *);
+void ws_server_set_cursor_image(ws_server *, const ws_surface *img, int hot_x, int hot_y);   /* copies; NULL restores the default arrow */
+void ws_compose_scene(ws_server *, ws_surface *screen);                  /* windows only, no cursor */
 void ws_server_desktop_color(ws_server *, float rgb[3]);
 
 /* Backends. headless writes PPM; drm (FreeBSD KMS) comes next. */
