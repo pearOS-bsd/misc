@@ -11,8 +11,8 @@ typedef int (*size_fn)(int,const char*,int*);
 int main(void){ setvbuf(stdout,NULL,_IONBF,0);
   void *h=dlopen("/System/Library/PrivateFrameworks/SkyLight.framework/SkyLight",RTLD_NOW);
   conn_fn mainconn=dlsym(h,"SLSMainConnectionID"); reg2_fn reg=0;
-  get2_fn get=dlsym(h,"SLSGetRegisteredCursorData2"); size_fn gsz=dlsym(h,"SLSGetRegisteredCursorDataSize");
-  reg=(reg2_fn)((uintptr_t)mainconn-0x1873b68f8UL+0x1871e2d20UL); printf("syms %p %p %p %p\n",mainconn,reg,get,gsz); if(!mainconn||!reg||!get) return 1;
+  get2_fn get=(get2_fn)((uintptr_t)mainconn-0x187039490UL+0x186e739c8UL); size_fn gsz=(size_fn)((uintptr_t)mainconn-0x187039490UL+0x186e736a4UL);
+  reg=(reg2_fn)((uintptr_t)mainconn-0x187039490UL+0x186e726dcUL); printf("syms %p %p %p %p\n",mainconn,reg,get,gsz); if(!mainconn||!reg||!get) return 1;
   int cid=mainconn(); printf("cid %d\n",cid);
   int cols=64, rows=48; uint32_t *px=malloc(cols*rows*4);
   for(int i=0;i<cols*rows;i++) px[i]=0xff000000|(i&0xff)<<8|((i>>8)&0xff); /* ARGB opaque */
