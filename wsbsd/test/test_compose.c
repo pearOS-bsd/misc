@@ -46,7 +46,27 @@ static void test_walk(void)
 	CHECK(l.v[1].pixels != content && l.v[1].buffer_id == 0);
 	ws_window_commit(srv, a);
 	memset(&l, 0, sizeof l); ws_server_walk(srv, on_visit, &l);
-	CHECK(l.v[1].pixels == content && l.v[1].buffer_id == 7 && l.v[1].full_damage);
+	CHECK(l.v[1].pixels != content && l.v[1].pixels != NULL && l.v[1].buffer_id == 7 && l.v[1].full_damage);   /* a committed copy, not the client buffer */
+	CHECK(memcmp(l.v[1].pixels->px, content->px, 4) == 0 && l.v[1].pixels->w == 100);
+	/* a client write is invisible until it is flushed; a rect flush copies and damages only that rectangle */
+	content->px[0] = 0x55;
+	ws_server_clear_damage(srv); memset(&l, 0, sizeof l); ws_server_walk(srv, on_visit, &l);
+	CHECK(l.v[1].pixels->px[0] != 0x55 && !l.v[1].has_damage);
+	uint64_t g0 = ws_server_generation(srv);
+	ws_window_flush_rect(srv, a, &(ws_rect){ 0, 0, 10, 10 });
+	memset(&l, 0, sizeof l); ws_server_walk(srv, on_visit, &l);
+	CHECK(l.v[1].pixels->px[0] == 0x55 && l.v[1].has_damage && !l.v[1].full_damage && l.v[1].damage.w == 10 && ws_server_generation(srv) != g0);
+	/* the cursor is independent of every window: moving it changes no scene generation, a new image bumps the serial */
+	{
+		uint64_t g1 = ws_server_generation(srv); uint32_t s1 = ws_cursor_serial(srv); int hx, hy;
+		ws_server_warp_cursor(srv, 50, 60);
+		CHECK(ws_server_generation(srv) == g1 && ws_cursor_image(srv, &hx, &hy) != NULL && hx == 2 && hy == 2);
+		ws_surface *ci = ws_surface_new(8, 8);
+		ws_server_set_cursor_image(srv, ci, 3, 4);
+		const ws_surface *got = ws_cursor_image(srv, &hx, &hy);
+		CHECK(got != NULL && got->w == 8 && hx == 3 && hy == 4 && ws_cursor_serial(srv) != s1 && ws_server_generation(srv) == g1);
+		ws_surface_free(ci);
+	}
 	ws_server_drop_content(srv, content);
 	memset(&l, 0, sizeof l); ws_server_walk(srv, on_visit, &l);
 	CHECK(l.v[1].pixels != content && l.v[1].buffer_id == 0);

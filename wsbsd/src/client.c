@@ -263,6 +263,7 @@ int ws_poll_event(ws_conn *c, ws_win *w, ws_event *e)
 }
 
 int ws_screenshot(ws_conn *c, const char *path) { return wsx_call(c, WSX_SCREENSHOT, NULL, 0, path, NULL); }
+int ws_screenshot_scene(ws_conn *c, const char *path) { int32_t a[1] = { 1 }; return wsx_call(c, WSX_SCREENSHOT, a, 1, path, NULL); }
 int ws_server_quit(ws_conn *c) { return wsx_call(c, WSX_QUIT, NULL, 0, NULL, NULL); }
 
 int ws_win_set_sublevel(ws_conn *c, ws_win *w, int sl)

@@ -60,6 +60,8 @@ jobs:
             gmake gl
             export LIBGL_ALWAYS_SOFTWARE=1 EGL_PLATFORM=surfaceless
             WSD_ARGS="-r gl" OUT=freebsd-gl sh test/run_demo.sh
+            WSD_ARGS="-r gl" OUT=freebsd-gl-interactive sh test/run_interactive.sh
+            for f in freebsd-gl-interactive-*.ppm; do python3 tools/ppm2png.py "$f" "${f%.ppm}.png" || true; done
             ls -l *.png *.ppm || true
       - uses: actions/upload-artifact@v4
         if: always()
