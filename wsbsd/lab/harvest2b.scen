@@ -1,0 +1,50 @@
+new_window a 100 200 300 150
+new_window b 50 60 80 40
+# 30356 __XCopyManagedDisplaySpaces size=0x18
+raw 30356 
+# 30359 __XManagedDisplaySetCurrentSpace size=0x38
+raw 30359 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30359 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30359 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0
+# 30361 __XManagedDisplaySetIsAnimating size=0x34
+raw 30361 ndr u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30361 ndr wid:a u32:0 u32:0 u32:0 u32:0
+raw 30361 ndr cid u32:0 u32:0 u32:0 u32:0
+# 30362 __XSpaceCopyManagedShape size=0x28
+raw 30362 ndr u32:0 u32:0
+raw 30362 ndr wid:a u32:0
+raw 30362 ndr cid u32:0
+# 30363 __XCopyPackagesPersistenceDictionary size=0x18
+raw 30363 
+# 30369 __XCopyBestManagedDisplayForPoint size=0x30
+raw 30369 ndr u32:0 u32:0 u32:0 u32:0
+raw 30369 ndr wid:a u32:0 u32:0 u32:0
+raw 30369 ndr cid u32:0 u32:0 u32:0
+# 30370 __XCopyBestManagedDisplayForRect size=0x40
+raw 30370 ndr u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30370 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30370 ndr cid u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+# 30371 __XCopyManagedDisplayForWindow size=0x24
+raw 30371 ndr u32:0
+raw 30371 ndr wid:a
+raw 30371 ndr cid
+# 30372 __XCopyManagedDisplayForSpace size=0x28
+raw 30372 ndr u32:0 u32:0
+raw 30372 ndr wid:a u32:0
+raw 30372 ndr cid u32:0
+# 30373 __XManagedDisplayCurrentSpaceAllowsWindow size=0x34
+raw 30373 ndr u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30373 ndr wid:a u32:0 u32:0 u32:0 u32:0
+raw 30373 ndr cid u32:0 u32:0 u32:0 u32:0
+# 30380 __XDeferWindowMoveEvents size=0x24
+raw 30380 ndr u32:0
+raw 30380 ndr wid:a
+raw 30380 ndr cid
+# 30382 __XConnectionSetSpinning size=0x24
+raw 30382 ndr u32:0
+raw 30382 ndr wid:a
+raw 30382 ndr cid
+# 30383 __XSpacePreferCurrentDisplay size=0x28
+raw 30383 ndr u32:0 u32:0
+raw 30383 ndr wid:a u32:0
+raw 30383 ndr cid u32:0
