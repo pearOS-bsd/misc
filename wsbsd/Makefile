@@ -4,17 +4,18 @@ CFLAGS  ?= -O2 -g
 CFLAGS  += -std=c99 -D_DEFAULT_SOURCE -D_BSD_SOURCE -Wall -Wextra -Iinclude
 LDLIBS   = -lm
 CORE     = src/compositor_sw.c src/server.c src/shadow.c src/region.c src/ipc.c src/evrec.c src/buffer.c
-HDRS     = include/ws_gl.h include/ws_buffer.h include/ws_evrec.h include/ws.h include/ws_client.h include/ws_backend.h include/ws_ipc.h include/ws_region.h include/mach_compat.h include/sls_wire.h include/sls_msgids.h
+HDRS = include/ws_gl.h include/ws_buffer.h include/ws_evrec.h include/ws.h include/ws_client.h include/ws_backend.h include/ws_ipc.h include/ws_region.h include/mach_compat.h include/sls_wire.h include/sls_msgids.h src/wsd_priv.h
 OUT          = window
 # set by the `kms` target
 EXTRA_SRC    =
+FAMILIES     = src/sls_ext.c src/sls_session.c
 EXTRA_CFLAGS =
 EXTRA_LIBS   =
 
 all: wsd test_window test_interactive test_robust test_compose test_region test_wire test_evrec test_buffer test_diff
 
-wsd: $(CORE) $(EXTRA_SRC) src/wsd.c $(HDRS)
-	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ $(CORE) $(EXTRA_SRC) src/wsd.c $(EXTRA_LIBS) $(LDLIBS)
+wsd: $(CORE) $(EXTRA_SRC) $(FAMILIES) src/wsd.c $(HDRS)
+	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ $(CORE) $(EXTRA_SRC) $(FAMILIES) src/wsd.c $(EXTRA_LIBS) $(LDLIBS)
 
 test_interactive: src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_interactive.c $(HDRS)
 	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_interactive.c $(EXTRA_LIBS) $(LDLIBS)
