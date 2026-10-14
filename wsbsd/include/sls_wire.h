@@ -161,5 +161,5 @@ typedef sls_surface_req wsx_buffer_release_req;               /* wid unused (0),
  * name offset@0x34, name length@0x38 (<= 0x80), name@0x3c, then at P = pad4(length): global@P+0x3c (byte), set_now@P+0x40 (byte), cols, rows,
  * width_pts, height_pts, hot_x_px, hot_y_px, npixels (= OOL size / 4), frames, frame_duration (u32 each from P+0x44); size = P + 0x68 in [0x68, 0xe8].
  * Reply: 0x28 with the cursor seed@0x24. GetRegisteredCursorData reply: complex, 0x58: OOL@0x1c (size@0x28), NDR@0x2c, width_px@0x34, height_px@0x38,
- * hot_x@0x3c, hot_y@0x40, width_pts@0x44, height_pts@0x48, bytes@0x4c, frames@0x50, duration@0x54 (the hotspot/size order is inferred from the client stub). */
+ * width_pts@0x3c, height_pts@0x40, hot_x@0x44, hot_y@0x48 (points), bytes@0x4c, frames@0x50, duration@0x54 (a float; order verified live). */
 #define SLS_CURSOR_NAME_MAX 0x80

@@ -200,7 +200,7 @@ int main(void)
 			uint8_t gb[0x58 + 64]; uint32_t g[0x58 / 4];
 			CHECK(xchg(cfd, nq, nsz, gb, sizeof gb, NULL, NULL) == (int)sizeof gb);
 			memcpy(g, gb, 0x58);
-			CHECK(g[1] == 0x58 && (g[0] & 0x80000000u) && g[6] == 1 && g[10] == 64 && g[13] == 4 && g[14] == 4 && g[15] == 1 && g[16] == 1 && g[17] == 4 && g[18] == 4 && g[19] == 64 && g[20] == 1);
+			CHECK(g[1] == 0x58 && (g[0] & 0x80000000u) && g[6] == 1 && g[10] == 64 && g[13] == 4 && g[14] == 4 && g[15] == 4 && g[16] == 4 && g[17] == 1 && g[18] == 1 && g[19] == 64 && g[20] == 1);
 			CHECK(memcmp(gb + 0x58, pix, 64) == 0);
 			NAMEREQ(SLS_MSG_SetRegisteredCursor);
 			CHECK(rc_of(cfd, nq, nsz, SLS_MSG_SetRegisteredCursor + 100) == 0);

@@ -189,8 +189,8 @@ static int do_cursor_get_data(conn *c, const mach_msg_header_t *h, const cursor_
 	m[0x24] = 0; m[0x25] = 1; m[0x26] = 0; m[0x27] = MACH_MSG_OOL_DESCRIPTOR;
 	memcpy(m + 0x28, &bytes, 4);
 	memcpy(m + 0x2c, &WS_NDR, 8);
-	uint32_t v[9] = { e->cols, e->rows * e->frames, (uint32_t)((double)e->hotx_px / e->cols * e->wpts), (uint32_t)((double)e->hoty_px / e->rows * e->hpts),
-	                  e->wpts, e->hpts, bytes, e->frames, e->duration };
+	uint32_t v[9] = { e->cols, e->rows * e->frames, e->wpts, e->hpts,                    /* size in points first, then the hotspot (verified live) */
+	                  (uint32_t)((double)e->hotx_px / e->cols * e->wpts), (uint32_t)((double)e->hoty_px / e->rows * e->hpts), bytes, e->frames, e->duration };
 	memcpy(m + 0x34, v, sizeof v);
 	struct iovec iov[2] = { { m, sizeof m }, { e->px, bytes } };         /* out-of-line data follows the message in the same datagram */
 	return ws_ipc_send(c->fd, iov, 2, NULL, 0);
