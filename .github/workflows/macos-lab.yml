@@ -1,0 +1,25 @@
+name: macos-lab
+
+# Runs a probe from wsbsd/lab on the hosted macOS runner (real WindowServer, SIP off, passwordless root) and uploads its output.
+on:
+  workflow_dispatch:
+    inputs:
+      probe:
+        description: "lab probe name (wsbsd/lab/<name>.c)"
+        required: true
+        default: cursor_probe
+
+jobs:
+  lab:
+    runs-on: macos-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run probe
+        run: sh wsbsd/lab/run.sh "${{ github.event.inputs.probe }}"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lab-${{ github.event.inputs.probe }}
+          path: wsbsd/lab-out/*
+          if-no-files-found: warn
