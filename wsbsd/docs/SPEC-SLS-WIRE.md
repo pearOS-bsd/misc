@@ -142,3 +142,12 @@ Theft ids come from one counter shared by all connections: 0x65, 0x66, ... wrapp
 holds key focus and asks for it (options bit 9) or when it already has it by default; -600 when the connection is unknown. Hide counts are per connection,
 force-show clears the connection's count, obscure lasts until the mouse moves. Unknown (not modelled): the "lost key focus" notifications sent to the previous
 holder, the process-front permission check, PSNs (the connection id stands in for the low word).
+
+## Registered cursors (30128..30133, decompiled `__X*RegisteredCursor*`, client stubs `SLSRegisterCursorWithData2` / `SLSGetRegisteredCursorData2`)
+
+Exact layouts are in `include/sls_wire.h`. Summary: name requests carry `{offset, length <= 0x80, bytes}` from 0x20; `RegisterCursorWithData` is a complex message whose
+OOL descriptor holds BGRA premultiplied pixels (`cols * rows * frames`, frames stacked), followed by the name and eleven u32 fields (global, set-now, cols, rows,
+width/height in points, hotspot in pixels, pixel count, frames, frame duration). Errors: -304 bad size, -300 bad descriptor type or pixel-count mismatch, 1001 invalid
+dimensions (points > 0x400, zero, more pixels than supplied), 1007 unknown name (Set/GetSize/GetData), 1000 for removing `com.apple.coregraphics.*` names.
+Set shows the first frame scaled to its size in points; animation is not played. Not yet verified live: the order of the hotspot/size pairs in the GetData reply (taken
+from the client stub's output parameters), and the meaning of the cursor seed returned by Register (the cursor serial stands in).
