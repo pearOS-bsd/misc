@@ -12,7 +12,7 @@ static int fails, checked, skipped;
 /* ids whose reply depends on live state (pids, times, displays, focus): size and complex bit only */
 static const int env_differs[] = { 30139, 30140 };   /* the real session has processes with key focus, a fresh wsd has none */
 /* zero-argument harvest: answers that depend on the recorded machine (its windows, displays, hot keys, process records) */
-static const int harvest_env[] = { 30139, 30140, 30014, 30063, 30068, 30136, 30137, 30211, 30389, 30456 };
+static const int harvest_env[] = { 33023, 33027, 32006, 32007, 32008, 32010, 32024, 32035, 32038, 32052, 32063, 32072, 34006, 30139, 30140, 30014, 30063, 30068, 30136, 30137, 30211, 30389, 30456 };
 static int is_harvest_env(int id) { for (size_t i = 0; i < sizeof harvest_env / sizeof *harvest_env; i++) if (harvest_env[i] == id) return 1; return 0; }
 static const int state_dependent[] = { 30243, 30247, 30356, 30363, 30110, 30054, 30149, 30308, 30309 };
 static int is_env(int id) { for (size_t i = 0; i < sizeof env_differs / sizeof *env_differs; i++) if (env_differs[i] == id) return 1; return 0; }
@@ -55,13 +55,13 @@ int main(int argc, char **argv)
 	}
 
 	/* the harvest: fixed-size requests with all-zero arguments (variant 0), replies recorded from the real server in a fresh session */
-	const char *hpath = argc > 2 ? argv[2] : "docs/golden/harvest-macos26.6.2.txt";
-	FILE *hf = fopen(hpath, "r");
+	static const char *const hpaths[] = { "docs/golden/harvest-macos26.6.2.txt", "docs/golden/harvest-server-macos26.6.2.txt" };
 	int hchecked = 0, hfails = 0;
+	for (int hp = 0; hp < 2; hp++) {
+	FILE *hf = fopen(hpaths[hp], "r");
 	while (hf && fgets(line, sizeof line, hf)) {
 		int id, v, rq, rid, size; unsigned bits; char hex[8000] = "";
 		if (sscanf(line, "id=%d variant=%d reqsize=%d reply_id=%d bits=%x size=%d hex=%7999s", &id, &v, &rq, &rid, &bits, &size, hex) < 6 || v != 0 || hex[0] == '?') continue;
-		if (id >= 29000 && id < 29042) continue;
 		if (is_harvest_env(id) || (hex[0] && !strncmp(hex + 16, "d1feffff", 8))) continue;      /* -303: served on another port */
 		uint8_t req[0x100]; memset(req, 0, sizeof req);
 		mach_msg_header_t *q = (mach_msg_header_t *)req;
@@ -80,6 +80,8 @@ int main(int argc, char **argv)
 		size_t from = (bits & 0x80000000u) ? 4 : 8;
 		if (!bad && !is_state(id)) for (size_t i = from; i < blen; i++) if (rep[0x18 + i] != want[i]) { bad = 1; break; }
 		if (bad) { printf("FAIL h%d (zero arguments): size %zd/%d id %d/%d bits %08x/%08x\n", id, n, size, r->msgh_id, rid, r->msgh_bits, bits); hfails++; }
+	}
+	if (hf) fclose(hf);
 	}
 	fails += hfails;
 	printf("harvest (zero arguments): %d checked, %d differ\n", hchecked, hfails);
