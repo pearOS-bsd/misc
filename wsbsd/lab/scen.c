@@ -37,9 +37,9 @@ static void raw(int id, char **tok, int nt)
 	hd->msgh_bits = MACH_MSGH_BITS(MACH_MSG_TYPE_COPY_SEND, MACH_MSG_TYPE_MAKE_SEND_ONCE);
 	hd->msgh_size = (mach_msg_size_t)n; hd->msgh_remote_port = srvport; hd->msgh_local_port = reply; hd->msgh_id = id;
 	static uint8_t rep[0x20000]; memset(rep, 0, sizeof rep);
-	kern_return_t kr = mach_msg(hd, MACH_SEND_MSG, (mach_msg_size_t)n, 0, MACH_PORT_NULL, 3000, MACH_PORT_NULL);
+	kern_return_t kr = mach_msg(hd, MACH_SEND_MSG, (mach_msg_size_t)n, 0, MACH_PORT_NULL, 1500, MACH_PORT_NULL);
 	if (kr) { printf("raw %d send-error=0x%x\n", id, kr); return; }
-	kr = mach_msg((mach_msg_header_t *)rep, MACH_RCV_MSG | MACH_RCV_TIMEOUT, 0, sizeof rep, reply, 3000, MACH_PORT_NULL);
+	kr = mach_msg((mach_msg_header_t *)rep, MACH_RCV_MSG | MACH_RCV_TIMEOUT, 0, sizeof rep, reply, 1500, MACH_PORT_NULL);
 	if (kr) { printf("raw %d recv-error=0x%x\n", id, kr); return; }
 	mach_msg_header_t *r = (mach_msg_header_t *)rep;
 	printf("raw %d reqsize=%zu -> reply_id=%d bits=%08x size=%u hex=", id, n, r->msgh_id, r->msgh_bits, r->msgh_size);
