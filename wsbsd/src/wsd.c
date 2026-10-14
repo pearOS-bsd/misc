@@ -11,6 +11,7 @@
 #include "ws_gl.h"
 #endif
 #include "sls_wire.h"
+#include "wsd_priv.h"
 #include <errno.h>
 #include <signal.h>
 #include <stdio.h>
@@ -31,15 +32,15 @@
 #define DEFAULT_SOCKET "/tmp/wsd.sock"
 #define MAXCONN 128
 
-static ws_server *srv;
+ws_server *srv;
 static ws_surface *screen;
 static int running = 1;
-static int dirty;
+int wsd_dirty;
+#define dirty wsd_dirty
 static void cursors_owner_cleanup(uint32_t owner);
 static int test_mode;          /* -t: enables the private test requests (screenshot to a file, input injection, quit) */
 static uint8_t rbuf[WS_IPC_RECV_CAP];        /* receive buffer: requests are parsed in place, nothing is allocated per message */
 
-typedef struct { int fd; uint32_t id; int efd; int pid; char app[64]; int handshaken; } conn;
 static conn conns[MAXCONN];
 static uint32_t next_conn = 1;
 
@@ -87,15 +88,16 @@ static void buf_release(ws_buffer *b)
 }
 static void owner_cleanup(uint32_t owner)
 {
+	sls_ext_owner_cleanup(owner);
 	cursors_owner_cleanup(owner);
 	for (int i = 0; i < MAXSURF; i++) if (surfs[i].used && surfs[i].owner == owner) surfs[i].used = 0;
 	for (int i = 0; i < MAXBUF; i++) if (bufs[i].id && bufs[i].owner == owner) buf_release(&bufs[i]);
 }
 
 
-static int reply_simple(int fd, const mach_msg_header_t *req, int32_t retcode);
-static int reply_value(int fd, const mach_msg_header_t *req, int32_t value);
-static void fill_reply_header(mach_msg_header_t *r, const mach_msg_header_t *req, uint32_t size, int complex);
+
+
+
 
 /* ---- registered cursors (SetRegisteredCursor & co.): named cursors, per connection or global; the image is BGRA premultiplied ---- */
 typedef struct {
@@ -209,7 +211,7 @@ static int peer_pid(int fd)
 #endif
 }
 
-static conn *conn_by_id(uint32_t id);
+#define conn_by_id wsd_conn_by_id
 
 /* events queued for a window are also pushed to its owner's event channel, if the connection opened one */
 static void push_event(void *ctx, uint32_t owner, const ws_event *e)
@@ -227,7 +229,7 @@ static void push_event(void *ctx, uint32_t owner, const ws_event *e)
 static float bits2f(uint32_t v) { float f; memcpy(&f, &v, sizeof f); return f; }
 
 /* ---- replies ---- */
-static void fill_reply_header(mach_msg_header_t *r, const mach_msg_header_t *req, uint32_t size, int complex)
+void fill_reply_header(mach_msg_header_t *r, const mach_msg_header_t *req, uint32_t size, int complex)
 {
 	r->msgh_bits = (complex ? MACH_MSGH_BITS_COMPLEX : 0) | MACH_MSG_TYPE_MOVE_SEND_ONCE;
 	r->msgh_size = size;
@@ -236,7 +238,7 @@ static void fill_reply_header(mach_msg_header_t *r, const mach_msg_header_t *req
 	r->msgh_id = req->msgh_id + 100;
 }
 
-static int reply_simple(int fd, const mach_msg_header_t *req, int32_t retcode)
+int reply_simple(int fd, const mach_msg_header_t *req, int32_t retcode)
 {
 	sls_simple_reply r;
 	memset(&r, 0, sizeof r);
@@ -246,7 +248,7 @@ static int reply_simple(int fd, const mach_msg_header_t *req, int32_t retcode)
 	return ws_ipc_send(fd, &v, 1, NULL, 0);
 }
 
-static int reply_mig_error(int fd, const mach_msg_header_t *req, int32_t code)
+int reply_mig_error(int fd, const mach_msg_header_t *req, int32_t code)
 {
 	sls_simple_reply r;
 	memset(&r, 0, sizeof r);
@@ -257,7 +259,7 @@ static int reply_mig_error(int fd, const mach_msg_header_t *req, int32_t code)
 	return ws_ipc_send(fd, &v, 1, NULL, 0);
 }
 
-static int reply_value(int fd, const mach_msg_header_t *req, int32_t value)
+int reply_value(int fd, const mach_msg_header_t *req, int32_t value)
 {
 	sls_value_reply r;
 	memset(&r, 0, sizeof r);
@@ -267,12 +269,12 @@ static int reply_value(int fd, const mach_msg_header_t *req, int32_t value)
 	return ws_ipc_send(fd, &v, 1, NULL, 0);
 }
 
-static int simple_ok(const mach_msg_header_t *h, size_t len, size_t want)
+int simple_ok(const mach_msg_header_t *h, size_t len, size_t want)
 {
 	return !(h->msgh_bits & MACH_MSGH_BITS_COMPLEX) && h->msgh_size == want && len == want;
 }
 
-static int holds_rights(const conn *c, uint32_t wid) { return wid && ws_window_owner(srv, wid) == c->id; }
+int holds_rights(const conn *c, uint32_t wid) { return wid && ws_window_owner(srv, wid) == c->id; }
 
 /* ---- SkyLight routines ---- */
 static int do_create_window(conn *c, const uint8_t *buf, size_t len)
@@ -590,7 +592,7 @@ static int do_simple(conn *c, const uint8_t *buf, size_t len)
 		struct iovec v = { &r, sizeof r };
 		return ws_ipc_send(c->fd, &v, 1, NULL, 0);
 	}
-	default: return -2;
+	default: return sls_ext_dispatch(c, buf, len);
 	}
 }
 
@@ -792,7 +794,7 @@ static int dispatch(conn *c, uint8_t *buf, size_t len, int *fds, int nfds)
 	return reply_mig_error(c->fd, h, MIG_BAD_ID);                       /* known id we do not implement, or an unknown id */
 }
 
-static conn *conn_by_id(uint32_t id) { for (int i = 0; i < MAXCONN; i++) if (conns[i].fd >= 0 && conns[i].id == id) return &conns[i]; return NULL; }
+conn *wsd_conn_by_id(uint32_t id) { for (int i = 0; i < MAXCONN; i++) if (conns[i].fd >= 0 && conns[i].id == id) return &conns[i]; return NULL; }
 static conn *conn_by_fd(int fd) { for (int i = 0; i < MAXCONN; i++) if (conns[i].fd == fd) return &conns[i]; return NULL; }
 
 int main(int argc, char **argv)
