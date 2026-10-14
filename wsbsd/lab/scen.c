@@ -80,6 +80,12 @@ int main(int argc, char **argv)
 		} else if (!strcmp(tok[0], "level") && nt >= 3) printf("# level err=%d\n", setLevel(cid, wid_of(tok[1]), atoi(tok[2])));
 		else if (!strcmp(tok[0], "port") && nt >= 2) {
 			if (!strcmp(tok[1], "conn")) srvport = portbyid(cid);
+			else if (!strcmp(tok[1], "server") || !strcmp(tok[1], "event")) {
+				const char *cands[] = { "SLSServerPort", "CGSServerPort", "CGSEventServerPort", "SLSEventServerPort", 0 };
+				mach_port_t (*fn)(void) = 0; const char *used = "";
+				for (int k = 0; cands[k]; k++) { if (!!strcmp(tok[1], "event") != !strstr(cands[k], "Event") && (fn = dlsym(RTLD_DEFAULT, cands[k]))) { used = cands[k]; break; } }
+				srvport = fn ? fn() : 0; printf("# port %s via %s = %u\n", tok[1], used, srvport);
+			}
 			else { mach_port_t p = 0; kern_return_t kr = bootstrap_look_up(bootstrap_port, !strcmp(tok[1], "session") ? "com.apple.windowserver.session" : !strcmp(tok[1], "root") ? "com.apple.windowserver" : "com.apple.windowserver.active", &p); srvport = p; printf("# port %s kr=%d port=%u\n", tok[1], kr, p); }
 		}
 		else if (!strcmp(tok[0], "raw") && nt >= 2) { printf("# %s\n", tok[0]); raw(atoi(tok[1]), tok + 2, nt - 2); }
