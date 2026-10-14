@@ -19,7 +19,12 @@
 #include <unistd.h>
 #include <sys/event.h>
 #include <sys/socket.h>
+#include <sys/types.h>
 #include <sys/un.h>
+#ifdef __FreeBSD__
+#include <sys/param.h>
+#include <sys/ucred.h>
+#endif
 #include <fcntl.h>
 #include <math.h>
 
