@@ -59,11 +59,11 @@ int main(int argc, char **argv)
 	void *h = dlopen("/System/Library/PrivateFrameworks/SkyLight.framework/SkyLight", RTLD_NOW);
 	uintptr_t mainrt = (uintptr_t)dlsym(h, "SLSMainConnectionID");
 	char cmd[400], line[400]; uintptr_t mainfile = 0, portfile = 0;
-	snprintf(cmd, sizeof cmd, "sudo lldb -b -p %d -o 'image lookup -n SLSMainConnectionID' -o 'image lookup -n CGSGetConnectionPortById' -o detach 2>&1 | grep 'Address: SkyLight'", (int)getpid());
+	snprintf(cmd, sizeof cmd, "sudo lldb -b -p %d -o 'image lookup -n SLSMainConnectionID' -o 'image lookup -r -n CGSGetConnectionPortById' -o detach 2>&1 | tee /tmp/lldb_resolve.txt | grep 'Address: SkyLight'", (int)getpid());
 	FILE *p = popen(cmd, "r"); int k = 0;
 	while (p && fgets(line, sizeof line, p)) { char *q = strstr(line, "SkyLight[0x"); if (q) { (k++ == 0 ? &mainfile : &portfile)[0] = strtoull(q + 11, NULL, 16); } }
 	if (p) pclose(p);
-	if (!mainfile || !portfile) { printf("cannot resolve symbols (%lx %lx)\n", (unsigned long)mainfile, (unsigned long)portfile); return 1; }
+	if (!mainfile || !portfile) { printf("cannot resolve symbols (%lx %lx)\n", (unsigned long)mainfile, (unsigned long)portfile); system("cat /tmp/lldb_resolve.txt | head -30"); return 1; }
 	char env[64]; snprintf(env, sizeof env, "%lx", (unsigned long)(mainrt - mainfile + portfile)); setenv("PORT_FN", env, 1);
 	FILE *f = fopen(argv[1], "r"); char buf[2048];
 	while (f && fgets(buf, sizeof buf, f)) {
