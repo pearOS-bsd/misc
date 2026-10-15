@@ -10,6 +10,13 @@
 static struct { int used; uint32_t wid; char key[130]; uint8_t *data; uint32_t len; } props[MAXPROPS];
 static struct { int used; uint32_t wid, ctx; } layer_ctx[256];
 
+/* a copy of a named window value (SetWindowProperty); the length, or -1 when the window has no such value */
+int sls_window_property_copy(uint32_t wid, const char *key, uint8_t *out, size_t cap)
+{
+	for (int i = 0; i < MAXPROPS; i++) if (props[i].used && props[i].wid == wid && !strcmp(props[i].key, key)) { if (props[i].len > cap) return -1; if (props[i].len) memcpy(out, props[i].data, props[i].len); return (int)props[i].len; }
+	return -1;
+}
+
 static void purge_dead(void)
 {
 	for (int i = 0; i < MAXPROPS; i++) if (props[i].used && !ws_window_exists(srv, props[i].wid)) { free(props[i].data); memset(&props[i], 0, sizeof props[i]); }
