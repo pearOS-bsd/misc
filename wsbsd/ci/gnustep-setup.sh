@@ -23,6 +23,7 @@ done
 ar rcs libwsclient.a *.o
 
 mkdir -p /tmp/gs && cd /tmp/gs
+pkg install -y inter-font >/dev/null 2>&1 || pkg install -y inter >/dev/null 2>&1 || true      # the title font of the macOS-style decorations (falls back to the system bold)
 # libs-gui from source: the packaged one is older than the libs-back it is paired with (window ordering never reached the server)
 pkg install -y giflib >/dev/null 2>&1 || true
 git clone --depth 1 https://github.com/gnustep/libs-gui gui 2>&1 | tail -1

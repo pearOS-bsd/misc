@@ -17,6 +17,20 @@ static NSColor *rgb(int r, int g, int b, CGFloat a) { return [NSColor colorWithC
 
 #define TB 32.0
 
+/* San Francisco is not redistributable: the closest free face is Inter (pkg inter-font), else the system bold */
+static NSFont *titleFont(void)
+{
+	static NSFont *f; static BOOL done;
+	if (!done) {
+		done = YES;
+		NSString *names[] = { @"Inter SemiBold", @"Inter-SemiBold", @"Inter Semi Bold", @"Inter Bold", @"Inter-Bold" };
+		for (int i = 0; i < 5 && !f; i++) f = [NSFont fontWithName: names[i] size: 13.0];
+		if (!f) f = [NSFont boldSystemFontOfSize: 13.0];
+		[f retain];
+	}
+	return f;
+}
+
 @implementation WsdMacDecorationView
 
 + (void) offsets: (float *)l : (float *)r : (float *)t : (float *)b forStyleMask: (NSUInteger)style
@@ -70,8 +84,14 @@ static NSGradient *grad(int r0, int g0, int b0, int r1, int g1, int b1, int r2, 
 	else if (i == 1) g = grad(251, 180, 1, 253, 193, 1, 254, 207, 48);
 	else g = grad(51, 194, 1, 0, 188, 0, 78, 194, 58);
 	[g drawInBezierPath: p angle: 270.0];
-	[(key ? rgb(255, 255, 255, 0.22) : rgb(255, 255, 255, dark ? 0.30 : 0.10)) set];     /* the rim */
-	[p setLineWidth: 1.0]; [p stroke];
+	/* the rim measured on the real buttons: darker at the sides, bright caps on the top and bottom edges */
+	[rgb(0, 0, 0, key ? 0.10 : 0.06) set]; [p setLineWidth: 1.0]; [p stroke];
+	NSPoint c = NSMakePoint(NSMidX(r), NSMidY(r));
+	[(key ? rgb(255, 255, 255, 0.55) : rgb(255, 255, 255, dark ? 0.35 : 0.25)) set];
+	NSBezierPath *cap = [NSBezierPath bezierPath]; [cap setLineWidth: 1.0];
+	[cap appendBezierPathWithArcWithCenter: c radius: 6.5 startAngle: 55 endAngle: 125]; [cap stroke];
+	cap = [NSBezierPath bezierPath]; [cap setLineWidth: 1.0];
+	[cap appendBezierPathWithArcWithCenter: c radius: 6.5 startAngle: 235 endAngle: 305]; [cap stroke];
 }
 
 - (void) drawRect: (NSRect)rect
@@ -87,7 +107,7 @@ static NSGradient *grad(int r0, int g0, int b0, int r1, int g1, int b1, int r2, 
 			[ps setLineBreakMode: NSLineBreakByTruncatingTail];
 			NSColor *tc = dark ? (key ? rgb(160, 160, 160, 1) : rgb(110, 110, 110, 1)) : (key ? rgb(0, 0, 0, 0.78) : rgb(0, 0, 0, 0.40));
 			NSDictionary *at = [NSDictionary dictionaryWithObjectsAndKeys:
-				[NSFont boldSystemFontOfSize: 13.0], NSFontAttributeName, tc, NSForegroundColorAttributeName, ps, NSParagraphStyleAttributeName, nil];
+				titleFont(), NSFontAttributeName, tc, NSForegroundColorAttributeName, ps, NSParagraphStyleAttributeName, nil];
 			CGFloat x = 82.0;
 			[[window title] drawInRect: NSMakeRect(x, b.size.height - TB + 8.0, b.size.width - x - 16.0, 16.0) withAttributes: at];
 		}
