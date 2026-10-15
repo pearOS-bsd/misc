@@ -38,7 +38,11 @@ w, h = struct.unpack(">HH", rd(s, 4)); pf = rd(s, 16); nl = struct.unpack(">I", 
 assert pf[0] == 32 and pf[2] == 0 and pf[3] == 1, pf
 print("server init %dx%d name=%s" % (w, h, name.decode()))
 s.sendall(struct.pack(">BxHBBBBHHHBBBxxx", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)[:0] + b"")   # (no SetPixelFormat: the server format is used)
+bpp = int(os.environ.get("VNC_BPP", "32"))
 use_z = os.environ.get("VNC_ZLIB") == "1"
+if bpp != 32:                                              # SetPixelFormat: 16 bit 5-6-5 or 8 bit 3-3-2, little endian true colour
+    fmt = (16, 16, 0, 1, 31, 63, 31, 11, 5, 0) if bpp == 16 else (8, 8, 0, 1, 7, 7, 3, 5, 2, 0)
+    s.sendall(struct.pack(">BxxxBBBBHHHBBBxxx", 0, *fmt))
 if use_z: s.sendall(struct.pack(">BxHi", 2, 1, 6))          # SetEncodings: zlib
 s.sendall(struct.pack(">BBHHHH", 3, 0, 0, 0, w, h))        # full update request
 t = rd(s, 1)[0]; assert t == 0
@@ -47,9 +51,9 @@ total = 0; zdec = zlib.decompressobj()
 for _ in range(nrect):
     x, y, rw, rh, enc = struct.unpack(">HHHHi", rd(s, 12))
     if enc == 6:
-        zl = struct.unpack(">I", rd(s, 4))[0]; data = zdec.decompress(rd(s, zl)); assert len(data) == rw * rh * 4
+        zl = struct.unpack(">I", rd(s, 4))[0]; data = zdec.decompress(rd(s, zl)); assert len(data) == rw * rh * (bpp // 8)
     else:
-        assert enc == 0 and not use_z; rd(s, rw * rh * 4)
+        assert enc == 0 and not use_z; rd(s, rw * rh * (bpp // 8))
     total += rw * rh
 print("rectangles %d, pixels %d (screen %d)" % (nrect, total, w * h))
 assert total == w * h
