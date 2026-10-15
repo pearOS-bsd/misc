@@ -541,3 +541,12 @@ int ws_win_get_resolution(ws_conn *c, ws_win *w, float *scale)
 	if (!rc) memcpy(scale, &v, 4);
 	return rc;
 }
+
+int ws_conn_screen(ws_conn *c, int *w, int *h)
+{
+	wsx_rep r;
+	if (wsx_call(c, WSX_GET_SCREEN, NULL, 0, NULL, &r)) return -1;
+	if (w) *w = r.a[0];
+	if (h) *h = r.a[1];
+	return 0;
+}
