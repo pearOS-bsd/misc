@@ -74,6 +74,38 @@ int main(void)
 	CHECK(rc(fd, m, 0x28) == 0);
 	w32(m, 0x20, 99999);
 	CHECK(rc(fd, m, 0x28) == 1002);
+
+	/* connection properties: Set (OOL), Get returns it, an unknown name gives an empty descriptor */
+	{
+		uint8_t cm[0x80 + 8]; size_t csz = P + 0x44; memset(cm, 0, sizeof cm);
+		hdr(cm, (uint32_t)csz, SLS_MSG_SetConnectionProperty, 1);
+		w32(cm, 0x18, 1); cm[0x25] = 1; cm[0x27] = 1; w32(cm, 0x28, 8); memcpy(cm + 0x2c, &WS_NDR, 8);
+		w32(cm, 0x34, (uint32_t)ws_conn_id(c)); w32(cm, 0x3c, kl); memcpy(cm + 0x40, key, 15); w32(cm, 0x40 + P, 8); memcpy(cm + csz, data, 8);
+		CHECK(rc(fd, cm, csz + 8) == 0);
+		uint8_t q[0x2c + 16]; memset(q, 0, sizeof q); hdr(q, 0x2c + 16, SLS_MSG_GetConnectionProperty, 0); memcpy(q + 0x18, &WS_NDR, 8);
+		w32(q, 0x20, (uint32_t)ws_conn_id(c)); w32(q, 0x28, kl); memcpy(q + 0x2c, key, 15);
+		int gn = call(fd, q, sizeof q, rep, sizeof rep);
+		CHECK(gn == 0x38 + 8 && r32(rep, 0x34) == 8 && memcmp(rep + 0x38, data, 8) == 0);
+		memcpy(q + 0x2c, "kCGSOtherKey000", 15);
+		gn = call(fd, q, sizeof q, rep, sizeof rep);
+		CHECK(gn == 0x38 && r32(rep, 0x34) == 0);
+	}
+	/* notification interests and the opaque shape: sizes checked as on the real server, then accepted */
+	{
+		uint8_t nm[0x24 + 8]; memset(nm, 0, sizeof nm); hdr(nm, 0x24 + 8, SLS_MSG_SetConnectionNotifyInterests, 0); memcpy(nm + 0x18, &WS_NDR, 8); w32(nm, 0x20, 2); w32(nm, 0x24, 0x4b5); w32(nm, 0x28, 0x5e0);
+		CHECK(rc(fd, nm, 0x24 + 8) == 0);
+		w32(nm, 0x20, 3);
+		CHECK(rc(fd, nm, 0x24 + 8) == -304);                                              /* count and size disagree */
+		uint8_t os[0x3c + 8]; memset(os, 0, sizeof os); hdr(os, 0x3c, SLS_MSG_SetWindowOpaqueShape, 1);
+		w32(os, 0x18, 1); os[0x25] = 1; os[0x27] = 1; w32(os, 0x28, 8); memcpy(os + 0x2c, &WS_NDR, 8); w32(os, 0x34, w.id); w32(os, 0x38, 8);
+		CHECK(rc(fd, os, 0x3c + 8) == 0);
+		w32(os, 0x38, 4);
+		CHECK(rc(fd, os, 0x3c + 8) == -300);
+		uint8_t cs[0x3c + 16]; memset(cs, 0, sizeof cs); hdr(cs, 0x3c, SLS_MSG_CopySpacesForWindows, 1);
+		w32(cs, 0x18, 1); cs[0x25] = 1; cs[0x27] = 1; w32(cs, 0x28, 8); memcpy(cs + 0x2c, &WS_NDR, 8); w32(cs, 0x34, 0); w32(cs, 0x38, 2); w32(cs, 0x3c, w.id); w32(cs, 0x40, w.id);
+		int sn = call(fd, cs, 0x3c + 8, rep, sizeof rep);
+		CHECK(sn == 0x38 + 16 && r32(rep, 0x34) == 2 && r32(rep, 0x28) == 16);          /* two windows, one space each (u64 ids) */
+	}
 	ws_server_quit(c);
 	printf(failures ? "%d failures\n" : "window extension routines: all checks passed\n", failures);
 	return failures != 0;

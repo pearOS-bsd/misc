@@ -2,6 +2,7 @@
 #include "wsd_priv.h"
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 int sls_golden_reply(conn *c, const mach_msg_header_t *h);
 
@@ -24,9 +25,71 @@ static int do_create_application(conn *c, const uint8_t *buf, size_t len)
 	return reply_simple(c->fd, h, 0);
 }
 
+/* connection properties (30181/30182), the same shape as window properties with a connection id in place of the window id */
+static struct { int used; uint32_t cid; char key[130]; uint8_t *data; uint32_t len; } cprops[128];
+
+static int do_set_conn_property(conn *c, const uint8_t *buf, size_t len)
+{
+	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
+	if (!(h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len < 0x44 || h->msgh_size < 0x44 || h->msgh_size > 0xc4 || rd32(buf, 0x18) != 1) return reply_simple(c->fd, h, -304);
+	if (buf[0x27] != 1) return reply_simple(c->fd, h, -300);
+	uint32_t osz = rd32(buf, 0x28), n = rd32(buf, 0x3c), P = (n + 3) & ~3u;
+	if (n > 0x80 || h->msgh_size != P + 0x44 || len != (size_t)h->msgh_size + osz) return reply_simple(c->fd, h, -304);
+	if (rd32(buf, 0x40 + P) != osz) return reply_simple(c->fd, h, -300);
+	char key[130]; memcpy(key, buf + 0x40, n); key[n] = 0; key[strnlen(key, n)] = 0;
+	uint32_t cid = rd32(buf, 0x34);
+	int slot = -1;
+	for (int i = 0; i < 128; i++) if (cprops[i].used && cprops[i].cid == cid && !strcmp(cprops[i].key, key)) { slot = i; free(cprops[i].data); cprops[i].data = NULL; }
+	for (int i = 0; i < 128 && slot < 0; i++) if (!cprops[i].used) slot = i;
+	if (slot < 0) return reply_simple(c->fd, h, 1000);
+	uint8_t *d = osz ? malloc(osz) : NULL;
+	if (osz && !d) return reply_simple(c->fd, h, 1000);
+	if (osz) memcpy(d, buf + h->msgh_size, osz);
+	cprops[slot].used = 1; cprops[slot].cid = cid; snprintf(cprops[slot].key, sizeof cprops[slot].key, "%s", key); cprops[slot].data = d; cprops[slot].len = osz;
+	return reply_simple(c->fd, h, 0);
+}
+
+static int do_get_conn_property(conn *c, const uint8_t *buf, size_t len)
+{
+	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
+	if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size < 0x2c || h->msgh_size > 0xac) return reply_simple(c->fd, h, -304);
+	uint32_t n = rd32(buf, 0x28), cid = rd32(buf, 0x20);
+	if (n > 0x80 || h->msgh_size != ((n + 3) & ~3u) + 0x2c) return reply_simple(c->fd, h, -304);
+	char key[130]; memcpy(key, buf + 0x2c, n); key[n] = 0; key[strnlen(key, n)] = 0;
+	const uint8_t *data = NULL; uint32_t dl = 0;
+	for (int i = 0; i < 128; i++) if (cprops[i].used && cprops[i].cid == cid && !strcmp(cprops[i].key, key)) { data = cprops[i].data; dl = cprops[i].len; }
+	uint8_t m[0x38]; memset(m, 0, sizeof m);
+	fill_reply_header((mach_msg_header_t *)m, h, sizeof m, 1);
+	wr32(m, 0x18, 1); m[0x25] = 1; m[0x27] = 1; wr32(m, 0x28, dl); memcpy(m + 0x2c, &WS_NDR, 8); wr32(m, 0x34, dl);
+	struct iovec v[2] = { { m, sizeof m }, { (void *)data, dl } };
+	return ws_ipc_send(c->fd, v, dl ? 2 : 1, NULL, 0);
+}
+
+/* notification interests: 30379 SetConnectionNotifyInterests: count@0x20, ids from 0x24 (size 0x24 + 4n); 30378 SetProcessNotifyInterests: mode@0x20, count@0x24, ids from 0x28 */
+
 int sls_session_dispatch(conn *c, const uint8_t *buf, size_t len)
 {
 	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
+	if (h->msgh_id == SLS_MSG_SetConnectionProperty) return do_set_conn_property(c, buf, len);
+	if (h->msgh_id == SLS_MSG_GetConnectionProperty) return do_get_conn_property(c, buf, len);
+	if (h->msgh_id == SLS_MSG_SetConnectionNotifyInterests) {
+		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size < 0x24) return reply_simple(c->fd, h, -304);
+		uint32_t n = rd32(buf, 0x20);
+		if (n > 256 || h->msgh_size != 0x24 + 4 * n) return reply_simple(c->fd, h, -304);
+		c->notify_n = n; memcpy(c->notify, buf + 0x24, 4 * n);
+		return reply_simple(c->fd, h, 0);
+	}
+	if (h->msgh_id == SLS_MSG_SetProcessNotifyInterests) {
+		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size < 0x28) return reply_simple(c->fd, h, -304);
+		uint32_t n = rd32(buf, 0x24);
+		if (n > 256 || h->msgh_size != 0x28 + 4 * n || rd32(buf, 0x20) > 2) return reply_simple(c->fd, h, -304);
+		return reply_simple(c->fd, h, c->registered ? 0 : 1010);
+	}
+	if (h->msgh_id == SLS_MSG_SetKeyTranslationTable) {                                // complex: OOL table, size 0x38, descriptor size repeated @0x34
+		if (!(h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || h->msgh_size != 0x38 || len < 0x38 || rd32(buf, 0x18) != 1) return reply_simple(c->fd, h, -304);
+		if (buf[0x27] != 1 || rd32(buf, 0x28) != rd32(buf, 0x34) || len != 0x38 + (size_t)rd32(buf, 0x28)) return reply_simple(c->fd, h, -300);
+		return reply_simple(c->fd, h, 0);
+	}
 	if (h->msgh_id == SLS_MSG_CreateApplication) return do_create_application(c, buf, len);
 	if (!(h->msgh_bits & MACH_MSGH_BITS_COMPLEX) && h->msgh_size == sizeof *h && len == sizeof *h) return sls_golden_reply(c, h);
 	return -2;
