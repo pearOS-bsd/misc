@@ -873,6 +873,15 @@ int main(void)
 		hdr(m, 0x24, 32056, 0); w32(m, 0x20, (uint32_t)getpid()); n = call(fd, m, 0x24, rep, sizeof rep); CHECK(n >= 0x28 && r32(rep, 0x20) == 0 && n == 0x28 + 4 * (int)r32(rep, 0x24));
 		hdr(m, 0x24, 32056, 0); w32(m, 0x20, 0x7ffffff0); n = call(fd, m, 0x24, rep, sizeof rep); CHECK(n == 0x28 && r32(rep, 0x24) == 0);
 	}
+	{ /* GetWindowList, AreEventsCaptured, SetMouseEventEnableFlags, ReenableCursorObscure */
+		uint8_t m[0x28], rep[0x1000]; memset(m, 0, sizeof m);
+		hdr(m, 0x28, 30067, 0); w32(m, 0x20, 0); w32(m, 0x24, 0x400); int n = call(fd, m, 0x28, rep, sizeof rep); uint32_t cnt = r32(rep, 0x24);
+		CHECK(n == 0x28 + 4 * (int)cnt && cnt >= 1 && r32(rep, 0x20) == 0);
+		w32(m, 0x24, 1); n = call(fd, m, 0x28, rep, sizeof rep); CHECK(n == 0x2c && r32(rep, 0x24) == 1);
+		hdr(m, 0x18, 30054, 0); n = call(fd, m, 0x18, rep, sizeof rep); CHECK(n == 0x2c && rep[0x24] == 0 && r32(rep, 0x28) == 0);
+		hdr(m, 0x28, 30089, 0); w32(m, 0x20, w.id); w32(m, 0x24, 3); CHECK(rc(fd, m, 0x28) == 0);
+		hdr(m, 0x18, 30477, 0); CHECK(rc(fd, m, 0x18) == 0);
+	}
 	{ /* event taps: place, query, enable, list, release (layouts from the decompiled routines) */
 		uint8_t q[0x44], rep[0x200]; memset(q, 0, sizeof q);
 		hdr(q, 0x44, 32028, 1); w32(q, 0x18, 1); w32(q, 0x1c, 0x777); q[0x26] = 0x11; memcpy(q + 0x28, "\0\0\0\0\1\0\0\0", 8);
