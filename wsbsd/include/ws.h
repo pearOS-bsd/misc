@@ -114,6 +114,8 @@ void ws_server_key(ws_server *, int key, int down);
  * posts WS_EV_TRACK_ENTER / WS_EV_TRACK_EXIT to that window. */
 int ws_tracking_set(ws_server *, uint64_t id, ws_wid wid, const ws_rect *rects, int n);       /* creates or replaces */
 void ws_tracking_remove(ws_server *, uint64_t id);
+void ws_tracking_remove_window(ws_server *, ws_wid wid);                       /* every tracking region of the window */
+int ws_tracking_set_enabled(ws_server *, uint64_t id, ws_wid wid, int enabled);   /* -1 when the window has no such region */
 int ws_tracking_set_shape(ws_server *, uint64_t id, const ws_rect *rects, int n);
 void ws_server_scroll(ws_server *, int x, int y, int dx, int dy, int continuous);   /* to the window under the pointer */
 void ws_server_flags(ws_server *, uint32_t flags);                    /* modifier state changed: event to the key window; later key events carry it */

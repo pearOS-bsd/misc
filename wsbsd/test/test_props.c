@@ -355,6 +355,31 @@ int main(void)
 		CHECK(!again);                                                                    /* removed: no more events */
 	}
 
+	/* tracking areas (the legacy API AppKit uses): AddTrackingArea, SetTrackingAreasEnabled, RemoveTrackingArea(s), RemoveAllTrackingAreas */
+	{
+		uint8_t reg[64]; size_t rn = ws_region_serialize(&(ws_rect){ 0, 0, 50, 50 }, 1, reg, sizeof reg);
+		ws_win_set_event_mask(c, &w, -1);
+		ws_event e; while (ws_conn_next_pushed_event(c, 20, &e)) { }
+		uint8_t am[0x50 + 64]; memset(am, 0, sizeof am); hdr(am, 0x50, 30157, 1);
+		w32(am, 0x18, 1); am[0x25] = 1; am[0x27] = 1; w32(am, 0x28, (uint32_t)rn); memcpy(am + 0x2c, &WS_NDR, 8);
+		w32(am, 0x34, w.id); w32(am, 0x38, (uint32_t)rn); w32(am, 0x3c, 0x77); memcpy(am + 0x50, reg, rn);
+		CHECK(rc(fd, am, 0x50 + rn) == 0);                                              /* created under the pointer: entered at once */
+		ws_post_mouse_event(c, 5, 40, 50, 0, 0, 0);
+		int entered = 0; for (int i = 0; i < 10 && ws_conn_next_pushed_event(c, 100, &e); i++) if (e.type == WS_EV_TRACK_ENTER && e.key == 0x77 && e.wid == w.id) entered = 1;
+		CHECK(entered);
+		uint8_t ra[0x24]; memset(ra, 0, sizeof ra); hdr(ra, 0x24, 30162, 0); memcpy(ra + 0x18, &WS_NDR, 8); w32(ra, 0x20, w.id);
+		CHECK(rc(fd, ra, 0x24) == 0);
+		ws_post_mouse_event(c, 5, 120, 100, 0, 0, 0); ws_post_mouse_event(c, 5, 40, 50, 0, 0, 0);
+		int again = 0; for (int i = 0; i < 6 && ws_conn_next_pushed_event(c, 60, &e); i++) if (e.type == WS_EV_TRACK_ENTER) again = 1;
+		CHECK(!again);                                                                    /* all removed */
+		uint8_t rm[0x2c]; memset(rm, 0, sizeof rm); hdr(rm, 0x2c, 30160, 0); memcpy(rm + 0x18, &WS_NDR, 8); w32(rm, 0x20, w.id); w32(rm, 0x24, 0x77);
+		CHECK(rc(fd, rm, 0x2c) == 0);
+		uint8_t en[0x40 + 8]; memset(en, 0, sizeof en); hdr(en, 0x40, 30164, 1); w32(en, 0x18, 1); en[0x25] = 1; en[0x27] = 1; w32(en, 0x28, 8); memcpy(en + 0x2c, &WS_NDR, 8);
+		w32(en, 0x34, w.id); w32(en, 0x38, 1); w32(en, 0x3c, 1); w32(en, 0x40, 0x99); w32(en, 0x44, 0);
+		CHECK(rc(fd, en, 0x48) == 0);
+		w32(en, 0x34, 0x7ffff); CHECK(rc(fd, en, 0x48) == 1000);
+	}
+
 	/* GetDisplaySystemState: the layout of the real state (header, mode records, tail), filled for wsd's display (640x480 in the test) */
 	{
 		uint8_t q[0x28]; memset(q, 0, sizeof q); hdr(q, 0x28, SLS_MSG_GetDisplaySystemState, 0); memcpy(q + 0x18, &WS_NDR, 8); w32(q, 0x20, 13);
