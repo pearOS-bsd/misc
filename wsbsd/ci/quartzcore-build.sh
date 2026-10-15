@@ -34,7 +34,7 @@ echo "== opal_min plain variants:"; for v in 0 6 14; do LD_LIBRARY_PATH=$LDP ./o
 cc -O1 -g -Iinclude $OBJC_FLAGS -I/usr/local/GNUstep/System/Library/Headers -o opal_demo_here demo/opal_demo.m $CSRC -lopal -lgnustep-corebase $OBJC_LIBS -lcairo -lm 2>&1 | grep -E "error" | head -3
 echo "== opal_demo in this job (it works in the opal job):"; LD_LIBRARY_PATH=$LDP ./opal_demo_here /tmp/opal-here.ppm 2>&1 | grep -E "ctx data|wrote" | head -3
 echo "== LD path used: $LDP"; ldd ./opal_min_plain 2>/dev/null | grep -E "opal|corebase|cairo|base" | head -6
-echo "== opal_min with QuartzCore+GL:"; LD_LIBRARY_PATH=$LDP ./opal_min_qc 2>&1 | tail -3
+echo "== opal_min with QuartzCore+GL:"; ls -l opal_min_qc 2>&1 | cut -c1-80; ldd ./opal_min_qc 2>&1 | grep -E "opal|Quartz|GL|cairo|not found" | head -8; for v in 0 14; do LD_LIBRARY_PATH=$LDP ./opal_min_qc $v 2>&1 | tail -5; echo "rc=$?"; done
 kill $MP 2>/dev/null
 # the demo: a CALayer tree with animations drawn into a wsd window
 gmake install 2>&1 | tail -2
