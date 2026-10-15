@@ -30,7 +30,7 @@ export WS_SOCKET=/tmp/wsd-min.sock
 ./wsd -t -g 1024x700 >/tmp/wsd-min.log 2>&1 &
 MP=$!
 sleep 1
-echo "== opal_min plain variants:"; for v in 0 1 2 6 10 12 14 20 21 22; do LD_LIBRARY_PATH=$LDP ./opal_min_plain $v 2>&1 | grep 'variant' ; done
+echo "== opal_min plain variants:"; for v in 0 6 14; do LD_LIBRARY_PATH=$LDP ./opal_min_plain $v 2>&1 | grep 'variant' ; done
 cc -O1 -g -Iinclude $OBJC_FLAGS -I/usr/local/GNUstep/System/Library/Headers -o opal_demo_here demo/opal_demo.m $CSRC -lopal -lgnustep-corebase $OBJC_LIBS -lcairo -lm 2>&1 | grep -E "error" | head -3
 echo "== opal_demo in this job (it works in the opal job):"; LD_LIBRARY_PATH=$LDP ./opal_demo_here /tmp/opal-here.ppm 2>&1 | grep -E "ctx data|wrote" | head -3
 echo "== LD path used: $LDP"; ldd ./opal_min_plain 2>/dev/null | grep -E "opal|corebase|cairo|base" | head -6
@@ -42,7 +42,8 @@ cd "$WS"
 gmake wsd 2>&1 | tail -1
 OBJC_FLAGS="$(gnustep-config --objc-flags 2>/dev/null)"
 OBJC_LIBS="$(gnustep-config --base-libs 2>/dev/null)"
-cc -O1 -g -Iinclude $OBJC_FLAGS -I/usr/local/GNUstep/System/Library/Headers -o ca_demo demo/ca_demo.m src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c -L/tmp/gs/qc/Source/QuartzCore.framework -lQuartzCore -lGL -lopal -lgnustep-corebase $OBJC_LIBS -lcairo -lm 2>&1 | tail -25
+QCH=$(find /tmp/gs/qc /usr/local/GNUstep -name QuartzCore.h 2>/dev/null | head -1); echo "QuartzCore.h: $QCH"; QCI=""; [ -n "$QCH" ] && QCI="-I$(dirname $(dirname $QCH))"
+cc -O1 -g -Iinclude $QCI $OBJC_FLAGS -I/usr/local/GNUstep/System/Library/Headers -o ca_demo demo/ca_demo.m src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c -L/tmp/gs/qc/Source/QuartzCore.framework -lQuartzCore -lGL -lopal -lgnustep-corebase $OBJC_LIBS -lcairo -lm 2>&1 | tail -25
 export WS_SOCKET=/tmp/wsd-ca.sock
 ./wsd -t -g 1024x700 >/tmp/wsd-ca.log 2>&1 &
 WP=$!
