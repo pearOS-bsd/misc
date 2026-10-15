@@ -72,7 +72,7 @@ static ws_buffer bufs[MAXBUF];
 static uint32_t next_buf = 1;
 typedef struct { int used; uint32_t wid, sid; int kind; uint32_t a, b; uint32_t owner; } surf;
 static surf surfs[MAXSURF];
-static uint32_t next_sid = 1;
+static uint32_t next_sid = 0x100;                   /* the real server's CGXCreateSurfaceID starts at 0x100 (recorded) */
 
 static ws_buffer *buf_by_id(uint32_t id) { for (int i = 0; i < MAXBUF; i++) if (bufs[i].id == id && id) return &bufs[i]; return NULL; }
 static surf *surf_find(uint32_t wid, uint32_t sid) { for (int i = 0; i < MAXSURF; i++) if (surfs[i].used && surfs[i].wid == wid && surfs[i].sid == sid) return &surfs[i]; return NULL; }
