@@ -106,13 +106,15 @@ int main(int argc, char **argv)
 	[box addAnimation: fade forKey: @"fade"];
 	[CATransaction flush];
 
+	/* Opal assumes rows are width*4 bytes apart, the wsd buffer's stride is padded (2176 for 520): draw into a tight buffer and copy the rows */
+	size_t tstride = (size_t)W * 4; uint8_t *tmp = calloc(tstride, H);
 	int shots = 0;
 	for (int frame = 0; frame < 40; frame++) {
 		CFTimeInterval now = CACurrentMediaTime();
 		update_layer(root, now);
 		/* Opal writes into the shared memory when a context is flushed, and a flushed context is finished: one fresh bitmap context per frame */
-		memset(px->px, 0, px->stride * H);                               /* clear the buffer by hand: Opal's CGContextClearRect leaves the Cairo operator on CLEAR */
-		CGContextRef g = CGBitmapContextCreate(px->px, W, H, 8, px->stride, rgb, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little);
+		memset(tmp, 0, tstride * H);                               /* clear the buffer by hand: Opal's CGContextClearRect leaves the Cairo operator on CLEAR */
+		CGContextRef g = CGBitmapContextCreate(tmp, W, H, 8, tstride, rgb, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little);
 		if (!g) { fprintf(stderr, "ca_demo: CGBitmapContextCreate failed\n"); return 1; }
 		if (frame == 0) {                                              /* does Opal draw at all in this binary: a private buffer, no wsd involved */
 			uint32_t *own = calloc(64 * 64, 4);
@@ -139,6 +141,7 @@ int main(int argc, char **argv)
 			printf("  box presentation pos %g,%g opacity %g; model pos %g,%g\n", bpos.x, bpos.y, [bp opacity], [[[root sublayers] objectAtIndex: 1] position].x, [[[root sublayers] objectAtIndex: 1] position].y);
 		}
 		CGContextRelease(g);
+		for (int y = 0; y < H; y++) memcpy(px->px + (size_t)y * px->stride, tmp + (size_t)y * tstride, tstride);
 		if (frame == 0 || frame == 5) { long nz = 0; for (int y = 0; y < H; y++) for (int x = 0; x < W; x++) if (((uint32_t *)(px->px + y * px->stride))[x]) nz++;
 			printf("frame %d after release: %ld non-zero pixels (Opal writes the pixels out when the context is released)\n", frame, nz); }
 		ws_surface_flush(c, &w, sid, NULL);
