@@ -188,6 +188,29 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		}
 		return reply_simple(c->fd, h, 0);
 	}
+	case SLS_MSG_SetTrackingAreaShape: {                                           /* OOL region; wid@0x34, compat id u64@0x38, region size repeated@0x40; size 0x48; 1000 for an unknown window or without rights */
+		int err; int osz = ool_request(h, buf, len, 0x48, &err);
+		if (osz < 0) return reply_simple(c->fd, h, err);
+		if ((uint32_t)osz != rd32(buf, 0x40)) return reply_simple(c->fd, h, -300);
+		uint32_t wid = rd32(buf, 0x34); uint64_t id; memcpy(&id, buf + 0x38, 8);
+		if (!ws_window_exists(srv, wid) || !holds_rights(c, wid)) return reply_simple(c->fd, h, 1000);
+		ws_rect *rc = NULL; int nr = 0; ws_rect bb;
+		if (osz && ws_region_parse(buf + 0x48, (uint32_t)osz, &rc, &nr, &bb) == 0) ws_tracking_set_shape(srv, id, rc, nr);
+		free(rc);
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_WindowSetShadowProperties: {                                     /* OOL serialized property list; wid@0x34, size repeated@0x38; size 0x3c. 1000 for an unknown window, else 0 (applied only with rights; kept opaque here) */
+		int err; int osz = ool_request(h, buf, len, 0x3c, &err);
+		if (osz < 0) return reply_simple(c->fd, h, err);
+		if ((uint32_t)osz != rd32(buf, 0x38)) return reply_simple(c->fd, h, -300);
+		return reply_simple(c->fd, h, ws_window_exists(srv, rd32(buf, 0x34)) ? 0 : 1000);
+	}
+	case SLS_MSG_SetEventCapture:                                                  /* three u32 @0x20..0x28, size 0x2c: always answered 0 here (no event capture state yet) */
+		if (!simple_ok(h, len, 0x2c)) return reply_simple(c->fd, h, -304);
+		return reply_simple(c->fd, h, 0);
+	case SLS_MSG_SetWindowIsBuffered:                                              /* wid@0x20, flag byte@0x24, size 0x28: windows here are always buffered */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		return reply_simple(c->fd, h, ws_window_exists(srv, rd32(buf, 0x20)) && holds_rights(c, rd32(buf, 0x20)) ? 0 : 1000);
 	case SLS_MSG_RemoveStructuralRegion: {                                         /* id u64@0x20, size 0x28, always 0 */
 		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
 		uint64_t id; memcpy(&id, buf + 0x20, 8);
