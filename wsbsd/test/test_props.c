@@ -146,6 +146,22 @@ int main(void)
 		memset(m, 0, sizeof m); hdr(m, 0x34, 30159, 0); w32(m, 0x20, ra.id); w32(m, 0x24, 77); CHECK(rc(fd, m, 0x34) == 0x3e9);          /* no such tracking area */
 		w32(m, 0x20, 0x7ffff); CHECK(rc(fd, m, 0x34) == 1000);
 	}
+	{ /* ordering groups: the grouped window is ordered in / out with its parent, above it */
+		ws_win op, oc; CHECK(ws_win_create(c, (ws_rect){ 400, 20, 30, 30 }, 0, &op) == 0 && ws_win_create(c, (ws_rect){ 440, 20, 30, 30 }, 0, &oc) == 0);
+		uint8_t m[0x2c], rep[0x100]; memset(m, 0, sizeof m); hdr(m, 0x2c, 30193, 0); w32(m, 0x20, oc.id); w32(m, 0x24, 1); w32(m, 0x28, op.id); CHECK(rc(fd, m, 0x2c) == 0);
+		ws_win_order(c, &op, 1, 0);
+		memset(m, 0, sizeof m); hdr(m, 0x24, 30312, 0); w32(m, 0x20, oc.id); int g = call(fd, m, 0x24, rep, sizeof rep); CHECK(g == 0x28 && rep[0x24] == 1);
+		memset(m, 0, sizeof m); hdr(m, 0x24, 30188, 0); w32(m, 0x20, oc.id); g = call(fd, m, 0x24, rep, sizeof rep); CHECK(g >= 0x38 + 8 && r32(rep, 0x38) == op.id && r32(rep, 0x3c) == oc.id);
+		ws_win_order(c, &op, 0, 0);
+		memset(m, 0, sizeof m); hdr(m, 0x24, 30312, 0); w32(m, 0x20, oc.id); g = call(fd, m, 0x24, rep, sizeof rep); CHECK(g == 0x28 && rep[0x24] == 0);
+		memset(m, 0, sizeof m); hdr(m, 0x24, 30192, 0); w32(m, 0x20, op.id); CHECK(rc(fd, m, 0x24) == 0);
+	}
+	{ /* SetWindowHasKeyAppearance / MainAppearance: accepted for a window with rights and for an unknown window (0), -304 for a wrong size */
+		ws_win ka; CHECK(ws_win_create(c, (ws_rect){ 500, 20, 30, 30 }, 0, &ka) == 0);
+		uint8_t m[0x28]; memset(m, 0, sizeof m); hdr(m, 0x28, 30178, 0); w32(m, 0x20, ka.id); w32(m, 0x24, 1); CHECK(rc(fd, m, 0x28) == 0);
+		hdr(m, 0x28, 30179, 0); CHECK(rc(fd, m, 0x28) == 0); w32(m, 0x20, 0x7ffff); CHECK(rc(fd, m, 0x28) == 0);
+		hdr(m, 0x24, 30178, 0); CHECK(rc(fd, m, 0x24) == -304);
+	}
 	{ /* GetWindowTransform: the identity for a window nothing transformed (recorded), 1000 for an unknown window, -304 for a bad size */
 		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 100, 200, 30, 20 }, 0, &tw) == 0);
 		uint8_t m[0x28], rep[0x80]; memset(m, 0, sizeof m); hdr(m, 0x28, 30034, 0); w32(m, 0x20, tw.id); w32(m, 0x24, 0x7fffff00);

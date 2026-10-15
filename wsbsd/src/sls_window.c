@@ -395,6 +395,13 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 			ws_move_window(srv, wid, (int)nx, (int)ny); }
 		return reply_simple(c->fd, h, 0);
 	}
+	case SLS_MSG_SetWindowHasKeyAppearance:                                        /* wid@0x20, flag@0x24, size 0x28: the window is drawn active (shadow, state) even when it is not the key window; applied with rights; always 0 */
+	case SLS_MSG_SetWindowHasMainAppearance: {
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		uint32_t wid = rd32(buf, 0x20);
+		if (ws_window_exists(srv, wid) && holds_rights(c, wid)) ws_window_set_appearance(srv, wid, h->msgh_id == SLS_MSG_SetWindowHasKeyAppearance ? 1 : 2, (rd32(buf, 0x24) & 0xff) != 0);
+		return reply_simple(c->fd, h, 0);
+	}
 	case SLS_MSG_SetWindowParent: {                                                /* child@0x20, parent@0x24, size 0x28; rights on both; always 0 */
 		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
 		uint32_t child = rd32(buf, 0x20), parent = rd32(buf, 0x24);

@@ -100,6 +100,7 @@ int ws_release_window(ws_server *, ws_wid);
 ws_surface *ws_window_backing(ws_server *, ws_wid);
 int ws_move_window(ws_server *, ws_wid, int x, int y);
 /* movement groups (the group follows when a member moves) and ordering groups (kept, grouped windows are listed) */
+int ws_window_set_appearance(ws_server *, ws_wid, int bit, int on);          /* bit 1: key appearance, 2: main appearance (drawn active even when not the key window) */
 int ws_window_set_movement_parent(ws_server *, ws_wid child, ws_wid parent);
 ws_wid ws_window_movement_parent(ws_server *, ws_wid);
 void ws_window_clear_movement_group(ws_server *, ws_wid);
