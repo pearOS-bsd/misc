@@ -12,7 +12,7 @@
 #include <string.h>
 
 enum {
-	OP_ORDER_WINDOW = 1, OP_SET_ALPHA = 3, OP_SET_LEVEL = 6, OP_SET_SHAPE = 11, OP_SET_SUBLEVEL = 12, OP_MOVE_WITH_GROUP = 22, OP_SET_TAGS = 118, OP_CONTENT_BLUR = 134,
+	OP_ORDER_WINDOW = 1, OP_SET_ALPHA = 3, OP_SET_LEVEL = 6, OP_SET_OPAQUE_SHAPE = 7, OP_SET_RESOLUTION = 10, OP_SET_SHAPE = 11, OP_SET_SUBLEVEL = 12, OP_MOVE_WITH_GROUP = 22, OP_BIND_SURFACE = 51, OP_ORDER_SURFACE = 52, OP_SET_SURFACE_BOUNDS = 53, OP_SET_SURFACE_OPACITY = 54, OP_REMOVE_SURFACE = 95, OP_SET_CORNER_RADIUS = 105, OP_SET_TAGS = 118, OP_CONTENT_BLUR = 134,
 };
 
 typedef struct { const uint8_t *p; size_t n; int bad; } rd_t;
@@ -98,6 +98,29 @@ static int run_stream(conn *c, const uint8_t *p, size_t n)
 			if (holds_rights(c, wid)) ws_window_set_tags(srv, wid, lo | (hi << 32), clear);
 			break;
 		}
+		case OP_SET_OPAQUE_SHAPE: {                                                  /* wid, region length, region bytes */
+			uint32_t wid = (uint32_t)get_packed(&r); uint64_t len = get_packed(&r);
+			if (r.bad || len > r.n) return 1001;
+			(void)wid; r.p += len; r.n -= len;                                       /* accepted, not used for composition yet */
+			break;
+		}
+		case OP_SET_RESOLUTION: { uint32_t wid = (uint32_t)get_packed(&r); double res = get_double(&r); if (r.bad) return 1001; (void)wid; (void)res; break; }
+		case OP_SET_CORNER_RADIUS: {
+			uint32_t wid = (uint32_t)get_packed(&r); double rad = get_double(&r);
+			if (r.bad) return 1001;
+			if (holds_rights(c, wid)) ws_set_window_corner_radius(srv, wid, (int)rad);
+			break;
+		}
+		case OP_BIND_SURFACE: {                                                       /* wid, surface id, kind, a, b: the BindSurface request */
+			uint32_t wid = (uint32_t)get_packed(&r), sid = (uint32_t)get_packed(&r); int kind = (int)get_packed(&r); uint32_t a = (uint32_t)get_packed(&r), b = (uint32_t)get_packed(&r);
+			if (r.bad) return 1001;
+			(void)wsd_bind_surface(c, wid, sid, kind, a, b);
+			break;
+		}
+		case OP_REMOVE_SURFACE: { uint32_t wid = (uint32_t)get_packed(&r), sid = (uint32_t)get_packed(&r); if (r.bad) return 1001; (void)wsd_remove_surface(c, wid, sid); break; }
+		case OP_ORDER_SURFACE: { uint32_t wid = (uint32_t)get_packed(&r), sid = (uint32_t)get_packed(&r); (void)get_byte(&r); (void)get_packed(&r); if (r.bad) return 1001; (void)wid; (void)sid; break; }
+		case OP_SET_SURFACE_BOUNDS: { (void)get_packed(&r); (void)get_packed(&r); (void)get_double(&r); (void)get_double(&r); (void)get_double(&r); (void)get_double(&r); if (r.bad) return 1001; break; }
+		case OP_SET_SURFACE_OPACITY: { (void)get_packed(&r); (void)get_packed(&r); (void)get_byte(&r); if (r.bad) return 1001; break; }
 		case OP_CONTENT_BLUR: {
 			uint32_t wid = (uint32_t)get_packed(&r); (void)get_float(&r);
 			if (r.bad) return 1001;

@@ -25,6 +25,9 @@ int reply_mig_error(int fd, const mach_msg_header_t *req, int32_t code);
 int simple_ok(const mach_msg_header_t *h, size_t len, size_t want);   /* not complex, size and datagram length both equal want */
 int holds_rights(const conn *c, uint32_t wid);
 
+int wsd_bind_surface(conn *c, uint32_t wid, uint32_t sid, int kind, uint32_t a, uint32_t b);   /* BindSurface semantics, returns the retcode */
+int wsd_remove_surface(conn *c, uint32_t wid, uint32_t sid);
+
 /* Protocol families. Each returns -2 for an id it does not handle, otherwise the result of sending the reply (>= 0) or -1 to drop the connection. */
 int sls_ext_dispatch(conn *c, const uint8_t *buf, size_t len);
 void sls_ext_owner_cleanup(uint32_t owner);

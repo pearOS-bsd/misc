@@ -310,6 +310,39 @@ static int do_create_window(conn *c, const uint8_t *buf, size_t len)
 	return rc;
 }
 
+
+/* surface operations shared by the direct requests and the transaction ops: return the retcode */
+int wsd_remove_surface(conn *c, uint32_t wid, uint32_t sid)
+{
+	if (!holds_rights(c, wid)) return CGS_ERROR_FAILURE;
+	surf *sf = surf_find(wid, sid);
+	if (sf) { surf_unbind(sf); sf->used = 0; }
+	return 0;
+}
+
+int wsd_bind_surface(conn *c, uint32_t wid, uint32_t sid, int kind, uint32_t a, uint32_t bid)
+{
+	if (!holds_rights(c, wid)) return CGS_ERROR_FAILURE;
+	surf *sf = surf_find(wid, sid);
+	if (!sf) return CGS_ERROR_ILLEGAL_ARGUMENT;                                                 /* "Invalid surface" */
+	switch (kind) {
+	case SLS_BIND_NONE: surf_unbind(sf); break;
+	case SLS_BIND_INVALID: return CGS_ERROR_ILLEGAL_ARGUMENT;
+	case SLS_BIND_CONTEXT: {
+		ws_buffer *b = buf_by_id(bid);
+		if (!b || b->owner != c->id) return CGS_ERROR_ILLEGAL_ARGUMENT;
+		if (!b->cpu) return CGS_ERROR_FAILURE;                                                  /* neither a CPU view nor a GL import */
+		surf_unbind(sf);
+		sf->kind = SLS_BIND_CONTEXT; sf->a = a; sf->b = bid;
+		ws_window_set_content(srv, sf->wid, b->cpu, b->id);
+		break;
+	}
+	case SLS_BIND_WINDOW: case SLS_BIND_ACCEL: return CGS_ERROR_FAILURE;                       /* not supported by wsbsd */
+	default: break;                                                                           /* unknown kinds fall through to success in the original */
+	}
+	return 0;
+}
+
 static int do_simple(conn *c, const uint8_t *buf, size_t len)
 {
 	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
@@ -578,33 +611,12 @@ static int do_simple(conn *c, const uint8_t *buf, size_t len)
 	case SLS_MSG_RemoveSurface: {
 		if (!simple_ok(h, len, sizeof(sls_surface_req))) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
 		const sls_surface_req *q = (const void *)buf;
-		if (!holds_rights(c, q->wid)) return reply_simple(c->fd, h, CGS_ERROR_FAILURE);
-		surf *sf = surf_find(q->wid, (uint32_t)q->level);
-		if (sf) { surf_unbind(sf); sf->used = 0; }
-		return reply_simple(c->fd, h, 0);
+		return reply_simple(c->fd, h, wsd_remove_surface(c, q->wid, (uint32_t)q->level));
 	}
 	case SLS_MSG_BindSurface: {
 		if (!simple_ok(h, len, sizeof(sls_bind_req))) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
 		const sls_bind_req *q = (const void *)buf;
-		if (!holds_rights(c, q->wid)) return reply_simple(c->fd, h, CGS_ERROR_FAILURE);
-		surf *sf = surf_find(q->wid, q->sid);
-		if (!sf) return reply_simple(c->fd, h, CGS_ERROR_ILLEGAL_ARGUMENT);                       /* "Invalid surface" */
-		switch (q->kind) {
-		case SLS_BIND_NONE: surf_unbind(sf); break;
-		case SLS_BIND_INVALID: return reply_simple(c->fd, h, CGS_ERROR_ILLEGAL_ARGUMENT);
-		case SLS_BIND_CONTEXT: {
-			ws_buffer *b = buf_by_id(q->b);
-			if (!b || b->owner != c->id) return reply_simple(c->fd, h, CGS_ERROR_ILLEGAL_ARGUMENT);
-			if (!b->cpu) return reply_simple(c->fd, h, CGS_ERROR_FAILURE);                      /* neither a CPU view nor a GL import */
-			surf_unbind(sf);
-			sf->kind = SLS_BIND_CONTEXT; sf->a = q->a; sf->b = q->b;
-			ws_window_set_content(srv, sf->wid, b->cpu, b->id);
-			break;
-		}
-		case SLS_BIND_WINDOW: case SLS_BIND_ACCEL: return reply_simple(c->fd, h, CGS_ERROR_FAILURE);   /* not supported by wsbsd */
-		default: break;                                                                       /* unknown kinds fall through to success in the original */
-		}
-		return reply_simple(c->fd, h, 0);
+		return reply_simple(c->fd, h, wsd_bind_surface(c, q->wid, q->sid, q->kind, q->a, q->b));
 	}
 	case SLS_MSG_GetSurfaceBinding: {
 		if (!simple_ok(h, len, sizeof(sls_surface_req))) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
