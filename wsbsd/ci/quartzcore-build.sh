@@ -15,3 +15,19 @@ gmake -j2 messages=yes 2>&1 | grep -E "error|Error|fatal|No such|undefined" | he
 echo "== build done, libraries:"
 ls Source/obj 2>/dev/null | head
 find /tmp/gs/qc -name "libQuartzCore*" | head
+
+# the demo: a CALayer tree with animations drawn into a wsd window
+gmake install 2>&1 | tail -2
+cd "$WS"
+gmake wsd 2>&1 | tail -1
+OBJC_FLAGS="$(gnustep-config --objc-flags 2>/dev/null)"
+OBJC_LIBS="$(gnustep-config --base-libs 2>/dev/null)"
+cc -O1 -g -Iinclude $OBJC_FLAGS -I/usr/local/GNUstep/System/Library/Headers -o ca_demo demo/ca_demo.m src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c -L/tmp/gs/qc/Source/QuartzCore.framework -lQuartzCore -lopal -lgnustep-corebase $OBJC_LIBS -lcairo -lm 2>&1 | tail -25
+export WS_SOCKET=/tmp/wsd-ca.sock
+./wsd -t -g 1024x700 >/tmp/wsd-ca.log 2>&1 &
+WP=$!
+sleep 1
+LD_LIBRARY_PATH=/tmp/gs/qc/Source/QuartzCore.framework:/tmp/gs/opal/Source/obj:/tmp/gs/corebase/Source/obj:/usr/local/GNUstep/System/Library/Libraries:/usr/local/lib ./ca_demo ca 2>&1 | tail -15
+kill $WP 2>/dev/null
+for f in ca-a ca-b; do python3 tools/ppm2png.py $f.ppm $f.png 2>&1 | tail -1; done
+ls -l ca-*.png 2>&1
