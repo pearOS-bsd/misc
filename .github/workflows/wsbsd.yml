@@ -102,6 +102,11 @@ jobs:
             WSD_ARGS="-r gl" OUT=freebsd-gl-interactive sh test/run_interactive.sh
             for f in freebsd-gl-interactive-*.ppm; do python3 tools/ppm2png.py "$f" "${f%.ppm}.png" || true; done
             ls -l *.png *.ppm || true
+            echo '--- the full build (KMS display + evdev input + GL): compiles and fails cleanly without a display device'
+            gmake full
+            ./wsd -b kms -g 64x64 > /tmp/kms.log 2>&1 || true
+            cat /tmp/kms.log
+            grep -q 'cannot open KMS device' /tmp/kms.log
       - uses: actions/upload-artifact@v4
         if: always()
         with:
