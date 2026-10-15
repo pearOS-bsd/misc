@@ -42,6 +42,8 @@ open(p,'w').write(s)
 PY
 # the packaged gnustep-gui predates GSFontAssetInstaller: build without the font asset installers
 sed -i '' '/FontAssetInstaller/d' Source/cairo/GNUmakefile Source/cairo/CairoContext.m
+# the cairo makefile adds the Win32 surfaces for any server that is not x11 or wayland
+sed -i '' 's/cairo_OBJC_FILES += Win32CairoSurface.m Win32CairoGState.m/cairo_OBJC_FILES += /' Source/cairo/GNUmakefile
 ./configure --enable-server=headless --enable-graphics=cairo 2>&1 | tail -5
 gmake -j2 2>&1 | grep -E "error|Error|warning: implicit|undefined" | head -30
 gmake install 2>&1 | tail -3
