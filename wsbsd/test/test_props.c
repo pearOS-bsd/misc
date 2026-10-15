@@ -271,6 +271,13 @@ int main(void)
 		w32(m, 0x24, 0x10000); CHECK(rc(fd2, m, 0x28) == 1001);                                    /* no longer held */
 		ws_disconnect(c2);
 	}
+	{ /* a connection cannot take more than 1 GiB of window backing: 4000x4000 windows (64 MB each) stop around the sixteenth; another connection is not affected */
+		ws_conn *c3 = ws_connect(NULL); CHECK(c3 != NULL); int made = 0; ws_win big;
+		while (made < 40 && ws_win_create(c3, (ws_rect){ 0, 0, 4000, 4000 }, 0, &big) == 0) made++;
+		CHECK(made >= 10 && made < 40);
+		ws_conn *c4 = ws_connect(NULL); CHECK(c4 != NULL && ws_win_create(c4, (ws_rect){ 0, 0, 4000, 4000 }, 0, &big) == 0);
+		ws_disconnect(c4); ws_disconnect(c3);
+	}
 	{ /* GetWindowTransform: the identity for a window nothing transformed (recorded), 1000 for an unknown window, -304 for a bad size */
 		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 100, 200, 30, 20 }, 0, &tw) == 0);
 		uint8_t m[0x28], rep[0x80]; memset(m, 0, sizeof m); hdr(m, 0x28, 30034, 0); w32(m, 0x20, tw.id); w32(m, 0x24, 0x7fffff00);

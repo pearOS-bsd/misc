@@ -352,6 +352,8 @@ void wsd_rights_cleanup(uint32_t cid)
 }
 
 /* ---- SkyLight routines ---- */
+#define WSD_MAX_WINDOWS_PER_CONN 2048
+#define WSD_MAX_BYTES_PER_CONN (1.0 * 1024 * 1024 * 1024)       /* 1 GiB of window backing per connection */
 static int do_create_window(conn *c, const uint8_t *buf, size_t len)
 {
 	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
@@ -367,6 +369,8 @@ static int do_create_window(conn *c, const uint8_t *buf, size_t len)
 	ws_rect *rects; int n; ws_rect bounds;
 	if (ws_region_parse(buf + sizeof rq, rq.region.size, &rects, &n, &bounds) || bounds.w <= 0 || bounds.h <= 0 || bounds.w > 8192 || bounds.h > 8192)
 		return reply_simple(c->fd, h, CGS_ERROR_FAILURE);
+	{ int nw; double nb; ws_owner_usage(srv, c->id, &nw, &nb);                   /* a connection cannot exhaust the server: limits on windows and backing memory */
+	  if (nw >= WSD_MAX_WINDOWS_PER_CONN || nb + (double)bounds.w * bounds.h * 4.0 > WSD_MAX_BYTES_PER_CONN) { free(rects); return reply_simple(c->fd, h, CGS_ERROR_FAILURE); } }
 	int pfd = -1;
 	ws_wid wid = ws_create_window_fd(srv, bounds, c->id, &pfd);
 	if (!wid) { free(rects); return reply_simple(c->fd, h, CGS_ERROR_FAILURE); }

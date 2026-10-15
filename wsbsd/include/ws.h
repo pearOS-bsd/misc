@@ -99,6 +99,7 @@ ws_wid ws_active_window(ws_server *);                        /* frontmost window
 int ws_release_window(ws_server *, ws_wid);
 ws_surface *ws_window_backing(ws_server *, ws_wid);
 int ws_move_window(ws_server *, ws_wid, int x, int y);
+void ws_owner_usage(ws_server *, uint32_t owner, int *windows, double *bytes);   /* windows owned and bytes of their backing stores */
 /* movement groups (the group follows when a member moves) and ordering groups (kept, grouped windows are listed) */
 int ws_window_set_appearance(ws_server *, ws_wid, int bit, int on);          /* bit 1: key appearance, 2: main appearance (drawn active even when not the key window) */
 int ws_window_set_movement_parent(ws_server *, ws_wid child, ws_wid parent);

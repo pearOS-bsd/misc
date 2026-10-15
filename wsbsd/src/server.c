@@ -249,6 +249,14 @@ static void move_group(ws_server *s, ws_wid id, int dx, int dy, int depth)
 	for (size_t i = 0; i < s->n; i++) if (s->win[i].mvparent == id) { s->win[i].frame.x += dx; s->win[i].frame.y += dy; move_group(s, s->win[i].id, dx, dy, depth + 1); }
 }
 
+/* resource accounting per owner: number of windows and bytes of backing memory (frame area * 4) */
+void ws_owner_usage(ws_server *s, uint32_t owner, int *windows, double *bytes)
+{
+	int n = 0; double b = 0;
+	for (size_t i = 0; i < s->n; i++) if (s->win[i].owner == owner) { n++; b += (double)s->win[i].frame.w * (double)s->win[i].frame.h * 4.0; }
+	*windows = n; *bytes = b;
+}
+
 int ws_move_window(ws_server *s, ws_wid id, int x, int y)
 {
 	window *w = get(s, id);
