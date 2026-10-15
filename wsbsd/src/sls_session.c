@@ -79,9 +79,38 @@ static int reply_ool_blob(conn *c, const mach_msg_header_t *h, const uint8_t *bl
 	return ws_ipc_send(c->fd, v, 2, NULL, 0);
 }
 
+
+/* Routines the recorded macOS 26.6 data only knows as argument-less requests; the 27.0 table gives them arguments (argc from docs/skylight-msgid-table.txt:
+ * size = 0x20 + 4 * (argc - 1)). There is no Dock, no right-to-left UI and no virtual display here, so the answers are the "nothing" values.
+ * Unverified live: the exact error the real server gives for a virtual display that does not exist (1001, kCGErrorIllegalArgument, is assumed). */
+static int do_system_ui_query(conn *c, const uint8_t *buf, size_t len)
+{
+	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
+	switch (h->msgh_id) {
+	case SLS_MSG_GetAppearanceTheme: case SLS_MSG_GetSystemUIHasRTLDirection: case SLS_MSG_GetDebugOptions:
+		if (!simple_ok(h, len, 0x24)) return -2;
+		return reply_value(c->fd, h, 0);                                  /* light appearance, left-to-right, no debug options */
+	case SLS_MSG_GetDockRectWithReason: {                               /* reply 0x3c: retcode, rect (4 floats), two u32: no Dock, empty rect */
+		if (!simple_ok(h, len, 0x38)) return -2;
+		uint8_t r[0x3c]; memset(r, 0, sizeof r);
+		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
+		memcpy(r + 0x18, &WS_NDR, sizeof WS_NDR);
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
+	case SLS_MSG_DisconnectWindowManager:
+		if (!simple_ok(h, len, 0x18)) return -2;
+		return reply_simple(c->fd, h, 0);
+	case SLS_MSG_VirtualDisplayDestroy:
+		if (!simple_ok(h, len, 0x24)) return -2;
+		return reply_simple(c->fd, h, 1001);
+	}
+	return -2;
+}
+
 int sls_session_dispatch(conn *c, const uint8_t *buf, size_t len)
 {
 	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
+	{ int rc = do_system_ui_query(c, buf, len); if (rc != -2) return rc; }
 	if (h->msgh_id == SLS_MSG_CopyManagedDisplays || h->msgh_id == SLS_MSG_GetDevices) {
 		if (!simple_ok(h, len, sizeof *h)) return reply_simple(c->fd, h, -304);
 		return h->msgh_id == SLS_MSG_GetDevices ? reply_ool_blob(c, h, sls_blob_devices, sls_blob_devices_len) : reply_ool_blob(c, h, sls_blob_displays, sls_blob_displays_len);

@@ -34,6 +34,18 @@ int main(void)
 	if (!c) return 1;
 	int fd = ws_conn_fd(c);
 	{ int sw = 0, sh = 0; CHECK(ws_conn_screen(c, &sw, &sh) == 0 && sw == 640 && sh == 480); }
+	{ /* routines with their 27.0 request shapes: appearance, RTL, debug options, dock rect, window manager, virtual display */
+		uint8_t m[0x40], rep[0x100]; int got;
+		static const struct { int id; uint32_t size; int rsize; int code; int val; } q[] = {
+			{ 30176, 0x24, 0x28, 0, 0 }, { 30441, 0x24, 0x28, 0, 0 }, { 32003, 0x24, 0x28, 0, 0 },
+			{ 30247, 0x38, 0x3c, 0, 0 }, { 30573, 0x18, 0x24, 0, 0 }, { 30577, 0x24, 0x24, 1001, 0 } };
+		for (unsigned k = 0; k < sizeof q / sizeof *q; k++) {
+			memset(m, 0, sizeof m); hdr(m, q[k].size, q[k].id, 0);
+			got = call(fd, m, q[k].size, rep, sizeof rep);
+			CHECK(got == q[k].rsize && r32(rep, 0x14) == (uint32_t)q[k].id + 100 && (int)r32(rep, 0x20) == q[k].code);
+			if (q[k].rsize == 0x28) CHECK(r32(rep, 0x24) == (uint32_t)q[k].val);
+		}
+	}
 	ws_win w;
 	if (ws_win_create(c, (ws_rect){ 10, 10, 100, 80 }, 0, &w)) return 1;
 	uint8_t m[0x200], rep[0x400];
