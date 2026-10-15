@@ -98,6 +98,38 @@ static void test_walk(void)
 	ws_server_free(srv);
 }
 
+
+/* backdrop blur: a half-transparent window with blur radius shows a blurred copy of what is behind it */
+static void test_blur(void)
+{
+	ws_server *srv = ws_server_new(120, 60);
+	ws_surface *scr = ws_surface_new(120, 60);
+	ws_wid back = ws_create_window(srv, (ws_rect){ 0, 0, 120, 60 });
+	ws_surface *bs = ws_window_backing(srv, back);
+	for (int y = 0; y < 60; y++) for (int x = 0; x < 120; x++) { uint8_t *p = bs->px + (size_t)y * bs->stride + (size_t)x * 4; int on = x < 60; p[0] = p[1] = p[2] = on ? 255 : 0; p[3] = 255; }
+	ws_order_window(srv, back, WS_ABOVE, 0);
+	ws_wid glass = ws_create_window(srv, (ws_rect){ 30, 10, 60, 40 });
+	ws_surface *gs = ws_window_backing(srv, glass);
+	memset(gs->px, 0, gs->stride * (size_t)gs->h);                                  /* fully transparent glass */
+	ws_order_window(srv, glass, WS_ABOVE, 0);
+	ws_compose_scene(srv, scr);
+	int edge = scr->px[(size_t)30 * scr->stride + 59 * 4];                          /* the sharp edge between white and black, no blur yet */
+	CHECK(edge == 255 || edge == 0);
+	CHECK(ws_set_window_blur(srv, glass, 10, 0, 0.0f) == 0);
+	int r = 0, f = 0; float a = 0; CHECK(ws_window_blur(srv, glass, &r, &f, &a) == 0 && r == 10);
+	ws_set_window_blur(srv, glass, 99, 0, 0.0f); ws_window_blur(srv, glass, &r, &f, &a); CHECK(r == 60);   /* clamped */
+	ws_set_window_blur(srv, glass, 10, 0, 0.0f);
+	ws_compose_scene(srv, scr);
+	int mid = scr->px[(size_t)30 * scr->stride + 59 * 4];                           /* the edge is now smeared: strictly between the extremes */
+	int far_left = scr->px[(size_t)30 * scr->stride + 32 * 4], outside = scr->px[(size_t)5 * scr->stride + 59 * 4];
+	CHECK(mid > 20 && mid < 235);
+	CHECK(far_left > 200);                                                            /* still mostly white inside the glass on the white side */
+	CHECK(outside == 255);                                                            /* outside the glass nothing changes */
+	CHECK(ws_server_has_blur(srv));
+	ws_surface_free(scr);
+	ws_server_free(srv);
+}
+
 int main(void)
 {
 	ws_server *srv = ws_server_new(320, 200);

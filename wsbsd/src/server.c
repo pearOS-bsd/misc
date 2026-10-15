@@ -28,6 +28,7 @@ typedef struct {
 	int committed;
 	ws_rect dmg; int has_dmg, full_dmg;
 	uint32_t shadow_gen;
+	int blur_radius, blur_flag; float blur_amount;   /* SetWindowBackgroundBlurRadius */
 	ws_rect *shape;       /* window-relative rectangles, NULL = the whole frame */
 	int nshape;
 } window;
@@ -572,6 +573,10 @@ void ws_compose_scene(ws_server *s, ws_surface *screen)
 	s->comp->fill(s->comp, screen, all, 0.10f, 0.12f, 0.16f, 1.0f);   /* desktop */
 	size_t n = sorted(s, v);
 	for (size_t i = 0; i < n; i++) {
+		if (v[i]->blur_radius > 0) {                                          /* blur what is behind the window (sigma = radius / 2: an estimate) */
+			if (s->comp->flush) s->comp->flush(s->comp);
+			ws_blur_region(screen, v[i]->frame, (float)v[i]->blur_radius * 0.5f);
+		}
 		s->comp->over(s->comp, screen, v[i]->frame.x, v[i]->frame.y, (v[i]->content && v[i]->committed) ? (v[i]->front ? v[i]->front : v[i]->content) : v[i]->backing, v[i]->alpha, all);
 		/* the shadow layer is rendered above its window (it is cut out of the window shape; the inner rim lies inside it) */
 		if (v[i]->shadow_on) draw_shadow(s, v[i], screen, v[i]->id == act);
@@ -657,3 +662,21 @@ void ws_cursor_obscure(ws_server *s, uint32_t cid) { (void)cid; if (!s->obscured
 void ws_cursor_reveal(ws_server *s, uint32_t cid) { (void)cid; if (s->obscured) { s->obscured = 0; cursor_changed(s); } }
 
 static void kf_remove_at_fwd(ws_server *s, int i) { kf_remove_at(s, i); bump(s); }
+
+/* ---- backdrop blur ---- */
+int ws_set_window_blur(ws_server *s, ws_wid id, int radius, int flag, float amount)
+{
+	window *w = get(s, id);
+	if (!w) return -1;
+	radius = radius < 0 ? 0 : radius > 60 ? 60 : radius;
+	if (radius != w->blur_radius || flag != w->blur_flag || amount != w->blur_amount) { w->blur_radius = radius; w->blur_flag = flag; w->blur_amount = amount; bump(s); }
+	return 0;
+}
+int ws_window_blur(ws_server *s, ws_wid id, int *radius, int *flag, float *amount)
+{
+	window *w = get(s, id);
+	if (!w) return -1;
+	*radius = w->blur_radius; *flag = w->blur_flag; *amount = w->blur_amount;
+	return 0;
+}
+int ws_server_has_blur(ws_server *s) { for (size_t i = 0; i < s->n; i++) if (s->win[i].on_screen && s->win[i].blur_radius > 0) return 1; return 0; }

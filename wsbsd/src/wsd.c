@@ -55,7 +55,7 @@ static void render_frame(ws_surface *dst, int with_cursor)
 {
 	int done = 0;
 #ifdef WS_GL
-	if (glc) {
+	if (glc && !ws_server_has_blur(srv)) {                        /* backdrop blur is composed in software for now */
 		if (compositor_render_frame(glc, srv) == 0 && glc_read_pixels(glc, dst) == 0) { gl_failures = 0; done = 1; }
 		else if (++gl_failures >= 3) { fprintf(stderr, "wsd: GL compositor keeps failing, falling back to software\n"); glc_destroy(glc); glc = NULL; }
 	}
@@ -463,6 +463,12 @@ static int do_simple(conn *c, const uint8_t *buf, size_t len)
 		ws_server_warp_cursor(srv, q->x, q->y);                /* the original warps first, then validates the interval */
 		float iv = bits2f(q->interval_bits);
 		if (!(iv >= 0.0f && iv <= 10.0f)) return reply_simple(c->fd, h, 0x3ef);     /* "Invalid interval": 1007 */
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_SetWindowBackgroundBlurRadius: {                       /* wid@0x20, radius@0x24 (clamped to 60), flag byte@0x28, float@0x2c; always 0 */
+		if (!simple_ok(h, len, 0x30)) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
+		uint32_t wid = rd32(buf, 0x20), rad = rd32(buf, 0x24); float amt = bits2f(rd32(buf, 0x2c));
+		if (holds_rights(c, wid)) ws_set_window_blur(srv, wid, rad > 60 ? 60 : (int)rad, buf[0x28] != 0, amt);
 		return reply_simple(c->fd, h, 0);
 	}
 	case SLS_MSG_SetWindowEventMask: {

@@ -178,6 +178,14 @@ int ws_win_alpha(ws_conn *c, ws_win *w, float al)
 	return simple_call(c, &q, sizeof q);
 }
 
+int ws_win_blur(ws_conn *c, ws_win *w, int radius)
+{
+	uint8_t m[0x30]; memset(m, 0, sizeof m);
+	fill_header((mach_msg_header_t *)m, sizeof m, SLS_MSG_SetWindowBackgroundBlurRadius, 0);
+	memcpy(m + 0x18, &WS_NDR, 8); memcpy(m + 0x20, &w->id, 4); uint32_t r = (uint32_t)radius; memcpy(m + 0x24, &r, 4);
+	return simple_call(c, m, sizeof m);
+}
+
 int ws_win_release(ws_conn *c, ws_win *w)
 {
 	sls_terminate_req q; memset(&q, 0, sizeof q);

@@ -161,6 +161,22 @@ int main(int argc, char **argv)
 		ws_win_shadow(c, &surf_w, 14, 1);
 		ws_win_order(c, &surf_w, WS_ABOVE, 0);
 	}
+	/* a frosted-glass panel: translucent white over the colourful window, with a background blur */
+	ws_win glass; int have_glass = 0;
+	{
+		if (ws_win_create(c, (ws_rect){ 960, 150, 260, 170 }, 0, &glass) == 0) {
+			have_glass = 1;
+			ws_surface *g = glass.px;
+			for (int y = 0; y < g->h; y++) for (int x = 0; x < g->w; x++) { uint8_t *p = g->px + (size_t)y * g->stride + (size_t)x * 4; p[0] = p[1] = p[2] = 90; p[3] = 90; }   /* premultiplied white at 35 % */
+			rrect(g, 20, 24, 120, 12, 6, (col){ 1, 1, 1, 0.95f });
+			rrect(g, 20, 48, 220, 8, 4, (col){ 1, 1, 1, 0.7f });
+			rrect(g, 20, 66, 180, 8, 4, (col){ 1, 1, 1, 0.7f });
+			mask_corners(g, 18);
+			ws_win_shadow(c, &glass, 18, 1);
+			ws_win_blur(c, &glass, 24);
+			ws_win_flush(c, &glass);
+		}
+	}
 	ws_win_shadow(c, &back, 12, 1);
 	ws_win_shadow(c, &main_w, 12, 1);
 	ws_win_shadow(c, &hud, 20, 1);
@@ -169,6 +185,7 @@ int main(int argc, char **argv)
 	ws_win_order(c, &main_w, WS_ABOVE, 0);
 	ws_win_order(c, &hud, WS_ABOVE, 0);
 	ws_win_order(c, &main_w, WS_ABOVE, 0);          /* focus the test window: it takes the active shadow */
+	if (have_glass) ws_win_order(c, &glass, WS_ABOVE, 0);
 	ws_win_flush(c, &back); ws_win_flush(c, &main_w); ws_win_flush(c, &hud);
 	/* drive the input path: hover, click the test window, press a key, then read the events back */
 	ws_inject_mouse(c, 520, 330, 0);
