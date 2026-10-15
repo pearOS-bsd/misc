@@ -88,7 +88,7 @@ int main(int argc, char **argv)
 		}
 		char out2[256]; snprintf(out2, sizeof out2, "%s-click.ppm", out);
 		ws_screenshot_scene(c, out2);
-		printf("click %s, wrote %s\n", got ? "delivered" : "MISSING", out2);
+		printf("click %s at local (%d,%d), wrote %s\n", got ? "delivered" : "MISSING", got ? e.x : -1, got ? e.y : -1, out2);
 	}
 	CGContextRelease(g); CGColorSpaceRelease(rgb);
 	ws_server_quit(c);
