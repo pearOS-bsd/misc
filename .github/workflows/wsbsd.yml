@@ -61,6 +61,14 @@ jobs:
             ./wsd -S -t -g 320x200 > /tmp/wsd-cap.log 2>&1 & W=$!; sleep 1; kill $W; grep -q 'capability mode' /tmp/wsd-cap.log || { cat /tmp/wsd-cap.log; echo 'wsd did not enter capability mode'; exit 1; }
             gmake demo OUT=freebsd-sw
             ls -l *.png *.ppm || true
+            gmake package
+            tar -tzf wsbsd-*.tar.gz | head -30
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: wsbsd-freebsd-package
+          path: wsbsd/wsbsd-*.tar.gz
+          if-no-files-found: warn
       - uses: actions/upload-artifact@v4
         if: always()
         with:
