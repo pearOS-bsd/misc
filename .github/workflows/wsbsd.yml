@@ -161,3 +161,11 @@ jobs:
           usesh: true
           run: |
             sh wsbsd/ci/quartzcore-build.sh 2>&1 | tail -70
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: freebsd-quartzcore-screenshots
+          path: |
+            wsbsd/ca-a.png
+            wsbsd/ca-b.png
+          if-no-files-found: warn
