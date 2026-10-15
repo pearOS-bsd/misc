@@ -969,6 +969,7 @@ static int dispatch(conn *c, uint8_t *buf, size_t len, int *fds, int nfds)
 	return reply_mig_error(c->fd, h, MIG_BAD_ID);                       /* known id we do not implement, or an unknown id */
 }
 
+conn *wsd_conn_by_psn(uint32_t hi, uint32_t lo) { for (int i = 0; i < MAXCONN; i++) if (conns[i].fd >= 0 && conns[i].registered && conns[i].psn_hi == hi && conns[i].psn_lo == lo) return &conns[i]; return NULL; }
 conn *wsd_conn_by_id(uint32_t id) { for (int i = 0; i < MAXCONN; i++) if (conns[i].fd >= 0 && conns[i].id == id) return &conns[i]; return NULL; }
 static conn *conn_by_fd(int fd) { for (int i = 0; i < MAXCONN; i++) if (conns[i].fd == fd) return &conns[i]; return NULL; }
 

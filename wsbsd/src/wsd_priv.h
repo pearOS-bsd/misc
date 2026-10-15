@@ -11,11 +11,13 @@ typedef struct {
 	int fd; uint32_t id; int efd; int pid; char app[64]; int handshaken;
 	uint32_t notify_n, notify[256];                                           /* connection notification interests */
 	int registered; uint32_t psn_hi, psn_lo, session_id; int app_type;          /* process record made by CreateApplication */
+	uint64_t gesture_mask; uint32_t coalesce_mask, notes;                        /* SetGestureEventSubmask, CoalesceEventsInMask, SetNotifications */
 } conn;
 
 extern ws_server *srv;
 extern int wsd_dirty;                                   /* set when something visible may have changed */
 conn *wsd_conn_by_id(uint32_t id);
+conn *wsd_conn_by_psn(uint32_t hi, uint32_t lo);                                    /* the connection that registered this process (CreateApplication), NULL if none */
 
 /* replies: 0x24 simple, 0x28 with one value, MIG error, header for custom layouts */
 void fill_reply_header(mach_msg_header_t *r, const mach_msg_header_t *req, uint32_t size, int complex);
