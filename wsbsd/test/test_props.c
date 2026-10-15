@@ -136,6 +136,16 @@ int main(void)
 		hdr(m, 0x24, 30187, 0); w32(m, 0x20, gc.id); g = call(fd, m, 0x24, rep, sizeof rep); CHECK(g == 0x38 && r32(rep, 0x28) == 0);
 		w32(m, 0x20, 0x7ffff); CHECK(call(fd, m, 0x24, rep, sizeof rep) == 0x24 && r32(rep, 0x20) == 0x3e9);
 	}
+	{ /* SetWindowOriginRelativeToWindow, MoveTrackingArea */
+		ws_win ra, rb; CHECK(ws_win_create(c, (ws_rect){ 300, 300, 40, 40 }, 0, &ra) == 0 && ws_win_create(c, (ws_rect){ 0, 0, 20, 20 }, 0, &rb) == 0);
+		uint8_t m[0x34]; memset(m, 0, sizeof m); hdr(m, 0x34, 30186, 0); w32(m, 0x20, rb.id); w32(m, 0x24, ra.id);
+		float dx = 5, dy = -7; memcpy(m + 0x28, &dx, 4); memcpy(m + 0x2c, &dy, 4);
+		CHECK(rc(fd, m, 0x34) == 0);
+		ws_rect fr; CHECK(ws_win_get_bounds(c, &rb, &fr) == 0 && fr.x == 305 && fr.y == 293);
+		w32(m, 0x24, 0x7ffff); CHECK(rc(fd, m, 0x34) == 1000);
+		memset(m, 0, sizeof m); hdr(m, 0x34, 30159, 0); w32(m, 0x20, ra.id); w32(m, 0x24, 77); CHECK(rc(fd, m, 0x34) == 0x3e9);          /* no such tracking area */
+		w32(m, 0x20, 0x7ffff); CHECK(rc(fd, m, 0x34) == 1000);
+	}
 	{ /* GetWindowTransform: the identity for a window nothing transformed (recorded), 1000 for an unknown window, -304 for a bad size */
 		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 100, 200, 30, 20 }, 0, &tw) == 0);
 		uint8_t m[0x28], rep[0x80]; memset(m, 0, sizeof m); hdr(m, 0x28, 30034, 0); w32(m, 0x20, tw.id); w32(m, 0x24, 0x7fffff00);

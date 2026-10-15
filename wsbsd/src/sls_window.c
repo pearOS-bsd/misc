@@ -386,6 +386,14 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		}
 		return reply_simple(c->fd, h, 0);
 	}
+	case SLS_MSG_SetWindowOriginRelativeToWindow: {                                /* wid@0x20, relative window@0x24, dx / dy floats @0x28/@0x2c, flag@0x30, size 0x34: the origin becomes the other window's origin plus the offset; 1000 when a window is unknown or lacks rights */
+		if (!simple_ok(h, len, 0x34)) return reply_simple(c->fd, h, -304);
+		uint32_t wid = rd32(buf, 0x20), rel = rd32(buf, 0x24); float dx, dy; memcpy(&dx, buf + 0x28, 4); memcpy(&dy, buf + 0x2c, 4);
+		ws_rect rf;
+		if (!ws_window_exists(srv, wid) || ws_window_frame(srv, rel, &rf) || !holds_rights(c, wid) || !holds_rights(c, rel)) return reply_simple(c->fd, h, 1000);
+		ws_move_window(srv, wid, (int)(rf.x + dx), (int)(rf.y + dy));
+		return reply_simple(c->fd, h, 0);
+	}
 	case SLS_MSG_SetWindowParent: {                                                /* child@0x20, parent@0x24, size 0x28; rights on both; always 0 */
 		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
 		uint32_t child = rd32(buf, 0x20), parent = rd32(buf, 0x24);
@@ -426,6 +434,19 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 			else ws_tracking_set(srv, id, wid, NULL, 0);
 			free(rc);
 		}
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_MoveTrackingArea: {                                               /* wid@0x20, compat id u64@0x24, x@0x2c, y@0x30, size 0x34; 1000 unknown window, 1001 unknown area, else 0 (applied with rights) */
+		if (!simple_ok(h, len, 0x34)) return reply_simple(c->fd, h, -304);
+		uint32_t wid = rd32(buf, 0x20); uint64_t id; memcpy(&id, buf + 0x24, 8);
+		if (!ws_window_exists(srv, wid)) return reply_simple(c->fd, h, 1000);
+		if (!holds_rights(c, wid)) return reply_simple(c->fd, h, 1001);
+		return reply_simple(c->fd, h, ws_tracking_move(srv, id, wid, (int)rd32(buf, 0x2c), (int)rd32(buf, 0x30)) ? 0x3e9 : 0);
+	}
+	case SLS_MSG_SetTrackingAreaEnabled: {                                        /* wid@0x20, compat id u64@0x24, enabled@0x2c, size 0x30; always 0 */
+		if (!simple_ok(h, len, 0x30)) return reply_simple(c->fd, h, -304);
+		uint64_t id; memcpy(&id, buf + 0x24, 8);
+		if (ws_window_exists(srv, rd32(buf, 0x20)) && holds_rights(c, rd32(buf, 0x20))) ws_tracking_set_enabled(srv, id, rd32(buf, 0x20), rd32(buf, 0x2c) != 0);
 		return reply_simple(c->fd, h, 0);
 	}
 	case SLS_MSG_RemoveTrackingArea: {                                             /* wid@0x20, compat id u64@0x24, size 0x2c; always 0 */
