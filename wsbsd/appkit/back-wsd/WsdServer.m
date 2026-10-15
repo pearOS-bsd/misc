@@ -149,9 +149,9 @@ static void terminate(int sig)
 {
 	struct wsd_window *w = [self wsdWindow: win];
 	if (!w) return;
-	GSSetDevice(ctxt, w, 0, w->h);
-	DPSinitmatrix(ctxt);
-	DPSinitclip(ctxt);
+	[ctxt GSSetDevice: w : 0 : w->h];
+	[ctxt DPSinitmatrix];
+	[ctxt DPSinitclip];
 }
 
 - (void) orderwindow: (int)op : (int)otherWin : (int)win
