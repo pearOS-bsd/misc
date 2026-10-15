@@ -2,10 +2,11 @@
 #import <AppKit/AppKit.h>
 #import <GNUstepGUI/GSDisplayServer.h>
 
-@interface Hello : NSObject { @public NSTextField *field; }
+@interface Hello : NSObject { @public NSTextField *field; NSWindow *win; }
 - (void)clicked:(id)sender;
 @end
 @implementation Hello
+- (void)resize:(id)sender { NSLog(@"resizing"); [win setFrame:NSMakeRect(300, 300, 480, 260) display:YES]; NSLog(@"frame now %@", NSStringFromRect([win frame])); }
 - (void)quit:(id)sender { NSLog(@"done"); [NSApp terminate:nil]; }
 - (void)clicked:(id)sender { NSLog(@"button clicked"); [field setStringValue:@"Clicked!"]; }
 @end
@@ -23,10 +24,11 @@ int main(int argc, char **argv)
 	NSTextField *t = [[NSTextField alloc] initWithFrame:NSMakeRect(20, 80, 200, 24)];
 	[t setStringValue:@"Hello from GNUstep AppKit"];
 	[[w contentView] addSubview:t];
-	h->field = t;
+	h->field = t; h->win = w;
 	[w makeKeyAndOrderFront:nil];
 	NSLog(@"window shown, frame %@ number %d visible %d bgapp %d hidden %d active %d", NSStringFromRect([w frame]), (int)[w windowNumber], (int)[w isVisible], (int)[[NSUserDefaults standardUserDefaults] boolForKey:@"GSBackgroundApp"], (int)[NSApp isHidden], (int)[NSApp isActive]);
 	[NSTimer scheduledTimerWithTimeInterval:([[NSUserDefaults standardUserDefaults] doubleForKey:@"HelloSeconds"] ?: 1.0) target:h selector:@selector(quit:) userInfo:nil repeats:NO];
+	[NSTimer scheduledTimerWithTimeInterval:8.0 target:h selector:@selector(resize:) userInfo:nil repeats:NO];
 	[app run];
 	return 0;
 }

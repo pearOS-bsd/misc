@@ -135,4 +135,6 @@ jobs:
           path: |
             wsbsd/appkit.png
             wsbsd/appkit-click.png
+            wsbsd/appkit-key.png
+            wsbsd/appkit-resize.png
           if-no-files-found: warn
