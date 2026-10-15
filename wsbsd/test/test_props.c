@@ -605,6 +605,19 @@ int main(void)
 		got = call(fd, m, 0x3c, rep, sizeof rep); uint64_t sid = 0; if (got == 0x2c) memcpy(&sid, rep + 0x24, 8);
 		CHECK(got == 0x2c && r32(rep, 0x20) == 0 && sid >= 2);
 		memset(m, 0, sizeof m); hdr(m, 0x30 + 4, 30334, 0); memcpy(m + 0x20, &sid, 8); w32(m, 0x2c, 4); memcpy(m + 0x30, "work", 4); CHECK(rc(fd, m, 0x34) == 0);
+		{ /* owners and shape of the space */
+			uint8_t so[0x40 + 8]; memset(so, 0, sizeof so); hdr(so, 0x40, 30340, 1); w32(so, 0x18, 1); so[0x25] = 1; so[0x27] = 1; w32(so, 0x28, 8); memcpy(so + 0x2c, &WS_NDR, 8); memcpy(so + 0x34, &sid, 8); w32(so, 0x3c, 2); w32(so, 0x40, 7); w32(so, 0x44, 9);
+			CHECK(rc(fd, so, 0x48) == 0);
+			uint8_t q[0x28]; memset(q, 0, sizeof q); hdr(q, 0x28, 30339, 0); memcpy(q + 0x20, &sid, 8);
+			got = call(fd, q, 0x28, rep, sizeof rep); CHECK(got == 0x38 + 8 && r32(rep, 0x34) == 8 && r32(rep, 0x38) == 7 && r32(rep, 0x3c) == 9);
+			uint8_t ro[0x2c]; memset(ro, 0, sizeof ro); hdr(ro, 0x2c, 30342, 0); memcpy(ro + 0x20, &sid, 8); w32(ro, 0x28, 7);
+			CHECK(rc(fd, ro, 0x2c) == 0);
+			got = call(fd, q, 0x28, rep, sizeof rep); CHECK(got == 0x38 + 4 && r32(rep, 0x38) == 9);
+			uint8_t reg[64]; size_t rn = ws_region_serialize(&(ws_rect){ 5, 5, 20, 20 }, 1, reg, sizeof reg);
+			uint8_t sh[0x40 + 64]; memset(sh, 0, sizeof sh); hdr(sh, 0x40, 30344, 1); w32(sh, 0x18, 1); sh[0x25] = 1; sh[0x27] = 1; w32(sh, 0x28, (uint32_t)rn); memcpy(sh + 0x2c, &WS_NDR, 8); memcpy(sh + 0x34, &sid, 8); w32(sh, 0x3c, (uint32_t)rn); memcpy(sh + 0x40, reg, rn);
+			CHECK(rc(fd, sh, 0x40 + rn) == 0);
+			hdr(q, 0x28, 30343, 0); got = call(fd, q, 0x28, rep, sizeof rep); CHECK(got == 0x38 + (int)rn && memcmp(rep + 0x38, reg, rn) == 0);
+		}
 		uint8_t bp[16]; memcpy(bp, "bplist00", 8); bp[8] = 0x54; memcpy(bp + 9, "work", 4);
 		uint8_t wm[0x38 + 16]; memset(wm, 0, sizeof wm); hdr(wm, 0x38, 30349, 1); w32(wm, 0x18, 1); wm[0x25] = 1; wm[0x27] = 1; w32(wm, 0x28, 13); memcpy(wm + 0x2c, &WS_NDR, 8); w32(wm, 0x34, 13); memcpy(wm + 0x38, bp, 13);
 		got = call(fd, wm, 0x38 + 13, rep, sizeof rep); uint64_t found = 0; if (got == 0x2c) memcpy(&found, rep + 0x24, 8);
