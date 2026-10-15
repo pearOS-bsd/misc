@@ -12,7 +12,7 @@ static const uint8_t display_uuid_bytes[16] = { 0x07,0x23,0x0e,0xfa,0x7a,0x8d,0x
 
 #define MAXSP 64
 #define MAXMEM 512
-static struct { int used; uint64_t id; uint32_t type; char name[130]; uint8_t *values; uint32_t vlen; float alpha; int shown; } sp[MAXSP];
+static struct { int used; uint64_t id; uint32_t type; char name[130]; uint8_t *values; uint32_t vlen; float alpha; int shown; uint32_t owners[32]; int nown; uint8_t *shape; uint32_t shape_len; } sp[MAXSP];
 static struct { int used; uint32_t wid; uint64_t sid; } mem[MAXMEM];
 static uint64_t next_space = 2;
 static int sp_ready;
@@ -62,7 +62,7 @@ int sls_space_dispatch(conn *c, const uint8_t *buf, size_t len)
 		uint64_t id; memcpy(&id, buf + 0x20, 8);
 		int i = sp_find(id);
 		if (i < 0 || id == 1) return reply_simple(c->fd, h, 0x3e9);
-		free(sp[i].values); memset(&sp[i], 0, sizeof sp[i]);
+		free(sp[i].values); free(sp[i].shape); memset(&sp[i], 0, sizeof sp[i]);
 		for (int k = 0; k < MAXMEM; k++) if (mem[k].used && mem[k].sid == id) mem[k].used = 0;
 		return reply_simple(c->fd, h, 0);
 	}
@@ -93,6 +93,31 @@ int sls_space_dispatch(conn *c, const uint8_t *buf, size_t len)
 		uint64_t id; memcpy(&id, buf + 0x34, 8);
 		int i = sp_find(id);
 		if (i >= 0) { free(sp[i].values); sp[i].values = osz ? malloc((size_t)osz) : NULL; if (sp[i].values) { memcpy(sp[i].values, buf + 0x40, (size_t)osz); sp[i].vlen = (uint32_t)osz; } else sp[i].vlen = 0; }
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_SpaceSetOwners: {                                                 /* OOL u32 connection ids; space id u64@0x34, count@0x3c (= size / 4); size 0x40; replaces the owner list of a known space; always 0 */
+		osz = ool_request(h, buf, len, 0x40, &err);
+		if (osz < 0) return reply_simple(c->fd, h, err);
+		if ((uint32_t)osz >> 2 != rd32(buf, 0x3c)) return reply_simple(c->fd, h, -300);
+		uint64_t id; memcpy(&id, buf + 0x34, 8);
+		int i = sp_find(id);
+		if (i >= 0) { int n = osz >> 2; if (n > 32) n = 32; for (int k = 0; k < n; k++) sp[i].owners[k] = rd32(buf, 0x40 + 4 * k); sp[i].nown = n; }
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_SpaceRemoveOwner: {                                               /* id u64@0x20, connection id@0x28, size 0x2c; always 0 */
+		if (!simple_ok(h, len, 0x2c)) return reply_simple(c->fd, h, -304);
+		uint64_t id; memcpy(&id, buf + 0x20, 8); uint32_t o = rd32(buf, 0x28);
+		int i = sp_find(id);
+		if (i >= 0) { int k2 = 0; for (int k = 0; k < sp[i].nown; k++) if (sp[i].owners[k] != o) sp[i].owners[k2++] = sp[i].owners[k]; sp[i].nown = k2; }
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_SpaceSetShape: {                                                  /* OOL region; space id u64@0x34, size repeated@0x3c; size 0x40; kept for SpaceCopyShape; always 0 */
+		osz = ool_request(h, buf, len, 0x40, &err);
+		if (osz < 0) return reply_simple(c->fd, h, err);
+		if ((uint32_t)osz != rd32(buf, 0x3c)) return reply_simple(c->fd, h, -300);
+		uint64_t id; memcpy(&id, buf + 0x34, 8);
+		int i = sp_find(id);
+		if (i >= 0) { free(sp[i].shape); sp[i].shape = osz ? malloc((size_t)osz) : NULL; sp[i].shape_len = 0; if (sp[i].shape) { memcpy(sp[i].shape, buf + 0x40, (size_t)osz); sp[i].shape_len = (uint32_t)osz; } }
 		return reply_simple(c->fd, h, 0);
 	}
 	case SLS_MSG_SpaceGetType: {                                                   /* id u64@0x20, size 0x28; reply value: the space type; 1010 for an unknown space */
@@ -194,8 +219,10 @@ int sls_space_dispatch(conn *c, const uint8_t *buf, size_t len)
 		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
 		uint64_t id; memcpy(&id, buf + 0x20, 8);
 		if (sp_find(id) < 0 && h->msgh_id != SLS_MSG_SpaceCopyOwners) return reply_simple(c->fd, h, 0x3f2);      /* an unknown space has no owners: an empty array (recorded) */
-		uint8_t reg[128]; size_t rn = 0;
+		uint8_t reg[128]; size_t rn = 0; int si = sp_find(id);
 		if (h->msgh_id == SLS_MSG_SpaceCopyManagedShape) rn = ws_region_serialize(&(ws_rect){ 0, 0, wsd_screen_w, wsd_screen_h }, 1, reg, sizeof reg);
+		else if (h->msgh_id == SLS_MSG_SpaceCopyShape && si >= 0 && sp[si].shape_len && sp[si].shape_len <= sizeof reg) { memcpy(reg, sp[si].shape, sp[si].shape_len); rn = sp[si].shape_len; }
+		else if (h->msgh_id == SLS_MSG_SpaceCopyOwners && si >= 0 && sp[si].nown) { for (int k = 0; k < sp[si].nown; k++) wr32(reg, 4 * k, sp[si].owners[k]); rn = 4 * (size_t)sp[si].nown; }
 		uint8_t m[0x38]; memset(m, 0, sizeof m);
 		fill_reply_header((mach_msg_header_t *)m, h, sizeof m, 1);
 		wr32(m, 0x18, 1); m[0x24] = 1; m[0x25] = 1; m[0x27] = 1; wr32(m, 0x28, (uint32_t)rn); memcpy(m + 0x2c, &WS_NDR, 8); wr32(m, 0x34, (uint32_t)rn);
