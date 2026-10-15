@@ -334,6 +334,58 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		wr32(r, 0x30, ws_window_owner(srv, wid)); wr32(r, 0x34, holds_rights(c, wid) ? 0x30007u : 0); wr32(r, 0x38, 1);
 		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
 	}
+	case SLS_MSG_GetWindowMovementGroup:                                           /* wid@0x20, size 0x24; reply complex 0x38: OOL array of the group's window ids, the byte length in both the descriptor size and @0x34 (as decompiled); 1001 for an unknown window */
+	case SLS_MSG_GetWindowOrderingGroup: {
+		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size != 0x24) return reply_simple(c->fd, h, -304);
+		uint32_t wid = rd32(buf, 0x20);
+		if (!ws_window_exists(srv, wid)) return reply_simple(c->fd, h, 0x3e9);
+		ws_wid ids[256]; int n = h->msgh_id == SLS_MSG_GetWindowMovementGroup ? ws_window_movement_group(srv, wid, ids, 256) : ws_window_ordering_group(srv, wid, ids, 256);
+		if (n > 256) n = 256;
+		uint32_t arr[256]; for (int i = 0; i < n; i++) arr[i] = ids[i];
+		uint8_t m[0x38]; memset(m, 0, sizeof m);
+		fill_reply_header((mach_msg_header_t *)m, h, sizeof m, 1);
+		wr32(m, 0x18, 1); m[0x24] = 1; m[0x25] = 1; m[0x27] = 1; wr32(m, 0x28, (uint32_t)n * 4); memcpy(m + 0x2c, &WS_NDR, 8); wr32(m, 0x34, (uint32_t)n * 4);
+		struct iovec v[2] = { { m, sizeof m }, { arr, (size_t)n * 4 } };
+		return ws_ipc_send(c->fd, v, n ? 2 : 1, NULL, 0);
+	}
+	case SLS_MSG_AddWindowToWindowMovementGroup:                                   /* parent@0x20, child@0x24, size 0x28; rights on both; always 0 */
+	case SLS_MSG_RemoveWindowFromWindowMovementGroup: {
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		uint32_t p = rd32(buf, 0x20), ch = rd32(buf, 0x24);
+		if (holds_rights(c, p) && holds_rights(c, ch)) {
+			if (h->msgh_id == SLS_MSG_AddWindowToWindowMovementGroup) ws_window_set_movement_parent(srv, ch, p);
+			else if (ws_window_movement_parent(srv, ch) == p) ws_window_set_movement_parent(srv, ch, 0);
+		}
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_ClearWindowMovementGroup:                                         /* wid@0x20, size 0x24 */
+	case SLS_MSG_ClearWindowOrderingGroup:
+	case SLS_MSG_RemoveWindowFromWindowOrderingGroup: {
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		uint32_t wid = rd32(buf, 0x20);
+		if (holds_rights(c, wid)) {
+			if (h->msgh_id == SLS_MSG_ClearWindowMovementGroup) ws_window_clear_movement_group(srv, wid);
+			else if (h->msgh_id == SLS_MSG_ClearWindowOrderingGroup) ws_window_clear_ordering_group(srv, wid);
+			else ws_window_set_ordering_parent(srv, wid, 0, 0);
+		}
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_AddWindowToWindowOrderingGroup: {                                 /* wid@0x20, relation@0x24 (1 above, -1 below), parent@0x28, size 0x2c */
+		if (!simple_ok(h, len, 0x2c)) return reply_simple(c->fd, h, -304);
+		uint32_t wid = rd32(buf, 0x20), par = rd32(buf, 0x28); int32_t rel = (int32_t)rd32(buf, 0x24);
+		if (ws_window_exists(srv, wid) && ws_window_exists(srv, par) && holds_rights(c, wid) && holds_rights(c, par)) ws_window_set_ordering_parent(srv, wid, rel, par);
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_SetWindowLevelForGroup: {                                         /* wid@0x20, level@0x24, size 0x28: the window and its ordering group take the level */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		uint32_t wid = rd32(buf, 0x20); int lv = (int)rd32(buf, 0x24);
+		if (ws_window_exists(srv, wid) && holds_rights(c, wid)) {
+			ws_wid ids[256]; int n = ws_window_ordering_group(srv, wid, ids, 256); if (n > 256) n = 256;
+			ws_set_window_level(srv, wid, lv);
+			for (int i = 0; i < n; i++) if (ids[i] != wid && holds_rights(c, ids[i])) ws_set_window_level(srv, ids[i], lv);
+		}
+		return reply_simple(c->fd, h, 0);
+	}
 	case SLS_MSG_SetWindowParent: {                                                /* child@0x20, parent@0x24, size 0x28; rights on both; always 0 */
 		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
 		uint32_t child = rd32(buf, 0x20), parent = rd32(buf, 0x24);

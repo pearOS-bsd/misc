@@ -99,6 +99,14 @@ ws_wid ws_active_window(ws_server *);                        /* frontmost window
 int ws_release_window(ws_server *, ws_wid);
 ws_surface *ws_window_backing(ws_server *, ws_wid);
 int ws_move_window(ws_server *, ws_wid, int x, int y);
+/* movement groups (the group follows when a member moves) and ordering groups (kept, grouped windows are listed) */
+int ws_window_set_movement_parent(ws_server *, ws_wid child, ws_wid parent);
+ws_wid ws_window_movement_parent(ws_server *, ws_wid);
+void ws_window_clear_movement_group(ws_server *, ws_wid);
+int ws_window_movement_group(ws_server *, ws_wid, ws_wid *out, int max);
+int ws_window_set_ordering_parent(ws_server *, ws_wid child, int rel, ws_wid parent);
+void ws_window_clear_ordering_group(ws_server *, ws_wid);
+int ws_window_ordering_group(ws_server *, ws_wid, ws_wid *out, int max);
 int ws_order_window(ws_server *, ws_wid, int mode, ws_wid relative); /* WS_ABOVE/WS_BELOW/WS_OUT */
 int ws_set_window_level(ws_server *, ws_wid, int level);
 int ws_set_window_alpha(ws_server *, ws_wid, float alpha);

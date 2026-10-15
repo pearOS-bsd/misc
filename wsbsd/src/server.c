@@ -26,6 +26,9 @@ typedef struct {
 	int sublevel, event_mask;
 	uint64_t tags;
 	ws_wid parent;          /* SetWindowParent: 0 = none */
+	ws_wid mvparent;        /* movement group: the window this one moves with (0 = none) */
+	ws_wid ogparent;        /* ordering group: the window this one is grouped with (0 = none) */
+	int ogrel;              /* ordering group: 1 above / -1 below the group parent */
 	int corner_radius;
 	float resolution;
 	ws_surface *content;        /* borrowed */
@@ -134,7 +137,7 @@ int ws_release_window(ws_server *s, ws_wid id)
 	if (!w) return -1;
 	if (s->grab == id) s->grab = 0;
 	if (s->key_win == id) s->key_win = 0;
-	for (size_t i = 0; i < s->n; i++) if (s->win[i].parent == id) s->win[i].parent = 0;       /* children of a destroyed window lose their parent */
+	for (size_t i = 0; i < s->n; i++) { if (s->win[i].parent == id) s->win[i].parent = 0; if (s->win[i].mvparent == id) s->win[i].mvparent = 0; if (s->win[i].ogparent == id) s->win[i].ogparent = 0; }       /* children of a destroyed window lose their parent / groups */
 	ws_surface_free(w->backing); ws_surface_free(w->shadow); ws_surface_free(w->front); free(w->shape); free(w->evshape);
 	bump(s);
 	if (w->shm[0]) ws_shm_unlink(w->shm);
@@ -237,13 +240,82 @@ void ws_release_owner(ws_server *s, uint32_t owner)
 	}
 }
 
+/* a window that moved takes its movement group (the windows whose mvparent chain leads to it) along by the same offset */
+static void move_group(ws_server *s, ws_wid id, int dx, int dy, int depth)
+{
+	if (depth > 16 || (!dx && !dy)) return;
+	for (size_t i = 0; i < s->n; i++) if (s->win[i].mvparent == id) { s->win[i].frame.x += dx; s->win[i].frame.y += dy; move_group(s, s->win[i].id, dx, dy, depth + 1); }
+}
+
 int ws_move_window(ws_server *s, ws_wid id, int x, int y)
 {
 	window *w = get(s, id);
 	if (!w) return -1;
+	int dx = x - (int)w->frame.x, dy = y - (int)w->frame.y;
 	w->frame.x = x; w->frame.y = y;
+	move_group(s, id, dx, dy, 0);
 	bump(s);
 	return 0;
+}
+
+/* Movement groups (SLSAddWindowToWindowMovementGroup and friends): child follows parent. parent 0 detaches; a cycle is refused. */
+int ws_window_set_movement_parent(ws_server *s, ws_wid child, ws_wid parent)
+{
+	window *w = get(s, child);
+	if (!w || child == parent || (parent && !get(s, parent))) return -1;
+	for (ws_wid p = parent; p; ) { if (p == child) return -1; window *pw = get(s, p); p = pw ? pw->mvparent : 0; }
+	w->mvparent = parent;
+	return 0;
+}
+ws_wid ws_window_movement_parent(ws_server *s, ws_wid id) { window *w = get(s, id); return w ? w->mvparent : 0; }
+void ws_window_clear_movement_group(ws_server *s, ws_wid id)      /* the window leaves its group, and a group it leads dissolves */
+{
+	window *w = get(s, id); if (!w) return;
+	w->mvparent = 0;
+	for (size_t i = 0; i < s->n; i++) if (s->win[i].mvparent == id) s->win[i].mvparent = 0;
+}
+/* members of the group the window belongs to (its root and every descendant), at most max; returns the count */
+int ws_window_movement_group(ws_server *s, ws_wid id, ws_wid *out, int max)
+{
+	window *w = get(s, id); if (!w) return 0;
+	ws_wid root = id; for (int d = 0; d < 16 && get(s, root) && get(s, root)->mvparent; d++) root = get(s, root)->mvparent;
+	int n = 0; ws_wid queue[256]; int qh = 0, qt = 0;
+	int has = 0; for (size_t i = 0; i < s->n; i++) if (s->win[i].mvparent == root) has = 1;
+	if (!has) return 0;
+	queue[qt++] = root;
+	while (qh < qt && qt < 256) {
+		ws_wid cur = queue[qh++]; if (n < max) out[n] = cur; n++;
+		for (size_t i = 0; i < s->n && qt < 256; i++) if (s->win[i].mvparent == cur) queue[qt++] = s->win[i].id;
+	}
+	return n;
+}
+/* Ordering groups: a window ordered with another (above / below) */
+int ws_window_set_ordering_parent(ws_server *s, ws_wid child, int rel, ws_wid parent)
+{
+	window *w = get(s, child);
+	if (!w || child == parent || (parent && !get(s, parent))) return -1;
+	for (ws_wid p = parent; p; ) { if (p == child) return -1; window *pw = get(s, p); p = pw ? pw->ogparent : 0; }
+	w->ogparent = parent; w->ogrel = rel;
+	return 0;
+}
+void ws_window_clear_ordering_group(ws_server *s, ws_wid id)
+{
+	window *w = get(s, id); if (!w) return;
+	w->ogparent = 0;
+	for (size_t i = 0; i < s->n; i++) if (s->win[i].ogparent == id) s->win[i].ogparent = 0;
+}
+int ws_window_ordering_group(ws_server *s, ws_wid id, ws_wid *out, int max)
+{
+	window *w = get(s, id); if (!w) return 0;
+	ws_wid root = id; for (int d = 0; d < 16 && get(s, root) && get(s, root)->ogparent; d++) root = get(s, root)->ogparent;
+	int has = 0; for (size_t i = 0; i < s->n; i++) if (s->win[i].ogparent == root) has = 1;
+	if (!has) return 0;
+	int n = 0; ws_wid queue[256]; int qh = 0, qt = 0; queue[qt++] = root;
+	while (qh < qt && qt < 256) {
+		ws_wid cur = queue[qh++]; if (n < max) out[n] = cur; n++;
+		for (size_t i = 0; i < s->n && qt < 256; i++) if (s->win[i].ogparent == cur) queue[qt++] = s->win[i].id;
+	}
+	return n;
 }
 
 static int key_cmp(const window *x, const window *y)
@@ -860,6 +932,6 @@ int ws_set_window_frame(ws_server *s, ws_wid id, int x, int y, int w, int h)
 {
 	window *win = get(s, id);
 	if (!win) return -1;
-	if (win->frame.x != x || win->frame.y != y) { win->frame.x = x; win->frame.y = y; bump(s); }
+	if (win->frame.x != x || win->frame.y != y) { int dx = x - (int)win->frame.x, dy = y - (int)win->frame.y; win->frame.x = x; win->frame.y = y; move_group(s, id, dx, dy, 0); bump(s); }
 	return ws_resize_window(s, id, w, h);
 }

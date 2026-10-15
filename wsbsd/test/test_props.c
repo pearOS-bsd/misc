@@ -123,6 +123,19 @@ int main(void)
 		ws_win_order(c, &lw, 0, 0);
 		hdr(m, 0x38, 30460, 0); CHECK(rc(fd, m, 0x38) == -304);
 	}
+	{ /* movement groups: a child moves with its parent; the group is listed; clearing dissolves it */
+		ws_win gp, gc; CHECK(ws_win_create(c, (ws_rect){ 10, 10, 50, 50 }, 0, &gp) == 0 && ws_win_create(c, (ws_rect){ 100, 100, 20, 20 }, 0, &gc) == 0);
+		uint8_t m[0x2c], rep[0x100]; memset(m, 0, sizeof m); hdr(m, 0x28, 30190, 0); w32(m, 0x20, gp.id); w32(m, 0x24, gc.id); CHECK(rc(fd, m, 0x28) == 0);
+		CHECK(ws_win_move(c, &gp, 60, 70) == 0);
+		ws_rect fr; CHECK(ws_win_get_bounds(c, &gc, &fr) == 0 && fr.x == 150 && fr.y == 160);
+		memset(m, 0, sizeof m); hdr(m, 0x24, 30187, 0); w32(m, 0x20, gc.id);
+		int g = call(fd, m, 0x24, rep, sizeof rep);
+		CHECK(g >= 0x38 + 8 && r32(rep, 0x28) == 8 && r32(rep, 0x38) == gp.id && r32(rep, 0x3c) == gc.id);
+		hdr(m, 0x24, 30189, 0); w32(m, 0x20, gp.id); CHECK(rc(fd, m, 0x24) == 0);
+		CHECK(ws_win_move(c, &gp, 0, 0) == 0 && ws_win_get_bounds(c, &gc, &fr) == 0 && fr.x == 150);
+		hdr(m, 0x24, 30187, 0); w32(m, 0x20, gc.id); g = call(fd, m, 0x24, rep, sizeof rep); CHECK(g == 0x38 && r32(rep, 0x28) == 0);
+		w32(m, 0x20, 0x7ffff); CHECK(call(fd, m, 0x24, rep, sizeof rep) == 0x24 && r32(rep, 0x20) == 0x3e9);
+	}
 	{ /* GetWindowTransform: the identity for a window nothing transformed (recorded), 1000 for an unknown window, -304 for a bad size */
 		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 100, 200, 30, 20 }, 0, &tw) == 0);
 		uint8_t m[0x28], rep[0x80]; memset(m, 0, sizeof m); hdr(m, 0x28, 30034, 0); w32(m, 0x20, tw.id); w32(m, 0x24, 0x7fffff00);
