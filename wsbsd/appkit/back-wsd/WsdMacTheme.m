@@ -17,6 +17,10 @@ static NSColor *rgb(int r, int g, int b, CGFloat a) { return [NSColor colorWithC
 
 #define TB 32.0
 
+@interface GSStandardWindowDecorationView (WsdPrivate)
+- (NSPoint) mouseLocationOnScreenOutsideOfEventStream;
+@end
+
 @interface NSWindow (WsdPrivate)
 - (void) _captureMouse: (id)sender;
 - (void) _releaseMouse: (id)sender;
