@@ -188,3 +188,20 @@ CGError SLSSetWindowListAlpha(CGSConnectionID cid, const CGSWindowID *list, int 
 	for (int i = 0; i < count; i++) { ws_win t; int r = ws_win_alpha(get_conn(), handle(list[i], &t), alpha); if (r) rc = r; }
 	return rc;
 }
+
+/* wsbsd shim extension standing in for WindowListCreateImage / HWCaptureWindowListToIOSurface (no CoreGraphics images here): the composed BGRA pixels of one window (wid != 0) or the
+ * whole screen (wid 0) in a malloc'd buffer the caller frees. */
+CGError WSCaptureWindowPixels(CGSConnectionID cid, CGSWindowID wid, int *w, int *h, uint8_t **bgra)
+{
+	(void)cid;
+	ws_conn *c = get_conn();
+	if (!c || !w || !h || !bgra) return 1001;
+	ws_surface *s = ws_capture(c, (ws_rect){ 0, 0, 0, 0 }, wid, 0);
+	if (!s) return 1000;
+	uint8_t *out = malloc((size_t)s->w * 4 * (size_t)s->h);
+	if (!out) { ws_surface_free(s); return 1000; }
+	for (int y = 0; y < s->h; y++) memcpy(out + (size_t)y * s->w * 4, s->px + (size_t)y * s->stride, (size_t)s->w * 4);
+	*w = s->w; *h = s->h; *bgra = out;
+	ws_surface_free(s);
+	return 0;
+}
