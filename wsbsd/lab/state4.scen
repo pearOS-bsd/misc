@@ -1,0 +1,70 @@
+# the tail of state3 (the real server destroys the connection after an unknown id)
+new_window a 100 200 300 150
+new_window b 50 60 80 40
+raw 30362 ndr wid:a u32:0
+raw 30364 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30365 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30374 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30380 ndr wid:a
+raw 30382 ndr wid:a
+raw 30384 ndr wid:a u32:0 u32:0 u32:0
+raw 30391 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30392 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30395 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30396 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30398 ndr wid:a u32:0 u32:0
+raw 30400 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30405 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30411 ndr wid:a u32:0 u32:0
+raw 30412 ndr wid:a u32:0
+raw 30413 ndr wid:a
+raw 30414 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30415 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30416 ndr wid:a u32:0
+raw 30417 ndr wid:a u32:0 u32:0 u32:0
+raw 30418 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30419 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30420 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30423 ndr wid:a u32:0
+raw 30427 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30428 ndr 
+raw 30443 ndr wid:a u32:0 u32:0
+raw 30446 ndr wid:a u32:0
+raw 30447 ndr wid:a u32:0 u32:0 u32:0 u32:0
+raw 30451 ndr wid:a u32:0
+raw 30460 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30465 ndr wid:a u32:0
+raw 30469 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30477 ndr 
+raw 30478 ndr wid:a
+raw 30481 ndr wid:a u32:0 u32:0
+raw 30482 ndr wid:a u32:0
+raw 30483 ndr wid:a u32:0
+raw 30485 ndr wid:a u32:0
+raw 30489 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30494 ndr 
+raw 30500 ndr 
+raw 30533 ndr wid:a u32:0
+raw 30545 ndr wid:a
+raw 30546 ndr wid:a
+raw 30548 ndr wid:a u32:0
+raw 30549 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30551 ndr 
+raw 30557 ndr wid:a u32:0 u32:0 u32:0
+raw 30563 ndr wid:a u32:0
+raw 30564 ndr wid:a u32:0
+raw 30565 ndr wid:a u32:0
+raw 30569 ndr wid:a u32:0
+raw 30588 ndr wid:a
+raw 30589 ndr wid:a
+raw 30592 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30598 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30615 ndr wid:a u32:0
+raw 30627 ndr wid:a
+raw 30628 ndr wid:a u32:0 u32:0 u32:0
+raw 30630 ndr wid:a
+raw 30636 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30637 ndr 
+raw 30638 ndr wid:a
+raw 30644 ndr wid:a
+raw 30645 ndr wid:a
