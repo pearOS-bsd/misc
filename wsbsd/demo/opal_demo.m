@@ -5,6 +5,19 @@
 #include <stdio.h>
 #include <math.h>
 
+/* a push button drawn with CoreGraphics: rounded look made of two rectangles and a label; pressed state is green */
+static void draw_button(CGContextRef g, CGRect r, int pressed)
+{
+	CGContextSetRGBFillColor(g, pressed ? 0.20 : 0.00, pressed ? 0.78 : 0.48, pressed ? 0.35 : 1.0, 1);
+	CGContextFillRect(g, r);
+	CGContextSetRGBFillColor(g, 1, 1, 1, 0.25);
+	CGContextFillRect(g, CGRectMake(r.origin.x, r.origin.y + r.size.height - 3, r.size.width, 3));
+	CGContextSetRGBFillColor(g, 1, 1, 1, 1);
+	CGContextSelectFont(g, "DejaVu Sans", 15, kCGEncodingMacRoman);
+	const char *label = pressed ? "Clicked!" : "Click me";
+	CGContextShowTextAtPoint(g, r.origin.x + 16, r.origin.y + 11, label, strlen(label));
+}
+
 int main(int argc, char **argv)
 {
 	const char *out = argc > 1 ? argv[1] : "opal.ppm";
@@ -50,15 +63,34 @@ int main(int argc, char **argv)
 		if (img) { CGContextDrawImage(g, CGRectMake(430, 40, 96, 96), img); CGImageRelease(img); }
 		if (tc) CGContextRelease(tc);
 	}
+	draw_button(g, CGRectMake(30, 20, 120, 34), 0);
 	CGContextFlush(g);
 	fprintf(stderr, "opal_demo: ctx data %p (ours %p), pixel(10,10)=%08x pixel(120,130)=%08x\n", CGBitmapContextGetData(g), px->px, ((uint32_t *)px->px)[10 * (px->stride / 4) + 10], ((uint32_t *)px->px)[130 * (px->stride / 4) + 120]);
-	CGContextRelease(g); CGColorSpaceRelease(rgb);
 	ws_rect all = { 0, 0, W, H };
 	if (ws_surface_flush(c, &w, sid, &all)) { fprintf(stderr, "opal_demo: flush failed\n"); return 1; }
 	ws_win_shadow(c, &w, 12, 1);
 	ws_win_order(c, &w, WS_ABOVE, 0);
 	if (ws_screenshot(c, out)) { fprintf(stderr, "opal_demo: screenshot failed\n"); return 1; }
 	printf("wrote %s\n", out);
+	/* interaction: a click (PostEventRecord) on the button reaches the window, the app redraws only the button with CoreGraphics and flushes only its rectangle */
+	{
+		ws_win_set_event_mask(c, &w, -1);
+		ws_post_mouse_event(c, 5, 120 + 90, 100 + 323, 0, 0, 0);
+		ws_post_mouse_event(c, 1, 120 + 90, 100 + 323, 0, 1, 0);
+		ws_event e; int got = 0;
+		for (int i = 0; i < 20 && ws_conn_next_pushed_event(c, 300, &e); i++) if (e.type == WS_EV_MOUSE_DOWN) { got = 1; break; }
+		ws_post_mouse_event(c, 2, 120 + 90, 100 + 323, 0, 1, 0);
+		if (got && e.x >= 30 && e.x < 150 && e.y >= H - 54 && e.y < H - 20) {
+			draw_button(g, CGRectMake(30, 20, 120, 34), 1);
+			CGContextFlush(g);
+			ws_rect btn = { 30, H - 54, 120, 34 };
+			ws_surface_flush(c, &w, sid, &btn);
+		}
+		char out2[256]; snprintf(out2, sizeof out2, "%s-click.ppm", out);
+		ws_screenshot_scene(c, out2);
+		printf("click %s, wrote %s\n", got ? "delivered" : "MISSING", out2);
+	}
+	CGContextRelease(g); CGColorSpaceRelease(rgb);
 	ws_server_quit(c);
 	return 0;
 }

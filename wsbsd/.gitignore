@@ -22,3 +22,6 @@ test_props
 test_shim
 test_shim2
 test_shim3
+opal_demo
+opal*.ppm
+opal*.png

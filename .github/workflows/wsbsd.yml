@@ -108,6 +108,8 @@ jobs:
         if: always()
         with:
           name: freebsd-opal-screenshot
-          path: wsbsd/opal.png
+          path: |
+            wsbsd/opal.png
+            wsbsd/opal-click.png
           if-no-files-found: warn
 

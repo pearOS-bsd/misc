@@ -30,4 +30,5 @@ sleep 1
 find / -name "libopal*" -o -name "libgnustep-corebase*" 2>/dev/null | head -5
 LD_LIBRARY_PATH=/tmp/gs/opal/Source/obj:/tmp/gs/corebase/Source/obj:/usr/local/GNUstep/System/Library/Libraries:/usr/local/lib ./opal_demo opal.ppm 2>&1 | tail -5
 python3 tools/ppm2png.py opal.ppm opal.png 2>&1 | tail -1 || true
-ls -l opal.ppm opal.png 2>&1
+python3 tools/ppm2png.py opal.ppm-click.ppm opal-click.png 2>&1 | tail -1 || true
+ls -l opal.png opal-click.png 2>&1
