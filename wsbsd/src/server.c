@@ -37,6 +37,7 @@ typedef struct {
 	int blur_radius, blur_flag; float blur_amount;   /* SetWindowBackgroundBlurRadius */
 	ws_rect *shape;       /* window-relative rectangles, NULL = the whole frame */
 	int nshape;
+	ws_rect *evshape; int nev;   /* SetWindowEventShape: where the window takes events, when different from where it is drawn */
 } window;
 
 struct ws_server {
@@ -134,7 +135,7 @@ int ws_release_window(ws_server *s, ws_wid id)
 	if (s->grab == id) s->grab = 0;
 	if (s->key_win == id) s->key_win = 0;
 	for (size_t i = 0; i < s->n; i++) if (s->win[i].parent == id) s->win[i].parent = 0;       /* children of a destroyed window lose their parent */
-	ws_surface_free(w->backing); ws_surface_free(w->shadow); ws_surface_free(w->front); free(w->shape);
+	ws_surface_free(w->backing); ws_surface_free(w->shadow); ws_surface_free(w->front); free(w->shape); free(w->evshape);
 	bump(s);
 	if (w->shm[0]) ws_shm_unlink(w->shm);
 	*w = s->win[--s->n];
@@ -313,6 +314,15 @@ ws_wid ws_window_parent(ws_server *s, ws_wid id) { window *w = get(s, id); retur
 int ws_set_window_system_alpha(ws_server *s, ws_wid id, float a) { window *w = get(s, id); if (!w) return -1; w->sys_alpha = a < 0 ? 0 : a > 1 ? 1 : a; bump(s); return 0; }
 int ws_set_window_system_level(ws_server *s, ws_wid id, int cls) { window *w = get(s, id); if (!w) return -1; w->syslevel = cls; return 0; }
 
+int ws_window_set_event_shape(ws_server *s, ws_wid id, const ws_rect *r, int n)
+{
+	window *w = get(s, id);
+	if (!w) return -1;
+	free(w->evshape); w->evshape = NULL; w->nev = 0;
+	if (n > 0) { w->evshape = malloc((size_t)n * sizeof *r); if (!w->evshape) return -1; memcpy(w->evshape, r, (size_t)n * sizeof *r); w->nev = n; }
+	return 0;
+}
+
 int ws_window_has_shadow(ws_server *s, ws_wid id) { window *w = get(s, id); return w && w->shadow_on; }
 
 int ws_set_window_shadow(ws_server *s, ws_wid id, int cr, int on)
@@ -360,7 +370,12 @@ ws_wid ws_find_window(ws_server *s, int x, int y)
 		window *w = v[i];
 		if (w->alpha * w->sys_alpha <= 0) continue;
 		int in = 0;
-		if (w->nshape) {                                  /* the window shape (clip) decides, not the bounding frame */
+		if (w->nev) {                                     /* the event shape decides first */
+			for (int k = 0; k < w->nev && !in; k++) {
+				ws_rect q = w->evshape[k];
+				in = x >= w->frame.x + q.x && y >= w->frame.y + q.y && x < w->frame.x + q.x + q.w && y < w->frame.y + q.y + q.h;
+			}
+		} else if (w->nshape) {                                  /* the window shape (clip) decides, not the bounding frame */
 			for (int k = 0; k < w->nshape && !in; k++) {
 				ws_rect q = w->shape[k];
 				in = x >= w->frame.x + q.x && y >= w->frame.y + q.y && x < w->frame.x + q.x + q.w && y < w->frame.y + q.y + q.h;

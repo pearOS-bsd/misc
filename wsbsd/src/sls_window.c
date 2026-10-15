@@ -220,6 +220,24 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 	case SLS_MSG_ForceWaitCursorActive:                                             /* flag@0x20, size 0x24 */
 		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
 		return reply_simple(c->fd, h, 0);
+	case SLS_MSG_SetWindowEventShape: {                                             /* OOL region; wid@0x34, size repeated@0x38; size 0x3c; applied with rights (type 2); always 0. The region is window-relative and decides where the window takes events */
+		int err; int osz = ool_request(h, buf, len, 0x3c, &err);
+		if (osz < 0) return reply_simple(c->fd, h, err);
+		if ((uint32_t)osz != rd32(buf, 0x38)) return reply_simple(c->fd, h, -300);
+		uint32_t wid = rd32(buf, 0x34);
+		if (ws_window_exists(srv, wid) && holds_rights(c, wid)) {
+			ws_rect *rc = NULL; int nr = 0; ws_rect bb;
+			if (osz && ws_region_parse(buf + 0x3c, (uint32_t)osz, &rc, &nr, &bb) == 0) ws_window_set_event_shape(srv, wid, rc, nr); else ws_window_set_event_shape(srv, wid, NULL, 0);
+			free(rc);
+		}
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_SetWindowRegion: return do_set_property(c, buf, len);              /* the same request as SetWindowProperty (named, OOL bytes): the region is kept as a named window value */
+	case SLS_MSG_DeleteWindowRegion: return do_delete_property(c, buf, len);        /* the same request as DeleteWindowProperty */
+	case SLS_MSG_BlockWindowOrdering: {                                            /* value@0x20, size 0x24; reply value: 1 when the session's ordering counter (0 here) is below it */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		return reply_value(c->fd, h, (int32_t)rd32(buf, 0x20) > 0 ? 1 : 0);
+	}
 	case SLS_MSG_OrderWindowListWithOperation: {                                   /* n@0x20 (<= 0x400), n ids, then operation and relative window (u32 each); size 4n + 0x2c; 1000 for an empty list or a window without rights */
 		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size < 0x2c || h->msgh_size > 0x102c) return reply_simple(c->fd, h, -304);
 		uint32_t n = rd32(buf, 0x20);

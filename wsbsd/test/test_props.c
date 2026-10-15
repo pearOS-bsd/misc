@@ -355,6 +355,21 @@ int main(void)
 		CHECK(!again);                                                                    /* removed: no more events */
 	}
 
+	/* SetWindowEventShape: events go where the event shape is, not where the window is drawn; window regions are named values; BlockWindowOrdering */
+	{
+		ws_win ew; CHECK(ws_win_create(c, (ws_rect){ 600, 400, 40, 40 }, 0, &ew) == 0 && ws_win_order(c, &ew, 1, 0) == 0);
+		CHECK(ws_win_find(c, 605, 405) == ew.id);                                              /* inside the frame */
+		uint8_t reg[64]; size_t rn = ws_region_serialize(&(ws_rect){ 20, 20, 10, 10 }, 1, reg, sizeof reg);
+		uint8_t em[0x3c + 64], rep[0x100]; memset(em, 0, sizeof em); hdr(em, 0x3c, 30225, 1); w32(em, 0x18, 1); em[0x25] = 1; em[0x27] = 1; w32(em, 0x28, (uint32_t)rn); memcpy(em + 0x2c, &WS_NDR, 8); w32(em, 0x34, ew.id); w32(em, 0x38, (uint32_t)rn); memcpy(em + 0x3c, reg, rn);
+		int got = call(fd, em, 0x3c + rn, rep, sizeof rep); CHECK(got >= 0x24 && r32(rep, 0x20) == 0);
+		CHECK(ws_win_find(c, 605, 405) != ew.id);                                              /* outside the event shape now */
+		CHECK(ws_win_find(c, 625, 425) == ew.id);                                              /* inside it */
+		w32(em, 0x28, 0); w32(em, 0x38, 0); got = call(fd, em, 0x3c, rep, sizeof rep); CHECK(got >= 0x24 && r32(rep, 0x20) == 0);          /* an empty region clears it */
+		CHECK(ws_win_find(c, 605, 405) == ew.id);
+		uint8_t m[0x40]; memset(m, 0, sizeof m); hdr(m, 0x24, 30167, 0); w32(m, 0x20, 5); got = call(fd, m, 0x24, rep, sizeof rep); CHECK(got == 0x28 && r32(rep, 0x24) == 1);
+		ws_win_order(c, &ew, 0, 0);
+	}
+
 	/* cursor routines: the region lock keeps the pointer inside; another connection cannot take it; restriction mode/options, drag lock, obscure and wait cursor are accepted */
 	{
 		uint8_t reg[64]; size_t rn = ws_region_serialize(&(ws_rect){ 100, 100, 50, 50 }, 1, reg, sizeof reg), got;
