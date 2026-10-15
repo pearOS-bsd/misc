@@ -63,7 +63,7 @@ static int do_get_property(conn *c, const uint8_t *buf, size_t len)
 	for (int i = 0; i < MAXPROPS; i++) if (props[i].used && props[i].wid == wid && !strcmp(props[i].key, key)) { data = props[i].data; n = props[i].len; }
 	uint8_t m[0x38]; memset(m, 0, sizeof m);
 	fill_reply_header((mach_msg_header_t *)m, h, sizeof m, 1);
-	wr32(m, 0x18, 1); m[0x25] = 1; m[0x27] = 1; wr32(m, 0x28, n);                 /* one OOL descriptor, then the record and the size */
+	wr32(m, 0x18, 1); m[0x24] = 1; m[0x25] = 1; m[0x27] = 1; wr32(m, 0x28, n);                 /* one OOL descriptor, then the record and the size */
 	memcpy(m + 0x2c, &WS_NDR, 8); wr32(m, 0x34, n);
 	struct iovec v[2] = { { m, sizeof m }, { (void *)data, n } };
 	return ws_ipc_send(c->fd, v, n ? 2 : 1, NULL, 0);
@@ -113,7 +113,7 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		size_t n = ws_region_serialize(&r, 1, reg, sizeof reg);
 		uint8_t m[0x38]; memset(m, 0, sizeof m);
 		fill_reply_header((mach_msg_header_t *)m, h, sizeof m, 1);
-		wr32(m, 0x18, 1); m[0x25] = 1; m[0x27] = 1; wr32(m, 0x28, (uint32_t)n); memcpy(m + 0x2c, &WS_NDR, 8); wr32(m, 0x34, (uint32_t)n);
+		wr32(m, 0x18, 1); m[0x24] = 1; m[0x25] = 1; m[0x27] = 1; wr32(m, 0x28, (uint32_t)n); memcpy(m + 0x2c, &WS_NDR, 8); wr32(m, 0x34, (uint32_t)n);
 		struct iovec v[2] = { { m, sizeof m }, { reg, n } };
 		return ws_ipc_send(c->fd, v, 2, NULL, 0);
 	}
@@ -155,7 +155,7 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		for (uint32_t i = 0; i < count; i++) spaces[i] = 1;                         /* one space */
 		uint8_t m[0x38]; memset(m, 0, sizeof m);
 		fill_reply_header((mach_msg_header_t *)m, h, sizeof m, 1);
-		wr32(m, 0x18, 1); m[0x25] = 1; m[0x27] = 1; wr32(m, 0x28, count * 8); memcpy(m + 0x2c, &WS_NDR, 8); wr32(m, 0x34, count);
+		wr32(m, 0x18, 1); m[0x24] = 1; m[0x25] = 1; m[0x27] = 1; wr32(m, 0x28, count * 8); memcpy(m + 0x2c, &WS_NDR, 8); wr32(m, 0x34, count);
 		struct iovec v[2] = { { m, sizeof m }, { spaces, count * 8 } };
 		int rc = ws_ipc_send(c->fd, v, count ? 2 : 1, NULL, 0);
 		free(spaces);
