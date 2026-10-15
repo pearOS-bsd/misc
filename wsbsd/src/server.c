@@ -10,6 +10,8 @@ typedef struct {
 	ws_rect frame;
 	int level;
 	float alpha;
+	float sys_alpha;        /* SetWindowListSystemAlpha: multiplies the alpha (fades done by the system); 1 by default */
+	int syslevel;           /* SetWindowListSystemLevel class, kept */
 	int on_screen;
 	uint64_t order;         /* higher = in front within its level */
 	ws_surface *backing;
@@ -118,7 +120,7 @@ static ws_wid add_window(ws_server *s, ws_rect f, ws_surface *b, const char *shm
 		s->win = nw; s->cap = nc;
 	}
 	window *w = &s->win[s->n++];
-	*w = (window){ .id = s->next_id++, .frame = f, .alpha = 1.0f, .backing = b, .full_dmg = 1 };
+	*w = (window){ .id = s->next_id++, .frame = f, .alpha = 1.0f, .sys_alpha = 1.0f, .backing = b, .full_dmg = 1 };
 	strncpy(w->shm, shm, sizeof w->shm - 1);
 	bump(s);
 	return w->id;
@@ -307,6 +309,9 @@ int ws_window_set_parent(ws_server *s, ws_wid child, ws_wid parent)
 }
 ws_wid ws_window_parent(ws_server *s, ws_wid id) { window *w = get(s, id); return w ? w->parent : 0; }
 
+int ws_set_window_system_alpha(ws_server *s, ws_wid id, float a) { window *w = get(s, id); if (!w) return -1; w->sys_alpha = a < 0 ? 0 : a > 1 ? 1 : a; bump(s); return 0; }
+int ws_set_window_system_level(ws_server *s, ws_wid id, int cls) { window *w = get(s, id); if (!w) return -1; w->syslevel = cls; return 0; }
+
 int ws_window_has_shadow(ws_server *s, ws_wid id) { window *w = get(s, id); return w && w->shadow_on; }
 
 int ws_set_window_shadow(ws_server *s, ws_wid id, int cr, int on)
@@ -352,7 +357,7 @@ ws_wid ws_find_window(ws_server *s, int x, int y)
 	ws_wid hit = 0;
 	for (size_t i = n; i-- > 0;) {
 		window *w = v[i];
-		if (w->alpha <= 0) continue;
+		if (w->alpha * w->sys_alpha <= 0) continue;
 		int in = 0;
 		if (w->nshape) {                                  /* the window shape (clip) decides, not the bounding frame */
 			for (int k = 0; k < w->nshape && !in; k++) {
@@ -551,7 +556,7 @@ static void draw_shadow(ws_server *s, window *w, ws_surface *screen, int active)
 	ensure_shadow(s, w, active);
 	if (!w->shadow) return;
 	ws_rect all = { 0, 0, screen->w, screen->h };
-	s->comp->over(s->comp, screen, w->frame.x - w->shadow_pad, w->frame.y - w->shadow_pad, w->shadow, w->alpha, all);
+	s->comp->over(s->comp, screen, w->frame.x - w->shadow_pad, w->frame.y - w->shadow_pad, w->shadow, w->alpha * w->sys_alpha, all);
 }
 
 void ws_window_damage(ws_server *s, ws_wid id, const ws_rect *r)
@@ -585,7 +590,7 @@ void ws_server_walk(ws_server *s, ws_visit_fn fn, void *ctx)
 		if (w->shadow_on) ensure_shadow(s, w, w->id == act);
 		ws_visit vis;
 		memset(&vis, 0, sizeof vis);
-		vis.id = w->id; vis.frame = w->frame; vis.alpha = w->alpha; vis.corner_radius = w->corner_radius ? w->corner_radius : (w->shadow_on ? w->shadow_cr : 0); vis.blur_radius = w->blur_radius; vis.active = w->id == act;
+		vis.id = w->id; vis.frame = w->frame; vis.alpha = w->alpha * w->sys_alpha; vis.corner_radius = w->corner_radius ? w->corner_radius : (w->shadow_on ? w->shadow_cr : 0); vis.blur_radius = w->blur_radius; vis.active = w->id == act;
 		vis.pixels = (w->content && w->committed) ? (w->front ? w->front : w->content) : w->backing;
 		vis.buffer_id = (w->content && w->committed) ? w->content_id : 0;
 		if (w->shadow_on && w->shadow) {
@@ -611,7 +616,7 @@ void ws_compose_scene(ws_server *s, ws_surface *screen)
 			float sg = ws_blur_sigma(v[i]->blur_radius); int m = (int)ceilf(3.0f * sg);
 			ws_blur_region(screen, (ws_rect){ v[i]->frame.x - m, v[i]->frame.y - m, v[i]->frame.w + 2 * m, v[i]->frame.h + 2 * m }, v[i]->frame, sg);   /* the backdrop beyond the edges feeds the blur */
 		}
-		s->comp->over(s->comp, screen, v[i]->frame.x, v[i]->frame.y, (v[i]->content && v[i]->committed) ? (v[i]->front ? v[i]->front : v[i]->content) : v[i]->backing, v[i]->alpha, all);
+		s->comp->over(s->comp, screen, v[i]->frame.x, v[i]->frame.y, (v[i]->content && v[i]->committed) ? (v[i]->front ? v[i]->front : v[i]->content) : v[i]->backing, v[i]->alpha * v[i]->sys_alpha, all);
 		/* the shadow layer is rendered above its window (it is cut out of the window shape; the inner rim lies inside it) */
 		if (v[i]->shadow_on) draw_shadow(s, v[i], screen, v[i]->id == act);
 	}

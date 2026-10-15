@@ -79,7 +79,6 @@ static const gen_entry gen_table[] = {
 	{ 30321, 56, 1, 1, 36 },   /* __XWillSwitchSpaces */
 	{ 30322, 56, 1, 1, 36 },   /* __XShowSpaces */
 	{ 30323, 56, 1, 1, 36 },   /* __XHideSpaces */
-	{ 30326, 80, 1, 1, 56 },   /* __XCopyWindowsWithOptionsAndTags */
 	{ 30328, 60, 1, 1, 44 },   /* __XSpaceCreate */
 	{ 30329, 40, 0, 0, 36 },   /* __XSpaceDestroy */
 	{ 30331, 64, 0, 0, 36 },   /* __XSpaceSetValues */
@@ -186,7 +185,6 @@ static const gen_var_entry gen_var_table[] = {
 	{ 30004, 0, 36, 8 },   /* __XSetLoginNameAndParameters */
 	{ 30009, 0, 36, 6 },   /* __XMoveWindowListOnMatchingDisplayChangedSeed */
 	{ 30027, 0, 36, 15 },   /* __XSetWindowCornerMask */
-	{ 30040, 0, 36, 5 },   /* __XSetWindowListSystemAlpha */
 	{ 30071, 0, 36, 3 },   /* __XRequestNotificationsForWindows */
 	{ 30096, 0, 36, 7 },   /* __XFlushSurfaceInline */
 	{ 30100, 0, 36, 9 },   /* __XShapeSurfaceInline */
@@ -200,8 +198,6 @@ static const gen_var_entry gen_var_table[] = {
 	{ 30227, 0, 36, 8 },   /* __XScrollWindowRegionInline */
 	{ 30228, 1, 36, 5 },   /* __XSetWindowListGlobalClipShape */
 	{ 30231, 0, 36, 3 },   /* __XRemoveWindowListGlobalClipShape */
-	{ 30233, 0, 36, 5 },   /* __XOrderWindowListWithOperation */
-	{ 30257, 0, 36, 5 },   /* __XSetWindowListSystemLevel */
 	{ 30259, 0, 52, 23 },   /* __XHWCaptureWindowListToIOSurface */
 	{ 30262, 0, 36, 5 },   /* __XSetWindowRegionInline */
 	{ 30274, 0, 36, 8 },   /* __XGrantConnectionRightsOnWindowReserving */
