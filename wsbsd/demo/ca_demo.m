@@ -108,6 +108,13 @@ int main(int argc, char **argv)
 		memset(px->px, 0, px->stride * H);                               /* clear the buffer by hand: Opal's CGContextClearRect leaves the Cairo operator on CLEAR */
 		CGContextRef g = CGBitmapContextCreate(px->px, W, H, 8, px->stride, rgb, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little);
 		if (!g) { fprintf(stderr, "ca_demo: CGBitmapContextCreate failed\n"); return 1; }
+		if (frame == 0) {                                              /* does Opal draw at all in this binary: a private buffer, no wsd involved */
+			uint32_t *own = calloc(64 * 64, 4);
+			CGContextRef og = CGBitmapContextCreate(own, 64, 64, 8, 256, rgb, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little);
+			CGContextSetRGBFillColor(og, 1, 0, 0, 1); CGContextFillRect(og, CGRectMake(0, 0, 64, 64)); CGContextFlush(og);
+			printf("own-buffer test: ctx %p data %p (ours %p) pixel = %08x\n", og, CGBitmapContextGetData(og), own, own[32 * 64 + 32]);
+			printf("wsd-buffer ctx %p data %p (px %p)\n", g, CGBitmapContextGetData(g), px->px);
+		}
 		if (frame == 0) {                                              /* sanity: plain CoreGraphics before any layer */
 			CGContextSetRGBFillColor(g, 1, 0, 0, 1); CGContextFillRect(g, CGRectMake(0, 0, 100, 100));
 			CGContextFlush(g);
