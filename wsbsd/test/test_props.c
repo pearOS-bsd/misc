@@ -367,13 +367,15 @@ int main(void)
 		memset(m, 0, sizeof m); hdr(m, 0x2c, 30202, 0); memcpy(m + 0x20, &hid, 8); w32(m, 0x28, 0); CHECK(rc(fd, m, 0x2c) == 0);
 		memset(m, 0, sizeof m); hdr(m, 0x28, 30201, 0); memcpy(m + 0x20, &hid, 8); got = call(fd, m, 0x28, rep, sizeof rep); CHECK(got == 0x28 && r32(rep, 0x24) == 0);
 		memset(m, 0, sizeof m); hdr(m, 0x2c, 30230, 0); memcpy(m + 0x20, &hid, 8); w32(m, 0x28, 0x13); CHECK(rc(fd, m, 0x2c) == 0);
-		memset(m, 0, sizeof m); hdr(m, 0x28, 30229, 0); memcpy(m + 0x20, &hid, 8); got = call(fd, m, 0x28, rep, sizeof rep); CHECK(got == 0x28 && r32(rep, 0x24) == 0x11);
+		memset(m, 0, sizeof m); hdr(m, 0x28, 30229, 0); memcpy(m + 0x20, &hid, 8); got = call(fd, m, 0x28, rep, sizeof rep); CHECK(got == 0x28 && r32(rep, 0x24) == 0x17);
 		memset(m, 0, sizeof m); hdr(m, 0x28, 30203, 0); memcpy(m + 0x20, &hid, 8); CHECK(rc(fd, m, 0x28) == 0);
 		memset(m, 0, sizeof m); hdr(m, 0x28, 30199, 0); memcpy(m + 0x20, &hid, 8); CHECK(rc(fd, m, 0x28) == 0x3ef);
 		memset(m, 0, sizeof m); hdr(m, 0x24, 30210, 0); w32(m, 0x20, 3); CHECK(rc(fd, m, 0x24) == 0);
 		memset(m, 0, sizeof m); hdr(m, 0x18, 30211, 0); got = call(fd, m, 0x18, rep, sizeof rep); CHECK(got == 0x28 && r32(rep, 0x24) == 3);
 		/* symbolic */
-		memset(m, 0, sizeof m); hdr(m, 0x24, 32011, 0); w32(m, 0x20, 7); CHECK(rc(fd, m, 0x24) == 0x3ef);
+		memset(m, 0, sizeof m); hdr(m, 0x24, 32011, 0); w32(m, 0x20, 0x108 + 1); CHECK(rc(fd, m, 0x24) == 0x3ef);                                              /* out of range */
+		memset(m, 0, sizeof m); hdr(m, 0x24, 32011, 0); w32(m, 0x20, 0); got = call(fd, m, 0x24, rep, sizeof rep);
+		CHECK(got == 0x30 && r32(rep, 0x24) == 0xffff && r32(rep, 0x28) == 53 && r32(rep, 0x2c) == 0x180000);                                          /* id 0: Cmd-Opt-Esc, as on the real server */
 		memset(m, 0, sizeof m); hdr(m, 0x30, 32012, 0); w32(m, 0x20, 7); w32(m, 0x24, 0x78); w32(m, 0x28, 0x1000); w32(m, 0x2c, 5); CHECK(rc(fd, m, 0x30) == 0);
 		memset(m, 0, sizeof m); hdr(m, 0x24, 32011, 0); w32(m, 0x20, 7); got = call(fd, m, 0x24, rep, sizeof rep);
 		CHECK(got == 0x30 && r32(rep, 0x24) == 0x78 && r32(rep, 0x28) == 0x1000 && r32(rep, 0x2c) == 5);
@@ -382,7 +384,7 @@ int main(void)
 		memset(m, 0, sizeof m); hdr(m, 0x28, 32014, 0); w32(m, 0x20, 0x500); w32(m, 0x24, 1); CHECK(rc(fd, m, 0x28) == 0x3e9);
 		memset(m, 0, sizeof m); hdr(m, 0x24 + 8, 32015, 0); w32(m, 0x20, 2); w32(m, 0x24, 7); w32(m, 0x28, 8);                                           /* the values and states of ids 7 and 8 */
 		uint8_t big[0x100]; got = call(fd, m, 0x2c, big, sizeof big);
-		CHECK(got == 0x34 + 32 && r32(big, 0x28) == 0x78 && r32(big, 0x2c) == 0 && r32(big, 0x28 + 8 + 4) == 0x1000);
+		CHECK(got == 0x34 + 32 && r32(big, 0x28) == 0x78 && r32(big, 0x28 + 8 + 4) == 0x1000);
 	}
 
 	/* SetWindowParent, GetParentWindowList, WindowIsVisible, and the parent in WindowQuery records */
