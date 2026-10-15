@@ -119,6 +119,8 @@ int main(int argc, char **argv)
 			CGContextSetRGBFillColor(g, 1, 0, 0, 1); CGContextFillRect(g, CGRectMake(0, 0, 100, 100));
 			CGContextFlush(g);
 			const uint8_t *q0 = px->px + (H - 50) * px->stride + 50 * 4;
+			{ long nz = 0; int fr = -1, fc = -1; for (int y = 0; y < H; y++) for (int x = 0; x < W; x++) if (((uint32_t *)(px->px + y * px->stride))[x]) { if (!nz) { fr = y; fc = x; } nz++; }
+				printf("sanity scan: %ld non-zero pixels, first at row %d col %d (stride %zu)\n", nz, fr, fc, (size_t)px->stride); }
 			printf("sanity pixel(50,50 from bottom-left) = %02x%02x%02x%02x; first bytes %02x %02x\n", q0[0], q0[1], q0[2], q0[3], px->px[0], px->px[1]);
 		}
 		draw_layer([root presentationLayer], g, 1.0f);
