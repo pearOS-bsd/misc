@@ -363,6 +363,15 @@ int ws_post_event_to_psn(ws_conn *c, uint32_t psn_lo, uint32_t psn_hi, const uin
 }
 int ws_post_event_to_pid(ws_conn *c, int pid, const uint8_t *rec, size_t n) { return ws_post_event_to_psn(c, 1, (uint32_t)pid, rec, n); }
 
+int ws_cursor_position(ws_conn *c, int *x, int *y)
+{
+	wsx_rep r;
+	if (wsx_call(c, WSX_GET_CURSOR, NULL, 0, NULL, &r)) return -1;
+	if (x) *x = r.a[0];
+	if (y) *y = r.a[1];
+	return 0;
+}
+
 int ws_post_mouse_event(ws_conn *c, int type, float x, float y, uint32_t flags, int click_state, int button)
 {
 	uint8_t rec[512];
