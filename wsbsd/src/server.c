@@ -57,6 +57,7 @@ struct ws_server {
 	uint64_t gen;
 	ws_surface *cursor_img; int cursor_hx, cursor_hy; uint32_t cursor_serial;
 	struct track { int used; uint64_t id; ws_wid wid; ws_rect *r; int n; int inside; int disabled; int ox, oy; } trk[64];
+	float cursor_scale; ws_surface *cursor_scaled; const ws_surface *cursor_scaled_src; float cursor_scaled_for;       /* SetCursorScale: the pointer is drawn this much larger */
 	int decoupled; uint32_t decoupled_by; int rx, ry;           /* AssociateMouseAndMouseCursorPosition(false): the pointer is held still while the mouse keeps sending motion (deltas) */
 	ws_rect lock; int locked;                                   /* SetCursorRegionLock: the pointer stays inside this rectangle (the bounds of the locked region) */
 	struct kf { uint32_t cid; int ids[8]; int n; } kf[32]; int nkf; int kf_next;      /* key focus list, [0] is the holder */
@@ -653,11 +654,37 @@ void ws_server_set_cursor_image(ws_server *s, const ws_surface *img, int hx, int
 }
 
 /* software path: blend the cursor image onto a finished frame */
+/* bilinear scaling of premultiplied BGRA */
+static ws_surface *scale_surface(const ws_surface *src, float k)
+{
+	int nw = (int)(src->w * k + 0.5f), nh = (int)(src->h * k + 0.5f);
+	if (nw < 1 || nh < 1 || nw > 512 || nh > 512) return NULL;
+	ws_surface *d = ws_surface_new(nw, nh); if (!d) return NULL;
+	for (int y = 0; y < nh; y++) {
+		float fy = (y + 0.5f) / k - 0.5f; int y0 = (int)floorf(fy); float ty = fy - y0; int y1 = y0 + 1; if (y0 < 0) y0 = 0; if (y1 < 0) y1 = 0; if (y0 >= src->h) y0 = src->h - 1; if (y1 >= src->h) y1 = src->h - 1;
+		for (int x = 0; x < nw; x++) {
+			float fx = (x + 0.5f) / k - 0.5f; int x0 = (int)floorf(fx); float tx = fx - x0; int x1 = x0 + 1; if (x0 < 0) x0 = 0; if (x1 < 0) x1 = 0; if (x0 >= src->w) x0 = src->w - 1; if (x1 >= src->w) x1 = src->w - 1;
+			const uint8_t *p00 = src->px + (size_t)y0 * src->stride + 4 * (size_t)x0, *p10 = src->px + (size_t)y0 * src->stride + 4 * (size_t)x1;
+			const uint8_t *p01 = src->px + (size_t)y1 * src->stride + 4 * (size_t)x0, *p11 = src->px + (size_t)y1 * src->stride + 4 * (size_t)x1;
+			uint8_t *o = d->px + (size_t)y * d->stride + 4 * (size_t)x;
+			for (int c = 0; c < 4; c++) { float v = (p00[c] * (1 - tx) + p10[c] * tx) * (1 - ty) + (p01[c] * (1 - tx) + p11[c] * tx) * ty; o[c] = (uint8_t)(v + 0.5f); }
+		}
+	}
+	return d;
+}
+
+void ws_set_cursor_scale(ws_server *s, float k) { if (k > 0 && k < 16 && k != s->cursor_scale) { s->cursor_scale = k; s->cursor_serial++; } }
+
 static void draw_cursor(ws_server *s, ws_surface *scr)
 {
 	int hx, hy;
 	const ws_surface *img = ws_cursor_image(s, &hx, &hy);
 	if (!img) return;
+	float k = s->cursor_scale > 0 ? s->cursor_scale : 1.0f;
+	if (k != 1.0f) {
+		if (!s->cursor_scaled || s->cursor_scaled_src != img || s->cursor_scaled_for != k) { ws_surface_free(s->cursor_scaled); s->cursor_scaled = scale_surface(img, k); s->cursor_scaled_src = img; s->cursor_scaled_for = k; }
+		if (s->cursor_scaled) { img = s->cursor_scaled; hx = (int)(hx * k + 0.5f); hy = (int)(hy * k + 0.5f); }
+	}
 	ws_rect all = { 0, 0, scr->w, scr->h };
 	s->comp->over(s->comp, scr, s->cx - hx, s->cy - hy, img, 1.0f, all);
 }
