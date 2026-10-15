@@ -27,6 +27,9 @@ cd back
 mkdir -p Headers/wsd
 cp "$WS"/appkit/back-wsd/*.h "$WS"/include/ws.h "$WS"/include/ws_client.h "$WS"/include/ws_buffer.h Headers/wsd/
 cp "$WS"/appkit/back-wsd/*.m Source/headless/
+# the wsd client library is compiled straight into the headless subproject (a static archive is not picked up by the bundle link)
+for f in client compositor_sw region ipc evrec buffer; do cp "$WS/src/$f.c" Source/headless/wsc_$f.c; done
+printf 'ADDITIONAL_INCLUDE_DIRS += -I%s/include\nADDITIONAL_CFLAGS += -std=gnu99 -D_DEFAULT_SOURCE\nheadless_C_FILES += wsc_client.c wsc_compositor_sw.c wsc_region.c wsc_ipc.c wsc_evrec.c wsc_buffer.c\n' "$WS" >> Source/headless/GNUmakefile.preamble
 # headless server -> wsd server
 sed -i '' 's/^HeadlessServer.m \\/HeadlessServer.m WsdServer.m WsdCairoSurface.m \\/' Source/headless/GNUmakefile
 sed -i '' 's/HeadlessServer/WsdServer/g; s#<headless/WsdServer.h>#<wsd/WsdServer.h>#' Source/GSBackend.m
