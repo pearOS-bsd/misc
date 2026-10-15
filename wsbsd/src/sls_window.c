@@ -294,6 +294,15 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		wr32(r, 0x24, ws_window_owner(srv, wid));
 		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
 	}
+	case SLS_MSG_GetWindowTransform: {                                             /* wid@0x20, entry@0x24 (0x7fffff00: the window's own transform), size 0x28; reply 0x40: flags@0x24, the 2D transform as six floats @0x28 (a b c d tx ty). No transform is ever set, so it is the identity (recorded on a macOS runner); 1000 for an unknown window */
+		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size != 0x28) return reply_simple(c->fd, h, -304);
+		if (!ws_window_exists(srv, rd32(buf, 0x20))) return reply_simple(c->fd, h, 1000);
+		uint8_t r[0x40]; memset(r, 0, sizeof r);
+		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
+		memcpy(r + 0x18, &WS_NDR, sizeof WS_NDR);
+		float one = 1.0f; memcpy(r + 0x28, &one, 4); memcpy(r + 0x34, &one, 4);          /* a = d = 1 */
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
 	case SLS_MSG_SetWindowParent: {                                                /* child@0x20, parent@0x24, size 0x28; rights on both; always 0 */
 		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
 		uint32_t child = rd32(buf, 0x20), parent = rd32(buf, 0x24);

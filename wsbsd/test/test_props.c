@@ -114,6 +114,14 @@ int main(void)
 		CHECK(s && s->w == sw && s->h == sh); if (s) ws_surface_free(s);
 		CHECK(ws_capture(c, (ws_rect){ 0, 0, 0, 0 }, 0xfffff, 0) == NULL);
 	}
+	{ /* GetWindowTransform: the identity for a window nothing transformed (recorded), 1000 for an unknown window, -304 for a bad size */
+		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 100, 200, 30, 20 }, 0, &tw) == 0);
+		uint8_t m[0x28], rep[0x80]; memset(m, 0, sizeof m); hdr(m, 0x28, 30034, 0); w32(m, 0x20, tw.id); w32(m, 0x24, 0x7fffff00);
+		int g = call(fd, m, sizeof m, rep, sizeof rep); float f[6]; memcpy(f, rep + 0x28, 24);
+		CHECK(g == 0x40 && r32(rep, 0x20) == 0 && f[0] == 1 && f[1] == 0 && f[2] == 0 && f[3] == 1 && f[4] == 0 && f[5] == 0);
+		w32(m, 0x20, 0x7ffff); CHECK(rc(fd, m, sizeof m) == 1000);
+		hdr(m, 0x24, 30034, 0); CHECK(rc(fd, m, 0x24) == -304);
+	}
 	{ /* shared memory regions: 32006 gives two port descriptors (0x34 bytes), 34006 three (0x40), each of 0x110000 bytes */
 		uint8_t m[0x18], rep[0x80]; memset(m, 0, sizeof m); hdr(m, 0x18, 32006, 0);
 		int g = call(fd, m, sizeof m, rep, sizeof rep);
