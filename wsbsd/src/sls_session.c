@@ -107,10 +107,32 @@ static int do_system_ui_query(conn *c, const uint8_t *buf, size_t len)
 	return -2;
 }
 
+/* GetSymbolicHotKeyValuesAndStates (32015): request = header, NDR, count@0x20 (<= 0x100), count hot key ids; size 0x24 + 4n (decompiled __XGetSymbolicHotKeyValuesAndStates).
+ * Reply: retcode@0x20, n@0x24, array A (hot key character value, 4n bytes), then three more (n, array) pairs: key code, modifier mask, enabled; size 0x34 + 16n.
+ * The session's symbolic hot key table is empty here (no system preferences): every entry is zero and disabled. */
+static int do_symbolic_hotkeys(conn *c, const uint8_t *buf, size_t len)
+{
+	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
+	if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size < 0x24) return -2;
+	uint32_t n = rd32(buf, 0x20);
+	if (n > 0x100 || h->msgh_size != 0x24 + 4 * n) return reply_simple(c->fd, h, -304);
+	size_t rsize = 0x34 + 16 * (size_t)n;
+	uint8_t *r = calloc(1, rsize);
+	if (!r) return reply_simple(c->fd, h, 1000);
+	fill_reply_header((mach_msg_header_t *)r, h, (uint32_t)rsize, 0);
+	memcpy(r + 0x18, &WS_NDR, sizeof WS_NDR);
+	wr32(r, 0x24, n);
+	for (int k = 1; k <= 3; k++) wr32(r, 0x28 + 4 * n * k + 4 * (k - 1), n);    /* the count in front of each following array */
+	int rc = ws_ipc_send(c->fd, &(struct iovec){ r, rsize }, 1, NULL, 0);
+	free(r);
+	return rc;
+}
+
 int sls_session_dispatch(conn *c, const uint8_t *buf, size_t len)
 {
 	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
 	{ int rc = do_system_ui_query(c, buf, len); if (rc != -2) return rc; }
+	if (h->msgh_id == SLS_MSG_GetSymbolicHotKeyValuesAndStates) { int rc = do_symbolic_hotkeys(c, buf, len); if (rc != -2) return rc; }
 	if (h->msgh_id == SLS_MSG_CopyManagedDisplays || h->msgh_id == SLS_MSG_GetDevices) {
 		if (!simple_ok(h, len, sizeof *h)) return reply_simple(c->fd, h, -304);
 		return h->msgh_id == SLS_MSG_GetDevices ? reply_ool_blob(c, h, sls_blob_devices, sls_blob_devices_len) : reply_ool_blob(c, h, sls_blob_displays, sls_blob_displays_len);
