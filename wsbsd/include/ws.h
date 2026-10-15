@@ -60,6 +60,7 @@ ws_wid ws_create_window_fd(ws_server *, ws_rect frame, uint32_t owner, int *fd_o
 void ws_set_window_shape(ws_server *, ws_wid, const ws_rect *abs_rects, int n);      /* region in screen coordinates; hit testing uses it */
 uint32_t ws_window_owner(ws_server *, ws_wid);
 int ws_window_frame(ws_server *, ws_wid, ws_rect *out);
+int ws_resize_window(ws_server *, ws_wid, int w, int h);       /* new size, same origin; pixels come from the bound buffer */
 int ws_window_level(ws_server *, ws_wid, int *level);
 int ws_window_alpha(ws_server *, ws_wid, float *alpha);
 int ws_count_owned(ws_server *, uint32_t owner);

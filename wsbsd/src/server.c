@@ -680,3 +680,16 @@ int ws_window_blur(ws_server *s, ws_wid id, int *radius, int *flag, float *amoun
 	return 0;
 }
 int ws_server_has_blur(ws_server *s) { for (size_t i = 0; i < s->n; i++) if (s->win[i].on_screen && s->win[i].blur_radius > 0) return 1; return 0; }
+
+int ws_resize_window(ws_server *s, ws_wid id, int w, int h)
+{
+	window *win = get(s, id);
+	if (!win || w <= 0 || h <= 0 || w > 16384 || h > 16384) return -1;
+	if (win->frame.w != w || win->frame.h != h) {
+		win->frame.w = w; win->frame.h = h;
+		if (win->shadow) { ws_surface_free(win->shadow); win->shadow = NULL; }          /* the shadow is rebuilt for the new size */
+		win->full_dmg = 1; win->has_dmg = 1;
+		bump(s);
+	}
+	return 0;
+}
