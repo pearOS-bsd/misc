@@ -2,9 +2,9 @@ name: wsbsd
 
 on:
   push:
-    paths: ['wsbsd/**', 'terminal/**', '.github/workflows/wsbsd.yml']
+    paths: ['wsbsd/**', 'terminal/**', 'ksa/**', '.github/workflows/wsbsd.yml']
   pull_request:
-    paths: ['wsbsd/**', 'terminal/**', '.github/workflows/wsbsd.yml']
+    paths: ['wsbsd/**', 'terminal/**', 'ksa/**', '.github/workflows/wsbsd.yml']
   workflow_dispatch:
 
 jobs:
@@ -190,6 +190,10 @@ jobs:
             wsbsd/gorm-doc.png
             wsbsd/terminal.png
             wsbsd/terminal-key.png
+            wsbsd/ksa-pane0.png
+            wsbsd/ksa-pane1.png
+            wsbsd/ksa-pane2.png
+            wsbsd/ksa-pane3.png
           if-no-files-found: warn
 
   # Core Animation: GNUstep QuartzCore (CALayer) over Opal on FreeBSD. Exploratory: the build is expected to need patches.

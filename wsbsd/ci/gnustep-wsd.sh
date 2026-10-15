@@ -86,6 +86,24 @@ EOT
 		{ echo "TERMINAL LOG:"; grep -v '^(lldb)' /tmp/terminal.log | grep -v 'wsd-back: \(titlewindow\|setinput\|flush\|commit\|order\|ws_win\|receivedEvent\|event type\)' | tail -40; } >> /tmp/terminal-ci.txt 2>&1
 	fi
 fi
+# Keyboard Setup Assistant (ksa/): the same Cocoa sources as on macOS, run on wsd; every pane is screenshotted and the Shift-key flow is checked
+KD="$WS/../ksa"
+if [ -d "$KD" ]; then
+	(cd "$KD" && cc -o KeyboardSetupAssistant-gnustep src/main.m $(gnustep-config --objc-flags) $(gnustep-config --gui-libs) 2>&1 | grep -E "error|undefined" | head -20)
+	if [ -x "$KD/KeyboardSetupAssistant-gnustep" ]; then
+		for p in 0 1 2 3; do
+			(KSA_PANE=$p KSA_EXIT_AFTER=9 timeout 20 "$KD/KeyboardSetupAssistant-gnustep" >/tmp/ksa$p.log 2>&1) &
+			KP=$!; sleep 5
+			./wsshot ksa-pane$p.ppm && python3 tools/ppm2png.py ksa-pane$p.ppm ksa-pane$p.png
+			i=0; while kill -0 $KP 2>/dev/null && [ $i -lt 15 ]; do sleep 1; i=$((i+1)); done; pkill -f KeyboardSetupAssistant-gnustep 2>/dev/null
+		done
+		rm -f /tmp/ksa-out.txt
+		(KSA_PANE=1 KSA_SCRIPT="key:6,key:44,done" KSA_OUTPUT=/tmp/ksa-out.txt KSA_EXIT_AFTER=12 timeout 20 "$KD/KeyboardSetupAssistant-gnustep" >/tmp/ksa-flow.log 2>&1) &
+		KP=$!; i=0; while kill -0 $KP 2>/dev/null && [ $i -lt 20 ]; do sleep 1; i=$((i+1)); done
+		echo '=== KSA ==='; cat /tmp/ksa-flow.log | grep -v wsd-back | tail -12; echo "ksa output: $(cat /tmp/ksa-out.txt 2>&1)"
+		grep -qx ANSI /tmp/ksa-out.txt 2>/dev/null && echo 'KSA flow ok' || echo 'KSA flow FAILED'
+	fi
+fi
 kill $WP 2>/dev/null
 grep -v '^(lldb)\|warning\|wsd-back: \(titlewindow\|setinput\|flush\|commit\|order\|ws_win\)' /tmp/hello.log | tail -40; tail -5 /tmp/wsd.log
 ls -l appkit.png
