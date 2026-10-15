@@ -64,6 +64,22 @@ int main(void)
 		w32(big, 0x20, 999999); CHECK(rc(fd, big, 0x2c + ((rn + 3) & ~3u)) == (int)(uint32_t)-600);
 		ws_win_order(c, &tw, 0, 0);
 	}
+	{ /* SetEventCapture, SetWindowIsBuffered, WindowSetShadowProperties (OOL), SetTrackingAreaShape (OOL) */
+		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 11, 22, 33, 44 }, 0, &tw) == 0);
+		uint8_t m[0x80], rep[0x100]; memset(m, 0, sizeof m);
+		hdr(m, 0x2c, 30055, 0); CHECK(rc(fd, m, 0x2c) == 0);
+		memset(m, 0, sizeof m); hdr(m, 0x28, 30019, 0); w32(m, 0x20, tw.id); CHECK(rc(fd, m, 0x28) == 0);
+		w32(m, 0x20, 0x7ffff); CHECK(rc(fd, m, 0x28) == 1000);
+		/* shadow properties: one OOL byte payload appended to the datagram */
+		uint8_t o[0x80]; memset(o, 0, sizeof o); hdr(o, 0x3c, 30024, 1); w32(o, 0x18, 1); o[0x27] = 1; w32(o, 0x28, 4); w32(o, 0x34, tw.id); w32(o, 0x38, 4);
+		int got = call(fd, o, 0x3c + 4, rep, sizeof rep); CHECK(got >= 0x24 && r32(rep, 0x20) == 0);
+		w32(o, 0x34, 0x7ffff); got = call(fd, o, 0x3c + 4, rep, sizeof rep); CHECK(got >= 0x24 && r32(rep, 0x20) == 1000);
+		w32(o, 0x34, tw.id); w32(o, 0x38, 5); got = call(fd, o, 0x3c + 4, rep, sizeof rep); CHECK(got >= 0x24 && r32(rep, 0x20) == (uint32_t)-300);
+		/* tracking area shape: an empty region payload (size 0) is accepted for an owned window */
+		memset(o, 0, sizeof o); hdr(o, 0x48, 30156, 1); w32(o, 0x18, 1); o[0x27] = 1; w32(o, 0x28, 0); w32(o, 0x34, tw.id); w32(o, 0x40, 0);
+		got = call(fd, o, 0x48, rep, sizeof rep); CHECK(got >= 0x24 && r32(rep, 0x20) == 0);
+		w32(o, 0x34, 0x7ffff); got = call(fd, o, 0x48, rep, sizeof rep); CHECK(got >= 0x24 && r32(rep, 0x20) == 1000);
+	}
 	{ /* PostFilteredEventTapData, style 2 (SLEventPostToPid): the event reaches the process's frontmost window only */
 		ws_win pw; CHECK(ws_win_create(c, (ws_rect){ 300, 300, 100, 60 }, 0, &pw) == 0 && ws_win_order(c, &pw, 1, 0) == 0);
 		uint8_t rec[512]; size_t rn = ws_evrec_make_key(rec, sizeof rec, 1, 12, 0, 0, 0, 0, 0, 0x0a);
