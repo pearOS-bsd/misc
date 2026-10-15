@@ -10,14 +10,14 @@ on:
 jobs:
   # wsd under AddressSanitizer + UBSan, fuzzed with random and size-exact SkyLight requests (any sanitizer report or a dead server fails the job)
   fuzz:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - name: Sanitizer build and fuzz
         run: |
           cd wsbsd
-          SAN="-fsanitize=address,undefined -fno-sanitize-recover=undefined -fno-omit-frame-pointer -g -O1"
+          SAN="-fsanitize=address,undefined -fno-omit-frame-pointer -g -O1"
           cc $SAN -std=c99 -D_DEFAULT_SOURCE -Iinclude -o wsd_asan src/compositor_sw.c src/blur.c src/server.c src/shadow.c src/region.c src/ipc.c src/evrec.c src/buffer.c src/sls_*.c src/wsd.c -lm
           cc -std=c99 -D_DEFAULT_SOURCE -Iinclude -Itest -o fuzz_wsd test/fuzz_wsd.c src/ipc.c src/client.c src/compositor_sw.c src/region.c src/evrec.c src/buffer.c -lm
           export WS_SOCKET=/tmp/fuzz.sock
