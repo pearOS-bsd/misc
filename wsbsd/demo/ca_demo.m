@@ -7,6 +7,7 @@
 #include "ws_client.h"
 #include <stdio.h>
 #include <math.h>
+#include <string.h>
 #include <unistd.h>
 
 /* the framework-private calls CARenderer itself makes */
@@ -104,9 +105,9 @@ int main(int argc, char **argv)
 		CFTimeInterval now = CACurrentMediaTime();
 		update_layer(root, now);
 		/* Opal writes into the shared memory when a context is flushed, and a flushed context is finished: one fresh bitmap context per frame */
+		memset(px->px, 0, px->stride * H);                               /* clear the buffer by hand: Opal's CGContextClearRect leaves the Cairo operator on CLEAR */
 		CGContextRef g = CGBitmapContextCreate(px->px, W, H, 8, px->stride, rgb, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little);
 		if (!g) { fprintf(stderr, "ca_demo: CGBitmapContextCreate failed\n"); return 1; }
-		CGContextClearRect(g, CGRectMake(0, 0, W, H));
 		if (frame == 0) {                                              /* sanity: plain CoreGraphics before any layer */
 			CGContextSetRGBFillColor(g, 1, 0, 0, 1); CGContextFillRect(g, CGRectMake(0, 0, 100, 100));
 			CGContextFlush(g);
