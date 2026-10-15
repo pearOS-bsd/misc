@@ -12,7 +12,7 @@ typedef struct {
 	int (*win_count)(int, int, int *);
 	int (*onscreen_count)(int, int, int *);
 	int (*set_sub)(int, uint32_t, int);
-	int (*get_sub)(int, uint32_t, int *);
+	int (*get_sub)(int, uint32_t);                    /* returns the sublevel itself */
 	int (*set_mask)(int, uint32_t, unsigned);
 	int (*get_mask)(int, uint32_t, unsigned *);
 	int (*set_blur)(int, uint32_t, int);
@@ -34,10 +34,9 @@ static int run_api2(const api2_t *a)
 	printf("on screen count: %d %d\n", a->onscreen_count(cid, cid, &n), n);
 	a->order(cid, w2, 1, 0);
 	printf("on screen count: %d %d\n", a->onscreen_count(cid, cid, &n), n);
-	int sl = -9;
-	printf("sublevel: %d %d\n", a->get_sub(cid, w1, &sl), sl);
+	printf("sublevel: %d\n", a->get_sub(cid, w1));
 	printf("set sublevel 3: %d\n", a->set_sub(cid, w1, 3));
-	printf("sublevel: %d %d\n", a->get_sub(cid, w1, &sl), sl);
+	printf("sublevel: %d\n", a->get_sub(cid, w1));
 	unsigned m = 0xdead;
 	printf("event mask: %d %#x\n", a->get_mask(cid, w1, &m), m);
 	printf("set event mask: %d\n", a->set_mask(cid, w1, 0x12));
