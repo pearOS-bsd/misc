@@ -4,5 +4,11 @@ obscure: 0
 reveal: 0
 hide, bad connection: 0
 cursor scale: 0 1
+tags: 0 0
+set tags: 0
+tags: 0 0x5
+clear tags: 0
+tags: 0 0x4
+tags, bad window: 0 0
 on screen list: 0 count 3 order: C B A
 on screen list: 0 count 3 order: A C B

@@ -478,3 +478,41 @@ int ws_win_list(ws_conn *c, int owner, int onscreen, uint32_t *out, int max, int
 
 void ws_raw_header(uint8_t *m, uint32_t size, int id) { fill_header((mach_msg_header_t *)m, size, id, 0); }
 int ws_raw_simple(ws_conn *c, const void *req, size_t n) { return simple_call(c, req, n); }
+
+/* ---- transactions: stream builder and commit (format: src/sls_transaction.c) ---- */
+size_t ws_tx_packed(uint8_t *out, int64_t v)
+{
+	if (v == 0) { out[0] = 0x00; return 1; }
+	if (v == -1) { out[0] = 0x01; return 1; }
+	int neg = v < 0, k = 1;
+	for (; k < 8; k++) {                                          /* the fewest bytes whose sign extension gives v back */
+		int64_t lo = -((int64_t)1 << (8 * k)), hi = ((int64_t)1 << (8 * k)) - 1;
+		if (neg ? v >= lo : v <= hi) break;
+	}
+	out[0] = (uint8_t)(k << 4 | (neg ? 1 : 0));
+	for (int i = 0; i < k; i++) out[1 + i] = (uint8_t)((uint64_t)v >> (8 * (k - 1 - i)));
+	return 1 + (size_t)k;
+}
+size_t ws_tx_float(uint8_t *out, float f) { out[0] = 'H'; memcpy(out + 1, &f, 4); return 5; }
+size_t ws_tx_double(uint8_t *out, double d) { out[0] = 0x88; memcpy(out + 1, &d, 8); return 9; }
+
+int ws_transaction_commit(ws_conn *c, const uint8_t *stream, size_t n, int sync)
+{
+	if (n > 0x4000) return 1001;
+	uint32_t P = ((uint32_t)n + 3) & ~3u, size = P + 0x48;
+	uint8_t m[0x4048]; memset(m, 0, size);
+	fill_header((mach_msg_header_t *)m, size, sync ? SLS_MSG_TransactionCommitSync : SLS_MSG_TransactionCommitAsync, 1);
+	uint32_t one = 1; memcpy(m + 0x18, &one, 4); m[0x25] = 1; m[0x27] = 1;
+	memcpy(m + 0x2c, &WS_NDR, 8);
+	uint32_t il = (uint32_t)n; memcpy(m + 0x40, &il, 4); memcpy(m + 0x44, stream, n);
+	return simple_call(c, m, size);
+}
+
+int ws_raw_call(ws_conn *c, const void *req, size_t n, void *reply, size_t cap)
+{
+	struct iovec v = { (void *)req, n };
+	ssize_t got = call(c, &v, 1, reply, cap, NULL, NULL);
+	if (got < (ssize_t)sizeof(sls_simple_reply)) return -1;
+	int32_t rc; memcpy(&rc, (uint8_t *)reply + 0x20, 4);
+	return rc;
+}

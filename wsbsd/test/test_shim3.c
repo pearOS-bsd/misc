@@ -6,6 +6,6 @@
 int main(void)
 {
 	api3_t a = { SLSMainConnectionID, (int (*)(const R3_ *, void **))CGSNewRegionWithRect, (int (*)(int, int, float, float, void *, uint32_t *))SLSNewWindow, SLSReleaseWindow, SLSOrderWindow,
-	             SLSHideCursor, SLSShowCursor, SLSObscureCursor, SLSRevealCursor, SLSGetCursorScale, SLSGetOnScreenWindowList };
+	             SLSHideCursor, SLSShowCursor, SLSObscureCursor, SLSRevealCursor, SLSGetCursorScale, SLSGetOnScreenWindowList, SLSSetWindowTags, SLSGetWindowTags, SLSClearWindowTags };
 	return run_api3(&a);
 }

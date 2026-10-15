@@ -145,6 +145,43 @@ int main(void)
 		}
 		CHECK(got_scroll && got_flags);
 	}
+
+	/* transactions: the packed encodings (checked against bytes seen on the real system: wid 0x1d -> 10 1d, tags 5 -> 10 05, zero -> 00) and several operations in one stream */
+	{
+		uint8_t e[16];
+		CHECK(ws_tx_packed(e, 0x1d) == 2 && e[0] == 0x10 && e[1] == 0x1d);
+		CHECK(ws_tx_packed(e, 5) == 2 && e[0] == 0x10 && e[1] == 0x05);
+		CHECK(ws_tx_packed(e, 0) == 1 && e[0] == 0x00);
+		CHECK(ws_tx_packed(e, -1) == 1 && e[0] == 0x01);
+		CHECK(ws_tx_packed(e, -5) == 2 && e[0] == 0x11 && e[1] == 0xfb);
+		CHECK(ws_tx_packed(e, 0x1234) == 3 && e[0] == 0x20 && e[1] == 0x12 && e[2] == 0x34);
+		uint8_t st[256]; size_t n = 0;
+		st[n++] = 3; n += ws_tx_packed(st + n, w.id); n += ws_tx_float(st + n, 0.25f); n += ws_tx_float(st + n, 0.0f);            /* SetWindowAlpha */
+		st[n++] = 6; n += ws_tx_packed(st + n, w.id); n += ws_tx_packed(st + n, 7);                                                 /* SetWindowLevel */
+		st[n++] = 12; n += ws_tx_packed(st + n, w.id); n += ws_tx_packed(st + n, 4);                                                /* SetWindowSubLevel */
+		st[n++] = 22; n += ws_tx_packed(st + n, w.id); n += ws_tx_double(st + n, 33.0); n += ws_tx_double(st + n, 44.0);              /* MoveWindowWithGroup */
+		st[n++] = 118; n += ws_tx_packed(st + n, w.id); n += ws_tx_packed(st + n, 0x30); n += ws_tx_packed(st + n, 0); st[n++] = 0;  /* SetWindowTags */
+		st[n++] = 0xff;
+		CHECK(ws_transaction_commit(c, st, n, 1) == 0);
+		float al = -1; int lv = -1, sub = -1; ws_rect fr2;
+		CHECK(ws_win_get_alpha(c, &w, &al) == 0 && al == 0.25f);
+		CHECK(ws_win_get_level(c, &w, &lv) == 0 && lv == 7);
+		CHECK(ws_win_get_sublevel(c, &w, &sub) == 0 && sub == 4);
+		CHECK(ws_win_get_bounds(c, &w, &fr2) == 0 && fr2.x == 33 && fr2.y == 44);
+		uint8_t tg[0x24]; memset(tg, 0, sizeof tg); hdr(tg, 0x24, SLS_MSG_GetWindowTags, 0); memcpy(tg + 0x18, &WS_NDR, 8); w32(tg, 0x20, w.id);
+		CHECK(call(fd, tg, 0x24, rep, sizeof rep) == 0x2c && r32(rep, 0x24) == 0x30);
+		/* a stream with an unknown opcode or truncated arguments is refused; an operation on someone else's window is silently ignored */
+		uint8_t bad[4] = { 0x8d, 0xff };
+		CHECK(ws_transaction_commit(c, bad, 2, 0) == 1001);
+		uint8_t trunc[3] = { 6, 0x10, 0x05 };
+		CHECK(ws_transaction_commit(c, trunc, 3, 0) == 1001);
+		uint8_t foreign[16]; size_t fn = 0; foreign[fn++] = 6; fn += ws_tx_packed(foreign + fn, 99999); fn += ws_tx_packed(foreign + fn, 3); foreign[fn++] = 0xff;
+		CHECK(ws_transaction_commit(c, foreign, fn, 0) == 0);
+		/* exactly one of inline and out-of-line: both -> 1001 */
+		uint8_t both[0x48 + 8 + 8]; memset(both, 0, sizeof both); hdr(both, 0x48 + 4, SLS_MSG_TransactionCommitAsync, 1);
+		w32(both, 0x18, 1); both[0x25] = 1; both[0x27] = 1; w32(both, 0x28, 4); memcpy(both + 0x2c, &WS_NDR, 8); w32(both, 0x40, 1); both[0x44] = 0xff; w32(both, 0x48, 4); memcpy(both + 0x4c, "\xff\0\0\0", 4);
+		CHECK(rc(fd, both, 0x4c + 4) == 1001);
+	}
 	ws_server_quit(c);
 	printf(failures ? "%d failures\n" : "window extension routines: all checks passed\n", failures);
 	return failures != 0;

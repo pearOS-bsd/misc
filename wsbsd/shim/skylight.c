@@ -144,3 +144,31 @@ CGError SLSGetOnScreenWindowList(CGSConnectionID cid, CGSConnectionID owner, int
 	*count = total < max ? total : max;
 	return 0;
 }
+
+/* window tags go through a transaction (op SetWindowTags: wid, low 32 bits, high 32 bits, clear flag) */
+static CGError tags_tx(CGSWindowID wid, uint64_t tags, int clear)
+{
+	ws_conn *c = get_conn();
+	if (!c) return 1000;
+	uint8_t s[64]; size_t n = 0;
+	s[n++] = 118;
+	n += ws_tx_packed(s + n, (int64_t)wid); n += ws_tx_packed(s + n, (int64_t)(tags & 0xffffffffu)); n += ws_tx_packed(s + n, (int64_t)(tags >> 32));
+	s[n++] = (uint8_t)clear; s[n++] = 0xff;
+	return ws_transaction_commit(c, s, n, 0);
+}
+CGError SLSSetWindowTags(CGSConnectionID cid, CGSWindowID wid, uint64_t *tags, int size) { (void)cid; (void)size; return tags ? tags_tx(wid, *tags, 0) : 1001; }
+CGError SLSClearWindowTags(CGSConnectionID cid, CGSWindowID wid, uint64_t *tags, int size) { (void)cid; (void)size; return tags ? tags_tx(wid, *tags, 1) : 1001; }
+CGError SLSGetWindowTags(CGSConnectionID cid, CGSWindowID wid, uint64_t *tags, int size)
+{
+	(void)cid; (void)size;
+	ws_conn *c = get_conn();
+	if (!c || !tags) return 1001;
+	uint8_t m[0x24]; memset(m, 0, sizeof m);
+	ws_raw_header(m, sizeof m, SLS_MSG_GetWindowTags);
+	memcpy(m + 0x18, &WS_NDR, 8); memcpy(m + 0x20, &wid, 4);
+	uint8_t r[0x2c];
+	int rc = ws_raw_call(c, m, sizeof m, r, sizeof r);
+	if (rc) return rc;
+	memcpy(tags, r + 0x24, 8);
+	return 0;
+}

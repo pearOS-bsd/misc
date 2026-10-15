@@ -471,6 +471,15 @@ static int do_simple(conn *c, const uint8_t *buf, size_t len)
 		if (holds_rights(c, wid)) ws_set_window_blur(srv, wid, rad > 60 ? 60 : (int)rad, buf[0x28] != 0, amt);
 		return reply_simple(c->fd, h, 0);
 	}
+	case SLS_MSG_GetWindowTags: {                                        /* wid@0x20; reply 0x2c with the 64-bit tags@0x24 (0 for an unknown window) */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
+		uint8_t m[0x2c]; memset(m, 0, sizeof m);
+		fill_reply_header((mach_msg_header_t *)m, h, sizeof m, 0);
+		memcpy(m + 0x18, &WS_NDR, 8);
+		uint64_t t = ws_window_tags(srv, rd32(buf, 0x20)); memcpy(m + 0x24, &t, 8);
+		struct iovec v = { m, sizeof m };
+		return ws_ipc_send(c->fd, &v, 1, NULL, 0);
+	}
 	case SLS_MSG_GetWindowEventMask: {
 		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
 		int mask = 0;

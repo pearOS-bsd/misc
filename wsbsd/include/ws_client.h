@@ -23,7 +23,13 @@ int ws_win_get_event_mask(ws_conn *, ws_win *, int *mask);        /* GetWindowEv
 int ws_win_is_ordered_in(ws_conn *, ws_win *, int *in);           /* WindowIsOrderedIn (30311) */
 int ws_win_list(ws_conn *, int owner, int onscreen, uint32_t *out, int max, int *total);   /* GetWindowListWithTags (30066), front to back */
 void ws_raw_header(uint8_t *m, uint32_t size, int id);               /* a request header (shims build their own bodies) */
+int ws_raw_call(ws_conn *, const void *req, size_t n, void *reply, size_t cap);   /* request/reply, returns the return code */
 int ws_raw_simple(ws_conn *, const void *req, size_t n);          /* send a request, return its return code */
+/* transactions (30429 / 30430): build the operation stream with the ws_tx_* encoders, then commit */
+size_t ws_tx_packed(uint8_t *out, int64_t v);                      /* packed64 */
+size_t ws_tx_float(uint8_t *out, float f);
+size_t ws_tx_double(uint8_t *out, double d);
+int ws_transaction_commit(ws_conn *, const uint8_t *stream, size_t n, int sync);
 int ws_win_set_level(ws_conn *, ws_win *, int level);            /* SetWindowLevel (30012) */
 int ws_win_get_level(ws_conn *, ws_win *, int *level);          /* GetWindowLevel (30013) */
 int ws_win_get_alpha(ws_conn *, ws_win *, float *alpha);        /* GetWindowAlpha (30042) */
