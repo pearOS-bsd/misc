@@ -44,7 +44,6 @@ static void draw_layer(CALayer *l, CGContextRef g, float parent_alpha)
 		CGContextRestoreGState(g);
 	}
 	if ([l backgroundColor]) { CGContextSetFillColorWithColor(g, [l backgroundColor]); CGContextFillRect(g, local); }
-	if ([l borderWidth] > 0 && [l borderColor]) { CGContextSetStrokeColorWithColor(g, [l borderColor]); CGContextSetLineWidth(g, [l borderWidth]); CGContextStrokeRect(g, local); }
 	if ([l masksToBounds]) CGContextClipToRect(g, local);
 	CATransform3D st = [l sublayerTransform];
 	CGContextTranslateCTM(g, -b.origin.x, -b.origin.y);
@@ -76,7 +75,7 @@ int main(int argc, char **argv)
 	[root setBackgroundColor: rgba(rgb, 0.12, 0.16, 0.30, 1)];
 	CALayer *panel = [CALayer layer];
 	[panel setBounds: CGRectMake(0, 0, 440, 140)]; [panel setPosition: CGPointMake(W / 2, 90)];
-	[panel setBackgroundColor: rgba(rgb, 1, 1, 1, 0.20)]; [panel setBorderWidth: 2]; [panel setBorderColor: rgba(rgb, 1, 1, 1, 0.8)];
+	[panel setBackgroundColor: rgba(rgb, 1, 1, 1, 0.20)];
 	[root addSublayer: panel];
 	CALayer *box = [CALayer layer];
 	[box setBounds: CGRectMake(0, 0, 80, 80)]; [box setPosition: CGPointMake(70, 250)];

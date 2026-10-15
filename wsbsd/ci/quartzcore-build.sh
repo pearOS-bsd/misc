@@ -6,7 +6,7 @@ WS="${GITHUB_WORKSPACE:-$(cd "$(dirname "$0")/../.." && pwd)}/wsbsd"
 # corebase + Opal (and the packaged gnustep-gui) come from the Opal script; its demo is skipped by stopping after the libraries
 sh "$WS/ci/opal-build.sh" >/tmp/opal-build.log 2>&1
 tail -5 /tmp/opal-build.log
-pkg install -y gnustep-gui mesa-libs libglvnd glew >/dev/null 2>&1
+pkg install -y gnustep-gui mesa-libs libglvnd glew python3 >/dev/null 2>&1
 . /usr/local/GNUstep/System/Library/Makefiles/GNUstep.sh
 cd /tmp/gs && git clone --depth 1 https://github.com/gnustep/libs-quartzcore qc 2>&1 | tail -1
 cd qc
