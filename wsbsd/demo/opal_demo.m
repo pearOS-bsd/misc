@@ -84,7 +84,8 @@ int main(int argc, char **argv)
 			draw_button(g, CGRectMake(30, 20, 120, 34), 1);
 			CGContextFlush(g);
 			ws_rect btn = { 30, H - 54, 120, 34 };
-			ws_surface_flush(c, &w, sid, &btn);
+			int frc = ws_surface_flush(c, &w, sid, &btn);
+			fprintf(stderr, "opal_demo: pressed pixel(60,323)=%08x flush rc=%d\n", ((uint32_t *)px->px)[323 * (px->stride / 4) + 60], frc);
 		}
 		char out2[256]; snprintf(out2, sizeof out2, "%s-click.ppm", out);
 		ws_screenshot_scene(c, out2);
