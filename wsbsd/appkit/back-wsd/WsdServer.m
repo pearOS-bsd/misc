@@ -109,6 +109,7 @@ static void terminate(int sig)
 	w->number = (int)w->win.id;
 	WLOG(@"window %d created %d,%d %dx%d style %x", w->number, w->x, w->y, w->w, w->h, style);
 	w->next = windows; windows = w;
+	[self _setWindowOwnedByServer: w->number];   /* without this GSServerForWindow() is nil for the window and AppKit's calls never arrive */
 	return w->number;
 }
 
