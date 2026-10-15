@@ -1,0 +1,25 @@
+# state routines: window visibility, geometry, parents, resolution, ordering, lists
+new_window a 100 200 300 150
+new_window b 50 60 80 40
+level a 5
+raw 30312 ndr wid:a
+raw 30311 ndr wid:a
+raw 30028 ndr wid:a
+raw 30028 ndr u32:99999
+raw 30279 ndr wid:a f32:2.0
+raw 30280 ndr wid:a
+raw 30249 ndr wid:b wid:a
+raw 30241 ndr u32:2 wid:a wid:b
+raw 30023 ndr wid:a
+raw 30167 ndr u32:1
+raw 30019 ndr wid:a u32:1
+raw 30162 ndr wid:a
+raw 30545 ndr u32:2
+raw 30127 ndr u32:0
+raw 30040 ndr u32:1 wid:a u32:1 f32:0.5
+raw 30257 ndr u32:1 u32:1 wid:a
+raw 30257 ndr u32:9 u32:1 wid:a
+raw 30233 ndr u32:1 wid:a u32:1 u32:0
+raw 30312 ndr wid:a
+raw 30066 ndr u32:0 u32:16 u32:1 u32:0 u32:0 u32:0 u32:0
+raw 30312 ndr u32:99999
