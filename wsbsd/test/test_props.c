@@ -285,6 +285,20 @@ int main(void)
 		CHECK(failed >= 10 && failed <= 12);
 		ws_disconnect(c5);
 	}
+	{ /* a window title set as a property appears in WindowQuery records when query flag 1 asks for names (string entry before the record: byte 2, u32 length, the text) and not otherwise */
+		ws_win tt; CHECK(ws_win_create(c, (ws_rect){ 30, 340, 40, 30 }, 0, &tt) == 0);
+		static const uint8_t bp[] = { 'b','p','l','i','s','t','0','0', 0x55, 'H','e','l','l','o', 0x08, 0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0x0e };
+		uint8_t m[0x100], rep[0x400]; size_t P = 16, size = P + 0x44; memset(m, 0, sizeof m); hdr(m, (uint32_t)size, 30048, 1);
+		w32(m, 0x18, 1); m[0x25] = 1; m[0x27] = 1; w32(m, 0x28, sizeof bp); memcpy(m + 0x2c, &WS_NDR, 8);
+		w32(m, 0x34, tt.id); w32(m, 0x3c, 16); memcpy(m + 0x40, "kCGSWindowTitle", 15); w32(m, 0x40 + P, sizeof bp); memcpy(m + size, bp, sizeof bp);
+		CHECK(rc(fd, m, size + sizeof bp) == 0);
+		uint8_t q[0x40]; for (int named = 0; named < 2; named++) {
+			memset(q, 0, sizeof q); hdr(q, 0x30, 30474, 0); w32(q, 0x20, (uint32_t)named); w32(q, 0x28, 4); q[0x2c] = 0x10; q[0x2d] = 1; q[0x2e] = 0x20 * 0; q[0x2e] = 0x10; q[0x2f] = (uint8_t)tt.id;
+			int g = call(fd, q, 0x30, rep, sizeof rep); uint32_t slen = g > 0x38 ? r32(rep, 0x34) : 0;
+			int has = 0; for (uint32_t i = 12; i + 10 <= slen; i++) if (rep[0x38 + i] == 2 && r32(rep, 0x38 + i + 1) == 5 && memcmp(rep + 0x38 + i + 5, "Hello", 5) == 0) has = 1;
+			CHECK(g > 0x38 && has == named);
+		}
+	}
 	{ /* GetWindowTransform: the identity for a window nothing transformed (recorded), 1000 for an unknown window, -304 for a bad size */
 		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 100, 200, 30, 20 }, 0, &tw) == 0);
 		uint8_t m[0x28], rep[0x80]; memset(m, 0, sizeof m); hdr(m, 0x28, 30034, 0); w32(m, 0x20, tw.id); w32(m, 0x24, 0x7fffff00);

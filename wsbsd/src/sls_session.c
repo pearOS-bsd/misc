@@ -1,5 +1,6 @@
 /* Connection / session / process level routines: version, session ports, client dictionaries, debug options, appearance. */
 #include "wsd_priv.h"
+#include "bplist.h"
 #include "ws_buffer.h"
 #include <string.h>
 #include <stdio.h>
@@ -170,8 +171,11 @@ static int wq_get_p64(const uint8_t *s, size_t n, size_t *i, int64_t *out)
 static void wq_rect(wq_buf *b, int x, int y, int w, int h) { wq_p64(b, x); wq_p64(b, y); wq_p64(b, w); wq_p64(b, h); }
 
 /* one window record as the decompiled encode_window writes it (unverified live: values the model does not have are the ones the real server wrote for a plain window) */
+static int wq_names;                                                  /* query flag 1: window names are included (recorded on a macOS runner) */
 static int wq_spaces;                                                 /* query flag 4: windows list their spaces */
-static void wq_window(wq_buf *b, ws_wid id)
+int sls_window_property_copy(uint32_t wid, const char *key, uint8_t *out, size_t cap);
+/* writes one window record; returns the offset of its marker byte (what the index list points at). A titled window (kCGSWindowTitle holding a string) first gets a string entry: byte 2, u32 length, the bytes. */
+static uint32_t wq_window(wq_buf *b, ws_wid id)
 {
 	ws_rect f = { 0, 0, 0, 0 }; int level = 0; float alpha = 1.0f;
 	ws_window_frame(srv, id, &f); ws_window_level(srv, id, &level); ws_window_alpha(srv, id, &alpha);
@@ -179,7 +183,11 @@ static void wq_window(wq_buf *b, ws_wid id)
 	uint64_t tags = ws_window_tags(srv, id);
 	ws_rect sh = f;
 	{ sh.x -= 23; sh.y -= 15; sh.w += 46; sh.h += 46; }   /* shadow outsets as the real server reports them for an ordinary window */
+	uint32_t nameoff = 0xffffffffu; char title[256];
+	if (wq_names) { uint8_t pl[512]; int pn = sls_window_property_copy(id, "kCGSWindowTitle", pl, sizeof pl);
+	  if (pn > 0 && bp_string(pl, (size_t)pn, title, sizeof title)) { uint32_t tl = (uint32_t)strlen(title); nameoff = (uint32_t)b->n; wq_u8(b, 2); wq_u32(b, tl); wq_put(b, title, tl); } }
 	wq_u32(b, 0);
+	uint32_t marker = (uint32_t)b->n;
 	wq_u8(b, 1);
 	wq_p64(b, id); wq_p64(b, owner); wq_p64(b, ws_window_parent(srv, id)); wq_p64(b, oc ? oc->pid : 0); wq_p64(b, 0); wq_p64(b, 0);
 	wq_p64(b, level);
@@ -190,8 +198,9 @@ static void wq_window(wq_buf *b, ws_wid id)
 	if (!tags) tags = 0xf;                                                   /* a window nothing has tagged reads 0xf in the record (recorded on a macOS runner) */
 	wq_p64(b, (int64_t)(tags & 0xffffffffu)); wq_p64(b, (int64_t)(tags >> 32));
 	wq_u8(b, 0); wq_u8(b, 0);                                            /* no window shape, one more flag */
-	wq_u32(b, 0xffffffffu); wq_u32(b, wq_spaces ? 0xcu : 0xffffffffu); wq_u32(b, 0xffffffffu);   /* no name / space list (an empty list at 0xc when asked for) / group */
-	wq_u8(b, 0); wq_u8(b, 0); wq_u8(b, 0);
+	wq_u32(b, nameoff); wq_u32(b, wq_spaces ? 0xcu : 0xffffffffu); wq_u32(b, 0xffffffffu);   /* name (the string entry's offset) / space list (an empty list at 0xc when asked for) / group */
+	wq_u8(b, nameoff != 0xffffffffu); wq_u8(b, 0); wq_u8(b, 0);
+	return marker;
 }
 
 /* WindowQuery (30474), the engine behind window lists. Request (decompiled __XWindowQuery): complex bit clear, query flags (u64)@0x20, n@0x28 (<= 0x4000), an encoded
@@ -237,7 +246,7 @@ static int do_window_query(conn *c, const uint8_t *buf, size_t len)
 	} else {
 		for (int64_t k = 0; k < cnt && nids < 256; k++) { int64_t id; if (!wq_get_p64(q, n, &qi, &id)) break; if (id > 0) ids[nids++] = (ws_wid)id; }
 	}
-	wq_buf b = { 0, 0, 0 }; wq_spaces = (rd32(buf, 0x20) & 4) != 0;
+	wq_buf b = { 0, 0, 0 }; wq_spaces = (rd32(buf, 0x20) & 4) != 0; wq_names = (rd32(buf, 0x20) & 1) != 0;
 	wq_u32(&b, 0xffffffffu); wq_u32(&b, 0xffffffffu); wq_u32(&b, 0xffffffffu);   /* window / space / display list offsets, patched below */
 	uint32_t seen_id[256], seen_off[256]; int nseen = 0;
 	uint32_t listoff[256]; int nlist = 0;
@@ -247,9 +256,8 @@ static int do_window_query(conn *c, const uint8_t *buf, size_t len)
 		int at = -1;
 		for (int j = 0; j < nseen; j++) if (seen_id[j] == (uint32_t)id) at = j;
 		if (at < 0) {
-			seen_id[nseen] = (uint32_t)id; seen_off[nseen] = (uint32_t)b.n + 4;       /* the offset of the marker byte, after the leading zero word */
+			seen_id[nseen] = (uint32_t)id; seen_off[nseen] = wq_window(&b, (ws_wid)id);       /* the offset of the marker byte */
 			at = nseen++;
-			wq_window(&b, (ws_wid)id);
 		}
 		listoff[nlist++] = seen_off[at];
 	}

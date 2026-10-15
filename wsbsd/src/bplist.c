@@ -58,3 +58,19 @@ size_t bp_serialize(bp_node *root, uint8_t **out)
 	*out = w.b;
 	return w.n;
 }
+
+/* the text of a property list holding one string (bplist00, ASCII or UTF-16 string as the first object); 0 when it is anything else */
+int bp_string(const uint8_t *b, size_t n, char *out, size_t cap)
+{
+	if (n < 10 || memcmp(b, "bplist00", 8)) return 0;
+	uint8_t m = b[8]; size_t len = m & 0xf, off = 9;
+	if ((m & 0xf0) != 0x50 && (m & 0xf0) != 0x60) return 0;
+	if (len == 0xf) { if (off >= n || (b[off] & 0xf0) != 0x10) return 0; int nb = 1 << (b[off] & 0xf); off++; len = 0; for (int i = 0; i < nb && off < n; i++) len = (len << 8) | b[off++]; }
+	if (len + 1 > cap) return 0;
+	if ((m & 0xf0) == 0x50) { if (off + len > n) return 0; memcpy(out, b + off, len); out[len] = 0; return 1; }
+	if (off + 2 * len > n) return 0;
+	for (size_t i = 0; i < len; i++) out[i] = (char)b[off + 2 * i + 1];                 /* UTF-16BE, the low byte */
+	out[len] = 0;
+	return 1;
+}
+

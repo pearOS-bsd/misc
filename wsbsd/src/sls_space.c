@@ -31,21 +31,6 @@ uint64_t sls_space_of_window(uint32_t wid)
 	return 1;
 }
 
-/* the text of a property list holding one string (bplist00, ASCII or UTF-16 string as the first object); 0 when it is anything else */
-static int bplist_string(const uint8_t *b, size_t n, char *out, size_t cap)
-{
-	if (n < 10 || memcmp(b, "bplist00", 8)) return 0;
-	uint8_t m = b[8]; size_t len = m & 0xf, off = 9;
-	if ((m & 0xf0) != 0x50 && (m & 0xf0) != 0x60) return 0;
-	if (len == 0xf) { if (off >= n || (b[off] & 0xf0) != 0x10) return 0; int nb = 1 << (b[off] & 0xf); off++; len = 0; for (int i = 0; i < nb && off < n; i++) len = (len << 8) | b[off++]; }
-	if (len + 1 > cap) return 0;
-	if ((m & 0xf0) == 0x50) { if (off + len > n) return 0; memcpy(out, b + off, len); out[len] = 0; return 1; }
-	if (off + 2 * len > n) return 0;
-	for (size_t i = 0; i < len; i++) out[i] = (char)b[off + 2 * i + 1];                 /* UTF-16BE, the low byte */
-	out[len] = 0;
-	return 1;
-}
-
 static int reply_u64(conn *c, const mach_msg_header_t *h, uint64_t v)
 {
 	uint8_t r[0x2c]; memset(r, 0, sizeof r);
@@ -95,7 +80,7 @@ int sls_space_dispatch(conn *c, const uint8_t *buf, size_t len)
 		if (osz < 0) return reply_simple(c->fd, h, err);
 		if ((uint32_t)osz != rd32(buf, 0x34)) return reply_simple(c->fd, h, -300);
 		char name[130];
-		if (osz == 0 || !bplist_string(buf + 0x38, (uint32_t)osz, name, sizeof name)) return reply_simple(c->fd, h, 1000);
+		if (osz == 0 || !bp_string(buf + 0x38, (uint32_t)osz, name, sizeof name)) return reply_simple(c->fd, h, 1000);
 		sp_init();
 		uint64_t found = 0;
 		for (int i = 0; i < MAXSP; i++) if (sp[i].used && sp[i].name[0] && !strcmp(sp[i].name, name)) { found = sp[i].id; break; }
