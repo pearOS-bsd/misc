@@ -1,0 +1,46 @@
+cid=263927 port=9731
+# new_window a err=0 wid=30
+# new_window b err=0 wid=31
+# level err=0
+# raw
+raw 30312 reqsize=36 -> reply_id=30412 bits=00001200 size=40 hex=00000000010000000000000000000000
+# raw
+raw 30311 reqsize=36 -> reply_id=30411 bits=00001200 size=40 hex=00000000010000000000000000000000
+# raw
+raw 30028 reqsize=36 -> reply_id=30128 bits=00001200 size=52 hex=0000000001000000000000000000c842000048430000964300001643
+# raw
+raw 30028 reqsize=36 -> reply_id=30128 bits=00001200 size=36 hex=0000000001000000e8030000
+# raw
+raw 30279 reqsize=40 -> reply_id=30379 bits=00001200 size=36 hex=000000000000000000000000
+# raw
+raw 30280 reqsize=36 -> reply_id=30380 bits=00001200 size=40 hex=00000000010000000000000000000040
+# raw
+raw 30249 reqsize=40 -> reply_id=30349 bits=00001200 size=36 hex=000000000000000000000000
+# raw
+raw 30241 reqsize=44 -> reply_id=30341 bits=00001200 size=36 hex=0000000001000000e9030000
+# raw
+raw 30023 reqsize=36 -> reply_id=30123 bits=00001200 size=36 hex=000000000000000000000000
+# raw
+raw 30167 reqsize=36 -> reply_id=30267 bits=00001200 size=40 hex=00000000010000000000000001000000
+# raw
+raw 30019 reqsize=40 -> reply_id=30119 bits=00001200 size=36 hex=000000000100000000000000
+# raw
+raw 30162 reqsize=36 -> reply_id=30262 bits=00001200 size=36 hex=000000000000000000000000
+# raw
+raw 30545 reqsize=36 -> reply_id=30645 bits=00001200 size=36 hex=000000000000000000000000
+# raw
+raw 30127 reqsize=36 -> reply_id=30227 bits=00001200 size=36 hex=000000000000000000000000
+# raw
+raw 30040 reqsize=48 -> reply_id=30140 bits=00001200 size=36 hex=000000000000000000000000
+# raw
+raw 30257 reqsize=44 -> reply_id=30357 bits=00001200 size=36 hex=0000000001000000d0feffff
+# raw
+raw 30257 reqsize=44 -> reply_id=30357 bits=00001200 size=36 hex=0000000001000000d0feffff
+# raw
+raw 30233 reqsize=48 -> reply_id=71 bits=00001200 size=24 hex=
+# raw
+raw 30312 send-error=0x10000003
+# raw
+raw 30066 send-error=0x10000003
+# raw
+raw 30312 send-error=0x10000003

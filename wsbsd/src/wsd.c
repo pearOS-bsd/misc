@@ -240,6 +240,25 @@ void fill_reply_header(mach_msg_header_t *r, const mach_msg_header_t *req, uint3
 	r->msgh_id = req->msgh_id + 100;
 }
 
+#undef ws_ipc_send
+#include "sls_zero_ndr.h"
+int wsd_send(int sock, const struct iovec *iov, int iovcnt, const int *fds, int nfds)
+{
+	if (iovcnt == 1 && iov[0].iov_len == 36) {                          /* a kern-return-only reply: some routines leave the NDR record zero on success */
+		uint8_t m[36]; memcpy(m, iov[0].iov_base, 36);
+		const mach_msg_header_t *h = (const mach_msg_header_t *)m;
+		int32_t ret; memcpy(&ret, m + 0x20, 4);
+		if (ret == 0 && !(h->msgh_bits & MACH_MSGH_BITS_COMPLEX) && h->msgh_id > 100) {
+			for (size_t k = 0; k < sizeof zero_ndr_ids / sizeof *zero_ndr_ids; k++)
+				if ((uint32_t)zero_ndr_ids[k] + 100 == (uint32_t)h->msgh_id) { memset(m + 0x18, 0, 8); break; }
+		}
+		struct iovec v = { m, 36 };
+		return ws_ipc_send(sock, &v, 1, fds, nfds);
+	}
+	return ws_ipc_send(sock, iov, iovcnt, fds, nfds);
+}
+#define ws_ipc_send wsd_send
+
 int reply_simple(int fd, const mach_msg_header_t *req, int32_t retcode)
 {
 	sls_simple_reply r;

@@ -7,6 +7,10 @@
 #include <stdint.h>
 #include <stddef.h>
 
+/* replies leave through wsd_send, which zeroes the NDR record of the success replies the real server leaves zeroed (see sls_zero_ndr.h) */
+int wsd_send(int sock, const struct iovec *iov, int iovcnt, const int *fds, int nfds);
+#define ws_ipc_send wsd_send
+
 typedef struct {
 	int fd; uint32_t id; int efd; int pid; char app[64]; int handshaken;
 	uint32_t notify_n, notify[256];                                           /* connection notification interests */

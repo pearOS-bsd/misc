@@ -289,10 +289,11 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		if (child && parent && ws_window_exists(srv, child) && ws_window_exists(srv, parent) && holds_rights(c, child) && holds_rights(c, parent)) ws_window_set_parent(srv, child, parent);
 		return reply_simple(c->fd, h, 0);
 	}
-	case SLS_MSG_GetParentWindowList: {                                            /* n@0x20 (<= 0x400), n window ids; size 4n + 0x24. Reply 0x1028: retcode, 0x400@0x24, the parent of each id (0: none or invalid window) at 0x28 */
+	case SLS_MSG_GetParentWindowList: {                                            /* n@0x20 (must be 0x400, else 1001), n window ids; size 4n + 0x24. Reply 0x1028: retcode, 0x400@0x24, the parent of each id (0: none or invalid window) at 0x28 */
 		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size < 0x24 || h->msgh_size > 0x1024) return reply_simple(c->fd, h, -304);
 		uint32_t n = rd32(buf, 0x20);
 		if (n > 0x400 || h->msgh_size != 4 * n + 0x24) return reply_simple(c->fd, h, -304);
+		if (n != 0x400) return reply_simple(c->fd, h, 1001);                      /* recorded on a macOS runner (and in the decompile): only a full list of 0x400 ids is accepted */
 		uint8_t *r = calloc(1, 0x1028);
 		if (!r) return reply_simple(c->fd, h, 1000);
 		fill_reply_header((mach_msg_header_t *)r, h, 0x1028, 0);
