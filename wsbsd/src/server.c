@@ -293,6 +293,8 @@ int ws_order_window(ws_server *s, ws_wid id, int mode, ws_wid rel)
 	return 0;
 }
 
+int ws_window_invalidate_shadow(ws_server *s, ws_wid id) { window *w = get(s, id); if (!w) return -1; ws_surface_free(w->shadow); w->shadow = NULL; bump(s); return 0; }
+
 int ws_window_has_shadow(ws_server *s, ws_wid id) { window *w = get(s, id); return w && w->shadow_on; }
 
 int ws_set_window_shadow(ws_server *s, ws_wid id, int cr, int on)

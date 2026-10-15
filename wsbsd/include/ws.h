@@ -88,7 +88,8 @@ uint64_t ws_server_generation(const ws_server *);                       /* incre
 void ws_server_drop_content(ws_server *, const ws_surface *content);     /* a buffer is going away */                                      /* windows held by a connection */
 void ws_release_owner(ws_server *, uint32_t owner);                                  /* a connection went away */
 int ws_set_window_shadow(ws_server *, ws_wid, int corner_radius, int enabled);
-int ws_window_has_shadow(ws_server *, ws_wid);                  /* 1 when the window casts a shadow */
+int ws_window_has_shadow(ws_server *, ws_wid);
+int ws_window_invalidate_shadow(ws_server *, ws_wid);            /* drops the cached shadow image: rebuilt on the next frame */                  /* 1 when the window casts a shadow */
 ws_wid ws_active_window(ws_server *);                        /* frontmost window that has a shadow */
 int ws_release_window(ws_server *, ws_wid);
 ws_surface *ws_window_backing(ws_server *, ws_wid);

@@ -92,6 +92,28 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 {
 	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
 	switch (h->msgh_id) {
+	case SLS_MSG_InvalidateWindowShadow: {                                        /* wid@0x20; 0 whatever the window (decompiled: the invalidation only happens with rights) */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		uint32_t wid = rd32(buf, 0x20);
+		if (ws_window_exists(srv, wid) && holds_rights(c, wid)) ws_window_invalidate_shadow(srv, wid);
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_SynchronizeWindowBackingStore:                                   /* wid@0x20: waits for the next display update; answered at once here */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		return reply_simple(c->fd, h, 0);
+	case SLS_MSG_RemoveAllSurfaces:
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		return reply_simple(c->fd, h, wsd_remove_all_surfaces(c, rd32(buf, 0x20)));
+	case SLS_MSG_GetScreenRectForWindow: {                                         /* wid@0x20; reply 0x34: retcode, x y w h as floats; 1000 for an unknown window */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		ws_rect f;
+		if (ws_window_frame(srv, rd32(buf, 0x20), &f)) return reply_simple(c->fd, h, 1000);
+		uint8_t r[0x34]; memset(r, 0, sizeof r);
+		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
+		memcpy(r + 0x18, &WS_NDR, sizeof WS_NDR);
+		float v[4] = { (float)f.x, (float)f.y, (float)f.w, (float)f.h }; memcpy(r + 0x24, v, 16);
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
 	case SLS_MSG_ShapeWindow: {                                                    /* two OOL regions (shape, second shape), wid@0x44, option@0x48, byte@0x4c, sizes repeated @0x50/@0x54, size 0x58 */
 		if (!(h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || h->msgh_size != 0x58 || len < 0x58 || rd32(buf, 0x18) != 2) return reply_simple(c->fd, h, -304);
 		uint32_t s1 = rd32(buf, 0x28), s2 = rd32(buf, 0x38);
