@@ -42,7 +42,6 @@ static const gen_entry gen_table[] = {
 	{ 30148, 36, 0, 0, 36 },   /* __XExitSpecialKeyMode */
 	{ 30153, 40, 1, 1, 36 },   /* __XSetDefaultBootstrapPort */
 	{ 30158, 140, 0, 0, 36 },   /* __XAddTrackingAreas */
-	{ 30167, 36, 0, 0, 40 },   /* __XBlockWindowOrdering */
 	{ 30184, 36, 0, 0, 36 },   /* __XPackagesAddWindowToDraggingSpace */
 	{ 30185, 36, 0, 0, 36 },   /* __XPackagesRemoveWindowFromDraggingSpace */
 	{ 30191, 40, 0, 0, 36 },   /* __XRemoveWindowFromWindowMovementGroup */
@@ -186,9 +185,6 @@ static const gen_var_entry gen_var_table[] = {
 	{ 30108, 0, 36, 4 },   /* __XDeleteSurfaceProperty */
 	{ 30122, 0, 36, 4 },   /* __XPostBroadcastNotification */
 	{ 30123, 0, 36, 5 },   /* __XPostNotificationToConnection */
-	{ 30154, 0, 36, 5 },   /* __XSetWindowRegion */
-	{ 30155, 0, 36, 3 },   /* __XDeleteWindowRegion */
-	{ 30225, 0, 36, 4 },   /* __XSetWindowEventShape */
 	{ 30227, 0, 36, 8 },   /* __XScrollWindowRegionInline */
 	{ 30228, 1, 36, 5 },   /* __XSetWindowListGlobalClipShape */
 	{ 30231, 0, 36, 3 },   /* __XRemoveWindowListGlobalClipShape */
