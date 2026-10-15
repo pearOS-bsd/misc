@@ -182,6 +182,7 @@ static void wq_window(wq_buf *b, ws_wid id)
 	wq_rect(b, f.x, f.y, f.w, f.h); wq_rect(b, f.x, f.y, f.w, f.h);
 	wq_rect(b, sh.x, sh.y, sh.w, sh.h); wq_rect(b, sh.x, sh.y, sh.w, sh.h);
 	wq_p64(b, 0); wq_p64(b, 0);                                         /* corner radius, an unnamed field */
+	if (!tags) tags = 0xf;                                                   /* a window nothing has tagged reads 0xf in the record (recorded on a macOS runner) */
 	wq_p64(b, (int64_t)(tags & 0xffffffffu)); wq_p64(b, (int64_t)(tags >> 32));
 	wq_u8(b, 0); wq_u8(b, 0);                                            /* no window shape, one more flag */
 	wq_u32(b, 0xffffffffu); wq_u32(b, 0xffffffffu); wq_u32(b, 0xffffffffu);   /* no name / space list / group */
