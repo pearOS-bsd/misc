@@ -929,6 +929,7 @@ int ws_tracking_set(ws_server *s, uint64_t id, ws_wid wid, const ws_rect *rects,
 	for (int i = 0; i < 64; i++) if (s->trk[i].used && s->trk[i].id == id) t = &s->trk[i];
 	for (int i = 0; i < 64 && !t; i++) if (!s->trk[i].used) t = &s->trk[i];
 	if (!t || !get(s, wid)) return -1;
+	if (t->used == 0) { int mine = 0; uint32_t ow = get(s, wid)->owner; for (int i = 0; i < 64; i++) if (s->trk[i].used && ws_window_owner(s, s->trk[i].wid) == ow) mine++; if (mine >= 24) return -1; }      /* a connection cannot fill the table of tracking regions */
 	free(t->r); t->r = NULL; t->n = 0;
 	if (n > 0) { t->r = malloc((size_t)n * sizeof *t->r); if (!t->r) return -1; memcpy(t->r, rects, (size_t)n * sizeof *t->r); t->n = n; }
 	t->used = 1; t->id = id; t->wid = wid; t->inside = 0; t->ox = t->oy = 0;
