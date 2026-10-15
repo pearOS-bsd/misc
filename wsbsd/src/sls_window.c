@@ -100,10 +100,24 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		uint32_t wid = rd32(buf, 0x44);
 		if (holds_rights(c, wid) && s1) {
 			ws_rect *r = NULL; int nr = 0; ws_rect bb;
-			if (ws_region_parse(buf + 0x58, s1, &r, &nr, &bb) == 0 && bb.w > 0 && bb.h > 0) ws_resize_window(srv, wid, bb.x + bb.w, bb.y + bb.h);   /* the shape's extent is the window size */
+			if (ws_region_parse(buf + 0x58, s1, &r, &nr, &bb) == 0 && bb.w > 0 && bb.h > 0) ws_set_window_frame(srv, wid, bb.x, bb.y, bb.w, bb.h);   /* the shape is in screen coordinates: its bounds are the new frame (verified live) */
 			free(r);
 		}
 		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_SetWindowResolution: {                                           /* wid@0x20, float@0x24 */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		uint32_t wid = rd32(buf, 0x20); uint32_t bits = rd32(buf, 0x24); float f; memcpy(&f, &bits, 4);
+		if (!ws_window_exists(srv, wid) || !holds_rights(c, wid)) return -2;       /* what the real server answers for a window it does not let us change (recorded) */
+		ws_set_window_resolution(srv, wid, f);
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_GetWindowResolution: {                                           /* wid@0x20; reply 0x28 with the float@0x24 */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		float f;
+		if (ws_window_resolution(srv, rd32(buf, 0x20), &f)) return -2;
+		uint32_t bits; memcpy(&bits, &f, 4);
+		return reply_value(c->fd, h, (int32_t)bits);
 	}
 	case SLS_MSG_GetWindowShape: {                                                 /* wid@0x20; reply complex 0x38 with the serialized shape; 1000 for an unknown window */
 		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
