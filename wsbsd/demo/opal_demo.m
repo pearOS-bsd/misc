@@ -34,11 +34,11 @@ int main(int argc, char **argv)
 	CGContextRestoreGState(g);
 	/* text */
 	CGContextSetRGBFillColor(g, 1, 1, 1, 1);
-	CGContextSelectFont(g, "Helvetica", 28, kCGEncodingMacRoman);
+	CGContextSelectFont(g, "DejaVu Sans", 28, kCGEncodingMacRoman);
 	CGContextSetTextDrawingMode(g, kCGTextFill);
 	const char *line1 = "wsbsd: Quartz 2D on FreeBSD";
 	CGContextShowTextAtPoint(g, 48, 90 + 200, line1, strlen(line1));
-	CGContextSelectFont(g, "Helvetica", 16, kCGEncodingMacRoman);
+	CGContextSelectFont(g, "DejaVu Sans", 16, kCGEncodingMacRoman);
 	const char *line2 = "CoreGraphics (Opal/Cairo) into a wsd window";
 	CGContextShowTextAtPoint(g, 48, 66 + 200, line2, strlen(line2));
 	/* an image made from a bitmap, drawn scaled */
