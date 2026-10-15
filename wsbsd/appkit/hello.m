@@ -6,6 +6,7 @@
 - (void)clicked:(id)sender;
 @end
 @implementation Hello
+- (void)quit:(id)sender { NSLog(@"done"); [NSApp terminate:nil]; }
 - (void)clicked:(id)sender { NSLog(@"button clicked"); [field setStringValue:@"Clicked!"]; }
 @end
 
@@ -25,8 +26,7 @@ int main(int argc, char **argv)
 	h->field = t;
 	[w makeKeyAndOrderFront:nil];
 	NSLog(@"window shown, frame %@ number %d visible %d bgapp %d hidden %d active %d", NSStringFromRect([w frame]), (int)[w windowNumber], (int)[w isVisible], (int)[[NSUserDefaults standardUserDefaults] boolForKey:@"GSBackgroundApp"], (int)[NSApp isHidden], (int)[NSApp isActive]);
-	[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:(argc > 1 ? atof(argv[1]) : 1.0)]];
-	NSLog(@"done");
-	[pool release];
+	[NSTimer scheduledTimerWithTimeInterval:(argc > 1 ? atof(argv[1]) : 1.0) target:h selector:@selector(quit:) userInfo:nil repeats:NO];
+	[app run];
 	return 0;
 }
