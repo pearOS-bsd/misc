@@ -83,10 +83,11 @@ int main(int argc, char **argv)
 		if (got && e.x >= 30 && e.x < 150 && e.y >= H - 54 && e.y < H - 20) {
 			/* Opal's CGContextFlush ends a context's drawing: the next update uses a fresh bitmap context over the same shared memory */
 			CGContextRef g2 = CGBitmapContextCreate(px->px, W, H, 8, px->stride, rgb, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little);
+			fprintf(stderr, "opal_demo: g2=%p g=%p\n", (void *)g2, (void *)g);
 			draw_button(g2, CGRectMake(30, 20, 120, 34), 1);
 			CGContextFlush(g2); CGContextRelease(g2);
 			fprintf(stderr, "opal_demo: after g2 pixel(60,323)=%08x\n", ((uint32_t *)px->px)[323 * (px->stride / 4) + 60]);
-			for (int yy = 300; yy < 306; yy++) for (int xx = 40; xx < 100; xx++) ((uint32_t *)px->px)[yy * (px->stride / 4) + xx] = 0xffff0000;      /* direct write: tests the flush path */
+			for (int yy = 310; yy < 316; yy++) for (int xx = 40; xx < 100; xx++) ((uint32_t *)px->px)[yy * (px->stride / 4) + xx] = 0xffff0000;      /* direct write: tests the flush path */
 			ws_rect btn = { 30, H - 54, 120, 34 };
 			int frc = ws_surface_flush(c, &w, sid, &btn);
 			fprintf(stderr, "opal_demo: flush rc=%d\n", frc);
