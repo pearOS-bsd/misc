@@ -22,9 +22,10 @@ static uint32_t wid_of(const char *n) { for (int i = 0; i < nwins; i++) if (!str
 static void raw(int id, char **tok, int nt)
 {
 	uint8_t req[0x2000]; memset(req, 0, sizeof req); size_t n = 0x18;
-	int complex = 0;
+	int complex = 0; size_t nlen_at = 0;
 	for (int i = 0; i < nt; i++) {
 		char *t = tok[i];
+		if (!strcmp(t, "nlen")) { nlen_at = n; n += 4; continue; }              /* a u32 that receives the length of everything that follows, unpadded; the message is then padded to 4 */
 		if (!strncmp(t, "ool:", 4)) {                       /* one out-of-line descriptor: count@0x18, descriptor@0x1c..0x2b, the next token lands at 0x2c */
 			size_t hl = strlen(t + 4) / 2; uint8_t *mem = mmap(0, 0x4000, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
 			for (size_t k = 0; k < hl; k++) { unsigned v; sscanf(t + 4 + 2 * k, "%2x", &v); mem[k] = (uint8_t)v; }
@@ -37,10 +38,17 @@ static void raw(int id, char **tok, int nt)
 		else if (!strcmp(t, "cid")) { uint32_t v = (uint32_t)cid; memcpy(req + n, &v, 4); n += 4; }
 		else if (!strncmp(t, "f32:", 4)) { float v = strtof(t + 4, NULL); memcpy(req + n, &v, 4); n += 4; }
 		else if (!strncmp(t, "f64:", 4)) { double v = strtod(t + 4, NULL); memcpy(req + n, &v, 8); n += 8; }
+		else if (!strncmp(t, "pk:", 3) || !strncmp(t, "pkwid:", 6)) {                /* a transaction packed64: pk:<number> or pkwid:<window name> */
+			int64_t v = !strncmp(t, "pkwid:", 6) ? (int64_t)wid_of(t + 6) : strtoll(t + 3, NULL, 0);
+			if (v >= 0 && v < 16 && 0) req[n++] = 0;
+			else if (v == 0 || v == -1) req[n++] = v == 0 ? 0 : 1;
+			else { uint64_t u = v < 0 ? (uint64_t)~v : (uint64_t)v; int nb = 1; while (nb < 8 && (u >> (8 * nb))) nb++; req[n++] = (uint8_t)((nb << 4) | (v < 0 ? 1 : 0)); for (int b = nb - 1; b >= 0; b--) req[n++] = (uint8_t)(u >> (8 * b)); }
+		}
 		else if (!strncmp(t, "pad:", 4)) n += (size_t)atoi(t + 4);
 		else if (!strncmp(t, "hex:", 4)) { for (const char *s = t + 4; s[0] && s[1]; s += 2) { unsigned v; sscanf(s, "%2x", &v); req[n++] = (uint8_t)v; } }
 		else if (!strncmp(t, "str:", 4)) { size_t l = strlen(t + 4); memcpy(req + n, t + 4, l); n += (l + 3) & ~3u; }
 	}
+	if (nlen_at) { uint32_t l = (uint32_t)(n - nlen_at - 4); memcpy(req + nlen_at, &l, 4); n = (n + 3) & ~(size_t)3; }
 	mach_msg_header_t *hd = (mach_msg_header_t *)req;
 	mach_port_t reply; mach_port_allocate(mach_task_self(), MACH_PORT_RIGHT_RECEIVE, &reply);
 	hd->msgh_bits = MACH_MSGH_BITS(MACH_MSG_TYPE_COPY_SEND, MACH_MSG_TYPE_MAKE_SEND_ONCE) | (complex ? MACH_MSGH_BITS_COMPLEX : 0);
