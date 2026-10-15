@@ -17,18 +17,28 @@ void ws_buffer_init(ws_buffer *b)
 	b->modifier = ~0ULL;
 }
 
+/* An anonymous shared memory object: SHM_ANON on FreeBSD (allowed in capability mode), else a named object unlinked at once. Returns the descriptor, -1 on failure. */
+int ws_shm_create_anon(void)
+{
+#ifdef SHM_ANON
+	return shm_open(SHM_ANON, O_RDWR, 0600);
+#else
+	static unsigned counter; char name[48];
+	snprintf(name, sizeof name, "/wsx.%d.%u", (int)getpid(), ++counter);
+	int fd = shm_open(name, O_RDWR | O_CREAT | O_EXCL, 0600);
+	if (fd >= 0) shm_unlink(name);
+	return fd;
+#endif
+}
+
 int ws_buffer_create_shm(ws_buffer *b, int w, int h, uint32_t fourcc)
 {
 	int bpp = ws_buffer_bytes_per_pixel(fourcc);
 	if (!bpp || w <= 0 || h <= 0 || w > 16384 || h > 16384) return -1;
 	ws_buffer_init(b);
 	size_t stride = ws_buffer_stride_for(w, bpp), size = ws_buffer_alloc_size(stride, h);
-	static unsigned counter;
-	char name[40];
-	snprintf(name, sizeof name, "/wsb.%d.%u", (int)getpid(), ++counter);
-	int fd = shm_open(name, O_RDWR | O_CREAT | O_EXCL, 0600);
+	int fd = ws_shm_create_anon();
 	if (fd < 0) return -1;
-	shm_unlink(name);
 	if (ftruncate(fd, (off_t)size) < 0) { close(fd); return -1; }
 	b->kind = WS_BUF_SHM; b->w = w; b->h = h; b->fourcc = fourcc; b->nplanes = 1;
 	b->stride[0] = (uint32_t)stride; b->offset[0] = 0; b->modifier = 0; b->fd[0] = fd;

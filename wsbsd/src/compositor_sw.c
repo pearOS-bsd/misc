@@ -1,4 +1,5 @@
 #include "ws.h"
+#include "ws_buffer.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -36,14 +37,10 @@ void ws_shm_unlink(const char *name) { shm_unlink(name); }
 
 ws_surface *ws_surface_shm_anon(int w, int h, int *fd_out)
 {
-	static unsigned counter;
-	char name[32];
 	if (w <= 0 || h <= 0) return NULL;
 	size_t len = (size_t)w * 4 * (size_t)h;
-	snprintf(name, sizeof name, "/wsa.%d.%u", (int)getpid(), ++counter);
-	int fd = shm_open(name, O_RDWR | O_CREAT | O_EXCL, 0600);
+	int fd = ws_shm_create_anon();                          /* the descriptor is the only handle */
 	if (fd < 0) return NULL;
-	shm_unlink(name);                                       /* the descriptor is the only handle from now on */
 	if (ftruncate(fd, (off_t)len) < 0) { close(fd); return NULL; }
 	void *m = mmap(NULL, len, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 	ws_surface *s = m == MAP_FAILED ? NULL : calloc(1, sizeof *s);

@@ -1,5 +1,6 @@
 /* Connection / session / process level routines: version, session ports, client dictionaries, debug options, appearance. */
 #include "wsd_priv.h"
+#include "ws_buffer.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -331,10 +332,8 @@ static int do_shmem(conn *c, const uint8_t *buf, size_t len)
 	int n = h->msgh_id == 32006 ? 2 : 3, base = h->msgh_id == 32006 ? 0 : 2;
 	if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size != 0x18) return reply_simple(c->fd, h, -304);
 	for (int i = 0; i < n; i++) if (shmem_fds[base + i] < 0) {
-		char name[40]; snprintf(name, sizeof name, "/wsx.%d.%d", (int)getpid(), base + i);
-		int fd = shm_open(name, O_RDWR | O_CREAT | O_EXCL, 0600);
+		int fd = ws_shm_create_anon();
 		if (fd < 0) return reply_simple(c->fd, h, 1000);
-		shm_unlink(name);
 		if (ftruncate(fd, 0x110000) < 0) { close(fd); return reply_simple(c->fd, h, 1000); }
 		shmem_fds[base + i] = fd;
 	}

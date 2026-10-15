@@ -29,6 +29,7 @@ int reply_simple(int fd, const mach_msg_header_t *req, int32_t retcode);
 int reply_value(int fd, const mach_msg_header_t *req, int32_t value);
 int reply_mig_error(int fd, const mach_msg_header_t *req, int32_t code);
 int simple_ok(const mach_msg_header_t *h, size_t len, size_t want);   /* not complex, size and datagram length both equal want */
+int wsd_sandbox_enter(int listen_fd, int kq);                                 /* Capsicum capability mode (FreeBSD); -1 elsewhere */
 int holds_rights(const conn *c, uint32_t wid);
 uint32_t wsd_rights_held(const conn *c, uint32_t wid);                       /* the rights mask the connection holds on the window (owner: 0x30007) */
 int wsd_grant_create(conn *c, uint32_t recip, uint32_t wid, uint32_t a, uint32_t b);
