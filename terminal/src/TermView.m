@@ -79,8 +79,8 @@ static NSColor *colour(uint32_t c, NSColor *dflt) { if (c == VT_DEFAULT_COLOR) r
 			CGFloat w = (c->wide == 1 ? 2 : 1) * cellW;
 			if (bg != VT_DEFAULT_COLOR || (c->attr & VT_INVERSE) || sel) { [b set]; NSRectFill(NSMakeRect(x * cellW, py, w, cellH)); }
 			if (c->ch != ' ' && c->ch != 0 && !(c->attr & VT_HIDDEN)) {
-				UniChar buf[2]; int n = 1;
-				if (c->ch > 0xffff) { uint32_t v = c->ch - 0x10000; buf[0] = (UniChar)(0xd800 + (v >> 10)); buf[1] = (UniChar)(0xdc00 + (v & 0x3ff)); n = 2; } else buf[0] = (UniChar)c->ch;
+				unichar buf[2]; int n = 1;
+				if (c->ch > 0xffff) { uint32_t v = c->ch - 0x10000; buf[0] = (unichar)(0xd800 + (v >> 10)); buf[1] = (unichar)(0xdc00 + (v & 0x3ff)); n = 2; } else buf[0] = (unichar)c->ch;
 				NSString *s = [NSString stringWithCharacters:buf length:n];
 				NSMutableDictionary *at = [NSMutableDictionary dictionaryWithObjectsAndKeys:((c->attr & VT_BOLD) ? boldFont : font), NSFontAttributeName, f, NSForegroundColorAttributeName, nil];
 				if (c->attr & VT_UNDERLINE) [at setObject:[NSNumber numberWithInt:1] forKey:NSUnderlineStyleAttributeName];
