@@ -32,3 +32,7 @@ LD_LIBRARY_PATH=/tmp/gs/opal/Source/obj:/tmp/gs/corebase/Source/obj:/usr/local/G
 python3 tools/ppm2png.py opal.ppm opal.png 2>&1 | tail -1 || true
 python3 tools/ppm2png.py opal.ppm-click.ppm opal-click.png 2>&1 | tail -1 || true
 ls -l opal.png opal-click.png 2>&1
+
+# Opal probe: do successive contexts over one buffer all draw?
+cc -O1 -g $OBJC_FLAGS -I/usr/local/GNUstep/System/Library/Headers -o opal_probe demo/opal_probe.m -lopal -lgnustep-corebase $OBJC_LIBS -lcairo -lm 2>&1 | tail -5
+LD_LIBRARY_PATH=/tmp/gs/opal/Source/obj:/tmp/gs/corebase/Source/obj:/usr/local/GNUstep/System/Library/Libraries:/usr/local/lib ./opal_probe 2>&1 | tail -6
