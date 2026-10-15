@@ -25,3 +25,9 @@ Switch to a text console first (Ctrl+Alt+F2); DRM master is exclusive, so no X s
 2. Mouse moves the cursor (`/dev/input/event*` readable).
 3. `test_window` window appears with shadows; click it, type a key (events are drained by the client).
 4. If the mode set fails: `drmModeSetCrtc` error means another DRM master or a connector without a CRTC.
+
+## Sandbox (Capsicum)
+
+`wsd -S` enters capability mode once the listening socket, the event queue and (with `kms`) the display and input devices are open: from then on the server cannot open files or paths,
+create named sockets or reach anything outside the descriptors it holds. Clients still connect and shared memory is created with `SHM_ANON`. The FreeBSD CI job runs `test_props` and
+`test_robust` against a sandboxed server. The test-mode screenshot (`-t`, writes a file) does not work under `-S`, as intended. On systems without Capsicum `-S` is a no-op with a message.
