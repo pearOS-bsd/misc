@@ -10,6 +10,7 @@
 #endif
 
 @interface TermApp : NSObject
+- (void)finish:(NSTimer *)t;
 - (void)typeInitial:(NSTimer *)t;
 - (void)newWindow:(id)sender;
 @end
@@ -24,7 +25,15 @@
 	NSWindow *w = [[NSWindow alloc] initWithContentRect:cr styleMask:(NSWindowStyleMaskTitled | NSWindowStyleMaskClosable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskResizable) backing:NSBackingStoreBuffered defer:NO];
 	[w setTitle:@"Terminal"]; [w setContentView:v]; [v setFrameSize:sz]; [w makeFirstResponder:v]; [w makeKeyAndOrderFront:nil];
 	const char *init = getenv("TERMINAL_INITIAL_INPUT");                       /* for automated runs: text typed into the shell shortly after start */
+	const char *quitAfter = getenv("TERMINAL_EXIT_AFTER");
+	if (quitAfter && atof(quitAfter) > 0) [NSTimer scheduledTimerWithTimeInterval:atof(quitAfter) target:self selector:@selector(finish:) userInfo:nil repeats:NO];
 	if (init && *init) [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(typeInitial:) userInfo:v repeats:NO];
+}
+- (void)finish:(NSTimer *)t
+{
+	const char *dump = getenv("TERMINAL_DUMP");                                          /* automated runs: write the screen text, then quit */
+	if (dump && *dump) { for (NSWindow *w in [NSApp windows]) if ([[w contentView] isKindOfClass:[TermView class]]) { [(TermView *)[w contentView] dumpScreenToFile:[NSString stringWithUTF8String:dump]]; break; } }
+	[NSApp terminate:nil];
 }
 - (void)typeInitial:(NSTimer *)t { [(TermView *)[t userInfo] writeString:[NSString stringWithUTF8String:getenv("TERMINAL_INITIAL_INPUT")]]; }
 - (void)applicationDidFinishLaunching:(NSNotification *)n { (void)n; [self newWindow:nil]; }

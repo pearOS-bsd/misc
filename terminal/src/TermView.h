@@ -16,6 +16,7 @@
 - (NSString *)titleString;
 - (BOOL)childExited;
 - (void)writeString:(NSString *)s;                         /* sends text to the shell as if typed */
+- (BOOL)dumpScreenToFile:(NSString *)path;                 /* the visible text, one line per row (for automated checks) */
 - (void)paste:(id)sender;
 - (void)copy:(id)sender;
 @end
