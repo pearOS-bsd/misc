@@ -40,7 +40,7 @@ s=s.replace('#else\n#  error Invalid server for Cairo backend','#elif BUILD_SERV
 open(p,'w').write(s)
 p='Source/GNUmakefile.preamble'
 s=open(p).read()
-s+='\nADDITIONAL_INCLUDE_DIRS += -I$WS/include\nADDITIONAL_LDFLAGS += /tmp/wsc/libwsclient.a\nlibgnustep-\$(BACKEND_FULL)_BUNDLE_LIBS += /tmp/wsc/libwsclient.a\n'
+s+='\nADDITIONAL_INCLUDE_DIRS += -I$WS/include\n'
 open(p,'w').write(s)
 PY
 # the packaged gnustep-gui predates GSFontAssetInstaller: build without the font asset installers
