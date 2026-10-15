@@ -32,6 +32,9 @@ test_shim: shim/skylight.c src/client.c src/compositor_sw.c src/region.c src/ipc
 test_shim2: shim/skylight.c src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_shim2.c test/shim_api2.inc include/SkyLight.h $(HDRS)
 	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ shim/skylight.c src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_shim2.c $(EXTRA_LIBS) $(LDLIBS)
 
+test_shim3: shim/skylight.c src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_shim3.c test/shim_api3.inc include/SkyLight.h $(HDRS)
+	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ shim/skylight.c src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_shim3.c $(EXTRA_LIBS) $(LDLIBS)
+
 test_robust: src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_robust.c $(HDRS)
 	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_robust.c $(EXTRA_LIBS) $(LDLIBS)
 
@@ -68,7 +71,7 @@ gl: clean
 full: clean
 	$(MAKE) wsd test_window EXTRA_SRC="src/backend_kms.c src/compositor_gl.c" EXTRA_CFLAGS="-DWS_KMS -DWS_GL -DWS_GBM -DWS_EGL `pkg-config --cflags libdrm egl gbm glesv2`" EXTRA_LIBS="`pkg-config --libs libdrm egl gbm glesv2`"
 
-check: test_compose test_region test_evrec test_buffer test_diff wsd test_wire test_interactive test_robust test_golden test_props test_shim test_shim2 test_shim2
+check: test_compose test_region test_evrec test_buffer test_diff wsd test_wire test_interactive test_robust test_golden test_props test_shim test_shim2 test_shim3 test_shim2
 	./test_compose
 	./test_region
 	./test_evrec
@@ -81,6 +84,7 @@ check: test_compose test_region test_evrec test_buffer test_diff wsd test_wire t
 	sh test/run_one.sh test_props
 	sh test/run_shim.sh test_shim shim_basic
 	sh test/run_shim.sh test_shim2 shim_api2
+	sh test/run_shim.sh test_shim3 shim_api3
 
 # start wsd, draw the test window through the protocol, save window.ppm (window.png on macOS), stop wsd
 demo: wsd test_window

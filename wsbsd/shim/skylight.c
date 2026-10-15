@@ -1,6 +1,7 @@
 /* SkyLight client shim: the SLS/CGS C API over wsbsd's wire client (src/client.c). One connection per process, created on first use. */
 #include "SkyLight.h"
 #include "ws_client.h"
+#include "sls_wire.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -116,3 +117,29 @@ int SLSGetWindowSubLevel(CGSConnectionID cid, CGSWindowID wid) { (void)cid; ws_w
 CGError SLSSetWindowEventMask(CGSConnectionID cid, CGSWindowID wid, unsigned mask) { (void)cid; ws_win t; return ws_win_set_event_mask(get_conn(), handle(wid, &t), (int)mask); }
 CGError SLSGetWindowEventMask(CGSConnectionID cid, CGSWindowID wid, unsigned *mask) { (void)cid; ws_win t; int v = 0; if (!mask) return 1001; int rc = ws_win_get_event_mask(get_conn(), handle(wid, &t), &v); if (!rc) *mask = (unsigned)v; return rc; }
 CGError SLSSetWindowBackgroundBlurRadius(CGSConnectionID cid, CGSWindowID wid, int radius) { (void)cid; ws_win t; return ws_win_blur(get_conn(), handle(wid, &t), radius); }
+
+/* cursor visibility: HideCursor/ShowCursor/ObscureCursor/RevealCursor (32016..32019) carry the connection id in the body; the real client sends them to the server port */
+static CGError cursor_call(int id, CGSConnectionID cid, int extra)
+{
+	ws_conn *c = get_conn();
+	if (!c) return 1000;
+	uint8_t m[0x28]; memset(m, 0, sizeof m);
+	uint32_t size = id == SLS_MSG_ShowCursor ? 0x28 : 0x24;
+	ws_raw_header(m, size, id);
+	memcpy(m + 0x18, &WS_NDR, 8); memcpy(m + 0x20, &cid, 4); if (id == SLS_MSG_ShowCursor) memcpy(m + 0x24, &extra, 4);
+	return ws_raw_simple(c, m, size);
+}
+CGError SLSHideCursor(CGSConnectionID cid) { return cursor_call(SLS_MSG_HideCursor, cid, 0); }
+CGError SLSShowCursor(CGSConnectionID cid) { return cursor_call(SLS_MSG_ShowCursor, cid, 0); }
+CGError SLSObscureCursor(CGSConnectionID cid) { return cursor_call(SLS_MSG_ObscureCursor, cid, 0); }
+CGError SLSRevealCursor(CGSConnectionID cid) { return cursor_call(SLS_MSG_RevealCursor, cid, 0); }
+CGError SLSGetCursorScale(CGSConnectionID cid, float *scale) { (void)cid; ws_conn *c = get_conn(); return c && scale ? ws_cursor_scale(c, scale) : 1001; }
+CGError SLSGetOnScreenWindowList(CGSConnectionID cid, CGSConnectionID owner, int max, uint32_t *list, int *count)
+{
+	(void)cid;
+	if (!list || !count || max < 0) return 1001;
+	int total = 0, rc = ws_win_list(get_conn(), owner, 1, list, max, &total);
+	if (rc) return rc;
+	*count = total < max ? total : max;
+	return 0;
+}

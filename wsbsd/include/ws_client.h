@@ -21,6 +21,9 @@ int ws_win_release(ws_conn *, ws_win *);
 ws_wid ws_win_find(ws_conn *, int x, int y);                   /* FindWindow (30014) */
 int ws_win_get_event_mask(ws_conn *, ws_win *, int *mask);        /* GetWindowEventMask (30052) */
 int ws_win_is_ordered_in(ws_conn *, ws_win *, int *in);           /* WindowIsOrderedIn (30311) */
+int ws_win_list(ws_conn *, int owner, int onscreen, uint32_t *out, int max, int *total);   /* GetWindowListWithTags (30066), front to back */
+void ws_raw_header(uint8_t *m, uint32_t size, int id);               /* a request header (shims build their own bodies) */
+int ws_raw_simple(ws_conn *, const void *req, size_t n);          /* send a request, return its return code */
 int ws_win_set_level(ws_conn *, ws_win *, int level);            /* SetWindowLevel (30012) */
 int ws_win_get_level(ws_conn *, ws_win *, int *level);          /* GetWindowLevel (30013) */
 int ws_win_get_alpha(ws_conn *, ws_win *, float *alpha);        /* GetWindowAlpha (30042) */

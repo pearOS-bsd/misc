@@ -37,4 +37,10 @@ int SLSGetWindowSubLevel(CGSConnectionID cid, CGSWindowID wid);                 
 CGError SLSSetWindowEventMask(CGSConnectionID cid, CGSWindowID wid, unsigned mask);
 CGError SLSGetWindowEventMask(CGSConnectionID cid, CGSWindowID wid, unsigned *mask);
 CGError SLSSetWindowBackgroundBlurRadius(CGSConnectionID cid, CGSWindowID wid, int radius);
+CGError SLSHideCursor(CGSConnectionID cid);
+CGError SLSShowCursor(CGSConnectionID cid);
+CGError SLSObscureCursor(CGSConnectionID cid);
+CGError SLSRevealCursor(CGSConnectionID cid);
+CGError SLSGetCursorScale(CGSConnectionID cid, float *scale);
+CGError SLSGetOnScreenWindowList(CGSConnectionID cid, CGSConnectionID owner, int max, uint32_t *list, int *count);
 #endif

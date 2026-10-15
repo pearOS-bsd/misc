@@ -718,3 +718,15 @@ void ws_server_flags(ws_server *s, uint32_t flags)
 	if (w) post_ex(w, (ws_event){ WS_EV_FLAGS, w->id, 0, 0, s->buttons, 0, flags, 0, 0, 0 });
 }
 uint32_t ws_server_modifier_flags(const ws_server *s) { (void)s; return g_flags; }
+
+int ws_list_windows(ws_server *s, uint32_t owner, int onscreen, ws_wid *out, int max)
+{
+	window **v = malloc((s->n + 1) * sizeof *v);
+	if (!v) return 0;
+	size_t n = sorted(s, v);
+	int total = 0;
+	for (size_t i = n; i-- > 0;) if (!owner || v[i]->owner == owner) { if (total < max) out[total] = v[i]->id; total++; }
+	if (!onscreen) for (size_t i = 0; i < s->n; i++) if (!s->win[i].on_screen && (!owner || s->win[i].owner == owner)) { if (total < max) out[total] = s->win[i].id; total++; }
+	free(v);
+	return total;
+}
