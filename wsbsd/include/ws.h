@@ -90,6 +90,7 @@ void ws_release_owner(ws_server *, uint32_t owner);                             
 int ws_set_window_shadow(ws_server *, ws_wid, int corner_radius, int enabled);
 int ws_window_has_shadow(ws_server *, ws_wid);
 int ws_window_set_event_shape(ws_server *, ws_wid, const ws_rect *rects, int n);   /* window-relative; n = 0 clears */
+int ws_set_window_filter(ws_server *, ws_wid, int type);                  /* 2: CIColorInvert, 0 none */
 int ws_set_window_transform(ws_server *, ws_wid, const float m[6]);   /* a b c d tx ty about the window centre; identity clears */
 int ws_set_window_system_alpha(ws_server *, ws_wid, float a);   /* the system's own fade factor, multiplied with the window's alpha */
 int ws_set_window_system_level(ws_server *, ws_wid, int cls);
@@ -181,6 +182,7 @@ typedef struct {
 	ws_rect damage;                 /* union of the dirty rectangles since the last frame, window-local */
 	int has_damage, full_damage;    /* full_damage: the whole content changed (new window, resize, new buffer) */
 	int blur_radius;        /* background blur radius in points behind this window, 0 = none */
+	int invert;                     /* CIColorInvert filter */
 	int has_xf; float xf[6];        /* SetWindowTransform: a b c d tx ty about the window centre */
 } ws_visit;
 typedef void (*ws_visit_fn)(void *ctx, const ws_visit *v);

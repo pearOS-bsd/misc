@@ -10,6 +10,7 @@ typedef struct {
 	ws_rect frame;
 	int level;
 	float alpha;
+	int filter;                     /* SetWindowCIFilter: 2 = CIColorInvert (rendered), others kept only */
 	float xf[6]; int has_xf;        /* SetWindowTransform: a b c d tx ty about the window centre (software compositor) */
 	float sys_alpha;        /* SetWindowListSystemAlpha: multiplies the alpha (fades done by the system); 1 by default */
 	int syslevel;           /* SetWindowListSystemLevel class, kept */
@@ -405,6 +406,8 @@ int ws_window_set_parent(ws_server *s, ws_wid child, ws_wid parent)
 ws_wid ws_window_parent(ws_server *s, ws_wid id) { window *w = get(s, id); return w ? w->parent : 0; }
 
 int ws_set_window_system_alpha(ws_server *s, ws_wid id, float a) { window *w = get(s, id); if (!w) return -1; w->sys_alpha = a < 0 ? 0 : a > 1 ? 1 : a; bump(s); return 0; }
+int ws_set_window_filter(ws_server *s, ws_wid id, int type) { window *w = get(s, id); if (!w) return -1; w->filter = type; bump(s); return 0; }
+
 int ws_set_window_transform(ws_server *s, ws_wid id, const float m[6])
 {
 	window *w = get(s, id); if (!w) return -1;
@@ -780,7 +783,7 @@ void ws_server_walk(ws_server *s, ws_visit_fn fn, void *ctx)
 		if (w->shadow_on && w->shadow) {
 			vis.shadow = w->shadow; vis.shadow_x = w->frame.x - w->shadow_pad; vis.shadow_y = w->frame.y - w->shadow_pad; vis.shadow_gen = w->shadow_gen;
 		}
-		vis.has_xf = w->has_xf; memcpy(vis.xf, w->xf, sizeof vis.xf);
+		vis.invert = w->filter == 2; vis.has_xf = w->has_xf; memcpy(vis.xf, w->xf, sizeof vis.xf);
 		vis.damage = w->dmg; vis.has_damage = w->has_dmg; vis.full_damage = w->full_dmg;
 		fn(ctx, &vis);
 	}
@@ -804,9 +807,15 @@ void ws_compose_scene(ws_server *s, ws_surface *screen)
 		{
 			const ws_surface *px = (v[i]->content && v[i]->committed) ? (v[i]->front ? v[i]->front : v[i]->content) : v[i]->backing;
 			ws_surface *xs = NULL; int xo = 0, yo = 0;
+			ws_surface *inv = NULL;
+			if (v[i]->filter == 2 && px && px->px && (inv = ws_surface_new(px->w, px->h))) {      /* CIColorInvert on premultiplied pixels: c' = a - c */
+				for (int y = 0; y < px->h; y++) { const uint8_t *sp = px->px + (size_t)y * px->stride; uint8_t *dp = inv->px + (size_t)y * inv->stride; for (int x = 0; x < px->w; x++, sp += 4, dp += 4) { dp[0] = sp[3] - sp[0]; dp[1] = sp[3] - sp[1]; dp[2] = sp[3] - sp[2]; dp[3] = sp[3]; } }
+				px = inv;
+			}
 			if (v[i]->has_xf && px && px->px) xs = xform_surface(v[i], px, &xo, &yo);
 			if (xs) { s->comp->over(s->comp, screen, v[i]->frame.x + xo, v[i]->frame.y + yo, xs, v[i]->alpha * v[i]->sys_alpha, all); if (s->comp->flush) s->comp->flush(s->comp); ws_surface_free(xs); }
 			else s->comp->over(s->comp, screen, v[i]->frame.x, v[i]->frame.y, px, v[i]->alpha * v[i]->sys_alpha, all);
+			if (inv) { if (s->comp->flush) s->comp->flush(s->comp); ws_surface_free(inv); }
 		}
 		/* the shadow layer is rendered above its window (it is cut out of the window shape; the inner rim lies inside it) */
 		if (v[i]->shadow_on) draw_shadow(s, v[i], screen, v[i]->id == act || v[i]->appearance);
