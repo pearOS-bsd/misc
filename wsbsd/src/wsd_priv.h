@@ -15,6 +15,7 @@ typedef struct {
 	int fd; uint32_t id; int efd; int pid; char app[64]; int handshaken;
 	uint32_t notify_n, notify[256];                                           /* connection notification interests */
 	int registered; uint32_t psn_hi, psn_lo, session_id; int app_type;          /* process record made by CreateApplication */
+	uint32_t key_override;                                                       /* OverrideKeyRegistration bits (one per special key 0..6) */
 	uint64_t gesture_mask; uint32_t coalesce_mask, notes;                        /* SetGestureEventSubmask, CoalesceEventsInMask, SetNotifications */
 } conn;
 

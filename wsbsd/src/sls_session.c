@@ -385,6 +385,19 @@ int sls_session_dispatch(conn *c, const uint8_t *buf, size_t len)
 		if (buf[0x27] != 1 || rd32(buf, 0x28) != rd32(buf, 0x34) || len != 0x38 + (size_t)rd32(buf, 0x28)) return reply_simple(c->fd, h, -300);
 		return reply_simple(c->fd, h, 0);
 	}
+	if (h->msgh_id == SLS_MSG_OverrideKeyRegistration || h->msgh_id == SLS_MSG_UnoverrideKeyRegistration || h->msgh_id == SLS_MSG_RegisterForKey) {
+		/* psn (hi, lo)@0x20, key@0x28 (Override / Unoverride: 0..6, else -50; RegisterForKey: size 0x30, flag@0x2c), size 0x2c. -600 for a process without a record, 1010 when the record belongs to another connection */
+		uint32_t want = h->msgh_id == SLS_MSG_RegisterForKey ? 0x30 : 0x2c;
+		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size != want) return reply_simple(c->fd, h, MIG_SIZE_ERR);
+		uint32_t key = rd32(buf, h->msgh_id == SLS_MSG_RegisterForKey ? 0x28 : 0x28);
+		conn *t = wsd_conn_by_psn(rd32(buf, 0x20), rd32(buf, 0x24));
+		if (h->msgh_id != SLS_MSG_RegisterForKey && key >= 7) return reply_simple(c->fd, h, -50);
+		if (!t) return reply_simple(c->fd, h, -600);
+		if (t != c) return reply_simple(c->fd, h, 0x3f2);
+		if (h->msgh_id == SLS_MSG_OverrideKeyRegistration) c->key_override |= 1u << key;
+		else if (h->msgh_id == SLS_MSG_UnoverrideKeyRegistration) { if (!(c->key_override & (1u << key))) return reply_simple(c->fd, h, 0x3f2); c->key_override &= ~(1u << key); }
+		return reply_simple(c->fd, h, 0);
+	}
 	if (h->msgh_id == SLS_MSG_CreateApplication) return do_create_application(c, buf, len);
 	if (h->msgh_id == SLS_MSG_MenuBarExists || h->msgh_id == SLS_MSG_GetActiveMenuBarDrawingStyle || h->msgh_id == SLS_MSG_GetMenuBarAutohideEnabled || h->msgh_id == SLS_MSG_GetZoomParameters) return -2;      /* dedicated handlers (the menu bar state the setters change) */
 	if (!(h->msgh_bits & MACH_MSGH_BITS_COMPLEX) && h->msgh_size == sizeof *h && len == sizeof *h) return sls_golden_reply(c, h);
