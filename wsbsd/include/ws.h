@@ -64,6 +64,8 @@ int ws_window_level(ws_server *, ws_wid, int *level);
 int ws_window_alpha(ws_server *, ws_wid, float *alpha);
 int ws_count_owned(ws_server *, uint32_t owner);
 int ws_count_onscreen_owned(ws_server *, uint32_t owner);
+int ws_window_exists(ws_server *, ws_wid);
+int ws_window_on_screen(ws_server *, ws_wid);                 /* 1 when ordered in */
 int ws_set_window_sublevel(ws_server *, ws_wid, int sublevel);                      /* a 16-bit value, ordered after the level */
 int ws_window_sublevel(ws_server *, ws_wid, int *sublevel);
 int ws_window_shape_bounds(ws_server *, ws_wid, ws_rect *out);

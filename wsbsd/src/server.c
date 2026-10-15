@@ -164,6 +164,8 @@ int ws_window_shape_bounds(ws_server *s, ws_wid id, ws_rect *out)       /* windo
 	*out = (ws_rect){ x0, y0, x1 - x0, y1 - y0 };
 	return 0;
 }
+int ws_window_exists(ws_server *s, ws_wid id) { return get(s, id) != NULL; }
+int ws_window_on_screen(ws_server *s, ws_wid id) { window *w = get(s, id); return w && w->on_screen; }
 int ws_count_onscreen_owned(ws_server *s, uint32_t owner) { int n = 0; for (size_t i = 0; i < s->n; i++) n += s->win[i].owner == owner && s->win[i].on_screen; return n; }
 
 int ws_window_set_content(ws_server *s, ws_wid id, ws_surface *c, uint32_t buffer_id)
