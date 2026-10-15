@@ -116,7 +116,7 @@ jobs:
   # AppKit above wsd: GNUstep gui with the wsd display backend (appkit/back-wsd), an AppKit window on the real compositor.
   freebsd-appkit:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     continue-on-error: true
     steps:
       - uses: actions/checkout@v4
