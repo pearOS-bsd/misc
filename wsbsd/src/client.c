@@ -346,6 +346,23 @@ static int post_record(ws_conn *c, const uint8_t *rec, size_t n)
 
 int ws_post_event_record(ws_conn *c, const uint8_t *rec, size_t n) { return post_record(c, rec, n); }
 
+/* PostFilteredEventTapData (32025) with style 2, what SLEventPostToPid sends: the event goes to the process only. The PSN of a pid is {low 1, high pid}. */
+int ws_post_event_to_psn(ws_conn *c, uint32_t psn_lo, uint32_t psn_hi, const uint8_t *rec, size_t n)
+{
+	uint8_t buf[0x34 + 8 + 512];
+	if (n == 0 || n > 512) return -1;
+	uint32_t dl = 8 + (uint32_t)n, size = 0x34 + ((dl + 3) & ~3u);
+	memset(buf, 0, sizeof buf);
+	fill_header((mach_msg_header_t *)buf, size, SLS_MSG_PostFilteredEventTapData, 0);
+	memcpy(buf + 0x18, &WS_NDR, sizeof WS_NDR);
+	uint32_t v[4] = { 2, psn_lo, psn_hi, 0 }; memcpy(buf + 0x20, v, 16);
+	memcpy(buf + 0x30, &dl, 4);
+	uint32_t l = (uint32_t)n; memcpy(buf + 0x34 + 4, &l, 4);                     /* token 0, then the event length */
+	memcpy(buf + 0x34 + 8, rec, n);
+	return simple_call(c, buf, size);
+}
+int ws_post_event_to_pid(ws_conn *c, int pid, const uint8_t *rec, size_t n) { return ws_post_event_to_psn(c, 1, (uint32_t)pid, rec, n); }
+
 int ws_post_mouse_event(ws_conn *c, int type, float x, float y, uint32_t flags, int click_state, int button)
 {
 	uint8_t rec[512];

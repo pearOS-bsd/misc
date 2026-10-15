@@ -106,6 +106,7 @@ void ws_compose(ws_server *, ws_surface *screen);            /* one full frame *
 enum { WS_EV_NONE = 0, WS_EV_MOUSE_MOVE, WS_EV_MOUSE_DOWN, WS_EV_MOUSE_UP, WS_EV_KEY_DOWN, WS_EV_KEY_UP, WS_EV_FOCUS_IN, WS_EV_FOCUS_OUT, WS_EV_SCROLL, WS_EV_FLAGS, WS_EV_TRACK_ENTER, WS_EV_TRACK_EXIT };   /* track events: key = low 32 bits of the region id, dy = high 32 bits */
 /* x,y are window-local; flags are the CGEventFlags modifier mask; dx,dy the scroll deltas in points (continuous: pixel deltas from a trackpad) */
 typedef struct { int type; ws_wid wid; int x, y; int buttons, key; uint32_t flags; int dx, dy, continuous; } ws_event;
+int ws_window_post(ws_server *, ws_wid, const ws_event *);          /* queues an event for one window (and pushes it to its owner) without routing it */
 void ws_server_mouse(ws_server *, int x, int y, int buttons);   /* absolute, screen coordinates; buttons bitmask */
 void ws_server_key(ws_server *, int key, int down);
 /* Tracking regions (AddStructuralRegionOfType with a tracking type): window-relative rectangles; the pointer entering or leaving them while their window is the one under it

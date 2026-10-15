@@ -737,6 +737,80 @@ static int do_post_event(conn *c, const uint8_t *buf, size_t len)
 	return reply_simple(c->fd, h, 0);
 }
 
+
+/* PostFilteredEventTapData (32025), ...Sync (32026) and ...OOL (32027): what SLEventPostToPid / SLEventPostToPSN send (style 2 = "to the process only"). Request (decompiled
+ * __XPostFilteredEventTapData): style@0x20, tap id / PSN low@0x24, sequence / PSN high@0x28, u32@0x2c, data length n@0x30 (<= 0x4000), data@0x34, size pad4(n) + 0x34.
+ * The data is a run of events: u32 token (0), u32 length, the event as CGEventCreateData makes it. SLEventPostToPid passes {1, pid}: a PSN whose low word is 1 and
+ * whose high word is the pid. Delivery to the process: the key / mouse / flags / scroll event goes to the process's frontmost ordered-in window. Anyone may post
+ * (the real server checks that the sender may synthesize events). */
+static conn *process_for_psn(uint32_t lo, uint32_t hi)
+{
+	for (int i = 0; i < MAXCONN; i++) {
+		conn *t = &conns[i];
+		if (t->fd < 0) continue;
+		if (lo == 1 && t->pid && (uint32_t)t->pid == hi) return t;            /* the pid-style PSN */
+		if (t->registered && t->psn_lo == lo && t->psn_hi == hi) return t;
+	}
+	return NULL;
+}
+
+static int deliver_to_process(conn *t, const uint8_t *rec, size_t n)
+{
+	ws_evrec r;
+	if (ws_evrec_parse(rec, n, &r)) return -1;
+	ws_wid ids[1];
+	if (ws_list_windows(srv, t->id, 1, ids, 1) < 1) return -1;                  /* no window to receive it */
+	ws_rect f; if (ws_window_frame(srv, ids[0], &f)) return -1;
+	int type = ws_evrec_type(&r);
+	float fx = 0, fy = 0; ws_evrec_location(&r, &fx, &fy);
+	int x = (int)floorf(fx) - f.x, y = (int)floorf(fy) - f.y;
+	ws_event e; memset(&e, 0, sizeof e);
+	e.x = x; e.y = y; e.flags = ws_evrec_flags(&r);
+	switch (type) {
+	case 1: case 3: case 25: e.type = WS_EV_MOUSE_DOWN; e.buttons = type == 1 ? 1 : type == 3 ? 2 : 4; break;
+	case 2: case 4: case 26: e.type = WS_EV_MOUSE_UP; break;
+	case 5: case 6: case 7: case 27: e.type = WS_EV_MOUSE_MOVE; break;
+	case 10: case 11: { int kc = ws_evrec_keycode(&r); if (kc < 0) return -1; e.type = type == 10 ? WS_EV_KEY_DOWN : WS_EV_KEY_UP; e.key = kc; break; }
+	case 12: e.type = WS_EV_FLAGS; break;
+	case 22: {
+		const ws_evfield *p1 = ws_evrec_find(&r, 96), *p2 = ws_evrec_find(&r, 97), *l1 = ws_evrec_find(&r, 11), *l2 = ws_evrec_find(&r, 12), *ic = ws_evrec_find(&r, 88);
+		e.type = WS_EV_SCROLL; e.dy = p1 ? (int)p1->v[0] : l1 ? (int)l1->v[0] * 10 : 0; e.dx = p2 ? (int)p2->v[0] : l2 ? (int)l2->v[0] * 10 : 0; e.continuous = ic ? (int)ic->v[0] : 0;
+		break;
+	}
+	default: return -1;
+	}
+	return ws_window_post(srv, ids[0], &e);
+}
+
+static int do_post_tap_data(conn *c, const uint8_t *buf, size_t len, int ool)
+{
+	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
+	uint32_t style, a, b; const uint8_t *data; size_t n;
+	if (!ool) {
+		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size < 0x34 || h->msgh_size > 0x4034) return reply_simple(c->fd, h, -304);
+		n = rd32(buf, 0x30);
+		if (n > 0x4000 || n > h->msgh_size - 0x34 || h->msgh_size != ((n + 3) & ~(size_t)3) + 0x34) return reply_simple(c->fd, h, -304);
+		style = rd32(buf, 0x20); a = rd32(buf, 0x24); b = rd32(buf, 0x28); data = buf + 0x34;
+	} else {                                                                      /* one OOL descriptor (payload appended to the datagram), size 0x48 */
+		if (!(h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || h->msgh_size != 0x48 || len < 0x48 || rd32(buf, 0x18) != 1) return reply_simple(c->fd, h, -304);
+		if (buf[0x27] != 1 || rd32(buf, 0x28) != rd32(buf, 0x44)) return reply_simple(c->fd, h, -300);
+		n = rd32(buf, 0x28);
+		if (len != 0x48 + n) return reply_simple(c->fd, h, -300);
+		style = rd32(buf, 0x34); a = rd32(buf, 0x38); b = rd32(buf, 0x3c); data = buf + 0x48;
+	}
+	if (style == 2) {
+		conn *t = process_for_psn(a, b);
+		size_t i = 0;
+		while (t && n - i > 7) {
+			uint32_t tok = rd32(data, i), l = rd32(data, i + 4);
+			if (tok != 0 || l > n - i - 8) break;
+			deliver_to_process(t, data + i + 8, l);
+			i += 8 + l;
+		}
+	}
+	return reply_simple(c->fd, h, 0);
+}
+
 static int do_new_connection(conn *c, const uint8_t *buf, size_t len)
 {
 	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
@@ -832,6 +906,8 @@ static int dispatch(conn *c, uint8_t *buf, size_t len, int *fds, int nfds)
 	if (h->msgh_id == SLS_MSG_FlushSurface) { dirty = 1; return do_flush_surface(c, buf, len); }
 	if (h->msgh_id == WSX_BUFFER_RELEASE) return do_buffer_release(c, buf, len);
 	if (h->msgh_id == SLS_MSG_PostEventRecord) { dirty = 1; return do_post_event(c, buf, len); }
+	if (h->msgh_id == SLS_MSG_PostFilteredEventTapData || h->msgh_id == SLS_MSG_PostFilteredEventTapDataSync) { dirty = 1; return do_post_tap_data(c, buf, len, 0); }
+	if (h->msgh_id == SLS_MSG_PostFilteredEventTapDataOOL) { dirty = 1; return do_post_tap_data(c, buf, len, 1); }
 	if ((h->msgh_id >= 29000 && h->msgh_id < 29042) || (h->msgh_id >= SLS_MSGID_BASE && h->msgh_id < SLS_MSGID_END) ||
 	    (h->msgh_id >= 32000 && h->msgh_id < 32074) || (h->msgh_id >= 33000 && h->msgh_id < 33029) || (h->msgh_id >= 34000 && h->msgh_id < 34010)) {
 		int rc = do_simple(c, buf, len);
