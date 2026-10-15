@@ -4,6 +4,8 @@
 #include "ws_client.h"
 #include <stdio.h>
 #include <math.h>
+#include <string.h>
+#include <stdlib.h>
 
 /* a push button drawn with CoreGraphics: rounded look made of two rectangles and a label; pressed state is green */
 static void draw_button(CGContextRef g, CGRect r, int pressed)
@@ -82,17 +84,14 @@ int main(int argc, char **argv)
 		ws_post_mouse_event(c, 2, 120 + 90, 100 + 323, 0, 1, 0);
 		if (got && e.x >= 30 && e.x < 150 && e.y >= H - 54 && e.y < H - 20) {
 			/* Opal's CGContextFlush ends a context's drawing: the next update uses a fresh bitmap context over the same shared memory */
-			CGContextRelease(g); g = NULL;                                              /* the first context is gone before the next one draws */
-			CGContextRef g2 = CGBitmapContextCreate(px->px, W, H, 8, px->stride, rgb, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little);
-			fprintf(stderr, "opal_demo: g2=%p g=%p\n", (void *)g2, (void *)g);
+			/* the update is drawn into a scratch bitmap with a fresh context and copied into the window buffer (a second context directly over the shared
+			 * buffer did not draw in this setup; the same sequence over plain memory does, see opal_probe) */
+			size_t tstride = (size_t)W * 4; uint8_t *tmp = calloc(tstride, H);
+			CGContextRef g2 = CGBitmapContextCreate(tmp, W, H, 8, tstride, rgb, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little);
 			draw_button(g2, CGRectMake(30, 20, 120, 34), 1);
 			CGContextFlush(g2); CGContextRelease(g2);
-			{
-				int greens = 0, fx = -1, fy = -1;
-				for (int yy = 0; yy < H; yy++) for (int xx = 0; xx < W; xx++) { uint32_t v = ((uint32_t *)px->px)[yy * (px->stride / 4) + xx]; if ((v & 0x00ffffff) == 0x0033c759 || (v & 0xff) == 0x59) { if (!greens) { fx = xx; fy = yy; } greens++; } }
-				fprintf(stderr, "opal_demo: after g2 pixel(60,323)=%08x, greenish pixels %d (first at %d,%d)\n", ((uint32_t *)px->px)[323 * (px->stride / 4) + 60], greens, fx, fy);
-			}
-			for (int yy = 310; yy < 316; yy++) for (int xx = 40; xx < 100; xx++) ((uint32_t *)px->px)[yy * (px->stride / 4) + xx] = 0xffff0000;      /* direct write: tests the flush path */
+			for (int yy = H - 54; yy < H - 20; yy++) memcpy(px->px + (size_t)yy * px->stride + 30 * 4, tmp + (size_t)yy * tstride + 30 * 4, 120 * 4);
+			free(tmp);
 			ws_rect btn = { 30, H - 54, 120, 34 };
 			int frc = ws_surface_flush(c, &w, sid, &btn);
 			fprintf(stderr, "opal_demo: flush rc=%d\n", frc);
