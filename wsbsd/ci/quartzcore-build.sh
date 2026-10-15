@@ -22,7 +22,7 @@ cd "$WS"
 gmake wsd 2>&1 | tail -1
 OBJC_FLAGS="$(gnustep-config --objc-flags 2>/dev/null)"
 OBJC_LIBS="$(gnustep-config --base-libs 2>/dev/null)"
-cc -O1 -g -Iinclude $OBJC_FLAGS -I/usr/local/GNUstep/System/Library/Headers -o ca_demo demo/ca_demo.m src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c -L/tmp/gs/qc/Source/QuartzCore.framework -lQuartzCore -lopal -lgnustep-corebase $OBJC_LIBS -lcairo -lm 2>&1 | tail -25
+cc -O1 -g -Iinclude $OBJC_FLAGS -I/usr/local/GNUstep/System/Library/Headers -o ca_demo demo/ca_demo.m src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c -L/tmp/gs/qc/Source/QuartzCore.framework -lQuartzCore -lGL -lopal -lgnustep-corebase $OBJC_LIBS -lcairo -lm 2>&1 | tail -25
 export WS_SOCKET=/tmp/wsd-ca.sock
 ./wsd -t -g 1024x700 >/tmp/wsd-ca.log 2>&1 &
 WP=$!
