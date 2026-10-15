@@ -9,7 +9,49 @@ static BOOL isDark(void) { const char *e = getenv("WSD_APPEARANCE"); return !(e 
 
 static NSColor *rgb(int r, int g, int b, CGFloat a) { return [NSColor colorWithCalibratedRed: r / 255.0 green: g / 255.0 blue: b / 255.0 alpha: a]; }
 
+/* the system colours: derived from the window background (WSD_WINDOW_BG=r,g,b overrides the neutral default; on macOS the dark window colour is tinted by the wallpaper, (27,36,43) on the machine the measurements come from) */
+static void windowBG(int *r, int *g, int *b)
+{
+	*r = *g = *b = isDark() ? 30 : 236;
+	const char *e = getenv("WSD_WINDOW_BG");
+	if (e) { int x, y, z; if (sscanf(e, "%d,%d,%d", &x, &y, &z) == 3) { *r = x; *g = y; *b = z; } }
+}
+static int mix(int base, int top, double a) { return (int)(base * (1 - a) + top * a + 0.5); }
+
+void WsdApplyMacPalette(void)
+{
+	int r, g, b; windowBG(&r, &g, &b); BOOL dark = isDark(); int fg = dark ? 255 : 0;
+	NSColorList *l = [NSColorList colorListNamed: @"System"];
+	if (!l) return;
+	NSColor *label = rgb(mix(r, fg, 0.85), mix(g, fg, 0.85), mix(b, fg, 0.85), 1);
+	NSColor *sec = rgb(mix(r, fg, 0.55), mix(g, fg, 0.55), mix(b, fg, 0.55), 1);
+	[l setColor: rgb(r, g, b, 1) forKey: @"windowBackgroundColor"];
+	[l setColor: rgb(r, g, b, 1) forKey: @"controlBackgroundColor"];
+	[l setColor: rgb(mix(r, fg, dark ? 0.07 : 0.0), mix(g, fg, dark ? 0.07 : 0.0), mix(b, fg, dark ? 0.07 : 0.0), 1) forKey: @"controlColor"];
+	[l setColor: label forKey: @"controlTextColor"]; [l setColor: label forKey: @"textColor"]; [l setColor: label forKey: @"windowFrameTextColor"];
+	[l setColor: sec forKey: @"disabledControlTextColor"]; [l setColor: sec forKey: @"secondaryLabelColor"];
+	[l setColor: rgb(mix(r, fg, dark ? 0.04 : 0.0), mix(g, fg, dark ? 0.04 : 0.0), mix(b, fg, dark ? 0.04 : 0.0), 1) forKey: @"textBackgroundColor"];
+}
+
 @implementation WsdMacTheme
+
+/* push buttons: a capsule 24 pt high centred in the cell frame (the frame is 32 pt: the extra space is the focus ring margin), filled white at 8 % over the window, the accent blue (0,122,255) when it is the default button */
+- (void) drawButton: (NSRect)frame in: (NSCell *)cell view: (NSView *)view style: (int)style state: (GSThemeControlState)state
+{
+	if (style != NSRoundedBezelStyle && style != NSRegularSquareBezelStyle && style != NSRoundRectBezelStyle && style != NSTexturedRoundedBezelStyle) {
+		[super drawButton: frame in: cell view: view style: style state: state];
+		return;
+	}
+	NSRect r = frame; r.size.height = r.size.height > 24 ? 24 : r.size.height; r.origin.y = frame.origin.y + (frame.size.height - r.size.height) / 2.0;
+	BOOL isDefault = [cell isKindOfClass: [NSButtonCell class]] && [[(NSButtonCell *)cell keyEquivalent] isEqualToString: @"\r"];
+	BOOL enabled = [cell isEnabled], pressed = (state == GSThemeHighlightedState || state == GSThemeHighlightedFirstResponderState);
+	int wr, wg, wb; windowBG(&wr, &wg, &wb); BOOL dark = isDark(); int fg = dark ? 255 : 0;
+	NSColor *fill;
+	if (isDefault && enabled) fill = pressed ? rgb(0, 100, 220, 1) : rgb(0, 122, 255, 1);
+	else { double a = dark ? (pressed ? 0.16 : 0.08) : (pressed ? 0.12 : 0.05); if (!enabled) a *= 0.5; fill = rgb(mix(wr, fg, a), mix(wg, fg, a), mix(wb, fg, a), 1); }
+	[fill set];
+	[[NSBezierPath bezierPathWithRoundedRect: r xRadius: r.size.height / 2.0 yRadius: r.size.height / 2.0] fill];
+}
 - (id<GSWindowDecorator>) windowDecorator { return (id<GSWindowDecorator>)[WsdMacDecorationView class]; }
 - (float) titlebarHeight { return 32.0; }
 - (float) resizebarHeight { return 6.0; }                         /* an invisible strip along the bottom edge that still resizes */
@@ -107,8 +149,10 @@ static NSGradient *grad(int r0, int g0, int b0, int r1, int g1, int b1, int r2, 
 {
 	NSRect b = [self bounds];
 	BOOL dark = isDark(), key = (inputState == 0);
+	[[NSColor windowBackgroundColor] set]; NSRectFill(b);                               /* the window background (the backing store starts transparent) */
 	if (hasTitleBar) {
-		NSColor *bg = dark ? (key ? rgb(35, 35, 36, 1) : rgb(34, 34, 34, 1)) : (key ? rgb(236, 236, 238, 1) : rgb(246, 246, 246, 1));
+		int wr, wg, wb; windowBG(&wr, &wg, &wb);
+		NSColor *bg = dark ? (key ? rgb(mix(wr, 255, 0.035), mix(wg, 255, 0.035), mix(wb, 255, 0.035), 1) : rgb(wr + 4, wg + 4, wb + 4, 1)) : (key ? rgb(mix(wr, 255, 0.5), mix(wg, 255, 0.5), mix(wb, 255, 0.5), 1) : rgb(246, 246, 246, 1));
 		[bg set];
 		NSRectFill(titleBarRect);
 		if (isTitled && [window title]) {

@@ -2,6 +2,8 @@
 #import <GNUstepGUI/GSTheme.h>
 #import <GNUstepGUI/GSWindowDecorationView.h>
 
+void WsdApplyMacPalette(void);                      /* sets the NSColor system colours of the macOS palette */
+
 @interface WsdMacTheme : GSTheme
 @end
 

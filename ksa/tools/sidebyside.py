@@ -10,15 +10,25 @@ mac = Image.open(sys.argv[1]).convert("RGBA"); bsd = Image.open(sys.argv[2]).con
 bbox = mac.split()[3].point(lambda a: 255 if a > 250 else 0).getbbox()
 mac = mac.crop(bbox) if bbox else mac
 W, H = mac.size
-# the window on wsd: find the first row/col where the title bar colour (35,35,36 +-3) block of width W starts
+# the window on wsd: the top-most row with a long run of title bar colour; the run's left end (minus the 1 px rim) is the window's left edge
 px = bsd.load(); sw, sh = bsd.size
+tb = mac.convert("RGB").load()[W // 2, 20]                    # the mac title bar colour, sampled in the middle of the bar
+def near(c): return all(abs(c[i] - tb[i]) <= 6 for i in range(3))
 best = None
-for y in range(0, sh - H + 1):
-    for x in range(0, sw - W + 1, 1):
-        r, g, b = px[x + 100, y + 8]
-        if abs(r - 35) < 6 and abs(g - 35) < 6 and abs(b - 36) < 6 and px[x + 100, y + H // 2][0] < 80 and abs(px[x + 100 + 1, y + 8][0] - r) < 4:
-            best = (x, y); break
-    if best: break
+for y in range(0, sh - 40):
+    run = 0; start = 0
+    for x in range(sw):
+        if near(px[x, y]):
+            if run == 0: start = x
+            run += 1
+            if run >= W - 80: break
+        else: run = 0
+    if run >= W - 80:
+        # row y is inside the bar: walk up to the top rim, then to the left rim
+        while y > 0 and near(px[start + 100, y - 1]): y -= 1
+        x0 = start
+        while x0 > 0 and near(px[x0 - 1, y + 20]): x0 -= 1
+        best = (x0 - 1, y - 1); break
 if not best: best = ((sw - W) // 2, (sh - H) // 2)
 crop = bsd.crop((best[0], best[1], best[0] + W, best[1] + H))
 bg = Image.new("RGBA", mac.size, (0, 0, 0, 255)); bg.alpha_composite(mac); macrgb = bg.convert("RGB")
