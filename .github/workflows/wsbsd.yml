@@ -188,6 +188,8 @@ jobs:
             wsbsd/gorm.png
             wsbsd/gorm-menu.png
             wsbsd/gorm-doc.png
+            wsbsd/terminal.png
+            wsbsd/terminal-key.png
           if-no-files-found: warn
 
   # Core Animation: GNUstep QuartzCore (CALayer) over Opal on FreeBSD. Exploratory: the build is expected to need patches.
