@@ -1,0 +1,5 @@
+# managed display spaces and space getters
+raw 30356 ndr
+raw 30324 ndr u32:7
+raw 30324 ndr u32:1
+raw 30324 ndr u32:2
