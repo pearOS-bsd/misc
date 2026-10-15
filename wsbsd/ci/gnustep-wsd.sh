@@ -79,5 +79,5 @@ sleep 2
 ./wsshot appkit-resize.ppm; python3 tools/ppm2png.py appkit-resize.ppm appkit-resize.png
 wait $HP
 kill $WP 2>/dev/null
-grep -v '^(lldb)\|warning\|wsd-back: \(titlewindow\|setinput\|attach\|flush\|commit\|order\|ws_win\|setWindow\)' /tmp/hello.log | tail -25; tail -5 /tmp/wsd.log
+grep -v '^(lldb)\|warning\|wsd-back: \(titlewindow\|setinput\|flush\|commit\|order\|ws_win\)' /tmp/hello.log | tail -40; tail -5 /tmp/wsd.log
 ls -l appkit.png
