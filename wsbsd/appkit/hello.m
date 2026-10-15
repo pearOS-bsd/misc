@@ -22,7 +22,7 @@ int main(int argc, char **argv)
 	[t setStringValue:@"Hello from GNUstep AppKit"];
 	[[w contentView] addSubview:t];
 	[w makeKeyAndOrderFront:nil];
-	NSLog(@"window shown, frame %@", NSStringFromRect([w frame]));
+	NSLog(@"window shown, frame %@ number %d visible %d bgapp %d hidden %d active %d", NSStringFromRect([w frame]), (int)[w windowNumber], (int)[w isVisible], (int)[[NSUserDefaults standardUserDefaults] boolForKey:@"GSBackgroundApp"], (int)[NSApp isHidden], (int)[NSApp isActive]);
 	[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:(argc > 1 ? atof(argv[1]) : 1.0)]];
 	NSLog(@"done");
 	[pool release];
