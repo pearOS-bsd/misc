@@ -107,6 +107,12 @@ int main(int argc, char **argv)
 		CGContextRef g = CGBitmapContextCreate(px->px, W, H, 8, px->stride, rgb, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little);
 		if (!g) { fprintf(stderr, "ca_demo: CGBitmapContextCreate failed\n"); return 1; }
 		CGContextClearRect(g, CGRectMake(0, 0, W, H));
+		if (frame == 0) {                                              /* sanity: plain CoreGraphics before any layer */
+			CGContextSetRGBFillColor(g, 1, 0, 0, 1); CGContextFillRect(g, CGRectMake(0, 0, 100, 100));
+			CGContextFlush(g);
+			const uint8_t *q0 = px->px + (H - 50) * px->stride + 50 * 4;
+			printf("sanity pixel(50,50 from bottom-left) = %02x%02x%02x%02x; first bytes %02x %02x\n", q0[0], q0[1], q0[2], q0[3], px->px[0], px->px[1]);
+		}
 		draw_layer([root presentationLayer], g, 1.0f);
 		CGContextFlush(g);
 		if (frame == 0 || frame == 5) {
