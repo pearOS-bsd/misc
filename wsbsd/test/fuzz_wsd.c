@@ -30,7 +30,14 @@ int main(int argc, char **argv)
 		h->msgh_bits = (rnd() % 6 == 0) ? MACH_MSGH_BITS_COMPLEX : 0; h->msgh_size = (rnd() % 8 == 0) ? (uint32_t)(rnd() % 0x3000) : (uint32_t)n;
 		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) && n >= 0x2c) { uint32_t one = 1; memcpy(m + 0x18, &one, 4); }               /* a count of 1 descriptor slot */
 		h->msgh_id = id; h->msgh_remote_port = 0; h->msgh_local_port = 0;
-		struct iovec v = { m, n };
+		size_t total = n;
+		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) && n >= 0x2c && rnd() % 4) {                      /* one out-of-line descriptor with real appended bytes (a region / plist / array shaped blob) */
+			uint32_t k = rnd() % 0x200; static const uint8_t fl[4] = { 0, 1, 0, 1 };
+			memset(m + 0x1c, 0, 8); memcpy(m + 0x24, fl, 4); memcpy(m + 0x28, &k, 4);
+			for (uint32_t q = 0; q < k && n + k <= sizeof m; q++) m[n + q] = (uint8_t)(rnd() % 4 == 0 ? rnd() : (q < 8 ? 0 : (q & 3) == 0 ? 1 : 0));
+			if (n + k <= sizeof m) total = n + k;
+		}
+		struct iovec v = { m, total };
 		if (ws_ipc_send(fd, &v, 1, NULL, 0)) { close(fd); fd = ws_ipc_connect(path); reconnects++; if (fd < 0) { printf("FAIL: wsd gone at iteration %d id %d\n", i, id); return 1; } continue; }
 		int fds[WS_IPC_MAX_FDS], nf = 0;
 		ssize_t g = ws_ipc_recv(fd, rep, sizeof rep, fds, &nf);
