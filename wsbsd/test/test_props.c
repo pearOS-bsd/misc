@@ -172,6 +172,13 @@ int main(void)
 		hdr(m, 0x24, 30324, 0); w32(m, 0x20, 1); CHECK(call(fd, m, 0x24, rep, sizeof rep) == 0x38 && r32(rep, 0x34) == 0);          /* masks without the user bit select system spaces: none (recorded) */
 		w32(m, 0x20, 0x7777); hdr(m, 0x28, 30335, 0); CHECK(rc(fd, m, 0x28) == 0x3f2);
 	}
+	{ /* CopyManagedDisplaySpaces: the bplist for one display with the default space, byte for byte the real server's 201 bytes (recorded on a macOS runner) up to the display identifier string */
+		static const char *want = "62706c6973743030a101d3020304050d0f5d43757272656e74205370616365565370616365735f1012446973706c6179204964656e746966696572d4060708090a0a0b0c54696436345e4d616e6167656453706163654944547479706554757569641001100050a10ed4060708090a0a0b0c5f1024";
+		uint8_t m[0x18], rep[0x400]; memset(m, 0, sizeof m); hdr(m, 0x18, 30356, 0);
+		int g = call(fd, m, sizeof m, rep, sizeof rep); uint32_t pn = g >= 0x38 ? r32(rep, 0x28) : 0; int same = 1;
+		for (uint32_t i = 0; i < strlen(want) / 2 && same; i++) { unsigned v; sscanf(want + 2 * i, "%2x", &v); if (0x38 + i >= (uint32_t)g || rep[0x38 + i] != v) same = 0; }
+		CHECK(g >= 0x38 && pn == 201 && r32(rep, 0x34) == 201 && same && g == (int)(0x38 + pn));
+	}
 	{ /* GetWindowTransform: the identity for a window nothing transformed (recorded), 1000 for an unknown window, -304 for a bad size */
 		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 100, 200, 30, 20 }, 0, &tw) == 0);
 		uint8_t m[0x28], rep[0x80]; memset(m, 0, sizeof m); hdr(m, 0x28, 30034, 0); w32(m, 0x20, tw.id); w32(m, 0x24, 0x7fffff00);
