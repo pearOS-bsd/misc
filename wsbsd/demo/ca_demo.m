@@ -67,6 +67,12 @@ int main(int argc, char **argv)
 	ws_surface *px = cb.buf.cpu;
 	CGColorSpaceRef rgb = CGColorSpaceCreateDeviceRGB();
 
+	{ /* the same drawing opal_demo does, first thing, before any layer exists */
+		CGContextRef e = CGBitmapContextCreate(px->px, W, H, 8, px->stride, rgb, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little);
+		CGContextSetRGBFillColor(e, 0, 0.5, 1, 1); CGContextFillRect(e, CGRectMake(0, 0, 100, 100)); CGContextFlush(e); CGContextRelease(e);
+		long nz = 0; for (int y = 0; y < H; y++) for (int x = 0; x < W; x++) if (((uint32_t *)(px->px + y * px->stride))[x]) nz++;
+		printf("early test: %ld non-zero pixels in the wsd buffer (before any CALayer)\n", nz);
+	}
 	/* the layer tree */
 	CALayer *root = [CALayer layer];
 	[root setBounds: CGRectMake(0, 0, W, H)]; [root setPosition: CGPointMake(W / 2, H / 2)];
