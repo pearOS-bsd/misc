@@ -9,6 +9,7 @@
 #define WS_IPC_MAX_FDS 4
 #define WS_IPC_RECV_CAP (0x12060 + 0x40000)     /* subsystem max message + room for out-of-line payloads */
 
+const char *ws_default_socket_path(void);                    /* $XDG_RUNTIME_DIR/wsd.sock or /tmp/wsd-<uid>.sock */
 int ws_ipc_listen(const char *path);
 int ws_ipc_connect(const char *path);
 /* Sends iov as one message; fds (nfds <= WS_IPC_MAX_FDS) ride along. Returns 0 or -1. */

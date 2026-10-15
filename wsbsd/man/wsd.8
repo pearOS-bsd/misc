@@ -1,0 +1,76 @@
+.Dd October 15, 2026
+.Dt WSD 8
+.Os
+.Sh NAME
+.Nm wsd
+.Nd window server and compositor speaking the SkyLight WindowServer protocol
+.Sh SYNOPSIS
+.Nm
+.Op Fl S
+.Op Fl t
+.Op Fl b Ar backend
+.Op Fl r Ar renderer
+.Op Fl g Ar WxH
+.Op Fl s Ar socket
+.Op Fl c Ar card
+.Op Fl n Ar rendernode
+.Sh DESCRIPTION
+.Nm
+is a window server for FreeBSD that implements the wire protocol of the macOS WindowServer
+(the SkyLight MIG subsystems), composes the windows of its clients with shadows, rounded
+corners, alpha and background blur, and routes keyboard, pointer and scroll input to them.
+It listens on a stream socket (SOCK_SEQPACKET) that only its own user can open.
+.Pp
+The options are:
+.Bl -tag -width "-n rendernode"
+.It Fl b Ar backend
+.Cm headless
+(default) or
+.Cm kms
+(DRM/KMS display and evdev input, built with
+.Ql gmake kms ) .
+.It Fl r Ar renderer
+.Cm sw
+(default, CPU) or
+.Cm gl
+(OpenGL ES 2 through EGL, built with
+.Ql gmake gl ) .
+.It Fl g Ar WxH
+Screen size of the headless backend (default 1280x800).
+.It Fl s Ar socket
+Socket path.
+Default:
+.Ev XDG_RUNTIME_DIR Ns /wsd.sock ,
+else
+.Pa /tmp/wsd- Ns Ar uid Ns Pa .sock .
+.It Fl S
+Enter Capsicum capability mode once the server is set up.
+.It Fl t
+Test mode: enables the private requests used by the test suite (screenshot to a file,
+input injection, quit).
+Never use it on a session that matters.
+.El
+.Sh ENVIRONMENT
+.Bl -tag -width XDG_RUNTIME_DIR
+.It Ev WS_SOCKET
+Socket path used by clients and by
+.Nm
+when
+.Fl s
+is not given.
+.El
+.Sh FILES
+.Bl -tag -width "%%PREFIX%%/etc/rc.d/wsd"
+.It Pa %%PREFIX%%/etc/rc.d/wsd
+rc(8) script, see its header for the rc.conf variables.
+.It Pa %%PREFIX%%/bin/wsstart
+Starts a private server for the current user and runs a client on it.
+.El
+.Sh SEE ALSO
+.Xr capsicum 4 ,
+.Xr rc.conf 5
+.Sh SECURITY CONSIDERATIONS
+Connections from other users are refused, each connection is limited in windows,
+buffers, surfaces and memory, and with
+.Fl S
+the process cannot open new files after start-up.
