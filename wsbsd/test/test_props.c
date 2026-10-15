@@ -37,8 +37,8 @@ int main(void)
 	{ /* routines with their 27.0 request shapes: appearance, RTL, debug options, dock rect, window manager, virtual display */
 		uint8_t m[0x40], rep[0x100]; int got;
 		static const struct { int id; uint32_t size; int rsize; int code; int val; } q[] = {
-			{ 30176, 0x24, 0x28, 0, 0 }, { 30441, 0x24, 0x28, 0, 0 }, { 32003, 0x24, 0x28, 0, 0 },
-			{ 30247, 0x38, 0x3c, 0, 0 }, { 30573, 0x18, 0x24, 0, 0 }, { 30577, 0x24, 0x24, 1001, 0 } };
+			{ 30176, 0x18, 0x28, 0, 0 }, { 30441, 0x18, 0x28, 0, 0 }, { 32003, 0x18, 0x28, 0, 0 },
+			{ 30247, 0x18, 0x3c, 0, 0 }, { 30573, 0x18, 0x24, 0, 0 }, { 30577, 0x24, 0x24, 1001, 0 } };
 		for (unsigned k = 0; k < sizeof q / sizeof *q; k++) {
 			memset(m, 0, sizeof m); hdr(m, q[k].size, q[k].id, 0);
 			got = call(fd, m, q[k].size, rep, sizeof rep);
