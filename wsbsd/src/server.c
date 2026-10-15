@@ -559,7 +559,7 @@ void ws_server_walk(ws_server *s, ws_visit_fn fn, void *ctx)
 		if (w->shadow_on) ensure_shadow(s, w, w->id == act);
 		ws_visit vis;
 		memset(&vis, 0, sizeof vis);
-		vis.id = w->id; vis.frame = w->frame; vis.alpha = w->alpha; vis.corner_radius = w->shadow_on ? w->shadow_cr : 0; vis.active = w->id == act;
+		vis.id = w->id; vis.frame = w->frame; vis.alpha = w->alpha; vis.corner_radius = w->shadow_on ? w->shadow_cr : 0; vis.blur_radius = w->blur_radius; vis.active = w->id == act;
 		vis.pixels = (w->content && w->committed) ? (w->front ? w->front : w->content) : w->backing;
 		vis.buffer_id = (w->content && w->committed) ? w->content_id : 0;
 		if (w->shadow_on && w->shadow) {
@@ -582,7 +582,8 @@ void ws_compose_scene(ws_server *s, ws_surface *screen)
 	for (size_t i = 0; i < n; i++) {
 		if (v[i]->blur_radius > 0) {                                          /* blur what is behind the window (sigma = radius / 2: an estimate) */
 			if (s->comp->flush) s->comp->flush(s->comp);
-			ws_blur_region(screen, v[i]->frame, (float)v[i]->blur_radius * 0.5f);
+			float sg = ws_blur_sigma(v[i]->blur_radius); int m = (int)ceilf(3.0f * sg);
+			ws_blur_region(screen, (ws_rect){ v[i]->frame.x - m, v[i]->frame.y - m, v[i]->frame.w + 2 * m, v[i]->frame.h + 2 * m }, v[i]->frame, sg);   /* the backdrop beyond the edges feeds the blur */
 		}
 		s->comp->over(s->comp, screen, v[i]->frame.x, v[i]->frame.y, (v[i]->content && v[i]->committed) ? (v[i]->front ? v[i]->front : v[i]->content) : v[i]->backing, v[i]->alpha, all);
 		/* the shadow layer is rendered above its window (it is cut out of the window shape; the inner rim lies inside it) */

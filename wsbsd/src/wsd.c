@@ -55,7 +55,7 @@ static void render_frame(ws_surface *dst, int with_cursor)
 {
 	int done = 0;
 #ifdef WS_GL
-	if (glc && !ws_server_has_blur(srv)) {                        /* backdrop blur is composed in software for now */
+	if (glc) {
 		if (compositor_render_frame(glc, srv) == 0 && glc_read_pixels(glc, dst) == 0) { gl_failures = 0; done = 1; }
 		else if (++gl_failures >= 3) { fprintf(stderr, "wsd: GL compositor keeps failing, falling back to software\n"); glc_destroy(glc); glc = NULL; }
 	}
