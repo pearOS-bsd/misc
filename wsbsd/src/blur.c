@@ -31,7 +31,9 @@ static void box_pass(const uint8_t *src, uint8_t *dst, int len, int count, size_
 	}
 }
 
-void ws_blur_region(ws_surface *img, ws_rect r, float sigma)
+float ws_blur_sigma(int radius) { return (float)radius * 0.5f; }
+
+void ws_blur_region(ws_surface *img, ws_rect r, ws_rect wr, float sigma)
 {
 	if (!img || sigma < 0.3f) return;
 	if (r.x < 0) { r.w += r.x; r.x = 0; }
@@ -49,6 +51,7 @@ void ws_blur_region(ws_surface *img, ws_rect r, float sigma)
 		box_pass(a, b, r.w, r.h, stride, 4, rad);                    /* horizontal */
 		box_pass(b, a, r.h, r.w, 4, stride, rad);                    /* vertical: lines are columns */
 	}
-	for (int y = 0; y < r.h; y++) memcpy(img->px + (size_t)(r.y + y) * img->stride + (size_t)r.x * 4, a + (size_t)y * stride, stride);
+	int x0 = wr.x < r.x ? r.x : wr.x, y0 = wr.y < r.y ? r.y : wr.y, x1 = wr.x + wr.w > r.x + r.w ? r.x + r.w : wr.x + wr.w, y1 = wr.y + wr.h > r.y + r.h ? r.y + r.h : wr.y + wr.h;
+	for (int y = y0; y < y1; y++) memcpy(img->px + (size_t)y * img->stride + (size_t)x0 * 4, a + (size_t)(y - r.y) * stride + (size_t)(x0 - r.x) * 4, (size_t)(x1 - x0) * 4);
 	free(a); free(b);
 }

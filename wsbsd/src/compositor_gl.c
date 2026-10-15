@@ -13,6 +13,7 @@
 #include <gbm.h>
 #endif
 #include <stdint.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -43,7 +44,8 @@ struct gl_compositor {
 	PFNGLEGLIMAGETARGETTEXTURE2DOESPROC image_target;
 	PFNEGLEXPORTDMABUFIMAGEQUERYMESAPROC export_query;
 	PFNEGLEXPORTDMABUFIMAGEMESAPROC export_image;
-	GLuint prog, vbo, fbo, fbo_tex;
+	GLuint prog, vbo, fbo, fbo_tex, tmp_fbo, tmp_tex, blur_prog;
+	GLint bu_rect, bu_screen, bu_src, bu_dir, bu_sigma, bu_rad;
 	GLint u_rect, u_screen, u_tex, u_size, u_uvscale, u_alpha, u_radius, u_border, u_swap;
 	wtex wt[MAX_TEX]; stex st[MAX_TEX]; itex it[MAX_TEX];
 	uint8_t *stage; size_t stage_cap;
@@ -61,6 +63,29 @@ static const char *VS =
 	"    /* row 0 of the render target is the top of the screen, so read-back and scan-out need no flip */\n"
 	"    gl_Position = vec4(px.x / u_screen.x * 2.0 - 1.0, px.y / u_screen.y * 2.0 - 1.0, 0.0, 1.0);\n"
 	"    v_uv = a_pos;\n"
+	"}\n";
+
+static const char *BLUR_FS =
+	"#ifdef GL_FRAGMENT_PRECISION_HIGH\n"
+	"precision highp float;\n"
+	"#else\n"
+	"precision mediump float;\n"
+	"#endif\n"
+	"uniform sampler2D u_src;\n"
+	"uniform vec2 u_screen;\n"
+	"uniform vec2 u_dir;\n"                                   /* (1,0) or (0,1) */
+	"uniform float u_sigma;\n"
+	"uniform float u_rad;\n"                                  /* taps on each side, <= 45 */
+	"void main() {\n"
+	"    vec2 uv = gl_FragCoord.xy / u_screen;\n"
+	"    vec4 sum = vec4(0.0); float wsum = 0.0;\n"
+	"    for (int i = -45; i <= 45; i++) {\n"
+	"        float f = float(i);\n"
+	"        if (abs(f) > u_rad) continue;\n"
+	"        float w = exp(-f * f / (2.0 * u_sigma * u_sigma));\n"
+	"        sum += texture2D(u_src, uv + u_dir * f / u_screen) * w; wsum += w;\n"
+	"    }\n"
+	"    gl_FragColor = sum / wsum;\n"
 	"}\n";
 
 static const char *FS =
@@ -135,6 +160,24 @@ static int build_program(gl_compositor *c)
 	c->u_radius = glGetUniformLocation(c->prog, "u_radius");
 	c->u_border = glGetUniformLocation(c->prog, "u_border");
 	c->u_swap = glGetUniformLocation(c->prog, "u_swap");
+	{                                                                             /* separable gaussian for background blur */
+		GLuint bvs = compile(GL_VERTEX_SHADER, VS), bfs = compile(GL_FRAGMENT_SHADER, BLUR_FS);
+		if (bvs && bfs) {
+			c->blur_prog = glCreateProgram();
+			glAttachShader(c->blur_prog, bvs); glAttachShader(c->blur_prog, bfs);
+			glBindAttribLocation(c->blur_prog, 0, "a_pos");
+			glLinkProgram(c->blur_prog);
+			GLint lk = 0; glGetProgramiv(c->blur_prog, GL_LINK_STATUS, &lk);
+			if (!lk) { glDeleteProgram(c->blur_prog); c->blur_prog = 0; }
+			else {
+				c->bu_rect = glGetUniformLocation(c->blur_prog, "u_rect"); c->bu_screen = glGetUniformLocation(c->blur_prog, "u_screen");
+				c->bu_src = glGetUniformLocation(c->blur_prog, "u_src"); c->bu_dir = glGetUniformLocation(c->blur_prog, "u_dir");
+				c->bu_sigma = glGetUniformLocation(c->blur_prog, "u_sigma"); c->bu_rad = glGetUniformLocation(c->blur_prog, "u_rad");
+			}
+		}
+		if (bvs) glDeleteShader(bvs);
+		if (bfs) glDeleteShader(bfs);
+	}
 	return 0;
 }
 
@@ -182,6 +225,15 @@ static void make_target(gl_compositor *c)
 	glGenFramebuffers(1, &c->fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, c->fbo);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, c->fbo_tex, 0);
+	glGenTextures(1, &c->tmp_tex);                                                 /* intermediate target of the separable blur */
+	glBindTexture(GL_TEXTURE_2D, c->tmp_tex);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, c->w, c->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glGenFramebuffers(1, &c->tmp_fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, c->tmp_fbo);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, c->tmp_tex, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, c->fbo);
 }
 
 gl_compositor *glc_create(const char *node, int width, int height)
@@ -380,9 +432,37 @@ static void draw_quad(gl_compositor *c, float x, float y, float w, float h, GLui
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
+/* backdrop blur: horizontal pass of the scene into tmp (the window rect plus the vertical reach), vertical pass back into the frame inside the window rect */
+static void blur_backdrop(gl_compositor *c, const ws_visit *v)
+{
+	if (!c->blur_prog || v->blur_radius <= 0) return;
+	float sigma = ws_blur_sigma(v->blur_radius); int reach = (int)ceilf(3.0f * sigma); if (reach > 45) reach = 45;
+	float x = (float)v->frame.x, y = (float)v->frame.y, w = (float)v->frame.w, h = (float)v->frame.h;
+	float y0 = y - (float)reach < 0 ? 0 : y - (float)reach, y1 = y + h + (float)reach > (float)c->h ? (float)c->h : y + h + (float)reach;
+	if (x < 0) { w += x; x = 0; }
+	if (x + w > (float)c->w) w = (float)c->w - x;
+	if (w <= 0 || y1 <= y0) return;
+	glDisable(GL_BLEND);
+	glUseProgram(c->blur_prog);
+	glUniform2f(c->bu_screen, (float)c->w, (float)c->h);
+	glUniform1i(c->bu_src, 0); glUniform1f(c->bu_sigma, sigma); glUniform1f(c->bu_rad, (float)reach);
+	glActiveTexture(GL_TEXTURE0);
+	glBindFramebuffer(GL_FRAMEBUFFER, c->tmp_fbo);
+	glBindTexture(GL_TEXTURE_2D, c->fbo_tex);
+	glUniform2f(c->bu_dir, 1.0f, 0.0f); glUniform4f(c->bu_rect, x, y0, w, y1 - y0);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	glBindFramebuffer(GL_FRAMEBUFFER, c->fbo);
+	glBindTexture(GL_TEXTURE_2D, c->tmp_tex);
+	glUniform2f(c->bu_dir, 0.0f, 1.0f); glUniform4f(c->bu_rect, x, y, w, h < (float)c->h - y ? h : (float)c->h - y);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	glUseProgram(c->prog);
+	glEnable(GL_BLEND);
+}
+
 static void visit(void *ctx, const ws_visit *v)
 {
 	gl_compositor *c = ctx;
+	if (v->blur_radius > 0) blur_backdrop(c, v);
 	int swap = 1; float uvx = 1, uvy = 1;
 	GLuint tex = window_texture(c, v, &swap, &uvx, &uvy);
 	if (tex && v->alpha > 0.0f)
@@ -476,6 +556,9 @@ void glc_destroy(gl_compositor *c)
 		}
 		if (c->fbo) glDeleteFramebuffers(1, &c->fbo);
 		if (c->fbo_tex) glDeleteTextures(1, &c->fbo_tex);
+		if (c->tmp_tex) glDeleteTextures(1, &c->tmp_tex);
+		if (c->tmp_fbo) glDeleteFramebuffers(1, &c->tmp_fbo);
+		if (c->blur_prog) glDeleteProgram(c->blur_prog);
 		if (c->vbo) glDeleteBuffers(1, &c->vbo);
 		if (c->prog) glDeleteProgram(c->prog);
 		eglMakeCurrent(c->dpy, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);

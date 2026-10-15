@@ -142,6 +142,7 @@ typedef struct {
 	uint32_t shadow_gen;            /* changes whenever the shadow layer is rebuilt */
 	ws_rect damage;                 /* union of the dirty rectangles since the last frame, window-local */
 	int has_damage, full_damage;    /* full_damage: the whole content changed (new window, resize, new buffer) */
+	int blur_radius;        /* background blur radius in points behind this window, 0 = none */
 } ws_visit;
 typedef void (*ws_visit_fn)(void *ctx, const ws_visit *v);
 void ws_server_walk(ws_server *, ws_visit_fn fn, void *ctx);              /* bottom to top, on-screen windows only */
@@ -156,11 +157,12 @@ int ws_cursor_visible(const ws_server *);
 void ws_server_set_cursor_image(ws_server *, const ws_surface *img, int hot_x, int hot_y);   /* copies; NULL restores the default arrow */
 void ws_compose_scene(ws_server *, ws_surface *screen);                  /* windows only, no cursor */
 void ws_server_desktop_color(ws_server *, float rgb[3]);
-void ws_blur_region(ws_surface *img, ws_rect r, float sigma);            /* gaussian blur in place (premultiplied BGRA, clamped edges) */
+void ws_blur_region(ws_surface *img, ws_rect src, ws_rect write, float sigma);   /* gaussian blur of src (edges clamped at the image), only write is stored back */
+float ws_blur_sigma(int radius);                                         /* radius in points -> gaussian sigma (estimate: radius / 2) */
 /* Background blur behind a window (SetWindowBackgroundBlurRadius): radius in points (0..60), the compositor blurs what is behind the window before drawing it. */
 int ws_set_window_blur(ws_server *, ws_wid, int radius, int flag, float amount);
 int ws_window_blur(ws_server *, ws_wid, int *radius, int *flag, float *amount);
-int ws_server_has_blur(ws_server *);                                     /* any on-screen window with a blur: such frames are composed in software */
+int ws_server_has_blur(ws_server *);                                     /* any on-screen window with a blur */
 
 /* Backends. headless writes PPM; drm (FreeBSD KMS) comes next. */
 /* Shadow generator. Model recovered from SkyLight's ShadowVerticalBlurRGBA shader (see docs/DESIGN.md).
