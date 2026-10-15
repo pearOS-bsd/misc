@@ -108,6 +108,13 @@ int main(int argc, char **argv)
 		update_layer(root, now);
 		CGContextClearRect(g, CGRectMake(0, 0, W, H));
 		draw_layer([root presentationLayer], g, 1.0f);
+		if (frame == 0 || frame == 5) {
+			CALayer *pl = [root presentationLayer]; CGRect pb = [pl bounds]; CGPoint pp = [pl position];
+			const uint8_t *q = px->px + 180 * px->stride + 260 * 4;
+			printf("frame %d: root bounds %gx%g pos %g,%g sublayers %d bg %p opacity %g; pixel(260,180) = %02x%02x%02x%02x\n", frame, pb.size.width, pb.size.height, pp.x, pp.y, (int)[[pl sublayers] count], [pl backgroundColor], [pl opacity], q[0], q[1], q[2], q[3]);
+			CALayer *bp = [[[root sublayers] objectAtIndex: 1] presentationLayer]; CGPoint bpos = [bp position];
+			printf("  box presentation pos %g,%g opacity %g; model pos %g,%g\n", bpos.x, bpos.y, [bp opacity], [[[root sublayers] objectAtIndex: 1] position].x, [[[root sublayers] objectAtIndex: 1] position].y);
+		}
 		ws_surface_flush(c, &w, sid, NULL);
 		double el = now - start;
 		if (shots == 0 && el > 0.25) { char p[256]; snprintf(p, sizeof p, "%s-a.ppm", out); ws_screenshot_scene(c, p); shots = 1; printf("frame at %.2fs\n", el); }
