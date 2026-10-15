@@ -534,9 +534,12 @@ int main(void)
 	/* SetWindowParent, GetParentWindowList, WindowIsVisible, and the parent in WindowQuery records */
 	{
 		ws_win pa, ch; CHECK(ws_win_create(c, (ws_rect){ 400, 300, 50, 50 }, 0, &pa) == 0 && ws_win_create(c, (ws_rect){ 410, 310, 20, 20 }, 0, &ch) == 0);
-		uint8_t m[0x40], rep[0x1100]; memset(m, 0, sizeof m); hdr(m, 0x28, 30249, 0); w32(m, 0x20, ch.id); w32(m, 0x24, pa.id); CHECK(rc(fd, m, 0x28) == 0);
+		uint8_t m[0x1040], rep[0x1100]; memset(m, 0, sizeof m); hdr(m, 0x28, 30249, 0); w32(m, 0x20, ch.id); w32(m, 0x24, pa.id); CHECK(rc(fd, m, 0x28) == 0);
 		memset(m, 0, sizeof m); hdr(m, 0x24 + 8, 30241, 0); w32(m, 0x20, 2); w32(m, 0x24, ch.id); w32(m, 0x28, pa.id);
 		int got = call(fd, m, 0x2c, rep, sizeof rep);
+		CHECK(got == 0x24 && r32(rep, 0x20) == 1001);                                    /* anything but a full list of 0x400 ids is refused (recorded) */
+		memset(m, 0, sizeof m); hdr(m, 0x1024, 30241, 0); w32(m, 0x20, 0x400); w32(m, 0x24, ch.id); w32(m, 0x28, pa.id);
+		got = call(fd, m, 0x1024, rep, sizeof rep);
 		CHECK(got == 0x1028 && r32(rep, 0x20) == 0 && r32(rep, 0x24) == 0x400 && r32(rep, 0x28) == pa.id && r32(rep, 0x2c) == 0);
 		ws_win_order(c, &ch, 0, 0);
 		memset(m, 0, sizeof m); hdr(m, 0x24, 30312, 0); w32(m, 0x20, ch.id); got = call(fd, m, 0x24, rep, sizeof rep);
@@ -545,7 +548,7 @@ int main(void)
 		ws_win_order(c, &ch, 0, 0);
 		w32(m, 0x20, 0x7ffff); got = call(fd, m, 0x24, rep, sizeof rep); CHECK(got == 0x28 && rep[0x24] == 0);
 		memset(m, 0, sizeof m); hdr(m, 0x28, 30249, 0); w32(m, 0x20, pa.id); w32(m, 0x24, ch.id); CHECK(rc(fd, m, 0x28) == 0);                                /* a cycle is refused silently */
-		memset(m, 0, sizeof m); hdr(m, 0x24 + 4, 30241, 0); w32(m, 0x20, 1); w32(m, 0x24, pa.id); got = call(fd, m, 0x28, rep, sizeof rep); CHECK(got == 0x1028 && r32(rep, 0x28) == 0);
+		memset(m, 0, sizeof m); hdr(m, 0x1024, 30241, 0); w32(m, 0x20, 0x400); w32(m, 0x24, pa.id); got = call(fd, m, 0x1024, rep, sizeof rep); CHECK(got == 0x1028 && r32(rep, 0x28) == 0);
 		ws_win_order(c, &pa, 0, 0);
 	}
 
