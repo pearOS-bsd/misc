@@ -52,6 +52,7 @@ struct ws_server {
 	uint64_t gen;
 	ws_surface *cursor_img; int cursor_hx, cursor_hy; uint32_t cursor_serial;
 	struct track { int used; uint64_t id; ws_wid wid; ws_rect *r; int n; int inside; int disabled; } trk[64];
+	ws_rect lock; int locked;                                   /* SetCursorRegionLock: the pointer stays inside this rectangle (the bounds of the locked region) */
 	struct kf { uint32_t cid; int ids[8]; int n; } kf[32]; int nkf; int kf_next;      /* key focus list, [0] is the holder */
 	struct { uint32_t cid; int count; } hide[64]; int nhide; int obscured;
 };
@@ -420,8 +421,15 @@ static void set_key_window(ws_server *s, ws_wid id)
 
 static void track_update(ws_server *s, int x, int y);
 
+void ws_cursor_lock(ws_server *s, const ws_rect *bounds)
+{
+	if (bounds && bounds->w > 0 && bounds->h > 0) { s->lock = *bounds; s->locked = 1; } else s->locked = 0;
+	if (s->locked) { if (s->cx < s->lock.x) s->cx = s->lock.x; if (s->cy < s->lock.y) s->cy = s->lock.y; if (s->cx >= s->lock.x + s->lock.w) s->cx = s->lock.x + s->lock.w - 1; if (s->cy >= s->lock.y + s->lock.h) s->cy = s->lock.y + s->lock.h - 1; }
+}
+
 void ws_server_mouse(ws_server *s, int x, int y, int buttons)
 {
+	if (s->locked) { if (x < s->lock.x) x = s->lock.x; if (y < s->lock.y) y = s->lock.y; if (x >= s->lock.x + s->lock.w) x = s->lock.x + s->lock.w - 1; if (y >= s->lock.y + s->lock.h) y = s->lock.y + s->lock.h - 1; }
 	x = x < 0 ? 0 : x >= s->w ? s->w - 1 : x;
 	y = y < 0 ? 0 : y >= s->h ? s->h - 1 : y;
 	int moved = x != s->cx || y != s->cy, pressed = buttons & ~s->buttons, released = s->buttons & ~buttons;
@@ -455,7 +463,7 @@ void ws_server_key(ws_server *s, int key, int down)
 
 void ws_server_set_event_sink(ws_server *s, ws_event_sink fn, void *ctx) { (void)s; sink = fn; sink_ctx = ctx; }
 int ws_server_buttons(ws_server *s) { return s->buttons; }
-void ws_server_warp_cursor(ws_server *s, int x, int y) { s->cx = x < 0 ? 0 : x >= s->w ? s->w - 1 : x; s->cy = y < 0 ? 0 : y >= s->h ? s->h - 1 : y; }
+void ws_server_warp_cursor(ws_server *s, int x, int y) { if (s->locked) { if (x < s->lock.x) x = s->lock.x; if (y < s->lock.y) y = s->lock.y; if (x >= s->lock.x + s->lock.w) x = s->lock.x + s->lock.w - 1; if (y >= s->lock.y + s->lock.h) y = s->lock.y + s->lock.h - 1; }  s->cx = x < 0 ? 0 : x >= s->w ? s->w - 1 : x; s->cy = y < 0 ? 0 : y >= s->h ? s->h - 1 : y; }
 int ws_set_window_event_mask(ws_server *s, ws_wid id, int m) { window *w = get(s, id); if (!w) return -1; w->event_mask = m; return 0; }
 int ws_window_event_mask(ws_server *s, ws_wid id, int *m) { window *w = get(s, id); if (!w) return -1; *m = w->event_mask; return 0; }
 

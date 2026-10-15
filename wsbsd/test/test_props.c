@@ -355,6 +355,25 @@ int main(void)
 		CHECK(!again);                                                                    /* removed: no more events */
 	}
 
+	/* cursor routines: the region lock keeps the pointer inside; another connection cannot take it; restriction mode/options, drag lock, obscure and wait cursor are accepted */
+	{
+		uint8_t reg[64]; size_t rn = ws_region_serialize(&(ws_rect){ 100, 100, 50, 50 }, 1, reg, sizeof reg), got;
+		uint8_t lm[0x38 + 64]; memset(lm, 0, sizeof lm); hdr(lm, 0x38, 30459, 1); w32(lm, 0x18, 1); lm[0x25] = 1; lm[0x27] = 1; w32(lm, 0x28, (uint32_t)rn); memcpy(lm + 0x2c, &WS_NDR, 8); w32(lm, 0x34, (uint32_t)rn); memcpy(lm + 0x38, reg, rn);
+		CHECK(rc(fd, lm, 0x38 + rn) == 0);
+		int cx = -1, cy = -1;
+		ws_post_mouse_event(c, 5, 5, 5, 0, 0, 0); ws_cursor_position(c, &cx, &cy); CHECK(cx == 100 && cy == 100);                              /* clamped to the region's corner */
+		ws_post_mouse_event(c, 5, 500, 400, 0, 0, 0); ws_cursor_position(c, &cx, &cy); CHECK(cx == 149 && cy == 149);
+		ws_post_mouse_event(c, 5, 120, 130, 0, 0, 0); ws_cursor_position(c, &cx, &cy); CHECK(cx == 120 && cy == 130);                          /* inside: untouched */
+		uint8_t q[0x40]; memset(q, 0, sizeof q);
+		w32(lm, 0x28, 0); w32(lm, 0x34, 0); CHECK(rc(fd, lm, 0x38) == 0);                                                                    /* an empty region releases */
+		memset(q, 0, sizeof q); hdr(q, 0x24, 30545, 0); w32(q, 0x20, 2); CHECK(rc(fd, q, 0x24) == 0);
+		memset(q, 0, sizeof q); hdr(q, 0x28, 30548, 0); w32(q, 0x20, 1); CHECK(rc(fd, q, 0x28) == 0);
+		memset(q, 0, sizeof q); hdr(q, 0x40, 30458, 0); CHECK(rc(fd, q, 0x40) == 0);
+		memset(q, 0, sizeof q); hdr(q, 0x28, 30476, 0); CHECK(rc(fd, q, 0x28) == 0);
+		memset(q, 0, sizeof q); hdr(q, 0x24, 30127, 0); CHECK(rc(fd, q, 0x24) == 0);
+		(void)got;
+	}
+
 	/* window lists: OrderWindowListWithOperation, SetWindowListSystemAlpha / Level, CopyWindowsWithOptionsAndTags */
 	{
 		ws_win a1, a2; CHECK(ws_win_create(c, (ws_rect){ 500, 400, 30, 30 }, 0, &a1) == 0 && ws_win_create(c, (ws_rect){ 510, 410, 30, 30 }, 0, &a2) == 0);

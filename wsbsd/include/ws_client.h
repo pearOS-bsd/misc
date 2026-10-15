@@ -70,6 +70,7 @@ int ws_post_event_record(ws_conn *, const uint8_t *rec, size_t n);   /* PostEven
 /* SLEventPostToPid / SLEventPostToPSN (PostFilteredEventTapData, style 2): the event record as CGEventCreateData makes it goes to that process only */
 int ws_post_event_to_pid(ws_conn *, int pid, const uint8_t *rec, size_t n);
 int ws_post_event_to_psn(ws_conn *, uint32_t psn_lo, uint32_t psn_hi, const uint8_t *rec, size_t n);
+int ws_cursor_position(ws_conn *, int *x, int *y);            /* the pointer's position (private call) */
 int ws_post_mouse_event(ws_conn *, int type, float x, float y, uint32_t flags, int click_state, int button);
 int ws_post_key_event(ws_conn *, int down, int keycode, uint32_t flags);                       /* GetCursorScale (30135) */                                      /* private: this connection's id */
 int ws_win_count(ws_conn *, int connection_id);                 /* GetWindowCount (30063) */

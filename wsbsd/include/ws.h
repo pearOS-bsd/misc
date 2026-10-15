@@ -130,6 +130,7 @@ ws_wid ws_key_window(ws_server *);
 typedef void (*ws_event_sink)(void *ctx, uint32_t owner, const ws_event *e);
 void ws_server_set_event_sink(ws_server *, ws_event_sink fn, void *ctx);          /* called for every event queued for a window */
 void ws_server_warp_cursor(ws_server *, int x, int y);
+void ws_cursor_lock(ws_server *, const ws_rect *bounds);        /* keep the pointer inside bounds (NULL or empty: release) */
 int ws_server_buttons(ws_server *);
 int ws_set_window_event_mask(ws_server *, ws_wid, int mask);
 int ws_window_event_mask(ws_server *, ws_wid, int *mask);

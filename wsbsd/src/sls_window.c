@@ -88,6 +88,9 @@ static int ool_request(const mach_msg_header_t *h, const uint8_t *buf, size_t le
 	return (int)osz;
 }
 
+extern uint32_t cursor_lock_owner;
+static uint8_t cursor_drag_lock[31]; static uint32_t cursor_restriction_mode; static uint8_t cursor_restriction_corners, cursor_teleport;
+
 int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 {
 	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
@@ -188,6 +191,35 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		}
 		return reply_simple(c->fd, h, 0);
 	}
+	case SLS_MSG_SetCursorRegionLock: {                                            /* OOL region; size repeated@0x34; size 0x38. The pointer is kept inside the region's bounds; an empty region releases. 1004 when another connection holds the lock */
+		int err; int osz = ool_request(h, buf, len, 0x38, &err);
+		if (osz < 0) return reply_simple(c->fd, h, err);
+		if ((uint32_t)osz != rd32(buf, 0x34)) return reply_simple(c->fd, h, -300);
+		if (cursor_lock_owner && cursor_lock_owner != c->id) return reply_simple(c->fd, h, 0x3ec);
+		ws_rect *rc = NULL; int nr = 0; ws_rect bb;
+		if (osz && ws_region_parse(buf + 0x38, (uint32_t)osz, &rc, &nr, &bb) == 0 && bb.w > 0 && bb.h > 0) { ws_cursor_lock(srv, &bb); cursor_lock_owner = c->id; }
+		else { ws_cursor_lock(srv, NULL); cursor_lock_owner = 0; }
+		free(rc);
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_SetCursorDragLock:                                                 /* 31 flag bytes @0x20, size 0x40: kept */
+		if (!simple_ok(h, len, 0x40)) return reply_simple(c->fd, h, -304);
+		memcpy(cursor_drag_lock, buf + 0x20, sizeof cursor_drag_lock);
+		return reply_simple(c->fd, h, 0);
+	case SLS_MSG_SetCursorRestrictionMode:                                          /* mode@0x20 (1..3 map to the system's modes, else 0), size 0x24 */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		cursor_restriction_mode = rd32(buf, 0x20) - 1u < 3 ? rd32(buf, 0x20) : 0;
+		return reply_simple(c->fd, h, 0);
+	case SLS_MSG_SetCursorRestrictionOptions:                                       /* corners byte@0x20, teleport byte@0x24, size 0x28 */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		cursor_restriction_corners = (uint8_t)rd32(buf, 0x20); cursor_teleport = (uint8_t)rd32(buf, 0x24);
+		return reply_simple(c->fd, h, 0);
+	case SLS_MSG_DisableCursorObscure:                                              /* double timeout@0x20 (clamped to 0.001 .. 0.5), size 0x28: the pointer is not hidden while typing until it expires (not modelled) */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		return reply_simple(c->fd, h, 0);
+	case SLS_MSG_ForceWaitCursorActive:                                             /* flag@0x20, size 0x24 */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		return reply_simple(c->fd, h, 0);
 	case SLS_MSG_OrderWindowListWithOperation: {                                   /* n@0x20 (<= 0x400), n ids, then operation and relative window (u32 each); size 4n + 0x2c; 1000 for an empty list or a window without rights */
 		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size < 0x2c || h->msgh_size > 0x102c) return reply_simple(c->fd, h, -304);
 		uint32_t n = rd32(buf, 0x20);
@@ -400,4 +432,5 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 	return -2;
 }
 
-void sls_window_owner_cleanup(uint32_t owner) { (void)owner; purge_dead(); }
+uint32_t cursor_lock_owner;
+void sls_window_owner_cleanup(uint32_t owner) { if (cursor_lock_owner == owner) { cursor_lock_owner = 0; ws_cursor_lock(srv, NULL); } purge_dead(); }

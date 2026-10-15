@@ -39,7 +39,6 @@ static const gen_entry gen_table[] = {
 	{ 30065, 56, 1, 1, 36 },   /* __XSnappingInfoSetPrefs */
 	{ 30087, 36, 0, 0, 36 },   /* __XSetSecureEventInput */
 	{ 30112, 44, 0, 0, 44 },   /* __XZoomTransformPoint */
-	{ 30127, 36, 0, 0, 36 },   /* __XForceWaitCursorActive */
 	{ 30148, 36, 0, 0, 36 },   /* __XExitSpecialKeyMode */
 	{ 30153, 40, 1, 1, 36 },   /* __XSetDefaultBootstrapPort */
 	{ 30158, 140, 0, 0, 36 },   /* __XAddTrackingAreas */
@@ -109,13 +108,10 @@ static const gen_entry gen_table[] = {
 	{ 30442, 40, 0, 0, 40 },   /* __XSpaceGetAlpha */
 	{ 30448, 72, 1, 1, 36 },   /* __XTileSpaceMoveSpacersForSize */
 	{ 30452, 36, 0, 0, 36 },   /* __XSystemStatusBarPrepareToUnregisterWindow */
-	{ 30458, 64, 0, 0, 36 },   /* __XSetCursorDragLock */
-	{ 30459, 56, 0, 0, 36 },   /* __XSetCursorRegionLock */
 	{ 30464, 36, 0, 0, 36 },   /* __XHMDRelease */
 	{ 30465, 40, 1, 1, 36 },   /* __XHMDSetNotificationPort */
 	{ 30469, 60, 1, 1, 36 },   /* __XHMDConfigureQueue */
 	{ 30471, 24, 0, 0, 52 },   /* __XHMDGetTotalUpdateCount */
-	{ 30476, 40, 0, 0, 36 },   /* __XDisableCursorObscure */
 	{ 30489, 56, 1, 1, 36 },   /* __XScreenTimeSuppressWindows */
 	{ 30490, 40, 0, 0, 36 },   /* __XSetAppearanceThemeSwitchesAutomatically */
 	{ 30492, 24, 0, 0, 44 },   /* __XGetAutomaticAppearanceScheduleOverride */
@@ -133,8 +129,6 @@ static const gen_entry gen_table[] = {
 	{ 30538, 76, 0, 0, 52 },   /* __XSelectiveSharingContextCreate */
 	{ 30539, 48, 0, 0, 36 },   /* __XSelectiveSharingContextDestroy */
 	{ 30544, 48, 0, 0, 36 },   /* __XSelectiveSharingContextStop */
-	{ 30545, 36, 0, 0, 36 },   /* __XSetCursorRestrictionMode */
-	{ 30548, 40, 0, 0, 36 },   /* __XSetCursorRestrictionOptions */
 	{ 30549, 56, 1, 1, 36 },   /* __XUpdateAssessmentMode */
 	{ 30558, 48, 0, 0, 36 },   /* __XSelectiveSharingContextCancelPicker */
 	{ 30568, 56, 1, 1, 36 },   /* __XSetTransactionCompletion */
