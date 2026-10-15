@@ -1,6 +1,7 @@
 /* Spaces: a table of spaces (the default user space has id 1), their names and values, the windows assigned to them, and show / hide state. Layouts from the decompiled routines.
  * Not modelled: the managed displays a space is bound to, owners, shapes and tiles. */
 #include "wsd_priv.h"
+#include "bplist.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -135,6 +136,45 @@ int sls_space_dispatch(conn *c, const uint8_t *buf, size_t len)
 		wr32(m, 0x18, 1); m[0x24] = 1; m[0x25] = 1; m[0x27] = 1; wr32(m, 0x28, n * 8); memcpy(m + 0x2c, &WS_NDR, 8); wr32(m, 0x34, n);
 		struct iovec v[2] = { { m, sizeof m }, { ids, (size_t)n * 8 } };
 		return ws_ipc_send(c->fd, v, n ? 2 : 1, NULL, 0);
+	}
+	case SLS_MSG_CopyManagedDisplaySpaces: {                                       /* size 0x18; reply complex 0x38: OOL bplist, an array with one dictionary per display (Current Space, Spaces, Display Identifier); the layout recorded on a macOS runner (201 bytes for one display with the default space) */
+		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size != 0x18) return reply_simple(c->fd, h, -304);
+		sp_init();
+		bp_node ints[2 * MAXSP + 4], strs[MAXSP + 8], dicts[2 * MAXSP + 2], arr, top, disp, *kids[3 * MAXSP + 16], *keys[3 * MAXSP + 16];
+		static const char *spk[4] = { "id64", "ManagedSpaceID", "type", "uuid" };
+		bp_node spkey[4], *spkeyp[4]; for (int k = 0; k < 4; k++) { spkey[k] = (bp_node){ BP_STR, spk[k], 0, NULL, NULL, 0, -1 }; spkeyp[k] = &spkey[k]; }
+		int ni = 0, ns = 0, nd = 0, nk = 0, first = -1, nsp = 0;
+		bp_node *spaces[MAXSP]; bp_node *cur = NULL;
+		bp_node *emptystr = &strs[ns++]; *emptystr = (bp_node){ BP_STR, "", 0, NULL, NULL, 0, -1 };
+		for (int i = 0; i < MAXSP && nsp < MAXSP; i++) if (sp[i].used) {
+			for (int pass = 0; pass < 2; pass++) {                      /* pass 0: the entry in Spaces, pass 1: a second copy for Current Space when this is the shown space */
+				if (pass == 1 && !(sp[i].shown && first < 0)) break;
+				bp_node *a = &ints[ni++], *b = &ints[ni++], *t = &ints[ni++];
+				*a = (bp_node){ BP_INT, NULL, sp[i].id, NULL, NULL, 0, -1 }; *b = *a; *t = (bp_node){ BP_INT, NULL, sp[i].type, NULL, NULL, 0, -1 };
+				bp_node **kv = &kids[nk]; nk += 4; kv[0] = a; kv[1] = b; kv[2] = t; kv[3] = emptystr;
+				bp_node *d = &dicts[nd++]; *d = (bp_node){ BP_DICT, NULL, 0, kv, spkeyp, 4, -1 };
+				if (pass == 0) spaces[nsp++] = d; else cur = d;
+			}
+			if (sp[i].shown && first < 0) first = i;
+		}
+		if (!cur && nsp) cur = spaces[0];
+		static const char *dk[3] = { "Current Space", "Spaces", "Display Identifier" };
+		bp_node dkey[3], *dkeyp[3]; for (int k = 0; k < 3; k++) { dkey[k] = (bp_node){ BP_STR, dk[k], 0, NULL, NULL, 0, -1 }; dkeyp[k] = &dkey[k]; }
+		arr = (bp_node){ BP_ARRAY, NULL, 0, spaces, NULL, nsp, -1 };
+		bp_node dispid = (bp_node){ BP_STR, "5A42259C-47B8-4590-9762-97DBE4FE7F1B", 0, NULL, NULL, 0, -1 };
+		bp_node *dv[3] = { cur ? cur : &arr, &arr, &dispid };
+		disp = (bp_node){ BP_DICT, NULL, 0, dv, dkeyp, 3, -1 };
+		bp_node *tv[1] = { &disp }; top = (bp_node){ BP_ARRAY, NULL, 0, tv, NULL, 1, -1 };
+		(void)keys; (void)strs; (void)nk;
+		uint8_t *pl = NULL; size_t pn = bp_serialize(&top, &pl);
+		if (!pl || pn > 0x4000) { free(pl); return reply_simple(c->fd, h, 1000); }
+		uint8_t m[0x38]; memset(m, 0, sizeof m);
+		fill_reply_header((mach_msg_header_t *)m, h, sizeof m, 1);
+		wr32(m, 0x18, 1); m[0x24] = 1; m[0x25] = 1; m[0x27] = 1; wr32(m, 0x28, (uint32_t)pn); memcpy(m + 0x2c, &WS_NDR, 8); wr32(m, 0x34, (uint32_t)pn);
+		struct iovec v[2] = { { m, sizeof m }, { pl, pn } };
+		int rc = ws_ipc_send(c->fd, v, 2, NULL, 0);
+		free(pl);
+		return rc;
 	}
 	case SLS_MSG_SpaceGetAlpha: {                                                  /* id u64@0x20, size 0x28; reply value: the alpha as a float; 1010 for an unknown space */
 		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
