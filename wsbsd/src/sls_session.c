@@ -80,18 +80,18 @@ static int reply_ool_blob(conn *c, const mach_msg_header_t *h, const uint8_t *bl
 }
 
 
-/* Routines the recorded macOS 26.6 data only knows as argument-less requests; the 27.0 table gives them arguments (argc from docs/skylight-msgid-table.txt:
- * size = 0x20 + 4 * (argc - 1)). There is no Dock, no right-to-left UI and no virtual display here, so the answers are the "nothing" values.
+/* Routines a Cocoa app calls that had no handler. The request sizes are what the decompiled server routines check (header-only 0x18 for the first four,
+ * 0x18 for DisconnectWindowManager, 0x24 for VirtualDisplayDestroy). There is no Dock, no right-to-left UI and no virtual display here, so the answers are the "nothing" values.
  * Unverified live: the exact error the real server gives for a virtual display that does not exist (1001, kCGErrorIllegalArgument, is assumed). */
 static int do_system_ui_query(conn *c, const uint8_t *buf, size_t len)
 {
 	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
 	switch (h->msgh_id) {
 	case SLS_MSG_GetAppearanceTheme: case SLS_MSG_GetSystemUIHasRTLDirection: case SLS_MSG_GetDebugOptions:
-		if (!simple_ok(h, len, 0x24)) return -2;
+		if (!simple_ok(h, len, 0x18)) return -2;
 		return reply_value(c->fd, h, 0);                                  /* light appearance, left-to-right, no debug options */
 	case SLS_MSG_GetDockRectWithReason: {                               /* reply 0x3c: retcode, rect (4 floats), two u32: no Dock, empty rect */
-		if (!simple_ok(h, len, 0x38)) return -2;
+		if (!simple_ok(h, len, 0x18)) return -2;
 		uint8_t r[0x3c]; memset(r, 0, sizeof r);
 		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
 		memcpy(r + 0x18, &WS_NDR, sizeof WS_NDR);
