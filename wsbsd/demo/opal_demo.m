@@ -51,6 +51,7 @@ int main(int argc, char **argv)
 		if (tc) CGContextRelease(tc);
 	}
 	CGContextFlush(g);
+	fprintf(stderr, "opal_demo: ctx data %p (ours %p), pixel(10,10)=%08x pixel(120,130)=%08x\n", CGBitmapContextGetData(g), px->px, ((uint32_t *)px->px)[10 * (px->stride / 4) + 10], ((uint32_t *)px->px)[130 * (px->stride / 4) + 120]);
 	CGContextRelease(g); CGColorSpaceRelease(rgb);
 	ws_rect all = { 0, 0, W, H };
 	if (ws_surface_flush(c, &w, sid, &all)) { fprintf(stderr, "opal_demo: flush failed\n"); return 1; }
