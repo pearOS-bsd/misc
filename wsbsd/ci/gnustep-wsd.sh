@@ -40,6 +40,8 @@ s=open(p).read()
 s+='\nADDITIONAL_INCLUDE_DIRS += -I$WS/include\nADDITIONAL_LDFLAGS += /tmp/wsc/libwsclient.a\n'
 open(p,'w').write(s)
 PY
+# the packaged gnustep-gui predates GSFontAssetInstaller: build without the font asset installers
+sed -i '' '/FontAssetInstaller/d' Source/cairo/GNUmakefile Source/cairo/CairoContext.m
 ./configure --enable-server=headless --enable-graphics=cairo 2>&1 | tail -5
 gmake -j2 2>&1 | grep -E "error|Error|warning: implicit|undefined" | head -30
 gmake install 2>&1 | tail -3
