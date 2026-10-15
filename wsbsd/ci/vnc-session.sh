@@ -26,14 +26,14 @@ ssh -tt -p 443 -o BatchMode=yes -o StrictHostKeyChecking=no -o ServerAliveInterv
 TP1=$!
 ssh -tt -p 443 -o BatchMode=yes -o StrictHostKeyChecking=no -o ServerAliveInterval=20 -R0:127.0.0.1:5900 tcp@a.pinggy.io >/tmp/tunnel-tcp.log 2>&1 </dev/null &
 TP=$!
-i=0; while [ $i -lt 30 ]; do grep -q 'https://' /tmp/tunnel-http.log 2>/dev/null && break; sleep 1; i=$((i + 1)); done
-URL="$(grep -o 'https://[a-zA-Z0-9.-]*pinggy[a-zA-Z0-9.-]*' /tmp/tunnel-http.log | head -1)"
+i=0; while [ $i -lt 30 ]; do grep -q 'run.pinggy-free.link' /tmp/tunnel-http.log 2>/dev/null && break; sleep 1; i=$((i + 1)); done
+URL="$(grep -o 'https://[a-z0-9-]*\.run\.pinggy-free\.link' /tmp/tunnel-http.log | head -1)"
 ADDR="$(grep -o 'tcp://[a-zA-Z0-9.-]*:[0-9]*' /tmp/tunnel-tcp.log | head -1 | sed 's|tcp://||')"
 [ -n "$URL" ] || echo "http tunnel: $(tr '\n\r' '  ' < /tmp/tunnel-http.log | cut -c1-240)"
 echo
 echo "=========================================================="
 echo " VNC session, open for $MINUTES minutes"
-if [ -n "$URL" ]; then echo " BROWSER:  $URL/vnc.html?autoconnect=true&resize=scale&password=$PW"; else echo " no browser tunnel came up"; fi
+if [ -n "$URL" ]; then echo " BROWSER:  $URL/vnc.html?autoconnect=true&resize=scale   (enter the password below)"; else echo " no browser tunnel came up"; fi
 if [ -n "$ADDR" ]; then echo " VNC viewer address: $ADDR"; fi
 echo " password: $PW"
 echo " (use any VNC viewer; in the terminal try: neofetch, ls, Sudoku &, Gorm &)"
