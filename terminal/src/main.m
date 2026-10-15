@@ -20,7 +20,9 @@
 {
 	(void)sender;
 	TermView *v = [[TermView alloc] initWithShell:nil];
-	NSSize sz = [v idealSizeForCols:80 rows:24];
+	int cols = getenv("TERMINAL_COLS") ? atoi(getenv("TERMINAL_COLS")) : 80, rows = getenv("TERMINAL_ROWS") ? atoi(getenv("TERMINAL_ROWS")) : 24;
+	if (cols < 20 || cols > 400) cols = 80; if (rows < 5 || rows > 200) rows = 24;
+	NSSize sz = [v idealSizeForCols:cols rows:rows];
 	NSRect cr = NSMakeRect(80 + 24 * [[NSApp windows] count], 160, sz.width, sz.height);
 	NSWindow *w = [[NSWindow alloc] initWithContentRect:cr styleMask:(NSWindowStyleMaskTitled | NSWindowStyleMaskClosable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskResizable) backing:NSBackingStoreBuffered defer:NO];
 	[w setTitle:@"Terminal"]; [w setContentView:v]; [v setFrameSize:sz]; [w makeFirstResponder:v]; [w makeKeyAndOrderFront:nil];
