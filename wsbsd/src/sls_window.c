@@ -512,7 +512,7 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		uint32_t wid = rd32(buf, 0x20), fid = rd32(buf, 0x24), fl = rd32(buf, 0x28);
 		if (ws_window_exists(srv, wid) && holds_rights(c, wid) && cif_find(fid) >= 0) {
 			int slot = -1; for (int i = 0; i < 256; i++) { if (win_cif[i].wid == wid) { slot = i; break; } if (slot < 0 && (!win_cif[i].wid || !ws_window_exists(srv, win_cif[i].wid))) slot = i; }
-			if (slot >= 0) { if (fl == 0) { if (win_cif[slot].fid == fid) memset(&win_cif[slot], 0, sizeof win_cif[slot]); } else if ((fl & 0x100) || !win_cif[slot].fid || win_cif[slot].wid != wid) { win_cif[slot].wid = wid; win_cif[slot].fid = fid; } }
+			if (slot >= 0) { if (fl == 0) { if (win_cif[slot].fid == fid) { memset(&win_cif[slot], 0, sizeof win_cif[slot]); ws_set_window_filter(srv, wid, 0); } } else if ((fl & 0x100) || !win_cif[slot].fid || win_cif[slot].wid != wid) { win_cif[slot].wid = wid; win_cif[slot].fid = fid; ws_set_window_filter(srv, wid, cif[cif_find(fid)].type); } }
 		}
 		return reply_simple(c->fd, h, 0);
 	}

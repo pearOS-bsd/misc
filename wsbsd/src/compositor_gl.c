@@ -46,7 +46,7 @@ struct gl_compositor {
 	PFNEGLEXPORTDMABUFIMAGEMESAPROC export_image;
 	GLuint prog, vbo, fbo, fbo_tex, tmp_fbo, tmp_tex, blur_prog;
 	GLint bu_rect, bu_screen, bu_src, bu_dir, bu_sigma, bu_rad;
-	GLint u_xf, u_xt, u_rect, u_screen, u_tex, u_size, u_uvscale, u_alpha, u_radius, u_border, u_swap;
+	GLint u_invert, u_xf, u_xt, u_rect, u_screen, u_tex, u_size, u_uvscale, u_alpha, u_radius, u_border, u_swap;
 	wtex wt[MAX_TEX]; stex st[MAX_TEX]; itex it[MAX_TEX];
 	uint8_t *stage; size_t stage_cap;
 	char desc[320];
@@ -103,7 +103,8 @@ static const char *FS =
 	"uniform float u_alpha;\n"                                 /* window opacity */
 	"uniform float u_radius;\n"                                /* corner radius in pixels, 0 = square */
 	"uniform float u_border;\n"                                /* 1px border strength, 0 = none */
-	"uniform int u_swap;\n"                                    /* 1: the texture holds BGRA bytes uploaded as RGBA */
+	"uniform int u_swap;\n"
+	"uniform int u_invert;\n"                                 /* CIColorInvert: premultiplied c = a - c */                                    /* 1: the texture holds BGRA bytes uploaded as RGBA */
 	"varying vec2 v_uv;\n"
 	"void main() {\n"
 	"    vec2 p = (v_uv - 0.5) * u_size;\n"
@@ -112,6 +113,7 @@ static const char *FS =
 	"    float cover = clamp(0.5 - d, 0.0, 1.0);\n"                               /* analytic anti-aliased clip */
 	"    vec4 c = texture2D(u_tex, v_uv * u_uvscale);\n"                          /* premultiplied */
 	"    if (u_swap != 0) c = c.bgra;\n"
+	"    if (u_invert != 0) c = vec4(c.a - c.rgb, c.a);\n"
 	"    c *= cover;\n"
 	"    float ring = clamp(1.0 - abs(d + 0.5), 0.0, 1.0);\n"                      /* a 1 px band just inside the edge */
 	"    vec4 b = vec4(0.0, 0.0, 0.0, 0.16) * ring * u_border * cover;\n"          /* subtle dark stroke, premultiplied */
@@ -155,6 +157,7 @@ static int build_program(gl_compositor *c)
 		return -1;
 	}
 	c->u_rect = glGetUniformLocation(c->prog, "u_rect");
+	c->u_invert = glGetUniformLocation(c->prog, "u_invert");
 	c->u_xf = glGetUniformLocation(c->prog, "u_xf"); c->u_xt = glGetUniformLocation(c->prog, "u_xt");
 	c->u_screen = glGetUniformLocation(c->prog, "u_screen");
 	c->u_tex = glGetUniformLocation(c->prog, "u_tex");
@@ -470,9 +473,11 @@ static void visit(void *ctx, const ws_visit *v)
 	int swap = 1; float uvx = 1, uvy = 1;
 	GLuint tex = window_texture(c, v, &swap, &uvx, &uvy);
 	if (tex && v->alpha > 0.0f) {
+		glUniform1i(c->u_invert, v->invert);
 		if (v->has_xf) { glUniform4f(c->u_xf, v->xf[0], v->xf[1], v->xf[2], v->xf[3]); glUniform2f(c->u_xt, v->xf[4], v->xf[5]); }
 		draw_quad(c, (float)v->frame.x, (float)v->frame.y, (float)v->frame.w, (float)v->frame.h, tex, uvx, uvy, v->alpha,
 		          (float)v->corner_radius, v->corner_radius > 0 ? 1.0f : 0.0f, swap);
+		glUniform1i(c->u_invert, 0);
 		if (v->has_xf) { glUniform4f(c->u_xf, 0, 0, 0, 0); glUniform2f(c->u_xt, 0, 0); }
 	}
 	if (v->shadow && v->alpha > 0.0f) {                                          /* the shadow layer lies above its window: it is cut out of the window shape */

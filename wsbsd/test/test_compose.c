@@ -100,6 +100,23 @@ static void test_walk(void)
 }
 
 
+/* CIColorInvert: an opaque red window reads cyan */
+static void test_invert(void)
+{
+	ws_server *srv = ws_server_new(100, 100);
+	ws_surface *scr = ws_surface_new(100, 100);
+	ws_wid w = ws_create_window(srv, (ws_rect){ 10, 10, 40, 40 });
+	ws_fill(ws_window_backing(srv, w), (ws_rect){ 0, 0, 40, 40 }, 1, 0, 0, 1);
+	ws_order_window(srv, w, WS_ABOVE, 0);
+	CHECK(ws_set_window_filter(srv, w, 2) == 0);
+	ws_compose_scene(srv, scr);
+	CHECK(*(uint32_t *)(scr->px + 20 * scr->stride + 20 * 4) == 0xff00ffffu);
+	CHECK(ws_set_window_filter(srv, w, 0) == 0);
+	ws_compose_scene(srv, scr);
+	CHECK(*(uint32_t *)(scr->px + 20 * scr->stride + 20 * 4) == 0xffff0000u);
+	ws_surface_free(scr); ws_server_free(srv);
+}
+
 /* SetWindowTransform: a 40x40 red window scaled 2x about its centre covers 80x80, translation moves it */
 static void test_transform(void)
 {
@@ -238,6 +255,7 @@ int main(void)
 	ws_server_free(srv);
 	test_walk();
 	test_transform();
+	test_invert();
 	printf(fails ? "%d failures\n" : "all tests passed\n", fails);
 	return fails != 0;
 }
