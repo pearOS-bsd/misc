@@ -87,3 +87,27 @@ jobs:
           name: macos-screenshots
           path: wsbsd/*.png
           if-no-files-found: warn
+
+  # CoreGraphics above wsd: GNUstep corebase + Opal (Quartz 2D over Cairo) built from source on FreeBSD, drawing into a wsd window.
+  freebsd-opal:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Opal and run the CoreGraphics demo on FreeBSD x86_64
+        uses: vmactions/freebsd-vm@v1
+        with:
+          release: "14.2"
+          arch: x86_64
+          usesh: true
+          run: |
+            pkg install -y python3 >/dev/null 2>&1
+            sh wsbsd/ci/opal-build.sh 2>&1 | tail -30
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: freebsd-opal-screenshot
+          path: wsbsd/opal.png
+          if-no-files-found: warn
+
