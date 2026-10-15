@@ -397,7 +397,7 @@ int main(void)
 		CHECK(xchg(a, &g, sizeof g, &br, sizeof br, NULL, NULL) == (int)sizeof br && br.retcode == 0 && br.x == 400 && br.y == 500 && br.w == 300 && br.ht == 150 && br.h.msgh_size == 0x44);
 		g.h.msgh_id = SLS_MSG_GetWindowOwner;
 		sls_owner_reply orp;
-		CHECK(xchg(a, &g, sizeof g, &orp, sizeof orp, NULL, NULL) == (int)sizeof orp && orp.retcode == 0 && (uint32_t)orp.owner == owner_a && orp.rights == 5 && orp.h.msgh_size == 0x30);
+		CHECK(xchg(a, &g, sizeof g, &orp, sizeof orp, NULL, NULL) == (int)sizeof orp && orp.retcode == 0 && (uint32_t)orp.owner == owner_a && orp.rights == 0x30007 && orp.extra == 1 && orp.h.msgh_size == 0x30);
 		CHECK(xchg(b, &g, sizeof g, &orp, sizeof orp, NULL, NULL) == (int)sizeof orp && (uint32_t)orp.owner == owner_a && orp.rights == 0);     /* another connection sees no rights */
 		g.h.msgh_id = SLS_MSG_GetWindowCount; g.wid = owner_a;                              /* the argument is a connection id: a owns w1, w3, w5 */
 		CHECK(xchg(a, &g, sizeof g, &vr, sizeof vr, NULL, NULL) == (int)sizeof vr && vr.retcode == 0 && vr.value == 3);
