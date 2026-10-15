@@ -163,6 +163,18 @@ static NSColor *colour(uint32_t c, NSColor *dflt) { if (c == VT_DEFAULT_COLOR) r
 	return out;
 }
 
+- (BOOL)dumpScreenToFile:(NSString *)path
+{
+	NSMutableString *out = [NSMutableString string];
+	for (int y = 0; y < vt_rows(term); y++) {
+		NSMutableString *line = [NSMutableString string];
+		for (int x = 0; x < vt_cols(term); x++) { const vt_cell *c = vt_cell_at(term, x, y); if (!c || c->wide == 2) continue; unichar u = c->ch > 0xffff ? '?' : (unichar)c->ch; [line appendFormat:@"%C", (unichar)(u ? u : ' ')]; }
+		while ([line hasSuffix:@" "]) [line deleteCharactersInRange:NSMakeRange([line length] - 1, 1)];
+		[out appendString:line]; [out appendString:@"\n"];
+	}
+	return [out writeToFile:path atomically:NO encoding:NSUTF8StringEncoding error:NULL];
+}
+
 - (void)copy:(id)sender { (void)sender; NSPasteboard *pb = [NSPasteboard generalPasteboard]; [pb declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil]; [pb setString:[self selectedText] forType:NSStringPboardType]; }
 - (void)paste:(id)sender
 {
