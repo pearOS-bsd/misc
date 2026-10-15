@@ -188,6 +188,30 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		}
 		return reply_simple(c->fd, h, 0);
 	}
+	case SLS_MSG_FlushRegion: {                                                    /* OOL region; wid@0x34, size repeated@0x38; size 0x3c: the region's bounds are flushed (an empty region: the whole window); always 0 */
+		int err; int osz = ool_request(h, buf, len, 0x3c, &err);
+		if (osz < 0) return reply_simple(c->fd, h, err);
+		if ((uint32_t)osz != rd32(buf, 0x38)) return reply_simple(c->fd, h, -300);
+		uint32_t wid = rd32(buf, 0x34);
+		if (ws_window_exists(srv, wid)) {
+			ws_rect *rc = NULL; int nr = 0; ws_rect bb;
+			if (osz && ws_region_parse(buf + 0x3c, (uint32_t)osz, &rc, &nr, &bb) == 0 && bb.w > 0 && bb.h > 0) ws_window_flush_rect(srv, wid, &bb); else ws_window_flush_rect(srv, wid, NULL);
+			free(rc);
+		}
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_SetWindowClipShape: {                                             /* OOL region; wid@0x34, size repeated@0x38; size 0x3c: applied only with rights (not modelled), always 0 */
+		int err; int osz = ool_request(h, buf, len, 0x3c, &err);
+		if (osz < 0) return reply_simple(c->fd, h, err);
+		if ((uint32_t)osz != rd32(buf, 0x38)) return reply_simple(c->fd, h, -300);
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_ShapeSurface: {                                                   /* OOL region; six u32 @0x34..0x48 (connection, window, surface, ...), size repeated@0x4c; size 0x50: accepted, not modelled */
+		int err; int osz = ool_request(h, buf, len, 0x50, &err);
+		if (osz < 0) return reply_simple(c->fd, h, err);
+		if ((uint32_t)osz != rd32(buf, 0x4c)) return reply_simple(c->fd, h, -300);
+		return reply_simple(c->fd, h, 0);
+	}
 	case SLS_MSG_SetTrackingAreaShape: {                                           /* OOL region; wid@0x34, compat id u64@0x38, region size repeated@0x40; size 0x48; 1000 for an unknown window or without rights */
 		int err; int osz = ool_request(h, buf, len, 0x48, &err);
 		if (osz < 0) return reply_simple(c->fd, h, err);
