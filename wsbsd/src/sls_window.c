@@ -108,6 +108,20 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 	case SLS_MSG_RemoveAllSurfaces:
 		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
 		return reply_simple(c->fd, h, wsd_remove_all_surfaces(c, rd32(buf, 0x20)));
+	case SLS_MSG_GetSurfaceCount:                                                  /* wid@0x20, size 0x24; reply 0x28 with the number of surfaces; 1000 for an unknown window */
+	case SLS_MSG_GetSurfaceList: {                                                 /* reply 0x28 + 4n: n@0x24, the ids from 0x28 (at most 0x400) */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		uint32_t wid = rd32(buf, 0x20);
+		if (!ws_window_exists(srv, wid)) return reply_simple(c->fd, h, 1000);
+		uint32_t ids[0x400]; int n = wsd_window_surfaces(wid, ids, 0x400); if (n > 0x400) n = 0x400;
+		if (h->msgh_id == SLS_MSG_GetSurfaceCount) return reply_value(c->fd, h, n);
+		uint8_t r[0x28 + 4 * 0x400]; memset(r, 0, 0x28);
+		uint32_t size = 0x28 + 4 * (uint32_t)n;
+		fill_reply_header((mach_msg_header_t *)r, h, size, 0);
+		memcpy(r + 0x18, &WS_NDR, sizeof WS_NDR); wr32(r, 0x24, (uint32_t)n);
+		for (int i = 0; i < n; i++) wr32(r, 0x28 + 4 * i, ids[i]);
+		return ws_ipc_send(c->fd, &(struct iovec){ r, size }, 1, NULL, 0);
+	}
 	case SLS_MSG_GetScreenRectForWindow: {                                         /* wid@0x20; reply 0x34: retcode, x y w h as floats; 1000 for an unknown window */
 		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
 		ws_rect f;

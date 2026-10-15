@@ -212,6 +212,16 @@ int main(void)
 		memset(m, 0, sizeof m); hdr(m, 0x2c, 30443, 0); w32(m, 0x20, 1); a = 1.0f; memcpy(m + 0x28, &a, 4); CHECK(rc(fd, m, 0x2c) == 0);
 		memset(m, 0, sizeof m); hdr(m, 0x24, 30134, 0); float sc = 2.0f; memcpy(m + 0x20, &sc, 4); CHECK(rc(fd, m, 0x24) == 0);
 	}
+	{ /* surfaces of a window: AddSurface, GetSurfaceCount / GetSurfaceList read the window's list, RemoveAllSurfaces empties it */
+		ws_win sw2; CHECK(ws_win_create(c, (ws_rect){ 20, 300, 40, 40 }, 0, &sw2) == 0);
+		uint8_t m[0x24], rep[0x100]; memset(m, 0, sizeof m); hdr(m, 0x24, 30090, 0); w32(m, 0x20, sw2.id);
+		int g = call(fd, m, 0x24, rep, sizeof rep); uint32_t sid = r32(rep, 0x24); CHECK(g == 0x28 && r32(rep, 0x20) == 0 && sid >= 0x100);
+		hdr(m, 0x24, 30102, 0); g = call(fd, m, 0x24, rep, sizeof rep); CHECK(g == 0x28 && r32(rep, 0x24) == 1);
+		hdr(m, 0x24, 30103, 0); g = call(fd, m, 0x24, rep, sizeof rep); CHECK(g == 0x2c && r32(rep, 0x24) == 1 && r32(rep, 0x28) == sid);
+		hdr(m, 0x24, 30092, 0); CHECK(rc(fd, m, 0x24) == 0);
+		hdr(m, 0x24, 30102, 0); g = call(fd, m, 0x24, rep, sizeof rep); CHECK(g == 0x28 && r32(rep, 0x24) == 0);
+		w32(m, 0x20, 0x7ffff); CHECK(rc(fd, m, 0x24) == 1000);
+	}
 	{ /* GetWindowTransform: the identity for a window nothing transformed (recorded), 1000 for an unknown window, -304 for a bad size */
 		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 100, 200, 30, 20 }, 0, &tw) == 0);
 		uint8_t m[0x28], rep[0x80]; memset(m, 0, sizeof m); hdr(m, 0x28, 30034, 0); w32(m, 0x20, tw.id); w32(m, 0x24, 0x7fffff00);
