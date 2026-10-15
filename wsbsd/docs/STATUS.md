@@ -3,7 +3,7 @@
 What it is: `wsd`, a window server and compositor for FreeBSD that speaks the macOS WindowServer (SkyLight) wire protocol, plus a client library, test suites and the packaging around it.
 
 ## Numbers (approximate, from the repository)
-- SkyLight server routines known from the macOS 27 decompile: 728. With a dedicated handler holding real state: 232 (32%). Answered from replies recorded on a real macOS 26 WindowServer: ~280.
+- SkyLight server routines known from the macOS 27 decompile: 728. With a dedicated handler holding real state: 242 (33%). Answered from replies recorded on a real macOS 26 WindowServer: ~280.
   The rest are generated acceptors with the right sizes and a success reply.
 - Differential runs against the real server (macOS 26 runner, `lab/state*.scen`, `lab/spaces*.scen`, `lab/wq*.scen`): state2 146/175 replies equal, state3a 100/111, state4 55/67; the differences are mostly macOS 26 vs 27
   (request sizes, ids the 26 server lacks) and routines the real server serves on another port.
@@ -20,7 +20,7 @@ Product: `make install` / `make package`, rc.d script, `wsstart`, `wsd(8)`.
 ## Not done
 - Routines needing more of the system: menu bar, display wall / HMD, selective sharing, capture streams, session management beyond the single session.
 - Event taps: the registry is real (PlaceTap, PlaceTapOnConnection, Release, Enable, IsEnabled, GetEventTapList, timeout, option; `src/sls_tap.c`), but events are not handed to the tapping process (no tap reply port).
-- Window transforms are rendered by the software compositor (affine about the centre, nearest sample; GL path not yet), CIFilters are stored but not rendered; the cursor scale is.
+- Window transforms are rendered (software and GL, affine about the centre), CIColorInvert too; screen zoom only by the software compositor; other CIFilters are stored, not rendered; the cursor scale is.
 - KMS / GPU paths compile and run in a VM (software and Mesa llvmpipe) but have never run on real hardware.
 - No Quartz (CoreGraphics / Core Animation) and no AppKit of Apple: no Cocoa application has run on it; the Terminal probe shows what is missing (`../terminal/docs/GAPS.md`).
 - Version drift: ids and request sizes follow macOS 27, the recorded behaviour comes from macOS 26 (no macOS 27 runner exists yet).
