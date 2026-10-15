@@ -57,15 +57,19 @@ echo DIAG; pkg info gnustep-gui gnustep-base gnustep-make | grep -i '^Name\|^Ver
 cd "$WS"
 cc -o hello appkit/hello.m $(gnustep-config --objc-flags) $(gnustep-config --gui-libs) 2>&1 | tail -15
 cc -O1 -std=c99 -D_DEFAULT_SOURCE -Iinclude -o wsshot tools/wsshot.c /tmp/wsc/libwsclient.a -lm
+cc -O1 -std=c99 -D_DEFAULT_SOURCE -Iinclude -o wsclick tools/wsclick.c /tmp/wsc/libwsclient.a -lm
 gmake wsd 2>&1 | tail -2
 export WS_SOCKET=/tmp/wsd-appkit.sock
 ./wsd -t -g 1280x800 >/tmp/wsd.log 2>&1 &
 WP=$!
 sleep 1
-WSD_DEBUG=1 timeout 30 ./hello 8 >/tmp/hello.log 2>&1 &
+WSD_DEBUG=1 timeout 30 ./hello 12 >/tmp/hello.log 2>&1 &
 HP=$!
 sleep 4
 ./wsshot appkit.ppm; python3 tools/ppm2png.py appkit.ppm appkit.png
+./wsclick 180 554
+sleep 1
+./wsshot appkit-click.ppm; python3 tools/ppm2png.py appkit-click.ppm appkit-click.png
 wait $HP
 kill $WP 2>/dev/null
 tail -40 /tmp/hello.log; tail -5 /tmp/wsd.log

@@ -132,5 +132,7 @@ jobs:
         if: always()
         with:
           name: freebsd-appkit-screenshot
-          path: wsbsd/appkit.png
+          path: |
+            wsbsd/appkit.png
+            wsbsd/appkit-click.png
           if-no-files-found: warn
