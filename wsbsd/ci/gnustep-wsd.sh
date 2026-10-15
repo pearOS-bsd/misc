@@ -2,7 +2,7 @@
 # AppKit (GNUstep gui) on wsd: builds libs-back with the "wsd" display server (appkit/back-wsd) in place of the headless one, then runs
 # an AppKit program against a live wsd and takes a screenshot of the screen.
 export IGNORE_OSVERSION=yes
-pkg install -y gnustep-sudoku gnustep-back gnustep-make gnustep-base gnustep-gui cairo freetype2 fontconfig git png jpeg-turbo tiff pkgconf gmake lcms2 bzip2 icu libffi dejavu autoconf libdispatch python3 >/dev/null 2>&1 || true
+pkg install -y neofetch gnustep-sudoku gnustep-back gnustep-make gnustep-base gnustep-gui cairo freetype2 fontconfig git png jpeg-turbo tiff pkgconf gmake lcms2 bzip2 icu libffi dejavu autoconf libdispatch python3 >/dev/null 2>&1 || true
 cat > /usr/local/libdata/pkgconfig/bzip2.pc <<EOP
 Name: bzip2
 Description: bzip2
@@ -120,13 +120,13 @@ if [ -d "$TD" ]; then
 	(cd "$TD" && make test 2>&1 | tail -2 && cc -o Terminal-gnustep src/vt.c src/pty.c src/TermView.m src/main.m $(gnustep-config --objc-flags) $(gnustep-config --gui-libs) -lutil 2>&1 | grep -E "error|undefined" | head -15)
 	if [ -x "$TD/Terminal-gnustep" ]; then
 		cat > /tmp/term-input.txt <<'EOT'
-echo hello from the shell; printf '\033[1;31mred\033[0m \033[38;5;33mblue\033[0m\n'; ls /
+echo hello from the shell; printf '\033[1;31mred\033[0m \033[38;5;33mblue\033[0m\n'; clear; neofetch
 EOT
 		rm -f /tmp/terminal-dump.txt
-		(TERMINAL_EXIT_AFTER=20 TERMINAL_DUMP=/tmp/terminal-dump.txt TERMINAL_INITIAL_INPUT="$(cat /tmp/term-input.txt)
+		(TERMINAL_COLS=110 TERMINAL_ROWS=30 TERMINAL_EXIT_AFTER=26 TERMINAL_DUMP=/tmp/terminal-dump.txt TERMINAL_INITIAL_INPUT="$(cat /tmp/term-input.txt)
 " WSD_DEBUG=1 timeout 40 lldb -b -o 'run' -o 'bt' -o 'quit' -- "$TD/Terminal-gnustep" >/tmp/terminal.log 2>&1) &
 		TP=$!
-		sleep 10
+		sleep 14
 		{ echo "TERMINAL: screenshot"; ./wsshot terminal.ppm; echo "wsshot rc=$?"; python3 tools/ppm2png.py terminal.ppm terminal.png; echo "ppm2png rc=$?"; } >> /tmp/terminal-ci.txt 2>&1
 		./wskey 0 0 8; sleep 1
 		./wsshot terminal-key.ppm; python3 tools/ppm2png.py terminal-key.ppm terminal-key.png
@@ -134,7 +134,7 @@ EOT
 		i=0; while kill -0 $TP 2>/dev/null && [ $i -lt 30 ]; do sleep 1; i=$((i+1)); done          # the application quits itself after TERMINAL_EXIT_AFTER seconds, writing its screen text
 		kill $TP 2>/dev/null; pkill -f Terminal-gnustep 2>/dev/null
 		{ echo "TERMINAL SCREEN TEXT:"; cat /tmp/terminal-dump.txt 2>&1 | head -30; } >> /tmp/terminal-ci.txt 2>&1
-		if grep -q 'hello from the shell' /tmp/terminal-dump.txt 2>/dev/null && grep -q '^red blue' /tmp/terminal-dump.txt; then TERMINAL_OK=1; else TERMINAL_OK=0; fi
+		if grep -q 'Kernel' /tmp/terminal-dump.txt 2>/dev/null && grep -q 'Uptime' /tmp/terminal-dump.txt; then TERMINAL_OK=1; else TERMINAL_OK=0; fi
 		{ echo "TERMINAL LOG:"; grep -v '^(lldb)' /tmp/terminal.log | grep -v 'wsd-back: \(titlewindow\|setinput\|flush\|commit\|order\|ws_win\|receivedEvent\|event type\)' | tail -40; } >> /tmp/terminal-ci.txt 2>&1
 	fi
 fi
@@ -142,4 +142,4 @@ kill $WP 2>/dev/null
 grep -v '^(lldb)\|warning\|wsd-back: \(titlewindow\|setinput\|flush\|commit\|order\|ws_win\)' /tmp/hello.log | tail -40; tail -5 /tmp/wsd.log
 ls -l appkit.png
 echo '=== TERMINAL (terminal/) ==='; cat /tmp/terminal-ci.txt 2>/dev/null
-[ "${TERMINAL_OK:-1}" = 1 ] || { echo 'TERMINAL CHECK FAILED: the shell output is not on the terminal screen'; exit 1; }
+[ "${TERMINAL_OK:-1}" = 1 ] || { echo 'TERMINAL CHECK FAILED: neofetch output is not on the terminal screen'; exit 1; }
