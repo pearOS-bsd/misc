@@ -151,6 +151,11 @@ int ws_cursor_visible(const ws_server *);
 void ws_server_set_cursor_image(ws_server *, const ws_surface *img, int hot_x, int hot_y);   /* copies; NULL restores the default arrow */
 void ws_compose_scene(ws_server *, ws_surface *screen);                  /* windows only, no cursor */
 void ws_server_desktop_color(ws_server *, float rgb[3]);
+void ws_blur_region(ws_surface *img, ws_rect r, float sigma);            /* gaussian blur in place (premultiplied BGRA, clamped edges) */
+/* Background blur behind a window (SetWindowBackgroundBlurRadius): radius in points (0..60), the compositor blurs what is behind the window before drawing it. */
+int ws_set_window_blur(ws_server *, ws_wid, int radius, int flag, float amount);
+int ws_window_blur(ws_server *, ws_wid, int *radius, int *flag, float *amount);
+int ws_server_has_blur(ws_server *);                                     /* any on-screen window with a blur: such frames are composed in software */
 
 /* Backends. headless writes PPM; drm (FreeBSD KMS) comes next. */
 /* Shadow generator. Model recovered from SkyLight's ShadowVerticalBlurRGBA shader (see docs/DESIGN.md).
