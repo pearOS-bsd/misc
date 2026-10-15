@@ -1,0 +1,8 @@
+new_window a 100 200 300 150
+port slsserver
+raw 34003 ndr u32:0 u32:0
+raw 34003 ndr u32:0 u32:1
+port conn
+raw 30389
+raw 30456
+raw 30368 ndr u32:0 u32:0

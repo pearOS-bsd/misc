@@ -54,6 +54,12 @@ static void raw(int id, char **tok, int nt)
 	printf("raw %d reqsize=%zu -> reply_id=%d bits=%08x size=%u hex=", id, n, r->msgh_id, r->msgh_bits, r->msgh_size);
 	for (uint32_t i = 0x18; i < r->msgh_size && i < 0x600; i++) printf("%02x", rep[i]);
 	printf("\n");
+	if ((r->msgh_bits & MACH_MSGH_BITS_COMPLEX) && r->msgh_size >= 0x2c && *(uint32_t *)(rep + 0x18) >= 1 && rep[0x27] == 1) {   /* out-of-line data: show it */
+		uint64_t a; memcpy(&a, rep + 0x1c, 8); uint32_t sz = *(uint32_t *)(rep + 0x28);
+		printf("ool size=%u hex=", sz);
+		for (uint32_t i = 0; i < sz && i < 0x1000; i++) printf("%02x", ((uint8_t *)(uintptr_t)a)[i]);
+		printf("\n");
+	}
 	mach_port_mod_refs(mach_task_self(), reply, MACH_PORT_RIGHT_RECEIVE, -1);
 }
 
@@ -88,10 +94,10 @@ int main(int argc, char **argv)
 		} else if (!strcmp(tok[0], "level") && nt >= 3) printf("# level err=%d\n", setLevel(cid, wid_of(tok[1]), atoi(tok[2])));
 		else if (!strcmp(tok[0], "port") && nt >= 2) {
 			if (!strcmp(tok[1], "conn")) srvport = portbyid(cid);
-			else if (!strcmp(tok[1], "server") || !strcmp(tok[1], "event")) {
+			else if (!strcmp(tok[1], "slsserver") || !strcmp(tok[1], "server") || !strcmp(tok[1], "event")) {
 				const char *cands[] = { "SLSServerPort", "CGSServerPort", "CGSEventServerPort", "SLSEventServerPort", 0 };
 				mach_port_t (*fn)(void) = 0; const char *used = "";
-				for (int k = 0; cands[k]; k++) { if (!!strcmp(tok[1], "event") != !strstr(cands[k], "Event") && (fn = dlsym(RTLD_DEFAULT, cands[k]))) { used = cands[k]; break; } }
+				for (int k = 0; cands[k]; k++) { if (!strcmp(tok[1], "slsserver") ? (k == 0 && (fn = dlsym(RTLD_DEFAULT, cands[k]))) : (!!strcmp(tok[1], "event") != !strstr(cands[k], "Event") && (fn = dlsym(RTLD_DEFAULT, cands[k])))) { used = cands[k]; break; } }
 				srvport = fn ? fn() : 0; printf("# port %s via %s = %u\n", tok[1], used, srvport);
 			}
 			else { mach_port_t p = 0; kern_return_t kr = bootstrap_look_up(bootstrap_port, !strcmp(tok[1], "session") ? "com.apple.windowserver.session" : !strcmp(tok[1], "root") ? "com.apple.windowserver" : "com.apple.windowserver.active", &p); srvport = p; printf("# port %s kr=%d port=%u\n", tok[1], kr, p); }
