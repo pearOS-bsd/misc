@@ -252,6 +252,13 @@ int sls_space_dispatch(conn *c, const uint8_t *buf, size_t len)
 		double w = wsd_screen_w, hh = wsd_screen_h; memcpy(r + 0x34, &w, 8); memcpy(r + 0x3c, &hh, 8);
 		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
 	}
+	case SLS_MSG_SpaceSetAlpha: {                                                  /* id u64@0x20, alpha float@0x28, size 0x2c; applied to a known space, always 0 */
+		if (!simple_ok(h, len, 0x2c)) return reply_simple(c->fd, h, -304);
+		uint64_t id; memcpy(&id, buf + 0x20, 8);
+		int i = sp_find(id);
+		if (i >= 0) { float a; memcpy(&a, buf + 0x28, 4); if (a != a) a = 1.0f; sp[i].alpha = a < 0 ? 0 : a > 1 ? 1 : a; }
+		return reply_simple(c->fd, h, 0);
+	}
 	case SLS_MSG_SpaceGetAlpha: {                                                  /* id u64@0x20, size 0x28; reply value: the alpha as a float; 1010 for an unknown space */
 		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
 		uint64_t id; memcpy(&id, buf + 0x20, 8);
