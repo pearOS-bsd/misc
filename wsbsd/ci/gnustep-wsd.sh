@@ -63,7 +63,7 @@ export WS_SOCKET=/tmp/wsd-appkit.sock
 ./wsd -t -g 1280x800 >/tmp/wsd.log 2>&1 &
 WP=$!
 sleep 1
-WSD_DEBUG=1 timeout 30 ./hello 12 >/tmp/hello.log 2>&1 &
+(WSD_DEBUG=1 timeout 60 lldb -b -o 'run 12' -o 'bt' -o 'quit' -- ./hello >/tmp/hello.log 2>&1) &
 HP=$!
 sleep 4
 ./wsshot appkit.ppm; python3 tools/ppm2png.py appkit.ppm appkit.png
@@ -72,5 +72,5 @@ sleep 1
 ./wsshot appkit-click.ppm; python3 tools/ppm2png.py appkit-click.ppm appkit-click.png
 wait $HP
 kill $WP 2>/dev/null
-tail -40 /tmp/hello.log; tail -5 /tmp/wsd.log
+grep -v '^(lldb)\|warning' /tmp/hello.log | tail -60; tail -5 /tmp/wsd.log
 ls -l appkit.png
