@@ -71,6 +71,10 @@ int ws_post_event_record(ws_conn *, const uint8_t *rec, size_t n);   /* PostEven
 int ws_post_event_to_pid(ws_conn *, int pid, const uint8_t *rec, size_t n);
 int ws_post_event_to_psn(ws_conn *, uint32_t psn_lo, uint32_t psn_hi, const uint8_t *rec, size_t n);
 int ws_cursor_position(ws_conn *, int *x, int *y);            /* the pointer's position (private call) */
+/* notifications pushed on the event channel (PostNotificationToConnection / PostBroadcastNotification) */
+int ws_conn_next_notification(ws_conn *, int timeout_ms, uint32_t *type, uint8_t *data, uint32_t *len);   /* data: at least 256 bytes */
+int ws_notification_post(ws_conn *, uint32_t to_cid, uint32_t type, const uint8_t *data, uint32_t n);
+int ws_notification_broadcast(ws_conn *, uint32_t type, const uint8_t *data, uint32_t n);
 int ws_post_mouse_event(ws_conn *, int type, float x, float y, uint32_t flags, int click_state, int button);
 int ws_post_key_event(ws_conn *, int down, int keycode, uint32_t flags);                       /* GetCursorScale (30135) */                                      /* private: this connection's id */
 int ws_win_count(ws_conn *, int connection_id);                 /* GetWindowCount (30063) */

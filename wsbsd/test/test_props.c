@@ -355,6 +355,25 @@ int main(void)
 		CHECK(!again);                                                                    /* removed: no more events */
 	}
 
+	/* notifications: ToConnection reaches the target, Broadcast only the connections that registered the type; events and notifications share the channel */
+	{
+		uint32_t type = 0, n = 0; uint8_t d[256]; ws_event e; while (ws_conn_next_pushed_event(c, 0, &e)) {}
+		CHECK(ws_notification_post(c, (uint32_t)ws_conn_id(c), 0x77, (const uint8_t *)"hello", 5) == 0);
+		CHECK(ws_conn_next_notification(c, 500, &type, d, &n) == 1 && type == 0x77 && n == 5 && memcmp(d, "hello", 5) == 0);
+		CHECK(ws_notification_post(c, 0x7fffff, 0x77, (const uint8_t *)"x", 1) == 0 && ws_conn_next_notification(c, 100, &type, d, &n) == 0);            /* unknown target: accepted, nothing delivered */
+		uint8_t m[0x30]; memset(m, 0, sizeof m); hdr(m, 0x28, SLS_MSG_SetConnectionNotifyInterests, 0); w32(m, 0x20, 1); w32(m, 0x24, 0x88); CHECK(rc(fd, m, 0x28) == 0);
+		CHECK(ws_notification_broadcast(c, 0x99, (const uint8_t *)"no", 2) == 0 && ws_conn_next_notification(c, 100, &type, d, &n) == 0);                       /* not registered */
+		CHECK(ws_notification_broadcast(c, 0x88, (const uint8_t *)"yes", 3) == 0 && ws_conn_next_notification(c, 500, &type, d, &n) == 1 && type == 0x88 && n == 3 && memcmp(d, "yes", 3) == 0);
+		ws_win nw; CHECK(ws_win_create(c, (ws_rect){ 300, 200, 100, 100 }, 0, &nw) == 0 && ws_win_order(c, &nw, 1, 0) == 0); ws_win_set_event_mask(c, &nw, -1);
+		while (ws_conn_next_pushed_event(c, 20, &e)) {}
+		ws_post_mouse_event(c, 5, 321, 222, 0, 0, 0);                                                                                                       /* events still arrive after notifications */
+		CHECK(ws_notification_post(c, (uint32_t)ws_conn_id(c), 0x55, (const uint8_t *)"z", 1) == 0);
+		int got_move = 0; for (int i = 0; i < 6 && ws_conn_next_pushed_event(c, 100, &e); i++) if (e.type == WS_EV_MOUSE_MOVE) got_move = 1;
+		CHECK(got_move && ws_conn_next_notification(c, 100, &type, d, &n) == 1 && type == 0x55);
+		ws_win_order(c, &nw, 0, 0);
+		memset(m, 0, sizeof m); hdr(m, 0x24, SLS_MSG_SetConnectionNotifyInterests, 0); w32(m, 0x20, 0); CHECK(rc(fd, m, 0x24) == 0);
+	}
+
 	/* SetWindowEventShape: events go where the event shape is, not where the window is drawn; window regions are named values; BlockWindowOrdering */
 	{
 		ws_win ew; CHECK(ws_win_create(c, (ws_rect){ 600, 400, 40, 40 }, 0, &ew) == 0 && ws_win_order(c, &ew, 1, 0) == 0);
