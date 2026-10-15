@@ -30,7 +30,7 @@ export WS_SOCKET=/tmp/wsd-min.sock
 ./wsd -t -g 1024x700 >/tmp/wsd-min.log 2>&1 &
 MP=$!
 sleep 1
-echo "== opal_min plain variants:"; for v in 0 6; do LD_LIBRARY_PATH=$LDP ./opal_min_plain $v 2>&1 | tail -4; done
+echo "== opal_min plain variants:"; for v in 0 6 10 11 12 13 14; do LD_LIBRARY_PATH=$LDP ./opal_min_plain $v 2>&1 | tail -2; done
 cc -O1 -g -Iinclude $OBJC_FLAGS -I/usr/local/GNUstep/System/Library/Headers -o opal_demo_here demo/opal_demo.m $CSRC -lopal -lgnustep-corebase $OBJC_LIBS -lcairo -lm 2>&1 | grep -E "error" | head -3
 echo "== opal_demo in this job (it works in the opal job):"; LD_LIBRARY_PATH=$LDP ./opal_demo_here /tmp/opal-here.ppm 2>&1 | grep -E "ctx data|wrote" | head -3
 echo "== LD path used: $LDP"; ldd ./opal_min_plain 2>/dev/null | grep -E "opal|corebase|cairo|base" | head -6
