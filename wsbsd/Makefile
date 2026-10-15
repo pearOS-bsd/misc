@@ -26,6 +26,9 @@ test_golden: src/ipc.c test/test_golden.c $(HDRS)
 test_props: src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_props.c $(HDRS)
 	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_props.c $(EXTRA_LIBS) $(LDLIBS)
 
+test_shim: shim/skylight.c src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_shim.c test/shim_api.inc include/SkyLight.h $(HDRS)
+	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ shim/skylight.c src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_shim.c $(EXTRA_LIBS) $(LDLIBS)
+
 test_robust: src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_robust.c $(HDRS)
 	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_robust.c $(EXTRA_LIBS) $(LDLIBS)
 
@@ -62,7 +65,7 @@ gl: clean
 full: clean
 	$(MAKE) wsd test_window EXTRA_SRC="src/backend_kms.c src/compositor_gl.c" EXTRA_CFLAGS="-DWS_KMS -DWS_GL -DWS_GBM -DWS_EGL `pkg-config --cflags libdrm egl gbm glesv2`" EXTRA_LIBS="`pkg-config --libs libdrm egl gbm glesv2`"
 
-check: test_compose test_region test_evrec test_buffer test_diff wsd test_wire test_interactive test_robust test_golden test_props
+check: test_compose test_region test_evrec test_buffer test_diff wsd test_wire test_interactive test_robust test_golden test_props test_shim
 	./test_compose
 	./test_region
 	./test_evrec
@@ -73,10 +76,11 @@ check: test_compose test_region test_evrec test_buffer test_diff wsd test_wire t
 	sh test/run_robust.sh
 	sh test/run_golden.sh
 	sh test/run_one.sh test_props
+	sh test/run_shim.sh
 
 # start wsd, draw the test window through the protocol, save window.ppm (window.png on macOS), stop wsd
 demo: wsd test_window
 	OUT="$(OUT)" sh test/run_demo.sh
 
 clean:
-	rm -f wsd test_window test_interactive test_robust test_golden test_props test_compose test_region test_wire test_evrec test_buffer test_diff out.ppm window.ppm window.png
+	rm -f wsd test_window test_interactive test_robust test_golden test_props test_shim test_compose test_region test_wire test_evrec test_buffer test_diff out.ppm window.ppm window.png

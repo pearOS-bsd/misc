@@ -19,6 +19,7 @@ int ws_win_shadow(ws_conn *, ws_win *, int corner_radius, int on);
 int ws_win_flush(ws_conn *, ws_win *);
 int ws_win_release(ws_conn *, ws_win *);
 ws_wid ws_win_find(ws_conn *, int x, int y);                   /* FindWindow (30014) */
+int ws_win_set_level(ws_conn *, ws_win *, int level);            /* SetWindowLevel (30012) */
 int ws_win_get_level(ws_conn *, ws_win *, int *level);          /* GetWindowLevel (30013) */
 int ws_win_get_alpha(ws_conn *, ws_win *, float *alpha);        /* GetWindowAlpha (30042) */
 int ws_win_get_bounds(ws_conn *, ws_win *, ws_rect *r);         /* GetWindowFrameBounds (30060) */
