@@ -1,0 +1,11 @@
+# space getters for the default space (id 1)
+raw 30330 ndr u32:1 u32:0
+raw 30339 ndr u32:1 u32:0
+raw 30347 ndr u32:1 u32:0
+raw 30343 ndr u32:1 u32:0
+raw 30345 ndr u32:1 u32:0
+raw 30372 ndr u32:1 u32:0
+raw 30362 ndr u32:1 u32:0
+raw 30412 ndr u32:1 u32:0
+raw 30333 ndr u32:1 u32:0
+raw 30330 ndr u32:77 u32:0
