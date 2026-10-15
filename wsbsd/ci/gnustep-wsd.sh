@@ -50,6 +50,7 @@ sed -i '' 's/cairo_OBJC_FILES += Win32CairoSurface.m Win32CairoGState.m/cairo_OB
 ./configure --enable-server=headless --enable-graphics=cairo 2>&1 | tail -5
 gmake -j2 2>&1 | grep -E "error|Error|warning: implicit|undefined" | head -30
 gmake install 2>&1 | tail -3
+echo DIAG; ls Source/headless/obj/*/ 2>&1 | head -20; nm -D /usr/local/GNUstep/Local/Library/Bundles/libgnustep-back-032.bundle/libgnustep-back-032 | grep -c ws_; grep -n wsc_ Source/headless/GNUmakefile.preamble | cut -c1-150; echo ENDDIAG
 
 cd "$WS"
 cc -o hello appkit/hello.m $(gnustep-config --objc-flags) $(gnustep-config --gui-libs) 2>&1 | tail -15
