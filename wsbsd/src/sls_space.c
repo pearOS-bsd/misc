@@ -125,11 +125,11 @@ int sls_space_dispatch(conn *c, const uint8_t *buf, size_t len)
 		free(r);
 		return rc;
 	}
-	case SLS_MSG_CopySpaces: {                                                     /* mask@0x20, size 0x24; reply complex 0x38: OOL array of space ids (u64), size = 8 * count@0x34. Bit 0 selects the shown spaces, bit 1 the hidden ones (bit 2, the system spaces, adds none here) */
+	case SLS_MSG_CopySpaces: {                                                     /* mask@0x20, size 0x24; reply complex 0x38: OOL array of space ids (u64), size = 8 * count@0x34. Bit 2 selects the user spaces, then bit 0 the shown one and bit 1 the hidden ones (7 all, 5 current, 6 others); bits 0 / 1 alone select system spaces, none here (recorded on a macOS runner: masks 1 and 2 give nothing) */
 		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
 		uint32_t mask = rd32(buf, 0x20); uint64_t ids[MAXSP]; uint32_t n = 0;
 		sp_init();
-		for (int i = 0; i < MAXSP; i++) if (sp[i].used && ((sp[i].shown && (mask & 1)) || (!sp[i].shown && (mask & 2)))) ids[n++] = sp[i].id;
+		for (int i = 0; i < MAXSP; i++) if (sp[i].used && (mask & 4) && ((sp[i].shown && (mask & 1)) || (!sp[i].shown && (mask & 2)))) ids[n++] = sp[i].id;
 		uint8_t m[0x38]; memset(m, 0, sizeof m);
 		fill_reply_header((mach_msg_header_t *)m, h, sizeof m, 1);
 		wr32(m, 0x18, 1); m[0x24] = 1; m[0x25] = 1; m[0x27] = 1; wr32(m, 0x28, n * 8); memcpy(m + 0x2c, &WS_NDR, 8); wr32(m, 0x34, n);
