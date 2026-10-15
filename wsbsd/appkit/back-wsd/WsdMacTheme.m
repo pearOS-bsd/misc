@@ -120,9 +120,11 @@ static NSGradient *grad(int r0, int g0, int b0, int r1, int g1, int b1, int r2, 
 			CGFloat x = 82.0;
 			[[window title] drawInRect: NSMakeRect(x, b.size.height - TB + 8.0, b.size.width - x - 16.0, 16.0) withAttributes: at];
 		}
-		if (hasCloseButton) [self drawCircle: 0 key: key dark: dark];
-		if (hasMiniaturizeButton) [self drawCircle: 1 key: key dark: dark];
-		if (isTitled && hasResizeBar) [self drawCircle: 2 key: key dark: dark];      /* the zoom button */
+		if (isTitled) {                                                                  /* a button the window lacks is drawn disabled (grey), as on macOS */
+			[self drawCircle: 0 key: key && hasCloseButton dark: dark];
+			[self drawCircle: 1 key: key && hasMiniaturizeButton dark: dark];
+			[self drawCircle: 2 key: key && hasResizeBar dark: dark];                    /* the zoom button */
+		}
 	}
 }
 
