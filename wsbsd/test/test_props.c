@@ -388,7 +388,7 @@ int main(void)
 		memset(m, 0, sizeof m); hdr(m, 0x24, 30208, 0); w32(m, 0x20, 0x98000e0); CHECK(rc(fd, m, 0x24) == 0);
 		memset(m, 0, sizeof m); hdr(m, 0x30, 30119, 0); w32(m, 0x20, 0x99); w32(m, 0x24, 0x99); w32(m, 0x28, 0x1e); CHECK(rc(fd, m, 0x30) == (int)(uint32_t)-50);   /* no process record on this connection */
 		memset(m, 0, sizeof m); hdr(m, 0x30, 30118, 0); w32(m, 0x20, 1); w32(m, 0x24, 2); CHECK(rc(fd, m, 0x30) == (int)(uint32_t)-600);                          /* no such process */
-		memset(m, 0, sizeof m); hdr(m, 0x24, 30276, 0); w32(m, 0x20, hw.id); got = call(fd, m, 0x24, rep, sizeof rep); CHECK(got == 0x30 && r32(rep, 0x20) == 0 && r32(rep, 0x24) == 0x30007);
+		memset(m, 0, sizeof m); hdr(m, 0x24, 30276, 0); w32(m, 0x20, hw.id); got = call(fd, m, 0x24, rep, sizeof rep); CHECK(got == 0x30 && r32(rep, 0x20) == 0 && r32(rep, 0x24) == 1 && r32(rep, 0x28) == 0x30006 && r32(rep, 0x2c) == 0x10000);
 		w32(m, 0x20, 0x7ffff); CHECK(rc(fd, m, 0x24) == 0x3e9);
 	}
 
