@@ -150,6 +150,17 @@ int main(void)
 				CHECK(rc_of(cfd, ca, 0x50, SLS_MSG_CreateApplication + 100) == 0);
 				CHECK(rc_of(cfd, ca, 0x50, SLS_MSG_CreateApplication + 100) == -50);            /* a second record for the same connection */
 			}
+			{ /* special key overrides: the process record is the caller's own, key numbers 0..6 */
+				uint8_t ok[0x2c]; memset(ok, 0, sizeof ok); hdr((mach_msg_header_t *)ok, 0x2c, SLS_MSG_OverrideKeyRegistration, 0); memcpy(ok + 0x18, &WS_NDR, 8);
+				wr32(ok, 0x20, 0); wr32(ok, 0x24, 0x77); wr32(ok, 0x28, 3);                       /* the PSN CreateApplication recorded */
+				CHECK(rc_of(cfd, ok, 0x2c, SLS_MSG_OverrideKeyRegistration + 100) == 0);
+				wr32(ok, 0x28, 9); CHECK(rc_of(cfd, ok, 0x2c, SLS_MSG_OverrideKeyRegistration + 100) == -50);
+				wr32(ok, 0x24, 0x7777); wr32(ok, 0x28, 3); CHECK(rc_of(cfd, ok, 0x2c, SLS_MSG_OverrideKeyRegistration + 100) == -600);        /* no such process */
+				wr32(ok, 0x24, 0x77);
+				hdr((mach_msg_header_t *)ok, 0x2c, SLS_MSG_UnoverrideKeyRegistration, 0);
+				CHECK(rc_of(cfd, ok, 0x2c, SLS_MSG_UnoverrideKeyRegistration + 100) == 0);
+				CHECK(rc_of(cfd, ok, 0x2c, SLS_MSG_UnoverrideKeyRegistration + 100) == 0x3f2);                                              /* not overridden any more */
+			}
 			sls_header_only_req ho; hdr(&ho, sizeof ho, SLS_MSG_GetKeyFocusProcess, 0);
 			CHECK(xchg(cfd, &ho, sizeof ho, &pr2, sizeof pr2, NULL, NULL) == (int)sizeof(sls_simple_reply) && ((sls_simple_reply *)&pr2)->retcode == -600);   /* nobody has focus */
 			hdr(&kq.h, sizeof kq, SLS_MSG_StealKeyFocusReturningID, 0); kq.ndr = WS_NDR; kq.wid = 0;
