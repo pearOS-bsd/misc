@@ -2,7 +2,7 @@
 # AppKit (GNUstep gui) on wsd: builds libs-back with the "wsd" display server (appkit/back-wsd) in place of the headless one, then runs
 # an AppKit program against a live wsd and takes a screenshot of the screen.
 export IGNORE_OSVERSION=yes
-pkg install -y gnustep-make gnustep-base gnustep-gui cairo freetype2 fontconfig git png jpeg-turbo tiff pkgconf gmake lcms2 bzip2 icu libffi dejavu autoconf libdispatch python3 >/dev/null 2>&1 || true
+pkg install -y gnustep-sudoku gnustep-back gnustep-make gnustep-base gnustep-gui cairo freetype2 fontconfig git png jpeg-turbo tiff pkgconf gmake lcms2 bzip2 icu libffi dejavu autoconf libdispatch python3 >/dev/null 2>&1 || true
 cat > /usr/local/libdata/pkgconfig/bzip2.pc <<EOP
 Name: bzip2
 Description: bzip2
@@ -78,6 +78,18 @@ sleep 1
 i=0; until grep -q 'frame after resize' /tmp/hello.log || [ $i -ge 30 ]; do sleep 1; i=$((i+1)); done; sleep 1
 ./wsshot appkit-resize.ppm; python3 tools/ppm2png.py appkit-resize.ppm appkit-resize.png
 wait $HP
+# a real, unmodified GNUstep application from the package repository
+APP=$(find /usr/local/GNUstep -maxdepth 4 -name 'Sudoku.app' 2>/dev/null | head -1)
+echo "sudoku app: $APP"
+if [ -n "$APP" ]; then
+	BIN="$APP/Sudoku"
+	(WSD_DEBUG=1 timeout 40 lldb -b -o 'run' -o 'bt' -o 'quit' -- "$BIN" >/tmp/sudoku.log 2>&1) &
+	SP=$!
+	sleep 12
+	./wsshot sudoku.ppm; python3 tools/ppm2png.py sudoku.ppm sudoku.png
+	kill $SP 2>/dev/null; pkill -f Sudoku 2>/dev/null
+	grep -v '^(lldb)\|warning\|wsd-back: \(titlewindow\|setinput\|flush\|commit\|order\|ws_win\)' /tmp/sudoku.log | tail -30
+fi
 kill $WP 2>/dev/null
 grep -v '^(lldb)\|warning\|wsd-back: \(titlewindow\|setinput\|flush\|commit\|order\|ws_win\)' /tmp/hello.log | tail -40; tail -5 /tmp/wsd.log
 ls -l appkit.png
