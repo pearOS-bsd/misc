@@ -6,6 +6,7 @@
 #include "ws_ipc.h"
 #include "ws_region.h"
 #include "ws_evrec.h"
+#include "ws_input.h"
 #include "ws_buffer.h"
 #ifdef WS_GL
 #include "ws_gl.h"
@@ -39,6 +40,7 @@ static int running = 1;
 int wsd_dirty;
 #define dirty wsd_dirty
 static void cursors_owner_cleanup(uint32_t owner);
+int wsd_vnc_read(ws_server *srv, ws_input *in, int sw, int sh, const char *name);
 static int test_mode;          /* -t: enables the private test requests (screenshot to a file, input injection, quit) */
 static uint8_t rbuf[WS_IPC_RECV_CAP];        /* receive buffer: requests are parsed in place, nothing is allocated per message */
 
@@ -1086,7 +1088,7 @@ static conn *conn_by_fd(int fd) { for (int i = 0; i < MAXCONN; i++) if (conns[i]
 int main(int argc, char **argv)
 {
 	const char *path = getenv("WS_SOCKET") ? getenv("WS_SOCKET") : DEFAULT_SOCKET;
-	int w = 1280, h = 800, sandbox = 0;
+	int w = 1280, h = 800, sandbox = 0, vnc_port = 0, vnc_ls = -1; ws_input vin;
 	const char *backend = "headless", *card = "/dev/dri/card0", *renderer = "sw", *render_node = "/dev/dri/renderD128";
 	for (int i = 1; i < argc; i++) {
 		if (!strcmp(argv[i], "-s") && i + 1 < argc) path = argv[++i];
@@ -1097,6 +1099,7 @@ int main(int argc, char **argv)
 		else if (!strcmp(argv[i], "-n") && i + 1 < argc) render_node = argv[++i];
 		else if (!strcmp(argv[i], "-t")) test_mode = 1;
 		else if (!strcmp(argv[i], "-S")) sandbox = 1;
+		else if (!strcmp(argv[i], "-V") && i + 1 < argc) vnc_port = atoi(argv[++i]);
 	}
 #ifdef WS_KMS
 	ws_kms *kms = NULL;
@@ -1153,6 +1156,14 @@ int main(int argc, char **argv)
 		if (!vt_ok) fprintf(stderr, "wsd: not on a vt(4) console: no console switching (input stays grabbed)\n");
 	}
 #endif
+	if (vnc_port > 0) {                                                            /* -V port: a VNC viewer on 127.0.0.1:port (WSD_VNC_PASSWORD, at most 8 characters, enables password authentication) */
+		const char *pw = getenv("WSD_VNC_PASSWORD");
+		vnc_ls = wsd_vnc_listen(vnc_port, pw);
+		if (vnc_ls < 0) { perror("wsd: vnc listen"); return 1; }
+		EV_SET(&ev, vnc_ls, EVFILT_READ, EV_ADD, 0, 0, NULL); kevent(kq, &ev, 1, NULL, 0, NULL);
+		ws_input_init(&vin, w, h); vin.accel = 0;
+		fprintf(stderr, "wsd: VNC on 127.0.0.1:%d%s\n", vnc_port, pw && *pw ? " (password)" : " (no password)");
+	}
 	fprintf(stderr, "wsd: %dx%d, backend %s, listening on %s\n", w, h, backend, path);
 	if (sandbox) { if (wsd_sandbox_enter(ls, kq) == 0) fprintf(stderr, "wsd: capability mode\n"); else if (sandbox == 2) return 1; }
 
@@ -1164,10 +1175,13 @@ int main(int argc, char **argv)
 #else
 		(void)frame;
 #endif
+		if (vnc_ls >= 0 && wsd_vnc_connected()) to = &frame;                      /* a viewer is attached: wake up to send updates */
 		int n = kevent(kq, NULL, 0, out, 16, to);
 		if (n < 0) { if (errno == EINTR) continue; perror("wsd: kevent"); break; }
 		for (int i = 0; i < n; i++) {
 			int fd = (int)out[i].ident;
+			if (vnc_ls >= 0 && out[i].filter == EVFILT_READ && fd == vnc_ls) { int cfd = wsd_vnc_accept(); if (cfd >= 0) { EV_SET(&ev, cfd, EVFILT_READ, EV_ADD, 0, 0, NULL); kevent(kq, &ev, 1, NULL, 0, NULL); } continue; }
+			if (vnc_ls >= 0 && out[i].filter == EVFILT_READ && fd == wsd_vnc_client_fd()) { wsd_vnc_read(srv, &vin, w, h, "wsd"); dirty = 1; continue; }
 #ifdef WS_KMS
 			if (out[i].filter == EVFILT_SIGNAL) {
 				if (fd == SIGUSR1) { vt_active = 0; if (kms) ws_kms_pause(kms); wsd_vt_release_ack(); }
@@ -1209,6 +1223,11 @@ int main(int argc, char **argv)
 				if (c->efd >= 0) close(c->efd);
 				close(fd); c->fd = -1; c->efd = -1;
 			}
+		}
+		if (vnc_ls >= 0) {                                                         /* update the viewer when it asked and something moved or changed */
+			int cx, cy; ws_cursor_pos(srv, &cx, &cy);
+			uint64_t key = ws_server_generation(srv) * 1000003ULL + (uint64_t)cx * 4099 + (uint64_t)cy * 31 + ws_cursor_serial(srv);
+			if (wsd_vnc_wants(key)) { render_frame(screen, 1); wsd_vnc_update(screen, key); }
 		}
 #ifdef WS_KMS
 		if (kms && vt_active) {
