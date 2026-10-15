@@ -100,6 +100,26 @@ static void test_walk(void)
 }
 
 
+/* screen zoom: a 10x10 red square at the centre of a 100x100 screen covers 20x20 at scale 2 */
+static void test_zoom(void)
+{
+	ws_server *srv = ws_server_new(100, 100);
+	ws_surface *scr = ws_surface_new(100, 100);
+	ws_wid w = ws_create_window(srv, (ws_rect){ 45, 45, 10, 10 });
+	ws_fill(ws_window_backing(srv, w), (ws_rect){ 0, 0, 10, 10 }, 1, 0, 0, 1);
+	ws_order_window(srv, w, WS_ABOVE, 0);
+	ws_compose_scene(srv, scr);
+	#define ZP(x, y) (*(uint32_t *)(scr->px + (size_t)(y) * scr->stride + (size_t)(x) * 4))
+	CHECK(ZP(42, 50) != 0xffff0000u && ZP(50, 50) == 0xffff0000u);
+	CHECK(ws_server_set_zoom(srv, 2.0f, 50, 50) == 0);
+	ws_compose_scene(srv, scr);
+	CHECK(ZP(42, 50) == 0xffff0000u && ZP(58, 50) == 0xffff0000u && ZP(38, 50) != 0xffff0000u && ZP(62, 50) != 0xffff0000u);
+	CHECK(ws_server_set_zoom(srv, 1.0f, 0, 0) == 0);
+	ws_compose_scene(srv, scr);
+	CHECK(ZP(42, 50) != 0xffff0000u && ZP(50, 50) == 0xffff0000u);
+	ws_surface_free(scr); ws_server_free(srv);
+}
+
 /* CIColorInvert: an opaque red window reads cyan */
 static void test_invert(void)
 {
@@ -256,6 +276,7 @@ int main(void)
 	test_walk();
 	test_transform();
 	test_invert();
+	test_zoom();
 	printf(fails ? "%d failures\n" : "all tests passed\n", fails);
 	return fails != 0;
 }
