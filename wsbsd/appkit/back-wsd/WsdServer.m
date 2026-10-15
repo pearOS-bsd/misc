@@ -10,6 +10,7 @@
 #include <signal.h>
 
 #include "wsd/WsdServer.h"
+#define WLOG(...) do { if (getenv("WSD_DEBUG")) NSLog(@"wsd-back: " __VA_ARGS__); } while (0)
 #include "wsd/WsdCairoSurface.h"
 
 /* CGKeyCode -> characters for an ANSI layout (unshifted, shifted) */
@@ -106,6 +107,7 @@ static void terminate(int sig)
 	w->style = style;
 	if (ws_win_create(conn, (ws_rect){ w->x, w->y, w->w, w->h }, 0, &w->win)) { free(w); return 0; }
 	w->number = (int)w->win.id;
+	WLOG(@"window %d created %d,%d %dx%d style %x", w->number, w->x, w->y, w->w, w->h, style);
 	w->next = windows; windows = w;
 	return w->number;
 }
@@ -119,7 +121,8 @@ static void terminate(int sig)
 		ws_cbuf_release(conn, &w->cbuf);
 		w->has_buffer = 0;
 	}
-	if (ws_cbuf_create(conn, w->w, w->h, &w->cbuf)) return NO;
+	WLOG(@"attachBuffer %d %dx%d", w->number, w->w, w->h);
+	if (ws_cbuf_create(conn, w->w, w->h, &w->cbuf)) { WLOG(@"cbuf_create failed"); return NO; }
 	if (ws_surface_add(conn, &w->win, &w->sid) || ws_surface_bind_buffer(conn, &w->win, w->sid, &w->cbuf)) { ws_cbuf_release(conn, &w->cbuf); return NO; }
 	w->has_buffer = 1;
 	return YES;
@@ -130,7 +133,8 @@ static void terminate(int sig)
 	if (!w->has_buffer) return;
 	/* NSRect is in the window's flipped-for-Cairo space of the drawing; flush the whole surface: partial rects from AppKit are in the bottom-left space */
 	(void)rect;
-	ws_surface_flush(conn, &w->win, w->sid, NULL);
+	int frc = ws_surface_flush(conn, &w->win, w->sid, NULL);
+	WLOG(@"commit %d -> %d", w->number, frc);
 }
 
 - (void) termwindow: (int)win
@@ -148,6 +152,7 @@ static void terminate(int sig)
 - (void) setWindowdevice: (int)win forContext: (NSGraphicsContext *)ctxt
 {
 	struct wsd_window *w = [self wsdWindow: win];
+	WLOG(@"setWindowdevice %d %p", win, w);
 	if (!w) return;
 	[ctxt GSSetDevice: w : 0 : w->h];
 	[ctxt DPSinitmatrix];
@@ -158,14 +163,17 @@ static void terminate(int sig)
 {
 	struct wsd_window *w = [self wsdWindow: win];
 	if (!w) return;
+	WLOG(@"orderwindow %d op %d", win, op);
 	int mode = op == NSWindowOut ? WS_OUT : (op == NSWindowBelow ? WS_BELOW : WS_ABOVE);
-	ws_win_order(conn, &w->win, mode, (ws_wid)otherWin);
+	int orc = ws_win_order(conn, &w->win, mode, (ws_wid)otherWin);
+	WLOG(@"ws_win_order -> %d", orc);
 	if (mode != WS_OUT && w->has_buffer) ws_surface_flush(conn, &w->win, w->sid, NULL);
 }
 
 - (void) flushwindowrect: (NSRect)rect : (int)win
 {
 	struct wsd_window *w = [self wsdWindow: win];
+	WLOG(@"flushwindowrect %d surface %p", win, w ? w->surface : NULL);
 	if (w) [[GSCurrentContext() class] handleExposeRect: rect forDriver: w->surface];
 }
 

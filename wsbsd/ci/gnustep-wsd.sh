@@ -60,11 +60,11 @@ export WS_SOCKET=/tmp/wsd-appkit.sock
 ./wsd -t -g 1280x800 >/tmp/wsd.log 2>&1 &
 WP=$!
 sleep 1
-timeout 30 ./hello 8 >/tmp/hello.log 2>&1 &
+WSD_DEBUG=1 timeout 30 ./hello 8 >/tmp/hello.log 2>&1 &
 HP=$!
 sleep 4
 ./wsshot appkit.ppm; python3 tools/ppm2png.py appkit.ppm appkit.png
 wait $HP
 kill $WP 2>/dev/null
-tail -20 /tmp/hello.log; tail -5 /tmp/wsd.log
+tail -40 /tmp/hello.log; tail -5 /tmp/wsd.log
 ls -l appkit.png
