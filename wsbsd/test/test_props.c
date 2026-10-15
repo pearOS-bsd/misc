@@ -162,6 +162,15 @@ int main(void)
 		hdr(m, 0x28, 30179, 0); CHECK(rc(fd, m, 0x28) == 0); w32(m, 0x20, 0x7ffff); CHECK(rc(fd, m, 0x28) == 0);
 		hdr(m, 0x24, 30178, 0); CHECK(rc(fd, m, 0x24) == -304);
 	}
+	{ /* spaces read back: CopySpaces (mask 3: shown and hidden) lists the default space 1, SpaceGetType(1) is 0, SpaceCopyName of an unnamed space is 1000, an unknown space 1010 */
+		uint8_t m[0x28], rep[0x200]; memset(m, 0, sizeof m); hdr(m, 0x24, 30324, 0); w32(m, 0x20, 3);
+		int g = call(fd, m, 0x24, rep, sizeof rep); uint32_t cnt = g >= 0x38 ? r32(rep, 0x34) : 0; int has1 = 0;
+		for (uint32_t i = 0; i < cnt && g >= (int)(0x38 + 8 * (i + 1)); i++) if (r32(rep, 0x38 + 8 * i) == 1 && r32(rep, 0x3c + 8 * i) == 0) has1 = 1;
+		CHECK(g >= 0x38 && cnt >= 1 && has1 && r32(rep, 0x28) == cnt * 8);
+		memset(m, 0, sizeof m); hdr(m, 0x28, 30335, 0); w32(m, 0x20, 1); CHECK(call(fd, m, 0x28, rep, sizeof rep) == 0x28 && r32(rep, 0x20) == 0 && r32(rep, 0x24) == 0);
+		hdr(m, 0x28, 30333, 0); CHECK(rc(fd, m, 0x28) == 1000);
+		w32(m, 0x20, 0x7777); hdr(m, 0x28, 30335, 0); CHECK(rc(fd, m, 0x28) == 0x3f2);
+	}
 	{ /* GetWindowTransform: the identity for a window nothing transformed (recorded), 1000 for an unknown window, -304 for a bad size */
 		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 100, 200, 30, 20 }, 0, &tw) == 0);
 		uint8_t m[0x28], rep[0x80]; memset(m, 0, sizeof m); hdr(m, 0x28, 30034, 0); w32(m, 0x20, tw.id); w32(m, 0x24, 0x7fffff00);
