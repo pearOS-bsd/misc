@@ -139,6 +139,8 @@ int main(int argc, char **argv)
 			printf("  box presentation pos %g,%g opacity %g; model pos %g,%g\n", bpos.x, bpos.y, [bp opacity], [[[root sublayers] objectAtIndex: 1] position].x, [[[root sublayers] objectAtIndex: 1] position].y);
 		}
 		CGContextRelease(g);
+		if (frame == 0 || frame == 5) { long nz = 0; for (int y = 0; y < H; y++) for (int x = 0; x < W; x++) if (((uint32_t *)(px->px + y * px->stride))[x]) nz++;
+			printf("frame %d after release: %ld non-zero pixels (Opal writes the pixels out when the context is released)\n", frame, nz); }
 		ws_surface_flush(c, &w, sid, NULL);
 		double el = now - start;
 		if (shots == 0 && el > 0.25) { char p[256]; snprintf(p, sizeof p, "%s-a.ppm", out); ws_screenshot_scene(c, p); shots = 1; printf("frame at %.2fs\n", el); }
