@@ -268,6 +268,16 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		for (uint32_t i = 0; i < n; i++) ws_set_window_system_level(srv, rd32(buf, 0x28 + 4 * i), (int)rd32(buf, 0x20));
 		return reply_simple(c->fd, h, 0);
 	}
+	case SLS_MSG_CopyWindowsWithOptionsAndTagsAndSpaceOptions: {                   /* two space option words @0x20/@0x24, options@0x28, tags u64@0x2c/@0x34; size 0x3c (no input descriptor). Reply as above: the ordered-in windows front to back */
+		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size != 0x3c) return reply_simple(c->fd, h, -304);
+		ws_wid ids[256]; int cnt = ws_list_windows(srv, 0, 1, ids, 256); if (cnt > 256) cnt = 256;
+		uint32_t arr[256]; for (int i = 0; i < cnt; i++) arr[i] = ids[i];
+		uint8_t m[0x38]; memset(m, 0, sizeof m);
+		fill_reply_header((mach_msg_header_t *)m, h, sizeof m, 1);
+		wr32(m, 0x18, 1); m[0x24] = 1; m[0x25] = 1; m[0x27] = 1; wr32(m, 0x28, (uint32_t)cnt * 4); memcpy(m + 0x2c, &WS_NDR, 8); wr32(m, 0x34, (uint32_t)cnt);
+		struct iovec v[2] = { { m, sizeof m }, { arr, (size_t)cnt * 4 } };
+		return ws_ipc_send(c->fd, v, cnt ? 2 : 1, NULL, 0);
+	}
 	case SLS_MSG_CopyWindowsWithOptionsAndTags: {                                  /* OOL array of space ids (u64); options@0x34, u32@0x3c, tags u64@0x40, u64@0x48; size 0x50. Reply: OOL array of window ids (count@0x34), the ordered-in windows front to back (the filters are not applied) */
 		int err; int osz = ool_request(h, buf, len, 0x50, &err);
 		if (osz < 0) return reply_simple(c->fd, h, err);
