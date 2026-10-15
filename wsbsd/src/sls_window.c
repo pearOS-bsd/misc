@@ -112,6 +112,7 @@ static int ool_multi(const mach_msg_header_t *h, const uint8_t *buf, size_t len,
 	return total == len ? 0 : -304;
 }
 
+static uint32_t mouse_enable[64]; static uint32_t mouse_enable_wid[64];
 static uint32_t menubar_style; static uint8_t menubar_autohide, menubar_blurred;      /* menu bar state (a menu bar always exists on wsd's single display) */
 
 /* per-window attributes the simple setters keep: depth, one-shot flag, backing alpha, autofill colour, client perceived type */
@@ -440,6 +441,37 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		fill_reply_header((mach_msg_header_t *)r, h, 0x28 + 4 * n, 0);
 		memcpy(r + 0x18, &WS_NDR, 8); wr32(r, 0x24, n); for (uint32_t i = 0; i < n; i++) wr32(r, 0x28 + 4 * i, ids[i]);
 		return ws_ipc_send(c->fd, &(struct iovec){ r, 0x28 + 4 * n }, 1, NULL, 0);
+	}
+	case SLS_MSG_GetWindowList: {                                                  /* owner connection@0x20 (0: the whole session), capacity@0x24 (<= 0x400), size 0x28; reply 4 * count + 0x28: count@0x24, ids from 0x28 */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		uint32_t cap = rd32(buf, 0x24); if (cap > 0x400) cap = 0x400;
+		ws_wid ids[0x400]; int n = ws_list_windows(srv, rd32(buf, 0x20), 0, ids, (int)cap);
+		if (n < 0) n = 0; if ((uint32_t)n > cap) n = (int)cap;
+		uint8_t *r = calloc(1, 0x28 + 4 * (size_t)n); if (!r) return reply_simple(c->fd, h, 1000);
+		fill_reply_header((mach_msg_header_t *)r, h, 0x28 + 4 * (uint32_t)n, 0);
+		memcpy(r + 0x18, &WS_NDR, 8); wr32(r, 0x24, (uint32_t)n); for (int i = 0; i < n; i++) wr32(r, 0x28 + 4 * i, ids[i]);
+		int rc2 = ws_ipc_send(c->fd, &(struct iovec){ r, 0x28 + 4 * (size_t)n }, 1, NULL, 0);
+		free(r); return rc2;
+	}
+	case SLS_MSG_AreEventsCaptured: {                                              /* size 0x18; reply 0x2c: captured flag byte@0x24 and the mask of captured event types@0x28 (nothing is captured) */
+		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size != 0x18) return reply_simple(c->fd, h, -304);
+		uint8_t r[0x2c]; memset(r, 0, sizeof r);
+		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
+		memcpy(r + 0x18, &WS_NDR, 8);
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
+	case SLS_MSG_SetMouseEventEnableFlags: {                                       /* wid@0x20, flags@0x24, size 0x28; kept for a window the caller may change; always 0 */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		uint32_t wid = rd32(buf, 0x20);
+		if (ws_window_exists(srv, wid) && holds_rights(c, wid)) {
+			int slot = -1; for (int i = 0; i < 64; i++) { if (mouse_enable_wid[i] == wid) { slot = i; break; } if (slot < 0 && (!mouse_enable_wid[i] || !ws_window_exists(srv, mouse_enable_wid[i]))) slot = i; }
+			if (slot >= 0) { mouse_enable_wid[slot] = wid; mouse_enable[slot] = rd32(buf, 0x24); }
+		}
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_ReenableCursorObscure: {                                          /* size 0x18; always 0 here (the obscure count is not nested) */
+		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size != 0x18) return reply_simple(c->fd, h, -304);
+		return reply_simple(c->fd, h, 0);
 	}
 	case SLS_MSG_GetWindowShmemReference: {                                        /* wid@0x20, size 0x24; reply complex 0x3c: one port descriptor (the window's memory entry; no descriptor is passed here), the return code overlays its pad word, NDR@0x28, then owner / rights / sharing state as GetWindowOwner reports them; 1000 for an unknown window */
 		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size != 0x24) return reply_simple(c->fd, h, -304);
