@@ -380,6 +380,8 @@ static void post_ex(window *w, ws_event e)
 	if (sink) sink(sink_ctx, w->owner, &w->ev[(w->ev_head - 1) % 64]);
 }
 
+int ws_window_post(ws_server *s, ws_wid id, const ws_event *e) { window *w = get(s, id); if (!w) return -1; post_ex(w, *e); return 0; }
+
 int ws_next_event(ws_server *s, ws_wid id, ws_event *out)
 {
 	window *w = get(s, id);

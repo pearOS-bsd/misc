@@ -1,5 +1,6 @@
 /* Window properties, layer context binding and the ordered-in query, with the sizes, codes and layouts observed on the real server (lab/prop1.scen, win1.scen). */
 #include "ws_client.h"
+#include "ws_evrec.h"
 #include "ws_ipc.h"
 #include "sls_wire.h"
 #include "ws_region.h"
@@ -41,6 +42,18 @@ int main(void)
 		hdr(m, 0x30, 30474, 0); w32(m, 0x28, 99);                                       /* length field does not match the size */
 		got = call(fd, m, 0x30, rep, sizeof rep);
 		CHECK(got == 0x24 && r32(rep, 0x20) == (uint32_t)-304);
+	}
+	{ /* PostFilteredEventTapData, style 2 (SLEventPostToPid): the event reaches the process's frontmost window only */
+		ws_win pw; CHECK(ws_win_create(c, (ws_rect){ 300, 300, 100, 60 }, 0, &pw) == 0 && ws_win_order(c, &pw, 1, 0) == 0);
+		uint8_t rec[512]; size_t rn = ws_evrec_make_key(rec, sizeof rec, 1, 12, 0, 0, 0, 0, 0, 0x0a);
+		ws_event e; while (ws_conn_next_pushed_event(c, 0, &e)) {}
+		CHECK(rn > 0 && ws_post_event_to_pid(c, (int)getpid(), rec, rn) == 0);
+		CHECK(ws_conn_next_pushed_event(c, 500, &e) == 1 && e.type == WS_EV_KEY_DOWN && e.key == 12 && e.wid == pw.id);
+		rn = ws_evrec_make_mouse(rec, sizeof rec, 1, 320, 310, 0, 1, 0, 0);
+		CHECK(ws_post_event_to_pid(c, (int)getpid(), rec, rn) == 0);
+		CHECK(ws_conn_next_pushed_event(c, 500, &e) == 1 && e.type == WS_EV_MOUSE_DOWN && e.wid == pw.id && e.x == 20 && e.y == 10);       /* window-local */
+		CHECK(ws_post_event_to_pid(c, 999999, rec, rn) == 0 && ws_conn_next_pushed_event(c, 200, &e) == 0);                                /* unknown pid: accepted, nothing delivered */
+		ws_win_order(c, &pw, 0, 0);
 	}
 	{ /* WindowQuery of one known window: the record laid out as the real server's reply (recorded on a macOS runner, lab/wq1.scen) for a window at 100,200,300,150, level 5, with a shadow */
 		ws_win qw; CHECK(ws_win_create(c, (ws_rect){ 100, 200, 300, 150 }, 5, &qw) == 0 && ws_win_shadow(c, &qw, 10, 1) == 0);
