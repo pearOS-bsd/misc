@@ -16,29 +16,30 @@ TD="$WS/../terminal"
 TERMINAL_COLS=110 TERMINAL_ROWS=30 TERMINAL_INITIAL_INPUT="neofetch
 " "$TD/Terminal-gnustep" >/tmp/terminal.log 2>&1 &
 sleep 3
-# the tunnel: a public host:port forwarded to the viewer port of this machine, through an ssh remote forward that needs no account: pinggy.io (tcp), then serveo.net
-rm -f /tmp/tunnel.log /tmp/tunnel2.log; ADDR=""
-ssh -tt -p 443 -o BatchMode=yes -o StrictHostKeyChecking=no -o ServerAliveInterval=20 -o ExitOnForwardFailure=yes -R0:127.0.0.1:5900 tcp@a.pinggy.io >/tmp/tunnel.log 2>&1 </dev/null &
+# a browser viewer: noVNC + websockify (WebSocket to VNC), reached through an HTTPS tunnel; plus the raw VNC port through a TCP tunnel for a desktop viewer
+cd /tmp && git clone --depth 1 https://github.com/novnc/noVNC.git novnc 2>&1 | tail -1; git clone --depth 1 https://github.com/novnc/websockify.git websockify 2>&1 | tail -1
+cd /tmp/websockify && (python3 -m websockify --web /tmp/novnc 6080 127.0.0.1:5900 >/tmp/websockify.log 2>&1 &)
+sleep 2
+cd "$WS"
+rm -f /tmp/tunnel-http.log /tmp/tunnel-tcp.log; URL=""; ADDR=""
+ssh -tt -p 443 -o BatchMode=yes -o StrictHostKeyChecking=no -o ServerAliveInterval=20 -R0:127.0.0.1:6080 a.pinggy.io >/tmp/tunnel-http.log 2>&1 </dev/null &
+TP1=$!
+ssh -tt -p 443 -o BatchMode=yes -o StrictHostKeyChecking=no -o ServerAliveInterval=20 -R0:127.0.0.1:5900 tcp@a.pinggy.io >/tmp/tunnel-tcp.log 2>&1 </dev/null &
 TP=$!
-i=0; while ! grep -q 'tcp://' /tmp/tunnel.log 2>/dev/null && [ $i -lt 25 ]; do sleep 1; i=$((i + 1)); done
-ADDR="$(grep -o 'tcp://[a-zA-Z0-9.-]*:[0-9]*' /tmp/tunnel.log | head -1 | sed 's|tcp://||')"
-if [ -z "$ADDR" ]; then
-	kill $TP 2>/dev/null; echo "pinggy: $(tr '\n\r' '  ' < /tmp/tunnel.log | cut -c1-240)"
-	ssh -tt -o BatchMode=yes -o StrictHostKeyChecking=no -o ServerAliveInterval=20 -o ExitOnForwardFailure=yes -R 5900:127.0.0.1:5900 serveo.net >/tmp/tunnel2.log 2>&1 </dev/null &
-	TP=$!
-	i=0; while ! grep -q 'Forwarding' /tmp/tunnel2.log 2>/dev/null && [ $i -lt 15 ]; do sleep 1; i=$((i + 1)); done
-	ADDR="$(grep -o 'serveo.net:[0-9]*' /tmp/tunnel2.log | head -1)"
-	[ -n "$ADDR" ] || echo "serveo: $(tr '\n\r' '  ' < /tmp/tunnel2.log | cut -c1-200)"
-fi
+i=0; while [ $i -lt 30 ]; do grep -q 'https://' /tmp/tunnel-http.log 2>/dev/null && break; sleep 1; i=$((i + 1)); done
+URL="$(grep -o 'https://[a-zA-Z0-9.-]*pinggy[a-zA-Z0-9.-]*' /tmp/tunnel-http.log | head -1)"
+ADDR="$(grep -o 'tcp://[a-zA-Z0-9.-]*:[0-9]*' /tmp/tunnel-tcp.log | head -1 | sed 's|tcp://||')"
+[ -n "$URL" ] || echo "http tunnel: $(tr '\n\r' '  ' < /tmp/tunnel-http.log | cut -c1-240)"
 echo
 echo "=========================================================="
 echo " VNC session, open for $MINUTES minutes"
-if [ -n "$ADDR" ]; then echo " address:  $ADDR"; else echo " no tunnel came up (pinggy.io and serveo.net refused the forward)"; fi
+if [ -n "$URL" ]; then echo " BROWSER:  $URL/vnc.html?autoconnect=true&resize=scale&password=$PW"; else echo " no browser tunnel came up"; fi
+if [ -n "$ADDR" ]; then echo " VNC viewer address: $ADDR"; fi
 echo " password: $PW"
 echo " (use any VNC viewer; in the terminal try: neofetch, ls, Sudoku &, Gorm &)"
 echo "=========================================================="
 echo
 sleep $((MINUTES * 60))
-kill $TP $WP 2>/dev/null
+kill $TP $TP1 $WP 2>/dev/null
 pkill -f Terminal-gnustep 2>/dev/null
 echo "session over"
