@@ -2,10 +2,11 @@
 #import <CoreGraphics/CoreGraphics.h>
 #include "ws_client.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 int main(int argc, char **argv)
 {
-	int variant = argc > 1 ? argv[1][0] - '0' : 0;
+	int variant = argc > 1 ? atoi(argv[1]) : 0;
 	ws_conn *c = ws_connect(NULL); if (!c) return 1;
 	enum { W = 560, H = 360 };
 	ws_win w; ws_cbuf cb; uint32_t sid;
