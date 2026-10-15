@@ -507,6 +507,17 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		free(pl);
 		return rc;
 	}
+	case SLS_MSG_GetSpecifiedWindowShape: {                                        /* wid@0x20, kind@0x24, size 0x28; reply complex 0x38 with a serialized region; a window without a specified shape answers the empty region located at its origin (recorded: 0x80000000, 4, x, y, 0x7fffffff); 1000 for an unknown window */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		ws_rect f;
+		if (ws_window_frame(srv, rd32(buf, 0x20), &f)) return reply_simple(c->fd, h, 1000);
+		uint8_t reg[20]; wr32(reg, 0, 0x80000000u); wr32(reg, 4, 4); wr32(reg, 8, (uint32_t)(int)f.x); wr32(reg, 12, (uint32_t)(int)f.y); wr32(reg, 16, 0x7fffffffu);
+		uint8_t m[0x38]; memset(m, 0, sizeof m);
+		fill_reply_header((mach_msg_header_t *)m, h, sizeof m, 1);
+		wr32(m, 0x18, 1); m[0x24] = 1; m[0x25] = 1; m[0x27] = 1; wr32(m, 0x28, sizeof reg); memcpy(m + 0x2c, &WS_NDR, 8); wr32(m, 0x34, sizeof reg);
+		struct iovec v[2] = { { m, sizeof m }, { reg, sizeof reg } };
+		return ws_ipc_send(c->fd, v, 2, NULL, 0);
+	}
 	case SLS_MSG_SetWindowParent: {                                                /* child@0x20, parent@0x24, size 0x28; rights on both; always 0 */
 		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
 		uint32_t child = rd32(buf, 0x20), parent = rd32(buf, 0x24);
