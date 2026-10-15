@@ -38,3 +38,4 @@ wsbsd-*.tar.gz
 stage
 test_input
 soak
+test_bplist
