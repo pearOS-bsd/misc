@@ -4,6 +4,7 @@
 #include "ws_ipc.h"
 #include "mach_compat.h"
 #include <stdio.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
@@ -51,6 +52,27 @@ static void raw(int id, char **tok, int nt)
 	if (ws_ipc_send(ws_conn_fd(conn), v, plen ? 2 : 1, NULL, 0)) { printf("raw %d send-error\n", id); return; }
 	static uint8_t rep[0x20000]; int fds[8], nf = 0; memset(rep, 0, sizeof rep);
 	ssize_t got = ws_ipc_recv(ws_conn_fd(conn), rep, sizeof rep, fds, &nf);
+	{ /* SCEN_MUTATE=N: afterwards send N mutated copies of the request (flipped bytes, odd sizes, dropped or extra payload) and just drain the answers: the server must survive them */
+		const char *mu = getenv("SCEN_MUTATE"); int nmut = mu ? atoi(mu) : 0;
+		static uint64_t rs = 0x9e3779b97f4a7c15ull;
+		for (int k = 0; k < nmut; k++) {
+			uint8_t mm[0x4000]; size_t mn = n < sizeof mm ? n : sizeof mm; memcpy(mm, req, mn);
+			rs ^= rs << 13; rs ^= rs >> 7; rs ^= rs << 17;
+			int nflip = 1 + (int)(rs % 4);
+			for (int f = 0; f < nflip; f++) { rs ^= rs << 13; rs ^= rs >> 7; rs ^= rs << 17; size_t at = 0x18 + (size_t)(rs % (mn > 0x18 ? mn - 0x18 : 1)); if (at < mn) mm[at] = (uint8_t)(rs >> 20); }
+			rs ^= rs << 13; rs ^= rs >> 7; rs ^= rs << 17;
+			size_t sendn = mn; if (rs % 5 == 0) sendn = mn > 4 ? mn - 4 * (1 + rs % 3) : mn; if (rs % 7 == 0) sendn = mn + 4 * (1 + rs % 3 < 8 ? 1 + rs % 3 : 1);
+			if (sendn > sizeof mm) sendn = sizeof mm;
+			if (sendn < 0x18) sendn = 0x18;
+			if (sendn > mn) memset(mm + mn, 0x41, sendn - mn);
+			if (rs % 3 == 0) *(uint32_t *)mm = *(uint32_t *)mm ^ MACH_MSGH_BITS_COMPLEX;
+			struct iovec mv[2] = { { mm, sendn }, { payload, plen } };
+			if (ws_ipc_send(ws_conn_fd(conn), mv, plen ? 2 : 1, NULL, 0)) { printf("mutation send failed (server gone?)\n"); exit(3); }
+			static uint8_t junk[0x20000]; int jf[8], jn = 0; ssize_t jg = ws_ipc_recv(ws_conn_fd(conn), junk, sizeof junk, jf, &jn);
+			for (int q = 0; q < jn; q++) close(jf[q]);
+			if (jg <= 0) { printf("mutation: connection closed\n"); exit(3); }
+		}
+	}
 	if (got < 0x18) { printf("raw %d recv-error\n", id); return; }
 	mach_msg_header_t *r = (mach_msg_header_t *)rep;
 	printf("raw %d reqsize=%zu -> reply_id=%d bits=%08x size=%u hex=", id, n, r->msgh_id, r->msgh_bits, r->msgh_size);
