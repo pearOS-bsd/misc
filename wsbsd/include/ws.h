@@ -116,6 +116,7 @@ int ws_set_window_level(ws_server *, ws_wid, int level);
 int ws_set_window_alpha(ws_server *, ws_wid, float alpha);
 ws_wid ws_find_window(ws_server *, int x, int y);            /* topmost on-screen at point */
 void ws_server_set_compositor(ws_server *, ws_compositor *);  /* default: sw */
+int ws_server_set_zoom(ws_server *, float scale, int cx, int cy);   /* magnify the composed frame about (cx, cy); 1 = off */
 void ws_compose(ws_server *, ws_surface *screen);            /* one full frame */
 
 /* Input and cursor. The server is fed absolute pointer positions and key events by a backend (evdev on FreeBSD,

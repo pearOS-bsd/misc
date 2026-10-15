@@ -790,6 +790,7 @@ void ws_server_walk(ws_server *s, ws_visit_fn fn, void *ctx)
 	free(v);
 }
 
+static void apply_zoom(ws_surface *screen);
 void ws_compose_scene(ws_server *s, ws_surface *screen)
 {
 	window **v = malloc((s->n + 1) * sizeof *v);
@@ -822,6 +823,25 @@ void ws_compose_scene(ws_server *s, ws_surface *screen)
 	}
 	if (s->comp->flush) s->comp->flush(s->comp);
 	free(v);
+	apply_zoom(screen);
+}
+
+/* screen zoom (SetZoomParameters): the frame is magnified about the zoom centre, nearest sample; scale 1 is off */
+static float zoom_scale_v = 1.0f; static int zoom_cx, zoom_cy;
+int ws_server_set_zoom(ws_server *s, float scale, int cx, int cy) { (void)s; if (!(scale >= 1.0f) || scale > 64.0f) scale = 1.0f; zoom_scale_v = scale; zoom_cx = cx; zoom_cy = cy; return 0; }
+static void apply_zoom(ws_surface *screen)
+{
+	if (zoom_scale_v <= 1.0f || screen->w <= 0 || screen->h <= 0) return;
+	float vw = screen->w / zoom_scale_v, vh = screen->h / zoom_scale_v;
+	float x0 = zoom_cx - vw / 2, y0 = zoom_cy - vh / 2;                       /* the visible window, kept on the screen */
+	if (x0 < 0) x0 = 0; if (y0 < 0) y0 = 0; if (x0 + vw > screen->w) x0 = screen->w - vw; if (y0 + vh > screen->h) y0 = screen->h - vh;
+	ws_surface *copy = ws_surface_new(screen->w, screen->h); if (!copy) return;
+	for (int y = 0; y < screen->h; y++) memcpy(copy->px + (size_t)y * copy->stride, screen->px + (size_t)y * screen->stride, (size_t)screen->w * 4);
+	for (int y = 0; y < screen->h; y++) {
+		int sy = (int)(y0 + (y + 0.5f) / zoom_scale_v); if (sy >= screen->h) sy = screen->h - 1;
+		for (int x = 0; x < screen->w; x++) { int sx = (int)(x0 + (x + 0.5f) / zoom_scale_v); if (sx >= screen->w) sx = screen->w - 1; memcpy(screen->px + (size_t)y * screen->stride + (size_t)x * 4, copy->px + (size_t)sy * copy->stride + (size_t)sx * 4, 4); }
+	}
+	ws_surface_free(copy);
 }
 
 void ws_compose(ws_server *s, ws_surface *screen)

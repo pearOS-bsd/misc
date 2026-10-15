@@ -533,6 +533,7 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		if (sc == sc && sc >= 1.0f) zoom_scale = sc > 64.0f ? 64.0f : sc; else zoom_scale = 1.0f;
 		if ((int32_t)rd32(buf, 0x20) != INT32_MIN && (int32_t)rd32(buf, 0x24) != INT32_MIN) { zoom_x = (int32_t)rd32(buf, 0x20); zoom_y = (int32_t)rd32(buf, 0x24); }
 		zoom_flag = rd32(buf, 0x2c) != 0;
+		ws_server_set_zoom(srv, zoom_scale, zoom_x == INT32_MIN ? wsd_screen_w / 2 : zoom_x, zoom_y == INT32_MIN ? wsd_screen_h / 2 : zoom_y);
 		return reply_simple(c->fd, h, 0);
 	}
 	case SLS_MSG_GetWindowShmemReference: {                                        /* wid@0x20, size 0x24; reply complex 0x3c: one port descriptor (the window's memory entry; no descriptor is passed here), the return code overlays its pad word, NDR@0x28, then owner / rights / sharing state as GetWindowOwner reports them; 1000 for an unknown window */
