@@ -19,7 +19,7 @@ int main(int argc, char **argv)
 	const char *path = getenv("WS_SOCKET"); if (!path) { fprintf(stderr, "WS_SOCKET not set\n"); return 2; }
 	ws_conn *wc = ws_connect(path); ws_win keep[6]; int nkeep = 0;                 /* a few real windows, so the random fields sometimes name one */
 	if (wc) for (int k = 0; k < 6; k++) if (ws_win_create(wc, (ws_rect){ 10 * k, 10 * k, 100, 80 }, k, &keep[nkeep]) == 0) { ws_win_order(wc, &keep[nkeep], 1, 0); nkeep++; }
-	int fd = ws_ipc_connect(path); if (fd < 0) { fprintf(stderr, "connect failed\n"); return 2; }
+	int fd = wc ? ws_conn_fd(wc) : ws_ipc_connect(path);                          /* the window owner's own socket: rights checks pass for the windows above */ if (fd < 0) { fprintf(stderr, "connect failed\n"); return 2; }
 	static uint8_t m[0x12100], rep[WS_IPC_RECV_CAP];
 	int answered = 0, reconnects = 0;
 	for (int i = 0; i < iters; i++) {
@@ -33,6 +33,7 @@ int main(int argc, char **argv)
 		mach_msg_header_t *h = (mach_msg_header_t *)m;
 		h->msgh_bits = (rnd() % 6 == 0) ? MACH_MSGH_BITS_COMPLEX : 0; h->msgh_size = (rnd() % 8 == 0) ? (uint32_t)(rnd() % 0x3000) : (uint32_t)n;
 		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) && n >= 0x2c) { uint32_t one = 1; memcpy(m + 0x18, &one, 4); }               /* a count of 1 descriptor slot */
+		if (id == WSX_QUIT) id = WSX_GET_SCREEN;
 		h->msgh_id = id; h->msgh_remote_port = 0; h->msgh_local_port = 0;
 		size_t total = n;
 		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) && n >= 0x2c && rnd() % 4) {                      /* one out-of-line descriptor with real appended bytes (a region / plist / array shaped blob) */
@@ -42,12 +43,12 @@ int main(int argc, char **argv)
 			if (n + k <= sizeof m) total = n + k;
 		}
 		struct iovec v = { m, total };
-		if (ws_ipc_send(fd, &v, 1, NULL, 0)) { close(fd); fd = ws_ipc_connect(path); reconnects++; if (fd < 0) { printf("FAIL: wsd gone at iteration %d id %d\n", i, id); return 1; } continue; }
+		if (ws_ipc_send(fd, &v, 1, NULL, 0)) { if (!wc) close(fd); fd = ws_ipc_connect(path); reconnects++; if (fd < 0) { printf("FAIL: wsd gone at iteration %d id %d\n", i, id); return 1; } continue; }
 		int fds[WS_IPC_MAX_FDS], nf = 0;
 		ssize_t g = ws_ipc_recv(fd, rep, sizeof rep, fds, &nf);
 		for (int k = 0; k < nf; k++) close(fds[k]);
 		if (g > 0) answered++;
-		else { close(fd); fd = ws_ipc_connect(path); reconnects++; if (fd < 0) { printf("FAIL: wsd gone at iteration %d id %d\n", i, id); return 1; } }
+		else { if (!wc) close(fd); fd = ws_ipc_connect(path); reconnects++; if (fd < 0) { printf("FAIL: wsd gone at iteration %d id %d\n", i, id); return 1; } }
 	}
 	printf("fuzz: %d requests, %d answered, %d reconnects, wsd alive\n", iters, answered, reconnects);
 	return 0;
