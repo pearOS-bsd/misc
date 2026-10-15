@@ -21,6 +21,7 @@ typedef struct {
 extern ws_server *srv;
 extern int wsd_dirty;                                   /* set when something visible may have changed */
 conn *wsd_conn_by_id(uint32_t id);
+int wsd_conns_for_pid(int pid, uint32_t *ids, int max);                           /* the live connections of a process */
 conn *wsd_conn_by_psn(uint32_t hi, uint32_t lo);                                    /* the connection that registered this process (CreateApplication), NULL if none */
 
 /* replies: 0x24 simple, 0x28 with one value, MIG error, header for custom layouts */

@@ -112,6 +112,8 @@ static int ool_multi(const mach_msg_header_t *h, const uint8_t *buf, size_t len,
 	return total == len ? 0 : -304;
 }
 
+static uint32_t menubar_style; static uint8_t menubar_autohide, menubar_blurred;      /* menu bar state (a menu bar always exists on wsd's single display) */
+
 /* per-window attributes the simple setters keep: depth, one-shot flag, backing alpha, autofill colour, client perceived type */
 #define MAXATTR 512
 static struct { uint32_t wid; int depth; uint8_t oneshot, has_alpha, have_alpha; uint8_t autofill[12]; int perceived; } attr[MAXATTR];
@@ -413,6 +415,31 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
 		memcpy(r + 0x18, &WS_NDR, 8); memcpy(r + 0x24, m, sizeof m);
 		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
+	case SLS_MSG_MenuBarExists:                                                    /* size 0x18; reply 0x28: 1 (recorded) */
+	case SLS_MSG_GetActiveMenuBarDrawingStyle:                                     /* reply 0x28: the style@0x24 */
+	case SLS_MSG_GetMenuBarAutohideEnabled: {                                      /* reply 0x28: the flag byte@0x24 */
+		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size != 0x18) return reply_simple(c->fd, h, -304);
+		uint8_t r[0x28]; memset(r, 0, sizeof r);
+		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
+		memcpy(r + 0x18, &WS_NDR, 8);
+		if (h->msgh_id == SLS_MSG_MenuBarExists) wr32(r, 0x24, 1); else if (h->msgh_id == SLS_MSG_GetActiveMenuBarDrawingStyle) wr32(r, 0x24, menubar_style); else r[0x24] = menubar_autohide;
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
+	case SLS_MSG_SetMenuBarDrawingStyle:                                           /* style@0x20, size 0x24; always 0 */
+	case SLS_MSG_SetMenuBarAutohideEnabled:                                        /* flag byte@0x20 */
+	case SLS_MSG_SetMenuBarUseBlurredAppearance: {                                 /* flag byte@0x20 */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		if (h->msgh_id == SLS_MSG_SetMenuBarDrawingStyle) menubar_style = rd32(buf, 0x20); else if (h->msgh_id == SLS_MSG_SetMenuBarAutohideEnabled) menubar_autohide = buf[0x20] != 0; else menubar_blurred = buf[0x20] != 0;
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_ConnectionsForPid: {                                              /* pid@0x20, size 0x24; reply 4 * count + 0x28: count@0x24, connection ids from 0x28 */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		uint32_t ids[64]; int pid = (int)rd32(buf, 0x20); uint32_t n = pid > 0 ? (uint32_t)wsd_conns_for_pid(pid, ids, 64) : 0;
+		uint8_t r[0x28 + 64 * 4]; memset(r, 0, sizeof r);
+		fill_reply_header((mach_msg_header_t *)r, h, 0x28 + 4 * n, 0);
+		memcpy(r + 0x18, &WS_NDR, 8); wr32(r, 0x24, n); for (uint32_t i = 0; i < n; i++) wr32(r, 0x28 + 4 * i, ids[i]);
+		return ws_ipc_send(c->fd, &(struct iovec){ r, 0x28 + 4 * n }, 1, NULL, 0);
 	}
 	case SLS_MSG_GetWindowShmemReference: {                                        /* wid@0x20, size 0x24; reply complex 0x3c: one port descriptor (the window's memory entry; no descriptor is passed here), the return code overlays its pad word, NDR@0x28, then owner / rights / sharing state as GetWindowOwner reports them; 1000 for an unknown window */
 		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size != 0x24) return reply_simple(c->fd, h, -304);
