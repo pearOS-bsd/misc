@@ -471,6 +471,12 @@ static int do_simple(conn *c, const uint8_t *buf, size_t len)
 		if (holds_rights(c, wid)) ws_set_window_blur(srv, wid, rad > 60 ? 60 : (int)rad, buf[0x28] != 0, amt);
 		return reply_simple(c->fd, h, 0);
 	}
+	case SLS_MSG_GetWindowEventMask: {
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
+		int mask = 0;
+		if (ws_window_event_mask(srv, rd32(buf, 0x20), &mask)) return sls_ext_dispatch(c, buf, len);     /* unknown window: what the real server answers (recorded) */
+		return reply_value(c->fd, h, mask);
+	}
 	case SLS_MSG_SetWindowEventMask: {
 		if (!simple_ok(h, len, sizeof(sls_eventmask_req))) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
 		const sls_eventmask_req *q = (const void *)buf;
