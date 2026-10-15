@@ -697,6 +697,7 @@ static int do_simple(conn *c, const uint8_t *buf, size_t len)
 		uint32_t wid = ((const sls_wid_req *)buf)->wid;
 		if (!holds_rights(c, wid)) return reply_simple(c->fd, h, CGS_ERROR_FAILURE);
 		surf *sf = NULL;
+		{ int ns = 0; for (int i = 0; i < MAXSURF; i++) if (surfs[i].used && surfs[i].owner == c->id) ns++; if (ns >= 128) return reply_simple(c->fd, h, CGS_ERROR_FAILURE); }       /* per-connection surface limit */
 		for (int i = 0; i < MAXSURF && !sf; i++) if (!surfs[i].used) sf = &surfs[i];
 		if (!sf) return reply_simple(c->fd, h, CGS_ERROR_FAILURE);
 		memset(sf, 0, sizeof *sf); sf->used = 1; sf->wid = wid; sf->sid = next_sid++; sf->owner = c->id;
@@ -765,6 +766,9 @@ static int do_buffer_import(conn *c, const uint8_t *buf, size_t len, int *fds, i
 	int bpp = ws_buffer_bytes_per_pixel(q.fourcc);
 	if (!bpp || q.width <= 0 || q.height <= 0 || q.width > 16384 || q.height > 16384 || (q.kind != WS_BUF_SHM && q.kind != WS_BUF_DMABUF) ||
 	    q.stride[0] < (uint32_t)(q.width * bpp)) { rc = CGS_ERROR_ILLEGAL_ARGUMENT; goto fail; }
+	{ int nb = 0; double bytes = 0;                                          /* per-connection limits: 64 buffers, 1 GiB of them */
+	  for (int i = 0; i < MAXBUF; i++) if (bufs[i].id && bufs[i].owner == c->id) { nb++; bytes += (double)bufs[i].stride[0] * bufs[i].h; }
+	  if (nb >= 64 || bytes + (double)q.stride[0] * q.height > 1024.0 * 1024 * 1024) { rc = CGS_ERROR_FAILURE; goto fail; } }
 	ws_buffer *b = NULL;
 	for (int i = 0; i < MAXBUF && !b; i++) if (!bufs[i].id) b = &bufs[i];
 	if (!b) { rc = CGS_ERROR_FAILURE; goto fail; }

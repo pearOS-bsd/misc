@@ -278,6 +278,13 @@ int main(void)
 		ws_conn *c4 = ws_connect(NULL); CHECK(c4 != NULL && ws_win_create(c4, (ws_rect){ 0, 0, 4000, 4000 }, 0, &big) == 0);
 		ws_disconnect(c4); ws_disconnect(c3);
 	}
+	{ /* per-connection surface limit: the 129th AddSurface on one connection fails */
+		ws_conn *c5 = ws_connect(NULL); ws_win sw5; CHECK(c5 && ws_win_create(c5, (ws_rect){ 0, 0, 20, 20 }, 0, &sw5) == 0);
+		uint8_t m[0x24], rep[0x40]; int fd5 = ws_conn_fd(c5), failed = 0;
+		for (int i = 0; i < 140; i++) { memset(m, 0, sizeof m); hdr(m, 0x24, 30090, 0); w32(m, 0x20, sw5.id); int g = call(fd5, m, 0x24, rep, sizeof rep); if (g >= 0x24 && r32(rep, 0x20) == 1000) failed++; }
+		CHECK(failed >= 10 && failed <= 12);
+		ws_disconnect(c5);
+	}
 	{ /* GetWindowTransform: the identity for a window nothing transformed (recorded), 1000 for an unknown window, -304 for a bad size */
 		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 100, 200, 30, 20 }, 0, &tw) == 0);
 		uint8_t m[0x28], rep[0x80]; memset(m, 0, sizeof m); hdr(m, 0x28, 30034, 0); w32(m, 0x20, tw.id); w32(m, 0x24, 0x7fffff00);
