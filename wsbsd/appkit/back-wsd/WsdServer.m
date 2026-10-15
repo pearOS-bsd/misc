@@ -76,7 +76,7 @@ static void terminate(int sig)
 	NSString *modes[] = { NSDefaultRunLoopMode, NSModalPanelRunLoopMode, NSEventTrackingRunLoopMode };
 	for (int i = 0; i < 3; i++)
 		[rl addEvent: (void *)(intptr_t)fd type: ET_RDESC watcher: (id)self forMode: modes[i]];
-	if (!getenv("WSD_NO_MACTHEME")) [GSTheme setTheme: [[[WsdMacTheme alloc] init] autorelease]];     /* macOS-style window decorations (appkit/back-wsd/WsdMacTheme.m) */
+	if (!getenv("WSD_NO_MACTHEME")) [GSTheme setTheme: [[[WsdMacTheme alloc] initWithBundle: nil] autorelease]];     /* macOS-style window decorations (appkit/back-wsd/WsdMacTheme.m) */
 	return self;
 }
 
