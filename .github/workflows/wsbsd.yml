@@ -18,7 +18,7 @@ jobs:
         run: |
           cd wsbsd
           SAN="-fsanitize=address,undefined -fno-omit-frame-pointer -g -O1"
-          cc $SAN -std=c99 -D_DEFAULT_SOURCE -Iinclude -o wsd_asan src/compositor_sw.c src/blur.c src/server.c src/shadow.c src/region.c src/ipc.c src/evrec.c src/buffer.c src/sls_*.c src/bplist.c src/sandbox.c src/vnc.c src/wsd.c -lm
+          cc $SAN -std=c99 -D_DEFAULT_SOURCE -Iinclude -o wsd_asan src/compositor_sw.c src/blur.c src/server.c src/shadow.c src/region.c src/ipc.c src/evrec.c src/buffer.c src/sls_*.c src/bplist.c src/sandbox.c src/vnc.c src/input.c src/wsd.c -lm
           cc -std=c99 -D_DEFAULT_SOURCE -Iinclude -Itest -o fuzz_wsd test/fuzz_wsd.c src/ipc.c src/client.c src/compositor_sw.c src/region.c src/evrec.c src/buffer.c -lm
           export WS_SOCKET=/tmp/fuzz.sock
           ./wsd_asan -t -g 640x480 > wsd.log 2>&1 &
