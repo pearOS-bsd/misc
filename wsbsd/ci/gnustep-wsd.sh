@@ -114,6 +114,25 @@ if [ -n "$GAPP" ]; then
 	kill $GP 2>/dev/null; pkill -f Gorm 2>/dev/null
 	grep -v '^(lldb)\|warning\|wsd-back: ' /tmp/gorm.log | tail -25
 fi
+# Terminal (terminal/): a terminal emulator written against the public Cocoa API, built with GNUstep and run on wsd with some shell output
+TD="$WS/../terminal"
+if [ -d "$TD" ]; then
+	(cd "$TD" && make test 2>&1 | tail -2 && cc -o Terminal-gnustep src/vt.c src/pty.c src/TermView.m src/main.m $(gnustep-config --objc-flags) $(gnustep-config --gui-libs) -lutil 2>&1 | grep -E "error|undefined" | head -15)
+	if [ -x "$TD/Terminal-gnustep" ]; then
+		cat > /tmp/term-input.txt <<'EOT'
+echo hello from the shell; printf '\033[1;31mred\033[0m \033[38;5;33mblue\033[0m\n'; ls /
+EOT
+		(TERMINAL_INITIAL_INPUT="$(cat /tmp/term-input.txt)
+" WSD_DEBUG=1 timeout 40 lldb -b -o 'run' -o 'bt' -o 'quit' -- "$TD/Terminal-gnustep" >/tmp/terminal.log 2>&1) &
+		TP=$!
+		sleep 10
+		./wsshot terminal.ppm; python3 tools/ppm2png.py terminal.ppm terminal.png
+		./wskey 0 0 8; sleep 1
+		./wsshot terminal-key.ppm; python3 tools/ppm2png.py terminal-key.ppm terminal-key.png
+		kill $TP 2>/dev/null; pkill -f Terminal-gnustep 2>/dev/null
+		grep -v '^(lldb)\|warning\|wsd-back: ' /tmp/terminal.log | tail -25
+	fi
+fi
 kill $WP 2>/dev/null
 grep -v '^(lldb)\|warning\|wsd-back: \(titlewindow\|setinput\|flush\|commit\|order\|ws_win\)' /tmp/hello.log | tail -40; tail -5 /tmp/wsd.log
 ls -l appkit.png

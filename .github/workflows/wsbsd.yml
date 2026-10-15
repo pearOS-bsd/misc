@@ -2,9 +2,9 @@ name: wsbsd
 
 on:
   push:
-    paths: ['wsbsd/**', '.github/workflows/wsbsd.yml']
+    paths: ['wsbsd/**', 'terminal/**', '.github/workflows/wsbsd.yml']
   pull_request:
-    paths: ['wsbsd/**', '.github/workflows/wsbsd.yml']
+    paths: ['wsbsd/**', 'terminal/**', '.github/workflows/wsbsd.yml']
   workflow_dispatch:
 
 jobs:
