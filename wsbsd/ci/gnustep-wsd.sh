@@ -58,6 +58,7 @@ cd "$WS"
 cc -o hello appkit/hello.m $(gnustep-config --objc-flags) $(gnustep-config --gui-libs) 2>&1 | tail -15
 cc -O1 -std=c99 -D_DEFAULT_SOURCE -Iinclude -o wsshot tools/wsshot.c /tmp/wsc/libwsclient.a -lm
 cc -O1 -std=c99 -D_DEFAULT_SOURCE -Iinclude -o wsclick tools/wsclick.c /tmp/wsc/libwsclient.a -lm
+cc -O1 -std=c99 -D_DEFAULT_SOURCE -Iinclude -o wskey tools/wskey.c /tmp/wsc/libwsclient.a -lm
 gmake wsd 2>&1 | tail -2
 export WS_SOCKET=/tmp/wsd-appkit.sock
 ./wsd -t -g 1280x800 >/tmp/wsd.log 2>&1 &
@@ -70,6 +71,12 @@ sleep 4
 ./wsclick 180 554
 sleep 1
 ./wsshot appkit-click.ppm; python3 tools/ppm2png.py appkit-click.ppm appkit-click.png
+./wsclick 220 608
+./wskey 0 11 8
+sleep 1
+./wsshot appkit-key.ppm; python3 tools/ppm2png.py appkit-key.ppm appkit-key.png
+sleep 2
+./wsshot appkit-resize.ppm; python3 tools/ppm2png.py appkit-resize.ppm appkit-resize.png
 wait $HP
 kill $WP 2>/dev/null
 grep -v '^(lldb)\|warning\|wsd-back: \(titlewindow\|setinput\|attach\|flush\|commit\|order\|ws_win\|setWindow\)' /tmp/hello.log | tail -25; tail -5 /tmp/wsd.log
