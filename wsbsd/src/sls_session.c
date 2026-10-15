@@ -60,7 +60,7 @@ static int do_get_conn_property(conn *c, const uint8_t *buf, size_t len)
 	for (int i = 0; i < 128; i++) if (cprops[i].used && cprops[i].cid == cid && !strcmp(cprops[i].key, key)) { data = cprops[i].data; dl = cprops[i].len; }
 	uint8_t m[0x38]; memset(m, 0, sizeof m);
 	fill_reply_header((mach_msg_header_t *)m, h, sizeof m, 1);
-	wr32(m, 0x18, 1); m[0x25] = 1; m[0x27] = 1; wr32(m, 0x28, dl); memcpy(m + 0x2c, &WS_NDR, 8); wr32(m, 0x34, dl);
+	wr32(m, 0x18, 1); m[0x24] = 1; m[0x25] = 1; m[0x27] = 1; wr32(m, 0x28, dl); memcpy(m + 0x2c, &WS_NDR, 8); wr32(m, 0x34, dl);
 	struct iovec v[2] = { { m, sizeof m }, { (void *)data, dl } };
 	return ws_ipc_send(c->fd, v, dl ? 2 : 1, NULL, 0);
 }
@@ -74,7 +74,7 @@ static int reply_ool_blob(conn *c, const mach_msg_header_t *h, const uint8_t *bl
 {
 	uint8_t m[0x38]; memset(m, 0, sizeof m);
 	fill_reply_header((mach_msg_header_t *)m, h, sizeof m, 1);
-	wr32(m, 0x18, 1); m[0x25] = 1; m[0x27] = 1; wr32(m, 0x28, n); memcpy(m + 0x2c, &WS_NDR, 8); wr32(m, 0x34, n);
+	wr32(m, 0x18, 1); m[0x24] = 1; m[0x25] = 1; m[0x27] = 1; wr32(m, 0x28, n); memcpy(m + 0x2c, &WS_NDR, 8); wr32(m, 0x34, n);
 	struct iovec v[2] = { { m, sizeof m }, { (void *)blob, n } };
 	return ws_ipc_send(c->fd, v, 2, NULL, 0);
 }
