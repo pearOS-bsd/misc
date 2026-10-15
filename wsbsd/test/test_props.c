@@ -797,6 +797,35 @@ int main(void)
 		double dw; memcpy(&dw, b + 32 * 4, 8); CHECK(dw == 640.0);
 		CHECK(r32(b, 23 * 4) == 0x12345678);
 	}
+	{ /* event taps: place, query, enable, list, release (layouts from the decompiled routines) */
+		uint8_t q[0x44], rep[0x200]; memset(q, 0, sizeof q);
+		hdr(q, 0x44, 32028, 1); w32(q, 0x18, 1); w32(q, 0x1c, 0x777); q[0x26] = 0x11; memcpy(q + 0x28, "\0\0\0\0\1\0\0\0", 8);
+		w32(q, 0x30, 1); w32(q, 0x3c, 0); w32(q, 0x40, 0x1c00);
+		int n = call(fd, q, 0x44, rep, sizeof rep);
+		uint32_t tid = r32(rep, 0x24);
+		CHECK(n == 0x2c && r32(rep, 0x20) == 0 && tid != 0 && r32(rep, 0x28) == 0x1c00);
+		w32(q, 0x30, 3); CHECK(rc(fd, q, 0x44) == 1000);                                   /* location out of range */
+		w32(q, 0x30, 1); q[0x26] = 0x10; CHECK(rc(fd, q, 0x44) == -300); q[0x26] = 0x11;
+		uint8_t e[0x28]; memset(e, 0, sizeof e);
+		hdr(e, 0x24, 32032, 0); w32(e, 0x20, tid);
+		n = call(fd, e, 0x24, rep, sizeof rep); CHECK(n == 0x28 && r32(rep, 0x20) == 0 && r32(rep, 0x24) == 1);
+		hdr(e, 0x28, 32031, 0); w32(e, 0x20, tid); w32(e, 0x24, 0); CHECK(rc(fd, e, 0x28) == 0);
+		hdr(e, 0x24, 32032, 0); w32(e, 0x20, tid); n = call(fd, e, 0x24, rep, sizeof rep); CHECK(n == 0x28 && r32(rep, 0x24) == 0);
+		hdr(e, 0x28, 32031, 0); w32(e, 0x20, 0); w32(e, 0x24, 1); CHECK(rc(fd, e, 0x28) == 0);   /* all taps */
+		hdr(e, 0x24, 32032, 0); w32(e, 0x20, tid); n = call(fd, e, 0x24, rep, sizeof rep); CHECK(r32(rep, 0x24) == 1);
+		hdr(e, 0x28, 32031, 0); w32(e, 0x20, 0x7fff0000); CHECK(rc(fd, e, 0x28) == 1007);
+		uint8_t l[0x18]; hdr(l, 0x18, 32035, 0);
+		static uint8_t big[0x400]; n = call(fd, l, 0x18, big, sizeof big);
+		CHECK(n == 0x38 + (int)r32(big, 0x28) && r32(big, 0x34) >= 1 && r32(big, 0x28) == r32(big, 0x34) * 0x34);
+		{ int found = 0; for (uint32_t i = 0; i < r32(big, 0x34); i++) if (r32(big, 0x38 + i * 0x34) == tid) { found = 1; CHECK(r32(big, 0x38 + i * 0x34 + 4) == 1 && r32(big, 0x38 + i * 0x34 + 0x1c) == 1); } CHECK(found); }
+		uint8_t o[0x2c]; memset(o, 0, sizeof o); hdr(o, 0x2c, 32040, 0); CHECK(rc(fd, o, 0x2c) == 0x3eb);       /* not an Apple internal build */
+		uint8_t tm[0x24]; hdr(tm, 0x24, 32036, 0); float five = 50.0f; memcpy(tm + 0x20, &five, 4); CHECK(rc(fd, tm, 0x24) == 0);
+		uint8_t gt[0x18]; hdr(gt, 0x18, 32037, 0); n = call(fd, gt, 0x18, rep, sizeof rep);
+		{ float got; memcpy(&got, rep + 0x24, 4); CHECK(n == 0x28 && got == 10.0f); }                           /* clamped to 10 */
+		hdr(e, 0x24, 32030, 0); w32(e, 0x20, tid); CHECK(rc(fd, e, 0x24) == 0);
+		hdr(e, 0x24, 32032, 0); w32(e, 0x20, tid); CHECK(rc(fd, e, 0x24) == 1007);                              /* released */
+		hdr(e, 0x24, 32030, 0); w32(e, 0x20, tid); CHECK(rc(fd, e, 0x24) == 1007);
+	}
 	ws_server_quit(c);
 	printf(failures ? "%d failures\n" : "window extension routines: all checks passed\n", failures);
 	return failures != 0;

@@ -33,6 +33,7 @@ int main(int argc, char **argv)
 		if (sscanf(line, "id=%d reqsize=%d reply_id=%d bits=%x size=%d hex=%7999s", &id, &rq, &rid, &bits, &size, hex) < 5 || rq != 0x18) continue;
 		if (id >= 29000 && id < 29042) continue;                                 /* the session subsystem lives on another port */
 		if (is_env(id)) continue;
+		if (id == 32035 || id == 32037) continue;                                /* event tap list / timeout: served on the server port (dedicated handlers); the record is the connection port's -303 */
 		if (id == 32003) continue;                                               /* GetDebugOptions is served on the server port (dedicated handler); the record is the connection port's -303 */
 		if (id == 32006 || id == 34006) continue;                                /* served now (two / three shared memory descriptors); the record is the unprivileged error reply */
 		mach_msg_header_t req; memset(&req, 0, sizeof req);

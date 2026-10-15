@@ -19,7 +19,7 @@ Product: `make install` / `make package`, rc.d script, `wsstart`, `wsd(8)`.
 
 ## Not done
 - Routines needing more of the system: menu bar, display wall / HMD, selective sharing, capture streams, session management beyond the single session.
-- Event taps (`PlaceTap` ...): the pipeline to the tapping process is not implemented.
+- Event taps: the registry is real (PlaceTap, PlaceTapOnConnection, Release, Enable, IsEnabled, GetEventTapList, timeout, option; `src/sls_tap.c`), but events are not handed to the tapping process (no tap reply port).
 - Window transforms are rendered by the software compositor (affine about the centre, nearest sample; GL path not yet), CIFilters are stored but not rendered; the cursor scale is.
 - KMS / GPU paths compile and run in a VM (software and Mesa llvmpipe) but have never run on real hardware.
 - No Quartz (CoreGraphics / Core Animation) and no AppKit of Apple: no Cocoa application has run on it; the Terminal probe shows what is missing (`../terminal/docs/GAPS.md`).
