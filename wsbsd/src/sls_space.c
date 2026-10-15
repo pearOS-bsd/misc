@@ -2,6 +2,11 @@
  * Not modelled: the managed displays a space is bound to, owners, shapes and tiles. */
 #include "wsd_priv.h"
 #include "bplist.h"
+#include "ws_region.h"
+
+extern int wsd_screen_w, wsd_screen_h;
+#define DISPLAY_UUID "07230EFA-7A8D-4E37-845C-19CC8737EEF5"      /* the display's identifier as the recorded server reports it (a fixed stand-in here) */
+static const uint8_t display_uuid_bytes[16] = { 0x07,0x23,0x0e,0xfa,0x7a,0x8d,0x4e,0x37,0x84,0x5c,0x19,0xcc,0x87,0x37,0xee,0xf5 };
 #include <stdlib.h>
 #include <string.h>
 
@@ -112,12 +117,11 @@ int sls_space_dispatch(conn *c, const uint8_t *buf, size_t len)
 		if (i < 0) return reply_simple(c->fd, h, 0x3f2);
 		return reply_value(c->fd, h, (int32_t)sp[i].type);
 	}
-	case SLS_MSG_SpaceCopyName: {                                                  /* id u64@0x20, size 0x28; reply pad4(len + 1) + 0x2c: 0@0x24, length + 1@0x28, the name from 0x2c; 1010 for an unknown space, 1000 for a space without a name */
+	case SLS_MSG_SpaceCopyName: {                                                  /* id u64@0x20, size 0x28; reply pad4(len + 1) + 0x2c: 0@0x24, length + 1@0x28, the name from 0x2c (the default space has the empty name, recorded); 1010 for an unknown space */
 		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
 		uint64_t id; memcpy(&id, buf + 0x20, 8);
 		int i = sp_find(id);
 		if (i < 0) return reply_simple(c->fd, h, 0x3f2);
-		if (!sp[i].name[0]) return reply_simple(c->fd, h, 1000);
 		uint32_t n = (uint32_t)strlen(sp[i].name) + 1, size = ((n + 3) & ~3u) + 0x2c;
 		uint8_t *r = calloc(1, size); if (!r) return reply_simple(c->fd, h, 1000);
 		fill_reply_header((mach_msg_header_t *)r, h, size, 0);
@@ -161,7 +165,7 @@ int sls_space_dispatch(conn *c, const uint8_t *buf, size_t len)
 		static const char *dk[3] = { "Current Space", "Spaces", "Display Identifier" };
 		bp_node dkey[3], *dkeyp[3]; for (int k = 0; k < 3; k++) { dkey[k] = (bp_node){ BP_STR, dk[k], 0, NULL, NULL, 0, -1 }; dkeyp[k] = &dkey[k]; }
 		arr = (bp_node){ BP_ARRAY, NULL, 0, spaces, NULL, nsp, -1 };
-		bp_node dispid = (bp_node){ BP_STR, "5A42259C-47B8-4590-9762-97DBE4FE7F1B", 0, NULL, NULL, 0, -1 };
+		bp_node dispid = (bp_node){ BP_STR, DISPLAY_UUID, 0, NULL, NULL, 0, -1 };
 		bp_node *dv[3] = { cur ? cur : &arr, &arr, &dispid };
 		disp = (bp_node){ BP_DICT, NULL, 0, dv, dkeyp, 3, -1 };
 		bp_node *tv[1] = { &disp }; top = (bp_node){ BP_ARRAY, NULL, 0, tv, NULL, 1, -1 };
@@ -175,6 +179,78 @@ int sls_space_dispatch(conn *c, const uint8_t *buf, size_t len)
 		int rc = ws_ipc_send(c->fd, v, 2, NULL, 0);
 		free(pl);
 		return rc;
+	}
+	case SLS_MSG_SpaceCopyValues: {                                                /* id u64@0x20, size 0x28; reply complex 0x38: OOL bplist dictionary (id64, ManagedSpaceID, type, uuid; values stored by SpaceSetValues are returned as set); 1010 for an unknown space */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		uint64_t id; memcpy(&id, buf + 0x20, 8);
+		int i = sp_find(id);
+		if (i < 0) return reply_simple(c->fd, h, 0x3f2);
+		uint8_t *pl = NULL; size_t pn;
+		if (sp[i].values && sp[i].vlen) { pl = malloc(sp[i].vlen); if (!pl) return reply_simple(c->fd, h, 1000); memcpy(pl, sp[i].values, sp[i].vlen); pn = sp[i].vlen; }
+		else {
+			static const char *k4[4] = { "id64", "ManagedSpaceID", "type", "uuid" };
+			bp_node key[4], *keyp[4], v0 = { BP_INT, NULL, sp[i].id, NULL, NULL, 0, -1 }, v1 = v0, v2 = { BP_INT, NULL, sp[i].type, NULL, NULL, 0, -1 }, v3 = { BP_STR, "", 0, NULL, NULL, 0, -1 };
+			for (int k = 0; k < 4; k++) { key[k] = (bp_node){ BP_STR, k4[k], 0, NULL, NULL, 0, -1 }; keyp[k] = &key[k]; }
+			bp_node *vals[4] = { &v0, &v1, &v2, &v3 };
+			bp_node d = { BP_DICT, NULL, 0, vals, keyp, 4, -1 };
+			pn = bp_serialize(&d, &pl);
+		}
+		uint8_t m[0x38]; memset(m, 0, sizeof m);
+		fill_reply_header((mach_msg_header_t *)m, h, sizeof m, 1);
+		wr32(m, 0x18, 1); m[0x24] = 1; m[0x25] = 1; m[0x27] = 1; wr32(m, 0x28, (uint32_t)pn); memcpy(m + 0x2c, &WS_NDR, 8); wr32(m, 0x34, (uint32_t)pn);
+		struct iovec v[2] = { { m, sizeof m }, { pl, pn } };
+		int rc = ws_ipc_send(c->fd, v, 2, NULL, 0);
+		free(pl);
+		return rc;
+	}
+	case SLS_MSG_SpaceCopyOwners:                                                  /* id u64@0x20, size 0x28; reply complex 0x38 with an empty out-of-line array (no owners, recorded) */
+	case SLS_MSG_SpaceCopyShape:                                                   /* the same, an empty shape */
+	case SLS_MSG_SpaceCopyManagedShape: {                                          /* ... and the managed shape: the display rectangle as a serialized region */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		uint64_t id; memcpy(&id, buf + 0x20, 8);
+		if (sp_find(id) < 0 && h->msgh_id != SLS_MSG_SpaceCopyOwners) return reply_simple(c->fd, h, 0x3f2);      /* an unknown space has no owners: an empty array (recorded) */
+		uint8_t reg[128]; size_t rn = 0;
+		if (h->msgh_id == SLS_MSG_SpaceCopyManagedShape) rn = ws_region_serialize(&(ws_rect){ 0, 0, wsd_screen_w, wsd_screen_h }, 1, reg, sizeof reg);
+		uint8_t m[0x38]; memset(m, 0, sizeof m);
+		fill_reply_header((mach_msg_header_t *)m, h, sizeof m, 1);
+		wr32(m, 0x18, 1); m[0x24] = 1; m[0x25] = 1; m[0x27] = 1; wr32(m, 0x28, (uint32_t)rn); memcpy(m + 0x2c, &WS_NDR, 8); wr32(m, 0x34, (uint32_t)rn);
+		struct iovec v[2] = { { m, sizeof m }, { reg, rn } };
+		return ws_ipc_send(c->fd, v, rn ? 2 : 1, NULL, 0);
+	}
+	case SLS_MSG_SpaceGetAbsoluteLevel: {                                          /* id u64@0x20, size 0x28; reply value 0 (recorded); 1010 for an unknown space */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		uint64_t id; memcpy(&id, buf + 0x20, 8);
+		if (sp_find(id) < 0) return reply_simple(c->fd, h, 0x3f2);
+		return reply_value(c->fd, h, 0);
+	}
+	case SLS_MSG_SpaceGetTransform: {                                              /* id u64@0x20, size 0x28; reply 0x40: ret, then the identity transform a b c d tx ty as floats and a flag byte 1 (recorded) */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		uint64_t id; memcpy(&id, buf + 0x20, 8);
+		if (sp_find(id) < 0) return reply_simple(c->fd, h, 0x3f2);
+		uint8_t r[0x40]; memset(r, 0, sizeof r);
+		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
+		memcpy(r + 0x18, &WS_NDR, sizeof WS_NDR);
+		float one = 1.0f; memcpy(r + 0x24, &one, 4); memcpy(r + 0x30, &one, 4); r[0x3c] = 1;
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
+	case SLS_MSG_CopyManagedDisplayForSpace: {                                     /* id u64@0x20, size 0x28; reply 0x34: the display's UUID (16 bytes); 1010 for an unknown space */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		uint64_t id; memcpy(&id, buf + 0x20, 8);
+		if (sp_find(id) < 0) return reply_simple(c->fd, h, 0x3e9);                  /* recorded: 1001 */
+		uint8_t r[0x34]; memset(r, 0, sizeof r);
+		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
+		memcpy(r + 0x18, &WS_NDR, sizeof WS_NDR); memcpy(r + 0x24, display_uuid_bytes, 16);
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
+	case SLS_MSG_SpaceGetRect: {                                                   /* id u64@0x20, size 0x28; reply 0x44: ret, then x y w h as doubles (the display rectangle, recorded) */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		uint64_t id; memcpy(&id, buf + 0x20, 8);
+		if (sp_find(id) < 0) return reply_simple(c->fd, h, 1000);                   /* recorded */
+		uint8_t r[0x44]; memset(r, 0, sizeof r);
+		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
+		memcpy(r + 0x18, &WS_NDR, sizeof WS_NDR);
+		double w = wsd_screen_w, hh = wsd_screen_h; memcpy(r + 0x34, &w, 8); memcpy(r + 0x3c, &hh, 8);
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
 	}
 	case SLS_MSG_SpaceGetAlpha: {                                                  /* id u64@0x20, size 0x28; reply value: the alpha as a float; 1010 for an unknown space */
 		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
