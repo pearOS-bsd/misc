@@ -38,7 +38,7 @@ int main(int argc, char **argv)
 		mach_msg_header_t req; memset(&req, 0, sizeof req);
 		req.msgh_bits = MACH_MSGH_BITS(MACH_MSG_TYPE_COPY_SEND, MACH_MSG_TYPE_MAKE_SEND_ONCE); req.msgh_size = sizeof req; req.msgh_remote_port = 1; req.msgh_local_port = 1; req.msgh_id = id;
 		struct iovec v = { &req, sizeof req };
-		uint8_t rep[0x400]; int fds[4], nf = 0;
+		uint8_t rep[0x4000]; int fds[4], nf = 0;
 		if (ws_ipc_send(fd, &v, 1, NULL, 0)) { printf("FAIL %d: send\n", id); fails++; continue; }
 		ssize_t n = ws_ipc_recv(fd, rep, sizeof rep, fds, &nf);
 		checked++;
@@ -70,7 +70,7 @@ int main(int argc, char **argv)
 		q->msgh_bits = MACH_MSGH_BITS(MACH_MSG_TYPE_COPY_SEND, MACH_MSG_TYPE_MAKE_SEND_ONCE); q->msgh_size = (uint32_t)rq; q->msgh_remote_port = 1; q->msgh_local_port = 1; q->msgh_id = id;
 		if (rq >= 0x20) { static const uint8_t ndr[8] = { 0, 0, 0, 0, 1, 0, 0, 0 }; memcpy(req + 0x18, ndr, 8); }
 		struct iovec iv = { req, (size_t)rq };
-		uint8_t rep[0x400]; int fds[4], nf = 0;
+		uint8_t rep[0x4000]; int fds[4], nf = 0;
 		if (ws_ipc_send(fd, &iv, 1, NULL, 0)) { printf("FAIL h%d: send\n", id); hfails++; continue; }
 		ssize_t n = ws_ipc_recv(fd, rep, sizeof rep, fds, &nf);
 		hchecked++;

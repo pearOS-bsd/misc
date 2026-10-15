@@ -46,8 +46,11 @@ int sls_harvest_reply(conn *c, const uint8_t *buf, size_t len)
 		uint8_t m[0x120]; memset(m, 0, sizeof m);
 		fill_reply_header((mach_msg_header_t *)m, h, r->size, r->complex);
 		memcpy(m + 0x18, r->body, r->body_len);
-		struct iovec v = { m, r->size };
-		return ws_ipc_send(c->fd, &v, 1, NULL, 0);
+		static const uint8_t zeros[0x1000];
+		uint32_t osz = r->complex && r->size >= 0x2c && m[0x27] == 1 ? rd32(m, 0x28) : 0;            /* an out-of-line payload the recording does not hold: zero bytes of the announced size follow */
+		if (osz > sizeof zeros) osz = sizeof zeros;
+		struct iovec v[2] = { { m, r->size }, { (void *)zeros, osz } };
+		return ws_ipc_send(c->fd, v, osz ? 2 : 1, NULL, 0);
 	}
 	return -2;
 }''')
