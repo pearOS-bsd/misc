@@ -882,6 +882,16 @@ int main(void)
 		hdr(m, 0x28, 30089, 0); w32(m, 0x20, w.id); w32(m, 0x24, 3); CHECK(rc(fd, m, 0x28) == 0);
 		hdr(m, 0x18, 30477, 0); CHECK(rc(fd, m, 0x18) == 0);
 	}
+	{ /* Core Image filters */
+		uint8_t bp[8 + 1 + 13], nm[0x38 + 24], rep[0x100]; memcpy(bp, "bplist00", 8); bp[8] = 0x5d; memcpy(bp + 9, "CIColorInvert", 13);
+		memset(nm, 0, sizeof nm); hdr(nm, 0x38, 30221, 1); w32(nm, 0x18, 1); nm[0x25] = 1; nm[0x27] = 1; w32(nm, 0x28, 22); memcpy(nm + 0x2c, &WS_NDR, 8); w32(nm, 0x34, 22); memcpy(nm + 0x38, bp, 22);
+		int n = call(fd, nm, 0x38 + 22, rep, sizeof rep); uint32_t fid = r32(rep, 0x24);
+		CHECK(n == 0x28 && r32(rep, 0x20) == 0 && fid != 0);
+		memcpy(nm + 0x38 + 9, "CIColorInvers", 13); CHECK(rc(fd, nm, 0x38 + 22) == 0x3ee);                 /* not a known filter */
+		uint8_t sw[0x2c]; memset(sw, 0, sizeof sw); hdr(sw, 0x2c, 30224, 0); w32(sw, 0x20, w.id); w32(sw, 0x24, fid); w32(sw, 0x28, 0x100); CHECK(rc(fd, sw, 0x2c) == 0);
+		w32(sw, 0x28, 0); CHECK(rc(fd, sw, 0x2c) == 0);
+		uint8_t rl[0x24]; memset(rl, 0, sizeof rl); hdr(rl, 0x24, 30222, 0); w32(rl, 0x20, fid); CHECK(rc(fd, rl, 0x24) == 0);
+	}
 	{ /* event taps: place, query, enable, list, release (layouts from the decompiled routines) */
 		uint8_t q[0x44], rep[0x200]; memset(q, 0, sizeof q);
 		hdr(q, 0x44, 32028, 1); w32(q, 0x18, 1); w32(q, 0x1c, 0x777); q[0x26] = 0x11; memcpy(q + 0x28, "\0\0\0\0\1\0\0\0", 8);
