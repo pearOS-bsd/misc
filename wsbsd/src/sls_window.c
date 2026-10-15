@@ -436,7 +436,8 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		if (osz < 0) return reply_simple(c->fd, h, err);
 		if ((uint32_t)osz != rd32(buf, 0x38)) return reply_simple(c->fd, h, -300);
 		uint32_t wid = rd32(buf, 0x34); uint64_t id; memcpy(&id, buf + 0x3c, 8);
-		if (ws_window_exists(srv, wid)) {
+		if (!ws_window_exists(srv, wid)) return reply_simple(c->fd, h, 1000);        /* recorded on a macOS runner */
+		{
 			ws_rect *rc = NULL; int nr = 0; ws_rect bb;
 			if (osz && ws_region_parse(buf + 0x50, (uint32_t)osz, &rc, &nr, &bb) == 0) ws_tracking_set(srv, id, wid, rc, nr);
 			else ws_tracking_set(srv, id, wid, NULL, 0);
