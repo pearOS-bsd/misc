@@ -7,12 +7,23 @@
 #define NSYM 0x109
 static struct { int used; uint32_t owner; uint64_t id; uint16_t key, mods; uint32_t flags, type; int disabled; } hk[MAXHK];
 static struct { uint32_t owner; uint32_t mode; int used; } hkmode[64];
+/* the symbolic table: key = character code (0xffff: none), mods = key code, flags = modifier mask (the three values GetSymbolicHotKeyValue returns, in that order) */
 static struct { int valid; uint16_t key, mods; uint32_t flags; int enabled; } sym[NSYM];
+typedef struct { uint8_t valid; uint16_t chr, keycode; uint32_t mods; uint8_t enabled; } sym_default;
+extern const sym_default sls_sym_defaults[NSYM];       /* generated: a fresh session's table, recorded on a macOS runner */
+static int sym_ready;
+static void sym_init(void)
+{
+	if (sym_ready) return;
+	sym_ready = 1;
+	for (int i = 0; i < NSYM; i++) { sym[i].valid = sls_sym_defaults[i].valid; sym[i].key = sls_sym_defaults[i].chr; sym[i].mods = sls_sym_defaults[i].keycode; sym[i].flags = sls_sym_defaults[i].mods; sym[i].enabled = sls_sym_defaults[i].enabled; }
+}
 
 static int hk_find(uint32_t owner, uint64_t id) { for (int i = 0; i < MAXHK; i++) if (hk[i].used && hk[i].owner == owner && hk[i].id == id) return i; return -1; }
 
 int sls_symbolic_hotkey(uint32_t id, uint16_t *key, uint16_t *mods, uint32_t *flags, int *enabled)
 {
+	sym_init();
 	if (id >= NSYM) return -1;
 	if (key) *key = sym[id].key;
 	if (mods) *mods = sym[id].mods;
@@ -39,6 +50,7 @@ static int reply_u32x3(conn *c, const mach_msg_header_t *h, uint32_t a, uint32_t
 int sls_hotkey_dispatch(conn *c, const uint8_t *buf, size_t len)
 {
 	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
+	sym_init();
 	switch (h->msgh_id) {
 	case SLS_MSG_GetHotKey: {                                                      /* id u64@0x20, size 0x28; reply 0x30: key, modifiers, flags; 1007 when unknown */
 		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
@@ -53,14 +65,16 @@ int sls_hotkey_dispatch(conn *c, const uint8_t *buf, size_t len)
 		int i = hk_find(c->id, id);
 		for (int k = 0; k < MAXHK && i < 0; k++) if (!hk[k].used) i = k;
 		if (i < 0) return reply_simple(c->fd, h, 1000);
+		int fresh = !hk[i].used;
+		if (fresh) { hk[i].type = 6; hk[i].disabled = 0; }                           /* a new hot key has type 6 (the same value an unknown id answers) */
 		hk[i].used = 1; hk[i].owner = c->id; hk[i].id = id; hk[i].key = (uint16_t)rd32(buf, 0x28); hk[i].mods = (uint16_t)rd32(buf, 0x2c); hk[i].flags = rd32(buf, 0x30);
 		return reply_simple(c->fd, h, 0);
 	}
-	case SLS_MSG_GetHotKeyEnabled: {                                               /* id@0x20, size 0x28; reply value 1 when enabled, 0 when disabled or unknown */
+	case SLS_MSG_GetHotKeyEnabled: {                                               /* id@0x20, size 0x28; reply value 1 when enabled or unknown, 0 when disabled */
 		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
 		uint64_t id; memcpy(&id, buf + 0x20, 8);
 		int i = hk_find(c->id, id);
-		return reply_value(c->fd, h, i >= 0 && !hk[i].disabled);
+		return reply_value(c->fd, h, i < 0 || !hk[i].disabled);                       /* an unknown id reads as enabled (recorded on a macOS runner) */
 	}
 	case SLS_MSG_SetHotKeyEnabled: {                                               /* id@0x20, enabled@0x28, size 0x2c; 1007 when unknown */
 		if (!simple_ok(h, len, 0x2c)) return reply_simple(c->fd, h, -304);
@@ -78,12 +92,11 @@ int sls_hotkey_dispatch(conn *c, const uint8_t *buf, size_t len)
 		hk[i].used = 0;
 		return reply_simple(c->fd, h, 0);
 	}
-	case SLS_MSG_GetHotKeyType: {                                                  /* id@0x20, size 0x28; reply value type & 0x1f; 1007 when unknown */
+	case SLS_MSG_GetHotKeyType: {                                                  /* id@0x20, size 0x28; reply value type & 0x1f; 6 when unknown */
 		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
 		uint64_t id; memcpy(&id, buf + 0x20, 8);
 		int i = hk_find(c->id, id);
-		if (i < 0) return reply_simple(c->fd, h, 0x3ef);
-		return reply_value(c->fd, h, (int32_t)(hk[i].type & 0x1f));
+		return reply_value(c->fd, h, i < 0 ? 6 : (int32_t)(hk[i].type & 0x1f));       /* an unknown id answers 6 (recorded on a macOS runner) */
 	}
 	case SLS_MSG_SetHotKeyType: {                                                  /* id@0x20, type@0x28, size 0x2c; the type keeps its bits 1,2,3,5,6 and takes bits 0 and 4 from the request */
 		if (!simple_ok(h, len, 0x2c)) return reply_simple(c->fd, h, -304);
@@ -117,6 +130,7 @@ int sls_hotkey_dispatch(conn *c, const uint8_t *buf, size_t len)
 		if (!simple_ok(h, len, 0x30)) return reply_simple(c->fd, h, -304);
 		uint32_t id = rd32(buf, 0x20);
 		if (id >= NSYM) return reply_simple(c->fd, h, 0x3e9);
+		if (!rd32(buf, 0x24) && !rd32(buf, 0x28) && !rd32(buf, 0x2c)) return reply_simple(c->fd, h, 0x3e9);   /* all zero: refused (recorded; the real rule is not known) */
 		sym[id].valid = 1; sym[id].key = (uint16_t)rd32(buf, 0x24); sym[id].mods = (uint16_t)rd32(buf, 0x28); sym[id].flags = rd32(buf, 0x2c);
 		return reply_simple(c->fd, h, 0);
 	}
