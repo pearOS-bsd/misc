@@ -17,6 +17,22 @@ echo "== build done, libraries:"
 ls Source/obj 2>/dev/null | head
 find /tmp/gs/qc -name "libQuartzCore*" | head
 
+# the smallest Opal drawing, with and without libQuartzCore / GL on the link line
+cd "$WS"
+gmake wsd 2>&1 | tail -1
+OBJC_FLAGS="$(gnustep-config --objc-flags 2>/dev/null)"
+OBJC_LIBS="$(gnustep-config --base-libs 2>/dev/null)"
+LDP=/tmp/gs/qc/Source/QuartzCore.framework/Versions/0:/tmp/gs/qc/Source/QuartzCore.framework:/tmp/gs/opal/Source/obj:/tmp/gs/corebase/Source/obj:/usr/local/GNUstep/System/Library/Libraries:/usr/local/lib
+CSRC="src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c"
+cc -O1 -Iinclude $OBJC_FLAGS -I/usr/local/GNUstep/System/Library/Headers -o opal_min_plain demo/opal_min.m $CSRC -lopal -lgnustep-corebase $OBJC_LIBS -lcairo -lm 2>&1 | grep -E "error" | head -5
+cc -O1 -Iinclude $OBJC_FLAGS -I/usr/local/GNUstep/System/Library/Headers -o opal_min_qc demo/opal_min.m $CSRC -L/tmp/gs/qc/Source/QuartzCore.framework -lQuartzCore -lGL -lopal -lgnustep-corebase $OBJC_LIBS -lcairo -lm 2>&1 | grep -E "error" | head -5
+export WS_SOCKET=/tmp/wsd-min.sock
+./wsd -t -g 1024x700 >/tmp/wsd-min.log 2>&1 &
+MP=$!
+sleep 1
+echo "== opal_min plain:"; LD_LIBRARY_PATH=$LDP ./opal_min_plain 2>&1 | tail -3
+echo "== opal_min with QuartzCore+GL:"; LD_LIBRARY_PATH=$LDP ./opal_min_qc 2>&1 | tail -3
+kill $MP 2>/dev/null
 # the demo: a CALayer tree with animations drawn into a wsd window
 gmake install 2>&1 | tail -2
 cd "$WS"
