@@ -1,0 +1,18 @@
+connection id positive: 1
+new region: 0
+new window: 0 wid nonzero 1
+bounds: 0 100 200 300 150
+level: 0 0
+alpha: 0 1
+set level 5: 0
+level: 0 5
+set alpha 0.5: 0
+alpha: 0 0.5
+move: 0
+bounds: 0 400 500 300 150
+owner is us: 0 1
+order above: 0
+order out: 0
+release: 0
+bounds after release: 1000
+release again: 0
