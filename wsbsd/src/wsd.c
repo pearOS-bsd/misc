@@ -1173,6 +1173,7 @@ int main(int argc, char **argv)
 			if (fd == ls) {
 				int cfd = accept(ls, NULL, NULL);
 				if (cfd < 0) continue;
+				{ uid_t pu; gid_t pg; if (getpeereid(cfd, &pu, &pg) < 0 || (pu != geteuid() && pu != 0)) { close(cfd); continue; } }      /* defence in depth next to the socket's 0600 mode: only the server's user (or root) may connect */
 				conn *slot = conn_by_fd(-1);
 				if (!slot) { close(cfd); continue; }
 				memset(slot, 0, sizeof *slot); slot->fd = cfd; slot->efd = -1; slot->id = next_conn++; slot->pid = 0;
