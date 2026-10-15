@@ -71,9 +71,8 @@ sleep 4
 sleep 1
 ./wsshot appkit-click.ppm; python3 tools/ppm2png.py appkit-click.ppm appkit-click.png
 wait $HP
-echo ALERTBT
-timeout 60 lldb -b -o "br set -S runModal" -o "br set -S beginSheetModalForWindow:completionHandler:" -o 'run 6' -o 'bt 30' -o 'quit' -- ./hello 2>&1 | grep -v '^(lldb)\|wsd-back' | cut -c1-200 | tail -45
-echo ENDALERTBT
+timeout 60 lldb -b -o "br set -S runModal" -o "br set -S beginSheetModalForWindow:completionHandler:" -o 'run 6' -o 'bt 30' -o 'quit' -- ./hello 2>&1 | grep -v '^(lldb)\|wsd-back' | cut -c1-200 | tail -45 > /tmp/alert.log
 kill $WP 2>/dev/null
-grep -v '^(lldb)\|warning' /tmp/hello.log | tail -60; tail -5 /tmp/wsd.log
+grep -v '^(lldb)\|warning\|wsd-back: \(titlewindow\|setinput\|attach\|flush\|commit\|order\|ws_win\|setWindow\)' /tmp/hello.log | tail -25; tail -5 /tmp/wsd.log
+echo ALERTBT; cat /tmp/alert.log
 ls -l appkit.png
