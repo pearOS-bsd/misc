@@ -81,14 +81,13 @@ int main(int argc, char **argv)
 		for (int i = 0; i < 20 && ws_conn_next_pushed_event(c, 300, &e); i++) if (e.type == WS_EV_MOUSE_DOWN) { got = 1; break; }
 		ws_post_mouse_event(c, 2, 120 + 90, 100 + 323, 0, 1, 0);
 		if (got && e.x >= 30 && e.x < 150 && e.y >= H - 54 && e.y < H - 20) {
-			draw_button(g, CGRectMake(30, 20, 120, 34), 1);
-			CGContextSetRGBFillColor(g, 1, 0, 0, 1); CGContextFillRect(g, CGRectMake(200, 20, 40, 40));           /* experiment: does any new drawing land? */
-			fprintf(stderr, "opal_demo: before flush pixel(60,323)=%08x pixel(220,320)=%08x\n", ((uint32_t *)px->px)[323 * (px->stride / 4) + 60], ((uint32_t *)px->px)[320 * (px->stride / 4) + 220]);
-			CGContextFlush(g);
-			fprintf(stderr, "opal_demo: after flush pixel(220,320)=%08x\n", ((uint32_t *)px->px)[320 * (px->stride / 4) + 220]);
+			/* Opal's CGContextFlush ends a context's drawing: the next update uses a fresh bitmap context over the same shared memory */
+			CGContextRef g2 = CGBitmapContextCreate(px->px, W, H, 8, px->stride, rgb, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little);
+			draw_button(g2, CGRectMake(30, 20, 120, 34), 1);
+			CGContextFlush(g2); CGContextRelease(g2);
 			ws_rect btn = { 30, H - 54, 120, 34 };
 			int frc = ws_surface_flush(c, &w, sid, &btn);
-			fprintf(stderr, "opal_demo: pressed pixel(60,323)=%08x flush rc=%d\n", ((uint32_t *)px->px)[323 * (px->stride / 4) + 60], frc);
+			(void)frc;
 		}
 		char out2[256]; snprintf(out2, sizeof out2, "%s-click.ppm", out);
 		ws_screenshot_scene(c, out2);
