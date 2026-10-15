@@ -108,6 +108,13 @@ install: wsd tools_all
 	install -m 0644 include/ws.h include/ws_client.h include/ws_buffer.h include/ws_evrec.h include/ws_region.h include/ws_ipc.h include/sls_wire.h include/sls_msgids.h include/mach_compat.h include/SkyLight.h $(DESTDIR)$(PREFIX)/include/wsbsd/
 	install -m 0644 libwsclient.a $(DESTDIR)$(PREFIX)/lib/libwsclient.a
 
+VERSION ?= 0.1
+# a relocatable tarball of the installed tree (stage with DESTDIR, tar with the prefix as root)
+package:
+	rm -rf stage && $(MAKE) install DESTDIR=$(CURDIR)/stage PREFIX=$(PREFIX)
+	tar -czf wsbsd-$(VERSION)-$$(uname -s)-$$(uname -m).tar.gz -C stage .
+	rm -rf stage
+
 CLIENT_SRC = src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c
 libwsclient.a: $(CLIENT_SRC) $(HDRS)
 	for f in $(CLIENT_SRC); do $(CC) $(CFLAGS) -c -o $${f%.c}.client.o $$f || exit 1; done
@@ -127,4 +134,4 @@ demo: wsd test_window
 	OUT="$(OUT)" sh test/run_demo.sh
 
 clean:
-	rm -f libwsclient.a src/*.client.o wsshot wsclick wskey wsdrag test_generic wsd test_window test_interactive test_robust test_golden test_props test_shim test_compose test_region test_wire test_evrec test_buffer test_diff out.ppm window.ppm window.png
+	rm -rf stage wsbsd-*.tar.gz; rm -f libwsclient.a src/*.client.o wsshot wsclick wskey wsdrag test_generic wsd test_window test_interactive test_robust test_golden test_props test_shim test_compose test_region test_wire test_evrec test_buffer test_diff out.ppm window.ppm window.png
