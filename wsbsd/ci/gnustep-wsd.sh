@@ -126,13 +126,15 @@ EOT
 " WSD_DEBUG=1 timeout 40 lldb -b -o 'run' -o 'bt' -o 'quit' -- "$TD/Terminal-gnustep" >/tmp/terminal.log 2>&1) &
 		TP=$!
 		sleep 10
-		./wsshot terminal.ppm; python3 tools/ppm2png.py terminal.ppm terminal.png
+		{ echo "TERMINAL: screenshot"; ./wsshot terminal.ppm; echo "wsshot rc=$?"; python3 tools/ppm2png.py terminal.ppm terminal.png; echo "ppm2png rc=$?"; } >> /tmp/terminal-ci.txt 2>&1
 		./wskey 0 0 8; sleep 1
 		./wsshot terminal-key.ppm; python3 tools/ppm2png.py terminal-key.ppm terminal-key.png
+		ls -l terminal*.png >> /tmp/terminal-ci.txt 2>&1
 		kill $TP 2>/dev/null; pkill -f Terminal-gnustep 2>/dev/null
-		grep -v '^(lldb)\|warning\|wsd-back: ' /tmp/terminal.log | tail -25
+		{ echo "TERMINAL LOG:"; grep -v '^(lldb)' /tmp/terminal.log | grep -v 'wsd-back: \(titlewindow\|setinput\|flush\|commit\|order\|ws_win\|receivedEvent\|event type\)' | tail -40; } >> /tmp/terminal-ci.txt 2>&1
 	fi
 fi
 kill $WP 2>/dev/null
 grep -v '^(lldb)\|warning\|wsd-back: \(titlewindow\|setinput\|flush\|commit\|order\|ws_win\)' /tmp/hello.log | tail -40; tail -5 /tmp/wsd.log
 ls -l appkit.png
+echo '=== TERMINAL (terminal/) ==='; cat /tmp/terminal-ci.txt 2>/dev/null
