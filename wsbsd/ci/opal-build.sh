@@ -2,7 +2,7 @@
 # Builds GNUstep corebase (CoreFoundation) and Opal (CoreGraphics over Cairo) from source inside FreeBSD: the layer above SkyLight/wsd that a CoreGraphics demo needs.
 export IGNORE_OSVERSION=yes
 pkg search -o dispatch | head -5
-pkg install -y libdispatch gnustep-make gnustep-base cairo freetype2 fontconfig git png jpeg-turbo tiff pkgconf gmake lcms2 bzip2 icu libffi >/dev/null 2>&1 || true
+pkg install -y libdispatch gnustep-make gnustep-base cairo freetype2 fontconfig git png jpeg-turbo tiff pkgconf gmake lcms2 bzip2 icu libffi dejavu >/dev/null 2>&1 || true
 cat > /usr/local/libdata/pkgconfig/bzip2.pc <<EOP
 Name: bzip2
 Description: bzip2

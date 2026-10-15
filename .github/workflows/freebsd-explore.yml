@@ -24,3 +24,11 @@ jobs:
             export IGNORE_OSVERSION=yes
             pkg update -f >/dev/null 2>&1 || true
             ${{ github.event.inputs.cmd }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: explore-output
+          path: |
+            wsbsd/*.png
+            wsbsd/*.ppm
+          if-no-files-found: ignore
