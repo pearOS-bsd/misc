@@ -1,0 +1,32 @@
+/* The client API of SkyLight (the SLS and CGS functions) as wsbsd's shim implements it. Names, argument order and result codes follow the real library;
+ * the implementation (shim/skylight.c) speaks the SkyLight MIG protocol to wsd. */
+#ifndef WSBSD_SKYLIGHT_H
+#define WSBSD_SKYLIGHT_H
+#include <stdint.h>
+
+typedef int CGError;
+typedef int CGSConnectionID;
+typedef uint32_t CGSWindowID;
+typedef struct { double x, y; } SLPoint;
+typedef struct { double x, y, w, h; } SLRect;                    /* CGRect: origin then size */
+typedef struct CGSRegion *CGSRegionRef;
+
+int SLSMainConnectionID(void);
+CGError SLSNewConnection(int unused, CGSConnectionID *cid);
+CGError SLSReleaseConnection(CGSConnectionID cid);
+
+CGError CGSNewRegionWithRect(const SLRect *rect, CGSRegionRef *out);
+CGError SLSNewRegionWithRect(const SLRect *rect, CGSRegionRef *out);
+CGError CGSReleaseRegion(CGSRegionRef region);
+
+CGError SLSNewWindow(CGSConnectionID cid, int type, float x, float y, CGSRegionRef region, CGSWindowID *wid);
+CGError SLSReleaseWindow(CGSConnectionID cid, CGSWindowID wid);
+CGError SLSOrderWindow(CGSConnectionID cid, CGSWindowID wid, int mode, CGSWindowID relative);   /* mode: 1 above, -1 below, 0 out */
+CGError SLSMoveWindow(CGSConnectionID cid, CGSWindowID wid, const SLPoint *origin);
+CGError SLSSetWindowLevel(CGSConnectionID cid, CGSWindowID wid, int level);
+CGError SLSGetWindowLevel(CGSConnectionID cid, CGSWindowID wid, int *level);
+CGError SLSSetWindowAlpha(CGSConnectionID cid, CGSWindowID wid, float alpha);
+CGError SLSGetWindowAlpha(CGSConnectionID cid, CGSWindowID wid, float *alpha);
+CGError SLSGetWindowBounds(CGSConnectionID cid, CGSWindowID wid, SLRect *bounds);
+CGError SLSGetWindowOwner(CGSConnectionID cid, CGSWindowID wid, CGSConnectionID *owner);
+#endif

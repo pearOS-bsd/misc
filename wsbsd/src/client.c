@@ -231,6 +231,12 @@ static int wid_value(ws_conn *c, int id, uint32_t wid, int32_t *out)
 	return 0;
 }
 
+int ws_win_set_level(ws_conn *c, ws_win *w, int level)
+{
+	sls_level_req q; memset(&q, 0, sizeof q);
+	fill_header(&q.h, sizeof q, SLS_MSG_SetWindowLevel, 0); q.ndr = WS_NDR; q.wid = w->id; q.level = level;
+	return simple_call(c, &q, sizeof q);
+}
 int ws_win_get_level(ws_conn *c, ws_win *w, int *level) { int32_t v = 0; int rc = wid_value(c, SLS_MSG_GetWindowLevel, w->id, &v); if (!rc) *level = v; return rc; }
 int ws_win_get_alpha(ws_conn *c, ws_win *w, float *alpha) { int32_t v = 0; int rc = wid_value(c, SLS_MSG_GetWindowAlpha, w->id, &v); if (!rc) memcpy(alpha, &v, 4); return rc; }
 int ws_win_count(ws_conn *c, int cid) { int32_t v = 0; return wid_value(c, SLS_MSG_GetWindowCount, (uint32_t)cid, &v) ? -1 : v; }
@@ -267,7 +273,7 @@ int ws_poll_event(ws_conn *c, ws_win *w, ws_event *e)
 	int32_t a[1] = { (int32_t)w->id };
 	wsx_rep r;
 	if (wsx_call(c, WSX_NEXT_EVENT, a, 1, NULL, &r) || r.a[0] == WS_EV_NONE) return 0;
-	*e = (ws_event){ r.a[0], (ws_wid)r.a[1], r.a[2], r.a[3], r.a[4], r.a[5] };
+	*e = (ws_event){ .type = r.a[0], .wid = (ws_wid)r.a[1], .x = r.a[2], .y = r.a[3], .buttons = r.a[4], .key = r.a[5] };
 	return 1;
 }
 

@@ -19,3 +19,4 @@ test_robust
 lab-out/
 test_golden
 test_props
+test_shim
