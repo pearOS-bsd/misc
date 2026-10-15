@@ -22,6 +22,7 @@ typedef struct {
 	unsigned ev_head, ev_tail;
 	uint32_t owner;
 	int sublevel, event_mask;
+	uint64_t tags;
 	ws_surface *content;        /* borrowed */
 	ws_surface *front;          /* committed copy of the content: what is shown */
 	uint32_t content_id;
@@ -729,4 +730,14 @@ int ws_list_windows(ws_server *s, uint32_t owner, int onscreen, ws_wid *out, int
 	if (!onscreen) for (size_t i = 0; i < s->n; i++) if (!s->win[i].on_screen && (!owner || s->win[i].owner == owner)) { if (total < max) out[total] = s->win[i].id; total++; }
 	free(v);
 	return total;
+}
+
+uint64_t ws_window_tags(ws_server *s, ws_wid id) { window *w = get(s, id); return w ? w->tags : 0; }
+int ws_window_set_tags(ws_server *s, ws_wid id, uint64_t tags, int clear)
+{
+	window *w = get(s, id);
+	if (!w) return -1;
+	uint64_t n = clear ? (w->tags & ~tags) : (w->tags | tags);
+	if (n != w->tags) { w->tags = n; bump(s); }
+	return 0;
 }

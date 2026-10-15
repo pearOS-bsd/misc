@@ -43,4 +43,7 @@ CGError SLSObscureCursor(CGSConnectionID cid);
 CGError SLSRevealCursor(CGSConnectionID cid);
 CGError SLSGetCursorScale(CGSConnectionID cid, float *scale);
 CGError SLSGetOnScreenWindowList(CGSConnectionID cid, CGSConnectionID owner, int max, uint32_t *list, int *count);
+CGError SLSSetWindowTags(CGSConnectionID cid, CGSWindowID wid, uint64_t *tags, int size);
+CGError SLSClearWindowTags(CGSConnectionID cid, CGSWindowID wid, uint64_t *tags, int size);
+CGError SLSGetWindowTags(CGSConnectionID cid, CGSWindowID wid, uint64_t *tags, int size);
 #endif

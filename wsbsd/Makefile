@@ -8,7 +8,7 @@ HDRS = include/ws_gl.h include/ws_buffer.h include/ws_evrec.h include/ws.h inclu
 OUT          = window
 # set by the `kms` target
 EXTRA_SRC    =
-FAMILIES     = src/sls_ext.c src/sls_session.c src/sls_window.c src/sls_golden.c src/sls_harvest.c
+FAMILIES     = src/sls_ext.c src/sls_session.c src/sls_window.c src/sls_transaction.c src/sls_golden.c src/sls_harvest.c
 EXTRA_CFLAGS =
 EXTRA_LIBS   =
 

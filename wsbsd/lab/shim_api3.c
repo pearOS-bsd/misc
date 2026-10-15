@@ -10,5 +10,6 @@ int main(void)
 	a.rel_win = dlsym(RTLD_DEFAULT, "SLSReleaseWindow"); a.order = dlsym(RTLD_DEFAULT, "SLSOrderWindow");
 	a.hide = dlsym(RTLD_DEFAULT, "SLSHideCursor"); a.show = dlsym(RTLD_DEFAULT, "SLSShowCursor"); a.obscure = dlsym(RTLD_DEFAULT, "SLSObscureCursor"); a.reveal = dlsym(RTLD_DEFAULT, "SLSRevealCursor");
 	a.scale = dlsym(RTLD_DEFAULT, "SLSGetCursorScale"); a.onscreen_list = dlsym(RTLD_DEFAULT, "SLSGetOnScreenWindowList");
+	a.set_tags = dlsym(RTLD_DEFAULT, "SLSSetWindowTags"); a.get_tags = dlsym(RTLD_DEFAULT, "SLSGetWindowTags"); a.clear_tags = dlsym(RTLD_DEFAULT, "SLSClearWindowTags");
 	return run_api3(&a);
 }

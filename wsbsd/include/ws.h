@@ -66,6 +66,8 @@ int ws_window_alpha(ws_server *, ws_wid, float *alpha);
 int ws_count_owned(ws_server *, uint32_t owner);
 int ws_count_onscreen_owned(ws_server *, uint32_t owner);
 int ws_window_exists(ws_server *, ws_wid);
+uint64_t ws_window_tags(ws_server *, ws_wid);                  /* window tag bits (0 for an unknown window) */
+int ws_window_set_tags(ws_server *, ws_wid, uint64_t tags, int clear);   /* set or clear bits */
 /* front-to-back list of windows (owner 0: all owners); onscreen: only ordered-in windows, else the others follow in creation order. Returns the total, fills up to max. */
 int ws_list_windows(ws_server *, uint32_t owner, int onscreen, ws_wid *out, int max);
 int ws_window_on_screen(ws_server *, ws_wid);                 /* 1 when ordered in */
