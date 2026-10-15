@@ -15,7 +15,10 @@ int main(int argc, char **argv)
 	if (variant == 0) { CGContextSetRGBFillColor(g, 0, 0.5, 1, 1); CGContextFillRect(g, CGRectMake(0, 0, 100, 100)); }                          /* one small rect */
 	else if (variant == 1) { CGContextSetRGBFillColor(g, 0, 0.5, 1, 1); CGContextFillRect(g, CGRectMake(0, 0, W, H)); }                       /* the whole buffer */
 	else if (variant == 2) { for (int y = 0; y < H; y++) { CGContextSetRGBFillColor(g, 0.1 + 0.25 * y / H, 0.16, 0.35, 1); CGContextFillRect(g, CGRectMake(0, y, W, 1)); } }   /* one-pixel bands, as opal_demo */
-	else { CGContextSetRGBFillColor(g, 0, 0.5, 1, 1); CGContextBeginPath(g); CGContextAddRect(g, CGRectMake(0, 0, 200, 200)); CGContextFillPath(g); }   /* a path fill */
+	else if (variant == 3) { CGContextSetRGBFillColor(g, 0, 0.5, 1, 1); CGContextBeginPath(g); CGContextAddRect(g, CGRectMake(0, 0, 200, 200)); CGContextFillPath(g); }   /* a path fill */
+	else if (variant == 4) { CGContextSelectFont(g, "DejaVu Sans", 15, kCGEncodingMacRoman); CGContextSetRGBFillColor(g, 0, 0.5, 1, 1); CGContextFillRect(g, CGRectMake(0, 0, W, H)); }   /* a font selected first */
+	else if (variant == 5) { CGContextSetRGBFillColor(g, 0, 0.5, 1, 1); CGContextFillRect(g, CGRectMake(0, 0, W, H)); CGContextSelectFont(g, "DejaVu Sans", 15, kCGEncodingMacRoman); CGContextSetRGBFillColor(g, 1, 1, 1, 1); CGContextShowTextAtPoint(g, 10, 10, "hi", 2); }
+	else { CGContextSetRGBFillColor(g, 0, 0.5, 1, 1); CGContextBeginPath(g); CGContextAddArc(g, 120, 130, 70, 0, 6.28318, 0); CGContextClosePath(g); CGContextFillPath(g); }   /* an arc path as the demo draws
 	long nz0 = 0, nz1 = 0, nz2 = 0;
 	#define COUNT(v) do { v = 0; for (int y = 0; y < H; y++) for (int x = 0; x < W; x++) if (((uint32_t *)(px->px + y * px->stride))[x]) v++; } while (0)
 	COUNT(nz0);                                  /* after drawing, before any flush */

@@ -30,7 +30,7 @@ export WS_SOCKET=/tmp/wsd-min.sock
 ./wsd -t -g 1024x700 >/tmp/wsd-min.log 2>&1 &
 MP=$!
 sleep 1
-echo "== opal_min plain variants:"; for v in 0 1 2 3; do LD_LIBRARY_PATH=$LDP ./opal_min_plain $v 2>&1 | tail -1; done
+echo "== opal_min plain variants:"; for v in 0 1 2 3 4 5 6; do LD_LIBRARY_PATH=$LDP ./opal_min_plain $v 2>&1 | tail -1; done
 echo "== opal_min with QuartzCore+GL:"; LD_LIBRARY_PATH=$LDP ./opal_min_qc 2>&1 | tail -3
 kill $MP 2>/dev/null
 # the demo: a CALayer tree with animations drawn into a wsd window
