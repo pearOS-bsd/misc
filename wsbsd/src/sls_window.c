@@ -112,6 +112,13 @@ static int ool_multi(const mach_msg_header_t *h, const uint8_t *buf, size_t len,
 	return total == len ? 0 : -304;
 }
 
+/* Core Image filters (NewCIFilter / ReleaseCIFilter / SetCIFilterValues / SetWindowCIFilter): the filter is named by a property list string, "CIShapedWaterRipple" (type 1) or "CIColorInvert" (type 2) as the decompile compares it; kept per connection and per window, not rendered */
+#define MAXCIF 128
+static struct { uint32_t id, owner; int type; uint32_t refs; } cif[MAXCIF];
+static uint32_t next_cif = 1;
+static struct { uint32_t wid, fid; } win_cif[256];
+static int cif_find(uint32_t id) { for (int i = 0; i < MAXCIF; i++) if (cif[i].id == id) return i; return -1; }
+
 static uint32_t mouse_enable[64]; static uint32_t mouse_enable_wid[64];
 static uint32_t menubar_style; static uint8_t menubar_autohide, menubar_blurred;      /* menu bar state (a menu bar always exists on wsd's single display) */
 
@@ -471,6 +478,42 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 	}
 	case SLS_MSG_ReenableCursorObscure: {                                          /* size 0x18; always 0 here (the obscure count is not nested) */
 		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size != 0x18) return reply_simple(c->fd, h, -304);
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_NewCIFilter: {                                                    /* OOL plist string naming the filter; size repeated@0x34; size 0x38. Reply 0x28: the filter id@0x24; 1006 for a name that is not one of the two */
+		int err; int osz = ool_request(h, buf, len, 0x38, &err);
+		if (osz < 0) return reply_simple(c->fd, h, err);
+		if ((uint32_t)osz != rd32(buf, 0x34)) return reply_simple(c->fd, h, -300);
+		char nm[64]; int type = 0;
+		if (bp_string(buf + 0x38, (size_t)osz, nm, sizeof nm)) { if (!strcmp(nm, "CIShapedWaterRipple")) type = 1; else if (!strcmp(nm, "CIColorInvert")) type = 2; }
+		if (!type) return reply_simple(c->fd, h, 0x3ee);
+		int slot = -1; for (int i = 0; i < MAXCIF; i++) if (!cif[i].id) { slot = i; break; }
+		if (slot < 0) return reply_simple(c->fd, h, 1000);
+		cif[slot].id = next_cif++; cif[slot].owner = c->id; cif[slot].type = type; cif[slot].refs = 1;
+		uint8_t r[0x28]; memset(r, 0, sizeof r);
+		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
+		memcpy(r + 0x18, &WS_NDR, 8); wr32(r, 0x24, cif[slot].id);
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
+	case SLS_MSG_ReleaseCIFilter: {                                                /* filter id@0x20, size 0x24; only the creating connection releases; always 0 */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		int i = cif_find(rd32(buf, 0x20));
+		if (i >= 0 && cif[i].owner == c->id) { cif[i].owner = 0; if (cif[i].refs <= 1) memset(&cif[i], 0, sizeof cif[i]); else cif[i].refs--; }
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_SetCIFilterValues: {                                              /* OOL plist dict of input values; filter id@0x34, size repeated@0x38; size 0x3c; 1003 without a connection; always 0 otherwise */
+		int err; int osz = ool_request(h, buf, len, 0x3c, &err);
+		if (osz < 0) return reply_simple(c->fd, h, err);
+		if ((uint32_t)osz != rd32(buf, 0x38)) return reply_simple(c->fd, h, -300);
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_SetWindowCIFilter: {                                              /* wid@0x20, filter id@0x24, flags@0x28 (0: remove the window's filter; bit 8: drop the window's other filters first), size 0x2c; rights 4; always 0 */
+		if (!simple_ok(h, len, 0x2c)) return reply_simple(c->fd, h, -304);
+		uint32_t wid = rd32(buf, 0x20), fid = rd32(buf, 0x24), fl = rd32(buf, 0x28);
+		if (ws_window_exists(srv, wid) && holds_rights(c, wid) && cif_find(fid) >= 0) {
+			int slot = -1; for (int i = 0; i < 256; i++) { if (win_cif[i].wid == wid) { slot = i; break; } if (slot < 0 && (!win_cif[i].wid || !ws_window_exists(srv, win_cif[i].wid))) slot = i; }
+			if (slot >= 0) { if (fl == 0) { if (win_cif[slot].fid == fid) memset(&win_cif[slot], 0, sizeof win_cif[slot]); } else if ((fl & 0x100) || !win_cif[slot].fid || win_cif[slot].wid != wid) { win_cif[slot].wid = wid; win_cif[slot].fid = fid; } }
+		}
 		return reply_simple(c->fd, h, 0);
 	}
 	case SLS_MSG_GetWindowShmemReference: {                                        /* wid@0x20, size 0x24; reply complex 0x3c: one port descriptor (the window's memory entry; no descriptor is passed here), the return code overlays its pad word, NDR@0x28, then owner / rights / sharing state as GetWindowOwner reports them; 1000 for an unknown window */
