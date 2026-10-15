@@ -321,6 +321,13 @@ int wsd_remove_surface(conn *c, uint32_t wid, uint32_t sid)
 	return 0;
 }
 
+int wsd_remove_all_surfaces(conn *c, uint32_t wid)
+{
+	if (!ws_window_exists(srv, wid) || !holds_rights(c, wid)) return 1000;            /* needs write access to the window */
+	for (int i = 0; i < MAXSURF; i++) if (surfs[i].used && surfs[i].wid == wid) { surf_unbind(&surfs[i]); surfs[i].used = 0; }
+	return 0;
+}
+
 int wsd_bind_surface(conn *c, uint32_t wid, uint32_t sid, int kind, uint32_t a, uint32_t bid)
 {
 	if (!holds_rights(c, wid)) return CGS_ERROR_FAILURE;
@@ -782,6 +789,19 @@ static int deliver_to_process(conn *t, const uint8_t *rec, size_t n)
 	return ws_window_post(srv, ids[0], &e);
 }
 
+/* PostEventRecordTo (30120): request = header, NDR, PSN (hi@0x20, lo@0x24), n@0x28 (<= 0x4000), the record@0x2c, size pad4(n) + 0x2c. -304 for a bad size, -600 when no process has that PSN. */
+static int do_post_event_record_to(conn *c, const uint8_t *buf, size_t len)
+{
+	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
+	if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size < 0x2c || h->msgh_size > 0x402c) return reply_simple(c->fd, h, -304);
+	uint32_t n = rd32(buf, 0x28);
+	if (n > 0x4000 || n > h->msgh_size - 0x2c || h->msgh_size != ((n + 3) & ~3u) + 0x2c) return reply_simple(c->fd, h, -304);
+	conn *t = process_for_psn(rd32(buf, 0x24), rd32(buf, 0x20));
+	if (!t) return reply_simple(c->fd, h, -600);
+	if (n) deliver_to_process(t, buf + 0x2c, n);
+	return reply_simple(c->fd, h, 0);
+}
+
 static int do_post_tap_data(conn *c, const uint8_t *buf, size_t len, int ool)
 {
 	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
@@ -906,6 +926,7 @@ static int dispatch(conn *c, uint8_t *buf, size_t len, int *fds, int nfds)
 	if (h->msgh_id == SLS_MSG_FlushSurface) { dirty = 1; return do_flush_surface(c, buf, len); }
 	if (h->msgh_id == WSX_BUFFER_RELEASE) return do_buffer_release(c, buf, len);
 	if (h->msgh_id == SLS_MSG_PostEventRecord) { dirty = 1; return do_post_event(c, buf, len); }
+	if (h->msgh_id == SLS_MSG_PostEventRecordTo) { dirty = 1; return do_post_event_record_to(c, buf, len); }
 	if (h->msgh_id == SLS_MSG_PostFilteredEventTapData || h->msgh_id == SLS_MSG_PostFilteredEventTapDataSync) { dirty = 1; return do_post_tap_data(c, buf, len, 0); }
 	if (h->msgh_id == SLS_MSG_PostFilteredEventTapDataOOL) { dirty = 1; return do_post_tap_data(c, buf, len, 1); }
 	if ((h->msgh_id >= 29000 && h->msgh_id < 29042) || (h->msgh_id >= SLS_MSGID_BASE && h->msgh_id < SLS_MSGID_END) ||

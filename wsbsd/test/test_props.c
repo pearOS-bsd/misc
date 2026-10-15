@@ -43,6 +43,27 @@ int main(void)
 		got = call(fd, m, 0x30, rep, sizeof rep);
 		CHECK(got == 0x24 && r32(rep, 0x20) == (uint32_t)-304);
 	}
+	{ /* window routines: GetScreenRectForWindow, InvalidateWindowShadow, SynchronizeWindowBackingStore, RemoveAllSurfaces, PostEventRecordTo */
+		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 11, 22, 33, 44 }, 0, &tw) == 0 && ws_win_order(c, &tw, 1, 0) == 0);
+		uint8_t m[0x400], rep[0x100]; int got;
+		memset(m, 0, sizeof m); hdr(m, 0x24, 30028, 0); w32(m, 0x20, tw.id);
+		got = call(fd, m, 0x24, rep, sizeof rep);
+		{ float v[4]; memcpy(v, rep + 0x24, 16); CHECK(got == 0x34 && r32(rep, 0x20) == 0 && v[0] == 11 && v[1] == 22 && v[2] == 33 && v[3] == 44); }
+		memset(m, 0, sizeof m); hdr(m, 0x24, 30028, 0); w32(m, 0x20, 0x7ffff);
+		CHECK(rc(fd, m, 0x24) == 1000);
+		memset(m, 0, sizeof m); hdr(m, 0x24, 30023, 0); w32(m, 0x20, tw.id); CHECK(rc(fd, m, 0x24) == 0);
+		memset(m, 0, sizeof m); hdr(m, 0x24, 30086, 0); w32(m, 0x20, tw.id); CHECK(rc(fd, m, 0x24) == 0);
+		uint32_t sid = 0; CHECK(ws_surface_add(c, &tw, &sid) == 0 && sid);
+		memset(m, 0, sizeof m); hdr(m, 0x24, 30092, 0); w32(m, 0x20, tw.id); CHECK(rc(fd, m, 0x24) == 0);
+		int kind = -1; uint32_t ba = 0, bb = 0; CHECK(ws_surface_binding(c, &tw, sid, &kind, &ba, &bb) != 0);               /* the surface is gone */
+		memset(m, 0, sizeof m); hdr(m, 0x24, 30092, 0); w32(m, 0x20, 0x7ffff); CHECK(rc(fd, m, 0x24) == 1000);
+		uint8_t rec[512]; size_t rn = ws_evrec_make_key(rec, sizeof rec, 1, 13, 0, 0, 0, 0, 0, 0x0a); ws_event e; while (ws_conn_next_pushed_event(c, 0, &e)) {}
+		memset(m, 0, sizeof m); hdr(m, (uint32_t)(0x2c + ((rn + 3) & ~3u)), 30120, 0); w32(m, 0x20, (uint32_t)getpid()); w32(m, 0x24, 1); w32(m, 0x28, (uint32_t)rn); memcpy(m + 0x2c, rec, rn);
+		uint8_t *big = m; CHECK(rc(fd, big, 0x2c + ((rn + 3) & ~3u)) == 0);
+		CHECK(ws_conn_next_pushed_event(c, 500, &e) == 1 && e.type == WS_EV_KEY_DOWN && e.key == 13 && e.wid == tw.id);
+		w32(big, 0x20, 999999); CHECK(rc(fd, big, 0x2c + ((rn + 3) & ~3u)) == (int)(uint32_t)-600);
+		ws_win_order(c, &tw, 0, 0);
+	}
 	{ /* PostFilteredEventTapData, style 2 (SLEventPostToPid): the event reaches the process's frontmost window only */
 		ws_win pw; CHECK(ws_win_create(c, (ws_rect){ 300, 300, 100, 60 }, 0, &pw) == 0 && ws_win_order(c, &pw, 1, 0) == 0);
 		uint8_t rec[512]; size_t rn = ws_evrec_make_key(rec, sizeof rec, 1, 12, 0, 0, 0, 0, 0, 0x0a);

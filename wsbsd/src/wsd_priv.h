@@ -27,6 +27,7 @@ int holds_rights(const conn *c, uint32_t wid);
 
 int wsd_bind_surface(conn *c, uint32_t wid, uint32_t sid, int kind, uint32_t a, uint32_t b);   /* BindSurface semantics, returns the retcode */
 int wsd_remove_surface(conn *c, uint32_t wid, uint32_t sid);
+int wsd_remove_all_surfaces(conn *c, uint32_t wid);                             /* RemoveAllSurfaces: the retcode */
 
 /* Protocol families. Each returns -2 for an id it does not handle, otherwise the result of sending the reply (>= 0) or -1 to drop the connection. */
 int sls_ext_dispatch(conn *c, const uint8_t *buf, size_t len);
