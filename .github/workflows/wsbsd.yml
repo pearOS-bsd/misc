@@ -138,4 +138,6 @@ jobs:
             wsbsd/appkit-key.png
             wsbsd/appkit-resize.png
             wsbsd/sudoku.png
+            wsbsd/sudoku-cell.png
+            wsbsd/sudoku-menu.png
           if-no-files-found: warn

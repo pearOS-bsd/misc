@@ -87,6 +87,10 @@ if [ -n "$APP" ]; then
 	SP=$!
 	sleep 12
 	./wsshot sudoku.ppm; python3 tools/ppm2png.py sudoku.ppm sudoku.png
+	./wsclick 640 400; ./wsclick 20 700; sleep 1
+	./wsshot sudoku-cell.ppm; python3 tools/ppm2png.py sudoku-cell.ppm sudoku-cell.png
+	./wsclick 38 71; sleep 1
+	./wsshot sudoku-menu.ppm; python3 tools/ppm2png.py sudoku-menu.ppm sudoku-menu.png
 	kill $SP 2>/dev/null; pkill -f Sudoku 2>/dev/null
 	grep -v '^(lldb)\|warning\|wsd-back: \(titlewindow\|setinput\|flush\|commit\|order\|ws_win\)' /tmp/sudoku.log | tail -30
 fi
