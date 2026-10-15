@@ -113,3 +113,24 @@ jobs:
             wsbsd/opal-click.png
           if-no-files-found: warn
 
+  # AppKit above wsd: GNUstep gui with the wsd display backend (appkit/back-wsd), an AppKit window on the real compositor.
+  freebsd-appkit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build libs-back with the wsd server and run an AppKit program
+        uses: vmactions/freebsd-vm@v1
+        with:
+          release: "14.2"
+          arch: x86_64
+          usesh: true
+          run: |
+            sh wsbsd/ci/gnustep-wsd.sh 2>&1 | tail -60
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: freebsd-appkit-screenshot
+          path: wsbsd/appkit.png
+          if-no-files-found: warn
