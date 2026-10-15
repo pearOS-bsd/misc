@@ -105,7 +105,7 @@ if [ -n "$GAPP" ]; then
 	./wsshot gorm.ppm; python3 tools/ppm2png.py gorm.ppm gorm.png
 	./wsclick 38 51; sleep 1
 	./wsshot gorm-menu.ppm; python3 tools/ppm2png.py gorm-menu.ppm gorm-menu.png
-	./wsclick 160 52; sleep 4
+	./wsclick 150 72; sleep 5
 	./wsshot gorm-doc.ppm; python3 tools/ppm2png.py gorm-doc.ppm gorm-doc.png
 	kill $GP 2>/dev/null; pkill -f Gorm 2>/dev/null
 	grep -v '^(lldb)\|warning\|wsd-back: ' /tmp/gorm.log | tail -25
