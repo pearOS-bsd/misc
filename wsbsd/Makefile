@@ -26,6 +26,9 @@ test_generic: src/ipc.c test/test_generic.c $(HDRS)
 test_input: $(CORE) test/test_input.c $(HDRS) include/ws_input.h
 	$(CC) $(CFLAGS) -o $@ $(CORE) test/test_input.c $(LDLIBS)
 
+soak: src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/soak.c $(HDRS)
+	$(CC) $(CFLAGS) -o $@ src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/soak.c $(LDLIBS)
+
 test_golden: src/ipc.c test/test_golden.c $(HDRS)
 	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ src/ipc.c test/test_golden.c $(LDLIBS)
 
