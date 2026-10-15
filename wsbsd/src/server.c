@@ -47,6 +47,7 @@ struct ws_server {
 	ws_event_sink sink; void *sink_ctx;
 	uint64_t gen;
 	ws_surface *cursor_img; int cursor_hx, cursor_hy; uint32_t cursor_serial;
+	struct track { int used; uint64_t id; ws_wid wid; ws_rect *r; int n; int inside; } trk[64];
 	struct kf { uint32_t cid; int ids[8]; int n; } kf[32]; int nkf; int kf_next;      /* key focus list, [0] is the holder */
 	struct { uint32_t cid; int count; } hide[64]; int nhide; int obscured;
 };
@@ -220,6 +221,7 @@ int ws_count_owned(ws_server *s, uint32_t owner) { int n = 0; for (size_t i = 0;
 
 void ws_release_owner(ws_server *s, uint32_t owner)
 {
+	for (int i = 0; i < 64; i++) if (s->trk[i].used && ws_window_owner(s, s->trk[i].wid) == owner) { free(s->trk[i].r); memset(&s->trk[i], 0, sizeof s->trk[i]); }
 	for (int i = 0; i < s->nkf;) { if (s->kf[i].cid == owner) kf_remove_at_fwd(s, i); else i++; }       /* a dying connection loses key focus ... */
 	for (int i = 0; i < s->nhide; i++) if (s->hide[i].cid == owner && s->hide[i].count) { s->hide[i].count = 0; s->cursor_serial++; }   /* ... and its cursor hides */
 	for (size_t i = 0; i < s->n;) {
@@ -392,12 +394,15 @@ static void set_key_window(ws_server *s, ws_wid id)
 	if (n) post(n, WS_EV_FOCUS_IN, 0, 0, 0, 0);
 }
 
+static void track_update(ws_server *s, int x, int y);
+
 void ws_server_mouse(ws_server *s, int x, int y, int buttons)
 {
 	x = x < 0 ? 0 : x >= s->w ? s->w - 1 : x;
 	y = y < 0 ? 0 : y >= s->h ? s->h - 1 : y;
 	int moved = x != s->cx || y != s->cy, pressed = buttons & ~s->buttons, released = s->buttons & ~buttons;
 	s->cx = x; s->cy = y;
+	if (moved) track_update(s, x, y);
 	if (moved && s->obscured) { s->obscured = 0; s->cursor_serial++; }       /* an obscured cursor comes back when the mouse moves */
 	ws_wid target = s->grab ? s->grab : ws_find_window(s, x, y);
 	if (pressed && !s->grab && target) {                       /* click: raise within its level, focus, grab */
@@ -750,4 +755,45 @@ int ws_set_window_corner_radius(ws_server *s, ws_wid id, int radius)
 	radius = radius < 0 ? 0 : radius;
 	if (radius != w->corner_radius) { w->corner_radius = radius; bump(s); }
 	return 0;
+}
+
+/* ---- tracking regions ---- */
+static int track_contains(const struct track *t, int lx, int ly)
+{
+	for (int i = 0; i < t->n; i++) if (lx >= t->r[i].x && ly >= t->r[i].y && lx < t->r[i].x + t->r[i].w && ly < t->r[i].y + t->r[i].h) return 1;
+	return 0;
+}
+static void track_update(ws_server *s, int x, int y)
+{
+	ws_wid top = ws_find_window(s, x, y);
+	for (int i = 0; i < 64; i++) {
+		struct track *t = &s->trk[i];
+		if (!t->used) continue;
+		window *w = get(s, t->wid);
+		int in = w && top == t->wid && track_contains(t, x - w->frame.x, y - w->frame.y);
+		if (in == t->inside) continue;
+		t->inside = in;
+		if (w) post_ex(w, (ws_event){ in ? WS_EV_TRACK_ENTER : WS_EV_TRACK_EXIT, w->id, x - w->frame.x, y - w->frame.y, s->buttons, (int)(uint32_t)t->id, g_flags, 0, (int)(uint32_t)(t->id >> 32), 0 });
+	}
+}
+int ws_tracking_set(ws_server *s, uint64_t id, ws_wid wid, const ws_rect *rects, int n)
+{
+	struct track *t = NULL;
+	for (int i = 0; i < 64; i++) if (s->trk[i].used && s->trk[i].id == id) t = &s->trk[i];
+	for (int i = 0; i < 64 && !t; i++) if (!s->trk[i].used) t = &s->trk[i];
+	if (!t || !get(s, wid)) return -1;
+	free(t->r); t->r = NULL; t->n = 0;
+	if (n > 0) { t->r = malloc((size_t)n * sizeof *t->r); if (!t->r) return -1; memcpy(t->r, rects, (size_t)n * sizeof *t->r); t->n = n; }
+	t->used = 1; t->id = id; t->wid = wid; t->inside = 0;
+	track_update(s, s->cx, s->cy);                                 /* a region created under the pointer is entered at once */
+	return 0;
+}
+void ws_tracking_remove(ws_server *s, uint64_t id)
+{
+	for (int i = 0; i < 64; i++) if (s->trk[i].used && s->trk[i].id == id) { free(s->trk[i].r); memset(&s->trk[i], 0, sizeof s->trk[i]); }
+}
+int ws_tracking_set_shape(ws_server *s, uint64_t id, const ws_rect *rects, int n)
+{
+	for (int i = 0; i < 64; i++) if (s->trk[i].used && s->trk[i].id == id) return ws_tracking_set(s, id, s->trk[i].wid, rects, n);
+	return -1;
 }

@@ -208,6 +208,28 @@ int main(void)
 		dn = call(fd, q, 0x18, rep, sizeof rep);
 		CHECK(dn > 0x38 + 8 && memcmp(rep + 0x38, "bplist00", 8) == 0 && r32(rep, 0x34) == (uint32_t)(dn - 0x38));
 	}
+
+	/* tracking regions: entering and leaving a region of the window under the pointer is reported with the region id */
+	{
+		uint8_t reg[64]; size_t rn = ws_region_serialize(&(ws_rect){ 0, 0, 50, 50 }, 1, reg, sizeof reg);
+		uint8_t tm[0x58 + 64]; memset(tm, 0, sizeof tm); hdr(tm, 0x58, SLS_MSG_AddStructuralRegionOfType, 1);
+		w32(tm, 0x18, 1); tm[0x25] = 1; tm[0x27] = 1; w32(tm, 0x28, (uint32_t)rn); memcpy(tm + 0x2c, &WS_NDR, 8);
+		w32(tm, 0x34, 1); w32(tm, 0x38, w.id); w32(tm, 0x48, (uint32_t)rn); w32(tm, 0x50, 0x2339); memcpy(tm + 0x58, reg, rn);
+		CHECK(rc(fd, tm, 0x58 + rn) == 0);
+		ws_win_set_event_mask(c, &w, -1);
+		ws_event e; while (ws_conn_next_pushed_event(c, 20, &e)) { }
+		ws_post_mouse_event(c, 5, 40, 50, 0, 0, 0);                                      /* local (7, 6) inside the region */
+		int entered = 0, exited = 0;
+		for (int i = 0; i < 10 && ws_conn_next_pushed_event(c, 100, &e); i++) if (e.type == WS_EV_TRACK_ENTER && e.key == 0x2339 && e.wid == w.id) entered = 1;
+		ws_post_mouse_event(c, 5, 120, 100, 0, 0, 0);                                    /* still in the window, outside the region */
+		for (int i = 0; i < 10 && ws_conn_next_pushed_event(c, 100, &e); i++) if (e.type == WS_EV_TRACK_EXIT && e.key == 0x2339) exited = 1;
+		CHECK(entered && exited);
+		uint8_t rm[0x28]; memset(rm, 0, sizeof rm); hdr(rm, 0x28, SLS_MSG_RemoveStructuralRegion, 0); memcpy(rm + 0x18, &WS_NDR, 8); w32(rm, 0x20, 0x2339);
+		CHECK(rc(fd, rm, 0x28) == 0);
+		ws_post_mouse_event(c, 5, 40, 50, 0, 0, 0);
+		int again = 0; for (int i = 0; i < 5 && ws_conn_next_pushed_event(c, 60, &e); i++) if (e.type == WS_EV_TRACK_ENTER) again = 1;
+		CHECK(!again);                                                                    /* removed: no more events */
+	}
 	ws_server_quit(c);
 	printf(failures ? "%d failures\n" : "window extension routines: all checks passed\n", failures);
 	return failures != 0;
