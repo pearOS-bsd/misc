@@ -124,6 +124,16 @@ static void sw_over(ws_compositor *c, ws_surface *dst, int dx, int dy, const ws_
 	for (int y = y0; y < y1; y++) {
 		const uint8_t *sp = src->px + (size_t)(y - dy) * src->stride + (size_t)(x0 - dx) * 4;
 		uint8_t *dp = dst->px + (size_t)y * dst->stride + (size_t)x0 * 4;
+		if (o == 256) {                                           /* full opacity: opaque pixels are copied whole, transparent ones skipped, only the translucent ones are blended */
+			for (int x = x0; x < x1; x++, sp += 4, dp += 4) {
+				uint8_t a = sp[3];
+				if (a == 255) { memcpy(dp, sp, 4); continue; }
+				if (a == 0) continue;
+				uint32_t inv = 255 - a;
+				for (int k = 0; k < 4; k++) { uint32_t t = (uint32_t)dp[k] * inv, v = sp[k] + DIV255(t); dp[k] = (uint8_t)(v > 255 ? 255 : v); }
+			}
+			continue;
+		}
 		for (int x = x0; x < x1; x++, sp += 4, dp += 4) {
 			uint32_t s4[4];
 			for (int k = 0; k < 4; k++) s4[k] = o < 256 ? ((uint32_t)sp[k] * (uint32_t)o) >> 8 : sp[k];
