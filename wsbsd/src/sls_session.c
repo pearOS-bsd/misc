@@ -312,7 +312,9 @@ static int do_conn_state(conn *c, const uint8_t *buf, size_t len)
 		uint8_t r[0x30]; memset(r, 0, sizeof r);
 		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
 		memcpy(r + 0x18, &WS_NDR, sizeof WS_NDR);
-		wr32(r, 0x24, holds_rights(c, wid) ? 0x30007u : 0);                          /* the owner holds every right */
+		/* recorded on a macOS runner for the owner: held 1, held but reserved 0x30006, class 0x10000 (the window's sharing state is 1); a connection with no rights holds none */
+		if (holds_rights(c, wid)) { wr32(r, 0x24, 1); wr32(r, 0x28, 0x30006); }
+		wr32(r, 0x2c, 0x10000);
 		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
 	}
 	}
