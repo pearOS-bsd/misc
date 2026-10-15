@@ -162,13 +162,13 @@ int main(void)
 		hdr(m, 0x28, 30179, 0); CHECK(rc(fd, m, 0x28) == 0); w32(m, 0x20, 0x7ffff); CHECK(rc(fd, m, 0x28) == 0);
 		hdr(m, 0x24, 30178, 0); CHECK(rc(fd, m, 0x24) == -304);
 	}
-	{ /* spaces read back: CopySpaces (mask 7: all user spaces) lists the default space 1, SpaceGetType(1) is 0, SpaceCopyName of an unnamed space is 1000, an unknown space 1010 */
+	{ /* spaces read back: CopySpaces (mask 7: all user spaces) lists the default space 1, SpaceGetType(1) is 0, SpaceCopyName of the default space is the empty name, an unknown space 1010 */
 		uint8_t m[0x28], rep[0x200]; memset(m, 0, sizeof m); hdr(m, 0x24, 30324, 0); w32(m, 0x20, 7);
 		int g = call(fd, m, 0x24, rep, sizeof rep); uint32_t cnt = g >= 0x38 ? r32(rep, 0x34) : 0; int has1 = 0;
 		for (uint32_t i = 0; i < cnt && g >= (int)(0x38 + 8 * (i + 1)); i++) if (r32(rep, 0x38 + 8 * i) == 1 && r32(rep, 0x3c + 8 * i) == 0) has1 = 1;
 		CHECK(g >= 0x38 && cnt >= 1 && has1 && r32(rep, 0x28) == cnt * 8);
 		memset(m, 0, sizeof m); hdr(m, 0x28, 30335, 0); w32(m, 0x20, 1); CHECK(call(fd, m, 0x28, rep, sizeof rep) == 0x28 && r32(rep, 0x20) == 0 && r32(rep, 0x24) == 0);
-		hdr(m, 0x28, 30333, 0); CHECK(rc(fd, m, 0x28) == 1000);
+		hdr(m, 0x28, 30333, 0); CHECK(call(fd, m, 0x28, rep, sizeof rep) == 0x30 && r32(rep, 0x20) == 0 && r32(rep, 0x28) == 1 && rep[0x2c] == 0);   /* the default space has the empty name (recorded) */
 		hdr(m, 0x24, 30324, 0); w32(m, 0x20, 1); CHECK(call(fd, m, 0x24, rep, sizeof rep) == 0x38 && r32(rep, 0x34) == 0);          /* masks without the user bit select system spaces: none (recorded) */
 		w32(m, 0x20, 0x7777); hdr(m, 0x28, 30335, 0); CHECK(rc(fd, m, 0x28) == 0x3f2);
 	}
@@ -178,6 +178,17 @@ int main(void)
 		int g = call(fd, m, sizeof m, rep, sizeof rep); uint32_t pn = g >= 0x38 ? r32(rep, 0x28) : 0; int same = 1;
 		for (uint32_t i = 0; i < strlen(want) / 2 && same; i++) { unsigned v; sscanf(want + 2 * i, "%2x", &v); if (0x38 + i >= (uint32_t)g || rep[0x38 + i] != v) same = 0; }
 		CHECK(g >= 0x38 && pn == 201 && r32(rep, 0x34) == 201 && same && g == (int)(0x38 + pn));
+	}
+	{ /* the recorded space getters: values dictionary (92 bytes for the default space), empty owners, identity transform, the display rectangle and UUID */
+		uint8_t m[0x28], rep[0x400]; memset(m, 0, sizeof m); hdr(m, 0x28, 30330, 0); w32(m, 0x20, 1);
+		int g = call(fd, m, sizeof m, rep, sizeof rep); CHECK(g == 0x38 + 92 && r32(rep, 0x28) == 92 && memcmp(rep + 0x38, "bplist00", 8) == 0);
+		hdr(m, 0x28, 30339, 0); g = call(fd, m, sizeof m, rep, sizeof rep); CHECK(g == 0x38 && r32(rep, 0x28) == 0);
+		hdr(m, 0x28, 30345, 0); g = call(fd, m, sizeof m, rep, sizeof rep); float f[6]; memcpy(f, rep + 0x24, 24);
+		CHECK(g == 0x40 && f[0] == 1 && f[3] == 1 && f[1] == 0 && f[4] == 0 && f[5] == 0 && rep[0x3c] == 1);
+		hdr(m, 0x28, 30412, 0); g = call(fd, m, sizeof m, rep, sizeof rep); double d[2]; memcpy(d, rep + 0x34, 16); CHECK(g == 0x44 && d[0] > 0 && d[1] > 0);
+		hdr(m, 0x28, 30372, 0); g = call(fd, m, sizeof m, rep, sizeof rep); CHECK(g == 0x34 && rep[0x24] == 0x07 && rep[0x25] == 0x23);
+		hdr(m, 0x28, 30347, 0); CHECK(call(fd, m, sizeof m, rep, sizeof rep) == 0x28 && r32(rep, 0x24) == 0);
+		w32(m, 0x20, 0x777); hdr(m, 0x28, 30372, 0); CHECK(rc(fd, m, 0x28) == 0x3e9); hdr(m, 0x28, 30412, 0); CHECK(rc(fd, m, 0x28) == 1000);
 	}
 	{ /* GetWindowTransform: the identity for a window nothing transformed (recorded), 1000 for an unknown window, -304 for a bad size */
 		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 100, 200, 30, 20 }, 0, &tw) == 0);
