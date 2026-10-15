@@ -33,6 +33,7 @@ int ws_transaction_commit(ws_conn *, const uint8_t *stream, size_t n, int sync);
 int ws_win_set_frame(ws_conn *, ws_win *, ws_rect frame);        /* ShapeWindow: origin and size */
 int ws_win_set_resolution(ws_conn *, ws_win *, float scale);       /* SetWindowResolution (30279) */
 int ws_win_get_resolution(ws_conn *, ws_win *, float *scale);      /* GetWindowResolution (30280) */
+int ws_win_set_transform(ws_conn *, ws_win *, const float m[6]);   /* SetWindowTransform (30033): a b c d tx ty about the window centre */
 int ws_win_set_level(ws_conn *, ws_win *, int level);            /* SetWindowLevel (30012) */
 int ws_win_get_level(ws_conn *, ws_win *, int *level);          /* GetWindowLevel (30013) */
 int ws_win_get_alpha(ws_conn *, ws_win *, float *alpha);        /* GetWindowAlpha (30042) */

@@ -288,6 +288,14 @@ int ws_win_set_level(ws_conn *c, ws_win *w, int level)
 	fill_header(&q.h, sizeof q, SLS_MSG_SetWindowLevel, 0); q.ndr = WS_NDR; q.wid = w->id; q.level = level;
 	return simple_call(c, &q, sizeof q);
 }
+int ws_win_set_transform(ws_conn *c, ws_win *w, const float m[6])
+{
+	uint8_t q[0x44]; memset(q, 0, sizeof q);
+	fill_header((mach_msg_header_t *)q, sizeof q, SLS_MSG_SetWindowTransform, 0);
+	memcpy(q + 0x18, &WS_NDR, sizeof WS_NDR);
+	memcpy(q + 0x28, &w->id, 4); memcpy(q + 0x2c, m, 24);
+	return simple_call(c, q, sizeof q);
+}
 int ws_win_get_event_mask(ws_conn *c, ws_win *w, int *mask) { int32_t v = 0; int rc = wid_value(c, SLS_MSG_GetWindowEventMask, w->id, &v); if (!rc) *mask = v; return rc; }
 int ws_win_is_ordered_in(ws_conn *c, ws_win *w, int *in) { int32_t v = 0; int rc = wid_value(c, SLS_MSG_WindowIsOrderedIn, w->id, &v); if (!rc) *in = (uint8_t)v; return rc; }
 int ws_win_get_level(ws_conn *c, ws_win *w, int *level) { int32_t v = 0; int rc = wid_value(c, SLS_MSG_GetWindowLevel, w->id, &v); if (!rc) *level = v; return rc; }
