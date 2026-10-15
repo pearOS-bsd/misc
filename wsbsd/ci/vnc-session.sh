@@ -16,24 +16,24 @@ TD="$WS/../terminal"
 TERMINAL_COLS=110 TERMINAL_ROWS=30 TERMINAL_INITIAL_INPUT="neofetch
 " "$TD/Terminal-gnustep" >/tmp/terminal.log 2>&1 &
 sleep 3
-# the tunnel: a public host:port forwarded to the viewer port of this machine. First choice serveo.net (an ssh remote forward, needs a terminal for its banner), then bore.pub (pkg).
-rm -f /tmp/tunnel.log; ADDR=""
-ssh -tt -o BatchMode=yes -o StrictHostKeyChecking=no -o ServerAliveInterval=20 -o ExitOnForwardFailure=yes -R 5900:127.0.0.1:5900 serveo.net >/tmp/tunnel.log 2>&1 </dev/null &
+# the tunnel: a public host:port forwarded to the viewer port of this machine, through an ssh remote forward that needs no account: pinggy.io (tcp), then serveo.net
+rm -f /tmp/tunnel.log /tmp/tunnel2.log; ADDR=""
+ssh -tt -p 443 -o BatchMode=yes -o StrictHostKeyChecking=no -o ServerAliveInterval=20 -o ExitOnForwardFailure=yes -R0:127.0.0.1:5900 tcp@a.pinggy.io >/tmp/tunnel.log 2>&1 </dev/null &
 TP=$!
-i=0; while ! grep -q 'Forwarding' /tmp/tunnel.log 2>/dev/null && [ $i -lt 25 ]; do sleep 1; i=$((i + 1)); done
-if grep -q 'Forwarding' /tmp/tunnel.log; then ADDR="$(grep -o 'serveo.net:[0-9]*' /tmp/tunnel.log | head -1)"; else
-	kill $TP 2>/dev/null; echo "serveo: $(tr '\n\r' '  ' < /tmp/tunnel.log | cut -c1-200)"
-	if pkg install -y bore >/dev/null 2>&1 || pkg install -y bore-cli >/dev/null 2>&1; then
-		bore local 5900 --to bore.pub >/tmp/tunnel2.log 2>&1 &
-		TP=$!
-		i=0; while ! grep -q 'bore.pub:' /tmp/tunnel2.log 2>/dev/null && [ $i -lt 20 ]; do sleep 1; i=$((i + 1)); done
-		ADDR="$(grep -o 'bore.pub:[0-9]*' /tmp/tunnel2.log | head -1)"
-	else echo "bore is not available as a package"; fi
+i=0; while ! grep -q 'tcp://' /tmp/tunnel.log 2>/dev/null && [ $i -lt 25 ]; do sleep 1; i=$((i + 1)); done
+ADDR="$(grep -o 'tcp://[a-zA-Z0-9.-]*:[0-9]*' /tmp/tunnel.log | head -1 | sed 's|tcp://||')"
+if [ -z "$ADDR" ]; then
+	kill $TP 2>/dev/null; echo "pinggy: $(tr '\n\r' '  ' < /tmp/tunnel.log | cut -c1-240)"
+	ssh -tt -o BatchMode=yes -o StrictHostKeyChecking=no -o ServerAliveInterval=20 -o ExitOnForwardFailure=yes -R 5900:127.0.0.1:5900 serveo.net >/tmp/tunnel2.log 2>&1 </dev/null &
+	TP=$!
+	i=0; while ! grep -q 'Forwarding' /tmp/tunnel2.log 2>/dev/null && [ $i -lt 15 ]; do sleep 1; i=$((i + 1)); done
+	ADDR="$(grep -o 'serveo.net:[0-9]*' /tmp/tunnel2.log | head -1)"
+	[ -n "$ADDR" ] || echo "serveo: $(tr '\n\r' '  ' < /tmp/tunnel2.log | cut -c1-200)"
 fi
 echo
 echo "=========================================================="
 echo " VNC session, open for $MINUTES minutes"
-if [ -n "$ADDR" ]; then echo " address:  $ADDR"; else echo " no tunnel came up (serveo.net and bore.pub unreachable from here)"; fi
+if [ -n "$ADDR" ]; then echo " address:  $ADDR"; else echo " no tunnel came up (pinggy.io and serveo.net refused the forward)"; fi
 echo " password: $PW"
 echo " (use any VNC viewer; in the terminal try: neofetch, ls, Sudoku &, Gorm &)"
 echo "=========================================================="
