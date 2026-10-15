@@ -12,7 +12,7 @@ FAMILIES     = src/sls_ext.c src/sls_session.c src/sls_window.c src/sls_tap.c sr
 EXTRA_CFLAGS =
 EXTRA_LIBS   =
 
-all: wsd test_window test_interactive test_robust test_compose test_region test_wire test_evrec test_buffer test_diff
+all: wsd test_bplist test_window test_interactive test_robust test_compose test_region test_wire test_evrec test_buffer test_diff
 
 wsd: $(CORE) $(EXTRA_SRC) $(FAMILIES) src/wsd.c $(HDRS)
 	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ $(CORE) $(EXTRA_SRC) $(FAMILIES) src/wsd.c $(EXTRA_LIBS) $(LDLIBS) $$([ "$$(uname -s)" = Darwin ] || echo -lcrypto) -lz
@@ -31,6 +31,9 @@ soak: src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/bu
 
 test_golden: src/ipc.c test/test_golden.c $(HDRS)
 	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ src/ipc.c test/test_golden.c $(LDLIBS)
+
+test_bplist: test/test_bplist.c src/bplist.c $(HDRS)
+	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -Isrc -o $@ test/test_bplist.c src/bplist.c
 
 test_props: src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_props.c $(HDRS)
 	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_props.c $(EXTRA_LIBS) $(LDLIBS)
@@ -83,7 +86,7 @@ gl: clean
 full: clean
 	$(MAKE) wsd test_window EXTRA_SRC="src/backend_kms.c src/vt_switch.c src/compositor_gl.c" EXTRA_CFLAGS="-DWS_KMS -DWS_GL -DWS_GBM -DWS_EGL `pkg-config --cflags libdrm egl gbm glesv2`" EXTRA_LIBS="`pkg-config --libs libdrm egl gbm glesv2`"
 
-check: test_input test_compose test_region test_evrec test_buffer test_diff wsd test_wire test_interactive test_robust test_golden test_generic test_props test_shim test_shim2 test_shim3 test_shim4 test_shim2
+check: test_bplist test_input test_compose test_region test_evrec test_buffer test_diff wsd test_wire test_interactive test_robust test_golden test_generic test_props test_shim test_shim2 test_shim3 test_shim4 test_shim2
 	./test_input
 	./test_compose
 	./test_region
@@ -95,6 +98,7 @@ check: test_input test_compose test_region test_evrec test_buffer test_diff wsd 
 	sh test/run_robust.sh
 	sh test/run_golden.sh
 	sh test/run_one.sh test_generic
+	./test_bplist
 	sh test/run_one.sh test_props
 	sh test/run_shim.sh test_shim shim_basic
 	sh test/run_shim.sh test_shim2 shim_api2

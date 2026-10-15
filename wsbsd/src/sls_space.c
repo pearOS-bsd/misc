@@ -120,6 +120,19 @@ int sls_space_dispatch(conn *c, const uint8_t *buf, size_t len)
 		if (i >= 0) { free(sp[i].shape); sp[i].shape = osz ? malloc((size_t)osz) : NULL; sp[i].shape_len = 0; if (sp[i].shape) { memcpy(sp[i].shape, buf + 0x40, (size_t)osz); sp[i].shape_len = (uint32_t)osz; } }
 		return reply_simple(c->fd, h, 0);
 	}
+	case SLS_MSG_SpaceRemoveValuesForKeys: {                                       /* OOL plist (array of key strings); space id u64@0x34, size repeated@0x3c; size 0x40; takes those keys out of the space's values; always 0 */
+		osz = ool_request(h, buf, len, 0x40, &err);
+		if (osz < 0) return reply_simple(c->fd, h, err);
+		if ((uint32_t)osz != rd32(buf, 0x3c)) return reply_simple(c->fd, h, -300);
+		uint64_t id; memcpy(&id, buf + 0x34, 8);
+		int i = sp_find(id);
+		if (i >= 0 && sp[i].values && sp[i].vlen) {
+			static char keys[32][64]; int nk = bp_string_array(buf + 0x40, (size_t)osz, keys, 32); uint8_t *nv = NULL;
+			size_t nl = nk > 0 ? bp_dict_remove(sp[i].values, sp[i].vlen, keys, nk, &nv) : 0;
+			if (nl) { free(sp[i].values); sp[i].values = nv; sp[i].vlen = (uint32_t)nl; }
+		}
+		return reply_simple(c->fd, h, 0);
+	}
 	case SLS_MSG_SpaceGetType: {                                                   /* id u64@0x20, size 0x28; reply value: the space type; 1010 for an unknown space */
 		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
 		uint64_t id; memcpy(&id, buf + 0x20, 8);
