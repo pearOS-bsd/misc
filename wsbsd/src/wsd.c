@@ -73,7 +73,7 @@ static void render_frame(ws_surface *dst, int with_cursor)
 #define MAXSURF 512
 static ws_buffer bufs[MAXBUF];
 static uint32_t next_buf = 1;
-typedef struct { int used; uint32_t wid, sid; int kind; uint32_t a, b; uint32_t owner; } surf;
+typedef struct { int used; uint32_t wid, sid; int kind; uint32_t a, b; uint32_t owner; int32_t ox, oy; uint8_t opaque; float alpha; } surf;
 static surf surfs[MAXSURF];
 static uint32_t next_sid = 0x100;                   /* the real server's CGXCreateSurfaceID starts at 0x100 (recorded) */
 
@@ -707,7 +707,7 @@ static int do_simple(conn *c, const uint8_t *buf, size_t len)
 		{ int ns = 0; for (int i = 0; i < MAXSURF; i++) if (surfs[i].used && surfs[i].owner == c->id) ns++; if (ns >= 128) return reply_simple(c->fd, h, CGS_ERROR_FAILURE); }       /* per-connection surface limit */
 		for (int i = 0; i < MAXSURF && !sf; i++) if (!surfs[i].used) sf = &surfs[i];
 		if (!sf) return reply_simple(c->fd, h, CGS_ERROR_FAILURE);
-		memset(sf, 0, sizeof *sf); sf->used = 1; sf->wid = wid; sf->sid = next_sid++; sf->owner = c->id;
+		memset(sf, 0, sizeof *sf); sf->used = 1; sf->wid = wid; sf->sid = next_sid++; sf->owner = c->id; sf->alpha = 1.0f;
 		return reply_value(c->fd, h, (int32_t)sf->sid);
 	}
 	case SLS_MSG_RemoveSurface: {
@@ -730,6 +730,56 @@ static int do_simple(conn *c, const uint8_t *buf, size_t len)
 		r.ndr = WS_NDR; r.kind = sf->kind; r.a = sf->a; r.b = sf->b;
 		struct iovec v = { &r, sizeof r };
 		return ws_ipc_send(c->fd, &v, 1, NULL, 0);
+	}
+	case SLS_MSG_MoveSurface: {                                                    /* wid@0x20, surface@0x24, x@0x28, y@0x2c (integers), size 0x30; write access needed; always 0 */
+		if (!simple_ok(h, len, 0x30)) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
+		surf *sf = surf_find(rd32(buf, 0x20), rd32(buf, 0x24));
+		if (sf && holds_rights(c, sf->wid)) { sf->ox = (int32_t)rd32(buf, 0x28); sf->oy = (int32_t)rd32(buf, 0x2c); }
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_OrderSurface: {                                                   /* wid@0x20, surface@0x24, mode@0x28, relative surface@0x2c, size 0x30; the stacking of a window's surfaces is not kept; always 0 */
+		if (!simple_ok(h, len, 0x30)) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_GetSurfaceBounds: {                                               /* wid@0x20, surface@0x24, size 0x28; reply 0x34: x y w h (integers) @0x24; 1000 unknown window, 1001 unknown surface (zeros) */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
+		uint32_t wid = rd32(buf, 0x20); ws_rect f;
+		if (ws_window_frame(srv, wid, &f)) return reply_simple(c->fd, h, 1000);
+		surf *sf = surf_find(wid, rd32(buf, 0x24));
+		if (!sf) return reply_simple(c->fd, h, 0x3e9);
+		uint8_t r[0x34]; memset(r, 0, sizeof r);
+		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
+		memcpy(r + 0x18, &WS_NDR, 8); wr32(r, 0x24, (uint32_t)sf->ox); wr32(r, 0x28, (uint32_t)sf->oy); wr32(r, 0x2c, (uint32_t)f.w); wr32(r, 0x30, (uint32_t)f.h);
+		struct iovec v = { r, sizeof r };
+		return ws_ipc_send(c->fd, &v, 1, NULL, 0);
+	}
+	case SLS_MSG_SetSurfaceOpacity: {                                              /* wid@0x20, surface@0x24, opaque (byte)@0x28, size 0x2c; always 0 */
+		if (!simple_ok(h, len, 0x2c)) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
+		surf *sf = surf_find(rd32(buf, 0x20), rd32(buf, 0x24));
+		if (sf && holds_rights(c, sf->wid)) sf->opaque = buf[0x28] != 0;
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_GetSurfaceOpacity: {                                              /* wid@0x20, surface@0x24, size 0x28; reply 0x28: the flag byte@0x24; 1000 unknown window, 1001 unknown surface */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
+		uint32_t wid = rd32(buf, 0x20); ws_rect f;
+		if (ws_window_frame(srv, wid, &f)) return reply_simple(c->fd, h, 1000);
+		surf *sf = surf_find(wid, rd32(buf, 0x24));
+		if (!sf) return reply_simple(c->fd, h, 0x3e9);
+		uint8_t r[0x28]; memset(r, 0, sizeof r);
+		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
+		memcpy(r + 0x18, &WS_NDR, 8); r[0x24] = sf->opaque;
+		struct iovec v = { r, sizeof r };
+		return ws_ipc_send(c->fd, &v, 1, NULL, 0);
+	}
+	case SLS_MSG_SetSurfaceListAlpha: {                                            /* wid@0x20, count@0x24 (<= 0x400), surface ids@0x28, alpha float after them; size 4 * count + 0x2c; 1000 without rights, 1001 for no surfaces or an unknown one */
+		uint32_t n = h->msgh_size >= 0x2c ? rd32(buf, 0x24) : 0;
+		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size < 0x2c || n > 0x400 || h->msgh_size != n * 4 + 0x2c) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
+		uint32_t wid = rd32(buf, 0x20); float a; memcpy(&a, buf + 0x28 + 4 * n, 4);
+		if (!ws_window_exists(srv, wid) || !holds_rights(c, wid)) return reply_simple(c->fd, h, 1000);
+		if (n == 0) return reply_simple(c->fd, h, 0x3e9);
+		int bad = 0; if (a != a) a = 0; a = a > 1 ? 1 : a < 0 ? 0 : a;
+		for (uint32_t i = 0; i < n; i++) { surf *sf = surf_find(wid, rd32(buf, 0x28 + 4 * i)); if (sf) sf->alpha = a; else bad = 1; }
+		return reply_simple(c->fd, h, bad ? 0x3e9 : 0);
 	}
 	default: return sls_ext_dispatch(c, buf, len);
 	}

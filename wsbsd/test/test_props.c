@@ -832,6 +832,21 @@ int main(void)
 		w32(a, 0x7c, 2); CHECK(rc(fd, a, at) == -300);
 		uint8_t ra[0x24]; memset(ra, 0, sizeof ra); hdr(ra, 0x24, 30162, 0); memcpy(ra + 0x18, &WS_NDR, 8); w32(ra, 0x20, w.id); CHECK(rc(fd, ra, 0x24) == 0);
 	}
+	{ /* surface geometry and opacity */
+		uint32_t sid = 0; CHECK(ws_surface_add(c, &w, &sid) == 0 && sid != 0);
+		uint8_t m[0x30 + 0x20], rep[0x100]; memset(m, 0, sizeof m);
+		hdr(m, 0x30, 30094, 0); w32(m, 0x20, w.id); w32(m, 0x24, sid); w32(m, 0x28, 12); w32(m, 0x2c, (uint32_t)-7); CHECK(rc(fd, m, 0x30) == 0);
+		hdr(m, 0x28, 30101, 0); int n = call(fd, m, 0x28, rep, sizeof rep);
+		CHECK(n == 0x34 && r32(rep, 0x20) == 0 && r32(rep, 0x24) == 12 && (int)r32(rep, 0x28) == -7 && r32(rep, 0x2c) > 0 && r32(rep, 0x30) > 0);
+		w32(m, 0x24, 0x7777); CHECK(rc(fd, m, 0x28) == 0x3e9); w32(m, 0x20, 0x7ffff); CHECK(rc(fd, m, 0x28) == 1000); w32(m, 0x20, w.id); w32(m, 0x24, sid);
+		hdr(m, 0x2c, 30104, 0); m[0x28] = 1; CHECK(rc(fd, m, 0x2c) == 0);
+		hdr(m, 0x28, 30105, 0); n = call(fd, m, 0x28, rep, sizeof rep); CHECK(n == 0x28 && r32(rep, 0x20) == 0 && rep[0x24] == 1);
+		hdr(m, 0x2c, 30104, 0); m[0x28] = 0; CHECK(rc(fd, m, 0x2c) == 0);
+		hdr(m, 0x28, 30105, 0); n = call(fd, m, 0x28, rep, sizeof rep); CHECK(rep[0x24] == 0);
+		uint8_t la[0x30]; memset(la, 0, sizeof la); hdr(la, 0x30, 30298, 0); w32(la, 0x20, w.id); w32(la, 0x24, 1); w32(la, 0x28, sid); float half = 0.5f; memcpy(la + 0x2c, &half, 4);
+		CHECK(rc(fd, la, 0x30) == 0); w32(la, 0x28, 0x7777); CHECK(rc(fd, la, 0x30) == 0x3e9);
+		hdr(la, 0x2c, 30298, 0); w32(la, 0x24, 0); CHECK(rc(fd, la, 0x2c) == 0x3e9);
+	}
 	{ /* event taps: place, query, enable, list, release (layouts from the decompiled routines) */
 		uint8_t q[0x44], rep[0x200]; memset(q, 0, sizeof q);
 		hdr(q, 0x44, 32028, 1); w32(q, 0x18, 1); w32(q, 0x1c, 0x777); q[0x26] = 0x11; memcpy(q + 0x28, "\0\0\0\0\1\0\0\0", 8);
