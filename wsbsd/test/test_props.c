@@ -355,6 +355,36 @@ int main(void)
 		CHECK(!again);                                                                    /* removed: no more events */
 	}
 
+	/* hot keys: per-connection records, the operating mode and the symbolic table */
+	{
+		uint8_t m[0x40], rep[0x100]; int got;
+		uint64_t hid = 0x1122334455ULL;
+		memset(m, 0, sizeof m); hdr(m, 0x28, 30199, 0); memcpy(m + 0x20, &hid, 8); CHECK(rc(fd, m, 0x28) == 0x3ef);                          /* unknown */
+		memset(m, 0, sizeof m); hdr(m, 0x38, 30200, 0); memcpy(m + 0x20, &hid, 8); w32(m, 0x28, 0x2c); w32(m, 0x2c, 0x100); w32(m, 0x30, 7); CHECK(rc(fd, m, 0x38) == 0);
+		memset(m, 0, sizeof m); hdr(m, 0x28, 30199, 0); memcpy(m + 0x20, &hid, 8); got = call(fd, m, 0x28, rep, sizeof rep);
+		CHECK(got == 0x30 && r32(rep, 0x20) == 0 && r32(rep, 0x24) == 0x2c && r32(rep, 0x28) == 0x100 && r32(rep, 0x2c) == 7);
+		memset(m, 0, sizeof m); hdr(m, 0x28, 30201, 0); memcpy(m + 0x20, &hid, 8); got = call(fd, m, 0x28, rep, sizeof rep); CHECK(got == 0x28 && r32(rep, 0x24) == 1);
+		memset(m, 0, sizeof m); hdr(m, 0x2c, 30202, 0); memcpy(m + 0x20, &hid, 8); w32(m, 0x28, 0); CHECK(rc(fd, m, 0x2c) == 0);
+		memset(m, 0, sizeof m); hdr(m, 0x28, 30201, 0); memcpy(m + 0x20, &hid, 8); got = call(fd, m, 0x28, rep, sizeof rep); CHECK(got == 0x28 && r32(rep, 0x24) == 0);
+		memset(m, 0, sizeof m); hdr(m, 0x2c, 30230, 0); memcpy(m + 0x20, &hid, 8); w32(m, 0x28, 0x13); CHECK(rc(fd, m, 0x2c) == 0);
+		memset(m, 0, sizeof m); hdr(m, 0x28, 30229, 0); memcpy(m + 0x20, &hid, 8); got = call(fd, m, 0x28, rep, sizeof rep); CHECK(got == 0x28 && r32(rep, 0x24) == 0x11);
+		memset(m, 0, sizeof m); hdr(m, 0x28, 30203, 0); memcpy(m + 0x20, &hid, 8); CHECK(rc(fd, m, 0x28) == 0);
+		memset(m, 0, sizeof m); hdr(m, 0x28, 30199, 0); memcpy(m + 0x20, &hid, 8); CHECK(rc(fd, m, 0x28) == 0x3ef);
+		memset(m, 0, sizeof m); hdr(m, 0x24, 30210, 0); w32(m, 0x20, 3); CHECK(rc(fd, m, 0x24) == 0);
+		memset(m, 0, sizeof m); hdr(m, 0x18, 30211, 0); got = call(fd, m, 0x18, rep, sizeof rep); CHECK(got == 0x28 && r32(rep, 0x24) == 3);
+		/* symbolic */
+		memset(m, 0, sizeof m); hdr(m, 0x24, 32011, 0); w32(m, 0x20, 7); CHECK(rc(fd, m, 0x24) == 0x3ef);
+		memset(m, 0, sizeof m); hdr(m, 0x30, 32012, 0); w32(m, 0x20, 7); w32(m, 0x24, 0x78); w32(m, 0x28, 0x1000); w32(m, 0x2c, 5); CHECK(rc(fd, m, 0x30) == 0);
+		memset(m, 0, sizeof m); hdr(m, 0x24, 32011, 0); w32(m, 0x20, 7); got = call(fd, m, 0x24, rep, sizeof rep);
+		CHECK(got == 0x30 && r32(rep, 0x24) == 0x78 && r32(rep, 0x28) == 0x1000 && r32(rep, 0x2c) == 5);
+		memset(m, 0, sizeof m); hdr(m, 0x28, 32014, 0); w32(m, 0x20, 7); w32(m, 0x24, 1); CHECK(rc(fd, m, 0x28) == 0);
+		memset(m, 0, sizeof m); hdr(m, 0x24, 32013, 0); w32(m, 0x20, 7); got = call(fd, m, 0x24, rep, sizeof rep); CHECK(got == 0x28 && r32(rep, 0x24) == 1);
+		memset(m, 0, sizeof m); hdr(m, 0x28, 32014, 0); w32(m, 0x20, 0x500); w32(m, 0x24, 1); CHECK(rc(fd, m, 0x28) == 0x3e9);
+		memset(m, 0, sizeof m); hdr(m, 0x24 + 8, 32015, 0); w32(m, 0x20, 2); w32(m, 0x24, 7); w32(m, 0x28, 8);                                           /* the values and states of ids 7 and 8 */
+		uint8_t big[0x100]; got = call(fd, m, 0x2c, big, sizeof big);
+		CHECK(got == 0x34 + 32 && r32(big, 0x28) == 0x78 && r32(big, 0x2c) == 0 && r32(big, 0x28 + 8 + 4) == 0x1000);
+	}
+
 	/* SetWindowParent, GetParentWindowList, WindowIsVisible, and the parent in WindowQuery records */
 	{
 		ws_win pa, ch; CHECK(ws_win_create(c, (ws_rect){ 400, 300, 50, 50 }, 0, &pa) == 0 && ws_win_create(c, (ws_rect){ 410, 310, 20, 20 }, 0, &ch) == 0);
