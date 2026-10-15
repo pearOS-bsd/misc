@@ -41,7 +41,7 @@ int main(int argc, char **argv)
 		ssize_t n = ws_ipc_recv(fd, rep, sizeof rep, fds, &nf);
 		checked++;
 		mach_msg_header_t *r = (mach_msg_header_t *)rep;
-		if (n != size || r->msgh_size != (uint32_t)size || (r->msgh_id != rid && !(r->msgh_id == 71)) || r->msgh_bits != bits) {
+		if ((bits & 0x80000000u ? n < size : n != size) || r->msgh_size != (uint32_t)size || (r->msgh_id != rid && !(r->msgh_id == 71)) || r->msgh_bits != bits) {
 			printf("FAIL %d: reply size %zd (want %d) id %d (want %d) bits %08x (want %08x)\n", id, n, size, r->msgh_id, rid, r->msgh_bits, bits); fails++; continue;
 		}
 		if (is_state(id)) { skipped++; continue; }
@@ -73,7 +73,7 @@ int main(int argc, char **argv)
 		ssize_t n = ws_ipc_recv(fd, rep, sizeof rep, fds, &nf);
 		hchecked++;
 		mach_msg_header_t *r = (mach_msg_header_t *)rep;
-		int bad = n != size || r->msgh_size != (uint32_t)size || r->msgh_id != rid || r->msgh_bits != bits;
+		int bad = (bits & 0x80000000u ? n < size : n != size) || r->msgh_size != (uint32_t)size || r->msgh_id != rid || r->msgh_bits != bits;
 		size_t blen = strlen(hex) / 2; uint8_t want[0x400];
 		for (size_t i = 0; i < blen && i < sizeof want; i++) want[i] = (uint8_t)(hexval(hex[2 * i]) * 16 + hexval(hex[2 * i + 1]));
 		/* the NDR record of simple replies is only written by some routines: compare from the return code on */
