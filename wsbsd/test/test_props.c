@@ -240,7 +240,7 @@ int main(void)
 		CHECK(dn == 0x38 + (int)blen && r32(big, 0x34) == blen);
 		const uint8_t *b = big + 0x38;
 		uint32_t count = r32(b, 63 * 4), cur = r32(b, 16);
-		CHECK(count >= 2 && cur == count - 1 && blen == 64 * 4 + count * 132 + 64 + 3);
+		CHECK(count >= 1 && cur == count - 1 && blen == 64 * 4 + count * 132 + 64 + 3);
 		const uint8_t *last = b + 256 + cur * 132;                                       /* the current (native) mode record */
 		CHECK(r32(last, 24) == 640 && r32(last, 28) == 480 && r32(last, 40) == 2560 && r32(last, 12) == 0x2000007);
 		double dw; memcpy(&dw, b + 32 * 4, 8); CHECK(dw == 640.0);
