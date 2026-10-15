@@ -3,7 +3,7 @@
 What it is: `wsd`, a window server and compositor for FreeBSD that speaks the macOS WindowServer (SkyLight) wire protocol, plus a client library, test suites and the packaging around it.
 
 ## Numbers (approximate, from the repository)
-- SkyLight server routines known from the macOS 27 decompile: 728. With a dedicated handler holding real state: ~200 (27%). Answered from replies recorded on a real macOS 26 WindowServer: ~280.
+- SkyLight server routines known from the macOS 27 decompile: 728. With a dedicated handler holding real state: 232 (32%). Answered from replies recorded on a real macOS 26 WindowServer: ~280.
   The rest are generated acceptors with the right sizes and a success reply.
 - Differential runs against the real server (macOS 26 runner, `lab/state*.scen`, `lab/spaces*.scen`, `lab/wq*.scen`): state2 146/175 replies equal, state3a 100/111, state4 55/67; the differences are mostly macOS 26 vs 27
   (request sizes, ids the 26 server lacks) and routines the real server serves on another port.
