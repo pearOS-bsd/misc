@@ -18,6 +18,7 @@ def load(path):
     return names,cid,out
 def norm(hexs,names,cid):
     b=bytearray.fromhex(hexs) if hexs and len(hexs)%2==0 else bytearray()
+    if len(b)>=24 and int.from_bytes(b[0:4],'little')==1 and b[11:12]==b'\x01': b[4:12]=b'\0'*8     # a complex reply: the out-of-line address is a pointer, never compared
     words=[]
     for i in range(0,len(b)-3,4):
         v=int.from_bytes(b[i:i+4],'little')

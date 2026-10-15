@@ -144,11 +144,12 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		uint32_t bits; memcpy(&bits, &f, 4);
 		return reply_value(c->fd, h, (int32_t)bits);
 	}
-	case SLS_MSG_GetWindowShape: {                                                 /* wid@0x20; reply complex 0x38 with the serialized shape; 1000 for an unknown window */
+	case SLS_MSG_GetWindowClipShape:                                                /* the same reply with the shape relative to the window (recorded on a macOS runner) */
+	case SLS_MSG_GetWindowShape: {                                                 /* wid@0x20; reply complex 0x38 with the serialized shape in screen coordinates; 1000 for an unknown window */
 		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
 		ws_rect f;
 		if (ws_window_frame(srv, rd32(buf, 0x20), &f)) return reply_simple(c->fd, h, 1000);
-		ws_rect r = { 0, 0, f.w, f.h }; uint8_t reg[256];
+		ws_rect r = h->msgh_id == SLS_MSG_GetWindowClipShape ? (ws_rect){ 0, 0, f.w, f.h } : f; uint8_t reg[256];
 		size_t n = ws_region_serialize(&r, 1, reg, sizeof reg);
 		uint8_t m[0x38]; memset(m, 0, sizeof m);
 		fill_reply_header((mach_msg_header_t *)m, h, sizeof m, 1);
