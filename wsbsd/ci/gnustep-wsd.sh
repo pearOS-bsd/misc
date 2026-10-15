@@ -75,7 +75,7 @@ sleep 1
 ./wskey 0 11 8
 sleep 1
 ./wsshot appkit-key.ppm; python3 tools/ppm2png.py appkit-key.ppm appkit-key.png
-sleep 2
+i=0; until grep -q 'frame after resize' /tmp/hello.log || [ $i -ge 30 ]; do sleep 1; i=$((i+1)); done; sleep 1
 ./wsshot appkit-resize.ppm; python3 tools/ppm2png.py appkit-resize.ppm appkit-resize.png
 wait $HP
 kill $WP 2>/dev/null
