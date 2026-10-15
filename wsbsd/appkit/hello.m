@@ -23,7 +23,7 @@ int main(int argc, char **argv)
 	[[w contentView] addSubview:t];
 	[w makeKeyAndOrderFront:nil];
 	NSLog(@"window shown, frame %@", NSStringFromRect([w frame]));
-	[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:1.0]];
+	[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:(argc > 1 ? atof(argv[1]) : 1.0)]];
 	NSLog(@"done");
 	[pool release];
 	return 0;
