@@ -1,10 +1,10 @@
 new_window a 100 200 300 150
 # property "kCGSWindowTitle" = 0x2a bytes of serialized plist (taken from a real app); name len 0x10 incl NUL
-raw 30050 ndr wid:a u32:0 u32:16 str:kCGSWindowTitle u32:0
+raw 30050 ndr wid:a u32:0 u32:16 str:kCGSWindowTitle
 raw 30048 ool:62706c6973743030d101025f10114865 ndr wid:a u32:0 u32:16 str:kCGSWindowTitle u32:16
-raw 30050 ndr wid:a u32:0 u32:16 str:kCGSWindowTitle u32:0
+raw 30050 ndr wid:a u32:0 u32:16 str:kCGSWindowTitle
 raw 30048 ool:62706c6973743030d101025f10114865 ndr u32:99999 u32:0 u32:16 str:kCGSWindowTitle u32:16
 raw 30048 ool:62706c6973743030d101025f10114865 ndr wid:a u32:0 u32:16 str:kCGSWindowTitle u32:15
 raw 30049 ndr wid:a u32:0 u32:16 str:kCGSWindowTitle
-raw 30050 ndr wid:a u32:0 u32:16 str:kCGSWindowTitle u32:0
-raw 30050 ndr wid:a u32:0 u32:4 str:nope u32:0
+raw 30050 ndr wid:a u32:0 u32:16 str:kCGSWindowTitle
+raw 30050 ndr wid:a u32:0 u32:4 str:nope
