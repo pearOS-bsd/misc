@@ -15,7 +15,7 @@ EXTRA_LIBS   =
 all: wsd test_window test_interactive test_robust test_compose test_region test_wire test_evrec test_buffer test_diff
 
 wsd: $(CORE) $(EXTRA_SRC) $(FAMILIES) src/wsd.c $(HDRS)
-	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ $(CORE) $(EXTRA_SRC) $(FAMILIES) src/wsd.c $(EXTRA_LIBS) $(LDLIBS) $$([ "$$(uname -s)" = Darwin ] || echo -lcrypto)
+	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ $(CORE) $(EXTRA_SRC) $(FAMILIES) src/wsd.c $(EXTRA_LIBS) $(LDLIBS) $$([ "$$(uname -s)" = Darwin ] || echo -lcrypto) -lz
 
 test_interactive: src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_interactive.c $(HDRS)
 	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_interactive.c $(EXTRA_LIBS) $(LDLIBS)

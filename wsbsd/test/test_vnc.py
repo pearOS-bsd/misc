@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """A tiny RFB client: handshake, authentication (when WSD_VNC_PASSWORD is given the DES response is computed with `openssl enc -des-ecb`), one full framebuffer update,
 a pointer click and a key; checks that the server answers with a framebuffer of the right size and that the click reaches a window."""
-import os, socket, struct, subprocess, sys
+import os, socket, struct, subprocess, sys, zlib
 
 port = int(sys.argv[1]); password = sys.argv[2] if len(sys.argv) > 2 else ""
 
@@ -38,17 +38,24 @@ w, h = struct.unpack(">HH", rd(s, 4)); pf = rd(s, 16); nl = struct.unpack(">I", 
 assert pf[0] == 32 and pf[2] == 0 and pf[3] == 1, pf
 print("server init %dx%d name=%s" % (w, h, name.decode()))
 s.sendall(struct.pack(">BxHBBBBHHHBBBxxx", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)[:0] + b"")   # (no SetPixelFormat: the server format is used)
+use_z = os.environ.get("VNC_ZLIB") == "1"
+if use_z: s.sendall(struct.pack(">BxHi", 2, 1, 6))          # SetEncodings: zlib
 s.sendall(struct.pack(">BBHHHH", 3, 0, 0, 0, w, h))        # full update request
 t = rd(s, 1)[0]; assert t == 0
 rd(s, 1); nrect = struct.unpack(">H", rd(s, 2))[0]
-total = 0
+total = 0; zdec = zlib.decompressobj()
 for _ in range(nrect):
-    x, y, rw, rh, enc = struct.unpack(">HHHHi", rd(s, 12)); assert enc == 0
-    rd(s, rw * rh * 4); total += rw * rh
+    x, y, rw, rh, enc = struct.unpack(">HHHHi", rd(s, 12))
+    if enc == 6:
+        zl = struct.unpack(">I", rd(s, 4))[0]; data = zdec.decompress(rd(s, zl)); assert len(data) == rw * rh * 4
+    else:
+        assert enc == 0 and not use_z; rd(s, rw * rh * 4)
+    total += rw * rh
 print("rectangles %d, pixels %d (screen %d)" % (nrect, total, w * h))
 assert total == w * h
-s.sendall(struct.pack(">BBHH", 5, 0, 50, 50))               # pointer move
-s.sendall(struct.pack(">BBHH", 5, 1, 50, 50)); s.sendall(struct.pack(">BBHH", 5, 0, 50, 50))     # click
+px = 20 + os.getpid() % 200
+s.sendall(struct.pack(">BBHH", 5, 0, px, 50))               # pointer move (a position the cursor is not at yet)
+s.sendall(struct.pack(">BBHH", 5, 1, px, 50)); s.sendall(struct.pack(">BBHH", 5, 0, px, 50))     # click
 s.sendall(struct.pack(">BBxxI", 4, 1, ord('a'))); s.sendall(struct.pack(">BBxxI", 4, 0, ord('a')))
 s.sendall(struct.pack(">BBHHHH", 3, 1, 0, 0, w, h))
 s.settimeout(5)
