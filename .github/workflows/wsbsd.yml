@@ -136,6 +136,7 @@ jobs:
             wsbsd/appkit.png
             wsbsd/appkit-click.png
             wsbsd/appkit-key.png
+            wsbsd/appkit-drag.png
             wsbsd/appkit-resize.png
             wsbsd/sudoku.png
             wsbsd/sudoku-cell.png
