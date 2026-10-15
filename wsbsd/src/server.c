@@ -23,6 +23,7 @@ typedef struct {
 	uint32_t owner;
 	int sublevel, event_mask;
 	uint64_t tags;
+	ws_wid parent;          /* SetWindowParent: 0 = none */
 	int corner_radius;
 	float resolution;
 	ws_surface *content;        /* borrowed */
@@ -129,6 +130,7 @@ int ws_release_window(ws_server *s, ws_wid id)
 	if (!w) return -1;
 	if (s->grab == id) s->grab = 0;
 	if (s->key_win == id) s->key_win = 0;
+	for (size_t i = 0; i < s->n; i++) if (s->win[i].parent == id) s->win[i].parent = 0;       /* children of a destroyed window lose their parent */
 	ws_surface_free(w->backing); ws_surface_free(w->shadow); ws_surface_free(w->front); free(w->shape);
 	bump(s);
 	if (w->shm[0]) ws_shm_unlink(w->shm);
@@ -294,6 +296,16 @@ int ws_order_window(ws_server *s, ws_wid id, int mode, ws_wid rel)
 }
 
 int ws_window_invalidate_shadow(ws_server *s, ws_wid id) { window *w = get(s, id); if (!w) return -1; ws_surface_free(w->shadow); w->shadow = NULL; bump(s); return 0; }
+
+int ws_window_set_parent(ws_server *s, ws_wid child, ws_wid parent)
+{
+	window *w = get(s, child);
+	if (!w || child == parent || (parent && !get(s, parent))) return -1;
+	for (ws_wid p = parent; p; ) { if (p == child) return -1; window *pw = get(s, p); p = pw ? pw->parent : 0; }   /* no cycles */
+	w->parent = parent; bump(s);
+	return 0;
+}
+ws_wid ws_window_parent(ws_server *s, ws_wid id) { window *w = get(s, id); return w ? w->parent : 0; }
 
 int ws_window_has_shadow(ws_server *s, ws_wid id) { window *w = get(s, id); return w && w->shadow_on; }
 

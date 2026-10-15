@@ -69,7 +69,6 @@ static const gen_entry gen_table[] = {
 	{ 30266, 36, 0, 0, 36 },   /* __XSetSwipeScrollDirection */
 	{ 30268, 40, 0, 0, 36 },   /* __XPersistenceWillLaunchApps */
 	{ 30278, 88, 1, 1, 44 },   /* __XHWCaptureDisplayIntoIOSurface */
-	{ 30312, 36, 0, 0, 40 },   /* __XWindowIsVisible */
 	{ 30313, 132, 0, 0, 36 },   /* __XDisplayStreamCreate */
 	{ 30314, 40, 1, 1, 36 },   /* __XDisplayStreamStart */
 	{ 30315, 40, 1, 1, 36 },   /* __XDisplayStreamStop */
@@ -203,7 +202,6 @@ static const gen_var_entry gen_var_table[] = {
 	{ 30228, 1, 36, 5 },   /* __XSetWindowListGlobalClipShape */
 	{ 30231, 0, 36, 3 },   /* __XRemoveWindowListGlobalClipShape */
 	{ 30233, 0, 36, 5 },   /* __XOrderWindowListWithOperation */
-	{ 30241, 0, 4136, 5 },   /* __XGetParentWindowList */
 	{ 30257, 0, 36, 5 },   /* __XSetWindowListSystemLevel */
 	{ 30259, 0, 52, 23 },   /* __XHWCaptureWindowListToIOSurface */
 	{ 30262, 0, 36, 5 },   /* __XSetWindowRegionInline */

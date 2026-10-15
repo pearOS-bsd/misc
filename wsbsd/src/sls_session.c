@@ -168,7 +168,7 @@ static void wq_window(wq_buf *b, ws_wid id)
 	if (ws_window_has_shadow(srv, id)) { sh.x -= 23; sh.y -= 15; sh.w += 46; sh.h += 46; }   /* shadow outsets as the real server reports them for an ordinary window */
 	wq_u32(b, 0);
 	wq_u8(b, 1);
-	wq_p64(b, id); wq_p64(b, owner); wq_p64(b, 0); wq_p64(b, oc ? oc->pid : 0); wq_p64(b, 0); wq_p64(b, 0);
+	wq_p64(b, id); wq_p64(b, owner); wq_p64(b, ws_window_parent(srv, id)); wq_p64(b, oc ? oc->pid : 0); wq_p64(b, 0); wq_p64(b, 0);
 	wq_p64(b, level);
 	if ((float)(int)alpha == alpha) wq_p64(b, (int)alpha); else { wq_u8(b, 0x48); wq_put(b, &alpha, 4); }
 	wq_rect(b, f.x, f.y, f.w, f.h); wq_rect(b, f.x, f.y, f.w, f.h);
