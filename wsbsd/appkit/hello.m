@@ -1,5 +1,6 @@
 /* the smallest AppKit program: an application, a window with a button and a text field, run for a moment and quit */
 #import <AppKit/AppKit.h>
+#import <GNUstepGUI/GSDisplayServer.h>
 
 @interface Hello : NSObject
 - (void)clicked:(id)sender;
@@ -23,6 +24,7 @@ int main(int argc, char **argv)
 	[[w contentView] addSubview:t];
 	[w makeKeyAndOrderFront:nil];
 	NSLog(@"window shown, frame %@ number %d visible %d bgapp %d hidden %d active %d", NSStringFromRect([w frame]), (int)[w windowNumber], (int)[w isVisible], (int)[[NSUserDefaults standardUserDefaults] boolForKey:@"GSBackgroundApp"], (int)[NSApp isHidden], (int)[NSApp isActive]);
+	{ GSDisplayServer *srv = GSCurrentServer(); NSLog(@"server %@ %@ responds %d", srv, [srv class], (int)[srv respondsToSelector:@selector(orderwindow:::)]); [srv orderwindow:NSWindowAbove :0 :(int)[w windowNumber]]; }
 	[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:(argc > 1 ? atof(argv[1]) : 1.0)]];
 	NSLog(@"done");
 	[pool release];
