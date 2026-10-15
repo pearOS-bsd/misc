@@ -31,6 +31,9 @@ export WS_SOCKET=/tmp/wsd-min.sock
 MP=$!
 sleep 1
 echo "== opal_min plain variants:"; for v in 0 1 2 3 4 5 6; do LD_LIBRARY_PATH=$LDP ./opal_min_plain $v 2>&1 | tail -1; done
+cc -O1 -g -Iinclude $OBJC_FLAGS -I/usr/local/GNUstep/System/Library/Headers -o opal_demo_here demo/opal_demo.m $CSRC -lopal -lgnustep-corebase $OBJC_LIBS -lcairo -lm 2>&1 | grep -E "error" | head -3
+echo "== opal_demo in this job (it works in the opal job):"; LD_LIBRARY_PATH=$LDP ./opal_demo_here /tmp/opal-here.ppm 2>&1 | grep -E "ctx data|wrote" | head -3
+echo "== LD path used: $LDP"; ldd ./opal_min_plain 2>/dev/null | grep -E "opal|corebase|cairo|base" | head -6
 echo "== opal_min with QuartzCore+GL:"; LD_LIBRARY_PATH=$LDP ./opal_min_qc 2>&1 | tail -3
 kill $MP 2>/dev/null
 # the demo: a CALayer tree with animations drawn into a wsd window
