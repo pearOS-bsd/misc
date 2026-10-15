@@ -77,10 +77,49 @@ static int do_delete_property(conn *c, const uint8_t *buf, size_t len)
 	return reply_simple(c->fd, h, 0);
 }
 
+/* complex requests with one OOL descriptor (count@0x18 = 1, type byte@0x27 = 1, size@0x28), NDR@0x2c; returns the checked descriptor size or -1 with *err set */
+static int ool_request(const mach_msg_header_t *h, const uint8_t *buf, size_t len, uint32_t want_size, int *err)
+{
+	if (!(h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || h->msgh_size != want_size || len < want_size || rd32(buf, 0x18) != 1) { *err = -304; return -1; }
+	uint32_t osz = rd32(buf, 0x28);
+	if (buf[0x27] != 1) { *err = -300; return -1; }
+	if (len != (size_t)want_size + osz) { *err = -304; return -1; }
+	return (int)osz;
+}
+
 int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 {
 	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
 	switch (h->msgh_id) {
+	case SLS_MSG_SetWindowOpaqueShape: {                                           /* OOL region, wid@0x34, region size@0x38 (= descriptor size), size 0x3c */
+		int err; int osz = ool_request(h, buf, len, 0x3c, &err);
+		if (osz < 0) return reply_simple(c->fd, h, err);
+		if ((uint32_t)osz != rd32(buf, 0x38)) return reply_simple(c->fd, h, -300);
+		(void)holds_rights(c, rd32(buf, 0x34));                                     /* the opaque shape only helps the compositor skip work: accepted, not used yet */
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_AddStructuralRegionOfType: {                                      /* OOL region, size 0x58; tracking/structural regions are accepted and not delivered yet */
+		int err; int osz = ool_request(h, buf, len, 0x58, &err);
+		if (osz < 0) return reply_simple(c->fd, h, err);
+		if ((uint32_t)osz != rd32(buf, 0x48)) return reply_simple(c->fd, h, -300);
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_CopySpacesForWindows: {                                           /* OOL array of window ids (count@0x38 = size/4); reply OOL array of space ids (u64) */
+		int err; int osz = ool_request(h, buf, len, 0x3c, &err);
+		if (osz < 0) return reply_simple(c->fd, h, err);
+		if (rd32(buf, 0x38) != (uint32_t)osz / 4) return reply_simple(c->fd, h, -300);
+		uint32_t count = (uint32_t)osz / 4;
+		uint64_t *spaces = malloc(count * 8 + 8);
+		if (!spaces) return reply_simple(c->fd, h, 1000);
+		for (uint32_t i = 0; i < count; i++) spaces[i] = 1;                         /* one space */
+		uint8_t m[0x38]; memset(m, 0, sizeof m);
+		fill_reply_header((mach_msg_header_t *)m, h, sizeof m, 1);
+		wr32(m, 0x18, 1); m[0x25] = 1; m[0x27] = 1; wr32(m, 0x28, count * 8); memcpy(m + 0x2c, &WS_NDR, 8); wr32(m, 0x34, count);
+		struct iovec v[2] = { { m, sizeof m }, { spaces, count * 8 } };
+		int rc = ws_ipc_send(c->fd, v, count ? 2 : 1, NULL, 0);
+		free(spaces);
+		return rc;
+	}
 	case SLS_MSG_SetWindowProperty: return do_set_property(c, buf, len);
 	case SLS_MSG_GetWindowProperty: return do_get_property(c, buf, len);
 	case SLS_MSG_DeleteWindowProperty: return do_delete_property(c, buf, len);
