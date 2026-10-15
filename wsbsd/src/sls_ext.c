@@ -7,6 +7,8 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len);
 void sls_window_owner_cleanup(uint32_t owner);
 int sls_transaction_dispatch(conn *c, const uint8_t *buf, size_t len);
 int sls_display_dispatch(conn *c, const uint8_t *buf, size_t len);
+int sls_space_dispatch(conn *c, const uint8_t *buf, size_t len);
+void sls_space_owner_cleanup(uint32_t owner);
 int sls_hotkey_dispatch(conn *c, const uint8_t *buf, size_t len);
 void sls_hotkey_owner_cleanup(uint32_t owner);
 int sls_harvest_reply(conn *c, const uint8_t *buf, size_t len);
@@ -15,6 +17,8 @@ int sls_generic_reply(conn *c, const uint8_t *buf, size_t len);
 int sls_ext_dispatch(conn *c, const uint8_t *buf, size_t len)
 {
 	int rc = sls_hotkey_dispatch(c, buf, len);         /* first: header-only requests (GetGlobalHotKeyOperatingMode) would otherwise get the recorded reply */
+	if (rc != -2) return rc;
+	rc = sls_space_dispatch(c, buf, len);
 	if (rc != -2) return rc;
 	rc = sls_session_dispatch(c, buf, len);
 	if (rc != -2) return rc;
@@ -29,4 +33,4 @@ int sls_ext_dispatch(conn *c, const uint8_t *buf, size_t len)
 	return sls_generic_reply(c, buf, len);           /* last: wire-correct acceptors generated from the decompiled routines (success, right sizes) */
 }
 
-void sls_ext_owner_cleanup(uint32_t owner) { sls_session_owner_cleanup(owner); sls_window_owner_cleanup(owner); sls_hotkey_owner_cleanup(owner); }
+void sls_ext_owner_cleanup(uint32_t owner) { sls_session_owner_cleanup(owner); sls_window_owner_cleanup(owner); sls_hotkey_owner_cleanup(owner); sls_space_owner_cleanup(owner); }

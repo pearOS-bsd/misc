@@ -27,6 +27,8 @@ int holds_rights(const conn *c, uint32_t wid);
 
 int wsd_bind_surface(conn *c, uint32_t wid, uint32_t sid, int kind, uint32_t a, uint32_t b);   /* BindSurface semantics, returns the retcode */
 int sls_symbolic_hotkey(uint32_t id, uint16_t *key, uint16_t *mods, uint32_t *flags, int *enabled);   /* the session's symbolic hot key table: 0 valid, 1 unset, -1 bad id */
+uint64_t sls_space_of_window(uint32_t wid);                       /* the space a window is in (1: the default space) */
+int ool_request(const mach_msg_header_t *h, const uint8_t *buf, size_t len, uint32_t want_size, int *err);   /* a complex request with one OOL descriptor: its size, or -1 with *err */
 int wsd_remove_surface(conn *c, uint32_t wid, uint32_t sid);
 int wsd_remove_all_surfaces(conn *c, uint32_t wid);                             /* RemoveAllSurfaces: the retcode */
 

@@ -72,21 +72,12 @@ static const gen_entry gen_table[] = {
 	{ 30316, 40, 1, 1, 36 },   /* __XDisplayStreamDestroy */
 	{ 30317, 40, 1, 1, 36 },   /* __XSetUpdateInfoHandler */
 	{ 30318, 56, 1, 1, 36 },   /* __XResetWindows */
-	{ 30319, 76, 0, 0, 36 },   /* __XAddWindowsToSpaces */
-	{ 30320, 76, 0, 0, 36 },   /* __XRemoveWindowsFromSpaces */
 	{ 30321, 56, 1, 1, 36 },   /* __XWillSwitchSpaces */
-	{ 30322, 56, 1, 1, 36 },   /* __XShowSpaces */
-	{ 30323, 56, 1, 1, 36 },   /* __XHideSpaces */
-	{ 30328, 60, 1, 1, 44 },   /* __XSpaceCreate */
-	{ 30329, 40, 0, 0, 36 },   /* __XSpaceDestroy */
-	{ 30331, 64, 0, 0, 36 },   /* __XSpaceSetValues */
 	{ 30332, 64, 1, 1, 36 },   /* __XSpaceRemoveValuesForKeys */
 	{ 30340, 64, 1, 1, 36 },   /* __XSpaceSetOwners */
 	{ 30342, 44, 0, 0, 36 },   /* __XSpaceRemoveOwner */
 	{ 30344, 64, 1, 1, 36 },   /* __XSpaceSetShape */
-	{ 30349, 56, 1, 1, 44 },   /* __XSpaceWithName */
 	{ 30350, 40, 0, 0, 36 },   /* __XSpaceResetMenuBar */
-	{ 30352, 44, 0, 0, 36 },   /* __XProcessAssignToSpace */
 	{ 30364, 56, 1, 1, 36 },   /* __XRestorePackagesManagementPersistenceData */
 	{ 30365, 56, 1, 1, 56 },   /* __XCopyApplicationPersistencePropertyListsForWindowList */
 	{ 30368, 40, 0, 0, 68 },   /* __XGetRevealedMenuBarBounds */
@@ -104,7 +95,6 @@ static const gen_entry gen_table[] = {
 	{ 30424, 64, 1, 1, 52 },   /* __XSpaceGetSizeForProposedTile */
 	{ 30425, 76, 0, 0, 36 },   /* __XWindowListSetLockedBounds */
 	{ 30440, 36, 0, 0, 36 },   /* __XSetSystemUIHasRTLDirection */
-	{ 30442, 40, 0, 0, 40 },   /* __XSpaceGetAlpha */
 	{ 30448, 72, 1, 1, 36 },   /* __XTileSpaceMoveSpacersForSize */
 	{ 30452, 36, 0, 0, 36 },   /* __XSystemStatusBarPrepareToUnregisterWindow */
 	{ 30464, 36, 0, 0, 36 },   /* __XHMDRelease */
@@ -194,7 +184,6 @@ static const gen_var_entry gen_var_table[] = {
 	{ 30294, 0, 1108, 13 },   /* __XGetRegisteredCursorImages */
 	{ 30295, 0, 84, 6 },   /* __XGetMenuBar */
 	{ 30298, 0, 36, 5 },   /* __XSetSurfaceListAlpha */
-	{ 30334, 0, 36, 4 },   /* __XSpaceSetName */
 	{ 30357, 0, 36, 5 },   /* __XMoveManagedSpaceToDisplayIndex */
 	{ 30367, 0, 36, 4 },   /* __XSetActiveMenuBarDisplayIdentifier */
 	{ 30377, 0, 36, 5 },   /* __XManagedDisplaySetRoleWindow */

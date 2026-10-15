@@ -355,6 +355,33 @@ int main(void)
 		CHECK(!again);                                                                    /* removed: no more events */
 	}
 
+	/* spaces: create, name, look up by name, alpha, put a window in a space (CopySpacesForWindows follows), remove, destroy */
+	{
+		ws_win sw; CHECK(ws_win_create(c, (ws_rect){ 700, 500, 30, 30 }, 0, &sw) == 0);
+		uint8_t m[0x100], rep[0x100]; int got;
+		memset(m, 0, sizeof m); hdr(m, 0x3c, 30328, 1); w32(m, 0x18, 1); m[0x25] = 1; m[0x27] = 1; w32(m, 0x28, 0); memcpy(m + 0x2c, &WS_NDR, 8); w32(m, 0x34, 0); w32(m, 0x38, 0);
+		got = call(fd, m, 0x3c, rep, sizeof rep); uint64_t sid = 0; if (got == 0x2c) memcpy(&sid, rep + 0x24, 8);
+		CHECK(got == 0x2c && r32(rep, 0x20) == 0 && sid >= 2);
+		memset(m, 0, sizeof m); hdr(m, 0x30 + 4, 30334, 0); memcpy(m + 0x20, &sid, 8); w32(m, 0x2c, 4); memcpy(m + 0x30, "work", 4); CHECK(rc(fd, m, 0x34) == 0);
+		uint8_t bp[16]; memcpy(bp, "bplist00", 8); bp[8] = 0x54; memcpy(bp + 9, "work", 4);
+		uint8_t wm[0x38 + 16]; memset(wm, 0, sizeof wm); hdr(wm, 0x38, 30349, 1); w32(wm, 0x18, 1); wm[0x25] = 1; wm[0x27] = 1; w32(wm, 0x28, 13); memcpy(wm + 0x2c, &WS_NDR, 8); w32(wm, 0x34, 13); memcpy(wm + 0x38, bp, 13);
+		got = call(fd, wm, 0x38 + 13, rep, sizeof rep); uint64_t found = 0; if (got == 0x2c) memcpy(&found, rep + 0x24, 8);
+		CHECK(got == 0x2c && found == sid);
+		memcpy(wm + 0x38 + 9, "nope", 4); got = call(fd, wm, 0x38 + 13, rep, sizeof rep); found = 1; if (got == 0x2c) memcpy(&found, rep + 0x24, 8); CHECK(got == 0x2c && found == 0);
+		memset(m, 0, sizeof m); hdr(m, 0x28, 30442, 0); memcpy(m + 0x20, &sid, 8); got = call(fd, m, 0x28, rep, sizeof rep); { float f; memcpy(&f, rep + 0x24, 4); CHECK(got == 0x28 && f == 1.0f); }
+		uint64_t bad = 0xdead; memcpy(m + 0x20, &bad, 8); CHECK(rc(fd, m, 0x28) == 0x3f2);
+		/* AddWindowsToSpaces: one window, one space */
+		uint8_t am[0x4c + 12]; memset(am, 0, sizeof am); hdr(am, 0x4c, 30319, 1); w32(am, 0x18, 2); am[0x25] = 1; am[0x27] = 1; w32(am, 0x28, 4); am[0x35] = 1; am[0x37] = 1; w32(am, 0x38, 8); memcpy(am + 0x3c, &WS_NDR, 8); w32(am, 0x44, 1); w32(am, 0x48, 1);
+		w32(am, 0x4c, sw.id); memcpy(am + 0x50, &sid, 8);
+		CHECK(rc(fd, am, 0x4c + 12) == 0);
+		uint8_t cm[0x3c + 4]; memset(cm, 0, sizeof cm); hdr(cm, 0x3c, SLS_MSG_CopySpacesForWindows, 1); w32(cm, 0x18, 1); cm[0x25] = 1; cm[0x27] = 1; w32(cm, 0x28, 4); memcpy(cm + 0x2c, &WS_NDR, 8); w32(cm, 0x38, 1); w32(cm, 0x3c, sw.id);
+		uint8_t big[0x100]; got = call(fd, cm, 0x40, big, sizeof big); uint64_t in = 0; if (got >= 0x38 + 8) memcpy(&in, big + 0x38, 8); CHECK(in == sid);
+		hdr(am, 0x4c, 30320, 1); CHECK(rc(fd, am, 0x4c + 12) == 0);
+		got = call(fd, cm, 0x40, big, sizeof big); in = 0; if (got >= 0x38 + 8) memcpy(&in, big + 0x38, 8); CHECK(in == 1);                      /* back in the default space */
+		memset(m, 0, sizeof m); hdr(m, 0x28, 30329, 0); memcpy(m + 0x20, &sid, 8); CHECK(rc(fd, m, 0x28) == 0); CHECK(rc(fd, m, 0x28) == 0x3e9);   /* destroyed; again: unknown */
+		uint64_t one = 1; memcpy(m + 0x20, &one, 8); CHECK(rc(fd, m, 0x28) == 0x3e9);                                                                  /* the default space stays */
+	}
+
 	/* notifications: ToConnection reaches the target, Broadcast only the connections that registered the type; events and notifications share the channel */
 	{
 		uint32_t type = 0, n = 0; uint8_t d[256]; ws_event e; while (ws_conn_next_pushed_event(c, 0, &e)) {}
