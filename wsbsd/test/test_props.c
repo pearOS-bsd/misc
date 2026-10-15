@@ -114,6 +114,15 @@ int main(void)
 		CHECK(s && s->w == sw && s->h == sh); if (s) ws_surface_free(s);
 		CHECK(ws_capture(c, (ws_rect){ 0, 0, 0, 0 }, 0xfffff, 0) == NULL);
 	}
+	{ /* CopyWindowsWithOptionsAndTagsAndSpaceOptions: the ordered-in windows as an out-of-line id array */
+		ws_win lw; CHECK(ws_win_create(c, (ws_rect){ 200, 200, 30, 20 }, 0, &lw) == 0 && ws_win_order(c, &lw, 1, 0) == 0);
+		uint8_t m[0x3c], rep[0x400]; memset(m, 0, sizeof m); hdr(m, 0x3c, 30460, 0);
+		int g = call(fd, m, sizeof m, rep, sizeof rep); uint32_t cnt = g >= 0x38 ? r32(rep, 0x34) : 0; int found = 0;
+		for (uint32_t i = 0; i < cnt && g >= (int)(0x38 + 4 * (i + 1)); i++) if (r32(rep, 0x38 + 4 * i) == lw.id) found = 1;
+		CHECK(g >= 0x38 && cnt >= 1 && found && r32(rep, 0x28) == cnt * 4);
+		ws_win_order(c, &lw, 0, 0);
+		hdr(m, 0x38, 30460, 0); CHECK(rc(fd, m, 0x38) == -304);
+	}
 	{ /* GetWindowTransform: the identity for a window nothing transformed (recorded), 1000 for an unknown window, -304 for a bad size */
 		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 100, 200, 30, 20 }, 0, &tw) == 0);
 		uint8_t m[0x28], rep[0x80]; memset(m, 0, sizeof m); hdr(m, 0x28, 30034, 0); w32(m, 0x20, tw.id); w32(m, 0x24, 0x7fffff00);
