@@ -139,10 +139,33 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		(void)holds_rights(c, rd32(buf, 0x34));                                     /* the opaque shape only helps the compositor skip work: accepted, not used yet */
 		return reply_simple(c->fd, h, 0);
 	}
-	case SLS_MSG_AddStructuralRegionOfType: {                                      /* OOL region, size 0x58; tracking/structural regions are accepted and not delivered yet */
+	case SLS_MSG_AddStructuralRegionOfType: {                                      /* OOL region; type@0x34 (bit 0: tracking), wid@0x38, user data u64@0x3c, region size repeated@0x48, id u64@0x50; size 0x58 */
 		int err; int osz = ool_request(h, buf, len, 0x58, &err);
 		if (osz < 0) return reply_simple(c->fd, h, err);
 		if ((uint32_t)osz != rd32(buf, 0x48)) return reply_simple(c->fd, h, -300);
+		uint32_t type = rd32(buf, 0x34), wid = rd32(buf, 0x38); uint64_t id; memcpy(&id, buf + 0x50, 8);
+		if (type >= 2) return reply_simple(c->fd, h, 0x3f2);
+		if (type & 1) {                                                             /* a tracking region: the pointer entering/leaving it is reported */
+			ws_rect *rc = NULL; int nr = 0; ws_rect bb;
+			if (osz && ws_region_parse(buf + 0x58, (uint32_t)osz, &rc, &nr, &bb) == 0 && holds_rights(c, wid)) ws_tracking_set(srv, id, wid, rc, nr);
+			free(rc);
+		}
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_RemoveStructuralRegion: {                                         /* id u64@0x20, size 0x28, always 0 */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		uint64_t id; memcpy(&id, buf + 0x20, 8);
+		ws_tracking_remove(srv, id);
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_StructuralRegionSetShape: {                                       /* OOL region, id u64@0x34, size repeated@0x3c, size 0x40 */
+		int err; int osz = ool_request(h, buf, len, 0x40, &err);
+		if (osz < 0) return reply_simple(c->fd, h, err);
+		if ((uint32_t)osz != rd32(buf, 0x3c)) return reply_simple(c->fd, h, -300);
+		uint64_t id; memcpy(&id, buf + 0x34, 8);
+		ws_rect *rc = NULL; int nr = 0; ws_rect bb;
+		if (osz && ws_region_parse(buf + 0x40, (uint32_t)osz, &rc, &nr, &bb) == 0) ws_tracking_set_shape(srv, id, rc, nr);
+		free(rc);
 		return reply_simple(c->fd, h, 0);
 	}
 	case SLS_MSG_CopySpacesForWindows: {                                           /* OOL array of window ids (count@0x38 = size/4); reply OOL array of space ids (u64) */
