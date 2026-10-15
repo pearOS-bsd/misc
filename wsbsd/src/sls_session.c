@@ -191,17 +191,26 @@ static int do_window_query(conn *c, const uint8_t *buf, size_t len)
 	if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size < 0x2c || h->msgh_size > 0x402c) return reply_simple(c->fd, h, -304);
 	uint32_t n = rd32(buf, 0x28);
 	if (n > 0x4000 || h->msgh_size != ((n + 3) & ~3u) + 0x2c) return reply_simple(c->fd, h, -304);
-	/* query stream: packed64 count, then count window ids (a count of 0 asks for every window with filters; not reproduced: no windows) */
+	/* query stream: packed64 count, then count window ids. A count of 0 asks for every window matching the filters: recorded on a macOS runner, a short stream gives the
+	 * ordered-in windows front to back, and a first option of 1 gives only the WindowServer-owned ones (none here). The remaining filters (owner, tags, spaces) are not decoded. */
 	const uint8_t *q = buf + 0x2c; size_t qi = 0; int64_t cnt = 0;
 	if (!wq_get_p64(q, n, &qi, &cnt) || cnt < 0 || cnt > 0x4000) cnt = 0;
+	ws_wid ids[256]; int nids = 0;
+	if (cnt == 0) {
+		int64_t opt = 0;
+		if (!wq_get_p64(q, n, &qi, &opt)) opt = 0;
+		if (!(opt & 1)) nids = ws_list_windows(srv, 0, 1, ids, 256);
+		if (nids > 256) nids = 256;
+	} else {
+		for (int64_t k = 0; k < cnt && nids < 256; k++) { int64_t id; if (!wq_get_p64(q, n, &qi, &id)) break; if (id > 0) ids[nids++] = (ws_wid)id; }
+	}
 	wq_buf b = { 0, 0, 0 };
 	wq_u32(&b, 0xffffffffu); wq_u32(&b, 0xffffffffu); wq_u32(&b, 0xffffffffu);   /* window / space / display list offsets, patched below */
 	uint32_t seen_id[256], seen_off[256]; int nseen = 0;
 	uint32_t listoff[256]; int nlist = 0;
-	for (int64_t k = 0; k < cnt; k++) {
-		int64_t id;
-		if (!wq_get_p64(q, n, &qi, &id)) break;
-		if (id <= 0 || !ws_window_exists(srv, (ws_wid)id) || nlist >= 256) continue;
+	for (int k = 0; k < nids; k++) {
+		int64_t id = ids[k];
+		if (!ws_window_exists(srv, (ws_wid)id) || nlist >= 256) continue;
 		int at = -1;
 		for (int j = 0; j < nseen; j++) if (seen_id[j] == (uint32_t)id) at = j;
 		if (at < 0) {

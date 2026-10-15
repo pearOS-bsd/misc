@@ -61,6 +61,16 @@ int main(void)
 		static const uint8_t suffix[] = { 0x10,5, 0x10,1, 0x10,0x64,0x10,0xc8,0x20,1,0x2c,0x10,0x96, 0x10,0x64,0x10,0xc8,0x20,1,0x2c,0x10,0x96,
 			0x10,0x4d,0x10,0xb9,0x20,1,0x5a,0x10,0xc4, 0x10,0x4d,0x10,0xb9,0x20,1,0x5a,0x10,0xc4, 0,0, 0,0, 0,0, 0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff, 0,0,0 };
 		CHECK(i + sizeof suffix == slen - 8 && memcmp(S + i, suffix, sizeof suffix) == 0);
+		/* count 0: every ordered-in window, front to back; option 1: only WindowServer-owned windows (none) */
+		ws_win qw2; CHECK(ws_win_create(c, (ws_rect){ 5, 5, 20, 20 }, 0, &qw2) == 0 && ws_win_order(c, &qw, 1, 0) == 0 && ws_win_order(c, &qw2, 1, 0) == 0);
+		memset(m, 0, sizeof m); hdr(m, 0x30, 30474, 0); w32(m, 0x28, 1); m[0x2c] = 0;
+		got = call(fd, m, 0x30, rep, sizeof rep);
+		slen = got > 0x38 ? r32(rep, 0x34) : 0;
+		{ uint32_t lo = r32(rep, 0x38); CHECK(slen > 100 && lo + 12 == slen && r32(rep, 0x38 + lo) == 2); CHECK(S[0] == S[0]); }
+		memset(m, 0, sizeof m); hdr(m, 0x30, 30474, 0); w32(m, 0x28, 3); m[0x2c] = 0x00; m[0x2d] = 0x10; m[0x2e] = 1;
+		got = call(fd, m, 0x30, rep, sizeof rep);
+		CHECK(got == 0x48 && r32(rep, 0x34) == 12);
+		ws_win_order(c, &qw, 0, 0); ws_win_order(c, &qw2, 0, 0);                         /* out again: later tests click around here */
 		/* an unknown window id: the empty result */
 		memset(m, 0, sizeof m); hdr(m, 0x30, 30474, 0); w32(m, 0x28, 4); m[0x2c] = 0x10; m[0x2d] = 1; m[0x2e] = 0x30; m[0x2f] = 0xff;
 		got = call(fd, m, 0x30, rep, sizeof rep);
