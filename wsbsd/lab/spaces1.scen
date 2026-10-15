@@ -1,5 +1,4 @@
-# managed display spaces and space getters
-raw 30356 ndr
+# space listing (the managed display request is in spaces2)
 raw 30324 ndr u32:7
 raw 30324 ndr u32:1
 raw 30324 ndr u32:2
