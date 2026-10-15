@@ -1,5 +1,6 @@
 /* Window routines beyond the core set in wsd.c: properties, layer context binding, ordered-in query. */
 #include "wsd_priv.h"
+#include "ws_region.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -91,6 +92,31 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 {
 	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
 	switch (h->msgh_id) {
+	case SLS_MSG_ShapeWindow: {                                                    /* two OOL regions (shape, second shape), wid@0x44, option@0x48, byte@0x4c, sizes repeated @0x50/@0x54, size 0x58 */
+		if (!(h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || h->msgh_size != 0x58 || len < 0x58 || rd32(buf, 0x18) != 2) return reply_simple(c->fd, h, -304);
+		uint32_t s1 = rd32(buf, 0x28), s2 = rd32(buf, 0x38);
+		if (buf[0x27] != 1 || buf[0x37] != 1 || s1 != rd32(buf, 0x50) || s2 != rd32(buf, 0x54)) return reply_simple(c->fd, h, -300);
+		if (len != 0x58 + (size_t)s1 + s2) return reply_simple(c->fd, h, -304);
+		uint32_t wid = rd32(buf, 0x44);
+		if (holds_rights(c, wid) && s1) {
+			ws_rect *r = NULL; int nr = 0; ws_rect bb;
+			if (ws_region_parse(buf + 0x58, s1, &r, &nr, &bb) == 0 && bb.w > 0 && bb.h > 0) ws_resize_window(srv, wid, bb.x + bb.w, bb.y + bb.h);   /* the shape's extent is the window size */
+			free(r);
+		}
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_GetWindowShape: {                                                 /* wid@0x20; reply complex 0x38 with the serialized shape; 1000 for an unknown window */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		ws_rect f;
+		if (ws_window_frame(srv, rd32(buf, 0x20), &f)) return reply_simple(c->fd, h, 1000);
+		ws_rect r = { 0, 0, f.w, f.h }; uint8_t reg[256];
+		size_t n = ws_region_serialize(&r, 1, reg, sizeof reg);
+		uint8_t m[0x38]; memset(m, 0, sizeof m);
+		fill_reply_header((mach_msg_header_t *)m, h, sizeof m, 1);
+		wr32(m, 0x18, 1); m[0x25] = 1; m[0x27] = 1; wr32(m, 0x28, (uint32_t)n); memcpy(m + 0x2c, &WS_NDR, 8); wr32(m, 0x34, (uint32_t)n);
+		struct iovec v[2] = { { m, sizeof m }, { reg, n } };
+		return ws_ipc_send(c->fd, v, 2, NULL, 0);
+	}
 	case SLS_MSG_SetWindowOpaqueShape: {                                           /* OOL region, wid@0x34, region size@0x38 (= descriptor size), size 0x3c */
 		int err; int osz = ool_request(h, buf, len, 0x3c, &err);
 		if (osz < 0) return reply_simple(c->fd, h, err);

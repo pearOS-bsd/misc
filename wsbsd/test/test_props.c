@@ -2,6 +2,7 @@
 #include "ws_client.h"
 #include "ws_ipc.h"
 #include "sls_wire.h"
+#include "ws_region.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -105,6 +106,23 @@ int main(void)
 		w32(cs, 0x18, 1); cs[0x25] = 1; cs[0x27] = 1; w32(cs, 0x28, 8); memcpy(cs + 0x2c, &WS_NDR, 8); w32(cs, 0x34, 0); w32(cs, 0x38, 2); w32(cs, 0x3c, w.id); w32(cs, 0x40, w.id);
 		int sn = call(fd, cs, 0x3c + 8, rep, sizeof rep);
 		CHECK(sn == 0x38 + 16 && r32(rep, 0x34) == 2 && r32(rep, 0x28) == 16);          /* two windows, one space each (u64 ids) */
+	}
+
+	/* ShapeWindow resizes (two OOL regions); GetWindowShape reads the shape back */
+	{
+		uint8_t reg[64]; size_t rn = ws_region_serialize(&(ws_rect){ 0, 0, 150, 90 }, 1, reg, sizeof reg);
+		uint8_t sw[0x58 + 80]; memset(sw, 0, sizeof sw); hdr(sw, 0x58, SLS_MSG_ShapeWindow, 1);
+		w32(sw, 0x18, 2); sw[0x25] = 1; sw[0x27] = 1; w32(sw, 0x28, (uint32_t)rn); sw[0x35] = 1; sw[0x37] = 1; w32(sw, 0x38, 0);
+		memcpy(sw + 0x3c, &WS_NDR, 8); w32(sw, 0x44, w.id); w32(sw, 0x50, (uint32_t)rn); w32(sw, 0x54, 0); memcpy(sw + 0x58, reg, rn);
+		CHECK(rc(fd, sw, 0x58 + rn) == 0);
+		ws_rect fr; CHECK(ws_win_get_bounds(c, &w, &fr) == 0 && fr.w == 150 && fr.h == 90 && fr.x == 10 && fr.y == 10);
+		hdr(g, 0x24, SLS_MSG_GetWindowShape, 0); memcpy(g + 0x18, &WS_NDR, 8); w32(g, 0x20, w.id);
+		int sn = call(fd, g, 0x24, rep, sizeof rep);
+		CHECK(sn > 0x38 && r32(rep, 0x28) == (uint32_t)(sn - 0x38));
+		ws_rect *rr = NULL; int nrr = 0; ws_rect bbx;
+		CHECK(ws_region_parse(rep + 0x38, (uint32_t)(sn - 0x38), &rr, &nrr, &bbx) == 0 && bbx.w == 150 && bbx.h == 90); free(rr);
+		w32(g, 0x20, 99999);
+		CHECK(rc(fd, g, 0x24) == 1000);
 	}
 	ws_server_quit(c);
 	printf(failures ? "%d failures\n" : "window extension routines: all checks passed\n", failures);
