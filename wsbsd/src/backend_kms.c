@@ -4,6 +4,7 @@
  * as evdev codes. The compositor stays the CPU one; a GL compositor would render to GBM buffers instead. */
 #ifdef WS_KMS
 #include "ws_backend.h"
+#include "ws_input.h"
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -11,6 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/ioctl.h>
 #include <sys/mman.h>
 #include <xf86drm.h>
 #include <xf86drmMode.h>
@@ -146,7 +148,7 @@ void ws_kms_close(ws_kms *k)
 
 /* ---- evdev ---- */
 #define MAXDEV 16
-struct ws_evdev { int n, fd[MAXDEV]; int x, y, buttons; int init; };
+struct ws_evdev { int n, fd[MAXDEV]; ws_input in; int in_init; int abs[MAXDEV][2][2]; int has_abs[MAXDEV]; };
 
 ws_evdev *ws_evdev_open(const char *dir)
 {
@@ -159,7 +161,13 @@ ws_evdev *ws_evdev_open(const char *dir)
 		char path[512];
 		snprintf(path, sizeof path, "%s/%s", dir, de->d_name);
 		int fd = open(path, O_RDONLY | O_NONBLOCK | O_CLOEXEC);
-		if (fd >= 0) e->fd[e->n++] = fd;
+		if (fd >= 0) {
+			struct input_absinfo ax, ay;                          /* a device with absolute axes (tablet, touch screen) reports positions in its own range */
+			if (ioctl(fd, EVIOCGABS(ABS_X), &ax) == 0 && ioctl(fd, EVIOCGABS(ABS_Y), &ay) == 0 && ax.maximum > ax.minimum && ay.maximum > ay.minimum) {
+				e->has_abs[e->n] = 1; e->abs[e->n][0][0] = ax.minimum; e->abs[e->n][0][1] = ax.maximum; e->abs[e->n][1][0] = ay.minimum; e->abs[e->n][1][1] = ay.maximum;
+			}
+			e->fd[e->n++] = fd;
+		}
 	}
 	closedir(d);
 	return e;
@@ -170,32 +178,15 @@ int ws_evdev_fd(ws_evdev *e, int i) { return e->fd[i]; }
 
 int ws_evdev_dispatch(ws_evdev *e, int i, ws_server *srv, int sw, int sh)
 {
-	struct input_event ev[32];
-	if (!e->init) { e->x = sw / 2; e->y = sh / 2; e->init = 1; }
+	struct input_event ev[64];
+	if (!e->in_init) { ws_input_init(&e->in, sw, sh); e->in_init = 1; }
 	for (;;) {
 		ssize_t n = read(e->fd[i], ev, sizeof ev);
 		if (n < 0) return errno == EAGAIN ? 0 : -1;
 		if (n == 0) return -1;
-		int moved = 0;
 		for (size_t j = 0; j < (size_t)n / sizeof ev[0]; j++) {
-			if (ev[j].type == EV_REL) {
-				if (ev[j].code == REL_X) { e->x += ev[j].value; moved = 1; }
-				else if (ev[j].code == REL_Y) { e->y += ev[j].value; moved = 1; }
-			} else if (ev[j].type == EV_KEY) {
-				int c = ev[j].code;
-				if (c >= BTN_LEFT && c <= BTN_MIDDLE) {
-					int bit = c == BTN_LEFT ? 1 : c == BTN_RIGHT ? 2 : 4;
-					e->buttons = ev[j].value ? (e->buttons | bit) : (e->buttons & ~bit);
-					moved = 1;
-				} else if (ev[j].value != 2) {                     /* ignore autorepeat */
-					ws_server_key(srv, c, ev[j].value);
-				}
-			}
-		}
-		if (moved) {
-			e->x = e->x < 0 ? 0 : e->x >= sw ? sw - 1 : e->x;
-			e->y = e->y < 0 ? 0 : e->y >= sh ? sh - 1 : e->y;
-			ws_server_mouse(srv, e->x, e->y, e->buttons);
+			if (ev[j].type == EV_ABS && e->has_abs[i]) { ws_input_set_abs_range(&e->in, 0, e->abs[i][0][0], e->abs[i][0][1]); ws_input_set_abs_range(&e->in, 1, e->abs[i][1][0], e->abs[i][1][1]); }
+			ws_input_feed(&e->in, srv, ev[j].type, ev[j].code, ev[j].value);       /* EV_SYN / EV_KEY / EV_REL / EV_ABS share the numbers of ws_input.h */
 		}
 	}
 }
