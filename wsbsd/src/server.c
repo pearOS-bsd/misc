@@ -57,6 +57,7 @@ struct ws_server {
 	uint64_t gen;
 	ws_surface *cursor_img; int cursor_hx, cursor_hy; uint32_t cursor_serial;
 	struct track { int used; uint64_t id; ws_wid wid; ws_rect *r; int n; int inside; int disabled; int ox, oy; } trk[64];
+	int decoupled; uint32_t decoupled_by; int rx, ry;           /* AssociateMouseAndMouseCursorPosition(false): the pointer is held still while the mouse keeps sending motion (deltas) */
 	ws_rect lock; int locked;                                   /* SetCursorRegionLock: the pointer stays inside this rectangle (the bounds of the locked region) */
 	struct kf { uint32_t cid; int ids[8]; int n; } kf[32]; int nkf; int kf_next;      /* key focus list, [0] is the holder */
 	struct { uint32_t cid; int count; } hide[64]; int nhide; int obscured;
@@ -524,8 +525,16 @@ void ws_cursor_lock(ws_server *s, const ws_rect *bounds)
 	if (s->locked) { if (s->cx < s->lock.x) s->cx = s->lock.x; if (s->cy < s->lock.y) s->cy = s->lock.y; if (s->cx >= s->lock.x + s->lock.w) s->cx = s->lock.x + s->lock.w - 1; if (s->cy >= s->lock.y + s->lock.h) s->cy = s->lock.y + s->lock.h - 1; }
 }
 
+void ws_server_decouple(ws_server *s, uint32_t owner, int on)
+{
+	if (on) { s->decoupled = 1; s->decoupled_by = owner; s->rx = s->cx; s->ry = s->cy; }
+	else if (s->decoupled && (!owner || s->decoupled_by == owner)) s->decoupled = 0;
+}
+
 void ws_server_mouse(ws_server *s, int x, int y, int buttons)
 {
+	int ddx = 0, ddy = 0, held = 0;
+	if (s->decoupled) { ddx = x - s->rx; ddy = y - s->ry; s->rx = x; s->ry = y; x = s->cx; y = s->cy; held = ddx || ddy; }   /* the pointer stays, the motion survives as deltas */
 	if (s->locked) { if (x < s->lock.x) x = s->lock.x; if (y < s->lock.y) y = s->lock.y; if (x >= s->lock.x + s->lock.w) x = s->lock.x + s->lock.w - 1; if (y >= s->lock.y + s->lock.h) y = s->lock.y + s->lock.h - 1; }
 	x = x < 0 ? 0 : x >= s->w ? s->w - 1 : x;
 	y = y < 0 ? 0 : y >= s->h ? s->h - 1 : y;
@@ -545,6 +554,7 @@ void ws_server_mouse(ws_server *s, int x, int y, int buttons)
 	if (w) {
 		int lx = x - w->frame.x, ly = y - w->frame.y;
 		if (moved) post(w, WS_EV_MOUSE_MOVE, lx, ly, buttons, 0);
+		else if (held) post_ex(w, (ws_event){ WS_EV_MOUSE_MOVE, w->id, lx, ly, buttons, 0, 0, ddx, ddy, 0 });
 		if (pressed) post(w, WS_EV_MOUSE_DOWN, lx, ly, buttons, 0);
 		if (released) post(w, WS_EV_MOUSE_UP, lx, ly, buttons, 0);
 	}

@@ -190,6 +190,20 @@ int main(void)
 		hdr(m, 0x28, 30347, 0); CHECK(call(fd, m, sizeof m, rep, sizeof rep) == 0x28 && r32(rep, 0x24) == 0);
 		w32(m, 0x20, 0x777); hdr(m, 0x28, 30372, 0); CHECK(rc(fd, m, 0x28) == 0x3e9); hdr(m, 0x28, 30412, 0); CHECK(rc(fd, m, 0x28) == 1000);
 	}
+	{ /* AssociateMouseAndMouseCursorPosition(false): the pointer is held while the motion arrives as deltas; coupling it again lets it move */
+		ws_win dw; CHECK(ws_win_create(c, (ws_rect){ 300, 300, 100, 100 }, 0, &dw) == 0 && ws_win_order(c, &dw, 1, 0) == 0); ws_win_set_event_mask(c, &dw, -1);
+		ws_event e; while (ws_conn_next_pushed_event(c, 0, &e)) {}
+		CHECK(ws_inject_mouse(c, 350, 350, 0) == 0);
+		uint8_t m[0x24]; memset(m, 0, sizeof m); hdr(m, 0x24, 30126, 0); m[0x20] = 0; CHECK(rc(fd, m, 0x24) == 0);
+		while (ws_conn_next_pushed_event(c, 0, &e)) {}
+		CHECK(ws_inject_mouse(c, 370, 360, 0) == 0); 
+		int cx = 0, cy = 0; CHECK(ws_cursor_position(c, &cx, &cy) == 0 && cx == 350 && cy == 350);
+		int got = 0; while (ws_conn_next_pushed_event(c, 300, &e) == 1) if (e.type == WS_EV_MOUSE_MOVE && e.dx == 20 && e.dy == 10) { got = 1; break; }
+		CHECK(got);
+		m[0x20] = 1; CHECK(rc(fd, m, 0x24) == 0);
+		CHECK(ws_inject_mouse(c, 380, 370, 0) == 0 && ws_cursor_position(c, &cx, &cy) == 0 && cx == 380 && cy == 370);
+		ws_win_order(c, &dw, 0, 0);
+	}
 	{ /* GetWindowTransform: the identity for a window nothing transformed (recorded), 1000 for an unknown window, -304 for a bad size */
 		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 100, 200, 30, 20 }, 0, &tw) == 0);
 		uint8_t m[0x28], rep[0x80]; memset(m, 0, sizeof m); hdr(m, 0x28, 30034, 0); w32(m, 0x20, tw.id); w32(m, 0x24, 0x7fffff00);
