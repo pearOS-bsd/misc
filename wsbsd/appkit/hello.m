@@ -2,11 +2,11 @@
 #import <AppKit/AppKit.h>
 #import <GNUstepGUI/GSDisplayServer.h>
 
-@interface Hello : NSObject
+@interface Hello : NSObject { @public NSTextField *field; }
 - (void)clicked:(id)sender;
 @end
 @implementation Hello
-- (void)clicked:(id)sender { NSLog(@"button clicked"); }
+- (void)clicked:(id)sender { NSLog(@"button clicked"); [field setStringValue:@"Clicked!"]; }
 @end
 
 int main(int argc, char **argv)
@@ -22,9 +22,9 @@ int main(int argc, char **argv)
 	NSTextField *t = [[NSTextField alloc] initWithFrame:NSMakeRect(20, 80, 200, 24)];
 	[t setStringValue:@"Hello from GNUstep AppKit"];
 	[[w contentView] addSubview:t];
+	h->field = t;
 	[w makeKeyAndOrderFront:nil];
 	NSLog(@"window shown, frame %@ number %d visible %d bgapp %d hidden %d active %d", NSStringFromRect([w frame]), (int)[w windowNumber], (int)[w isVisible], (int)[[NSUserDefaults standardUserDefaults] boolForKey:@"GSBackgroundApp"], (int)[NSApp isHidden], (int)[NSApp isActive]);
-	{ GSDisplayServer *srv = GSCurrentServer(); NSLog(@"server %@ %@ responds %d", srv, [srv class], (int)[srv respondsToSelector:@selector(orderwindow:::)]); [srv orderwindow:NSWindowAbove :0 :(int)[w windowNumber]]; }
 	[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:(argc > 1 ? atof(argv[1]) : 1.0)]];
 	NSLog(@"done");
 	[pool release];
