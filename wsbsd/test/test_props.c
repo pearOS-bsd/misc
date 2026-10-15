@@ -797,6 +797,28 @@ int main(void)
 		double dw; memcpy(&dw, b + 32 * 4, 8); CHECK(dw == 640.0);
 		CHECK(r32(b, 23 * 4) == 0x12345678);
 	}
+	{ /* the list forms: SetWindowTransformList (2 OOL) and AddTrackingAreas (5 OOL) */
+		uint8_t m[0x54 + 4 + 24]; memset(m, 0, sizeof m); hdr(m, 0x54, 30032, 1); w32(m, 0x18, 2);
+		m[0x25] = 1; m[0x27] = 1; w32(m, 0x28, 4); m[0x35] = 1; m[0x37] = 1; w32(m, 0x38, 24); memcpy(m + 0x3c, &WS_NDR, 8); w32(m, 0x4c, 1); w32(m, 0x50, 1);
+		w32(m, 0x54, w.id); float xf[6] = { 1.5f, 0, 0, 1.5f, 3, 4 }; memcpy(m + 0x58, xf, 24);
+		CHECK(rc(fd, m, sizeof m) == 0);
+		w32(m, 0x50, 2); CHECK(rc(fd, m, sizeof m) == -300);                                   /* count and size disagree */
+		m[0x37] = 2; w32(m, 0x50, 1); CHECK(rc(fd, m, sizeof m) == -300); m[0x37] = 1;
+		CHECK(rc(fd, m, sizeof m - 4) == -304);
+		uint8_t reg[64]; size_t rn = ws_region_serialize(&(ws_rect){ 0, 0, 50, 50 }, 1, reg, sizeof reg);
+		uint8_t a[0x8c + 64 + 4 + 8 + 1 + 8]; memset(a, 0, sizeof a); hdr(a, 0x8c, 30158, 1); w32(a, 0x18, 5);
+		uint32_t sizes[5] = { (uint32_t)rn, 4, 8, 1, 8 };
+		for (int i = 0; i < 5; i++) { a[0x1c + 16 * i + 9] = 1; a[0x1c + 16 * i + 0xb] = 1; w32(a, 0x28 + 16 * i, sizes[i]); }
+		memcpy(a + 0x6c, &WS_NDR, 8); w32(a, 0x74, w.id); w32(a, 0x78, (uint32_t)rn); w32(a, 0x7c, 1); w32(a, 0x80, 1); w32(a, 0x84, 1); w32(a, 0x88, 1);
+		size_t at = 0x8c; memcpy(a + at, reg, rn); at += rn; w32(a, at, (uint32_t)rn); at += 4; uint64_t tid = 0x55; memcpy(a + at, &tid, 8); at += 8; a[at++] = 0; at += 8;
+		ws_event e; while (ws_conn_next_pushed_event(c, 20, &e)) { }
+		CHECK(rc(fd, a, at) == 0);
+		ws_post_mouse_event(c, 5, 40, 50, 0, 0, 0);
+		int entered = 0; for (int i = 0; i < 10 && ws_conn_next_pushed_event(c, 100, &e); i++) if (e.type == WS_EV_TRACK_ENTER && e.key == 0x55 && e.wid == w.id) entered = 1;
+		CHECK(entered);
+		w32(a, 0x7c, 2); CHECK(rc(fd, a, at) == -300);
+		uint8_t ra[0x24]; memset(ra, 0, sizeof ra); hdr(ra, 0x24, 30162, 0); memcpy(ra + 0x18, &WS_NDR, 8); w32(ra, 0x20, w.id); CHECK(rc(fd, ra, 0x24) == 0);
+	}
 	{ /* event taps: place, query, enable, list, release (layouts from the decompiled routines) */
 		uint8_t q[0x44], rep[0x200]; memset(q, 0, sizeof q);
 		hdr(q, 0x44, 32028, 1); w32(q, 0x18, 1); w32(q, 0x1c, 0x777); q[0x26] = 0x11; memcpy(q + 0x28, "\0\0\0\0\1\0\0\0", 8);
