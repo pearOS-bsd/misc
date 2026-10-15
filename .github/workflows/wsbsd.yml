@@ -145,3 +145,19 @@ jobs:
             wsbsd/gorm-menu.png
             wsbsd/gorm-doc.png
           if-no-files-found: warn
+
+  # Core Animation: GNUstep QuartzCore (CALayer) over Opal on FreeBSD. Exploratory: the build is expected to need patches.
+  freebsd-quartzcore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build GNUstep QuartzCore
+        uses: vmactions/freebsd-vm@v1
+        with:
+          release: "14.2"
+          arch: x86_64
+          usesh: true
+          run: |
+            sh wsbsd/ci/quartzcore-build.sh 2>&1 | tail -70
