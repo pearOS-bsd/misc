@@ -16,8 +16,11 @@ int main(int argc, char **argv)
 	else if (variant == 1) { CGContextSetRGBFillColor(g, 0, 0.5, 1, 1); CGContextFillRect(g, CGRectMake(0, 0, W, H)); }                       /* the whole buffer */
 	else if (variant == 2) { for (int y = 0; y < H; y++) { CGContextSetRGBFillColor(g, 0.1 + 0.25 * y / H, 0.16, 0.35, 1); CGContextFillRect(g, CGRectMake(0, y, W, 1)); } }   /* one-pixel bands, as opal_demo */
 	else { CGContextSetRGBFillColor(g, 0, 0.5, 1, 1); CGContextBeginPath(g); CGContextAddRect(g, CGRectMake(0, 0, 200, 200)); CGContextFillPath(g); }   /* a path fill */
-	CGContextFlush(g);
-	long nz = 0; for (int y = 0; y < H; y++) for (int x = 0; x < W; x++) if (((uint32_t *)(px->px + y * px->stride))[x]) nz++;
-	printf("opal_min variant %d: %ld non-zero pixels\n", variant, nz);
+	long nz0 = 0, nz1 = 0, nz2 = 0;
+	#define COUNT(v) do { v = 0; for (int y = 0; y < H; y++) for (int x = 0; x < W; x++) if (((uint32_t *)(px->px + y * px->stride))[x]) v++; } while (0)
+	COUNT(nz0);                                  /* after drawing, before any flush */
+	CGContextFlush(g); COUNT(nz1);               /* after CGContextFlush */
+	CGContextRelease(g); COUNT(nz2);             /* after the context is released (a bitmap context may copy its pixels out then) */
+	printf("opal_min variant %d: %ld non-zero pixels (before flush %ld, after flush %ld, after release %ld)\n", variant, nz2, nz0, nz1, nz2);
 	return 0;
 }
