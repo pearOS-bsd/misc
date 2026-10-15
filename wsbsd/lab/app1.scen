@@ -1,0 +1,10 @@
+# register an application record on the real server, then use key focus
+raw 30136 ndr u32:0 u32:0
+raw 30283 ndr u32:0 u32:0x99001 u32:0 u32:0 u32:0 u32:0 u32:0 u32:1 str:t u32:0 u32:0 u32:0
+raw 30283 ndr u32:0 u32:0x99002 u32:1 u32:0 u32:0 u32:0 u32:0 u32:1 str:t u32:0 u32:0 u32:0
+raw 30136 ndr u32:0 u32:0
+raw 30137 ndr u32:0
+raw 30139
+raw 30138 ndr u32:0
+raw 30283 ndr u32:0 u32:0x99001 u32:0 u32:0 u32:0 u32:0 u32:0 u32:1 str:t u32:0 u32:0 u32:0
+raw 30283 ndr u32:0 u32:0x99003 u32:0 u32:0 u32:0 u32:0 u32:0 u32:1 str:t u32:1 u32:0 u32:0
