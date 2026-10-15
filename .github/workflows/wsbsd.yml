@@ -26,6 +26,12 @@ jobs:
           for s in 1 2 3 4 5 6; do ./fuzz_wsd 100000 $s; done
           cc -std=c99 -D_DEFAULT_SOURCE -Iinclude -o scen_wsd lab/scen_wsd.c src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c -lm
           for f in lab/state1 lab/state2 lab/state3 lab/state4 lab/wq1 lab/wq2 lab/prop1 lab/harvest1 lab/harvest2 lab/harvest3 lab/harvest4 lab/hotkeys lab/disp1 lab/app1; do SCEN_MUTATE=300 ./scen_wsd $f.scen > /dev/null || { echo "mutation run failed on $f"; exit 1; }; done
+          cc -std=c99 -D_DEFAULT_SOURCE -Iinclude -o test_props test/test_props.c src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c -lm
+          WS_SOCKET=/tmp/fuzz2.sock ./wsd_asan -t -g 640x480 > wsd2.log 2>&1 &
+          W2=$!; sleep 1
+          WS_SOCKET=/tmp/fuzz2.sock TEST_MUTATE=40 ./test_props > /dev/null || true        # the mutants change state, so some assertions may fail: only the server's survival counts
+          wait $W2; code=$?
+          if [ $code -ne 0 ] || grep -q "runtime error\|AddressSanitizer" wsd2.log; then echo "wsd died under the test mutants (exit $code)"; cat wsd2.log; exit 1; fi
           kill -0 $! && echo "wsd alive"
           if grep -q "runtime error\|AddressSanitizer" wsd.log; then cat wsd.log; exit 1; fi
 

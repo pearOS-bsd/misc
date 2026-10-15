@@ -20,9 +20,33 @@ static void hdr(uint8_t *m, uint32_t size, int id, int complex)
 	w32(m, 0, (complex ? 0x80000000u : 0) | 0x1513); w32(m, 4, size); w32(m, 8, 1); w32(m, 12, 1); w32(m, 20, (uint32_t)id);
 }
 
+/* TEST_MUTATE=N: every request this test sends is also sent, N times, in mutated form (flipped bytes, odd sizes, the complex bit toggled) on a second connection, whose answers are
+ * drained: with wsd running under the sanitizers this reaches the stateful handlers with the exact shapes the tests use */
+static void mutants(const uint8_t *req, size_t n)
+{
+	static int mfd = -2, nmut = -1; static uint64_t rs = 0x2545f4914f6cdd1dull;
+	if (nmut < 0) { const char *e = getenv("TEST_MUTATE"); nmut = e ? atoi(e) : 0; }
+	if (nmut <= 0) return;
+	if (mfd < 0) { mfd = ws_ipc_connect(getenv("WS_SOCKET")); if (mfd < 0) return; }
+	for (int k = 0; k < nmut; k++) {
+		uint8_t mm[0x4000]; size_t mn = n < sizeof mm ? n : sizeof mm; memcpy(mm, req, mn);
+		rs ^= rs << 13; rs ^= rs >> 7; rs ^= rs << 17;
+		for (int f = 0; f < 1 + (int)(rs % 3); f++) { rs ^= rs << 13; rs ^= rs >> 7; rs ^= rs << 17; if (mn > 0x18) mm[0x18 + rs % (mn - 0x18)] = (uint8_t)(rs >> 24); }
+		size_t sn = mn; rs ^= rs << 13; rs ^= rs >> 7; rs ^= rs << 17;
+		if (rs % 5 == 0 && mn > 0x1c) sn = mn - 4; else if (rs % 7 == 0 && mn + 4 <= sizeof mm) { memset(mm + mn, 0x41, 4); sn = mn + 4; }
+		if (rs % 3 == 0) mm[3] ^= 0x80;
+		struct iovec mv = { mm, sn }; int jf[4], jn = 0; static uint8_t junk[WS_IPC_RECV_CAP];
+		if (ws_ipc_send(mfd, &mv, 1, NULL, 0)) { close(mfd); mfd = ws_ipc_connect(getenv("WS_SOCKET")); if (mfd < 0) return; continue; }
+		ssize_t g = ws_ipc_recv(mfd, junk, sizeof junk, jf, &jn);
+		for (int q = 0; q < jn; q++) close(jf[q]);
+		if (g <= 0) { close(mfd); mfd = ws_ipc_connect(getenv("WS_SOCKET")); if (mfd < 0) return; }
+	}
+}
+
 static int call(int fd, uint8_t *req, size_t n, uint8_t *rep, size_t cap)
 {
 	struct iovec v = { req, n }; int fds[4], nf = 0;
+	mutants(req, n);
 	if (ws_ipc_send(fd, &v, 1, NULL, 0)) return -1;
 	return (int)ws_ipc_recv(fd, rep, cap, fds, &nf);
 }
