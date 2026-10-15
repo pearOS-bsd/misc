@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <zlib.h>
 #include <sys/socket.h>
 #include <sys/time.h>
 #ifdef __APPLE__
@@ -24,7 +25,7 @@
 enum { ST_VERSION, ST_SECTYPE, ST_AUTH, ST_INIT, ST_RUN };
 
 static struct {
-	int ls, fd, state, want, incremental;
+	int ls, fd, state, want, incremental, use_zlib; z_stream zs; int zs_ready;
 	uint8_t in[512]; size_t inn;
 	uint8_t challenge[16];
 	uint32_t shift[3]; int bigendian;                     /* the client's pixel format (r, g, b shifts) */
@@ -74,7 +75,7 @@ int wsd_vnc_listen(int port, const char *password)
 int wsd_vnc_client_fd(void) { return v.fd; }
 int wsd_vnc_connected(void) { return v.fd >= 0 && v.state == ST_RUN; }
 
-static void drop(void) { if (v.fd >= 0) close(v.fd); v.fd = -1; free(v.last); v.last = NULL; v.state = ST_VERSION; v.inn = 0; v.want = 0; }
+static void drop(void) { if (v.zs_ready) { deflateEnd(&v.zs); v.zs_ready = 0; } v.use_zlib = 0; if (v.fd >= 0) close(v.fd); v.fd = -1; free(v.last); v.last = NULL; v.state = ST_VERSION; v.inn = 0; v.want = 0; }
 
 /* returns the new client's descriptor to watch, or -1 */
 int wsd_vnc_accept(void)
@@ -166,7 +167,11 @@ int wsd_vnc_read(ws_server *srv, ws_input *in, int sw, int sh, const char *name)
 			if (v.inn < 1) return 0;
 			uint8_t t = v.in[0];
 			if (t == 0) { if (v.inn < 20) return 0; v.bigendian = v.in[6]; if (v.in[4] == 32 && v.in[7]) { v.shift[0] = v.in[14]; v.shift[1] = v.in[15]; v.shift[2] = v.in[16]; } consume(20); }
-			else if (t == 2) { if (v.inn < 4) return 0; size_t n = (size_t)(v.in[2] << 8 | v.in[3]); if (v.inn < 4 + 4 * n) { if (4 + 4 * n > sizeof v.in) { drop(); return -1; } return 0; } consume(4 + 4 * n); }
+			else if (t == 2) {
+				if (v.inn < 4) return 0; size_t n = (size_t)(v.in[2] << 8 | v.in[3]); if (v.inn < 4 + 4 * n) { if (4 + 4 * n > sizeof v.in) { drop(); return -1; } return 0; }
+				for (size_t k = 0; k < n; k++) { int32_t e = (int32_t)((uint32_t)v.in[4 + 4 * k] << 24 | (uint32_t)v.in[5 + 4 * k] << 16 | (uint32_t)v.in[6 + 4 * k] << 8 | v.in[7 + 4 * k]); if (e == 6) v.use_zlib = 1; }      /* the viewer takes zlib-compressed rectangles */
+				consume(4 + 4 * n);
+			}
 			else if (t == 3) { if (v.inn < 10) return 0; v.want = 1; v.incremental = v.in[1]; v.rx = v.in[2] << 8 | v.in[3]; v.ry = v.in[4] << 8 | v.in[5]; v.rw = v.in[6] << 8 | v.in[7]; v.rh = v.in[8] << 8 | v.in[9]; if (!v.incremental) { free(v.last); v.last = NULL; } consume(10); }
 			else if (t == 4) { if (v.inn < 8) return 0; uint32_t k = (uint32_t)v.in[4] << 24 | (uint32_t)v.in[5] << 16 | (uint32_t)v.in[6] << 8 | v.in[7]; int code = keysym_to_evdev(k); if (code > 0) ws_input_feed(in, srv, WSI_EV_KEY, code, v.in[1] ? 1 : 0); consume(8); }
 			else if (t == 5) {
@@ -211,14 +216,22 @@ int wsd_vnc_update(const ws_surface *screen, uint64_t gen)
 		int diff = 0; for (int y = 0; y < ph && !diff; y++) if (memcmp(screen->px + (size_t)(py + y) * screen->stride + (size_t)px * 4, v.last + ((size_t)(py + y) * W + px) * 4, (size_t)pw * 4)) diff = 1;
 		if (!diff) continue;
 		buf[0] = (uint8_t)(px >> 8); buf[1] = (uint8_t)px; buf[2] = (uint8_t)(py >> 8); buf[3] = (uint8_t)py; buf[4] = (uint8_t)(pw >> 8); buf[5] = (uint8_t)pw; buf[6] = (uint8_t)(ph >> 8); buf[7] = (uint8_t)ph;
-		buf[8] = buf[9] = buf[10] = buf[11] = 0;                                  /* raw encoding */
+		buf[8] = buf[9] = buf[10] = 0; buf[11] = v.use_zlib ? 6 : 0;               /* encoding: raw (0) or zlib (6) */
 		uint8_t *o = buf + 12;
 		for (int y = 0; y < ph; y++) {
 			const uint8_t *row = screen->px + (size_t)(py + y) * screen->stride + (size_t)px * 4;
 			for (int x = 0; x < pw; x++, o += 4) put_pixel(o, row + 4 * x, v.shift, v.bigendian);
 			memcpy(v.last + ((size_t)(py + y) * W + px) * 4, row, (size_t)pw * 4);
 		}
-		if (send_all(v.fd, buf, (size_t)(o - buf)) < 0) { drop(); return -1; }
+		if (v.use_zlib) {                                                         /* u32 length, then the raw pixels deflated on one stream per connection */
+			if (!v.zs_ready) { memset(&v.zs, 0, sizeof v.zs); if (deflateInit(&v.zs, 3) != Z_OK) { drop(); return -1; } v.zs_ready = 1; }
+			static uint8_t zb[TILE * TILE * 4 + 4096];
+			v.zs.next_in = buf + 12; v.zs.avail_in = (uInt)(o - (buf + 12)); v.zs.next_out = zb; v.zs.avail_out = sizeof zb;
+			if (deflate(&v.zs, Z_SYNC_FLUSH) != Z_OK) { drop(); return -1; }
+			uint32_t zl = (uint32_t)(sizeof zb - v.zs.avail_out);
+			buf[12] = (uint8_t)(zl >> 24); buf[13] = (uint8_t)(zl >> 16); buf[14] = (uint8_t)(zl >> 8); buf[15] = (uint8_t)zl;
+			if (send_all(v.fd, buf, 16) < 0 || send_all(v.fd, zb, zl) < 0) { drop(); return -1; }
+		} else if (send_all(v.fd, buf, (size_t)(o - buf)) < 0) { drop(); return -1; }
 	}
 	v.want = 0; v.last_gen = gen; v.last_send = t;
 	return 0;
