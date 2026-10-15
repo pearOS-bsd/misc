@@ -34,6 +34,14 @@ int main(void)
 	if (!c) return 1;
 	int fd = ws_conn_fd(c);
 	{ int sw = 0, sh = 0; CHECK(ws_conn_screen(c, &sw, &sh) == 0 && sw == 640 && sh == 480); }
+	{ /* WindowQuery with an empty query: complex reply, one descriptor slot, inline stream of three 0xffffffff list slots */
+		uint8_t m[0x40], rep[0x100]; memset(m, 0, sizeof m); hdr(m, 0x2c, 30474, 0);
+		int got = call(fd, m, 0x2c, rep, sizeof rep);
+		CHECK(got == 0x48 && (r32(rep, 0) & 0x80000000u) && r32(rep, 0x14) == 30574 && r32(rep, 0x18) == 1 && r32(rep, 0x24) == 0x01000101u && r32(rep, 0x34) == 12 && r32(rep, 0x38) == 0xffffffffu && r32(rep, 0x40) == 0xffffffffu);
+		hdr(m, 0x30, 30474, 0); w32(m, 0x28, 99);                                       /* length field does not match the size */
+		got = call(fd, m, 0x30, rep, sizeof rep);
+		CHECK(got == 0x24 && r32(rep, 0x20) == (uint32_t)-304);
+	}
 	{ /* GetSymbolicHotKeyValuesAndStates: 3 ids -> reply 0x34 + 16 * 3, counts in front of every array */
 		uint8_t m[0x40], rep[0x100]; memset(m, 0, sizeof m); hdr(m, 0x24 + 12, 32015, 0); w32(m, 0x20, 3); w32(m, 0x24, 1); w32(m, 0x28, 2); w32(m, 0x2c, 3);
 		int got = call(fd, m, 0x24 + 12, rep, sizeof rep);
