@@ -2,6 +2,7 @@
 #import <CoreGraphics/CoreGraphics.h>
 #include "ws_client.h"
 #include <stdio.h>
+#include <math.h>
 int main(int argc, char **argv)
 {
 	int variant = argc > 1 ? argv[1][0] - '0' : 0;
@@ -14,6 +15,14 @@ int main(int argc, char **argv)
 	CGContextRef g = CGBitmapContextCreate(px->px, W, H, 8, px->stride, rgb, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little);
 	fprintf(stderr, "opal_min: context %p, buffer stride %zu (width*4 = %d)\n", (void *)g, (size_t)px->stride, W * 4);
 	if (!g) return 2;
+	if (variant >= 10) {                                                            /* the demo's drawing, the first (variant - 9) steps of it */
+		int steps = variant - 9;
+		for (int y = 0; y < H; y++) { CGFloat t = (CGFloat)y / H; CGContextSetRGBFillColor(g, 0.10 + 0.25 * t, 0.16 + 0.20 * t, 0.35 + 0.30 * t, 1); CGContextFillRect(g, CGRectMake(0, y, W, 1)); }
+		if (steps >= 2) { CGContextSetRGBFillColor(g, 1.0, 0.62, 0.15, 1); CGContextBeginPath(g); CGContextAddArc(g, 120, 130, 70, 0, 2 * M_PI, 0); CGContextClosePath(g); CGContextFillPath(g); }
+		if (steps >= 3) { CGContextSetRGBStrokeColor(g, 1, 1, 1, 0.95); CGContextSetLineWidth(g, 4); CGContextBeginPath(g); CGContextMoveToPoint(g, 300, 60); CGContextAddLineToPoint(g, 360, 200); CGContextAddLineToPoint(g, 260, 120); CGContextClosePath(g); CGContextStrokePath(g); }
+		if (steps >= 4) { CGContextSaveGState(g); CGContextSetRGBFillColor(g, 1, 1, 1, 0.22); CGContextBeginPath(g); CGContextAddRect(g, CGRectMake(30, 230, 500, 100)); CGContextFillPath(g); CGContextRestoreGState(g); }
+		if (steps >= 5) { CGContextSetRGBFillColor(g, 1, 1, 1, 1); CGContextSelectFont(g, "DejaVu Sans", 28, kCGEncodingMacRoman); CGContextSetTextDrawingMode(g, kCGTextFill); CGContextShowTextAtPoint(g, 48, 290, "wsbsd", 5); }
+	} else
 	if (variant == 0) { CGContextSetRGBFillColor(g, 0, 0.5, 1, 1); CGContextFillRect(g, CGRectMake(0, 0, 100, 100)); }                          /* one small rect */
 	else if (variant == 1) { CGContextSetRGBFillColor(g, 0, 0.5, 1, 1); CGContextFillRect(g, CGRectMake(0, 0, W, H)); }                       /* the whole buffer */
 	else if (variant == 2) { for (int y = 0; y < H; y++) { CGContextSetRGBFillColor(g, 0.1 + 0.25 * y / H, 0.16, 0.35, 1); CGContextFillRect(g, CGRectMake(0, y, W, 1)); } }   /* one-pixel bands, as opal_demo */
