@@ -24,3 +24,16 @@ The protocol facts were obtained by analysing a macOS installation the author ow
 of public and private APIs on the running system) for the purpose of interoperability. No Apple code is included; the implementation is original.
 The raw tables of Apple routine names and addresses are not published. Anyone redistributing or building on this should check the licence terms
 that apply to them.
+
+
+## Install and run
+
+```
+gmake                      # or: gmake kms / gmake gl / gmake full on FreeBSD with libdrm / Mesa
+gmake check                # the whole test suite, including an install smoke test
+doas gmake install         # PREFIX=/usr/local: wsd, wsshot/wsclick/wskey/wsdrag, wsstart, libwsclient.a + headers, rc.d script, wsd(8)
+wsstart -- your-client     # a private server for this user, stopped when the client exits
+```
+
+As a service: `sysrc wsd_enable=YES wsd_user=alice wsd_flags="-b kms -r gl -S"` then `service wsd start`; clients find the socket through
+`XDG_RUNTIME_DIR` (`/var/run/wsd/wsd.sock` with the rc script's defaults) or `WS_SOCKET`. See `man wsd` and `docs/FREEBSD.md`.

@@ -1,0 +1,34 @@
+#!/bin/sh
+#
+# PROVIDE: wsd
+# REQUIRE: LOGIN FILESYSTEMS
+# KEYWORD: shutdown
+#
+# Add the following to /etc/rc.conf to run the window server for one user's session:
+#   wsd_enable="YES"
+#   wsd_user="alice"                         # the user whose session this is (default: root)
+#   wsd_flags="-b kms -r gl -S"              # backend (headless | kms), renderer (sw | gl), -S = Capsicum sandbox
+#   wsd_socket_dir="/var/run/wsd"            # the socket is <dir>/wsd.sock, readable by wsd_user only
+
+. /etc/rc.subr
+
+name="wsd"
+rcvar="wsd_enable"
+load_rc_config $name
+
+: ${wsd_enable:="NO"}
+: ${wsd_user:="root"}
+: ${wsd_flags:="-b kms -r gl -S"}
+: ${wsd_socket_dir:="/var/run/wsd"}
+
+pidfile="/var/run/${name}.pid"
+command="/usr/sbin/daemon"
+command_args="-f -P ${pidfile} -u ${wsd_user} env XDG_RUNTIME_DIR=${wsd_socket_dir} %%PREFIX%%/sbin/wsd ${wsd_flags}"
+start_precmd="wsd_prestart"
+
+wsd_prestart()
+{
+	install -d -o "${wsd_user}" -g "$(id -gn ${wsd_user})" -m 0700 "${wsd_socket_dir}"
+}
+
+run_rc_command "$1"

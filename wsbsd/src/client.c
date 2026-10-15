@@ -11,7 +11,7 @@
 #include <unistd.h>
 #include <poll.h>
 
-#define DEFAULT_SOCKET "/tmp/wsd.sock"
+#define DEFAULT_SOCKET ws_default_socket_path()
 
 typedef struct { uint32_t type, len; uint8_t data[256]; } ws_notif;
 struct ws_conn { int fd; int efd; int cid; ws_event evq[64]; int evh, evt; ws_notif nq[64]; int nh, nt; };   /* messages read from the event channel while waiting for the other kind are queued */

@@ -3,6 +3,8 @@
 #include <fcntl.h>
 #include <stdint.h>
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
@@ -132,3 +134,13 @@ ssize_t ws_ipc_recv(int sock, void *buf, size_t cap, int *fds, int *nfds)
 }
 
 int ws_ipc_socketpair(int sv[2]) { return socketpair(AF_UNIX, WS_SOCKTYPE, 0, sv); }
+
+/* The default socket: $XDG_RUNTIME_DIR/wsd.sock when the session has a private runtime directory, else /tmp/wsd-<uid>.sock (never one name shared by every user). */
+const char *ws_default_socket_path(void)
+{
+	static char path[200];
+	const char *rt = getenv("XDG_RUNTIME_DIR");
+	if (rt && *rt && strlen(rt) < 150) snprintf(path, sizeof path, "%s/wsd.sock", rt);
+	else snprintf(path, sizeof path, "/tmp/wsd-%u.sock", (unsigned)geteuid());
+	return path;
+}

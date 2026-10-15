@@ -93,10 +93,38 @@ check: test_compose test_region test_evrec test_buffer test_diff wsd test_wire t
 	sh test/run_shim.sh test_shim2 shim_api2
 	sh test/run_shim.sh test_shim3 shim_api3
 	sh test/run_shim.sh test_shim4 shim_api4
+	sh test/run_install.sh
+
+PREFIX  ?= /usr/local
+DESTDIR ?=
+# install: the server, the tools, the client library and headers, the rc script, wsstart and the manual page
+install: wsd tools_all
+	install -d $(DESTDIR)$(PREFIX)/sbin $(DESTDIR)$(PREFIX)/bin $(DESTDIR)$(PREFIX)/include/wsbsd $(DESTDIR)$(PREFIX)/lib $(DESTDIR)$(PREFIX)/etc/rc.d $(DESTDIR)$(PREFIX)/share/man/man8
+	install -m 0755 wsd $(DESTDIR)$(PREFIX)/sbin/wsd
+	install -m 0755 wsshot wsclick wskey wsdrag $(DESTDIR)$(PREFIX)/bin/
+	sed 's|%%PREFIX%%|$(PREFIX)|g' dist/wsstart > $(DESTDIR)$(PREFIX)/bin/wsstart && chmod 0755 $(DESTDIR)$(PREFIX)/bin/wsstart
+	sed 's|%%PREFIX%%|$(PREFIX)|g' dist/wsd.rc > $(DESTDIR)$(PREFIX)/etc/rc.d/wsd && chmod 0555 $(DESTDIR)$(PREFIX)/etc/rc.d/wsd
+	sed 's|%%PREFIX%%|$(PREFIX)|g' man/wsd.8 > $(DESTDIR)$(PREFIX)/share/man/man8/wsd.8
+	install -m 0644 include/ws.h include/ws_client.h include/ws_buffer.h include/ws_evrec.h include/ws_region.h include/ws_ipc.h include/sls_wire.h include/sls_msgids.h include/mach_compat.h include/SkyLight.h $(DESTDIR)$(PREFIX)/include/wsbsd/
+	install -m 0644 libwsclient.a $(DESTDIR)$(PREFIX)/lib/libwsclient.a
+
+CLIENT_SRC = src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c
+libwsclient.a: $(CLIENT_SRC) $(HDRS)
+	for f in $(CLIENT_SRC); do $(CC) $(CFLAGS) -c -o $${f%.c}.client.o $$f || exit 1; done
+	rm -f $@ && ar rcs $@ $(CLIENT_SRC:.c=.client.o)
+wsshot: tools/wsshot.c libwsclient.a
+	$(CC) $(CFLAGS) -o $@ tools/wsshot.c libwsclient.a $(LDLIBS)
+wsclick: tools/wsclick.c libwsclient.a
+	$(CC) $(CFLAGS) -o $@ tools/wsclick.c libwsclient.a $(LDLIBS)
+wskey: tools/wskey.c libwsclient.a
+	$(CC) $(CFLAGS) -o $@ tools/wskey.c libwsclient.a $(LDLIBS)
+wsdrag: tools/wsdrag.c libwsclient.a
+	$(CC) $(CFLAGS) -o $@ tools/wsdrag.c libwsclient.a $(LDLIBS)
+tools_all: wsshot wsclick wskey wsdrag
 
 # start wsd, draw the test window through the protocol, save window.ppm (window.png on macOS), stop wsd
 demo: wsd test_window
 	OUT="$(OUT)" sh test/run_demo.sh
 
 clean:
-	rm -f test_generic wsd test_window test_interactive test_robust test_golden test_props test_shim test_compose test_region test_wire test_evrec test_buffer test_diff out.ppm window.ppm window.png
+	rm -f libwsclient.a src/*.client.o wsshot wsclick wskey wsdrag test_generic wsd test_window test_interactive test_robust test_golden test_props test_shim test_compose test_region test_wire test_evrec test_buffer test_diff out.ppm window.ppm window.png

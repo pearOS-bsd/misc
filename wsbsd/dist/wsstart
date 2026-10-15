@@ -1,0 +1,18 @@
+#!/bin/sh
+# wsstart [client args...]: starts a private window server for this user and runs the client on it (like startx); the server stops when the client exits.
+#   WSD_FLAGS   options for wsd (default: headless software rendering)
+#   wsstart -- sh              a shell whose programs all talk to the new server
+set -e
+PREFIX="${PREFIX:-%%PREFIX%%}"
+dir="${XDG_RUNTIME_DIR:-${TMPDIR:-/tmp}/wsd-$(id -u)}"
+mkdir -m 0700 -p "$dir"
+export XDG_RUNTIME_DIR="$dir"
+export WS_SOCKET="$dir/wsd.sock"
+rm -f "$WS_SOCKET"
+"$PREFIX/sbin/wsd" ${WSD_FLAGS:--g 1280x800} &
+WSD=$!
+trap 'kill $WSD 2>/dev/null || true; rm -f "$WS_SOCKET"' EXIT INT TERM
+i=0; while [ ! -S "$WS_SOCKET" ] && [ $i -lt 100 ]; do i=$((i + 1)); sleep 0.1; done
+[ -S "$WS_SOCKET" ] || { echo "wsstart: the window server did not start" >&2; exit 1; }
+[ "$1" = "--" ] && shift
+if [ $# -gt 0 ]; then "$@"; else wait $WSD; fi

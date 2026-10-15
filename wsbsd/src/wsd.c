@@ -29,7 +29,7 @@
 #include <fcntl.h>
 #include <math.h>
 
-#define DEFAULT_SOCKET "/tmp/wsd.sock"
+#define DEFAULT_SOCKET ws_default_socket_path()
 #define MAXCONN 128
 
 ws_server *srv;
