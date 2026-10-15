@@ -34,6 +34,11 @@ static int do_set_property(conn *c, const uint8_t *buf, size_t len)
 	purge_dead();
 	int slot = -1;
 	for (int i = 0; i < MAXPROPS; i++) if (props[i].used && props[i].wid == wid && !strcmp(props[i].key, key)) { slot = i; free(props[i].data); props[i].data = NULL; break; }
+	if (slot < 0) {                                                                  /* a new entry: no connection may hold more than 64 of the shared table's 512 */
+		int mine = 0; uint32_t ow = ws_window_owner(srv, wid);
+		for (int i = 0; i < MAXPROPS; i++) if (props[i].used && ws_window_owner(srv, props[i].wid) == ow) mine++;
+		if (mine >= 64) return reply_simple(c->fd, h, 1000);
+	}
 	for (int i = 0; i < MAXPROPS && slot < 0; i++) if (!props[i].used) slot = i;
 	if (slot < 0) return reply_simple(c->fd, h, 1000);
 	uint8_t *d = osz ? malloc(osz) : NULL;
