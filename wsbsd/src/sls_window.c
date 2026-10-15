@@ -475,6 +475,7 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		if (ws_window_exists(srv, wid) && holds_rights(c, wid)) {
 			int slot = -1; for (int i = 0; i < MAXXF; i++) { if (xform[i].wid == wid) { slot = i; break; } if (slot < 0 && !xform[i].wid) slot = i; }
 			if (slot >= 0) { xform[slot].wid = wid; memcpy(xform[slot].m, buf + 0x2c, 24); }
+			ws_set_window_transform(srv, wid, (const float *)(const void *)(buf + 0x2c));
 		}
 		return reply_simple(c->fd, h, 0);
 	}

@@ -1,3 +1,4 @@
+#include <math.h>
 #include "ws.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -98,6 +99,31 @@ static void test_walk(void)
 	ws_server_free(srv);
 }
 
+
+/* SetWindowTransform: a 40x40 red window scaled 2x about its centre covers 80x80, translation moves it */
+static void test_transform(void)
+{
+	ws_server *srv = ws_server_new(200, 200);
+	ws_surface *scr = ws_surface_new(200, 200);
+	ws_wid w = ws_create_window(srv, (ws_rect){ 80, 80, 40, 40 });
+	ws_fill(ws_window_backing(srv, w), (ws_rect){ 0, 0, 40, 40 }, 1, 0, 0, 1);
+	ws_order_window(srv, w, WS_ABOVE, 0);
+	float m[6] = { 2, 0, 0, 2, 0, 0 };
+	CHECK(ws_set_window_transform(srv, w, m) == 0);
+	ws_compose_scene(srv, scr);
+	#define PX(x, y) (*(uint32_t *)(scr->px + (size_t)(y) * scr->stride + (size_t)(x) * 4))
+	CHECK(PX(65, 100) == 0xffff0000u && PX(134, 100) == 0xffff0000u && PX(100, 65) == 0xffff0000u);
+	CHECK(PX(60, 100) != 0xffff0000u && PX(140, 100) != 0xffff0000u);
+	m[0] = m[3] = 1; m[4] = 50;
+	CHECK(ws_set_window_transform(srv, w, m) == 0);
+	ws_compose_scene(srv, scr);
+	CHECK(PX(150, 100) == 0xffff0000u && PX(100, 100) != 0xffff0000u);
+	m[4] = 0; CHECK(ws_set_window_transform(srv, w, m) == 0);
+	ws_compose_scene(srv, scr);
+	CHECK(PX(100, 100) == 0xffff0000u && PX(65, 100) != 0xffff0000u);
+	m[0] = NAN; CHECK(ws_set_window_transform(srv, w, m) == -1);
+	ws_surface_free(scr); ws_server_free(srv);
+}
 
 /* backdrop blur: a half-transparent window with blur radius shows a blurred copy of what is behind it */
 static void test_blur(void)
@@ -211,6 +237,7 @@ int main(void)
 	ws_surface_free(scr);
 	ws_server_free(srv);
 	test_walk();
+	test_transform();
 	printf(fails ? "%d failures\n" : "all tests passed\n", fails);
 	return fails != 0;
 }

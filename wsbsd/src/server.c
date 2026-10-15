@@ -10,6 +10,7 @@ typedef struct {
 	ws_rect frame;
 	int level;
 	float alpha;
+	float xf[6]; int has_xf;        /* SetWindowTransform: a b c d tx ty about the window centre (software compositor) */
 	float sys_alpha;        /* SetWindowListSystemAlpha: multiplies the alpha (fades done by the system); 1 by default */
 	int syslevel;           /* SetWindowListSystemLevel class, kept */
 	int on_screen;
@@ -404,6 +405,39 @@ int ws_window_set_parent(ws_server *s, ws_wid child, ws_wid parent)
 ws_wid ws_window_parent(ws_server *s, ws_wid id) { window *w = get(s, id); return w ? w->parent : 0; }
 
 int ws_set_window_system_alpha(ws_server *s, ws_wid id, float a) { window *w = get(s, id); if (!w) return -1; w->sys_alpha = a < 0 ? 0 : a > 1 ? 1 : a; bump(s); return 0; }
+int ws_set_window_transform(ws_server *s, ws_wid id, const float m[6])
+{
+	window *w = get(s, id); if (!w) return -1;
+	for (int i = 0; i < 6; i++) if (!isfinite(m[i]) || fabsf(m[i]) > 1e4f) return -1;
+	int ident = m[0] == 1 && m[1] == 0 && m[2] == 0 && m[3] == 1 && m[4] == 0 && m[5] == 0;
+	memcpy(w->xf, m, sizeof w->xf); w->has_xf = !ident; bump(s); return 0;
+}
+
+/* the window's pixels through its affine transform (inverse mapping, nearest sample) into a new surface covering the transformed box; the box origin goes to *ox,*oy */
+static ws_surface *xform_surface(const window *w, const ws_surface *src, int *ox, int *oy)
+{
+	float cx = src->w / 2.0f, cy = src->h / 2.0f, a = w->xf[0], b = w->xf[1], c = w->xf[2], d = w->xf[3];
+	float det = a * d - b * c; if (fabsf(det) < 1e-6f) return NULL;
+	float minx = 1e9f, miny = 1e9f, maxx = -1e9f, maxy = -1e9f;
+	for (int i = 0; i < 4; i++) {
+		float px = (i & 1 ? src->w : 0) - cx, py = (i & 2 ? src->h : 0) - cy;
+		float X = a * px + c * py + cx + w->xf[4], Y = b * px + d * py + cy + w->xf[5];
+		if (X < minx) minx = X; if (X > maxx) maxx = X; if (Y < miny) miny = Y; if (Y > maxy) maxy = Y;
+	}
+	int bw = (int)ceilf(maxx - minx), bh = (int)ceilf(maxy - miny);
+	if (bw <= 0 || bh <= 0 || bw > 8192 || bh > 8192) return NULL;
+	ws_surface *o = ws_surface_new(bw, bh); if (!o) return NULL;
+	for (int y = 0; y < bh; y++) for (int x = 0; x < bw; x++) {
+		float X = minx + x + 0.5f - cx - w->xf[4], Y = miny + y + 0.5f - cy - w->xf[5];
+		float u = (d * X - c * Y) / det + cx, v = (-b * X + a * Y) / det + cy;
+		int iu = (int)floorf(u), iv = (int)floorf(v);
+		if (iu < 0 || iv < 0 || iu >= src->w || iv >= src->h) continue;
+		memcpy(o->px + (size_t)y * o->stride + (size_t)x * 4, src->px + (size_t)iv * src->stride + (size_t)iu * 4, 4);
+	}
+	*ox = (int)floorf(minx); *oy = (int)floorf(miny);
+	return o;
+}
+
 int ws_set_window_system_level(ws_server *s, ws_wid id, int cls) { window *w = get(s, id); if (!w) return -1; w->syslevel = cls; return 0; }
 
 int ws_window_set_event_shape(ws_server *s, ws_wid id, const ws_rect *r, int n)
@@ -766,7 +800,13 @@ void ws_compose_scene(ws_server *s, ws_surface *screen)
 			float sg = ws_blur_sigma(v[i]->blur_radius); int m = (int)ceilf(3.0f * sg);
 			ws_blur_region(screen, (ws_rect){ v[i]->frame.x - m, v[i]->frame.y - m, v[i]->frame.w + 2 * m, v[i]->frame.h + 2 * m }, v[i]->frame, sg);   /* the backdrop beyond the edges feeds the blur */
 		}
-		s->comp->over(s->comp, screen, v[i]->frame.x, v[i]->frame.y, (v[i]->content && v[i]->committed) ? (v[i]->front ? v[i]->front : v[i]->content) : v[i]->backing, v[i]->alpha * v[i]->sys_alpha, all);
+		{
+			const ws_surface *px = (v[i]->content && v[i]->committed) ? (v[i]->front ? v[i]->front : v[i]->content) : v[i]->backing;
+			ws_surface *xs = NULL; int xo = 0, yo = 0;
+			if (v[i]->has_xf && px && px->px) xs = xform_surface(v[i], px, &xo, &yo);
+			if (xs) { s->comp->over(s->comp, screen, v[i]->frame.x + xo, v[i]->frame.y + yo, xs, v[i]->alpha * v[i]->sys_alpha, all); if (s->comp->flush) s->comp->flush(s->comp); ws_surface_free(xs); }
+			else s->comp->over(s->comp, screen, v[i]->frame.x, v[i]->frame.y, px, v[i]->alpha * v[i]->sys_alpha, all);
+		}
 		/* the shadow layer is rendered above its window (it is cut out of the window shape; the inner rim lies inside it) */
 		if (v[i]->shadow_on) draw_shadow(s, v[i], screen, v[i]->id == act || v[i]->appearance);
 	}
