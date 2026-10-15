@@ -16,7 +16,10 @@ int main(int argc, char **argv)
 	CGContextRef g = CGBitmapContextCreate(px->px, W, H, 8, px->stride, rgb, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little);
 	fprintf(stderr, "opal_min: context %p, buffer stride %zu (width*4 = %d)\n", (void *)g, (size_t)px->stride, W * 4);
 	if (!g) return 2;
-	if (variant >= 10) {                                                            /* the demo's drawing, the first (variant - 9) steps of it */
+	if (variant == 20) { for (int y = 0; y < H; y++) { CGContextSetRGBFillColor(g, 0, 0.5, 1, 1); CGContextFillRect(g, CGRectMake(0, y, W, 1)); } }           /* the same colour in bands */
+	else if (variant == 21) { for (int y = 0; y < H; y += 2) { CGContextSetRGBFillColor(g, 0, 0.5, 1, 1); CGContextFillRect(g, CGRectMake(0, y, W, 1)); } }   /* every other band */
+	else if (variant == 22) { CGContextSetRGBFillColor(g, 0.1, 0.16, 0.35, 1); CGContextFillRect(g, CGRectMake(0, 0, W, H)); }                              /* the demo's first colour, whole */
+	else if (variant >= 10) {                                                            /* the demo's drawing, the first (variant - 9) steps of it */
 		int steps = variant - 9;
 		for (int y = 0; y < H; y++) { CGFloat t = (CGFloat)y / H; CGContextSetRGBFillColor(g, 0.10 + 0.25 * t, 0.16 + 0.20 * t, 0.35 + 0.30 * t, 1); CGContextFillRect(g, CGRectMake(0, y, W, 1)); }
 		if (steps >= 2) { CGContextSetRGBFillColor(g, 1.0, 0.62, 0.15, 1); CGContextBeginPath(g); CGContextAddArc(g, 120, 130, 70, 0, 2 * M_PI, 0); CGContextClosePath(g); CGContextFillPath(g); }
