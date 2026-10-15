@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include "ws_client.h"
 #include "ws_ipc.h"
 #include "sls_wire.h"
 #include "mach_compat.h"
@@ -16,6 +17,8 @@ int main(int argc, char **argv)
 {
 	int iters = argc > 1 ? atoi(argv[1]) : 20000; rs = argc > 2 ? strtoull(argv[2], 0, 10) : 88172645463325252ull;
 	const char *path = getenv("WS_SOCKET"); if (!path) { fprintf(stderr, "WS_SOCKET not set\n"); return 2; }
+	ws_conn *wc = ws_connect(path); ws_win keep[6]; int nkeep = 0;                 /* a few real windows, so the random fields sometimes name one */
+	if (wc) for (int k = 0; k < 6; k++) if (ws_win_create(wc, (ws_rect){ 10 * k, 10 * k, 100, 80 }, k, &keep[nkeep]) == 0) { ws_win_order(wc, &keep[nkeep], 1, 0); nkeep++; }
 	int fd = ws_ipc_connect(path); if (fd < 0) { fprintf(stderr, "connect failed\n"); return 2; }
 	static uint8_t m[0x12100], rep[WS_IPC_RECV_CAP];
 	int answered = 0, reconnects = 0;
@@ -26,6 +29,7 @@ int main(int argc, char **argv)
 		if (rnd() % 10 < 7) { int j = (int)(rnd() % (sizeof fuzz_sizes / sizeof *fuzz_sizes)); id = fuzz_sizes[j].id; n = (size_t)fuzz_sizes[j].size; if (rnd() % 5 == 0) n += 4 * (rnd() % 3); }   /* mostly exact sizes, so the handlers get past the size check */
 		n &= ~(size_t)3; if (n < 0x18) n = 0x18;
 		for (size_t k = 0; k < n; k++) m[k] = (uint8_t)(rnd() % 3 == 0 ? rnd() : (rnd() % 5 == 0 ? 0xff : 0));
+		for (size_t k = 0x20; k + 4 <= n && nkeep; k += 4) if (rnd() % 6 == 0) { uint32_t w = keep[rnd() % nkeep].id; memcpy(m + k, &w, 4); }
 		mach_msg_header_t *h = (mach_msg_header_t *)m;
 		h->msgh_bits = (rnd() % 6 == 0) ? MACH_MSGH_BITS_COMPLEX : 0; h->msgh_size = (rnd() % 8 == 0) ? (uint32_t)(rnd() % 0x3000) : (uint32_t)n;
 		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) && n >= 0x2c) { uint32_t one = 1; memcpy(m + 0x18, &one, 4); }               /* a count of 1 descriptor slot */
