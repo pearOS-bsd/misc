@@ -35,6 +35,7 @@ int main(int argc, char **argv)
 	#define COUNT(v) do { v = 0; for (int y = 0; y < H; y++) for (int x = 0; x < W; x++) if (((uint32_t *)(px->px + y * px->stride))[x]) v++; } while (0)
 	COUNT(nz0);                                  /* after drawing, before any flush */
 	CGContextFlush(g); COUNT(nz1);               /* after CGContextFlush */
+	fprintf(stderr, "opal_min: pixel(10,10)=%08x stride %zu data %p ours %p\n", ((uint32_t *)px->px)[10 * (px->stride / 4) + 10], (size_t)px->stride, CGBitmapContextGetData(g), (void *)px->px);
 	CGContextRelease(g); COUNT(nz2);             /* after the context is released (a bitmap context may copy its pixels out then) */
 	printf("opal_min variant %d: %ld non-zero pixels (before flush %ld, after flush %ld, after release %ld)\n", variant, nz2, nz0, nz1, nz2);
 	return 0;
