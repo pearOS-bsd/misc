@@ -294,4 +294,36 @@ static void terminate(int sig)
 
 - (NSDate *) timedOutEvent: (void *)data type: (RunLoopEventType)type forMode: (NSString *)mode { return nil; }
 
+
+/* ---- the rest of what GSDisplayServer expects a backend to override ---- */
+- (void) restrictWindow: (int)win toImage: (NSImage *)image {}
+- (int) findWindowAt: (NSPoint)screenLocation windowRef: (int *)windowRef excluding: (int)win
+{
+	ws_wid f = ws_win_find(conn, (int)screenLocation.x, screenH - (int)screenLocation.y);
+	if (windowRef) *windowRef = (int)f;
+	return (int)f;
+}
+- (const NSWindowDepth *) availableDepthsForScreen: (int)screen
+{
+	static NSWindowDepth depths[2];
+	depths[0] = (NSWindowDepth)(0x100 | 8); depths[1] = 0;
+	return depths;
+}
+- (void *) serverDevice { return conn; }
+- (void *) windowDevice: (int)win { return [self wsdWindow: win]; }
+- (void) beep {}
+- (int) nativeWindow: (void *)winref : (NSRect *)frame : (NSBackingStoreType *)type : (unsigned int *)style : (int *)screen { return 0; }
+- (void) stylewindow: (unsigned int)style : (int)win { struct wsd_window *w = [self wsdWindow: win]; if (w) w->style = style; }
+- (void) windowbacking: (NSBackingStoreType)type : (int)win {}
+- (void) setmaxsize: (NSSize)size : (int)win {}
+- (void) setminsize: (NSSize)size : (int)win {}
+- (void) setresizeincrements: (NSSize)size : (int)win {}
+- (void) setinputstate: (int)state : (int)win { WLOG(@"setinputstate %d %d", state, win); }
+- (NSPoint) mouselocation { return lastPoint; }
+- (void) setMouseLocation: (NSPoint)mouseLocation onScreen: (int)aScreen { ws_cursor_warp(conn, (int)mouseLocation.x, screenH - (int)mouseLocation.y, 0); lastPoint = mouseLocation; }
+- (void) hidecursor {}
+- (void) showcursor {}
+- (void) recolorcursor: (NSColor *)fg : (NSColor *)bg : (void *)cid {}
+- (void) freecursor: (void *)cid {}
+
 @end
