@@ -231,7 +231,7 @@ int main(int argc, char **argv)
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	[NSApplication sharedApplication];
-	[NSApp setActivationPolicy: NSApplicationActivationPolicyRegular];
+	if ([NSApp respondsToSelector: @selector(setActivationPolicy:)]) [NSApp setActivationPolicy: NSApplicationActivationPolicyRegular];
 	[NSApp setDelegate: [[KSADelegate alloc] init]];
 	[NSApp activateIgnoringOtherApps: YES];
 	[NSApp run];
