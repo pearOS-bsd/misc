@@ -27,7 +27,7 @@ export WS_SOCKET=/tmp/wsd-ca.sock
 ./wsd -t -g 1024x700 >/tmp/wsd-ca.log 2>&1 &
 WP=$!
 sleep 1
-LD_LIBRARY_PATH=/tmp/gs/qc/Source/QuartzCore.framework:/tmp/gs/opal/Source/obj:/tmp/gs/corebase/Source/obj:/usr/local/GNUstep/System/Library/Libraries:/usr/local/lib ./ca_demo ca 2>&1 | tail -15
+LD_LIBRARY_PATH=/tmp/gs/qc/Source/QuartzCore.framework/Versions/0:/tmp/gs/qc/Source/QuartzCore.framework:/tmp/gs/opal/Source/obj:/tmp/gs/corebase/Source/obj:/usr/local/GNUstep/System/Library/Libraries:/usr/local/lib ./ca_demo ca 2>&1 | tail -15
 kill $WP 2>/dev/null
 for f in ca-a ca-b; do python3 tools/ppm2png.py $f.ppm $f.png 2>&1 | tail -1; done
 ls -l ca-*.png 2>&1
