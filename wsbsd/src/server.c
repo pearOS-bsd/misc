@@ -790,6 +790,27 @@ void ws_server_walk(ws_server *s, ws_visit_fn fn, void *ctx)
 	free(v);
 }
 
+/* a copy of the window's pixels with the four corners cut to a circle of radius r (anti-aliased by exact-ish coverage); NULL when nothing to cut */
+static ws_surface *round_corners(const ws_surface *src, int r)
+{
+	if (r <= 0 || !src || !src->px || src->w < 2 * r || src->h < 2 * r) return NULL;
+	ws_surface *o = ws_surface_new(src->w, src->h); if (!o) return NULL;
+	for (int y = 0; y < src->h; y++) memcpy(o->px + (size_t)y * o->stride, src->px + (size_t)y * src->stride, (size_t)src->w * 4);
+	for (int cy = 0; cy < r; cy++)
+		for (int cx = 0; cx < r; cx++) {
+			float dx = (float)r - (cx + 0.5f), dy = (float)r - (cy + 0.5f);
+			float d = sqrtf(dx * dx + dy * dy) - (float)r;                      /* signed distance to the arc, > 0 outside */
+			float cov = 0.5f - d; cov = cov < 0 ? 0 : cov > 1 ? 1 : cov;
+			if (cov >= 1.0f) continue;
+			int xs[2] = { cx, src->w - 1 - cx }, ys[2] = { cy, src->h - 1 - cy };
+			for (int a = 0; a < 2; a++) for (int b = 0; b < 2; b++) {
+				uint8_t *p = o->px + (size_t)ys[b] * o->stride + (size_t)xs[a] * 4;
+				for (int k = 0; k < 4; k++) p[k] = (uint8_t)(p[k] * cov + 0.5f);
+			}
+		}
+	return o;
+}
+
 static void apply_zoom(ws_surface *screen);
 void ws_compose_scene(ws_server *s, ws_surface *screen)
 {
@@ -813,10 +834,12 @@ void ws_compose_scene(ws_server *s, ws_surface *screen)
 				for (int y = 0; y < px->h; y++) { const uint8_t *sp = px->px + (size_t)y * px->stride; uint8_t *dp = inv->px + (size_t)y * inv->stride; for (int x = 0; x < px->w; x++, sp += 4, dp += 4) { dp[0] = sp[3] - sp[0]; dp[1] = sp[3] - sp[1]; dp[2] = sp[3] - sp[2]; dp[3] = sp[3]; } }
 				px = inv;
 			}
+			ws_surface *rnd = NULL; int cr = v[i]->corner_radius ? v[i]->corner_radius : (v[i]->shadow_on ? v[i]->shadow_cr : 0);
+			if (cr > 0 && px && (rnd = round_corners(px, cr))) px = rnd;
 			if (v[i]->has_xf && px && px->px) xs = xform_surface(v[i], px, &xo, &yo);
 			if (xs) { s->comp->over(s->comp, screen, v[i]->frame.x + xo, v[i]->frame.y + yo, xs, v[i]->alpha * v[i]->sys_alpha, all); if (s->comp->flush) s->comp->flush(s->comp); ws_surface_free(xs); }
 			else s->comp->over(s->comp, screen, v[i]->frame.x, v[i]->frame.y, px, v[i]->alpha * v[i]->sys_alpha, all);
-			if (inv) { if (s->comp->flush) s->comp->flush(s->comp); ws_surface_free(inv); }
+			if (inv || rnd) { if (s->comp->flush) s->comp->flush(s->comp); ws_surface_free(inv); ws_surface_free(rnd); }
 		}
 		/* the shadow layer is rendered above its window (it is cut out of the window shape; the inner rim lies inside it) */
 		if (v[i]->shadow_on) draw_shadow(s, v[i], screen, v[i]->id == act || v[i]->appearance);
