@@ -1,0 +1,17 @@
+window count: 0 2
+on screen count: 0 0
+ordered in: 0 0
+ordered in after order: 0 1
+on screen count: 0 1
+on screen count: 0 2
+sublevel: 0
+set sublevel 3: 0
+sublevel: 3
+event mask: 0 0
+set event mask: 0
+event mask: 0 0x12
+set blur 12: 0
+set blur on a bad window: 0
+ordered in, bad window: 0 0
+window count: 0 1
+window count: 0 0

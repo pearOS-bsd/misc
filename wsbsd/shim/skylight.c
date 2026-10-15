@@ -100,3 +100,19 @@ CGError SLSGetWindowOwner(CGSConnectionID cid, CGSWindowID wid, CGSConnectionID 
 	*owner = own;
 	return 0;
 }
+
+CGError SLSWindowIsOrderedIn(CGSConnectionID cid, CGSWindowID wid, unsigned char *out)
+{
+	(void)cid; ws_win t; int v = 0;
+	if (!out) return 1001;
+	int rc = ws_win_is_ordered_in(get_conn(), handle(wid, &t), &v);
+	if (!rc) *out = (unsigned char)v;
+	return rc;
+}
+CGError SLSGetWindowCount(CGSConnectionID cid, CGSConnectionID owner, int *count) { (void)cid; if (!count) return 1001; int n = ws_win_count(get_conn(), owner); if (n < 0) return 1000; *count = n; return 0; }
+CGError SLSGetOnScreenWindowCount(CGSConnectionID cid, CGSConnectionID owner, int *count) { (void)cid; if (!count) return 1001; int n = ws_win_onscreen_count(get_conn(), owner); if (n < 0) return 1000; *count = n; return 0; }
+CGError SLSSetWindowSubLevel(CGSConnectionID cid, CGSWindowID wid, int sub) { (void)cid; ws_win t; return ws_win_set_sublevel(get_conn(), handle(wid, &t), sub); }
+int SLSGetWindowSubLevel(CGSConnectionID cid, CGSWindowID wid) { (void)cid; ws_win t; int v = 0; return ws_win_get_sublevel(get_conn(), handle(wid, &t), &v) ? 0 : v; }
+CGError SLSSetWindowEventMask(CGSConnectionID cid, CGSWindowID wid, unsigned mask) { (void)cid; ws_win t; return ws_win_set_event_mask(get_conn(), handle(wid, &t), (int)mask); }
+CGError SLSGetWindowEventMask(CGSConnectionID cid, CGSWindowID wid, unsigned *mask) { (void)cid; ws_win t; int v = 0; if (!mask) return 1001; int rc = ws_win_get_event_mask(get_conn(), handle(wid, &t), &v); if (!rc) *mask = (unsigned)v; return rc; }
+CGError SLSSetWindowBackgroundBlurRadius(CGSConnectionID cid, CGSWindowID wid, int radius) { (void)cid; ws_win t; return ws_win_blur(get_conn(), handle(wid, &t), radius); }

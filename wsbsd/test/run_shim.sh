@@ -8,7 +8,8 @@ export WS_SOCKET="$SOCK"
 WSD=$!
 trap 'kill $WSD 2>/dev/null || true; rm -f "$SOCK" "$SOCK.out"' EXIT
 i=0; while [ ! -S "$SOCK" ] && [ $i -lt 50 ]; do i=$((i+1)); sleep 0.1; done
-./test_shim > "$SOCK.out"
-if [ -f docs/golden/shim_basic.txt ]; then
-  if diff -u docs/golden/shim_basic.txt "$SOCK.out"; then echo "shim: output identical to the real SkyLight"; else echo "shim: DIFFERS from the real SkyLight"; exit 1; fi
+PROG="${1:-test_shim}"; GOLD="docs/golden/${2:-shim_basic}.txt"
+"./$PROG" > "$SOCK.out"
+if [ -f "$GOLD" ]; then
+  if diff -u "$GOLD" "$SOCK.out"; then echo "shim: output identical to the real SkyLight"; else echo "shim: DIFFERS from the real SkyLight"; exit 1; fi
 else cat "$SOCK.out"; echo "shim: no golden file yet"; fi

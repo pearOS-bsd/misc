@@ -29,4 +29,12 @@ CGError SLSSetWindowAlpha(CGSConnectionID cid, CGSWindowID wid, float alpha);
 CGError SLSGetWindowAlpha(CGSConnectionID cid, CGSWindowID wid, float *alpha);
 CGError SLSGetWindowBounds(CGSConnectionID cid, CGSWindowID wid, SLRect *bounds);
 CGError SLSGetWindowOwner(CGSConnectionID cid, CGSWindowID wid, CGSConnectionID *owner);
+CGError SLSWindowIsOrderedIn(CGSConnectionID cid, CGSWindowID wid, unsigned char *ordered_in);
+CGError SLSGetWindowCount(CGSConnectionID cid, CGSConnectionID owner, int *count);
+CGError SLSGetOnScreenWindowCount(CGSConnectionID cid, CGSConnectionID owner, int *count);
+CGError SLSSetWindowSubLevel(CGSConnectionID cid, CGSWindowID wid, int sublevel);
+int SLSGetWindowSubLevel(CGSConnectionID cid, CGSWindowID wid);                 /* the sublevel is the return value */
+CGError SLSSetWindowEventMask(CGSConnectionID cid, CGSWindowID wid, unsigned mask);
+CGError SLSGetWindowEventMask(CGSConnectionID cid, CGSWindowID wid, unsigned *mask);
+CGError SLSSetWindowBackgroundBlurRadius(CGSConnectionID cid, CGSWindowID wid, int radius);
 #endif
