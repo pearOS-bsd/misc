@@ -95,7 +95,7 @@ if [ -n "$APP" ]; then
 	grep -v '^(lldb)\|warning\|wsd-back: \(titlewindow\|setinput\|flush\|commit\|order\|ws_win\)' /tmp/sudoku.log | tail -30
 fi
 # a larger application built from source: Gorm, GNUstep's interface builder (panels, palettes, inspectors)
-(cd /tmp/gs && git clone --depth 1 https://github.com/gnustep/apps-gorm gorm 2>&1 | tail -1 && cd gorm && gmake -j2 2>&1 | grep -E "error|Error " | head -8; gmake install 2>&1 | tail -2)
+(cd /tmp/gs && git clone --depth 1 https://github.com/gnustep/apps-gorm gorm 2>&1 | tail -1 && cd gorm && grep -rl 6Formatters --include=GNUmakefile . | head -3 | xargs -I{} sed -i '' 's/6Formatters//' {}; gmake -j2 2>&1 | grep -E "error|Error " | head -8; gmake install 2>&1 | tail -2)
 GAPP=$(find /usr/local/GNUstep /tmp/gs/gorm -maxdepth 5 -name 'Gorm.app' -type d 2>/dev/null | head -1)
 echo "gorm app: $GAPP"
 if [ -n "$GAPP" ]; then
