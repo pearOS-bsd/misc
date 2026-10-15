@@ -230,6 +230,22 @@ int main(void)
 		int again = 0; for (int i = 0; i < 5 && ws_conn_next_pushed_event(c, 60, &e); i++) if (e.type == WS_EV_TRACK_ENTER) again = 1;
 		CHECK(!again);                                                                    /* removed: no more events */
 	}
+
+	/* GetDisplaySystemState: the layout of the real state (header, mode records, tail), filled for wsd's display (640x480 in the test) */
+	{
+		uint8_t q[0x28]; memset(q, 0, sizeof q); hdr(q, 0x28, SLS_MSG_GetDisplaySystemState, 0); memcpy(q + 0x18, &WS_NDR, 8); w32(q, 0x20, 13);
+		uint8_t big[4096];
+		int dn = call(fd, q, 0x28, big, sizeof big);
+		uint32_t blen = r32(big, 0x28);
+		CHECK(dn == 0x38 + (int)blen && r32(big, 0x34) == blen);
+		const uint8_t *b = big + 0x38;
+		uint32_t count = r32(b, 63 * 4), cur = r32(b, 16);
+		CHECK(count >= 2 && cur == count - 1 && blen == 64 * 4 + count * 132 + 64 + 3);
+		const uint8_t *last = b + 256 + cur * 132;                                       /* the current (native) mode record */
+		CHECK(r32(last, 24) == 640 && r32(last, 28) == 480 && r32(last, 40) == 2560 && r32(last, 12) == 0x2000007);
+		double dw; memcpy(&dw, b + 32 * 4, 8); CHECK(dw == 640.0);
+		CHECK(r32(b, 23 * 4) == 0x12345678);
+	}
 	ws_server_quit(c);
 	printf(failures ? "%d failures\n" : "window extension routines: all checks passed\n", failures);
 	return failures != 0;
