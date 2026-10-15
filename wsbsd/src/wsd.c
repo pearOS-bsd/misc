@@ -934,6 +934,22 @@ static int do_private(conn *c, const uint8_t *buf, size_t len)
 	case WSX_GET_CURSOR: ws_cursor_pos(srv, &r.a[0], &r.a[1]); break;
 	case WSX_FIND_WINDOW: r.a[0] = (int32_t)ws_find_window(srv, a[0], a[1]); break;
 	case WSX_SET_SHADOW: r.retcode = holds_rights(c, (uint32_t)a[0]) && !ws_set_window_shadow(srv, (ws_wid)a[0], a[1], a[2]) ? 0 : CGS_ERROR_FAILURE; break;
+	case WSX_CAPTURE: {                                  /* pixels of the composed scene: a[0..3] rect (all zero: the whole screen), a[4] window id (its frame, 0: none), a[5] bit 0: with the cursor; the reply carries a shared memory descriptor of w*h BGRA pixels */
+		int x = a[0], y = a[1], w = a[2], hh = a[3];
+		if (a[4]) { ws_rect f; if (ws_window_frame(srv, (ws_wid)a[4], &f)) return reply_mig_error(c->fd, h, MIG_BAD_ID); x = (int)f.x; y = (int)f.y; w = (int)f.w; hh = (int)f.h; }
+		else if (w <= 0 || hh <= 0) { x = 0; y = 0; w = wsd_screen_w; hh = wsd_screen_h; }
+		if (w <= 0 || hh <= 0 || w > 16384 || hh > 16384) { r.retcode = CGS_ERROR_FAILURE; break; }
+		render_frame(screen, a[5] & 1);
+		int fd = -1; ws_surface *out = ws_surface_shm_anon(w, hh, &fd);
+		if (!out) { r.retcode = CGS_ERROR_FAILURE; break; }
+		ws_fill(out, (ws_rect){ 0, 0, w, hh }, 0, 0, 0, 0);
+		ws_copy(out, 0, 0, screen, (ws_rect){ x, y, w, hh });
+		r.a[0] = w; r.a[1] = hh;
+		struct iovec cv = { &r, sizeof r };
+		int rc = ws_ipc_send(c->fd, &cv, 1, &fd, 1);
+		ws_surface_free(out); close(fd);
+		return rc;
+	}
 	case WSX_QUIT: running = 0; break;
 	case WSX_GET_CONNECTION_ID: r.a[0] = (int32_t)c->id; break;
 	case WSX_GET_SCREEN: r.a[0] = wsd_screen_w; r.a[1] = wsd_screen_h; break;
@@ -951,7 +967,7 @@ static int dispatch(conn *c, uint8_t *buf, size_t len, int *fds, int nfds)
 	for (int i = 0; i < nfds; i++) close(fds[i]);                       /* every other request takes no descriptors */
 	if (h->msgh_size < sizeof *h || h->msgh_size > len) return reply_mig_error(c->fd, h, MIG_BAD_ARGUMENTS);
 	h->msgh_local_port = c->id;                                         /* the connection the request arrived on */
-	if (h->msgh_id >= WSX_FLUSH && h->msgh_id <= WSX_GET_SCREEN) { dirty = 1; return do_private(c, buf, len); }
+	if (h->msgh_id >= WSX_FLUSH && h->msgh_id <= WSX_CAPTURE) { dirty = 1; return do_private(c, buf, len); }
 	if (h->msgh_id == SLS_MSG_CreateWindow) { dirty = 1; return do_create_window(c, buf, len); }
 	if (h->msgh_id == SLS_MSG_NewConnectionPort) return do_new_connection(c, buf, len);
 	if (h->msgh_id == SLS_MSG_FlushSurface) { dirty = 1; return do_flush_surface(c, buf, len); }
