@@ -117,6 +117,21 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		struct iovec v[2] = { { m, sizeof m }, { reg, n } };
 		return ws_ipc_send(c->fd, v, 2, NULL, 0);
 	}
+	case SLS_MSG_GetWindowListWithTags: {                                          /* owner@0x20 (0: all), max@0x24 (<= 0x400), option byte@0x28 (bit 0: on screen only), tag masks @0x2c/@0x34 (no tags yet); size 0x3c */
+		if (!simple_ok(h, len, 0x3c)) return reply_simple(c->fd, h, -304);
+		uint32_t owner = rd32(buf, 0x20), max = rd32(buf, 0x24);
+		if (max > 0x400) max = 0x400;
+		ws_wid ids[0x400];
+		int total = ws_list_windows(srv, owner, buf[0x28] & 1, ids, (int)max);
+		uint32_t n = (uint32_t)total < max ? (uint32_t)total : max;
+		uint8_t m[0x2c + 4 * 0x400]; memset(m, 0, 0x2c);
+		fill_reply_header((mach_msg_header_t *)m, h, 0x2c + 4 * n, 0);
+		memcpy(m + 0x18, &WS_NDR, 8); wr32(m, 0x20, 0); wr32(m, 0x24, n);
+		for (uint32_t i = 0; i < n; i++) wr32(m, 0x28 + 4 * i, ids[i]);
+		wr32(m, 0x28 + 4 * n, (uint32_t)total);
+		struct iovec v = { m, 0x2c + 4 * n };
+		return ws_ipc_send(c->fd, &v, 1, NULL, 0);
+	}
 	case SLS_MSG_SetWindowOpaqueShape: {                                           /* OOL region, wid@0x34, region size@0x38 (= descriptor size), size 0x3c */
 		int err; int osz = ool_request(h, buf, len, 0x3c, &err);
 		if (osz < 0) return reply_simple(c->fd, h, err);

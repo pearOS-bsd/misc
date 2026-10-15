@@ -458,3 +458,23 @@ int ws_surface_flush(ws_conn *c, ws_win *w, uint32_t sid, const ws_rect *dirty)
 	ssize_t got = call(c, v, rl ? 2 : 1, &r, sizeof r, NULL, NULL);
 	return got == (ssize_t)sizeof r ? r.retcode : -1;
 }
+
+int ws_win_list(ws_conn *c, int owner, int onscreen, uint32_t *out, int max, int *total)
+{
+	uint8_t q[0x3c]; memset(q, 0, sizeof q);
+	fill_header((mach_msg_header_t *)q, sizeof q, SLS_MSG_GetWindowListWithTags, 0); memcpy(q + 0x18, &WS_NDR, 8);
+	uint32_t o = (uint32_t)owner, m = (uint32_t)max; memcpy(q + 0x20, &o, 4); memcpy(q + 0x24, &m, 4); q[0x28] = (uint8_t)onscreen;
+	uint8_t r[0x2c + 4 * 0x400]; struct iovec v = { q, sizeof q };
+	ssize_t got = call(c, &v, 1, r, sizeof r, NULL, NULL);
+	if (got < (ssize_t)sizeof(sls_simple_reply)) return -1;
+	int32_t rc; memcpy(&rc, r + 0x20, 4);
+	if (rc) return rc;
+	uint32_t n; memcpy(&n, r + 0x24, 4);
+	if (got < (ssize_t)(0x2c + 4 * n)) return -1;
+	for (uint32_t i = 0; i < n && (int)i < max; i++) memcpy(&out[i], r + 0x28 + 4 * i, 4);
+	if (total) { uint32_t t; memcpy(&t, r + 0x28 + 4 * n, 4); *total = (int)t; }
+	return 0;
+}
+
+void ws_raw_header(uint8_t *m, uint32_t size, int id) { fill_header((mach_msg_header_t *)m, size, id, 0); }
+int ws_raw_simple(ws_conn *c, const void *req, size_t n) { return simple_call(c, req, n); }
