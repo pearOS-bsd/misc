@@ -26,7 +26,7 @@ int main(int argc, char **argv)
 	h->field = t;
 	[w makeKeyAndOrderFront:nil];
 	NSLog(@"window shown, frame %@ number %d visible %d bgapp %d hidden %d active %d", NSStringFromRect([w frame]), (int)[w windowNumber], (int)[w isVisible], (int)[[NSUserDefaults standardUserDefaults] boolForKey:@"GSBackgroundApp"], (int)[NSApp isHidden], (int)[NSApp isActive]);
-	[NSTimer scheduledTimerWithTimeInterval:(argc > 1 ? atof(argv[1]) : 1.0) target:h selector:@selector(quit:) userInfo:nil repeats:NO];
+	[NSTimer scheduledTimerWithTimeInterval:([[NSUserDefaults standardUserDefaults] doubleForKey:@"HelloSeconds"] ?: 1.0) target:h selector:@selector(quit:) userInfo:nil repeats:NO];
 	[app run];
 	return 0;
 }
