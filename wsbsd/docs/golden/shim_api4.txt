@@ -1,0 +1,9 @@
+bounds: 0 10 20 100 60
+set shape: 0
+bounds: 0 0 0 220 140
+set shape at 30,40: 0
+bounds: 0 30 40 100 60
+resolution: 0 1
+set resolution 2: 0
+resolution: 0 2
+set list alpha: 0
