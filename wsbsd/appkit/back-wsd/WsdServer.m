@@ -198,10 +198,8 @@ static void terminate(int sig)
 	BOOL resized = (nw != w->w || nh != w->h);
 	w->w = nw; w->h = nh;
 	ws_win_set_frame(conn, &w->win, (ws_rect){ w->x, w->y, w->w, w->h });
-	if (resized) {
-		/* the next setWindowdevice:forContext: (called by AppKit after a resize) allocates the new buffer; drop the old one now */
-		if (w->has_buffer) { ws_surface_unbind(conn, &w->win, w->sid); ws_surface_remove(conn, &w->win, w->sid); ws_cbuf_release(conn, &w->cbuf); w->has_buffer = 0; }
-	}
+	/* the old buffer stays mapped (the current Cairo surface still draws into it); the next setWindowdevice:forContext: sees the size change in attachBuffer: and swaps it */
+	(void)resized;
 }
 
 - (void) movewindow: (NSPoint)loc : (int)win
