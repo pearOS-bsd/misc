@@ -208,6 +208,7 @@ static void terminate(int sig)
 	if (nh < 1) nh = 1;
 	w->x = (int)frame.origin.x; w->y = screenH - (int)(frame.origin.y + frame.size.height);
 	BOOL resized = (nw != w->w || nh != w->h);
+	WLOG(@"placewindow %d -> %d,%d %dx%d resized %d", win, w->x, w->y, nw, nh, (int)resized);
 	w->w = nw; w->h = nh;
 	ws_win_set_frame(conn, &w->win, (ws_rect){ w->x, w->y, w->w, w->h });
 	/* the old buffer stays mapped (the current Cairo surface still draws into it); the next setWindowdevice:forContext: sees the size change in attachBuffer: and swaps it */
