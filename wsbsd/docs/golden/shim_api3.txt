@@ -1,0 +1,8 @@
+hide: 0
+show: 0
+obscure: 0
+reveal: 0
+hide, bad connection: 0
+cursor scale: 0 1
+on screen list: 0 count 3 order: C B A
+on screen list: 0 count 3 order: A C B

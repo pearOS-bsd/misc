@@ -127,7 +127,8 @@ static CGError cursor_call(int id, CGSConnectionID cid, int extra)
 	uint32_t size = id == SLS_MSG_ShowCursor ? 0x28 : 0x24;
 	ws_raw_header(m, size, id);
 	memcpy(m + 0x18, &WS_NDR, 8); memcpy(m + 0x20, &cid, 4); if (id == SLS_MSG_ShowCursor) memcpy(m + 0x24, &extra, 4);
-	return ws_raw_simple(c, m, size);
+	ws_raw_simple(c, m, size);
+	return 0;                                                  /* the real client does not report the server's code (observed: 0 for a bad connection) */
 }
 CGError SLSHideCursor(CGSConnectionID cid) { return cursor_call(SLS_MSG_HideCursor, cid, 0); }
 CGError SLSShowCursor(CGSConnectionID cid) { return cursor_call(SLS_MSG_ShowCursor, cid, 0); }
