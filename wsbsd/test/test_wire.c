@@ -12,6 +12,7 @@
 #include <sys/select.h>
 
 static int fails;
+static void wr32(uint8_t *b, size_t off, uint32_t v) { memcpy(b + off, &v, 4); }
 #define CHECK(c) do { if (!(c)) { printf("FAIL line %d: %s\n", __LINE__, #c); fails++; } } while (0)
 
 static void hdr(mach_msg_header_t *h, uint32_t size, int id, int complex)
@@ -136,6 +137,19 @@ int main(void)
 		{
 			uint32_t me = rep.connection_id;
 			sls_wid_req kq; memset(&kq, 0, sizeof kq); sls_value_reply kr; sls_keyproc_reply pr2;
+			/* without a process record key focus is refused (-600); CreateApplication makes the record */
+			hdr(&kq.h, sizeof kq, SLS_MSG_StealKeyFocusReturningID, 0); kq.ndr = WS_NDR;
+			CHECK(rc_of(cfd, &kq, sizeof kq, SLS_MSG_StealKeyFocusReturningID + 100) == -600);
+			{
+				uint8_t ca[0x50]; memset(ca, 0, sizeof ca); hdr((mach_msg_header_t *)ca, 0x50, SLS_MSG_CreateApplication, 0);
+				memcpy(ca + 0x18, &WS_NDR, 8);
+				wr32(ca, 0x24, 0x77); wr32(ca, 0x28, 1); wr32(ca, 0x2c, 1234); wr32(ca, 0x30, 1); wr32(ca, 0x34, 501); wr32(ca, 0x3c, 4); memcpy(ca + 0x40, "wire", 4);
+				wr32(ca, 0x28, 0);
+				CHECK(rc_of(cfd, ca, 0x50, SLS_MSG_CreateApplication + 100) == -50);            /* session id 0: refused */
+				wr32(ca, 0x28, 1);
+				CHECK(rc_of(cfd, ca, 0x50, SLS_MSG_CreateApplication + 100) == 0);
+				CHECK(rc_of(cfd, ca, 0x50, SLS_MSG_CreateApplication + 100) == -50);            /* a second record for the same connection */
+			}
 			sls_header_only_req ho; hdr(&ho, sizeof ho, SLS_MSG_GetKeyFocusProcess, 0);
 			CHECK(xchg(cfd, &ho, sizeof ho, &pr2, sizeof pr2, NULL, NULL) == (int)sizeof(sls_simple_reply) && ((sls_simple_reply *)&pr2)->retcode == -600);   /* nobody has focus */
 			hdr(&kq.h, sizeof kq, SLS_MSG_StealKeyFocusReturningID, 0); kq.ndr = WS_NDR; kq.wid = 0;

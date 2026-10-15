@@ -7,7 +7,10 @@
 #include <stdint.h>
 #include <stddef.h>
 
-typedef struct { int fd; uint32_t id; int efd; int pid; char app[64]; int handshaken; } conn;
+typedef struct {
+	int fd; uint32_t id; int efd; int pid; char app[64]; int handshaken;
+	int registered; uint32_t psn_hi, psn_lo, session_id; int app_type;          /* process record made by CreateApplication */
+} conn;
 
 extern ws_server *srv;
 extern int wsd_dirty;                                   /* set when something visible may have changed */
