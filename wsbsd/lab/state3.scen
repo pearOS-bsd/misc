@@ -1,0 +1,182 @@
+# brute force 2: routines state2 skipped (spaces, cursor, events, connection...), a window id first then 0s
+new_window a 100 200 300 150
+new_window b 50 60 80 40
+raw 30000 ndr 
+raw 30002 ndr wid:a
+raw 30014 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30024 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30029 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30038 ndr wid:a u32:0
+raw 30051 ndr wid:a u32:0
+raw 30052 ndr wid:a
+raw 30053 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30064 ndr wid:a u32:0 u32:0 u32:0 u32:0
+raw 30065 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30066 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30081 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30087 ndr wid:a
+raw 30089 ndr wid:a u32:0
+raw 30093 ndr wid:a u32:0 u32:0 u32:0 u32:0
+raw 30106 ndr wid:a u32:0 u32:0 u32:0 u32:0
+raw 30111 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30118 ndr wid:a u32:0 u32:0 u32:0
+raw 30119 ndr wid:a u32:0 u32:0 u32:0
+raw 30124 ndr wid:a u32:0 u32:0
+raw 30125 ndr wid:a u32:0
+raw 30126 ndr wid:a
+raw 30134 ndr wid:a
+raw 30135 ndr 
+raw 30139 ndr 
+raw 30140 ndr 
+raw 30143 ndr wid:a u32:0 u32:0
+raw 30149 ndr 
+raw 30150 ndr 
+raw 30152 ndr wid:a
+raw 30159 ndr wid:a u32:0 u32:0 u32:0 u32:0
+raw 30161 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30164 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30166 ndr wid:a u32:0
+raw 30169 ndr wid:a u32:0 u32:0 u32:0 u32:0
+raw 30170 ndr 
+raw 30171 ndr wid:a
+raw 30172 ndr 
+raw 30173 ndr wid:a
+raw 30174 ndr 
+raw 30177 ndr wid:a
+raw 30183 ndr wid:a u32:0 u32:0 u32:0 u32:0
+raw 30185 ndr wid:a
+raw 30186 ndr wid:a u32:0 u32:0 u32:0 u32:0
+raw 30199 ndr wid:a u32:0
+raw 30200 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30201 ndr wid:a u32:0
+raw 30202 ndr wid:a u32:0 u32:0
+raw 30203 ndr wid:a u32:0
+raw 30206 ndr wid:a
+raw 30208 ndr wid:a
+raw 30209 ndr wid:a u32:0 u32:0 u32:0
+raw 30210 ndr wid:a
+raw 30211 ndr 
+raw 30213 ndr wid:a
+raw 30215 ndr wid:a u32:0
+raw 30220 ndr wid:a
+raw 30221 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30223 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30226 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30229 ndr wid:a u32:0
+raw 30230 ndr wid:a u32:0 u32:0
+raw 30234 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30235 ndr wid:a
+raw 30236 ndr wid:a u32:0
+raw 30239 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30240 ndr wid:a
+raw 30244 ndr wid:a u32:0
+raw 30245 ndr wid:a
+raw 30246 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30247 ndr 
+raw 30248 ndr 
+raw 30250 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30251 ndr wid:a u32:0
+raw 30256 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30265 ndr wid:a
+raw 30270 ndr wid:a
+raw 30271 ndr wid:a u32:0
+raw 30272 ndr wid:a
+raw 30287 ndr wid:a
+raw 30291 ndr wid:a u32:0 u32:0 u32:0
+raw 30292 ndr wid:a u32:0
+raw 30306 ndr wid:a u32:0 u32:0 u32:0 u32:0
+raw 30310 ndr wid:a u32:0 u32:0 u32:0
+raw 30318 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30322 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30323 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30324 ndr wid:a
+raw 30325 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30328 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30329 ndr wid:a u32:0
+raw 30330 ndr wid:a u32:0
+raw 30331 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30332 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30333 ndr wid:a u32:0
+raw 30335 ndr wid:a u32:0
+raw 30339 ndr wid:a u32:0
+raw 30340 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30341 ndr wid:a u32:0 u32:0
+raw 30342 ndr wid:a u32:0 u32:0
+raw 30343 ndr wid:a u32:0
+raw 30344 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30345 ndr wid:a u32:0
+raw 30347 ndr wid:a u32:0
+raw 30348 ndr wid:a u32:0 u32:0
+raw 30349 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30350 ndr wid:a u32:0
+raw 30351 ndr wid:a u32:0 u32:0 u32:0
+raw 30352 ndr wid:a u32:0 u32:0
+raw 30353 ndr wid:a
+raw 30354 ndr wid:a u32:0
+raw 30362 ndr wid:a u32:0
+raw 30364 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30365 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30374 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30380 ndr wid:a
+raw 30382 ndr wid:a
+raw 30384 ndr wid:a u32:0 u32:0 u32:0
+raw 30391 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30392 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30395 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30396 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30398 ndr wid:a u32:0 u32:0
+raw 30400 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30405 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30411 ndr wid:a u32:0 u32:0
+raw 30412 ndr wid:a u32:0
+raw 30413 ndr wid:a
+raw 30414 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30415 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30416 ndr wid:a u32:0
+raw 30417 ndr wid:a u32:0 u32:0 u32:0
+raw 30418 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30419 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30420 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30423 ndr wid:a u32:0
+raw 30427 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30428 ndr 
+raw 30443 ndr wid:a u32:0 u32:0
+raw 30446 ndr wid:a u32:0
+raw 30447 ndr wid:a u32:0 u32:0 u32:0 u32:0
+raw 30451 ndr wid:a u32:0
+raw 30460 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30465 ndr wid:a u32:0
+raw 30469 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30477 ndr 
+raw 30478 ndr wid:a
+raw 30481 ndr wid:a u32:0 u32:0
+raw 30482 ndr wid:a u32:0
+raw 30483 ndr wid:a u32:0
+raw 30485 ndr wid:a u32:0
+raw 30489 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30494 ndr 
+raw 30500 ndr 
+raw 30533 ndr wid:a u32:0
+raw 30545 ndr wid:a
+raw 30546 ndr wid:a
+raw 30548 ndr wid:a u32:0
+raw 30549 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30551 ndr 
+raw 30557 ndr wid:a u32:0 u32:0 u32:0
+raw 30563 ndr wid:a u32:0
+raw 30564 ndr wid:a u32:0
+raw 30565 ndr wid:a u32:0
+raw 30569 ndr wid:a u32:0
+raw 30588 ndr wid:a
+raw 30589 ndr wid:a
+raw 30592 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30598 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30615 ndr wid:a u32:0
+raw 30627 ndr wid:a
+raw 30628 ndr wid:a u32:0 u32:0 u32:0
+raw 30630 ndr wid:a
+raw 30636 ndr wid:a u32:0 u32:0 u32:0 u32:0 u32:0 u32:0 u32:0
+raw 30637 ndr 
+raw 30638 ndr wid:a
+raw 30644 ndr wid:a
+raw 30645 ndr wid:a
