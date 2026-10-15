@@ -1,0 +1,9 @@
+# WindowQuery (30474), count 0 = every window matching the filters; short streams take the defaults
+new_window a 100 200 300 150
+new_window b 50 60 80 40
+level a 5
+order b above
+raw 30474 ndr u32:0 u32:0 nlen pk:0
+raw 30474 ndr u32:0 u32:0 nlen pk:0 pk:0 pk:0 pk:0 pk:0 pk:0 pk:0 pk:0 pk:0 pk:0 pk:0
+raw 30474 ndr u32:0 u32:0 nlen pk:0 pk:1 pk:0 pk:0 pk:0 pk:0 pk:0 pk:0 pk:0 pk:0 pk:0
+raw 30474 ndr u32:0 u32:0 nlen pk:0 pk:0 pk:0 pk:0 pk:0 pk:0 pk:0 pk:0 pk:0 pk:0 pk:0 pk:0 pk:0
