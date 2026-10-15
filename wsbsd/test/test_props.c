@@ -182,6 +182,22 @@ int main(void)
 		w32(both, 0x18, 1); both[0x25] = 1; both[0x27] = 1; w32(both, 0x28, 4); memcpy(both + 0x2c, &WS_NDR, 8); w32(both, 0x40, 1); both[0x44] = 0xff; w32(both, 0x48, 4); memcpy(both + 0x4c, "\xff\0\0\0", 4);
 		CHECK(rc(fd, both, 0x4c + 4) == 1001);
 	}
+
+	/* surface binding through a transaction: BindSurface (kind 4, buffer) then RemoveSurface */
+	{
+		ws_cbuf cb; uint32_t sid = 0;
+		CHECK(ws_cbuf_create(c, 32, 32, &cb) == 0 && ws_surface_add(c, &w, &sid) == 0 && sid);
+		uint8_t st[64]; size_t n = 0;
+		st[n++] = 51; n += ws_tx_packed(st + n, w.id); n += ws_tx_packed(st + n, sid); n += ws_tx_packed(st + n, 4); n += ws_tx_packed(st + n, 0); n += ws_tx_packed(st + n, cb.id); st[n++] = 0xff;
+		CHECK(ws_transaction_commit(c, st, n, 0) == 0);
+		int kind = -1; uint32_t ba = 9, bb = 0;
+		CHECK(ws_surface_binding(c, &w, sid, &kind, &ba, &bb) == 0 && kind == 4 && bb == cb.id);
+		n = 0; st[n++] = 95; n += ws_tx_packed(st + n, w.id); n += ws_tx_packed(st + n, sid); st[n++] = 0xff;
+		CHECK(ws_transaction_commit(c, st, n, 0) == 0);
+		CHECK(ws_surface_binding(c, &w, sid, &kind, &ba, &bb) != 0);                      /* gone */
+		n = 0; st[n++] = 105; n += ws_tx_packed(st + n, w.id); n += ws_tx_double(st + n, 12.0); st[n++] = 0xff;
+		CHECK(ws_transaction_commit(c, st, n, 0) == 0);
+	}
 	ws_server_quit(c);
 	printf(failures ? "%d failures\n" : "window extension routines: all checks passed\n", failures);
 	return failures != 0;

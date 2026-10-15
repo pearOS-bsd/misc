@@ -23,6 +23,7 @@ typedef struct {
 	uint32_t owner;
 	int sublevel, event_mask;
 	uint64_t tags;
+	int corner_radius;
 	ws_surface *content;        /* borrowed */
 	ws_surface *front;          /* committed copy of the content: what is shown */
 	uint32_t content_id;
@@ -560,7 +561,7 @@ void ws_server_walk(ws_server *s, ws_visit_fn fn, void *ctx)
 		if (w->shadow_on) ensure_shadow(s, w, w->id == act);
 		ws_visit vis;
 		memset(&vis, 0, sizeof vis);
-		vis.id = w->id; vis.frame = w->frame; vis.alpha = w->alpha; vis.corner_radius = w->shadow_on ? w->shadow_cr : 0; vis.blur_radius = w->blur_radius; vis.active = w->id == act;
+		vis.id = w->id; vis.frame = w->frame; vis.alpha = w->alpha; vis.corner_radius = w->corner_radius ? w->corner_radius : (w->shadow_on ? w->shadow_cr : 0); vis.blur_radius = w->blur_radius; vis.active = w->id == act;
 		vis.pixels = (w->content && w->committed) ? (w->front ? w->front : w->content) : w->backing;
 		vis.buffer_id = (w->content && w->committed) ? w->content_id : 0;
 		if (w->shadow_on && w->shadow) {
@@ -739,5 +740,14 @@ int ws_window_set_tags(ws_server *s, ws_wid id, uint64_t tags, int clear)
 	if (!w) return -1;
 	uint64_t n = clear ? (w->tags & ~tags) : (w->tags | tags);
 	if (n != w->tags) { w->tags = n; bump(s); }
+	return 0;
+}
+
+int ws_set_window_corner_radius(ws_server *s, ws_wid id, int radius)
+{
+	window *w = get(s, id);
+	if (!w) return -1;
+	radius = radius < 0 ? 0 : radius;
+	if (radius != w->corner_radius) { w->corner_radius = radius; bump(s); }
 	return 0;
 }
