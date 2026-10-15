@@ -82,6 +82,7 @@ int main(int argc, char **argv)
 		ws_post_mouse_event(c, 2, 120 + 90, 100 + 323, 0, 1, 0);
 		if (got && e.x >= 30 && e.x < 150 && e.y >= H - 54 && e.y < H - 20) {
 			/* Opal's CGContextFlush ends a context's drawing: the next update uses a fresh bitmap context over the same shared memory */
+			CGContextRelease(g); g = NULL;                                              /* the first context is gone before the next one draws */
 			CGContextRef g2 = CGBitmapContextCreate(px->px, W, H, 8, px->stride, rgb, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little);
 			fprintf(stderr, "opal_demo: g2=%p g=%p\n", (void *)g2, (void *)g);
 			draw_button(g2, CGRectMake(30, 20, 120, 34), 1);
@@ -96,7 +97,8 @@ int main(int argc, char **argv)
 		ws_screenshot_scene(c, out2);
 		printf("click %s at local (%d,%d), wrote %s\n", got ? "delivered" : "MISSING", got ? e.x : -1, got ? e.y : -1, out2);
 	}
-	CGContextRelease(g); CGColorSpaceRelease(rgb);
+	if (g) CGContextRelease(g);
+	CGColorSpaceRelease(rgb);
 	ws_server_quit(c);
 	return 0;
 }
