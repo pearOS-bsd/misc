@@ -138,7 +138,7 @@ typedef struct { mach_msg_header_t h; NDR_record_t ndr; int32_t a[8]; char s[128
 typedef struct { mach_msg_header_t h; NDR_record_t ndr; int32_t retcode; int32_t a[8]; } wsx_rep;
 
 /* pushed on the event channel returned by NewConnectionPort (wsbsd private; macOS uses the event shared memory instead) */
-typedef struct { mach_msg_header_t h; NDR_record_t ndr; int32_t type; uint32_t wid; int32_t x, y, buttons, key; } wsx_event_msg;
+typedef struct { mach_msg_header_t h; NDR_record_t ndr; int32_t type; uint32_t wid; int32_t x, y, buttons, key; uint32_t flags; int32_t dx, dy, continuous; } wsx_event_msg;
 
 /* wsbsd private: register a shared buffer. Complex message: header, count = nplanes, one port descriptor per plane (name = 1-based index into
  * the SCM_RIGHTS descriptors, MOVE_SEND), then NDR and the description. Reply: a value reply carrying the buffer id. */

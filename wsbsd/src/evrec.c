@@ -10,6 +10,7 @@ int ws_evrec_parse(const uint8_t *b, size_t len, ws_evrec *out)
 	if (len < 4 || (len & 3) || rd32(b) != 2) return -1;            /* leading word: 2 */
 	size_t i = 4;
 	while (i < len) {
+		if (i + 4 == len && rd32(b + i) == 0x4052) { i = len; break; }                          /* flagsChanged records end with one bare word (0x4052 on the real system) */
 		if (i + 8 > len || out->n >= WS_EV_FIELD_MAX) return -1;
 		uint32_t tag = rd32(b + i);
 		unsigned kind = tag >> 16, top = (tag >> 14) & 3;

@@ -124,6 +124,27 @@ int main(void)
 		w32(g, 0x20, 99999);
 		CHECK(rc(fd, g, 0x24) == 1000);
 	}
+
+	/* scroll and flags-changed records (bytes from CGEventCreateData on the real system) reach the window under the pointer / the key window */
+	{
+		static const char *scroll_hex = "000000020001403500000000000140360000000000014037000000160002c03842c80000434800000002c039bf800000bf8000000001003a00000000000003e80001403b0000010000014033000000000001403400000000000100a900000000000003e80001406a000000000001406b000000000001400b000000030001400cfffffffc0001400d00000000000140580000000000014089000000000001405d000300000001405efffc00000001405f00000000000140600000001e00014061ffffffd80001406200000000000140ad00000000000140630000000000014064000000000001c0af000000000001c0b0000000000001c0b1000000000001c0b200000000";
+		static const char *flags_hex = "0000000200014035000000000001403600000000000140370000000c0002c03842c80000434800000002c039bf800000bf8000000001003a00000000000003e80001403b0002000000014033000000000001403400000000000100a900000000000003e80001406a000000000001406b00000000000140090000000000014008000000000001400a000000000001404c000000000001404d000000000001404e000000000001404f00000000000140500000000000014051000000000001407f00000000000140800000000000004052";
+		ws_win w2;
+		CHECK(ws_win_create(c, (ws_rect){ 50, 150, 100, 100 }, 0, &w2) == 0);
+		ws_win_order(c, &w2, 1, 0); ws_win_set_event_mask(c, &w2, -1);
+		ws_post_mouse_event(c, 5, 100, 200, 0, 0, 0); ws_post_mouse_event(c, 1, 100, 200, 0, 1, 0); ws_post_mouse_event(c, 2, 100, 200, 0, 1, 0);   /* click: w2 becomes the key window */
+		uint8_t rec[1024];
+		size_t rl = 0; for (const char *q = scroll_hex; q[0] && q[1]; q += 2) { unsigned v; sscanf(q, "%2x", &v); rec[rl++] = (uint8_t)v; }
+		CHECK(ws_post_event_record(c, rec, rl) == 0);
+		rl = 0; for (const char *q = flags_hex; q[0] && q[1]; q += 2) { unsigned v; sscanf(q, "%2x", &v); rec[rl++] = (uint8_t)v; }
+		CHECK(ws_post_event_record(c, rec, rl) == 0);
+		ws_event e; int got_scroll = 0, got_flags = 0;
+		for (int i = 0; i < 20 && ws_conn_next_pushed_event(c, 200, &e); i++) {
+			if (e.type == WS_EV_SCROLL) { got_scroll = 1; CHECK(e.wid == w2.id && e.dy == 30 && e.dx == -40 && e.continuous == 0 && e.x == 50 && e.y == 50); }
+			if (e.type == WS_EV_FLAGS) { got_flags = 1; CHECK(e.flags == 0x20000); }
+		}
+		CHECK(got_scroll && got_flags);
+	}
 	ws_server_quit(c);
 	printf(failures ? "%d failures\n" : "window extension routines: all checks passed\n", failures);
 	return failures != 0;

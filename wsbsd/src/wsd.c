@@ -221,7 +221,7 @@ static void push_event(void *ctx, uint32_t owner, const ws_event *e)
 	if (!c || c->efd < 0) return;
 	wsx_event_msg m; memset(&m, 0, sizeof m);
 	m.h.msgh_bits = MACH_MSG_TYPE_MOVE_SEND_ONCE; m.h.msgh_size = sizeof m; m.h.msgh_id = WSX_EVENT_PUSH;
-	m.ndr = WS_NDR; m.type = e->type; m.wid = e->wid; m.x = e->x; m.y = e->y; m.buttons = e->buttons; m.key = e->key;
+	m.ndr = WS_NDR; m.type = e->type; m.wid = e->wid; m.x = e->x; m.y = e->y; m.buttons = e->buttons; m.key = e->key; m.flags = e->flags; m.dx = e->dx; m.dy = e->dy; m.continuous = e->continuous;
 	struct iovec v = { &m, sizeof m };
 	ws_ipc_send(c->efd, &v, 1, NULL, 0);                     /* non-blocking: a full channel drops the event */
 }
@@ -692,6 +692,13 @@ static int do_post_event(conn *c, const uint8_t *buf, size_t len)
 	mouse:
 		ws_server_mouse(srv, x, y, b);
 		break;
+	case 12: ws_server_flags(srv, ws_evrec_flags(&rec)); break;          /* flagsChanged */
+	case 22: {                                                          /* scroll wheel: point deltas (fields 96, 97), else line deltas (11, 12) x 10 */
+		const ws_evfield *p1 = ws_evrec_find(&rec, 96), *p2 = ws_evrec_find(&rec, 97), *l1 = ws_evrec_find(&rec, 11), *l2 = ws_evrec_find(&rec, 12), *ic = ws_evrec_find(&rec, 88);
+		int dy = p1 ? (int)p1->v[0] : l1 ? (int)l1->v[0] * 10 : 0, dx = p2 ? (int)p2->v[0] : l2 ? (int)l2->v[0] * 10 : 0;
+		ws_server_scroll(srv, x, y, dx, dy, ic ? (int)ic->v[0] : 0);
+		break;
+	}
 	case 10: case 11: {
 		int kc = ws_evrec_keycode(&rec);
 		if (kc >= 0) ws_server_key(srv, kc, type == 10);

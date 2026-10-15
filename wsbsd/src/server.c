@@ -359,10 +359,17 @@ ws_wid ws_active_window(ws_server *s)
 }
 
 static ws_event_sink sink; static void *sink_ctx;
+static uint32_t g_flags;                                   /* modifier state (CGEventFlags) */
+static void post_ex(window *w, ws_event e);
 static void post(window *w, int type, int x, int y, int buttons, int key)
 {
+	post_ex(w, (ws_event){ type, w->id, x, y, buttons, key, g_flags, 0, 0, 0 });
+}
+static void post_ex(window *w, ws_event e)
+{
+	e.wid = w->id;
 	if (w->ev_head - w->ev_tail == 64) w->ev_tail++;           /* queue full: drop the oldest */
-	w->ev[w->ev_head++ % 64] = (ws_event){ type, w->id, x, y, buttons, key };
+	w->ev[w->ev_head++ % 64] = e;
 	if (sink) sink(sink_ctx, w->owner, &w->ev[(w->ev_head - 1) % 64]);
 }
 
@@ -693,3 +700,20 @@ int ws_resize_window(ws_server *s, ws_wid id, int w, int h)
 	}
 	return 0;
 }
+
+void ws_server_scroll(ws_server *s, int x, int y, int dx, int dy, int continuous)
+{
+	ws_wid target = s->grab ? s->grab : ws_find_window(s, x, y);
+	window *w = get(s, target);
+	if (!w) return;
+	post_ex(w, (ws_event){ WS_EV_SCROLL, w->id, x - w->frame.x, y - w->frame.y, s->buttons, 0, g_flags, dx, dy, continuous });
+}
+
+void ws_server_flags(ws_server *s, uint32_t flags)
+{
+	if (flags == g_flags) return;
+	g_flags = flags;
+	window *w = get(s, s->key_win);
+	if (w) post_ex(w, (ws_event){ WS_EV_FLAGS, w->id, 0, 0, s->buttons, 0, flags, 0, 0, 0 });
+}
+uint32_t ws_server_modifier_flags(const ws_server *s) { (void)s; return g_flags; }
