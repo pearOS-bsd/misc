@@ -27,6 +27,7 @@ cc -O1 -g -Iinclude $OBJC_FLAGS -I/usr/local/GNUstep/System/Library/Headers -o o
 SOCK=/tmp/wsd-opal.sock; export WS_SOCKET=$SOCK
 ./wsd -t -g 1280x800 >/dev/null 2>&1 &
 sleep 1
-LD_LIBRARY_PATH=/usr/local/GNUstep/System/Library/Libraries:/usr/local/lib ./opal_demo opal.ppm 2>&1 | tail -5
+find / -name "libopal*" -o -name "libgnustep-corebase*" 2>/dev/null | head -5
+LD_LIBRARY_PATH=/tmp/gs/opal/Source/obj:/tmp/gs/corebase/Source/obj:/usr/local/GNUstep/System/Library/Libraries:/usr/local/lib ./opal_demo opal.ppm 2>&1 | tail -5
 python3 tools/ppm2png.py opal.ppm opal.png 2>&1 | tail -1 || true
 ls -l opal.ppm opal.png 2>&1
