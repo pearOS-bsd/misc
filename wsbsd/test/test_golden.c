@@ -49,7 +49,7 @@ int main(int argc, char **argv)
 		for (size_t i = 0; i < blen && i < sizeof want; i++) want[i] = (uint8_t)(hexval(hex[2 * i]) * 16 + hexval(hex[2 * i + 1]));
 		int cx = (bits & 0x80000000u) != 0;
 		for (size_t i = 0; i < blen; i++) {
-			if (cx && i >= 4 && i < 4 + 4) continue;                              /* port names differ */
+			if (cx && i >= 4 && i < 12) continue;                                  /* port names / out-of-line addresses differ */
 			if (rep[0x18 + i] != want[i]) { printf("FAIL %d: body byte %zu is %02x, real server says %02x\n", id, i, rep[0x18 + i], want[i]); fails++; break; }
 		}
 	}
