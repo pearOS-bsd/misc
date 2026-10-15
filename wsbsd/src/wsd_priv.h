@@ -30,6 +30,7 @@ int reply_value(int fd, const mach_msg_header_t *req, int32_t value);
 int reply_mig_error(int fd, const mach_msg_header_t *req, int32_t code);
 int simple_ok(const mach_msg_header_t *h, size_t len, size_t want);   /* not complex, size and datagram length both equal want */
 int holds_rights(const conn *c, uint32_t wid);
+int wsd_window_surfaces(uint32_t wid, uint32_t *out, int max);          /* surface ids of a window; returns the count */
 
 int wsd_bind_surface(conn *c, uint32_t wid, uint32_t sid, int kind, uint32_t a, uint32_t b);   /* BindSurface semantics, returns the retcode */
 int sls_symbolic_hotkey(uint32_t id, uint16_t *key, uint16_t *mods, uint32_t *flags, int *enabled);   /* the session's symbolic hot key table: 0 valid, 1 unset, -1 bad id */

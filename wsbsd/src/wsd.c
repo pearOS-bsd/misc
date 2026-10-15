@@ -340,6 +340,14 @@ int wsd_remove_surface(conn *c, uint32_t wid, uint32_t sid)
 	return 0;
 }
 
+/* the ids of the surfaces of a window, oldest first (the list the window keeps); returns the count */
+int wsd_window_surfaces(uint32_t wid, uint32_t *out, int max)
+{
+	int n = 0;
+	for (int i = 0; i < MAXSURF; i++) if (surfs[i].used && surfs[i].wid == wid) { if (n < max) out[n] = surfs[i].sid; n++; }
+	return n;
+}
+
 int wsd_remove_all_surfaces(conn *c, uint32_t wid)
 {
 	if (!ws_window_exists(srv, wid) || !holds_rights(c, wid)) return 1000;            /* needs write access to the window */
