@@ -141,4 +141,6 @@ jobs:
             wsbsd/sudoku-cell.png
             wsbsd/sudoku-menu.png
             wsbsd/gorm.png
+            wsbsd/gorm-menu.png
+            wsbsd/gorm-doc.png
           if-no-files-found: warn
