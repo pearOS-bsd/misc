@@ -33,6 +33,7 @@ int ws_buffer_bytes_per_pixel(uint32_t fourcc);                /* 0 if the forma
 
 void ws_buffer_init(ws_buffer *b);
 /* Anonymous shared-memory buffer, mapped; fd[0] can be passed to another process. 0 on success. */
+int ws_shm_create_anon(void);                                   /* an anonymous shared memory object (SHM_ANON where available): the descriptor or -1 */
 int ws_buffer_create_shm(ws_buffer *b, int w, int h, uint32_t fourcc);
 /* Maps an imported descriptor (shm or a linear dma-buf) so the CPU compositor can read it. 0 on success. */
 int ws_buffer_map(ws_buffer *b);

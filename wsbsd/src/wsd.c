@@ -1074,7 +1074,7 @@ static conn *conn_by_fd(int fd) { for (int i = 0; i < MAXCONN; i++) if (conns[i]
 int main(int argc, char **argv)
 {
 	const char *path = getenv("WS_SOCKET") ? getenv("WS_SOCKET") : DEFAULT_SOCKET;
-	int w = 1280, h = 800;
+	int w = 1280, h = 800, sandbox = 0;
 	const char *backend = "headless", *card = "/dev/dri/card0", *renderer = "sw", *render_node = "/dev/dri/renderD128";
 	for (int i = 1; i < argc; i++) {
 		if (!strcmp(argv[i], "-s") && i + 1 < argc) path = argv[++i];
@@ -1084,6 +1084,7 @@ int main(int argc, char **argv)
 		else if (!strcmp(argv[i], "-r") && i + 1 < argc) renderer = argv[++i];          /* sw | gl */
 		else if (!strcmp(argv[i], "-n") && i + 1 < argc) render_node = argv[++i];
 		else if (!strcmp(argv[i], "-t")) test_mode = 1;
+		else if (!strcmp(argv[i], "-S")) sandbox = 1;
 	}
 #ifdef WS_KMS
 	ws_kms *kms = NULL;
@@ -1135,6 +1136,7 @@ int main(int argc, char **argv)
 	}
 #endif
 	fprintf(stderr, "wsd: %dx%d, backend %s, listening on %s\n", w, h, backend, path);
+	if (sandbox) { if (wsd_sandbox_enter(ls, kq) == 0) fprintf(stderr, "wsd: capability mode\n"); else if (sandbox == 2) return 1; }
 
 	while (running) {
 		struct kevent out[16];
