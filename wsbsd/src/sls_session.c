@@ -128,6 +128,58 @@ static int do_symbolic_hotkeys(conn *c, const uint8_t *buf, size_t len)
 	return rc;
 }
 
+/* ---- WindowQuery stream encoding (transaction streams: packed64 integers, 0x48 + float, 0x88 + double) ---- */
+typedef struct { uint8_t *p; size_t n, cap; } wq_buf;
+static void wq_put(wq_buf *b, const void *d, size_t n) { if (b->n + n > b->cap) { b->cap = (b->n + n) * 2 + 64; b->p = realloc(b->p, b->cap); } memcpy(b->p + b->n, d, n); b->n += n; }
+static void wq_u8(wq_buf *b, uint8_t v) { wq_put(b, &v, 1); }
+static void wq_u32(wq_buf *b, uint32_t v) { wq_put(b, &v, 4); }
+static void wq_p64(wq_buf *b, int64_t v)
+{
+	if (v == 0 || v == -1) { wq_u8(b, v == 0 ? 0 : 1); return; }
+	int nb = 1;
+	if (v >= 0) { while (nb < 8 && ((uint64_t)v >> (8 * nb))) nb++; }
+	else { while (nb < 8 && v < -((int64_t)1 << (8 * nb - 1))) nb++; }
+	wq_u8(b, (uint8_t)((nb << 4) | (v < 0 ? 1 : 0)));
+	for (int i = nb - 1; i >= 0; i--) wq_u8(b, (uint8_t)((uint64_t)v >> (8 * i)));
+}
+static int wq_get_p64(const uint8_t *s, size_t n, size_t *i, int64_t *out)
+{
+	if (*i >= n) return 0;
+	uint8_t t = s[(*i)++];
+	if (t < 0x10) { *out = -(int64_t)(t & 1); return 1; }
+	int nb = t >> 4;
+	if (nb > 8 || *i + nb > n) return 0;
+	uint64_t v = 0;
+	for (int k = 0; k < nb; k++) v = (v << 8) | s[(*i)++];
+	if (t & 1 && nb < 8) { uint64_t sign = (uint64_t)1 << (8 * nb - 1); v = (v ^ sign) - sign; }
+	*out = (int64_t)v;
+	return 1;
+}
+static void wq_rect(wq_buf *b, int x, int y, int w, int h) { wq_p64(b, x); wq_p64(b, y); wq_p64(b, w); wq_p64(b, h); }
+
+/* one window record as the decompiled encode_window writes it (unverified live: values the model does not have are the ones the real server wrote for a plain window) */
+static void wq_window(wq_buf *b, ws_wid id)
+{
+	ws_rect f = { 0, 0, 0, 0 }; int level = 0; float alpha = 1.0f;
+	ws_window_frame(srv, id, &f); ws_window_level(srv, id, &level); ws_window_alpha(srv, id, &alpha);
+	uint32_t owner = ws_window_owner(srv, id); conn *oc = wsd_conn_by_id(owner);
+	uint64_t tags = ws_window_tags(srv, id);
+	ws_rect sh = f;
+	if (ws_window_has_shadow(srv, id)) { sh.x -= 23; sh.y -= 15; sh.w += 46; sh.h += 46; }   /* shadow outsets as the real server reports them for an ordinary window */
+	wq_u32(b, 0);
+	wq_u8(b, 1);
+	wq_p64(b, id); wq_p64(b, owner); wq_p64(b, 0); wq_p64(b, oc ? oc->pid : 0); wq_p64(b, 0); wq_p64(b, 0);
+	wq_p64(b, level);
+	if ((float)(int)alpha == alpha) wq_p64(b, (int)alpha); else { wq_u8(b, 0x48); wq_put(b, &alpha, 4); }
+	wq_rect(b, f.x, f.y, f.w, f.h); wq_rect(b, f.x, f.y, f.w, f.h);
+	wq_rect(b, sh.x, sh.y, sh.w, sh.h); wq_rect(b, sh.x, sh.y, sh.w, sh.h);
+	wq_p64(b, 0); wq_p64(b, 0);                                         /* corner radius, an unnamed field */
+	wq_p64(b, (int64_t)(tags & 0xffffffffu)); wq_p64(b, (int64_t)(tags >> 32));
+	wq_u8(b, 0); wq_u8(b, 0);                                            /* no window shape, one more flag */
+	wq_u32(b, 0xffffffffu); wq_u32(b, 0xffffffffu); wq_u32(b, 0xffffffffu);   /* no name / space list / group */
+	wq_u8(b, 0); wq_u8(b, 0); wq_u8(b, 0);
+}
+
 /* WindowQuery (30474), the engine behind window lists. Request (decompiled __XWindowQuery): complex bit clear, query flags (u64)@0x20, n@0x28 (<= 0x4000), an encoded
  * query stream of n bytes@0x2c, size = pad4(n) + 0x2c. The reply is a complex message with one out-of-line descriptor slot and an inline stream:
  * descriptor count 1@0x18, address@0x1c (0 when inline), 0x01000101@0x24, size@0x28 (0 when inline), NDR@0x2c, inline length@0x34, stream@0x38, then the OOL size again;
@@ -139,14 +191,45 @@ static int do_window_query(conn *c, const uint8_t *buf, size_t len)
 	if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size < 0x2c || h->msgh_size > 0x402c) return reply_simple(c->fd, h, -304);
 	uint32_t n = rd32(buf, 0x28);
 	if (n > 0x4000 || h->msgh_size != ((n + 3) & ~3u) + 0x2c) return reply_simple(c->fd, h, -304);
-	uint8_t r[0x48]; memset(r, 0, sizeof r);
-	fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 1);
+	/* query stream: packed64 count, then count window ids (a count of 0 asks for every window with filters; not reproduced: no windows) */
+	const uint8_t *q = buf + 0x2c; size_t qi = 0; int64_t cnt = 0;
+	if (!wq_get_p64(q, n, &qi, &cnt) || cnt < 0 || cnt > 0x4000) cnt = 0;
+	wq_buf b = { 0, 0, 0 };
+	wq_u32(&b, 0xffffffffu); wq_u32(&b, 0xffffffffu); wq_u32(&b, 0xffffffffu);   /* window / space / display list offsets, patched below */
+	uint32_t seen_id[256], seen_off[256]; int nseen = 0;
+	uint32_t listoff[256]; int nlist = 0;
+	for (int64_t k = 0; k < cnt; k++) {
+		int64_t id;
+		if (!wq_get_p64(q, n, &qi, &id)) break;
+		if (id <= 0 || !ws_window_exists(srv, (ws_wid)id) || nlist >= 256) continue;
+		int at = -1;
+		for (int j = 0; j < nseen; j++) if (seen_id[j] == (uint32_t)id) at = j;
+		if (at < 0) {
+			seen_id[nseen] = (uint32_t)id; seen_off[nseen] = (uint32_t)b.n + 4;       /* the offset of the marker byte, after the leading zero word */
+			at = nseen++;
+			wq_window(&b, (ws_wid)id);
+		}
+		listoff[nlist++] = seen_off[at];
+	}
+	if (nlist) {
+		uint32_t at = (uint32_t)b.n;
+		wq_u32(&b, (uint32_t)nlist);
+		for (int j = 0; j < nlist; j++) wq_u32(&b, listoff[j]);
+		memcpy(b.p, &at, 4);
+	}
+	if (b.n > 0x4000) { free(b.p); return reply_simple(c->fd, h, -304); }
+	size_t pad = (b.n + 3) & ~(size_t)3, rsize = pad + 0x3c;
+	uint8_t *r = calloc(1, rsize);
+	if (!r) { free(b.p); return reply_simple(c->fd, h, 1000); }
+	fill_reply_header((mach_msg_header_t *)r, h, (uint32_t)rsize, 1);
 	wr32(r, 0x18, 1);
 	wr32(r, 0x24, 0x01000101u);
 	memcpy(r + 0x2c, &WS_NDR, sizeof WS_NDR);
-	wr32(r, 0x34, 12);
-	wr32(r, 0x38, 0xffffffffu); wr32(r, 0x3c, 0xffffffffu); wr32(r, 0x40, 0xffffffffu);
-	return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	wr32(r, 0x34, (uint32_t)b.n);
+	memcpy(r + 0x38, b.p, b.n);
+	int rc = ws_ipc_send(c->fd, &(struct iovec){ r, rsize }, 1, NULL, 0);
+	free(r); free(b.p);
+	return rc;
 }
 
 int sls_session_dispatch(conn *c, const uint8_t *buf, size_t len)

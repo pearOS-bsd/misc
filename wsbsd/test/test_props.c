@@ -42,6 +42,30 @@ int main(void)
 		got = call(fd, m, 0x30, rep, sizeof rep);
 		CHECK(got == 0x24 && r32(rep, 0x20) == (uint32_t)-304);
 	}
+	{ /* WindowQuery of one known window: the record laid out as the real server's reply (recorded on a macOS runner, lab/wq1.scen) for a window at 100,200,300,150, level 5, with a shadow */
+		ws_win qw; CHECK(ws_win_create(c, (ws_rect){ 100, 200, 300, 150 }, 5, &qw) == 0 && ws_win_shadow(c, &qw, 10, 1) == 0);
+		uint8_t m[0x60], rep[0x200]; memset(m, 0, sizeof m);
+		uint8_t st[8]; size_t sn = 0; st[sn++] = 0x10; st[sn++] = 1;                         /* packed64: count 1 */
+		if (qw.id < 0x100) { st[sn++] = 0x10; st[sn++] = (uint8_t)qw.id; } else { st[sn++] = 0x20; st[sn++] = (uint8_t)(qw.id >> 8); st[sn++] = (uint8_t)qw.id; }
+		size_t msz = 0x2c + ((sn + 3) & ~3u); hdr(m, (uint32_t)msz, 30474, 0); w32(m, 0x28, (uint32_t)sn); memcpy(m + 0x2c, st, sn);
+		int got = call(fd, m, msz, rep, sizeof rep);
+		uint32_t slen = got > 0x38 ? r32(rep, 0x34) : 0;
+		CHECK(got == (int)(((slen + 3) & ~3u) + 0x3c) && slen > 60 && r32(rep, 0x38) == slen - 8 && r32(rep, 0x3c) == 0xffffffffu && r32(rep, 0x40) == 0xffffffffu);
+		const uint8_t *S = rep + 0x38;
+		CHECK(r32(rep, 0x38 + slen - 8) == 1 && r32(rep, 0x38 + slen - 4) == 16);          /* index list: one entry, the record at offset 16 */
+		CHECK(r32(rep, 0x38 + 12) == 0 && S[16] == 1);                                       /* zero word, then the new-window marker */
+		size_t i = 17; int64_t v; int okp = 1;
+		int64_t want[6] = { qw.id, ws_conn_id(c), 0, (int64_t)getpid(), 0, 0 };
+		for (int k = 0; k < 6; k++) { size_t x = i; uint8_t t = S[x++]; int64_t val = 0; if (t < 0x10) val = -(t & 1); else { int nb = t >> 4; for (int q = 0; q < nb; q++) val = (val << 8) | S[x++]; } v = val; i = x; if (v != want[k]) okp = 0; }
+		CHECK(okp);
+		static const uint8_t suffix[] = { 0x10,5, 0x10,1, 0x10,0x64,0x10,0xc8,0x20,1,0x2c,0x10,0x96, 0x10,0x64,0x10,0xc8,0x20,1,0x2c,0x10,0x96,
+			0x10,0x4d,0x10,0xb9,0x20,1,0x5a,0x10,0xc4, 0x10,0x4d,0x10,0xb9,0x20,1,0x5a,0x10,0xc4, 0,0, 0,0, 0,0, 0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff, 0,0,0 };
+		CHECK(i + sizeof suffix == slen - 8 && memcmp(S + i, suffix, sizeof suffix) == 0);
+		/* an unknown window id: the empty result */
+		memset(m, 0, sizeof m); hdr(m, 0x30, 30474, 0); w32(m, 0x28, 4); m[0x2c] = 0x10; m[0x2d] = 1; m[0x2e] = 0x30; m[0x2f] = 0xff;
+		got = call(fd, m, 0x30, rep, sizeof rep);
+		CHECK(got == 0x48 && r32(rep, 0x34) == 12);
+	}
 	{ /* GetSymbolicHotKeyValuesAndStates: 3 ids -> reply 0x34 + 16 * 3, counts in front of every array */
 		uint8_t m[0x40], rep[0x100]; memset(m, 0, sizeof m); hdr(m, 0x24 + 12, 32015, 0); w32(m, 0x20, 3); w32(m, 0x24, 1); w32(m, 0x28, 2); w32(m, 0x2c, 3);
 		int got = call(fd, m, 0x24 + 12, rep, sizeof rep);
