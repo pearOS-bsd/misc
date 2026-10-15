@@ -55,7 +55,7 @@ struct ws_server {
 	ws_event_sink sink; void *sink_ctx;
 	uint64_t gen;
 	ws_surface *cursor_img; int cursor_hx, cursor_hy; uint32_t cursor_serial;
-	struct track { int used; uint64_t id; ws_wid wid; ws_rect *r; int n; int inside; int disabled; } trk[64];
+	struct track { int used; uint64_t id; ws_wid wid; ws_rect *r; int n; int inside; int disabled; int ox, oy; } trk[64];
 	ws_rect lock; int locked;                                   /* SetCursorRegionLock: the pointer stays inside this rectangle (the bounds of the locked region) */
 	struct kf { uint32_t cid; int ids[8]; int n; } kf[32]; int nkf; int kf_next;      /* key focus list, [0] is the holder */
 	struct { uint32_t cid; int count; } hide[64]; int nhide; int obscured;
@@ -903,7 +903,7 @@ int ws_tracking_set(ws_server *s, uint64_t id, ws_wid wid, const ws_rect *rects,
 	if (!t || !get(s, wid)) return -1;
 	free(t->r); t->r = NULL; t->n = 0;
 	if (n > 0) { t->r = malloc((size_t)n * sizeof *t->r); if (!t->r) return -1; memcpy(t->r, rects, (size_t)n * sizeof *t->r); t->n = n; }
-	t->used = 1; t->id = id; t->wid = wid; t->inside = 0;
+	t->used = 1; t->id = id; t->wid = wid; t->inside = 0; t->ox = t->oy = 0;
 	track_update(s, s->cx, s->cy);                                 /* a region created under the pointer is entered at once */
 	return 0;
 }
@@ -918,6 +918,16 @@ void ws_tracking_remove_window(ws_server *s, ws_wid wid)
 int ws_tracking_set_enabled(ws_server *s, uint64_t id, ws_wid wid, int enabled)
 {
 	for (int i = 0; i < 64; i++) if (s->trk[i].used && s->trk[i].id == id && s->trk[i].wid == wid) { s->trk[i].disabled = !enabled; track_update(s, s->cx, s->cy); return 0; }
+	return -1;
+}
+int ws_tracking_move(ws_server *s, uint64_t id, ws_wid wid, int x, int y)      /* the region's origin moves to (x, y) in window coordinates; -1 when the window has no such region */
+{
+	for (int i = 0; i < 64; i++) if (s->trk[i].used && s->trk[i].id == id && s->trk[i].wid == wid) {
+		struct track *t = &s->trk[i];
+		for (int k = 0; k < t->n; k++) { t->r[k].x += x - t->ox; t->r[k].y += y - t->oy; }
+		t->ox = x; t->oy = y; track_update(s, s->cx, s->cy);
+		return 0;
+	}
 	return -1;
 }
 int ws_tracking_set_shape(ws_server *s, uint64_t id, const ws_rect *rects, int n)
