@@ -26,6 +26,7 @@ typedef struct {
 	int sublevel, event_mask;
 	uint64_t tags;
 	ws_wid parent;          /* SetWindowParent: 0 = none */
+	int appearance;         /* bit 0: key appearance, bit 1: main appearance forced on by the client (SetWindowHasKeyAppearance / Main) */
 	ws_wid mvparent;        /* movement group: the window this one moves with (0 = none) */
 	ws_wid ogparent;        /* ordering group: the window this one is grouped with (0 = none) */
 	int ogrel;              /* ordering group: 1 above / -1 below the group parent */
@@ -259,6 +260,7 @@ int ws_move_window(ws_server *s, ws_wid id, int x, int y)
 }
 
 /* Movement groups (SLSAddWindowToWindowMovementGroup and friends): child follows parent. parent 0 detaches; a cycle is refused. */
+int ws_window_set_appearance(ws_server *s, ws_wid id, int bit, int on) { window *w = get(s, id); if (!w) return -1; int old = w->appearance; if (on) w->appearance |= bit; else w->appearance &= ~bit; if (old != w->appearance) { ws_surface_free(w->shadow); w->shadow = NULL; bump(s); } return 0; }
 int ws_window_set_movement_parent(ws_server *s, ws_wid child, ws_wid parent)
 {
 	window *w = get(s, child);
@@ -362,14 +364,22 @@ static void place(ws_server *s, window *w, int mode, window *rel)
 	free(v);
 }
 
-int ws_order_window(ws_server *s, ws_wid id, int mode, ws_wid rel)
+static int order_group(ws_server *s, ws_wid id, int mode, ws_wid rel, int depth)
 {
 	window *w = get(s, id);
 	if (!w) return -1;
-	if (mode == WS_OUT) { w->on_screen = 0; bump(s); return 0; }
-	place(s, w, mode == WS_BELOW ? WS_BELOW : WS_ABOVE, rel ? get(s, rel) : NULL);
+	if (mode == WS_OUT) w->on_screen = 0, bump(s);
+	else place(s, w, mode == WS_BELOW ? WS_BELOW : WS_ABOVE, rel ? get(s, rel) : NULL);
+	if (depth < 8)                                                      /* the windows grouped with this one for ordering follow it: out with it, else above / below it */
+		for (size_t i = 0; i < s->n; i++) {
+			window *c = &s->win[i];
+			if (c->ogparent != id) continue;
+			ws_wid cid = c->id; int crel = c->ogrel;
+			order_group(s, cid, mode == WS_OUT ? WS_OUT : (crel < 0 ? WS_BELOW : WS_ABOVE), id, depth + 1);
+		}
 	return 0;
 }
+int ws_order_window(ws_server *s, ws_wid id, int mode, ws_wid rel) { return order_group(s, id, mode, rel, 0); }
 
 int ws_window_invalidate_shadow(ws_server *s, ws_wid id) { window *w = get(s, id); if (!w) return -1; ws_surface_free(w->shadow); w->shadow = NULL; bump(s); return 0; }
 
@@ -682,10 +692,10 @@ void ws_server_walk(ws_server *s, ws_visit_fn fn, void *ctx)
 	size_t n = sorted(s, v);
 	for (size_t i = 0; i < n; i++) {
 		window *w = v[i];
-		if (w->shadow_on) ensure_shadow(s, w, w->id == act);
+		if (w->shadow_on) ensure_shadow(s, w, w->id == act || w->appearance);
 		ws_visit vis;
 		memset(&vis, 0, sizeof vis);
-		vis.id = w->id; vis.frame = w->frame; vis.alpha = w->alpha * w->sys_alpha; vis.corner_radius = w->corner_radius ? w->corner_radius : (w->shadow_on ? w->shadow_cr : 0); vis.blur_radius = w->blur_radius; vis.active = w->id == act;
+		vis.id = w->id; vis.frame = w->frame; vis.alpha = w->alpha * w->sys_alpha; vis.corner_radius = w->corner_radius ? w->corner_radius : (w->shadow_on ? w->shadow_cr : 0); vis.blur_radius = w->blur_radius; vis.active = w->id == act || w->appearance;
 		vis.pixels = (w->content && w->committed) ? (w->front ? w->front : w->content) : w->backing;
 		vis.buffer_id = (w->content && w->committed) ? w->content_id : 0;
 		if (w->shadow_on && w->shadow) {
@@ -713,7 +723,7 @@ void ws_compose_scene(ws_server *s, ws_surface *screen)
 		}
 		s->comp->over(s->comp, screen, v[i]->frame.x, v[i]->frame.y, (v[i]->content && v[i]->committed) ? (v[i]->front ? v[i]->front : v[i]->content) : v[i]->backing, v[i]->alpha * v[i]->sys_alpha, all);
 		/* the shadow layer is rendered above its window (it is cut out of the window shape; the inner rim lies inside it) */
-		if (v[i]->shadow_on) draw_shadow(s, v[i], screen, v[i]->id == act);
+		if (v[i]->shadow_on) draw_shadow(s, v[i], screen, v[i]->id == act || v[i]->appearance);
 	}
 	if (s->comp->flush) s->comp->flush(s->comp);
 	free(v);
