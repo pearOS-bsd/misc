@@ -68,6 +68,7 @@ static void terminate(int sig)
 	}
 	if (ws_conn_screen(conn, &screenW, &screenH)) { screenW = 1280; screenH = 800; }
 	int fd = ws_conn_event_fd(conn);
+	WLOG(@"event fd %d", fd);
 	NSRunLoop *rl = [NSRunLoop currentRunLoop];
 	NSString *modes[] = { NSDefaultRunLoopMode, NSModalPanelRunLoopMode, NSEventTrackingRunLoopMode };
 	for (int i = 0; i < 3; i++)
@@ -250,7 +251,9 @@ static void terminate(int sig)
 - (void) receivedEvent: (void *)data type: (RunLoopEventType)type extra: (void *)extra forMode: (NSString *)mode
 {
 	ws_event e;
+	WLOG(@"receivedEvent called");
 	while (ws_conn_next_pushed_event(conn, 0, &e)) {
+		WLOG(@"event type %d wid %d at %d,%d buttons %d", e.type, (int)e.wid, e.x, e.y, e.buttons);
 		struct wsd_window *w = [self wsdWindow: (int)e.wid];
 		if (!w) continue;
 		NSPoint p = NSMakePoint(e.x, w->h - e.y);
