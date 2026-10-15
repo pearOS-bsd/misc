@@ -250,6 +250,10 @@ int wsd_send(int sock, const struct iovec *iov, int iovcnt, const int *fds, int 
 		uint8_t m[36]; memcpy(m, iov[0].iov_base, 36);
 		const mach_msg_header_t *h = (const mach_msg_header_t *)m;
 		int32_t ret; memcpy(&ret, m + 0x20, 4);
+		if (ret != 0 && !(h->msgh_bits & MACH_MSGH_BITS_COMPLEX) && h->msgh_id > 100 && !(ret <= -300 && ret >= -310)) {
+			for (size_t k = 0; k < sizeof zero_ndr_err_ids / sizeof *zero_ndr_err_ids; k++)
+				if ((uint32_t)zero_ndr_err_ids[k] + 100 == (uint32_t)h->msgh_id) { memset(m + 0x18, 0, 8); break; }
+		}
 		if (ret == 0 && !(h->msgh_bits & MACH_MSGH_BITS_COMPLEX) && h->msgh_id > 100) {
 			for (size_t k = 0; k < sizeof zero_ndr_ids / sizeof *zero_ndr_ids; k++)
 				if ((uint32_t)zero_ndr_ids[k] + 100 == (uint32_t)h->msgh_id) { memset(m + 0x18, 0, 8); break; }

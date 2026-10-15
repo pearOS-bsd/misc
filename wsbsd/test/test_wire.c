@@ -36,7 +36,7 @@ static int rc_of(int s, const void *req, size_t len, int expect_id)
 	if (xchg(s, req, len, &r, sizeof r, NULL, NULL) != (int)sizeof r) return -9999;
 	CHECK(r.h.msgh_id == expect_id);
 	CHECK(r.h.msgh_size == 0x24 && !(r.h.msgh_bits & MACH_MSGH_BITS_COMPLEX));
-	{ static const uint8_t zero[8] = { 0 }; CHECK(memcmp(&r.ndr, &WS_NDR, 8) == 0 || (r.retcode == 0 && memcmp(&r.ndr, zero, 8) == 0)); }   /* a success of some routines leaves the NDR zero, as the real server does */
+	{ static const uint8_t zero[8] = { 0 }; CHECK(memcmp(&r.ndr, &WS_NDR, 8) == 0 || (!(r.retcode <= -300 && r.retcode >= -310) && memcmp(&r.ndr, zero, 8) == 0)); }   /* a success of some routines leaves the NDR zero, as the real server does */
 	return r.retcode;
 }
 

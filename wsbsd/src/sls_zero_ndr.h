@@ -33,3 +33,6 @@ static const uint16_t zero_ndr_ids[] = {
 	33000, 33001, 33002, 33003, 33004, 33005, 33006, 33007, 33008, 33010, 33014, 33018,
 	33019, 33020, 33021, 33022, 33025, 34007,
 };
+
+/* routines whose routine-level error replies (a code other than the MIG size / type errors) leave the NDR zeroed too: seen on a macOS runner (state1..state4, state3a) */
+static const uint16_t zero_ndr_err_ids[] = { 30077, 30136, 30151, 30157, 30169, 30183, 30186, 30329, 30391, 30418, 30464, 30480, 30557 };
