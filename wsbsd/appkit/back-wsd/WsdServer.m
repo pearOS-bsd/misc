@@ -70,7 +70,7 @@ static void terminate(int sig)
 	NSRunLoop *rl = [NSRunLoop currentRunLoop];
 	NSString *modes[] = { NSDefaultRunLoopMode, NSModalPanelRunLoopMode, NSEventTrackingRunLoopMode };
 	for (int i = 0; i < 3; i++)
-		[rl addEvent: (void *)(intptr_t)fd type: ET_RDESC watcher: (id<RunLoopEvents>)self forMode: modes[i]];
+		[rl addEvent: (void *)(intptr_t)fd type: ET_RDESC watcher: (id)self forMode: modes[i]];
 	return self;
 }
 
@@ -85,7 +85,7 @@ static void terminate(int sig)
 /* ---- screen ---- */
 - (NSArray *) screenList { return [NSArray arrayWithObject: [NSNumber numberWithInt: 0]]; }
 - (NSRect) boundsForScreen: (int)screen { return NSMakeRect(0, 0, screenW, screenH); }
-- (NSWindowDepth) windowDepthForScreen: (int)screen { return (NSWindowDepth)(_GSRGBBitValue | 8); }
+- (NSWindowDepth) windowDepthForScreen: (int)screen { return (NSWindowDepth)(0x100 | 8); }
 - (NSSize) resolutionForScreen: (int)screen { return NSMakeSize(72, 72); }
 - (void) styleoffsets: (float *)l : (float *)r : (float *)t : (float *)b : (unsigned int)style
 {
@@ -207,7 +207,7 @@ static void terminate(int sig)
 	if (w) { w->level = level; ws_win_set_level(conn, &w->win, level); }
 }
 - (int) windowlevel: (int)win { struct wsd_window *w = [self wsdWindow: win]; return w ? w->level : 0; }
-- (int) windowdepth: (int)win { return (int)(_GSRGBBitValue | 8); }
+- (int) windowdepth: (int)win { return (int)(0x100 | 8); }
 - (void) titlewindow: (NSString *)window_title : (int)win {}
 - (void) miniwindow: (int)win {}
 - (BOOL) appOwnsMiniwindow { return NO; }
