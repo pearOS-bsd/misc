@@ -120,6 +120,8 @@ static struct { uint32_t wid, fid; } win_cif[256];
 static int cif_find(uint32_t id) { for (int i = 0; i < MAXCIF; i++) if (cif[i].id == id) return i; return -1; }
 
 static uint32_t mouse_enable[64]; static uint32_t mouse_enable_wid[64];
+extern int wsd_screen_w, wsd_screen_h;
+static float zoom_scale = 1.0f; static int32_t zoom_x = INT32_MIN, zoom_y = INT32_MIN; static uint32_t zoom_flag;
 static uint32_t menubar_style; static uint8_t menubar_autohide, menubar_blurred;      /* menu bar state (a menu bar always exists on wsd's single display) */
 
 /* per-window attributes the simple setters keep: depth, one-shot flag, backing alpha, autofill colour, client perceived type */
@@ -514,6 +516,23 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 			int slot = -1; for (int i = 0; i < 256; i++) { if (win_cif[i].wid == wid) { slot = i; break; } if (slot < 0 && (!win_cif[i].wid || !ws_window_exists(srv, win_cif[i].wid))) slot = i; }
 			if (slot >= 0) { if (fl == 0) { if (win_cif[slot].fid == fid) { memset(&win_cif[slot], 0, sizeof win_cif[slot]); ws_set_window_filter(srv, wid, 0); } } else if ((fl & 0x100) || !win_cif[slot].fid || win_cif[slot].wid != wid) { win_cif[slot].wid = wid; win_cif[slot].fid = fid; ws_set_window_filter(srv, wid, cif[cif_find(fid)].type); } }
 		}
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_GetZoomParameters: {                                              /* size 0x18; reply 0x34: centre x y (integers)@0x24 (the screen centre when never set), scale float@0x2c, flag@0x30 */
+		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size != 0x18) return reply_simple(c->fd, h, -304);
+		uint8_t r[0x34]; memset(r, 0, sizeof r);
+		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
+		memcpy(r + 0x18, &WS_NDR, 8);
+		wr32(r, 0x24, (uint32_t)(zoom_x == INT32_MIN ? wsd_screen_w / 2 : zoom_x)); wr32(r, 0x28, (uint32_t)(zoom_y == INT32_MIN ? wsd_screen_h / 2 : zoom_y));
+		memcpy(r + 0x2c, &zoom_scale, 4); wr32(r, 0x30, zoom_flag);
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
+	case SLS_MSG_SetZoomParameters: {                                              /* centre x@0x20, y@0x24 (INT_MIN: keep), scale float@0x28, flag@0x2c, warp@0x30, float@0x34; size 0x38; scale clamped to 1..; always 0 */
+		if (!simple_ok(h, len, 0x38)) return reply_simple(c->fd, h, -304);
+		float sc; memcpy(&sc, buf + 0x28, 4);
+		if (sc == sc && sc >= 1.0f) zoom_scale = sc > 64.0f ? 64.0f : sc; else zoom_scale = 1.0f;
+		if ((int32_t)rd32(buf, 0x20) != INT32_MIN && (int32_t)rd32(buf, 0x24) != INT32_MIN) { zoom_x = (int32_t)rd32(buf, 0x20); zoom_y = (int32_t)rd32(buf, 0x24); }
+		zoom_flag = rd32(buf, 0x2c) != 0;
 		return reply_simple(c->fd, h, 0);
 	}
 	case SLS_MSG_GetWindowShmemReference: {                                        /* wid@0x20, size 0x24; reply complex 0x3c: one port descriptor (the window's memory entry; no descriptor is passed here), the return code overlays its pad word, NDR@0x28, then owner / rights / sharing state as GetWindowOwner reports them; 1000 for an unknown window */

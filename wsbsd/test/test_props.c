@@ -892,6 +892,15 @@ int main(void)
 		w32(sw, 0x28, 0); CHECK(rc(fd, sw, 0x2c) == 0);
 		uint8_t rl[0x24]; memset(rl, 0, sizeof rl); hdr(rl, 0x24, 30222, 0); w32(rl, 0x20, fid); CHECK(rc(fd, rl, 0x24) == 0);
 	}
+	{ /* zoom parameters */
+		uint8_t m[0x38], rep[0x100]; memset(m, 0, sizeof m);
+		hdr(m, 0x18, 30110, 0); int n = call(fd, m, 0x18, rep, sizeof rep); float one; memcpy(&one, rep + 0x2c, 4);
+		CHECK(n == 0x34 && r32(rep, 0x20) == 0 && r32(rep, 0x24) == 320 && r32(rep, 0x28) == 240 && one == 1.0f);       /* the 640x480 test screen's centre */
+		hdr(m, 0x38, 30111, 0); w32(m, 0x20, 100); w32(m, 0x24, 50); float two = 2.0f; memcpy(m + 0x28, &two, 4); w32(m, 0x2c, 1); CHECK(rc(fd, m, 0x38) == 0);
+		hdr(m, 0x18, 30110, 0); n = call(fd, m, 0x18, rep, sizeof rep); memcpy(&one, rep + 0x2c, 4); CHECK(r32(rep, 0x24) == 100 && r32(rep, 0x28) == 50 && one == 2.0f && r32(rep, 0x30) == 1);
+		hdr(m, 0x38, 30111, 0); w32(m, 0x20, 0x80000000u); w32(m, 0x24, 0x80000000u); float f1 = 1.0f; memcpy(m + 0x28, &f1, 4); w32(m, 0x2c, 0); CHECK(rc(fd, m, 0x38) == 0);
+		hdr(m, 0x18, 30110, 0); n = call(fd, m, 0x18, rep, sizeof rep); memcpy(&one, rep + 0x2c, 4); CHECK(r32(rep, 0x24) == 100 && one == 1.0f && r32(rep, 0x30) == 0);
+	}
 	{ /* event taps: place, query, enable, list, release (layouts from the decompiled routines) */
 		uint8_t q[0x44], rep[0x200]; memset(q, 0, sizeof q);
 		hdr(q, 0x44, 32028, 1); w32(q, 0x18, 1); w32(q, 0x1c, 0x777); q[0x26] = 0x11; memcpy(q + 0x28, "\0\0\0\0\1\0\0\0", 8);
