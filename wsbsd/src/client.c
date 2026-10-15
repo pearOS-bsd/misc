@@ -84,7 +84,7 @@ int ws_conn_next_pushed_event(ws_conn *c, int timeout_ms, ws_event *out)
 	if (poll(&p, 1, timeout_ms) <= 0 || !(p.revents & POLLIN)) return 0;
 	wsx_event_msg m; int fds[WS_IPC_MAX_FDS], nfds = 0;
 	if (ws_ipc_recv(c->efd, &m, sizeof m, fds, &nfds) != (ssize_t)sizeof m || m.h.msgh_id != WSX_EVENT_PUSH) return 0;
-	*out = (ws_event){ m.type, m.wid, m.x, m.y, m.buttons, m.key };
+	*out = (ws_event){ m.type, m.wid, m.x, m.y, m.buttons, m.key, m.flags, m.dx, m.dy, m.continuous };
 	return 1;
 }
 
@@ -335,6 +335,8 @@ static int post_record(ws_conn *c, const uint8_t *rec, size_t n)
 	memcpy(buf, &hd, sizeof hd); memcpy(buf + sizeof hd, rec, n);
 	return simple_call(c, buf, size);
 }
+
+int ws_post_event_record(ws_conn *c, const uint8_t *rec, size_t n) { return post_record(c, rec, n); }
 
 int ws_post_mouse_event(ws_conn *c, int type, float x, float y, uint32_t flags, int click_state, int button)
 {

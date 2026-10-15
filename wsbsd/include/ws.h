@@ -94,10 +94,14 @@ void ws_compose(ws_server *, ws_surface *screen);            /* one full frame *
 /* Input and cursor. The server is fed absolute pointer positions and key events by a backend (evdev on FreeBSD,
  * injection in tests); it picks the target window, raises on click, grabs while a button is held and queues
  * events per window. Clients drain their window's queue. */
-enum { WS_EV_NONE = 0, WS_EV_MOUSE_MOVE, WS_EV_MOUSE_DOWN, WS_EV_MOUSE_UP, WS_EV_KEY_DOWN, WS_EV_KEY_UP, WS_EV_FOCUS_IN, WS_EV_FOCUS_OUT };
-typedef struct { int type; ws_wid wid; int x, y;   /* x,y are window-local */ int buttons, key; } ws_event;
+enum { WS_EV_NONE = 0, WS_EV_MOUSE_MOVE, WS_EV_MOUSE_DOWN, WS_EV_MOUSE_UP, WS_EV_KEY_DOWN, WS_EV_KEY_UP, WS_EV_FOCUS_IN, WS_EV_FOCUS_OUT, WS_EV_SCROLL, WS_EV_FLAGS };
+/* x,y are window-local; flags are the CGEventFlags modifier mask; dx,dy the scroll deltas in points (continuous: pixel deltas from a trackpad) */
+typedef struct { int type; ws_wid wid; int x, y; int buttons, key; uint32_t flags; int dx, dy, continuous; } ws_event;
 void ws_server_mouse(ws_server *, int x, int y, int buttons);   /* absolute, screen coordinates; buttons bitmask */
 void ws_server_key(ws_server *, int key, int down);
+void ws_server_scroll(ws_server *, int x, int y, int dx, int dy, int continuous);   /* to the window under the pointer */
+void ws_server_flags(ws_server *, uint32_t flags);                    /* modifier state changed: event to the key window; later key events carry it */
+uint32_t ws_server_modifier_flags(const ws_server *);
 int ws_next_event(ws_server *, ws_wid, ws_event *out);          /* 1 if an event was returned */
 void ws_cursor_pos(ws_server *, int *x, int *y);
 ws_wid ws_key_window(ws_server *);
