@@ -33,6 +33,7 @@ int main(int argc, char **argv)
 		if (sscanf(line, "id=%d reqsize=%d reply_id=%d bits=%x size=%d hex=%7999s", &id, &rq, &rid, &bits, &size, hex) < 5 || rq != 0x18) continue;
 		if (id >= 29000 && id < 29042) continue;                                 /* the session subsystem lives on another port */
 		if (is_env(id)) continue;
+		if (id == 32003) continue;                                               /* GetDebugOptions is served on the server port (dedicated handler); the record is the connection port's -303 */
 		mach_msg_header_t req; memset(&req, 0, sizeof req);
 		req.msgh_bits = MACH_MSGH_BITS(MACH_MSG_TYPE_COPY_SEND, MACH_MSG_TYPE_MAKE_SEND_ONCE); req.msgh_size = sizeof req; req.msgh_remote_port = 1; req.msgh_local_port = 1; req.msgh_id = id;
 		struct iovec v = { &req, sizeof req };
