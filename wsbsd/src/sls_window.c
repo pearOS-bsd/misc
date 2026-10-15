@@ -453,7 +453,7 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 	case SLS_MSG_SetCursorScale: {                                                 /* scale float@0x20 (taken when 0 < scale < 16), size 0x24; always 0. Kept; the cursor is drawn at its fixed size */
 		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
 		uint32_t bits = rd32(buf, 0x20); float f; memcpy(&f, &bits, 4);
-		if (f > 0.0f && f < 16.0f) cursor_scale = f;
+		if (f > 0.0f && f < 16.0f) { cursor_scale = f; ws_set_cursor_scale(srv, f); }
 		return reply_simple(c->fd, h, 0);
 	}
 	case SLS_MSG_WindowRightsRelinquish: {                                         /* wid@0x20, rights@0x24, size 0x28; 1001 for exclusive or unheld rights */
