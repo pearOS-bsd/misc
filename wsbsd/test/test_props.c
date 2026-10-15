@@ -103,6 +103,17 @@ int main(void)
 		CHECK(ws_post_event_to_pid(c, 999999, rec, rn) == 0 && ws_conn_next_pushed_event(c, 200, &e) == 0);                                /* unknown pid: accepted, nothing delivered */
 		ws_win_order(c, &pw, 0, 0);
 	}
+	{ /* capture: the composed pixels come back through a shared descriptor, for a window's frame, a rect or the whole screen */
+		ws_win cw; CHECK(ws_win_create(c, (ws_rect){ 10, 20, 40, 30 }, 0, &cw) == 0);
+		ws_surface *s = ws_capture(c, (ws_rect){ 0, 0, 0, 0 }, cw.id, 0);
+		CHECK(s && s->w == 40 && s->h == 30); if (s) ws_surface_free(s);
+		s = ws_capture(c, (ws_rect){ 0, 0, 8, 8 }, 0, 1);
+		CHECK(s && s->w == 8 && s->h == 8); if (s) ws_surface_free(s);
+		int sw = 0, sh = 0; CHECK(ws_conn_screen(c, &sw, &sh) == 0);
+		s = ws_capture(c, (ws_rect){ 0, 0, 0, 0 }, 0, 0);
+		CHECK(s && s->w == sw && s->h == sh); if (s) ws_surface_free(s);
+		CHECK(ws_capture(c, (ws_rect){ 0, 0, 0, 0 }, 0xfffff, 0) == NULL);
+	}
 	{ /* shared memory regions: 32006 gives two port descriptors (0x34 bytes), 34006 three (0x40), each of 0x110000 bytes */
 		uint8_t m[0x18], rep[0x80]; memset(m, 0, sizeof m); hdr(m, 0x18, 32006, 0);
 		int g = call(fd, m, sizeof m, rep, sizeof rep);

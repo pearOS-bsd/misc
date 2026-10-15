@@ -330,6 +330,20 @@ int ws_poll_event(ws_conn *c, ws_win *w, ws_event *e)
 	return 1;
 }
 
+/* pixels of the composed scene (rect, or a window's frame when wid != 0; a zero rect is the whole screen) as a mapped surface the caller frees; NULL on failure */
+ws_surface *ws_capture(ws_conn *c, ws_rect r, uint32_t wid, int with_cursor)
+{
+	wsx_req q; memset(&q, 0, sizeof q);
+	fill_header(&q.h, sizeof q, WSX_CAPTURE, 0); q.ndr = WS_NDR;
+	q.a[0] = (int32_t)r.x; q.a[1] = (int32_t)r.y; q.a[2] = (int32_t)r.w; q.a[3] = (int32_t)r.h; q.a[4] = (int32_t)wid; q.a[5] = with_cursor;
+	wsx_rep rep; int fds[WS_IPC_MAX_FDS], nf = 0;
+	struct iovec v = { &q, sizeof q };
+	ssize_t got = call(c, &v, 1, &rep, sizeof rep, fds, &nf);
+	if (got != (ssize_t)sizeof rep || rep.h.msgh_id != WSX_CAPTURE + 100 || rep.retcode || nf != 1) { for (int i = 0; i < nf; i++) close(fds[i]); return NULL; }
+	ws_surface *s = ws_surface_from_fd(fds[0], rep.a[0], rep.a[1]);
+	close(fds[0]);
+	return s;
+}
 int ws_screenshot(ws_conn *c, const char *path) { return wsx_call(c, WSX_SCREENSHOT, NULL, 0, path, NULL); }
 int ws_screenshot_scene(ws_conn *c, const char *path) { int32_t a[1] = { 1 }; return wsx_call(c, WSX_SCREENSHOT, a, 1, path, NULL); }
 int ws_server_quit(ws_conn *c) { return wsx_call(c, WSX_QUIT, NULL, 0, NULL, NULL); }
