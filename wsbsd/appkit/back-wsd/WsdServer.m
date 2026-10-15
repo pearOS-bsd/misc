@@ -161,6 +161,7 @@ static void terminate(int sig)
 
 - (void) orderwindow: (int)op : (int)otherWin : (int)win
 {
+	WLOG(@"orderwindow enter %d op %d other %d", win, op, otherWin);
 	struct wsd_window *w = [self wsdWindow: win];
 	if (!w) return;
 	WLOG(@"orderwindow %d op %d", win, op);
@@ -172,6 +173,7 @@ static void terminate(int sig)
 
 - (void) flushwindowrect: (NSRect)rect : (int)win
 {
+	WLOG(@"flushwindowrect enter %d", win);
 	struct wsd_window *w = [self wsdWindow: win];
 	WLOG(@"flushwindowrect %d surface %p", win, w ? w->surface : NULL);
 	if (w) [[GSCurrentContext() class] handleExposeRect: rect forDriver: w->surface];
@@ -216,10 +218,10 @@ static void terminate(int sig)
 }
 - (int) windowlevel: (int)win { struct wsd_window *w = [self wsdWindow: win]; return w ? w->level : 0; }
 - (int) windowdepth: (int)win { return (int)(0x100 | 8); }
-- (void) titlewindow: (NSString *)window_title : (int)win {}
+- (void) titlewindow: (NSString *)window_title : (int)win { WLOG(@"titlewindow %d", win); }
 - (void) miniwindow: (int)win {}
 - (BOOL) appOwnsMiniwindow { return NO; }
-- (void) setinputfocus: (int)win { keyWindow = win; }
+- (void) setinputfocus: (int)win { WLOG(@"setinputfocus %d", win); keyWindow = win; }
 - (void) setalpha: (float)alpha : (int)win
 {
 	struct wsd_window *w = [self wsdWindow: win];
