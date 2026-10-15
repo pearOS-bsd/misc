@@ -173,7 +173,7 @@ static void wq_window(wq_buf *b, ws_wid id)
 	uint32_t owner = ws_window_owner(srv, id); conn *oc = wsd_conn_by_id(owner);
 	uint64_t tags = ws_window_tags(srv, id);
 	ws_rect sh = f;
-	if (ws_window_has_shadow(srv, id)) { sh.x -= 23; sh.y -= 15; sh.w += 46; sh.h += 46; }   /* shadow outsets as the real server reports them for an ordinary window */
+	{ sh.x -= 23; sh.y -= 15; sh.w += 46; sh.h += 46; }   /* shadow outsets as the real server reports them for an ordinary window */
 	wq_u32(b, 0);
 	wq_u8(b, 1);
 	wq_p64(b, id); wq_p64(b, owner); wq_p64(b, ws_window_parent(srv, id)); wq_p64(b, oc ? oc->pid : 0); wq_p64(b, 0); wq_p64(b, 0);
