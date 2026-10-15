@@ -204,6 +204,14 @@ int main(void)
 		CHECK(ws_inject_mouse(c, 380, 370, 0) == 0 && ws_cursor_position(c, &cx, &cy) == 0 && cx == 380 && cy == 370);
 		ws_win_order(c, &dw, 0, 0);
 	}
+	{ /* SpaceSetAlpha is read back by SpaceGetAlpha (clamped to 0..1); SetCursorScale is accepted */
+		uint8_t m[0x2c], rep[0x40]; memset(m, 0, sizeof m); hdr(m, 0x2c, 30443, 0); w32(m, 0x20, 1); float a = 0.25f; memcpy(m + 0x28, &a, 4); CHECK(rc(fd, m, 0x2c) == 0);
+		memset(m, 0, sizeof m); hdr(m, 0x28, 30442, 0); w32(m, 0x20, 1);
+		int g = call(fd, m, 0x28, rep, sizeof rep); float back; memcpy(&back, rep + 0x24, 4);
+		CHECK(g == 0x28 && back == 0.25f);
+		memset(m, 0, sizeof m); hdr(m, 0x2c, 30443, 0); w32(m, 0x20, 1); a = 1.0f; memcpy(m + 0x28, &a, 4); CHECK(rc(fd, m, 0x2c) == 0);
+		memset(m, 0, sizeof m); hdr(m, 0x24, 30134, 0); float sc = 2.0f; memcpy(m + 0x20, &sc, 4); CHECK(rc(fd, m, 0x24) == 0);
+	}
 	{ /* GetWindowTransform: the identity for a window nothing transformed (recorded), 1000 for an unknown window, -304 for a bad size */
 		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 100, 200, 30, 20 }, 0, &tw) == 0);
 		uint8_t m[0x28], rep[0x80]; memset(m, 0, sizeof m); hdr(m, 0x28, 30034, 0); w32(m, 0x20, tw.id); w32(m, 0x24, 0x7fffff00);

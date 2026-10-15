@@ -91,6 +91,7 @@ int ool_request(const mach_msg_header_t *h, const uint8_t *buf, size_t len, uint
 extern uint32_t cursor_lock_owner;
 static uint8_t cursor_drag_lock[31]; static uint32_t cursor_restriction_mode; static uint8_t cursor_restriction_corners, cursor_teleport;
 
+static float cursor_scale = 1.0f;
 int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 {
 	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
@@ -405,6 +406,12 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 	case SLS_MSG_AssociateMouseAndMouseCursorPosition: {                           /* flag byte@0x20 (1: the pointer follows the mouse, 0: it is held still and motion arrives as deltas), size 0x24; released when the connection goes; always 0 */
 		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
 		ws_server_decouple(srv, c->id, (buf[0x20] & 1) == 0);
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_SetCursorScale: {                                                 /* scale float@0x20 (taken when 0 < scale < 16), size 0x24; always 0. Kept; the cursor is drawn at its fixed size */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		uint32_t bits = rd32(buf, 0x20); float f; memcpy(&f, &bits, 4);
+		if (f > 0.0f && f < 16.0f) cursor_scale = f;
 		return reply_simple(c->fd, h, 0);
 	}
 	case SLS_MSG_SetWindowParent: {                                                /* child@0x20, parent@0x24, size 0x28; rights on both; always 0 */
