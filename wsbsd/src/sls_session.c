@@ -128,10 +128,32 @@ static int do_symbolic_hotkeys(conn *c, const uint8_t *buf, size_t len)
 	return rc;
 }
 
+/* WindowQuery (30474), the engine behind window lists. Request (decompiled __XWindowQuery): complex bit clear, query flags (u64)@0x20, n@0x28 (<= 0x4000), an encoded
+ * query stream of n bytes@0x2c, size = pad4(n) + 0x2c. The reply is a complex message with one out-of-line descriptor slot and an inline stream:
+ * descriptor count 1@0x18, address@0x1c (0 when inline), 0x01000101@0x24, size@0x28 (0 when inline), NDR@0x2c, inline length@0x34, stream@0x38, then the OOL size again;
+ * size = pad4(len) + 0x3c. The stream starts with three 0xffffffff slots (window / space / display index lists, filled in when a list is not empty).
+ * Only the empty result is produced: wsd answers every query with no windows, no spaces and no displays (encode_window is not reproduced yet). */
+static int do_window_query(conn *c, const uint8_t *buf, size_t len)
+{
+	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
+	if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size < 0x2c || h->msgh_size > 0x402c) return reply_simple(c->fd, h, -304);
+	uint32_t n = rd32(buf, 0x28);
+	if (n > 0x4000 || h->msgh_size != ((n + 3) & ~3u) + 0x2c) return reply_simple(c->fd, h, -304);
+	uint8_t r[0x48]; memset(r, 0, sizeof r);
+	fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 1);
+	wr32(r, 0x18, 1);
+	wr32(r, 0x24, 0x01000101u);
+	memcpy(r + 0x2c, &WS_NDR, sizeof WS_NDR);
+	wr32(r, 0x34, 12);
+	wr32(r, 0x38, 0xffffffffu); wr32(r, 0x3c, 0xffffffffu); wr32(r, 0x40, 0xffffffffu);
+	return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+}
+
 int sls_session_dispatch(conn *c, const uint8_t *buf, size_t len)
 {
 	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
 	{ int rc = do_system_ui_query(c, buf, len); if (rc != -2) return rc; }
+	if (h->msgh_id == SLS_MSG_WindowQuery) return do_window_query(c, buf, len);
 	if (h->msgh_id == SLS_MSG_GetSymbolicHotKeyValuesAndStates) { int rc = do_symbolic_hotkeys(c, buf, len); if (rc != -2) return rc; }
 	if (h->msgh_id == SLS_MSG_CopyManagedDisplays || h->msgh_id == SLS_MSG_GetDevices) {
 		if (!simple_ok(h, len, sizeof *h)) return reply_simple(c->fd, h, -304);
