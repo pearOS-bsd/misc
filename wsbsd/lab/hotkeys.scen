@@ -1,4 +1,5 @@
 # the session's symbolic hot key table on the real server: value and enabled bit for every id (SLSServerPort)
+new_window a 100 200 300 150
 port server
 raw 32011 ndr u32:0
 raw 32011 ndr u32:1
