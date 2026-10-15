@@ -8,6 +8,25 @@ on:
   workflow_dispatch:
 
 jobs:
+  # wsd under AddressSanitizer + UBSan, fuzzed with random and size-exact SkyLight requests (any sanitizer report or a dead server fails the job)
+  fuzz:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Sanitizer build and fuzz
+        run: |
+          cd wsbsd
+          SAN="-fsanitize=address,undefined -fno-sanitize-recover=undefined -fno-omit-frame-pointer -g -O1"
+          cc $SAN -std=c99 -D_DEFAULT_SOURCE -Iinclude -o wsd_asan src/compositor_sw.c src/blur.c src/server.c src/shadow.c src/region.c src/ipc.c src/evrec.c src/buffer.c src/sls_*.c src/wsd.c -lm
+          cc -std=c99 -D_DEFAULT_SOURCE -Iinclude -Itest -o fuzz_wsd test/fuzz_wsd.c src/ipc.c
+          export WS_SOCKET=/tmp/fuzz.sock
+          ./wsd_asan -t -g 640x480 > wsd.log 2>&1 &
+          sleep 1
+          for s in 1 2 3 4 5 6; do ./fuzz_wsd 100000 $s; done
+          kill -0 $! && echo "wsd alive"
+          if grep -q "runtime error\|AddressSanitizer" wsd.log; then cat wsd.log; exit 1; fi
+
   # The real target: FreeBSD on x86_64 (QEMU). Runs the whole test suite and renders the test window with the software compositor.
   freebsd:
     runs-on: ubuntu-latest
