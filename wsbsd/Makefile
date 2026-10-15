@@ -3,7 +3,7 @@ CC      ?= cc
 CFLAGS  ?= -O2 -g
 CFLAGS  += -std=c99 -D_DEFAULT_SOURCE -D_BSD_SOURCE -Wall -Wextra -Iinclude
 LDLIBS   = -lm
-CORE     = src/compositor_sw.c src/blur.c src/server.c src/shadow.c src/region.c src/ipc.c src/evrec.c src/buffer.c
+CORE     = src/input.c src/compositor_sw.c src/blur.c src/server.c src/shadow.c src/region.c src/ipc.c src/evrec.c src/buffer.c
 HDRS = include/ws_gl.h include/ws_buffer.h include/ws_evrec.h include/ws.h include/ws_client.h include/ws_backend.h include/ws_ipc.h include/ws_region.h include/mach_compat.h include/sls_wire.h include/sls_msgids.h src/wsd_priv.h src/sls_zero_ndr.h src/bplist.h
 OUT          = window
 # set by the `kms` target
@@ -22,6 +22,9 @@ test_interactive: src/client.c src/compositor_sw.c src/region.c src/ipc.c src/ev
 
 test_generic: src/ipc.c test/test_generic.c $(HDRS)
 	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ src/ipc.c test/test_generic.c $(LDLIBS)
+
+test_input: $(CORE) test/test_input.c $(HDRS) include/ws_input.h
+	$(CC) $(CFLAGS) -o $@ $(CORE) test/test_input.c $(LDLIBS)
 
 test_golden: src/ipc.c test/test_golden.c $(HDRS)
 	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ src/ipc.c test/test_golden.c $(LDLIBS)
@@ -77,7 +80,8 @@ gl: clean
 full: clean
 	$(MAKE) wsd test_window EXTRA_SRC="src/backend_kms.c src/compositor_gl.c" EXTRA_CFLAGS="-DWS_KMS -DWS_GL -DWS_GBM -DWS_EGL `pkg-config --cflags libdrm egl gbm glesv2`" EXTRA_LIBS="`pkg-config --libs libdrm egl gbm glesv2`"
 
-check: test_compose test_region test_evrec test_buffer test_diff wsd test_wire test_interactive test_robust test_golden test_generic test_props test_shim test_shim2 test_shim3 test_shim4 test_shim2
+check: test_input test_compose test_region test_evrec test_buffer test_diff wsd test_wire test_interactive test_robust test_golden test_generic test_props test_shim test_shim2 test_shim3 test_shim4 test_shim2
+	./test_input
 	./test_compose
 	./test_region
 	./test_evrec
@@ -134,4 +138,4 @@ demo: wsd test_window
 	OUT="$(OUT)" sh test/run_demo.sh
 
 clean:
-	rm -rf stage wsbsd-*.tar.gz; rm -f libwsclient.a src/*.client.o wsshot wsclick wskey wsdrag test_generic wsd test_window test_interactive test_robust test_golden test_props test_shim test_compose test_region test_wire test_evrec test_buffer test_diff out.ppm window.ppm window.png
+	rm -rf stage wsbsd-*.tar.gz; rm -f test_input libwsclient.a src/*.client.o wsshot wsclick wskey wsdrag test_generic wsd test_window test_interactive test_robust test_golden test_props test_shim test_compose test_region test_wire test_evrec test_buffer test_diff out.ppm window.ppm window.png
