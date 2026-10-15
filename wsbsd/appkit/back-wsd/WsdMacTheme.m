@@ -17,6 +17,11 @@ static NSColor *rgb(int r, int g, int b, CGFloat a) { return [NSColor colorWithC
 
 #define TB 32.0
 
+@interface NSWindow (WsdPrivate)
+- (void) _captureMouse: (id)sender;
+- (void) _releaseMouse: (id)sender;
+@end
+
 /* San Francisco is not redistributable: the closest free face is Inter (pkg inter-font), else the system bold */
 static NSFont *titleFont(void)
 {
@@ -55,7 +60,7 @@ static NSFont *titleFont(void)
 {
 	NSRect b = [self bounds];
 	if (hasTitleBar) titleBarRect = NSMakeRect(0, b.size.height - TB, b.size.width, TB);
-	if (hasResizeBar) resizeBarRect = NSMakeRect(0, 0, b.size.width, 6.0);
+	resizeBarRect = NSZeroRect;                                  /* every edge resizes: handled in mouseDown: below */
 	closeButtonRect = miniaturizeButtonRect = NSZeroRect;
 }
 
@@ -117,6 +122,53 @@ static NSGradient *grad(int r0, int g0, int b0, int r1, int g1, int b1, int r2, 
 	}
 }
 
+/* bit 1 left, 2 right, 4 bottom, 8 top: the 5 px edge zones, 12 px at the corners */
+- (int) edgesAtPoint: (NSPoint)p
+{
+	NSRect b = [self bounds]; int m = 0; const CGFloat e = 5.0, c = 12.0;
+	if (p.x < e) m |= 1; if (p.x > b.size.width - e) m |= 2; if (p.y < e) m |= 4; if (p.y > b.size.height - e) m |= 8;
+	if (!m) {
+		BOOL nl = p.x < c, nr = p.x > b.size.width - c, nb = p.y < c, nt = p.y > b.size.height - c;
+		if ((nl || nr) && (nb || nt)) { /* inside a corner square but off the edge strips: no resize */ }
+	} else if (m == 1 || m == 2) { if (p.y < c) m |= 4; else if (p.y > b.size.height - c) m |= 8; }
+	else if (m == 4 || m == 8) { if (p.x < c) m |= 1; else if (p.x > b.size.width - c) m |= 2; }
+	return m;
+}
+
+/* the edge strips lie over the content view: claim them before the subviews see the click */
+- (NSView *) hitTest: (NSPoint)aPoint
+{
+	if (hasResizeBar) {
+		NSPoint p = [self convertPoint: aPoint fromView: [self superview]];
+		if (NSPointInRect(p, [self bounds]) && [self edgesAtPoint: p]) return self;
+	}
+	return [super hitTest: aPoint];
+}
+
+- (void) resizeWindowWithEdges: (int)m event: (NSEvent *)event
+{
+	NSRect frame = [window frame]; NSSize mn = [window minSize], mx = [window maxSize];
+	NSPoint start = [self mouseLocationOnScreenOutsideOfEventStream];
+	NSEvent *e = event;
+	[window _captureMouse: nil];
+	while ([e type] != NSLeftMouseUp) {
+		e = [[self window] nextEventMatchingMask: NSLeftMouseDraggedMask | NSLeftMouseUpMask untilDate: [NSDate distantFuture] inMode: NSEventTrackingRunLoopMode dequeue: YES];
+		NSPoint now = [self mouseLocationOnScreenOutsideOfEventStream];
+		CGFloat dx = now.x - start.x, dy = now.y - start.y;
+		NSRect nf = frame;
+		if (m & 2) nf.size.width = frame.size.width + dx;
+		if (m & 1) { nf.size.width = frame.size.width - dx; nf.origin.x = frame.origin.x + dx; }
+		if (m & 8) nf.size.height = frame.size.height + dy;
+		if (m & 4) { nf.size.height = frame.size.height - dy; nf.origin.y = frame.origin.y + dy; }
+		if (nf.size.width < mn.width) { if (m & 1) nf.origin.x = NSMaxX(frame) - mn.width; nf.size.width = mn.width; }
+		if (nf.size.height < mn.height) { if (m & 4) nf.origin.y = NSMaxY(frame) - mn.height; nf.size.height = mn.height; }
+		if (mx.width > 0 && nf.size.width > mx.width) { if (m & 1) nf.origin.x = NSMaxX(frame) - mx.width; nf.size.width = mx.width; }
+		if (mx.height > 0 && nf.size.height > mx.height) { if (m & 4) nf.origin.y = NSMaxY(frame) - mx.height; nf.size.height = mx.height; }
+		if (!NSEqualRects(nf, [window frame])) [window setFrame: nf display: YES];
+	}
+	[window _releaseMouse: nil];
+}
+
 - (void) mouseDown: (NSEvent *)event
 {
 	NSPoint p = [self convertPoint: [event locationInWindow] fromView: nil];
@@ -136,6 +188,7 @@ static NSGradient *grad(int r0, int g0, int b0, int r1, int g1, int b1, int r2, 
 			return;
 		}
 	}
+	if (hasResizeBar) { int m = [self edgesAtPoint: p]; if (m) { [self resizeWindowWithEdges: m event: event]; return; } }
 	[super mouseDown: event];
 }
 @end
