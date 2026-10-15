@@ -1,0 +1,25 @@
+name: freebsd-explore
+
+# Looks at what the FreeBSD package repository offers (GNUstep, Opal, Cairo ...) so the layers above wsd can be planned. Manual only.
+on:
+  workflow_dispatch:
+    inputs:
+      cmd:
+        description: "shell commands to run inside FreeBSD"
+        required: true
+        default: "pkg search -o gnustep | head -50; pkg search -o opal; pkg search cairo | head"
+
+jobs:
+  explore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: vmactions/freebsd-vm@v1
+        with:
+          release: "14.2"
+          arch: x86_64
+          usesh: true
+          run: |
+            pkg update -f >/dev/null 2>&1 || true
+            ${{ github.event.inputs.cmd }}
