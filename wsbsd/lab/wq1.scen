@@ -1,0 +1,10 @@
+# WindowQuery (30474) by window ids: request = header, ndr, flags u64, n (nlen), stream = packed64 count then ids
+new_window a 100 200 300 150
+new_window b 50 60 80 40
+level a 5
+raw 30474 ndr u32:0 u32:0 nlen pk:2 pkwid:a pkwid:b
+raw 30474 ndr u32:0 u32:0 nlen pk:1 pkwid:a
+raw 30474 ndr u32:1 u32:0 nlen pk:1 pkwid:a
+raw 30474 ndr u32:4 u32:0 nlen pk:1 pkwid:a
+raw 30474 ndr u32:8 u32:0 nlen pk:1 pkwid:a
+raw 30474 ndr u32:0 u32:0 nlen pk:1 pk:99999
