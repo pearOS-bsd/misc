@@ -87,8 +87,10 @@ static void buf_release(ws_buffer *b)
 	ws_buffer_close(b);
 	memset(b, 0, sizeof *b);
 }
+void wsd_rights_cleanup(uint32_t cid);
 static void owner_cleanup(uint32_t owner)
 {
+	wsd_rights_cleanup(owner);
 	sls_ext_owner_cleanup(owner);
 	cursors_owner_cleanup(owner);
 	for (int i = 0; i < MAXSURF; i++) if (surfs[i].used && surfs[i].owner == owner) surfs[i].used = 0;
@@ -295,7 +297,59 @@ int simple_ok(const mach_msg_header_t *h, size_t len, size_t want)
 	return !(h->msgh_bits & MACH_MSGH_BITS_COMPLEX) && h->msgh_size == want && len == want;
 }
 
-int holds_rights(const conn *c, uint32_t wid) { return wid && ws_window_owner(srv, wid) == c->id; }
+/* ---- window rights: the owner holds everything; GrantConnectionRightsOnWindow offers rights to another connection, CompleteWindowRightsGrant accepts them, WindowRightsRelinquish gives them back ---- */
+#define MAXRTS 256
+#define MAXGRANTS 64
+static struct { uint32_t wid, cid, mask; } rts[MAXRTS];
+static struct { int used; uint32_t wid, recip, a, b, id; } grants[MAXGRANTS];
+static uint32_t next_grant = 1;
+
+uint32_t wsd_rights_held(const conn *c, uint32_t wid)
+{
+	if (!wid) return 0;
+	if (ws_window_owner(srv, wid) == c->id) return 0x30007u;
+	uint32_t m = 0;
+	for (int i = 0; i < MAXRTS; i++) if (rts[i].wid == wid && rts[i].cid == c->id) m |= rts[i].mask;
+	return m;
+}
+int holds_rights(const conn *c, uint32_t wid) { return wid && wsd_rights_held(c, wid) != 0; }
+
+/* offers rights (a: the main set, b: reserved) on a window to a connection; the caller must be able to extend them. Returns the return code. */
+int wsd_grant_create(conn *c, uint32_t recip, uint32_t wid, uint32_t a, uint32_t b)
+{
+	if (!wsd_conn_by_id(recip)) return 1001;                                     /* the recipient connection must exist */
+	if (!ws_window_exists(srv, wid)) return 1001;
+	for (int i = 0; i < MAXGRANTS; i++) if (grants[i].used && grants[i].wid == wid) return 1001;     /* one offer at a time */
+	if ((a & b & 7) != 0) return 1001;
+	if (!(a & 1) && b != 0) return 1001;
+	if ((wsd_rights_held(c, wid) & (a | b | 1)) != (a | b | 1)) return 1001;       /* the caller lacks the privilege to extend these rights */
+	for (int i = 0; i < MAXGRANTS; i++) if (!grants[i].used) { grants[i].used = 1; grants[i].wid = wid; grants[i].recip = recip; grants[i].a = a; grants[i].b = b; grants[i].id = next_grant++; return 0; }
+	return 1000;
+}
+int wsd_grant_complete(conn *c, uint32_t wid, uint32_t id)
+{
+	for (int i = 0; i < MAXGRANTS; i++) if (grants[i].used && grants[i].wid == wid) {
+		if (grants[i].recip != c->id) return 1010;                                 /* not the grant recipient */
+		if (grants[i].id != id) return 1010;                                       /* grant id mismatch */
+		for (int k = 0; k < MAXRTS; k++) if (!rts[k].wid) { rts[k].wid = wid; rts[k].cid = c->id; rts[k].mask = grants[i].a | grants[i].b; grants[i].used = 0; return 0; }
+		return 1000;
+	}
+	return 1001;                                                                    /* no grant exists */
+}
+uint32_t wsd_grant_id(uint32_t wid) { for (int i = 0; i < MAXGRANTS; i++) if (grants[i].used && grants[i].wid == wid) return grants[i].id; return 0; }
+int wsd_rights_relinquish(conn *c, uint32_t wid, uint32_t mask)
+{
+	if (!ws_window_exists(srv, wid) || (mask & 7)) return 1001;                      /* exclusive rights (1, 2, 4) cannot be relinquished */
+	uint32_t held = 0; for (int i = 0; i < MAXRTS; i++) if (rts[i].wid == wid && rts[i].cid == c->id) held |= rts[i].mask;
+	if (mask & ~held) return 1001;                                                  /* rights not directly held */
+	for (int i = 0; i < MAXRTS; i++) if (rts[i].wid == wid && rts[i].cid == c->id) { rts[i].mask &= ~mask; if (!rts[i].mask) rts[i].wid = 0; }
+	return 0;
+}
+void wsd_rights_cleanup(uint32_t cid)
+{
+	for (int i = 0; i < MAXRTS; i++) if (rts[i].cid == cid) rts[i].wid = 0;
+	for (int i = 0; i < MAXGRANTS; i++) if (grants[i].used && grants[i].recip == cid) grants[i].used = 0;
+}
 
 /* ---- SkyLight routines ---- */
 static int do_create_window(conn *c, const uint8_t *buf, size_t len)

@@ -30,6 +30,11 @@ int reply_value(int fd, const mach_msg_header_t *req, int32_t value);
 int reply_mig_error(int fd, const mach_msg_header_t *req, int32_t code);
 int simple_ok(const mach_msg_header_t *h, size_t len, size_t want);   /* not complex, size and datagram length both equal want */
 int holds_rights(const conn *c, uint32_t wid);
+uint32_t wsd_rights_held(const conn *c, uint32_t wid);                       /* the rights mask the connection holds on the window (owner: 0x30007) */
+int wsd_grant_create(conn *c, uint32_t recip, uint32_t wid, uint32_t a, uint32_t b);
+int wsd_grant_complete(conn *c, uint32_t wid, uint32_t id);
+uint32_t wsd_grant_id(uint32_t wid);
+int wsd_rights_relinquish(conn *c, uint32_t wid, uint32_t mask);
 int wsd_window_surfaces(uint32_t wid, uint32_t *out, int max);          /* surface ids of a window; returns the count */
 
 int wsd_bind_surface(conn *c, uint32_t wid, uint32_t sid, int kind, uint32_t a, uint32_t b);   /* BindSurface semantics, returns the retcode */

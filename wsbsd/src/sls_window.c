@@ -440,6 +440,19 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		if (f > 0.0f && f < 16.0f) cursor_scale = f;
 		return reply_simple(c->fd, h, 0);
 	}
+	case SLS_MSG_WindowRightsRelinquish: {                                         /* wid@0x20, rights@0x24, size 0x28; 1001 for exclusive or unheld rights */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		return reply_simple(c->fd, h, wsd_rights_relinquish(c, rd32(buf, 0x20), rd32(buf, 0x24)));
+	}
+	case SLS_MSG_CompleteWindowRightsGrant: {                                      /* wid@0x20, grant id@0x24, size 0x2c; 1001 no grant, 1010 wrong recipient or id */
+		if (!simple_ok(h, len, 0x2c)) return reply_simple(c->fd, h, -304);
+		return reply_simple(c->fd, h, wsd_grant_complete(c, rd32(buf, 0x20), rd32(buf, 0x24)));
+	}
+	case SLS_MSG_GrantConnectionRightsOnWindowReserving: {                        /* recipient connection@0x20, rights@0x24, window@0x28, reserved rights@0x2c, u64@0x30, length@0x3c, text; size pad4(length) + 0x40 */
+		uint32_t n = h->msgh_size >= 0x40 ? rd32(buf, 0x3c) : 0;
+		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size < 0x40 || h->msgh_size > 0x440 || n > 0x400 || h->msgh_size != ((n + 3) & 0xffc) + 0x40) return reply_simple(c->fd, h, -304);
+		return reply_simple(c->fd, h, wsd_grant_create(c, rd32(buf, 0x20), rd32(buf, 0x28), rd32(buf, 0x24), rd32(buf, 0x2c)));
+	}
 	case SLS_MSG_SetWindowParent: {                                                /* child@0x20, parent@0x24, size 0x28; rights on both; always 0 */
 		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
 		uint32_t child = rd32(buf, 0x20), parent = rd32(buf, 0x24);
