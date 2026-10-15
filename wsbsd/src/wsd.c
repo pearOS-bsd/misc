@@ -811,6 +811,7 @@ static int do_private(conn *c, const uint8_t *buf, size_t len)
 	case WSX_SET_SHADOW: r.retcode = holds_rights(c, (uint32_t)a[0]) && !ws_set_window_shadow(srv, (ws_wid)a[0], a[1], a[2]) ? 0 : CGS_ERROR_FAILURE; break;
 	case WSX_QUIT: running = 0; break;
 	case WSX_GET_CONNECTION_ID: r.a[0] = (int32_t)c->id; break;
+	case WSX_GET_SCREEN: r.a[0] = wsd_screen_w; r.a[1] = wsd_screen_h; break;
 	default: return reply_mig_error(c->fd, h, MIG_BAD_ID);
 	}
 	struct iovec v = { &r, sizeof r };
@@ -825,7 +826,7 @@ static int dispatch(conn *c, uint8_t *buf, size_t len, int *fds, int nfds)
 	for (int i = 0; i < nfds; i++) close(fds[i]);                       /* every other request takes no descriptors */
 	if (h->msgh_size < sizeof *h || h->msgh_size > len) return reply_mig_error(c->fd, h, MIG_BAD_ARGUMENTS);
 	h->msgh_local_port = c->id;                                         /* the connection the request arrived on */
-	if (h->msgh_id >= WSX_FLUSH && h->msgh_id <= WSX_GET_CONNECTION_ID) { dirty = 1; return do_private(c, buf, len); }
+	if (h->msgh_id >= WSX_FLUSH && h->msgh_id <= WSX_GET_SCREEN) { dirty = 1; return do_private(c, buf, len); }
 	if (h->msgh_id == SLS_MSG_CreateWindow) { dirty = 1; return do_create_window(c, buf, len); }
 	if (h->msgh_id == SLS_MSG_NewConnectionPort) return do_new_connection(c, buf, len);
 	if (h->msgh_id == SLS_MSG_FlushSurface) { dirty = 1; return do_flush_surface(c, buf, len); }

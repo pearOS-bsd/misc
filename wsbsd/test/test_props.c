@@ -33,6 +33,7 @@ int main(void)
 	ws_conn *c = ws_connect(NULL);
 	if (!c) return 1;
 	int fd = ws_conn_fd(c);
+	{ int sw = 0, sh = 0; CHECK(ws_conn_screen(c, &sw, &sh) == 0 && sw == 640 && sh == 480); }
 	ws_win w;
 	if (ws_win_create(c, (ws_rect){ 10, 10, 100, 80 }, 0, &w)) return 1;
 	uint8_t m[0x200], rep[0x400];
