@@ -122,6 +122,14 @@ static int do_symbolic_hotkeys(conn *c, const uint8_t *buf, size_t len)
 	fill_reply_header((mach_msg_header_t *)r, h, (uint32_t)rsize, 0);
 	memcpy(r + 0x18, &WS_NDR, sizeof WS_NDR);
 	wr32(r, 0x24, n);
+	for (uint32_t i = 0; i < n; i++) {                                              /* the values from the session's symbolic hot key table */
+		uint32_t hid = rd32(buf, 0x24 + 4 * i); uint16_t k = 0, m = 0; uint32_t fl = 0; int en = 0;
+		sls_symbolic_hotkey(hid, &k, &m, &fl, &en);
+		wr32(r, 0x28 + 4 * i, k);                                                   /* the first array: the key of each id */
+		wr32(r, 0x28 + 4 * n + 4 + 4 * i, m);
+		wr32(r, 0x28 + 8 * n + 8 + 4 * i, fl);
+		wr32(r, 0x28 + 12 * n + 12 + 4 * i, (uint32_t)en);
+	}
 	for (int k = 1; k <= 3; k++) wr32(r, 0x28 + 4 * n * k + 4 * (k - 1), n);    /* the count in front of each following array */
 	int rc = ws_ipc_send(c->fd, &(struct iovec){ r, rsize }, 1, NULL, 0);
 	free(r);

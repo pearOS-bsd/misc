@@ -49,7 +49,6 @@ static const gen_entry gen_table[] = {
 	{ 30191, 40, 0, 0, 36 },   /* __XRemoveWindowFromWindowMovementGroup */
 	{ 30194, 36, 0, 0, 36 },   /* __XRemoveWindowFromWindowOrderingGroup */
 	{ 30196, 40, 0, 0, 36 },   /* __XSetLastDeactivated */
-	{ 30203, 40, 0, 0, 36 },   /* __XRemoveHotKey */
 	{ 30206, 36, 0, 0, 36 },   /* __XEventSetAppIsUnresponsiveNotificationTimeout */
 	{ 30207, 40, 0, 0, 44 },   /* __XEventAppUnresponsiveStatus */
 	{ 30214, 56, 1, 1, 36 },   /* __XUpdateSessionWorkspaceData */

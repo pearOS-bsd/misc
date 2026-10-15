@@ -26,6 +26,7 @@ int simple_ok(const mach_msg_header_t *h, size_t len, size_t want);   /* not com
 int holds_rights(const conn *c, uint32_t wid);
 
 int wsd_bind_surface(conn *c, uint32_t wid, uint32_t sid, int kind, uint32_t a, uint32_t b);   /* BindSurface semantics, returns the retcode */
+int sls_symbolic_hotkey(uint32_t id, uint16_t *key, uint16_t *mods, uint32_t *flags, int *enabled);   /* the session's symbolic hot key table: 0 valid, 1 unset, -1 bad id */
 int wsd_remove_surface(conn *c, uint32_t wid, uint32_t sid);
 int wsd_remove_all_surfaces(conn *c, uint32_t wid);                             /* RemoveAllSurfaces: the retcode */
 
