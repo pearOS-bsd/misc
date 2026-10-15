@@ -1,5 +1,6 @@
 /* Window routines beyond the core set in wsd.c: properties, layer context binding, ordered-in query. */
 #include "wsd_priv.h"
+#include "bplist.h"
 #include "ws_region.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -476,6 +477,35 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 			if (slot >= 0) { xform[slot].wid = wid; memcpy(xform[slot].m, buf + 0x2c, 24); }
 		}
 		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_WindowRoutingRecordsForScreenLocation: {                         /* x@0x20, y@0x24 (integers), size 0x28; reply complex 0x38: OOL bplist {"Routing Records": [{Location{X, Y}, "Context ID", "Connection ID"}], "WindowID"} for the window under the point (recorded layout: reals for the location, relative to the window) */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		int x = (int)rd32(buf, 0x20), y = (int)rd32(buf, 0x24);
+		ws_wid hit = ws_find_window(srv, x, y); ws_rect f = { 0, 0, 0, 0 };
+		if (hit) ws_window_frame(srv, hit, &f);
+		bp_node kX = { BP_STR, "X", 0, 0, NULL, NULL, 0, -1 }, kY = { BP_STR, "Y", 0, 0, NULL, NULL, 0, -1 };
+		bp_node vX = { BP_REAL, NULL, 0, (double)(x - f.x), NULL, NULL, 0, -1 }, vY = { BP_REAL, NULL, 0, (double)(y - f.y), NULL, NULL, 0, -1 };
+		bp_node *lk[2] = { &kX, &kY }, *lv[2] = { &vX, &vY };
+		bp_node loc = { BP_DICT, NULL, 0, 0, lv, lk, 2, -1 };
+		bp_node kL = { BP_STR, "Location", 0, 0, NULL, NULL, 0, -1 }, kC = { BP_STR, "Context ID", 0, 0, NULL, NULL, 0, -1 }, kO = { BP_STR, "Connection ID", 0, 0, NULL, NULL, 0, -1 };
+		bp_node vC = { BP_INT, NULL, 0, 0, NULL, NULL, 0, -1 }, vO = { BP_INT, NULL, hit ? ws_window_owner(srv, hit) : 0, 0, NULL, NULL, 0, -1 };
+		bp_node *rk[3] = { &kL, &kC, &kO }, *rv[3] = { &loc, &vC, &vO };
+		bp_node rec = { BP_DICT, NULL, 0, 0, rv, rk, 3, -1 };
+		bp_node *ra[1] = { &rec };
+		bp_node arr = { BP_ARRAY, NULL, 0, 0, ra, NULL, hit ? 1 : 0, -1 };
+		bp_node kR = { BP_STR, "Routing Records", 0, 0, NULL, NULL, 0, -1 }, kW = { BP_STR, "WindowID", 0, 0, NULL, NULL, 0, -1 };
+		bp_node vW = { BP_INT, NULL, hit, 0, NULL, NULL, 0, -1 };
+		bp_node *tk[2] = { &kR, &kW }, *tv[2] = { &arr, &vW };
+		bp_node top = { BP_DICT, NULL, 0, 0, tv, tk, 2, -1 };
+		uint8_t *pl = NULL; size_t pn = bp_serialize(&top, &pl);
+		if (!pl) return reply_simple(c->fd, h, 1000);
+		uint8_t m[0x38]; memset(m, 0, sizeof m);
+		fill_reply_header((mach_msg_header_t *)m, h, sizeof m, 1);
+		wr32(m, 0x18, 1); m[0x24] = 1; m[0x25] = 1; m[0x27] = 1; wr32(m, 0x28, (uint32_t)pn); memcpy(m + 0x2c, &WS_NDR, 8); wr32(m, 0x34, (uint32_t)pn);
+		struct iovec v[2] = { { m, sizeof m }, { pl, pn } };
+		int rc = ws_ipc_send(c->fd, v, 2, NULL, 0);
+		free(pl);
+		return rc;
 	}
 	case SLS_MSG_SetWindowParent: {                                                /* child@0x20, parent@0x24, size 0x28; rights on both; always 0 */
 		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);

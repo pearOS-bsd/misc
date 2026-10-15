@@ -22,10 +22,10 @@ static void marker(bp_w *w, uint8_t type, size_t len)
 static int assign(bp_w *w, bp_node *x)
 {
 	if (w->nobj >= BP_MAXOBJ - 1) return -1;
-	if (x->kind == BP_INT || x->kind == BP_STR)
+	if (x->kind == BP_INT || x->kind == BP_STR || x->kind == BP_REAL)
 		for (int i = 0; i < w->nobj; i++) {
 			const bp_node *r = w->rep[i];
-			if (r->kind == x->kind && ((x->kind == BP_INT && r->i == x->i) || (x->kind == BP_STR && !strcmp(r->s, x->s)))) { x->id = i; return i; }
+			if (r->kind == x->kind && ((x->kind == BP_INT && r->i == x->i) || (x->kind == BP_STR && !strcmp(r->s, x->s)) || (x->kind == BP_REAL && r->d == x->d))) { x->id = i; return i; }
 		}
 	x->id = w->nobj; w->rep[w->nobj++] = x;
 	if (x->kind == BP_ARRAY) for (int k = 0; k < x->n; k++) assign(w, x->kids[k]);
@@ -43,6 +43,7 @@ size_t bp_serialize(bp_node *root, uint8_t **out)
 		const bp_node *x = w.rep[i]; off[i] = w.n;
 		switch (x->kind) {
 		case BP_INT: if (x->i < 256) { u8(&w, 0x10); u8(&w, (uint8_t)x->i); } else if (x->i < 65536) { u8(&w, 0x11); be(&w, x->i, 2); } else { u8(&w, 0x12); be(&w, x->i, 4); } break;
+		case BP_REAL: { uint64_t bits; memcpy(&bits, &x->d, 8); u8(&w, 0x23); be(&w, bits, 8); break; }
 		case BP_STR: marker(&w, 0x50, strlen(x->s)); put(&w, x->s, strlen(x->s)); break;
 		case BP_ARRAY: marker(&w, 0xa0, (size_t)x->n); for (int k = 0; k < x->n; k++) u8(&w, (uint8_t)x->kids[k]->id); break;
 		case BP_DICT: marker(&w, 0xd0, (size_t)x->n); for (int k = 0; k < x->n; k++) u8(&w, (uint8_t)x->keys[k]->id); for (int k = 0; k < x->n; k++) u8(&w, (uint8_t)x->kids[k]->id); break;

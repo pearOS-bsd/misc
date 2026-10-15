@@ -131,29 +131,29 @@ int sls_space_dispatch(conn *c, const uint8_t *buf, size_t len)
 		sp_init();
 		bp_node ints[2 * MAXSP + 4], strs[MAXSP + 8], dicts[2 * MAXSP + 2], arr, top, disp, *kids[3 * MAXSP + 16], *keys[3 * MAXSP + 16];
 		static const char *spk[4] = { "id64", "ManagedSpaceID", "type", "uuid" };
-		bp_node spkey[4], *spkeyp[4]; for (int k = 0; k < 4; k++) { spkey[k] = (bp_node){ BP_STR, spk[k], 0, NULL, NULL, 0, -1 }; spkeyp[k] = &spkey[k]; }
+		bp_node spkey[4], *spkeyp[4]; for (int k = 0; k < 4; k++) { spkey[k] = (bp_node){ BP_STR, spk[k], 0, 0, NULL, NULL, 0, -1 }; spkeyp[k] = &spkey[k]; }
 		int ni = 0, ns = 0, nd = 0, nk = 0, first = -1, nsp = 0;
 		bp_node *spaces[MAXSP]; bp_node *cur = NULL;
-		bp_node *emptystr = &strs[ns++]; *emptystr = (bp_node){ BP_STR, "", 0, NULL, NULL, 0, -1 };
+		bp_node *emptystr = &strs[ns++]; *emptystr = (bp_node){ BP_STR, "", 0, 0, NULL, NULL, 0, -1 };
 		for (int i = 0; i < MAXSP && nsp < MAXSP; i++) if (sp[i].used) {
 			for (int pass = 0; pass < 2; pass++) {                      /* pass 0: the entry in Spaces, pass 1: a second copy for Current Space when this is the shown space */
 				if (pass == 1 && !(sp[i].shown && first < 0)) break;
 				bp_node *a = &ints[ni++], *b = &ints[ni++], *t = &ints[ni++];
-				*a = (bp_node){ BP_INT, NULL, sp[i].id, NULL, NULL, 0, -1 }; *b = *a; *t = (bp_node){ BP_INT, NULL, sp[i].type, NULL, NULL, 0, -1 };
+				*a = (bp_node){ BP_INT, NULL, sp[i].id, 0, NULL, NULL, 0, -1 }; *b = *a; *t = (bp_node){ BP_INT, NULL, sp[i].type, 0, NULL, NULL, 0, -1 };
 				bp_node **kv = &kids[nk]; nk += 4; kv[0] = a; kv[1] = b; kv[2] = t; kv[3] = emptystr;
-				bp_node *d = &dicts[nd++]; *d = (bp_node){ BP_DICT, NULL, 0, kv, spkeyp, 4, -1 };
+				bp_node *d = &dicts[nd++]; *d = (bp_node){ BP_DICT, NULL, 0, 0, kv, spkeyp, 4, -1 };
 				if (pass == 0) spaces[nsp++] = d; else cur = d;
 			}
 			if (sp[i].shown && first < 0) first = i;
 		}
 		if (!cur && nsp) cur = spaces[0];
 		static const char *dk[3] = { "Current Space", "Spaces", "Display Identifier" };
-		bp_node dkey[3], *dkeyp[3]; for (int k = 0; k < 3; k++) { dkey[k] = (bp_node){ BP_STR, dk[k], 0, NULL, NULL, 0, -1 }; dkeyp[k] = &dkey[k]; }
-		arr = (bp_node){ BP_ARRAY, NULL, 0, spaces, NULL, nsp, -1 };
-		bp_node dispid = (bp_node){ BP_STR, DISPLAY_UUID, 0, NULL, NULL, 0, -1 };
+		bp_node dkey[3], *dkeyp[3]; for (int k = 0; k < 3; k++) { dkey[k] = (bp_node){ BP_STR, dk[k], 0, 0, NULL, NULL, 0, -1 }; dkeyp[k] = &dkey[k]; }
+		arr = (bp_node){ BP_ARRAY, NULL, 0, 0, spaces, NULL, nsp, -1 };
+		bp_node dispid = (bp_node){ BP_STR, DISPLAY_UUID, 0, 0, NULL, NULL, 0, -1 };
 		bp_node *dv[3] = { cur ? cur : &arr, &arr, &dispid };
-		disp = (bp_node){ BP_DICT, NULL, 0, dv, dkeyp, 3, -1 };
-		bp_node *tv[1] = { &disp }; top = (bp_node){ BP_ARRAY, NULL, 0, tv, NULL, 1, -1 };
+		disp = (bp_node){ BP_DICT, NULL, 0, 0, dv, dkeyp, 3, -1 };
+		bp_node *tv[1] = { &disp }; top = (bp_node){ BP_ARRAY, NULL, 0, 0, tv, NULL, 1, -1 };
 		(void)keys; (void)strs; (void)nk;
 		uint8_t *pl = NULL; size_t pn = bp_serialize(&top, &pl);
 		if (!pl || pn > 0x4000) { free(pl); return reply_simple(c->fd, h, 1000); }
@@ -174,10 +174,10 @@ int sls_space_dispatch(conn *c, const uint8_t *buf, size_t len)
 		if (sp[i].values && sp[i].vlen) { pl = malloc(sp[i].vlen); if (!pl) return reply_simple(c->fd, h, 1000); memcpy(pl, sp[i].values, sp[i].vlen); pn = sp[i].vlen; }
 		else {
 			static const char *k4[4] = { "id64", "ManagedSpaceID", "type", "uuid" };
-			bp_node key[4], *keyp[4], v0 = { BP_INT, NULL, sp[i].id, NULL, NULL, 0, -1 }, v1 = v0, v2 = { BP_INT, NULL, sp[i].type, NULL, NULL, 0, -1 }, v3 = { BP_STR, "", 0, NULL, NULL, 0, -1 };
-			for (int k = 0; k < 4; k++) { key[k] = (bp_node){ BP_STR, k4[k], 0, NULL, NULL, 0, -1 }; keyp[k] = &key[k]; }
+			bp_node key[4], *keyp[4], v0 = { BP_INT, NULL, sp[i].id, 0, NULL, NULL, 0, -1 }, v1 = v0, v2 = { BP_INT, NULL, sp[i].type, 0, NULL, NULL, 0, -1 }, v3 = { BP_STR, "", 0, 0, NULL, NULL, 0, -1 };
+			for (int k = 0; k < 4; k++) { key[k] = (bp_node){ BP_STR, k4[k], 0, 0, NULL, NULL, 0, -1 }; keyp[k] = &key[k]; }
 			bp_node *vals[4] = { &v0, &v1, &v2, &v3 };
-			bp_node d = { BP_DICT, NULL, 0, vals, keyp, 4, -1 };
+			bp_node d = { BP_DICT, NULL, 0, 0, vals, keyp, 4, -1 };
 			pn = bp_serialize(&d, &pl);
 		}
 		uint8_t m[0x38]; memset(m, 0, sizeof m);
