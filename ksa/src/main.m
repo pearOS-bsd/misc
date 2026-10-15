@@ -66,11 +66,7 @@ static NSTextField *label(NSString *s, NSRect f, NSFont *font, NSColor *color, N
 	return t;
 }
 
-static NSColor *secondary(void)
-{
-	if ([NSColor respondsToSelector: @selector(secondaryLabelColor)]) return [NSColor secondaryLabelColor];
-	return [NSColor colorWithCalibratedWhite: 0.5 alpha: 1.0];
-}
+static NSColor *secondary(void) { return [[NSColor controlTextColor] colorWithAlphaComponent: 0.65]; }
 
 /* the keyboard glyph on the top of the introduction and selection panes (Apple draws an SF Symbol: resources/keyboard.png when a copy is available, else this outline) */
 @interface KSAGlyph : NSView

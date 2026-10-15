@@ -92,7 +92,7 @@ if [ -d "$KD" ]; then
 	(cd "$KD" && cc -o KeyboardSetupAssistant-gnustep src/main.m $(gnustep-config --objc-flags) $(gnustep-config --gui-libs) 2>&1 | grep -E "error|undefined" | head -20)
 	if [ -x "$KD/KeyboardSetupAssistant-gnustep" ]; then
 		for p in 0 1 2 3; do
-			(KSA_PANE=$p KSA_EXIT_AFTER=9 timeout 20 "$KD/KeyboardSetupAssistant-gnustep" >/tmp/ksa$p.log 2>&1) &
+			(WSD_WINDOW_BG=27,36,43 KSA_PANE=$p KSA_EXIT_AFTER=9 timeout 20 "$KD/KeyboardSetupAssistant-gnustep" >/tmp/ksa$p.log 2>&1) &
 			KP=$!; sleep 5
 			./wsshot ksa-pane$p.ppm && python3 tools/ppm2png.py ksa-pane$p.ppm ksa-pane$p.png
 			i=0; while kill -0 $KP 2>/dev/null && [ $i -lt 15 ]; do sleep 1; i=$((i+1)); done; pkill -f KeyboardSetupAssistant-gnustep 2>/dev/null
