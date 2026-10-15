@@ -33,6 +33,7 @@
 #define MAXCONN 128
 
 ws_server *srv;
+int wsd_screen_w = 1280, wsd_screen_h = 800;
 static ws_surface *screen;
 static int running = 1;
 int wsd_dirty;
@@ -870,6 +871,7 @@ int main(int argc, char **argv)
 	if (strcmp(backend, "headless")) { fprintf(stderr, "wsd: backend '%s' not built in (use gmake kms on FreeBSD)\n", backend); return 1; }
 	(void)card;
 #endif
+	wsd_screen_w = w; wsd_screen_h = h;
 	signal(SIGPIPE, SIG_IGN);
 	srv = ws_server_new(w, h);
 	screen = ws_surface_new(w, h);
