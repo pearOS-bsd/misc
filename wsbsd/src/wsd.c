@@ -1089,6 +1089,7 @@ int main(int argc, char **argv)
 {
 	const char *path = getenv("WS_SOCKET") ? getenv("WS_SOCKET") : DEFAULT_SOCKET;
 	int w = 1280, h = 800, sandbox = 0, vnc_port = 0, vnc_ls = -1; ws_input vin;
+	int vnc_updates = 0, vnc_backlog_loops = 0; double vnc_render_ms = 0, vnc_report = 0;
 	const char *backend = "headless", *card = "/dev/dri/card0", *renderer = "sw", *render_node = "/dev/dri/renderD128";
 	for (int i = 1; i < argc; i++) {
 		if (!strcmp(argv[i], "-s") && i + 1 < argc) path = argv[++i];
@@ -1224,10 +1225,19 @@ int main(int argc, char **argv)
 				close(fd); c->fd = -1; c->efd = -1;
 			}
 		}
+		if (vnc_ls >= 0 && wsd_vnc_backlog()) wsd_vnc_flush();                      /* a slow viewer: keep draining its queue between other work */
 		if (vnc_ls >= 0) {                                                         /* update the viewer when it asked and something moved or changed */
 			int cx, cy; ws_cursor_pos(srv, &cx, &cy);
 			uint64_t key = ws_server_generation(srv) * 1000003ULL + (uint64_t)cx * 4099 + (uint64_t)cy * 31 + ws_cursor_serial(srv);
-			if (wsd_vnc_wants(key)) { render_frame(screen, 1); wsd_vnc_update(screen, key); }
+			if (wsd_vnc_wants(key)) {
+				struct timespec t0, t1; clock_gettime(CLOCK_MONOTONIC, &t0);
+				render_frame(screen, 1); clock_gettime(CLOCK_MONOTONIC, &t1);
+				wsd_vnc_update(screen, key);
+				vnc_updates++; vnc_render_ms += (t1.tv_sec - t0.tv_sec) * 1e3 + (t1.tv_nsec - t0.tv_nsec) / 1e6;
+			}
+			if (wsd_vnc_backlog()) vnc_backlog_loops++;
+			if (vnc_updates || vnc_backlog_loops) { struct timespec tn; clock_gettime(CLOCK_MONOTONIC, &tn); double nowt = tn.tv_sec + tn.tv_nsec / 1e9;
+				if (nowt - vnc_report >= 5.0) { if (vnc_report > 0 && vnc_updates) fprintf(stderr, "wsd: vnc %d updates in 5 s, compose %.1f ms each, viewer behind %d loops\n", vnc_updates, vnc_render_ms / vnc_updates, vnc_backlog_loops); vnc_report = nowt; vnc_updates = 0; vnc_render_ms = 0; vnc_backlog_loops = 0; } }
 		}
 #ifdef WS_KMS
 		if (kms && vt_active) {
