@@ -29,8 +29,8 @@ int main(int argc, char **argv)
 	[w makeKeyAndOrderFront:nil];
 	NSLog(@"window shown, frame %@ number %d visible %d bgapp %d hidden %d active %d", NSStringFromRect([w frame]), (int)[w windowNumber], (int)[w isVisible], (int)[[NSUserDefaults standardUserDefaults] boolForKey:@"GSBackgroundApp"], (int)[NSApp isHidden], (int)[NSApp isActive]);
 	[NSTimer scheduledTimerWithTimeInterval:([[NSUserDefaults standardUserDefaults] doubleForKey:@"HelloSeconds"] ?: 1.0) target:h selector:@selector(quit:) userInfo:nil repeats:NO];
-	[NSTimer scheduledTimerWithTimeInterval:8.0 target:h selector:@selector(resize:) userInfo:nil repeats:NO];
-	[NSTimer scheduledTimerWithTimeInterval:9.5 target:h selector:@selector(check:) userInfo:nil repeats:NO];
+	[NSTimer scheduledTimerWithTimeInterval:12.0 target:h selector:@selector(resize:) userInfo:nil repeats:NO];
+	[NSTimer scheduledTimerWithTimeInterval:13.5 target:h selector:@selector(check:) userInfo:nil repeats:NO];
 	[app run];
 	return 0;
 }

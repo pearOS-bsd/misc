@@ -58,13 +58,14 @@ cd "$WS"
 cc -o hello appkit/hello.m $(gnustep-config --objc-flags) $(gnustep-config --gui-libs) 2>&1 | tail -15
 cc -O1 -std=c99 -D_DEFAULT_SOURCE -Iinclude -o wsshot tools/wsshot.c /tmp/wsc/libwsclient.a -lm
 cc -O1 -std=c99 -D_DEFAULT_SOURCE -Iinclude -o wsclick tools/wsclick.c /tmp/wsc/libwsclient.a -lm
+cc -O1 -std=c99 -D_DEFAULT_SOURCE -Iinclude -o wsdrag tools/wsdrag.c /tmp/wsc/libwsclient.a -lm
 cc -O1 -std=c99 -D_DEFAULT_SOURCE -Iinclude -o wskey tools/wskey.c /tmp/wsc/libwsclient.a -lm
 gmake wsd 2>&1 | tail -2
 export WS_SOCKET=/tmp/wsd-appkit.sock
 ./wsd -t -g 1280x800 >/tmp/wsd.log 2>&1 &
 WP=$!
 sleep 1
-(WSD_DEBUG=1 timeout 60 lldb -b -o 'run -HelloSeconds 12' -o 'bt' -o 'quit' -- ./hello >/tmp/hello.log 2>&1) &
+(WSD_DEBUG=1 timeout 60 lldb -b -o 'run -HelloSeconds 18' -o 'bt' -o 'quit' -- ./hello >/tmp/hello.log 2>&1) &
 HP=$!
 sleep 4
 ./wsshot appkit.ppm; python3 tools/ppm2png.py appkit.ppm appkit.png
@@ -75,6 +76,9 @@ sleep 1
 ./wskey 0 11 8
 sleep 1
 ./wsshot appkit-key.ppm; python3 tools/ppm2png.py appkit-key.ppm appkit-key.png
+./wsdrag 270 488 700 200
+sleep 1
+./wsshot appkit-drag.ppm; python3 tools/ppm2png.py appkit-drag.ppm appkit-drag.png
 i=0; until grep -q 'frame after resize' /tmp/hello.log || [ $i -ge 30 ]; do sleep 1; i=$((i+1)); done; sleep 1
 ./wsshot appkit-resize.ppm; python3 tools/ppm2png.py appkit-resize.ppm appkit-resize.png
 wait $HP
