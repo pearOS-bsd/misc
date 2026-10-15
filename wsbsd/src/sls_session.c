@@ -67,9 +67,25 @@ static int do_get_conn_property(conn *c, const uint8_t *buf, size_t len)
 
 /* notification interests: 30379 SetConnectionNotifyInterests: count@0x20, ids from 0x24 (size 0x24 + 4n); 30378 SetProcessNotifyInterests: mode@0x20, count@0x24, ids from 0x28 */
 
+/* replies whose only content is an out-of-line binary property list: complex 0x38, OOL@0x1c, NDR@0x2c, size repeated@0x34 */
+extern const uint8_t sls_blob_displays[], sls_blob_devices[];
+extern const unsigned sls_blob_displays_len, sls_blob_devices_len;
+static int reply_ool_blob(conn *c, const mach_msg_header_t *h, const uint8_t *blob, unsigned n)
+{
+	uint8_t m[0x38]; memset(m, 0, sizeof m);
+	fill_reply_header((mach_msg_header_t *)m, h, sizeof m, 1);
+	wr32(m, 0x18, 1); m[0x25] = 1; m[0x27] = 1; wr32(m, 0x28, n); memcpy(m + 0x2c, &WS_NDR, 8); wr32(m, 0x34, n);
+	struct iovec v[2] = { { m, sizeof m }, { (void *)blob, n } };
+	return ws_ipc_send(c->fd, v, 2, NULL, 0);
+}
+
 int sls_session_dispatch(conn *c, const uint8_t *buf, size_t len)
 {
 	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
+	if (h->msgh_id == SLS_MSG_CopyManagedDisplays || h->msgh_id == SLS_MSG_GetDevices) {
+		if (!simple_ok(h, len, sizeof *h)) return reply_simple(c->fd, h, -304);
+		return h->msgh_id == SLS_MSG_GetDevices ? reply_ool_blob(c, h, sls_blob_devices, sls_blob_devices_len) : reply_ool_blob(c, h, sls_blob_displays, sls_blob_displays_len);
+	}
 	if (h->msgh_id == SLS_MSG_SetConnectionProperty) return do_set_conn_property(c, buf, len);
 	if (h->msgh_id == SLS_MSG_GetConnectionProperty) return do_get_conn_property(c, buf, len);
 	if (h->msgh_id == SLS_MSG_SetConnectionNotifyInterests) {

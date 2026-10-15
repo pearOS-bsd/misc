@@ -198,6 +198,16 @@ int main(void)
 		n = 0; st[n++] = 105; n += ws_tx_packed(st + n, w.id); n += ws_tx_double(st + n, 12.0); st[n++] = 0xff;
 		CHECK(ws_transaction_commit(c, st, n, 0) == 0);
 	}
+
+	/* the displays and devices property lists: an OOL binary plist each */
+	{
+		uint8_t q[0x18]; hdr(q, 0x18, SLS_MSG_CopyManagedDisplays, 0);
+		int dn = call(fd, q, 0x18, rep, sizeof rep);
+		CHECK(dn == 0x38 + 83 && r32(rep, 0x28) == 83 && memcmp(rep + 0x38, "bplist00", 8) == 0);
+		hdr(q, 0x18, SLS_MSG_GetDevices, 0);
+		dn = call(fd, q, 0x18, rep, sizeof rep);
+		CHECK(dn > 0x38 + 8 && memcmp(rep + 0x38, "bplist00", 8) == 0 && r32(rep, 0x34) == (uint32_t)(dn - 0x38));
+	}
 	ws_server_quit(c);
 	printf(failures ? "%d failures\n" : "window extension routines: all checks passed\n", failures);
 	return failures != 0;
