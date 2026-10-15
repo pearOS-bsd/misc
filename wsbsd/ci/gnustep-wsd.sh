@@ -50,10 +50,13 @@ cc -O1 -std=c99 -D_DEFAULT_SOURCE -Iinclude -o wsshot tools/wsshot.c /tmp/wsc/li
 gmake wsd 2>&1 | tail -2
 export WS_SOCKET=/tmp/wsd-appkit.sock
 ./wsd -t -g 1280x800 >/tmp/wsd.log 2>&1 &
+WP=$!
 sleep 1
-./hello 8 >/tmp/hello.log 2>&1 &
+timeout 30 ./hello 8 >/tmp/hello.log 2>&1 &
+HP=$!
 sleep 4
 ./wsshot appkit.ppm; python3 tools/ppm2png.py appkit.ppm appkit.png
-wait
+wait $HP
+kill $WP 2>/dev/null
 tail -20 /tmp/hello.log; tail -5 /tmp/wsd.log
 ls -l appkit.png
