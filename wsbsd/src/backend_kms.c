@@ -140,13 +140,6 @@ int ws_kms_resume(ws_kms *k)
 	return 0;
 }
 
-/* reads and drops everything pending on an input device (used while another VT is active) */
-int ws_evdev_drain(ws_evdev *e, int i)
-{
-	struct input_event ev[64];
-	for (;;) { ssize_t n = read(e->fd[i], ev, sizeof ev); if (n < 0) return errno == EAGAIN ? 0 : -1; if (n == 0) return -1; }
-}
-
 int ws_kms_handle_events(ws_kms *k)
 {
 	drmEventContext ctx = { .version = 2, .page_flip_handler = on_flip };
@@ -193,6 +186,14 @@ ws_evdev *ws_evdev_open(const char *dir)
 
 int ws_evdev_count(ws_evdev *e) { return e->n; }
 int ws_evdev_fd(ws_evdev *e, int i) { return e->fd[i]; }
+
+/* reads and drops everything pending on an input device (used while another VT is active) */
+int ws_evdev_drain(ws_evdev *e, int i)
+{
+	struct input_event ev[64];
+	for (;;) { ssize_t n = read(e->fd[i], ev, sizeof ev); if (n < 0) return errno == EAGAIN ? 0 : -1; if (n == 0) return -1; }
+}
+
 
 int ws_evdev_dispatch(ws_evdev *e, int i, ws_server *srv, int sw, int sh)
 {
