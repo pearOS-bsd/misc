@@ -13,7 +13,8 @@
 
 #define DEFAULT_SOCKET "/tmp/wsd.sock"
 
-struct ws_conn { int fd; int efd; int cid; };
+typedef struct { uint32_t type, len; uint8_t data[256]; } ws_notif;
+struct ws_conn { int fd; int efd; int cid; ws_event evq[64]; int evh, evt; ws_notif nq[64]; int nh, nt; };   /* messages read from the event channel while waiting for the other kind are queued */
 
 static uint32_t f2bits(float f) { uint32_t v; memcpy(&v, &f, sizeof v); return v; }
 
@@ -78,14 +79,64 @@ void ws_disconnect(ws_conn *c) { if (c) { if (c->efd >= 0) close(c->efd); close(
 
 int ws_conn_event_fd(ws_conn *c) { return c->efd; }
 
+/* reads the event channel until something of the wanted kind has been queued (events and notifications share the channel) */
+static void drain_channel(ws_conn *c, int timeout_ms, int want_event)
+{
+	for (;;) {
+		if (want_event ? c->evh != c->evt : c->nh != c->nt) return;
+		struct pollfd p = { c->efd, POLLIN, 0 };
+		if (poll(&p, 1, timeout_ms) <= 0 || !(p.revents & POLLIN)) return;
+		timeout_ms = 0;
+		union { wsx_event_msg e; wsx_notify_msg n; } m; int fds[WS_IPC_MAX_FDS], nfds = 0;
+		ssize_t got = ws_ipc_recv(c->efd, &m, sizeof m, fds, &nfds);
+		if (got == (ssize_t)sizeof m.e && m.e.h.msgh_id == WSX_EVENT_PUSH) {
+			if (c->evh - c->evt == 64) c->evt++;
+			c->evq[c->evh++ % 64] = (ws_event){ m.e.type, m.e.wid, m.e.x, m.e.y, m.e.buttons, m.e.key, m.e.flags, m.e.dx, m.e.dy, m.e.continuous };
+		} else if (got == (ssize_t)sizeof m.n && m.n.h.msgh_id == WSX_NOTIFY_PUSH) {
+			if (c->nh - c->nt == 64) c->nt++;
+			ws_notif *q = &c->nq[c->nh++ % 64]; q->type = m.n.type; q->len = m.n.len; memcpy(q->data, m.n.data, sizeof q->data);
+		} else if (got <= 0) return;
+	}
+}
+
 int ws_conn_next_pushed_event(ws_conn *c, int timeout_ms, ws_event *out)
 {
-	struct pollfd p = { c->efd, POLLIN, 0 };
-	if (poll(&p, 1, timeout_ms) <= 0 || !(p.revents & POLLIN)) return 0;
-	wsx_event_msg m; int fds[WS_IPC_MAX_FDS], nfds = 0;
-	if (ws_ipc_recv(c->efd, &m, sizeof m, fds, &nfds) != (ssize_t)sizeof m || m.h.msgh_id != WSX_EVENT_PUSH) return 0;
-	*out = (ws_event){ m.type, m.wid, m.x, m.y, m.buttons, m.key, m.flags, m.dx, m.dy, m.continuous };
+	drain_channel(c, timeout_ms, 1);
+	if (c->evh == c->evt) return 0;
+	*out = c->evq[c->evt++ % 64];
 	return 1;
+}
+
+int ws_conn_next_notification(ws_conn *c, int timeout_ms, uint32_t *type, uint8_t *data, uint32_t *len)
+{
+	drain_channel(c, timeout_ms, 0);
+	if (c->nh == c->nt) return 0;
+	ws_notif *q = &c->nq[c->nt++ % 64];
+	*type = q->type; *len = q->len;
+	if (data) memcpy(data, q->data, q->len);
+	return 1;
+}
+
+int ws_notification_post(ws_conn *c, uint32_t to_cid, uint32_t type, const uint8_t *data, uint32_t n)
+{
+	uint8_t buf[0x2c + 0x4000 + 4]; uint32_t P = (n + 3) & ~3u;
+	if (n > 0x4000) return -1;
+	memset(buf, 0, 0x2c + P);
+	fill_header((mach_msg_header_t *)buf, 0x2c + P, SLS_MSG_PostNotificationToConnection, 0);
+	memcpy(buf + 0x18, &WS_NDR, sizeof WS_NDR);
+	memcpy(buf + 0x20, &type, 4); memcpy(buf + 0x24, &n, 4); if (n) memcpy(buf + 0x28, data, n); memcpy(buf + 0x28 + P, &to_cid, 4);
+	return simple_call(c, buf, 0x2c + P);
+}
+
+int ws_notification_broadcast(ws_conn *c, uint32_t type, const uint8_t *data, uint32_t n)
+{
+	uint8_t buf[0x28 + 0x4000]; uint32_t P = (n + 3) & ~3u;
+	if (n > 0x4000) return -1;
+	memset(buf, 0, 0x28 + P);
+	fill_header((mach_msg_header_t *)buf, 0x28 + P, SLS_MSG_PostBroadcastNotification, 0);
+	memcpy(buf + 0x18, &WS_NDR, sizeof WS_NDR);
+	memcpy(buf + 0x20, &type, 4); memcpy(buf + 0x24, &n, 4); if (n) memcpy(buf + 0x28, data, n);
+	return simple_call(c, buf, 0x28 + P);
 }
 
 int ws_conn_pid_version(ws_conn *c, int cid, long *pid)

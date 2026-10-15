@@ -183,8 +183,6 @@ static const gen_var_entry gen_var_table[] = {
 	{ 30100, 0, 36, 9 },   /* __XShapeSurfaceInline */
 	{ 30107, 1, 36, 6 },   /* __XSetSurfaceProperty */
 	{ 30108, 0, 36, 4 },   /* __XDeleteSurfaceProperty */
-	{ 30122, 0, 36, 4 },   /* __XPostBroadcastNotification */
-	{ 30123, 0, 36, 5 },   /* __XPostNotificationToConnection */
 	{ 30227, 0, 36, 8 },   /* __XScrollWindowRegionInline */
 	{ 30228, 1, 36, 5 },   /* __XSetWindowListGlobalClipShape */
 	{ 30231, 0, 36, 3 },   /* __XRemoveWindowListGlobalClipShape */

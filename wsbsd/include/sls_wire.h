@@ -131,13 +131,15 @@ _Static_assert(OFF(sls_create_window_rep, shmem) == 0x1c && OFF(sls_create_windo
 /* ---- private wsbsd extension ids (NOT SkyLight ids): flush, screenshot, input injection, events, shadow, quit ---- */
 enum {
 	WSX_FLUSH = 39001, WSX_SCREENSHOT, WSX_INJECT_MOUSE, WSX_INJECT_KEY, WSX_NEXT_EVENT, WSX_GET_CURSOR,
-	WSX_FIND_WINDOW, WSX_SET_SHADOW, WSX_QUIT, WSX_GET_CONNECTION_ID, WSX_GET_SCREEN, WSX_BUFFER_IMPORT = 39020, WSX_BUFFER_RELEASE, WSX_EVENT_PUSH = 39100
+	WSX_FIND_WINDOW, WSX_SET_SHADOW, WSX_QUIT, WSX_GET_CONNECTION_ID, WSX_GET_SCREEN, WSX_BUFFER_IMPORT = 39020, WSX_BUFFER_RELEASE, WSX_EVENT_PUSH = 39100, WSX_NOTIFY_PUSH
 };
 /* private requests share one layout: header, NDR, 8 ints, 128 bytes of text */
 typedef struct { mach_msg_header_t h; NDR_record_t ndr; int32_t a[8]; char s[128]; } wsx_req;
 typedef struct { mach_msg_header_t h; NDR_record_t ndr; int32_t retcode; int32_t a[8]; } wsx_rep;
 
 /* pushed on the event channel returned by NewConnectionPort (wsbsd private; macOS uses the event shared memory instead) */
+/* a notification (PostNotificationToConnection / PostBroadcastNotification) pushed to a connection's event channel: type, then len bytes of data (at most 256) */
+typedef struct { mach_msg_header_t h; NDR_record_t ndr; uint32_t type; uint32_t len; uint8_t data[256]; } wsx_notify_msg;
 typedef struct { mach_msg_header_t h; NDR_record_t ndr; int32_t type; uint32_t wid; int32_t x, y, buttons, key; uint32_t flags; int32_t dx, dy, continuous; } wsx_event_msg;
 
 /* wsbsd private: register a shared buffer. Complex message: header, count = nplanes, one port descriptor per plane (name = 1-based index into

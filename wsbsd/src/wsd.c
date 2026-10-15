@@ -789,6 +789,37 @@ static int deliver_to_process(conn *t, const uint8_t *rec, size_t n)
 	return ws_window_post(srv, ids[0], &e);
 }
 
+/* PostNotificationToConnection (30123) and PostBroadcastNotification (30122), decompiled __X routines: the notification is pushed to the connection's event channel.
+ * ToConnection: type@0x20, n@0x24 (<= 0x4000), data@0x28, then the target connection id (u32 after the padded data); size pad4(n) + 0x2c.
+ * Broadcast: type@0x20, n@0x24, data@0x28; size pad4(n) + 0x28; delivered to every connection whose notification interests (SetConnectionNotifyInterests) list the type. Always 0. */
+static void push_notification(conn *t, uint32_t type, const uint8_t *data, uint32_t n)
+{
+	if (!t || t->efd < 0) return;
+	wsx_notify_msg m; memset(&m, 0, sizeof m);
+	m.h.msgh_bits = MACH_MSG_TYPE_MOVE_SEND_ONCE; m.h.msgh_size = sizeof m; m.h.msgh_id = WSX_NOTIFY_PUSH;
+	m.ndr = WS_NDR; m.type = type; m.len = n > sizeof m.data ? (uint32_t)sizeof m.data : n; memcpy(m.data, data, m.len);
+	ws_ipc_send(t->efd, &(struct iovec){ &m, sizeof m }, 1, NULL, 0);
+}
+static int do_post_notification(conn *c, const uint8_t *buf, size_t len, int broadcast)
+{
+	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
+	size_t fixed = broadcast ? 0x28 : 0x2c;
+	if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size < fixed || h->msgh_size > 0x4000 + fixed + 4) return reply_simple(c->fd, h, -304);
+	uint32_t n = rd32(buf, 0x24), P = (n + 3) & ~3u;
+	if (n > 0x4000 || h->msgh_size != P + fixed) return reply_simple(c->fd, h, -304);
+	uint32_t type = rd32(buf, 0x20);
+	if (broadcast) {
+		for (int i = 0; i < MAXCONN; i++) {
+			conn *t = &conns[i];
+			if (t->fd < 0) continue;
+			for (uint32_t k = 0; k < t->notify_n; k++) if (t->notify[k] == type) { push_notification(t, type, buf + 0x28, n); break; }
+		}
+	} else {
+		push_notification(wsd_conn_by_id(rd32(buf, 0x28 + P)), type, buf + 0x28, n);
+	}
+	return reply_simple(c->fd, h, 0);
+}
+
 /* PostEventRecordTo (30120): request = header, NDR, PSN (hi@0x20, lo@0x24), n@0x28 (<= 0x4000), the record@0x2c, size pad4(n) + 0x2c. -304 for a bad size, -600 when no process has that PSN. */
 static int do_post_event_record_to(conn *c, const uint8_t *buf, size_t len)
 {
@@ -926,6 +957,7 @@ static int dispatch(conn *c, uint8_t *buf, size_t len, int *fds, int nfds)
 	if (h->msgh_id == SLS_MSG_FlushSurface) { dirty = 1; return do_flush_surface(c, buf, len); }
 	if (h->msgh_id == WSX_BUFFER_RELEASE) return do_buffer_release(c, buf, len);
 	if (h->msgh_id == SLS_MSG_PostEventRecord) { dirty = 1; return do_post_event(c, buf, len); }
+	if (h->msgh_id == SLS_MSG_PostNotificationToConnection || h->msgh_id == SLS_MSG_PostBroadcastNotification) return do_post_notification(c, buf, len, h->msgh_id == SLS_MSG_PostBroadcastNotification);
 	if (h->msgh_id == SLS_MSG_PostEventRecordTo) { dirty = 1; return do_post_event_record_to(c, buf, len); }
 	if (h->msgh_id == SLS_MSG_PostFilteredEventTapData || h->msgh_id == SLS_MSG_PostFilteredEventTapDataSync) { dirty = 1; return do_post_tap_data(c, buf, len, 0); }
 	if (h->msgh_id == SLS_MSG_PostFilteredEventTapDataOOL) { dirty = 1; return do_post_tap_data(c, buf, len, 1); }
