@@ -171,7 +171,7 @@ jobs:
           arch: x86_64
           usesh: true
           run: |
-            sh wsbsd/ci/gnustep-wsd.sh 2>&1 | tail -60
+            sh wsbsd/ci/gnustep-wsd.sh 2>&1 | tail -90
       - uses: actions/upload-artifact@v4
         if: always()
         with:
