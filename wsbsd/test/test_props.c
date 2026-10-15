@@ -103,6 +103,13 @@ int main(void)
 		CHECK(ws_post_event_to_pid(c, 999999, rec, rn) == 0 && ws_conn_next_pushed_event(c, 200, &e) == 0);                                /* unknown pid: accepted, nothing delivered */
 		ws_win_order(c, &pw, 0, 0);
 	}
+	{ /* shared memory regions: 32006 gives two port descriptors (0x34 bytes), 34006 three (0x40), each of 0x110000 bytes */
+		uint8_t m[0x18], rep[0x80]; memset(m, 0, sizeof m); hdr(m, 0x18, 32006, 0);
+		int g = call(fd, m, sizeof m, rep, sizeof rep);
+		CHECK(g == 0x34 && r32(rep, 0x18) == 2 && r32(rep, 0x24) == 0x110000u && r32(rep, 0x30) == 0x110000u);
+		hdr(m, 0x18, 34006, 0); g = call(fd, m, sizeof m, rep, sizeof rep);
+		CHECK(g == 0x40 && r32(rep, 0x18) == 3 && r32(rep, 0x3c) == 0x110000u);
+	}
 	{ /* WindowQuery of one known window: the record laid out as the real server's reply (recorded on a macOS runner, lab/wq1.scen) for a window at 100,200,300,150, level 5, with a shadow */
 		ws_win qw; CHECK(ws_win_create(c, (ws_rect){ 100, 200, 300, 150 }, 5, &qw) == 0 && ws_win_shadow(c, &qw, 10, 1) == 0);
 		uint8_t m[0x60], rep[0x200]; memset(m, 0, sizeof m);
