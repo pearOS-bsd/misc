@@ -391,7 +391,8 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		uint32_t wid = rd32(buf, 0x20), rel = rd32(buf, 0x24); float dx, dy; memcpy(&dx, buf + 0x28, 4); memcpy(&dy, buf + 0x2c, 4);
 		ws_rect rf;
 		if (!ws_window_exists(srv, wid) || ws_window_frame(srv, rel, &rf) || !holds_rights(c, wid) || !holds_rights(c, rel)) return reply_simple(c->fd, h, 1000);
-		ws_move_window(srv, wid, (int)(rf.x + dx), (int)(rf.y + dy));
+		{ double nx = rf.x + dx, ny = rf.y + dy; if (!(nx > -1e6 && nx < 1e6)) nx = 0; if (!(ny > -1e6 && ny < 1e6)) ny = 0;      /* NaN / huge offsets are clamped, never converted blindly */
+			ws_move_window(srv, wid, (int)nx, (int)ny); }
 		return reply_simple(c->fd, h, 0);
 	}
 	case SLS_MSG_SetWindowParent: {                                                /* child@0x20, parent@0x24, size 0x28; rights on both; always 0 */
