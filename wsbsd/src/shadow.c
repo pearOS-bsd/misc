@@ -17,8 +17,10 @@ ws_shadow_params ws_shadow_defaults(int active)
 	/* stdev/density/offset: measured on macOS windows earlier, not read from SkyLight (AppKit and WindowManager
 	 * supply them at run time). Rim values are estimates. */
 	ws_shadow_params p;
-	if (active) p = (ws_shadow_params){ 19.0f, 0.665f, 18.0f, 0.25f, 1.0f, 0.35f, 1.0f, 0 };
-	else        p = (ws_shadow_params){  7.0f, 0.390f,  7.0f, 0.25f, 1.0f, 0.35f, 1.0f, 0 };
+	/* fitted to captures of real AppKit windows on macOS 27 (gaussian of the shape, shifted down): key window sigma 19, density 0.72, offset 19;
+	 * a window that is not key: sigma 19, density 0.41, offset 18. The 1 px inner rim is white at 10 %. */
+	if (active) p = (ws_shadow_params){ 19.0f, 0.72f, 19.0f, 0.25f, 1.0f, 0.10f, 1.0f, 0 };
+	else        p = (ws_shadow_params){ 19.0f, 0.41f, 18.0f, 0.25f, 1.0f, 0.10f, 1.0f, 0 };
 	return p;
 }
 
