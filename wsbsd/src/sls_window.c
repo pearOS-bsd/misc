@@ -101,6 +101,17 @@ int ool_request(const mach_msg_header_t *h, const uint8_t *buf, size_t len, uint
 	return (int)osz;
 }
 
+
+/* complex requests with n OOL descriptors (count@0x18 = n, 16 bytes each from 0x1c: type byte at +0xb, size at +0xc); the data follows the message in descriptor order.
+ * Returns 0 with off[i] / sz[i] set, else a MIG error code. */
+static int ool_multi(const mach_msg_header_t *h, const uint8_t *buf, size_t len, uint32_t want_size, int n, size_t *off, uint32_t *sz)
+{
+	if (!(h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || h->msgh_size != want_size || len < want_size || rd32(buf, 0x18) != (uint32_t)n) return -304;
+	uint64_t total = want_size;
+	for (int i = 0; i < n; i++) { if (buf[0x27 + 16 * i] != 1) return -300; sz[i] = rd32(buf, 0x28 + 16 * i); off[i] = (size_t)total; total += sz[i]; }
+	return total == len ? 0 : -304;
+}
+
 extern uint32_t cursor_lock_owner;
 static uint8_t cursor_drag_lock[31]; static uint32_t cursor_restriction_mode; static uint8_t cursor_restriction_corners, cursor_teleport;
 
@@ -547,6 +558,33 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		memcpy(r + 0x18, &WS_NDR, sizeof WS_NDR);
 		r[0x24] = ws_window_exists(srv, rd32(buf, 0x20)) && ws_window_on_screen(srv, rd32(buf, 0x20)) ? 1 : 0;
 		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
+	case SLS_MSG_SetWindowTransformList: {                                         /* 2 OOL: window ids (u32 each), transforms (24 bytes each: a b c d tx ty); NDR@0x3c, flags@0x44, entry@0x48, counts@0x4c / 0x50 (must match the sizes); size 0x54 */
+		size_t off[2]; uint32_t sz[2]; int e = ool_multi(h, buf, len, 0x54, 2, off, sz);
+		if (e) return reply_simple(c->fd, h, e);
+		if ((sz[0] >> 2) != rd32(buf, 0x4c) || sz[1] / 0x18 != rd32(buf, 0x50)) return reply_simple(c->fd, h, -300);
+		uint32_t n = sz[0] >> 2; if (sz[1] / 0x18 < n) n = sz[1] / 0x18;                  /* applied pairwise */
+		for (uint32_t i = 0; i < n; i++) {
+			uint32_t wid = rd32(buf, off[0] + 4 * i);
+			if (ws_window_exists(srv, wid) && holds_rights(c, wid)) ws_set_window_transform(srv, wid, (const float *)(const void *)(buf + off[1] + 0x18 * i));
+		}
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_AddTrackingAreas: {                                               /* 5 OOL, size 0x8c, wid@0x74; the descriptor sizes must agree with the counts@0x78..0x88. Inferred layout (not decompiled below the wire checks): region bytes of all areas, the byte length of each area's region (u32), the area ids (u64), flags, user data (u64) */
+		size_t off[5]; uint32_t sz[5]; int e = ool_multi(h, buf, len, 0x8c, 5, off, sz);
+		if (e) return reply_simple(c->fd, h, e);
+		if (sz[0] != rd32(buf, 0x78) || (sz[1] >> 2) != rd32(buf, 0x7c) || (sz[2] >> 3) != rd32(buf, 0x80) || sz[3] != rd32(buf, 0x84) || (sz[4] >> 3) != rd32(buf, 0x88)) return reply_simple(c->fd, h, -300);
+		uint32_t wid = rd32(buf, 0x74), n = sz[2] >> 3, used = 0;
+		if (!ws_window_exists(srv, wid)) return reply_simple(c->fd, h, 1000);
+		if (!holds_rights(c, wid)) return reply_simple(c->fd, h, 0);
+		for (uint32_t i = 0; i < n && i < (sz[1] >> 2); i++) {
+			uint32_t rl = rd32(buf, off[1] + 4 * i); uint64_t id; memcpy(&id, buf + off[2] + 8 * i, 8);
+			if (rl > sz[0] - used) break;
+			ws_rect *rc = NULL; int nr = 0; ws_rect bb;
+			if (rl && ws_region_parse(buf + off[0] + used, rl, &rc, &nr, &bb) == 0) ws_tracking_set(srv, id, wid, rc, nr); else ws_tracking_set(srv, id, wid, NULL, 0);
+			free(rc); used += rl;
+		}
+		return reply_simple(c->fd, h, 0);
 	}
 	case SLS_MSG_AddTrackingArea: {                                                /* OOL region; wid@0x34, size repeated@0x38, compat id u64@0x3c, u64@0x48 (user data); size 0x50; 0 */
 		int err; int osz = ool_request(h, buf, len, 0x50, &err);
