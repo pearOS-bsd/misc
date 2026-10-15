@@ -7,6 +7,7 @@
 @end
 @implementation Hello
 - (void)resize:(id)sender { NSLog(@"resizing"); [win setFrame:NSMakeRect(300, 300, 480, 260) display:YES]; NSLog(@"frame now %@", NSStringFromRect([win frame])); }
+- (void)check:(id)sender { NSLog(@"frame after resize %@", NSStringFromRect([win frame])); }
 - (void)quit:(id)sender { NSLog(@"done"); [NSApp terminate:nil]; }
 - (void)clicked:(id)sender { NSLog(@"button clicked"); [field setStringValue:@"Clicked!"]; }
 @end
@@ -29,6 +30,7 @@ int main(int argc, char **argv)
 	NSLog(@"window shown, frame %@ number %d visible %d bgapp %d hidden %d active %d", NSStringFromRect([w frame]), (int)[w windowNumber], (int)[w isVisible], (int)[[NSUserDefaults standardUserDefaults] boolForKey:@"GSBackgroundApp"], (int)[NSApp isHidden], (int)[NSApp isActive]);
 	[NSTimer scheduledTimerWithTimeInterval:([[NSUserDefaults standardUserDefaults] doubleForKey:@"HelloSeconds"] ?: 1.0) target:h selector:@selector(quit:) userInfo:nil repeats:NO];
 	[NSTimer scheduledTimerWithTimeInterval:8.0 target:h selector:@selector(resize:) userInfo:nil repeats:NO];
+	[NSTimer scheduledTimerWithTimeInterval:9.5 target:h selector:@selector(check:) userInfo:nil repeats:NO];
 	[app run];
 	return 0;
 }

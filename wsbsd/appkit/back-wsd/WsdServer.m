@@ -196,7 +196,7 @@ static void terminate(int sig)
 	NSTimeInterval ts = [[NSDate date] timeIntervalSinceReferenceDate];
 	NSEvent *ev = [NSEvent otherEventWithType: NSAppKitDefined location: resized ? origin : NSZeroPoint modifierFlags: 0 timestamp: ts windowNumber: w->number context: GSCurrentContext()
 		subtype: resized ? GSAppKitWindowResized : GSAppKitWindowMoved data1: resized ? w->w : (NSInteger)origin.x data2: resized ? w->h : (NSInteger)origin.y];
-	[(GSWindowWithNumber(w->number)) sendEvent: ev];
+	[NSApp postEvent: ev atStart: NO];   /* queued: the NSWindow may not be fully set up yet while it is being created */
 }
 
 - (void) placewindow: (NSRect)frame : (int)win
