@@ -80,6 +80,17 @@ int main(void)
 		got = call(fd, o, 0x48, rep, sizeof rep); CHECK(got >= 0x24 && r32(rep, 0x20) == 0);
 		w32(o, 0x34, 0x7ffff); got = call(fd, o, 0x48, rep, sizeof rep); CHECK(got >= 0x24 && r32(rep, 0x20) == 1000);
 	}
+	{ /* FlushRegion, SetWindowClipShape (OOL empty regions) and ShapeSurface */
+		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 1, 2, 30, 40 }, 0, &tw) == 0);
+		uint8_t o[0x80], rep[0x100]; int got;
+		memset(o, 0, sizeof o); hdr(o, 0x3c, 30081, 1); w32(o, 0x18, 1); o[0x27] = 1; w32(o, 0x34, tw.id);
+		got = call(fd, o, 0x3c, rep, sizeof rep); CHECK(got >= 0x24 && r32(rep, 0x20) == 0);
+		memset(o, 0, sizeof o); hdr(o, 0x3c, 30029, 1); w32(o, 0x18, 1); o[0x27] = 1; w32(o, 0x34, tw.id);
+		got = call(fd, o, 0x3c, rep, sizeof rep); CHECK(got >= 0x24 && r32(rep, 0x20) == 0);
+		memset(o, 0, sizeof o); hdr(o, 0x50, 30099, 1); w32(o, 0x18, 1); o[0x27] = 1;
+		got = call(fd, o, 0x50, rep, sizeof rep); CHECK(got >= 0x24 && r32(rep, 0x20) == 0);
+		w32(o, 0x4c, 3); got = call(fd, o, 0x50, rep, sizeof rep); CHECK(got >= 0x24 && r32(rep, 0x20) == (uint32_t)-300);
+	}
 	{ /* PostFilteredEventTapData, style 2 (SLEventPostToPid): the event reaches the process's frontmost window only */
 		ws_win pw; CHECK(ws_win_create(c, (ws_rect){ 300, 300, 100, 60 }, 0, &pw) == 0 && ws_win_order(c, &pw, 1, 0) == 0);
 		uint8_t rec[512]; size_t rn = ws_evrec_make_key(rec, sizeof rec, 1, 12, 0, 0, 0, 0, 0, 0x0a);
