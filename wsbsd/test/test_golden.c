@@ -12,7 +12,7 @@ static int fails, checked, skipped;
 /* ids whose reply depends on live state (pids, times, displays, focus): size and complex bit only */
 static const int env_differs[] = { 30139, 30140 };   /* the real session has processes with key focus, a fresh wsd has none */
 /* zero-argument harvest: answers that depend on the recorded machine (its windows, displays, hot keys, process records) */
-static const int harvest_env[] = { 34003, 33023, 33027, 32006, 32007, 32008, 32010, 32024, 32035, 32038, 32052, 32063, 32072, 34006, 30139, 30140, 30014, 30063, 30068, 30211, 30389, 30456, 30460, 30404 };
+static const int harvest_env[] = { 34003, 33023, 33027, 32006, 32007, 32008, 32010, 32024, 32035, 32038, 32052, 32063, 32072, 34006, 30139, 30140, 30014, 30063, 30068, 30211, 30389, 30456, 30460, 30404, 30572 /* GetWindowTransform3D: the macOS 26 server refuses this 36-byte request (-304), macOS 27's takes it */ };
 static int is_harvest_env(int id) { for (size_t i = 0; i < sizeof harvest_env / sizeof *harvest_env; i++) if (harvest_env[i] == id) return 1; return 0; }
 static const int state_dependent[] = { 34003, 30389, 30456, 30243, 30247, 30356, 30363, 30110, 30054, 30149, 30308, 30309 };
 static int is_env(int id) { for (size_t i = 0; i < sizeof env_differs / sizeof *env_differs; i++) if (env_differs[i] == id) return 1; return 0; }

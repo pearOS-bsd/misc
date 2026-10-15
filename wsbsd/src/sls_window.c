@@ -112,6 +112,17 @@ static int ool_multi(const mach_msg_header_t *h, const uint8_t *buf, size_t len,
 	return total == len ? 0 : -304;
 }
 
+/* per-window attributes the simple setters keep: depth, one-shot flag, backing alpha, autofill colour, client perceived type */
+#define MAXATTR 512
+static struct { uint32_t wid; int depth; uint8_t oneshot, has_alpha, have_alpha; uint8_t autofill[12]; int perceived; } attr[MAXATTR];
+static int attr_slot(uint32_t wid, int create)
+{
+	int free_i = -1;
+	for (int i = 0; i < MAXATTR; i++) { if (attr[i].wid == wid) return i; if (free_i < 0 && (!attr[i].wid || !ws_window_exists(srv, attr[i].wid))) free_i = i; }
+	if (!create || free_i < 0) return -1;
+	memset(&attr[free_i], 0, sizeof attr[free_i]); attr[free_i].wid = wid; return free_i;
+}
+
 extern uint32_t cursor_lock_owner;
 static uint8_t cursor_drag_lock[31]; static uint32_t cursor_restriction_mode; static uint8_t cursor_restriction_corners, cursor_teleport;
 
@@ -363,7 +374,44 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		uint8_t r[0x28]; memset(r, 0, sizeof r);
 		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
 		memcpy(r + 0x18, &WS_NDR, sizeof WS_NDR);
-		if (h->msgh_id == SLS_MSG_GetWindowDepth) wr32(r, 0x24, 4);
+		{ int ai = attr_slot(rd32(buf, 0x20), 0);
+			if (h->msgh_id == SLS_MSG_GetWindowDepth) wr32(r, 0x24, ai >= 0 && attr[ai].depth ? (uint32_t)attr[ai].depth : 4);
+			else if (h->msgh_id == SLS_MSG_GetWindowHasAlpha && ai >= 0 && attr[ai].have_alpha) r[0x24] = attr[ai].has_alpha; }
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
+	case SLS_MSG_SetWindowDepth: {                                                 /* wid@0x20, depth@0x24, size 0x28; kept for the window; always 0 */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		uint32_t wid = rd32(buf, 0x20); int ai;
+		if (ws_window_exists(srv, wid) && holds_rights(c, wid) && (ai = attr_slot(wid, 1)) >= 0) attr[ai].depth = (int)rd32(buf, 0x24);
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_SetWindowIsOneShot:                                               /* wid@0x20, flag byte@0x24, size 0x28; rights needed; always 0 */
+	case SLS_MSG_SetWindowHasAlpha:                                                /* the same, no rights check */
+	case SLS_MSG_SetWindowClientPerceivedType: {                                   /* wid@0x20, type@0x24 */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		uint32_t wid = rd32(buf, 0x20); int ai;
+		if (ws_window_exists(srv, wid) && (h->msgh_id == SLS_MSG_SetWindowHasAlpha || holds_rights(c, wid) || h->msgh_id == SLS_MSG_SetWindowClientPerceivedType) && (ai = attr_slot(wid, 1)) >= 0) {
+			if (h->msgh_id == SLS_MSG_SetWindowIsOneShot) attr[ai].oneshot = buf[0x24] != 0;
+			else if (h->msgh_id == SLS_MSG_SetWindowHasAlpha) { attr[ai].has_alpha = buf[0x24] != 0; attr[ai].have_alpha = 1; }
+			else attr[ai].perceived = (int)rd32(buf, 0x24);
+		}
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_SetWindowAutofillColor: {                                         /* wid@0x20, 12 bytes of colour@0x24, size 0x30; rights needed; always 0 */
+		if (!simple_ok(h, len, 0x30)) return reply_simple(c->fd, h, -304);
+		uint32_t wid = rd32(buf, 0x20); int ai;
+		if (ws_window_exists(srv, wid) && holds_rights(c, wid) && (ai = attr_slot(wid, 1)) >= 0) memcpy(attr[ai].autofill, buf + 0x24, 12);
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_GetWindowTransform3D: {                                           /* wid@0x20, size 0x24; reply 0x64: the 4x4 matrix as 16 floats @0x24 (row major, m11 m12 .. m44); the 2D transform set by SetWindowTransform maps to a b / c d / tx ty; 1000 for an unknown window */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		uint32_t wid = rd32(buf, 0x20);
+		if (!ws_window_exists(srv, wid)) return reply_simple(c->fd, h, 1000);
+		float m[16] = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 };
+		for (int i = 0; i < MAXXF; i++) if (xform[i].wid == wid) { m[0] = xform[i].m[0]; m[1] = xform[i].m[1]; m[4] = xform[i].m[2]; m[5] = xform[i].m[3]; m[12] = xform[i].m[4]; m[13] = xform[i].m[5]; break; }
+		uint8_t r[0x64]; memset(r, 0, sizeof r);
+		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
+		memcpy(r + 0x18, &WS_NDR, 8); memcpy(r + 0x24, m, sizeof m);
 		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
 	}
 	case SLS_MSG_GetWindowShmemReference: {                                        /* wid@0x20, size 0x24; reply complex 0x3c: one port descriptor (the window's memory entry; no descriptor is passed here), the return code overlays its pad word, NDR@0x28, then owner / rights / sharing state as GetWindowOwner reports them; 1000 for an unknown window */
