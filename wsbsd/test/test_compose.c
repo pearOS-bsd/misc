@@ -100,6 +100,22 @@ static void test_walk(void)
 }
 
 
+/* rounded corners: a window with a corner radius of 16 loses its corner pixels, keeps the rest */
+static void test_corners(void)
+{
+	ws_server *srv = ws_server_new(100, 100);
+	ws_surface *scr = ws_surface_new(100, 100);
+	ws_wid w = ws_create_window(srv, (ws_rect){ 10, 10, 60, 60 });
+	ws_fill(ws_window_backing(srv, w), (ws_rect){ 0, 0, 60, 60 }, 1, 0, 0, 1);
+	ws_order_window(srv, w, WS_ABOVE, 0);
+	ws_set_window_shadow(srv, w, 16, 1);
+	ws_compose_scene(srv, scr);
+	#define CP(x, y) (*(uint32_t *)(scr->px + (size_t)(y) * scr->stride + (size_t)(x) * 4))
+	CHECK(CP(10, 10) != 0xffff0000u);                      /* the corner pixel is cut */
+	CHECK(CP(40, 40) == 0xffff0000u && CP(10, 40) == 0xffff0000u && CP(40, 10) == 0xffff0000u);
+	ws_surface_free(scr); ws_server_free(srv);
+}
+
 /* screen zoom: a 10x10 red square at the centre of a 100x100 screen covers 20x20 at scale 2 */
 static void test_zoom(void)
 {
@@ -277,6 +293,7 @@ int main(void)
 	test_transform();
 	test_invert();
 	test_zoom();
+	test_corners();
 	printf(fails ? "%d failures\n" : "all tests passed\n", fails);
 	return fails != 0;
 }
