@@ -87,7 +87,11 @@ int main(int argc, char **argv)
 			fprintf(stderr, "opal_demo: g2=%p g=%p\n", (void *)g2, (void *)g);
 			draw_button(g2, CGRectMake(30, 20, 120, 34), 1);
 			CGContextFlush(g2); CGContextRelease(g2);
-			fprintf(stderr, "opal_demo: after g2 pixel(60,323)=%08x\n", ((uint32_t *)px->px)[323 * (px->stride / 4) + 60]);
+			{
+				int greens = 0, fx = -1, fy = -1;
+				for (int yy = 0; yy < H; yy++) for (int xx = 0; xx < W; xx++) { uint32_t v = ((uint32_t *)px->px)[yy * (px->stride / 4) + xx]; if ((v & 0x00ffffff) == 0x0033c759 || (v & 0xff) == 0x59) { if (!greens) { fx = xx; fy = yy; } greens++; } }
+				fprintf(stderr, "opal_demo: after g2 pixel(60,323)=%08x, greenish pixels %d (first at %d,%d)\n", ((uint32_t *)px->px)[323 * (px->stride / 4) + 60], greens, fx, fy);
+			}
 			for (int yy = 310; yy < 316; yy++) for (int xx = 40; xx < 100; xx++) ((uint32_t *)px->px)[yy * (px->stride / 4) + xx] = 0xffff0000;      /* direct write: tests the flush path */
 			ws_rect btn = { 30, H - 54, 120, 34 };
 			int frc = ws_surface_flush(c, &w, sid, &btn);
