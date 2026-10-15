@@ -254,6 +254,23 @@ int main(void)
 		w32(m, 0x20, 0x7ffff); CHECK(rc(fd, m, 0x24) == 0x3f2);
 		hdr(m, 0x24, 30192, 0); w32(m, 0x20, aa.id); CHECK(rc(fd, m, 0x24) == 0);
 	}
+	{ /* rights grants: the owner offers rights, the recipient accepts (the grant id is tried: the real server announces it by notification), holds them, relinquishes the non-exclusive ones */
+		ws_conn *c2 = ws_connect(NULL); CHECK(c2 != NULL);
+		ws_win gw; CHECK(ws_win_create(c, (ws_rect){ 150, 300, 20, 20 }, 0, &gw) == 0);
+		int fd2 = ws_conn_fd(c2); uint8_t m[0x44], rep[0x40]; memset(m, 0, sizeof m);
+		hdr(m, 0x40, 30274, 0); w32(m, 0x20, (uint32_t)ws_conn_id(c2)); w32(m, 0x24, 1); w32(m, 0x28, gw.id); w32(m, 0x2c, 0x10000); w32(m, 0x3c, 0);
+		CHECK(rc(fd2, m, 0x40) == 1001);                                                        /* the recipient lacks privileges on the window */
+		CHECK(rc(fd, m, 0x40) == 0);                                                            /* the owner extends them */
+		CHECK(rc(fd, m, 0x40) == 1001);                                                         /* one offer at a time */
+		memset(m, 0, sizeof m); hdr(m, 0x24, 30276, 0); w32(m, 0x20, gw.id); int g = call(fd2, m, 0x24, rep, sizeof rep); CHECK(g == 0x30 && r32(rep, 0x24) == 0);
+		int okid = 0; for (uint32_t id = 1; id < 200 && !okid; id++) { memset(m, 0, sizeof m); hdr(m, 0x2c, 30275, 0); w32(m, 0x20, gw.id); w32(m, 0x24, id); if (rc(fd2, m, 0x2c) == 0) okid = 1; }
+		CHECK(okid);
+		memset(m, 0, sizeof m); hdr(m, 0x24, 30276, 0); w32(m, 0x20, gw.id); g = call(fd2, m, 0x24, rep, sizeof rep); CHECK(g == 0x30 && r32(rep, 0x24) == 0x10001);
+		memset(m, 0, sizeof m); hdr(m, 0x28, 30277, 0); w32(m, 0x20, gw.id); w32(m, 0x24, 1); CHECK(rc(fd2, m, 0x28) == 1001);                  /* exclusive rights stay */
+		w32(m, 0x24, 0x10000); CHECK(rc(fd2, m, 0x28) == 0);
+		w32(m, 0x24, 0x10000); CHECK(rc(fd2, m, 0x28) == 1001);                                    /* no longer held */
+		ws_disconnect(c2);
+	}
 	{ /* GetWindowTransform: the identity for a window nothing transformed (recorded), 1000 for an unknown window, -304 for a bad size */
 		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 100, 200, 30, 20 }, 0, &tw) == 0);
 		uint8_t m[0x28], rep[0x80]; memset(m, 0, sizeof m); hdr(m, 0x28, 30034, 0); w32(m, 0x20, tw.id); w32(m, 0x24, 0x7fffff00);
