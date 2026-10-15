@@ -65,8 +65,6 @@ int main(int argc, char **argv)
 	ws_win_order(c, &w, 1, 0);
 	ws_surface *px = cb.buf.cpu;
 	CGColorSpaceRef rgb = CGColorSpaceCreateDeviceRGB();
-	CGContextRef g = CGBitmapContextCreate(px->px, W, H, 8, px->stride, rgb, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little);
-	if (!g) { fprintf(stderr, "ca_demo: CGBitmapContextCreate failed\n"); return 1; }
 
 	/* the layer tree */
 	CALayer *root = [CALayer layer];
@@ -105,8 +103,12 @@ int main(int argc, char **argv)
 	for (int frame = 0; frame < 40; frame++) {
 		CFTimeInterval now = CACurrentMediaTime();
 		update_layer(root, now);
+		/* Opal writes into the shared memory when a context is flushed, and a flushed context is finished: one fresh bitmap context per frame */
+		CGContextRef g = CGBitmapContextCreate(px->px, W, H, 8, px->stride, rgb, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little);
+		if (!g) { fprintf(stderr, "ca_demo: CGBitmapContextCreate failed\n"); return 1; }
 		CGContextClearRect(g, CGRectMake(0, 0, W, H));
 		draw_layer([root presentationLayer], g, 1.0f);
+		CGContextFlush(g);
 		if (frame == 0 || frame == 5) {
 			CALayer *pl = [root presentationLayer]; CGRect pb = [pl bounds]; CGPoint pp = [pl position];
 			const uint8_t *q = px->px + 180 * px->stride + 260 * 4;
@@ -114,6 +116,7 @@ int main(int argc, char **argv)
 			CALayer *bp = [[[root sublayers] objectAtIndex: 1] presentationLayer]; CGPoint bpos = [bp position];
 			printf("  box presentation pos %g,%g opacity %g; model pos %g,%g\n", bpos.x, bpos.y, [bp opacity], [[[root sublayers] objectAtIndex: 1] position].x, [[[root sublayers] objectAtIndex: 1] position].y);
 		}
+		CGContextRelease(g);
 		ws_surface_flush(c, &w, sid, NULL);
 		double el = now - start;
 		if (shots == 0 && el > 0.25) { char p[256]; snprintf(p, sizeof p, "%s-a.ppm", out); ws_screenshot_scene(c, p); shots = 1; printf("frame at %.2fs\n", el); }
