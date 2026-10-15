@@ -172,3 +172,19 @@ CGError SLSGetWindowTags(CGSConnectionID cid, CGSWindowID wid, uint64_t *tags, i
 	memcpy(tags, r + 0x24, 8);
 	return 0;
 }
+
+CGError SLSSetWindowShape(CGSConnectionID cid, CGSWindowID wid, float tx, float ty, CGSRegionRef shape)
+{
+	(void)cid; ws_win t;
+	if (!shape) return 1001;
+	return ws_win_set_frame(get_conn(), handle(wid, &t), (ws_rect){ (int)tx, (int)ty, (int)shape->r.w, (int)shape->r.h });
+}
+CGError SLSGetWindowResolution(CGSConnectionID cid, CGSWindowID wid, double *scale) { (void)cid; ws_win t; float f = 1; if (!scale) return 1001; int rc = ws_win_get_resolution(get_conn(), handle(wid, &t), &f); if (!rc) *scale = f; return rc; }
+CGError SLSSetWindowResolution(CGSConnectionID cid, CGSWindowID wid, double scale) { (void)cid; ws_win t; return ws_win_set_resolution(get_conn(), handle(wid, &t), (float)scale); }
+CGError SLSSetWindowListAlpha(CGSConnectionID cid, const CGSWindowID *list, int count, float alpha)
+{
+	(void)cid;
+	int rc = 0;
+	for (int i = 0; i < count; i++) { ws_win t; int r = ws_win_alpha(get_conn(), handle(list[i], &t), alpha); if (r) rc = r; }
+	return rc;
+}

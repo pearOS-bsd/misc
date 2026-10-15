@@ -24,6 +24,7 @@ typedef struct {
 	int sublevel, event_mask;
 	uint64_t tags;
 	int corner_radius;
+	float resolution;
 	ws_surface *content;        /* borrowed */
 	ws_surface *front;          /* committed copy of the content: what is shown */
 	uint32_t content_id;
@@ -796,4 +797,14 @@ int ws_tracking_set_shape(ws_server *s, uint64_t id, const ws_rect *rects, int n
 {
 	for (int i = 0; i < 64; i++) if (s->trk[i].used && s->trk[i].id == id) return ws_tracking_set(s, id, s->trk[i].wid, rects, n);
 	return -1;
+}
+
+int ws_set_window_resolution(ws_server *s, ws_wid id, float scale) { window *w = get(s, id); if (!w) return -1; if (w->resolution != scale) { w->resolution = scale; bump(s); } return 0; }
+int ws_window_resolution(ws_server *s, ws_wid id, float *scale) { window *w = get(s, id); if (!w) return -1; *scale = w->resolution > 0 ? w->resolution : 1.0f; return 0; }
+int ws_set_window_frame(ws_server *s, ws_wid id, int x, int y, int w, int h)
+{
+	window *win = get(s, id);
+	if (!win) return -1;
+	if (win->frame.x != x || win->frame.y != y) { win->frame.x = x; win->frame.y = y; bump(s); }
+	return ws_resize_window(s, id, w, h);
 }

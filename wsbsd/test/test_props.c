@@ -110,7 +110,7 @@ int main(void)
 
 	/* ShapeWindow resizes (two OOL regions); GetWindowShape reads the shape back */
 	{
-		uint8_t reg[64]; size_t rn = ws_region_serialize(&(ws_rect){ 0, 0, 150, 90 }, 1, reg, sizeof reg);
+		uint8_t reg[64]; size_t rn = ws_region_serialize(&(ws_rect){ 10, 10, 150, 90 }, 1, reg, sizeof reg);        /* screen coordinates: the bounds are the new frame */
 		uint8_t sw[0x58 + 80]; memset(sw, 0, sizeof sw); hdr(sw, 0x58, SLS_MSG_ShapeWindow, 1);
 		w32(sw, 0x18, 2); sw[0x25] = 1; sw[0x27] = 1; w32(sw, 0x28, (uint32_t)rn); sw[0x35] = 1; sw[0x37] = 1; w32(sw, 0x38, 0);
 		memcpy(sw + 0x3c, &WS_NDR, 8); w32(sw, 0x44, w.id); w32(sw, 0x50, (uint32_t)rn); w32(sw, 0x54, 0); memcpy(sw + 0x58, reg, rn);

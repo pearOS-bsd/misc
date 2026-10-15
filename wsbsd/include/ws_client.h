@@ -30,6 +30,9 @@ size_t ws_tx_packed(uint8_t *out, int64_t v);                      /* packed64 *
 size_t ws_tx_float(uint8_t *out, float f);
 size_t ws_tx_double(uint8_t *out, double d);
 int ws_transaction_commit(ws_conn *, const uint8_t *stream, size_t n, int sync);
+int ws_win_set_frame(ws_conn *, ws_win *, ws_rect frame);        /* ShapeWindow: origin and size */
+int ws_win_set_resolution(ws_conn *, ws_win *, float scale);       /* SetWindowResolution (30279) */
+int ws_win_get_resolution(ws_conn *, ws_win *, float *scale);      /* GetWindowResolution (30280) */
 int ws_win_set_level(ws_conn *, ws_win *, int level);            /* SetWindowLevel (30012) */
 int ws_win_get_level(ws_conn *, ws_win *, int *level);          /* GetWindowLevel (30013) */
 int ws_win_get_alpha(ws_conn *, ws_win *, float *alpha);        /* GetWindowAlpha (30042) */

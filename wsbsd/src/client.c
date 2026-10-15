@@ -516,3 +516,28 @@ int ws_raw_call(ws_conn *c, const void *req, size_t n, void *reply, size_t cap)
 	int32_t rc; memcpy(&rc, (uint8_t *)reply + 0x20, 4);
 	return rc;
 }
+
+/* ShapeWindow (30242): the window takes the bounds of the region (screen coordinates) as its frame */
+int ws_win_set_frame(ws_conn *c, ws_win *w, ws_rect frame)
+{
+	uint8_t reg[256]; size_t rn = ws_region_serialize(&frame, 1, reg, sizeof reg);
+	if (!rn) return -1;
+	uint8_t m[0x58 + 256]; memset(m, 0, sizeof m);
+	fill_header((mach_msg_header_t *)m, 0x58, SLS_MSG_ShapeWindow, 1);
+	uint32_t two = 2, n32 = (uint32_t)rn; memcpy(m + 0x18, &two, 4); m[0x25] = 1; m[0x27] = 1; memcpy(m + 0x28, &n32, 4); m[0x35] = 1; m[0x37] = 1;
+	memcpy(m + 0x3c, &WS_NDR, 8); memcpy(m + 0x44, &w->id, 4); memcpy(m + 0x50, &n32, 4); memcpy(m + 0x58, reg, rn);
+	return simple_call(c, m, 0x58 + rn);
+}
+int ws_win_set_resolution(ws_conn *c, ws_win *w, float scale)
+{
+	uint8_t m[0x28]; memset(m, 0, sizeof m);
+	fill_header((mach_msg_header_t *)m, sizeof m, SLS_MSG_SetWindowResolution, 0);
+	memcpy(m + 0x18, &WS_NDR, 8); memcpy(m + 0x20, &w->id, 4); memcpy(m + 0x24, &scale, 4);
+	return simple_call(c, m, sizeof m);
+}
+int ws_win_get_resolution(ws_conn *c, ws_win *w, float *scale)
+{
+	int32_t v = 0; int rc = wid_value(c, SLS_MSG_GetWindowResolution, w->id, &v);
+	if (!rc) memcpy(scale, &v, 4);
+	return rc;
+}

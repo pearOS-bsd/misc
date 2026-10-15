@@ -86,7 +86,7 @@ static int run_stream(conn *c, const uint8_t *p, size_t n)
 			if (r.bad || len > r.n) return 1001;
 			if (holds_rights(c, wid) && len) {
 				ws_rect *rc = NULL; int nr = 0; ws_rect bb;
-				if (ws_region_parse(r.p, (uint32_t)len, &rc, &nr, &bb) == 0 && bb.w > 0 && bb.h > 0) ws_resize_window(srv, wid, bb.x + bb.w, bb.y + bb.h);
+				if (ws_region_parse(r.p, (uint32_t)len, &rc, &nr, &bb) == 0 && bb.w > 0 && bb.h > 0) ws_set_window_frame(srv, wid, bb.x, bb.y, bb.w, bb.h);
 				free(rc);
 			}
 			r.p += len; r.n -= len;
@@ -104,7 +104,7 @@ static int run_stream(conn *c, const uint8_t *p, size_t n)
 			(void)wid; r.p += len; r.n -= len;                                       /* accepted, not used for composition yet */
 			break;
 		}
-		case OP_SET_RESOLUTION: { uint32_t wid = (uint32_t)get_packed(&r); double res = get_double(&r); if (r.bad) return 1001; (void)wid; (void)res; break; }
+		case OP_SET_RESOLUTION: { uint32_t wid = (uint32_t)get_packed(&r); double res = get_double(&r); if (r.bad) return 1001; if (holds_rights(c, wid)) ws_set_window_resolution(srv, wid, (float)res); break; }
 		case OP_SET_CORNER_RADIUS: {
 			uint32_t wid = (uint32_t)get_packed(&r); double rad = get_double(&r);
 			if (r.bad) return 1001;

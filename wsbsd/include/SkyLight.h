@@ -46,4 +46,8 @@ CGError SLSGetOnScreenWindowList(CGSConnectionID cid, CGSConnectionID owner, int
 CGError SLSSetWindowTags(CGSConnectionID cid, CGSWindowID wid, uint64_t *tags, int size);
 CGError SLSClearWindowTags(CGSConnectionID cid, CGSWindowID wid, uint64_t *tags, int size);
 CGError SLSGetWindowTags(CGSConnectionID cid, CGSWindowID wid, uint64_t *tags, int size);
+CGError SLSSetWindowShape(CGSConnectionID cid, CGSWindowID wid, float tx, float ty, CGSRegionRef shape);   /* origin (tx, ty), size of the region */
+CGError SLSGetWindowResolution(CGSConnectionID cid, CGSWindowID wid, double *scale);
+CGError SLSSetWindowResolution(CGSConnectionID cid, CGSWindowID wid, double scale);
+CGError SLSSetWindowListAlpha(CGSConnectionID cid, const CGSWindowID *list, int count, float alpha);
 #endif
