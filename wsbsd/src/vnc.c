@@ -28,7 +28,7 @@ static struct {
 	int ls, fd, state, want, incremental, use_zlib; z_stream zs; int zs_ready;
 	uint8_t in[512]; size_t inn;
 	uint8_t challenge[16];
-	uint32_t shift[3]; int bigendian;                     /* the client's pixel format (r, g, b shifts) */
+	int bpp, bigendian; uint32_t shift[3], max[3];        /* the client's pixel format: bits per pixel (8 / 16 / 32), byte order, true-colour shifts and maxima */
 	uint8_t *last; int lw, lh;                            /* what the client has */
 	int rx, ry, rw, rh;                                   /* the region of the last request */
 	uint64_t last_gen; double last_send;
@@ -85,7 +85,7 @@ int wsd_vnc_accept(void)
 	if (v.fd >= 0) { close(c); return -1; }                  /* one viewer at a time */
 	int one = 1; setsockopt(c, IPPROTO_TCP, TCP_NODELAY, &one, sizeof one);
 	fcntl(c, F_SETFL, fcntl(c, F_GETFL) | O_NONBLOCK);
-	v.fd = c; v.state = ST_VERSION; v.inn = 0; v.want = 0; v.shift[0] = 16; v.shift[1] = 8; v.shift[2] = 0; v.bigendian = 0;
+	v.fd = c; v.state = ST_VERSION; v.inn = 0; v.want = 0; v.bpp = 32; v.shift[0] = 16; v.shift[1] = 8; v.shift[2] = 0; v.max[0] = v.max[1] = v.max[2] = 255; v.bigendian = 0;
 	if (send_all(c, "RFB 003.008\n", 12) < 0) { drop(); return -1; }
 	return c;
 }
@@ -112,12 +112,13 @@ static int keysym_to_evdev(uint32_t k)
 	return -1;
 }
 
-/* the bytes of a pixel in the client's format */
-static void put_pixel(uint8_t *o, const uint8_t *bgra, const uint32_t sh[3], int big)
+/* the bytes of a pixel in the client's format (8, 16 or 32 bits, any shifts and maxima); returns how many bytes were written */
+static int put_pixel(uint8_t *o, const uint8_t *bgra)
 {
-	uint32_t p = ((uint32_t)bgra[2] << sh[0]) | ((uint32_t)bgra[1] << sh[1]) | ((uint32_t)bgra[0] << sh[2]);
-	if (big) { o[0] = (uint8_t)(p >> 24); o[1] = (uint8_t)(p >> 16); o[2] = (uint8_t)(p >> 8); o[3] = (uint8_t)p; }
-	else { o[0] = (uint8_t)p; o[1] = (uint8_t)(p >> 8); o[2] = (uint8_t)(p >> 16); o[3] = (uint8_t)(p >> 24); }
+	uint32_t p = ((uint32_t)bgra[2] * v.max[0] / 255 << v.shift[0]) | ((uint32_t)bgra[1] * v.max[1] / 255 << v.shift[1]) | ((uint32_t)bgra[0] * v.max[2] / 255 << v.shift[2]);
+	int n = v.bpp / 8;
+	for (int i = 0; i < n; i++) o[v.bigendian ? n - 1 - i : i] = (uint8_t)(p >> (8 * i));
+	return n;
 }
 
 static int consume(size_t n) { memmove(v.in, v.in + n, v.inn - n); v.inn -= n; return 0; }
@@ -166,7 +167,17 @@ int wsd_vnc_read(ws_server *srv, ws_input *in, int sw, int sh, const char *name)
 		} else {
 			if (v.inn < 1) return 0;
 			uint8_t t = v.in[0];
-			if (t == 0) { if (v.inn < 20) return 0; v.bigendian = v.in[6]; if (v.in[4] == 32 && v.in[7]) { v.shift[0] = v.in[14]; v.shift[1] = v.in[15]; v.shift[2] = v.in[16]; } consume(20); }
+			if (t == 0) {                                                            /* SetPixelFormat */
+				if (v.inn < 20) return 0;
+				int bpp = v.in[4];
+				if ((bpp == 8 || bpp == 16 || bpp == 32) && v.in[7]) {            /* true colour only (a colour map is not offered) */
+					v.bpp = bpp; v.bigendian = v.in[6] != 0;
+					v.max[0] = (uint32_t)(v.in[8] << 8 | v.in[9]); v.max[1] = (uint32_t)(v.in[10] << 8 | v.in[11]); v.max[2] = (uint32_t)(v.in[12] << 8 | v.in[13]);
+					v.shift[0] = v.in[14] & 31; v.shift[1] = v.in[15] & 31; v.shift[2] = v.in[16] & 31;
+					for (int k = 0; k < 3; k++) if (v.max[k] == 0 || v.max[k] > 255) v.max[k] = 255;
+				}
+				consume(20);
+			}
 			else if (t == 2) {
 				if (v.inn < 4) return 0; size_t n = (size_t)(v.in[2] << 8 | v.in[3]); if (v.inn < 4 + 4 * n) { if (4 + 4 * n > sizeof v.in) { drop(); return -1; } return 0; }
 				for (size_t k = 0; k < n; k++) { int32_t e = (int32_t)((uint32_t)v.in[4 + 4 * k] << 24 | (uint32_t)v.in[5 + 4 * k] << 16 | (uint32_t)v.in[6 + 4 * k] << 8 | v.in[7 + 4 * k]); if (e == 6) v.use_zlib = 1; }      /* the viewer takes zlib-compressed rectangles */
@@ -210,7 +221,7 @@ int wsd_vnc_update(const ws_surface *screen, uint64_t gen)
 	if (!nrect) { v.last_gen = gen; return 0; }
 	hdr[2] = (uint8_t)(nrect >> 8); hdr[3] = (uint8_t)nrect;
 	if (send_all(v.fd, hdr, 4) < 0) { drop(); return -1; }
-	uint8_t buf[12 + TILE * TILE * 4];
+	uint8_t buf[12 + TILE * TILE * 4 + 16];
 	for (int ty = y0 / TILE; ty * TILE < y1; ty++) for (int tx = x0 / TILE; tx * TILE < x1; tx++) {
 		int px = tx * TILE, py = ty * TILE, pw = TILE, ph = TILE; if (px + pw > W) pw = W - px; if (py + ph > H) ph = H - py;
 		int diff = 0; for (int y = 0; y < ph && !diff; y++) if (memcmp(screen->px + (size_t)(py + y) * screen->stride + (size_t)px * 4, v.last + ((size_t)(py + y) * W + px) * 4, (size_t)pw * 4)) diff = 1;
@@ -220,7 +231,7 @@ int wsd_vnc_update(const ws_surface *screen, uint64_t gen)
 		uint8_t *o = buf + 12;
 		for (int y = 0; y < ph; y++) {
 			const uint8_t *row = screen->px + (size_t)(py + y) * screen->stride + (size_t)px * 4;
-			for (int x = 0; x < pw; x++, o += 4) put_pixel(o, row + 4 * x, v.shift, v.bigendian);
+			for (int x = 0; x < pw; x++) o += put_pixel(o, row + 4 * x);
 			memcpy(v.last + ((size_t)(py + y) * W + px) * 4, row, (size_t)pw * 4);
 		}
 		if (v.use_zlib) {                                                         /* u32 length, then the raw pixels deflated on one stream per connection */
