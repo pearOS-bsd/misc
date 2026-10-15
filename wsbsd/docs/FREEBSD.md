@@ -34,6 +34,6 @@ create named sockets or reach anything outside the descriptors it holds. Clients
 
 ## Console switching (KMS backend)
 
-On a vt(4) console, `wsd -b kms` puts its VT in graphics mode, turns the console keyboard off and asks the kernel for SIGUSR1 (leave) and SIGUSR2 (come back). While another VT is in front it drops
+On a vt(4) console, `wsd -b kms` puts its VT in graphics mode, puts the console keyboard in raw mode and asks the kernel for SIGUSR1 (leave) and SIGUSR2 (come back). While another VT is in front it drops
 DRM master and discards raw input, so nothing typed on the other console reaches the window server or its clients; coming back it takes master again and redraws. SIGTERM / SIGINT restore text mode
 and the keyboard. When wsd is not started from a vt(4) console it says so and runs without this (input stays grabbed). Written against vt(4); never run on real hardware.

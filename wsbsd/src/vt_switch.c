@@ -28,7 +28,7 @@ int wsd_vt_setup(void)
 	m.mode = VT_PROCESS; m.relsig = SIGUSR1; m.acqsig = SIGUSR2; m.frsig = SIGUSR2;
 	if (ioctl(vtfd, VT_SETMODE, &m) < 0) { close(vtfd); vtfd = -1; return -1; }
 	if (ioctl(vtfd, KDGKBMODE, &old_kbmode) < 0) old_kbmode = -1;
-	ioctl(vtfd, KDSKBMODE, K_OFF);                       /* the console keyboard driver must not echo keystrokes into the VT */
+	ioctl(vtfd, KDSKBMODE, K_RAW);                       /* the console keyboard driver must not translate keystrokes into characters for the shell on this VT */
 	ioctl(vtfd, KDSETMODE, KD_GRAPHICS);
 	return 0;
 #else
