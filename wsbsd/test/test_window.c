@@ -179,6 +179,7 @@ int main(int argc, char **argv)
 	}
 	ws_win_shadow(c, &back, 12, 1);
 	ws_win_shadow(c, &main_w, 12, 1);
+	{ const float m[6] = { 1.15f, 0.2f, -0.2f, 1.15f, 0, 0 }; ws_win_set_transform(c, &hud, m); }   /* the HUD tilted and enlarged */
 	ws_win_shadow(c, &hud, 20, 1);
 	ws_win_alpha(c, &hud, 0.88f);
 	ws_win_order(c, &back, WS_ABOVE, 0);

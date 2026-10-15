@@ -46,7 +46,7 @@ struct gl_compositor {
 	PFNEGLEXPORTDMABUFIMAGEMESAPROC export_image;
 	GLuint prog, vbo, fbo, fbo_tex, tmp_fbo, tmp_tex, blur_prog;
 	GLint bu_rect, bu_screen, bu_src, bu_dir, bu_sigma, bu_rad;
-	GLint u_rect, u_screen, u_tex, u_size, u_uvscale, u_alpha, u_radius, u_border, u_swap;
+	GLint u_xf, u_xt, u_rect, u_screen, u_tex, u_size, u_uvscale, u_alpha, u_radius, u_border, u_swap;
 	wtex wt[MAX_TEX]; stex st[MAX_TEX]; itex it[MAX_TEX];
 	uint8_t *stage; size_t stage_cap;
 	char desc[320];
@@ -57,9 +57,12 @@ static const char *VS =
 	"attribute vec2 a_pos;\n"                                  /* unit quad, (0,0) top-left */
 	"uniform vec4 u_rect;\n"                                   /* x, y, width, height in pixels, origin top-left */
 	"uniform vec2 u_screen;\n"
+	"uniform vec4 u_xf;\n"                                    /* SetWindowTransform a b c d about the quad centre; all zero (the default) = identity */
+	"uniform vec2 u_xt;\n"                                    /* its translation */
 	"varying vec2 v_uv;\n"
 	"void main() {\n"
 	"    vec2 px = u_rect.xy + a_pos * u_rect.zw;\n"
+	"    if (u_xf != vec4(0.0)) { vec2 ctr = u_rect.xy + 0.5 * u_rect.zw, d = px - ctr; px = ctr + vec2(u_xf.x * d.x + u_xf.z * d.y, u_xf.y * d.x + u_xf.w * d.y) + u_xt; }\n"
 	"    /* row 0 of the render target is the top of the screen, so read-back and scan-out need no flip */\n"
 	"    gl_Position = vec4(px.x / u_screen.x * 2.0 - 1.0, px.y / u_screen.y * 2.0 - 1.0, 0.0, 1.0);\n"
 	"    v_uv = a_pos;\n"
@@ -152,6 +155,7 @@ static int build_program(gl_compositor *c)
 		return -1;
 	}
 	c->u_rect = glGetUniformLocation(c->prog, "u_rect");
+	c->u_xf = glGetUniformLocation(c->prog, "u_xf"); c->u_xt = glGetUniformLocation(c->prog, "u_xt");
 	c->u_screen = glGetUniformLocation(c->prog, "u_screen");
 	c->u_tex = glGetUniformLocation(c->prog, "u_tex");
 	c->u_size = glGetUniformLocation(c->prog, "u_size");
@@ -465,9 +469,12 @@ static void visit(void *ctx, const ws_visit *v)
 	if (v->blur_radius > 0) blur_backdrop(c, v);
 	int swap = 1; float uvx = 1, uvy = 1;
 	GLuint tex = window_texture(c, v, &swap, &uvx, &uvy);
-	if (tex && v->alpha > 0.0f)
+	if (tex && v->alpha > 0.0f) {
+		if (v->has_xf) { glUniform4f(c->u_xf, v->xf[0], v->xf[1], v->xf[2], v->xf[3]); glUniform2f(c->u_xt, v->xf[4], v->xf[5]); }
 		draw_quad(c, (float)v->frame.x, (float)v->frame.y, (float)v->frame.w, (float)v->frame.h, tex, uvx, uvy, v->alpha,
 		          (float)v->corner_radius, v->corner_radius > 0 ? 1.0f : 0.0f, swap);
+		if (v->has_xf) { glUniform4f(c->u_xf, 0, 0, 0, 0); glUniform2f(c->u_xt, 0, 0); }
+	}
 	if (v->shadow && v->alpha > 0.0f) {                                          /* the shadow layer lies above its window: it is cut out of the window shape */
 		GLuint st = shadow_texture(c, v);
 		if (st) draw_quad(c, (float)v->shadow_x, (float)v->shadow_y, (float)v->shadow->w, (float)v->shadow->h, st, 1, 1, v->alpha, 0, 0, 1);

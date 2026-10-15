@@ -181,6 +181,7 @@ typedef struct {
 	ws_rect damage;                 /* union of the dirty rectangles since the last frame, window-local */
 	int has_damage, full_damage;    /* full_damage: the whole content changed (new window, resize, new buffer) */
 	int blur_radius;        /* background blur radius in points behind this window, 0 = none */
+	int has_xf; float xf[6];        /* SetWindowTransform: a b c d tx ty about the window centre */
 } ws_visit;
 typedef void (*ws_visit_fn)(void *ctx, const ws_visit *v);
 void ws_server_walk(ws_server *, ws_visit_fn fn, void *ctx);              /* bottom to top, on-screen windows only */
