@@ -25,7 +25,7 @@ mkdir -p /tmp/gs && cd /tmp/gs
 git clone --depth 1 https://github.com/gnustep/libs-back back 2>&1 | tail -1
 cd back
 mkdir -p Headers/wsd
-cp "$WS"/appkit/back-wsd/*.h Headers/wsd/
+cp "$WS"/appkit/back-wsd/*.h "$WS"/include/ws.h "$WS"/include/ws_client.h "$WS"/include/ws_buffer.h Headers/wsd/
 cp "$WS"/appkit/back-wsd/*.m Source/headless/
 # headless server -> wsd server
 sed -i '' 's/^HeadlessServer.m \\/HeadlessServer.m WsdServer.m WsdCairoSurface.m \\/' Source/headless/GNUmakefile

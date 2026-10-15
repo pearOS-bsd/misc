@@ -5,7 +5,7 @@
 
 #include "config.h"
 #include <GNUstepGUI/GSDisplayServer.h>
-#include "ws_client.h"
+#include "wsd/ws_client.h"
 
 /* the "device" GNUstep passes around for a window */
 struct wsd_window {
