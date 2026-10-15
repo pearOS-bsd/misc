@@ -12,9 +12,9 @@ def load(path):
         m=re.match(r'# new_window (\w+) err=\d+ wid=(\d+)',l)
         if m: names[int(m[2])]=m[1]; continue
         m=re.match(r'raw (\d+) (?:reqsize=(\d+) -> reply_id=(\d+) bits=(\w+) size=(\d+) hex=([0-9a-f]*)|.*(error.*))',l)
-        if m: out.append((int(m[1]),m[2],m[3],m[4],m[5],m[6] or '',m[7])); continue
+        if m: out.append([int(m[1]),m[2],m[3],m[4],m[5],m[6] or '',m[7],None]); continue
         m=re.match(r'ool size=(\d+) hex=([0-9a-f]*)',l)
-        if m: out.append(('ool',m[1],m[2]))
+        if m and out: out[-1][7]=(m[1],m[2])
     return names,cid,out
 def norm(hexs,names,cid):
     b=bytearray.fromhex(hexs) if hexs and len(hexs)%2==0 else bytearray()
@@ -54,9 +54,7 @@ def window_query(hexs,names,cid):
 rn,rc,ro=load(sys.argv[1]); wn,wc,wo=load(sys.argv[2])
 same=diff=0
 for k,(a,b) in enumerate(zip(ro,wo)):
-    if a[0]=='ool' or b[0]=='ool':
-        ok=a==b; 
-    else:
+    if True:
         if a[0]==30474 and b[0]==30474 and a[2:5]==b[2:5] and 'sys' not in sys.argv:
             try: da=window_query(a[5],rn,rc); db=window_query(b[5],wn,wc)
             except Exception as e: da=db=None
@@ -64,12 +62,11 @@ for k,(a,b) in enumerate(zip(ro,wo)):
             if not ok and da is not None:
                 diff+=1; print("DIFF line",k,"id 30474 (decoded)"); print("   real",da); print("   wsd ",db); continue
         else:
-            ok=(a[0]==b[0] and a[2:5]==b[2:5] and norm(a[5],rn,rc)==norm(b[5],wn,wc))
+            ok=(a[0]==b[0] and a[2:5]==b[2:5] and norm(a[5],rn,rc)==norm(b[5],wn,wc) and a[7]==b[7])
     if ok: same+=1; continue
     diff+=1
     print("DIFF line",k,"id",a[0])
     for tag,x,nn,cc in (("real",a,rn,rc),("wsd ",b,wn,wc)):
-        if x[0]=='ool': print("  ",tag,"ool",x[1],x[2][:120]); continue
-        print("  ",tag,"reply",x[2],"bits",x[3],"size",x[4],norm(x[5],nn,cc)[:230])
+        print("  ",tag,"reply",x[2],"bits",x[3],"size",x[4],norm(x[5],nn,cc)[:230], ("ool "+x[7][0]+" "+x[7][1][:80]) if x[7] else "")
 if len(ro)!=len(wo): print("different number of replies: real",len(ro),"wsd",len(wo))
 print("%d equal, %d differ"%(same,diff))

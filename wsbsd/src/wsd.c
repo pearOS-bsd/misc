@@ -439,7 +439,8 @@ static int do_simple(conn *c, const uint8_t *buf, size_t len)
 		sls_owner_reply r; memset(&r, 0, sizeof r);
 		fill_reply_header(&r.h, h, sizeof r, 0);
 		r.ndr = WS_NDR; r.owner = (int32_t)owner;
-		r.rights = owner == c->id ? 5 : 0;                     /* inferred: bits for rights types 1 and 4 */
+		r.rights = holds_rights(c, wid) ? 0x30007 : 0;          /* recorded on a macOS runner: the owner holds 0x30007 */
+		r.extra = 1;                                            /* recorded: window+0x8dc (the sharing state), 1 for an ordinary window */
 		struct iovec v = { &r, sizeof r };
 		return ws_ipc_send(c->fd, &v, 1, NULL, 0);
 	}

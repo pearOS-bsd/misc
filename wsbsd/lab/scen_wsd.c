@@ -71,6 +71,7 @@ int main(int argc, char **argv)
 	if (!conn || argc < 2) { fprintf(stderr, "usage: scen_wsd file.scen (WS_SOCKET set)\n"); return 1; }
 	cid = ws_conn_id(conn);
 	printf("cid=%d port=wsd\n", cid);
+	for (int k = 0; k < 40; k++) { ws_win filler; ws_win_create(conn, (ws_rect){ 0, 0, 1, 1 }, 0, &filler); }   /* real window ids start around 30: keep small field values from looking like ids */
 	FILE *f = fopen(argv[1], "r"); char line[4096];
 	while (fgets(line, sizeof line, f)) {
 		char *tok[64]; int nt = 0;
