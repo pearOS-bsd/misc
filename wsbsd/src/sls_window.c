@@ -402,6 +402,11 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		if (ws_window_exists(srv, wid) && holds_rights(c, wid)) ws_window_set_appearance(srv, wid, h->msgh_id == SLS_MSG_SetWindowHasKeyAppearance ? 1 : 2, (rd32(buf, 0x24) & 0xff) != 0);
 		return reply_simple(c->fd, h, 0);
 	}
+	case SLS_MSG_AssociateMouseAndMouseCursorPosition: {                           /* flag byte@0x20 (1: the pointer follows the mouse, 0: it is held still and motion arrives as deltas), size 0x24; released when the connection goes; always 0 */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		ws_server_decouple(srv, c->id, (buf[0x20] & 1) == 0);
+		return reply_simple(c->fd, h, 0);
+	}
 	case SLS_MSG_SetWindowParent: {                                                /* child@0x20, parent@0x24, size 0x28; rights on both; always 0 */
 		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
 		uint32_t child = rd32(buf, 0x20), parent = rd32(buf, 0x24);
@@ -585,4 +590,4 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 }
 
 uint32_t cursor_lock_owner;
-void sls_window_owner_cleanup(uint32_t owner) { if (cursor_lock_owner == owner) { cursor_lock_owner = 0; ws_cursor_lock(srv, NULL); } purge_dead(); }
+void sls_window_owner_cleanup(uint32_t owner) { ws_server_decouple(srv, owner, 0); if (cursor_lock_owner == owner) { cursor_lock_owner = 0; ws_cursor_lock(srv, NULL); } purge_dead(); }

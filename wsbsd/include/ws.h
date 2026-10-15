@@ -132,6 +132,7 @@ void ws_tracking_remove_window(ws_server *, ws_wid wid);                       /
 int ws_tracking_set_enabled(ws_server *, uint64_t id, ws_wid wid, int enabled);   /* -1 when the window has no such region */
 int ws_tracking_move(ws_server *, uint64_t id, ws_wid wid, int x, int y);     /* -1 when the window has no such region */
 int ws_tracking_set_shape(ws_server *, uint64_t id, const ws_rect *rects, int n);
+void ws_server_decouple(ws_server *, uint32_t owner, int on);                 /* the pointer stops following the mouse (motion arrives as dx / dy); on = 0 releases, owner 0 releases whoever holds it */
 void ws_server_scroll(ws_server *, int x, int y, int dx, int dy, int continuous);   /* to the window under the pointer */
 void ws_server_flags(ws_server *, uint32_t flags);                    /* modifier state changed: event to the key window; later key events carry it */
 uint32_t ws_server_modifier_flags(const ws_server *);
