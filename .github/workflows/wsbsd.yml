@@ -24,6 +24,8 @@ jobs:
           ./wsd_asan -t -g 640x480 > wsd.log 2>&1 &
           sleep 1
           for s in 1 2 3 4 5 6; do ./fuzz_wsd 100000 $s; done
+          cc -std=c99 -D_DEFAULT_SOURCE -Iinclude -o scen_wsd lab/scen_wsd.c src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c -lm
+          for f in lab/state1 lab/state2 lab/state3 lab/state4 lab/wq1 lab/wq2 lab/prop1 lab/harvest1 lab/harvest2 lab/harvest3 lab/harvest4 lab/hotkeys lab/disp1 lab/app1; do SCEN_MUTATE=300 ./scen_wsd $f.scen > /dev/null || { echo "mutation run failed on $f"; exit 1; }; done
           kill -0 $! && echo "wsd alive"
           if grep -q "runtime error\|AddressSanitizer" wsd.log; then cat wsd.log; exit 1; fi
 
