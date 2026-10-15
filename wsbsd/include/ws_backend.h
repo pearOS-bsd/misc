@@ -15,6 +15,8 @@ int ws_kms_present(ws_kms *);                               /* queue a page flip
 int ws_kms_cursor_supported(ws_kms *);
 int ws_kms_cursor_set(ws_kms *, const ws_surface *img, int hot_x, int hot_y);
 int ws_kms_cursor_move(ws_kms *, int x, int y);              /* x, y: the top-left corner of the image on screen */
+void ws_kms_pause(ws_kms *);                                /* the VT was switched away: drop DRM master */
+int ws_kms_resume(ws_kms *);                                /* the VT is back: take DRM master, show the front buffer again; -1 on failure */
 int ws_kms_handle_events(ws_kms *);                         /* call when ws_kms_fd is readable */
 void ws_kms_close(ws_kms *);
 
@@ -24,6 +26,12 @@ int ws_evdev_count(ws_evdev *);
 int ws_evdev_fd(ws_evdev *, int i);
 /* Reads pending events from fd i and feeds the server; returns -1 if the device went away. */
 int ws_evdev_dispatch(ws_evdev *, int i, ws_server *, int screen_w, int screen_h);
+int ws_evdev_drain(ws_evdev *, int i);                      /* read and discard pending events (another VT is active); -1 if the device went away */
 void ws_evdev_close(ws_evdev *);
+/* console switching (FreeBSD vt(4)), src/vt_switch.c */
+int wsd_vt_setup(void);
+void wsd_vt_release_ack(void);
+void wsd_vt_acquire_ack(void);
+void wsd_vt_restore(void);
 #endif
 #endif

@@ -129,6 +129,24 @@ static void on_flip(int fd, unsigned seq, unsigned sec, unsigned usec, void *dat
 	k->front = 1 - k->front; k->flip_pending = 0;
 }
 
+/* the VT went to another console: give up DRM master (the new owner needs it); coming back, take it again and show the front buffer */
+void ws_kms_pause(ws_kms *k) { drmDropMaster(k->fd); k->flip_pending = 0; }
+int ws_kms_resume(ws_kms *k)
+{
+	if (drmSetMaster(k->fd)) return -1;
+	k->flip_pending = 0;
+	if (drmModeSetCrtc(k->fd, k->crtc, k->buf[k->front].fb, 0, 0, &k->conn, 1, &k->mode)) return -1;
+	if (k->cur.on) drmModeSetCursor2(k->fd, k->crtc, k->cur.handle, k->cur.w, k->cur.h, 0, 0);
+	return 0;
+}
+
+/* reads and drops everything pending on an input device (used while another VT is active) */
+int ws_evdev_drain(ws_evdev *e, int i)
+{
+	struct input_event ev[64];
+	for (;;) { ssize_t n = read(e->fd[i], ev, sizeof ev); if (n < 0) return errno == EAGAIN ? 0 : -1; if (n == 0) return -1; }
+}
+
 int ws_kms_handle_events(ws_kms *k)
 {
 	drmEventContext ctx = { .version = 2, .page_flip_handler = on_flip };

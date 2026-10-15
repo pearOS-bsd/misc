@@ -31,3 +31,9 @@ Switch to a text console first (Ctrl+Alt+F2); DRM master is exclusive, so no X s
 `wsd -S` enters capability mode once the listening socket, the event queue and (with `kms`) the display and input devices are open: from then on the server cannot open files or paths,
 create named sockets or reach anything outside the descriptors it holds. Clients still connect and shared memory is created with `SHM_ANON`. The FreeBSD CI job runs `test_props` and
 `test_robust` against a sandboxed server. The test-mode screenshot (`-t`, writes a file) does not work under `-S`, as intended. On systems without Capsicum `-S` is a no-op with a message.
+
+## Console switching (KMS backend)
+
+On a vt(4) console, `wsd -b kms` puts its VT in graphics mode, turns the console keyboard off and asks the kernel for SIGUSR1 (leave) and SIGUSR2 (come back). While another VT is in front it drops
+DRM master and discards raw input, so nothing typed on the other console reaches the window server or its clients; coming back it takes master again and redraws. SIGTERM / SIGINT restore text mode
+and the keyboard. When wsd is not started from a vt(4) console it says so and runs without this (input stays grabbed). Written against vt(4); never run on real hardware.

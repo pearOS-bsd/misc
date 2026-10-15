@@ -1103,6 +1103,7 @@ int main(int argc, char **argv)
 	ws_evdev *input = NULL;
 	int hw_cursor = 0;                          /* the cursor lives on the hardware plane: moving it needs no frame */
 	uint64_t last_gen = ~0ULL; uint32_t last_cursor_serial = ~0u; int last_cx = -1, last_cy = -1;
+	int vt_ok = 0, vt_active = 1;               /* console switching: vt_active is 0 while another VT is in front */
 	if (!strcmp(backend, "kms")) {
 		kms = ws_kms_open(card, &w, &h);
 		if (!kms) { fprintf(stderr, "wsd: cannot open KMS device %s\n", card); return 1; }
@@ -1145,6 +1146,11 @@ int main(int argc, char **argv)
 			EV_SET(&ev, ws_evdev_fd(input, i), EVFILT_READ, EV_ADD, 0, 0, NULL);
 			kevent(kq, &ev, 1, NULL, 0, NULL);
 		}
+		vt_ok = wsd_vt_setup() == 0;                              /* console switching: SIGUSR1 = leave, SIGUSR2 = come back */
+		signal(SIGUSR1, SIG_IGN); signal(SIGUSR2, SIG_IGN); signal(SIGTERM, SIG_IGN); signal(SIGINT, SIG_IGN);
+		int sigs[4] = { SIGUSR1, SIGUSR2, SIGTERM, SIGINT };
+		for (int i = 0; i < 4; i++) { EV_SET(&ev, sigs[i], EVFILT_SIGNAL, EV_ADD, 0, 0, NULL); kevent(kq, &ev, 1, NULL, 0, NULL); }
+		if (!vt_ok) fprintf(stderr, "wsd: not on a vt(4) console: no console switching (input stays grabbed)\n");
 	}
 #endif
 	fprintf(stderr, "wsd: %dx%d, backend %s, listening on %s\n", w, h, backend, path);
@@ -1163,11 +1169,18 @@ int main(int argc, char **argv)
 		for (int i = 0; i < n; i++) {
 			int fd = (int)out[i].ident;
 #ifdef WS_KMS
+			if (out[i].filter == EVFILT_SIGNAL) {
+				if (fd == SIGUSR1) { vt_active = 0; if (kms) ws_kms_pause(kms); wsd_vt_release_ack(); }
+				else if (fd == SIGUSR2) { wsd_vt_acquire_ack(); if (kms && ws_kms_resume(kms) == 0) { vt_active = 1; last_gen = ~0ULL; last_cx = -1; last_cursor_serial = ~0u; hw_cursor = 0; dirty = 1; } }
+				else running = 0;                                         /* SIGTERM / SIGINT: leave the loop, restore the console */
+				continue;
+			}
 			if (kms && fd == ws_kms_fd(kms)) { ws_kms_handle_events(kms); continue; }
 			if (input) {
 				int idx = -1;
 				for (int j = 0; j < ws_evdev_count(input); j++) if (ws_evdev_fd(input, j) == fd) idx = j;
 				if (idx >= 0) {
+					if (!vt_active) { if (ws_evdev_drain(input, idx) < 0) { EV_SET(&ev, fd, EVFILT_READ, EV_DELETE, 0, 0, NULL); kevent(kq, &ev, 1, NULL, 0, NULL); close(fd); } continue; }
 					if (ws_evdev_dispatch(input, idx, srv, w, h) < 0) { EV_SET(&ev, fd, EVFILT_READ, EV_DELETE, 0, 0, NULL); kevent(kq, &ev, 1, NULL, 0, NULL); close(fd); }
 					dirty = 1;
 					continue;
@@ -1198,7 +1211,7 @@ int main(int argc, char **argv)
 			}
 		}
 #ifdef WS_KMS
-		if (kms) {
+		if (kms && vt_active) {
 			int hx = 0, hy = 0, cx, cy;
 			const ws_surface *cimg = ws_cursor_image(srv, &hx, &hy);
 			ws_cursor_pos(srv, &cx, &cy);
@@ -1219,6 +1232,7 @@ int main(int argc, char **argv)
 #ifdef WS_KMS
 	ws_evdev_close(input);
 	ws_kms_close(kms);
+	wsd_vt_restore();
 #endif
 #ifdef WS_GL
 	glc_destroy(glc);
