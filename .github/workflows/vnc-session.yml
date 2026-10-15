@@ -1,0 +1,33 @@
+name: vnc-session
+
+# Start by hand (Actions -> vnc-session -> Run workflow). Builds wsd + the Terminal on FreeBSD, then opens a VNC viewer on the window server through a public TCP tunnel for N minutes:
+# the address and a one-time password are printed in the log of the "Session" step. The virtual machine is thrown away afterwards and holds no secrets (no token is passed to it).
+on:
+  workflow_dispatch:
+    inputs:
+      minutes:
+        description: "minutes the session stays open (1-30)"
+        default: "5"
+
+permissions:
+  contents: read
+
+jobs:
+  session:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Session
+        uses: vmactions/freebsd-vm@v1
+        with:
+          release: "14.2"
+          arch: x86_64
+          usesh: true
+          run: |
+            M=${{ github.event.inputs.minutes }}
+            case "$M" in ''|*[!0-9]*) M=5 ;; esac
+            [ "$M" -gt 30 ] && M=30
+            sh wsbsd/ci/vnc-session.sh "$M"
