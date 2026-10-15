@@ -3,6 +3,9 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/mman.h>
 
 int sls_golden_reply(conn *c, const mach_msg_header_t *h);
 
@@ -316,11 +319,36 @@ static int do_conn_state(conn *c, const uint8_t *buf, size_t len)
 	return -2;
 }
 
+/* GetEventShmem (32006, reply 0x34 with 2 port descriptors) and GetDisplayShmem (34006, reply 0x40 with 3): shared memory regions of 0x110000 bytes each. The Mach memory-entry
+ * ports become shared-memory file descriptors sent as SCM_RIGHTS; the regions are created once and handed to every caller, zero filled. */
+static int shmem_fds[5] = { -1, -1, -1, -1, -1 };
+static int do_shmem(conn *c, const uint8_t *buf, size_t len)
+{
+	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
+	int n = h->msgh_id == 32006 ? 2 : 3, base = h->msgh_id == 32006 ? 0 : 2;
+	if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size != 0x18) return reply_simple(c->fd, h, -304);
+	for (int i = 0; i < n; i++) if (shmem_fds[base + i] < 0) {
+		char name[40]; snprintf(name, sizeof name, "/wsx.%d.%d", (int)getpid(), base + i);
+		int fd = shm_open(name, O_RDWR | O_CREAT | O_EXCL, 0600);
+		if (fd < 0) return reply_simple(c->fd, h, 1000);
+		shm_unlink(name);
+		if (ftruncate(fd, 0x110000) < 0) { close(fd); return reply_simple(c->fd, h, 1000); }
+		shmem_fds[base + i] = fd;
+	}
+	uint8_t r[0x40]; memset(r, 0, sizeof r);
+	uint32_t size = 0x1c + 12 * (uint32_t)n;
+	fill_reply_header((mach_msg_header_t *)r, h, size, 1);
+	wr32(r, 0x18, (uint32_t)n);
+	for (int i = 0; i < n; i++) { wr32(r, 0x1c + 12 * i, (uint32_t)i + 1); wr32(r, 0x24 + 12 * i, 0x110000u); }
+	return ws_ipc_send(c->fd, &(struct iovec){ r, size }, 1, shmem_fds + base, n);
+}
+
 int sls_session_dispatch(conn *c, const uint8_t *buf, size_t len)
 {
 	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
 	{ int rc = do_system_ui_query(c, buf, len); if (rc != -2) return rc; }
 	{ int rc = do_conn_state(c, buf, len); if (rc != -2) return rc; }
+	if (h->msgh_id == 32006 || h->msgh_id == 34006) return do_shmem(c, buf, len);
 	if (h->msgh_id == SLS_MSG_WindowQuery) return do_window_query(c, buf, len);
 	if (h->msgh_id == SLS_MSG_GetSymbolicHotKeyValuesAndStates) { int rc = do_symbolic_hotkeys(c, buf, len); if (rc != -2) return rc; }
 	if (h->msgh_id == SLS_MSG_CopyManagedDisplays || h->msgh_id == SLS_MSG_GetDevices) {
