@@ -8,14 +8,14 @@ HDRS = include/ws_gl.h include/ws_buffer.h include/ws_evrec.h include/ws.h inclu
 OUT          = window
 # set by the `kms` target
 EXTRA_SRC    =
-FAMILIES     = src/sls_ext.c src/sls_session.c src/sls_window.c src/sls_transaction.c src/sls_golden.c src/sls_blobs.c src/sls_display.c src/sls_display_tpl.c src/sls_harvest.c src/sls_generic.c src/sls_hotkey.c src/sls_hotkey_defaults.c src/sls_space.c src/bplist.c src/sandbox.c
+FAMILIES     = src/sls_ext.c src/sls_session.c src/sls_window.c src/sls_transaction.c src/sls_golden.c src/sls_blobs.c src/sls_display.c src/sls_display_tpl.c src/sls_harvest.c src/sls_generic.c src/sls_hotkey.c src/sls_hotkey_defaults.c src/sls_space.c src/bplist.c src/sandbox.c src/vnc.c
 EXTRA_CFLAGS =
 EXTRA_LIBS   =
 
 all: wsd test_window test_interactive test_robust test_compose test_region test_wire test_evrec test_buffer test_diff
 
 wsd: $(CORE) $(EXTRA_SRC) $(FAMILIES) src/wsd.c $(HDRS)
-	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ $(CORE) $(EXTRA_SRC) $(FAMILIES) src/wsd.c $(EXTRA_LIBS) $(LDLIBS)
+	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ $(CORE) $(EXTRA_SRC) $(FAMILIES) src/wsd.c $(EXTRA_LIBS) $(LDLIBS) $$([ "$$(uname -s)" = Darwin ] || echo -lcrypto)
 
 test_interactive: src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_interactive.c $(HDRS)
 	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_interactive.c $(EXTRA_LIBS) $(LDLIBS)
@@ -98,6 +98,7 @@ check: test_input test_compose test_region test_evrec test_buffer test_diff wsd 
 	sh test/run_shim.sh test_shim3 shim_api3
 	sh test/run_shim.sh test_shim4 shim_api4
 	sh test/run_install.sh
+	sh test/run_vnc.sh
 
 PREFIX  ?= /usr/local
 DESTDIR ?=

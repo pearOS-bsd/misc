@@ -29,6 +29,15 @@ int reply_simple(int fd, const mach_msg_header_t *req, int32_t retcode);
 int reply_value(int fd, const mach_msg_header_t *req, int32_t value);
 int reply_mig_error(int fd, const mach_msg_header_t *req, int32_t code);
 int simple_ok(const mach_msg_header_t *h, size_t len, size_t want);   /* not complex, size and datagram length both equal want */
+/* VNC (src/vnc.c) */
+struct ws_input_s;
+int wsd_vnc_listen(int port, const char *password);                          /* the listening descriptor (127.0.0.1), -1 on failure */
+int wsd_vnc_accept(void);                                                    /* the viewer's descriptor to watch, -1 if refused */
+int wsd_vnc_client_fd(void);
+int wsd_vnc_connected(void);
+int wsd_vnc_wants(uint64_t key);                                             /* 1 when the viewer waits for an update and something changed */
+int wsd_vnc_update(const ws_surface *screen, uint64_t key);
+int wsd_vnc_des_response(const char *password, const uint8_t challenge[16], uint8_t out[16]);
 int wsd_sandbox_enter(int listen_fd, int kq);                                 /* Capsicum capability mode (FreeBSD); -1 elsewhere */
 int holds_rights(const conn *c, uint32_t wid);
 uint32_t wsd_rights_held(const conn *c, uint32_t wid);                       /* the rights mask the connection holds on the window (owner: 0x30007) */
