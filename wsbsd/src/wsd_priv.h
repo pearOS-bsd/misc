@@ -35,6 +35,8 @@ int wsd_vnc_listen(int port, const char *password);                          /* 
 int wsd_vnc_accept(void);                                                    /* the viewer's descriptor to watch, -1 if refused */
 int wsd_vnc_client_fd(void);
 int wsd_vnc_connected(void);
+int wsd_vnc_flush(void);                                                    /* push queued update bytes; 1 = more waits for the socket, -1 = error */
+int wsd_vnc_backlog(void);
 int wsd_vnc_wants(uint64_t key);                                             /* 1 when the viewer waits for an update and something changed */
 int wsd_vnc_update(const ws_surface *screen, uint64_t key);
 int wsd_vnc_des_response(const char *password, const uint8_t challenge[16], uint8_t out[16]);

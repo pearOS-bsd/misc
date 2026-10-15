@@ -53,6 +53,28 @@ int wsd_vnc_des_response(const char *password, const uint8_t challenge[16], uint
 #endif
 }
 
+static uint8_t *outb; static size_t outn, outcap, outoff;                /* data waiting for a slow viewer: wsd never blocks on the viewer's socket */
+static int queue(const void *p, size_t n)
+{
+	if (outoff && outoff == outn) outoff = outn = 0;
+	if (outn + n > outcap) { size_t nc = (outn + n) * 2; uint8_t *nb = realloc(outb, nc); if (!nb) return -1; outb = nb; outcap = nc; }
+	memcpy(outb + outn, p, n); outn += n;
+	return 0;
+}
+/* sends as much of the queue as the socket takes; 1 when something is left, 0 when empty, -1 on error */
+int wsd_vnc_flush(void)
+{
+	if (v.fd < 0) { outn = outoff = 0; return 0; }
+	while (outoff < outn) {
+		ssize_t w = send(v.fd, outb + outoff, outn - outoff, 0);
+		if (w < 0) { if (errno == EINTR) continue; if (errno == EAGAIN || errno == EWOULDBLOCK) return 1; return -1; }
+		outoff += (size_t)w;
+	}
+	outoff = outn = 0;
+	return 0;
+}
+int wsd_vnc_backlog(void) { return outn > outoff; }
+
 static int send_all(int fd, const void *p, size_t n)
 {
 	const uint8_t *b = p;
@@ -75,7 +97,7 @@ int wsd_vnc_listen(int port, const char *password)
 int wsd_vnc_client_fd(void) { return v.fd; }
 int wsd_vnc_connected(void) { return v.fd >= 0 && v.state == ST_RUN; }
 
-static void drop(void) { if (v.zs_ready) { deflateEnd(&v.zs); v.zs_ready = 0; } v.use_zlib = 0; if (v.fd >= 0) close(v.fd); v.fd = -1; free(v.last); v.last = NULL; v.state = ST_VERSION; v.inn = 0; v.want = 0; }
+static void drop(void) { outn = outoff = 0; if (v.zs_ready) { deflateEnd(&v.zs); v.zs_ready = 0; } v.use_zlib = 0; if (v.fd >= 0) close(v.fd); v.fd = -1; free(v.last); v.last = NULL; v.state = ST_VERSION; v.inn = 0; v.want = 0; }
 
 /* returns the new client's descriptor to watch, or -1 */
 int wsd_vnc_accept(void)
@@ -200,7 +222,7 @@ int wsd_vnc_read(ws_server *srv, ws_input *in, int sw, int sh, const char *name)
 	}
 }
 
-int wsd_vnc_wants(uint64_t key) { return v.fd >= 0 && v.state == ST_RUN && v.want && (!v.last || !v.incremental || key != v.last_gen) && now() - v.last_send >= 0.03; }
+int wsd_vnc_wants(uint64_t key) { return v.fd >= 0 && v.state == ST_RUN && v.want && !wsd_vnc_backlog() && (!v.last || !v.incremental || key != v.last_gen) && now() - v.last_send >= 0.03; }
 
 /* sends the changed tiles of the composed screen if the viewer asked for an update. gen: the server's content generation. Returns 0 or -1 (connection closed). */
 int wsd_vnc_update(const ws_surface *screen, uint64_t gen)
@@ -220,7 +242,7 @@ int wsd_vnc_update(const ws_surface *screen, uint64_t gen)
 	}
 	if (!nrect) { v.last_gen = gen; return 0; }
 	hdr[2] = (uint8_t)(nrect >> 8); hdr[3] = (uint8_t)nrect;
-	if (send_all(v.fd, hdr, 4) < 0) { drop(); return -1; }
+	if (queue(hdr, 4) < 0) { drop(); return -1; }
 	uint8_t buf[12 + TILE * TILE * 4 + 16];
 	for (int ty = y0 / TILE; ty * TILE < y1; ty++) for (int tx = x0 / TILE; tx * TILE < x1; tx++) {
 		int px = tx * TILE, py = ty * TILE, pw = TILE, ph = TILE; if (px + pw > W) pw = W - px; if (py + ph > H) ph = H - py;
@@ -241,9 +263,10 @@ int wsd_vnc_update(const ws_surface *screen, uint64_t gen)
 			if (deflate(&v.zs, Z_SYNC_FLUSH) != Z_OK) { drop(); return -1; }
 			uint32_t zl = (uint32_t)(sizeof zb - v.zs.avail_out);
 			buf[12] = (uint8_t)(zl >> 24); buf[13] = (uint8_t)(zl >> 16); buf[14] = (uint8_t)(zl >> 8); buf[15] = (uint8_t)zl;
-			if (send_all(v.fd, buf, 16) < 0 || send_all(v.fd, zb, zl) < 0) { drop(); return -1; }
-		} else if (send_all(v.fd, buf, (size_t)(o - buf)) < 0) { drop(); return -1; }
+			if (queue(buf, 16) < 0 || queue(zb, zl) < 0) { drop(); return -1; }
+		} else if (queue(buf, (size_t)(o - buf)) < 0) { drop(); return -1; }
 	}
 	v.want = 0; v.last_gen = gen; v.last_send = t;
+	if (wsd_vnc_flush() < 0) { drop(); return -1; }
 	return 0;
 }
