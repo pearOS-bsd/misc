@@ -299,6 +299,15 @@ int main(void)
 			CHECK(g > 0x38 && has == named);
 		}
 	}
+	{ /* WindowRoutingRecordsForScreenLocation: a bplist naming the window under the point and the point relative to it */
+		ws_win rr; CHECK(ws_win_create(c, (ws_rect){ 200, 150, 60, 50 }, 0, &rr) == 0 && ws_win_order(c, &rr, 1, 0) == 0);
+		uint8_t m[0x28], rep[0x400]; memset(m, 0, sizeof m); hdr(m, 0x28, 30404, 0); w32(m, 0x20, 210); w32(m, 0x24, 160);
+		int g = call(fd, m, sizeof m, rep, sizeof rep); uint32_t pn = g >= 0x38 ? r32(rep, 0x28) : 0;
+		CHECK(g == (int)(0x38 + pn) && pn > 50 && memcmp(rep + 0x38, "bplist00", 8) == 0 && r32(rep, 0x34) == pn);
+		int found = 0; for (uint32_t i = 8; i + 8 <= pn; i++) if (memcmp(rep + 0x38 + i, "Location", 8) == 0) found = 1;
+		CHECK(found);
+		ws_win_order(c, &rr, 0, 0);
+	}
 	{ /* GetWindowTransform: the identity for a window nothing transformed (recorded), 1000 for an unknown window, -304 for a bad size */
 		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 100, 200, 30, 20 }, 0, &tw) == 0);
 		uint8_t m[0x28], rep[0x80]; memset(m, 0, sizeof m); hdr(m, 0x28, 30034, 0); w32(m, 0x20, tw.id); w32(m, 0x24, 0x7fffff00);
