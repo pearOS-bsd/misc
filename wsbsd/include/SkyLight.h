@@ -50,4 +50,5 @@ CGError SLSSetWindowShape(CGSConnectionID cid, CGSWindowID wid, float tx, float 
 CGError SLSGetWindowResolution(CGSConnectionID cid, CGSWindowID wid, double *scale);
 CGError SLSSetWindowResolution(CGSConnectionID cid, CGSWindowID wid, double scale);
 CGError SLSSetWindowListAlpha(CGSConnectionID cid, const CGSWindowID *list, int count, float alpha);
+CGError WSCaptureWindowPixels(CGSConnectionID cid, CGSWindowID wid, int *w, int *h, uint8_t **bgra);   /* wsbsd extension: composed pixels of a window / the screen */
 #endif
