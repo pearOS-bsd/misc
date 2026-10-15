@@ -313,6 +313,27 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		float one = 1.0f; memcpy(r + 0x28, &one, 4); memcpy(r + 0x34, &one, 4);          /* a = d = 1 */
 		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
 	}
+	case SLS_MSG_GetWindowIsBuffered:                                              /* wid@0x20, size 0x24; reply 0x28 with a value at 0x24: a window without a backing surface reads 0 for the buffered flag (recorded), the main display depth 4 for the depth, 0 for has-alpha; 1000 for an unknown window (has-alpha: always 0) */
+	case SLS_MSG_GetWindowDepth:
+	case SLS_MSG_GetWindowHasAlpha: {
+		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size != 0x24) return reply_simple(c->fd, h, -304);
+		if (h->msgh_id != SLS_MSG_GetWindowHasAlpha && !ws_window_exists(srv, rd32(buf, 0x20))) return reply_simple(c->fd, h, 1000);
+		uint8_t r[0x28]; memset(r, 0, sizeof r);
+		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
+		memcpy(r + 0x18, &WS_NDR, sizeof WS_NDR);
+		if (h->msgh_id == SLS_MSG_GetWindowDepth) wr32(r, 0x24, 4);
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
+	case SLS_MSG_GetWindowShmemReference: {                                        /* wid@0x20, size 0x24; reply complex 0x3c: one port descriptor (the window's memory entry; no descriptor is passed here), the return code overlays its pad word, NDR@0x28, then owner / rights / sharing state as GetWindowOwner reports them; 1000 for an unknown window */
+		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size != 0x24) return reply_simple(c->fd, h, -304);
+		uint32_t wid = rd32(buf, 0x20);
+		if (!ws_window_exists(srv, wid)) return reply_simple(c->fd, h, 1000);
+		uint8_t r[0x3c]; memset(r, 0, sizeof r);
+		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 1);
+		wr32(r, 0x18, 1); wr32(r, 0x24, 0x110000u); memcpy(r + 0x28, &WS_NDR, sizeof WS_NDR);
+		wr32(r, 0x30, ws_window_owner(srv, wid)); wr32(r, 0x34, holds_rights(c, wid) ? 0x30007u : 0); wr32(r, 0x38, 1);
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
 	case SLS_MSG_SetWindowParent: {                                                /* child@0x20, parent@0x24, size 0x28; rights on both; always 0 */
 		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
 		uint32_t child = rd32(buf, 0x20), parent = rd32(buf, 0x24);

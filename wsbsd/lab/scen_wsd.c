@@ -67,6 +67,7 @@ static void raw(int id, char **tok, int nt)
 int main(int argc, char **argv)
 {
 	setvbuf(stdout, NULL, _IONBF, 0);
+	for (int k = 0; k < 300; k++) { ws_conn *t = ws_connect(NULL); if (t) ws_disconnect(t); }            /* real connection ids are large: burn some so small field values never look like one */
 	conn = ws_connect(NULL);
 	if (!conn || argc < 2) { fprintf(stderr, "usage: scen_wsd file.scen (WS_SOCKET set)\n"); return 1; }
 	cid = ws_conn_id(conn);
