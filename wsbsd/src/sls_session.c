@@ -249,10 +249,54 @@ static int do_window_query(conn *c, const uint8_t *buf, size_t len)
 	return rc;
 }
 
+/* Connection-level event / process state: SetGestureEventSubmask (30251: u64@0x20, size 0x28), CoalesceEventsInMask (30208: mask@0x20, size 0x24), SetNotifications (30119: PSN u64@0x20,
+ * set@0x28, clear@0x2c, size 0x30; reply 0x28 with the new mask: old & (~clear | 0xffdb2fe1) | set & 0x24d01e; -50 when the connection is not that process), SetFrontProcess (30118: PSN u64@0x20,
+ * two u32, size 0x30) and GetHeldWindowRights (30276: wid@0x20, size 0x24; reply 0x30: rights held, rights held but reserved, window class). */
+static uint32_t front_psn_hi, front_psn_lo;
+static int do_conn_state(conn *c, const uint8_t *buf, size_t len)
+{
+	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
+	switch (h->msgh_id) {
+	case SLS_MSG_SetGestureEventSubmask:
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		memcpy(&c->gesture_mask, buf + 0x20, 8);
+		return reply_simple(c->fd, h, 0);
+	case SLS_MSG_CoalesceEventsInMask:
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		c->coalesce_mask = rd32(buf, 0x20);
+		return reply_simple(c->fd, h, 0);
+	case SLS_MSG_SetNotifications: {
+		if (!simple_ok(h, len, 0x30)) return reply_simple(c->fd, h, -304);
+		uint32_t hi = rd32(buf, 0x20), lo = rd32(buf, 0x24);
+		if (!c->registered || c->psn_hi != hi || c->psn_lo != lo) return reply_simple(c->fd, h, -50);
+		uint32_t set = rd32(buf, 0x28), clear = rd32(buf, 0x2c);
+		c->notes = (c->notes & (~clear | 0xffdb2fe1u)) | (set & 0x24d01eu);
+		return reply_value(c->fd, h, (int32_t)c->notes);
+	}
+	case SLS_MSG_SetFrontProcess:
+		if (!simple_ok(h, len, 0x30)) return reply_simple(c->fd, h, -304);
+		if (!wsd_conn_by_psn(rd32(buf, 0x20), rd32(buf, 0x24))) return reply_simple(c->fd, h, -600);          /* procNotFound (recorded) */
+		front_psn_hi = rd32(buf, 0x20); front_psn_lo = rd32(buf, 0x24);
+		return reply_simple(c->fd, h, 0);
+	case SLS_MSG_GetHeldWindowRights: {
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		uint32_t wid = rd32(buf, 0x20);
+		if (!ws_window_exists(srv, wid)) return reply_simple(c->fd, h, 0x3e9);
+		uint8_t r[0x30]; memset(r, 0, sizeof r);
+		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
+		memcpy(r + 0x18, &WS_NDR, sizeof WS_NDR);
+		wr32(r, 0x24, holds_rights(c, wid) ? 0x30007u : 0);                          /* the owner holds every right */
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
+	}
+	return -2;
+}
+
 int sls_session_dispatch(conn *c, const uint8_t *buf, size_t len)
 {
 	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
 	{ int rc = do_system_ui_query(c, buf, len); if (rc != -2) return rc; }
+	{ int rc = do_conn_state(c, buf, len); if (rc != -2) return rc; }
 	if (h->msgh_id == SLS_MSG_WindowQuery) return do_window_query(c, buf, len);
 	if (h->msgh_id == SLS_MSG_GetSymbolicHotKeyValuesAndStates) { int rc = do_symbolic_hotkeys(c, buf, len); if (rc != -2) return rc; }
 	if (h->msgh_id == SLS_MSG_CopyManagedDisplays || h->msgh_id == SLS_MSG_GetDevices) {

@@ -355,6 +355,17 @@ int main(void)
 		CHECK(!again);                                                                    /* removed: no more events */
 	}
 
+	/* connection state: gesture submask, coalescing, SetNotifications (needs the process record), SetFrontProcess, GetHeldWindowRights */
+	{
+		uint8_t m[0x40], rep[0x100]; int got; ws_win hw; CHECK(ws_win_create(c, (ws_rect){ 720, 520, 20, 20 }, 0, &hw) == 0);
+		memset(m, 0, sizeof m); hdr(m, 0x28, 30251, 0); w32(m, 0x20, 7); CHECK(rc(fd, m, 0x28) == 0);
+		memset(m, 0, sizeof m); hdr(m, 0x24, 30208, 0); w32(m, 0x20, 0x98000e0); CHECK(rc(fd, m, 0x24) == 0);
+		memset(m, 0, sizeof m); hdr(m, 0x30, 30119, 0); w32(m, 0x20, 0x99); w32(m, 0x24, 0x99); w32(m, 0x28, 0x1e); CHECK(rc(fd, m, 0x30) == (int)(uint32_t)-50);   /* no process record on this connection */
+		memset(m, 0, sizeof m); hdr(m, 0x30, 30118, 0); w32(m, 0x20, 1); w32(m, 0x24, 2); CHECK(rc(fd, m, 0x30) == (int)(uint32_t)-600);                          /* no such process */
+		memset(m, 0, sizeof m); hdr(m, 0x24, 30276, 0); w32(m, 0x20, hw.id); got = call(fd, m, 0x24, rep, sizeof rep); CHECK(got == 0x30 && r32(rep, 0x20) == 0 && r32(rep, 0x24) == 0x30007);
+		w32(m, 0x20, 0x7ffff); CHECK(rc(fd, m, 0x24) == 0x3e9);
+	}
+
 	/* spaces: create, name, look up by name, alpha, put a window in a space (CopySpacesForWindows follows), remove, destroy */
 	{
 		ws_win sw; CHECK(ws_win_create(c, (ws_rect){ 700, 500, 30, 30 }, 0, &sw) == 0);
