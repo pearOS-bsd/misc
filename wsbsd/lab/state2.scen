@@ -1,0 +1,178 @@
+# brute force: every routine with a small fixed request, a window id first then 1s
+new_window a 100 200 300 150
+new_window b 50 60 80 40
+raw 30001 ndr 
+raw 30010 ndr wid:a u32:1 u32:1
+raw 30012 ndr wid:a u32:1
+raw 30013 ndr wid:a
+raw 30015 ndr wid:a
+raw 30016 ndr wid:a u32:1
+raw 30020 ndr wid:a
+raw 30021 ndr wid:a u32:1
+raw 30022 ndr wid:a
+raw 30023 ndr wid:a
+raw 30026 ndr wid:a
+raw 30030 ndr wid:a
+raw 30034 ndr wid:a u32:1
+raw 30041 ndr wid:a u32:1 u32:1
+raw 30042 ndr wid:a
+raw 30046 ndr wid:a
+raw 30056 ndr wid:a u32:1
+raw 30058 ndr wid:a
+raw 30061 ndr wid:a u32:1
+raw 30062 ndr wid:a
+raw 30063 ndr wid:a
+raw 30067 ndr wid:a u32:1
+raw 30068 ndr wid:a
+raw 30069 ndr wid:a u32:1
+raw 30070 ndr wid:a
+raw 30074 ndr wid:a
+raw 30075 ndr wid:a
+raw 30076 ndr 
+raw 30077 ndr wid:a u32:1 u32:1
+raw 30082 ndr wid:a
+raw 30083 ndr wid:a
+raw 30084 ndr wid:a
+raw 30085 ndr wid:a u32:1 u32:1 u32:1
+raw 30088 ndr wid:a
+raw 30090 ndr wid:a
+raw 30091 ndr wid:a u32:1
+raw 30092 ndr wid:a
+raw 30094 ndr wid:a u32:1 u32:1 u32:1
+raw 30095 ndr wid:a u32:1 u32:1 u32:1
+raw 30101 ndr wid:a u32:1
+raw 30102 ndr wid:a
+raw 30103 ndr wid:a
+raw 30104 ndr wid:a u32:1 u32:1
+raw 30105 ndr wid:a u32:1
+raw 30109 ndr wid:a u32:1
+raw 30110 ndr 
+raw 30117 ndr 
+raw 30136 ndr wid:a u32:1
+raw 30137 ndr wid:a
+raw 30138 ndr wid:a
+raw 30141 ndr wid:a u32:1
+raw 30142 ndr wid:a u32:1
+raw 30144 ndr wid:a u32:1 u32:1 u32:1
+raw 30145 ndr wid:a u32:1 u32:1
+raw 30146 ndr wid:a u32:1 u32:1
+raw 30147 ndr wid:a
+raw 30151 ndr wid:a u32:1 u32:1
+raw 30153 ndr wid:a u32:1
+raw 30160 ndr wid:a u32:1 u32:1
+raw 30162 ndr wid:a
+raw 30163 ndr wid:a u32:1 u32:1 u32:1
+raw 30165 ndr wid:a u32:1 u32:1 u32:1
+raw 30167 ndr wid:a
+raw 30175 ndr wid:a u32:1
+raw 30176 ndr 
+raw 30178 ndr wid:a u32:1
+raw 30179 ndr wid:a u32:1
+raw 30180 ndr 
+raw 30187 ndr wid:a
+raw 30188 ndr wid:a
+raw 30189 ndr wid:a
+raw 30190 ndr wid:a u32:1
+raw 30191 ndr wid:a u32:1
+raw 30192 ndr wid:a
+raw 30193 ndr wid:a u32:1 u32:1
+raw 30194 ndr wid:a
+raw 30195 ndr wid:a u32:1
+raw 30196 ndr wid:a u32:1
+raw 30197 ndr wid:a u32:1
+raw 30198 ndr wid:a
+raw 30212 ndr wid:a u32:1
+raw 30218 ndr wid:a u32:1
+raw 30219 ndr wid:a
+raw 30222 ndr wid:a
+raw 30224 ndr wid:a u32:1 u32:1
+raw 30243 ndr 
+raw 30249 ndr wid:a u32:1
+raw 30252 ndr wid:a u32:1
+raw 30253 ndr wid:a
+raw 30254 ndr wid:a u32:1 u32:1
+raw 30255 ndr wid:a u32:1
+raw 30264 ndr wid:a u32:1
+raw 30266 ndr wid:a
+raw 30269 ndr 
+raw 30275 ndr wid:a u32:1 u32:1
+raw 30276 ndr wid:a
+raw 30277 ndr wid:a u32:1
+raw 30279 ndr wid:a u32:1
+raw 30281 ndr wid:a u32:1 u32:1
+raw 30282 ndr wid:a u32:1
+raw 30285 ndr wid:a
+raw 30286 ndr wid:a
+raw 30308 ndr 
+raw 30309 ndr 
+raw 30311 ndr wid:a
+raw 30312 ndr wid:a
+raw 30317 ndr wid:a u32:1
+raw 30327 ndr wid:a
+raw 30363 ndr 
+raw 30387 ndr wid:a
+raw 30388 ndr 
+raw 30394 ndr wid:a u32:1
+raw 30397 ndr wid:a u32:1 u32:1 u32:1
+raw 30399 ndr wid:a u32:1 u32:1
+raw 30401 ndr wid:a u32:1 u32:1
+raw 30404 ndr wid:a u32:1
+raw 30408 ndr wid:a
+raw 30434 ndr wid:a u32:1
+raw 30435 ndr wid:a
+raw 30440 ndr wid:a
+raw 30441 ndr 
+raw 30444 ndr wid:a u32:1
+raw 30445 ndr wid:a u32:1
+raw 30449 ndr wid:a u32:1
+raw 30452 ndr wid:a
+raw 30456 ndr 
+raw 30461 ndr wid:a u32:1 u32:1
+raw 30464 ndr wid:a
+raw 30466 ndr wid:a
+raw 30467 ndr 
+raw 30468 ndr wid:a u32:1
+raw 30470 ndr wid:a u32:1
+raw 30480 ndr wid:a u32:1
+raw 30484 ndr wid:a u32:1 u32:1
+raw 30498 ndr 
+raw 30501 ndr 
+raw 30531 ndr wid:a u32:1
+raw 30532 ndr wid:a
+raw 30534 ndr wid:a u32:1
+raw 30539 ndr wid:a u32:1 u32:1 u32:1
+raw 30540 ndr 
+raw 30542 ndr wid:a u32:1 u32:1 u32:1
+raw 30543 ndr wid:a u32:1 u32:1 u32:1
+raw 30544 ndr wid:a u32:1 u32:1 u32:1
+raw 30547 ndr 
+raw 30550 ndr 
+raw 30552 ndr wid:a
+raw 30554 ndr 
+raw 30555 ndr wid:a
+raw 30556 ndr wid:a u32:1 u32:1 u32:1
+raw 30558 ndr wid:a u32:1 u32:1 u32:1
+raw 30562 ndr 
+raw 30566 ndr wid:a u32:1
+raw 30567 ndr wid:a
+raw 30572 ndr wid:a
+raw 30573 ndr 
+raw 30579 ndr wid:a
+raw 30595 ndr 
+raw 30597 ndr wid:a
+raw 30611 ndr wid:a u32:1
+raw 30617 ndr wid:a
+raw 30618 ndr wid:a u32:1
+raw 30619 ndr wid:a
+raw 30620 ndr 
+raw 30640 ndr wid:a u32:1
+raw 32005 ndr wid:a u32:1
+raw 32008 ndr 
+raw 32043 ndr wid:a u32:1
+raw 32055 ndr wid:a u32:1
+raw 32062 ndr wid:a
+raw 32063 ndr 
+raw 32065 ndr wid:a u32:1
+raw 32072 ndr 
+raw 34007 ndr wid:a
+raw 34008 ndr wid:a
