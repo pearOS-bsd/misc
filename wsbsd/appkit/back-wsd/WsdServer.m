@@ -7,6 +7,7 @@
 #include <Foundation/NSRunLoop.h>
 #include <Foundation/NSValue.h>
 #include <GNUstepGUI/GSDisplayServer.h>
+#include <AppKit/NSWindow.h>
 #include <signal.h>
 
 #include "wsd/WsdServer.h"
@@ -188,6 +189,16 @@ static void terminate(int sig)
 	return NSMakeRect(w->x, screenH - (w->y + w->h), w->w, w->h);
 }
 
+/* AppKit updates NSWindow's frame only when the backend reports it: moved/resized events, in AppKit coordinates (origin bottom-left) */
+- (void) reportFrameOf: (struct wsd_window *)w resized: (BOOL)resized
+{
+	NSPoint origin = NSMakePoint(w->x, screenH - (w->y + w->h));
+	NSTimeInterval ts = [[NSDate date] timeIntervalSinceReferenceDate];
+	NSEvent *ev = [NSEvent otherEventWithType: NSAppKitDefined location: resized ? origin : NSZeroPoint modifierFlags: 0 timestamp: ts windowNumber: w->number context: GSCurrentContext()
+		subtype: resized ? GSAppKitWindowResized : GSAppKitWindowMoved data1: resized ? w->w : (NSInteger)origin.x data2: resized ? w->h : (NSInteger)origin.y];
+	[(GSWindowWithNumber(w->number)) sendEvent: ev];
+}
+
 - (void) placewindow: (NSRect)frame : (int)win
 {
 	struct wsd_window *w = [self wsdWindow: win];
@@ -200,7 +211,7 @@ static void terminate(int sig)
 	w->w = nw; w->h = nh;
 	ws_win_set_frame(conn, &w->win, (ws_rect){ w->x, w->y, w->w, w->h });
 	/* the old buffer stays mapped (the current Cairo surface still draws into it); the next setWindowdevice:forContext: sees the size change in attachBuffer: and swaps it */
-	(void)resized;
+	[self reportFrameOf: w resized: resized];
 }
 
 - (void) movewindow: (NSPoint)loc : (int)win
@@ -209,6 +220,7 @@ static void terminate(int sig)
 	if (!w) return;
 	w->x = (int)loc.x; w->y = screenH - (int)(loc.y + w->h);
 	ws_win_move(conn, &w->win, w->x, w->y);
+	[self reportFrameOf: w resized: NO];
 }
 
 - (void) setwindowlevel: (int)level : (int)win
