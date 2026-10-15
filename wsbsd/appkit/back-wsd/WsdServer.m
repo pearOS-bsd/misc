@@ -112,6 +112,7 @@ static void terminate(int sig)
 	w->style = style;
 	if (ws_win_create(conn, (ws_rect){ w->x, w->y, w->w, w->h }, 0, &w->win)) { free(w); return 0; }
 	w->number = (int)w->win.id;
+	if (style & 1) ws_win_shadow(conn, &w->win, 10, 1);                       /* a titled window gets the window server's shadow and rounded corners, as on macOS */
 	WLOG(@"window %d created %d,%d %dx%d style %x", w->number, w->x, w->y, w->w, w->h, style);
 	w->next = windows; windows = w;
 	[self _setWindowOwnedByServer: w->number];   /* without this GSServerForWindow() is nil for the window and AppKit's calls never arrive */
