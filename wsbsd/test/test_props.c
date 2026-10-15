@@ -276,6 +276,9 @@ int main(void)
 		uint8_t m[0x28], rep[0x80]; memset(m, 0, sizeof m); hdr(m, 0x28, 30034, 0); w32(m, 0x20, tw.id); w32(m, 0x24, 0x7fffff00);
 		int g = call(fd, m, sizeof m, rep, sizeof rep); float f[6]; memcpy(f, rep + 0x28, 24);
 		CHECK(g == 0x40 && r32(rep, 0x20) == 0 && f[0] == 1 && f[1] == 0 && f[2] == 0 && f[3] == 1 && f[4] == 0 && f[5] == 0);
+		{ uint8_t st[0x44]; memset(st, 0, sizeof st); hdr(st, 0x44, 30033, 0); w32(st, 0x28, tw.id); float sx[6] = { 0.5f, 0, 0, 0.5f, 10, 20 }; memcpy(st + 0x2c, sx, 24);
+		  CHECK(rc(fd, st, 0x44) == 0);
+		  w32(m, 0x20, tw.id); g = call(fd, m, sizeof m, rep, sizeof rep); memcpy(f, rep + 0x28, 24); CHECK(g == 0x40 && f[0] == 0.5f && f[3] == 0.5f && f[4] == 10 && f[5] == 20); }
 		w32(m, 0x20, 0x7ffff); CHECK(rc(fd, m, sizeof m) == 1000);
 		hdr(m, 0x24, 30034, 0); CHECK(rc(fd, m, 0x24) == -304);
 	}
