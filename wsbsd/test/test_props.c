@@ -355,6 +355,33 @@ int main(void)
 		CHECK(!again);                                                                    /* removed: no more events */
 	}
 
+	/* window lists: OrderWindowListWithOperation, SetWindowListSystemAlpha / Level, CopyWindowsWithOptionsAndTags */
+	{
+		ws_win a1, a2; CHECK(ws_win_create(c, (ws_rect){ 500, 400, 30, 30 }, 0, &a1) == 0 && ws_win_create(c, (ws_rect){ 510, 410, 30, 30 }, 0, &a2) == 0);
+		CHECK(ws_win_order(c, &a1, 1, 0) == 0 && ws_win_order(c, &a2, 1, 0) == 0);
+		uint8_t m[0x100], rep[0x400]; int got; uint32_t ids[16]; int total = 0;
+		memset(m, 0, sizeof m); hdr(m, 0x2c + 4, 30233, 0); w32(m, 0x20, 1); w32(m, 0x24, a1.id); w32(m, 0x28, 1); w32(m, 0x2c, 0);          /* a1 above everything */
+		CHECK(rc(fd, m, 0x30) == 0);
+		int lr = ws_win_list(c, 0, 1, ids, 16, &total), p1 = -1, p2 = -1; for (int i = 0; i < 16 && i < total; i++) { if (ids[i] == a1.id) p1 = i; if (ids[i] == a2.id) p2 = i; }
+		CHECK(lr >= 0 && p1 >= 0 && p2 >= 0 && p1 < p2);                                                                                      /* a1 is in front of a2 */                                                                 /* a1 is the frontmost */
+		memset(m, 0, sizeof m); hdr(m, 0x2c, 30233, 0); w32(m, 0x20, 0); CHECK(rc(fd, m, 0x2c) == 1000);                                       /* empty list */
+		memset(m, 0, sizeof m); hdr(m, 0x2c + 4, 30233, 0); w32(m, 0x20, 1); w32(m, 0x24, 0x7ffff); CHECK(rc(fd, m, 0x30) == 1000);             /* unknown window */
+		/* system alpha: one id, one float 0.5 */
+		memset(m, 0, sizeof m); hdr(m, 0x28 + 8, 30040, 0); w32(m, 0x20, 1); w32(m, 0x24, a2.id); w32(m, 0x28, 1); { float f = 0.5f; memcpy(m + 0x2c, &f, 4); }
+		CHECK(rc(fd, m, 0x30) == 0);
+		w32(m, 0x28, 2); CHECK(rc(fd, m, 0x30) == (int)(uint32_t)-304);                                                                        /* the counts do not match the size */
+		/* system level: class 1, one window; class 5 refused; empty list refused */
+		memset(m, 0, sizeof m); hdr(m, 0x2c + 4, 30257, 0); w32(m, 0x20, 1); w32(m, 0x24, 1); w32(m, 0x28, a2.id); CHECK(rc(fd, m, 0x30) == 0);
+		w32(m, 0x20, 5); CHECK(rc(fd, m, 0x30) == 0x3e9);
+		memset(m, 0, sizeof m); hdr(m, 0x2c, 30257, 0); w32(m, 0x20, 1); w32(m, 0x24, 0); CHECK(rc(fd, m, 0x2c) == 1000);
+		/* the list of windows: ordered-in ones, front to back (no space filter) */
+		memset(m, 0, sizeof m); hdr(m, 0x50, 30326, 1); w32(m, 0x18, 1); m[0x25] = 1; m[0x27] = 1; w32(m, 0x28, 0); memcpy(m + 0x2c, &WS_NDR, 8);
+		got = call(fd, m, 0x50, rep, sizeof rep);
+		CHECK(got >= 0x38 && (r32(rep, 0) & 0x80000000u) && r32(rep, 0x34) == (uint32_t)(got - 0x38) / 4 && r32(rep, 0x28) == r32(rep, 0x34) * 4 && got >= 0x38 + 8);
+		{ int q1 = -1, q2 = -1; for (uint32_t i = 0; i < r32(rep, 0x34); i++) { if (r32(rep, 0x38 + 4 * i) == a1.id) q1 = (int)i; if (r32(rep, 0x38 + 4 * i) == a2.id) q2 = (int)i; } CHECK(q1 >= 0 && q2 >= 0 && q1 < q2); }
+		ws_win_order(c, &a1, 0, 0); ws_win_order(c, &a2, 0, 0);
+	}
+
 	/* hot keys: per-connection records, the operating mode and the symbolic table */
 	{
 		uint8_t m[0x40], rep[0x100]; int got;

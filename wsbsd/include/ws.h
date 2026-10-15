@@ -89,6 +89,8 @@ void ws_server_drop_content(ws_server *, const ws_surface *content);     /* a bu
 void ws_release_owner(ws_server *, uint32_t owner);                                  /* a connection went away */
 int ws_set_window_shadow(ws_server *, ws_wid, int corner_radius, int enabled);
 int ws_window_has_shadow(ws_server *, ws_wid);
+int ws_set_window_system_alpha(ws_server *, ws_wid, float a);   /* the system's own fade factor, multiplied with the window's alpha */
+int ws_set_window_system_level(ws_server *, ws_wid, int cls);
 int ws_window_set_parent(ws_server *, ws_wid child, ws_wid parent);   /* parent 0 clears; -1 for unknown windows or a cycle */
 ws_wid ws_window_parent(ws_server *, ws_wid);                            /* 0 when none */
 int ws_window_invalidate_shadow(ws_server *, ws_wid);            /* drops the cached shadow image: rebuilt on the next frame */                  /* 1 when the window casts a shadow */

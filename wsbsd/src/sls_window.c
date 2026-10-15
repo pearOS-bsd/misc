@@ -188,6 +188,51 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		}
 		return reply_simple(c->fd, h, 0);
 	}
+	case SLS_MSG_OrderWindowListWithOperation: {                                   /* n@0x20 (<= 0x400), n ids, then operation and relative window (u32 each); size 4n + 0x2c; 1000 for an empty list or a window without rights */
+		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size < 0x2c || h->msgh_size > 0x102c) return reply_simple(c->fd, h, -304);
+		uint32_t n = rd32(buf, 0x20);
+		if (n > 0x400 || h->msgh_size != 4 * n + 0x2c) return reply_simple(c->fd, h, -304);
+		if (n == 0) return reply_simple(c->fd, h, 1000);
+		for (uint32_t i = 0; i < n; i++) { uint32_t w = rd32(buf, 0x24 + 4 * i); if (!w || !ws_window_exists(srv, w) || !holds_rights(c, w)) return reply_simple(c->fd, h, 1000); }
+		int op = (int32_t)rd32(buf, 0x24 + 4 * n); uint32_t rel = rd32(buf, 0x28 + 4 * n);
+		int mode = op > 0 ? WS_ABOVE : op < 0 ? WS_BELOW : WS_OUT;
+		for (uint32_t i = 0; i < n; i++) ws_order_window(srv, rd32(buf, 0x24 + 4 * i), mode, rel);
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_SetWindowListSystemAlpha: {                                       /* n@0x20, n ids, m, m floats; size 4n + 4m + 0x28 (n, m <= 0x400); 0 */
+		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size < 0x28 || h->msgh_size > 0x2028) return reply_simple(c->fd, h, -304);
+		uint32_t n = rd32(buf, 0x20);
+		if (n > 0x400 || h->msgh_size < 4 * n + 0x28) return reply_simple(c->fd, h, -304);
+		uint32_t m = rd32(buf, 0x24 + 4 * n);
+		if (m > 0x400 || h->msgh_size != 4 * n + 4 * m + 0x28) return reply_simple(c->fd, h, -304);
+		for (uint32_t i = 0; i < n && i < m; i++) { uint32_t bits = rd32(buf, 0x28 + 4 * n + 4 * i); float a; memcpy(&a, &bits, 4); uint32_t w = rd32(buf, 0x24 + 4 * i); if (holds_rights(c, w)) ws_set_window_system_alpha(srv, w, a); }
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_SetWindowListSystemLevel: {                                       /* class@0x20 (< 3), n@0x24 (<= 0x400), n ids; size 4n + 0x2c; 1001 for a bad class, 1000 for an empty list */
+		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size < 0x2c || h->msgh_size > 0x102c) return reply_simple(c->fd, h, -304);
+		uint32_t n = rd32(buf, 0x24);
+		if (n > 0x400 || h->msgh_size != 4 * n + 0x2c) return reply_simple(c->fd, h, -304);
+		if (rd32(buf, 0x20) >= 3) return reply_simple(c->fd, h, 0x3e9);
+		if (n == 0) return reply_simple(c->fd, h, 1000);
+		for (uint32_t i = 0; i < n; i++) ws_set_window_system_level(srv, rd32(buf, 0x28 + 4 * i), (int)rd32(buf, 0x20));
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_CopyWindowsWithOptionsAndTags: {                                  /* OOL array of space ids (u64); options@0x34, u32@0x3c, tags u64@0x40, u64@0x48; size 0x50. Reply: OOL array of window ids (count@0x34), the ordered-in windows front to back (the filters are not applied) */
+		int err; int osz = ool_request(h, buf, len, 0x50, &err);
+		if (osz < 0) return reply_simple(c->fd, h, err);
+		if ((uint32_t)osz / 8 != rd32(buf, 0x38)) return reply_simple(c->fd, h, -300);
+		ws_wid ids[256]; int cnt = ws_list_windows(srv, 0, 1, ids, 256); if (cnt > 256) cnt = 256;
+		uint32_t *arr = malloc((size_t)cnt * 4 + 4);
+		if (!arr) return reply_simple(c->fd, h, 1000);
+		for (int i = 0; i < cnt; i++) arr[i] = ids[i];
+		uint8_t m[0x38]; memset(m, 0, sizeof m);
+		fill_reply_header((mach_msg_header_t *)m, h, sizeof m, 1);
+		wr32(m, 0x18, 1); m[0x24] = 1; m[0x25] = 1; m[0x27] = 1; wr32(m, 0x28, (uint32_t)cnt * 4); memcpy(m + 0x2c, &WS_NDR, 8); wr32(m, 0x34, (uint32_t)cnt);
+		struct iovec v[2] = { { m, sizeof m }, { arr, (size_t)cnt * 4 } };
+		int rc = ws_ipc_send(c->fd, v, cnt ? 2 : 1, NULL, 0);
+		free(arr);
+		return rc;
+	}
 	case SLS_MSG_SetWindowParent: {                                                /* child@0x20, parent@0x24, size 0x28; rights on both; always 0 */
 		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
 		uint32_t child = rd32(buf, 0x20), parent = rd32(buf, 0x24);
