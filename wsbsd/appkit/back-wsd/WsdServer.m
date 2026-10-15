@@ -85,6 +85,9 @@ static void terminate(int sig)
 	return NULL;
 }
 
+/* wsd has no window manager: AppKit draws its own title bars and borders (client-side decorations) and moves/resizes the window itself */
+- (BOOL) handlesWindowDecorations { return NO; }
+
 /* ---- screen ---- */
 - (NSArray *) screenList { return [NSArray arrayWithObject: [NSNumber numberWithInt: 0]]; }
 - (NSRect) boundsForScreen: (int)screen { return NSMakeRect(0, 0, screenW, screenH); }
