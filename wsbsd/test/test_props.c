@@ -222,6 +222,14 @@ int main(void)
 		hdr(m, 0x24, 30102, 0); g = call(fd, m, 0x24, rep, sizeof rep); CHECK(g == 0x28 && r32(rep, 0x24) == 0);
 		w32(m, 0x20, 0x7ffff); CHECK(rc(fd, m, 0x24) == 1000);
 	}
+	{ /* CopyAssociatedWindows lists the other windows of the ordering group */
+		ws_win aa, ab; CHECK(ws_win_create(c, (ws_rect){ 90, 300, 20, 20 }, 0, &aa) == 0 && ws_win_create(c, (ws_rect){ 120, 300, 20, 20 }, 0, &ab) == 0);
+		uint8_t m[0x2c], rep[0x100]; memset(m, 0, sizeof m); hdr(m, 0x2c, 30193, 0); w32(m, 0x20, ab.id); w32(m, 0x24, 1); w32(m, 0x28, aa.id); CHECK(rc(fd, m, 0x2c) == 0);
+		memset(m, 0, sizeof m); hdr(m, 0x24, 30327, 0); w32(m, 0x20, aa.id); int g = call(fd, m, 0x24, rep, sizeof rep);
+		CHECK(g == 0x3c && r32(rep, 0x34) == 1 && r32(rep, 0x38) == ab.id);
+		w32(m, 0x20, 0x7ffff); CHECK(rc(fd, m, 0x24) == 0x3f2);
+		hdr(m, 0x24, 30192, 0); w32(m, 0x20, aa.id); CHECK(rc(fd, m, 0x24) == 0);
+	}
 	{ /* GetWindowTransform: the identity for a window nothing transformed (recorded), 1000 for an unknown window, -304 for a bad size */
 		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 100, 200, 30, 20 }, 0, &tw) == 0);
 		uint8_t m[0x28], rep[0x80]; memset(m, 0, sizeof m); hdr(m, 0x28, 30034, 0); w32(m, 0x20, tw.id); w32(m, 0x24, 0x7fffff00);

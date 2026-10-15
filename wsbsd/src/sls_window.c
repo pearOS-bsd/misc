@@ -349,6 +349,18 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		wr32(r, 0x30, ws_window_owner(srv, wid)); wr32(r, 0x34, holds_rights(c, wid) ? 0x30007u : 0); wr32(r, 0x38, 1);
 		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
 	}
+	case SLS_MSG_CopyAssociatedWindows: {                                          /* wid@0x20, size 0x24; reply complex 0x38: OOL array of the other windows of its ordering group, count@0x34; 1010 for an unknown window */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		uint32_t wid = rd32(buf, 0x20);
+		if (!ws_window_exists(srv, wid)) return reply_simple(c->fd, h, 0x3f2);
+		ws_wid all[256]; int na = ws_window_ordering_group(srv, wid, all, 256); if (na > 256) na = 256;
+		uint32_t arr[256]; uint32_t n = 0; for (int i = 0; i < na; i++) if (all[i] != wid) arr[n++] = all[i];
+		uint8_t m[0x38]; memset(m, 0, sizeof m);
+		fill_reply_header((mach_msg_header_t *)m, h, sizeof m, 1);
+		wr32(m, 0x18, 1); m[0x24] = 1; m[0x25] = 1; m[0x27] = 1; wr32(m, 0x28, n * 4); memcpy(m + 0x2c, &WS_NDR, 8); wr32(m, 0x34, n);
+		struct iovec v[2] = { { m, sizeof m }, { arr, (size_t)n * 4 } };
+		return ws_ipc_send(c->fd, v, n ? 2 : 1, NULL, 0);
+	}
 	case SLS_MSG_GetWindowMovementGroup:                                           /* wid@0x20, size 0x24; reply complex 0x38: OOL array of the group's window ids, the byte length in both the descriptor size and @0x34 (as decompiled); 1001 for an unknown window */
 	case SLS_MSG_GetWindowOrderingGroup: {
 		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size != 0x24) return reply_simple(c->fd, h, -304);
