@@ -21,7 +21,7 @@ struct wsd_window {
 	struct wsd_window *next;
 };
 
-@interface WsdServer : GSDisplayServer <RunLoopEvents>
+@interface WsdServer : GSDisplayServer
 {
 	ws_conn *conn;
 	int screenW, screenH;
