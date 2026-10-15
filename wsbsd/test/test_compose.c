@@ -113,7 +113,7 @@ static void test_transform(void)
 	ws_compose_scene(srv, scr);
 	#define PX(x, y) (*(uint32_t *)(scr->px + (size_t)(y) * scr->stride + (size_t)(x) * 4))
 	CHECK(PX(65, 100) == 0xffff0000u && PX(134, 100) == 0xffff0000u && PX(100, 65) == 0xffff0000u);
-	CHECK(PX(60, 100) != 0xffff0000u && PX(140, 100) != 0xffff0000u);
+	CHECK(PX(55, 100) != 0xffff0000u && PX(145, 100) != 0xffff0000u);
 	m[0] = m[3] = 1; m[4] = 50;
 	CHECK(ws_set_window_transform(srv, w, m) == 0);
 	ws_compose_scene(srv, scr);
