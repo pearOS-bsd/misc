@@ -104,6 +104,38 @@ int sls_space_dispatch(conn *c, const uint8_t *buf, size_t len)
 		if (i >= 0) { free(sp[i].values); sp[i].values = osz ? malloc((size_t)osz) : NULL; if (sp[i].values) { memcpy(sp[i].values, buf + 0x40, (size_t)osz); sp[i].vlen = (uint32_t)osz; } else sp[i].vlen = 0; }
 		return reply_simple(c->fd, h, 0);
 	}
+	case SLS_MSG_SpaceGetType: {                                                   /* id u64@0x20, size 0x28; reply value: the space type; 1010 for an unknown space */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		uint64_t id; memcpy(&id, buf + 0x20, 8);
+		int i = sp_find(id);
+		if (i < 0) return reply_simple(c->fd, h, 0x3f2);
+		return reply_value(c->fd, h, (int32_t)sp[i].type);
+	}
+	case SLS_MSG_SpaceCopyName: {                                                  /* id u64@0x20, size 0x28; reply pad4(len + 1) + 0x2c: 0@0x24, length + 1@0x28, the name from 0x2c; 1010 for an unknown space, 1000 for a space without a name */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		uint64_t id; memcpy(&id, buf + 0x20, 8);
+		int i = sp_find(id);
+		if (i < 0) return reply_simple(c->fd, h, 0x3f2);
+		if (!sp[i].name[0]) return reply_simple(c->fd, h, 1000);
+		uint32_t n = (uint32_t)strlen(sp[i].name) + 1, size = ((n + 3) & ~3u) + 0x2c;
+		uint8_t *r = calloc(1, size); if (!r) return reply_simple(c->fd, h, 1000);
+		fill_reply_header((mach_msg_header_t *)r, h, size, 0);
+		memcpy(r + 0x18, &WS_NDR, sizeof WS_NDR); wr32(r, 0x28, n); memcpy(r + 0x2c, sp[i].name, n);
+		int rc = ws_ipc_send(c->fd, &(struct iovec){ r, size }, 1, NULL, 0);
+		free(r);
+		return rc;
+	}
+	case SLS_MSG_CopySpaces: {                                                     /* mask@0x20, size 0x24; reply complex 0x38: OOL array of space ids (u64), size = 8 * count@0x34. Bit 0 selects the shown spaces, bit 1 the hidden ones (bit 2, the system spaces, adds none here) */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		uint32_t mask = rd32(buf, 0x20); uint64_t ids[MAXSP]; uint32_t n = 0;
+		sp_init();
+		for (int i = 0; i < MAXSP; i++) if (sp[i].used && ((sp[i].shown && (mask & 1)) || (!sp[i].shown && (mask & 2)))) ids[n++] = sp[i].id;
+		uint8_t m[0x38]; memset(m, 0, sizeof m);
+		fill_reply_header((mach_msg_header_t *)m, h, sizeof m, 1);
+		wr32(m, 0x18, 1); m[0x24] = 1; m[0x25] = 1; m[0x27] = 1; wr32(m, 0x28, n * 8); memcpy(m + 0x2c, &WS_NDR, 8); wr32(m, 0x34, n);
+		struct iovec v[2] = { { m, sizeof m }, { ids, (size_t)n * 8 } };
+		return ws_ipc_send(c->fd, v, n ? 2 : 1, NULL, 0);
+	}
 	case SLS_MSG_SpaceGetAlpha: {                                                  /* id u64@0x20, size 0x28; reply value: the alpha as a float; 1010 for an unknown space */
 		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
 		uint64_t id; memcpy(&id, buf + 0x20, 8);
