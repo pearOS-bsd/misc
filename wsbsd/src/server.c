@@ -48,7 +48,7 @@ struct ws_server {
 	ws_event_sink sink; void *sink_ctx;
 	uint64_t gen;
 	ws_surface *cursor_img; int cursor_hx, cursor_hy; uint32_t cursor_serial;
-	struct track { int used; uint64_t id; ws_wid wid; ws_rect *r; int n; int inside; } trk[64];
+	struct track { int used; uint64_t id; ws_wid wid; ws_rect *r; int n; int inside; int disabled; } trk[64];
 	struct kf { uint32_t cid; int ids[8]; int n; } kf[32]; int nkf; int kf_next;      /* key focus list, [0] is the holder */
 	struct { uint32_t cid; int count; } hide[64]; int nhide; int obscured;
 };
@@ -777,7 +777,7 @@ static void track_update(ws_server *s, int x, int y)
 		struct track *t = &s->trk[i];
 		if (!t->used) continue;
 		window *w = get(s, t->wid);
-		int in = w && top == t->wid && track_contains(t, x - w->frame.x, y - w->frame.y);
+		int in = !t->disabled && w && top == t->wid && track_contains(t, x - w->frame.x, y - w->frame.y);
 		if (in == t->inside) continue;
 		t->inside = in;
 		if (w) post_ex(w, (ws_event){ in ? WS_EV_TRACK_ENTER : WS_EV_TRACK_EXIT, w->id, x - w->frame.x, y - w->frame.y, s->buttons, (int)(uint32_t)t->id, g_flags, 0, (int)(uint32_t)(t->id >> 32), 0 });
@@ -798,6 +798,15 @@ int ws_tracking_set(ws_server *s, uint64_t id, ws_wid wid, const ws_rect *rects,
 void ws_tracking_remove(ws_server *s, uint64_t id)
 {
 	for (int i = 0; i < 64; i++) if (s->trk[i].used && s->trk[i].id == id) { free(s->trk[i].r); memset(&s->trk[i], 0, sizeof s->trk[i]); }
+}
+void ws_tracking_remove_window(ws_server *s, ws_wid wid)
+{
+	for (int i = 0; i < 64; i++) if (s->trk[i].used && s->trk[i].wid == wid) { free(s->trk[i].r); memset(&s->trk[i], 0, sizeof s->trk[i]); }
+}
+int ws_tracking_set_enabled(ws_server *s, uint64_t id, ws_wid wid, int enabled)
+{
+	for (int i = 0; i < 64; i++) if (s->trk[i].used && s->trk[i].id == id && s->trk[i].wid == wid) { s->trk[i].disabled = !enabled; track_update(s, s->cx, s->cy); return 0; }
+	return -1;
 }
 int ws_tracking_set_shape(ws_server *s, uint64_t id, const ws_rect *rects, int n)
 {

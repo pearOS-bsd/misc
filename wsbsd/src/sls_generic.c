@@ -42,12 +42,7 @@ static const gen_entry gen_table[] = {
 	{ 30127, 36, 0, 0, 36 },   /* __XForceWaitCursorActive */
 	{ 30148, 36, 0, 0, 36 },   /* __XExitSpecialKeyMode */
 	{ 30153, 40, 1, 1, 36 },   /* __XSetDefaultBootstrapPort */
-	{ 30157, 80, 1, 1, 36 },   /* __XAddTrackingArea */
 	{ 30158, 140, 0, 0, 36 },   /* __XAddTrackingAreas */
-	{ 30160, 44, 0, 0, 36 },   /* __XRemoveTrackingArea */
-	{ 30161, 60, 0, 0, 36 },   /* __XRemoveTrackingAreas */
-	{ 30162, 36, 0, 0, 36 },   /* __XRemoveAllTrackingAreas */
-	{ 30164, 64, 1, 1, 36 },   /* __XSetTrackingAreasEnabled */
 	{ 30167, 36, 0, 0, 40 },   /* __XBlockWindowOrdering */
 	{ 30184, 36, 0, 0, 36 },   /* __XPackagesAddWindowToDraggingSpace */
 	{ 30185, 36, 0, 0, 36 },   /* __XPackagesRemoveWindowFromDraggingSpace */

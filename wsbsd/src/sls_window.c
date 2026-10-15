@@ -188,6 +188,44 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		}
 		return reply_simple(c->fd, h, 0);
 	}
+	case SLS_MSG_AddTrackingArea: {                                                /* OOL region; wid@0x34, size repeated@0x38, compat id u64@0x3c, u64@0x48 (user data); size 0x50; 0 */
+		int err; int osz = ool_request(h, buf, len, 0x50, &err);
+		if (osz < 0) return reply_simple(c->fd, h, err);
+		if ((uint32_t)osz != rd32(buf, 0x38)) return reply_simple(c->fd, h, -300);
+		uint32_t wid = rd32(buf, 0x34); uint64_t id; memcpy(&id, buf + 0x3c, 8);
+		if (ws_window_exists(srv, wid)) {
+			ws_rect *rc = NULL; int nr = 0; ws_rect bb;
+			if (osz && ws_region_parse(buf + 0x50, (uint32_t)osz, &rc, &nr, &bb) == 0) ws_tracking_set(srv, id, wid, rc, nr);
+			else ws_tracking_set(srv, id, wid, NULL, 0);
+			free(rc);
+		}
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_RemoveTrackingArea: {                                             /* wid@0x20, compat id u64@0x24, size 0x2c; always 0 */
+		if (!simple_ok(h, len, 0x2c)) return reply_simple(c->fd, h, -304);
+		uint64_t id; memcpy(&id, buf + 0x24, 8);
+		if (ws_window_exists(srv, rd32(buf, 0x20)) && holds_rights(c, rd32(buf, 0x20))) ws_tracking_remove(srv, id);
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_RemoveAllTrackingAreas: {                                         /* wid@0x20, size 0x24; always 0 */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		if (ws_window_exists(srv, rd32(buf, 0x20)) && holds_rights(c, rd32(buf, 0x20))) ws_tracking_remove_window(srv, rd32(buf, 0x20));
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_RemoveTrackingAreas:
+	case SLS_MSG_SetTrackingAreasEnabled: {                                        /* OOL array of compat ids (u64); wid@0x34, count@0x38 (= size / 8); size 0x3c (Remove) / 0x40 (SetEnabled, enabled flags after the count) */
+		int remove = h->msgh_id == SLS_MSG_RemoveTrackingAreas;
+		int err; int osz = ool_request(h, buf, len, remove ? 0x3c : 0x40, &err);
+		if (osz < 0) return reply_simple(c->fd, h, err);
+		if ((uint32_t)osz / 8 != rd32(buf, 0x38)) return reply_simple(c->fd, h, -300);
+		uint32_t wid = rd32(buf, 0x34);
+		if (!ws_window_exists(srv, wid)) return reply_simple(c->fd, h, 1000);
+		if (!holds_rights(c, wid)) return reply_simple(c->fd, h, 1002);
+		if (osz < 8) return reply_simple(c->fd, h, 0x3e9);                          /* "Null tracking area array" */
+		const uint8_t *ids = buf + (remove ? 0x3c : 0x40);
+		for (int i = 0; i < osz / 8; i++) { uint64_t id; memcpy(&id, ids + 8 * i, 8); if (remove) ws_tracking_remove(srv, id); else ws_tracking_set_enabled(srv, id, wid, rd32(buf, 0x3c) != 0); }      /* the enabled flag at 0x3c is inferred (unverified live) */
+		return reply_simple(c->fd, h, 0);
+	}
 	case SLS_MSG_FlushRegion: {                                                    /* OOL region; wid@0x34, size repeated@0x38; size 0x3c: the region's bounds are flushed (an empty region: the whole window); always 0 */
 		int err; int osz = ool_request(h, buf, len, 0x3c, &err);
 		if (osz < 0) return reply_simple(c->fd, h, err);
