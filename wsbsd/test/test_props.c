@@ -847,6 +847,19 @@ int main(void)
 		CHECK(rc(fd, la, 0x30) == 0); w32(la, 0x28, 0x7777); CHECK(rc(fd, la, 0x30) == 0x3e9);
 		hdr(la, 0x2c, 30298, 0); w32(la, 0x24, 0); CHECK(rc(fd, la, 0x2c) == 0x3e9);
 	}
+	{ /* depth, backing alpha, one-shot, autofill, perceived type, the 4x4 transform */
+		uint8_t m[0x30], rep[0x100]; memset(m, 0, sizeof m);
+		hdr(m, 0x28, 30021, 0); w32(m, 0x20, w.id); w32(m, 0x24, 8); CHECK(rc(fd, m, 0x28) == 0);
+		hdr(m, 0x24, SLS_MSG_GetWindowDepth, 0); w32(m, 0x20, w.id); int n = call(fd, m, 0x24, rep, sizeof rep); CHECK(n == 0x28 && r32(rep, 0x24) == 8);
+		hdr(m, 0x28, 30061, 0); m[0x24] = 1; CHECK(rc(fd, m, 0x28) == 0);
+		hdr(m, 0x24, SLS_MSG_GetWindowHasAlpha, 0); n = call(fd, m, 0x24, rep, sizeof rep); CHECK(n == 0x28 && rep[0x24] == 1);
+		hdr(m, 0x28, 30056, 0); m[0x24] = 1; CHECK(rc(fd, m, 0x28) == 0);
+		hdr(m, 0x28, 30611, 0); w32(m, 0x24, 2); CHECK(rc(fd, m, 0x28) == 0);
+		hdr(m, 0x30, 30085, 0); CHECK(rc(fd, m, 0x30) == 0);
+		hdr(m, 0x24, 30572, 0); n = call(fd, m, 0x24, rep, sizeof rep); float f0; memcpy(&f0, rep + 0x24, 4);
+		CHECK(n == 0x64 && r32(rep, 0x20) == 0 && f0 == 1.0f);
+		w32(m, 0x20, 0x7ffff); CHECK(rc(fd, m, 0x24) == 1000);
+	}
 	{ /* event taps: place, query, enable, list, release (layouts from the decompiled routines) */
 		uint8_t q[0x44], rep[0x200]; memset(q, 0, sizeof q);
 		hdr(q, 0x44, 32028, 1); w32(q, 0x18, 1); w32(q, 0x1c, 0x777); q[0x26] = 0x11; memcpy(q + 0x28, "\0\0\0\0\1\0\0\0", 8);
