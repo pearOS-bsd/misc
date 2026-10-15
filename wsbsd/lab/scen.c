@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include <sys/mman.h>
 typedef struct { double x, y, w, h; } R;
 typedef void *Region;
 static int cid; static mach_port_t srvport;
@@ -21,9 +22,16 @@ static uint32_t wid_of(const char *n) { for (int i = 0; i < nwins; i++) if (!str
 static void raw(int id, char **tok, int nt)
 {
 	uint8_t req[0x2000]; memset(req, 0, sizeof req); size_t n = 0x18;
+	int complex = 0;
 	for (int i = 0; i < nt; i++) {
 		char *t = tok[i];
-		if (!strcmp(t, "ndr")) { static const uint8_t ndr[8] = { 0, 0, 0, 0, 1, 0, 0, 0 }; memcpy(req + n, ndr, 8); n += 8; }
+		if (!strncmp(t, "ool:", 4)) {                       /* one out-of-line descriptor: count@0x18, descriptor@0x1c..0x2b, the next token lands at 0x2c */
+			size_t hl = strlen(t + 4) / 2; uint8_t *mem = mmap(0, 0x4000, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
+			for (size_t k = 0; k < hl; k++) { unsigned v; sscanf(t + 4 + 2 * k, "%2x", &v); mem[k] = (uint8_t)v; }
+			uint32_t one = 1, sz = (uint32_t)hl; uint64_t addr = (uint64_t)(uintptr_t)mem; uint8_t fl[4] = { 0, 1, 0, 1 };
+			memcpy(req + 0x18, &one, 4); memcpy(req + 0x1c, &addr, 8); memcpy(req + 0x24, fl, 4); memcpy(req + 0x28, &sz, 4); n = 0x2c; complex = 1;
+		}
+		else if (!strcmp(t, "ndr")) { static const uint8_t ndr[8] = { 0, 0, 0, 0, 1, 0, 0, 0 }; memcpy(req + n, ndr, 8); n += 8; }
 		else if (!strncmp(t, "u32:", 4) || !strncmp(t, "i32:", 4)) { uint32_t v = (uint32_t)strtoll(t + 4, NULL, 0); memcpy(req + n, &v, 4); n += 4; }
 		else if (!strncmp(t, "wid:", 4)) { uint32_t v = wid_of(t + 4); memcpy(req + n, &v, 4); n += 4; }
 		else if (!strcmp(t, "cid")) { uint32_t v = (uint32_t)cid; memcpy(req + n, &v, 4); n += 4; }
@@ -35,7 +43,7 @@ static void raw(int id, char **tok, int nt)
 	}
 	mach_msg_header_t *hd = (mach_msg_header_t *)req;
 	mach_port_t reply; mach_port_allocate(mach_task_self(), MACH_PORT_RIGHT_RECEIVE, &reply);
-	hd->msgh_bits = MACH_MSGH_BITS(MACH_MSG_TYPE_COPY_SEND, MACH_MSG_TYPE_MAKE_SEND_ONCE);
+	hd->msgh_bits = MACH_MSGH_BITS(MACH_MSG_TYPE_COPY_SEND, MACH_MSG_TYPE_MAKE_SEND_ONCE) | (complex ? MACH_MSGH_BITS_COMPLEX : 0);
 	hd->msgh_size = (mach_msg_size_t)n; hd->msgh_remote_port = srvport; hd->msgh_local_port = reply; hd->msgh_id = id;
 	static uint8_t rep[0x20000]; memset(rep, 0, sizeof rep);
 	kern_return_t kr = mach_msg(hd, MACH_SEND_MSG, (mach_msg_size_t)n, 0, MACH_PORT_NULL, 1500, MACH_PORT_NULL);
