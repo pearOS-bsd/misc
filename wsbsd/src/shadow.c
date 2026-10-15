@@ -19,8 +19,8 @@ ws_shadow_params ws_shadow_defaults(int active)
 	ws_shadow_params p;
 	/* fitted to captures of real AppKit windows on macOS 27 (gaussian of the shape, shifted down): key window sigma 19, density 0.72, offset 19;
 	 * a window that is not key: sigma 19, density 0.41, offset 18. The 1 px inner rim is white at 10 %. */
-	if (active) p = (ws_shadow_params){ 19.0f, 0.72f, 19.0f, 0.25f, 1.0f, 0.10f, 1.0f, 0 };
-	else        p = (ws_shadow_params){ 19.0f, 0.41f, 18.0f, 0.25f, 1.0f, 0.10f, 1.0f, 0 };
+	if (active) p = (ws_shadow_params){ 19.0f, 0.72f, 19.0f, 0.95f, 1.0f, 0.10f, 1.0f, 0 };
+	else        p = (ws_shadow_params){ 19.0f, 0.41f, 18.0f, 0.95f, 1.0f, 0.10f, 1.0f, 0 };
 	return p;
 }
 
@@ -90,7 +90,22 @@ static ws_surface *direct(int w, int h, int cr, const ws_shadow_params *p, int p
 		}
 	float *S = blurred(M, W, H, p->stdev);
 	float *R = blurred(M, W, H, p->rim_radius / 2.8f);
+	if (R && p->rim_radius <= 1.0f) {                         /* a crisp 1 px ring just outside the shape, as on real windows: the shape dilated by one pixel minus the shape */
+		for (int y = 0; y < H; y++)
+			for (int x = 0; x < W; x++) {
+				float dil = rr_cover(x - pad + 0.5f, y - pad + 0.5f, (float)(w + 2), (float)(h + 2), (float)(cr + 1));       /* centred on the window: shift by 1 */
+				dil = rr_cover(x - pad + 1.5f, y - pad + 1.5f, (float)(w + 2), (float)(h + 2), (float)(cr + 1));
+				float ring = dil - M[(size_t)y * W + x]; R[(size_t)y * W + x] = ring < 0 ? 0 : ring > 1 ? 1 : ring;
+			}
+	}
 	float *G = blurred(inv, W, H, p->inner_rim_radius / 2.8f);
+	if (G && p->inner_rim_radius <= 1.0f) {                   /* a crisp 1 px ring just inside the shape: the shape minus the shape shrunk by one pixel */
+		for (int y = 0; y < H; y++)
+			for (int x = 0; x < W; x++) {
+				float ero = rr_cover(x - pad - 0.5f, y - pad - 0.5f, (float)(w - 2), (float)(h - 2), (float)(cr > 1 ? cr - 1 : 0));
+				float ring = M[(size_t)y * W + x] - ero; G[(size_t)y * W + x] = ring < 0 ? 0 : ring > 1 ? 1 : ring;
+			}
+	}
 	ws_surface *out = ws_surface_new(W, H);
 	if (!S || !R || !G || !out) { free(M); free(inv); free(S); free(R); free(G); ws_surface_free(out); return NULL; }
 	int off = (int)lroundf(p->vertical_offset);

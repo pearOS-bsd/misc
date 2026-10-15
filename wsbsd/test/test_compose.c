@@ -112,7 +112,7 @@ static void test_corners(void)
 	ws_compose_scene(srv, scr);
 	#define CP(x, y) (*(uint32_t *)(scr->px + (size_t)(y) * scr->stride + (size_t)(x) * 4))
 	CHECK(CP(10, 10) != 0xffff0000u);                      /* the corner pixel is cut */
-	CHECK(CP(40, 40) == 0xffff0000u && CP(10, 40) == 0xffff0000u && CP(40, 10) == 0xffff0000u);
+	CHECK(CP(40, 40) == 0xffff0000u && CP(12, 40) == 0xffff0000u && CP(40, 12) == 0xffff0000u);
 	ws_surface_free(scr); ws_server_free(srv);
 }
 
