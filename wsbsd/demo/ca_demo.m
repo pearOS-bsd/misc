@@ -34,7 +34,6 @@ static void draw_layer(CALayer *l, CGContextRef g, float parent_alpha)
 	CGContextConcatCTM(g, CGAffineTransformMake(t.m11, t.m12, t.m21, t.m22, t.m41, t.m42));
 	CGContextTranslateCTM(g, -ap.x * b.size.width, -ap.y * b.size.height);
 	float alpha = parent_alpha * [l opacity];
-	CGContextSetAlpha(g, alpha);
 	CGRect local = CGRectMake(0, 0, b.size.width, b.size.height);
 	if ([l shadowOpacity] > 0) {                                  /* a hard offset shadow (the real renderer blurs it) */
 		CGContextSaveGState(g);
@@ -43,7 +42,7 @@ static void draw_layer(CALayer *l, CGContextRef g, float parent_alpha)
 		CGContextFillRect(g, CGRectOffset(local, so.width, so.height));
 		CGContextRestoreGState(g);
 	}
-	if ([l backgroundColor]) { CGContextSetFillColorWithColor(g, [l backgroundColor]); CGContextFillRect(g, local); }
+	if ([l backgroundColor]) { const CGFloat *k = CGColorGetComponents([l backgroundColor]); CGContextSetRGBFillColor(g, k[0], k[1], k[2], k[3] * alpha); CGContextFillRect(g, local); }
 	if ([l masksToBounds]) CGContextClipToRect(g, local);
 	CATransform3D st = [l sublayerTransform];
 	CGContextTranslateCTM(g, -b.origin.x, -b.origin.y);
