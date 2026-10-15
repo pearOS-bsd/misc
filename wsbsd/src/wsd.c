@@ -477,17 +477,20 @@ static int do_simple(conn *c, const uint8_t *buf, size_t len)
 		return reply_value(c->fd, h, (int32_t)bits);
 	}
 	case SLS_MSG_ModifyKeyFocus: {
+		if (!c->registered) return reply_simple(c->fd, h, -600);                    /* no process record: procNotFound */
 		if (!simple_ok(h, len, sizeof(sls_two_req))) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
 		const sls_two_req *q = (const void *)buf;
 		if ((uint8_t)q->a == 1) { ws_keyfocus_release(srv, c->id, 0); return reply_simple(c->fd, h, 0); }
 		return reply_simple(c->fd, h, ws_keyfocus_steal(srv, c->id, q->b, 0, NULL));
 	}
 	case SLS_MSG_StealKeyFocusReturningID: {
+		if (!c->registered) return reply_simple(c->fd, h, -600);                    /* no process record: procNotFound */
 		if (!simple_ok(h, len, sizeof(sls_terminate_req))) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
 		int id = 0, rc = ws_keyfocus_steal(srv, c->id, (int)((const sls_terminate_req *)buf)->wid, 1, &id);
 		return rc ? reply_simple(c->fd, h, rc) : reply_value(c->fd, h, id);          /* success replies are 0x28 long with the id */
 	}
 	case SLS_MSG_ReleaseKeyFocusWithID: {
+		if (!c->registered) return reply_simple(c->fd, h, -600);                    /* no process record: procNotFound */
 		if (!simple_ok(h, len, sizeof(sls_terminate_req))) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
 		return reply_simple(c->fd, h, ws_keyfocus_release(srv, c->id, (int)((const sls_terminate_req *)buf)->wid));
 	}
