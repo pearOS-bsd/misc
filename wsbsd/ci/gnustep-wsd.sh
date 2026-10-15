@@ -94,6 +94,18 @@ if [ -n "$APP" ]; then
 	kill $SP 2>/dev/null; pkill -f Sudoku 2>/dev/null
 	grep -v '^(lldb)\|warning\|wsd-back: \(titlewindow\|setinput\|flush\|commit\|order\|ws_win\)' /tmp/sudoku.log | tail -30
 fi
+# a larger application built from source: Gorm, GNUstep's interface builder (panels, palettes, inspectors)
+(cd /tmp/gs && git clone --depth 1 https://github.com/gnustep/apps-gorm gorm 2>&1 | tail -1 && cd gorm && gmake -j2 2>&1 | grep -E "error|Error " | head -8; gmake install 2>&1 | tail -2)
+GAPP=$(find /usr/local/GNUstep /tmp/gs/gorm -maxdepth 5 -name 'Gorm.app' -type d 2>/dev/null | head -1)
+echo "gorm app: $GAPP"
+if [ -n "$GAPP" ]; then
+	(WSD_DEBUG=1 timeout 60 lldb -b -o 'run' -o 'bt' -o 'quit' -- "$GAPP/Gorm" >/tmp/gorm.log 2>&1) &
+	GP=$!
+	sleep 25
+	./wsshot gorm.ppm; python3 tools/ppm2png.py gorm.ppm gorm.png
+	kill $GP 2>/dev/null; pkill -f Gorm 2>/dev/null
+	grep -v '^(lldb)\|warning\|wsd-back: ' /tmp/gorm.log | tail -25
+fi
 kill $WP 2>/dev/null
 grep -v '^(lldb)\|warning\|wsd-back: \(titlewindow\|setinput\|flush\|commit\|order\|ws_win\)' /tmp/hello.log | tail -40; tail -5 /tmp/wsd.log
 ls -l appkit.png
