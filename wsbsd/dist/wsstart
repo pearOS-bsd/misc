@@ -8,6 +8,8 @@ dir="${XDG_RUNTIME_DIR:-${TMPDIR:-/tmp}/wsd-$(id -u)}"
 mkdir -m 0700 -p "$dir"
 export XDG_RUNTIME_DIR="$dir"
 export WS_SOCKET="$dir/wsd.sock"
+# session identity, read by neofetch/fastfetch (DE) and toolkits
+export XDG_CURRENT_DESKTOP=Aqua XDG_SESSION_DESKTOP=Aqua XDG_SESSION_TYPE=wsd
 rm -f "$WS_SOCKET"
 "$PREFIX/sbin/wsd" ${WSD_FLAGS:--g 1280x800} &
 WSD=$!

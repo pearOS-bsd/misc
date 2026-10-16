@@ -1,0 +1,10 @@
+{
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+  "modules": [
+    "title", "separator", "os", "host", "kernel", "uptime", "packages", "shell", "display",
+    { "type": "de" },
+    { "type": "custom", "key": "WM", "format": "Quartz Compositor" },
+    { "type": "custom", "key": "WM Theme", "format": "Blue (Dark)" },
+    "terminal", "cpu", "gpu", "memory"
+  ]
+}

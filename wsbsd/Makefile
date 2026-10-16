@@ -116,6 +116,10 @@ install: wsd tools_all
 	install -m 0755 wsshot wsclick wskey wsdrag $(DESTDIR)$(PREFIX)/bin/
 	sed 's|%%PREFIX%%|$(PREFIX)|g' dist/wsstart > $(DESTDIR)$(PREFIX)/bin/wsstart && chmod 0755 $(DESTDIR)$(PREFIX)/bin/wsstart
 	sed 's|%%PREFIX%%|$(PREFIX)|g' dist/wsd.rc > $(DESTDIR)$(PREFIX)/etc/rc.d/wsd && chmod 0555 $(DESTDIR)$(PREFIX)/etc/rc.d/wsd
+	install -d $(DESTDIR)$(PREFIX)/etc/xdg/fastfetch $(DESTDIR)$(PREFIX)/share/wsbsd $(DESTDIR)$(PREFIX)/etc/profile.d
+	install -m 0644 dist/fastfetch.jsonc $(DESTDIR)$(PREFIX)/etc/xdg/fastfetch/config.jsonc
+	install -m 0644 dist/neofetch.conf $(DESTDIR)$(PREFIX)/share/wsbsd/neofetch.conf
+	install -m 0644 dist/wsd.sh $(DESTDIR)$(PREFIX)/etc/profile.d/wsd.sh
 	sed 's|%%PREFIX%%|$(PREFIX)|g' man/wsd.8 > $(DESTDIR)$(PREFIX)/share/man/man8/wsd.8
 	install -m 0644 include/ws.h include/ws_client.h include/ws_buffer.h include/ws_evrec.h include/ws_region.h include/ws_ipc.h include/sls_wire.h include/sls_msgids.h include/mach_compat.h include/SkyLight.h $(DESTDIR)$(PREFIX)/include/wsbsd/
 	install -m 0644 libwsclient.a $(DESTDIR)$(PREFIX)/lib/libwsclient.a
