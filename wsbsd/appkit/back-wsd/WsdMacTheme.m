@@ -119,7 +119,7 @@ void WsdApplyMacPalette(void)
 	[l setColor: rgb(mix(r, fg, dark ? 0.07 : 0.0), mix(g, fg, dark ? 0.07 : 0.0), mix(b, fg, dark ? 0.07 : 0.0), 1) forKey: @"controlColor"];
 	[l setColor: label forKey: @"controlTextColor"]; [l setColor: label forKey: @"textColor"]; [l setColor: label forKey: @"windowFrameTextColor"];
 	[l setColor: sec forKey: @"disabledControlTextColor"]; [l setColor: sec forKey: @"secondaryLabelColor"];
-	[l setColor: rgb(mix(r, fg, dark ? 0.04 : 0.0), mix(g, fg, dark ? 0.04 : 0.0), mix(b, fg, dark ? 0.04 : 0.0), 1) forKey: @"textBackgroundColor"];
+	[l setColor: dark ? rgb(23, 24, 25, 1) : rgb(255, 255, 255, 1) forKey: @"textBackgroundColor"];      /* the field fill measured on macOS: neutral, darker than the (wallpaper tinted) window */
 }
 
 @implementation WsdMacTheme
@@ -136,7 +136,8 @@ void WsdApplyMacPalette(void)
 /* push buttons: a capsule 24 pt high centred in the cell frame (the frame is 32 pt: the extra space is the focus ring margin), filled white at 8 % over the window, the accent blue (0,122,255) when it is the default button */
 - (void) drawButton: (NSRect)frame in: (NSCell *)cell view: (NSView *)view style: (int)style state: (GSThemeControlState)state
 {
-	if (style != NSRoundedBezelStyle && style != NSRegularSquareBezelStyle && style != NSRoundRectBezelStyle && style != NSTexturedRoundedBezelStyle) {
+	BOOL popup = [cell isKindOfClass: [NSPopUpButtonCell class]];
+	if (!popup && style != NSRoundedBezelStyle && style != NSRegularSquareBezelStyle && style != NSRoundRectBezelStyle && style != NSTexturedRoundedBezelStyle) {
 		[super drawButton: frame in: cell view: view style: style state: state];
 		return;
 	}

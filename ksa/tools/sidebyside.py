@@ -27,7 +27,7 @@ for y in range(0, sh - 40):
         # row y is inside the bar: walk up to the top rim, then to the left rim
         while y > 0 and near(px[start + 100, y - 1]): y -= 1
         x0 = start
-        while x0 > 0 and near(px[x0 - 1, y + 20]): x0 -= 1
+        while x0 > 0 and near(px[x0 - 1, y + 28]): x0 -= 1
         best = (x0 - 1, y - 1); break
 if not best: best = ((sw - W) // 2, (sh - H) // 2)
 crop = bsd.crop((best[0], best[1], best[0] + W, best[1] + H))
