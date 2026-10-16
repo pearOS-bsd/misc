@@ -78,6 +78,8 @@ int main(void)
 		memset(m, 0, sizeof m); hdr(m, 0x24, 30371, 0); w32(m, 0x20, tw.id);                              /* CopyManagedDisplayForWindow: the display UUID; 1001 for an unknown window */
 		got = call(fd, m, 0x24, rep, sizeof rep); CHECK(got == 0x34 && r32(rep, 0x20) == 0 && r32(rep, 0x24) == 0xfa0e2307u);
 		w32(m, 0x20, 0x7ffff); CHECK(rc(fd, m, 0x24) == 1001);
+		memset(m, 0, sizeof m); hdr(m, 0x30, 30369, 0); got = call(fd, m, 0x30, rep, sizeof rep); CHECK(got == 0x34 && r32(rep, 0x20) == 0 && r32(rep, 0x24) == 0xfa0e2307u);   /* best display for a point / rect */
+		memset(m, 0, sizeof m); hdr(m, 0x40, 30370, 0); got = call(fd, m, 0x40, rep, sizeof rep); CHECK(got == 0x34 && r32(rep, 0x20) == 0 && r32(rep, 0x24) == 0xfa0e2307u);
 		memset(m, 0, sizeof m); hdr(m, 0x28, 30197, 0); w32(m, 0x20, tw.id); w32(m, 0x24, 1); CHECK(rc(fd, m, 0x28) == 0);   /* CycleWindows */
 		hdr(m, 0x24, 30197, 0); CHECK(rc(fd, m, 0x24) == (int)(uint32_t)-304);
 		memset(m, 0, sizeof m); hdr(m, 0x24, 30023, 0); w32(m, 0x20, tw.id); CHECK(rc(fd, m, 0x24) == 0);
