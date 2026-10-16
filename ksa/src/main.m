@@ -146,6 +146,7 @@ static NSColor *secondary(void) { return [[NSColor controlTextColor] colorWithAl
 		[first setEnabled: detected != KSATypeUnknown];
 	}
 	[[window contentView] addSubview: pane];
+	[window makeFirstResponder: [window contentView]];                  /* no button shows a focus ring until the user tabs to it */
 	[window display];
 }
 

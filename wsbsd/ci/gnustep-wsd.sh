@@ -86,6 +86,7 @@ EOT
 		{ echo "TERMINAL LOG:"; grep -v '^(lldb)' /tmp/terminal.log | grep -v 'wsd-back: \(titlewindow\|setinput\|flush\|commit\|order\|ws_win\|receivedEvent\|event type\)' | tail -40; } >> /tmp/terminal-ci.txt 2>&1
 	fi
 fi
+fc-list 2>/dev/null | grep -i "inter" | head -3 | sed 's/^/FONT: /'
 # Keyboard Setup Assistant (ksa/): the same Cocoa sources as on macOS, run on wsd; every pane is screenshotted and the Shift-key flow is checked
 KD="$WS/../ksa"
 if [ -d "$KD" ]; then
