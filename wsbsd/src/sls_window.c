@@ -308,6 +308,30 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
 		return reply_value(c->fd, h, (int32_t)rd32(buf, 0x20) > 0 ? 1 : 0);
 	}
+	case SLS_MSG_OrderWindowListWithGroups: {                                      /* n@0x20, n ids, m, m operations, k, k relative windows; size 4(n+m+k) + 0x2c, each count <= 0x400; 1000 unless n == m == k > 0; an operation of 2 is
+	                                                                                * turned into 1 with relative window 0 (decompiled __CGXOrderWindowListWithGroups); the windows of the group move together (ordering groups are not modelled) */
+		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size < 0x2c || h->msgh_size > 0x302c) return reply_simple(c->fd, h, -304);
+		uint32_t sz = h->msgh_size, n = rd32(buf, 0x20);
+		if (n > 0x400 || 4 * n + 0x2c > sz) return reply_simple(c->fd, h, -304);
+		uint32_t m = rd32(buf, 0x24 + 4 * n);
+		if (m > 0x400 || sz - 4 * n < 4 * m + 0x2c) return reply_simple(c->fd, h, -304);
+		uint32_t k = rd32(buf, 0x28 + 4 * n + 4 * m);
+		if (k > 0x400 || sz != 4 * (n + m + k) + 0x2c) return reply_simple(c->fd, h, -304);
+		if (n == 0 || n != m || n != k) return reply_simple(c->fd, h, 1000);
+		for (uint32_t i = 0; i < n; i++) {
+			uint32_t w = rd32(buf, 0x24 + 4 * i); int op = (int32_t)rd32(buf, 0x28 + 4 * n + 4 * i); uint32_t rel = rd32(buf, 0x2c + 4 * n + 4 * m + 4 * i);
+			if (op == 2) { op = 1; rel = 0; }
+			if (!w || !ws_window_exists(srv, w) || !holds_rights(c, w)) continue;
+			ws_order_window(srv, w, op > 0 ? WS_ABOVE : op < 0 ? WS_BELOW : WS_OUT, rel);
+		}
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_BringNextToFront:                                                 /* size 0x18; no process stack to rotate: 0 (decompiled __XBringNextToFront) */
+		if (!simple_ok(h, len, 0x18)) return reply_simple(c->fd, h, -304);
+		return reply_simple(c->fd, h, 0);
+	case SLS_MSG_DoDeferredOrdering:                                               /* size 0x44; ordering is never deferred here: 0 */
+		if (!simple_ok(h, len, 0x44)) return reply_simple(c->fd, h, -304);
+		return reply_simple(c->fd, h, 0);
 	case SLS_MSG_OrderWindowListWithOperation: {                                   /* n@0x20 (<= 0x400), n ids, then operation and relative window (u32 each); size 4n + 0x2c; 1000 for an empty list or a window without rights */
 		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size < 0x2c || h->msgh_size > 0x102c) return reply_simple(c->fd, h, -304);
 		uint32_t n = rd32(buf, 0x20);
