@@ -609,6 +609,11 @@ int main(void)
 		memset(m, 0, sizeof m); hdr(m, 0x24, 30276, 0); w32(m, 0x20, hw.id); got = call(fd, m, 0x24, rep, sizeof rep); CHECK(got == 0x30 && r32(rep, 0x20) == 0 && r32(rep, 0x24) == 1 && r32(rep, 0x28) == 0x30006 && r32(rep, 0x2c) == 0x10000);
 		w32(m, 0x20, 0x7ffff); CHECK(rc(fd, m, 0x24) == 0x3e9);
 		memset(m, 0, sizeof m); hdr(m, 0x28, 30166, 0); w32(m, 0x20, 1); w32(m, 0x24, 2); CHECK(rc(fd, m, 0x28) == (int)(uint32_t)-600);      /* GetConnectionIDForPSN: unknown process */
+		{ uint8_t g[0x54]; memset(g, 0, sizeof g); hdr(g, 0x54, 30407, 0); w32(g, 0x20, hw.id); double dv[6] = { 100, 50, 800, 600, 10, 20 }; memcpy(g + 0x24, dv, 48);     /* Packages Set/GetWindowConstraints */
+		  CHECK(rc(fd, g, 0x54) == 0);
+		  memset(g, 0, sizeof g); hdr(g, 0x24, 30408, 0); w32(g, 0x20, hw.id); got = call(fd, g, 0x24, rep, sizeof rep); double gv[6]; memcpy(gv, rep + 0x24, 48);
+		  CHECK(got == 0x54 && r32(rep, 0x20) == 0 && gv[0] == 100 && gv[3] == 600 && gv[5] == 20);
+		  w32(g, 0x20, 0x7ffff); got = call(fd, g, 0x24, rep, sizeof rep); memcpy(gv, rep + 0x24, 48); CHECK(got == 0x54 && gv[0] == 0 && gv[5] == 0); }
 		memset(m, 0, sizeof m); hdr(m, 0x28, 30252, 0); w32(m, 0x20, hw.id); w32(m, 0x24, 7); CHECK(rc(fd, m, 0x28) == 0);                    /* SetWindowColorProfile / GetWindowColorProfile */
 		memset(m, 0, sizeof m); hdr(m, 0x24, 30253, 0); w32(m, 0x20, hw.id); got = call(fd, m, 0x24, rep, sizeof rep); CHECK(got == 0x28 && r32(rep, 0x20) == 0 && r32(rep, 0x24) == 7);
 		w32(m, 0x20, 0x7ffff); got = call(fd, m, 0x24, rep, sizeof rep); CHECK(got == 0x28 && r32(rep, 0x20) == 0 && r32(rep, 0x24) == 0);
