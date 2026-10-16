@@ -357,6 +357,15 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 	return [super colorNamed: aName state: elementState];
 }
 
+
+/* colour wells: a capsule round the colour */
+- (NSRect) drawColorWellBorder: (NSColorWell *)well withBounds: (NSRect)bounds withClip: (NSRect)clipRect
+{
+	if (![well isBordered]) return bounds;
+	fillRound(bounds, bounds.size.height / 2, onBG(0.10));
+	return NSInsetRect(bounds, 4, 4);
+}
+
 /* table headers: no bezel, a 1 px hairline under the header (the title is drawn by the cell) */
 - (void) drawTableHeaderCell: (NSTableHeaderCell *)cell withFrame: (NSRect)cellFrame inView: (NSView *)controlView state: (GSThemeControlState)state
 {
@@ -405,6 +414,20 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 		[rgb(40, 40, 42, 1) set]; NSBezierPath *x = [NSBezierPath bezierPath]; [x setLineWidth: 1.4]; [x setLineCapStyle: NSRoundLineCapStyle];
 		[x moveToPoint: NSMakePoint(NSMidX(cb) - 2.5, NSMidY(cb) - 2.5)]; [x lineToPoint: NSMakePoint(NSMidX(cb) + 2.5, NSMidY(cb) + 2.5)]; [x moveToPoint: NSMakePoint(NSMidX(cb) - 2.5, NSMidY(cb) + 2.5)]; [x lineToPoint: NSMakePoint(NSMidX(cb) + 2.5, NSMidY(cb) - 2.5)]; [x stroke];
 	}
+}
+@end
+
+/* level indicators: separate rounded segments, green when filled (Apple's capacity style) */
+@interface NSLevelIndicatorCell (WsdMac)
+@end
+@implementation NSLevelIndicatorCell (WsdMac)
+- (void) drawInteriorWithFrame: (NSRect)f inView: (NSView *)v
+{
+	double mn = [self minValue], mx = [self maxValue], val = [self doubleValue];
+	int n = (int)(mx - mn + 0.5); if (n < 1) n = 1; if (n > 50) n = 50;
+	int filled = (int)((val - mn) / (mx - mn > 0 ? mx - mn : 1) * n + 0.5);
+	CGFloat gap = 2.0, w = (f.size.width - gap * (n - 1)) / n, h = f.size.height > 15 ? 15 : f.size.height, y = NSMidY(f) - h / 2;
+	for (int i = 0; i < n; i++) fillRound(NSMakeRect(f.origin.x + i * (w + gap), y, w, h), 3.0, i < filled ? rgb(52, 199, 89, 1) : onBG(0.08));
 }
 @end
 
