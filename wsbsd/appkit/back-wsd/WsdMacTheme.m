@@ -18,8 +18,22 @@ static void windowBG(int *r, int *g, int *b)
 }
 static int mix(int base, int top, double a) { return (int)(base * (1 - a) + top * a + 0.5); }
 
+/* San Francisco is not redistributable: Inter (pkg inter-font) is the closest free face; the GNUstep font defaults are pointed at it when it is installed */
+static void applyFonts(void)
+{
+	NSString *reg[] = { @"Inter-Regular", @"Inter", @"Inter Regular" }, *bold[] = { @"Inter-Bold", @"Inter Bold", @"Inter-SemiBold", @"Inter SemiBold" };
+	NSString *r = nil, *b = nil;
+	for (int i = 0; i < 3 && !r; i++) if ([NSFont fontWithName: reg[i] size: 13]) r = reg[i];
+	for (int i = 0; i < 4 && !b; i++) if ([NSFont fontWithName: bold[i] size: 13]) b = bold[i];
+	if (getenv("WSD_DEBUG")) NSLog(@"wsd fonts: regular=%@ bold=%@", r, b);
+	NSUserDefaults *d = [NSUserDefaults standardUserDefaults];
+	if (r) for (NSString *k in @[@"NSFont", @"NSUserFont", @"NSControlContentFont", @"NSLabelFont", @"NSMessageFont", @"NSMenuFont", @"NSPaletteFont", @"NSToolTipsFont"]) [d setObject: r forKey: k];
+	if (b) for (NSString *k in @[@"NSBoldFont", @"NSTitleBarFont"]) [d setObject: b forKey: k];
+}
+
 void WsdApplyMacPalette(void)
 {
+	applyFonts();
 	int r, g, b; windowBG(&r, &g, &b); BOOL dark = isDark(); int fg = dark ? 255 : 0;
 	NSColorList *l = [NSColorList colorListNamed: @"System"];
 	if (!l) return;
@@ -34,6 +48,9 @@ void WsdApplyMacPalette(void)
 }
 
 @implementation WsdMacTheme
+
+/* a default button on macOS carries no return-arrow image (GNUstep adds one) */
+- (void) setKeyEquivalent: (NSString *)key forButtonCell: (NSButtonCell *)cell { }
 
 /* push buttons: a capsule 24 pt high centred in the cell frame (the frame is 32 pt: the extra space is the focus ring margin), filled white at 8 % over the window, the accent blue (0,122,255) when it is the default button */
 - (void) drawButton: (NSRect)frame in: (NSCell *)cell view: (NSView *)view style: (int)style state: (GSThemeControlState)state
