@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 #include <stdlib.h>
+#include <math.h>
 #include <string.h>
 #import "wsd/WsdMacTheme.h"
 
@@ -38,21 +39,42 @@ static void applyFonts(void)
 
 /* radio buttons and check boxes: GNUstep draws them from the named images NSRadioButton / NSHighlightedRadioButton and NSSwitch / NSHighlightedSwitch; the images drawn here are the macOS ones
  * (16 pt controls, filled white at 10 % over the window when off, the accent blue with a white dot / check when on), with the 6 pt gap to the title built into the image */
+static double segDist(double px, double py, double ax, double ay, double bx, double by)
+{
+	double dx = bx - ax, dy = by - ay, t = ((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy);
+	t = t < 0 ? 0 : t > 1 ? 1 : t;
+	double cx = ax + t * dx - px, cy = ay + t * dy - py; return sqrt(cx * cx + cy * cy);
+}
+
+/* the pixels are computed here (coverage of a signed distance), not drawn with lockFocus: that does not depend on the display server being up */
 static NSImage *controlImage(BOOL radio, BOOL on)
 {
 	int wr, wg, wb; windowBG(&wr, &wg, &wb); BOOL dark = isDark(); int fg = dark ? 255 : 0;
-	NSImage *img = [[NSImage alloc] initWithSize: NSMakeSize(22, 16)];
-	[img lockFocus];
-	NSRect r = NSMakeRect(0, 0, 16, 16);
-	NSBezierPath *shape = radio ? [NSBezierPath bezierPathWithOvalInRect: r] : [NSBezierPath bezierPathWithRoundedRect: r xRadius: 4 yRadius: 4];
-	if (on) [rgb(0, 122, 255, 1) set]; else [rgb(mix(wr, fg, dark ? 0.10 : 0.06), mix(wg, fg, dark ? 0.10 : 0.06), mix(wb, fg, dark ? 0.10 : 0.06), 1) set];
-	[shape fill];
-	if (on) {
-		[rgb(255, 255, 255, 1) set];
-		if (radio) [[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(5, 5, 6, 6)] fill];
-		else { NSBezierPath *c = [NSBezierPath bezierPath]; [c setLineWidth: 1.8]; [c moveToPoint: NSMakePoint(4, 8.2)]; [c lineToPoint: NSMakePoint(6.9, 5)]; [c lineToPoint: NSMakePoint(12, 11.2)]; [c stroke]; }
-	}
-	[img unlockFocus];
+	const int W = 22, H = 16;
+	int fr = on ? 0 : mix(wr, fg, dark ? 0.10 : 0.06), fgc = on ? 122 : mix(wg, fg, dark ? 0.10 : 0.06), fb = on ? 255 : mix(wb, fg, dark ? 0.10 : 0.06);
+	unsigned char *buf = calloc((size_t)W * H, 4);
+	for (int y = 0; y < H; y++)
+		for (int x = 0; x < W; x++) {
+			double px = x + 0.5, py = y + 0.5, d;                                       /* y runs down the image */
+			if (radio) d = sqrt((px - 8) * (px - 8) + (py - 8) * (py - 8)) - 8;
+			else { double qx = fabs(px - 8) - 4, qy = fabs(py - 8) - 4; d = sqrt((qx > 0 ? qx : 0) * (qx > 0 ? qx : 0) + (qy > 0 ? qy : 0) * (qy > 0 ? qy : 0)) + (qx > qy ? qx : qy < 0 ? (qx > qy ? qx : qy) : 0) - 4; }
+			double cov = 0.5 - d; cov = cov < 0 ? 0 : cov > 1 ? 1 : cov;
+			double r = fr, g = fgc, b = fb;
+			if (on) {
+				double m;
+				if (radio) m = 0.5 - (sqrt((px - 8) * (px - 8) + (py - 8) * (py - 8)) - 3);
+				else { double dd = segDist(px, py, 4, 7.8, 6.9, 11) < segDist(px, py, 6.9, 11, 12, 4.8) ? segDist(px, py, 4, 7.8, 6.9, 11) : segDist(px, py, 6.9, 11, 12, 4.8); m = 0.5 - (dd - 0.9); }
+				m = m < 0 ? 0 : m > 1 ? 1 : m;
+				r = r * (1 - m) + 255 * m; g = g * (1 - m) + 255 * m; b = b * (1 - m) + 255 * m;
+			}
+			unsigned char *o = buf + ((size_t)y * W + x) * 4;
+			o[0] = (unsigned char)(r + 0.5); o[1] = (unsigned char)(g + 0.5); o[2] = (unsigned char)(b + 0.5); o[3] = (unsigned char)(cov * 255 + 0.5);
+		}
+	NSBitmapImageRep *rep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes: NULL pixelsWide: W pixelsHigh: H bitsPerSample: 8 samplesPerPixel: 4 hasAlpha: YES isPlanar: NO
+		colorSpaceName: NSDeviceRGBColorSpace bytesPerRow: W * 4 bitsPerPixel: 32];
+	memcpy([rep bitmapData], buf, (size_t)W * H * 4); free(buf);
+	NSImage *img = [[NSImage alloc] initWithSize: NSMakeSize(W, H)];
+	[img addRepresentation: rep]; [rep release];
 	return img;
 }
 
@@ -64,6 +86,16 @@ static void installControlImages(void)
 		BOOL a = [controlImage(YES, NO) setName: @"NSRadioButton"], b = [controlImage(YES, YES) setName: @"NSHighlightedRadioButton"];
 		BOOL c = [controlImage(NO, NO) setName: @"NSSwitch"], d = [controlImage(NO, YES) setName: @"NSHighlightedSwitch"];
 		if (getenv("WSD_DEBUG")) NSLog(@"wsd control images named: %d %d %d %d", a, b, c, d);
+		const char *dump = getenv("WSD_DUMP_IMAGES");
+		if (dump) {
+			NSString *names[4] = { @"NSRadioButton", @"NSHighlightedRadioButton", @"NSSwitch", @"NSHighlightedSwitch" };
+			for (int i = 0; i < 4; i++) {
+				NSImage *im = [NSImage imageNamed: names[i]];
+				NSData *t = [im TIFFRepresentation];
+				NSLog(@"wsd image %@: size %@ tiff %lu bytes", names[i], NSStringFromSize([im size]), (unsigned long)[t length]);
+				[t writeToFile: [NSString stringWithFormat: @"%s/wsd-%@.tiff", dump, names[i]] atomically: YES];
+			}
+		}
 	} @catch (NSException *e) { NSLog(@"wsd theme: control images: %@", e); }
 }
 
