@@ -114,6 +114,9 @@ if [ -d "$UD" ]; then
 		UP=$!; sleep 5
 		./wsshot uitest.ppm && python3 tools/ppm2png.py uitest.ppm uitest.png; grep '^CTRL' /tmp/uitest-manifest.txt > uitest-manifest.txt
 		i=0; while kill -0 $UP 2>/dev/null && [ $i -lt 15 ]; do sleep 1; i=$((i+1)); done; pkill -f UITest-gnustep 2>/dev/null
+		(WSD_APPEARANCE=light UI_EXIT_AFTER=9 timeout 20 "$UD/UITest-gnustep" >/dev/null 2>/tmp/uitest-light.log) &
+		UP=$!; sleep 5; ./wsshot uitest-light.ppm && python3 tools/ppm2png.py uitest-light.ppm uitest-light.png
+		i=0; while kill -0 $UP 2>/dev/null && [ $i -lt 15 ]; do sleep 1; i=$((i+1)); done; pkill -f UITest-gnustep 2>/dev/null
 		echo "=== UITEST ==="; wc -l uitest-manifest.txt; grep -v wsd-back /tmp/uitest.log | tail -5
 	fi
 fi

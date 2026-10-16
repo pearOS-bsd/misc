@@ -14,6 +14,6 @@ var best = 0; var id = 0
 for w in l where (w[kCGWindowOwnerName as String] as? String) == "uitest" { let b = w[kCGWindowBounds as String] as! [String: Any]; let a = Int((b["Width"] as! Double) * (b["Height"] as! Double)); if a > best { best = a; id = w[kCGWindowNumber as String] as! Int } }
 print(id)
 SW
-open -n "$APP" --env UI_EXIT_AFTER=8
+open -n "$APP" --env UI_EXIT_AFTER=8 --env UI_APPEARANCE=${UI_APPEARANCE:-dark}
 sleep 3; ID=$(swift "$APP/winid.swift"); screencapture -x -o -l "$ID" "$OUT/gallery.png"
 pkill -f "$APP/Contents/MacOS/uitest"; ls "$OUT"
