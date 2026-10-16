@@ -36,7 +36,8 @@ static void applyFonts(void)
 	if (r) for (NSString *k in @[@"NSFont", @"NSUserFont", @"NSControlContentFont", @"NSLabelFont", @"NSMessageFont", @"NSMenuFont", @"NSPaletteFont", @"NSToolTipsFont"]) [d setObject: r forKey: k];
 	if (b) for (NSString *k in @[@"NSBoldFont", @"NSTitleBarFont"]) [d setObject: b forKey: k];
 	[d setObject: @"NSMacintoshInterfaceStyle" forKey: @"NSScrollViewInterfaceStyle"];
-	[d setObject: @"NSMacintoshInterfaceStyle" forKey: @"NSMenuInterfaceStyle"];                      /* the menu as a bar across the top of the screen */              /* the vertical scroller on the right */
+	[d setObject: @"NSMacintoshInterfaceStyle" forKey: @"NSMenuInterfaceStyle"];
+	[d setBool: YES forKey: @"GSSuppressAppIcon"];                                           /* no application icon tile on the desktop (the Dock is not emulated) */                      /* the menu as a bar across the top of the screen */              /* the vertical scroller on the right */
 	[d setBool: YES forKey: @"GSScrollViewNoInnerBorder"];              /* scroll views have no inner border on macOS */
 }
 
@@ -301,6 +302,18 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 }
 
 /* scroller slots (the disabled scroller) are not drawn */
+
+/* group boxes: a rounded panel (the window colour lightened by 3 %) with the title above it at the left, as on macOS */
+- (void) drawBoxInClipRect: (NSRect)clipRect boxType: (NSBoxType)boxType borderType: (NSBorderType)borderType inView: (NSBox *)box
+{
+	if (boxType == NSBoxSeparator) { [onBG(0.10) set]; NSRectFill([box borderRect]); return; }
+	if (boxType == NSBoxCustom || boxType == NSBoxOldStyle) { [super drawBoxInClipRect: clipRect boxType: boxType borderType: borderType inView: box]; return; }
+	NSRect b = [box bounds]; CGFloat th = [box titlePosition] == NSNoTitle ? 0 : [box titleRect].size.height + 2;
+	NSRect panel = NSMakeRect(b.origin.x, b.origin.y, b.size.width, b.size.height - th);
+	fillRound(panel, 8.0, onBG(0.035));
+	if ([box titlePosition] != NSNoTitle) { NSRect tr = [box titleRect]; tr.origin.x = b.origin.x + 8; tr.origin.y = NSMaxY(b) - th; [[box titleCell] drawWithFrame: tr inView: box]; }
+}
+
 /* table headers: no bezel, a 1 px hairline under the header (the title is drawn by the cell) */
 - (void) drawTableHeaderCell: (NSTableHeaderCell *)cell withFrame: (NSRect)cellFrame inView: (NSView *)controlView state: (GSThemeControlState)state
 {
