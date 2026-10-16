@@ -636,6 +636,12 @@ int main(void)
 			w32(q, 0x30, 0x7ffff); CHECK(rc(fd, q, 0x34) == 1001);
 			uint64_t one = 1; memset(q, 0, sizeof q); hdr(q, 0x38, 30359, 0); memcpy(q + 0x20, du, 16); memcpy(q + 0x30, &one, 8); CHECK(rc(fd, q, 0x38) == 0);   /* back */
 			memset(q, 0, sizeof q); hdr(q, 0x24, 30353, 0); w32(q, 0x20, 1); CHECK(rc(fd, q, 0x24) == 0);
+			{ uint8_t g[0x40]; memset(g, 0, sizeof g); hdr(g, 0x28, 30368, 0); uint64_t u1 = 1; memcpy(g + 0x20, &u1, 8);                              /* GetRevealedMenuBarBounds */
+			  got = call(fd, g, 0x28, rep, sizeof rep); double b[4]; memcpy(b, rep + 0x24, 32); CHECK(got == 0x44 && r32(rep, 0x20) == 0 && b[0] == 0 && b[2] == 640 && b[3] == 24);
+			  u1 = 99; memcpy(g + 0x20, &u1, 8); got = call(fd, g, 0x28, rep, sizeof rep); memcpy(b, rep + 0x24, 32); CHECK(got == 0x44 && b[0] > 1e300 && b[2] == 0);
+			  memset(g, 0, sizeof g); hdr(g, 0x38, 30427, 0); got = call(fd, g, 0x38, rep, sizeof rep); CHECK(got == 0x2c && r32(rep, 0x20) == 0);          /* GetSpacePermittedResizeDirections */
+			  memset(g, 0, sizeof g); hdr(g, 0x28 + 8, 30497, 0); w32(g, 0x24, 5); got = call(fd, g, 0x30, rep, sizeof rep); CHECK(got == 0x28 && r32(rep, 0x20) == 0 && rep[0x24] == 0);   /* GetMenuBarVisibilityOverrideOnDisplay */
+			  w32(g, 0x24, 3); CHECK(rc(fd, g, 0x30) == (int)(uint32_t)-304); }
 		}
 		memset(m, 0, sizeof m); hdr(m, 0x30 + 4, 30334, 0); memcpy(m + 0x20, &sid, 8); w32(m, 0x2c, 4); memcpy(m + 0x30, "work", 4); CHECK(rc(fd, m, 0x34) == 0);
 		{ /* owners and shape of the space */
