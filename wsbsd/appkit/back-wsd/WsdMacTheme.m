@@ -22,10 +22,10 @@ static int mix(int base, int top, double a) { return (int)(base * (1 - a) + top 
 /* San Francisco is not redistributable: Inter (pkg inter-font) is the closest free face; the GNUstep font defaults are pointed at it when it is installed */
 static void applyFonts(void)
 {
-	NSString *reg[] = { @"Inter-Regular", @"Inter", @"Inter Regular" }, *bold[] = { @"Inter-Bold", @"Inter Bold", @"Inter-SemiBold", @"Inter SemiBold" };
+	NSString *reg[] = { @"Inter-Medium", @"Inter-Regular", @"Inter" }, *bold[] = { @"Inter-Bold", @"Inter Bold", @"Inter-SemiBold", @"Inter SemiBold" };
 	NSString *r = nil, *b = nil;
 	NSArray *avail = [[NSFontManager sharedFontManager] availableFonts];
-	for (int i = 0; i < 3 && !r; i++) if ([avail containsObject: reg[i]]) r = reg[i];
+	for (int i = 0; i < 3 && !r; i++) if ([avail containsObject: reg[i]]) r = reg[i];      /* macOS draws the system font with a heavier rendering: Inter Medium is the closest weight */
 	for (int i = 0; i < 4 && !b; i++) if ([avail containsObject: bold[i]]) b = bold[i];
 	if (getenv("WSD_DEBUG")) {
 		NSMutableArray *inter = [NSMutableArray array];
@@ -225,9 +225,9 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 	[[NSColor controlTextColor] set];
 	CGFloat cx = NSMidX(r);
 	for (int k = 0; k < 2; k++) {
-		CGFloat cy = k == 0 ? NSMidY(r) + 5.5 : NSMidY(r) - 5.5, d = k == 0 ? -1 : 1;
-		NSBezierPath *p = [NSBezierPath bezierPath]; [p setLineWidth: 1.5]; [p setLineCapStyle: NSRoundLineCapStyle]; [p setLineJoinStyle: NSRoundLineJoinStyle];
-		[p moveToPoint: NSMakePoint(cx - 3, cy + d * 1.5)]; [p lineToPoint: NSMakePoint(cx, cy - d * 1.5)]; [p lineToPoint: NSMakePoint(cx + 3, cy + d * 1.5)]; [p stroke];
+		CGFloat cy = k == 0 ? NSMidY(r) + 8 : NSMidY(r) - 8, d = k == 0 ? -1 : 1;
+		NSBezierPath *p = [NSBezierPath bezierPath]; [p setLineWidth: 1.8]; [p setLineCapStyle: NSRoundLineCapStyle]; [p setLineJoinStyle: NSRoundLineJoinStyle];
+		[p moveToPoint: NSMakePoint(cx - 4.5, cy + d * 2)]; [p lineToPoint: NSMakePoint(cx, cy - d * 2)]; [p lineToPoint: NSMakePoint(cx + 4.5, cy + d * 2)]; [p stroke];
 	}
 }
 
@@ -238,6 +238,7 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 	NSRect r = cellFrame; if (r.size.height > 24) { r.origin.y += (r.size.height - 24) / 2; r.size.height = 24; }
 	NSColor *c = sel ? accent() : onBG(0.08);
 	CGFloat rad = r.size.height / 2;
+	if (sel) { fillRound(r, rad, c); return; }                       /* the selected segment is a pill of its own */
 	NSBezierPath *p = [NSBezierPath bezierPathWithRect: r];
 	if (rl || rr) {
 		NSBezierPath *rounded = [NSBezierPath bezierPathWithRoundedRect: r xRadius: rad yRadius: rad];
