@@ -3,7 +3,8 @@
 import sys
 from PIL import Image
 mac = Image.open(sys.argv[1]).convert("RGBA"); bb = mac.split()[3].point(lambda a: 255 if a > 250 else 0).getbbox(); mac = mac.crop(bb)
-W, H = mac.size; TB = H - 700; p = mac.load()
+CH = next(int(l.split()[2]) for l in open(sys.argv[2]) if l.startswith("CONTENT"))
+W, H = mac.size; TB = H - CH; p = mac.load()
 for line in open(sys.argv[2]):
     t = line.split()
     if len(t) == 6 and t[1] == sys.argv[3]:
