@@ -68,7 +68,7 @@ static NSImage *controlImage(BOOL radio, BOOL on)
 				r = r * (1 - m) + 255 * m; g = g * (1 - m) + 255 * m; b = b * (1 - m) + 255 * m;
 			}
 			unsigned char *o = buf + ((size_t)y * W + x) * 4;
-			o[0] = (unsigned char)(r + 0.5); o[1] = (unsigned char)(g + 0.5); o[2] = (unsigned char)(b + 0.5); o[3] = (unsigned char)(cov * 255 + 0.5);
+			o[0] = (unsigned char)(r * cov + 0.5); o[1] = (unsigned char)(g * cov + 0.5); o[2] = (unsigned char)(b * cov + 0.5); o[3] = (unsigned char)(cov * 255 + 0.5);      /* premultiplied */
 		}
 	NSBitmapImageRep *rep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes: NULL pixelsWide: W pixelsHigh: H bitsPerSample: 8 samplesPerPixel: 4 hasAlpha: YES isPlanar: NO
 		colorSpaceName: NSDeviceRGBColorSpace bytesPerRow: W * 4 bitsPerPixel: 32];
