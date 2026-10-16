@@ -95,7 +95,8 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 	NSScrollView *tss = [[[NSScrollView alloc] initWithFrame: NSMakeRect(0, 0, 210, 110)] autorelease]; [tss setDocumentView: tb]; [tss setHasVerticalScroller: YES]; [tss setBorderType: NSBezelBorder];
 	static Src *src; src = [[Src alloc] init]; [tb setDataSource: src]; [tb reloadData]; [tb selectRowIndexes: [NSIndexSet indexSetWithIndex: 1] byExtendingSelection: NO];
 	caption(@"table view", cx[3], y); place(tss, @"tableview", cx[3], y + 16);
-	[w center]; [w makeKeyAndOrderFront: nil]; [w makeFirstResponder: focusField];       /* only the \"focused\" field shows the focus ring */
+	[w center]; [w makeKeyAndOrderFront: nil]; if (getenv("UI_FOCUS")) [w makeFirstResponder: focusField];       /* off by default: on macOS 26+ a focused field opens a Writing Tools panel that leaks into the capture */
+	else [w makeFirstResponder: nil];
 	if (getenv("UI_MODE") && !strcmp(getenv("UI_MODE"), "alert")) [self performSelector: @selector(showAlert:) withObject: nil afterDelay: 0.6];
 	if (getenv("UI_MODE") && !strcmp(getenv("UI_MODE"), "menu")) [self performSelector: @selector(showMenu:) withObject: nil afterDelay: 0.6];
 	const char *ex = getenv("UI_EXIT_AFTER"); if (ex) [NSTimer scheduledTimerWithTimeInterval: atof(ex) target: NSApp selector: @selector(terminate:) userInfo: nil repeats: NO];
