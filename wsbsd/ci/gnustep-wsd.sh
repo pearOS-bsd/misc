@@ -93,7 +93,7 @@ if [ -d "$KD" ]; then
 	(cd "$KD" && cc -o KeyboardSetupAssistant-gnustep src/main.m $(gnustep-config --objc-flags) $(gnustep-config --gui-libs) 2>&1 | grep -E "error|undefined" | head -20)
 	if [ -x "$KD/KeyboardSetupAssistant-gnustep" ]; then
 		for p in 0 1 2 3; do
-			(WSD_WINDOW_BG=27,36,43 KSA_PANE=$p KSA_EXIT_AFTER=9 timeout 20 "$KD/KeyboardSetupAssistant-gnustep" >/tmp/ksa$p.log 2>&1) &
+			(WSD_DUMP_IMAGES=/tmp WSD_WINDOW_BG=27,36,43 KSA_PANE=$p KSA_EXIT_AFTER=9 timeout 20 "$KD/KeyboardSetupAssistant-gnustep" >/tmp/ksa$p.log 2>&1) &
 			KP=$!; sleep 5
 			./wsshot ksa-pane$p.ppm && python3 tools/ppm2png.py ksa-pane$p.ppm ksa-pane$p.png
 			i=0; while kill -0 $KP 2>/dev/null && [ $i -lt 15 ]; do sleep 1; i=$((i+1)); done; pkill -f KeyboardSetupAssistant-gnustep 2>/dev/null
@@ -101,7 +101,7 @@ if [ -d "$KD" ]; then
 		rm -f /tmp/ksa-out.txt
 		(KSA_PANE=1 KSA_SCRIPT="key:6,key:44,done" KSA_OUTPUT=/tmp/ksa-out.txt KSA_EXIT_AFTER=12 timeout 20 "$KD/KeyboardSetupAssistant-gnustep" >/tmp/ksa-flow.log 2>&1) &
 		KP=$!; i=0; while kill -0 $KP 2>/dev/null && [ $i -lt 20 ]; do sleep 1; i=$((i+1)); done
-		echo '=== KSA ==='; cat /tmp/ksa-flow.log | grep -v wsd-back | tail -12; echo "ksa output: $(cat /tmp/ksa-out.txt 2>&1)"
+		ls -l /tmp/wsd-*.tiff 2>&1 | head; for t in /tmp/wsd-*.tiff; do echo "TIFF $t $(wc -c < $t)"; done; echo '=== KSA ==='; cat /tmp/ksa-flow.log | grep -v wsd-back | tail -12; echo "ksa output: $(cat /tmp/ksa-out.txt 2>&1)"
 		grep -qx ANSI /tmp/ksa-out.txt 2>/dev/null && echo 'KSA flow ok' || echo 'KSA flow FAILED'
 	fi
 fi
