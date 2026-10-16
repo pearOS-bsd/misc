@@ -36,9 +36,34 @@ static void applyFonts(void)
 	if (b) for (NSString *k in @[@"NSBoldFont", @"NSTitleBarFont"]) [d setObject: b forKey: k];
 }
 
+/* radio buttons and check boxes: GNUstep draws them from the named images NSRadioButton / NSHighlightedRadioButton and NSSwitch / NSHighlightedSwitch; the images drawn here are the macOS ones
+ * (16 pt controls, filled white at 10 % over the window when off, the accent blue with a white dot / check when on), with the 6 pt gap to the title built into the image */
+static NSImage *controlImage(BOOL radio, BOOL on)
+{
+	int wr, wg, wb; windowBG(&wr, &wg, &wb); BOOL dark = isDark(); int fg = dark ? 255 : 0;
+	NSImage *img = [[NSImage alloc] initWithSize: NSMakeSize(22, 16)];
+	[img lockFocus];
+	NSRect r = NSMakeRect(0, 0, 16, 16);
+	NSBezierPath *shape = radio ? [NSBezierPath bezierPathWithOvalInRect: r] : [NSBezierPath bezierPathWithRoundedRect: r xRadius: 4 yRadius: 4];
+	if (on) [rgb(0, 122, 255, 1) set]; else [rgb(mix(wr, fg, dark ? 0.10 : 0.06), mix(wg, fg, dark ? 0.10 : 0.06), mix(wb, fg, dark ? 0.10 : 0.06), 1) set];
+	[shape fill];
+	if (on) {
+		[rgb(255, 255, 255, 1) set];
+		if (radio) [[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(5, 5, 6, 6)] fill];
+		else { NSBezierPath *c = [NSBezierPath bezierPath]; [c setLineWidth: 1.8]; [c moveToPoint: NSMakePoint(4, 8.2)]; [c lineToPoint: NSMakePoint(6.9, 5)]; [c lineToPoint: NSMakePoint(12, 11.2)]; [c stroke]; }
+	}
+	[img unlockFocus];
+	return img;
+}
+
 void WsdApplyMacPalette(void)
 {
 	applyFonts();
+	{
+		BOOL a = [controlImage(YES, NO) setName: @"NSRadioButton"], b = [controlImage(YES, YES) setName: @"NSHighlightedRadioButton"];
+		BOOL c = [controlImage(NO, NO) setName: @"NSSwitch"], d = [controlImage(NO, YES) setName: @"NSHighlightedSwitch"];
+		if (getenv("WSD_DEBUG")) NSLog(@"wsd control images named: %d %d %d %d", a, b, c, d);
+	}
 	int r, g, b; windowBG(&r, &g, &b); BOOL dark = isDark(); int fg = dark ? 255 : 0;
 	NSColorList *l = [NSColorList colorListNamed: @"System"];
 	if (!l) return;
@@ -56,6 +81,9 @@ void WsdApplyMacPalette(void)
 
 /* GSTheme's defaultsDidChange: swaps back to the stock theme whenever a user default changes and the active theme's name is not "GNUstep" (we change the font defaults): claim that name */
 - (NSString *) name { return @"GNUstep"; }
+
+/* the dotted focus rectangle is not part of the macOS look (the focus ring only appears for keyboard navigation) */
+- (void) drawFocusFrame: (NSRect)frame view: (NSView *)view { }
 
 /* a default button on macOS carries no return-arrow image (GNUstep adds one) */
 - (void) setKeyEquivalent: (NSString *)key forButtonCell: (NSButtonCell *)cell { }
