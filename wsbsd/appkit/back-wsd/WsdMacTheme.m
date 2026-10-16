@@ -56,14 +56,20 @@ static NSImage *controlImage(BOOL radio, BOOL on)
 	return img;
 }
 
-void WsdApplyMacPalette(void)
+/* made when the first window exists (the images are drawn with lockFocus, which needs a working display server) */
+static void installControlImages(void)
 {
-	applyFonts();
-	{
+	static BOOL done; if (done) return; done = YES;
+	@try {
 		BOOL a = [controlImage(YES, NO) setName: @"NSRadioButton"], b = [controlImage(YES, YES) setName: @"NSHighlightedRadioButton"];
 		BOOL c = [controlImage(NO, NO) setName: @"NSSwitch"], d = [controlImage(NO, YES) setName: @"NSHighlightedSwitch"];
 		if (getenv("WSD_DEBUG")) NSLog(@"wsd control images named: %d %d %d %d", a, b, c, d);
-	}
+	} @catch (NSException *e) { NSLog(@"wsd theme: control images: %@", e); }
+}
+
+void WsdApplyMacPalette(void)
+{
+	@try { applyFonts(); } @catch (NSException *e) { NSLog(@"wsd theme: fonts: %@", e); }
 	int r, g, b; windowBG(&r, &g, &b); BOOL dark = isDark(); int fg = dark ? 255 : 0;
 	NSColorList *l = [NSColorList colorListNamed: @"System"];
 	if (!l) return;
@@ -147,6 +153,7 @@ static NSFont *titleFont(void)
 
 - (id) initWithFrame: (NSRect)frame window: (NSWindow *)w
 {
+	installControlImages();
 	self = [super initWithFrame: frame window: w];
 	if (self == nil) return nil;
 	[closeButton removeFromSuperview];                           /* the circles are drawn here: no NSButton subviews */
