@@ -85,7 +85,27 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 	NSScrollView *tss = [[[NSScrollView alloc] initWithFrame: NSMakeRect(0, 0, 210, 110)] autorelease]; [tss setDocumentView: tb]; [tss setHasVerticalScroller: YES]; [tss setBorderType: NSBezelBorder];
 	caption(@"table view", cx[3], y); place(tss, @"tableview", cx[3], y + 16);
 	[w center]; [w makeKeyAndOrderFront: nil]; [w makeFirstResponder: focusField];       /* only the \"focused\" field shows the focus ring */
+	if (getenv("UI_MODE") && !strcmp(getenv("UI_MODE"), "alert")) [self performSelector: @selector(showAlert:) withObject: nil afterDelay: 0.6];
+	if (getenv("UI_MODE") && !strcmp(getenv("UI_MODE"), "menu")) [self performSelector: @selector(showMenu:) withObject: nil afterDelay: 0.6];
 	const char *ex = getenv("UI_EXIT_AFTER"); if (ex) [NSTimer scheduledTimerWithTimeInterval: atof(ex) target: NSApp selector: @selector(terminate:) userInfo: nil repeats: NO];
+}
+- (void) showAlert: (id)unused
+{
+	NSAlert *a = [[[NSAlert alloc] init] autorelease];
+	[a setMessageText: @"Alert title"]; [a setInformativeText: @"Informative text that explains the alert in a sentence or two."];
+	[a addButtonWithTitle: @"OK"]; [a addButtonWithTitle: @"Cancel"];
+	[a runModal];
+}
+- (void) showMenu: (id)unused
+{
+	NSMenu *m = [[[NSMenu alloc] initWithTitle: @""] autorelease];
+	[m addItemWithTitle: @"Item one" action: @selector(self) keyEquivalent: @""];
+	NSMenuItem *two = [m addItemWithTitle: @"Item two (checked)" action: @selector(self) keyEquivalent: @"t"]; [two setState: NSOnState];
+	[m addItem: [NSMenuItem separatorItem]];
+	NSMenuItem *dis = [m addItemWithTitle: @"Disabled item" action: NULL keyEquivalent: @""]; [dis setEnabled: NO];
+	[m addItemWithTitle: @"Item four" action: @selector(self) keyEquivalent: @"4"];
+	NSWindow *w0 = [NSApp keyWindow] ? [NSApp keyWindow] : [[NSApp windows] objectAtIndex: 0];
+	[NSMenu popUpContextMenu: m withEvent: [NSEvent mouseEventWithType: NSRightMouseDown location: NSMakePoint(150, 150) modifierFlags: 0 timestamp: 0 windowNumber: [w0 windowNumber] context: nil eventNumber: 0 clickCount: 1 pressure: 1] forView: [w0 contentView]];
 }
 - (BOOL) applicationShouldTerminateAfterLastWindowClosed: (NSApplication *)a { return YES; }
 @end
