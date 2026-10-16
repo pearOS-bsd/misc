@@ -37,6 +37,7 @@ static void applyFonts(void)
 	if (b) for (NSString *k in @[@"NSBoldFont", @"NSTitleBarFont"]) [d setObject: b forKey: k];
 	[d setObject: @"NSMacintoshInterfaceStyle" forKey: @"NSScrollViewInterfaceStyle"];
 	[d setObject: @"NSMacintoshInterfaceStyle" forKey: @"NSMenuInterfaceStyle"];
+	[d setObject: @"\u2318" forKey: @"GSCommandKeyString"]; [d setObject: @"\u2303" forKey: @"GSControlKeyString"]; [d setObject: @"\u2325" forKey: @"GSAlternateKeyString"]; [d setObject: @"\u21E7" forKey: @"GSShiftKeyString"];      /* the key equivalent symbols: command, control, option, shift */
 	[d setBool: YES forKey: @"GSSuppressAppIcon"];                                           /* no application icon tile on the desktop (the Dock is not emulated) */                      /* the menu as a bar across the top of the screen */              /* the vertical scroller on the right */
 	[d setBool: YES forKey: @"GSScrollViewNoInnerBorder"];              /* scroll views have no inner border on macOS */
 }
@@ -318,6 +319,7 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 
 
 /* menus: a rounded panel (corner radius 10, the window colour lightened by 18 %, 1 px lighter border), accent highlight with radius 6, hairline separators; the menu bar across the top is darker */
+- (BOOL) drawsBorderForMenuItemCell: (NSMenuItemCell *)cell state: (GSThemeControlState)state isHorizontal: (BOOL)horizontal { return NO; }
 - (CGFloat) menuBorderRadius { return 10.0; }
 - (NSColor *) menuBackgroundColor { return onBG(0.18); }
 - (NSColor *) menuBorderColor { return onBG(0.30); }
