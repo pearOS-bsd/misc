@@ -25,7 +25,11 @@ static void applyFonts(void)
 	NSString *r = nil, *b = nil;
 	for (int i = 0; i < 3 && !r; i++) if ([NSFont fontWithName: reg[i] size: 13]) r = reg[i];
 	for (int i = 0; i < 4 && !b; i++) if ([NSFont fontWithName: bold[i] size: 13]) b = bold[i];
-	if (getenv("WSD_DEBUG")) NSLog(@"wsd fonts: regular=%@ bold=%@", r, b);
+	if (getenv("WSD_DEBUG")) {
+		NSMutableArray *inter = [NSMutableArray array];
+		for (NSString *n in [[NSFontManager sharedFontManager] availableFonts]) if ([n rangeOfString: @"Inter" options: NSCaseInsensitiveSearch].location != NSNotFound) [inter addObject: n];
+		NSLog(@"wsd fonts: regular=%@ bold=%@ available=%lu inter=%@ first=%@", r, b, (unsigned long)[[[NSFontManager sharedFontManager] availableFonts] count], inter, [[[NSFontManager sharedFontManager] availableFonts] subarrayWithRange: NSMakeRange(0, MIN(6, [[[NSFontManager sharedFontManager] availableFonts] count]))]);
+	}
 	NSUserDefaults *d = [NSUserDefaults standardUserDefaults];
 	if (r) for (NSString *k in @[@"NSFont", @"NSUserFont", @"NSControlContentFont", @"NSLabelFont", @"NSMessageFont", @"NSMenuFont", @"NSPaletteFont", @"NSToolTipsFont"]) [d setObject: r forKey: k];
 	if (b) for (NSString *k in @[@"NSBoldFont", @"NSTitleBarFont"]) [d setObject: b forKey: k];
