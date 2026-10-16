@@ -85,7 +85,7 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 	NSTabView *tv = [[[NSTabView alloc] initWithFrame: NSMakeRect(0, 0, 210, 110)] autorelease];
 	for (int i = 0; i < 3; i++) { NSTabViewItem *it = [[[NSTabViewItem alloc] initWithIdentifier: [NSString stringWithFormat: @"t%d", i]] autorelease]; [it setLabel: [NSString stringWithFormat: @"Tab %d", i + 1]]; [tv addTabViewItem: it]; }
 	if (col != 0) { col = 0; y += 66; }
-	caption(@"tab view", cx[0], y); place(tv, @"tabview", cx[0], y + 16);
+	if (getenv("UI_TABVIEW")) { caption(@"tab view", cx[0], y); place(tv, @"tabview", cx[0], y + 16); }     /* off by default: on macOS 26+ the tab view puts a glass layer outside the window, which breaks the capture */
 	NSScrollView *scv = [[[NSScrollView alloc] initWithFrame: NSMakeRect(0, 0, 210, 110)] autorelease]; [scv setHasVerticalScroller: YES]; [scv setDocumentView: [[[NSView alloc] initWithFrame: NSMakeRect(0, 0, 190, 400)] autorelease]];
 	caption(@"scroll view", cx[1], y); place(scv, @"scrollview", cx[1], y + 16);
 	NSTextView *tx = [[[NSTextView alloc] initWithFrame: NSMakeRect(0, 0, 210, 110)] autorelease]; [tx setString: @"Text view"];
