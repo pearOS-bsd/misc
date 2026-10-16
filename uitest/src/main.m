@@ -5,6 +5,7 @@
 static NSView *content;
 static CGFloat contentH;
 static int shown = -1;
+static NSTextField *focusField;
 
 /* registers a control at (x, y) from the top-left of the content area and prints its rectangle */
 static void place(NSView *v, NSString *name, CGFloat x, CGFloat yTop)
@@ -34,9 +35,14 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 @implementation Del
 - (void) applicationDidFinishLaunching: (NSNotification *)n
 {
-	NSRect r = NSMakeRect(0, 0, 940, 700); contentH = r.size.height;
+	NSRect r = NSMakeRect(0, 0, 940, 780); contentH = r.size.height;
+	printf("CONTENT %d %d\n", (int)r.size.width, (int)r.size.height);
 	w = [[NSWindow alloc] initWithContentRect: r styleMask: NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask backing: NSBackingStoreBuffered defer: NO];
 	[w setTitle: @"UI Gallery"]; content = [w contentView];
+	if (getenv("UI_APPEARANCE") && [NSApp respondsToSelector: @selector(setAppearance:)] && NSClassFromString(@"NSAppearance")) {
+		NSString *an = !strcmp(getenv("UI_APPEARANCE"), "light") ? @"NSAppearanceNameAqua" : @"NSAppearanceNameDarkAqua";
+		id ap = [NSClassFromString(@"NSAppearance") performSelector: @selector(appearanceNamed:) withObject: an]; [NSApp performSelector: @selector(setAppearance:) withObject: ap];
+	}
 	CGFloat cx[4] = { 20, 250, 480, 710 }, y = 20; int col = 0;
 #define CELL(label, name, view) do { caption(label, cx[col], y); place(view, name, cx[col], y + 16); col++; if (col == 4) { col = 0; y += 74; } } while (0)
 
@@ -62,6 +68,10 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 	NSBox *bx = [[[NSBox alloc] initWithFrame: NSMakeRect(0, 0, 190, 60)] autorelease]; [bx setTitle: @"Group"]; CELL(@"box", @"box", bx);
 	NSBox *sp = [[[NSBox alloc] initWithFrame: NSMakeRect(0, 0, 190, 2)] autorelease]; [sp setBoxType: NSBoxSeparator]; CELL(@"separator", @"separator", sp);
 	NSTextField *lb = [[[NSTextField alloc] initWithFrame: NSMakeRect(0, 0, 190, 18)] autorelease]; [lb setStringValue: @"Label text"]; [lb setEditable: NO]; [lb setBezeled: NO]; [lb setDrawsBackground: NO]; CELL(@"label", @"label", lb);
+	b = button(@"Pressed", NSMomentaryPushInButton, NSMakeRect(0, 0, 100, 32)); [b highlight: YES]; CELL(@"push pressed", @"push-pressed", b);
+	b = button(@"Pressed", NSMomentaryPushInButton, NSMakeRect(0, 0, 100, 32)); [b setKeyEquivalent: @"\r"]; [b highlight: YES]; CELL(@"default pressed", @"push-default-pressed", b);
+	focusField = [[[NSTextField alloc] initWithFrame: NSMakeRect(0, 0, 160, 22)] autorelease]; [focusField setStringValue: @"Focused"]; CELL(@"text field focused", @"textfield-focused", focusField);
+	b = button(@"Checkbox", NSSwitchButton, NSMakeRect(0, 0, 110, 20)); [b setState: NSOnState]; [b highlight: YES]; CELL(@"checkbox pressed", @"check-pressed", b);
 	NSTabView *tv = [[[NSTabView alloc] initWithFrame: NSMakeRect(0, 0, 210, 110)] autorelease];
 	for (int i = 0; i < 3; i++) { NSTabViewItem *it = [[[NSTabViewItem alloc] initWithIdentifier: [NSString stringWithFormat: @"t%d", i]] autorelease]; [it setLabel: [NSString stringWithFormat: @"Tab %d", i + 1]]; [tv addTabViewItem: it]; }
 	if (col != 0) { col = 0; y += 74; }
@@ -74,7 +84,7 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 	NSTableView *tb = [[[NSTableView alloc] initWithFrame: NSMakeRect(0, 0, 210, 110)] autorelease]; NSTableColumn *c = [[[NSTableColumn alloc] initWithIdentifier: @"c"] autorelease]; [[c headerCell] setStringValue: @"Column"]; [c setWidth: 200]; [tb addTableColumn: c];
 	NSScrollView *tss = [[[NSScrollView alloc] initWithFrame: NSMakeRect(0, 0, 210, 110)] autorelease]; [tss setDocumentView: tb]; [tss setHasVerticalScroller: YES]; [tss setBorderType: NSBezelBorder];
 	caption(@"table view", cx[3], y); place(tss, @"tableview", cx[3], y + 16);
-	[w center]; [w makeKeyAndOrderFront: nil]; [w makeFirstResponder: nil];       /* no field starts with the focus ring */
+	[w center]; [w makeKeyAndOrderFront: nil]; [w makeFirstResponder: focusField];       /* only the \"focused\" field shows the focus ring */
 	const char *ex = getenv("UI_EXIT_AFTER"); if (ex) [NSTimer scheduledTimerWithTimeInterval: atof(ex) target: NSApp selector: @selector(terminate:) userInfo: nil repeats: NO];
 }
 - (BOOL) applicationShouldTerminateAfterLastWindowClosed: (NSApplication *)a { return YES; }

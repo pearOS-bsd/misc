@@ -26,7 +26,8 @@ for y in range(0, sh - 40):
         best = (x0 - 1, y - 1); break
 if not best: best = ((sw - W) // 2, (sh - H) // 2)
 crop = bsd.crop((best[0], best[1], best[0] + W, best[1] + H))
-TB = H - 700                                              # the title bar height: the manifest uses content coordinates
+CH = next(int(l.split()[2]) for l in open(sys.argv[3]) if l.startswith("CONTENT"))
+TB = H - CH                                              # the title bar height: the manifest uses content coordinates
 rows = []; table = []
 S = 3
 for line in open(sys.argv[3]):
