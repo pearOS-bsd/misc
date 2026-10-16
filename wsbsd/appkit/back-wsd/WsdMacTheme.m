@@ -83,9 +83,16 @@ static void installControlImages(void)
 {
 	static BOOL done; if (done) return; done = YES;
 	@try {
-		BOOL a = [controlImage(YES, NO) setName: @"NSRadioButton"], b = [controlImage(YES, YES) setName: @"NSHighlightedRadioButton"];
-		BOOL c = [controlImage(NO, NO) setName: @"NSSwitch"], d = [controlImage(NO, YES) setName: @"NSHighlightedSwitch"];
-		if (getenv("WSD_DEBUG")) NSLog(@"wsd control images named: %d %d %d %d", a, b, c, d);
+		/* +imageNamed: maps the OpenStep names (NSRadioButton ...) to the library's real names before looking them up: take the stock image out under its real name and put ours in */
+		NSString *keys[4] = { @"NSRadioButton", @"NSHighlightedRadioButton", @"NSSwitch", @"NSHighlightedSwitch" };
+		BOOL radio[4] = { YES, YES, NO, NO }, on[4] = { NO, YES, NO, YES };
+		for (int i = 0; i < 4; i++) {
+			NSImage *old = [NSImage imageNamed: keys[i]]; NSString *real = old && [old name] ? [[old name] copy] : keys[i];
+			if (old) [old setName: nil];
+			NSImage *nu = controlImage(radio[i], on[i]);
+			BOOL ok = [nu setName: real];
+			if (getenv("WSD_DEBUG")) NSLog(@"wsd control image %@ -> %@ replaced=%d named=%d", keys[i], real, old != nil, ok);
+		}
 		const char *dump = getenv("WSD_DUMP_IMAGES");
 		if (dump) {
 			NSString *names[4] = { @"NSRadioButton", @"NSHighlightedRadioButton", @"NSSwitch", @"NSHighlightedSwitch" };
