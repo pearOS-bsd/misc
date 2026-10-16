@@ -134,11 +134,67 @@ static void wsdButtonInterior(id self, SEL _cmd, NSRect f, NSView *v)
 	((void (*)(id, SEL, NSRect, NSView *))origButtonInterior)(self, _cmd, f, v);
 	if (toggle) [c setHighlighted: YES];
 }
+
+static void fillRound(NSRect r, CGFloat radius, NSColor *c);
+/* ---- NSAlert as macOS draws it: no title bar, a rounded panel (radius 26), the icon, a bold title, the informative text and capsule buttons side by side (the first button, on the right, is the default one) ---- */
+@interface WsdAlertBack : NSView @end
+@implementation WsdAlertBack
+- (BOOL) isFlipped { return YES; }
+- (void) drawRect: (NSRect)r { int wr, wg, wb; windowBG(&wr, &wg, &wb); [[NSColor clearColor] set]; NSRectFill(r); fillRound([self bounds], 26.0, rgb(wr, wg, wb, 1)); }
+@end
+@interface WsdAlertTarget : NSObject { @public NSInteger code; } - (void) pressed: (id)b; @end
+@implementation WsdAlertTarget - (void) pressed: (id)b { [NSApp stopModalWithCode: [b tag]]; } @end
+
+static IMP origAlertRun;
+static NSInteger wsdAlertRun(id self, SEL _cmd)
+{
+	NSAlert *al = self; NSArray *btns = [al buttons]; if (![btns count]) return ((NSInteger (*)(id, SEL))origAlertRun)(self, _cmd);
+	const CGFloat W = 260, M = 22, TW = W - 2 * M;
+	NSString *title = [al messageText] ?: @"", *info = [al informativeText] ?: @"";
+	NSFont *tf = [NSFont boldSystemFontOfSize: 13], *bf = [NSFont systemFontOfSize: 13];
+	NSColor *fgc = [NSColor controlTextColor];
+	NSDictionary *ta = @{ NSFontAttributeName: tf, NSForegroundColorAttributeName: fgc }, *ba = @{ NSFontAttributeName: bf, NSForegroundColorAttributeName: fgc };
+	CGFloat th = 0, ih = 0;
+	NSTextStorage *st = [[[NSTextStorage alloc] initWithString: title attributes: ta] autorelease]; NSLayoutManager *lm = [[[NSLayoutManager alloc] init] autorelease];
+	NSTextContainer *tc = [[[NSTextContainer alloc] initWithContainerSize: NSMakeSize(TW, 10000)] autorelease]; [tc setLineFragmentPadding: 0]; [lm addTextContainer: tc]; [st addLayoutManager: lm];
+	th = ceil([lm usedRectForTextContainer: tc].size.height);
+	NSTextStorage *st2 = [[[NSTextStorage alloc] initWithString: info attributes: ba] autorelease]; NSLayoutManager *lm2 = [[[NSLayoutManager alloc] init] autorelease];
+	NSTextContainer *tc2 = [[[NSTextContainer alloc] initWithContainerSize: NSMakeSize(TW, 10000)] autorelease]; [tc2 setLineFragmentPadding: 0]; [lm2 addTextContainer: tc2]; [st2 addLayoutManager: lm2];
+	ih = [info length] ? ceil([lm2 usedRectForTextContainer: tc2].size.height) : 0;
+	CGFloat y = 22, iconY = y; y += 64 + 14;
+	CGFloat titleY = y; y += th + 8; CGFloat infoY = y; y += ih + (ih ? 20 : 4);
+	CGFloat btnY = y, H = y + 30 + 14;
+	NSPanel *p = [[NSPanel alloc] initWithContentRect: NSMakeRect(0, 0, W, H) styleMask: NSBorderlessWindowMask backing: NSBackingStoreBuffered defer: NO];
+	[p setOpaque: NO]; [p setBackgroundColor: [NSColor clearColor]]; [p setHasShadow: YES]; [p setLevel: NSModalPanelWindowLevel];
+	WsdAlertBack *back = [[[WsdAlertBack alloc] initWithFrame: NSMakeRect(0, 0, W, H)] autorelease]; [p setContentView: back];
+	NSImage *ic = [al icon] ?: [NSApp applicationIconImage];
+	if (ic) { NSImageView *iv = [[[NSImageView alloc] initWithFrame: NSMakeRect(M, iconY, 64, 64)] autorelease]; [iv setImage: ic]; [iv setImageScaling: NSImageScaleProportionallyUpOrDown]; [back addSubview: iv]; }
+	NSTextField *(^label)(NSString *, NSDictionary *, NSRect) = ^NSTextField *(NSString *t, NSDictionary *a, NSRect f) {
+		NSTextField *l = [[[NSTextField alloc] initWithFrame: f] autorelease]; [l setBezeled: NO]; [l setDrawsBackground: NO]; [l setEditable: NO]; [l setSelectable: NO];
+		[l setAttributedStringValue: [[[NSAttributedString alloc] initWithString: t attributes: a] autorelease]]; return l; };
+	[back addSubview: label(title, ta, NSMakeRect(M, titleY, TW, th))];
+	if (ih) [back addSubview: label(info, ba, NSMakeRect(M, infoY, TW, ih))];
+	WsdAlertTarget *tg = [[[WsdAlertTarget alloc] init] autorelease];
+	NSUInteger n = [btns count]; CGFloat gap = 8, bw = n > 1 ? (W - 32 - gap * (n - 1)) / n : W - 32;
+	for (NSUInteger i = 0; i < n; i++) {                                           /* the first button is the rightmost, as on macOS */
+		NSButton *src = [btns objectAtIndex: i];
+		NSButton *b = [[[NSButton alloc] initWithFrame: NSMakeRect(16 + (n - 1 - i) * (bw + gap), btnY, bw, 30)] autorelease];
+		[b setTitle: [src title]]; [b setBezelStyle: NSRoundedBezelStyle]; [b setTag: NSAlertFirstButtonReturn + (NSInteger)i]; [b setTarget: tg]; [b setAction: @selector(pressed:)];
+		if (i == 0) [b setKeyEquivalent: @"\r"]; else if (![[src keyEquivalent] length] && [[[src title] lowercaseString] isEqualToString: @"cancel"]) [b setKeyEquivalent: @"\033"];
+		[back addSubview: b];
+	}
+	[p center]; [p makeKeyAndOrderFront: nil];
+	NSInteger rc = [NSApp runModalForWindow: p];
+	[p orderOut: nil]; [p release];
+	return rc;
+}
 static void swizzleTableDefaults(void)
 {
 	Method mt = class_getInstanceMethod([NSTableView class], @selector(_initDefaults));
 	if (mt && !origTableInit) origTableInit = method_setImplementation(mt, (IMP)wsdTableInit);
 	Method mb = class_getInstanceMethod([NSButtonCell class], @selector(drawInteriorWithFrame:inView:));
+	Method ma = class_getInstanceMethod([NSAlert class], @selector(runModal));
+	if (ma && !origAlertRun && !getenv("WSD_NO_MACALERT")) origAlertRun = method_setImplementation(ma, (IMP)wsdAlertRun);
 	if (mb && !origButtonInterior) origButtonInterior = method_setImplementation(mb, (IMP)wsdButtonInterior);
 }
 
