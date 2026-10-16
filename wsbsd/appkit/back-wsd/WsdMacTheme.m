@@ -155,6 +155,114 @@ void WsdApplyMacPalette(void)
 - (float) resizebarHeight { return 6.0; }                         /* an invisible strip along the bottom edge that still resizes */
 @end
 
+/* ---- text fields, sliders, progress bars, steppers, segmented controls, pop-up buttons: measured on the real controls (dark appearance, docs/UI-MAC.md) ---- */
+static NSColor *onBG(double a) { int r, g, b; windowBG(&r, &g, &b); int fg = isDark() ? 255 : 0; return rgb(mix(r, fg, a), mix(g, fg, a), mix(b, fg, a), 1); }
+static NSColor *accent(void) { return rgb(0, 122, 255, 1); }
+static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezierPath bezierPathWithRoundedRect: r xRadius: radius yRadius: radius] fill]; }
+
+@implementation WsdMacTheme (Controls)
+
+/* text field bezel: 1 px border (the window colour lightened by 5 %) round a field filled with the text background (23,24,25 in the dark appearance), corner radius 6 */
+- (void) drawWhiteBezel: (NSRect)frame withClip: (NSRect)clip
+{
+	fillRound(frame, 6.0, onBG(0.05));
+	fillRound(NSInsetRect(frame, 1, 1), 5.0, isDark() ? rgb(23, 24, 25, 1) : rgb(255, 255, 255, 1));
+}
+
+/* the bezel of scroll views and tables: a 1 px hairline */
+- (void) drawGrayBezel: (NSRect)frame withClip: (NSRect)clip
+{
+	[onBG(0.08) set]; NSFrameRect(frame);
+}
+
+- (void) drawSliderBorderAndBackground: (NSBorderType)aType frame: (NSRect)cellFrame inCell: (NSCell *)cell isHorizontal: (BOOL)horizontal { }
+
+/* the track: 6 pt thick capsule centred on the bar, the part before the knob in the accent colour */
+- (void) drawBarInside: (NSRect)rect inCell: (NSCell *)cell flipped: (BOOL)flipped
+{
+	NSSliderCell *sc = (NSSliderCell *)cell;
+	BOOL horizontal = rect.size.width > rect.size.height;
+	if (!horizontal) { [super drawBarInside: rect inCell: cell flipped: flipped]; return; }
+	CGFloat cy = NSMidY(rect), th = 6.0; NSRect track = NSMakeRect(rect.origin.x, cy - th / 2, rect.size.width, th);
+	BOOL en = [cell isEnabled];
+	fillRound(track, th / 2, onBG(0.12));
+	double mn = [sc minValue], mx = [sc maxValue], f = mx > mn ? ([sc doubleValue] - mn) / (mx - mn) : 0;
+	CGFloat kr = 10.0, x = track.origin.x + kr + f * (track.size.width - 2 * kr);
+	NSRect fill = NSMakeRect(track.origin.x, track.origin.y, x - track.origin.x, th);
+	fillRound(fill, th / 2, en ? accent() : onBG(0.28));
+}
+
+- (void) drawKnobInCell: (NSCell *)cell
+{
+	NSSliderCell *sc = (NSSliderCell *)cell; NSView *v = [cell controlView];
+	NSRect kr = [sc knobRectFlipped: [v isFlipped]]; NSRect c = NSMakeRect(NSMidX(kr) - 10, NSMidY(kr) - 10, 20, 20);
+	NSColor *knob = rgb(218, 220, 222, 1);
+	[rgb(0, 0, 0, 0.25) set]; [[NSBezierPath bezierPathWithOvalInRect: NSOffsetRect(NSInsetRect(c, 1, 1), 0, -1)] fill];
+	[([cell isEnabled] ? knob : rgb(150, 152, 154, 1)) set]; [[NSBezierPath bezierPathWithOvalInRect: NSInsetRect(c, 1, 1)] fill];
+}
+
+/* determinate progress bars: an 8 pt capsule, the done part in the accent colour on the track colour (46,53,60) */
+- (NSRect) drawProgressIndicatorBezel: (NSRect)bounds withClip: (NSRect)rect { return bounds; }
+- (void) drawProgressIndicator: (NSProgressIndicator *)progress withBounds: (NSRect)bounds withClip: (NSRect)rect atCount: (int)count forValue: (double)val
+{
+	if ([progress style] == NSProgressIndicatorSpinningStyle || [progress isIndeterminate] || [progress isVertical]) {
+		[super drawProgressIndicator: progress withBounds: bounds withClip: rect atCount: count forValue: val];
+		return;
+	}
+	CGFloat h = bounds.size.height > 8 ? 8 : bounds.size.height; NSRect t = NSMakeRect(bounds.origin.x, NSMidY(bounds) - h / 2, bounds.size.width, h);
+	fillRound(t, h / 2, onBG(0.10));
+	if (val > 0) { NSRect d = t; d.size.width = t.size.width * (val > 1 ? 1 : val); if (d.size.width < h) d.size.width = h; fillRound(d, h / 2, accent()); }
+}
+
+/* steppers: a vertical capsule filled white at 8 % with the two chevrons */
+- (void) drawStepperCell: (NSCell *)cell withFrame: (NSRect)cellFrame inView: (NSView *)controlView highlightUp: (BOOL)hu highlightDown: (BOOL)hd
+{
+	NSRect r = NSMakeRect(cellFrame.origin.x, cellFrame.origin.y + (cellFrame.size.height - 24) / 2, cellFrame.size.width > 20 ? 20 : cellFrame.size.width, 24);
+	fillRound(r, 6.0, onBG(hu || hd ? 0.14 : 0.08));
+	[[NSColor controlTextColor] set];
+	CGFloat cx = NSMidX(r);
+	for (int k = 0; k < 2; k++) {
+		CGFloat cy = k == 0 ? NSMidY(r) + 5.5 : NSMidY(r) - 5.5, d = k == 0 ? -1 : 1;
+		NSBezierPath *p = [NSBezierPath bezierPath]; [p setLineWidth: 1.5]; [p setLineCapStyle: NSRoundLineCapStyle]; [p setLineJoinStyle: NSRoundLineJoinStyle];
+		[p moveToPoint: NSMakePoint(cx - 3, cy + d * 1.5)]; [p lineToPoint: NSMakePoint(cx, cy - d * 1.5)]; [p lineToPoint: NSMakePoint(cx + 3, cy + d * 1.5)]; [p stroke];
+	}
+}
+
+/* segmented controls: a capsule (white 8 %), the selected segment in the accent colour */
+- (void) drawSegmentedControlSegment: (NSCell *)cell withFrame: (NSRect)cellFrame inView: (NSView *)controlView style: (NSSegmentStyle)style state: (GSThemeControlState)state roundedLeft: (BOOL)rl roundedRight: (BOOL)rr
+{
+	BOOL sel = (state == GSThemeSelectedState || state == GSThemeSelectedFirstResponderState);
+	NSRect r = cellFrame; if (r.size.height > 24) { r.origin.y += (r.size.height - 24) / 2; r.size.height = 24; }
+	NSColor *c = sel ? accent() : onBG(0.08);
+	CGFloat rad = r.size.height / 2;
+	NSBezierPath *p = [NSBezierPath bezierPathWithRect: r];
+	if (rl || rr) {
+		NSBezierPath *rounded = [NSBezierPath bezierPathWithRoundedRect: r xRadius: rad yRadius: rad];
+		[c set]; [rounded fill];
+		if (!rl) { [c set]; NSRectFill(NSMakeRect(r.origin.x, r.origin.y, rad, r.size.height)); }
+		if (!rr) { [c set]; NSRectFill(NSMakeRect(NSMaxX(r) - rad, r.origin.y, rad, r.size.height)); }
+		return;
+	}
+	[c set]; [p fill];
+}
+
+/* pop-up buttons: the title at 12 pt from the left and the two chevrons at the right */
+- (void) drawPopUpButtonCellInteriorWithFrame: (NSRect)cellFrame withCell: (NSCell *)cell inView: (NSView *)controlView
+{
+	NSString *title = [cell respondsToSelector: @selector(titleOfSelectedItem)] ? [(NSPopUpButtonCell *)cell titleOfSelectedItem] : [cell title];
+	NSColor *tc = [cell isEnabled] ? [NSColor controlTextColor] : [NSColor disabledControlTextColor];
+	NSDictionary *at = [NSDictionary dictionaryWithObjectsAndKeys: [NSFont systemFontOfSize: 13], NSFontAttributeName, tc, NSForegroundColorAttributeName, nil];
+	NSSize sz = [title sizeWithAttributes: at];
+	[title drawAtPoint: NSMakePoint(cellFrame.origin.x + 12, NSMidY(cellFrame) - sz.height / 2) withAttributes: at];
+	[tc set]; CGFloat cx = NSMaxX(cellFrame) - 14;
+	for (int k = 0; k < 2; k++) {
+		CGFloat cy = k == 0 ? NSMidY(cellFrame) + 3.5 : NSMidY(cellFrame) - 3.5, d = k == 0 ? -1 : 1;
+		NSBezierPath *p = [NSBezierPath bezierPath]; [p setLineWidth: 1.4]; [p setLineCapStyle: NSRoundLineCapStyle]; [p setLineJoinStyle: NSRoundLineJoinStyle];
+		[p moveToPoint: NSMakePoint(cx - 3, cy + d * 1.5)]; [p lineToPoint: NSMakePoint(cx, cy - d * 1.5)]; [p lineToPoint: NSMakePoint(cx + 3, cy + d * 1.5)]; [p stroke];
+	}
+}
+@end
+
 #define TB 32.0
 
 @interface GSStandardWindowDecorationView (WsdPrivate)
