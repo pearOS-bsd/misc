@@ -732,6 +732,15 @@ int main(void)
 		CHECK(rc(fd, m, 0x30) == 0);
 		int lr = ws_win_list(c, 0, 1, ids, 16, &total), p1 = -1, p2 = -1; for (int i = 0; i < 16 && i < total; i++) { if (ids[i] == a1.id) p1 = i; if (ids[i] == a2.id) p2 = i; }
 		CHECK(lr >= 0 && p1 >= 0 && p2 >= 0 && p1 < p2);                                                                                      /* a1 is in front of a2 */                                                                 /* a1 is the frontmost */
+		{ /* OrderWindowListWithGroups: ids, operations, relative windows (one each); operation 2 means above everything */
+			memset(m, 0, sizeof m); hdr(m, 0x2c + 12, 30426, 0); w32(m, 0x20, 1); w32(m, 0x24, a2.id); w32(m, 0x28, 1); w32(m, 0x2c, 2); w32(m, 0x30, 1); w32(m, 0x34, 0);
+			CHECK(rc(fd, m, 0x38) == 0);
+			lr = ws_win_list(c, 0, 1, ids, 16, &total); p1 = -1; p2 = -1; for (int i = 0; i < 16 && i < total; i++) { if (ids[i] == a1.id) p1 = i; if (ids[i] == a2.id) p2 = i; }
+			CHECK(lr >= 0 && p1 >= 0 && p2 >= 0 && p2 < p1);                                                                                   /* a2 is in front of a1 now */
+			memset(m, 0, sizeof m); hdr(m, 0x2c, 30426, 0); CHECK(rc(fd, m, 0x2c) == 1000);                                                      /* empty lists */
+			memset(m, 0, sizeof m); hdr(m, 0x2c + 4, 30426, 0); w32(m, 0x20, 1); w32(m, 0x24, a1.id); CHECK(rc(fd, m, 0x30) == 1000);   /* the counts differ */
+			memset(m, 0, sizeof m); hdr(m, 0x2c + 4, 30233, 0); w32(m, 0x20, 1); w32(m, 0x24, a1.id); w32(m, 0x28, 1); w32(m, 0x2c, 0); CHECK(rc(fd, m, 0x30) == 0);   /* a1 in front again */
+		}
 		memset(m, 0, sizeof m); hdr(m, 0x2c, 30233, 0); w32(m, 0x20, 0); CHECK(rc(fd, m, 0x2c) == 1000);                                       /* empty list */
 		memset(m, 0, sizeof m); hdr(m, 0x2c + 4, 30233, 0); w32(m, 0x20, 1); w32(m, 0x24, 0x7ffff); CHECK(rc(fd, m, 0x30) == 1000);             /* unknown window */
 		/* system alpha: one id, one float 0.5 */
