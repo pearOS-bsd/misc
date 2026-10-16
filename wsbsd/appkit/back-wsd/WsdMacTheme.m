@@ -52,7 +52,7 @@ static double segDist(double px, double py, double ax, double ay, double bx, dou
 static NSImage *controlImage(BOOL radio, BOOL on)
 {
 	int wr, wg, wb; windowBG(&wr, &wg, &wb); BOOL dark = isDark(); int fg = dark ? 255 : 0;
-	const int W = 22, H = 16;
+	const int W = 16, H = 16;                                    /* square: the cell scales the image into a square, a wider image would be squeezed */
 	int fr = on ? 0 : mix(wr, fg, dark ? 0.10 : 0.06), fgc = on ? 122 : mix(wg, fg, dark ? 0.10 : 0.06), fb = on ? 255 : mix(wb, fg, dark ? 0.10 : 0.06);
 	unsigned char *buf = calloc((size_t)W * H, 4);
 	for (int y = 0; y < H; y++)
