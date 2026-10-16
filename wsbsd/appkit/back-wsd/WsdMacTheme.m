@@ -135,6 +135,25 @@ static void wsdButtonInterior(id self, SEL _cmd, NSRect f, NSView *v)
 	if (toggle) [c setHighlighted: YES];
 }
 
+/* the generic application icon (a light rounded square with a faint grid), pixels computed like the control images: GNUstep's stock icon has hard black corners */
+static NSImage *genericAppIcon(void)
+{
+	const int N = 64; unsigned char *buf = calloc((size_t)N * N, 4);
+	for (int y = 0; y < N; y++)
+		for (int x = 0; x < N; x++) {
+			double px = x + 0.5, py = y + 0.5, qx = fabs(px - N / 2.0) - (N / 2.0 - 14), qy = fabs(py - N / 2.0) - (N / 2.0 - 14), ox = qx > 0 ? qx : 0, oy = qy > 0 ? qy : 0;
+			double d = sqrt(ox * ox + oy * oy) + ((qx > qy ? qx : qy) < 0 ? (qx > qy ? qx : qy) : 0) - 14, cov = 0.5 - d; cov = cov < 0 ? 0 : cov > 1 ? 1 : cov;
+			double t = py / N, r = 236 - 30 * t, g = 241 - 28 * t, b = 246 - 22 * t;
+			int gx = (x % 16 == 0 || x % 16 == 1), gy = (y % 16 == 0 || y % 16 == 1);
+			if ((gx || gy) && x > 6 && x < N - 6 && y > 6 && y < N - 6) { r += (255 - r) * 0.6; g += (255 - g) * 0.6; b += (255 - b) * 0.6; }
+			unsigned char *o = buf + ((size_t)y * N + x) * 4;
+			o[0] = (unsigned char)(r * cov + 0.5); o[1] = (unsigned char)(g * cov + 0.5); o[2] = (unsigned char)(b * cov + 0.5); o[3] = (unsigned char)(cov * 255 + 0.5);
+		}
+	NSBitmapImageRep *rep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes: NULL pixelsWide: N pixelsHigh: N bitsPerSample: 8 samplesPerPixel: 4 hasAlpha: YES isPlanar: NO colorSpaceName: NSDeviceRGBColorSpace bytesPerRow: N * 4 bitsPerPixel: 32];
+	memcpy([rep bitmapData], buf, (size_t)N * N * 4); free(buf);
+	NSImage *img = [[[NSImage alloc] initWithSize: NSMakeSize(N, N)] autorelease]; [img addRepresentation: rep]; [rep release];
+	return img;
+}
 static void fillRound(NSRect r, CGFloat radius, NSColor *c);
 /* ---- NSAlert as macOS draws it: no title bar, a rounded panel (radius 26), the icon, a bold title, the informative text and capsule buttons side by side (the first button, on the right, is the default one) ---- */
 @interface WsdAlertBack : NSView @end
@@ -167,7 +186,7 @@ static NSInteger wsdAlertRun(id self, SEL _cmd)
 	NSPanel *p = [[NSPanel alloc] initWithContentRect: NSMakeRect(0, 0, W, H) styleMask: NSBorderlessWindowMask backing: NSBackingStoreBuffered defer: NO];
 	[p setOpaque: NO]; [p setBackgroundColor: [NSColor clearColor]]; [p setHasShadow: YES]; [p setLevel: NSModalPanelWindowLevel];
 	WsdAlertBack *back = [[[WsdAlertBack alloc] initWithFrame: NSMakeRect(0, 0, W, H)] autorelease]; [p setContentView: back];
-	NSImage *ic = [al icon] ?: [NSApp applicationIconImage];
+	NSImage *ic = [al icon]; if (!ic || ic == [NSApp applicationIconImage] || [[ic name] isEqualToString: @"NSApplicationIcon"]) ic = genericAppIcon();
 	if (ic) { NSImageView *iv = [[[NSImageView alloc] initWithFrame: NSMakeRect(M, iconY, 64, 64)] autorelease]; [iv setImage: ic]; [iv setImageScaling: NSImageScaleProportionallyUpOrDown]; [back addSubview: iv]; }
 	NSTextField *(^label)(NSString *, NSDictionary *, NSRect) = ^NSTextField *(NSString *t, NSDictionary *a, NSRect f) {
 		NSTextField *l = [[[NSTextField alloc] initWithFrame: f] autorelease]; [l setBezeled: NO]; [l setDrawsBackground: NO]; [l setEditable: NO]; [l setSelectable: NO];
