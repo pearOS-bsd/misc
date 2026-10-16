@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 #include <stdlib.h>
+#import <objc/runtime.h>
 #include <math.h>
 #include <string.h>
 #import "wsd/WsdMacTheme.h"
@@ -116,8 +117,22 @@ static void installControlImages(void)
 	} @catch (NSException *e) { NSLog(@"wsd theme: control images: %@", e); }
 }
 
+/* GNUstep's table views start with solid grid lines and 16 pt rows; Cocoa's have no grid and 24 pt rows */
+static IMP origTableInit;
+static void wsdTableInit(id self, SEL _cmd)
+{
+	((void (*)(id, SEL))origTableInit)(self, _cmd);
+	[(NSTableView *)self setGridStyleMask: 0]; [(NSTableView *)self setRowHeight: 24.0]; [(NSTableView *)self setIntercellSpacing: NSMakeSize(3, 2)];
+}
+static void swizzleTableDefaults(void)
+{
+	Method mt = class_getInstanceMethod([NSTableView class], @selector(_initDefaults));
+	if (mt && !origTableInit) origTableInit = method_setImplementation(mt, (IMP)wsdTableInit);
+}
+
 void WsdApplyMacPalette(void)
 {
+	swizzleTableDefaults();
 	@try { applyFonts(); } @catch (NSException *e) { NSLog(@"wsd theme: fonts: %@", e); }
 	int r, g, b; windowBG(&r, &g, &b); BOOL dark = isDark(); int fg = dark ? 255 : 0;
 	NSColorList *l = [NSColorList colorListNamed: @"System"];
@@ -331,6 +346,15 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 {
 	if (horizontal) { [rgb(16, 18, 24, 1) set]; NSRectFill(bounds); return; }
 	fillRound(bounds, 10.0, onBG(0.30)); fillRound(NSInsetRect(bounds, 1, 1), 9.0, onBG(0.18));
+}
+
+
+/* named colours the stock drawing asks the theme for */
+- (NSColor *) colorNamed: (NSString *)aName state: (GSThemeControlState)elementState
+{
+	if ([aName isEqualToString: @"highlightedTableRowBackgroundColor"]) return isDark() ? rgb(72, 72, 72, 1) : rgb(210, 210, 212, 1);
+	if ([aName isEqualToString: @"highlightedTableRowTextColor"]) return [NSColor controlTextColor];
+	return [super colorNamed: aName state: elementState];
 }
 
 /* table headers: no bezel, a 1 px hairline under the header (the title is drawn by the cell) */
