@@ -266,6 +266,25 @@ int sls_space_dispatch(conn *c, const uint8_t *buf, size_t len)
 		memcpy(r + 0x18, &WS_NDR, 8); r[0x24] = sp_find(id) >= 0;
 		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
 	}
+	case SLS_MSG_ManagedDisplaySetCurrentSpace: {                                  /* display UUID@0x20 (16 bytes), space id u64@0x30, size 0x38; always 0 (decompiled __XManagedDisplaySetCurrentSpace); the space of the one managed display becomes the shown one */
+		if (!simple_ok(h, len, 0x38)) return reply_simple(c->fd, h, -304);
+		uint64_t id; memcpy(&id, buf + 0x30, 8); int k = sp_find(id);
+		if (k >= 0 && !memcmp(buf + 0x20, display_uuid_bytes, 16) && sp[k].type == 0) { for (int i = 0; i < MAXSP; i++) if (sp[i].used && sp[i].type == 0) sp[i].shown = 0; sp[k].shown = 1; }
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_ManagedDisplayCurrentSpaceAllowsWindow: {                         /* display UUID@0x20, wid@0x30, size 0x34; reply 0x28: flag byte@0x24 (the window belongs to the shown space); 1001 for an unknown window, 1000 for an unknown display */
+		if (!simple_ok(h, len, 0x34)) return reply_simple(c->fd, h, -304);
+		if (!ws_window_exists(srv, rd32(buf, 0x30))) return reply_simple(c->fd, h, 0x3e9);
+		if (memcmp(buf + 0x20, display_uuid_bytes, 16)) return reply_simple(c->fd, h, 1000);
+		sp_init(); int ok = 0, k = sp_find(sls_space_of_window(rd32(buf, 0x30))); if (k >= 0 && sp[k].shown) ok = 1;
+		uint8_t r[0x28]; memset(r, 0, sizeof r);
+		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
+		memcpy(r + 0x18, &WS_NDR, 8); r[0x24] = (uint8_t)ok;
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
+	case SLS_MSG_ProcessAssignToAllSpaces:                                         /* pid@0x20, size 0x24: the process becomes sticky (no per-process state kept); 0 */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		return reply_simple(c->fd, h, 0);
 	case SLS_MSG_CopyManagedDisplayForSpace: {                                     /* id u64@0x20, size 0x28; reply 0x34: the display's UUID (16 bytes); 1010 for an unknown space */
 		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
 		uint64_t id; memcpy(&id, buf + 0x20, 8);

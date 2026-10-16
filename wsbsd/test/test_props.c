@@ -626,6 +626,17 @@ int main(void)
 		memset(m, 0, sizeof m); hdr(m, 0x3c, 30328, 1); w32(m, 0x18, 1); m[0x25] = 1; m[0x27] = 1; w32(m, 0x28, 0); memcpy(m + 0x2c, &WS_NDR, 8); w32(m, 0x34, 0); w32(m, 0x38, 0);
 		got = call(fd, m, 0x3c, rep, sizeof rep); uint64_t sid = 0; if (got == 0x2c) memcpy(&sid, rep + 0x24, 8);
 		CHECK(got == 0x2c && r32(rep, 0x20) == 0 && sid >= 2);
+		{ /* ManagedDisplaySetCurrentSpace / ManagedDisplayCurrentSpaceAllowsWindow / ProcessAssignToAllSpaces */
+			static const uint8_t du[16] = { 0x07,0x23,0x0e,0xfa,0x7a,0x8d,0x4e,0x37,0x84,0x5c,0x19,0xcc,0x87,0x37,0xee,0xf5 };
+			uint8_t q[0x38]; memset(q, 0, sizeof q); hdr(q, 0x34, 30373, 0); memcpy(q + 0x20, du, 16); w32(q, 0x30, sw.id);
+			got = call(fd, q, 0x34, rep, sizeof rep); CHECK(got == 0x28 && r32(rep, 0x20) == 0 && rep[0x24] == 1);                    /* the window sits in the shown default space */
+			memset(q, 0, sizeof q); hdr(q, 0x38, 30359, 0); memcpy(q + 0x20, du, 16); memcpy(q + 0x30, &sid, 8); CHECK(rc(fd, q, 0x38) == 0);
+			memset(q, 0, sizeof q); hdr(q, 0x34, 30373, 0); memcpy(q + 0x20, du, 16); w32(q, 0x30, sw.id);
+			got = call(fd, q, 0x34, rep, sizeof rep); CHECK(got == 0x28 && rep[0x24] == 0);                                           /* now another space is shown */
+			w32(q, 0x30, 0x7ffff); CHECK(rc(fd, q, 0x34) == 1001);
+			uint64_t one = 1; memset(q, 0, sizeof q); hdr(q, 0x38, 30359, 0); memcpy(q + 0x20, du, 16); memcpy(q + 0x30, &one, 8); CHECK(rc(fd, q, 0x38) == 0);   /* back */
+			memset(q, 0, sizeof q); hdr(q, 0x24, 30353, 0); w32(q, 0x20, 1); CHECK(rc(fd, q, 0x24) == 0);
+		}
 		memset(m, 0, sizeof m); hdr(m, 0x30 + 4, 30334, 0); memcpy(m + 0x20, &sid, 8); w32(m, 0x2c, 4); memcpy(m + 0x30, "work", 4); CHECK(rc(fd, m, 0x34) == 0);
 		{ /* owners and shape of the space */
 			uint8_t so[0x40 + 8]; memset(so, 0, sizeof so); hdr(so, 0x40, 30340, 1); w32(so, 0x18, 1); so[0x25] = 1; so[0x27] = 1; w32(so, 0x28, 8); memcpy(so + 0x2c, &WS_NDR, 8); memcpy(so + 0x34, &sid, 8); w32(so, 0x3c, 2); w32(so, 0x40, 7); w32(so, 0x44, 9);
