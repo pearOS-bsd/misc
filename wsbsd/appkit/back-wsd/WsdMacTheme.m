@@ -234,17 +234,18 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 	if (val > 0) { NSRect d = t; d.size.width = t.size.width * (val > 1 ? 1 : val); if (d.size.width < h) d.size.width = h; fillRound(d, h / 2, accent()); }
 }
 
-/* steppers: a vertical capsule filled white at 8 % with the two chevrons */
+/* steppers: a rounded rect filled white at 8 % with the two chevrons round a hairline (measured: 20 x 24, chevrons 5.3 pt from the middle) */
 - (void) drawStepperCell: (NSCell *)cell withFrame: (NSRect)cellFrame inView: (NSView *)controlView highlightUp: (BOOL)hu highlightDown: (BOOL)hd
 {
 	NSRect r = NSMakeRect(cellFrame.origin.x, cellFrame.origin.y + (cellFrame.size.height - 24) / 2, cellFrame.size.width > 20 ? 20 : cellFrame.size.width, 24);
-	fillRound(r, 9.5, onBG(hu || hd ? 0.14 : 0.08));
+	fillRound(r, 6.0, onBG(hu || hd ? 0.14 : 0.08));
+	[onBG(0.16) set]; NSRectFill(NSMakeRect(r.origin.x + 2, NSMidY(r) - 0.5, r.size.width - 4, 1));
 	[[NSColor controlTextColor] set];
 	CGFloat cx = NSMidX(r);
 	for (int k = 0; k < 2; k++) {
-		CGFloat cy = k == 0 ? NSMidY(r) + 8 : NSMidY(r) - 8, d = k == 0 ? -1 : 1;
+		CGFloat cy = k == 0 ? NSMidY(r) + 5.3 : NSMidY(r) - 5.3, d = k == 0 ? -1 : 1;
 		NSBezierPath *p = [NSBezierPath bezierPath]; [p setLineWidth: 1.8]; [p setLineCapStyle: NSRoundLineCapStyle]; [p setLineJoinStyle: NSRoundLineJoinStyle];
-		[p moveToPoint: NSMakePoint(cx - 4.5, cy + d * 2)]; [p lineToPoint: NSMakePoint(cx, cy - d * 2)]; [p lineToPoint: NSMakePoint(cx + 4.5, cy + d * 2)]; [p stroke];
+		[p moveToPoint: NSMakePoint(cx - 4.2, cy + d * 1.6)]; [p lineToPoint: NSMakePoint(cx, cy - d * 1.6)]; [p lineToPoint: NSMakePoint(cx + 4.2, cy + d * 1.6)]; [p stroke];
 	}
 }
 
@@ -254,8 +255,8 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 	BOOL sel = (state == GSThemeSelectedState || state == GSThemeSelectedFirstResponderState);
 	NSRect r = cellFrame; if (r.size.height > 24) { r.origin.y += (r.size.height - 24) / 2; r.size.height = 24; }
 	NSColor *c = sel ? accent() : onBG(0.08);
-	CGFloat rad = r.size.height / 2;
-	if (sel) { fillRound(r, rad, c); return; }                       /* the selected segment is a pill of its own */
+	CGFloat rad = 6.0;
+	if (sel) { fillRound(NSInsetRect(r, 0, 0), 6.0, c); return; }                       /* the selected segment is a rounded rectangle of its own */
 	NSBezierPath *p = [NSBezierPath bezierPathWithRect: r];
 	if (rl || rr) {
 		NSBezierPath *rounded = [NSBezierPath bezierPathWithRoundedRect: r xRadius: rad yRadius: rad];
@@ -338,6 +339,31 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 @end
 @implementation NSScroller (WsdSlot)
 - (void) drawKnobSlotInRect: (NSRect)slotRect highlight: (BOOL)flag { }          /* macOS draws no scroller track */
+@end
+
+/* search fields: a capsule round the whole field with the magnifier and the clear button inside it */
+@interface NSSearchFieldCell (WsdMac)
+@end
+@implementation NSSearchFieldCell (WsdMac)
+- (NSRect) searchButtonRectForBounds: (NSRect)r { return NSMakeRect(r.origin.x + 8, NSMidY(r) - 7, 14, 14); }
+- (NSRect) cancelButtonRectForBounds: (NSRect)r { return NSMakeRect(NSMaxX(r) - 8 - 14, NSMidY(r) - 7, 14, 14); }
+- (NSRect) searchTextRectForBounds: (NSRect)r { return NSMakeRect(r.origin.x + 26, r.origin.y, r.size.width - 52, r.size.height); }
+- (void) drawWithFrame: (NSRect)f inView: (NSView *)v
+{
+	fillRound(f, f.size.height / 2, onBG(0.05));
+	fillRound(NSInsetRect(f, 1, 1), (f.size.height - 2) / 2, isDark() ? rgb(23, 24, 25, 1) : rgb(255, 255, 255, 1));
+	NSRect sb = [self searchButtonRectForBounds: f]; NSColor *tc = [[NSColor controlTextColor] colorWithAlphaComponent: 0.6];
+	[tc set];
+	NSBezierPath *ring = [NSBezierPath bezierPathWithOvalInRect: NSMakeRect(sb.origin.x + 1.5, sb.origin.y + 3.5, 8, 8)]; [ring setLineWidth: 1.4]; [ring stroke];
+	NSBezierPath *h = [NSBezierPath bezierPath]; [h setLineWidth: 1.6]; [h setLineCapStyle: NSRoundLineCapStyle]; [h moveToPoint: NSMakePoint(sb.origin.x + 9.4, sb.origin.y + 4.6)]; [h lineToPoint: NSMakePoint(sb.origin.x + 12.6, sb.origin.y + 1.4)]; [h stroke];
+	[self drawInteriorWithFrame: [self searchTextRectForBounds: f] inView: v];
+	if ([[self stringValue] length] > 0) {
+		NSRect cb = [self cancelButtonRectForBounds: f];
+		fillRound(NSInsetRect(cb, 0.5, 0.5), 6.5, rgb(160, 160, 163, 1));
+		[rgb(40, 40, 42, 1) set]; NSBezierPath *x = [NSBezierPath bezierPath]; [x setLineWidth: 1.4]; [x setLineCapStyle: NSRoundLineCapStyle];
+		[x moveToPoint: NSMakePoint(NSMidX(cb) - 2.5, NSMidY(cb) - 2.5)]; [x lineToPoint: NSMakePoint(NSMidX(cb) + 2.5, NSMidY(cb) + 2.5)]; [x moveToPoint: NSMakePoint(NSMidX(cb) - 2.5, NSMidY(cb) + 2.5)]; [x lineToPoint: NSMakePoint(NSMidX(cb) + 2.5, NSMidY(cb) - 2.5)]; [x stroke];
+	}
+}
 @end
 
 #define TB 32.0
