@@ -82,7 +82,7 @@ EOT
 		i=0; while kill -0 $TP 2>/dev/null && [ $i -lt 30 ]; do sleep 1; i=$((i+1)); done          # the application quits itself after TERMINAL_EXIT_AFTER seconds, writing its screen text
 		kill $TP 2>/dev/null; pkill -f Terminal-gnustep 2>/dev/null
 		{ echo "TERMINAL SCREEN TEXT:"; cat /tmp/terminal-dump.txt 2>&1 | head -30; } >> /tmp/terminal-ci.txt 2>&1
-		if grep -q 'Kernel' /tmp/terminal-dump.txt 2>/dev/null && grep -q 'Uptime' /tmp/terminal-dump.txt; then TERMINAL_OK=1; else TERMINAL_OK=0; fi
+		if grep -q 'OS:' /tmp/terminal-dump.txt 2>/dev/null && grep -q 'Uptime' /tmp/terminal-dump.txt; then TERMINAL_OK=1; else TERMINAL_OK=0; fi
 		{ echo "TERMINAL LOG:"; grep -v '^(lldb)' /tmp/terminal.log | grep -v 'wsd-back: \(titlewindow\|setinput\|flush\|commit\|order\|ws_win\|receivedEvent\|event type\)' | tail -40; } >> /tmp/terminal-ci.txt 2>&1
 	fi
 fi
