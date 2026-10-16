@@ -163,16 +163,18 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 @implementation WsdMacTheme (Controls)
 
 /* text field bezel: 1 px border (the window colour lightened by 5 %) round a field filled with the text background (23,24,25 in the dark appearance), corner radius 6 */
-- (void) drawWhiteBezel: (NSRect)frame withClip: (NSRect)clip
+- (NSRect) drawWhiteBezel: (NSRect)frame withClip: (NSRect)clip
 {
 	fillRound(frame, 6.0, onBG(0.05));
 	fillRound(NSInsetRect(frame, 1, 1), 5.0, isDark() ? rgb(23, 24, 25, 1) : rgb(255, 255, 255, 1));
+	return NSInsetRect(frame, 2, 2);                                /* the content rectangle, as the stock method returns it */
 }
 
 /* the bezel of scroll views and tables: a 1 px hairline */
-- (void) drawGrayBezel: (NSRect)frame withClip: (NSRect)clip
+- (NSRect) drawGrayBezel: (NSRect)frame withClip: (NSRect)clip
 {
 	[onBG(0.08) set]; NSFrameRect(frame);
+	return NSInsetRect(frame, 1, 1);
 }
 
 - (void) drawSliderBorderAndBackground: (NSBorderType)aType frame: (NSRect)cellFrame inCell: (NSCell *)cell isHorizontal: (BOOL)horizontal { }
