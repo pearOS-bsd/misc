@@ -332,6 +332,18 @@ static int do_conn_state(conn *c, const uint8_t *buf, size_t len)
 		memcpy(r + 0x18, &WS_NDR, sizeof WS_NDR); wr32(r, 0x24, n); if (o) wr32(r, 0x28, o->id);
 		return ws_ipc_send(c->fd, &(struct iovec){ r, 0x28 + 4 * n }, 1, NULL, 0);
 	}
+	case SLS_MSG_GetWindowRightHolderPSN: {                                        /* wid@0x20, kind@0x24 (1 owner, 2 event receiver, 4 presenter), size 0x28; reply 0x2c: the PSN@0x24; 1001 for another kind, -600 when the window has no such holder
+	                                                                                * (decompiled __XGetWindowRightHolderPSN; the owner stands in for the receiver and the presenter here) */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		uint32_t kind = rd32(buf, 0x24);
+		if (kind != 1 && kind != 2 && kind != 4) return reply_simple(c->fd, h, 0x3e9);
+		conn *o = ws_window_exists(srv, rd32(buf, 0x20)) ? wsd_conn_by_id(ws_window_owner(srv, rd32(buf, 0x20))) : NULL;
+		if (!o || !o->registered) return reply_simple(c->fd, h, -600);
+		uint8_t r[0x2c]; memset(r, 0, sizeof r);
+		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
+		memcpy(r + 0x18, &WS_NDR, sizeof WS_NDR); wr32(r, 0x24, o->psn_hi); wr32(r, 0x28, o->psn_lo);
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
 	case SLS_MSG_CopyBestManagedDisplayForPoint:                                   /* x y doubles @0x20/@0x28, size 0x30; the one display's UUID (decompiled: a point of 0,0 means the cursor) */
 	case SLS_MSG_CopyBestManagedDisplayForRect: {                                  /* x y w h doubles @0x20.., size 0x40 */
 		if (!simple_ok(h, len, h->msgh_id == SLS_MSG_CopyBestManagedDisplayForPoint ? 0x30 : 0x40)) return reply_simple(c->fd, h, -304);
