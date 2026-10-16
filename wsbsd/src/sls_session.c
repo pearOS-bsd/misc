@@ -309,6 +309,29 @@ static int do_conn_state(conn *c, const uint8_t *buf, size_t len)
 		c->notes = (c->notes & (~clear | 0xffdb2fe1u)) | (set & 0x24d01eu);
 		return reply_value(c->fd, h, (int32_t)c->notes);
 	}
+	case SLS_MSG_GetConnectionIDForPSN: {                                           /* PSN hi@0x20 lo@0x24, size 0x28; reply 0x28: the connection id@0x24; -600 for an unknown process (decompiled __XGetConnectionIDForPSN) */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		conn *o = wsd_conn_by_psn(rd32(buf, 0x20), rd32(buf, 0x24));
+		if (!o) return reply_simple(c->fd, h, -600);
+		return reply_value(c->fd, h, (int32_t)o->id);
+	}
+	case SLS_MSG_GetConnectionPSN: {                                               /* connection id@0x20, size 0x24; reply 0x2c: the PSN (hi, lo) at 0x24 */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		conn *o = wsd_conn_by_id(rd32(buf, 0x20));
+		if (!o || !o->registered) return reply_simple(c->fd, h, -600);                  /* recorded for connection 0 */
+		uint8_t r[0x2c]; memset(r, 0, sizeof r);
+		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
+		memcpy(r + 0x18, &WS_NDR, sizeof WS_NDR); wr32(r, 0x24, o->psn_hi); wr32(r, 0x28, o->psn_lo);
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
+	case SLS_MSG_ConnectionsForPSN: {                                              /* PSN@0x20, size 0x28; reply 0x28 + 4n: n@0x24 (at most 0x400), the connection ids from 0x28 */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		conn *o = wsd_conn_by_psn(rd32(buf, 0x20), rd32(buf, 0x24)); uint32_t n = o ? 1 : 0;
+		uint8_t r[0x2c]; memset(r, 0, sizeof r);
+		fill_reply_header((mach_msg_header_t *)r, h, 0x28 + 4 * n, 0);
+		memcpy(r + 0x18, &WS_NDR, sizeof WS_NDR); wr32(r, 0x24, n); if (o) wr32(r, 0x28, o->id);
+		return ws_ipc_send(c->fd, &(struct iovec){ r, 0x28 + 4 * n }, 1, NULL, 0);
+	}
 	case SLS_MSG_CopyBestManagedDisplayForPoint:                                   /* x y doubles @0x20/@0x28, size 0x30; the one display's UUID (decompiled: a point of 0,0 means the cursor) */
 	case SLS_MSG_CopyBestManagedDisplayForRect: {                                  /* x y w h doubles @0x20.., size 0x40 */
 		if (!simple_ok(h, len, h->msgh_id == SLS_MSG_CopyBestManagedDisplayForPoint ? 0x30 : 0x40)) return reply_simple(c->fd, h, -304);
