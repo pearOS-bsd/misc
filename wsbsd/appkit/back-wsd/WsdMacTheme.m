@@ -22,10 +22,10 @@ static int mix(int base, int top, double a) { return (int)(base * (1 - a) + top 
 /* San Francisco is not redistributable: Inter (pkg inter-font) is the closest free face; the GNUstep font defaults are pointed at it when it is installed */
 static void applyFonts(void)
 {
-	NSString *reg[] = { @"Inter-Medium", @"Inter-Regular", @"Inter" }, *bold[] = { @"Inter-Bold", @"Inter Bold", @"Inter-SemiBold", @"Inter SemiBold" };
+	NSString *reg[] = { @"Inter-SemiBold", @"Inter-Medium", @"Inter-Regular", @"Inter" }, *bold[] = { @"Inter-Bold", @"Inter Bold", @"Inter-SemiBold", @"Inter SemiBold" };
 	NSString *r = nil, *b = nil;
 	NSArray *avail = [[NSFontManager sharedFontManager] availableFonts];
-	for (int i = 0; i < 3 && !r; i++) if ([avail containsObject: reg[i]]) r = reg[i];      /* macOS draws the system font with a heavier rendering: Inter Medium is the closest weight */
+	for (int i = 0; i < 4 && !r; i++) if ([avail containsObject: reg[i]]) r = reg[i];      /* macOS draws the system font with a heavier rendering: Inter Medium is the closest weight */
 	for (int i = 0; i < 4 && !b; i++) if ([avail containsObject: bold[i]]) b = bold[i];
 	if (getenv("WSD_DEBUG")) {
 		NSMutableArray *inter = [NSMutableArray array];
