@@ -269,6 +269,29 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 	}
 }
 
+
+/* tab views: a rounded content box under a capsule of tabs (the selected one lighter), the tabs centred at the top */
+- (void) drawTabViewRect: (NSRect)rect inView: (NSView *)view withItems: (NSArray *)items selectedItem: (NSTabViewItem *)selected
+{
+	NSTabView *tv = (NSTabView *)view; const NSTabViewType type = [tv tabViewType]; NSRect bounds = [view bounds];
+	if (type != NSTopTabsBezelBorder) { [super drawTabViewRect: rect inView: view withItems: items selectedItem: selected]; return; }
+	NSRect box = [self tabViewBackgroundRectForBounds: bounds tabViewType: type];
+	box = NSInsetRect(box, 1, 1);
+	fillRound(box, 8.0, onBG(0.12)); fillRound(NSInsetRect(box, 1, 1), 7.0, onBG(0.035));
+	const CGFloat th = 24.0, pad = 12.0; const BOOL trunc = [tv allowsTruncatedLabels]; BOOL flipped = [view isFlipped];
+	CGFloat total = 0; NSUInteger n = [items count];
+	for (NSUInteger i = 0; i < n; i++) total += [[items objectAtIndex: i] sizeOfLabel: trunc].width + 2 * pad;
+	CGFloat x = bounds.origin.x + (bounds.size.width - total) / 2, y = flipped ? bounds.origin.y + 4 : NSMaxY(bounds) - 4 - th;
+	fillRound(NSMakeRect(x, y, total, th), th / 2, onBG(0.08));
+	for (NSUInteger i = 0; i < n; i++) {
+		NSTabViewItem *it = [items objectAtIndex: i]; CGFloat w = [it sizeOfLabel: trunc].width + 2 * pad; NSRect r = NSMakeRect(x, y, w, th);
+		if ([it tabState] == NSSelectedTab) fillRound(NSInsetRect(r, 2, 2), (th - 4) / 2, onBG(0.20));
+		[it drawLabel: trunc inRect: r];
+		x += w;
+	}
+}
+
+/* scroller slots (the disabled scroller) are not drawn */
 /* table headers: no bezel, a 1 px hairline under the header (the title is drawn by the cell) */
 - (void) drawTableHeaderCell: (NSTableHeaderCell *)cell withFrame: (NSRect)cellFrame inView: (NSView *)controlView state: (GSThemeControlState)state
 {
@@ -287,6 +310,12 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 	NSRect c = isHorizontal ? NSInsetRect(k, 1, (k.size.height - 7) / 2) : NSInsetRect(k, (k.size.width - 7) / 2, 1);
 	fillRound(c, 3.5, rgb(mix(0, 255, 0.45), mix(0, 255, 0.46), mix(0, 255, 0.48), 1));
 }
+@end
+
+@interface NSScroller (WsdSlot)
+@end
+@implementation NSScroller (WsdSlot)
+- (void) drawKnobSlotInRect: (NSRect)slotRect highlight: (BOOL)flag { }          /* macOS draws no scroller track */
 @end
 
 #define TB 32.0
