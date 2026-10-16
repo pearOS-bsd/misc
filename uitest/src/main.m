@@ -116,8 +116,7 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 	[m addItem: [NSMenuItem separatorItem]];
 	NSMenuItem *dis = [m addItemWithTitle: @"Disabled item" action: NULL keyEquivalent: @""]; [dis setEnabled: NO];
 	[m addItemWithTitle: @"Item four" action: @selector(self) keyEquivalent: @"4"];
-	if ([m respondsToSelector: @selector(popUpMenuPositioningItem:atLocation:inView:)]) { [m popUpMenuPositioningItem: nil atLocation: NSMakePoint(150, 150) inView: [w contentView]]; return; }
-	[NSMenu popUpContextMenu: m withEvent: [NSEvent mouseEventWithType: NSRightMouseDown location: NSMakePoint(150, 150) modifierFlags: 0 timestamp: 0 windowNumber: [w windowNumber] context: nil eventNumber: 0 clickCount: 1 pressure: 1] forView: [w contentView]];
+	[NSMenu popUpContextMenu: m withEvent: [NSEvent mouseEventWithType: NSRightMouseDown location: NSMakePoint([w frame].origin.x + 150, [w frame].origin.y + 150) modifierFlags: 0 timestamp: 0 windowNumber: 0 context: nil eventNumber: 0 clickCount: 1 pressure: 1] forView: [w contentView]];
 }
 - (BOOL) applicationShouldTerminateAfterLastWindowClosed: (NSApplication *)a { return YES; }
 @end
