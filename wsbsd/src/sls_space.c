@@ -285,6 +285,29 @@ int sls_space_dispatch(conn *c, const uint8_t *buf, size_t len)
 	case SLS_MSG_ProcessAssignToAllSpaces:                                         /* pid@0x20, size 0x24: the process becomes sticky (no per-process state kept); 0 */
 		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
 		return reply_simple(c->fd, h, 0);
+	case SLS_MSG_GetRevealedMenuBarBounds: {                                       /* space id u64@0x20, size 0x28; reply 0x44: x y w h doubles@0x24 (the menu bar of a user space: the display width by 24; CGRectNull = inf, inf, 0, 0 for any other space), decompiled __XGetRevealedMenuBarBounds */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		uint64_t id; memcpy(&id, buf + 0x20, 8); int k = sp_find(id);
+		double inf = 1.0 / 0.0, r4[4] = { inf, inf, 0, 0 };
+		if (k >= 0 && sp[k].type == 0) { r4[0] = 0; r4[1] = 0; r4[2] = wsd_screen_w; r4[3] = 24; }
+		uint8_t r[0x44]; memset(r, 0, sizeof r);
+		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
+		memcpy(r + 0x18, &WS_NDR, 8); memcpy(r + 0x24, r4, 32);
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
+	case SLS_MSG_GetSpacePermittedResizeDirections: {                              /* space id u64@0x20, tile index@0x28, size 0x38; reply 0x2c: the permitted directions u64@0x24; 0 without tiles (recorded) */
+		if (!simple_ok(h, len, 0x38)) return reply_simple(c->fd, h, -304);
+		return reply_u64(c, h, 0);
+	}
+	case SLS_MSG_GetMenuBarVisibilityOverrideOnDisplay: {                          /* count@0x24 (<= 0x80), display id data; size pad4(count) + 0x28; reply 0x28: flag byte@0x24 (no override) */
+		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size < 0x28 || h->msgh_size > 0xa8) return reply_simple(c->fd, h, -304);
+		uint32_t n = rd32(buf, 0x24);
+		if (n > 0x80 || h->msgh_size != ((n + 3) & 0x1fc) + 0x28) return reply_simple(c->fd, h, -304);
+		uint8_t r[0x28]; memset(r, 0, sizeof r);
+		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
+		memcpy(r + 0x18, &WS_NDR, 8);
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
 	case SLS_MSG_CopyManagedDisplayForSpace: {                                     /* id u64@0x20, size 0x28; reply 0x34: the display's UUID (16 bytes); 1010 for an unknown space */
 		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
 		uint64_t id; memcpy(&id, buf + 0x20, 8);
