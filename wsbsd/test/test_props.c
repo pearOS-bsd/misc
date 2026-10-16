@@ -85,6 +85,12 @@ int main(void)
 		memset(m, 0, sizeof m); hdr(m, 0x24, 30023, 0); w32(m, 0x20, tw.id); CHECK(rc(fd, m, 0x24) == 0);
 		memset(m, 0, sizeof m); hdr(m, 0x24, 30086, 0); w32(m, 0x20, tw.id); CHECK(rc(fd, m, 0x24) == 0);
 		uint32_t sid = 0; CHECK(ws_surface_add(c, &tw, &sid) == 0 && sid);
+		memset(m, 0, sizeof m); hdr(m, 0x28, 30282, 0); w32(m, 0x20, tw.id); w32(m, 0x24, sid);                                              /* Get/SetSurfaceResolution */
+		got = call(fd, m, 0x28, rep, sizeof rep); { float sc; memcpy(&sc, rep + 0x24, 4); CHECK(got == 0x30 && r32(rep, 0x20) == 0 && sc == 1.0f && r32(rep, 0x28) == 33 && r32(rep, 0x2c) == 44); }
+		memset(m, 0, sizeof m); hdr(m, 0x2c, 30281, 0); w32(m, 0x20, tw.id); w32(m, 0x24, sid); { float two = 2.0f; memcpy(m + 0x28, &two, 4); } CHECK(rc(fd, m, 0x2c) == 0);
+		memset(m, 0, sizeof m); hdr(m, 0x28, 30282, 0); w32(m, 0x20, tw.id); w32(m, 0x24, sid);
+		got = call(fd, m, 0x28, rep, sizeof rep); CHECK(got == 0x30 && r32(rep, 0x28) == 66 && r32(rep, 0x2c) == 88);
+		w32(m, 0x24, 0x7777); CHECK(rc(fd, m, 0x28) == 1000);
 		memset(m, 0, sizeof m); hdr(m, 0x24, 30092, 0); w32(m, 0x20, tw.id); CHECK(rc(fd, m, 0x24) == 0);
 		int kind = -1; uint32_t ba = 0, bb = 0; CHECK(ws_surface_binding(c, &tw, sid, &kind, &ba, &bb) != 0);               /* the surface is gone */
 		memset(m, 0, sizeof m); hdr(m, 0x24, 30092, 0); w32(m, 0x20, 0x7ffff); CHECK(rc(fd, m, 0x24) == 1000);
