@@ -602,6 +602,9 @@ int main(void)
 		memset(m, 0, sizeof m); hdr(m, 0x30, 30118, 0); w32(m, 0x20, 1); w32(m, 0x24, 2); CHECK(rc(fd, m, 0x30) == (int)(uint32_t)-600);                          /* no such process */
 		memset(m, 0, sizeof m); hdr(m, 0x24, 30276, 0); w32(m, 0x20, hw.id); got = call(fd, m, 0x24, rep, sizeof rep); CHECK(got == 0x30 && r32(rep, 0x20) == 0 && r32(rep, 0x24) == 1 && r32(rep, 0x28) == 0x30006 && r32(rep, 0x2c) == 0x10000);
 		w32(m, 0x20, 0x7ffff); CHECK(rc(fd, m, 0x24) == 0x3e9);
+		memset(m, 0, sizeof m); hdr(m, 0x28, 30166, 0); w32(m, 0x20, 1); w32(m, 0x24, 2); CHECK(rc(fd, m, 0x28) == (int)(uint32_t)-600);      /* GetConnectionIDForPSN: unknown process */
+		memset(m, 0, sizeof m); hdr(m, 0x24, 30235, 0); w32(m, 0x20, 0x7ffff); CHECK(rc(fd, m, 0x24) == (int)(uint32_t)-600);              /* GetConnectionPSN: unknown connection */
+		memset(m, 0, sizeof m); hdr(m, 0x28, 32034, 0); w32(m, 0x20, 1); w32(m, 0x24, 2); got = call(fd, m, 0x28, rep, sizeof rep); CHECK(got == 0x28 && r32(rep, 0x20) == 0 && r32(rep, 0x24) == 0);   /* ConnectionsForPSN: none */
 	}
 
 	/* spaces: create, name, look up by name, alpha, put a window in a space (CopySpacesForWindows follows), remove, destroy */
