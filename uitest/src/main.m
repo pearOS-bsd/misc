@@ -35,7 +35,7 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 @implementation Del
 - (void) applicationDidFinishLaunching: (NSNotification *)n
 {
-	NSRect r = NSMakeRect(0, 0, 940, 780); contentH = r.size.height;
+	NSRect r = NSMakeRect(0, 0, 940, 740); contentH = r.size.height;
 	printf("CONTENT %d %d\n", (int)r.size.width, (int)r.size.height);
 	w = [[NSWindow alloc] initWithContentRect: r styleMask: NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask backing: NSBackingStoreBuffered defer: NO];
 	[w setTitle: @"UI Gallery"]; content = [w contentView];
@@ -44,7 +44,7 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 		id ap = [NSClassFromString(@"NSAppearance") performSelector: @selector(appearanceNamed:) withObject: an]; [NSApp performSelector: @selector(setAppearance:) withObject: ap];
 	}
 	CGFloat cx[4] = { 20, 250, 480, 710 }, y = 20; int col = 0;
-#define CELL(label, name, view) do { caption(label, cx[col], y); place(view, name, cx[col], y + 16); col++; if (col == 4) { col = 0; y += 74; } } while (0)
+#define CELL(label, name, view) do { caption(label, cx[col], y); place(view, name, cx[col], y + 16); col++; if (col == 4) { col = 0; y += 66; } } while (0)
 
 	NSButton *b = button(@"Button", NSMomentaryPushInButton, NSMakeRect(0, 0, 100, 32)); CELL(@"push", @"push", b);
 	b = button(@"Default", NSMomentaryPushInButton, NSMakeRect(0, 0, 100, 32)); [b setKeyEquivalent: @"\r"]; CELL(@"push default", @"push-default", b);
@@ -74,7 +74,7 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 	b = button(@"Checkbox", NSSwitchButton, NSMakeRect(0, 0, 110, 20)); [b setState: NSOnState]; [b highlight: YES]; CELL(@"checkbox pressed", @"check-pressed", b);
 	NSTabView *tv = [[[NSTabView alloc] initWithFrame: NSMakeRect(0, 0, 210, 110)] autorelease];
 	for (int i = 0; i < 3; i++) { NSTabViewItem *it = [[[NSTabViewItem alloc] initWithIdentifier: [NSString stringWithFormat: @"t%d", i]] autorelease]; [it setLabel: [NSString stringWithFormat: @"Tab %d", i + 1]]; [tv addTabViewItem: it]; }
-	if (col != 0) { col = 0; y += 74; }
+	if (col != 0) { col = 0; y += 66; }
 	caption(@"tab view", cx[0], y); place(tv, @"tabview", cx[0], y + 16);
 	NSScrollView *scv = [[[NSScrollView alloc] initWithFrame: NSMakeRect(0, 0, 210, 110)] autorelease]; [scv setHasVerticalScroller: YES]; [scv setDocumentView: [[[NSView alloc] initWithFrame: NSMakeRect(0, 0, 190, 400)] autorelease]];
 	caption(@"scroll view", cx[1], y); place(scv, @"scrollview", cx[1], y + 16);
