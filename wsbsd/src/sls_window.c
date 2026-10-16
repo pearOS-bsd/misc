@@ -143,6 +143,9 @@ static float cursor_scale = 1.0f;
 static struct { uint32_t wid; float m[6]; } xform[MAXXF];                  /* SetWindowTransform: kept per window (not applied when compositing) */
 #define MAXCP 256
 static struct { uint32_t wid; uint32_t profile; } cprof[MAXCP];                  /* SetWindowColorProfile: the profile id per window (0 = unset) */
+#define MAXSR 256
+static struct { uint32_t wid, sid; float scale; } sres[MAXSR];                  /* SetSurfaceResolution: the scale per surface (unset surfaces count as 1) */
+static int surface_of(uint32_t wid, uint32_t sid) { uint32_t ids[0x400]; int n = wsd_window_surfaces(wid, ids, 0x400); if (n > 0x400) n = 0x400; for (int i = 0; i < n; i++) if (ids[i] == sid) return 1; return 0; }
 int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 {
 	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
@@ -436,6 +439,27 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
 		memcpy(r + 0x18, &WS_NDR, 8);
 		if (h->msgh_id == SLS_MSG_MenuBarExists) wr32(r, 0x24, 1); else if (h->msgh_id == SLS_MSG_GetActiveMenuBarDrawingStyle) wr32(r, 0x24, menubar_style); else r[0x24] = menubar_autohide;
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
+	case SLS_MSG_SetSurfaceResolution: {                                           /* wid@0x20, surface@0x24, scale float@0x28, size 0x2c; kept for a surface of a known window written with rights; always 0 (decompiled __XSetSurfaceResolution) */
+		if (!simple_ok(h, len, 0x2c)) return reply_simple(c->fd, h, -304);
+		uint32_t wid = rd32(buf, 0x20), sid = rd32(buf, 0x24); float sc; memcpy(&sc, buf + 0x28, 4);
+		if (ws_window_exists(srv, wid) && holds_rights(c, wid) && surface_of(wid, sid) && sc == sc) {
+			int slot = -1; for (int i = 0; i < MAXSR; i++) { if (sres[i].wid == wid && sres[i].sid == sid) { slot = i; break; } if (slot < 0 && !sres[i].wid) slot = i; }
+			if (slot >= 0) { sres[slot].wid = wid; sres[slot].sid = sid; sres[slot].scale = sc; }
+		}
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_GetSurfaceResolution: {                                           /* wid@0x20, surface@0x24, size 0x28; reply 0x30: scale float@0x24, pixel width / height ints @0x28 / @0x2c (the window size times the scale when the scale is above 1); 1000 for an unknown surface or a scale of 0 */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		uint32_t wid = rd32(buf, 0x20), sid = rd32(buf, 0x24); ws_rect f; float sc = 1.0f;
+		if (!ws_window_exists(srv, wid) || !surface_of(wid, sid) || ws_window_frame(srv, wid, &f)) return reply_simple(c->fd, h, 1000);
+		for (int i = 0; i < MAXSR; i++) if (sres[i].wid == wid && sres[i].sid == sid) sc = sres[i].scale;
+		if (sc == 0) return reply_simple(c->fd, h, 1000);
+		double pw = f.w, ph = f.h; if (sc > 1.0f) { pw *= sc; ph *= sc; }
+		uint8_t r[0x30]; memset(r, 0, sizeof r);
+		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
+		memcpy(r + 0x18, &WS_NDR, sizeof WS_NDR); memcpy(r + 0x24, &sc, 4); wr32(r, 0x28, (uint32_t)(int)pw); wr32(r, 0x2c, (uint32_t)(int)ph);
 		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
 	}
 	case SLS_MSG_SetWindowColorProfile: {                                          /* wid@0x20, profile id@0x24, size 0x28; applied with rights to a known window, always 0 (decompiled __XSetWindowColorProfile) */
