@@ -4,3 +4,4 @@ test_vt
 *.dSYM
 *.ppm
 *.png
+refs/

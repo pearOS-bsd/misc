@@ -195,6 +195,7 @@ jobs:
             wsbsd/ksa-pane2.png
             wsbsd/ksa-pane3.png
             wsbsd/uitest.png
+            wsbsd/terminal-parity.png
             wsbsd/uitest-light.png
             wsbsd/uitest-manifest.txt
           if-no-files-found: warn

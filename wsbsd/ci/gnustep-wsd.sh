@@ -87,6 +87,13 @@ EOT
 	fi
 fi
 fc-list 2>/dev/null | grep -i "inter" | head -3 | sed 's/^/FONT: /'
+# Terminal parity run: the same fixed session as terminal/tools/macshot.sh (sh, prompt "$ ", two lines), screenshotted for the side-by-side with macOS
+if [ -x "$TD/Terminal-gnustep" ]; then
+	(SHELL=/bin/sh WSD_WINDOW_BG=27,36,43 TERMINAL_COLS=80 TERMINAL_ROWS=24 TERMINAL_EXIT_AFTER=10 TERMINAL_INITIAL_INPUT="PS1='\$ '; clear; echo hello from the shell; printf '\\033[1;31mred\\033[0m \\033[38;5;33mblue\\033[0m\\n'
+" timeout 20 "$TD/Terminal-gnustep" >/tmp/terminal-parity.log 2>&1) &
+	TPP=$!; sleep 5; ./wsshot terminal-parity.ppm && python3 tools/ppm2png.py terminal-parity.ppm terminal-parity.png
+	i=0; while kill -0 $TPP 2>/dev/null && [ $i -lt 15 ]; do sleep 1; i=$((i+1)); done; pkill -f Terminal-gnustep 2>/dev/null
+fi
 # Keyboard Setup Assistant (ksa/): the same Cocoa sources as on macOS, run on wsd; every pane is screenshotted and the Shift-key flow is checked
 KD="$WS/../ksa"
 if [ -d "$KD" ]; then
