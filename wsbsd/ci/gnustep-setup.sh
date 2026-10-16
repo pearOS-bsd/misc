@@ -25,7 +25,7 @@ ar rcs libwsclient.a *.o
 mkdir -p /tmp/gs && cd /tmp/gs
 # Inter (SIL OFL, rsms/inter): the free face closest to San Francisco, used as the GNUstep default font by the macOS-style theme
 mkdir -p /usr/local/share/fonts/inter /tmp/inter
-(fetch -qo /tmp/inter.zip https://github.com/rsms/inter/releases/download/v4.0/Inter-4.0.zip && tar -xf /tmp/inter.zip -C /tmp/inter && cp /tmp/inter/extras/ttf/Inter-Regular.ttf /tmp/inter/extras/ttf/Inter-SemiBold.ttf /tmp/inter/extras/ttf/Inter-Bold.ttf /usr/local/share/fonts/inter/ 2>/dev/null && fc-cache -f >/dev/null 2>&1) || echo 'Inter font download failed'
+(fetch -qo /tmp/inter.zip https://github.com/rsms/inter/releases/download/v4.0/Inter-4.0.zip && tar -xf /tmp/inter.zip -C /tmp/inter && cp /tmp/inter/extras/ttf/Inter-Regular.ttf /tmp/inter/extras/ttf/Inter-Medium.ttf /tmp/inter/extras/ttf/Inter-SemiBold.ttf /tmp/inter/extras/ttf/Inter-Bold.ttf /usr/local/share/fonts/inter/ 2>/dev/null && fc-cache -f >/dev/null 2>&1) || echo 'Inter font download failed'
 fc-list | grep -ci inter | sed 's/^/FONT: inter faces installed: /'
 # libs-gui from source: the packaged one is older than the libs-back it is paired with (window ordering never reached the server)
 pkg install -y giflib >/dev/null 2>&1 || true
