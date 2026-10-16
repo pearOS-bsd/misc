@@ -129,6 +129,7 @@ void WsdApplyMacPalette(void)
 	[l setColor: rgb(mix(r, fg, dark ? 0.07 : 0.0), mix(g, fg, dark ? 0.07 : 0.0), mix(b, fg, dark ? 0.07 : 0.0), 1) forKey: @"controlColor"];
 	[l setColor: label forKey: @"controlTextColor"]; [l setColor: label forKey: @"textColor"]; [l setColor: label forKey: @"windowFrameTextColor"];
 	[l setColor: rgb(0, 122, 255, 1) forKey: @"selectedMenuItemColor"];
+	[l setColor: dark ? rgb(72, 72, 72, 1) : rgb(210, 210, 212, 1) forKey: @"selectedControlColor"];      /* selected table rows (the unemphasised selection of a window without focus) */
 	[l setColor: rgb(255, 255, 255, 1) forKey: @"selectedControlTextColor"]; [l setColor: rgb(255, 255, 255, 1) forKey: @"selectedMenuItemTextColor"];
 	[l setColor: dark ? rgb(63, 96, 130, 1) : rgb(176, 215, 255, 1) forKey: @"selectedTextBackgroundColor"]; [l setColor: label forKey: @"selectedTextColor"];
 	[l setColor: sec forKey: @"disabledControlTextColor"]; [l setColor: sec forKey: @"secondaryLabelColor"];

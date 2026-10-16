@@ -32,6 +32,12 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 
 @interface Del : NSObject { NSWindow *w; }
 @end
+@interface Src : NSObject
+@end
+@implementation Src
+- (NSInteger) numberOfRowsInTableView: (NSTableView *)t { return 4; }
+- (id) tableView: (NSTableView *)t objectValueForTableColumn: (NSTableColumn *)c row: (NSInteger)r { return [NSString stringWithFormat: @"Row %d", (int)r + 1]; }
+@end
 @implementation Del
 - (void) applicationDidFinishLaunching: (NSNotification *)n
 {
@@ -83,6 +89,7 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 	caption(@"text view", cx[2], y); place(ts, @"textview", cx[2], y + 16);
 	NSTableView *tb = [[[NSTableView alloc] initWithFrame: NSMakeRect(0, 0, 210, 110)] autorelease]; NSTableColumn *c = [[[NSTableColumn alloc] initWithIdentifier: @"c"] autorelease]; [[c headerCell] setStringValue: @"Column"]; [c setWidth: 200]; [tb addTableColumn: c];
 	NSScrollView *tss = [[[NSScrollView alloc] initWithFrame: NSMakeRect(0, 0, 210, 110)] autorelease]; [tss setDocumentView: tb]; [tss setHasVerticalScroller: YES]; [tss setBorderType: NSBezelBorder];
+	static Src *src; src = [[Src alloc] init]; [tb setDataSource: src]; [tb reloadData]; [tb selectRowIndexes: [NSIndexSet indexSetWithIndex: 1] byExtendingSelection: NO];
 	caption(@"table view", cx[3], y); place(tss, @"tableview", cx[3], y + 16);
 	[w center]; [w makeKeyAndOrderFront: nil]; [w makeFirstResponder: focusField];       /* only the \"focused\" field shows the focus ring */
 	if (getenv("UI_MODE") && !strcmp(getenv("UI_MODE"), "alert")) [self performSelector: @selector(showAlert:) withObject: nil afterDelay: 0.6];
