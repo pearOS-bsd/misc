@@ -23,8 +23,9 @@ static void applyFonts(void)
 {
 	NSString *reg[] = { @"Inter-Regular", @"Inter", @"Inter Regular" }, *bold[] = { @"Inter-Bold", @"Inter Bold", @"Inter-SemiBold", @"Inter SemiBold" };
 	NSString *r = nil, *b = nil;
-	for (int i = 0; i < 3 && !r; i++) if ([NSFont fontWithName: reg[i] size: 13]) r = reg[i];
-	for (int i = 0; i < 4 && !b; i++) if ([NSFont fontWithName: bold[i] size: 13]) b = bold[i];
+	NSArray *avail = [[NSFontManager sharedFontManager] availableFonts];
+	for (int i = 0; i < 3 && !r; i++) if ([avail containsObject: reg[i]]) r = reg[i];
+	for (int i = 0; i < 4 && !b; i++) if ([avail containsObject: bold[i]]) b = bold[i];
 	if (getenv("WSD_DEBUG")) {
 		NSMutableArray *inter = [NSMutableArray array];
 		for (NSString *n in [[NSFontManager sharedFontManager] availableFonts]) if ([n rangeOfString: @"Inter" options: NSCaseInsensitiveSearch].location != NSNotFound) [inter addObject: n];
