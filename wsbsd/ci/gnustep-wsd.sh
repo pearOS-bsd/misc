@@ -10,6 +10,7 @@ cc -O1 -std=c99 -D_DEFAULT_SOURCE -Iinclude -o wsdrag tools/wsdrag.c /tmp/wsc/li
 cc -O1 -std=c99 -D_DEFAULT_SOURCE -Iinclude -o wskey tools/wskey.c /tmp/wsc/libwsclient.a -lm
 gmake wsd 2>&1 | tail -2
 export WS_SOCKET=/tmp/wsd-appkit.sock
+export XDG_CURRENT_DESKTOP=Aqua XDG_SESSION_DESKTOP=Aqua XDG_SESSION_TYPE=wsd      # what wsstart exports: neofetch shows DE: Aqua
 ./wsd -t -g 1280x800 >/tmp/wsd.log 2>&1 &
 WP=$!
 sleep 1
@@ -83,6 +84,7 @@ EOT
 		kill $TP 2>/dev/null; pkill -f Terminal-gnustep 2>/dev/null
 		{ echo "TERMINAL SCREEN TEXT:"; cat /tmp/terminal-dump.txt 2>&1 | head -30; } >> /tmp/terminal-ci.txt 2>&1
 		if grep -q 'OS:' /tmp/terminal-dump.txt 2>/dev/null && grep -q 'Uptime' /tmp/terminal-dump.txt; then TERMINAL_OK=1; else TERMINAL_OK=0; fi
+		if grep -q 'DE: Aqua' /tmp/terminal-dump.txt 2>/dev/null; then echo 'neofetch DE: Aqua (ok)'; else echo 'neofetch did not print DE: Aqua'; fi
 		{ echo "TERMINAL LOG:"; grep -v '^(lldb)' /tmp/terminal.log | grep -v 'wsd-back: \(titlewindow\|setinput\|flush\|commit\|order\|ws_win\|receivedEvent\|event type\)' | tail -40; } >> /tmp/terminal-ci.txt 2>&1
 	fi
 fi
