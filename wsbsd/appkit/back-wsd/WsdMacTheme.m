@@ -154,7 +154,7 @@ void WsdApplyMacPalette(void)
 - (void) drawButton: (NSRect)frame in: (NSCell *)cell view: (NSView *)view style: (int)style state: (GSThemeControlState)state
 {
 	BOOL popup = [cell isKindOfClass: [NSPopUpButtonCell class]];
-	if (!popup && (style == NSDisclosureBezelStyle || style == NSCircularBezelStyle || style == NSHelpButtonBezelStyle || style == NSRecessedBezelStyle || style == NSInlineBezelStyle)) {      /* styles that keep the stock drawing (the default style 0 is a plain push button) */
+	if (!popup && (style == 5 /* disclosure */ || style == 7 /* circular */ || style == 9 /* help */ || style == 13 /* recessed */ || style == 15 /* inline */)) {      /* styles that keep the stock drawing (the default style 0 is a plain push button) */
 		[super drawButton: frame in: cell view: view style: style state: state];
 		return;
 	}
