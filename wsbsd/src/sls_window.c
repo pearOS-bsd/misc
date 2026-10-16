@@ -143,6 +143,8 @@ static float cursor_scale = 1.0f;
 static struct { uint32_t wid; float m[6]; } xform[MAXXF];                  /* SetWindowTransform: kept per window (not applied when compositing) */
 #define MAXCP 256
 static struct { uint32_t wid; uint32_t profile; } cprof[MAXCP];                  /* SetWindowColorProfile: the profile id per window (0 = unset) */
+#define MAXWC 256
+static struct { uint32_t wid; double v[6]; } wcon[MAXWC];                         /* PackagesSetWindowConstraints: six doubles per window */
 #define MAXSR 256
 static struct { uint32_t wid, sid; float scale; } sres[MAXSR];                  /* SetSurfaceResolution: the scale per surface (unset surfaces count as 1) */
 static int surface_of(uint32_t wid, uint32_t sid) { uint32_t ids[0x400]; int n = wsd_window_surfaces(wid, ids, 0x400); if (n > 0x400) n = 0x400; for (int i = 0; i < n; i++) if (ids[i] == sid) return 1; return 0; }
@@ -492,6 +494,25 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		uint8_t r[0x30]; memset(r, 0, sizeof r);
 		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
 		memcpy(r + 0x18, &WS_NDR, sizeof WS_NDR); memcpy(r + 0x24, &sc, 4); wr32(r, 0x28, (uint32_t)(int)pw); wr32(r, 0x2c, (uint32_t)(int)ph);
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
+	case SLS_MSG_PackagesSetWindowConstraints: {                                   /* wid@0x20, six doubles@0x24 (three size pairs), size 0x54; kept with rights on a known window; always 0 (decompiled __XPackagesSetWindowConstraints; a pair of zeros
+	                                                                                * stands for the default, which is stored as given here) */
+		if (!simple_ok(h, len, 0x54)) return reply_simple(c->fd, h, -304);
+		uint32_t wid = rd32(buf, 0x20);
+		if (ws_window_exists(srv, wid) && holds_rights(c, wid)) {
+			int slot = -1; for (int i = 0; i < MAXWC; i++) { if (wcon[i].wid == wid) { slot = i; break; } if (slot < 0 && !wcon[i].wid) slot = i; }
+			if (slot >= 0) { wcon[slot].wid = wid; memcpy(wcon[slot].v, buf + 0x24, 48); }
+		}
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_PackagesGetWindowConstraints: {                                   /* wid@0x20, size 0x24; reply 0x54: the six doubles@0x24, zeros when none were set or the caller has no rights */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		uint32_t wid = rd32(buf, 0x20);
+		uint8_t r[0x54]; memset(r, 0, sizeof r);
+		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
+		memcpy(r + 0x18, &WS_NDR, sizeof WS_NDR);
+		if (wid && ws_window_exists(srv, wid) && holds_rights(c, wid)) for (int i = 0; i < MAXWC; i++) if (wcon[i].wid == wid) memcpy(r + 0x24, wcon[i].v, 48);
 		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
 	}
 	case SLS_MSG_SetWindowColorProfile: {                                          /* wid@0x20, profile id@0x24, size 0x28; applied with rights to a known window, always 0 (decompiled __XSetWindowColorProfile) */
