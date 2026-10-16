@@ -122,7 +122,7 @@ static IMP origTableInit;
 static void wsdTableInit(id self, SEL _cmd)
 {
 	((void (*)(id, SEL))origTableInit)(self, _cmd);
-	[(NSTableView *)self setGridStyleMask: 0]; [(NSTableView *)self setRowHeight: 24.0]; [(NSTableView *)self setIntercellSpacing: NSMakeSize(3, 2)];
+	[(NSTableView *)self setGridStyleMask: 0]; [(NSTableView *)self setRowHeight: 24.0]; [(NSTableView *)self setIntercellSpacing: NSMakeSize(11, 2)];                    /* the cell text starts ~6 pt in, as in Cocoa's cell padding */
 }
 static void swizzleTableDefaults(void)
 {
