@@ -309,6 +309,15 @@ static int do_conn_state(conn *c, const uint8_t *buf, size_t len)
 		c->notes = (c->notes & (~clear | 0xffdb2fe1u)) | (set & 0x24d01eu);
 		return reply_value(c->fd, h, (int32_t)c->notes);
 	}
+	case SLS_MSG_CopyBestManagedDisplayForPoint:                                   /* x y doubles @0x20/@0x28, size 0x30; the one display's UUID (decompiled: a point of 0,0 means the cursor) */
+	case SLS_MSG_CopyBestManagedDisplayForRect: {                                  /* x y w h doubles @0x20.., size 0x40 */
+		if (!simple_ok(h, len, h->msgh_id == SLS_MSG_CopyBestManagedDisplayForPoint ? 0x30 : 0x40)) return reply_simple(c->fd, h, -304);
+		static const uint8_t uuid[16] = { 0x07,0x23,0x0e,0xfa,0x7a,0x8d,0x4e,0x37,0x84,0x5c,0x19,0xcc,0x87,0x37,0xee,0xf5 };
+		uint8_t r[0x34]; memset(r, 0, sizeof r);
+		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
+		memcpy(r + 0x18, &WS_NDR, sizeof WS_NDR); memcpy(r + 0x24, uuid, 16);
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
 	case SLS_MSG_CopyManagedDisplayForWindow: {                                    /* wid@0x20, size 0x24; reply 0x34: the display's UUID (16 bytes); 1001 for an unknown window (decompiled __XCopyManagedDisplayForWindow) */
 		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
 		if (!ws_window_exists(srv, rd32(buf, 0x20))) return reply_simple(c->fd, h, 0x3e9);
