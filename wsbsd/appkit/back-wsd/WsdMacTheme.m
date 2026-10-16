@@ -35,7 +35,8 @@ static void applyFonts(void)
 	NSUserDefaults *d = [NSUserDefaults standardUserDefaults];
 	if (r) for (NSString *k in @[@"NSFont", @"NSUserFont", @"NSControlContentFont", @"NSLabelFont", @"NSMessageFont", @"NSMenuFont", @"NSPaletteFont", @"NSToolTipsFont"]) [d setObject: r forKey: k];
 	if (b) for (NSString *k in @[@"NSBoldFont", @"NSTitleBarFont"]) [d setObject: b forKey: k];
-	[d setObject: @"NSMacintoshInterfaceStyle" forKey: @"NSScrollViewInterfaceStyle"];              /* the vertical scroller on the right */
+	[d setObject: @"NSMacintoshInterfaceStyle" forKey: @"NSScrollViewInterfaceStyle"];
+	[d setObject: @"NSMacintoshInterfaceStyle" forKey: @"NSMenuInterfaceStyle"];                      /* the menu as a bar across the top of the screen */              /* the vertical scroller on the right */
 	[d setBool: YES forKey: @"GSScrollViewNoInnerBorder"];              /* scroll views have no inner border on macOS */
 }
 
