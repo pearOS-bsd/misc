@@ -34,3 +34,6 @@ Measured on a real macOS 27 (Darwin 27) machine with AppKit's own `NSWindow` (pr
 
 ## How the parity is checked
 `uitest/` renders every control above in a fixed layout; `uitest/tools/compare.py` crops each control from the macOS and the wsd screenshot and prints the mean absolute difference per control plus a side-by-side sheet (left macOS, middle wsd, right difference). The floor is ~8 (font rendering: Inter instead of San Francisco, no ClearType-like smoothing match). `ksa/` does the same for a whole application (the Keyboard Setup Assistant panes).
+
+## NSAlert
+`-[NSAlert runModal]` is replaced in `WsdMacTheme.m` (WSD_NO_MACALERT=1 keeps GNUstep's): borderless panel, radius 26, 64 pt icon, bold title, 13 pt text, 30 pt capsule buttons (first = default, rightmost), 260 pt wide. Verified against `refs/mac/alert.png` (CI artifact `uitest-alert.png`). Open: the stock app icon (black/white square) differs from Apple's generic icon.
