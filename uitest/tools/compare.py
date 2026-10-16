@@ -12,14 +12,17 @@ tb = macrgb.load()[W // 2, 20]
 def near(c): return all(abs(c[i] - tb[i]) <= 6 for i in range(3))
 best = None
 for y in range(0, sh - 40):
-    run = 0; start = 0
+    run = 0; start = 0; found = None
     for x in range(sw):
         if near(px[x, y]):
             if run == 0: start = x
             run += 1
-            if run >= W - 80: break
-        else: run = 0
-    if run >= W - 80:
+        else:
+            if W - 80 <= run <= W + 10: found = start
+            run = 0
+    if W - 80 <= run <= W + 10: found = start
+    if found is not None:                                       # a run as wide as the window (the menu bar spans the whole screen and is skipped)
+        start = found
         while y > 0 and near(px[start + 100, y - 1]): y -= 1
         x0 = start
         while x0 > 0 and near(px[x0 - 1, y + 28]): x0 -= 1
