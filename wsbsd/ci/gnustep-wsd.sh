@@ -105,6 +105,18 @@ if [ -d "$KD" ]; then
 		grep -qx ANSI /tmp/ksa-out.txt 2>/dev/null && echo 'KSA flow ok' || echo 'KSA flow FAILED'
 	fi
 fi
+# UI gallery (uitest/): every standard control, the same Cocoa source as on macOS; screenshot + control manifest for the per-control comparison
+UD="$WS/../uitest"
+if [ -d "$UD" ]; then
+	(cd "$UD" && cc -o UITest-gnustep src/main.m $(gnustep-config --objc-flags) $(gnustep-config --gui-libs) 2>&1 | grep -E "error|undefined" | head -20)
+	if [ -x "$UD/UITest-gnustep" ]; then
+		(WSD_WINDOW_BG=27,36,43 UI_EXIT_AFTER=9 timeout 20 "$UD/UITest-gnustep" >/tmp/uitest-manifest.txt 2>/tmp/uitest.log) &
+		UP=$!; sleep 5
+		./wsshot uitest.ppm && python3 tools/ppm2png.py uitest.ppm uitest.png; grep '^CTRL' /tmp/uitest-manifest.txt > uitest-manifest.txt
+		i=0; while kill -0 $UP 2>/dev/null && [ $i -lt 15 ]; do sleep 1; i=$((i+1)); done; pkill -f UITest-gnustep 2>/dev/null
+		echo "=== UITEST ==="; wc -l uitest-manifest.txt; grep -v wsd-back /tmp/uitest.log | tail -5
+	fi
+fi
 kill $WP 2>/dev/null
 grep -v '^(lldb)\|warning\|wsd-back: \(titlewindow\|setinput\|flush\|commit\|order\|ws_win\)' /tmp/hello.log | tail -40; tail -5 /tmp/wsd.log
 ls -l appkit.png
