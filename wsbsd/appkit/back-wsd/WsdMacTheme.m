@@ -13,7 +13,7 @@ static NSColor *rgb(int r, int g, int b, CGFloat a) { return [NSColor colorWithC
 /* the system colours: derived from the window background (WSD_WINDOW_BG=r,g,b overrides the neutral default; on macOS the dark window colour is tinted by the wallpaper, (27,36,43) on the machine the measurements come from) */
 static void windowBG(int *r, int *g, int *b)
 {
-	*r = *g = *b = isDark() ? 30 : 236;
+	*r = *g = *b = isDark() ? 30 : 255;
 	const char *e = getenv("WSD_WINDOW_BG");
 	if (e) { int x, y, z; if (sscanf(e, "%d,%d,%d", &x, &y, &z) == 3) { *r = x; *g = y; *b = z; } }
 }
