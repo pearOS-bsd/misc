@@ -54,6 +54,9 @@ void WsdApplyMacPalette(void)
 
 @implementation WsdMacTheme
 
+/* GSTheme's defaultsDidChange: swaps back to the stock theme whenever a user default changes and the active theme's name is not "GNUstep" (we change the font defaults): claim that name */
+- (NSString *) name { return @"GNUstep"; }
+
 /* a default button on macOS carries no return-arrow image (GNUstep adds one) */
 - (void) setKeyEquivalent: (NSString *)key forButtonCell: (NSButtonCell *)cell { }
 
