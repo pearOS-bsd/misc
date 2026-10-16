@@ -59,7 +59,7 @@ static NSImage *controlImage(BOOL radio, BOOL on)
 		for (int x = 0; x < W; x++) {
 			double px = x + 0.5, py = y + 0.5, d;                                       /* y runs down the image */
 			if (radio) d = sqrt((px - 8) * (px - 8) + (py - 8) * (py - 8)) - 8;
-			else { double qx = fabs(px - 8) - 4, qy = fabs(py - 8) - 4; d = sqrt((qx > 0 ? qx : 0) * (qx > 0 ? qx : 0) + (qy > 0 ? qy : 0) * (qy > 0 ? qy : 0)) + (qx > qy ? qx : qy < 0 ? (qx > qy ? qx : qy) : 0) - 4; }
+			else { double qx = fabs(px - 8) - 4, qy = fabs(py - 8) - 4, ox = qx > 0 ? qx : 0, oy = qy > 0 ? qy : 0, m = qx > qy ? qx : qy; d = sqrt(ox * ox + oy * oy) + (m < 0 ? m : 0) - 4; }      /* rounded square: half size 8, radius 4 */
 			double cov = 0.5 - d; cov = cov < 0 ? 0 : cov > 1 ? 1 : cov;
 			double r = fr, g = fgc, b = fb;
 			if (on) {
@@ -125,6 +125,8 @@ void WsdApplyMacPalette(void)
 	[l setColor: rgb(r, g, b, 1) forKey: @"controlBackgroundColor"];
 	[l setColor: rgb(mix(r, fg, dark ? 0.07 : 0.0), mix(g, fg, dark ? 0.07 : 0.0), mix(b, fg, dark ? 0.07 : 0.0), 1) forKey: @"controlColor"];
 	[l setColor: label forKey: @"controlTextColor"]; [l setColor: label forKey: @"textColor"]; [l setColor: label forKey: @"windowFrameTextColor"];
+	[l setColor: rgb(255, 255, 255, 1) forKey: @"selectedControlTextColor"]; [l setColor: rgb(255, 255, 255, 1) forKey: @"selectedMenuItemTextColor"];
+	[l setColor: dark ? rgb(63, 96, 130, 1) : rgb(176, 215, 255, 1) forKey: @"selectedTextBackgroundColor"]; [l setColor: label forKey: @"selectedTextColor"];
 	[l setColor: sec forKey: @"disabledControlTextColor"]; [l setColor: sec forKey: @"secondaryLabelColor"];
 	[l setColor: dark ? rgb(23, 24, 25, 1) : rgb(255, 255, 255, 1) forKey: @"textBackgroundColor"];      /* the field fill measured on macOS: neutral, darker than the (wallpaper tinted) window */
 }
@@ -135,7 +137,13 @@ void WsdApplyMacPalette(void)
 - (NSString *) name { return @"GNUstep"; }
 
 /* the dotted focus rectangle is not part of the macOS look (the focus ring only appears for keyboard navigation) */
-- (void) drawFocusFrame: (NSRect)frame view: (NSView *)view { }
+- (void) drawFocusFrame: (NSRect)frame view: (NSView *)view
+{
+	/* the focus ring is drawn inside the view: the real one is 3 pt wide round the control, which a view cannot draw outside of its bounds here */
+	if (![view isKindOfClass: [NSTextField class]] && ![view isKindOfClass: [NSTextView class]]) return;
+	NSBezierPath *p = [NSBezierPath bezierPathWithRoundedRect: NSInsetRect([view bounds], 1.5, 1.5) xRadius: 6 yRadius: 6];
+	[p setLineWidth: 3.0]; [rgb(28, 98, 155, 1) set]; [p stroke];
+}
 
 /* a default button on macOS carries no return-arrow image (GNUstep adds one) */
 - (void) setKeyEquivalent: (NSString *)key forButtonCell: (NSButtonCell *)cell { }
@@ -153,8 +161,8 @@ void WsdApplyMacPalette(void)
 	BOOL enabled = [cell isEnabled], pressed = (state == GSThemeHighlightedState || state == GSThemeHighlightedFirstResponderState);
 	int wr, wg, wb; windowBG(&wr, &wg, &wb); BOOL dark = isDark(); int fg = dark ? 255 : 0;
 	NSColor *fill;
-	if (isDefault && enabled) fill = pressed ? rgb(0, 100, 220, 1) : rgb(0, 122, 255, 1);
-	else { double a = dark ? (pressed ? 0.16 : 0.08) : (pressed ? 0.12 : 0.05); if (!enabled) a *= 0.5; fill = rgb(mix(wr, fg, a), mix(wg, fg, a), mix(wb, fg, a), 1); }
+	if (isDefault && enabled) fill = pressed ? rgb(30, 138, 255, 1) : rgb(0, 122, 255, 1);
+	else { double a = dark ? (pressed ? 0.21 : 0.08) : (pressed ? 0.12 : 0.05); if (!enabled) a *= 0.5; fill = rgb(mix(wr, fg, a), mix(wg, fg, a), mix(wb, fg, a), 1); }
 	[fill set];
 	[[NSBezierPath bezierPathWithRoundedRect: r xRadius: r.size.height / 2.0 yRadius: r.size.height / 2.0] fill];
 }
