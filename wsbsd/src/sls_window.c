@@ -141,6 +141,8 @@ static uint8_t cursor_drag_lock[31]; static uint32_t cursor_restriction_mode; st
 static float cursor_scale = 1.0f;
 #define MAXXF 256
 static struct { uint32_t wid; float m[6]; } xform[MAXXF];                  /* SetWindowTransform: kept per window (not applied when compositing) */
+#define MAXCP 256
+static struct { uint32_t wid; uint32_t profile; } cprof[MAXCP];                  /* SetWindowColorProfile: the profile id per window (0 = unset) */
 int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 {
 	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
@@ -435,6 +437,21 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		memcpy(r + 0x18, &WS_NDR, 8);
 		if (h->msgh_id == SLS_MSG_MenuBarExists) wr32(r, 0x24, 1); else if (h->msgh_id == SLS_MSG_GetActiveMenuBarDrawingStyle) wr32(r, 0x24, menubar_style); else r[0x24] = menubar_autohide;
 		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
+	case SLS_MSG_SetWindowColorProfile: {                                          /* wid@0x20, profile id@0x24, size 0x28; applied with rights to a known window, always 0 (decompiled __XSetWindowColorProfile) */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		uint32_t wid = rd32(buf, 0x20);
+		if (ws_window_exists(srv, wid) && holds_rights(c, wid)) {
+			int slot = -1; for (int i = 0; i < MAXCP; i++) { if (cprof[i].wid == wid) { slot = i; break; } if (slot < 0 && !cprof[i].wid) slot = i; }
+			if (slot >= 0) { cprof[slot].wid = wid; cprof[slot].profile = rd32(buf, 0x24); }
+		}
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_GetWindowColorProfile: {                                          /* wid@0x20, size 0x24; reply 0x28: the profile id@0x24 (0 for an unknown window or none set) */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		uint32_t wid = rd32(buf, 0x20), v = 0;
+		for (int i = 0; i < MAXCP; i++) if (cprof[i].wid == wid && wid && ws_window_exists(srv, wid)) v = cprof[i].profile;
+		return reply_value(c->fd, h, (int32_t)v);
 	}
 	case SLS_MSG_GetSystemWindow: {                                                /* kind@0x20, size 0x24; reply 0x28: the window id@0x24 (kind 4 = the menu bar window of the current space; none here, so 0); 1000 for another kind */
 		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
