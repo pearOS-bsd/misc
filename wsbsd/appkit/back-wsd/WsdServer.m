@@ -264,7 +264,7 @@ static void terminate(int sig)
 - (NSPoint) mouseLocationOnScreen: (int)screen window: (int *)win
 {
 	if (win) *win = 0;
-	return lastPoint;
+	return [self mouselocation];
 }
 - (BOOL) capturemouse: (int)win { return YES; }
 - (void) releasemouse {}
