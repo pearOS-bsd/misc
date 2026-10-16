@@ -436,6 +436,11 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		if (h->msgh_id == SLS_MSG_MenuBarExists) wr32(r, 0x24, 1); else if (h->msgh_id == SLS_MSG_GetActiveMenuBarDrawingStyle) wr32(r, 0x24, menubar_style); else r[0x24] = menubar_autohide;
 		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
 	}
+	case SLS_MSG_GetSystemWindow: {                                                /* kind@0x20, size 0x24; reply 0x28: the window id@0x24 (kind 4 = the menu bar window of the current space; none here, so 0); 1000 for another kind */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		if (rd32(buf, 0x20) != 4) return reply_simple(c->fd, h, 1000);
+		return reply_value(c->fd, h, 0);
+	}
 	case SLS_MSG_SetMenuBarDrawingStyle:                                           /* style@0x20, size 0x24; always 0 */
 	case SLS_MSG_SetMenuBarAutohideEnabled:                                        /* flag byte@0x20 */
 	case SLS_MSG_SetMenuBarUseBlurredAppearance: {                                 /* flag byte@0x20 */

@@ -258,6 +258,14 @@ int sls_space_dispatch(conn *c, const uint8_t *buf, size_t len)
 		float one = 1.0f; memcpy(r + 0x24, &one, 4); memcpy(r + 0x30, &one, 4); r[0x3c] = 1;
 		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
 	}
+	case SLS_MSG_IsMenuBarVisibleOnSpace: {                                         /* space id u64@0x20, size 0x28; reply 0x28: the flag byte@0x24 (0 for an unknown space, recorded; a known one shows the bar) */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		uint64_t id; memcpy(&id, buf + 0x20, 8);
+		uint8_t r[0x28]; memset(r, 0, sizeof r);
+		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
+		memcpy(r + 0x18, &WS_NDR, 8); r[0x24] = sp_find(id) >= 0;
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
 	case SLS_MSG_CopyManagedDisplayForSpace: {                                     /* id u64@0x20, size 0x28; reply 0x34: the display's UUID (16 bytes); 1010 for an unknown space */
 		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
 		uint64_t id; memcpy(&id, buf + 0x20, 8);
