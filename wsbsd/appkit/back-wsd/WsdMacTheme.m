@@ -124,10 +124,22 @@ static void wsdTableInit(id self, SEL _cmd)
 	((void (*)(id, SEL))origTableInit)(self, _cmd);
 	[(NSTableView *)self setGridStyleMask: 0]; [(NSTableView *)self setRowHeight: 24.0]; [(NSTableView *)self setIntercellSpacing: NSMakeSize(11, 2)];                    /* the cell text starts ~6 pt in, as in Cocoa's cell padding */
 }
+/* GNUstep shows a pressed check box / radio button as the reversed state (NeXT); macOS keeps the state while the mouse is down: draw them as if not pressed */
+static IMP origButtonInterior;
+static void wsdButtonInterior(id self, SEL _cmd, NSRect f, NSView *v)
+{
+	NSButtonCell *c = self; BOOL hl = [c isHighlighted];
+	BOOL toggle = hl && [c image] && ([c imagePosition] == NSImageLeft || [c imagePosition] == NSImageRight) && ![c isBordered] && [c alternateImage];
+	if (toggle) [c setHighlighted: NO];
+	((void (*)(id, SEL, NSRect, NSView *))origButtonInterior)(self, _cmd, f, v);
+	if (toggle) [c setHighlighted: YES];
+}
 static void swizzleTableDefaults(void)
 {
 	Method mt = class_getInstanceMethod([NSTableView class], @selector(_initDefaults));
 	if (mt && !origTableInit) origTableInit = method_setImplementation(mt, (IMP)wsdTableInit);
+	Method mb = class_getInstanceMethod([NSButtonCell class], @selector(drawInteriorWithFrame:inView:));
+	if (mb && !origButtonInterior) origButtonInterior = method_setImplementation(mb, (IMP)wsdButtonInterior);
 }
 
 void WsdApplyMacPalette(void)
