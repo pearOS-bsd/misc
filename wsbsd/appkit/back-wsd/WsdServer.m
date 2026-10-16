@@ -343,7 +343,12 @@ static void terminate(int sig)
 - (void) setminsize: (NSSize)size : (int)win {}
 - (void) setresizeincrements: (NSSize)size : (int)win {}
 - (void) setinputstate: (int)state : (int)win { WLOG(@"setinputstate %d %d", state, win); }
-- (NSPoint) mouselocation { return lastPoint; }
+- (NSPoint) mouselocation
+{
+	int px, py;                                                                   /* before any pointer event the server knows better than lastPoint */
+	if (ws_cursor_position(conn, &px, &py) == 0) lastPoint = NSMakePoint(px, screenH - py);
+	return lastPoint;
+}
 - (void) setMouseLocation: (NSPoint)mouseLocation onScreen: (int)aScreen { ws_cursor_warp(conn, (int)mouseLocation.x, screenH - (int)mouseLocation.y, 0); lastPoint = mouseLocation; }
 - (void) hidecursor {}
 - (void) showcursor {}
