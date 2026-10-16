@@ -738,6 +738,9 @@ int main(void)
 		CHECK(rc(fd, m, 0x30) == 0);
 		int lr = ws_win_list(c, 0, 1, ids, 16, &total), p1 = -1, p2 = -1; for (int i = 0; i < 16 && i < total; i++) { if (ids[i] == a1.id) p1 = i; if (ids[i] == a2.id) p2 = i; }
 		CHECK(lr >= 0 && p1 >= 0 && p2 >= 0 && p1 < p2);                                                                                      /* a1 is in front of a2 */                                                                 /* a1 is the frontmost */
+		memset(m, 0, sizeof m); hdr(m, 0x30, 30007, 0); w32(m, 0x20, a1.id); w32(m, 0x24, 123); w32(m, 0x28, 77); CHECK(rc(fd, m, 0x30) == 0);      /* MoveWindowOnMatchingDisplayChangedSeed */
+		{ uint8_t q[0x24], rr[0x40]; memset(q, 0, sizeof q); hdr(q, 0x24, 30028, 0); w32(q, 0x20, a1.id); int g2 = call(fd, q, 0x24, rr, sizeof rr); float v[4]; memcpy(v, rr + 0x24, 16); CHECK(g2 == 0x34 && v[0] == 123 && v[1] == 77); }
+		w32(m, 0x20, 0x7ffff); CHECK(rc(fd, m, 0x30) == 1000);
 		{ /* OrderWindowListWithGroups: ids, operations, relative windows (one each); operation 2 means above everything */
 			memset(m, 0, sizeof m); hdr(m, 0x2c + 12, 30426, 0); w32(m, 0x20, 1); w32(m, 0x24, a2.id); w32(m, 0x28, 1); w32(m, 0x2c, 2); w32(m, 0x30, 1); w32(m, 0x34, 0);
 			CHECK(rc(fd, m, 0x38) == 0);

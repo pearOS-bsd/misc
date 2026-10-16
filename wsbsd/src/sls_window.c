@@ -308,6 +308,14 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
 		return reply_value(c->fd, h, (int32_t)rd32(buf, 0x20) > 0 ? 1 : 0);
 	}
+	case SLS_MSG_MoveWindowOnMatchingDisplayChangedSeed: {                         /* wid@0x20, x@0x24, y@0x28 (ints), display seed@0x2c, size 0x30: the window moves so that its origin becomes (x, y), with rights; 1000 for an unknown window or without rights
+	                                                                                * (decompiled __XMoveWindowOnMatchingDisplayChangedSeed; the seed never changes here, so it always matches) */
+		if (!simple_ok(h, len, 0x30)) return reply_simple(c->fd, h, -304);
+		uint32_t wid = rd32(buf, 0x20);
+		if (!wid || !ws_window_exists(srv, wid) || !holds_rights(c, wid)) return reply_simple(c->fd, h, 1000);
+		ws_move_window(srv, wid, (int32_t)rd32(buf, 0x24), (int32_t)rd32(buf, 0x28));
+		return reply_simple(c->fd, h, 0);
+	}
 	case SLS_MSG_OrderWindowListWithGroups: {                                      /* n@0x20, n ids, m, m operations, k, k relative windows; size 4(n+m+k) + 0x2c, each count <= 0x400; 1000 unless n == m == k > 0; an operation of 2 is
 	                                                                                * turned into 1 with relative window 0 (decompiled __CGXOrderWindowListWithGroups); the windows of the group move together (ordering groups are not modelled) */
 		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size < 0x2c || h->msgh_size > 0x302c) return reply_simple(c->fd, h, -304);
