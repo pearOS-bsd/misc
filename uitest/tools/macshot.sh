@@ -15,5 +15,5 @@ for w in l where (w[kCGWindowOwnerName as String] as? String) == "uitest" { let 
 print(id)
 SW
 open -n "$APP" --env UI_EXIT_AFTER=8 --env UI_APPEARANCE=${UI_APPEARANCE:-dark}
-sleep 3; ID=$(swift "$APP/winid.swift"); screencapture -x -o -l "$ID" "$OUT/gallery.png"
+osascript -e "tell application id \"test.uitest\" to activate" >/dev/null 2>&1; sleep 4; ID=$(swift "$APP/winid.swift"); screencapture -x -o -l "$ID" "$OUT/gallery.png"
 pkill -f "$APP/Contents/MacOS/uitest"; ls "$OUT"
