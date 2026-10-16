@@ -124,6 +124,11 @@ if [ -d "$UD" ]; then
 		(WSD_APPEARANCE=light UI_EXIT_AFTER=9 timeout 20 "$UD/UITest-gnustep" >/dev/null 2>/tmp/uitest-light.log) &
 		UP=$!; sleep 5; ./wsshot uitest-light.ppm && python3 tools/ppm2png.py uitest-light.ppm uitest-light.png
 		i=0; while kill -0 $UP 2>/dev/null && [ $i -lt 15 ]; do sleep 1; i=$((i+1)); done; pkill -f UITest-gnustep 2>/dev/null
+		for MODE in menu alert; do
+			(UI_MODE=$MODE WSD_WINDOW_BG=27,36,43 UI_EXIT_AFTER=9 timeout 20 "$UD/UITest-gnustep" >/dev/null 2>/tmp/uitest-$MODE.log) &
+			UP=$!; sleep 5; ./wsshot uitest-$MODE.ppm && python3 tools/ppm2png.py uitest-$MODE.ppm uitest-$MODE.png
+			i=0; while kill -0 $UP 2>/dev/null && [ $i -lt 15 ]; do sleep 1; i=$((i+1)); done; pkill -f UITest-gnustep 2>/dev/null
+		done
 		echo "=== UITEST ==="; wc -l uitest-manifest.txt; grep -v wsd-back /tmp/uitest.log | tail -5
 	fi
 fi
