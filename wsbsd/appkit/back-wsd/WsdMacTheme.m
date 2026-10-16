@@ -35,6 +35,7 @@ static void applyFonts(void)
 	NSUserDefaults *d = [NSUserDefaults standardUserDefaults];
 	if (r) for (NSString *k in @[@"NSFont", @"NSUserFont", @"NSControlContentFont", @"NSLabelFont", @"NSMessageFont", @"NSMenuFont", @"NSPaletteFont", @"NSToolTipsFont"]) [d setObject: r forKey: k];
 	if (b) for (NSString *k in @[@"NSBoldFont", @"NSTitleBarFont"]) [d setObject: b forKey: k];
+	[d setObject: @"NSMacintoshInterfaceStyle" forKey: @"NSScrollViewInterfaceStyle"];              /* the vertical scroller on the right */
 	[d setBool: YES forKey: @"GSScrollViewNoInnerBorder"];              /* scroll views have no inner border on macOS */
 }
 
@@ -93,6 +94,11 @@ static void installControlImages(void)
 			NSImage *nu = controlImage(radio[i], on[i]);
 			BOOL ok = [nu setName: real];
 			if (getenv("WSD_DEBUG")) NSLog(@"wsd control image %@ -> %@ replaced=%d named=%d", keys[i], real, old != nil, ok);
+		}
+		for (NSString *nm in @[@"common_Nibble", @"common_3DArrowDown"]) {              /* the stock pop-up arrows are blanked: the theme draws the chevrons */
+			NSImage *old = [NSImage imageNamed: nm]; NSString *real = old && [old name] ? [[old name] copy] : nm; NSSize sz = old ? [old size] : NSMakeSize(8, 8);
+			if (old) [old setName: nil];
+			NSImage *blank = [[NSImage alloc] initWithSize: sz]; [blank setName: real];
 		}
 		const char *dump = getenv("WSD_DUMP_IMAGES");
 		if (dump) {
@@ -222,7 +228,7 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 - (void) drawStepperCell: (NSCell *)cell withFrame: (NSRect)cellFrame inView: (NSView *)controlView highlightUp: (BOOL)hu highlightDown: (BOOL)hd
 {
 	NSRect r = NSMakeRect(cellFrame.origin.x, cellFrame.origin.y + (cellFrame.size.height - 24) / 2, cellFrame.size.width > 20 ? 20 : cellFrame.size.width, 24);
-	fillRound(r, 6.0, onBG(hu || hd ? 0.14 : 0.08));
+	fillRound(r, 9.5, onBG(hu || hd ? 0.14 : 0.08));
 	[[NSColor controlTextColor] set];
 	CGFloat cx = NSMidX(r);
 	for (int k = 0; k < 2; k++) {
@@ -251,14 +257,10 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 	[c set]; [p fill];
 }
 
-/* pop-up buttons: the title at 12 pt from the left and the two chevrons at the right */
+/* pop-up buttons: the cell draws the title; the stock arrow image is replaced by a blank one and the two chevrons are drawn here at the right */
 - (void) drawPopUpButtonCellInteriorWithFrame: (NSRect)cellFrame withCell: (NSCell *)cell inView: (NSView *)controlView
 {
-	NSString *title = [cell respondsToSelector: @selector(titleOfSelectedItem)] ? [(NSPopUpButtonCell *)cell titleOfSelectedItem] : [cell title];
 	NSColor *tc = [cell isEnabled] ? [NSColor controlTextColor] : [NSColor disabledControlTextColor];
-	NSDictionary *at = [NSDictionary dictionaryWithObjectsAndKeys: [NSFont systemFontOfSize: 13], NSFontAttributeName, tc, NSForegroundColorAttributeName, nil];
-	NSSize sz = [title sizeWithAttributes: at];
-	[title drawAtPoint: NSMakePoint(cellFrame.origin.x + 12, NSMidY(cellFrame) - sz.height / 2) withAttributes: at];
 	[tc set]; CGFloat cx = NSMaxX(cellFrame) - 14;
 	for (int k = 0; k < 2; k++) {
 		CGFloat cy = k == 0 ? NSMidY(cellFrame) + 3.5 : NSMidY(cellFrame) - 3.5, d = k == 0 ? -1 : 1;
@@ -270,8 +272,11 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 /* table headers: no bezel, a 1 px hairline under the header (the title is drawn by the cell) */
 - (void) drawTableHeaderCell: (NSTableHeaderCell *)cell withFrame: (NSRect)cellFrame inView: (NSView *)controlView state: (GSThemeControlState)state
 {
+	[cell setAlignment: NSLeftTextAlignment]; [cell setFont: [NSFont systemFontOfSize: 13]];
 	[onBG(0.08) set]; NSRectFill(NSMakeRect(cellFrame.origin.x, [controlView isFlipped] ? NSMaxY(cellFrame) - 1 : cellFrame.origin.y, cellFrame.size.width, 1));
 }
+
+- (void) drawTableCornerView: (NSView *)cornerView withClip: (NSRect)aRect { }
 
 /* scrollers: only the knob, a slim capsule (no arrows, no slot) */
 - (float) defaultScrollerWidth { return 15.0; }
