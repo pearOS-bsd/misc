@@ -97,7 +97,7 @@ static void installControlImages(void)
 			BOOL ok = [nu setName: real];
 			if (getenv("WSD_DEBUG")) NSLog(@"wsd control image %@ -> %@ replaced=%d named=%d", keys[i], real, old != nil, ok);
 		}
-		for (NSString *nm in @[@"common_Nibble", @"common_3DArrowDown"]) {              /* the stock pop-up arrows are blanked: the theme draws the chevrons */
+		for (NSString *nm in @[@"common_Nibble", @"common_3DArrowDown", @"common_ret", @"common_retH"]) {              /* the stock pop-up arrows are blanked: the theme draws the chevrons */
 			NSImage *old = [NSImage imageNamed: nm]; NSString *real = old && [old name] ? [[old name] copy] : nm; NSSize sz = old ? [old size] : NSMakeSize(8, 8);
 			if (old) [old setName: nil];
 			NSImage *blank = [[NSImage alloc] initWithSize: sz]; [blank setName: real];
@@ -127,6 +127,7 @@ void WsdApplyMacPalette(void)
 	[l setColor: rgb(r, g, b, 1) forKey: @"controlBackgroundColor"];
 	[l setColor: rgb(mix(r, fg, dark ? 0.07 : 0.0), mix(g, fg, dark ? 0.07 : 0.0), mix(b, fg, dark ? 0.07 : 0.0), 1) forKey: @"controlColor"];
 	[l setColor: label forKey: @"controlTextColor"]; [l setColor: label forKey: @"textColor"]; [l setColor: label forKey: @"windowFrameTextColor"];
+	[l setColor: rgb(0, 122, 255, 1) forKey: @"selectedMenuItemColor"];
 	[l setColor: rgb(255, 255, 255, 1) forKey: @"selectedControlTextColor"]; [l setColor: rgb(255, 255, 255, 1) forKey: @"selectedMenuItemTextColor"];
 	[l setColor: dark ? rgb(63, 96, 130, 1) : rgb(176, 215, 255, 1) forKey: @"selectedTextBackgroundColor"]; [l setColor: label forKey: @"selectedTextColor"];
 	[l setColor: sec forKey: @"disabledControlTextColor"]; [l setColor: sec forKey: @"secondaryLabelColor"];
@@ -313,6 +314,20 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 	NSRect panel = NSMakeRect(b.origin.x, b.origin.y, b.size.width, b.size.height - th);
 	fillRound(panel, 8.0, onBG(0.035));
 	if ([box titlePosition] != NSNoTitle) { NSRect tr = [box titleRect]; tr.origin.x = b.origin.x + 8; tr.origin.y = NSMaxY(b) - th; [[box titleCell] drawWithFrame: tr inView: box]; }
+}
+
+
+/* menus: a rounded panel (corner radius 10, the window colour lightened by 18 %, 1 px lighter border), accent highlight with radius 6, hairline separators; the menu bar across the top is darker */
+- (CGFloat) menuBorderRadius { return 10.0; }
+- (NSColor *) menuBackgroundColor { return onBG(0.18); }
+- (NSColor *) menuBorderColor { return onBG(0.30); }
+- (CGFloat) menuItemBackgroundRadius { return 6.0; }
+- (NSColor *) menuSeparatorColor { return onBG(0.28); }
+- (CGFloat) menuSeparatorInset { return 8.0; }
+- (void) drawBackgroundForMenuView: (NSMenuView *)menuView withFrame: (NSRect)bounds dirtyRect: (NSRect)dirtyRect horizontal: (BOOL)horizontal
+{
+	if (horizontal) { [rgb(16, 18, 24, 1) set]; NSRectFill(bounds); return; }
+	fillRound(bounds, 10.0, onBG(0.30)); fillRound(NSInsetRect(bounds, 1, 1), 9.0, onBG(0.18));
 }
 
 /* table headers: no bezel, a 1 px hairline under the header (the title is drawn by the cell) */

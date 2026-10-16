@@ -234,7 +234,10 @@ static void terminate(int sig)
 - (void) setwindowlevel: (int)level : (int)win
 {
 	struct wsd_window *w = [self wsdWindow: win];
-	if (w) { w->level = level; ws_win_set_level(conn, &w->win, level); }
+	if (w) {
+		w->level = level; ws_win_set_level(conn, &w->win, level);
+		if (level >= 101 || (level >= 3 && level < 20 && !(w->style & 1))) ws_win_shadow(conn, &w->win, 10, 1);      /* pop-up and sub menus: rounded corners and the window server's shadow */
+	}
 }
 - (int) windowlevel: (int)win { struct wsd_window *w = [self wsdWindow: win]; return w ? w->level : 0; }
 - (int) windowdepth: (int)win { return (int)(0x100 | 8); }
