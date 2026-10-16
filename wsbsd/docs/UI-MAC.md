@@ -18,3 +18,19 @@ Measured on a real macOS 27 (Darwin 27) machine with AppKit's own `NSWindow` (pr
 ## Not done
 - Side/top edge resizing (only the bottom edge and corners resize, as GNUstep does), hover glyphs on the traffic lights, vibrancy of the title bar (a plain colour is used), San Francisco font (not redistributable: DejaVu / any free sans is used), toolbars and unified title bars, full-screen.
 - The light appearance and app-inactive shadow (smaller than the non-key one) were not measured precisely.
+
+## Controls (measured on the real controls, dark appearance, colours are over the window colour W; `onBG(a)` = W lightened by a)
+- Push button: capsule 24 pt high centred in a 32 pt frame, fill onBG(0.08) (pressed 0.21); default button accent (0,122,255), pressed (30,138,255). Light appearance: onBG with black, 0.075.
+- Check box / radio: 16 pt, fill onBG(0.10) off; accent with white check / white 6 pt dot on; check box corner radius 4.
+- Text field: 1 px border onBG(0.05), fill (23,24,25) (white in light), radius 6; the real field draws 1 px outside its frame (not reproducible inside the view).
+- Search field: capsule, magnifier 14 pt at 8 pt from the left, clear button (grey 160 circle) 8 pt from the right.
+- Slider: 6 pt capsule track onBG(0.12), accent before the knob, 20 pt knob (218,220,222) with a soft shadow.
+- Progress bar: 8 pt capsule, track onBG(0.10), accent bar. Stepper: 20 x 24, radius 6, chevrons 5.3 pt from the middle round a hairline.
+- Segmented control: container onBG(0.08), radius 6, the selected segment accent. Pop-up button: capsule onBG(0.08), title 12 pt from the left, two chevrons at the right.
+- Tab view: capsule of tabs (selected onBG(0.20)) centred above a rounded content box (border onBG(0.12), fill onBG(0.035)). Group box: rounded panel onBG(0.035), title above it at the left.
+- Scrollers: only a slim 7 pt knob (no arrows, no track), on the right. Table header: left aligned title and a 1 px hairline.
+- Menu bar: GNUstep's Macintosh interface style (NSMenuInterfaceStyle) puts the menu in a bar across the top of the screen.
+- Window colour: macOS tints the dark window colour with the wallpaper ((27,36,43) on the measured machine, (30,30,30) neutral); the light window colour is white (255).
+
+## How the parity is checked
+`uitest/` renders every control above in a fixed layout; `uitest/tools/compare.py` crops each control from the macOS and the wsd screenshot and prints the mean absolute difference per control plus a side-by-side sheet (left macOS, middle wsd, right difference). The floor is ~8 (font rendering: Inter instead of San Francisco, no ClearType-like smoothing match). `ksa/` does the same for a whole application (the Keyboard Setup Assistant panes).
