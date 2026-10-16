@@ -35,6 +35,7 @@ static void applyFonts(void)
 	NSUserDefaults *d = [NSUserDefaults standardUserDefaults];
 	if (r) for (NSString *k in @[@"NSFont", @"NSUserFont", @"NSControlContentFont", @"NSLabelFont", @"NSMessageFont", @"NSMenuFont", @"NSPaletteFont", @"NSToolTipsFont"]) [d setObject: r forKey: k];
 	if (b) for (NSString *k in @[@"NSBoldFont", @"NSTitleBarFont"]) [d setObject: b forKey: k];
+	[d setBool: YES forKey: @"GSScrollViewNoInnerBorder"];              /* scroll views have no inner border on macOS */
 }
 
 /* radio buttons and check boxes: GNUstep draws them from the named images NSRadioButton / NSHighlightedRadioButton and NSSwitch / NSHighlightedSwitch; the images drawn here are the macOS ones
@@ -264,6 +265,22 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 		NSBezierPath *p = [NSBezierPath bezierPath]; [p setLineWidth: 1.4]; [p setLineCapStyle: NSRoundLineCapStyle]; [p setLineJoinStyle: NSRoundLineJoinStyle];
 		[p moveToPoint: NSMakePoint(cx - 3, cy + d * 1.5)]; [p lineToPoint: NSMakePoint(cx, cy - d * 1.5)]; [p lineToPoint: NSMakePoint(cx + 3, cy + d * 1.5)]; [p stroke];
 	}
+}
+
+/* table headers: no bezel, a 1 px hairline under the header (the title is drawn by the cell) */
+- (void) drawTableHeaderCell: (NSTableHeaderCell *)cell withFrame: (NSRect)cellFrame inView: (NSView *)controlView state: (GSThemeControlState)state
+{
+	[onBG(0.08) set]; NSRectFill(NSMakeRect(cellFrame.origin.x, [controlView isFlipped] ? NSMaxY(cellFrame) - 1 : cellFrame.origin.y, cellFrame.size.width, 1));
+}
+
+/* scrollers: only the knob, a slim capsule (no arrows, no slot) */
+- (float) defaultScrollerWidth { return 15.0; }
+- (void) drawScrollerRect: (NSRect)rect inView: (NSView *)view hitPart: (NSScrollerPart)hitPart isHorizontal: (BOOL)isHorizontal
+{
+	NSScroller *sc = (NSScroller *)view; NSRect k = [sc rectForPart: NSScrollerKnob];
+	if (NSIsEmptyRect(k) || !NSIntersectsRect(rect, k)) return;
+	NSRect c = isHorizontal ? NSInsetRect(k, 1, (k.size.height - 7) / 2) : NSInsetRect(k, (k.size.width - 7) / 2, 1);
+	fillRound(c, 3.5, rgb(mix(0, 255, 0.45), mix(0, 255, 0.46), mix(0, 255, 0.48), 1));
 }
 @end
 
