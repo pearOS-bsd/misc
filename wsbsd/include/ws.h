@@ -206,6 +206,13 @@ ws_surface *ws_cursor_shape_image(int shape, int *hot_x, int *hot_y);       /* N
 void ws_server_set_cursor_shape(ws_server *, int shape);   /* copies; NULL restores the default arrow */
 void ws_compose_scene(ws_server *, ws_surface *screen);                  /* windows only, no cursor */
 void ws_server_desktop_color(ws_server *, float rgb[3]);
+/* system-wide frame rate (src/fps.c): every presented frame is reported, the rate is over the last second; ws_draw_fps puts "NN FPS | x.x ms" in the top right corner */
+void ws_fps_frame(double compose_ms);
+double ws_fps_rate(void);
+double ws_fps_compose_ms(void);
+unsigned long ws_fps_total(void);
+void ws_draw_fps(ws_surface *img);
+int ws_draw_text_small(ws_surface *img, int x, int y, const char *s, int scale);   /* 5x7 font; returns the x after the text */
 void ws_blur_region(ws_surface *img, ws_rect src, ws_rect write, float sigma);   /* gaussian blur of src (edges clamped at the image), only write is stored back */
 float ws_blur_sigma(int radius);                                         /* radius in points -> gaussian sigma (estimate: radius / 2) */
 /* Background blur behind a window (SetWindowBackgroundBlurRadius): radius in points (0..60), the compositor blurs what is behind the window before drawing it. */
