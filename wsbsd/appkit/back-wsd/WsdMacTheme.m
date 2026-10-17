@@ -177,7 +177,7 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c);
 @interface WsdAlertBack : NSView @end
 @implementation WsdAlertBack
 - (BOOL) isFlipped { return YES; }
-- (void) drawRect: (NSRect)r { int wr, wg, wb; windowBG(&wr, &wg, &wb); [[NSColor clearColor] set]; NSRectFill(r); fillRound([self bounds], 26.0, rgb(wr, wg, wb, 1)); }
+- (void) drawRect: (NSRect)r { [[NSColor clearColor] set]; NSRectFill(r); fillRound([self bounds], 26.0, isDark() ? rgb(31, 31, 31, 1) : rgb(236, 236, 236, 1)); }
 @end
 @interface WsdAlertTarget : NSObject { @public NSInteger code; } - (void) pressed: (id)b; @end
 @implementation WsdAlertTarget - (void) pressed: (id)b { [NSApp stopModalWithCode: [b tag]]; } @end
@@ -198,14 +198,14 @@ static NSInteger wsdAlertRun(id self, SEL _cmd)
 	NSTextStorage *st2 = [[[NSTextStorage alloc] initWithString: info attributes: ba] autorelease]; NSLayoutManager *lm2 = [[[NSLayoutManager alloc] init] autorelease];
 	NSTextContainer *tc2 = [[[NSTextContainer alloc] initWithContainerSize: NSMakeSize(TW, 10000)] autorelease]; [tc2 setLineFragmentPadding: 0]; [lm2 addTextContainer: tc2]; [st2 addLayoutManager: lm2];
 	ih = [info length] ? ceil([lm2 usedRectForTextContainer: tc2].size.height) : 0;
-	CGFloat y = 22, iconY = y; y += 64 + 14;
-	CGFloat titleY = y; y += th + 8; CGFloat infoY = y; y += ih + (ih ? 20 : 4);
-	CGFloat btnY = y, H = y + 30 + 14;
+	CGFloat y = 26, iconY = y; y += 52 + 20;
+	CGFloat titleY = y; y += th + 14; CGFloat infoY = y; y += ih + (ih ? 17 : 4);
+	CGFloat btnY = y, H = y + 28 + 16;
 	NSPanel *p = [[NSPanel alloc] initWithContentRect: NSMakeRect(0, 0, W, H) styleMask: NSBorderlessWindowMask backing: NSBackingStoreBuffered defer: NO];
 	[p setOpaque: NO]; [p setBackgroundColor: [NSColor clearColor]]; [p setHasShadow: YES]; [p setLevel: NSModalPanelWindowLevel];
 	WsdAlertBack *back = [[[WsdAlertBack alloc] initWithFrame: NSMakeRect(0, 0, W, H)] autorelease]; [p setContentView: back];
 	NSImage *ic = [al icon]; if (!ic || ic == [NSApp applicationIconImage] || [[ic name] isEqualToString: @"NSApplicationIcon"]) ic = genericAppIcon();
-	if (ic) { NSImageView *iv = [[[NSImageView alloc] initWithFrame: NSMakeRect(M, iconY, 64, 64)] autorelease]; [iv setImage: ic]; [iv setImageScaling: NSImageScaleProportionallyUpOrDown]; [back addSubview: iv]; }
+	if (ic) { NSImageView *iv = [[[NSImageView alloc] initWithFrame: NSMakeRect(26, iconY, 52, 52)] autorelease]; [iv setImage: ic]; [iv setImageScaling: NSImageScaleProportionallyUpOrDown]; [back addSubview: iv]; }
 	NSTextField *(^label)(NSString *, NSDictionary *, NSRect) = ^NSTextField *(NSString *t, NSDictionary *a, NSRect f) {
 		NSTextField *l = [[[NSTextField alloc] initWithFrame: f] autorelease]; [l setBezeled: NO]; [l setDrawsBackground: NO]; [l setEditable: NO]; [l setSelectable: NO];
 		[l setAttributedStringValue: [[[NSAttributedString alloc] initWithString: t attributes: a] autorelease]]; return l; };
@@ -215,8 +215,8 @@ static NSInteger wsdAlertRun(id self, SEL _cmd)
 	NSUInteger n = [btns count]; CGFloat gap = 8, bw = n > 1 ? (W - 32 - gap * (n - 1)) / n : W - 32;
 	for (NSUInteger i = 0; i < n; i++) {                                           /* the first button is the rightmost, as on macOS */
 		NSButton *src = [btns objectAtIndex: i];
-		NSButton *b = [[[NSButton alloc] initWithFrame: NSMakeRect(16 + (n - 1 - i) * (bw + gap), btnY, bw, 30)] autorelease];
-		[b setTitle: [src title]]; [b setBezelStyle: NSRoundedBezelStyle]; [b setTag: NSAlertFirstButtonReturn + (NSInteger)i]; [b setTarget: tg]; [b setAction: @selector(pressed:)];
+		NSButton *b = [[[NSButton alloc] initWithFrame: NSMakeRect(16 + (n - 1 - i) * (bw + gap), btnY, bw, 28)] autorelease];
+		[b setTag: 90210]; [b setTitle: [src title]]; [b setBezelStyle: NSRoundedBezelStyle]; [b setTag: NSAlertFirstButtonReturn + (NSInteger)i]; [b setTarget: tg]; [b setAction: @selector(pressed:)];
 		if (i == 0) [b setKeyEquivalent: @"\r"]; else if (![[src keyEquivalent] length] && [[[src title] lowercaseString] isEqualToString: @"cancel"]) [b setKeyEquivalent: @"\033"];
 		[back addSubview: b];
 	}
@@ -325,15 +325,17 @@ void WsdApplyMacPalette(void)
 		[super drawButton: frame in: cell view: view style: style state: state];
 		return;
 	}
-	NSRect r = frame; r.size.height = r.size.height > 24 ? 24 : r.size.height; r.origin.y = frame.origin.y + (frame.size.height - r.size.height) / 2.0;
+	BOOL alertBtn = [view respondsToSelector: @selector(tag)] && [(NSControl *)view tag] == 90210;                  /* the alert panel's buttons are 28 pt capsules */
+	NSRect r = frame; r.size.height = r.size.height > (alertBtn ? 28 : 24) ? (alertBtn ? 28 : 24) : r.size.height; r.origin.y = frame.origin.y + (frame.size.height - r.size.height) / 2.0;
 	BOOL isDefault = [cell isKindOfClass: [NSButtonCell class]] && [[(NSButtonCell *)cell keyEquivalent] isEqualToString: @"\r"];
 	BOOL enabled = [cell isEnabled], pressed = (state == GSThemeHighlightedState || state == GSThemeHighlightedFirstResponderState || state == GSThemeSelectedState || state == GSThemeSelectedFirstResponderState);
 	int wr, wg, wb; windowBG(&wr, &wg, &wb); BOOL dark = isDark(); int fg = dark ? 255 : 0;
+	if (alertBtn) { wr = wg = wb = dark ? 31 : 236; }
 	NSColor *fill;
 	if (isDefault && enabled) fill = pressed ? (dark ? rgb(25, 135, 255, 1) : rgb(0, 110, 230, 1)) : rgb(0, 122, 255, 1);
 	else { double a = dark ? (pressed ? 0.17 : 0.08) : (pressed ? 0.165 : 0.075); if (!enabled) a *= 0.5; fill = rgb(mix(wr, fg, a), mix(wg, fg, a), mix(wb, fg, a), 1); }
 	[fill set];
-	[[NSBezierPath bezierPathWithRoundedRect: r xRadius: 5.0 yRadius: 5.0] fill];                        /* measured on the real button: a rounded rectangle, radius 5 pt (not a capsule) */
+	[[NSBezierPath bezierPathWithRoundedRect: r xRadius: alertBtn ? r.size.height / 2.0 : 5.0 yRadius: alertBtn ? r.size.height / 2.0 : 5.0] fill];                        /* measured on the real button: a rounded rectangle, radius 5 pt (not a capsule) */
 }
 - (id<GSWindowDecorator>) windowDecorator { return (id<GSWindowDecorator>)[WsdMacDecorationView class]; }
 - (float) titlebarHeight { return 32.0; }
