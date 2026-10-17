@@ -449,10 +449,10 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 {
 	if (boxType == NSBoxSeparator) { [onBG(0.10) set]; NSRectFill([box borderRect]); return; }
 	if (boxType == NSBoxCustom || boxType == NSBoxOldStyle) { [super drawBoxInClipRect: clipRect boxType: boxType borderType: borderType inView: box]; return; }
-	NSRect b = [box bounds]; CGFloat th = [box titlePosition] == NSNoTitle ? 0 : [box titleRect].size.height + 2;
+	NSRect b = [box bounds]; CGFloat th = [box titlePosition] == NSNoTitle ? 0 : [box titleRect].size.height - 3.5;          /* measured: the panel starts 3.5 pt below the title top, the title sits at the very top */
 	NSRect panel = NSMakeRect(b.origin.x, b.origin.y, b.size.width, b.size.height - th);
 	fillRound(panel, 8.0, onBG(0.035));
-	if ([box titlePosition] != NSNoTitle) { NSRect tr = [box titleRect]; tr.origin.x = b.origin.x + 8; tr.origin.y = NSMaxY(b) - th; [[box titleCell] drawWithFrame: tr inView: box]; }
+	if ([box titlePosition] != NSNoTitle) { NSRect tr = [box titleRect]; tr.origin.x = b.origin.x + 8; tr.origin.y = NSMaxY(b) - tr.size.height; [[box titleCell] drawWithFrame: tr inView: box]; }
 }
 
 
