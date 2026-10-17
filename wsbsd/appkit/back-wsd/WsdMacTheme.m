@@ -216,7 +216,7 @@ static NSInteger wsdAlertRun(id self, SEL _cmd)
 	for (NSUInteger i = 0; i < n; i++) {                                           /* the first button is the rightmost, as on macOS */
 		NSButton *src = [btns objectAtIndex: i];
 		NSButton *b = [[[NSButton alloc] initWithFrame: NSMakeRect(16 + (n - 1 - i) * (bw + gap), btnY, bw, 28)] autorelease];
-		[b setTag: 90210]; [b setTitle: [src title]]; [b setBezelStyle: NSRoundedBezelStyle]; [b setTag: NSAlertFirstButtonReturn + (NSInteger)i]; [b setTarget: tg]; [b setAction: @selector(pressed:)];
+		[b setTitle: [src title]]; [b setBezelStyle: NSRoundedBezelStyle]; [b setTag: NSAlertFirstButtonReturn + (NSInteger)i]; [b setTarget: tg]; [b setAction: @selector(pressed:)];
 		if (i == 0) [b setKeyEquivalent: @"\r"]; else if (![[src keyEquivalent] length] && [[[src title] lowercaseString] isEqualToString: @"cancel"]) [b setKeyEquivalent: @"\033"];
 		[back addSubview: b];
 	}
@@ -325,7 +325,7 @@ void WsdApplyMacPalette(void)
 		[super drawButton: frame in: cell view: view style: style state: state];
 		return;
 	}
-	BOOL alertBtn = [view respondsToSelector: @selector(tag)] && [(NSControl *)view tag] == 90210;                  /* the alert panel's buttons are 28 pt capsules */
+	BOOL alertBtn = [[view window] isKindOfClass: [NSPanel class]] && [[view window] styleMask] == NSBorderlessWindowMask;                  /* the alert panel's buttons are 28 pt capsules */
 	NSRect r = frame; r.size.height = r.size.height > (alertBtn ? 28 : 24) ? (alertBtn ? 28 : 24) : r.size.height; r.origin.y = frame.origin.y + (frame.size.height - r.size.height) / 2.0;
 	BOOL isDefault = [cell isKindOfClass: [NSButtonCell class]] && [[(NSButtonCell *)cell keyEquivalent] isEqualToString: @"\r"];
 	BOOL enabled = [cell isEnabled], pressed = (state == GSThemeHighlightedState || state == GSThemeHighlightedFirstResponderState || state == GSThemeSelectedState || state == GSThemeSelectedFirstResponderState);
