@@ -196,7 +196,7 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		uint32_t wid = rd32(buf, 0x44);
 		if (holds_rights(c, wid) && s1) {
 			ws_rect *r = NULL; int nr = 0; ws_rect bb;
-			if (ws_region_parse(buf + 0x58, s1, &r, &nr, &bb) == 0 && bb.w > 0 && bb.h > 0) ws_set_window_frame(srv, wid, bb.x, bb.y, bb.w, bb.h);   /* the shape is in screen coordinates: its bounds are the new frame (verified live) */
+			if (ws_region_parse(buf + 0x58, s1, &r, &nr, &bb) == 0 && bb.w > 0 && bb.h > 0) { ws_set_window_frame(srv, wid, bb.x, bb.y, bb.w, bb.h); ws_set_window_shape(srv, wid, r, nr); }   /* the shape is in screen coordinates: its bounds are the new frame (verified live), and it is the new shape: a window that grew took events only where it had been */
 			free(r);
 		}
 		return reply_simple(c->fd, h, 0);

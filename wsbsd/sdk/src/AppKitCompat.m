@@ -675,3 +675,24 @@ static void wsbsdRegisterPrototypes(id self, SEL _cmd, NSArray *views)
 	if (m && !origRegisterPrototypes) origRegisterPrototypes = method_setImplementation(m, (IMP)wsbsdRegisterPrototypes);
 }
 @end
+
+/* ---- a command-line argument that is a path: GNUstep opens it as a document at launch and shows an error alert when the application has no document types or delegate method for it (Pashua
+ * and other tools take a config file as argument); macOS does not open command-line arguments. Without a delegate -application:openFile: and without document types it is ignored. ---- */
+static IMP origServicesOpenFile;
+static BOOL wsbsdServicesOpenFile(id self, SEL _cmd, id app, NSString *file)
+{
+	id delegate = [NSApp delegate];
+	BOOL delegateOpens = delegate && ([delegate respondsToSelector: @selector(application:openFile:)] || [delegate respondsToSelector: @selector(application:openFiles:)]);
+	BOOL hasTypes = [[[NSDocumentController sharedDocumentController] documentClassNames] count] > 0;
+	if (!delegateOpens && !hasTypes) return NO;
+	return ((BOOL (*)(id, SEL, id, NSString *))origServicesOpenFile)(self, _cmd, app, file);
+}
+@interface WsbsdOpenFileFix : NSObject @end
+@implementation WsbsdOpenFileFix
++ (void)load
+{
+	Class c = objc_getClass("GSServicesManager");
+	Method m = c ? class_getInstanceMethod(c, sel_registerName("application:openFile:")) : NULL;
+	if (m && !origServicesOpenFile) origServicesOpenFile = method_setImplementation(m, (IMP)wsbsdServicesOpenFile);
+}
+@end

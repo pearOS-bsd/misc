@@ -240,7 +240,11 @@ static int wsdShapeForStyle(int style)
 	NSTimeInterval ts = [[NSDate date] timeIntervalSinceReferenceDate];
 	NSEvent *ev = [NSEvent otherEventWithType: NSAppKitDefined location: resized ? origin : NSZeroPoint modifierFlags: 0 timestamp: ts windowNumber: w->number context: GSCurrentContext()
 		subtype: resized ? GSAppKitWindowResized : GSAppKitWindowMoved data1: resized ? w->w : (NSInteger)origin.x data2: resized ? w->h : (NSInteger)origin.y];
-	[NSApp postEvent: ev atStart: NO];   /* queued: the NSWindow may not be fully set up yet while it is being created */
+	/* A resize is delivered at once when the window is set up: on Apple -setFrame: / -setContentSize: have taken effect when they return (Pashua sizes its dialog element by element
+	 * from the content view's frame); GNUstep's backends deliver the event later. Otherwise queued: the NSWindow may not be fully set up yet while it is being created. */
+	NSWindow *nw = resized ? [NSApp windowWithWindowNumber: w->number] : nil;
+	if (nw && [nw contentView] && [[nw contentView] superview]) [nw sendEvent: ev];
+	else [NSApp postEvent: ev atStart: NO];
 }
 
 - (void) placewindow: (NSRect)frame : (int)win
