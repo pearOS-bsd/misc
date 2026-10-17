@@ -18,3 +18,21 @@ After the version header the decoder reads 32-bit tokens: the low 12 bits are th
   Specialised fields (token, decoder): 0x24027 -> 0x18715e290, 0x1002a -> 0x18715e4f0, 0x2c038 -> 0x18715e64c, 0x2c039 -> 0x18715e8b4, 0x4052 -> 0x18715eb1c, 0x4054 -> 0x18715eb28, 0x106d -> 0x18715eb44, 0x40ac -> 0x18715ebf8, 0x10ae -> 0x18715ec70, 0x10b3 -> 0x18715ed2c, 0xc0b4 -> 0x18715ede0 (not decompiled yet).
 - Generic field: a 32-bit token `0x0001_xxxx` (high half 1), low 12 bits = the CGEvent field id, bit 15 clear = integer, with the size class in bits 12 to 14: 0 = 8 bytes, 1 = 1 byte, 2 = 2 bytes, 4 = 4 bytes, the value following the token big-endian (zero extended) and stored with `SLEventRecordSetIntegerValue(record, field, value)`; bit 15 set with class 4 = a big-endian IEEE float read as 4 bytes and stored as a double with `SLEventRecordSetDoubleValue`. Field 0xa9 (the event timestamp) goes through `convert_time` when the reader is not the server.
 - Version 2 and 3 decoders exist (version header read by `SLS::TokenizedCoding::Decoder::CreateFromProvider`, not decompiled); the header layout and the eleven specialised decoders are what remains before an encoder can be written.
+
+### The eleven specialised fields and the record layout (decompiled)
+Offsets are into the 0xf8-byte `SLSEventRecord`; all values in the stream are big-endian.
+| token | decoder | stream payload | stored at |
+|---|---|---|---|
+| 0x24027 | #3 | two u32 | u32 at +0x74 and u32 at +0x78 |
+| 0x1002a | #4 | u64 | +0x58 |
+| 0x2c038 | #1 | two floats | doubles at +0x10 and +0x18 (the location) |
+| 0x2c039 | #2 | two floats | doubles at +0x20 and +0x28 |
+| 0x4052 | #5 | n x 4 bytes, n = token >> 16, the UTF-16 unit is the last two bytes of each 4-byte cell | `SLSEventRecordSetUnicodeString` |
+| 0x4054 | #6 | min(n, 15) x u32, n = token >> 16 | +0x8c (array) |
+| 0x106d | #7 | n raw bytes, n = token >> 16 | via `decode_bytes` (not decompiled) |
+| 0x40ac | #8 | u32 array | `SLSEventRecordSetAuditToken` |
+| 0x10ae, 0x10b3 | #9, #10 | n raw bytes | via `decode_bytes` |
+| 0xc0b4 | #11 | a transform (`decode_transform`) | `SLSEventRecordSetLocalToDesktopTransform` |
+
+`SLEventRecordSetIntegerValue` (0x1871537b0) maps the integer fields: the record's event type is field 0x37 (u32 at +8; the CGEventType numbers: 1..7 mouse, 10 / 11 / 12 key down / up / flags changed, 22 scroll), field 0x65 is the flags word (+0x54), 0x32 u32 at +4, 0x35 / 0x36 u16 at +0 / +2, 0x3a u64 at +0x30, 0x3b u32 at +0x38, 0x33 / 0x34 u32 at +0x3c / +0x40, 0x29 u32 at +0x48, 0x2b / 0x2c u32 at +0x4c / +0x50, 0x2d u32 at +0x60, 0x57 u64 at +0x68, 0x55 u32 at +0x7c, 0xa9 (the timestamp) lives in an extension record. Fields below 0x20 depend on the event type: for the keyboard events (10 to 12) field 9 is the key code (u16 at +0x90) and field 8 the auto-repeat flag; for the mouse events field 0 is the event number, 1 the click state, 2 the pressure, 3 the button.
+The stream starts with a native u32 version (1, 2 or 3, read by `Decoder::CreateFromProvider`, 0x1871557a4); how the tokens themselves are framed (byte order of the 32-bit token and the end of the stream) is in `Decoder::decode_with_manager`, not decompiled yet.
