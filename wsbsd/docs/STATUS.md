@@ -1,15 +1,16 @@
-# wsbsd status (2026-10-15)
+# wsbsd status (2026-10-17)
 
 What it is: `wsd`, a window server and compositor for FreeBSD that speaks the macOS WindowServer (SkyLight) wire protocol, plus a client library, test suites and the packaging around it.
 
 ## Numbers (approximate, from the repository)
-- SkyLight server routines known from the macOS 27 decompile: 728. With a dedicated handler holding real state: 242 (33%). Answered from replies recorded on a real macOS 26 WindowServer: ~280.
+- SkyLight server routines known from the macOS 27 decompile: 728. With a dedicated handler holding real state: about 265 (36%; the recorded replies cover most of the rest correctly). Answered from replies recorded on a real macOS 26 WindowServer: ~280.
   The rest are generated acceptors with the right sizes and a success reply.
 - Differential runs against the real server (macOS 26 runner, `lab/state*.scen`, `lab/spaces*.scen`, `lab/wq*.scen`): state2 146/175 replies equal, state3a 100/111, state4 55/67; the differences are mostly macOS 26 vs 27
   (request sizes, ids the 26 server lacks) and routines the real server serves on another port.
 - Tests: `make check` (wire conformance, golden replies from the real server, property / window / space / input suites, shim tests, install and VNC tests), a sanitizer fuzz job (random, size-exact, mutated requests), soak (`test/soak.c`).
 
 ## Works
+AppKit look (GNUstep + `appkit/back-wsd/WsdMacTheme.m`, measured against real AppKit, `docs/UI-MAC.md`): window decorations, push buttons, check boxes, radios, text and search fields, sliders, progress and level bars, steppers, segmented controls, pop-ups, combo boxes, date pickers, table views, group boxes, alerts, menus and the menu bar, `NSVisualEffectView` materials with behind-window blur. Gallery difference against the Mac: 2 to 13 per channel in dark (text rendering floor ~8, date picker 23), up to 20 in light.
 Windows (create, move, resize, shapes, levels, ordering, groups, properties), spaces (basic), window rights and grants, tracking areas, event routing (mouse, keys, scroll, flags), input translation from evdev,
 software and GL compositors with shadows, rounded corners, alpha and background blur, capture, cursor (images, scale, hide, lock, decouple), WindowQuery with names / displays, hot keys, shared memory regions.
 Real applications on it: GNUstep AppKit programs (Sudoku, Gorm, the Terminal in `../terminal`), through the GNUstep back-end in `appkit/back-wsd`.
