@@ -28,7 +28,10 @@ jobs:
           sudo make -C ge install PREFIX=/usr LIBDIR=/usr/lib INSTALLROOT= > ge-install.log 2>&1 || { tail -30 ge-install.log; exit 1; }
           git clone --depth 1 https://github.com/pearOS-archlinux/pearos-bootloader pb
           cd pb
-          make 2>&1 | tail -15
+          EFIH=$(find /usr /usr/local -name efi.h -path '*/efi/efi.h' 2>/dev/null | head -1); CRT0=$(find /usr /usr/local -name 'crt0-efi-x86_64.o' 2>/dev/null | head -1)
+          echo "efi.h: $EFIH  crt0: $CRT0"; ls /usr/local/lib/libgnuefi.a /usr/lib/libgnuefi.a 2>&1 | head -3
+          EFIINC=$(dirname "$EFIH"); LIBD=$(dirname "$CRT0")
+          make EFIINC="$EFIINC" GNUEFILIB="$LIBD" EFILIB="$LIBD" EFICRT0="$LIBD" 2>&1 | tail -15
           ls -l ploader/*.efi
           mkdir -p ../ploader-out/licenses
           cp ploader/ploader_x64.efi ../ploader-out/
