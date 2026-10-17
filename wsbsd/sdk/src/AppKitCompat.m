@@ -2,6 +2,12 @@
 #import <wsbsd/AppKitCompat.h>
 #import <objc/runtime.h>
 
+__attribute__((weak)) const CGRect CGRectZero = { { 0, 0 }, { 0, 0 } };
+__attribute__((weak)) const CGSize CGSizeZero = { 0, 0 };
+__attribute__((weak)) const CGPoint CGPointZero = { 0, 0 };
+__attribute__((weak)) const CGRect CGRectNull = { { INFINITY, INFINITY }, { 0, 0 } };
+__attribute__((weak)) const CGAffineTransform CGAffineTransformIdentity = { 1, 0, 0, 1, 0, 0 };
+
 static id getAssoc(id o, const void *key) { return objc_getAssociatedObject(o, key); }
 static void setAssoc(id o, const void *key, id v) { objc_setAssociatedObject(o, key, v, OBJC_ASSOCIATION_RETAIN_NONATOMIC); }
 

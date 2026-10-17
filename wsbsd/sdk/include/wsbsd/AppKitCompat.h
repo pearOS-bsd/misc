@@ -23,22 +23,17 @@
 #import <CoreGraphics/CoreGraphics.h>
 #endif
 #endif
-typedef enum { CGRectMinXEdge, CGRectMinYEdge, CGRectMaxXEdge, CGRectMaxYEdge } CGRectEdge;
-#ifndef CGRectZero
-#define CGRectZero ((CGRect){ { 0, 0 }, { 0, 0 } })
+#if defined(__has_include)
+#if __has_include(<CoreFoundation/CFCGTypes.h>)
+#import <CoreFoundation/CFCGTypes.h>      /* CGRectEdge and the CG geometry types of newer GNUstep base */
 #endif
-#ifndef CGSizeZero
-#define CGSizeZero ((CGSize){ 0, 0 })
 #endif
-#ifndef CGPointZero
-#define CGPointZero ((CGPoint){ 0, 0 })
-#endif
-#ifndef CGRectNull
-#define CGRectNull ((CGRect){ { INFINITY, INFINITY }, { 0, 0 } })
-#endif
-#ifndef CGAffineTransformIdentity
-#define CGAffineTransformIdentity ((CGAffineTransform){ 1, 0, 0, 1, 0, 0 })
-#endif
+/* the constants Opal defines but a stack without it lacks: declared the way Opal does (a repeated extern const is fine), defined weakly in AppKitCompat.m */
+extern const CGRect CGRectZero;
+extern const CGSize CGSizeZero;
+extern const CGPoint CGPointZero;
+extern const CGRect CGRectNull;
+extern const CGAffineTransform CGAffineTransformIdentity;
 #ifndef NSPasteboardNameGeneral
 #define NSPasteboardNameGeneral NSGeneralPboard
 #define NSPasteboardNameFind NSFindPboard
