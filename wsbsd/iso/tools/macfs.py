@@ -7,7 +7,7 @@
   macfs.py verify    ROOT MANIFEST   exit 1 if there is a symlink, or a directory of the manifest is missing; prints the coverage
 
 Only names, types and modes come from the Mac (iso/manifest, made by tools/mac-manifest.sh); the contents are ours."""
-import json, os, shutil, stat, sys
+import functools, json, os, shutil, stat, sys
 
 def read(manifest, name):
     out = []
@@ -22,13 +22,14 @@ def read(manifest, name):
 
 TREE_FILES = ["layout.txt", "system.txt", "frameworks.txt", "privateframeworks.txt", "coreservices.txt", "system-applications.txt", "usr-lib.txt"]
 
+@functools.lru_cache(maxsize=None)
 def all_entries(manifest):
     seen, res = set(), []
     for n in TREE_FILES:
         for e in read(manifest, n):
             if e[2] in seen: continue
             seen.add(e[2]); res.append(e)
-    return res
+    return tuple(res)
 
 def dest(root, p): return os.path.join(root, p.lstrip("/"))
 
@@ -41,13 +42,16 @@ def skeleton(root, manifest):
             except OSError: pass
             n += 1
     # an Info.plist in every bundle that the manifest lists as a framework / app directory
-    for t, mode, path, target in all_entries(manifest):
+    entries = all_entries(manifest); vmap = {}
+    for tt, _, p, _ in entries:
+        if tt == "d" and os.path.basename(os.path.dirname(p)) == "Versions": vmap.setdefault(os.path.dirname(os.path.dirname(p)), []).append(os.path.basename(p))
+    for t, mode, path, target in entries:
         if t != "d": continue
         for ext, sub in ((".framework", "Versions"), (".app", "Contents")):
             if path.endswith(ext):
                 base = os.path.basename(path)[:-len(ext)]
                 if ext == ".framework":
-                    vers = [os.path.basename(p) for tt, _, p, _ in all_entries(manifest) if tt == "d" and os.path.dirname(p) == path + "/Versions"]
+                    vers = vmap.get(path, [])
                     for v in vers:
                         rd = dest(root, path + "/Versions/" + v + "/Resources"); os.makedirs(rd, exist_ok=True)
                         write_plist(os.path.join(rd, "Info.plist"), base, "FMWK", v)

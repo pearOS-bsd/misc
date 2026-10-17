@@ -12,6 +12,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: iso-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   # Ploader (pearOS-archlinux/pearos-bootloader, a rEFInd fork, GPL): built on Linux with gnu-efi
   ploader:

@@ -293,6 +293,24 @@ enum { NSURLBookmarkCreationWithSecurityScope = 1 << 11, NSURLBookmarkCreationSe
 - (BOOL)startAccessingSecurityScopedResource;
 - (void)stopAccessingSecurityScopedResource;
 @end
+/* system fonts with a weight: the weight picks the bold face from 0.4 up (the theme has regular and bold) */
+typedef CGFloat NSFontWeight;
+#ifndef NSFontWeightRegular
+#define NSFontWeightUltraLight (-0.8)
+#define NSFontWeightThin (-0.6)
+#define NSFontWeightLight (-0.4)
+#define NSFontWeightRegular 0.0
+#define NSFontWeightMedium 0.23
+#define NSFontWeightSemibold 0.3
+#define NSFontWeightBold 0.4
+#define NSFontWeightHeavy 0.56
+#define NSFontWeightBlack 0.62
+#endif
+@interface NSFont (WsbsdWeights)
++ (NSFont *)systemFontOfSize:(CGFloat)size weight:(NSFontWeight)weight;
++ (NSFont *)monospacedDigitSystemFontOfSize:(CGFloat)size weight:(NSFontWeight)weight;
++ (NSFont *)monospacedSystemFontOfSize:(CGFloat)size weight:(NSFontWeight)weight;
+@end
 @interface NSMenu (WsbsdMenuName)
 - (void)_setMenuName:(NSString *)name;
 - (NSString *)_menuName;
