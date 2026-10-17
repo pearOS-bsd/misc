@@ -504,6 +504,7 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 /* menus: a rounded panel (corner radius 10, the window colour lightened by 18 %, 1 px lighter border), accent highlight with radius 6, hairline separators; the menu bar across the top is darker */
 - (BOOL) drawsBorderForMenuItemCell: (NSMenuItemCell *)cell state: (GSThemeControlState)state isHorizontal: (BOOL)horizontal { return NO; }
 - (CGFloat) menuBorderRadius { return 10.0; }
+- (CGFloat) menuBarHeight { return 30.0; }                    /* measured on the Mac: the bar is 30 pt, near black (1,1,15) */
 - (CGFloat) menuItemHeight { return 22.0; }                  /* measured: rows are 22 pt, a separator row 10 pt */
 - (CGFloat) menuSeparatorHeight { return 10.0; }
 - (NSColor *) menuBackgroundColor { return onBG(0.18); }
@@ -513,7 +514,7 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 - (CGFloat) menuSeparatorInset { return 8.0; }
 - (void) drawBackgroundForMenuView: (NSMenuView *)menuView withFrame: (NSRect)bounds dirtyRect: (NSRect)dirtyRect horizontal: (BOOL)horizontal
 {
-	if (horizontal) { [rgb(16, 18, 24, 1) set]; NSRectFill(bounds); return; }
+	if (horizontal) { [isDark() ? rgb(2, 2, 14, 1) : rgb(232, 232, 234, 1) set]; NSRectFill(bounds); return; }
 	fillRound(bounds, 10.0, onBG(0.30)); fillRound(NSInsetRect(bounds, 1, 1), 9.0, onBG(0.18));
 }
 
