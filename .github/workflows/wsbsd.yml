@@ -119,6 +119,29 @@ jobs:
           path: wsbsd/*.png
           if-no-files-found: warn
 
+  # Exploratory: does a newer FreeBSD give the QEMU virtio GPU a DRM device, so that the KMS backend can run in CI?
+  freebsd15-kms:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Look for a DRM device on FreeBSD 15 and run wsd -b kms on it
+        uses: vmactions/freebsd-vm@v1
+        with:
+          release: "15.0"
+          arch: x86_64
+          usesh: true
+          prepare: |
+            pkg install -y gmake pkgconf python3 libdrm drm-kmod mesa-libs mesa-dri libglvnd
+          run: |
+            uname -a
+            pciconf -lv | grep -i -B1 -A3 'vga\|display' | head -12
+            for m in virtio_gpu vtgpu drm vmwgfx; do kldload $m 2>&1 | head -1; done
+            kldstat | head -20; ls -l /dev/dri 2>&1 | head
+            cd wsbsd && gmake full 2>&1 | tail -3
+            if [ -e /dev/dri/card0 ]; then ./wsd -b kms -g 800x600 -t > /tmp/kms.log 2>&1 & KW=$!; sleep 4; ./wsshot kms.ppm 2>&1 | head -2; kill $KW 2>/dev/null; cat /tmp/kms.log | head -20; fi
+
   # The development machine's platform (arm64 macOS): the same suite, headless.
   macos:
     runs-on: macos-latest
