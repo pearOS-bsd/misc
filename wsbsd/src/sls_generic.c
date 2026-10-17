@@ -157,8 +157,6 @@ static const gen_entry gen_table[] = {
 	{ 32071, 56, 1, 1, 36 },   /* __XSetGlobalLightOptions */
 	{ 33000, 36, 0, 0, 36 },   /* __XInitializeGamma */
 	{ 33005, 60, 1, 1, 36 },   /* __XSetDisplayIntention */
-	{ 33011, 40, 0, 0, 40 },   /* __XSetDisplayBrightness */
-	{ 33012, 40, 0, 0, 40 },   /* __XGetDisplayBrightness */
 	{ 33024, 56, 1, 1, 40 },   /* __XAirDisplayOnline */
 };
 typedef struct { int id; int complex; uint32_t reply_size; int argc; } gen_var_entry;
