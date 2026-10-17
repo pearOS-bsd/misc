@@ -278,15 +278,15 @@ static void wsdDatePickerWith(id self, SEL _cmd, NSRect f, NSView *v)
 static IMP origVEVDraw, origVEVMove;
 static void wsdVEVDraw(id self, SEL _cmd, NSRect r)
 {
-	NSVisualEffectView *v = self; BOOL dark = isDark(); NSInteger m = (NSInteger)[v material];
+	BOOL dark = isDark(); NSInteger m = (NSInteger)[self performSelector: @selector(material)];                  /* by selector: older GNUstep releases have no NSVisualEffectView header */
 	double a = (m == 3 || m == 5 /* titlebar, menu */) ? 0.72 : 0.58;                         /* alpha of the tint: the material over the blurred backdrop */
 	NSColor *tint = dark ? rgb(30, 30, 30, a) : rgb(236, 236, 238, a);
 	[tint set]; NSRectFillUsingOperation(r, NSCompositeSourceOver);
 }
 static void wsdVEVMove(id self, SEL _cmd)
 {
-	NSVisualEffectView *v = self; NSWindow *w = [v window];
-	if (w && [v blendingMode] == NSVisualEffectBlendingModeBehindWindow) {
+	NSWindow *w = [(NSView *)self window];
+	if (w && (NSInteger)[self performSelector: @selector(blendingMode)] == 0 /* behind window */) {
 		[w setOpaque: NO]; [w setBackgroundColor: [NSColor clearColor]];
 		id srv = GSCurrentServer();
 		if ([srv respondsToSelector: @selector(wsdBackgroundBlur::)]) [srv wsdBackgroundBlur: 30 : (int)[w windowNumber]];

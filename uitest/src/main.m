@@ -121,8 +121,9 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 	[back setTitle: @"Backdrop"]; [back setContentView: [[[Stripes alloc] initWithFrame: NSMakeRect(0, 0, 420, 360)] autorelease]]; [back makeKeyAndOrderFront: nil];
 	NSWindow *fx = [[NSWindow alloc] initWithContentRect: NSMakeRect(300, 200, 360, 280) styleMask: NSTitledWindowMask | NSClosableWindowMask backing: NSBackingStoreBuffered defer: NO];
 	[fx setTitle: @"Vibrancy"];
-	NSVisualEffectView *ve = [[[NSVisualEffectView alloc] initWithFrame: NSMakeRect(0, 0, 360, 280)] autorelease];
-	[ve setMaterial: (NSVisualEffectMaterial)7]; [ve setBlendingMode: NSVisualEffectBlendingModeBehindWindow]; [ve setState: NSVisualEffectStateActive];
+	Class vc = NSClassFromString(@"NSVisualEffectView"); if (!vc) return;
+	NSView *ve = [[[vc alloc] initWithFrame: NSMakeRect(0, 0, 360, 280)] autorelease];
+	[(id)ve performSelector: @selector(setMaterial:) withObject: (id)(NSInteger)7]; [(id)ve performSelector: @selector(setBlendingMode:) withObject: (id)(NSInteger)0]; [(id)ve performSelector: @selector(setState:) withObject: (id)(NSInteger)1];
 	[fx setContentView: ve];
 	NSTextField *t = [[[NSTextField alloc] initWithFrame: NSMakeRect(20, 220, 300, 22)] autorelease]; [t setStringValue: @"Sidebar material over a striped window"]; [t setEditable: NO]; [t setBezeled: NO]; [t setDrawsBackground: NO]; [ve addSubview: t];
 	[fx makeKeyAndOrderFront: nil];
