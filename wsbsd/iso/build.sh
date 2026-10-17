@@ -66,6 +66,8 @@ for d in etc private/etc; do
 	install -m 755 "$HERE/overlay/etc-rc.d-macdesktop" "$ROOT/$d/rc.d/macdesktop"
 done
 mkdir -p "$ROOT/System/Library/LaunchDaemons"
+# no text login on the screen: the window server owns it (the serial console keeps its login)
+for d in etc private/etc; do sed -i '' -E 's/^(ttyv[0-9a-f]+[[:space:]].*)[[:space:]]on[[:space:]]+(secure)?/\1 off \2/' "$ROOT/$d/ttys"; done
 python3 "$HERE/tools/macfs.py" desymlink "$ROOT"
 python3 "$HERE/tools/macfs.py" verify "$ROOT" "$HERE/manifest" || { echo "layout check failed"; [ -n "$LAYOUT_STRICT" ] && exit 1; }
 

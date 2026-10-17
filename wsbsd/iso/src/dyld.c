@@ -1,6 +1,6 @@
 /* /usr/lib/dyld on this system: a small ELF program with the job of the Mac's dyld for a program started through it. The Mac's dyld is a Mach-O image loader and cannot run on FreeBSD; the FreeBSD runtime
  * linker (ld-elf.so.1) loads the ELF programs. This one makes the lookup the way dyld does it: DYLD_FRAMEWORK_PATH, DYLD_LIBRARY_PATH and DYLD_FALLBACK_* are honoured and the standard places
- * (/System/Library/Frameworks/*, /System/Library/PrivateFrameworks/*, /usr/lib, /Library/Frameworks/*) are searched, by turning them into LD_LIBRARY_PATH for the program: dyld [-arch x] program [args].  */
+ * (the Frameworks directories of /System/Library, /System/Library/PrivateFrameworks and /Library, /usr/lib and the GNUstep library directories) are searched, by turning them into LD_LIBRARY_PATH for the program: dyld [-arch x] program [args].  */
 #include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,7 +37,7 @@ int main(int argc, char **argv)
 	add_frameworks(path, sizeof path, "/System/Library/Frameworks");
 	add_frameworks(path, sizeof path, "/System/Library/PrivateFrameworks");
 	add_frameworks(path, sizeof path, "/Library/Frameworks");
-	size_t u = strlen(path); snprintf(path + u, sizeof path - u, "%s/usr/lib:/usr/local/lib", u ? ":" : "");
+	size_t u = strlen(path); snprintf(path + u, sizeof path - u, "%s/usr/lib:/usr/local/lib:/usr/local/GNUstep/System/Library/Libraries:/usr/local/GNUstep/Local/Library/Libraries", u ? ":" : "");
 	const char *old = getenv("LD_LIBRARY_PATH");
 	if (old && *old) { u = strlen(path); snprintf(path + u, sizeof path - u, ":%s", old); }
 	setenv("LD_LIBRARY_PATH", path, 1);
