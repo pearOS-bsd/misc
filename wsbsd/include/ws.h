@@ -146,6 +146,9 @@ void ws_cursor_pos(ws_server *, int *x, int *y);
 ws_wid ws_key_window(ws_server *);
 typedef void (*ws_event_sink)(void *ctx, uint32_t owner, const ws_event *e);
 void ws_server_set_event_sink(ws_server *, ws_event_sink fn, void *ctx);          /* called for every event queued for a window */
+typedef int (*ws_key_filter)(void *ctx, int key, int down);                  /* returns nonzero when it holds the key event back (active event taps); the holder re-injects it with ws_server_key_unfiltered */
+void ws_server_set_key_filter(ws_server *, ws_key_filter fn, void *ctx);
+void ws_server_key_unfiltered(ws_server *, int key, int down);
 void ws_server_warp_cursor(ws_server *, int x, int y);
 void ws_cursor_lock(ws_server *, const ws_rect *bounds);        /* keep the pointer inside bounds (NULL or empty: release) */
 int ws_server_buttons(ws_server *);
