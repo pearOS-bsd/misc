@@ -529,8 +529,11 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 	fillRound(NSInsetRect(f, 1, 1), (f.size.height - 2) / 2, isDark() ? rgb(23, 24, 25, 1) : rgb(255, 255, 255, 1));
 	NSRect sb = [self searchButtonRectForBounds: f]; NSColor *tc = [[NSColor controlTextColor] colorWithAlphaComponent: 0.6];
 	[tc set];
+	[NSGraphicsContext saveGraphicsState];
+	if ([v isFlipped]) { NSAffineTransform *ft = [NSAffineTransform transform]; [ft translateXBy: 0 yBy: 2 * NSMidY(sb)]; [ft scaleXBy: 1 yBy: -1]; [ft concat]; }          /* the drawing below assumes y up */
 	NSBezierPath *ring = [NSBezierPath bezierPathWithOvalInRect: NSMakeRect(sb.origin.x + 1.5, sb.origin.y + 3.5, 8, 8)]; [ring setLineWidth: 1.4]; [ring stroke];
 	NSBezierPath *h = [NSBezierPath bezierPath]; [h setLineWidth: 1.6]; [h setLineCapStyle: NSRoundLineCapStyle]; [h moveToPoint: NSMakePoint(sb.origin.x + 9.4, sb.origin.y + 4.6)]; [h lineToPoint: NSMakePoint(sb.origin.x + 12.6, sb.origin.y + 1.4)]; [h stroke];
+	[NSGraphicsContext restoreGraphicsState];
 	[self drawInteriorWithFrame: [self searchTextRectForBounds: f] inView: v];
 	if ([[self stringValue] length] > 0) {
 		NSRect cb = [self cancelButtonRectForBounds: f];
