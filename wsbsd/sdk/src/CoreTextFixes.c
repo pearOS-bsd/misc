@@ -64,3 +64,76 @@ void CTFontDrawGlyphs(CTFontRef font, const CGGlyph glyphs[], const CGPoint posi
 	}
 	cairo_restore(ct);
 }
+
+/* CTFontCopyCharacterSet: Opal answers with the font descriptor's character set attribute, which a font made by name does not have (nil), so every character looked uncovered by
+ * the font (Hex Fiend's ASCII column then asked for substitution fonts forever). The set is read from the face's character map. The set is an NSMutableCharacterSet, made through the
+ * runtime because this file is plain C. */
+#include <objc/message.h>
+#include FT_FREETYPE_H
+typedef struct { unsigned long location, length; } WsbsdRange;
+CFCharacterSetRef CTFontCopyCharacterSet(CTFontRef font)
+{
+	Ivar iv = class_getInstanceVariable(object_getClass((id)font), "fontFace");
+	void *ft = iv ? *(void **)((char *)font + ivar_getOffset(iv)) : NULL;
+	Class cls = objc_getClass("NSMutableCharacterSet");
+	if (!cls) return NULL;
+	id set = ((id (*)(id, SEL))objc_msgSend)((id)cls, sel_registerName("new"));
+	if (!set) return NULL;
+	if (ft) {
+		FT_Face face = (FT_Face)ft;
+		FT_UInt idx; FT_ULong c = FT_Get_First_Char(face, &idx), start = 0, prev = 0; int open = 0;
+		while (idx) {
+			if (!open) { start = prev = c; open = 1; }
+			else if (c == prev + 1) prev = c;
+			else {
+				WsbsdRange r = { start, prev - start + 1 };
+				if (start < 0x10000) ((void (*)(id, SEL, WsbsdRange))objc_msgSend)(set, sel_registerName("addCharactersInRange:"), r);
+				start = prev = c;
+			}
+			c = FT_Get_Next_Char(face, c, &idx);
+		}
+		if (open && start < 0x10000) { WsbsdRange r = { start, prev - start + 1 }; ((void (*)(id, SEL, WsbsdRange))objc_msgSend)(set, sel_registerName("addCharactersInRange:"), r); }
+	}
+	return (CFCharacterSetRef)set;
+}
+
+/* CTFontCreateForString: on Apple the result is never NULL (the base font itself when nothing else covers the text; its glyph lookup then fails and the caller marks the character
+ * as missing). Opal's returns NULL when fontconfig finds no other font, and Hex Fiend's ASCII column then never settled: the glyph of a character like a newline stayed "not loaded"
+ * and it reloaded and redrew forever. */
+#include <dlfcn.h>
+CTFontRef CTFontCreateForString(CTFontRef base, CFStringRef str, CFRange range)
+{
+	static CTFontRef (*real)(CTFontRef, CFStringRef, CFRange);
+	if (!real) real = (CTFontRef (*)(CTFontRef, CFStringRef, CFRange))dlsym(RTLD_NEXT, "CTFontCreateForString");
+	CTFontRef r = real ? real(base, str, range) : NULL;
+	if (!r && base) r = (CTFontRef)CFRetain(base);
+	return r;
+}
+
+/* CTFontGetGlyphsForCharacters: the result is false when some character has no glyph (that glyph is 0). Opal's answers true whatever the lookup found, so a substitution font that does not
+ * cover a character was taken for one that does, and Hex Fiend drew glyph 0 (the "missing" box) of a font whose advance it then divided by: a pane-sized box. */
+bool CTFontGetGlyphsForCharacters(CTFontRef font, const UniChar characters[], CGGlyph glyphs[], CFIndex count)
+{
+	static bool (*real)(CTFontRef, const UniChar *, CGGlyph *, CFIndex);
+	if (!real) real = (bool (*)(CTFontRef, const UniChar *, CGGlyph *, CFIndex))dlsym(RTLD_NEXT, "CTFontGetGlyphsForCharacters");
+	if (!real) return false;
+	bool ok = real(font, characters, glyphs, count);
+	for (CFIndex i = 0; i < count; i++) if (glyphs[i] == 0) ok = false;
+	return ok;
+}
+
+/* CGRectIntersection with the CoreGraphics semantics. Opal's returned the other rectangle when one had no size (CGRectZero, "no caret": Hex Fiend then filled the whole text view
+ * with the caret colour) and a NaN rectangle instead of CGRectNull when they do not meet. Touching rectangles give a rectangle without width or height, as on Apple. */
+CGRect CGRectIntersection(CGRect r1, CGRect r2)
+{
+	if (CGRectIsNull(r1) || CGRectIsNull(r2)) return CGRectNull;
+	CGFloat a0 = r1.origin.x, a1 = r1.origin.x + r1.size.width, b0 = r2.origin.x, b1 = r2.origin.x + r2.size.width;
+	if (a1 < a0) { CGFloat t = a0; a0 = a1; a1 = t; }
+	if (b1 < b0) { CGFloat t = b0; b0 = b1; b1 = t; }
+	CGFloat c0 = r1.origin.y, c1 = r1.origin.y + r1.size.height, d0 = r2.origin.y, d1 = r2.origin.y + r2.size.height;
+	if (c1 < c0) { CGFloat t = c0; c0 = c1; c1 = t; }
+	if (d1 < d0) { CGFloat t = d0; d0 = d1; d1 = t; }
+	CGFloat x0 = a0 > b0 ? a0 : b0, x1 = a1 < b1 ? a1 : b1, y0 = c0 > d0 ? c0 : d0, y1 = c1 < d1 ? c1 : d1;
+	if (!(x1 >= x0) || !(y1 >= y0)) return CGRectNull;                                    /* also NaN */
+	return CGRectMake(x0, y0, x1 - x0, y1 - y0);
+}
