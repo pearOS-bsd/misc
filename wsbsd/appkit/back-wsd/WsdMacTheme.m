@@ -642,17 +642,14 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 	double mn = [self minValue], mx = [self maxValue], val = [self doubleValue];
 	int n = (int)(mx - mn + 0.5); if (n < 1) n = 1; if (n > 50) n = 50;
 	int filled = (int)((val - mn) / (mx - mn > 0 ? mx - mn : 1) * n + 0.5);
-	/* measured: contiguous segments of equal width, each with a 1 px darker border shared with its neighbours, 16 pt high, the ends rounded */
+	/* measured: 10 separate rounded cells (radius 3.5, 1 pt apart), each with a 1 px darker rim, 16 pt high */
 	CGFloat w = f.size.width / n, h = f.size.height > 16 ? 16 : f.size.height, y = NSMidY(f) - h / 2; BOOL dark = isDark();
-	NSColor *fillOn = dark ? rgb(48, 209, 88, 1) : rgb(52, 199, 89, 1), *edgeOn = dark ? rgb(42, 182, 77, 1) : rgb(45, 173, 78, 1), *fillOff = onBG(0.07), *edgeOff = onBG(dark ? 0.19 : 0.19);
-	[NSGraphicsContext saveGraphicsState];
-	[[NSBezierPath bezierPathWithRoundedRect: NSMakeRect(f.origin.x, y, f.size.width, h) xRadius: 3.0 yRadius: 3.0] addClip];
+	NSColor *fillOn = dark ? rgb(48, 209, 88, 1) : rgb(52, 199, 89, 1), *edgeOn = dark ? rgb(42, 182, 77, 1) : rgb(45, 173, 78, 1), *fillOff = onBG(0.07), *edgeOff = onBG(0.19);
 	for (int i = 0; i < n; i++) {
-		NSRect r = NSMakeRect(f.origin.x + i * w, y, w, h); BOOL on = i < filled;
-		[(on ? edgeOn : edgeOff) set]; NSRectFill(r);
-		[(on ? fillOn : fillOff) set]; NSRectFill(NSInsetRect(r, 1, 1));
+		NSRect r = NSMakeRect(f.origin.x + i * w, y, w - 1, h); BOOL on = i < filled;
+		fillRound(r, 3.5, on ? edgeOn : edgeOff);
+		fillRound(NSInsetRect(r, 1, 1), 2.5, on ? fillOn : fillOff);
 	}
-	[NSGraphicsContext restoreGraphicsState];
 }
 @end
 
