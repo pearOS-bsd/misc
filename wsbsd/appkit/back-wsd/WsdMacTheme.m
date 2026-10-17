@@ -261,11 +261,19 @@ static id wsdHeaderInit(id self, SEL _cmd, NSRect f)
 	if (f.size.height > 15 && f.size.height < 30) f.size.height = 28;
 	return ((id (*)(id, SEL, NSRect))origHeaderInit)(self, _cmd, f);
 }
+/* a date picker's text stays on one line and is clipped (GNUstep wraps the time under the date) */
+static IMP origDatePickerDraw;
+static void wsdDatePickerDraw(id self, SEL _cmd, NSRect f, NSView *v)
+{
+	[(NSCell *)self setWraps: NO]; [(NSCell *)self setLineBreakMode: NSLineBreakByClipping];
+	((void (*)(id, SEL, NSRect, NSView *))origDatePickerDraw)(self, _cmd, f, v);
+}
 static void swizzleTableDefaults(void)
 {
 	Method mt = class_getInstanceMethod([NSTableView class], @selector(_initDefaults));
 	if (mt && !origTableInit) origTableInit = method_setImplementation(mt, (IMP)wsdTableInit);
 	Method mb = class_getInstanceMethod([NSButtonCell class], @selector(drawInteriorWithFrame:inView:));
+	if (NSClassFromString(@"NSDatePickerCell")) { Method mdp = class_getInstanceMethod(NSClassFromString(@"NSDatePickerCell"), @selector(drawInteriorWithFrame:inView:)); if (mdp && !origDatePickerDraw) origDatePickerDraw = method_setImplementation(mdp, (IMP)wsdDatePickerDraw); }
 	Method mth = class_getInstanceMethod([NSTableHeaderView class], @selector(initWithFrame:));
 	if (mth && !origHeaderInit) origHeaderInit = method_setImplementation(mth, (IMP)wsdHeaderInit);
 	Method mat = class_getInstanceMethod([NSButtonCell class], @selector(attributedTitle));
