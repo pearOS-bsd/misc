@@ -567,7 +567,7 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 /* table headers: no bezel, a 1 px hairline under the header (the title is drawn by the cell) */
 - (void) drawTableHeaderCell: (NSTableHeaderCell *)cell withFrame: (NSRect)cellFrame inView: (NSView *)controlView state: (GSThemeControlState)state
 {
-	[onBG(0.035) set]; NSRectFill(cellFrame);                       /* the header strip is a little lighter than the rows */
+	if (isDark()) { int r, g, b; windowBG(&r, &g, &b); [rgb(mix(r, 255, 0.035), mix(g, 255, 0.035), mix(b, 255, 0.035), 1) set]; NSRectFill(cellFrame); }          /* dark: the header strip is a little lighter than the rows; light: none */
 	[cell setAlignment: NSLeftTextAlignment]; [cell setFont: [NSFont systemFontOfSize: 13]];
 	[onBG(0.08) set]; NSRectFill(NSMakeRect(cellFrame.origin.x, [controlView isFlipped] ? NSMaxY(cellFrame) - 1 : cellFrame.origin.y, cellFrame.size.width, 1));
 }
@@ -578,10 +578,14 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 - (float) defaultScrollerWidth { return 15.0; }
 - (void) drawScrollerRect: (NSRect)rect inView: (NSView *)view hitPart: (NSScrollerPart)hitPart isHorizontal: (BOOL)isHorizontal
 {
+	/* legacy ("always") scrollers as measured: an 11 pt wide track (window colour + 5 % foreground) with an 11 pt knob, (158,160,164) dark / (122,122,122) light */
 	NSScroller *sc = (NSScroller *)view; NSRect k = [sc rectForPart: NSScrollerKnob];
+	NSRect bar = [sc bounds];
+	NSRect tr = isHorizontal ? NSInsetRect(bar, 2, (bar.size.height - 11) / 2) : NSInsetRect(bar, (bar.size.width - 11) / 2, 2);
+	if (NSIntersectsRect(rect, tr)) fillRound(tr, 5.5, onBG(isDark() ? 0.05 : 0.047));
 	if (NSIsEmptyRect(k) || !NSIntersectsRect(rect, k)) return;
-	NSRect c = isHorizontal ? NSInsetRect(k, 1, (k.size.height - 7) / 2) : NSInsetRect(k, (k.size.width - 7) / 2, 1);
-	fillRound(c, 3.5, rgb(mix(0, 255, 0.45), mix(0, 255, 0.46), mix(0, 255, 0.48), 1));
+	NSRect c = isHorizontal ? NSInsetRect(k, 1, (k.size.height - 11) / 2) : NSInsetRect(k, (k.size.width - 11) / 2, 1);
+	fillRound(c, 5.5, isDark() ? rgb(158, 160, 164, 1) : rgb(122, 122, 122, 1));
 }
 @end
 
