@@ -10,7 +10,7 @@ ARCH="$(uname -p)"; case "$ARCH" in amd64) EFINAME=BOOTX64.EFI; PLNAME=ploader_x
 REL="${FREEBSD_RELEASE:-$(freebsd-version -u | sed 's/-p[0-9]*$//')}"
 WORK="${WORK:-/tmp/isowork}"; ROOT="$WORK/root"; OUT="${OUT:-$WS/iso-out}"
 export IGNORE_OSVERSION=yes GITHUB_WORKSPACE="${GITHUB_WORKSPACE:-$(dirname "$WS")}"
-mkdir -p "$WORK" "$OUT"; rm -rf "$ROOT"; mkdir -p "$ROOT"
+mkdir -p "$WORK" "$OUT"; [ -d "$ROOT" ] && chflags -R noschg,nouchg "$ROOT" 2>/dev/null; rm -rf "$ROOT"; mkdir -p "$ROOT"
 
 echo "== 1. the software"
 if [ -z "$SKIP_SOFTWARE" ]; then
@@ -29,7 +29,7 @@ cc -O2 -o /usr/local/libexec/dyld "$HERE/src/dyld.c"
 echo "== 2. FreeBSD $REL base and kernel"
 for s in base kernel; do
 	[ -f "$WORK/$s.txz" ] || fetch -q -o "$WORK/$s.txz" "https://download.freebsd.org/releases/$RELDIR/$REL/$s.txz"
-	tar -xpf "$WORK/$s.txz" -C "$ROOT"
+	tar -xpf "$WORK/$s.txz" --no-fflags -C "$ROOT"
 done
 rm -rf "$ROOT/usr/lib32" "$ROOT/usr/tests" "$ROOT/usr/share/doc" "$ROOT/usr/share/examples" "$ROOT/usr/share/games" "$ROOT/usr/share/man" "$ROOT/usr/share/info" "$ROOT/usr/include" "$ROOT/usr/lib/clang" "$ROOT/usr/share/dtrace" "$ROOT/usr/share/sendmail" "$ROOT/usr/share/openssl"
 rm -f "$ROOT"/usr/lib/*.a "$ROOT"/usr/lib/*_p.a "$ROOT"/usr/bin/clang* "$ROOT"/usr/bin/ld.lld "$ROOT"/usr/bin/lld* "$ROOT"/usr/bin/lldb* "$ROOT"/usr/bin/llvm-* "$ROOT"/usr/bin/c++ "$ROOT"/usr/bin/cc "$ROOT"/usr/bin/c89 "$ROOT"/usr/bin/c99 "$ROOT"/usr/bin/cpp "$ROOT"/usr/bin/CC "$ROOT"/usr/bin/ld "$ROOT"/usr/bin/ld.bfd "$ROOT"/usr/bin/ar "$ROOT"/usr/bin/ranlib
