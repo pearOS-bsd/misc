@@ -176,7 +176,7 @@ jobs:
           arch: x86_64
           usesh: true
           run: |
-            sh wsbsd/ci/gnustep-wsd.sh 2>&1 | tail -90
+            sh wsbsd/ci/gnustep-wsd.sh 2>&1 | tee wsbsd/appkit-ci.log | tail -90
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -205,6 +205,7 @@ jobs:
             wsbsd/uitest-menu.png
             wsbsd/uitest-alert.png
             wsbsd/uitest-vibrancy.png
+            wsbsd/appkit-ci.log
             wsbsd/uitest-manifest.txt
           if-no-files-found: warn
 
