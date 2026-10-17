@@ -1,0 +1,26 @@
+{
+  "_comment": "What this repository builds, and where the reference Mac has the thing of that name. Sources are paths in the staging root (the FreeBSD side), destinations follow iso/manifest.",
+  "frameworks": {
+    "AppKit":          { "binary": ["/usr/local/GNUstep/System/Library/Libraries/libgnustep-gui.so.0.32"] },
+    "Foundation":      { "binary": ["/usr/local/GNUstep/System/Library/Libraries/libgnustep-base.so.1.31"] },
+    "CoreFoundation":  { "binary": ["/usr/local/GNUstep/Local/Library/Libraries/libgnustep-corebase.so.0"] },
+    "CoreGraphics":    { "binary": ["/usr/local/GNUstep/Local/Library/Libraries/libopal.so.0"] },
+    "CoreText":        { "binary": ["/usr/local/GNUstep/Local/Library/Libraries/libopal.so.0"] },
+    "ImageIO":         { "binary": ["/usr/local/GNUstep/Local/Library/Libraries/libopal.so.0"] },
+    "CoreServices":    { "binary": ["/usr/local/lib/libwsbsdcompat.so"] },
+    "Security":        { "binary": ["/usr/local/lib/libwsbsdcompat.so"] },
+    "DiskArbitration": { "binary": ["/usr/local/lib/libwsbsdcompat.so"] },
+    "QuartzCore":      { "binary": ["/usr/local/lib/libwsbsdcompat.so"] },
+    "Carbon":          { "binary": ["/usr/local/lib/libwsbsdcompat.so"] }
+  },
+  "privateframeworks": {
+    "SkyLight":        { "binary": ["/usr/local/lib/libwsclient.so"] }
+  },
+  "files": {
+    "/System/Library/PrivateFrameworks/SkyLight.framework/Versions/A/Resources/WindowServer": "/usr/local/sbin/wsd",
+    "/System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal": "/usr/local/bin/Terminal-gnustep",
+    "/Applications/UITest.app/Contents/MacOS/UITest": "/usr/local/bin/UITest-gnustep",
+    "/System/Applications/Utilities/Keyboard Setup Assistant.app/Contents/MacOS/Keyboard Setup Assistant": "/usr/local/bin/KeyboardSetupAssistant-gnustep",
+    "/usr/lib/dyld": "/usr/local/libexec/dyld"
+  }
+}
