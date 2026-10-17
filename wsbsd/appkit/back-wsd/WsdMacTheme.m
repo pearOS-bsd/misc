@@ -151,6 +151,7 @@ static void wsdButtonInterior(id self, SEL _cmd, NSRect f, NSView *v)
 	NSButtonCell *c = self; BOOL hl = [c isHighlighted];
 	BOOL toggle = hl && [c image] && ([c imagePosition] == NSImageLeft || [c imagePosition] == NSImageRight) && ![c isBordered] && [c alternateImage];
 	if (toggle) [c setHighlighted: NO];
+	if ([c image] && ([c imagePosition] == NSImageLeft || [c imagePosition] == NSImageRight) && ![c isBordered] && [c alternateImage]) f.origin.y += [v isFlipped] ? -1 : 1;   /* measured: check boxes and radios sit 1 pt higher on the Mac */
 	((void (*)(id, SEL, NSRect, NSView *))origButtonInterior)(self, _cmd, f, v);
 	if (toggle) [c setHighlighted: YES];
 }
