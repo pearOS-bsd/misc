@@ -25,6 +25,8 @@ sh "$WS/sdk/build-compat.sh" "$WORK/compat" > "$WORK/compat.log" 2>&1; install -
 install -d /usr/local/bin /usr/local/libexec
 for a in terminal:Terminal-gnustep uitest:UITest-gnustep ksa:KeyboardSetupAssistant-gnustep; do d="${a%%:*}"; b="${a##*:}"; (cd "$WS/../$d" && make gnustep >/dev/null 2>&1 && install -m 755 "$b" /usr/local/bin/"$b"); done
 cc -O2 -o /usr/local/libexec/dyld "$HERE/src/dyld.c"
+cc -O2 -I"$WS/sdk/include" -o /usr/local/bin/xattr "$HERE/src/xattr.c" "$WS/sdk/src/xattr.c"
+install -d /usr/local/sbin; cc -O2 -I"$WS/sdk/include" -o /usr/local/sbin/spctl "$HERE/src/spctl.c" "$WS/sdk/src/xattr.c"
 
 echo "== 2. FreeBSD $REL base and kernel"
 for s in base kernel; do
