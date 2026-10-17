@@ -1,0 +1,1807 @@
+d 755 /System/Library/CoreServices
+l 755 /System/Library/CoreServices/.SystemVersionPlatform.plist -> SystemVersion.plist
+d 755 /System/Library/CoreServices/.diagnostics
+f 644 /System/Library/CoreServices/.diagnostics/BridgeOSActivationSupported
+f 644 /System/Library/CoreServices/.diagnostics/BridgeVersion.bin
+d 755 /System/Library/CoreServices/.diagnostics/Drivers
+d 755 /System/Library/CoreServices/.diagnostics/Drivers/HardwareDrivers
+f 644 /System/Library/CoreServices/.diagnostics/Drivers/diags_lua_engine.efi
+f 644 /System/Library/CoreServices/.diagnostics/Drivers/diags_test_engine.efi
+f 644 /System/Library/CoreServices/.diagnostics/Drivers/qa_logger.efi
+d 755 /System/Library/CoreServices/.diagnostics/GUI
+d 755 /System/Library/CoreServices/.diagnostics/GUI/Dutch.lproj
+d 755 /System/Library/CoreServices/.diagnostics/GUI/English.lproj
+d 755 /System/Library/CoreServices/.diagnostics/GUI/French.lproj
+d 755 /System/Library/CoreServices/.diagnostics/GUI/German.lproj
+d 755 /System/Library/CoreServices/.diagnostics/GUI/Images
+d 755 /System/Library/CoreServices/.diagnostics/GUI/Italian.lproj
+d 755 /System/Library/CoreServices/.diagnostics/GUI/Japanese.lproj
+f 644 /System/Library/CoreServices/.diagnostics/GUI/Localizable.loctable
+d 755 /System/Library/CoreServices/.diagnostics/GUI/Spanish.lproj
+d 755 /System/Library/CoreServices/.diagnostics/GUI/ar.lproj
+d 755 /System/Library/CoreServices/.diagnostics/GUI/ca.lproj
+d 755 /System/Library/CoreServices/.diagnostics/GUI/cs.lproj
+d 755 /System/Library/CoreServices/.diagnostics/GUI/da.lproj
+f 644 /System/Library/CoreServices/.diagnostics/GUI/diags_gui.efi
+d 755 /System/Library/CoreServices/.diagnostics/GUI/el.lproj
+d 755 /System/Library/CoreServices/.diagnostics/GUI/es_MX.lproj
+d 755 /System/Library/CoreServices/.diagnostics/GUI/fi.lproj
+d 755 /System/Library/CoreServices/.diagnostics/GUI/he.lproj
+d 755 /System/Library/CoreServices/.diagnostics/GUI/hr.lproj
+d 755 /System/Library/CoreServices/.diagnostics/GUI/hu.lproj
+d 755 /System/Library/CoreServices/.diagnostics/GUI/id.lproj
+d 755 /System/Library/CoreServices/.diagnostics/GUI/ko.lproj
+d 755 /System/Library/CoreServices/.diagnostics/GUI/ms.lproj
+d 755 /System/Library/CoreServices/.diagnostics/GUI/no.lproj
+d 755 /System/Library/CoreServices/.diagnostics/GUI/pl.lproj
+d 755 /System/Library/CoreServices/.diagnostics/GUI/pt.lproj
+d 755 /System/Library/CoreServices/.diagnostics/GUI/pt_PT.lproj
+d 755 /System/Library/CoreServices/.diagnostics/GUI/ro.lproj
+d 755 /System/Library/CoreServices/.diagnostics/GUI/ru.lproj
+d 755 /System/Library/CoreServices/.diagnostics/GUI/sk.lproj
+d 755 /System/Library/CoreServices/.diagnostics/GUI/sv.lproj
+d 755 /System/Library/CoreServices/.diagnostics/GUI/tr.lproj
+d 755 /System/Library/CoreServices/.diagnostics/GUI/uk.lproj
+d 755 /System/Library/CoreServices/.diagnostics/GUI/vi.lproj
+d 755 /System/Library/CoreServices/.diagnostics/GUI/zh_CN.lproj
+d 755 /System/Library/CoreServices/.diagnostics/GUI/zh_TW.lproj
+f 644 /System/Library/CoreServices/.diagnostics/Info.plist
+d 755 /System/Library/CoreServices/.diagnostics/Resources
+d 755 /System/Library/CoreServices/.diagnostics/Resources/100
+d 755 /System/Library/CoreServices/.diagnostics/Resources/101
+d 755 /System/Library/CoreServices/.diagnostics/Resources/102
+d 755 /System/Library/CoreServices/.diagnostics/Resources/103
+d 755 /System/Library/CoreServices/.diagnostics/Resources/104
+d 755 /System/Library/CoreServices/.diagnostics/Resources/107
+d 755 /System/Library/CoreServices/.diagnostics/Resources/108
+d 755 /System/Library/CoreServices/.diagnostics/Resources/109
+d 755 /System/Library/CoreServices/.diagnostics/Resources/110
+d 755 /System/Library/CoreServices/.diagnostics/Resources/111
+d 755 /System/Library/CoreServices/.diagnostics/Resources/28
+d 755 /System/Library/CoreServices/.diagnostics/Resources/29
+d 755 /System/Library/CoreServices/.diagnostics/Resources/32
+d 755 /System/Library/CoreServices/.diagnostics/Resources/33
+d 755 /System/Library/CoreServices/.diagnostics/Resources/34
+d 755 /System/Library/CoreServices/.diagnostics/Resources/35
+d 755 /System/Library/CoreServices/.diagnostics/Resources/36
+d 755 /System/Library/CoreServices/.diagnostics/Resources/50
+d 755 /System/Library/CoreServices/.diagnostics/Resources/51
+d 755 /System/Library/CoreServices/.diagnostics/Resources/53
+d 755 /System/Library/CoreServices/.diagnostics/Resources/54
+d 755 /System/Library/CoreServices/.diagnostics/Resources/55
+d 755 /System/Library/CoreServices/.diagnostics/Resources/56
+d 755 /System/Library/CoreServices/.diagnostics/Resources/61
+d 755 /System/Library/CoreServices/.diagnostics/Resources/63
+d 755 /System/Library/CoreServices/.diagnostics/Resources/65
+d 755 /System/Library/CoreServices/.diagnostics/Resources/66
+d 755 /System/Library/CoreServices/.diagnostics/Resources/67
+d 755 /System/Library/CoreServices/.diagnostics/Resources/68
+d 755 /System/Library/CoreServices/.diagnostics/Resources/69
+d 755 /System/Library/CoreServices/.diagnostics/Resources/73
+d 755 /System/Library/CoreServices/.diagnostics/Resources/74
+d 755 /System/Library/CoreServices/.diagnostics/Resources/78
+d 755 /System/Library/CoreServices/.diagnostics/Resources/79
+d 755 /System/Library/CoreServices/.diagnostics/Resources/8
+d 755 /System/Library/CoreServices/.diagnostics/Resources/80
+d 755 /System/Library/CoreServices/.diagnostics/Resources/81
+d 755 /System/Library/CoreServices/.diagnostics/Resources/83
+d 755 /System/Library/CoreServices/.diagnostics/Resources/84
+d 755 /System/Library/CoreServices/.diagnostics/Resources/86
+d 755 /System/Library/CoreServices/.diagnostics/Resources/87
+d 755 /System/Library/CoreServices/.diagnostics/Resources/88
+d 755 /System/Library/CoreServices/.diagnostics/Resources/89
+d 755 /System/Library/CoreServices/.diagnostics/Resources/90
+d 755 /System/Library/CoreServices/.diagnostics/Resources/91
+d 755 /System/Library/CoreServices/.diagnostics/Resources/92
+d 755 /System/Library/CoreServices/.diagnostics/Resources/93
+d 755 /System/Library/CoreServices/.diagnostics/Resources/94
+d 755 /System/Library/CoreServices/.diagnostics/Resources/95
+d 755 /System/Library/CoreServices/.diagnostics/Resources/96
+d 755 /System/Library/CoreServices/.diagnostics/Resources/97
+d 755 /System/Library/CoreServices/.diagnostics/Resources/98
+d 755 /System/Library/CoreServices/.diagnostics/Resources/99
+d 755 /System/Library/CoreServices/.diagnostics/Resources/PCIE
+d 755 /System/Library/CoreServices/.diagnostics/Resources/Storage
+d 755 /System/Library/CoreServices/.diagnostics/Support
+f 644 /System/Library/CoreServices/.diagnostics/Support/EXT.enc
+f 644 /System/Library/CoreServices/.diagnostics/Support/default.enc
+f 644 /System/Library/CoreServices/.diagnostics/Support/diags.enc
+f 644 /System/Library/CoreServices/.diagnostics/Support/reference.enc
+f 644 /System/Library/CoreServices/.diagnostics/diags.efi
+f 644 /System/Library/CoreServices/.diagnostics/version.plist
+d 755 /System/Library/CoreServices/AOS.bundle
+d 755 /System/Library/CoreServices/AOS.bundle/Contents
+f 644 /System/Library/CoreServices/AOS.bundle/Contents/Info.plist
+d 755 /System/Library/CoreServices/AOS.bundle/Contents/Resources
+d 755 /System/Library/CoreServices/AOS.bundle/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/AOS.bundle/Contents/version.plist
+d 755 /System/Library/CoreServices/AOSUIPrefPaneLauncher.app
+d 755 /System/Library/CoreServices/AOSUIPrefPaneLauncher.app/Contents
+f 644 /System/Library/CoreServices/AOSUIPrefPaneLauncher.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/AOSUIPrefPaneLauncher.app/Contents/Library
+d 755 /System/Library/CoreServices/AOSUIPrefPaneLauncher.app/Contents/MacOS
+f 644 /System/Library/CoreServices/AOSUIPrefPaneLauncher.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/AOSUIPrefPaneLauncher.app/Contents/Resources
+d 755 /System/Library/CoreServices/AOSUIPrefPaneLauncher.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/AOSUIPrefPaneLauncher.app/Contents/version.plist
+f 755 /System/Library/CoreServices/APFSUserAgent
+d 755 /System/Library/CoreServices/AVB Configuration.app
+d 755 /System/Library/CoreServices/AVB Configuration.app/Contents
+f 644 /System/Library/CoreServices/AVB Configuration.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/AVB Configuration.app/Contents/MacOS
+f 644 /System/Library/CoreServices/AVB Configuration.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/AVB Configuration.app/Contents/Resources
+d 755 /System/Library/CoreServices/AVB Configuration.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/AVB Configuration.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Accessibility Reader.app
+d 755 /System/Library/CoreServices/Accessibility Reader.app/Contents
+f 644 /System/Library/CoreServices/Accessibility Reader.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Accessibility Reader.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Accessibility Reader.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Accessibility Reader.app/Contents/Resources
+d 755 /System/Library/CoreServices/Accessibility Reader.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Accessibility Reader.app/Contents/version.plist
+d 755 /System/Library/CoreServices/AccessibilityUIServer.app
+d 755 /System/Library/CoreServices/AccessibilityUIServer.app/Contents
+f 644 /System/Library/CoreServices/AccessibilityUIServer.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/AccessibilityUIServer.app/Contents/MacOS
+f 644 /System/Library/CoreServices/AccessibilityUIServer.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/AccessibilityUIServer.app/Contents/Resources
+d 755 /System/Library/CoreServices/AccessibilityUIServer.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/AccessibilityUIServer.app/Contents/version.plist
+d 755 /System/Library/CoreServices/AddPrinter.app
+d 755 /System/Library/CoreServices/AddPrinter.app/Contents
+d 755 /System/Library/CoreServices/AddPrinter.app/Contents/Frameworks
+f 644 /System/Library/CoreServices/AddPrinter.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/AddPrinter.app/Contents/MacOS
+f 644 /System/Library/CoreServices/AddPrinter.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/AddPrinter.app/Contents/PlugIns
+d 755 /System/Library/CoreServices/AddPrinter.app/Contents/Resources
+d 755 /System/Library/CoreServices/AddPrinter.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/AddPrinter.app/Contents/version.plist
+d 755 /System/Library/CoreServices/AddressBookUrlForwarder.app
+d 755 /System/Library/CoreServices/AddressBookUrlForwarder.app/Contents
+f 644 /System/Library/CoreServices/AddressBookUrlForwarder.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/AddressBookUrlForwarder.app/Contents/MacOS
+f 644 /System/Library/CoreServices/AddressBookUrlForwarder.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/AddressBookUrlForwarder.app/Contents/Resources
+d 755 /System/Library/CoreServices/AddressBookUrlForwarder.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/AddressBookUrlForwarder.app/Contents/version.plist
+d 755 /System/Library/CoreServices/AirDropUI.app
+d 755 /System/Library/CoreServices/AirDropUI.app/Contents
+f 644 /System/Library/CoreServices/AirDropUI.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/AirDropUI.app/Contents/MacOS
+f 644 /System/Library/CoreServices/AirDropUI.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/AirDropUI.app/Contents/Resources
+d 755 /System/Library/CoreServices/AirDropUI.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/AirDropUI.app/Contents/version.plist
+d 755 /System/Library/CoreServices/AirPlayUIAgent.app
+d 755 /System/Library/CoreServices/AirPlayUIAgent.app/Contents
+f 644 /System/Library/CoreServices/AirPlayUIAgent.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/AirPlayUIAgent.app/Contents/MacOS
+f 644 /System/Library/CoreServices/AirPlayUIAgent.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/AirPlayUIAgent.app/Contents/Resources
+d 755 /System/Library/CoreServices/AirPlayUIAgent.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/AirPlayUIAgent.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Apple Diagnostics.app
+d 755 /System/Library/CoreServices/Apple Diagnostics.app/Contents
+f 644 /System/Library/CoreServices/Apple Diagnostics.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Apple Diagnostics.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Apple Diagnostics.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Apple Diagnostics.app/Contents/Resources
+d 755 /System/Library/CoreServices/Apple Diagnostics.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Apple Diagnostics.app/Contents/version.plist
+d 755 /System/Library/CoreServices/AppleScript Utility.app
+d 755 /System/Library/CoreServices/AppleScript Utility.app/Contents
+f 644 /System/Library/CoreServices/AppleScript Utility.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/AppleScript Utility.app/Contents/MacOS
+f 644 /System/Library/CoreServices/AppleScript Utility.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/AppleScript Utility.app/Contents/Resources
+d 755 /System/Library/CoreServices/AppleScript Utility.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/AppleScript Utility.app/Contents/version.plist
+d 755 /System/Library/CoreServices/ApplicationFirewall.bundle
+d 755 /System/Library/CoreServices/ApplicationFirewall.bundle/Contents
+d 755 /System/Library/CoreServices/ApplicationFirewall.bundle/Contents/Resources
+d 755 /System/Library/CoreServices/Applications
+d 755 /System/Library/CoreServices/Applications/About This Mac.app
+d 755 /System/Library/CoreServices/Applications/About This Mac.app/Contents
+d 755 /System/Library/CoreServices/Applications/Archive Utility.app
+d 755 /System/Library/CoreServices/Applications/Archive Utility.app/Contents
+d 755 /System/Library/CoreServices/Applications/DVD Player.app
+d 755 /System/Library/CoreServices/Applications/DVD Player.app/Contents
+d 755 /System/Library/CoreServices/Applications/Desk View.app
+d 755 /System/Library/CoreServices/Applications/Desk View.app/Contents
+d 755 /System/Library/CoreServices/Applications/Directory Utility.app
+d 755 /System/Library/CoreServices/Applications/Directory Utility.app/Contents
+d 755 /System/Library/CoreServices/Applications/Expansion Slot Utility.app
+d 755 /System/Library/CoreServices/Applications/Expansion Slot Utility.app/Contents
+d 755 /System/Library/CoreServices/Applications/Feedback Assistant.app
+d 755 /System/Library/CoreServices/Applications/Feedback Assistant.app/Contents
+d 755 /System/Library/CoreServices/Applications/Folder Actions Setup.app
+d 755 /System/Library/CoreServices/Applications/Folder Actions Setup.app/Contents
+d 755 /System/Library/CoreServices/Applications/Keychain Access.app
+d 755 /System/Library/CoreServices/Applications/Keychain Access.app/Contents
+d 755 /System/Library/CoreServices/Applications/Ticket Viewer.app
+d 755 /System/Library/CoreServices/Applications/Ticket Viewer.app/Contents
+d 755 /System/Library/CoreServices/Applications/Wireless Diagnostics.app
+d 755 /System/Library/CoreServices/Applications/Wireless Diagnostics.app/Contents
+d 755 /System/Library/CoreServices/Applications/iOS App Installer.app
+d 755 /System/Library/CoreServices/Applications/iOS App Installer.app/Contents
+d 755 /System/Library/CoreServices/ArchivingExceptions.bundle
+d 755 /System/Library/CoreServices/ArchivingExceptions.bundle/Contents
+d 755 /System/Library/CoreServices/ArchivingExceptions.bundle/Contents/Resources
+d 755 /System/Library/CoreServices/AuthorizationPromptService.app
+d 755 /System/Library/CoreServices/AuthorizationPromptService.app/Contents
+f 644 /System/Library/CoreServices/AuthorizationPromptService.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/AuthorizationPromptService.app/Contents/MacOS
+f 644 /System/Library/CoreServices/AuthorizationPromptService.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/AuthorizationPromptService.app/Contents/Resources
+d 755 /System/Library/CoreServices/AuthorizationPromptService.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/AuthorizationPromptService.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Automator Application Stub.app
+d 755 /System/Library/CoreServices/Automator Application Stub.app/Contents
+f 644 /System/Library/CoreServices/Automator Application Stub.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Automator Application Stub.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Automator Application Stub.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Automator Application Stub.app/Contents/Resources
+f 644 /System/Library/CoreServices/Automator Application Stub.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Automator Installer.app
+d 755 /System/Library/CoreServices/Automator Installer.app/Contents
+f 644 /System/Library/CoreServices/Automator Installer.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Automator Installer.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Automator Installer.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Automator Installer.app/Contents/Resources
+d 755 /System/Library/CoreServices/Automator Installer.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Automator Installer.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Batteries.app
+d 755 /System/Library/CoreServices/Batteries.app/Contents
+f 644 /System/Library/CoreServices/Batteries.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Batteries.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Batteries.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Batteries.app/Contents/PlugIns
+d 755 /System/Library/CoreServices/Batteries.app/Contents/Resources
+d 755 /System/Library/CoreServices/Batteries.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Batteries.app/Contents/version.plist
+d 755 /System/Library/CoreServices/BluetoothSetupAssistant.app
+d 755 /System/Library/CoreServices/BluetoothSetupAssistant.app/Contents
+f 644 /System/Library/CoreServices/BluetoothSetupAssistant.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/BluetoothSetupAssistant.app/Contents/MacOS
+f 644 /System/Library/CoreServices/BluetoothSetupAssistant.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/BluetoothSetupAssistant.app/Contents/Resources
+d 755 /System/Library/CoreServices/BluetoothSetupAssistant.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/BluetoothSetupAssistant.app/Contents/version.plist
+d 755 /System/Library/CoreServices/BluetoothUIServer.app
+d 755 /System/Library/CoreServices/BluetoothUIServer.app/Contents
+f 644 /System/Library/CoreServices/BluetoothUIServer.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/BluetoothUIServer.app/Contents/MacOS
+f 644 /System/Library/CoreServices/BluetoothUIServer.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/BluetoothUIServer.app/Contents/Resources
+d 755 /System/Library/CoreServices/BluetoothUIServer.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/BluetoothUIServer.app/Contents/version.plist
+d 755 /System/Library/CoreServices/BluetoothUIService.app
+d 755 /System/Library/CoreServices/BluetoothUIService.app/Contents
+f 644 /System/Library/CoreServices/BluetoothUIService.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/BluetoothUIService.app/Contents/MacOS
+f 644 /System/Library/CoreServices/BluetoothUIService.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/BluetoothUIService.app/Contents/Resources
+d 755 /System/Library/CoreServices/BluetoothUIService.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/BluetoothUIService.app/Contents/version.plist
+f 755 /System/Library/CoreServices/CSUserAgent
+d 755 /System/Library/CoreServices/CalendarFileHandler.app
+d 755 /System/Library/CoreServices/CalendarFileHandler.app/Contents
+f 644 /System/Library/CoreServices/CalendarFileHandler.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/CalendarFileHandler.app/Contents/MacOS
+f 644 /System/Library/CoreServices/CalendarFileHandler.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/CalendarFileHandler.app/Contents/Resources
+d 755 /System/Library/CoreServices/CalendarFileHandler.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/CalendarFileHandler.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Captive Network Assistant.app
+d 755 /System/Library/CoreServices/Captive Network Assistant.app/Contents
+f 644 /System/Library/CoreServices/Captive Network Assistant.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Captive Network Assistant.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Captive Network Assistant.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Captive Network Assistant.app/Contents/Resources
+d 755 /System/Library/CoreServices/Captive Network Assistant.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Captive Network Assistant.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Certificate Assistant.app
+d 755 /System/Library/CoreServices/Certificate Assistant.app/Contents
+d 755 /System/Library/CoreServices/Certificate Assistant.app/Contents/Frameworks
+f 644 /System/Library/CoreServices/Certificate Assistant.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Certificate Assistant.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Certificate Assistant.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Certificate Assistant.app/Contents/Resources
+d 755 /System/Library/CoreServices/Certificate Assistant.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Certificate Assistant.app/Contents/version.plist
+d 755 /System/Library/CoreServices/ClockAngel.app
+d 755 /System/Library/CoreServices/ClockAngel.app/Contents
+f 644 /System/Library/CoreServices/ClockAngel.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/ClockAngel.app/Contents/MacOS
+f 644 /System/Library/CoreServices/ClockAngel.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/ClockAngel.app/Contents/Resources
+d 755 /System/Library/CoreServices/ClockAngel.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/ClockAngel.app/Contents/version.plist
+f 755 /System/Library/CoreServices/CloudSettingsSyncAgent
+d 755 /System/Library/CoreServices/CommonCocoaPanels.bundle
+d 755 /System/Library/CoreServices/CommonCocoaPanels.bundle/Contents
+f 644 /System/Library/CoreServices/CommonCocoaPanels.bundle/Contents/Info.plist
+d 755 /System/Library/CoreServices/CommonCocoaPanels.bundle/Contents/MacOS
+d 755 /System/Library/CoreServices/CommonCocoaPanels.bundle/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/CommonCocoaPanels.bundle/Contents/version.plist
+d 755 /System/Library/CoreServices/ControlCenter.app
+d 755 /System/Library/CoreServices/ControlCenter.app/Contents
+f 644 /System/Library/CoreServices/ControlCenter.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/ControlCenter.app/Contents/MacOS
+f 644 /System/Library/CoreServices/ControlCenter.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/ControlCenter.app/Contents/PlugIns
+d 755 /System/Library/CoreServices/ControlCenter.app/Contents/Resources
+d 755 /System/Library/CoreServices/ControlCenter.app/Contents/XPCServices
+d 755 /System/Library/CoreServices/ControlCenter.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/ControlCenter.app/Contents/version.plist
+d 755 /System/Library/CoreServices/ControlStrip.app
+d 755 /System/Library/CoreServices/ControlStrip.app/Contents
+f 644 /System/Library/CoreServices/ControlStrip.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/ControlStrip.app/Contents/MacOS
+f 644 /System/Library/CoreServices/ControlStrip.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/ControlStrip.app/Contents/Resources
+d 755 /System/Library/CoreServices/ControlStrip.app/Contents/XPCServices
+d 755 /System/Library/CoreServices/ControlStrip.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/ControlStrip.app/Contents/version.plist
+l 755 /System/Library/CoreServices/CoreGlyphs.bundle -> ../PrivateFrameworks/SFSymbols.framework/Versions/A/Resources/CoreGlyphs.bundle
+l 755 /System/Library/CoreServices/CoreGlyphsPrivate.bundle -> ../PrivateFrameworks/SFSymbols.framework/Versions/A/Resources/CoreGlyphsPrivate.bundle
+d 755 /System/Library/CoreServices/CoreLocationAgent.app
+d 755 /System/Library/CoreServices/CoreLocationAgent.app/Contents
+f 644 /System/Library/CoreServices/CoreLocationAgent.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/CoreLocationAgent.app/Contents/MacOS
+f 644 /System/Library/CoreServices/CoreLocationAgent.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/CoreLocationAgent.app/Contents/Resources
+d 755 /System/Library/CoreServices/CoreLocationAgent.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/CoreLocationAgent.app/Contents/version.plist
+d 755 /System/Library/CoreServices/CoreServicesUIAgent.app
+d 755 /System/Library/CoreServices/CoreServicesUIAgent.app/Contents
+f 644 /System/Library/CoreServices/CoreServicesUIAgent.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/CoreServicesUIAgent.app/Contents/MacOS
+f 644 /System/Library/CoreServices/CoreServicesUIAgent.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/CoreServicesUIAgent.app/Contents/Resources
+d 755 /System/Library/CoreServices/CoreServicesUIAgent.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/CoreServicesUIAgent.app/Contents/version.plist
+d 755 /System/Library/CoreServices/CoreTypes.bundle
+d 755 /System/Library/CoreServices/CoreTypes.bundle/Contents
+f 644 /System/Library/CoreServices/CoreTypes.bundle/Contents/Info.plist
+d 755 /System/Library/CoreServices/CoreTypes.bundle/Contents/Library
+d 755 /System/Library/CoreServices/CoreTypes.bundle/Contents/Resources
+d 755 /System/Library/CoreServices/CoreTypes.bundle/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/CoreTypes.bundle/Contents/version.plist
+d 755 /System/Library/CoreServices/Coverage Details.app
+d 755 /System/Library/CoreServices/Coverage Details.app/Contents
+f 644 /System/Library/CoreServices/Coverage Details.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Coverage Details.app/Contents/Library
+d 755 /System/Library/CoreServices/Coverage Details.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Coverage Details.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Coverage Details.app/Contents/Resources
+d 755 /System/Library/CoreServices/Coverage Details.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Coverage Details.app/Contents/version.plist
+f 755 /System/Library/CoreServices/CrashReporterSupportHelper
+f 755 /System/Library/CoreServices/DMProxy
+d 755 /System/Library/CoreServices/Database Events.app
+d 755 /System/Library/CoreServices/Database Events.app/Contents
+f 644 /System/Library/CoreServices/Database Events.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Database Events.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Database Events.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Database Events.app/Contents/Resources
+d 755 /System/Library/CoreServices/Database Events.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Database Events.app/Contents/version.plist
+l 644 /System/Library/CoreServices/DefaultBackground.jpg -> /System/Library/Wallpapers/.default/DefaultAerial.jpg
+l 644 /System/Library/CoreServices/DefaultDesktop.heic -> /System/Library/Wallpapers/.default/DefaultAerial.heic
+d 755 /System/Library/CoreServices/DeviceManagementClient
+d 755 /System/Library/CoreServices/DeviceManagementClient/LaunchPolicyAlertAgent.app
+d 755 /System/Library/CoreServices/DeviceManagementClient/LaunchPolicyAlertAgent.app/Contents
+d 755 /System/Library/CoreServices/Diagnostics Reporter.app
+d 755 /System/Library/CoreServices/Diagnostics Reporter.app/Contents
+f 644 /System/Library/CoreServices/Diagnostics Reporter.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Diagnostics Reporter.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Diagnostics Reporter.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Diagnostics Reporter.app/Contents/Resources
+d 755 /System/Library/CoreServices/Diagnostics Reporter.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Diagnostics Reporter.app/Contents/version.plist
+d 755 /System/Library/CoreServices/DiscHelper.app
+d 755 /System/Library/CoreServices/DiscHelper.app/Contents
+f 644 /System/Library/CoreServices/DiscHelper.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/DiscHelper.app/Contents/MacOS
+f 644 /System/Library/CoreServices/DiscHelper.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/DiscHelper.app/Contents/Resources
+d 755 /System/Library/CoreServices/DiscHelper.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/DiscHelper.app/Contents/version.plist
+d 755 /System/Library/CoreServices/DiskImageMounter.app
+d 755 /System/Library/CoreServices/DiskImageMounter.app/Contents
+f 644 /System/Library/CoreServices/DiskImageMounter.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/DiskImageMounter.app/Contents/MacOS
+f 644 /System/Library/CoreServices/DiskImageMounter.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/DiskImageMounter.app/Contents/Resources
+d 755 /System/Library/CoreServices/DiskImageMounter.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/DiskImageMounter.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Dock.app
+d 755 /System/Library/CoreServices/Dock.app/Contents
+f 644 /System/Library/CoreServices/Dock.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Dock.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Dock.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Dock.app/Contents/PlugIns
+d 755 /System/Library/CoreServices/Dock.app/Contents/Resources
+d 755 /System/Library/CoreServices/Dock.app/Contents/XPCServices
+d 755 /System/Library/CoreServices/Dock.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Dock.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Dwell Control.app
+d 755 /System/Library/CoreServices/Dwell Control.app/Contents
+f 644 /System/Library/CoreServices/Dwell Control.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Dwell Control.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Dwell Control.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Dwell Control.app/Contents/Resources
+d 755 /System/Library/CoreServices/Dwell Control.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Dwell Control.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Enhanced Logging.app
+d 755 /System/Library/CoreServices/Enhanced Logging.app/Contents
+f 644 /System/Library/CoreServices/Enhanced Logging.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Enhanced Logging.app/Contents/Library
+d 755 /System/Library/CoreServices/Enhanced Logging.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Enhanced Logging.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Enhanced Logging.app/Contents/Resources
+d 755 /System/Library/CoreServices/Enhanced Logging.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Enhanced Logging.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Erase Assistant.app
+d 755 /System/Library/CoreServices/Erase Assistant.app/Contents
+f 644 /System/Library/CoreServices/Erase Assistant.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Erase Assistant.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Erase Assistant.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Erase Assistant.app/Contents/Resources
+d 755 /System/Library/CoreServices/Erase Assistant.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Erase Assistant.app/Contents/version.plist
+d 755 /System/Library/CoreServices/EscrowSecurityAlert.app
+d 755 /System/Library/CoreServices/EscrowSecurityAlert.app/Contents
+f 644 /System/Library/CoreServices/EscrowSecurityAlert.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/EscrowSecurityAlert.app/Contents/MacOS
+f 644 /System/Library/CoreServices/EscrowSecurityAlert.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/EscrowSecurityAlert.app/Contents/Resources
+d 755 /System/Library/CoreServices/EscrowSecurityAlert.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/EscrowSecurityAlert.app/Contents/version.plist
+f 755 /System/Library/CoreServices/ExpansionSlotNotification
+d 755 /System/Library/CoreServices/Family.app
+d 755 /System/Library/CoreServices/Family.app/Contents
+f 644 /System/Library/CoreServices/Family.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Family.app/Contents/Library
+d 755 /System/Library/CoreServices/Family.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Family.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Family.app/Contents/Resources
+d 755 /System/Library/CoreServices/Family.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Family.app/Contents/version.plist
+d 755 /System/Library/CoreServices/FamilyExtensionHost.app
+d 755 /System/Library/CoreServices/FamilyExtensionHost.app/Contents
+d 755 /System/Library/CoreServices/FamilyExtensionHost.app/Contents/Extensions
+f 644 /System/Library/CoreServices/FamilyExtensionHost.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/FamilyExtensionHost.app/Contents/MacOS
+f 644 /System/Library/CoreServices/FamilyExtensionHost.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/FamilyExtensionHost.app/Contents/Resources
+d 755 /System/Library/CoreServices/FamilyExtensionHost.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/FamilyExtensionHost.app/Contents/version.plist
+d 755 /System/Library/CoreServices/FileProvider-Feedback.app
+d 755 /System/Library/CoreServices/FileProvider-Feedback.app/Contents
+f 644 /System/Library/CoreServices/FileProvider-Feedback.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/FileProvider-Feedback.app/Contents/MacOS
+f 644 /System/Library/CoreServices/FileProvider-Feedback.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/FileProvider-Feedback.app/Contents/Resources
+d 755 /System/Library/CoreServices/FileProvider-Feedback.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/FileProvider-Feedback.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Finder.app
+d 755 /System/Library/CoreServices/Finder.app/Contents
+d 755 /System/Library/CoreServices/Finder.app/Contents/Applications
+f 644 /System/Library/CoreServices/Finder.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Finder.app/Contents/Library
+d 755 /System/Library/CoreServices/Finder.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Finder.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Finder.app/Contents/PlugIns
+d 755 /System/Library/CoreServices/Finder.app/Contents/Resources
+d 755 /System/Library/CoreServices/Finder.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Finder.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Firmware Updates
+d 755 /System/Library/CoreServices/FolderActionsDispatcher.app
+d 755 /System/Library/CoreServices/FolderActionsDispatcher.app/Contents
+f 644 /System/Library/CoreServices/FolderActionsDispatcher.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/FolderActionsDispatcher.app/Contents/MacOS
+f 644 /System/Library/CoreServices/FolderActionsDispatcher.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/FolderActionsDispatcher.app/Contents/Resources
+d 755 /System/Library/CoreServices/FolderActionsDispatcher.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/FolderActionsDispatcher.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Game Center.app
+d 755 /System/Library/CoreServices/Game Center.app/Contents
+f 644 /System/Library/CoreServices/Game Center.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Game Center.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Game Center.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Game Center.app/Contents/Resources
+d 755 /System/Library/CoreServices/Game Center.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Game Center.app/Contents/version.plist
+d 755 /System/Library/CoreServices/GameOverlayUI.app
+d 755 /System/Library/CoreServices/GameOverlayUI.app/Contents
+f 644 /System/Library/CoreServices/GameOverlayUI.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/GameOverlayUI.app/Contents/MacOS
+f 644 /System/Library/CoreServices/GameOverlayUI.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/GameOverlayUI.app/Contents/Resources
+d 755 /System/Library/CoreServices/GameOverlayUI.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/GameOverlayUI.app/Contents/version.plist
+d 755 /System/Library/CoreServices/GameTrampoline.app
+d 755 /System/Library/CoreServices/GameTrampoline.app/Contents
+f 644 /System/Library/CoreServices/GameTrampoline.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/GameTrampoline.app/Contents/MacOS
+f 644 /System/Library/CoreServices/GameTrampoline.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/GameTrampoline.app/Contents/Resources
+d 755 /System/Library/CoreServices/GameTrampoline.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/GameTrampoline.app/Contents/version.plist
+d 755 /System/Library/CoreServices/IOUIAgent.app
+d 755 /System/Library/CoreServices/IOUIAgent.app/Contents
+f 644 /System/Library/CoreServices/IOUIAgent.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/IOUIAgent.app/Contents/MacOS
+f 644 /System/Library/CoreServices/IOUIAgent.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/IOUIAgent.app/Contents/Resources
+d 755 /System/Library/CoreServices/IOUIAgent.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/IOUIAgent.app/Contents/version.plist
+d 755 /System/Library/CoreServices/IconsetResources.bundle
+d 755 /System/Library/CoreServices/IconsetResources.bundle/Contents
+f 644 /System/Library/CoreServices/IconsetResources.bundle/Contents/Info.plist
+d 755 /System/Library/CoreServices/IconsetResources.bundle/Contents/Resources
+d 755 /System/Library/CoreServices/IconsetResources.bundle/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/IconsetResources.bundle/Contents/version.plist
+d 755 /System/Library/CoreServices/Image Events.app
+d 755 /System/Library/CoreServices/Image Events.app/Contents
+f 644 /System/Library/CoreServices/Image Events.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Image Events.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Image Events.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Image Events.app/Contents/Resources
+d 755 /System/Library/CoreServices/Image Events.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Image Events.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Install Command Line Developer Tools.app
+d 755 /System/Library/CoreServices/Install Command Line Developer Tools.app/Contents
+f 644 /System/Library/CoreServices/Install Command Line Developer Tools.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Install Command Line Developer Tools.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Install Command Line Developer Tools.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Install Command Line Developer Tools.app/Contents/Resources
+d 755 /System/Library/CoreServices/Install Command Line Developer Tools.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Install Command Line Developer Tools.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Install in Progress.app
+d 755 /System/Library/CoreServices/Install in Progress.app/Contents
+f 644 /System/Library/CoreServices/Install in Progress.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Install in Progress.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Install in Progress.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Install in Progress.app/Contents/Resources
+d 755 /System/Library/CoreServices/Install in Progress.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Install in Progress.app/Contents/version.plist
+d 755 /System/Library/CoreServices/InstallAssistantCompatibility.bundle
+d 755 /System/Library/CoreServices/InstallAssistantCompatibility.bundle/Contents
+f 644 /System/Library/CoreServices/InstallAssistantCompatibility.bundle/Contents/Info.plist
+d 755 /System/Library/CoreServices/InstallAssistantCompatibility.bundle/Contents/Resources
+d 755 /System/Library/CoreServices/InstallAssistantCompatibility.bundle/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/InstallAssistantCompatibility.bundle/Contents/version.plist
+d 755 /System/Library/CoreServices/Installer Progress.app
+d 755 /System/Library/CoreServices/Installer Progress.app/Contents
+f 644 /System/Library/CoreServices/Installer Progress.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Installer Progress.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Installer Progress.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Installer Progress.app/Contents/Resources
+d 755 /System/Library/CoreServices/Installer Progress.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Installer Progress.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Installer.app
+d 755 /System/Library/CoreServices/Installer.app/Contents
+f 644 /System/Library/CoreServices/Installer.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Installer.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Installer.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Installer.app/Contents/PlugIns
+d 755 /System/Library/CoreServices/Installer.app/Contents/Resources
+d 755 /System/Library/CoreServices/Installer.app/Contents/XPCServices
+d 755 /System/Library/CoreServices/Installer.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Installer.app/Contents/version.plist
+d 755 /System/Library/CoreServices/InternetSharing.bundle
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/English.lproj
+f 644 /System/Library/CoreServices/InternetSharing.bundle/Resources/Localizable.loctable
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/ar.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/ca.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/cs.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/da.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/de.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/el.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/en_AU.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/en_GB.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/es.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/es_419.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/fi.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/fr.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/fr_CA.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/he.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/hi.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/hr.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/hu.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/id.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/it.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/ja.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/ko.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/ms.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/nl.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/no.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/pl.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/pt_BR.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/pt_PT.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/ro.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/ru.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/sk.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/sl.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/sv.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/th.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/tr.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/uk.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/vi.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/zh_CN.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/zh_HK.lproj
+d 755 /System/Library/CoreServices/InternetSharing.bundle/Resources/zh_TW.lproj
+d 755 /System/Library/CoreServices/JavaLauncher.app
+d 755 /System/Library/CoreServices/JavaLauncher.app/Contents
+f 644 /System/Library/CoreServices/JavaLauncher.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/JavaLauncher.app/Contents/MacOS
+f 644 /System/Library/CoreServices/JavaLauncher.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/JavaLauncher.app/Contents/Resources
+d 755 /System/Library/CoreServices/JavaLauncher.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/JavaLauncher.app/Contents/version.plist
+d 755 /System/Library/CoreServices/KernelEventAgent.bundle
+d 755 /System/Library/CoreServices/KernelEventAgent.bundle/Contents
+f 644 /System/Library/CoreServices/KernelEventAgent.bundle/Contents/Info.plist
+d 755 /System/Library/CoreServices/KernelEventAgent.bundle/Contents/Resources
+d 755 /System/Library/CoreServices/KernelEventAgent.bundle/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/KernelEventAgent.bundle/Contents/version.plist
+d 755 /System/Library/CoreServices/KeyboardAccessAgent.app
+d 755 /System/Library/CoreServices/KeyboardAccessAgent.app/Contents
+f 644 /System/Library/CoreServices/KeyboardAccessAgent.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/KeyboardAccessAgent.app/Contents/MacOS
+f 644 /System/Library/CoreServices/KeyboardAccessAgent.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/KeyboardAccessAgent.app/Contents/Resources
+d 755 /System/Library/CoreServices/KeyboardAccessAgent.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/KeyboardAccessAgent.app/Contents/version.plist
+d 755 /System/Library/CoreServices/KeyboardSetupAssistant.app
+d 755 /System/Library/CoreServices/KeyboardSetupAssistant.app/Contents
+f 644 /System/Library/CoreServices/KeyboardSetupAssistant.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/KeyboardSetupAssistant.app/Contents/MacOS
+f 644 /System/Library/CoreServices/KeyboardSetupAssistant.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/KeyboardSetupAssistant.app/Contents/Resources
+d 755 /System/Library/CoreServices/KeyboardSetupAssistant.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/KeyboardSetupAssistant.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Keychain Circle Notification.app
+d 755 /System/Library/CoreServices/Keychain Circle Notification.app/Contents
+f 644 /System/Library/CoreServices/Keychain Circle Notification.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Keychain Circle Notification.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Keychain Circle Notification.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Keychain Circle Notification.app/Contents/Resources
+d 755 /System/Library/CoreServices/Keychain Circle Notification.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Keychain Circle Notification.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Language Chooser.app
+d 755 /System/Library/CoreServices/Language Chooser.app/Contents
+f 644 /System/Library/CoreServices/Language Chooser.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Language Chooser.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Language Chooser.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Language Chooser.app/Contents/Resources
+d 755 /System/Library/CoreServices/Language Chooser.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Language Chooser.app/Contents/version.plist
+d 755 /System/Library/CoreServices/MDMMigrationTrampoline.app
+d 755 /System/Library/CoreServices/MDMMigrationTrampoline.app/Contents
+f 644 /System/Library/CoreServices/MDMMigrationTrampoline.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/MDMMigrationTrampoline.app/Contents/MacOS
+f 644 /System/Library/CoreServices/MDMMigrationTrampoline.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/MDMMigrationTrampoline.app/Contents/Resources
+d 755 /System/Library/CoreServices/MDMMigrationTrampoline.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/MDMMigrationTrampoline.app/Contents/version.plist
+d 755 /System/Library/CoreServices/MLTEFile.bundle
+d 755 /System/Library/CoreServices/MLTEFile.bundle/Contents
+f 644 /System/Library/CoreServices/MLTEFile.bundle/Contents/Info.plist
+d 755 /System/Library/CoreServices/MLTEFile.bundle/Contents/MacOS
+d 755 /System/Library/CoreServices/MLTEFile.bundle/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/MLTEFile.bundle/Contents/version.plist
+d 755 /System/Library/CoreServices/MTLReplayer.app
+d 755 /System/Library/CoreServices/MTLReplayer.app/Contents
+f 644 /System/Library/CoreServices/MTLReplayer.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/MTLReplayer.app/Contents/MacOS
+f 644 /System/Library/CoreServices/MTLReplayer.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/MTLReplayer.app/Contents/Resources
+d 755 /System/Library/CoreServices/MTLReplayer.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/MTLReplayer.app/Contents/version.plist
+d 755 /System/Library/CoreServices/MajorOSInfo.bundle
+d 755 /System/Library/CoreServices/MajorOSInfo.bundle/Contents
+d 755 /System/Library/CoreServices/MajorOSInfo.bundle/Contents/Resources
+d 755 /System/Library/CoreServices/ManagedClient.app
+d 755 /System/Library/CoreServices/ManagedClient.app/Contents
+f 644 /System/Library/CoreServices/ManagedClient.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/ManagedClient.app/Contents/MacOS
+f 644 /System/Library/CoreServices/ManagedClient.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/ManagedClient.app/Contents/PlugIns
+d 755 /System/Library/CoreServices/ManagedClient.app/Contents/Resources
+d 755 /System/Library/CoreServices/ManagedClient.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/ManagedClient.app/Contents/version.plist
+d 755 /System/Library/CoreServices/MapsSuggestionsTransportModePrediction.mlmodelc
+d 755 /System/Library/CoreServices/MapsSuggestionsTransportModePrediction.mlmodelc/analytics
+f 644 /System/Library/CoreServices/MapsSuggestionsTransportModePrediction.mlmodelc/analytics/coremldata.bin
+f 644 /System/Library/CoreServices/MapsSuggestionsTransportModePrediction.mlmodelc/coremldata.bin
+f 644 /System/Library/CoreServices/MapsSuggestionsTransportModePrediction.mlmodelc/metadata.json
+d 755 /System/Library/CoreServices/MapsSuggestionsTransportModePrediction.mlmodelc/model0
+f 644 /System/Library/CoreServices/MapsSuggestionsTransportModePrediction.mlmodelc/model0/coremldata.bin
+d 755 /System/Library/CoreServices/MapsSuggestionsTransportModePrediction.mlmodelc/model1
+f 644 /System/Library/CoreServices/MapsSuggestionsTransportModePrediction.mlmodelc/model1/_B0000.DAT
+f 644 /System/Library/CoreServices/MapsSuggestionsTransportModePrediction.mlmodelc/model1/coremldata.bin
+d 755 /System/Library/CoreServices/MediaRemoteUI.app
+d 755 /System/Library/CoreServices/MediaRemoteUI.app/Contents
+f 644 /System/Library/CoreServices/MediaRemoteUI.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/MediaRemoteUI.app/Contents/MacOS
+f 644 /System/Library/CoreServices/MediaRemoteUI.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/MediaRemoteUI.app/Contents/Resources
+d 755 /System/Library/CoreServices/MediaRemoteUI.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/MediaRemoteUI.app/Contents/version.plist
+d 755 /System/Library/CoreServices/MediaRemoteUIService.app
+d 755 /System/Library/CoreServices/MediaRemoteUIService.app/Contents
+f 644 /System/Library/CoreServices/MediaRemoteUIService.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/MediaRemoteUIService.app/Contents/MacOS
+f 644 /System/Library/CoreServices/MediaRemoteUIService.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/MediaRemoteUIService.app/Contents/Resources
+d 755 /System/Library/CoreServices/MediaRemoteUIService.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/MediaRemoteUIService.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Medical Imaging Calibrator.app
+d 755 /System/Library/CoreServices/Medical Imaging Calibrator.app/Contents
+f 644 /System/Library/CoreServices/Medical Imaging Calibrator.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Medical Imaging Calibrator.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Medical Imaging Calibrator.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Medical Imaging Calibrator.app/Contents/Resources
+d 755 /System/Library/CoreServices/Medical Imaging Calibrator.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Medical Imaging Calibrator.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Memory Slot Utility.app
+d 755 /System/Library/CoreServices/Memory Slot Utility.app/Contents
+f 644 /System/Library/CoreServices/Memory Slot Utility.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Memory Slot Utility.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Memory Slot Utility.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Memory Slot Utility.app/Contents/Resources
+d 755 /System/Library/CoreServices/Memory Slot Utility.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Memory Slot Utility.app/Contents/version.plist
+f 755 /System/Library/CoreServices/MemorySlotNotification
+d 755 /System/Library/CoreServices/Menu Extras
+d 755 /System/Library/CoreServices/Menu Extras/AirPort.menu
+d 755 /System/Library/CoreServices/Menu Extras/AirPort.menu/Contents
+d 755 /System/Library/CoreServices/Menu Extras/DwellControl.menu
+d 755 /System/Library/CoreServices/Menu Extras/DwellControl.menu/Contents
+d 755 /System/Library/CoreServices/Menu Extras/Eject.menu
+d 755 /System/Library/CoreServices/Menu Extras/Eject.menu/Contents
+d 755 /System/Library/CoreServices/Menu Extras/ExpressCard.menu
+d 755 /System/Library/CoreServices/Menu Extras/ExpressCard.menu/Contents
+d 755 /System/Library/CoreServices/Menu Extras/PPP.menu
+d 755 /System/Library/CoreServices/Menu Extras/PPP.menu/Contents
+d 755 /System/Library/CoreServices/Menu Extras/PPPoE.menu
+d 755 /System/Library/CoreServices/Menu Extras/PPPoE.menu/Contents
+d 755 /System/Library/CoreServices/Menu Extras/SafeEjectGPUExtra.menu
+d 755 /System/Library/CoreServices/Menu Extras/SafeEjectGPUExtra.menu/Contents
+d 755 /System/Library/CoreServices/Menu Extras/TimeMachine.menu
+d 755 /System/Library/CoreServices/Menu Extras/TimeMachine.menu/Contents
+d 755 /System/Library/CoreServices/Menu Extras/VPN.menu
+d 755 /System/Library/CoreServices/Menu Extras/VPN.menu/Contents
+d 755 /System/Library/CoreServices/MenuBarAgent.app
+d 755 /System/Library/CoreServices/MenuBarAgent.app/Contents
+f 644 /System/Library/CoreServices/MenuBarAgent.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/MenuBarAgent.app/Contents/MacOS
+f 644 /System/Library/CoreServices/MenuBarAgent.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/MenuBarAgent.app/Contents/Resources
+d 755 /System/Library/CoreServices/MenuBarAgent.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/MenuBarAgent.app/Contents/version.plist
+d 755 /System/Library/CoreServices/MusicRecognitionMac.app
+d 755 /System/Library/CoreServices/MusicRecognitionMac.app/Contents
+f 644 /System/Library/CoreServices/MusicRecognitionMac.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/MusicRecognitionMac.app/Contents/MacOS
+f 644 /System/Library/CoreServices/MusicRecognitionMac.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/MusicRecognitionMac.app/Contents/Resources
+d 755 /System/Library/CoreServices/MusicRecognitionMac.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/MusicRecognitionMac.app/Contents/version.plist
+d 755 /System/Library/CoreServices/NetAuthAgent.app
+d 755 /System/Library/CoreServices/NetAuthAgent.app/Contents
+f 644 /System/Library/CoreServices/NetAuthAgent.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/NetAuthAgent.app/Contents/MacOS
+f 644 /System/Library/CoreServices/NetAuthAgent.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/NetAuthAgent.app/Contents/Resources
+d 755 /System/Library/CoreServices/NetAuthAgent.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/NetAuthAgent.app/Contents/version.plist
+d 755 /System/Library/CoreServices/NotificationCenter.app
+d 755 /System/Library/CoreServices/NotificationCenter.app/Contents
+f 644 /System/Library/CoreServices/NotificationCenter.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/NotificationCenter.app/Contents/MacOS
+f 644 /System/Library/CoreServices/NotificationCenter.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/NotificationCenter.app/Contents/Resources
+d 755 /System/Library/CoreServices/NotificationCenter.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/NotificationCenter.app/Contents/version.plist
+d 755 /System/Library/CoreServices/NowPlayingTouchUI.app
+d 755 /System/Library/CoreServices/NowPlayingTouchUI.app/Contents
+f 644 /System/Library/CoreServices/NowPlayingTouchUI.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/NowPlayingTouchUI.app/Contents/MacOS
+f 644 /System/Library/CoreServices/NowPlayingTouchUI.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/NowPlayingTouchUI.app/Contents/Resources
+d 755 /System/Library/CoreServices/NowPlayingTouchUI.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/NowPlayingTouchUI.app/Contents/version.plist
+d 755 /System/Library/CoreServices/OBEXAgent.app
+d 755 /System/Library/CoreServices/OBEXAgent.app/Contents
+f 644 /System/Library/CoreServices/OBEXAgent.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/OBEXAgent.app/Contents/MacOS
+f 644 /System/Library/CoreServices/OBEXAgent.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/OBEXAgent.app/Contents/Resources
+d 755 /System/Library/CoreServices/OBEXAgent.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/OBEXAgent.app/Contents/version.plist
+d 755 /System/Library/CoreServices/OSDUIHelper.app
+d 755 /System/Library/CoreServices/OSDUIHelper.app/Contents
+f 644 /System/Library/CoreServices/OSDUIHelper.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/OSDUIHelper.app/Contents/MacOS
+f 644 /System/Library/CoreServices/OSDUIHelper.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/OSDUIHelper.app/Contents/Resources
+d 755 /System/Library/CoreServices/OSDUIHelper.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/OSDUIHelper.app/Contents/version.plist
+d 755 /System/Library/CoreServices/PIPAgent.app
+d 755 /System/Library/CoreServices/PIPAgent.app/Contents
+f 644 /System/Library/CoreServices/PIPAgent.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/PIPAgent.app/Contents/MacOS
+f 644 /System/Library/CoreServices/PIPAgent.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/PIPAgent.app/Contents/Resources
+d 755 /System/Library/CoreServices/PIPAgent.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/PIPAgent.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Paired Devices.app
+d 755 /System/Library/CoreServices/Paired Devices.app/Contents
+f 644 /System/Library/CoreServices/Paired Devices.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Paired Devices.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Paired Devices.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Paired Devices.app/Contents/Resources
+d 755 /System/Library/CoreServices/Paired Devices.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Paired Devices.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Pass Viewer.app
+d 755 /System/Library/CoreServices/Pass Viewer.app/Contents
+f 644 /System/Library/CoreServices/Pass Viewer.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Pass Viewer.app/Contents/Library
+d 755 /System/Library/CoreServices/Pass Viewer.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Pass Viewer.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Pass Viewer.app/Contents/Resources
+d 755 /System/Library/CoreServices/Pass Viewer.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Pass Viewer.app/Contents/version.plist
+d 755 /System/Library/CoreServices/PassViewer.app
+d 755 /System/Library/CoreServices/PassViewer.app/Contents
+f 644 /System/Library/CoreServices/PassViewer.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/PassViewer.app/Contents/MacOS
+f 644 /System/Library/CoreServices/PassViewer.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/PassViewer.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/PassViewer.app/Contents/version.plist
+d 755 /System/Library/CoreServices/PeopleMessageService.app
+d 755 /System/Library/CoreServices/PeopleMessageService.app/Contents
+d 755 /System/Library/CoreServices/PeopleMessageService.app/Contents/Extensions
+f 644 /System/Library/CoreServices/PeopleMessageService.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/PeopleMessageService.app/Contents/MacOS
+f 644 /System/Library/CoreServices/PeopleMessageService.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/PeopleMessageService.app/Contents/PlugIns
+d 755 /System/Library/CoreServices/PeopleMessageService.app/Contents/Resources
+d 755 /System/Library/CoreServices/PeopleMessageService.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/PeopleMessageService.app/Contents/version.plist
+d 755 /System/Library/CoreServices/PeopleViewService.app
+d 755 /System/Library/CoreServices/PeopleViewService.app/Contents
+f 644 /System/Library/CoreServices/PeopleViewService.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/PeopleViewService.app/Contents/Library
+d 755 /System/Library/CoreServices/PeopleViewService.app/Contents/MacOS
+f 644 /System/Library/CoreServices/PeopleViewService.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/PeopleViewService.app/Contents/PlugIns
+d 755 /System/Library/CoreServices/PeopleViewService.app/Contents/Resources
+d 755 /System/Library/CoreServices/PeopleViewService.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/PeopleViewService.app/Contents/version.plist
+f 644 /System/Library/CoreServices/PlatformSupport.plist
+d 755 /System/Library/CoreServices/PowerChime.app
+d 755 /System/Library/CoreServices/PowerChime.app/Contents
+f 644 /System/Library/CoreServices/PowerChime.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/PowerChime.app/Contents/MacOS
+f 644 /System/Library/CoreServices/PowerChime.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/PowerChime.app/Contents/Resources
+d 755 /System/Library/CoreServices/PowerChime.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/PowerChime.app/Contents/version.plist
+d 755 /System/Library/CoreServices/PreviewShell.app
+d 755 /System/Library/CoreServices/PreviewShell.app/Contents
+f 644 /System/Library/CoreServices/PreviewShell.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/PreviewShell.app/Contents/MacOS
+f 644 /System/Library/CoreServices/PreviewShell.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/PreviewShell.app/Contents/Resources
+d 755 /System/Library/CoreServices/PreviewShell.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/PreviewShell.app/Contents/version.plist
+d 755 /System/Library/CoreServices/PreviewShellMac.app
+d 755 /System/Library/CoreServices/PreviewShellMac.app/Contents
+f 644 /System/Library/CoreServices/PreviewShellMac.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/PreviewShellMac.app/Contents/MacOS
+f 644 /System/Library/CoreServices/PreviewShellMac.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/PreviewShellMac.app/Contents/Resources
+d 755 /System/Library/CoreServices/PreviewShellMac.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/PreviewShellMac.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Pro Display Calibrator.app
+d 755 /System/Library/CoreServices/Pro Display Calibrator.app/Contents
+f 644 /System/Library/CoreServices/Pro Display Calibrator.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Pro Display Calibrator.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Pro Display Calibrator.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Pro Display Calibrator.app/Contents/Resources
+d 755 /System/Library/CoreServices/Pro Display Calibrator.app/Contents/XPCServices
+d 755 /System/Library/CoreServices/Pro Display Calibrator.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Pro Display Calibrator.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Problem Reporter.app
+d 755 /System/Library/CoreServices/Problem Reporter.app/Contents
+f 644 /System/Library/CoreServices/Problem Reporter.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Problem Reporter.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Problem Reporter.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Problem Reporter.app/Contents/Resources
+d 755 /System/Library/CoreServices/Problem Reporter.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Problem Reporter.app/Contents/version.plist
+d 755 /System/Library/CoreServices/ProfileHelper.app
+d 755 /System/Library/CoreServices/ProfileHelper.app/Contents
+f 644 /System/Library/CoreServices/ProfileHelper.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/ProfileHelper.app/Contents/MacOS
+f 644 /System/Library/CoreServices/ProfileHelper.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/ProfileHelper.app/Contents/Resources
+d 755 /System/Library/CoreServices/ProfileHelper.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/ProfileHelper.app/Contents/version.plist
+d 755 /System/Library/CoreServices/RFBEventHelper.bundle
+d 755 /System/Library/CoreServices/RFBEventHelper.bundle/Contents
+f 644 /System/Library/CoreServices/RFBEventHelper.bundle/Contents/Info.plist
+d 755 /System/Library/CoreServices/RFBEventHelper.bundle/Contents/MacOS
+d 755 /System/Library/CoreServices/RFBEventHelper.bundle/Contents/Resources
+d 755 /System/Library/CoreServices/RFBEventHelper.bundle/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/RFBEventHelper.bundle/Contents/version.plist
+d 755 /System/Library/CoreServices/RapportUIAgent.app
+d 755 /System/Library/CoreServices/RapportUIAgent.app/Contents
+f 644 /System/Library/CoreServices/RapportUIAgent.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/RapportUIAgent.app/Contents/MacOS
+f 644 /System/Library/CoreServices/RapportUIAgent.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/RapportUIAgent.app/Contents/Resources
+d 755 /System/Library/CoreServices/RapportUIAgent.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/RapportUIAgent.app/Contents/version.plist
+d 755 /System/Library/CoreServices/RawCamera.bundle
+d 755 /System/Library/CoreServices/RawCamera.bundle/Contents
+f 644 /System/Library/CoreServices/RawCamera.bundle/Contents/Info.plist
+d 755 /System/Library/CoreServices/RawCamera.bundle/Contents/MacOS
+d 755 /System/Library/CoreServices/RawCamera.bundle/Contents/Resources
+d 755 /System/Library/CoreServices/RawCamera.bundle/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/RawCamera.bundle/Contents/version.plist
+d 755 /System/Library/CoreServices/RawCameraSupport.bundle
+d 755 /System/Library/CoreServices/RawCameraSupport.bundle/Contents
+f 644 /System/Library/CoreServices/RawCameraSupport.bundle/Contents/Info.plist
+d 755 /System/Library/CoreServices/RawCameraSupport.bundle/Contents/MacOS
+d 755 /System/Library/CoreServices/RawCameraSupport.bundle/Contents/Resources
+d 755 /System/Library/CoreServices/RawCameraSupport.bundle/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/RawCameraSupport.bundle/Contents/version.plist
+d 755 /System/Library/CoreServices/RegisterPluginIMApp.app
+d 755 /System/Library/CoreServices/RegisterPluginIMApp.app/Contents
+f 644 /System/Library/CoreServices/RegisterPluginIMApp.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/RegisterPluginIMApp.app/Contents/MacOS
+f 644 /System/Library/CoreServices/RegisterPluginIMApp.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/RegisterPluginIMApp.app/Contents/Resources
+d 755 /System/Library/CoreServices/RegisterPluginIMApp.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/RegisterPluginIMApp.app/Contents/version.plist
+d 755 /System/Library/CoreServices/RemoteManagement
+d 755 /System/Library/CoreServices/RemoteManagement/ARDAgent.app
+d 755 /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents
+d 755 /System/Library/CoreServices/RemoteManagement/AppleVNCServer.bundle
+d 755 /System/Library/CoreServices/RemoteManagement/AppleVNCServer.bundle/Contents
+d 755 /System/Library/CoreServices/RemoteManagement/Remote Desktop Message.app
+d 755 /System/Library/CoreServices/RemoteManagement/Remote Desktop Message.app/Contents
+d 755 /System/Library/CoreServices/RemoteManagement/SSMenuAgent.app
+d 755 /System/Library/CoreServices/RemoteManagement/SSMenuAgent.app/Contents
+d 755 /System/Library/CoreServices/RemoteManagement/ScreensharingAgent.bundle
+d 755 /System/Library/CoreServices/RemoteManagement/ScreensharingAgent.bundle/Contents
+d 755 /System/Library/CoreServices/RemoteManagement/screensharingd.bundle
+d 755 /System/Library/CoreServices/RemoteManagement/screensharingd.bundle/Contents
+f 755 /System/Library/CoreServices/RemotePairTool
+f 755 /System/Library/CoreServices/ReportCrash
+f 755 /System/Library/CoreServices/ReportSystemMemory
+d 755 /System/Library/CoreServices/Resources
+d 755 /System/Library/CoreServices/Resources/Profiles
+f 644 /System/Library/CoreServices/Resources/Profiles/HD 709-A.icc
+f 644 /System/Library/CoreServices/Resources/Profiles/HD 709.icc
+f 644 /System/Library/CoreServices/Resources/Profiles/SD 170M-A.icc
+f 644 /System/Library/CoreServices/Resources/Profiles/SD 170M.icc
+f 644 /System/Library/CoreServices/RestoreVersion.plist
+d 755 /System/Library/CoreServices/Rosetta 2 Updater.app
+d 755 /System/Library/CoreServices/Rosetta 2 Updater.app/Contents
+f 644 /System/Library/CoreServices/Rosetta 2 Updater.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Rosetta 2 Updater.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Rosetta 2 Updater.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Rosetta 2 Updater.app/Contents/Resources
+d 755 /System/Library/CoreServices/Rosetta 2 Updater.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Rosetta 2 Updater.app/Contents/version.plist
+f 755 /System/Library/CoreServices/ScopedBookmarkAgent
+d 755 /System/Library/CoreServices/Screen Time.app
+d 755 /System/Library/CoreServices/Screen Time.app/Contents
+f 644 /System/Library/CoreServices/Screen Time.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Screen Time.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Screen Time.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Screen Time.app/Contents/PlugIns
+d 755 /System/Library/CoreServices/Screen Time.app/Contents/Resources
+d 755 /System/Library/CoreServices/Screen Time.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Screen Time.app/Contents/version.plist
+d 755 /System/Library/CoreServices/ScreenSaverEngine.app
+d 755 /System/Library/CoreServices/ScreenSaverEngine.app/Contents
+f 644 /System/Library/CoreServices/ScreenSaverEngine.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/ScreenSaverEngine.app/Contents/MacOS
+f 644 /System/Library/CoreServices/ScreenSaverEngine.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/ScreenSaverEngine.app/Contents/Resources
+d 755 /System/Library/CoreServices/ScreenSaverEngine.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/ScreenSaverEngine.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Script Menu.app
+d 755 /System/Library/CoreServices/Script Menu.app/Contents
+f 644 /System/Library/CoreServices/Script Menu.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Script Menu.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Script Menu.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Script Menu.app/Contents/Resources
+d 755 /System/Library/CoreServices/Script Menu.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Script Menu.app/Contents/version.plist
+d 755 /System/Library/CoreServices/ScriptMonitor.app
+d 755 /System/Library/CoreServices/ScriptMonitor.app/Contents
+f 644 /System/Library/CoreServices/ScriptMonitor.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/ScriptMonitor.app/Contents/MacOS
+f 644 /System/Library/CoreServices/ScriptMonitor.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/ScriptMonitor.app/Contents/Resources
+d 755 /System/Library/CoreServices/ScriptMonitor.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/ScriptMonitor.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Search.bundle
+d 755 /System/Library/CoreServices/Search.bundle/Contents
+f 644 /System/Library/CoreServices/Search.bundle/Contents/Info.plist
+d 755 /System/Library/CoreServices/Search.bundle/Contents/MacOS
+d 755 /System/Library/CoreServices/Search.bundle/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Search.bundle/Contents/version.plist
+d 755 /System/Library/CoreServices/SecTransitionEnablement.bundle
+d 755 /System/Library/CoreServices/SecurityAgentPlugins
+d 755 /System/Library/CoreServices/SecurityAgentPlugins/CryptoTokenKit.bundle
+d 755 /System/Library/CoreServices/SecurityAgentPlugins/CryptoTokenKit.bundle/Contents
+d 755 /System/Library/CoreServices/SecurityAgentPlugins/DiskUnlock.bundle
+d 755 /System/Library/CoreServices/SecurityAgentPlugins/DiskUnlock.bundle/Contents
+d 755 /System/Library/CoreServices/SecurityAgentPlugins/FamilyControls.bundle
+d 755 /System/Library/CoreServices/SecurityAgentPlugins/FamilyControls.bundle/Contents
+d 755 /System/Library/CoreServices/SecurityAgentPlugins/HomeDirMechanism.bundle
+d 755 /System/Library/CoreServices/SecurityAgentPlugins/HomeDirMechanism.bundle/Contents
+d 755 /System/Library/CoreServices/SecurityAgentPlugins/KerberosAgent.bundle
+d 755 /System/Library/CoreServices/SecurityAgentPlugins/KerberosAgent.bundle/Contents
+d 755 /System/Library/CoreServices/SecurityAgentPlugins/LocalAuthentication.bundle
+d 755 /System/Library/CoreServices/SecurityAgentPlugins/LocalAuthentication.bundle/Contents
+d 755 /System/Library/CoreServices/SecurityAgentPlugins/MCXMechanism.bundle
+d 755 /System/Library/CoreServices/SecurityAgentPlugins/MCXMechanism.bundle/Contents
+d 755 /System/Library/CoreServices/SecurityAgentPlugins/PKINITMechanism.bundle
+d 755 /System/Library/CoreServices/SecurityAgentPlugins/PKINITMechanism.bundle/Contents
+d 755 /System/Library/CoreServices/SecurityAgentPlugins/PSSOAuthPlugin.bundle
+d 755 /System/Library/CoreServices/SecurityAgentPlugins/PSSOAuthPlugin.bundle/Contents
+d 755 /System/Library/CoreServices/SecurityAgentPlugins/RestartAuthorization.bundle
+d 755 /System/Library/CoreServices/SecurityAgentPlugins/RestartAuthorization.bundle/Contents
+d 755 /System/Library/CoreServices/SecurityAgentPlugins/loginKC.bundle
+d 755 /System/Library/CoreServices/SecurityAgentPlugins/loginKC.bundle/Contents
+d 755 /System/Library/CoreServices/SecurityAgentPlugins/loginwindow.bundle
+d 755 /System/Library/CoreServices/SecurityAgentPlugins/loginwindow.bundle/Contents
+f 755 /System/Library/CoreServices/ServicesUIAgent
+d 755 /System/Library/CoreServices/SettingsPlaceholder.app
+d 755 /System/Library/CoreServices/SettingsPlaceholder.app/Contents
+f 644 /System/Library/CoreServices/SettingsPlaceholder.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/SettingsPlaceholder.app/Contents/MacOS
+f 644 /System/Library/CoreServices/SettingsPlaceholder.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/SettingsPlaceholder.app/Contents/Resources
+d 755 /System/Library/CoreServices/SettingsPlaceholder.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/SettingsPlaceholder.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Setup Assistant.app
+d 755 /System/Library/CoreServices/Setup Assistant.app/Contents
+f 644 /System/Library/CoreServices/Setup Assistant.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Setup Assistant.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Setup Assistant.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Setup Assistant.app/Contents/Resources
+d 755 /System/Library/CoreServices/Setup Assistant.app/Contents/SharedSupport
+d 755 /System/Library/CoreServices/Setup Assistant.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Setup Assistant.app/Contents/version.plist
+d 755 /System/Library/CoreServices/SetupAssistantPlugins
+d 755 /System/Library/CoreServices/SetupAssistantPlugins/CoreDuet.flplugin
+d 755 /System/Library/CoreServices/SetupAssistantPlugins/CoreDuet.flplugin/Contents
+d 755 /System/Library/CoreServices/SetupAssistantPlugins/Fonts.flplugin
+d 755 /System/Library/CoreServices/SetupAssistantPlugins/Fonts.flplugin/Contents
+d 755 /System/Library/CoreServices/SetupAssistantPlugins/GameCenter.icdplugin
+d 755 /System/Library/CoreServices/SetupAssistantPlugins/GameCenter.icdplugin/Contents
+d 755 /System/Library/CoreServices/SetupAssistantPlugins/IdentityServices.icdplugin
+d 755 /System/Library/CoreServices/SetupAssistantPlugins/IdentityServices.icdplugin/Contents
+d 755 /System/Library/CoreServices/SetupAssistantPlugins/LaunchServices.flplugin
+d 755 /System/Library/CoreServices/SetupAssistantPlugins/LaunchServices.flplugin/Contents
+d 755 /System/Library/CoreServices/SetupAssistantPlugins/Mail.flplugin
+d 755 /System/Library/CoreServices/SetupAssistantPlugins/Mail.flplugin/Contents
+d 755 /System/Library/CoreServices/SetupAssistantPlugins/QuickLook.flplugin
+d 755 /System/Library/CoreServices/SetupAssistantPlugins/QuickLook.flplugin/Contents
+d 755 /System/Library/CoreServices/SetupAssistantPlugins/Rosetta.flplugin
+d 755 /System/Library/CoreServices/SetupAssistantPlugins/Rosetta.flplugin/Contents
+d 755 /System/Library/CoreServices/SetupAssistantPlugins/ServicesMenu.flplugin
+d 755 /System/Library/CoreServices/SetupAssistantPlugins/ServicesMenu.flplugin/Contents
+d 755 /System/Library/CoreServices/SetupAssistantPlugins/Spotlight.flplugin
+d 755 /System/Library/CoreServices/SetupAssistantPlugins/Spotlight.flplugin/Contents
+d 755 /System/Library/CoreServices/SetupAssistantPlugins/iCloudDelegate.icdplugin
+d 755 /System/Library/CoreServices/SetupAssistantPlugins/iCloudDelegate.icdplugin/Contents
+d 755 /System/Library/CoreServices/ShortcutDroplet.app
+d 755 /System/Library/CoreServices/ShortcutDroplet.app/Contents
+f 644 /System/Library/CoreServices/ShortcutDroplet.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/ShortcutDroplet.app/Contents/MacOS
+f 644 /System/Library/CoreServices/ShortcutDroplet.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/ShortcutDroplet.app/Contents/Resources
+d 755 /System/Library/CoreServices/ShortcutDroplet.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/ShortcutDroplet.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Shortcuts Events.app
+d 755 /System/Library/CoreServices/Shortcuts Events.app/Contents
+f 644 /System/Library/CoreServices/Shortcuts Events.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Shortcuts Events.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Shortcuts Events.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Shortcuts Events.app/Contents/Resources
+d 755 /System/Library/CoreServices/Shortcuts Events.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Shortcuts Events.app/Contents/version.plist
+d 755 /System/Library/CoreServices/ShortcutsActions.app
+d 755 /System/Library/CoreServices/ShortcutsActions.app/Contents
+f 644 /System/Library/CoreServices/ShortcutsActions.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/ShortcutsActions.app/Contents/MacOS
+f 644 /System/Library/CoreServices/ShortcutsActions.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/ShortcutsActions.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/ShortcutsActions.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Siri.app
+d 755 /System/Library/CoreServices/Siri.app/Contents
+f 644 /System/Library/CoreServices/Siri.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Siri.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Siri.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Siri.app/Contents/Resources
+d 755 /System/Library/CoreServices/Siri.app/Contents/XPCServices
+d 755 /System/Library/CoreServices/Siri.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Siri.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Siri.bundle
+d 755 /System/Library/CoreServices/Siri.bundle/Contents
+f 644 /System/Library/CoreServices/Siri.bundle/Contents/Info.plist
+d 755 /System/Library/CoreServices/Siri.bundle/Contents/MacOS
+d 755 /System/Library/CoreServices/Siri.bundle/Contents/Resources
+d 755 /System/Library/CoreServices/Siri.bundle/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Siri.bundle/Contents/version.plist
+f 755 /System/Library/CoreServices/SiriAppAccessMigrator
+d 755 /System/Library/CoreServices/Software Update.app
+d 755 /System/Library/CoreServices/Software Update.app/Contents
+f 644 /System/Library/CoreServices/Software Update.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Software Update.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Software Update.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Software Update.app/Contents/Resources
+d 755 /System/Library/CoreServices/Software Update.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Software Update.app/Contents/version.plist
+d 755 /System/Library/CoreServices/SpacesTouchBarAgent.app
+d 755 /System/Library/CoreServices/SpacesTouchBarAgent.app/Contents
+f 644 /System/Library/CoreServices/SpacesTouchBarAgent.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/SpacesTouchBarAgent.app/Contents/MacOS
+f 644 /System/Library/CoreServices/SpacesTouchBarAgent.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/SpacesTouchBarAgent.app/Contents/Resources
+d 755 /System/Library/CoreServices/SpacesTouchBarAgent.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/SpacesTouchBarAgent.app/Contents/version.plist
+d 755 /System/Library/CoreServices/Spotlight.app
+d 755 /System/Library/CoreServices/Spotlight.app/Contents
+d 755 /System/Library/CoreServices/Spotlight.app/Contents/Extensions
+f 644 /System/Library/CoreServices/Spotlight.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/Spotlight.app/Contents/MacOS
+f 644 /System/Library/CoreServices/Spotlight.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/Spotlight.app/Contents/Resources
+d 755 /System/Library/CoreServices/Spotlight.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/Spotlight.app/Contents/version.plist
+d 755 /System/Library/CoreServices/StageManagerOnboarding.app
+d 755 /System/Library/CoreServices/StageManagerOnboarding.app/Contents
+f 644 /System/Library/CoreServices/StageManagerOnboarding.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/StageManagerOnboarding.app/Contents/MacOS
+f 644 /System/Library/CoreServices/StageManagerOnboarding.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/StageManagerOnboarding.app/Contents/Resources
+d 755 /System/Library/CoreServices/StageManagerOnboarding.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/StageManagerOnboarding.app/Contents/version.plist
+f 755 /System/Library/CoreServices/SubmitDiagInfo
+d 755 /System/Library/CoreServices/System Events.app
+d 755 /System/Library/CoreServices/System Events.app/Contents
+f 644 /System/Library/CoreServices/System Events.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/System Events.app/Contents/MacOS
+f 644 /System/Library/CoreServices/System Events.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/System Events.app/Contents/Resources
+d 755 /System/Library/CoreServices/System Events.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/System Events.app/Contents/version.plist
+d 755 /System/Library/CoreServices/SystemAppearance.bundle
+d 755 /System/Library/CoreServices/SystemAppearance.bundle/Contents
+f 644 /System/Library/CoreServices/SystemAppearance.bundle/Contents/Info.plist
+d 755 /System/Library/CoreServices/SystemAppearance.bundle/Contents/MacOS
+d 755 /System/Library/CoreServices/SystemAppearance.bundle/Contents/Resources
+d 755 /System/Library/CoreServices/SystemAppearance.bundle/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/SystemAppearance.bundle/Contents/version.plist
+d 755 /System/Library/CoreServices/SystemFolderLocalizations
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/ar.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/ar.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/ca.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/ca.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/cs.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/cs.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/da.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/da.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/de.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/de.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/el.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/el.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/en.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/en.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/en_AU.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/en_AU.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/en_CA.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/en_CA.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/en_GB.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/en_GB.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/en_IN.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/en_IN.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/es.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/es.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/es_419.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/es_419.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/fi.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/fi.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/fr.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/fr.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/fr_CA.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/fr_CA.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/he.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/he.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/hi.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/hi.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/hr.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/hr.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/hu.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/hu.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/id.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/id.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/it.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/it.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/ja.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/ja.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/ko.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/ko.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/ms.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/ms.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/nl.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/nl.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/no.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/no.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/pl.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/pl.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/pt.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/pt.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/pt_PT.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/pt_PT.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/ro.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/ro.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/ru.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/ru.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/sk.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/sk.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/sl.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/sl.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/sv.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/sv.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/th.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/th.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/tr.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/tr.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/uk.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/uk.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/vi.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/vi.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/zh_CN.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/zh_CN.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/zh_HK.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/zh_HK.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemFolderLocalizations/zh_TW.lproj
+f 644 /System/Library/CoreServices/SystemFolderLocalizations/zh_TW.lproj/SystemFolderLocalizations.strings
+d 755 /System/Library/CoreServices/SystemIntents.app
+d 755 /System/Library/CoreServices/SystemIntents.app/Contents
+f 644 /System/Library/CoreServices/SystemIntents.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/SystemIntents.app/Contents/MacOS
+f 644 /System/Library/CoreServices/SystemIntents.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/SystemIntents.app/Contents/Resources
+d 755 /System/Library/CoreServices/SystemIntents.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/SystemIntents.app/Contents/version.plist
+d 755 /System/Library/CoreServices/SystemUIServer.app
+d 755 /System/Library/CoreServices/SystemUIServer.app/Contents
+f 644 /System/Library/CoreServices/SystemUIServer.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/SystemUIServer.app/Contents/MacOS
+f 644 /System/Library/CoreServices/SystemUIServer.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/SystemUIServer.app/Contents/Resources
+d 755 /System/Library/CoreServices/SystemUIServer.app/Contents/XPCServices
+d 755 /System/Library/CoreServices/SystemUIServer.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/SystemUIServer.app/Contents/version.plist
+d 755 /System/Library/CoreServices/SystemVersion.bundle
+d 755 /System/Library/CoreServices/SystemVersion.bundle/Dutch.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/Dutch.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/English.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/English.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/French.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/French.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/German.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/German.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/Italian.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/Italian.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/Japanese.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/Japanese.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/Spanish.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/Spanish.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/ar.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/ar.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/ca.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/ca.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/cs.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/cs.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/da.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/da.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/el.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/el.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/en_AU.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/en_AU.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/en_GB.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/en_GB.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/es_419.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/es_419.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/fi.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/fi.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/fr_CA.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/fr_CA.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/he.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/he.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/hi.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/hi.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/hr.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/hr.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/hu.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/hu.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/id.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/id.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/ko.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/ko.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/ms.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/ms.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/no.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/no.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/pl.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/pl.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/pt.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/pt.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/pt_PT.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/pt_PT.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/ro.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/ro.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/ru.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/ru.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/sk.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/sk.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/sl.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/sl.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/sv.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/sv.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/th.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/th.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/tr.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/tr.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/uk.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/uk.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/vi.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/vi.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/zh_CN.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/zh_CN.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/zh_HK.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/zh_HK.lproj/SystemVersion.strings
+d 755 /System/Library/CoreServices/SystemVersion.bundle/zh_TW.lproj
+f 644 /System/Library/CoreServices/SystemVersion.bundle/zh_TW.lproj/SystemVersion.strings
+f 444 /System/Library/CoreServices/SystemVersion.plist
+d 755 /System/Library/CoreServices/TextInputMenuAgent.app
+d 755 /System/Library/CoreServices/TextInputMenuAgent.app/Contents
+f 644 /System/Library/CoreServices/TextInputMenuAgent.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/TextInputMenuAgent.app/Contents/MacOS
+f 644 /System/Library/CoreServices/TextInputMenuAgent.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/TextInputMenuAgent.app/Contents/Resources
+d 755 /System/Library/CoreServices/TextInputMenuAgent.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/TextInputMenuAgent.app/Contents/version.plist
+d 755 /System/Library/CoreServices/TextInputMenuCore.bundle
+d 755 /System/Library/CoreServices/TextInputMenuCore.bundle/Contents
+f 644 /System/Library/CoreServices/TextInputMenuCore.bundle/Contents/Info.plist
+d 755 /System/Library/CoreServices/TextInputMenuCore.bundle/Contents/MacOS
+d 755 /System/Library/CoreServices/TextInputMenuCore.bundle/Contents/Resources
+d 755 /System/Library/CoreServices/TextInputMenuCore.bundle/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/TextInputMenuCore.bundle/Contents/version.plist
+d 755 /System/Library/CoreServices/TextInputSwitcher.app
+d 755 /System/Library/CoreServices/TextInputSwitcher.app/Contents
+f 644 /System/Library/CoreServices/TextInputSwitcher.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/TextInputSwitcher.app/Contents/MacOS
+f 644 /System/Library/CoreServices/TextInputSwitcher.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/TextInputSwitcher.app/Contents/Resources
+d 755 /System/Library/CoreServices/TextInputSwitcher.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/TextInputSwitcher.app/Contents/version.plist
+d 755 /System/Library/CoreServices/ThermalTrap.app
+d 755 /System/Library/CoreServices/ThermalTrap.app/Contents
+f 644 /System/Library/CoreServices/ThermalTrap.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/ThermalTrap.app/Contents/MacOS
+f 644 /System/Library/CoreServices/ThermalTrap.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/ThermalTrap.app/Contents/Resources
+d 755 /System/Library/CoreServices/ThermalTrap.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/ThermalTrap.app/Contents/version.plist
+d 755 /System/Library/CoreServices/TimeMachine
+d 755 /System/Library/CoreServices/TimeMachine/TMHelperAgent.app
+d 755 /System/Library/CoreServices/TimeMachine/TMHelperAgent.app/Contents
+f 755 /System/Library/CoreServices/TimeMachine/backupd
+f 755 /System/Library/CoreServices/TimeMachine/backupd-helper
+f 755 /System/Library/CoreServices/TimeMachine/brtool
+d 755 /System/Library/CoreServices/TimeZoneUpdates.bundle
+d 755 /System/Library/CoreServices/TimeZoneUpdates.bundle/Contents
+f 644 /System/Library/CoreServices/TimeZoneUpdates.bundle/Contents/Info.plist
+d 755 /System/Library/CoreServices/TimeZoneUpdates.bundle/Contents/Resources
+d 755 /System/Library/CoreServices/TimeZoneUpdates.bundle/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/TimeZoneUpdates.bundle/Contents/version.plist
+d 755 /System/Library/CoreServices/TipsSpotlightHandler.app
+d 755 /System/Library/CoreServices/TipsSpotlightHandler.app/Contents
+f 644 /System/Library/CoreServices/TipsSpotlightHandler.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/TipsSpotlightHandler.app/Contents/MacOS
+f 644 /System/Library/CoreServices/TipsSpotlightHandler.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/TipsSpotlightHandler.app/Contents/PlugIns
+d 755 /System/Library/CoreServices/TipsSpotlightHandler.app/Contents/Resources
+d 755 /System/Library/CoreServices/TipsSpotlightHandler.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/TipsSpotlightHandler.app/Contents/version.plist
+f 755 /System/Library/CoreServices/TouchBarEvent.bundle
+d 755 /System/Library/CoreServices/UAUPlugins
+d 755 /System/Library/CoreServices/UAUPlugins/ADIUserAccountUpdater.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/ADIUserAccountUpdater.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/AMSDataMigrator.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/AMSDataMigrator.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/AccessibilityAccountUpdater.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/AccessibilityAccountUpdater.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/AppearancePrefUAU.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/AppearancePrefUAU.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/AssistantUAUPlugin.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/AssistantUAUPlugin.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/CalendarMigrationUserAccountUpdaterPlugin.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/CalendarMigrationUserAccountUpdaterPlugin.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/ClassroomStudentMigrator.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/ClassroomStudentMigrator.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/CommerceAccountUpdater.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/CommerceAccountUpdater.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/ControlCenterUpdater.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/ControlCenterUpdater.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/DockUpdater.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/DockUpdater.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/FileStatsUAUPlugin.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/FileStatsUAUPlugin.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/FolderActionsAccountUpdater.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/FolderActionsAccountUpdater.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/FontBookUAU.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/FontBookUAU.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/HomeFolderUpdater.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/HomeFolderUpdater.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/HomeKitUAUPlugin.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/HomeKitUAUPlugin.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/InternationalAccountUpdater.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/InternationalAccountUpdater.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/InternetAccountsUAUPlugin.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/InternetAccountsUAUPlugin.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/KeychainSyncAccountUpdater.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/KeychainSyncAccountUpdater.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/MessagesAccountUpdater.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/MessagesAccountUpdater.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/MiniLauncherPlugin.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/MiniLauncherPlugin.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/MouseUAUPlugin.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/MouseUAUPlugin.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/NetAuthAccountUpdater.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/NetAuthAccountUpdater.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/PCSAccountUpdater.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/PCSAccountUpdater.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/PhotosUserAccountUpdaterPlugin.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/PhotosUserAccountUpdaterPlugin.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/PrintingAccountUpdater.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/PrintingAccountUpdater.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/QLCacheCleanupUAU.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/QLCacheCleanupUAU.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/SafariUserAccountUpdater.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/SafariUserAccountUpdater.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/ScreenTimeUAU.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/ScreenTimeUAU.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/SeedingUAUPlugin.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/SeedingUAUPlugin.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/SpacesUpdater.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/SpacesUpdater.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/SystemMigrationPlugin.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/SystemMigrationPlugin.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/SystemSettingsUserAccountUpdater.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/SystemSettingsUserAccountUpdater.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/Terminal User Account Updater.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/Terminal User Account Updater.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/TextInputSourceUAU.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/TextInputSourceUAU.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/UAULoginItemsAndTALUpdater.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/UAULoginItemsAndTALUpdater.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/UserAccountUpdater8021XPlugin.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/UserAccountUpdater8021XPlugin.bundle/Contents
+d 755 /System/Library/CoreServices/UAUPlugins/iCloudAccountsMigratorPlugin.bundle
+d 755 /System/Library/CoreServices/UAUPlugins/iCloudAccountsMigratorPlugin.bundle/Contents
+d 755 /System/Library/CoreServices/UIKitSystem.app
+d 755 /System/Library/CoreServices/UIKitSystem.app/Contents
+f 644 /System/Library/CoreServices/UIKitSystem.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/UIKitSystem.app/Contents/MacOS
+f 644 /System/Library/CoreServices/UIKitSystem.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/UIKitSystem.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/UIKitSystem.app/Contents/version.plist
+d 755 /System/Library/CoreServices/UniversalAccessControl.app
+d 755 /System/Library/CoreServices/UniversalAccessControl.app/Contents
+f 644 /System/Library/CoreServices/UniversalAccessControl.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/UniversalAccessControl.app/Contents/MacOS
+f 644 /System/Library/CoreServices/UniversalAccessControl.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/UniversalAccessControl.app/Contents/Resources
+d 755 /System/Library/CoreServices/UniversalAccessControl.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/UniversalAccessControl.app/Contents/version.plist
+d 755 /System/Library/CoreServices/UniversalControl.app
+d 755 /System/Library/CoreServices/UniversalControl.app/Contents
+f 644 /System/Library/CoreServices/UniversalControl.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/UniversalControl.app/Contents/MacOS
+f 644 /System/Library/CoreServices/UniversalControl.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/UniversalControl.app/Contents/Resources
+d 755 /System/Library/CoreServices/UniversalControl.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/UniversalControl.app/Contents/version.plist
+d 755 /System/Library/CoreServices/UnmountAssistantAgent.app
+d 755 /System/Library/CoreServices/UnmountAssistantAgent.app/Contents
+f 644 /System/Library/CoreServices/UnmountAssistantAgent.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/UnmountAssistantAgent.app/Contents/MacOS
+f 644 /System/Library/CoreServices/UnmountAssistantAgent.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/UnmountAssistantAgent.app/Contents/Resources
+d 755 /System/Library/CoreServices/UnmountAssistantAgent.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/UnmountAssistantAgent.app/Contents/version.plist
+f 755 /System/Library/CoreServices/UserAccountUpdater
+d 755 /System/Library/CoreServices/UserNotificationCenter.app
+d 755 /System/Library/CoreServices/UserNotificationCenter.app/Contents
+f 644 /System/Library/CoreServices/UserNotificationCenter.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/UserNotificationCenter.app/Contents/MacOS
+f 644 /System/Library/CoreServices/UserNotificationCenter.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/UserNotificationCenter.app/Contents/Resources
+d 755 /System/Library/CoreServices/UserNotificationCenter.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/UserNotificationCenter.app/Contents/version.plist
+f 755 /System/Library/CoreServices/UserPictureSyncAgent
+d 755 /System/Library/CoreServices/VoiceOver.app
+d 755 /System/Library/CoreServices/VoiceOver.app/Contents
+f 644 /System/Library/CoreServices/VoiceOver.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/VoiceOver.app/Contents/MacOS
+f 644 /System/Library/CoreServices/VoiceOver.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/VoiceOver.app/Contents/Resources
+d 755 /System/Library/CoreServices/VoiceOver.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/VoiceOver.app/Contents/version.plist
+d 755 /System/Library/CoreServices/WallpaperAgent.app
+d 755 /System/Library/CoreServices/WallpaperAgent.app/Contents
+f 644 /System/Library/CoreServices/WallpaperAgent.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/WallpaperAgent.app/Contents/MacOS
+f 644 /System/Library/CoreServices/WallpaperAgent.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/WallpaperAgent.app/Contents/PlugIns
+d 755 /System/Library/CoreServices/WallpaperAgent.app/Contents/Resources
+d 755 /System/Library/CoreServices/WallpaperAgent.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/WallpaperAgent.app/Contents/version.plist
+d 755 /System/Library/CoreServices/WatchFaceAlert.app
+d 755 /System/Library/CoreServices/WatchFaceAlert.app/Contents
+f 644 /System/Library/CoreServices/WatchFaceAlert.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/WatchFaceAlert.app/Contents/MacOS
+f 644 /System/Library/CoreServices/WatchFaceAlert.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/WatchFaceAlert.app/Contents/PlugIns
+d 755 /System/Library/CoreServices/WatchFaceAlert.app/Contents/Resources
+d 755 /System/Library/CoreServices/WatchFaceAlert.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/WatchFaceAlert.app/Contents/version.plist
+d 755 /System/Library/CoreServices/WiFiAgent.app
+d 755 /System/Library/CoreServices/WiFiAgent.app/Contents
+f 644 /System/Library/CoreServices/WiFiAgent.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/WiFiAgent.app/Contents/MacOS
+f 644 /System/Library/CoreServices/WiFiAgent.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/WiFiAgent.app/Contents/Resources
+d 755 /System/Library/CoreServices/WiFiAgent.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/WiFiAgent.app/Contents/version.plist
+d 755 /System/Library/CoreServices/WiFiMigratorPlugin.bundle
+d 755 /System/Library/CoreServices/WiFiMigratorPlugin.bundle/Contents
+f 644 /System/Library/CoreServices/WiFiMigratorPlugin.bundle/Contents/Info.plist
+d 755 /System/Library/CoreServices/WiFiMigratorPlugin.bundle/Contents/MacOS
+d 755 /System/Library/CoreServices/WiFiMigratorPlugin.bundle/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/WiFiMigratorPlugin.bundle/Contents/version.plist
+d 755 /System/Library/CoreServices/WidgetKit Simulator.app
+d 755 /System/Library/CoreServices/WidgetKit Simulator.app/Contents
+f 644 /System/Library/CoreServices/WidgetKit Simulator.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/WidgetKit Simulator.app/Contents/MacOS
+f 644 /System/Library/CoreServices/WidgetKit Simulator.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/WidgetKit Simulator.app/Contents/Resources
+d 755 /System/Library/CoreServices/WidgetKit Simulator.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/WidgetKit Simulator.app/Contents/version.plist
+d 755 /System/Library/CoreServices/WidgetRenderer_Activities.app
+d 755 /System/Library/CoreServices/WidgetRenderer_Activities.app/Contents
+f 644 /System/Library/CoreServices/WidgetRenderer_Activities.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/WidgetRenderer_Activities.app/Contents/MacOS
+f 644 /System/Library/CoreServices/WidgetRenderer_Activities.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/WidgetRenderer_Activities.app/Contents/Resources
+d 755 /System/Library/CoreServices/WidgetRenderer_Activities.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/WidgetRenderer_Activities.app/Contents/version.plist
+d 755 /System/Library/CoreServices/WindowManager.app
+d 755 /System/Library/CoreServices/WindowManager.app/Contents
+f 644 /System/Library/CoreServices/WindowManager.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/WindowManager.app/Contents/MacOS
+f 644 /System/Library/CoreServices/WindowManager.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/WindowManager.app/Contents/PlugIns
+d 755 /System/Library/CoreServices/WindowManager.app/Contents/Resources
+d 755 /System/Library/CoreServices/WindowManager.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/WindowManager.app/Contents/version.plist
+d 755 /System/Library/CoreServices/WorkoutAlert-Mac.app
+d 755 /System/Library/CoreServices/WorkoutAlert-Mac.app/Contents
+f 644 /System/Library/CoreServices/WorkoutAlert-Mac.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/WorkoutAlert-Mac.app/Contents/MacOS
+f 644 /System/Library/CoreServices/WorkoutAlert-Mac.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/WorkoutAlert-Mac.app/Contents/Resources
+d 755 /System/Library/CoreServices/WorkoutAlert-Mac.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/WorkoutAlert-Mac.app/Contents/version.plist
+d 755 /System/Library/CoreServices/XPCServices
+d 755 /System/Library/CoreServices/XPCServices/ReportCrashService.xpc
+d 755 /System/Library/CoreServices/XPCServices/ReportCrashService.xpc/Contents
+f 755 /System/Library/CoreServices/accessorysensormgrd
+f 755 /System/Library/CoreServices/appleeventsd
+f 755 /System/Library/CoreServices/appplaceholdersyncd
+f 755 /System/Library/CoreServices/audioaccessoryd
+f 755 /System/Library/CoreServices/cacheTimeZones
+f 644 /System/Library/CoreServices/com.apple.NSServicesRestrictions.plist
+f 644 /System/Library/CoreServices/com.apple.launchservices.lsd.csdb
+l 755 /System/Library/CoreServices/coreservicesd -> ../Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Support/coreservicesd
+f 644 /System/Library/CoreServices/default.metallib
+f 755 /System/Library/CoreServices/destinationd
+f 755 /System/Library/CoreServices/diagnostics_agent
+f 755 /System/Library/CoreServices/diagnosticservicesd
+d 755 /System/Library/CoreServices/iCloud+.app
+d 755 /System/Library/CoreServices/iCloud+.app/Contents
+f 644 /System/Library/CoreServices/iCloud+.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/iCloud+.app/Contents/Library
+d 755 /System/Library/CoreServices/iCloud+.app/Contents/MacOS
+f 644 /System/Library/CoreServices/iCloud+.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/iCloud+.app/Contents/Resources
+d 755 /System/Library/CoreServices/iCloud+.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/iCloud+.app/Contents/version.plist
+d 755 /System/Library/CoreServices/iCloud.app
+d 755 /System/Library/CoreServices/iCloud.app/Contents
+f 644 /System/Library/CoreServices/iCloud.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/iCloud.app/Contents/Library
+d 755 /System/Library/CoreServices/iCloud.app/Contents/MacOS
+f 644 /System/Library/CoreServices/iCloud.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/iCloud.app/Contents/Resources
+d 755 /System/Library/CoreServices/iCloud.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/iCloud.app/Contents/version.plist
+f 444 /System/Library/CoreServices/iOSSystemVersion.plist
+f 644 /System/Library/CoreServices/iTunesStoreURLPatterns.plist
+f 755 /System/Library/CoreServices/iconservicesagent
+f 755 /System/Library/CoreServices/iconservicesd
+f 755 /System/Library/CoreServices/ionodecache
+f 755 /System/Library/CoreServices/launchservicesd
+d 755 /System/Library/CoreServices/liquiddetectiond.app
+f 755 /System/Library/CoreServices/liquiddetectiond.app/liquiddetectiond
+f 644 /System/Library/CoreServices/liquiddetectiond.app/lockScreenLiquidDetection.pdf
+f 755 /System/Library/CoreServices/lockoutagent
+f 755 /System/Library/CoreServices/logind
+d 755 /System/Library/CoreServices/loginwindow.app
+d 755 /System/Library/CoreServices/loginwindow.app/Contents
+f 644 /System/Library/CoreServices/loginwindow.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/loginwindow.app/Contents/MacOS
+f 644 /System/Library/CoreServices/loginwindow.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/loginwindow.app/Contents/Resources
+d 755 /System/Library/CoreServices/loginwindow.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/loginwindow.app/Contents/version.plist
+d 755 /System/Library/CoreServices/mDNSResponder.bundle
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/Dutch.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/English.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/French.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/German.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/Italian.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/Japanese.lproj
+f 644 /System/Library/CoreServices/mDNSResponder.bundle/Resources/Localizable.loctable
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/Spanish.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/ar.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/ca.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/cs.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/da.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/el.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/en_AU.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/en_GB.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/es_419.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/fi.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/fr_CA.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/he.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/hi.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/hr.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/hu.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/id.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/ko.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/ms.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/no.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/pl.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/pt.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/pt_PT.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/ro.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/ru.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/sk.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/sl.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/sv.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/th.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/tr.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/uk.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/vi.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/zh_CN.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/zh_HK.lproj
+d 755 /System/Library/CoreServices/mDNSResponder.bundle/Resources/zh_TW.lproj
+f 755 /System/Library/CoreServices/mapspushd
+f 755 /System/Library/CoreServices/navd
+f 755 /System/Library/CoreServices/osanalyticshelper
+f 755 /System/Library/CoreServices/pbs
+d 755 /System/Library/CoreServices/powerd.bundle
+f 644 /System/Library/CoreServices/powerd.bundle/AppWorkaround.plist
+f 644 /System/Library/CoreServices/powerd.bundle/Info.plist
+f 644 /System/Library/CoreServices/powerd.bundle/Localizable.loctable
+d 755 /System/Library/CoreServices/powerd.bundle/_CodeSignature
+f 644 /System/Library/CoreServices/powerd.bundle/_CodeSignature/CodeDirectory
+f 644 /System/Library/CoreServices/powerd.bundle/_CodeSignature/CodeRequirements
+f 644 /System/Library/CoreServices/powerd.bundle/_CodeSignature/CodeResources
+f 644 /System/Library/CoreServices/powerd.bundle/_CodeSignature/CodeSignature
+d 755 /System/Library/CoreServices/powerd.bundle/ar.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/ca.lproj
+f 644 /System/Library/CoreServices/powerd.bundle/com.apple.iokit.power
+f 644 /System/Library/CoreServices/powerd.bundle/com.apple.powerd.plist
+d 755 /System/Library/CoreServices/powerd.bundle/cs.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/da.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/de.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/el.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/en.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/en_AU.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/en_GB.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/es.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/es_419.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/fi.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/fr.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/fr_CA.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/he.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/hi.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/hr.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/hu.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/id.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/it.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/ja.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/ko.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/migrateenergyprefs.bundle
+d 755 /System/Library/CoreServices/powerd.bundle/migrateenergyprefs.bundle/Contents
+d 755 /System/Library/CoreServices/powerd.bundle/ms.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/nl.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/no.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/pl.lproj
+f 755 /System/Library/CoreServices/powerd.bundle/powerd
+f 644 /System/Library/CoreServices/powerd.bundle/powerd.codes
+d 755 /System/Library/CoreServices/powerd.bundle/pt_BR.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/pt_PT.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/ro.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/ru.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/sk.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/sl.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/sv.lproj
+f 755 /System/Library/CoreServices/powerd.bundle/swd
+d 755 /System/Library/CoreServices/powerd.bundle/th.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/tr.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/uk.lproj
+f 644 /System/Library/CoreServices/powerd.bundle/version.plist
+d 755 /System/Library/CoreServices/powerd.bundle/vi.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/zh_CN.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/zh_HK.lproj
+d 755 /System/Library/CoreServices/powerd.bundle/zh_TW.lproj
+f 755 /System/Library/CoreServices/rc.trampoline
+d 755 /System/Library/CoreServices/rcd.app
+d 755 /System/Library/CoreServices/rcd.app/Contents
+f 644 /System/Library/CoreServices/rcd.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/rcd.app/Contents/MacOS
+f 644 /System/Library/CoreServices/rcd.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/rcd.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/rcd.app/Contents/version.plist
+d 755 /System/Library/CoreServices/screencaptureui.app
+d 755 /System/Library/CoreServices/screencaptureui.app/Contents
+f 644 /System/Library/CoreServices/screencaptureui.app/Contents/Info.plist
+d 755 /System/Library/CoreServices/screencaptureui.app/Contents/MacOS
+f 644 /System/Library/CoreServices/screencaptureui.app/Contents/PkgInfo
+d 755 /System/Library/CoreServices/screencaptureui.app/Contents/Resources
+d 755 /System/Library/CoreServices/screencaptureui.app/Contents/_CodeSignature
+f 644 /System/Library/CoreServices/screencaptureui.app/Contents/version.plist
+f 755 /System/Library/CoreServices/sessionlogoutd
+f 755 /System/Library/CoreServices/sharedfilelistd
+f 755 /System/Library/CoreServices/talagent
+f 755 /System/Library/CoreServices/talagentd
+f 755 /System/Library/CoreServices/uncd

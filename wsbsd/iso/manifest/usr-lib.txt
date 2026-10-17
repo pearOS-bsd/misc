@@ -1,0 +1,127 @@
+d 755 /usr/lib
+l 755 /usr/lib/cron -> ../../var/at
+f 755 /usr/lib/dsc_extractor.bundle
+d 755 /usr/lib/dtrace
+d 755 /usr/lib/dtrace/arm
+d 755 /usr/lib/dtrace/arm64
+f 644 /usr/lib/dtrace/darwin.d
+f 644 /usr/lib/dtrace/dt_cpp.h
+f 644 /usr/lib/dtrace/errno.d
+f 644 /usr/lib/dtrace/io.d
+f 644 /usr/lib/dtrace/ip.d
+f 644 /usr/lib/dtrace/sched.d
+f 644 /usr/lib/dtrace/signal.d
+f 644 /usr/lib/dtrace/socket.d
+f 644 /usr/lib/dtrace/tcp.d
+f 644 /usr/lib/dtrace/unistd.d
+d 755 /usr/lib/dtrace/x86_64
+f 755 /usr/lib/dyld
+d 755 /usr/lib/i18n
+f 755 /usr/lib/ignition
+f 755 /usr/lib/libLeaksAtExit.dylib
+f 755 /usr/lib/libRPAC.dylib
+f 644 /usr/lib/libc++.modules.json
+f 755 /usr/lib/libffi-trampolines.dylib
+f 755 /usr/lib/libgmalloc.dylib
+l 755 /usr/lib/libipconfig.dylib -> ../../System/Library/PrivateFrameworks/IPConfiguration.framework/IPConfiguration
+l 755 /usr/lib/libnetquality.dylib -> ../../System/Library/PrivateFrameworks/NetworkQuality.framework/NetworkQuality
+l 755 /usr/lib/libnetwork.dylib -> ../../System/Library/Frameworks/Network.framework/Network
+f 755 /usr/lib/libobjc-trampolines.dylib
+l 755 /usr/lib/libpcre2-8.dylib -> libpcre2-8.0.dylib
+l 755 /usr/lib/libpcre2-posix.dylib -> libpcre2-posix.3.dylib
+f 755 /usr/lib/libruby.2.6.dylib
+l 755 /usr/lib/libz.1.2.12.dylib -> libz.1.dylib
+d 755 /usr/lib/log
+d 755 /usr/lib/objc
+d 755 /usr/lib/pam
+f 444 /usr/lib/pam/pam_aks.so.2
+f 444 /usr/lib/pam/pam_basesystem.so.2
+f 755 /usr/lib/pam/pam_deny.so.2
+f 444 /usr/lib/pam/pam_env.so.2
+f 444 /usr/lib/pam/pam_group.so.2
+f 444 /usr/lib/pam/pam_krb5.so.2
+f 444 /usr/lib/pam/pam_launchd.so.2
+f 444 /usr/lib/pam/pam_localauthentication.so.2
+f 444 /usr/lib/pam/pam_mount.so.2
+f 444 /usr/lib/pam/pam_nologin.so.2
+f 444 /usr/lib/pam/pam_ntlm.so.2
+f 444 /usr/lib/pam/pam_opendirectory.so.2
+f 755 /usr/lib/pam/pam_permit.so.2
+f 444 /usr/lib/pam/pam_rootok.so.2
+f 444 /usr/lib/pam/pam_sacl.so.2
+f 444 /usr/lib/pam/pam_self.so.2
+f 444 /usr/lib/pam/pam_smartcard.so.2
+f 444 /usr/lib/pam/pam_tid.so.2
+f 444 /usr/lib/pam/pam_uwtmp.so.2
+d 755 /usr/lib/pkgconfig
+f 644 /usr/lib/pkgconfig/apr-1.pc
+f 644 /usr/lib/pkgconfig/apr-util-1.pc
+f 644 /usr/lib/pkgconfig/libpcre.pc
+f 644 /usr/lib/pkgconfig/libpcre2-8.pc
+f 644 /usr/lib/pkgconfig/libpcre2-posix.pc
+f 644 /usr/lib/pkgconfig/libpcreposix.pc
+d 755 /usr/lib/rdma
+d 755 /usr/lib/rpcsvc
+f 755 /usr/lib/rpcsvc/dssetup.bundle
+f 755 /usr/lib/rpcsvc/echosvc.bundle
+f 755 /usr/lib/rpcsvc/lsarpc.bundle
+f 755 /usr/lib/rpcsvc/mdssvc.bundle
+f 755 /usr/lib/rpcsvc/netlogon.bundle
+f 755 /usr/lib/rpcsvc/srvsvc.bundle
+f 755 /usr/lib/rpcsvc/wkssvc.bundle
+l 755 /usr/lib/ruby -> ../../System/Library/Frameworks/Ruby.framework/Versions/Current/usr/lib/ruby
+d 755 /usr/lib/sasl2
+f 755 /usr/lib/sasl2/apop.so
+f 755 /usr/lib/sasl2/atoken.so
+f 755 /usr/lib/sasl2/dhx.so
+f 755 /usr/lib/sasl2/digestmd5WebDAV.so
+f 755 /usr/lib/sasl2/libanonymous.2.so
+f 755 /usr/lib/sasl2/libcrammd5.2.so
+f 755 /usr/lib/sasl2/libdigestmd5.2.so
+f 755 /usr/lib/sasl2/libgssapiv2.2.0.18.so
+l 755 /usr/lib/sasl2/libgssapiv2.2.so -> libgssapiv2.2.0.18.so
+f 755 /usr/lib/sasl2/libntlm.so
+f 755 /usr/lib/sasl2/libplain.2.so
+f 755 /usr/lib/sasl2/login.so
+f 755 /usr/lib/sasl2/mschapv2.so
+f 755 /usr/lib/sasl2/oauthbearer.so
+d 755 /usr/lib/sasl2/openldap
+f 755 /usr/lib/sasl2/plain-clienttoken.so
+f 755 /usr/lib/sasl2/pwauxprop.so
+f 755 /usr/lib/sasl2/shadow_auxprop.so
+f 755 /usr/lib/sasl2/smb_ntlmv2.so
+f 755 /usr/lib/sasl2/srp.so
+l 755 /usr/lib/sqlite3 -> /System/Library/Tcl/sqlite3
+f 755 /usr/lib/ssh-keychain.dylib
+d 755 /usr/lib/swift
+l 755 /usr/lib/swift/libswiftCompatibilitySpan.dylib -> libswiftCore.dylib
+l 755 /usr/lib/swift/libswiftCreateML.dylib -> /System/Library/Frameworks/CreateML.framework/Versions/Current/CreateML
+l 755 /usr/lib/swift/libswiftIdentityLookup.dylib -> /System/Library/Frameworks/IdentityLookup.framework/IdentityLookup
+l 755 /usr/lib/swift/libswiftMetricKit.dylib -> ../../../System/Library/Frameworks/MetricKit.framework/Versions/A/MetricKit
+l 755 /usr/lib/swift/libswiftNetwork.dylib -> ../../../System/Library/Frameworks/Network.framework/Network
+l 755 /usr/lib/swift/libswiftPhotos.dylib -> ../../../System/Library/Frameworks/Photos.framework/Versions/A/Photos
+l 755 /usr/lib/swift/libswiftPhotosUI.dylib -> ../../../System/Library/Frameworks/PhotosUI.framework/Versions/A/PhotosUI
+f 755 /usr/lib/swift/libswiftRemoteMirror.dylib
+l 755 /usr/lib/swift/libswiftShazamKit.dylib -> ../../../System/Library/Frameworks/ShazamKit.framework/Versions/A/ShazamKit
+l 755 /usr/lib/swift/libswiftSoundAnalysis.dylib -> ../../../System/Library/Frameworks/SoundAnalysis.framework/Versions/A/SoundAnalysis
+l 755 /usr/lib/swift/libswiftSoundAnalysis_Private.dylib -> ../../../System/Library/Frameworks/SoundAnalysis.framework/Versions/A/SoundAnalysis
+l 755 /usr/lib/swift/libswiftVirtualization.dylib -> ../../../System/Library/Frameworks/Virtualization.framework/Versions/Current/Virtualization
+d 755 /usr/lib/swift/playgrounds
+d 755 /usr/lib/system
+d 755 /usr/lib/system/introspection
+f 755 /usr/lib/system/libsystem_kernel.dylib
+f 755 /usr/lib/system/libsystem_platform.dylib
+f 755 /usr/lib/system/libsystem_pthread.dylib
+f 755 /usr/lib/system/wordexp-helper
+d 755 /usr/lib/updaters
+d 755 /usr/lib/usd
+l 755 /usr/lib/usd/libAlembic.dylib -> ./libusd_ms.dylib
+l 755 /usr/lib/usd/libHalf.dylib -> ./libusd_ms.dylib
+l 755 /usr/lib/usd/libIex.dylib -> ./libusd_ms.dylib
+l 755 /usr/lib/usd/libImath.dylib -> ./libusd_ms.dylib
+l 755 /usr/lib/usd/libOSD.dylib -> ./libusd_ms.dylib
+d 755 /usr/lib/usd/libraries
+l 755 /usr/lib/usd/libtbb.dylib -> ./libusd_ms.dylib
+d 755 /usr/lib/usd/usd
+d 755 /usr/lib/zsh
+d 755 /usr/lib/zsh/5.9
