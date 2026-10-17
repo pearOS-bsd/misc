@@ -251,6 +251,17 @@ int main(void)
 	CHECK(p[1] > 100 && p[1] < 160);               /* green channel is about half */
 	CHECK(p[3] == 255);                            /* destination stays opaque */
 	CHECK(at(scr, 2, 2)[0] == 37 && at(scr, 2, 2)[1] == 37 && at(scr, 2, 2)[2] == 37);   /* desktop #252525 */
+	{ /* system-wide frame counter and its overlay */
+		unsigned long before = ws_fps_total();
+		for (int i = 0; i < 5; i++) ws_fps_frame(2.0);
+		CHECK(ws_fps_total() == before + 5);
+		ws_surface *o = ws_surface_new(300, 80);
+		ws_fill(o, (ws_rect){ 0, 0, 300, 80 }, 0, 0, 0, 255);
+		ws_draw_fps(o);
+		int lit = 0; for (int y = 0; y < o->h; y++) for (int x = 0; x < o->w; x++) if (o->px[(size_t)y * o->stride + x * 4] > 200) lit++;
+		CHECK(lit > 0);                                          /* the overlay sits in the top right corner, below the menu bar */
+		ws_surface_free(o);
+	}
 	{ /* standard cursor shapes */
 		uint32_t ser = ws_cursor_serial(srv); int hx, hy;
 		ws_server_set_cursor_shape(srv, 1);

@@ -71,6 +71,7 @@ int ws_post_event_record(ws_conn *, const uint8_t *rec, size_t n);   /* PostEven
 /* SLEventPostToPid / SLEventPostToPSN (PostFilteredEventTapData, style 2): the event record as CGEventCreateData makes it goes to that process only */
 int ws_post_event_to_pid(ws_conn *, int pid, const uint8_t *rec, size_t n);
 int ws_post_event_to_psn(ws_conn *, uint32_t psn_lo, uint32_t psn_hi, const uint8_t *rec, size_t n);
+int ws_fps(ws_conn *, double *fps, double *compose_ms, unsigned long *frames);   /* system-wide frame rate of the compositor (private call) */
 int ws_cursor_set_shape(ws_conn *, int shape);                  /* a standard cursor shape (see ws_server_set_cursor_shape); private call */
 int ws_cursor_position(ws_conn *, int *x, int *y);            /* the pointer's position (private call) */
 /* notifications pushed on the event channel (PostNotificationToConnection / PostBroadcastNotification) */

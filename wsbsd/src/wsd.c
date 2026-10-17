@@ -42,6 +42,7 @@ int wsd_dirty;
 #define dirty wsd_dirty
 static void cursors_owner_cleanup(uint32_t owner);
 int wsd_vnc_read(ws_server *srv, ws_input *in, int sw, int sh, const char *name);
+static int fps_overlay;        /* -F: draw the system-wide frame rate on the screen */
 static int test_mode;          /* -t: enables the private test requests (screenshot to a file, input injection, quit) */
 static uint8_t rbuf[WS_IPC_RECV_CAP];        /* receive buffer: requests are parsed in place, nothing is allocated per message */
 
@@ -1089,6 +1090,7 @@ static int do_private(conn *c, const uint8_t *buf, size_t len)
 	case WSX_SCREENSHOT:
 		q.s[sizeof q.s - 1] = 0;
 		render_frame(screen, !(a[0] & 1));                       /* a[0] bit 0: leave the cursor out */
+		if (fps_overlay) ws_draw_fps(screen);
 		r.retcode = ws_write_ppm(screen, q.s) ? CGS_ERROR_FAILURE : 0;
 		break;
 	case WSX_INJECT_MOUSE: ws_server_mouse(srv, a[0], a[1], a[2]); break;
@@ -1118,6 +1120,7 @@ static int do_private(conn *c, const uint8_t *buf, size_t len)
 		ws_surface_free(out); close(fd);
 		return rc;
 	}
+	case WSX_GET_FPS: r.a[0] = (int32_t)(ws_fps_rate() * 100 + 0.5); r.a[1] = (int32_t)(ws_fps_compose_ms() * 100 + 0.5); r.a[2] = (int32_t)(ws_fps_total() & 0x7fffffff); break;
 	case WSX_SET_CURSOR: ws_server_set_cursor_shape(srv, a[0]); break;
 	case WSX_QUIT: running = 0; break;
 	case WSX_GET_CONNECTION_ID: r.a[0] = (int32_t)c->id; break;
@@ -1136,7 +1139,7 @@ static int dispatch(conn *c, uint8_t *buf, size_t len, int *fds, int nfds)
 	for (int i = 0; i < nfds; i++) close(fds[i]);                       /* every other request takes no descriptors */
 	if (h->msgh_size < sizeof *h || h->msgh_size > len) return reply_mig_error(c->fd, h, MIG_BAD_ARGUMENTS);
 	h->msgh_local_port = c->id;                                         /* the connection the request arrived on */
-	if (h->msgh_id >= WSX_FLUSH && h->msgh_id <= WSX_SET_CURSOR) { dirty = 1; return do_private(c, buf, len); }
+	if (h->msgh_id >= WSX_FLUSH && h->msgh_id <= WSX_GET_FPS) { dirty = 1; return do_private(c, buf, len); }
 	if (h->msgh_id == SLS_MSG_CreateWindow) { dirty = 1; return do_create_window(c, buf, len); }
 	if (h->msgh_id == SLS_MSG_NewConnectionPort) return do_new_connection(c, buf, len);
 	if (h->msgh_id == SLS_MSG_FlushSurface) { dirty = 1; return do_flush_surface(c, buf, len); }
@@ -1165,6 +1168,7 @@ int main(int argc, char **argv)
 	int w = 1280, h = 800, sandbox = 0, vnc_port = 0, vnc_ls = -1; ws_input vin;
 	int vnc_updates = 0, vnc_backlog_loops = 0; double vnc_render_ms = 0, vnc_report = 0;
 	const char *backend = "headless", *card = "/dev/dri/card0", *renderer = "sw", *render_node = "/dev/dri/renderD128";
+	if (getenv("WSD_FPS")) fps_overlay = 1;
 	for (int i = 1; i < argc; i++) {
 		if (!strcmp(argv[i], "-s") && i + 1 < argc) path = argv[++i];
 		else if (!strcmp(argv[i], "-g") && i + 1 < argc) sscanf(argv[++i], "%dx%d", &w, &h);
@@ -1173,6 +1177,7 @@ int main(int argc, char **argv)
 		else if (!strcmp(argv[i], "-r") && i + 1 < argc) renderer = argv[++i];          /* sw | gl */
 		else if (!strcmp(argv[i], "-n") && i + 1 < argc) render_node = argv[++i];
 		else if (!strcmp(argv[i], "-t")) test_mode = 1;
+		else if (!strcmp(argv[i], "-F")) fps_overlay = 1;                                  /* the frame rate in the top right corner (also WSD_FPS=1) */
 		else if (!strcmp(argv[i], "-S")) sandbox = 1;
 		else if (!strcmp(argv[i], "-V") && i + 1 < argc) vnc_port = atoi(argv[++i]);
 	}
@@ -1308,6 +1313,8 @@ int main(int argc, char **argv)
 			if (wsd_vnc_wants(key)) {
 				struct timespec t0, t1; clock_gettime(CLOCK_MONOTONIC, &t0);
 				render_frame(screen, 1); clock_gettime(CLOCK_MONOTONIC, &t1);
+				ws_fps_frame((t1.tv_sec - t0.tv_sec) * 1e3 + (t1.tv_nsec - t0.tv_nsec) / 1e6);
+				if (fps_overlay) ws_draw_fps(screen);
 				wsd_vnc_update(screen, key);
 				vnc_updates++; vnc_render_ms += (t1.tv_sec - t0.tv_sec) * 1e3 + (t1.tv_nsec - t0.tv_nsec) / 1e6;
 			}
@@ -1328,7 +1335,10 @@ int main(int argc, char **argv)
 			uint64_t gen = ws_server_generation(srv);
 			int need = gen != last_gen || (!hw_cursor && (cx != last_cx || cy != last_cy || ws_cursor_serial(srv) != last_cursor_serial));
 			if (need && ws_kms_present_ready(kms)) {
+				struct timespec k0, k1; clock_gettime(CLOCK_MONOTONIC, &k0);
 				render_frame(ws_kms_back(kms), !hw_cursor && ws_cursor_visible(srv));
+				clock_gettime(CLOCK_MONOTONIC, &k1); ws_fps_frame((k1.tv_sec - k0.tv_sec) * 1e3 + (k1.tv_nsec - k0.tv_nsec) / 1e6);
+				if (fps_overlay) ws_draw_fps(ws_kms_back(kms));
 				if (ws_kms_present(kms) == 0) { last_gen = gen; last_cx = cx; last_cy = cy; last_cursor_serial = ws_cursor_serial(srv); }
 			} else if (hw_cursor) { last_cx = cx; last_cy = cy; }
 		}
