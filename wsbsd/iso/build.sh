@@ -6,7 +6,7 @@
 # The result: macbsd-<arch>.iso, UEFI, Ploader first, FreeBSD's loader without screens, then the window server.
 set -e
 HERE="$(cd "$(dirname "$0")" && pwd)"; WS="$(cd "$HERE/.." && pwd)"
-ARCH="$(uname -p)"; case "$ARCH" in amd64) EFINAME=BOOTX64.EFI; PLNAME=ploader_x64.efi; RELDIR=amd64/amd64 ;; aarch64) EFINAME=BOOTAA64.EFI; PLNAME=ploader_aa64.efi; RELDIR=arm64/aarch64 ;; *) echo "unsupported $ARCH"; exit 1 ;; esac
+ARCH="$(uname -p)"; case "$ARCH" in amd64) EFINAME=BOOTX64.EFI; PLNAME=ploader_x64.efi; RELDIR=amd64 ;; aarch64) EFINAME=BOOTAA64.EFI; PLNAME=ploader_aa64.efi; RELDIR=arm64/aarch64 ;; *) echo "unsupported $ARCH"; exit 1 ;; esac
 REL="${FREEBSD_RELEASE:-$(freebsd-version -u | sed 's/-p[0-9]*$//')}"
 WORK="${WORK:-/tmp/isowork}"; ROOT="$WORK/root"; OUT="${OUT:-$WS/iso-out}"
 export IGNORE_OSVERSION=yes GITHUB_WORKSPACE="${GITHUB_WORKSPACE:-$(dirname "$WS")}"

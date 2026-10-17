@@ -7,7 +7,6 @@
 #import <objc/runtime.h>
 #include <sys/xattr.h>
 #include <stdio.h>
-#include <uuid.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -21,10 +20,12 @@ static NSString *readQuarantine(NSString *path)
 }
 BOOL WsbsdQuarantineMark(NSString *path, NSString *agent)
 {
-	uuid_t u; char *us = NULL; uint32_t st; uuid_create(&u, &st); uuid_to_string(&u, &us, &st);
-	for (char *c = us; c && *c; c++) if (*c >= 'a' && *c <= 'f') *c -= 32;
-	NSString *v = [NSString stringWithFormat: @"0083;%08lx;%@;%s", (unsigned long)[[NSDate date] timeIntervalSince1970], agent ?: @"wsbsd", us ?: ""];
-	free(us);
+	unsigned char r[16]; char us[40]; FILE *f = fopen("/dev/urandom", "r");
+	if (!f || fread(r, 1, 16, f) != 16) memset(r, 0x5a, 16);
+	if (f) fclose(f);
+	r[6] = (r[6] & 0x0f) | 0x40; r[8] = (r[8] & 0x3f) | 0x80;                       /* a version 4 UUID */
+	snprintf(us, sizeof us, "%02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X", r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9], r[10], r[11], r[12], r[13], r[14], r[15]);
+	NSString *v = [NSString stringWithFormat: @"0083;%08lx;%@;%s", (unsigned long)[[NSDate date] timeIntervalSince1970], agent ?: @"wsbsd", us];
 	const char *c = [v UTF8String];
 	return setxattr([path fileSystemRepresentation], "com.apple.quarantine", c, strlen(c), 0, 0) == 0;
 }
