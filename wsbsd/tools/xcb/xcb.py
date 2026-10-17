@@ -77,7 +77,7 @@ def build(proj, name, o):
     where = {}
     for e in errs: where.setdefault(e.split("error: ", 1)[1], e.split(": error", 1)[0])
     for msg, n in Counter(e.split("error: ", 1)[1] for e in errs).most_common(25):
-        print("%4d %s%s" % (n, msg, "   [%s]" % os.path.relpath(where[msg], proj.root) ""))
+        print("%4d %s   [%s]" % (n, msg, os.path.relpath(where[msg], proj.root)))
     return 0 if ok == len(jobs) else 2
 
 def main(a):
