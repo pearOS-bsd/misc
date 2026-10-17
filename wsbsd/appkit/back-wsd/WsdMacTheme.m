@@ -367,7 +367,7 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 /* text field bezel: 1 px border (the window colour lightened by 5 %) round a field filled with the text background (23,24,25 in the dark appearance), corner radius 6 */
 - (NSRect) drawWhiteBezel: (NSRect)frame withClip: (NSRect)clip
 {
-	if (gInDatePicker) { NSRect fr = frame; if (fr.size.height > 20) { fr.origin.y += (fr.size.height - 20) / 2 - ([v isFlipped] ? -3 : 3); fr.size.height = 20; } fillRound(fr, 6.0, isDark() ? rgb(23, 24, 25, 1) : rgb(255, 255, 255, 1)); return NSInsetRect(fr, 4, 1); }          /* the date picker field: no ring */
+	if (gInDatePicker) { NSRect fr = frame; if (fr.size.height > 20) { fr.origin.y += (fr.size.height - 20) / 2 - 3; fr.size.height = 20; } fillRound(fr, 6.0, isDark() ? rgb(23, 24, 25, 1) : rgb(255, 255, 255, 1)); return NSInsetRect(fr, 4, 1); }          /* the date picker field: no ring */
 	fillRound(frame, 6.0, onBG(0.05));
 	fillRound(NSInsetRect(frame, 1, 1), 5.0, isDark() ? rgb(23, 24, 25, 1) : rgb(255, 255, 255, 1));
 	return NSInsetRect(frame, 2, 2);                                /* the content rectangle, as the stock method returns it */
