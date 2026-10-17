@@ -735,7 +735,8 @@ static NSGradient *grad(int r0, int g0, int b0, int r1, int g1, int b1, int r2, 
 {
 	NSRect b = [self bounds];
 	BOOL dark = isDark(), key = (inputState == 0);
-	[[NSColor windowBackgroundColor] set]; NSRectFill(b);                               /* the window background (the backing store starts transparent) */
+	{ NSWindow *wn = [self window]; NSColor *wbg = (wn && ![wn isOpaque]) ? [wn backgroundColor] : [NSColor windowBackgroundColor];          /* non-opaque windows (behind-window materials) keep their own, usually clear, background */
+	  [wbg set]; NSRectFillUsingOperation(b, ([wn isOpaque] || !wn) ? NSCompositeSourceOver : NSCompositeCopy); }               /* the window background (the backing store starts transparent) */
 	if (hasTitleBar) {
 		int wr, wg, wb; windowBG(&wr, &wg, &wb);
 		NSColor *bg = dark ? (key ? rgb(mix(wr, 255, 0.035), mix(wg, 255, 0.035), mix(wb, 255, 0.035), 1) : rgb(wr + 4, wg + 4, wb + 4, 1)) : (key ? rgb(mix(wr, 255, 0.5), mix(wg, 255, 0.5), mix(wb, 255, 0.5), 1) : rgb(246, 246, 246, 1));
