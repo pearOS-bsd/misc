@@ -207,11 +207,20 @@ static NSInteger wsdAlertRun(id self, SEL _cmd)
 	[p orderOut: nil]; [p release];
 	return rc;
 }
+/* GNUstep centres a segment's label twice (it offsets the frame by half the free space, then centres inside that): left aligned inside the offset frame it lands in the middle, as on macOS */
+static IMP origSegDraw;
+static void wsdSegDraw(id self, SEL _cmd, NSInteger seg, NSRect f, NSView *v)
+{
+	[(NSSegmentedCell *)self setAlignment: NSLeftTextAlignment];
+	((void (*)(id, SEL, NSInteger, NSRect, NSView *))origSegDraw)(self, _cmd, seg, f, v);
+}
 static void swizzleTableDefaults(void)
 {
 	Method mt = class_getInstanceMethod([NSTableView class], @selector(_initDefaults));
 	if (mt && !origTableInit) origTableInit = method_setImplementation(mt, (IMP)wsdTableInit);
 	Method mb = class_getInstanceMethod([NSButtonCell class], @selector(drawInteriorWithFrame:inView:));
+	Method msg = class_getInstanceMethod([NSSegmentedCell class], @selector(drawSegment:inFrame:withView:));
+	if (msg && !origSegDraw) origSegDraw = method_setImplementation(msg, (IMP)wsdSegDraw);
 	Method ma = class_getInstanceMethod([NSAlert class], @selector(runModal));
 	if (ma && !origAlertRun && !getenv("WSD_NO_MACALERT")) origAlertRun = method_setImplementation(ma, (IMP)wsdAlertRun);
 	if (mb && !origButtonInterior) origButtonInterior = method_setImplementation(mb, (IMP)wsdButtonInterior);
@@ -234,7 +243,7 @@ void WsdApplyMacPalette(void)
 	[l setColor: dark ? rgb(72, 72, 72, 1) : rgb(210, 210, 212, 1) forKey: @"selectedControlColor"];      /* selected table rows (the unemphasised selection of a window without focus) */
 	[l setColor: rgb(255, 255, 255, 1) forKey: @"selectedControlTextColor"]; [l setColor: rgb(255, 255, 255, 1) forKey: @"selectedMenuItemTextColor"];
 	[l setColor: dark ? rgb(63, 96, 130, 1) : rgb(176, 215, 255, 1) forKey: @"selectedTextBackgroundColor"]; [l setColor: label forKey: @"selectedTextColor"];
-	[l setColor: dark ? sec : rgb(mix(r, fg, 0.28), mix(g, fg, 0.28), mix(b, fg, 0.28), 1) forKey: @"disabledControlTextColor"]; [l setColor: sec forKey: @"secondaryLabelColor"];
+	{ double da = dark ? 0.20 : 0.23; [l setColor: rgb(mix(r, fg, da), mix(g, fg, da), mix(b, fg, da), 1) forKey: @"disabledControlTextColor"]; } [l setColor: sec forKey: @"secondaryLabelColor"];
 	[l setColor: dark ? rgb(23, 24, 25, 1) : rgb(255, 255, 255, 1) forKey: @"textBackgroundColor"];      /* the field fill measured on macOS: neutral, darker than the (wallpaper tinted) window */
 }
 
