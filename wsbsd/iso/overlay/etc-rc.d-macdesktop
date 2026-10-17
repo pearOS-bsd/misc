@@ -1,0 +1,26 @@
+#!/bin/sh
+# PROVIDE: macdesktop
+# REQUIRE: LOGIN devd
+# KEYWORD: shutdown
+# The desktop: the window server on the console framebuffer, then the login-less session (Terminal). Silent: kernel messages are muted so that nothing is drawn over the screen.
+. /etc/rc.subr
+name="macdesktop"
+rcvar="macdesktop_enable"
+start_cmd="macdesktop_start"
+stop_cmd="macdesktop_stop"
+WS=/System/Library/PrivateFrameworks/SkyLight.framework/Versions/A/Resources/WindowServer
+macdesktop_start()
+{
+	conscontrol mute on >/dev/null 2>&1
+	export WS_SOCKET=/var/run/WindowServer.sock HOME=/Users/Shared XDG_CURRENT_DESKTOP=Aqua XDG_SESSION_DESKTOP=Aqua XDG_SESSION_TYPE=wsd TERM=xterm-256color
+	mkdir -p /Users/Shared /var/run
+	rm -f $WS_SOCKET
+	daemon -f -p /var/run/WindowServer.pid $WS -b kms -c /dev/ttyv0 -t
+	sleep 2
+	for app in /System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal; do
+		daemon -f /usr/lib/dyld $app
+	done
+}
+macdesktop_stop() { [ -f /var/run/WindowServer.pid ] && kill "$(cat /var/run/WindowServer.pid)"; }
+load_rc_config $name
+run_rc_command "$1"

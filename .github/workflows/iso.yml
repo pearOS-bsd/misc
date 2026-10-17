@@ -1,0 +1,95 @@
+name: iso
+
+# A bootable FreeBSD image with the macOS file layout that starts the window server by itself. Built on every change of the system (and on demand) and published as the release `iso-latest`;
+# a tag `v*` makes a release of its own.
+on:
+  push:
+    branches: [main]
+    paths: ['wsbsd/iso/**', 'wsbsd/src/**', 'wsbsd/include/**', 'wsbsd/appkit/**', 'wsbsd/sdk/**', 'wsbsd/ci/**', 'terminal/**', 'ksa/**', 'uitest/**', '.github/workflows/iso.yml']
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  # Ploader (pearOS-archlinux/pearos-bootloader, a rEFInd fork, GPL): built on Linux with gnu-efi
+  ploader:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Build Ploader
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq gnu-efi build-essential git
+          git clone --depth 1 https://github.com/pearOS-archlinux/pearos-bootloader pb
+          cd pb
+          make 2>&1 | tail -15
+          ls -l ploader/*.efi
+          mkdir -p ../ploader-out/licenses
+          cp ploader/ploader_x64.efi ../ploader-out/
+          cp -R theme ../ploader-out/theme
+          cp COPYING.txt LICENSE.txt CREDITS.txt README.md ../ploader-out/licenses/
+          git rev-parse HEAD > ../ploader-out/licenses/SOURCE-COMMIT.txt
+          echo "Source: https://github.com/pearOS-archlinux/pearos-bootloader" >> ../ploader-out/licenses/SOURCE-COMMIT.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ploader
+          path: ploader-out
+          if-no-files-found: error
+
+  iso:
+    needs: ploader
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: ploader
+          path: ploader-out
+      - name: Build the image on FreeBSD x86_64
+        uses: vmactions/freebsd-vm@v1
+        with:
+          release: "14.2"
+          arch: x86_64
+          usesh: true
+          mem: 6144
+          prepare: |
+            pkg install -y python3 gmake pkgconf git >/dev/null 2>&1
+          run: |
+            set -e
+            cd "$GITHUB_WORKSPACE" 2>/dev/null || true
+            PLOADER_DIR="$PWD/ploader-out" OUT="$PWD/wsbsd/iso-out" sh wsbsd/iso/build.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: macbsd-iso
+          path: |
+            wsbsd/iso-out/*.iso
+            wsbsd/iso-out/*.sha256
+          if-no-files-found: warn
+
+  release:
+    needs: iso
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: macbsd-iso
+          path: out
+      - uses: actions/download-artifact@v4
+        with:
+          name: ploader
+          path: ploader-out
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ls -l out
+          TAG="iso-latest"; TITLE="macbsd image (latest build)"
+          if [ "${GITHUB_REF_TYPE}" = tag ]; then TAG="${GITHUB_REF_NAME}"; TITLE="macbsd ${GITHUB_REF_NAME}"; fi
+          tar -czf out/ploader-licenses.tar.gz -C ploader-out licenses
+          gh release delete "$TAG" --repo "$GITHUB_REPOSITORY" --cleanup-tag --yes 2>/dev/null || true
+          gh release create "$TAG" out/* --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "$TITLE" --prerelease \
+            --notes "Bootable UEFI image (amd64): Ploader, FreeBSD without boot screens, the macOS file layout (real files, no symlinks), the wsbsd window server on the framebuffer. Built from commit $GITHUB_SHA. Ploader is GPL (licence files in ploader-licenses.tar.gz, source: https://github.com/pearOS-archlinux/pearos-bootloader)."
