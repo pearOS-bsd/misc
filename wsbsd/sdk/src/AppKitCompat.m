@@ -223,6 +223,7 @@ NSString *const NSPasteboardURLReadingContentsConformToTypesKey = @"NSPasteboard
 @end
 
 /* ---- gesture recognizers: GNUstep has the class names only; clicks are recognized in -[NSWindow sendEvent:] ---- */
+static void installGestureHook(void);
 static const char gTarget, gAction, gEnabled, gView, gState, gDelegate, gButtons, gClicks, gRecognizers;
 
 @implementation NSGestureRecognizer (WsbsdCompat)
@@ -250,7 +251,7 @@ static const char gTarget, gAction, gEnabled, gView, gState, gDelegate, gButtons
 - (void)addGestureRecognizer:(NSGestureRecognizer *)r
 {
 	NSMutableArray *a = getAssoc(self, &gRecognizers); if (!a) { a = [NSMutableArray array]; setAssoc(self, &gRecognizers, a); }
-	if (![a containsObject: r]) { [a addObject: r]; [r setView: self]; }
+	if (![a containsObject: r]) { [a addObject: r]; [r setView: self]; installGestureHook(); }
 }
 - (void)removeGestureRecognizer:(NSGestureRecognizer *)r { [(NSMutableArray *)getAssoc(self, &gRecognizers) removeObject: r]; [r setView: nil]; }
 - (NSArray *)gestureRecognizers { NSArray *a = getAssoc(self, &gRecognizers); return a ? [a copy] : @[]; }
@@ -268,14 +269,14 @@ static void wsbsdSendEvent(id self, SEL _cmd, NSEvent *e)
 	}
 	((void (*)(id, SEL, NSEvent *))origSendEvent)(self, _cmd, e);
 }
-@interface WsbsdGestureSupport : NSObject @end
-@implementation WsbsdGestureSupport
-+ (void)load
+static void installGestureHook(void)          /* lazily, at the first recognizer: +load would run before main() and initialize AppKit too early */
 {
-	Method m = class_getInstanceMethod([NSWindow class], @selector(sendEvent:));
-	if (m && !origSendEvent) origSendEvent = method_setImplementation(m, (IMP)wsbsdSendEvent);
+	static dispatch_once_t once;
+	dispatch_once(&once, ^{
+		Method m = class_getInstanceMethod([NSWindow class], @selector(sendEvent:));
+		if (m && !origSendEvent) origSendEvent = method_setImplementation(m, (IMP)wsbsdSendEvent);
+	});
 }
-@end
 
 /* ---- smaller AppKit / Foundation gaps ---- */
 @implementation NSWindow (WsbsdProperties)
@@ -344,5 +345,96 @@ NSString *const NSAppleScriptErrorMessage = @"NSAppleScriptErrorMessage";
 {
 	if (errorInfo) *errorInfo = @{ NSAppleScriptErrorNumber: @(-1708), NSAppleScriptErrorMessage: @"AppleScript is not available on this system" };
 	return nil;
+}
+@end
+
+/* ---- Sparkle: no update framework here. SUUpdater is what a nib may instantiate; like the App Store build of Hex Fiend it hides "Check for Updates" ---- */
+@interface SUUpdater : NSObject
+@property (nonatomic) BOOL automaticallyChecksForUpdates;
+@property (nonatomic) BOOL automaticallyDownloadsUpdates;
+@property (nonatomic) NSTimeInterval updateCheckInterval;
+@property (nonatomic, strong) NSURL *feedURL;
+- (IBAction)checkForUpdates:(id)sender;
+- (void)checkForUpdatesInBackground;
+@end
+@implementation SUUpdater
+- (IBAction)checkForUpdates:(id)sender { (void)sender; }
+- (void)checkForUpdatesInBackground { }
+- (BOOL)validateMenuItem:(NSMenuItem *)item
+{
+	if ([item action] == @selector(checkForUpdates:)) { [item setHidden: YES]; return NO; }
+	return YES;
+}
+@end
+
+/* ---- fonts: names of the Mac system fonts map to the faces installed here; +load may not message AppKit classes (main() has not run), so only the runtime API is used ---- */
+static IMP origFontWithName;
+static NSString *aliasForFont(NSString *name)
+{
+	NSString *n = [name lowercaseString];
+	BOOL bold = [n rangeOfString: @"bold"].location != NSNotFound, ital = [n rangeOfString: @"italic"].location != NSNotFound || [n rangeOfString: @"oblique"].location != NSNotFound;
+	if ([n rangeOfString: @"monaco"].location != NSNotFound || [n rangeOfString: @"menlo"].location != NSNotFound || [n rangeOfString: @"courier"].location != NSNotFound ||
+	    [n rangeOfString: @"andale"].location != NSNotFound || [n rangeOfString: @"sfmono"].location != NSNotFound || [n rangeOfString: @"sf mono"].location != NSNotFound ||
+	    [n rangeOfString: @"consolas"].location != NSNotFound || [n rangeOfString: @"fixed"].location != NSNotFound)
+		return bold ? (ital ? @"DejaVuSansMono-BoldOblique" : @"DejaVuSansMono-Bold") : (ital ? @"DejaVuSansMono-Oblique" : @"DejaVuSansMono");
+	if ([n rangeOfString: @"times"].location != NSNotFound || [n rangeOfString: @"georgia"].location != NSNotFound || [n rangeOfString: @"palatino"].location != NSNotFound)
+		return bold ? @"DejaVuSerif-Bold" : @"DejaVuSerif";
+	if ([n rangeOfString: @"helvetica"].location != NSNotFound || [n rangeOfString: @"lucida"].location != NSNotFound || [n rangeOfString: @"arial"].location != NSNotFound ||
+	    [n rangeOfString: @"sf pro"].location != NSNotFound || [n rangeOfString: @"sfpro"].location != NSNotFound || [n rangeOfString: @"system"].location != NSNotFound)
+		return bold ? @"Inter-Bold" : @"Inter-Regular";
+	return nil;
+}
+static id aliasFontWithName(id self, SEL _cmd, NSString *name, CGFloat size)
+{
+	id f = ((id (*)(id, SEL, NSString *, CGFloat))origFontWithName)(self, _cmd, name, size);
+	if (f || !name) return f;
+	NSString *alias = aliasForFont(name);
+	return alias ? ((id (*)(id, SEL, NSString *, CGFloat))origFontWithName)(self, _cmd, alias, size) : nil;
+}
+@interface WsbsdFontAliases : NSObject @end
+@implementation WsbsdFontAliases
++ (void)load
+{
+	Class c = objc_getClass("NSFont");
+	Method m = c ? class_getClassMethod(c, sel_registerName("fontWithName:size:")) : NULL;
+	if (m && !origFontWithName) origFontWithName = method_setImplementation(m, (IMP)aliasFontWithName);
+}
+@end
+
+/* ---- NSFont <-> CTFont: on Apple an NSFont IS a CTFont (toll-free); with Opal a CTFontRef is an OPFont and its functions message OPFont methods. Each class forwards the selectors
+ * it does not know to an equivalent object of the other one, so a font can be handed to either API. Installed with the runtime API only (+load runs before main). ---- */
+#include <CoreText/CoreText.h>
+static const char opOfNSKey, nsOfOPKey;
+static id forwardNSFont(id self, SEL _cmd, SEL sel)
+{
+	id op = objc_getAssociatedObject(self, &opOfNSKey);
+	if (!op) {
+		NSString *name = [(NSFont *)self fontName]; if (!name) return nil;
+		op = (__bridge_transfer id)CTFontCreateWithName((__bridge CFStringRef)name, [(NSFont *)self pointSize], NULL);
+		if (!op) return nil;
+		objc_setAssociatedObject(self, &opOfNSKey, op, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+	}
+	return [op respondsToSelector: sel] ? op : nil;
+}
+static id forwardOPFont(id self, SEL _cmd, SEL sel)
+{
+	id ns = objc_getAssociatedObject(self, &nsOfOPKey);
+	if (!ns) {
+		CTFontRef ct = (__bridge CTFontRef)self;
+		NSString *name = (__bridge_transfer NSString *)CTFontCopyPostScriptName(ct);
+		ns = name ? [NSFont fontWithName: name size: CTFontGetSize(ct)] : nil;
+		if (!ns) return nil;
+		objc_setAssociatedObject(self, &nsOfOPKey, ns, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+	}
+	return [ns respondsToSelector: sel] ? ns : nil;
+}
+@interface WsbsdFontBridge : NSObject @end
+@implementation WsbsdFontBridge
++ (void)load
+{
+	SEL fwd = sel_registerName("forwardingTargetForSelector:");
+	Class nsfont = objc_getClass("NSFont"), opfont = objc_getClass("OPFont");
+	if (nsfont) class_addMethod(nsfont, fwd, (IMP)forwardNSFont, "@@::");
+	if (opfont) class_addMethod(opfont, fwd, (IMP)forwardOPFont, "@@::");
 }
 @end

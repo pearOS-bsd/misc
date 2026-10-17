@@ -3,14 +3,6 @@
 #include <strings.h>
 #include <string.h>
 #include <stdlib.h>
-CFStringRef kUTTagClassFilenameExtension, kUTTagClassMIMEType, kUTTypeData, kUTTypeItem, kUTTypeContent, kUTTypePlainText, kUTTypeText, kUTTypeApplicationBundle, kUTTypeFolder, kUTTypeDirectory, kUTTypeBundle;
-__attribute__((constructor)) static void initUT(void)
-{
-	kUTTagClassFilenameExtension = CFSTR("public.filename-extension"); kUTTagClassMIMEType = CFSTR("public.mime-type");
-	kUTTypeData = CFSTR("public.data"); kUTTypeItem = CFSTR("public.item"); kUTTypeContent = CFSTR("public.content"); kUTTypePlainText = CFSTR("public.plain-text");
-	kUTTypeText = CFSTR("public.text"); kUTTypeApplicationBundle = CFSTR("com.apple.application-bundle"); kUTTypeFolder = CFSTR("public.folder");
-	kUTTypeDirectory = CFSTR("public.directory"); kUTTypeBundle = CFSTR("com.apple.bundle");
-}
 Boolean UTTypeEqual(CFStringRef a, CFStringRef b) { if (!a || !b) return a == b; return CFStringCompare(a, b, kCFCompareCaseInsensitive) == kCFCompareEqualTo; }
 static const char *parent_of(const char *u)
 {
