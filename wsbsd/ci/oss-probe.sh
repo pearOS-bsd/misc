@@ -13,6 +13,14 @@ if [ "${OSS_COREBASE:-1}" = 1 ]; then
 	( cd corebase && ./configure CPPFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib" > $W/cb-conf.log 2>&1 && gmake -j2 GNUSTEP_INSTALLATION_DOMAIN=SYSTEM > $W/cb-build.log 2>&1 && gmake install GNUSTEP_INSTALLATION_DOMAIN=SYSTEM > $W/cb-inst.log 2>&1 ) && echo "corebase: installed" || { echo "corebase: build FAILED"; tail -5 $W/cb-conf.log; grep -E "error" $W/cb-build.log | head -8; }
 	ls /usr/local/GNUstep/System/Library/Headers/CoreFoundation 2>/dev/null | head -3
 fi
+# Opal: CoreGraphics, CoreText and ImageIO headers and libraries (built the way ci/opal-build.sh does)
+if [ "${OSS_OPAL:-1}" = 1 ]; then
+	pkg install -y libdispatch cairo freetype2 fontconfig lcms2 bzip2 >/dev/null 2>&1 || true
+	[ -f /usr/local/libdata/pkgconfig/bzip2.pc ] || printf 'Name: bzip2\nDescription: bzip2\nVersion: 1.0.8\nLibs: -lbz2\nCflags:\n' > /usr/local/libdata/pkgconfig/bzip2.pc
+	timeout 120 git clone --depth 1 -q https://github.com/gnustep/libs-opal opal 2>/dev/null
+	( cd opal && gmake -j2 messages=yes > $W/opal-build.log 2>&1 && gmake install > $W/opal-inst.log 2>&1 ) && echo "opal: installed" || { echo "opal: build FAILED"; grep -E "error" $W/opal-build.log | head -8; }
+	ls /usr/local/GNUstep/System/Library/Headers/CoreText 2>/dev/null | head -3
+fi
 BASE="-I$WS/sdk/include -include $WS/sdk/include/wsbsd/prelude.h $(gnustep-config --objc-flags) -fblocks -fobjc-arc -w -fsyntax-only"
 for r in $REPOS; do
 	n=$(echo $r | tr / _)
