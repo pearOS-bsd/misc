@@ -130,6 +130,14 @@ A FreeBSD-based ISO that starts straight into this window server. The rules, set
    in `iso/` from the Mac the author owns; the files that fill the tree are built from this repository (our ELF libraries, GNUstep / Opal based, the apps, wsd). Apple's binaries, dyld shared cache
    and resources are not copied, and a Mach-O dyld cannot run on FreeBSD: `/usr/lib/dyld` is our own ELF loader / launcher that provides the same entry point and does the framework lookup.
 4. **Boot:** UEFI (arm64 and amd64), the FreeBSD kernel, an rc script that starts `wsd` on the framebuffer (`wsd -b kms`, see `docs/FREEBSD.md`) and the login / desktop applications.
+5. **Boot loader: Ploader** ([pearOS-archlinux/pearos-bootloader](https://github.com/pearOS-archlinux/pearos-bootloader), a rEFInd fork: GPL, the licence files travel with it; the binary is `ploader_x64.efi`,
+   an aarch64 build is made from the same sources for the arm64 image). Nothing of FreeBSD's own boot is visible: Ploader boots the first OS silently (Alt+M picker, the recovery key combinations of that project),
+   the FreeBSD `loader` is chained without its menu or logo (`beastie_disable`, `autoboot_delay` 0, `boot_mute`, `verbose_loading` off, quiet kernel and rc output), and the first thing drawn is the window server.
+6. **Extended attributes work as on a Mac**, because they decide whether an application downloaded from the internet may run: `com.apple.quarantine` (flags;time;agent;UUID), `com.apple.provenance`,
+   `com.apple.macl`, `com.apple.FinderInfo`, `com.apple.ResourceFork`, `com.apple.metadata:*`, `com.apple.lastuseddate#PS`, `com.apple.quarantine` removal on user approval. The root file system is UFS2 (extattr)
+   or ZFS; `getxattr` / `setxattr` / `listxattr` / `removexattr` (with `XATTR_NOFOLLOW`, `XATTR_CREATE`, `XATTR_REPLACE`) map onto `extattr` in the user namespace (`sdk/src/xattr.c`); `/usr/bin/xattr`, `ls -l@`,
+   `/usr/sbin/spctl` and the Launch Services check ("downloaded from the Internet. Are you sure you want to open it?", then the attribute is cleared) are part of the system; downloads written by our
+   applications get the quarantine attribute. A test installs an app with and without the attribute and checks what the launcher does.
 
 Status: the reference tree of the Mac has been inspected (top level, `System/Library/Frameworks` with 340 entries, `/Applications` with 60); the manifest script, the layout generator and the image
 build are the next steps.
