@@ -32,3 +32,6 @@ Product: `make install` / `make package`, rc.d script, `wsstart`, `wsd(8)`.
 ## Core Animation over Opal (FreeBSD)
 GNUstep QuartzCore (CALayer tree, implicit and explicit animations) renders into a wsd window through Opal (`demo/ca_demo.m`, CI job freebsd-quartzcore, screenshots ca-a/ca-b).
 Pitfall found: Opal's CGBitmapContext assumes rows `width*4` bytes apart and ignores a padded bytesPerRow, while wsd buffers are padded to 128 bytes; draw into a tight buffer and copy the rows (the GNUstep back-end uses Cairo with the real stride and is not affected).
+
+## Keyboard layouts (xkbcommon)
+`src/xkbmap.c` + `include/ws_xkb.h` translate macOS key codes and CGEventFlags to text through xkbcommon (`WSD_XKB_LAYOUT`, `WSD_XKB_VARIANT`, `WSD_XKB_OPTIONS`; Option acts as AltGr). The AppKit backend uses it when built with `-DWSD_XKB` (CI does), falling back to the US table. `test_xkb` runs in `make check` when xkbcommon is installed.

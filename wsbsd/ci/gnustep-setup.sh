@@ -3,7 +3,7 @@
 # AppKit (GNUstep gui) on wsd: builds libs-back with the "wsd" display server (appkit/back-wsd) in place of the headless one, then runs
 # an AppKit program against a live wsd and takes a screenshot of the screen.
 export IGNORE_OSVERSION=yes
-pkg install -y neofetch gnustep-sudoku gnustep-back gnustep-make gnustep-base gnustep-gui cairo freetype2 fontconfig git png jpeg-turbo tiff pkgconf gmake lcms2 bzip2 icu libffi dejavu autoconf libdispatch python3 >/dev/null 2>&1 || true
+pkg install -y neofetch gnustep-sudoku gnustep-back gnustep-make gnustep-base gnustep-gui cairo freetype2 fontconfig git png jpeg-turbo tiff pkgconf gmake lcms2 bzip2 icu libffi dejavu autoconf libdispatch python3 libxkbcommon xkeyboard-config >/dev/null 2>&1 || true
 cat > /usr/local/libdata/pkgconfig/bzip2.pc <<EOP
 Name: bzip2
 Description: bzip2
@@ -17,7 +17,7 @@ WS="${GITHUB_WORKSPACE:-$(cd "$(dirname "$0")/../.." && pwd)}/wsbsd"
 
 # the wsd client library, position independent so the back bundle can link it
 mkdir -p /tmp/wsc && cd /tmp/wsc
-for f in client compositor_sw region ipc evrec buffer; do
+for f in client compositor_sw region ipc evrec buffer keymap xkbmap; do
 	cc -O2 -fPIC -std=c99 -D_DEFAULT_SOURCE -I"$WS/include" -c "$WS/src/$f.c" -o $f.o || exit 1
 done
 ar rcs libwsclient.a *.o
@@ -34,11 +34,11 @@ git clone --depth 1 https://github.com/gnustep/libs-gui gui 2>&1 | tail -1
 git clone --depth 1 https://github.com/gnustep/libs-back back 2>&1 | tail -1
 cd back
 mkdir -p Headers/wsd
-cp "$WS"/appkit/back-wsd/*.h "$WS"/include/ws.h "$WS"/include/ws_client.h "$WS"/include/ws_buffer.h Headers/wsd/
+cp "$WS"/include/ws_xkb.h "$WS"/include/ws_input.h Headers/wsd/ 2>/dev/null; cp "$WS"/appkit/back-wsd/*.h "$WS"/include/ws.h "$WS"/include/ws_client.h "$WS"/include/ws_buffer.h Headers/wsd/
 cp "$WS"/appkit/back-wsd/*.m Source/headless/
 # the wsd client library is compiled straight into the headless subproject (a static archive is not picked up by the bundle link)
 for f in client compositor_sw region ipc evrec buffer; do cp "$WS/src/$f.c" Source/headless/wsc_$f.c; done
-printf 'ADDITIONAL_INCLUDE_DIRS += -I%s/include\nADDITIONAL_CFLAGS += -std=gnu99 -D_DEFAULT_SOURCE\nheadless_C_FILES += wsc_client.c wsc_compositor_sw.c wsc_region.c wsc_ipc.c wsc_evrec.c wsc_buffer.c\n' "$WS" >> Source/headless/GNUmakefile.preamble
+printf 'ADDITIONAL_INCLUDE_DIRS += -I%s/include\nADDITIONAL_CFLAGS += -std=gnu99 -D_DEFAULT_SOURCE\nheadless_C_FILES += wsc_client.c wsc_compositor_sw.c wsc_region.c wsc_ipc.c wsc_evrec.c wsc_buffer.c wsc_keymap.c wsc_xkbmap.c\nADDITIONAL_CFLAGS += -DWSD_XKB $(shell pkg-config --cflags xkbcommon)\nADDITIONAL_LDFLAGS += $(shell pkg-config --libs xkbcommon)\n' "$WS" >> Source/headless/GNUmakefile.preamble
 # headless server -> wsd server
 sed -i '' 's/^HeadlessServer.m \\/HeadlessServer.m WsdServer.m WsdCairoSurface.m WsdMacTheme.m \\/' Source/headless/GNUmakefile
 sed -i '' 's/HeadlessServer/WsdServer/g; s#<headless/WsdServer.h>#<wsd/WsdServer.h>#' Source/GSBackend.m

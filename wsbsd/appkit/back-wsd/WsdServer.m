@@ -26,8 +26,21 @@ static const char *keymap[128][2] = {
 	[47]={".",">"},[48]={"\t","\t"},[49]={" "," "},[50]={"`","~"},[51]={"\x7f","\x7f"},[53]={"\x1b","\x1b"},
 };
 
+#ifdef WSD_XKB
+#include "wsd/ws_xkb.h"
+#endif
+
 static NSString *keychars(int code, unsigned flags, BOOL ignoringMods)
 {
+#ifdef WSD_XKB
+	static int xkb = -1;
+	if (xkb < 0) xkb = (ws_xkb_init(NULL, NULL, NULL) == 0);
+	if (xkb) {
+		char b[16];
+		int n = ws_xkb_chars(code, flags, ignoringMods, b, sizeof b);
+		return n > 0 ? [NSString stringWithUTF8String: b] : @"";
+	}
+#endif
 	if (code < 0 || code >= 128) return @"";
 	int shift = (flags & 0x20000) != 0;          /* kCGEventFlagMaskShift */
 	const char *s = keymap[code][(shift && !ignoringMods) ? 1 : 0];
