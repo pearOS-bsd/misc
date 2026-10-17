@@ -32,10 +32,29 @@ ssize_t getxattr(const char *path, const char *name, void *value, size_t size, u
 { (void)position; return (options & XATTR_NOFOLLOW) ? extattr_get_link(path, EXTATTR_NAMESPACE_USER, name, value, size) : extattr_get_file(path, EXTATTR_NAMESPACE_USER, name, value, size); }
 ssize_t fgetxattr(int fd, const char *name, void *value, size_t size, u_int32_t position, int options)
 { (void)position; (void)options; return extattr_get_fd(fd, EXTATTR_NAMESPACE_USER, name, value, size); }
+/* XATTR_CREATE fails with EEXIST when the attribute is there, XATTR_REPLACE with ENOATTR when it is not (the Darwin semantics; extattr_set always replaces) */
+static int check_flags(ssize_t have, int options)
+{
+	if ((options & XATTR_CREATE) && have >= 0) { errno = EEXIST; return -1; }
+	if ((options & XATTR_REPLACE) && have < 0) { errno = ENOATTR; return -1; }
+	return 0;
+}
 int setxattr(const char *path, const char *name, const void *value, size_t size, u_int32_t position, int options)
-{ (void)position; ssize_t r = (options & XATTR_NOFOLLOW) ? extattr_set_link(path, EXTATTR_NAMESPACE_USER, name, value, size) : extattr_set_file(path, EXTATTR_NAMESPACE_USER, name, value, size); return r < 0 ? -1 : 0; }
+{
+	(void)position;
+	if (options & (XATTR_CREATE | XATTR_REPLACE)) {
+		ssize_t have = (options & XATTR_NOFOLLOW) ? extattr_get_link(path, EXTATTR_NAMESPACE_USER, name, NULL, 0) : extattr_get_file(path, EXTATTR_NAMESPACE_USER, name, NULL, 0);
+		if (check_flags(have, options)) return -1;
+	}
+	ssize_t r = (options & XATTR_NOFOLLOW) ? extattr_set_link(path, EXTATTR_NAMESPACE_USER, name, value, size) : extattr_set_file(path, EXTATTR_NAMESPACE_USER, name, value, size);
+	return r < 0 ? -1 : 0;
+}
 int fsetxattr(int fd, const char *name, const void *value, size_t size, u_int32_t position, int options)
-{ (void)position; (void)options; return extattr_set_fd(fd, EXTATTR_NAMESPACE_USER, name, value, size) < 0 ? -1 : 0; }
+{
+	(void)position;
+	if (options & (XATTR_CREATE | XATTR_REPLACE)) { if (check_flags(extattr_get_fd(fd, EXTATTR_NAMESPACE_USER, name, NULL, 0), options)) return -1; }
+	return extattr_set_fd(fd, EXTATTR_NAMESPACE_USER, name, value, size) < 0 ? -1 : 0;
+}
 int removexattr(const char *path, const char *name, int options)
 { return ((options & XATTR_NOFOLLOW) ? extattr_delete_link(path, EXTATTR_NAMESPACE_USER, name) : extattr_delete_file(path, EXTATTR_NAMESPACE_USER, name)) < 0 ? -1 : 0; }
 int fremovexattr(int fd, const char *name, int options) { (void)options; return extattr_delete_fd(fd, EXTATTR_NAMESPACE_USER, name) < 0 ? -1 : 0; }
