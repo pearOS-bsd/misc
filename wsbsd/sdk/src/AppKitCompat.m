@@ -147,6 +147,7 @@ static const char clipsKey;
 
 /* ---- libc / system functions of Darwin that sources call ---- */
 #include <string.h>
+#include <dlfcn.h>
 void memset_pattern4(void *b, const void *p, size_t len) { for (size_t i = 0; i < len; i++) ((unsigned char *)b)[i] = ((const unsigned char *)p)[i % 4]; }
 void memset_pattern8(void *b, const void *p, size_t len) { for (size_t i = 0; i < len; i++) ((unsigned char *)b)[i] = ((const unsigned char *)p)[i % 8]; }
 void memset_pattern16(void *b, const void *p, size_t len) { for (size_t i = 0; i < len; i++) ((unsigned char *)b)[i] = ((const unsigned char *)p)[i % 16]; }
@@ -283,6 +284,18 @@ static void installGestureHook(void)          /* lazily, at the first recognizer
 @implementation NSWindow (WsbsdProperties)
 - (BOOL)documentEdited { return [self isDocumentEdited]; }
 - (void)setContentBorderThickness:(CGFloat)t forEdge:(NSRectEdge)e { (void)t; (void)e; }
+static const char winAppearanceKey, winTransparentKey, winTitleVisKey;
+- (id)appearance { return getAssoc(self, &winAppearanceKey); }
+- (void)setAppearance:(id)a { setAssoc(self, &winAppearanceKey, a); }
+- (BOOL)titlebarAppearsTransparent { return [(NSNumber *)getAssoc(self, &winTransparentKey) boolValue]; }
+- (void)setTitlebarAppearsTransparent:(BOOL)f { setAssoc(self, &winTransparentKey, [NSNumber numberWithBool: f]); }
+- (NSInteger)titleVisibility { return [(NSNumber *)getAssoc(self, &winTitleVisKey) integerValue]; }
+- (void)setTitleVisibility:(NSInteger)v { setAssoc(self, &winTitleVisKey, [NSNumber numberWithInteger: v]); }
+- (void)setStyleMask:(NSUInteger)mask
+{
+	Ivar iv = class_getInstanceVariable([NSWindow class], "_styleMask");
+	if (iv) *(NSUInteger *)((char *)(__bridge void *)self + ivar_getOffset(iv)) = mask;
+}
 @end
 @implementation NSMenuItem (WsbsdHidden)
 static const char hiddenKey;
@@ -333,6 +346,7 @@ static const char repURLKey;
 }
 @end
 NSPasteboardType const NSPasteboardTypeFileURL = @"public.file-url";
+NSPasteboardType const NSPasteboardTypeURL = @"public.url";
 @implementation NSScrollView (WsbsdScrolling)
 static const char predominantKey;
 - (BOOL)usesPredominantAxisScrolling { NSNumber *n = getAssoc(self, &predominantKey); return n ? [n boolValue] : YES; }
@@ -465,11 +479,26 @@ static id wsbsdTransferWindowOwnership(id self, SEL _cmd)
  * bytes per line and displayed lines there). GNUstep's -setFrame: sets the frame itself and never calls it. For a class that overrides -setFrameSize: the same split is done here.
  * Runtime API only (+load runs before main). ---- */
 static IMP origViewSetFrame, viewSetFrameSize;
+/* the class (from self's up) that implements -setFrameSize: and whether it comes from GNUstep itself: its own views (NSTableView, NSClipView ...) are written for -setFrame: not calling -setFrameSize: and
+ * loop when it does; only a -setFrameSize: of the application's (or its libraries') is called */
+static BOOL setFrameSizeIsApplications(id self)
+{
+	SEL sfs = sel_registerName("setFrameSize:");
+	for (Class k = object_getClass(self); k; k = class_getSuperclass(k)) {
+		unsigned n = 0; Method *ms = class_copyMethodList(k, &n); IMP imp = NULL;
+		for (unsigned i = 0; i < n; i++) if (sel_isEqual(method_getName(ms[i]), sfs)) { imp = method_getImplementation(ms[i]); break; }
+		free(ms);
+		if (imp) {
+			Dl_info di; const char *img = dladdr((void *)imp, &di) ? di.dli_fname : NULL;
+			return !(img && (strstr(img, "libgnustep-gui") || strstr(img, "libgnustep-back")));
+		}
+	}
+	return NO;
+}
 static void wsbsdViewSetFrame(id self, SEL _cmd, NSRect f)
 {
 	SEL sfs = sel_registerName("setFrameSize:");
-	Method m = class_getInstanceMethod(object_getClass(self), sfs);
-	if (!m || method_getImplementation(m) == viewSetFrameSize) { ((void (*)(id, SEL, NSRect))origViewSetFrame)(self, _cmd, f); return; }
+	if (!setFrameSizeIsApplications(self)) { ((void (*)(id, SEL, NSRect))origViewSetFrame)(self, _cmd, f); return; }
 	NSRect old = ((NSRect (*)(id, SEL))objc_msgSend)(self, sel_registerName("frame"));
 	if (old.origin.x != f.origin.x || old.origin.y != f.origin.y) ((void (*)(id, SEL, NSPoint))objc_msgSend)(self, sel_registerName("setFrameOrigin:"), f.origin);
 	if (old.size.width != f.size.width || old.size.height != f.size.height) ((void (*)(id, SEL, NSSize))objc_msgSend)(self, sfs, f.size);
@@ -482,5 +511,167 @@ static void wsbsdViewSetFrame(id self, SEL _cmd, NSRect f)
 	Method m = c ? class_getInstanceMethod(c, sel_registerName("setFrame:")) : NULL;
 	Method s = c ? class_getInstanceMethod(c, sel_registerName("setFrameSize:")) : NULL;
 	if (m && s && !origViewSetFrame) { viewSetFrameSize = method_getImplementation(s); origViewSetFrame = method_setImplementation(m, (IMP)wsbsdViewSetFrame); }
+}
+@end
+
+/* ---- modern property spellings over GNUstep's methods; recents and the alert's suppression button ---- */
+@implementation NSString (WsbsdProperties)
+@end
+@implementation NSToolbar (WsbsdProperties)
+@end
+@implementation NSScanner (WsbsdProperties)
+@end
+@implementation NSWindow (WsbsdVisible)
+@end
+@implementation NSDocumentController (WsbsdRecents)
+- (NSArray *)recentDocumentURLs
+{
+	NSMutableArray *urls = [NSMutableArray array];
+	for (NSString *p in [self recentDocumentURLs_wsbsd_paths]) [urls addObject: [NSURL fileURLWithPath: p]];
+	return urls;
+}
+- (NSArray *)recentDocumentURLs_wsbsd_paths { return [self respondsToSelector: @selector(recentDocumentPaths)] ? [self performSelector: @selector(recentDocumentPaths)] : @[]; }
+@end
+@implementation NSAlert (WsbsdSuppression)
+static const char suppressShowKey, suppressButtonKey;
+- (BOOL)showsSuppressionButton { return [(NSNumber *)getAssoc(self, &suppressShowKey) boolValue]; }
+- (void)setShowsSuppressionButton:(BOOL)f { setAssoc(self, &suppressShowKey, [NSNumber numberWithBool: f]); }
+- (NSButton *)suppressionButton
+{
+	NSButton *b = getAssoc(self, &suppressButtonKey);
+	if (!b) { b = [[NSButton alloc] initWithFrame: NSMakeRect(0, 0, 200, 18)]; [b setButtonType: NSSwitchButton]; [b setTitle: @"Do not show this message again"]; setAssoc(self, &suppressButtonKey, b); }
+	return b;
+}
+@end
+
+@implementation NSControl (WsbsdEnabled)
+@end
+@implementation NSWindow (WsbsdStatus)
+@end
+@implementation NSTimer (WsbsdTolerance)
+static const char tolKey;
+- (NSTimeInterval)tolerance { return [(NSNumber *)getAssoc(self, &tolKey) doubleValue]; }
+- (void)setTolerance:(NSTimeInterval)t { setAssoc(self, &tolKey, [NSNumber numberWithDouble: t]); }
+@end
+@implementation NSView (WsbsdAnimator)
+- (instancetype)animator { return self; }
++ (id)defaultAnimationForKey:(NSString *)key { (void)key; return nil; }
+@end
+
+/* ---- Core Animation names and the QuickLook panel: classes that accept their settings and do nothing ---- */
+#import <QuartzCore/QuartzCore.h>
+#import <Quartz/Quartz.h>
+@implementation CAAnimation
++ (instancetype)animation { return [[self alloc] init]; }
+- (id)copyWithZone:(NSZone *)z { (void)z; return self; }
+@end
+@implementation CAPropertyAnimation
++ (instancetype)animationWithKeyPath:(NSString *)path { CAPropertyAnimation *a = [self animation]; a.keyPath = path; return a; }
+@end
+@implementation CABasicAnimation
+@end
+@implementation CAMediaTimingFunction
++ (instancetype)functionWithName:(NSString *)name { (void)name; return [[self alloc] init]; }
+@end
+@implementation CATransaction
++ (void)begin {} + (void)commit {} + (void)setDisableActions:(BOOL)f { (void)f; } + (void)setAnimationDuration:(CFTimeInterval)d { (void)d; }
++ (void)setCompletionBlock:(void (^)(void))block { if (block) block(); }
+@end
+@implementation QLPreviewPanel
+@synthesize dataSource, delegate, currentPreviewItemIndex;
++ (QLPreviewPanel *)sharedPreviewPanel { static QLPreviewPanel *p; if (!p) p = [[QLPreviewPanel alloc] initWithContentRect: NSMakeRect(0, 0, 400, 300) styleMask: NSTitledWindowMask | NSClosableWindowMask backing: NSBackingStoreBuffered defer: YES]; return p; }
++ (BOOL)sharedPreviewPanelExists { return NO; }
+- (void)reloadData {}
+- (void)refreshCurrentPreviewItem {}
+@end
+
+@implementation NSSearchField (WsbsdSearch)
+static const char sendsWholeKey, sendsImmKey;
+- (BOOL)sendsWholeSearchString { return [(NSNumber *)getAssoc(self, &sendsWholeKey) boolValue]; }
+- (void)setSendsWholeSearchString:(BOOL)f { setAssoc(self, &sendsWholeKey, [NSNumber numberWithBool: f]); }
+- (BOOL)sendsSearchStringImmediately { return [(NSNumber *)getAssoc(self, &sendsImmKey) boolValue]; }
+- (void)setSendsSearchStringImmediately:(BOOL)f { setAssoc(self, &sendsImmKey, [NSNumber numberWithBool: f]); }
+@end
+
+@implementation NSDocumentController (WsbsdClassProperties)
+@end
+
+@implementation NSWorkspaceOpenConfiguration
++ (instancetype)configuration { return [[self alloc] init]; }
+@end
+@implementation NSWorkspace (WsbsdOpenConfiguration)
+- (void)openURLs:(NSArray *)urls withApplicationAtURL:(NSURL *)appURL configuration:(NSWorkspaceOpenConfiguration *)configuration completionHandler:(void (^)(NSRunningApplication *app, NSError *error))handler
+{
+	(void)configuration; BOOL ok = YES;
+	for (NSURL *u in urls) ok = ([appURL isFileURL] ? [self openFile: [u path] withApplication: [appURL path]] : [self openFile: [u path]]) && ok;
+	if (handler) handler(nil, ok ? nil : [NSError errorWithDomain: NSCocoaErrorDomain code: 4 userInfo: nil]);
+}
+@end
+
+/* ---- NSWindowController asks -windowNibName on Apple (subclasses override it); GNUstep only looks at the name given to -initWithWindowNibName:, so a controller that overrides the method
+ * got a nil nib path. The overridden name is used when there is none. ---- */
+static IMP origWindowNibPath;
+static NSString *wsbsdWindowNibPath(id self, SEL _cmd)
+{
+	NSString *p = ((NSString *(*)(id, SEL))origWindowNibPath)(self, _cmd);
+	if (p) return p;
+	NSString *name = [(NSWindowController *)self windowNibName];
+	if (!name) return nil;
+	id owner = [(NSWindowController *)self owner];
+	p = [[NSBundle bundleForClass: [owner class]] pathForNibResource: name];
+	return p ?: [[NSBundle mainBundle] pathForNibResource: name];
+}
+@interface WsbsdWindowControllerFix : NSObject @end
+@implementation WsbsdWindowControllerFix
++ (void)load
+{
+	Class c = objc_getClass("NSWindowController");
+	Method m = c ? class_getInstanceMethod(c, sel_registerName("windowNibPath")) : NULL;
+	if (m && !origWindowNibPath) origWindowNibPath = method_setImplementation(m, (IMP)wsbsdWindowNibPath);
+}
+@end
+/* the private name AppKit gives the recent documents / windows menu (an application marks its menu with it); kept */
+@implementation NSMenu (WsbsdMenuName)
+static const char menuNameKey;
+- (void)_setMenuName:(NSString *)name { setAssoc(self, &menuNameKey, name); }
+- (NSString *)_menuName { return getAssoc(self, &menuNameKey); }
+@end
+
+/* ---- a table column without an identifier gets one ("AutomaticTableColumnIdentifier.N" on Apple); GNUstep's view-based table uses the identifier as a dictionary key and failed on nil ---- */
+static IMP origColumnIdentifier;
+static id wsbsdColumnIdentifier(id self, SEL _cmd)
+{
+	id ident = ((id (*)(id, SEL))origColumnIdentifier)(self, _cmd);
+	if (ident) return ident;
+	static int counter;
+	NSString *auto_ = [NSString stringWithFormat: @"AutomaticTableColumnIdentifier.%d", counter++];
+	[(NSTableColumn *)self setIdentifier: auto_];
+	return auto_;
+}
+@interface WsbsdTableColumnFix : NSObject @end
+@implementation WsbsdTableColumnFix
++ (void)load
+{
+	Class c = objc_getClass("NSTableColumn");
+	Method m = c ? class_getInstanceMethod(c, sel_registerName("identifier")) : NULL;
+	if (m && !origColumnIdentifier) origColumnIdentifier = method_setImplementation(m, (IMP)wsbsdColumnIdentifier);
+}
+@end
+
+/* ---- prototype cell views of a view-based table column without an identifier: GNUstep keys them by identifier; one is made up (they are looked up by column, never by that name) ---- */
+static IMP origRegisterPrototypes;
+static void wsbsdRegisterPrototypes(id self, SEL _cmd, NSArray *views)
+{
+	static int counter;
+	for (NSView *v in views) if (![v identifier]) [v setIdentifier: [NSString stringWithFormat: @"AutomaticTableCellIdentifier.%d", counter++]];
+	((void (*)(id, SEL, NSArray *))origRegisterPrototypes)(self, _cmd, views);
+}
+@interface WsbsdPrototypeFix : NSObject @end
+@implementation WsbsdPrototypeFix
++ (void)load
+{
+	Class c = objc_getClass("NSTableView");
+	Method m = c ? class_getInstanceMethod(c, sel_registerName("_registerPrototypeViews:")) : NULL;
+	if (m && !origRegisterPrototypes) origRegisterPrototypes = method_setImplementation(m, (IMP)wsbsdRegisterPrototypes);
 }
 @end

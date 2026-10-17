@@ -29,6 +29,14 @@ const CFStringRef kUTTypeContent = CFS("public.content");
 const CFStringRef kUTTypePlainText = CFS("public.plain-text");
 const CFStringRef kUTTypeText = CFS("public.text");
 const CFStringRef kUTTypeApplicationBundle = CFS("com.apple.application-bundle");
+const CFStringRef kUTTypeDescriptionKey = CFS("UTTypeDescription");
+const CFStringRef kUTTypeConformsToKey = CFS("UTTypeConformsTo");
+const CFStringRef kUTTypeIdentifierKey = CFS("UTTypeIdentifier");
+const CFStringRef kUTTypeTagSpecificationKey = CFS("UTTypeTagSpecification");
 const CFStringRef kUTTypeFolder = CFS("public.folder");
 const CFStringRef kUTTypeDirectory = CFS("public.directory");
 const CFStringRef kUTTypeBundle = CFS("com.apple.bundle");
+
+#import <QuartzCore/QuartzCore.h>
+NSString *const kCAMediaTimingFunctionLinear = @"linear", *const kCAMediaTimingFunctionEaseIn = @"easeIn", *const kCAMediaTimingFunctionEaseOut = @"easeOut", *const kCAMediaTimingFunctionEaseInEaseOut = @"easeInEaseOut", *const kCAMediaTimingFunctionDefault = @"default";
+const CFStringRef kSecCodeInfoEntitlementsDict = CFS("entitlements-dict"), kSecCodeInfoEntitlements = CFS("entitlements"), kSecCodeInfoIdentifier = CFS("identifier");

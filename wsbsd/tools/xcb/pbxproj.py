@@ -89,15 +89,25 @@ class Project:
         if st == "DEVELOPER_DIR": return "$(DEVELOPER_DIR)/" + p
         return p
     # ---- build settings ----
-    def settings(self, target, config="Release"):
+    def settings(self, target, config=None):
+        """Build settings of a configuration: XCB_CONFIG, else Release, else the first one that is not a debug one (Deployment ...) and has a product name."""
         s = {}
-        def cl(oid):
+        def names(oid): return [self.objs[c]["name"] for c in self.objs[self.objs[oid]["buildConfigurationList"]]["buildConfigurations"]]
+        def cl(oid, config):
             for c in self.objs[self.objs[oid]["buildConfigurationList"]]["buildConfigurations"]:
                 co = self.objs[c]
                 if co["name"] == config: return co.get("buildSettings", {})
             return {}
-        s.update(cl(self.main_id()) if False else self._proj_settings(config))
-        s.update(cl(target["id"]))
+        if config is None: config = os.environ.get("XCB_CONFIG")
+        if config is None:
+            ns = names(target["id"])
+            cands = ["Release"] + [n for n in ns if n not in ("Debug", "Development", "Release")] + ns
+            config = next((n for n in cands if n in ns and cl(target["id"], n).get("PRODUCT_NAME")), "Release")
+            # a configuration without settings (Xcode's "Default" of old projects) is no choice
+            rich = [n for n in cands if n in ns and cl(target["id"], n)]
+            if config not in rich and rich: config = rich[0]
+        s.update(self._proj_settings(config))
+        s.update(cl(target["id"], config))
         return s
     def main_id(self): return [k for k, o in self.objs.items() if o.get("isa") == "PBXProject"][0]
     def _proj_settings(self, config):

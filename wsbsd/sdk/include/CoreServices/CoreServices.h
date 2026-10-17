@@ -9,6 +9,7 @@
 typedef int32_t OSStatus;
 typedef uint32_t OSType;
 typedef int16_t OSErr;
+struct UTCDateTime;
 #include <CoreFoundation/CoreFoundation.h>
 #pragma clang arc_cf_code_audited begin
 #ifdef __cplusplus
@@ -18,10 +19,14 @@ extern "C" {
 int32_t UCConvertSecondsToCFAbsoluteTime(uint32_t seconds, CFAbsoluteTime *absoluteTime);
 int32_t UCConvertCFAbsoluteTimeToSeconds(CFAbsoluteTime absoluteTime, uint32_t *seconds);
 Boolean UTTypeEqual(CFStringRef inUTI1, CFStringRef inUTI2);
+CFDictionaryRef UTTypeCopyDeclaration(CFStringRef inUTI);
+OSStatus UCConvertUTCDateTimeToCFAbsoluteTime(const struct UTCDateTime *iUTCDate, CFAbsoluteTime *oCFTime);
+OSStatus UCConvertCFAbsoluteTimeToUTCDateTime(CFAbsoluteTime iCFTime, struct UTCDateTime *oUTCDate);
 Boolean UTTypeConformsTo(CFStringRef inUTI, CFStringRef inConformsToUTI);
 CFStringRef UTTypeCopyPreferredTagWithClass(CFStringRef inUTI, CFStringRef inTagClass);
 CFStringRef UTTypeCreatePreferredIdentifierForTag(CFStringRef inTagClass, CFStringRef inTag, CFStringRef inConformingToUTI);
 CFStringRef UTTypeCopyDescription(CFStringRef inUTI);
+extern const CFStringRef kUTTypeDescriptionKey, kUTTypeConformsToKey, kUTTypeIdentifierKey, kUTTypeTagSpecificationKey;
 extern const CFStringRef kUTTagClassFilenameExtension;
 extern const CFStringRef kUTTagClassMIMEType;
 extern const CFStringRef kUTTypeData, kUTTypeItem, kUTTypeContent, kUTTypePlainText, kUTTypeText, kUTTypeApplicationBundle, kUTTypeFolder, kUTTypeDirectory, kUTTypeBundle;
@@ -30,5 +35,6 @@ extern const CFStringRef kUTTypeData, kUTTypeItem, kUTTypeContent, kUTTypePlainT
 #endif
 #pragma clang arc_cf_code_audited end
 enum { noErr = 0, userCanceledErr = -128, fnfErr = -43, paramErr = -50, permErr = -54 };
+#include <CoreServices/FileManager.h>
 #endif
 #endif

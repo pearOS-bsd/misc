@@ -18,7 +18,7 @@ typedef void (*FSEventStreamCallback)(ConstFSEventStreamRef streamRef, void *cli
 #define kFSEventStreamEventIdSinceNow 0xFFFFFFFFFFFFFFFFULL
 enum { kFSEventStreamCreateFlagNone = 0, kFSEventStreamCreateFlagUseCFTypes = 1, kFSEventStreamCreateFlagNoDefer = 2, kFSEventStreamCreateFlagWatchRoot = 4,
        kFSEventStreamCreateFlagIgnoreSelf = 8, kFSEventStreamCreateFlagFileEvents = 0x10 };
-enum { kFSEventStreamEventFlagNone = 0, kFSEventStreamEventFlagMustScanSubDirs = 1, kFSEventStreamEventFlagItemCreated = 0x100, kFSEventStreamEventFlagItemRemoved = 0x200,
+enum { kFSEventStreamEventFlagNone = 0, kFSEventStreamEventFlagMustScanSubDirs = 1, kFSEventStreamEventFlagUserDropped = 2, kFSEventStreamEventFlagKernelDropped = 4, kFSEventStreamEventFlagEventIdsWrapped = 8, kFSEventStreamEventFlagHistoryDone = 0x10, kFSEventStreamEventFlagRootChanged = 0x20, kFSEventStreamEventFlagMount = 0x40, kFSEventStreamEventFlagUnmount = 0x80, kFSEventStreamEventFlagItemCreated = 0x100, kFSEventStreamEventFlagItemRemoved = 0x200,
        kFSEventStreamEventFlagItemModified = 0x1000, kFSEventStreamEventFlagItemIsFile = 0x10000, kFSEventStreamEventFlagItemIsDir = 0x20000 };
 FSEventStreamRef FSEventStreamCreate(CFAllocatorRef allocator, FSEventStreamCallback callback, FSEventStreamContext *context, CFArrayRef pathsToWatch,
                                      FSEventStreamEventId sinceWhen, CFTimeInterval latency, uint32_t flags);
