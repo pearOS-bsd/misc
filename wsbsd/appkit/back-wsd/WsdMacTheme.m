@@ -295,6 +295,15 @@ static void wsdVEVMove(id self, SEL _cmd)
 	}
 	if (origVEVMove) ((void (*)(id, SEL))origVEVMove)(self, _cmd);
 }
+/* macOS keeps a window's title bar below the menu bar but lets the bottom run off the screen; GNUstep shrinks the window to fit */
+static IMP origConstrain;
+static NSRect wsdConstrain(id self, SEL _cmd, NSRect f, NSScreen *scr)
+{
+	NSRect sf = scr ? [scr frame] : NSMakeRect(0, 0, 1280, 800);
+	CGFloat top = NSMaxY(sf) - 30.0;
+	if (NSMaxY(f) > top) f.origin.y -= NSMaxY(f) - top;
+	return f;
+}
 static void swizzleTableDefaults(void)
 {
 	Method mt = class_getInstanceMethod([NSTableView class], @selector(_initDefaults));
@@ -307,6 +316,7 @@ static void swizzleTableDefaults(void)
 		Method md = class_getInstanceMethod(vc, @selector(drawRect:)); if (md && !origVEVDraw) { origVEVDraw = method_getImplementation(md); class_replaceMethod(vc, @selector(drawRect:), (IMP)wsdVEVDraw, method_getTypeEncoding(md)); }
 		Method mm = class_getInstanceMethod(vc, @selector(viewDidMoveToWindow)); if (mm && !origVEVMove) { origVEVMove = method_getImplementation(mm); class_replaceMethod(vc, @selector(viewDidMoveToWindow), (IMP)wsdVEVMove, method_getTypeEncoding(mm)); }
 	}
+	{ Method mc = class_getInstanceMethod([NSWindow class], @selector(constrainFrameRect:toScreen:)); if (mc && !origConstrain) origConstrain = method_setImplementation(mc, (IMP)wsdConstrain); }
 	Method mth = class_getInstanceMethod([NSTableHeaderView class], @selector(initWithFrame:));
 	if (mth && !origHeaderInit) origHeaderInit = method_setImplementation(mth, (IMP)wsdHeaderInit);
 	Method mat = class_getInstanceMethod([NSButtonCell class], @selector(attributedTitle));
