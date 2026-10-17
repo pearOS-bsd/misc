@@ -17,7 +17,7 @@ WS="${GITHUB_WORKSPACE:-$(cd "$(dirname "$0")/../.." && pwd)}/wsbsd"
 
 # the wsd client library, position independent so the back bundle can link it
 mkdir -p /tmp/wsc && cd /tmp/wsc
-for f in client compositor_sw region ipc evrec buffer keymap xkbmap; do
+for f in client compositor_sw region ipc evrec buffer; do
 	cc -O2 -fPIC -std=c99 -D_DEFAULT_SOURCE -I"$WS/include" -c "$WS/src/$f.c" -o $f.o || exit 1
 done
 ar rcs libwsclient.a *.o
@@ -39,7 +39,7 @@ mkdir -p Headers/wsd
 cp "$WS"/include/ws_xkb.h "$WS"/include/ws_input.h Headers/wsd/ 2>/dev/null; cp "$WS"/appkit/back-wsd/*.h "$WS"/include/ws.h "$WS"/include/ws_client.h "$WS"/include/ws_buffer.h Headers/wsd/
 cp "$WS"/appkit/back-wsd/*.m Source/headless/
 # the wsd client library is compiled straight into the headless subproject (a static archive is not picked up by the bundle link)
-for f in client compositor_sw region ipc evrec buffer; do cp "$WS/src/$f.c" Source/headless/wsc_$f.c; done
+for f in client compositor_sw region ipc evrec buffer keymap xkbmap; do cp "$WS/src/$f.c" Source/headless/wsc_$f.c; done
 printf 'ADDITIONAL_INCLUDE_DIRS += -I%s/include\nADDITIONAL_CFLAGS += -std=gnu99 -D_DEFAULT_SOURCE\nheadless_C_FILES += wsc_client.c wsc_compositor_sw.c wsc_region.c wsc_ipc.c wsc_evrec.c wsc_buffer.c wsc_keymap.c wsc_xkbmap.c\nADDITIONAL_CFLAGS += -DWSD_XKB -I/usr/local/include $(shell pkg-config --cflags xkbcommon)\nADDITIONAL_LDFLAGS += -L/usr/local/lib -lxkbcommon\n' "$WS" >> Source/headless/GNUmakefile.preamble
 # headless server -> wsd server
 sed -i '' 's/^HeadlessServer.m \\/HeadlessServer.m WsdServer.m WsdCairoSurface.m WsdMacTheme.m \\/' Source/headless/GNUmakefile
