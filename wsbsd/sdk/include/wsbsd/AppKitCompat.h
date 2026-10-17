@@ -286,6 +286,13 @@ enum { NSURLBookmarkCreationWithSecurityScope = 1 << 11, NSURLBookmarkCreationSe
 @property BOOL sendsWholeSearchString;
 @property BOOL sendsSearchStringImmediately;
 @end
+/* bookmarks and security scope: a bookmark is the path (there is no sandbox; resolving it gives the path back) */
+@interface NSURL (WsbsdBookmarks)
+- (NSData *)bookmarkDataWithOptions:(NSUInteger)options includingResourceValuesForKeys:(NSArray *)keys relativeToURL:(NSURL *)relativeURL error:(NSError **)error;
++ (instancetype)URLByResolvingBookmarkData:(NSData *)bookmarkData options:(NSUInteger)options relativeToURL:(NSURL *)relativeURL bookmarkDataIsStale:(BOOL *)isStale error:(NSError **)error;
+- (BOOL)startAccessingSecurityScopedResource;
+- (void)stopAccessingSecurityScopedResource;
+@end
 @interface NSMenu (WsbsdMenuName)
 - (void)_setMenuName:(NSString *)name;
 - (NSString *)_menuName;
