@@ -982,6 +982,22 @@ int main(void)
 		uint8_t tm[0x24]; hdr(tm, 0x24, 32036, 0); float five = 50.0f; memcpy(tm + 0x20, &five, 4); CHECK(rc(fd, tm, 0x24) == 0);
 		uint8_t gt[0x18]; hdr(gt, 0x18, 32037, 0); n = call(fd, gt, 0x18, rep, sizeof rep);
 		{ float got; memcpy(&got, rep + 0x24, 4); CHECK(n == 0x28 && got == 10.0f); }                           /* clamped to 10 */
+		{ /* a listen-only tap on key down gets the serialized event as a notification (PostEventTapData's data stream) */
+			uint8_t lq[0x44]; memset(lq, 0, sizeof lq);
+			hdr(lq, 0x44, 32028, 1); w32(lq, 0x18, 1); w32(lq, 0x1c, 0x778); lq[0x26] = 0x11; memcpy(lq + 0x28, "\0\0\0\0\1\0\0\0", 8);
+			w32(lq, 0x30, 1); w32(lq, 0x3c, 1); w32(lq, 0x40, 1u << 10);
+			int ln = call(fd, lq, 0x44, rep, sizeof rep); uint32_t ltid = r32(rep, 0x24); CHECK(ln == 0x2c && ltid != 0);
+			ws_win kw; CHECK(ws_win_create(c, (ws_rect){ 30, 30, 50, 50 }, 0, &kw) == 0 && ws_win_order(c, &kw, 1, 0) == 0);
+			uint32_t nt, nl; uint8_t nd[768]; while (ws_conn_next_notification(c, 0, &nt, nd, &nl)) {}
+			uint8_t rec[512]; size_t rn = ws_evrec_make_key(rec, sizeof rec, 1, 13, 0, 0, 0, 0, 0, 0x0a); uint8_t pm[0x400]; memset(pm, 0, sizeof pm);
+			hdr(pm, (uint32_t)(0x2c + ((rn + 3) & ~3u)), 30120, 0); w32(pm, 0x20, (uint32_t)getpid()); w32(pm, 0x24, 1); w32(pm, 0x28, (uint32_t)rn); memcpy(pm + 0x2c, rec, rn);
+			CHECK(rc(fd, pm, 0x2c + ((rn + 3) & ~3u)) == 0);
+			int got = 0; for (int tries = 0; tries < 20 && !got; tries++) while (ws_conn_next_notification(c, 200, &nt, nd, &nl)) if (nt == 0x54415044u) { got = 1; break; }
+			CHECK(got && nl > 24 && r32(nd, 0) == 0 && r32(nd, 8) == ltid && r32(nd, 12) == nl - 16 && r32(nd, 16) == 0 && r32(nd, 20) == nl - 24);
+			if (got) { ws_evrec er; CHECK(ws_evrec_parse(nd + 24, nl - 24, &er) == 0 && ws_evrec_type(&er) == 10 && ws_evrec_keycode(&er) == 13); }
+			ws_win_order(c, &kw, 0, 0);
+			hdr(e, 0x28, 32031, 0); w32(e, 0x20, ltid); w32(e, 0x24, 0); CHECK(rc(fd, e, 0x28) == 0);          /* disabled again (a release would drop every tap of the connection) */
+		}
 		hdr(e, 0x24, 32030, 0); w32(e, 0x20, tid); CHECK(rc(fd, e, 0x24) == 0);
 		hdr(e, 0x24, 32032, 0); w32(e, 0x20, tid); CHECK(rc(fd, e, 0x24) == 1007);                              /* released */
 		hdr(e, 0x24, 32030, 0); w32(e, 0x20, tid); CHECK(rc(fd, e, 0x24) == 1007);

@@ -219,10 +219,27 @@ static int peer_pid(int fd)
 
 #define conn_by_id wsd_conn_by_id
 
+/* listen-only event taps: every event queued for a window is also serialized as a CGEvent record and offered to the taps (src/sls_tap.c) */
+static void tap_deliver(const ws_event *e)
+{
+	int cg; uint8_t rec[512]; size_t n = 0; ws_rect f = { 0, 0, 0, 0 }; ws_window_frame(srv, e->wid, &f);
+	float gx = (float)(f.x + e->x), gy = (float)(f.y + e->y);
+	switch (e->type) {
+	case WS_EV_MOUSE_MOVE: cg = 5; n = ws_evrec_make_mouse(rec, sizeof rec, cg, gx, gy, e->flags, 0, 0, 0); break;
+	case WS_EV_MOUSE_DOWN: cg = (e->buttons & 2) ? 3 : 1; n = ws_evrec_make_mouse(rec, sizeof rec, cg, gx, gy, e->flags, 1, (e->buttons & 2) ? 1 : 0, 0); break;
+	case WS_EV_MOUSE_UP: cg = (e->buttons & 2) ? 4 : 2; n = ws_evrec_make_mouse(rec, sizeof rec, cg, gx, gy, e->flags, 1, (e->buttons & 2) ? 1 : 0, 0); break;
+	case WS_EV_KEY_DOWN: cg = 10; n = ws_evrec_make_key(rec, sizeof rec, 1, e->key, e->flags, gx, gy, 0, 0, 0x0a); break;
+	case WS_EV_KEY_UP: cg = 11; n = ws_evrec_make_key(rec, sizeof rec, 0, e->key, e->flags, gx, gy, 0, 0, 0x0a); break;
+	default: return;
+	}
+	if (n) sls_tap_deliver(cg, rec, n);
+}
+
 /* events queued for a window are also pushed to its owner's event channel, if the connection opened one */
 static void push_event(void *ctx, uint32_t owner, const ws_event *e)
 {
 	(void)ctx;
+	tap_deliver(e);
 	conn *c = conn_by_id(owner);
 	if (!c || c->efd < 0) return;
 	wsx_event_msg m; memset(&m, 0, sizeof m);
@@ -947,6 +964,7 @@ static void push_notification(conn *t, uint32_t type, const uint8_t *data, uint3
 	m.ndr = WS_NDR; m.type = type; m.len = n > sizeof m.data ? (uint32_t)sizeof m.data : n; memcpy(m.data, data, m.len);
 	ws_ipc_send(t->efd, &(struct iovec){ &m, sizeof m }, 1, NULL, 0);
 }
+void wsd_push_notification(uint32_t owner, uint32_t type, const uint8_t *data, uint32_t n) { push_notification(conn_by_id(owner), type, data, n); }
 static int do_post_notification(conn *c, const uint8_t *buf, size_t len, int broadcast)
 {
 	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
