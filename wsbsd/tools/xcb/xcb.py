@@ -33,9 +33,34 @@ def stage_headers(p, out):
             os.symlink(os.path.realpath(path), dst); n += 1                    # a link, so #import sees one file whichever way it is reached
     return n
 
+import re
+_inc = re.compile(r'^\s*#\s*(?:import|include)\s*[<"]([^>"]+)[>"]', re.M)
+def alias_case(proj, p, out):
+    """The sources were written on a case-insensitive file system: an include whose case differs from the file's (HFFUnctions.h for HFFunctions.h) is made to resolve by a link."""
+    hdrs = {}
+    for oid, o in proj.objs.items():
+        if o.get("isa") == "PBXFileReference" and o.get("path", "").endswith(".h") and os.path.exists(proj.path_of(oid)):
+            hdrs.setdefault(os.path.basename(proj.path_of(oid)).lower(), os.path.realpath(proj.path_of(oid)))
+    have = set()
+    for root, dirs, files in os.walk(os.path.join(out, "headers")):
+        for f in files: have.add(os.path.relpath(os.path.join(root, f), os.path.join(out, "headers")))
+    srcdirs = {os.path.dirname(x[0]) for x in p["sources"] + p["headers"]}
+    n = 0
+    for path in [x[0] for x in p["sources"] + p["headers"]]:
+        try: text = open(path, encoding="utf-8", errors="replace").read()
+        except OSError: continue
+        for name in _inc.findall(text):
+            base = os.path.basename(name)
+            if not base.endswith(".h") or name in have or any(os.path.exists(os.path.join(d, name)) for d in srcdirs): continue
+            real = hdrs.get(base.lower())
+            if real and os.path.basename(real) != base:
+                dst = os.path.join(out, "headers", name); os.makedirs(os.path.dirname(dst), exist_ok=True)
+                if not os.path.lexists(dst): os.symlink(real, dst); have.add(name); n += 1
+    return n
+
 def compile_flags(proj, p, out, extra):
     env = p["env"]; f = []
-    if str(env.get("CLANG_ENABLE_OBJC_ARC", "NO")) == "YES": f.append("-fobjc-arc")
+    f.append("-fobjc-arc" if str(env.get("CLANG_ENABLE_OBJC_ARC", "NO")) == "YES" else "-fno-objc-arc")
     f += ["-fblocks", "-I" + os.path.join(out, "headers")] + ["-I" + x for x in extra]
     dirs = sorted({os.path.dirname(x[0]) for x in p["sources"] + p["headers"]})
     f += ["-I" + x for x in dirs]
@@ -61,6 +86,8 @@ def build(proj, name, o):
     p = plan(proj, name); t = p["target"]; out = os.path.abspath(o.get("--out", "xcb-out")); os.makedirs(out, exist_ok=True)
     cc = o.get("--cc", "clang"); cflags = shlex.split(o.get("--cflags", "")); syntax = "--syntax-only" in o
     print("staged %d headers as <%s/...>" % (stage_headers(p, out), p["env"]["PRODUCT_NAME"]))
+    na = alias_case(proj, p, out)
+    if na: print("%d includes differ from the file name only by case (resolved by links)" % na)
     base = compile_flags(proj, p, out, [x for x in o.get("--dep-incs", "").split(",") if x])
     jobs = []; skipped = []
     for path, fr, st in p["sources"]:

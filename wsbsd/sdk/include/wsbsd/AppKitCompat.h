@@ -12,9 +12,36 @@
 #import <AppKit/NSAlert.h>
 #import <AppKit/NSColor.h>
 #import <AppKit/NSImageCell.h>
+#import <AppKit/NSScroller.h>
+#import <AppKit/NSEvent.h>
+#import <AppKit/NSControl.h>
 #import <AppKit/NSTextStorage.h>
 #import <AppKit/NSGraphics.h>
 
+#import <CoreGraphics/CoreGraphics.h>
+typedef enum { CGRectMinXEdge, CGRectMinYEdge, CGRectMaxXEdge, CGRectMaxYEdge } CGRectEdge;
+#ifndef CGRectZero
+#define CGRectZero ((CGRect){ { 0, 0 }, { 0, 0 } })
+#endif
+#ifndef CGSizeZero
+#define CGSizeZero ((CGSize){ 0, 0 })
+#endif
+#ifndef CGPointZero
+#define CGPointZero ((CGPoint){ 0, 0 })
+#endif
+#ifndef CGRectNull
+#define CGRectNull ((CGRect){ { INFINITY, INFINITY }, { 0, 0 } })
+#endif
+#ifndef CGAffineTransformIdentity
+#define CGAffineTransformIdentity ((CGAffineTransform){ 1, 0, 0, 1, 0, 0 })
+#endif
+#ifndef NSPasteboardNameGeneral
+#define NSPasteboardNameGeneral NSGeneralPboard
+#define NSPasteboardNameFind NSFindPboard
+#define NSPasteboardNameDrag NSDragPboard
+#define NSPasteboardNameFont NSFontPboard
+#define NSPasteboardNameRuler NSRulerPboard
+#endif
 #ifndef NSBezelStyleRounded
 #define NSBezelStyleRounded 1
 #define NSBezelStyleRegularSquare 2
@@ -66,6 +93,21 @@ typedef NSUInteger NSAttributedStringEnumerationOptions;
 #define NSAttributedStringEnumerationLongestEffectiveRangeNotRequired (1UL << 20)
 #endif
 
+@interface NSUndoManager (WsbsdCompat)
+- (void)setActionIsDiscardable:(BOOL)flag;
+@end
+@interface NSEvent (WsbsdCompat)
+- (BOOL)hasPreciseScrollingDeltas;
+- (CGFloat)scrollingDeltaX;
+- (CGFloat)scrollingDeltaY;
+@end
+@interface NSControl (WsbsdCompat)
+- (NSControlSize)controlSize;
+- (void)setControlSize:(NSControlSize)size;
+@end
+@interface NSScroller (WsbsdCompat)
++ (CGFloat)scrollerWidthForControlSize:(NSControlSize)size scrollerStyle:(int)style;
+@end
 @interface NSTextView (WsbsdCompat)
 - (void)insertText:(id)string replacementRange:(NSRange)range;
 - (BOOL)isAutomaticQuoteSubstitutionEnabled;
@@ -92,6 +134,7 @@ typedef NSUInteger NSAttributedStringEnumerationOptions;
 @interface NSColor (WsbsdCompat)
 + (NSColor *)linkColor;
 + (NSColor *)separatorColor;
++ (NSArray *)alternatingContentBackgroundColors;
 @end
 @interface NSAttributedString (WsbsdCompat)
 - (void)enumerateAttribute:(NSString *)name inRange:(NSRange)range options:(NSAttributedStringEnumerationOptions)opts usingBlock:(void (^)(id value, NSRange range, BOOL *stop))block;
