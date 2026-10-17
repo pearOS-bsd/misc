@@ -122,6 +122,13 @@ if [ -d "$UD" ]; then
 		(WSD_WINDOW_BG=27,36,43 UI_EXIT_AFTER=9 timeout 20 "$UD/UITest-gnustep" >/tmp/uitest-manifest.txt 2>/tmp/uitest.log) &
 		UP=$!; sleep 5
 		./wsshot uitest.ppm && python3 tools/ppm2png.py uitest.ppm uitest.png; grep '^CTRL' /tmp/uitest-manifest.txt > uitest-manifest.txt
+		python3 - <<'PY' || UITEST_BLANK=1
+import sys
+d=open('uitest.ppm','rb').read()
+body=d[-1280*800*3:]
+print('uitest screenshot: %d distinct bytes' % len(set(body[::97])))
+sys.exit(0 if len(set(body[::97]))>40 else 1)
+PY
 		i=0; while kill -0 $UP 2>/dev/null && [ $i -lt 15 ]; do sleep 1; i=$((i+1)); done; pkill -f UITest-gnustep 2>/dev/null
 		(WSD_APPEARANCE=light UI_EXIT_AFTER=9 timeout 20 "$UD/UITest-gnustep" >/dev/null 2>/tmp/uitest-light.log) &
 		UP=$!; sleep 5; ./wsshot uitest-light.ppm && python3 tools/ppm2png.py uitest-light.ppm uitest-light.png
@@ -138,4 +145,5 @@ kill $WP 2>/dev/null
 grep -v '^(lldb)\|warning\|wsd-back: \(titlewindow\|setinput\|flush\|commit\|order\|ws_win\)' /tmp/hello.log | tail -40; tail -5 /tmp/wsd.log
 ls -l appkit.png
 echo '=== TERMINAL (terminal/) ==='; cat /tmp/terminal-ci.txt 2>/dev/null
+[ "${UITEST_BLANK:-0}" = 0 ] || { echo 'UITEST CHECK FAILED: the gallery screenshot is blank (the app or the backend did not build)'; exit 1; }
 [ "${TERMINAL_OK:-1}" = 1 ] || { echo 'TERMINAL CHECK FAILED: neofetch output is not on the terminal screen'; exit 1; }
