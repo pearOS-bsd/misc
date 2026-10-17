@@ -34,6 +34,11 @@ The stack: `wsd` (this repo: window server and compositor speaking the SkyLight 
 | `terminal/` (Terminal) | pty, text rendering, neofetch showing the Aqua desktop |
 | `ksa/` (Keyboard Setup Assistant clone) | AppKit panes compared side by side with the Mac |
 | `uitest/` (UI gallery) | 33 controls, alert, menu, vibrancy, light / dark |
+| [Hex Fiend](https://github.com/HexFiend/HexFiend) (built by `tools/xcb`, unmodified but 4 Swift files in `ports/hexfiend/overlay`) | document windows, hex and ASCII columns, themes, dark appearance, resize cursors |
+| [GrandPerspective](https://github.com/mfcarroll/grandperspective) (2026 sources, 138 of 138 files, unmodified) | starts: menu bar, welcome window, alerts, drive picker |
+| [Pashua](https://github.com/BlueM/Pashua) (41 of 41 files, unmodified) | starts and builds its dialog (window size still wrong) |
+
+The repository root `README.md` has the overview with screenshots; `ci/build-app.sh` builds any Xcode project this way.
 
 ### Unmodified open source Mac apps (survey, `ci/oss-probe.sh`)
 Each repository is cloned as is and every Objective-C file is syntax-checked against the GNUstep headers with ARC (project headers are resolved by directory name, which is
