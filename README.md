@@ -45,12 +45,12 @@ Rule of the project: upstream sources are never edited. What the platform lacks 
 
 ## Applications
 
-State on 2026-10-17, FreeBSD 14.5 aarch64 (QEMU, HVF) and the CI virtual machine (x86_64). "Unmodified" means no line of the application's own sources was changed.
+State on 2026-10-17, FreeBSD 14.5 aarch64 (QEMU, HVF; a real screen in the QEMU window and VNC) and the CI virtual machine (x86_64). "Unmodified" means no line of the application's own sources was changed.
 
 | Application | Build | Runs | Notes |
 |---|---|---|---|
 | [Hex Fiend](https://github.com/HexFiend/HexFiend) | framework 61 of 61, app 47 of 47 files, **unmodified** except 4 Swift files ported to Objective-C in the overlay | **yes**: menus, document windows, hex and ASCII columns with real data, themes, dark appearance, resize cursors | the window starts small; Swift-only features (some themes UI) are the overlay's |
-| [GrandPerspective](https://github.com/mfcarroll/grandperspective) (2026) | 138 of 138, unmodified | **starts**: menu bar, welcome window, its own alerts, drive picker | scanning and the treemap view are the next step |
+| [GrandPerspective](https://github.com/mfcarroll/grandperspective) (2026) | 138 of 138, unmodified | **starts**: menu bar, welcome window (its right edge is clipped), its own alerts, drive access flow, folder picker | starting a scan raises an exception inside `scanFolder:filterSet:` (under investigation); no result window yet |
 | [GrandPerspective 1.5](https://github.com/bezigon/GrandPerspective) (2015) | 115 of 115, unmodified | scans a folder through the Carbon File Manager shim, then **crashes**: the 2015 sources pass `float *` where AppKit takes `CGFloat *` (broken on any 64-bit platform, also on a Mac) | the 2026 sources are the target |
 | [Pashua](https://github.com/BlueM/Pashua) | 41 of 41, unmodified | **yes**: reads a config file, shows the dialog (text, field, pop-up, checkbox, buttons) and prints the values on OK | the static text is drawn selected (GNUstep selects it when it gets focus) |
 | Chess.app ([apple-oss-distributions/Chess](https://github.com/apple-oss-distributions/Chess)) | not started | | Swift (SharePlay), OpenGL/Metal 3D board: needs overlay for Swift and a GL path |
@@ -71,7 +71,7 @@ CoreText drawing over Opal (glyph drawing, character sets, substitution fonts, `
 - **Cursor**: an independent image with a hotspot (hardware cursor plane on KMS); standard shapes drawn by the server (arrow, I-beam, hand, crosshair, resize arrows, move); AppKit cursor rects drive them, including the window edge resize cursors.
 - **Input**: evdev to macOS key codes, xkbcommon layouts, pointer acceleration, wheel, tablets.
 - **Frame rate counter**: `wsd -F` (or `WSD_FPS=1`) draws the system-wide frame rate and compose time in the corner; `wsfps` prints it. ![fps](wsbsd/docs/screenshots/fps-overlay.png)
-- **Displays**: VNC today (`wsd -V 5901`; a viewer replaces a stale one, keepalive), DRM/KMS and GBM written but not yet verified on real hardware.
+- **Displays**: the **vt(4) framebuffer** (`gmake fb`, `wsd -b kms -c /dev/ttyv0`): a real screen in the QEMU window, no VNC and no GPU driver needed, input from evdev (USB keyboard and tablet); VNC (`wsd -V 5901`; a viewer replaces a stale one, keepalive); DRM/KMS and GBM written but not yet verified on real hardware.
 
 ![cursors](wsbsd/docs/screenshots/cursors.png)
 
@@ -90,8 +90,16 @@ shape is comparable.
 | One composed 1080p frame (8 windows, shadows, blur) | 21.1 ms (software, one core) | 16.8 ms (software, one core) | on the GPU |
 | CPU, idle | none measured in 3 s | none measured in 3 s | 49 to 67 % of a core |
 
-In the local FreeBSD virtual machine (QEMU on an M1, 1280x800 desktop with a Terminal, software compositor) a frame composes in **1 to 2 ms**; the frame rate seen through VNC (24 to 29 frames
-a second with noVNC in a browser) is set by the viewer's request cadence and the network path, not by the compositor, which can compose frames several times faster than that.
+**Frame rate, VNC against the real screen** (local FreeBSD VM: QEMU on an M1 with HVF, software compositor, one desktop with a Terminal; `wsfps`, `test`/`stress` pointer injection, measured 2026-10-17):
+
+| Path | Frames presented per second | Per frame |
+|---|---|---|
+| VNC (noVNC in a browser), 1280x800 | 24 to 29 | compose 1 to 2 ms: the rate is the viewer's request cadence and the network path, not the compositor |
+| **wsd on the framebuffer** (`-b kms -c /dev/ttyv0`, QEMU window, no VNC), 800x600, damage on every frame | **about 1,290** (7,010 frames in 5.4 s) | 0.66 ms compose and copy |
+
+So without VNC the compositor is no longer the limit: it can hand the display well over 200 frames a second in this scene (a Terminal window and a moving software cursor). What a person sees is capped by the
+display, QEMU's window refreshes at about 60 Hz, so the figure to quote for what is on the screen is 60; heavier scenes (several large windows with blur) compose in more time per frame and have not been
+measured on the framebuffer yet.
 The WindowServer's transport is Mach IPC with audit checks, wsd uses Unix sockets, so the latency comparison says little about the architecture.
 
 UI parity with macOS (the same Objective-C gallery rendered on both, mean absolute pixel difference per control, 0 to 255): dark appearance, most controls 4 to 12, the date picker 23; light
