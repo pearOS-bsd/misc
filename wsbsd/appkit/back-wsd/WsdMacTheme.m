@@ -84,6 +84,23 @@ static NSImage *controlImage(BOOL radio, BOOL on)
 	return img;
 }
 
+/* the combo box button's arrow: a small chevron pointing down (the stock image is a row of dots here) */
+static NSImage *comboChevron(void)
+{
+	const int W = 12, H = 12; unsigned char *buf = calloc((size_t)W * H, 4); int c = isDark() ? 215 : 70;
+	for (int y = 0; y < H; y++)
+		for (int x = 0; x < W; x++) {
+			double px = x + 0.5, py = y + 0.5;
+			double d1 = segDist(px, py, 2.5, 4.2, 6.0, 7.8), d2 = segDist(px, py, 6.0, 7.8, 9.5, 4.2), d = d1 < d2 ? d1 : d2;
+			double cov = 0.5 - (d - 0.8); cov = cov < 0 ? 0 : cov > 1 ? 1 : cov;
+			unsigned char *o = buf + ((size_t)y * W + x) * 4; o[0] = (unsigned char)(c * cov + 0.5); o[1] = o[0]; o[2] = o[0]; o[3] = (unsigned char)(cov * 255 + 0.5);
+		}
+	NSBitmapImageRep *rep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes: NULL pixelsWide: W pixelsHigh: H bitsPerSample: 8 samplesPerPixel: 4 hasAlpha: YES isPlanar: NO colorSpaceName: NSDeviceRGBColorSpace bytesPerRow: W * 4 bitsPerPixel: 32];
+	memcpy([rep bitmapData], buf, (size_t)W * H * 4); free(buf);
+	NSImage *img = [[[NSImage alloc] initWithSize: NSMakeSize(W, H)] autorelease]; [img addRepresentation: rep]; [rep release];
+	return img;
+}
+
 /* made when the first window exists (the images are drawn with lockFocus, which needs a working display server) */
 static void installControlImages(void)
 {
@@ -99,6 +116,7 @@ static void installControlImages(void)
 			BOOL ok = [nu setName: real];
 			if (getenv("WSD_DEBUG")) NSLog(@"wsd control image %@ -> %@ replaced=%d named=%d", keys[i], real, old != nil, ok);
 		}
+		{ NSImage *old = [NSImage imageNamed: @"NSComboArrow"]; NSString *real = old && [old name] ? [[old name] copy] : @"NSComboArrow"; if (old) [old setName: nil]; [comboChevron() setName: real]; }
 		for (NSString *nm in @[@"common_Nibble", @"common_3DArrowDown", @"common_ret", @"common_retH"]) {              /* the stock pop-up arrows are blanked: the theme draws the chevrons */
 			NSImage *old = [NSImage imageNamed: nm]; NSString *real = old && [old name] ? [[old name] copy] : nm; NSSize sz = old ? [old size] : NSMakeSize(8, 8);
 			if (old) [old setName: nil];
