@@ -254,11 +254,20 @@ static NSAttributedString *wsdAttrTitle(id self, SEL _cmd)
 	[m appendAttributedString: t];
 	return m;
 }
+/* table headers are 28 pt high on macOS (GNUstep: 22) */
+static IMP origHeaderInit;
+static id wsdHeaderInit(id self, SEL _cmd, NSRect f)
+{
+	if (f.size.height > 15 && f.size.height < 30) f.size.height = 28;
+	return ((id (*)(id, SEL, NSRect))origHeaderInit)(self, _cmd, f);
+}
 static void swizzleTableDefaults(void)
 {
 	Method mt = class_getInstanceMethod([NSTableView class], @selector(_initDefaults));
 	if (mt && !origTableInit) origTableInit = method_setImplementation(mt, (IMP)wsdTableInit);
 	Method mb = class_getInstanceMethod([NSButtonCell class], @selector(drawInteriorWithFrame:inView:));
+	Method mth = class_getInstanceMethod([NSTableHeaderView class], @selector(initWithFrame:));
+	if (mth && !origHeaderInit) origHeaderInit = method_setImplementation(mth, (IMP)wsdHeaderInit);
 	Method mat = class_getInstanceMethod([NSButtonCell class], @selector(attributedTitle));
 	if (mat && !origAttrTitle) origAttrTitle = method_setImplementation(mat, (IMP)wsdAttrTitle);
 	Method mtc = class_getInstanceMethod([NSButtonCell class], @selector(textColor));
@@ -511,6 +520,7 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 /* table headers: no bezel, a 1 px hairline under the header (the title is drawn by the cell) */
 - (void) drawTableHeaderCell: (NSTableHeaderCell *)cell withFrame: (NSRect)cellFrame inView: (NSView *)controlView state: (GSThemeControlState)state
 {
+	[onBG(0.035) set]; NSRectFill(cellFrame);                       /* the header strip is a little lighter than the rows */
 	[cell setAlignment: NSLeftTextAlignment]; [cell setFont: [NSFont systemFontOfSize: 13]];
 	[onBG(0.08) set]; NSRectFill(NSMakeRect(cellFrame.origin.x, [controlView isFlipped] ? NSMaxY(cellFrame) - 1 : cellFrame.origin.y, cellFrame.size.width, 1));
 }
