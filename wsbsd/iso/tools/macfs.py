@@ -95,13 +95,18 @@ def install(root, manifest, comp_file):
         s = os.path.join(root, src.lstrip("/"))
         if os.path.exists(s): copy_real(s, dest(root, dst)); placed += 1
         else: print("missing component source %s" % src)
-    # symlink entries of the manifest become real copies (shortest paths first: Versions/Current before AppKit -> Versions/Current/AppKit)
-    links = sorted([e for e in entries if e[0] == "l"], key=lambda e: e[2].count("/"))
-    for t, mode, path, target in links:
-        d = dest(root, path)
-        src = os.path.normpath(os.path.join(os.path.dirname(d), target)) if not target.startswith("/") else dest(root, target)
-        if os.path.lexists(d) or not os.path.exists(src): continue
-        copy_real(src, d); placed += 1
+    # symlink entries of the manifest become real copies; a link whose target is itself a link (AppKit -> Versions/Current/AppKit, Current -> C) waits until that one exists
+    links = [e for e in entries if e[0] == "l"]
+    for _ in range(6):
+        left = []
+        for t, mode, path, target in links:
+            d = dest(root, path)
+            src = os.path.normpath(os.path.join(os.path.dirname(d), target)) if not target.startswith("/") else dest(root, target)
+            if os.path.lexists(d): continue
+            if not os.path.exists(src): left.append((t, mode, path, target)); continue
+            copy_real(src, d); placed += 1
+        if len(left) == len(links) or not left: break
+        links = left
     print("install: %d placements" % placed)
 
 def desymlink(root):
@@ -139,7 +144,7 @@ def verify(root, manifest):
     withbin = 0
     for p in fw:
         nm = os.path.basename(p)[:-10]
-        if os.path.isfile(os.path.join(dest(root, p), nm)): withbin += 1
+        if os.path.isfile(os.path.join(dest(root, p), nm)) or any(os.path.isfile(os.path.join(dest(root, p), "Versions", v, nm)) for v in (os.listdir(os.path.join(dest(root, p), "Versions")) if os.path.isdir(os.path.join(dest(root, p), "Versions")) else [])): withbin += 1
     print("frameworks on the Mac: %d, present: %d, with their own library: %d" % (len(fw), len(have), withbin))
     return bad
 
