@@ -181,7 +181,6 @@ static const gen_var_entry gen_var_table[] = {
 	{ 30284, 0, 36, 16 },   /* __XSetMagicZoom */
 	{ 30293, 0, 40, 15 },   /* __XRegisterCursorImages */
 	{ 30294, 0, 1108, 13 },   /* __XGetRegisteredCursorImages */
-	{ 30295, 0, 84, 6 },   /* __XGetMenuBar */
 	{ 30298, 0, 36, 5 },   /* __XSetSurfaceListAlpha */
 	{ 30357, 0, 36, 5 },   /* __XMoveManagedSpaceToDisplayIndex */
 	{ 30367, 0, 36, 4 },   /* __XSetActiveMenuBarDisplayIdentifier */

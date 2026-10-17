@@ -466,7 +466,7 @@ int sls_session_dispatch(conn *c, const uint8_t *buf, size_t len)
 		return reply_simple(c->fd, h, 0);
 	}
 	if (h->msgh_id == SLS_MSG_CreateApplication) return do_create_application(c, buf, len);
-	if (h->msgh_id == SLS_MSG_MenuBarExists || h->msgh_id == SLS_MSG_GetActiveMenuBarDrawingStyle || h->msgh_id == SLS_MSG_GetMenuBarAutohideEnabled || h->msgh_id == SLS_MSG_GetZoomParameters) return -2;      /* dedicated handlers (the menu bar state the setters change) */
+	if (h->msgh_id == SLS_MSG_MenuBarExists || h->msgh_id == SLS_MSG_GetActiveMenuBarDrawingStyle || h->msgh_id == SLS_MSG_GetMenuBarAutohideEnabled || h->msgh_id == SLS_MSG_GetZoomParameters || h->msgh_id == SLS_MSG_GetMenuBar) return -2;      /* dedicated handlers (the menu bar state the setters change) */
 	if (!(h->msgh_bits & MACH_MSGH_BITS_COMPLEX) && h->msgh_size == sizeof *h && len == sizeof *h) return sls_golden_reply(c, h);
 	return -2;
 }

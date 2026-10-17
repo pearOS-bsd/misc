@@ -295,6 +295,17 @@ int sls_space_dispatch(conn *c, const uint8_t *buf, size_t len)
 		memcpy(r + 0x18, &WS_NDR, 8); memcpy(r + 0x24, r4, 32);
 		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
 	}
+	case SLS_MSG_GetMenuBar: {                                                      /* header only, size 0x18; reply 0x54: bounds x y w h doubles@0x24 (the menu bar of the shown user space: the display width by 24; CGRectNull = inf, inf, 0, 0 without one), bar alpha float@0x44 (1.0), hidden flag byte@0x48, space flags u32@0x4c, float@0x50 = -1.0 (decompiled __XGetMenuBar) */
+		if (!simple_ok(h, len, 0x18)) return reply_simple(c->fd, h, -304);
+		sp_init(); int shown = 0; for (int i = 0; i < MAXSP; i++) if (sp[i].used && sp[i].type == 0 && sp[i].shown) shown = 1;
+		double inf = 1.0 / 0.0, r4[4] = { inf, inf, 0, 0 };
+		if (shown) { r4[0] = 0; r4[1] = 0; r4[2] = wsd_screen_w; r4[3] = 24; }
+		uint8_t r[0x54]; memset(r, 0, sizeof r);
+		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
+		memcpy(r + 0x18, &WS_NDR, 8); memcpy(r + 0x24, r4, 32);
+		float one = 1.0f, m1 = -1.0f; memcpy(r + 0x44, &one, 4); memcpy(r + 0x50, &m1, 4);
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
 	case SLS_MSG_GetSpacePermittedResizeDirections: {                              /* space id u64@0x20, tile index@0x28, size 0x38; reply 0x2c: the permitted directions u64@0x24; 0 without tiles (recorded) */
 		if (!simple_ok(h, len, 0x38)) return reply_simple(c->fd, h, -304);
 		return reply_u64(c, h, 0);
