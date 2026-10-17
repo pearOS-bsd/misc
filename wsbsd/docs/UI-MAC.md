@@ -37,3 +37,12 @@ Measured on a real macOS 27 (Darwin 27) machine with AppKit's own `NSWindow` (pr
 
 ## NSAlert
 `-[NSAlert runModal]` is replaced in `WsdMacTheme.m` (WSD_NO_MACALERT=1 keeps GNUstep's): borderless panel, radius 26, 64 pt icon, bold title, 13 pt text, 30 pt capsule buttons (first = default, rightmost), 260 pt wide. Verified against `refs/mac/alert.png` (CI artifact `uitest-alert.png`). Open: the stock app icon (black/white square) differs from Apple's generic icon.
+
+## Measured on 2026-10-17 (screen unlocked, references refreshed)
+- Push buttons and pop-ups: rounded rectangle, radius 5 pt, 24 pt high (not capsules); the alert's buttons are 28 pt capsules.
+- Button fills (dark / light): normal window + 8 % / + 7.5 % white-or-black, pressed + 17 % / 16.5 %, default pressed (25,135,255) / (0,110,230); the title colour does not change while pressed, white on the default button.
+- Disabled text: 20 % (dark) / 23 % (light) of the foreground over the window colour.
+- Check box / radio: 6 pt between image and title (a three-per-em space in front of the title makes up for GNUstep's 2.5 pt). Segment labels are centred in their segment (GNUstep centred them twice).
+- Table header 28 pt high with a strip 3.5 % lighter; group box panel starts 3.5 pt below the title top; search field text 19 pt from the left edge; the magnifier is mirrored in flipped views; the combo box arrow is a chevron; the colour swatch is a capsule.
+- Alert: 260 pt wide, icon 52 pt at (26, 26), title and text at x = 22, 28 pt buttons 16 pt from the edges, neutral background (31,31,31) dark / (236,236,236) light, radius 26.
+- Gallery differences left (dark, mean abs per channel): date picker 21.7, table 13, combo box 12.3, check pressed 10.6, check on 10, stepper 9.9.
