@@ -22,8 +22,8 @@ The stack: `wsd` (this repo: window server and compositor speaking the SkyLight 
   checked against golden vectors from a live system. A software compositor does shadows, blur / vibrancy, rounded and shaped windows, resize.
 - **Input:** evdev to macOS key codes and `CGEventFlags`, keyboard layouts through xkbcommon, pointer acceleration, wheel, tablets.
 - **Written but not verified on real hardware:** DRM/KMS and evdev backends, GBM/dma-buf, the OpenGL ES compositor (CI has no GPU).
-- **UI parity with macOS** (the same Objective-C gallery rendered on both, mean absolute pixel difference per control): most controls are below 10 of 255; the largest
-  differences left are the date picker, table view, combo box and the light appearance (about 12 to 24). The font is Inter, not San Francisco (not redistributable).
+- **UI parity with macOS** (the same Objective-C gallery rendered on both, mean absolute pixel difference per control, 0 to 255): dark appearance, most controls 4 to 12, the
+  date picker 23; light appearance 4 to 16, the date picker 24. Much of what is left is the font (Inter, not San Francisco, which is not redistributable).
 
 ### Applications that run today (CI, FreeBSD x86_64, software compositor)
 | Application | What it exercises |
