@@ -1,5 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
+#import <GNUstepGUI/GSDisplayServer.h>
+@interface GSDisplayServer (WsdBlur) - (void) wsdBackgroundBlur: (int)radius : (int)win; @end
 #include <stdlib.h>
 #import <objc/runtime.h>
 #include <math.h>
