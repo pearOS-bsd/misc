@@ -224,11 +224,25 @@ static NSColor *wsdButtonTextColor(id self, SEL _cmd)
 	if ([c image] || [c isBordered] == NO) return ((NSColor *(*)(id, SEL))origButtonTextColor)(self, _cmd);
 	return [NSColor controlTextColor];
 }
+/* the check box / radio image has the 6 pt gap built in on macOS, GNUstep leaves only ~2.5 pt between image and title: a three-per-em space (4.3 pt at 13 pt) in front of the title makes up the difference */
+static IMP origAttrTitle;
+static NSAttributedString *wsdAttrTitle(id self, SEL _cmd)
+{
+	NSAttributedString *t = ((NSAttributedString *(*)(id, SEL))origAttrTitle)(self, _cmd);
+	NSButtonCell *c = self;
+	if (!t || ![t length] || ![c image] || [c isBordered] || ([c imagePosition] != NSImageLeft)) return t;
+	NSDictionary *a = [t attributesAtIndex: 0 effectiveRange: NULL];
+	NSMutableAttributedString *m = [[[NSMutableAttributedString alloc] initWithString: @"\u2004" attributes: a] autorelease];
+	[m appendAttributedString: t];
+	return m;
+}
 static void swizzleTableDefaults(void)
 {
 	Method mt = class_getInstanceMethod([NSTableView class], @selector(_initDefaults));
 	if (mt && !origTableInit) origTableInit = method_setImplementation(mt, (IMP)wsdTableInit);
 	Method mb = class_getInstanceMethod([NSButtonCell class], @selector(drawInteriorWithFrame:inView:));
+	Method mat = class_getInstanceMethod([NSButtonCell class], @selector(attributedTitle));
+	if (mat && !origAttrTitle) origAttrTitle = method_setImplementation(mat, (IMP)wsdAttrTitle);
 	Method mtc = class_getInstanceMethod([NSButtonCell class], @selector(textColor));
 	if (mtc && !origButtonTextColor) origButtonTextColor = method_setImplementation(mtc, (IMP)wsdButtonTextColor);
 	Method msg = class_getInstanceMethod([NSSegmentedCell class], @selector(drawSegment:inFrame:withView:));
