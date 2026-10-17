@@ -12,6 +12,8 @@ static inline int32_t OSAtomicDecrement32(volatile int32_t *p) { return __atomic
 static inline int32_t OSAtomicDecrement32Barrier(volatile int32_t *p) { return __atomic_sub_fetch(p, 1, __ATOMIC_SEQ_CST); }
 static inline int64_t OSAtomicAdd64(int64_t n, volatile int64_t *p) { return __atomic_add_fetch(p, n, __ATOMIC_SEQ_CST); }
 static inline int64_t OSAtomicAdd64Barrier(int64_t n, volatile int64_t *p) { return __atomic_add_fetch(p, n, __ATOMIC_SEQ_CST); }
+static inline int64_t OSAtomicIncrement64Barrier(volatile int64_t *p) { return __atomic_add_fetch(p, 1, __ATOMIC_SEQ_CST); }
+static inline int64_t OSAtomicDecrement64Barrier(volatile int64_t *p) { return __atomic_sub_fetch(p, 1, __ATOMIC_SEQ_CST); }
 static inline int64_t OSAtomicIncrement64(volatile int64_t *p) { return __atomic_add_fetch(p, 1, __ATOMIC_SEQ_CST); }
 static inline int64_t OSAtomicDecrement64(volatile int64_t *p) { return __atomic_sub_fetch(p, 1, __ATOMIC_SEQ_CST); }
 static inline bool OSAtomicCompareAndSwap32(int32_t o, int32_t n, volatile int32_t *p) { return __atomic_compare_exchange_n(p, &o, n, false, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST); }
@@ -32,4 +34,9 @@ typedef int32_t OSSpinLock;
 static inline void OSSpinLockLock(volatile OSSpinLock *l) { while (__atomic_exchange_n(l, 1, __ATOMIC_ACQUIRE)) {} }
 static inline bool OSSpinLockTry(volatile OSSpinLock *l) { return !__atomic_exchange_n(l, 1, __ATOMIC_ACQUIRE); }
 static inline void OSSpinLockUnlock(volatile OSSpinLock *l) { __atomic_store_n(l, 0, __ATOMIC_RELEASE); }
+/* OSQueue: a LIFO list of elements linked through a pointer at `offset` (the head holds a spin lock; the Darwin one is lock-free) */
+typedef struct { void *opaque1; long opaque2; } OSQueueHead;
+#define OS_ATOMIC_QUEUE_INIT { NULL, 0 }
+static inline void OSAtomicEnqueue(OSQueueHead *h, void *elem, size_t off) { while (__atomic_exchange_n(&h->opaque2, 1, __ATOMIC_ACQUIRE)) {} *(void **)((char *)elem + off) = h->opaque1; h->opaque1 = elem; __atomic_store_n(&h->opaque2, 0, __ATOMIC_RELEASE); }
+static inline void *OSAtomicDequeue(OSQueueHead *h, size_t off) { while (__atomic_exchange_n(&h->opaque2, 1, __ATOMIC_ACQUIRE)) {} void *e = h->opaque1; if (e) h->opaque1 = *(void **)((char *)e + off); __atomic_store_n(&h->opaque2, 0, __ATOMIC_RELEASE); return e; }
 #endif

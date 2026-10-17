@@ -13,7 +13,7 @@ if [ "${OSS_COREBASE:-1}" = 1 ]; then
 	( cd corebase && ./configure CPPFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib" > $W/cb-conf.log 2>&1 && gmake -j2 GNUSTEP_INSTALLATION_DOMAIN=SYSTEM > $W/cb-build.log 2>&1 && gmake install GNUSTEP_INSTALLATION_DOMAIN=SYSTEM > $W/cb-inst.log 2>&1 ) && echo "corebase: installed" || { echo "corebase: build FAILED"; tail -5 $W/cb-conf.log; grep -E "error" $W/cb-build.log | head -8; }
 	ls /usr/local/GNUstep/System/Library/Headers/CoreFoundation 2>/dev/null | head -3
 fi
-BASE="-I$WS/sdk/include $(gnustep-config --objc-flags) -fblocks -fobjc-arc -w -fsyntax-only"
+BASE="-I$WS/sdk/include -include $WS/sdk/include/wsbsd/prelude.h $(gnustep-config --objc-flags) -fblocks -fobjc-arc -w -fsyntax-only"
 for r in $REPOS; do
 	n=$(echo $r | tr / _)
 	timeout 120 git clone --depth 1 -q https://github.com/$r $n 2>/dev/null || { echo "== $r: clone failed"; continue; }
@@ -41,5 +41,5 @@ echo "== sdk/src/AppKitCompat.m"; clang -I$WS/sdk/include $(gnustep-config --obj
 # The same survey through the Xcode project driver (tools/xcb): headers staged the way Xcode exposes them, the target's own flags, ARC, defines and prefix header
 if command -v python3 >/dev/null 2>&1 && [ -d $W/HexFiend_HexFiend ]; then
 	echo "== xcb: Hex Fiend, target HexFiend_Framework (framework, 61 Objective-C sources)"
-	python3 "$WS/tools/xcb/xcb.py" $W/HexFiend_HexFiend/app/HexFiend_2.xcodeproj build HexFiend_Framework --out $W/xcb-hf --syntax-only --cc clang --cflags "-I$WS/sdk/include $(gnustep-config --objc-flags) -w" -j 2 2>&1 | head -40
+	python3 "$WS/tools/xcb/xcb.py" $W/HexFiend_HexFiend/app/HexFiend_2.xcodeproj build HexFiend_Framework --out $W/xcb-hf --syntax-only --cc clang --cflags "-I$WS/sdk/include -include $WS/sdk/include/wsbsd/prelude.h $(gnustep-config --objc-flags) -w" -j 2 2>&1 | head -40
 fi

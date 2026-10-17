@@ -61,6 +61,7 @@ static const char accessoryKey;
 
 @implementation NSColor (WsbsdCompat)
 + (NSColor *)linkColor { return [NSColor colorWithCalibratedRed: 0.0 green: 0.4 blue: 0.8 alpha: 1.0]; }
++ (NSColor *)separatorColor { return [NSColor colorWithCalibratedWhite: 0.0 alpha: 0.1]; }
 @end
 
 @implementation NSAttributedString (WsbsdCompat)
