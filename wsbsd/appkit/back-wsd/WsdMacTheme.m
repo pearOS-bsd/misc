@@ -262,11 +262,16 @@ static id wsdHeaderInit(id self, SEL _cmd, NSRect f)
 	return ((id (*)(id, SEL, NSRect))origHeaderInit)(self, _cmd, f);
 }
 /* a date picker's text stays on one line and is clipped (GNUstep wraps the time under the date) */
-static IMP origDatePickerDraw;
+static IMP origDatePickerDraw; static BOOL gInDatePicker;
 static void wsdDatePickerDraw(id self, SEL _cmd, NSRect f, NSView *v)
 {
 	[(NSCell *)self setWraps: NO]; [(NSCell *)self setLineBreakMode: NSLineBreakByClipping];
-	((void (*)(id, SEL, NSRect, NSView *))origDatePickerDraw)(self, _cmd, f, v);
+	gInDatePicker = YES; ((void (*)(id, SEL, NSRect, NSView *))origDatePickerDraw)(self, _cmd, f, v); gInDatePicker = NO;
+}
+static IMP origDatePickerWith;
+static void wsdDatePickerWith(id self, SEL _cmd, NSRect f, NSView *v)
+{
+	gInDatePicker = YES; ((void (*)(id, SEL, NSRect, NSView *))origDatePickerWith)(self, _cmd, f, v); gInDatePicker = NO;
 }
 static void swizzleTableDefaults(void)
 {
@@ -274,6 +279,7 @@ static void swizzleTableDefaults(void)
 	if (mt && !origTableInit) origTableInit = method_setImplementation(mt, (IMP)wsdTableInit);
 	Method mb = class_getInstanceMethod([NSButtonCell class], @selector(drawInteriorWithFrame:inView:));
 	if (NSClassFromString(@"NSDatePickerCell")) { Method mdp = class_getInstanceMethod(NSClassFromString(@"NSDatePickerCell"), @selector(drawInteriorWithFrame:inView:)); if (mdp && !origDatePickerDraw) origDatePickerDraw = method_setImplementation(mdp, (IMP)wsdDatePickerDraw); }
+	if (NSClassFromString(@"NSDatePickerCell") && !origDatePickerWith) { Class dc = NSClassFromString(@"NSDatePickerCell"); Method mw = class_getInstanceMethod(dc, @selector(drawWithFrame:inView:)); if (mw) { origDatePickerWith = method_getImplementation(mw); class_replaceMethod(dc, @selector(drawWithFrame:inView:), (IMP)wsdDatePickerWith, method_getTypeEncoding(mw)); } }
 	Method mth = class_getInstanceMethod([NSTableHeaderView class], @selector(initWithFrame:));
 	if (mth && !origHeaderInit) origHeaderInit = method_setImplementation(mth, (IMP)wsdHeaderInit);
 	Method mat = class_getInstanceMethod([NSButtonCell class], @selector(attributedTitle));
@@ -360,6 +366,7 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 /* text field bezel: 1 px border (the window colour lightened by 5 %) round a field filled with the text background (23,24,25 in the dark appearance), corner radius 6 */
 - (NSRect) drawWhiteBezel: (NSRect)frame withClip: (NSRect)clip
 {
+	if (gInDatePicker) { fillRound(frame, 6.0, isDark() ? rgb(23, 24, 25, 1) : rgb(255, 255, 255, 1)); return NSInsetRect(frame, 4, 2); }          /* the date picker field: no ring */
 	fillRound(frame, 6.0, onBG(0.05));
 	fillRound(NSInsetRect(frame, 1, 1), 5.0, isDark() ? rgb(23, 24, 25, 1) : rgb(255, 255, 255, 1));
 	return NSInsetRect(frame, 2, 2);                                /* the content rectangle, as the stock method returns it */
@@ -415,9 +422,9 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 - (void) drawStepperCell: (NSCell *)cell withFrame: (NSRect)cellFrame inView: (NSView *)controlView highlightUp: (BOOL)hu highlightDown: (BOOL)hd
 {
 	NSRect r = NSMakeRect(cellFrame.origin.x, cellFrame.origin.y + (cellFrame.size.height - 24) / 2, cellFrame.size.width > 20 ? 20 : cellFrame.size.width, 24);
-	fillRound(r, 6.0, onBG(hu || hd ? 0.14 : 0.08));
-	[onBG(0.16) set]; NSRectFill(NSMakeRect(r.origin.x + 2, NSMidY(r) - 0.5, r.size.width - 4, 1));
-	[[NSColor controlTextColor] set];
+	BOOL dp = gInDatePicker;                                           /* in a date picker the stepper is just the two chevrons */
+	if (!dp) { fillRound(r, 6.0, onBG(hu || hd ? 0.14 : 0.08)); [onBG(0.16) set]; NSRectFill(NSMakeRect(r.origin.x + 2, NSMidY(r) - 0.5, r.size.width - 4, 1)); }
+	[dp ? [[NSColor controlTextColor] colorWithAlphaComponent: 0.65] : [NSColor controlTextColor] set];
 	CGFloat cx = NSMidX(r);
 	for (int k = 0; k < 2; k++) {
 		CGFloat cy = k == 0 ? NSMidY(r) + 5.3 : NSMidY(r) - 5.3, d = k == 0 ? -1 : 1;
