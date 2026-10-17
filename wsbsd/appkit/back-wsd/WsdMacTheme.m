@@ -265,6 +265,14 @@ static id wsdHeaderInit(id self, SEL _cmd, NSRect f)
 }
 /* a date picker's text stays on one line and is clipped (GNUstep wraps the time under the date) */
 static IMP origDatePickerDraw; static BOOL gInDatePicker;
+static IMP origComboDraw;
+/* measured: the combo box's text and chevron sit 3 pt higher than GNUstep's interior frame puts them */
+static void wsdComboDraw(id self, SEL _cmd, NSRect f, NSView *v)
+{
+	f.origin.y += [v isFlipped] ? -3 : 3;
+	((void (*)(id, SEL, NSRect, NSView *))origComboDraw)(self, _cmd, f, v);
+}
+
 static void wsdDatePickerDraw(id self, SEL _cmd, NSRect f, NSView *v)
 {
 	[(NSCell *)self setWraps: NO]; [(NSCell *)self setLineBreakMode: NSLineBreakByClipping];
@@ -309,6 +317,7 @@ static void swizzleTableDefaults(void)
 	Method mt = class_getInstanceMethod([NSTableView class], @selector(_initDefaults));
 	if (mt && !origTableInit) origTableInit = method_setImplementation(mt, (IMP)wsdTableInit);
 	Method mb = class_getInstanceMethod([NSButtonCell class], @selector(drawInteriorWithFrame:inView:));
+	{ Class cc = NSClassFromString(@"NSComboBoxCell"); Method mcb = cc ? class_getInstanceMethod(cc, @selector(drawInteriorWithFrame:inView:)) : NULL; if (mcb && !origComboDraw) { origComboDraw = method_getImplementation(mcb); class_replaceMethod(cc, @selector(drawInteriorWithFrame:inView:), (IMP)wsdComboDraw, method_getTypeEncoding(mcb)); } }
 	if (NSClassFromString(@"NSDatePickerCell")) { Method mdp = class_getInstanceMethod(NSClassFromString(@"NSDatePickerCell"), @selector(drawInteriorWithFrame:inView:)); if (mdp && !origDatePickerDraw) origDatePickerDraw = method_setImplementation(mdp, (IMP)wsdDatePickerDraw); }
 	if (NSClassFromString(@"NSDatePickerCell") && !origDatePickerWith) { Class dc = NSClassFromString(@"NSDatePickerCell"); Method mw = class_getInstanceMethod(dc, @selector(drawWithFrame:inView:)); if (mw) { origDatePickerWith = method_getImplementation(mw); class_replaceMethod(dc, @selector(drawWithFrame:inView:), (IMP)wsdDatePickerWith, method_getTypeEncoding(mw)); } }
 	if (NSClassFromString(@"NSVisualEffectView")) {
@@ -643,7 +652,7 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 	int n = (int)(mx - mn + 0.5); if (n < 1) n = 1; if (n > 50) n = 50;
 	int filled = (int)((val - mn) / (mx - mn > 0 ? mx - mn : 1) * n + 0.5);
 	/* measured: 10 separate rounded cells (radius 3.5, 1 pt apart), each with a 1 px darker rim, 16 pt high */
-	CGFloat w = f.size.width / n, h = f.size.height > 16 ? 16 : f.size.height, y = NSMidY(f) - h / 2; BOOL dark = isDark();
+	CGFloat w = f.size.width / n, h = f.size.height > 16 ? 16 : f.size.height, y = NSMidY(f) - h / 2 + ([v isFlipped] ? -2 : 2);   /* measured: the cells sit at the top of the 18 pt frame, GNUstep's origin is a point lower */ BOOL dark = isDark();
 	NSColor *fillOn = dark ? rgb(48, 209, 88, 1) : rgb(52, 199, 89, 1), *edgeOn = dark ? rgb(42, 182, 77, 1) : rgb(45, 173, 78, 1), *fillOff = onBG(0.07), *edgeOff = onBG(0.19);
 	for (int i = 0; i < n; i++) {
 		NSRect r = NSMakeRect(f.origin.x + i * w, y, w - 1, h); BOOL on = i < filled;
