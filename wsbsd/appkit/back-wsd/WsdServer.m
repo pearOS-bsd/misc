@@ -231,6 +231,13 @@ static void terminate(int sig)
 	[self reportFrameOf: w resized: NO];
 }
 
+/* behind-window blur for NSVisualEffectView (see WsdMacTheme.m) */
+- (void) wsdBackgroundBlur: (int)radius : (int)win
+{
+	struct wsd_window *w = [self wsdWindow: win];
+	if (w) ws_win_blur(conn, &w->win, radius);
+}
+
 - (void) setwindowlevel: (int)level : (int)win
 {
 	struct wsd_window *w = [self wsdWindow: win];

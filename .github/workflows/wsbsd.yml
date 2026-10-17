@@ -204,6 +204,7 @@ jobs:
             wsbsd/uitest-light.png
             wsbsd/uitest-menu.png
             wsbsd/uitest-alert.png
+            wsbsd/uitest-vibrancy.png
             wsbsd/uitest-manifest.txt
           if-no-files-found: warn
 

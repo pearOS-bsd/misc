@@ -274,6 +274,25 @@ static void wsdDatePickerWith(id self, SEL _cmd, NSRect f, NSView *v)
 	[(NSCell *)self setFont: [NSFont systemFontOfSize: 13]];
 	gInDatePicker = YES; ((void (*)(id, SEL, NSRect, NSView *))origDatePickerWith)(self, _cmd, f, v); gInDatePicker = NO;
 }
+/* NSVisualEffectView (a stub in GNUstep): a translucent material tint; with behind-window blending the window turns non-opaque and the compositor blurs what is behind it */
+static IMP origVEVDraw, origVEVMove;
+static void wsdVEVDraw(id self, SEL _cmd, NSRect r)
+{
+	NSVisualEffectView *v = self; BOOL dark = isDark(); NSInteger m = (NSInteger)[v material];
+	double a = (m == 3 || m == 5 /* titlebar, menu */) ? 0.72 : 0.58;                         /* alpha of the tint: the material over the blurred backdrop */
+	NSColor *tint = dark ? rgb(30, 30, 30, a) : rgb(236, 236, 238, a);
+	[tint set]; NSRectFillUsingOperation(r, NSCompositeSourceOver);
+}
+static void wsdVEVMove(id self, SEL _cmd)
+{
+	NSVisualEffectView *v = self; NSWindow *w = [v window];
+	if (w && [v blendingMode] == NSVisualEffectBlendingModeBehindWindow) {
+		[w setOpaque: NO]; [w setBackgroundColor: [NSColor clearColor]];
+		id srv = GSCurrentServer();
+		if ([srv respondsToSelector: @selector(wsdBackgroundBlur::)]) [srv wsdBackgroundBlur: 30 : (int)[w windowNumber]];
+	}
+	if (origVEVMove) ((void (*)(id, SEL))origVEVMove)(self, _cmd);
+}
 static void swizzleTableDefaults(void)
 {
 	Method mt = class_getInstanceMethod([NSTableView class], @selector(_initDefaults));
@@ -281,6 +300,11 @@ static void swizzleTableDefaults(void)
 	Method mb = class_getInstanceMethod([NSButtonCell class], @selector(drawInteriorWithFrame:inView:));
 	if (NSClassFromString(@"NSDatePickerCell")) { Method mdp = class_getInstanceMethod(NSClassFromString(@"NSDatePickerCell"), @selector(drawInteriorWithFrame:inView:)); if (mdp && !origDatePickerDraw) origDatePickerDraw = method_setImplementation(mdp, (IMP)wsdDatePickerDraw); }
 	if (NSClassFromString(@"NSDatePickerCell") && !origDatePickerWith) { Class dc = NSClassFromString(@"NSDatePickerCell"); Method mw = class_getInstanceMethod(dc, @selector(drawWithFrame:inView:)); if (mw) { origDatePickerWith = method_getImplementation(mw); class_replaceMethod(dc, @selector(drawWithFrame:inView:), (IMP)wsdDatePickerWith, method_getTypeEncoding(mw)); } }
+	if (NSClassFromString(@"NSVisualEffectView")) {
+		Class vc = NSClassFromString(@"NSVisualEffectView");
+		Method md = class_getInstanceMethod(vc, @selector(drawRect:)); if (md && !origVEVDraw) { origVEVDraw = method_getImplementation(md); class_replaceMethod(vc, @selector(drawRect:), (IMP)wsdVEVDraw, method_getTypeEncoding(md)); }
+		Method mm = class_getInstanceMethod(vc, @selector(viewDidMoveToWindow)); if (mm && !origVEVMove) { origVEVMove = method_getImplementation(mm); class_replaceMethod(vc, @selector(viewDidMoveToWindow), (IMP)wsdVEVMove, method_getTypeEncoding(mm)); }
+	}
 	Method mth = class_getInstanceMethod([NSTableHeaderView class], @selector(initWithFrame:));
 	if (mth && !origHeaderInit) origHeaderInit = method_setImplementation(mth, (IMP)wsdHeaderInit);
 	Method mat = class_getInstanceMethod([NSButtonCell class], @selector(attributedTitle));
