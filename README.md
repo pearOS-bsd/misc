@@ -147,8 +147,14 @@ A FreeBSD-based ISO that starts straight into this window server. The rules, set
    `/usr/sbin/spctl` and the Launch Services check ("downloaded from the Internet. Are you sure you want to open it?", then the attribute is cleared) are part of the system; downloads written by our
    applications get the quarantine attribute. A test installs an app with and without the attribute and checks what the launcher does.
 
-Status: the reference tree of the Mac has been inspected (top level, `System/Library/Frameworks` with 340 entries, `/Applications` with 60); the manifest script, the layout generator and the image
-build are the next steps.
+Status (2026-10-17): `wsbsd/iso/` has the manifest of the reference Mac (`manifest/`, paths only, 41,000 lines), the layout tool (`tools/macfs.py`: skeleton, install, desymlink, verify; the image has 20,365 of
+the Mac's directories and no symlink), the component map (`components.json`), the silent-boot overlay, the EFI partition with Ploader, `build.sh` and `.github/workflows/iso.yml` (builds Ploader on Linux, the image
+on FreeBSD amd64 and publishes the release `iso-latest`). A local arm64 build of the same script boots in QEMU straight into the window server with the Terminal, nothing of FreeBSD's boot visible:
+
+![the ISO after boot](wsbsd/docs/screenshots/iso-boot.png)
+
+What is not done yet: the framework files are our libraries under the Mac's names, the other 360 or so frameworks are directories with an `Info.plist` and no library; Hex Fiend and the other apps are not on the image
+yet; the amd64 image is built by CI (first result pending), the arm64 image has no Ploader (it boots through FreeBSD's loader directly).
 
 ## Known limits
 - DRM/KMS, evdev and the GL compositor have not been run on real hardware (CI has no GPU).
