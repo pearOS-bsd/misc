@@ -74,7 +74,10 @@ def build(proj, name, o):
     print("%d of %d sources compile%s" % (ok, len(jobs), " (syntax only)" if syntax else ""))
     for sk in skipped: print("skipped (needs another toolchain):", os.path.relpath(sk, proj.root))
     from collections import Counter
-    for msg, n in Counter(e.split("error: ", 1)[1] for e in errs).most_common(25): print("%4d %s" % (n, msg))
+    where = {}
+    for e in errs: where.setdefault(e.split("error: ", 1)[1], e.split(": error", 1)[0])
+    for msg, n in Counter(e.split("error: ", 1)[1] for e in errs).most_common(25):
+        print("%4d %s%s" % (n, msg, "   [%s]" % os.path.relpath(where[msg], proj.root) if n < 4 else ""))
     return 0 if ok == len(jobs) else 2
 
 def main(a):

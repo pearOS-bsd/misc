@@ -9,6 +9,9 @@
 #ifndef F_NOCACHE
 #define F_NOCACHE 48                    /* Darwin: bypass the buffer cache; fcntl reports EINVAL here, callers ignore it */
 #endif
+#ifndef DKIOCGETBLOCKCOUNT
+#define DKIOCGETBLOCKCOUNT 0x40086419UL   /* Darwin's request number: not a disk ioctl here, it fails and callers take their error path */
+#endif
 #if defined(__FreeBSD__)
 #include <sys/disk.h>
 #ifndef DKIOCGETBLOCKSIZE
