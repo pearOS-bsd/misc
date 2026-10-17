@@ -129,3 +129,32 @@ static const char accessoryKey;
 @implementation NSColor (WsbsdCompatRows)
 + (NSArray *)alternatingContentBackgroundColors { return [NSArray arrayWithObjects: [NSColor whiteColor], [NSColor colorWithCalibratedWhite: 0.96 alpha: 1.0], nil]; }
 @end
+
+@implementation NSView (WsbsdCompat)
+static const char clipsKey;
+- (BOOL)clipsToBounds { NSNumber *n = getAssoc(self, &clipsKey); return n ? [n boolValue] : NO; }
+- (void)setClipsToBounds:(BOOL)flag { setAssoc(self, &clipsKey, [NSNumber numberWithBool: flag]); }
+- (NSMenuItem *)enclosingMenuItem { return nil; }
+@end
+@implementation NSImage (WsbsdCompat)
+- (void)lockFocusFlipped:(BOOL)flipped { [self setFlipped: flipped]; [self lockFocus]; }
+@end
+@implementation NSColor (WsbsdCompatText)
++ (NSColor *)textInsertionPointColor { return [NSColor controlTextColor]; }
++ (NSColor *)unemphasizedSelectedTextBackgroundColor { return [NSColor colorWithCalibratedWhite: 0.83 alpha: 1.0]; }
+@end
+
+/* ---- libc / system functions of Darwin that sources call ---- */
+#include <string.h>
+void memset_pattern4(void *b, const void *p, size_t len) { for (size_t i = 0; i < len; i++) ((unsigned char *)b)[i] = ((const unsigned char *)p)[i % 4]; }
+void memset_pattern8(void *b, const void *p, size_t len) { for (size_t i = 0; i < len; i++) ((unsigned char *)b)[i] = ((const unsigned char *)p)[i % 8]; }
+void memset_pattern16(void *b, const void *p, size_t len) { for (size_t i = 0; i < len; i++) ((unsigned char *)b)[i] = ((const unsigned char *)p)[i % 16]; }
+void OSMemoryBarrier(void) { __atomic_thread_fence(__ATOMIC_SEQ_CST); }
+
+/* ---- AppKit image names newer than GNUstep ---- */
+NSString *const NSImageNameStopProgressTemplate = @"NSStopProgressTemplate";
+NSString *const NSImageNameRefreshTemplate = @"NSRefreshTemplate";
+NSString *const NSImageNameGoLeftTemplate = @"NSGoLeftTemplate";
+NSString *const NSImageNameGoRightTemplate = @"NSGoRightTemplate";
+NSString *const NSImageNameAddTemplate = @"NSAddTemplate";
+NSString *const NSImageNameRemoveTemplate = @"NSRemoveTemplate";

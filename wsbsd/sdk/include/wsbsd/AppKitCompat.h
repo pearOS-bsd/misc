@@ -15,6 +15,9 @@
 #import <AppKit/NSScroller.h>
 #import <AppKit/NSEvent.h>
 #import <AppKit/NSControl.h>
+#import <AppKit/NSMenuItem.h>
+#import <AppKit/NSView.h>
+#import <AppKit/NSImage.h>
 #import <AppKit/NSTextStorage.h>
 #import <AppKit/NSGraphics.h>
 
@@ -34,6 +37,26 @@ extern const CGSize CGSizeZero;
 extern const CGPoint CGPointZero;
 extern const CGRect CGRectNull;
 extern const CGAffineTransform CGAffineTransformIdentity;
+#if defined(__has_include)
+#if __has_include(<CoreText/CoreText.h>)
+#import <CoreText/CoreText.h>             /* Apple's Cocoa umbrella reaches CoreText through ApplicationServices */
+#endif
+#endif
+#ifndef NSEventMaskAny
+#define NSEventMaskLeftMouseDown NSLeftMouseDownMask
+#define NSEventMaskLeftMouseUp NSLeftMouseUpMask
+#define NSEventMaskRightMouseDown NSRightMouseDownMask
+#define NSEventMaskRightMouseUp NSRightMouseUpMask
+#define NSEventMaskMouseMoved NSMouseMovedMask
+#define NSEventMaskLeftMouseDragged NSLeftMouseDraggedMask
+#define NSEventMaskRightMouseDragged NSRightMouseDraggedMask
+#define NSEventMaskKeyDown NSKeyDownMask
+#define NSEventMaskKeyUp NSKeyUpMask
+#define NSEventMaskFlagsChanged NSFlagsChangedMask
+#define NSEventMaskScrollWheel NSScrollWheelMask
+#define NSEventMaskPeriodic NSPeriodicMask
+#define NSEventMaskAny NSAnyEventMask
+#endif
 #ifndef NSPasteboardNameGeneral
 #define NSPasteboardNameGeneral NSGeneralPboard
 #define NSPasteboardNameFind NSFindPboard
@@ -86,12 +109,33 @@ extern const CGAffineTransform CGAffineTransformIdentity;
 #define NSCompositingOperationHighlight NSCompositeHighlight
 #define NSCompositingOperationPlusLighter NSCompositePlusLighter
 #endif
+#if __has_feature(objc_arc)
+/* Apple declares the colour arrays const (NSColor *const *); GNUstep's NSColor ** is an __autoreleasing out-parameter to ARC, which refuses a plain array */
+#define NSRectFillListWithColors(r, c, n) NSRectFillListWithColors((r), (NSColor *__autoreleasing *)(void *)(c), (n))
+#define NSRectFillListWithColorsUsingOperation(r, c, n, op) NSRectFillListWithColorsUsingOperation((r), (NSColor *__autoreleasing *)(void *)(c), (n), (op))
+#endif
+extern NSString *const NSImageNameStopProgressTemplate;
+extern NSString *const NSImageNameRefreshTemplate;
+extern NSString *const NSImageNameGoLeftTemplate;
+extern NSString *const NSImageNameGoRightTemplate;
+extern NSString *const NSImageNameAddTemplate;
+extern NSString *const NSImageNameRemoveTemplate;
+void memset_pattern4(void *b, const void *pattern, size_t len);
+void memset_pattern8(void *b, const void *pattern, size_t len);
+void memset_pattern16(void *b, const void *pattern, size_t len);
 typedef NSUInteger NSAttributedStringEnumerationOptions;
 #ifndef NSAttributedStringEnumerationReverse
 #define NSAttributedStringEnumerationReverse (1UL << 1)
 #define NSAttributedStringEnumerationLongestEffectiveRangeNotRequired (1UL << 20)
 #endif
 
+@interface NSView (WsbsdCompat)
+@property (nonatomic) BOOL clipsToBounds;
+- (NSMenuItem *)enclosingMenuItem;
+@end
+@interface NSImage (WsbsdCompat)
+- (void)lockFocusFlipped:(BOOL)flipped;
+@end
 @interface NSUndoManager (WsbsdCompat)
 - (void)setActionIsDiscardable:(BOOL)flag;
 @end
@@ -133,6 +177,8 @@ typedef NSUInteger NSAttributedStringEnumerationOptions;
 @interface NSColor (WsbsdCompat)
 + (NSColor *)linkColor;
 + (NSColor *)separatorColor;
++ (NSColor *)textInsertionPointColor;
++ (NSColor *)unemphasizedSelectedTextBackgroundColor;
 + (NSArray *)alternatingContentBackgroundColors;
 @end
 @interface NSAttributedString (WsbsdCompat)
