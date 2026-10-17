@@ -134,7 +134,9 @@ def build_target(proj, name, o, out, state):
     with ThreadPoolExecutor(max_workers=int(o.get("-j", 4))) as ex:
         for j, r in ex.map(run, jobs):
             if r.returncode == 0: ok += 1
-            else: errs += [l for l in r.stderr.splitlines() if "error:" in l]
+            else:
+                errs += [l for l in r.stderr.splitlines() if "error:" in l]
+                if os.environ.get("XCB_V"): print("FAILED:", " ".join(shlex.quote(x) for x in j[1]))
     print("%d of %d sources compile%s" % (ok, len(jobs), " (syntax only)" if syntax else ""))
     for sk in skipped: print("skipped (needs another toolchain):", os.path.relpath(sk, proj.root))
     from collections import Counter

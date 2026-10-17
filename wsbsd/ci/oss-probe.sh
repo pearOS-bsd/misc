@@ -46,8 +46,20 @@ done
 # the compatibility layer itself has to compile against this GNUstep (errors are shown, the survey goes on)
 echo "== sdk/src/AppKitCompat.m"; clang -I$WS/sdk/include $(gnustep-config --objc-flags) -fblocks -fobjc-arc -Wno-everything -fsyntax-only $WS/sdk/src/AppKitCompat.m 2>&1 | grep -E "error" | head -20; echo "(end of compat check)"
 
-# The same survey through the Xcode project driver (tools/xcb): headers staged the way Xcode exposes them, the target's own flags, ARC, defines and prefix header
+# The same survey through the Xcode project driver (tools/xcb): headers staged the way Xcode exposes them, the target's own flags, ARC, defines and prefix header;
+# the CF / CoreText / CoreGraphics headers are patched copies with the ARC "audited" regions Apple's have (sdk/gen-cf-wrappers.sh), libwsbsdcompat provides the rest
 if command -v python3 >/dev/null 2>&1 && [ -d $W/HexFiend_HexFiend ]; then
-	echo "== xcb: Hex Fiend, target HexFiend_Framework (framework, 61 Objective-C sources)"
-	python3 "$WS/tools/xcb/xcb.py" $W/HexFiend_HexFiend/app/HexFiend_2.xcodeproj build HexFiend_Framework --out $W/xcb-hf --syntax-only --cc clang --cflags "-I$WS/sdk/include -include $WS/sdk/include/wsbsd/prelude.h $(gnustep-config --objc-flags) -w" -j 2 2>&1 | head -40
+	sh "$WS/sdk/gen-cf-wrappers.sh" $W/cfwrap 2>&1 | tail -1
+	sh "$WS/sdk/build-compat.sh" $W/compat 2>&1 | tail -3
+	GSL="$(gnustep-config --gui-libs)"
+	XF="-I$W/cfwrap -I$WS/sdk/include -include $WS/sdk/include/wsbsd/prelude.h $(gnustep-config --objc-flags) -w"
+	echo "== xcb: Hex Fiend, target HexFiend_Framework (framework, 61 Objective-C sources): compile and link"
+	python3 "$WS/tools/xcb/xcb.py" $W/HexFiend_HexFiend/app/HexFiend_2.xcodeproj build HexFiend_Framework --out $W/xcb-hf --cc clang --cflags "$XF" \
+		--fw-map "Cocoa=$GSL;Foundation=$(gnustep-config --base-libs)" --ldflags "$GSL -L$W/compat -lwsbsdcompat -lopal -lgnustep-corebase -ldispatch" -j 2 2>&1 | head -40
+	O=$W/xcb-hf/HexFiend_Framework
+	if [ -f $O/libHexFiend.so ]; then
+		clang -x objective-c -fobjc-arc $XF -I$O/headers "$WS/sdk/tests/hexfiend_smoke.m" -o $W/hf_smoke -L$O -lHexFiend -L$W/compat -lwsbsdcompat $GSL -lopal -lgnustep-corebase -ldispatch 2>&1 | grep error | head -5
+		echo "== Hex Fiend engine smoke test (HFByteArray from the unmodified sources):"
+		LD_LIBRARY_PATH=$O:$W/compat:/usr/local/GNUstep/System/Library/Libraries:/usr/local/GNUstep/Local/Library/Libraries:/usr/local/lib $W/hf_smoke 2>&1 | tail -3; echo "exit status $?"
+	fi
 fi
