@@ -234,7 +234,7 @@ void WsdApplyMacPalette(void)
 	[l setColor: dark ? rgb(72, 72, 72, 1) : rgb(210, 210, 212, 1) forKey: @"selectedControlColor"];      /* selected table rows (the unemphasised selection of a window without focus) */
 	[l setColor: rgb(255, 255, 255, 1) forKey: @"selectedControlTextColor"]; [l setColor: rgb(255, 255, 255, 1) forKey: @"selectedMenuItemTextColor"];
 	[l setColor: dark ? rgb(63, 96, 130, 1) : rgb(176, 215, 255, 1) forKey: @"selectedTextBackgroundColor"]; [l setColor: label forKey: @"selectedTextColor"];
-	[l setColor: sec forKey: @"disabledControlTextColor"]; [l setColor: sec forKey: @"secondaryLabelColor"];
+	[l setColor: dark ? sec : rgb(mix(r, fg, 0.28), mix(g, fg, 0.28), mix(b, fg, 0.28), 1) forKey: @"disabledControlTextColor"]; [l setColor: sec forKey: @"secondaryLabelColor"];
 	[l setColor: dark ? rgb(23, 24, 25, 1) : rgb(255, 255, 255, 1) forKey: @"textBackgroundColor"];      /* the field fill measured on macOS: neutral, darker than the (wallpaper tinted) window */
 }
 
@@ -268,8 +268,8 @@ void WsdApplyMacPalette(void)
 	BOOL enabled = [cell isEnabled], pressed = (state == GSThemeHighlightedState || state == GSThemeHighlightedFirstResponderState);
 	int wr, wg, wb; windowBG(&wr, &wg, &wb); BOOL dark = isDark(); int fg = dark ? 255 : 0;
 	NSColor *fill;
-	if (isDefault && enabled) fill = pressed ? rgb(30, 138, 255, 1) : rgb(0, 122, 255, 1);
-	else { double a = dark ? (pressed ? 0.21 : 0.08) : (pressed ? 0.12 : 0.05); if (!enabled) a *= 0.5; fill = rgb(mix(wr, fg, a), mix(wg, fg, a), mix(wb, fg, a), 1); }
+	if (isDefault && enabled) fill = pressed ? (dark ? rgb(25, 135, 255, 1) : rgb(0, 110, 230, 1)) : rgb(0, 122, 255, 1);
+	else { double a = dark ? (pressed ? 0.17 : 0.08) : (pressed ? 0.165 : 0.075); if (!enabled) a *= 0.5; fill = rgb(mix(wr, fg, a), mix(wg, fg, a), mix(wb, fg, a), 1); }
 	[fill set];
 	[[NSBezierPath bezierPathWithRoundedRect: r xRadius: 5.0 yRadius: 5.0] fill];                        /* measured on the real button: a rounded rectangle, radius 5 pt (not a capsule) */
 }
@@ -450,7 +450,9 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 {
 	if (![well isBordered]) return bounds;
 	fillRound(bounds, bounds.size.height / 2, onBG(0.10));
-	return NSInsetRect(bounds, 4, 4);
+	NSRect in = NSInsetRect(bounds, 4, 4);
+	[[NSBezierPath bezierPathWithRoundedRect: in xRadius: in.size.height / 2 yRadius: in.size.height / 2] addClip];                  /* the swatch is a capsule too */
+	return in;
 }
 
 /* table headers: no bezel, a 1 px hairline under the header (the title is drawn by the cell) */
