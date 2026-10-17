@@ -104,8 +104,12 @@ int wsd_vnc_accept(void)
 {
 	int c = accept(v.ls, NULL, NULL);
 	if (c < 0) return -1;
-	if (v.fd >= 0) { close(c); return -1; }                  /* one viewer at a time */
+	if (v.fd >= 0) drop();                                    /* one viewer at a time: a new one replaces the old, which after a lost tunnel or a closed tab may only be a half-open connection that would keep the place for hours */
 	int one = 1; setsockopt(c, IPPROTO_TCP, TCP_NODELAY, &one, sizeof one);
+	setsockopt(c, SOL_SOCKET, SO_KEEPALIVE, &one, sizeof one);
+#ifdef TCP_KEEPIDLE
+	{ int idle = 30, intvl = 10, cnt = 3; setsockopt(c, IPPROTO_TCP, TCP_KEEPIDLE, &idle, sizeof idle); setsockopt(c, IPPROTO_TCP, TCP_KEEPINTVL, &intvl, sizeof intvl); setsockopt(c, IPPROTO_TCP, TCP_KEEPCNT, &cnt, sizeof cnt); }
+#endif
 	fcntl(c, F_SETFL, fcntl(c, F_GETFL) | O_NONBLOCK);
 	v.fd = c; v.state = ST_VERSION; v.inn = 0; v.want = 0; v.bpp = 32; v.shift[0] = 16; v.shift[1] = 8; v.shift[2] = 0; v.max[0] = v.max[1] = v.max[2] = 255; v.bigendian = 0;
 	if (send_all(c, "RFB 003.008\n", 12) < 0) { drop(); return -1; }
