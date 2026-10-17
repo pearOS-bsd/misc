@@ -2,6 +2,7 @@
 
 #include <AppKit/NSApplication.h>
 #include <AppKit/NSEvent.h>
+#include <AppKit/NSCursor.h>
 #include <AppKit/NSWindow.h>
 #include <Foundation/NSDebug.h>
 #include <Foundation/NSRunLoop.h>
@@ -113,9 +114,24 @@ static void terminate(int sig)
 {
 	*l = *r = *t = *b = 0;
 }
-- (void) standardcursor: (int)style : (void **)cid { *cid = NULL; }
-- (void) imagecursor: (NSPoint)hotp : (NSImage *)image : (void **)cid { *cid = NULL; }
-- (void) setcursor: (void *)cid {}
+/* cursors: the window server draws the standard shapes (src/cursor.c); a cursor id is the shape + 1 (NULL stays the arrow) */
+static int wsdShapeForStyle(int style)
+{
+	switch (style) {
+	case GSIBeamCursor: return 1;
+	case GSPointingHandCursor: return 2;
+	case GSCrosshairCursor: return 3;
+	case GSResizeLeftCursor: case GSResizeRightCursor: case GSResizeLeftRightCursor: return 4;
+	case GSResizeUpCursor: case GSResizeDownCursor: case GSResizeUpDownCursor: return 5;
+	case GSOpenHandCursor: return 8;
+	case GSClosedHandCursor: return 9;
+	default: return 0;
+	}
+}
+- (void) standardcursor: (int)style : (void **)cid { *cid = (void *)(intptr_t)(wsdShapeForStyle(style) + 1); }
+- (void) imagecursor: (NSPoint)hotp : (NSImage *)image : (void **)cid { *cid = (void *)(intptr_t)1; }
+- (void) wsdSetCursorShape: (int)shape { WLOG(@"cursor shape %d", shape); if (conn) ws_cursor_set_shape(conn, shape); }
+- (void) setcursor: (void *)cid { [self wsdSetCursorShape: cid ? (int)(intptr_t)cid - 1 : 0]; }
 
 /* ---- windows ---- */
 - (int) window: (NSRect)frame : (NSBackingStoreType)type : (unsigned int)style : (int)screen

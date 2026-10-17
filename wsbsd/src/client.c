@@ -436,6 +436,8 @@ int ws_post_event_to_psn(ws_conn *c, uint32_t psn_lo, uint32_t psn_hi, const uin
 }
 int ws_post_event_to_pid(ws_conn *c, int pid, const uint8_t *rec, size_t n) { return ws_post_event_to_psn(c, 1, (uint32_t)pid, rec, n); }
 
+int ws_cursor_set_shape(ws_conn *c, int shape) { int32_t a[1] = { shape }; return wsx_call(c, WSX_SET_CURSOR, a, 1, NULL, NULL); }
+
 int ws_cursor_position(ws_conn *c, int *x, int *y)
 {
 	wsx_rep r;
