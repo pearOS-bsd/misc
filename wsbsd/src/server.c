@@ -57,7 +57,7 @@ struct ws_server {
 	ws_wid grab, key_win;
 	ws_event_sink sink; void *sink_ctx;
 	uint64_t gen;
-	ws_surface *cursor_img; int cursor_hx, cursor_hy; uint32_t cursor_serial;
+	ws_surface *cursor_img; int cursor_hx, cursor_hy; uint32_t cursor_serial; int cursor_shape;
 	struct track { int used; uint64_t id; ws_wid wid; ws_rect *r; int n; int inside; int disabled; int ox, oy; } trk[64];
 	float cursor_scale; ws_surface *cursor_scaled; const ws_surface *cursor_scaled_src; float cursor_scaled_for;       /* SetCursorScale: the pointer is drawn this much larger */
 	int decoupled; uint32_t decoupled_by; int rx, ry;           /* AssociateMouseAndMouseCursorPosition(false): the pointer is held still while the mouse keeps sending motion (deltas) */
@@ -685,6 +685,15 @@ uint32_t ws_cursor_serial(const ws_server *s) { return s->cursor_serial; }
 static int hidden_total(const ws_server *s) { int t = 0; for (int i = 0; i < s->nhide; i++) t += s->hide[i].count; return t; }
 int ws_cursor_visible(const ws_server *s) { return s->cursor_visible && !s->obscured && hidden_total(s) == 0; }
 
+void ws_server_set_cursor_shape(ws_server *s, int shape)
+{
+	if (shape == s->cursor_shape && s->cursor_img) return;
+	int hx = 0, hy = 0; ws_surface *img = ws_cursor_shape_image(shape, &hx, &hy);
+	ws_server_set_cursor_image(s, img, hx, hy);                      /* NULL: the default arrow */
+	ws_surface_free(img);
+	s->cursor_shape = img ? shape : 0;
+}
+
 void ws_server_set_cursor_image(ws_server *s, const ws_surface *img, int hx, int hy)
 {
 	ws_surface_free(s->cursor_img); s->cursor_img = NULL;
@@ -771,7 +780,7 @@ void ws_window_damage(ws_server *s, ws_wid id, const ws_rect *r)
 }
 
 void ws_server_clear_damage(ws_server *s) { for (size_t i = 0; i < s->n; i++) { s->win[i].has_dmg = 0; s->win[i].full_dmg = 0; } }
-void ws_server_desktop_color(ws_server *s, float rgb[3]) { (void)s; rgb[0] = 0.10f; rgb[1] = 0.12f; rgb[2] = 0.16f; }
+void ws_server_desktop_color(ws_server *s, float rgb[3]) { (void)s; rgb[0] = rgb[1] = rgb[2] = 37.0f / 255.0f; }
 void ws_draw_cursor(ws_server *s, ws_surface *screen) { if (ws_cursor_visible(s)) draw_cursor(s, screen); }
 
 void ws_server_walk(ws_server *s, ws_visit_fn fn, void *ctx)
@@ -826,7 +835,7 @@ void ws_compose_scene(ws_server *s, ws_surface *screen)
 	if (!v) return;
 	ws_rect all = { 0, 0, screen->w, screen->h };
 	ws_wid act = ws_active_window(s);
-	s->comp->fill(s->comp, screen, all, 0.10f, 0.12f, 0.16f, 1.0f);   /* desktop */
+	s->comp->fill(s->comp, screen, all, 37.0f / 255.0f, 37.0f / 255.0f, 37.0f / 255.0f, 1.0f);   /* desktop: #252525 */
 	size_t n = sorted(s, v);
 	for (size_t i = 0; i < n; i++) {
 		if (v[i]->blur_radius > 0) {                                          /* blur what is behind the window (sigma = radius / 2: an estimate) */

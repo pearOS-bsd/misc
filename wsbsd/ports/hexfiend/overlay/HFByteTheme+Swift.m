@@ -1,5 +1,6 @@
 /* Port of HFByteTheme.swift: the JSON byte colour themes of the application */
 #import "Hex_Fiend-Swift.h"
+#include <ctype.h>
 
 static NSColor *RGB(NSColor *c) { NSColor *r = [c colorUsingColorSpaceName: NSCalibratedRGBColorSpace]; return r ? r : c; }
 
@@ -72,12 +73,73 @@ static struct HFByteThemeColor *ColorTable(NSDictionary *dict)
 	return table;
 }
 
+
+/* ---- JSON5 (what the .json5 theme files are): unquoted keys, 0x numbers, comments, trailing commas, single quotes. Foundation's JSON reader on Apple takes the .json5Allowed option;
+ * GNUstep's has none, so this small recursive reader does the part the themes use. ---- */
+@interface WsbsdJSON5 : NSObject { const char *p, *end; }
+- (id)parse: (NSData *)data;
+@end
+@implementation WsbsdJSON5
+- (void)skip
+{
+	for (;;) {
+		while (p < end && (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r')) p++;
+		if (p + 1 < end && p[0] == '/' && p[1] == '/') { while (p < end && *p != '\n') p++; }
+		else if (p + 1 < end && p[0] == '/' && p[1] == '*') { p += 2; while (p + 1 < end && !(p[0] == '*' && p[1] == '/')) p++; p += 2; }
+		else break;
+	}
+}
+- (NSString *)string
+{
+	char q = *p++; NSMutableString *r = [NSMutableString string];
+	while (p < end && *p != q) {
+		if (*p == '\\' && p + 1 < end) { p++; char c = *p; r = (NSMutableString *)[r stringByAppendingFormat: @"%c", c == 'n' ? '\n' : c == 't' ? '\t' : c]; p++; continue; }
+		[r appendFormat: @"%c", *p]; p++;
+	}
+	p++; return r;
+}
+- (NSString *)identifier
+{
+	const char *s = p; while (p < end && (isalnum((unsigned char)*p) || *p == '_' || *p == '$')) p++;
+	return [[NSString alloc] initWithBytes: s length: (NSUInteger)(p - s) encoding: NSUTF8StringEncoding];
+}
+- (id)value
+{
+	[self skip]; if (p >= end) return nil;
+	if (*p == '{') {
+		p++; NSMutableDictionary *d = [NSMutableDictionary dictionary];
+		for (;;) {
+			[self skip]; if (p >= end) return nil; if (*p == '}') { p++; return d; }
+			NSString *k = (*p == '"' || *p == '\'') ? [self string] : [self identifier]; if (![k length]) return nil;
+			[self skip]; if (p >= end || *p != ':') return nil; p++;
+			id v = [self value]; if (!v) return nil; d[k] = v;
+			[self skip]; if (p < end && *p == ',') p++;
+		}
+	}
+	if (*p == '[') {
+		p++; NSMutableArray *a = [NSMutableArray array];
+		for (;;) { [self skip]; if (p >= end) return nil; if (*p == ']') { p++; return a; } id v = [self value]; if (!v) return nil; [a addObject: v]; [self skip]; if (p < end && *p == ',') p++; }
+	}
+	if (*p == '"' || *p == '\'') return [self string];
+	if (*p == '-' || *p == '+' || isdigit((unsigned char)*p)) {
+		char *e; BOOL neg = *p == '-'; if (*p == '-' || *p == '+') p++;
+		unsigned long long v = strtoull(p, &e, (p + 1 < end && p[0] == '0' && (p[1] == 'x' || p[1] == 'X')) ? 16 : 10);
+		if (e && (*e == '.' || *e == 'e' || *e == 'E')) { double dv = strtod(p, &e); p = e; return @(neg ? -dv : dv); }
+		p = e; return neg ? @(-(long long)v) : @(v);
+	}
+	NSString *w = [self identifier];
+	if ([w isEqualToString: @"true"]) return @YES; if ([w isEqualToString: @"false"]) return @NO; if ([w isEqualToString: @"null"]) return [NSNull null];
+	return nil;
+}
+- (id)parse: (NSData *)data { p = [data bytes]; end = p + [data length]; return [self value]; }
+@end
+
 @implementation HFByteTheme (HFByteThemeFromURL)
 + (instancetype)fromUrl: (NSURL *)url
 {
 	NSData *data = [NSData dataWithContentsOfURL: url];
 	NSError *error = nil;
-	NSDictionary *top = data ? [NSJSONSerialization JSONObjectWithData: data options: 0 error: &error] : nil;
+	NSDictionary *top = data ? [[[WsbsdJSON5 alloc] init] parse: data] : nil;
 	if (![top isKindOfClass: [NSDictionary class]]) { NSLog(@"Invalid json at %@: %@", url, error); return nil; }
 	if (![top[@"dark"] isKindOfClass: [NSDictionary class]]) { NSLog(@"Invalid \"dark\" at %@!", url); return nil; }
 	if (![top[@"light"] isKindOfClass: [NSDictionary class]]) { NSLog(@"Invalid \"light\" at %@!", url); return nil; }

@@ -689,6 +689,31 @@ static NSFont *titleFont(void)
 	return f;
 }
 
+@interface NSObject (WsdCursorShape)
+- (void) wsdSetCursorShape: (int)shape;
+@end
+
+/* A cursor the window server draws itself: the diagonal and edge resize shapes GNUstep has no standard cursor for */
+@interface WsdShapeCursor : NSCursor { int shape; }
++ (WsdShapeCursor *) cursorWithShape: (int)s;
+@end
+@implementation WsdShapeCursor
++ (WsdShapeCursor *) cursorWithShape: (int)s
+{
+	static NSMutableDictionary *cache;
+	if (!cache) cache = [NSMutableDictionary new];
+	WsdShapeCursor *c = [cache objectForKey: [NSNumber numberWithInt: s]];
+	if (!c) {
+		NSImage *img = [[[NSImage alloc] initWithSize: NSMakeSize(1, 1)] autorelease];
+		c = [[WsdShapeCursor alloc] initWithImage: img hotSpot: NSZeroPoint];
+		c->shape = s; [cache setObject: c forKey: [NSNumber numberWithInt: s]];
+	}
+	return c;
+}
+- (void) mouseEntered: (NSEvent *)e { if (getenv("WSD_DEBUG")) NSLog(@"wsd-back: cursor entered shape %d key %d", shape, (int)[[NSApp keyWindow] isKeyWindow]); [super mouseEntered: e]; }
+- (void) set { [super set]; id srv = GSCurrentServer(); if ([srv respondsToSelector: @selector(wsdSetCursorShape:)]) [srv wsdSetCursorShape: shape]; }
+@end
+
 @implementation WsdMacDecorationView
 
 + (void) offsets: (float *)l : (float *)r : (float *)t : (float *)b forStyleMask: (NSUInteger)style
@@ -810,7 +835,7 @@ static NSGradient *grad(int r0, int g0, int b0, int r1, int g1, int b1, int r2, 
 - (void) resizeWindowWithEdges: (int)m event: (NSEvent *)event
 {
 	NSRect frame = [window frame]; NSSize mn = [window minSize], mx = [window maxSize];
-	NSPoint start = [self mouseLocationOnScreenOutsideOfEventStream];
+	NSPoint start = [window convertBaseToScreen: [event locationInWindow]];     /* where the press happened, not where the pointer is by now */
 	NSEvent *e = event;
 	[window _captureMouse: nil];
 	while ([e type] != NSLeftMouseUp) {
@@ -829,6 +854,26 @@ static NSGradient *grad(int r0, int g0, int b0, int r1, int g1, int b1, int r2, 
 		if (!NSEqualRects(nf, [window frame])) [window setFrame: nf display: YES];
 	}
 	[window _releaseMouse: nil];
+}
+
+/* the resize cursors over the edge strips (the same zones as edgesAtPoint:) */
+- (void) resetCursorRects
+{
+	[super resetCursorRects];
+	if (getenv("WSD_DEBUG")) NSLog(@"wsd-back: decoration resetCursorRects resize %d key %d", (int)hasResizeBar, (int)[window isKeyWindow]);
+	if (!hasResizeBar) return;
+	NSRect b = [self bounds]; const CGFloat e = 5.0, c = 12.0;
+	NSCursor *lr = [WsdShapeCursor cursorWithShape: 4], *ud = [WsdShapeCursor cursorWithShape: 5], *nwse = [WsdShapeCursor cursorWithShape: 6], *nesw = [WsdShapeCursor cursorWithShape: 7];
+	CGFloat W = b.size.width, H = b.size.height, x0 = b.origin.x, y0 = b.origin.y;
+	[self addCursorRect: NSMakeRect(x0 + c, y0, W - 2 * c, e) cursor: ud];
+	[self addCursorRect: NSMakeRect(x0 + c, y0 + H - e, W - 2 * c, e) cursor: ud];
+	[self addCursorRect: NSMakeRect(x0, y0 + c, e, H - 2 * c) cursor: lr];
+	[self addCursorRect: NSMakeRect(x0 + W - e, y0 + c, e, H - 2 * c) cursor: lr];
+	/* corners: the 12 px along each edge (bottom left / top right are NE-SW in unflipped coordinates) */
+	[self addCursorRect: NSMakeRect(x0, y0, c, e) cursor: nesw]; [self addCursorRect: NSMakeRect(x0, y0, e, c) cursor: nesw];
+	[self addCursorRect: NSMakeRect(x0 + W - c, y0 + H - e, c, e) cursor: nesw]; [self addCursorRect: NSMakeRect(x0 + W - e, y0 + H - c, e, c) cursor: nesw];
+	[self addCursorRect: NSMakeRect(x0 + W - c, y0, c, e) cursor: nwse]; [self addCursorRect: NSMakeRect(x0 + W - e, y0, e, c) cursor: nwse];
+	[self addCursorRect: NSMakeRect(x0, y0 + H - e, c, e) cursor: nwse]; [self addCursorRect: NSMakeRect(x0, y0 + H - c, e, c) cursor: nwse];
 }
 
 - (void) mouseDown: (NSEvent *)event

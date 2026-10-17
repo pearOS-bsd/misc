@@ -250,7 +250,18 @@ int main(void)
 	const uint8_t *p = at(scr, 160, 40);            /* c over b/desktop region */
 	CHECK(p[1] > 100 && p[1] < 160);               /* green channel is about half */
 	CHECK(p[3] == 255);                            /* destination stays opaque */
-	CHECK(at(scr, 2, 2)[0] == 41);                 /* desktop blue = 0.16*255 */
+	CHECK(at(scr, 2, 2)[0] == 37 && at(scr, 2, 2)[1] == 37 && at(scr, 2, 2)[2] == 37);   /* desktop #252525 */
+	{ /* standard cursor shapes */
+		uint32_t ser = ws_cursor_serial(srv); int hx, hy;
+		ws_server_set_cursor_shape(srv, 1);
+		CHECK(ws_cursor_serial(srv) != ser);
+		const ws_surface *ci = ws_cursor_image(srv, &hx, &hy);
+		CHECK(ci && hx == 16 && hy == 16);
+		int opaque = 0; for (int y = 0; y < ci->h; y++) for (int x = 0; x < ci->w; x++) if (ci->px[(size_t)y * ci->stride + x * 4 + 3] == 255) opaque++;
+		CHECK(opaque > 20);
+		for (int k = 2; k < ws_cursor_shape_count(); k++) { ws_surface *sh = ws_cursor_shape_image(k, &hx, &hy); CHECK(sh != NULL); ws_surface_free(sh); }
+		ws_server_set_cursor_shape(srv, 0);
+	}
 
 	/* move and out */
 	ws_move_window(srv, b, 200, 150);
