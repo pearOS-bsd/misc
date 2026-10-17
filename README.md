@@ -8,7 +8,7 @@ WindowServer (SkyLight), looking like they do on a Mac. No X11, no Wayland, no A
 | ![UI gallery](wsbsd/docs/screenshots/gallery.png) | ![Hex Fiend](wsbsd/docs/screenshots/hexfiend.png) |
 | The UI gallery (33 controls) in dark appearance, drawn by GNUstep AppKit on `wsd` with the macOS theme. | [Hex Fiend](https://github.com/HexFiend/HexFiend), built from its own Xcode project, with the hex and ASCII columns. |
 | ![GrandPerspective](wsbsd/docs/screenshots/grandperspective.png) | ![Pashua](wsbsd/docs/screenshots/pashua.png) |
-| [GrandPerspective](https://github.com/mfcarroll/grandperspective) (2026 sources, 138 files, unmodified): welcome window and its "Drive Access Required" alert. | [Pashua](https://github.com/BlueM/Pashua), 41 of 41 files built unmodified; the dialog layout is still wrong (see the table). |
+| [GrandPerspective](https://github.com/mfcarroll/grandperspective) (2026 sources, 138 files, unmodified): welcome window and its "Drive Access Required" alert. | [Pashua](https://github.com/BlueM/Pashua), 41 of 41 files built unmodified; the dialog is built from a config file (the text in it is the config's, not Pashua's) and prints its results. |
 
 ## What is in the repository
 
@@ -52,7 +52,7 @@ State on 2026-10-17, FreeBSD 14.5 aarch64 (QEMU, HVF) and the CI virtual machine
 | [Hex Fiend](https://github.com/HexFiend/HexFiend) | framework 61 of 61, app 47 of 47 files, **unmodified** except 4 Swift files ported to Objective-C in the overlay | **yes**: menus, document windows, hex and ASCII columns with real data, themes, dark appearance, resize cursors | the window starts small; Swift-only features (some themes UI) are the overlay's |
 | [GrandPerspective](https://github.com/mfcarroll/grandperspective) (2026) | 138 of 138, unmodified | **starts**: menu bar, welcome window, its own alerts, drive picker | scanning and the treemap view are the next step |
 | [GrandPerspective 1.5](https://github.com/bezigon/GrandPerspective) (2015) | 115 of 115, unmodified | scans a folder through the Carbon File Manager shim, then **crashes**: the 2015 sources pass `float *` where AppKit takes `CGFloat *` (broken on any 64-bit platform, also on a Mac) | the 2026 sources are the target |
-| [Pashua](https://github.com/BlueM/Pashua) | 41 of 41, unmodified | **starts**, builds its dialog from a config file | the dialog window comes out tiny (layout computation), under investigation |
+| [Pashua](https://github.com/BlueM/Pashua) | 41 of 41, unmodified | **yes**: reads a config file, shows the dialog (text, field, pop-up, checkbox, buttons) and prints the values on OK | the static text is drawn selected (GNUstep selects it when it gets focus) |
 | Chess.app ([apple-oss-distributions/Chess](https://github.com/apple-oss-distributions/Chess)) | not started | | Swift (SharePlay), OpenGL/Metal 3D board: needs overlay for Swift and a GL path |
 | [TextMate](https://github.com/textmate/textmate) | not started | | Objective-C++, its own build system (ninja + rave), many C++ dependencies |
 | GNUstep Sudoku, Gorm, `terminal/`, `ksa/`, `uitest/` | yes | yes | stock GNUstep apps and the in-repo apps (CI) |
