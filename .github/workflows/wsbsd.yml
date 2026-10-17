@@ -207,6 +207,7 @@ jobs:
             wsbsd/uitest-alert.png
             wsbsd/uitest-vibrancy.png
             wsbsd/appkit-ci.log
+            wsbsd/oss-probe.log
             wsbsd/uitest-manifest.txt
           if-no-files-found: warn
 
