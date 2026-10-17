@@ -29,12 +29,15 @@ jobs:
           # Ploader's sources are written against gnu-efi 4 (AsciiStrLen); Ubuntu's package is 3.0
           git clone --depth 1 --branch 4.0.4 https://github.com/ncroxon/gnu-efi ge
           make -C ge -j4 > ge.log 2>&1 || { tail -30 ge.log; exit 1; }
-          sudo make -C ge install PREFIX=/usr LIBDIR=/usr/lib INSTALLROOT= > ge-install.log 2>&1 || { tail -30 ge-install.log; exit 1; }
+          make -C ge install PREFIX=/usr INSTALLROOT="$PWD/geroot" > ge-install.log 2>&1 || { tail -30 ge-install.log; exit 1; }
+          find geroot -name efi.h -o -name 'crt0-efi-x86_64.o' -o -name 'elf_x86_64_efi.lds' -o -name 'libgnuefi.a' | head
           git clone --depth 1 https://github.com/pearOS-archlinux/pearos-bootloader pb
           cd pb
-          EFIH=$(find /usr /usr/local -name efi.h -path '*/efi/efi.h' 2>/dev/null | head -1); CRT0=$(find /usr /usr/local -name 'crt0-efi-x86_64.o' 2>/dev/null | head -1)
-          echo "efi.h: $EFIH  crt0: $CRT0"; ls /usr/local/lib/libgnuefi.a /usr/lib/libgnuefi.a 2>&1 | head -3
-          EFIINC=$(dirname "$EFIH"); LIBD=$(dirname "$CRT0")
+          GE="$PWD/../geroot/usr"; EFIH=$(find "$GE" -name efi.h -path '*/efi/efi.h' | head -1)
+          echo "efi.h: $EFIH"
+          LIBD="$GE/lib"; [ -f "$LIBD/crt0-efi-x86_64.o" ] || LIBD=$(dirname "$(find "$GE" -name 'crt0-efi-x86_64.o' | head -1)")
+          echo "libs: $LIBD"
+          EFIINC=$(dirname "$EFIH")
           make EFIINC="$EFIINC" GNUEFILIB="$LIBD" EFILIB="$LIBD" EFICRT0="$LIBD" 2>&1 | tail -15
           ls -l ploader/*.efi
           mkdir -p ../ploader-out/licenses
