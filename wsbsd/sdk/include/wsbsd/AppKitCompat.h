@@ -18,7 +18,11 @@
 #import <AppKit/NSTextStorage.h>
 #import <AppKit/NSGraphics.h>
 
+#if defined(__has_include)
+#if __has_include(<CoreGraphics/CoreGraphics.h>)
 #import <CoreGraphics/CoreGraphics.h>
+#endif
+#endif
 typedef enum { CGRectMinXEdge, CGRectMinYEdge, CGRectMaxXEdge, CGRectMaxYEdge } CGRectEdge;
 #ifndef CGRectZero
 #define CGRectZero ((CGRect){ { 0, 0 }, { 0, 0 } })
