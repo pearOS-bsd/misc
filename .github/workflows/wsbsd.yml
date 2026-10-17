@@ -56,6 +56,7 @@ jobs:
             cd wsbsd
             gmake
             gmake check
+            echo '--- wsd resource use (FreeBSD VM) ---'; sh test/run_bench.sh || true
             echo '--- the same tests with wsd in Capsicum capability mode (-S)'
             for t in test_props test_robust; do WSD_FLAGS=-S sh test/run_one.sh $t || exit 1; done
             ./wsd -S -t -g 320x200 > /tmp/wsd-cap.log 2>&1 & W=$!; sleep 1; kill $W; grep -q 'capability mode' /tmp/wsd-cap.log || { cat /tmp/wsd-cap.log; echo 'wsd did not enter capability mode'; exit 1; }
