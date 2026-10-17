@@ -143,6 +143,7 @@ PY
 	fi
 fi
 kill $WP 2>/dev/null
+echo '=== OSS APP PROBE ==='; sh "$WS/ci/oss-probe.sh" 2>&1 | tee oss-probe.log | tail -80
 grep -v '^(lldb)\|warning\|wsd-back: \(titlewindow\|setinput\|flush\|commit\|order\|ws_win\)' /tmp/hello.log | tail -40; tail -5 /tmp/wsd.log
 ls -l appkit.png
 echo '=== TERMINAL (terminal/) ==='; cat /tmp/terminal-ci.txt 2>/dev/null
