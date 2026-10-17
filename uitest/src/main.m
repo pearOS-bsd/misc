@@ -38,6 +38,11 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 - (NSInteger) numberOfRowsInTableView: (NSTableView *)t { return 4; }
 - (id) tableView: (NSTableView *)t objectValueForTableColumn: (NSTableColumn *)c row: (NSInteger)r { return [NSString stringWithFormat: @"Row %d", (int)r + 1]; }
 @end
+@interface Stripes : NSView @end
+@implementation Stripes
+- (void) drawRect: (NSRect)r { for (int i = 0; i < 24; i++) { [[NSColor colorWithCalibratedHue: i / 24.0 saturation: 0.85 brightness: 0.9 alpha: 1] set]; NSRectFill(NSMakeRect(i * 18, 0, 18, 360)); } }
+@end
+
 @implementation Del
 - (void) applicationDidFinishLaunching: (NSNotification *)n
 {
@@ -99,6 +104,7 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 	else [w makeFirstResponder: nil];
 	if (getenv("UI_MODE") && !strcmp(getenv("UI_MODE"), "alert")) [self performSelector: @selector(showAlert:) withObject: nil afterDelay: 0.6];
 	if (getenv("UI_MODE") && !strcmp(getenv("UI_MODE"), "menu")) [self performSelector: @selector(showMenu:) withObject: nil afterDelay: 0.6];
+	if (getenv("UI_MODE") && !strcmp(getenv("UI_MODE"), "vibrancy")) [self performSelector: @selector(showVibrancy:) withObject: nil afterDelay: 0.6];
 	const char *ex = getenv("UI_EXIT_AFTER"); if (ex) [NSTimer scheduledTimerWithTimeInterval: atof(ex) target: NSApp selector: @selector(terminate:) userInfo: nil repeats: NO];
 }
 - (void) showAlert: (id)unused
@@ -107,6 +113,19 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 	[a setMessageText: @"Alert title"]; [a setInformativeText: @"Informative text that explains the alert in a sentence or two."];
 	[a addButtonWithTitle: @"OK"]; [a addButtonWithTitle: @"Cancel"];
 	[a runModal];
+}
+- (void) showVibrancy: (id)unused
+{
+	/* a striped window behind, a window with a behind-window material (sidebar) partly over it */
+	NSWindow *back = [[NSWindow alloc] initWithContentRect: NSMakeRect(60, 140, 420, 360) styleMask: NSTitledWindowMask backing: NSBackingStoreBuffered defer: NO];
+	[back setTitle: @"Backdrop"]; [back setContentView: [[[Stripes alloc] initWithFrame: NSMakeRect(0, 0, 420, 360)] autorelease]]; [back makeKeyAndOrderFront: nil];
+	NSWindow *fx = [[NSWindow alloc] initWithContentRect: NSMakeRect(300, 200, 360, 280) styleMask: NSTitledWindowMask | NSClosableWindowMask backing: NSBackingStoreBuffered defer: NO];
+	[fx setTitle: @"Vibrancy"];
+	NSVisualEffectView *ve = [[[NSVisualEffectView alloc] initWithFrame: NSMakeRect(0, 0, 360, 280)] autorelease];
+	[ve setMaterial: (NSVisualEffectMaterial)7]; [ve setBlendingMode: NSVisualEffectBlendingModeBehindWindow]; [ve setState: NSVisualEffectStateActive];
+	[fx setContentView: ve];
+	NSTextField *t = [[[NSTextField alloc] initWithFrame: NSMakeRect(20, 220, 300, 22)] autorelease]; [t setStringValue: @"Sidebar material over a striped window"]; [t setEditable: NO]; [t setBezeled: NO]; [t setDrawsBackground: NO]; [ve addSubview: t];
+	[fx makeKeyAndOrderFront: nil];
 }
 - (void) showMenu: (id)unused
 {
