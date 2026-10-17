@@ -718,3 +718,63 @@ static BOOL wsbsdServicesOpenFile(id self, SEL _cmd, id app, NSString *file)
 + (NSFont *)monospacedDigitSystemFontOfSize:(CGFloat)size weight:(NSFontWeight)weight { return [self systemFontOfSize: size weight: weight]; }
 + (NSFont *)monospacedSystemFontOfSize:(CGFloat)size weight:(NSFontWeight)weight { (void)weight; return [NSFont userFixedPitchFontOfSize: size]; }
 @end
+
+/* ---- NSURL resource values, computed from the file (GNUstep's answered with the wrong kind of object for several keys: a date where a BOOL is expected) ---- */
+#include <sys/stat.h>
+static id resourceValue(NSURL *u, NSString *key)
+{
+	if (![u isFileURL]) return nil;
+	struct stat st, lst; const char *p = [[u path] fileSystemRepresentation];
+	if (lstat(p, &lst) != 0) return nil;
+	if (stat(p, &st) != 0) st = lst;
+	BOOL dir = S_ISDIR(st.st_mode), pkg = dir && ([[[u path] pathExtension] length] > 0 && [@[@"app", @"framework", @"bundle", @"plugin", @"kext", @"xpc", @"appex"] containsObject: [[u path] pathExtension]]);
+	if ([key isEqualToString: @"NSURLIsDirectoryKey"]) return [NSNumber numberWithBool: dir];
+	if ([key isEqualToString: @"NSURLIsRegularFileKey"]) return [NSNumber numberWithBool: S_ISREG(st.st_mode)];
+	if ([key isEqualToString: @"NSURLIsSymbolicLinkKey"]) return [NSNumber numberWithBool: S_ISLNK(lst.st_mode)];
+	if ([key isEqualToString: @"NSURLIsPackageKey"]) return [NSNumber numberWithBool: pkg];
+	if ([key isEqualToString: @"NSURLIsApplicationKey"]) return [NSNumber numberWithBool: pkg && [[[u path] pathExtension] isEqualToString: @"app"]];
+	if ([key isEqualToString: @"NSURLIsHiddenKey"]) return [NSNumber numberWithBool: [[[u path] lastPathComponent] hasPrefix: @"."]];
+	if ([key isEqualToString: @"NSURLIsReadableKey"]) return [NSNumber numberWithBool: access(p, R_OK) == 0];
+	if ([key isEqualToString: @"NSURLIsWritableKey"]) return [NSNumber numberWithBool: access(p, W_OK) == 0];
+	if ([key isEqualToString: @"NSURLIsExecutableKey"]) return [NSNumber numberWithBool: access(p, X_OK) == 0];
+	if ([key isEqualToString: @"NSURLIsVolumeKey"]) return [NSNumber numberWithBool: [[u path] isEqualToString: @"/"]];
+	if ([key isEqualToString: @"NSURLFileSizeKey"] || [key isEqualToString: @"NSURLTotalFileSizeKey"]) return [NSNumber numberWithLongLong: (long long)st.st_size];
+	if ([key isEqualToString: @"NSURLFileAllocatedSizeKey"] || [key isEqualToString: @"NSURLTotalFileAllocatedSizeKey"]) return [NSNumber numberWithLongLong: (long long)st.st_blocks * 512];
+	if ([key isEqualToString: @"NSURLContentModificationDateKey"]) return [NSDate dateWithTimeIntervalSince1970: (NSTimeInterval)st.st_mtime];
+	if ([key isEqualToString: @"NSURLAttributeModificationDateKey"]) return [NSDate dateWithTimeIntervalSince1970: (NSTimeInterval)st.st_ctime];
+	if ([key isEqualToString: @"NSURLContentAccessDateKey"]) return [NSDate dateWithTimeIntervalSince1970: (NSTimeInterval)st.st_atime];
+	if ([key isEqualToString: @"NSURLCreationDateKey"]) return [NSDate dateWithTimeIntervalSince1970: (NSTimeInterval)st.st_birthtime];
+	if ([key isEqualToString: @"NSURLNameKey"] || [key isEqualToString: @"NSURLLocalizedNameKey"]) return [[u path] lastPathComponent];
+	if ([key isEqualToString: @"NSURLPathKey"]) return [u path];
+	if ([key isEqualToString: @"NSURLLinkCountKey"]) return [NSNumber numberWithUnsignedLong: st.st_nlink];
+	if ([key isEqualToString: @"NSURLVolumeURLKey"]) return [NSURL fileURLWithPath: @"/"];
+	if ([key isEqualToString: @"NSURLTypeIdentifierKey"]) return dir ? (pkg ? @"com.apple.application-bundle" : @"public.folder") : @"public.data";
+	return nil;
+}
+static IMP origGetResource, origResourceValues;
+static BOOL wsbsdGetResourceValue(id self, SEL _cmd, id *value, NSString *key, NSError **error)
+{
+	id v = resourceValue(self, key);
+	if (!v) return ((BOOL (*)(id, SEL, id *, id, NSError **))origGetResource)(self, _cmd, value, key, error);
+	if (value) *value = v;
+	return YES;
+}
+static NSDictionary *wsbsdResourceValues(id self, SEL _cmd, NSArray *keys, NSError **error)
+{
+	NSMutableDictionary *d = [NSMutableDictionary dictionary];
+	for (NSString *k in keys) { id v = resourceValue(self, k); if (v) [d setObject: v forKey: k]; }
+	return d;
+}
+@interface WsbsdURLResourceFix : NSObject @end
+@implementation WsbsdURLResourceFix
++ (void)load
+{
+	Class c = objc_getClass("NSURL");
+	Method m = c ? class_getInstanceMethod(c, sel_registerName("getResourceValue:forKey:error:")) : NULL;
+	if (m && !origGetResource) origGetResource = method_setImplementation(m, (IMP)wsbsdGetResourceValue);
+	else if (c && !origGetResource) { class_addMethod(c, sel_registerName("getResourceValue:forKey:error:"), (IMP)wsbsdGetResourceValue, "c@:^@@^@"); }
+	m = c ? class_getInstanceMethod(c, sel_registerName("resourceValuesForKeys:error:")) : NULL;
+	if (m && !origResourceValues) origResourceValues = method_setImplementation(m, (IMP)wsbsdResourceValues);
+	else if (c && !origResourceValues) class_addMethod(c, sel_registerName("resourceValuesForKeys:error:"), (IMP)wsbsdResourceValues, "@@:@^@");
+}
+@end
