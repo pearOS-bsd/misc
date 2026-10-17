@@ -98,6 +98,7 @@ static void wsdColorSetAny(id self, SEL _cmd)
 	for (Class k = object_getClass(self); k && !orig; k = class_getSuperclass(k))
 		for (int i = 0; i < nColorHooks; i++) if (colorHooks[i].cls == k && sel_isEqual(colorHooks[i].sel, _cmd)) { orig = colorHooks[i].orig; break; }
 	if (orig) ((void (*)(id, SEL))orig)(self, _cmd);
+	if (getenv("WSD_COLORLOG")) NSLog(@"wsd-back: %@ %s on %s%s", [self description], sel_getName(_cmd), class_getName(object_getClass(self)), orig ? "" : " (no original)");
 	afterColorSet();
 }
 static void hookColorClass(Class k)
