@@ -23,4 +23,5 @@ void ws_input_init(ws_input *in, int sw, int sh);
 void ws_input_set_abs_range(ws_input *in, int axis, int min, int max);       /* ABS_X / ABS_Y ranges of a device that reports absolute positions */
 void ws_input_feed(ws_input *in, ws_server *srv, int type, int code, int value);   /* one input_event; motion and absolute positions are applied at EV_SYN */
 int ws_input_mac_keycode(int evdev_code);                                     /* macOS virtual key code, -1 when there is none */
+int ws_input_evdev_code(int mac_keycode);                                    /* evdev code for a macOS virtual key code, -1 when there is none */
 #endif

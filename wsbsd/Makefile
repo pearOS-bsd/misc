@@ -3,7 +3,7 @@ CC      ?= cc
 CFLAGS  ?= -O2 -g
 CFLAGS  += -std=c99 -D_DEFAULT_SOURCE -D_BSD_SOURCE -Wall -Wextra -Iinclude
 LDLIBS   = -lm
-CORE     = src/input.c src/compositor_sw.c src/blur.c src/server.c src/shadow.c src/region.c src/ipc.c src/evrec.c src/buffer.c
+CORE     = src/input.c src/keymap.c src/compositor_sw.c src/blur.c src/server.c src/shadow.c src/region.c src/ipc.c src/evrec.c src/buffer.c
 HDRS = include/ws_gl.h include/ws_buffer.h include/ws_evrec.h include/ws.h include/ws_client.h include/ws_backend.h include/ws_ipc.h include/ws_region.h include/mach_compat.h include/sls_wire.h include/sls_msgids.h src/wsd_priv.h src/sls_zero_ndr.h src/bplist.h
 OUT          = window
 # set by the `kms` target
@@ -25,6 +25,9 @@ test_generic: src/ipc.c test/test_generic.c $(HDRS)
 
 test_input: $(CORE) test/test_input.c $(HDRS) include/ws_input.h
 	$(CC) $(CFLAGS) -o $@ $(CORE) test/test_input.c $(LDLIBS)
+
+test_xkb: $(CORE) src/xkbmap.c test/test_xkb.c include/ws_xkb.h $(HDRS)
+	$(CC) $(CFLAGS) $$(pkg-config --cflags xkbcommon) -o $@ $(CORE) src/xkbmap.c test/test_xkb.c $$(pkg-config --libs xkbcommon) $(LDLIBS)
 
 soak: src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/soak.c $(HDRS)
 	$(CC) $(CFLAGS) -o $@ src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/soak.c $(LDLIBS)
@@ -98,6 +101,7 @@ check: test_bplist test_input test_compose test_region test_evrec test_buffer te
 	sh test/run_robust.sh
 	sh test/run_golden.sh
 	sh test/run_one.sh test_generic
+	@if pkg-config --exists xkbcommon 2>/dev/null; then $(MAKE) test_xkb && ./test_xkb; else echo 'xkbcommon not found, skipping test_xkb'; fi
 	./test_bplist
 	sh test/run_one.sh test_props
 	sh test/run_shim.sh test_shim shim_basic
