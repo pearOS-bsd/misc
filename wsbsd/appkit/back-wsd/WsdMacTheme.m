@@ -540,7 +540,7 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 @implementation NSSearchFieldCell (WsdMac)
 - (NSRect) searchButtonRectForBounds: (NSRect)r { return NSMakeRect(r.origin.x + 8, NSMidY(r) - 7, 14, 14); }
 - (NSRect) cancelButtonRectForBounds: (NSRect)r { return NSMakeRect(NSMaxX(r) - 8 - 14, NSMidY(r) - 7, 14, 14); }
-- (NSRect) searchTextRectForBounds: (NSRect)r { return NSMakeRect(r.origin.x + 26, r.origin.y, r.size.width - 52, r.size.height); }
+- (NSRect) searchTextRectForBounds: (NSRect)r { return NSMakeRect(r.origin.x + 19, r.origin.y, r.size.width - 45, r.size.height); }
 - (void) drawWithFrame: (NSRect)f inView: (NSView *)v
 {
 	fillRound(f, f.size.height / 2, onBG(0.05));
