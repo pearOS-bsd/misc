@@ -696,3 +696,19 @@ static BOOL wsbsdServicesOpenFile(id self, SEL _cmd, id app, NSString *file)
 	if (m && !origServicesOpenFile) origServicesOpenFile = method_setImplementation(m, (IMP)wsbsdServicesOpenFile);
 }
 @end
+
+@implementation NSURL (WsbsdBookmarks)
+- (NSData *)bookmarkDataWithOptions:(NSUInteger)options includingResourceValuesForKeys:(NSArray *)keys relativeToURL:(NSURL *)relativeURL error:(NSError **)error
+{
+	(void)options; (void)keys; (void)relativeURL; (void)error;
+	return [[self absoluteString] dataUsingEncoding: NSUTF8StringEncoding];
+}
++ (instancetype)URLByResolvingBookmarkData:(NSData *)bookmarkData options:(NSUInteger)options relativeToURL:(NSURL *)relativeURL bookmarkDataIsStale:(BOOL *)isStale error:(NSError **)error
+{
+	(void)options; (void)relativeURL; (void)error; if (isStale) *isStale = NO;
+	NSString *s = [[NSString alloc] initWithData: bookmarkData encoding: NSUTF8StringEncoding];
+	return s ? [NSURL URLWithString: s] : nil;
+}
+- (BOOL)startAccessingSecurityScopedResource { return YES; }
+- (void)stopAccessingSecurityScopedResource {}
+@end
