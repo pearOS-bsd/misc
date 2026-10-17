@@ -3,7 +3,7 @@
 # AppKit (GNUstep gui) on wsd: builds libs-back with the "wsd" display server (appkit/back-wsd) in place of the headless one, then runs
 # an AppKit program against a live wsd and takes a screenshot of the screen.
 export IGNORE_OSVERSION=yes
-pkg install -y neofetch gnustep-sudoku gnustep-back gnustep-make gnustep-base gnustep-gui cairo freetype2 fontconfig git png jpeg-turbo tiff pkgconf gmake lcms2 bzip2 icu libffi dejavu autoconf libdispatch python3 libxkbcommon xkeyboard-config >/dev/null 2>&1 || true
+pkg install -y neofetch gnustep-sudoku gnustep-back gnustep-make gnustep-base gnustep-gui cairo freetype2 fontconfig git png jpeg-turbo tiff pkgconf gmake lcms2 bzip2 icu libffi dejavu autoconf libdispatch python3 >/dev/null 2>&1 || true
 cat > /usr/local/libdata/pkgconfig/bzip2.pc <<EOP
 Name: bzip2
 Description: bzip2
@@ -28,6 +28,8 @@ mkdir -p /usr/local/share/fonts/inter /tmp/inter
 (fetch -qo /tmp/inter.zip https://github.com/rsms/inter/releases/download/v4.0/Inter-4.0.zip && tar -xf /tmp/inter.zip -C /tmp/inter && cp /tmp/inter/extras/ttf/Inter-Regular.ttf /tmp/inter/extras/ttf/Inter-Medium.ttf /tmp/inter/extras/ttf/Inter-SemiBold.ttf /tmp/inter/extras/ttf/Inter-Bold.ttf /usr/local/share/fonts/inter/ 2>/dev/null && fc-cache -f >/dev/null 2>&1) || echo 'Inter font download failed'
 fc-list | grep -ci inter | sed 's/^/FONT: inter faces installed: /'
 # libs-gui from source: the packaged one is older than the libs-back it is paired with (window ordering never reached the server)
+pkg install -y libxkbcommon xkeyboard-config >/dev/null 2>&1 || pkg install -y libxkbcommon >/dev/null 2>&1 || true
+echo "xkb: $(pkg info -e libxkbcommon && echo installed || echo MISSING) $(pkg-config --cflags xkbcommon 2>&1)"
 pkg install -y giflib >/dev/null 2>&1 || true
 git clone --depth 1 https://github.com/gnustep/libs-gui gui 2>&1 | tail -1
 (cd gui && ./configure CPPFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib" 2>&1 | tail -3 && gmake -j2 GNUSTEP_INSTALLATION_DOMAIN=SYSTEM 2>&1 | grep -E "error|Error" | head -10; gmake install GNUSTEP_INSTALLATION_DOMAIN=SYSTEM 2>&1 | tail -2)
@@ -38,7 +40,7 @@ cp "$WS"/include/ws_xkb.h "$WS"/include/ws_input.h Headers/wsd/ 2>/dev/null; cp 
 cp "$WS"/appkit/back-wsd/*.m Source/headless/
 # the wsd client library is compiled straight into the headless subproject (a static archive is not picked up by the bundle link)
 for f in client compositor_sw region ipc evrec buffer; do cp "$WS/src/$f.c" Source/headless/wsc_$f.c; done
-printf 'ADDITIONAL_INCLUDE_DIRS += -I%s/include\nADDITIONAL_CFLAGS += -std=gnu99 -D_DEFAULT_SOURCE\nheadless_C_FILES += wsc_client.c wsc_compositor_sw.c wsc_region.c wsc_ipc.c wsc_evrec.c wsc_buffer.c wsc_keymap.c wsc_xkbmap.c\nADDITIONAL_CFLAGS += -DWSD_XKB $(shell pkg-config --cflags xkbcommon)\nADDITIONAL_LDFLAGS += $(shell pkg-config --libs xkbcommon)\n' "$WS" >> Source/headless/GNUmakefile.preamble
+printf 'ADDITIONAL_INCLUDE_DIRS += -I%s/include\nADDITIONAL_CFLAGS += -std=gnu99 -D_DEFAULT_SOURCE\nheadless_C_FILES += wsc_client.c wsc_compositor_sw.c wsc_region.c wsc_ipc.c wsc_evrec.c wsc_buffer.c wsc_keymap.c wsc_xkbmap.c\nADDITIONAL_CFLAGS += -DWSD_XKB -I/usr/local/include $(shell pkg-config --cflags xkbcommon)\nADDITIONAL_LDFLAGS += -L/usr/local/lib -lxkbcommon\n' "$WS" >> Source/headless/GNUmakefile.preamble
 # headless server -> wsd server
 sed -i '' 's/^HeadlessServer.m \\/HeadlessServer.m WsdServer.m WsdCairoSurface.m WsdMacTheme.m \\/' Source/headless/GNUmakefile
 sed -i '' 's/HeadlessServer/WsdServer/g; s#<headless/WsdServer.h>#<wsd/WsdServer.h>#' Source/GSBackend.m
