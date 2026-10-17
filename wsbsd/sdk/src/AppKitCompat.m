@@ -1,6 +1,7 @@
 /* Implementations of the methods declared in include/wsbsd/AppKitCompat.h. */
 #import <wsbsd/AppKitCompat.h>
 #import <objc/runtime.h>
+#import <objc/message.h>
 
 __attribute__((weak)) const CGRect CGRectZero = { { 0, 0 }, { 0, 0 } };
 __attribute__((weak)) const CGSize CGSizeZero = { 0, 0 };
@@ -127,7 +128,7 @@ static const char accessoryKey;
 + (CGFloat)scrollerWidthForControlSize:(NSControlSize)size scrollerStyle:(int)style { (void)style; return [NSScroller scrollerWidth]; }
 @end
 @implementation NSColor (WsbsdCompatRows)
-+ (NSArray *)alternatingContentBackgroundColors { return [NSArray arrayWithObjects: [NSColor whiteColor], [NSColor colorWithCalibratedWhite: 0.96 alpha: 1.0], nil]; }
++ (NSArray *)alternatingContentBackgroundColors { return [NSColor controlAlternatingRowBackgroundColors]; }      /* the theme's row colours (dark or light) */
 @end
 
 @implementation NSView (WsbsdCompat)
@@ -457,5 +458,29 @@ static id wsbsdTransferWindowOwnership(id self, SEL _cmd)
 	Class c = objc_getClass("NSDocument");
 	Method m = c ? class_getInstanceMethod(c, sel_registerName("_transferWindowOwnership")) : NULL;
 	if (m && !origTransferWindow) origTransferWindow = method_setImplementation(m, (IMP)wsbsdTransferWindowOwnership);
+}
+@end
+
+/* ---- NSView -setFrame: on Apple is built from -setFrameOrigin: and -setFrameSize:, and applications that track their size override -setFrameSize: (Hex Fiend lays out its
+ * bytes per line and displayed lines there). GNUstep's -setFrame: sets the frame itself and never calls it. For a class that overrides -setFrameSize: the same split is done here.
+ * Runtime API only (+load runs before main). ---- */
+static IMP origViewSetFrame, viewSetFrameSize;
+static void wsbsdViewSetFrame(id self, SEL _cmd, NSRect f)
+{
+	SEL sfs = sel_registerName("setFrameSize:");
+	Method m = class_getInstanceMethod(object_getClass(self), sfs);
+	if (!m || method_getImplementation(m) == viewSetFrameSize) { ((void (*)(id, SEL, NSRect))origViewSetFrame)(self, _cmd, f); return; }
+	NSRect old = ((NSRect (*)(id, SEL))objc_msgSend)(self, sel_registerName("frame"));
+	if (old.origin.x != f.origin.x || old.origin.y != f.origin.y) ((void (*)(id, SEL, NSPoint))objc_msgSend)(self, sel_registerName("setFrameOrigin:"), f.origin);
+	if (old.size.width != f.size.width || old.size.height != f.size.height) ((void (*)(id, SEL, NSSize))objc_msgSend)(self, sfs, f.size);
+}
+@interface WsbsdViewFrameFix : NSObject @end
+@implementation WsbsdViewFrameFix
++ (void)load
+{
+	Class c = objc_getClass("NSView");
+	Method m = c ? class_getInstanceMethod(c, sel_registerName("setFrame:")) : NULL;
+	Method s = c ? class_getInstanceMethod(c, sel_registerName("setFrameSize:")) : NULL;
+	if (m && s && !origViewSetFrame) { viewSetFrameSize = method_getImplementation(s); origViewSetFrame = method_setImplementation(m, (IMP)wsbsdViewSetFrame); }
 }
 @end

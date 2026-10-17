@@ -1,3 +1,7 @@
+#if __has_include(<AppKit/NSAppearance.h>)
+#import <AppKit/NSAppearance.h>
+#define WSD_HAVE_APPEARANCE 1
+#endif
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 #import <GNUstepGUI/GSDisplayServer.h>
@@ -353,13 +357,22 @@ void WsdApplyMacPalette(void)
 	[l setColor: rgb(r, g, b, 1) forKey: @"windowBackgroundColor"];
 	[l setColor: rgb(r, g, b, 1) forKey: @"controlBackgroundColor"];
 	[l setColor: rgb(mix(r, fg, dark ? 0.07 : 0.0), mix(g, fg, dark ? 0.07 : 0.0), mix(b, fg, dark ? 0.07 : 0.0), 1) forKey: @"controlColor"];
+	[l setColor: label forKey: @"labelColor"];
 	[l setColor: label forKey: @"controlTextColor"]; [l setColor: label forKey: @"textColor"]; [l setColor: label forKey: @"windowFrameTextColor"];
 	[l setColor: rgb(0, 122, 255, 1) forKey: @"selectedMenuItemColor"];
 	[l setColor: dark ? rgb(72, 72, 72, 1) : rgb(210, 210, 212, 1) forKey: @"selectedControlColor"];      /* selected table rows (the unemphasised selection of a window without focus) */
 	[l setColor: rgb(255, 255, 255, 1) forKey: @"selectedControlTextColor"]; [l setColor: rgb(255, 255, 255, 1) forKey: @"selectedMenuItemTextColor"];
 	[l setColor: dark ? rgb(63, 96, 130, 1) : rgb(176, 215, 255, 1) forKey: @"selectedTextBackgroundColor"]; [l setColor: label forKey: @"selectedTextColor"];
 	{ double da = dark ? 0.20 : 0.23; [l setColor: rgb(mix(r, fg, da), mix(g, fg, da), mix(b, fg, da), 1) forKey: @"disabledControlTextColor"]; } [l setColor: sec forKey: @"secondaryLabelColor"];
-	[l setColor: dark ? rgb(23, 24, 25, 1) : rgb(255, 255, 255, 1) forKey: @"textBackgroundColor"];      /* the field fill measured on macOS: neutral, darker than the (wallpaper tinted) window */
+	{ double ta = dark ? 0.35 : 0.30; [l setColor: rgb(mix(r, fg, ta), mix(g, fg, ta), mix(b, fg, ta), 1) forKey: @"tertiaryLabelColor"]; ta = dark ? 0.20 : 0.16; [l setColor: rgb(mix(r, fg, ta), mix(g, fg, ta), mix(b, fg, ta), 1) forKey: @"quaternaryLabelColor"]; }
+	[l setColor: dark ? rgb(23, 24, 25, 1) : rgb(255, 255, 255, 1) forKey: @"textBackgroundColor"];
+	/* alternating table / list rows (what controlAlternatingRowBackgroundColors names) */
+	[l setColor: dark ? rgb(30, 30, 30, 1) : rgb(255, 255, 255, 1) forKey: @"rowBackgroundColor"];
+	[l setColor: dark ? rgb(38, 38, 38, 1) : rgb(244, 245, 245, 1) forKey: @"alternateRowBackgroundColor"];
+	/* the appearance applications ask for (NSAppearance.currentAppearance, effectiveAppearance): the dark one when the desktop is dark */
+#ifdef WSD_HAVE_APPEARANCE
+	if (dark && NSClassFromString(@"NSAppearance")) [NSAppearance setCurrentAppearance: [NSAppearance appearanceNamed: NSAppearanceNameDarkAqua]];
+#endif      /* the field fill measured on macOS: neutral, darker than the (wallpaper tinted) window */
 }
 
 @implementation WsdMacTheme
