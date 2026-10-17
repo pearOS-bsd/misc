@@ -15,10 +15,10 @@ macdesktop_start()
 	export WS_SOCKET=/var/run/WindowServer.sock HOME=/Users/Shared XDG_CURRENT_DESKTOP=Aqua XDG_SESSION_DESKTOP=Aqua XDG_SESSION_TYPE=wsd TERM=xterm-256color
 	mkdir -p /Users/Shared /var/run
 	rm -f $WS_SOCKET
-	daemon -f -p /var/run/WindowServer.pid $WS -b kms -c /dev/ttyv0 -t
+	daemon -f -o /var/log/WindowServer.log -p /var/run/WindowServer.pid $WS -b kms -c /dev/ttyv0 -t
 	sleep 2
 	for app in /System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal; do
-		daemon -f /usr/lib/dyld $app
+		daemon -f -o /var/log/Terminal.log /usr/lib/dyld $app
 	done
 }
 macdesktop_stop() { [ -f /var/run/WindowServer.pid ] && kill "$(cat /var/run/WindowServer.pid)"; }
