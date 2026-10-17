@@ -35,6 +35,9 @@ for r in $REPOS; do
 	echo "-- other:"; grep -vE "file not found|undeclared identifier|unknown type name|no type or protocol|not found on object|no visible @interface|no known|cannot find" $W/$n.err | sed "s/.*error: //" | sort | uniq -c | sort -rn | head -10
 done
 
+# the compatibility layer itself has to compile against this GNUstep (errors are shown, the survey goes on)
+echo "== sdk/src/AppKitCompat.m"; clang -I$WS/sdk/include $(gnustep-config --objc-flags) -fblocks -fobjc-arc -Wno-everything -fsyntax-only $WS/sdk/src/AppKitCompat.m 2>&1 | grep -E "error" | head -20; echo "(end of compat check)"
+
 # The same survey through the Xcode project driver (tools/xcb): headers staged the way Xcode exposes them, the target's own flags, ARC, defines and prefix header
 if command -v python3 >/dev/null 2>&1 && [ -d $W/HexFiend_HexFiend ]; then
 	echo "== xcb: Hex Fiend, target HexFiend_Framework (framework, 61 Objective-C sources)"
