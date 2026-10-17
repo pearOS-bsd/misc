@@ -1,0 +1,13 @@
+{
+  "replace": {
+    "sources/Encodings.swift": "overlay/Encodings.m",
+    "sources/ChooseStringEncodingWindowController.swift": "overlay/ChooseStringEncodingWindowController.m",
+    "sources/HFByteTheme.swift": "overlay/HFByteTheme+Swift.m",
+    "sources/ScrollViewRepresenter.swift": "overlay/ScrollViewRepresenter.m"
+  },
+  "include": [
+    "overlay/tcl_compat",
+    "overlay"
+  ],
+  "defines": []
+}

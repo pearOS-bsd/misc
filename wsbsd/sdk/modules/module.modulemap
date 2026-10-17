@@ -1,0 +1,7 @@
+/* Clang modules over the GNUstep headers, so that `@import Cocoa;` (what Xcode projects with CLANG_ENABLE_MODULES expect) works.
+ * Each module wraps the umbrella header of the framework; the wrappers live next to this file. */
+module Foundation [system] { header "wsbsd_Foundation.h" export * }
+module CoreFoundation [system] { header "wsbsd_CoreFoundation.h" export * }
+module AppKit [system] { header "wsbsd_AppKit.h" export * }
+module Cocoa [system] { header "wsbsd_Cocoa.h" export * }
+module Dispatch [system] { header "wsbsd_dispatch.h" export * }
