@@ -199,7 +199,7 @@ static NSInteger wsdAlertRun(id self, SEL _cmd)
 	NSTextContainer *tc2 = [[[NSTextContainer alloc] initWithContainerSize: NSMakeSize(TW, 10000)] autorelease]; [tc2 setLineFragmentPadding: 0]; [lm2 addTextContainer: tc2]; [st2 addLayoutManager: lm2];
 	ih = [info length] ? ceil([lm2 usedRectForTextContainer: tc2].size.height) : 0;
 	CGFloat y = 26, iconY = y; y += 52 + 20;
-	CGFloat titleY = y; y += th + 14; CGFloat infoY = y; y += ih + (ih ? 17 : 4);
+	CGFloat titleY = y; y += th + 11; CGFloat infoY = y; y += ih + (ih ? 11 : 4);
 	CGFloat btnY = y, H = y + 28 + 16;
 	NSPanel *p = [[NSPanel alloc] initWithContentRect: NSMakeRect(0, 0, W, H) styleMask: NSBorderlessWindowMask backing: NSBackingStoreBuffered defer: NO];
 	[p setOpaque: NO]; [p setBackgroundColor: [NSColor clearColor]]; [p setHasShadow: YES]; [p setLevel: NSModalPanelWindowLevel];
