@@ -153,6 +153,11 @@ on FreeBSD amd64 and publishes the release `iso-latest`). A local arm64 build of
 
 ![the ISO after boot](wsbsd/docs/screenshots/iso-boot.png)
 
+Extended attributes and the Gatekeeper check work (tested on FreeBSD UFS, `wsbsd/iso/test/xattr-test.sh`): `xattr` and `spctl` tools, `XATTR_CREATE` / `XATTR_REPLACE`, and Launch Services asks before it opens a quarantined
+application ("is an app downloaded from the Internet. Are you sure you want to open it?"); after Open the attribute carries the approved flag (`0083` becomes `00c3`) and the question is not asked again:
+
+![Gatekeeper prompt](wsbsd/docs/screenshots/gatekeeper.png)
+
 What is not done yet: the framework files are our libraries under the Mac's names, the other 360 or so frameworks are directories with an `Info.plist` and no library; Hex Fiend and the other apps are not on the image
 yet; the amd64 image is built by CI (first result pending), the arm64 image has no Ploader (it boots through FreeBSD's loader directly).
 
