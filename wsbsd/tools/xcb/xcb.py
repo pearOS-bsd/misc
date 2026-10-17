@@ -22,7 +22,12 @@ def plan(proj, name):
     hdr = proj.phase_files(proj.phase(t, "PBXHeadersBuildPhase"))
     fw = proj.phase_files(proj.phase(t, "PBXFrameworksBuildPhase"))
     res = proj.phase_files(proj.phase(t, "PBXResourcesBuildPhase"))
-    return dict(target=t, env=env, sources=src, headers=hdr, frameworks=fw, resources=res, deps=proj.dependencies(t))
+    deps = proj.dependencies(t); have = {d["id"] for d in deps}
+    prod = {o.get("productReference"): k for k, o in proj.objs.items() if o.get("isa") == "PBXNativeTarget" and o.get("productReference")}
+    for b in (proj.phase(t, "PBXFrameworksBuildPhase") or {}).get("files", []):     # implicit dependencies: a linked product of another target of the project
+        fr = proj.objs[b].get("fileRef")
+        if fr in prod and prod[fr] not in have and prod[fr] != t["id"]: have.add(prod[fr]); deps.append(proj.objs[prod[fr]] | {"id": prod[fr]})
+    return dict(target=t, env=env, sources=src, headers=hdr, frameworks=fw, resources=res, deps=deps)
 
 def stage_headers(p, out):
     name = p["env"]["PRODUCT_NAME"]; d = os.path.join(out, "headers", name); os.makedirs(d, exist_ok=True); n = 0
@@ -82,20 +87,45 @@ def compile_flags(proj, p, out, extra):
         pch = pbxproj.expand(pch, env); f += ["-include", pch if os.path.isabs(pch) else os.path.join(proj.root, pch)]
     return f
 
-def build(proj, name, o):
-    p = plan(proj, name); t = p["target"]; out = os.path.abspath(o.get("--out", "xcb-out")); os.makedirs(out, exist_ok=True)
+LIB_TYPES = ("com.apple.product-type.framework", "com.apple.product-type.library.dynamic", "com.apple.product-type.library.static")
+
+def fw_flags(p, o):
+    """Frameworks of the target's link phase: mapped with --fw-map "Cocoa=-lgnustep-gui;Foundation=-lgnustep-base" (on macOS the default is -framework NAME); the ones with no mapping are reported."""
+    m = dict(x.split("=", 1) for x in o.get("--fw-map", "").split(";") if "=" in x)
+    flags, unmapped = [], []
+    for path, fr, st in p["frameworks"]:
+        base = os.path.basename(path)
+        if "$(BUILT_PRODUCTS_DIR)" in path: continue                        # another target of the project: linked through the dependency
+        n = base.rsplit(".", 1)[0]
+        if base.endswith((".framework", ".tbd", ".dylib")):
+            if n in m: flags += shlex.split(m[n])
+            elif sys.platform == "darwin": flags += ["-framework", n] if base.endswith(".framework") else ["-l" + n.replace("lib", "", 1).split(".")[0]]
+            else: unmapped.append(n)
+    return flags, unmapped
+
+def build_target(proj, name, o, out, state):
+    if name in state: return state[name]["rc"]
+    p = plan(proj, name); t = p["target"]; tout = os.path.join(out, name.replace(" ", "_")); os.makedirs(tout, exist_ok=True)
     cc = o.get("--cc", "clang"); cflags = shlex.split(o.get("--cflags", "")); syntax = "--syntax-only" in o
-    print("staged %d headers as <%s/...>" % (stage_headers(p, out), p["env"]["PRODUCT_NAME"]))
-    na = alias_case(proj, p, out)
+    dep_incs, dep_libs, rc = [], [], 0
+    for d in p["deps"]:
+        if d.get("productType") in LIB_TYPES:
+            rc |= build_target(proj, d["name"], o, out, state)
+            pr = state[d["name"]]; dep_incs.append(os.path.join(pr["tout"], "headers"))
+            if pr.get("lib"): dep_libs.append(pr["lib"])
+        else: print("(dependency %s is a %s: not built here)" % (d["name"], d.get("productType", d["isa"]).rsplit(".", 1)[-1]))
+    print("== target %s (%s)" % (name, (t.get("productType") or t["isa"]).rsplit(".", 1)[-1]))
+    print("staged %d headers as <%s/...>" % (stage_headers(p, tout), p["env"]["PRODUCT_NAME"]))
+    na = alias_case(proj, p, tout)
     if na: print("%d includes differ from the file name only by case (resolved by links)" % na)
-    base = compile_flags(proj, p, out, [x for x in o.get("--dep-incs", "").split(",") if x])
+    base = compile_flags(proj, p, tout, dep_incs + [x for x in o.get("--dep-incs", "").split(",") if x])
     jobs = []; skipped = []
     for path, fr, st in p["sources"]:
         lang = SRC_EXT.get(os.path.splitext(path)[1])
         if lang is None or lang == "swift": skipped.append(path); continue
         extra = shlex.split(st.get("COMPILER_FLAGS", "")) if isinstance(st, dict) else []
         x = {"objc": ["-x", "objective-c"], "objc++": ["-x", "objective-c++", "-std=c++17"], "c": ["-x", "c"], "c++": ["-x", "c++", "-std=c++17"]}[lang]
-        obj = os.path.join(out, "obj", t["name"], os.path.relpath(path, proj.root).replace("/", "_").replace("..", "up") + ".o")
+        obj = os.path.join(tout, "obj", os.path.relpath(path, proj.root).replace("/", "_").replace("..", "up") + ".o")
         os.makedirs(os.path.dirname(obj), exist_ok=True)
         jobs.append((path, [cc] + cflags + base + extra + x + (["-fsyntax-only"] if syntax else ["-c", "-o", obj]) + [path], obj))
     def run(j):
@@ -112,7 +142,33 @@ def build(proj, name, o):
     for e in errs: where.setdefault(e.split("error: ", 1)[1], e.split(": error", 1)[0])
     for msg, n in Counter(e.split("error: ", 1)[1] for e in errs).most_common(25):
         print("%4d %s   [%s]" % (n, msg, os.path.relpath(where[msg], proj.root)))
-    return 0 if ok == len(jobs) else 2
+    pr = {"tout": tout, "rc": rc | (0 if ok == len(jobs) else 2)}
+    ptype = t.get("productType", ""); pname = p["env"]["PRODUCT_NAME"]
+    if not syntax and ok == len(jobs) and jobs:
+        objs = [j[2] for j in jobs]; fl, unmapped = fw_flags(p, o)
+        ld = [x for x in pbxproj.expand(p["env"].get("OTHER_LDFLAGS", []), p["env"]) if x and x != "$(inherited)"] if sys.platform == "darwin" else []
+        ld = ld if isinstance(ld, list) else shlex.split(ld)
+        extra_ld = shlex.split(o.get("--ldflags", ""))
+        if unmapped: print("frameworks with no --fw-map entry (not linked):", ", ".join(unmapped))
+        if ptype in ("com.apple.product-type.framework", "com.apple.product-type.library.dynamic"):
+            lib = os.path.join(tout, "lib" + pname.replace(" ", "") + o.get("--shared-ext", ".so" if sys.platform != "darwin" else ".dylib"))
+            cmd = [cc, o.get("--shared-flag", "-shared" if sys.platform != "darwin" else "-dynamiclib"), "-o", lib] + objs + dep_libs + fl + ld + extra_ld
+        elif ptype == "com.apple.product-type.library.static":
+            lib = os.path.join(tout, "lib" + pname.replace(" ", "") + ".a"); cmd = ["ar", "rcs", lib] + objs
+        else:
+            lib = None; exe = os.path.join(tout, pname.replace(" ", "")); cmd = [cc, "-o", exe] + objs + dep_libs + fl + ld + extra_ld
+        r = subprocess.run(cmd, capture_output=True, text=True)
+        target_file = lib or exe
+        if r.returncode == 0: print("linked", os.path.relpath(target_file, out)); pr["lib"] = lib; pr["exe"] = None if lib else exe
+        else:
+            print("link failed:"); pr["rc"] |= 2
+            for l in r.stderr.splitlines()[:12]: print("  " + l)
+    state[name] = pr
+    return pr["rc"]
+
+def build(proj, name, o):
+    out = os.path.abspath(o.get("--out", "xcb-out")); os.makedirs(out, exist_ok=True)
+    return build_target(proj, name, o, out, {})
 
 def main(a):
     if len(a) < 2: print(__doc__); return 1
