@@ -712,3 +712,9 @@ static BOOL wsbsdServicesOpenFile(id self, SEL _cmd, id app, NSString *file)
 - (BOOL)startAccessingSecurityScopedResource { return YES; }
 - (void)stopAccessingSecurityScopedResource {}
 @end
+
+@implementation NSFont (WsbsdWeights)
++ (NSFont *)systemFontOfSize:(CGFloat)size weight:(NSFontWeight)weight { return weight >= 0.4 ? [NSFont boldSystemFontOfSize: size] : [NSFont systemFontOfSize: size]; }
++ (NSFont *)monospacedDigitSystemFontOfSize:(CGFloat)size weight:(NSFontWeight)weight { return [self systemFontOfSize: size weight: weight]; }
++ (NSFont *)monospacedSystemFontOfSize:(CGFloat)size weight:(NSFontWeight)weight { (void)weight; return [NSFont userFixedPitchFontOfSize: size]; }
+@end
