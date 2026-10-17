@@ -721,6 +721,8 @@ static BOOL wsbsdServicesOpenFile(id self, SEL _cmd, id app, NSString *file)
 
 /* ---- NSURL resource values, computed from the file (GNUstep's answered with the wrong kind of object for several keys: a date where a BOOL is expected) ---- */
 #include <sys/stat.h>
+#include <sys/param.h>
+#include <sys/mount.h>
 static id resourceValue(NSURL *u, NSString *key)
 {
 	if (![u isFileURL]) return nil;
@@ -748,6 +750,15 @@ static id resourceValue(NSURL *u, NSString *key)
 	if ([key isEqualToString: @"NSURLPathKey"]) return [u path];
 	if ([key isEqualToString: @"NSURLLinkCountKey"]) return [NSNumber numberWithUnsignedLong: st.st_nlink];
 	if ([key isEqualToString: @"NSURLVolumeURLKey"]) return [NSURL fileURLWithPath: @"/"];
+	if ([key hasPrefix: @"NSURLVolume"]) {
+		struct statfs sf; if (statfs(p, &sf) != 0) return nil;
+		if ([key isEqualToString: @"NSURLVolumeAvailableCapacityKey"] || [key isEqualToString: @"NSURLVolumeAvailableCapacityForImportantUsageKey"] || [key isEqualToString: @"NSURLVolumeAvailableCapacityForOpportunisticUsageKey"]) return [NSNumber numberWithLongLong: (long long)sf.f_bavail * (long long)sf.f_bsize];
+		if ([key isEqualToString: @"NSURLVolumeTotalCapacityKey"]) return [NSNumber numberWithLongLong: (long long)sf.f_blocks * (long long)sf.f_bsize];
+		if ([key isEqualToString: @"NSURLVolumeLocalizedFormatDescriptionKey"] || [key isEqualToString: @"NSURLVolumeNameKey"] || [key isEqualToString: @"NSURLVolumeLocalizedNameKey"]) return [key isEqualToString: @"NSURLVolumeLocalizedFormatDescriptionKey"] ? [NSString stringWithUTF8String: sf.f_fstypename] : [NSString stringWithUTF8String: sf.f_mntonname];
+		if ([key isEqualToString: @"NSURLVolumeIsLocalKey"]) return [NSNumber numberWithBool: (sf.f_flags & MNT_LOCAL) != 0];
+		if ([key isEqualToString: @"NSURLVolumeIsReadOnlyKey"]) return [NSNumber numberWithBool: (sf.f_flags & MNT_RDONLY) != 0];
+		if ([key isEqualToString: @"NSURLVolumeURLKey"]) return [NSURL fileURLWithPath: [NSString stringWithUTF8String: sf.f_mntonname]];
+	}
 	if ([key isEqualToString: @"NSURLTypeIdentifierKey"]) return dir ? (pkg ? @"com.apple.application-bundle" : @"public.folder") : @"public.data";
 	return nil;
 }
@@ -755,7 +766,11 @@ static IMP origGetResource, origResourceValues;
 static BOOL wsbsdGetResourceValue(id self, SEL _cmd, id *value, NSString *key, NSError **error)
 {
 	id v = resourceValue(self, key);
-	if (!v) return ((BOOL (*)(id, SEL, id *, id, NSError **))origGetResource)(self, _cmd, value, key, error);
+	if (!v) {
+		if (origGetResource && ((BOOL (*)(id, SEL, id *, id, NSError **))origGetResource)(self, _cmd, value, key, error)) return YES;
+		if (error) *error = [NSError errorWithDomain: NSCocoaErrorDomain code: 256 userInfo: [NSDictionary dictionaryWithObject: [NSString stringWithFormat: @"No value for %@", key] forKey: NSLocalizedDescriptionKey]];
+		return NO;
+	}
 	if (value) *value = v;
 	return YES;
 }
@@ -777,4 +792,11 @@ static NSDictionary *wsbsdResourceValues(id self, SEL _cmd, NSArray *keys, NSErr
 	if (m && !origResourceValues) origResourceValues = method_setImplementation(m, (IMP)wsbsdResourceValues);
 	else if (c && !origResourceValues) class_addMethod(c, sel_registerName("resourceValuesForKeys:error:"), (IMP)wsbsdResourceValues, "@@:@^@");
 }
+@end
+
+/* an xib image resource GNUstep could not find stays a string, and the loader then sets its "template" attribute on it: a harmless no-op instead of an exception that aborts the whole nib */
+@implementation NSString (WsbsdXibImageTemplate)
+- (void)setTemplate:(BOOL)flag { (void)flag; }
+- (NSSize)size { return NSZeroSize; }
+- (void)setSize:(NSSize)size { (void)size; }
 @end
