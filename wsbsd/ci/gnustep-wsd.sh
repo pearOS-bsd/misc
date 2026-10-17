@@ -138,6 +138,7 @@ PY
 			UP=$!; sleep 5; ./wsshot uitest-$MODE.ppm && python3 tools/ppm2png.py uitest-$MODE.ppm uitest-$MODE.png
 			i=0; while kill -0 $UP 2>/dev/null && [ $i -lt 15 ]; do sleep 1; i=$((i+1)); done; pkill -f UITest-gnustep 2>/dev/null
 		done
+		echo "=== UITEST vibrancy log ==="; grep -v "wsd-back: " /tmp/uitest-vibrancy.log | tail -12
 		echo "=== UITEST ==="; wc -l uitest-manifest.txt; grep -v wsd-back /tmp/uitest.log | tail -5
 	fi
 fi
