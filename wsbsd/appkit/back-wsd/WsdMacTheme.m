@@ -488,6 +488,8 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 /* menus: a rounded panel (corner radius 10, the window colour lightened by 18 %, 1 px lighter border), accent highlight with radius 6, hairline separators; the menu bar across the top is darker */
 - (BOOL) drawsBorderForMenuItemCell: (NSMenuItemCell *)cell state: (GSThemeControlState)state isHorizontal: (BOOL)horizontal { return NO; }
 - (CGFloat) menuBorderRadius { return 10.0; }
+- (CGFloat) menuItemHeight { return 22.0; }                  /* measured: rows are 22 pt, a separator row 10 pt */
+- (CGFloat) menuSeparatorHeight { return 10.0; }
 - (NSColor *) menuBackgroundColor { return onBG(0.18); }
 - (NSColor *) menuBorderColor { return onBG(0.30); }
 - (CGFloat) menuItemBackgroundRadius { return 6.0; }
