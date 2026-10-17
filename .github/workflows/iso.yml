@@ -21,7 +21,11 @@ jobs:
       - name: Build Ploader
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq gnu-efi build-essential git
+          sudo apt-get install -y -qq build-essential git
+          # Ploader's sources are written against gnu-efi 4 (AsciiStrLen); Ubuntu's package is 3.0
+          git clone --depth 1 --branch 4.0.4 https://github.com/ncroxon/gnu-efi ge
+          make -C ge -j4 > ge.log 2>&1 || { tail -30 ge.log; exit 1; }
+          sudo make -C ge install PREFIX=/usr LIBDIR=/usr/lib INSTALLROOT= > ge-install.log 2>&1 || { tail -30 ge-install.log; exit 1; }
           git clone --depth 1 https://github.com/pearOS-archlinux/pearos-bootloader pb
           cd pb
           make 2>&1 | tail -15
