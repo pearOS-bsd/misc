@@ -1,0 +1,474 @@
+d 755 /System/Applications
+f 644 /System/Applications/.localized
+d 755 /System/Applications/App Store.app
+d 755 /System/Applications/App Store.app/Contents
+f 644 /System/Applications/App Store.app/Contents/Info.plist
+d 755 /System/Applications/App Store.app/Contents/MacOS
+f 644 /System/Applications/App Store.app/Contents/PkgInfo
+d 755 /System/Applications/App Store.app/Contents/PlugIns
+d 755 /System/Applications/App Store.app/Contents/Resources
+d 755 /System/Applications/App Store.app/Contents/_CodeSignature
+f 644 /System/Applications/App Store.app/Contents/version.plist
+d 755 /System/Applications/Apps.app
+d 755 /System/Applications/Apps.app/Contents
+f 644 /System/Applications/Apps.app/Contents/Info.plist
+d 755 /System/Applications/Apps.app/Contents/MacOS
+f 644 /System/Applications/Apps.app/Contents/PkgInfo
+d 755 /System/Applications/Apps.app/Contents/Resources
+d 755 /System/Applications/Apps.app/Contents/_CodeSignature
+f 644 /System/Applications/Apps.app/Contents/version.plist
+d 755 /System/Applications/Automator.app
+d 755 /System/Applications/Automator.app/Contents
+f 644 /System/Applications/Automator.app/Contents/Info.plist
+d 755 /System/Applications/Automator.app/Contents/MacOS
+f 644 /System/Applications/Automator.app/Contents/PkgInfo
+d 755 /System/Applications/Automator.app/Contents/Resources
+d 755 /System/Applications/Automator.app/Contents/_CodeSignature
+f 644 /System/Applications/Automator.app/Contents/version.plist
+d 755 /System/Applications/Books.app
+d 755 /System/Applications/Books.app/Contents
+d 755 /System/Applications/Books.app/Contents/Frameworks
+f 644 /System/Applications/Books.app/Contents/Info.plist
+d 755 /System/Applications/Books.app/Contents/MacOS
+f 644 /System/Applications/Books.app/Contents/PkgInfo
+d 755 /System/Applications/Books.app/Contents/PlugIns
+d 755 /System/Applications/Books.app/Contents/Resources
+d 755 /System/Applications/Books.app/Contents/XPCServices
+d 755 /System/Applications/Books.app/Contents/_CodeSignature
+f 644 /System/Applications/Books.app/Contents/version.plist
+d 755 /System/Applications/Calculator.app
+d 755 /System/Applications/Calculator.app/Contents
+f 644 /System/Applications/Calculator.app/Contents/Info.plist
+d 755 /System/Applications/Calculator.app/Contents/MacOS
+f 644 /System/Applications/Calculator.app/Contents/PkgInfo
+d 755 /System/Applications/Calculator.app/Contents/PlugIns
+d 755 /System/Applications/Calculator.app/Contents/Resources
+d 755 /System/Applications/Calculator.app/Contents/_CodeSignature
+f 644 /System/Applications/Calculator.app/Contents/version.plist
+d 755 /System/Applications/Calendar.app
+d 755 /System/Applications/Calendar.app/Contents
+d 755 /System/Applications/Calendar.app/Contents/Extensions
+f 644 /System/Applications/Calendar.app/Contents/Info.plist
+d 755 /System/Applications/Calendar.app/Contents/MacOS
+f 644 /System/Applications/Calendar.app/Contents/PkgInfo
+d 755 /System/Applications/Calendar.app/Contents/PlugIns
+d 755 /System/Applications/Calendar.app/Contents/Resources
+d 755 /System/Applications/Calendar.app/Contents/_CodeSignature
+f 644 /System/Applications/Calendar.app/Contents/version.plist
+d 755 /System/Applications/Chess.app
+d 755 /System/Applications/Chess.app/Contents
+f 644 /System/Applications/Chess.app/Contents/Info.plist
+d 755 /System/Applications/Chess.app/Contents/MacOS
+f 644 /System/Applications/Chess.app/Contents/PkgInfo
+d 755 /System/Applications/Chess.app/Contents/Resources
+d 755 /System/Applications/Chess.app/Contents/_CodeSignature
+f 644 /System/Applications/Chess.app/Contents/version.plist
+d 755 /System/Applications/Clock.app
+d 755 /System/Applications/Clock.app/Contents
+f 644 /System/Applications/Clock.app/Contents/Info.plist
+d 755 /System/Applications/Clock.app/Contents/MacOS
+f 644 /System/Applications/Clock.app/Contents/PkgInfo
+d 755 /System/Applications/Clock.app/Contents/PlugIns
+d 755 /System/Applications/Clock.app/Contents/Resources
+d 755 /System/Applications/Clock.app/Contents/_CodeSignature
+f 644 /System/Applications/Clock.app/Contents/version.plist
+d 755 /System/Applications/Contacts.app
+d 755 /System/Applications/Contacts.app/Contents
+f 644 /System/Applications/Contacts.app/Contents/Info.plist
+d 755 /System/Applications/Contacts.app/Contents/MacOS
+f 644 /System/Applications/Contacts.app/Contents/PkgInfo
+d 755 /System/Applications/Contacts.app/Contents/Resources
+d 755 /System/Applications/Contacts.app/Contents/_CodeSignature
+f 644 /System/Applications/Contacts.app/Contents/version.plist
+d 755 /System/Applications/Dictionary.app
+d 755 /System/Applications/Dictionary.app/Contents
+f 644 /System/Applications/Dictionary.app/Contents/Info.plist
+d 755 /System/Applications/Dictionary.app/Contents/MacOS
+f 644 /System/Applications/Dictionary.app/Contents/PkgInfo
+d 755 /System/Applications/Dictionary.app/Contents/Resources
+d 755 /System/Applications/Dictionary.app/Contents/_CodeSignature
+f 644 /System/Applications/Dictionary.app/Contents/version.plist
+d 755 /System/Applications/FaceTime.app
+d 755 /System/Applications/FaceTime.app/Contents
+f 644 /System/Applications/FaceTime.app/Contents/Info.plist
+d 755 /System/Applications/FaceTime.app/Contents/Library
+d 755 /System/Applications/FaceTime.app/Contents/MacOS
+f 644 /System/Applications/FaceTime.app/Contents/PkgInfo
+d 755 /System/Applications/FaceTime.app/Contents/PlugIns
+d 755 /System/Applications/FaceTime.app/Contents/Resources
+d 755 /System/Applications/FaceTime.app/Contents/_CodeSignature
+f 644 /System/Applications/FaceTime.app/Contents/version.plist
+d 755 /System/Applications/FindMy.app
+d 755 /System/Applications/FindMy.app/Contents
+d 755 /System/Applications/FindMy.app/Contents/Frameworks
+f 644 /System/Applications/FindMy.app/Contents/Info.plist
+d 755 /System/Applications/FindMy.app/Contents/Library
+d 755 /System/Applications/FindMy.app/Contents/MacOS
+f 644 /System/Applications/FindMy.app/Contents/PkgInfo
+d 755 /System/Applications/FindMy.app/Contents/PlugIns
+d 755 /System/Applications/FindMy.app/Contents/Resources
+d 755 /System/Applications/FindMy.app/Contents/_CodeSignature
+f 644 /System/Applications/FindMy.app/Contents/version.plist
+d 755 /System/Applications/Font Book.app
+d 755 /System/Applications/Font Book.app/Contents
+f 644 /System/Applications/Font Book.app/Contents/Info.plist
+d 755 /System/Applications/Font Book.app/Contents/MacOS
+f 644 /System/Applications/Font Book.app/Contents/PkgInfo
+d 755 /System/Applications/Font Book.app/Contents/Resources
+d 755 /System/Applications/Font Book.app/Contents/_CodeSignature
+f 644 /System/Applications/Font Book.app/Contents/version.plist
+d 755 /System/Applications/Freeform.app
+d 755 /System/Applications/Freeform.app/Contents
+d 755 /System/Applications/Freeform.app/Contents/Extensions
+d 755 /System/Applications/Freeform.app/Contents/Frameworks
+f 644 /System/Applications/Freeform.app/Contents/Info.plist
+d 755 /System/Applications/Freeform.app/Contents/Library
+d 755 /System/Applications/Freeform.app/Contents/MacOS
+f 644 /System/Applications/Freeform.app/Contents/PkgInfo
+d 755 /System/Applications/Freeform.app/Contents/PlugIns
+d 755 /System/Applications/Freeform.app/Contents/Resources
+d 755 /System/Applications/Freeform.app/Contents/_CodeSignature
+f 644 /System/Applications/Freeform.app/Contents/version.plist
+d 755 /System/Applications/Games.app
+d 755 /System/Applications/Games.app/Contents
+f 644 /System/Applications/Games.app/Contents/Info.plist
+d 755 /System/Applications/Games.app/Contents/Library
+d 755 /System/Applications/Games.app/Contents/MacOS
+f 644 /System/Applications/Games.app/Contents/PkgInfo
+d 755 /System/Applications/Games.app/Contents/Resources
+d 755 /System/Applications/Games.app/Contents/_CodeSignature
+f 644 /System/Applications/Games.app/Contents/version.plist
+d 755 /System/Applications/Home.app
+d 755 /System/Applications/Home.app/Contents
+f 644 /System/Applications/Home.app/Contents/Info.plist
+d 755 /System/Applications/Home.app/Contents/MacOS
+f 644 /System/Applications/Home.app/Contents/PkgInfo
+d 755 /System/Applications/Home.app/Contents/PlugIns
+d 755 /System/Applications/Home.app/Contents/Resources
+d 755 /System/Applications/Home.app/Contents/_CodeSignature
+f 644 /System/Applications/Home.app/Contents/version.plist
+d 755 /System/Applications/Image Capture.app
+d 755 /System/Applications/Image Capture.app/Contents
+f 644 /System/Applications/Image Capture.app/Contents/Info.plist
+d 755 /System/Applications/Image Capture.app/Contents/MacOS
+f 644 /System/Applications/Image Capture.app/Contents/PkgInfo
+d 755 /System/Applications/Image Capture.app/Contents/Resources
+d 755 /System/Applications/Image Capture.app/Contents/_CodeSignature
+f 644 /System/Applications/Image Capture.app/Contents/version.plist
+d 755 /System/Applications/Image Playground.app
+d 755 /System/Applications/Image Playground.app/Contents
+d 755 /System/Applications/Image Playground.app/Contents/Extensions
+f 644 /System/Applications/Image Playground.app/Contents/Info.plist
+d 755 /System/Applications/Image Playground.app/Contents/MacOS
+f 644 /System/Applications/Image Playground.app/Contents/PkgInfo
+d 755 /System/Applications/Image Playground.app/Contents/PlugIns
+d 755 /System/Applications/Image Playground.app/Contents/Resources
+d 755 /System/Applications/Image Playground.app/Contents/_CodeSignature
+f 644 /System/Applications/Image Playground.app/Contents/version.plist
+d 755 /System/Applications/Journal.app
+d 755 /System/Applications/Journal.app/Contents
+f 644 /System/Applications/Journal.app/Contents/Info.plist
+d 755 /System/Applications/Journal.app/Contents/MacOS
+f 644 /System/Applications/Journal.app/Contents/PkgInfo
+d 755 /System/Applications/Journal.app/Contents/PlugIns
+d 755 /System/Applications/Journal.app/Contents/Resources
+d 755 /System/Applications/Journal.app/Contents/_CodeSignature
+f 644 /System/Applications/Journal.app/Contents/version.plist
+d 755 /System/Applications/Mail.app
+d 755 /System/Applications/Mail.app/Contents
+f 644 /System/Applications/Mail.app/Contents/Info.plist
+d 755 /System/Applications/Mail.app/Contents/MacOS
+f 644 /System/Applications/Mail.app/Contents/PkgInfo
+d 755 /System/Applications/Mail.app/Contents/PlugIns
+d 755 /System/Applications/Mail.app/Contents/Resources
+d 755 /System/Applications/Mail.app/Contents/_CodeSignature
+f 644 /System/Applications/Mail.app/Contents/version.plist
+d 755 /System/Applications/Maps.app
+d 755 /System/Applications/Maps.app/Contents
+f 644 /System/Applications/Maps.app/Contents/Info.plist
+d 755 /System/Applications/Maps.app/Contents/Library
+d 755 /System/Applications/Maps.app/Contents/MacOS
+f 644 /System/Applications/Maps.app/Contents/PkgInfo
+d 755 /System/Applications/Maps.app/Contents/PlugIns
+d 755 /System/Applications/Maps.app/Contents/Resources
+d 755 /System/Applications/Maps.app/Contents/_CodeSignature
+f 644 /System/Applications/Maps.app/Contents/version.plist
+d 755 /System/Applications/Messages.app
+d 755 /System/Applications/Messages.app/Contents
+d 755 /System/Applications/Messages.app/Contents/Extensions
+f 644 /System/Applications/Messages.app/Contents/Info.plist
+d 755 /System/Applications/Messages.app/Contents/Library
+d 755 /System/Applications/Messages.app/Contents/MacOS
+f 644 /System/Applications/Messages.app/Contents/PkgInfo
+d 755 /System/Applications/Messages.app/Contents/PlugIns
+d 755 /System/Applications/Messages.app/Contents/Resources
+d 755 /System/Applications/Messages.app/Contents/_CodeSignature
+f 644 /System/Applications/Messages.app/Contents/version.plist
+d 755 /System/Applications/Mission Control.app
+d 755 /System/Applications/Mission Control.app/Contents
+f 644 /System/Applications/Mission Control.app/Contents/Info.plist
+d 755 /System/Applications/Mission Control.app/Contents/MacOS
+f 644 /System/Applications/Mission Control.app/Contents/PkgInfo
+d 755 /System/Applications/Mission Control.app/Contents/Resources
+d 755 /System/Applications/Mission Control.app/Contents/_CodeSignature
+f 644 /System/Applications/Mission Control.app/Contents/version.plist
+d 755 /System/Applications/Music.app
+d 755 /System/Applications/Music.app/Contents
+f 644 /System/Applications/Music.app/Contents/Info.plist
+d 755 /System/Applications/Music.app/Contents/MacOS
+f 644 /System/Applications/Music.app/Contents/PkgInfo
+d 755 /System/Applications/Music.app/Contents/PlugIns
+d 755 /System/Applications/Music.app/Contents/Resources
+d 755 /System/Applications/Music.app/Contents/XPCServices
+d 755 /System/Applications/Music.app/Contents/_CodeSignature
+f 644 /System/Applications/Music.app/Contents/version.plist
+d 755 /System/Applications/News.app
+d 755 /System/Applications/News.app/Contents
+f 644 /System/Applications/News.app/Contents/Info.plist
+d 755 /System/Applications/News.app/Contents/Library
+d 755 /System/Applications/News.app/Contents/MacOS
+f 644 /System/Applications/News.app/Contents/PkgInfo
+d 755 /System/Applications/News.app/Contents/PlugIns
+d 755 /System/Applications/News.app/Contents/Resources
+d 755 /System/Applications/News.app/Contents/_CodeSignature
+f 644 /System/Applications/News.app/Contents/version.plist
+d 755 /System/Applications/Notes.app
+d 755 /System/Applications/Notes.app/Contents
+f 644 /System/Applications/Notes.app/Contents/Info.plist
+d 755 /System/Applications/Notes.app/Contents/Library
+d 755 /System/Applications/Notes.app/Contents/MacOS
+f 644 /System/Applications/Notes.app/Contents/PkgInfo
+d 755 /System/Applications/Notes.app/Contents/PlugIns
+d 755 /System/Applications/Notes.app/Contents/Resources
+d 755 /System/Applications/Notes.app/Contents/_CodeSignature
+f 644 /System/Applications/Notes.app/Contents/version.plist
+d 755 /System/Applications/Passwords.app
+d 755 /System/Applications/Passwords.app/Contents
+f 644 /System/Applications/Passwords.app/Contents/Info.plist
+d 755 /System/Applications/Passwords.app/Contents/Library
+d 755 /System/Applications/Passwords.app/Contents/MacOS
+f 644 /System/Applications/Passwords.app/Contents/PkgInfo
+d 755 /System/Applications/Passwords.app/Contents/Resources
+d 755 /System/Applications/Passwords.app/Contents/_CodeSignature
+f 644 /System/Applications/Passwords.app/Contents/version.plist
+d 755 /System/Applications/Phone.app
+d 755 /System/Applications/Phone.app/Contents
+f 644 /System/Applications/Phone.app/Contents/Info.plist
+d 755 /System/Applications/Phone.app/Contents/MacOS
+f 644 /System/Applications/Phone.app/Contents/PkgInfo
+d 755 /System/Applications/Phone.app/Contents/PlugIns
+d 755 /System/Applications/Phone.app/Contents/Resources
+d 755 /System/Applications/Phone.app/Contents/_CodeSignature
+f 644 /System/Applications/Phone.app/Contents/version.plist
+d 755 /System/Applications/Photo Booth.app
+d 755 /System/Applications/Photo Booth.app/Contents
+f 644 /System/Applications/Photo Booth.app/Contents/Info.plist
+d 755 /System/Applications/Photo Booth.app/Contents/MacOS
+f 644 /System/Applications/Photo Booth.app/Contents/PkgInfo
+d 755 /System/Applications/Photo Booth.app/Contents/Resources
+d 755 /System/Applications/Photo Booth.app/Contents/_CodeSignature
+f 644 /System/Applications/Photo Booth.app/Contents/version.plist
+d 755 /System/Applications/Photos.app
+d 755 /System/Applications/Photos.app/Contents
+f 644 /System/Applications/Photos.app/Contents/Info.plist
+d 755 /System/Applications/Photos.app/Contents/Library
+d 755 /System/Applications/Photos.app/Contents/MacOS
+f 644 /System/Applications/Photos.app/Contents/PkgInfo
+d 755 /System/Applications/Photos.app/Contents/PlugIns
+d 755 /System/Applications/Photos.app/Contents/Resources
+d 755 /System/Applications/Photos.app/Contents/XPCServices
+d 755 /System/Applications/Photos.app/Contents/_CodeSignature
+f 644 /System/Applications/Photos.app/Contents/version.plist
+d 755 /System/Applications/Podcasts.app
+d 755 /System/Applications/Podcasts.app/Contents
+d 755 /System/Applications/Podcasts.app/Contents/Frameworks
+f 644 /System/Applications/Podcasts.app/Contents/Info.plist
+d 755 /System/Applications/Podcasts.app/Contents/MacOS
+f 644 /System/Applications/Podcasts.app/Contents/PkgInfo
+d 755 /System/Applications/Podcasts.app/Contents/PlugIns
+d 755 /System/Applications/Podcasts.app/Contents/Resources
+d 755 /System/Applications/Podcasts.app/Contents/_CodeSignature
+d 755 /System/Applications/Preview.app
+d 755 /System/Applications/Preview.app/Contents
+f 644 /System/Applications/Preview.app/Contents/Info.plist
+d 755 /System/Applications/Preview.app/Contents/MacOS
+f 644 /System/Applications/Preview.app/Contents/PkgInfo
+d 755 /System/Applications/Preview.app/Contents/Resources
+d 755 /System/Applications/Preview.app/Contents/_CodeSignature
+f 644 /System/Applications/Preview.app/Contents/version.plist
+d 755 /System/Applications/QuickTime Player.app
+d 755 /System/Applications/QuickTime Player.app/Contents
+f 644 /System/Applications/QuickTime Player.app/Contents/Info.plist
+d 755 /System/Applications/QuickTime Player.app/Contents/MacOS
+f 644 /System/Applications/QuickTime Player.app/Contents/PkgInfo
+d 755 /System/Applications/QuickTime Player.app/Contents/Resources
+d 755 /System/Applications/QuickTime Player.app/Contents/XPCServices
+d 755 /System/Applications/QuickTime Player.app/Contents/_CodeSignature
+f 644 /System/Applications/QuickTime Player.app/Contents/version.plist
+d 755 /System/Applications/Reminders.app
+d 755 /System/Applications/Reminders.app/Contents
+f 644 /System/Applications/Reminders.app/Contents/Info.plist
+d 755 /System/Applications/Reminders.app/Contents/Library
+d 755 /System/Applications/Reminders.app/Contents/MacOS
+f 644 /System/Applications/Reminders.app/Contents/PkgInfo
+d 755 /System/Applications/Reminders.app/Contents/PlugIns
+d 755 /System/Applications/Reminders.app/Contents/Resources
+d 755 /System/Applications/Reminders.app/Contents/_CodeSignature
+f 644 /System/Applications/Reminders.app/Contents/version.plist
+d 755 /System/Applications/Shortcuts.app
+d 755 /System/Applications/Shortcuts.app/Contents
+f 644 /System/Applications/Shortcuts.app/Contents/Info.plist
+d 755 /System/Applications/Shortcuts.app/Contents/Library
+d 755 /System/Applications/Shortcuts.app/Contents/MacOS
+f 644 /System/Applications/Shortcuts.app/Contents/PkgInfo
+d 755 /System/Applications/Shortcuts.app/Contents/PlugIns
+d 755 /System/Applications/Shortcuts.app/Contents/Resources
+d 755 /System/Applications/Shortcuts.app/Contents/_CodeSignature
+f 644 /System/Applications/Shortcuts.app/Contents/version.plist
+d 755 /System/Applications/Siri AI.app
+d 755 /System/Applications/Siri AI.app/Contents
+f 644 /System/Applications/Siri AI.app/Contents/Info.plist
+d 755 /System/Applications/Siri AI.app/Contents/MacOS
+f 644 /System/Applications/Siri AI.app/Contents/PkgInfo
+d 755 /System/Applications/Siri AI.app/Contents/Resources
+d 755 /System/Applications/Siri AI.app/Contents/_CodeSignature
+f 644 /System/Applications/Siri AI.app/Contents/version.plist
+d 755 /System/Applications/Siri.app
+d 755 /System/Applications/Siri.app/Contents
+f 644 /System/Applications/Siri.app/Contents/Info.plist
+d 755 /System/Applications/Siri.app/Contents/MacOS
+f 644 /System/Applications/Siri.app/Contents/PkgInfo
+d 755 /System/Applications/Siri.app/Contents/Resources
+d 755 /System/Applications/Siri.app/Contents/_CodeSignature
+f 644 /System/Applications/Siri.app/Contents/version.plist
+d 755 /System/Applications/Stickies.app
+d 755 /System/Applications/Stickies.app/Contents
+f 644 /System/Applications/Stickies.app/Contents/Info.plist
+d 755 /System/Applications/Stickies.app/Contents/MacOS
+f 644 /System/Applications/Stickies.app/Contents/PkgInfo
+d 755 /System/Applications/Stickies.app/Contents/Resources
+d 755 /System/Applications/Stickies.app/Contents/XPCServices
+d 755 /System/Applications/Stickies.app/Contents/_CodeSignature
+f 644 /System/Applications/Stickies.app/Contents/version.plist
+d 755 /System/Applications/Stocks.app
+d 755 /System/Applications/Stocks.app/Contents
+f 644 /System/Applications/Stocks.app/Contents/Info.plist
+d 755 /System/Applications/Stocks.app/Contents/Library
+d 755 /System/Applications/Stocks.app/Contents/MacOS
+f 644 /System/Applications/Stocks.app/Contents/PkgInfo
+d 755 /System/Applications/Stocks.app/Contents/PlugIns
+d 755 /System/Applications/Stocks.app/Contents/Resources
+d 755 /System/Applications/Stocks.app/Contents/_CodeSignature
+f 644 /System/Applications/Stocks.app/Contents/version.plist
+d 755 /System/Applications/System Settings.app
+d 755 /System/Applications/System Settings.app/Contents
+f 644 /System/Applications/System Settings.app/Contents/Info.plist
+d 755 /System/Applications/System Settings.app/Contents/MacOS
+f 644 /System/Applications/System Settings.app/Contents/PkgInfo
+d 755 /System/Applications/System Settings.app/Contents/PlugIns
+d 755 /System/Applications/System Settings.app/Contents/Resources
+d 755 /System/Applications/System Settings.app/Contents/XPCServices
+d 755 /System/Applications/System Settings.app/Contents/_CodeSignature
+f 644 /System/Applications/System Settings.app/Contents/version.plist
+d 755 /System/Applications/TV.app
+d 755 /System/Applications/TV.app/Contents
+f 644 /System/Applications/TV.app/Contents/Info.plist
+d 755 /System/Applications/TV.app/Contents/MacOS
+f 644 /System/Applications/TV.app/Contents/PkgInfo
+d 755 /System/Applications/TV.app/Contents/PlugIns
+d 755 /System/Applications/TV.app/Contents/Resources
+d 755 /System/Applications/TV.app/Contents/_CodeSignature
+f 644 /System/Applications/TV.app/Contents/version.plist
+d 755 /System/Applications/TextEdit.app
+d 755 /System/Applications/TextEdit.app/Contents
+f 644 /System/Applications/TextEdit.app/Contents/Info.plist
+d 755 /System/Applications/TextEdit.app/Contents/MacOS
+f 644 /System/Applications/TextEdit.app/Contents/PkgInfo
+d 755 /System/Applications/TextEdit.app/Contents/Resources
+d 755 /System/Applications/TextEdit.app/Contents/_CodeSignature
+f 644 /System/Applications/TextEdit.app/Contents/version.plist
+d 755 /System/Applications/Time Machine.app
+d 755 /System/Applications/Time Machine.app/Contents
+f 644 /System/Applications/Time Machine.app/Contents/Info.plist
+d 755 /System/Applications/Time Machine.app/Contents/MacOS
+f 644 /System/Applications/Time Machine.app/Contents/PkgInfo
+d 755 /System/Applications/Time Machine.app/Contents/Resources
+d 755 /System/Applications/Time Machine.app/Contents/_CodeSignature
+f 644 /System/Applications/Time Machine.app/Contents/version.plist
+d 755 /System/Applications/Tips.app
+d 755 /System/Applications/Tips.app/Contents
+f 644 /System/Applications/Tips.app/Contents/Info.plist
+d 755 /System/Applications/Tips.app/Contents/Library
+d 755 /System/Applications/Tips.app/Contents/MacOS
+f 644 /System/Applications/Tips.app/Contents/PkgInfo
+d 755 /System/Applications/Tips.app/Contents/PlugIns
+d 755 /System/Applications/Tips.app/Contents/Resources
+d 755 /System/Applications/Tips.app/Contents/_CodeSignature
+f 644 /System/Applications/Tips.app/Contents/version.plist
+d 755 /System/Applications/Utilities
+f 644 /System/Applications/Utilities/.localized
+d 755 /System/Applications/Utilities/Activity Monitor.app
+d 755 /System/Applications/Utilities/Activity Monitor.app/Contents
+d 755 /System/Applications/Utilities/AirPort Utility.app
+d 755 /System/Applications/Utilities/AirPort Utility.app/Contents
+d 755 /System/Applications/Utilities/Audio MIDI Setup.app
+d 755 /System/Applications/Utilities/Audio MIDI Setup.app/Contents
+d 755 /System/Applications/Utilities/Bluetooth File Exchange.app
+d 755 /System/Applications/Utilities/Bluetooth File Exchange.app/Contents
+d 755 /System/Applications/Utilities/ColorSync Utility.app
+d 755 /System/Applications/Utilities/ColorSync Utility.app/Contents
+d 755 /System/Applications/Utilities/Console.app
+d 755 /System/Applications/Utilities/Console.app/Contents
+d 755 /System/Applications/Utilities/Digital Color Meter.app
+d 755 /System/Applications/Utilities/Digital Color Meter.app/Contents
+d 755 /System/Applications/Utilities/Disk Utility.app
+d 755 /System/Applications/Utilities/Disk Utility.app/Contents
+d 755 /System/Applications/Utilities/Grapher.app
+d 755 /System/Applications/Utilities/Grapher.app/Contents
+d 755 /System/Applications/Utilities/Magnifier.app
+d 755 /System/Applications/Utilities/Magnifier.app/Contents
+d 755 /System/Applications/Utilities/Migration Assistant.app
+d 755 /System/Applications/Utilities/Migration Assistant.app/Contents
+d 755 /System/Applications/Utilities/Print Center.app
+d 755 /System/Applications/Utilities/Print Center.app/Contents
+d 755 /System/Applications/Utilities/Screen Sharing.app
+d 755 /System/Applications/Utilities/Screen Sharing.app/Contents
+d 755 /System/Applications/Utilities/Screenshot.app
+d 755 /System/Applications/Utilities/Screenshot.app/Contents
+d 755 /System/Applications/Utilities/Script Editor.app
+d 755 /System/Applications/Utilities/Script Editor.app/Contents
+d 755 /System/Applications/Utilities/System Information.app
+d 755 /System/Applications/Utilities/System Information.app/Contents
+d 755 /System/Applications/Utilities/Terminal.app
+d 755 /System/Applications/Utilities/Terminal.app/Contents
+d 755 /System/Applications/Utilities/VoiceOver Utility.app
+d 755 /System/Applications/Utilities/VoiceOver Utility.app/Contents
+d 755 /System/Applications/VoiceMemos.app
+d 755 /System/Applications/VoiceMemos.app/Contents
+f 644 /System/Applications/VoiceMemos.app/Contents/Info.plist
+d 755 /System/Applications/VoiceMemos.app/Contents/MacOS
+f 644 /System/Applications/VoiceMemos.app/Contents/PkgInfo
+d 755 /System/Applications/VoiceMemos.app/Contents/PlugIns
+d 755 /System/Applications/VoiceMemos.app/Contents/Resources
+d 755 /System/Applications/VoiceMemos.app/Contents/_CodeSignature
+f 644 /System/Applications/VoiceMemos.app/Contents/version.plist
+d 755 /System/Applications/Weather.app
+d 755 /System/Applications/Weather.app/Contents
+d 755 /System/Applications/Weather.app/Contents/Extensions
+f 644 /System/Applications/Weather.app/Contents/Info.plist
+d 755 /System/Applications/Weather.app/Contents/Library
+d 755 /System/Applications/Weather.app/Contents/MacOS
+f 644 /System/Applications/Weather.app/Contents/PkgInfo
+d 755 /System/Applications/Weather.app/Contents/PlugIns
+d 755 /System/Applications/Weather.app/Contents/Resources
+d 755 /System/Applications/Weather.app/Contents/_CodeSignature
+f 644 /System/Applications/Weather.app/Contents/version.plist
+d 755 /System/Applications/iPhone Mirroring.app
+d 755 /System/Applications/iPhone Mirroring.app/Contents
+d 755 /System/Applications/iPhone Mirroring.app/Contents/Frameworks
+f 644 /System/Applications/iPhone Mirroring.app/Contents/Info.plist
+d 755 /System/Applications/iPhone Mirroring.app/Contents/MacOS
+f 644 /System/Applications/iPhone Mirroring.app/Contents/PkgInfo
+d 755 /System/Applications/iPhone Mirroring.app/Contents/Resources
+d 755 /System/Applications/iPhone Mirroring.app/Contents/_CodeSignature
+f 644 /System/Applications/iPhone Mirroring.app/Contents/version.plist
