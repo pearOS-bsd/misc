@@ -12,6 +12,8 @@
 #import <AppKit/NSAlert.h>
 #import <AppKit/NSColor.h>
 #import <AppKit/NSImageCell.h>
+#import <AppKit/NSTextStorage.h>
+#import <AppKit/NSGraphics.h>
 
 #ifndef NSBezelStyleRounded
 #define NSBezelStyleRounded 1
@@ -41,6 +43,22 @@
 #endif
 #ifndef NSSegmentStyleSeparated
 #define NSSegmentStyleSeparated 8
+#endif
+#ifndef NSCompositingOperationSourceOver
+#define NSCompositingOperationClear NSCompositeClear
+#define NSCompositingOperationCopy NSCompositeCopy
+#define NSCompositingOperationSourceOver NSCompositeSourceOver
+#define NSCompositingOperationSourceIn NSCompositeSourceIn
+#define NSCompositingOperationSourceOut NSCompositeSourceOut
+#define NSCompositingOperationSourceAtop NSCompositeSourceAtop
+#define NSCompositingOperationDestinationOver NSCompositeDestinationOver
+#define NSCompositingOperationDestinationIn NSCompositeDestinationIn
+#define NSCompositingOperationDestinationOut NSCompositeDestinationOut
+#define NSCompositingOperationDestinationAtop NSCompositeDestinationAtop
+#define NSCompositingOperationXOR NSCompositeXOR
+#define NSCompositingOperationPlusDarker NSCompositePlusDarker
+#define NSCompositingOperationHighlight NSCompositeHighlight
+#define NSCompositingOperationPlusLighter NSCompositePlusLighter
 #endif
 typedef NSUInteger NSAttributedStringEnumerationOptions;
 #ifndef NSAttributedStringEnumerationReverse
@@ -73,6 +91,7 @@ typedef NSUInteger NSAttributedStringEnumerationOptions;
 @end
 @interface NSColor (WsbsdCompat)
 + (NSColor *)linkColor;
++ (NSColor *)separatorColor;
 @end
 @interface NSAttributedString (WsbsdCompat)
 - (void)enumerateAttribute:(NSString *)name inRange:(NSRange)range options:(NSAttributedStringEnumerationOptions)opts usingBlock:(void (^)(id value, NSRange range, BOOL *stop))block;
