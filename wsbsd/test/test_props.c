@@ -649,6 +649,10 @@ int main(void)
 			  w32(g, 0x24, 3); CHECK(rc(fd, g, 0x30) == (int)(uint32_t)-304);
 			  memset(g, 0, sizeof g); hdr(g, 0x18, 30295, 0); got = call(fd, g, 0x18, rep, sizeof rep); memcpy(b, rep + 0x24, 32); float al, m1; memcpy(&al, rep + 0x44, 4); memcpy(&m1, rep + 0x50, 4);
 			  CHECK(got == 0x54 && r32(rep, 0x20) == 0 && b[0] == 0 && b[2] == 640 && b[3] == 24 && al == 1.0f && rep[0x48] == 0 && m1 == -1.0f); }       /* GetMenuBar */
+			  { memset(g, 0, sizeof g); hdr(g, 0x28, 33012, 0); w32(g, 0x24, 13); got = call(fd, g, 0x28, rep, sizeof rep); float br; memcpy(&br, rep + 0x24, 4); CHECK(got == 0x28 && r32(rep, 0x20) == 0 && br == 1.0f);
+			    float nb = 0.5f; memset(g, 0, sizeof g); hdr(g, 0x28, 33011, 0); memcpy(g + 0x20, &nb, 4); w32(g, 0x24, 13); CHECK(rc(fd, g, 0x28) == 0);
+			    memset(g, 0, sizeof g); hdr(g, 0x28, 33012, 0); w32(g, 0x24, 13); got = call(fd, g, 0x28, rep, sizeof rep); memcpy(&br, rep + 0x24, 4); CHECK(got == 0x28 && br == 0.5f);
+			    memset(g, 0, sizeof g); hdr(g, 0x20, 33012, 0); CHECK(rc(fd, g, 0x20) == (int)(uint32_t)-304); }       /* Set/GetDisplayBrightness */
 		}
 		memset(m, 0, sizeof m); hdr(m, 0x30 + 4, 30334, 0); memcpy(m + 0x20, &sid, 8); w32(m, 0x2c, 4); memcpy(m + 0x30, "work", 4); CHECK(rc(fd, m, 0x34) == 0);
 		{ /* owners and shape of the space */

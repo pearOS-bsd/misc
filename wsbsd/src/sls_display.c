@@ -42,6 +42,15 @@ size_t sls_display_state(uint8_t *out, size_t cap, int W, int H)
 int sls_display_dispatch(conn *c, const uint8_t *buf, size_t len)
 {
 	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
+	static float brightness = 1.0f;                    /* the one display's brightness, kept (the hardware backlight is the backend's business) */
+	if (h->msgh_id == SLS_MSG_SetDisplayBrightness || h->msgh_id == SLS_MSG_GetDisplayBrightness) {   /* size 0x28: brightness float@0x20 (set), display id@0x24; Get replies 0x28 with the float@0x24; always 0 (decompiled __XSet/GetDisplayBrightness) */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		if (h->msgh_id == SLS_MSG_SetDisplayBrightness) { memcpy(&brightness, buf + 0x20, 4); return reply_simple(c->fd, h, 0); }
+		uint8_t r[0x28]; memset(r, 0, sizeof r);
+		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
+		memcpy(r + 0x18, &WS_NDR, 8); memcpy(r + 0x24, &brightness, 4);
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
 	if (h->msgh_id != SLS_MSG_GetDisplaySystemState) return -2;
 	if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
 	uint8_t blob[64 * 4 + 16 * 33 * 4 + 16 * 4 + 8];
