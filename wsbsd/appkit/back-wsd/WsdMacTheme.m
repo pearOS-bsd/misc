@@ -703,8 +703,10 @@ static NSFont *titleFont(void)
 	installControlImages();
 	self = [super initWithFrame: frame window: w];
 	if (self == nil) return nil;
-	[closeButton removeFromSuperview];                           /* the circles are drawn here: no NSButton subviews */
-	[miniaturizeButton removeFromSuperview];
+	/* the circles are drawn here: no NSButton subviews. The buttons stay alive: GSStandardWindowDecorationView keeps using the ivars
+	 * (setDocumentEdited: messages closeButton), and removing a subview releases it, which left a dangling pointer and crashed on the first edit */
+	[closeButton retain]; [closeButton removeFromSuperview];
+	[miniaturizeButton retain]; [miniaturizeButton removeFromSuperview];
 	[self updateRects];
 	return self;
 }
