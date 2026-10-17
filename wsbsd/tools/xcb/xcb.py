@@ -28,7 +28,9 @@ def stage_headers(p, out):
     name = p["env"]["PRODUCT_NAME"]; d = os.path.join(out, "headers", name); os.makedirs(d, exist_ok=True); n = 0
     for path, fr, st in p["headers"]:
         if os.path.exists(path):                                             # Xcode's header map exposes the target's Project headers too, inside the target
-            shutil.copyfile(path, os.path.join(d, os.path.basename(path))); n += 1
+            dst = os.path.join(d, os.path.basename(path))
+            if os.path.lexists(dst): os.remove(dst)
+            os.symlink(os.path.realpath(path), dst); n += 1                    # a link, so #import sees one file whichever way it is reached
     return n
 
 def compile_flags(proj, p, out, extra):
@@ -45,6 +47,11 @@ def compile_flags(proj, p, out, extra):
         for x in (v if isinstance(v, list) else shlex.split(pbxproj.expand(v, env))):
             x = pbxproj.expand(x, env)
             if x and x != "$(inherited)": f.append("-D" + x)
+    seen = set()                                                              # Xcode's header map: every header the project references answers to its bare name
+    for oid, o in proj.objs.items():
+        if o.get("isa") == "PBXFileReference" and o.get("path", "").endswith(".h"):
+            d = os.path.dirname(proj.path_of(oid))
+            if d not in seen and os.path.isdir(d): seen.add(d); f += ["-idirafter", d]
     pch = env.get("GCC_PREFIX_HEADER")
     if pch and str(env.get("GCC_PRECOMPILE_PREFIX_HEADER", "NO")) != "NO_NEVER":
         pch = pbxproj.expand(pch, env); f += ["-include", pch if os.path.isabs(pch) else os.path.join(proj.root, pch)]
