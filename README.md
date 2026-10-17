@@ -161,6 +161,24 @@ application ("is an app downloaded from the Internet. Are you sure you want to o
 What is not done yet: the framework files are our libraries under the Mac's names, the other 360 or so frameworks are directories with an `Info.plist` and no library; Hex Fiend and the other apps are not on the image
 yet; the amd64 image is built by CI (first result pending), the arm64 image has no Ploader (it boots through FreeBSD's loader directly).
 
+## Component status: what exists and what does not
+
+| macOS component | Status | Details |
+|---|---|---|
+| **WindowServer** | Yes (`wsd`) | Speaks the SkyLight MIG wire protocol over unix sockets; windows, spaces, displays, cursor, hotkeys, menu bar, event taps (passive), screenshots. Software and OpenGL ES compositors; blur/material effects; framebuffer (vt), DRM/KMS and VNC backends. |
+| **Quartz Compositor** | Yes | Compositing, shadows, blur, window shapes, cursor and a system-wide FPS counter. Not yet verified on real GPU hardware. |
+| **SkyLight** | Partial | About 270 of ~728 known routines have real, stateful handlers; the rest return recorded replies so clients do not block but nothing happens. The client side is `libwsclient`, not Apple's SkyLight API. |
+| **AppKit / Cocoa** | Partial | GNUstep gui/base with a custom `wsd` backend plus a compatibility layer (`sdk/`) that fills Apple-only APIs, so unmodified open-source Cocoa apps build and run. Behaviour still differs from macOS in places. |
+| **Core Foundation** | Yes | GNUstep CoreBase, plus our additions in `sdk/` (CoreServices, Security, UTType, FileManager...). |
+| **Core Graphics** | Partial | Opal (over cairo) bridged into AppKit drawing; CoreText covered only as far as the tested apps need. |
+| **dyld** | Yes (ISO) | A `/usr/lib/dyld` that resolves the macOS-style layout on the image. |
+| **Core Animation (QuartzCore)** | Stubs only | Classes such as `CABasicAnimation` and `CATransaction` accept calls and do nothing. No `CALayer` rendering, animation or transitions. This is the most realistic next major component. |
+| **UIKit** | No | Out of scope; the target is AppKit apps. |
+| **SwiftUI** | No | Swift on FreeBSD has no Objective-C interoperability, so it cannot subclass `NSObject` or use AppKit. SwiftUI also relies on RenderBox, which is absent. A later target, not started. |
+| **RenderBox / Metal** | No | Not provided. |
+| **WebKit** | No | Not provided. |
+| **Extended attributes / Gatekeeper** | Yes | `com.apple.quarantine` on FreeBSD `extattr(2)`, a quarantine prompt, `xattr` and `spctl` tools. |
+
 ## Known limits
 - DRM/KMS, evdev and the GL compositor have not been run on real hardware (CI has no GPU).
 - The font is Inter; window layout of some apps (Pashua's dialog) and several AppKit behaviours differ from macOS.
