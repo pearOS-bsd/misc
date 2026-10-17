@@ -2,7 +2,7 @@
 """xcb: builds an Xcode project's targets with clang on a non-Apple system, without editing the project.
 usage: xcb.py PROJECT.xcodeproj list
        xcb.py PROJECT.xcodeproj plan TARGET   (prints what would be compiled, headers exposed and frameworks linked)
-       xcb.py PROJECT.xcodeproj build TARGET [--out DIR] [--cc clang] [--cflags "..."] [--ldflags "..."] [--syntax-only] [-j N] [--dep-incs DIR,...] [--overlay overlay.json]
+       xcb.py PROJECT.xcodeproj build TARGET [--out DIR] [--cc clang] [--cflags "..."] [--ldflags "..."] [--syntax-only] [-j N] [--dep-incs DIR,...] [--overlay overlay.json] [--bundle-libs a.so,b.so]
          stages the public / private headers as <Product/Header.h> (what an Xcode framework target exposes), compiles every C / Objective-C(++) source
          with the target's settings (ARC, defines, prefix header, header search paths, per-file flags) and links; Swift sources are reported and skipped"""
 import sys, os, shutil, subprocess, shlex
@@ -183,15 +183,51 @@ def build_target(proj, name, o, out, state):
         elif ptype == "com.apple.product-type.library.static":
             lib = os.path.join(tout, "lib" + pname.replace(" ", "") + ".a"); cmd = ["ar", "rcs", lib] + objs
         else:
-            lib = None; exe = os.path.join(tout, pname.replace(" ", "")); cmd = [cc, "-o", exe] + objs + dep_libs + fl + ld + extra_ld
+            lib = None; exe = os.path.join(tout, pname.replace(" ", "")); cmd = [cc, "-o", exe] + objs + dep_libs + fl + ld + extra_ld + ([] if sys.platform == "darwin" else ["-Wl,-rpath,$ORIGIN/lib"])
         r = subprocess.run(cmd, capture_output=True, text=True)
         target_file = lib or exe
-        if r.returncode == 0: print("linked", os.path.relpath(target_file, out)); pr["lib"] = lib; pr["exe"] = None if lib else exe
+        if r.returncode == 0:
+            print("linked", os.path.relpath(target_file, out)); pr["lib"] = lib; pr["exe"] = None if lib else exe
+            if ptype == "com.apple.product-type.application" and "--no-bundle" not in o: pr["app"] = make_bundle(proj, p, tout, pname, exe, dep_libs, o)
         else:
             print("link failed:"); pr["rc"] |= 2
             for l in r.stderr.splitlines()[:12]: print("  " + l)
     state[name] = pr
     return pr["rc"]
+
+
+def make_bundle(proj, p, tout, pname, exe, dep_libs, o):
+    """A GNUstep application bundle: NAME.app/{NAME, lib/*.so, Resources/...}; the resources of the project (nibs and xibs from their .lproj directories are also placed at the top of
+    Resources, where GNUstep looks without the Base localization), an Info-gnustep.plist made from the project's Info.plist."""
+    import plistlib
+    app = os.path.join(tout, pname.replace(" ", "") + ".app"); res = os.path.join(app, "Resources"); lib = os.path.join(app, "lib")
+    shutil.rmtree(app, ignore_errors=True); os.makedirs(res); os.makedirs(lib)
+    shutil.copy2(exe, os.path.join(app, os.path.basename(exe)))
+    for l in dep_libs + [x for x in o.get("--bundle-libs", "").split(",") if x]:
+        if os.path.exists(l): shutil.copy2(l, lib)
+    n = 0
+    for path, fr, st in p["resources"]:
+        if not os.path.exists(path) or path.endswith((".icns", ".xcassets", ".xcdatamodeld")): continue
+        parent = os.path.basename(os.path.dirname(path)); dstdir = res
+        if parent.endswith(".lproj") and parent != "Base.lproj": dstdir = os.path.join(res, parent)
+        os.makedirs(dstdir, exist_ok=True)
+        if os.path.isdir(path): shutil.copytree(path, os.path.join(dstdir, os.path.basename(path)), dirs_exist_ok=True)
+        else: shutil.copy2(path, os.path.join(dstdir, os.path.basename(path)))
+        n += 1
+    env = dict(p["env"]); env.update({"EXECUTABLE_NAME": pname.replace(" ", ""), "PRODUCT_NAME": pname, "TARGET_NAME": p["target"]["name"]})
+    info = env.get("INFOPLIST_FILE")
+    d = {}
+    if info:
+        ip = pbxproj.expand(info, env); ip = ip if os.path.isabs(ip) else os.path.join(proj.root, ip)
+        if os.path.exists(ip):
+            d = plistlib.load(open(ip, "rb"))
+            for k, v in list(d.items()):
+                if isinstance(v, str): d[k] = pbxproj.expand(v, env)
+    d.setdefault("NSPrincipalClass", "NSApplication"); d["NSExecutable"] = pname.replace(" ", ""); d.setdefault("CFBundleName", pname)
+    d.setdefault("CFBundleExecutable", pname.replace(" ", ""))
+    plistlib.dump(d, open(os.path.join(res, "Info-gnustep.plist"), "wb"), fmt=plistlib.FMT_XML)
+    print("bundle %s: %d resources, Info-gnustep.plist (NSMainNibFile=%s)" % (os.path.relpath(app, os.path.dirname(tout)), n, d.get("NSMainNibFile")))
+    return app
 
 def build(proj, name, o):
     out = os.path.abspath(o.get("--out", "xcb-out")); os.makedirs(out, exist_ok=True)

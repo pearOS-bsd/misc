@@ -114,7 +114,12 @@ class Project:
         out = []
         for b in phase.get("files", []) if phase else []:
             bf = self.objs[b]; fr = bf.get("fileRef")
-            if fr and fr in self.objs: out.append((self.path_of(fr), self.objs[fr], bf.get("settings", {})))
+            if fr and fr in self.objs:
+                o = self.objs[fr]
+                if o.get("isa") == "PBXVariantGroup":                         # a localized file: one entry per variant (Base.lproj/X.xib, de.lproj/X.strings, ...)
+                    for c in o.get("children", []):
+                        if c in self.objs: out.append((self.path_of(c), self.objs[c], bf.get("settings", {})))
+                else: out.append((self.path_of(fr), o, bf.get("settings", {})))
         return out
     def dependencies(self, target):
         out = []

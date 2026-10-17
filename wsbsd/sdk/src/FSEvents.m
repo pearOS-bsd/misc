@@ -85,12 +85,6 @@ void FSEventStreamRelease(FSEventStreamRef s) { if (!s) return; FSEventStreamSto
 
 /* ---- ServiceManagement: no launchd, so no helper can be installed ---- */
 #include <ServiceManagement/ServiceManagement.h>
-CFStringRef kSMDomainSystemLaunchd, kSMDomainUserLaunchd, kSMRightBlessPrivilegedHelper, kSMRightModifySystemDaemons;
-__attribute__((constructor)) static void initSMConstants(void)
-{
-	kSMDomainSystemLaunchd = CFSTR("com.apple.ServiceManagement.systemdomain"); kSMDomainUserLaunchd = CFSTR("com.apple.ServiceManagement.userdomain");
-	kSMRightBlessPrivilegedHelper = CFSTR("com.apple.ServiceManagement.blesshelper"); kSMRightModifySystemDaemons = CFSTR("com.apple.ServiceManagement.daemons.modify");
-}
 Boolean SMJobBless(CFStringRef d, CFStringRef l, AuthorizationRef a, CFErrorRef *e) { (void)d; (void)l; (void)a; if (e) *e = NULL; return false; }
 CFDictionaryRef SMJobCopyDictionary(CFStringRef d, CFStringRef l) { (void)d; (void)l; return NULL; }
 Boolean SMJobRemove(CFStringRef d, CFStringRef l, AuthorizationRef a, Boolean w, CFErrorRef *e) { (void)d; (void)l; (void)a; (void)w; if (e) *e = NULL; return false; }
