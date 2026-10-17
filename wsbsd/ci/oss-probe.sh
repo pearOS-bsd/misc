@@ -5,6 +5,13 @@
 # missing system headers, undeclared identifiers / types, missing properties and methods. Output goes to stdout; nothing here fails the build.
 REPOS="${OSS_REPOS:-HexFiend/HexFiend MacDownApp/macdown transmission/transmission}"
 W=/tmp/oss; rm -rf $W; mkdir -p $W; cd $W || exit 0
+# CoreFoundation: GNUstep CoreBase from source (not part of the pkg set); a failed build only shows up as the missing CF types in the survey
+if [ "${OSS_COREBASE:-1}" = 1 ]; then
+	pkg install -y icu >/dev/null 2>&1 || true
+	timeout 120 git clone --depth 1 -q https://github.com/gnustep/libs-corebase corebase 2>/dev/null
+	( cd corebase && ./configure CPPFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib" > $W/cb-conf.log 2>&1 && gmake -j2 GNUSTEP_INSTALLATION_DOMAIN=SYSTEM > $W/cb-build.log 2>&1 && gmake install GNUSTEP_INSTALLATION_DOMAIN=SYSTEM > $W/cb-inst.log 2>&1 ) && echo "corebase: installed" || { echo "corebase: build FAILED"; tail -5 $W/cb-conf.log; grep -E "error" $W/cb-build.log | head -8; }
+	ls /usr/local/GNUstep/System/Library/Headers/CoreFoundation 2>/dev/null | head -3
+fi
 BASE="$(gnustep-config --objc-flags) -fblocks -fobjc-arc -w -fsyntax-only"
 for r in $REPOS; do
 	n=$(echo $r | tr / _)
