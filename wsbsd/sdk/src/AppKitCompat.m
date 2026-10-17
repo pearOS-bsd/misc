@@ -158,3 +158,191 @@ NSString *const NSImageNameGoLeftTemplate = @"NSGoLeftTemplate";
 NSString *const NSImageNameGoRightTemplate = @"NSGoRightTemplate";
 NSString *const NSImageNameAddTemplate = @"NSAddTemplate";
 NSString *const NSImageNameRemoveTemplate = @"NSRemoveTemplate";
+
+NSString *const NSPasteboardURLReadingFileURLsOnlyKey = @"NSPasteboardURLReadingFileURLsOnlyKey";
+NSString *const NSPasteboardURLReadingContentsConformToTypesKey = @"NSPasteboardURLReadingContentsConformToTypesKey";
+
+@implementation NSString (WsbsdCompat)
+- (BOOL)localizedCaseInsensitiveContainsString:(NSString *)other { return [self rangeOfString: other options: NSCaseInsensitiveSearch].location != NSNotFound; }
+- (BOOL)getBytes:(void *)buffer maxLength:(NSUInteger)max usedLength:(NSUInteger *)used encoding:(NSStringEncoding)enc options:(NSUInteger)opts range:(NSRange)range remainingRange:(NSRangePointer)leftover
+{
+	NSUInteger usedBytes = 0, i = range.location, end = NSMaxRange(range);
+	BOOL lossy = (opts & 1) != 0;                                                   /* NSStringEncodingConversionAllowLossy */
+	while (i < end) {
+		NSRange r = [self rangeOfComposedCharacterSequenceAtIndex: i]; if (NSMaxRange(r) > end) r.length = end - r.location;
+		NSData *d = [[self substringWithRange: r] dataUsingEncoding: enc allowLossyConversion: lossy];
+		if (!d) { if (used) *used = usedBytes; if (leftover) *leftover = NSMakeRange(i, end - i); return NO; }
+		if (usedBytes + [d length] > max) break;
+		if (buffer) memcpy((char *)buffer + usedBytes, [d bytes], [d length]);
+		usedBytes += [d length]; i = NSMaxRange(r);
+	}
+	if (used) *used = usedBytes;
+	if (leftover) *leftover = NSMakeRange(i, end - i);
+	return YES;
+}
+@end
+@implementation NSWindow (WsbsdCompat)
+- (void)setAutorecalculatesContentBorderThickness:(BOOL)flag forEdge:(NSRectEdge)edge { (void)flag; (void)edge; }
+- (NSArray *)tabbedWindows { return nil; }
+@end
+@implementation NSDocument (WsbsdViewing)
+- (BOOL)isInViewingMode { return NO; }
+@end
+@implementation NSFileCoordinator (WsbsdCompat)
+- (instancetype)initWithFilePresenter:(id)presenter { (void)presenter; return [self init]; }
+@end
+@implementation NSPasteboard (WsbsdReading)
+- (NSArray *)readObjectsForClasses:(NSArray *)classes options:(NSDictionary *)options
+{
+	NSMutableArray *out = [NSMutableArray array];
+	for (Class c in classes) {
+		if (c == [NSURL class]) {
+			id files = [self propertyListForType: NSFilenamesPboardType];
+			for (NSString *f in ([files isKindOfClass: [NSArray class]] ? files : @[])) [out addObject: [NSURL fileURLWithPath: f]];
+		} else if (c == [NSString class]) { NSString *s = [self stringForType: NSStringPboardType]; if (s) [out addObject: s]; }
+	}
+	(void)options;
+	return out;
+}
+@end
+@implementation NSView (WsbsdBacking)
+- (NSRect)convertRectFromBacking:(NSRect)r { return r; }
+- (NSRect)convertRectToBacking:(NSRect)r { return r; }
+- (NSSize)convertSizeFromBacking:(NSSize)s { return s; }
+- (NSSize)convertSizeToBacking:(NSSize)s { return s; }
+@end
+@implementation NSMachPort
++ (NSPort *)portWithMachPort:(uint32_t)p { return [[self alloc] initWithMachPort: p options: 0]; }
+- (instancetype)initWithMachPort:(uint32_t)p options:(NSUInteger)f { (void)p; (void)f; return [super init]; }
+- (uint32_t)machPort { return 0; }
+@end
+@implementation NSMachBootstrapServer
++ (instancetype)sharedInstance { static NSMachBootstrapServer *s; if (!s) s = [[self alloc] init]; return s; }
+- (NSPort *)portForName:(NSString *)name { (void)name; return nil; }
+- (NSPort *)portForName:(NSString *)name host:(NSString *)host { (void)name; (void)host; return nil; }
+@end
+
+/* ---- gesture recognizers: GNUstep has the class names only; clicks are recognized in -[NSWindow sendEvent:] ---- */
+static const char gTarget, gAction, gEnabled, gView, gState, gDelegate, gButtons, gClicks, gRecognizers;
+
+@implementation NSGestureRecognizer (WsbsdCompat)
+- (instancetype)initWithTarget:(id)t action:(SEL)a { self = [self init]; if (self) { [self setTarget: t]; [self setAction: a]; } return self; }
+- (id)target { return [(NSValue *)getAssoc(self, &gTarget) nonretainedObjectValue]; }
+- (void)setTarget:(id)t { setAssoc(self, &gTarget, t ? [NSValue valueWithNonretainedObject: t] : nil); }
+- (SEL)action { NSValue *v = getAssoc(self, &gAction); return v ? (SEL)[v pointerValue] : NULL; }
+- (void)setAction:(SEL)a { setAssoc(self, &gAction, [NSValue valueWithPointer: a]); }
+- (BOOL)isEnabled { NSNumber *n = getAssoc(self, &gEnabled); return n ? [n boolValue] : YES; }
+- (void)setEnabled:(BOOL)f { setAssoc(self, &gEnabled, [NSNumber numberWithBool: f]); }
+- (NSView *)view { return [(NSValue *)getAssoc(self, &gView) nonretainedObjectValue]; }
+- (void)setView:(NSView *)v { setAssoc(self, &gView, v ? [NSValue valueWithNonretainedObject: v] : nil); }
+- (NSInteger)state { return [(NSNumber *)getAssoc(self, &gState) integerValue]; }
+- (void)setState:(NSInteger)s { setAssoc(self, &gState, [NSNumber numberWithInteger: s]); }
+- (id)delegate { return [(NSValue *)getAssoc(self, &gDelegate) nonretainedObjectValue]; }
+- (void)setDelegate:(id)d { setAssoc(self, &gDelegate, d ? [NSValue valueWithNonretainedObject: d] : nil); }
+@end
+@implementation NSClickGestureRecognizer (WsbsdCompat)
+- (NSUInteger)buttonMask { NSNumber *n = getAssoc(self, &gButtons); return n ? [n unsignedIntegerValue] : 1; }
+- (void)setButtonMask:(NSUInteger)m { setAssoc(self, &gButtons, [NSNumber numberWithUnsignedInteger: m]); }
+- (NSInteger)numberOfClicksRequired { NSNumber *n = getAssoc(self, &gClicks); return n ? [n integerValue] : 1; }
+- (void)setNumberOfClicksRequired:(NSInteger)n { setAssoc(self, &gClicks, [NSNumber numberWithInteger: n]); }
+@end
+@implementation NSView (WsbsdGestures)
+- (void)addGestureRecognizer:(NSGestureRecognizer *)r
+{
+	NSMutableArray *a = getAssoc(self, &gRecognizers); if (!a) { a = [NSMutableArray array]; setAssoc(self, &gRecognizers, a); }
+	if (![a containsObject: r]) { [a addObject: r]; [r setView: self]; }
+}
+- (void)removeGestureRecognizer:(NSGestureRecognizer *)r { [(NSMutableArray *)getAssoc(self, &gRecognizers) removeObject: r]; [r setView: nil]; }
+- (NSArray *)gestureRecognizers { NSArray *a = getAssoc(self, &gRecognizers); return a ? [a copy] : @[]; }
+@end
+
+static IMP origSendEvent;
+static void wsbsdSendEvent(id self, SEL _cmd, NSEvent *e)
+{
+	if ([e type] == NSLeftMouseUp) {
+		NSView *hit = [[self contentView] hitTest: [[[self contentView] superview] convertPoint: [e locationInWindow] fromView: nil]];
+		for (NSView *v = hit; v; v = [v superview])
+			for (NSGestureRecognizer *r in [v gestureRecognizers])
+				if ([r isKindOfClass: [NSClickGestureRecognizer class]] && [r isEnabled] && [e clickCount] >= [(NSClickGestureRecognizer *)r numberOfClicksRequired] && [r target] && [r action])
+					[[r target] performSelector: [r action] withObject: r];
+	}
+	((void (*)(id, SEL, NSEvent *))origSendEvent)(self, _cmd, e);
+}
+@interface WsbsdGestureSupport : NSObject @end
+@implementation WsbsdGestureSupport
++ (void)load
+{
+	Method m = class_getInstanceMethod([NSWindow class], @selector(sendEvent:));
+	if (m && !origSendEvent) origSendEvent = method_setImplementation(m, (IMP)wsbsdSendEvent);
+}
+@end
+
+/* ---- smaller AppKit / Foundation gaps ---- */
+@implementation NSWindow (WsbsdProperties)
+- (BOOL)documentEdited { return [self isDocumentEdited]; }
+- (void)setContentBorderThickness:(CGFloat)t forEdge:(NSRectEdge)e { (void)t; (void)e; }
+@end
+@implementation NSMenuItem (WsbsdHidden)
+static const char hiddenKey;
+- (BOOL)isHidden { return [(NSNumber *)getAssoc(self, &hiddenKey) boolValue]; }
+- (void)setHidden:(BOOL)f { setAssoc(self, &hiddenKey, [NSNumber numberWithBool: f]); }
+@end
+@implementation NSBundle (WsbsdURLs)
+- (NSArray *)URLsForResourcesWithExtension:(NSString *)ext subdirectory:(NSString *)sub
+{
+	NSMutableArray *urls = [NSMutableArray array];
+	for (NSString *p in [self pathsForResourcesOfType: ext inDirectory: sub]) [urls addObject: [NSURL fileURLWithPath: p]];
+	return urls;
+}
+@end
+@implementation NSTableView (WsbsdStyle)
+static const char styleKey;
+- (NSInteger)style { return [(NSNumber *)getAssoc(self, &styleKey) integerValue]; }
+- (void)setStyle:(NSInteger)s { setAssoc(self, &styleKey, [NSNumber numberWithInteger: s]); }
+@end
+
+@implementation NSOpenPanel (WsbsdCompat)
+static const char disclosedKey;
+- (BOOL)accessoryViewDisclosed { return [(NSNumber *)getAssoc(self, &disclosedKey) boolValue]; }
+- (void)setAccessoryViewDisclosed:(BOOL)f { setAssoc(self, &disclosedKey, [NSNumber numberWithBool: f]); }
+@end
+@implementation NSWindow (WsbsdURL)
+static const char repURLKey;
+- (NSURL *)representedURL { return getAssoc(self, &repURLKey); }
+- (void)setRepresentedURL:(NSURL *)u { setAssoc(self, &repURLKey, u); if ([u isFileURL]) [self setRepresentedFilename: [u path]]; else [self setRepresentedFilename: @""]; }
+@end
+@implementation NSPasteboard (WsbsdWriting)
+- (NSInteger)clearContents { return [self declareTypes: @[] owner: nil]; }
+- (BOOL)writeObjects:(NSArray *)objects
+{
+	NSMutableArray *files = [NSMutableArray array]; NSString *text = nil;
+	for (id o in objects) {
+		if ([o isKindOfClass: [NSURL class]] && [o isFileURL]) [files addObject: [o path]];
+		else if ([o isKindOfClass: [NSString class]]) text = o;
+	}
+	NSMutableArray *types = [NSMutableArray array];
+	if (text) [types addObject: NSStringPboardType];
+	if ([files count]) [types addObject: NSFilenamesPboardType];
+	[self addTypes: types owner: nil];
+	BOOL ok = YES;
+	if (text) ok = [self setString: text forType: NSStringPboardType] && ok;
+	if ([files count]) ok = [self setPropertyList: files forType: NSFilenamesPboardType] && ok;
+	return ok;
+}
+@end
+NSPasteboardType const NSPasteboardTypeFileURL = @"public.file-url";
+@implementation NSScrollView (WsbsdScrolling)
+static const char predominantKey;
+- (BOOL)usesPredominantAxisScrolling { NSNumber *n = getAssoc(self, &predominantKey); return n ? [n boolValue] : YES; }
+- (void)setUsesPredominantAxisScrolling:(BOOL)f { setAssoc(self, &predominantKey, [NSNumber numberWithBool: f]); }
+@end
+NSString *const NSAppleScriptErrorNumber = @"NSAppleScriptErrorNumber";
+NSString *const NSAppleScriptErrorMessage = @"NSAppleScriptErrorMessage";
+@implementation NSAppleScript (WsbsdCompat)
+- (instancetype)initWithSource:(NSString *)source { (void)source; return [self init]; }
+- (id)executeAndReturnError:(NSDictionary **)errorInfo
+{
+	if (errorInfo) *errorInfo = @{ NSAppleScriptErrorNumber: @(-1708), NSAppleScriptErrorMessage: @"AppleScript is not available on this system" };
+	return nil;
+}
+@end

@@ -6,6 +6,17 @@
 #include <stdbool.h>
 #include <fcntl.h>
 #include <unistd.h>
+#ifndef __APPLE__
+typedef uint64_t uint64; typedef uint32_t uint32; typedef uint16_t uint16; typedef uint8_t uint8;      /* MacTypes.h names */
+#endif
+#if defined(__has_include)
+#if __has_include(<CoreServices/FSEvents.h>) && !defined(__APPLE__)
+#include <CoreServices/FSEvents.h>   /* Apple's Foundation reaches FSEvents; sources name it without asking */
+#endif
+#endif
+#if defined(__aarch64__) && !defined(__arm64__)
+#define __arm64__ 1          /* Apple's name for the same CPU: sources test it */
+#endif
 #ifndef F_NOCACHE
 #define F_NOCACHE 48                    /* Darwin: bypass the buffer cache; fcntl reports EINVAL here, callers ignore it */
 #endif

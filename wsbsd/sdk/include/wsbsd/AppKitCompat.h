@@ -3,6 +3,11 @@
 #ifndef WSBSD_APPKIT_COMPAT_H
 #define WSBSD_APPKIT_COMPAT_H
 #import <Foundation/Foundation.h>
+#if defined(__has_include)
+#if __has_include(<CoreServices/CoreServices.h>)
+#import <CoreServices/CoreServices.h>
+#endif
+#endif
 #import <AppKit/NSButton.h>
 #import <AppKit/NSButtonCell.h>
 #import <AppKit/NSTextView.h>
@@ -16,8 +21,17 @@
 #import <AppKit/NSEvent.h>
 #import <AppKit/NSControl.h>
 #import <AppKit/NSMenuItem.h>
+#import <AppKit/NSOpenPanel.h>
+#import <AppKit/NSScrollView.h>
 #import <AppKit/NSView.h>
 #import <AppKit/NSImage.h>
+#import <AppKit/NSWindow.h>
+#import <AppKit/NSWindowController.h>
+#import <AppKit/NSFontPanel.h>
+#import <AppKit/NSGestureRecognizer.h>
+#import <AppKit/NSClickGestureRecognizer.h>
+#import <AppKit/NSTableView.h>
+#import <AppKit/NSMenuItem.h>
 #import <AppKit/NSTextStorage.h>
 #import <AppKit/NSGraphics.h>
 
@@ -123,6 +137,34 @@ extern NSString *const NSImageNameRemoveTemplate;
 void memset_pattern4(void *b, const void *pattern, size_t len);
 void memset_pattern8(void *b, const void *pattern, size_t len);
 void memset_pattern16(void *b, const void *pattern, size_t len);
+#ifndef NSRectEdgeMinX
+#define NSRectEdgeMinX NSMinXEdge
+#define NSRectEdgeMinY NSMinYEdge
+#define NSRectEdgeMaxX NSMaxXEdge
+#define NSRectEdgeMaxY NSMaxYEdge
+#endif
+typedef NSUInteger NSFontPanelModeMask;
+#ifndef NSFontPanelModeMaskFace
+#define NSFontPanelModeMaskFace (1UL << 0)
+#define NSFontPanelModeMaskSize (1UL << 1)
+#define NSFontPanelModeMaskCollection (1UL << 2)
+#define NSFontPanelModeMaskUnderlineEffect (1UL << 8)
+#define NSFontPanelModeMaskStrikethroughEffect (1UL << 9)
+#define NSFontPanelModeMaskTextColorEffect (1UL << 10)
+#define NSFontPanelModeMaskDocumentColorEffect (1UL << 11)
+#define NSFontPanelModeMaskShadowEffect (1UL << 12)
+#define NSFontPanelModeMaskAllEffects 0xFFF00UL
+#define NSFontPanelModeMaskStandardModes 0xFFFFUL
+#define NSFontPanelModeMaskAllModes 0xFFFFFFFFUL
+#endif
+#ifndef NSChangeRedone
+#define NSChangeRedone ((NSDocumentChangeType)5)
+#endif
+#ifndef NSChangeDiscardable
+#define NSChangeDiscardable ((NSDocumentChangeType)256)
+#endif
+extern NSString *const NSPasteboardURLReadingFileURLsOnlyKey;
+extern NSString *const NSPasteboardURLReadingContentsConformToTypesKey;
 typedef NSUInteger NSAttributedStringEnumerationOptions;
 #ifndef NSAttributedStringEnumerationReverse
 #define NSAttributedStringEnumerationReverse (1UL << 1)
@@ -135,6 +177,102 @@ typedef NSUInteger NSAttributedStringEnumerationOptions;
 @end
 @interface NSImage (WsbsdCompat)
 - (void)lockFocusFlipped:(BOOL)flipped;
+@end
+@interface NSString (WsbsdCompat)
+- (BOOL)localizedCaseInsensitiveContainsString:(NSString *)other;
+- (BOOL)getBytes:(void *)buffer maxLength:(NSUInteger)maxBufferCount usedLength:(NSUInteger *)usedBufferCount encoding:(NSStringEncoding)encoding
+         options:(NSUInteger)options range:(NSRange)range remainingRange:(NSRangePointer)leftover;
+@end
+@interface NSWindow (WsbsdCompat)
+- (void)setAutorecalculatesContentBorderThickness:(BOOL)flag forEdge:(NSRectEdge)edge;
+- (NSArray *)tabbedWindows;
+@end
+@interface NSDocument (WsbsdViewing)
+- (BOOL)isInViewingMode;
+@end
+@interface NSFileCoordinator (WsbsdCompat)
+- (instancetype)initWithFilePresenter:(id)presenter;
+@end
+@interface NSPasteboard (WsbsdReading)
+- (NSArray *)readObjectsForClasses:(NSArray *)classArray options:(NSDictionary *)options;
+@end
+@interface NSView (WsbsdBacking)
+- (NSRect)convertRectFromBacking:(NSRect)r;
+- (NSRect)convertRectToBacking:(NSRect)r;
+- (NSSize)convertSizeFromBacking:(NSSize)s;
+- (NSSize)convertSizeToBacking:(NSSize)s;
+@end
+/* Mach ports: no Mach IPC here, the classes exist so that code naming them compiles; their ports are always absent */
+@interface NSMachPort : NSPort
++ (NSPort *)portWithMachPort:(uint32_t)machPort;
+- (instancetype)initWithMachPort:(uint32_t)machPort options:(NSUInteger)f;
+- (uint32_t)machPort;
+@end
+enum { NSMachPortDeallocateNone = 0, NSMachPortDeallocateSendRight = 1, NSMachPortDeallocateReceiveRight = 2 };
+@interface NSMachBootstrapServer : NSObject
++ (instancetype)sharedInstance;
+- (NSPort *)portForName:(NSString *)name;
+- (NSPort *)portForName:(NSString *)name host:(NSString *)host;
+@end
+@interface NSGestureRecognizer (WsbsdCompat)
+- (instancetype)initWithTarget:(id)target action:(SEL)action;
+@property (nonatomic, weak) id target;
+@property (nonatomic) SEL action;
+@property (nonatomic, getter=isEnabled) BOOL enabled;
+@property (nonatomic, weak) NSView *view;
+@property (nonatomic) NSInteger state;
+@property (nonatomic, weak) id delegate;
+@end
+@interface NSClickGestureRecognizer (WsbsdCompat)
+@property (nonatomic) NSUInteger buttonMask;
+@property (nonatomic) NSInteger numberOfClicksRequired;
+@end
+@interface NSView (WsbsdGestures)
+- (void)addGestureRecognizer:(NSGestureRecognizer *)recognizer;
+- (void)removeGestureRecognizer:(NSGestureRecognizer *)recognizer;
+- (NSArray *)gestureRecognizers;
+@end
+@interface NSWindow (WsbsdProperties)
+- (BOOL)documentEdited;
+- (void)setContentBorderThickness:(CGFloat)thickness forEdge:(NSRectEdge)edge;
+@end
+@interface NSMenuItem (WsbsdHidden)
+- (BOOL)isHidden;
+- (void)setHidden:(BOOL)flag;
+@end
+@interface NSBundle (WsbsdURLs)
+- (NSArray *)URLsForResourcesWithExtension:(NSString *)ext subdirectory:(NSString *)subpath;
+@end
+@interface NSTableView (WsbsdStyle)
+@property (nonatomic) NSInteger style;
+@end
+#ifndef NSTableViewStyleFullWidth
+#define NSTableViewStyleAutomatic 0
+#define NSTableViewStyleFullWidth 1
+#define NSTableViewStyleInset 2
+#define NSTableViewStyleSourceList 3
+#define NSTableViewStylePlain 4
+#endif
+@interface NSOpenPanel (WsbsdCompat)
+@property (nonatomic) BOOL accessoryViewDisclosed;
+@end
+@interface NSWindow (WsbsdURL)
+@property (nonatomic, copy) NSURL *representedURL;
+@end
+@interface NSPasteboard (WsbsdWriting)
+- (NSInteger)clearContents;
+- (BOOL)writeObjects:(NSArray *)objects;
+@end
+extern NSPasteboardType const NSPasteboardTypeFileURL;
+@interface NSScrollView (WsbsdScrolling)
+@property (nonatomic) BOOL usesPredominantAxisScrolling;
+@end
+/* AppleScript: no scripting engine here; compiling and running a script reports an error */
+extern NSString *const NSAppleScriptErrorNumber;
+extern NSString *const NSAppleScriptErrorMessage;
+@interface NSAppleScript (WsbsdCompat)
+- (instancetype)initWithSource:(NSString *)source;
+- (id)executeAndReturnError:(NSDictionary **)errorInfo;
 @end
 @interface NSUndoManager (WsbsdCompat)
 - (void)setActionIsDiscardable:(BOOL)flag;

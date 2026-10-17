@@ -47,4 +47,27 @@ for fw in ("CoreFoundation", "CoreText", "CoreGraphics", "ImageIO"):
     lines.insert(start, "#pragma clang arc_cf_code_audited begin")
     open(os.path.join(out, name), "w").write("\n".join(lines)); n += 1
 print("patched %d headers (CoreFoundation, CoreText, CoreGraphics, ImageIO) into %s" % (n, outroot))
+
+# Declarations where Apple's headers are more precise than GNUstep's: patched copies of single headers (the installed ones are not touched).
+# old text -> new text; every pair has to match exactly once or the header is left as it is.
+PATCHES = {
+  "AppKit/NSMenuItem.h": [("@protocol NSMenuItem <NSValidatedUserInterfaceItem, NSCopying, NSCoding, NSObject>",
+                           "@protocol NSMenuItem <NSValidatedUserInterfaceItem, NSCopying, NSCoding, NSObject>\n@property (nonatomic, getter=isEnabled) BOOL enabled;")],
+  "AppKit/NSWindow.h": [("- (id) windowController;", "- (NSWindowController *) windowController;")],
+  "AppKit/NSAlert.h": [("- (id) window;", "- (NSWindow *) window;")],
+  "Foundation/NSFileManager.h": [("@class NSDirectoryEnumerator;", "@class NSDirectoryEnumerator<ObjectType>;"),
+                                 ("@interface NSDirectoryEnumerator : NSEnumerator", "@interface NSDirectoryEnumerator<__covariant ObjectType> : NSEnumerator")],
+}
+np = 0
+for rel, pairs in PATCHES.items():
+    for r in roots:
+        f = os.path.join(r, rel)
+        if not os.path.exists(f): continue
+        t = open(f, encoding="utf-8", errors="replace").read()
+        if all(t.count(a) == 1 for a, _ in pairs):
+            for a, b in pairs: t = t.replace(a, b)
+            dst = os.path.join(outroot, rel); os.makedirs(os.path.dirname(dst), exist_ok=True); open(dst, "w").write(t); np += 1
+        else: print("patch skipped (declaration not found exactly once):", rel)
+        break
+print("patched %d AppKit / Foundation headers" % np)
 PY

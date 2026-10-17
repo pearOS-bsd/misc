@@ -2,7 +2,7 @@
 """xcb: builds an Xcode project's targets with clang on a non-Apple system, without editing the project.
 usage: xcb.py PROJECT.xcodeproj list
        xcb.py PROJECT.xcodeproj plan TARGET   (prints what would be compiled, headers exposed and frameworks linked)
-       xcb.py PROJECT.xcodeproj build TARGET [--out DIR] [--cc clang] [--cflags "..."] [--ldflags "..."] [--syntax-only] [-j N] [--dep-incs DIR,...]
+       xcb.py PROJECT.xcodeproj build TARGET [--out DIR] [--cc clang] [--cflags "..."] [--ldflags "..."] [--syntax-only] [-j N] [--dep-incs DIR,...] [--overlay overlay.json]
          stages the public / private headers as <Product/Header.h> (what an Xcode framework target exposes), compiles every C / Objective-C(++) source
          with the target's settings (ARC, defines, prefix header, header search paths, per-file flags) and links; Swift sources are reported and skipped"""
 import sys, os, shutil, subprocess, shlex
@@ -66,6 +66,8 @@ def alias_case(proj, p, out):
 def compile_flags(proj, p, out, extra):
     env = p["env"]; f = []
     f.append("-fobjc-arc" if str(env.get("CLANG_ENABLE_OBJC_ARC", "NO")) == "YES" else "-fno-objc-arc")
+    if str(env.get("CLANG_ENABLE_MODULES", "NO")) == "YES":                  # `@import Cocoa;`: clang modules (the module maps of a non-Apple SDK come with --cflags)
+        f += ["-fmodules", "-fimplicit-module-maps", "-fmodules-cache-path=" + os.path.join(os.path.dirname(out), "modcache")]
     f += ["-fblocks", "-I" + os.path.join(out, "headers")] + ["-I" + x for x in extra]
     dirs = sorted({os.path.dirname(x[0]) for x in p["sources"] + p["headers"]})
     f += ["-I" + x for x in dirs]
@@ -99,9 +101,16 @@ def fw_flags(p, o):
         n = base.rsplit(".", 1)[0]
         if base.endswith((".framework", ".tbd", ".dylib")):
             if n in m: flags += shlex.split(m[n])
-            elif sys.platform == "darwin": flags += ["-framework", n] if base.endswith(".framework") else ["-l" + n.replace("lib", "", 1).split(".")[0]]
+            elif not base.endswith(".framework"): flags.append("-l" + n.replace("lib", "", 1).split(".")[0])     # libz.1.tbd -> -lz
+            elif sys.platform == "darwin": flags += ["-framework", n]
             else: unmapped.append(n)
     return flags, unmapped
+
+def load_overlay(o):
+    f = o.get("--overlay")
+    if not f: return None
+    import json
+    d = json.load(open(f)); d["dir"] = os.path.dirname(os.path.abspath(f)); return d
 
 def build_target(proj, name, o, out, state):
     if name in state: return state[name]["rc"]
@@ -114,10 +123,22 @@ def build_target(proj, name, o, out, state):
             pr = state[d["name"]]; dep_incs.append(os.path.join(pr["tout"], "headers"))
             if pr.get("lib"): dep_libs.append(pr["lib"])
         else: print("(dependency %s is a %s: not built here)" % (d["name"], d.get("productType", d["isa"]).rsplit(".", 1)[-1]))
+    ov = load_overlay(o)
+    if ov:                                                                    # a port layer: sources written for the platform replace the ones that cannot be built (e.g. Swift)
+        rep = {os.path.normpath(os.path.join(proj.root, k)): os.path.join(ov["dir"], v) for k, v in ov.get("replace", {}).items()}
+        p["sources"] = [(rep.get(os.path.normpath(path), path), fr, st) for path, fr, st in p["sources"]]
+        dep_incs += [os.path.join(ov["dir"], x) for x in ov.get("include", [])]
+        cflags = cflags + ["-D" + x for x in ov.get("defines", [])]
     print("== target %s (%s)" % (name, (t.get("productType") or t["isa"]).rsplit(".", 1)[-1]))
     print("staged %d headers as <%s/...>" % (stage_headers(p, tout), p["env"]["PRODUCT_NAME"]))
     na = alias_case(proj, p, tout)
     if na: print("%d includes differ from the file name only by case (resolved by links)" % na)
+    gen = os.path.join(tout, "gen"); gens = []
+    for path, fr, st in p["sources"]:
+        if path.endswith(".defs"):                                           # Mach IPC interface definitions: client stubs from the MIG stand-in
+            subprocess.run([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), "mig.py"), path, gen], check=False); gens.append(path)
+    p["sources"] = [x for x in p["sources"] if x[0] not in gens]
+    if gens: dep_incs.append(gen)
     base = compile_flags(proj, p, tout, dep_incs + [x for x in o.get("--dep-incs", "").split(",") if x])
     jobs = []; skipped = []
     for path, fr, st in p["sources"]:
@@ -140,10 +161,14 @@ def build_target(proj, name, o, out, state):
     print("%d of %d sources compile%s" % (ok, len(jobs), " (syntax only)" if syntax else ""))
     for sk in skipped: print("skipped (needs another toolchain):", os.path.relpath(sk, proj.root))
     from collections import Counter
+    msgs = []
+    for e in errs:
+        m = re.search(r"error:\s*(.*)$", e)
+        msgs.append((m.group(1).strip() or "(empty message)", e.split(": error", 1)[0]))
     where = {}
-    for e in errs: where.setdefault(e.split("error: ", 1)[1], e.split(": error", 1)[0])
-    for msg, n in Counter(e.split("error: ", 1)[1] for e in errs).most_common(25):
-        print("%4d %s   [%s]" % (n, msg, os.path.relpath(where[msg], proj.root)))
+    for msg, loc in msgs: where.setdefault(msg, loc)
+    for msg, n in Counter(m for m, _ in msgs).most_common(25):
+        print("%4d %s   [%s]" % (n, msg, os.path.relpath(where[msg], proj.root) if os.path.isabs(where[msg]) else where[msg]))
     pr = {"tout": tout, "rc": rc | (0 if ok == len(jobs) else 2)}
     ptype = t.get("productType", ""); pname = p["env"]["PRODUCT_NAME"]
     if not syntax and ok == len(jobs) and jobs:
