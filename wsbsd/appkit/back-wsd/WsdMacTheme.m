@@ -271,6 +271,7 @@ static void wsdDatePickerDraw(id self, SEL _cmd, NSRect f, NSView *v)
 static IMP origDatePickerWith;
 static void wsdDatePickerWith(id self, SEL _cmd, NSRect f, NSView *v)
 {
+	[(NSCell *)self setFont: [NSFont systemFontOfSize: 13]];
 	gInDatePicker = YES; ((void (*)(id, SEL, NSRect, NSView *))origDatePickerWith)(self, _cmd, f, v); gInDatePicker = NO;
 }
 static void swizzleTableDefaults(void)
