@@ -255,7 +255,7 @@ void WsdApplyMacPalette(void)
 /* a default button on macOS carries no return-arrow image (GNUstep adds one) */
 - (void) setKeyEquivalent: (NSString *)key forButtonCell: (NSButtonCell *)cell { }
 
-/* push buttons: a capsule 24 pt high centred in the cell frame (the frame is 32 pt: the extra space is the focus ring margin), filled white at 8 % over the window, the accent blue (0,122,255) when it is the default button */
+/* push buttons: a rounded rectangle (radius 5) 24 pt high centred in the cell frame (the frame is 32 pt: the extra space is the focus ring margin), filled white at 8 % over the window, the accent blue (0,122,255) when it is the default button */
 - (void) drawButton: (NSRect)frame in: (NSCell *)cell view: (NSView *)view style: (int)style state: (GSThemeControlState)state
 {
 	BOOL popup = [cell isKindOfClass: [NSPopUpButtonCell class]];
@@ -271,7 +271,7 @@ void WsdApplyMacPalette(void)
 	if (isDefault && enabled) fill = pressed ? rgb(30, 138, 255, 1) : rgb(0, 122, 255, 1);
 	else { double a = dark ? (pressed ? 0.21 : 0.08) : (pressed ? 0.12 : 0.05); if (!enabled) a *= 0.5; fill = rgb(mix(wr, fg, a), mix(wg, fg, a), mix(wb, fg, a), 1); }
 	[fill set];
-	[[NSBezierPath bezierPathWithRoundedRect: r xRadius: r.size.height / 2.0 yRadius: r.size.height / 2.0] fill];
+	[[NSBezierPath bezierPathWithRoundedRect: r xRadius: 5.0 yRadius: 5.0] fill];                        /* measured on the real button: a rounded rectangle, radius 5 pt (not a capsule) */
 }
 - (id<GSWindowDecorator>) windowDecorator { return (id<GSWindowDecorator>)[WsdMacDecorationView class]; }
 - (float) titlebarHeight { return 32.0; }
