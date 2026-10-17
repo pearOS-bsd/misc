@@ -249,6 +249,8 @@ static void push_event(void *ctx, uint32_t owner, const ws_event *e)
 	ws_ipc_send(c->efd, &v, 1, NULL, 0);                     /* non-blocking: a full channel drops the event */
 }
 
+static int tap_key_filter(void *ctx, int key, int down) { (void)ctx; return sls_tap_filter_key(key, down); }
+
 static float bits2f(uint32_t v) { float f; memcpy(&f, &v, sizeof f); return f; }
 
 /* ---- replies ---- */
@@ -1014,6 +1016,7 @@ static int do_post_tap_data(conn *c, const uint8_t *buf, size_t len, int ool)
 		if (len != 0x48 + n) return reply_simple(c->fd, h, -300);
 		style = rd32(buf, 0x34); a = rd32(buf, 0x38); b = rd32(buf, 0x3c); data = buf + 0x48;
 	}
+	if (style == 0) sls_tap_post_result(a, b, data, n);                          /* an active tap's answer: tap id, sequence, the surviving events */
 	if (style == 2) {
 		conn *t = process_for_psn(a, b);
 		size_t i = 0;
@@ -1205,6 +1208,7 @@ int main(int argc, char **argv)
 	}
 	for (int i = 0; i < MAXCONN; i++) { conns[i].fd = -1; conns[i].efd = -1; }
 	ws_server_set_event_sink(srv, push_event, NULL);
+	ws_server_set_key_filter(srv, tap_key_filter, NULL);
 
 	int ls = ws_ipc_listen(path);
 	if (ls < 0) { perror("wsd: listen"); return 1; }
@@ -1247,6 +1251,7 @@ int main(int argc, char **argv)
 		(void)frame;
 #endif
 		if (vnc_ls >= 0 && wsd_vnc_connected()) to = &frame;                      /* a viewer is attached: wake up to send updates */
+		struct timespec held; { int ms = sls_tap_poll(); if (ms >= 0) { held.tv_sec = ms / 1000; held.tv_nsec = (long)(ms % 1000) * 1000000L; if (!to || ms < 16) to = &held; } }   /* a key event held by an active tap times out */
 		int n = kevent(kq, NULL, 0, out, 16, to);
 		if (n < 0) { if (errno == EINTR) continue; perror("wsd: kevent"); break; }
 		for (int i = 0; i < n; i++) {

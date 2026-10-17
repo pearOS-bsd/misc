@@ -608,7 +608,15 @@ void ws_server_mouse(ws_server *s, int x, int y, int buttons)
 	s->buttons = buttons;
 }
 
+static ws_key_filter key_filter; static void *key_filter_ctx;
+void ws_server_set_key_filter(ws_server *s, ws_key_filter fn, void *ctx) { (void)s; key_filter = fn; key_filter_ctx = ctx; }
 void ws_server_key(ws_server *s, int key, int down)
+{
+	if (key_filter && key_filter(key_filter_ctx, key, down)) return;
+	ws_server_key_unfiltered(s, key, down);
+}
+
+void ws_server_key_unfiltered(ws_server *s, int key, int down)
 {
 	window *w = get(s, s->key_win);
 	if (w) post(w, down ? WS_EV_KEY_DOWN : WS_EV_KEY_UP, 0, 0, s->buttons, key);

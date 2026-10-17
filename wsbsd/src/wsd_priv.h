@@ -72,3 +72,6 @@ static inline void wr32(uint8_t *b, size_t off, uint32_t v) { __builtin_memcpy(b
 
 #define WSD_NOTE_TAP_DATA 0x54415044u          /* notification type that carries event tap data to the tapping connection ("TAPD") */
 void sls_tap_deliver(int cgtype, const uint8_t *rec, size_t n);
+int sls_tap_filter_key(int key, int down);                                  /* 1 when an active tap holds the key event */
+void sls_tap_post_result(uint32_t tap_id, uint32_t seq, const uint8_t *data, size_t n);
+int sls_tap_poll(void);                                                      /* ms until a held event times out, -1 when none */

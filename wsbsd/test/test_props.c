@@ -1004,6 +1004,40 @@ int main(void)
 			ws_win_order(c, &kw, 0, 0);
 			hdr(e, 0x28, 32031, 0); w32(e, 0x20, ltid); w32(e, 0x24, 0); CHECK(rc(fd, e, 0x28) == 0);          /* disabled again (a release would drop every tap of the connection) */
 		}
+		{ /* an active tap holds a key event back until it answers: changed, dropped, or timed out */
+			uint8_t aq[0x44]; memset(aq, 0, sizeof aq);
+			hdr(aq, 0x44, 32028, 1); w32(aq, 0x18, 1); w32(aq, 0x1c, 0x779); aq[0x26] = 0x11; memcpy(aq + 0x28, "\0\0\0\0\1\0\0\0", 8);
+			w32(aq, 0x30, 1); w32(aq, 0x3c, 0); w32(aq, 0x40, 1u << 10);
+			int an = call(fd, aq, 0x44, rep, sizeof rep); uint32_t atid = r32(rep, 0x24); CHECK(an == 0x2c && atid != 0);
+			ws_win kw2; CHECK(ws_win_create(c, (ws_rect){ 30, 30, 50, 50 }, 0, &kw2) == 0 && ws_win_order(c, &kw2, 1, 0) == 0);
+			uint32_t nt, nl; uint8_t nd[768]; ws_event pe;
+			while (ws_conn_next_notification(c, 0, &nt, nd, &nl)) {} while (ws_conn_next_pushed_event(c, 0, &pe)) {}
+			uint8_t tm2[0x24]; hdr(tm2, 0x24, 32036, 0); float to = 0.4f; memcpy(tm2 + 0x20, &to, 4); CHECK(rc(fd, tm2, 0x24) == 0);
+			for (int round = 0; round < 3; round++) {
+				CHECK(ws_inject_key(c, 13, 1) == 0);
+				int got = 0; uint32_t seq = 0;
+				for (int tries = 0; tries < 20 && !got; tries++) while (ws_conn_next_notification(c, 100, &nt, nd, &nl)) if (nt == 0x54415044u && r32(nd, 8) == atid) { got = 1; seq = r32(nd, 4); break; }
+				CHECK(got);
+				int leaked = 0; while (ws_conn_next_pushed_event(c, 50, &pe)) if (pe.type == WS_EV_KEY_DOWN) leaked = 1;
+				CHECK(!leaked);                                                                           /* held: the window has not seen it */
+				if (round == 0 || round == 1) {                                                           /* round 0 changes the key (13 -> 12), round 1 drops it */
+					uint8_t rec[512]; size_t rn = round == 0 ? ws_evrec_make_key(rec, sizeof rec, 1, 12, 0, 0, 0, 0, 0, 0x0a) : 0;
+					uint8_t pm[0x400]; memset(pm, 0, sizeof pm); size_t dn = rn ? rn + 8 : 0;
+					if (rn) { w32(pm, 0x34 + 4, (uint32_t)rn); memcpy(pm + 0x34 + 8, rec, rn); }
+					hdr(pm, (uint32_t)(0x34 + ((dn + 3) & ~(size_t)3)), 32025, 0); w32(pm, 0x20, 0); w32(pm, 0x24, atid); w32(pm, 0x28, seq); w32(pm, 0x30, (uint32_t)dn);
+					CHECK(rc(fd, pm, (int)(0x34 + ((dn + 3) & ~(size_t)3))) == 0);
+					int key = -1; while (ws_conn_next_pushed_event(c, 300, &pe)) if (pe.type == WS_EV_KEY_DOWN) { key = pe.key; break; }
+					CHECK(round == 0 ? key == 12 : key == -1);
+				} else {                                                                                  /* round 2: no answer, the tap times out, the original key goes on and the tap is disabled */
+					int key = -1; for (int tries = 0; tries < 10 && key < 0; tries++) while (ws_conn_next_pushed_event(c, 200, &pe)) if (pe.type == WS_EV_KEY_DOWN) { key = pe.key; break; }
+					CHECK(key == 13);
+				}
+				CHECK(ws_inject_key(c, 13, 0) == 0);                                                      /* key up is not in the mask: straight through while the tap is idle */
+				while (ws_conn_next_pushed_event(c, 50, &pe)) {}
+			}
+			ws_win_order(c, &kw2, 0, 0);
+			hdr(e, 0x28, 32031, 0); w32(e, 0x20, atid); w32(e, 0x24, 0); CHECK(rc(fd, e, 0x28) == 0);
+		}
 		hdr(e, 0x24, 32030, 0); w32(e, 0x20, tid); CHECK(rc(fd, e, 0x24) == 0);
 		hdr(e, 0x24, 32032, 0); w32(e, 0x20, tid); CHECK(rc(fd, e, 0x24) == 1007);                              /* released */
 		hdr(e, 0x24, 32030, 0); w32(e, 0x20, tid); CHECK(rc(fd, e, 0x24) == 1007);
