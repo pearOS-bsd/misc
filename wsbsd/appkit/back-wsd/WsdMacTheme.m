@@ -214,11 +214,23 @@ static void wsdSegDraw(id self, SEL _cmd, NSInteger seg, NSRect f, NSView *v)
 	[(NSSegmentedCell *)self setAlignment: NSLeftTextAlignment];
 	((void (*)(id, SEL, NSInteger, NSRect, NSView *))origSegDraw)(self, _cmd, seg, f, v);
 }
+/* titles of push buttons: the text colour never changes while the button is pressed (GNUstep switches to the selection colour); the default button has white text */
+static IMP origButtonTextColor;
+static NSColor *wsdButtonTextColor(id self, SEL _cmd)
+{
+	NSButtonCell *c = self;
+	if (![c isEnabled]) return [NSColor disabledControlTextColor];
+	if ([[c keyEquivalent] isEqualToString: @"\r"] && [c bezelStyle] != 0) return [NSColor whiteColor];
+	if ([c image] || [c isBordered] == NO) return ((NSColor *(*)(id, SEL))origButtonTextColor)(self, _cmd);
+	return [NSColor controlTextColor];
+}
 static void swizzleTableDefaults(void)
 {
 	Method mt = class_getInstanceMethod([NSTableView class], @selector(_initDefaults));
 	if (mt && !origTableInit) origTableInit = method_setImplementation(mt, (IMP)wsdTableInit);
 	Method mb = class_getInstanceMethod([NSButtonCell class], @selector(drawInteriorWithFrame:inView:));
+	Method mtc = class_getInstanceMethod([NSButtonCell class], @selector(textColor));
+	if (mtc && !origButtonTextColor) origButtonTextColor = method_setImplementation(mtc, (IMP)wsdButtonTextColor);
 	Method msg = class_getInstanceMethod([NSSegmentedCell class], @selector(drawSegment:inFrame:withView:));
 	if (msg && !origSegDraw) origSegDraw = method_setImplementation(msg, (IMP)wsdSegDraw);
 	Method ma = class_getInstanceMethod([NSAlert class], @selector(runModal));
