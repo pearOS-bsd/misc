@@ -115,6 +115,25 @@ sh sdk/build-compat.sh /root/compat         # libwsbsdcompat
 sh ci/build-app.sh /path/App.xcodeproj Target /out/dir     # an unmodified Xcode project -> Target.app
 ```
 
+## Next: a bootable ISO with the macOS file layout (`iso/`, in preparation)
+
+A FreeBSD-based ISO that starts straight into this window server. The rules, set by the project owner:
+
+1. **The tree is the macOS tree, with real files.** `/System`, `/System/Library/Frameworks`, `/System/Library/PrivateFrameworks`, `/System/Library/CoreServices`, `/Library`, `/Applications`, `/Users`,
+   `/usr/lib`, `/private`, `/bin`, `/sbin` ... exist at the same paths as on the reference Mac (macOS 27.0, build 26A5416b), **and nothing is a symlink**: where macOS uses a symlink
+   (`/etc`, `/var`, `/tmp` -> `private/...`, a framework's `Versions/Current` and its top-level `AppKit`, `Resources`, `Headers` entries) the ISO has a real directory or file.
+2. **What we built is installed the way a Mac installs it.** A framework is `Name.framework/Versions/<letter>/{Name, Resources, Headers, Modules ...}` in the place the Mac has it (AppKit, Foundation,
+   CoreGraphics, CoreText, QuartzCore, SkyLight ... under `/System/Library/Frameworks` or `PrivateFrameworks`), an application is `/Applications/Name.app/Contents/{MacOS,Resources,Info.plist}`,
+   the dynamic linker sits at `/usr/lib/dyld` and the system libraries at `/usr/lib/` with the Mac's names. If a path exists on the Mac for a component we provide, it exists on the ISO, and the
+   other way round: a file that the ISO has under a framework name must be what that framework is.
+3. **Only paths and names are taken from the Mac, never content.** The manifest of the reference system (directory and file names, types, modes; no file contents) is produced by a script
+   in `iso/` from the Mac the author owns; the files that fill the tree are built from this repository (our ELF libraries, GNUstep / Opal based, the apps, wsd). Apple's binaries, dyld shared cache
+   and resources are not copied, and a Mach-O dyld cannot run on FreeBSD: `/usr/lib/dyld` is our own ELF loader / launcher that provides the same entry point and does the framework lookup.
+4. **Boot:** UEFI (arm64 and amd64), the FreeBSD kernel, an rc script that starts `wsd` on the framebuffer (`wsd -b kms`, see `docs/FREEBSD.md`) and the login / desktop applications.
+
+Status: the reference tree of the Mac has been inspected (top level, `System/Library/Frameworks` with 340 entries, `/Applications` with 60); the manifest script, the layout generator and the image
+build are the next steps.
+
 ## Known limits
 - DRM/KMS, evdev and the GL compositor have not been run on real hardware (CI has no GPU).
 - The font is Inter; window layout of some apps (Pashua's dialog) and several AppKit behaviours differ from macOS.
