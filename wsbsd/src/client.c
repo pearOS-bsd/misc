@@ -13,7 +13,7 @@
 
 #define DEFAULT_SOCKET ws_default_socket_path()
 
-typedef struct { uint32_t type, len; uint8_t data[256]; } ws_notif;
+typedef struct { uint32_t type, len; uint8_t data[768]; } ws_notif;
 struct ws_conn { int fd; int efd; int cid; ws_event evq[64]; int evh, evt; ws_notif nq[64]; int nh, nt; };   /* messages read from the event channel while waiting for the other kind are queued */
 
 static uint32_t f2bits(float f) { uint32_t v; memcpy(&v, &f, sizeof v); return v; }

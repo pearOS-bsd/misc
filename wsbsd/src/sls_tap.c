@@ -15,6 +15,25 @@ static tap_t *tap_find(uint32_t id) { for (int i = 0; i < MAXTAPS; i++) if (taps
 
 void sls_tap_owner_cleanup(uint32_t owner) { for (int i = 0; i < MAXTAPS; i++) if (taps[i].used && taps[i].owner == owner) taps[i].used = 0; }
 
+/* Listen-only taps (option bit 0) get every event of a type in their mask: the data of PostEventTapData (decompiled client side, docs/EVENT-TAPS.md) as a notification on the owner's event channel:
+ * type 0, sequence, tap id, n, then n bytes = the data stream: token 0, the length of the event, the CGEvent record. Taps that may change the event (not listen-only) are not served yet. */
+extern void wsd_push_notification(uint32_t owner, uint32_t type, const uint8_t *data, uint32_t n);
+void sls_tap_deliver(int cgtype, const uint8_t *rec, size_t n)
+{
+	static uint32_t seq;
+	for (int i = 0; i < MAXTAPS; i++) {
+		tap_t *t = &taps[i];
+		if (!t->used || !t->enabled || !(t->options & 1) || cgtype < 0 || cgtype > 31 || !((t->mask >> cgtype) & 1)) continue;
+		if (!wsd_conn_by_id(t->owner)) continue;
+		uint8_t b[16 + 8 + 512]; uint32_t body = (uint32_t)n + 8; if (body > 512) continue;
+		memset(b, 0, sizeof b);
+		wr32(b, 0, 0); wr32(b, 4, ++seq); wr32(b, 8, t->id); wr32(b, 12, body);
+		wr32(b, 16, 0); wr32(b, 20, (uint32_t)n);                                  /* token 0 and the event length (native order, as the client reads them raw) */
+		memcpy(b + 24, rec, n);
+		wsd_push_notification(t->owner, WSD_NOTE_TAP_DATA, b, 16 + 8 + (uint32_t)n);
+	}
+}
+
 /* the tapping connection must still exist for its taps to count (a tap whose owner died is released) */
 static void purge(void) { for (int i = 0; i < MAXTAPS; i++) if (taps[i].used && !wsd_conn_by_id(taps[i].owner)) taps[i].used = 0; }
 

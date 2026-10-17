@@ -69,3 +69,6 @@ void sls_ext_owner_cleanup(uint32_t owner);
 static inline uint32_t rd32(const uint8_t *b, size_t off) { uint32_t v; __builtin_memcpy(&v, b + off, 4); return v; }
 static inline void wr32(uint8_t *b, size_t off, uint32_t v) { __builtin_memcpy(b + off, &v, 4); }
 #endif
+
+#define WSD_NOTE_TAP_DATA 0x54415044u          /* notification type that carries event tap data to the tapping connection ("TAPD") */
+void sls_tap_deliver(int cgtype, const uint8_t *rec, size_t n);
