@@ -37,3 +37,12 @@ create named sockets or reach anything outside the descriptors it holds. Clients
 On a vt(4) console, `wsd -b kms` puts its VT in graphics mode, puts the console keyboard in raw mode and asks the kernel for SIGUSR1 (leave) and SIGUSR2 (come back). While another VT is in front it drops
 DRM master and discards raw input, so nothing typed on the other console reaches the window server or its clients; coming back it takes master again and redraws. SIGTERM / SIGINT restore text mode
 and the keyboard. When wsd is not started from a vt(4) console it says so and runs without this (input stays grabbed). Written against vt(4); never run on real hardware.
+
+## A real screen without a GPU driver (vt framebuffer) - verified in QEMU
+`gmake fb` builds wsd with `src/backend_fb.c`: the display is the framebuffer the console already uses (EFI GOP on arm64 and UEFI amd64, simplefb), reached through `/dev/ttyv0`
+(`FBIOGTYPE`, `FBIO_GETLINEWIDTH`, `mmap`). `wsd -b kms -c /dev/ttyv0` selects it (the backend keeps the KMS interface, so the rest of wsd is the same); the cursor is composed in software.
+Input is evdev. On FreeBSD 14 the USB HID drivers are not used by default: `/boot/loader.conf` needs `hw.usb.usbhid.enable="1"`, `hkbd_load="YES"`, `hms_load="YES"`, `hidmap_load="YES"`
+(`/etc/rc.conf`: `devmatch_blocklist="uhid"`), then the keyboard is `hkbd` and the tablet `hms` (absolute positions), both as `/dev/input/event*`.
+
+QEMU (aarch64 virt, HVF): `-device ramfb -device qemu-xhci -device usb-kbd -device usb-tablet -display cocoa`, keeping the PCI slots of the disk and network devices so that the UEFI boot entry
+still matches (`~/fbsd-vm/start-gui.sh`); `sh ci/fb-session.sh terminal hexfiend` starts the desktop. Measured: 800x600 (the ramfb default), a frame is composed and copied in 2 to 3 ms.
