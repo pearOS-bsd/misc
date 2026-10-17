@@ -107,6 +107,11 @@ jobs:
             ./wsd -b kms -g 64x64 > /tmp/kms.log 2>&1 || true
             cat /tmp/kms.log
             grep -q 'cannot open KMS device' /tmp/kms.log
+            echo '--- is there a DRM device in this VM? (information only)'
+            ls -l /dev/dri 2>&1 | head; pciconf -lv 2>&1 | grep -i -B1 -A3 'vga\|display' | head -12
+            pkg install -y drm-kmod >/dev/null 2>&1 && echo 'drm-kmod installed' || echo 'drm-kmod not installable'
+            for m in virtio_gpu vtgpu drm; do kldload $m 2>&1 | head -1; done; kldstat | head -20; ls -l /dev/dri 2>&1 | head
+            if [ -e /dev/dri/card0 ]; then ./wsd -b kms -g 640x480 -t > /tmp/kms2.log 2>&1 & KW=$!; sleep 3; kill $KW 2>/dev/null; cat /tmp/kms2.log | head -20; fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
