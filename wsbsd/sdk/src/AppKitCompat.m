@@ -104,3 +104,22 @@ static const char accessoryKey;
 }
 - (NSString *)base64Encoding { return [self base64EncodedStringWithOptions: 0]; }
 @end
+
+@implementation NSUndoManager (WsbsdCompat)
+- (void)setActionIsDiscardable:(BOOL)flag { (void)flag; }
+@end
+@implementation NSEvent (WsbsdCompat)
+- (BOOL)hasPreciseScrollingDeltas { return NO; }
+- (CGFloat)scrollingDeltaX { return [self deltaX]; }
+- (CGFloat)scrollingDeltaY { return [self deltaY]; }
+@end
+@implementation NSControl (WsbsdCompat)
+- (NSControlSize)controlSize { return [[self cell] controlSize]; }
+- (void)setControlSize:(NSControlSize)size { [[self cell] setControlSize: size]; }
+@end
+@implementation NSScroller (WsbsdCompat)
++ (CGFloat)scrollerWidthForControlSize:(NSControlSize)size scrollerStyle:(int)style { (void)style; return [NSScroller scrollerWidth]; }
+@end
+@implementation NSColor (WsbsdCompatRows)
++ (NSArray *)alternatingContentBackgroundColors { return [NSArray arrayWithObjects: [NSColor whiteColor], [NSColor colorWithCalibratedWhite: 0.96 alpha: 1.0], nil]; }
+@end
