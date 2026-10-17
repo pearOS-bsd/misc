@@ -104,6 +104,7 @@ static NSImage *comboChevron(void)
 }
 
 /* made when the first window exists (the images are drawn with lockFocus, which needs a working display server) */
+extern void WsdInstallCGBridge(void);
 static void installControlImages(void)
 {
 	static BOOL done; if (done) return; done = YES;
@@ -701,6 +702,7 @@ static NSFont *titleFont(void)
 - (id) initWithFrame: (NSRect)frame window: (NSWindow *)w
 {
 	installControlImages();
+	WsdInstallCGBridge();                                        /* [NSGraphicsContext graphicsPort] for programs that draw with CoreGraphics */
 	self = [super initWithFrame: frame window: w];
 	if (self == nil) return nil;
 	/* the circles are drawn here: no NSButton subviews. The buttons stay alive: GSStandardWindowDecorationView keeps using the ivars

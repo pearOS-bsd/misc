@@ -162,6 +162,7 @@ static void terminate(int sig)
 
 - (void) termwindow: (int)win
 {
+	WLOG(@"termwindow %d", win);
 	struct wsd_window **pp = &windows;
 	while (*pp && (*pp)->number != win) pp = &(*pp)->next;
 	struct wsd_window *w = *pp;
@@ -261,12 +262,13 @@ static void terminate(int sig)
 }
 - (int) windowlevel: (int)win { struct wsd_window *w = [self wsdWindow: win]; return w ? w->level : 0; }
 - (int) windowdepth: (int)win { return (int)(0x100 | 8); }
-- (void) titlewindow: (NSString *)window_title : (int)win { WLOG(@"titlewindow %d", win); }
+- (void) titlewindow: (NSString *)window_title : (int)win { WLOG(@"titlewindow %d \"%@\"", win, window_title); }
 - (void) miniwindow: (int)win {}
 - (BOOL) appOwnsMiniwindow { return NO; }
 - (void) setinputfocus: (int)win { WLOG(@"setinputfocus %d", win); keyWindow = win; }
 - (void) setalpha: (float)alpha : (int)win
 {
+	WLOG(@"setalpha %d %g", win, (double)alpha);
 	struct wsd_window *w = [self wsdWindow: win];
 	if (w) ws_win_alpha(conn, &w->win, alpha);
 }

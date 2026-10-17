@@ -438,3 +438,24 @@ static id forwardOPFont(id self, SEL _cmd, SEL sel)
 	if (opfont) class_addMethod(opfont, fwd, (IMP)forwardOPFont, "@@::");
 }
 @end
+
+/* ---- NSDocument + xib: GNUstep's NSDocument keeps the window of its nib in _window as an assigned pointer and hands it to the window controller with an autorelease, counting on the
+ * nib loader's retain. The xib loader does not leave one behind, so the window was released with the loader's connections right after it was created (the document window
+ * appeared and vanished). One retain more at the hand-over keeps it; the window is released when its controller closes it. Runtime API only (+load runs before main). ---- */
+extern id objc_retain(id);                                         /* the runtime's retain: ARC code may not message -retain */
+static IMP origTransferWindow;
+static id wsbsdTransferWindowOwnership(id self, SEL _cmd)
+{
+	id w = ((id (*)(id, SEL))origTransferWindow)(self, _cmd);      /* autoreleased, _window cleared */
+	if (w) objc_retain(w);                                         /* the retain the xib loader does not leave: it outlives the loader's connections */
+	return w;
+}
+@interface WsbsdDocumentFix : NSObject @end
+@implementation WsbsdDocumentFix
++ (void)load
+{
+	Class c = objc_getClass("NSDocument");
+	Method m = c ? class_getInstanceMethod(c, sel_registerName("_transferWindowOwnership")) : NULL;
+	if (m && !origTransferWindow) origTransferWindow = method_setImplementation(m, (IMP)wsbsdTransferWindowOwnership);
+}
+@end
