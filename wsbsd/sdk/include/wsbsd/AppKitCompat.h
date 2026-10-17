@@ -15,6 +15,9 @@
 #import <AppKit/NSDocument.h>
 #import <AppKit/NSPasteboard.h>
 #import <AppKit/NSAlert.h>
+#import <AppKit/NSSearchField.h>
+#import <AppKit/NSMenu.h>
+#import <AppKit/NSWorkspace.h>
 #import <AppKit/NSColor.h>
 #import <AppKit/NSImageCell.h>
 #import <AppKit/NSScroller.h>
@@ -27,6 +30,12 @@
 #import <AppKit/NSImage.h>
 #import <AppKit/NSWindow.h>
 #import <AppKit/NSWindowController.h>
+#import <AppKit/NSDocumentController.h>
+#import <AppKit/NSToolbar.h>
+#import <AppKit/NSAlert.h>
+#import <AppKit/NSSearchField.h>
+#import <AppKit/NSMenu.h>
+#import <AppKit/NSWorkspace.h>
 #import <AppKit/NSFontPanel.h>
 #import <AppKit/NSGestureRecognizer.h>
 #import <AppKit/NSClickGestureRecognizer.h>
@@ -232,9 +241,91 @@ enum { NSMachPortDeallocateNone = 0, NSMachPortDeallocateSendRight = 1, NSMachPo
 - (void)removeGestureRecognizer:(NSGestureRecognizer *)recognizer;
 - (NSArray *)gestureRecognizers;
 @end
+/* modern property spellings and constants GNUstep lacks */
+@protocol NSMenuItemValidation <NSObject>
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem;
+@end
+@interface NSString (WsbsdProperties)
+@property (readonly, getter=isAbsolutePath) BOOL absolutePath;
+@end
+@interface NSToolbar (WsbsdProperties)
+@property (readonly, getter=isVisible) BOOL visible;
+@end
+@interface NSScanner (WsbsdProperties)
+@property (readonly, getter=isAtEnd) BOOL atEnd;
+@end
+@interface NSDocumentController (WsbsdClassProperties)
+@property (class, readonly, strong) NSDocumentController *sharedDocumentController;
+@end
+@class NSRunningApplication;
+@interface NSWorkspaceOpenConfiguration : NSObject
++ (instancetype)configuration;
+@property BOOL activates, addsToRecentItems, promptsUserIfNeeded;
+@end
+@interface NSWorkspace (WsbsdOpenConfiguration)
+- (void)openURLs:(NSArray *)urls withApplicationAtURL:(NSURL *)appURL configuration:(NSWorkspaceOpenConfiguration *)configuration completionHandler:(void (^)(NSRunningApplication *app, NSError *error))handler;
+@end
+@interface NSDocumentController (WsbsdRecents)
+@property (readonly, copy) NSArray *recentDocumentURLs;
+@end
+@interface NSAlert (WsbsdSuppression)
+@property BOOL showsSuppressionButton;
+@property (readonly, strong) NSButton *suppressionButton;
+@end
+enum { NSAlertStyleWarning = 0, NSAlertStyleInformational = 1, NSAlertStyleCritical = 2 };
+enum { NSBitmapImageFileTypeTIFF = 0, NSBitmapImageFileTypeBMP, NSBitmapImageFileTypeGIF, NSBitmapImageFileTypeJPEG, NSBitmapImageFileTypePNG, NSBitmapImageFileTypeJPEG2000 };
+extern NSPasteboardType const NSPasteboardTypeURL;
+enum { NSURLBookmarkCreationWithSecurityScope = 1 << 11, NSURLBookmarkCreationSecurityScopeAllowOnlyReadAccess = 1 << 12 };
+@interface NSWindow (WsbsdVisible)
+@property (readonly, getter=isVisible) BOOL visible;
+@end
+@protocol NSToolbarItemValidation <NSObject>
+- (BOOL)validateToolbarItem:(NSToolbarItem *)item;
+@end
+@interface NSSearchField (WsbsdSearch)
+@property BOOL sendsWholeSearchString;
+@property BOOL sendsSearchStringImmediately;
+@end
+@interface NSMenu (WsbsdMenuName)
+- (void)_setMenuName:(NSString *)name;
+- (NSString *)_menuName;
+@end
+@interface NSControl (WsbsdEnabled)
+@property (getter=isEnabled) BOOL enabled;
+@end
+@interface NSWindow (WsbsdStatus)
+@property (readonly, getter=isMainWindow) BOOL mainWindow;
+@property (readonly, getter=isKeyWindow) BOOL keyWindow;
+@property (readonly, getter=isZoomed) BOOL zoomed;
+@end
+@interface NSTimer (WsbsdTolerance)
+@property NSTimeInterval tolerance;
+@end
+@interface NSView (WsbsdAnimator)
+- (instancetype)animator;
++ (id)defaultAnimationForKey:(NSString *)key;
+@end
+#ifndef NSCompositingOperationColorDodge
+#define NSCompositingOperationMultiply 14
+#define NSCompositingOperationScreen 15
+#define NSCompositingOperationOverlay 16
+#define NSCompositingOperationDarken 17
+#define NSCompositingOperationLighten 18
+#define NSCompositingOperationColorDodge 19
+#define NSCompositingOperationColorBurn 20
+#define NSCompositingOperationSoftLight 21
+#define NSCompositingOperationHardLight 22
+#define NSCompositingOperationDifference 23
+#define NSCompositingOperationExclusion 24
+#endif
 @interface NSWindow (WsbsdProperties)
 - (BOOL)documentEdited;
 - (void)setContentBorderThickness:(CGFloat)thickness forEdge:(NSRectEdge)edge;
+/* the window's own appearance (nil: the application's), a transparent title bar and a changeable style mask: kept; the theme draws the title bar the same either way */
+@property (nonatomic, strong) id appearance;
+@property (nonatomic) BOOL titlebarAppearsTransparent;
+@property (nonatomic) NSInteger titleVisibility;
+- (void)setStyleMask:(NSUInteger)mask;
 @end
 @interface NSMenuItem (WsbsdHidden)
 - (BOOL)isHidden;

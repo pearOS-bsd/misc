@@ -5,3 +5,4 @@ module CoreFoundation [system] { header "wsbsd_CoreFoundation.h" export * }
 module AppKit [system] { header "wsbsd_AppKit.h" export * }
 module Cocoa [system] { header "wsbsd_Cocoa.h" export * }
 module Dispatch [system] { header "wsbsd_dispatch.h" export * }
+module Quartz [system] { header "wsbsd_Quartz.h" export * }

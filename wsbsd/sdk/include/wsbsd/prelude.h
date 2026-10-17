@@ -61,3 +61,14 @@ typedef uint64_t uint64; typedef uint32_t uint32; typedef uint16_t uint16; typed
 #endif
 #endif
 #endif
+#ifndef ULONG_LONG_MAX
+#include <limits.h>
+#ifndef ULONG_LONG_MAX
+#define ULONG_LONG_MAX ULLONG_MAX
+#endif
+#endif
+
+#include <sys/stat.h>
+#ifndef SF_DATALESS
+#define SF_DATALESS 0x40000000        /* macOS: file content not downloaded (iCloud etc.); never set here */
+#endif
