@@ -286,7 +286,7 @@ void WsdApplyMacPalette(void)
 	}
 	NSRect r = frame; r.size.height = r.size.height > 24 ? 24 : r.size.height; r.origin.y = frame.origin.y + (frame.size.height - r.size.height) / 2.0;
 	BOOL isDefault = [cell isKindOfClass: [NSButtonCell class]] && [[(NSButtonCell *)cell keyEquivalent] isEqualToString: @"\r"];
-	BOOL enabled = [cell isEnabled], pressed = (state == GSThemeHighlightedState || state == GSThemeHighlightedFirstResponderState);
+	BOOL enabled = [cell isEnabled], pressed = (state == GSThemeHighlightedState || state == GSThemeHighlightedFirstResponderState || state == GSThemeSelectedState || state == GSThemeSelectedFirstResponderState);
 	int wr, wg, wb; windowBG(&wr, &wg, &wb); BOOL dark = isDark(); int fg = dark ? 255 : 0;
 	NSColor *fill;
 	if (isDefault && enabled) fill = pressed ? (dark ? rgb(25, 135, 255, 1) : rgb(0, 110, 230, 1)) : rgb(0, 122, 255, 1);
