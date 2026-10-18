@@ -33,6 +33,8 @@ int vt_mouse_mode(const vt *t);                                                 
 int vt_mouse_sgr(const vt *t);                                                             /* ?1006: the SGR encoding of mouse reports */
 int vt_focus_events(const vt *t);                                                          /* ?1004: send ESC [ I / ESC [ O when the window gains or loses the key */
 void vt_clear_scrollback(vt *t);
+uint64_t vt_scrolled(const vt *t);                                                         /* lines pushed into the scrollback so far: a screen row y has the absolute line number vt_scrolled + y */
+int vt_prompt_count(const vt *t); uint64_t vt_prompt_at(const vt *t, int i);                /* the prompts announced with OSC 133;A (absolute line numbers) */
 void vt_set_ansi(vt *t, const uint32_t colors[16]);                                       /* this terminal's 16 ANSI colours (0x00RRGGBB), as a profile defines them */
 uint32_t vt_palette(int index);                                                            /* the 256 colour palette as 0x00RRGGBB */
 #endif
