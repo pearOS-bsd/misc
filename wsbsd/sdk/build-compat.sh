@@ -8,6 +8,7 @@ F="-fPIC -fblocks -w -I$QC/include -I$D/include $(gnustep-config --objc-flags)"
 gmake -C "$QC" BUILD="$OUT/qc" "$OUT/qc/libQuartzCore.so" 2>&1 | grep -E "error|Error" | head; cp "$OUT/qc/libQuartzCore.so" "$OUT/libQuartzCore.so"
 clang $F -fobjc-arc -c "$D/src/AppKitCompat.m" -o "$OUT/AppKitCompat.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/AppKitAnimation.m" -o "$OUT/AppKitAnimation.o" 2>&1 | grep -E "error" | head
+clang $F -fobjc-arc -c "$D/src/AppKitLayers.m" -o "$OUT/AppKitLayers.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/FSEvents.m" -o "$OUT/FSEvents.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/Quarantine.m" -o "$OUT/Quarantine.o" 2>&1 | grep -E "error" | head
 for c in xattr DiskArb UTType FileManager Security; do clang $F -c "$D/src/$c.c" -o "$OUT/$c.o" 2>&1 | grep -E "error" | head; done

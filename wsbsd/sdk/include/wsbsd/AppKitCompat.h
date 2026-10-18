@@ -453,4 +453,16 @@ extern NSString *const NSAppleScriptErrorMessage;
 + (id)dataWithContentsOfFile:(NSString *)path options:(NSUInteger)options error:(NSError **)error;
 - (NSString *)base64Encoding;
 @end
+@class CALayer;
+@interface NSView (WsbsdLayers)
+- (BOOL)wantsLayer;
+- (void)setWantsLayer:(BOOL)flag;
+- (CALayer *)layer;
+- (void)setLayer:(CALayer *)layer;
+- (CALayer *)makeBackingLayer;
+- (BOOL)wantsUpdateLayer;
+- (void)updateLayer;
+- (BOOL)canDrawSubviewsIntoLayer;
+- (void)setCanDrawSubviewsIntoLayer:(BOOL)flag;
+@end
 #endif

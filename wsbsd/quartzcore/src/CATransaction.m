@@ -47,7 +47,7 @@ void CATransactionNoteChange(void)
 	CATransactionState *t = top();
 	if (t->implicit && !gFlushScheduled) {
 		gFlushScheduled = YES;
-		[[NSRunLoop mainRunLoop] performSelector:@selector(_wsbsdFlushImplicit) target:[CATransaction class] argument:nil order:0 modes:@[NSRunLoopCommonModes]];
+		[[NSRunLoop mainRunLoop] performSelector:@selector(_wsbsdFlushImplicit) target:[CATransaction class] argument:nil order:0 modes:@[NSDefaultRunLoopMode, NSRunLoopCommonModes]];      /* GNUstep does not expand the common modes for performers */
 	}
 }
 
