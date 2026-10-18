@@ -76,7 +76,7 @@ for d in etc private/etc; do sed -i '' -E 's/^(ttyv[0-9a-f]+[[:space:]].*[[:spac
 for d in etc private/etc; do cp "$ROOT/usr/share/zoneinfo/UTC" "$ROOT/$d/localtime" 2>/dev/null || true; done
 # what the desktop needs at run time and that earlier images lacked: ICU's data (NSDateFormatter crashed without it), a time zone, no getty on the screen's console
 for need in "$ROOT/usr/local/share/icu" "$ROOT/etc/localtime" "$ROOT/usr/local/lib/libicudata.so.76"; do [ -e "$need" ] || { echo "image check failed, missing: $need"; exit 1; }; done
-grep -E '^ttyv0' "$ROOT/etc/ttys" | grep -q ' off' || { echo "image check failed: ttyv0 still has a getty"; grep -E '^ttyv0' "$ROOT/etc/ttys"; exit 1; }
+grep -E '^ttyv0' "$ROOT/etc/ttys" | grep -qE '[[:space:]]off([[:space:]]|$)' || { echo "image check failed: ttyv0 still has a getty"; grep -E '^ttyv0' "$ROOT/etc/ttys"; exit 1; }
 python3 "$HERE/tools/macfs.py" desymlink "$ROOT"
 python3 "$HERE/tools/macfs.py" verify "$ROOT" "$HERE/manifest" || { echo "layout check failed"; [ -n "$LAYOUT_STRICT" ] && exit 1; }
 
