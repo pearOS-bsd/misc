@@ -7,12 +7,12 @@ test: test/test_vt.c src/vt.c src/vt.h
 	./test_vt
 
 mac: Terminal-mac
-Terminal-mac: $(SRC) src/TermView.m src/TermWindow.m src/TermProfile.m src/main.m src/TermView.h src/TermWindow.h src/TermProfile.h src/Profiles.inc
-	$(CC) -fobjc-arc-weak -fno-objc-arc -o $@ $(SRC) src/TermView.m src/TermWindow.m src/TermProfile.m src/main.m -framework Cocoa -lutil 2>/dev/null || $(CC) -fno-objc-arc -o $@ $(SRC) src/TermView.m src/TermWindow.m src/TermProfile.m src/main.m -framework Cocoa
+Terminal-mac: $(SRC) src/TermView.m src/TermWindow.m src/TermProfile.m src/TermSettings.m src/main.m src/TermView.h src/TermWindow.h src/TermProfile.h src/TermSettings.h src/Profiles.inc
+	$(CC) -fobjc-arc-weak -fno-objc-arc -o $@ $(SRC) src/TermView.m src/TermWindow.m src/TermProfile.m src/TermSettings.m src/main.m -framework Cocoa -lutil 2>/dev/null || $(CC) -fno-objc-arc -o $@ $(SRC) src/TermView.m src/TermWindow.m src/TermProfile.m src/TermSettings.m src/main.m -framework Cocoa
 
 gnustep: Terminal-gnustep
-Terminal-gnustep: $(SRC) src/TermView.m src/TermWindow.m src/TermProfile.m src/main.m src/TermView.h src/TermWindow.h src/TermProfile.h src/Profiles.inc
-	$(CC) -o $@ $(SRC) src/TermView.m src/TermWindow.m src/TermProfile.m src/main.m `gnustep-config --objc-flags` `gnustep-config --gui-libs` -lopal -lgnustep-corebase -ldispatch -lutil
+Terminal-gnustep: $(SRC) src/TermView.m src/TermWindow.m src/TermProfile.m src/TermSettings.m src/main.m src/TermView.h src/TermWindow.h src/TermProfile.h src/TermSettings.h src/Profiles.inc
+	$(CC) -o $@ $(SRC) src/TermView.m src/TermWindow.m src/TermProfile.m src/TermSettings.m src/main.m `gnustep-config --objc-flags` `gnustep-config --gui-libs` -lopal -lgnustep-corebase -ldispatch -lutil
 
 clean:
 	rm -f test_vt Terminal-mac Terminal-gnustep

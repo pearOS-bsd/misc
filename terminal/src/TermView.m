@@ -28,6 +28,7 @@ static BOOL allowMouse = YES, optionAsMeta = YES;
 	if (master < 0) { const char *m = "cannot start a shell\r\n"; vt_feed(term, m, strlen(m)); exited = YES; }
 	pump = [[NSTimer scheduledTimerWithTimeInterval:1.0 / 60 target:self selector:@selector(pump:) userInfo:nil repeats:YES] retain];
 	blinkOn = YES; active = YES;
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(profileChanged:) name:@"TermProfileChanged" object:nil];
 	return self;
 }
 
@@ -41,6 +42,7 @@ static BOOL allowMouse = YES, optionAsMeta = YES;
 	if (p->blink) blinkTimer = [[NSTimer scheduledTimerWithTimeInterval:0.55 target:self selector:@selector(blink:) userInfo:nil repeats:YES] retain];
 	blinkOn = YES; [self setNeedsDisplay:YES];
 }
+- (void)profileChanged:(NSNotification *)n { if ([n object] == profile) { fontSize = profile->fontSize; [self applyProfile:profile]; if ([delegate respondsToSelector:@selector(termViewFontChanged:)]) [delegate termViewFontChanged:self]; } }
 - (void)blink:(NSTimer *)t { (void)t; blinkOn = !blinkOn; [self setNeedsDisplay:YES]; }
 
 - (void)rebuildFont
@@ -56,6 +58,7 @@ static BOOL allowMouse = YES, optionAsMeta = YES;
 
 - (void)dealloc
 {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[pump invalidate]; [pump release]; [blinkTimer invalidate]; [blinkTimer release];
 	if (master >= 0) close(master);
 	if (child > 0) { kill(child, SIGHUP); waitpid(child, NULL, WNOHANG); }

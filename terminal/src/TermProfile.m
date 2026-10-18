@@ -32,8 +32,24 @@ static NSColor *col(const float *c, double r, double g, double b)
 			}
 			[all addObject: p]; [p release];
 		}
+		[self loadOverrides];
 	}
 	return all;
+}
++ (void)loadOverrides
+{
+	NSDictionary *o = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"Window Settings"];
+	for (TermProfile *p in [self allProfiles]) {
+		NSDictionary *d = [o objectForKey:p->name]; if (![d isKindOfClass:[NSDictionary class]]) continue;
+		#define COL(key, field) { NSArray *a = [d objectForKey:key]; if ([a count] == 4) { [p->field release]; p->field = [[NSColor colorWithCalibratedRed:[[a objectAtIndex:0] doubleValue] green:[[a objectAtIndex:1] doubleValue] blue:[[a objectAtIndex:2] doubleValue] alpha:[[a objectAtIndex:3] doubleValue]] retain]; } }
+		COL(@"BackgroundColor", background) COL(@"TextColor", text) COL(@"TextBoldColor", boldText) COL(@"CursorColor", cursor) COL(@"SelectionColor", selection)
+		if ([d objectForKey:@"FontSize"]) p->fontSize = [[d objectForKey:@"FontSize"] doubleValue];
+		if ([d objectForKey:@"BackgroundBlur"]) p->blur = [[d objectForKey:@"BackgroundBlur"] doubleValue];
+		if ([d objectForKey:@"columnCount"]) p->cols = [[d objectForKey:@"columnCount"] intValue];
+		if ([d objectForKey:@"rowCount"]) p->rows = [[d objectForKey:@"rowCount"] intValue];
+		if ([d objectForKey:@"CursorBlink"]) p->blink = [[d objectForKey:@"CursorBlink"] boolValue];
+		if ([d objectForKey:@"FontAntialias"]) p->antialias = [[d objectForKey:@"FontAntialias"] boolValue];
+	}
 }
 + (TermProfile *)profileNamed:(NSString *)n { for (TermProfile *p in [self allProfiles]) if ([p->name isEqualToString: n]) return p; return nil; }
 + (TermProfile *)defaultProfile
@@ -42,6 +58,15 @@ static NSColor *col(const float *c, double r, double g, double b)
 	return p ?: [self profileNamed: @"Pro"] ?: [[self allProfiles] objectAtIndex: 0];
 }
 + (void)setDefaultProfile:(TermProfile *)p { [[NSUserDefaults standardUserDefaults] setObject: p->name forKey: @"Default Window Settings"]; [[NSUserDefaults standardUserDefaults] synchronize]; }
+static NSArray *colArray(NSColor *c) { NSColor *r = [c colorUsingColorSpaceName:NSCalibratedRGBColorSpace]; return [NSArray arrayWithObjects:[NSNumber numberWithDouble:[r redComponent]], [NSNumber numberWithDouble:[r greenComponent]], [NSNumber numberWithDouble:[r blueComponent]], [NSNumber numberWithDouble:[r alphaComponent]], nil]; }
+- (void)changed
+{
+	NSMutableDictionary *all = [[[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"Window Settings"] mutableCopy] autorelease] ?: [NSMutableDictionary dictionary];
+	NSDictionary *d = [NSDictionary dictionaryWithObjectsAndKeys:colArray(background), @"BackgroundColor", colArray(text), @"TextColor", colArray(boldText), @"TextBoldColor", colArray(cursor), @"CursorColor", colArray(selection), @"SelectionColor",
+		[NSNumber numberWithDouble:fontSize], @"FontSize", [NSNumber numberWithDouble:blur], @"BackgroundBlur", [NSNumber numberWithInt:cols], @"columnCount", [NSNumber numberWithInt:rows], @"rowCount", [NSNumber numberWithBool:blink], @"CursorBlink", [NSNumber numberWithBool:antialias], @"FontAntialias", nil];
+	[all setObject:d forKey:name]; [[NSUserDefaults standardUserDefaults] setObject:all forKey:@"Window Settings"]; [[NSUserDefaults standardUserDefaults] synchronize];
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"TermProfileChanged" object:self];
+}
 - (NSFont *)fontWithSize:(CGFloat)size bold:(BOOL)bold
 {
 	/* the faces of Terminal.app are SF Mono (the "SFMonoTerminal" faces), Monaco, Andale Mono, Courier: use them when the system has them, else the system's fixed pitch face */
