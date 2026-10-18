@@ -1148,7 +1148,7 @@ static int do_private(conn *c, const uint8_t *buf, size_t len)
 	}
 	case WSX_GET_FPS: r.a[0] = (int32_t)(ws_fps_rate() * 100 + 0.5); r.a[1] = (int32_t)(ws_fps_compose_ms() * 100 + 0.5); r.a[2] = (int32_t)(ws_fps_total() & 0x7fffffff); break;
 	case WSX_SET_CURSOR: ws_server_set_cursor_shape(srv, a[0]); break;
-	case WSX_SET_GLASS: r.retcode = holds_rights(c, (uint32_t)a[0]) ? ws_set_window_glass(srv, (ws_wid)a[0], (ws_rect){ a[1], a[2], a[3], a[4] }, a[5], a[6]) : CGS_ERROR_FAILURE; break;
+	case WSX_SET_GLASS: r.retcode = holds_rights(c, (uint32_t)a[0]) ? ws_set_window_glass_slot(srv, (ws_wid)a[0], a[7], (ws_rect){ a[1], a[2], a[3], a[4] }, a[5], a[6]) : CGS_ERROR_FAILURE; break;
 	case WSX_QUIT: running = 0; break;
 	case WSX_GET_CONNECTION_ID: r.a[0] = (int32_t)c->id; break;
 	case WSX_GET_SCREEN: r.a[0] = wsd_screen_w; r.a[1] = wsd_screen_h; break;

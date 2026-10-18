@@ -91,36 +91,66 @@ static void sample_bilinear(const ws_surface *s, float x, float y, float out[3])
 	for (int c = 0; c < 3; c++) out[c] = ((p00[c] * (1 - fx) + p10[c] * fx) * (1 - fy) + (p01[c] * (1 - fx) + p11[c] * fx) * fy) / 255.0f;      /* BGRA: c = 0 blue */
 }
 
-void ws_glass_region(ws_surface *img, ws_rect gr, int rad, int mode)
+/* the signed distance (< 0 inside) of the rounded rectangle g (screen coordinates) from the point (x, y) */
+static float glass_sdf(const ws_glass *g, int ox, int oy, float x, float y)
 {
-	if (!img || gr.w < 4 || gr.h < 4 || mode <= 0) return;
-	float Lmax = mode == 2 ? 10.0f : (getenv("WS_GLASS_L") ? (float)atof(getenv("WS_GLASS_L")) : 18.0f), amp = getenv("WS_GLASS_AMP") ? (float)atof(getenv("WS_GLASS_AMP")) : 26.0f; int M = (int)ceilf(amp) + 6;
-	ws_rect cr = { gr.x - M, gr.y - M, gr.w + 2 * M, gr.h + 2 * M };
-	int cx0 = cr.x < 0 ? 0 : cr.x, cy0 = cr.y < 0 ? 0 : cr.y, cx1 = cr.x + cr.w > img->w ? img->w : cr.x + cr.w, cy1 = cr.y + cr.h > img->h ? img->h : cr.y + cr.h;
+	float hw = g->rect.w / 2.0f, hh = g->rect.h / 2.0f, r = (float)(g->radius > 0 ? g->radius : 0); if (r > hh) r = hh; if (r > hw) r = hw;
+	float px = x - (ox + g->rect.x + hw), py = y - (oy + g->rect.y + hh), qx = fabsf(px) - (hw - r), qy = fabsf(py) - (hh - r);
+	float mx = qx > 0 ? qx : 0, my = qy > 0 ? qy : 0;
+	return sqrtf(mx * mx + my * my) + fminf(fmaxf(qx, qy), 0) - r;
+}
+/* all the glass shapes of a window as one: the polynomial smooth minimum makes shapes that come close (the buttons of a toolbar, the groups of a container) melt into each other */
+static float glass_field(const ws_glass *g, int n, int ox, int oy, float x, float y, int *mode)
+{
+	float f = 1e9f; *mode = 1; const float k = 14.0f;
+	for (int i = 0; i < n; i++) {
+		if (g[i].mode <= 0) continue;
+		float s = glass_sdf(&g[i], ox, oy, x, y);
+		if (f > 1e8f) { f = s; *mode = g[i].mode; continue; }
+		float h = fmaxf(k - fabsf(f - s), 0) / k; float m = fminf(f, s) - h * h * k * 0.25f;
+		if (s < f) *mode = g[i].mode;
+		f = m;
+	}
+	return f;
+}
+
+void ws_glass_regions(ws_surface *img, const ws_glass *g, int n, int ox, int oy)
+{
+	if (!img || !g || n <= 0) return;
+	int any = 0, bx0 = 1 << 30, by0 = 1 << 30, bx1 = -(1 << 30), by1 = -(1 << 30);
+	for (int i = 0; i < n; i++) if (g[i].mode > 0 && g[i].rect.w > 3 && g[i].rect.h > 3) {
+		any = 1; int x0 = ox + g[i].rect.x, y0 = oy + g[i].rect.y;
+		if (x0 < bx0) bx0 = x0; if (y0 < by0) by0 = y0; if (x0 + g[i].rect.w > bx1) bx1 = x0 + g[i].rect.w; if (y0 + g[i].rect.h > by1) by1 = y0 + g[i].rect.h;
+	}
+	if (!any) return;
+	float Lbase = getenv("WS_GLASS_L") ? (float)atof(getenv("WS_GLASS_L")) : 18.0f, amp = getenv("WS_GLASS_AMP") ? (float)atof(getenv("WS_GLASS_AMP")) : 26.0f;
+	int M = (int)ceilf(amp) + 6;
+	int cx0 = bx0 - M < 0 ? 0 : bx0 - M, cy0 = by0 - M < 0 ? 0 : by0 - M, cx1 = bx1 + M > img->w ? img->w : bx1 + M, cy1 = by1 + M > img->h ? img->h : by1 + M;
 	if (cx1 <= cx0 || cy1 <= cy0) return;
 	ws_surface *tmp = ws_surface_new(cx1 - cx0, cy1 - cy0); if (!tmp) return;                 /* the backdrop as it is now: the lens samples from it while the result is written to the image */
 	for (int y = cy0; y < cy1; y++) memcpy(tmp->px + (size_t)(y - cy0) * tmp->stride, img->px + (size_t)y * img->stride + (size_t)cx0 * 4, (size_t)(cx1 - cx0) * 4);
-	float hw = gr.w / 2.0f, hh = gr.h / 2.0f, r = (float)(rad > 0 ? rad : 0); if (r > hh) r = hh; if (r > hw) r = hw;
-	float L = fminf(Lmax, fminf(gr.w, gr.h) / 2.5f);                                 /* width of the lens band */
-	float tint = mode == 2 ? 0.90f : 0.69f, lift = mode == 2 ? 0.0f : 0.012f;
-	int x0 = gr.x < 0 ? 0 : gr.x, y0 = gr.y < 0 ? 0 : gr.y, x1 = gr.x + gr.w > img->w ? img->w : gr.x + gr.w, y1 = gr.y + gr.h > img->h ? img->h : gr.y + gr.h;
+	int x0 = bx0 < 0 ? 0 : bx0, y0 = by0 < 0 ? 0 : by0, x1 = bx1 > img->w ? img->w : bx1, y1 = by1 > img->h ? img->h : by1;
 	for (int y = y0; y < y1; y++) for (int x = x0; x < x1; x++) {
-		float px = x + 0.5f - gr.x - hw, py = y + 0.5f - gr.y - hh;                  /* relative to the centre */
-		float qx = fabsf(px) - (hw - r), qy = fabsf(py) - (hh - r);
-		float mx = qx > 0 ? qx : 0, my = qy > 0 ? qy : 0, sdf = sqrtf(mx * mx + my * my) + fminf(fmaxf(qx, qy), 0) - r;      /* < 0 inside */
+		float fx = x + 0.5f, fy = y + 0.5f; int mode;
+		float sdf = glass_field(g, n, ox, oy, fx, fy, &mode);
 		float cover = clampf(0.5f - sdf, 0, 1); if (cover <= 0) continue;
 		float d = -sdf; if (d < 0) d = 0;
-		float nx, ny;                                                               /* outward normal */
-		if (qx > 0 && qy > 0) { float l = sqrtf(qx * qx + qy * qy); nx = (px < 0 ? -1 : 1) * qx / l; ny = (py < 0 ? -1 : 1) * qy / l; }
-		else if (qx > qy) { nx = px < 0 ? -1.0f : 1.0f; ny = 0; } else { nx = 0; ny = py < 0 ? -1.0f : 1.0f; }
-		float shift = 0; if (d < L) shift = amp * sinf(3.14159265f * d / L);        /* the bevel folds the image: content from up to `amp` pixels beyond the edge, mirrored where the slope reverses (that is where lines look thick) */
-		float col[3]; sample_bilinear(tmp, (x + 0.5f + nx * shift) - cx0, (y + 0.5f + ny * shift) - cy0, col);
+		int dm; float gx = glass_field(g, n, ox, oy, fx + 1, fy, &dm) - glass_field(g, n, ox, oy, fx - 1, fy, &dm), gy = glass_field(g, n, ox, oy, fx, fy + 1, &dm) - glass_field(g, n, ox, oy, fx, fy - 1, &dm);
+		float gl = sqrtf(gx * gx + gy * gy); float nx = gl > 1e-4f ? gx / gl : 0, ny = gl > 1e-4f ? gy / gl : -1;      /* outward normal */
+		float L = mode == 2 ? 10.0f : Lbase, A = mode == 2 ? amp * 0.5f : amp;
+		float tint = mode == 2 ? 0.90f : 0.69f, lift = mode == 2 ? 0.0f : 0.012f;
+		float shift = 0; if (d < L) shift = A * sinf(3.14159265f * d / L);          /* the bevel folds the image: content from up to A pixels beyond the edge, mirrored where the slope reverses (that is where lines look thick) */
+		float col[3]; sample_bilinear(tmp, (fx + nx * shift) - cx0, (fy + ny * shift) - cy0, col);
 		float light = nx * -0.55f + ny * -0.83f; if (light < 0) light = 0;
-		float rim = expf(-d / 1.1f) * (0.10f + 0.50f * light), glow = expf(-d / 5.0f) * 0.05f * light;
-		float white = rim + glow;
+		float rim = expf(-d / 1.1f) * (0.10f + 0.50f * light), glow = expf(-d / 5.0f) * 0.05f * light, white = rim + glow;
 		for (int c = 0; c < 3; c++) { col[c] = col[c] * tint + lift; col[c] = col[c] * (1 - white) + white; if (col[c] > 1) col[c] = 1; }
 		uint8_t *dp = img->px + (size_t)y * img->stride + (size_t)x * 4;
 		for (int c = 0; c < 3; c++) dp[c] = (uint8_t)(dp[c] * (1 - cover) + col[c] * 255.0f * cover + 0.5f);
 	}
 	ws_surface_free(tmp);
+}
+
+void ws_glass_region(ws_surface *img, ws_rect rect, int radius, int mode)
+{
+	ws_glass g = { rect, radius, mode }; ws_glass_regions(img, &g, 1, 0, 0);
 }
