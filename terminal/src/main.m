@@ -16,6 +16,8 @@
 - (void)showSettings:(id)sender { (void)sender; [TermSettings show]; }
 - (void)newWindow:(id)sender { [[TermWindowController alloc] initWithProfile:[self profileOf:sender] command:nil]; }
 - (void)newTab:(id)sender { TermWindowController *c = [self wc]; if (c) [c newTabWithProfile:[self profileOf:sender] command:nil]; else [self newWindow:sender]; }
+- (void)splitPane:(id)sender { [[self wc] splitPane:sender]; }
+- (void)closeSplitPane:(id)sender { [[self wc] closeSplitPane:sender]; }
 - (void)closeTab:(id)sender { [[self wc] closeCurrentTab:sender]; }
 - (void)closeWindow:(id)sender { (void)sender; [[[self wc] window] performClose:nil]; }
 - (void)nextTab:(id)sender { [[self wc] nextTab:sender]; }
@@ -65,6 +67,7 @@
 	if (a == @selector(toggleSecureKeyboard:)) { [mi setState:[[NSUserDefaults standardUserDefaults] boolForKey:@"SecureKeyboardEntry"] ? NSOnState : NSOffState]; return YES; }
 	if (a == @selector(toggleTabBar:)) { TermWindowController *c = [self wc]; [mi setTitle:[c tabBarShown] ? @"Hide Tab Bar" : @"Show Tab Bar"]; return c != nil; }
 	if (a == @selector(changeProfile:)) { TermWindowController *c = [self wc]; [mi setState:c && [[[c term] profile] isEqual:[mi representedObject]] ? NSOnState : NSOffState]; return c != nil; }
+	if (a == @selector(closeSplitPane:)) return [[self wc] hasSplitPanes];
 	if (a == @selector(nextTab:) || a == @selector(previousTab:)) return [[[self wc] tabs] count] > 1;
 	if ([mi target] == self && ![self respondsToSelector:a]) return NO;                         /* not implemented (yet): disabled */
 	return [[TermWindowController all] count] > 0 || a == @selector(newWindow:) || a == @selector(newTab:);
@@ -124,7 +127,7 @@ int main(int argc, char **argv)
 	profileItems(SUB(m, @"New Tab with Profile"), @selector(newTab:), d);
 	M(m, @"New Command…", @selector(newCommand:), @"n", CMD | SH, d); M(m, @"New Remote Connection…", @selector(newRemoteConnection:), @"k", CMD | SH, d); SEP(m);
 	M(m, @"Open…", @selector(openDocument:), @"o", CMD, d); SUB(m, @"Open Recent"); SEP(m);
-	M(m, @"Close Tab", @selector(closeTab:), @"w", CMD, d); M(m, @"Close Window", @selector(closeWindow:), @"w", CMD | SH, d); M(m, @"Close Split Pane", @selector(closeSplitPane:), @"d", CMD | SH, d); SEP(m);
+	M(m, @"Close Tab", @selector(closeTab:), @"w", CMD, d); M(m, @"Close Window", @selector(closeWindow:), @"w", CMD | SH, d); M(m, @"Split Pane", @selector(splitPane:), @"d", CMD, d); M(m, @"Close Split Pane", @selector(closeSplitPane:), @"d", CMD | SH, d); SEP(m);
 	M(m, @"Save Windows as Group…", @selector(saveWindowGroup:), nil, 0, d); M(m, @"Open Window Group", @selector(openWindowGroup:), nil, 0, d); SEP(m);
 	M(m, @"Export Settings…", @selector(exportSettings:), nil, 0, d); M(m, @"Export Text As…", @selector(exportText:), @"s", CMD | OPT, d); M(m, @"Export Selected Text As…", @selector(exportSelectedText:), nil, 0, d); SEP(m);
 	M(m, @"Print…", @selector(print:), @"p", CMD, nil); M(m, @"Page Setup…", @selector(runPageLayout:), @"p", CMD | SH, nil); SEP(m);

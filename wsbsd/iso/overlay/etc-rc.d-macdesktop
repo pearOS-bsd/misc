@@ -33,6 +33,13 @@ macdesktop_start()
 		daemon -f -o /var/log/Terminal.log /usr/lib/dyld $app
 	done
 }
-macdesktop_stop() { [ -f /var/run/WindowServer.pid ] && kill "$(cat /var/run/WindowServer.pid)"; }
+macdesktop_stop()
+{
+	# the applications first, then the window server (it clears the screen and gives the console back), then the console messages are shown again
+	for p in Terminal Dock SystemUIServer; do pkill -x "$p" 2>/dev/null; done
+	[ -f /var/run/WindowServer.pid ] && kill "$(cat /var/run/WindowServer.pid)" 2>/dev/null
+	i=0; while [ $i -lt 30 ] && pgrep -f "WindowServer -b" >/dev/null 2>&1; do sleep 0.1; i=$((i+1)); done
+	conscontrol mute off >/dev/null 2>&1
+}
 load_rc_config $name
 run_rc_command "$1"

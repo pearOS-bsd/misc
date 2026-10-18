@@ -15,6 +15,7 @@
 - (void)selectTab:(NSUInteger)i;
 - (void)closeTab:(NSUInteger)i;
 - (void)closeCurrentTab:(id)sender;
+- (void)splitPane:(id)sender; - (void)closeSplitPane:(id)sender; - (BOOL)hasSplitPanes;
 - (void)nextTab:(id)sender; - (void)previousTab:(id)sender;
 - (void)toggleTabBar:(id)sender; - (BOOL)tabBarShown;
 - (void)showFindBar:(id)sender; - (void)hideFindBar:(id)sender; - (void)findNext:(id)sender; - (void)findPrevious:(id)sender; - (void)useSelectionForFind:(id)sender;

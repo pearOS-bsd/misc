@@ -218,6 +218,7 @@ static NSColor *rgbColor(uint32_t c) { return [NSColor colorWithCalibratedRed:((
 
 - (void)mouseDown:(NSEvent *)e
 {
+	if ([delegate respondsToSelector:@selector(termViewActivated:)]) [delegate termViewActivated:self];
 	NSPoint p = [self convertPoint:[e locationInWindow] fromView:nil]; int x = (int)(p.x / cellW), y = (int)(p.y / cellH);
 	if (vt_mouse_mode(term) && allowMouse && !([e modifierFlags] & NSShiftKeyMask)) { [self reportMouse:0 x:x y:y release:NO]; return; }
 	clickCount = (int)[e clickCount];
