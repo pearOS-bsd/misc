@@ -48,6 +48,7 @@ static void SetTags(NSString *path, NSArray *names);
 @end
 static void RoundWindow(NSWindow *w, int radius) { id srv = GSCurrentServer(); if ([srv respondsToSelector: @selector(wsdWindowCorners::)]) [srv wsdWindowCorners: radius : (int)[w windowNumber]]; }
 static BOOL DrawSymbol(NSString *name, NSRect cell, CGFloat pointSize, NSColor *tint);
+static NSTextField *SearchField(NSView *root, NSRect f);
 static NSTextField *Field(NSRect f, NSString *val); static NSButton *Btn(NSString *title, NSRect f, id target, SEL action, BOOL def);
 static NSColor *RGB(int r, int g, int b) { return [NSColor colorWithCalibratedRed: r / 255.0 green: g / 255.0 blue: b / 255.0 alpha: 1]; }
 static NSColor *RGBA(int r, int g, int b, double a) { return [NSColor colorWithCalibratedRed: r / 255.0 green: g / 255.0 blue: b / 255.0 alpha: a]; }
@@ -615,17 +616,17 @@ static void DrawSideIcon(NSString *name, NSRect r, NSColor *tint)               
 	[P_LINE setFill]; NSRectFill(NSMakeRect(0, 63, [self bounds].size.width, 1));
 	double x0 = 20;                                                                                               /* measured in the panel's own coordinates minus the sidebar (135) */
 	FillRound(NSMakeRect(x0, 20, 50, 24), 8, P_CONTROL);
-	for (int k = 0; k < 2; k++) { NSBezierPath *p = [NSBezierPath bezierPath]; double cx = x0 + 13 + k * 24 + (k ? -2 : 2), cy = 32; [p setLineWidth: 1.5]; [p moveToPoint: NSMakePoint(cx + (k ? -3 : 3), cy - 5)]; [p lineToPoint: NSMakePoint(cx + (k ? 3 : -3), cy)]; [p lineToPoint: NSMakePoint(cx + (k ? -3 : 3), cy + 5)]; [((k ? canFwd : canBack) ? P_TEXT : P_DIM) setStroke]; [p stroke]; }
-	FillRound(NSMakeRect(76, 20, 66, 24), 8, P_CONTROL); FillRound(NSMakeRect(150, 20, 66, 24), 8, P_CONTROL);
-	[P_TEXT setFill]; if (mode == 1 || compact) { for (int i = 0; i < 3; i++) NSRectFill(NSMakeRect(92, 27 + i * 4, 10, 1.6)); } else if (mode == 0) { for (int i = 0; i < 4; i++) NSRectFill(NSMakeRect(91 + (i % 2) * 6, 27 + (i / 2) * 6, 4.5, 4.5)); } else for (int i = 0; i < 3; i++) NSRectFill(NSMakeRect(90 + i * 4.5, 27, 3, 10)); for (int i = 0; i < 9; i++) NSRectFill(NSMakeRect(163 + (i % 3) * 4.5, 27 + (i / 3) * 3.6, 2.5, 2.5));
-	for (int k = 0; k < 2; k++) { double cx = (k ? 200 : 126); NSBezierPath *p = [NSBezierPath bezierPath]; [p setLineWidth: 1.4]; [p moveToPoint: NSMakePoint(cx - 3, 30)]; [p lineToPoint: NSMakePoint(cx, 33.5)]; [p lineToPoint: NSMakePoint(cx + 3, 30)]; [P_TEXT setStroke]; [p stroke]; }
+	[(PDark() ? RGBA(255, 255, 255, 0.16) : RGBA(0, 0, 0, 0.14)) setFill]; NSRectFill(NSMakeRect(x0 + 25, 26, 1, 12));                       /* the divider of the segmented back / forward control */
+	DrawSymbol(@"chevron.left", NSMakeRect(x0, 20, 25, 24), 13, canBack ? P_TEXT : P_DIM); DrawSymbol(@"chevron.right", NSMakeRect(x0 + 25, 20, 25, 24), 13, canFwd ? P_TEXT : P_DIM);
+	FillRound(NSMakeRect(76, 20, 66, 24), 8, P_CONTROL); FillRound(NSMakeRect(150, 20, 66, 24), 8, P_CONTROL);                      /* the view mode and the grouping, each with a pop-up arrow */
+	DrawSymbol(mode == 1 || compact ? @"list.bullet" : mode == 0 ? @"square.grid.2x2" : @"rectangle.split.3x1", NSMakeRect(86, 20, 24, 24), 14, P_TEXT); DrawSymbol(@"square.grid.3x1.below.line.grid.1x2", NSMakeRect(160, 20, 24, 24), 14, P_TEXT);
+	DrawSymbol(@"chevron.down", NSMakeRect(118, 20, 16, 24), 9, P_TEXT); DrawSymbol(@"chevron.down", NSMakeRect(192, 20, 16, 24), 9, P_TEXT);
 	double px = compact ? 224 : 258, pw = compact ? 198 : 229, sx = compact ? 462 : 529, sw = compact ? 195 : 196;
 	NSRect pp = NSMakeRect(px, 20, pw, 24); FillRound(pp, 8, P_CONTROL);                                         /* the path pop-up: a folder, the name, the up / down arrows */
 	DrawFolder(NSMakeRect(px + 10, 26, 14, 12)); Text(pathTitle ?: @"", NSMakePoint(px + 29, 32), 13, NO, P_TEXT, YES);
-	for (int k = 0; k < 2; k++) { NSBezierPath *p = [NSBezierPath bezierPath]; [p setLineWidth: 1.2]; double cx = NSMaxX(pp) - 14, cy = k ? 35 : 29; [p moveToPoint: NSMakePoint(cx - 3, cy + (k ? -2 : 2))]; [p lineToPoint: NSMakePoint(cx, cy + (k ? 1 : -1))]; [p lineToPoint: NSMakePoint(cx + 3, cy + (k ? -2 : 2))]; [P_TEXT setStroke]; [p stroke]; }
-	if (compact) { FillRound(NSMakeRect(430, 20, 22, 24), 8, P_CONTROL); NSBezierPath *ch = [NSBezierPath bezierPath]; [ch setLineWidth: 1.4]; [ch moveToPoint: NSMakePoint(436, 34)]; [ch lineToPoint: NSMakePoint(441, 30)]; [ch lineToPoint: NSMakePoint(446, 34)]; [P_TEXT setStroke]; [ch stroke]; }   /* the button that folds the browser away */
-	NSBezierPath *lens = [NSBezierPath bezierPathWithOvalInRect: NSMakeRect(sx + 12, 26, 9, 9)]; [lens setLineWidth: 1.3]; [P_DIM setStroke]; [lens stroke]; (void)sw;
-	NSBezierPath *hd = [NSBezierPath bezierPath]; [hd setLineWidth: 1.3]; [hd moveToPoint: NSMakePoint(sx + 20, 35)]; [hd lineToPoint: NSMakePoint(sx + 23.5, 38.5)]; [hd stroke];
+	DrawSymbol(@"chevron.up.chevron.down", NSMakeRect(NSMaxX(pp) - 24, 20, 16, 24), 9, P_TEXT);
+	if (compact) { FillRound(NSMakeRect(430, 20, 22, 24), 8, P_CONTROL); DrawSymbol(@"chevron.down", NSMakeRect(430, 20, 22, 24), 10, P_TEXT); }   /* the button that folds the browser away */
+	(void)sw; (void)sx;
 }
 - (void)mouseDown:(NSEvent *)ev
 {
@@ -919,7 +920,7 @@ static void DrawSideIcon(NSString *name, NSRect r, NSColor *tint)               
 		nameField = Field(NSMakeRect(358, 41, 232, 26), name); [nameField setBezeled: YES]; [nameField setDelegate: (id)self]; [root addSubview: nameField];
 		tagField = [[WsdTagField alloc] initWithFrame: NSMakeRect(358, 79, 232, 26)]; [root addSubview: tagField];
 		WsdToolbar *tb = [[WsdToolbar alloc] initWithFrame: NSMakeRect(135, 104, 677, 64)]; tb->target = self; tb->compact = YES; toolbar = tb; [root addSubview: tb];
-		NSTextField *sf2 = Field(NSMakeRect(135 + 462, 123, 195, 26), nil); [sf2 setBezeled: YES]; [sf2 setDelegate: (id)self]; [[sf2 cell] setPlaceholderAttributedString: [[NSAttributedString alloc] initWithString: @"Search" attributes: Attr(13, NO, P_DIM)]]; [root addSubview: sf2]; tb->search = sf2;
+		NSTextField *sf2 = SearchField(root, NSMakeRect(135 + 462, 123, 195, 26)); [sf2 setDelegate: (id)self]; tb->search = sf2;
 		listHeader = [[WsdListHeader alloc] initWithFrame: NSMakeRect(135, 169, 677, 26)]; [root addSubview: listHeader];
 		listScroll = [[NSScrollView alloc] initWithFrame: NSMakeRect(135, 195, 677, 76)]; [listScroll setHasVerticalScroller: YES]; [listScroll setBorderType: NSNoBorder]; [listScroll setDrawsBackground: NO];
 		listView = [[WsdListColumn alloc] initWithFrame: NSMakeRect(0, 0, 662, 100)]; listView->types = types; listView->filesOK = YES; listView->dirsOK = NO; listView->delegate = self; listView->active = YES; [listScroll setDocumentView: listView]; [root addSubview: listScroll];
@@ -988,6 +989,22 @@ static NSButton *Btn(NSString *title, NSRect f, id target, SEL action, BOOL def)
 	NSButton *b = [[NSButton alloc] initWithFrame: f]; [b setTitle: title]; [b setBezelStyle: NSRoundedBezelStyle]; [b setTarget: target]; [b setAction: action]; if (def) [b setKeyEquivalent: @"\r"]; else if ([title isEqual: @"Cancel"]) [b setKeyEquivalent: @"\033"];
 	return b;
 }
+@interface WsdSearchCell : NSTextFieldCell @end
+@implementation WsdSearchCell
+- (NSRect)drawingRectForBounds:(NSRect)r { r = [super drawingRectForBounds: r]; r.origin.x += 20; r.size.width -= 20; return r; }
+@end
+@interface WsdGlyphView : NSView { @public NSString *name; CGFloat size; } @end
+@implementation WsdGlyphView
+- (BOOL)isFlipped { return YES; }
+- (NSView *)hitTest:(NSPoint)p { return nil; }
+- (void)drawRect:(NSRect)r { DrawSymbol(name, [self bounds], size, P_DIM); }
+@end
+static NSTextField *SearchField(NSView *root, NSRect f)                                            /* a rounded field with the magnifying glass inside at its left */
+{
+	NSTextField *t = [[NSTextField alloc] initWithFrame: f]; WsdSearchCell *c = [[WsdSearchCell alloc] initTextCell: @""]; [t setCell: c]; [t setBordered: NO]; [t setBezeled: YES]; [t setDrawsBackground: NO]; [t setFont: [NSFont systemFontOfSize: 13]]; [t setTextColor: P_TEXT]; [t setFocusRingType: NSFocusRingTypeNone];
+	[c setPlaceholderAttributedString: [[NSAttributedString alloc] initWithString: @"Search" attributes: Attr(13, NO, P_DIM)]]; [root addSubview: t];
+	WsdGlyphView *g = [[WsdGlyphView alloc] initWithFrame: NSMakeRect(f.origin.x + 4, f.origin.y, 20, f.size.height)]; g->name = @"magnifyingglass"; g->size = 12; [root addSubview: g]; return t;
+}
 static NSTextField *Field(NSRect f, NSString *val)
 {
 	NSTextField *t = [[NSTextField alloc] initWithFrame: f]; [t setBordered: NO]; [t setBezeled: NO]; [t setDrawsBackground: NO]; [t setStringValue: val ?: @""]; [t setFont: [NSFont systemFontOfSize: 13]]; [t setTextColor: P_TEXT]; [t setFocusRingType: NSFocusRingTypeNone];
@@ -1010,7 +1027,7 @@ static NSInteger WsdRunPanel(NSSavePanel *sp)
 		WsdSidebar *sb = [[WsdSidebar alloc] initWithFrame: NSMakeRect(0, 0, 135, 448)]; [sb setup]; sb->target = pc; sb->action = @selector(sidebarGo:); pc->sidebar = sb;
 		NSScrollView *ssv = [[NSScrollView alloc] initWithFrame: NSMakeRect(0, 0, 135, 448)]; [ssv setHasVerticalScroller: YES]; [ssv setAutohidesScrollers: YES]; [ssv setBorderType: NSNoBorder]; [ssv setDrawsBackground: NO]; [ssv setDocumentView: sb]; [root addSubview: ssv];
 		WsdToolbar *tb = [[WsdToolbar alloc] initWithFrame: NSMakeRect(135, 0, 745, 64)]; tb->target = pc; pc->toolbar = tb; [root addSubview: tb];
-		NSTextField *sf2 = Field(NSMakeRect(135 + 529, 19, 196, 26), nil); [sf2 setBezeled: YES]; [sf2 setDelegate: (id)pc]; [[sf2 cell] setPlaceholderAttributedString: [[NSAttributedString alloc] initWithString: @"Search" attributes: Attr(13, NO, P_DIM)]]; [root addSubview: sf2]; tb->search = sf2;
+		NSTextField *sf2 = SearchField(root, NSMakeRect(135 + 529, 19, 196, 26)); [sf2 setDelegate: (id)pc]; tb->search = sf2;
 		pc->cancel = Btn(@"Cancel", NSMakeRect(695, 448 - 43, 77, 22), pc, @selector(cancelIt:), NO); pc->ok = Btn(([sp prompt].length && ![[sp prompt] isEqual: @"Name:"]) ? [sp prompt] : @"Open", NSMakeRect(781, 448 - 43, 79, 22), pc, @selector(accept:), YES);
 		[root addSubview: pc->cancel]; [root addSubview: pc->ok]; [pc->ok setEnabled: NO];
 		pc->viewMode = 2; [pc navigate: d push: YES]; if (getenv("WSD_PANEL_VIEW")) [pc setViewMode: atoi(getenv("WSD_PANEL_VIEW"))]; for (NSInteger i = 0; i < (NSInteger)[sb->items count]; i++) if ([sb->items[i][@"p"] isEqual: d]) sb->selected = i;
