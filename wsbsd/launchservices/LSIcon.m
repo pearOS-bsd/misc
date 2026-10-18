@@ -21,6 +21,17 @@ CGImageRef LSIconCreateFromICNS(NSString *path, int px)
 	CGImageRef im = c ? CGBitmapContextCreateImage(c) : NULL; if (c) CGContextRelease(c); CGColorSpaceRelease(cs); free(pm); return im;
 }
 
+static CGPathRef RoundRectPath(CGRect r, CGFloat rx)
+{
+	CGMutablePathRef p = CGPathCreateMutable(); CGFloat x0 = CGRectGetMinX(r), x1 = CGRectGetMaxX(r), y0 = CGRectGetMinY(r), y1 = CGRectGetMaxY(r);
+	if (rx * 2 > r.size.height) rx = r.size.height / 2; if (rx * 2 > r.size.width) rx = r.size.width / 2;
+	CGPathMoveToPoint(p, NULL, x0 + rx, y0); CGPathAddLineToPoint(p, NULL, x1 - rx, y0); CGPathAddArc(p, NULL, x1 - rx, y0 + rx, rx, -M_PI / 2, 0, 0);
+	CGPathAddLineToPoint(p, NULL, x1, y1 - rx); CGPathAddArc(p, NULL, x1 - rx, y1 - rx, rx, 0, M_PI / 2, 0);
+	CGPathAddLineToPoint(p, NULL, x0 + rx, y1); CGPathAddArc(p, NULL, x0 + rx, y1 - rx, rx, M_PI / 2, M_PI, 0);
+	CGPathAddLineToPoint(p, NULL, x0, y0 + rx); CGPathAddArc(p, NULL, x0 + rx, y0 + rx, rx, M_PI, 3 * M_PI / 2, 0);
+	CGPathCloseSubpath(p); return p;
+}
+
 static void Fill(CGContextRef c, double r, double g, double b, double a) { CGContextSetRGBFillColor(c, r, g, b, a); CGContextSetRGBStrokeColor(c, r, g, b, a); }
 static void Grad(CGContextRef c, CGRect r, const double *top, const double *bot)
 {
@@ -47,7 +58,7 @@ static void DrawFolder(CGContextRef c)
 	(void)body; (void)tab;
 	/* the front flap */
 	CGRect fr = CGRectMake(0.5, 6, 63, 38); CGMutablePathRef q = CGPathCreateMutable();
-	CGPathAddRoundedRect(q, NULL, fr, 4, 4);
+	CGPathAddPath(q, NULL, RoundRectPath(fr, 4));
 	CGContextSaveGState(c); CGContextAddPath(c, q); CGContextClip(c);
 	const double t2[3] = { 104 / 255., 200 / 255., 244 / 255. }, b2[3] = { 66 / 255., 170 / 255., 220 / 255. };
 	Grad(c, fr, t2, b2); CGContextRestoreGState(c);
@@ -102,7 +113,7 @@ static void DrawPage(CGContextRef c, NSString *kind, NSString *label)
 
 static void DrawApp(CGContextRef c)
 {
-	CGRect r = CGRectMake(4, 4, 56, 56); CGMutablePathRef p = CGPathCreateMutable(); CGPathAddRoundedRect(p, NULL, r, 12.5, 12.5);
+	CGRect r = CGRectMake(4, 4, 56, 56); CGMutablePathRef p = CGPathCreateMutable(); CGPathAddPath(p, NULL, RoundRectPath(r, 12.5));
 	CGContextSaveGState(c); CGContextAddPath(c, p); CGContextClip(c); const double t[3] = { 0.78, 0.9, 1 }, b[3] = { 0.36, 0.55, 0.9 }; Grad(c, r, t, b); CGContextRestoreGState(c);
 	Fill(c, 1, 1, 1, 0.95); CGContextSetLineWidth(c, 4.5); CGContextSetLineCap(c, kCGLineCapRound); CGContextSetLineJoin(c, kCGLineJoinRound);
 	CGContextMoveToPoint(c, 20, 18); CGContextAddLineToPoint(c, 32, 46); CGContextAddLineToPoint(c, 44, 18); CGContextStrokePath(c);
