@@ -29,7 +29,7 @@ typedef struct { uint32_t wid; int pid; char label[64]; char bpath[512]; CGImage
 	int autohide; double hideDelay, hideTime, hideFrac, hideT0, reveal0, dwell0; int hidden;                  /* hideFrac: 0 shown ... 1 hidden */
 	NSArray *ctxItems; int ctxOpen, ctxSub, ctxHoverMain, ctxHoverSub; NSRect ctxMainR, ctxSubR; NSArray *ctxSubItems; double ctxH;
 	int ctxItem, dragCand, dragItem, dragging; double dragStartX; int trashFull;
-	NSTrackingRectTag trackTag; double pointer; int hover; double scale[MAXITEMS]; double bounceStart[MAXITEMS]; NSTimer *timer; double screenW, screenH; DockFan fan; int fanOpen; double fanStart, fanClose; NSMutableArray *fanStore;
+	NSTrackingRectTag trackTag; double pointer; int hover; double scale[MAXITEMS]; double bounceStart[MAXITEMS]; NSTimer *timer; double screenW, screenH, screenLen, alongBase; int orient; DockFan fan; int fanOpen; double fanStart, fanClose; NSMutableArray *fanStore;
 }
 - (void)reload;
 @end
@@ -67,7 +67,9 @@ static NSString *TileLabel(NSDictionary *t, NSString *path)
 - (void)loadPrefs
 {
 	prefs = [NSMutableDictionary dictionaryWithContentsOfFile: [self prefsPath]] ?: [NSMutableDictionary dictionary];
-	m = (DockMetrics){ 58, 99, 1, (int)screenW };
+	NSString *ori = prefs[@"orientation"]; orient = [ori isEqualToString: @"left"] ? 1 : [ori isEqualToString: @"right"] ? 2 : 0;
+	alongBase = orient ? 30 : 0; screenLen = orient ? screenH - alongBase : screenW;                           /* a bar on a side is centred below the menu bar */
+	m = (DockMetrics){ 58, 99, 1, (int)screenLen };
 	if ([prefs[@"tilesize"] intValue] > 0) m.tilesize = [prefs[@"tilesize"] intValue];
 	if ([prefs[@"largesize"] intValue] > 0) m.largesize = [prefs[@"largesize"] intValue];
 	if (prefs[@"magnification"]) m.magnification = [prefs[@"magnification"] boolValue];
@@ -163,14 +165,35 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 	for (int i = 0; i < n; i++) { scale[i] = 1; bounceStart[i] = 0; if (items[i].kind == DOCK_APP) { CGImageRef ic = [self iconForPath: paths[i]]; if (ic) tiles[i].icon = ic; } }
 	scanKey = [[[runningPaths allObjects] sortedArrayUsingSelector: @selector(compare:)] componentsJoinedByString: @"|"];
 }
+- (BOOL)wide { return fanOpen || ctxOpen; }
+- (double)originX { return [self wide] ? (orient ? -alongBase : 0) : winX; }          /* the along-coordinate of the window's start */
+/* the window's frame for the state: the bar's own window, or the whole screen while a fan or a menu is open */
+- (NSRect)stateFrame
+{
+	double thick = (autohide && hideFrac >= 1) ? 2 : orient ? 320 : 170;
+	if (!orient) {
+		if (fanOpen) return NSMakeRect(0, 0, screenW, fmin(screenH, 170 + 64 * (fan.n + 1)));
+		if (ctxOpen) return NSMakeRect(0, 0, screenW, fmin(screenH, 170 + ctxH));
+		return NSMakeRect(winX, 0, winW, thick);
+	}
+	if ([self wide]) return NSMakeRect(0, 0, screenW, screenH);
+	return NSMakeRect(orient == 1 ? 0 : screenW - thick, screenH - (alongBase + winX + winW), thick, winW);
+}
+- (void)iconRect:(int)i into:(double *)r                                            /* the tile's rectangle for the genie, x from the left, y up */
+{
+	const DockSlot *sl = &slots[i];
+	if (!orient) { r[0] = sl->cx - sl->art / 2; r[1] = bar.bottom_margin + 15; }
+	else { r[0] = orient == 1 ? bar.bottom_margin + 15 : screenW - (bar.bottom_margin + 15) - sl->art; r[1] = screenH - (alongBase + sl->cx) - sl->art / 2; }
+	r[2] = r[3] = sl->art;
+}
 - (void)computeWindow
 {
 	double maxW = 0, minX = 1e9;                                                   /* the widest bar over a sweep of pointer positions */
 	for (int k = -1; k <= 20; k++) {
-		DockBar b; DockSlot tmp[MAXITEMS]; double px = k < 0 ? -1 : (k * screenW / 20.0);
+		DockBar b; DockSlot tmp[MAXITEMS]; double px = k < 0 ? -1 : (k * screenLen / 20.0);
 		dock_layout(&m, items, n, px, tmp, &b); if (b.bar_w > maxW) maxW = b.bar_w;
 	}
-	(void)minX; winW = ceil(maxW) + 8; if (winW > screenW) winW = screenW; winX = floor((screenW - winW) / 2);
+	(void)minX; winW = ceil(maxW) + 8; if (winW > screenLen) winW = screenLen; winX = floor((screenLen - winW) / 2);
 }
 - (void)relayout
 {
@@ -184,7 +207,7 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 	if (!autohide) { hideFrac = 0; return; }
 	int px = 0, py = 0; if (!wsc || ws_cursor_position(wsc, &px, &py)) return;
 	double zone = 5 + bar.bar_h + 14 + (m.magnification ? m.largesize - m.tilesize : 0);
-	BOOL atEdge = py >= screenH - 1, inZone = py >= screenH - zone, keep = fanOpen || ctxOpen || dragging || (hideFrac < 1 && inZone);
+	BOOL atEdge = orient == 1 ? px <= 0 : orient == 2 ? px >= screenW - 1 : py >= screenH - 1, inZone = orient == 1 ? px <= zone : orient == 2 ? px >= screenW - zone : py >= screenH - zone, keep = fanOpen || ctxOpen || dragging || (hideFrac < 1 && inZone);
 	if (hideFrac >= 1) { if (atEdge) { if (!dwell0) dwell0 = Now(); if (Now() - dwell0 >= hideDelay) { keep = YES; dwell0 = 0; } } else dwell0 = 0; }
 	double step = dt / fmax(hideTime, 0.05);
 	if (keep) hideFrac = fmax(0, hideFrac - step); else hideFrac = fmin(1, hideFrac + step);
@@ -228,8 +251,8 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 		double p = (Now() - mw->t0) / (mw->phase == 1 ? 0.75 : 0.5); if (p > 1) p = 1; if (mw->phase == 3) p = 1 - p;
 		int ti = mw->appItem >= 0 ? mw->appItem : mw->item; if (ti < 0 || ti >= n) continue;
 		const DockSlot *sl = &slots[ti]; ws_win w = { .id = mw->wid, .px = NULL };
-		double icon[4] = { sl->cx - sl->art / 2, bar.bottom_margin + 15, sl->art, sl->art }; int cols, rows; float done;
-		int nf = genie_mesh(mw->wr, icon, (float)p, 1, genieMesh, &cols, &rows, &done);
+		double icon[4]; [self iconRect: ti into: icon]; int cols, rows; float done;
+		int nf = genie_mesh(mw->wr, icon, (float)p, orient ? 2 + orient : 1, genieMesh, &cols, &rows, &done);
 		if (nf && !(mw->phase == 1 && p >= 1) && !(mw->phase == 3 && p <= 0)) ws_win_warp(wsc, &w, cols, rows, genieMesh);
 		if (mw->phase == 1 && p >= 1) { ws_win_order(wsc, &w, WS_OUT, 0); ws_win_warp(wsc, &w, 0, 0, NULL); mw->phase = 2; }
 		else if (mw->phase == 3 && p <= 0) {
@@ -243,8 +266,8 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 {
 	MiniWin *mw = &mini[k]; if (mw->phase != 2 || !wsc) return;
 	ws_win w = { .id = mw->wid, .px = NULL };
-	int ti = mw->appItem >= 0 ? mw->appItem : mw->item; const DockSlot *sl = &slots[ti]; double icon[4] = { sl->cx - sl->art / 2, bar.bottom_margin + 15, sl->art, sl->art }; int cols, rows; float done;
-	if (genie_mesh(mw->wr, icon, 1.0f, 1, genieMesh, &cols, &rows, &done)) ws_win_warp(wsc, &w, cols, rows, genieMesh);      /* collapsed into the tile before it is shown */
+	int ti = mw->appItem >= 0 ? mw->appItem : mw->item; const DockSlot *sl = &slots[ti]; double icon[4]; [self iconRect: ti into: icon]; int cols, rows; float done;
+	if (genie_mesh(mw->wr, icon, 1.0f, orient ? 2 + orient : 1, genieMesh, &cols, &rows, &done)) ws_win_warp(wsc, &w, cols, rows, genieMesh);      /* collapsed into the tile before it is shown */
 	ws_win_order(wsc, &w, WS_ABOVE, 0);
 	mw->phase = 3; mw->t0 = Now();
 	[[NSDistributedNotificationCenter defaultCenter] postNotificationName: @"com.wsbsd.dock.restore" object: nil userInfo: @{ @"wid": @(mw->wid) } deliverImmediately: YES];
@@ -269,21 +292,22 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 	if (ctxOpen && wsc) { int px, py; if (ws_cursor_position(wsc, &px, &py) == 0) [self ctxHoverAt: NSMakePoint(px, screenH - py)]; pointer = -1; hover = -1; }
 	if (wsc && !fanOpen && !ctxOpen) {                                          /* the pointer from the window server: the bar unzooms when it leaves (tracking events are not reliable) */
 		int px, py; if (ws_cursor_position(wsc, &px, &py) == 0) {
-			NSRect wf = [[self window] frame]; double top = screenH - wf.size.height;
-			if (hideFrac < 1 && py >= top && px >= wf.origin.x && px < wf.origin.x + wf.size.width) { pointer = px; hover = [self tileAt: pointer]; } else { pointer = -1; hover = -1; }
+			NSRect wf = [[self window] frame]; double top = screenH - (wf.origin.y + wf.size.height);
+			if (hideFrac < 1 && py >= top && py < top + wf.size.height && px >= wf.origin.x && px < wf.origin.x + wf.size.width) { pointer = orient ? py - alongBase : px; hover = [self tileAt: pointer]; } else { pointer = -1; hover = -1; }
 		}
 	}
 	[self relayout];
-	if (wsc && !fanOpen && !(autohide && hideFrac >= 1)) { double ox = ctxOpen ? 0 : winX;                      /* the glass of the bar: the window server blurs and bends what is behind the bar's rounded rectangle (the window is larger than the bar) */
+	if (wsc && !fanOpen && !(autohide && hideFrac >= 1)) { double ox = ctxOpen ? 0 : winX; (void)ox;                      /* the glass of the bar: the window server blurs and bends what is behind the bar's rounded rectangle (the window is larger than the bar) */
 		ws_win gw = { .id = (ws_wid)[[self window] windowNumber], .px = NULL }; double wh = [[self window] frame].size.height;
 		ws_rect gr = { (int)floor(bar.bar_x - ox), (int)floor(wh - (bar.bottom_margin + bar.bar_h)), (int)ceil(bar.bar_w), (int)ceil(bar.bar_h) };
+		if (orient) { double ww = [[self window] frame].size.width; gr = (ws_rect){ (int)floor(orient == 1 ? bar.bottom_margin : ww - (bar.bottom_margin + bar.bar_h)), (int)floor(bar.bar_x - [self originX]), (int)ceil(bar.bar_h), (int)ceil(bar.bar_w) }; }
 		if (gr.x != glassRect.x || gr.y != glassRect.y || gr.w != glassRect.w || gr.h != glassRect.h || !glassOn) { ws_win_glass(wsc, &gw, gr, 18, 1); glassRect = gr; glassOn = 1; }
 	} else if (wsc && glassOn) { ws_win_glass(wsc, &(ws_win){ .id = (ws_wid)[[self window] windowNumber], .px = NULL }, (ws_rect){ 0, 0, 0, 0 }, 0, 0); glassOn = 0; }
 	[self stepMini];
 	if (getenv("DOCK_FAN") && !fanOpen && !fanStart) { [self openFan: n - 2]; }
 	NSWindow *w = [self window];
 	if (winW <= 0) [self computeWindow];
-	NSRect f = NSMakeRect(winX, 0, winW, (autohide && hideFrac >= 1) ? 2 : 170);
+	NSRect f = [self stateFrame];
 	if (fanOpen && fanDir && Now() - fanCheck > 0.5) {                        /* the folder changed while the fan is open: list it again (the fan keeps its opening state) */
 		fanCheck = Now(); double mt = [[[[NSFileManager defaultManager] attributesOfItemAtPath: fanDir error: NULL] fileModificationDate] timeIntervalSinceReferenceDate];
 		if (mt != fanMTime) { double st = fanStart; int anchor = fan.anchor; [self openFan: anchor]; fanStart = st - 1; }
@@ -291,9 +315,9 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 	if (fanOpen) {                                                             /* the fan: the window covers the screen so that a click anywhere closes it */
 		double el = Now() - fanStart; fan.t = el; fan.u = 1;
 		if (fanClose > 0) { double ce = Now() - fanClose; fan.u = 1 - ce / 0.15; fan.t = 1; if (fan.u <= 0) { fanOpen = 0; fanClose = 0; } }
-		f = NSMakeRect(0, 0, screenW, fmin(screenH, 170 + 64 * (fan.n + 1)));
+		f = [self stateFrame];
 	}
-	else if (ctxOpen) f = NSMakeRect(0, 0, screenW, fmin(screenH, 170 + ctxH));
+	else if (ctxOpen) f = [self stateFrame];
 	NSRect cur = [w frame];
 	if (fabs(f.origin.x - cur.origin.x) >= 1 || fabs(f.size.width - cur.size.width) >= 1 || fabs(f.size.height - cur.size.height) >= 1) { [w setFrame: f display: NO]; }
 	[self setNeedsDisplay: YES];
@@ -305,7 +329,7 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 	if (!c) return;
 	if (getenv("DOCK_TEST")) { CGContextSetRGBFillColor(c, 1, 0, 0, 1); CGContextFillRect(c, CGRectMake(10, 10, 200, 100)); NSRectFill(NSMakeRect(250, 10, 100, 100)); }
 	else { CGContextSaveGState(c); CGContextClearRect(c, NSRectToCGRect([self bounds])); CGContextRestoreGState(c); }
-	DockScene sc = { m, items, tiles, n, slots, bar, (fanOpen || ctxOpen) ? 0 : winX, [self bounds].size.height, hover, fanOpen ? &fan : NULL };
+	DockScene sc = { m, items, tiles, n, slots, bar, [self originX], [self bounds].size.height, hover, fanOpen ? &fan : NULL, orient, [self bounds].size.width };
 	DockRender(c, &sc);
 	if (ctxOpen) [self drawContext];
 }
@@ -314,7 +338,7 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 	for (int i = 0; i < n; i++) if (!DOCK_IS_GAP(items[i].kind) && x >= slots[i].x && x < slots[i].x + slots[i].w) return i;
 	return -1;
 }
-- (double)screenX:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; return p.x + ((fanOpen || ctxOpen) ? 0 : winX); }
+- (double)screenX:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; return (orient ? [self bounds].size.height - p.y : p.x) + [self originX]; }
 - (void)openFan:(int)i
 {
 	NSString *dir = paths[i]; NSFileManager *fm = [NSFileManager defaultManager];
@@ -380,6 +404,7 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 - (double)pointerAbove                                                       /* how far the pointer is above the bar's top, in points */
 {
 	int px, py; if (!wsc || ws_cursor_position(wsc, &px, &py)) return 0;
+	if (orient == 1) return px - (5 + bar.bar_h); if (orient == 2) return (screenW - px) - (5 + bar.bar_h);
 	return (screenH - (5 + bar.bar_h)) - py;
 }
 - (void)mouseUp:(NSEvent *)e
@@ -467,9 +492,14 @@ static NSSize MenuSize(NSArray *its)
 	} else if (k == DOCK_TRASH) { [its addObject: E(@"Empty Trash", 6, NO, !trashFull)]; }
 	else return;
 	ctxItems = its; ctxOpen = 1; ctxSub = -1; ctxHoverMain = -1; ctxHoverSub = -1; ctxSubItems = nil;
-	NSSize ms = MenuSize(its); double top = bar.bottom_margin + bar.bar_h + 8;          /* above the bar, centred on the tile */
-	double x = fmax(8, fmin(screenW - ms.width - 8, slots[i].cx - ms.width / 2));
-	ctxMainR = NSMakeRect(x, top, ms.width, ms.height); ctxH = top + ms.height + 40;
+	NSSize ms = MenuSize(its); double top = bar.bottom_margin + bar.bar_h + 8;
+	if (!orient) {                                                                       /* above the bar, centred on the tile */
+		double x = fmax(8, fmin(screenW - ms.width - 8, slots[i].cx - ms.width / 2));
+		ctxMainR = NSMakeRect(x, top, ms.width, ms.height); ctxH = top + ms.height + 40;
+	} else {                                                                             /* beside the bar, level with the tile */
+		double cy = screenH - (alongBase + slots[i].cx), y = fmax(8, fmin(screenH - ms.height - 8, cy - ms.height / 2));
+		ctxMainR = NSMakeRect(orient == 1 ? top : screenW - top - ms.width, y, ms.width, ms.height); ctxH = 0;
+	}
 }
 - (NSRect)rectOfItem:(int)q in:(NSArray *)its menu:(NSRect)r                    /* y up: the first item at the top */
 {
@@ -534,7 +564,7 @@ int main(int argc, char *argv[])
 		DockView *v = [[DockView alloc] initWithFrame: NSMakeRect(0, 0, 1200, 170)];
 		[v relayout];
 		if (getenv("DOCK_LOG")) NSLog(@"dock: screen %.0f bar %.1f %.1f items %d tilesize %d", v->screenW, v->bar.bar_x, v->bar.bar_w, v->n, v->m.tilesize);
-		[v computeWindow]; NSWindow *w = [[NSWindow alloc] initWithContentRect: NSMakeRect(v->winX, 0, v->winW, 170) styleMask: NSBorderlessWindowMask backing: NSBackingStoreBuffered defer: NO];
+		[v computeWindow]; NSWindow *w = [[NSWindow alloc] initWithContentRect: [v stateFrame] styleMask: NSBorderlessWindowMask backing: NSBackingStoreBuffered defer: NO];
 		if (getenv("DOCK_TEST")) { [w setBackgroundColor: [NSColor greenColor]]; } else { [w setOpaque: NO]; [w setBackgroundColor: [NSColor clearColor]]; } [w setHasShadow: NO]; [w setLevel: getenv("DOCK_LEVEL") ? atoi(getenv("DOCK_LEVEL")) : 20]; [w setHidesOnDeactivate: NO]; [w setCanHide: NO]; [w setContentView: v]; [w setAcceptsMouseMovedEvents: YES];
 		[w orderFrontRegardless];
 		[app run];
