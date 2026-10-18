@@ -305,6 +305,11 @@ static int wsdShapeForStyle(int style)
 }
 
 /* rounded corners (and the window server's shadow) for a window the application shapes itself: the file panels */
+- (void) wsdWindowScale: (float)scale : (int)win                                  /* a uniform scale about the window's centre (the open / close animations of the panels) */
+{
+	struct wsd_window *w = [self wsdWindow: win];
+	if (w) { float m[6] = { scale, 0, 0, scale, 0, 0 }; ws_win_set_transform(conn, &w->win, m); }
+}
 - (void) wsdWindowCorners: (int)radius : (int)win
 {
 	struct wsd_window *w = [self wsdWindow: win];
