@@ -125,6 +125,28 @@ int main(void)
 		  k.path = p; k.rotationMode = kCAAnimationRotateAuto; k.duration = 1; k.fillMode = kCAFillModeBoth; k.removedOnCompletion = NO; run("keyframe path rotateAuto", k, @"transform", 0, 1, 0.125); }
 		{ CAKeyframeAnimation *k = [CAKeyframeAnimation animationWithKeyPath:@"transform.rotation.z"]; k.values = @[NUM(0), NUM(0.5), NUM(-0.5), NUM(0)]; k.duration = 1; k.fillMode = kCAFillModeBoth; k.removedOnCompletion = NO;
 		  run("keyframe rotation shake", k, @"transform", 0, 1, 0.125); }
+		/* keyframes of other value types */
+		{ CGColorRef c1 = CGColorCreateGenericRGB(1, 0, 0, 1), c2 = CGColorCreateGenericRGB(0, 1, 0, 0.5), c3 = CGColorCreateGenericRGB(0, 0, 1, 1);
+		  for (NSString *m in @[kCAAnimationLinear, kCAAnimationDiscrete, kCAAnimationPaced, kCAAnimationCubic, kCAAnimationCubicPaced]) {
+			CAKeyframeAnimation *k = [CAKeyframeAnimation animationWithKeyPath:@"backgroundColor"]; k.values = @[(__bridge id)c1, (__bridge id)c2, (__bridge id)c3]; k.duration = 1; k.calculationMode = m; k.fillMode = kCAFillModeBoth; k.removedOnCompletion = NO;
+			run([[NSString stringWithFormat:@"keyframe color %@", m] UTF8String], k, @"backgroundColor", 0, 1, 0.125); } }
+		for (NSString *m in @[kCAAnimationLinear, kCAAnimationPaced, kCAAnimationCubic, kCAAnimationDiscrete]) {
+			CAKeyframeAnimation *k = [CAKeyframeAnimation animationWithKeyPath:@"bounds"]; k.values = @[[NSValue valueWithRect:NSMakeRect(0, 0, 10, 10)], [NSValue valueWithRect:NSMakeRect(5, 5, 50, 20)], [NSValue valueWithRect:NSMakeRect(0, 0, 20, 80)]]; k.duration = 1; k.calculationMode = m; k.fillMode = kCAFillModeBoth; k.removedOnCompletion = NO;
+			run([[NSString stringWithFormat:@"keyframe bounds %@", m] UTF8String], k, @"bounds", 0, 1, 0.125); }
+		{ CAKeyframeAnimation *k = [CAKeyframeAnimation animationWithKeyPath:@"opacity"]; k.values = @[@0, @1, @0.25]; k.duration = 1; k.timingFunctions = @[tf(kCAMediaTimingFunctionEaseIn), tf(kCAMediaTimingFunctionEaseOut)]; k.fillMode = kCAFillModeBoth; k.removedOnCompletion = NO; run("keyframe 3 values with 2 tfs", k, @"opacity", 0, 1, 0.0625); }
+		{ CAKeyframeAnimation *k = [CAKeyframeAnimation animationWithKeyPath:@"opacity"]; k.values = @[@0, @1, @0.25, @0.9]; k.keyTimes = @[@0, @0.1, @0.8, @1]; k.calculationMode = kCAAnimationCubic; k.duration = 1; k.fillMode = kCAFillModeBoth; k.removedOnCompletion = NO; run("keyframe cubic keyTimes uneven", k, @"opacity", 0, 1, 0.0625); }
+		{ CAKeyframeAnimation *k = [CAKeyframeAnimation animationWithKeyPath:@"opacity"]; k.values = @[@0, @1, @0.25, @0.9]; k.tensionValues = @[@0.5, @0, @-0.5, @0]; k.continuityValues = @[@0, @0.5, @0, @-0.5]; k.biasValues = @[@0, @0, @0.5, @0]; k.calculationMode = kCAAnimationCubic; k.duration = 1; k.fillMode = kCAFillModeBoth; k.removedOnCompletion = NO; run("keyframe cubic TCB", k, @"opacity", 0, 1, 0.0625); }
+		{ CAKeyframeAnimation *k = [CAKeyframeAnimation animationWithKeyPath:@"position"]; k.values = @[PT(0, 0), PT(100, 0), PT(100, 100)]; k.calculationMode = kCAAnimationCubic; k.duration = 1; k.fillMode = kCAFillModeBoth; k.removedOnCompletion = NO; run("keyframe cubic points", k, @"position", 0, 1, 0.0625); }
+		{ CAKeyframeAnimation *k = [CAKeyframeAnimation animationWithKeyPath:@"position"]; CGMutablePathRef p = CGPathCreateMutable(); CGPathMoveToPoint(p, NULL, 0, 0); CGPathAddLineToPoint(p, NULL, 100, 0); CGPathAddQuadCurveToPoint(p, NULL, 100, 100, 0, 100);
+		  k.path = p; k.calculationMode = kCAAnimationPaced; k.duration = 1; k.fillMode = kCAFillModeBoth; k.removedOnCompletion = NO; run("keyframe path paced", k, @"position", 0, 1, 0.0625); }
+		{ CAKeyframeAnimation *k = [CAKeyframeAnimation animationWithKeyPath:@"position"]; CGMutablePathRef p = CGPathCreateMutable(); CGPathAddEllipseInRect(p, NULL, CGRectMake(0, 0, 100, 60));
+		  k.path = p; k.rotationMode = kCAAnimationRotateAutoReverse; k.duration = 1; k.fillMode = kCAFillModeBoth; k.removedOnCompletion = NO; run("keyframe path ellipse autoReverse position", k, @"position", 0, 1, 0.0625); run("keyframe path ellipse autoReverse transform", k, @"transform", 0, 1, 0.125); }
+		for (int q = 0; q < 3; q++) { for (double amt = -0.5; amt <= 0.51; amt += 1.0) {
+			CAKeyframeAnimation *k = [CAKeyframeAnimation animationWithKeyPath:@"opacity"]; k.values = @[@0, @1, @0.25, @0.9, @0.4]; k.calculationMode = kCAAnimationCubic; k.duration = 1; k.fillMode = kCAFillModeBoth; k.removedOnCompletion = NO;
+			NSArray *arr = @[NUM(amt), NUM(amt), NUM(amt), NUM(amt), NUM(amt)];
+			if (q == 0) k.tensionValues = arr; else if (q == 1) k.continuityValues = arr; else k.biasValues = arr;
+			char nm[64]; snprintf(nm, sizeof nm, "tcb %s %g", q == 0 ? "tension" : (q == 1 ? "continuity" : "bias"), amt);
+			run(nm, k, @"opacity", 0, 1, 0.0625); } }
 		/* group */
 		{ CAAnimationGroup *g = [CAAnimationGroup animation]; CABasicAnimation *x = basic(@"opacity", NUM(0), NUM(1), 1), *y = basic(@"position.x", NUM(0), NUM(100), 2);
 		  g.animations = @[x, y]; g.duration = 2; g.fillMode = kCAFillModeBoth; g.removedOnCompletion = NO; run("group opacity+position.x", g, @"opacity", 0, 2, 0.25); run("group position", g, @"position", 0, 2, 0.5); }

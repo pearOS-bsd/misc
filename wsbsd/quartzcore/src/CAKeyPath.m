@@ -72,7 +72,7 @@ id CALayerValueForKeyPath(CALayer *l, NSString *kp)
 		return TransformComponent([v CATransform3DValue], rest, NO, nil, NULL);
 	if ([v isKindOfClass:[NSValue class]]) {
 		const char *t = [v objCType]; double buf[8] = { 0 }; [v getValue:buf];
-		if (strstr(t, "Point") || strstr(t, "Size")) {
+		if (!strstr(t, "Rect") && (strstr(t, "Point") || strstr(t, "Size"))) {
 			if ([rest isEqualToString:@"x"] || [rest isEqualToString:@"width"]) return @(buf[0]);
 			if ([rest isEqualToString:@"y"] || [rest isEqualToString:@"height"]) return @(buf[1]);
 		} else if (strstr(t, "Rect")) {
@@ -99,7 +99,7 @@ void CALayerSetValueForKeyPath(CALayer *l, NSString *kp, id v)
 	if ([cur isKindOfClass:[NSValue class]]) {
 		const char *t = [cur objCType]; double buf[8] = { 0 }; [cur getValue:buf]; double x = [v doubleValue];
 		BOOL ok = NO;
-		if (strstr(t, "Point") || strstr(t, "Size")) {
+		if (!strstr(t, "Rect") && (strstr(t, "Point") || strstr(t, "Size"))) {
 			if ([rest isEqualToString:@"x"] || [rest isEqualToString:@"width"]) { buf[0] = x; ok = YES; }
 			else if ([rest isEqualToString:@"y"] || [rest isEqualToString:@"height"]) { buf[1] = x; ok = YES; }
 		} else if (strstr(t, "Rect")) {

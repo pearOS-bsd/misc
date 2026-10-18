@@ -113,7 +113,7 @@ static BOOL CAEqualBytes(CAType t, const void *a, const void *b)
 @end
 @implementation CALayerEntry @end
 
-static NSHashTable *gAnimatedLayers;
+static NSHashTable *gAnimatedLayers, *gSnapshotLayers, *gContextRoots;
 static uint64_t gGeneration;
 
 @implementation CALayer
@@ -125,7 +125,7 @@ static uint64_t gGeneration;
 	CALayer *_model;                           /* for a presentation layer */
 	CALayer *_presentation;
 	CFTimeInterval _presentationTime; uint64_t _presentationGen, _version;
-	BOOL _isPresentation, _contextRoot, _needsLayout, _needsDisplay;
+	BOOL _isPresentation, _contextRoot, _needsLayout, _needsDisplay, _committed;
 	CFTimeInterval _beginTime, _duration, _timeOffset, _repeatDuration;
 	float _speed, _repeatCount;
 	BOOL _autoreverses;
@@ -189,8 +189,14 @@ CA_ACCESSORS_CALayer
 - (BOOL)shouldArchiveValueForKey:(NSString *)key { return YES; }
 
 - (BOOL)_isPresentation { return _isPresentation; }
-- (BOOL)_inContext { for (CALayer *l = self; l; l = l->_superlayer) if (l->_contextRoot || (l->_model && [l->_model _inContext])) return YES; return NO; }
-- (void)_setContext:(BOOL)c { _contextRoot = c; }
+- (BOOL)_inContext
+{
+	if (!_isPresentation && !_committed) return NO;           /* a layer is part of the rendered tree after its first commit */
+	for (CALayer *l = self; l; l = l->_superlayer) if (l->_contextRoot || (l->_model && l->_model->_contextRoot)) return YES;
+	return NO;
+}
+- (void)_markCommitted { _committed = YES; for (CALayer *s in _sublayers) [s _markCommitted]; [_mask _markCommitted]; }
+- (void)_setContext:(BOOL)c { _contextRoot = c; if (c) { if (!gContextRoots) gContextRoots = [NSHashTable weakObjectsHashTable]; [gContextRoots addObject:self]; } }
 
 /* ---- generic property access ------------------------------------------------------------------------------------------------------------------------------------- */
 - (id)_boxedPropertyAtIndex:(int)i { return CABox(kCAProps[i].type, (char *)&d + kCAProps[i].off); }
@@ -567,8 +573,9 @@ static NSArray *CAChain(CALayer *l) { NSMutableArray *a = [NSMutableArray array]
 - (CAAnimation *)_implicitAnimationForKeyPath:(NSString *)key
 {
 	int i = CAPropIndex(key);
-	BOOL sublayers = [key isEqualToString:@"sublayers"];
+	BOOL sublayers = [key isEqualToString:@"sublayers"] || [key isEqualToString:@"mask"];
 	if (i < 0 && !sublayers) return nil;
+	if ([CATransaction animationDuration] == 0) return nil;
 	unsigned fl = sublayers ? CAF_T : kCAProps[i].flags;
 	if (fl & CAF_T) {
 		CATransition *t = [CATransition animation];
@@ -596,6 +603,7 @@ static NSArray *CAChain(CALayer *l) { NSMutableArray *a = [NSMutableArray array]
 }
 - (void)_runAction:(id)action forKey:(NSString *)key
 {
+	if ([action isKindOfClass:[CATransition class]]) key = kCATransition;
 	if ([action respondsToSelector:@selector(runActionForKey:object:arguments:)]) [action runActionForKey:key object:self arguments:nil];
 }
 
@@ -604,9 +612,9 @@ static NSArray *CAChain(CALayer *l) { NSMutableArray *a = [NSMutableArray array]
 {
 	if (!anim) return;
 	CAAnimation *c = [anim copy];
-	if (c.duration == 0 && ![c isKindOfClass:[CAAnimationGroup class]] && ![c isKindOfClass:[CASpringAnimation class]]) c.duration = [CATransaction animationDuration];
+	[c setDefaultDuration:[CATransaction animationDuration]];
 	if (c.beginTime == 0) { [c _setAddedAt:[self _localTime]]; }
-	CALayerEntry *e = [CALayerEntry new]; e->key = key ?: [NSString stringWithFormat:@"anim%llu", (unsigned long long)++gGeneration]; e->anim = c;
+	CALayerEntry *e = [CALayerEntry new]; e->key = key ?: [NSString stringWithFormat:@"\001anon%llu", (unsigned long long)++gGeneration]; e->anim = c;
 	if (!_anims) _anims = [NSMutableArray array];
 	for (CALayerEntry *o in [_anims copy]) if ([o->key isEqualToString:e->key]) { [_anims removeObject:o]; [self _animationRemoved:o finished:NO]; }
 	[_anims addObject:e];
@@ -626,7 +634,7 @@ static NSArray *CAChain(CALayer *l) { NSMutableArray *a = [NSMutableArray array]
 	for (CALayerEntry *e in [_anims copy]) if ([e->key isEqualToString:key]) { [_anims removeObject:e]; [self _animationRemoved:e finished:NO]; }
 	_version++; gGeneration++;
 }
-- (NSArray *)animationKeys { if (!_anims.count) return nil; NSMutableArray *k = [NSMutableArray array]; for (CALayerEntry *e in _anims) [k addObject:e->key]; return k; }
+- (NSArray *)animationKeys { NSMutableArray *k = [NSMutableArray array]; for (CALayerEntry *e in _anims) if (![e->key hasPrefix:@"\x01"]) [k addObject:e->key]; return k.count ? k : nil; }
 - (CAAnimation *)animationForKey:(NSString *)key { for (CALayerEntry *e in _anims) if ([e->key isEqualToString:key]) return [e->anim copy]; return nil; }
 
 /* animations that ended are removed (or kept by their fill mode), and the delegates told, when the transaction is committed */
@@ -652,6 +660,7 @@ static NSArray *CAChain(CALayer *l) { NSMutableArray *a = [NSMutableArray array]
 	}
 }
 - (BOOL)_hasAnimations { return _anims.count > 0; }
+- (void)_refreshPresentation { _presentation = nil; (void)[self presentationLayer]; }
 
 - (instancetype)modelLayer { return _isPresentation ? _model : self; }
 - (instancetype)presentationLayer
@@ -659,7 +668,7 @@ static NSArray *CAChain(CALayer *l) { NSMutableArray *a = [NSMutableArray array]
 	if (_isPresentation) return self;
 	if (![self _inContext]) return nil;
 	CFTimeInterval txn = CATransactionTime();
-	if (_presentation && _presentationTime == txn && _presentationGen == gGeneration && _version == _presentation->_version + 0 && _presentation->_version == _version) return _presentation;
+	if (_presentation && _presentationTime == txn) return _presentation;      /* a snapshot: it is refreshed when the transaction ends */
 	CALayer *p = [[[self class] alloc] initWithLayer:self];
 	p->_isPresentation = YES; p->_model = self; p->_superlayer = _superlayer;
 	p->_sublayers = nil;
@@ -673,6 +682,8 @@ static NSArray *CAChain(CALayer *l) { NSMutableArray *a = [NSMutableArray array]
 	}
 	p->_version = _version;
 	_presentation = p; _presentationTime = txn; _presentationGen = gGeneration;
+	if (!gSnapshotLayers) gSnapshotLayers = [NSHashTable weakObjectsHashTable];
+	[gSnapshotLayers addObject:self];
 	return p;
 }
 
@@ -681,7 +692,14 @@ static NSArray *CAChain(CALayer *l) { NSMutableArray *a = [NSMutableArray array]
 
 void CALayerCommitAnimations(void)
 {
+	for (CALayer *r in [gContextRoots allObjects]) [r _markCommitted];
 	for (CALayer *l in [gAnimatedLayers allObjects]) [l _commitAnimations];
+}
+
+/* after a commit the presentation layers are made again for the new time (the snapshot of a layer is the state at the last commit) */
+void CALayerRefreshPresentations(void)
+{
+	for (CALayer *l in [gSnapshotLayers allObjects]) [l _refreshPresentation];
 }
 
 @implementation NSNull (CAActionAdditions)
@@ -753,6 +771,7 @@ CA_ACCESSORS_CAEmitterLayer
 - (void)dealloc { if (_color) CGColorRelease(_color); }
 - (void)encodeWithCoder:(NSCoder *)c {}
 - (instancetype)initWithCoder:(NSCoder *)c { return [self init]; }
+- (id)valueForKey:(NSString *)key { if ([key isEqualToString:@"color"]) return _color ? (__bridge id)_color : nil; if ([key isEqualToString:@"enabled"]) @throw [NSException exceptionWithName:NSUndefinedKeyException reason:@"enabled" userInfo:nil]; return [super valueForKey:key]; }
 - (CGColorRef)color { return _color; }
 - (void)setColor:(CGColorRef)c { if (c) CGColorRetain(c); if (_color) CGColorRelease(_color); _color = c; }
 - (CFTimeInterval)beginTime { return _beginTime; } - (void)setBeginTime:(CFTimeInterval)v { _beginTime = v; }

@@ -55,6 +55,8 @@ CGColorRef CAColorCreateExtSRGB(const double rgba[4])
 
 static id ca_color_interpolate(CGColorRef a, CGColorRef b, float f)
 {
+	if (f == 0) return (__bridge id)a;
+	if (f == 1) return (__bridge id)b;
 	double x[4], y[4]; CAColorGetExtSRGB(a, x); CAColorGetExtSRGB(b, y);
 	double fr = (double)f;
 	for (int i = 0; i < 4; i++) x[i] = x[i] + (y[i] - x[i]) * fr;
@@ -146,6 +148,11 @@ id CAValueAdd(id base, id other, int k)
 			for (int i = 0; i < m; i++) p = CATransform3DConcat(p, unit);
 			return [NSValue valueWithCATransform3D:CATransform3DConcat(p, a)];
 		}
+	}
+	if (base && other && CFGetTypeID((__bridge CFTypeRef)base) == CGColorGetTypeID() && CFGetTypeID((__bridge CFTypeRef)other) == CGColorGetTypeID()) {
+		double x[4], y[4]; CAColorGetExtSRGB((__bridge CGColorRef)base, x); CAColorGetExtSRGB((__bridge CGColorRef)other, y);
+		for (int i = 0; i < 4; i++) x[i] = x[i] + y[i] * (double)k;
+		return CFBridgingRelease(CAColorCreateExtSRGB(x));
 	}
 	if ([base isKindOfClass:[NSArray class]] && [other isKindOfClass:[NSArray class]] && [base count] == [other count]) {
 		NSMutableArray *r = [NSMutableArray array];

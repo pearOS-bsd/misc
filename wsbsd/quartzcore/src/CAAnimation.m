@@ -23,7 +23,7 @@ NSString *const kCAFillModeBoth = @"both";
 NSString *const kCAFillModeRemoved = @"removed";
 
 /* the time of the animation inside its layer's time, with the timing function applied; false when the animation is not active at that time */
-static BOOL mapAnimationTime(CAAnimation *a, double *t, int *iteration)
+BOOL CAMapAnimationTime(CAAnimation *a, double *t, int *iteration)
 {
 	CATiming tm;
 	if (CAAnimationTiming(a, &tm)) {
@@ -100,6 +100,7 @@ static BOOL mapAnimationTime(CAAnimation *a, double *t, int *iteration)
 - (void)runActionForKey:(NSString *)event object:(id)anObject arguments:(NSDictionary *)dict { [(CALayer *)anObject addAnimation:self forKey:event]; }
 - (void)applyForTime:(CFTimeInterval)t presentationObject:(id)pres modelObject:(id)model {}
 - (float)_solveTiming:(float)x { return x; }
+- (void)setDefaultDuration:(CFTimeInterval)d { if (_duration <= 0) _duration = d; }
 - (CFTimeInterval)_addedAt { return _addedAt; }
 - (BOOL)_hasAddedAt { return _hasAddedAt; }
 - (void)_setAddedAt:(CFTimeInterval)t { _addedAt = t; _hasAddedAt = YES; }
@@ -151,7 +152,7 @@ bool CAAnimationTiming(CAAnimation *a, CATiming *t)
 	if (![self isEnabled]) return;
 	NSString *kp = [self keyPath]; if (!kp) return;
 	double t = time; int iteration = 0;
-	if (!mapAnimationTime(self, &t, &iteration)) return;
+	if (!CAMapAnimationTime(self, &t, &iteration)) return;
 	id from = _from, to = _to, by = _by;
 	if (from && to) {}
 	else if (from && by) to = CAValueAdd(from, by, 1);
@@ -289,6 +290,7 @@ static double spring_eval(const SpringState *s, double t)
 	[super _copyInto:c]; CAKeyframeAnimation *k = (CAKeyframeAnimation *)c;
 	k->_values = _values; k->_path = _path ? CGPathRetain(_path) : NULL; k->_keyTimes = _keyTimes; k->_timingFunctions = _timingFunctions; k->_tension = _tension; k->_continuity = _continuity; k->_bias = _bias; k->_calc = _calc; k->_rotation = _rotation;
 }
+- (id)valueForKey:(NSString *)key { if ([key isEqualToString:@"path"]) return _path ? (__bridge id)_path : nil; return [super valueForKey:key]; }
 - (NSArray *)values { return _values; }
 - (void)setValues:(NSArray *)v { _values = [v copy]; }
 - (CGPathRef)path { return _path; }
@@ -336,19 +338,19 @@ static double spring_eval(const SpringState *s, double t)
 	NSArray *_animations;
 }
 - (void)_copyInto:(CAAnimation *)c { ((CAAnimationGroup *)c)->_animations = [[NSArray alloc] initWithArray:_animations copyItems:YES]; }
+- (void)setDefaultDuration:(CFTimeInterval)d
+{
+	if ([self duration] <= 0) [self setDuration:d];
+	for (CAAnimation *a in _animations) [a setDefaultDuration:[self duration]];
+}
 - (NSArray *)animations { return _animations; }
 - (void)setAnimations:(NSArray *)v { _animations = [v copy]; }
 - (void)applyForTime:(CFTimeInterval)time presentationObject:(id)pres modelObject:(id)model
 {
-	if (![self isEnabled]) return;
+	if (![self isEnabled] || !_animations.count) return;
 	double t = time;
-	CATiming tm;
-	if (CAAnimationTiming(self, &tm)) {
-		if (!CATimingMapParentToActive(&tm, &t, NULL)) return;
-		CATimingMapActiveToLocal(&tm, &t, NULL);
-	}
-	CAMediaTimingFunction *f = [self timingFunction];
-	if (f) t = (double)[f _solve:(float)t];
+	if (!CAMapAnimationTime(self, &t, NULL)) return;
+	t = [self duration] * t;
 	for (CAAnimation *a in _animations) [a applyForTime:t presentationObject:pres modelObject:model];
 }
 @end

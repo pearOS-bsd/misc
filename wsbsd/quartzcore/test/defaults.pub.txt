@@ -81,7 +81,7 @@ strokeStart = 0
 ## CATextLayer
 alignmentMode = "natural"
 allowsFontSubpixelQuantization = 0
-font = <CTFont: 0x1028ff280>{name = Helvetica, size = 36.000000, matrix = 0x0, descriptor = <CTFontDescriptor: 0x797309c660>{attributes = {
+font = <CTFont: 0x1045e28d0>{name = Helvetica, size = 36.000000, matrix = 0x0, descriptor = <CTFontDescriptor: 0x7b1509c660>{attributes = {
 fontSize = 36
 foregroundColor = color(1,1,1,1)
 string = nil

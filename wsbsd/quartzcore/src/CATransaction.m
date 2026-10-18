@@ -34,7 +34,8 @@ static CATransactionState *top(void)
 
 CFTimeInterval CATransactionTime(void)
 {
-	CATransactionState *t = top();
+	top();
+	CATransactionState *t = stack().firstObject;                    /* nested transactions share the time of the outermost one */
 	if (t->time == 0) t->time = CACurrentMediaTime();
 	return t->time;
 }
@@ -76,6 +77,7 @@ void CATransactionNoteChange(void)
 	CATransactionState *t = s.firstObject;
 	if (t && t->implicit) { [s removeObjectAtIndex:0]; [self _finish:t]; }
 	else CALayerCommitAnimations();
+	CALayerRefreshPresentations();
 }
 + (void)lock {}
 + (void)unlock {}
