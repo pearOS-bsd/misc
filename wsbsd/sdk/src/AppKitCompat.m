@@ -787,20 +787,87 @@ static NSDictionary *wsbsdResourceValues(id self, SEL _cmd, NSArray *keys, NSErr
 - (void)setSize:(NSSize)size { (void)size; }
 @end
 
+static BOOL WsDrawSymbolKnown(NSString *n)
+{
+	static NSSet *names;
+	if (!names) names = [NSSet setWithObjects: @"plus", @"plus.circle", @"minus", @"xmark", @"checkmark", @"chevron.left", @"chevron.right", @"chevron.up", @"chevron.down", @"arrow.up", @"arrow.down", @"arrow.left", @"arrow.right",
+		@"arrow.clockwise", @"arrow.counterclockwise", @"arrow.uturn.backward", @"trash", @"magnifyingglass", @"folder", @"doc", @"doc.viewfinder", @"eye", @"book", @"info.circle", @"ellipsis", @"line.3.horizontal", @"square.and.arrow.up", nil];
+	return [names containsObject: n];
+}
 @implementation NSImage (WsbsdSymbols)
+/* the drawing of a symbol on a 18 x 18 canvas: strokes of 1.5 points, round ends; names that have no drawing get an outlined square with their first letter */
+static void WsSymbolStroke(NSBezierPath *p) { [p setLineWidth: 1.5]; [p setLineCapStyle: NSRoundLineCapStyle]; [p setLineJoinStyle: NSRoundLineJoinStyle]; [p stroke]; }
+static BOOL WsDrawSymbol(NSString *n)
+{
+	NSBezierPath *p = [NSBezierPath bezierPath];
+#define LINE(x0, y0, x1, y1) do { [p moveToPoint: NSMakePoint(x0, y0)]; [p lineToPoint: NSMakePoint(x1, y1)]; } while (0)
+#define PLINE(x0, y0, x1, y1, x2, y2) do { [p moveToPoint: NSMakePoint(x0, y0)]; [p lineToPoint: NSMakePoint(x1, y1)]; [p lineToPoint: NSMakePoint(x2, y2)]; } while (0)
+	if ([n isEqualToString: @"plus"] || [n isEqualToString: @"plus.circle"]) { LINE(9, 3.5, 9, 14.5); LINE(3.5, 9, 14.5, 9); }
+	else if ([n isEqualToString: @"minus"]) LINE(3.5, 9, 14.5, 9);
+	else if ([n isEqualToString: @"xmark"]) { LINE(4, 4, 14, 14); LINE(4, 14, 14, 4); }
+	else if ([n isEqualToString: @"checkmark"]) PLINE(3.5, 9.5, 7.5, 5, 14.5, 13);
+	else if ([n isEqualToString: @"chevron.left"]) PLINE(11, 3.5, 6, 9, 11, 14.5);
+	else if ([n isEqualToString: @"chevron.right"]) PLINE(7, 3.5, 12, 9, 7, 14.5);
+	else if ([n isEqualToString: @"chevron.up"]) PLINE(3.5, 7, 9, 12, 14.5, 7);
+	else if ([n isEqualToString: @"chevron.down"]) PLINE(3.5, 11, 9, 6, 14.5, 11);
+	else if ([n isEqualToString: @"arrow.up"]) { LINE(9, 3, 9, 15); PLINE(4.5, 7.5, 9, 3, 13.5, 7.5); }
+	else if ([n isEqualToString: @"arrow.down"]) { LINE(9, 3, 9, 15); PLINE(4.5, 10.5, 9, 15, 13.5, 10.5); }
+	else if ([n isEqualToString: @"arrow.left"]) { LINE(3, 9, 15, 9); PLINE(7.5, 4.5, 3, 9, 7.5, 13.5); }
+	else if ([n isEqualToString: @"arrow.right"]) { LINE(3, 9, 15, 9); PLINE(10.5, 4.5, 15, 9, 10.5, 13.5); }
+	else if ([n isEqualToString: @"arrow.clockwise"] || [n isEqualToString: @"arrow.counterclockwise"]) {
+		BOOL cw = [n isEqualToString: @"arrow.clockwise"];
+		[p appendBezierPathWithArcWithCenter: NSMakePoint(9, 9) radius: 5.5 startAngle: cw ? 70 : 110 endAngle: cw ? -200 : 380 clockwise: cw];
+		WsSymbolStroke(p); p = [NSBezierPath bezierPath];
+		if (cw) PLINE(11.5, 14.5, 14.5, 12.8, 14.6, 9.3); else PLINE(6.5, 14.5, 3.5, 12.8, 3.4, 9.3);
+	}
+	else if ([n isEqualToString: @"arrow.uturn.backward"]) {
+		PLINE(7, 5, 3.5, 8.5, 7, 12); [p moveToPoint: NSMakePoint(3.5, 8.5)]; [p lineToPoint: NSMakePoint(11, 8.5)];
+		[p appendBezierPathWithArcWithCenter: NSMakePoint(11, 5.5) radius: 3 startAngle: 90 endAngle: -90 clockwise: YES]; [p lineToPoint: NSMakePoint(8, 2.5)];
+	}
+	else if ([n isEqualToString: @"trash"]) { [p appendBezierPathWithRect: NSMakeRect(5, 2.5, 8, 10)]; LINE(3.5, 14, 14.5, 14); LINE(7, 14, 7, 15.5); LINE(11, 14, 11, 15.5); LINE(7.5, 5, 7.5, 10.5); LINE(10.5, 5, 10.5, 10.5); }
+	else if ([n isEqualToString: @"magnifyingglass"]) { [p appendBezierPathWithOvalInRect: NSMakeRect(3, 6, 8, 8)]; LINE(10.7, 6.5, 14.5, 2.7); }
+	else if ([n isEqualToString: @"folder"]) { [p appendBezierPathWithRoundedRect: NSMakeRect(2.5, 3.5, 13, 9.5) xRadius: 1.5 yRadius: 1.5]; PLINE(2.5, 13, 4, 15, 8, 15); }
+	else if ([n isEqualToString: @"doc"] || [n isEqualToString: @"doc.viewfinder"]) { [p appendBezierPathWithRoundedRect: NSMakeRect(4, 2.5, 10, 13) xRadius: 1.5 yRadius: 1.5]; LINE(6.5, 10, 11.5, 10); LINE(6.5, 7, 11.5, 7); }
+	else if ([n isEqualToString: @"eye"]) { [p appendBezierPathWithOvalInRect: NSMakeRect(7.2, 7.2, 3.6, 3.6)]; [p moveToPoint: NSMakePoint(2, 9)]; [p curveToPoint: NSMakePoint(16, 9) controlPoint1: NSMakePoint(5, 14) controlPoint2: NSMakePoint(13, 14)]; [p curveToPoint: NSMakePoint(2, 9) controlPoint1: NSMakePoint(13, 4) controlPoint2: NSMakePoint(5, 4)]; }
+	else if ([n isEqualToString: @"book"]) { [p appendBezierPathWithRect: NSMakeRect(3, 3.5, 12, 11)]; LINE(9, 3.5, 9, 14.5); }
+	else if ([n isEqualToString: @"info.circle"]) { [p appendBezierPathWithOvalInRect: NSMakeRect(2.5, 2.5, 13, 13)]; LINE(9, 8, 9, 12.5); LINE(9, 5.5, 9, 5.7); }
+	else if ([n isEqualToString: @"ellipsis"]) { LINE(4, 9, 4.1, 9); LINE(9, 9, 9.1, 9); LINE(14, 9, 14.1, 9); }
+	else if ([n isEqualToString: @"line.3.horizontal"]) { LINE(3, 5, 15, 5); LINE(3, 9, 15, 9); LINE(3, 13, 15, 13); }
+	else if ([n isEqualToString: @"square.and.arrow.up"]) { LINE(9, 3, 9, 11.5); PLINE(6, 8.5, 9, 11.8, 12, 8.5); PLINE(5.5, 6, 3.5, 6, 3.5, 15); LINE(3.5, 15, 14.5, 15); LINE(14.5, 15, 14.5, 6); LINE(14.5, 6, 12.5, 6); }
+	else return NO;
+	WsSymbolStroke(p);
+	return YES;
+}
 + (instancetype)imageWithSystemSymbolName:(NSString *)name accessibilityDescription:(NSString *)description
 {
 	if (!name.length) return nil;
 	NSImage *img = [[NSImage alloc] initWithSize: NSMakeSize(18, 18)];
 	[img lockFocus];
 	[[NSColor blackColor] set];
-	NSBezierPath *p = [NSBezierPath bezierPathWithRoundedRect: NSMakeRect(2.5, 2.5, 13, 13) xRadius: 3 yRadius: 3]; [p setLineWidth: 1.5]; [p stroke];
-	NSString *g = [[name substringToIndex: 1] uppercaseString];
-	NSDictionary *a = @{ NSFontAttributeName: [NSFont boldSystemFontOfSize: 9], NSForegroundColorAttributeName: [NSColor blackColor] };
-	NSSize sz = [g sizeWithAttributes: a]; [g drawAtPoint: NSMakePoint(9 - sz.width / 2, 9 - sz.height / 2) withAttributes: a];
+	if (!WsDrawSymbol(name)) {
+		NSBezierPath *p = [NSBezierPath bezierPathWithRoundedRect: NSMakeRect(2.5, 2.5, 13, 13) xRadius: 3 yRadius: 3]; [p setLineWidth: 1.5]; [p stroke];
+		NSString *g = [[name substringToIndex: 1] uppercaseString];
+		NSDictionary *a = @{ NSFontAttributeName: [NSFont boldSystemFontOfSize: 9], NSForegroundColorAttributeName: [NSColor blackColor] };
+		NSSize sz = [g sizeWithAttributes: a]; [g drawAtPoint: NSMakePoint(9 - sz.width / 2, 9 - sz.height / 2) withAttributes: a];
+	}
 	[img unlockFocus];
 	[img setTemplate: YES];
 	return img;
+}
+/* nibs name symbols in an image catalog ("system"): +imageNamed: falls back to the drawn symbol */
+static IMP origImageNamed;
+static id WsImageNamed(id self, SEL _cmd, NSString *name);
++ (void)load
+{
+	Method m = class_getClassMethod(objc_getClass("NSImage"), @selector(imageNamed:));
+	if (m) { origImageNamed = method_getImplementation(m); method_setImplementation(m, (IMP)WsImageNamed); }
+}
+static id WsImageNamed(id self, SEL _cmd, NSString *name)
+{
+	id img = ((id (*)(id, SEL, id))origImageNamed)(self, _cmd, name);
+	if (img || !name.length) return img;
+	if (!WsDrawSymbolKnown(name)) return nil;
+	return [NSImage imageWithSystemSymbolName: name accessibilityDescription: nil];
 }
 @end
 
