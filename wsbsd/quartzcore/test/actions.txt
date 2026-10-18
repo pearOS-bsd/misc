@@ -41,9 +41,6 @@ actions custom: position           [position CABasicAnimation dur=5 begin=0 spee
 second change keeps from=pres      [opacity CABasicAnimation dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 from=1 to=nil add=0]
 detached layer                     none
 pres of detached: 0
-keys: (
-    x,
-    y
-)
+keys: x,y
 after remove x: 1
 after remove all: 0

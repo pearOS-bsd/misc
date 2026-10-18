@@ -114,6 +114,9 @@ static BOOL CAEqualBytes(CAType t, const void *a, const void *b)
 @implementation CALayerEntry @end
 
 static NSHashTable *gAnimatedLayers, *gSnapshotLayers, *gContextRoots;
+static void (^gChangeObserver)(CALayer *);
+void CALayerSetChangeObserver(void (^obs)(CALayer *)) { gChangeObserver = [obs copy]; }
+static inline void CANotify(CALayer *l) { if (gChangeObserver) gChangeObserver(l); }
 static uint64_t gGeneration;
 
 @implementation CALayer
@@ -223,7 +226,7 @@ static id CAGetObjProp(CALayer *l, int i) { return *(__unsafe_unretained id *)(v
 	[self _storeAt:slot type:pd->type from:p];
 	_version++;
 	if (!_isPresentation) {
-		CATransactionNoteChange();
+		CATransactionNoteChange(); CANotify(self);
 		if (pd->flags & CAF_X) [self setNeedsDisplay];
 		if (i == CAP_bounds) { [self _boundsChanged]; }
 		if (action) [self _runAction:action forKey:@(pd->name)];
@@ -321,7 +324,7 @@ static void CASetObjProp(CALayer *l, int i, id v) { __unsafe_unretained id u = v
 }
 - (void)_sublayersChanged
 {
-	_version++; CATransactionNoteChange();
+	_version++; CATransactionNoteChange(); CANotify(self);
 	if (_isPresentation || [CATransaction disableActions]) return;
 	id action = [self _actionForPropertyChange:@"sublayers" flags:CAF_T];
 	if (action) [self _runAction:action forKey:@"sublayers"];
@@ -364,10 +367,13 @@ static void CASetObjProp(CALayer *l, int i, id v) { __unsafe_unretained id u = v
 {
 	CGRect b = d.bounds;
 	CGFloat ax = b.origin.x + d.anchorPoint.x * b.size.width, ay = b.origin.y + d.anchorPoint.y * b.size.height;
-	CATransform3D m = CATransform3DMakeTranslation(-ax, -ay, -d.anchorPointZ);
+	CATransform3D m = CATransform3DIdentity;
+	m = CATransform3DConcat(m, CATransform3DMakeTranslation(-ax, -ay, -d.anchorPointZ));
 	m = CATransform3DConcat(m, d.transform);
-	m = CATransform3DConcat(m, CATransform3DMakeTranslation(d.position.x, d.position.y, d.zPosition));
 	CALayer *s = _superlayer;
+	/* in a flipped superlayer the positions of the sublayers are measured from the top: the axes of the sublayer stay as they are */
+	CGFloat py = (s && s->d.geometryFlipped) ? 2 * s->d.bounds.origin.y + s->d.bounds.size.height - d.position.y : d.position.y;
+	m = CATransform3DConcat(m, CATransform3DMakeTranslation(d.position.x, py, d.zPosition));
 	if (s && !CATransform3DIsIdentity(s->d.sublayerTransform)) {
 		CGRect sb = s->d.bounds; CGFloat sx = sb.origin.x + s->d.anchorPoint.x * sb.size.width, sy = sb.origin.y + s->d.anchorPoint.y * sb.size.height;
 		CATransform3D st = CATransform3DConcat(CATransform3DConcat(CATransform3DMakeTranslation(-sx, -sy, -s->d.anchorPointZ), s->d.sublayerTransform), CATransform3DMakeTranslation(sx, sy, s->d.anchorPointZ));
@@ -479,8 +485,8 @@ static NSArray *CAChain(CALayer *l) { NSMutableArray *a = [NSMutableArray array]
 - (CFTimeInterval)_localTime { return [self _convertTime:CATransactionTime() from:nil to:self]; }
 
 /* ---- display and layout ------------------------------------------------------------------------------------------------------------------------------------------ */
-- (void)setNeedsDisplay { _needsDisplay = YES; CATransactionNoteChange(); }
-- (void)setNeedsDisplayInRect:(CGRect)r { _needsDisplay = YES; CATransactionNoteChange(); }
+- (void)setNeedsDisplay { _needsDisplay = YES; CATransactionNoteChange(); CANotify(self); }
+- (void)setNeedsDisplayInRect:(CGRect)r { _needsDisplay = YES; CATransactionNoteChange(); CANotify(self); }
 - (BOOL)needsDisplay { return _needsDisplay; }
 - (void)displayIfNeeded { if (_needsDisplay) [self display]; }
 - (void)display
@@ -621,7 +627,7 @@ static NSArray *CAChain(CALayer *l) { NSMutableArray *a = [NSMutableArray array]
 	if (!gAnimatedLayers) gAnimatedLayers = [NSHashTable weakObjectsHashTable];
 	[gAnimatedLayers addObject:self];
 	_version++; gGeneration++;
-	CATransactionNoteChange();
+	CATransactionNoteChange(); CANotify(self);
 }
 - (void)_animationRemoved:(CALayerEntry *)e finished:(BOOL)f
 {
@@ -660,6 +666,18 @@ static NSArray *CAChain(CALayer *l) { NSMutableArray *a = [NSMutableArray array]
 	}
 }
 - (BOOL)_hasAnimations { return _anims.count > 0; }
+- (BOOL)_treeHasActiveAnimations:(CFTimeInterval)now
+{
+	for (CALayerEntry *e in _anims) {
+		CAAnimation *a = e->anim; CATiming tm;
+		if (!CAAnimationTiming(a, &tm)) return YES;
+		double end = CATimingEndTime(&tm); double lt = [self _convertTime:now from:nil to:self];
+		if (isinf(end) || lt <= end) return YES;
+		if (!a.isRemovedOnCompletion && (tm.fillForwards)) continue;
+	}
+	for (CALayer *s in _sublayers) if ([s _treeHasActiveAnimations:now]) return YES;
+	return [_mask _treeHasActiveAnimations:now];
+}
 - (void)_refreshPresentation { _presentation = nil; (void)[self presentationLayer]; }
 
 /* a presentation tree for the time t (media time): every node is a presentation layer with the animations applied for t */
