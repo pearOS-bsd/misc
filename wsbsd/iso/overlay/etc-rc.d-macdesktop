@@ -29,7 +29,7 @@ macdesktop_start()
 	rm -f $WS_SOCKET
 	daemon -f -o /var/log/WindowServer.log -p /var/run/WindowServer.pid $WS -b kms -c /dev/ttyv0 -t -F
 	sleep 2
-	for app in /System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal; do
+	for app in /System/Library/CoreServices/Dock.app/Contents/MacOS/Dock /System/Library/CoreServices/SystemUIServer.app/Contents/MacOS/SystemUIServer /System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal; do
 		daemon -f -o /var/log/Terminal.log /usr/lib/dyld $app
 	done
 }
