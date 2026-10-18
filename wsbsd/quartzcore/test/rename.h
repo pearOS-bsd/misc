@@ -22,6 +22,7 @@
 #define CAValueFunction WSCAValueFunction
 #define CATransaction WSCATransaction
 #define CARenderer WSCARenderer
+#define CAFilter WSCAFilter
 #define CADisplayLink WSCADisplayLink
 #define CAMediaTiming WSCAMediaTiming
 #define CAAction WSCAAction

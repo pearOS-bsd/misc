@@ -35,5 +35,6 @@ void RComposite(RSurf *dest, const RSurf *src, int x, int y, float alpha, const 
 /* the alpha channel of src, blurred (gaussian sigma in pixels), offset and tinted into a shadow surface; result is the same size as src */
 void RShadowFromAlpha(RSurf *out, const RSurf *src, double sigma, RColor tint);
 void RBlur(RSurf *s, double sigma);
+void RBlurNormalized(RSurf *s, double sigma);
 
 #endif

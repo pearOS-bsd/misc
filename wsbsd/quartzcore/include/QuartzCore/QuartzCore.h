@@ -21,5 +21,6 @@
 #import <QuartzCore/CAEmitterLayer.h>
 #import <QuartzCore/CADisplayLink.h>
 #import <QuartzCore/CARenderer.h>
+#import <QuartzCore/CAFilter.h>
 
 #endif
