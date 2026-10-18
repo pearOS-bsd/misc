@@ -42,7 +42,7 @@ rm -f "$ROOT"/usr/lib/*.a "$ROOT"/usr/lib/*_p.a "$ROOT"/usr/bin/clang* "$ROOT"/u
 
 echo "== 3. what we built, with the libraries it needs"
 mkdir -p "$ROOT/usr/local"
-tar -C / -cf - usr/local/GNUstep usr/local/sbin/wsd usr/local/bin usr/local/libexec/dyld usr/local/lib/libwsclient.so usr/local/lib/libwsbsdcompat.so usr/local/lib/libQuartzCore.so usr/local/share/fonts usr/local/etc/fonts 2>/dev/null | tar -C "$ROOT" -xpf -
+tar -C / -cf - usr/local/GNUstep usr/local/sbin/wsd usr/local/bin usr/local/libexec/dyld usr/local/lib/libwsclient.so usr/local/lib/libwsbsdcompat.so usr/local/lib/libQuartzCore.so usr/local/share/fonts usr/local/etc/fonts usr/local/share/icu usr/local/lib/libicudata.so usr/local/lib/libicudata.so.76 usr/local/lib/libicudata.so.76.1 2>/dev/null | tar -C "$ROOT" -xpf -
 # every shared library below /usr/local that these programs need (ldd closure)
 find "$ROOT/usr/local" -type f \( -name '*.so*' -o -perm -u+x \) 2>/dev/null | sed "s|^$ROOT||" > "$WORK/elf.list"
 : > "$WORK/needed.list"
@@ -71,7 +71,12 @@ for d in etc private/etc; do
 done
 mkdir -p "$ROOT/System/Library/LaunchDaemons"
 # no text login on the screen: the window server owns it (the serial console keeps its login)
-for d in etc private/etc; do sed -i '' -E 's/^(ttyv[0-9a-f]+[[:space:]].*)[[:space:]]on[[:space:]]+(secure)?/\1 off \2/' "$ROOT/$d/ttys"; done
+for d in etc private/etc; do sed -i '' -E 's/^(ttyv[0-9a-f]+[[:space:]].*[[:space:]])(onifexists|on)([[:space:]]|$)/\1off\3/' "$ROOT/$d/ttys"; done
+# the local time zone (GNUstep's NSTimeZone and ICU's date formats need one; the image has no /etc/localtime of its own)
+for d in etc private/etc; do cp "$ROOT/usr/share/zoneinfo/UTC" "$ROOT/$d/localtime" 2>/dev/null || true; done
+# what the desktop needs at run time and that earlier images lacked: ICU's data (NSDateFormatter crashed without it), a time zone, no getty on the screen's console
+for need in "$ROOT/usr/local/share/icu" "$ROOT/etc/localtime" "$ROOT/usr/local/lib/libicudata.so.76"; do [ -e "$need" ] || { echo "image check failed, missing: $need"; exit 1; }; done
+grep -E '^ttyv0' "$ROOT/etc/ttys" | grep -q ' off' || { echo "image check failed: ttyv0 still has a getty"; grep -E '^ttyv0' "$ROOT/etc/ttys"; exit 1; }
 python3 "$HERE/tools/macfs.py" desymlink "$ROOT"
 python3 "$HERE/tools/macfs.py" verify "$ROOT" "$HERE/manifest" || { echo "layout check failed"; [ -n "$LAYOUT_STRICT" ] && exit 1; }
 

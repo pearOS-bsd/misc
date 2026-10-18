@@ -27,9 +27,11 @@ int ws_evdev_fd(ws_evdev *, int i);
 /* Reads pending events from fd i and feeds the server; returns -1 if the device went away. */
 int ws_evdev_dispatch(ws_evdev *, int i, ws_server *, int screen_w, int screen_h);
 int ws_evdev_drain(ws_evdev *, int i);                      /* read and discard pending events (another VT is active); -1 if the device went away */
+int ws_evdev_rescan(ws_evdev *);                           /* opens devices that appeared since (USB keyboards enumerate late); returns the index of the first new one, or -1 when none */
+void ws_evdev_forget(ws_evdev *, int i);                   /* closes the device and frees its slot (it may come back with rescan) */
 void ws_evdev_close(ws_evdev *);
 /* console switching (FreeBSD vt(4)), src/vt_switch.c */
-int wsd_vt_setup(void);
+int wsd_vt_setup(const char *console);       /* takes over the VT behind the console device (e.g. /dev/ttyv0), else the controlling terminal */
 void wsd_vt_release_ack(void);
 void wsd_vt_acquire_ack(void);
 void wsd_vt_restore(void);

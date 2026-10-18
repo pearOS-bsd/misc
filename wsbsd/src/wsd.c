@@ -1228,10 +1228,11 @@ int main(int argc, char **argv)
 		EV_SET(&ev, ws_kms_fd(kms), EVFILT_READ, EV_ADD, 0, 0, NULL);
 		kevent(kq, &ev, 1, NULL, 0, NULL);
 		for (int i = 0; input && i < ws_evdev_count(input); i++) {
+			if (ws_evdev_fd(input, i) < 0) continue;
 			EV_SET(&ev, ws_evdev_fd(input, i), EVFILT_READ, EV_ADD, 0, 0, NULL);
 			kevent(kq, &ev, 1, NULL, 0, NULL);
 		}
-		vt_ok = wsd_vt_setup() == 0;                              /* console switching: SIGUSR1 = leave, SIGUSR2 = come back */
+		vt_ok = wsd_vt_setup(card) == 0;                              /* console switching: SIGUSR1 = leave, SIGUSR2 = come back */
 		signal(SIGUSR1, SIG_IGN); signal(SIGUSR2, SIG_IGN); signal(SIGTERM, SIG_IGN); signal(SIGINT, SIG_IGN);
 		int sigs[4] = { SIGUSR1, SIGUSR2, SIGTERM, SIGINT };
 		for (int i = 0; i < 4; i++) { EV_SET(&ev, sigs[i], EVFILT_SIGNAL, EV_ADD, 0, 0, NULL); kevent(kq, &ev, 1, NULL, 0, NULL); }
@@ -1259,8 +1260,22 @@ int main(int argc, char **argv)
 #endif
 		if (vnc_ls >= 0 && wsd_vnc_connected()) to = &frame;                      /* a viewer is attached: wake up to send updates */
 		struct timespec held; { int ms = sls_tap_poll(); if (ms >= 0) { held.tv_sec = ms / 1000; held.tv_nsec = (long)(ms % 1000) * 1000000L; if (!to || ms < 16) to = &held; } }   /* a key event held by an active tap times out */
+#ifdef WS_KMS
+		struct timespec scan_to = { 1, 0 };                                       /* USB keyboards and mice enumerate late (or are plugged in later): look for new input devices every second */
+		if (input && (!to || to->tv_sec > 0)) to = &scan_to;
+#endif
 		int n = kevent(kq, NULL, 0, out, 16, to);
 		if (n < 0) { if (errno == EINTR) continue; perror("wsd: kevent"); break; }
+#ifdef WS_KMS
+		if (input) {
+			static struct timespec last_scan; struct timespec now_ts; clock_gettime(CLOCK_MONOTONIC, &now_ts);
+			if (now_ts.tv_sec != last_scan.tv_sec && (now_ts.tv_sec - last_scan.tv_sec >= 1)) {
+				last_scan = now_ts;
+				int first = ws_evdev_rescan(input);
+				for (int j = first < 0 ? ws_evdev_count(input) : first; j < ws_evdev_count(input); j++) if (ws_evdev_fd(input, j) >= 0) { EV_SET(&ev, ws_evdev_fd(input, j), EVFILT_READ, EV_ADD, 0, 0, NULL); kevent(kq, &ev, 1, NULL, 0, NULL); }
+			}
+		}
+#endif
 		for (int i = 0; i < n; i++) {
 			int fd = (int)out[i].ident;
 			if (vnc_ls >= 0 && out[i].filter == EVFILT_READ && fd == vnc_ls) { int cfd = wsd_vnc_accept(); if (cfd >= 0) { EV_SET(&ev, cfd, EVFILT_READ, EV_ADD, 0, 0, NULL); kevent(kq, &ev, 1, NULL, 0, NULL); } continue; }
@@ -1277,8 +1292,8 @@ int main(int argc, char **argv)
 				int idx = -1;
 				for (int j = 0; j < ws_evdev_count(input); j++) if (ws_evdev_fd(input, j) == fd) idx = j;
 				if (idx >= 0) {
-					if (!vt_active) { if (ws_evdev_drain(input, idx) < 0) { EV_SET(&ev, fd, EVFILT_READ, EV_DELETE, 0, 0, NULL); kevent(kq, &ev, 1, NULL, 0, NULL); close(fd); } continue; }
-					if (ws_evdev_dispatch(input, idx, srv, w, h) < 0) { EV_SET(&ev, fd, EVFILT_READ, EV_DELETE, 0, 0, NULL); kevent(kq, &ev, 1, NULL, 0, NULL); close(fd); }
+					if (!vt_active) { if (ws_evdev_drain(input, idx) < 0) { EV_SET(&ev, fd, EVFILT_READ, EV_DELETE, 0, 0, NULL); kevent(kq, &ev, 1, NULL, 0, NULL); ws_evdev_forget(input, idx); } continue; }
+					if (ws_evdev_dispatch(input, idx, srv, w, h) < 0) { EV_SET(&ev, fd, EVFILT_READ, EV_DELETE, 0, 0, NULL); kevent(kq, &ev, 1, NULL, 0, NULL); ws_evdev_forget(input, idx); }
 					dirty = 1;
 					continue;
 				}

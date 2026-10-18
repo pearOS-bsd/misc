@@ -13,9 +13,19 @@ macdesktop_start()
 {
 	conscontrol mute on >/dev/null 2>&1
 	export WS_SOCKET=/var/run/WindowServer.sock HOME=/Users/Shared XDG_CURRENT_DESKTOP=Aqua XDG_SESSION_DESKTOP=Aqua XDG_SESSION_TYPE=wsd TERM=xterm-256color
-	mkdir -p /Users/Shared /var/run
+	mkdir -p /var/run
+	# the image is read-only: the home of the session (preferences, GNUstep's caches and sockets) is memory
+	mount | grep -q ' /Users/Shared ' || mount -t tmpfs -o mode=1777 tmpfs /Users/Shared
+	mkdir -p /Users/Shared/GNUstep /tmp/GNUstepSecure
+	chmod 700 /tmp/GNUstepSecure
+	# GNUstep's name server and notification center must be up before the first application: started on demand they time out on slow machines and the application dies ("unable to contact GDNC server")
+	GS=/usr/local/GNUstep/System/Tools
+	pgrep -x gdomap >/dev/null || daemon -f -p /var/run/gdomap.pid $GS/gdomap -f
+	i=0; while [ $i -lt 30 ] && ! pgrep -x gdomap >/dev/null; do sleep 1; i=$((i+1)); done
+	pgrep -x gdnc >/dev/null || daemon -f -o /var/log/gdnc.log $GS/gdnc --auto --daemon
+	i=0; while [ $i -lt 60 ] && ! pgrep -x gdnc >/dev/null; do sleep 1; i=$((i+1)); done
 	rm -f $WS_SOCKET
-	daemon -f -o /var/log/WindowServer.log -p /var/run/WindowServer.pid $WS -b kms -c /dev/ttyv0 -t
+	daemon -f -o /var/log/WindowServer.log -p /var/run/WindowServer.pid $WS -b kms -c /dev/ttyv0 -t -F
 	sleep 2
 	for app in /System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal; do
 		daemon -f -o /var/log/Terminal.log /usr/lib/dyld $app
