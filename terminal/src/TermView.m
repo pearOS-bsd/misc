@@ -8,7 +8,7 @@ static void vt_reply(void *ctx, const char *d, size_t n) { int fd = *(int *)ctx;
 static BOOL allowMouse = YES, optionAsMeta = YES;
 
 @implementation TermView
-@synthesize delegate, profile;
+- (id)delegate { return delegate; } - (void)setDelegate:(id)d { delegate = d; } - (TermProfile *)profile { return profile; }
 
 + (void)setAllowMouseReporting:(BOOL)b { allowMouse = b; }
 + (BOOL)allowMouseReporting { return allowMouse; }
@@ -101,7 +101,7 @@ static NSColor *rgbColor(uint32_t c) { return [NSColor colorWithCalibratedRed:((
 - (void)drawRect:(NSRect)dirty
 {
 	NSColor *defFg = profile->text, *defBg = profile->background; BOOL hasAlpha = [defBg alphaComponent] < 0.999;
-	if (hasAlpha) { CGContextRef cg = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort]; CGContextClearRect(cg, NSRectToCGRect(dirty)); }
+	if (hasAlpha) { CGContextRef cg = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort]; CGContextSaveGState(cg); CGContextClearRect(cg, NSRectToCGRect(dirty)); CGContextRestoreGState(cg); }
 	[defBg set]; NSRectFillUsingOperation(dirty, hasAlpha ? NSCompositeSourceOver : NSCompositeCopy);
 	int cols = vt_cols(term), rows = vt_rows(term), curx, cury, curvis; vt_cursor(term, &curx, &cury, &curvis);
 	int hist = vt_alt_screen(term) ? 0 : vt_scrollback_lines(term); if (scrollOffset > hist) scrollOffset = hist;

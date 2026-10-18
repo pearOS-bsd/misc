@@ -301,7 +301,7 @@ static int wsdShapeForStyle(int style)
 	for (NSWindow *nw in [NSApp windows]) if ([nw windowNumber] == win) { title = [nw title] ?: @""; break; }
 	w->dockTaken = 0;
 	[[NSDistributedNotificationCenter defaultCenter] postNotificationName: @"com.wsbsd.dock.minimize" object: nil
-		userInfo: @{ @"wid": @(win), @"pid": @((int)getpid()), @"title": title } deliverImmediately: YES];
+		userInfo: @{ @"wid": @(win), @"pid": @((int)getpid()), @"title": title, @"bundle": [[NSBundle mainBundle] bundlePath] ?: @"" } deliverImmediately: YES];
 	[self performSelector: @selector(wsdMiniFallback:) withObject: @(win) afterDelay: 1.5];
 }
 - (void) wsdMiniFallback: (NSNumber *)win

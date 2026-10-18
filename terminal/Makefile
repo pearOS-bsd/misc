@@ -12,7 +12,7 @@ Terminal-mac: $(SRC) src/TermView.m src/TermWindow.m src/TermProfile.m src/main.
 
 gnustep: Terminal-gnustep
 Terminal-gnustep: $(SRC) src/TermView.m src/TermWindow.m src/TermProfile.m src/main.m src/TermView.h src/TermWindow.h src/TermProfile.h src/Profiles.inc
-	$(CC) -o $@ $(SRC) src/TermView.m src/TermWindow.m src/TermProfile.m src/main.m `gnustep-config --objc-flags` `gnustep-config --gui-libs` -lutil
+	$(CC) -o $@ $(SRC) src/TermView.m src/TermWindow.m src/TermProfile.m src/main.m `gnustep-config --objc-flags` `gnustep-config --gui-libs` -lopal -lgnustep-corebase -ldispatch -lutil
 
 clean:
 	rm -f test_vt Terminal-mac Terminal-gnustep

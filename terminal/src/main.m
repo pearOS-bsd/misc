@@ -154,7 +154,7 @@ int main(int argc, char **argv)
 	M(m, @"Show Previous Tab", @selector(previousTab:), @"\t", CTL | SH, d); M(m, @"Show Next Tab", @selector(nextTab:), @"\t", CTL, d); SEP(m);
 	M(m, @"Cycle Through Windows", @selector(cycleWindows:), @"`", CMD, d); M(m, @"Bring All to Front", @selector(orderFrontAllWindows:), nil, 0, d);
 
-	m = SUB(bar, @"Help"); [app setHelpMenu:m];
+	m = SUB(bar, @"Help"); if ([app respondsToSelector:@selector(setHelpMenu:)]) [app performSelector:@selector(setHelpMenu:) withObject:m];
 	M(m, @"Terminal Help", @selector(showHelp:), @"?", CMD, d);
 	[app setMainMenu:bar];
 	[app run];

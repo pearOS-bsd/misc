@@ -13,7 +13,7 @@
 static double Now(void) { return CACurrentMediaTime(); }
 
 /* a minimized window: lives in the Dock as a tile with its picture; the genie runs between the window and the tile */
-typedef struct { uint32_t wid; int pid; char label[64]; CGImageRef thumb; int phase; double t0; double wr[4]; int item; } MiniWin;       /* phase: 1 minimizing, 2 settled, 3 restoring */
+typedef struct { uint32_t wid; int pid; char label[64]; CGImageRef thumb; int phase; double t0; double wr[4]; int item; int appItem; } MiniWin;       /* phase: 1 minimizing, 2 settled, 3 restoring */
 #define MAXMINI 16
 
 @interface DockView : NSView {
@@ -58,7 +58,8 @@ typedef struct { uint32_t wid; int pid; char label[64]; CGImageRef thumb; int ph
 	}
 	items[n].kind = DOCK_SEPARATOR; tiles[n] = (DockTile){ NULL, "", 0, 0, 0 }; [paths addObject: @""]; [pids addObject: @0]; n++;
 	items[n].kind = DOCK_OTHER; tiles[n] = (DockTile){ "Downloads", "folder", 0, 0, 0 }; [paths addObject: [NSHomeDirectory() stringByAppendingPathComponent: @"Downloads"]]; [pids addObject: @0]; n++;
-	for (int k = 0; k < nmini && n < MAXITEMS - 2; k++) {                       /* minimized windows: after the Downloads stack, before the Trash */
+	for (int k = 0; k < nmini && n < MAXITEMS - 2; k++) {                       /* minimized windows without a tile of their application: after the Downloads stack, before the Trash */
+		mini[k].item = -1; if (mini[k].appItem >= 0) continue;
 		items[n].kind = DOCK_MINIMIZED; mini[k].item = n; tiles[n] = (DockTile){ mini[k].label, mini[k].phase == 2 ? "doc" : "none", 0, 0, 0, mini[k].phase == 2 ? mini[k].thumb : NULL };
 		[paths addObject: @""]; [pids addObject: @0]; n++;
 	}
@@ -89,7 +90,8 @@ typedef struct { uint32_t wid; int pid; char label[64]; CGImageRef thumb; int ph
 	ws_win w = { .id = wid, .px = NULL }; ws_rect r; if (ws_win_get_bounds(wsc, &w, &r)) return;
 	MiniWin *mw = &mini[nmini++]; memset(mw, 0, sizeof *mw);
 	mw->wid = wid; mw->pid = [u[@"pid"] intValue]; snprintf(mw->label, sizeof mw->label, "%s", [u[@"title"] length] ? [u[@"title"] UTF8String] : "Window");
-	mw->thumb = [self thumbOfWindow: wid]; mw->phase = 1; mw->t0 = Now();
+	mw->thumb = [self thumbOfWindow: wid]; mw->phase = 1; mw->t0 = Now(); mw->appItem = -1;
+	{ NSString *bp = u[@"bundle"]; if ([bp length]) for (int i = 0; i < n; i++) if (items[i].kind == DOCK_APP && [paths[i] length] && ([paths[i] isEqualToString: bp] || [[paths[i] lastPathComponent] isEqualToString: [bp lastPathComponent]])) { mw->appItem = i; break; } }
 	int sw = 0, sh = 0; ws_conn_screen(wsc, &sw, &sh); mw->wr[0] = r.x; mw->wr[1] = sh - (r.y + r.h); mw->wr[2] = r.w; mw->wr[3] = r.h;
 	[[NSDistributedNotificationCenter defaultCenter] postNotificationName: @"com.wsbsd.dock.minimized" object: nil userInfo: @{ @"wid": @(wid) } deliverImmediately: YES];
 	[self reload];
@@ -98,8 +100,9 @@ typedef struct { uint32_t wid; int pid; char label[64]; CGImageRef thumb; int ph
 {
 	for (int k = 0; k < nmini; k++) {
 		MiniWin *mw = &mini[k]; if (mw->phase == 2 || !wsc) continue;
-		double p = (Now() - mw->t0) / 0.5; if (p > 1) p = 1; if (mw->phase == 3) p = 1 - p;
-		const DockSlot *sl = &slots[mw->item]; ws_win w = { .id = mw->wid, .px = NULL };
+		double p = (Now() - mw->t0) / (mw->phase == 1 ? 0.75 : 0.5); if (p > 1) p = 1; if (mw->phase == 3) p = 1 - p;
+		int ti = mw->appItem >= 0 ? mw->appItem : mw->item; if (ti < 0 || ti >= n) continue;
+		const DockSlot *sl = &slots[ti]; ws_win w = { .id = mw->wid, .px = NULL };
 		double icon[4] = { sl->cx - sl->art / 2, bar.bottom_margin + 15, sl->art, sl->art }; int cols, rows; float done;
 		int nf = genie_mesh(mw->wr, icon, (float)p, 1, genieMesh, &cols, &rows, &done);
 		if (nf && !(mw->phase == 1 && p >= 1) && !(mw->phase == 3 && p <= 0)) ws_win_warp(wsc, &w, cols, rows, genieMesh);
@@ -109,13 +112,13 @@ typedef struct { uint32_t wid; int pid; char label[64]; CGImageRef thumb; int ph
 			memmove(&mini[k], &mini[k + 1], (size_t)(nmini - k - 1) * sizeof mini[0]); nmini--; k--; [self reload];
 		}
 	}
-	for (int k = 0; k < nmini; k++) { int i = mini[k].item; if (i < n) { tiles[i].icon = mini[k].phase == 2 ? mini[k].thumb : NULL; tiles[i].glyph = mini[k].phase == 2 ? "doc" : "none"; } }
+	for (int k = 0; k < nmini; k++) { int i = mini[k].item; if (i >= 0 && i < n) { tiles[i].icon = mini[k].phase == 2 ? mini[k].thumb : NULL; tiles[i].glyph = mini[k].phase == 2 ? "doc" : "none"; } }
 }
 - (void)restoreMini:(int)k
 {
 	MiniWin *mw = &mini[k]; if (mw->phase != 2 || !wsc) return;
 	ws_win w = { .id = mw->wid, .px = NULL };
-	const DockSlot *sl = &slots[mw->item]; double icon[4] = { sl->cx - sl->art / 2, bar.bottom_margin + 15, sl->art, sl->art }; int cols, rows; float done;
+	int ti = mw->appItem >= 0 ? mw->appItem : mw->item; const DockSlot *sl = &slots[ti]; double icon[4] = { sl->cx - sl->art / 2, bar.bottom_margin + 15, sl->art, sl->art }; int cols, rows; float done;
 	if (genie_mesh(mw->wr, icon, 1.0f, 1, genieMesh, &cols, &rows, &done)) ws_win_warp(wsc, &w, cols, rows, genieMesh);      /* collapsed into the tile before it is shown */
 	ws_win_order(wsc, &w, WS_ABOVE, 0);
 	mw->phase = 3; mw->t0 = Now();
@@ -128,6 +131,12 @@ typedef struct { uint32_t wid; int pid; char label[64]; CGImageRef thumb; int ph
 		if (bounceStart[i] > 0) {                                                  /* the launch bounce: three arcs of decreasing height, 0.6 s each... */
 			double t = Now() - bounceStart[i], dur = 2.0; if (t > dur) { bounceStart[i] = 0; tiles[i].bounce = 0; }
 			else { double ph = fmod(t, 0.66) / 0.66; tiles[i].bounce = (float)(4 * ph * (1 - ph) * (1.0 - t / dur) * 0.75); }
+		}
+	}
+	if (wsc && !fanOpen) {                                                      /* the pointer from the window server: the bar unzooms when it leaves (tracking events are not reliable) */
+		int px, py; if (ws_cursor_position(wsc, &px, &py) == 0) {
+			NSRect wf = [[self window] frame]; double top = screenH - wf.size.height;
+			if (py >= top && px >= wf.origin.x && px < wf.origin.x + wf.size.width) { pointer = px; hover = [self tileAt: pointer]; } else { pointer = -1; hover = -1; }
 		}
 	}
 	[self relayout];
@@ -170,7 +179,7 @@ typedef struct { uint32_t wid; int pid; char label[64]; CGImageRef thumb; int ph
 		NSDate *da = [[fm attributesOfItemAtPath: [dir stringByAppendingPathComponent: a] error: NULL] fileModificationDate], *db = [[fm attributesOfItemAtPath: [dir stringByAppendingPathComponent: b] error: NULL] fileModificationDate];
 		return [db compare: da ?: [NSDate distantPast]]; }];
 	fanStore = [NSMutableArray array]; for (int k = 0; k < fan.n; k++) { free((void *)fan.labels[k]); if (fan.icons[k]) CGImageRelease(fan.icons[k]); } memset(&fan, 0, sizeof fan);
-	int maxShown = (int)((screenH - 40 /*menu bar*/ - 110 - 64) / 64); if (maxShown > 14) maxShown = 14; if (maxShown < 3) maxShown = 3; int cnt = (int)[vis count]; if (cnt == 0) return;
+	int maxShown = (int)((screenH - 40 /*menu bar*/ - 110 - 64) / 64); if (maxShown > 14) maxShown = 14; if (maxShown < 3) maxShown = 3; int cnt = (int)[vis count]; if (cnt == 0) { [vis addObject: @"Empty"]; cnt = 1; }
 	int shown = cnt > maxShown + 1 ? maxShown : cnt;
 	for (int k = 0; k < shown; k++) {
 		BOOL isdir = NO; [fm fileExistsAtPath: [dir stringByAppendingPathComponent: vis[k]] isDirectory: &isdir];
@@ -188,6 +197,7 @@ typedef struct { uint32_t wid; int pid; char label[64]; CGImageRef thumb; int ph
 	if (fanOpen) { if (!fanClose) fanClose = Now(); return; }
 	if (i < 0 || !tiles[i].label) return;
 	NSString *path = paths[i];
+	if (items[i].kind == DOCK_APP) { for (int k = nmini - 1; k >= 0; k--) if (mini[k].appItem == i && mini[k].phase == 2) { [self restoreMini: k]; return; } }
 	if (items[i].kind == DOCK_MINIMIZED) { for (int k = 0; k < nmini; k++) if (mini[k].item == i) [self restoreMini: k]; return; }
 	if (items[i].kind == DOCK_OTHER) { [self openFan: i]; return; }
 	if (items[i].kind == DOCK_APP && path.length && [[NSFileManager defaultManager] fileExistsAtPath: path]) {

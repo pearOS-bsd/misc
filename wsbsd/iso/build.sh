@@ -86,6 +86,8 @@ for d in etc private/etc usr/local/etc; do          # FreeBSD's zsh reads its gl
 	cp "$HERE/overlay/etc-zprofile" "$ROOT/$d/zprofile"; cp "$HERE/overlay/etc-zshrc" "$ROOT/$d/zshrc"
 done
 pw -R "$ROOT" usermod root -s /bin/zsh
+# /usr/sbin/pkg is only the bootstrapper: without the real pkg it asks "fetch and install it now? [y/N]" on the terminal, and neofetch (which calls `pkg info` for its package count) hangs on it
+printf '#!/bin/sh\nexit 1\n' > "$ROOT/usr/sbin/pkg"; chmod 755 "$ROOT/usr/sbin/pkg"
 # the local time zone (GNUstep's NSTimeZone and ICU's date formats need one; the image has no /etc/localtime of its own)
 for d in etc private/etc; do cp "$ROOT/usr/share/zoneinfo/UTC" "$ROOT/$d/localtime" 2>/dev/null || true; done
 # what the desktop needs at run time and that earlier images lacked: ICU's data (NSDateFormatter crashed without it), a time zone, no getty on the screen's console
