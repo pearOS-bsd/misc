@@ -10,7 +10,7 @@
     "CoreServices":    { "binary": ["/usr/local/lib/libwsbsdcompat.so"] },
     "Security":        { "binary": ["/usr/local/lib/libwsbsdcompat.so"] },
     "DiskArbitration": { "binary": ["/usr/local/lib/libwsbsdcompat.so"] },
-    "QuartzCore":      { "binary": ["/usr/local/lib/libwsbsdcompat.so"] },
+    "QuartzCore":      { "binary": ["/usr/local/lib/libQuartzCore.so"] },
     "Carbon":          { "binary": ["/usr/local/lib/libwsbsdcompat.so"] }
   },
   "privateframeworks": {

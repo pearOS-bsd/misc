@@ -553,30 +553,9 @@ static const char tolKey;
 - (NSTimeInterval)tolerance { return [(NSNumber *)getAssoc(self, &tolKey) doubleValue]; }
 - (void)setTolerance:(NSTimeInterval)t { setAssoc(self, &tolKey, [NSNumber numberWithDouble: t]); }
 @end
-@implementation NSView (WsbsdAnimator)
-- (instancetype)animator { return self; }
-+ (id)defaultAnimationForKey:(NSString *)key { (void)key; return nil; }
-@end
 
-/* ---- Core Animation names and the QuickLook panel: classes that accept their settings and do nothing ---- */
-#import <QuartzCore/QuartzCore.h>
+/* ---- the QuickLook panel: a class that accepts its settings and does nothing (Core Animation is the QuartzCore of this stack, see quartzcore/) ---- */
 #import <Quartz/Quartz.h>
-@implementation CAAnimation
-+ (instancetype)animation { return [[self alloc] init]; }
-- (id)copyWithZone:(NSZone *)z { (void)z; return self; }
-@end
-@implementation CAPropertyAnimation
-+ (instancetype)animationWithKeyPath:(NSString *)path { CAPropertyAnimation *a = [self animation]; a.keyPath = path; return a; }
-@end
-@implementation CABasicAnimation
-@end
-@implementation CAMediaTimingFunction
-+ (instancetype)functionWithName:(NSString *)name { (void)name; return [[self alloc] init]; }
-@end
-@implementation CATransaction
-+ (void)begin {} + (void)commit {} + (void)setDisableActions:(BOOL)f { (void)f; } + (void)setAnimationDuration:(CFTimeInterval)d { (void)d; }
-+ (void)setCompletionBlock:(void (^)(void))block { if (block) block(); }
-@end
 @implementation QLPreviewPanel
 @synthesize dataSource, delegate, currentPreviewItemIndex;
 + (QLPreviewPanel *)sharedPreviewPanel { static QLPreviewPanel *p; if (!p) p = [[QLPreviewPanel alloc] initWithContentRect: NSMakeRect(0, 0, 400, 300) styleMask: NSTitledWindowMask | NSClosableWindowMask backing: NSBackingStoreBuffered defer: YES]; return p; }

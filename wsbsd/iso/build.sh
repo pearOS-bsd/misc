@@ -25,7 +25,7 @@ for need in /usr/local/GNUstep/System/Library/Libraries/libgnustep-gui.so.0.32 /
 done
 (cd "$WS" && gmake fb >/dev/null && install -d /usr/local/sbin && install -m 755 wsd /usr/local/sbin/wsd)
 (cd "$WS/src" && for f in client compositor_sw region ipc evrec buffer; do cc -O2 -fPIC -std=c99 -D_DEFAULT_SOURCE -I"$WS/include" -c $f.c -o "$WORK/ws_$f.o"; done; cc -shared -o /usr/local/lib/libwsclient.so "$WORK"/ws_*.o -lm)
-sh "$WS/sdk/build-compat.sh" "$WORK/compat" > "$WORK/compat.log" 2>&1; install -m 755 "$WORK/compat/libwsbsdcompat.so" /usr/local/lib/libwsbsdcompat.so
+sh "$WS/sdk/build-compat.sh" "$WORK/compat" > "$WORK/compat.log" 2>&1; install -m 755 "$WORK/compat/libwsbsdcompat.so" /usr/local/lib/libwsbsdcompat.so; install -m 755 "$WORK/compat/libQuartzCore.so" /usr/local/lib/libQuartzCore.so
 install -d /usr/local/bin /usr/local/libexec
 for a in terminal:Terminal-gnustep uitest:UITest-gnustep ksa:KeyboardSetupAssistant-gnustep; do d="${a%%:*}"; b="${a##*:}"; (cd "$WS/../$d" && make gnustep >/dev/null 2>&1 && install -m 755 "$b" /usr/local/bin/"$b"); done
 cc -O2 -o /usr/local/libexec/dyld "$HERE/src/dyld.c"
@@ -42,7 +42,7 @@ rm -f "$ROOT"/usr/lib/*.a "$ROOT"/usr/lib/*_p.a "$ROOT"/usr/bin/clang* "$ROOT"/u
 
 echo "== 3. what we built, with the libraries it needs"
 mkdir -p "$ROOT/usr/local"
-tar -C / -cf - usr/local/GNUstep usr/local/sbin/wsd usr/local/bin usr/local/libexec/dyld usr/local/lib/libwsclient.so usr/local/lib/libwsbsdcompat.so usr/local/share/fonts usr/local/etc/fonts 2>/dev/null | tar -C "$ROOT" -xpf -
+tar -C / -cf - usr/local/GNUstep usr/local/sbin/wsd usr/local/bin usr/local/libexec/dyld usr/local/lib/libwsclient.so usr/local/lib/libwsbsdcompat.so usr/local/lib/libQuartzCore.so usr/local/share/fonts usr/local/etc/fonts 2>/dev/null | tar -C "$ROOT" -xpf -
 # every shared library below /usr/local that these programs need (ldd closure)
 find "$ROOT/usr/local" -type f \( -name '*.so*' -o -perm -u+x \) 2>/dev/null | sed "s|^$ROOT||" > "$WORK/elf.list"
 : > "$WORK/needed.list"

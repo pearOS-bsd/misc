@@ -141,6 +141,13 @@ int main(int argc, char **argv)
 		for (size_t i = 0; i < sizeof kScenes / sizeof kScenes[0]; i++) {
 			if (argc > 2 && strcmp(argv[2], kScenes[i].name)) continue;
 			CALayer *root = kScenes[i].fn();
+			if (getenv("CTXMODE")) {
+				CGColorSpaceRef cs = CGColorSpaceCreateDeviceRGB(); memset(buf, 0, W * H * 4);
+				CGContextRef c = CGBitmapContextCreate(buf, W, H, 8, W * 4, cs, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little);
+				[root renderInContext:c]; CGContextRelease(c); CGColorSpaceRelease(cs);
+				char path[512]; snprintf(path, sizeof path, "%s/%s.bgra", outdir, kScenes[i].name); FILE *f = fopen(path, "wb"); fwrite(buf, 1, W * H * 4, f); fclose(f);
+				continue;
+			}
 #ifdef REAL_CA
 			CARenderer *R = [CARenderer rendererWithMTLTexture:tex options:@{ kCARendererMetalCommandQueue: q }];
 			R.layer = root; R.bounds = CGRectMake(0, 0, W, H); [CATransaction flush];

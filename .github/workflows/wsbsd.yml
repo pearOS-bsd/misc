@@ -211,26 +211,30 @@ jobs:
             wsbsd/uitest-manifest.txt
           if-no-files-found: warn
 
-  # Core Animation: GNUstep QuartzCore (CALayer) over Opal on FreeBSD. Exploratory: the build is expected to need patches.
+  # Core Animation (wsbsd/quartzcore): built on FreeBSD against Opal and compared with the values recorded from Apple's QuartzCore; on macOS compared with the live framework.
   freebsd-quartzcore:
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
-      - name: Build GNUstep QuartzCore
+      - name: Build libQuartzCore and run the reference tests on FreeBSD
         uses: vmactions/freebsd-vm@v1
         with:
-          release: "14.2"
+          release: "14.5"
           arch: x86_64
           usesh: true
           run: |
-            sh wsbsd/ci/quartzcore-build.sh 2>&1 | tail -70
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: freebsd-quartzcore-screenshots
-          path: |
-            wsbsd/ca-a.png
-            wsbsd/ca-b.png
-          if-no-files-found: warn
+            sh wsbsd/ci/quartzcore-check.sh 2>&1 | tail -60
+
+  quartzcore-macos:
+    runs-on: macos-latest
+    timeout-minutes: 30
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Differential tests against the installed QuartzCore
+        run: |
+          cd wsbsd/quartzcore
+          make check-golden check-actions check-values 2>&1 | grep -E "lines compared|differences|error" || true
+          make render-compare 2>&1 | tail -30 || true
+          make bench 2>&1 | tail -12
