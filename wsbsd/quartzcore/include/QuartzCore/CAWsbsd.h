@@ -13,6 +13,8 @@ CA_EXTERN void CARenderPresentation(CALayer *root, CGContextRef ctx, CFTimeInter
 /* YES while the layer or a sublayer has an animation that has not finished */
 CA_EXTERN BOOL CALayerTreeHasActiveAnimations(CALayer *root);
 /* called (on the thread that changed it) whenever a layer property, the sublayers or the animations of a layer change; used to redraw what shows the layer */
+/* marks the root of a layer tree that is on screen (the role of a CAContext / CARenderer layer): its layers are committed, have presentation layers and take implicit animations */
+CA_EXTERN void CALayerSetContextRoot(CALayer *root, BOOL isRoot);
 CA_EXTERN void CALayerSetChangeObserver(void (^observer)(CALayer *changed));
 CA_EXTERN_C_END
 #endif

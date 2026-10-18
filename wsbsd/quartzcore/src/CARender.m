@@ -446,6 +446,7 @@ static void CADrawTree(CALayer *tree, CGContextRef ctx, BOOL rootMode)
 	if (minx > maxx) return;
 	double uy0 = flip ? Hb - maxy : miny, uy1 = flip ? Hb - miny : maxy;                 /* the extent in user space */
 	CGRect ext = CGRectMake(minx - 40, uy0 - 40, maxx - minx + 80, uy1 - uy0 + 80);
+	if (!isfinite(clip.origin.x) || !isfinite(clip.origin.y) || !isfinite(clip.size.width) || !isfinite(clip.size.height)) clip = ext;      /* a context that cannot tell its clip (Opal) */
 	CGRect r = CGRectIntersection(clip, ext); if (CGRectIsNull(r) || r.size.width <= 0 || r.size.height <= 0) return;
 	r = CGRectMake(floor(r.origin.x), floor(r.origin.y), ceil(r.size.width + 1), ceil(r.size.height + 1));
 	int w = (int)ceil(r.size.width * s), h = (int)ceil(r.size.height * s); if (w <= 0 || h <= 0 || w > 8192 || h > 8192) return;
@@ -467,6 +468,7 @@ void CARenderPresentation(CALayer *root, CGContextRef ctx, CFTimeInterval time, 
 	CALayer *tree = [root _presentationTreeAtTime:time ?: CACurrentMediaTime()];
 	CADrawTree(tree, ctx, !applyTransform);
 }
+void CALayerSetContextRoot(CALayer *root, BOOL isRoot) { [root _setContext:isRoot]; if (isRoot) [root _markCommitted]; }
 BOOL CALayerTreeHasActiveAnimations(CALayer *root) { return [root _treeHasActiveAnimations:CACurrentMediaTime()]; }
 
 @implementation CARenderer
