@@ -74,6 +74,7 @@ int ws_kms_handle_events(ws_kms *k) { char b[16]; return (int)read(k->pipe_r, b,
 void ws_kms_close(ws_kms *k)
 {
 	if (!k) return;
+	memset(k->map, 0, k->map_size);                                        /* the console draws over what the window server leaves: black, not the last frame */
 	munmap(k->map, k->map_size);
 	ws_surface_free(k->back);
 	close(k->pipe_r); close(k->pipe_w); close(k->fd);

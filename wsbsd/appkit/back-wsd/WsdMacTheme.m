@@ -391,7 +391,7 @@ static double WsdAnim(NSView *view, int key, double target, double dur, BOOL sta
 	static NSMutableDictionary *st;                                           /* "ptr:key" -> @[value, last time] */
 	if (!st) st = [[NSMutableDictionary alloc] init];
 	NSString *k = [NSString stringWithFormat: @"%p:%d", view, key]; NSArray *a = [st objectForKey: k]; double now = [[NSDate date] timeIntervalSinceReferenceDate], v, last;
-	if (!a || now - [[a objectAtIndex: 1] doubleValue] > 0.4) { v = startAtTarget ? target : (target > 0.5 ? 0.0 : 1.0); last = now; }      /* not drawn for a while: the animation starts again */
+	if (!a || now - [[a objectAtIndex: 1] doubleValue] > 2.5) { v = startAtTarget ? target : (target > 0.5 ? 0.0 : 1.0); last = now; }      /* not drawn for a while: the animation starts again */
 	else { v = [[a objectAtIndex: 0] doubleValue]; last = [[a objectAtIndex: 1] doubleValue]; }
 	double step = (now - last) / dur; if (v < target) { v += step; if (v > target) v = target; } else if (v > target) { v -= step; if (v < target) v = target; }
 	[st setObject: [NSArray arrayWithObjects: [NSNumber numberWithDouble: v], [NSNumber numberWithDouble: now], nil] forKey: k];
