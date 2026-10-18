@@ -63,7 +63,7 @@ typedef struct { uint32_t wid; int pid; char label[64]; CGImageRef thumb; int ph
 		[paths addObject: @""]; [pids addObject: @0]; n++;
 	}
 	items[n].kind = DOCK_TRASH; tiles[n] = (DockTile){ "Trash", "trash", 0, 0, 0 }; [paths addObject: @""]; [pids addObject: @0]; n++;
-	for (int i = 0; i < n; i++) { scale[i] = 1; bounceStart[i] = 0; if (items[i].kind == DOCK_APP && [paths[i] length] && [[NSFileManager defaultManager] fileExistsAtPath: paths[i]]) tiles[i].icon = LSIconCreateForPath(paths[i], 256); }
+	for (int i = 0; i < n; i++) { scale[i] = 1; bounceStart[i] = 0; if (items[i].kind == DOCK_APP && [paths[i] length] && [[NSFileManager defaultManager] fileExistsAtPath: paths[i]]) { if (LSBundleIconPath(paths[i])) tiles[i].icon = LSIconCreateForPath(paths[i], 256); } }
 }
 - (void)relayout
 {
