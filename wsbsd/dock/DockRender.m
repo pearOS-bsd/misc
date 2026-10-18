@@ -210,11 +210,11 @@ void DockRender(CGContextRef c, const DockScene *s)
 		if (t->glyph && !strcmp(t->glyph, "none") && !t->icon) { /* a minimizing window's tile: empty until the window has arrived */ }
 		else if (t->icon) CGContextDrawImage(c, CGRectMake(cx - art / 2 - art * 0.0625, art_bottom + lift - art * 0.0625, art * 1.125, art * 1.125), t->icon);   /* the icon image has a margin (the art is 80 % of it) */
 		else DockDrawIcon(c, t->glyph, CGRectMake(cx - art / 2, art_bottom + lift, art, art));
-		if (t->badge > 0) {
-			char num[16]; snprintf(num, sizeof num, "%d", t->badge); CGFloat tw = 0; DrawText(c, num, 13, CGPointZero, &tw);
-			CGFloat bwid = fmax(22, tw + 12), bxx = cx + art / 2 - bwid + 6, byy = art_bottom + lift + art - 17;
-			SetRGB(c, 0.91, 0.25, 0.22, 1); CGPathRef pill = ContinuousRect(CGRectMake(bxx, byy, bwid, 22), 11); CGContextAddPath(c, pill); CGContextFillPath(c); CGPathRelease(pill);
-			SetRGB(c, 1, 1, 1, 1); DrawText(c, num, 13, CGPointMake(bxx + (bwid - tw) / 2, byy + 5), NULL);
+		if (t->badge > 0) {                                               /* the badge, laid out as ECStatusLabelLayer does on the 128 point icon canvas (decompiled): a red pill 50 high and at least 50 wide, text 20 wider than the number, in the top right corner */
+			char num[16]; snprintf(num, sizeof num, "%d", t->badge); double canvas = art * 1.25, k = canvas / 128; CGFloat tw = 0; DrawText(c, num, (CGFloat)(30 * k), CGPointZero, &tw);
+			double w128 = fmax(54, tw / k + 20) - 4, bw = w128 * k, bh = 50 * k, bxx = cx + canvas / 2 - bw - 1 * k, byy = art_bottom + lift - art * 0.0625 + canvas - bh - 1 * k;
+			SetRGB(c, 1.0, 0.2314, 0.1885, 0.92); CGPathRef pill = ContinuousRect(CGRectMake(bxx, byy, bw, bh), bh / 2); CGContextAddPath(c, pill); CGContextFillPath(c); CGPathRelease(pill);
+			SetRGB(c, 1, 1, 1, 1); DrawText(c, num, (CGFloat)(30 * k), CGPointMake(bxx + (bw - tw) / 2, byy + bh / 2 - 10.5 * k), NULL);
 		}
 		CGContextRestoreGState(c);
 		if (t->running) { SetRGB(c, 0.54, 0.54, 0.54, 1); CGContextFillEllipseInRect(c, CGRectMake(cx - 2, by + 11.5, 4, 4)); }
