@@ -304,6 +304,49 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 	mw->phase = 3; mw->t0 = Now();
 	[[NSDistributedNotificationCenter defaultCenter] postNotificationName: @"com.wsbsd.dock.restore" object: nil userInfo: @{ @"wid": @(mw->wid) } deliverImmediately: YES];
 }
+/* ---- hot corners, as the Dock decides them (decompiled from HotCorners::_handleEvent:location:flags: and _cornerActionForMouseEnter:): the four wvous-<tl|tr|bl|br>-corner preferences hold an action
+ * (1 none, 2 Mission Control, 3 application windows, 4 Desktop, 5 start the screen saver, 6 do not start it, 7 Dashboard, 10 put the display to sleep, 11 Launchpad, 12 Notification Center, 13 lock the screen, 14 Quick Note);
+ * entering the corner's region runs the action, 5 and 10 only after 0.5 s in the corner, 6 for as long as the pointer stays; leaving the region cancels what is pending */
+static int hcInside = -1, hcDesktop; static double hcEnter; static int hcPending; static NSMutableArray *hcHidden;
+static int HCAction(NSDictionary *prefs, int corner)
+{
+	static const char *k[4] = { "wvous-tl-corner", "wvous-tr-corner", "wvous-bl-corner", "wvous-br-corner" };
+	id v = prefs[@(k[corner])]; return v ? [v intValue] : 1;
+}
+- (void)runCornerAction:(int)a
+{
+	NSLog(@"hotcorners: handling mouse enter action %d", a);
+	if (a == 4 && wsc) {                                                       /* Desktop: every other window steps aside, the next time they come back */
+		uint32_t ids[256]; int total = 0; ws_win me = { .id = (ws_wid)[[self window] windowNumber], .px = NULL }; int myOwner = 0, rights = 0; ws_win_get_owner(wsc, &me, &myOwner, &rights);
+		if (!hcDesktop) {
+			hcHidden = [NSMutableArray array]; if (ws_win_list(wsc, 0, 1, ids, 256, &total) == 0) for (int i = 0; i < total && i < 256; i++) {
+				ws_win w = { .id = ids[i], .px = NULL }; int lv = 0, ow = 0; ws_win_get_level(wsc, &w, &lv); ws_win_get_owner(wsc, &w, &ow, &rights);
+				if (lv == 0 && ow != myOwner) { [hcHidden addObject: @(ids[i])]; ws_win_order(wsc, &w, WS_OUT, 0); }
+			}
+			hcDesktop = 1;
+		} else { for (NSNumber *n in hcHidden) { ws_win w = { .id = (ws_wid)[n unsignedIntValue], .px = NULL }; ws_win_order(wsc, &w, WS_ABOVE, 0); } hcHidden = nil; hcDesktop = 0; }
+		return;
+	}
+	[[NSDistributedNotificationCenter defaultCenter] postNotificationName: @"com.wsbsd.hotcorner" object: nil userInfo: @{ @"action": @(a) } deliverImmediately: YES];
+}
+- (void)pollHotCorners
+{
+	if (!wsc) return; int px, py; if (ws_cursor_position(wsc, &px, &py)) return;
+	static int dbg; if (getenv("DOCK_LOG") && (dbg++ % 120) == 0) NSLog(@"hotcorners: pointer %d,%d tl=%d br=%d", px, py, HCAction(prefs, 0), HCAction(prefs, 3));
+	int corner = -1; if (py <= 1) corner = px <= 1 ? 0 : px >= screenW - 2 ? 1 : -1; else if (py >= screenH - 2) corner = px <= 1 ? 2 : px >= screenW - 2 ? 3 : -1;
+	if (corner < 0) {                                                          /* left the region: what waits is cancelled, a "keep the screen saver away" ends */
+		if (hcInside >= 0 && HCAction(prefs, hcInside) == 6) [[NSDistributedNotificationCenter defaultCenter] postNotificationName: @"com.wsbsd.hotcorner" object: nil userInfo: @{ @"action": @6, @"exit": @YES } deliverImmediately: YES];
+		hcInside = -1; hcPending = 0; return;
+	}
+	if (corner == hcInside) {
+		if (hcPending && Now() - hcEnter >= 0.5) { int a = hcPending; hcPending = 0; [self runCornerAction: a]; }
+		return;
+	}
+	hcInside = corner; hcEnter = Now(); int a = HCAction(prefs, corner);
+	if (a == 1) return;
+	if (a == 5 || a == 10) { hcPending = a; return; }
+	[self runCornerAction: a];
+}
 - (void)tick:(NSTimer *)t
 {
 	if (Now() - scanT > 1.5) {                                                  /* the running applications: a tile appears for one that is not in the Dock, and goes when it quits */
@@ -313,7 +356,7 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 		if (![key isEqualToString: scanKey] && !dragging) [self reload];
 		trashFull = full;
 	}
-	[self stepAutohide];
+	[self stepAutohide]; [self pollHotCorners];
 	for (int i = 0; i < n; i++) {
 		int pid = [pids[i] intValue]; tiles[i].running = (pid > 0 && kill(pid, 0) == 0) || (items[i].kind == DOCK_APP && [self pidOfApp: paths[i]] > 0);
 		if (bounceStart[i] > 0) {                                                  /* the launch bounce: three arcs of decreasing height, 0.6 s each... */
