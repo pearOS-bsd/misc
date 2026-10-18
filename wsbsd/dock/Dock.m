@@ -28,6 +28,7 @@ typedef struct { uint32_t wid; int pid; char label[64]; char bpath[512]; CGImage
 	NSMutableDictionary *iconCache; NSSet *runningPaths; NSDictionary *runningPids; double scanT; NSString *scanKey;
 	int autohide; double hideDelay, hideTime, hideFrac, hideT0, reveal0, dwell0; int hidden;                  /* hideFrac: 0 shown ... 1 hidden */
 	NSArray *ctxItems; int ctxOpen, ctxSub, ctxHoverMain, ctxHoverSub; NSRect ctxMainR, ctxSubR; NSArray *ctxSubItems; double ctxH;
+	double poofT0; NSPoint poofAt;
 	int ctxItem, dragCand, dragItem, dragging; double dragStartX; int trashFull;
 	NSTrackingRectTag trackTag; double pointer; int hover; double scale[MAXITEMS]; double bounceStart[MAXITEMS]; NSTimer *timer; double screenW, screenH, screenLen, alongBase; int orient; DockFan fan; int fanOpen; double fanStart, fanClose; NSMutableArray *fanStore;
 }
@@ -165,12 +166,14 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 	for (int i = 0; i < n; i++) { scale[i] = 1; bounceStart[i] = 0; if (items[i].kind == DOCK_APP) { CGImageRef ic = [self iconForPath: paths[i]]; if (ic) tiles[i].icon = ic; } }
 	scanKey = [[[runningPaths allObjects] sortedArrayUsingSelector: @selector(compare:)] componentsJoinedByString: @"|"];
 }
-- (BOOL)wide { return fanOpen || ctxOpen; }
+- (BOOL)wide { return fanOpen || ctxOpen || [self poofing]; }
+- (BOOL)poofing { return poofT0 > 0 && Now() - poofT0 < 0.6; }
 - (double)originX { return [self wide] ? (orient ? -alongBase : 0) : winX; }          /* the along-coordinate of the window's start */
 /* the window's frame for the state: the bar's own window, or the whole screen while a fan or a menu is open */
 - (NSRect)stateFrame
 {
 	double thick = (autohide && hideFrac >= 1) ? 2 : orient ? 320 : 170;
+	if ([self poofing] && !fanOpen && !ctxOpen) return NSMakeRect(0, 0, screenW, screenH);
 	if (!orient) {
 		if (fanOpen) return NSMakeRect(0, 0, screenW, fmin(screenH, 170 + 64 * (fan.n + 1)));
 		if (ctxOpen) return NSMakeRect(0, 0, screenW, fmin(screenH, 170 + ctxH));
@@ -244,6 +247,21 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 	[[NSDistributedNotificationCenter defaultCenter] postNotificationName: @"com.wsbsd.dock.minimized" object: nil userInfo: @{ @"wid": @(wid) } deliverImmediately: YES];
 	[self reload];
 }
+/* the minimize effect of the preference "mineffect": the genie, or "scale" (the window shrinks straight into the tile) */
+- (int)effectMesh:(const double *)win icon:(const double *)icon progress:(float)p cols:(int *)cols rows:(int *)rows done:(float *)done
+{
+	int dir = orient ? 2 + orient : 1;
+	if (![prefs[@"mineffect"] isEqual: @"scale"]) return genie_mesh(win, icon, p, dir, genieMesh, cols, rows, done);
+	static float id[GENIE_MAX_FLOATS]; int c0, r0; float d0;                       /* the corners of the untouched window, in the mesh's own conventions */
+	if (!genie_mesh(win, icon, 0.0001f, dir, id, &c0, &r0, &d0) || c0 < 2 || r0 < 2) return genie_mesh(win, icon, p, dir, genieMesh, cols, rows, done);
+	int cc[4] = { 0, c0 - 1, 0, c0 - 1 }, rr[4] = { 0, 0, r0 - 1, r0 - 1 };
+	for (int k = 0; k < 4; k++) {
+		const float *q = &id[(rr[k] * c0 + cc[k]) * 4]; float *o = &genieMesh[k * 4];
+		double nx = win[2] > 0 ? (q[2] - win[0]) / win[2] : 0, ny = win[3] > 0 ? (q[3] - win[1]) / win[3] : 0;
+		o[0] = q[0]; o[1] = q[1]; o[2] = (float)(q[2] + (icon[0] + nx * icon[2] - q[2]) * p); o[3] = (float)(q[3] + (icon[1] + ny * icon[3] - q[3]) * p);
+	}
+	*cols = 2; *rows = 2; *done = p; return 16;
+}
 - (void)stepMini
 {
 	for (int k = 0; k < nmini; k++) {
@@ -252,7 +270,7 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 		int ti = mw->appItem >= 0 ? mw->appItem : mw->item; if (ti < 0 || ti >= n) continue;
 		const DockSlot *sl = &slots[ti]; ws_win w = { .id = mw->wid, .px = NULL };
 		double icon[4]; [self iconRect: ti into: icon]; int cols, rows; float done;
-		int nf = genie_mesh(mw->wr, icon, (float)p, orient ? 2 + orient : 1, genieMesh, &cols, &rows, &done);
+		int nf = [self effectMesh: mw->wr icon: icon progress: (float)p cols: &cols rows: &rows done: &done];
 		if (nf && !(mw->phase == 1 && p >= 1) && !(mw->phase == 3 && p <= 0)) ws_win_warp(wsc, &w, cols, rows, genieMesh);
 		if (mw->phase == 1 && p >= 1) { ws_win_order(wsc, &w, WS_OUT, 0); ws_win_warp(wsc, &w, 0, 0, NULL); mw->phase = 2; }
 		else if (mw->phase == 3 && p <= 0) {
@@ -267,7 +285,7 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 	MiniWin *mw = &mini[k]; if (mw->phase != 2 || !wsc) return;
 	ws_win w = { .id = mw->wid, .px = NULL };
 	int ti = mw->appItem >= 0 ? mw->appItem : mw->item; const DockSlot *sl = &slots[ti]; double icon[4]; [self iconRect: ti into: icon]; int cols, rows; float done;
-	if (genie_mesh(mw->wr, icon, 1.0f, orient ? 2 + orient : 1, genieMesh, &cols, &rows, &done)) ws_win_warp(wsc, &w, cols, rows, genieMesh);      /* collapsed into the tile before it is shown */
+	if ([self effectMesh: mw->wr icon: icon progress: 1.0f cols: &cols rows: &rows done: &done]) ws_win_warp(wsc, &w, cols, rows, genieMesh);      /* collapsed into the tile before it is shown */
 	ws_win_order(wsc, &w, WS_ABOVE, 0);
 	mw->phase = 3; mw->t0 = Now();
 	[[NSDistributedNotificationCenter defaultCenter] postNotificationName: @"com.wsbsd.dock.restore" object: nil userInfo: @{ @"wid": @(mw->wid) } deliverImmediately: YES];
@@ -290,7 +308,7 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 		}
 	}
 	if (ctxOpen && wsc) { int px, py; if (ws_cursor_position(wsc, &px, &py) == 0) [self ctxHoverAt: NSMakePoint(px, screenH - py)]; pointer = -1; hover = -1; }
-	if (wsc && !fanOpen && !ctxOpen) {                                          /* the pointer from the window server: the bar unzooms when it leaves (tracking events are not reliable) */
+	if (wsc && !fanOpen && !ctxOpen && ![self poofing]) {                       /* the pointer from the window server: the bar unzooms when it leaves (tracking events are not reliable) */
 		int px, py; if (ws_cursor_position(wsc, &px, &py) == 0) {
 			NSRect wf = [[self window] frame]; double top = screenH - (wf.origin.y + wf.size.height);
 			if (hideFrac < 1 && py >= top && py < top + wf.size.height && px >= wf.origin.x && px < wf.origin.x + wf.size.width) { pointer = orient ? py - alongBase : px; hover = [self tileAt: pointer]; } else { pointer = -1; hover = -1; }
@@ -299,7 +317,7 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 	[self relayout];
 	if (wsc && !fanOpen && !(autohide && hideFrac >= 1)) { double ox = ctxOpen ? 0 : winX; (void)ox;                      /* the glass of the bar: the window server blurs and bends what is behind the bar's rounded rectangle (the window is larger than the bar) */
 		ws_win gw = { .id = (ws_wid)[[self window] windowNumber], .px = NULL }; double wh = [[self window] frame].size.height;
-		ws_rect gr = { (int)floor(bar.bar_x - ox), (int)floor(wh - (bar.bottom_margin + bar.bar_h)), (int)ceil(bar.bar_w), (int)ceil(bar.bar_h) };
+		ws_rect gr = { (int)floor(bar.bar_x - [self originX]), (int)floor(wh - (bar.bottom_margin + bar.bar_h)), (int)ceil(bar.bar_w), (int)ceil(bar.bar_h) };
 		if (orient) { double ww = [[self window] frame].size.width; gr = (ws_rect){ (int)floor(orient == 1 ? bar.bottom_margin : ww - (bar.bottom_margin + bar.bar_h)), (int)floor(bar.bar_x - [self originX]), (int)ceil(bar.bar_h), (int)ceil(bar.bar_w) }; }
 		if (gr.x != glassRect.x || gr.y != glassRect.y || gr.w != glassRect.w || gr.h != glassRect.h || !glassOn) { ws_win_glass(wsc, &gw, gr, 18, 1); glassRect = gr; glassOn = 1; }
 	} else if (wsc && glassOn) { ws_win_glass(wsc, &(ws_win){ .id = (ws_wid)[[self window] windowNumber], .px = NULL }, (ws_rect){ 0, 0, 0, 0 }, 0, 0); glassOn = 0; }
@@ -332,6 +350,7 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 	DockScene sc = { m, items, tiles, n, slots, bar, [self originX], [self bounds].size.height, hover, fanOpen ? &fan : NULL, orient, [self bounds].size.width };
 	DockRender(c, &sc);
 	if (ctxOpen) [self drawContext];
+	if ([self poofing]) [self drawPoof];
 }
 - (int)tileAt:(double)x
 {
@@ -412,7 +431,10 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 	int i = dragCand; dragCand = -1; if (ctxOpen) return;
 	if (dragging) {
 		dragging = 0; int d = dragItem; dragItem = -1;
-		if (d >= 0 && d < n && [self pointerAbove] > 40 && srcKind[d] != -1) { [self keepToggle: d remove: YES]; }       /* dragged out of the Dock: it is removed */
+		if (d >= 0 && d < n && [self pointerAbove] > 40 && srcKind[d] != -1) {
+			int px, py; if (wsc && ws_cursor_position(wsc, &px, &py) == 0) { poofAt = NSMakePoint(px, screenH - py); poofT0 = Now(); }
+			[self keepToggle: d remove: YES];
+		}       /* dragged out of the Dock: it is removed */
 		else { [self savePrefs]; [self reload]; }
 		return;
 	}
@@ -536,6 +558,15 @@ static NSSize MenuSize(NSArray *its)
 		[d[@"t"] drawAtPoint: NSMakePoint(ir.origin.x + 24, ir.origin.y + (ir.size.height - ts.height) / 2) withAttributes: at];
 		if ([d[@"on"] boolValue]) [@"✓" drawAtPoint: NSMakePoint(ir.origin.x + 7, ir.origin.y + (ir.size.height - ts.height) / 2) withAttributes: at];
 		if (d[@"sub"]) [@"›" drawAtPoint: NSMakePoint(ir.origin.x + ir.size.width - 14, ir.origin.y + (ir.size.height - ts.height) / 2) withAttributes: at];
+	}
+}
+- (void)drawPoof                                                                /* the puff of smoke of a tile dragged out of the Dock: grey clouds that swell and thin out */
+{
+	CGContextRef c = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort]; double t = (Now() - poofT0) / 0.6; if (t > 1) return;
+	for (int k = 0; k < 7; k++) {
+		double a = k * 0.9 + 0.4, d = 26 * t * (0.4 + 0.12 * k), r = 14 + 34 * t + 4 * (k % 3), al = 0.55 * (1 - t) * (1 - t) * (k == 0 ? 1.0 : 0.8);
+		CGFloat x = poofAt.x + cos(a) * d, y = poofAt.y + sin(a) * d * 0.8 + 10 * t;
+		for (int q = 0; q < 6; q++) { double rr = r * (1.0 - q / 6.0); CGContextSetRGBFillColor(c, 0.85, 0.85, 0.87, al / 4); CGContextFillEllipseInRect(c, CGRectMake(x - rr, y - rr, 2 * rr, 2 * rr)); }                      /* a soft edge: nested discs */
 	}
 }
 - (void)drawContext
