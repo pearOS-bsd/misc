@@ -181,7 +181,8 @@ void DockRender(CGContextRef c, const DockScene *s)
 		}
 		CGFloat art = sl->art, lift = t->bounce * s->m.tilesize;
 		if (s->fan && s->fan->anchor == i) continue;                      /* drawn by DrawFan */
-		if (t->icon) CGContextDrawImage(c, CGRectMake(cx - art / 2 - art * 0.0625, art_bottom + lift - art * 0.0625, art * 1.125, art * 1.125), t->icon);   /* the icon image has a margin (the art is 80 % of it) */
+		if (t->glyph && !strcmp(t->glyph, "none") && !t->icon) { /* a minimizing window's tile: empty until the window has arrived */ }
+		else if (t->icon) CGContextDrawImage(c, CGRectMake(cx - art / 2 - art * 0.0625, art_bottom + lift - art * 0.0625, art * 1.125, art * 1.125), t->icon);   /* the icon image has a margin (the art is 80 % of it) */
 		else DockDrawIcon(c, t->glyph, CGRectMake(cx - art / 2, art_bottom + lift, art, art));
 		if (t->badge > 0) {
 			char num[16]; snprintf(num, sizeof num, "%d", t->badge); CGFloat tw = 0; DrawText(c, num, 13, CGPointZero, &tw);

@@ -911,7 +911,7 @@ void ws_server_walk(ws_server *s, ws_visit_fn fn, void *ctx)
 		vis.id = w->id; vis.frame = w->frame; vis.alpha = w->alpha * w->sys_alpha; vis.corner_radius = w->corner_radius ? w->corner_radius : (w->shadow_on ? w->shadow_cr : 0); vis.blur_radius = w->blur_radius; vis.active = w->id == act || w->appearance;
 		vis.pixels = (w->content && w->committed) ? (w->front ? w->front : w->content) : w->backing;
 		vis.buffer_id = (w->content && w->committed) ? w->content_id : 0;
-		if (w->shadow_on && w->shadow) {
+		if (w->shadow_on && w->shadow && !w->mesh) {
 			vis.shadow = w->shadow; vis.shadow_x = w->frame.x - w->shadow_pad; vis.shadow_y = w->frame.y - w->shadow_pad; vis.shadow_gen = w->shadow_gen;
 		}
 		vis.invert = w->filter == 2; vis.has_xf = w->has_xf; memcpy(vis.xf, w->xf, sizeof vis.xf);
@@ -980,7 +980,7 @@ void ws_compose_scene(ws_server *s, ws_surface *screen)
 			if (inv || rnd || brt) { if (s->comp->flush) s->comp->flush(s->comp); ws_surface_free(inv); ws_surface_free(rnd); ws_surface_free(brt); }
 		}
 		/* the shadow layer is rendered above its window (it is cut out of the window shape; the inner rim lies inside it) */
-		if (v[i]->shadow_on) draw_shadow(s, v[i], screen, v[i]->id == act || v[i]->appearance);
+		if (v[i]->shadow_on && !v[i]->mesh) draw_shadow(s, v[i], screen, v[i]->id == act || v[i]->appearance);     /* a warped window (genie) has no shadow: it is not where the frame is */
 	}
 	if (s->comp->flush) s->comp->flush(s->comp);
 	free(v);

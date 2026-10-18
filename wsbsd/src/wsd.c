@@ -1,6 +1,15 @@
 /* wsd: the window server daemon. kqueue loop, SOCK_SEQPACKET + SCM_RIGHTS transport carrying SkyLight-layout MIG messages,
  * shared-memory backing stores, software compositor. Display backend: headless (PPM) or FreeBSD KMS (untested).
  * Protocol facts: docs/SPEC-SLS-WIRE.md. */
+#ifdef __FreeBSD__
+#include <sys/param.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/ucred.h>
+#include <sys/un.h>
+#include <sys/sysctl.h>
+#include <sys/user.h>
+#endif
 #include "ws.h"
 #include "ws_backend.h"
 #include "ws_ipc.h"
@@ -331,10 +340,26 @@ static struct { uint32_t wid, cid, mask; } rts[MAXRTS];
 static struct { int used; uint32_t wid, recip, a, b, id; } grants[MAXGRANTS];
 static uint32_t next_grant = 1;
 
+/* The Dock works on the windows of every application (genie minimize, restore): the real WindowServer lets it. The peer is the Dock when its executable is called Dock. */
+static int conn_is_dock(conn *c)
+{
+	if (c->dock) return c->dock > 0;
+	c->dock = -1;
+#ifdef __FreeBSD__
+	struct xucred cr; socklen_t l = sizeof cr;
+	if (getsockopt(c->fd, 0, LOCAL_PEERCRED, &cr, &l) == 0 && cr.cr_pid > 0) {
+		int mib[4] = { CTL_KERN, KERN_PROC, KERN_PROC_PATHNAME, cr.cr_pid }; char path[1024]; size_t n = sizeof path;
+		if (sysctl(mib, 4, path, &n, NULL, 0) == 0) { const char *b = strrchr(path, '/'); b = b ? b + 1 : path; if (!strcmp(b, "Dock")) c->dock = 1; }
+	}
+#endif
+	return c->dock > 0;
+}
+
 uint32_t wsd_rights_held(const conn *c, uint32_t wid)
 {
 	if (!wid) return 0;
 	if (ws_window_owner(srv, wid) == c->id) return 0x30007u;
+	if (conn_is_dock((conn *)c) && ws_window_exists(srv, wid)) return 0x30007u;
 	uint32_t m = 0;
 	for (int i = 0; i < MAXRTS; i++) if (rts[i].wid == wid && rts[i].cid == c->id) m |= rts[i].mask;
 	return m;

@@ -17,6 +17,7 @@ struct wsd_window {
 	int x, y, w, h;             /* wsd coordinates (origin top-left) */
 	int level;
 	unsigned style;
+	int dockTaken;              /* the Dock has taken the minimizing window over (it animates and orders it out) */
 	void *surface;              /* the current WsdCairoSurface (unretained) */
 	struct wsd_window *next;
 };

@@ -5,13 +5,20 @@
 #include <unistd.h>
 #include <signal.h>
 #include "DockRender.h"
+#include "genie.h"
+#include "ws_client.h"
 #import "../launchservices/LSIcon.h"
 
 #define MAXITEMS 64
 static double Now(void) { return CACurrentMediaTime(); }
 
+/* a minimized window: lives in the Dock as a tile with its picture; the genie runs between the window and the tile */
+typedef struct { uint32_t wid; int pid; char label[64]; CGImageRef thumb; int phase; double t0; double wr[4]; int item; } MiniWin;       /* phase: 1 minimizing, 2 settled, 3 restoring */
+#define MAXMINI 16
+
 @interface DockView : NSView {
 @public
+	MiniWin mini[MAXMINI]; int nmini; ws_conn *wsc; float genieMesh[GENIE_MAX_FLOATS];
 	DockMetrics m; DockItem items[MAXITEMS]; DockTile tiles[MAXITEMS]; DockSlot slots[MAXITEMS]; DockBar bar; int n;
 	NSMutableArray *paths; NSMutableArray *names; NSMutableArray *pids; NSMutableArray *labelStore;
 	NSTrackingRectTag trackTag; double pointer; int hover; double scale[MAXITEMS]; double bounceStart[MAXITEMS]; NSTimer *timer; double screenW, screenH; DockFan fan; int fanOpen; double fanStart, fanClose; NSMutableArray *fanStore;
@@ -32,6 +39,8 @@ static double Now(void) { return CACurrentMediaTime(); }
 	if ([prefs[@"largesize"] intValue] > 0) m.largesize = [prefs[@"largesize"] intValue];
 	if (prefs[@"magnification"]) m.magnification = [prefs[@"magnification"] boolValue];
 	pointer = -1; hover = -1;
+	wsc = ws_connect(NULL);
+	[[NSDistributedNotificationCenter defaultCenter] addObserver: self selector: @selector(miniNote:) name: @"com.wsbsd.dock.minimize" object: nil];
 	[self reload];
 	timer = [NSTimer scheduledTimerWithTimeInterval: 1.0 / 60 target: self selector: @selector(tick:) userInfo: nil repeats: YES];
 	return self;
@@ -49,6 +58,10 @@ static double Now(void) { return CACurrentMediaTime(); }
 	}
 	items[n].kind = DOCK_SEPARATOR; tiles[n] = (DockTile){ NULL, "", 0, 0, 0 }; [paths addObject: @""]; [pids addObject: @0]; n++;
 	items[n].kind = DOCK_OTHER; tiles[n] = (DockTile){ "Downloads", "folder", 0, 0, 0 }; [paths addObject: [NSHomeDirectory() stringByAppendingPathComponent: @"Downloads"]]; [pids addObject: @0]; n++;
+	for (int k = 0; k < nmini && n < MAXITEMS - 2; k++) {                       /* minimized windows: after the Downloads stack, before the Trash */
+		items[n].kind = DOCK_MINIMIZED; mini[k].item = n; tiles[n] = (DockTile){ mini[k].label, mini[k].phase == 2 ? "doc" : "none", 0, 0, 0, mini[k].phase == 2 ? mini[k].thumb : NULL };
+		[paths addObject: @""]; [pids addObject: @0]; n++;
+	}
 	items[n].kind = DOCK_TRASH; tiles[n] = (DockTile){ "Trash", "trash", 0, 0, 0 }; [paths addObject: @""]; [pids addObject: @0]; n++;
 	for (int i = 0; i < n; i++) { scale[i] = 1; bounceStart[i] = 0; if (items[i].kind == DOCK_APP && [paths[i] length] && [[NSFileManager defaultManager] fileExistsAtPath: paths[i]]) tiles[i].icon = LSIconCreateForPath(paths[i], 256); }
 }
@@ -56,6 +69,57 @@ static double Now(void) { return CACurrentMediaTime(); }
 {
 	double px = pointer;
 	dock_layout(&m, items, n, px, slots, &bar);
+}
+- (CGImageRef)thumbOfWindow:(uint32_t)wid
+{
+	ws_surface *s = wsc ? ws_capture(wsc, (ws_rect){ 0, 0, 0, 0 }, wid, 0) : NULL; if (!s) return NULL;
+	int box = 128; CGColorSpaceRef cs = CGColorSpaceCreateDeviceRGB();
+	CGContextRef c = CGBitmapContextCreate(NULL, box, box, 8, box * 4, cs, kCGImageAlphaPremultipliedLast);
+	CGDataProviderRef dp = CGDataProviderCreateWithData(NULL, s->px, (size_t)s->stride * s->h, NULL);
+	CGImageRef src = CGImageCreate(s->w, s->h, 8, 32, s->stride, cs, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little, dp, NULL, false, kCGRenderingIntentDefault);
+	double k = fmin((box - 8.0) / s->w, (box - 8.0) / s->h), w = s->w * k, h = s->h * k;
+	if (src) { CGContextSetInterpolationQuality(c, kCGInterpolationHigh); CGContextDrawImage(c, CGRectMake((box - w) / 2, (box - h) / 2, w, h), src); CGImageRelease(src); }
+	CGImageRef out = CGBitmapContextCreateImage(c);
+	CGDataProviderRelease(dp); CGContextRelease(c); CGColorSpaceRelease(cs); ws_surface_free(s);
+	return out;
+}
+- (void)miniNote:(NSNotification *)note
+{
+	NSDictionary *u = [note userInfo]; uint32_t wid = (uint32_t)[u[@"wid"] intValue]; if (!wsc || !wid || nmini >= MAXMINI) return;
+	ws_win w = { .id = wid, .px = NULL }; ws_rect r; if (ws_win_get_bounds(wsc, &w, &r)) return;
+	MiniWin *mw = &mini[nmini++]; memset(mw, 0, sizeof *mw);
+	mw->wid = wid; mw->pid = [u[@"pid"] intValue]; snprintf(mw->label, sizeof mw->label, "%s", [u[@"title"] length] ? [u[@"title"] UTF8String] : "Window");
+	mw->thumb = [self thumbOfWindow: wid]; mw->phase = 1; mw->t0 = Now();
+	int sw = 0, sh = 0; ws_conn_screen(wsc, &sw, &sh); mw->wr[0] = r.x; mw->wr[1] = sh - (r.y + r.h); mw->wr[2] = r.w; mw->wr[3] = r.h;
+	[[NSDistributedNotificationCenter defaultCenter] postNotificationName: @"com.wsbsd.dock.minimized" object: nil userInfo: @{ @"wid": @(wid) } deliverImmediately: YES];
+	[self reload];
+}
+- (void)stepMini
+{
+	for (int k = 0; k < nmini; k++) {
+		MiniWin *mw = &mini[k]; if (mw->phase == 2 || !wsc) continue;
+		double p = (Now() - mw->t0) / 0.5; if (p > 1) p = 1; if (mw->phase == 3) p = 1 - p;
+		const DockSlot *sl = &slots[mw->item]; ws_win w = { .id = mw->wid, .px = NULL };
+		double icon[4] = { sl->cx - sl->art / 2, bar.bottom_margin + 15, sl->art, sl->art }; int cols, rows; float done;
+		int nf = genie_mesh(mw->wr, icon, (float)p, 1, genieMesh, &cols, &rows, &done);
+		if (nf && !(mw->phase == 1 && p >= 1) && !(mw->phase == 3 && p <= 0)) ws_win_warp(wsc, &w, cols, rows, genieMesh);
+		if (mw->phase == 1 && p >= 1) { ws_win_order(wsc, &w, WS_OUT, 0); ws_win_warp(wsc, &w, 0, 0, NULL); mw->phase = 2; }
+		else if (mw->phase == 3 && p <= 0) {
+			ws_win_warp(wsc, &w, 0, 0, NULL); if (mw->thumb) CGImageRelease(mw->thumb);
+			memmove(&mini[k], &mini[k + 1], (size_t)(nmini - k - 1) * sizeof mini[0]); nmini--; k--; [self reload];
+		}
+	}
+	for (int k = 0; k < nmini; k++) { int i = mini[k].item; if (i < n) { tiles[i].icon = mini[k].phase == 2 ? mini[k].thumb : NULL; tiles[i].glyph = mini[k].phase == 2 ? "doc" : "none"; } }
+}
+- (void)restoreMini:(int)k
+{
+	MiniWin *mw = &mini[k]; if (mw->phase != 2 || !wsc) return;
+	ws_win w = { .id = mw->wid, .px = NULL };
+	const DockSlot *sl = &slots[mw->item]; double icon[4] = { sl->cx - sl->art / 2, bar.bottom_margin + 15, sl->art, sl->art }; int cols, rows; float done;
+	if (genie_mesh(mw->wr, icon, 1.0f, 1, genieMesh, &cols, &rows, &done)) ws_win_warp(wsc, &w, cols, rows, genieMesh);      /* collapsed into the tile before it is shown */
+	ws_win_order(wsc, &w, WS_ABOVE, 0);
+	mw->phase = 3; mw->t0 = Now();
+	[[NSDistributedNotificationCenter defaultCenter] postNotificationName: @"com.wsbsd.dock.restore" object: nil userInfo: @{ @"wid": @(mw->wid) } deliverImmediately: YES];
 }
 - (void)tick:(NSTimer *)t
 {
@@ -67,6 +131,7 @@ static double Now(void) { return CACurrentMediaTime(); }
 		}
 	}
 	[self relayout];
+	[self stepMini];
 	if (getenv("DOCK_FAN") && !fanOpen && !fanStart) { [self openFan: n - 2]; }
 	NSWindow *w = [self window];
 	NSRect f = NSMakeRect(floor(bar.bar_x), 0, ceil(bar.bar_w), 170);
@@ -123,6 +188,7 @@ static double Now(void) { return CACurrentMediaTime(); }
 	if (fanOpen) { if (!fanClose) fanClose = Now(); return; }
 	if (i < 0 || !tiles[i].label) return;
 	NSString *path = paths[i];
+	if (items[i].kind == DOCK_MINIMIZED) { for (int k = 0; k < nmini; k++) if (mini[k].item == i) [self restoreMini: k]; return; }
 	if (items[i].kind == DOCK_OTHER) { [self openFan: i]; return; }
 	if (items[i].kind == DOCK_APP && path.length && [[NSFileManager defaultManager] fileExistsAtPath: path]) {
 		bounceStart[i] = Now();
