@@ -12,6 +12,7 @@ typedef struct {
 	float alpha;
 	int filter;                     /* SetWindowCIFilter: 2 = CIColorInvert (rendered), others kept only */
 	float xf[6]; int has_xf;        /* SetWindowTransform: a b c d tx ty about the window centre (software compositor) */
+	ws_rect *cap_excl; int ncap_excl;   /* SetWindowCaptureExcludeShape: window-relative rectangles left out of screen captures */
 	float brightness;       /* SetWindowListBrightness: the colour is multiplied by it (1 = unchanged); software compositor */
 	float sys_alpha;        /* SetWindowListSystemAlpha: multiplies the alpha (fades done by the system); 1 by default */
 	int syslevel;           /* SetWindowListSystemLevel class, kept */
@@ -144,7 +145,7 @@ int ws_release_window(ws_server *s, ws_wid id)
 	if (s->grab == id) s->grab = 0;
 	if (s->key_win == id) s->key_win = 0;
 	for (size_t i = 0; i < s->n; i++) { if (s->win[i].parent == id) s->win[i].parent = 0; if (s->win[i].mvparent == id) s->win[i].mvparent = 0; if (s->win[i].ogparent == id) s->win[i].ogparent = 0; }       /* children of a destroyed window lose their parent / groups */
-	ws_surface_free(w->backing); ws_surface_free(w->shadow); ws_surface_free(w->front); free(w->shape); free(w->evshape);
+	ws_surface_free(w->backing); ws_surface_free(w->shadow); ws_surface_free(w->front); free(w->shape); free(w->evshape); free(w->cap_excl);
 	bump(s);
 	if (w->shm[0]) ws_shm_unlink(w->shm);
 	*w = s->win[--s->n];
@@ -470,6 +471,26 @@ int ws_set_window_level(ws_server *s, ws_wid id, int level)
 	if (!w) return -1;
 	if (w->level != level) { w->level = level; bump(s); if (w->on_screen) place(s, w, WS_ABOVE, NULL); }   /* the real server brings it to the front of the new level */
 	return 0;
+}
+int ws_set_window_capture_exclude(ws_server *s, ws_wid id, const ws_rect *r, int n)
+{
+	window *w = get(s, id); if (!w) return -1;
+	free(w->cap_excl); w->cap_excl = NULL; w->ncap_excl = 0;
+	if (n > 0 && r) { w->cap_excl = malloc(sizeof(ws_rect) * (size_t)n); if (!w->cap_excl) return -1; memcpy(w->cap_excl, r, sizeof(ws_rect) * (size_t)n); w->ncap_excl = n; }
+	return 0;
+}
+/* clears what the windows excluded from capture cover in `out`, a capture of the screen rectangle whose top left corner is (ox, oy) */
+void ws_capture_apply_exclusions(ws_server *s, ws_surface *out, int ox, int oy)
+{
+	for (size_t i = 0; i < s->n; i++) {
+		window *w = &s->win[i]; if (!w->ncap_excl || !w->on_screen) continue;
+		for (int k = 0; k < w->ncap_excl; k++) {
+			ws_rect r = w->cap_excl[k]; r.x += w->frame.x - ox; r.y += w->frame.y - oy;
+			int x0 = (int)floorf(r.x), y0 = (int)floorf(r.y), x1 = (int)ceilf(r.x + r.w), y1 = (int)ceilf(r.y + r.h);
+			if (x0 < 0) x0 = 0; if (y0 < 0) y0 = 0; if (x1 > out->w) x1 = out->w; if (y1 > out->h) y1 = out->h;
+			for (int y = y0; y < y1; y++) memset(out->px + (size_t)y * out->stride + x0 * 4, 0, (size_t)(x1 - x0) * 4);
+		}
+	}
 }
 int ws_set_window_brightness(ws_server *s, ws_wid id, float b) { window *w = get(s, id); if (!w) return -1; w->brightness = b < 0 ? 0 : b > 8 ? 8 : b; bump(s); return 0; }
 int ws_window_brightness(ws_server *s, ws_wid id, float *b) { window *w = get(s, id); if (!w) return -1; *b = w->brightness; return 0; }

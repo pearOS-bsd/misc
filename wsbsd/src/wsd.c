@@ -1114,6 +1114,7 @@ static int do_private(conn *c, const uint8_t *buf, size_t len)
 		if (!out) { r.retcode = CGS_ERROR_FAILURE; break; }
 		ws_fill(out, (ws_rect){ 0, 0, w, hh }, 0, 0, 0, 0);
 		ws_copy(out, 0, 0, screen, (ws_rect){ x, y, w, hh });
+		ws_capture_apply_exclusions(srv, out, x, y);
 		r.a[0] = w; r.a[1] = hh;
 		struct iovec cv = { &r, sizeof r };
 		int rc = ws_ipc_send(c->fd, &cv, 1, &fd, 1);

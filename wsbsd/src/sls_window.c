@@ -866,6 +866,18 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		}
 		return reply_simple(c->fd, h, 0);
 	}
+	case SLS_MSG_SetWindowCaptureExcludeShape: {                                   /* OOL region; wid@0x34, size repeated@0x38, size 0x3c; needs write access, an empty region does nothing; 0 (decompiled __XSetWindowCaptureExcludeShape) */
+		int err; int osz = ool_request(h, buf, len, 0x3c, &err);
+		if (osz < 0) return reply_simple(c->fd, h, err);
+		if ((uint32_t)osz != rd32(buf, 0x38)) return reply_simple(c->fd, h, -300);
+		uint32_t wid = rd32(buf, 0x34);
+		if (osz && ws_window_exists(srv, wid) && holds_rights(c, wid)) {
+			ws_rect *rc = NULL; int nr = 0; ws_rect bb;
+			if (ws_region_parse(buf + 0x3c, (uint32_t)osz, &rc, &nr, &bb) == 0) ws_set_window_capture_exclude(srv, wid, rc, nr);
+			free(rc);
+		}
+		return reply_simple(c->fd, h, 0);
+	}
 	case SLS_MSG_AddTrackingArea: {                                                /* OOL region; wid@0x34, size repeated@0x38, compat id u64@0x3c, u64@0x48 (user data); size 0x50; 0 */
 		int err; int osz = ool_request(h, buf, len, 0x50, &err);
 		if (osz < 0) return reply_simple(c->fd, h, err);
