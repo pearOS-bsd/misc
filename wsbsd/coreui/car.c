@@ -2,11 +2,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <fcntl.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include "lzfse/lzfse_internal.h"
 #include "lzfse/lzfse.h"
 
 struct CarFile {
-	uint8_t *buf; size_t len;
+	uint8_t *buf; size_t len; int mapped;                    /* the file, mapped (the system catalogue of the symbols is 117 MB: only the pages that are looked at are read) */
 	uint32_t nblocks; const uint8_t *index;                  /* the block table: (address, length) pairs, big-endian */
 	uint32_t renditions_tree;
 	int nkeys; uint32_t keyids[32];                          /* KEYFORMAT */
@@ -49,11 +53,12 @@ static void collect(CarFile *c, uint32_t node)
 
 CarFile *car_open(const char *path)
 {
-	FILE *f = fopen(path, "rb"); if (!f) return NULL;
-	fseek(f, 0, SEEK_END); long n = ftell(f); fseek(f, 0, SEEK_SET);
-	CarFile *c = calloc(1, sizeof *c); c->buf = malloc((size_t)n); c->len = (size_t)n;
-	if (fread(c->buf, 1, (size_t)n, f) != (size_t)n || n < 32 || memcmp(c->buf, "BOMStore", 8)) { fclose(f); car_close(c); return NULL; }
-	fclose(f);
+	int fd = open(path, O_RDONLY); if (fd < 0) return NULL;
+	struct stat st; if (fstat(fd, &st) || st.st_size < 32) { close(fd); return NULL; }
+	CarFile *c = calloc(1, sizeof *c); c->len = (size_t)st.st_size;
+	void *m = mmap(NULL, c->len, PROT_READ, MAP_PRIVATE, fd, 0); close(fd);
+	if (m == MAP_FAILED || memcmp(m, "BOMStore", 8)) { if (m != MAP_FAILED) munmap(m, c->len); free(c); return NULL; }
+	c->buf = m; c->mapped = 1;
 	uint32_t ioff = be32(c->buf + 16), voff = be32(c->buf + 24);
 	c->nblocks = be32(c->buf + ioff); c->index = c->buf + ioff;
 	uint32_t nvars = be32(c->buf + voff); const uint8_t *p = c->buf + voff + 4; uint32_t kf = 0, rend = 0;
@@ -71,7 +76,7 @@ CarFile *car_open(const char *path)
 	collect(c, be32(t + 8));
 	return c;
 }
-void car_close(CarFile *c) { if (!c) return; free(c->buf); free(c->keyblk); free(c->valblk); free(c); }
+void car_close(CarFile *c) { if (!c) return; if (c->mapped) munmap(c->buf, c->len); else free(c->buf); free(c->keyblk); free(c->valblk); free(c); }
 int car_count(const CarFile *c) { return c->count; }
 
 int car_rendition(const CarFile *c, int i, CarRendition *r)
@@ -79,8 +84,8 @@ int car_rendition(const CarFile *c, int i, CarRendition *r)
 	if (i < 0 || i >= c->count) return -1;
 	size_t kl, vl; const uint8_t *key = block(c, c->keyblk[i], &kl), *v = block(c, c->valblk[i], &vl);
 	if (!key || !v || vl < 184 || memcmp(v, "ISTC", 4)) { if (getenv("CAR_DEBUG")) fprintf(stderr, "rendition %d: key %p val %p len %zu\n", i, (const void *)key, (const void *)v, vl); return -1; }
-	memset(r, 0, sizeof *r); for (int k = 0; k < 26; k++) r->attr[k] = -1;
-	for (int k = 0; k < c->nkeys && (size_t)(2 * k + 2) <= kl; k++) if (c->keyids[k] < 26) r->attr[c->keyids[k]] = le16(key + 2 * k);
+	memset(r, 0, sizeof *r); for (int k = 0; k < 32; k++) r->attr[k] = -1;
+	for (int k = 0; k < c->nkeys && (size_t)(2 * k + 2) <= kl; k++) if (c->keyids[k] < 32) r->attr[c->keyids[k]] = le16(key + 2 * k);
 	r->name = (const char *)v + 40; r->width = (int)le32(v + 12); r->height = (int)le32(v + 16); r->scale = (int)le32(v + 20) / 100; r->pixel_format = le32(v + 24); r->layout = le16(v + 36);
 	r->csi = v; r->csi_len = vl;
 	size_t tl = le32(v + 168); if (184 + tl > vl) return -1;
@@ -124,4 +129,25 @@ uint8_t *car_data(const CarRendition *r, size_t *len)
 		free(out);
 	}
 	return NULL;
+}
+
+/* the vector glyphs: the renditions called "<name>.svg" whose part is 59 carry one "BVG " container per weight (key attribute 26: 1 ultralight .. 4 regular .. 9 black); the nearest weight wins */
+int car_symbols(const CarFile *c, const char *const *names, int n, int weight, uint8_t **out, size_t *outlen)
+{
+	int *best = calloc((size_t)n, sizeof *best), found = 0; for (int k = 0; k < n; k++) { best[k] = 99; out[k] = NULL; outlen[k] = 0; }
+	for (int i = 0; i < c->count; i++) {
+		size_t kl; const uint8_t *key = block(c, c->keyblk[i], &kl); if (!key) continue;
+		int part = -1, w = -1;
+		for (int k = 0; k < c->nkeys && (size_t)(2 * k + 2) <= kl; k++) { if (c->keyids[k] == CAR_PART) part = le16(key + 2 * k); else if (c->keyids[k] == 26) w = le16(key + 2 * k); }
+		if (part != 59 || w < 0) continue;
+		CarRendition r; if (car_rendition(c, i, &r)) continue;
+		size_t nl = strlen(r.name); if (nl < 5 || strcmp(r.name + nl - 4, ".svg")) continue;
+		for (int k = 0; k < n; k++) {
+			if (strlen(names[k]) != nl - 4 || strncmp(names[k], r.name, nl - 4)) continue;
+			int d = abs(w - weight); if (d >= best[k]) break;
+			size_t len; uint8_t *data = car_data(&r, &len); if (!data || len < 4 || memcmp(data, "BVG ", 4)) { free(data); break; }
+			if (!out[k]) found++; free(out[k]); out[k] = data; outlen[k] = len; best[k] = d; break;
+		}
+	}
+	free(best); return found;
 }

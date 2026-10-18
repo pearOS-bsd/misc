@@ -16,7 +16,7 @@ typedef struct {
 	int scale;                    /* 1, 2 or 3 */
 	uint32_t pixel_format;        /* 'BGRA', 'GA8 ', ... as the four bytes of the file read little-endian */
 	uint16_t layout;              /* the kind: 10 .. 12 images, 1000 + something for data, 1007 packed ... */
-	int attr[26];                 /* the key's attributes by identifier, -1 when the key has none */
+	int attr[32];                 /* the key's attributes by identifier, -1 when the key has none */
 	const uint8_t *csi;           /* the rendition's whole CSI record */
 	size_t csi_len;
 	const uint8_t *tlv; size_t tlv_len;      /* the info list: (tag, length, bytes) triples */
@@ -33,4 +33,6 @@ int car_find(const CarFile *, const char *name, int state, int value, int scale,
 const uint8_t *car_tlv(const CarRendition *, uint32_t tag, size_t *len);
 /* the contents of a data rendition ("RAWD" blocks): malloc'ed, *len bytes; NULL when the rendition is no data rendition */
 uint8_t *car_data(const CarRendition *, size_t *len);
+/* the "BVG " containers (see bvg.h) of the symbols `names` (without ".svg") at the weight (1..9, 4 = regular): out[k] malloc'ed or NULL; returns how many were found. One pass over the catalogue for all of them */
+int car_symbols(const CarFile *, const char *const *names, int n, int weight, uint8_t **out, size_t *outlen);
 #endif
