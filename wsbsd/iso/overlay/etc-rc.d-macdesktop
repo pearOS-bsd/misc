@@ -18,7 +18,7 @@ macdesktop_start()
 	# the image is read-only: the home of the session (preferences, GNUstep's caches and sockets) is memory
 	mount | grep -q ' /Users/Shared ' || mount -t tmpfs -o mode=1777 tmpfs /Users/Shared
 	mount | grep -q ' /root ' || mount -t tmpfs -o mode=755 tmpfs /root
-	mkdir -p /Users/Shared/GNUstep /root/GNUstep /tmp/GNUstepSecure
+	mkdir -p /Users/Shared/GNUstep /root/GNUstep /Users/Shared/Downloads /root/Downloads /tmp/GNUstepSecure
 	chmod 700 /tmp/GNUstepSecure
 	# GNUstep's name server and notification center must be up before the first application: started on demand they time out on slow machines and the application dies ("unable to contact GDNC server")
 	GS=/usr/local/GNUstep/System/Tools

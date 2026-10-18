@@ -60,7 +60,7 @@ struct ws_server {
 	ws_wid grab, key_win;
 	ws_event_sink sink; void *sink_ctx;
 	uint64_t gen;
-	ws_surface *cursor_img; int cursor_hx, cursor_hy; uint32_t cursor_serial; int cursor_shape;
+	ws_surface *cursor_img; int cursor_hx, cursor_hy; uint32_t cursor_serial; int cursor_shape; ws_wid cursor_win;       /* cursor_win: the window under the pointer when a non-arrow shape was set */
 	struct track { int used; uint64_t id; ws_wid wid; ws_rect *r; int n; int inside; int disabled; int ox, oy; } trk[64];
 	float cursor_scale; ws_surface *cursor_scaled; const ws_surface *cursor_scaled_src; float cursor_scaled_for;       /* SetCursorScale: the pointer is drawn this much larger */
 	int decoupled; uint32_t decoupled_by; int rx, ry;           /* AssociateMouseAndMouseCursorPosition(false): the pointer is held still while the mouse keeps sending motion (deltas) */
@@ -703,6 +703,7 @@ void ws_server_mouse(ws_server *s, int x, int y, int buttons)
 	if (moved) track_update(s, x, y);
 	if (moved && s->obscured) { s->obscured = 0; s->cursor_serial++; }       /* an obscured cursor comes back when the mouse moves */
 	ws_wid target = s->grab ? s->grab : ws_find_window(s, x, y);
+	if (moved && s->cursor_shape != 0 && !s->grab && target != s->cursor_win) ws_server_set_cursor_shape(s, 0);        /* the pointer left the window that asked for this cursor (a resize arrow, an I-beam): back to the arrow */
 	if (pressed && !s->grab && target) {                       /* click: raise within its level, focus, grab */
 		ws_order_window(s, target, WS_ABOVE, 0);
 		set_key_window(s, target);
@@ -806,6 +807,7 @@ void ws_server_set_cursor_shape(ws_server *s, int shape)
 	ws_server_set_cursor_image(s, img, hx, hy);                      /* NULL: the default arrow */
 	ws_surface_free(img);
 	s->cursor_shape = img ? shape : 0;
+	s->cursor_win = s->cursor_shape ? ws_find_window(s, s->cx, s->cy) : 0;
 }
 
 void ws_server_set_cursor_image(ws_server *s, const ws_surface *img, int hx, int hy)

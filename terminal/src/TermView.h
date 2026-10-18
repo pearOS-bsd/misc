@@ -15,8 +15,8 @@
 	NSString *findQuery; BOOL findCase;    /* matches are highlighted while set */
 	id delegate;
 }
-@property (assign) id delegate;            /* told about title changes and the end of the shell: -termViewChanged: / -termViewExited: */
-@property (readonly) TermProfile *profile;
+- (id)delegate; - (void)setDelegate:(id)d;                /* told about title changes and the end of the shell: -termViewChanged: / -termViewExited: */
+- (TermProfile *)profile;
 - (instancetype)initWithProfile:(TermProfile *)p command:(NSString *)cmd;
 - (void)applyProfile:(TermProfile *)p;
 - (NSSize)idealSizeForCols:(int)cols rows:(int)rows;

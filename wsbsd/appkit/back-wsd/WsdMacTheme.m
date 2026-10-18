@@ -5,6 +5,7 @@
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 #import <GNUstepGUI/GSDisplayServer.h>
+static IMP origTFDraw; static void wsdTFDraw(id self, SEL _cmd, NSRect f, NSView *v);
 @interface GSDisplayServer (WsdBlur) - (void) wsdBackgroundBlur: (int)radius : (int)win; @end
 #include <stdlib.h>
 #import <objc/runtime.h>
@@ -338,6 +339,8 @@ static void swizzleTableDefaults(void)
 	if (mat && !origAttrTitle) origAttrTitle = method_setImplementation(mat, (IMP)wsdAttrTitle);
 	Method mtc = class_getInstanceMethod([NSButtonCell class], @selector(textColor));
 	if (mtc && !origButtonTextColor) origButtonTextColor = method_setImplementation(mtc, (IMP)wsdButtonTextColor);
+	Method mtf = class_getInstanceMethod([NSTextFieldCell class], @selector(drawInteriorWithFrame:inView:));
+	if (mtf && !origTFDraw) origTFDraw = method_setImplementation(mtf, (IMP)wsdTFDraw);
 	Method msg = class_getInstanceMethod([NSSegmentedCell class], @selector(drawSegment:inFrame:withView:));
 	if (msg && !origSegDraw) origSegDraw = method_setImplementation(msg, (IMP)wsdSegDraw);
 	Method ma = class_getInstanceMethod([NSAlert class], @selector(runModal));
@@ -375,18 +378,54 @@ void WsdApplyMacPalette(void)
 #endif      /* the field fill measured on macOS: neutral, darker than the (wallpaper tinted) window */
 }
 
+
+/* ---- animation of controls: a value that moves towards its target over `dur` seconds, kept per view (and key); every draw advances it and asks for another one while it is moving ---- */
+@interface NSView (WsdAnimation)
+- (void) wsdAnimationTick;
+@end
+@implementation NSView (WsdAnimation)
+- (void) wsdAnimationTick { [self setNeedsDisplay: YES]; }
+@end
+static double WsdAnim(NSView *view, int key, double target, double dur, BOOL startAtTarget)
+{
+	static NSMutableDictionary *st;                                           /* "ptr:key" -> @[value, last time] */
+	if (!st) st = [[NSMutableDictionary alloc] init];
+	NSString *k = [NSString stringWithFormat: @"%p:%d", view, key]; NSArray *a = [st objectForKey: k]; double now = [[NSDate date] timeIntervalSinceReferenceDate], v, last;
+	if (!a || now - [[a objectAtIndex: 1] doubleValue] > 0.4) { v = startAtTarget ? target : (target > 0.5 ? 0.0 : 1.0); last = now; }      /* not drawn for a while: the animation starts again */
+	else { v = [[a objectAtIndex: 0] doubleValue]; last = [[a objectAtIndex: 1] doubleValue]; }
+	double step = (now - last) / dur; if (v < target) { v += step; if (v > target) v = target; } else if (v > target) { v -= step; if (v < target) v = target; }
+	[st setObject: [NSArray arrayWithObjects: [NSNumber numberWithDouble: v], [NSNumber numberWithDouble: now], nil] forKey: k];
+	if (v != target) [view performSelector: @selector(wsdAnimationTick) withObject: nil afterDelay: 1.0 / 60 inModes: [NSArray arrayWithObjects: NSDefaultRunLoopMode, NSEventTrackingRunLoopMode, nil]];
+	return v;
+}
+static double EaseOut(double t) { return 1 - (1 - t) * (1 - t) * (1 - t); }
+
+/* the focus ring of a text field: it grows in and fades in over a quarter of a second, in the accent colour (as on the Mac) */
+static void WsdFocusRing(NSView *view)
+{
+	double e = EaseOut(WsdAnim(view, 1, 1.0, 0.25, NO));
+	NSBezierPath *p = [NSBezierPath bezierPathWithRoundedRect: NSInsetRect([view bounds], 1.5, 1.5) xRadius: 6 yRadius: 6];
+	[p setLineWidth: 1.0 + 2.0 * e]; [[NSColor colorWithCalibratedRed: 0.0 green: 122 / 255.0 blue: 1.0 alpha: 0.2 + 0.5 * e] set]; [p stroke];
+}
+static void wsdTFDraw(id self, SEL _cmd, NSRect f, NSView *v)
+{
+	((void (*)(id, SEL, NSRect, NSView *))origTFDraw)(self, _cmd, f, v);
+	/* while editing the field editor is the first responder, which is why AppKit draws no ring */
+	if ([v isKindOfClass: [NSTextField class]]) { id fr = [[v window] firstResponder]; if (([fr isKindOfClass: [NSText class]] && [(NSText *)fr delegate] == v) || fr == v) WsdFocusRing(v); }
+}
+
 @implementation WsdMacTheme
 
 /* GSTheme's defaultsDidChange: swaps back to the stock theme whenever a user default changes and the active theme's name is not "GNUstep" (we change the font defaults): claim that name */
 - (NSString *) name { return @"GNUstep"; }
+
 
 /* the dotted focus rectangle is not part of the macOS look (the focus ring only appears for keyboard navigation) */
 - (void) drawFocusFrame: (NSRect)frame view: (NSView *)view
 {
 	/* the focus ring is drawn inside the view: the real one is 3 pt wide round the control, which a view cannot draw outside of its bounds here */
 	if (![view isKindOfClass: [NSTextField class]] && ![view isKindOfClass: [NSTextView class]]) return;
-	NSBezierPath *p = [NSBezierPath bezierPathWithRoundedRect: NSInsetRect([view bounds], 1.5, 1.5) xRadius: 6 yRadius: 6];
-	[p setLineWidth: 3.0]; [rgb(28, 98, 155, 1) set]; [p stroke];
+	WsdFocusRing(view);
 }
 
 /* a default button on macOS carries no return-arrow image (GNUstep adds one) */
@@ -460,8 +499,10 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 - (void) drawKnobInCell: (NSCell *)cell
 {
 	NSSliderCell *sc = (NSSliderCell *)cell; NSView *v = [cell controlView];
-	NSRect kr = [sc knobRectFlipped: [v isFlipped]]; NSRect c = NSMakeRect(NSMidX(kr) - 10, NSMidY(kr) - 10, 20, 20);
-	NSColor *knob = rgb(218, 220, 222, 1);
+	NSRect kr = [sc knobRectFlipped: [v isFlipped]];
+	double press = EaseOut(WsdAnim(v, 2, [cell isHighlighted] ? 1.0 : 0.0, 0.12, YES));       /* the handle swells a little while it is held */
+	double hs = 20 + 2.0 * press; NSRect c = NSMakeRect(NSMidX(kr) - hs / 2, NSMidY(kr) - hs / 2, hs, hs);
+	NSColor *knob = rgb(218 + 8 * press, 220 + 8 * press, 222 + 8 * press, 1);
 	[rgb(0, 0, 0, 0.25) set]; [[NSBezierPath bezierPathWithOvalInRect: NSOffsetRect(NSInsetRect(c, 1, 1), 0, -1)] fill];
 	[([cell isEnabled] ? knob : rgb(150, 152, 154, 1)) set]; [[NSBezierPath bezierPathWithOvalInRect: NSInsetRect(c, 1, 1)] fill];
 }
