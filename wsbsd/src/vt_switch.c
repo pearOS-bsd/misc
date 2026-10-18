@@ -17,10 +17,13 @@
 static int vtfd = -1, old_kbmode = -1;
 
 /* 0: VT mode is set up; -1: this process is not on a vt(4) console (or the system has none): run without switching support */
-int wsd_vt_setup(void)
+int wsd_vt_setup(const char *console)
 {
 #ifdef __FreeBSD__
-	vtfd = open("/dev/tty", O_RDWR | O_CLOEXEC);
+	/* a daemon has no controlling terminal: the console device wsd was told to draw on (-c /dev/ttyv0) is the VT to take over */
+	vtfd = -1;
+	if (console && !strncmp(console, "/dev/ttyv", 9)) vtfd = open(console, O_RDWR | O_CLOEXEC | O_NONBLOCK);
+	if (vtfd < 0) vtfd = open("/dev/tty", O_RDWR | O_CLOEXEC);
 	if (vtfd < 0) return -1;
 	int active = 0;
 	if (ioctl(vtfd, VT_GETACTIVE, &active) < 0) { close(vtfd); vtfd = -1; return -1; }

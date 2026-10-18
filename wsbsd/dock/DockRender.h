@@ -10,6 +10,7 @@ typedef struct {
 	int running;                  /* a dot under the tile */
 	int badge;                    /* a red badge with this number when > 0 */
 	float bounce;                 /* 0 ... 1 lift of the tile, for the launch bounce (in tile heights) */
+	CGImageRef icon;              /* the application's real icon (from LaunchServices); NULL draws the built-in glyph */
 } DockTile;
 
 /* the fan of a stack: the newest items rise from the stack's tile along a curve, each with a label pill on its left */
@@ -17,6 +18,7 @@ typedef struct {
 typedef struct {
 	int n;                        /* number of entries (the last one may be the "N More in Finder" entry) */
 	const char *labels[DOCK_FAN_MAX]; const char *glyphs[DOCK_FAN_MAX];
+	CGImageRef icons[DOCK_FAN_MAX];  /* the real icons (64 x 64 box); NULL entries fall back to the glyph */
 	int anchor;                   /* tile index of the stack */
 	double t;                     /* seconds since the fan opened (negative while closing: -elapsed, see DockFanProgress) */
 	double u;                     /* open progress 0...1 of the whole fan (staggered per item inside) */
@@ -35,6 +37,7 @@ typedef struct {
 /* geometry of the fan: x offset of item k from the first one, vertical pitch, per-item eased progress for the time t in seconds (0 .. 1) */
 double DockFanOffsetX(int k);
 double DockFanPitch(void);
+double DockFanAngle(int k);
 double DockFanItemProgress(int k, double t);
 
 /* draws the bar, the tiles, the dots, the separator and the tooltip into ctx (a context of the window size, y up) */

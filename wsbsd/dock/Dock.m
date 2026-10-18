@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include "DockRender.h"
+#import "../launchservices/LSIcon.h"
 
 #define MAXITEMS 64
 static double Now(void) { return CACurrentMediaTime(); }
@@ -49,7 +50,7 @@ static double Now(void) { return CACurrentMediaTime(); }
 	items[n].kind = DOCK_SEPARATOR; tiles[n] = (DockTile){ NULL, "", 0, 0, 0 }; [paths addObject: @""]; [pids addObject: @0]; n++;
 	items[n].kind = DOCK_OTHER; tiles[n] = (DockTile){ "Downloads", "folder", 0, 0, 0 }; [paths addObject: [NSHomeDirectory() stringByAppendingPathComponent: @"Downloads"]]; [pids addObject: @0]; n++;
 	items[n].kind = DOCK_TRASH; tiles[n] = (DockTile){ "Trash", "trash", 0, 0, 0 }; [paths addObject: @""]; [pids addObject: @0]; n++;
-	for (int i = 0; i < n; i++) { scale[i] = 1; bounceStart[i] = 0; }
+	for (int i = 0; i < n; i++) { scale[i] = 1; bounceStart[i] = 0; if (items[i].kind == DOCK_APP && [paths[i] length] && [[NSFileManager defaultManager] fileExistsAtPath: paths[i]]) tiles[i].icon = LSIconCreateForPath(paths[i], 256); }
 }
 - (void)relayout
 {
@@ -103,12 +104,12 @@ static double Now(void) { return CACurrentMediaTime(); }
 	[vis sortUsingComparator: ^NSComparisonResult(NSString *a, NSString *b) {                 /* newest first */
 		NSDate *da = [[fm attributesOfItemAtPath: [dir stringByAppendingPathComponent: a] error: NULL] fileModificationDate], *db = [[fm attributesOfItemAtPath: [dir stringByAppendingPathComponent: b] error: NULL] fileModificationDate];
 		return [db compare: da ?: [NSDate distantPast]]; }];
-	fanStore = [NSMutableArray array]; for (int k = 0; k < fan.n; k++) free((void *)fan.labels[k]); memset(&fan, 0, sizeof fan);
+	fanStore = [NSMutableArray array]; for (int k = 0; k < fan.n; k++) { free((void *)fan.labels[k]); if (fan.icons[k]) CGImageRelease(fan.icons[k]); } memset(&fan, 0, sizeof fan);
 	int maxShown = (int)((screenH - 40 /*menu bar*/ - 110 - 64) / 64); if (maxShown > 14) maxShown = 14; if (maxShown < 3) maxShown = 3; int cnt = (int)[vis count]; if (cnt == 0) return;
 	int shown = cnt > maxShown + 1 ? maxShown : cnt;
 	for (int k = 0; k < shown; k++) {
 		BOOL isdir = NO; [fm fileExistsAtPath: [dir stringByAppendingPathComponent: vis[k]] isDirectory: &isdir];
-		[fanStore addObject: vis[k]]; fan.labels[fan.n] = strdup([vis[k] UTF8String]); fan.glyphs[fan.n] = isdir ? "folder" : "doc"; fan.n++;
+		[fanStore addObject: vis[k]]; fan.icons[fan.n] = LSIconCreateForPath([dir stringByAppendingPathComponent: vis[k]], 128); fan.labels[fan.n] = strdup([vis[k] UTF8String]); fan.glyphs[fan.n] = isdir ? "folder" : "doc"; fan.n++;
 	}
 	if (cnt > shown) { NSString *more = [NSString stringWithFormat: @"%d More in Finder", cnt - shown]; [fanStore addObject: more]; fan.labels[fan.n] = strdup([more UTF8String]); fan.glyphs[fan.n] = "folder"; fan.n++; }
 	fan.anchor = i; fanOpen = 1; fanStart = Now(); fanClose = 0;

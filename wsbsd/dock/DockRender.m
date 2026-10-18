@@ -103,9 +103,10 @@ static void DrawText(CGContextRef c, const char *text, CGFloat size, CGPoint at,
 	CGContextRestoreGState(c);
 }
 
-static const double fanx[16] = { 0, 4, 7, 13, 20, 28, 37, 50, 62, 77, 93, 109, 129, 147, 167, 190 };
+static const double fanx[16] = { 0, 2.5, 6.5, 13, 19.5, 27.5, 37.5, 49, 62, 76, 92, 109, 127.5, 146.5, 169, 192 };
 double DockFanOffsetX(int k) { return fanx[k < 0 ? 0 : k > 15 ? 15 : k]; }
 double DockFanPitch(void) { return 64; }
+double DockFanAngle(int k) { return -(0.65 + 1.246 * (k + 1)); }       /* degrees; every item is turned a little more, clockwise */
 double DockFanItemProgress(int k, double t)                          /* ease-out over 0.17 s, each item starting 12 ms after the one below it */
 {
 	double u = (t - 0.012 * k) / 0.17; if (u < 0) u = 0; if (u > 1) u = 1;
@@ -115,25 +116,29 @@ double DockFanItemProgress(int k, double t)                          /* ease-out
 static void DrawFan(CGContextRef c, const DockScene *s, CGFloat art_bottom)
 {
 	const DockFan *f = s->fan; const DockSlot *sl = &s->slots[f->anchor];
-	CGFloat cx = sl->cx - s->origin_x, isz = s->m.tilesize - 6;
+	CGFloat cx = sl->cx - s->origin_x, tile_top = art_bottom + sl->art;
 	for (int k = f->n - 1; k >= 0; k--) {                                 /* the top ones first so the lower ones overlap them */
 		double e = DockFanItemProgress(k, f->t); if (f->u < 1) e = e * f->u;
 		if (e <= 0.001) continue;
-		CGFloat fx = cx + DockFanOffsetX(k), fy = art_bottom + sl->art + 8 + DockFanPitch() * k;
-		CGFloat x = cx + (fx - cx) * e, y = art_bottom + (fy - art_bottom) * e, sz = isz * (0.55 + 0.45 * e);
+		CGFloat fx = cx - 2 + DockFanOffsetX(k), fy = tile_top + 62.5 + DockFanPitch() * k;
+		CGFloat x = cx + (fx - cx) * e, y = tile_top + (fy - tile_top) * e;
 		CGContextSaveGState(c); CGContextSetAlpha(c, e);
-		DockDrawIcon(c, f->glyphs[k], CGRectMake(x - sz / 2, y, sz, sz));
-		CGFloat tw = 0; DrawText(c, f->labels[k], 14, CGPointZero, &tw);
-		CGFloat pw = tw + 22, ph = 26, px = x - sz / 2 - 12 - pw, py = y + (sz - ph) / 2;
-		SetRGB(c, 0.17, 0.17, 0.18, 0.92); CGPathRef pill = ContinuousRect(CGRectMake(px, py, pw, ph), 13); CGContextAddPath(c, pill); CGContextFillPath(c); CGPathRelease(pill);
-		SetRGB(c, 1, 1, 1, 0.95); DrawText(c, f->labels[k], 14, CGPointMake(px + 11, py + 8), NULL);
+		CGContextTranslateCTM(c, x, y); CGContextRotateCTM(c, DockFanAngle(k) * M_PI / 180 * e); CGContextScaleCTM(c, 0.55 + 0.45 * e, 0.55 + 0.45 * e);
+		CGRect ir = CGRectMake(-32, -32, 64, 64);
+		if (f->icons[k]) CGContextDrawImage(c, ir, f->icons[k]); else DockDrawIcon(c, f->glyphs[k], CGRectInset(ir, 6, 6));
+		CGFloat tw = 0; DrawText(c, f->labels[k], 13, CGPointZero, &tw);
+		CGFloat ph = 26, pw = tw + 29, px = -37 - pw, py = -ph / 2;
+		SetRGB(c, 0.15, 0.15, 0.155, 0.92); CGPathRef pill = CGPathCreateWithRoundedRect(CGRectMake(px, py, pw, ph), ph / 2, ph / 2, NULL); CGContextAddPath(c, pill); CGContextFillPath(c);
+		SetRGB(c, 1, 1, 1, 0.10); CGContextSetLineWidth(c, 1); CGContextAddPath(c, pill); CGContextStrokePath(c); CGPathRelease(pill);
+		SetRGB(c, 1, 1, 1, 0.86); DrawText(c, f->labels[k], 13, CGPointMake(px + 14.5, py + 8.5), NULL);
 		CGContextRestoreGState(c);
 	}
 	/* while the fan is open the stack's tile is a dark rounded button with a chevron */
 	CGFloat art = sl->art, bx = cx - art / 2, by = art_bottom;
-	SetRGB(c, 0.17, 0.17, 0.18, 0.95 * fmin(1, f->u * 3)); CGPathRef btn = ContinuousRect(CGRectMake(bx, by, art, art), art * 0.2237); CGContextAddPath(c, btn); CGContextFillPath(c); CGPathRelease(btn);
-	SetRGB(c, 1, 1, 1, 0.9); CGContextSetLineWidth(c, 4); CGContextSetLineCap(c, kCGLineCapRound); CGContextSetLineJoin(c, kCGLineJoinRound);
-	CGContextMoveToPoint(c, cx - 9, by + art / 2 + 4); CGContextAddLineToPoint(c, cx, by + art / 2 - 5); CGContextAddLineToPoint(c, cx + 9, by + art / 2 + 4); CGContextStrokePath(c);
+	SetRGB(c, 0.13, 0.13, 0.135, 0.96 * fmin(1, f->u * 3)); CGPathRef btn = ContinuousRect(CGRectMake(bx, by, art, art), art * 0.2237); CGContextAddPath(c, btn); CGContextFillPath(c);
+	SetRGB(c, 1, 1, 1, 0.16); CGContextSetLineWidth(c, 1); CGContextAddPath(c, btn); CGContextStrokePath(c); CGPathRelease(btn);
+	SetRGB(c, 1, 1, 1, 0.92); CGContextSetLineWidth(c, 4); CGContextSetLineCap(c, kCGLineCapRound); CGContextSetLineJoin(c, kCGLineJoinRound);
+	CGContextMoveToPoint(c, cx - 10, by + art / 2 + 5); CGContextAddLineToPoint(c, cx, by + art / 2 - 5); CGContextAddLineToPoint(c, cx + 10, by + art / 2 + 5); CGContextStrokePath(c);
 }
 
 void DockRender(CGContextRef c, const DockScene *s)
@@ -165,7 +170,8 @@ void DockRender(CGContextRef c, const DockScene *s)
 		}
 		CGFloat art = sl->art, lift = t->bounce * s->m.tilesize;
 		if (s->fan && s->fan->anchor == i) continue;                      /* drawn by DrawFan */
-		DockDrawIcon(c, t->glyph, CGRectMake(cx - art / 2, art_bottom + lift, art, art));
+		if (t->icon) CGContextDrawImage(c, CGRectMake(cx - art / 2 - art * 0.0625, art_bottom + lift - art * 0.0625, art * 1.125, art * 1.125), t->icon);   /* the icon image has a margin (the art is 80 % of it) */
+		else DockDrawIcon(c, t->glyph, CGRectMake(cx - art / 2, art_bottom + lift, art, art));
 		if (t->badge > 0) {
 			char num[16]; snprintf(num, sizeof num, "%d", t->badge); CGFloat tw = 0; DrawText(c, num, 13, CGPointZero, &tw);
 			CGFloat bwid = fmax(22, tw + 12), bxx = cx + art / 2 - bwid + 6, byy = art_bottom + lift + art - 17;
