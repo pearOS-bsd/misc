@@ -8,6 +8,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <termios.h>
 #include <sys/ioctl.h>
 #ifdef __FreeBSD__
 #include <sys/consio.h>
@@ -15,6 +16,7 @@
 #endif
 
 static int vtfd = -1, old_kbmode = -1;
+static struct termios old_tio; static int have_tio;
 
 /* 0: VT mode is set up; -1: this process is not on a vt(4) console (or the system has none): run without switching support */
 int wsd_vt_setup(const char *console)
@@ -31,6 +33,8 @@ int wsd_vt_setup(const char *console)
 	m.mode = VT_PROCESS; m.relsig = SIGUSR1; m.acqsig = SIGUSR2; m.frsig = SIGUSR2;
 	if (ioctl(vtfd, VT_SETMODE, &m) < 0) { close(vtfd); vtfd = -1; return -1; }
 	if (ioctl(vtfd, KDGKBMODE, &old_kbmode) < 0) old_kbmode = -1;
+	/* the VT's tty must not echo what the raw keyboard sends: with echo on, every key is printed as scan code garbage straight onto the framebuffer */
+	if (tcgetattr(vtfd, &old_tio) == 0) { struct termios t = old_tio; cfmakeraw(&t); t.c_lflag &= ~(ECHO | ECHOE | ECHOK | ECHONL | ICANON | ISIG | IEXTEN); t.c_oflag &= ~OPOST; tcsetattr(vtfd, TCSANOW, &t); have_tio = 1; }
 	ioctl(vtfd, KDSKBMODE, K_RAW);                       /* the console keyboard driver must not translate keystrokes into characters for the shell on this VT */
 	ioctl(vtfd, KDSETMODE, KD_GRAPHICS);
 	return 0;
@@ -55,6 +59,7 @@ void wsd_vt_restore(void)
 #ifdef __FreeBSD__
 	if (vtfd < 0) return;
 	ioctl(vtfd, KDSETMODE, KD_TEXT);
+	if (have_tio) tcsetattr(vtfd, TCSANOW, &old_tio);
 	if (old_kbmode >= 0) ioctl(vtfd, KDSKBMODE, old_kbmode);
 	struct vt_mode m; memset(&m, 0, sizeof m); m.mode = VT_AUTO;
 	ioctl(vtfd, VT_SETMODE, &m);

@@ -72,6 +72,8 @@ done
 mkdir -p "$ROOT/System/Library/LaunchDaemons"
 # no text login on the screen: the window server owns it (the serial console keeps its login)
 for d in etc private/etc; do sed -i '' -E 's/^(ttyv[0-9a-f]+[[:space:]].*[[:space:]])(onifexists|on)([[:space:]]|$)/\1off\3/' "$ROOT/$d/ttys"; done
+# the shell of root and of the Terminal: bash, as on a Mac's terminal (the image has it from the software build)
+[ -x "$ROOT/usr/local/bin/bash" ] && pw -R "$ROOT" usermod root -s /usr/local/bin/bash
 # the local time zone (GNUstep's NSTimeZone and ICU's date formats need one; the image has no /etc/localtime of its own)
 for d in etc private/etc; do cp "$ROOT/usr/share/zoneinfo/UTC" "$ROOT/$d/localtime" 2>/dev/null || true; done
 # what the desktop needs at run time and that earlier images lacked: ICU's data (NSDateFormatter crashed without it), a time zone, no getty on the screen's console

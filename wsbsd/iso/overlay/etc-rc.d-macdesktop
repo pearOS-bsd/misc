@@ -13,10 +13,12 @@ macdesktop_start()
 {
 	conscontrol mute on >/dev/null 2>&1
 	export WS_SOCKET=/var/run/WindowServer.sock HOME=/Users/Shared XDG_CURRENT_DESKTOP=Aqua XDG_SESSION_DESKTOP=Aqua XDG_SESSION_TYPE=wsd TERM=xterm-256color
+	[ -x /usr/local/bin/bash ] && export SHELL=/usr/local/bin/bash
 	mkdir -p /var/run
 	# the image is read-only: the home of the session (preferences, GNUstep's caches and sockets) is memory
 	mount | grep -q ' /Users/Shared ' || mount -t tmpfs -o mode=1777 tmpfs /Users/Shared
-	mkdir -p /Users/Shared/GNUstep /tmp/GNUstepSecure
+	mount | grep -q ' /root ' || mount -t tmpfs -o mode=755 tmpfs /root
+	mkdir -p /Users/Shared/GNUstep /root/GNUstep /tmp/GNUstepSecure
 	chmod 700 /tmp/GNUstepSecure
 	# GNUstep's name server and notification center must be up before the first application: started on demand they time out on slow machines and the application dies ("unable to contact GDNC server")
 	GS=/usr/local/GNUstep/System/Tools
