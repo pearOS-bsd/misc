@@ -1,4 +1,5 @@
 /* The layer compositor: renders a presentation tree with the software rasterizer. */
+#import <QuartzCore/CAFilter.h>
 #import "CALayerPrivate.h"
 #include "CARaster.h"
 #ifdef __APPLE__
@@ -134,6 +135,90 @@ static BOOL PushShapeClip(RCtx *cx, RMat M, const RShape *shape, RCtx *out, uint
 }
 
 static CGFloat Scale2D(RMat M) { return sqrt(fabs(M.m[0] * M.m[5] - M.m[1] * M.m[4])); }
+
+static void ExtentOfOwn(CALayer *l, RMat M, double *minx, double *miny, double *maxx, double *maxy, CGRect b)
+{
+	double xs[4] = { b.origin.x, b.origin.x + b.size.width, b.origin.x, b.origin.x + b.size.width }, ys[4] = { b.origin.y, b.origin.y, b.origin.y + b.size.height, b.origin.y + b.size.height };
+	for (int i = 0; i < 4; i++) { double a = xs[i] * M.m[0] + ys[i] * M.m[4] + M.m[12], c = xs[i] * M.m[1] + ys[i] * M.m[5] + M.m[13]; if (a < *minx) *minx = a; if (a > *maxx) *maxx = a; if (c < *miny) *miny = c; if (c > *maxy) *maxy = c; }
+}
+
+/* ---- filters (CAFilter) ------------------------------------------------------------------------------------------------------------------------------------------- */
+static NSArray *EnabledFilters(NSArray *fs)
+{
+	NSMutableArray *out = nil;
+	for (id f in fs) if ([f isKindOfClass:[CAFilter class]] && [f isEnabled]) { if (!out) out = [NSMutableArray array]; [out addObject:f]; }
+	return out;
+}
+static double FilterNum(CAFilter *f, NSString *k, double dflt) { id v = [f valueForKey:k]; return [v respondsToSelector:@selector(doubleValue)] ? [v doubleValue] : dflt; }
+/* how far a chain of filters spreads the content (in layer-space units times the scale): blurs */
+static double FilterPad(NSArray *fs, double scale)
+{
+	double pad = 0;
+	for (CAFilter *f in fs) if ([[f type] isEqual:kCAFilterGaussianBlur]) pad += 3 * fabs(FilterNum(f, @"inputRadius", 0)) * scale;
+	return pad;
+}
+/* per-pixel colour filters work on straight (unpremultiplied) colour */
+typedef void (*PixFn)(float *rgba, const double *p);
+static void FSaturate(float *c, const double *p) { float l = 0.2126f * c[0] + 0.7152f * c[1] + 0.0722f * c[2], a = (float)p[0]; for (int k = 0; k < 3; k++) c[k] = l + (c[k] - l) * a; }
+static void FBrightness(float *c, const double *p) { for (int k = 0; k < 3; k++) c[k] += (float)p[0]; }
+static void FContrast(float *c, const double *p) { for (int k = 0; k < 3; k++) c[k] = (c[k] - 0.5f) * (float)p[0] + 0.5f; }
+static void FInvert(float *c, const double *p) { for (int k = 0; k < 3; k++) c[k] = 1 - c[k]; }
+static void FMultiply(float *c, const double *p) { for (int k = 0; k < 3; k++) c[k] *= (float)p[k]; c[3] *= (float)p[3]; }
+static void FMatrix(float *c, const double *p)
+{	/* p: 20 values, m11 m12 m13 m14 m15 (red row) ... : out_j = sum_i in_i * m[i][j] + m[4][j] */
+	float o[4]; for (int j = 0; j < 4; j++) o[j] = c[0] * (float)p[0 * 5 + j] + c[1] * (float)p[1 * 5 + j] + c[2] * (float)p[2 * 5 + j] + c[3] * (float)p[3 * 5 + j] + (float)p[4 * 5 + j];
+	for (int j = 0; j < 4; j++) c[j] = o[j];
+}
+static void ApplyPixelFilter(RSurf *s, PixFn fn, const double *p)
+{
+	for (int y = 0; y < s->h; y++) for (int x = 0; x < s->w; x++) {
+		uint8_t *q = s->px + (size_t)y * s->stride + x * 4; float a = q[3] / 255.0f; float c[4];
+		if (a > 0) { c[0] = q[2] / 255.0f / a; c[1] = q[1] / 255.0f / a; c[2] = q[0] / 255.0f / a; } else c[0] = c[1] = c[2] = 0;
+		c[3] = a; fn(c, p);
+		for (int k = 0; k < 3; k++) c[k] = fmaxf(0, c[k]); c[3] = fminf(1, fmaxf(0, c[3]));      /* the colour may exceed 1: premultiplied it is clamped only at the end, as in the float pipeline of Core Animation */
+		{ float v0 = c[2] * c[3] * 255 + 0.5f, v1 = c[1] * c[3] * 255 + 0.5f, v2 = c[0] * c[3] * 255 + 0.5f; q[0] = (uint8_t)(v0 > 255 ? 255 : v0); q[1] = (uint8_t)(v1 > 255 ? 255 : v1); q[2] = (uint8_t)(v2 > 255 ? 255 : v2); } q[3] = (uint8_t)(c[3] * 255 + 0.5f);
+	}
+}
+static void ApplyFilters(RSurf *s, NSArray *fs, double scale, BOOL backdrop)
+{
+	for (CAFilter *f in fs) {
+		NSString *t = [f type]; double p[20] = { 0 };
+		if ([t isEqual:kCAFilterGaussianBlur]) { double r = FilterNum(f, @"inputRadius", 0) * scale; if (r > 0) { if (backdrop) RBlurNormalized(s, r); else RBlur(s, r); } }
+		else if ([t isEqual:kCAFilterColorSaturate]) { p[0] = FilterNum(f, @"inputAmount", 1); ApplyPixelFilter(s, FSaturate, p); }
+		else if ([t isEqual:kCAFilterColorBrightness]) { p[0] = FilterNum(f, @"inputAmount", 0); ApplyPixelFilter(s, FBrightness, p); }
+		else if ([t isEqual:kCAFilterColorContrast]) { p[0] = FilterNum(f, @"inputAmount", 1); ApplyPixelFilter(s, FContrast, p); }
+		else if ([t isEqual:kCAFilterColorInvert]) ApplyPixelFilter(s, FInvert, p);
+		else if ([t isEqual:kCAFilterMultiplyColor]) {
+			id c = [f valueForKey:@"inputColor"]; double rgba[4] = { 1, 1, 1, 1 };
+			if (c && CAIsColor(c)) CAColorGetExtSRGB((__bridge CGColorRef)c, rgba);
+			ApplyPixelFilter(s, FMultiply, rgba);
+		}
+		else if ([t isEqual:kCAFilterColorMatrix]) {
+			id m = [f valueForKey:@"inputColorMatrix"]; float v[20];
+			if ([m isKindOfClass:[NSValue class]] && strstr([m objCType], "{") ) { [m getValue:v]; for (int i = 0; i < 20; i++) p[i] = v[i]; ApplyPixelFilter(s, FMatrix, p); }
+		}
+	}
+}
+
+/* the layer's backdrop: what is behind the layer inside its shape is replaced by the filtered version of itself */
+static void ApplyBackdrop(CALayer *l, NSArray *fs, RMat M, RCtx *cx)
+{
+	/* CARenderer filters the whole backdrop below the layer (everything drawn before it in the group), not only the part under the layer's shape */
+	double scale = Scale2D(M);
+	RSurf *d = cx->dest;
+	int rx0 = cx->clip.x0, ry0 = cx->clip.y0, rx1 = cx->clip.x1, ry1 = cx->clip.y1;
+	if (rx0 < 0) rx0 = 0; if (ry0 < 0) ry0 = 0; if (rx1 > d->w) rx1 = d->w; if (ry1 > d->h) ry1 = d->h;
+	if (rx1 <= rx0 || ry1 <= ry0) return;
+	RSurf bd = RSurfCreate(d->w, d->h);
+	for (int y = 0; y < d->h; y++) memcpy(bd.px + (size_t)y * bd.stride, d->px + (size_t)y * d->stride, (size_t)d->w * 4);
+	ApplyFilters(&bd, fs, scale, YES);
+	for (int y = ry0; y < ry1; y++) for (int x = rx0; x < rx1; x++) {
+		float a = 1; if (cx->clip.mask) a = cx->clip.mask[(size_t)y * cx->clip.mstride + x] / 255.0f; if (a <= 0) continue;
+		uint8_t *dp = d->px + (size_t)y * d->stride + x * 4, *bp = bd.px + (size_t)y * bd.stride + x * 4;
+		for (int k = 0; k < 4; k++) dp[k] = (uint8_t)(dp[k] + (bp[k] - dp[k]) * a + 0.5f);
+	}
+	RSurfFree(&bd);
+}
 
 static void RenderReplicated(CAReplicatorLayer *l, NSArray *subs, RMat M, RCtx *cx)
 {
@@ -365,7 +450,7 @@ static BOOL NeedsGroup(CALayer *l)
 {
 	float op = [l opacity];
 	if (op < 1 && [l allowsGroupOpacity] && ([[l _sublayerArray] count] || ([l borderWidth] > 0 && ([l backgroundColor] || [l contents])))) return YES;
-	if ([l shadowOpacity] > 0 || [l mask] || [l shouldRasterize]) return YES;
+	if ([l shadowOpacity] > 0 || [l mask] || [l shouldRasterize] || EnabledFilters([l filters])) return YES;
 	return NO;
 }
 
@@ -393,11 +478,14 @@ static void RenderLayerEx(CALayer *l, RMat parent, RCtx *cx, BOOL isRoot)
 		/* a layer seen from behind is not drawn: the orientation of its projected plane */
 		double det = M.m[0] * M.m[5] - M.m[1] * M.m[4]; if (det < 0 && M.m[3] == 0 && M.m[7] == 0) return;
 	}
+	{ NSArray *bf = EnabledFilters([l backgroundFilters]); if (bf) ApplyBackdrop(l, bf, M, cx); }
 	if (!NeedsGroup(l)) { RenderContent(l, M, cx, opacity); return; }
 	/* a group: the layer and its sublayers are drawn together, then shadow, mask and opacity are applied */
 	double minx = 1e30, miny = 1e30, maxx = -1e30, maxy = -1e30;
 	ExtentOf(l, parent, &minx, &miny, &maxx, &maxy, 0, isRoot);
-	double blur = [l shadowOpacity] > 0 ? [l shadowRadius] * Scale2D(M) * 1.5 + 2 : 0;
+	NSArray *filt = EnabledFilters([l filters]);
+	double fpad = filt ? FilterPad(filt, Scale2D(M)) : 0;
+	double blur = ([l shadowOpacity] > 0 ? [l shadowRadius] * Scale2D(M) * 1.5 + 2 : 0) + fpad;
 	CGSize so = [l shadowOffset];
 	double sox = so.width * M.m[0] + so.height * M.m[4], soy = so.width * M.m[1] + so.height * M.m[5];
 	int x0 = (int)floor(fmin(minx, minx + sox) - blur) - 1, y0 = (int)floor(fmin(miny, miny + soy) - blur) - 1, x1 = (int)ceil(fmax(maxx, maxx + sox) + blur) + 1, y1 = (int)ceil(fmax(maxy, maxy + soy) + blur) + 1;
@@ -409,6 +497,7 @@ static void RenderLayerEx(CALayer *l, RMat parent, RCtx *cx, BOOL isRoot)
 	RMat Mg = RMatMul(M, shift);
 	/* the layer's own content is drawn with full opacity into the group; the opacity is applied when the group is composited */
 	RenderContent(l, Mg, &gc, 1.0f);
+	if (filt) ApplyFilters(&grp, filt, Scale2D(M), NO);
 	CALayer *mask = [l mask];
 	if (mask) {
 		RSurf ms = RSurfCreate(grp.w, grp.h); RCtx mc = { &ms, { 0, 0, ms.w, ms.h, NULL, 0 }, 0, 0 };

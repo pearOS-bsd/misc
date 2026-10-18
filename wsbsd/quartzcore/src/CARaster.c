@@ -268,6 +268,17 @@ void RBlur(RSurf *s, double sigma)
 	for (int y = 0; y < s->h; y++) for (int x = 0; x < s->w; x++) for (int k = 0; k < 4; k++) { float v = c[k][(size_t)y * s->w + x] * 255 + 0.5f; s->px[(size_t)y * s->stride + x * 4 + k] = (uint8_t)(v > 255 ? 255 : v); }
 	for (int k = 0; k < 4; k++) free(c[k]);
 }
+/* the blur with the weights renormalised at the edges of the surface (the surface edge repeats, nothing fades in from outside): what a backdrop blur does */
+void RBlurNormalized(RSurf *s, double sigma)
+{
+	size_t n = (size_t)s->w * s->h; float *one = malloc(n * sizeof(float)); for (size_t i = 0; i < n; i++) one[i] = 1;
+	GaussianFloat(one, s->w, s->h, sigma);
+	float *c[4];
+	for (int k = 0; k < 4; k++) { c[k] = malloc(n * sizeof(float)); for (int y = 0; y < s->h; y++) for (int x = 0; x < s->w; x++) c[k][(size_t)y * s->w + x] = s->px[(size_t)y * s->stride + x * 4 + k] * (1.0f / 255); GaussianFloat(c[k], s->w, s->h, sigma); }
+	for (int y = 0; y < s->h; y++) for (int x = 0; x < s->w; x++) { float w = one[(size_t)y * s->w + x]; if (w < 1e-6f) w = 1e-6f; for (int k = 0; k < 4; k++) { float v = c[k][(size_t)y * s->w + x] / w * 255 + 0.5f; s->px[(size_t)y * s->stride + x * 4 + k] = (uint8_t)(v > 255 ? 255 : v); } }
+	for (int k = 0; k < 4; k++) free(c[k]);
+	free(one);
+}
 void RShadowFromAlpha(RSurf *out, const RSurf *src, double sigma, RColor tint)
 {
 	int w = src->w, h = src->h; float *a = malloc((size_t)w * h * sizeof(float));

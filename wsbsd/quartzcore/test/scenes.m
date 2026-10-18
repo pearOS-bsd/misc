@@ -7,6 +7,12 @@
 #ifdef __APPLE__
 #import <AppKit/AppKit.h>
 #endif
+#ifdef REAL_CA
+@interface CAFilter : NSObject
++ (instancetype)filterWithType:(NSString *)type;
+@end
+#endif
+static id FILTER(NSString *type, NSString *key, id value) { CAFilter *f = [CAFilter filterWithType:type]; if (key) [f setValue:value forKey:key]; return f; }
 #define W 400
 #define H 300
 static CGColorRef RGB(double r, double g, double b, double a) { return CGColorCreateGenericRGB(r, g, b, a); }
@@ -42,6 +48,37 @@ static CALayer *s_gradient_img(void)
 static CALayer *s_mask(void) { CALayer *r = rootLayer(); CALayer *a = box(CGRectMake(60, 60, 200, 160), RGB(1, 0.7, 0, 1)); CALayer *m = box(CGRectMake(20, 20, 100, 100), RGB(0, 0, 0, 1)); m.cornerRadius = 50; a.mask = m; [r addSublayer:a]; return r; }
 static CALayer *s_sublayer_transform(void) { CALayer *r = rootLayer(); CALayer *a = box(CGRectMake(50, 50, 200, 160), RGB(1, 1, 1, 0.2)); a.sublayerTransform = CATransform3DMakeScale(0.5, 0.5, 1); [a addSublayer:box(CGRectMake(40, 40, 100, 80), RGB(1, 0, 0, 1))]; [r addSublayer:a]; return r; }
 static CALayer *s_nested_opacity(void) { CALayer *r = rootLayer(); CALayer *a = box(CGRectMake(40, 40, 160, 160), RGB(1, 0, 0, 1)); a.opacity = 0.7; CALayer *b = box(CGRectMake(40, 40, 100, 100), RGB(0, 1, 0, 1)); b.opacity = 0.5; [a addSublayer:b]; [r addSublayer:a]; return r; }
+
+
+static CALayer *stripes(void)
+{
+	CALayer *r = rootLayer();
+	for (int i = 0; i < 10; i++) [r addSublayer:box(CGRectMake(i * 40, 0, 20, H), i % 2 ? RGB(1, 0.2, 0.1, 1) : RGB(0.1, 0.8, 0.3, 1))];
+	return r;
+}
+static CALayer *s_blur_filter(void)
+{
+	CALayer *r = rootLayer(); CALayer *g = box(CGRectMake(60, 60, 280, 180), RGB(0, 0, 0, 0)); [g addSublayer:box(CGRectMake(20, 20, 100, 60), RGB(1, 1, 0, 1))]; CALayer *c = box(CGRectMake(150, 80, 100, 100), RGB(0, 0.5, 1, 1)); c.cornerRadius = 50; [g addSublayer:c];
+	g.filters = @[FILTER(@"gaussianBlur", @"inputRadius", @6)]; [r addSublayer:g];
+	CALayer *h = box(CGRectMake(20, 20, 60, 30), RGB(1, 1, 1, 1)); h.filters = @[FILTER(@"gaussianBlur", @"inputRadius", @1.5)]; [r addSublayer:h]; return r;
+}
+static CALayer *s_backdrop_blur(void)
+{
+	CALayer *r = stripes(); CALayer *g = box(CGRectMake(60, 60, 280, 180), RGB(1, 1, 1, 0.15)); g.cornerRadius = 24; g.backgroundFilters = @[FILTER(@"gaussianBlur", @"inputRadius", @8)]; [r addSublayer:g]; return r;
+}
+static CALayer *s_color_filters(void)
+{
+	CALayer *r = stripes();
+	NSArray *fs = @[FILTER(@"colorSaturate", @"inputAmount", @0), FILTER(@"colorSaturate", @"inputAmount", @2.5), FILTER(@"colorBrightness", @"inputAmount", @0.3), FILTER(@"colorContrast", @"inputAmount", @2)];
+	for (int i = 0; i < 4; i++) { CALayer *g = box(CGRectMake(20 + (i % 2) * 190, 20 + (i / 2) * 140, 170, 120), RGB(1, 1, 1, 0.0)); g.backgroundFilters = @[fs[i]]; [r addSublayer:g]; }
+	return r;
+}
+static CALayer *s_filters_color(void)
+{
+	CALayer *r = rootLayer(); NSArray *fs = @[FILTER(@"colorSaturate", @"inputAmount", @0), FILTER(@"colorSaturate", @"inputAmount", @2.5), FILTER(@"colorBrightness", @"inputAmount", @0.3), FILTER(@"colorContrast", @"inputAmount", @2)];
+	for (int i = 0; i < 4; i++) { CALayer *g = box(CGRectMake(20 + (i % 2) * 190, 20 + (i / 2) * 140, 170, 120), RGB(0.8, 0.3, 0.2, 0.9)); [g addSublayer:box(CGRectMake(10, 10, 60, 60), RGB(0.2, 0.7, 0.3, 1))]; g.filters = @[fs[i]]; [r addSublayer:g]; }
+	return r;
+}
 
 static CALayer *s_contents_unclipped(void)
 {
@@ -152,7 +189,7 @@ static struct { const char *name; SceneFn fn; } kScenes[] = {
 	{ "flipped", s_flipped },
 	{ "shape", s_shape }, { "gradient", s_gradient }, { "text", s_text }, { "replicator", s_replicator }, { "zorder", s_zorder }, { "transformlayer", s_transformlayer }, { "rasterize", s_rasterize },
 	{ "contents_unclipped", s_contents_unclipped },
-	{ "solid", s_solid }, { "rounded", s_rounded }, { "opacity", s_opacity }, { "shadow", s_shadow }, { "transform", s_transform }, { "perspective", s_perspective },
+	{ "blur_filter", s_blur_filter }, { "backdrop_blur", s_backdrop_blur }, { "color_filters", s_color_filters }, { "filters_color", s_filters_color }, { "solid", s_solid }, { "rounded", s_rounded }, { "opacity", s_opacity }, { "shadow", s_shadow }, { "transform", s_transform }, { "perspective", s_perspective },
 	{ "clip", s_clip }, { "border_order", s_border_order }, { "contents", s_gradient_img }, { "mask", s_mask }, { "sublayer_transform", s_sublayer_transform }, { "nested_opacity", s_nested_opacity },
 };
 
