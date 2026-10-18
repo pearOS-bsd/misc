@@ -4,6 +4,9 @@
 #ifdef REAL_CA
 #import <Metal/Metal.h>
 #endif
+#ifdef __APPLE__
+#import <AppKit/AppKit.h>
+#endif
 #define W 400
 #define H 300
 static CGColorRef RGB(double r, double g, double b, double a) { return CGColorCreateGenericRGB(r, g, b, a); }
@@ -55,7 +58,69 @@ static CALayer *s_contents_unclipped(void)
 	CALayer *c2 = [CALayer layer]; c2.frame = CGRectMake(120, 120, 60, 60); c2.contents = (__bridge id)img; c2.contentsGravity = kCAGravityResize; c2.magnificationFilter = kCAFilterNearest; [r addSublayer:c2];
 	return r;
 }
+static CGPathRef starPath(double cx, double cy, double R, double r)
+{
+	CGMutablePathRef p = CGPathCreateMutable();
+	for (int i = 0; i < 10; i++) { double a = -M_PI / 2 + i * M_PI / 5, rr = i % 2 ? r : R; double x = cx + cos(a) * rr, y = cy + sin(a) * rr; if (i == 0) CGPathMoveToPoint(p, NULL, x, y); else CGPathAddLineToPoint(p, NULL, x, y); }
+	CGPathCloseSubpath(p); return p;
+}
+static CALayer *s_shape(void)
+{
+	CALayer *r = rootLayer();
+	CAShapeLayer *a = [CAShapeLayer layer]; a.frame = CGRectMake(20, 20, 120, 120); a.path = starPath(60, 60, 55, 24); a.fillColor = RGB(1, 0.8, 0, 1); a.strokeColor = RGB(0.5, 0, 0, 1); a.lineWidth = 6; a.lineJoin = kCALineJoinRound; [r addSublayer:a];
+	CAShapeLayer *b = [CAShapeLayer layer]; b.frame = CGRectMake(160, 20, 120, 120); b.path = starPath(60, 60, 55, 24); b.fillColor = RGB(0, 0.6, 1, 1); b.fillRule = kCAFillRuleEvenOdd; b.strokeColor = RGB(1, 1, 1, 1); b.lineWidth = 3; b.lineDashPattern = @[@8, @4]; [r addSublayer:b];
+	CAShapeLayer *c = [CAShapeLayer layer]; c.frame = CGRectMake(20, 160, 200, 100); CGMutablePathRef p = CGPathCreateMutable(); CGPathMoveToPoint(p, NULL, 10, 80); CGPathAddCurveToPoint(p, NULL, 50, -20, 120, 120, 190, 20); c.path = p; c.fillColor = NULL; c.strokeColor = RGB(1, 1, 1, 1); c.lineWidth = 8; c.lineCap = kCALineCapRound; c.strokeStart = 0.15; c.strokeEnd = 0.8; [r addSublayer:c];
+	CAShapeLayer *d = [CAShapeLayer layer]; d.frame = CGRectMake(250, 170, 130, 100); d.path = CGPathCreateWithRoundedRect(CGRectMake(10, 10, 110, 80), 20, 20, NULL); d.fillColor = RGB(0.8, 0.2, 0.8, 0.8); d.strokeColor = RGB(0, 0, 0, 1); d.lineWidth = 5; d.miterLimit = 4; [r addSublayer:d];
+	return r;
+}
+static CALayer *s_gradient(void)
+{
+	CALayer *r = rootLayer();
+	CAGradientLayer *a = [CAGradientLayer layer]; a.frame = CGRectMake(20, 20, 160, 110); a.colors = @[(__bridge id)RGB(1, 0, 0, 1), (__bridge id)RGB(1, 1, 0, 1), (__bridge id)RGB(0, 0.5, 1, 1)]; a.locations = @[@0, @0.4, @1]; a.startPoint = CGPointMake(0, 0); a.endPoint = CGPointMake(1, 1); [r addSublayer:a];
+	CAGradientLayer *b = [CAGradientLayer layer]; b.frame = CGRectMake(210, 20, 160, 110); b.colors = @[(__bridge id)RGB(1, 1, 1, 1), (__bridge id)RGB(0, 0, 0, 0.2)]; b.type = kCAGradientLayerRadial; b.startPoint = CGPointMake(0.5, 0.5); b.endPoint = CGPointMake(1, 1); b.cornerRadius = 16; [r addSublayer:b];
+	CAGradientLayer *c = [CAGradientLayer layer]; c.frame = CGRectMake(20, 160, 130, 110); c.colors = @[(__bridge id)RGB(1, 0, 0, 1), (__bridge id)RGB(0, 1, 0, 1), (__bridge id)RGB(0, 0, 1, 1), (__bridge id)RGB(1, 0, 0, 1)]; c.type = kCAGradientLayerConic; c.startPoint = CGPointMake(0.5, 0.5); c.endPoint = CGPointMake(0.5, 0); [r addSublayer:c];
+	CAGradientLayer *d = [CAGradientLayer layer]; d.frame = CGRectMake(180, 160, 190, 110); d.colors = @[(__bridge id)RGB(0, 0, 0, 0), (__bridge id)RGB(0, 0, 0, 1)]; d.startPoint = CGPointMake(0, 0.5); d.endPoint = CGPointMake(1, 0.5); d.backgroundColor = RGB(1, 1, 1, 1); [r addSublayer:d];
+	return r;
+}
+static CALayer *s_text(void)
+{
+	CALayer *r = rootLayer();
+	CATextLayer *a = [CATextLayer layer]; a.frame = CGRectMake(20, 20, 360, 40); a.string = @"Hello Core Animation"; a.fontSize = 28; a.foregroundColor = RGB(1, 1, 1, 1); a.contentsScale = 1; [r addSublayer:a];
+	CATextLayer *b = [CATextLayer layer]; b.frame = CGRectMake(20, 80, 200, 80); b.string = @"This text wraps over several lines because it is long."; b.fontSize = 16; b.wrapped = YES; b.alignmentMode = kCAAlignmentCenter; b.foregroundColor = RGB(1, 0.9, 0.4, 1); b.contentsScale = 1; [r addSublayer:b];
+	CATextLayer *c = [CATextLayer layer]; c.frame = CGRectMake(240, 80, 140, 40); c.string = [[NSAttributedString alloc] initWithString:@"Attributed" attributes:@{ NSForegroundColorAttributeName: [NSColor cyanColor], NSFontAttributeName: [NSFont boldSystemFontOfSize:20] }]; c.contentsScale = 1; [r addSublayer:c];
+	CATextLayer *d = [CATextLayer layer]; d.frame = CGRectMake(20, 200, 150, 30); d.string = @"truncation of a long string"; d.fontSize = 18; d.truncationMode = kCATruncationEnd; d.foregroundColor = RGB(1, 1, 1, 1); d.contentsScale = 1; [r addSublayer:d];
+	return r;
+}
+static CALayer *s_replicator(void)
+{
+	CALayer *r = rootLayer();
+	CAReplicatorLayer *a = [CAReplicatorLayer layer]; a.frame = CGRectMake(20, 20, 360, 100); a.instanceCount = 6; a.instanceTransform = CATransform3DMakeTranslation(55, 0, 0); a.instanceColor = RGB(1, 1, 1, 1); a.instanceGreenOffset = -0.15; a.instanceBlueOffset = -0.15; a.instanceAlphaOffset = -0.1;
+	CALayer *s = box(CGRectMake(10, 10, 40, 40), RGB(1, 0.5, 0.5, 1)); s.cornerRadius = 8; [a addSublayer:s]; [r addSublayer:a];
+	CAReplicatorLayer *b = [CAReplicatorLayer layer]; b.frame = CGRectMake(200, 150, 100, 100); b.instanceCount = 12; b.instanceTransform = CATransform3DMakeRotation(2 * M_PI / 12, 0, 0, 1);
+	CALayer *t = box(CGRectMake(48, 5, 4, 20), RGB(1, 1, 0, 1)); [b addSublayer:t]; [r addSublayer:b]; return r;
+}
+static CALayer *s_zorder(void)
+{
+	CALayer *r = rootLayer();
+	CALayer *a = box(CGRectMake(40, 40, 120, 120), RGB(1, 0, 0, 1)); a.zPosition = 10; CALayer *b = box(CGRectMake(80, 80, 120, 120), RGB(0, 1, 0, 1)); b.zPosition = 0; CALayer *c = box(CGRectMake(120, 120, 120, 120), RGB(0, 0, 1, 1)); c.zPosition = 5;
+	[r addSublayer:a]; [r addSublayer:b]; [r addSublayer:c];
+	CALayer *p = [CALayer layer]; p.frame = CGRectMake(260, 40, 120, 220); CATransform3D t = CATransform3DIdentity; t.m34 = -1.0 / 400; p.sublayerTransform = t;
+	CALayer *x = box(CGRectMake(10, 10, 100, 100), RGB(1, 0.5, 0, 1)); x.zPosition = 80; CALayer *y = box(CGRectMake(30, 40, 80, 100), RGB(0, 0.8, 0.8, 1)); y.zPosition = -80; [p addSublayer:x]; [p addSublayer:y]; [r addSublayer:p];
+	return r;
+}
+static CALayer *s_transformlayer(void)
+{
+	CALayer *r = rootLayer(); CATransformLayer *tl = [CATransformLayer layer]; tl.frame = CGRectMake(120, 60, 160, 160);
+	CATransform3D p = CATransform3DIdentity; p.m34 = -1.0 / 500; tl.transform = CATransform3DRotate(p, 0.6, 0, 1, 0);
+	CALayer *a = box(CGRectMake(0, 0, 160, 160), RGB(1, 0.2, 0.2, 0.9)); a.zPosition = 40; CALayer *b = box(CGRectMake(0, 0, 160, 160), RGB(0.2, 0.2, 1, 0.9)); b.zPosition = -40; [tl addSublayer:b]; [tl addSublayer:a]; [r addSublayer:tl]; return r;
+}
+static CALayer *s_rasterize(void)
+{
+	CALayer *r = rootLayer(); CALayer *a = box(CGRectMake(40, 40, 160, 120), RGB(1, 1, 1, 0.5)); a.shouldRasterize = YES; a.rasterizationScale = 1; a.cornerRadius = 20; a.opacity = 0.8;
+	[a addSublayer:box(CGRectMake(20, 20, 80, 60), RGB(1, 0, 0, 1))]; [a addSublayer:box(CGRectMake(60, 50, 80, 60), RGB(0, 0, 1, 1))]; [r addSublayer:a]; return r;
+}
 static struct { const char *name; SceneFn fn; } kScenes[] = {
+	{ "shape", s_shape }, { "gradient", s_gradient }, { "text", s_text }, { "replicator", s_replicator }, { "zorder", s_zorder }, { "transformlayer", s_transformlayer }, { "rasterize", s_rasterize },
 	{ "contents_unclipped", s_contents_unclipped },
 	{ "solid", s_solid }, { "rounded", s_rounded }, { "opacity", s_opacity }, { "shadow", s_shadow }, { "transform", s_transform }, { "perspective", s_perspective },
 	{ "clip", s_clip }, { "border_order", s_border_order }, { "contents", s_gradient_img }, { "mask", s_mask }, { "sublayer_transform", s_sublayer_transform }, { "nested_opacity", s_nested_opacity },

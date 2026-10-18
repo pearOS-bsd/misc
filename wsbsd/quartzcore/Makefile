@@ -4,7 +4,7 @@ CC ?= cc
 CFLAGS += -O2 -g -fobjc-arc -Iinclude -Isrc -Wall -Wno-unused-function -Wno-deprecated-declarations -fvisibility=default
 SRC := $(wildcard src/*.m src/*.c)
 ifeq ($(UNAME),Darwin)
-  FW := -framework Foundation -framework CoreGraphics
+  FW := -framework Foundation -framework CoreGraphics -framework CoreText -framework AppKit
   BUILD := build-mac
   CFLAGS += -include test/rename.h
 else
@@ -76,9 +76,9 @@ check-defaults: test/defaults_real test/defaults_ours
 endif
 ifeq ($(UNAME),Darwin)
 test/scenes_real: test/scenes.m
-	$(CC) -fobjc-arc -DREAL_CA -framework Foundation -framework QuartzCore -framework Metal -framework CoreGraphics -o $@ test/scenes.m
+	$(CC) -fobjc-arc -DREAL_CA -framework Foundation -framework AppKit -framework QuartzCore -framework Metal -framework CoreGraphics -o $@ test/scenes.m
 test/scenes_ours: test/scenes.m $(BUILD)/libQuartzCore.a
-	$(CC) $(CFLAGS) -o $@ test/scenes.m $(BUILD)/libQuartzCore.a -ObjC $(FW)
+	$(CC) $(CFLAGS) -o $@ test/scenes.m $(BUILD)/libQuartzCore.a -ObjC $(FW) -framework AppKit -framework CoreText
 render-real: test/scenes_real
 	./test/scenes_real /tmp/scenes_real
 render-compare: test/scenes_real test/scenes_ours
