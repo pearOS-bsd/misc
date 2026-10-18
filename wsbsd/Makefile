@@ -94,6 +94,7 @@ full: clean
 	$(MAKE) wsd test_window EXTRA_SRC="src/backend_kms.c src/evdev.c src/vt_switch.c src/compositor_gl.c" EXTRA_CFLAGS="-DWS_KMS -DWS_GL -DWS_GBM -DWS_EGL `pkg-config --cflags libdrm egl gbm glesv2`" EXTRA_LIBS="`pkg-config --libs libdrm egl gbm glesv2`"
 
 check: test_bplist test_input test_compose test_region test_evrec test_buffer test_diff wsd test_wire test_interactive test_robust test_golden test_generic test_props test_shim test_shim2 test_shim3 test_shim4 test_shim2
+	$(MAKE) -C coreui check
 	./test_input
 	./test_compose
 	./test_region
