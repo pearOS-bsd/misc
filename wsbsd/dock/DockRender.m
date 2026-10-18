@@ -179,6 +179,7 @@ void DockRender(CGContextRef c, const DockScene *s)
 			SetRGB(c, 1, 1, 1, 0.255); CGContextFillRect(c, CGRectMake(floor(cx), by + 11, 1, 62));
 			continue;
 		}
+		if (DOCK_IS_GAP(s->items[i].kind)) continue;
 		CGFloat art = sl->art, lift = t->bounce * s->m.tilesize;
 		if (s->fan && s->fan->anchor == i) continue;                      /* drawn by DrawFan */
 		if (t->glyph && !strcmp(t->glyph, "none") && !t->icon) { /* a minimizing window's tile: empty until the window has arrived */ }
