@@ -27,7 +27,7 @@ typedef struct { uint32_t wid; int pid; char label[64]; char bpath[512]; CGImage
 	NSMutableDictionary *prefs; NSMutableArray *apps, *others; int srcKind[MAXITEMS], srcIdx[MAXITEMS];      /* srcKind: 0 pinned application, 1 running application without a tile, 2 right-hand section, -1 other */
 	NSMutableDictionary *iconCache; NSSet *runningPaths; NSDictionary *runningPids; double scanT; NSString *scanKey;
 	int autohide; double hideDelay, hideTime, hideFrac, hideT0, reveal0, dwell0; int hidden;                  /* hideFrac: 0 shown ... 1 hidden */
-	NSArray *ctxItems; int ctxOpen, ctxSub, ctxHoverMain, ctxHoverSub; NSRect ctxMainR, ctxSubR; NSArray *ctxSubItems; double ctxH;
+	NSArray *ctxItems; int ctxGlass, ctxGlassSet[2]; ws_rect ctxGlassRect[2]; int ctxOpen, ctxSub, ctxHoverMain, ctxHoverSub; NSRect ctxMainR, ctxSubR; NSArray *ctxSubItems; double ctxH;
 	double poofT0; NSPoint poofAt;
 	int ctxItem, dragCand, dragItem, dragging; double dragStartX; int trashFull;
 	NSTrackingRectTag trackTag; double pointer; int hover; double scale[MAXITEMS]; double bounceStart[MAXITEMS]; NSTimer *timer; double screenW, screenH, screenLen, alongBase; int orient; DockFan fan; int fanOpen; double fanStart, fanClose; NSMutableArray *fanStore;
@@ -101,16 +101,19 @@ static NSString *TileLabel(NSDictionary *t, NSString *path)
 - (void)scanProcesses
 {
 	NSMutableDictionary *pm = [NSMutableDictionary dictionary];
-	FILE *f = popen("ps -axo pid=,command= 2>/dev/null", "r");
+	FILE *f = popen("ps -axwwo pid=,command= 2>/dev/null", "r");
 	if (f) {
 		char line[2048];
 		while (fgets(line, sizeof line, f)) {
-			char *mark = strstr(line, ".app/Contents/MacOS/"); if (!mark) continue;
+			char *mark = strstr(line, ".app/Contents/MacOS/");
+			if (!mark) { mark = strstr(line, ".app/"); if (mark) { char *e = mark + 5; while (*e && *e != ' ' && *e != '\n') { if (*e == '/') { mark = NULL; break; } e++; } } }        /* the GNUstep layout: the program lies next to the bundle's other files */
+			if (!mark) continue;
 			int pid = atoi(line); *mark = 0; char *start = line; while (*start == ' ') start++; while (*start >= '0' && *start <= '9') start++; while (*start == ' ') start++;
 			NSString *bp = [[NSString stringWithUTF8String: start] stringByAppendingString: @".app"]; if (!pm[bp]) pm[bp] = @(pid);
 		}
 		pclose(f);
 	}
+	if (getenv("DOCK_LOG")) NSLog(@"dock: running %@", pm);
 	runningPids = pm; runningPaths = [NSSet setWithArray: [pm allKeys]];
 }
 - (BOOL)isSystemApp:(NSString *)bp
@@ -321,6 +324,17 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 		if (orient) { double ww = [[self window] frame].size.width; gr = (ws_rect){ (int)floor(orient == 1 ? bar.bottom_margin : ww - (bar.bottom_margin + bar.bar_h)), (int)floor(bar.bar_x - [self originX]), (int)ceil(bar.bar_h), (int)ceil(bar.bar_w) }; }
 		if (gr.x != glassRect.x || gr.y != glassRect.y || gr.w != glassRect.w || gr.h != glassRect.h || !glassOn) { ws_win_glass(wsc, &gw, gr, 18, 1); glassRect = gr; glassOn = 1; }
 	} else if (wsc && glassOn) { ws_win_glass(wsc, &(ws_win){ .id = (ws_wid)[[self window] windowNumber], .px = NULL }, (ws_rect){ 0, 0, 0, 0 }, 0, 0); glassOn = 0; }
+	if (wsc) {                                                                  /* the menus' material: slots 1 (menu) and 2 (submenu) of the window's glass, mode 4 = the dark Menu.caar */
+		ws_win gw = { .id = (ws_wid)[[self window] windowNumber], .px = NULL }; double wh = [[self window] frame].size.height;
+		for (int k = 0; k < 2; k++) {
+			NSRect r = k == 0 ? ctxMainR : ctxSubR; BOOL on = ctxOpen && (k == 0 || ctxSubItems);
+			ws_rect gr = on ? (ws_rect){ (int)r.origin.x, (int)floor(wh - (r.origin.y + r.size.height)), (int)r.size.width, (int)r.size.height } : (ws_rect){ 0, 0, 0, 0 };
+			if (!on && !ctxGlassSet[k]) continue;
+			if (on && ctxGlassSet[k] && !memcmp(&gr, &ctxGlassRect[k], sizeof gr)) continue;
+			ws_win_glass_slot(wsc, &gw, k + 1, gr, 10, on ? 4 : 0); ctxGlassSet[k] = on; ctxGlassRect[k] = gr;
+		}
+		ctxGlass = ctxGlassSet[0];
+	}
 	[self stepMini];
 	if (getenv("DOCK_FAN") && !fanOpen && !fanStart) { [self openFan: n - 2]; }
 	NSWindow *w = [self window];
@@ -390,7 +404,8 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 	NSString *path = paths[i];
 	if (!(items[i].kind == DOCK_APP && path.length && [[NSFileManager defaultManager] fileExistsAtPath: path])) return;
 	bounceStart[i] = Now();
-	NSString *exe = [[path stringByAppendingPathComponent: @"Contents/MacOS"] stringByAppendingPathComponent: [[path lastPathComponent] stringByDeletingPathExtension]];
+	NSString *base = [[path lastPathComponent] stringByDeletingPathExtension], *exe = [[path stringByAppendingPathComponent: @"Contents/MacOS"] stringByAppendingPathComponent: base];
+	if (![[NSFileManager defaultManager] isExecutableFileAtPath: exe]) exe = [path stringByAppendingPathComponent: base];
 	NSTask *task = [[NSTask alloc] init]; [task setLaunchPath: exe]; @try { [task launch]; pids[i] = @([task processIdentifier]); } @catch (NSException *x) {}
 }
 - (void)mouseDown:(NSEvent *)e
@@ -444,7 +459,22 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 	if (items[i].kind == DOCK_MINIMIZED) { for (int k = 0; k < nmini; k++) if (mini[k].item == i) [self restoreMini: k]; return; }
 	if (items[i].kind == DOCK_OTHER) { if ([self isDirTile: i]) [self openFan: i]; else [self openPath: path]; return; }
 	if (items[i].kind == DOCK_TRASH) { return; }
+	if (items[i].kind == DOCK_APP && [runningPaths containsObject: path] && [self activateApp: path]) return;        /* a running application comes to the front instead of starting again */
 	[self launchItem: i];
+}
+/* brings the windows of a running application to the front, in their order; NO when it has none on the screen */
+- (BOOL)activateApp:(NSString *)bundle
+{
+	int pid = [runningPids[bundle] intValue]; if (!pid || !wsc) return NO;
+	uint32_t ids[256]; int total = 0; if (ws_win_list(wsc, 0, 1, ids, 256, &total) != 0) return NO;
+	int got = 0;
+	for (int k = (total < 256 ? total : 256) - 1; k >= 0; k--) {                          /* back to front: the frontmost ends up on top */
+		ws_win w = { .id = ids[k], .px = NULL }; int lv = 0, owner = 0, rights = 0; long wpid = 0;
+		if (getenv("DOCK_LOG")) { ws_win_get_level(wsc, &w, &lv); ws_win_get_owner(wsc, &w, &owner, &rights); ws_conn_pid_version(wsc, owner, &wpid); NSLog(@"dock: activate %d: window %u level %d owner %d pid %ld", pid, ids[k], lv, owner, wpid); wpid = 0; }
+		if (ws_win_get_level(wsc, &w, &lv) || lv != 0 || ws_win_get_owner(wsc, &w, &owner, &rights) || ws_conn_pid_version(wsc, owner, &wpid) || wpid != pid) continue;
+		ws_win_order(wsc, &w, WS_ABOVE, 0); got++;
+	}
+	return got > 0;
 }
 - (BOOL)isDirTile:(int)i { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: paths[i] isDirectory: &d]; return d; }
 - (void)openPath:(NSString *)p { NSTask *t = [[NSTask alloc] init]; [t setLaunchPath: @"/usr/bin/env"]; [t setArguments: @[@"xdg-open", p]]; @try { [t launch]; } @catch (NSException *x) {} }
@@ -546,8 +576,7 @@ static NSSize MenuSize(NSArray *its)
 {
 	CGContextRef c = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
 	NSBezierPath *bp = [NSBezierPath bezierPathWithRoundedRect: r xRadius: 10 yRadius: 10];
-	CGContextSaveGState(c); CGContextSetShadowWithColor(c, CGSizeMake(0, -8), 22, CGColorCreateGenericGray(0, 0.45));
-	[[NSColor colorWithCalibratedWhite: 0.16 alpha: 0.94] setFill]; [bp fill]; CGContextRestoreGState(c);
+	if (!ctxGlass) { [[NSColor colorWithCalibratedWhite: 0.16 alpha: 0.94] setFill]; [bp fill]; }          /* the material (Menu.caar) is the compositor's; this fill is the fallback */
 	[[NSColor colorWithCalibratedWhite: 1 alpha: 0.14] setStroke]; [bp setLineWidth: 1]; [bp stroke];
 	for (int q = 0; q < (int)[its count]; q++) {
 		NSDictionary *d = its[q]; NSRect ir = [self rectOfItem: q in: its menu: r];
