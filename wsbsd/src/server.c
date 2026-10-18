@@ -946,6 +946,18 @@ static ws_surface *round_corners(const ws_surface *src, int r)
 	return o;
 }
 
+/* a window that has just grown while its client has not drawn the new size yet: the new strip shows the nearest edge of what is there (not the desktop), so that a resize does not flash */
+static ws_surface *grow_edge(const ws_surface *src, int w, int h)
+{
+	ws_surface *o = ws_surface_new(w, h); if (!o) return NULL;
+	for (int y = 0; y < h; y++) {
+		int sy = y < src->h ? y : src->h - 1; const uint8_t *sp = src->px + (size_t)sy * src->stride; uint8_t *dp = o->px + (size_t)y * o->stride;
+		int cw = src->w < w ? src->w : w; memcpy(dp, sp, (size_t)cw * 4);
+		for (int x = cw; x < w; x++) memcpy(dp + (size_t)x * 4, sp + (size_t)(src->w - 1) * 4, 4);
+	}
+	return o;
+}
+
 static void apply_zoom(ws_surface *screen);
 void ws_compose_scene(ws_server *s, ws_surface *screen)
 {
@@ -975,13 +987,15 @@ void ws_compose_scene(ws_server *s, ws_surface *screen)
 				for (int y = 0; y < px->h; y++) { const uint8_t *sp = px->px + (size_t)y * px->stride; uint8_t *dp = brt->px + (size_t)y * brt->stride; for (int x = 0; x < px->w; x++, sp += 4, dp += 4) { for (int c = 0; c < 3; c++) { int t = (sp[c] * k + 128) >> 8; dp[c] = (uint8_t)(t > sp[3] ? sp[3] : t); } dp[3] = sp[3]; } }
 				px = brt;
 			}
+			ws_surface *grown = NULL;
+			if (px && px->px && px->w > 0 && px->h > 0 && (px->w < v[i]->frame.w || px->h < v[i]->frame.h) && !v[i]->mesh && (grown = grow_edge(px, v[i]->frame.w, v[i]->frame.h))) px = grown;
 			ws_surface *rnd = NULL; int cr = v[i]->corner_radius ? v[i]->corner_radius : (v[i]->shadow_on ? v[i]->shadow_cr : 0);
 			if (cr > 0 && px && (rnd = round_corners(px, cr))) px = rnd;
 			if (v[i]->mesh && px && px->px) { xs = warp_surface(s, v[i], px, &xo, &yo); xo -= (int)v[i]->frame.x; yo -= (int)v[i]->frame.y; }
 			else if (v[i]->has_xf && px && px->px) xs = xform_surface(v[i], px, &xo, &yo);
 			if (xs) { s->comp->over(s->comp, screen, v[i]->frame.x + xo, v[i]->frame.y + yo, xs, v[i]->alpha * v[i]->sys_alpha, all); if (s->comp->flush) s->comp->flush(s->comp); ws_surface_free(xs); }
 			else s->comp->over(s->comp, screen, v[i]->frame.x, v[i]->frame.y, px, v[i]->alpha * v[i]->sys_alpha, all);
-			if (inv || rnd || brt) { if (s->comp->flush) s->comp->flush(s->comp); ws_surface_free(inv); ws_surface_free(rnd); ws_surface_free(brt); }
+			if (inv || rnd || brt || grown) { if (s->comp->flush) s->comp->flush(s->comp); ws_surface_free(inv); ws_surface_free(rnd); ws_surface_free(brt); ws_surface_free(grown); }
 		}
 		/* the shadow layer is rendered above its window (it is cut out of the window shape; the inner rim lies inside it) */
 		if (v[i]->shadow_on && !v[i]->mesh) draw_shadow(s, v[i], screen, v[i]->id == act || v[i]->appearance);     /* a warped window (genie) has no shadow: it is not where the frame is */
