@@ -103,7 +103,14 @@ static void DrawFileIcon(NSRect ic, NSString *name)
 	NSString *ext = [[path pathExtension] lowercaseString]; NSImage *img = [@[ @"png", @"jpg", @"jpeg", @"gif", @"tiff", @"bmp" ] containsObject: ext] ? [[NSImage alloc] initWithContentsOfFile: path] : nil;
 	NSRect th = NSMakeRect(floor((W - 132) / 2) - 2, 11, 132, 188);                                        /* the picture: a page of 132 x 188 */
 	if (img && [img size].width > 0) { double k = fmin(132.0 / [img size].width, 188.0 / [img size].height); NSSize z = NSMakeSize([img size].width * k, [img size].height * k); NSRect r = NSMakeRect(NSMidX(th) - z.width / 2, NSMidY(th) - z.height / 2, z.width, z.height); [img drawInRect: r fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; }
-	else { [RGB(250, 250, 250) setFill]; NSRectFill(th); NSRect ic = NSMakeRect(NSMidX(th) - 28, NSMidY(th) - 34, 56, 68); DrawFileIcon(ic, [path lastPathComponent]); }
+	else {
+		[RGB(250, 250, 250) setFill]; NSRectFill(th); NSString *txt = nil;
+		if (![ext isEqual: @"pdf"] && [at fileSize] < 4 * 1024 * 1024) { NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath: path]; NSData *dd = [fh readDataOfLength: 2400]; [fh closeFile]; txt = dd.length ? [[NSString alloc] initWithData: dd encoding: NSUTF8StringEncoding] : nil; }
+		if ([txt length]) {                                                                                              /* a text file: the first lines, tiny, on the page */
+			NSDictionary *ta = @{ NSFontAttributeName: [NSFont userFixedPitchFontOfSize: 4.5], NSForegroundColorAttributeName: RGB(60, 60, 60) }; double y = th.origin.y + 8; int n = 0;
+			for (NSString *ln in [txt componentsSeparatedByString: @"\n"]) { if (++n > 38) break; NSString *l = [ln length] > 34 ? [ln substringToIndex: 34] : ln; [l drawAtPoint: NSMakePoint(th.origin.x + 8, y) withAttributes: ta]; y += 4.6; }
+		} else { NSRect ic = NSMakeRect(NSMidX(th) - 28, NSMidY(th) - 34, 56, 68); DrawFileIcon(ic, [path lastPathComponent]); }
+	}
 	Text([path lastPathComponent], NSMakePoint(11, 230 + 7), 15, YES, P_TEXT, YES);
 	Text([NSString stringWithFormat: @"%@ - %@", KindOf(path, NO), SizeText([at fileSize])], NSMakePoint(11, 252 + 6), 13, NO, P_DIM, YES);
 	Text(@"Information", NSMakePoint(11, 275 + 5), 13, YES, P_TEXT, YES);
@@ -125,10 +132,25 @@ static void DrawFileIcon(NSRect ic, NSString *name)
 - (void)load
 {
 	rows = [NSMutableArray array]; NSFileManager *fm = [NSFileManager defaultManager]; NSMutableArray *ents = [NSMutableArray array];
-	for (NSString *n in [fm contentsOfDirectoryAtPath: dir error: NULL]) {
-		if ([n hasPrefix: @"."]) continue;
+	NSArray *names = nil; NSString *base = dir;
+	if ([dir isEqual: @"recents://"]) {                                                                                  /* Recents: the newest files under the home folder (three levels deep) */
+		NSMutableArray *found = [NSMutableArray array]; NSString *home = NSHomeDirectory(); int visited = 0;
+		NSMutableArray *queue = [NSMutableArray arrayWithObject: @""], *depth = [NSMutableArray arrayWithObject: @0];       /* breadth first, three levels, at most 400 names of a folder and 4000 in all */
+		for (NSUInteger qi = 0; qi < [queue count] && visited < 4000; qi++) {
+			NSString *rel0 = queue[qi]; int dp = [depth[qi] intValue]; NSArray *ls = [fm contentsOfDirectoryAtPath: [home stringByAppendingPathComponent: rel0] error: NULL]; int k = 0;
+			for (NSString *nm in ls) {
+				if ([nm hasPrefix: @"."] || (!dp && [nm isEqual: @"Library"])) continue; if (++k > 400 || ++visited > 4000) break;
+				NSString *rel = [rel0 stringByAppendingPathComponent: nm]; BOOL d = NO; [fm fileExistsAtPath: [home stringByAppendingPathComponent: rel] isDirectory: &d];
+				if (d) { if (dp < 2) { [queue addObject: rel]; [depth addObject: @(dp + 1)]; } } else [found addObject: rel];
+			}
+		}
+		[found sortUsingComparator: ^NSComparisonResult(NSString *a, NSString *b) { return [[[fm attributesOfItemAtPath: [home stringByAppendingPathComponent: b] error: NULL] fileModificationDate] compare: [[fm attributesOfItemAtPath: [home stringByAppendingPathComponent: a] error: NULL] fileModificationDate] ?: [NSDate distantPast]]; }];
+		names = [found count] > 100 ? [found subarrayWithRange: NSMakeRange(0, 100)] : found; base = home;
+	} else names = [fm contentsOfDirectoryAtPath: dir error: NULL];
+	for (NSString *n in names) {
+		if ([[n lastPathComponent] hasPrefix: @"."]) continue;
 		if ([filter length] && [n rangeOfString: filter options: NSCaseInsensitiveSearch].location == NSNotFound) continue;
-		WsdEntry *e = [WsdEntry new]; e->name = n; e->path = [dir stringByAppendingPathComponent: n]; BOOL d = NO; [fm fileExistsAtPath: e->path isDirectory: &d]; e->dir = d;
+		WsdEntry *e = [WsdEntry new]; e->name = n; e->path = [base stringByAppendingPathComponent: n]; if ([dir isEqual: @"recents://"]) e->name = [n lastPathComponent]; BOOL d = NO; [fm fileExistsAtPath: e->path isDirectory: &d]; e->dir = d;
 		e->date = [[fm attributesOfItemAtPath: e->path error: NULL] fileModificationDate] ?: [NSDate distantPast];
 		e->enabled = d || (filesOK && (!types.count || [types containsObject: [[n pathExtension] lowercaseString]]));
 		[ents addObject: e];
@@ -285,7 +307,7 @@ static void DrawSideIcon(NSString *name, NSRect r, NSColor *tint)               
 {
 	NSString *home = NSHomeDirectory(); items = [NSMutableArray array];
 	void (^add)(NSString *, NSString *, NSString *) = ^(NSString *kind, NSString *title, NSString *path) { [items addObject: @{ @"k": kind, @"t": title, @"p": path ?: @"" }]; };
-	add(@"item", @"Recents", home); add(@"item", @"Shared", @"/Users");
+	add(@"item", @"Recents", @"recents://"); add(@"item", @"Shared", @"/Users");
 	add(@"head", @"Favorites", nil); add(@"item", @"Applications", @"/Applications"); add(@"item", @"Desktop", [home stringByAppendingPathComponent: @"Desktop"]);
 	add(@"item", @"Documents", [home stringByAppendingPathComponent: @"Documents"]); add(@"item", @"Downloads", [home stringByAppendingPathComponent: @"Downloads"]);
 	add(@"head", @"Locations", nil); add(@"item", @"Macintosh HD", @"/"); add(@"item", [home lastPathComponent], home);
@@ -573,7 +595,7 @@ static void DrawSideIcon(NSString *name, NSRect r, NSColor *tint)               
 - (void)pathPicked:(NSMenuItem *)it { [self sidebarGo: [it representedObject]]; }
 - (void)refresh
 {
-	NSString *d = [self currentDir], *title = [d isEqual: @"/"] ? @"Macintosh HD" : [d lastPathComponent]; if (toolbar) { toolbar->pathTitle = title; toolbar->canBack = hpos > 0; toolbar->canFwd = hpos + 1 < (NSInteger)[history count]; }
+	NSString *d = [self currentDir], *title = [d isEqual: @"/"] ? @"Macintosh HD" : ([d isEqual: @"recents://"] ? @"Recents" : [d lastPathComponent]); if (toolbar) { toolbar->mode = viewMode; toolbar->pathTitle = title; toolbar->canBack = hpos > 0; toolbar->canFwd = hpos + 1 < (NSInteger)[history count]; }
 	BOOL enable = chosen != nil;
 	if (chosen) { BOOL isDir = NO; [[NSFileManager defaultManager] fileExistsAtPath: chosen isDirectory: &isDir]; enable = isDir ? dirsOK : filesOK; }
 	if (isSave) enable = [[nameField stringValue] length] > 0;
