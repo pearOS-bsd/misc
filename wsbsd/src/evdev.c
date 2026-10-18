@@ -77,6 +77,7 @@ int ws_evdev_dispatch(ws_evdev *e, int i, ws_server *srv, int sw, int sh)
 		if (n < 0) return errno == EAGAIN ? 0 : -1;
 		if (n == 0) return -1;
 		for (size_t j = 0; j < (size_t)n / sizeof ev[0]; j++) {
+			if (getenv("WSD_INPUT_LOG") && ev[j].type != 0) fprintf(stderr, "wsd: input dev %d type %d code %d value %d\n", i, ev[j].type, ev[j].code, ev[j].value);
 			if (ev[j].type == EV_ABS && e->has_abs[i]) { ws_input_set_abs_range(&e->in, 0, e->abs[i][0][0], e->abs[i][0][1]); ws_input_set_abs_range(&e->in, 1, e->abs[i][1][0], e->abs[i][1][1]); }
 			ws_input_feed(&e->in, srv, ev[j].type, ev[j].code, ev[j].value);       /* EV_SYN / EV_KEY / EV_REL / EV_ABS share the numbers of ws_input.h */
 		}
