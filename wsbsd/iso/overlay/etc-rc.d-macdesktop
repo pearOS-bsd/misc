@@ -13,7 +13,7 @@ macdesktop_start()
 {
 	conscontrol mute on >/dev/null 2>&1
 	export WS_SOCKET=/var/run/WindowServer.sock HOME=/Users/Shared XDG_CURRENT_DESKTOP=Aqua XDG_SESSION_DESKTOP=Aqua XDG_SESSION_TYPE=wsd TERM=xterm-256color
-	[ -x /usr/local/bin/bash ] && export SHELL=/usr/local/bin/bash
+	[ -x /bin/zsh ] && export SHELL=/bin/zsh
 	mkdir -p /var/run
 	# the image is read-only: the home of the session (preferences, GNUstep's caches and sockets) is memory
 	mount | grep -q ' /Users/Shared ' || mount -t tmpfs -o mode=1777 tmpfs /Users/Shared

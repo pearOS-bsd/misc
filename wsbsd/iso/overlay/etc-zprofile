@@ -1,0 +1,3 @@
+# /etc/zprofile: login shells (the same job as the user's ~/.zprofile on the Mac: read ~/.profile in sh mode, then set the PATH)
+if [ -r "$HOME/.profile" ]; then emulate sh -c 'source "$HOME/.profile"'; fi
+export PATH="/usr/local/bin:/usr/local/sbin:/usr/local/GNUstep/System/Tools:$PATH"
