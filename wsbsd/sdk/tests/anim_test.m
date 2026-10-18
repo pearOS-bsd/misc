@@ -13,8 +13,12 @@ static NSMutableArray *gSamples; static CFTimeInterval gStart;
 @end
 #define CHECK(c, ...) do { if (!(c)) { failures++; printf("FAIL: " __VA_ARGS__); printf("\n"); } } while (0)
 
-int main(void)
+extern char **environ;
+int main(int argc, char *argv[])
 {
+#ifdef GNUSTEP
+	[NSProcessInfo initializeWithArguments: argv count: argc environment: environ];
+#endif
 	@autoreleasepool {
 		NSView *v = [[SampleView alloc] initWithFrame: NSMakeRect(0, 0, 100, 100)];
 		NSMutableArray *samples = gSamples = [NSMutableArray array]; __block int completed = 0; __block CFTimeInterval doneAt = 0;
