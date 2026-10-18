@@ -151,3 +151,17 @@ int car_symbols(const CarFile *c, const char *const *names, int n, int weight, u
 	}
 	free(best); return found;
 }
+
+/* an image set ("GenericApplicationIcon", "txt-fill": a manifest rendition of layout 1010 and the bitmaps that carry its identifier, one per size): the smallest bitmap at least `want` pixels wide, else the largest */
+int car_image_set(const CarFile *c, const char *name, int want, CarRendition *out)
+{
+	CarRendition set; if (car_find(c, name, -1, -1, -1, &set) || (set.layout & 4095) != 1010) return -1;
+	int id = set.attr[CAR_IDENTIFIER], have = 0; CarRendition best; memset(&best, 0, sizeof best);
+	for (int i = 0; i < c->count; i++) {
+		CarRendition r; if (car_rendition(c, i, &r) || r.attr[CAR_IDENTIFIER] != id || r.attr[CAR_PART] != 220 || (r.layout & 4095) != 12) continue;
+		int rank = r.pixel_format == 0x47413136 ? 1 : 0;                                       /* GA16 only when there is nothing else */
+		int better = !have || (r.width >= want && (best.width < want || r.width < best.width)) || (best.width < want && r.width > best.width) || (r.width == best.width && !rank && best.pixel_format == 0x47413136);
+		if (better) { best = r; have = 1; }
+	}
+	if (!have) return -1; *out = best; return 0;
+}

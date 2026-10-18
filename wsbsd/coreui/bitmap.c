@@ -104,7 +104,7 @@ uint8_t *car_bitmap(const CarRendition *r, int *w, int *h, int *bpp)
 	const uint8_t *p = r->payload; size_t n = r->payload_len;
 	if (n < 16 || memcmp(p, "MLEC", 4)) return NULL;
 	int comp = (int)le32(p + 8); int W = r->width, H = r->height;
-	int nb = r->pixel_format == 0x41524742 ? 4 : r->pixel_format == 0x20384147 ? 2 : 0; (void)nb;
+	int nb = r->pixel_format == 0x41524742 ? 4 : r->pixel_format == 0x47413820 ? 2 : 0; (void)nb;
 	size_t pos = 16; int y0 = 0; int ob = 0; int chunked = le32(p + 4) == 1;                              /* version 1 payloads are lists of KCBC bands, version 0 is one stream for the whole image */
 	uint8_t *out = NULL;
 	while (chunked ? (pos + 20 <= n && !memcmp(p + pos, "KCBC", 4)) : pos == 16) {
@@ -115,7 +115,7 @@ uint8_t *car_bitmap(const CarRendition *r, int *w, int *h, int *bpp)
 			if (!ob) { int fmt = blob[16 + 7]; ob = bpp_of(fmt); if (!ob) break; out = calloc((size_t)W * H, (size_t)ob); if (!out) return NULL; }
 			if ((int)rows > H - y0 || dmp2_decode(blob + 16, (size_t)clen, W, (int)rows, out + (size_t)y0 * W * ob, (size_t)W * ob, 0)) { free(out); return NULL; }
 		} else if (comp == 4) {
-			if (!ob) { ob = 4; out = calloc((size_t)W * H, 4); if (!out) return NULL; }
+			if (!ob) { ob = r->pixel_format == 0x47413820 ? 2 : r->pixel_format == 0x47413136 ? 4 : 4; out = calloc((size_t)W * H, (size_t)ob); if (!out) return NULL; }
 			size_t need = (size_t)rows * W * ob; size_t got = lzfse_decode_buffer(out + (size_t)y0 * W * ob, need, blob, len, NULL);
 			if (got != need) { free(out); return NULL; }
 		} else break;
