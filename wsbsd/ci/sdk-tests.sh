@@ -1,6 +1,9 @@
 #!/bin/sh
 # Runs the programs of sdk/tests against the compat layer (needs GNUstep gui/back, Opal and a running wsd: WS_SOCKET): sh ci/sdk-tests.sh
 . /usr/local/GNUstep/System/Library/Makefiles/GNUstep.sh
+WS0="$(cd "$(dirname "$0")/.." && pwd)"
+# Opal (CoreGraphics) and corebase (CoreFoundation): built from source when this runner does not have them yet
+ls /usr/local/GNUstep/*/Library/Libraries/libopal.so >/dev/null 2>&1 || { sh "$WS0/ci/opal-libs.sh" > /tmp/opal-libs-sdk.log 2>&1; tail -3 /tmp/opal-libs-sdk.log; . /usr/local/GNUstep/System/Library/Makefiles/GNUstep.sh; }
 WS="$(cd "$(dirname "$0")/.." && pwd)"; O=/tmp/sdk-compat; mkdir -p $O
 # the CoreFoundation headers of corebase are reached through the wrappers the application builds use
 sh "$WS/sdk/gen-cf-wrappers.sh" $O/cfwrap 2>&1 | tail -1
