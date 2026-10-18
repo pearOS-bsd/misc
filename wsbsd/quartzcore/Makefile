@@ -74,3 +74,14 @@ check-defaults: test/defaults_real test/defaults_ours
 	./test/defaults_ours | sed 's/WSCA/CA/g' > test/defaults.ours.txt
 	python3 -I test/cmp.py test/defaults.pub.txt test/defaults.ours.txt 1e-9
 endif
+ifeq ($(UNAME),Darwin)
+test/scenes_real: test/scenes.m
+	$(CC) -fobjc-arc -DREAL_CA -framework Foundation -framework QuartzCore -framework Metal -framework CoreGraphics -o $@ test/scenes.m
+test/scenes_ours: test/scenes.m $(BUILD)/libQuartzCore.a
+	$(CC) $(CFLAGS) -o $@ test/scenes.m $(BUILD)/libQuartzCore.a -ObjC $(FW)
+render-real: test/scenes_real
+	./test/scenes_real /tmp/scenes_real
+render-compare: test/scenes_real test/scenes_ours
+	./test/scenes_real /tmp/scenes_real; ./test/scenes_ours /tmp/scenes_ours
+	python3 -I test/imgcmp.py /tmp/scenes_real /tmp/scenes_ours /tmp/scenes_png
+endif
