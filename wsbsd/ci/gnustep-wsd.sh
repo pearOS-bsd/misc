@@ -142,10 +142,12 @@ PY
 		echo "=== UITEST ==="; wc -l uitest-manifest.txt; grep -v wsd-back /tmp/uitest.log | tail -5
 	fi
 fi
+echo '=== SDK TESTS (compat layer) ==='; sh "$WS/ci/sdk-tests.sh" 2>&1 | tee sdk-tests.log | tail -30
 kill $WP 2>/dev/null
 echo '=== OSS APP PROBE ==='; sh "$WS/ci/oss-probe.sh" 2>&1 | tee oss-probe.log | tail -80
 grep -v '^(lldb)\|warning\|wsd-back: \(titlewindow\|setinput\|flush\|commit\|order\|ws_win\)' /tmp/hello.log | tail -40; tail -5 /tmp/wsd.log
 ls -l appkit.png
 echo '=== TERMINAL (terminal/) ==='; cat /tmp/terminal-ci.txt 2>/dev/null
+grep -q 'SDK TEST .*FAILED\|did not build' sdk-tests.log 2>/dev/null && { echo 'SDK TESTS FAILED'; exit 1; }
 [ "${UITEST_BLANK:-0}" = 0 ] || { echo 'UITEST CHECK FAILED: the gallery screenshot is blank (the app or the backend did not build)'; exit 1; }
 [ "${TERMINAL_OK:-1}" = 1 ] || { echo 'TERMINAL CHECK FAILED: neofetch output is not on the terminal screen'; exit 1; }
