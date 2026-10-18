@@ -23,6 +23,8 @@ struct vt {
 	vt_write_fn wr; void *wctx;
 	char title[256];
 	uint32_t gen;
+	int mouse_mode, mouse_sgr, focus_events;     /* ?1000 / ?1002 / ?1003 (1, 2, 3), ?1006, ?1004 */
+	uint32_t ansi[16]; int has_ansi;       /* the 16 ANSI colours of the profile (else the default palette) */
 };
 
 enum { S_GROUND, S_ESC, S_CSI, S_OSC, S_OSC_ESC, S_ESC_INTER, S_DCS };
@@ -36,6 +38,14 @@ uint32_t vt_palette(int i)
 	if (i < 256) { int v = 8 + (i - 232) * 10; return (uint32_t)(v << 16 | v << 8 | v); }
 	return 0xffffff;
 }
+
+static uint32_t pal(const vt *t, int i) { return (t->has_ansi && i >= 0 && i < 16) ? t->ansi[i] : vt_palette(i); }
+void vt_set_ansi(vt *t, const uint32_t c[16]) { memcpy(t->ansi, c, sizeof t->ansi); t->has_ansi = 1; t->gen++; }
+
+int vt_mouse_mode(const vt *t) { return t->mouse_mode; }
+int vt_mouse_sgr(const vt *t) { return t->mouse_sgr; }
+int vt_focus_events(const vt *t) { return t->focus_events; }
+void vt_clear_scrollback(vt *t) { t->hist_n = 0; t->gen++; }
 
 static vt_cell blank(const vt *t) { vt_cell c = { ' ', VT_DEFAULT_COLOR, t->bg, 0, 0 }; return c; }
 static vt_cell *cell(const vt *t, int x, int y) { return &t->scr[(size_t)y * t->cols + x]; }
@@ -143,12 +153,12 @@ static void sgr(vt *t)
 		else if (p == 5 || p == 6) t->attr |= VT_BLINK; else if (p == 7) t->attr |= VT_INVERSE; else if (p == 8) t->attr |= VT_HIDDEN; else if (p == 9) t->attr |= VT_STRIKE;
 		else if (p == 22) t->attr &= (uint8_t)~(VT_BOLD | VT_DIM); else if (p == 23) t->attr &= (uint8_t)~VT_ITALIC; else if (p == 24) t->attr &= (uint8_t)~VT_UNDERLINE;
 		else if (p == 25) t->attr &= (uint8_t)~VT_BLINK; else if (p == 27) t->attr &= (uint8_t)~VT_INVERSE; else if (p == 28) t->attr &= (uint8_t)~VT_HIDDEN; else if (p == 29) t->attr &= (uint8_t)~VT_STRIKE;
-		else if (p >= 30 && p <= 37) t->fg = vt_palette(p - 30); else if (p == 39) t->fg = VT_DEFAULT_COLOR;
-		else if (p >= 40 && p <= 47) t->bg = vt_palette(p - 40); else if (p == 49) t->bg = VT_DEFAULT_COLOR;
-		else if (p >= 90 && p <= 97) t->fg = vt_palette(p - 90 + 8); else if (p >= 100 && p <= 107) t->bg = vt_palette(p - 100 + 8);
+		else if (p >= 30 && p <= 37) t->fg = pal(t, p - 30); else if (p == 39) t->fg = VT_DEFAULT_COLOR;
+		else if (p >= 40 && p <= 47) t->bg = pal(t, p - 40); else if (p == 49) t->bg = VT_DEFAULT_COLOR;
+		else if (p >= 90 && p <= 97) t->fg = pal(t, p - 90 + 8); else if (p >= 100 && p <= 107) t->bg = pal(t, p - 100 + 8);
 		else if (p == 38 || p == 48) {
 			uint32_t col = VT_DEFAULT_COLOR;
-			if (i + 2 < t->nparams && t->params[i + 1] == 5) { col = vt_palette(t->params[i + 2] & 0xff); i += 2; }
+			if (i + 2 < t->nparams && t->params[i + 1] == 5) { col = pal(t, t->params[i + 2] & 0xff); i += 2; }
 			else if (i + 4 < t->nparams && t->params[i + 1] == 2) { col = (uint32_t)((t->params[i + 2] & 0xff) << 16 | (t->params[i + 3] & 0xff) << 8 | (t->params[i + 4] & 0xff)); i += 4; }
 			if (p == 38) t->fg = col; else t->bg = col;
 		}
@@ -171,6 +181,7 @@ static void set_mode(vt *t, int on)
 		if (t->private_mark == '?') {
 			if (p == 1) t->app_cursor = on; else if (p == 6) { t->origin = on; goto_xy(t, 0, 0); } else if (p == 7) t->autowrap = on; else if (p == 25) t->cursor_visible = on;
 			else if (p == 47 || p == 1047 || p == 1049) switch_alt(t, on); else if (p == 2004) t->bracketed = on;
+			else if (p == 1000 || p == 1002 || p == 1003) t->mouse_mode = on ? (p == 1000 ? 1 : p == 1002 ? 2 : 3) : 0; else if (p == 1006) t->mouse_sgr = on; else if (p == 1004) t->focus_events = on;
 		} else if (p == 4) t->insert = on;
 	}
 }

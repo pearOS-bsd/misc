@@ -29,5 +29,10 @@ const char *vt_title(const vt *t);                                              
 uint32_t vt_dirty_gen(const vt *t);                                                        /* changes whenever the content changes */
 int vt_app_cursor_keys(const vt *t);                                                       /* DECCKM: arrows send ESC O A instead of ESC [ A */
 int vt_bracketed_paste(const vt *t);
+int vt_mouse_mode(const vt *t);                                                            /* 0 off, 1 press and release, 2 plus dragging, 3 plus all motion */
+int vt_mouse_sgr(const vt *t);                                                             /* ?1006: the SGR encoding of mouse reports */
+int vt_focus_events(const vt *t);                                                          /* ?1004: send ESC [ I / ESC [ O when the window gains or loses the key */
+void vt_clear_scrollback(vt *t);
+void vt_set_ansi(vt *t, const uint32_t colors[16]);                                       /* this terminal's 16 ANSI colours (0x00RRGGBB), as a profile defines them */
 uint32_t vt_palette(int index);                                                            /* the 256 colour palette as 0x00RRGGBB */
 #endif
