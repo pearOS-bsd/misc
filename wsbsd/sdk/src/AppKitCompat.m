@@ -156,6 +156,7 @@ void OSMemoryBarrier(void) { __atomic_thread_fence(__ATOMIC_SEQ_CST); }
 /* ---- AppKit image names newer than GNUstep ---- */
 NSString *const NSImageNameStopProgressTemplate = @"NSStopProgressTemplate";
 NSString *const NSImageNameRefreshTemplate = @"NSRefreshTemplate";
+NSString *const NSImageNameActionTemplate = @"NSActionTemplate", *const NSImageNameFolder = @"NSFolder", *const NSImageNameSmartBadgeTemplate = @"NSSmartBadgeTemplate";
 NSString *const NSImageNameGoLeftTemplate = @"NSGoLeftTemplate";
 NSString *const NSImageNameGoRightTemplate = @"NSGoRightTemplate";
 NSString *const NSImageNameAddTemplate = @"NSAddTemplate";
@@ -800,5 +801,33 @@ static NSDictionary *wsbsdResourceValues(id self, SEL _cmd, NSArray *keys, NSErr
 	[img unlockFocus];
 	[img setTemplate: YES];
 	return img;
+}
+@end
+
+@implementation NSWindow (WsbsdTermination)
+- (void)setPreventsApplicationTerminationWhenModal:(BOOL)flag {}
+- (BOOL)preventsApplicationTerminationWhenModal { return NO; }
+@end
+@implementation NSWorkspace (WsbsdLaunchServices)
+- (NSURL *)URLForApplicationToOpenURL:(NSURL *)url { return nil; }
+- (NSArray<NSURL *> *)URLsForApplicationsToOpenURL:(NSURL *)url { return @[]; }
+@end
+@implementation NSString (WsbsdLocalizedCase)
+- (NSString *)localizedCapitalizedString { return [self capitalizedString]; }
+- (NSString *)localizedLowercaseString { return [self lowercaseString]; }
+- (NSString *)localizedUppercaseString { return [self uppercaseString]; }
+@end
+
+@implementation NSFileManager (WsbsdTrash)
+/* the item is moved into ~/.Trash (the FreeDesktop trash folder layout is not used) under a free name */
+- (BOOL)trashItemAtURL:(NSURL *)url resultingItemURL:(NSURL **)outResultingURL error:(NSError **)error
+{
+	NSString *trash = [NSHomeDirectory() stringByAppendingPathComponent: @".Trash"];
+	[self createDirectoryAtPath: trash withIntermediateDirectories: YES attributes: nil error: nil];
+	NSString *name = [[url path] lastPathComponent], *dest = [trash stringByAppendingPathComponent: name];
+	for (int i = 2; [self fileExistsAtPath: dest]; i++) dest = [trash stringByAppendingPathComponent: [NSString stringWithFormat: @"%@ %d.%@", [name stringByDeletingPathExtension], i, [name pathExtension]]];
+	if (![self moveItemAtPath: [url path] toPath: dest error: error]) return NO;
+	if (outResultingURL) *outResultingURL = [NSURL fileURLWithPath: dest];
+	return YES;
 }
 @end

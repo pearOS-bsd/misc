@@ -157,7 +157,9 @@ def build_target(proj, name, o, out, state):
             if r.returncode == 0: ok += 1
             else:
                 errs += [l for l in r.stderr.splitlines() if "error:" in l]
-                if os.environ.get("XCB_V"): print("FAILED:", " ".join(shlex.quote(x) for x in j[1]))
+                if os.environ.get("XCB_V"):
+                    print("FAILED:", j[0])
+                    for l in [l for l in r.stderr.splitlines() if "error:" in l or l.startswith(" ")][:int(os.environ.get("XCB_V")) if os.environ.get("XCB_V").isdigit() else 30]: print("   ", l)
     print("%d of %d sources compile%s" % (ok, len(jobs), " (syntax only)" if syntax else ""))
     for sk in skipped: print("skipped (needs another toolchain):", os.path.relpath(sk, proj.root))
     from collections import Counter
@@ -191,7 +193,10 @@ def build_target(proj, name, o, out, state):
             if ptype == "com.apple.product-type.application" and "--no-bundle" not in o: pr["app"] = make_bundle(proj, p, tout, pname, exe, dep_libs, o)
         else:
             print("link failed:"); pr["rc"] |= 2
-            for l in r.stderr.splitlines()[:12]: print("  " + l)
+            if os.environ.get("XCB_V"): print("  link command:", " ".join(shlex.quote(x) for x in cmd))
+            und = sorted({l.split("undefined symbol:", 1)[1].strip() for l in r.stderr.splitlines() if "undefined symbol:" in l})
+            if und: print("  undefined symbols (%d): %s" % (len(und), " ".join(und)))
+            for l in [l for l in r.stderr.splitlines() if "undefined symbol:" not in l and not l.strip().startswith(">>>")][:12]: print("  " + l)
     state[name] = pr
     return pr["rc"]
 

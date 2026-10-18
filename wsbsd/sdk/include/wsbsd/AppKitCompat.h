@@ -140,6 +140,7 @@ extern const CGAffineTransform CGAffineTransformIdentity;
 #endif
 extern NSString *const NSImageNameStopProgressTemplate;
 extern NSString *const NSImageNameRefreshTemplate;
+extern NSString *const NSImageNameActionTemplate, *const NSImageNameFolder, *const NSImageNameSmartBadgeTemplate;
 extern NSString *const NSImageNameGoLeftTemplate;
 extern NSString *const NSImageNameGoRightTemplate;
 extern NSString *const NSImageNameAddTemplate;
@@ -469,5 +470,27 @@ extern NSString *const NSAppleScriptErrorMessage;
 /* SF Symbols: there is no symbol set; an image is made from the name (a small outlined glyph) so that code that expects a template image gets one */
 @interface NSImage (WsbsdSymbols)
 + (instancetype)imageWithSystemSymbolName:(NSString *)name accessibilityDescription:(NSString *)description;
+@end
+#ifndef WSBSD_FILEATTR_TYPES
+#define WSBSD_FILEATTR_TYPES
+typedef NSString *NSFileAttributeKey;
+typedef NSString *NSFileAttributeType;
+#endif
+extern NSString *NSWorkspaceDidRenameVolumeNotification;
+@interface NSWindow (WsbsdTermination)
+- (void)setPreventsApplicationTerminationWhenModal:(BOOL)flag;
+- (BOOL)preventsApplicationTerminationWhenModal;
+@end
+@interface NSWorkspace (WsbsdLaunchServices)
+- (NSURL *)URLForApplicationToOpenURL:(NSURL *)url;
+- (NSArray<NSURL *> *)URLsForApplicationsToOpenURL:(NSURL *)url;
+@end
+@interface NSString (WsbsdLocalizedCase)
+- (NSString *)localizedCapitalizedString;
+- (NSString *)localizedLowercaseString;
+- (NSString *)localizedUppercaseString;
+@end
+@interface NSFileManager (WsbsdTrash)
+- (BOOL)trashItemAtURL:(NSURL *)url resultingItemURL:(NSURL **)outResultingURL error:(NSError **)error;
 @end
 #endif
