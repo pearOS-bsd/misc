@@ -96,6 +96,7 @@ void DockDrawIcon(CGContextRef c, const char *glyph, CGRect r)
 	CGPathRelease(sq);
 }
 
+static void Upright(CGContextRef c, const DockScene *s, CGFloat cx, CGFloat cy);
 static void DrawText(CGContextRef c, const char *text, CGFloat size, CGPoint at, CGFloat *outWidth)
 {
 	/* the "toy" text API of CoreGraphics: it exists in Apple's and in Opal; the width is measured by drawing far outside the window (Opal does not know the invisible text mode) */
@@ -132,13 +133,14 @@ static void DrawFan(CGContextRef c, const DockScene *s, CGFloat art_bottom)
 		double e = DockFanItemProgress(k, f->t); if (f->u < 1) e = e * f->u;
 		if (e <= 0.001) continue;
 		CGFloat fx = cx - 2 + DockFanOffsetX(k), fy = tile_top + 62.5 + DockFanPitch() * k;
-		CGFloat x = cx + (fx - cx) * e, y = tile_top + (fy - tile_top) * e;
+		if (s->orient) { fx = cx - (62.5 + DockFanPitch() * k); fy = tile_top + 6 + DockFanOffsetX(k); }       /* beside the bar: the items rise up the screen and lean away from the edge */
+		CGFloat x = cx + (fx - cx) * e, y = tile_top + (fy - tile_top) * e; CGFloat sgn = s->orient == 2 ? -1 : 1;
 		CGContextSaveGState(c); CGContextSetAlpha(c, e);
-		CGContextTranslateCTM(c, x, y); CGContextRotateCTM(c, DockFanAngle(k) * M_PI / 180 * e); CGContextScaleCTM(c, 0.55 + 0.45 * e, 0.55 + 0.45 * e);
+		CGContextTranslateCTM(c, x, y); Upright(c, s, 0, 0); CGContextRotateCTM(c, sgn * DockFanAngle(k) * M_PI / 180 * e); CGContextScaleCTM(c, 0.55 + 0.45 * e, 0.55 + 0.45 * e);
 		CGRect ir = CGRectMake(-32, -32, 64, 64);
 		if (f->icons[k]) CGContextDrawImage(c, ir, f->icons[k]); else DockDrawIcon(c, f->glyphs[k], CGRectInset(ir, 6, 6));
 		CGFloat tw = 0; DrawText(c, f->labels[k], 13, CGPointZero, &tw);
-		CGFloat ph = 26, pw = tw + 29, px = -37 - pw, py = -ph / 2;
+		CGFloat ph = 26, pw = tw + 29, px = s->orient == 1 ? 37 : -37 - pw, py = -ph / 2;
 		SetRGB(c, 0.15, 0.15, 0.155, 0.92); CGPathRef pill = RoundRectPath(CGRectMake(px, py, pw, ph), ph / 2); CGContextAddPath(c, pill); CGContextFillPath(c);
 		SetRGB(c, 1, 1, 1, 0.10); CGContextSetLineWidth(c, 1); CGContextAddPath(c, pill); CGContextStrokePath(c); CGPathRelease(pill);
 		SetRGB(c, 1, 1, 1, 0.86); DrawText(c, f->labels[k], 13, CGPointMake(px + 14.5, py + 8.5), NULL);
@@ -152,8 +154,30 @@ static void DrawFan(CGContextRef c, const DockScene *s, CGFloat art_bottom)
 	CGContextMoveToPoint(c, cx - 10, by + art / 2 + 5); CGContextAddLineToPoint(c, cx, by + art / 2 - 5); CGContextAddLineToPoint(c, cx + 10, by + art / 2 + 5); CGContextStrokePath(c);
 }
 
+
+/* the bar on the left or right edge: dock space (x along the bar, y away from the edge) maps onto the window; Upright undoes the turn around a point so that icons and texts are not rotated */
+static void Orient(CGContextRef c, const DockScene *s)
+{
+	if (s->orient == 1) CGContextConcatCTM(c, CGAffineTransformMake(0, -1, 1, 0, 0, s->height));
+	else if (s->orient == 2) CGContextConcatCTM(c, CGAffineTransformMake(0, -1, -1, 0, s->width, s->height));
+}
+static void Upright(CGContextRef c, const DockScene *s, CGFloat cx, CGFloat cy)
+{
+	if (!s->orient) return;
+	CGContextTranslateCTM(c, cx, cy);
+	if (s->orient == 1) CGContextConcatCTM(c, CGAffineTransformMake(0, 1, -1, 0, 0, 0)); else CGContextConcatCTM(c, CGAffineTransformMake(0, -1, -1, 0, 0, 0));
+	CGContextTranslateCTM(c, -cx, -cy);
+}
+static CGPoint WinOf(const DockScene *s, CGFloat x, CGFloat y)                    /* a point of dock space in the window */
+{
+	if (s->orient == 1) return CGPointMake(y, s->height - x);
+	if (s->orient == 2) return CGPointMake(s->width - y, s->height - x);
+	return CGPointMake(x, y);
+}
+
 void DockRender(CGContextRef c, const DockScene *s)
 {
+	if (s->orient) { CGContextSaveGState(c); Orient(c, s); }
 	const DockBar *b = &s->bar;
 	CGFloat bx = b->bar_x - s->origin_x, by = b->bottom_margin, bw = b->bar_w, bh = b->bar_h;
 	/* the bar: white at 4.7 %, over what the compositor blurs behind the window */
@@ -182,6 +206,7 @@ void DockRender(CGContextRef c, const DockScene *s)
 		if (DOCK_IS_GAP(s->items[i].kind)) continue;
 		CGFloat art = sl->art, lift = t->bounce * s->m.tilesize;
 		if (s->fan && s->fan->anchor == i) continue;                      /* drawn by DrawFan */
+		CGContextSaveGState(c); Upright(c, s, cx, art_bottom + lift + art / 2);
 		if (t->glyph && !strcmp(t->glyph, "none") && !t->icon) { /* a minimizing window's tile: empty until the window has arrived */ }
 		else if (t->icon) CGContextDrawImage(c, CGRectMake(cx - art / 2 - art * 0.0625, art_bottom + lift - art * 0.0625, art * 1.125, art * 1.125), t->icon);   /* the icon image has a margin (the art is 80 % of it) */
 		else DockDrawIcon(c, t->glyph, CGRectMake(cx - art / 2, art_bottom + lift, art, art));
@@ -191,16 +216,26 @@ void DockRender(CGContextRef c, const DockScene *s)
 			SetRGB(c, 0.91, 0.25, 0.22, 1); CGPathRef pill = ContinuousRect(CGRectMake(bxx, byy, bwid, 22), 11); CGContextAddPath(c, pill); CGContextFillPath(c); CGPathRelease(pill);
 			SetRGB(c, 1, 1, 1, 1); DrawText(c, num, 13, CGPointMake(bxx + (bwid - tw) / 2, byy + 5), NULL);
 		}
+		CGContextRestoreGState(c);
 		if (t->running) { SetRGB(c, 0.54, 0.54, 0.54, 1); CGContextFillEllipseInRect(c, CGRectMake(cx - 2, by + 11.5, 4, 4)); }
 	}
 	if (s->fan) DrawFan(c, s, art_bottom);
-	if (!s->fan && s->hover >= 0 && s->hover < s->n && s->tiles[s->hover].label) {                 /* the label: a dark pill above the tile with a small arrow */
+	if (s->orient) CGContextRestoreGState(c);
+	if (!s->fan && s->hover >= 0 && s->hover < s->n && s->tiles[s->hover].label) {                 /* the label: a dark pill beside the tile with a small arrow */
 		const DockSlot *sl = &s->slots[s->hover]; CGFloat cx = sl->cx - s->origin_x, tw = 0;
 		DrawText(c, s->tiles[s->hover].label, 15, CGPointZero, &tw);
-		CGFloat pw = tw + 28, ph = 30, py = art_bottom + sl->art + 14;
-		CGRect pr = CGRectMake(cx - pw / 2, py, pw, ph);
-		SetRGB(c, 0.17, 0.17, 0.18, 0.92); CGPathRef pill = ContinuousRect(pr, 15); CGContextAddPath(c, pill); CGContextFillPath(c); CGPathRelease(pill);
-		CGContextMoveToPoint(c, cx - 7, py + 0.5); CGContextAddLineToPoint(c, cx, py - 7); CGContextAddLineToPoint(c, cx + 7, py + 0.5); CGContextClosePath(c); CGContextFillPath(c);
-		SetRGB(c, 1, 1, 1, 0.95); DrawText(c, s->tiles[s->hover].label, 15, CGPointMake(cx - tw / 2, py + 9), NULL);
+		CGFloat pw = tw + 28, ph = 30;
+		if (!s->orient) {
+			CGFloat py = art_bottom + sl->art + 14; CGRect pr = CGRectMake(cx - pw / 2, py, pw, ph);
+			SetRGB(c, 0.17, 0.17, 0.18, 0.92); CGPathRef pill = ContinuousRect(pr, 15); CGContextAddPath(c, pill); CGContextFillPath(c); CGPathRelease(pill);
+			CGContextMoveToPoint(c, cx - 7, py + 0.5); CGContextAddLineToPoint(c, cx, py - 7); CGContextAddLineToPoint(c, cx + 7, py + 0.5); CGContextClosePath(c); CGContextFillPath(c);
+			SetRGB(c, 1, 1, 1, 0.95); DrawText(c, s->tiles[s->hover].label, 15, CGPointMake(cx - tw / 2, py + 9), NULL);
+		} else {                                                                                   /* on the left edge the pill is to the right of the tile, on the right edge to the left */
+			CGPoint e = WinOf(s, cx, art_bottom + sl->art + 14), cp = WinOf(s, cx, art_bottom + sl->art / 2); CGFloat dir = s->orient == 1 ? 1 : -1;
+			CGRect pr = CGRectMake(s->orient == 1 ? e.x : e.x - pw, cp.y - ph / 2, pw, ph);
+			SetRGB(c, 0.17, 0.17, 0.18, 0.92); CGPathRef pill = ContinuousRect(pr, 15); CGContextAddPath(c, pill); CGContextFillPath(c); CGPathRelease(pill);
+			CGContextMoveToPoint(c, e.x - dir * 0.5, cp.y + 7); CGContextAddLineToPoint(c, e.x - dir * 7.5, cp.y); CGContextAddLineToPoint(c, e.x - dir * 0.5, cp.y - 7); CGContextClosePath(c); CGContextFillPath(c);
+			SetRGB(c, 1, 1, 1, 0.95); DrawText(c, s->tiles[s->hover].label, 15, CGPointMake(pr.origin.x + 14, cp.y - 6), NULL);
+		}
 	}
 }
