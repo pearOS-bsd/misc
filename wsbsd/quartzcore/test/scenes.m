@@ -119,7 +119,37 @@ static CALayer *s_rasterize(void)
 	CALayer *r = rootLayer(); CALayer *a = box(CGRectMake(40, 40, 160, 120), RGB(1, 1, 1, 0.5)); a.shouldRasterize = YES; a.rasterizationScale = 1; a.cornerRadius = 20; a.opacity = 0.8;
 	[a addSublayer:box(CGRectMake(20, 20, 80, 60), RGB(1, 0, 0, 1))]; [a addSublayer:box(CGRectMake(60, 50, 80, 60), RGB(0, 0, 1, 1))]; [r addSublayer:a]; return r;
 }
+static CALayer *s_flipped(void)
+{
+	CALayer *r = rootLayer();
+	CALayer *a = box(CGRectMake(40, 40, 160, 120), RGB(1, 1, 1, 0.3)); a.geometryFlipped = YES;
+	[a addSublayer:box(CGRectMake(10, 10, 60, 30), RGB(1, 0, 0, 1))]; [a addSublayer:box(CGRectMake(80, 70, 60, 40), RGB(0, 0, 1, 1))]; [r addSublayer:a];
+	CALayer *b = box(CGRectMake(240, 40, 130, 120), RGB(1, 1, 1, 0.3)); b.geometryFlipped = YES; b.transform = CATransform3DMakeRotation(0.4, 0, 0, 1);
+	[b addSublayer:box(CGRectMake(10, 10, 60, 30), RGB(1, 0.6, 0, 1))]; [r addSublayer:b];
+	CALayer *p = box(CGRectMake(40, 190, 160, 90), RGB(0.2, 0.2, 0.2, 0.5)); p.geometryFlipped = YES; CALayer *c = box(CGRectMake(10, 10, 60, 30), RGB(0, 1, 0, 1)); c.geometryFlipped = YES; [p addSublayer:c]; [r addSublayer:p];
+	return r;
+}
+static CGImageRef asymImage(void)
+{
+	int iw = 32, ih = 32; uint8_t *px = malloc(iw * ih * 4);
+	for (int y = 0; y < ih; y++) for (int x = 0; x < iw; x++) { uint8_t *p = px + (y * iw + x) * 4; p[0] = x * 8; p[1] = y * 8; p[2] = (x < 8 && y < 8) ? 255 : 30; p[3] = 255; }
+	CGColorSpaceRef cs = CGColorSpaceCreateDeviceRGB(); CGContextRef c = CGBitmapContextCreate(px, iw, ih, 8, iw * 4, cs, kCGImageAlphaPremultipliedLast); return CGBitmapContextCreateImage(c);
+}
+static CALayer *s_flipped_contents(void)
+{
+	CALayer *r = rootLayer(); CGImageRef img = asymImage();
+	/* 1: unflipped layer with contents; 2: flipped layer with contents; 3: flipped parent, unflipped child with contents; 4: flipped parent, flipped child with contents */
+	CALayer *a = [CALayer layer]; a.frame = CGRectMake(20, 20, 64, 64); a.contents = (__bridge id)img; [r addSublayer:a];
+	CALayer *b = [CALayer layer]; b.frame = CGRectMake(110, 20, 64, 64); b.contents = (__bridge id)img; b.geometryFlipped = YES; [r addSublayer:b];
+	CALayer *pp = box(CGRectMake(200, 20, 90, 90), RGB(1, 1, 1, 0.2)); pp.geometryFlipped = YES; [r addSublayer:pp];
+	CALayer *c = [CALayer layer]; c.frame = CGRectMake(5, 5, 64, 64); c.contents = (__bridge id)img; [pp addSublayer:c];
+	CALayer *qq = box(CGRectMake(300, 20, 90, 90), RGB(1, 1, 1, 0.2)); qq.geometryFlipped = YES; [r addSublayer:qq];
+	CALayer *d = [CALayer layer]; d.frame = CGRectMake(5, 5, 64, 64); d.contents = (__bridge id)img; d.geometryFlipped = YES; [qq addSublayer:d];
+	return r;
+}
 static struct { const char *name; SceneFn fn; } kScenes[] = {
+	{ "flipped_contents", s_flipped_contents },
+	{ "flipped", s_flipped },
 	{ "shape", s_shape }, { "gradient", s_gradient }, { "text", s_text }, { "replicator", s_replicator }, { "zorder", s_zorder }, { "transformlayer", s_transformlayer }, { "rasterize", s_rasterize },
 	{ "contents_unclipped", s_contents_unclipped },
 	{ "solid", s_solid }, { "rounded", s_rounded }, { "opacity", s_opacity }, { "shadow", s_shadow }, { "transform", s_transform }, { "perspective", s_perspective },

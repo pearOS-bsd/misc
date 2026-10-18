@@ -28,6 +28,7 @@ void CARenderLayerTree(CALayer *l, CGContextRef ctx);
 - (CAAnimation *)_implicitAnimationForKeyPath:(NSString *)key;
 - (CFTimeInterval)_localTime;
 - (void)_commitAnimations;
+- (BOOL)_treeHasActiveAnimations:(CFTimeInterval)now;
 - (CALayer *)_presentationTreeAtTime:(CFTimeInterval)t;
 - (NSArray *)_sublayerArray;
 - (CATransform3D)_localToSuperMatrix;

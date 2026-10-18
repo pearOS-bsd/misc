@@ -24,3 +24,5 @@ test/*.real.txt
 test/*.out
 test/*_ref
 test/bench
+test/scenes_ours
+test/scenes_real

@@ -432,30 +432,42 @@ static void RenderLayerEx(CALayer *l, RMat parent, RCtx *cx, BOOL isRoot)
 	RSurfFree(&grp);
 }
 
-/* the layer drawn into a CoreGraphics context at its own coordinates (its position and transform are not applied), from the model values */
-void CARenderLayerTree(CALayer *l, CGContextRef ctx)
+/* a layer tree drawn into a CoreGraphics context. The layer space has y up; when the user space of the context is flipped (y down, as inside a flipped view) the layer bounds are mapped to it from the top:
+ * user y = (2 * bounds.origin.y + bounds.size.height) - layer y. rootMode: the layer itself is drawn at its own origin (no position, no transform). */
+static void CADrawTree(CALayer *tree, CGContextRef ctx, BOOL rootMode)
 {
 	CGRect clip = CGContextGetClipBoundingBox(ctx);
 	CGAffineTransform ctm = CGContextGetCTM(ctx);
+	BOOL flip = (ctm.a * ctm.d - ctm.b * ctm.c) < 0;
 	double s = sqrt(fabs(ctm.a * ctm.d - ctm.b * ctm.c)); if (s < 1) s = 1; if (s > 4) s = 4;
-	CGRect b = [l bounds];
+	CGRect bnds = [tree bounds]; double Hb = 2 * bnds.origin.y + bnds.size.height;
 	double minx = 1e30, miny = 1e30, maxx = -1e30, maxy = -1e30;
-	ExtentOf(l, RMatIdentity(), &minx, &miny, &maxx, &maxy, 0, YES);
-	CGRect ext = CGRectMake(minx - 32, miny - 32, maxx - minx + 64, maxy - miny + 64); (void)b;
+	ExtentOf(tree, RMatIdentity(), &minx, &miny, &maxx, &maxy, 0, rootMode);
+	if (minx > maxx) return;
+	double uy0 = flip ? Hb - maxy : miny, uy1 = flip ? Hb - miny : maxy;                 /* the extent in user space */
+	CGRect ext = CGRectMake(minx - 40, uy0 - 40, maxx - minx + 80, uy1 - uy0 + 80);
 	CGRect r = CGRectIntersection(clip, ext); if (CGRectIsNull(r) || r.size.width <= 0 || r.size.height <= 0) return;
 	r = CGRectMake(floor(r.origin.x), floor(r.origin.y), ceil(r.size.width + 1), ceil(r.size.height + 1));
 	int w = (int)ceil(r.size.width * s), h = (int)ceil(r.size.height * s); if (w <= 0 || h <= 0 || w > 8192 || h > 8192) return;
+	double ymin = flip ? Hb - (r.origin.y + r.size.height) : r.origin.y;                   /* the layer y of the first row */
 	RSurf surf = RSurfCreate(w, h);
-	RMat M = RMatIdentity(); M.m[0] = s; M.m[5] = s; M.m[12] = -r.origin.x * s; M.m[13] = -r.origin.y * s;
+	RMat M = RMatIdentity(); M.m[0] = s; M.m[5] = s; M.m[12] = -r.origin.x * s; M.m[13] = -ymin * s;
 	RCtx cx = { &surf, { 0, 0, w, h, NULL, 0 }, 0, 0 };
-	RenderLayerEx(l, M, &cx, YES);
-	FlipRows(&surf);                                                      /* row 0 = the top of the image (largest y) */
+	RenderLayerEx(tree, M, &cx, rootMode);
+	if (!flip) FlipRows(&surf);                                                           /* CGContextDrawImage puts the first row at the top of the destination (largest y) */
 	CGColorSpaceRef cs = CGColorSpaceCreateDeviceRGB();
 	CGContextRef bc = CGBitmapContextCreate(surf.px, w, h, 8, surf.stride, cs, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little);
 	CGColorSpaceRelease(cs);
 	if (bc) { CGImageRef img = CGBitmapContextCreateImage(bc); if (img) { CGContextDrawImage(ctx, r, img); CGImageRelease(img); } CGContextRelease(bc); }
 	RSurfFree(&surf);
 }
+void CARenderLayerTree(CALayer *l, CGContextRef ctx) { CADrawTree(l, ctx, YES); }
+void CARenderPresentation(CALayer *root, CGContextRef ctx, CFTimeInterval time, BOOL applyTransform)
+{
+	CALayer *tree = [root _presentationTreeAtTime:time ?: CACurrentMediaTime()];
+	CADrawTree(tree, ctx, !applyTransform);
+}
+BOOL CALayerTreeHasActiveAnimations(CALayer *root) { return [root _treeHasActiveAnimations:CACurrentMediaTime()]; }
 
 @implementation CARenderer
 {
@@ -484,3 +496,4 @@ void CARenderLayerTree(CALayer *l, CGContextRef ctx)
 - (CFTimeInterval)nextFrameTime { return INFINITY; }
 - (void)endFrame {}
 @end
+
