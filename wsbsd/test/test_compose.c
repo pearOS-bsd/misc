@@ -359,6 +359,10 @@ int main(void)
 	ws_server_key(srv, 42, 1);
 	CHECK(ws_next_event(srv, a, &ev) && ev.type == WS_EV_MOUSE_UP);
 	CHECK(ws_next_event(srv, a, &ev) && ev.type == WS_EV_KEY_DOWN && ev.key == 42);
+	/* a cursor shape belongs to the window under the pointer when it was set: leaving that window brings the arrow back */
+	ws_server_mouse(srv, 30, 30, 0); ws_server_set_cursor_shape(srv, 3); CHECK(ws_server_cursor_shape(srv) == 3);
+	ws_server_mouse(srv, 33, 33, 0); CHECK(ws_server_cursor_shape(srv) == 3);              /* still over a */
+	ws_server_mouse(srv, 5, 290, 0); CHECK(ws_server_cursor_shape(srv) == 0);              /* over the desktop */
 	/* a window that appears takes the keyboard; the key window going away hands it to the frontmost ordinary window */
 	{ ws_wid k1 = ws_create_window(srv, (ws_rect){ 20, 20, 300, 200 }), k2 = ws_create_window(srv, (ws_rect){ 60, 60, 300, 200 });
 	  ws_order_window(srv, k1, WS_ABOVE, 0); CHECK(ws_key_window(srv) == k1);
