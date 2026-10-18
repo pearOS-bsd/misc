@@ -28,6 +28,7 @@ done
 (cd "$WS/src" && for f in client compositor_sw region ipc evrec buffer; do cc -O2 -fPIC -std=c99 -D_DEFAULT_SOURCE -I"$WS/include" -c $f.c -o "$WORK/ws_$f.o"; done; cc -shared -o /usr/local/lib/libwsclient.so "$WORK"/ws_*.o -lm)
 sh "$WS/sdk/build-compat.sh" "$WORK/compat" > "$WORK/compat.log" 2>&1; install -m 755 "$WORK/compat/libwsbsdcompat.so" /usr/local/lib/libwsbsdcompat.so; install -m 755 "$WORK/compat/libQuartzCore.so" /usr/local/lib/libQuartzCore.so
 install -d /usr/local/bin /usr/local/libexec
+install -d /usr/local/share/wsbsd/icons && install -m 644 "$HERE"/icons/*.icns /usr/local/share/wsbsd/icons/
 # the Dock and the status area of the menu bar (they talk to wsd through the client library: a static archive of the objects above)
 ar rcs "$WORK/libwsclient.a" "$WORK"/ws_*.o
 COMPAT="$WORK/compat" WSCLIENT="$WORK/libwsclient.a" sh "$WS/dock/build.sh" "$WORK/dock" > "$WORK/dock.log" 2>&1; install -m 755 "$WORK/dock/Dock" /usr/local/bin/Dock-gnustep || { cat "$WORK/dock.log"; exit 1; }
@@ -47,7 +48,7 @@ rm -f "$ROOT"/usr/lib/*.a "$ROOT"/usr/lib/*_p.a "$ROOT"/usr/bin/clang* "$ROOT"/u
 
 echo "== 3. what we built, with the libraries it needs"
 mkdir -p "$ROOT/usr/local"
-tar -C / -cf - usr/local/GNUstep usr/local/sbin/wsd usr/local/sbin/spctl usr/local/bin usr/local/libexec/dyld usr/local/lib/libwsclient.so usr/local/lib/libwsbsdcompat.so usr/local/lib/libQuartzCore.so usr/local/share/fonts usr/local/etc/fonts usr/local/bin/zsh usr/local/share/zsh usr/local/lib/zsh usr/local/share/icu usr/local/lib/libicudata.so usr/local/lib/libicudata.so.76 usr/local/lib/libicudata.so.76.1 2>/dev/null | tar -C "$ROOT" -xpf -
+tar -C / -cf - usr/local/GNUstep usr/local/sbin/wsd usr/local/sbin/spctl usr/local/bin usr/local/libexec/dyld usr/local/lib/libwsclient.so usr/local/lib/libwsbsdcompat.so usr/local/lib/libQuartzCore.so usr/local/share/fonts usr/local/etc/fonts usr/local/share/wsbsd usr/local/bin/zsh usr/local/share/zsh usr/local/lib/zsh usr/local/share/icu usr/local/lib/libicudata.so usr/local/lib/libicudata.so.76 usr/local/lib/libicudata.so.76.1 2>/dev/null | tar -C "$ROOT" -xpf -
 # every shared library below /usr/local that these programs need (ldd closure)
 find "$ROOT/usr/local" -type f \( -name '*.so*' -o -perm -u+x \) 2>/dev/null | sed "s|^$ROOT||" > "$WORK/elf.list"
 : > "$WORK/needed.list"
