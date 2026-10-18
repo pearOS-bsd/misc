@@ -92,6 +92,16 @@ int main(void)
 		{ CABasicAnimation *a = basic(@"transform.translation.x", NUM(0), NUM(50), 1); run("basic translation.x", a, @"transform", 0, 1, 0.25); }
 		{ CATransform3D a0 = CATransform3DMakeRotation(0, 0, 0, 1), a1 = CATransform3DScale(CATransform3DMakeRotation(M_PI / 2, 0, 0, 1), 2, 2, 1);
 		  CABasicAnimation *a = basic(@"transform", [NSValue valueWithCATransform3D:a0], [NSValue valueWithCATransform3D:a1], 1); run("basic transform matrix", a, @"transform", 0, 1, 0.25); }
+		{ CATransform3D a0 = CATransform3DIdentity, a1 = CATransform3DMakeRotation(M_PI / 2, 0, 1, 0);
+		  CABasicAnimation *a = basic(@"transform", [NSValue valueWithCATransform3D:a0], [NSValue valueWithCATransform3D:a1], 1); run("basic transform rotateY 90", a, @"transform", 0, 1, 0.25); }
+		{ CATransform3D a0 = CATransform3DMakeRotation(0.3, 1, 0, 0); a0.m34 = -1.0 / 500; CATransform3D a1 = CATransform3DTranslate(CATransform3DScale(CATransform3DMakeRotation(1.2, 0, 1, 0), 1.5, 0.5, 2), 10, 20, 30); a1.m34 = -1.0 / 800;
+		  CABasicAnimation *a = basic(@"transform", [NSValue valueWithCATransform3D:a0], [NSValue valueWithCATransform3D:a1], 1); run("basic transform perspective mix", a, @"transform", 0, 1, 0.125); }
+		{ CATransform3D a0 = CATransform3DMakeRotation(0.2, 1, 1, 0), a1 = CATransform3DMakeRotation(-2.5, 0, 1, 1);
+		  CABasicAnimation *a = basic(@"transform", [NSValue valueWithCATransform3D:a0], [NSValue valueWithCATransform3D:a1], 1); run("basic transform axis change", a, @"transform", 0, 1, 0.125); }
+		{ CATransform3D a0 = CATransform3DMakeScale(1, 1, 1), a1 = CATransform3DMakeScale(-1, 1, 1);
+		  CABasicAnimation *a = basic(@"transform", [NSValue valueWithCATransform3D:a0], [NSValue valueWithCATransform3D:a1], 1); run("basic transform mirror", a, @"transform", 0, 1, 0.25); }
+		{ CABasicAnimation *a = basic(@"transform.rotation.y", NUM(0), NUM(1.0), 1); run("basic rotation.y", a, @"transform", 0, 1, 0.25); }
+		{ CABasicAnimation *a = basic(@"transform.rotation.x", NUM(0), NUM(1.0), 1); run("basic rotation.x", a, @"transform", 0, 1, 0.25); }
 		{ CABasicAnimation *a = basic(@"backgroundColor", (__bridge id)CGColorCreateGenericRGB(1, 0, 0, 1), (__bridge id)CGColorCreateGenericRGB(0, 0, 1, 1), 1); run("basic color", a, @"backgroundColor", 0, 1, 0.25); }
 		{ CABasicAnimation *a = basic(@"cornerRadius", NUM(0), NUM(10), 1); a.byValue = nil; run("basic cornerRadius", a, @"cornerRadius", 0, 1, 0.5); }
 		{ CABasicAnimation *a = basic(@"opacity", nil, NUM(0), 1); run("basic to only (from model)", a, @"opacity", 0, 1, 0.25); }
