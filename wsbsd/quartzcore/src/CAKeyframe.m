@@ -91,25 +91,62 @@ static void CAPathCollect(void *info, const CGPathElement *e)
 	}
 }
 static void CAPathEvalPoint(const CAPathSeg *g, double u, CGPoint *pt, CGPoint *tan);
-#define CALENSTEPS 256
-static double CAPathSegLength(const CAPathSeg *g, double *table)      /* table[i] = length up to u = i / CALENSTEPS */
+/* Lengths of the segments and the parameter for a length: the adaptive subdivision of Core Animation (CA::Render::Path::keyframe_lengths and ::interpolate). A segment is a cubic (a quadratic one is
+ * raised in degree); a piece is final when its control polygon is not longer than its chord by more than the width of its parameter range (a first width of 1), at most 29 levels deep. A final piece
+ * counts (polygon + chord) / 2. For a given length the pieces are walked from the start and the parameter is interpolated linearly inside the piece where the length is reached; as a float. */
+typedef struct { double x, y; } CAV2;
+static double CAV2Len(CAV2 a, CAV2 b) { double dx = b.x - a.x, dy = b.y - a.y, d2 = dx * dx + dy * dy; return d2 > 0 ? d2 * (1.0 / sqrt(d2)) : 0; }
+static void CASegCubic(const CAPathSeg *g, CAV2 c[4])
 {
-	CGPoint prev = g->p[0], pt, tg; double L = 0;
-	if (table) table[0] = 0;
-	for (int i = 1; i <= CALENSTEPS; i++) {
-		CAPathEvalPoint(g, (double)i / CALENSTEPS, &pt, &tg);
-		L += hypot(pt.x - prev.x, pt.y - prev.y); prev = pt;
-		if (table) table[i] = L;
-	}
-	return L;
+	c[0] = (CAV2){ g->p[0].x, g->p[0].y };
+	if (g->kind == 3) { c[1] = (CAV2){ g->p[1].x, g->p[1].y }; c[2] = (CAV2){ g->p[2].x, g->p[2].y }; c[3] = (CAV2){ g->p[3].x, g->p[3].y }; }
+	else if (g->kind == 2) {
+		c[3] = (CAV2){ g->p[2].x, g->p[2].y };
+		c[1] = (CAV2){ (2 * g->p[1].x + g->p[0].x) * (1.0 / 3), (2 * g->p[1].y + g->p[0].y) * (1.0 / 3) }; c[2] = (CAV2){ (2 * g->p[1].x + g->p[2].x) * (1.0 / 3), (2 * g->p[1].y + g->p[2].y) * (1.0 / 3) };
+	} else { c[1] = c[0]; c[2] = (CAV2){ g->p[1].x, g->p[1].y }; c[3] = c[2]; }
 }
-/* the parameter at which the arc length of the segment is s */
-static double CAPathParamAtLength(const double *table, double s)
+static void CASplit(const CAV2 *c, CAV2 *l, CAV2 *r)
 {
-	int lo = 0, hi = CALENSTEPS;
-	while (hi - lo > 1) { int mid = (lo + hi) / 2; if (table[mid] <= s) lo = mid; else hi = mid; }
-	double span = table[hi] - table[lo], f = span > 0 ? (s - table[lo]) / span : 0;
-	return ((double)lo + f) / CALENSTEPS;
+	CAV2 m01 = { (c[0].x + c[1].x) * 0.5, (c[0].y + c[1].y) * 0.5 }, m12 = { (c[1].x + c[2].x) * 0.5, (c[1].y + c[2].y) * 0.5 }, m23 = { (c[2].x + c[3].x) * 0.5, (c[2].y + c[3].y) * 0.5 };
+	CAV2 a = { (m01.x + m12.x) * 0.5, (m01.y + m12.y) * 0.5 }, b = { (m12.x + m23.x) * 0.5, (m12.y + m23.y) * 0.5 }, mid = { (a.x + b.x) * 0.5, (a.y + b.y) * 0.5 };
+	l[0] = c[0]; l[1] = m01; l[2] = a; l[3] = mid; r[0] = mid; r[1] = b; r[2] = m23; r[3] = c[3];
+}
+typedef struct { CAV2 c[4]; double width; int depth; } CAPiece;
+static double CAPathSegLength(const CAPathSeg *g, double *unused)
+{
+	(void)unused;
+	if (g->kind == 1) return CAV2Len((CAV2){ g->p[0].x, g->p[0].y }, (CAV2){ g->p[1].x, g->p[1].y });
+	CAPiece st[32]; int sp = 0; CAPiece cur; CASegCubic(g, cur.c); cur.width = 1; cur.depth = 0; double total = 0;
+	for (;;) {
+		double chord = CAV2Len(cur.c[0], cur.c[3]), poly = CAV2Len(cur.c[0], cur.c[1]) + CAV2Len(cur.c[2], cur.c[3]) + CAV2Len(cur.c[1], cur.c[2]);
+		if (poly - chord <= cur.width || cur.depth >= 29) {
+			total += (poly + chord) * 0.5;
+			if (sp == 0) break;
+			cur = st[--sp];
+		} else {
+			CAPiece l, r; CASplit(cur.c, l.c, r.c); l.width = r.width = cur.width * 0.5; l.depth = r.depth = cur.depth + 1;
+			st[sp++] = r; cur = l;
+		}
+	}
+	return total;
+}
+static double CAPathParamAtLength(const CAPathSeg *g, double target)
+{
+	if (target == 0) return 0;
+	CAPiece st[32]; int sp = 0; CAPiece cur; CASegCubic(g, cur.c); cur.width = 1; cur.depth = 0; double accum = 0, accu = 0;
+	for (;;) {
+		double l0 = CAV2Len(cur.c[0], cur.c[1]), l1 = CAV2Len(cur.c[1], cur.c[2]), l2 = CAV2Len(cur.c[2], cur.c[3]), chord = CAV2Len(cur.c[0], cur.c[3]), poly = l2 + l0 + l1;
+		if ((poly - chord <= cur.width && fabs(l0 - l1) + fabs(l1 - l2) < 1.0) || cur.depth >= 29) {
+			double len = (chord + poly) * 0.5;
+			if (accum + len >= target) { double u = (target - accum) * cur.width / len + accu; if (u > 1) u = 1; return (double)(float)u; }
+			accum += len; accu += cur.width;
+			if (sp == 0) return 1;
+			cur = st[--sp];
+		} else {
+			CAPiece l, r; CASplit(cur.c, l.c, r.c); l.width = r.width = cur.width * 0.5; l.depth = r.depth = cur.depth + 1;
+			st[sp++] = r; cur = l;
+		}
+	}
 }
 /* the point and the tangent of a segment at u (0 ... 1) */
 static void CAPathEvalPoint(const CAPathSeg *g, double u, CGPoint *pt, CGPoint *tan);
@@ -177,7 +214,8 @@ void CAKeyframeApply(CAKeyframeAnimation *k, CFTimeInterval time, id pres, id mo
 		double span = kt[i + 1] - kt[i], u = (t - kt[i]) / span;
 		u = u > 1 ? 1 : (u < 0 ? 0 : u);
 		NSArray *tfs = [k timingFunctions]; if (tfs && i < tfs.count && mode != kModePaced && mode != kModeCubicPaced) u = (double)[tfs[i] _solve:(float)u];
-		if (mode == kModePaced || mode == kModeCubicPaced) { double tab[CALENSTEPS + 1]; double L = CAPathSegLength(&ps.seg[i], tab); u = CAPathParamAtLength(tab, u * L); }
+		u = (double)(float)u;                                           /* the render side works with a float parameter */
+		if ((mode == kModePaced || mode == kModeCubicPaced) && ps.seg[i].kind != 1) u = CAPathParamAtLength(&ps.seg[i], CAPathSegLength(&ps.seg[i], NULL) * u);
 		CGPoint pt, tan; CAPathEval(&ps.seg[i], u, &pt, &tan);
 		value = [NSValue valueWithPoint:NSMakePoint(pt.x, pt.y)];
 		NSString *rm = [k rotationMode];
