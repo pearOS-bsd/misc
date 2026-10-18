@@ -1118,7 +1118,7 @@ static int do_private(conn *c, const uint8_t *buf, size_t len)
 		if (fps_overlay) ws_draw_fps(screen);
 		r.retcode = ws_write_ppm(screen, q.s) ? CGS_ERROR_FAILURE : 0;
 		break;
-	case WSX_INJECT_MOUSE: ws_server_mouse(srv, a[0], a[1], a[2]); break;
+	case WSX_INJECT_MOUSE: ws_server_mouse(srv, a[0], a[1], a[2]); if (a[3] == 1) ws_server_scroll(srv, a[0], a[1], a[4], a[5], 0); break;        /* a[3] = 1: a scroll of (a[4], a[5]) points at the pointer */
 	case WSX_INJECT_KEY: ws_server_key(srv, a[0], a[1]); break;
 	case WSX_NEXT_EVENT: {
 		ws_event e = { 0 };

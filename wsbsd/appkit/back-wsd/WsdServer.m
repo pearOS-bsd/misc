@@ -304,6 +304,13 @@ static int wsdShapeForStyle(int style)
 	if (w) ws_win_glass(conn, &w->win, (ws_rect){ 0, 0, width, height }, 12, 5);
 }
 
+/* rounded corners (and the window server's shadow) for a window the application shapes itself: the file panels */
+- (void) wsdWindowCorners: (int)radius : (int)win
+{
+	struct wsd_window *w = [self wsdWindow: win];
+	if (w) ws_win_shadow(conn, &w->win, radius, 1);
+}
+
 - (void) setwindowlevel: (int)level : (int)win
 {
 	struct wsd_window *w = [self wsdWindow: win];
@@ -403,7 +410,7 @@ static int wsdShapeForStyle(int style)
 				characters: keychars(e.key, e.flags, NO) charactersIgnoringModifiers: keychars(e.key, e.flags, YES) isARepeat: NO keyCode: (unsigned short)e.key];
 			break;
 		case WS_EV_SCROLL:
-			ev = [NSEvent otherEventWithType: NSScrollWheel location: p modifierFlags: fl timestamp: ts windowNumber: w->number context: GSCurrentContext() subtype: 0 data1: e.dx data2: e.dy];
+			ev = [NSEvent mouseEventWithType: NSScrollWheel location: p modifierFlags: fl timestamp: ts windowNumber: w->number context: GSCurrentContext() eventNumber: 0 clickCount: 1 pressure: 0 buttonNumber: 0 deltaX: e.dx / 10.0 deltaY: e.dy / 10.0 deltaZ: 0];     /* a scroll event carries its deltas in the mouse record (an "other" event has none and AppKit read garbage from it); 10 points per line */
 			break;
 		case WS_EV_FOCUS_IN:
 			ev = [NSEvent otherEventWithType: NSAppKitDefined location: NSZeroPoint modifierFlags: 0 timestamp: ts windowNumber: w->number context: GSCurrentContext() subtype: GSAppKitWindowFocusIn data1: 0 data2: 0];

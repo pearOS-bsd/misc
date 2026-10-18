@@ -85,6 +85,7 @@ int ws_post_mouse_event(ws_conn *, int type, float x, float y, uint32_t flags, i
 int ws_post_key_event(ws_conn *, int down, int keycode, uint32_t flags);                       /* GetCursorScale (30135) */                                      /* private: this connection's id */
 int ws_win_count(ws_conn *, int connection_id);                 /* GetWindowCount (30063) */
 int ws_inject_mouse(ws_conn *, int x, int y, int buttons);
+int ws_inject_scroll(ws_conn *, int x, int y, int dx, int dy);          /* test injection: the pointer moves to (x, y) and the wheel turns by (dx, dy) points */
 int ws_inject_key(ws_conn *, int key, int down);
 int ws_poll_event(ws_conn *, ws_win *, ws_event *out);   /* 1 if an event was returned */
 ws_surface *ws_capture(ws_conn *, ws_rect r, uint32_t wid, int with_cursor);   /* composed pixels of a rect / a window's frame (wid != 0) / the whole screen (zero rect); free with ws_surface_free */
