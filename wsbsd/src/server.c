@@ -914,6 +914,7 @@ void ws_server_walk(ws_server *s, ws_visit_fn fn, void *ctx)
 		if (w->shadow_on && w->shadow && !w->mesh) {
 			vis.shadow = w->shadow; vis.shadow_x = w->frame.x - w->shadow_pad; vis.shadow_y = w->frame.y - w->shadow_pad; vis.shadow_gen = w->shadow_gen;
 		}
+		vis.brightness = w->brightness; vis.mesh = w->mesh; vis.mcols = w->mcols; vis.mrows = w->mrows;
 		vis.invert = w->filter == 2; vis.has_xf = w->has_xf; memcpy(vis.xf, w->xf, sizeof vis.xf);
 		vis.damage = w->dmg; vis.has_damage = w->has_dmg; vis.full_damage = w->full_dmg;
 		fn(ctx, &vis);

@@ -194,6 +194,8 @@ typedef struct {
 	int blur_radius;        /* background blur radius in points behind this window, 0 = none */
 	int invert;                     /* CIColorInvert filter */
 	int has_xf; float xf[6];        /* SetWindowTransform: a b c d tx ty about the window centre */
+	float brightness;               /* SetWindowListBrightness: colour channels are multiplied by it (1 = unchanged) */
+	const float *mesh; int mcols, mrows;   /* SetWindowWarp: srcX srcY dstX dstY per point in pixels, y up (NULL = none) */
 } ws_visit;
 typedef void (*ws_visit_fn)(void *ctx, const ws_visit *v);
 void ws_server_walk(ws_server *, ws_visit_fn fn, void *ctx);              /* bottom to top, on-screen windows only */

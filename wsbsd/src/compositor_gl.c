@@ -46,6 +46,7 @@ struct gl_compositor {
 	PFNEGLEXPORTDMABUFIMAGEMESAPROC export_image;
 	GLuint prog, vbo, fbo, fbo_tex, tmp_fbo, tmp_tex, blur_prog;
 	GLint bu_rect, bu_screen, bu_src, bu_dir, bu_sigma, bu_rad;
+	GLint u_bright, u_usedst;
 	GLint u_invert, u_xf, u_xt, u_rect, u_screen, u_tex, u_size, u_uvscale, u_alpha, u_radius, u_border, u_swap;
 	wtex wt[MAX_TEX]; stex st[MAX_TEX]; itex it[MAX_TEX];
 	uint8_t *stage; size_t stage_cap;
@@ -55,6 +56,8 @@ struct gl_compositor {
 /* ---------------------------------------------------------------- shaders */
 static const char *VS =
 	"attribute vec2 a_pos;\n"                                  /* unit quad, (0,0) top-left */
+	"attribute vec2 a_dst;\n"                                  /* mesh vertices: the destination in pixels (a_pos is then the texture coordinate) */
+	"uniform int u_usedst;\n"
 	"uniform vec4 u_rect;\n"                                   /* x, y, width, height in pixels, origin top-left */
 	"uniform vec2 u_screen;\n"
 	"uniform vec4 u_xf;\n"                                    /* SetWindowTransform a b c d about the quad centre; all zero (the default) = identity */
@@ -64,6 +67,8 @@ static const char *VS =
 	"    vec2 px = u_rect.xy + a_pos * u_rect.zw;\n"
 	"    if (u_xf != vec4(0.0)) { vec2 ctr = u_rect.xy + 0.5 * u_rect.zw, d = px - ctr; px = ctr + vec2(u_xf.x * d.x + u_xf.z * d.y, u_xf.y * d.x + u_xf.w * d.y) + u_xt; }\n"
 	"    /* row 0 of the render target is the top of the screen, so read-back and scan-out need no flip */\n"
+	"    gl_Position = vec4(px.x / u_screen.x * 2.0 - 1.0, px.y / u_screen.y * 2.0 - 1.0, 0.0, 1.0);\n"
+	"    if (u_usedst != 0) px = a_dst;\n"
 	"    gl_Position = vec4(px.x / u_screen.x * 2.0 - 1.0, px.y / u_screen.y * 2.0 - 1.0, 0.0, 1.0);\n"
 	"    v_uv = a_pos;\n"
 	"}\n";
@@ -104,6 +109,7 @@ static const char *FS =
 	"uniform float u_radius;\n"                                /* corner radius in pixels, 0 = square */
 	"uniform float u_border;\n"                                /* 1px border strength, 0 = none */
 	"uniform int u_swap;\n"
+	"uniform float u_bright;\n"                               /* SetWindowListBrightness: the colour of the premultiplied pixel is scaled, never above the alpha */
 	"uniform int u_invert;\n"                                 /* CIColorInvert: premultiplied c = a - c */                                    /* 1: the texture holds BGRA bytes uploaded as RGBA */
 	"varying vec2 v_uv;\n"
 	"void main() {\n"
@@ -114,6 +120,7 @@ static const char *FS =
 	"    vec4 c = texture2D(u_tex, v_uv * u_uvscale);\n"                          /* premultiplied */
 	"    if (u_swap != 0) c = c.bgra;\n"
 	"    if (u_invert != 0) c = vec4(c.a - c.rgb, c.a);\n"
+	"    c.rgb = min(c.rgb * u_bright, vec3(c.a));\n"
 	"    c *= cover;\n"
 	"    float ring = clamp(1.0 - abs(d + 0.5), 0.0, 1.0);\n"                      /* a 1 px band just inside the edge */
 	"    vec4 b = vec4(0.0, 0.0, 0.0, 0.16) * ring * u_border * cover;\n"          /* subtle dark stroke, premultiplied */
@@ -144,7 +151,7 @@ static int build_program(gl_compositor *c)
 	if (!vs || !fs) { if (vs) glDeleteShader(vs); if (fs) glDeleteShader(fs); return -1; }
 	c->prog = glCreateProgram();
 	glAttachShader(c->prog, vs); glAttachShader(c->prog, fs);
-	glBindAttribLocation(c->prog, 0, "a_pos");
+	glBindAttribLocation(c->prog, 0, "a_pos"); glBindAttribLocation(c->prog, 1, "a_dst");
 	glLinkProgram(c->prog);
 	glDeleteShader(vs); glDeleteShader(fs);
 	GLint ok = 0;
@@ -157,7 +164,7 @@ static int build_program(gl_compositor *c)
 		return -1;
 	}
 	c->u_rect = glGetUniformLocation(c->prog, "u_rect");
-	c->u_invert = glGetUniformLocation(c->prog, "u_invert");
+	c->u_invert = glGetUniformLocation(c->prog, "u_invert"); c->u_bright = glGetUniformLocation(c->prog, "u_bright"); c->u_usedst = glGetUniformLocation(c->prog, "u_usedst");
 	c->u_xf = glGetUniformLocation(c->prog, "u_xf"); c->u_xt = glGetUniformLocation(c->prog, "u_xt");
 	c->u_screen = glGetUniformLocation(c->prog, "u_screen");
 	c->u_tex = glGetUniformLocation(c->prog, "u_tex");
@@ -466,6 +473,45 @@ static void blur_backdrop(gl_compositor *c, const ws_visit *v)
 	glEnable(GL_BLEND);
 }
 
+/* the warped window (SetWindowWarp): every cell of the mesh is split into 6 x 6 pieces whose corners are interpolated bilinearly (the software compositor solves the bilinear map per pixel; triangles of a coarse cell
+ * would show their diagonal), drawn as triangles from a client-side vertex array with the destination as a second attribute */
+static void draw_mesh(gl_compositor *c, const ws_visit *v, GLuint tex, float uvx, float uvy, float alpha, int swap)
+{
+	enum { SUB = 6 };
+	int cols = v->mcols, rows = v->mrows; if (cols < 2 || rows < 2) return;
+	size_t cells = (size_t)(cols - 1) * (rows - 1), nv = cells * SUB * SUB * 6;
+	float *vert = malloc(nv * 4 * sizeof(float)); if (!vert) return;
+	size_t o = 0; float fw = (float)v->frame.w, fh = (float)v->frame.h, H = (float)c->h;
+	for (int r = 0; r + 1 < rows; r++) for (int cc = 0; cc + 1 < cols; cc++) {
+		const float *p[4] = { v->mesh + 4 * (r * cols + cc), v->mesh + 4 * (r * cols + cc + 1), v->mesh + 4 * ((r + 1) * cols + cc), v->mesh + 4 * ((r + 1) * cols + cc + 1) };
+		for (int j = 0; j < SUB; j++) for (int i = 0; i < SUB; i++) {
+			float s0 = (float)i / SUB, s1 = (float)(i + 1) / SUB, t0 = (float)j / SUB, t1 = (float)(j + 1) / SUB;
+			float cs[4][2] = { { s0, t0 }, { s1, t0 }, { s0, t1 }, { s1, t1 } }; float q[4][4];
+			for (int k = 0; k < 4; k++) {
+				float s = cs[k][0], t = cs[k][1];
+				#define LERP(n) ((1 - s) * (1 - t) * p[0][n] + s * (1 - t) * p[1][n] + (1 - s) * t * p[2][n] + s * t * p[3][n])
+				float sx = LERP(0), sy = LERP(1), dx = LERP(2), dy = LERP(3);
+				q[k][0] = sx / fw * uvx; q[k][1] = (fh - sy) / fh * uvy;      /* texture coordinates (a_pos is multiplied by u_uvscale in the fragment shader, so give it unscaled) */
+				q[k][0] = sx / fw; q[k][1] = (fh - sy) / fh;
+				q[k][2] = dx; q[k][3] = H - dy;
+				#undef LERP
+			}
+			static const int idx[6] = { 0, 1, 2, 2, 1, 3 };
+			for (int k = 0; k < 6; k++) { memcpy(vert + o, q[idx[k]], 4 * sizeof(float)); o += 4; }
+		}
+	}
+	glUniform1i(c->u_usedst, 1); glUniform4f(c->u_rect, 0, 0, 1, 1); glUniform2f(c->u_size, fw, fh); glUniform2f(c->u_uvscale, uvx, uvy);
+	glUniform1f(c->u_alpha, alpha); glUniform1f(c->u_radius, 0); glUniform1f(c->u_border, 0); glUniform1i(c->u_swap, swap);
+	glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, tex);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), vert); glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), vert + 2);
+	glDrawArrays(GL_TRIANGLES, 0, (GLsizei)o / 4);
+	glDisableVertexAttribArray(1); glUniform1i(c->u_usedst, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, c->vbo); glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+	free(vert);
+}
+
 static void visit(void *ctx, const ws_visit *v)
 {
 	gl_compositor *c = ctx;
@@ -473,11 +519,12 @@ static void visit(void *ctx, const ws_visit *v)
 	int swap = 1; float uvx = 1, uvy = 1;
 	GLuint tex = window_texture(c, v, &swap, &uvx, &uvy);
 	if (tex && v->alpha > 0.0f) {
-		glUniform1i(c->u_invert, v->invert);
+		glUniform1i(c->u_invert, v->invert); glUniform1f(c->u_bright, v->brightness > 0 || v->brightness == 0 ? v->brightness : 1.0f);
 		if (v->has_xf) { glUniform4f(c->u_xf, v->xf[0], v->xf[1], v->xf[2], v->xf[3]); glUniform2f(c->u_xt, v->xf[4], v->xf[5]); }
-		draw_quad(c, (float)v->frame.x, (float)v->frame.y, (float)v->frame.w, (float)v->frame.h, tex, uvx, uvy, v->alpha,
+		if (v->mesh && v->mcols >= 2 && v->mrows >= 2) draw_mesh(c, v, tex, uvx, uvy, v->alpha, swap);
+		else draw_quad(c, (float)v->frame.x, (float)v->frame.y, (float)v->frame.w, (float)v->frame.h, tex, uvx, uvy, v->alpha,
 		          (float)v->corner_radius, v->corner_radius > 0 ? 1.0f : 0.0f, swap);
-		glUniform1i(c->u_invert, 0);
+		glUniform1i(c->u_invert, 0); glUniform1f(c->u_bright, 1.0f);
 		if (v->has_xf) { glUniform4f(c->u_xf, 0, 0, 0, 0); glUniform2f(c->u_xt, 0, 0); }
 	}
 	if (v->shadow && v->alpha > 0.0f) {                                          /* the shadow layer lies above its window: it is cut out of the window shape */
@@ -501,7 +548,7 @@ int compositor_render_frame(gl_compositor *c, ws_server *srv)
 	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);                                  /* premultiplied alpha */
 	glUseProgram(c->prog);
 	glUniform2f(c->u_screen, (float)c->w, (float)c->h);
-	glUniform1i(c->u_tex, 0);
+	glUniform1i(c->u_tex, 0); glUniform1f(c->u_bright, 1.0f); glUniform1i(c->u_usedst, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, c->vbo);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, NULL);
