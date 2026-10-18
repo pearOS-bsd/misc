@@ -78,8 +78,9 @@ void ws_blur_region(ws_surface *img, ws_rect r, ws_rect wr, float sigma)
 	free(a); free(b);
 }
 
-/* ---- the glass material ("Liquid Glass"): what lies behind a rounded rectangle is blurred, its saturation is raised, the edge band acts as a lens (the backdrop is sampled from further inside, so the edge looks
- * thick and bent), a specular rim from a light at the top left and a soft inner shadow at the bottom edge. mode 1: regular, 2: clear (less blur, no tint) ---- */
+/* ---- the glass material ("Liquid Glass"), as measured on the real Dock over a high-contrast pattern: there is NO blur inside (lines and stripes stay crisp), the interior is the backdrop darkened to
+ * about 0.69 (white -> 176), and the edge band (about 18 px) is a lens that PULLS content in from beyond the edge (a line 18 px outside the bar shows up right at its edge, bent), with a thin specular
+ * rim lit from the top left. mode 1: regular, 2: clear (lighter tint, thinner lens) ---- */
 #include <math.h>
 static float clampf(float v, float lo, float hi) { return v < lo ? lo : v > hi ? hi : v; }
 static void sample_bilinear(const ws_surface *s, float x, float y, float out[3])
@@ -93,15 +94,15 @@ static void sample_bilinear(const ws_surface *s, float x, float y, float out[3])
 void ws_glass_region(ws_surface *img, ws_rect gr, int rad, int mode)
 {
 	if (!img || gr.w < 4 || gr.h < 4 || mode <= 0) return;
-	float sigma = mode == 2 ? 3.0f : 9.0f; int M = (int)ceilf(3.0f * sigma) + 16;
+	float Lmax = mode == 2 ? 10.0f : (getenv("WS_GLASS_L") ? (float)atof(getenv("WS_GLASS_L")) : 18.0f), amp = getenv("WS_GLASS_AMP") ? (float)atof(getenv("WS_GLASS_AMP")) : 26.0f; int M = (int)ceilf(amp) + 6;
 	ws_rect cr = { gr.x - M, gr.y - M, gr.w + 2 * M, gr.h + 2 * M };
 	int cx0 = cr.x < 0 ? 0 : cr.x, cy0 = cr.y < 0 ? 0 : cr.y, cx1 = cr.x + cr.w > img->w ? img->w : cr.x + cr.w, cy1 = cr.y + cr.h > img->h ? img->h : cr.y + cr.h;
 	if (cx1 <= cx0 || cy1 <= cy0) return;
-	ws_surface *tmp = ws_surface_new(cx1 - cx0, cy1 - cy0); if (!tmp) return;
+	ws_surface *tmp = ws_surface_new(cx1 - cx0, cy1 - cy0); if (!tmp) return;                 /* the backdrop as it is now: the lens samples from it while the result is written to the image */
 	for (int y = cy0; y < cy1; y++) memcpy(tmp->px + (size_t)(y - cy0) * tmp->stride, img->px + (size_t)y * img->stride + (size_t)cx0 * 4, (size_t)(cx1 - cx0) * 4);
-	ws_blur_region(tmp, (ws_rect){ 0, 0, tmp->w, tmp->h }, (ws_rect){ 0, 0, tmp->w, tmp->h }, sigma);
 	float hw = gr.w / 2.0f, hh = gr.h / 2.0f, r = (float)(rad > 0 ? rad : 0); if (r > hh) r = hh; if (r > hw) r = hw;
-	float L = fminf(16.0f, fminf(gr.w, gr.h) / 3.0f);                                 /* width of the lens band */
+	float L = fminf(Lmax, fminf(gr.w, gr.h) / 2.5f);                                 /* width of the lens band */
+	float tint = mode == 2 ? 0.90f : 0.69f, lift = mode == 2 ? 0.0f : 0.012f;
 	int x0 = gr.x < 0 ? 0 : gr.x, y0 = gr.y < 0 ? 0 : gr.y, x1 = gr.x + gr.w > img->w ? img->w : gr.x + gr.w, y1 = gr.y + gr.h > img->h ? img->h : gr.y + gr.h;
 	for (int y = y0; y < y1; y++) for (int x = x0; x < x1; x++) {
 		float px = x + 0.5f - gr.x - hw, py = y + 0.5f - gr.y - hh;                  /* relative to the centre */
@@ -112,16 +113,12 @@ void ws_glass_region(ws_surface *img, ws_rect gr, int rad, int mode)
 		float nx, ny;                                                               /* outward normal */
 		if (qx > 0 && qy > 0) { float l = sqrtf(qx * qx + qy * qy); nx = (px < 0 ? -1 : 1) * qx / l; ny = (py < 0 ? -1 : 1) * qy / l; }
 		else if (qx > qy) { nx = px < 0 ? -1.0f : 1.0f; ny = 0; } else { nx = 0; ny = py < 0 ? -1.0f : 1.0f; }
-		float shift = 0; if (d < L) { float t = 1 - d / L; shift = t * t * L * 0.85f; }
-		float col[3]; sample_bilinear(tmp, (x + 0.5f - nx * shift) - cx0, (y + 0.5f - ny * shift) - cy0, col);
-		float gray = 0.114f * col[0] + 0.587f * col[1] + 0.299f * col[2];
-		float sat = mode == 2 ? 1.25f : 1.6f;
-		for (int c = 0; c < 3; c++) col[c] = clampf(gray + (col[c] - gray) * sat + (mode == 2 ? 0.0f : 0.035f), 0, 1);
+		float shift = 0; if (d < L) shift = amp * sinf(3.14159265f * d / L);        /* the bevel folds the image: content from up to `amp` pixels beyond the edge, mirrored where the slope reverses (that is where lines look thick) */
+		float col[3]; sample_bilinear(tmp, (x + 0.5f + nx * shift) - cx0, (y + 0.5f + ny * shift) - cy0, col);
 		float light = nx * -0.55f + ny * -0.83f; if (light < 0) light = 0;
-		float rim = expf(-d / 1.3f), glow = expf(-d / 7.0f);
-		float white = (mode == 2 ? 0.0f : 0.05f) + rim * (0.12f + 0.55f * light) + glow * 0.10f * light;
-		float shade = expf(-d / 6.0f) * 0.12f * fmaxf(0.0f, nx * 0.25f + ny * 0.95f);
-		for (int c = 0; c < 3; c++) { col[c] = col[c] * (1 - shade) * (1 - white) + white; if (col[c] > 1) col[c] = 1; }
+		float rim = expf(-d / 1.1f) * (0.10f + 0.50f * light), glow = expf(-d / 5.0f) * 0.05f * light;
+		float white = rim + glow;
+		for (int c = 0; c < 3; c++) { col[c] = col[c] * tint + lift; col[c] = col[c] * (1 - white) + white; if (col[c] > 1) col[c] = 1; }
 		uint8_t *dp = img->px + (size_t)y * img->stride + (size_t)x * 4;
 		for (int c = 0; c < 3; c++) dp[c] = (uint8_t)(dp[c] * (1 - cover) + col[c] * 255.0f * cover + 0.5f);
 	}
