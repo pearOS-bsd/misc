@@ -211,6 +211,45 @@ static void DrawFileIcon(NSRect ic, NSString *name)
 	}
 }
 @end
+/* ---- the icon view: a grid of 96 x 92 cells, the picture above the name */
+@interface WsdIconColumn : WsdColumn { NSMutableArray *ents; NSInteger perRow; } @end
+@implementation WsdIconColumn
+- (void)load
+{
+	[super load]; ents = [NSMutableArray array]; for (id r in rows) if (![r isKindOfClass: [NSString class]]) [ents addObject: r];
+	double W = [self frame].size.width; perRow = (NSInteger)fmax(1, floor((W - 16) / 96)); NSInteger nr = ((NSInteger)[ents count] + perRow - 1) / perRow;
+	[self setFrameSize: NSMakeSize(W, fmax(nr * 92 + 24, 60))]; selected = -1;
+}
+- (NSRect)cell:(NSInteger)k { return NSMakeRect(8 + (k % perRow) * 96, 10 + (k / perRow) * 92, 96, 92); }
+- (void)drawRect:(NSRect)dirty
+{
+	[P_CONTENT setFill]; NSRectFill(dirty);
+	for (NSInteger k = 0; k < (NSInteger)[ents count]; k++) {
+		NSRect c = [self cell: k]; if (!NSIntersectsRect(c, dirty)) continue; WsdEntry *e = ents[k]; BOOL sel = k == selected;
+		NSRect ic = NSMakeRect(NSMidX(c) - 28, c.origin.y + 4, 56, 56);
+		if (sel) FillRound(NSInsetRect(ic, -4, -3), 8, active ? RGBA(255, 255, 255, 0.14) : P_SELECT);
+		NSGraphicsContext *g = [NSGraphicsContext currentContext]; [g saveGraphicsState]; NSAffineTransform *t = [NSAffineTransform transform]; [t translateXBy: ic.origin.x yBy: ic.origin.y]; [t scaleBy: 3.5]; [t concat];
+		if (e->dir) DrawFolder(NSMakeRect(0, 0, 16, 16)); else DrawFileIcon(NSMakeRect(0, 0, 16, 16), e->name);
+		[g restoreGraphicsState];
+		NSDictionary *a = Attr(12, NO, sel && active ? [NSColor whiteColor] : (e->enabled ? P_TEXT : P_DIM)); NSString *nm = e->name;
+		if ([nm sizeWithAttributes: a].width > 88) { while ([nm length] > 1 && [[nm stringByAppendingString: @"\u2026"] sizeWithAttributes: a].width > 88) nm = [nm substringToIndex: [nm length] - 1]; nm = [nm stringByAppendingString: @"\u2026"]; }
+		NSSize ts = [nm sizeWithAttributes: a]; NSRect lr = NSMakeRect(NSMidX(c) - ts.width / 2 - 5, c.origin.y + 64, ts.width + 10, 18);
+		if (sel && active) FillRound(lr, 6, RGB(0, 89, 209));
+		[nm drawAtPoint: NSMakePoint(NSMidX(c) - ts.width / 2, lr.origin.y + 9 - ts.height / 2) withAttributes: a];
+	}
+}
+- (void)mouseDown:(NSEvent *)ev
+{
+	[[self window] makeFirstResponder: self]; NSPoint p = [self convertPoint: [ev locationInWindow] fromView: nil];
+	for (NSInteger k = 0; k < (NSInteger)[ents count]; k++) if (NSPointInRect(p, [self cell: k])) { WsdEntry *e = ents[k]; if (!e->enabled) return; selected = k; [self setNeedsDisplay: YES]; [delegate column: self clicked: e doubleClick: [ev clickCount] >= 2]; return; }
+}
+- (void)keyDown:(NSEvent *)ev
+{
+	NSString *k = [ev characters]; if (![k length]) return; unichar ch = [k characterAtIndex: 0]; NSInteger n = (NSInteger)[ents count], i = selected < 0 ? 0 : selected;
+	if (ch == NSRightArrowFunctionKey) i++; else if (ch == NSLeftArrowFunctionKey) i--; else if (ch == NSDownArrowFunctionKey) i += perRow; else if (ch == NSUpArrowFunctionKey) i -= perRow; else { [super keyDown: ev]; return; }
+	if (i < 0 || i >= n) return; selected = i; [self scrollRectToVisible: [self cell: i]]; [self setNeedsDisplay: YES]; [delegate column: self clicked: ents[i] doubleClick: NO];
+}
+@end
 @interface WsdListHeader : NSView { @public NSString *group; } @end
 @implementation WsdListHeader
 - (BOOL)isFlipped { return YES; }
@@ -282,7 +321,7 @@ static void DrawSideIcon(NSString *name, NSRect r, NSColor *tint)               
 @end
 
 /* ---- the toolbar: back / forward, view mode, grouping, the path pop-up, the search field */
-@interface WsdToolbar : NSView { @public id target; BOOL canBack, canFwd, compact; NSString *pathTitle; NSTextField *search; } @end
+@interface WsdToolbar : NSView { @public id target; BOOL canBack, canFwd, compact; int mode; NSString *pathTitle; NSTextField *search; } @end
 @implementation WsdToolbar
 - (BOOL)isFlipped { return YES; }
 - (void)drawRect:(NSRect)dirty
@@ -293,7 +332,7 @@ static void DrawSideIcon(NSString *name, NSRect r, NSColor *tint)               
 	FillRound(NSMakeRect(x0, 20, 50, 24), 8, P_CONTROL);
 	for (int k = 0; k < 2; k++) { NSBezierPath *p = [NSBezierPath bezierPath]; double cx = x0 + 13 + k * 24 + (k ? -2 : 2), cy = 32; [p setLineWidth: 1.5]; [p moveToPoint: NSMakePoint(cx + (k ? -3 : 3), cy - 5)]; [p lineToPoint: NSMakePoint(cx + (k ? 3 : -3), cy)]; [p lineToPoint: NSMakePoint(cx + (k ? -3 : 3), cy + 5)]; [((k ? canFwd : canBack) ? P_TEXT : P_DIM) setStroke]; [p stroke]; }
 	FillRound(NSMakeRect(76, 20, 66, 24), 8, P_CONTROL); FillRound(NSMakeRect(150, 20, 66, 24), 8, P_CONTROL);
-	[P_TEXT setFill]; for (int i = 0; i < 3; i++) NSRectFill(NSMakeRect(90 + i * 4.5, 27, 3, 10)); for (int i = 0; i < 9; i++) NSRectFill(NSMakeRect(163 + (i % 3) * 4.5, 27 + (i / 3) * 3.6, 2.5, 2.5));
+	[P_TEXT setFill]; if (mode == 1 || compact) { for (int i = 0; i < 3; i++) NSRectFill(NSMakeRect(92, 27 + i * 4, 10, 1.6)); } else if (mode == 0) { for (int i = 0; i < 4; i++) NSRectFill(NSMakeRect(91 + (i % 2) * 6, 27 + (i / 2) * 6, 4.5, 4.5)); } else for (int i = 0; i < 3; i++) NSRectFill(NSMakeRect(90 + i * 4.5, 27, 3, 10)); for (int i = 0; i < 9; i++) NSRectFill(NSMakeRect(163 + (i % 3) * 4.5, 27 + (i / 3) * 3.6, 2.5, 2.5));
 	for (int k = 0; k < 2; k++) { double cx = (k ? 200 : 126); NSBezierPath *p = [NSBezierPath bezierPath]; [p setLineWidth: 1.4]; [p moveToPoint: NSMakePoint(cx - 3, 30)]; [p lineToPoint: NSMakePoint(cx, 33.5)]; [p lineToPoint: NSMakePoint(cx + 3, 30)]; [P_TEXT setStroke]; [p stroke]; }
 	double px = compact ? 224 : 258, pw = compact ? 198 : 229, sx = compact ? 462 : 529, sw = compact ? 195 : 196;
 	NSRect pp = NSMakeRect(px, 20, pw, 24); FillRound(pp, 8, P_CONTROL);                                         /* the path pop-up: a folder, the name, the up / down arrows */
@@ -310,6 +349,7 @@ static void DrawSideIcon(NSString *name, NSRect r, NSColor *tint)               
 	else if (NSPointInRect(p, NSMakeRect(45, 20, 25, 24)) && canFwd) [target performSelector: @selector(goForward)];
 	else if (NSPointInRect(p, NSMakeRect(compact ? 224 : 258, 20, compact ? 198 : 229, 24))) [target performSelector: @selector(showPathMenu:) withObject: [NSValue valueWithPoint: NSMakePoint(compact ? 359 : 393, 44)]];
 	else if (compact && NSPointInRect(p, NSMakeRect(430, 20, 22, 24))) [target performSelector: @selector(toggleExpanded)];
+	else if (NSPointInRect(p, NSMakeRect(76, 20, 66, 24)) && !compact) [target performSelector: @selector(showViewMenu)];
 }
 @end
 
@@ -344,7 +384,7 @@ static void DrawSideIcon(NSString *name, NSRect r, NSColor *tint)               
 
 @interface WsdPanelController : NSObject <WsdColumnDelegate> {
 	@public NSPanel *win; NSView *root; WsdSidebar *sidebar; WsdToolbar *toolbar; NSMutableArray *cols; NSString *dir; NSMutableArray *history; NSInteger hpos;
-	NSView *corners; WsdPreview *preview; BOOL expanded; NSString *saveDir, *savedName, *okTitle; NSScrollView *listScroll; WsdListColumn *listView; WsdListHeader *listHeader; NSButton *newFolder; NSString *searchText; BOOL isSave, filesOK, dirsOK, multiple; NSArray *types; NSString *chosen; NSButton *ok, *cancel; NSTextField *nameField; NSInteger result; NSString *message, *prompt;
+	NSView *corners; WsdPreview *preview; int viewMode; NSString *listDir; BOOL expanded; NSString *saveDir, *savedName, *okTitle; NSScrollView *listScroll; WsdColumn *listView; WsdListHeader *listHeader; NSButton *newFolder; NSString *searchText; BOOL isSave, filesOK, dirsOK, multiple; NSArray *types; NSString *chosen; NSButton *ok, *cancel; NSTextField *nameField; NSInteger result; NSString *message, *prompt;
 }
 @end
 @interface WsdRoot : NSView { @public BOOL saveForm, expanded; id owner; NSString *whereTitle; } @end
@@ -378,6 +418,10 @@ static void DrawSideIcon(NSString *name, NSRect r, NSColor *tint)               
 @implementation WsdPanelController
 - (void)column:(WsdColumn *)c clicked:(WsdEntry *)e doubleClick:(BOOL)dbl
 {
+	if (!isSave && c == listView) {                                                                                       /* the list or icons of the Open panel */
+		chosen = e->path; if (e->dir && dbl) { [self openListGo: e->path push: YES]; return; }
+		if (dbl && ((e->dir && dirsOK) || (!e->dir && filesOK))) [self accept: nil]; [self refresh]; return;
+	}
 	if (isSave) {                                                                                                          /* the list of the expanded Save panel */
 		if (e->dir) { if (dbl) [self saveGo: e->path push: YES]; } else { [nameField setStringValue: e->name]; if (dbl) [self accept: nil]; }
 		[self refresh]; return;
@@ -442,6 +486,39 @@ static void DrawSideIcon(NSString *name, NSRect r, NSColor *tint)               
 	listView->dir = saveDir; listView->filter = searchText; [listView load]; [listView setNeedsDisplay: YES];
 	for (id r in listView->rows) if ([r isKindOfClass: [NSString class]]) { listHeader->group = r; break; } [listHeader setNeedsDisplay: YES];
 }
+/* ---- the Open panel's view modes: icons (0), list (1), columns (2); gallery (3) shows the columns */
+- (void)showViewMenu
+{
+	NSMenu *m = [[NSMenu alloc] initWithTitle: @""]; NSArray *names = @[ @"as Icons", @"as List", @"as Columns", @"as Gallery" ];
+	for (int k = 0; k < 4; k++) { NSMenuItem *it = [m addItemWithTitle: names[k] action: @selector(viewModePicked:) keyEquivalent: @""]; [it setTarget: self]; [it setTag: k]; [it setState: (k == viewMode || (viewMode == 2 && k == 3 && NO)) ? NSOnState : NSOffState]; }
+	[m popUpMenuPositioningItem: nil atLocation: NSMakePoint(135 + 76, 64 - 20) inView: root];
+}
+- (void)viewModePicked:(NSMenuItem *)it { [self setViewMode: (int)[it tag] == 3 ? 2 : (int)[it tag]]; }
+- (void)clearBrowser
+{
+	if (preview) { [preview removeFromSuperview]; preview = nil; }
+	for (WsdColumn *c in cols) { NSScrollView *sv = [c enclosingScrollView]; [sv setDocumentView: nil]; [sv removeFromSuperview]; } [cols removeAllObjects];
+	if (listScroll) { [listScroll setDocumentView: nil]; [listScroll removeFromSuperview]; listScroll = nil; } if (listHeader) { [listHeader removeFromSuperview]; listHeader = nil; } listView = nil;
+}
+- (void)setViewMode:(int)m
+{
+	if (isSave || m == viewMode) return;
+	NSString *d = [self currentDir]; viewMode = m; [self clearBrowser]; chosen = nil;
+	if (m == 2) { [self navigate: d push: NO]; return; }
+	listDir = d; double H = [root bounds].size.height, W = [root bounds].size.width - 135, hy = 64;
+	if (m == 1) { listHeader = [[WsdListHeader alloc] initWithFrame: NSMakeRect(135, 64, W, 26)]; [root addSubview: listHeader]; hy = 90; }
+	listScroll = [[NSScrollView alloc] initWithFrame: NSMakeRect(135, hy, W, H - 66 - hy)]; [listScroll setHasVerticalScroller: YES]; [listScroll setBorderType: NSNoBorder]; [listScroll setDrawsBackground: NO];
+	listView = m == 1 ? [[WsdListColumn alloc] initWithFrame: NSMakeRect(0, 0, W - 15, 100)] : [[WsdIconColumn alloc] initWithFrame: NSMakeRect(0, 0, W - 15, 100)];
+	listView->types = types; listView->filesOK = filesOK; listView->dirsOK = dirsOK; listView->delegate = self; listView->active = YES; listView->dir = d; listView->filter = searchText; [listView load];
+	[listScroll setDocumentView: listView]; [root addSubview: listScroll]; [win makeFirstResponder: listView]; [self refreshListHeader]; [self refresh];
+}
+- (void)refreshListHeader { if (!listHeader || !listView) return; for (id r in listView->rows) if ([r isKindOfClass: [NSString class]]) { listHeader->group = r; break; } [listHeader setNeedsDisplay: YES]; }
+- (void)openListGo:(NSString *)path push:(BOOL)push
+{
+	if (!path) return;
+	if (push) { while ((NSInteger)[history count] > hpos + 1) [history removeLastObject]; [history addObject: path]; hpos = (NSInteger)[history count] - 1; }
+	listDir = path; listView->dir = path; [listView load]; [listView scrollRectToVisible: NSMakeRect(0, 0, 1, 1)]; [listView setNeedsDisplay: YES]; chosen = nil; [self refreshListHeader]; [self refresh];
+}
 - (void)toggleExpanded { expanded = !expanded; [self buildSave]; }
 - (void)makeNewFolder:(id)sender
 {
@@ -481,10 +558,11 @@ static void DrawSideIcon(NSString *name, NSRect r, NSColor *tint)               
 	{ WsdLights *lt = [[WsdLights alloc] initWithFrame: [root bounds]]; lt->show = expanded; [root addSubview: lt]; }
 	RoundWindow(win, 18); [root setNeedsDisplay: YES]; [self refresh]; [win makeFirstResponder: nameField];
 }
-- (void)sidebarGo:(NSString *)path { if (isSave) [self saveGo: path push: YES]; else [self navigate: path push: YES]; }
-- (void)goBack { if (hpos > 0) { hpos--; if (isSave) [self saveGo: history[hpos] push: NO]; else [self navigate: history[hpos] push: NO]; } }
-- (void)goForward { if (hpos + 1 < (NSInteger)[history count]) { hpos++; if (isSave) [self saveGo: history[hpos] push: NO]; else [self navigate: history[hpos] push: NO]; } }
-- (NSString *)currentDir { if (isSave) return saveDir ?: dir; WsdColumn *c = [cols lastObject]; return c ? c->dir : dir; }
+- (void)sidebarGo:(NSString *)path { if (isSave) [self saveGo: path push: YES]; else if (viewMode != 2) [self openListGo: path push: YES]; else [self navigate: path push: YES]; }
+- (void)goTo:(NSString *)path { if (isSave) [self saveGo: path push: NO]; else if (viewMode != 2) [self openListGo: path push: NO]; else [self navigate: path push: NO]; }
+- (void)goBack { if (hpos > 0) { hpos--; [self goTo: history[hpos]]; } }
+- (void)goForward { if (hpos + 1 < (NSInteger)[history count]) { hpos++; [self goTo: history[hpos]]; } }
+- (NSString *)currentDir { if (isSave) return saveDir ?: dir; if (viewMode != 2 && listDir) return listDir; WsdColumn *c = [cols lastObject]; return c ? c->dir : dir; }
 - (void)showPathMenu:(NSValue *)v
 {
 	NSMenu *m = [[NSMenu alloc] initWithTitle: @""]; NSString *p = [self currentDir]; NSMutableArray *chain = [NSMutableArray array];
@@ -492,7 +570,7 @@ static void DrawSideIcon(NSString *name, NSRect r, NSColor *tint)               
 	for (NSString *q in chain) { NSMenuItem *it = [m addItemWithTitle: [q isEqual: @"/"] ? @"Macintosh HD" : [q lastPathComponent] action: @selector(pathPicked:) keyEquivalent: @""]; [it setTarget: self]; [it setRepresentedObject: q]; }
 	[m popUpMenuPositioningItem: nil atLocation: isSave ? NSMakePoint(100, 140) : NSMakePoint(135 + 258, 64 - 20) inView: root];
 }
-- (void)pathPicked:(NSMenuItem *)it { if (isSave) [self saveGo: [it representedObject] push: YES]; else [self navigate: [it representedObject] push: YES]; }
+- (void)pathPicked:(NSMenuItem *)it { [self sidebarGo: [it representedObject]]; }
 - (void)refresh
 {
 	NSString *d = [self currentDir], *title = [d isEqual: @"/"] ? @"Macintosh HD" : [d lastPathComponent]; if (toolbar) { toolbar->pathTitle = title; toolbar->canBack = hpos > 0; toolbar->canFwd = hpos + 1 < (NSInteger)[history count]; }
@@ -518,6 +596,7 @@ static void DrawSideIcon(NSString *name, NSRect r, NSColor *tint)               
 {
 	if ([n object] == toolbar->search && toolbar) {                                                                    /* the search field filters the folders shown by name */
 		searchText = [toolbar->search stringValue]; for (WsdColumn *c in cols) { c->filter = searchText; [c load]; [c setNeedsDisplay: YES]; }
+		if (listView) { listView->filter = searchText; [listView load]; [listView setNeedsDisplay: YES]; [self refreshListHeader]; }
 	}
 	[self refresh];
 }
@@ -560,7 +639,7 @@ static NSInteger WsdRunPanel(NSSavePanel *sp)
 		NSTextField *sf2 = Field(NSMakeRect(135 + 529, 19, 196, 26), nil); [sf2 setBezeled: YES]; [sf2 setDelegate: (id)pc]; [[sf2 cell] setPlaceholderAttributedString: [[NSAttributedString alloc] initWithString: @"Search" attributes: Attr(13, NO, P_DIM)]]; [root addSubview: sf2]; tb->search = sf2;
 		pc->cancel = Btn(@"Cancel", NSMakeRect(695, 448 - 43, 77, 22), pc, @selector(cancelIt:), NO); pc->ok = Btn(([sp prompt].length && ![[sp prompt] isEqual: @"Name:"]) ? [sp prompt] : @"Open", NSMakeRect(781, 448 - 43, 79, 22), pc, @selector(accept:), YES);
 		[root addSubview: pc->cancel]; [root addSubview: pc->ok]; [pc->ok setEnabled: NO];
-		[pc navigate: d push: YES]; for (NSInteger i = 0; i < (NSInteger)[sb->items count]; i++) if ([sb->items[i][@"p"] isEqual: d]) sb->selected = i;
+		pc->viewMode = 2; [pc navigate: d push: YES]; if (getenv("WSD_PANEL_VIEW")) [pc setViewMode: atoi(getenv("WSD_PANEL_VIEW"))]; for (NSInteger i = 0; i < (NSInteger)[sb->items count]; i++) if ([sb->items[i][@"p"] isEqual: d]) sb->selected = i;
 	} else {
 		pc->okTitle = ([sp prompt].length && ![[sp prompt] isEqual: @"Name:"]) ? [sp prompt] : @"Save"; pc->savedName = nm ?: ([sp nameFieldStringValue] ?: @""); pc->saveDir = d; pc->dir = d;
 		[pc->history addObject: d]; pc->hpos = 0; [pc buildSave];
