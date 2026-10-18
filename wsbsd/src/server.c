@@ -14,6 +14,7 @@ typedef struct {
 	float xf[6]; int has_xf;        /* SetWindowTransform: a b c d tx ty about the window centre (software compositor) */
 	float *mesh; int mcols, mrows;      /* SetWindowWarp: a mesh of mcols x mrows points, 4 floats each: srcX srcY (pixels in the window) dstX dstY (screen); both y axes point up, the origin is the bottom left corner (decompiled Dock, genie) */
 	ws_rect *cap_excl; int ncap_excl;   /* SetWindowCaptureExcludeShape: window-relative rectangles left out of screen captures */
+	uint32_t fade_prop;     /* SetWindowListFadeProperties: the property word of the window's fade (kept, not interpreted) */
 	float brightness;       /* SetWindowListBrightness: the colour is multiplied by it (1 = unchanged); software compositor */
 	float sys_alpha;        /* SetWindowListSystemAlpha: multiplies the alpha (fades done by the system); 1 by default */
 	int syslevel;           /* SetWindowListSystemLevel class, kept */
@@ -1188,6 +1189,7 @@ int ws_window_set_tags(ws_server *s, ws_wid id, uint64_t tags, int clear)
 	return 0;
 }
 
+int ws_set_window_fade_property(ws_server *s, ws_wid id, uint32_t prop) { window *w = get(s, id); if (!w) return -1; w->fade_prop = prop; return 0; }
 int ws_set_window_corner_radius(ws_server *s, ws_wid id, int radius)
 {
 	window *w = get(s, id);

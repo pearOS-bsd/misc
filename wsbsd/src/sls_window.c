@@ -864,6 +864,17 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		ws_set_window_corner_radius(srv, wid, (int)(r > mw / 2 ? mw / 2 : r));
 		return reply_simple(c->fd, h, 0);
 	}
+	case SLS_MSG_SetWindowListFadeProperties: {                                     /* 1 OOL (window ids), count@0x34 (<= 0x400), then count u32 properties inline from 0x38 and the OOL size repeated after them: size 0x3c + 4 * count; decompiled __XSetWindowListFadeProperties (-304 bad message, -300 bad descriptor / size mismatch); applied pairwise, kept per window (read back through the window's properties) */
+		if (!(h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len < 0x3c || rd32(buf, 0x18) != 1 || buf[0x27] != 1) return reply_simple(c->fd, h, buf[0x27] != 1 && len >= 0x28 && (h->msgh_bits & MACH_MSGH_BITS_COMPLEX) ? -300 : -304);
+		uint32_t n = rd32(buf, 0x34), osz = rd32(buf, 0x28);
+		if (n > 0x400 || h->msgh_size != n * 4 + 0x3c || len < (size_t)h->msgh_size + osz) return reply_simple(c->fd, h, -304);
+		if (osz != rd32(buf, 0x38 + n * 4)) return reply_simple(c->fd, h, -300);
+		for (uint32_t i = 0; i < n && 4 * (i + 1) <= osz; i++) {
+			uint32_t wid = rd32(buf, h->msgh_size + 4 * i);
+			if (ws_window_exists(srv, wid) && holds_rights(c, wid)) ws_set_window_fade_property(srv, wid, rd32(buf, 0x38 + 4 * i));
+		}
+		return reply_simple(c->fd, h, 0);
+	}
 	case SLS_MSG_AddTrackingAreas: {                                               /* 5 OOL, size 0x8c, wid@0x74; the descriptor sizes must agree with the counts@0x78..0x88. Inferred layout (not decompiled below the wire checks): region bytes of all areas, the byte length of each area's region (u32), the area ids (u64), flags, user data (u64) */
 		size_t off[5]; uint32_t sz[5]; int e = ool_multi(h, buf, len, 0x8c, 5, off, sz);
 		if (e) return reply_simple(c->fd, h, e);
