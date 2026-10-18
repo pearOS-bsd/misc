@@ -13,9 +13,39 @@
 #endif
 
 static IMP origSetName, origRunModal, origRunModalRel, origBeginCompletion, origSaveFilename, origOpenFilenames;
-static const char kResult = 0;
+static const char kResult = 0, kTags = 0;
+@class WsdTagField;
 
-@interface GSDisplayServer (WsdCorners) - (void) wsdWindowCorners: (int)radius : (int)win; @end
+@interface GSDisplayServer (WsdCorners) - (void) wsdWindowCorners: (int)radius : (int)win; - (void) wsdWindowScale: (float)scale : (int)win; @end
+static void ScaleWindow(NSWindow *w, float scale) { id srv = GSCurrentServer(); if ([srv respondsToSelector: @selector(wsdWindowScale::)]) [srv wsdWindowScale: scale : (int)[w windowNumber]]; }
+/* the panel's open animation, measured on the Mac: scale 0.98 -> 1.0023 (at about 0.1 s) -> 1 within 0.2 s while it fades in; closing fades out in 0.1 s */
+/* the tags chosen in the Save panel go onto the file once the application has written it (the Mac's panel does the same: the file is not there yet when the panel closes) */
+@interface WsdTagApplier : NSObject { NSString *path; NSArray *tags; int tries; } + (void)apply:(NSArray *)tags toPath:(NSString *)p; @end
+static void SetTags(NSString *path, NSArray *names);
+@implementation WsdTagApplier
++ (void)apply:(NSArray *)t toPath:(NSString *)p { WsdTagApplier *a = [WsdTagApplier new]; a->path = p; a->tags = t; [[NSRunLoop currentRunLoop] addTimer: [NSTimer scheduledTimerWithTimeInterval: 0.5 target: a selector: @selector(tick:) userInfo: nil repeats: YES] forMode: NSDefaultRunLoopMode]; }
+- (void)tick:(NSTimer *)t { if ([[NSFileManager defaultManager] fileExistsAtPath: path]) { SetTags(path, tags); [t invalidate]; } else if (++tries > 40) [t invalidate]; }
+@end
+@interface WsdPanelAnim : NSObject { NSWindow *win; NSDate *t0; NSTimer *timer; } + (void)open:(NSWindow *)w; + (void)close:(NSWindow *)w; @end
+@implementation WsdPanelAnim
++ (void)open:(NSWindow *)w
+{
+	WsdPanelAnim *a = [WsdPanelAnim new]; a->win = w; a->t0 = [NSDate date]; [w setAlphaValue: 0]; ScaleWindow(w, 0.98f);
+	a->timer = [NSTimer timerWithTimeInterval: 1.0 / 60 target: a selector: @selector(tick:) userInfo: nil repeats: YES];
+	[[NSRunLoop currentRunLoop] addTimer: a->timer forMode: NSDefaultRunLoopMode]; [[NSRunLoop currentRunLoop] addTimer: a->timer forMode: NSModalPanelRunLoopMode];
+}
+- (void)tick:(NSTimer *)t
+{
+	double e = -[t0 timeIntervalSinceNow];
+	if (e >= 0.3) { ScaleWindow(win, 1.0f); [win setAlphaValue: 1]; [timer invalidate]; return; }
+	ScaleWindow(win, (float)(1 - 0.02 * exp(-9 * e) * cos(18 * e))); [win setAlphaValue: (CGFloat)fmin(1, e / 0.1)];
+}
++ (void)close:(NSWindow *)w
+{
+	NSDate *t0 = [NSDate date]; double e;
+	while ((e = -[t0 timeIntervalSinceNow]) < 0.1) { [w setAlphaValue: (CGFloat)(1 - e / 0.1)]; [[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0 / 60]]; }
+}
+@end
 static void RoundWindow(NSWindow *w, int radius) { id srv = GSCurrentServer(); if ([srv respondsToSelector: @selector(wsdWindowCorners::)]) [srv wsdWindowCorners: radius : (int)[w windowNumber]]; }
 static BOOL DrawSymbol(NSString *name, NSRect cell, CGFloat pointSize, NSColor *tint);
 static NSTextField *Field(NSRect f, NSString *val); static NSButton *Btn(NSString *title, NSRect f, id target, SEL action, BOOL def);
@@ -282,6 +312,9 @@ static NSString *SizeText(unsigned long long n)
 	NSDateFormatter *df = [[NSDateFormatter alloc] init]; [df setDateFormat: @"EEEE, d MMMM yyyy 'at' HH:mm"];
 	NSArray *rows = @[ @[ @"Created", [at fileCreationDate] ?: [NSDate date] ], @[ @"Modified", [at fileModificationDate] ?: [NSDate date] ] ]; double y = 299 + 5;
 	for (NSArray *r in rows) { [P_LINE setFill]; NSRectFill(NSMakeRect(11, y - 15, W - 24, 1)); Text(r[0], NSMakePoint(11, y + 4), 13, NO, P_DIM, YES); NSString *v = [df stringFromDate: r[1]]; NSDictionary *va = Attr(13, NO, P_TEXT); NSSize vs = [v sizeWithAttributes: va]; [v drawAtPoint: NSMakePoint(W - 28 - vs.width, y + 4 - vs.height / 2) withAttributes: va]; y += 24; }
+	Text(@"Tags", NSMakePoint(11, y + 12), 13, YES, P_TEXT, YES); NSArray *tg = TagsOf(path); y += 33;
+	if ([tg count]) { DrawTagDots(tg, 11 + TagDotsWidth(tg), y); Text([tg componentsJoinedByString: @", "], NSMakePoint(11 + TagDotsWidth(tg) + 8, y), 13, NO, P_TEXT, YES); }
+	else Text(@"Add Tags\u2026", NSMakePoint(11, y), 13, NO, P_DIM, YES);
 }
 @end
 
@@ -360,7 +393,7 @@ static NSString *SizeText(unsigned long long n)
 		NSRect ic = NSMakeRect(17, NSMinY(rr) + 3, 16, 16);
 		if (e->dir) DrawDirIcon(ic, e->name); else DrawFileIcon(ic, e->name);
 		NSColor *tc = sel && active ? [NSColor whiteColor] : (e->enabled ? P_TEXT : P_DIM);
-		TextFit(e->name, NSMakePoint(40, NSMidY(rr)), 13, tc, W - 40 - (e->dir ? 30 : 14));
+		double tdw = TagDotsWidth(e->tags); TextFit(e->name, NSMakePoint(40, NSMidY(rr)), 13, tc, W - 40 - (e->dir ? 30 : 14) - (tdw ? tdw + 16 : 0)); DrawTagDots(e->tags, W - 26, NSMidY(rr));
 		if (e->dir) { NSBezierPath *p = [NSBezierPath bezierPath]; double cx = W - 22, cy = NSMidY(rr); [p setLineWidth: 1.3]; [p moveToPoint: NSMakePoint(cx, cy - 3.5)]; [p lineToPoint: NSMakePoint(cx + 3.5, cy)]; [p lineToPoint: NSMakePoint(cx, cy + 3.5)]; [(sel && active ? [NSColor whiteColor] : P_DIM) setStroke]; [p stroke]; }
 	}
 }
@@ -402,7 +435,8 @@ static NSString *SizeText(unsigned long long n)
 		if (sel) FillRound(NSMakeRect(10, NSMinY(rr), W - 20, 22), 7, active ? RGB(0, 89, 209) : P_SELECT);
 		NSColor *tc = sel && active ? [NSColor whiteColor] : (e->enabled ? P_TEXT : P_DIM), *dc = sel && active ? RGBA(255, 255, 255, 0.85) : P_DIM;
 		NSRect ic = NSMakeRect(26, NSMinY(rr) + 3, 16, 16); if (e->dir) DrawDirIcon(ic, e->name); else DrawFileIcon(ic, e->name);
-		TextFit(e->name, NSMakePoint(48, NSMidY(rr)), 13, tc, 250 - 48 - 12);
+		double tdw = TagDotsWidth(e->tags); TextFit(e->name, NSMakePoint(48, NSMidY(rr)), 13, tc, 250 - 48 - 12 - (tdw ? tdw + 6 : 0));
+		if (tdw) { double nw = fmin([e->name sizeWithAttributes: Attr(13, NO, tc)].width, 250 - 48 - 12 - tdw - 6); DrawTagDots(e->tags, 48 + nw + 6 + tdw, NSMidY(rr)); }
 		NSDictionary *at = [[NSFileManager defaultManager] attributesOfItemAtPath: e->path error: NULL];
 		NSString *sz = e->dir ? @"--" : SizeText([at fileSize]); NSDictionary *sa = Attr(13, NO, dc); NSSize ss = [sz sizeWithAttributes: sa]; [sz drawAtPoint: NSMakePoint(341 - ss.width, NSMidY(rr) - ss.height / 2) withAttributes: sa];
 		Text(KindOf(e->path, e->dir), NSMakePoint(355, NSMidY(rr)), 13, NO, dc, YES);
@@ -432,7 +466,7 @@ static NSString *SizeText(unsigned long long n)
 		if ([nm sizeWithAttributes: a].width > 88) { while ([nm length] > 1 && [[nm stringByAppendingString: @"\u2026"] sizeWithAttributes: a].width > 88) nm = [nm substringToIndex: [nm length] - 1]; nm = [nm stringByAppendingString: @"\u2026"]; }
 		NSSize ts = [nm sizeWithAttributes: a]; NSRect lr = NSMakeRect(NSMidX(c) - ts.width / 2 - 5, c.origin.y + 64, ts.width + 10, 18);
 		if (sel && active) FillRound(lr, 6, RGB(0, 89, 209));
-		[nm drawAtPoint: NSMakePoint(NSMidX(c) - ts.width / 2, lr.origin.y + 9 - ts.height / 2) withAttributes: a];
+		[nm drawAtPoint: NSMakePoint(NSMidX(c) - ts.width / 2, lr.origin.y + 9 - ts.height / 2) withAttributes: a]; DrawTagDots(e->tags, NSMidX(c) - ts.width / 2 - 4, lr.origin.y + 9);
 	}
 }
 - (void)mouseDown:(NSEvent *)ev
@@ -635,50 +669,95 @@ static void DrawSideIcon(NSString *name, NSRect r, NSColor *tint)               
 
 @interface WsdPanelController : NSObject <WsdColumnDelegate> {
 	@public NSPanel *win; NSView *root; WsdSidebar *sidebar; WsdToolbar *toolbar; NSMutableArray *cols; NSString *dir; NSMutableArray *history; NSInteger hpos;
-	NSView *corners; WsdPreview *preview; int viewMode; NSString *listDir; BOOL expanded; NSString *saveDir, *savedName, *okTitle; NSScrollView *listScroll; WsdColumn *listView; WsdListHeader *listHeader; NSButton *newFolder; NSString *searchText; BOOL isSave, filesOK, dirsOK, multiple; NSArray *types; NSString *chosen; NSButton *ok, *cancel; NSTextField *nameField; NSInteger result; NSString *message, *prompt;
+	NSView *corners; WsdPreview *preview; int viewMode; NSString *listDir; BOOL expanded; NSString *saveDir, *savedName, *okTitle; NSScrollView *listScroll; WsdColumn *listView; WsdListHeader *listHeader; NSButton *newFolder; NSString *searchText; BOOL isSave, filesOK, dirsOK, multiple; NSArray *types; NSString *chosen; NSButton *ok, *cancel; NSTextField *nameField; WsdTagField *tagField; NSInteger result; NSString *message, *prompt;
 }
 @end
-/* ---- a pop-up menu drawn inside the panel (GNUstep's own pop-up windows come out far too big under this window server): a transparent sheet over the panel that holds the menu, takes the click and goes away */
-@interface WsdPopup : NSView { NSArray *titles; NSInteger checked, hover; NSRect box; void (^pick)(NSInteger); }
+/* ---- a pop-up menu: a small window of its own next to the panel (GNUstep's own pop-up windows come out far too big under this window server); it works while the panel is modal, closes when it loses the key or is picked from */
+@interface WsdPopupWindow : NSPanel @end
+@implementation WsdPopupWindow
+- (BOOL)canBecomeKeyWindow { return NO; }
+- (BOOL)worksWhenModal { return YES; }
+@end
+@class WsdPopup;
+@interface WsdPopupCatcher : NSView { @public WsdPopup *popup; } @end
+@interface WsdPopup : NSView { NSArray *titles, *dots; NSInteger checked, hover; void (^pick)(NSInteger); NSWindow *parent, *owned; WsdPopupCatcher *catcher; }
+- (void)finish:(NSInteger)i; - (void)keyDown:(NSEvent *)e;
 + (void)showIn:(NSView *)root titles:(NSArray *)t checked:(NSInteger)c at:(NSPoint)p pick:(void (^)(NSInteger))block;
++ (void)showIn:(NSView *)root titles:(NSArray *)t dots:(NSArray *)d at:(NSPoint)p pick:(void (^)(NSInteger))block;
 @end
 @implementation WsdPopup
-+ (void)showIn:(NSView *)root titles:(NSArray *)t checked:(NSInteger)c at:(NSPoint)p pick:(void (^)(NSInteger))block
++ (void)showIn:(NSView *)root titles:(NSArray *)t checked:(NSInteger)c at:(NSPoint)p pick:(void (^)(NSInteger))block { [self showIn: root titles: t dots: nil checked: c at: p pick: block]; }
++ (void)showIn:(NSView *)root titles:(NSArray *)t dots:(NSArray *)d at:(NSPoint)p pick:(void (^)(NSInteger))block { [self showIn: root titles: t dots: d checked: -1 at: p pick: block]; }
++ (void)showIn:(NSView *)root titles:(NSArray *)t dots:(NSArray *)d checked:(NSInteger)c at:(NSPoint)p pick:(void (^)(NSInteger))block
 {
-	WsdPopup *v = [[WsdPopup alloc] initWithFrame: [root bounds]]; v->titles = t; v->checked = c; v->hover = -1; v->pick = block;
-	double w = 60; for (NSString *s in t) w = fmax(w, [s sizeWithAttributes: Attr(13, NO, P_TEXT)].width + 44);
-	v->box = NSMakeRect(p.x, p.y, w, 10 + 24 * (double)[t count]); [root addSubview: v]; [[root window] setAcceptsMouseMovedEvents: YES]; [[root window] makeFirstResponder: v];
+	double w = 60; for (NSString *s in t) w = fmax(w, [s sizeWithAttributes: Attr(13, NO, P_TEXT)].width + 44); double h = 10 + 24 * (double)[t count];
+	NSPoint scr = [[root window] convertBaseToScreen: [root convertPoint: p toView: nil]];
+	WsdPopup *v = [[WsdPopup alloc] initWithFrame: NSMakeRect(0, 0, w, h)]; v->titles = t; v->dots = d; v->checked = c; v->hover = -1; v->pick = block; v->parent = [root window];
+	WsdPopupWindow *win = [[WsdPopupWindow alloc] initWithContentRect: NSMakeRect(scr.x, scr.y - h, w, h) styleMask: NSBorderlessWindowMask backing: NSBackingStoreBuffered defer: NO];
+	[win setOpaque: NO]; [win setBackgroundColor: [NSColor clearColor]]; [win setReleasedWhenClosed: NO]; [win setLevel: NSPopUpMenuWindowLevel]; [win setContentView: v]; [win setAcceptsMouseMovedEvents: YES];
+	WsdPopupCatcher *cat = [[WsdPopupCatcher alloc] initWithFrame: [root bounds]]; cat->popup = v; v->catcher = cat; [root addSubview: cat]; [[root window] makeFirstResponder: cat];
+	v->owned = win;                                                                                              /* kept alive until the menu is done (the window holds the view, the view holds the window: a cycle broken in -finish:) */
+	[win orderFront: nil]; RoundWindow(win, 10); if (getenv("WSD_PANEL_DEBUG")) NSLog(@"popup window %ld at %@ visible %d", (long)[win windowNumber], NSStringFromRect([win frame]), [win isVisible]);
 }
 - (BOOL)isFlipped { return YES; }
 - (BOOL)acceptsFirstResponder { return YES; }
-- (NSRect)rowRect:(NSInteger)i { return NSMakeRect(box.origin.x + 5, box.origin.y + 5 + 24 * i, box.size.width - 10, 24); }
+- (BOOL)acceptsFirstMouse:(NSEvent *)e { return YES; }
+- (NSRect)rowRect:(NSInteger)i { return NSMakeRect(5, 5 + 24 * i, [self bounds].size.width - 10, 24); }
 - (void)drawRect:(NSRect)dirty
 {
-	FillRound(NSOffsetRect(box, 0, 3), 10, RGBA(0, 0, 0, 0.25)); FillRound(box, 10, PDark() ? RGBA(54, 60, 68, 0.98) : RGBA(246, 246, 248, 0.98));
+	NSRect box = [self bounds]; FillRound(box, 10, PDark() ? RGBA(54, 60, 68, 0.98) : RGBA(246, 246, 248, 0.98));
 	[(PDark() ? RGBA(255, 255, 255, 0.14) : RGBA(0, 0, 0, 0.12)) setStroke]; NSBezierPath *o = [NSBezierPath bezierPathWithRoundedRect: NSInsetRect(box, 0.5, 0.5) xRadius: 10 yRadius: 10]; [o setLineWidth: 1]; [o stroke];
 	for (NSInteger i = 0; i < (NSInteger)[titles count]; i++) {
 		NSRect r = [self rowRect: i]; if (i == hover) FillRound(r, 5, RGB(10, 132, 255));
 		NSColor *tc = i == hover ? RGB(255, 255, 255) : P_TEXT; if (i == checked) Text(@"✓", NSMakePoint(r.origin.x + 8, NSMidY(r)), 12, YES, tc, YES);
+		if (dots && dots[i] != [NSNull null]) { [dots[i] setFill]; [[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(r.origin.x + 8, NSMidY(r) - 5, 10, 10)] fill]; }
 		Text(titles[i], NSMakePoint(r.origin.x + 26, NSMidY(r)), 13, NO, tc, YES);
 	}
 }
 - (NSInteger)rowAt:(NSPoint)p { for (NSInteger i = 0; i < (NSInteger)[titles count]; i++) if (NSPointInRect(p, [self rowRect: i])) return i; return -1; }
 - (void)mouseMoved:(NSEvent *)e { NSInteger h = [self rowAt: [self convertPoint: [e locationInWindow] fromView: nil]]; if (h != hover) { hover = h; [self setNeedsDisplay: YES]; } }
 - (void)mouseDragged:(NSEvent *)e { [self mouseMoved: e]; }
-- (void)mouseDown:(NSEvent *)e { [self mouseMoved: e]; }
-- (void)mouseUp:(NSEvent *)e
+- (void)mouseDown:(NSEvent *)e { [self mouseMoved: e]; NSInteger i = [self rowAt: [self convertPoint: [e locationInWindow] fromView: nil]]; if (i >= 0) [self finish: i]; }      /* picks on the press: a release does not reach a window of a modal session here */
+- (void)finish:(NSInteger)i
 {
-	NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; NSInteger i = [self rowAt: p]; void (^cb)(NSInteger) = pick;
-	if (i < 0 && NSPointInRect(p, box)) return;
-	[self removeFromSuperview]; if (i >= 0 && cb) cb(i);
+	if (getenv("WSD_PANEL_DEBUG")) NSLog(@"popup finish %ld", (long)i);
+	void (^cb)(NSInteger) = pick; pick = nil; [catcher removeFromSuperview]; catcher = nil; [[self window] orderOut: nil]; owned = nil;
+	if (i >= 0 && cb) cb(i);
 }
+- (void)mouseUp:(NSEvent *)e { NSInteger i = [self rowAt: [self convertPoint: [e locationInWindow] fromView: nil]]; if (i >= 0) [self finish: i]; }
 - (void)keyDown:(NSEvent *)e
 {
-	NSString *c = [e characters]; if ([c isEqual: @"\033"]) { [self removeFromSuperview]; return; }
+	NSString *c = [e characters]; if ([c isEqual: @"\033"]) { [self finish: -1]; return; }
 	NSInteger n = (NSInteger)[titles count]; unichar ch = [c length] ? [c characterAtIndex: 0] : 0;
 	if (ch == NSDownArrowFunctionKey) hover = (hover + 1) % n; else if (ch == NSUpArrowFunctionKey) hover = hover <= 0 ? n - 1 : hover - 1;
-	else if ((ch == '\r' || ch == '\n') && hover >= 0) { void (^cb)(NSInteger) = pick; NSInteger i = hover; [self removeFromSuperview]; if (cb) cb(i); return; }
+	else if ((ch == '\r' || ch == '\n') && hover >= 0) { [self finish: hover]; return; }
 	[self setNeedsDisplay: YES];
+}
+@end
+@implementation WsdPopupCatcher
+- (BOOL)acceptsFirstResponder { return YES; }
+- (void)mouseDown:(NSEvent *)e { [popup finish: -1]; }
+- (void)keyDown:(NSEvent *)e { [popup keyDown: e]; }
+@end
+/* ---- the Tags field of the Save panel: the chosen tags as tokens (a dot and the name); a click opens the list of the tags to choose from */
+@interface WsdTagField : NSView { @public NSMutableArray *chosen; } @end
+@implementation WsdTagField
+- (BOOL)isFlipped { return YES; }
+- (instancetype)initWithFrame:(NSRect)f { if ((self = [super initWithFrame: f])) chosen = [NSMutableArray array]; return self; }
+- (void)drawRect:(NSRect)dirty
+{
+	NSRect b = NSInsetRect([self bounds], 0.5, 0.5); FillRound(b, 6, P_FIELD); [(PDark() ? RGBA(255, 255, 255, 0.10) : RGBA(0, 0, 0, 0.14)) setStroke]; NSBezierPath *o = [NSBezierPath bezierPathWithRoundedRect: b xRadius: 6 yRadius: 6]; [o setLineWidth: 1]; [o stroke];
+	double x = 7; for (NSString *t in chosen) {
+		NSDictionary *a = Attr(12, NO, P_TEXT); NSSize ts = [t sizeWithAttributes: a]; NSRect pill = NSMakeRect(x, 4, ts.width + 26, 18);
+		FillRound(pill, 9, PDark() ? RGBA(255, 255, 255, 0.12) : RGBA(0, 0, 0, 0.08)); [TagColor(t) setFill]; [[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(x + 6, 8, 10, 10)] fill];
+		[t drawAtPoint: NSMakePoint(x + 20, 13 - ts.height / 2) withAttributes: a]; x += pill.size.width + 4;
+	}
+}
+- (void)mouseDown:(NSEvent *)e
+{
+	NSMutableArray *names = [NSMutableArray array], *dots = [NSMutableArray array]; for (NSString *t in TagNames()) if (![chosen containsObject: t]) { [names addObject: t]; [dots addObject: TagColor(t)]; }
+	if (![names count]) return; NSView *root = [[self window] contentView]; NSPoint at = [root convertPoint: NSMakePoint(0, [self bounds].size.height + 2) fromView: self];
+	__weak WsdTagField *me = self; [WsdPopup showIn: root titles: names dots: dots at: at pick: ^(NSInteger k) { WsdTagField *f = me; if (getenv("WSD_PANEL_DEBUG")) NSLog(@"tag picked %ld field %@", (long)k, f); if (!f) return; [f->chosen addObject: names[k]]; [f setNeedsDisplay: YES]; }];
 }
 @end
 @interface WsdRoot : NSView { @public BOOL saveForm, expanded; id owner; NSString *whereTitle; } @end
@@ -820,7 +899,7 @@ static void DrawSideIcon(NSString *name, NSRect r, NSColor *tint)               
 }
 - (void)buildSave
 {
-	NSString *name = nameField ? [nameField stringValue] : savedName; savedName = name;
+	NSString *name = nameField ? [nameField stringValue] : savedName; savedName = name; NSArray *keepTags = tagField ? [tagField->chosen copy] : nil;
 	for (NSView *v in [[root subviews] copy]) [v removeFromSuperview];
 	corners = nil; toolbar = nil; sidebar = nil; listView = nil; listScroll = nil; listHeader = nil;
 	NSSize size = expanded ? NSMakeSize(812, 333) : NSMakeSize(370, 204); NSRect wf = [win frame]; NSPoint ctr = NSMakePoint(NSMidX(wf), NSMidY(wf));
@@ -831,14 +910,14 @@ static void DrawSideIcon(NSString *name, NSRect r, NSColor *tint)               
 		NSArray *labels = @[ @"Save As:", @"Tags:", @"Where:" ]; double ys[3] = { 41, 79, 116 };
 		for (int i = 0; i < 3; i++) { NSTextField *l = Field(NSMakeRect(10, ys[i], 84, 20), labels[i]); [l setAlignment: NSRightTextAlignment]; [l setEditable: NO]; [l setTextColor: P_DIM]; [root addSubview: l]; }
 		nameField = Field(NSMakeRect(100, 41, 230, 25), name); [nameField setBezeled: YES]; [nameField setDelegate: (id)self]; [root addSubview: nameField];
-		NSTextField *tg = Field(NSMakeRect(100, 79, 230, 25), nil); [tg setBezeled: YES]; [root addSubview: tg];
+		tagField = [[WsdTagField alloc] initWithFrame: NSMakeRect(100, 79, 230, 25)]; [root addSubview: tagField];
 		cancel = Btn(@"Cancel", NSMakeRect(184, 160, 78, 24), self, @selector(cancelIt:), NO); ok = Btn(okTitle, NSMakeRect(271, 160, 79, 24), self, @selector(accept:), YES);
 		[root addSubview: cancel]; [root addSubview: ok];
 	} else {
 		WsdSidebar *sb = [[WsdSidebar alloc] initWithFrame: NSMakeRect(0, 0, 135, 333)]; [sb setup]; sb->target = self; sb->action = @selector(sidebarGo:); sidebar = sb;
 		NSScrollView *ssv = [[NSScrollView alloc] initWithFrame: NSMakeRect(0, 0, 135, 333)]; [ssv setHasVerticalScroller: YES]; [ssv setAutohidesScrollers: YES]; [ssv setBorderType: NSNoBorder]; [ssv setDrawsBackground: NO]; [ssv setDocumentView: sb]; [root addSubview: ssv]; [[ssv contentView] scrollToPoint: NSMakePoint(0, 32)]; [ssv reflectScrolledClipView: [ssv contentView]];           /* the window buttons cover the top of the sidebar: it starts scrolled (Shared is the first row) */
 		nameField = Field(NSMakeRect(358, 41, 232, 26), name); [nameField setBezeled: YES]; [nameField setDelegate: (id)self]; [root addSubview: nameField];
-		NSTextField *tg = Field(NSMakeRect(358, 79, 232, 26), nil); [tg setBezeled: YES]; [root addSubview: tg];
+		tagField = [[WsdTagField alloc] initWithFrame: NSMakeRect(358, 79, 232, 26)]; [root addSubview: tagField];
 		WsdToolbar *tb = [[WsdToolbar alloc] initWithFrame: NSMakeRect(135, 104, 677, 64)]; tb->target = self; tb->compact = YES; toolbar = tb; [root addSubview: tb];
 		NSTextField *sf2 = Field(NSMakeRect(135 + 462, 123, 195, 26), nil); [sf2 setBezeled: YES]; [sf2 setDelegate: (id)self]; [[sf2 cell] setPlaceholderAttributedString: [[NSAttributedString alloc] initWithString: @"Search" attributes: Attr(13, NO, P_DIM)]]; [root addSubview: sf2]; tb->search = sf2;
 		listHeader = [[WsdListHeader alloc] initWithFrame: NSMakeRect(135, 169, 677, 26)]; [root addSubview: listHeader];
@@ -849,6 +928,7 @@ static void DrawSideIcon(NSString *name, NSRect r, NSColor *tint)               
 		[self reloadList];
 	}
 	{ WsdLights *lt = [[WsdLights alloc] initWithFrame: [root bounds]]; lt->show = expanded; [root addSubview: lt]; }
+	if (keepTags) [tagField->chosen addObjectsFromArray: keepTags];
 	RoundWindow(win, 18); [root setNeedsDisplay: YES]; [self refresh]; [win makeFirstResponder: nameField];
 }
 - (void)sidebarGo:(NSString *)path { if (isSave) [self saveGo: path push: YES]; else if (viewMode != 2) [self openListGo: path push: YES]; else [self navigate: path push: YES]; }
@@ -880,12 +960,12 @@ static void DrawSideIcon(NSString *name, NSRect r, NSColor *tint)               
 	if (isSave) {
 		NSString *n = [nameField stringValue]; if (![n length]) return;
 		if (types.count && ![[n pathExtension] length]) n = [n stringByAppendingPathExtension: types[0]];
-		[res addObject: [[self currentDir] stringByAppendingPathComponent: n]];
+		[res addObject: [[self currentDir] stringByAppendingPathComponent: n]]; if ([tagField->chosen count]) objc_setAssociatedObject(self->win, &kTags, [tagField->chosen copy], OBJC_ASSOCIATION_RETAIN);
 	} else if (chosen) [res addObject: chosen]; else if (dirsOK) [res addObject: [self currentDir]];
 	if (![res count]) return;
-	objc_setAssociatedObject(self->win, &kResult, res, OBJC_ASSOCIATION_RETAIN); result = 1; [NSApp stopModalWithCode: 1]; [win orderOut: nil];
+	objc_setAssociatedObject(self->win, &kResult, res, OBJC_ASSOCIATION_RETAIN); result = 1; [NSApp stopModalWithCode: 1];
 }
-- (void)cancelIt:(id)sender { result = 0; [NSApp stopModalWithCode: 0]; [win orderOut: nil]; }
+- (void)cancelIt:(id)sender { result = 0; [NSApp stopModalWithCode: 0]; }
 - (void)controlTextDidChange:(NSNotification *)n
 {
 	if ([n object] == toolbar->search && toolbar) {                                                                    /* the search field filters the folders shown by name */
@@ -939,13 +1019,15 @@ static NSInteger WsdRunPanel(NSSavePanel *sp)
 		[pc->history addObject: d]; pc->hpos = 0; [pc buildSave];
 		objc_setAssociatedObject(w, "dirpath", d, OBJC_ASSOCIATION_RETAIN);
 	}
-	[w makeKeyAndOrderFront: nil]; RoundWindow(w, open ? 22 : 18);
+	[w makeKeyAndOrderFront: nil]; RoundWindow(w, open ? 22 : 18); if (!getenv("WSD_NO_PANEL_ANIM")) [WsdPanelAnim open: w];
 	if (open && [pc->cols count]) [w makeFirstResponder: pc->cols[0]];
 	if (!open) [w makeFirstResponder: pc->nameField];
 	NSInteger r = ((NSInteger (*)(id, SEL, NSWindow *))origRunModal)(NSApp, @selector(runModalForWindow:), w);
 	NSArray *res = objc_getAssociatedObject(w, &kResult);
+	NSArray *chosenTags = objc_getAssociatedObject(w, &kTags); if (r == 1 && [chosenTags count] && [res count]) [WsdTagApplier apply: chosenTags toPath: res[0]];
 	objc_setAssociatedObject(sp, &kResult, r == 1 ? res : nil, OBJC_ASSOCIATION_RETAIN);
-	[w orderOut: nil];
+	if (!getenv("WSD_NO_PANEL_ANIM")) [WsdPanelAnim close: w];
+	[w orderOut: nil]; [w setAlphaValue: 1]; ScaleWindow(w, 1.0f);
 	return r == 1 ? NSOKButton : NSCancelButton;
 }
 /* the Save form draws its own fields (they are not NSControls with bezels): the Where pop-up and the expand button */
