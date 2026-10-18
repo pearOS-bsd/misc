@@ -90,6 +90,8 @@ static void terminate(int sig)
 	NSString *modes[] = { NSDefaultRunLoopMode, NSModalPanelRunLoopMode, NSEventTrackingRunLoopMode };
 	for (int i = 0; i < 3; i++)
 		[rl addEvent: (void *)(intptr_t)fd type: ET_RDESC watcher: (id)self forMode: modes[i]];
+	[[NSDistributedNotificationCenter defaultCenter] addObserver: self selector: @selector(wsdDockMinimized:) name: @"com.wsbsd.dock.minimized" object: nil];
+	[[NSDistributedNotificationCenter defaultCenter] addObserver: self selector: @selector(wsdDockRestore:) name: @"com.wsbsd.dock.restore" object: nil];
 	if (!getenv("WSD_NO_MACTHEME")) { [GSTheme setTheme: [[[WsdMacTheme alloc] initWithBundle: nil] autorelease]]; WsdApplyMacPalette(); }     /* macOS-style window decorations (appkit/back-wsd/WsdMacTheme.m) */
 	return self;
 }
@@ -290,7 +292,34 @@ static int wsdShapeForStyle(int style)
 - (int) windowlevel: (int)win { struct wsd_window *w = [self wsdWindow: win]; return w ? w->level : 0; }
 - (int) windowdepth: (int)win { return (int)(0x100 | 8); }
 - (void) titlewindow: (NSString *)window_title : (int)win { WLOG(@"titlewindow %d \"%@\"", win, window_title); }
-- (void) miniwindow: (int)win {}
+/* Minimizing: AppKit has marked the window miniaturized; the Dock animates it into its tile (the genie) and takes it off the screen, then says so. Without a Dock, or when it is
+ * slow, the window leaves the screen after a second. Restoring: the Dock brings the window back with the reverse animation and asks the application to deminiaturize it. */
+- (void) miniwindow: (int)win
+{
+	struct wsd_window *w = [self wsdWindow: win]; if (!w) return;
+	NSString *title = @"";
+	for (NSWindow *nw in [NSApp windows]) if ([nw windowNumber] == win) { title = [nw title] ?: @""; break; }
+	w->dockTaken = 0;
+	[[NSDistributedNotificationCenter defaultCenter] postNotificationName: @"com.wsbsd.dock.minimize" object: nil
+		userInfo: @{ @"wid": @(win), @"pid": @((int)getpid()), @"title": title } deliverImmediately: YES];
+	[self performSelector: @selector(wsdMiniFallback:) withObject: @(win) afterDelay: 1.5];
+}
+- (void) wsdMiniFallback: (NSNumber *)win
+{
+	struct wsd_window *w = [self wsdWindow: [win intValue]];
+	if (w && !w->dockTaken) ws_win_order(conn, &w->win, WS_OUT, 0);
+}
+- (void) wsdDockMinimized: (NSNotification *)n
+{
+	struct wsd_window *w = [self wsdWindow: [[[n userInfo] objectForKey: @"wid"] intValue]];
+	if (w) w->dockTaken = 1;
+}
+- (void) wsdDockRestore: (NSNotification *)n
+{
+	int wid = [[[n userInfo] objectForKey: @"wid"] intValue];
+	if (![self wsdWindow: wid]) return;                                          /* another application's window */
+	for (NSWindow *nw in [NSApp windows]) if ([nw windowNumber] == wid) { [nw deminiaturize: nil]; break; }
+}
 - (BOOL) appOwnsMiniwindow { return NO; }
 - (void) setinputfocus: (int)win { WLOG(@"setinputfocus %d", win); keyWindow = win; }
 - (void) setalpha: (float)alpha : (int)win
