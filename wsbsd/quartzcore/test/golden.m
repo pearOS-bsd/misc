@@ -106,6 +106,18 @@ int main(void)
 		  CAKeyframeAnimation *k = [CAKeyframeAnimation animationWithKeyPath:@"position"]; k.path = pp; k.calculationMode = kCAAnimationPaced; k.duration = 1; k.fillMode = kCAFillModeBoth; k.removedOnCompletion = NO; run("keyframe path paced cubic", k, @"position", 0, 1, 0.0625); }
 		{ CGMutablePathRef pp = CGPathCreateMutable(); CGPathMoveToPoint(pp, NULL, 10, 10); CGPathAddQuadCurveToPoint(pp, NULL, 150, 10, 200, 150); CGPathAddLineToPoint(pp, NULL, 50, 200); CGPathAddCurveToPoint(pp, NULL, 0, 250, 300, 250, 350, 100);
 		  CAKeyframeAnimation *k = [CAKeyframeAnimation animationWithKeyPath:@"position"]; k.path = pp; k.calculationMode = kCAAnimationPaced; k.duration = 1; k.fillMode = kCAFillModeBoth; k.removedOnCompletion = NO; run("keyframe path paced mixed", k, @"position", 0, 1, 0.0625); }
+		for (int cnt = 3; cnt <= 5; cnt++) for (int cp = 0; cp < 2; cp++) {
+			NSMutableArray *vs = [NSMutableArray array]; double xs[] = { 10, 90, 40, 120, 20 }, ys[] = { 20, 5, 80, 60, 100 };
+			for (int i = 0; i < cnt; i++) [vs addObject:[NSValue valueWithPoint:NSMakePoint(xs[i], ys[i])]];
+			CAKeyframeAnimation *k = [CAKeyframeAnimation animationWithKeyPath:@"position"]; k.values = vs; k.calculationMode = cp ? kCAAnimationCubicPaced : kCAAnimationCubic; k.duration = 1; k.fillMode = kCAFillModeBoth; k.removedOnCompletion = NO;
+			char nm[64]; snprintf(nm, sizeof nm, "keyframe %s n=%d position", cp ? "cubicPaced" : "cubic", cnt); run(nm, k, @"position", 0, 1, 0.125);
+		}
+		for (int cnt = 3; cnt <= 4; cnt++) for (int cp = 0; cp < 2; cp++) {
+			NSMutableArray *vs = [NSMutableArray array]; double cs[5][4] = { { 1, 0, 0, 1 }, { 0, 1, 0, 0.5 }, { 0, 0, 1, 1 }, { 1, 1, 0, 0.7 }, { 0.2, 0.3, 0.9, 1 } };
+			for (int i = 0; i < cnt; i++) [vs addObject:(__bridge id)CGColorCreateGenericRGB(cs[i][0], cs[i][1], cs[i][2], cs[i][3])];
+			CAKeyframeAnimation *k = [CAKeyframeAnimation animationWithKeyPath:@"backgroundColor"]; k.values = vs; k.calculationMode = cp ? kCAAnimationCubicPaced : kCAAnimationCubic; k.duration = 1; k.fillMode = kCAFillModeBoth; k.removedOnCompletion = NO;
+			char nm[64]; snprintf(nm, sizeof nm, "keyframe %s n=%d color", cp ? "cubicPaced" : "cubic", cnt); run(nm, k, @"backgroundColor", 0, 1, 0.125);
+		}
 		{ CABasicAnimation *a = basic(@"backgroundColor", (__bridge id)CGColorCreateGenericRGB(1, 0, 0, 1), (__bridge id)CGColorCreateGenericRGB(0, 0, 1, 1), 1); run("basic color", a, @"backgroundColor", 0, 1, 0.25); }
 		{ CABasicAnimation *a = basic(@"cornerRadius", NUM(0), NUM(10), 1); a.byValue = nil; run("basic cornerRadius", a, @"cornerRadius", 0, 1, 0.5); }
 		{ CABasicAnimation *a = basic(@"opacity", nil, NUM(0), 1); run("basic to only (from model)", a, @"opacity", 0, 1, 0.25); }

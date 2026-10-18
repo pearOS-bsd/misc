@@ -215,6 +215,8 @@ static id CAGetObjProp(CALayer *l, int i) { return *(__unsafe_unretained id *)(v
 /* the part of a change that is the same for every property: the actions, the bookkeeping */
 - (void)_changeIndex:(int)i toBytes:(const void *)p isObject:(BOOL)isObj
 {
+	CGRect std;
+	if (i == CAP_bounds) { memcpy(&std, p, sizeof std); std = CGRectStandardize(std); p = &std; }          /* bounds are kept standardized, also in presentation layers */
 	const CAPropDesc *pd = &kCAProps[i]; char *slot = (char *)&d + pd->off;
 	if (!_isPresentation && !CAEqualBytes(pd->type, slot, p) ) { /* fall through to change */ }
 	else if (!_isPresentation && CAEqualBytes(pd->type, slot, p)) return;
@@ -405,6 +407,7 @@ static CGPoint CAApply(CATransform3D m, CGPoint p)
 {
 	CGRect b = d.bounds;
 	if (CATransform3DIsIdentity(d.transform)) {
+		f = CGRectStandardize(f);
 		CGRect nb = CGRectMake(b.origin.x, b.origin.y, f.size.width, f.size.height);
 		[self setBounds:nb];
 		[self setPosition:CGPointMake(f.origin.x + d.anchorPoint.x * f.size.width, f.origin.y + d.anchorPoint.y * f.size.height)];

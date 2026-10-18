@@ -153,7 +153,8 @@ int main(void)
 			L.timeOffset = T0 + tau; [CATransaction flush];
 			CALayer *p = [L presentationLayer];
 			printf("#%d kind=%d key=%s tau=%.4f %s\n", n, kind, kps[k], tau, [getk(p, rkp) UTF8String]);
-			if (getenv("FUZZ_DESC")) { CAAnimation *x = an; printf("   desc: %s dur=%g speed=%g off=%g begin=%g rep=%g repd=%g auto=%d fill=%s", [NSStringFromClass([x class]) UTF8String], x.duration, x.speed, x.timeOffset, x.beginTime, x.repeatCount, x.repeatDuration, x.autoreverses, [x.fillMode UTF8String]); if ([x isKindOfClass:[CAKeyframeAnimation class]]) { CAKeyframeAnimation *q = (CAKeyframeAnimation *)x; printf(" mode=%s n=%d keyTimes=%d tfs=%d", [q.calculationMode UTF8String], (int)q.values.count, (int)q.keyTimes.count, (int)q.timingFunctions.count); } printf("\n"); }
+			if (getenv("FUZZ_DESC")) { CAAnimation *x = an; printf("   desc: %s dur=%g speed=%g off=%g begin=%g rep=%g repd=%g auto=%d fill=%s", [NSStringFromClass([x class]) UTF8String], x.duration, x.speed, x.timeOffset, x.beginTime, x.repeatCount, x.repeatDuration, x.autoreverses, [x.fillMode UTF8String]); if ([x isKindOfClass:[CAKeyframeAnimation class]]) { CAKeyframeAnimation *q = (CAKeyframeAnimation *)x; printf(" mode=%s n=%d keyTimes=%d tfs=%d", [q.calculationMode UTF8String], (int)q.values.count, (int)q.keyTimes.count, (int)q.timingFunctions.count); for (id v in q.values) { NSMutableString *ms = [NSMutableString string]; fmtv(ms, v); printf(" [%s]", [ms UTF8String]); } }
+				if (x.timingFunction) { float c[4][2]; for (int i = 0; i < 4; i++) [x.timingFunction getControlPointAtIndex:i values:c[i]]; printf(" tf=(%g,%g,%g,%g)", c[1][0], c[1][1], c[2][0], c[2][1]); } printf("\n"); }
 		}
 	}
 	return 0;
