@@ -44,8 +44,9 @@ struct gl_compositor {
 	PFNGLEGLIMAGETARGETTEXTURE2DOESPROC image_target;
 	PFNEGLEXPORTDMABUFIMAGEQUERYMESAPROC export_query;
 	PFNEGLEXPORTDMABUFIMAGEMESAPROC export_image;
-	GLuint prog, vbo, fbo, fbo_tex, tmp_fbo, tmp_tex, blur_prog;
-	GLint bu_rect, bu_screen, bu_src, bu_dir, bu_sigma, bu_rad;
+	GLuint prog, vbo, fbo, fbo_tex, tmp_fbo, tmp_tex, blur_prog, scene_tex, bl_fbo, bl_tex, glass_prog;
+	GLint bu_rect, bu_screen, bu_src, bu_dir, bu_sigma, bu_rad, bu_step;
+	GLint gu_rect, gu_screen, gu_scene, gu_blur, gu_n, gu_grect, gu_grm, gu_L, gu_amp;
 	GLint u_bright, u_usedst;
 	GLint u_invert, u_xf, u_xt, u_rect, u_screen, u_tex, u_size, u_uvscale, u_alpha, u_radius, u_border, u_swap;
 	wtex wt[MAX_TEX]; stex st[MAX_TEX]; itex it[MAX_TEX];
@@ -84,6 +85,7 @@ static const char *BLUR_FS =
 	"uniform vec2 u_dir;\n"                                   /* (1,0) or (0,1) */
 	"uniform float u_sigma;\n"
 	"uniform float u_rad;\n"                                  /* taps on each side, <= 45 */
+	"uniform float u_step;\n"                                 /* distance between the taps in pixels (2 reaches 90 px with 45 taps) */
 	"void main() {\n"
 	"    vec2 uv = gl_FragCoord.xy / u_screen;\n"
 	"    vec4 sum = vec4(0.0); float wsum = 0.0;\n"
@@ -91,9 +93,70 @@ static const char *BLUR_FS =
 	"        float f = float(i);\n"
 	"        if (abs(f) > u_rad) continue;\n"
 	"        float w = exp(-f * f / (2.0 * u_sigma * u_sigma));\n"
-	"        sum += texture2D(u_src, uv + u_dir * f / u_screen) * w; wsum += w;\n"
+	"        sum += texture2D(u_src, uv + u_dir * f * u_step / u_screen) * w; wsum += w;\n"
 	"    }\n"
 	"    gl_FragColor = sum / wsum;\n"
+	"}\n";
+
+
+/* the glass of a window (see blur.c ws_glass_regions): up to 16 rounded rectangles melted by a smooth minimum; modes 1, 2 the lens material, 3, 4 the menu material of Menu.caar */
+static const char *GLASS_FS =
+	"#ifdef GL_FRAGMENT_PRECISION_HIGH\n"
+	"precision highp float;\n"
+	"#else\n"
+	"precision mediump float;\n"
+	"#endif\n"
+	"uniform sampler2D u_scene;\n"                             /* the frame so far (a copy) */
+	"uniform sampler2D u_blur;\n"                              /* the same, blurred (menu materials) */
+	"uniform vec2 u_screen;\n"
+	"uniform int u_n;\n"
+	"uniform vec4 u_grect[16];\n"                              /* x, y, w, h in screen pixels */
+	"uniform vec2 u_grm[16];\n"                                /* radius, mode */
+	"uniform float u_L;\n"
+	"uniform float u_amp;\n"
+	"float field(vec2 p, out float mode) {\n"
+	"    float f = 1e9; mode = 1.0; bool first = true;\n"
+	"    for (int i = 0; i < 16; i++) {\n"
+	"        if (i >= u_n) break;\n"
+	"        if (u_grm[i].y < 0.5) continue;\n"
+	"        vec4 r = u_grect[i]; vec2 h = 0.5 * r.zw; float rad = min(u_grm[i].x, min(h.x, h.y));\n"
+	"        vec2 q = abs(p - (r.xy + h)) - (h - vec2(rad));\n"
+	"        float s = length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - rad;\n"
+	"        if (first) { f = s; mode = u_grm[i].y; first = false; continue; }\n"
+	"        float hh = max(14.0 - abs(f - s), 0.0) / 14.0; float m = min(f, s) - hh * hh * 14.0 * 0.25;\n"
+	"        if (s < f) mode = u_grm[i].y;\n"
+	"        f = m;\n"
+	"    }\n"
+	"    return f;\n"
+	"}\n"
+	"void main() {\n"
+	"    vec2 p = gl_FragCoord.xy; float mode, dm;\n"
+	"    float sdf = field(p, mode);\n"
+	"    vec3 dst = texture2D(u_scene, p / u_screen).rgb;\n"
+	"    float cover = clamp(0.5 - sdf, 0.0, 1.0);\n"
+	"    if (cover <= 0.0) { gl_FragColor = vec4(dst, 1.0); return; }\n"
+	"    vec3 col;\n"
+	"    if (mode > 2.5) {\n"
+	"        bool dark = mode > 3.5;\n"
+	"        float sat = dark ? 2.2 : 2.1, fill = dark ? 0.157 : 0.965, fa = dark ? 0.70 : 0.72, tone = dark ? 0.125 : 0.93;\n"
+	"        col = texture2D(u_blur, p / u_screen).rgb;\n"
+	"        float lum = dot(col, vec3(0.2126, 0.7152, 0.0722));\n"
+	"        col = clamp(vec3(lum) + (col - vec3(lum)) * sat, 0.0, 1.0);\n"
+	"        col = vec3(fill * fa) + col * (1.0 - fa);\n"
+	"        col = dark ? max(col, vec3(tone)) : min(col, vec3(tone));\n"
+	"    } else {\n"
+	"        float d = max(-sdf, 0.0);\n"
+	"        float gx = field(p + vec2(1.0, 0.0), dm) - field(p - vec2(1.0, 0.0), dm), gy = field(p + vec2(0.0, 1.0), dm) - field(p - vec2(0.0, 1.0), dm);\n"
+	"        float gl = sqrt(gx * gx + gy * gy); vec2 n = gl > 1e-4 ? vec2(gx, gy) / gl : vec2(0.0, -1.0);\n"
+	"        bool clear = mode > 1.5;\n"
+	"        float L = clear ? 10.0 : u_L, A = clear ? u_amp * 0.5 : u_amp, tint = clear ? 0.90 : 0.69, lift = clear ? 0.0 : 0.012;\n"
+	"        float shift = d < L ? A * sin(3.14159265 * d / L) : 0.0;\n"
+	"        col = texture2D(u_scene, (p + n * shift) / u_screen).rgb;\n"
+	"        float light = max(n.x * -0.55 + n.y * -0.83, 0.0);\n"
+	"        float rim = exp(-d / 1.1) * (0.10 + 0.50 * light), glow = exp(-d / 5.0) * 0.05 * light, white = rim + glow;\n"
+	"        col = col * tint + vec3(lift); col = col * (1.0 - white) + vec3(white); col = min(col, vec3(1.0));\n"
+	"    }\n"
+	"    gl_FragColor = vec4(mix(dst, col, cover), 1.0);\n"
 	"}\n";
 
 static const char *FS =
@@ -186,11 +249,29 @@ static int build_program(gl_compositor *c)
 			else {
 				c->bu_rect = glGetUniformLocation(c->blur_prog, "u_rect"); c->bu_screen = glGetUniformLocation(c->blur_prog, "u_screen");
 				c->bu_src = glGetUniformLocation(c->blur_prog, "u_src"); c->bu_dir = glGetUniformLocation(c->blur_prog, "u_dir");
-				c->bu_sigma = glGetUniformLocation(c->blur_prog, "u_sigma"); c->bu_rad = glGetUniformLocation(c->blur_prog, "u_rad");
+				c->bu_sigma = glGetUniformLocation(c->blur_prog, "u_sigma"); c->bu_rad = glGetUniformLocation(c->blur_prog, "u_rad"); c->bu_step = glGetUniformLocation(c->blur_prog, "u_step");
 			}
 		}
 		if (bvs) glDeleteShader(bvs);
 		if (bfs) glDeleteShader(bfs);
+	}
+	{                                                                             /* the glass pass */
+		GLuint gvs = compile(GL_VERTEX_SHADER, VS), gfs = compile(GL_FRAGMENT_SHADER, GLASS_FS);
+		if (gvs && gfs) {
+			c->glass_prog = glCreateProgram();
+			glAttachShader(c->glass_prog, gvs); glAttachShader(c->glass_prog, gfs);
+			glBindAttribLocation(c->glass_prog, 0, "a_pos");
+			glLinkProgram(c->glass_prog);
+			GLint lk = 0; glGetProgramiv(c->glass_prog, GL_LINK_STATUS, &lk);
+			if (!lk) { char log[512]; GLsizei n = 0; glGetProgramInfoLog(c->glass_prog, sizeof log - 1, &n, log); log[n] = 0; fprintf(stderr, "wsd: glass shader link failed: %s\n", log); glDeleteProgram(c->glass_prog); c->glass_prog = 0; }
+			else {
+				GLuint g = c->glass_prog;
+				c->gu_rect = glGetUniformLocation(g, "u_rect"); c->gu_screen = glGetUniformLocation(g, "u_screen"); c->gu_scene = glGetUniformLocation(g, "u_scene"); c->gu_blur = glGetUniformLocation(g, "u_blur");
+				c->gu_n = glGetUniformLocation(g, "u_n"); c->gu_grect = glGetUniformLocation(g, "u_grect"); c->gu_grm = glGetUniformLocation(g, "u_grm"); c->gu_L = glGetUniformLocation(g, "u_L"); c->gu_amp = glGetUniformLocation(g, "u_amp");
+			}
+		} else if (gfs == 0) fprintf(stderr, "wsd: glass shader did not compile\n");
+		if (gvs) glDeleteShader(gvs);
+		if (gfs) glDeleteShader(gfs);
 	}
 	return 0;
 }
@@ -247,6 +328,19 @@ static void make_target(gl_compositor *c)
 	glGenFramebuffers(1, &c->tmp_fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, c->tmp_fbo);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, c->tmp_tex, 0);
+	glGenTextures(1, &c->scene_tex);                                               /* a copy of the frame for the glass to read while it writes */
+	glBindTexture(GL_TEXTURE_2D, c->scene_tex);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, c->w, c->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glGenTextures(1, &c->bl_tex);                                                  /* and its blurred version */
+	glBindTexture(GL_TEXTURE_2D, c->bl_tex);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, c->w, c->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glGenFramebuffers(1, &c->bl_fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, c->bl_fbo);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, c->bl_tex, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, c->fbo);
 }
 
@@ -459,7 +553,7 @@ static void blur_backdrop(gl_compositor *c, const ws_visit *v)
 	glDisable(GL_BLEND);
 	glUseProgram(c->blur_prog);
 	glUniform2f(c->bu_screen, (float)c->w, (float)c->h);
-	glUniform1i(c->bu_src, 0); glUniform1f(c->bu_sigma, sigma); glUniform1f(c->bu_rad, (float)reach);
+	glUniform1i(c->bu_src, 0); glUniform1f(c->bu_sigma, sigma); glUniform1f(c->bu_rad, (float)reach); glUniform1f(c->bu_step, 1.0f);
 	glActiveTexture(GL_TEXTURE0);
 	glBindFramebuffer(GL_FRAMEBUFFER, c->tmp_fbo);
 	glBindTexture(GL_TEXTURE_2D, c->fbo_tex);
@@ -471,6 +565,49 @@ static void blur_backdrop(gl_compositor *c, const ws_visit *v)
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	glUseProgram(c->prog);
 	glEnable(GL_BLEND);
+}
+
+/* the glass shapes of a window over the frame drawn so far: a copy of the frame (and, for the menu materials, a gaussian blur of it) is read while the shapes are written */
+static void glass_pass(gl_compositor *c, const ws_visit *v)
+{
+	if (!c->glass_prog || !v->glass || v->nglass <= 0 || !c->blur_prog) return;
+	float rect[16 * 4], rm[16 * 2]; int n = 0, mat = 0; float bx0 = 1e9f, by0 = 1e9f, bx1 = -1e9f, by1 = -1e9f;
+	for (int i = 0; i < v->nglass && i < 16; i++) {
+		const ws_glass *g = &v->glass[i]; rect[4 * i] = (float)(v->frame.x + g->rect.x); rect[4 * i + 1] = (float)(v->frame.y + g->rect.y); rect[4 * i + 2] = (float)g->rect.w; rect[4 * i + 3] = (float)g->rect.h;
+		rm[2 * i] = (float)g->radius; rm[2 * i + 1] = g->rect.w > 3 && g->rect.h > 3 ? (float)g->mode : 0.0f; n = i + 1;
+		if (rm[2 * i + 1] <= 0) continue;
+		if (g->mode >= 3) mat = 1;
+		if (rect[4 * i] < bx0) bx0 = rect[4 * i]; if (rect[4 * i + 1] < by0) by0 = rect[4 * i + 1];
+		if (rect[4 * i] + rect[4 * i + 2] > bx1) bx1 = rect[4 * i] + rect[4 * i + 2]; if (rect[4 * i + 1] + rect[4 * i + 3] > by1) by1 = rect[4 * i + 1] + rect[4 * i + 3];
+	}
+	if (bx1 <= bx0) return;
+	const float M = 32.0f;                                                          /* the lens looks this far beyond the edge */
+	float x0 = fmaxf(bx0 - M, 0), y0 = fmaxf(by0 - M, 0), x1 = fminf(bx1 + M, (float)c->w), y1 = fminf(by1 + M, (float)c->h);
+	if (x1 <= x0 || y1 <= y0) return;
+	glDisable(GL_BLEND);
+	glBindFramebuffer(GL_FRAMEBUFFER, c->fbo);
+	glBindTexture(GL_TEXTURE_2D, c->scene_tex);
+	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, (int)x0, (int)y0, (int)x0, (int)y0, (int)(x1 - x0), (int)(y1 - y0));
+	if (mat) {                                                                      /* sigma 30 with taps 2 px apart: 45 taps reach 90 px */
+		float ry0 = fmaxf(y0 - 90, 0), ry1 = fminf(y1 + 90, (float)c->h);
+		glUseProgram(c->blur_prog);
+		glUniform2f(c->bu_screen, (float)c->w, (float)c->h); glUniform1i(c->bu_src, 0); glUniform1f(c->bu_sigma, 15.0f); glUniform1f(c->bu_rad, 45.0f); glUniform1f(c->bu_step, 2.0f);
+		glActiveTexture(GL_TEXTURE0);
+		glBindFramebuffer(GL_FRAMEBUFFER, c->tmp_fbo); glBindTexture(GL_TEXTURE_2D, c->fbo_tex);
+		glUniform2f(c->bu_dir, 1.0f, 0.0f); glUniform4f(c->bu_rect, x0, ry0, x1 - x0, ry1 - ry0); glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		glBindFramebuffer(GL_FRAMEBUFFER, c->bl_fbo); glBindTexture(GL_TEXTURE_2D, c->tmp_tex);
+		glUniform2f(c->bu_dir, 0.0f, 1.0f); glUniform4f(c->bu_rect, x0, y0, x1 - x0, y1 - y0); glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		glBindFramebuffer(GL_FRAMEBUFFER, c->fbo);
+	}
+	glUseProgram(c->glass_prog);
+	glUniform2f(c->gu_screen, (float)c->w, (float)c->h); glUniform4f(c->gu_rect, x0, y0, x1 - x0, y1 - y0);
+	glUniform1i(c->gu_scene, 0); glUniform1i(c->gu_blur, 1); glUniform1i(c->gu_n, n);
+	glUniform4fv(c->gu_grect, n, rect); glUniform2fv(c->gu_grm, n, rm);
+	glUniform1f(c->gu_L, 18.0f); glUniform1f(c->gu_amp, 26.0f);
+	glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, c->bl_tex);
+	glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, c->scene_tex);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	glUseProgram(c->prog); glEnable(GL_BLEND);
 }
 
 /* the warped window (SetWindowWarp): every cell of the mesh is split into 6 x 6 pieces whose corners are interpolated bilinearly (the software compositor solves the bilinear map per pixel; triangles of a coarse cell
@@ -516,6 +653,7 @@ static void visit(void *ctx, const ws_visit *v)
 {
 	gl_compositor *c = ctx;
 	if (v->blur_radius > 0) blur_backdrop(c, v);
+	glass_pass(c, v);
 	int swap = 1; float uvx = 1, uvy = 1;
 	GLuint tex = window_texture(c, v, &swap, &uvx, &uvy);
 	if (tex && v->alpha > 0.0f) {
