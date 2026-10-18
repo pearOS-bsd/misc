@@ -1,0 +1,4 @@
+*.o
+libcoreui.a
+cardump
+test_car
