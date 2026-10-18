@@ -379,12 +379,25 @@ static void place(ws_server *s, window *w, int mode, window *rel)
 	free(v);
 }
 
+static void set_key_window(ws_server *s, ws_wid id);
+/* a window that takes the keyboard when it appears: an ordinary application window (not the menu bar, the Dock, an icon or a tooltip) */
+static int takes_key(const window *w) { return w->level == 0 && w->frame.w >= 100 && w->frame.h >= 60 && w->alpha * w->sys_alpha > 0; }
 static int order_group(ws_server *s, ws_wid id, int mode, ws_wid rel, int depth)
 {
 	window *w = get(s, id);
 	if (!w) return -1;
-	if (mode == WS_OUT) w->on_screen = 0, bump(s);
-	else place(s, w, mode == WS_BELOW ? WS_BELOW : WS_ABOVE, rel ? get(s, rel) : NULL);
+	if (mode == WS_OUT) {
+		w->on_screen = 0; bump(s);
+		if (depth == 0 && s->key_win == id) {                              /* the key window went away: the frontmost ordinary window takes the keyboard (as on a Mac), else nobody */
+			window *best = NULL;
+			for (size_t i = 0; i < s->n; i++) { window *c = &s->win[i]; if (c->on_screen && c->id != id && takes_key(c) && (!best || c->order > best->order)) best = c; }
+			set_key_window(s, best ? best->id : 0);
+		}
+	} else {
+		int was_on = w->on_screen;
+		place(s, w, mode == WS_BELOW ? WS_BELOW : WS_ABOVE, rel ? get(s, rel) : NULL);
+		if (depth == 0 && !was_on && mode != WS_BELOW && takes_key(w)) set_key_window(s, id);      /* a window that appears becomes the key window, the one the keys go to */
+	}
 	if (depth < 8)                                                      /* the windows grouped with this one for ordering follow it: out with it, else above / below it */
 		for (size_t i = 0; i < s->n; i++) {
 			window *c = &s->win[i];
