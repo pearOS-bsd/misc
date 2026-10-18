@@ -211,6 +211,7 @@ void ws_server_set_cursor_image(ws_server *, const ws_surface *img, int hot_x, i
 /* Standard shapes: 0 arrow, 1 I-beam, 2 pointing hand, 3 crosshair, 4 resize left-right, 5 up-down, 6 NW-SE, 7 NE-SW, 8 open hand, 9 closed hand, 10 move */
 int ws_cursor_shape_count(void);
 ws_surface *ws_cursor_shape_image(int shape, int *hot_x, int *hot_y);       /* NULL for the arrow / unknown; free with ws_surface_free */
+int ws_server_cursor_shape(const ws_server *);                    /* the standard shape in use (0: the arrow) */
 void ws_server_set_cursor_shape(ws_server *, int shape);   /* copies; NULL restores the default arrow */
 void ws_compose_scene(ws_server *, ws_surface *screen);                  /* windows only, no cursor */
 void ws_server_desktop_color(ws_server *, float rgb[3]);

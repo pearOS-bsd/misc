@@ -800,6 +800,7 @@ uint32_t ws_cursor_serial(const ws_server *s) { return s->cursor_serial; }
 static int hidden_total(const ws_server *s) { int t = 0; for (int i = 0; i < s->nhide; i++) t += s->hide[i].count; return t; }
 int ws_cursor_visible(const ws_server *s) { return s->cursor_visible && !s->obscured && hidden_total(s) == 0; }
 
+int ws_server_cursor_shape(const ws_server *s) { return s->cursor_shape; }
 void ws_server_set_cursor_shape(ws_server *s, int shape)
 {
 	if (shape == s->cursor_shape && s->cursor_img) return;
