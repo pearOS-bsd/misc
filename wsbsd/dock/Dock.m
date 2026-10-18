@@ -91,7 +91,14 @@ typedef struct { uint32_t wid; int pid; char label[64]; CGImageRef thumb; int ph
 	MiniWin *mw = &mini[nmini++]; memset(mw, 0, sizeof *mw);
 	mw->wid = wid; mw->pid = [u[@"pid"] intValue]; snprintf(mw->label, sizeof mw->label, "%s", [u[@"title"] length] ? [u[@"title"] UTF8String] : "Window");
 	mw->thumb = [self thumbOfWindow: wid]; mw->phase = 1; mw->t0 = Now(); mw->appItem = -1;
-	{ NSString *bp = u[@"bundle"]; if ([bp length]) for (int i = 0; i < n; i++) if (items[i].kind == DOCK_APP && [paths[i] length] && ([paths[i] isEqualToString: bp] || [[paths[i] lastPathComponent] isEqualToString: [bp lastPathComponent]])) { mw->appItem = i; break; } }
+	{                                                                           /* the application's tile: by the bundle path, or by the executable lying inside the tile's .app (the program may run through a wrapper) */
+		NSString *bp = u[@"bundle"], *exe = u[@"exe"];
+		for (int i = 0; i < n; i++) {
+			if (items[i].kind != DOCK_APP || ![paths[i] length]) continue;
+			BOOL hit = ([bp length] && ([paths[i] isEqualToString: bp] || [[paths[i] lastPathComponent] isEqualToString: [bp lastPathComponent]])) || ([exe length] && [exe hasPrefix: [paths[i] stringByAppendingString: @"/"]]);
+			if (hit) { mw->appItem = i; break; }
+		}
+	}
 	int sw = 0, sh = 0; ws_conn_screen(wsc, &sw, &sh); mw->wr[0] = r.x; mw->wr[1] = sh - (r.y + r.h); mw->wr[2] = r.w; mw->wr[3] = r.h;
 	[[NSDistributedNotificationCenter defaultCenter] postNotificationName: @"com.wsbsd.dock.minimized" object: nil userInfo: @{ @"wid": @(wid) } deliverImmediately: YES];
 	[self reload];
