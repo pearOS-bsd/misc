@@ -5,7 +5,7 @@
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 #import <GNUstepGUI/GSDisplayServer.h>
-static IMP origTFDraw, origTFRect, origMakeFR; static BOOL wsdMakeFirstResponder(id self, SEL _cmd, NSResponder *r); static void wsdTFDraw(id self, SEL _cmd, NSRect f, NSView *v); static void wsdTFRect(id self, SEL _cmd, NSRect r);
+static IMP origTFDraw, origTFRect, origMakeFR, origKeyEqStr; static NSString *wsdKeyEqString(id self, SEL _cmd); static BOOL wsdMakeFirstResponder(id self, SEL _cmd, NSResponder *r); static void wsdTFDraw(id self, SEL _cmd, NSRect f, NSView *v); static void wsdTFRect(id self, SEL _cmd, NSRect r);
 @interface GSDisplayServer (WsdBlur) - (void) wsdBackgroundBlur: (int)radius : (int)win; @end
 #include <stdlib.h>
 #import <objc/runtime.h>
@@ -339,6 +339,7 @@ static void swizzleTableDefaults(void)
 	if (mat && !origAttrTitle) origAttrTitle = method_setImplementation(mat, (IMP)wsdAttrTitle);
 	Method mtc = class_getInstanceMethod([NSButtonCell class], @selector(textColor));
 	if (mtc && !origButtonTextColor) origButtonTextColor = method_setImplementation(mtc, (IMP)wsdButtonTextColor);
+	{ Method mk = class_getInstanceMethod([NSMenuItemCell class], @selector(_keyEquivalentString)); if (mk && !origKeyEqStr) origKeyEqStr = method_setImplementation(mk, (IMP)wsdKeyEqString); }
 	{ Method mf = class_getInstanceMethod([NSWindow class], @selector(makeFirstResponder:)); if (mf && !origMakeFR) origMakeFR = method_setImplementation(mf, (IMP)wsdMakeFirstResponder); }
 	{ Method mr = class_getInstanceMethod([NSTextField class], @selector(drawRect:)); if (mr && !origTFRect) origTFRect = method_setImplementation(mr, (IMP)wsdTFRect); }
 	Method mtf = class_getInstanceMethod([NSTextFieldCell class], @selector(drawInteriorWithFrame:inView:));
@@ -422,6 +423,13 @@ static BOOL wsdMakeFirstResponder(id self, SEL _cmd, NSResponder *r)
 	NSView *newc = WsdControlOfEditor([(NSWindow *)self firstResponder]);
 	[oldc setNeedsDisplay: YES]; [newc setNeedsDisplay: YES];          /* a text field is drawn again when it gains or loses the editing focus: that is when its ring appears or goes */
 	return ok;
+}
+static NSString *wsdKeyEqString(id self, SEL _cmd)
+{
+	NSString *r = ((NSString *(*)(id, SEL))origKeyEqStr)(self, _cmd);
+	if ([r length] < 2) return r;
+	NSString *last = [r substringFromIndex: [r length] - 1];                       /* the menus of the Mac show the key in capitals: command-Q, not command-q */
+	return [[r substringToIndex: [r length] - 1] stringByAppendingString: [last uppercaseString]];
 }
 static void wsdTFRect(id self, SEL _cmd, NSRect r)
 {
