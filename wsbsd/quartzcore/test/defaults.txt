@@ -50,7 +50,7 @@ contentsRect = <0 0 1 1>
 contentsScale = 1
 contentsScaling = "stretch"
 contentsSwizzle = "RGBA"
-contentsTransform = <NSAffineTransform: 0x1028f9c70>
+contentsTransform = <NSAffineTransform: 0x1045dd2c0>
 continuousCorners = 0
 cornerContents = nil
 cornerContentsCenter = <0.5 0.5 0 0>
@@ -177,7 +177,7 @@ strokeStart = 0
 ## CATextLayer
 alignmentMode = "natural"
 allowsFontSubpixelQuantization = 0
-font = <CTFont: 0x1028ff280>{name = Helvetica, size = 36.000000, matrix = 0x0, descriptor = <CTFontDescriptor: 0x797309c660>{attributes = {
+font = <CTFont: 0x1045e28d0>{name = Helvetica, size = 36.000000, matrix = 0x0, descriptor = <CTFontDescriptor: 0x7b1509c660>{attributes = {
     NSFontNameAttribute = Helvetica;
 }>}}
 fontSize = 36

@@ -5,6 +5,7 @@
 @interface CAMediaTimingFunction ()
 - (float)_solve:(float)x;
 @end
+BOOL CAMapAnimationTime(CAAnimation *a, double *t, int *iteration);
 bool CAAnimationTiming(CAAnimation *a, CATiming *t);
 void CAKeyframeApply(CAKeyframeAnimation *k, CFTimeInterval time, id pres, id model);
 
@@ -19,6 +20,7 @@ void CALayerSetValueForKeyPath(CALayer *l, NSString *kp, id v);
 - (BOOL)_roundsToInteger;
 @end
 void CALayerCommitAnimations(void);
+void CALayerRefreshPresentations(void);
 void CARenderLayerTree(CALayer *l, CGContextRef ctx);
 @interface CALayer ()
 - (id)_actionForPropertyChange:(NSString *)key flags:(unsigned)flags;
@@ -26,6 +28,8 @@ void CARenderLayerTree(CALayer *l, CGContextRef ctx);
 - (CAAnimation *)_implicitAnimationForKeyPath:(NSString *)key;
 - (CFTimeInterval)_localTime;
 - (void)_commitAnimations;
+- (void)_markCommitted;
+- (void)_refreshPresentation;
 - (void)_boundsChanged;
 - (void)_sublayersChanged;
 - (void)_copyPropertiesFrom:(CALayer *)o;

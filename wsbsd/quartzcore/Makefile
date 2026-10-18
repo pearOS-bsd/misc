@@ -47,3 +47,30 @@ check-golden: test/golden_real test/golden_ours
 	./test/golden_real > test/golden.txt; ./test/golden_ours > test/golden.ours.txt
 	python3 -I test/cmp.py test/golden.txt test/golden.ours.txt 2e-6
 endif
+ifeq ($(UNAME),Darwin)
+test/fuzz_real: test/fuzz.m
+	$(CC) -fobjc-arc -DREAL_CA -framework Foundation -framework QuartzCore -framework Metal -framework CoreGraphics -o $@ test/fuzz.m
+test/fuzz_ours: test/fuzz.m $(BUILD)/libQuartzCore.a
+	$(CC) $(CFLAGS) -o $@ test/fuzz.m $(BUILD)/libQuartzCore.a -ObjC $(FW)
+check-fuzz: test/fuzz_real test/fuzz_ours
+	./test/fuzz_real > test/fuzz.real.txt; ./test/fuzz_ours > test/fuzz.ours.txt
+	python3 -I test/cmp.py test/fuzz.real.txt test/fuzz.ours.txt 2e-5
+endif
+ifeq ($(UNAME),Darwin)
+test/actions_real: test/actions.m
+	$(CC) -fobjc-arc -DREAL_CA -framework Foundation -framework QuartzCore -framework Metal -framework CoreGraphics -o $@ test/actions.m
+test/actions_ours: test/actions.m $(BUILD)/libQuartzCore.a
+	$(CC) $(CFLAGS) -o $@ test/actions.m $(BUILD)/libQuartzCore.a -ObjC $(FW)
+check-actions: test/actions_real test/actions_ours
+	./test/actions_real > test/actions.txt; ./test/actions_ours | sed 's/WSCA/CA/g' > test/actions.ours.txt
+	python3 -I test/cmp.py test/actions.txt test/actions.ours.txt 2e-6
+endif
+ifeq ($(UNAME),Darwin)
+test/defaults_ours: test/defaults.m $(BUILD)/libQuartzCore.a
+	$(CC) $(CFLAGS) -o $@ test/defaults.m $(BUILD)/libQuartzCore.a -ObjC $(FW)
+check-defaults: test/defaults_real test/defaults_ours
+	./test/defaults_real > test/defaults.txt
+	python3 -I test/pubfilter.py test/defaults.txt include/QuartzCore > test/defaults.pub.txt
+	./test/defaults_ours | sed 's/WSCA/CA/g' > test/defaults.ours.txt
+	python3 -I test/cmp.py test/defaults.pub.txt test/defaults.ours.txt 1e-9
+endif

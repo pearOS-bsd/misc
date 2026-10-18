@@ -14,11 +14,18 @@ static KFMode CAMode(NSString *s)
 /* distances between consecutive values, for the paced modes: the key times are made proportional to them */
 static double CADistance(id a, id b)
 {
-	if ([a isKindOfClass:[NSNumber class]]) return fabs([b doubleValue] - [a doubleValue]);
-	if ([a isKindOfClass:[NSValue class]]) {
-		double x[16] = { 0 }, y[16] = { 0 }; [a getValue:x]; [b getValue:y]; size_t sz; NSGetSizeAndAlignment([a objCType], &sz, NULL);
-		double s = 0; for (size_t i = 0; i < sz / 8 && i < 16; i++) s += (x[i] - y[i]) * (x[i] - y[i]);
+	if ([a isKindOfClass:[NSNumber class]]) return fabs([a doubleValue] - [b doubleValue]);
+	if (a && b && CFGetTypeID((__bridge CFTypeRef)a) == CGColorGetTypeID() && CFGetTypeID((__bridge CFTypeRef)b) == CGColorGetTypeID()) {
+		double x[4], y[4]; CAColorGetExtSRGB((__bridge CGColorRef)a, x); CAColorGetExtSRGB((__bridge CGColorRef)b, y);
+		double s = 0; for (int i = 0; i < 4; i++) s += (x[i] - y[i]) * (x[i] - y[i]);
 		return sqrt(s);
+	}
+	if (![a isKindOfClass:[NSValue class]]) return 1.0;
+	if ([a isKindOfClass:[NSValue class]] && [b isKindOfClass:[NSValue class]]) {
+		double x[16] = { 0 }, y[16] = { 0 }; [a getValue:x]; [b getValue:y]; size_t sz; NSGetSizeAndAlignment([a objCType], &sz, NULL);
+		size_t c = sz / 8;
+		if (c == 2 || c == 3) { double s = 0; for (size_t i = 0; i < c; i++) s += (x[i] - y[i]) * (x[i] - y[i]); return sqrt(s); }
+		if (c == 1) return y[0];
 	}
 	return 0;
 }
@@ -27,12 +34,14 @@ static double CADistance(id a, id b)
 static BOOL CAHermiteCapable(id v)
 {
 	if ([v isKindOfClass:[NSNumber class]]) return YES;
+	if (v && CFGetTypeID((__bridge CFTypeRef)v) == CGColorGetTypeID()) return YES;
 	if ([v isKindOfClass:[NSValue class]]) { const char *t = [v objCType]; return t && t[0] == '{' && !strstr(t, "Transform") && !strstr(t, "ColorMatrix"); }
 	return NO;
 }
 static int CAComps(id v, double *out)
 {
 	if ([v isKindOfClass:[NSNumber class]]) { out[0] = [v doubleValue]; return 1; }
+	if (CFGetTypeID((__bridge CFTypeRef)v) == CGColorGetTypeID()) { CAColorGetExtSRGB((__bridge CGColorRef)v, out); return 4; }
 	size_t sz; NSGetSizeAndAlignment([v objCType], &sz, NULL); [v getValue:out]; return (int)(sz / 8);
 }
 static id CAHermite(NSArray *vals, double *kt, NSUInteger i, double u, NSArray *tens, NSArray *cont, NSArray *bias)
@@ -50,7 +59,7 @@ static id CAHermite(NSArray *vals, double *kt, NSUInteger i, double u, NSArray *
 		if (hasPrev) CAComps(vals[idx - 1], pv); if (hasNext) CAComps(vals[idx + 1], pn);
 		for (int c = 0; c < nc; c++) {
 			double dp = hasPrev ? (pc[c] - pv[c]) / kp : 0, dn = hasNext ? (pn[c] - pc[c]) / kn : 0, mm;
-			if (!hasPrev) mm = dn; else if (!hasNext) mm = dp;
+			if (!hasPrev) mm = (1 - T) * dn; else if (!hasNext) mm = (1 - T) * dp;
 			else {
 				double wp = kp / (kp + kn), wn = kn / (kp + kn);
 				mm = side == 0 ? (1 - T) * ((1 + B) * (1 + C) * wp * dp + (1 - B) * (1 - C) * wn * dn) : (1 - T) * ((1 + B) * (1 - C) * wp * dp + (1 - B) * (1 + C) * wn * dn);
@@ -59,9 +68,12 @@ static id CAHermite(NSArray *vals, double *kt, NSUInteger i, double u, NSArray *
 			m[side][c] = mm * h;
 		}
 	}
+	if (u == 0 && ![vals[0] isKindOfClass:[NSNumber class]]) return vals[i];
+	if (u == 1 && ![vals[0] isKindOfClass:[NSNumber class]]) return vals[i + 1];
 	double h00 = 2 * u * u * u - 3 * u * u + 1, h10 = u * u * u - 2 * u * u + u, h01 = -2 * u * u * u + 3 * u * u, h11 = u * u * u - u * u;
 	for (int c = 0; c < nc; c++) out[c] = h00 * p[1][c] + h10 * m[0][c] + h01 * p[2][c] + h11 * m[1][c];
 	if ([vals[0] isKindOfClass:[NSNumber class]]) return @(out[0]);
+	if (CFGetTypeID((__bridge CFTypeRef)vals[0]) == CGColorGetTypeID()) return CFBridgingRelease(CAColorCreateExtSRGB(out));
 	return [NSValue valueWithBytes:out objCType:[vals[0] objCType]];
 }
 
@@ -75,11 +87,34 @@ static void CAPathCollect(void *info, const CGPathElement *e)
 	case kCGPathElementAddLineToPoint: if (g) { g->kind = 1; g->p[0] = s->cur; g->p[1] = e->points[0]; s->n++; } s->cur = e->points[0]; return;
 	case kCGPathElementAddQuadCurveToPoint: if (g) { g->kind = 2; g->p[0] = s->cur; g->p[1] = e->points[0]; g->p[2] = e->points[1]; s->n++; } s->cur = e->points[1]; return;
 	case kCGPathElementAddCurveToPoint: if (g) { g->kind = 3; g->p[0] = s->cur; g->p[1] = e->points[0]; g->p[2] = e->points[1]; g->p[3] = e->points[2]; s->n++; } s->cur = e->points[2]; return;
-	case kCGPathElementCloseSubpath: if (g && (s->cur.x != s->start.x || s->cur.y != s->start.y)) { g->kind = 1; g->p[0] = s->cur; g->p[1] = s->start; s->n++; } s->cur = s->start; return;
+	case kCGPathElementCloseSubpath: if (g) { g->kind = 1; g->p[0] = s->cur; g->p[1] = s->start; s->n++; } s->cur = s->start; return;
 	}
 }
+static void CAPathEvalPoint(const CAPathSeg *g, double u, CGPoint *pt, CGPoint *tan);
+#define CALENSTEPS 256
+static double CAPathSegLength(const CAPathSeg *g, double *table)      /* table[i] = length up to u = i / CALENSTEPS */
+{
+	CGPoint prev = g->p[0], pt, tg; double L = 0;
+	if (table) table[0] = 0;
+	for (int i = 1; i <= CALENSTEPS; i++) {
+		CAPathEvalPoint(g, (double)i / CALENSTEPS, &pt, &tg);
+		L += hypot(pt.x - prev.x, pt.y - prev.y); prev = pt;
+		if (table) table[i] = L;
+	}
+	return L;
+}
+/* the parameter at which the arc length of the segment is s */
+static double CAPathParamAtLength(const double *table, double s)
+{
+	int lo = 0, hi = CALENSTEPS;
+	while (hi - lo > 1) { int mid = (lo + hi) / 2; if (table[mid] <= s) lo = mid; else hi = mid; }
+	double span = table[hi] - table[lo], f = span > 0 ? (s - table[lo]) / span : 0;
+	return ((double)lo + f) / CALENSTEPS;
+}
 /* the point and the tangent of a segment at u (0 ... 1) */
-static void CAPathEval(const CAPathSeg *g, double u, CGPoint *pt, CGPoint *tan)
+static void CAPathEvalPoint(const CAPathSeg *g, double u, CGPoint *pt, CGPoint *tan);
+static void CAPathEval(const CAPathSeg *g, double u, CGPoint *pt, CGPoint *tan) { CAPathEvalPoint(g, u, pt, tan); }
+static void CAPathEvalPoint(const CAPathSeg *g, double u, CGPoint *pt, CGPoint *tan)
 {
 	double v = 1 - u;
 	if (g->kind == 1) {
@@ -128,8 +163,9 @@ void CAKeyframeApply(CAKeyframeAnimation *k, CFTimeInterval time, id pres, id mo
 	if (mode == kModePaced || mode == kModeCubicPaced) {
 		double total = 0, dist[n]; dist[0] = 0;
 		for (NSUInteger i = 1; i < n; i++) { dist[i] = CADistance(values[i - 1], values[i]); total += dist[i]; }
-		double acc = 0; kt[0] = 0;
-		for (NSUInteger i = 1; i < n; i++) { acc += dist[i]; kt[i] = total > 0 ? acc / total : (double)i / (n - 1); }
+		if (path) { total = 0; for (int i = 0; i < ps.n; i++) { dist[i + 1] = CAPathSegLength(&ps.seg[i], NULL); total += dist[i + 1]; } }
+		double acc = 0, inv = 1.0 / total; kt[0] = 0;
+		for (NSUInteger i = 1; i < n; i++) { acc += dist[i]; kt[i] = acc * inv; }
 	} else if (keyTimes.count == n) for (NSUInteger i = 0; i < n; i++) kt[i] = [keyTimes[i] doubleValue];
 	else if (mode == kModeDiscrete) for (NSUInteger i = 0; i < n; i++) kt[i] = (double)i / n;
 	else for (NSUInteger i = 0; i < n; i++) kt[i] = n > 1 ? (double)i / (n - 1) : 0;
@@ -138,9 +174,10 @@ void CAKeyframeApply(CAKeyframeAnimation *k, CFTimeInterval time, id pres, id mo
 	BOOL cubic = (mode == kModeCubic || mode == kModeCubicPaced) && n > 2 && CAHermiteCapable(values[0]);
 	if (onPath) {
 		NSUInteger i = 0; while (i + 2 < n && kt[i + 1] <= t) i++;
-		double span = kt[i + 1] - kt[i], u = span > 0 ? (t - kt[i]) / span : 0;
+		double span = kt[i + 1] - kt[i], u = (t - kt[i]) / span;
 		u = u > 1 ? 1 : (u < 0 ? 0 : u);
 		NSArray *tfs = [k timingFunctions]; if (tfs && i < tfs.count && mode != kModePaced && mode != kModeCubicPaced) u = (double)[tfs[i] _solve:(float)u];
+		if (mode == kModePaced || mode == kModeCubicPaced) { double tab[CALENSTEPS + 1]; double L = CAPathSegLength(&ps.seg[i], tab); u = CAPathParamAtLength(tab, u * L); }
 		CGPoint pt, tan; CAPathEval(&ps.seg[i], u, &pt, &tan);
 		value = [NSValue valueWithPoint:NSMakePoint(pt.x, pt.y)];
 		NSString *rm = [k rotationMode];
@@ -149,7 +186,7 @@ void CAKeyframeApply(CAKeyframeAnimation *k, CFTimeInterval time, id pres, id mo
 	else if (n == 1) value = values[0];
 	else if (cubic) {
 		NSUInteger i = 0; while (i + 2 < n && kt[i + 1] <= t) i++;
-		double span = kt[i + 1] - kt[i], u = span > 0 ? (t - kt[i]) / span : 0;
+		double span = kt[i + 1] - kt[i], u = (t - kt[i]) / span;
 		u = u > 1 ? 1 : (u < 0 ? 0 : u);
 		value = CAHermite(values, kt, i, u, [k tensionValues], [k continuityValues], [k biasValues]);
 	}
@@ -158,7 +195,7 @@ void CAKeyframeApply(CAKeyframeAnimation *k, CFTimeInterval time, id pres, id mo
 		value = values[i];
 	} else {
 		NSUInteger i = 0; while (i + 2 < n && kt[i + 1] <= t) i++;
-		double span = kt[i + 1] - kt[i], lt = span > 0 ? (t - kt[i]) / span : 0;
+		double span = kt[i + 1] - kt[i], lt = (t - kt[i]) / span;
 		lt = lt > 1 ? 1 : (lt < 0 ? 0 : lt);
 		NSArray *tfs = [k timingFunctions];
 		if (tfs && i < tfs.count && mode != kModePaced && mode != kModeCubicPaced) lt = (double)[tfs[i] _solve:(float)lt];

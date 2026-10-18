@@ -42,6 +42,7 @@ void CATransactionNoteChange(void);                                    /* a laye
 - (float)_solveTiming:(float)x;
 - (BOOL)isEnabled;
 - (BOOL)_hasStarted;
+- (void)setDefaultDuration:(CFTimeInterval)d;
 - (CFTimeInterval)_addedAt;
 - (BOOL)_hasAddedAt;
 - (void)_setAddedAt:(CFTimeInterval)t;

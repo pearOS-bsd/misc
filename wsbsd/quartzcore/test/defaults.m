@@ -26,7 +26,7 @@ static void dump(Class c, id obj)
 	free(ps);
 	[names sortUsingSelector:@selector(compare:)];
 	for (NSString *k in names) {
-		if ([k isEqualToString:@"delegate"] || [k isEqualToString:@"hash"] || [k isEqualToString:@"description"] || [k isEqualToString:@"debugDescription"] || [k isEqualToString:@"superclass"]) continue;
+		if ([k isEqualToString:@"visibleRect"] || [k isEqualToString:@"delegate"] || [k isEqualToString:@"hash"] || [k isEqualToString:@"description"] || [k isEqualToString:@"debugDescription"] || [k isEqualToString:@"superclass"]) continue;
 		NSMutableString *s = [NSMutableString string];
 		@try { fmtv(s, [obj valueForKey:k]); } @catch (id e) { [s appendString:@"<exception>"]; }
 		printf("%s = %s\n", [k UTF8String], [s UTF8String]);
