@@ -101,10 +101,12 @@ static NSString *TileLabel(NSDictionary *t, NSString *path)
 - (void)scanProcesses
 {
 	NSMutableDictionary *pm = [NSMutableDictionary dictionary];
-	FILE *f = popen("ps -axwwo pid=,command= 2>/dev/null", "r");
+	FILE *f = popen("ps -axww -o pid= -o command= 2>/dev/null", "r");
 	if (f) {
 		char line[2048];
 		while (fgets(line, sizeof line, f)) {
+			char *prog = strchr(line, ' '); while (prog && *prog == ' ') prog++; while (prog && *prog >= '0' && *prog <= '9') prog++; while (prog && *prog == ' ') prog++;          /* the program of the line: a bare executable (Terminal-gnustep) stands for the bundle of that name */
+			if (prog) { char cmd[1024]; snprintf(cmd, sizeof cmd, "%s", prog); char *sp = strpbrk(cmd, " \n"); if (sp) *sp = 0; char *bn = strrchr(cmd, '/'); bn = bn ? bn + 1 : cmd; NSString *nm = [NSString stringWithUTF8String: bn]; if ([nm hasSuffix: @"-gnustep"]) nm = [nm substringToIndex: [nm length] - 8]; if ([nm length] && !pm[[@"name:" stringByAppendingString: nm]]) pm[[@"name:" stringByAppendingString: nm]] = @(atoi(line)); }
 			char *mark = strstr(line, ".app/Contents/MacOS/");
 			if (!mark) { mark = strstr(line, ".app/"); if (mark) { char *e = mark + 5; while (*e && *e != ' ' && *e != '\n') { if (*e == '/') { mark = NULL; break; } e++; } } }        /* the GNUstep layout: the program lies next to the bundle's other files */
 			if (!mark) continue;
@@ -114,7 +116,16 @@ static NSString *TileLabel(NSDictionary *t, NSString *path)
 		pclose(f);
 	}
 	if (getenv("DOCK_LOG")) NSLog(@"dock: running %@", pm);
-	runningPids = pm; runningPaths = [NSSet setWithArray: [pm allKeys]];
+	runningPids = pm;
+	NSMutableSet *rp = [NSMutableSet set]; for (NSString *k in pm) if (![k hasPrefix: @"name:"]) [rp addObject: k]; runningPaths = rp;
+}
+/* the process of an application tile: its bundle's executable, or a program of the bundle's name (Terminal-gnustep for Terminal.app) */
+- (int)pidOfApp:(NSString *)path
+{
+	NSNumber *n = runningPids[path]; if (n) return [n intValue];
+	NSString *base = [[path lastPathComponent] stringByDeletingPathExtension];
+	n = runningPids[[@"name:" stringByAppendingString: base]] ?: runningPids[[@"name:" stringByAppendingString: [base stringByReplacingOccurrencesOfString: @" " withString: @""]]];
+	return n ? [n intValue] : 0;
 }
 - (BOOL)isSystemApp:(NSString *)bp
 {
@@ -304,7 +315,7 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 	}
 	[self stepAutohide];
 	for (int i = 0; i < n; i++) {
-		int pid = [pids[i] intValue]; tiles[i].running = (pid > 0 && kill(pid, 0) == 0) || (items[i].kind == DOCK_APP && [runningPaths containsObject: paths[i]]);
+		int pid = [pids[i] intValue]; tiles[i].running = (pid > 0 && kill(pid, 0) == 0) || (items[i].kind == DOCK_APP && [self pidOfApp: paths[i]] > 0);
 		if (bounceStart[i] > 0) {                                                  /* the launch bounce: three arcs of decreasing height, 0.6 s each... */
 			double t = Now() - bounceStart[i], dur = 2.0; if (t > dur) { bounceStart[i] = 0; tiles[i].bounce = 0; }
 			else { double ph = fmod(t, 0.66) / 0.66; tiles[i].bounce = (float)(4 * ph * (1 - ph) * (1.0 - t / dur) * 0.75); }
@@ -459,13 +470,13 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 	if (items[i].kind == DOCK_MINIMIZED) { for (int k = 0; k < nmini; k++) if (mini[k].item == i) [self restoreMini: k]; return; }
 	if (items[i].kind == DOCK_OTHER) { if ([self isDirTile: i]) [self openFan: i]; else [self openPath: path]; return; }
 	if (items[i].kind == DOCK_TRASH) { return; }
-	if (items[i].kind == DOCK_APP && [runningPaths containsObject: path] && [self activateApp: path]) return;        /* a running application comes to the front instead of starting again */
+	if (items[i].kind == DOCK_APP && [self pidOfApp: path] > 0 && [self activateApp: path]) return;        /* a running application comes to the front instead of starting again */
 	[self launchItem: i];
 }
 /* brings the windows of a running application to the front, in their order; NO when it has none on the screen */
 - (BOOL)activateApp:(NSString *)bundle
 {
-	int pid = [runningPids[bundle] intValue]; if (!pid || !wsc) return NO;
+	int pid = [self pidOfApp: bundle]; if (!pid || !wsc) return NO;
 	uint32_t ids[256]; int total = 0; if (ws_win_list(wsc, 0, 1, ids, 256, &total) != 0) return NO;
 	int got = 0;
 	for (int k = (total < 256 ? total : 256) - 1; k >= 0; k--) {                          /* back to front: the frontmost ends up on top */
@@ -490,7 +501,7 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 	int code = (int)[mi tag], i = ctxItem; if (i < 0 || i >= n) return;
 	switch (code) {
 	case 1: [self launchItem: i]; break;                                                                       /* Open */
-	case 2: { NSNumber *pid = runningPids[paths[i]]; if (pid) kill([pid intValue], SIGTERM); } break;           /* Quit */
+	case 2: { int pid = [self pidOfApp: paths[i]]; if (pid > 0) kill(pid, SIGTERM); } break;           /* Quit */
 	case 3: [self keepToggle: i remove: NO]; break;                                                            /* Keep in Dock */
 	case 4: [self keepToggle: i remove: YES]; break;                                                           /* Remove from Dock */
 	case 7: [self openPath: [paths[i] stringByDeletingLastPathComponent]]; break;                              /* Show in Finder */
@@ -526,7 +537,7 @@ static NSSize MenuSize(NSArray *its)
 {
 	int i = [self tileAt: [self screenX: e]]; if (ctxOpen) { ctxOpen = 0; return; } if (i < 0 || fanOpen) return; ctxItem = i; hover = -1;
 	NSString *name = tiles[i].label ? @(tiles[i].label) : @""; NSMutableArray *its = [NSMutableArray array];
-	int k = items[i].kind; BOOL running = k == DOCK_APP && [runningPaths containsObject: paths[i]];
+	int k = items[i].kind; BOOL running = k == DOCK_APP && [self pidOfApp: paths[i]] > 0;
 	if (k == DOCK_APP) {
 		BOOL keep = srcKind[i] == 0;
 		if (running) { [its addObject: E(name, 0, NO, YES)]; [its addObject: ESep()]; }
