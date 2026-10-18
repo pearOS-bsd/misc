@@ -78,6 +78,15 @@ int main(void)
 		w32(m, 0x34, 0x7ffff); CHECK(rc(fd, m, sizeof m) == 0);
 		w32(m, 4, 0x64); CHECK(rc(fd, m, sizeof m) == -304); (void)rep;
 	}
+	{ /* SetWindowListFadeProperties (decompiled): size 0x3c + 4 * count, one OOL of window ids; the OOL size is repeated after the properties */
+		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 5, 5, 30, 30 }, 0, &tw) == 0);
+		uint8_t m[0x44]; uint32_t one = 1;
+		memset(m, 0, sizeof m); hdr(m, 0x40, 30385, 1); memcpy(m + 0x18, &one, 4); m[0x27] = 1; w32(m, 0x28, 4); w32(m, 0x34, 1); w32(m, 0x38, 7); w32(m, 0x3c, 4); w32(m, 0x40, tw.id);
+		CHECK(rc(fd, m, 0x44) == 0);
+		w32(m, 0x3c, 8); CHECK(rc(fd, m, 0x44) == -300); w32(m, 0x3c, 4);
+		w32(m, 0x34, 2); CHECK(rc(fd, m, 0x44) == -304); w32(m, 0x34, 1);
+		m[0x27] = 2; CHECK(rc(fd, m, 0x44) == -300);
+	}
 	{ /* window routines: GetScreenRectForWindow, InvalidateWindowShadow, SynchronizeWindowBackingStore, RemoveAllSurfaces, PostEventRecordTo */
 		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 11, 22, 33, 44 }, 0, &tw) == 0 && ws_win_order(c, &tw, 1, 0) == 0);
 		uint8_t m[0x400], rep[0x100]; int got;
