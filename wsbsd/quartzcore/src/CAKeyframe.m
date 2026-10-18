@@ -226,7 +226,7 @@ void CAKeyframeApply(CAKeyframeAnimation *k, CFTimeInterval time, id pres, id mo
 		NSUInteger i = 0; while (i + 2 < n && kt[i + 1] <= t) i++;
 		double span = kt[i + 1] - kt[i], u = (t - kt[i]) / span;
 		u = u > 1 ? 1 : (u < 0 ? 0 : u);
-		value = CAHermite(values, kt, i, u, [k tensionValues], [k continuityValues], [k biasValues]);
+		value = (float)u < 0.001f ? values[i] : ((float)u > 0.999f ? values[i + 1] : CAHermite(values, kt, i, u, [k tensionValues], [k continuityValues], [k biasValues]));
 	}
 	else if (mode == kModeDiscrete) {
 		NSUInteger i = 0; for (NSUInteger j = 0; j < n; j++) if (kt[j] <= t) i = j;
@@ -237,7 +237,7 @@ void CAKeyframeApply(CAKeyframeAnimation *k, CFTimeInterval time, id pres, id mo
 		lt = lt > 1 ? 1 : (lt < 0 ? 0 : lt);
 		NSArray *tfs = [k timingFunctions];
 		if (tfs && i < tfs.count && mode != kModePaced && mode != kModeCubicPaced) lt = (double)[tfs[i] _solve:(float)lt];
-		value = lt == 0 ? values[i] : (lt == 1 ? values[i + 1] : CAValueInterpolate(values[i], values[i + 1], (float)lt));
+		value = (float)lt < 0.001f ? values[i] : ((float)lt > 0.999f ? values[i + 1] : CAValueInterpolate(values[i], values[i + 1], (float)lt));      /* within 0.001 of a key the key itself is taken */
 	}
 	if ([k isCumulative] && iteration) value = CAValueAdd(value, values.lastObject, iteration);
 	if ([k valueFunction]) value = CAValueApplyFunction([k valueFunction], value, k, pres);
