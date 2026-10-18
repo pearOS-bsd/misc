@@ -229,6 +229,22 @@ int ws_win_alpha(ws_conn *c, ws_win *w, float al)
 	return simple_call(c, &q, sizeof q);
 }
 
+int ws_win_warp(ws_conn *c, ws_win *w, int cols, int rows, const float *mesh)
+{
+	size_t nf = (size_t)cols * (size_t)rows * 4, bytes = nf * 4;
+	uint8_t m[0x44]; memset(m, 0, sizeof m);
+	{ mach_msg_header_t qh; fill_header(&qh, sizeof m, SLS_MSG_SetWindowWarp, 1); memcpy(m, &qh, sizeof qh); }
+	uint32_t one = 1; memcpy(m + 0x18, &one, 4);                                        /* one descriptor */
+	m[0x27] = 1;                                                                        /* an out-of-line descriptor */
+	uint32_t sz = (uint32_t)bytes; memcpy(m + 0x28, &sz, 4);
+	memcpy(m + 0x2c, &WS_NDR, 8);
+	uint32_t u = w->id; memcpy(m + 0x34, &u, 4); u = (uint32_t)cols; memcpy(m + 0x38, &u, 4); u = (uint32_t)rows; memcpy(m + 0x3c, &u, 4); u = (uint32_t)nf; memcpy(m + 0x40, &u, 4);
+	struct iovec v[2] = { { m, sizeof m }, { (void *)mesh, bytes } };
+	sls_simple_reply r; int nv = bytes ? 2 : 1;
+	ssize_t got = call(c, v, nv, &r, sizeof r, NULL, NULL);
+	return got == (ssize_t)sizeof r ? r.retcode : -1;
+}
+
 int ws_win_blur(ws_conn *c, ws_win *w, int radius)
 {
 	uint8_t m[0x30]; memset(m, 0, sizeof m);
