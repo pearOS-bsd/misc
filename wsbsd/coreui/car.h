@@ -35,4 +35,6 @@ const uint8_t *car_tlv(const CarRendition *, uint32_t tag, size_t *len);
 uint8_t *car_data(const CarRendition *, size_t *len);
 /* the "BVG " containers (see bvg.h) of the symbols `names` (without ".svg") at the weight (1..9, 4 = regular): out[k] malloc'ed or NULL; returns how many were found. One pass over the catalogue for all of them */
 int car_symbols(const CarFile *, const char *const *names, int n, int weight, uint8_t **out, size_t *outlen);
+/* the pixels of a bitmap rendition (compression 4 LZFSE, 11 Deepmap 2): malloc'ed rows of *bpp bytes (4: the catalogue's BGRA / the codec's RGBA, 2: gray + alpha), or NULL */
+uint8_t *car_bitmap(const CarRendition *, int *w, int *h, int *bpp);
 #endif

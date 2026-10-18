@@ -33,5 +33,15 @@ int main(void)
 		CHECK(g.seg[0].op == 'M' && fabs(g.seg[0].p[0] - (902 * 0.00634765 - 0.888671)) < 1e-3);
 		bvg_free(&g);
 	}
+	{	/* Deepmap 2 bitmaps (vImage's codec: predictive, palette and lossless tiles) from the catalogue of the Mac's document icons: the pixels hash to what the decoder gave when it was checked against the picture */
+		struct { const char *f; int w; unsigned long long h; } t[2] = { { "coreui/assets/test/dm2_256.mlec", 256, 0x29b3c78068d05cb4ull }, { "coreui/assets/test/dm2_512.mlec", 512, 0xaeae5f9d7f9afd37ull } };
+		for (int k = 0; k < 2; k++) {
+			FILE *f = fopen(t[k].f, "rb"); CHECK(f); static uint8_t buf[16384]; size_t len = fread(buf, 1, sizeof buf, f); fclose(f);
+			CarRendition r; memset(&r, 0, sizeof r); r.payload = buf; r.payload_len = len; r.width = r.height = t[k].w; r.pixel_format = 0x41524742;
+			int w, h, bpp; uint8_t *px = car_bitmap(&r, &w, &h, &bpp); CHECK(px && w == t[k].w && h == t[k].w && bpp == 4);
+			unsigned long long hash = 1469598103934665603ull; for (size_t i = 0; i < (size_t)w * h * 4; i++) { hash ^= px[i]; hash *= 1099511628211ull; }
+			CHECK(hash == t[k].h); free(px);
+		}
+	}
 	puts("coreui: ok"); return 0;
 }
