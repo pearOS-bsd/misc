@@ -13,7 +13,7 @@ static TermInspectorController *shared;
 + (void)setCurrentTerm:(TermView *)t { if (shared) [shared setTerm:t]; }
 @end
 
-static NSTextField *lab(NSString *s, NSRect r, BOOL bold) { NSTextField *t = [[[NSTextField alloc] initWithFrame:r] autorelease]; [t setStringValue:s]; [t setEditable:NO]; [t setSelectable:YES]; [t setBezeled:NO]; [t setBordered:NO]; [t setDrawsBackground:NO]; if (bold) [t setFont:[NSFont boldSystemFontOfSize:12]]; return t; }
+static NSTextField *lab(NSString *s, NSRect r, BOOL bold) { NSTextField *t = [[[NSTextField alloc] initWithFrame:r] autorelease]; [t setStringValue:s]; [t setEditable:NO]; [t setSelectable:NO]; [t setBezeled:NO]; [t setBordered:NO]; [t setDrawsBackground:NO]; if (bold) [t setFont:[NSFont boldSystemFontOfSize:12]]; return t; }
 
 @implementation TermInspectorController
 - (instancetype)init
@@ -39,7 +39,7 @@ static NSTextField *lab(NSString *s, NSRect r, BOOL bold) { NSTextField *t = [[[
 	const char *sh = getenv("SHELL"); [shellF setStringValue:sh ? [NSString stringWithUTF8String:sh] : @"/bin/sh"];
 	NSString *tty = [term ttyName]; NSString *txt = @"";
 	if (tty) {
-		NSTask *t = [[[NSTask alloc] init] autorelease]; NSPipe *p = [NSPipe pipe]; [t setLaunchPath:@"/bin/ps"]; [t setArguments:[NSArray arrayWithObjects:@"-t", [tty lastPathComponent], @"-o", @"pid=,stat=,command=", nil]]; [t setStandardOutput:p]; [t setStandardError:[NSFileHandle fileHandleWithNullDevice]];
+		NSTask *t = [[[NSTask alloc] init] autorelease]; NSPipe *p = [NSPipe pipe]; [t setLaunchPath:@"/bin/ps"]; [t setArguments:[NSArray arrayWithObjects:@"-t", [tty lastPathComponent], @"-o", @"pid=", @"-o", @"stat=", @"-o", @"command=", nil]]; [t setStandardOutput:p]; [t setStandardError:[NSFileHandle fileHandleWithNullDevice]];
 		@try { [t launch]; NSData *d = [[p fileHandleForReading] readDataToEndOfFile]; [t waitUntilExit]; txt = [[[NSString alloc] initWithData:d encoding:NSUTF8StringEncoding] autorelease] ?: @""; } @catch (id x) {}
 	}
 	[procs setString:txt];
