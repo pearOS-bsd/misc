@@ -1,0 +1,8 @@
+# /etc/zshrc: interactive shells
+export PATH="$HOME/.local/bin:$PATH"                      # as in the user's ~/.zshrc on the Mac
+HISTFILE="$HOME/.zsh_history"; HISTSIZE=5000; SAVEHIST=5000
+setopt APPEND_HISTORY SHARE_HISTORY HIST_IGNORE_DUPS INTERACTIVE_COMMENTS
+bindkey -e
+autoload -Uz compinit && compinit -u -d "${TMPDIR:-/tmp}/.zcompdump" 2>/dev/null
+PROMPT='%n@%m %1~ %# '                                    # the macOS default prompt
+alias ls='ls -G'

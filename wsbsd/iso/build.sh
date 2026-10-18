@@ -14,6 +14,7 @@ export IGNORE_OSVERSION=yes GITHUB_WORKSPACE="${GITHUB_WORKSPACE:-$(dirname "$WS
 mkdir -p "$WORK" "$OUT"; [ -d "$ROOT" ] && chflags -R noschg,nouchg "$ROOT" 2>/dev/null; rm -rf "$ROOT"; mkdir -p "$ROOT"
 
 echo "== 1. the software"
+pkg info -e zsh >/dev/null 2>&1 || pkg install -y zsh >/dev/null 2>&1 || true
 if [ -z "$SKIP_SOFTWARE" ]; then
 	pkg install -y python3 gmake pkgconf git >/dev/null 2>&1 || true
 	sh "$WS/ci/gnustep-setup.sh" > "$WORK/gnustep.log" 2>&1 || { tail -30 "$WORK/gnustep.log"; exit 1; }
@@ -42,7 +43,7 @@ rm -f "$ROOT"/usr/lib/*.a "$ROOT"/usr/lib/*_p.a "$ROOT"/usr/bin/clang* "$ROOT"/u
 
 echo "== 3. what we built, with the libraries it needs"
 mkdir -p "$ROOT/usr/local"
-tar -C / -cf - usr/local/GNUstep usr/local/sbin/wsd usr/local/sbin/spctl usr/local/bin usr/local/libexec/dyld usr/local/lib/libwsclient.so usr/local/lib/libwsbsdcompat.so usr/local/lib/libQuartzCore.so usr/local/share/fonts usr/local/etc/fonts usr/local/share/icu usr/local/lib/libicudata.so usr/local/lib/libicudata.so.76 usr/local/lib/libicudata.so.76.1 2>/dev/null | tar -C "$ROOT" -xpf -
+tar -C / -cf - usr/local/GNUstep usr/local/sbin/wsd usr/local/sbin/spctl usr/local/bin usr/local/libexec/dyld usr/local/lib/libwsclient.so usr/local/lib/libwsbsdcompat.so usr/local/lib/libQuartzCore.so usr/local/share/fonts usr/local/etc/fonts usr/local/bin/zsh usr/local/share/zsh usr/local/lib/zsh usr/local/share/icu usr/local/lib/libicudata.so usr/local/lib/libicudata.so.76 usr/local/lib/libicudata.so.76.1 2>/dev/null | tar -C "$ROOT" -xpf -
 # every shared library below /usr/local that these programs need (ldd closure)
 find "$ROOT/usr/local" -type f \( -name '*.so*' -o -perm -u+x \) 2>/dev/null | sed "s|^$ROOT||" > "$WORK/elf.list"
 : > "$WORK/needed.list"
@@ -72,8 +73,14 @@ done
 mkdir -p "$ROOT/System/Library/LaunchDaemons"
 # no text login on the screen: the window server owns it (the serial console keeps its login)
 for d in etc private/etc; do sed -i '' -E 's/^(ttyv[0-9a-f]+[[:space:]].*[[:space:]])(onifexists|on)([[:space:]]|$)/\1off\3/' "$ROOT/$d/ttys"; done
-# the shell of root and of the Terminal: bash, as on a Mac's terminal (the image has it from the software build)
-[ -x "$ROOT/usr/local/bin/bash" ] && pw -R "$ROOT" usermod root -s /usr/local/bin/bash
+# the shell of root and of the Terminal: zsh, the default shell of macOS (/bin/zsh), with /etc/zprofile and /etc/zshrc taken from the author's Mac configuration, minus what is Mac-only
+[ -x "$ROOT/usr/local/bin/zsh" ] || { echo "image check failed: zsh is not in the image"; exit 1; }
+install -m 755 "$ROOT/usr/local/bin/zsh" "$ROOT/bin/zsh"
+for d in etc private/etc; do
+	mkdir -p "$ROOT/$d"; grep -qx /bin/zsh "$ROOT/$d/shells" 2>/dev/null || echo /bin/zsh >> "$ROOT/$d/shells"
+	cp "$HERE/overlay/etc-zprofile" "$ROOT/$d/zprofile"; cp "$HERE/overlay/etc-zshrc" "$ROOT/$d/zshrc"
+done
+pw -R "$ROOT" usermod root -s /bin/zsh
 # the local time zone (GNUstep's NSTimeZone and ICU's date formats need one; the image has no /etc/localtime of its own)
 for d in etc private/etc; do cp "$ROOT/usr/share/zoneinfo/UTC" "$ROOT/$d/localtime" 2>/dev/null || true; done
 # what the desktop needs at run time and that earlier images lacked: ICU's data (NSDateFormatter crashed without it), a time zone, no getty on the screen's console
