@@ -92,3 +92,7 @@ wsstart -- your-client     # a private server for this user, stopped when the cl
 
 As a service: `sysrc wsd_enable=YES wsd_user=alice wsd_flags="-b kms -r gl -S"` then `service wsd start`; clients find the socket through
 `XDG_RUNTIME_DIR` (`/var/run/wsd/wsd.sock` with the rc script's defaults) or `WS_SOCKET`. See `man wsd` and `docs/FREEBSD.md`.
+
+## Core Animation
+
+`quartzcore/` is an implementation of QuartzCore that is checked value by value against Apple's own on a Mac (animations, implicit actions, rendering of scenes), with layer-backed `NSView`s, `NSAnimationContext` and `CAFilter` blur / colour filters. See [quartzcore/README.md](quartzcore/README.md).
