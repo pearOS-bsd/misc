@@ -343,6 +343,7 @@ int main(void)
 	ws_order_window(srv, a, WS_ABOVE, 0); ws_order_window(srv, b, WS_ABOVE, 0);
 	ws_move_window(srv, b, 200, 120);
 	ws_event ev;
+	while (ws_next_event(srv, a, &ev)); while (ws_next_event(srv, b, &ev)); while (ws_next_event(srv, c, &ev));     /* the focus events of appearing windows (the last one ordered in is the key window) */
 	ws_server_mouse(srv, 30, 30, 0);                        /* over a (b is elsewhere) */
 	CHECK(ws_next_event(srv, a, &ev) && ev.type == WS_EV_MOUSE_MOVE && ev.x == 10 && ev.y == 10);
 	ws_server_mouse(srv, 30, 30, 1);                        /* press on a */
@@ -350,6 +351,7 @@ int main(void)
 	int got_down = 0, got_focus = 0;
 	while (ws_next_event(srv, a, &ev)) { if (ev.type == WS_EV_MOUSE_DOWN) got_down = 1; if (ev.type == WS_EV_FOCUS_IN) got_focus = 1; }
 	CHECK(got_down && got_focus);
+	while (ws_next_event(srv, b, &ev));                     /* b lost the key focus */
 	ws_server_mouse(srv, 250, 140, 1);                      /* drag out over b: still goes to a */
 	CHECK(ws_next_event(srv, a, &ev) && ev.type == WS_EV_MOUSE_MOVE && ev.x == 230);
 	CHECK(!ws_next_event(srv, b, &ev));
@@ -357,6 +359,12 @@ int main(void)
 	ws_server_key(srv, 42, 1);
 	CHECK(ws_next_event(srv, a, &ev) && ev.type == WS_EV_MOUSE_UP);
 	CHECK(ws_next_event(srv, a, &ev) && ev.type == WS_EV_KEY_DOWN && ev.key == 42);
+	/* a window that appears takes the keyboard; the key window going away hands it to the frontmost ordinary window */
+	{ ws_wid k1 = ws_create_window(srv, (ws_rect){ 20, 20, 300, 200 }), k2 = ws_create_window(srv, (ws_rect){ 60, 60, 300, 200 });
+	  ws_order_window(srv, k1, WS_ABOVE, 0); CHECK(ws_key_window(srv) == k1);
+	  ws_order_window(srv, k2, WS_ABOVE, 0); CHECK(ws_key_window(srv) == k2);
+	  ws_order_window(srv, k2, WS_OUT, 0); CHECK(ws_key_window(srv) == k1);
+	  ws_order_window(srv, k1, WS_OUT, 0); ws_release_window(srv, k1); ws_release_window(srv, k2); }
 	ws_server_mouse(srv, 250, 140, 1); ws_server_mouse(srv, 250, 140, 0);   /* click on b: raise + focus */
 	CHECK(ws_key_window(srv) == b && ws_find_window(srv, 250, 140) == b);
 	ws_server_mouse(srv, 5, 190, 1); ws_server_mouse(srv, 5, 190, 0);        /* click on empty desktop: focus cleared */
