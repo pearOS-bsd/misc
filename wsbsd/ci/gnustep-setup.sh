@@ -41,6 +41,11 @@ cp "$WS"/appkit/back-wsd/*.m Source/headless/
 # the wsd client library is compiled straight into the headless subproject (a static archive is not picked up by the bundle link)
 for f in client compositor_sw region ipc evrec buffer keymap xkbmap; do cp "$WS/src/$f.c" Source/headless/wsc_$f.c; done
 printf 'ADDITIONAL_INCLUDE_DIRS += -I%s/include\nADDITIONAL_CFLAGS += -std=gnu99 -D_DEFAULT_SOURCE\nheadless_C_FILES += wsc_client.c wsc_compositor_sw.c wsc_region.c wsc_ipc.c wsc_evrec.c wsc_buffer.c wsc_keymap.c wsc_xkbmap.c\nADDITIONAL_CFLAGS += -DWSD_XKB -I/usr/local/include $(shell pkg-config --cflags xkbcommon)\nADDITIONAL_LDFLAGS += -L/usr/local/lib -lxkbcommon\n' "$WS" >> Source/headless/GNUmakefile.preamble
+# the asset catalogue reader (SF Symbols' vector glyphs for the file panels): coreui/car.c, bvg.c and the LZFSE decoder it uses, compiled into the same subproject
+mkdir -p Source/headless/lzfse; cp "$WS"/coreui/lzfse/*.h Source/headless/lzfse/; cp "$WS"/coreui/lzfse/*.h Source/headless/; cp "$WS"/coreui/car.h "$WS"/coreui/bvg.h Source/headless/
+cp "$WS"/coreui/car.c Source/headless/cu_car.c; cp "$WS"/coreui/bvg.c Source/headless/cu_bvg.c
+for f in lzfse_decode lzfse_decode_base lzfse_fse lzvn_decode_base; do cp "$WS/coreui/lzfse/$f.c" Source/headless/cu_$f.c; done
+printf 'headless_C_FILES += cu_car.c cu_bvg.c cu_lzfse_decode.c cu_lzfse_decode_base.c cu_lzfse_fse.c cu_lzvn_decode_base.c\nADDITIONAL_LDFLAGS += -lm\n' >> Source/headless/GNUmakefile.preamble
 # headless server -> wsd server
 sed -i '' 's/^HeadlessServer.m \\/HeadlessServer.m WsdServer.m WsdCairoSurface.m WsdMacTheme.m WsdCGBridge.m WsdFilePanel.m \\/' Source/headless/GNUmakefile
 printf '\nWsdFilePanel.m_FILE_FLAGS = -fobjc-arc\n' >> Source/headless/GNUmakefile                  # the file panel is written for ARC

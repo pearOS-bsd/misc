@@ -29,6 +29,9 @@ done
 sh "$WS/sdk/build-compat.sh" "$WORK/compat" > "$WORK/compat.log" 2>&1; install -m 755 "$WORK/compat/libwsbsdcompat.so" /usr/local/lib/libwsbsdcompat.so; install -m 755 "$WORK/compat/libQuartzCore.so" /usr/local/lib/libQuartzCore.so
 install -d /usr/local/bin /usr/local/libexec
 install -d /usr/local/share/wsbsd/icons && install -m 644 "$HERE"/icons/*.icns /usr/local/share/wsbsd/icons/
+[ -d "$WS/appkit/assets/panel" ] && { install -d /usr/local/share/wsbsd/panel && install -m 644 "$WS"/appkit/assets/panel/*.png /usr/local/share/wsbsd/panel/; }                            # the file panels: type icons and SF Symbols rendered on a Mac (appkit/assets/mkpanelassets.m)
+install -d /usr/local/share/wsbsd/coreui && install -m 644 "$WS"/coreui/assets/name_aliases.strings /usr/local/share/wsbsd/coreui/
+for c in "$WS"/coreui/assets/CoreGlyphs.car /usr/local/share/wsbsd/coreui/CoreGlyphs.car; do [ -f "$c" ] && { [ "$c" = /usr/local/share/wsbsd/coreui/CoreGlyphs.car ] || install -m 644 "$c" /usr/local/share/wsbsd/coreui/CoreGlyphs.car; break; }; done     # the SF Symbols' catalogue of the Mac (117 MB, not in the repository: copied in before the build)
 # the Dock and the status area of the menu bar (they talk to wsd through the client library: a static archive of the objects above)
 ar rcs "$WORK/libwsclient.a" "$WORK"/ws_*.o
 COMPAT="$WORK/compat" WSCLIENT="$WORK/libwsclient.a" sh "$WS/dock/build.sh" "$WORK/dock" > "$WORK/dock.log" 2>&1; install -m 755 "$WORK/dock/Dock" /usr/local/bin/Dock-gnustep || { cat "$WORK/dock.log"; exit 1; }
