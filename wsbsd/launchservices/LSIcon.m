@@ -142,6 +142,7 @@ CGImageRef LSIconCreateForKind(NSString *kind, int px)
 	CGImageRef im = CGBitmapContextCreateImage(c); CGContextRelease(c); return im;
 }
 
+NSString *LSBundleIconPath(NSString *app);
 static NSString *BundleIconFile(NSString *app)
 {
 	NSString *res = [app stringByAppendingPathComponent: @"Contents/Resources"];
@@ -160,3 +161,5 @@ CGImageRef LSIconCreateForPath(NSString *path, int px)
 	if ([kind isEqual: @"app"]) { NSString *f = BundleIconFile(path); if (f) { CGImageRef im = LSIconCreateFromICNS(f, px); if (im) return im; } }
 	return LSIconCreateForKind(kind, px);
 }
+
+NSString *LSBundleIconPath(NSString *app) { return BundleIconFile(app); }

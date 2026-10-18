@@ -12,4 +12,6 @@ CGImageRef LSIconCreateForKind(NSString *kind, int px);
 CGImageRef LSIconCreateFromICNS(NSString *path, int px);
 /* the kind used for a path's extension: "doc", "zip", "bin", "dmg", "text", "image", "audio", "video", "pdf", "code", "sheet", "folder", "app" */
 NSString *LSKindForPath(NSString *path);
+/* the path of the .icns of an application bundle (CFBundleIconFile), nil when it has none */
+NSString *LSBundleIconPath(NSString *app);
 #endif
