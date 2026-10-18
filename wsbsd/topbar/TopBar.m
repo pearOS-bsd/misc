@@ -34,13 +34,13 @@ static int BatteryPercent(void) { int v = -1; size_t n = sizeof v; if (sysctlbyn
 {
 	CGContextRef c = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort]; if (!c) return;
 	CGContextSaveGState(c); CGContextClearRect(c, NSRectToCGRect([self bounds])); CGContextRestoreGState(c);
-	double W = [self bounds].size.width, y0 = (BAR_H - 10) / 2.0 - 0.5;                    /* the text's baseline: cap height 10 px centred in the bar */
+	double W = [self bounds].size.width, y0 = 11.0;                    /* the text's baseline: 19 px below the top of the 30 px bar (measured on the real bar; menuBarHeight is 30, the menu bar font is 13 pt with a cap height of 9.16, from AppKit itself) */
 	time_t now = time(NULL); struct tm tmv; localtime_r(&now, &tmv); /* ControlCenter's Clock module: "DATE_TIME_FORMAT_WITH_MONTH" is "%1$@  %2$@", the date and the time with TWO spaces between them (one when the date has no month) */
 	char clk[64], dpart[32], tpart[16]; strftime(dpart, sizeof dpart, "%a ", &tmv); size_t dl = strlen(dpart); snprintf(dpart + dl, sizeof dpart - dl, "%d ", tmv.tm_mday); dl = strlen(dpart); strftime(dpart + dl, sizeof dpart - dl, "%b", &tmv);
 	strftime(tpart, sizeof tpart, "%H:%M", &tmv); snprintf(clk, sizeof clk, "%s  %s", dpart, tpart);
-	double tw = TextWidth(c, clk, 13), x = W - 22 - tw; SetW(c, 0.95); Text(c, clk, 13, x, y0 + 0.5);
+	double tw = TextWidth(c, clk, 13), x = W - 22 - tw; SetW(c, 0.95); Text(c, clk, 13, x, y0);
 	double cx = x - 24;                                                                       /* centre of the next icon: 37 px pitch in the real bar */
-	double cy = BAR_H / 2.0 - 0.5;
+	double cy = 15.0;                                                                          /* the icons are centred 15 px above the bottom of the bar */
 	SetW(c, 0.95);
 	{   /* control center: two small toggles */
 		CGContextSetLineWidth(c, 1.4);
