@@ -129,15 +129,28 @@ void ws_glass_regions(ws_surface *img, const ws_glass *g, int n, int ox, int oy)
 	if (cx1 <= cx0 || cy1 <= cy0) return;
 	ws_surface *tmp = ws_surface_new(cx1 - cx0, cy1 - cy0); if (!tmp) return;                 /* the backdrop as it is now: the lens samples from it while the result is written to the image */
 	for (int y = cy0; y < cy1; y++) memcpy(tmp->px + (size_t)(y - cy0) * tmp->stride, img->px + (size_t)y * img->stride + (size_t)cx0 * 4, (size_t)(cx1 - cx0) * 4);
-	ws_surface *bl = NULL;                                                                  /* the menu materials (modes 3, 4) work on a blurred copy of the backdrop */
-	for (int i = 0; i < n; i++) if (g[i].mode >= 3) { bl = ws_surface_new(tmp->w, tmp->h); break; }
+	ws_surface *bl = NULL, *bl5 = NULL;                                                     /* the menu materials work on a blurred copy of the backdrop: modes 3, 4 (Menu.caar) sigma 30, mode 5 (the context menu as measured on the Mac) sigma 4.5 */
+	for (int i = 0; i < n; i++) { if (g[i].mode == 3 || g[i].mode == 4) { if (!bl) bl = ws_surface_new(tmp->w, tmp->h); } else if (g[i].mode == 5 && !bl5) bl5 = ws_surface_new(tmp->w, tmp->h); }
 	if (bl) { memcpy(bl->px, tmp->px, (size_t)tmp->stride * tmp->h); ws_blur_region(bl, (ws_rect){ 0, 0, bl->w, bl->h }, (ws_rect){ 0, 0, bl->w, bl->h }, 30.0f); }
+	if (bl5) { memcpy(bl5->px, tmp->px, (size_t)tmp->stride * tmp->h); ws_blur_region(bl5, (ws_rect){ 0, 0, bl5->w, bl5->h }, (ws_rect){ 0, 0, bl5->w, bl5->h }, 4.5f); }
 	int x0 = bx0 < 0 ? 0 : bx0, y0 = by0 < 0 ? 0 : by0, x1 = bx1 > img->w ? img->w : bx1, y1 = by1 > img->h ? img->h : by1;
 	for (int y = y0; y < y1; y++) for (int x = x0; x < x1; x++) {
 		float fx = x + 0.5f, fy = y + 0.5f; int mode;
 		float sdf = glass_field(g, n, ox, oy, fx, fy, &mode);
 		float cover = clampf(0.5f - sdf, 0, 1); if (cover <= 0) continue;
-		if (mode >= 3 && bl) {                                                               /* Mica: Menu.caar of Aqua.car / DarkAqua.car: a backdrop (gaussian blur 30, saturate), the fill colour over it, the tone layer in darken (light) or lighten (dark) blend */
+		if (mode == 5 && bl5) {                                                              /* the context menu of the real Mac: out = f(L) + k (c - L) of the blurred backdrop (fitted to 23 measured backdrops, rms 3.8 / 255), f(L) = 0.1213 + 0.4825 (2L - L^2), L = .1886 r + .7455 g + .0659 b, k = 1.091; a 1 px highlight at the edge, strong on horizontal edges */
+			int bxp = x - cx0, byp = y - cy0; if (bxp < 0 || byp < 0 || bxp >= bl5->w || byp >= bl5->h) continue;
+			const uint8_t *bp = bl5->px + (size_t)byp * bl5->stride + (size_t)bxp * 4;
+			float c[3] = { bp[2] / 255.0f, bp[1] / 255.0f, bp[0] / 255.0f }, L = 0.1886f * c[0] + 0.7455f * c[1] + 0.0659f * c[2], f = 0.1213f + 0.4825f * (2 * L - L * L);
+			float dd = -sdf; if (dd < 0) dd = 0;
+			int dm; float gx = glass_field(g, n, ox, oy, fx + 1, fy, &dm) - glass_field(g, n, ox, oy, fx - 1, fy, &dm), gy = glass_field(g, n, ox, oy, fx, fy + 1, &dm) - glass_field(g, n, ox, oy, fx, fy - 1, &dm);
+			float gl = sqrtf(gx * gx + gy * gy), ny = gl > 1e-4f ? fabsf(gy / gl) : 1.0f;
+			float rim = dd < 1.0f ? 0.10f + 0.177f * ny : 0.042f * ny * expf(-(dd - 1.5f) / 3.8f);
+			uint8_t *dp = img->px + (size_t)y * img->stride + (size_t)x * 4;
+			for (int k = 0; k < 3; k++) { float o = f + 1.091f * (c[k] - L); o = clampf(o, 0, 1); o = o * (1 - rim) + rim; dp[2 - k] = (uint8_t)(dp[2 - k] * (1 - cover) + o * 255.0f * cover + 0.5f); }
+			continue;
+		}
+		if (mode >= 3 && mode < 5 && bl) {                                                               /* Mica: Menu.caar of Aqua.car / DarkAqua.car: a backdrop (gaussian blur 30, saturate), the fill colour over it, the tone layer in darken (light) or lighten (dark) blend */
 			int bxp = x - cx0, byp = y - cy0; if (bxp < 0 || byp < 0 || bxp >= bl->w || byp >= bl->h) continue;
 			const uint8_t *bp = bl->px + (size_t)byp * bl->stride + (size_t)bxp * 4; int dark = mode == 4;
 			float sat = dark ? 2.2f : 2.1f, fill = dark ? 0.157f : 0.965f, fa = dark ? 0.70f : 0.72f, tone = dark ? 0.125f : 0.93f;
@@ -160,7 +173,7 @@ void ws_glass_regions(ws_surface *img, const ws_glass *g, int n, int ox, int oy)
 		uint8_t *dp = img->px + (size_t)y * img->stride + (size_t)x * 4;
 		for (int c = 0; c < 3; c++) dp[c] = (uint8_t)(dp[c] * (1 - cover) + col[c] * 255.0f * cover + 0.5f);
 	}
-	ws_surface_free(tmp); if (bl) ws_surface_free(bl);
+	ws_surface_free(tmp); if (bl) ws_surface_free(bl); if (bl5) ws_surface_free(bl5);
 }
 
 void ws_glass_region(ws_surface *img, ws_rect rect, int radius, int mode)
