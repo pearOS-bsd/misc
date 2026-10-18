@@ -27,6 +27,7 @@ static NSMutableArray *all;
 	[self setNeedsDisplay:YES];
 }
 - (void)setFrameSize:(NSSize)s { [super setFrameSize:s]; [self layoutPanes]; }
+- (void)setFrame:(NSRect)f { [super setFrame:f]; [self layoutPanes]; }        /* GNUstep's setFrame: does not always go through setFrameSize: */
 - (void)addPane:(TermView *)t { [panes addObject:t]; [self addSubview:t]; active = [panes count] - 1; [self layoutPanes]; }
 - (void)removePane:(TermView *)t { NSUInteger i = [panes indexOfObject:t]; if (i == NSNotFound) return; [t removeFromSuperview]; [panes removeObjectAtIndex:i]; if (active >= [panes count]) active = [panes count] - 1; [self layoutPanes]; }
 - (void)setActivePane:(TermView *)t { NSUInteger i = [panes indexOfObject:t]; if (i != NSNotFound) { active = i; [self setNeedsDisplay:YES]; } }
