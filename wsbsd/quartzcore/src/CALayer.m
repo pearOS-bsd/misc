@@ -662,6 +662,21 @@ static NSArray *CAChain(CALayer *l) { NSMutableArray *a = [NSMutableArray array]
 - (BOOL)_hasAnimations { return _anims.count > 0; }
 - (void)_refreshPresentation { _presentation = nil; (void)[self presentationLayer]; }
 
+/* a presentation tree for the time t (media time): every node is a presentation layer with the animations applied for t */
+- (CALayer *)_presentationTreeAtTime:(CFTimeInterval)t
+{
+	CALayer *p = [[[self class] alloc] initWithLayer:self];
+	p->_isPresentation = YES; p->_model = self;
+	double lt = [self _convertTime:t from:nil to:self];
+	for (CALayerEntry *e in _anims) [e->anim applyForTime:lt presentationObject:p modelObject:self];
+	if (_sublayers.count) {
+		p->_sublayers = [NSMutableArray arrayWithCapacity:_sublayers.count];
+		for (CALayer *s in _sublayers) { CALayer *c = [s _presentationTreeAtTime:t]; c->_superlayer = p; [p->_sublayers addObject:c]; }
+	}
+	if (_mask) { p->_mask = [_mask _presentationTreeAtTime:t]; p->_mask->_superlayer = nil; }
+	return p;
+}
+- (NSArray *)_sublayerArray { return _sublayers; }
 - (instancetype)modelLayer { return _isPresentation ? _model : self; }
 - (instancetype)presentationLayer
 {
