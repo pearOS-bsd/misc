@@ -5,8 +5,9 @@
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 #import <GNUstepGUI/GSDisplayServer.h>
-static IMP origTFDraw, origTFRect, origMakeFR, origKeyEqStr; static NSString *wsdKeyEqString(id self, SEL _cmd); static BOOL wsdMakeFirstResponder(id self, SEL _cmd, NSResponder *r); static void wsdTFDraw(id self, SEL _cmd, NSRect f, NSView *v); static void wsdTFRect(id self, SEL _cmd, NSRect r);
-@interface GSDisplayServer (WsdBlur) - (void) wsdBackgroundBlur: (int)radius : (int)win; @end
+static IMP origMenuSize, origMenuTextColor, origMenuKeyEq, origMenuState, origTFDraw, origTFRect, origMakeFR, origKeyEqStr; static NSString *wsdKeyEqString(id self, SEL _cmd); static BOOL wsdMakeFirstResponder(id self, SEL _cmd, NSResponder *r); static void wsdTFDraw(id self, SEL _cmd, NSRect f, NSView *v); 
+static void wsdTFRect(id self, SEL _cmd, NSRect r);
+@interface GSDisplayServer (WsdBlur) - (void) wsdBackgroundBlur: (int)radius : (int)win; - (void) wsdMenuGlass: (int)win : (int)width : (int)height; @end
 #include <stdlib.h>
 #import <objc/runtime.h>
 #include <math.h>
@@ -14,6 +15,7 @@ static IMP origTFDraw, origTFRect, origMakeFR, origKeyEqStr; static NSString *ws
 #import "wsd/WsdMacTheme.h"
 
 /* WSD_APPEARANCE=light switches the palette; the measurements are of the dark appearance (the light one is typical macOS, not measured) */
+static void wsdMenuSizeToFit(id self, SEL _cmd); static NSColor *wsdMenuTextColor(id self, SEL _cmd); static void wsdMenuDrawKeyEq(id self, SEL _cmd, NSRect f, NSView *v); static void wsdMenuDrawState(id self, SEL _cmd, NSRect f, NSView *v);
 static BOOL isDark(void) { const char *e = getenv("WSD_APPEARANCE"); return !(e && !strcmp(e, "light")); }
 
 static NSColor *rgb(int r, int g, int b, CGFloat a) { return [NSColor colorWithCalibratedRed: r / 255.0 green: g / 255.0 blue: b / 255.0 alpha: a]; }
@@ -340,6 +342,10 @@ static void swizzleTableDefaults(void)
 	Method mtc = class_getInstanceMethod([NSButtonCell class], @selector(textColor));
 	if (mtc && !origButtonTextColor) origButtonTextColor = method_setImplementation(mtc, (IMP)wsdButtonTextColor);
 	{ Method mk = class_getInstanceMethod([NSMenuItemCell class], @selector(_keyEquivalentString)); if (mk && !origKeyEqStr) origKeyEqStr = method_setImplementation(mk, (IMP)wsdKeyEqString); }
+	{ Method m1 = class_getInstanceMethod([NSMenuView class], @selector(sizeToFit)); if (m1 && !origMenuSize) origMenuSize = method_setImplementation(m1, (IMP)wsdMenuSizeToFit); }
+	{ Method m2 = class_getInstanceMethod([NSMenuItemCell class], @selector(textColor)); if (m2 && !origMenuTextColor) origMenuTextColor = method_setImplementation(m2, (IMP)wsdMenuTextColor); }
+	{ Method m3 = class_getInstanceMethod([NSMenuItemCell class], @selector(drawKeyEquivalentWithFrame:inView:)); if (m3 && !origMenuKeyEq) origMenuKeyEq = method_setImplementation(m3, (IMP)wsdMenuDrawKeyEq); }
+	{ Method m4 = class_getInstanceMethod([NSMenuItemCell class], @selector(drawStateImageWithFrame:inView:)); if (m4 && !origMenuState) origMenuState = method_setImplementation(m4, (IMP)wsdMenuDrawState); }
 	{ Method mf = class_getInstanceMethod([NSWindow class], @selector(makeFirstResponder:)); if (mf && !origMakeFR) origMakeFR = method_setImplementation(mf, (IMP)wsdMakeFirstResponder); }
 	{ Method mr = class_getInstanceMethod([NSTextField class], @selector(drawRect:)); if (mr && !origTFRect) origTFRect = method_setImplementation(mr, (IMP)wsdTFRect); }
 	Method mtf = class_getInstanceMethod([NSTextFieldCell class], @selector(drawInteriorWithFrame:inView:));
@@ -443,6 +449,59 @@ static void wsdTFDraw(id self, SEL _cmd, NSRect f, NSView *v)
 	((void (*)(id, SEL, NSRect, NSView *))origTFDraw)(self, _cmd, f, v);
 	/* while editing the field editor is the first responder, which is why AppKit draws no ring */
 	if ([v isKindOfClass: [NSTextField class]]) { id fr = [[v window] firstResponder]; if (([fr isKindOfClass: [NSText class]] && ([(NSText *)fr delegate] == v || [(NSText *)fr delegate] == [(NSControl *)v cell])) || fr == v) WsdFocusRing(v); }
+}
+
+
+/* ---- menus as measured on the Mac: 16 pt left of the title (30 with a column of check marks), 16 on the right, 31 more for a submenu's arrow, key equivalents 24.5 pt after the title, width rounded up */
+static float *wsdMenuIvar(id mv, const char *name) { Ivar iv = class_getInstanceVariable([NSMenuView class], name); return iv ? (float *)((char *)mv + ivar_getOffset(iv)) : NULL; }
+static void wsdMenuSizeToFit(id self, SEL _cmd)
+{
+	((void (*)(id, SEL))origMenuSize)(self, _cmd);
+	if ([(NSMenuView *)self isHorizontal]) return;
+	Ivar ic = class_getInstanceVariable([NSMenuView class], "_itemCells"); NSArray *cells = ic ? *(NSArray **)((char *)self + ivar_getOffset(ic)) : nil; if (![cells count]) return;
+	BOOL hasCheck = NO, hasSub = NO; double maxTitle = 0, maxKey = 0;
+	for (NSMenuItemCell *c in cells) {
+		NSMenuItem *it = [c menuItem]; if ([it isSeparatorItem]) continue;
+		if ([it state] != NSOffState) hasCheck = YES;
+		if ([it hasSubmenu]) hasSub = YES; else maxKey = fmax(maxKey, [c keyEquivalentWidth]);
+		maxTitle = fmax(maxTitle, [c titleWidth]);
+	}
+	double W = maxTitle + 32 + (hasCheck ? 14 : 0) + (hasSub ? 31 : 0);
+	if (maxKey > 0) W = fmax(W, 16 + (hasCheck ? 14 : 0) + maxTitle + 24.5 + maxKey + 16);
+	W = ceil(W);
+	float *so = wsdMenuIvar(self, "_stateImageOffset"), *sw = wsdMenuIvar(self, "_stateImageWidth"), *io = wsdMenuIvar(self, "_imageAndTitleOffset"), *iw = wsdMenuIvar(self, "_imageAndTitleWidth"), *ko = wsdMenuIvar(self, "_keyEqOffset"), *kw = wsdMenuIvar(self, "_keyEqWidth");
+	Ivar cs = class_getInstanceVariable([NSMenuView class], "_cellSize"), lb = class_getInstanceVariable([NSMenuView class], "_leftBorderOffset");
+	if (!so || !sw || !io || !iw || !ko || !kw || !cs || !lb) return;
+	*so = 12; *sw = 14; *io = 16 + (hasCheck ? 14 : 0); *iw = (float)maxTitle; *kw = (float)(maxKey > 0 ? maxKey : 10); *ko = (float)(W - 16 - *kw);
+	*(int *)((char *)self + ivar_getOffset(lb)) = 0;                                                                        /* no left border: the cells start at the menu's edge */
+	NSSize *cell = (NSSize *)((char *)self + ivar_getOffset(cs)); cell->width = W;
+	[(NSView *)self setFrameSize: NSMakeSize(W, [(NSView *)self frame].size.height)];
+}
+static NSColor *wsdMenuTextColor(id self, SEL _cmd)
+{
+	NSMenuView *mv = [(NSMenuItemCell *)self menuView];
+	if (!mv || [mv isHorizontal]) return ((NSColor *(*)(id, SEL))origMenuTextColor)(self, _cmd);
+	if ([(NSMenuItemCell *)self isHighlighted]) return [NSColor whiteColor];
+	BOOL en = [[(NSMenuItemCell *)self menuItem] isEnabled];
+	return isDark() ? [NSColor colorWithCalibratedWhite: 1 alpha: en ? 0.85 : 0.25] : [NSColor colorWithCalibratedWhite: 0 alpha: en ? 0.85 : 0.25];
+}
+static void wsdMenuDrawKeyEq(id self, SEL _cmd, NSRect f, NSView *v)
+{
+	NSMenuItemCell *c = self;
+	if (![[c menuItem] hasSubmenu] || [[c menuView] isHorizontal]) { ((void (*)(id, SEL, NSRect, NSView *))origMenuKeyEq)(self, _cmd, f, v); return; }
+	double cx = f.origin.x + [(NSView *)[c menuView] frame].size.width - 26, cy = NSMidY(f);                                  /* the arrow: 5 wide, 9 high, 22 from the right edge */
+	NSBezierPath *p = [NSBezierPath bezierPath]; [p setLineWidth: 1.6]; [p setLineCapStyle: NSRoundLineCapStyle]; [p setLineJoinStyle: NSRoundLineJoinStyle];
+	[p moveToPoint: NSMakePoint(cx, cy + 4.5)]; [p lineToPoint: NSMakePoint(cx + 4.5, cy)]; [p lineToPoint: NSMakePoint(cx, cy - 4.5)];
+	[[c isHighlighted] ? [NSColor whiteColor] : (isDark() ? [NSColor colorWithCalibratedWhite: 1 alpha: 0.85] : [NSColor colorWithCalibratedWhite: 0 alpha: 0.85]) setStroke]; [p stroke];
+}
+static void wsdMenuDrawState(id self, SEL _cmd, NSRect f, NSView *v)
+{
+	NSMenuItemCell *c = self;
+	if ([[c menuView] isHorizontal]) { ((void (*)(id, SEL, NSRect, NSView *))origMenuState)(self, _cmd, f, v); return; }
+	if ([[c menuItem] state] == NSOffState) return;
+	NSString *g = [[c menuItem] state] == NSMixedState ? @"−" : @"✓"; NSFont *font = [NSFont systemFontOfSize: 13];
+	NSSize ts = [g sizeWithAttributes: @{ NSFontAttributeName: font }];
+	[g drawAtPoint: NSMakePoint(f.origin.x + 12, NSMidY(f) - ts.height / 2) withAttributes: @{ NSFontAttributeName: font, NSForegroundColorAttributeName: [c textColor] }];
 }
 
 @implementation WsdMacTheme
@@ -635,19 +694,39 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 
 /* menus: a rounded panel (corner radius 10, the window colour lightened by 18 %, 1 px lighter border), accent highlight with radius 6, hairline separators; the menu bar across the top is darker */
 - (BOOL) drawsBorderForMenuItemCell: (NSMenuItemCell *)cell state: (GSThemeControlState)state isHorizontal: (BOOL)horizontal { return NO; }
-- (CGFloat) menuBorderRadius { return 10.0; }
+- (CGFloat) menuBorderRadius { return 12.0; }
 - (CGFloat) menuBarHeight { return 30.0; }                    /* measured on the Mac: the bar is 30 pt, near black (1,1,15) */
-- (CGFloat) menuItemHeight { return 22.0; }                  /* measured: rows are 22 pt, a separator row 10 pt */
-- (CGFloat) menuSeparatorHeight { return 10.0; }
+- (CGFloat) menuItemHeight { return 24.0; }                  /* measured on the Mac (NSMenu popped up in a test program): rows are 24 pt, a separator row 11 pt, 5 pt above and below */
+- (CGFloat) menuSeparatorHeight { return 11.0; }
+- (NSEdgeInsets) menuItemAreaInsets { return (NSEdgeInsets){ 5, 0, 5, 0 }; }
 - (NSColor *) menuBackgroundColor { return onBG(0.18); }
 - (NSColor *) menuBorderColor { return onBG(0.30); }
-- (CGFloat) menuItemBackgroundRadius { return 6.0; }
-- (NSColor *) menuSeparatorColor { return onBG(0.28); }
-- (CGFloat) menuSeparatorInset { return 8.0; }
+- (CGFloat) menuItemBackgroundRadius { return 8.0; }
+- (NSColor *) menuSeparatorColor { return [NSColor colorWithCalibratedWhite: 1 alpha: 0.14]; }
+- (CGFloat) menuSeparatorInset { return 16.0; }
 - (void) drawBackgroundForMenuView: (NSMenuView *)menuView withFrame: (NSRect)bounds dirtyRect: (NSRect)dirtyRect horizontal: (BOOL)horizontal
 {
 	if (horizontal) { [isDark() ? rgb(2, 2, 14, 1) : rgb(232, 232, 234, 1) set]; NSRectFill(bounds); return; }
-	fillRound(bounds, 10.0, onBG(0.30)); fillRound(NSInsetRect(bounds, 1, 1), 9.0, onBG(0.18));
+	NSWindow *w = [menuView window];                                  /* a pop-up menu: the compositor draws the material (glass mode 5: the context menu as measured on the Mac) under the transparent window */
+	if (w) {
+		[w setOpaque: NO]; [w setBackgroundColor: [NSColor clearColor]];
+		id srv = GSCurrentServer();
+		if ([srv respondsToSelector: @selector(wsdMenuGlass:::)]) [srv wsdMenuGlass: (int)[w windowNumber] : (int)bounds.size.width : (int)bounds.size.height];
+	}
+	[[NSColor clearColor] set]; NSRectFillUsingOperation(bounds, NSCompositeCopy);
+}
+/* the highlighted row: the accent blue, 5 pt in from the sides, corner radius 8 */
+- (void) drawBorderAndBackgroundForMenuItemCell: (NSMenuItemCell *)cell withFrame: (NSRect)cellFrame inView: (NSView *)controlView state: (GSThemeControlState)state isHorizontal: (BOOL)horizontal
+{
+	if (horizontal) { [super drawBorderAndBackgroundForMenuItemCell: cell withFrame: cellFrame inView: controlView state: state isHorizontal: horizontal]; return; }
+	if ([[cell menuItem] isSeparatorItem] || !(state == GSThemeHighlightedState || [cell isHighlighted])) return;
+	fillRound(NSInsetRect(cellFrame, 5, 0), 8.0, rgb(0, 122, 255, 1));
+}
+- (void) drawSeparatorItemForMenuItemCell: (NSMenuItemCell *)cell withFrame: (NSRect)cellFrame inView: (NSView *)controlView isHorizontal: (BOOL)horizontal
+{
+	if (horizontal) { [super drawSeparatorItemForMenuItemCell: cell withFrame: cellFrame inView: controlView isHorizontal: horizontal]; return; }
+	[[NSColor colorWithCalibratedWhite: 1 alpha: 0.14] set];
+	NSRectFillUsingOperation(NSMakeRect(cellFrame.origin.x + 16, NSMidY(cellFrame) - 0.5, cellFrame.size.width - 31, 1), NSCompositeSourceOver);
 }
 
 
