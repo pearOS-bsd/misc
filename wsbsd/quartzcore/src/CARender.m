@@ -1,6 +1,12 @@
 /* The layer compositor: renders a presentation tree with the software rasterizer. */
 #import "CALayerPrivate.h"
 #include "CARaster.h"
+#ifdef __APPLE__
+#import <CoreText/CoreText.h>
+#import <AppKit/AppKit.h>
+#else
+#import <CoreText/CoreText.h>
+#endif
 
 CFTimeInterval gCARenderTimeOverride = 0;
 
@@ -56,6 +62,8 @@ static RShape ShapeFor(CALayer *l, CGRect b)
 static BOOL HasRadius(const RShape *s) { return s->rad[0] > 0 || s->rad[1] > 0 || s->rad[2] > 0 || s->rad[3] > 0; }
 
 static void RenderLayer(CALayer *l, RMat parent, RCtx *cx);
+static void DrawKindContent(CALayer *l, RMat M, RCtx *cx, float opacity);
+static CGColorRef CALayerWhiteForText(void);
 
 static void DrawContents(CALayer *l, RMat M, RCtx *cx, CGRect b, const RShape *shape, float opacity)
 {
@@ -126,6 +134,29 @@ static BOOL PushShapeClip(RCtx *cx, RMat M, const RShape *shape, RCtx *out, uint
 
 static CGFloat Scale2D(RMat M) { return sqrt(fabs(M.m[0] * M.m[5] - M.m[1] * M.m[4])); }
 
+static void RenderReplicated(CAReplicatorLayer *l, NSArray *subs, RMat M, RCtx *cx)
+{
+	NSInteger n = [l instanceCount]; if (n < 1) return;
+	CGRect bb = [l bounds]; CGPoint ap = [l anchorPoint]; double ax = bb.origin.x + ap.x * bb.size.width, ay = bb.origin.y + ap.y * bb.size.height;
+	RMat around = RMatIdentity(); around.m[12] = -ax; around.m[13] = -ay; RMat back = RMatIdentity(); back.m[12] = ax; back.m[13] = ay;
+	RMat it = RMatMul(RMatMul(around, RM([l instanceTransform])), back), cur = RMatIdentity();
+	double base[4] = { 1, 1, 1, 1 }; if ([l instanceColor]) CAColorGetExtSRGB([l instanceColor], base);
+	for (NSInteger i = 0; i < n; i++) {
+		RMat Mi = RMatMul(cur, M);
+		double r = base[0] + i * [l instanceRedOffset], g = base[1] + i * [l instanceGreenOffset], b = base[2] + i * [l instanceBlueOffset], a = base[3] + i * [l instanceAlphaOffset];
+		BOOL tinted = r != 1 || g != 1 || b != 1 || a != 1;
+		if (!tinted) { for (CALayer *s in subs) RenderLayer(s, Mi, cx); }
+		else {
+			RSurf grp = RSurfCreate(cx->dest->w, cx->dest->h); RCtx gc = { &grp, { 0, 0, grp.w, grp.h, NULL, 0 }, 0, 0 };
+			for (CALayer *s in subs) RenderLayer(s, Mi, &gc);
+			r = fmin(1, fmax(0, r)); g = fmin(1, fmax(0, g)); b = fmin(1, fmax(0, b)); a = fmin(1, fmax(0, a));
+			for (int y = 0; y < grp.h; y++) for (int x = 0; x < grp.w; x++) { uint8_t *p = grp.px + (size_t)y * grp.stride + x * 4; p[0] = (uint8_t)(p[0] * b * a + 0.5); p[1] = (uint8_t)(p[1] * g * a + 0.5); p[2] = (uint8_t)(p[2] * r * a + 0.5); p[3] = (uint8_t)(p[3] * a + 0.5); }
+			RComposite(cx->dest, &grp, 0, 0, 1, &cx->clip); RSurfFree(&grp);
+		}
+		cur = RMatMul(it, cur);
+	}
+}
+
 static void RenderContent(CALayer *l, RMat M, RCtx *cx, float opacity)
 {
 	CGRect b = [l bounds];
@@ -133,20 +164,173 @@ static void RenderContent(CALayer *l, RMat M, RCtx *cx, float opacity)
 	CGColorRef bg = [l backgroundColor];
 	if (bg) RFillShape(cx->dest, &cx->clip, M, &shape, CAPremulColor(bg, opacity), 0);
 	DrawContents(l, M, cx, b, (HasRadius(&shape) || [l masksToBounds]) ? &shape : NULL, opacity);
+	DrawKindContent(l, M, cx, opacity);
 	NSArray *subs = [l _sublayerArray];
+	BOOL anyZ = NO; for (CALayer *s in subs) if ([s zPosition] != 0) { anyZ = YES; break; }
+	if (anyZ) subs = [subs sortedArrayWithOptions:NSSortStable usingComparator:^NSComparisonResult(CALayer *a, CALayer *b2) { CGFloat x = [a zPosition], y = [b2 zPosition]; return x < y ? NSOrderedAscending : (x > y ? NSOrderedDescending : NSOrderedSame); }];
 	RCtx sub = *cx; uint8_t *buf = NULL;
 	if ([l masksToBounds]) PushShapeClip(cx, M, &shape, &sub, &buf);
-	for (CALayer *s in subs) RenderLayer(s, M, &sub);
+	if ([l isKindOfClass:[CAReplicatorLayer class]]) RenderReplicated((CAReplicatorLayer *)l, subs, M, &sub);
+	else for (CALayer *s in subs) RenderLayer(s, M, &sub);
 	free(buf);
 	double bw = [l borderWidth];
 	if (bw > 0) RStrokeShape(cx->dest, &cx->clip, M, &shape, bw, CAPremulColor([l borderColor], opacity));
+}
+
+/* ---- content drawn with CoreGraphics (shape, text) or by the rasterizer (gradient) -------------------------------------------------------------------------------- */
+/* the elements of a path as polylines sampled uniformly in the curve parameter: strokeStart / strokeEnd cut the path in that parameter (each element is one unit) */
+typedef struct { CGPoint pt[26]; int n; int move; } PElem;
+typedef struct { PElem *e; int n, cap; CGPoint cur, start; } PElems;
+static PElem *PElemNew(PElems *p) { if (p->n == p->cap) { p->cap = p->cap ? p->cap * 2 : 16; p->e = realloc(p->e, p->cap * sizeof(PElem)); } PElem *x = &p->e[p->n++]; x->n = 0; x->move = 0; return x; }
+static void FlattenApply(void *info, const CGPathElement *e)
+{
+	PElems *p = info; PElem *x;
+	switch (e->type) {
+	case kCGPathElementMoveToPoint: x = PElemNew(p); x->move = 1; x->pt[x->n++] = e->points[0]; p->cur = p->start = e->points[0]; break;
+	case kCGPathElementAddLineToPoint: x = PElemNew(p); x->pt[x->n++] = p->cur; x->pt[x->n++] = e->points[0]; p->cur = e->points[0]; break;
+	case kCGPathElementAddQuadCurveToPoint: x = PElemNew(p); x->pt[x->n++] = p->cur; for (int i = 1; i <= 16; i++) { double t = i / 16.0, v = 1 - t; x->pt[x->n++] = CGPointMake(v * v * p->cur.x + 2 * v * t * e->points[0].x + t * t * e->points[1].x, v * v * p->cur.y + 2 * v * t * e->points[0].y + t * t * e->points[1].y); } p->cur = e->points[1]; break;
+	case kCGPathElementAddCurveToPoint: x = PElemNew(p); x->pt[x->n++] = p->cur; for (int i = 1; i <= 24; i++) { double t = i / 24.0, v = 1 - t; x->pt[x->n++] = CGPointMake(v * v * v * p->cur.x + 3 * v * v * t * e->points[0].x + 3 * v * t * t * e->points[1].x + t * t * t * e->points[2].x, v * v * v * p->cur.y + 3 * v * v * t * e->points[0].y + 3 * v * t * t * e->points[1].y + t * t * t * e->points[2].y); } p->cur = e->points[2]; break;
+	case kCGPathElementCloseSubpath: x = PElemNew(p); x->pt[x->n++] = p->cur; x->pt[x->n++] = p->start; p->cur = p->start; break;
+	}
+}
+static CGPathRef TrimPath(CGPathRef path, double a, double b)
+{
+	PElems p = { 0 }; CGPathApply(path, &p, FlattenApply);
+	int ne = 0; for (int i = 0; i < p.n; i++) if (!p.e[i].move) ne++;
+	CGMutablePathRef out = CGPathCreateMutable(); double from = a * ne, to = b * ne; int k = 0; BOOL open = NO;
+	for (int i = 0; i < p.n; i++) {
+		PElem *x = &p.e[i]; if (x->move) { open = NO; continue; }
+		double e0 = k, e1 = k + 1; k++;
+		if (e1 < from || e0 > to) { open = NO; continue; }
+		double u0 = fmax(0, from - e0), u1 = fmin(1, to - e0);
+		int segs = x->n - 1;
+		for (int j = 0; j < segs; j++) {
+			double s0 = (double)j / segs, s1 = (double)(j + 1) / segs; if (s1 <= u0 || s0 >= u1) { continue; }
+			double t0 = fmax(0, (u0 - s0) * segs), t1 = fmin(1, (u1 - s0) * segs);
+			CGPoint p0 = x->pt[j], p1 = x->pt[j + 1];
+			CGPoint q0 = CGPointMake(p0.x + (p1.x - p0.x) * t0, p0.y + (p1.y - p0.y) * t0), q1 = CGPointMake(p0.x + (p1.x - p0.x) * t1, p0.y + (p1.y - p0.y) * t1);
+			if (!open) { CGPathMoveToPoint(out, NULL, q0.x, q0.y); open = YES; }
+			CGPathAddLineToPoint(out, NULL, q1.x, q1.y);
+		}
+		if (u1 < 1) open = NO;
+	}
+	free(p.e);
+	return out;
+}
+
+static void FlipRows(RSurf *s) { for (int y = 0; y < s->h / 2; y++) { uint8_t *a = s->px + (size_t)y * s->stride, *b = s->px + (size_t)(s->h - 1 - y) * s->stride; for (int x = 0; x < s->w * 4; x++) { uint8_t t = a[x]; a[x] = b[x]; b[x] = t; } } }
+static CGContextRef BitmapFor(RSurf *s, CGFloat scale)
+{
+	CGColorSpaceRef cs = CGColorSpaceCreateDeviceRGB();
+	CGContextRef ctx = CGBitmapContextCreate(s->px, s->w, s->h, 8, s->stride, cs, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little);
+	CGColorSpaceRelease(cs);
+	if (ctx) { CGContextScaleCTM(ctx, scale, scale); CGContextSetShouldSmoothFonts(ctx, false); CGContextSetAllowsFontSmoothing(ctx, false); }
+	return ctx;
+}
+static void CGSetColor(CGContextRef c, CGColorRef col, BOOL fill)
+{
+	double v[4]; CAColorGetExtSRGB(col, v);
+	for (int i = 0; i < 3; i++) v[i] = v[i] < 0 ? 0 : (v[i] > 1 ? 1 : v[i]);
+	if (fill) CGContextSetRGBFillColor(c, v[0], v[1], v[2], v[3]); else CGContextSetRGBStrokeColor(c, v[0], v[1], v[2], v[3]);
+}
+static void DrawShapeLayer(CAShapeLayer *l, RSurf *bmp, CGFloat scale)
+{
+	CGPathRef path = [l path]; if (!path) return;
+	CGContextRef c = BitmapFor(bmp, scale); if (!c) return;
+	CGRect b = [l bounds]; CGContextTranslateCTM(c, -b.origin.x, -b.origin.y);
+	CGColorRef fc = [l fillColor], sc = [l strokeColor];
+	double s0 = [l strokeStart], s1 = [l strokeEnd];
+	if (fc) { CGSetColor(c, fc, YES); CGContextAddPath(c, path); if ([[l fillRule] isEqualToString:kCAFillRuleEvenOdd]) CGContextEOFillPath(c); else CGContextFillPath(c); }
+	if (sc && [l lineWidth] > 0) {
+		CGSetColor(c, sc, NO); CGContextSetLineWidth(c, [l lineWidth]); CGContextSetMiterLimit(c, [l miterLimit]);
+		NSString *cap = [l lineCap], *join = [l lineJoin];
+		CGContextSetLineCap(c, [cap isEqualToString:kCALineCapRound] ? kCGLineCapRound : ([cap isEqualToString:kCALineCapSquare] ? kCGLineCapSquare : kCGLineCapButt));
+		CGContextSetLineJoin(c, [join isEqualToString:kCALineJoinRound] ? kCGLineJoinRound : ([join isEqualToString:kCALineJoinBevel] ? kCGLineJoinBevel : kCGLineJoinMiter));
+		NSArray *dash = [l lineDashPattern];
+		if (dash.count) { CGFloat d[32]; int n = 0; for (NSNumber *x in dash) if (n < 32) d[n++] = [x doubleValue]; CGContextSetLineDash(c, [l lineDashPhase], d, n); }
+		CGPathRef sp = (s0 > 0 || s1 < 1) ? TrimPath(path, fmax(0, s0), fmin(1, s1)) : path;
+		CGContextAddPath(c, sp); CGContextStrokePath(c);
+	}
+	CGContextRelease(c);
+}
+static void DrawTextLayer(CATextLayer *l, RSurf *bmp, CGFloat scale)
+{
+	id str = [l string]; if (!str) return;
+	CGRect b = [l bounds]; CGFloat fs = [l fontSize];
+	NSMutableAttributedString *as;
+	if ([str isKindOfClass:[NSAttributedString class]]) as = [str mutableCopy];
+	else {
+		CGColorRef fg = [l foregroundColor]; CTFontRef font = (CTFontRef)[l font];
+		CTFontRef f = font ? (CTFontRef)CFRetain(font) : CTFontCreateWithName(CFSTR("Helvetica"), fs, NULL);
+		if (font && CTFontGetSize(f) != fs) { CTFontRef f2 = CTFontCreateCopyWithAttributes(f, fs, NULL, NULL); CFRelease(f); f = f2; }
+		as = [[NSMutableAttributedString alloc] initWithString:[str description] attributes:@{ (__bridge id)kCTFontAttributeName: (__bridge id)f, (__bridge id)kCTForegroundColorAttributeName: (__bridge id)(fg ?: CALayerWhiteForText()) }];
+		CFRelease(f);
+	}
+	NSString *am = [l alignmentMode]; CTTextAlignment ta = [am isEqualToString:kCAAlignmentCenter] ? kCTTextAlignmentCenter : ([am isEqualToString:kCAAlignmentRight] ? kCTTextAlignmentRight : ([am isEqualToString:kCAAlignmentJustified] ? kCTTextAlignmentJustified : kCTTextAlignmentNatural));
+	CTLineBreakMode lb = [l isWrapped] ? kCTLineBreakByWordWrapping : kCTLineBreakByClipping;
+	NSString *tm = [l truncationMode];
+	if (![l isWrapped]) lb = [tm isEqualToString:kCATruncationEnd] ? kCTLineBreakByTruncatingTail : ([tm isEqualToString:kCATruncationStart] ? kCTLineBreakByTruncatingHead : ([tm isEqualToString:kCATruncationMiddle] ? kCTLineBreakByTruncatingMiddle : kCTLineBreakByClipping));
+	CTParagraphStyleSetting set[2] = { { kCTParagraphStyleSpecifierAlignment, sizeof ta, &ta }, { kCTParagraphStyleSpecifierLineBreakMode, sizeof lb, &lb } };
+	CTParagraphStyleRef ps = CTParagraphStyleCreate(set, 2);
+	[as addAttribute:(__bridge id)kCTParagraphStyleAttributeName value:(__bridge id)ps range:NSMakeRange(0, as.length)]; CFRelease(ps);
+	CGContextRef c = BitmapFor(bmp, scale); if (!c) return;
+	CGContextTranslateCTM(c, -b.origin.x, -b.origin.y);
+	CTFramesetterRef fsr = CTFramesetterCreateWithAttributedString((__bridge CFAttributedStringRef)as);
+	CGMutablePathRef pp = CGPathCreateMutable(); CGPathAddRect(pp, NULL, b);
+	CTFrameRef fr = CTFramesetterCreateFrame(fsr, CFRangeMake(0, 0), pp, NULL);
+	if ([l isWrapped] || ![[l truncationMode] isEqualToString:kCATruncationNone]) CTFrameDraw(fr, c);
+	else CTFrameDraw(fr, c);
+	CFRelease(fr); CFRelease(fsr); CGPathRelease(pp); CGContextRelease(c);
+}
+static CGColorRef CALayerWhiteForText(void) { static CGColorRef c; if (!c) { CGFloat v[4] = { 1, 1, 1, 1 }; CGColorSpaceRef cs = CGColorSpaceCreateDeviceRGB(); c = CGColorCreate(cs, v); CGColorSpaceRelease(cs); } return c; }
+
+static void DrawGradientLayer(CAGradientLayer *l, RSurf *bmp, CGFloat scale)
+{
+	NSArray *cols = [l colors]; if (cols.count < 1) return;
+	NSArray *locs = [l locations]; int n = (int)cols.count;
+	double (*rgba)[4] = malloc(sizeof(double[4]) * n); double *pos = malloc(sizeof(double) * n);
+	for (int i = 0; i < n; i++) { CAColorGetExtSRGB((__bridge CGColorRef)cols[i], rgba[i]); for (int k = 0; k < 3; k++) rgba[i][k] = fmin(1, fmax(0, rgba[i][k])); pos[i] = locs.count == n ? [locs[i] doubleValue] : (n > 1 ? (double)i / (n - 1) : 0); }
+	CGRect b = [l bounds]; CGPoint sp = [l startPoint], ep = [l endPoint]; NSString *type = [l type];
+	for (int y = 0; y < bmp->h; y++) for (int x = 0; x < bmp->w; x++) {
+		double lx = (x + 0.5) / scale / b.size.width, ly = (y + 0.5) / scale / b.size.height;     /* unit coordinates, y up like the layer */
+		double t;
+		if ([type isEqualToString:kCAGradientLayerRadial]) { double rx = fabs(ep.x - sp.x), ry = fabs(ep.y - sp.y); double dx = rx ? (lx - sp.x) / rx : 0, dy = ry ? (ly - sp.y) / ry : 0; t = sqrt(dx * dx + dy * dy); }
+		else if ([type isEqualToString:kCAGradientLayerConic]) { double ang = atan2(ly - sp.y, lx - sp.x), a0 = atan2(ep.y - sp.y, ep.x - sp.x); t = (ang - a0) / (2 * M_PI); t -= floor(t); }
+		else { double dx = ep.x - sp.x, dy = ep.y - sp.y, len2 = dx * dx + dy * dy; t = len2 > 0 ? ((lx - sp.x) * dx + (ly - sp.y) * dy) / len2 : 0; }
+		double c[4];
+		if (t <= pos[0]) memcpy(c, rgba[0], sizeof c);
+		else if (t >= pos[n - 1]) memcpy(c, rgba[n - 1], sizeof c);
+		else { int i = 0; while (i < n - 2 && t > pos[i + 1]) i++; double f = (t - pos[i]) / (pos[i + 1] - pos[i]); for (int k = 0; k < 4; k++) c[k] = rgba[i][k] + (rgba[i + 1][k] - rgba[i][k]) * f; }
+		uint8_t *p = bmp->px + (size_t)y * bmp->stride + x * 4;
+		/* the rows of the bitmap run with the layer y (see FlipRows): the y of the pixel is the layer y */
+		p[0] = (uint8_t)(c[2] * c[3] * 255 + 0.5); p[1] = (uint8_t)(c[1] * c[3] * 255 + 0.5); p[2] = (uint8_t)(c[0] * c[3] * 255 + 0.5); p[3] = (uint8_t)(c[3] * 255 + 0.5);
+	}
+	free(rgba); free(pos);
+}
+
+/* draws the content of the layer kinds that have one */
+static void DrawKindContent(CALayer *l, RMat M, RCtx *cx, float opacity)
+{
+	BOOL isShape = [l isKindOfClass:[CAShapeLayer class]], isText = [l isKindOfClass:[CATextLayer class]], isGrad = [l isKindOfClass:[CAGradientLayer class]];
+	if (!isShape && !isText && !isGrad) return;
+	CGRect b = [l bounds]; if (b.size.width <= 0 || b.size.height <= 0) return;
+	CGFloat sc = ceil(fmax(1.0, Scale2D(M))); int w = (int)ceil(b.size.width * sc), h = (int)ceil(b.size.height * sc);
+	if (w > 4096 || h > 4096) return;
+	RSurf bmp = RSurfCreate(w, h);
+	if (isShape) { DrawShapeLayer((CAShapeLayer *)l, &bmp, sc); FlipRows(&bmp); }
+	else if (isText) { DrawTextLayer((CATextLayer *)l, &bmp, sc); FlipRows(&bmp); }
+	else DrawGradientLayer((CAGradientLayer *)l, &bmp, sc);
+	RRect src = { 0, 0, w, h }, dst = { b.origin.x, b.origin.y, b.size.width, b.size.height };
+	RShape shape = ShapeFor(l, b);
+	RDrawImage(cx->dest, &cx->clip, M, &bmp, src, dst, HasRadius(&shape) ? &shape : NULL, opacity, 0);
+	RSurfFree(&bmp);
 }
 
 static BOOL NeedsGroup(CALayer *l)
 {
 	float op = [l opacity];
 	if (op < 1 && [l allowsGroupOpacity] && ([[l _sublayerArray] count] || ([l borderWidth] > 0 && ([l backgroundColor] || [l contents])))) return YES;
-	if ([l shadowOpacity] > 0 || [l mask]) return YES;
+	if ([l shadowOpacity] > 0 || [l mask] || [l shouldRasterize]) return YES;
 	return NO;
 }
 
