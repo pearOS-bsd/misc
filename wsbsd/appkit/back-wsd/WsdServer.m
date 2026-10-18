@@ -31,8 +31,21 @@ static const char *keymap[128][2] = {
 #include "wsd/ws_xkb.h"
 #endif
 
+/* the keys without a character: AppKit expects the private-use function-key characters (NSUpArrowFunctionKey ...) */
+static unichar functionKey(int code)
+{
+	switch (code) {
+	case 126: return 0xF700; case 125: return 0xF701; case 123: return 0xF702; case 124: return 0xF703;                 /* up, down, left, right */
+	case 122: return 0xF704; case 120: return 0xF705; case 99: return 0xF706; case 118: return 0xF707; case 96: return 0xF708; case 97: return 0xF709;      /* F1 ... F6 */
+	case 98: return 0xF70A; case 100: return 0xF70B; case 101: return 0xF70C; case 109: return 0xF70D; case 103: return 0xF70E; case 111: return 0xF70F;  /* F7 ... F12 */
+	case 117: return 0xF728; case 115: return 0xF729; case 119: return 0xF72B; case 116: return 0xF72C; case 121: return 0xF72D;                           /* forward delete, home, end, page up, page down */
+	}
+	return 0;
+}
+
 static NSString *keychars(int code, unsigned flags, BOOL ignoringMods)
 {
+	{ unichar fk = functionKey(code); if (fk) return [NSString stringWithCharacters: &fk length: 1]; }
 #ifdef WSD_XKB
 	static int xkb = -1;
 	if (xkb < 0) xkb = (ws_xkb_init(NULL, NULL, NULL) == 0);
