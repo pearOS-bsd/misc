@@ -345,6 +345,7 @@ int ws_win_get_owner(ws_conn *c, ws_win *w, int *owner, int *rights)
 	return 0;
 }
 int ws_inject_mouse(ws_conn *c, int x, int y, int b) { int32_t a[3] = { x, y, b }; return wsx_call(c, WSX_INJECT_MOUSE, a, 3, NULL, NULL); }
+int ws_inject_scroll(ws_conn *c, int x, int y, int dx, int dy) { int32_t a[6] = { x, y, 0, 1, dx, dy }; return wsx_call(c, WSX_INJECT_MOUSE, a, 6, NULL, NULL); }
 int ws_inject_key(ws_conn *c, int key, int down) { int32_t a[2] = { key, down }; return wsx_call(c, WSX_INJECT_KEY, a, 2, NULL, NULL); }
 
 int ws_poll_event(ws_conn *c, ws_win *w, ws_event *e)
