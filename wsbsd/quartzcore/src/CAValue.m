@@ -14,11 +14,12 @@ static const double kGenericToLinearSRGB[3][3] = {
 	{ -0.026545244895289,   0.948008910922566,  -0.0014344936715375528 },
 	{  0.0013035526008982408, 0.032590358561161346, 1.0031967449850745 } };
 
+/* Opal does not name its colour spaces: a colour in an unnamed RGB space is taken as sRGB, or (WSCA_UNNAMED_IS_GENERIC=1, used by the tests that were recorded with Generic RGB colours) as Generic RGB */
 static BOOL ca_space_is(CGColorSpaceRef cs, const char *name)
 {
 	if (!cs) return NO;
 	CFStringRef n = CGColorSpaceCopyName(cs);
-	if (!n) return NO;
+	if (!n) { static int generic = -1; if (generic < 0) generic = getenv("WSCA_UNNAMED_IS_GENERIC") != NULL; return generic && strstr(name, "Generic") != NULL; }
 	char buf[96]; BOOL r = CFStringGetCString(n, buf, sizeof buf, kCFStringEncodingUTF8) && strstr(buf, name) != NULL; CFRelease(n); return r;
 }
 
@@ -55,8 +56,6 @@ CGColorRef CAColorCreateExtSRGB(const double rgba[4])
 
 static id ca_color_interpolate(CGColorRef a, CGColorRef b, float f)
 {
-	if (f == 0) return (__bridge id)a;
-	if (f == 1) return (__bridge id)b;
 	double x[4], y[4]; CAColorGetExtSRGB(a, x); CAColorGetExtSRGB(b, y);
 	double fr = (double)f;
 	for (int i = 0; i < 4; i++) x[i] = x[i] + (y[i] - x[i]) * fr;
@@ -121,7 +120,7 @@ id CAValueInterpolate(id from, id to, float f)
 		}
 		return f < 0.5f ? from : to;
 	}
-	if (from && to && CFGetTypeID((__bridge CFTypeRef)from) == CGColorGetTypeID() && CFGetTypeID((__bridge CFTypeRef)to) == CGColorGetTypeID())
+	if (from && to && CAIsColor(from) && CAIsColor(to))
 		return ca_color_interpolate((__bridge CGColorRef)from, (__bridge CGColorRef)to, f);
 	if ([from isKindOfClass:[NSArray class]] && [to isKindOfClass:[NSArray class]] && [from count] == [to count]) {
 		NSMutableArray *r = [NSMutableArray arrayWithCapacity:[from count]];
@@ -149,7 +148,7 @@ id CAValueAdd(id base, id other, int k)
 			return [NSValue valueWithCATransform3D:CATransform3DConcat(p, a)];
 		}
 	}
-	if (base && other && CFGetTypeID((__bridge CFTypeRef)base) == CGColorGetTypeID() && CFGetTypeID((__bridge CFTypeRef)other) == CGColorGetTypeID()) {
+	if (base && other && CAIsColor(base) && CAIsColor(other)) {
 		double x[4], y[4]; CAColorGetExtSRGB((__bridge CGColorRef)base, x); CAColorGetExtSRGB((__bridge CGColorRef)other, y);
 		for (int i = 0; i < 4; i++) x[i] = x[i] + y[i] * (double)k;
 		return CFBridgingRelease(CAColorCreateExtSRGB(x));

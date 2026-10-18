@@ -1,6 +1,10 @@
 /* Media timing: the mapping of a time of the parent to the time of an object (layer or animation), and the timing function. The arithmetic follows QuartzCore (decompiled: CAMediaTimingCopyRenderTiming, CA::Render::Timing::map_parent_to_active / map_active_to_local / end_time / inverse_map_time, CA::Render::TimingFunction::evaluate). */
 #import "CAInternal.h"
+#ifdef __APPLE__
 #include <mach/mach_time.h>
+#else
+#include <time.h>
+#endif
 
 bool CATimingFromObject(id<CAMediaTiming> obj, CATiming *t)
 {
@@ -143,7 +147,12 @@ float CAMediaTimingFunctionSolve(float c[4], float x)
 
 CFTimeInterval CACurrentMediaTime(void)
 {
+#ifdef __APPLE__
 	static mach_timebase_info_data_t tb;
 	if (!tb.denom) mach_timebase_info(&tb);
 	return (double)mach_absolute_time() * (double)tb.numer / (double)tb.denom * 1e-9;
+#else
+	struct timespec ts; clock_gettime(CLOCK_MONOTONIC, &ts);
+	return (double)ts.tv_sec + (double)ts.tv_nsec * 1e-9;
+#endif
 }

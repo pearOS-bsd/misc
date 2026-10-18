@@ -1,0 +1,46 @@
+bounds                             [bounds CABasicAnimation dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 from={0,0,100,50} to=nil add=0]
+position                           [position CABasicAnimation dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 from=(60,45) to=nil add=0]
+zPosition                          [zPosition CABasicAnimation dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 from=0 to=nil add=0]
+anchorPoint                        [anchorPoint CABasicAnimation dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 from=(0.5,0.5) to=nil add=0]
+transform                          [transform CABasicAnimation dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 from=T[1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1] to=nil add=0]
+frame                              [bounds CABasicAnimation dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 from={0,0,100,50} to=nil add=0][position CABasicAnimation dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 from=(60,45) to=nil add=0]
+hidden                             [transition CATransition dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 type=fade sub=(null) p=0..1]
+unhidden                           [transition CATransition dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 type=fade sub=(null) p=0..1]
+opacity                            [opacity CABasicAnimation dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 from=1 to=nil add=0]
+backgroundColor                    [backgroundColor CABasicAnimation dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 from=color(1,1,1,1) to=nil add=0]
+cornerRadius                       [cornerRadius CABasicAnimation dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 from=0 to=nil add=0]
+masksToBounds                      [transition CATransition dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 type=fade sub=(null) p=0..1]
+shadowOpacity                      [shadowOpacity CABasicAnimation dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 from=0 to=nil add=0]
+shadowOffset                       [shadowOffset CABasicAnimation dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 from=[0,-3] to=nil add=0]
+shadowRadius                       [shadowRadius CABasicAnimation dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 from=3 to=nil add=0]
+shadowColor                        [shadowColor CABasicAnimation dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 from=color(0,0,0,1) to=nil add=0]
+borderWidth                        [borderWidth CABasicAnimation dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 from=0 to=nil add=0]
+borderColor                        [borderColor CABasicAnimation dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 from=color(1,1,1,1) to=nil add=0]
+contents                           [contents CABasicAnimation dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 from=nil to=nil add=0]
+contentsRect                       [contentsRect CABasicAnimation dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 from={0,0,1,1} to=nil add=0]
+name                               none
+sublayerTransform                  [sublayerTransform CABasicAnimation dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 from=T[1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1] to=nil add=0]
+doubleSided                        none
+opaque                             none
+maskedCorners                      [transition CATransition dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 type=fade sub=(null) p=0..1]
+filters                            [transition CATransition dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 type=fade sub=(null) p=0..1]
+mask                               [transition CATransition dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 type=fade sub=(null) p=0..1]
+addSublayer                        [transition CATransition dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 type=fade sub=(null) p=0..1]
+removeFromSuperlayer               [transition CATransition dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 type=fade sub=(null) p=0..1]
+txn dur 2: opacity                 [opacity CABasicAnimation dur=2 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 from=1 to=nil add=0]
+txn easeIn: position               [position CABasicAnimation dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.42,0,1,1 from=(60,45) to=nil add=0]
+txn disabled: opacity              none
+nested inherits dur 3              [opacity CABasicAnimation dur=3 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 from=1 to=nil add=0]
+nested dur 1                       [opacity CABasicAnimation dur=1 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 from=1 to=nil add=0]
+outer again                        [opacity CABasicAnimation dur=3 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 from=1 to=nil add=0]
+txn dur 0                          none
+txn defaults: dur=0.25 tf=0 disable=0
+actions null: opacity              none
+actions null: position             [position CABasicAnimation dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 from=(60,45) to=nil add=0]
+actions custom: position           [position CABasicAnimation dur=5 begin=0 speed=1 fill=removed rm=1 tf=0,0,0,0 from=nil to=nil add=0]
+second change keeps from=pres      [opacity CABasicAnimation dur=0.25 begin=0 speed=1 fill=backwards rm=1 tf=0.25,0.1,0.25,1 from=1 to=nil add=0]
+detached layer                     none
+pres of detached: 0
+keys: x,y
+after remove x: 1
+after remove all: 0

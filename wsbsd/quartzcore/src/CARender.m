@@ -30,7 +30,7 @@ static RColor CAPremulColor(CGColorRef c, float opacity)
 static NSMapTable *gImageCache;
 static CARenderImage *CAImageFor(id contents)
 {
-	if (!contents || CFGetTypeID((__bridge CFTypeRef)contents) != CGImageGetTypeID()) return nil;
+	if (!contents || !CAIsImage(contents)) return nil;
 	if (!gImageCache) gImageCache = [NSMapTable weakToStrongObjectsMapTable];
 	CARenderImage *ci = [gImageCache objectForKey:contents];
 	if (ci) return ci;
@@ -253,6 +253,7 @@ static void DrawShapeLayer(CAShapeLayer *l, RSurf *bmp, CGFloat scale)
 	}
 	CGContextRelease(c);
 }
+#ifdef __APPLE__
 static void DrawTextLayer(CATextLayer *l, RSurf *bmp, CGFloat scale)
 {
 	id str = [l string]; if (!str) return;
@@ -282,6 +283,39 @@ static void DrawTextLayer(CATextLayer *l, RSurf *bmp, CGFloat scale)
 	else CTFrameDraw(fr, c);
 	CFRelease(fr); CFRelease(fsr); CGPathRelease(pp); CGContextRelease(c);
 }
+#else
+static void DrawTextLayer(CATextLayer *l, RSurf *bmp, CGFloat scale)
+{
+	/* without CoreText: the string is laid out with the toy text API of CoreGraphics (the cairo text of Opal) */
+	id str = [l string]; if (!str) return;
+	NSString *text = [str isKindOfClass:[NSAttributedString class]] ? [(NSAttributedString *)str string] : [str description];
+	CGRect b = [l bounds]; CGFloat fs = [l fontSize]; if (fs <= 0) fs = 36;
+	CGContextRef c = BitmapFor(bmp, scale); if (!c) return;
+	CGContextTranslateCTM(c, -b.origin.x, -b.origin.y);
+	CGColorRef fg = [l foregroundColor] ?: CALayerWhiteForText(); CGSetColor(c, fg, YES);
+	CGContextSelectFont(c, "Helvetica", fs, kCGEncodingMacRoman);
+	NSMutableArray *lines = [NSMutableArray array];
+	if ([l isWrapped]) {
+		NSMutableString *cur = [NSMutableString string];
+		for (NSString *w in [text componentsSeparatedByString:@" "]) {
+			NSString *t = cur.length ? [NSString stringWithFormat:@"%@ %@", cur, w] : w;
+			CGContextSetTextPosition(c, 0, 0); CGContextSetTextDrawingMode(c, kCGTextInvisible); CGContextShowText(c, [t UTF8String], strlen([t UTF8String]));
+			if (CGContextGetTextPosition(c).x > b.size.width && cur.length) { [lines addObject:[cur copy]]; [cur setString:w]; } else { [cur setString:t]; }
+		}
+		if (cur.length) [lines addObject:cur];
+	} else [lines addObject:text];
+	CGFloat lh = fs * 1.15, y = b.origin.y + b.size.height - fs;
+	for (NSString *ln in lines) {
+		const char *u = [ln UTF8String]; size_t n = strlen(u);
+		CGContextSetTextDrawingMode(c, kCGTextInvisible); CGContextSetTextPosition(c, 0, 0); CGContextShowText(c, u, n); CGFloat w = CGContextGetTextPosition(c).x;
+		NSString *am = [l alignmentMode]; CGFloat x = b.origin.x;
+		if ([am isEqualToString:kCAAlignmentCenter]) x += (b.size.width - w) / 2; else if ([am isEqualToString:kCAAlignmentRight]) x += b.size.width - w;
+		CGContextSetTextDrawingMode(c, kCGTextFill); CGContextShowTextAtPoint(c, x, y, u, n);
+		y -= lh;
+	}
+	CGContextRelease(c);
+}
+#endif
 static CGColorRef CALayerWhiteForText(void) { static CGColorRef c; if (!c) { CGFloat v[4] = { 1, 1, 1, 1 }; CGColorSpaceRef cs = CGColorSpaceCreateDeviceRGB(); c = CGColorCreate(cs, v); CGColorSpaceRelease(cs); } return c; }
 
 static void DrawGradientLayer(CAGradientLayer *l, RSurf *bmp, CGFloat scale)

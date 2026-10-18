@@ -21,3 +21,5 @@ probe/cs
 probe/m2.dSYM
 test/*.ours.txt
 test/*.real.txt
+test/*.out
+test/*_ref

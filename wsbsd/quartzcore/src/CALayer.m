@@ -247,10 +247,10 @@ static void CASetObjProp(CALayer *l, int i, id v) { __unsafe_unretained id u = v
 	union { char bytes[128]; void *ptr; } u; memset(&u, 0, sizeof u);
 	switch (pd->type) {
 	case CAT_COL:
-		if (v && CFGetTypeID((__bridge CFTypeRef)v) == CGColorGetTypeID()) { u.ptr = (__bridge void *)v; [self _changeIndex:i toBytes:&u isObject:NO]; } else if (!v) [self _changeIndex:i toBytes:&u isObject:NO];
+		if (v && CAIsColor(v)) { u.ptr = (__bridge void *)v; [self _changeIndex:i toBytes:&u isObject:NO]; } else if (!v) [self _changeIndex:i toBytes:&u isObject:NO];
 		return;
 	case CAT_PATH:
-		if (!v || CFGetTypeID((__bridge CFTypeRef)v) == CGPathGetTypeID()) { u.ptr = (__bridge void *)v; [self _changeIndex:i toBytes:&u isObject:NO]; }
+		if (!v || CAIsPath(v)) { u.ptr = (__bridge void *)v; [self _changeIndex:i toBytes:&u isObject:NO]; }
 		return;
 	case CAT_OBJ: case CAT_STR: case CAT_ARR: { id cp = (pd->type == CAT_STR || pd->type == CAT_ARR) ? [v copy] : v; __unsafe_unretained id o = cp; [self _changeIndex:i toBytes:&o isObject:YES]; return; }
 	default:

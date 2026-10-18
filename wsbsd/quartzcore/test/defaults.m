@@ -1,13 +1,14 @@
 /* Default values of every public property of the layer and animation classes (golden: the real QuartzCore). */
 #import <Foundation/Foundation.h>
 #import <QuartzCore/QuartzCore.h>
+#import "cacompat.h"
 #import <objc/runtime.h>
 static void fmtv(NSMutableString *s, id v)
 {
 	if (!v) { [s appendString:@"nil"]; return; }
 	if ([v isKindOfClass:[NSNumber class]]) { [s appendFormat:@"%.9g", [v doubleValue]]; return; }
 	if ([v isKindOfClass:[NSString class]]) { [s appendFormat:@"\"%@\"", v]; return; }
-	if (CFGetTypeID((__bridge CFTypeRef)v) == CGColorGetTypeID()) {
+	if (CAIsColor(v)) {
 		CGColorRef c = (__bridge CGColorRef)v; size_t n = CGColorGetNumberOfComponents(c); const CGFloat *p = CGColorGetComponents(c);
 		[s appendString:@"color("]; for (size_t i = 0; i < n; i++) [s appendFormat:@"%s%.6g", i ? "," : "", p[i]]; [s appendString:@")"]; return;
 	}
