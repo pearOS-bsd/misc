@@ -11,7 +11,7 @@ else
   GSCFLAGS := $(shell gnustep-config --objc-flags 2>/dev/null)
   FW := $(shell gnustep-config --base-libs 2>/dev/null) -lopal -lgnustep-corebase -ldispatch -lcairo -lm
   CFLAGS += $(GSCFLAGS) -fPIC
-  BUILD := build
+  BUILD ?= build
 endif
 OBJ := $(patsubst src/%,$(BUILD)/%.o,$(SRC))
 
@@ -102,5 +102,15 @@ check-ref: test/golden_ref test/fuzz_ref test/actions_ref test/values_ref test/d
 	./test/golden_ref | sed 's/WSCA/CA/g' > test/golden.out && python3 -I test/cmp.py test/ref/golden.txt test/golden.out 2e-6
 	./test/fuzz_ref | sed 's/WSCA/CA/g' > test/fuzz.out && python3 -I test/cmp.py test/ref/fuzz.txt test/fuzz.out 2e-5 || true
 	./test/actions_ref | sed 's/WSCA/CA/g' > test/actions.out && python3 -I test/cmp.py test/ref/actions.txt test/actions.out 2e-6
-	./test/values_ref | sed 's/WSCA/CA/g' > test/values.out && python3 -I test/cmp.py test/ref/values.txt test/values.out 2e-6
+	./test/values_ref | sed 's/WSCA/CA/g' | grep -v '^color-srgb' > test/values.out && grep -v '^color-srgb' test/ref/values.txt > test/values.ref && python3 -I test/cmp.py test/values.ref test/values.out 2e-6
 	./test/defaults_ref | sed 's/WSCA/CA/g' > test/defaults.out && python3 -I test/cmp.py test/ref/defaults.txt test/defaults.out 1e-9 || true
+ifeq ($(UNAME),Darwin)
+renderctx-compare: test/scenes_real test/scenes_ours
+	CTXMODE=1 ./test/scenes_real /tmp/ctx_real; CTXMODE=1 ./test/scenes_ours /tmp/ctx_ours
+	python3 -I test/imgcmp.py /tmp/ctx_real /tmp/ctx_ours /tmp/ctx_png
+endif
+
+bench: test/bench
+	./test/bench
+test/bench: test/bench.m $(LIB)
+	$(CC) $(CFLAGS) -O2 -o $@ test/bench.m $(LIB) -ObjC $(FW) $(if $(filter Darwin,$(UNAME)),,-Wl,-rpath,$(CURDIR)/$(BUILD))

@@ -61,7 +61,8 @@ static RShape ShapeFor(CALayer *l, CGRect b)
 }
 static BOOL HasRadius(const RShape *s) { return s->rad[0] > 0 || s->rad[1] > 0 || s->rad[2] > 0 || s->rad[3] > 0; }
 
-static void RenderLayer(CALayer *l, RMat parent, RCtx *cx);
+static void RenderLayerEx(CALayer *l, RMat parent, RCtx *cx, BOOL root);
+static void RenderLayer(CALayer *l, RMat parent, RCtx *cx) { RenderLayerEx(l, parent, cx, NO); }
 static void DrawKindContent(CALayer *l, RMat M, RCtx *cx, float opacity);
 static CGColorRef CALayerWhiteForText(void);
 
@@ -368,24 +369,24 @@ static BOOL NeedsGroup(CALayer *l)
 	return NO;
 }
 
-static void ExtentOf(CALayer *l, RMat parent, double *minx, double *miny, double *maxx, double *maxy, int depth)
+static void ExtentOf(CALayer *l, RMat parent, double *minx, double *miny, double *maxx, double *maxy, int depth, BOOL root)
 {
-	RMat M = RMatMul(RM([l _localToSuperMatrix]), parent);
+	RMat M = root ? parent : RMatMul(RM([l _localToSuperMatrix]), parent);
 	CGRect b = [l bounds]; double xs[4] = { b.origin.x, b.origin.x + b.size.width, b.origin.x, b.origin.x + b.size.width }, ys[4] = { b.origin.y, b.origin.y, b.origin.y + b.size.height, b.origin.y + b.size.height };
 	for (int i = 0; i < 4; i++) {
 		double a = xs[i] * M.m[0] + ys[i] * M.m[4] + M.m[12], c = xs[i] * M.m[1] + ys[i] * M.m[5] + M.m[13], w = xs[i] * M.m[3] + ys[i] * M.m[7] + M.m[15];
 		if (w <= 1e-6) { *minx = -1e9; *miny = -1e9; *maxx = 1e9; *maxy = 1e9; return; }
 		a /= w; c /= w; if (a < *minx) *minx = a; if (a > *maxx) *maxx = a; if (c < *miny) *miny = c; if (c > *maxy) *maxy = c;
 	}
-	if (![l masksToBounds] && depth < 32) for (CALayer *s in [l _sublayerArray]) ExtentOf(s, M, minx, miny, maxx, maxy, depth + 1);
+	if (![l masksToBounds] && depth < 32) for (CALayer *s in [l _sublayerArray]) ExtentOf(s, M, minx, miny, maxx, maxy, depth + 1, NO);
 }
 
 /* renders one layer (and its sublayers); `parent` maps the coordinates of the superlayer's content to the surface */
-static void RenderLayer(CALayer *l, RMat parent, RCtx *cx)
+static void RenderLayerEx(CALayer *l, RMat parent, RCtx *cx, BOOL isRoot)
 {
 	if ([l isHidden]) return;
 	float opacity = [l opacity]; if (opacity <= 0) return;
-	RMat M = RMatMul(RM([l _localToSuperMatrix]), parent);
+	RMat M = isRoot ? parent : RMatMul(RM([l _localToSuperMatrix]), parent);
 	CGRect b = [l bounds];
 	if ((b.size.width <= 0 || b.size.height <= 0) && ![[l _sublayerArray] count]) return;
 	if (![l isDoubleSided]) {
@@ -395,7 +396,7 @@ static void RenderLayer(CALayer *l, RMat parent, RCtx *cx)
 	if (!NeedsGroup(l)) { RenderContent(l, M, cx, opacity); return; }
 	/* a group: the layer and its sublayers are drawn together, then shadow, mask and opacity are applied */
 	double minx = 1e30, miny = 1e30, maxx = -1e30, maxy = -1e30;
-	ExtentOf(l, parent, &minx, &miny, &maxx, &maxy, 0);
+	ExtentOf(l, parent, &minx, &miny, &maxx, &maxy, 0, isRoot);
 	double blur = [l shadowOpacity] > 0 ? [l shadowRadius] * Scale2D(M) * 1.5 + 2 : 0;
 	CGSize so = [l shadowOffset];
 	double sox = so.width * M.m[0] + so.height * M.m[4], soy = so.width * M.m[1] + so.height * M.m[5];
@@ -431,7 +432,30 @@ static void RenderLayer(CALayer *l, RMat parent, RCtx *cx)
 	RSurfFree(&grp);
 }
 
-void CARenderLayerTree(CALayer *l, CGContextRef ctx) {}
+/* the layer drawn into a CoreGraphics context at its own coordinates (its position and transform are not applied), from the model values */
+void CARenderLayerTree(CALayer *l, CGContextRef ctx)
+{
+	CGRect clip = CGContextGetClipBoundingBox(ctx);
+	CGAffineTransform ctm = CGContextGetCTM(ctx);
+	double s = sqrt(fabs(ctm.a * ctm.d - ctm.b * ctm.c)); if (s < 1) s = 1; if (s > 4) s = 4;
+	CGRect b = [l bounds];
+	double minx = 1e30, miny = 1e30, maxx = -1e30, maxy = -1e30;
+	ExtentOf(l, RMatIdentity(), &minx, &miny, &maxx, &maxy, 0, YES);
+	CGRect ext = CGRectMake(minx - 32, miny - 32, maxx - minx + 64, maxy - miny + 64); (void)b;
+	CGRect r = CGRectIntersection(clip, ext); if (CGRectIsNull(r) || r.size.width <= 0 || r.size.height <= 0) return;
+	r = CGRectMake(floor(r.origin.x), floor(r.origin.y), ceil(r.size.width + 1), ceil(r.size.height + 1));
+	int w = (int)ceil(r.size.width * s), h = (int)ceil(r.size.height * s); if (w <= 0 || h <= 0 || w > 8192 || h > 8192) return;
+	RSurf surf = RSurfCreate(w, h);
+	RMat M = RMatIdentity(); M.m[0] = s; M.m[5] = s; M.m[12] = -r.origin.x * s; M.m[13] = -r.origin.y * s;
+	RCtx cx = { &surf, { 0, 0, w, h, NULL, 0 }, 0, 0 };
+	RenderLayerEx(l, M, &cx, YES);
+	FlipRows(&surf);                                                      /* row 0 = the top of the image (largest y) */
+	CGColorSpaceRef cs = CGColorSpaceCreateDeviceRGB();
+	CGContextRef bc = CGBitmapContextCreate(surf.px, w, h, 8, surf.stride, cs, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little);
+	CGColorSpaceRelease(cs);
+	if (bc) { CGImageRef img = CGBitmapContextCreateImage(bc); if (img) { CGContextDrawImage(ctx, r, img); CGImageRelease(img); } CGContextRelease(bc); }
+	RSurfFree(&surf);
+}
 
 @implementation CARenderer
 {
@@ -455,7 +479,7 @@ void CARenderLayerTree(CALayer *l, CGContextRef ctx) {}
 	RSurf dest; RSurfWrap(&dest, _data, (int)_w, (int)_h, (int)_stride);
 	RCtx cx = { &dest, { 0, 0, (int)_w, (int)_h, NULL, 0 }, 0, 0 };
 	RMat origin = RMatIdentity(); origin.m[12] = -_bounds.origin.x; origin.m[13] = -_bounds.origin.y;
-	RenderLayer(tree, origin, &cx);
+	RenderLayerEx(tree, origin, &cx, NO);
 }
 - (CFTimeInterval)nextFrameTime { return INFINITY; }
 - (void)endFrame {}

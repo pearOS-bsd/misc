@@ -27,6 +27,7 @@
 #import <AppKit/NSOpenPanel.h>
 #import <AppKit/NSScrollView.h>
 #import <AppKit/NSView.h>
+#import <AppKit/NSAnimationContext.h>
 #import <AppKit/NSImage.h>
 #import <AppKit/NSWindow.h>
 #import <AppKit/NSWindowController.h>
@@ -327,8 +328,17 @@ typedef CGFloat NSFontWeight;
 @property NSTimeInterval tolerance;
 @end
 @interface NSView (WsbsdAnimator)
-- (instancetype)animator;
+- (id)animator;
 + (id)defaultAnimationForKey:(NSString *)key;
+@end
+@interface NSWindow (WsbsdAnimator)
+- (id)animator;
+@end
+@class CAMediaTimingFunction;
+@interface NSAnimationContext (WsbsdContext)
+@property(strong) CAMediaTimingFunction *timingFunction;
+@property BOOL allowsImplicitAnimation;
++ (void)runAnimationGroup:(void (^)(NSAnimationContext *context))changes;
 @end
 #ifndef NSCompositingOperationColorDodge
 #define NSCompositingOperationMultiply 14

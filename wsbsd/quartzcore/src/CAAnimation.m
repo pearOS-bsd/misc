@@ -178,6 +178,19 @@ bool CAAnimationTiming(CAAnimation *a, CATiming *t)
 - (BOOL)_roundsToInteger { return NO; }
 @end
 
+/* the value of a from/to animation at the time t seconds after it began: what the animation puts on a layer, without a layer (for AppKit's animator proxies and the like) */
+id CABasicAnimationValueAtTime(CABasicAnimation *a, CFTimeInterval t)
+{
+	double tt = t; int it = 0;
+	if (!CAMapAnimationTime(a, &tt, &it)) return nil;
+	id from = [a fromValue], to = [a toValue];
+	if (!from || !to) return nil;
+	if (tt <= 0) return from;
+	if (tt >= 1) return to;
+	tt = [a _timeFunction:tt];
+	return CAValueInterpolate(from, to, (float)tt);
+}
+
 
 /* ---- springs --------------------------------------------------------------------------------------------------------------------------------------------------------- */
 typedef struct { double w0, zeta, wd, a, b; BOOL over; } SpringState;
