@@ -114,6 +114,8 @@ int ws_window_ordering_group(ws_server *, ws_wid, ws_wid *out, int max);
 int ws_order_window(ws_server *, ws_wid, int mode, ws_wid relative); /* WS_ABOVE/WS_BELOW/WS_OUT */
 int ws_set_window_level(ws_server *, ws_wid, int level);
 int ws_set_window_alpha(ws_server *, ws_wid, float alpha);
+int ws_set_window_capture_exclude(ws_server *, ws_wid, const ws_rect *rects, int n);
+void ws_capture_apply_exclusions(ws_server *, ws_surface *out, int ox, int oy);
 int ws_set_window_brightness(ws_server *, ws_wid, float brightness);
 int ws_window_brightness(ws_server *, ws_wid, float *brightness);
 ws_wid ws_find_window(ws_server *, int x, int y);            /* topmost on-screen at point */

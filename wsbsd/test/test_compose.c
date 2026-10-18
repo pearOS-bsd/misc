@@ -171,6 +171,24 @@ static void test_brightness(void)
 	ws_surface_free(scr); ws_server_free(srv);
 }
 
+/* SetWindowCaptureExcludeShape: the excluded rectangle of a window is cleared in a capture, the rest is kept */
+static void test_capture_exclude(void)
+{
+	ws_server *srv = ws_server_new(100, 100);
+	ws_surface *scr = ws_surface_new(100, 100);
+	ws_wid w = ws_create_window(srv, (ws_rect){ 10, 10, 40, 40 });
+	ws_fill(ws_window_backing(srv, w), (ws_rect){ 0, 0, 40, 40 }, 1, 0, 0, 1);
+	ws_order_window(srv, w, WS_ABOVE, 0);
+	ws_compose_scene(srv, scr);
+	ws_rect ex = { 5, 5, 10, 10 };
+	CHECK(ws_set_window_capture_exclude(srv, w, &ex, 1) == 0);
+	ws_surface *cap = ws_surface_new(100, 100); ws_copy(cap, 0, 0, scr, (ws_rect){ 0, 0, 100, 100 });
+	ws_capture_apply_exclusions(srv, cap, 0, 0);
+	CHECK(*(uint32_t *)(cap->px + 20 * cap->stride + 20 * 4) == 0u);                       /* (15..25) in the screen */
+	CHECK(*(uint32_t *)(cap->px + 40 * cap->stride + 40 * 4) == 0xffff0000u);
+	ws_surface_free(cap); ws_surface_free(scr); ws_server_free(srv);
+}
+
 /* SetWindowTransform: a 40x40 red window scaled 2x about its centre covers 80x80, translation moves it */
 static void test_transform(void)
 {
@@ -333,6 +351,7 @@ int main(void)
 	test_transform();
 	test_invert();
 	test_brightness();
+	test_capture_exclude();
 	test_zoom();
 	test_corners();
 	printf(fails ? "%d failures\n" : "all tests passed\n", fails);
