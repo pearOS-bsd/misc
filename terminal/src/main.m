@@ -3,6 +3,7 @@
 #import "TermView.h"
 #import "TermWindow.h"
 #import "TermProfile.h"
+#import "TermSettings.h"
 
 @interface TermApp : NSObject
 - (TermWindowController *)wc;
@@ -12,6 +13,7 @@
 - (TermWindowController *)wc { NSWindow *w = [NSApp keyWindow] ?: [NSApp mainWindow]; for (TermWindowController *c in [TermWindowController all]) if ([c window] == w) return c; return [[TermWindowController all] lastObject]; }
 - (TermProfile *)profileOf:(id)sender { id r = [sender respondsToSelector:@selector(representedObject)] ? [sender representedObject] : nil; return [r isKindOfClass:[TermProfile class]] ? r : nil; }
 
+- (void)showSettings:(id)sender { (void)sender; [TermSettings show]; }
 - (void)newWindow:(id)sender { [[TermWindowController alloc] initWithProfile:[self profileOf:sender] command:nil]; }
 - (void)newTab:(id)sender { TermWindowController *c = [self wc]; if (c) [c newTabWithProfile:[self profileOf:sender] command:nil]; else [self newWindow:sender]; }
 - (void)closeTab:(id)sender { [[self wc] closeCurrentTab:sender]; }
@@ -80,6 +82,7 @@
 	(void)n; TermProfile *p = getenv("TERMINAL_PROFILE") ? [TermProfile profileNamed:[NSString stringWithUTF8String:getenv("TERMINAL_PROFILE")]] : nil;
 	TermWindowController *c = [[TermWindowController alloc] initWithProfile:p command:nil];
 	const char *init = getenv("TERMINAL_INITIAL_INPUT"), *quitAfter = getenv("TERMINAL_EXIT_AFTER");
+	if (getenv("TERMINAL_SETTINGS")) [TermSettings show];
 	if (quitAfter && atof(quitAfter) > 0) [NSTimer scheduledTimerWithTimeInterval:atof(quitAfter) target:self selector:@selector(finish:) userInfo:nil repeats:NO];
 	if (init && *init) [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(typeInitial:) userInfo:c repeats:NO];
 }

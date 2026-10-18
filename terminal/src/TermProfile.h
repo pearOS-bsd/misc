@@ -11,4 +11,5 @@
 + (TermProfile *)defaultProfile;                            /* the one "Use Settings as Default" last stored (NSUserDefaults "Default Window Settings"), else Pro */
 + (void)setDefaultProfile:(TermProfile *)p;
 - (NSFont *)fontWithSize:(CGFloat)size bold:(BOOL)bold;
+- (void)changed;                                            /* after an edit: stores the profile's values in the user defaults and tells every terminal that uses it (TermProfileChanged) */
 @end
