@@ -677,6 +677,12 @@ static BOOL wsbsdServicesOpenFile(id self, SEL _cmd, id app, NSString *file)
 @end
 
 @implementation NSURL (WsbsdBookmarks)
++ (instancetype)fileURLWithFileSystemRepresentation:(const char *)path isDirectory:(BOOL)isDir relativeToURL:(NSURL *)baseURL
+{
+	NSString *p = path ? [[NSFileManager defaultManager] stringWithFileSystemRepresentation: path length: strlen(path)] : @"";
+	if (baseURL && ![p hasPrefix: @"/"]) p = [[baseURL path] stringByAppendingPathComponent: p];
+	return [NSURL fileURLWithPath: p isDirectory: isDir];
+}
 - (NSData *)bookmarkDataWithOptions:(NSUInteger)options includingResourceValuesForKeys:(NSArray *)keys relativeToURL:(NSURL *)relativeURL error:(NSError **)error
 {
 	(void)options; (void)keys; (void)relativeURL; (void)error;
@@ -778,4 +784,21 @@ static NSDictionary *wsbsdResourceValues(id self, SEL _cmd, NSArray *keys, NSErr
 - (void)setTemplate:(BOOL)flag { (void)flag; }
 - (NSSize)size { return NSZeroSize; }
 - (void)setSize:(NSSize)size { (void)size; }
+@end
+
+@implementation NSImage (WsbsdSymbols)
++ (instancetype)imageWithSystemSymbolName:(NSString *)name accessibilityDescription:(NSString *)description
+{
+	if (!name.length) return nil;
+	NSImage *img = [[NSImage alloc] initWithSize: NSMakeSize(18, 18)];
+	[img lockFocus];
+	[[NSColor blackColor] set];
+	NSBezierPath *p = [NSBezierPath bezierPathWithRoundedRect: NSMakeRect(2.5, 2.5, 13, 13) xRadius: 3 yRadius: 3]; [p setLineWidth: 1.5]; [p stroke];
+	NSString *g = [[name substringToIndex: 1] uppercaseString];
+	NSDictionary *a = @{ NSFontAttributeName: [NSFont boldSystemFontOfSize: 9], NSForegroundColorAttributeName: [NSColor blackColor] };
+	NSSize sz = [g sizeWithAttributes: a]; [g drawAtPoint: NSMakePoint(9 - sz.width / 2, 9 - sz.height / 2) withAttributes: a];
+	[img unlockFocus];
+	[img setTemplate: YES];
+	return img;
+}
 @end

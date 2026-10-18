@@ -291,6 +291,7 @@ enum { NSURLBookmarkCreationWithSecurityScope = 1 << 11, NSURLBookmarkCreationSe
 @interface NSURL (WsbsdBookmarks)
 - (NSData *)bookmarkDataWithOptions:(NSUInteger)options includingResourceValuesForKeys:(NSArray *)keys relativeToURL:(NSURL *)relativeURL error:(NSError **)error;
 + (instancetype)URLByResolvingBookmarkData:(NSData *)bookmarkData options:(NSUInteger)options relativeToURL:(NSURL *)relativeURL bookmarkDataIsStale:(BOOL *)isStale error:(NSError **)error;
++ (instancetype)fileURLWithFileSystemRepresentation:(const char *)path isDirectory:(BOOL)isDir relativeToURL:(NSURL *)baseURL;
 - (BOOL)startAccessingSecurityScopedResource;
 - (void)stopAccessingSecurityScopedResource;
 @end
@@ -464,5 +465,9 @@ extern NSString *const NSAppleScriptErrorMessage;
 - (void)updateLayer;
 - (BOOL)canDrawSubviewsIntoLayer;
 - (void)setCanDrawSubviewsIntoLayer:(BOOL)flag;
+@end
+/* SF Symbols: there is no symbol set; an image is made from the name (a small outlined glyph) so that code that expects a template image gets one */
+@interface NSImage (WsbsdSymbols)
++ (instancetype)imageWithSystemSymbolName:(NSString *)name accessibilityDescription:(NSString *)description;
 @end
 #endif
