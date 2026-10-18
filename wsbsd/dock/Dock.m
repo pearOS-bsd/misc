@@ -48,6 +48,7 @@ typedef struct { uint32_t wid; int pid; char label[64]; char bpath[512]; CGImage
 	pointer = -1; hover = -1;
 	wsc = ws_connect(NULL);
 	[[NSDistributedNotificationCenter defaultCenter] addObserver: self selector: @selector(miniNote:) name: @"com.wsbsd.dock.minimize" object: nil];
+	[[NSDistributedNotificationCenter defaultCenter] addObserver: self selector: @selector(badgeNote:) name: @"com.wsbsd.dock.badge" object: nil];
 	[self reload];
 	timer = [NSTimer scheduledTimerWithTimeInterval: 1.0 / 60 target: self selector: @selector(tick:) userInfo: nil repeats: YES];
 	return self;
@@ -177,7 +178,7 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 	}
 	PUSH(DOCK_TRASH, "Trash", "trash", @"", -1, 0);
 	winW = 0;                                                                   /* the window geometry follows the items */
-	for (int i = 0; i < n; i++) { scale[i] = 1; bounceStart[i] = 0; if (items[i].kind == DOCK_APP) { CGImageRef ic = [self iconForPath: paths[i]]; if (ic) tiles[i].icon = ic; } }
+	for (int i = 0; i < n; i++) { scale[i] = 1; bounceStart[i] = 0; if (items[i].kind == DOCK_APP) { CGImageRef ic = [self iconForPath: paths[i]]; if (ic) tiles[i].icon = ic; tiles[i].badge = [badgeStore[paths[i]] intValue]; } }
 	scanKey = [[[runningPaths allObjects] sortedArrayUsingSelector: @selector(compare:)] componentsJoinedByString: @"|"];
 }
 - (BOOL)wide { return fanOpen || ctxOpen || [self poofing]; }
@@ -346,6 +347,14 @@ static int HCAction(NSDictionary *prefs, int corner)
 	if (a == 1) return;
 	if (a == 5 || a == 10) { hcPending = a; return; }
 	[self runCornerAction: a];
+}
+/* an application's Dock badge (NSDockTile badgeLabel): the notification carries the application's path and the number, 0 clears it */
+static NSMutableDictionary *badgeStore;
+- (void)badgeNote:(NSNotification *)n
+{
+	NSString *p = [n userInfo][@"path"]; if (![p length]) return; if (!badgeStore) badgeStore = [NSMutableDictionary dictionary];
+	badgeStore[p] = [n userInfo][@"count"] ?: @0; if (getenv("DOCK_LOG")) NSLog(@"dock: badge %@ -> %@ (tiles: %@)", p, badgeStore[p], [paths description]); for (int i = 0; i < self->n; i++) if (items[i].kind == DOCK_APP && [paths[i] isEqualToString: p]) tiles[i].badge = [badgeStore[p] intValue];
+	[self setNeedsDisplay: YES];
 }
 - (void)tick:(NSTimer *)t
 {
