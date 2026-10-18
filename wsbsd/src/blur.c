@@ -77,3 +77,53 @@ void ws_blur_region(ws_surface *img, ws_rect r, ws_rect wr, float sigma)
 	for (int y = y0; y < y1; y++) memcpy(img->px + (size_t)y * img->stride + (size_t)x0 * 4, a + (size_t)(y - r.y) * stride + (size_t)(x0 - r.x) * 4, (size_t)(x1 - x0) * 4);
 	free(a); free(b);
 }
+
+/* ---- the glass material ("Liquid Glass"): what lies behind a rounded rectangle is blurred, its saturation is raised, the edge band acts as a lens (the backdrop is sampled from further inside, so the edge looks
+ * thick and bent), a specular rim from a light at the top left and a soft inner shadow at the bottom edge. mode 1: regular, 2: clear (less blur, no tint) ---- */
+#include <math.h>
+static float clampf(float v, float lo, float hi) { return v < lo ? lo : v > hi ? hi : v; }
+static void sample_bilinear(const ws_surface *s, float x, float y, float out[3])
+{
+	x = clampf(x - 0.5f, 0, (float)s->w - 1.001f); y = clampf(y - 0.5f, 0, (float)s->h - 1.001f);
+	int x0 = (int)x, y0 = (int)y; float fx = x - x0, fy = y - y0;
+	const uint8_t *p00 = s->px + (size_t)y0 * s->stride + (size_t)x0 * 4, *p10 = p00 + 4, *p01 = p00 + s->stride, *p11 = p01 + 4;
+	for (int c = 0; c < 3; c++) out[c] = ((p00[c] * (1 - fx) + p10[c] * fx) * (1 - fy) + (p01[c] * (1 - fx) + p11[c] * fx) * fy) / 255.0f;      /* BGRA: c = 0 blue */
+}
+
+void ws_glass_region(ws_surface *img, ws_rect gr, int rad, int mode)
+{
+	if (!img || gr.w < 4 || gr.h < 4 || mode <= 0) return;
+	float sigma = mode == 2 ? 3.0f : 9.0f; int M = (int)ceilf(3.0f * sigma) + 16;
+	ws_rect cr = { gr.x - M, gr.y - M, gr.w + 2 * M, gr.h + 2 * M };
+	int cx0 = cr.x < 0 ? 0 : cr.x, cy0 = cr.y < 0 ? 0 : cr.y, cx1 = cr.x + cr.w > img->w ? img->w : cr.x + cr.w, cy1 = cr.y + cr.h > img->h ? img->h : cr.y + cr.h;
+	if (cx1 <= cx0 || cy1 <= cy0) return;
+	ws_surface *tmp = ws_surface_new(cx1 - cx0, cy1 - cy0); if (!tmp) return;
+	for (int y = cy0; y < cy1; y++) memcpy(tmp->px + (size_t)(y - cy0) * tmp->stride, img->px + (size_t)y * img->stride + (size_t)cx0 * 4, (size_t)(cx1 - cx0) * 4);
+	ws_blur_region(tmp, (ws_rect){ 0, 0, tmp->w, tmp->h }, (ws_rect){ 0, 0, tmp->w, tmp->h }, sigma);
+	float hw = gr.w / 2.0f, hh = gr.h / 2.0f, r = (float)(rad > 0 ? rad : 0); if (r > hh) r = hh; if (r > hw) r = hw;
+	float L = fminf(16.0f, fminf(gr.w, gr.h) / 3.0f);                                 /* width of the lens band */
+	int x0 = gr.x < 0 ? 0 : gr.x, y0 = gr.y < 0 ? 0 : gr.y, x1 = gr.x + gr.w > img->w ? img->w : gr.x + gr.w, y1 = gr.y + gr.h > img->h ? img->h : gr.y + gr.h;
+	for (int y = y0; y < y1; y++) for (int x = x0; x < x1; x++) {
+		float px = x + 0.5f - gr.x - hw, py = y + 0.5f - gr.y - hh;                  /* relative to the centre */
+		float qx = fabsf(px) - (hw - r), qy = fabsf(py) - (hh - r);
+		float mx = qx > 0 ? qx : 0, my = qy > 0 ? qy : 0, sdf = sqrtf(mx * mx + my * my) + fminf(fmaxf(qx, qy), 0) - r;      /* < 0 inside */
+		float cover = clampf(0.5f - sdf, 0, 1); if (cover <= 0) continue;
+		float d = -sdf; if (d < 0) d = 0;
+		float nx, ny;                                                               /* outward normal */
+		if (qx > 0 && qy > 0) { float l = sqrtf(qx * qx + qy * qy); nx = (px < 0 ? -1 : 1) * qx / l; ny = (py < 0 ? -1 : 1) * qy / l; }
+		else if (qx > qy) { nx = px < 0 ? -1.0f : 1.0f; ny = 0; } else { nx = 0; ny = py < 0 ? -1.0f : 1.0f; }
+		float shift = 0; if (d < L) { float t = 1 - d / L; shift = t * t * L * 0.85f; }
+		float col[3]; sample_bilinear(tmp, (x + 0.5f - nx * shift) - cx0, (y + 0.5f - ny * shift) - cy0, col);
+		float gray = 0.114f * col[0] + 0.587f * col[1] + 0.299f * col[2];
+		float sat = mode == 2 ? 1.25f : 1.6f;
+		for (int c = 0; c < 3; c++) col[c] = clampf(gray + (col[c] - gray) * sat + (mode == 2 ? 0.0f : 0.035f), 0, 1);
+		float light = nx * -0.55f + ny * -0.83f; if (light < 0) light = 0;
+		float rim = expf(-d / 1.3f), glow = expf(-d / 7.0f);
+		float white = (mode == 2 ? 0.0f : 0.05f) + rim * (0.12f + 0.55f * light) + glow * 0.10f * light;
+		float shade = expf(-d / 6.0f) * 0.12f * fmaxf(0.0f, nx * 0.25f + ny * 0.95f);
+		for (int c = 0; c < 3; c++) { col[c] = col[c] * (1 - shade) * (1 - white) + white; if (col[c] > 1) col[c] = 1; }
+		uint8_t *dp = img->px + (size_t)y * img->stride + (size_t)x * 4;
+		for (int c = 0; c < 3; c++) dp[c] = (uint8_t)(dp[c] * (1 - cover) + col[c] * 255.0f * cover + 0.5f);
+	}
+	ws_surface_free(tmp);
+}

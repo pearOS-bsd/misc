@@ -18,6 +18,7 @@ typedef struct { uint32_t wid; int pid; char label[64]; CGImageRef thumb; int ph
 
 @interface DockView : NSView {
 @public
+	ws_rect glassRect; int glassOn;
 	NSString *fanDir; double fanMTime, fanCheck;      /* the folder of the open fan and its modification time: the fan lists it again when it changes */
 	double winX, winW;     /* the bar's window: as wide as the bar gets when magnified, fixed for the current items (resizing the window every frame made the Dock flicker) */
 	MiniWin mini[MAXMINI]; int nmini; ws_conn *wsc; float genieMesh[GENIE_MAX_FLOATS];
@@ -159,6 +160,11 @@ typedef struct { uint32_t wid; int pid; char label[64]; CGImageRef thumb; int ph
 		}
 	}
 	[self relayout];
+	if (wsc && !fanOpen) {                                                      /* the glass of the bar: the window server blurs and bends what is behind the bar's rounded rectangle (the window is larger than the bar) */
+		ws_win gw = { .id = (ws_wid)[[self window] windowNumber], .px = NULL }; double wh = [[self window] frame].size.height;
+		ws_rect gr = { (int)floor(bar.bar_x - winX), (int)floor(wh - (bar.bottom_margin + bar.bar_h)), (int)ceil(bar.bar_w), (int)ceil(bar.bar_h) };
+		if (gr.x != glassRect.x || gr.y != glassRect.y || gr.w != glassRect.w || gr.h != glassRect.h || !glassOn) { ws_win_glass(wsc, &gw, gr, 18, 1); glassRect = gr; glassOn = 1; }
+	} else if (wsc && fanOpen && glassOn) { ws_win_glass(wsc, &(ws_win){ .id = (ws_wid)[[self window] windowNumber], .px = NULL }, (ws_rect){ 0, 0, 0, 0 }, 0, 0); glassOn = 0; }
 	[self stepMini];
 	if (getenv("DOCK_FAN") && !fanOpen && !fanStart) { [self openFan: n - 2]; }
 	NSWindow *w = [self window];

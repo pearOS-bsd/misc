@@ -266,8 +266,32 @@ static void test_blur(void)
 	ws_server_free(srv);
 }
 
+
+/* the glass material: a colourful backdrop under a transparent window with a glass rectangle; the inside is blurred and more saturated, the corners outside the rounded rectangle are untouched, the rim is lighter */
+static void test_glass(void)
+{
+	ws_server *srv = ws_server_new(400, 200);
+	ws_wid bg = ws_create_window(srv, (ws_rect){ 0, 0, 400, 200 }), gl = ws_create_window(srv, (ws_rect){ 50, 60, 300, 80 });
+	ws_surface *b = ws_window_backing(srv, bg);
+	for (int y = 0; y < 200; y++) for (int x = 0; x < 400; x++) { uint8_t *p = (uint8_t *)at(b, x, y); int chk = ((x / 20) + (y / 20)) & 1; p[0] = chk ? 200 : 30; p[1] = chk ? 60 : 180; p[2] = chk ? 40 : 220; p[3] = 255; }
+	ws_order_window(srv, bg, WS_ABOVE, 0); ws_order_window(srv, gl, WS_ABOVE, 0);
+	ws_surface *plain = ws_surface_new(400, 200); ws_compose_scene(srv, plain);
+	ws_set_window_glass(srv, gl, (ws_rect){ 0, 0, 300, 80 }, 24, 1);
+	ws_surface *out = ws_surface_new(400, 200); ws_compose_scene(srv, out);
+	CHECK(memcmp(at(out, 5, 5), at(plain, 5, 5), 4) == 0);                                   /* outside the glass: unchanged */
+	CHECK(memcmp(at(out, 52, 62), at(plain, 52, 62), 4) == 0);                               /* the corner outside the rounded rectangle */
+	int diff = 0; for (int c = 0; c < 3; c++) diff += abs(at(out, 200, 100)[c] - at(plain, 200, 100)[c]); CHECK(diff > 6);   /* inside: blurred */
+	int d1 = abs(at(out, 200, 100)[0] - at(out, 220, 100)[0]) + abs(at(out, 200, 100)[1] - at(out, 220, 100)[1]);
+	int d0 = abs(at(plain, 200, 100)[0] - at(plain, 220, 100)[0]) + abs(at(plain, 200, 100)[1] - at(plain, 220, 100)[1]);
+	CHECK(d1 < d0);                                                                          /* the checkerboard is smoother */
+	CHECK(at(out, 200, 61)[0] > at(out, 200, 100)[0] && at(out, 200, 61)[1] > at(out, 200, 100)[1]);   /* the top rim is a light line */
+	if (getenv("GLASS_PPM")) ws_write_ppm(out, getenv("GLASS_PPM"));
+	ws_surface_free(plain); ws_surface_free(out); ws_server_free(srv);
+}
+
 int main(void)
 {
+	test_glass();
 	ws_server *srv = ws_server_new(320, 200);
 	ws_surface *scr = ws_surface_new(320, 200);
 	ws_rect r1 = { 20, 20, 160, 100 }, r2 = { 100, 60, 160, 100 }, r3 = { 150, 10, 80, 80 };
@@ -380,7 +404,7 @@ int main(void)
 	CHECK(ws_write_ppm(scr, "out.ppm") == 0);
 	ws_surface_free(scr);
 	ws_server_free(srv);
-	test_walk();
+	test_walk(); test_glass();
 	test_transform();
 	test_invert();
 	test_brightness();

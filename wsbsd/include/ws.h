@@ -194,6 +194,7 @@ typedef struct {
 	int blur_radius;        /* background blur radius in points behind this window, 0 = none */
 	int invert;                     /* CIColorInvert filter */
 	int has_xf; float xf[6];        /* SetWindowTransform: a b c d tx ty about the window centre */
+	int glass_mode, glass_radius; ws_rect glass_rect;   /* the glass material over a part of the window (window-relative rect) */
 	float brightness;               /* SetWindowListBrightness: colour channels are multiplied by it (1 = unchanged) */
 	const float *mesh; int mcols, mrows;   /* SetWindowWarp: srcX srcY dstX dstY per point in pixels, y up (NULL = none) */
 } ws_visit;
@@ -222,6 +223,9 @@ double ws_fps_compose_ms(void);
 unsigned long ws_fps_total(void);
 void ws_draw_fps(ws_surface *img);
 int ws_draw_text_small(ws_surface *img, int x, int y, const char *s, int scale);   /* 5x7 font; returns the x after the text */
+/* the glass material over a rounded rectangle of the screen image: blur, saturation, lens at the edge, specular rim (mode 1 regular, 2 clear) */
+void ws_glass_region(ws_surface *img, ws_rect rect, int radius, int mode);
+int ws_set_window_glass(ws_server *, ws_wid id, ws_rect rect_in_window, int radius, int mode);   /* mode 0 removes it */
 void ws_blur_region(ws_surface *img, ws_rect src, ws_rect write, float sigma);   /* gaussian blur of src (edges clamped at the image), only write is stored back */
 float ws_blur_sigma(int radius);                                         /* radius in points -> gaussian sigma (estimate: radius / 2) */
 /* Background blur behind a window (SetWindowBackgroundBlurRadius): radius in points (0..60), the compositor blurs what is behind the window before drawing it. */
