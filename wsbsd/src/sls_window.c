@@ -839,6 +839,17 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		}
 		return reply_simple(c->fd, h, 0);
 	}
+	case SLS_MSG_SetWindowListBrightness: {                                        /* 2 OOL: window ids (u32 each), brightness (float each); counts@0x44 / 0x48 (must match the sizes, decompiled __XSetWindowListBrightness); size 0x4c; applied pairwise */
+		size_t off[2]; uint32_t sz[2]; int e = ool_multi(h, buf, len, 0x4c, 2, off, sz);
+		if (e) return reply_simple(c->fd, h, e);
+		if ((sz[0] >> 2) != rd32(buf, 0x44) || (sz[1] >> 2) != rd32(buf, 0x48)) return reply_simple(c->fd, h, -300);
+		uint32_t n = sz[0] >> 2; if ((sz[1] >> 2) < n) n = sz[1] >> 2;
+		for (uint32_t i = 0; i < n; i++) {
+			uint32_t wid = rd32(buf, off[0] + 4 * i); float b; memcpy(&b, buf + off[1] + 4 * i, 4);
+			if (ws_window_exists(srv, wid) && holds_rights(c, wid)) ws_set_window_brightness(srv, wid, b);
+		}
+		return reply_simple(c->fd, h, 0);
+	}
 	case SLS_MSG_AddTrackingAreas: {                                               /* 5 OOL, size 0x8c, wid@0x74; the descriptor sizes must agree with the counts@0x78..0x88. Inferred layout (not decompiled below the wire checks): region bytes of all areas, the byte length of each area's region (u32), the area ids (u64), flags, user data (u64) */
 		size_t off[5]; uint32_t sz[5]; int e = ool_multi(h, buf, len, 0x8c, 5, off, sz);
 		if (e) return reply_simple(c->fd, h, e);

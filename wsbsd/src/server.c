@@ -12,6 +12,7 @@ typedef struct {
 	float alpha;
 	int filter;                     /* SetWindowCIFilter: 2 = CIColorInvert (rendered), others kept only */
 	float xf[6]; int has_xf;        /* SetWindowTransform: a b c d tx ty about the window centre (software compositor) */
+	float brightness;       /* SetWindowListBrightness: the colour is multiplied by it (1 = unchanged); software compositor */
 	float sys_alpha;        /* SetWindowListSystemAlpha: multiplies the alpha (fades done by the system); 1 by default */
 	int syslevel;           /* SetWindowListSystemLevel class, kept */
 	int on_screen;
@@ -130,7 +131,7 @@ static ws_wid add_window(ws_server *s, ws_rect f, ws_surface *b, const char *shm
 		s->win = nw; s->cap = nc;
 	}
 	window *w = &s->win[s->n++];
-	*w = (window){ .id = s->next_id++, .frame = f, .alpha = 1.0f, .sys_alpha = 1.0f, .backing = b, .full_dmg = 1 };
+	*w = (window){ .id = s->next_id++, .frame = f, .alpha = 1.0f, .brightness = 1.0f, .sys_alpha = 1.0f, .backing = b, .full_dmg = 1 };
 	strncpy(w->shm, shm, sizeof w->shm - 1);
 	bump(s);
 	return w->id;
@@ -470,6 +471,8 @@ int ws_set_window_level(ws_server *s, ws_wid id, int level)
 	if (w->level != level) { w->level = level; bump(s); if (w->on_screen) place(s, w, WS_ABOVE, NULL); }   /* the real server brings it to the front of the new level */
 	return 0;
 }
+int ws_set_window_brightness(ws_server *s, ws_wid id, float b) { window *w = get(s, id); if (!w) return -1; w->brightness = b < 0 ? 0 : b > 8 ? 8 : b; bump(s); return 0; }
+int ws_window_brightness(ws_server *s, ws_wid id, float *b) { window *w = get(s, id); if (!w) return -1; *b = w->brightness; return 0; }
 int ws_set_window_alpha(ws_server *s, ws_wid id, float a) { window *w = get(s, id); if (!w) return -1; w->alpha = a < 0 ? 0 : a > 1 ? 1 : a; bump(s); return 0; }
 
 static int back_to_front(const void *a, const void *b)
@@ -851,12 +854,18 @@ void ws_compose_scene(ws_server *s, ws_surface *screen)
 				for (int y = 0; y < px->h; y++) { const uint8_t *sp = px->px + (size_t)y * px->stride; uint8_t *dp = inv->px + (size_t)y * inv->stride; for (int x = 0; x < px->w; x++, sp += 4, dp += 4) { dp[0] = sp[3] - sp[0]; dp[1] = sp[3] - sp[1]; dp[2] = sp[3] - sp[2]; dp[3] = sp[3]; } }
 				px = inv;
 			}
+			ws_surface *brt = NULL;
+			if (v[i]->brightness != 1.0f && px && px->px && (brt = ws_surface_new(px->w, px->h))) {          /* SetWindowListBrightness: the colour channels of the premultiplied pixels are scaled, the alpha is not */
+				int k = (int)(v[i]->brightness * 256.0f + 0.5f);
+				for (int y = 0; y < px->h; y++) { const uint8_t *sp = px->px + (size_t)y * px->stride; uint8_t *dp = brt->px + (size_t)y * brt->stride; for (int x = 0; x < px->w; x++, sp += 4, dp += 4) { for (int c = 0; c < 3; c++) { int t = (sp[c] * k + 128) >> 8; dp[c] = (uint8_t)(t > sp[3] ? sp[3] : t); } dp[3] = sp[3]; } }
+				px = brt;
+			}
 			ws_surface *rnd = NULL; int cr = v[i]->corner_radius ? v[i]->corner_radius : (v[i]->shadow_on ? v[i]->shadow_cr : 0);
 			if (cr > 0 && px && (rnd = round_corners(px, cr))) px = rnd;
 			if (v[i]->has_xf && px && px->px) xs = xform_surface(v[i], px, &xo, &yo);
 			if (xs) { s->comp->over(s->comp, screen, v[i]->frame.x + xo, v[i]->frame.y + yo, xs, v[i]->alpha * v[i]->sys_alpha, all); if (s->comp->flush) s->comp->flush(s->comp); ws_surface_free(xs); }
 			else s->comp->over(s->comp, screen, v[i]->frame.x, v[i]->frame.y, px, v[i]->alpha * v[i]->sys_alpha, all);
-			if (inv || rnd) { if (s->comp->flush) s->comp->flush(s->comp); ws_surface_free(inv); ws_surface_free(rnd); }
+			if (inv || rnd || brt) { if (s->comp->flush) s->comp->flush(s->comp); ws_surface_free(inv); ws_surface_free(rnd); ws_surface_free(brt); }
 		}
 		/* the shadow layer is rendered above its window (it is cut out of the window shape; the inner rim lies inside it) */
 		if (v[i]->shadow_on) draw_shadow(s, v[i], screen, v[i]->id == act || v[i]->appearance);
