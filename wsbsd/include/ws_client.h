@@ -14,6 +14,7 @@ int ws_win_create(ws_conn *, ws_rect frame, int level, ws_win *out);
 int ws_win_order(ws_conn *, ws_win *, int mode, ws_wid relative);
 int ws_win_move(ws_conn *, ws_win *, int x, int y);
 int ws_win_alpha(ws_conn *, ws_win *, float alpha);
+int ws_win_warp(ws_conn *, ws_win *, int cols, int rows, const float *mesh);   /* SetWindowWarp (30031): srcX srcY dstX dstY per point, y up; no points removes the warp */
 int ws_win_blur(ws_conn *, ws_win *, int radius);               /* SetWindowBackgroundBlurRadius (30260): blur what is behind the window */
 int ws_win_shadow(ws_conn *, ws_win *, int corner_radius, int on);
 int ws_win_flush(ws_conn *, ws_win *);

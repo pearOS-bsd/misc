@@ -451,22 +451,29 @@ static ws_surface *warp_surface(const ws_server *srv, const window *w, const ws_
 	size_t sw = (size_t)bw * 2, sh = (size_t)bh * 2; uint8_t *ss = calloc(sw * sh, 4); if (!ss) { ws_surface_free(o); free(q); return NULL; }
 	for (int r = 0; r + 1 < rows; r++) for (int c = 0; c + 1 < cols; c++) {
 		const float *p00 = m + 4 * (r * cols + c), *p10 = p00 + 4, *p01 = p00 + 4 * cols, *p11 = p01 + 4;
-		const float *tri[2][3] = { { p00, p10, p01 }, { p10, p11, p01 } };
-		for (int t = 0; t < 2; t++) {
-			const float *A = tri[t][0], *B = tri[t][1], *C = tri[t][2];
-			float area = edge_fn(A[0], A[1], B[0], B[1], C[0], C[1]); if (fabsf(area) < 1e-6f) continue;
-			float tx0 = fminf(A[0], fminf(B[0], C[0])), tx1 = fmaxf(A[0], fmaxf(B[0], C[0])), ty0 = fminf(A[1], fminf(B[1], C[1])), ty1 = fmaxf(A[1], fmaxf(B[1], C[1]));
-			int ix0 = (int)floorf((tx0 - x0) * 2) - 1, ix1 = (int)ceilf((tx1 - x0) * 2) + 1, iy0 = (int)floorf((ty0 - y0) * 2) - 1, iy1 = (int)ceilf((ty1 - y0) * 2) + 1;
-			if (ix0 < 0) ix0 = 0; if (iy0 < 0) iy0 = 0; if (ix1 > (int)sw) ix1 = (int)sw; if (iy1 > (int)sh) iy1 = (int)sh;
-			for (int y = iy0; y < iy1; y++) for (int x = ix0; x < ix1; x++) {
-				float px = x0 + (x + 0.5f) * 0.5f, py = y0 + (y + 0.5f) * 0.5f;
-				float w0 = edge_fn(B[0], B[1], C[0], C[1], px, py) / area, w1 = edge_fn(C[0], C[1], A[0], A[1], px, py) / area, w2 = 1.0f - w0 - w1;
-				const float e = -1e-4f;                                              /* a sample on the shared edge belongs to both triangles: the later one wins, the cell stays closed */
-				if (w0 < e || w1 < e || w2 < e) continue;
-				float u = w0 * A[2] + w1 * B[2] + w2 * C[2], v = w0 * A[3] + w1 * B[3] + w2 * C[3];
-				uint8_t *dst = ss + ((size_t)y * sw + x) * 4; dst[0] = dst[1] = dst[2] = dst[3] = 0;
-				warp_pixel(src, u, v, dst, 1.0f);
+		float tx0 = fminf(fminf(p00[0], p10[0]), fminf(p01[0], p11[0])), tx1 = fmaxf(fmaxf(p00[0], p10[0]), fmaxf(p01[0], p11[0]));
+		float ty0 = fminf(fminf(p00[1], p10[1]), fminf(p01[1], p11[1])), ty1 = fmaxf(fmaxf(p00[1], p10[1]), fmaxf(p01[1], p11[1]));
+		int ix0 = (int)floorf((tx0 - x0) * 2) - 1, ix1 = (int)ceilf((tx1 - x0) * 2) + 1, iy0 = (int)floorf((ty0 - y0) * 2) - 1, iy1 = (int)ceilf((ty1 - y0) * 2) + 1;
+		if (ix0 < 0) ix0 = 0; if (iy0 < 0) iy0 = 0; if (ix1 > (int)sw) ix1 = (int)sw; if (iy1 > (int)sh) iy1 = (int)sh;
+		/* the quad is mapped bilinearly: p = p00 + s (p10 - p00) + t (p01 - p00) + s t (p00 - p10 - p01 + p11); the inverse is solved per sample (a quadratic in t) */
+		float e1x = p10[0] - p00[0], e1y = p10[1] - p00[1], e2x = p01[0] - p00[0], e2y = p01[1] - p00[1], e3x = p00[0] - p10[0] - p01[0] + p11[0], e3y = p00[1] - p10[1] - p01[1] + p11[1];
+		for (int y = iy0; y < iy1; y++) for (int x = ix0; x < ix1; x++) {
+			float px = x0 + (x + 0.5f) * 0.5f - p00[0], py = y0 + (y + 0.5f) * 0.5f - p00[1];
+			float hx = px, hy = py;
+			float k2 = e3x * e2y - e3y * e2x, k1 = (e1x * e2y - e1y * e2x) + (hx * e3y - hy * e3x), k0 = hx * e1y - hy * e1x;      /* cross2(g,f), cross2(e,f) + cross2(h,g), cross2(h,e) */
+			float t, sv;
+			if (fabsf(k2) < 1e-6f) { if (fabsf(k1) < 1e-9f) continue; t = -k0 / k1; sv = (hx - e2x * t) / (e1x + e3x * t); }
+			else {
+				float disc = k1 * k1 - 4 * k0 * k2; if (disc < 0) continue; float sq = sqrtf(disc);
+				float t1 = (-k1 - sq) / (2 * k2), t2 = (-k1 + sq) / (2 * k2), s1 = (hx - e2x * t1) / (e1x + e3x * t1), s2 = (hx - e2x * t2) / (e1x + e3x * t2);
+				const float lo = -1e-4f, hi = 1.0001f;
+				if (t1 >= lo && t1 <= hi && s1 >= lo && s1 <= hi) { t = t1; sv = s1; } else if (t2 >= lo && t2 <= hi && s2 >= lo && s2 <= hi) { t = t2; sv = s2; } else continue;
 			}
+			if (t < -1e-4f || t > 1.0001f || sv < -1e-4f || sv > 1.0001f) continue;
+			float u = (1 - sv) * (1 - t) * p00[2] + sv * (1 - t) * p10[2] + (1 - sv) * t * p01[2] + sv * t * p11[2];
+			float v = (1 - sv) * (1 - t) * p00[3] + sv * (1 - t) * p10[3] + (1 - sv) * t * p01[3] + sv * t * p11[3];
+			uint8_t *dst = ss + ((size_t)y * sw + x) * 4; dst[0] = dst[1] = dst[2] = dst[3] = 0;
+			warp_pixel(src, u, v, dst, 1.0f);
 		}
 	}
 	for (int y = 0; y < bh; y++) for (int x = 0; x < bw; x++) {
