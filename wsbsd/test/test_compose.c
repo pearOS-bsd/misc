@@ -197,9 +197,11 @@ static void test_warp(void)
 	ws_wid w = ws_create_window(srv, (ws_rect){ 10, 10, 40, 40 });
 	ws_fill(ws_window_backing(srv, w), (ws_rect){ 0, 0, 40, 40 }, 1, 0, 0, 1);
 	ws_order_window(srv, w, WS_ABOVE, 0);
-	float mesh[4 * 4] = { 10, 10, 0, 0,   30, 10, 1, 0,   10, 50, 0, 1,   30, 50, 1, 1 };
+	/* srcX srcY dstX dstY per point, y up: the 40x40 window at (10,10) squeezed into x 10..30 (the screen is 100 high: y up 50 is row 50 from the top) */
+	float mesh[4 * 4] = { 0, 0, 10, 50,   40, 0, 30, 50,   0, 40, 10, 90,   40, 40, 30, 90 };
 	CHECK(ws_set_window_warp(srv, w, 2, 2, mesh) == 0);
 	ws_compose_scene(srv, scr);
+	if (getenv("WARP_DUMP")) for (int y = 0; y < 100; y += 5) { for (int x = 0; x < 60; x += 3) putchar(*(uint32_t *)(scr->px + y * scr->stride + x * 4) == 0xffff0000u ? '#' : '.'); putchar('\n'); }
 	CHECK(*(uint32_t *)(scr->px + 30 * scr->stride + 20 * 4) == 0xffff0000u);               /* inside the squeezed window */
 	CHECK(*(uint32_t *)(scr->px + 30 * scr->stride + 40 * 4) != 0xffff0000u);               /* where the window was, now empty */
 	CHECK(ws_set_window_warp(srv, w, 0, 0, NULL) == 0);
