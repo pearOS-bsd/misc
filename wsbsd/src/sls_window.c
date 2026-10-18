@@ -851,6 +851,19 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		}
 		return reply_simple(c->fd, h, 0);
 	}
+	case SLS_MSG_SetWindowCornerMask: {                                             /* 1 OOL (the mask, one byte per pixel), size 0x68, wid@0x34, the OOL size again@0x38, width@0x3c, height@0x40, format@0x44, four doubles@0x48 (the stretch rectangle, 0..1; both pairs infinite = the default); decompiled __XSetWindowCornerMask: -304 / -300 for a bad message / OOL, nothing happens without rights or when width * height overflows 32 bits or exceeds the data;
+		 * the mask is a small picture of the window's corner stretched over its shape: kept here as the corner radius (the pixels of the first row that are less than half covered) */
+		size_t off[1]; uint32_t sz[1]; int e = ool_multi(h, buf, len, 0x68, 1, off, sz);
+		if (e) return reply_simple(c->fd, h, e);
+		if (sz[0] != rd32(buf, 0x38)) return reply_simple(c->fd, h, -300);
+		uint32_t wid = rd32(buf, 0x34), mw = rd32(buf, 0x3c), mh = rd32(buf, 0x40);
+		if (!ws_window_exists(srv, wid) || !holds_rights(c, wid)) return reply_simple(c->fd, h, 0);
+		uint64_t px = (uint64_t)mw * mh;
+		if (px >> 32 || !px || px > sz[0]) { ws_set_window_corner_radius(srv, wid, 0); return reply_simple(c->fd, h, 0); }
+		uint32_t r = 0; while (r < mw && buf[off[0] + r] < 128) r++;
+		ws_set_window_corner_radius(srv, wid, (int)(r > mw / 2 ? mw / 2 : r));
+		return reply_simple(c->fd, h, 0);
+	}
 	case SLS_MSG_AddTrackingAreas: {                                               /* 5 OOL, size 0x8c, wid@0x74; the descriptor sizes must agree with the counts@0x78..0x88. Inferred layout (not decompiled below the wire checks): region bytes of all areas, the byte length of each area's region (u32), the area ids (u64), flags, user data (u64) */
 		size_t off[5]; uint32_t sz[5]; int e = ool_multi(h, buf, len, 0x8c, 5, off, sz);
 		if (e) return reply_simple(c->fd, h, e);

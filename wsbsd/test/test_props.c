@@ -67,6 +67,17 @@ int main(void)
 		got = call(fd, m, 0x30, rep, sizeof rep);
 		CHECK(got == 0x24 && r32(rep, 0x20) == (uint32_t)-304);
 	}
+	{ /* SetWindowCornerMask (decompiled __XSetWindowCornerMask): size 0x68 with one out-of-line mask; -304 / -300 for a bad message / descriptor, 0 otherwise (nothing happens for an unknown window or a mask that does not fit) */
+		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 5, 5, 30, 30 }, 0, &tw) == 0);
+		uint8_t m[0x68 + 64], rep[0x100]; uint32_t one = 1;
+		memset(m, 0, sizeof m); hdr(m, 0x68, 30027, 1); memcpy(m + 0x18, &one, 4); m[0x27] = 1; w32(m, 0x28, 64); w32(m, 0x34, tw.id); w32(m, 0x38, 64); w32(m, 0x3c, 8); w32(m, 0x40, 8);
+		for (int i = 0; i < 64; i++) m[0x68 + i] = i % 8 < 2 ? 0 : 255;
+		CHECK(rc(fd, m, sizeof m) == 0);
+		m[0x27] = 2; CHECK(rc(fd, m, sizeof m) == -300); m[0x27] = 1;
+		w32(m, 0x38, 63); CHECK(rc(fd, m, sizeof m) == -300); w32(m, 0x38, 64);
+		w32(m, 0x34, 0x7ffff); CHECK(rc(fd, m, sizeof m) == 0);
+		w32(m, 4, 0x64); CHECK(rc(fd, m, sizeof m) == -304); (void)rep;
+	}
 	{ /* window routines: GetScreenRectForWindow, InvalidateWindowShadow, SynchronizeWindowBackingStore, RemoveAllSurfaces, PostEventRecordTo */
 		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 11, 22, 33, 44 }, 0, &tw) == 0 && ws_win_order(c, &tw, 1, 0) == 0);
 		uint8_t m[0x400], rep[0x100]; int got;
