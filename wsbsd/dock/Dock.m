@@ -335,14 +335,14 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 		if (orient) { double ww = [[self window] frame].size.width; gr = (ws_rect){ (int)floor(orient == 1 ? bar.bottom_margin : ww - (bar.bottom_margin + bar.bar_h)), (int)floor(bar.bar_x - [self originX]), (int)ceil(bar.bar_h), (int)ceil(bar.bar_w) }; }
 		if (gr.x != glassRect.x || gr.y != glassRect.y || gr.w != glassRect.w || gr.h != glassRect.h || !glassOn) { ws_win_glass(wsc, &gw, gr, 18, 1); glassRect = gr; glassOn = 1; }
 	} else if (wsc && glassOn) { ws_win_glass(wsc, &(ws_win){ .id = (ws_wid)[[self window] windowNumber], .px = NULL }, (ws_rect){ 0, 0, 0, 0 }, 0, 0); glassOn = 0; }
-	if (wsc) {                                                                  /* the menus' material: slots 1 (menu) and 2 (submenu) of the window's glass, mode 4 = the dark Menu.caar */
+	if (wsc) {                                                                  /* the menus' material: slots 1 (menu) and 2 (submenu) of the window's glass, mode 5 = the context menu as measured on the Mac */
 		ws_win gw = { .id = (ws_wid)[[self window] windowNumber], .px = NULL }; double wh = [[self window] frame].size.height;
 		for (int k = 0; k < 2; k++) {
 			NSRect r = k == 0 ? ctxMainR : ctxSubR; BOOL on = ctxOpen && (k == 0 || ctxSubItems);
 			ws_rect gr = on ? (ws_rect){ (int)r.origin.x, (int)floor(wh - (r.origin.y + r.size.height)), (int)r.size.width, (int)r.size.height } : (ws_rect){ 0, 0, 0, 0 };
 			if (!on && !ctxGlassSet[k]) continue;
 			if (on && ctxGlassSet[k] && !memcmp(&gr, &ctxGlassRect[k], sizeof gr)) continue;
-			ws_win_glass_slot(wsc, &gw, k + 1, gr, 10, on ? 4 : 0); ctxGlassSet[k] = on; ctxGlassRect[k] = gr;
+			ws_win_glass_slot(wsc, &gw, k + 1, gr, 12, on ? 5 : 0); ctxGlassSet[k] = on; ctxGlassRect[k] = gr;
 		}
 		ctxGlass = ctxGlassSet[0];
 	}
@@ -527,12 +527,17 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 static NSDictionary *E(NSString *t, int code, BOOL on, BOOL dis) { return @{ @"t": t, @"c": @(code), @"on": @(on), @"dis": @(dis) }; }
 static NSDictionary *ESep(void) { return @{ @"sep": @YES }; }
 static NSDictionary *ESub(NSString *t, NSArray *sub) { return @{ @"t": t, @"sub": sub }; }
-static NSDictionary *kMenuAttrs(BOOL dis) { return @{ NSFontAttributeName: [NSFont systemFontOfSize: 13], NSForegroundColorAttributeName: dis ? [NSColor colorWithCalibratedWhite: 1 alpha: 0.35] : [NSColor whiteColor] }; }
+static NSFont *MenuFont(void) { return [NSFont systemFontOfSize: 13]; }
+static NSDictionary *kMenuAttrs(BOOL dis, BOOL sel) { return @{ NSFontAttributeName: MenuFont(), NSForegroundColorAttributeName: sel ? [NSColor whiteColor] : [NSColor colorWithCalibratedWhite: 1 alpha: dis ? 0.25 : 0.85] }; }
+/* the metrics of the real context menu (measured on the Mac): rows 24 high, separators 11, 5 above and below, 16 on each side of the text, 14 more for a column of check marks, 31 more for a submenu's arrow; width rounded up */
 static NSSize MenuSize(NSArray *its)
 {
-	double w = 0, h = 10; for (NSDictionary *d in its) { if (d[@"sep"]) { h += 11; continue; } h += 22; w = fmax(w, [d[@"t"] sizeWithAttributes: kMenuAttrs(NO)].width + (d[@"sub"] ? 20 : 0)); }
-	return NSMakeSize(ceil(w) + 38, h);
+	double w = 0, h = 10; BOOL check = NO, sub = NO;
+	for (NSDictionary *d in its) { if (d[@"sep"]) { h += 11; continue; } h += 24; w = fmax(w, [d[@"t"] sizeWithAttributes: @{ NSFontAttributeName: MenuFont() }].width); if ([d[@"on"] boolValue]) check = YES; if (d[@"sub"]) sub = YES; }
+	return NSMakeSize(ceil(w + 32 + (check ? 14 : 0) + (sub ? 31 : 0)), h);
 }
+static BOOL MenuHasCheck(NSArray *its) { for (NSDictionary *d in its) if ([d[@"on"] boolValue]) return YES; return NO; }
+
 - (void)rightMouseDown:(NSEvent *)e
 {
 	int i = [self tileAt: [self screenX: e]]; if (ctxOpen) { ctxOpen = 0; return; } if (i < 0 || fanOpen) return; ctxItem = i; hover = -1;
@@ -554,6 +559,7 @@ static NSSize MenuSize(NSArray *its)
 		[its addObject: E([NSString stringWithFormat: @"Open “%@”", name], 5, NO, NO)];
 	} else if (k == DOCK_TRASH) { [its addObject: E(@"Empty Trash", 6, NO, !trashFull)]; }
 	else return;
+	if (getenv("DOCK_TESTMENU")) its = [@[ ESub(@"Options", @[ E(@"Keep in Dock", 4, YES, NO) ]), ESep(), E(@"Open", 1, NO, NO), E(@"Quit", 2, NO, NO) ] mutableCopy];       /* the menu of the comparison with the real Mac */
 	ctxItems = its; ctxOpen = 1; ctxSub = -1; ctxHoverMain = -1; ctxHoverSub = -1; ctxSubItems = nil;
 	NSSize ms = MenuSize(its); double top = bar.bottom_margin + bar.bar_h + 8;
 	if (!orient) {                                                                       /* above the bar, centred on the tile */
@@ -567,7 +573,7 @@ static NSSize MenuSize(NSArray *its)
 - (NSRect)rectOfItem:(int)q in:(NSArray *)its menu:(NSRect)r                    /* y up: the first item at the top */
 {
 	double y = r.origin.y + r.size.height - 5;
-	for (int j = 0; j <= q; j++) { double hgt = its[j][@"sep"] ? 11 : 22; y -= hgt; if (j == q) return NSMakeRect(r.origin.x + 5, y, r.size.width - 10, hgt); }
+	for (int j = 0; j <= q; j++) { double hgt = its[j][@"sep"] ? 11 : 24; y -= hgt; if (j == q) return NSMakeRect(r.origin.x + 5, y, r.size.width - 10, hgt); }
 	return NSZeroRect;
 }
 - (void)ctxHoverAt:(NSPoint)p
@@ -586,18 +592,28 @@ static NSSize MenuSize(NSArray *its)
 - (void)drawMenu:(NSArray *)its in:(NSRect)r hover:(int)hv
 {
 	CGContextRef c = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
-	NSBezierPath *bp = [NSBezierPath bezierPathWithRoundedRect: r xRadius: 10 yRadius: 10];
-	if (!ctxGlass) { [[NSColor colorWithCalibratedWhite: 0.16 alpha: 0.94] setFill]; [bp fill]; }          /* the material (Menu.caar) is the compositor's; this fill is the fallback */
-	[[NSColor colorWithCalibratedWhite: 1 alpha: 0.14] setStroke]; [bp setLineWidth: 1]; [bp stroke];
+	NSBezierPath *bp = [NSBezierPath bezierPathWithRoundedRect: r xRadius: 12 yRadius: 12];
+	for (int i = 14; i >= 1; i--) {                                                       /* the shadow, outside the menu only (rings of falling strength: a clip would stay in force for the texts): 13 % at the edge, gone after 14 px, a little heavier below */
+		double al = 0.135 * exp(-(i - 1) / 5.5); NSBezierPath *ring = [NSBezierPath bezierPathWithRoundedRect: NSInsetRect(r, -i + 0.5, -i + 0.5) xRadius: 12 + i yRadius: 12 + i];
+		[[NSColor colorWithCalibratedWhite: 0 alpha: al] setStroke]; [ring setLineWidth: 1]; [ring stroke];
+	}
+	if (!ctxGlass) { [[NSColor colorWithCalibratedWhite: 0.25 alpha: 1] setFill]; [bp fill]; }     /* the material is the compositor's; this fill is the fallback */
+	NSBezierPath *ol = [NSBezierPath bezierPathWithRoundedRect: NSInsetRect(r, -0.5, -0.5) xRadius: 12.5 yRadius: 12.5];   /* the 1 px dark line just outside the edge */
+	[[NSColor colorWithCalibratedWhite: 0 alpha: 0.85] setStroke]; [ol setLineWidth: 1]; [ol stroke];
+	BOOL check = MenuHasCheck(its); NSFont *font = MenuFont();
 	for (int q = 0; q < (int)[its count]; q++) {
 		NSDictionary *d = its[q]; NSRect ir = [self rectOfItem: q in: its menu: r];
-		if (d[@"sep"]) { [[NSColor colorWithCalibratedWhite: 1 alpha: 0.16] setFill]; NSRectFill(NSMakeRect(ir.origin.x + 4, ir.origin.y + 5, ir.size.width - 8, 1)); continue; }
-		BOOL dis = [d[@"dis"] boolValue];
-		if (q == hv && !dis) { [[NSColor colorWithCalibratedRed: 0.04 green: 0.52 blue: 1 alpha: 1] setFill]; [[NSBezierPath bezierPathWithRoundedRect: ir xRadius: 5 yRadius: 5] fill]; }
-		NSDictionary *at = kMenuAttrs(dis); NSSize ts = [d[@"t"] sizeWithAttributes: at];
-		[d[@"t"] drawAtPoint: NSMakePoint(ir.origin.x + 24, ir.origin.y + (ir.size.height - ts.height) / 2) withAttributes: at];
-		if ([d[@"on"] boolValue]) [@"✓" drawAtPoint: NSMakePoint(ir.origin.x + 7, ir.origin.y + (ir.size.height - ts.height) / 2) withAttributes: at];
-		if (d[@"sub"]) [@"›" drawAtPoint: NSMakePoint(ir.origin.x + ir.size.width - 14, ir.origin.y + (ir.size.height - ts.height) / 2) withAttributes: at];
+		if (d[@"sep"]) { [[NSColor colorWithCalibratedWhite: 1 alpha: 0.14] setFill]; NSRectFill(NSMakeRect(r.origin.x + 16, ir.origin.y + 5, r.size.width - 31, 1)); continue; }
+		BOOL dis = [d[@"dis"] boolValue], sel = q == hv && !dis;
+		if (sel) { [[NSColor colorWithCalibratedRed: 0 green: 0.478 blue: 1 alpha: 1] setFill]; [[NSBezierPath bezierPathWithRoundedRect: ir xRadius: 8 yRadius: 8] fill]; }
+		NSDictionary *at = kMenuAttrs(dis, sel); double base = ir.origin.y + ir.size.height - 16.5, oy = base + [font descender];            /* the baseline lies 16.5 below the row's top */
+		[d[@"t"] drawAtPoint: NSMakePoint(r.origin.x + 16 + (check ? 14 : 0), oy) withAttributes: at];
+		if ([d[@"on"] boolValue]) [@"\u2713" drawAtPoint: NSMakePoint(r.origin.x + 12, oy) withAttributes: at];
+		if (d[@"sub"]) {                                                                                                     /* the arrow: 5 wide, 9 high, 22 from the right edge */
+			double cx = r.origin.x + r.size.width - 26, cy = ir.origin.y + ir.size.height / 2;
+			CGContextSaveGState(c); CGContextSetLineWidth(c, 1.6); CGContextSetLineCap(c, kCGLineCapRound); CGContextSetLineJoin(c, kCGLineJoinRound);
+			CGContextSetRGBStrokeColor(c, 1, 1, 1, sel ? 1 : 0.85); CGContextMoveToPoint(c, cx, cy + 4.5); CGContextAddLineToPoint(c, cx + 4.5, cy); CGContextAddLineToPoint(c, cx, cy - 4.5); CGContextStrokePath(c); CGContextRestoreGState(c);
+		}
 	}
 }
 - (void)drawPoof                                                                /* the puff of smoke of a tile dragged out of the Dock: grey clouds that swell and thin out */

@@ -290,6 +290,27 @@ static void test_glass(void)
 }
 
 
+/* the context menu material (glass mode 5) against what the real Mac drew over uniform backdrops (screen captures of an NSMenu over known colours) */
+static void test_menu_material(void)
+{
+	static const struct { int bg[3], want[3]; } t[] = { { { 0, 0, 0 }, { 31, 31, 31 } }, { { 64, 64, 64 }, { 84, 84, 84 } }, { { 128, 128, 128 }, { 123, 123, 123 } }, { { 191, 191, 191 }, { 146, 146, 146 } },
+		{ { 255, 255, 255 }, { 155, 155, 155 } }, { { 255, 0, 0 }, { 255, 15, 15 } }, { { 0, 0, 255 }, { 26, 26, 255 } }, { { 204, 102, 51 }, { 206, 101, 49 } } };
+	for (unsigned k = 0; k < sizeof t / sizeof t[0]; k++) {
+		ws_server *srv = ws_server_new(300, 200);
+		ws_wid bg = ws_create_window(srv, (ws_rect){ 0, 0, 300, 200 }), m = ws_create_window(srv, (ws_rect){ 60, 40, 111, 93 });
+		ws_surface *b = ws_window_backing(srv, bg);
+		for (int y = 0; y < 200; y++) for (int x = 0; x < 300; x++) { uint8_t *p = (uint8_t *)at(b, x, y); p[0] = (uint8_t)t[k].bg[2]; p[1] = (uint8_t)t[k].bg[1]; p[2] = (uint8_t)t[k].bg[0]; p[3] = 255; }
+		ws_order_window(srv, bg, WS_ABOVE, 0); ws_order_window(srv, m, WS_ABOVE, 0);
+		ws_set_window_glass(srv, m, (ws_rect){ 0, 0, 111, 93 }, 12, 5);
+		ws_surface *out = ws_surface_new(300, 200); ws_compose_scene(srv, out);
+		const uint8_t *c = at(out, 60 + 55, 40 + 46);
+		for (int ch = 0; ch < 3; ch++) CHECK(abs(c[2 - ch] - t[k].want[ch]) <= 12);              /* the fit is good to a few levels; saturated colours to a dozen */
+		if (k == 0) { CHECK(at(out, 60 + 55, 40)[0] > at(out, 60 + 55, 40 + 3)[0] + 20); CHECK(at(out, 60, 40 + 46)[0] > at(out, 60 + 8, 40 + 46)[0] + 8); }   /* the rim: strong on the top edge, weaker on the sides */
+		CHECK(memcmp(at(out, 5, 5), at(b, 5, 5), 4) == 0);
+		ws_surface_free(out); ws_server_free(srv);
+	}
+}
+
 /* GLASS_DEMO=file.ppm: the pattern used to measure the real Dock (stripes, lines, text-like marks) behind a 1160 x 78 glass bar of radius 18 */
 static void glass_demo(const char *path)
 {
@@ -311,7 +332,7 @@ static void glass_demo(const char *path)
 int main(void)
 {
 	if (getenv("GLASS_DEMO")) { glass_demo(getenv("GLASS_DEMO")); return 0; }
-	test_glass();
+	test_glass(); test_menu_material();
 	ws_server *srv = ws_server_new(320, 200);
 	ws_surface *scr = ws_surface_new(320, 200);
 	ws_rect r1 = { 20, 20, 160, 100 }, r2 = { 100, 60, 160, 100 }, r3 = { 150, 10, 80, 80 };
@@ -424,7 +445,7 @@ int main(void)
 	CHECK(ws_write_ppm(scr, "out.ppm") == 0);
 	ws_surface_free(scr);
 	ws_server_free(srv);
-	test_walk(); test_glass();
+	test_walk(); test_glass(); test_menu_material();
 	test_transform();
 	test_invert();
 	test_brightness();

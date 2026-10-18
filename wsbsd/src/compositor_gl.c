@@ -136,7 +136,16 @@ static const char *GLASS_FS =
 	"    float cover = clamp(0.5 - sdf, 0.0, 1.0);\n"
 	"    if (cover <= 0.0) { gl_FragColor = vec4(dst, 1.0); return; }\n"
 	"    vec3 col;\n"
-	"    if (mode > 2.5) {\n"
+	"    if (mode > 4.5) {\n"
+	"        vec3 c = texture2D(u_blur, p / u_screen).rgb;\n"
+	"        float L = dot(c, vec3(0.1886, 0.7455, 0.0659)), f = 0.1213 + 0.4825 * (2.0 * L - L * L);\n"
+	"        float dd = max(-sdf, 0.0);\n"
+	"        float gx = field(p + vec2(1.0, 0.0), dm) - field(p - vec2(1.0, 0.0), dm), gy = field(p + vec2(0.0, 1.0), dm) - field(p - vec2(0.0, 1.0), dm);\n"
+	"        float gl = sqrt(gx * gx + gy * gy), ny = gl > 1e-4 ? abs(gy / gl) : 1.0;\n"
+	"        float rim = dd < 1.0 ? 0.10 + 0.177 * ny : 0.042 * ny * exp(-(dd - 1.5) / 3.8);\n"
+	"        col = clamp(vec3(f) + 1.091 * (c - vec3(L)), 0.0, 1.0);\n"
+	"        col = col * (1.0 - rim) + vec3(rim);\n"
+	"    } else if (mode > 2.5) {\n"
 	"        bool dark = mode > 3.5;\n"
 	"        float sat = dark ? 2.2 : 2.1, fill = dark ? 0.157 : 0.965, fa = dark ? 0.70 : 0.72, tone = dark ? 0.125 : 0.93;\n"
 	"        col = texture2D(u_blur, p / u_screen).rgb;\n"
@@ -576,7 +585,7 @@ static void glass_pass(gl_compositor *c, const ws_visit *v)
 		const ws_glass *g = &v->glass[i]; rect[4 * i] = (float)(v->frame.x + g->rect.x); rect[4 * i + 1] = (float)(v->frame.y + g->rect.y); rect[4 * i + 2] = (float)g->rect.w; rect[4 * i + 3] = (float)g->rect.h;
 		rm[2 * i] = (float)g->radius; rm[2 * i + 1] = g->rect.w > 3 && g->rect.h > 3 ? (float)g->mode : 0.0f; n = i + 1;
 		if (rm[2 * i + 1] <= 0) continue;
-		if (g->mode >= 3) mat = 1;
+		if (g->mode >= 3) mat |= g->mode == 5 ? 2 : 1;
 		if (rect[4 * i] < bx0) bx0 = rect[4 * i]; if (rect[4 * i + 1] < by0) by0 = rect[4 * i + 1];
 		if (rect[4 * i] + rect[4 * i + 2] > bx1) bx1 = rect[4 * i] + rect[4 * i + 2]; if (rect[4 * i + 1] + rect[4 * i + 3] > by1) by1 = rect[4 * i + 1] + rect[4 * i + 3];
 	}
@@ -589,9 +598,10 @@ static void glass_pass(gl_compositor *c, const ws_visit *v)
 	glBindTexture(GL_TEXTURE_2D, c->scene_tex);
 	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, (int)x0, (int)y0, (int)x0, (int)y0, (int)(x1 - x0), (int)(y1 - y0));
 	if (mat) {                                                                      /* sigma 30 with taps 2 px apart: 45 taps reach 90 px */
-		float ry0 = fmaxf(y0 - 90, 0), ry1 = fminf(y1 + 90, (float)c->h);
+		float reach = (mat & 1) ? 90.0f : 14.0f, ry0 = fmaxf(y0 - reach, 0), ry1 = fminf(y1 + reach, (float)c->h);
 		glUseProgram(c->blur_prog);
-		glUniform2f(c->bu_screen, (float)c->w, (float)c->h); glUniform1i(c->bu_src, 0); glUniform1f(c->bu_sigma, 15.0f); glUniform1f(c->bu_rad, 45.0f); glUniform1f(c->bu_step, 2.0f);
+		int fine = !(mat & 1);                                                         /* only the context-menu material (sigma 4.5): taps 1 px apart */
+		glUniform2f(c->bu_screen, (float)c->w, (float)c->h); glUniform1i(c->bu_src, 0); glUniform1f(c->bu_sigma, fine ? 4.5f : 15.0f); glUniform1f(c->bu_rad, fine ? 14.0f : 45.0f); glUniform1f(c->bu_step, fine ? 1.0f : 2.0f);
 		glActiveTexture(GL_TEXTURE0);
 		glBindFramebuffer(GL_FRAMEBUFFER, c->tmp_fbo); glBindTexture(GL_TEXTURE_2D, c->fbo_tex);
 		glUniform2f(c->bu_dir, 1.0f, 0.0f); glUniform4f(c->bu_rect, x0, ry0, x1 - x0, ry1 - ry0); glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
