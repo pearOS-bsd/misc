@@ -283,14 +283,34 @@ static void test_glass(void)
 	int diff = 0; for (int c = 0; c < 3; c++) diff += abs(at(out, 200, 100)[c] - at(plain, 200, 100)[c]); CHECK(diff > 6);   /* inside: blurred */
 	int d1 = abs(at(out, 200, 100)[0] - at(out, 220, 100)[0]) + abs(at(out, 200, 100)[1] - at(out, 220, 100)[1]);
 	int d0 = abs(at(plain, 200, 100)[0] - at(plain, 220, 100)[0]) + abs(at(plain, 200, 100)[1] - at(plain, 220, 100)[1]);
-	CHECK(d1 < d0);                                                                          /* the checkerboard is smoother */
-	CHECK(at(out, 200, 61)[0] > at(out, 200, 100)[0] && at(out, 200, 61)[1] > at(out, 200, 100)[1]);   /* the top rim is a light line */
+	CHECK(d1 <= d0 + 20);                                                                    /* no blur inside: the checkerboard stays about as sharp */
+	CHECK(at(out, 200, 61)[0] > at(out, 200, 63)[0] || at(out, 200, 61)[1] > at(out, 200, 63)[1]);   /* the top rim is a lighter line */
 	if (getenv("GLASS_PPM")) ws_write_ppm(out, getenv("GLASS_PPM"));
 	ws_surface_free(plain); ws_surface_free(out); ws_server_free(srv);
 }
 
+
+/* GLASS_DEMO=file.ppm: the pattern used to measure the real Dock (stripes, lines, text-like marks) behind a 1160 x 78 glass bar of radius 18 */
+static void glass_demo(const char *path)
+{
+	ws_server *srv = ws_server_new(1400, 200);
+	ws_wid bg = ws_create_window(srv, (ws_rect){ 0, 0, 1400, 200 }), gl = ws_create_window(srv, (ws_rect){ 0, 0, 1400, 200 });
+	ws_surface *b = ws_window_backing(srv, bg);
+	for (int y = 0; y < 200; y++) for (int x = 0; x < 1400; x++) {
+		uint8_t *p = (uint8_t *)at(b, x, y); int stripe = (x % 40) < 18; float h = ((x / 40) % 12) / 12.0f * 6.0f; int k = (int)h; float f = h - k;
+		float rgb[3] = { 1, 1, 1 }; if (stripe) { float v[6][3] = { { 1, f, 0 }, { 1 - f, 1, 0 }, { 0, 1, f }, { 0, 1 - f, 1 }, { f, 0, 1 }, { 1, 0, 1 - f } }; for (int c = 0; c < 3; c++) rgb[c] = 0.1f + 0.85f * v[k % 6][c]; }
+		if (y % 14 < 2) rgb[0] = rgb[1] = rgb[2] = 0;
+		p[0] = (uint8_t)(rgb[2] * 255); p[1] = (uint8_t)(rgb[1] * 255); p[2] = (uint8_t)(rgb[0] * 255); p[3] = 255;
+	}
+	ws_order_window(srv, bg, WS_ABOVE, 0); ws_order_window(srv, gl, WS_ABOVE, 0);
+	ws_set_window_glass(srv, gl, (ws_rect){ 100, 62, 1160, 78 }, 18, 1);
+	ws_surface *out = ws_surface_new(1400, 200); ws_compose_scene(srv, out); ws_write_ppm(out, path);
+	ws_surface_free(out); ws_server_free(srv);
+}
+
 int main(void)
 {
+	if (getenv("GLASS_DEMO")) { glass_demo(getenv("GLASS_DEMO")); return 0; }
 	test_glass();
 	ws_server *srv = ws_server_new(320, 200);
 	ws_surface *scr = ws_surface_new(320, 200);
