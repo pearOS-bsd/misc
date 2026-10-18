@@ -5,6 +5,17 @@
 
 static void SetRGB(CGContextRef c, double r, double g, double b, double a) { CGContextSetRGBFillColor(c, r, g, b, a); CGContextSetRGBStrokeColor(c, r, g, b, a); }
 
+static CGPathRef RoundRectPath(CGRect r, CGFloat rx)
+{
+	CGMutablePathRef p = CGPathCreateMutable(); CGFloat x0 = CGRectGetMinX(r), x1 = CGRectGetMaxX(r), y0 = CGRectGetMinY(r), y1 = CGRectGetMaxY(r);
+	if (rx * 2 > r.size.height) rx = r.size.height / 2; if (rx * 2 > r.size.width) rx = r.size.width / 2;
+	CGPathMoveToPoint(p, NULL, x0 + rx, y0); CGPathAddLineToPoint(p, NULL, x1 - rx, y0); CGPathAddArc(p, NULL, x1 - rx, y0 + rx, rx, -M_PI / 2, 0, 0);
+	CGPathAddLineToPoint(p, NULL, x1, y1 - rx); CGPathAddArc(p, NULL, x1 - rx, y1 - rx, rx, 0, M_PI / 2, 0);
+	CGPathAddLineToPoint(p, NULL, x0 + rx, y1); CGPathAddArc(p, NULL, x0 + rx, y1 - rx, rx, M_PI / 2, M_PI, 0);
+	CGPathAddLineToPoint(p, NULL, x0, y0 + rx); CGPathAddArc(p, NULL, x0 + rx, y0 + rx, rx, M_PI, 3 * M_PI / 2, 0);
+	CGPathCloseSubpath(p); return p;
+}
+
 /* a rounded rectangle with continuous corners (the superellipse of Core Animation's .continuous curve, approximated by Bezier curves that reach 1.5286 r along the sides) */
 static CGPathRef ContinuousRect(CGRect r, CGFloat rad)
 {
@@ -128,7 +139,7 @@ static void DrawFan(CGContextRef c, const DockScene *s, CGFloat art_bottom)
 		if (f->icons[k]) CGContextDrawImage(c, ir, f->icons[k]); else DockDrawIcon(c, f->glyphs[k], CGRectInset(ir, 6, 6));
 		CGFloat tw = 0; DrawText(c, f->labels[k], 13, CGPointZero, &tw);
 		CGFloat ph = 26, pw = tw + 29, px = -37 - pw, py = -ph / 2;
-		SetRGB(c, 0.15, 0.15, 0.155, 0.92); CGPathRef pill = CGPathCreateWithRoundedRect(CGRectMake(px, py, pw, ph), ph / 2, ph / 2, NULL); CGContextAddPath(c, pill); CGContextFillPath(c);
+		SetRGB(c, 0.15, 0.15, 0.155, 0.92); CGPathRef pill = RoundRectPath(CGRectMake(px, py, pw, ph), ph / 2); CGContextAddPath(c, pill); CGContextFillPath(c);
 		SetRGB(c, 1, 1, 1, 0.10); CGContextSetLineWidth(c, 1); CGContextAddPath(c, pill); CGContextStrokePath(c); CGPathRelease(pill);
 		SetRGB(c, 1, 1, 1, 0.86); DrawText(c, f->labels[k], 13, CGPointMake(px + 14.5, py + 8.5), NULL);
 		CGContextRestoreGState(c);
