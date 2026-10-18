@@ -156,19 +156,22 @@ static int wsdShapeForStyle(int style)
 - (BOOL) attachBuffer: (struct wsd_window *)w
 {
 	if (w->has_buffer && w->cbuf.buf.w == w->w && w->cbuf.buf.h == w->h) return YES;
-	ws_cbuf old = w->cbuf; BOOL hadOld = w->has_buffer != 0;
-	if (hadOld) { ws_surface_unbind(conn, &w->win, w->sid); ws_surface_remove(conn, &w->win, w->sid); w->has_buffer = 0; }
+	ws_cbuf old = w->cbuf; BOOL hadOld = w->has_buffer != 0; ws_cbuf nb;
 	WLOG(@"attachBuffer %d %dx%d", w->number, w->w, w->h);
-	if (ws_cbuf_create(conn, w->w, w->h, &w->cbuf)) { WLOG(@"cbuf_create failed"); if (hadOld) ws_cbuf_release(conn, &old); return NO; }
-	if (ws_surface_add(conn, &w->win, &w->sid) || ws_surface_bind_buffer(conn, &w->win, w->sid, &w->cbuf)) { ws_cbuf_release(conn, &w->cbuf); if (hadOld) ws_cbuf_release(conn, &old); return NO; }
-	w->has_buffer = 1;
+	if (ws_cbuf_create(conn, w->w, w->h, &nb)) { WLOG(@"cbuf_create failed"); return NO; }
 	if (hadOld) {
-		/* what was drawn stays (top left aligned) until the window repaints: AppKit only redraws the views that changed size */
-		const ws_surface *os = old.buf.cpu, *ns = w->cbuf.buf.cpu;
+		/* what was drawn stays (top left aligned) until the window repaints: AppKit only redraws the views that changed size; copied BEFORE the new buffer is bound, so no frame shows it empty */
+		const ws_surface *os = old.buf.cpu, *ns = nb.buf.cpu;
 		if (os && ns && os->px && ns->px) {
 			int cw = os->w < ns->w ? os->w : ns->w, ch = os->h < ns->h ? os->h : ns->h;
 			for (int y = 0; y < ch; y++) memcpy(ns->px + (size_t)y * ns->stride, os->px + (size_t)y * os->stride, (size_t)cw * 4);
 		}
+		ws_surface_unbind(conn, &w->win, w->sid); ws_surface_remove(conn, &w->win, w->sid); w->has_buffer = 0;
+	}
+	w->cbuf = nb;
+	if (ws_surface_add(conn, &w->win, &w->sid) || ws_surface_bind_buffer(conn, &w->win, w->sid, &w->cbuf)) { ws_cbuf_release(conn, &w->cbuf); if (hadOld) ws_cbuf_release(conn, &old); return NO; }
+	w->has_buffer = 1;
+	if (hadOld) {
 		ws_cbuf_release(conn, &old);
 		NSWindow *nw = [NSApp windowWithWindowNumber: w->number];
 		if (nw) [nw performSelector: @selector(display) withObject: nil afterDelay: 0];     /* and the whole window is drawn again */

@@ -18,6 +18,8 @@ typedef struct { uint32_t wid; int pid; char label[64]; CGImageRef thumb; int ph
 
 @interface DockView : NSView {
 @public
+	NSString *fanDir; double fanMTime, fanCheck;      /* the folder of the open fan and its modification time: the fan lists it again when it changes */
+	double winX, winW;     /* the bar's window: as wide as the bar gets when magnified, fixed for the current items (resizing the window every frame made the Dock flicker) */
 	MiniWin mini[MAXMINI]; int nmini; ws_conn *wsc; float genieMesh[GENIE_MAX_FLOATS];
 	DockMetrics m; DockItem items[MAXITEMS]; DockTile tiles[MAXITEMS]; DockSlot slots[MAXITEMS]; DockBar bar; int n;
 	NSMutableArray *paths; NSMutableArray *names; NSMutableArray *pids; NSMutableArray *labelStore;
@@ -64,7 +66,17 @@ typedef struct { uint32_t wid; int pid; char label[64]; CGImageRef thumb; int ph
 		[paths addObject: @""]; [pids addObject: @0]; n++;
 	}
 	items[n].kind = DOCK_TRASH; tiles[n] = (DockTile){ "Trash", "trash", 0, 0, 0 }; [paths addObject: @""]; [pids addObject: @0]; n++;
+	winW = 0;                                                                   /* the window geometry follows the items */
 	for (int i = 0; i < n; i++) { scale[i] = 1; bounceStart[i] = 0; if (items[i].kind == DOCK_APP && [paths[i] length] && [[NSFileManager defaultManager] fileExistsAtPath: paths[i]]) { if (LSBundleIconPath(paths[i])) tiles[i].icon = LSIconCreateForPath(paths[i], 256); } }
+}
+- (void)computeWindow
+{
+	double maxW = 0, minX = 1e9;                                                   /* the widest bar over a sweep of pointer positions */
+	for (int k = -1; k <= 20; k++) {
+		DockBar b; DockSlot tmp[MAXITEMS]; double px = k < 0 ? -1 : (k * screenW / 20.0);
+		dock_layout(&m, items, n, px, tmp, &b); if (b.bar_w > maxW) maxW = b.bar_w;
+	}
+	(void)minX; winW = ceil(maxW) + 8; if (winW > screenW) winW = screenW; winX = floor((screenW - winW) / 2);
 }
 - (void)relayout
 {
@@ -150,7 +162,12 @@ typedef struct { uint32_t wid; int pid; char label[64]; CGImageRef thumb; int ph
 	[self stepMini];
 	if (getenv("DOCK_FAN") && !fanOpen && !fanStart) { [self openFan: n - 2]; }
 	NSWindow *w = [self window];
-	NSRect f = NSMakeRect(floor(bar.bar_x), 0, ceil(bar.bar_w), 170);
+	if (winW <= 0) [self computeWindow];
+	NSRect f = NSMakeRect(winX, 0, winW, 170);
+	if (fanOpen && fanDir && Now() - fanCheck > 0.5) {                        /* the folder changed while the fan is open: list it again (the fan keeps its opening state) */
+		fanCheck = Now(); double mt = [[[[NSFileManager defaultManager] attributesOfItemAtPath: fanDir error: NULL] fileModificationDate] timeIntervalSinceReferenceDate];
+		if (mt != fanMTime) { double st = fanStart; int anchor = fan.anchor; [self openFan: anchor]; fanStart = st - 1; }
+	}
 	if (fanOpen) {                                                             /* the fan: the window covers the screen so that a click anywhere closes it */
 		double el = Now() - fanStart; fan.t = el; fan.u = 1;
 		if (fanClose > 0) { double ce = Now() - fanClose; fan.u = 1 - ce / 0.15; fan.t = 1; if (fan.u <= 0) { fanOpen = 0; fanClose = 0; } }
@@ -167,7 +184,7 @@ typedef struct { uint32_t wid; int pid; char label[64]; CGImageRef thumb; int ph
 	if (!c) return;
 	if (getenv("DOCK_TEST")) { CGContextSetRGBFillColor(c, 1, 0, 0, 1); CGContextFillRect(c, CGRectMake(10, 10, 200, 100)); NSRectFill(NSMakeRect(250, 10, 100, 100)); }
 	else { CGContextSaveGState(c); CGContextClearRect(c, NSRectToCGRect([self bounds])); CGContextRestoreGState(c); }
-	DockScene sc = { m, items, tiles, n, slots, bar, fanOpen ? 0 : floor(bar.bar_x), [self bounds].size.height, hover, fanOpen ? &fan : NULL };
+	DockScene sc = { m, items, tiles, n, slots, bar, fanOpen ? 0 : winX, [self bounds].size.height, hover, fanOpen ? &fan : NULL };
 	DockRender(c, &sc);
 }
 - (int)tileAt:(double)x
@@ -175,7 +192,7 @@ typedef struct { uint32_t wid; int pid; char label[64]; CGImageRef thumb; int ph
 	for (int i = 0; i < n; i++) if (items[i].kind != DOCK_SEPARATOR && x >= slots[i].x && x < slots[i].x + slots[i].w) return i;
 	return -1;
 }
-- (double)screenX:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; return p.x + (fanOpen ? 0 : floor(bar.bar_x)); }
+- (double)screenX:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; return p.x + (fanOpen ? 0 : winX); }
 - (void)openFan:(int)i
 {
 	NSString *dir = paths[i]; NSFileManager *fm = [NSFileManager defaultManager];
@@ -194,6 +211,7 @@ typedef struct { uint32_t wid; int pid; char label[64]; CGImageRef thumb; int ph
 	}
 	if (cnt > shown) { NSString *more = [NSString stringWithFormat: @"%d More in Finder", cnt - shown]; [fanStore addObject: more]; fan.labels[fan.n] = strdup([more UTF8String]); fan.glyphs[fan.n] = "folder"; fan.n++; }
 	fan.anchor = i; fanOpen = 1; fanStart = Now(); fanClose = 0;
+	fanDir = dir; fanMTime = [[[fm attributesOfItemAtPath: dir error: NULL] fileModificationDate] timeIntervalSinceReferenceDate];
 }
 - (void)mouseMoved:(NSEvent *)e { pointer = [self screenX: e]; hover = [self tileAt: pointer]; }
 - (void)mouseExited:(NSEvent *)e { pointer = -1; hover = -1; }
@@ -225,7 +243,7 @@ int main(int argc, char *argv[])
 		DockView *v = [[DockView alloc] initWithFrame: NSMakeRect(0, 0, 1200, 170)];
 		[v relayout];
 		if (getenv("DOCK_LOG")) NSLog(@"dock: screen %.0f bar %.1f %.1f items %d tilesize %d", v->screenW, v->bar.bar_x, v->bar.bar_w, v->n, v->m.tilesize);
-		NSWindow *w = [[NSWindow alloc] initWithContentRect: NSMakeRect(v->bar.bar_x, 0, v->bar.bar_w, 170) styleMask: NSBorderlessWindowMask backing: NSBackingStoreBuffered defer: NO];
+		[v computeWindow]; NSWindow *w = [[NSWindow alloc] initWithContentRect: NSMakeRect(v->winX, 0, v->winW, 170) styleMask: NSBorderlessWindowMask backing: NSBackingStoreBuffered defer: NO];
 		if (getenv("DOCK_TEST")) { [w setBackgroundColor: [NSColor greenColor]]; } else { [w setOpaque: NO]; [w setBackgroundColor: [NSColor clearColor]]; } [w setHasShadow: NO]; [w setLevel: getenv("DOCK_LEVEL") ? atoi(getenv("DOCK_LEVEL")) : 20]; [w setHidesOnDeactivate: NO]; [w setCanHide: NO]; [w setContentView: v]; [w setAcceptsMouseMovedEvents: YES];
 		[w orderFrontRegardless];
 		[app run];
