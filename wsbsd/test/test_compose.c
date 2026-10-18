@@ -153,6 +153,24 @@ static void test_invert(void)
 	ws_surface_free(scr); ws_server_free(srv);
 }
 
+/* SetWindowListBrightness: the colour of an opaque window is multiplied, the alpha stays */
+static void test_brightness(void)
+{
+	ws_server *srv = ws_server_new(100, 100);
+	ws_surface *scr = ws_surface_new(100, 100);
+	ws_wid w = ws_create_window(srv, (ws_rect){ 10, 10, 40, 40 });
+	ws_fill(ws_window_backing(srv, w), (ws_rect){ 0, 0, 40, 40 }, 1, 0.5f, 0, 1);
+	ws_order_window(srv, w, WS_ABOVE, 0);
+	CHECK(ws_set_window_brightness(srv, w, 0.5f) == 0);
+	ws_compose_scene(srv, scr);
+	uint32_t p = *(uint32_t *)(scr->px + 20 * scr->stride + 20 * 4);
+	CHECK((p >> 24) == 0xff && abs((int)((p >> 16) & 0xff) - 128) <= 1 && abs((int)((p >> 8) & 0xff) - 64) <= 1 && (p & 0xff) == 0);
+	CHECK(ws_set_window_brightness(srv, w, 1.0f) == 0);
+	ws_compose_scene(srv, scr);
+	CHECK(*(uint32_t *)(scr->px + 20 * scr->stride + 20 * 4) == 0xffff8000u || (*(uint32_t *)(scr->px + 20 * scr->stride + 20 * 4) & 0xffff0000u) == 0xffff0000u);
+	ws_surface_free(scr); ws_server_free(srv);
+}
+
 /* SetWindowTransform: a 40x40 red window scaled 2x about its centre covers 80x80, translation moves it */
 static void test_transform(void)
 {
@@ -314,6 +332,7 @@ int main(void)
 	test_walk();
 	test_transform();
 	test_invert();
+	test_brightness();
 	test_zoom();
 	test_corners();
 	printf(fails ? "%d failures\n" : "all tests passed\n", fails);
