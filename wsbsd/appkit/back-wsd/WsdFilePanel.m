@@ -17,6 +17,7 @@ static const char kResult = 0;
 
 @interface GSDisplayServer (WsdCorners) - (void) wsdWindowCorners: (int)radius : (int)win; @end
 static void RoundWindow(NSWindow *w, int radius) { id srv = GSCurrentServer(); if ([srv respondsToSelector: @selector(wsdWindowCorners::)]) [srv wsdWindowCorners: radius : (int)[w windowNumber]]; }
+static BOOL DrawSymbol(NSString *name, NSRect cell, CGFloat pointSize, NSColor *tint);
 static NSTextField *Field(NSRect f, NSString *val); static NSButton *Btn(NSString *title, NSRect f, id target, SEL action, BOOL def);
 static NSColor *RGB(int r, int g, int b) { return [NSColor colorWithCalibratedRed: r / 255.0 green: g / 255.0 blue: b / 255.0 alpha: 1]; }
 static NSColor *RGBA(int r, int g, int b, double a) { return [NSColor colorWithCalibratedRed: r / 255.0 green: g / 255.0 blue: b / 255.0 alpha: a]; }
@@ -46,29 +47,51 @@ static void TextFit(NSString *s, NSPoint left_center, CGFloat size, NSColor *col
 }
 static void FillRound(NSRect r, CGFloat rad, NSColor *c) { [c setFill]; [[NSBezierPath bezierPathWithRoundedRect: r xRadius: rad yRadius: rad] fill]; }
 
-/* ---- the pictures: type icons and SF Symbols rendered on a Mac (appkit/assets/mkpanelassets.m), scaled with an area filter and tinted when asked */
-static NSString *PanelAsset(NSString *name)
+/* ---- the pictures: bitmaps taken from the system's own asset catalogues (coreui: .car files of the Mac), scaled with an area filter and tinted when asked.
+ * A picture is named "car:<catalogue>:<rendition>" (one bitmap) or "set:<catalogue>:<image set>" (the size that fits best) */
+static NSString *CarPath(NSString *name)
 {
-	static NSArray *dirs; if (!dirs) dirs = @[ @"/usr/local/share/wsbsd/panel", @"/root/wsbsd/appkit/assets/panel", @"/System/Library/wsbsd/panel" ];
-	for (NSString *d in dirs) { NSString *p = [d stringByAppendingPathComponent: name]; if ([[NSFileManager defaultManager] fileExistsAtPath: p]) return p; }
+	static NSArray *dirs; if (!dirs) dirs = @[ @"/usr/local/share/wsbsd/coreui", @"/root/wsbsd/coreui/assets", @"/System/Library/PrivateFrameworks/DesktopServicesPriv.framework/Versions/A/Resources", @"/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources" ];
+	for (NSString *d in dirs) for (NSString *f in @[ [name stringByAppendingString: @".car"], @"Assets.car" ]) { NSString *p = [d stringByAppendingPathComponent: f]; if ([[NSFileManager defaultManager] fileExistsAtPath: p] && ([f isEqual: @"Assets.car"] ? [d containsString: name] : YES)) return p; }
 	return nil;
 }
-static NSBitmapImageRep *LoadRep(NSString *file)
+static CarFile *CarNamed(NSString *name)
 {
 	static NSMutableDictionary *cache; if (!cache) cache = [NSMutableDictionary dictionary];
-	id c = cache[file]; if (c) return c == [NSNull null] ? nil : c;
-	NSString *p = PanelAsset(file); NSBitmapImageRep *r = p ? [NSBitmapImageRep imageRepWithContentsOfFile: p] : nil;
-	if (r && !([r samplesPerPixel] == 4 && [r bitsPerSample] == 8 && ![r isPlanar])) r = nil;
-	cache[file] = r ?: (id)[NSNull null]; return r;
+	NSValue *v = cache[name]; if (v) return [v pointerValue] ? (CarFile *)[v pointerValue] : NULL;
+	NSString *p = CarPath(name); CarFile *c = p ? car_open([p fileSystemRepresentation]) : NULL; cache[name] = [NSValue valueWithPointer: c]; return c;
+}
+static NSBitmapImageRep *RepFromPixels(const uint8_t *p, int w, int h, int bpp)                                   /* BGRA premultiplied or gray + alpha -> straight RGBA */
+{
+	NSBitmapImageRep *r = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes: NULL pixelsWide: w pixelsHigh: h bitsPerSample: 8 samplesPerPixel: 4 hasAlpha: YES isPlanar: NO colorSpaceName: NSDeviceRGBColorSpace bitmapFormat: NSAlphaNonpremultipliedBitmapFormat bytesPerRow: 0 bitsPerPixel: 0];
+	unsigned char *d = [r bitmapData]; NSInteger bpr = [r bytesPerRow];
+	for (int y = 0; y < h; y++) for (int x = 0; x < w; x++) {
+		const uint8_t *q = p + ((size_t)y * w + x) * bpp; unsigned char *o = d + y * bpr + x * 4;
+		if (bpp == 2) { o[0] = o[1] = o[2] = q[0]; o[3] = q[1]; }
+		else { unsigned a = q[3]; if (a) { o[0] = (unsigned char)fmin(255, q[2] * 255.0 / a + 0.5); o[1] = (unsigned char)fmin(255, q[1] * 255.0 / a + 0.5); o[2] = (unsigned char)fmin(255, q[0] * 255.0 / a + 0.5); } else o[0] = o[1] = o[2] = 0; o[3] = (unsigned char)a; }
+	}
+	return r;
+}
+static NSBitmapImageRep *LoadRep(NSString *file, int px)
+{
+	static NSMutableDictionary *cache; if (!cache) cache = [NSMutableDictionary dictionary];
+	NSArray *parts = [file componentsSeparatedByString: @":"]; if ([parts count] != 3) return nil;
+	CarFile *car = CarNamed(parts[1]); if (!car) return nil;
+	CarRendition r; BOOL ok = NO; const char *nm = [parts[2] UTF8String];
+	if ([parts[0] isEqual: @"set"]) ok = !car_image_set(car, nm, px * 2, &r); else ok = !car_find(car, nm, -1, -1, -1, &r);
+	if (!ok) return nil;
+	NSString *key = [NSString stringWithFormat: @"%@|%d", file, r.width]; id c = cache[key]; if (c) return c == [NSNull null] ? nil : c;
+	int w, h, bpp; uint8_t *pix = car_bitmap(&r, &w, &h, &bpp); NSBitmapImageRep *rep = pix ? RepFromPixels(pix, w, h, bpp) : nil; free(pix);
+	if (getenv("WSD_PANEL_DEBUG")) NSLog(@"panel picture %@ -> %s %dx%d bpp %d %s", file, r.name, w, h, bpp, rep ? "ok" : "FAILED");
+	cache[key] = rep ?: (id)[NSNull null]; return rep;
 }
 /* the picture `file` at px x px (box filter in premultiplied space); tint: every pixel gets this colour, the alpha stays */
 static NSImage *Picture(NSString *file, int px, NSColor *tint)
 {
 	static NSMutableDictionary *cache; if (!cache) cache = [NSMutableDictionary dictionary];
-	NSString *key = [NSString stringWithFormat: @"%@|%d|%@", file, px, tint ? [tint description] : @""]; NSImage *hit = cache[key]; if (hit) return hit;
-	NSBitmapImageRep *src = LoadRep(file); if (!src) return nil;
+	NSString *key = [NSString stringWithFormat: @"%@|%d|%@", file, px, tint ? [tint description] : @""]; id hit = cache[key]; if (hit) return hit == [NSNull null] ? nil : hit;
+	NSBitmapImageRep *src = LoadRep(file, px); if (!src) { cache[key] = [NSNull null]; return nil; }
 	int sw = (int)[src pixelsWide], sh = (int)[src pixelsHigh]; NSInteger sbpr = [src bytesPerRow]; const unsigned char *sp = [src bitmapData];
-	if (getenv("WSD_PANEL_DEBUG")) NSLog(@"panel picture %@: %dx%d bpr %ld spp %ld bps %ld bpp %ld alpha %d fmt %lu center %d %d %d %d", file, sw, sh, (long)sbpr, (long)[src samplesPerPixel], (long)[src bitsPerSample], (long)[src bitsPerPixel], [src hasAlpha], (unsigned long)[src bitmapFormat], sp[(sh / 2) * sbpr + (sw / 2) * 4], sp[(sh / 2) * sbpr + (sw / 2) * 4 + 1], sp[(sh / 2) * sbpr + (sw / 2) * 4 + 2], sp[(sh / 2) * sbpr + (sw / 2) * 4 + 3]);
 	NSBitmapImageRep *dst = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes: NULL pixelsWide: px pixelsHigh: px bitsPerSample: 8 samplesPerPixel: 4 hasAlpha: YES isPlanar: NO colorSpaceName: NSDeviceRGBColorSpace bitmapFormat: NSAlphaNonpremultipliedBitmapFormat bytesPerRow: 0 bitsPerPixel: 0];
 	unsigned char *dp = [dst bitmapData]; NSInteger dbpr = [dst bytesPerRow]; CGFloat tr = 0, tg = 0, tb = 0, ta = 1; if (tint) [[tint colorUsingColorSpaceName: NSCalibratedRGBColorSpace] getRed: &tr green: &tg blue: &tb alpha: &ta];
 	double kx = (double)sw / px, ky = (double)sh / px;
@@ -78,41 +101,88 @@ static NSImage *Picture(NSString *file, int px, NSColor *tint)
 			double w = (fmin(xx + 1, x1) - fmax(xx, x0)) * (fmin(yy + 1, y1) - fmax(yy, y0)); const unsigned char *q = sp + yy * sbpr + xx * 4; double a = q[3] / 255.0;
 			sr += w * a * q[0]; sg += w * a * q[1]; sb += w * a * q[2]; sa += w * a; wsum += w;
 		}
-		unsigned char *o = dp + y * dbpr + x * 4; double a = wsum > 0 ? sa / wsum : 0;
+		unsigned char *o = dp + (px - 1 - y) * dbpr + x * 4; double a = wsum > 0 ? sa / wsum : 0;                       /* rows reversed: the pictures are drawn in flipped views */
 		if (tint) { o[0] = (unsigned char)(tr * 255 + 0.5); o[1] = (unsigned char)(tg * 255 + 0.5); o[2] = (unsigned char)(tb * 255 + 0.5); o[3] = (unsigned char)(a * ta * 255 + 0.5); }
 		else if (sa > 0) { o[0] = (unsigned char)fmin(255, sr / sa + 0.5); o[1] = (unsigned char)fmin(255, sg / sa + 0.5); o[2] = (unsigned char)fmin(255, sb / sa + 0.5); o[3] = (unsigned char)(a * 255 + 0.5); }
 		else o[0] = o[1] = o[2] = o[3] = 0;
 	}
-	if (getenv("WSD_PANEL_DEBUG")) [[dst representationUsingType: NSPNGFileType properties: nil] writeToFile: [NSString stringWithFormat: @"/tmp/panelpic_%@_%d.png", [file stringByDeletingPathExtension], px] atomically: NO];
+	if (getenv("WSD_PANEL_DEBUG")) [[dst representationUsingType: NSPNGFileType properties: nil] writeToFile: [NSString stringWithFormat: @"/tmp/panelpic_%lu_%d.png", (unsigned long)[key hash], px] atomically: NO];
 	NSImage *img = [[NSImage alloc] initWithSize: NSMakeSize(px, px)]; [img addRepresentation: dst]; cache[key] = img; return img;
 }
 static void DrawPic(NSImage *img, NSRect r) { if (img) [img drawInRect: r fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1.0]; }
+static int PxOf(NSRect r) { return (int)fmax(8, round(fmax(r.size.width, r.size.height))); }
 
-static void DrawFolder(NSRect r)
+static void DrawFolder(NSRect r)                                                                                    /* the folder bitmaps of DesktopServices: one per nominal size */
 {
-	NSImage *i = Picture(@"ft_folder.png", (int)fmax(8, round(fmax(r.size.width, r.size.height))), nil);
+	int px = PxOf(r), n = px <= 32 ? 32 : px <= 64 ? 64 : px <= 256 ? 256 : px <= 512 ? 512 : 1024;
+	NSImage *i = Picture([NSString stringWithFormat: @"car:DesktopServicesPriv:FolderEmpty%dx%d.png", n, n], px, nil);
 	if (i) { DrawPic(i, r); return; }
 	NSBezierPath *b = [NSBezierPath bezierPathWithRoundedRect: NSMakeRect(r.origin.x, r.origin.y + 2.5, r.size.width, r.size.height - 4.5) xRadius: 2 yRadius: 2]; [RGB(86, 176, 244) setFill]; [b fill];
 }
-static void DrawDoc(NSRect r, BOOL pdf)
+static void DrawAppIcon(NSRect r)
 {
-	NSImage *i = Picture(pdf ? @"ft_pdf.png" : @"ft_generic.png", (int)fmax(8, round(fmax(r.size.width, r.size.height))), nil);
-	if (i) { DrawPic(i, r); return; }
-	NSRect d = NSInsetRect(r, 2.5, 0.5); FillRound(d, 1.5, pdf ? RGB(250, 250, 250) : RGB(236, 238, 240));
+	NSImage *i = Picture(@"set:CoreTypes:GenericApplicationIcon", PxOf(r), nil);
+	if (i) DrawPic(i, r); else FillRound(NSInsetRect(r, 1, 1), 4, RGB(120, 130, 140));
 }
-static NSString *IconFileFor(NSString *name, BOOL exec)
+
+/* the type declarations of CoreTypes (its Info.plist): extension -> type -> the icon recipe (a background picture, an SF Symbol, a label) up the chain of conformance */
+static NSDictionary *IconSpecForExt(NSString *ext)
 {
-	static NSDictionary *alias; if (!alias) alias = @{ @"jpeg": @"jpg", @"htm": @"html", @"yml": @"yaml", @"tgz": @"gz", @"xz": @"gz", @"bz2": @"gz", @"zst": @"gz", @"markdown": @"md", @"cc": @"cpp", @"cxx": @"cpp", @"hpp": @"h", @"mm": @"m", @"tif": @"tiff", @"htm": @"html", @"bash": @"sh", @"zsh": @"sh", @"txt": @"txt", @"text": @"txt", @"rst": @"txt", @"conf": @"txt", @"cfg": @"txt", @"ini": @"txt", @"ko": @"o", @"so": @"o", @"dylib": @"o", @"wav": @"mp3", @"flac": @"mp3", @"aac": @"mp3", @"ogg": @"mp3", @"mkv": @"mov", @"avi": @"mov", @"m4v": @"mp4", @"webm": @"mp4", @"jpe": @"jpg", @"webp": @"png", @"bmp": @"png", @"ico": @"png", @"docx": @"doc", @"xlsx": @"xls", @"pptx": @"key", @"ttc": @"ttf", @"otf": @"ttf", @"pkg": @"pkg", @"img": @"iso", @"qcow2": @"iso" };
-	NSString *ext = [[name pathExtension] lowercaseString];
-	if (![ext length]) return exec ? @"ft_exec.png" : @"ft_generic.png";
-	NSString *k = alias[ext] ?: ext; NSString *f = [NSString stringWithFormat: @"ft_%@.png", k];
-	return PanelAsset(f) ? f : @"ft_generic.png";
+	static NSDictionary *byExt, *byId; static BOOL tried;
+	if (!tried) {
+		tried = YES; NSMutableDictionary *e = [NSMutableDictionary dictionary], *d = [NSMutableDictionary dictionary]; NSDictionary *info = nil;
+		for (NSString *dir in @[ @"/usr/local/share/wsbsd/coreui", @"/root/wsbsd/coreui/assets", @"/System/Library/CoreServices/CoreTypes.bundle/Contents" ]) {
+			NSString *f = [dir stringByAppendingPathComponent: [dir hasSuffix: @"Contents"] ? @"Info.plist" : @"CoreTypes-Info.plist"]; NSData *data = [NSData dataWithContentsOfFile: f];
+			id pl = data ? [NSPropertyListSerialization propertyListWithData: data options: 0 format: NULL error: NULL] : nil; if ([pl isKindOfClass: [NSDictionary class]]) { info = pl; break; }
+		}
+		for (NSString *k in @[ @"UTExportedTypeDeclarations", @"UTImportedTypeDeclarations" ]) for (NSDictionary *t in info[k]) {
+			NSString *u = t[@"UTTypeIdentifier"]; if (!u) continue; if (!d[u]) d[u] = t;
+			id x = t[@"UTTypeTagSpecification"][@"public.filename-extension"]; if ([x isKindOfClass: [NSString class]]) x = @[ x ];
+			for (NSString *ex in x) { NSMutableArray *a = e[[ex lowercaseString]]; if (!a) e[[ex lowercaseString]] = a = [NSMutableArray array]; [a addObject: u]; }
+		}
+		byExt = e; byId = d;
+		if (getenv("WSD_PANEL_DEBUG")) NSLog(@"panel types: %lu extensions, %lu types (info %@)", (unsigned long)[e count], (unsigned long)[d count], info ? @"loaded" : @"MISSING");
+	}
+	NSMutableArray *queue = [NSMutableArray arrayWithArray: byExt[ext] ?: @[]]; NSMutableSet *seen = [NSMutableSet set];
+	while ([queue count]) {
+		NSString *u = queue[0]; [queue removeObjectAtIndex: 0]; if ([seen containsObject: u]) continue; [seen addObject: u];
+		NSDictionary *t = byId[u]; if (!t) continue; NSDictionary *ic = t[@"UTTypeIcons"];
+		if ([ic count] && !([ic count] == 1 && ic[@"ISDocumentIconConfiguration"] == nil && ic[@"ISSymbolName"] != nil && NO)) { if (ic[@"ISDocumentIconConfiguration"] || ic[@"UTTypeIconBackgroundName"] || ic[@"UTTypeIconName"] || ic[@"UTTypeIconFile"]) return ic; }
+		id c = t[@"UTTypeConformsTo"]; if ([c isKindOfClass: [NSString class]]) c = @[ c ]; [queue addObjectsFromArray: c ?: @[]];
+	}
+	return nil;
 }
+/* the generic document of the new look: a page with a folded corner, drawn on the 128-point canvas the system icons use (measured: the page is 86 x 114 at (21, 7), the fold 32 wide) */
+static void DrawDocPage(NSRect r)
+{
+	double s = fmin(r.size.width, r.size.height) / 128.0; NSPoint o = NSMakePoint(NSMidX(r) - 64 * s, NSMidY(r) - 64 * s);
+	#define PT(a_, b_) NSMakePoint(o.x + (a_) * s, o.y + (b_) * s)
+	NSBezierPath *page = [NSBezierPath bezierPath]; double rad = 3.5;
+	[page moveToPoint: PT(21 + rad, 7)]; [page lineToPoint: PT(75, 7)]; [page lineToPoint: PT(106, 38)]; [page lineToPoint: PT(106, 120 - rad)];
+	[page curveToPoint: PT(106 - rad, 120) controlPoint1: PT(106, 120 - rad * 0.45) controlPoint2: PT(106 - rad * 0.45, 120)]; [page lineToPoint: PT(21 + rad, 120)];
+	[page curveToPoint: PT(21, 120 - rad) controlPoint1: PT(21 + rad * 0.45, 120) controlPoint2: PT(21, 120 - rad * 0.45)]; [page lineToPoint: PT(21, 7 + rad)];
+	[page curveToPoint: PT(21 + rad, 7) controlPoint1: PT(21, 7 + rad * 0.45) controlPoint2: PT(21 + rad * 0.45, 7)]; [page closePath];
+	if (s > 0.3) { NSBezierPath *sh = [page copy]; NSAffineTransform *t = [NSAffineTransform transform]; [t translateXBy: 0 yBy: 1.2 * s]; [sh transformUsingAffineTransform: t]; [RGBA(0, 0, 0, 0.16) setFill]; [sh fill]; }
+	NSGradient *g = [[NSGradient alloc] initWithStartingColor: RGB(236, 236, 238) endingColor: RGB(248, 248, 249)]; [g drawInBezierPath: page angle: 90];
+	NSBezierPath *fold = [NSBezierPath bezierPath]; [fold moveToPoint: PT(75, 7)]; [fold lineToPoint: PT(75, 38 - 1)]; [fold lineToPoint: PT(106, 38)]; [fold closePath];
+	[RGB(250, 250, 251) setFill]; [fold fill];
+	[RGBA(0, 0, 0, 0.10) setStroke]; [fold setLineWidth: fmax(0.5, s * 0.8)]; [fold stroke];
+	#undef PT
+}
+static void DrawDirIcon(NSRect r, NSString *name) { if ([[[name pathExtension] lowercaseString] isEqual: @"app"]) DrawAppIcon(r); else DrawFolder(r); }
 static void DrawFileIcon(NSRect ic, NSString *name)
 {
-	NSImage *i = Picture(IconFileFor(name, NO), (int)fmax(8, round(fmax(ic.size.width, ic.size.height))), nil);
-	if (i) { DrawPic(i, ic); return; }
-	DrawDoc(ic, [[[name pathExtension] lowercaseString] isEqual: @"pdf"]);
+	NSString *ext = [[name pathExtension] lowercaseString]; int px = PxOf(ic); NSDictionary *spec = [ext length] ? IconSpecForExt(ext) : nil;
+	DrawDocPage(ic); if (px < 24) return;
+	NSString *bg = spec[@"UTTypeIconBackgroundName"], *sym = spec[@"ISDocumentIconConfiguration"][@"ISSymbolName"];
+	if (getenv("WSD_PANEL_DEBUG")) NSLog(@"panel icon %@ px %d spec %@ bg %@ sym %@", name, px, spec ? @"yes" : @"no", bg, sym);
+	if ([bg length]) { NSImage *im = Picture([NSString stringWithFormat: @"set:CoreTypes:%@", [bg hasSuffix: @"_16"] ? [bg substringToIndex: [bg length] - 3] : bg], px, nil); if (im) DrawPic(im, ic); }
+	double s = fmin(ic.size.width, ic.size.height) / 128.0; NSPoint c = NSMakePoint(NSMidX(ic), NSMidY(ic));
+	if ([sym length]) DrawSymbol(sym, NSMakeRect(c.x - 40 * s, c.y - 40 * s, 80 * s, 80 * s), (CGFloat)(48 * s), RGBA(120, 120, 124, 0.62));
+	if (([sym length] || spec[@"ISSymbolTreatment"]) && px >= 40 && [ext length] < 6) {
+		NSString *lab = [ext uppercaseString]; NSDictionary *a = Attr((CGFloat)(16.5 * s), YES, RGBA(130, 130, 134, 0.72)); NSSize ts = [lab sizeWithAttributes: a];
+		[lab drawAtPoint: NSMakePoint(c.x - ts.width / 2, ic.origin.y + 109 * s - ts.height * 0.80) withAttributes: a];
+	}
 }
 
 /* ---- the entries of a directory, newest first, in the groups the Mac shows */
@@ -288,7 +358,7 @@ static NSString *SizeText(unsigned long long n)
 		WsdEntry *e = r; BOOL sel = i == selected; double W = rr.size.width;
 		if (sel) { NSColor *sc = active ? RGB(0, 89, 209) : P_SELECT; if (e->dir) FillRound(NSMakeRect(10, NSMinY(rr), W - 20, 22), 7, sc); else { [sc setFill]; NSRectFill(NSMakeRect(0, NSMinY(rr), W, 22)); } }     /* a folder's row is a rounded capsule, a file's runs edge to edge */
 		NSRect ic = NSMakeRect(17, NSMinY(rr) + 3, 16, 16);
-		if (e->dir) DrawFolder(ic); else DrawFileIcon(ic, e->name);
+		if (e->dir) DrawDirIcon(ic, e->name); else DrawFileIcon(ic, e->name);
 		NSColor *tc = sel && active ? [NSColor whiteColor] : (e->enabled ? P_TEXT : P_DIM);
 		TextFit(e->name, NSMakePoint(40, NSMidY(rr)), 13, tc, W - 40 - (e->dir ? 30 : 14));
 		if (e->dir) { NSBezierPath *p = [NSBezierPath bezierPath]; double cx = W - 22, cy = NSMidY(rr); [p setLineWidth: 1.3]; [p moveToPoint: NSMakePoint(cx, cy - 3.5)]; [p lineToPoint: NSMakePoint(cx + 3.5, cy)]; [p lineToPoint: NSMakePoint(cx, cy + 3.5)]; [(sel && active ? [NSColor whiteColor] : P_DIM) setStroke]; [p stroke]; }
@@ -331,7 +401,7 @@ static NSString *SizeText(unsigned long long n)
 		WsdEntry *e = r; BOOL sel = i == selected;
 		if (sel) FillRound(NSMakeRect(10, NSMinY(rr), W - 20, 22), 7, active ? RGB(0, 89, 209) : P_SELECT);
 		NSColor *tc = sel && active ? [NSColor whiteColor] : (e->enabled ? P_TEXT : P_DIM), *dc = sel && active ? RGBA(255, 255, 255, 0.85) : P_DIM;
-		NSRect ic = NSMakeRect(26, NSMinY(rr) + 3, 16, 16); if (e->dir) DrawFolder(ic); else DrawFileIcon(ic, e->name);
+		NSRect ic = NSMakeRect(26, NSMinY(rr) + 3, 16, 16); if (e->dir) DrawDirIcon(ic, e->name); else DrawFileIcon(ic, e->name);
 		TextFit(e->name, NSMakePoint(48, NSMidY(rr)), 13, tc, 250 - 48 - 12);
 		NSDictionary *at = [[NSFileManager defaultManager] attributesOfItemAtPath: e->path error: NULL];
 		NSString *sz = e->dir ? @"--" : SizeText([at fileSize]); NSDictionary *sa = Attr(13, NO, dc); NSSize ss = [sz sizeWithAttributes: sa]; [sz drawAtPoint: NSMakePoint(341 - ss.width, NSMidY(rr) - ss.height / 2) withAttributes: sa];
@@ -357,9 +427,7 @@ static NSString *SizeText(unsigned long long n)
 		NSRect c = [self cell: k]; if (!NSIntersectsRect(c, dirty)) continue; WsdEntry *e = ents[k]; BOOL sel = k == selected;
 		NSRect ic = NSMakeRect(NSMidX(c) - 28, c.origin.y + 4, 56, 56);
 		if (sel) FillRound(NSInsetRect(ic, -4, -3), 8, active ? RGBA(255, 255, 255, 0.14) : P_SELECT);
-		NSGraphicsContext *g = [NSGraphicsContext currentContext]; [g saveGraphicsState]; NSAffineTransform *t = [NSAffineTransform transform]; [t translateXBy: ic.origin.x yBy: ic.origin.y]; [t scaleBy: 3.5]; [t concat];
-		if (e->dir) DrawFolder(NSMakeRect(0, 0, 16, 16)); else DrawFileIcon(NSMakeRect(0, 0, 16, 16), e->name);
-		[g restoreGraphicsState];
+		if (e->dir) DrawDirIcon(ic, e->name); else DrawFileIcon(ic, e->name);
 		NSDictionary *a = Attr(12, NO, sel && active ? [NSColor whiteColor] : (e->enabled ? P_TEXT : P_DIM)); NSString *nm = e->name;
 		if ([nm sizeWithAttributes: a].width > 88) { while ([nm length] > 1 && [[nm stringByAppendingString: @"\u2026"] sizeWithAttributes: a].width > 88) nm = [nm substringToIndex: [nm length] - 1]; nm = [nm stringByAppendingString: @"\u2026"]; }
 		NSSize ts = [nm sizeWithAttributes: a]; NSRect lr = NSMakeRect(NSMidX(c) - ts.width / 2 - 5, c.origin.y + 64, ts.width + 10, 18);
@@ -570,6 +638,49 @@ static void DrawSideIcon(NSString *name, NSRect r, NSColor *tint)               
 	NSView *corners; WsdPreview *preview; int viewMode; NSString *listDir; BOOL expanded; NSString *saveDir, *savedName, *okTitle; NSScrollView *listScroll; WsdColumn *listView; WsdListHeader *listHeader; NSButton *newFolder; NSString *searchText; BOOL isSave, filesOK, dirsOK, multiple; NSArray *types; NSString *chosen; NSButton *ok, *cancel; NSTextField *nameField; NSInteger result; NSString *message, *prompt;
 }
 @end
+/* ---- a pop-up menu drawn inside the panel (GNUstep's own pop-up windows come out far too big under this window server): a transparent sheet over the panel that holds the menu, takes the click and goes away */
+@interface WsdPopup : NSView { NSArray *titles; NSInteger checked, hover; NSRect box; void (^pick)(NSInteger); }
++ (void)showIn:(NSView *)root titles:(NSArray *)t checked:(NSInteger)c at:(NSPoint)p pick:(void (^)(NSInteger))block;
+@end
+@implementation WsdPopup
++ (void)showIn:(NSView *)root titles:(NSArray *)t checked:(NSInteger)c at:(NSPoint)p pick:(void (^)(NSInteger))block
+{
+	WsdPopup *v = [[WsdPopup alloc] initWithFrame: [root bounds]]; v->titles = t; v->checked = c; v->hover = -1; v->pick = block;
+	double w = 60; for (NSString *s in t) w = fmax(w, [s sizeWithAttributes: Attr(13, NO, P_TEXT)].width + 44);
+	v->box = NSMakeRect(p.x, p.y, w, 10 + 24 * (double)[t count]); [root addSubview: v]; [[root window] setAcceptsMouseMovedEvents: YES]; [[root window] makeFirstResponder: v];
+}
+- (BOOL)isFlipped { return YES; }
+- (BOOL)acceptsFirstResponder { return YES; }
+- (NSRect)rowRect:(NSInteger)i { return NSMakeRect(box.origin.x + 5, box.origin.y + 5 + 24 * i, box.size.width - 10, 24); }
+- (void)drawRect:(NSRect)dirty
+{
+	FillRound(NSOffsetRect(box, 0, 3), 10, RGBA(0, 0, 0, 0.25)); FillRound(box, 10, PDark() ? RGBA(54, 60, 68, 0.98) : RGBA(246, 246, 248, 0.98));
+	[(PDark() ? RGBA(255, 255, 255, 0.14) : RGBA(0, 0, 0, 0.12)) setStroke]; NSBezierPath *o = [NSBezierPath bezierPathWithRoundedRect: NSInsetRect(box, 0.5, 0.5) xRadius: 10 yRadius: 10]; [o setLineWidth: 1]; [o stroke];
+	for (NSInteger i = 0; i < (NSInteger)[titles count]; i++) {
+		NSRect r = [self rowRect: i]; if (i == hover) FillRound(r, 5, RGB(10, 132, 255));
+		NSColor *tc = i == hover ? RGB(255, 255, 255) : P_TEXT; if (i == checked) Text(@"✓", NSMakePoint(r.origin.x + 8, NSMidY(r)), 12, YES, tc, YES);
+		Text(titles[i], NSMakePoint(r.origin.x + 26, NSMidY(r)), 13, NO, tc, YES);
+	}
+}
+- (NSInteger)rowAt:(NSPoint)p { for (NSInteger i = 0; i < (NSInteger)[titles count]; i++) if (NSPointInRect(p, [self rowRect: i])) return i; return -1; }
+- (void)mouseMoved:(NSEvent *)e { NSInteger h = [self rowAt: [self convertPoint: [e locationInWindow] fromView: nil]]; if (h != hover) { hover = h; [self setNeedsDisplay: YES]; } }
+- (void)mouseDragged:(NSEvent *)e { [self mouseMoved: e]; }
+- (void)mouseDown:(NSEvent *)e { [self mouseMoved: e]; }
+- (void)mouseUp:(NSEvent *)e
+{
+	NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; NSInteger i = [self rowAt: p]; void (^cb)(NSInteger) = pick;
+	if (i < 0 && NSPointInRect(p, box)) return;
+	[self removeFromSuperview]; if (i >= 0 && cb) cb(i);
+}
+- (void)keyDown:(NSEvent *)e
+{
+	NSString *c = [e characters]; if ([c isEqual: @"\033"]) { [self removeFromSuperview]; return; }
+	NSInteger n = (NSInteger)[titles count]; unichar ch = [c length] ? [c characterAtIndex: 0] : 0;
+	if (ch == NSDownArrowFunctionKey) hover = (hover + 1) % n; else if (ch == NSUpArrowFunctionKey) hover = hover <= 0 ? n - 1 : hover - 1;
+	else if ((ch == '\r' || ch == '\n') && hover >= 0) { void (^cb)(NSInteger) = pick; NSInteger i = hover; [self removeFromSuperview]; if (cb) cb(i); return; }
+	[self setNeedsDisplay: YES];
+}
+@end
 @interface WsdRoot : NSView { @public BOOL saveForm, expanded; id owner; NSString *whereTitle; } @end
 @implementation WsdRoot
 - (BOOL)isFlipped { return YES; }
@@ -672,9 +783,8 @@ static void DrawSideIcon(NSString *name, NSRect r, NSColor *tint)               
 /* ---- the Open panel's view modes: icons (0), list (1), columns (2); gallery (3) shows the columns */
 - (void)showViewMenu
 {
-	NSMenu *m = [[NSMenu alloc] initWithTitle: @""]; NSArray *names = @[ @"as Icons", @"as List", @"as Columns", @"as Gallery" ];
-	for (int k = 0; k < 4; k++) { NSMenuItem *it = [m addItemWithTitle: names[k] action: @selector(viewModePicked:) keyEquivalent: @""]; [it setTarget: self]; [it setTag: k]; [it setState: (k == viewMode || (viewMode == 2 && k == 3 && NO)) ? NSOnState : NSOffState]; }
-	[m popUpMenuPositioningItem: nil atLocation: NSMakePoint(135 + 76, 64 - 20) inView: root];
+	__weak WsdPanelController *me = self;
+	[WsdPopup showIn: root titles: @[ @"as Icons", @"as List", @"as Columns", @"as Gallery" ] checked: viewMode at: NSMakePoint(135 + 76, 64 - 20) pick: ^(NSInteger k) { [me setViewMode: k == 3 ? 2 : (int)k]; }];
 }
 - (void)viewModePicked:(NSMenuItem *)it { [self setViewMode: (int)[it tag] == 3 ? 2 : (int)[it tag]]; }
 - (void)clearBrowser
@@ -748,10 +858,11 @@ static void DrawSideIcon(NSString *name, NSRect r, NSColor *tint)               
 - (NSString *)currentDir { if (isSave) return saveDir ?: dir; if (viewMode != 2 && listDir) return listDir; WsdColumn *c = [cols lastObject]; return c ? c->dir : dir; }
 - (void)showPathMenu:(NSValue *)v
 {
-	NSMenu *m = [[NSMenu alloc] initWithTitle: @""]; NSString *p = [self currentDir]; NSMutableArray *chain = [NSMutableArray array];
+	NSString *p = [self currentDir]; NSMutableArray *chain = [NSMutableArray array], *names = [NSMutableArray array];
 	while ([p length] > 1) { [chain addObject: p]; p = [p stringByDeletingLastPathComponent]; } [chain addObject: @"/"];
-	for (NSString *q in chain) { NSMenuItem *it = [m addItemWithTitle: [q isEqual: @"/"] ? @"Macintosh HD" : [q lastPathComponent] action: @selector(pathPicked:) keyEquivalent: @""]; [it setTarget: self]; [it setRepresentedObject: q]; }
-	[m popUpMenuPositioningItem: nil atLocation: isSave ? NSMakePoint(100, 140) : NSMakePoint(135 + 258, 64 - 20) inView: root];
+	for (NSString *q in chain) [names addObject: [q isEqual: @"/"] ? @"Macintosh HD" : [q lastPathComponent]];
+	__weak WsdPanelController *me = self;
+	[WsdPopup showIn: root titles: names checked: 0 at: isSave ? NSMakePoint(100, 140) : NSMakePoint(135 + 258, 64 - 20) pick: ^(NSInteger k) { [me sidebarGo: chain[k]]; }];
 }
 - (void)pathPicked:(NSMenuItem *)it { [self sidebarGo: [it representedObject]]; }
 - (void)refresh
