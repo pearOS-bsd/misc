@@ -60,7 +60,7 @@ int main(void)
 			CARenderer *r = [CARenderer rendererWithBitmap:buf width:W height:H bytesPerRow:W * 4 options:nil];
 			CALayer *root = desktop(W, H, sc[i].windows); r.layer = root; r.bounds = CGRectMake(0, 0, W, H); [CATransaction flush];
 			[r beginFrameAtTime:CACurrentMediaTime() timeStamp:NULL]; [r render];
-			int N = 8; double t0 = now();
+			int N = getenv("BENCH_FRAMES") ? atoi(getenv("BENCH_FRAMES")) : 8; double t0 = now();
 			for (int k = 0; k < N; k++) { [r beginFrameAtTime:CACurrentMediaTime() timeStamp:NULL]; memset(buf, 0, (size_t)W * H * 4); [r render]; }
 			double d = (now() - t0) / N;
 			printf("compositor %-24s %8.1f ms per frame  (%5.1f fps)\n", sc[i].name, d * 1000, 1.0 / d);

@@ -132,11 +132,54 @@ void RFillShape(RSurf *dest, const RClip *clip, RMat m, const RShape *shape, RCo
 	if (clip) { if (x0 < clip->x0) x0 = clip->x0; if (y0 < clip->y0) y0 = clip->y0; if (x1 > clip->x1) x1 = clip->x1; if (y1 > clip->y1) y1 = clip->y1; }
 	double sc = LocalScale(&H, shape->r.x + shape->r.w / 2, shape->r.y + shape->r.h / 2);
 	(void)backface;
+	/* an affine mapping: the part of the shape that is surely covered (further from the edge than any corner reaches and than the antialiasing width) is filled without evaluating the distance */
+	double ix0 = 1e300, iy0 = 1e300, ix1 = -1e300, iy1 = -1e300;
+	if (H.affine && sc > 0) {
+		double mr = 0; for (int i = 0; i < 4; i++) if (shape->rad[i] > mr) mr = shape->rad[i];
+		double inset = mr * (shape->continuous ? 1.6 : 1.0) + 2.0 / sc;
+		ix0 = shape->r.x + inset; iy0 = shape->r.y + inset; ix1 = shape->r.x + shape->r.w - inset; iy1 = shape->r.y + shape->r.h - inset;
+	}
+	int plain = !clip || !clip->mask;
+	uint8_t solid[4] = { (uint8_t)(c.b * 255 + 0.5f), (uint8_t)(c.g * 255 + 0.5f), (uint8_t)(c.r * 255 + 0.5f), (uint8_t)(c.a * 255 + 0.5f) };
+	int opaque = c.a >= 1.0f && plain;
+	int axis = H.affine && H.inv[1] == 0 && H.inv[3] == 0 && H.inv[0] > 0;               /* scale and translation only: the rows are spans */
+	uint32_t solid32; memcpy(&solid32, solid, 4);
 	for (int y = y0; y < y1; y++) {
 		uint8_t *row = dest->px + (size_t)y * dest->stride;
+		double lx, ly;
+		if (H.affine) { lx = (x0 + 0.5) * H.inv[0] + (y + 0.5) * H.inv[3] + H.inv[6]; ly = (x0 + 0.5) * H.inv[1] + (y + 0.5) * H.inv[4] + H.inv[7]; }
+		int xa = x1, xb = x1;                                                            /* the span of surely covered pixels of this row, when there is one */
+		if (axis && ly > iy0 && ly < iy1 && ix1 > ix0) {
+			double ca = (ix0 - H.inv[6]) / H.inv[0] - 0.5, cb = (ix1 - H.inv[6]) / H.inv[0] - 0.5;      /* lx = (x + 0.5) * inv0 + inv6 */
+			xa = (int)floor(ca) + 2; xb = (int)ceil(cb) - 1; if (xa < x0) xa = x0; if (xb > x1) xb = x1;
+			if (xb <= xa) { xa = xb = x1; }
+		}
+		if (xb > xa && plain) {
+			int x = x0;
+			for (; x < xa; x++) {                                                         /* the left part, general */
+				double l2x = lx + (x - x0) * H.inv[0], l2y = ly, psc = sc;
+				float cov = CovFromSD(ShapeSD(shape, l2x, l2y), psc); if (cov <= 0) continue; cov *= ClipCoverage(clip, x, y); if (cov <= 0) continue;
+				Blend(row + x * 4, c.r * cov, c.g * cov, c.b * cov, c.a * cov);
+			}
+			if (opaque) { uint32_t *d = (uint32_t *)(void *)(row + xa * 4); for (int k = xa; k < xb; k++) *d++ = solid32; }
+			else for (int k = xa; k < xb; k++) { float cv = ClipCoverage(clip, k, y); Blend(row + k * 4, c.r * cv, c.g * cv, c.b * cv, c.a * cv); }
+			for (x = xb; x < x1; x++) {
+				double l2x = lx + (x - x0) * H.inv[0], l2y = ly, psc = sc;
+				float cov = CovFromSD(ShapeSD(shape, l2x, l2y), psc); if (cov <= 0) continue; cov *= ClipCoverage(clip, x, y); if (cov <= 0) continue;
+				Blend(row + x * 4, c.r * cov, c.g * cov, c.b * cov, c.a * cov);
+			}
+			continue;
+		}
 		for (int x = x0; x < x1; x++) {
-			double lx, ly, w; Unproject(&H, x + 0.5, y + 0.5, &lx, &ly, &w);
+			double w = 1;
+			if (H.affine) { if (x > x0) { lx += H.inv[0]; ly += H.inv[1]; } }
+			else Unproject(&H, x + 0.5, y + 0.5, &lx, &ly, &w);
 			if (w <= 0) continue;
+			if (lx > ix0 && lx < ix1 && ly > iy0 && ly < iy1) {                      /* surely inside */
+				if (opaque) { memcpy(row + x * 4, solid, 4); continue; }
+				float cv = ClipCoverage(clip, x, y); if (cv <= 0) continue;
+				Blend(row + x * 4, c.r * cv, c.g * cv, c.b * cv, c.a * cv); continue;
+			}
 			double psc = H.affine ? sc : LocalScale(&H, lx, ly);
 			float cov = CovFromSD(ShapeSD(shape, lx, ly), psc);
 			if (cov <= 0) continue;
@@ -216,13 +259,19 @@ void RDrawImage(RSurf *dest, const RClip *clip, RMat m, const RSurf *img, RRect 
 
 void RComposite(RSurf *dest, const RSurf *src, int sx, int sy, float alpha, const RClip *clip)
 {
+	int plain = !clip || !clip->mask;
 	for (int y = 0; y < src->h; y++) {
 		int dy = y + sy; if (dy < 0 || dy >= dest->h) continue;
+		if (clip && (dy < clip->y0 || dy >= clip->y1)) continue;
 		const uint8_t *s = src->px + (size_t)y * src->stride; uint8_t *d = dest->px + (size_t)dy * dest->stride;
-		for (int x = 0; x < src->w; x++) {
-			int dx = x + sx; if (dx < 0 || dx >= dest->w) continue;
+		int xs = 0, xe = src->w;
+		if (sx < 0) xs = -sx; if (sx + xe > dest->w) xe = dest->w - sx;
+		if (clip && plain) { if (sx + xs < clip->x0) xs = clip->x0 - sx; if (sx + xe > clip->x1) xe = clip->x1 - sx; }
+		for (int x = xs; x < xe; x++) {
+			int dx = x + sx;
 			const uint8_t *p = s + x * 4; if (!p[3] && !p[0] && !p[1] && !p[2]) continue;
-			float k = alpha * ClipCoverage(clip, dx, dy); if (k <= 0) continue;
+			float k = plain ? alpha : alpha * ClipCoverage(clip, dx, dy); if (k <= 0) continue;
+			if (k >= 1 && p[3] == 255) { memcpy(d + dx * 4, p, 4); continue; }                     /* an opaque pixel replaces the destination */
 			Blend(d + dx * 4, p[2] * (1.0f / 255) * k, p[1] * (1.0f / 255) * k, p[0] * (1.0f / 255) * k, p[3] * (1.0f / 255) * k);
 		}
 	}
@@ -240,12 +289,19 @@ static void BoxBlurH(float *src, float *dst, int w, int h, int r)
 }
 static void BoxBlurV(float *src, float *dst, int w, int h, int r)
 {
+	/* row by row: one running sum per column (the same sums as column by column, but the memory is walked in order) */
 	float k = 1.0f / (2 * r + 1);
-	for (int x = 0; x < w; x++) {
-		float acc = 0;
-		for (int y = -r; y <= r; y++) acc += (y >= 0 && y < h) ? src[(size_t)y * w + x] : 0;
-		for (int y = 0; y < h; y++) { dst[(size_t)y * w + x] = acc * k; int add = y + r + 1, sub = y - r; acc += (add < h ? src[(size_t)add * w + x] : 0) - (sub >= 0 ? src[(size_t)sub * w + x] : 0); }
+	float *acc = calloc((size_t)w, sizeof(float));
+	for (int y = -r; y <= r; y++) if (y >= 0 && y < h) { const float *row = src + (size_t)y * w; for (int x = 0; x < w; x++) acc[x] += row[x]; }
+	for (int y = 0; y < h; y++) {
+		float *d = dst + (size_t)y * w; int add = y + r + 1, sub = y - r;
+		for (int x = 0; x < w; x++) d[x] = acc[x] * k;
+		const float *ra = add < h ? src + (size_t)add * w : NULL, *rs = sub >= 0 ? src + (size_t)sub * w : NULL;
+		if (ra && rs) for (int x = 0; x < w; x++) acc[x] += ra[x] - rs[x];
+		else if (ra) for (int x = 0; x < w; x++) acc[x] += ra[x] - 0;
+		else if (rs) for (int x = 0; x < w; x++) acc[x] += 0 - rs[x];
 	}
+	free(acc);
 }
 /* three box blurs approximate a gaussian (box widths from the standard deviation) */
 static void GaussianFloat(float *a, int w, int h, double sigma)
