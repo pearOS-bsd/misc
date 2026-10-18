@@ -92,6 +92,7 @@
 	TermWindowController *c = [[TermWindowController alloc] initWithProfile:p command:nil];
 	const char *init = getenv("TERMINAL_INITIAL_INPUT"), *quitAfter = getenv("TERMINAL_EXIT_AFTER");
 	if (getenv("TERMINAL_SETTINGS")) [TermSettings show];
+	if (getenv("TERMINAL_INSPECTOR")) [TermInspector showForTerm:[c term]];
 	if (quitAfter && atof(quitAfter) > 0) [NSTimer scheduledTimerWithTimeInterval:atof(quitAfter) target:self selector:@selector(finish:) userInfo:nil repeats:NO];
 	if (init && *init) [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(typeInitial:) userInfo:c repeats:NO];
 }
