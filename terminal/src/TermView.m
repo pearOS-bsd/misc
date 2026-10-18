@@ -6,7 +6,7 @@
 #include <stdlib.h>
 
 static void vt_reply(void *ctx, const char *d, size_t n) { int fd = *(int *)ctx; if (fd >= 0) (void)write(fd, d, n); }
-static BOOL allowMouse = YES, optionAsMeta = YES, autoMark = YES, showMarks = YES;
+static NSString *customTitle_unused; static BOOL allowMouse = YES, optionAsMeta = YES, autoMark = YES, showMarks = YES;
 
 @implementation TermView
 - (id)delegate { return delegate; } - (void)setDelegate:(id)d { delegate = d; } - (TermProfile *)profile { return profile; }
@@ -65,14 +65,15 @@ static BOOL allowMouse = YES, optionAsMeta = YES, autoMark = YES, showMarks = YE
 	[pump invalidate]; [pump release]; [blinkTimer invalidate]; [blinkTimer release];
 	if (master >= 0) close(master);
 	if (child > 0) { kill(child, SIGHUP); waitpid(child, NULL, WNOHANG); }
-	vt_free(term); [font release]; [boldFont release]; [profile release]; [command release]; [findQuery release]; [marks release]; [bookmarks release];
+	vt_free(term); [font release]; [boldFont release]; [profile release]; [command release]; [findQuery release]; [marks release]; [bookmarks release]; [customTitle release];
 	[super dealloc];
 }
 
 - (BOOL)isFlipped { return YES; }
 - (BOOL)acceptsFirstResponder { return YES; }
 - (BOOL)isOpaque { return [profile->background alphaComponent] >= 0.999; }
-- (NSString *)titleString { const char *t = vt_title(term); return (t && *t) ? [NSString stringWithUTF8String:t] : @"Terminal"; }
+- (void)setCustomTitle:(NSString *)t { [customTitle release]; customTitle = [t length] ? [t copy] : nil; if ([delegate respondsToSelector:@selector(termViewChanged:)]) [delegate termViewChanged:self]; }
+- (NSString *)titleString { if (customTitle) return customTitle; const char *t = vt_title(term); return (t && *t) ? [NSString stringWithUTF8String:t] : @"Terminal"; }
 - (BOOL)childExited { return exited; }
 - (pid_t)childPid { return child; }
 - (NSString *)ttyName { const char *n = master >= 0 ? ptsname(master) : NULL; return n ? [NSString stringWithUTF8String:n] : nil; }

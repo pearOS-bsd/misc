@@ -13,7 +13,7 @@
 	int scrollOffset;                      /* lines scrolled back into history */
 	int selStartX, selStartY, selEndX, selEndY; BOOL hasSel; int clickCount;
 	NSString *findQuery; BOOL findCase;    /* matches are highlighted while set */
-	id delegate;
+	id delegate; NSString *customTitle;
 	NSMutableArray *marks, *bookmarks;     /* absolute line numbers (vt_scrolled + row) of the marks and bookmarks the user set */
 }
 + (void)setAutoMarkPrompts:(BOOL)b; + (BOOL)autoMarkPrompts; + (void)setShowMarks:(BOOL)b; + (BOOL)showMarks;
@@ -23,7 +23,8 @@
 - (void)applyProfile:(TermProfile *)p;
 - (NSSize)idealSizeForCols:(int)cols rows:(int)rows;
 - (int)cols; - (int)rows;
-- (NSString *)titleString;
+- (NSString *)titleString;                                 /* the custom title when Edit Title set one, else the program's (OSC) title */
+- (void)setCustomTitle:(NSString *)t;
 - (BOOL)childExited;
 - (void)setActive:(BOOL)a;                 /* the window is key and this is the front tab: the cursor is solid */
 - (void)writeString:(NSString *)s;                         /* sends text to the shell as if typed */

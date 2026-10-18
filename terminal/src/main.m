@@ -14,6 +14,33 @@
 - (TermWindowController *)wc { NSWindow *w = [NSApp keyWindow] ?: [NSApp mainWindow]; for (TermWindowController *c in [TermWindowController all]) if ([c window] == w) return c; return [[TermWindowController all] lastObject]; }
 - (TermProfile *)profileOf:(id)sender { id r = [sender respondsToSelector:@selector(representedObject)] ? [sender representedObject] : nil; return [r isKindOfClass:[TermProfile class]] ? r : nil; }
 
+- (NSString *)promptFor:(NSString *)title message:(NSString *)msg initial:(NSString *)init
+{
+	NSAlert *a = [[[NSAlert alloc] init] autorelease]; [a setMessageText:title]; [a setInformativeText:msg]; [a addButtonWithTitle:@"OK"]; [a addButtonWithTitle:@"Cancel"];
+	NSTextField *f = [[[NSTextField alloc] initWithFrame:NSMakeRect(0, 0, 280, 24)] autorelease]; [f setStringValue:init ?: @""]; [a setAccessoryView:f];
+	return [a runModal] == NSAlertFirstButtonReturn ? [f stringValue] : nil;
+}
+- (void)newCommand:(id)sender
+{
+	(void)sender; NSString *c = [self promptFor:@"New Command" message:@"Command (complete path):" initial:@"/bin/sh"]; if (![c length]) return;
+	[[TermWindowController alloc] initWithProfile:nil command:c];
+}
+- (void)openDocument:(id)sender
+{
+	(void)sender; NSOpenPanel *op = [NSOpenPanel openPanel]; if ([op runModal] != NSOKButton) return;
+	NSString *p = [[[op URLs] objectAtIndex:0] path]; if ([[NSFileManager defaultManager] isExecutableFileAtPath:p]) [[TermWindowController alloc] initWithProfile:nil command:p];
+}
+- (void)editTitle:(id)sender
+{
+	(void)sender; TermWindowController *c = [self wc]; if (!c) return; NSString *t = [self promptFor:@"Edit Title" message:@"Tab title:" initial:[[c term] titleString]]; if (t) [[c term] setCustomTitle:t];
+}
+- (void)editBackground:(id)sender { (void)sender; [[NSColorPanel sharedColorPanel] setTarget:self]; [[NSColorPanel sharedColorPanel] setAction:@selector(backgroundColorPicked:)]; [[NSColorPanel sharedColorPanel] orderFront:nil]; }
+- (void)showColors:(id)sender { (void)sender; [[NSColorPanel sharedColorPanel] orderFront:nil]; }
+- (void)backgroundColorPicked:(id)sender
+{
+	TermWindowController *c = [self wc]; if (!c) return; TermProfile *p = [[c term] profile]; NSColor *n = [[(NSColorPanel *)sender color] colorWithAlphaComponent:[p->background alphaComponent]];
+	[p->background release]; p->background = [n retain]; [p changed];
+}
 - (void)showInspector:(id)sender { (void)sender; TermWindowController *c = [self wc]; if (c) [TermInspector showForTerm:[c term]]; }
 - (void)showSettings:(id)sender { (void)sender; [TermSettings show]; }
 - (void)newWindow:(id)sender { [[TermWindowController alloc] initWithProfile:[self profileOf:sender] command:nil]; }
@@ -156,6 +183,7 @@ int main(int argc, char **argv)
 	m = SUB(bar, @"View");
 	M(m, @"Show Tab Bar", @selector(toggleTabBar:), @"t", CMD | SH, d); SEP(m);
 	M(m, @"Bigger", @selector(biggerFont:), @"+", CMD, nil); M(m, @"Smaller", @selector(smallerFont:), @"-", CMD, nil); M(m, @"Default Font Size", @selector(defaultFontSize:), @"0", CMD, nil); SEP(m);
+	M(m, @"Show Colours", @selector(showColors:), @"c", CMD | SH, d); SEP(m);
 	M(m, @"Allow Mouse Reporting", @selector(toggleMouseReporting:), nil, 0, d); M(m, @"Use Option as Meta Key", @selector(toggleOptionAsMeta:), nil, 0, d); SEP(m);
 	NSMenu *nv = SUB(m, @"Navigate");
 	M(nv, @"Line Up", @selector(scrollLineUp:), nil, 0, nil); M(nv, @"Line Down", @selector(scrollLineDown:), nil, 0, nil); M(nv, @"Page Up", @selector(scrollPageUp:), nil, 0, nil); M(nv, @"Page Down", @selector(scrollPageDown:), nil, 0, nil);
