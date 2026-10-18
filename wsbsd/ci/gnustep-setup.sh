@@ -54,6 +54,16 @@ s=open(p).read()
 s+='\nADDITIONAL_INCLUDE_DIRS += -I$WS/include\n'
 open(p,'w').write(s)
 PY
+# a bitmap of 3 samples in 32 bits per pixel (RGB and an unused byte: what GrandPerspective's tree image is) has no alpha: the unused byte must not become transparency
+python3 - <<PY2
+p='Source/cairo/CairoGState.m'
+s=open(p).read()
+old="                                        | (*dataPixel & 0xFF00FF00);        // A_G_ -> A_G_\n"
+new="                                        | (*dataPixel & 0xFF00FF00);        // A_G_ -> A_G_\n              if (!hasAlpha) reformattedDataPixel[-1] |= 0xFF000000;   // the fourth byte is padding, not alpha\n"
+assert old in s
+s=s.replace(old,new,1)
+open(p,'w').write(s)
+PY2
 # the cairo makefile adds the Win32 surfaces for any server that is not x11 or wayland
 sed -i '' 's/cairo_OBJC_FILES += Win32CairoSurface.m Win32CairoGState.m/cairo_OBJC_FILES += /' Source/cairo/GNUmakefile
 ./configure --enable-server=headless --enable-graphics=cairo 2>&1 | tail -5
