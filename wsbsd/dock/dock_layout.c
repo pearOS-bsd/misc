@@ -5,6 +5,7 @@
 
 static double pitch(const DockMetrics *m) { return m->tilesize + 4.0; }
 static double sep_width(const DockMetrics *m) { return pitch(m) * (28.0 / 62.0); }
+static double base_width(const DockMetrics *m, int kind) { return kind == DOCK_SEPARATOR ? sep_width(m) : kind == DOCK_SMALLSPACER ? pitch(m) * 0.5 : pitch(m); }
 
 /* the size factor of a tile whose centre is d points from the pointer: a Gaussian bell (3 tile sizes) cut off at 5.2 tile sizes, fitted to the real Dock in the expanded layout */
 double dock_magnify_factor(const DockMetrics *m, double d)
@@ -19,9 +20,9 @@ static void place(const DockMetrics *m, const DockItem *items, int n, const doub
 {
 	double x = 0;
 	for (int i = 0; i < n; i++) {
-		double base = items[i].kind == DOCK_SEPARATOR ? sep_width(m) : pitch(m), s = items[i].kind == DOCK_SEPARATOR ? 1.0 : scale[i];
+		double base = base_width(m, items[i].kind), s = DOCK_IS_GAP(items[i].kind) ? 1.0 : scale[i];
 		slots[i].x = x; slots[i].w = base * s; slots[i].scale = s; slots[i].cx = x + slots[i].w * 0.5;
-		slots[i].art = (items[i].kind == DOCK_SEPARATOR ? 0 : (double)(int)(m->tilesize * 0.81 + 0.5)) * s;
+		slots[i].art = (DOCK_IS_GAP(items[i].kind) ? 0 : (double)(int)(m->tilesize * 0.81 + 0.5)) * s;
 		x += slots[i].w;
 	}
 	*total = x;
@@ -41,7 +42,7 @@ void dock_layout(const DockMetrics *m, const DockItem *items, int n, double curs
 		for (int it = 0; it < 200; it++) {
 			double moved = 0;
 			for (int i = 0; i < n; i++) {
-				double target = items[i].kind == DOCK_SEPARATOR ? 1.0 : dock_magnify_factor(m, fabs(slots[i].cx + left - cursor_x));
+				double target = DOCK_IS_GAP(items[i].kind) ? 1.0 : dock_magnify_factor(m, fabs(slots[i].cx + left - cursor_x));
 				double ns = scale[i] + (target - scale[i]) * 0.5; moved += fabs(ns - scale[i]); scale[i] = ns;
 			}
 			place(m, items, n, scale, slots, &total);

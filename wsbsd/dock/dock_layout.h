@@ -3,7 +3,8 @@
 #ifndef WSBSD_DOCK_LAYOUT_H
 #define WSBSD_DOCK_LAYOUT_H
 
-enum { DOCK_APP = 0, DOCK_SEPARATOR = 1, DOCK_OTHER = 2, DOCK_TRASH = 3, DOCK_MINIMIZED = 4 };
+enum { DOCK_APP = 0, DOCK_SEPARATOR = 1, DOCK_OTHER = 2, DOCK_TRASH = 3, DOCK_MINIMIZED = 4, DOCK_SPACER = 5, DOCK_SMALLSPACER = 6 };
+#define DOCK_IS_GAP(k) ((k) == DOCK_SEPARATOR || (k) == DOCK_SPACER || (k) == DOCK_SMALLSPACER)
 
 typedef struct {
 	int tilesize;                 /* the "size" preference, 58 by default */
