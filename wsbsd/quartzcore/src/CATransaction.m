@@ -41,17 +41,18 @@ CFTimeInterval CATransactionTime(void)
 }
 
 /* a layer changed: the implicit transaction is committed by the run loop */
+static BOOL gFlushScheduled;
 void CATransactionNoteChange(void)
 {
 	CATransactionState *t = top();
-	if (t->implicit && !t->flushScheduled) {
-		t->flushScheduled = YES;
+	if (t->implicit && !gFlushScheduled) {
+		gFlushScheduled = YES;
 		[[NSRunLoop mainRunLoop] performSelector:@selector(_wsbsdFlushImplicit) target:[CATransaction class] argument:nil order:0 modes:@[NSRunLoopCommonModes]];
 	}
 }
 
 @implementation CATransaction
-+ (void)_wsbsdFlushImplicit { [self flush]; }
++ (void)_wsbsdFlushImplicit { gFlushScheduled = NO; [self flush]; }
 + (void)begin
 {
 	CATransactionState *parent = top(), *t = [CATransactionState new];

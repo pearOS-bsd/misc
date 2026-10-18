@@ -9,13 +9,18 @@ ifeq ($(UNAME),Darwin)
   CFLAGS += -include test/rename.h
 else
   GSCFLAGS := $(shell gnustep-config --objc-flags 2>/dev/null)
-  FW := $(shell gnustep-config --base-libs 2>/dev/null) -lopal -lcairo -lm
+  FW := $(shell gnustep-config --base-libs 2>/dev/null) -lopal -lgnustep-corebase -ldispatch -lcairo -lm
   CFLAGS += $(GSCFLAGS) -fPIC
   BUILD := build
 endif
 OBJ := $(patsubst src/%,$(BUILD)/%.o,$(SRC))
 
-all: $(BUILD)/libQuartzCore.a
+ifeq ($(UNAME),Darwin)
+LIB := $(BUILD)/libQuartzCore.a
+else
+LIB := $(BUILD)/libQuartzCore.so
+endif
+all: $(LIB)
 $(BUILD)/%.m.o: src/%.m src/CAInternal.h src/CALayerPrivate.h src/CALayerProps.inc | $(BUILD)
 	$(CC) $(CFLAGS) -c $< -o $@
 $(BUILD)/%.c.o: src/%.c | $(BUILD)
@@ -24,6 +29,8 @@ $(BUILD):
 	mkdir -p $(BUILD)
 $(BUILD)/libQuartzCore.a: $(OBJ)
 	ar rcs $@ $(OBJ)
+$(BUILD)/libQuartzCore.so: $(OBJ)
+	$(CC) -shared -o $@ $(OBJ) $(FW)
 
 # --- differential tests against the real QuartzCore (macOS only)
 ifeq ($(UNAME),Darwin)
@@ -85,3 +92,15 @@ render-compare: test/scenes_real test/scenes_ours
 	./test/scenes_real /tmp/scenes_real; ./test/scenes_ours /tmp/scenes_ours
 	python3 -I test/imgcmp.py /tmp/scenes_real /tmp/scenes_ours /tmp/scenes_png
 endif
+
+# --- the same scenarios against the reference values recorded from Apple's QuartzCore (test/ref): runs everywhere
+CHECKCC = $(CC) $(CFLAGS) $(if $(filter Darwin,$(UNAME)),,-DNO_RENAME)
+test/%_ref: test/%.m $(LIB)
+	$(CHECKCC) -o $@ test/$*.m $(LIB) -ObjC $(FW) -Wl,-rpath,$(CURDIR)/$(BUILD)
+check-ref: export WSCA_UNNAMED_IS_GENERIC=1
+check-ref: test/golden_ref test/fuzz_ref test/actions_ref test/values_ref test/defaults_ref
+	./test/golden_ref | sed 's/WSCA/CA/g' > test/golden.out && python3 -I test/cmp.py test/ref/golden.txt test/golden.out 2e-6
+	./test/fuzz_ref | sed 's/WSCA/CA/g' > test/fuzz.out && python3 -I test/cmp.py test/ref/fuzz.txt test/fuzz.out 2e-5 || true
+	./test/actions_ref | sed 's/WSCA/CA/g' > test/actions.out && python3 -I test/cmp.py test/ref/actions.txt test/actions.out 2e-6
+	./test/values_ref | sed 's/WSCA/CA/g' > test/values.out && python3 -I test/cmp.py test/ref/values.txt test/values.out 2e-6
+	./test/defaults_ref | sed 's/WSCA/CA/g' > test/defaults.out && python3 -I test/cmp.py test/ref/defaults.txt test/defaults.out 1e-9 || true

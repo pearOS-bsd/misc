@@ -15,7 +15,7 @@ static KFMode CAMode(NSString *s)
 static double CADistance(id a, id b)
 {
 	if ([a isKindOfClass:[NSNumber class]]) return fabs([a doubleValue] - [b doubleValue]);
-	if (a && b && CFGetTypeID((__bridge CFTypeRef)a) == CGColorGetTypeID() && CFGetTypeID((__bridge CFTypeRef)b) == CGColorGetTypeID()) {
+	if (a && b && CAIsColor(a) && CAIsColor(b)) {
 		double x[4], y[4]; CAColorGetExtSRGB((__bridge CGColorRef)a, x); CAColorGetExtSRGB((__bridge CGColorRef)b, y);
 		double s = 0; for (int i = 0; i < 4; i++) s += (x[i] - y[i]) * (x[i] - y[i]);
 		return sqrt(s);
@@ -34,14 +34,14 @@ static double CADistance(id a, id b)
 static BOOL CAHermiteCapable(id v)
 {
 	if ([v isKindOfClass:[NSNumber class]]) return YES;
-	if (v && CFGetTypeID((__bridge CFTypeRef)v) == CGColorGetTypeID()) return YES;
+	if (v && CAIsColor(v)) return YES;
 	if ([v isKindOfClass:[NSValue class]]) { const char *t = [v objCType]; return t && t[0] == '{' && !strstr(t, "Transform") && !strstr(t, "ColorMatrix"); }
 	return NO;
 }
 static int CAComps(id v, double *out)
 {
 	if ([v isKindOfClass:[NSNumber class]]) { out[0] = [v doubleValue]; return 1; }
-	if (CFGetTypeID((__bridge CFTypeRef)v) == CGColorGetTypeID()) { CAColorGetExtSRGB((__bridge CGColorRef)v, out); return 4; }
+	if (CAIsColor(v)) { CAColorGetExtSRGB((__bridge CGColorRef)v, out); return 4; }
 	size_t sz; NSGetSizeAndAlignment([v objCType], &sz, NULL); [v getValue:out]; return (int)(sz / 8);
 }
 static id CAHermite(NSArray *vals, double *kt, NSUInteger i, double u, NSArray *tens, NSArray *cont, NSArray *bias)
@@ -73,7 +73,7 @@ static id CAHermite(NSArray *vals, double *kt, NSUInteger i, double u, NSArray *
 	double h00 = 2 * u * u * u - 3 * u * u + 1, h10 = u * u * u - 2 * u * u + u, h01 = -2 * u * u * u + 3 * u * u, h11 = u * u * u - u * u;
 	for (int c = 0; c < nc; c++) out[c] = h00 * p[1][c] + h10 * m[0][c] + h01 * p[2][c] + h11 * m[1][c];
 	if ([vals[0] isKindOfClass:[NSNumber class]]) return @(out[0]);
-	if (CFGetTypeID((__bridge CFTypeRef)vals[0]) == CGColorGetTypeID()) return CFBridgingRelease(CAColorCreateExtSRGB(out));
+	if (CAIsColor(vals[0])) return CFBridgingRelease(CAColorCreateExtSRGB(out));
 	return [NSValue valueWithBytes:out objCType:[vals[0] objCType]];
 }
 
@@ -199,7 +199,7 @@ void CAKeyframeApply(CAKeyframeAnimation *k, CFTimeInterval time, id pres, id mo
 		lt = lt > 1 ? 1 : (lt < 0 ? 0 : lt);
 		NSArray *tfs = [k timingFunctions];
 		if (tfs && i < tfs.count && mode != kModePaced && mode != kModeCubicPaced) lt = (double)[tfs[i] _solve:(float)lt];
-		value = CAValueInterpolate(values[i], values[i + 1], (float)lt);
+		value = lt == 0 ? values[i] : (lt == 1 ? values[i + 1] : CAValueInterpolate(values[i], values[i + 1], (float)lt));
 	}
 	if ([k isCumulative] && iteration) value = CAValueAdd(value, values.lastObject, iteration);
 	if ([k valueFunction]) value = CAValueApplyFunction([k valueFunction], value, k, pres);

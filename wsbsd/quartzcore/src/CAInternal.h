@@ -53,4 +53,20 @@ void CATransactionNoteChange(void);                                    /* a laye
 - (void)_setContext:(BOOL)inContext;
 - (BOOL)_isPresentation;
 @end
+
+/* the Core Graphics object kinds: type ids on macOS; the classes of Opal elsewhere (there the objects are Objective-C objects) */
+#ifndef CACOMPAT_H
+#define CACOMPAT_H
+#ifdef __APPLE__
+static inline BOOL CAIsColor(id v) { return v && CFGetTypeID((__bridge CFTypeRef)v) == CGColorGetTypeID(); }
+static inline BOOL CAIsPath(id v) { return v && CFGetTypeID((__bridge CFTypeRef)v) == CGPathGetTypeID(); }
+static inline BOOL CAIsImage(id v) { return v && CFGetTypeID((__bridge CFTypeRef)v) == CGImageGetTypeID(); }
+#else
+#import <objc/runtime.h>
+static inline BOOL CAIsKind(id v, const char *n) { Class c = objc_lookUpClass(n); return v && c && [v isKindOfClass:c]; }
+static inline BOOL CAIsColor(id v) { return CAIsKind(v, "CGColor"); }
+static inline BOOL CAIsPath(id v) { return CAIsKind(v, "CGPath"); }
+static inline BOOL CAIsImage(id v) { return CAIsKind(v, "CGImage"); }
+#endif
+#endif
 #endif

@@ -12,7 +12,8 @@ def allp(c):
     r = set(pub.get(c, ()))
     if sup.get(c): r |= allp(sup[c])
     return r
-cur = None
+cur = None; seen = set()
 for l in open(sys.argv[1]):
-    if l.startswith('## '): cur = l[3:].strip(); sys.stdout.write(l); continue
-    if l.split(' = ')[0] in allp(cur) | timing: sys.stdout.write(l)
+    if l.startswith('## '): cur = l[3:].strip(); seen = set(); sys.stdout.write(l); continue
+    k = l.split(' = ')[0]
+    if k in allp(cur) | timing and k not in seen: seen.add(k); sys.stdout.write(l)

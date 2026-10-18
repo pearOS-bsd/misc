@@ -1,6 +1,7 @@
 /* Value interpolation and addition, against the real QuartzCore (through the private -CA_interpolateValue:byFraction: / -CA_addValue:multipliedBy: when built with -DREAL_CA). */
 #import <Foundation/Foundation.h>
 #import <QuartzCore/QuartzCore.h>
+#import "cacompat.h"
 #import <objc/message.h>
 #ifndef REAL_CA
 #import "../src/CAInternal.h"
@@ -31,7 +32,7 @@ static void show(const char *tag, id v)
 	NSMutableString *o = [NSMutableString stringWithFormat:@"%s ", tag];
 	if (!v) [o appendString:@"nil"];
 	else if ([v isKindOfClass:[NSNumber class]]) [o appendFormat:@"%.12g", [v doubleValue]];
-	else if (CFGetTypeID((__bridge CFTypeRef)v) == CGColorGetTypeID()) {
+	else if (CAIsColor(v)) {
 		CGColorRef c = (__bridge CGColorRef)v; size_t n = CGColorGetNumberOfComponents(c); const CGFloat *p = CGColorGetComponents(c);
 		for (size_t i = 0; i < n; i++) [o appendFormat:@"%.9g ", p[i]];
 	} else if ([v isKindOfClass:[NSValue class]]) {

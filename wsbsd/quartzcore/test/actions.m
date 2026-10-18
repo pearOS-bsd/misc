@@ -2,6 +2,7 @@
  * An animation is sampled by freezing it (speed 0, timeOffset t) and reading the presentation layer. */
 #import <Foundation/Foundation.h>
 #import <QuartzCore/QuartzCore.h>
+#import "cacompat.h"
 #ifdef REAL_CA
 #import <Metal/Metal.h>
 #endif
@@ -31,7 +32,7 @@ static void fmtv(NSMutableString *s, id v)
 {
 	if (!v) { [s appendString:@"nil"]; return; }
 	if ([v isKindOfClass:[NSNumber class]]) { [s appendFormat:@"%.9g", [v doubleValue]]; return; }
-	if (CFGetTypeID((__bridge CFTypeRef)v) == CGColorGetTypeID()) {
+	if (CAIsColor(v)) {
 		CGColorRef c = (__bridge CGColorRef)v; size_t n = CGColorGetNumberOfComponents(c); const CGFloat *p = CGColorGetComponents(c);
 		[s appendString:@"color("]; for (size_t i = 0; i < n; i++) [s appendFormat:@"%s%.6g", i ? "," : "", p[i]]; [s appendString:@")"]; return;
 	}
@@ -95,7 +96,7 @@ int main(void)
 		/* a layer that is not in a rendered tree animates nothing */
 		{ CALayer *free = [CALayer layer]; free.opacity = 0.3; free.position = CGPointMake(3, 3); printf("%-34s %s\n", "detached layer", [describe(free) UTF8String]); printf("pres of detached: %d\n", [free presentationLayer] != nil); }
 		/* add/replace/remove animation keys */
-		{ CABasicAnimation *a = [CABasicAnimation animationWithKeyPath:@"opacity"]; a.duration = 1; [L addAnimation:a forKey:@"x"]; [L addAnimation:a forKey:@"y"]; [L addAnimation:a forKey:nil]; printf("keys: %s\n", [[[[L animationKeys] sortedArrayUsingSelector:@selector(compare:)] description] UTF8String]); [L removeAnimationForKey:@"x"]; printf("after remove x: %d\n", (int)[L animationKeys].count); [L removeAllAnimations]; printf("after remove all: %d\n", (int)[L animationKeys].count); }
+		{ CABasicAnimation *a = [CABasicAnimation animationWithKeyPath:@"opacity"]; a.duration = 1; [L addAnimation:a forKey:@"x"]; [L addAnimation:a forKey:@"y"]; [L addAnimation:a forKey:nil]; printf("keys: %s\n", [[[[L animationKeys] sortedArrayUsingSelector:@selector(compare:)] componentsJoinedByString:@","] UTF8String]); [L removeAnimationForKey:@"x"]; printf("after remove x: %d\n", (int)[L animationKeys].count); [L removeAllAnimations]; printf("after remove all: %d\n", (int)[L animationKeys].count); }
 	}
 	return 0;
 }
