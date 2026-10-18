@@ -52,6 +52,13 @@ int main(void)
 	unsigned s = 12345; char junk[4096]; for (int i = 0; i < 4096; i++) { s = s * 1103515245u + 12345u; junk[i] = (char)(s >> 16); }
 	for (int r = 0; r < 50; r++) vt_feed(t, junk, sizeof junk);
 	vt_free(t);
+	{ /* OSC 133;A (the shell's prompt marks) and the absolute line numbers: the screen has 3 rows, so lines scroll into the history */
+		vt *t2 = vt_new(10, 3, 100); const char *s = "\033]133;A\007one\r\ntwo\r\nthree\r\n\033]133;A\007four\r\n";
+		vt_feed(t2, s, strlen(s));
+		CHECK(vt_prompt_count(t2) == 2 && vt_prompt_at(t2, 0) == 0 && vt_prompt_at(t2, 1) == 3);
+		CHECK(vt_scrolled(t2) == 2);
+		vt_free(t2);
+	}
 	if (failures) { printf("%d failures\n", failures); return 1; }
 	printf("vt emulator: all checks passed\n");
 	return 0;

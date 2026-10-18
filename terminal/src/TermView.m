@@ -3,15 +3,18 @@
 #include <unistd.h>
 #include <signal.h>
 #include <sys/wait.h>
+#include <stdlib.h>
 
 static void vt_reply(void *ctx, const char *d, size_t n) { int fd = *(int *)ctx; if (fd >= 0) (void)write(fd, d, n); }
-static BOOL allowMouse = YES, optionAsMeta = YES;
+static BOOL allowMouse = YES, optionAsMeta = YES, autoMark = YES, showMarks = YES;
 
 @implementation TermView
 - (id)delegate { return delegate; } - (void)setDelegate:(id)d { delegate = d; } - (TermProfile *)profile { return profile; }
 
 + (void)setAllowMouseReporting:(BOOL)b { allowMouse = b; }
 + (BOOL)allowMouseReporting { return allowMouse; }
++ (void)setAutoMarkPrompts:(BOOL)b { autoMark = b; } + (BOOL)autoMarkPrompts { return autoMark; }
++ (void)setShowMarks:(BOOL)b { showMarks = b; } + (BOOL)showMarks { return showMarks; }
 + (void)setOptionAsMeta:(BOOL)b { optionAsMeta = b; }
 + (BOOL)optionAsMeta { return optionAsMeta; }
 
@@ -27,7 +30,7 @@ static BOOL allowMouse = YES, optionAsMeta = YES;
 	vt_set_writer(term, vt_reply, &master);
 	if (master < 0) { const char *m = "cannot start a shell\r\n"; vt_feed(term, m, strlen(m)); exited = YES; }
 	pump = [[NSTimer scheduledTimerWithTimeInterval:1.0 / 60 target:self selector:@selector(pump:) userInfo:nil repeats:YES] retain];
-	blinkOn = YES; active = YES;
+	blinkOn = YES; active = YES; marks = [[NSMutableArray alloc] init]; bookmarks = [[NSMutableArray alloc] init];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(profileChanged:) name:@"TermProfileChanged" object:nil];
 	return self;
 }
@@ -62,7 +65,7 @@ static BOOL allowMouse = YES, optionAsMeta = YES;
 	[pump invalidate]; [pump release]; [blinkTimer invalidate]; [blinkTimer release];
 	if (master >= 0) close(master);
 	if (child > 0) { kill(child, SIGHUP); waitpid(child, NULL, WNOHANG); }
-	vt_free(term); [font release]; [boldFont release]; [profile release]; [command release]; [findQuery release];
+	vt_free(term); [font release]; [boldFont release]; [profile release]; [command release]; [findQuery release]; [marks release]; [bookmarks release];
 	[super dealloc];
 }
 
@@ -71,6 +74,8 @@ static BOOL allowMouse = YES, optionAsMeta = YES;
 - (BOOL)isOpaque { return [profile->background alphaComponent] >= 0.999; }
 - (NSString *)titleString { const char *t = vt_title(term); return (t && *t) ? [NSString stringWithUTF8String:t] : @"Terminal"; }
 - (BOOL)childExited { return exited; }
+- (pid_t)childPid { return child; }
+- (NSString *)ttyName { const char *n = master >= 0 ? ptsname(master) : NULL; return n ? [NSString stringWithUTF8String:n] : nil; }
 - (int)cols { return vt_cols(term); } - (int)rows { return vt_rows(term); }
 - (NSSize)idealSizeForCols:(int)cols rows:(int)rows { return NSMakeSize(cols * cellW, rows * cellH); }
 - (void)setActive:(BOOL)a { active = a; if (vt_focus_events(term)) [self writeString:a ? @"\033[I" : @"\033[O"]; [self setNeedsDisplay:YES]; }
@@ -141,6 +146,16 @@ static NSColor *rgbColor(uint32_t c) { return [NSColor colorWithCalibratedRed:((
 				if (r.location == NSNotFound) break;
 				[[NSColor colorWithCalibratedRed:1 green:0.85 blue:0.1 alpha:0.45] set]; NSRectFillUsingOperation(NSMakeRect(r.location * cellW, py, r.length * cellW, cellH), NSCompositeSourceOver);
 			}
+		}
+	}
+	if (showMarks) {                                                          /* marks, bookmarks and the shell's prompts: a bar at the left edge of the line */
+		uint64_t top = vt_scrolled(term) - (uint64_t)scrollOffset;
+		for (int y = 0; y < rows; y++) {
+			uint64_t abs = top + (uint64_t)y; NSColor *c = nil;
+			if ([bookmarks containsObject:[NSNumber numberWithUnsignedLongLong:abs]]) c = [NSColor colorWithCalibratedRed:1 green:0.8 blue:0.1 alpha:0.95];
+			else if ([marks containsObject:[NSNumber numberWithUnsignedLongLong:abs]]) c = [NSColor colorWithCalibratedRed:0.25 green:0.55 blue:1 alpha:0.95];
+			else if (autoMark) for (int k = vt_prompt_count(term) - 1; k >= 0; k--) { uint64_t pa = vt_prompt_at(term, k); if (pa == abs) { c = [NSColor colorWithCalibratedWhite:0.6 alpha:0.5]; break; } if (pa < abs - 0) break; }
+			if (c) { [c set]; NSRectFill(NSMakeRect(0, y * cellH + 1, 3, cellH - 2)); }
 		}
 	}
 	if (curvis && scrollOffset == 0 && !exited && (blinkOn || !active || !profile->blink)) {
@@ -328,6 +343,41 @@ static NSColor *rgbColor(uint32_t c) { return [NSColor colorWithCalibratedRed:((
 		selStartX = (int)f.location; selEndX = (int)(f.location + f.length - 1); selStartY = selEndY = y; hasSel = YES; [self setNeedsDisplay:YES]; return YES;
 	}
 	return NO;
+}
+
+
+/* ---- Marks: Mark / Unmark / Mark as Bookmark / Jump to Previous / Next Mark / Clear to Previous Mark (the lines are counted from the start of the scrollback, so they survive scrolling) ---- */
+- (uint64_t)cursorAbs { int cx, cy, cv; vt_cursor(term, &cx, &cy, &cv); return vt_scrolled(term) + (uint64_t)cy; }
+- (uint64_t)selectedAbs { return hasSel ? vt_scrolled(term) - (uint64_t)scrollOffset + (uint64_t)MIN(selStartY, selEndY) : [self cursorAbs]; }
+- (void)markLine:(id)sender { (void)sender; NSNumber *n = [NSNumber numberWithUnsignedLongLong:[self selectedAbs]]; if (![marks containsObject:n]) [marks addObject:n]; [self setNeedsDisplay:YES]; }
+- (void)unmarkLine:(id)sender { (void)sender; NSNumber *n = [NSNumber numberWithUnsignedLongLong:[self selectedAbs]]; [marks removeObject:n]; [bookmarks removeObject:n]; [self setNeedsDisplay:YES]; }
+- (void)markAsBookmark:(id)sender { (void)sender; NSNumber *n = [NSNumber numberWithUnsignedLongLong:[self selectedAbs]]; if (![bookmarks containsObject:n]) [bookmarks addObject:n]; [self setNeedsDisplay:YES]; }
+- (void)insertBookmark:(id)sender { [self markAsBookmark:sender]; }
+- (NSArray *)allMarkLines:(BOOL)bookmarksOnly
+{
+	NSMutableArray *a = [NSMutableArray arrayWithArray:bookmarks];
+	if (!bookmarksOnly) { [a addObjectsFromArray:marks]; if (autoMark) for (int k = 0; k < vt_prompt_count(term); k++) [a addObject:[NSNumber numberWithUnsignedLongLong:vt_prompt_at(term, k)]]; }
+	return [a sortedArrayUsingSelector:@selector(compare:)];
+}
+- (void)showAbsLine:(uint64_t)m { uint64_t s = vt_scrolled(term); int so = m >= s ? 0 : (int)(s - m); if (so > vt_scrollback_lines(term)) so = vt_scrollback_lines(term); scrollOffset = so; hasSel = NO; [self setNeedsDisplay:YES]; }
+- (void)jump:(BOOL)fwd bookmarksOnly:(BOOL)bo
+{
+	uint64_t top = vt_scrolled(term) - (uint64_t)scrollOffset; NSArray *a = [self allMarkLines:bo]; NSNumber *best = nil;
+	for (NSNumber *n in a) { uint64_t m = [n unsignedLongLongValue]; if (fwd ? m > top : m < top) { best = n; if (fwd) break; } }
+	if (best) [self showAbsLine:[best unsignedLongLongValue]]; else NSBeep();
+}
+- (void)jumpToPreviousMark:(id)sender { (void)sender; [self jump:NO bookmarksOnly:NO]; }
+- (void)jumpToNextMark:(id)sender { (void)sender; [self jump:YES bookmarksOnly:NO]; }
+- (void)jumpToPreviousBookmark:(id)sender { (void)sender; [self jump:NO bookmarksOnly:YES]; }
+- (void)jumpToNextBookmark:(id)sender { (void)sender; [self jump:YES bookmarksOnly:YES]; }
+- (void)clearToPreviousMark:(id)sender
+{
+	(void)sender; uint64_t cur = [self cursorAbs]; NSNumber *best = nil; for (NSNumber *n in [self allMarkLines:NO]) if ([n unsignedLongLongValue] < cur) best = n;
+	if (!best) { NSBeep(); return; }
+	uint64_t s = vt_scrolled(term), m = [best unsignedLongLongValue]; if (m < s) vt_clear_scrollback(term);
+	int cx, cy, cv; vt_cursor(term, &cx, &cy, &cv); int from = m >= s ? (int)(m - s) : 0;
+	for (int y = from; y < cy; y++) { char b[32]; snprintf(b, sizeof b, "\033[%d;1H\033[2K", y + 1); vt_feed(term, b, strlen(b)); }
+	char back[32]; snprintf(back, sizeof back, "\033[%d;%dH", cy + 1, cx + 1); vt_feed(term, back, strlen(back)); scrollOffset = 0; [self setNeedsDisplay:YES];
 }
 
 @end

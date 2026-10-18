@@ -23,6 +23,7 @@ struct vt {
 	vt_write_fn wr; void *wctx;
 	char title[256];
 	uint32_t gen;
+	uint64_t scrolled; uint64_t prompts[2048]; int nprompts;       /* lines pushed into the history so far; absolute line numbers of the prompts the shell announced (OSC 133;A) */
 	int mouse_mode, mouse_sgr, focus_events;     /* ?1000 / ?1002 / ?1003 (1, 2, 3), ?1006, ?1004 */
 	uint32_t ansi[16]; int has_ansi;       /* the 16 ANSI colours of the profile (else the default palette) */
 };
@@ -96,6 +97,7 @@ static void push_history(vt *t, int y)
 	memcpy(&t->hist[(size_t)t->hist_head * t->cols], cell(t, 0, y), (size_t)t->cols * sizeof(vt_cell));
 	t->hist_head = (t->hist_head + 1) % t->max_scroll;
 	if (t->hist_n < t->max_scroll) t->hist_n++;
+	t->scrolled++;
 }
 
 static void scroll_up(vt *t, int n)                                   /* the scroll region moves up: lines at the top are lost (kept in history for a full-screen region) */
@@ -262,6 +264,19 @@ static void ground(vt *t, uint8_t b)
 	}
 }
 
+static void osc_done(vt *t)
+{
+	t->osc[t->osc_n < 255 ? t->osc_n : 255] = 0; int code = atoi(t->osc); char *semi = strchr(t->osc, ';');
+	if (semi && (code == 0 || code == 2)) snprintf(t->title, sizeof t->title, "%s", semi + 1);
+	else if (semi && code == 133 && semi[1] == 'A') {                  /* the shell integration: a prompt starts on this line */
+		uint64_t abs = t->scrolled + (uint64_t)t->cy;
+		if (!t->nprompts || t->prompts[t->nprompts - 1] != abs) { if (t->nprompts == 2048) { memmove(t->prompts, t->prompts + 1, 2047 * sizeof t->prompts[0]); t->nprompts--; } t->prompts[t->nprompts++] = abs; }
+	}
+}
+uint64_t vt_scrolled(const vt *t) { return t->scrolled; }
+int vt_prompt_count(const vt *t) { return t->nprompts; }
+uint64_t vt_prompt_at(const vt *t, int i) { return t->prompts[i]; }
+
 void vt_feed(vt *t, const char *data, size_t n)
 {
 	for (size_t i = 0; i < n; i++) {
@@ -285,10 +300,10 @@ void vt_feed(vt *t, const char *data, size_t n)
 			else if (b == 0x1b) t->state = S_ESC; else if (b < 0x20) ground(t, b);
 			break;
 		case S_OSC:
-			if (b == 0x07) { t->osc[t->osc_n < 255 ? t->osc_n : 255] = 0; int code = atoi(t->osc); char *semi = strchr(t->osc, ';'); if (semi && (code == 0 || code == 2)) snprintf(t->title, sizeof t->title, "%s", semi + 1); t->state = S_GROUND; }
+			if (b == 0x07) { osc_done(t); t->state = S_GROUND; }
 			else if (b == 0x1b) t->state = S_OSC_ESC; else if (t->osc_n < 255) t->osc[t->osc_n++] = (char)b;
 			break;
-		case S_OSC_ESC: { t->osc[t->osc_n < 255 ? t->osc_n : 255] = 0; int code = atoi(t->osc); char *semi = strchr(t->osc, ';'); if (semi && (code == 0 || code == 2)) snprintf(t->title, sizeof t->title, "%s", semi + 1); t->state = b == '\\' ? S_GROUND : S_ESC; break; }
+		case S_OSC_ESC: osc_done(t); t->state = b == '\\' ? S_GROUND : S_ESC; break;
 		case S_DCS: if (b == 0x1b) t->state = S_OSC_ESC, t->osc_n = 0; else if (b == 0x07) t->state = S_GROUND; break;
 		}
 	}

@@ -4,6 +4,7 @@
 #import "TermWindow.h"
 #import "TermProfile.h"
 #import "TermSettings.h"
+#import "TermInspector.h"
 
 @interface TermApp : NSObject
 - (TermWindowController *)wc;
@@ -13,6 +14,7 @@
 - (TermWindowController *)wc { NSWindow *w = [NSApp keyWindow] ?: [NSApp mainWindow]; for (TermWindowController *c in [TermWindowController all]) if ([c window] == w) return c; return [[TermWindowController all] lastObject]; }
 - (TermProfile *)profileOf:(id)sender { id r = [sender respondsToSelector:@selector(representedObject)] ? [sender representedObject] : nil; return [r isKindOfClass:[TermProfile class]] ? r : nil; }
 
+- (void)showInspector:(id)sender { (void)sender; TermWindowController *c = [self wc]; if (c) [TermInspector showForTerm:[c term]]; }
 - (void)showSettings:(id)sender { (void)sender; [TermSettings show]; }
 - (void)newWindow:(id)sender { [[TermWindowController alloc] initWithProfile:[self profileOf:sender] command:nil]; }
 - (void)newTab:(id)sender { TermWindowController *c = [self wc]; if (c) [c newTabWithProfile:[self profileOf:sender] command:nil]; else [self newWindow:sender]; }
@@ -30,6 +32,8 @@
 - (void)hideFindBar:(id)sender { [[self wc] hideFindBar:sender]; }
 - (void)changeProfile:(id)sender { TermProfile *p = [self profileOf:sender]; if (p) [[self wc] applyProfileToCurrent:p]; }
 - (void)useSettingsAsDefault:(id)sender { (void)sender; TermWindowController *c = [self wc]; if (c) [TermProfile setDefaultProfile:[[c term] profile]]; }
+- (void)toggleAutoMark:(id)sender { (void)sender; [TermView setAutoMarkPrompts:![TermView autoMarkPrompts]]; }
+- (void)toggleShowMarks:(id)sender { (void)sender; [TermView setShowMarks:![TermView showMarks]]; }
 - (void)toggleOptionAsMeta:(id)sender { (void)sender; [TermView setOptionAsMeta:![TermView optionAsMeta]]; }
 - (void)toggleMouseReporting:(id)sender { (void)sender; [TermView setAllowMouseReporting:![TermView allowMouseReporting]]; }
 - (void)toggleSecureKeyboard:(id)sender { (void)sender; [[NSUserDefaults standardUserDefaults] setBool:![[NSUserDefaults standardUserDefaults] boolForKey:@"SecureKeyboardEntry"] forKey:@"SecureKeyboardEntry"]; }
@@ -63,6 +67,8 @@
 {
 	SEL a = [mi action];
 	if (a == @selector(toggleOptionAsMeta:)) { [mi setState:[TermView optionAsMeta] ? NSOnState : NSOffState]; return YES; }
+	if (a == @selector(toggleAutoMark:)) { [mi setState:[TermView autoMarkPrompts] ? NSOnState : NSOffState]; return YES; }
+	if (a == @selector(toggleShowMarks:)) { [mi setState:[TermView showMarks] ? NSOnState : NSOffState]; return YES; }
 	if (a == @selector(toggleMouseReporting:)) { [mi setState:[TermView allowMouseReporting] ? NSOnState : NSOffState]; return YES; }
 	if (a == @selector(toggleSecureKeyboard:)) { [mi setState:[[NSUserDefaults standardUserDefaults] boolForKey:@"SecureKeyboardEntry"] ? NSOnState : NSOffState]; return YES; }
 	if (a == @selector(toggleTabBar:)) { TermWindowController *c = [self wc]; [mi setTitle:[c tabBarShown] ? @"Hide Tab Bar" : @"Show Tab Bar"]; return c != nil; }
@@ -154,6 +160,14 @@ int main(int argc, char **argv)
 	M(nv, @"Line Up", @selector(scrollLineUp:), nil, 0, nil); M(nv, @"Line Down", @selector(scrollLineDown:), nil, 0, nil); M(nv, @"Page Up", @selector(scrollPageUp:), nil, 0, nil); M(nv, @"Page Down", @selector(scrollPageDown:), nil, 0, nil);
 	M(nv, @"Scroll to Top", @selector(scrollToTop:), nil, 0, nil); M(nv, @"Scroll to Bottom", @selector(scrollToBottom:), nil, 0, nil); SEP(m);
 	M(m, @"Enter Full Screen", @selector(toggleFullScreen:), @"f", CMD | CTL, nil);
+
+	m = SUB(bar, @"Marks"); NSMenuItem *dummy = nil; (void)dummy;
+	M(m, @"Mark", @selector(markLine:), @"u", CMD, nil); M(m, @"Unmark", @selector(unmarkLine:), @"u", CMD | SH, nil); M(m, @"Mark as Bookmark", @selector(markAsBookmark:), @"b", CMD | OPT, nil);
+	M(m, @"Insert Bookmark", @selector(insertBookmark:), nil, 0, nil); SEP(m);
+	M(m, @"Jump to Previous Mark", @selector(jumpToPreviousMark:), @"\uf700", CMD | CTL, nil); M(m, @"Jump to Next Mark", @selector(jumpToNextMark:), @"\uf701", CMD | CTL, nil);
+	M(m, @"Jump to Previous Bookmark", @selector(jumpToPreviousBookmark:), @"\uf700", CMD | OPT, nil); M(m, @"Jump to Next Bookmark", @selector(jumpToNextBookmark:), @"\uf701", CMD | OPT, nil); SEP(m);
+	M(m, @"Clear to Previous Mark", @selector(clearToPreviousMark:), nil, 0, nil); SEP(m);
+	M(m, @"Automatically Mark Prompt Lines", @selector(toggleAutoMark:), nil, 0, d); M(m, @"Show Marks", @selector(toggleShowMarks:), nil, 0, d);
 
 	m = SUB(bar, @"Window"); [app setWindowsMenu:m];
 	M(m, @"Minimise", @selector(performMiniaturize:), @"m", CMD, nil); M(m, @"Zoom", @selector(performZoom:), nil, 0, nil); SEP(m);

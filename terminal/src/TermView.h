@@ -14,7 +14,9 @@
 	int selStartX, selStartY, selEndX, selEndY; BOOL hasSel; int clickCount;
 	NSString *findQuery; BOOL findCase;    /* matches are highlighted while set */
 	id delegate;
+	NSMutableArray *marks, *bookmarks;     /* absolute line numbers (vt_scrolled + row) of the marks and bookmarks the user set */
 }
++ (void)setAutoMarkPrompts:(BOOL)b; + (BOOL)autoMarkPrompts; + (void)setShowMarks:(BOOL)b; + (BOOL)showMarks;
 - (id)delegate; - (void)setDelegate:(id)d;                /* told about title changes and the end of the shell: -termViewChanged: / -termViewExited: */
 - (TermProfile *)profile;
 - (instancetype)initWithProfile:(TermProfile *)p command:(NSString *)cmd;
@@ -26,6 +28,7 @@
 - (void)setActive:(BOOL)a;                 /* the window is key and this is the front tab: the cursor is solid */
 - (void)writeString:(NSString *)s;                         /* sends text to the shell as if typed */
 - (BOOL)dumpScreenToFile:(NSString *)path;                 /* the visible text, one line per row (for automated checks) */
+- (pid_t)childPid; - (NSString *)ttyName;                  /* for the Inspector */
 - (NSString *)allText;                                     /* scrollback and screen */
 - (NSString *)selectedText;
 /* menu actions */
@@ -35,4 +38,7 @@
 - (void)scrollToTop:(id)sender; - (void)scrollToBottom:(id)sender; - (void)scrollPageUp:(id)sender; - (void)scrollPageDown:(id)sender; - (void)scrollLineUp:(id)sender; - (void)scrollLineDown:(id)sender;
 - (BOOL)findText:(NSString *)s forward:(BOOL)fwd caseSensitive:(BOOL)cs;   /* from the current selection; selects and scrolls to the match */
 - (void)setFindHighlight:(NSString *)s;
+- (void)markLine:(id)sender; - (void)unmarkLine:(id)sender; - (void)markAsBookmark:(id)sender; - (void)insertBookmark:(id)sender;
+- (void)jumpToPreviousMark:(id)sender; - (void)jumpToNextMark:(id)sender; - (void)jumpToPreviousBookmark:(id)sender; - (void)jumpToNextBookmark:(id)sender;
+- (void)clearToPreviousMark:(id)sender;
 @end

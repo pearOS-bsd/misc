@@ -1,4 +1,5 @@
 #import "TermWindow.h"
+#import "TermInspector.h"
 #include <math.h>
 
 #define TABBAR_H 28.0
@@ -55,7 +56,7 @@ static NSMutableArray *all;
 		NSRect t = [self tabRect:i]; BOOL sel = i == [owner currentIndex];
 		if (sel) { [(dark ? [NSColor colorWithCalibratedWhite:0.27 alpha:1] : [NSColor colorWithCalibratedWhite:0.97 alpha:1]) set]; NSRectFill(NSInsetRect(t, 0, 0)); }
 		[[NSColor colorWithCalibratedWhite:dark ? 0 : 0.7 alpha:0.4] set]; NSRectFill(NSMakeRect(NSMaxX(t) - 1, 4, 1, TABBAR_H - 8));
-		NSString *title = [[(TermPanes *)[tabs objectAtIndex:i] activePane] titleString];
+		TermView *tv = [(TermPanes *)[tabs objectAtIndex:i] activePane]; NSString *title = [tv titleString]; if ([title isEqualToString:@"Terminal"]) { const char *sh = getenv("SHELL"); title = [NSString stringWithFormat:@"-%@ \u2014 %d\u00d7%d", sh ? [[NSString stringWithUTF8String:sh] lastPathComponent] : @"sh", [tv cols], [tv rows]]; }
 		NSMutableParagraphStyle *ps = [[[NSMutableParagraphStyle alloc] init] autorelease]; [ps setAlignment:NSCenterTextAlignment]; [ps setLineBreakMode:NSLineBreakByTruncatingTail];
 		NSDictionary *at = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont systemFontOfSize:12], NSFontAttributeName, fg, NSForegroundColorAttributeName, ps, NSParagraphStyleAttributeName, nil];
 		[title drawInRect:NSMakeRect(t.origin.x + 26, 6, t.size.width - 52, 16) withAttributes:at];
@@ -226,7 +227,7 @@ static NSMutableArray *all;
 - (void)useSelectionForFind:(id)sender { (void)sender; NSString *s = [[self term] selectedText]; if (![s length]) return; if (!findBar) [self buildFindBar]; [findField setStringValue:s]; [[self term] setFindHighlight:s]; }
 
 /* ---- window events ---- */
-- (void)windowDidBecomeKey:(NSNotification *)n { (void)n; [[self term] setActive:YES]; }
+- (void)windowDidBecomeKey:(NSNotification *)n { (void)n; [[self term] setActive:YES]; [TermInspector setCurrentTerm:[self term]]; }
 - (void)windowDidResignKey:(NSNotification *)n { (void)n; [[self term] setActive:NO]; }
 - (BOOL)windowShouldClose:(id)sender { (void)sender; return YES; }
 - (void)windowWillClose:(NSNotification *)n

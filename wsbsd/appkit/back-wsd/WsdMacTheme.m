@@ -5,7 +5,7 @@
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 #import <GNUstepGUI/GSDisplayServer.h>
-static IMP origTFDraw; static void wsdTFDraw(id self, SEL _cmd, NSRect f, NSView *v);
+static IMP origTFDraw, origTFRect; static void wsdTFDraw(id self, SEL _cmd, NSRect f, NSView *v); static void wsdTFRect(id self, SEL _cmd, NSRect r);
 @interface GSDisplayServer (WsdBlur) - (void) wsdBackgroundBlur: (int)radius : (int)win; @end
 #include <stdlib.h>
 #import <objc/runtime.h>
@@ -339,6 +339,7 @@ static void swizzleTableDefaults(void)
 	if (mat && !origAttrTitle) origAttrTitle = method_setImplementation(mat, (IMP)wsdAttrTitle);
 	Method mtc = class_getInstanceMethod([NSButtonCell class], @selector(textColor));
 	if (mtc && !origButtonTextColor) origButtonTextColor = method_setImplementation(mtc, (IMP)wsdButtonTextColor);
+	{ Method mr = class_getInstanceMethod([NSTextField class], @selector(drawRect:)); if (mr && !origTFRect) origTFRect = method_setImplementation(mr, (IMP)wsdTFRect); }
 	Method mtf = class_getInstanceMethod([NSTextFieldCell class], @selector(drawInteriorWithFrame:inView:));
 	if (mtf && !origTFDraw) origTFDraw = method_setImplementation(mtf, (IMP)wsdTFDraw);
 	Method msg = class_getInstanceMethod([NSSegmentedCell class], @selector(drawSegment:inFrame:withView:));
@@ -407,11 +408,18 @@ static void WsdFocusRing(NSView *view)
 	NSBezierPath *p = [NSBezierPath bezierPathWithRoundedRect: NSInsetRect([view bounds], 1.5, 1.5) xRadius: 6 yRadius: 6];
 	[p setLineWidth: 1.0 + 2.0 * e]; [[NSColor colorWithCalibratedRed: 0.0 green: 122 / 255.0 blue: 1.0 alpha: 0.2 + 0.5 * e] set]; [p stroke];
 }
+static void wsdTFRect(id self, SEL _cmd, NSRect r)
+{
+	((void (*)(id, SEL, NSRect))origTFRect)(self, _cmd, r);
+	if (![self isKindOfClass: [NSTextField class]]) return;
+	id fr = [[self window] firstResponder];
+	if (([fr isKindOfClass: [NSText class]] && ([(NSText *)fr delegate] == self || [(NSText *)fr delegate] == [(NSControl *)self cell])) || fr == self) WsdFocusRing(self);   /* the field editor's delegate is the cell */
+}
 static void wsdTFDraw(id self, SEL _cmd, NSRect f, NSView *v)
 {
 	((void (*)(id, SEL, NSRect, NSView *))origTFDraw)(self, _cmd, f, v);
 	/* while editing the field editor is the first responder, which is why AppKit draws no ring */
-	if ([v isKindOfClass: [NSTextField class]]) { id fr = [[v window] firstResponder]; if (([fr isKindOfClass: [NSText class]] && [(NSText *)fr delegate] == v) || fr == v) WsdFocusRing(v); }
+	if ([v isKindOfClass: [NSTextField class]]) { id fr = [[v window] firstResponder]; if (([fr isKindOfClass: [NSText class]] && ([(NSText *)fr delegate] == v || [(NSText *)fr delegate] == [(NSControl *)v cell])) || fr == v) WsdFocusRing(v); }
 }
 
 @implementation WsdMacTheme
