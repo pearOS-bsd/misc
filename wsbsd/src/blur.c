@@ -129,11 +129,24 @@ void ws_glass_regions(ws_surface *img, const ws_glass *g, int n, int ox, int oy)
 	if (cx1 <= cx0 || cy1 <= cy0) return;
 	ws_surface *tmp = ws_surface_new(cx1 - cx0, cy1 - cy0); if (!tmp) return;                 /* the backdrop as it is now: the lens samples from it while the result is written to the image */
 	for (int y = cy0; y < cy1; y++) memcpy(tmp->px + (size_t)(y - cy0) * tmp->stride, img->px + (size_t)y * img->stride + (size_t)cx0 * 4, (size_t)(cx1 - cx0) * 4);
+	ws_surface *bl = NULL;                                                                  /* the menu materials (modes 3, 4) work on a blurred copy of the backdrop */
+	for (int i = 0; i < n; i++) if (g[i].mode >= 3) { bl = ws_surface_new(tmp->w, tmp->h); break; }
+	if (bl) { memcpy(bl->px, tmp->px, (size_t)tmp->stride * tmp->h); ws_blur_region(bl, (ws_rect){ 0, 0, bl->w, bl->h }, (ws_rect){ 0, 0, bl->w, bl->h }, 30.0f); }
 	int x0 = bx0 < 0 ? 0 : bx0, y0 = by0 < 0 ? 0 : by0, x1 = bx1 > img->w ? img->w : bx1, y1 = by1 > img->h ? img->h : by1;
 	for (int y = y0; y < y1; y++) for (int x = x0; x < x1; x++) {
 		float fx = x + 0.5f, fy = y + 0.5f; int mode;
 		float sdf = glass_field(g, n, ox, oy, fx, fy, &mode);
 		float cover = clampf(0.5f - sdf, 0, 1); if (cover <= 0) continue;
+		if (mode >= 3 && bl) {                                                               /* Mica: Menu.caar of Aqua.car / DarkAqua.car: a backdrop (gaussian blur 30, saturate), the fill colour over it, the tone layer in darken (light) or lighten (dark) blend */
+			int bxp = x - cx0, byp = y - cy0; if (bxp < 0 || byp < 0 || bxp >= bl->w || byp >= bl->h) continue;
+			const uint8_t *bp = bl->px + (size_t)byp * bl->stride + (size_t)bxp * 4; int dark = mode == 4;
+			float sat = dark ? 2.2f : 2.1f, fill = dark ? 0.157f : 0.965f, fa = dark ? 0.70f : 0.72f, tone = dark ? 0.125f : 0.93f;
+			float b = bp[0] / 255.0f, gg = bp[1] / 255.0f, r = bp[2] / 255.0f, lum = 0.2126f * r + 0.7152f * gg + 0.0722f * b;
+			float col[3] = { r, gg, b }; for (int c = 0; c < 3; c++) { col[c] = lum + (col[c] - lum) * sat; col[c] = clampf(col[c], 0, 1); col[c] = fill * fa + col[c] * (1 - fa); col[c] = dark ? (col[c] > tone ? col[c] : tone) : (col[c] < tone ? col[c] : tone); }
+			uint8_t *dp = img->px + (size_t)y * img->stride + (size_t)x * 4;
+			dp[0] = (uint8_t)(dp[0] * (1 - cover) + col[2] * 255.0f * cover + 0.5f); dp[1] = (uint8_t)(dp[1] * (1 - cover) + col[1] * 255.0f * cover + 0.5f); dp[2] = (uint8_t)(dp[2] * (1 - cover) + col[0] * 255.0f * cover + 0.5f);
+			continue;
+		}
 		float d = -sdf; if (d < 0) d = 0;
 		int dm; float gx = glass_field(g, n, ox, oy, fx + 1, fy, &dm) - glass_field(g, n, ox, oy, fx - 1, fy, &dm), gy = glass_field(g, n, ox, oy, fx, fy + 1, &dm) - glass_field(g, n, ox, oy, fx, fy - 1, &dm);
 		float gl = sqrtf(gx * gx + gy * gy); float nx = gl > 1e-4f ? gx / gl : 0, ny = gl > 1e-4f ? gy / gl : -1;      /* outward normal */
@@ -147,7 +160,7 @@ void ws_glass_regions(ws_surface *img, const ws_glass *g, int n, int ox, int oy)
 		uint8_t *dp = img->px + (size_t)y * img->stride + (size_t)x * 4;
 		for (int c = 0; c < 3; c++) dp[c] = (uint8_t)(dp[c] * (1 - cover) + col[c] * 255.0f * cover + 0.5f);
 	}
-	ws_surface_free(tmp);
+	ws_surface_free(tmp); if (bl) ws_surface_free(bl);
 }
 
 void ws_glass_region(ws_surface *img, ws_rect rect, int radius, int mode)
