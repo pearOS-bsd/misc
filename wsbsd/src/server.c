@@ -44,7 +44,7 @@ typedef struct {
 	ws_rect dmg; int has_dmg, full_dmg;
 	uint32_t shadow_gen;
 	int blur_radius, blur_flag; float blur_amount;   /* SetWindowBackgroundBlurRadius */
-	int glass_mode, glass_radius; ws_rect glass_rect;   /* the glass material over a part of the window */
+	ws_glass glass[WS_GLASS_MAX]; int nglass;   /* the glass shapes of the window */
 	ws_rect *shape;       /* window-relative rectangles, NULL = the whole frame */
 	int nshape;
 	ws_rect *evshape; int nev;   /* SetWindowEventShape: where the window takes events, when different from where it is drawn */
@@ -918,7 +918,7 @@ void ws_server_walk(ws_server *s, ws_visit_fn fn, void *ctx)
 		if (w->shadow_on && w->shadow && !w->mesh) {
 			vis.shadow = w->shadow; vis.shadow_x = w->frame.x - w->shadow_pad; vis.shadow_y = w->frame.y - w->shadow_pad; vis.shadow_gen = w->shadow_gen;
 		}
-		vis.glass_mode = w->glass_mode; vis.glass_radius = w->glass_radius; vis.glass_rect = w->glass_rect;
+		vis.glass = w->nglass ? w->glass : NULL; vis.nglass = w->nglass;
 		vis.brightness = w->brightness; vis.mesh = w->mesh; vis.mcols = w->mcols; vis.mrows = w->mrows;
 		vis.invert = w->filter == 2; vis.has_xf = w->has_xf; memcpy(vis.xf, w->xf, sizeof vis.xf);
 		vis.damage = w->dmg; vis.has_damage = w->has_dmg; vis.full_damage = w->full_dmg;
@@ -970,9 +970,9 @@ void ws_compose_scene(ws_server *s, ws_surface *screen)
 	s->comp->fill(s->comp, screen, all, 37.0f / 255.0f, 37.0f / 255.0f, 37.0f / 255.0f, 1.0f);   /* desktop: #252525 */
 	size_t n = sorted(s, v);
 	for (size_t i = 0; i < n; i++) {
-		if (v[i]->glass_mode > 0) {                                           /* the glass material over a part of the window (the Dock's bar, the menu bar) */
+		if (v[i]->nglass > 0) {                                               /* the glass material (the Dock's bar, the menu bar, glass views): the window's shapes melt into one */
 			if (s->comp->flush) s->comp->flush(s->comp);
-			ws_glass_region(screen, (ws_rect){ v[i]->frame.x + v[i]->glass_rect.x, v[i]->frame.y + v[i]->glass_rect.y, v[i]->glass_rect.w, v[i]->glass_rect.h }, v[i]->glass_radius, v[i]->glass_mode);
+			ws_glass_regions(screen, v[i]->glass, v[i]->nglass, v[i]->frame.x, v[i]->frame.y);
 		} else if (v[i]->blur_radius > 0) {                                          /* blur what is behind the window (sigma = radius / 2: an estimate) */
 			if (s->comp->flush) s->comp->flush(s->comp);
 			float sg = ws_blur_sigma(v[i]->blur_radius); int m = (int)ceilf(3.0f * sg);
@@ -1107,12 +1107,18 @@ void ws_cursor_reveal(ws_server *s, uint32_t cid) { (void)cid; if (s->obscured) 
 static void kf_remove_at_fwd(ws_server *s, int i) { kf_remove_at(s, i); bump(s); }
 
 /* ---- backdrop blur ---- */
-int ws_set_window_glass(ws_server *s, ws_wid id, ws_rect r, int radius, int mode)
+int ws_set_window_glass_slot(ws_server *s, ws_wid id, int slot, ws_rect r, int radius, int mode)
 {
-	window *w = get(s, id); if (!w) return -1;
-	if (w->glass_mode != mode || w->glass_radius != radius || w->glass_rect.x != r.x || w->glass_rect.y != r.y || w->glass_rect.w != r.w || w->glass_rect.h != r.h) { w->glass_mode = mode; w->glass_radius = radius; w->glass_rect = r; bump(s); }
+	window *w = get(s, id); if (!w || slot < 0 || slot >= WS_GLASS_MAX) return -1;
+	ws_glass *g = &w->glass[slot];
+	if (g->mode != mode || g->radius != radius || g->rect.x != r.x || g->rect.y != r.y || g->rect.w != r.w || g->rect.h != r.h) {
+		g->rect = r; g->radius = radius; g->mode = mode;
+		int n = 0; for (int i = 0; i < WS_GLASS_MAX; i++) if (w->glass[i].mode > 0) n = i + 1;
+		w->nglass = n; bump(s);
+	}
 	return 0;
 }
+int ws_set_window_glass(ws_server *s, ws_wid id, ws_rect r, int radius, int mode) { return ws_set_window_glass_slot(s, id, 0, r, radius, mode); }
 int ws_set_window_blur(ws_server *s, ws_wid id, int radius, int flag, float amount)
 {
 	window *w = get(s, id);
