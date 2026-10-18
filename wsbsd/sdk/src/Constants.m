@@ -40,3 +40,7 @@ const CFStringRef kUTTypeBundle = CFS("com.apple.bundle");
 #import <QuartzCore/QuartzCore.h>
 NSString *const kCAMediaTimingFunctionLinear = @"linear", *const kCAMediaTimingFunctionEaseIn = @"easeIn", *const kCAMediaTimingFunctionEaseOut = @"easeOut", *const kCAMediaTimingFunctionEaseInEaseOut = @"easeInEaseOut", *const kCAMediaTimingFunctionDefault = @"default";
 const CFStringRef kSecCodeInfoEntitlementsDict = CFS("entitlements-dict"), kSecCodeInfoEntitlements = CFS("entitlements"), kSecCodeInfoIdentifier = CFS("identifier");
+/* Spotlight attribute names */
+CFStringRef kMDItemContentType = CFS("kMDItemContentType"), kMDItemDisplayName = CFS("kMDItemDisplayName"), kMDItemKind = CFS("kMDItemKind"), kMDItemFSSize = CFS("kMDItemFSSize"),
+	kMDItemLastUsedDate = CFS("kMDItemLastUsedDate"), kMDItemContentTypeTree = CFS("kMDItemContentTypeTree");
+NSString *NSWorkspaceDidRenameVolumeNotification = @"NSWorkspaceDidRenameVolumeNotification";

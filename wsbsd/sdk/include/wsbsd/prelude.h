@@ -7,6 +7,19 @@
 #include <fcntl.h>
 #include <unistd.h>
 #ifndef __APPLE__
+#include <sys/wait.h>                 /* WNOHANG and friends: Apple's headers reach them through <sys/types.h> users */
+/* <libutil.h> of FreeBSD declares a type called `properties`, which collides with instance variables of that name */
+#define properties wsbsd_libutil_properties
+#include <libutil.h>
+#undef properties
+/* nullability keywords of Apple's SDK spelt with underscores */
+#ifndef __nullable
+#define __nullable _Nullable
+#define __nonnull _Nonnull
+#define __null_unspecified _Null_unspecified
+#endif
+#endif
+#ifndef __APPLE__
 typedef uint64_t uint64; typedef uint32_t uint32; typedef uint16_t uint16; typedef uint8_t uint8;      /* MacTypes.h names */
 #endif
 #if defined(__has_include)

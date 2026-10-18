@@ -37,6 +37,7 @@ The stack: `wsd` (this repo: window server and compositor speaking the SkyLight 
 | [Hex Fiend](https://github.com/HexFiend/HexFiend) (built by `tools/xcb`, unmodified but 4 Swift files in `ports/hexfiend/overlay`) | document windows, hex and ASCII columns, themes, dark appearance, resize cursors |
 | [GrandPerspective](https://github.com/mfcarroll/grandperspective) (2026 sources, 138 of 138 files, unmodified) | scans a folder and draws its treemap; menu bar, welcome window, folder picker, toolbar |
 | [Pashua](https://github.com/BlueM/Pashua) (41 of 41 files, unmodified) | starts and builds its dialog (window size still wrong) |
+| [Sloth](https://github.com/sveinbjornt/Sloth) (17 of 17 files, unmodified; built with `-Dproperties=wsbsd_properties`) | builds and links; exits at start: its views use Cocoa bindings (`NSTreeController`), which GNUstep lacks |
 
 The repository root `README.md` has the overview with screenshots; `ci/build-app.sh` builds any Xcode project this way.
 
