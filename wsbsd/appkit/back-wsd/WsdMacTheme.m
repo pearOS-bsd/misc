@@ -5,7 +5,7 @@
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 #import <GNUstepGUI/GSDisplayServer.h>
-static IMP origTFDraw, origTFRect; static void wsdTFDraw(id self, SEL _cmd, NSRect f, NSView *v); static void wsdTFRect(id self, SEL _cmd, NSRect r);
+static IMP origTFDraw, origTFRect, origMakeFR; static BOOL wsdMakeFirstResponder(id self, SEL _cmd, NSResponder *r); static void wsdTFDraw(id self, SEL _cmd, NSRect f, NSView *v); static void wsdTFRect(id self, SEL _cmd, NSRect r);
 @interface GSDisplayServer (WsdBlur) - (void) wsdBackgroundBlur: (int)radius : (int)win; @end
 #include <stdlib.h>
 #import <objc/runtime.h>
@@ -339,6 +339,7 @@ static void swizzleTableDefaults(void)
 	if (mat && !origAttrTitle) origAttrTitle = method_setImplementation(mat, (IMP)wsdAttrTitle);
 	Method mtc = class_getInstanceMethod([NSButtonCell class], @selector(textColor));
 	if (mtc && !origButtonTextColor) origButtonTextColor = method_setImplementation(mtc, (IMP)wsdButtonTextColor);
+	{ Method mf = class_getInstanceMethod([NSWindow class], @selector(makeFirstResponder:)); if (mf && !origMakeFR) origMakeFR = method_setImplementation(mf, (IMP)wsdMakeFirstResponder); }
 	{ Method mr = class_getInstanceMethod([NSTextField class], @selector(drawRect:)); if (mr && !origTFRect) origTFRect = method_setImplementation(mr, (IMP)wsdTFRect); }
 	Method mtf = class_getInstanceMethod([NSTextFieldCell class], @selector(drawInteriorWithFrame:inView:));
 	if (mtf && !origTFDraw) origTFDraw = method_setImplementation(mtf, (IMP)wsdTFDraw);
@@ -406,7 +407,21 @@ static void WsdFocusRing(NSView *view)
 {
 	double e = EaseOut(WsdAnim(view, 1, 1.0, 0.25, NO));
 	NSBezierPath *p = [NSBezierPath bezierPathWithRoundedRect: NSInsetRect([view bounds], 1.5, 1.5) xRadius: 6 yRadius: 6];
-	[p setLineWidth: 1.0 + 2.0 * e]; [[NSColor colorWithCalibratedRed: 0.0 green: 122 / 255.0 blue: 1.0 alpha: 0.2 + 0.5 * e] set]; [p stroke];
+	[p setLineWidth: 1.0 + 2.0 * e]; [[NSColor colorWithCalibratedRed: 0.0 green: 122 / 255.0 blue: 1.0 alpha: 0.15 + 0.4 * e] set]; [p stroke];
+}
+static NSView *WsdControlOfEditor(id r)
+{
+	if (![r isKindOfClass: [NSText class]]) return nil;
+	id dl = [(NSText *)r delegate]; if ([dl isKindOfClass: [NSCell class]]) dl = [(NSCell *)dl controlView];
+	return [dl isKindOfClass: [NSTextField class]] ? dl : nil;
+}
+static BOOL wsdMakeFirstResponder(id self, SEL _cmd, NSResponder *r)
+{
+	NSView *oldc = WsdControlOfEditor([(NSWindow *)self firstResponder]);
+	BOOL ok = ((BOOL (*)(id, SEL, NSResponder *))origMakeFR)(self, _cmd, r);
+	NSView *newc = WsdControlOfEditor([(NSWindow *)self firstResponder]);
+	[oldc setNeedsDisplay: YES]; [newc setNeedsDisplay: YES];          /* a text field is drawn again when it gains or loses the editing focus: that is when its ring appears or goes */
+	return ok;
 }
 static void wsdTFRect(id self, SEL _cmd, NSRect r)
 {
