@@ -13,7 +13,7 @@ static double Now(void) { return CACurrentMediaTime(); }
 @public
 	DockMetrics m; DockItem items[MAXITEMS]; DockTile tiles[MAXITEMS]; DockSlot slots[MAXITEMS]; DockBar bar; int n;
 	NSMutableArray *paths; NSMutableArray *names; NSMutableArray *pids; NSMutableArray *labelStore;
-	NSTrackingRectTag trackTag; double pointer; int hover; double scale[MAXITEMS]; double bounceStart[MAXITEMS]; NSTimer *timer; double screenW;
+	NSTrackingRectTag trackTag; double pointer; int hover; double scale[MAXITEMS]; double bounceStart[MAXITEMS]; NSTimer *timer; double screenW, screenH; DockFan fan; int fanOpen; double fanStart, fanClose; NSMutableArray *fanStore;
 }
 - (void)reload;
 @end
@@ -24,7 +24,7 @@ static double Now(void) { return CACurrentMediaTime(); }
 - (instancetype)initWithFrame:(NSRect)f
 {
 	if (!(self = [super initWithFrame: f])) return nil;
-	screenW = [[NSScreen mainScreen] frame].size.width;
+	screenW = [[NSScreen mainScreen] frame].size.width; screenH = [[NSScreen mainScreen] frame].size.height;
 	m = (DockMetrics){ 58, 99, 1, (int)screenW };
 	NSDictionary *prefs = [NSDictionary dictionaryWithContentsOfFile: [NSHomeDirectory() stringByAppendingPathComponent: @"Library/Preferences/com.apple.dock.plist"]];
 	if ([prefs[@"tilesize"] intValue] > 0) m.tilesize = [prefs[@"tilesize"] intValue];
@@ -66,10 +66,16 @@ static double Now(void) { return CACurrentMediaTime(); }
 		}
 	}
 	[self relayout];
+	if (getenv("DOCK_FAN") && !fanOpen && !fanStart) { [self openFan: n - 2]; }
 	NSWindow *w = [self window];
 	NSRect f = NSMakeRect(floor(bar.bar_x), 0, ceil(bar.bar_w), 170);
+	if (fanOpen) {                                                             /* the fan: the window covers the screen so that a click anywhere closes it */
+		double el = Now() - fanStart; fan.t = el; fan.u = 1;
+		if (fanClose > 0) { double ce = Now() - fanClose; fan.u = 1 - ce / 0.15; fan.t = 1; if (fan.u <= 0) { fanOpen = 0; fanClose = 0; } }
+		f = NSMakeRect(0, 0, screenW, fmin(screenH, 170 + 64 * (fan.n + 1)));
+	}
 	NSRect cur = [w frame];
-	if (fabs(f.origin.x - cur.origin.x) >= 1 || fabs(f.size.width - cur.size.width) >= 1) { [w setFrame: f display: NO]; }
+	if (fabs(f.origin.x - cur.origin.x) >= 1 || fabs(f.size.width - cur.size.width) >= 1 || fabs(f.size.height - cur.size.height) >= 1) { [w setFrame: f display: NO]; }
 	[self setNeedsDisplay: YES];
 }
 - (void)drawRect:(NSRect)r
@@ -79,7 +85,7 @@ static double Now(void) { return CACurrentMediaTime(); }
 	if (!c) return;
 	if (getenv("DOCK_TEST")) { CGContextSetRGBFillColor(c, 1, 0, 0, 1); CGContextFillRect(c, CGRectMake(10, 10, 200, 100)); NSRectFill(NSMakeRect(250, 10, 100, 100)); }
 	else { CGContextSaveGState(c); CGContextClearRect(c, NSRectToCGRect([self bounds])); CGContextRestoreGState(c); }
-	DockScene sc = { m, items, tiles, n, slots, bar, floor(bar.bar_x), [self bounds].size.height, hover };
+	DockScene sc = { m, items, tiles, n, slots, bar, fanOpen ? 0 : floor(bar.bar_x), [self bounds].size.height, hover, fanOpen ? &fan : NULL };
 	DockRender(c, &sc);
 }
 - (int)tileAt:(double)x
@@ -87,14 +93,36 @@ static double Now(void) { return CACurrentMediaTime(); }
 	for (int i = 0; i < n; i++) if (items[i].kind != DOCK_SEPARATOR && x >= slots[i].x && x < slots[i].x + slots[i].w) return i;
 	return -1;
 }
-- (double)screenX:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; return p.x + floor(bar.bar_x); }
+- (double)screenX:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; return p.x + (fanOpen ? 0 : floor(bar.bar_x)); }
+- (void)openFan:(int)i
+{
+	NSString *dir = paths[i]; NSFileManager *fm = [NSFileManager defaultManager];
+	NSArray *all = [fm contentsOfDirectoryAtPath: dir error: NULL];
+	NSMutableArray *vis = [NSMutableArray array];
+	for (NSString *nm in all) if (![nm hasPrefix: @"."]) [vis addObject: nm];
+	[vis sortUsingComparator: ^NSComparisonResult(NSString *a, NSString *b) {                 /* newest first */
+		NSDate *da = [[fm attributesOfItemAtPath: [dir stringByAppendingPathComponent: a] error: NULL] fileModificationDate], *db = [[fm attributesOfItemAtPath: [dir stringByAppendingPathComponent: b] error: NULL] fileModificationDate];
+		return [db compare: da ?: [NSDate distantPast]]; }];
+	fanStore = [NSMutableArray array]; for (int k = 0; k < fan.n; k++) free((void *)fan.labels[k]); memset(&fan, 0, sizeof fan);
+	int maxShown = (int)((screenH - 40 /*menu bar*/ - 110 - 64) / 64); if (maxShown > 14) maxShown = 14; if (maxShown < 3) maxShown = 3; int cnt = (int)[vis count]; if (cnt == 0) return;
+	int shown = cnt > maxShown + 1 ? maxShown : cnt;
+	for (int k = 0; k < shown; k++) {
+		BOOL isdir = NO; [fm fileExistsAtPath: [dir stringByAppendingPathComponent: vis[k]] isDirectory: &isdir];
+		[fanStore addObject: vis[k]]; fan.labels[fan.n] = strdup([vis[k] UTF8String]); fan.glyphs[fan.n] = isdir ? "folder" : "doc"; fan.n++;
+	}
+	if (cnt > shown) { NSString *more = [NSString stringWithFormat: @"%d More in Finder", cnt - shown]; [fanStore addObject: more]; fan.labels[fan.n] = strdup([more UTF8String]); fan.glyphs[fan.n] = "folder"; fan.n++; }
+	fan.anchor = i; fanOpen = 1; fanStart = Now(); fanClose = 0;
+}
 - (void)mouseMoved:(NSEvent *)e { pointer = [self screenX: e]; hover = [self tileAt: pointer]; }
 - (void)mouseExited:(NSEvent *)e { pointer = -1; hover = -1; }
 - (void)mouseEntered:(NSEvent *)e { pointer = [self screenX: e]; }
 - (void)mouseDown:(NSEvent *)e
 {
-	int i = [self tileAt: [self screenX: e]]; if (i < 0 || !tiles[i].label) return;
+	int i = [self tileAt: [self screenX: e]];
+	if (fanOpen) { if (!fanClose) fanClose = Now(); return; }
+	if (i < 0 || !tiles[i].label) return;
 	NSString *path = paths[i];
+	if (items[i].kind == DOCK_OTHER) { [self openFan: i]; return; }
 	if (items[i].kind == DOCK_APP && path.length && [[NSFileManager defaultManager] fileExistsAtPath: path]) {
 		bounceStart[i] = Now();
 		NSString *exe = [[path stringByAppendingPathComponent: @"Contents/MacOS"] stringByAppendingPathComponent: [[path lastPathComponent] stringByDeletingPathExtension]];

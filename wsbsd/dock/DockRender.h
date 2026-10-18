@@ -12,6 +12,16 @@ typedef struct {
 	float bounce;                 /* 0 ... 1 lift of the tile, for the launch bounce (in tile heights) */
 } DockTile;
 
+/* the fan of a stack: the newest items rise from the stack's tile along a curve, each with a label pill on its left */
+#define DOCK_FAN_MAX 16
+typedef struct {
+	int n;                        /* number of entries (the last one may be the "N More in Finder" entry) */
+	const char *labels[DOCK_FAN_MAX]; const char *glyphs[DOCK_FAN_MAX];
+	int anchor;                   /* tile index of the stack */
+	double t;                     /* seconds since the fan opened (negative while closing: -elapsed, see DockFanProgress) */
+	double u;                     /* open progress 0...1 of the whole fan (staggered per item inside) */
+} DockFan;
+
 typedef struct {
 	DockMetrics m;
 	const DockItem *items; const DockTile *tiles; int n;
@@ -19,7 +29,13 @@ typedef struct {
 	double origin_x;              /* x of the window's left edge in the Dock's coordinates */
 	double height;                /* height of the window */
 	int hover;                    /* index of the tile with a tooltip, -1 for none */
+	const DockFan *fan;           /* NULL when no stack is open */
 } DockScene;
+
+/* geometry of the fan: x offset of item k from the first one, vertical pitch, per-item eased progress for the time t in seconds (0 .. 1) */
+double DockFanOffsetX(int k);
+double DockFanPitch(void);
+double DockFanItemProgress(int k, double t);
 
 /* draws the bar, the tiles, the dots, the separator and the tooltip into ctx (a context of the window size, y up) */
 void DockRender(CGContextRef ctx, const DockScene *s);
