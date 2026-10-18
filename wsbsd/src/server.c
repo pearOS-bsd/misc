@@ -12,6 +12,7 @@ typedef struct {
 	float alpha;
 	int filter;                     /* SetWindowCIFilter: 2 = CIColorInvert (rendered), others kept only */
 	float xf[6]; int has_xf;        /* SetWindowTransform: a b c d tx ty about the window centre (software compositor) */
+	float *mesh; int mcols, mrows;      /* SetWindowWarp: a mesh of mcols x mrows points, 4 floats each: x y (screen) u v (position in the window, 0..1) */
 	ws_rect *cap_excl; int ncap_excl;   /* SetWindowCaptureExcludeShape: window-relative rectangles left out of screen captures */
 	float brightness;       /* SetWindowListBrightness: the colour is multiplied by it (1 = unchanged); software compositor */
 	float sys_alpha;        /* SetWindowListSystemAlpha: multiplies the alpha (fades done by the system); 1 by default */
@@ -145,7 +146,7 @@ int ws_release_window(ws_server *s, ws_wid id)
 	if (s->grab == id) s->grab = 0;
 	if (s->key_win == id) s->key_win = 0;
 	for (size_t i = 0; i < s->n; i++) { if (s->win[i].parent == id) s->win[i].parent = 0; if (s->win[i].mvparent == id) s->win[i].mvparent = 0; if (s->win[i].ogparent == id) s->win[i].ogparent = 0; }       /* children of a destroyed window lose their parent / groups */
-	ws_surface_free(w->backing); ws_surface_free(w->shadow); ws_surface_free(w->front); free(w->shape); free(w->evshape); free(w->cap_excl);
+	ws_surface_free(w->backing); ws_surface_free(w->shadow); ws_surface_free(w->front); free(w->shape); free(w->evshape); free(w->cap_excl); free(w->mesh);
 	bump(s);
 	if (w->shm[0]) ws_shm_unlink(w->shm);
 	*w = s->win[--s->n];
@@ -419,6 +420,54 @@ int ws_set_window_transform(ws_server *s, ws_wid id, const float m[6])
 }
 
 /* the window's pixels through its affine transform (inverse mapping, nearest sample) into a new surface covering the transformed box; the box origin goes to *ox,*oy */
+/* a window drawn through its mesh: every cell is two triangles whose corners carry the screen position and the position in the window; the pixels are taken from the window with bilinear filtering (premultiplied) */
+static float edge_fn(float ax, float ay, float bx, float by, float px, float py) { return (bx - ax) * (py - ay) - (by - ay) * (px - ax); }
+static void warp_pixel(const ws_surface *src, float u, float v, uint8_t *out, float cover)
+{
+	float fu = u * src->w - 0.5f, fv = v * src->h - 0.5f; int iu = (int)floorf(fu), iv = (int)floorf(fv); float a = fu - iu, b = fv - iv;
+	float acc[4] = { 0, 0, 0, 0 };
+	for (int k = 0; k < 4; k++) {
+		int xx = iu + (k & 1), yy = iv + (k >> 1); float wgt = ((k & 1) ? a : 1 - a) * ((k >> 1) ? b : 1 - b);
+		if (xx < 0) xx = 0; if (yy < 0) yy = 0; if (xx >= src->w) xx = src->w - 1; if (yy >= src->h) yy = src->h - 1;
+		const uint8_t *p = src->px + (size_t)yy * src->stride + (size_t)xx * 4;
+		for (int c = 0; c < 4; c++) acc[c] += p[c] * wgt;
+	}
+	float ia = 1.0f - acc[3] * cover / 255.0f;
+	for (int c = 0; c < 4; c++) { float nv = acc[c] * cover + out[c] * ia; out[c] = (uint8_t)(nv > 255 ? 255 : nv + 0.5f); }
+}
+static ws_surface *warp_surface(const window *w, const ws_surface *src, int *ox, int *oy)
+{
+	int cols = w->mcols, rows = w->mrows; const float *m = w->mesh;
+	float minx = 1e9f, miny = 1e9f, maxx = -1e9f, maxy = -1e9f;
+	for (int i = 0; i < cols * rows; i++) { float x = m[4 * i], y = m[4 * i + 1]; if (x < minx) minx = x; if (x > maxx) maxx = x; if (y < miny) miny = y; if (y > maxy) maxy = y; }
+	int x0 = (int)floorf(minx) - 1, y0 = (int)floorf(miny) - 1, bw = (int)ceilf(maxx) + 1 - x0, bh = (int)ceilf(maxy) + 1 - y0;
+	if (bw <= 0 || bh <= 0 || bw > 8192 || bh > 8192) return NULL;
+	ws_surface *o = ws_surface_new(bw, bh); if (!o) return NULL;
+	for (int r = 0; r + 1 < rows; r++) for (int c = 0; c + 1 < cols; c++) {
+		const float *p00 = m + 4 * (r * cols + c), *p10 = p00 + 4, *p01 = p00 + 4 * cols, *p11 = p01 + 4;
+		const float *tri[2][3] = { { p00, p10, p01 }, { p10, p11, p01 } };
+		for (int t = 0; t < 2; t++) {
+			const float *A = tri[t][0], *B = tri[t][1], *C = tri[t][2];
+			float area = edge_fn(A[0], A[1], B[0], B[1], C[0], C[1]); if (fabsf(area) < 1e-6f) continue;
+			float tx0 = fminf(A[0], fminf(B[0], C[0])), tx1 = fmaxf(A[0], fmaxf(B[0], C[0])), ty0 = fminf(A[1], fminf(B[1], C[1])), ty1 = fmaxf(A[1], fmaxf(B[1], C[1]));
+			int ix0 = (int)floorf(tx0) - x0, ix1 = (int)ceilf(tx1) - x0, iy0 = (int)floorf(ty0) - y0, iy1 = (int)ceilf(ty1) - y0;
+			if (ix0 < 0) ix0 = 0; if (iy0 < 0) iy0 = 0; if (ix1 > bw) ix1 = bw; if (iy1 > bh) iy1 = bh;
+			for (int y = iy0; y < iy1; y++) for (int x = ix0; x < ix1; x++) {
+				int hit = 0; float u = 0, v = 0;                                     /* 4 samples per pixel: the coverage of the edges */
+				for (int sy = 0; sy < 2; sy++) for (int sx = 0; sx < 2; sx++) {
+					float px = x0 + x + 0.25f + 0.5f * sx, py = y0 + y + 0.25f + 0.5f * sy;
+					float w0 = edge_fn(B[0], B[1], C[0], C[1], px, py) / area, w1 = edge_fn(C[0], C[1], A[0], A[1], px, py) / area, w2 = 1.0f - w0 - w1;
+					if (w0 < 0 || w1 < 0 || w2 < 0) continue;
+					hit++; u += w0 * A[2] + w1 * B[2] + w2 * C[2]; v += w0 * A[3] + w1 * B[3] + w2 * C[3];
+				}
+				if (!hit) continue;
+				warp_pixel(src, u / hit, v / hit, o->px + (size_t)y * o->stride + (size_t)x * 4, hit / 4.0f);
+			}
+		}
+	}
+	*ox = x0; *oy = y0;
+	return o;
+}
 static ws_surface *xform_surface(const window *w, const ws_surface *src, int *ox, int *oy)
 {
 	float cx = src->w / 2.0f, cy = src->h / 2.0f, a = w->xf[0], b = w->xf[1], c = w->xf[2], d = w->xf[3];
@@ -472,6 +521,17 @@ int ws_set_window_level(ws_server *s, ws_wid id, int level)
 	if (w->level != level) { w->level = level; bump(s); if (w->on_screen) place(s, w, WS_ABOVE, NULL); }   /* the real server brings it to the front of the new level */
 	return 0;
 }
+int ws_set_window_warp(ws_server *s, ws_wid id, int cols, int rows, const float *mesh)
+{
+	window *w = get(s, id); if (!w) return -1;
+	free(w->mesh); w->mesh = NULL; w->mcols = w->mrows = 0;
+	if (cols >= 2 && rows >= 2 && mesh) {
+		size_t n = (size_t)cols * rows * 4; w->mesh = malloc(n * sizeof(float)); if (!w->mesh) return -1;
+		memcpy(w->mesh, mesh, n * sizeof(float)); w->mcols = cols; w->mrows = rows;
+	}
+	bump(s); return 0;
+}
+int ws_window_warp(ws_server *s, ws_wid id, int *cols, int *rows) { window *w = get(s, id); if (!w) return -1; *cols = w->mcols; *rows = w->mrows; return 0; }
 int ws_set_window_capture_exclude(ws_server *s, ws_wid id, const ws_rect *r, int n)
 {
 	window *w = get(s, id); if (!w) return -1;
@@ -883,7 +943,8 @@ void ws_compose_scene(ws_server *s, ws_surface *screen)
 			}
 			ws_surface *rnd = NULL; int cr = v[i]->corner_radius ? v[i]->corner_radius : (v[i]->shadow_on ? v[i]->shadow_cr : 0);
 			if (cr > 0 && px && (rnd = round_corners(px, cr))) px = rnd;
-			if (v[i]->has_xf && px && px->px) xs = xform_surface(v[i], px, &xo, &yo);
+			if (v[i]->mesh && px && px->px) { xs = warp_surface(v[i], px, &xo, &yo); xo -= (int)v[i]->frame.x; yo -= (int)v[i]->frame.y; }
+			else if (v[i]->has_xf && px && px->px) xs = xform_surface(v[i], px, &xo, &yo);
 			if (xs) { s->comp->over(s->comp, screen, v[i]->frame.x + xo, v[i]->frame.y + yo, xs, v[i]->alpha * v[i]->sys_alpha, all); if (s->comp->flush) s->comp->flush(s->comp); ws_surface_free(xs); }
 			else s->comp->over(s->comp, screen, v[i]->frame.x, v[i]->frame.y, px, v[i]->alpha * v[i]->sys_alpha, all);
 			if (inv || rnd || brt) { if (s->comp->flush) s->comp->flush(s->comp); ws_surface_free(inv); ws_surface_free(rnd); ws_surface_free(brt); }

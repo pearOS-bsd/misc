@@ -189,6 +189,25 @@ static void test_capture_exclude(void)
 	ws_surface_free(cap); ws_surface_free(scr); ws_server_free(srv);
 }
 
+/* SetWindowWarp: a mesh that squeezes a 40x40 window into the left half of its frame (x and y are screen positions, u and v the place in the window) */
+static void test_warp(void)
+{
+	ws_server *srv = ws_server_new(100, 100);
+	ws_surface *scr = ws_surface_new(100, 100);
+	ws_wid w = ws_create_window(srv, (ws_rect){ 10, 10, 40, 40 });
+	ws_fill(ws_window_backing(srv, w), (ws_rect){ 0, 0, 40, 40 }, 1, 0, 0, 1);
+	ws_order_window(srv, w, WS_ABOVE, 0);
+	float mesh[4 * 4] = { 10, 10, 0, 0,   30, 10, 1, 0,   10, 50, 0, 1,   30, 50, 1, 1 };
+	CHECK(ws_set_window_warp(srv, w, 2, 2, mesh) == 0);
+	ws_compose_scene(srv, scr);
+	CHECK(*(uint32_t *)(scr->px + 30 * scr->stride + 20 * 4) == 0xffff0000u);               /* inside the squeezed window */
+	CHECK(*(uint32_t *)(scr->px + 30 * scr->stride + 40 * 4) != 0xffff0000u);               /* where the window was, now empty */
+	CHECK(ws_set_window_warp(srv, w, 0, 0, NULL) == 0);
+	ws_compose_scene(srv, scr);
+	CHECK(*(uint32_t *)(scr->px + 30 * scr->stride + 40 * 4) == 0xffff0000u);
+	ws_surface_free(scr); ws_server_free(srv);
+}
+
 /* SetWindowTransform: a 40x40 red window scaled 2x about its centre covers 80x80, translation moves it */
 static void test_transform(void)
 {
@@ -352,6 +371,7 @@ int main(void)
 	test_invert();
 	test_brightness();
 	test_capture_exclude();
+	test_warp();
 	test_zoom();
 	test_corners();
 	printf(fails ? "%d failures\n" : "all tests passed\n", fails);

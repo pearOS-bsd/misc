@@ -1,4 +1,5 @@
 /* Window routines beyond the core set in wsd.c: properties, layer context binding, ordered-in query. */
+#include <math.h>
 #include "wsd_priv.h"
 #include "bplist.h"
 #include "ws_region.h"
@@ -864,6 +865,17 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 			if (rl && ws_region_parse(buf + off[0] + used, rl, &rc, &nr, &bb) == 0) ws_tracking_set(srv, id, wid, rc, nr); else ws_tracking_set(srv, id, wid, NULL, 0);
 			free(rc); used += rl;
 		}
+		return reply_simple(c->fd, h, 0);
+	}
+	case SLS_MSG_SetWindowWarp: {                                                  /* OOL floats; wid@0x34, columns@0x38 and rows@0x3c (each <= 0x800), float count@0x40 (4 per point: columns * rows * 4), size 0x44; every float below 2^31; 1000 for a bad mesh (decompiled __XSetWindowWarp, CGXWindow::set_mesh_warp) */
+		int err; int osz = ool_request(h, buf, len, 0x44, &err);
+		if (osz < 0) return reply_simple(c->fd, h, err);
+		uint32_t nf = (uint32_t)osz >> 2, wid = rd32(buf, 0x34), cols = rd32(buf, 0x38), rows = rd32(buf, 0x3c);
+		if (nf != rd32(buf, 0x40)) return reply_simple(c->fd, h, -300);
+		if (cols > 0x800 || rows > 0x800 || nf != cols * rows * 4) return reply_simple(c->fd, h, 1000);
+		const uint8_t *fl = buf + 0x44;
+		for (uint32_t i = 0; i < nf; i++) { float f; memcpy(&f, fl + 4 * i, 4); if (!(fabsf(f) < 2.1474836e+09f)) return reply_simple(c->fd, h, 1000); }
+		if (ws_window_exists(srv, wid) && holds_rights(c, wid)) ws_set_window_warp(srv, wid, (int)cols, (int)rows, nf ? (const float *)(const void *)fl : NULL);
 		return reply_simple(c->fd, h, 0);
 	}
 	case SLS_MSG_SetWindowCaptureExcludeShape: {                                   /* OOL region; wid@0x34, size repeated@0x38, size 0x3c; needs write access, an empty region does nothing; 0 (decompiled __XSetWindowCaptureExcludeShape) */
