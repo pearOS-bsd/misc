@@ -76,8 +76,8 @@ for d in etc private/etc; do sed -i '' -E 's/^(ttyv[0-9a-f]+[[:space:]].*[[:spac
 # the shell of root and of the Terminal: zsh, the default shell of macOS (/bin/zsh), with /etc/zprofile and /etc/zshrc taken from the author's Mac configuration, minus what is Mac-only
 [ -x "$ROOT/usr/local/bin/zsh" ] || { echo "image check failed: zsh is not in the image"; exit 1; }
 install -m 755 "$ROOT/usr/local/bin/zsh" "$ROOT/bin/zsh"
-for d in etc private/etc; do
-	mkdir -p "$ROOT/$d"; grep -qx /bin/zsh "$ROOT/$d/shells" 2>/dev/null || echo /bin/zsh >> "$ROOT/$d/shells"
+for d in etc private/etc usr/local/etc; do          # FreeBSD's zsh reads its global files from /usr/local/etc, the Mac's from /etc: both
+	mkdir -p "$ROOT/$d"; [ $d = usr/local/etc ] || { grep -qx /bin/zsh "$ROOT/$d/shells" 2>/dev/null || echo /bin/zsh >> "$ROOT/$d/shells"; }
 	cp "$HERE/overlay/etc-zprofile" "$ROOT/$d/zprofile"; cp "$HERE/overlay/etc-zshrc" "$ROOT/$d/zshrc"
 done
 pw -R "$ROOT" usermod root -s /bin/zsh
