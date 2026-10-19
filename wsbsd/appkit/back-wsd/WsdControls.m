@@ -41,3 +41,34 @@ static char kMinW, kSymCfg, kSingle;
 - (void)cancelTrackingWithoutAnimation { [self cancelTracking]; }
 @end
 
+
+/* NSScrollView magnification: the clip view's bounds are the frame divided by the magnification, so the document is scaled about the point that stays in place (the centre by default);
+ * minMagnification / maxMagnification clamp (0.25 and 4 as on macOS), magnifyToFitRect: picks the magnification that shows the rectangle. */
+static char kMag, kMagMin, kMagMax;
+@interface NSScrollView (WsdMagnification) @end
+@implementation NSScrollView (WsdMagnification)
+- (CGFloat)magnification { NSNumber *n = objc_getAssociatedObject(self, &kMag); return n ? [n doubleValue] : 1.0; }
+- (CGFloat)minMagnification { NSNumber *n = objc_getAssociatedObject(self, &kMagMin); return n ? [n doubleValue] : 0.25; }
+- (CGFloat)maxMagnification { NSNumber *n = objc_getAssociatedObject(self, &kMagMax); return n ? [n doubleValue] : 4.0; }
+- (void)setMinMagnification:(CGFloat)m { objc_setAssociatedObject(self, &kMagMin, [NSNumber numberWithDouble: m], OBJC_ASSOCIATION_RETAIN_NONATOMIC); }
+- (void)setMaxMagnification:(CGFloat)m { objc_setAssociatedObject(self, &kMagMax, [NSNumber numberWithDouble: m], OBJC_ASSOCIATION_RETAIN_NONATOMIC); }
+- (void)setMagnification:(CGFloat)m centeredAtPoint:(NSPoint)p        /* p in document coordinates */
+{
+	m = MAX([self minMagnification], MIN([self maxMagnification], m));
+	NSClipView *clip = [self contentView]; NSRect cf = [clip frame], b = [clip bounds];
+	NSPoint rel = NSMakePoint(b.size.width > 0 ? (p.x - b.origin.x) / b.size.width : 0.5, b.size.height > 0 ? (p.y - b.origin.y) / b.size.height : 0.5);   /* where p sits in the visible rectangle */
+	NSSize nb = NSMakeSize(cf.size.width / m, cf.size.height / m);
+	objc_setAssociatedObject(self, &kMag, [NSNumber numberWithDouble: m], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+	[clip setBoundsSize: nb];
+	NSPoint o = NSMakePoint(p.x - rel.x * nb.width, p.y - rel.y * nb.height);
+	[clip scrollToPoint: [clip constrainScrollPoint: o]]; [self reflectScrolledClipView: clip];
+	[self setNeedsDisplay: YES];
+}
+- (void)setMagnification:(CGFloat)m { NSRect b = [[self contentView] bounds]; [self setMagnification: m centeredAtPoint: NSMakePoint(NSMidX(b), NSMidY(b))]; }
+- (void)magnifyToFitRect:(NSRect)r
+{
+	NSRect cf = [[self contentView] frame]; if (r.size.width <= 0 || r.size.height <= 0) return;
+	CGFloat m = MIN(cf.size.width / r.size.width, cf.size.height / r.size.height);
+	[self setMagnification: m centeredAtPoint: NSMakePoint(NSMidX(r), NSMidY(r))];
+}
+@end
