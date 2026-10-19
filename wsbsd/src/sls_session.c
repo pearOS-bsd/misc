@@ -88,18 +88,32 @@ static int reply_ool_blob(conn *c, const mach_msg_header_t *h, const uint8_t *bl
 /* Routines a Cocoa app calls that had no handler. The request sizes are what the decompiled server routines check (header-only 0x18 for the first four,
  * 0x18 for DisconnectWindowManager, 0x24 for VirtualDisplayDestroy). There is no Dock, no right-to-left UI and no virtual display here, so the answers are the "nothing" values.
  * Unverified live: the exact error the real server gives for a virtual display that does not exist (1001, kCGErrorIllegalArgument, is assumed). */
+static float dock_rect[4]; static uint32_t dock_reason[2]; static int system_ui_rtl, dock_cursor_override, swipe_scroll_direction;      /* SetDockRectWithReason, SetSystemUIHasRTLDirection, SetDockCursorOverride, SetSwipeScrollDirection */
 static int do_system_ui_query(conn *c, const uint8_t *buf, size_t len)
 {
 	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
 	switch (h->msgh_id) {
-	case SLS_MSG_GetAppearanceTheme: case SLS_MSG_GetSystemUIHasRTLDirection: case SLS_MSG_GetDebugOptions:
+	case 30246:                                                           /* __XSetDockRectWithReason: rect x y w h as floats@0x20, reason (two u32)@0x30, size 0x38 */
+		if (!simple_ok(h, len, 0x38)) return reply_simple(c->fd, h, -304);
+		memcpy(dock_rect, buf + 0x20, 16); memcpy(dock_reason, buf + 0x30, 8); return reply_simple(c->fd, h, 0);
+	case 30440:                                                           /* __XSetSystemUIHasRTLDirection: flag byte@0x20, size 0x24 */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		system_ui_rtl = buf[0x20] != 0; return reply_simple(c->fd, h, 0);
+	case 30265: case 30266:                                               /* __XSetDockCursorOverride / __XSetSwipeScrollDirection: flag@0x20, size 0x24 */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		if (h->msgh_id == 30265) dock_cursor_override = rd32(buf, 0x20) != 0; else swipe_scroll_direction = rd32(buf, 0x20) != 0;
+		return reply_simple(c->fd, h, 0);
+	case SLS_MSG_GetSystemUIHasRTLDirection:
 		if (!simple_ok(h, len, 0x18)) return -2;
-		return reply_value(c->fd, h, 0);                                  /* light appearance, left-to-right, no debug options */
+		return reply_value(c->fd, h, system_ui_rtl);
+	case SLS_MSG_GetAppearanceTheme: case SLS_MSG_GetDebugOptions:
+		if (!simple_ok(h, len, 0x18)) return -2;
+		return reply_value(c->fd, h, 0);                                  /* light appearance, no debug options */
 	case SLS_MSG_GetDockRectWithReason: {                               /* reply 0x3c: retcode, rect (4 floats), two u32: no Dock, empty rect */
 		if (!simple_ok(h, len, 0x18)) return -2;
 		uint8_t r[0x3c]; memset(r, 0, sizeof r);
 		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
-		memcpy(r + 0x18, &WS_NDR, sizeof WS_NDR);
+		memcpy(r + 0x18, &WS_NDR, sizeof WS_NDR); memcpy(r + 0x24, dock_rect, 16); memcpy(r + 0x34, dock_reason, 8);
 		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
 	}
 	case SLS_MSG_DisconnectWindowManager:
