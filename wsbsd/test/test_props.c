@@ -1146,6 +1146,12 @@ int main(void)
 		memset(m, 0, sizeof m); hdr(m, 0x34, 30432, 0); w32(m, 0x20, 1); w32(m, 0x28, 1); w32(m, 0x2c, tw.id); CHECK(rc(fd, m, 0x34) == 0);
 		w32(m, 0x28, 2); CHECK(rc(fd, m, 0x34) == -304);
 	}
+	{ /* SetDockRectWithReason / GetDockRectWithReason, SetSystemUIHasRTLDirection / Get, cursor override, swipe direction (decompiled) */
+		uint8_t m[0x40], rep[0x100]; memset(m, 0, sizeof m); hdr(m, 0x38, 30246, 0); { float r[4] = { 1, 2, 300, 40 }; memcpy(m + 0x20, r, 16); } w32(m, 0x30, 7); w32(m, 0x34, 9); CHECK(rc(fd, m, 0x38) == 0);
+		{ uint8_t g[0x18]; memset(g, 0, sizeof g); hdr(g, 0x18, 30247, 0); int gn = call(fd, g, 0x18, rep, sizeof rep); float rr[4]; memcpy(rr, rep + 0x24, 16); CHECK(gn == 0x3c && rr[2] == 300 && r32(rep, 0x34) == 7 && r32(rep, 0x38) == 9); }
+		memset(m, 0, sizeof m); hdr(m, 0x24, 30440, 0); m[0x20] = 1; CHECK(rc(fd, m, 0x24) == 0);
+		hdr(m, 0x24, 30265, 0); w32(m, 0x20, 1); CHECK(rc(fd, m, 0x24) == 0); hdr(m, 0x24, 30266, 0); CHECK(rc(fd, m, 0x24) == 0); hdr(m, 0x28, 30266, 0); CHECK(rc(fd, m, 0x28) == -304);
+	}
 	ws_server_quit(c);
 	printf(failures ? "%d failures\n" : "window extension routines: all checks passed\n", failures);
 	return failures != 0;

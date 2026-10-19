@@ -40,11 +40,8 @@ static const gen_entry gen_table[] = {
 	{ 30237, 60, 1, 1, 36 },   /* __XSetWindowCaptureExcludeShape */
 	{ 30238, 36, 0, 0, 36 },   /* __XRemoveWindowCaptureExcludeShape */
 	{ 30239, 56, 1, 1, 36 },   /* __XSetApplicationBindingsForWorkspaces */
-	{ 30246, 56, 0, 0, 36 },   /* __XSetDockRectWithReason */
 	{ 30256, 56, 1, 1, 36 },   /* __XSetPreferencesForWorkspaces */
 	{ 30258, 104, 0, 0, 84 },   /* __XHWCaptureDesktop */
-	{ 30265, 36, 0, 0, 36 },   /* __XSetDockCursorOverride */
-	{ 30266, 36, 0, 0, 36 },   /* __XSetSwipeScrollDirection */
 	{ 30268, 40, 0, 0, 36 },   /* __XPersistenceWillLaunchApps */
 	{ 30278, 88, 1, 1, 44 },   /* __XHWCaptureDisplayIntoIOSurface */
 	{ 30313, 132, 0, 0, 36 },   /* __XDisplayStreamCreate */
@@ -72,7 +69,6 @@ static const gen_entry gen_table[] = {
 	{ 30421, 96, 1, 1, 36 },   /* __XSpaceMoveSpacersToPoint */
 	{ 30424, 64, 1, 1, 52 },   /* __XSpaceGetSizeForProposedTile */
 	{ 30425, 76, 0, 0, 36 },   /* __XWindowListSetLockedBounds */
-	{ 30440, 36, 0, 0, 36 },   /* __XSetSystemUIHasRTLDirection */
 	{ 30448, 72, 1, 1, 36 },   /* __XTileSpaceMoveSpacersForSize */
 	{ 30452, 36, 0, 0, 36 },   /* __XSystemStatusBarPrepareToUnregisterWindow */
 	{ 30464, 36, 0, 0, 36 },   /* __XHMDRelease */
