@@ -211,6 +211,29 @@ static void test_display_fade(void)
 	ws_surface_free(scr); ws_server_free(srv);
 }
 
+/* SetDisplayTransferByFormula / ByTable: gamma 2 on a mid grey darkens it, an inverted table turns white into black, the identity formula switches it off */
+static void test_gamma(void)
+{
+	ws_server *srv = ws_server_new(100, 100);
+	ws_surface *scr = ws_surface_new(100, 100);
+	ws_wid w = ws_create_window(srv, (ws_rect){ 10, 10, 40, 40 });
+	ws_fill(ws_window_backing(srv, w), (ws_rect){ 0, 0, 40, 40 }, 0.5f, 0.5f, 0.5f, 1);
+	ws_order_window(srv, w, WS_ABOVE, 0);
+	float f[9] = { 0, 1, 2, 0, 1, 2, 0, 1, 2 };
+	ws_display_gamma_formula(srv, f); ws_compose_scene(srv, scr);
+	uint32_t p = *(uint32_t *)(scr->px + 20 * scr->stride + 20 * 4);
+	CHECK(abs((int)((p >> 16) & 0xff) - 64) <= 3 && abs((int)(p & 0xff) - 64) <= 3);                 /* 0.5 ^ 2 = 0.25 */
+	float inv[2] = { 1, 0 };
+	ws_display_gamma_table(srv, inv, 2); ws_compose_scene(srv, scr);
+	p = *(uint32_t *)(scr->px + 20 * scr->stride + 20 * 4);
+	CHECK(abs((int)((p >> 16) & 0xff) - 127) <= 3);                                                       /* 1 - 0.5 */
+	float id[9] = { 0, 1, 1, 0, 1, 1, 0, 1, 1 };
+	ws_display_gamma_formula(srv, id); ws_compose_scene(srv, scr);
+	p = *(uint32_t *)(scr->px + 20 * scr->stride + 20 * 4);
+	CHECK(abs((int)((p >> 16) & 0xff) - 128) <= 2);
+	ws_surface_free(scr); ws_server_free(srv);
+}
+
 /* SetWindowCaptureExcludeShape: the excluded rectangle of a window is cleared in a capture, the rest is kept */
 static void test_capture_exclude(void)
 {
@@ -489,7 +512,7 @@ int main(void)
 	test_transform();
 	test_invert();
 	test_brightness();
-	test_capture_exclude(); test_global_clip(); test_display_fade();
+	test_capture_exclude(); test_global_clip(); test_display_fade(); test_gamma();
 	test_warp();
 	test_zoom();
 	test_corners();

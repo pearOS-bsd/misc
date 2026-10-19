@@ -105,6 +105,14 @@ int main(void)
 		memset(m, 0, sizeof m); hdr(m, 0x24, 33018, 0); w32(m, 0x20, tk); CHECK(rc(fd, m, 0x24) == 0);
 		hdr(m, 0x28, 33018, 0); CHECK(rc(fd, m, 0x28) == -304);
 	}
+	{ /* SetDisplayTransferByFormula (size 0x4c, nine floats) and ByTable (size 0x40, one OOL whose size / 4 is the count@0x38), decompiled */
+		uint8_t m[0x60]; uint32_t one = 1; memset(m, 0, sizeof m); hdr(m, 0x4c, 33008, 0);
+		{ float f[9] = { 0, 1, 1, 0, 1, 1, 0, 1, 1 }; memcpy(m + 0x28, f, 36); } CHECK(rc(fd, m, 0x4c) == 0);
+		w32(m, 4, 0x48); CHECK(rc(fd, m, 0x48) == -304);
+		uint8_t t[0x40 + 8]; memset(t, 0, sizeof t); hdr(t, 0x40, 33007, 1); memcpy(t + 0x18, &one, 4); t[0x27] = 1; w32(t, 0x28, 8); w32(t, 0x38, 2); { float tb[2] = { 0, 1 }; memcpy(t + 0x40, tb, 8); }
+		CHECK(rc(fd, t, sizeof t) == 0);
+		w32(t, 0x38, 3); CHECK(rc(fd, t, sizeof t) == -300);
+	}
 	{ /* window routines: GetScreenRectForWindow, InvalidateWindowShadow, SynchronizeWindowBackingStore, RemoveAllSurfaces, PostEventRecordTo */
 		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 11, 22, 33, 44 }, 0, &tw) == 0 && ws_win_order(c, &tw, 1, 0) == 0);
 		uint8_t m[0x400], rep[0x100]; int got;

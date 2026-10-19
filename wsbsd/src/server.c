@@ -54,6 +54,7 @@ typedef struct {
 } window;
 
 struct ws_server {
+	uint8_t gamma[3][256]; int gamma_on;   /* SetDisplayTransferByFormula / ByTable: a lookup table per channel (R, G, B) applied to the composed screen */
 	struct { double t0, secs, sb, eb; float r, g, b; int on; } fade;   /* DisplayFade: the screen is blended toward a colour (blend from sb to eb over secs seconds, then held) */
 	int w, h;
 	window *win;
@@ -1020,6 +1021,7 @@ void ws_compose_scene(ws_server *s, ws_surface *screen)
 	if (s->comp->flush) s->comp->flush(s->comp);
 	free(v);
 	apply_zoom(screen);
+	if (s->gamma_on) for (int y = 0; y < screen->h; y++) { uint8_t *p = screen->px + (size_t)y * screen->stride; for (int x = 0; x < screen->w; x++, p += 4) { p[0] = s->gamma[2][p[0]]; p[1] = s->gamma[1][p[1]]; p[2] = s->gamma[0][p[2]]; } }
 	if (s->fade.on) {                                                      /* DisplayFade: every pixel moves toward the fade colour by the current blend */
 		struct timespec ts; clock_gettime(CLOCK_MONOTONIC, &ts); double now = ts.tv_sec + ts.tv_nsec * 1e-9, e = s->fade.secs > 0 ? (now - s->fade.t0) / s->fade.secs : 1;
 		if (e > 1) e = 1; double bl = s->fade.sb + (s->fade.eb - s->fade.sb) * e; if (bl < 0) bl = 0; if (bl > 1) bl = 1;
@@ -1211,6 +1213,26 @@ int ws_window_set_tags(ws_server *s, ws_wid id, uint64_t tags, int clear)
 
 int ws_set_window_global_clip(ws_server *s, ws_wid id, const ws_rect *r, int n) { window *w = get(s, id); if (!w) return -1; free(w->gclip); w->gclip = NULL; w->ngclip = 0; if (n > 0 && (w->gclip = malloc((size_t)n * sizeof *w->gclip))) { memcpy(w->gclip, r, (size_t)n * sizeof *w->gclip); w->ngclip = n; } bump(s); return 0; }
 void ws_display_fade(ws_server *s, double secs, double start, double end, float r, float g, float b) { struct timespec ts; clock_gettime(CLOCK_MONOTONIC, &ts); s->fade.t0 = ts.tv_sec + ts.tv_nsec * 1e-9; s->fade.secs = secs; s->fade.sb = start; s->fade.eb = end; s->fade.r = r; s->fade.g = g; s->fade.b = b; s->fade.on = 1; bump(s); }
+/* CGSetDisplayTransferByFormula: out = min + (max - min) * in ^ gamma per channel (v: redMin redMax redGamma, green..., blue...); the identity turns the table off */
+void ws_display_gamma_formula(ws_server *s, const float v[9])
+{
+	int ident = 1;
+	for (int c = 0; c < 3; c++) {
+		float mn = v[3 * c], mx = v[3 * c + 1], g = v[3 * c + 2]; if (mn != 0 || mx != 1 || g != 1) ident = 0;
+		for (int i = 0; i < 256; i++) { float o = mn + (mx - mn) * powf(i / 255.0f, g); if (o < 0) o = 0; if (o > 1) o = 1; s->gamma[c][i] = (uint8_t)(o * 255.0f + 0.5f); }
+	}
+	s->gamma_on = !ident; bump(s);
+}
+/* CGSetDisplayTransferByTable: count entries in [0, 1] for each of the three channels, one after the other (a table whose size is not a multiple of three serves all channels); interpolated to 256 steps */
+void ws_display_gamma_table(ws_server *s, const float *t, int count)
+{
+	int n = count % 3 == 0 && count >= 3 ? count / 3 : count, chans = count % 3 == 0 && count >= 3 ? 3 : 1; if (n < 1) return;
+	for (int c = 0; c < 3; c++) for (int i = 0; i < 256; i++) {
+		const float *tab = t + (chans == 3 ? c * n : 0); float pos = n > 1 ? i / 255.0f * (n - 1) : 0; int k = (int)pos; float f = pos - k, a = tab[k], b = tab[k + 1 < n ? k + 1 : k], o = a + (b - a) * f;
+		if (o < 0) o = 0; if (o > 1) o = 1; s->gamma[c][i] = (uint8_t)(o * 255.0f + 0.5f);
+	}
+	s->gamma_on = 1; bump(s);
+}
 int ws_set_window_fade_property(ws_server *s, ws_wid id, uint32_t prop) { window *w = get(s, id); if (!w) return -1; w->fade_prop = prop; return 0; }
 int ws_set_window_corner_radius(ws_server *s, ws_wid id, int radius)
 {

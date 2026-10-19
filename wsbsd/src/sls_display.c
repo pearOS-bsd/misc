@@ -43,6 +43,18 @@ int sls_display_dispatch(conn *c, const uint8_t *buf, size_t len)
 {
 	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
 	static uint32_t fade_token, fade_held;                                  /* DisplayFade reservations: a token per Acquire, one holder at a time */
+	if (h->msgh_id == SLS_MSG_SetDisplayTransferByFormula) {                  /* decompiled __XSetDisplayTransferByFormula: size 0x4c, not complex; nine floats from 0x28 (min, max, gamma per channel); -304 otherwise */
+		if (!simple_ok(h, len, 0x4c)) return reply_simple(c->fd, h, -304);
+		float v[9]; memcpy(v, buf + 0x28, sizeof v); ws_display_gamma_formula(srv, v);
+		return reply_simple(c->fd, h, 0);
+	}
+	if (h->msgh_id == SLS_MSG_SetDisplayTransferByTable) {                    /* decompiled __XSetDisplayTransferByTable: complex with one OOL of floats, size 0x40, count@0x38 = OOL size / 4 (else -300); -304 for a bad message */
+		if (!(h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || h->msgh_size != 0x40 || len < 0x40 || rd32(buf, 0x18) != 1) return reply_simple(c->fd, h, -304);
+		uint32_t osz = rd32(buf, 0x28), cnt = rd32(buf, 0x38);
+		if (buf[0x27] != 1 || (osz >> 2) != cnt || len < 0x40 + (size_t)osz) return reply_simple(c->fd, h, -300);
+		if (cnt) { float *tb = malloc(osz); if (tb) { memcpy(tb, buf + 0x40, osz); ws_display_gamma_table(srv, tb, (int)cnt); free(tb); } }
+		return reply_simple(c->fd, h, 0);
+	}
 	if (h->msgh_id == SLS_MSG_AcquireDisplayFadeReservation) {                /* decompiled __XAcquireDisplayFadeReservation: size 0x24 (display id@0x20); the reply grows to 0x28 with the token@0x24 */
 		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
 		uint32_t did; memcpy(&did, buf + 0x20, 4); if (did != 1) return reply_simple(c->fd, h, 1006);      /* the real server answers 1006 for an unknown display (golden: zero arguments); the one display here is 1 */
