@@ -9,6 +9,7 @@ void sls_tap_owner_cleanup(uint32_t owner);
 void sls_window_owner_cleanup(uint32_t owner);
 int sls_transaction_dispatch(conn *c, const uint8_t *buf, size_t len);
 int sls_display_dispatch(conn *c, const uint8_t *buf, size_t len);
+int sls_sessctl_dispatch(conn *c, const uint8_t *buf, size_t len);
 int sls_space_dispatch(conn *c, const uint8_t *buf, size_t len);
 void sls_space_owner_cleanup(uint32_t owner);
 int sls_hotkey_dispatch(conn *c, const uint8_t *buf, size_t len);
@@ -25,6 +26,8 @@ int sls_ext_dispatch(conn *c, const uint8_t *buf, size_t len)
 	rc = sls_space_dispatch(c, buf, len);
 	if (rc != -2) return rc;
 	rc = sls_session_dispatch(c, buf, len);
+	if (rc != -2) return rc;
+	rc = sls_sessctl_dispatch(c, buf, len);
 	if (rc != -2) return rc;
 	rc = sls_display_dispatch(c, buf, len);
 	if (rc != -2) return rc;

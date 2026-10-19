@@ -1,14 +1,7 @@
 # routine ids that have neither a dedicated handler nor a recorded reply: tools/gen_generic.py writes an acceptor for each
-29001
 29002
 29005
-29006
-29007
 29008
-29011
-29012
-29013
-29015
 29018
 29019
 29020

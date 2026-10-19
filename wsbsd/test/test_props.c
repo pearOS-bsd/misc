@@ -1088,6 +1088,22 @@ int main(void)
 		hdr(e, 0x24, 32032, 0); w32(e, 0x20, tid); CHECK(rc(fd, e, 0x24) == 1007);                              /* released */
 		hdr(e, 0x24, 32030, 0); w32(e, 0x20, tid); CHECK(rc(fd, e, 0x24) == 1007);
 	}
+	{ /* session control (decompiled): Create answers 0x28 with the id, Release / SwitchConsole 0x2c, ScreenLockWindow 0x28, SleepWindows 0x2c (1000 for a window that does not exist), cube 0x24, ClientDictionary (1000 for an unknown session) */
+		uint8_t m[0x80], rep[0x100]; uint32_t two = 2, one = 1; memset(m, 0, sizeof m); hdr(m, 0x50, 29001, 1); memcpy(m + 0x18, &two, 4); m[0x27] = 1; m[0x37] = 1; w32(m, 0x28, 8); w32(m, 0x44, 8); w32(m, 0x38, 4); w32(m, 0x48, 4);
+		int got = call(fd, m, 0x50, rep, sizeof rep); CHECK(got == 0x28 && r32(rep, 0x20) == 0); uint32_t sid = r32(rep, 0x24); CHECK(sid > 256);
+		w32(m, 0x44, 9); CHECK(rc(fd, m, 0x50) == -300); w32(m, 0x44, 8);
+		memset(m, 0, sizeof m); hdr(m, 0x2c, 29007, 0); w32(m, 0x20, sid); CHECK(rc(fd, m, 0x2c) == 0);
+		hdr(m, 0x30, 29007, 0); CHECK(rc(fd, m, 0x30) == -304);
+		ws_win lw; CHECK(ws_win_create(c, (ws_rect){ 0, 0, 20, 20 }, 0, &lw) == 0);
+		memset(m, 0, sizeof m); hdr(m, 0x28, 29011, 0); w32(m, 0x20, 0); w32(m, 0x24, lw.id); CHECK(rc(fd, m, 0x28) == 0);
+		memset(m, 0, sizeof m); hdr(m, 0x2c, 29012, 0); w32(m, 0x24, lw.id); w32(m, 0x28, lw.id); CHECK(rc(fd, m, 0x2c) == 0);
+		w32(m, 0x28, 0x7ffff); CHECK(rc(fd, m, 0x2c) == 1000);
+		memset(m, 0, sizeof m); hdr(m, 0x24, 29013, 0); m[0x20] = 1; CHECK(rc(fd, m, 0x24) == 0);
+		memset(m, 0, sizeof m); hdr(m, 0x44 + 8, 29015, 1); memcpy(m + 0x18, &one, 4); m[0x27] = 1; w32(m, 0x28, 8); w32(m, 0x40, 8); w32(m, 0x34, sid); memcpy(m + 0x44, "abcdefgh", 8); CHECK(rc(fd, m, 0x44 + 8) == 0);
+		w32(m, 0x34, 9999); CHECK(rc(fd, m, 0x44 + 8) == 1000);
+		w32(m, 0x40, 7); CHECK(rc(fd, m, 0x44 + 8) == -300);
+		memset(m, 0, sizeof m); hdr(m, 0x2c, 29006, 0); w32(m, 0x20, sid); CHECK(rc(fd, m, 0x2c) == 0);
+	}
 	ws_server_quit(c);
 	printf(failures ? "%d failures\n" : "window extension routines: all checks passed\n", failures);
 	return failures != 0;
