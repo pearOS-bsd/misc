@@ -14,6 +14,7 @@ typedef struct {
 	float xf[6]; int has_xf;        /* SetWindowTransform: a b c d tx ty about the window centre (software compositor) */
 	float *mesh; int mcols, mrows;      /* SetWindowWarp: a mesh of mcols x mrows points, 4 floats each: srcX srcY (pixels in the window) dstX dstY (screen); both y axes point up, the origin is the bottom left corner (decompiled Dock, genie) */
 	ws_rect *cap_excl; int ncap_excl;   /* SetWindowCaptureExcludeShape: window-relative rectangles left out of screen captures */
+	ws_rect *gclip; int ngclip;   /* SetWindowListGlobalClipShape: screen rectangles the window is cut to */
 	uint32_t fade_prop;     /* SetWindowListFadeProperties: the property word of the window's fade (kept, not interpreted) */
 	float brightness;       /* SetWindowListBrightness: the colour is multiplied by it (1 = unchanged); software compositor */
 	float sys_alpha;        /* SetWindowListSystemAlpha: multiplies the alpha (fades done by the system); 1 by default */
@@ -148,7 +149,7 @@ int ws_release_window(ws_server *s, ws_wid id)
 	if (s->grab == id) s->grab = 0;
 	if (s->key_win == id) s->key_win = 0;
 	for (size_t i = 0; i < s->n; i++) { if (s->win[i].parent == id) s->win[i].parent = 0; if (s->win[i].mvparent == id) s->win[i].mvparent = 0; if (s->win[i].ogparent == id) s->win[i].ogparent = 0; }       /* children of a destroyed window lose their parent / groups */
-	ws_surface_free(w->backing); ws_surface_free(w->shadow); ws_surface_free(w->front); free(w->shape); free(w->evshape); free(w->cap_excl); free(w->mesh);
+	ws_surface_free(w->backing); ws_surface_free(w->shadow); ws_surface_free(w->front); free(w->shape); free(w->gclip); free(w->evshape); free(w->cap_excl); free(w->mesh);
 	bump(s);
 	if (w->shm[0]) ws_shm_unlink(w->shm);
 	*w = s->win[--s->n];
@@ -993,6 +994,14 @@ void ws_compose_scene(ws_server *s, ws_surface *screen)
 				for (int y = 0; y < px->h; y++) { const uint8_t *sp = px->px + (size_t)y * px->stride; uint8_t *dp = brt->px + (size_t)y * brt->stride; for (int x = 0; x < px->w; x++, sp += 4, dp += 4) { for (int c = 0; c < 3; c++) { int t = (sp[c] * k + 128) >> 8; dp[c] = (uint8_t)(t > sp[3] ? sp[3] : t); } dp[3] = sp[3]; } }
 				px = brt;
 			}
+			ws_surface *gcl = NULL;
+			if (v[i]->ngclip && px && px->px && (gcl = ws_surface_new(px->w, px->h))) {                       /* the global clip shape: only the pixels inside the rectangles (screen coordinates) stay */
+				for (int y = 0; y < px->h; y++) for (int x = 0; x < px->w; x++) {
+					int in = 0; for (int k = 0; k < v[i]->ngclip && !in; k++) { ws_rect q = v[i]->gclip[k]; int sx = (int)v[i]->frame.x + x, sy = (int)v[i]->frame.y + y; in = sx >= q.x && sx < q.x + q.w && sy >= q.y && sy < q.y + q.h; }
+					*(uint32_t *)(gcl->px + (size_t)y * gcl->stride + (size_t)x * 4) = in ? *(const uint32_t *)(px->px + (size_t)y * px->stride + (size_t)x * 4) : 0;
+				}
+				px = gcl;
+			}
 			ws_surface *grown = NULL;
 			if (px && px->px && px->w > 0 && px->h > 0 && (px->w < v[i]->frame.w || px->h < v[i]->frame.h) && !v[i]->mesh && (grown = grow_edge(px, v[i]->frame.w, v[i]->frame.h))) px = grown;
 			ws_surface *rnd = NULL; int cr = v[i]->corner_radius ? v[i]->corner_radius : (v[i]->shadow_on ? v[i]->shadow_cr : 0);
@@ -1001,7 +1010,7 @@ void ws_compose_scene(ws_server *s, ws_surface *screen)
 			else if (v[i]->has_xf && px && px->px) xs = xform_surface(v[i], px, &xo, &yo);
 			if (xs) { s->comp->over(s->comp, screen, v[i]->frame.x + xo, v[i]->frame.y + yo, xs, v[i]->alpha * v[i]->sys_alpha, all); if (s->comp->flush) s->comp->flush(s->comp); ws_surface_free(xs); }
 			else s->comp->over(s->comp, screen, v[i]->frame.x, v[i]->frame.y, px, v[i]->alpha * v[i]->sys_alpha, all);
-			if (inv || rnd || brt || grown) { if (s->comp->flush) s->comp->flush(s->comp); ws_surface_free(inv); ws_surface_free(rnd); ws_surface_free(brt); ws_surface_free(grown); }
+			if (inv || rnd || brt || grown || gcl) { if (s->comp->flush) s->comp->flush(s->comp); ws_surface_free(inv); ws_surface_free(rnd); ws_surface_free(brt); ws_surface_free(grown); ws_surface_free(gcl); }
 		}
 		/* the shadow layer is rendered above its window (it is cut out of the window shape; the inner rim lies inside it) */
 		if (v[i]->shadow_on && !v[i]->mesh) draw_shadow(s, v[i], screen, v[i]->id == act || v[i]->appearance);     /* a warped window (genie) has no shadow: it is not where the frame is */
@@ -1189,6 +1198,7 @@ int ws_window_set_tags(ws_server *s, ws_wid id, uint64_t tags, int clear)
 	return 0;
 }
 
+int ws_set_window_global_clip(ws_server *s, ws_wid id, const ws_rect *r, int n) { window *w = get(s, id); if (!w) return -1; free(w->gclip); w->gclip = NULL; w->ngclip = 0; if (n > 0 && (w->gclip = malloc((size_t)n * sizeof *w->gclip))) { memcpy(w->gclip, r, (size_t)n * sizeof *w->gclip); w->ngclip = n; } bump(s); return 0; }
 int ws_set_window_fade_property(ws_server *s, ws_wid id, uint32_t prop) { window *w = get(s, id); if (!w) return -1; w->fade_prop = prop; return 0; }
 int ws_set_window_corner_radius(ws_server *s, ws_wid id, int radius)
 {

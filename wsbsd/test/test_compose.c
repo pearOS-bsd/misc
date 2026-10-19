@@ -171,6 +171,25 @@ static void test_brightness(void)
 	ws_surface_free(scr); ws_server_free(srv);
 }
 
+/* SetWindowListGlobalClipShape: the window shows only inside the screen rectangles, nothing is clipped when the shape is removed */
+static void test_global_clip(void)
+{
+	ws_server *srv = ws_server_new(100, 100);
+	ws_surface *scr = ws_surface_new(100, 100);
+	ws_wid w = ws_create_window(srv, (ws_rect){ 10, 10, 40, 40 });
+	ws_fill(ws_window_backing(srv, w), (ws_rect){ 0, 0, 40, 40 }, 1, 0, 0, 1);
+	ws_order_window(srv, w, WS_ABOVE, 0);
+	ws_rect cl = { 10, 10, 20, 20 };
+	CHECK(ws_set_window_global_clip(srv, w, &cl, 1) == 0);
+	ws_compose_scene(srv, scr);
+	CHECK(*(uint32_t *)(scr->px + 20 * scr->stride + 20 * 4) == 0xffff0000u);
+	CHECK(*(uint32_t *)(scr->px + 40 * scr->stride + 40 * 4) != 0xffff0000u);
+	CHECK(ws_set_window_global_clip(srv, w, NULL, 0) == 0);
+	ws_compose_scene(srv, scr);
+	CHECK(*(uint32_t *)(scr->px + 40 * scr->stride + 40 * 4) == 0xffff0000u);
+	ws_surface_free(scr); ws_server_free(srv);
+}
+
 /* SetWindowCaptureExcludeShape: the excluded rectangle of a window is cleared in a capture, the rest is kept */
 static void test_capture_exclude(void)
 {
@@ -449,7 +468,7 @@ int main(void)
 	test_transform();
 	test_invert();
 	test_brightness();
-	test_capture_exclude();
+	test_capture_exclude(); test_global_clip();
 	test_warp();
 	test_zoom();
 	test_corners();
