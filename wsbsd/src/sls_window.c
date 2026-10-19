@@ -875,6 +875,28 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		}
 		return reply_simple(c->fd, h, 0);
 	}
+	case SLS_MSG_SetWindowListGlobalClipShape:
+	case SLS_MSG_RemoveWindowListGlobalClipShape: {                                /* Set: 1 OOL (the region), OOL size@0x28 repeated@0x34, count@0x38 (<= 0x400), ids inline from 0x3c, size 0x3c + 4 * count (decompiled __XSetWindowListGlobalClipShape; -304 / -300; the reply code is the routine's result, 0).
+		 * Remove (decompiled __XRemoveWindowListGlobalClipShape): not complex, count@0x20 (<= 0x400), ids inline from 0x24, size 0x24 + 4 * count; 1000 when a window is unknown or not ours */
+		int rem = h->msgh_id == SLS_MSG_RemoveWindowListGlobalClipShape;
+		if (rem) {
+			if (len < 0x24) return reply_simple(c->fd, h, -304);
+			uint32_t n = rd32(buf, 0x20); if (n > 0x400 || h->msgh_size != n * 4 + 0x24 || len < h->msgh_size) return reply_simple(c->fd, h, -304);
+			if (h->msgh_bits & MACH_MSGH_BITS_COMPLEX) return reply_simple(c->fd, h, -304);
+			for (uint32_t i = 0; i < n; i++) { uint32_t wid = rd32(buf, 0x24 + 4 * i); if (!wid || !ws_window_exists(srv, wid) || !holds_rights(c, wid)) return reply_simple(c->fd, h, 1000); }      /* every window must exist and be ours before anything changes */
+			for (uint32_t i = 0; i < n; i++) ws_set_window_global_clip(srv, rd32(buf, 0x24 + 4 * i), NULL, 0);
+			return reply_simple(c->fd, h, 0);
+		}
+		if (!(h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len < 0x3c || rd32(buf, 0x18) != 1) return reply_simple(c->fd, h, -304);
+		if (buf[0x27] != 1) return reply_simple(c->fd, h, -300);
+		uint32_t osz = rd32(buf, 0x28), n = rd32(buf, 0x38);
+		if (n > 0x400 || h->msgh_size != n * 4 + 0x3c || len < (size_t)h->msgh_size + osz) return reply_simple(c->fd, h, -304);
+		if (osz != rd32(buf, 0x34)) return reply_simple(c->fd, h, -300);
+		ws_rect *rc = NULL; int nr = 0; ws_rect bb;
+		if (osz && ws_region_parse(buf + h->msgh_size, osz, &rc, &nr, &bb)) { nr = 0; rc = NULL; }
+		for (uint32_t i = 0; i < n; i++) { uint32_t wid = rd32(buf, 0x3c + 4 * i); if (ws_window_exists(srv, wid) && holds_rights(c, wid)) ws_set_window_global_clip(srv, wid, rc, nr); }
+		free(rc); return reply_simple(c->fd, h, 0);
+	}
 	case SLS_MSG_AddTrackingAreas: {                                               /* 5 OOL, size 0x8c, wid@0x74; the descriptor sizes must agree with the counts@0x78..0x88. Inferred layout (not decompiled below the wire checks): region bytes of all areas, the byte length of each area's region (u32), the area ids (u64), flags, user data (u64) */
 		size_t off[5]; uint32_t sz[5]; int e = ool_multi(h, buf, len, 0x8c, 5, off, sz);
 		if (e) return reply_simple(c->fd, h, e);

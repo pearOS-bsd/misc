@@ -87,6 +87,15 @@ int main(void)
 		w32(m, 0x34, 2); CHECK(rc(fd, m, 0x44) == -304); w32(m, 0x34, 1);
 		m[0x27] = 2; CHECK(rc(fd, m, 0x44) == -300);
 	}
+	{ /* SetWindowListGlobalClipShape / RemoveWindowListGlobalClipShape (decompiled): Set is size 0x3c + 4 * count with one OOL region; Remove is size 0x24 + 4 * count and answers 1000 for a window that is not there */
+		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 5, 5, 30, 30 }, 0, &tw) == 0);
+		uint8_t m[0x60]; uint32_t one = 1;
+		memset(m, 0, sizeof m); hdr(m, 0x24 + 4, 30231, 0); w32(m, 0x20, 1); w32(m, 0x24, tw.id); CHECK(rc(fd, m, 0x28) == 0);
+		w32(m, 0x24, 0x7ffff); CHECK(rc(fd, m, 0x28) == 1000);
+		w32(m, 4, 0x30); CHECK(rc(fd, m, 0x28) == -304);
+		memset(m, 0, sizeof m); hdr(m, 0x40, 30228, 1); memcpy(m + 0x18, &one, 4); m[0x27] = 1; w32(m, 0x28, 0); w32(m, 0x34, 0); w32(m, 0x38, 1); w32(m, 0x3c, tw.id); CHECK(rc(fd, m, 0x40) == 0);
+		w32(m, 0x34, 4); CHECK(rc(fd, m, 0x40) == -300);
+	}
 	{ /* window routines: GetScreenRectForWindow, InvalidateWindowShadow, SynchronizeWindowBackingStore, RemoveAllSurfaces, PostEventRecordTo */
 		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 11, 22, 33, 44 }, 0, &tw) == 0 && ws_win_order(c, &tw, 1, 0) == 0);
 		uint8_t m[0x400], rep[0x100]; int got;
