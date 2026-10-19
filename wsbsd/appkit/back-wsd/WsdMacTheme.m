@@ -832,6 +832,9 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 @end
 
 #define TB 32.0
+CGFloat WsdTabBarHeight(NSWindow *w);                                                   /* WsdTabbing.m */
+void WsdDrawTabBar(NSWindow *w, NSRect bar, BOOL dark, BOOL key);
+BOOL WsdTabBarMouseDown(NSWindow *w, NSRect bar, NSPoint p, NSEvent *e);
 
 @interface GSStandardWindowDecorationView (WsdPrivate)
 - (NSPoint) mouseLocationOnScreenOutsideOfEventStream;
@@ -913,6 +916,16 @@ static NSFont *titleFont(void)
 	closeButtonRect = miniaturizeButtonRect = NSZeroRect;
 }
 
+/* the content view gives room to the tab bar (the window's frame does not change: the content gets shorter, as on macOS) */
+- (void) wsdApplyTabInset
+{
+	NSView *cv = [window contentView]; if (!cv) return;
+	NSRect b = [self bounds]; CGFloat th = WsdTabBarHeight(window), top = hasTitleBar ? TB : 0;
+	NSRect f = NSMakeRect(0, 0, b.size.width, b.size.height - top - th);
+	if (!NSEqualRects(f, [cv frame])) [cv setFrame: f];
+}
+- (void) resizeSubviewsWithOldSize: (NSSize)old { [super resizeSubviewsWithOldSize: old]; if (WsdTabBarHeight(window) > 0) [self wsdApplyTabInset]; }
+
 - (NSRect) circleRect: (int)i
 {
 	NSRect b = [self bounds];
@@ -968,6 +981,7 @@ static NSGradient *grad(int r0, int g0, int b0, int r1, int g1, int b1, int r2, 
 			CGFloat x = 82.0;
 			[[window title] drawInRect: NSMakeRect(x, b.size.height - TB + 8.0, b.size.width - x - 16.0, 16.0) withAttributes: at];
 		}
+		{ CGFloat th = WsdTabBarHeight(window); if (th > 0) { NSRect bar = NSMakeRect(0, b.size.height - TB - th, b.size.width, th); [bg set]; NSRectFill(bar); WsdDrawTabBar(window, bar, dark, key); } }       /* the tab bar of a tabbed window */
 		if (isTitled) {                                                                  /* a button the window lacks is drawn disabled (grey), as on macOS */
 			[self drawCircle: 0 key: key && hasCloseButton dark: dark];
 			[self drawCircle: 1 key: key && hasMiniaturizeButton dark: dark];
@@ -1062,6 +1076,7 @@ static NSGradient *grad(int r0, int g0, int b0, int r1, int g1, int b1, int r2, 
 			return;
 		}
 	}
+	{ CGFloat th = WsdTabBarHeight(window); if (th > 0 && WsdTabBarMouseDown(window, NSMakeRect(0, [self bounds].size.height - TB - th, [self bounds].size.width, th), p, event)) return; }
 	if (hasResizeBar) { int m = [self edgesAtPoint: p]; if (m) { [self resizeWindowWithEdges: m event: event]; return; } }
 	[super mouseDown: event];
 }
