@@ -378,6 +378,47 @@ int sls_space_dispatch(conn *c, const uint8_t *buf, size_t len)
 		}
 		return reply_simple(c->fd, h, 0);
 	}
+	case 30321: {                                                                  /* __XWillSwitchSpaces: complex, one OOL of space ids (u64), size 0x38: size@0x28, count@0x34 = size / 8; only announces the switch (nothing is kept); 0 */
+		if (!(h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || h->msgh_size != 0x38 || len < 0x38 || rd32(buf, 0x18) != 1) return reply_simple(c->fd, h, -304);
+		if (buf[0x27] != 1 || rd32(buf, 0x34) != rd32(buf, 0x28) / 8) return reply_simple(c->fd, h, -300);
+		return reply_simple(c->fd, h, 0);
+	}
+	case 30350:                                                                    /* __XSpaceResetMenuBar: space id u64@0x20, size 0x28; the menu bar of a space is always in its default place here; 0 */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		return reply_simple(c->fd, h, 0);
+	case 30357: {                                                                  /* __XMoveManagedSpaceToDisplayIndex: space id u64@0x20, display identifier length@0x2c (<= 0x80) and bytes from 0x30, index after them; size pad4(n) + 0x34; 1000 for an unknown space or a display other than the one */
+		uint32_t n = h->msgh_size >= 0x34 ? rd32(buf, 0x2c) : 0xffffffffu;
+		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || n > 0x80 || h->msgh_size != ((n + 3) & ~3u) + 0x34 || len < h->msgh_size) return reply_simple(c->fd, h, -304);
+		uint64_t sid; memcpy(&sid, buf + 0x20, 8);
+		if (sp_find(sid) < 0 || n == 0) return reply_simple(c->fd, h, 1000);
+		return reply_simple(c->fd, h, 0);
+	}
+	case 30374: {                                                                  /* __XMoveWindowsToManagedSpace: complex, one OOL of window ids, size 0x40: size@0x28, count@0x34 = size / 4, space id u64@0x38; the windows leave their spaces and join that one; 0 */
+		sp_init();
+		if (!(h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || h->msgh_size != 0x40 || len < 0x40 || rd32(buf, 0x18) != 1) return reply_simple(c->fd, h, -304);
+		uint32_t sz = rd32(buf, 0x28);
+		if (buf[0x27] != 1 || rd32(buf, 0x34) != sz / 4) return reply_simple(c->fd, h, -300);
+		if (len < 0x40 + (size_t)sz) return reply_simple(c->fd, h, -304);
+		uint64_t sid; memcpy(&sid, buf + 0x38, 8);
+		if (sp_find(sid) >= 0) for (uint32_t a = 0; a < sz / 4; a++) {
+			uint32_t wid = rd32(buf + 0x40, 4 * a); if (!ws_window_exists(srv, wid)) continue;
+			for (int k = 0; k < MAXMEM; k++) if (mem[k].used && mem[k].wid == wid) mem[k].used = 0;
+			for (int k = 0; k < MAXMEM; k++) if (!mem[k].used) { mem[k].used = 1; mem[k].wid = wid; mem[k].sid = sid; break; }
+		}
+		return reply_simple(c->fd, h, 0);
+	}
+	case 30432: {                                                                  /* __XSpaceAddWindowsAndRemoveFromSpaces: space id u64@0x20, count@0x28 (<= 0x400), window ids from 0x2c, a u32 option after them; size 4 * count + 0x30; the windows join the space and leave the others; 0 */
+		sp_init();
+		uint32_t n = h->msgh_size >= 0x30 ? rd32(buf, 0x28) : 0xffffffffu;
+		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || n > 0x400 || h->msgh_size != n * 4 + 0x30 || len < h->msgh_size) return reply_simple(c->fd, h, -304);
+		uint64_t sid; memcpy(&sid, buf + 0x20, 8);
+		if (sp_find(sid) >= 0) for (uint32_t a = 0; a < n; a++) {
+			uint32_t wid = rd32(buf, 0x2c + 4 * a); if (!ws_window_exists(srv, wid)) continue;
+			for (int k = 0; k < MAXMEM; k++) if (mem[k].used && mem[k].wid == wid) mem[k].used = 0;
+			for (int k = 0; k < MAXMEM; k++) if (!mem[k].used) { mem[k].used = 1; mem[k].wid = wid; mem[k].sid = sid; break; }
+		}
+		return reply_simple(c->fd, h, 0);
+	}
 	case SLS_MSG_ProcessAssignToSpace:                                             /* pid@0x20, space id u64@0x24, size 0x2c: kept nowhere (windows carry their own space) */
 		if (!simple_ok(h, len, 0x2c)) return reply_simple(c->fd, h, -304);
 		return reply_simple(c->fd, h, 0);

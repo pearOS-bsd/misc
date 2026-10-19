@@ -53,16 +53,13 @@ static const gen_entry gen_table[] = {
 	{ 30316, 40, 1, 1, 36 },   /* __XDisplayStreamDestroy */
 	{ 30317, 40, 1, 1, 36 },   /* __XSetUpdateInfoHandler */
 	{ 30318, 56, 1, 1, 36 },   /* __XResetWindows */
-	{ 30321, 56, 1, 1, 36 },   /* __XWillSwitchSpaces */
 	{ 30332, 64, 1, 1, 36 },   /* __XSpaceRemoveValuesForKeys */
 	{ 30340, 64, 1, 1, 36 },   /* __XSpaceSetOwners */
 	{ 30342, 44, 0, 0, 36 },   /* __XSpaceRemoveOwner */
 	{ 30344, 64, 1, 1, 36 },   /* __XSpaceSetShape */
-	{ 30350, 40, 0, 0, 36 },   /* __XSpaceResetMenuBar */
 	{ 30364, 56, 1, 1, 36 },   /* __XRestorePackagesManagementPersistenceData */
 	{ 30365, 56, 1, 1, 56 },   /* __XCopyApplicationPersistencePropertyListsForWindowList */
 	{ 30368, 40, 0, 0, 68 },   /* __XGetRevealedMenuBarBounds */
-	{ 30374, 64, 1, 1, 36 },   /* __XMoveWindowsToManagedSpace */
 	{ 30376, 64, 1, 1, 56 },   /* __XManagedDisplaysCopyRoleWindows */
 	{ 30386, 64, 0, 0, 36 },   /* __XWindowFreezeWithOptions */
 	{ 30387, 36, 0, 0, 36 },   /* __XWindowThaw */
@@ -157,13 +154,11 @@ static const gen_var_entry gen_var_table[] = {
 	{ 30293, 0, 40, 15 },   /* __XRegisterCursorImages */
 	{ 30294, 0, 1108, 13 },   /* __XGetRegisteredCursorImages */
 	{ 30298, 0, 36, 5 },   /* __XSetSurfaceListAlpha */
-	{ 30357, 0, 36, 5 },   /* __XMoveManagedSpaceToDisplayIndex */
 	{ 30367, 0, 36, 4 },   /* __XSetActiveMenuBarDisplayIdentifier */
 	{ 30377, 0, 36, 5 },   /* __XManagedDisplaySetRoleWindow */
 	{ 30385, 1, 36, 5 },   /* __XSetWindowListFadeProperties */
 	{ 30390, 0, 36, 4 },   /* __XSetIOHIDEventSystemClientProperty */
 	{ 30426, 0, 36, 7 },   /* __XOrderWindowListWithGroups */
-	{ 30432, 0, 36, 6 },   /* __XSpaceAddWindowsAndRemoveFromSpaces */
 	{ 30439, 0, 40, 3 },   /* __XGetMenuBarUsesRTLLayoutOnDisplayLegacy */
 	{ 30453, 0, 36, 3 },   /* __XSetAccessibilityAdjustments */
 	{ 30463, 0, 40, 5 },   /* __XHMDAcquire */

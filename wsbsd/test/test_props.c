@@ -1134,6 +1134,18 @@ int main(void)
 		w32(m, 0x4c, tw.id); { float f = 0.5f; memcpy(m + 0x50, &f, 4); } CHECK(rc(fd, m, 0x4c + 8) == 0);
 		w32(m, 0x48, 2); CHECK(rc(fd, m, 0x4c + 8) == -300);
 	}
+	{ /* spaces: WillSwitchSpaces, ResetMenuBar, MoveManagedSpaceToDisplayIndex, MoveWindowsToManagedSpace, AddWindowsAndRemoveFromSpaces (decompiled) */
+		uint8_t m[0x80]; uint32_t one = 1; memset(m, 0, sizeof m); hdr(m, 0x38, 30321, 1); memcpy(m + 0x18, &one, 4); m[0x27] = 1; w32(m, 0x28, 8); w32(m, 0x34, 1); CHECK(rc(fd, m, 0x38 + 8) == 0);
+		w32(m, 0x34, 2); CHECK(rc(fd, m, 0x38 + 8) == -300);
+		memset(m, 0, sizeof m); hdr(m, 0x28, 30350, 0); w32(m, 0x20, 1); CHECK(rc(fd, m, 0x28) == 0);
+		memset(m, 0, sizeof m); hdr(m, 0x34 + 4, 30357, 0); w32(m, 0x20, 1); w32(m, 0x2c, 4); memcpy(m + 0x30, "disp", 4); CHECK(rc(fd, m, 0x38) == 0);
+		w32(m, 0x20, 77); CHECK(rc(fd, m, 0x38) == 1000);
+		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 5, 5, 30, 30 }, 0, &tw) == 0);
+		memset(m, 0, sizeof m); hdr(m, 0x40, 30374, 1); memcpy(m + 0x18, &one, 4); m[0x27] = 1; w32(m, 0x28, 4); w32(m, 0x34, 1); w32(m, 0x38, 1); w32(m, 0x40, tw.id); CHECK(rc(fd, m, 0x44) == 0);
+		w32(m, 0x34, 3); CHECK(rc(fd, m, 0x44) == -300);
+		memset(m, 0, sizeof m); hdr(m, 0x34, 30432, 0); w32(m, 0x20, 1); w32(m, 0x28, 1); w32(m, 0x2c, tw.id); CHECK(rc(fd, m, 0x34) == 0);
+		w32(m, 0x28, 2); CHECK(rc(fd, m, 0x34) == -304);
+	}
 	ws_server_quit(c);
 	printf(failures ? "%d failures\n" : "window extension routines: all checks passed\n", failures);
 	return failures != 0;
