@@ -297,6 +297,13 @@ static int wsdShapeForStyle(int style)
 	if (w) ws_win_blur(conn, &w->win, radius);
 }
 
+/* one glass shape of a window (NSGlassEffectView): rect in window coordinates with the origin at the top left, style 1 regular / 2 clear, 0 removes the slot */
+- (void) wsdGlassSlot: (int)slot : (int)win : (NSRect)r : (int)radius : (int)mode
+{
+	struct wsd_window *w = [self wsdWindow: win];
+	if (w) ws_win_glass_slot(conn, &w->win, slot, (ws_rect){ (int)r.origin.x, (int)r.origin.y, (int)r.size.width, (int)r.size.height }, radius, mode);
+}
+
 /* the context-menu material (glass mode 5) over a whole menu window */
 - (void) wsdMenuGlass: (int)win : (int)width : (int)height
 {
