@@ -1121,6 +1121,19 @@ int main(void)
 		hdr(m, 0x28, 30508, 0); w32(m, 0x24, 3); CHECK(rc(fd, m, 0x28) == 1000); w32(m, 0x24, 0); CHECK(rc(fd, m, 0x28) == 0);
 		hdr(m, 0x24, 30509, 0); w32(m, 0x20, 9); CHECK(rc(fd, m, 0x24) == 1006); hdr(m, 0x28, 30509, 0); CHECK(rc(fd, m, 0x28) == -304);
 	}
+	{ /* SetWindowWarp / SetWindowTransformList / SetWindowListBrightness (decompiled): kept by the compositor stages */
+		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 5, 5, 30, 30 }, 0, &tw) == 0);
+		uint8_t m[0x200]; uint32_t one = 1, two = 2; memset(m, 0, sizeof m); hdr(m, 0x44, 30031, 1); memcpy(m + 0x18, &one, 4); m[0x27] = 1; w32(m, 0x28, 64); w32(m, 0x34, tw.id); w32(m, 0x38, 2); w32(m, 0x3c, 2); w32(m, 0x40, 16);
+		{ float mesh[16] = { 0, 0, 0, 0, 30, 0, 1, 0, 0, 30, 0, 1, 30, 30, 1, 1 }; memcpy(m + 0x44, mesh, 64); }
+		CHECK(rc(fd, m, 0x44 + 64) == 0);
+		w32(m, 0x3c, 3); CHECK(rc(fd, m, 0x44 + 64) == 1000); w32(m, 0x3c, 2); w32(m, 0x40, 15); CHECK(rc(fd, m, 0x44 + 64) == -300); w32(m, 0x40, 16);
+		memset(m, 0, sizeof m); hdr(m, 0x54, 30032, 1); memcpy(m + 0x18, &two, 4); m[0x27] = 1; m[0x37] = 1; w32(m, 0x28, 4); w32(m, 0x38, 24); w32(m, 0x4c, 1); w32(m, 0x50, 1);
+		w32(m, 0x54, tw.id); { float x[6] = { 1, 0, 0, 1, 5, 5 }; memcpy(m + 0x58, x, 24); } CHECK(rc(fd, m, 0x54 + 28) == 0);
+		w32(m, 0x50, 2); CHECK(rc(fd, m, 0x54 + 28) == -300);
+		memset(m, 0, sizeof m); hdr(m, 0x4c, 30035, 1); memcpy(m + 0x18, &two, 4); m[0x27] = 1; m[0x37] = 1; w32(m, 0x28, 4); w32(m, 0x38, 4); w32(m, 0x44, 1); w32(m, 0x48, 1);
+		w32(m, 0x4c, tw.id); { float f = 0.5f; memcpy(m + 0x50, &f, 4); } CHECK(rc(fd, m, 0x4c + 8) == 0);
+		w32(m, 0x48, 2); CHECK(rc(fd, m, 0x4c + 8) == -300);
+	}
 	ws_server_quit(c);
 	printf(failures ? "%d failures\n" : "window extension routines: all checks passed\n", failures);
 	return failures != 0;

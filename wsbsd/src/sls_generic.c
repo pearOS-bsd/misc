@@ -18,9 +18,6 @@ static const gen_entry gen_table[] = {
 	{ 29037, 40, 1, 1, 36 },   /* __XEstablishBootstrapXPCServiceConnection */
 	{ 29038, 56, 1, 1, 40 },   /* __XVerifyEventAuthenticationMessageSignature */
 	{ 29040, 36, 0, 0, 56 },   /* __XDisplayCopyActivePreset */
-	{ 30031, 68, 1, 1, 36 },   /* __XSetWindowWarp */
-	{ 30032, 84, 0, 0, 36 },   /* __XSetWindowTransformList */
-	{ 30035, 76, 0, 0, 36 },   /* __XSetWindowListBrightness */
 	{ 30036, 24, 0, 0, 36 },   /* __XDisableUpdateForConnection */
 	{ 30038, 40, 1, 1, 36 },   /* __XReenableUpdateForConnectionSync */
 	{ 30043, 24, 0, 0, 52 },   /* __XGetPerformanceData */

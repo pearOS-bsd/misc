@@ -54,6 +54,36 @@ int sls_sessctl_dispatch(conn *c, const uint8_t *buf, size_t len)
 		uint8_t r[0x2c]; memset(r, 0, sizeof r); fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0); memcpy(r + 0x18, &WS_NDR, 8);
 		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
 	}
+	case 30031: {                                                                  /* __XSetWindowWarp: complex, one OOL of floats (x y u v per mesh point), size 0x44: OOL size@0x28, window@0x34, columns@0x38, rows@0x3c, float count@0x40 (= size / 4 = columns * rows * 4, both <= 0x800, else 1000; a float of 2.1e9 or more gives 1000); the mesh follows the header; reply 0 */
+		if (!(h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || h->msgh_size != 0x44 || len < 0x44 || rd32(buf, 0x18) != 1) return reply_simple(c->fd, h, -304);
+		uint32_t osz = rd32(buf, 0x28), cols = rd32(buf, 0x38), rows = rd32(buf, 0x3c);
+		if (buf[0x27] != 1 || (osz >> 2) != rd32(buf, 0x40)) return reply_simple(c->fd, h, -300);
+		if (len < 0x44 + (size_t)osz) return reply_simple(c->fd, h, -304);
+		if (cols > 0x800 || rows > 0x800 || (osz >> 2) != cols * rows * 4) return reply_simple(c->fd, h, 1000);
+		const float *mesh = (const float *)(const void *)(buf + 0x44); uint32_t nf = osz >> 2;
+		for (uint32_t i = 0; i < nf; i++) { float v; memcpy(&v, buf + 0x44 + 4 * (size_t)i, 4); if (v >= 2.1474836e9f || v <= -2.1474836e9f || v != v) return reply_simple(c->fd, h, 1000); }
+		(void)mesh;
+		uint32_t wid = rd32(buf, 0x34);
+		if (nf >= 16 && ws_window_exists(srv, wid)) { float *m = malloc(osz); if (m) { memcpy(m, buf + 0x44, osz); ws_set_window_warp(srv, wid, (int)cols, (int)rows, m); free(m); } }
+		else if (ws_window_exists(srv, wid)) ws_set_window_warp(srv, wid, 0, 0, NULL);
+		return reply_simple(c->fd, h, 0);
+	}
+	case 30032: {                                                                  /* __XSetWindowTransformList: complex, two OOLs, size 0x54: window ids (size@0x28, count@0x4c = size / 4) and transforms (size@0x38, count@0x50 = size / 0x18: a b c d tx ty floats each); both follow the header; -300 for a mismatch */
+		if (!(h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || h->msgh_size != 0x54 || len < 0x54 || rd32(buf, 0x18) != 2) return reply_simple(c->fd, h, -304);
+		uint32_t a = rd32(buf, 0x28), b = rd32(buf, 0x38);
+		if (buf[0x27] != 1 || buf[0x37] != 1 || (a >> 2) != rd32(buf, 0x4c) || b / 0x18 != rd32(buf, 0x50) ) return reply_simple(c->fd, h, -300);
+		if (len < 0x54 + (size_t)a + b) return reply_simple(c->fd, h, -304);
+		for (uint32_t i = 0; i < a / 4 && i < b / 0x18; i++) { float m[6]; memcpy(m, buf + 0x54 + a + 0x18 * (size_t)i, 24); ws_set_window_transform(srv, rd32(buf + 0x54, 4 * i), m); }
+		return reply_simple(c->fd, h, 0);
+	}
+	case 30035: {                                                                  /* __XSetWindowListBrightness: complex, two OOLs, size 0x4c: window ids (size@0x28, count@0x44) and brightness floats (size@0x38, count@0x48), both after the header; a window takes the brightness of its place in the list; reply 0, -300 for a mismatch */
+		if (!(h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || h->msgh_size != 0x4c || len < 0x4c || rd32(buf, 0x18) != 2) return reply_simple(c->fd, h, -304);
+		uint32_t a = rd32(buf, 0x28), b = rd32(buf, 0x38);
+		if (buf[0x27] != 1 || buf[0x37] != 1 || (a >> 2) != rd32(buf, 0x44) || (b >> 2) != rd32(buf, 0x48) ) return reply_simple(c->fd, h, -300);
+		if (len < 0x4c + (size_t)a + b) return reply_simple(c->fd, h, -304);
+		for (uint32_t i = 0; i < a / 4 && i < b / 4; i++) { float f; memcpy(&f, buf + 0x4c + a + 4 * (size_t)i, 4); ws_set_window_brightness(srv, rd32(buf + 0x4c, 4 * i), f); }
+		return reply_simple(c->fd, h, 0);
+	}
 	case 29034: case 30509: case 30510: case 30512: case 30513: case 30535: case 30508: {   /* display presets of the one display (id 1): __XDisplayGetActivePresetIndex, GetFactoryDefaultPresetIndex, GetPresetCount (request 0x24: display@0x20), IsPresetValid / IsPresetWritable (0x28: display@0x20, index@0x24), GetPreferHDR10 (0x24); reply 0x28 with the value@0x24; SetActivePresetIndex (0x28) answers a code. One factory preset, index 0, valid, not writable, active; HDR10 not preferred; 1006 for another display, 1000 for an index there is not */
 		int two = h->msgh_id == 30512 || h->msgh_id == 30513 || h->msgh_id == 30508;
 		if (!simple_ok(h, len, two ? 0x28 : 0x24)) return reply_simple(c->fd, h, -304);
