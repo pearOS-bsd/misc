@@ -1,4 +1,5 @@
 #include "ws.h"
+#include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -53,6 +54,7 @@ typedef struct {
 } window;
 
 struct ws_server {
+	struct { double t0, secs, sb, eb; float r, g, b; int on; } fade;   /* DisplayFade: the screen is blended toward a colour (blend from sb to eb over secs seconds, then held) */
 	int w, h;
 	window *win;
 	size_t n, cap;
@@ -1018,6 +1020,15 @@ void ws_compose_scene(ws_server *s, ws_surface *screen)
 	if (s->comp->flush) s->comp->flush(s->comp);
 	free(v);
 	apply_zoom(screen);
+	if (s->fade.on) {                                                      /* DisplayFade: every pixel moves toward the fade colour by the current blend */
+		struct timespec ts; clock_gettime(CLOCK_MONOTONIC, &ts); double now = ts.tv_sec + ts.tv_nsec * 1e-9, e = s->fade.secs > 0 ? (now - s->fade.t0) / s->fade.secs : 1;
+		if (e > 1) e = 1; double bl = s->fade.sb + (s->fade.eb - s->fade.sb) * e; if (bl < 0) bl = 0; if (bl > 1) bl = 1;
+		if (bl > 0) {
+			int k = (int)(bl * 256 + 0.5), fr = (int)(s->fade.r * 255 + 0.5), fg = (int)(s->fade.g * 255 + 0.5), fb = (int)(s->fade.b * 255 + 0.5);
+			for (int y = 0; y < screen->h; y++) { uint8_t *p = screen->px + (size_t)y * screen->stride; for (int x = 0; x < screen->w; x++, p += 4) { p[0] += (uint8_t)(((fb - p[0]) * k) >> 8); p[1] += (uint8_t)(((fg - p[1]) * k) >> 8); p[2] += (uint8_t)(((fr - p[2]) * k) >> 8); } }
+		}
+		if (e >= 1 && bl <= 0) s->fade.on = 0;
+	}
 }
 
 /* screen zoom (SetZoomParameters): the frame is magnified about the zoom centre, nearest sample; scale 1 is off */
@@ -1199,6 +1210,7 @@ int ws_window_set_tags(ws_server *s, ws_wid id, uint64_t tags, int clear)
 }
 
 int ws_set_window_global_clip(ws_server *s, ws_wid id, const ws_rect *r, int n) { window *w = get(s, id); if (!w) return -1; free(w->gclip); w->gclip = NULL; w->ngclip = 0; if (n > 0 && (w->gclip = malloc((size_t)n * sizeof *w->gclip))) { memcpy(w->gclip, r, (size_t)n * sizeof *w->gclip); w->ngclip = n; } bump(s); return 0; }
+void ws_display_fade(ws_server *s, double secs, double start, double end, float r, float g, float b) { struct timespec ts; clock_gettime(CLOCK_MONOTONIC, &ts); s->fade.t0 = ts.tv_sec + ts.tv_nsec * 1e-9; s->fade.secs = secs; s->fade.sb = start; s->fade.eb = end; s->fade.r = r; s->fade.g = g; s->fade.b = b; s->fade.on = 1; bump(s); }
 int ws_set_window_fade_property(ws_server *s, ws_wid id, uint32_t prop) { window *w = get(s, id); if (!w) return -1; w->fade_prop = prop; return 0; }
 int ws_set_window_corner_radius(ws_server *s, ws_wid id, int radius)
 {

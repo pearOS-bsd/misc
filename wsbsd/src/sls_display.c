@@ -42,6 +42,24 @@ size_t sls_display_state(uint8_t *out, size_t cap, int W, int H)
 int sls_display_dispatch(conn *c, const uint8_t *buf, size_t len)
 {
 	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
+	static uint32_t fade_token, fade_held;                                  /* DisplayFade reservations: a token per Acquire, one holder at a time */
+	if (h->msgh_id == SLS_MSG_AcquireDisplayFadeReservation) {                /* decompiled __XAcquireDisplayFadeReservation: size 0x24 (display id@0x20); the reply grows to 0x28 with the token@0x24 */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		uint32_t did; memcpy(&did, buf + 0x20, 4); if (did != 1) return reply_simple(c->fd, h, 1006);      /* the real server answers 1006 for an unknown display (golden: zero arguments); the one display here is 1 */
+		uint8_t r[0x28]; memset(r, 0, sizeof r); fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0);
+		memcpy(r + 0x18, &WS_NDR, 8); fade_token = fade_token + 1 ? fade_token + 1 : 1; fade_held = fade_token; memcpy(r + 0x24, &fade_token, 4);
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
+	if (h->msgh_id == SLS_MSG_ReleaseDisplayFadeReservation) {                /* decompiled __XReleaseDisplayFadeReservation: size 0x24, token@0x20; the fade ends (the screen returns) */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		uint32_t tk; memcpy(&tk, buf + 0x20, 4); if (tk == fade_held) { fade_held = 0; ws_display_fade(srv, 0, 0, 0, 0, 0, 0); }
+		return reply_simple(c->fd, h, 0);
+	}
+	if (h->msgh_id == SLS_MSG_DisplayFade) {                                  /* decompiled __XDisplayFade: size 0x40, six 32-bit values from 0x24: seconds, start and end blend, red, green, blue (floats) */
+		if (!simple_ok(h, len, 0x40)) return reply_simple(c->fd, h, -304);
+		float v[6]; memcpy(v, buf + 0x24, sizeof v); ws_display_fade(srv, v[0], v[1], v[2], v[3], v[4], v[5]);
+		return reply_simple(c->fd, h, 0);
+	}
 	static float brightness = 1.0f;                    /* the one display's brightness, kept (the hardware backlight is the backend's business) */
 	if (h->msgh_id == SLS_MSG_SetDisplayBrightness || h->msgh_id == SLS_MSG_GetDisplayBrightness) {   /* size 0x28: brightness float@0x20 (set), display id@0x24; Get replies 0x28 with the float@0x24; always 0 (decompiled __XSet/GetDisplayBrightness) */
 		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
