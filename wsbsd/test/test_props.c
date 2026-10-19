@@ -96,6 +96,15 @@ int main(void)
 		memset(m, 0, sizeof m); hdr(m, 0x40, 30228, 1); memcpy(m + 0x18, &one, 4); m[0x27] = 1; w32(m, 0x28, 0); w32(m, 0x34, 0); w32(m, 0x38, 1); w32(m, 0x3c, tw.id); CHECK(rc(fd, m, 0x40) == 0);
 		w32(m, 0x34, 4); CHECK(rc(fd, m, 0x40) == -300);
 	}
+	{ /* display fade (decompiled): Acquire (size 0x24) answers 0x28 with a token, Release (0x24) and DisplayFade (0x40) answer a code; -304 for a wrong size */
+		uint8_t m[0x40], rep[0x100]; memset(m, 0, sizeof m); hdr(m, 0x24, 33017, 0); w32(m, 0x20, 1);
+		int got = call(fd, m, 0x24, rep, sizeof rep); CHECK(got == 0x28 && r32(rep, 0x20) == 0 && r32(rep, 0x24) != 0);
+		uint32_t tk = r32(rep, 0x24);
+		memset(m, 0, sizeof m); hdr(m, 0x40, 33019, 0); { float v[6] = { 0.5f, 0, 0, 0, 0, 0 }; memcpy(m + 0x24, v, 24); } CHECK(rc(fd, m, 0x40) == 0);
+		w32(m, 4, 0x38); CHECK(rc(fd, m, 0x38) == -304);
+		memset(m, 0, sizeof m); hdr(m, 0x24, 33018, 0); w32(m, 0x20, tk); CHECK(rc(fd, m, 0x24) == 0);
+		hdr(m, 0x28, 33018, 0); CHECK(rc(fd, m, 0x28) == -304);
+	}
 	{ /* window routines: GetScreenRectForWindow, InvalidateWindowShadow, SynchronizeWindowBackingStore, RemoveAllSurfaces, PostEventRecordTo */
 		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 11, 22, 33, 44 }, 0, &tw) == 0 && ws_win_order(c, &tw, 1, 0) == 0);
 		uint8_t m[0x400], rep[0x100]; int got;

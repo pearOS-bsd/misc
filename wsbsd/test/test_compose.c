@@ -190,6 +190,27 @@ static void test_global_clip(void)
 	ws_surface_free(scr); ws_server_free(srv);
 }
 
+/* DisplayFade: an instant fade to red at full blend turns every pixel red; half blend moves it half way; end blend 0 gives the screen back */
+static void test_display_fade(void)
+{
+	ws_server *srv = ws_server_new(100, 100);
+	ws_surface *scr = ws_surface_new(100, 100);
+	ws_wid w = ws_create_window(srv, (ws_rect){ 10, 10, 40, 40 });
+	ws_fill(ws_window_backing(srv, w), (ws_rect){ 0, 0, 40, 40 }, 0, 0, 1, 1);
+	ws_order_window(srv, w, WS_ABOVE, 0);
+	ws_display_fade(srv, 0, 0, 0.5, 1, 0, 0);
+	ws_compose_scene(srv, scr);
+	uint32_t p = *(uint32_t *)(scr->px + 20 * scr->stride + 20 * 4);
+	CHECK(abs((int)((p >> 16) & 0xff) - 128) <= 2 && abs((int)(p & 0xff) - 127) <= 2);
+	ws_display_fade(srv, 0, 0, 1, 1, 0, 0);
+	ws_compose_scene(srv, scr);
+	CHECK(*(uint32_t *)(scr->px + 20 * scr->stride + 20 * 4) == 0xffff0000u);
+	ws_display_fade(srv, 0, 0, 0, 1, 0, 0);
+	ws_compose_scene(srv, scr);
+	CHECK(*(uint32_t *)(scr->px + 20 * scr->stride + 20 * 4) == 0xff0000ffu);
+	ws_surface_free(scr); ws_server_free(srv);
+}
+
 /* SetWindowCaptureExcludeShape: the excluded rectangle of a window is cleared in a capture, the rest is kept */
 static void test_capture_exclude(void)
 {
@@ -468,7 +489,7 @@ int main(void)
 	test_transform();
 	test_invert();
 	test_brightness();
-	test_capture_exclude(); test_global_clip();
+	test_capture_exclude(); test_global_clip(); test_display_fade();
 	test_warp();
 	test_zoom();
 	test_corners();
