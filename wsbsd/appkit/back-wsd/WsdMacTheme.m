@@ -476,6 +476,7 @@ static void wsdMenuSizeToFit(id self, SEL _cmd)
 	if (!so || !sw || !io || !iw || !ko || !kw || !cs || !lb) return;
 	*so = 12; *sw = 14; *io = 16 + (hasCheck ? 14 : 0); *iw = (float)maxTitle; *kw = (float)(maxKey > 0 ? maxKey : 10); *ko = (float)(W - 16 - *kw);
 	*(int *)((char *)self + ivar_getOffset(lb)) = 0;                                                                        /* no left border: the cells start at the menu's edge */
+	id menu = [(NSMenuView *)self menu]; if ([menu respondsToSelector: @selector(minimumWidth)]) { double mw = ((double (*)(id, SEL))objc_msgSend)(menu, @selector(minimumWidth)); if (mw > W) W = mw; }             /* NSMenu.minimumWidth */
 	NSSize *cell = (NSSize *)((char *)self + ivar_getOffset(cs)); cell->width = W;
 	[(NSView *)self setFrameSize: NSMakeSize(W, [(NSView *)self frame].size.height)];
 }
