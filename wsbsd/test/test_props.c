@@ -1104,6 +1104,16 @@ int main(void)
 		w32(m, 0x40, 7); CHECK(rc(fd, m, 0x44 + 8) == -300);
 		memset(m, 0, sizeof m); hdr(m, 0x2c, 29006, 0); w32(m, 0x20, sid); CHECK(rc(fd, m, 0x2c) == 0);
 	}
+	{ /* secure event input, last deactivated, unresponsive timeout / status, performance counters, zoom point (decompiled) */
+		uint8_t m[0x80], rep[0x300]; memset(m, 0, sizeof m); hdr(m, 0x24, 30087, 0); w32(m, 0x20, 1); CHECK(rc(fd, m, 0x24) == 0); w32(m, 0x20, 0); CHECK(rc(fd, m, 0x24) == 0);
+		hdr(m, 0x28, 30196, 0); CHECK(rc(fd, m, 0x28) == 0); hdr(m, 0x24, 30196, 0); CHECK(rc(fd, m, 0x24) == -304);
+		hdr(m, 0x24, 30206, 0); { float f = 0.25f; memcpy(m + 0x20, &f, 4); } CHECK(rc(fd, m, 0x24) == 0);
+		memset(m, 0, sizeof m); hdr(m, 0x28, 30207, 0); w32(m, 0x20, 0x7777); w32(m, 0x24, 0x8888); CHECK(rc(fd, m, 0x28) == 1001);
+		memset(m, 0, sizeof m); hdr(m, 0x18, 30044, 0); int got = call(fd, m, 0x18, rep, sizeof rep); CHECK(got == 0x34 && r32(rep, 0x20) == 0);
+		hdr(m, 0x18, 30045, 0); got = call(fd, m, 0x18, rep, sizeof rep); CHECK(got == 0x22c && r32(rep, 0x20) == 0);
+		memset(m, 0, sizeof m); hdr(m, 0x2c, 30112, 0); w32(m, 0x24, 10); w32(m, 0x28, 20); got = call(fd, m, 0x2c, rep, sizeof rep); CHECK(got == 0x2c && r32(rep, 0x20) == 0 && r32(rep, 0x24) == 10 && r32(rep, 0x28) == 20);
+		w32(m, 0x24, 5000); CHECK(rc(fd, m, 0x2c) == 1000); w32(m, 0x20, 1); CHECK(rc(fd, m, 0x2c) == 0);
+	}
 	ws_server_quit(c);
 	printf(failures ? "%d failures\n" : "window extension routines: all checks passed\n", failures);
 	return failures != 0;

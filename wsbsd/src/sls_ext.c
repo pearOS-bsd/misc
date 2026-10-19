@@ -40,4 +40,5 @@ int sls_ext_dispatch(conn *c, const uint8_t *buf, size_t len)
 	return sls_generic_reply(c, buf, len);           /* last: wire-correct acceptors generated from the decompiled routines (success, right sizes) */
 }
 
-void sls_ext_owner_cleanup(uint32_t owner) { sls_session_owner_cleanup(owner); sls_window_owner_cleanup(owner); sls_hotkey_owner_cleanup(owner); sls_space_owner_cleanup(owner); sls_tap_owner_cleanup(owner); }
+void sls_sessctl_owner_cleanup(uint32_t owner);
+void sls_ext_owner_cleanup(uint32_t owner) { sls_sessctl_owner_cleanup(owner); sls_session_owner_cleanup(owner); sls_window_owner_cleanup(owner); sls_hotkey_owner_cleanup(owner); sls_space_owner_cleanup(owner); sls_tap_owner_cleanup(owner); }
