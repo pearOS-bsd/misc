@@ -4,7 +4,7 @@
 #import <objc/runtime.h>
 #define GET(k) objc_getAssociatedObject(self, &k)
 #define SET(k, v) objc_setAssociatedObject(self, &k, v, OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-static char kWantsLayer, kLayer, kAreas, kGestures, kInsets, kPrepared, kClips, kConc, kIntoLayer, kLayerCI, kCompact, kTouches, kResting, kCompFilter, kBGFilters, kContentFilters, kHActive, kVActive;
+static char kWantsLayer, kLayer, kAreas, kInsets, kPrepared, kClips, kConc, kIntoLayer, kLayerCI, kCompact, kTouches, kResting, kCompFilter, kBGFilters, kContentFilters, kHActive, kVActive;
 static NSNumber *B(BOOL v) { return [NSNumber numberWithBool: v]; }
 @implementation NSView (WsdAppKit)
 - (NSEdgeInsets)alignmentRectInsets { return NSEdgeInsetsMake(0, 0, 0, 0); }
@@ -56,10 +56,6 @@ static NSNumber *B(BOOL v) { return [NSNumber numberWithBool: v]; }
 - (void)viewDidChangeBackingProperties {}
 - (void)viewDidChangeEffectiveAppearance {}
 - (void)viewDidChangeEffectiveCornerRadii {}
-- (NSArray *)gestureRecognizers { return GET(kGestures) ?: [NSArray array]; }
-- (void)setGestureRecognizers:(NSArray *)g { SET(kGestures, g); }
-- (void)addGestureRecognizer:(id)g { NSMutableArray *m = [NSMutableArray arrayWithArray: [self gestureRecognizers]]; if (![m containsObject: g]) [m addObject: g]; SET(kGestures, m); }
-- (void)removeGestureRecognizer:(id)g { NSMutableArray *m = [NSMutableArray arrayWithArray: [self gestureRecognizers]]; [m removeObject: g]; SET(kGestures, m); }
 - (NSSize)fittingSize { return [self frame].size; }
 - (void)invalidateIntrinsicContentSize {}
 - (CGFloat)lastBaselineOffsetFromBottom { return 0; }

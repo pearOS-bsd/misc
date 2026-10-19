@@ -28,6 +28,8 @@ cc -fobjc-arc -o test_document test/test_document.m $(gnustep-config --objc-flag
 timeout 60 ./test_document 2>&1 | grep -v 'time zone' | tail -5 | tee /tmp/document.log; grep -q 'document ok' /tmp/document.log || { echo 'DOCUMENT TEST FAILED'; exit 1; }
 cc -fobjc-arc -o test_viewcontroller test/test_viewcontroller.m $(gnustep-config --objc-flags) $(gnustep-config --gui-libs) 2>&1 | grep error
 timeout 60 ./test_viewcontroller 2>&1 | grep -v 'time zone' | tail -5 | tee /tmp/viewcontroller.log; grep -q 'viewcontroller ok' /tmp/viewcontroller.log || { echo 'VIEWCONTROLLER TEST FAILED'; exit 1; }
+cc -fobjc-arc -o test_gesture test/test_gesture.m $(gnustep-config --objc-flags) $(gnustep-config --gui-libs) 2>&1 | grep error
+timeout 60 ./test_gesture 2>&1 | grep -v 'time zone' | tail -5 | tee /tmp/gesture.log; grep -q 'gesture ok' /tmp/gesture.log || { echo 'GESTURE TEST FAILED'; exit 1; }
 (WSD_DEBUG=1 timeout 60 lldb -b -o 'run -HelloSeconds 18' -o 'bt' -o 'quit' -- ./hello >/tmp/hello.log 2>&1) &
 HP=$!
 sleep 4
