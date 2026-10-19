@@ -1,6 +1,8 @@
 /* NSMenuItem additions: hidden items take no room and have no key equivalent, views take their row, parentItem, section headers. */
 #import <AppKit/AppKit.h>
 @interface NSMenuItem (D) - (BOOL)isHidden; - (void)setHidden:(BOOL)h; - (BOOL)allowsKeyEquivalentWhenHidden; - (void)setAllowsKeyEquivalentWhenHidden:(BOOL)b; - (NSMenuItem *)parentItem; - (BOOL)isHiddenOrHasHiddenAncestor; - (NSView *)view; - (void)setView:(NSView *)v; - (BOOL)isSectionHeader; + (NSMenuItem *)sectionHeaderWithTitle:(NSString *)t; @end
+@interface NSMenuItemBadge : NSObject - (id)initWithCount:(NSInteger)c; - (NSInteger)itemCount; - (NSInteger)type; - (NSString *)stringValue; + (id)alertsWithCount:(NSInteger)c; @end
+@interface NSMenuItem (B) - (NSMenuItemBadge *)badge; - (void)setBadge:(NSMenuItemBadge *)b; @end
 static int fails;
 #define CHECK(c) do { if (!(c)) { printf("FAIL %s:%d %s\n", __FILE__, __LINE__, #c); fails++; } } while (0)
 int main(void)
@@ -24,6 +26,8 @@ int main(void)
 		NSView *v = [[NSView alloc] initWithFrame: NSMakeRect(0, 0, 100, 40)]; [b setView: v];
 		CHECK([b view] == v); CHECK([v superview] == mv); CHECK(fabs([mv rectOfItemAtIndex: 1].size.height - 40) < 0.5);
 		NSMenuItem *h = [NSMenuItem sectionHeaderWithTitle: @"Sec"]; CHECK([h isSectionHeader]); CHECK(![h isEnabled]); CHECK(![a isSectionHeader]);
+		NSMenuItem *bi = [[NSMenuItem alloc] initWithTitle: @"X" action: NULL keyEquivalent: @""]; [bi setBadge: [NSClassFromString(@"NSMenuItemBadge") alertsWithCount: 7]];
+		CHECK([[bi badge] itemCount] == 7); CHECK([[bi badge] type] == 3); CHECK([[[bi badge] stringValue] isEqual: @"7"]);
 	}
 	printf(fails ? "menuitem: %d failed\n" : "menuitem ok\n", fails);
 	return fails != 0;
