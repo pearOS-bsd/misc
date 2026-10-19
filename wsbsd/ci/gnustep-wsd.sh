@@ -16,6 +16,8 @@ WP=$!
 sleep 1
 cc -fobjc-arc -o test_tracking test/test_tracking.m $(gnustep-config --objc-flags) $(gnustep-config --gui-libs) 2>&1 | grep error
 timeout 60 ./test_tracking 2>&1 | grep -v 'time zone' | tail -5 | tee /tmp/tracking.log; grep -q 'tracking ok' /tmp/tracking.log || { echo 'TRACKING TEST FAILED'; exit 1; }
+cc -fobjc-arc -o test_menuitem test/test_menuitem.m $(gnustep-config --objc-flags) $(gnustep-config --gui-libs) 2>&1 | grep error
+timeout 60 ./test_menuitem 2>&1 | grep -v 'time zone' | tail -5 | tee /tmp/menuitem.log; grep -q 'menuitem ok' /tmp/menuitem.log || { echo 'MENUITEM TEST FAILED'; exit 1; }
 (WSD_DEBUG=1 timeout 60 lldb -b -o 'run -HelloSeconds 18' -o 'bt' -o 'quit' -- ./hello >/tmp/hello.log 2>&1) &
 HP=$!
 sleep 4

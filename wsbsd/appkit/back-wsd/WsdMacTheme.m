@@ -463,7 +463,7 @@ static void wsdMenuSizeToFit(id self, SEL _cmd)
 	Ivar ic = class_getInstanceVariable([NSMenuView class], "_itemCells"); NSArray *cells = ic ? *(NSArray **)((char *)self + ivar_getOffset(ic)) : nil; if (![cells count]) return;
 	BOOL hasCheck = NO, hasSub = NO; double maxTitle = 0, maxKey = 0;
 	for (NSMenuItemCell *c in cells) {
-		NSMenuItem *it = [c menuItem]; if ([it isSeparatorItem]) continue;
+		NSMenuItem *it = [c menuItem]; if ([it isSeparatorItem] || [it isHidden]) continue;
 		if ([it state] != NSOffState) hasCheck = YES;
 		if ([it hasSubmenu]) hasSub = YES; else maxKey = fmax(maxKey, [c keyEquivalentWidth]);
 		maxTitle = fmax(maxTitle, [c titleWidth]);
