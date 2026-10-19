@@ -71,6 +71,8 @@ int ws_window_resolution(ws_server *, ws_wid, float *scale);
 int ws_set_window_frame(ws_server *, ws_wid, int x, int y, int w, int h);   /* origin and size at once (ShapeWindow) */
 int ws_set_window_global_clip(ws_server *, ws_wid, const ws_rect *r, int n);   /* SetWindowListGlobalClipShape: screen rectangles; n = 0 removes it */
 void ws_display_fade(ws_server *, double secs, double start_blend, double end_blend, float r, float g, float b);   /* DisplayFade */
+void ws_display_gamma_formula(ws_server *, const float v[9]);   /* SetDisplayTransferByFormula: redMin redMax redGamma, green..., blue... */
+void ws_display_gamma_table(ws_server *, const float *t, int count);   /* SetDisplayTransferByTable */
 int ws_set_window_fade_property(ws_server *, ws_wid, uint32_t prop);        /* SetWindowListFadeProperties */
 int ws_set_window_corner_radius(ws_server *, ws_wid, int radius);       /* rounded corners of the window shape (the compositor clips to it) */
 uint64_t ws_window_tags(ws_server *, ws_wid);                  /* window tag bits (0 for an unknown window) */
