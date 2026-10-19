@@ -9,6 +9,8 @@
 #include "wsd_priv.h"
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+extern int wsd_screen_w, wsd_screen_h;
 
 #define MAX_SESSIONS 16
 static struct { int used; uint32_t id; uint32_t lock_win, shield_win, auth_win; uint8_t *dict; uint32_t dict_len; } sess[MAX_SESSIONS] = { { 1, 256, 0, 0, 0, NULL, 0 } };
@@ -24,10 +26,49 @@ int sls_session_cube_enabled(void) { return cube_animation; }
 uint32_t sls_session_lock_window(uint32_t id) { int i = sidx(id); return i < 0 ? 0 : sess[i].lock_win; }
 const uint8_t *sls_session_client_dict(uint32_t id, uint32_t *len) { int i = sidx(id); if (i < 0) return NULL; *len = sess[i].dict_len; return sess[i].dict; }
 
+static uint64_t last_deactivated; static float unresponsive_timeout = 1.0f; static uint32_t secure_ids[64];       /* the connections that hold secure event input */
+int sls_secure_input_active(void) { for (int i = 0; i < 64; i++) if (secure_ids[i]) return 1; return 0; }
+void sls_sessctl_owner_cleanup(uint32_t owner) { for (int i = 0; i < 64; i++) if (secure_ids[i] == owner) secure_ids[i] = 0; }
+static double real_time(void) { struct timespec ts; clock_gettime(CLOCK_MONOTONIC, &ts); return ts.tv_sec + ts.tv_nsec * 1e-9; }
+
 int sls_sessctl_dispatch(conn *c, const uint8_t *buf, size_t len)
 {
 	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
 	switch (h->msgh_id) {
+	case 30087: {                                                                 /* __XSetSecureEventInput: flag@0x20; the connection's bit 0 of its flags is set / cleared and the system's secure input follows (any connection holding it) */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		int on = rd32(buf, 0x20) != 0;
+		sls_sessctl_owner_cleanup(c->id); if (on) for (int i = 0; i < 64; i++) if (!secure_ids[i]) { secure_ids[i] = c->id; break; }
+		return reply_simple(c->fd, h, 0);
+	}
+	case 30196:                                                                   /* __XSetLastDeactivated: 64-bit value@0x20 of the session's event state */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		memcpy(&last_deactivated, buf + 0x20, 8); return reply_simple(c->fd, h, 0);
+	case 30206: {                                                                 /* __XEventSetAppIsUnresponsiveNotificationTimeout: float@0x20, at least 1 second */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		float f; memcpy(&f, buf + 0x20, 4); unresponsive_timeout = f < 1.0f ? 1.0f : f; return reply_simple(c->fd, h, 0);
+	}
+	case 30207: {                                                                 /* __XEventAppUnresponsiveStatus: PSN@0x20 (hi, lo); reply 0x2c: seconds without an answer (float@0x24, 0 for a responsive one), flags@0x28; 1001 for an unknown process */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		if (!wsd_conn_by_psn(rd32(buf, 0x20), rd32(buf, 0x24))) return reply_simple(c->fd, h, 1001);
+		uint8_t r[0x2c]; memset(r, 0, sizeof r); fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0); memcpy(r + 0x18, &WS_NDR, 8);
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
+	case 30044: case 30045: {                                                      /* __XGetPerformanceTotalUpdateCount: reply 0x34: 64-bit count@0x24 (presented frames), time double@0x2c;  __XGetPerformanceUpdateCountPerDisplay: reply 0x22c: 128 counters@0x24 (display 0 = all frames), time@0x224 */
+		if (!simple_ok(h, len, 0x18)) return reply_simple(c->fd, h, -304);
+		uint64_t n = ws_fps_total(); double t = real_time();
+		uint8_t r[0x22c]; memset(r, 0, sizeof r); size_t sz = h->msgh_id == 30044 ? 0x34 : 0x22c;
+		fill_reply_header((mach_msg_header_t *)r, h, (uint32_t)sz, 0); memcpy(r + 0x18, &WS_NDR, 8);
+		if (h->msgh_id == 30044) { memcpy(r + 0x24, &n, 8); memcpy(r + 0x2c, &t, 8); } else { uint32_t n32 = (uint32_t)n; memcpy(r + 0x24, &n32, 4); memcpy(r + 0x224, &t, 8); }
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sz }, 1, NULL, 0);
+	}
+	case 30112: {                                                                  /* __XZoomTransformPoint: unzoom flag@0x20, x@0x24 y@0x28 (ints); without zoom the point maps to itself (reply 0x2c: x@0x24 y@0x28); 1000 for a point on no display */
+		if (!simple_ok(h, len, 0x2c)) return reply_simple(c->fd, h, -304);
+		int32_t x = (int32_t)rd32(buf, 0x24), y = (int32_t)rd32(buf, 0x28);
+		if (rd32(buf, 0x20) == 0 && (x < 0 || y < 0 || x >= wsd_screen_w || y >= wsd_screen_h)) return reply_simple(c->fd, h, 1000);
+		uint8_t r[0x2c]; memset(r, 0, sizeof r); fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0); memcpy(r + 0x18, &WS_NDR, 8); wr32(r, 0x24, (uint32_t)x); wr32(r, 0x28, (uint32_t)y);
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
 	case 29001: {
 		if (!(h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || h->msgh_size != 0x50 || len < 0x50 || rd32(buf, 0x18) != 2) return reply_simple(c->fd, h, -304);
 		if (buf[0x27] != 1 || buf[0x37] != 1 || rd32(buf, 0x28) != rd32(buf, 0x44) || rd32(buf, 0x38) != rd32(buf, 0x48)) return reply_simple(c->fd, h, -300);

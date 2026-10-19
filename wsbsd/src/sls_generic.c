@@ -25,12 +25,8 @@ static const gen_entry gen_table[] = {
 	{ 30036, 24, 0, 0, 36 },   /* __XDisableUpdateForConnection */
 	{ 30038, 40, 1, 1, 36 },   /* __XReenableUpdateForConnectionSync */
 	{ 30043, 24, 0, 0, 52 },   /* __XGetPerformanceData */
-	{ 30044, 24, 0, 0, 52 },   /* __XGetPerformanceTotalUpdateCount */
-	{ 30045, 24, 0, 0, 556 },   /* __XGetPerformanceUpdateCountPerDisplay */
 	{ 30053, 64, 1, 1, 36 },   /* __XSetBackgroundEventMaskAndShape */
 	{ 30065, 56, 1, 1, 36 },   /* __XSnappingInfoSetPrefs */
-	{ 30087, 36, 0, 0, 36 },   /* __XSetSecureEventInput */
-	{ 30112, 44, 0, 0, 44 },   /* __XZoomTransformPoint */
 	{ 30148, 36, 0, 0, 36 },   /* __XExitSpecialKeyMode */
 	{ 30153, 40, 1, 1, 36 },   /* __XSetDefaultBootstrapPort */
 	{ 30158, 140, 0, 0, 36 },   /* __XAddTrackingAreas */
@@ -38,9 +34,6 @@ static const gen_entry gen_table[] = {
 	{ 30185, 36, 0, 0, 36 },   /* __XPackagesRemoveWindowFromDraggingSpace */
 	{ 30191, 40, 0, 0, 36 },   /* __XRemoveWindowFromWindowMovementGroup */
 	{ 30194, 36, 0, 0, 36 },   /* __XRemoveWindowFromWindowOrderingGroup */
-	{ 30196, 40, 0, 0, 36 },   /* __XSetLastDeactivated */
-	{ 30206, 36, 0, 0, 36 },   /* __XEventSetAppIsUnresponsiveNotificationTimeout */
-	{ 30207, 40, 0, 0, 44 },   /* __XEventAppUnresponsiveStatus */
 	{ 30214, 56, 1, 1, 36 },   /* __XUpdateSessionWorkspaceData */
 	{ 30217, 56, 0, 0, 40 },   /* __XNewTransition */
 	{ 30219, 36, 0, 0, 36 },   /* __XReleaseTransition */
