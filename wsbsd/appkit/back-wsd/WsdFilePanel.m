@@ -508,11 +508,12 @@ static NSString *GlyphDir(void)
 	for (NSString *d in c) for (NSString *f in @[ @"CoreGlyphs.car", @"Assets.car" ]) if ([[NSFileManager defaultManager] fileExistsAtPath: [d stringByAppendingPathComponent: f]]) { dir = d; return dir; }
 	return dir;
 }
-static NSDictionary *GlyphTable(NSArray *want)                                                                            /* name -> WsdGlyph, every wanted symbol found in one pass over the catalogue */
+static NSDictionary *GlyphTableW(NSArray *want, int weight)                                                                            /* name -> WsdGlyph, every wanted symbol found in one pass over the catalogue */
 {
-	static NSMutableDictionary *table; static NSDictionary *alias; static CarFile *car;
-	if (!table) {
-		table = [NSMutableDictionary dictionary]; NSString *d = GlyphDir(); if (!d) return table;
+	static NSMutableDictionary *tables; static NSDictionary *alias; static CarFile *car;
+	if (!tables) tables = [NSMutableDictionary dictionary];
+	NSMutableDictionary *table = tables[@(weight)]; if (!table) tables[@(weight)] = table = [NSMutableDictionary dictionary];
+	if (!alias) { NSString *d = GlyphDir(); if (!d) return table;
 		NSString *f = [d stringByAppendingPathComponent: @"CoreGlyphs.car"]; if (![[NSFileManager defaultManager] fileExistsAtPath: f]) f = [d stringByAppendingPathComponent: @"Assets.car"];
 		car = car_open([f fileSystemRepresentation]);
 		NSData *ad = [NSData dataWithContentsOfFile: [d stringByAppendingPathComponent: @"name_aliases.strings"]];                      /* a binary property list in spite of the name */
@@ -523,7 +524,7 @@ static NSDictionary *GlyphTable(NSArray *want)                                  
 	if (![todo count]) return table;
 	int n = (int)[todo count]; const char **names = calloc((size_t)n, sizeof *names); uint8_t **bufs = calloc((size_t)n, sizeof *bufs); size_t *lens = calloc((size_t)n, sizeof *lens);
 	for (int i = 0; i < n; i++) { NSString *nm = alias[todo[i]] ?: todo[i]; names[i] = strdup([nm UTF8String]); }
-	car_symbols(car, names, n, 4, bufs, lens);
+	car_symbols(car, names, n, weight, bufs, lens);
 	for (int i = 0; i < n; i++) {
 		BvgGlyph g; WsdGlyph *w = nil;
 		if (bufs[i] && !bvg_parse(bufs[i], lens[i], &g)) {
@@ -540,6 +541,7 @@ static NSDictionary *GlyphTable(NSArray *want)                                  
 					}
 					int np = sg->op == 'C' ? 3 : sg->op == 'Z' ? 0 : 1; for (int j = 0; j < np; j++) { if (sg->p[2 * j] > x1) x1 = sg->p[2 * j]; if (sg->p[2 * j + 1] > y1) y1 = sg->p[2 * j + 1]; }
 				}
+				if (g.layer[l].knockout && [w->paths count]) { [(NSBezierPath *)[w->paths lastObject] appendBezierPath: p]; [[w->paths lastObject] setWindingRule: NSEvenOddWindingRule]; continue; }      /* cut out of the enclosure before it */
 				[w->paths addObject: p]; [w->alphas addObject: @(g.layer[l].opacity)];
 			}
 			w->size = NSMakeSize(x1, y1); bvg_free(&g);
@@ -548,11 +550,26 @@ static NSDictionary *GlyphTable(NSArray *want)                                  
 	}
 	free(names); free(bufs); free(lens); return table;
 }
+static NSDictionary *GlyphTable(NSArray *want) { return GlyphTableW(want, 4); }
 static NSArray *AllSymbolNames(void) { return @[ @"clock", @"person.2", @"app", @"menubar.dock.rectangle", @"desktopcomputer", @"doc", @"arrow.down.circle", @"icloud", @"house", @"externaldrive", @"internaldrive", @"macwindow", @"a.square", @"folder", @"airplayaudio", @"wifi", @"tag", @"circle", @"magnifyingglass", @"chevron.left", @"chevron.right", @"chevron.down", @"chevron.up.chevron.down", @"square.grid.2x2", @"list.bullet", @"rectangle.split.3x1", @"square.grid.3x1.below.line.grid.1x2", @"sidebar.left", @"apps.iphone", @"rectangle.grid.1x2", @"rectangle.grid.3x2", @"square.and.arrow.down" ]; }
 static BOOL DrawSymbol(NSString *name, NSRect cell, CGFloat pointSize, NSColor *tint)                                  /* centred in `cell`; NO when the catalogue has no such symbol */
 {
 	id g = GlyphTable(AllSymbolNames())[name]; if (!g) g = GlyphTable(@[ name ])[name];
 	if (!g || g == [NSNull null]) return NO;
+	WsdGlyph *w = g; double k = pointSize / 13.0; NSAffineTransform *t = [NSAffineTransform transform];
+	[t translateXBy: NSMidX(cell) - w->size.width * k / 2 yBy: NSMidY(cell) - w->size.height * k / 2]; [t scaleBy: (CGFloat)k];
+	for (NSUInteger i = 0; i < [w->paths count]; i++) { NSBezierPath *p = [t transformBezierPath: w->paths[i]]; [[tint colorWithAlphaComponent: [tint alphaComponent] * [w->alphas[i] doubleValue]] setFill]; [p fill]; }
+	return YES;
+}
+/* for NSImage's system symbols (WsdSymbolImage.m): the symbol's size in points at `pointSize`, and its drawing in the colour `tint` centred in `cell` */
+NSSize WsdSymbolSize(NSString *name, CGFloat pointSize, int weight)
+{
+	id g = GlyphTableW(@[ name ], weight)[name]; if (!g || g == [NSNull null]) return NSZeroSize;
+	WsdGlyph *w = g; return NSMakeSize(w->size.width * pointSize / 13.0, w->size.height * pointSize / 13.0);
+}
+BOOL WsdSymbolDraw(NSString *name, NSRect cell, CGFloat pointSize, int weight, NSColor *tint)
+{
+	id g = GlyphTableW(@[ name ], weight)[name]; if (!g || g == [NSNull null]) return NO;
 	WsdGlyph *w = g; double k = pointSize / 13.0; NSAffineTransform *t = [NSAffineTransform transform];
 	[t translateXBy: NSMidX(cell) - w->size.width * k / 2 yBy: NSMidY(cell) - w->size.height * k / 2]; [t scaleBy: (CGFloat)k];
 	for (NSUInteger i = 0; i < [w->paths count]; i++) { NSBezierPath *p = [t transformBezierPath: w->paths[i]]; [[tint colorWithAlphaComponent: [tint alphaComponent] * [w->alphas[i] doubleValue]] setFill]; [p fill]; }

@@ -122,15 +122,15 @@ int bvg_parse(const uint8_t *b, size_t len, BvgGlyph *g)
 	if (mi < 0) return -1;
 	char ms[160]; size_t ml = off[mi + 1] - off[mi]; if (ml >= sizeof ms) return -1; memcpy(ms, b + off[mi], ml); ms[ml] = 0;
 	if (sscanf(ms, "matrix(%lf %lf %lf %lf %lf %lf", &g->m[0], &g->m[1], &g->m[2], &g->m[3], &g->m[4], &g->m[5]) != 6) return -1;
-	Path P = { 0 }; double opacity = 1; BvgLayer *lay = NULL; int nl = 0;
+	Path P = { 0 }; double opacity = 1; BvgLayer *lay = NULL; int nl = 0, enc = 0;
 	for (int i = mi + 1; i < n; i++) {
 		const uint8_t *s = b + off[i]; size_t sl = off[i + 1] - off[i]; int text = sl > 0;
 		for (size_t k = 0; k < sl; k++) if ((s[k] < 32 && !(k + 1 == sl && s[k] == 0)) || s[k] > 126) text = 0;
-		if (text) { char t[32]; size_t m = sl < 31 ? sl : 31; memcpy(t, s, m); t[m] = 0; if (strchr(t, '.') && t[0] >= '0' && t[0] <= '9') opacity = atof(t); continue; }
+		if (text) { char t[32]; size_t m = sl < 31 ? sl : 31; memcpy(t, s, m); t[m] = 0; if (strchr(t, '.') && t[0] >= '0' && t[0] <= '9') opacity = atof(t); else if (!strncmp(t, "_enclosure.fill", 15)) enc = 1; continue; }
 		if (sl < 3 || (s[1] & 0xc0)) continue;                                                    /* a numeric list (stroke data), not a path */
 		int first = P.n; P.cx = P.cy = P.sx = P.sy = 0; P.lastc = 0;
 		if (decode_path(s, sl, &P) || P.n == first) { P.n = first; continue; }
-		lay = realloc(lay, (size_t)(nl + 1) * sizeof *lay); lay[nl].first = first; lay[nl].count = P.n - first; lay[nl].opacity = opacity; nl++; opacity = 1;
+		lay = realloc(lay, (size_t)(nl + 1) * sizeof *lay); lay[nl].first = first; lay[nl].count = P.n - first; lay[nl].opacity = opacity; lay[nl].knockout = enc == 2; if (enc == 1) enc = 2; nl++; opacity = 1;
 	}
 	if (!P.n) { free(P.s); free(lay); return -1; }
 	for (int i = 0; i < P.n; i++) {                                                                  /* through the matrix */

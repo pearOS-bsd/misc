@@ -139,5 +139,5 @@ static void wsdCellDraw(NSMenuItemCell *self, SEL _cmd, NSRect f, NSView *v)
 }
 @interface WsdMenuBadgeInit : NSObject @end
 @implementation WsdMenuBadgeInit
-+ (void)load { Method m = class_getInstanceMethod([NSMenuItemCell class], @selector(drawWithFrame:inView:)); if (m) origCellDraw = method_setImplementation(m, (IMP)wsdCellDraw); }
++ (void)load { Method m = class_getInstanceMethod([NSMenuItemCell class], @selector(drawWithFrame:inView:)); if (m) { origCellDraw = method_getImplementation(m); class_replaceMethod([NSMenuItemCell class], @selector(drawWithFrame:inView:), (IMP)wsdCellDraw, method_getTypeEncoding(m)); } }   /* replaced on NSMenuItemCell itself: the method may be inherited from NSButtonCell */
 @end
