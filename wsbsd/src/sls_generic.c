@@ -4,16 +4,9 @@
 
 typedef struct { int id; uint32_t req_size; int complex; int ndesc; uint32_t reply_size; } gen_entry;
 static const gen_entry gen_table[] = {
-	{ 29001, 80, 0, 0, 40 },   /* __XCreateSession */
 	{ 29002, 60, 1, 1, 52 },   /* __XCreateSessionWithAuditSessionID */
 	{ 29005, 56, 1, 1, 36 },   /* __XSpinControlSetNotificationPort */
-	{ 29006, 44, 0, 0, 36 },   /* __XReleaseSession */
-	{ 29007, 44, 0, 0, 36 },   /* __XSwitchConsoleToSession */
 	{ 29008, 40, 0, 0, 36 },   /* __XSwitchConsoleToAuditSession */
-	{ 29011, 40, 0, 0, 36 },   /* __XSetSessionScreenLockWindow */
-	{ 29012, 44, 0, 0, 36 },   /* __XSetSessionSleepWindows */
-	{ 29013, 36, 0, 0, 36 },   /* __XSetSessionSwitchCubeAnimation */
-	{ 29015, 68, 1, 1, 36 },   /* __XSetSessionClientDictionary */
 	{ 29018, 40, 1, 1, 36 },   /* __XEstablishTimelineConnection */
 	{ 29019, 40, 1, 1, 36 },   /* __XEstablishXPCClientConnection */
 	{ 29020, 40, 1, 1, 36 },   /* __XEstablishScreenTelemetryConnection */
