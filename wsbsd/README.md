@@ -30,7 +30,7 @@ The stack: `wsd` (this repo: window server and compositor speaking the SkyLight 
 |---|---|---|
 | SkyLight server routines (744) | ~74 % have a handler of their own, 192 only a generic acceptor | the handlers include replays of recorded replies; the share that is decompiled and verified is smaller (probably under half) |
 | Quartz Compositor (window server composition) | ~35 to 40 % | windows, shadows, blur, warp are solid; colour management / HDR, general Core Image filters, Spaces / Mission Control / multi-display and real-GPU verification are mostly missing |
-| AppKit (GNUstep with the wsd back-end and the macOS theme) | ~35 to 45 % for running real applications; ~60 % of the API surface | looks and behaves like a Mac only in places (menus, Open / Save panels); SwiftUI and UIKit are out of scope for now |
+| AppKit (GNUstep with the wsd back-end and the macOS theme) | ~35 to 45 % for running real applications; 68.7 % of the SDK selectors answered by the runtime (measured with `tools/appkit_probe.m`), of which 142 only answer without doing anything (`WsdAppKitPlaceholder` categories) and are not counted | looks and behaves like a Mac only in places (menus, Open / Save panels); SwiftUI and UIKit are out of scope for now |
 
 ### Applications that run today (CI, FreeBSD x86_64, software compositor)
 | Application | What it exercises |

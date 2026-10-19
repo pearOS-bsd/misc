@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Measures how much of an Apple framework's Objective-C API (from the SDK headers) a GNUstep install declares.
 usage: appkit_coverage.py APPLE_HEADERS_DIR GNUSTEP_HEADERS_DIR [--ours DIR] [--missing CLASS] [--json out.json]
---ours: a directory of our .m files; the methods of every "@implementation Class (WsdAppKit...)" category in it count as present
+--ours: a directory of our .m files; the methods of every "@implementation Class (WsdAppKit)" category count as present (the "WsdAppKitPlaceholder" categories, which only answer the selector, do not)
+--placeholders FILE: writes the placeholder selectors ("Class +|- selector") for tools/appkit_probe.m
 Counts, per class (@interface Name and categories folded into it), the selectors declared by Apple and the ones GNUstep declares for the same class;
 the Apple headers are read, never copied into the repository."""
 import re,sys,os,json,collections
@@ -48,7 +49,21 @@ def ours(d):
                     else: sels.add(k+''.join((p or '')+':' for p in re.findall(r'([A-Za-z_]\w*)?\s*:\s*\((?:[^()]|\([^()]*\))*\)\s*\w+',rest)))
                 cls[m.group(1)]|=sels
     return cls
+def placeholders(d):
+    out=[]
+    for root,_,fs in os.walk(d):
+        for f in fs:
+            if not f.endswith('.m'): continue
+            t=strip(open(os.path.join(root,f),errors='ignore').read())
+            for m in re.finditer(r'@implementation\s+(\w+)\s*\(\s*WsdAppKitPlaceholder\s*\)(.*?)@end',t,re.S):
+                for mm in re.finditer(r'^\s*([-+])\s*\((?:[^()]|\([^()]*\))*\)\s*([^;{]*?)\s*\{',m.group(2),re.M):
+                    k,rest=mm.group(1),mm.group(2).strip()
+                    sl=rest.split()[0] if ':' not in rest else ''.join((p or '')+':' for p in re.findall(r'([A-Za-z_]\w*)?\s*:\s*\((?:[^()]|\([^()]*\))*\)\s*\w+',rest))
+                    out.append('%s %s %s'%(m.group(1),k,sl))
+    return out
 def main():
+    if '--placeholders' in sys.argv:
+        open(sys.argv[sys.argv.index('--placeholders')+1],'w').write('\n'.join(placeholders(sys.argv[sys.argv.index('--ours')+1]))+'\n')
     a,g=scan(sys.argv[1]),scan(sys.argv[2])
     if '--ours' in sys.argv:
         for c,sl in ours(sys.argv[sys.argv.index('--ours')+1]).items(): g[c]=g.get(c,set())|sl

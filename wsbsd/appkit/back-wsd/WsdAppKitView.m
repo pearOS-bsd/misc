@@ -7,6 +7,27 @@
 static char kWantsLayer, kLayer, kAreas, kGestures, kInsets, kPrepared, kClips, kConc, kIntoLayer, kLayerCI, kCompact, kTouches, kResting, kCompFilter, kBGFilters, kContentFilters, kHActive, kVActive;
 static NSNumber *B(BOOL v) { return [NSNumber numberWithBool: v]; }
 @implementation NSView (WsdAppKit)
+- (NSEdgeInsets)alignmentRectInsets { return NSEdgeInsetsMake(0, 0, 0, 0); }
+- (NSRect)alignmentRectForFrame:(NSRect)f { NSEdgeInsets i = [self alignmentRectInsets]; return NSMakeRect(f.origin.x + i.left, f.origin.y + i.bottom, f.size.width - i.left - i.right, f.size.height - i.top - i.bottom); }
+- (NSRect)frameForAlignmentRect:(NSRect)r { NSEdgeInsets i = [self alignmentRectInsets]; return NSMakeRect(r.origin.x - i.left, r.origin.y - i.bottom, r.size.width + i.left + i.right, r.size.height + i.top + i.bottom); }
+- (NSPoint)convertPointToBacking:(NSPoint)p { return p; }
+- (NSPoint)convertPointFromBacking:(NSPoint)p { return p; }
+- (NSSize)convertSizeToBacking:(NSSize)s { return s; }
+- (NSSize)convertSizeFromBacking:(NSSize)s { return s; }
+- (NSRect)convertRectToBacking:(NSRect)r { return r; }
+- (NSRect)convertRectFromBacking:(NSRect)r { return r; }
+- (NSPoint)convertPointToLayer:(NSPoint)p { return p; }
+- (NSPoint)convertPointFromLayer:(NSPoint)p { return p; }
+- (NSSize)convertSizeToLayer:(NSSize)s { return s; }
+- (NSSize)convertSizeFromLayer:(NSSize)s { return s; }
+- (NSRect)convertRectToLayer:(NSRect)r { return r; }
+- (NSRect)convertRectFromLayer:(NSRect)r { return r; }
+- (void)translateRectsNeedingDisplayInRect:(NSRect)clip by:(NSSize)delta { [self setNeedsDisplayInRect: clip]; }
+- (NSRect)focusRingMaskBounds { return [self bounds]; }
+- (void)drawFocusRingMask { NSRectFill([self bounds]); }
+@end
+/* placeholders: they answer the selector (so that applications that call it run) but keep a value or answer a constant; nothing renders or reacts. Not counted as implemented. */
+@implementation NSView (WsdAppKitPlaceholder)
 + (BOOL)requiresConstraintBasedLayout { return NO; }
 + (BOOL)isCompatibleWithResponsiveScrolling { return NO; }
 - (BOOL)wantsLayer { return [GET(kWantsLayer) boolValue]; }
@@ -43,9 +64,6 @@ static NSNumber *B(BOOL v) { return [NSNumber numberWithBool: v]; }
 - (void)setGestureRecognizers:(NSArray *)g { SET(kGestures, g); }
 - (void)addGestureRecognizer:(id)g { NSMutableArray *m = [NSMutableArray arrayWithArray: [self gestureRecognizers]]; if (![m containsObject: g]) [m addObject: g]; SET(kGestures, m); }
 - (void)removeGestureRecognizer:(id)g { NSMutableArray *m = [NSMutableArray arrayWithArray: [self gestureRecognizers]]; [m removeObject: g]; SET(kGestures, m); }
-- (NSEdgeInsets)alignmentRectInsets { return NSEdgeInsetsMake(0, 0, 0, 0); }
-- (NSRect)alignmentRectForFrame:(NSRect)f { NSEdgeInsets i = [self alignmentRectInsets]; return NSMakeRect(f.origin.x + i.left, f.origin.y + i.bottom, f.size.width - i.left - i.right, f.size.height - i.top - i.bottom); }
-- (NSRect)frameForAlignmentRect:(NSRect)r { NSEdgeInsets i = [self alignmentRectInsets]; return NSMakeRect(r.origin.x - i.left, r.origin.y - i.bottom, r.size.width + i.left + i.right, r.size.height + i.top + i.bottom); }
 - (NSSize)fittingSize { return [self frame].size; }
 - (void)invalidateIntrinsicContentSize {}
 - (CGFloat)lastBaselineOffsetFromBottom { return 0; }
@@ -65,18 +83,6 @@ static NSNumber *B(BOOL v) { return [NSNumber numberWithBool: v]; }
 - (void)setHorizontalContentSizeConstraintActive:(BOOL)v { SET(kHActive, B(v)); }
 - (BOOL)isVerticalContentSizeConstraintActive { id v = GET(kVActive); return v ? [v boolValue] : YES; }
 - (void)setVerticalContentSizeConstraintActive:(BOOL)v { SET(kVActive, B(v)); }
-- (NSPoint)convertPointToBacking:(NSPoint)p { return p; }
-- (NSPoint)convertPointFromBacking:(NSPoint)p { return p; }
-- (NSSize)convertSizeToBacking:(NSSize)s { return s; }
-- (NSSize)convertSizeFromBacking:(NSSize)s { return s; }
-- (NSRect)convertRectToBacking:(NSRect)r { return r; }
-- (NSRect)convertRectFromBacking:(NSRect)r { return r; }
-- (NSPoint)convertPointToLayer:(NSPoint)p { return p; }
-- (NSPoint)convertPointFromLayer:(NSPoint)p { return p; }
-- (NSSize)convertSizeToLayer:(NSSize)s { return s; }
-- (NSSize)convertSizeFromLayer:(NSSize)s { return s; }
-- (NSRect)convertRectToLayer:(NSRect)r { return r; }
-- (NSRect)convertRectFromLayer:(NSRect)r { return r; }
 - (BOOL)acceptsTouchEvents { return [GET(kTouches) boolValue]; }
 - (void)setAcceptsTouchEvents:(BOOL)v { SET(kTouches, B(v)); }
 - (BOOL)wantsRestingTouches { return [GET(kResting) boolValue]; }
@@ -89,31 +95,50 @@ static NSNumber *B(BOOL v) { return [NSNumber numberWithBool: v]; }
 - (BOOL)isDrawingFindIndicator { return NO; }
 - (void)willOpenMenu:(NSMenu *)m withEvent:(NSEvent *)e {}
 - (void)didCloseMenu:(NSMenu *)m withEvent:(NSEvent *)e {}
-- (void)translateRectsNeedingDisplayInRect:(NSRect)clip by:(NSSize)delta { [self setNeedsDisplayInRect: clip]; }
 - (void)noteFocusRingMaskChanged {}
-- (NSRect)focusRingMaskBounds { return [self bounds]; }
-- (void)drawFocusRingMask { NSRectFill([self bounds]); }
 @end
+
 
 static char wSubtitle, wTitleVis, wTBTransparent, wTBSep, wToolbarStyle, wRepURL, wTabMode, wTabId, wMovable, wRestorable, wSharing, wAnimBeh, wVC, wColorSpace, wPrevents, wMaxFS, wMinFS, wBorder, wOrdIdx, wAppearanceSource, wTBAcc, wConc, wLogin;
 @implementation NSWindow (WsdAppKit)
-+ (BOOL)allowsAutomaticWindowTabbing { return NO; }
-+ (void)setAllowsAutomaticWindowTabbing:(BOOL)v {}
-+ (NSInteger)userTabbingPreference { return 1; }
 + (NSArray *)windowNumbersWithOptions:(NSInteger)o { NSMutableArray *a = [NSMutableArray array]; for (NSWindow *w in [NSApp windows]) [a addObject: [NSNumber numberWithInteger: [w windowNumber]]]; return a; }
 - (BOOL)hasTitleBar { return ([self styleMask] & NSTitledWindowMask) != 0; }
 - (BOOL)hasCloseBox { return ([self styleMask] & NSClosableWindowMask) != 0; }
 - (BOOL)isMiniaturizable { return ([self styleMask] & NSMiniaturizableWindowMask) != 0; }
 - (BOOL)isResizable { return ([self styleMask] & NSResizableWindowMask) != 0; }
 - (BOOL)isZoomable { return [self isResizable]; }
+- (BOOL)isFloatingPanel { return [self isKindOfClass: [NSPanel class]] && [(NSPanel *)self isFloatingPanel]; }
+- (BOOL)isModalPanel { return [NSApp modalWindow] == self; }
+- (void)endSheet:(NSWindow *)sheet { [NSApp endSheet: sheet]; }
+- (void)endSheet:(NSWindow *)sheet returnCode:(NSInteger)rc { [NSApp endSheet: sheet returnCode: rc]; }
+- (NSURL *)representedURL { return GET(wRepURL); }
+- (void)setRepresentedURL:(NSURL *)u { SET(wRepURL, u); if ([u isFileURL]) [self setRepresentedFilename: [u path]]; }
+- (id)contentViewController { return GET(wVC); }
+- (void)setContentViewController:(id)vc { SET(wVC, vc); if ([vc respondsToSelector: @selector(view)]) [self setContentView: [vc view]]; }
+- (NSRect)contentLayoutRect { return [[self contentView] frame]; }
+- (NSPoint)convertPointToScreen:(NSPoint)p { return [self convertBaseToScreen: p]; }
+- (NSPoint)convertPointFromScreen:(NSPoint)p { return [self convertScreenToBase: p]; }
+- (NSRect)convertRectToScreen:(NSRect)r { NSPoint o = [self convertBaseToScreen: r.origin]; return NSMakeRect(o.x, o.y, r.size.width, r.size.height); }
+- (NSRect)convertRectFromScreen:(NSRect)r { NSPoint o = [self convertScreenToBase: r.origin]; return NSMakeRect(o.x, o.y, r.size.width, r.size.height); }
+- (NSPoint)convertPointToBacking:(NSPoint)p { return p; }
+- (NSPoint)convertPointFromBacking:(NSPoint)p { return p; }
+- (NSRect)convertRectToBacking:(NSRect)r { return r; }
+- (NSRect)convertRectFromBacking:(NSRect)r { return r; }
+- (NSRect)backingAlignedRect:(NSRect)r options:(NSUInteger)o { return NSIntegralRect(r); }
+- (NSInteger)occlusionState { return [self isVisible] ? 2 : 0; }
+- (void)toggleFullScreen:(id)s { [self zoom: s]; }
+- (BOOL)isOnActiveSpace { return [self isVisible]; }
+- (NSRect)cascadingReferenceFrame { return [self frame]; }
+@end
+/* placeholders: they answer the selector (so that applications that call it run) but keep a value or answer a constant; nothing renders or reacts. Not counted as implemented. */
+@implementation NSWindow (WsdAppKitPlaceholder)
++ (BOOL)allowsAutomaticWindowTabbing { return NO; }
++ (void)setAllowsAutomaticWindowTabbing:(BOOL)v {}
++ (NSInteger)userTabbingPreference { return 1; }
 - (BOOL)isMovable { id v = GET(wMovable); return v ? [v boolValue] : YES; }
 - (void)setMovable:(BOOL)v { SET(wMovable, B(v)); }
 - (BOOL)isSheet { return [self isKindOfClass: [NSPanel class]] && [(id)self respondsToSelector: @selector(sheetParent)] && NO; }
-- (BOOL)isFloatingPanel { return [self isKindOfClass: [NSPanel class]] && [(NSPanel *)self isFloatingPanel]; }
-- (BOOL)isModalPanel { return [NSApp modalWindow] == self; }
 - (NSArray *)sheets { return [NSArray array]; }
-- (void)endSheet:(NSWindow *)sheet { [NSApp endSheet: sheet]; }
-- (void)endSheet:(NSWindow *)sheet returnCode:(NSInteger)rc { [NSApp endSheet: sheet returnCode: rc]; }
 - (NSString *)subtitle { return GET(wSubtitle) ?: @""; }
 - (void)setSubtitle:(NSString *)s { SET(wSubtitle, s); }
 - (NSInteger)titleVisibility { return [GET(wTitleVis) integerValue]; }
@@ -124,8 +149,6 @@ static char wSubtitle, wTitleVis, wTBTransparent, wTBSep, wToolbarStyle, wRepURL
 - (void)setTitlebarSeparatorStyle:(NSInteger)v { SET(wTBSep, [NSNumber numberWithInteger: v]); }
 - (NSInteger)toolbarStyle { return [GET(wToolbarStyle) integerValue]; }
 - (void)setToolbarStyle:(NSInteger)v { SET(wToolbarStyle, [NSNumber numberWithInteger: v]); }
-- (NSURL *)representedURL { return GET(wRepURL); }
-- (void)setRepresentedURL:(NSURL *)u { SET(wRepURL, u); if ([u isFileURL]) [self setRepresentedFilename: [u path]]; }
 - (NSInteger)tabbingMode { return [GET(wTabMode) integerValue]; }
 - (void)setTabbingMode:(NSInteger)v { SET(wTabMode, [NSNumber numberWithInteger: v]); }
 - (NSString *)tabbingIdentifier { return GET(wTabId) ?: @""; }
@@ -150,8 +173,6 @@ static char wSubtitle, wTitleVis, wTBTransparent, wTBSep, wToolbarStyle, wRepURL
 - (void)setSharingType:(NSInteger)v { SET(wSharing, [NSNumber numberWithInteger: v]); }
 - (NSInteger)animationBehavior { return [GET(wAnimBeh) integerValue]; }
 - (void)setAnimationBehavior:(NSInteger)v { SET(wAnimBeh, [NSNumber numberWithInteger: v]); }
-- (id)contentViewController { return GET(wVC); }
-- (void)setContentViewController:(id)vc { SET(wVC, vc); if ([vc respondsToSelector: @selector(view)]) [self setContentView: [vc view]]; }
 - (NSColorSpace *)colorSpace { return GET(wColorSpace) ?: [NSColorSpace sRGBColorSpace]; }
 - (void)setColorSpace:(NSColorSpace *)c { SET(wColorSpace, c); }
 - (BOOL)canRepresentDisplayGamut:(NSInteger)g { return g == 1; }
@@ -178,25 +199,12 @@ static char wSubtitle, wTitleVis, wTBTransparent, wTBSep, wToolbarStyle, wRepURL
 - (void)setAllowsConcurrentViewDrawing:(BOOL)v { SET(wConc, B(v)); }
 - (BOOL)canBecomeVisibleWithoutLogin { return [GET(wLogin) boolValue]; }
 - (void)setCanBecomeVisibleWithoutLogin:(BOOL)v { SET(wLogin, B(v)); }
-- (NSRect)contentLayoutRect { return [[self contentView] frame]; }
 - (id)contentLayoutGuide { return nil; }
-- (NSPoint)convertPointToScreen:(NSPoint)p { return [self convertBaseToScreen: p]; }
-- (NSPoint)convertPointFromScreen:(NSPoint)p { return [self convertScreenToBase: p]; }
-- (NSRect)convertRectToScreen:(NSRect)r { NSPoint o = [self convertBaseToScreen: r.origin]; return NSMakeRect(o.x, o.y, r.size.width, r.size.height); }
-- (NSRect)convertRectFromScreen:(NSRect)r { NSPoint o = [self convertScreenToBase: r.origin]; return NSMakeRect(o.x, o.y, r.size.width, r.size.height); }
-- (NSPoint)convertPointToBacking:(NSPoint)p { return p; }
-- (NSPoint)convertPointFromBacking:(NSPoint)p { return p; }
-- (NSRect)convertRectToBacking:(NSRect)r { return r; }
-- (NSRect)convertRectFromBacking:(NSRect)r { return r; }
-- (NSRect)backingAlignedRect:(NSRect)r options:(NSUInteger)o { return NSIntegralRect(r); }
-- (NSInteger)occlusionState { return [self isVisible] ? 2 : 0; }
 - (BOOL)inLiveResize { return NO; }
 - (void)disableScreenUpdatesUntilFlush {}
 - (void)performWindowDragWithEvent:(NSEvent *)e {}
-- (void)toggleFullScreen:(id)s { [self zoom: s]; }
-- (BOOL)isOnActiveSpace { return [self isVisible]; }
 - (BOOL)hasActiveWindowSharingSession { return NO; }
 - (void)visualizeConstraints:(NSArray *)c {}
 - (NSInteger)windowTitlebarLayoutDirection { return 0; }
-- (NSRect)cascadingReferenceFrame { return [self frame]; }
 @end
+
