@@ -25,6 +25,13 @@ The stack: `wsd` (this repo: window server and compositor speaking the SkyLight 
 - **UI parity with macOS** (the same Objective-C gallery rendered on both, mean absolute pixel difference per control, 0 to 255): dark appearance, most controls 4 to 12, the
   date picker 23; light appearance 4 to 16, the date picker 24. Much of what is left is the font (Inter, not San Francisco, which is not redistributable).
 
+### Estimated coverage (a rough estimate, not a measurement; fidelity to the real thing is not measured per routine)
+| Part | Estimate | Notes |
+|---|---|---|
+| SkyLight server routines (744) | ~74 % have a handler of their own, 192 only a generic acceptor | the handlers include replays of recorded replies; the share that is decompiled and verified is smaller (probably under half) |
+| Quartz Compositor (window server composition) | ~35 to 40 % | windows, shadows, blur, warp are solid; colour management / HDR, general Core Image filters, Spaces / Mission Control / multi-display and real-GPU verification are mostly missing |
+| AppKit (GNUstep with the wsd back-end and the macOS theme) | ~35 to 45 % for running real applications; ~60 % of the API surface | looks and behaves like a Mac only in places (menus, Open / Save panels); SwiftUI and UIKit are out of scope for now |
+
 ### Applications that run today (CI, FreeBSD x86_64, software compositor)
 | Application | What it exercises |
 |---|---|
