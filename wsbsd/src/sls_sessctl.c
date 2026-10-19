@@ -54,6 +54,16 @@ int sls_sessctl_dispatch(conn *c, const uint8_t *buf, size_t len)
 		uint8_t r[0x2c]; memset(r, 0, sizeof r); fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0); memcpy(r + 0x18, &WS_NDR, 8);
 		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
 	}
+	case 29034: case 30509: case 30510: case 30512: case 30513: case 30535: case 30508: {   /* display presets of the one display (id 1): __XDisplayGetActivePresetIndex, GetFactoryDefaultPresetIndex, GetPresetCount (request 0x24: display@0x20), IsPresetValid / IsPresetWritable (0x28: display@0x20, index@0x24), GetPreferHDR10 (0x24); reply 0x28 with the value@0x24; SetActivePresetIndex (0x28) answers a code. One factory preset, index 0, valid, not writable, active; HDR10 not preferred; 1006 for another display, 1000 for an index there is not */
+		int two = h->msgh_id == 30512 || h->msgh_id == 30513 || h->msgh_id == 30508;
+		if (!simple_ok(h, len, two ? 0x28 : 0x24)) return reply_simple(c->fd, h, -304);
+		if (rd32(buf, 0x20) != 1) return reply_simple(c->fd, h, 1006);
+		uint32_t idx = two ? rd32(buf, 0x24) : 0;
+		if (h->msgh_id == 30508) return reply_simple(c->fd, h, idx == 0 ? 0 : 1000);
+		uint32_t v = h->msgh_id == 30510 ? 1 : h->msgh_id == 30512 ? idx == 0 : 0;
+		uint8_t r[0x28]; memset(r, 0, sizeof r); fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0); memcpy(r + 0x18, &WS_NDR, 8); wr32(r, 0x24, v);
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
 	case 30044: case 30045: {                                                      /* __XGetPerformanceTotalUpdateCount: reply 0x34: 64-bit count@0x24 (presented frames), time double@0x2c;  __XGetPerformanceUpdateCountPerDisplay: reply 0x22c: 128 counters@0x24 (display 0 = all frames), time@0x224 */
 		if (!simple_ok(h, len, 0x18)) return reply_simple(c->fd, h, -304);
 		uint64_t n = ws_fps_total(); double t = real_time();

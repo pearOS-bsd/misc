@@ -1114,6 +1114,13 @@ int main(void)
 		memset(m, 0, sizeof m); hdr(m, 0x2c, 30112, 0); w32(m, 0x24, 10); w32(m, 0x28, 20); got = call(fd, m, 0x2c, rep, sizeof rep); CHECK(got == 0x2c && r32(rep, 0x20) == 0 && r32(rep, 0x24) == 10 && r32(rep, 0x28) == 20);
 		w32(m, 0x24, 5000); CHECK(rc(fd, m, 0x2c) == 1000); w32(m, 0x20, 1); CHECK(rc(fd, m, 0x2c) == 0);
 	}
+	{ /* display presets (one display, id 1): count 1, active / factory index 0, preset 0 valid and not writable, another display 1006 */
+		uint8_t m[0x40], rep[0x100]; memset(m, 0, sizeof m); hdr(m, 0x24, 30510, 0); w32(m, 0x20, 1); int got = call(fd, m, 0x24, rep, sizeof rep); CHECK(got == 0x28 && r32(rep, 0x20) == 0 && r32(rep, 0x24) == 1);
+		hdr(m, 0x24, 29034, 0); got = call(fd, m, 0x24, rep, sizeof rep); CHECK(got == 0x28 && r32(rep, 0x24) == 0);
+		hdr(m, 0x28, 30512, 0); w32(m, 0x24, 0); got = call(fd, m, 0x28, rep, sizeof rep); CHECK(got == 0x28 && r32(rep, 0x24) == 1); w32(m, 0x24, 3); got = call(fd, m, 0x28, rep, sizeof rep); CHECK(r32(rep, 0x24) == 0);
+		hdr(m, 0x28, 30508, 0); w32(m, 0x24, 3); CHECK(rc(fd, m, 0x28) == 1000); w32(m, 0x24, 0); CHECK(rc(fd, m, 0x28) == 0);
+		hdr(m, 0x24, 30509, 0); w32(m, 0x20, 9); CHECK(rc(fd, m, 0x24) == 1006); hdr(m, 0x28, 30509, 0); CHECK(rc(fd, m, 0x28) == -304);
+	}
 	ws_server_quit(c);
 	printf(failures ? "%d failures\n" : "window extension routines: all checks passed\n", failures);
 	return failures != 0;

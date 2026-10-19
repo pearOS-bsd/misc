@@ -15,7 +15,6 @@ static const gen_entry gen_table[] = {
 	{ 29027, 60, 1, 1, 36 },   /* __XTBConfigureQueue */
 	{ 29029, 24, 0, 0, 52 },   /* __XTBGetTotalUpdateCount */
 	{ 29033, 40, 0, 0, 56 },   /* __XDisplayCopyPreset */
-	{ 29034, 36, 0, 0, 40 },   /* __XDisplayGetActivePresetIndex */
 	{ 29037, 40, 1, 1, 36 },   /* __XEstablishBootstrapXPCServiceConnection */
 	{ 29038, 56, 1, 1, 40 },   /* __XVerifyEventAuthenticationMessageSignature */
 	{ 29040, 36, 0, 0, 56 },   /* __XDisplayCopyActivePreset */
@@ -91,15 +90,10 @@ static const gen_entry gen_table[] = {
 	{ 30492, 24, 0, 0, 44 },   /* __XGetAutomaticAppearanceScheduleOverride */
 	{ 30493, 124, 0, 0, 36 },   /* __XHWCaptureStreamCreate */
 	{ 30499, 24, 0, 0, 36 },   /* __XSecureCursorPositionTakeAssertion */
-	{ 30509, 36, 0, 0, 40 },   /* __XDisplayGetFactoryDefaultPresetIndex */
-	{ 30510, 36, 0, 0, 40 },   /* __XDisplayGetPresetCount */
 	{ 30511, 40, 0, 0, 52 },   /* __XDisplayCopyPresetUniqueID */
-	{ 30512, 40, 0, 0, 40 },   /* __XDisplayIsPresetValid */
-	{ 30513, 40, 0, 0, 40 },   /* __XDisplayIsPresetWritable */
 	{ 30514, 64, 1, 1, 36 },   /* __XDisplaySetPreset */
 	{ 30519, 56, 1, 1, 40 },   /* __XDisplayGetUserAdjustmentLuminanceCorrectionFactor */
 	{ 30523, 60, 1, 1, 36 },   /* __XDisplaySetUserAdjustment */
-	{ 30535, 36, 0, 0, 40 },   /* __XDisplayGetPreferHDR10 */
 	{ 30538, 76, 0, 0, 52 },   /* __XSelectiveSharingContextCreate */
 	{ 30539, 48, 0, 0, 36 },   /* __XSelectiveSharingContextDestroy */
 	{ 30544, 48, 0, 0, 36 },   /* __XSelectiveSharingContextStop */
@@ -181,7 +175,6 @@ static const gen_var_entry gen_var_table[] = {
 	{ 30486, 0, 36, 2 },   /* __XSetZoomDisplay */
 	{ 30496, 0, 36, 3 },   /* __XSetMenuBarVisibilityOverrideOnDisplay */
 	{ 30497, 0, 40, 3 },   /* __XGetMenuBarVisibilityOverrideOnDisplay */
-	{ 30508, 0, 36, 3 },   /* __XDisplaySetActivePresetIndex */
 	{ 30517, 0, 36, 3 },   /* __XDisplayResetPreset */
 	{ 30521, 0, 36, 3 },   /* __XSetHeadroomLimit */
 	{ 30528, 0, 36, 2 },   /* __XDisplayInvalidateUserAdjustment */
