@@ -1219,7 +1219,7 @@ void ws_display_gamma_formula(ws_server *s, const float v[9])
 	int ident = 1;
 	for (int c = 0; c < 3; c++) {
 		float mn = v[3 * c], mx = v[3 * c + 1], g = v[3 * c + 2]; if (mn != 0 || mx != 1 || g != 1) ident = 0;
-		for (int i = 0; i < 256; i++) { float o = mn + (mx - mn) * powf(i / 255.0f, g); if (o < 0) o = 0; if (o > 1) o = 1; s->gamma[c][i] = (uint8_t)(o * 255.0f + 0.5f); }
+		for (int i = 0; i < 256; i++) { float o = mn + (mx - mn) * powf(i / 255.0f, g); if (!(o >= 0)) o = 0; if (o > 1) o = 1; s->gamma[c][i] = (uint8_t)(o * 255.0f + 0.5f); }
 	}
 	s->gamma_on = !ident; bump(s);
 }
@@ -1229,7 +1229,7 @@ void ws_display_gamma_table(ws_server *s, const float *t, int count)
 	int n = count % 3 == 0 && count >= 3 ? count / 3 : count, chans = count % 3 == 0 && count >= 3 ? 3 : 1; if (n < 1) return;
 	for (int c = 0; c < 3; c++) for (int i = 0; i < 256; i++) {
 		const float *tab = t + (chans == 3 ? c * n : 0); float pos = n > 1 ? i / 255.0f * (n - 1) : 0; int k = (int)pos; float f = pos - k, a = tab[k], b = tab[k + 1 < n ? k + 1 : k], o = a + (b - a) * f;
-		if (o < 0) o = 0; if (o > 1) o = 1; s->gamma[c][i] = (uint8_t)(o * 255.0f + 0.5f);
+		if (!(o >= 0)) o = 0; if (o > 1) o = 1; s->gamma[c][i] = (uint8_t)(o * 255.0f + 0.5f);
 	}
 	s->gamma_on = 1; bump(s);
 }
