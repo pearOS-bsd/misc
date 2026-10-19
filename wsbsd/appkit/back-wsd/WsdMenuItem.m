@@ -102,3 +102,42 @@ static void wsdItemSize(NSMenuView *self, SEL _cmd)
 	if ((m = class_getInstanceMethod([NSMenuView class], @selector(sizeToFit)))) origSize = method_setImplementation(m, (IMP)wsdItemSize);
 }
 @end
+
+/* NSMenuItemBadge (macOS 14): a count, a string or a typed count at the trailing edge of the row, drawn as a pill (updates grey, new items blue, alerts red) after the cell is drawn.
+ * The colours and sizes are estimated, not measured on a Mac yet. */
+@interface NSMenuItemBadge : NSObject <NSCopying> { NSInteger _count; NSInteger _type; NSString *_string; } @end
+@implementation NSMenuItemBadge
+- (id)initWithCount:(NSInteger)c type:(NSInteger)t { if ((self = [super init])) { _count = c; _type = t; _string = [[NSString stringWithFormat: @"%ld", (long)c] retain]; } return self; }
+- (id)initWithCount:(NSInteger)c { return [self initWithCount: c type: 0]; }
+- (id)initWithString:(NSString *)s { if ((self = [super init])) _string = [s copy]; return self; }
++ (id)updatesWithCount:(NSInteger)c { return [[[self alloc] initWithCount: c type: 1] autorelease]; }
++ (id)newItemsWithCount:(NSInteger)c { return [[[self alloc] initWithCount: c type: 2] autorelease]; }
++ (id)alertsWithCount:(NSInteger)c { return [[[self alloc] initWithCount: c type: 3] autorelease]; }
+- (NSInteger)itemCount { return _count; }
+- (NSInteger)type { return _type; }
+- (NSString *)stringValue { return _string; }
+- (id)copyWithZone:(NSZone *)z { return [self retain]; }
+- (void)dealloc { [_string release]; [super dealloc]; }
+@end
+static char kBadge;
+@implementation NSMenuItem (WsdMenuItemBadge)
+- (NSMenuItemBadge *)badge { return objc_getAssociatedObject(self, &kBadge); }
+- (void)setBadge:(NSMenuItemBadge *)b { objc_setAssociatedObject(self, &kBadge, b, OBJC_ASSOCIATION_RETAIN_NONATOMIC); [[self menu] itemChanged: self]; }
+@end
+static IMP origCellDraw;
+static void wsdCellDraw(NSMenuItemCell *self, SEL _cmd, NSRect f, NSView *v)
+{
+	((void (*)(id, SEL, NSRect, NSView *))origCellDraw)(self, _cmd, f, v);
+	NSMenuItemBadge *b = [[self menuItem] badge]; if (!b || ![b stringValue]) return;
+	NSDictionary *at = [NSDictionary dictionaryWithObjectsAndKeys: [NSFont systemFontOfSize: 11], NSFontAttributeName, [NSColor whiteColor], NSForegroundColorAttributeName, nil];
+	NSSize ts = [[b stringValue] sizeWithAttributes: at];
+	CGFloat w = fmax(16, ts.width + 10), h = 16;
+	NSRect pill = NSMakeRect(NSMaxX(f) - w - 10, NSMidY(f) - h / 2, w, h);
+	NSColor *col = [b type] == 3 ? [NSColor colorWithCalibratedRed: 1.0 green: 0.27 blue: 0.23 alpha: 1] : [b type] == 2 ? [NSColor colorWithCalibratedRed: 0.0 green: 0.48 blue: 1.0 alpha: 1] : [NSColor colorWithCalibratedWhite: 0.55 alpha: 1];
+	[col set]; [[NSBezierPath bezierPathWithRoundedRect: pill xRadius: h / 2 yRadius: h / 2] fill];
+	[[b stringValue] drawAtPoint: NSMakePoint(NSMidX(pill) - ts.width / 2, NSMidY(pill) - ts.height / 2) withAttributes: at];
+}
+@interface WsdMenuBadgeInit : NSObject @end
+@implementation WsdMenuBadgeInit
++ (void)load { Method m = class_getInstanceMethod([NSMenuItemCell class], @selector(drawWithFrame:inView:)); if (m) origCellDraw = method_setImplementation(m, (IMP)wsdCellDraw); }
+@end
