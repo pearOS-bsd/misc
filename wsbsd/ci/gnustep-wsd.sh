@@ -32,6 +32,8 @@ cc -fobjc-arc -o test_gesture test/test_gesture.m $(gnustep-config --objc-flags)
 timeout 60 ./test_gesture 2>&1 | grep -v 'time zone' | tail -5 | tee /tmp/gesture.log; grep -q 'gesture ok' /tmp/gesture.log || { echo 'GESTURE TEST FAILED'; exit 1; }
 cc -fobjc-arc -o test_controls test/test_controls.m $(gnustep-config --objc-flags) $(gnustep-config --gui-libs) 2>&1 | grep error
 timeout 60 ./test_controls 2>&1 | grep -v 'time zone' | tail -5 | tee /tmp/controls.log; grep -q 'controls ok' /tmp/controls.log || { echo 'CONTROLS TEST FAILED'; exit 1; }
+cc -fobjc-arc -o test_tabbing test/test_tabbing.m $(gnustep-config --objc-flags) $(gnustep-config --gui-libs) 2>&1 | grep error
+timeout 60 ./test_tabbing 2>&1 | grep -v 'time zone' | tail -5 | tee /tmp/tabbing.log; grep -q 'tabbing ok' /tmp/tabbing.log || { echo 'TABBING TEST FAILED'; exit 1; }
 (WSD_DEBUG=1 timeout 60 lldb -b -o 'run -HelloSeconds 18' -o 'bt' -o 'quit' -- ./hello >/tmp/hello.log 2>&1) &
 HP=$!
 sleep 4
