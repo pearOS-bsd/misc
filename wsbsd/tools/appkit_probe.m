@@ -14,6 +14,6 @@ int main(int argc, char **argv) { @autoreleasepool { [NSApplication sharedApplic
 	}
 	printf("selectors answered by the runtime: %ld of %ld = %.1f %%\n", H, T, 100.0 * H / (T ? T : 1));
 	if (argc > 2 && strcmp(argv[2], "-")) { printf("%s missing: %s\n", argv[2], [[miss[[NSString stringWithUTF8String: argv[2]]] componentsJoinedByString: @" "] UTF8String]); return 0; }
-	NSArray *ks = [tot keysSortedByValueUsingComparator: ^NSComparisonResult(id a, id b) { return [@([tot[b] intValue] - [have[b] intValue]) compare: @([tot[a] intValue] - [have[a] intValue])]; }];
-	for (NSString *k in [ks subarrayWithRange: NSMakeRange(0, MIN(30, [ks count]))]) printf("%-34s apple %4d  answered %4d\n", [k UTF8String], [tot[k] intValue], [have[k] intValue]);
+	NSArray *ks = [[tot allKeys] sortedArrayUsingComparator: ^NSComparisonResult(id a, id b) { return [@([tot[b] intValue] - [have[b] intValue]) compare: @([tot[a] intValue] - [have[a] intValue])]; }];   /* most missing first */
+	for (NSString *k in [ks subarrayWithRange: NSMakeRange(0, MIN(45, [ks count]))]) printf("%-34s apple %4d  answered %4d\n", [k UTF8String], [tot[k] intValue], [have[k] intValue]);
 } return 0; }
