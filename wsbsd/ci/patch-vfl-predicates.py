@@ -9,6 +9,7 @@ s = open(path).read()
 if "GSVFLUnpack" in s:
     sys.exit(0)
 
+
 helper = """static void
 GSVFLUnpack(id spacing, CGFloat defaultConstant, CGFloat *constant,
             NSLayoutRelation *relation, NSNumber **priority)
@@ -159,4 +160,7 @@ old = "  [_constraints addObject: trailingConstraintToSuperview];"
 new = "  if (spacingPriority) [trailingConstraintToSuperview setPriority: [spacingPriority doubleValue]];\n  [_constraints addObject: trailingConstraintToSuperview];"
 assert old in s
 s = s.replace(old, new, 1)
+# the engine solves Cocoa's way (ci/patch-autolayout-vertical.py: Top and Bottom grow downwards): the vertical spacings of a connection are no longer negated
+import re as _re
+s = _re.sub(r"\(_isVerticalOrientation\s*\?\s*-viewSpacingConstant\s*:\s*viewSpacingConstant\)", "viewSpacingConstant", s)
 open(path, "w").write(s)
