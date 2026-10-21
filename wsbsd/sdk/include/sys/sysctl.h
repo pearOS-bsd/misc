@@ -5,7 +5,6 @@
 #if defined(__FreeBSD__)
 #include <sys/types.h>
 #include <sys/param.h>
-#include <sys/user.h>
 #ifdef __cplusplus
 extern "C" {
 #endif

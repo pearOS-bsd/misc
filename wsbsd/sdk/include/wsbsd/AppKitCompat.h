@@ -89,30 +89,30 @@ extern const CGAffineTransform CGAffineTransformIdentity;
 #define NSPasteboardNameRuler NSRulerPboard
 #endif
 #ifndef NSBezelStyleRounded
-#define NSBezelStyleRounded 1
-#define NSBezelStyleRegularSquare 2
-#define NSBezelStyleShadowlessSquare 6
-#define NSBezelStyleCircular 7
-#define NSBezelStyleTexturedSquare 8
-#define NSBezelStyleHelpButton 9
-#define NSBezelStyleSmallSquare 10
-#define NSBezelStyleTexturedRounded 11
-#define NSBezelStyleRoundRect 12
-#define NSBezelStyleRecessed 13
-#define NSBezelStyleRoundedDisclosure 14
-#define NSBezelStyleInline 15
+#define NSBezelStyleRounded ((NSBezelStyle)1)
+#define NSBezelStyleRegularSquare ((NSBezelStyle)2)
+#define NSBezelStyleShadowlessSquare ((NSBezelStyle)6)
+#define NSBezelStyleCircular ((NSBezelStyle)7)
+#define NSBezelStyleTexturedSquare ((NSBezelStyle)8)
+#define NSBezelStyleHelpButton ((NSBezelStyle)9)
+#define NSBezelStyleSmallSquare ((NSBezelStyle)10)
+#define NSBezelStyleTexturedRounded ((NSBezelStyle)11)
+#define NSBezelStyleRoundRect ((NSBezelStyle)12)
+#define NSBezelStyleRecessed ((NSBezelStyle)13)
+#define NSBezelStyleRoundedDisclosure ((NSBezelStyle)14)
+#define NSBezelStyleInline ((NSBezelStyle)15)
 #endif
 #ifndef NSButtonTypeMomentaryChange
-#define NSButtonTypeMomentaryLight 0
-#define NSButtonTypePushOnPushOff 1
-#define NSButtonTypeToggle 2
-#define NSButtonTypeSwitch 3
-#define NSButtonTypeRadio 4
-#define NSButtonTypeMomentaryChange 5
-#define NSButtonTypeOnOff 6
-#define NSButtonTypeMomentaryPushIn 7
-#define NSButtonTypeAccelerator 8
-#define NSButtonTypeMultiLevelAccelerator 9
+#define NSButtonTypeMomentaryLight ((NSButtonType)0)
+#define NSButtonTypePushOnPushOff ((NSButtonType)1)
+#define NSButtonTypeToggle ((NSButtonType)2)
+#define NSButtonTypeSwitch ((NSButtonType)3)
+#define NSButtonTypeRadio ((NSButtonType)4)
+#define NSButtonTypeMomentaryChange ((NSButtonType)5)
+#define NSButtonTypeOnOff ((NSButtonType)6)
+#define NSButtonTypeMomentaryPushIn ((NSButtonType)7)
+#define NSButtonTypeAccelerator ((NSButtonType)8)
+#define NSButtonTypeMultiLevelAccelerator ((NSButtonType)9)
 #endif
 #ifndef NSSegmentStyleSeparated
 #define NSSegmentStyleSeparated 8
@@ -493,4 +493,5 @@ extern NSString *NSWorkspaceDidRenameVolumeNotification;
 @interface NSFileManager (WsbsdTrash)
 - (BOOL)trashItemAtURL:(NSURL *)url resultingItemURL:(NSURL **)outResultingURL error:(NSError **)error;
 @end
+#import <wsbsd/AppKitCompat2.h>
 #endif

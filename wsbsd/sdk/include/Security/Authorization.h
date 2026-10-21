@@ -16,10 +16,12 @@ typedef AuthorizationItemSet AuthorizationRights;
 typedef AuthorizationItemSet AuthorizationEnvironment;
 typedef struct { char bytes[32]; } AuthorizationExternalForm;
 enum { errAuthorizationSuccess = 0, errAuthorizationInvalidSet = -60001, errAuthorizationInvalidRef = -60002, errAuthorizationDenied = -60005, errAuthorizationCanceled = -60006,
-       errAuthorizationInternal = -60008, errAuthorizationToolExecuteFailure = -60031 };
+       errAuthorizationInternal = -60008, errAuthorizationInteractionNotAllowed = -60007, errAuthorizationToolExecuteFailure = -60031 };
 enum { kAuthorizationFlagDefaults = 0, kAuthorizationFlagInteractionAllowed = 1, kAuthorizationFlagExtendRights = 2, kAuthorizationFlagPartialRights = 4,
        kAuthorizationFlagDestroyRights = 8, kAuthorizationFlagPreAuthorize = 16 };
 #define kAuthorizationEmptyEnvironment NULL
+#include <stdlib.h>
+static inline OSStatus AuthorizationFreeItemSet(AuthorizationItemSet *set) { if (!set) return errAuthorizationInvalidSet; free(set->items); free(set); return errAuthorizationSuccess; }
 #define kAuthorizationRightExecute "system.privilege.admin"
 static inline OSStatus AuthorizationCreate(const AuthorizationRights *r, const AuthorizationEnvironment *e, AuthorizationFlags f, AuthorizationRef *a) { (void)r; (void)e; (void)f; if (a) *a = 0; return errAuthorizationInternal; }
 static inline OSStatus AuthorizationFree(AuthorizationRef a, AuthorizationFlags f) { (void)a; (void)f; return errAuthorizationInvalidRef; }

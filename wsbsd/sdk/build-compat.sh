@@ -10,9 +10,10 @@ clang $F -fobjc-arc -c "$D/src/AppKitCompat.m" -o "$OUT/AppKitCompat.o" 2>&1 | g
 clang $F -fobjc-arc -c "$D/src/AppKitAnimation.m" -o "$OUT/AppKitAnimation.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/AppKitLayers.m" -o "$OUT/AppKitLayers.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/FSEvents.m" -o "$OUT/FSEvents.o" 2>&1 | grep -E "error" | head
+clang $F -fobjc-arc -c "$D/src/AppKitCompat2.m" -o "$OUT/AppKitCompat2.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/SystemFrameworks.m" -o "$OUT/SystemFrameworks.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/Quarantine.m" -o "$OUT/Quarantine.o" 2>&1 | grep -E "error" | head
-for c in xattr DiskArb UTType FileManager Security CoreServicesMisc ProcCompat CopyFile; do clang $F -c "$D/src/$c.c" -o "$OUT/$c.o" 2>&1 | grep -E "error" | head; done
+for c in xattr DiskArb UTType FileManager Security CoreServicesMisc ProcCompat CopyFile SecurityConstants; do clang $F -c "$D/src/$c.c" -o "$OUT/$c.o" 2>&1 | grep -E "error" | head; done
 clang $F $(pkg-config --cflags cairo fontconfig freetype2) -c "$D/src/CoreTextFixes.c" -o "$OUT/CoreTextFixes.o" 2>&1 | grep -E "error" | head
 clang $F -fno-objc-arc -c "$D/src/Constants.m" -o "$OUT/Constants.o" 2>&1 | grep -E "error" | head
 clang -shared -o "$OUT/libwsbsdcompat.so" "$OUT"/*.o -L"$OUT" -lQuartzCore $(gnustep-config --gui-libs) -lopal -lgnustep-corebase $(pkg-config --libs cairo fontconfig freetype2) 2>&1 | grep -E "error|undefined" | head
