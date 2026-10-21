@@ -371,3 +371,20 @@ static char kTACHidden;
 
 #import <QuickLook/QuickLook.h>
 CGImageRef QLThumbnailImageCreate(CFAllocatorRef a, CFURLRef u, CGSize s, CFDictionaryRef o) { (void)a; (void)u; (void)s; (void)o; return NULL; }
+
+@implementation NSData (WsbsdRanges)
+- (void)enumerateByteRangesUsingBlock:(void (^)(const void *, NSRange, BOOL *))block { BOOL stop = NO; block([self bytes], NSMakeRange(0, [self length]), &stop); }      /* the data is one contiguous range */
+@end
+@implementation NSWorkspace (WsbsdBundleLookup)
+- (NSURL *)URLForApplicationWithBundleIdentifier:(NSString *)bid
+{
+	for (NSString *dir in @[ @"/Applications", [NSHomeDirectory() stringByAppendingPathComponent: @"Applications"], @"/System/Applications", @"/usr/local/GNUstep/Local/Applications" ])
+		for (NSString *f in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: dir error: NULL]) {
+			if (![f hasSuffix: @".app"]) continue; NSString *p = [dir stringByAppendingPathComponent: f];
+			if ([[[NSBundle bundleWithPath: p] bundleIdentifier] isEqual: bid]) return [NSURL fileURLWithPath: p];
+		}
+	return nil;
+}
+@end
+NSString *const NSWorkspaceLaunchConfigurationArguments = @"NSWorkspaceLaunchConfigurationArguments";
+NSString *const NSWorkspaceLaunchConfigurationEnvironment = @"NSWorkspaceLaunchConfigurationEnvironment";

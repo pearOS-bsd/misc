@@ -230,4 +230,12 @@ typedef NS_ENUM(NSInteger, NSWindowAnimationBehavior) { NSWindowAnimationBehavio
 - (BOOL)createSymbolicLinkAtURL:(NSURL *)url withDestinationURL:(NSURL *)destURL error:(NSError **)error;
 - (BOOL)getRelationship:(NSInteger *)outRelationship ofDirectory:(NSSearchPathDirectory)directory inDomain:(NSSearchPathDomainMask)domainMask toItemAtURL:(NSURL *)url error:(NSError **)error;
 @end
+
+@interface NSData (WsbsdRanges)
+- (void)enumerateByteRangesUsingBlock:(void (^)(const void *bytes, NSRange byteRange, BOOL *stop))block;
+@end
+@interface NSWorkspace (WsbsdBundleLookup)
+- (NSURL *)URLForApplicationWithBundleIdentifier:(NSString *)bundleIdentifier;
+@end
+extern NSString *const NSWorkspaceLaunchConfigurationArguments, *const NSWorkspaceLaunchConfigurationEnvironment;
 #endif
