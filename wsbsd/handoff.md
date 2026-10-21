@@ -1,0 +1,62 @@
+# Handoff wsbsd (stare la 2026-10-21, ultimul commit 32cf964)
+
+Scrie pentru sesiunea următoare. Citește întâi: `README.md`, `docs/STATUS.md`, `docs/DESIGN.md`, acest fișier. Răspunde utilizatorului în română. Regula permanentă a utilizatorului: **continuă fără întrebări**, verifică întâi `git log` și starea CI, nu porni în paralel dacă altă sesiune lucrează.
+
+## Scopul
+WindowServer + compozitor Quartz pentru FreeBSD (repo `misc/wsbsd`, git root = `/Users/alxb421/Desktop/app/misc`):
+- Să compilezi **aplicații Cocoa open-source nemodificate** de pe GitHub pe FreeBSD, care să arate ca pe Mac. Fără binare Apple rulate, fără shim Mach. UIKit e în afara scopului, SwiftUI mai târziu.
+- Server SkyLight 1:1 (protocol Mach reconstruit din decompilarea `SkyLight` cu REA/Ghidra), compozitor (software + GL/KMS), blur/Material/Liquid Glass, ferestre (resize, forme), input complet, multi-display/Spaces.
+- AppKit peste GNUstep cu back-end propriu `appkit/back-wsd` și temă macOS.
+- ISO FreeBSD cu layout macOS (`iso/`), construit local în VM și pornit în QEMU.
+- Dock/bară de sus identice cu Mac (decompilate), panourile Open/Save ca pe Mac.
+- Activele (`.car`, icns) se folosesc **direct la runtime** din fișierele Mac, niciodată copii PNG randate (utilizatorul a refuzat explicit). Binarele/activele Apple sunt permise pentru teste și active.
+- Utilizatorul vrea **implementări reale decompilate, nu placeholdere** care umflă procentele.
+
+## Ce s-a făcut (rezumat)
+SkyLight (`src/`): handlere pentru zeci de rutine (ferestre, display, spații, hotkey-uri, tap-uri, sesiuni) + golden-uri înregistrate pe un runner macOS (`docs/golden/`). Etape de compoziție software: clip global, brightness, corner round, warp/transform, gamma LUT, fade. În această sesiune, din decompilare:
+- `src/sls_sessctl.c`: CreateSession/Release/SwitchConsole/ScreenLockWindow/SleepWindows/CubeAnimation/ClientDictionary (tabel real de sesiuni), SecureEventInput, LastDeactivated, timeout/status aplicație nereceptivă, contoare de performanță, ZoomTransformPoint, preseturi display (un display, id 1), SetWindowWarp, SetWindowTransformList, SetWindowListBrightness.
+- `src/sls_space.c`: WillSwitchSpaces, ResetMenuBar, MoveManagedSpaceToDisplayIndex, MoveWindowsToManagedSpace, AddWindowsAndRemoveFromSpaces.
+- `src/sls_session.c`: SetDockRectWithReason (GetDockRect îl întoarce), RTL, cursor override, swipe direction.
+- Fuzzer: NaN în gamma reparat.
+- Teste noi în `test/test_props.c`. ID-urile scoase din acceptoarele generice sunt șterse din `tools/generic_ids.txt`, `test/generic_cases.txt`, `src/sls_generic.c` (generatorul `tools/gen_generic.py` are nevoie de un corpus decompilat care nu mai e pe disc, deci editezi de mână).
+
+AppKit (`appkit/back-wsd/*.m`, doar implementări reale; categoriile `*Placeholder` nu se numără):
+tracking areas, NSMenuItem (hidden/view/badge/section header), NSGlassEffectView (sloturi de glass în compozitor), SF Symbols ca NSImage (decodor BVG din `coreui/`), NSWorkspace lookup/open, NSTextView (constructori, ghilimele inteligente), NSDocument (duplicate/lock/move/autosave), NSViewController (ierarhie, prezentare, preferredContentSize), NSEvent monitoare locale, gesture recognizers click/pan/press, NSControl/NSButton/NSMenu, NSScrollView magnification, tab-uri de fereastră (NSWindowTabGroup + tab bar în `WsdMacTheme.m`).
+Acoperire măsurată: **72,3 %** selectoare din SDK (`tools/appkit_probe.m`; README zice 72,1 %, de actualizat). Panourile Open/Save, icon-urile din `.car` (BVG, Deepmap2), Dock (colțuri active, badge-uri), toate în `coreui/`, `dock/`.
+
+## Ce urmează (prioritate)
+1. **SkyLight rămas ~110 rutine generice** (lista reală: vezi `src/sls_generic.c`). Probabil cele mai valoroase: WindowListCreateImage/FromArray/DescriptionFromArray (32042/32044/32045) și HWCapture* (nevoie de echivalent IOSurface prin `ws_buffer`), WindowFreezeWithOptions/Thaw (30386/30387), Disable/ReenableUpdateForConnection (30036/30038), SetMagicZoom/SetZoomDisplay (zoom ecran), SetDisplayRotation/Option/ColorProfile, SpaceCreateTile/MoveSpacers/GetSizeForProposedTile, RegisterCursorImages/GetRegisteredCursorImages, SetWindowCursorRestrictionShape, SetWindowCaptureExcludeShape, DisplayStream*, ContentStream*, VirtualDisplayCreate, SetFrontProcessWithInfo, PlaceTap/ReleaseEventTap (verifică dacă nu sunt deja în `sls_tap.c`), HIDEventRecordReplay. Metoda: adresele sunt în `docs/skylight-msgid-table.txt`; `mcp__rea__open_binary` pe `scratchpad/ex/out/System/Library/PrivateFrameworks/SkyLight.framework/Versions/A/SkyLight` (extras din dyld cache; dacă dispare, refă cu `dsc_extractor.bundle`), apoi `batch_decompile` cu adrese (durează minute prima dată). Aranjamentul cererii: antet 0x18, NDR 8 B, argumente de la 0x20; coduri -304 (dimensiune greșită), -300 (descriptor/număr nepotrivit), 1000/1001 (obiect necunoscut).
+2. **AppKit**: NSTableView (style, rowSizeStyle, hideRows, moveRow), NSScreen, NSApplication activationPolicy/yield, NSTypesetter/NSTextLayoutManager (TextKit 2), NSWindow setStyleMask/titlebar accessories/isMovable, NSToolbarItemGroup, NSSplitViewItemAccessoryViewController, NSSearchToolbarItem, NSSpellChecker. Ținta: să sară peste 80 % real.
+3. Aplicații de test (`docs/`/memoria utilizatorului): Hex Fiend merge; Pashua complet; GrandPerspective 2026 desenează treemap, rămân fereastra prea lată și segmented controls goale în toolbar; Chess (Swift+GL) și TextMate neîncepute.
+4. Panou Open/Save: QuickLook, Group by, galerie, temă light, atașare sheet, animația de expand la Save, 3 deepmap2 care eșuează, LZBITMAP, rețeta exactă a paginii de document, ExecutableBinaryIcon.
+5. Dock: curba de magnificare (nu e în binarul Dock), modificatori colțuri active, stacks grid/list, Spaces/Mission Control.
+6. Dock/Liquid Glass/KMS/GPU/multi-display: vezi `docs/STATUS.md`. Lista finală text „ce lipsește WindowServer-ului” e cerută de utilizator.
+7. **Designer**: utilizatorul a comandat active noi (21.000 €, gata în ~2 săptămâni de la 2026-10-18), directorul `/Users/alxb421/Desktop/app/assets-designer/` (în afara git: `orig/`, `mod/`, inventar CSV). De făcut: script de acceptanță (compară `.car` livrat cu orig: nume, atribute, dimensiuni, lipsă/extra) și căutare `mod/` înaintea `orig/` în cod (`CarPath` din `WsdFilePanel.m`). Până atunci se folosesc `.car` originale.
+8. Dacă SIP trebuie dezactivat la ceva, spune-i utilizatorului.
+
+## Teste
+- Mac: `make check` în `misc/wsbsd` (rulează `test_bplist … test_props, test_generic, test_golden, test_shim*, vnc`, ~20 s). Fuzz cu sanitizere în CI.
+- `test/test_props.c` = locul testelor de protocol SkyLight (helpers `hdr`, `rc`, `call`; adaugă un bloc înainte de `ws_server_quit`). Un ID dedicat nou: scoate-l și din `tools/generic_ids.txt`, `test/generic_cases.txt`, `src/sls_generic.c`, altfel `test_generic` pică.
+- AppKit: `test/test_*.m` (tracking, menuitem, symbols, workspace, textview, document, viewcontroller, gesture, controls, tabbing) + demo-uri `glass_demo.m`, `symbols_demo.m`, `tabs_demo.m`. Se compilează și rulează în VM FreeBSD cu `wsd` pornit (instrucțiunile în `ci/gnustep-wsd.sh`, care le rulează în CI). Testul unui bitmap rep nu randează în back-end (cairo bitmap context gol): verifică vizual cu `wsshot`.
+- `tools/appkit_probe.m` + `tools/appkit_coverage.py` măsoară acoperirea (probă la runtime vs. headere SDK; `--placeholders` excluse). Lista Apple e `/tmp/apple_sels.txt` din VM (regenerează din headerele SDK AppKit).
+
+## VM de dezvoltare FreeBSD (arm64, QEMU)
+- Directorul `~/fbsd-vm` (`start.sh`, `start-gui.sh`, `vm.sh`, `sync.sh`, `live.sh`, `build-hf.sh`). SSH: `ssh -i ~/fbsd-vm/id_ed25519 -p 2222 root@localhost` (wrapper `ci/vm-ssh.sh`, copie a `/tmp/vmssh`; în zsh folosește un script, nu `$S`).
+- Sincronizare: `ci/vm-sync.sh.example` (rsync spre `/root/wsbsd/`, **exclude** binarele Mach-O `wsd`, `ws*`, `test_*`, `.car` mari; altfel suprascrie uneltele compilate în VM). După sync: `gmake libwsclient.a tools_all`; `rm wsd; gmake wsd` dacă trebuie repornit.
+- Back-end GNUstep: se reface cu `ci/vm-gsbuild.sh` (copiază `appkit/back-wsd/*.m` în `/tmp/gs/back/Source/headless/`, `gmake`, apoi **copiază manual** `libgnustep-back-032` în `/usr/local/GNUstep/Local/Library/Bundles/...`; `gmake install` NU copiază binarul rebuilduit). Fișier nou `.m` trebuie adăugat și în lista din `ci/gnustep-setup.sh` (sed pe `Source/headless/GNUmakefile`) și în `GNUmakefile` din VM. Setup complet de la zero: `GITHUB_WORKSPACE=/root/ws sh -c ". ci/gnustep-setup.sh"` în `/root/wsbsd`.
+- Desktop live în VM: `sh /root/live.sh` (wsd cu VNC `:5901` + Terminal). Screenshot: `WS_SOCKET=/tmp/wsd-live.sock ./wsshot x.ppm; python3 tools/ppm2png.py x.ppm x.png`, apoi `scp`. Variabile pentru programe de test: `WS_SOCKET=/tmp/wsd-live.sock HOME=/root LD_LIBRARY_PATH=/root/compat:/usr/local/GNUstep/System/Library/Libraries:/usr/local/GNUstep/Local/Library/Libraries:/usr/local/lib`. Programele GNUstep de test cer `timeout -s KILL` (altfel un dialog modal de excepție le blochează).
+- **Capcane**: `pkill sd` ucide și `wsd`/`sshd` (folosește `pkill -x NUME`); ucide GrandPerspective înainte de screenshot (panoul modal rămâne deasupra); `[NSApp finishLaunching]` în demo-uri, altfel AppKit repune prima fereastră în față; GNUstep `NSWindowAbove/Below/Out` = 0/1/2 (nu valorile Apple); `beginSheet:` din GNUstep blochează (sheet-urile noastre sunt ferestre copil); `class_replaceMethod` pe clasa însăși, niciodată `method_setImplementation` pe metodă moștenită (a stricat NSButtonCell).
+- Fișierele mari `CoreGlyphs.car` (117 MB) și `CoreTypes.car` sunt `.gitignore`-ate; stau în `/usr/local/share/wsbsd/coreui/` în VM și în `coreui/assets/` local. `Aqua.car`/`DarkAqua.car` lipsesc în VM (`coreui/test_car` pică acolo, nu contează).
+- ISO: `iso/build.sh` (macfs.py, Ploader, boot silențios), test: `~/fbsd-vm/iso-test/run.sh`. Se construiește local în VM și se deschide în QEMU; build-ul pe CI e în `.github/workflows/iso.yml` (publică release `iso-latest`).
+
+## CI/CD
+- Workflow-uri în `misc/.github/workflows/`: `wsbsd.yml` (joburi: quartzcore-macos, freebsd, freebsd-opal, macos, freebsd-gl, fuzz, freebsd-quartzcore, freebsd-appkit — acesta din urmă rulează `ci/gnustep-wsd.sh` cu toate testele AppKit, durează ~10-25 min), `iso.yml`, `macos-lab.yml`, `freebsd-explore.yml`, `vnc-session.yml`.
+- Verifică cu `gh run list -L 6` și `gh run view ID --json jobs`. Un push nou **anulează** rularea `iso` în curs (concurrency); nu împinge modificări în `iso/`, `src/`, `sdk/`, `ci/` cât timp vrei să termine un iso. Rularea `wsbsd` nu se anulează.
+- Ultima stare cunoscută: `wsbsd` verde până la commit-ul cu preseturi display; următoarele (warp/transform/brightness, spații, dock rect) rulau încă.
+- Commit-urile se termină cu: `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>` și `Claude-Session: <url sesiune>` când sistemul le dă.
+
+## Memorie și alte note
+- Memoria utilizatorului: `~/.claude/projects/-Users-alxb421-Desktop-app/memory/` (MEMORY.md + fișiere project_*/feedback_*).
+- Răspunsurile mari de REA: nu rula analiză pe fișierul original dacă expiră, copiază-l în scratchpad.
+- README conține tabelul „Estimated coverage” (SkyLight ~74 % handlere, Quartz Compositor ~35–40 %, AppKit 72,1 % real). Actualizează-l după fiecare lot.
+- Arată utilizatorului câte un screenshot din când în când (`SendUserFile`).
