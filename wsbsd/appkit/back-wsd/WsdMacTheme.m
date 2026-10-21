@@ -320,6 +320,9 @@ static NSRect wsdConstrain(id self, SEL _cmd, NSRect f, NSScreen *scr)
 	NSRect sf = scr ? [scr frame] : NSMakeRect(0, 0, 1280, 800);
 	CGFloat top = NSMaxY(sf) - 30.0;
 	if (NSMaxY(f) > top) f.origin.y -= NSMaxY(f) - top;
+	if (f.size.width > sf.size.width) f.size.width = sf.size.width;             /* wider than the screen: shrunk to it; otherwise moved back onto it */
+	if (NSMaxX(f) > NSMaxX(sf)) f.origin.x = NSMaxX(sf) - f.size.width;
+	if (f.origin.x < sf.origin.x) f.origin.x = sf.origin.x;
 	return f;
 }
 static void swizzleTableDefaults(void)
