@@ -12,6 +12,8 @@ typedef struct { LSItemInfoFlags flags; uint32_t filetype; uint32_t creator; CFS
 enum { kClippingTextType = 0x63706c74 };
 int32_t LSOpenURLsWithRole(CFArrayRef inURLs, LSRolesMask inRole, const void *inAEParam, const void *inAppParams, CFArrayRef *outLaunchedURLs, CFIndex inMaxLaunchedURLs);
 int32_t LSCopyItemInfoForURL(CFURLRef inURL, LSRequestedInfo inWhichInfo, LSItemInfoRecord *outItemInfo);
+OSStatus LSSetDefaultHandlerForURLScheme(CFStringRef inURLScheme, CFStringRef inHandlerBundleID);
+CFStringRef LSCopyDefaultHandlerForURLScheme(CFStringRef inURLScheme);
 #ifdef __cplusplus
 }
 #endif

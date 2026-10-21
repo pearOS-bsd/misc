@@ -36,6 +36,13 @@ extern "C" {
 #endif
 size_t wsbsd_confstr(int name, char *buf, size_t len);
 int exchangedata(const char *path1, const char *path2, unsigned int options);
+#ifndef O_EVTONLY
+#define O_EVTONLY O_RDONLY            /* a descriptor opened only to watch the file (kqueue vnode events work on a read-only one) */
+#endif
+char *basename_r(const char *path, char *bname);          /* Darwin's reentrant basename / dirname: the result goes to the caller's buffer (PATH_MAX) */
+char *dirname_r(const char *path, char *dname);
+struct timespec;
+int gethostuuid(unsigned char uuid[16], const struct timespec *wait);               /* the machine's hardware UUID: kern.hostuuid */
 #ifdef __cplusplus
 }
 #endif
@@ -44,6 +51,18 @@ int exchangedata(const char *path1, const char *path2, unsigned int options);
 #define properties wsbsd_libutil_properties
 #include <libutil.h>
 #undef properties
+#ifndef WEAK_IMPORT_ATTRIBUTE
+#define WEAK_IMPORT_ATTRIBUTE __attribute__((weak))        /* Apple's weak_import: an ELF weak reference */
+#endif
+#ifdef __cplusplus
+/* libdispatch types the main queue and the global queues as unrelated classes in C++; Apple's headers make them subclasses of dispatch_queue_t, so `cond ? main : global` compiles there */
+#include <dispatch/dispatch.h>
+static inline dispatch_queue_t wsbsd_main_queue(void) { return (dispatch_queue_t)dispatch_get_main_queue(); }
+static inline dispatch_queue_t wsbsd_global_queue(long p, unsigned long f) { return (dispatch_queue_t)dispatch_get_global_queue(p, f); }
+#undef dispatch_get_main_queue
+#define dispatch_get_main_queue() wsbsd_main_queue()
+#define dispatch_get_global_queue(p, f) wsbsd_global_queue(p, f)
+#endif
 /* nullability keywords of Apple's SDK spelt with underscores */
 #ifndef __nullable
 #define __nullable _Nullable

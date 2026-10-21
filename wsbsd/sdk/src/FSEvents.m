@@ -116,3 +116,15 @@ Boolean SMJobBless(CFStringRef d, CFStringRef l, AuthorizationRef a, CFErrorRef 
 CFDictionaryRef SMJobCopyDictionary(CFStringRef d, CFStringRef l) { (void)d; (void)l; return NULL; }
 Boolean SMJobRemove(CFStringRef d, CFStringRef l, AuthorizationRef a, Boolean w, CFErrorRef *e) { (void)d; (void)l; (void)a; (void)w; if (e) *e = NULL; return false; }
 
+
+/* paths relative to a device: the device's mount point is put in front of each */
+#include <sys/mount.h>
+#include <sys/stat.h>
+FSEventStreamRef FSEventStreamCreateRelativeToDevice(CFAllocatorRef a, FSEventStreamCallback cb, FSEventStreamContext *ctx, dev_t dev, CFArrayRef rel, FSEventStreamEventId since, CFTimeInterval latency, uint32_t flags)
+{
+	struct statfs *fs; int n = getmntinfo(&fs, MNT_NOWAIT); NSString *root = nil;
+	for (int i = 0; i < n; i++) { struct stat st; if (stat(fs[i].f_mntonname, &st) == 0 && st.st_dev == dev) { root = [NSString stringWithUTF8String: fs[i].f_mntonname]; break; } }
+	if (!root) return NULL;
+	NSMutableArray *abs = [NSMutableArray array]; for (NSString *p in (__bridge NSArray *)rel) [abs addObject: [root stringByAppendingPathComponent: p]];
+	return FSEventStreamCreate(a, cb, ctx, (__bridge CFArrayRef)abs, since, latency, flags);
+}

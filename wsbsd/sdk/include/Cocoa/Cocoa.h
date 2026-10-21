@@ -6,4 +6,5 @@
 #if __has_include(<CoreText/CoreText.h>)
 #import <CoreText/CoreText.h>
 #endif
+#import <wsbsd/CGEvent.h>
 #import <wsbsd/AppKitCompat.h>

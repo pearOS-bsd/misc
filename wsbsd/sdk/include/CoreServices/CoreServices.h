@@ -29,7 +29,7 @@ CFStringRef UTTypeCopyDescription(CFStringRef inUTI);
 extern const CFStringRef kUTTypeDescriptionKey, kUTTypeConformsToKey, kUTTypeIdentifierKey, kUTTypeTagSpecificationKey;
 extern const CFStringRef kUTTagClassFilenameExtension;
 extern const CFStringRef kUTTagClassMIMEType;
-extern const CFStringRef kUTTypeData, kUTTypeItem, kUTTypeContent, kUTTypePlainText, kUTTypeText, kUTTypeApplicationBundle, kUTTypeFolder, kUTTypeDirectory, kUTTypeBundle;
+extern const CFStringRef kUTTypeRTF, kUTTypeHTML, kUTTypeXML, kUTTypeImage, kUTTypePNG, kUTTypeJPEG, kUTTypeGIF, kUTTypeTIFF, kUTTypePDF, kUTTypeSourceCode, kUTTypeUTF8PlainText, kUTTypeURL, kUTTypeData, kUTTypeItem, kUTTypeContent, kUTTypePlainText, kUTTypeText, kUTTypeApplicationBundle, kUTTypeFolder, kUTTypeDirectory, kUTTypeBundle;
 /* Launch Services: no application database; the lookups find nothing */
 typedef uint32_t LSRolesMask;
 enum { kLSRolesNone = 1, kLSRolesViewer = 2, kLSRolesEditor = 4, kLSRolesShell = 8, kLSRolesAll = (int)0xFFFFFFFF };
@@ -67,6 +67,7 @@ enum { noErr = 0, userCanceledErr = -128, fnfErr = -43, paramErr = -50, permErr 
 #endif
 #include <CoreServices/Gestalt.h>
 #include <CoreServices/LaunchServices.h>
+#include <CoreServices/IconsCore.h>
 #include <CoreServices/ResourceManager.h>
 #include <CoreFoundation/CFUserNotification.h>
 #include <CoreFoundation/CFPreferences.h>

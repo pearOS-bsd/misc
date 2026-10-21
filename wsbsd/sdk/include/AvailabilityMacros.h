@@ -1,6 +1,9 @@
 /* <AvailabilityMacros.h>: the version constants; this SDK behaves as a recent macOS. */
 #ifndef WSBSD_AVAILABILITYMACROS_H
 #define WSBSD_AVAILABILITYMACROS_H
+#ifndef WEAK_IMPORT_ATTRIBUTE
+#define WEAK_IMPORT_ATTRIBUTE __attribute__((weak))        /* an ELF weak reference: the symbol may be missing at run time */
+#endif
 #define MAC_OS_X_VERSION_10_0 1000
 #define MAC_OS_X_VERSION_10_1 1010
 #define MAC_OS_X_VERSION_10_2 1020
