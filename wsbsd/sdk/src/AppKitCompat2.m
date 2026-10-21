@@ -370,7 +370,6 @@ static char kTACHidden;
 @end
 
 #import <QuickLook/QuickLook.h>
-CGImageRef QLThumbnailImageCreate(CFAllocatorRef a, CFURLRef u, CGSize s, CFDictionaryRef o) { (void)a; (void)u; (void)s; (void)o; return NULL; }
 
 @implementation NSData (WsbsdRanges)
 - (void)enumerateByteRangesUsingBlock:(void (^)(const void *, NSRange, BOOL *))block { BOOL stop = NO; block([self bytes], NSMakeRange(0, [self length]), &stop); }      /* the data is one contiguous range */

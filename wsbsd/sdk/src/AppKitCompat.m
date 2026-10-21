@@ -555,16 +555,6 @@ static const char tolKey;
 - (void)setTolerance:(NSTimeInterval)t { setAssoc(self, &tolKey, [NSNumber numberWithDouble: t]); }
 @end
 
-/* ---- the QuickLook panel: a class that accepts its settings and does nothing (Core Animation is the QuartzCore of this stack, see quartzcore/) ---- */
-#import <Quartz/Quartz.h>
-@implementation QLPreviewPanel
-@synthesize dataSource, delegate, currentPreviewItemIndex;
-+ (QLPreviewPanel *)sharedPreviewPanel { static QLPreviewPanel *p; if (!p) p = [[QLPreviewPanel alloc] initWithContentRect: NSMakeRect(0, 0, 400, 300) styleMask: NSTitledWindowMask | NSClosableWindowMask backing: NSBackingStoreBuffered defer: YES]; return p; }
-+ (BOOL)sharedPreviewPanelExists { return NO; }
-- (void)reloadData {}
-- (void)refreshCurrentPreviewItem {}
-@end
-
 @implementation NSSearchField (WsbsdSearch)
 static const char sendsWholeKey, sendsImmKey;
 - (BOOL)sendsWholeSearchString { return [(NSNumber *)getAssoc(self, &sendsWholeKey) boolValue]; }

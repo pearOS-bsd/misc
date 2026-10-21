@@ -1,5 +1,4 @@
-/* <Quartz/Quartz.h>: on Apple the umbrella of QuartzCore, ImageKit, PDFKit, QuickLookUI and QuartzFilters. Here AppKit, the Core Animation names (QuartzCore/QuartzCore.h) and a QuickLook panel
- * that does not preview anything (the preview window never appears; an application asking for it is told it is not available). */
+/* <Quartz/Quartz.h>: on Apple the umbrella of QuartzCore, ImageKit, PDFKit, QuickLookUI and QuartzFilters. Here AppKit, the Core Animation names (QuartzCore/QuartzCore.h) and the QuickLook preview panel (sdk/src/QuickLook.m). */
 #ifndef WSBSD_QUARTZ_H
 #define WSBSD_QUARTZ_H
 #import <Cocoa/Cocoa.h>
@@ -25,6 +24,8 @@
 @property NSInteger currentPreviewItemIndex;
 + (QLPreviewPanel *)sharedPreviewPanel;
 + (BOOL)sharedPreviewPanelExists;
+@property (readonly) id<QLPreviewItem> currentPreviewItem;
+@property (readonly) id currentController;
 - (void)reloadData;
 - (void)refreshCurrentPreviewItem;
 @end

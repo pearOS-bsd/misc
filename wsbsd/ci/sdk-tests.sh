@@ -11,7 +11,8 @@ export CPATH="$O/cfwrap${CPATH:+:$CPATH}"
 sh "$WS/sdk/build-compat.sh" $O 2>&1 | tail -4
 GSL="$(gnustep-config --gui-libs)"
 FAIL=0
-for t in rep_draw anim_test layer_demo sys_tests; do
+export WSBSD_SDK_INCLUDE="$WS/sdk/include" WSBSD_QL_CFLAGS="-I$O/cfwrap $(gnustep-config --objc-flags | tr '\n' ' ')"
+for t in rep_draw anim_test layer_demo sys_tests ql_tests; do
 	clang -x objective-c -fblocks -w -fobjc-arc -I$O/cfwrap -I"$WS/quartzcore/include" -I"$WS/sdk/include" -include "$WS/sdk/include/wsbsd/prelude.h" $(gnustep-config --objc-flags) "$WS/sdk/tests/$t.m" -o $O/$t \
 		-L$O -lwsbsdcompat -lQuartzCore -Wl,-rpath,$O $GSL -lopal -lgnustep-corebase -ldispatch -lcrypto 2>&1 | grep error | head -3
 	[ -x $O/$t ] || { echo "SDK TEST $t: did not build"; FAIL=1; continue; }
