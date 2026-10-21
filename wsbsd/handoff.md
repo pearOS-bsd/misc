@@ -90,3 +90,6 @@ Acoperire măsurată: **72,3 %** selectoare din SDK (`tools/appkit_probe.m`; REA
 
 ## Cerință obligatorie nouă (2026-10-22): CoreWLAN + airportd
 CoreWLAN.framework (CWWiFiClient, CWInterface, CWNetwork, CWConfiguration...) și airportd, pentru conectare seamless la wifi și detecție hotspot. Decompilat cu REA de pe acest Mac și reimplementat 1:1 (clase, selectori, protocol XPC, coduri de eroare, notificări); pe FreeBSD peste wpa_supplicant / net80211. Status 0 %, planul e în README ("Required next"). README are acum și procentele pe subsisteme.
+
+## AirDrop + regula de oglindire a căilor (2026-10-22)
+După CoreWLAN: AirDrop (sharingd, NSSharingService), tot prin decompilare REA; referință: github.com/BenItBuhner/AirDrop-for-Everything. Regulă: orice există sub /System, /Library, /usr/libexec, /Applications pe acest Mac trebuie să existe la aceeași cale pe BSD (ex. /System/Library/Frameworks/CoreWLAN.framework, /usr/libexec/airportd). Instalările noi și `iso/build.sh` folosesc căile Mac.
