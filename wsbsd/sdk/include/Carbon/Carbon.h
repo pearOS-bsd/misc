@@ -20,4 +20,14 @@ enum {
 	kVK_F10 = 0x6D, kVK_F12 = 0x6F, kVK_F15 = 0x71, kVK_Help = 0x72, kVK_Home = 0x73, kVK_PageUp = 0x74, kVK_ForwardDelete = 0x75, kVK_F4 = 0x76, kVK_End = 0x77, kVK_F2 = 0x78, kVK_PageDown = 0x79, kVK_F1 = 0x7A,
 	kVK_LeftArrow = 0x7B, kVK_RightArrow = 0x7C, kVK_DownArrow = 0x7D, kVK_UpArrow = 0x7E, kVK_ISO_Section = 0x0A
 };
+/* symbolic hot keys (Carbon's key equivalent capture): nothing intercepts the system shortcuts here, so pushing a mode is a no-op */
+enum { kHIHotKeyModeAllEnabled = 0, kHIHotKeyModeAllDisabled = 1, kHIHotKeyModeAllDisabledExceptUniversalAccess = 2 };
+#ifdef __cplusplus
+extern "C" {
+#endif
+void *PushSymbolicHotKeyMode(uint32_t inOptions);
+void PopSymbolicHotKeyMode(void *inToken);
+#ifdef __cplusplus
+}
+#endif
 #endif

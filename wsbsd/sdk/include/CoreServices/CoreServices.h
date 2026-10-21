@@ -48,7 +48,7 @@ enum { procNotFound = -600 };
 OSStatus GetProcessForPID(pid_t pid, ProcessSerialNumber *psn);
 OSStatus CopyProcessName(const ProcessSerialNumber *psn, CFStringRef *name);
 /* the type codes of the icons of Icon Services (for -[NSWorkspace iconForFileType:] with NSFileTypeForHFSTypeCode) */
-enum { kToolbarHomeIcon = 'tHom', kLockedIcon = 'lock', kUnlockedIcon = 'ulck', kToolbarDeleteIcon = 'tDel', kToolbarInfoIcon = 'tInf', kGenericFolderIcon = 'fldr', kGenericApplicationIcon = 'APPL' };
+enum { kToolbarHomeIcon = 'tHom', kLockedIcon = 'lock', kUnlockedIcon = 'ulck', kToolbarDeleteIcon = 'tDel', kToolbarInfoIcon = 'tInf', kGenericFolderIcon = 'fldr', kGenericApplicationIcon = 'APPL', kUnknownFSObjectIcon = 'unfs', kGenericFileServerIcon = 'srvr', kInternetLocationGenericIcon = 'gnrl' };
 #ifdef __cplusplus
 }
 #endif

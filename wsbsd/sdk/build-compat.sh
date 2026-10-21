@@ -19,6 +19,8 @@ clang $F -fobjc-arc -c "$D/src/RunningApplication.m" -o "$OUT/RunningApplication
 clang $F -fobjc-arc -c "$D/src/Misc3.m" -o "$OUT/Misc3.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/UserNotifications.m" -o "$OUT/UserNotifications.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/NSURLSession.m" -I/usr/local/include -o "$OUT/NSURLSession.o" 2>&1 | grep -E "error" | head
+clang $F -fobjc-arc -c "$D/src/AppKitCompat3.m" -o "$OUT/AppKitCompat3.o" 2>&1 | grep -E "error" | head
+clang $F -fobjc-arc -c "$D/src/AppleEventObjects.m" -o "$OUT/AppleEventObjects.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/Keychain.m" -o "$OUT/Keychain.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/QuickLook.m" -o "$OUT/QuickLook.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/SystemFrameworks.m" -o "$OUT/SystemFrameworks.o" 2>&1 | grep -E "error" | head

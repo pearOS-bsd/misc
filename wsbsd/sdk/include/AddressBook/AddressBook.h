@@ -10,6 +10,7 @@ extern NSString *const kABLastNameProperty;
 - (id)valueAtIndex:(NSUInteger)index;
 - (NSString *)labelAtIndex:(NSUInteger)index;
 - (NSString *)primaryIdentifier;
+- (NSUInteger)indexForIdentifier:(NSString *)identifier;
 @end
 @interface ABMutableMultiValue : ABMultiValue @end
 @interface ABRecord : NSObject

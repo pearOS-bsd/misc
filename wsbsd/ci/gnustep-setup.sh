@@ -34,6 +34,8 @@ pkg install -y giflib >/dev/null 2>&1 || true
 git clone --depth 1 https://github.com/gnustep/libs-gui gui 2>&1 | tail -1
 # Auto Layout from xibs: libs-gui parses <constraint> but never builds it, and solves the vertical attributes upwards (ci/patch-*.py)
 python3 "$WS"/ci/patch-gsxib-constraints.py gui/Source/GSXib5KeyedUnarchiver.m; python3 "$WS"/ci/patch-autolayout-vertical.py gui/Source/GSAutoLayoutEngine.m
+python3 "$WS"/ci/patch-gui-types.py gui/Headers/AppKit   # the typed returns Apple declares (contentView, cell, itemArray ...)
+python3 "$WS"/ci/patch-menu-popup.py gui   # popUpMenuPositioningItem:... answers BOOL as on macOS
 sh "$WS"/ci/patch-nsimage-template.sh gui   # a bit field named "template" keeps Objective-C++ files from including AppKit
 (cd gui && ./configure CPPFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib" 2>&1 | tail -3 && gmake -j2 GNUSTEP_INSTALLATION_DOMAIN=SYSTEM 2>&1 | grep -E "error|Error" | head -10; gmake install GNUSTEP_INSTALLATION_DOMAIN=SYSTEM 2>&1 | tail -2)
 git clone --depth 1 https://github.com/gnustep/libs-back back 2>&1 | tail -1

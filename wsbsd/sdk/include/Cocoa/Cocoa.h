@@ -8,3 +8,7 @@
 #endif
 #import <wsbsd/CGEvent.h>
 #import <wsbsd/AppKitCompat.h>
+#import <wsbsd/AppKitCompat3.h>
+#if !GS_HAVE_NSURLSESSION
+#import <wsbsd/NSURLSession.h>
+#endif
