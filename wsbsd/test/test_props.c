@@ -1171,6 +1171,21 @@ int main(void)
 		(void)reg;
 				memset(m, 0, sizeof m); hdr(m, 0x24, 30486, 0); CHECK(rc(fd, m, 0x24) == 0); hdr(m, 0x28, 30486, 0); CHECK(rc(fd, m, 0x28) == -304);
 	}
+	{ /* RegisterCursorImages / GetRegisteredCursorImages (decompiled): a 2 x 2 cursor registered under a name, read back (pixels, floats, descriptor list), per-connection lookups */
+		uint8_t m[0x100], rep[0x400]; uint32_t one = 1; memset(m, 0, sizeof m); hdr(m, 0x7c, 30293, 1); memcpy(m + 0x18, &one, 4); m[0x27] = 1; w32(m, 0x28, 16); w32(m, 0x38, 5); memcpy(m + 0x3c, "wscur", 5);
+		{ float f[4] = { 1, 2, 3, 4 }; memcpy(m + 0x4c, f, 16); } w32(m, 0x44 + 0x18, 1); w32(m, 0x44 + 0x20, 4);
+		w32(m, 0x44 + 0x24, 2); w32(m, 0x44 + 0x28, 2); w32(m, 0x44 + 0x2c, 0); w32(m, 0x78, 4);
+		for (int i = 0; i < 16; i++) m[0x7c + i] = (uint8_t)(0xa0 + i);
+		int gn = call(fd, m, 0x7c + 16, rep, sizeof rep); CHECK(gn == 0x28 && r32(rep, 0x20) == 0 && r32(rep, 0x24) == 0);
+		w32(m, 0x78, 5); CHECK(rc(fd, m, 0x7c + 16) == -300); w32(m, 0x78, 4); w32(m, 0x44 + 0x20, 8); CHECK(rc(fd, m, 0x7c + 16) == -304); w32(m, 0x44 + 0x20, 4);
+		w32(m, 0x44 + 0x28, 5); CHECK(rc(fd, m, 0x7c + 16) == 1001); w32(m, 0x44 + 0x28, 2);
+		uint8_t g[0x40]; memset(g, 0, sizeof g); hdr(g, 0x34, 30294, 0); w32(g, 0x24, 5); memcpy(g + 0x28, "wscur", 5); w32(g, 0x30, 0x100);
+		gn = call(fd, g, 0x34, rep, sizeof rep);
+		CHECK(gn == 0x64 + 16 && (r32(rep, 0) & 0x80000000u) && r32(rep, 0x28) == 16 && r32(rep, 0x4c) == 4 && r32(rep, 0x50) == 2 && r32(rep, 0x54) == 2 && r32(rep, 0x58) == 0 && r32(rep, 0x5c) == 4 && r32(rep, 0x60) == 16 && rep[0x64] == 0xa0 && rep[0x73] == 0xaf);
+		{ float f[4]; memcpy(f, rep + 0x34, 16); CHECK(f[0] == 1 && f[3] == 4); }
+		memcpy(g + 0x28, "nocur", 5); CHECK(rc(fd, g, 0x34) == 1007); memcpy(g + 0x28, "wscur", 5); w32(g, 0x30, 2); CHECK(rc(fd, g, 0x34) == 1001);
+		w32(g, 0x24, 0x81); CHECK(rc(fd, g, 0x34) == -304);
+	}
 	ws_server_quit(c);
 	printf(failures ? "%d failures\n" : "window extension routines: all checks passed\n", failures);
 	return failures != 0;

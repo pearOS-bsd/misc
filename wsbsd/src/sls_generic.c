@@ -145,8 +145,6 @@ static const gen_var_entry gen_var_table[] = {
 	{ 30262, 0, 36, 5 },   /* __XSetWindowRegionInline */
 	{ 30274, 0, 36, 8 },   /* __XGrantConnectionRightsOnWindowReserving */
 	{ 30284, 0, 36, 16 },   /* __XSetMagicZoom */
-	{ 30293, 0, 40, 15 },   /* __XRegisterCursorImages */
-	{ 30294, 0, 1108, 13 },   /* __XGetRegisteredCursorImages */
 	{ 30298, 0, 36, 5 },   /* __XSetSurfaceListAlpha */
 	{ 30367, 0, 36, 4 },   /* __XSetActiveMenuBarDisplayIdentifier */
 	{ 30377, 0, 36, 5 },   /* __XManagedDisplaySetRoleWindow */
