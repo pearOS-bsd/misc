@@ -1,0 +1,2748 @@
+@class CW8021XProfile : NSObject <NSCopying, NSCoding> instanceSize=48
+  ivar +8 _userDefinedName @"NSString"
+  ivar +16 _ssid @"NSString"
+  ivar +24 _username @"NSString"
+  ivar +32 _password @"NSString"
+  ivar +40 _alwaysPromptForPassword B
+  property userDefinedName (T@"NSString",C,V_userDefinedName)
+  property ssid (T@"NSString",C,V_ssid)
+  property username (T@"NSString",C,V_username)
+  property password (T@"NSString",C,V_password)
+  property alwaysPromptForPassword (TB,V_alwaysPromptForPassword)
+  +allUser8021XProfiles @16@0:8  imp=+0x1a69056e0
+  +profile @16@0:8  imp=+0x1a690538c
+  -alwaysPromptForPassword B16@0:8  imp=+0x1a6905738
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a69054b0
+  -dealloc v16@0:8  imp=+0x1a69052ec
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a690560c
+  -init @16@0:8  imp=+0x1a6905288
+  -initWithCoder: @24@0:8@16  imp=+0x1a690554c
+  -isEqualToProfile: B24@0:8@16  imp=+0x1a69053bc
+  -password @16@0:8  imp=+0x1a6905710
+  -setAlwaysPromptForPassword: v20@0:8B16  imp=+0x1a6905744
+  -setPassword: v24@0:8@16  imp=+0x1a690571c
+  -setSsid: v24@0:8@16  imp=+0x1a6905730
+  -setUserDefinedName: v24@0:8@16  imp=+0x1a69056f4
+  -setUsername: v24@0:8@16  imp=+0x1a6905708
+  -ssid @16@0:8  imp=+0x1a6905724
+  -userDefinedName @16@0:8  imp=+0x1a69056e8
+  -username @16@0:8  imp=+0x1a69056fc
+@class CWANQP3GPPCellular : CWANQPElement <NSSecureCoding, NSCopying> instanceSize=48
+  ivar +40 _cellularInfoList @"NSArray"
+  property cellularInfoList (T@"NSArray",C,N,V_cellularInfoList)
+  +supportsSecureCoding B16@0:8  imp=+0x1a68c96f0
+  -cellularInfoList @16@0:8  imp=+0x1a68c9874
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68c9674
+  -dealloc v16@0:8  imp=+0x1a68c9488
+  -description @16@0:8  imp=+0x1a68c9510
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a68c96f8
+  -initWithCoder: @24@0:8@16  imp=+0x1a68c978c
+  -initWithNetwork:timestamp:anqpResult: @40@0:8@16@24@32  imp=+0x1a68c93cc
+  -setCellularInfoList: v24@0:8@16  imp=+0x1a68c9888
+@class CWANQPCapabilityList : CWANQPElement <NSSecureCoding, NSCopying> instanceSize=48
+  ivar +40 _supportsVenueName B
+  ivar +41 _supportsNetworkAuthenticationType B
+  ivar +42 _supportsRoamingConsortium B
+  ivar +43 _supportsNAIRealm B
+  ivar +44 _supportsDomainName B
+  property supportsVenueName (TB,N,V_supportsVenueName)
+  property supportsNetworkAuthenticationType (TB,N,V_supportsNetworkAuthenticationType)
+  property supportsRoamingConsortium (TB,N,V_supportsRoamingConsortium)
+  property supportsNAIRealm (TB,N,V_supportsNAIRealm)
+  property supportsDomainName (TB,N,V_supportsDomainName)
+  +supportsSecureCoding B16@0:8  imp=+0x1a68c3878
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68c37fc
+  -description @16@0:8  imp=+0x1a68c36b4
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a68c3880
+  -initWithCoder: @24@0:8@16  imp=+0x1a68c39d0
+  -initWithNetwork:timestamp:anqpResult: @40@0:8@16@24@32  imp=+0x1a68c3540
+  -setSupportsDomainName: v20@0:8B16  imp=+0x1a68c3bf8
+  -setSupportsNAIRealm: v20@0:8B16  imp=+0x1a68c3bd0
+  -setSupportsNetworkAuthenticationType: v20@0:8B16  imp=+0x1a68c3b80
+  -setSupportsRoamingConsortium: v20@0:8B16  imp=+0x1a68c3ba8
+  -setSupportsVenueName: v20@0:8B16  imp=+0x1a68c3b58
+  -supportsDomainName B16@0:8  imp=+0x1a68c3be4
+  -supportsNAIRealm B16@0:8  imp=+0x1a68c3bbc
+  -supportsNetworkAuthenticationType B16@0:8  imp=+0x1a68c3b6c
+  -supportsRoamingConsortium B16@0:8  imp=+0x1a68c3b94
+  -supportsVenueName B16@0:8  imp=+0x1a68c3b44
+@class CWANQPConnectionCapability : CWANQPElement <NSSecureCoding, NSCopying> instanceSize=48
+  ivar +40 _protoPortList @"NSArray"
+  property protoPortList (T@"NSArray",C,N,V_protoPortList)
+  +supportsSecureCoding B16@0:8  imp=+0x1a68c5508
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68c548c
+  -dealloc v16@0:8  imp=+0x1a68c52a0
+  -description @16@0:8  imp=+0x1a68c5328
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a68c5510
+  -initWithCoder: @24@0:8@16  imp=+0x1a68c55a4
+  -initWithNetwork:timestamp:anqpResult: @40@0:8@16@24@32  imp=+0x1a68c509c
+  -protoPortList @16@0:8  imp=+0x1a68c565c
+  -setProtoPortList: v24@0:8@16  imp=+0x1a68c5670
+@class CWANQPDomainName : CWANQPElement <NSSecureCoding, NSCopying> instanceSize=48
+  ivar +40 _domainNameList @"NSArray"
+  property domainNameList (T@"NSArray",C,N,V_domainNameList)
+  +supportsSecureCoding B16@0:8  imp=+0x1a68c8a78
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68c89fc
+  -dealloc v16@0:8  imp=+0x1a68c8810
+  -description @16@0:8  imp=+0x1a68c8898
+  -domainNameList @16@0:8  imp=+0x1a68c8bfc
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a68c8a80
+  -initWithCoder: @24@0:8@16  imp=+0x1a68c8b14
+  -initWithNetwork:timestamp:anqpResult: @40@0:8@16@24@32  imp=+0x1a68c8754
+  -setDomainNameList: v24@0:8@16  imp=+0x1a68c8c10
+@class CWANQPElement : NSObject <NSSecureCoding, NSCopying> instanceSize=40
+  ivar +8 _timestamp @"NSDate"
+  ivar +16 _network @"CWNetwork"
+  ivar +24 _type Q
+  ivar +32 _anqpResult @"NSDictionary"
+  property timestamp (T@"NSDate",C,N,V_timestamp)
+  property network (T@"CWNetwork",C,N,V_network)
+  property type (TQ,N,V_type)
+  property anqpResult (T@"NSDictionary",C,N,V_anqpResult)
+  +supportsSecureCoding B16@0:8  imp=+0x1a68cb394
+  -anqpResult @16@0:8  imp=+0x1a68cb534
+  -conformsToProtocol: B24@0:8@16  imp=+0x1a68cb100
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68cb300
+  -dealloc v16@0:8  imp=+0x1a68caea4
+  -description @16@0:8  imp=+0x1a68cb038
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a68cb39c
+  -hash Q16@0:8  imp=+0x1a68cb2bc
+  -initWithCoder: @24@0:8@16  imp=+0x1a68cb42c
+  -initWithNetwork:timestamp:type:anqpResult: @48@0:8@16@24Q32@40  imp=+0x1a68cadc8
+  -isEqual: B24@0:8@16  imp=+0x1a68cb24c
+  -isEqualtoANQPElement: B24@0:8@16  imp=+0x1a68cb1a0
+  -network @16@0:8  imp=+0x1a68cb514
+  -setAnqpResult: v24@0:8@16  imp=+0x1a68cb53c
+  -setNetwork: v24@0:8@16  imp=+0x1a68cb51c
+  -setTimestamp: v24@0:8@16  imp=+0x1a68cb50c
+  -setType: v24@0:8Q16  imp=+0x1a68cb52c
+  -timestamp @16@0:8  imp=+0x1a68cb504
+  -type Q16@0:8  imp=+0x1a68cb524
+  -typeString @16@0:8  imp=+0x1a68caf38
+@class CWANQPHS20CapabilityList : CWANQPElement <NSSecureCoding, NSCopying> instanceSize=48
+  ivar +40 _supportsHSQueryList B
+  ivar +41 _supportsHSCapabilityList B
+  ivar +42 _supportsOperatorFriendlyName B
+  ivar +43 _supportsWANMetrics B
+  ivar +44 _supportsConnectionCapability B
+  ivar +45 _supportsNAIHomeRealmQuery B
+  ivar +46 _supportsOperatingClassIndication B
+  property supportsHSQueryList (TB,N,V_supportsHSQueryList)
+  property supportsHSCapabilityList (TB,N,V_supportsHSCapabilityList)
+  property supportsOperatorFriendlyName (TB,N,V_supportsOperatorFriendlyName)
+  property supportsWANMetrics (TB,N,V_supportsWANMetrics)
+  property supportsConnectionCapability (TB,N,V_supportsConnectionCapability)
+  property supportsNAIHomeRealmQuery (TB,N,V_supportsNAIHomeRealmQuery)
+  property supportsOperatingClassIndication (TB,N,V_supportsOperatingClassIndication)
+  +supportsSecureCoding B16@0:8  imp=+0x1a68fef8c
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68fef10
+  -description @16@0:8  imp=+0x1a68fed88
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a68fef94
+  -initWithCoder: @24@0:8@16  imp=+0x1a68ff134
+  -initWithNetwork:timestamp:anqpResult: @40@0:8@16@24@32  imp=+0x1a68febcc
+  -setSupportsConnectionCapability: v20@0:8B16  imp=+0x1a68ff3b4
+  -setSupportsHSCapabilityList: v20@0:8B16  imp=+0x1a68ff33c
+  -setSupportsHSQueryList: v20@0:8B16  imp=+0x1a68ff314
+  -setSupportsNAIHomeRealmQuery: v20@0:8B16  imp=+0x1a68ff3dc
+  -setSupportsOperatingClassIndication: v20@0:8B16  imp=+0x1a68ff404
+  -setSupportsOperatorFriendlyName: v20@0:8B16  imp=+0x1a68ff364
+  -setSupportsWANMetrics: v20@0:8B16  imp=+0x1a68ff38c
+  -supportsConnectionCapability B16@0:8  imp=+0x1a68ff3a0
+  -supportsHSCapabilityList B16@0:8  imp=+0x1a68ff328
+  -supportsHSQueryList B16@0:8  imp=+0x1a68ff300
+  -supportsNAIHomeRealmQuery B16@0:8  imp=+0x1a68ff3c8
+  -supportsOperatingClassIndication B16@0:8  imp=+0x1a68ff3f0
+  -supportsOperatorFriendlyName B16@0:8  imp=+0x1a68ff350
+  -supportsWANMetrics B16@0:8  imp=+0x1a68ff378
+@class CWANQPNAIRealm : CWANQPElement <NSSecureCoding, NSCopying> instanceSize=48
+  ivar +40 _realmList @"NSArray"
+  property realmList (T@"NSArray",C,N,V_realmList)
+  +supportsSecureCoding B16@0:8  imp=+0x1a68c67dc
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68c6760
+  -dealloc v16@0:8  imp=+0x1a68c6574
+  -description @16@0:8  imp=+0x1a68c65fc
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a68c67e4
+  -initWithCoder: @24@0:8@16  imp=+0x1a68c6878
+  -initWithNetwork:timestamp:anqpResult: @40@0:8@16@24@32  imp=+0x1a68c6398
+  -realmList @16@0:8  imp=+0x1a68c6960
+  -setRealmList: v24@0:8@16  imp=+0x1a68c6974
+@class CWANQPNAIRealmEntry : NSObject <NSSecureCoding, NSCopying> instanceSize=24
+  ivar +8 _encodingType q
+  ivar +16 _realmName @"NSString"
+  property encodingType (Tq,N,V_encodingType)
+  property realmName (T@"NSString",C,N,V_realmName)
+  +supportsSecureCoding B16@0:8  imp=+0x1a68c6b90
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68c6b24
+  -dealloc v16@0:8  imp=+0x1a68c6a2c
+  -description @16@0:8  imp=+0x1a68c6aa8
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a68c6b98
+  -encodingType q16@0:8  imp=+0x1a68c6c90
+  -initWithCoder: @24@0:8@16  imp=+0x1a68c6c00
+  -initWithEncodingType:realmName: @32@0:8q16@24  imp=+0x1a68c6980
+  -realmName @16@0:8  imp=+0x1a68c6ca0
+  -setEncodingType: v24@0:8q16  imp=+0x1a68c6c98
+  -setRealmName: v24@0:8@16  imp=+0x1a68c6ca8
+@class CWANQPNetworkAuthenticationType : CWANQPElement <NSSecureCoding, NSCopying> instanceSize=48
+  ivar +40 _networkAuthTypeList @"NSArray"
+  property networkAuthTypeList (T@"NSArray",C,N,V_networkAuthTypeList)
+  +supportsSecureCoding B16@0:8  imp=+0x1a68c5ab0
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68c5a34
+  -dealloc v16@0:8  imp=+0x1a68c5848
+  -description @16@0:8  imp=+0x1a68c58d0
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a68c5ab8
+  -initWithCoder: @24@0:8@16  imp=+0x1a68c5b4c
+  -initWithNetwork:timestamp:anqpResult: @40@0:8@16@24@32  imp=+0x1a68c567c
+  -networkAuthTypeList @16@0:8  imp=+0x1a68c5c34
+  -setNetworkAuthTypeList: v24@0:8@16  imp=+0x1a68c5c48
+@class CWANQPNetworkAuthenticationTypeEntry : NSObject <NSSecureCoding, NSCopying> instanceSize=32
+  ivar +8 _typeIndicator q
+  ivar +16 _localizedTypeIndicator @"NSString"
+  ivar +24 _redirectURL @"NSString"
+  property typeIndicator (Tq,N,V_typeIndicator)
+  property localizedTypeIndicator (T@"NSString",C,N,V_localizedTypeIndicator)
+  property redirectURL (T@"NSString",C,N,V_redirectURL)
+  +supportsSecureCoding B16@0:8  imp=+0x1a690596c
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a6905900
+  -dealloc v16@0:8  imp=+0x1a69057fc
+  -description @16@0:8  imp=+0x1a6905884
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a6905974
+  -initWithCoder: @24@0:8@16  imp=+0x1a69059dc
+  -initWithTypeIndicator:redirectURL: @32@0:8q16@24  imp=+0x1a690574c
+  -localizedTypeIndicator @16@0:8  imp=+0x1a6905a7c
+  -redirectURL @16@0:8  imp=+0x1a6905a8c
+  -setLocalizedTypeIndicator: v24@0:8@16  imp=+0x1a6905a84
+  -setRedirectURL: v24@0:8@16  imp=+0x1a6905a94
+  -setTypeIndicator: v24@0:8q16  imp=+0x1a6905a74
+  -typeIndicator q16@0:8  imp=+0x1a6905a6c
+@class CWANQPOperatorFriendlyName : CWANQPElement <NSSecureCoding, NSCopying> instanceSize=48
+  ivar +40 _operatorFriendlyNameList @"NSArray"
+  property operatorFriendlyNameList (T@"NSArray",C,N,V_operatorFriendlyNameList)
+  +supportsSecureCoding B16@0:8  imp=+0x1a68f25d8
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68f255c
+  -dealloc v16@0:8  imp=+0x1a68f2370
+  -description @16@0:8  imp=+0x1a68f23f8
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a68f25e0
+  -initWithCoder: @24@0:8@16  imp=+0x1a68f2674
+  -initWithNetwork:timestamp:anqpResult: @40@0:8@16@24@32  imp=+0x1a68f219c
+  -operatorFriendlyNameList @16@0:8  imp=+0x1a68f275c
+  -setOperatorFriendlyNameList: v24@0:8@16  imp=+0x1a68f2770
+@class CWANQPOperatorFriendlyNameEntry : NSObject <NSSecureCoding, NSCopying> instanceSize=24
+  ivar +8 _languageCode @"NSString"
+  ivar +16 _name @"NSString"
+  property languageCode (T@"NSString",C,N,V_languageCode)
+  property name (T@"NSString",C,N,V_name)
+  +supportsSecureCoding B16@0:8  imp=+0x1a68c9abc
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68c9a50
+  -dealloc v16@0:8  imp=+0x1a68c994c
+  -description @16@0:8  imp=+0x1a68c99d4
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a68c9ac4
+  -initWithCoder: @24@0:8@16  imp=+0x1a68c9b1c
+  -initWithOperatorFriendlyName:languageCode: @32@0:8@16@24  imp=+0x1a68c9894
+  -languageCode @16@0:8  imp=+0x1a68c9ba4
+  -name @16@0:8  imp=+0x1a68c9bb4
+  -setLanguageCode: v24@0:8@16  imp=+0x1a68c9bac
+  -setName: v24@0:8@16  imp=+0x1a68c9bbc
+@class CWANQPProtoPortTuple : NSObject <NSSecureCoding, NSCopying> instanceSize=32
+  ivar +8 _ipProtocol q
+  ivar +16 _portNumber q
+  ivar +24 _status q
+  property ipProtocol (Tq,N,V_ipProtocol)
+  property portNumber (Tq,N,V_portNumber)
+  property status (Tq,N,V_status)
+  +stringForProtoPortStatus: @24@0:8q16  imp=+0x1a68f6b70
+  +supportsSecureCoding B16@0:8  imp=+0x1a68f6c88
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68f6c40
+  -description @16@0:8  imp=+0x1a68f6b9c
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a68f6c90
+  -initWithCoder: @24@0:8@16  imp=+0x1a68f6d2c
+  -initWithIPProtocol:portNumber:status: @40@0:8q16q24q32  imp=+0x1a68f6ad4
+  -ipProtocol q16@0:8  imp=+0x1a68f6dec
+  -portNumber q16@0:8  imp=+0x1a68f6dfc
+  -setIpProtocol: v24@0:8q16  imp=+0x1a68f6df4
+  -setPortNumber: v24@0:8q16  imp=+0x1a68f6e04
+  -setStatus: v24@0:8q16  imp=+0x1a68f6e14
+  -status q16@0:8  imp=+0x1a68f6e0c
+@class CWANQPRoamingConsortium : CWANQPElement <NSSecureCoding, NSCopying> instanceSize=48
+  ivar +40 _roamingConsortiumList @"NSArray"
+  property roamingConsortiumList (T@"NSArray",C,N,V_roamingConsortiumList)
+  +supportsSecureCoding B16@0:8  imp=+0x1a68c4b64
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68c4ae8
+  -dealloc v16@0:8  imp=+0x1a68c48fc
+  -description @16@0:8  imp=+0x1a68c4984
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a68c4b6c
+  -initWithCoder: @24@0:8@16  imp=+0x1a68c4c00
+  -initWithNetwork:timestamp:anqpResult: @40@0:8@16@24@32  imp=+0x1a68c4840
+  -roamingConsortiumList @16@0:8  imp=+0x1a68c4ce8
+  -setRoamingConsortiumList: v24@0:8@16  imp=+0x1a68c4cfc
+@class CWANQPVenueName : CWANQPElement <NSSecureCoding, NSCopying> instanceSize=80
+  ivar +40 _venueGroup q
+  ivar +48 _venueType q
+  ivar +56 _localizedVenueGroup @"NSString"
+  ivar +64 _localizedVenueType @"NSString"
+  ivar +72 _venueNameList @"NSArray"
+  property venueGroup (Tq,N,V_venueGroup)
+  property venueType (Tq,N,V_venueType)
+  property localizedVenueGroup (T@"NSString",C,N,V_localizedVenueGroup)
+  property localizedVenueType (T@"NSString",C,N,V_localizedVenueType)
+  property venueNameList (T@"NSArray",C,N,V_venueNameList)
+  +supportsSecureCoding B16@0:8  imp=+0x1a68e0d34
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68e0cb8
+  -dealloc v16@0:8  imp=+0x1a68e0a3c
+  -description @16@0:8  imp=+0x1a68e0af8
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a68e0d3c
+  -initWithCoder: @24@0:8@16  imp=+0x1a68e0e30
+  -initWithNetwork:timestamp:anqpResult: @40@0:8@16@24@32  imp=+0x1a68e07c4
+  -localizedVenueGroup @16@0:8  imp=+0x1a68e0fd0
+  -localizedVenueType @16@0:8  imp=+0x1a68e0ff0
+  -setLocalizedVenueGroup: v24@0:8@16  imp=+0x1a68e0fe4
+  -setLocalizedVenueType: v24@0:8@16  imp=+0x1a68e1004
+  -setVenueGroup: v24@0:8q16  imp=+0x1a68e0f94
+  -setVenueNameList: v24@0:8@16  imp=+0x1a68e1024
+  -setVenueType: v24@0:8q16  imp=+0x1a68e0fbc
+  -venueGroup q16@0:8  imp=+0x1a68e0f80
+  -venueNameList @16@0:8  imp=+0x1a68e1010
+  -venueType q16@0:8  imp=+0x1a68e0fa8
+@class CWANQPVenueNameEntry : NSObject <NSSecureCoding, NSCopying> instanceSize=24
+  ivar +8 _languageCode @"NSString"
+  ivar +16 _name @"NSString"
+  property languageCode (T@"NSString",C,N,V_languageCode)
+  property name (T@"NSString",C,N,V_name)
+  +supportsSecureCoding B16@0:8  imp=+0x1a68b8658
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68b85f4
+  -dealloc v16@0:8  imp=+0x1a68b84f0
+  -description @16@0:8  imp=+0x1a68b8578
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a68b8660
+  -initWithCoder: @24@0:8@16  imp=+0x1a68b86b8
+  -initWithVenueName:languageCode: @32@0:8@16@24  imp=+0x1a68b8438
+  -languageCode @16@0:8  imp=+0x1a68b8740
+  -name @16@0:8  imp=+0x1a68b8750
+  -setLanguageCode: v24@0:8@16  imp=+0x1a68b8748
+  -setName: v24@0:8@16  imp=+0x1a68b8758
+@class CWANQPVenueUrl : CWANQPElement <NSSecureCoding, NSCopying> instanceSize=48
+  ivar +40 _venueUrlList @"NSArray"
+  property venueUrlList (T@"NSArray",C,N,V_venueUrlList)
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68b6ba0
+  -dealloc v16@0:8  imp=+0x1a68b69b4
+  -description @16@0:8  imp=+0x1a68b6a3c
+  -initWithNetwork:timestamp:anqpResult: @40@0:8@16@24@32  imp=+0x1a68b6910
+  -setVenueUrlList: v24@0:8@16  imp=+0x1a68b6c30
+  -venueUrlList @16@0:8  imp=+0x1a68b6c1c
+@class CWANQPWANMetrics : CWANQPElement <NSSecureCoding, NSCopying> instanceSize=96
+  ivar +40 _linkStatus q
+  ivar +48 _hasSymmetricLink B
+  ivar +49 _isAtCapacity B
+  ivar +56 _downlinkSpeed q
+  ivar +64 _uplinkSpeed q
+  ivar +72 _downlinkLoad q
+  ivar +80 _uplinkLoad q
+  ivar +88 _loadMeasurementDuration q
+  property linkStatus (Tq,N,V_linkStatus)
+  property hasSymmetricLink (TB,N,V_hasSymmetricLink)
+  property isAtCapacity (TB,N,V_isAtCapacity)
+  property downlinkSpeed (Tq,N,V_downlinkSpeed)
+  property uplinkSpeed (Tq,N,V_uplinkSpeed)
+  property downlinkLoad (Tq,N,V_downlinkLoad)
+  property uplinkLoad (Tq,N,V_uplinkLoad)
+  property loadMeasurementDuration (Tq,N,V_loadMeasurementDuration)
+  +stringForWANMetricsLinkStatus: @24@0:8q16  imp=+0x1a68bfafc
+  +supportsSecureCoding B16@0:8  imp=+0x1a68bfd98
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68bfd1c
+  -description @16@0:8  imp=+0x1a68bfb24
+  -downlinkLoad q16@0:8  imp=+0x1a68c0228
+  -downlinkSpeed q16@0:8  imp=+0x1a68c01d8
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a68bfda0
+  -hasSymmetricLink B16@0:8  imp=+0x1a68c0188
+  -initWithCoder: @24@0:8@16  imp=+0x1a68bff68
+  -initWithNetwork:timestamp:anqpResult: @40@0:8@16@24@32  imp=+0x1a68bf944
+  -isAtCapacity B16@0:8  imp=+0x1a68c01b0
+  -linkStatus q16@0:8  imp=+0x1a68c0160
+  -loadMeasurementDuration q16@0:8  imp=+0x1a68c0278
+  -setDownlinkLoad: v24@0:8q16  imp=+0x1a68c023c
+  -setDownlinkSpeed: v24@0:8q16  imp=+0x1a68c01ec
+  -setHasSymmetricLink: v20@0:8B16  imp=+0x1a68c019c
+  -setIsAtCapacity: v20@0:8B16  imp=+0x1a68c01c4
+  -setLinkStatus: v24@0:8q16  imp=+0x1a68c0174
+  -setLoadMeasurementDuration: v24@0:8q16  imp=+0x1a68c028c
+  -setUplinkLoad: v24@0:8q16  imp=+0x1a68c0264
+  -setUplinkSpeed: v24@0:8q16  imp=+0x1a68c0214
+  -uplinkLoad q16@0:8  imp=+0x1a68c0250
+  -uplinkSpeed q16@0:8  imp=+0x1a68c0200
+@class CWAutoJoinStatistics : NSObject <NSCopying, NSSecureCoding> instanceSize=80
+  ivar +8 _interfaceName @"NSString"
+  ivar +16 _trigger q
+  ivar +24 _startedAt @"NSDate"
+  ivar +32 _endedAt @"NSDate"
+  ivar +40 _scannedChannelCount q
+  ivar +48 _scanDuration d
+  ivar +56 _joinAttempts @"NSArray"
+  ivar +64 _error @"NSError"
+  ivar +72 _result B
+  property interfaceName (T@"NSString",C,V_interfaceName)
+  property trigger (Tq,V_trigger)
+  property startedAt (T@"NSDate",C,V_startedAt)
+  property endedAt (T@"NSDate",C,V_endedAt)
+  property joinAttempts (T@"NSArray",C,V_joinAttempts)
+  property scannedChannelCount (Tq,V_scannedChannelCount)
+  property scanDuration (Td,V_scanDuration)
+  property error (T@"NSError",C,V_error)
+  property result (TB,V_result)
+  property totalDuration (T@"NSNumber",R,N)
+  +supportsSecureCoding B16@0:8  imp=+0x1a68d48dc
+  -conformsToProtocol: B24@0:8@16  imp=+0x1a68d46dc
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68d483c
+  -dealloc v16@0:8  imp=+0x1a68d4644
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a68d48e4
+  -endedAt @16@0:8  imp=+0x1a68d4c58
+  -error @16@0:8  imp=+0x1a68d4ca0
+  -hash Q16@0:8  imp=+0x1a68d4834
+  -initWithCoder: @24@0:8@16  imp=+0x1a68d49c8
+  -interfaceName @16@0:8  imp=+0x1a68d4c20
+  -isEqual: B24@0:8@16  imp=+0x1a68d47c0
+  -isEqualToAutoJoinStatistics: B24@0:8@16  imp=+0x1a68d477c
+  -joinAttempts @16@0:8  imp=+0x1a68d4c6c
+  -result B16@0:8  imp=+0x1a68d4cb4
+  -scanDuration d16@0:8  imp=+0x1a68d4c90
+  -scannedChannelCount q16@0:8  imp=+0x1a68d4c80
+  -setEndedAt: v24@0:8@16  imp=+0x1a68d4c64
+  -setError: v24@0:8@16  imp=+0x1a68d4cac
+  -setInterfaceName: v24@0:8@16  imp=+0x1a68d4c2c
+  -setJoinAttempts: v24@0:8@16  imp=+0x1a68d4c78
+  -setResult: v20@0:8B16  imp=+0x1a68d4cc0
+  -setScanDuration: v24@0:8d16  imp=+0x1a68d4c98
+  -setScannedChannelCount: v24@0:8q16  imp=+0x1a68d4c88
+  -setStartedAt: v24@0:8@16  imp=+0x1a68d4c50
+  -setTrigger: v24@0:8q16  imp=+0x1a68d4c3c
+  -startedAt @16@0:8  imp=+0x1a68d4c44
+  -totalDuration @16@0:8  imp=+0x1a68d4b98
+  -trigger q16@0:8  imp=+0x1a68d4c34
+@class CWBTCStatus : NSObject <NSCopying, NSSecureCoding> instanceSize=80
+  ivar +8 _coexEnabled B
+  ivar +9 _tdmEnabled B
+  ivar +10 _hybridEnabled B
+  ivar +16 _btAntennaRequestsCount q
+  ivar +24 _btAntennaGrantCount q
+  ivar +32 _btAntennaGrantDurationMicroseconds q
+  ivar +40 _btAbortCount q
+  ivar +48 _antennaRequestedDueToACL B
+  ivar +49 _antennaRequestedDueToSCO B
+  ivar +50 _antennaRequestedDueToeSCO B
+  ivar +51 _antennaRequestedDueToA2DP B
+  ivar +52 _antennaRequestedDueToSniff B
+  ivar +53 _antennaRequestedDueToPageScan B
+  ivar +54 _antennaRequestedDueToInquiryScan B
+  ivar +55 _antennaRequestedDueToPage B
+  ivar +56 _antennaRequestedDueToInquiry B
+  ivar +57 _antennaRequestedDueToBLE B
+  ivar +58 _antennaRequestedDueToOther B
+  ivar +64 _psnullRetryCountExceededCount q
+  ivar +72 _ucodeHighLatencyDetectedCount q
+  property coexEnabled (TB,N,V_coexEnabled)
+  property tdmEnabled (TB,N,V_tdmEnabled)
+  property hybridEnabled (TB,N,V_hybridEnabled)
+  property btAntennaRequestsCount (Tq,N,V_btAntennaRequestsCount)
+  property btAntennaGrantCount (Tq,N,V_btAntennaGrantCount)
+  property btAntennaGrantDurationMicroseconds (Tq,N,V_btAntennaGrantDurationMicroseconds)
+  property btAbortCount (Tq,N,V_btAbortCount)
+  property antennaRequestedDueToACL (TB,N,V_antennaRequestedDueToACL)
+  property antennaRequestedDueToSCO (TB,N,V_antennaRequestedDueToSCO)
+  property antennaRequestedDueToeSCO (TB,N,V_antennaRequestedDueToeSCO)
+  property antennaRequestedDueToA2DP (TB,N,V_antennaRequestedDueToA2DP)
+  property antennaRequestedDueToSniff (TB,N,V_antennaRequestedDueToSniff)
+  property antennaRequestedDueToPageScan (TB,N,V_antennaRequestedDueToPageScan)
+  property antennaRequestedDueToInquiryScan (TB,N,V_antennaRequestedDueToInquiryScan)
+  property antennaRequestedDueToPage (TB,N,V_antennaRequestedDueToPage)
+  property antennaRequestedDueToInquiry (TB,N,V_antennaRequestedDueToInquiry)
+  property antennaRequestedDueToBLE (TB,N,V_antennaRequestedDueToBLE)
+  property antennaRequestedDueToOther (TB,N,V_antennaRequestedDueToOther)
+  property psnullRetryCountExceededCount (Tq,N,V_psnullRetryCountExceededCount)
+  property ucodeHighLatencyDetectedCount (Tq,N,V_ucodeHighLatencyDetectedCount)
+  +supportsSecureCoding B16@0:8  imp=+0x1a68cdea4
+  -IsEqualToBTCStatus: B24@0:8@16  imp=+0x1a68cda58
+  -__getSampleDictionary @16@0:8  imp=+0x1a68ccc9c
+  -antennaRequestedDueToA2DP B16@0:8  imp=+0x1a68ce60c
+  -antennaRequestedDueToACL B16@0:8  imp=+0x1a68ce5dc
+  -antennaRequestedDueToBLE B16@0:8  imp=+0x1a68ce66c
+  -antennaRequestedDueToInquiry B16@0:8  imp=+0x1a68ce65c
+  -antennaRequestedDueToInquiryScan B16@0:8  imp=+0x1a68ce63c
+  -antennaRequestedDueToOther B16@0:8  imp=+0x1a68ce67c
+  -antennaRequestedDueToPage B16@0:8  imp=+0x1a68ce64c
+  -antennaRequestedDueToPageScan B16@0:8  imp=+0x1a68ce62c
+  -antennaRequestedDueToSCO B16@0:8  imp=+0x1a68ce5ec
+  -antennaRequestedDueToSniff B16@0:8  imp=+0x1a68ce61c
+  -antennaRequestedDueToeSCO B16@0:8  imp=+0x1a68ce5fc
+  -btAbortCount q16@0:8  imp=+0x1a68ce5cc
+  -btAntennaGrantCount q16@0:8  imp=+0x1a68ce5ac
+  -btAntennaGrantDurationMicroseconds q16@0:8  imp=+0x1a68ce5bc
+  -btAntennaRequestsCount q16@0:8  imp=+0x1a68ce59c
+  -coexEnabled B16@0:8  imp=+0x1a68ce56c
+  -conformsToProtocol: B24@0:8@16  imp=+0x1a68cd9b8
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68cdcd0
+  -dealloc v16@0:8  imp=+0x1a68cd7b8
+  -description @16@0:8  imp=+0x1a68ce364
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a68cdeac
+  -hash Q16@0:8  imp=+0x1a68cd890
+  -hybridEnabled B16@0:8  imp=+0x1a68ce58c
+  -init @16@0:8  imp=+0x1a68ccc38
+  -initWithCoder: @24@0:8@16  imp=+0x1a68ce108
+  -isEqual: B24@0:8@16  imp=+0x1a68cd81c
+  -psnullRetryCountExceededCount q16@0:8  imp=+0x1a68ce68c
+  -setAntennaRequestedDueToA2DP: v20@0:8B16  imp=+0x1a68ce614
+  -setAntennaRequestedDueToACL: v20@0:8B16  imp=+0x1a68ce5e4
+  -setAntennaRequestedDueToBLE: v20@0:8B16  imp=+0x1a68ce674
+  -setAntennaRequestedDueToInquiry: v20@0:8B16  imp=+0x1a68ce664
+  -setAntennaRequestedDueToInquiryScan: v20@0:8B16  imp=+0x1a68ce644
+  -setAntennaRequestedDueToOther: v20@0:8B16  imp=+0x1a68ce684
+  -setAntennaRequestedDueToPage: v20@0:8B16  imp=+0x1a68ce654
+  -setAntennaRequestedDueToPageScan: v20@0:8B16  imp=+0x1a68ce634
+  -setAntennaRequestedDueToSCO: v20@0:8B16  imp=+0x1a68ce5f4
+  -setAntennaRequestedDueToSniff: v20@0:8B16  imp=+0x1a68ce624
+  -setAntennaRequestedDueToeSCO: v20@0:8B16  imp=+0x1a68ce604
+  -setBtAbortCount: v24@0:8q16  imp=+0x1a68ce5d4
+  -setBtAntennaGrantCount: v24@0:8q16  imp=+0x1a68ce5b4
+  -setBtAntennaGrantDurationMicroseconds: v24@0:8q16  imp=+0x1a68ce5c4
+  -setBtAntennaRequestsCount: v24@0:8q16  imp=+0x1a68ce5a4
+  -setCoexEnabled: v20@0:8B16  imp=+0x1a68ce574
+  -setHybridEnabled: v20@0:8B16  imp=+0x1a68ce594
+  -setPsnullRetryCountExceededCount: v24@0:8q16  imp=+0x1a68ce694
+  -setTdmEnabled: v20@0:8B16  imp=+0x1a68ce584
+  -setUcodeHighLatencyDetectedCount: v24@0:8q16  imp=+0x1a68ce6a4
+  -tdmEnabled B16@0:8  imp=+0x1a68ce57c
+  -ucodeHighLatencyDetectedCount q16@0:8  imp=+0x1a68ce69c
+  -update B16@0:8  imp=+0x1a68ccfb0
+@class CWBaseStationPPPController : NSObject instanceSize=48
+  ivar +8 _pppStatus @"NSDictionary"
+  ivar +16 _internalQueue @"NSObject<OS_dispatch_queue>"
+  ivar +24 _pollTimer @"NSObject<OS_dispatch_source>"
+  ivar +32 _pollQueue @"NSObject<OS_dispatch_queue>"
+  ivar +40 _dialin B
+  property pppStatus (T@"NSDictionary",C,V_pppStatus)
+  property dialin (TB,V_dialin)
+  +PPPController @16@0:8  imp=+0x1a68ca154
+  -connect v16@0:8  imp=+0x1a68cac7c
+  -dealloc v16@0:8  imp=+0x1a68ca184
+  -dialin B16@0:8  imp=+0x1a68cadb4
+  -hangup v16@0:8  imp=+0x1a68cad00
+  -init @16@0:8  imp=+0x1a68ca084
+  -poll v16@0:8  imp=+0x1a68ca8a8
+  -pollPPPStatus @16@0:8  imp=+0x1a68ca254
+  -pppStatus @16@0:8  imp=+0x1a68cada0
+  -setDialin: v20@0:8B16  imp=+0x1a68cadc0
+  -setPollInterval: v24@0:8d16  imp=+0x1a68ca6a0
+  -setPppStatus: v24@0:8@16  imp=+0x1a68cadac
+  -startPollingPPP v16@0:8  imp=+0x1a68caa74
+  -stopPollingPPP v16@0:8  imp=+0x1a68cab7c
+@class CWChannel : NSObject <NSCopying, NSSecureCoding> instanceSize=16
+  ivar +8 _info @"NSDictionary"
+  property info (T@"NSDictionary",R,C,D)
+  property flags (TQ,R,D)
+  property channelProperties (TQ,R,D)
+  property info (T@"NSDictionary",C,V_info)
+  property channelNumber (Tq,R,D)
+  property channelWidth (Tq,R,D)
+  property channelBand (Tq,R,D)
+  +supportsSecureCoding B16@0:8  imp=+0x1a68c2190
+  -channelBand q16@0:8  imp=+0x1a68b6590
+  -channelNumber q16@0:8  imp=+0x1a68b64fc
+  -channelProperties Q16@0:8  imp=+0x1a68c2608
+  -channelWidth q16@0:8  imp=+0x1a68b653c
+  -conformsToProtocol: B24@0:8@16  imp=+0x1a68c24ec
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68c2198
+  -dealloc v16@0:8  imp=+0x1a68c2114
+  -description @16@0:8  imp=+0x1a68c2268
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a68c2224
+  -flags Q16@0:8  imp=+0x1a68c25d4
+  -hash Q16@0:8  imp=+0x1a68b64bc
+  -info @16@0:8  imp=+0x1a68b6530
+  -initWithChannel: @24@0:8@16  imp=+0x1a68c2594
+  -initWithCoder: @24@0:8@16  imp=+0x1a68c21d8
+  -initWithInfo: @24@0:8@16  imp=+0x1a68b63b4
+  -isEqual: B24@0:8@16  imp=+0x1a68b65d8
+  -isEqualToChannel: B24@0:8@16  imp=+0x1a68b664c
+  -setInfo: v24@0:8@16  imp=+0x1a68c258c
+@class CWChannelHistoryItem : NSObject <NSCopying> instanceSize=24
+  ivar +8 _channel q
+  ivar +16 _timestamp @"NSDate"
+  property channel (Tq,V_channel)
+  property timestamp (T@"NSDate",C,V_timestamp)
+  +supportsSecureCoding B16@0:8  imp=+0x1a68c9030
+  -channel q16@0:8  imp=+0x1a68c90c8
+  -conformsToProtocol: B24@0:8@16  imp=+0x1a68c8f7c
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68c8e38
+  -dealloc v16@0:8  imp=+0x1a68c8cd0
+  -description @16@0:8  imp=+0x1a68c8ef0
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a68c9038
+  -externalForm @16@0:8  imp=+0x1a68c8d4c
+  -hash Q16@0:8  imp=+0x1a68c8ee8
+  -initWithCoder: @24@0:8@16  imp=+0x1a68c907c
+  -initWithInfo: @24@0:8@16  imp=+0x1a68c8c1c
+  -isEqual: B24@0:8@16  imp=+0x1a68c8e88
+  -isEqualToChannelHistoryItem: B24@0:8@16  imp=+0x1a68c8de8
+  -setChannel: v24@0:8q16  imp=+0x1a68c90d0
+  -setTimestamp: v24@0:8@16  imp=+0x1a68c90e4
+  -timestamp @16@0:8  imp=+0x1a68c90d8
+@class CWConfiguration : NSObject <NSCopying, NSMutableCopying, NSSecureCoding> instanceSize=32
+  ivar +8 _info @"NSDictionary"
+  ivar +16 _networkProfiles @"NSOrderedSet"
+  ivar +24 _rememberJoinedNetworks B
+  ivar +25 _requireAdministratorForAssociation B
+  ivar +26 _requireAdministratorForPower B
+  ivar +27 _requireAdministratorForIBSSMode B
+  property info (T@"NSDictionary",C,V_info)
+  property networkProfiles (T@"NSOrderedSet",C,N,V_networkProfiles)
+  property requireAdministratorForAssociation (TB,N,V_requireAdministratorForAssociation)
+  property requireAdministratorForPower (TB,N,V_requireAdministratorForPower)
+  property requireAdministratorForIBSSMode (TB,N,V_requireAdministratorForIBSSMode)
+  property rememberJoinedNetworks (TB,N,V_rememberJoinedNetworks)
+  +configuration @16@0:8  imp=+0x1a68c29e0
+  +configurationForInterfaceWithName: @24@0:8@16  imp=+0x1a68c2c50
+  +configurationWithConfiguration: @24@0:8@16  imp=+0x1a68c2c8c
+  +supportsSecureCoding B16@0:8  imp=+0x1a68c3278
+  -commitForInterfaceWithName:authorization:error: B40@0:8@16@24o^@32  imp=+0x1a68c2ef8
+  -conformsToProtocol: B24@0:8@16  imp=+0x1a68c3144
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68c31f8
+  -dealloc v16@0:8  imp=+0x1a68c2958
+  -description @16@0:8  imp=+0x1a68c30bc
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a68c3280
+  -hash Q16@0:8  imp=+0x1a68c3048
+  -info @16@0:8  imp=+0x1a68c3504
+  -init @16@0:8  imp=+0x1a68c2a10
+  -initForInterfaceWithName: @24@0:8@16  imp=+0x1a68c2b64
+  -initWithCoder: @24@0:8@16  imp=+0x1a68c33a0
+  -initWithConfiguration: @24@0:8@16  imp=+0x1a68c2ba8
+  -initWithInfo:knownNetworks: @32@0:8@16@24  imp=+0x1a68c2a74
+  -isEqual: B24@0:8@16  imp=+0x1a68c2fbc
+  -isEqualToConfiguration: B24@0:8@16  imp=+0x1a68c2cc8
+  -mutableCopyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68c3238
+  -networkProfileWithSSID:securityType: @32@0:8@16Q24  imp=+0x1a68c2dbc
+  -networkProfiles @16@0:8  imp=+0x1a68c3518
+  -preferredNetworks @16@0:8  imp=+0x1a6904ccc
+  -rememberJoinedNetworks B16@0:8  imp=+0x1a68c3538
+  -requireAdministratorForAssociation B16@0:8  imp=+0x1a68c3528
+  -requireAdministratorForIBSSMode B16@0:8  imp=+0x1a68c3530
+  -requireAdministratorForPower B16@0:8  imp=+0x1a68c3520
+  -setInfo: v24@0:8@16  imp=+0x1a68c3510
+  -setNetworkProfiles: v24@0:8@16  imp=+0x1a68c27ec
+  -setRememberJoinedNetworks: v20@0:8B16  imp=+0x1a68c2918
+  -setRequireAdministratorForAssociation: v20@0:8B16  imp=+0x1a68c28d8
+  -setRequireAdministratorForIBSSMode: v20@0:8B16  imp=+0x1a68c2858
+  -setRequireAdministratorForPower: v20@0:8B16  imp=+0x1a68c2898
+@class CWDisplayedScanResult : NSObject <NSSecureCoding, NSCopying> instanceSize=48
+  ivar +8 _tetherDevice @"CWTetherDevice"
+  ivar +16 _network @"CWTrimmedNetwork"
+  ivar +24 _profile @"CWNetworkProfile"
+  ivar +32 _displayName @"NSString"
+  ivar +40 _groupTag q
+  property tetherDevice (T@"CWTetherDevice",C,N,V_tetherDevice)
+  property network (T@"CWTrimmedNetwork",C,N,V_network)
+  property profile (T@"CWNetworkProfile",C,N,V_profile)
+  property displayName (T@"NSString",C,N,V_displayName)
+  property groupTag (Tq,N,V_groupTag)
+  +displayedScanResultWithDisplayName:groupTag: @32@0:8@16q24  imp=+0x1a68b7ae8
+  +displayedScanResultsWithNetworks:anqpElements:tetherDevices:cachedTetherDevices:filterCurrentNetworkWithInterface:noBSSID: @60@0:8@16@24@32@40@48B56  imp=+0x1a68b6e08
+  +supportsSecureCoding B16@0:8  imp=+0x1a68b7e24
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68b7db4
+  -dealloc v16@0:8  imp=+0x1a68b7b34
+  -description @16@0:8  imp=+0x1a68b7bd4
+  -displayName @16@0:8  imp=+0x1a68b8034
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a68b7e2c
+  -groupTag q16@0:8  imp=+0x1a68b8044
+  -hash Q16@0:8  imp=+0x1a68b7dac
+  -initWithCoder: @24@0:8@16  imp=+0x1a68b7ec0
+  -initWithDisplayName:groupTag: @32@0:8@16q24  imp=+0x1a68b79f4
+  -isEqual: B24@0:8@16  imp=+0x1a68b7d38
+  -isEqualToDisplayedScanResult: B24@0:8@16  imp=+0x1a68b7c8c
+  -network @16@0:8  imp=+0x1a68b8004
+  -profile @16@0:8  imp=+0x1a68b8024
+  -setDisplayName: v24@0:8@16  imp=+0x1a68b803c
+  -setGroupTag: v24@0:8q16  imp=+0x1a68b804c
+  -setNetwork: v24@0:8@16  imp=+0x1a68b800c
+  -setProfile: v24@0:8@16  imp=+0x1a68b802c
+  -setTetherDevice: v24@0:8@16  imp=+0x1a68b801c
+  -tetherDevice @16@0:8  imp=+0x1a68b8014
+@class CWEAPOLClient : NSObject instanceSize=32
+  ivar +8 _interfaceName @"NSString"
+  ivar +16 _internalQueue @"NSObject<OS_dispatch_queue>"
+  ivar +24 _eapolStore ^v
+  property interfaceName (T@"NSString",C,V_interfaceName)
+  property eapolClientStatus (Tq,R,D)
+  property eapolClientSupplicantState (Tq,R,D)
+  property eapolClientControlState (Tq,R,D)
+  property eapolClientControlMode (Tq,R)
+  property eapolClientUUID (T@"NSString",R,D)
+  property userCancelledAuthentication (TB,R,D)
+  +eapolClientForInterfaceWithName: @24@0:8@16  imp=+0x1a68ff418
+  -dealloc v16@0:8  imp=+0x1a68ff45c
+  -description @16@0:8  imp=+0x1a6901238
+  -eapolClientControlMode q16@0:8  imp=+0x1a6900cd8
+  -eapolClientControlState q16@0:8  imp=+0x1a6900a6c
+  -eapolClientDomainSpecificError q16@0:8  imp=+0x1a690109c
+  -eapolClientStatus q16@0:8  imp=+0x1a6900e18
+  -eapolClientSupplicantState q16@0:8  imp=+0x1a6900b98
+  -eapolClientUUID @16@0:8  imp=+0x1a6900f58
+  -initForInterfaceWithName: @24@0:8@16  imp=+0x1a68ff840
+  -interfaceName @16@0:8  imp=+0x1a69012d8
+  -setInterfaceName: v24@0:8@16  imp=+0x1a69012e4
+  -startEAPOLForSSID:authenticationInfo:error: B40@0:8@16@24o^@32  imp=+0x1a6900814
+  -startEAPOLForSSID:username:password:identity:remember:error: B60@0:8@16@24@32^{__SecIdentity=}40B48o^@52  imp=+0x1a69006b8
+  -startEAPOLWithAuthenticationInfo:error: B32@0:8@16o^@24  imp=+0x1a690046c
+  -startEAPOLWithClientItemID:authenticationInfo:error: B40@0:8^{__EAPOLClientItemID=}16@24o^@32  imp=+0x1a6900200
+  -startEAPOLWithClientItemID:username:password:identity:remember:error: B60@0:8^{__EAPOLClientItemID=}16@24@32^{__SecIdentity=}40B48o^@52  imp=+0x1a68ffc10
+  -startSystemModeEAPOLForSSID:error: B32@0:8@16o^@24  imp=+0x1a68fff58
+  -stopEAPOL v16@0:8  imp=+0x1a6900944
+  -userCancelledAuthentication B16@0:8  imp=+0x1a69011dc
+@class CWIPMonitor : NSObject instanceSize=216
+  ivar +8 _interfaceName @"NSString"
+  ivar +16 _wifiServiceID @"NSString"
+  ivar +24 _ipv4WiFiStateKey @"NSString"
+  ivar +32 _ipv4WiFiStateConfig @"NSDictionary"
+  ivar +40 _ipv4WiFiSetupKey @"NSString"
+  ivar +48 _ipv4WiFiSetupConfig @"NSDictionary"
+  ivar +56 _ipv6WiFiStateKey @"NSString"
+  ivar +64 _ipv6WiFiStateConfig @"NSDictionary"
+  ivar +72 _ipv6WiFiSetupKey @"NSString"
+  ivar +80 _ipv6WiFiSetupConfig @"NSDictionary"
+  ivar +88 _ipv4GlobalStateKey @"NSString"
+  ivar +96 _ipv4GlobalStateConfig @"NSDictionary"
+  ivar +104 _ipv4GlobalSetupKey @"NSString"
+  ivar +112 _ipv4GlobalSetupConfig @"NSDictionary"
+  ivar +120 _ipv6GlobalStateKey @"NSString"
+  ivar +128 _ipv6GlobalStateConfig @"NSDictionary"
+  ivar +136 _ipv6GlobalSetupKey @"NSString"
+  ivar +144 _ipv6GlobalSetupConfig @"NSDictionary"
+  ivar +152 _reachabilityFlags I
+  ivar +160 _internalQueue @"NSObject<OS_dispatch_queue>"
+  ivar +168 _globalStore ^v
+  ivar +176 _networkServiceStore ^v
+  ivar +184 _ipStore ^v
+  ivar +192 _reachabilityRef ^v
+  ivar +200 _topLevelWiFiServiceID @"NSString"
+  ivar +208 _activeWiFiServiceIDs @"NSArray"
+  property topLevelWiFiServiceID (T@"NSString",C,V_topLevelWiFiServiceID)
+  property activeWiFiServiceIDs (T@"NSArray",C,V_activeWiFiServiceIDs)
+  property wifiServiceID (T@"NSString",C,V_wifiServiceID)
+  property interfaceName (T@"NSString",C,V_interfaceName)
+  property ipv4WiFiStateKey (T@"NSString",C,V_ipv4WiFiStateKey)
+  property ipv4WiFiStateConfig (T@"NSDictionary",C,V_ipv4WiFiStateConfig)
+  property ipv4WiFiSetupKey (T@"NSString",C,V_ipv4WiFiSetupKey)
+  property ipv4WiFiSetupConfig (T@"NSDictionary",C,V_ipv4WiFiSetupConfig)
+  property ipv4GlobalStateKey (T@"NSString",C,V_ipv4GlobalStateKey)
+  property ipv4WiFiGlobalStateConfig (T@"NSDictionary",C,V_ipv4GlobalStateConfig)
+  property ipv4GlobalSetupKey (T@"NSString",C,V_ipv4GlobalSetupKey)
+  property ipv4WiFiGlobalSetupConfig (T@"NSDictionary",C,V_ipv4GlobalSetupConfig)
+  property ipv6WiFiStateKey (T@"NSString",C,V_ipv6WiFiStateKey)
+  property ipv6WiFiStateConfig (T@"NSDictionary",C,V_ipv6WiFiStateConfig)
+  property ipv6WiFiSetupKey (T@"NSString",C,V_ipv6WiFiSetupKey)
+  property ipv6WiFiSetupConfig (T@"NSDictionary",C,V_ipv6WiFiSetupConfig)
+  property ipv6GlobalStateKey (T@"NSString",C,V_ipv6GlobalStateKey)
+  property ipv6WiFiGlobalStateConfig (T@"NSDictionary",C,V_ipv6GlobalStateConfig)
+  property ipv6GlobalSetupKey (T@"NSString",C,V_ipv6GlobalSetupKey)
+  property ipv6WiFiGlobalSetupConfig (T@"NSDictionary",C,V_ipv6GlobalSetupConfig)
+  property reachabilityFlags (TI,V_reachabilityFlags)
+  property ipv4Available (TB,R,D)
+  property ipv6Available (TB,R,D)
+  property ipv4Routable (TB,R,D)
+  property ipv6Routable (TB,R,D)
+  property ipv4PrimaryInterface (TB,R,D)
+  property ipv6PrimaryInterface (TB,R,D)
+  property ipv4PrimaryServiceID (T@"NSString",R,D)
+  property ipv6PrimaryServiceID (T@"NSString",R,D)
+  property internetReachable (TB,R,D)
+  property ipv4Addresses (T@"NSArray",R,D)
+  property ipv6Addresses (T@"NSArray",R,D)
+  property ipv4Router (T@"NSString",R,D)
+  property ipv6Router (T@"NSString",R,D)
+  property ipv4StateConfig (T@"NSDictionary",R,D)
+  property ipv6StateConfig (T@"NSDictionary",R,D)
+  property ipv4GlobalStateConfig (T@"NSDictionary",R,D)
+  property ipv6GlobalStateConfig (T@"NSDictionary",R,D)
+  property ipv4SetupConfig (T@"NSDictionary",R,D)
+  property ipv6SetupConfig (T@"NSDictionary",R,D)
+  property ipv4GlobalSetupConfig (T@"NSDictionary",R,D)
+  property ipv6GlobalSetupConfig (T@"NSDictionary",R,D)
+  +ipMonitorForInterfaceWithName: @24@0:8@16  imp=+0x1a69086ec
+  -activeWiFiServiceIDs @16@0:8  imp=+0x1a690c2e4
+  -dealloc v16@0:8  imp=+0x1a6908730
+  -description @16@0:8  imp=+0x1a690c084
+  -initForInterfaceWithName: @24@0:8@16  imp=+0x1a6908d18
+  -interfaceName @16@0:8  imp=+0x1a690c2bc
+  -internetReachable B16@0:8  imp=+0x1a690a694
+  -ipv4Addresses @16@0:8  imp=+0x1a690a78c
+  -ipv4Available B16@0:8  imp=+0x1a690afc8
+  -ipv4GlobalSetupConfig @16@0:8  imp=+0x1a690b704
+  -ipv4GlobalSetupKey @16@0:8  imp=+0x1a690c3d4
+  -ipv4GlobalStateConfig @16@0:8  imp=+0x1a690b834
+  -ipv4GlobalStateKey @16@0:8  imp=+0x1a690c3ac
+  -ipv4PrimaryInterface B16@0:8  imp=+0x1a690ad4c
+  -ipv4PrimaryServiceID @16@0:8  imp=+0x1a690ae88
+  -ipv4Routable B16@0:8  imp=+0x1a690b1f0
+  -ipv4Router @16@0:8  imp=+0x1a690aa6c
+  -ipv4SetupConfig @16@0:8  imp=+0x1a690b964
+  -ipv4StateConfig @16@0:8  imp=+0x1a690ba94
+  -ipv4WiFiGlobalSetupConfig @16@0:8  imp=+0x1a690c3e8
+  -ipv4WiFiGlobalStateConfig @16@0:8  imp=+0x1a690c3c0
+  -ipv4WiFiSetupConfig @16@0:8  imp=+0x1a690c348
+  -ipv4WiFiSetupKey @16@0:8  imp=+0x1a690c334
+  -ipv4WiFiStateConfig @16@0:8  imp=+0x1a690c320
+  -ipv4WiFiStateKey @16@0:8  imp=+0x1a690c30c
+  -ipv6Addresses @16@0:8  imp=+0x1a690a8fc
+  -ipv6Available B16@0:8  imp=+0x1a690b0dc
+  -ipv6GlobalSetupConfig @16@0:8  imp=+0x1a690bbc4
+  -ipv6GlobalSetupKey @16@0:8  imp=+0x1a690c424
+  -ipv6GlobalStateConfig @16@0:8  imp=+0x1a690bcf4
+  -ipv6GlobalStateKey @16@0:8  imp=+0x1a690c3fc
+  -ipv6PrimaryInterface B16@0:8  imp=+0x1a690b33c
+  -ipv6PrimaryServiceID @16@0:8  imp=+0x1a690b478
+  -ipv6Routable B16@0:8  imp=+0x1a690b5b8
+  -ipv6Router @16@0:8  imp=+0x1a690abdc
+  -ipv6SetupConfig @16@0:8  imp=+0x1a690be24
+  -ipv6StateConfig @16@0:8  imp=+0x1a690bf54
+  -ipv6WiFiGlobalSetupConfig @16@0:8  imp=+0x1a690c438
+  -ipv6WiFiGlobalStateConfig @16@0:8  imp=+0x1a690c410
+  -ipv6WiFiSetupConfig @16@0:8  imp=+0x1a690c398
+  -ipv6WiFiSetupKey @16@0:8  imp=+0x1a690c384
+  -ipv6WiFiStateConfig @16@0:8  imp=+0x1a690c370
+  -ipv6WiFiStateKey @16@0:8  imp=+0x1a690c35c
+  -monitorNetworkServiceID: v24@0:8@16  imp=+0x1a6909918
+  -queryGlobalIPv4SetupConfig @16@0:8  imp=+0x1a690a324
+  -queryGlobalIPv4StateConfig @16@0:8  imp=+0x1a690a28c
+  -queryGlobalIPv6SetupConfig @16@0:8  imp=+0x1a690a59c
+  -queryGlobalIPv6StateConfig @16@0:8  imp=+0x1a690a504
+  -queryNetworkReachabilityFlags I16@0:8  imp=+0x1a690a634
+  -queryWiFiIPv4SetupConfig @16@0:8  imp=+0x1a690a1e8
+  -queryWiFiIPv4StateConfig @16@0:8  imp=+0x1a690a144
+  -queryWiFiIPv6SetupConfig @16@0:8  imp=+0x1a690a460
+  -queryWiFiIPv6StateConfig @16@0:8  imp=+0x1a690a3bc
+  -queryWiFiNetworkServiceID @16@0:8  imp=+0x1a6909e64
+  -reachabilityFlags I16@0:8  imp=+0x1a690c44c
+  -setActiveWiFiServiceIDs: v24@0:8@16  imp=+0x1a690c2f0
+  -setInterfaceName: v24@0:8@16  imp=+0x1a690c2c8
+  -setIpv4GlobalSetupKey: v24@0:8@16  imp=+0x1a690c3e0
+  -setIpv4GlobalStateKey: v24@0:8@16  imp=+0x1a690c3b8
+  -setIpv4WiFiGlobalSetupConfig: v24@0:8@16  imp=+0x1a690c3f4
+  -setIpv4WiFiGlobalStateConfig: v24@0:8@16  imp=+0x1a690c3cc
+  -setIpv4WiFiSetupConfig: v24@0:8@16  imp=+0x1a690c354
+  -setIpv4WiFiSetupKey: v24@0:8@16  imp=+0x1a690c340
+  -setIpv4WiFiStateConfig: v24@0:8@16  imp=+0x1a690c32c
+  -setIpv4WiFiStateKey: v24@0:8@16  imp=+0x1a690c318
+  -setIpv6GlobalSetupKey: v24@0:8@16  imp=+0x1a690c430
+  -setIpv6GlobalStateKey: v24@0:8@16  imp=+0x1a690c408
+  -setIpv6WiFiGlobalSetupConfig: v24@0:8@16  imp=+0x1a690c444
+  -setIpv6WiFiGlobalStateConfig: v24@0:8@16  imp=+0x1a690c41c
+  -setIpv6WiFiSetupConfig: v24@0:8@16  imp=+0x1a690c3a4
+  -setIpv6WiFiSetupKey: v24@0:8@16  imp=+0x1a690c390
+  -setIpv6WiFiStateConfig: v24@0:8@16  imp=+0x1a690c37c
+  -setIpv6WiFiStateKey: v24@0:8@16  imp=+0x1a690c368
+  -setReachabilityFlags: v20@0:8I16  imp=+0x1a690c454
+  -setTopLevelWiFiServiceID: v24@0:8@16  imp=+0x1a690c2dc
+  -setWifiServiceID: v24@0:8@16  imp=+0x1a690c304
+  -topLevelWiFiServiceID @16@0:8  imp=+0x1a690c2d0
+  -updateActiveWiFiNetworkServiceIDs v16@0:8  imp=+0x1a6909fe4
+  -wifiServiceID @16@0:8  imp=+0x1a690c2f8
+@class CWInterface : NSObject instanceSize=88
+  ivar +8 _interfaceName @"NSString"
+  ivar +16 _capabilities @"NSArray"
+  ivar +24 _device ^{_Apple80211=}
+  ivar +32 _deviceAttached B
+  ivar +40 _eapolClient @
+  ivar +48 _ipMonitor @
+  ivar +56 _corewifi @"CWFInterface"
+  ivar +64 _xpcClient @"CWXPCClient"
+  ivar +72 _legacy B
+  ivar +80 _awdlServiceManager @"AWDLServiceDiscoveryManager"
+  property device (T^v,R,D)
+  property capabilities (T@"NSArray",R,C,D)
+  property ipMonitor (T@"CWIPMonitor",R,&,D)
+  property eapolClient (T@"CWEAPOLClient",R,&,D)
+  property deviceAttached (TB,R)
+  property interfaceCapabilities (TQ,R)
+  property numTXStreams (Tq,R,N)
+  property powerRX (TB,R)
+  property powerTX (TB,R)
+  property maxNSSSupportedForAP (Tq,R,N)
+  property btcStatus (T@"CWBTCStatus",R,N)
+  property powerSaveModeEnabled (TB,R,D)
+  property aggregateRSSI (Tq,R,D)
+  property aggregateNoise (Tq,R,D)
+  property supportedISMChannels (T@"NSSet",R,D)
+  property capabilities (T@"NSArray",C,V_capabilities)
+  property interfaceName (T@"NSString",C,V_interfaceName)
+  property device (T^v,V_device)
+  property deviceAttached (TB,V_deviceAttached)
+  property awdlServiceManager (T@"AWDLServiceDiscoveryManager",&,V_awdlServiceManager)
+  property corewifi (T@"CWFInterface",&,V_corewifi)
+  property xpcClient (T@"CWXPCClient",&,V_xpcClient)
+  property legacy (TB,V_legacy)
+  +interface @16@0:8  imp=+0x1a68b608c
+  +interfaceNames @16@0:8  imp=+0x1a68b60ec
+  +interfaceWithName: @24@0:8@16  imp=+0x1a68b6138
+  +supportedInterfaces @16@0:8  imp=+0x1a68ea4bc
+  -IO80211ControllerInfo @16@0:8  imp=+0x1a68ea00c
+  -__powerOfAllRadiosMatches: B20@0:8i16  imp=+0x1a68eefbc
+  -__scanForLoginWindowModeEnterpriseNetworkWithEAPProfile:error: @32@0:8^{__EAPOLClientProfile=}16o^@24  imp=+0x1a68e5a38
+  -__securityTypeWithLastNetworkJoined: Q24@0:8@16  imp=+0x1a68e35e4
+  -__setupLegacyEventMonitoring v16@0:8  imp=+0x1a68eaeb0
+  -__supportedWLANChannelForChannelNumber: @24@0:8Q16  imp=+0x1a68e2880
+  -acquireBluetoothPagingLockAndReply: v24@0:8@?16  imp=+0x1a68ec31c
+  -activePHYMode q16@0:8  imp=+0x1a68e2f64
+  -activeUCMProfileIndexForBand:error: q32@0:8q16^@24  imp=+0x1a68edeac
+  -aggregateNoise q16@0:8  imp=+0x1a69047c4
+  -aggregateRSSI q16@0:8  imp=+0x1a69047c0
+  -airplayStatistics @16@0:8  imp=+0x1a68f02e0
+  -associateTo8021XNetwork:error: B32@0:8@16o^@24  imp=+0x1a68e5e20
+  -associateTo8021XNetwork:remember:error: B36@0:8@16B24o^@28  imp=+0x1a68e622c
+  -associateToEnterpriseNetwork:clientItemID:username:password:identity:error: B64@0:8@16^{__EAPOLClientItemID=}24@32@40^{__SecIdentity=}48o^@56  imp=+0x1a68e75e4
+  -associateToEnterpriseNetwork:clientItemID:username:password:identity:forceBSSID:remember:error: B72@0:8@16^{__EAPOLClientItemID=}24@32@40^{__SecIdentity=}48B56B60o^@64  imp=+0x1a68e7b04
+  -associateToEnterpriseNetwork:clientItemID:username:password:identity:forceBSSID:remember:possiblyHidden:error: B76@0:8@16^{__EAPOLClientItemID=}24@32@40^{__SecIdentity=}48B56B60B64o^@68  imp=+0x1a68e7ae0
+  -associateToEnterpriseNetwork:identity:username:password:error: B56@0:8@16^{__SecIdentity=}24@32@40o^@48  imp=+0x1a68e2430
+  -associateToEnterpriseNetwork:identity:username:password:forceBSSID:remember:error: B64@0:8@16^{__SecIdentity=}24@32@40B48B52o^@56  imp=+0x1a68e75b4
+  -associateToEnterpriseNetwork:identity:username:password:forceBSSID:remember:possiblyHidden:error: B68@0:8@16^{__SecIdentity=}24@32@40B48B52B56o^@60  imp=+0x1a68e745c
+  -associateToEnterpriseNetwork:username:password:identity:disableUserInteraction:forceBSSID:remember:possiblyHidden:error: B72@0:8@16@24@32^{__SecIdentity=}40B48B52B56B60o^@64  imp=+0x1a68e7610
+  -associateToLoginWindowModeEnterpriseNetworkWithEAPProfile:username:password:error: B48@0:8^{__EAPOLClientProfile=}16@24@32o^@40  imp=+0x1a68e6640
+  -associateToNetwork:parameters:error: B40@0:8@16@24o^@32  imp=+0x1a6904814
+  -associateToNetwork:password:error: B40@0:8@16@24o^@32  imp=+0x1a68e23b0
+  -associateToNetwork:password:forceBSSID:remember:error: B48@0:8@16@24B32B36o^@40  imp=+0x1a68e5a2c
+  -associateToNetwork:password:forceBSSID:remember:possiblyHidden:error: B52@0:8@16@24B32B36B40o^@44  imp=+0x1a68e554c
+  -associateToPasspointNetwork:usingDomainName:error: B40@0:8@16@24o^@32  imp=+0x1a68e705c
+  -associateToSystemModeEnterpriseNetwork:error: B32@0:8@16o^@24  imp=+0x1a68e6c50
+  -autoJoinHistory @16@0:8  imp=+0x1a68ef380
+  -availableWLANChannels @16@0:8  imp=+0x1a68ed6f4
+  -awdlOperatingMode @16@0:8  imp=+0x1a68ecd04
+  -awdlServiceManager @16@0:8  imp=+0x1a68e33bc
+  -bssid @16@0:8  imp=+0x1a68b66e8
+  -bssidData @16@0:8  imp=+0x1a68e9c80
+  -btcStatus @16@0:8  imp=+0x1a68eef78
+  -busy B16@0:8  imp=+0x1a68e9bbc
+  -busyUI B16@0:8  imp=+0x1a68e9bf4
+  -cachedScanResults @16@0:8  imp=+0x1a68e312c
+  -cachedTrimmedScanResultsWithProperties: @24@0:8@16  imp=+0x1a68e91ac
+  -capabilities @16@0:8  imp=+0x1a68b6080
+  -causedLastWake B16@0:8  imp=+0x1a68e9e70
+  -channel @16@0:8  imp=+0x1a690459c
+  -clearANQPCacheForNetwork: v24@0:8@16  imp=+0x1a68eabf4
+  -clearScanCache v16@0:8  imp=+0x1a68e99bc
+  -commitConfiguration:authorization:error: B40@0:8@16@24o^@32  imp=+0x1a68e3230
+  -configuration @16@0:8  imp=+0x1a68e31f0
+  -conformsToProtocol: B24@0:8@16  imp=+0x1a68e3324
+  -connectToTetherDevice:remember:error: B36@0:8@16B24^@28  imp=+0x1a68ec8ec
+  -corewifi @16@0:8  imp=+0x1a68e33d0
+  -countryCode @16@0:8  imp=+0x1a68e2e0c
+  -countryCodeInternal @16@0:8  imp=+0x1a68f0290
+  -dealloc v16@0:8  imp=+0x1a68e13e4
+  -description @16@0:8  imp=+0x1a68e3284
+  -device ^v16@0:8  imp=+0x1a68e3398
+  -deviceAttached B16@0:8  imp=+0x1a68e33a8
+  -disableHostAPMode v16@0:8  imp=+0x1a690456c
+  -disassociate v16@0:8  imp=+0x1a68e24c4
+  -eapolClient @16@0:8  imp=+0x1a68e348c
+  -enableHostAPMode v16@0:8  imp=+0x1a6904568
+  -enableIBSSWithParameters:error: B32@0:8@16o^@24  imp=+0x1a6904934
+  -hardwareAddress @16@0:8  imp=+0x1a68e3150
+  -hostAPModeConfigurationAndPassword: @24@0:8^@16  imp=+0x1a68f02e8
+  -hwSupportedWLANChannels @16@0:8  imp=+0x1a68ed534
+  -initWithInterfaceName: @24@0:8@16  imp=+0x1a68b619c
+  -initWithInterfaceName:xpcClient:legacy: @36@0:8@16@24B32  imp=+0x1a68ebe44
+  -interfaceCapabilities Q16@0:8  imp=+0x1a68b5f58
+  -interfaceControlState q16@0:8  imp=+0x1a68e3c88
+  -interfaceMode q16@0:8  imp=+0x1a68e3028
+  -interfaceName @16@0:8  imp=+0x1a68b5850
+  -interfaceState @16@0:8  imp=+0x1a69045e0
+  -ipMonitor @16@0:8  imp=+0x1a68e340c
+  -isAWDLRealTimeModeInProgress B16@0:8  imp=+0x1a68ecd70
+  -isAirPlayInProgress B16@0:8  imp=+0x1a68e9c2c
+  -joinHistory @16@0:8  imp=+0x1a68ef6d8
+  -joinNetwork:reply: v32@0:8@16@?24  imp=+0x1a68ecdc0
+  -lastNetworkJoined @16@0:8  imp=+0x1a68e9cd4
+  -lastPreferredNetworkJoined @16@0:8  imp=+0x1a68e9d44
+  -lastTetherDeviceJoined @16@0:8  imp=+0x1a68ec564
+  -legacy B16@0:8  imp=+0x1a68e33f8
+  -macAddress @16@0:8  imp=+0x1a68e3178
+  -maxNSSSupportedForAP q16@0:8  imp=+0x1a68eef50
+  -maximumLinkSpeed Q16@0:8  imp=+0x1a68e3c10
+  -maximumUCMProfileCount q16@0:8  imp=+0x1a68ed778
+  -mcsIndex Q16@0:8  imp=+0x1a68e3c38
+  -monitorMode B16@0:8  imp=+0x1a68e35c4
+  -name @16@0:8  imp=+0x1a68ea4b8
+  -networkInterfaceAvailable B16@0:8  imp=+0x1a68e3ca8
+  -networkServiceIDs @16@0:8  imp=+0x1a68e3a38
+  -noise @16@0:8  imp=+0x1a6904664
+  -noiseMeasurement q16@0:8  imp=+0x1a68e30bc
+  -numTXStreams q16@0:8  imp=+0x1a68eef18
+  -numberOfSpatialStreams Q16@0:8  imp=+0x1a68e3c60
+  -opMode @16@0:8  imp=+0x1a690472c
+  -parentInterfaceName @16@0:8  imp=+0x1a68ecc98
+  -phyMode @16@0:8  imp=+0x1a69047cc
+  -physicalLayerMode Q16@0:8  imp=+0x1a68e350c
+  -power B16@0:8  imp=+0x1a6904620
+  -powerDebugInfo @16@0:8  imp=+0x1a68ea490
+  -powerOn B16@0:8  imp=+0x1a68b585c
+  -powerRX B16@0:8  imp=+0x1a68eef40
+  -powerSaveModeEnabled B16@0:8  imp=+0x1a690479c
+  -powerTX B16@0:8  imp=+0x1a68eef48
+  -queryANQPCacheWithElements:network:maxAge: @40@0:8Q16@24d32  imp=+0x1a68ea894
+  -queryANQPElements:network:maxAge:waitForWiFi:waitForBluetooth:priority:error: @64@0:8Q16@24d32B40B44q48o^@56  imp=+0x1a68ea4ec
+  -queryScanCacheWithChannels:ssidList:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:error: @72@0:8@16@24d32q40q48q56o^@64  imp=+0x1a68e8de0
+  -queryScanCacheWithChannels:ssidList:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:trimmedScanResultProperties:error: @80@0:8@16@24d32q40q48q56@64o^@72  imp=+0x1a68e8a10
+  -relinquishBluetoothPagingLockAndReply: v24@0:8@?16  imp=+0x1a68ec440
+  -restoreJoinConfigurationWithUUID:reply: v32@0:8@16@?24  imp=+0x1a68ec1e0
+  -roamHistory @16@0:8  imp=+0x1a68ef028
+  -rssi @16@0:8  imp=+0x1a6904624
+  -rssiValue q16@0:8  imp=+0x1a68e3094
+  -saveJoinConfigurationAndReply: v24@0:8@?16  imp=+0x1a68ec0a8
+  -scanForNetworksWithChannels:ssid:bssid:error: @48@0:8@16@24@32o^@40  imp=+0x1a68e7b28
+  -scanForNetworksWithChannels:ssid:bssid:restTime:dwellTime:ssidList:error: @72@0:8@16@24@32Q40Q48@56o^@64  imp=+0x1a68e8860
+  -scanForNetworksWithChannels:ssid:bssid:restTime:dwellTime:ssidList:trimmedScanResultProperties:lowPriority:lowLatency:scanType:error: @96@0:8@16@24@32Q40Q48@56@64B72B76q80o^@88  imp=+0x1a68e8924
+  -scanForNetworksWithChannels:ssidList:legacyScanSSID:includeHiddenNetworks:mergedScanResults:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:waitForWiFi:waitForBluetooth:priority:error: @104@0:8@16@24@32B40B44d48q56q64q72B80B84q88o^@96  imp=+0x1a68e7f58
+  -scanForNetworksWithChannels:ssidList:legacyScanSSID:includeHiddenNetworks:mergedScanResults:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:waitForWiFi:waitForBluetooth:priority:trimmedScanResultProperties:lowPriority:lowLatency:scanType:error: @128@0:8@16@24@32B40B44d48q56q64q72B80B84q88@96B104B108q112o^@120  imp=+0x1a68e8448
+  -scanForNetworksWithChannels:ssidList:legacyScanSSID:includeHiddenNetworks:mergedScanResults:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:waitForWiFi:waitForBluetooth:trimmedScanResultProperties:priority:error: @112@0:8@16@24@32B40B44d48q56q64q72B80B84@88q96o^@104  imp=+0x1a68e7b58
+  -scanForNetworksWithName:error: @32@0:8@16o^@24  imp=+0x1a68e23a4
+  -scanForNetworksWithName:includeHidden:error: @36@0:8@16B24o^@28  imp=+0x1a68e2354
+  -scanForNetworksWithParameters:error: @32@0:8@16o^@24  imp=+0x1a6904570
+  -scanForNetworksWithSSID:error: @32@0:8@16o^@24  imp=+0x1a68e2348
+  -scanForNetworksWithSSID:includeHidden:error: @36@0:8@16B24o^@28  imp=+0x1a68e22d4
+  -security q16@0:8  imp=+0x1a68e31c8
+  -securityMode @16@0:8  imp=+0x1a6904874
+  -securityType Q16@0:8  imp=+0x1a68e39f8
+  -securityTypeWithNetwork: Q24@0:8@16  imp=+0x1a68e3a34
+  -serviceActive B16@0:8  imp=+0x1a68e31a0
+  -set2GHzChainDisabled:andReassocRequired:error: B32@0:8B16B20^@24  imp=+0x1a68efb38
+  -setActiveUCMProfileIndexFor2g:and5g:error: B40@0:8q16q24^@32  imp=+0x1a68ee258
+  -setAwdlServiceManager: v24@0:8@16  imp=+0x1a68e33c8
+  -setBluetoothCoexProperty:forKey:error: B40@0:8@16@24^@32  imp=+0x1a68ee628
+  -setBluetoothConnectionReport:error: B32@0:8@16^@24  imp=+0x1a68eec20
+  -setCachedLocaleTimeout:error: B32@0:8d16o^@24  imp=+0x1a68ed244
+  -setCapabilities: v24@0:8@16  imp=+0x1a68e3390
+  -setCorewifi: v24@0:8@16  imp=+0x1a68e33dc
+  -setDevice: v24@0:8^v16  imp=+0x1a68e33a0
+  -setDeviceAttached: v20@0:8B16  imp=+0x1a68e33b4
+  -setHostAPModeConfiguration:password:authorization:error: B48@0:8@16@24@32^@40  imp=+0x1a68f0618
+  -setIORegistryBTCoexBooleanPropertyWithName:value:error: B36@0:8@16B24^@28  imp=+0x1a68ee5c8
+  -setInterfaceName: v24@0:8@16  imp=+0x1a68e3388
+  -setLegacy: v20@0:8B16  imp=+0x1a68e3404
+  -setPairwiseMasterKey:error: B32@0:8@16o^@24  imp=+0x1a68e1c0c
+  -setPeerTrafficRegistrationWithConfiguration:error: B32@0:8@16^@24  imp=+0x1a68efa30
+  -setPower:error: B28@0:8B16o^@20  imp=+0x1a68e14b8
+  -setRangeable:peers:error: B36@0:8B16@20o^@28  imp=+0x1a68e51ec
+  -setUCMProfile:atIndex:error: B40@0:8@16q24^@32  imp=+0x1a68ed780
+  -setULOFDMAStateForBluetoothCoexistence:error: B28@0:8B16^@20  imp=+0x1a68ee928
+  -setWEPKey:flags:index:error: B48@0:8@16Q24q32o^@40  imp=+0x1a68e1f64
+  -setWLANChannel:error: B32@0:8@16o^@24  imp=+0x1a68e18bc
+  -setXpcClient: v24@0:8@16  imp=+0x1a68e33f0
+  -sidecarDiagnostics @16@0:8  imp=+0x1a68f02b8
+  -ssid @16@0:8  imp=+0x1a68e2dbc
+  -ssidData @16@0:8  imp=+0x1a68e2de4
+  -startAWDL:error: B32@0:8@16o^@24  imp=+0x1a68e47c8
+  -startHostAPMode: B24@0:8o^@16  imp=+0x1a68e411c
+  -startHostAPModeWithSSID:securityType:channel:password:error: B56@0:8@16Q24@32@40o^@48  imp=+0x1a68e3d3c
+  -startIBSSModeWithSSID:security:channel:password:error: B56@0:8@16q24Q32@40o^@48  imp=+0x1a68e299c
+  -startRanging:timeout:error: B40@0:8@16d24o^@32  imp=+0x1a68e4e88
+  -startWPSForNetwork:pin:remember:error: B44@0:8@16@24B32o^@36  imp=+0x1a68e95ac
+  -stateInfo @16@0:8  imp=+0x1a68eceec
+  -stopAWDL v16@0:8  imp=+0x1a68e4b24
+  -stopHostAPMode v16@0:8  imp=+0x1a68e4464
+  -stopIBSSMode v16@0:8  imp=+0x1a68e91f0
+  -supportedISMChannels @16@0:8  imp=+0x1a69047c8
+  -supportedPhysicalLayerModes Q16@0:8  imp=+0x1a68e3b58
+  -supportedWLANChannels @16@0:8  imp=+0x1a68b61f0
+  -supportsShortGI40MHz B16@0:8  imp=+0x1a69046e0
+  -transmitPower q16@0:8  imp=+0x1a68e310c
+  -transmitRate d16@0:8  imp=+0x1a68e30e4
+  -twoGHzChainDisabledAndReturnReassocRequired:error: B32@0:8^B16^@24  imp=+0x1a68efe38
+  -txRate @16@0:8  imp=+0x1a69046a4
+  -ucmProfileAtIndex:error: @32@0:8q16^@24  imp=+0x1a68edae0
+  -virtualInterfaceRole @16@0:8  imp=+0x1a68eccc0
+  -wakeOnWirelessEnabled B16@0:8  imp=+0x1a68e3d14
+  -wlanChannel @16@0:8  imp=+0x1a68e2e70
+  -xpcClient @16@0:8  imp=+0x1a68e33e4
+@class CWInterfaceManager : NSObject instanceSize=16
+  ivar +8 _wifiClient @"CWWiFiClient"
+  property interfaces (T@"NSSet",R,D)
+  +interfaceManager @16@0:8  imp=+0x1a68e050c
+  +interfaceNames @16@0:8  imp=+0x1a68e0444
+  -dealloc v16@0:8  imp=+0x1a68e053c
+  -description @16@0:8  imp=+0x1a68e0724
+  -init @16@0:8  imp=+0x1a68e0474
+  -interfaceWithName: @24@0:8@16  imp=+0x1a68e05b8
+  -interfaces @16@0:8  imp=+0x1a68e05c0
+@class CWJoinStatistics : NSObject <NSCopying, NSSecureCoding> instanceSize=96
+  ivar +8 _interfaceName @"NSString"
+  ivar +16 _processName @"NSString"
+  ivar +24 _network @"CWNetwork"
+  ivar +32 _profile @"CWNetworkProfile"
+  ivar +40 _startedAt @"NSDate"
+  ivar +48 _assocEndedAt @"NSDate"
+  ivar +56 _authEndedAt @"NSDate"
+  ivar +64 _ipAssignedAt @"NSDate"
+  ivar +72 _endedAt @"NSDate"
+  ivar +80 _error @"NSError"
+  ivar +88 _result B
+  property interfaceName (T@"NSString",C,V_interfaceName)
+  property processName (T@"NSString",C,V_processName)
+  property network (T@"CWNetwork",C,V_network)
+  property profile (T@"CWNetworkProfile",C,V_profile)
+  property startedAt (T@"NSDate",C,V_startedAt)
+  property assocEndedAt (T@"NSDate",C,V_assocEndedAt)
+  property authEndedAt (T@"NSDate",C,V_authEndedAt)
+  property ipAssignedAt (T@"NSDate",C,V_ipAssignedAt)
+  property endedAt (T@"NSDate",C,V_endedAt)
+  property error (T@"NSError",C,V_error)
+  property result (TB,V_result)
+  property ipDuration (T@"NSNumber",R,N)
+  property authDuration (T@"NSNumber",R,N)
+  property assocDuration (T@"NSNumber",R,N)
+  property joinDuration (T@"NSNumber",R,N)
+  +supportsSecureCoding B16@0:8  imp=+0x1a690c900
+  -assocDuration @16@0:8  imp=+0x1a690cd2c
+  -assocEndedAt @16@0:8  imp=+0x1a690cf24
+  -authDuration @16@0:8  imp=+0x1a690cdc8
+  -authEndedAt @16@0:8  imp=+0x1a690cf38
+  -conformsToProtocol: B24@0:8@16  imp=+0x1a690c6e8
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a690c848
+  -dealloc v16@0:8  imp=+0x1a690c628
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a690c908
+  -endedAt @16@0:8  imp=+0x1a690cf60
+  -error @16@0:8  imp=+0x1a690cf74
+  -hash Q16@0:8  imp=+0x1a690c840
+  -initWithCoder: @24@0:8@16  imp=+0x1a690ca14
+  -interfaceName @16@0:8  imp=+0x1a690cec0
+  -ipAssignedAt @16@0:8  imp=+0x1a690cf4c
+  -ipDuration @16@0:8  imp=+0x1a690cc40
+  -isEqual: B24@0:8@16  imp=+0x1a690c7cc
+  -isEqualToJoinStatistics: B24@0:8@16  imp=+0x1a690c788
+  -joinDuration @16@0:8  imp=+0x1a690ce64
+  -network @16@0:8  imp=+0x1a690cee8
+  -processName @16@0:8  imp=+0x1a690ced4
+  -profile @16@0:8  imp=+0x1a690cefc
+  -result B16@0:8  imp=+0x1a690cf88
+  -setAssocEndedAt: v24@0:8@16  imp=+0x1a690cf30
+  -setAuthEndedAt: v24@0:8@16  imp=+0x1a690cf44
+  -setEndedAt: v24@0:8@16  imp=+0x1a690cf6c
+  -setError: v24@0:8@16  imp=+0x1a690cf80
+  -setInterfaceName: v24@0:8@16  imp=+0x1a690cecc
+  -setIpAssignedAt: v24@0:8@16  imp=+0x1a690cf58
+  -setNetwork: v24@0:8@16  imp=+0x1a690cef4
+  -setProcessName: v24@0:8@16  imp=+0x1a690cee0
+  -setProfile: v24@0:8@16  imp=+0x1a690cf08
+  -setResult: v20@0:8B16  imp=+0x1a690cf94
+  -setStartedAt: v24@0:8@16  imp=+0x1a690cf1c
+  -startedAt @16@0:8  imp=+0x1a690cf10
+@class CWLocationChannel : CWChannel instanceSize=24
+  ivar +16 _scanResultsCount Q
+  property scanResultsCount (TQ,N,V_scanResultsCount)
+  -description @16@0:8  imp=+0x1a68cbe28
+  -scanResultsCount Q16@0:8  imp=+0x1a68cbedc
+  -setScanResultsCount: v24@0:8Q16  imp=+0x1a68cbef0
+@class CWLocationClient : NSObject instanceSize=104
+  ivar +8 _wifiClient @"CWWiFiClient"
+  ivar +16 _interfaceName @"NSString"
+  ivar +24 _timer @"NSObject<OS_dispatch_source>"
+  ivar +32 _queue @"NSObject<OS_dispatch_queue>"
+  ivar +40 _interval d
+  ivar +48 _channelInterval d
+  ivar +56 _isScanningDisabled B
+  ivar +57 _isScanningTemporarilyDisabled B
+  ivar +58 _acquiredCurrentLocation B
+  ivar +64 _channelHistoryMap @"NSMutableDictionary"
+  ivar +72 _channelList @"NSMutableArray"
+  ivar +80 _prevChannelIndex Q
+  ivar +88 _channelIndex Q
+  ivar +96 _scanResultsHandler @?
+  +sharedLocationClient @16@0:8  imp=+0x1a68ce6ac
+  -__acquireCurrentLocationWithScanResults: v24@0:8@16  imp=+0x1a68cf290
+  -__performScan v16@0:8  imp=+0x1a68cf3d8
+  -__restartScanning v16@0:8  imp=+0x1a68cefd0
+  -__startScanning v16@0:8  imp=+0x1a68cf024
+  -__stopScanning v16@0:8  imp=+0x1a68cf254
+  -__supportedLocationWiFiChannelList @16@0:8  imp=+0x1a68cf874
+  -__updateChannelList v16@0:8  imp=+0x1a68cfad4
+  -autoJoinDidCompleteForWiFiInterfaceWithName: v24@0:8@16  imp=+0x1a68d037c
+  -autoJoinDidStartForWiFiInterfaceWithName: v24@0:8@16  imp=+0x1a68d0244
+  -countryCodeDidChangeForWiFiInterfaceWithName: v24@0:8@16  imp=+0x1a68cffb8
+  -dealloc v16@0:8  imp=+0x1a68ce880
+  -init @16@0:8  imp=+0x1a68ce71c
+  -powerStateDidChangeForWiFiInterfaceWithName: v24@0:8@16  imp=+0x1a68cfde8
+  -scanCacheUpdatedForWiFiInterfaceWithName: v24@0:8@16  imp=+0x1a68d00e4
+  -setChannelInterval: v24@0:8d16  imp=+0x1a68ceca8
+  -setInterval: v24@0:8d16  imp=+0x1a68ceb48
+  -setScanResultsHandler: v24@0:8@?16  imp=+0x1a68ce954
+  -startScanning v16@0:8  imp=+0x1a68cedac
+  -stopScanning v16@0:8  imp=+0x1a68ceebc
+@class CWMessageTracerCache : NSObject instanceSize=24
+  ivar +8 _prefs ^{__SCPreferences=}
+  ivar +16 _mutex @"NSObject<OS_dispatch_queue>"
+  +sharedMessageTracerCache @16@0:8  imp=+0x1a68c3c0c
+  -__addMTLogWithAttributes: v24@0:8@16  imp=+0x1a68c3dd4
+  -addAssociationMTLogWithAttributes:sampleUsingSSID: v32@0:8@16@24  imp=+0x1a68c4188
+  -addInternalAssociationMTLogWithAttributes:sampleUsingSSID: v32@0:8@16@24  imp=+0x1a68c43a0
+  -addInternalMTLogWithAttributes: v24@0:8@16  imp=+0x1a68c479c
+  -addMTLogWithAttributes: v24@0:8@16  imp=+0x1a68c45b4
+  -dealloc v16@0:8  imp=+0x1a68c3d4c
+  -init @16@0:8  imp=+0x1a68c3c7c
+@class CWMutableConfiguration : CWConfiguration instanceSize=32
+  property networkProfiles (T@"NSOrderedSet",C,D)
+  property requireAdministratorForAssociation (TB,D)
+  property requireAdministratorForPower (TB,D)
+  property requireAdministratorForIBSSMode (TB,D)
+  property rememberJoinedNetworks (TB,D)
+@class CWMutableNetworkProfile : CWNetworkProfile instanceSize=320
+  property lastAutoJoinAt (T@"NSDate",C,D)
+  property lastManualJoinAt (T@"NSDate",C,D)
+  property captiveNetworkStatus (Tq,D)
+  property captiveNetwork (TB,D)
+  property wasCaptiveNetwork (TB,D)
+  property temporarilyDisabled (TB,D)
+  property systemMode (TB,D)
+  property hiddenNetwork (TB,D)
+  property securityType (TQ,D)
+  property autoLogin (TB,D)
+  property captiveBypass (TB,D)
+  property disabled (TB,D)
+  property isPasspoint (TB,D)
+  property domainName (T@"NSString",C,D)
+  property displayName (T@"NSString",C,D)
+  property roamingConsortiumList (T@"NSArray",C,D)
+  property naiRealmList (T@"NSArray",C,D)
+  property isServiceProviderRoamingEnabled (TB,D)
+  property possiblyHiddenNetwork (TB,D)
+  property collocatedGroup (T@"NSSet",C,D)
+  property channelHistory (T@"NSSet",C,D)
+  property roamingProfileType (Tq,D)
+  property transitionDisabledFlags (TQ,D)
+  property standalone6G (TB,D)
+  property isPersonalHotspot (TB,D)
+  property bssidList (T@"NSArray",C,D)
+  property shareMode (Tq,D)
+  property userRole (Tq,D)
+  property payloadUUID (T@"NSString",C)
+  property addedBy (TQ,D)
+  property addedAt (T@"NSDate",C)
+  property wasHiddenBefore (T@"NSDate",C,D)
+  property captiveSheetTimestamp (T@"NSDate",C,D)
+  property userPreferredOrderTimestamp (T@"NSDate",C,D)
+  property updatedAt (T@"NSDate",C,D)
+  property discoveredAt (T@"NSDate",C,D)
+  property networkGroupID (T@"NSString",C,D)
+  property networkGroupPriority (TQ,D)
+  property userPreferredNetworkNames (T@"NSDictionary",C,D)
+  property userPreferredPasspointDomains (T@"NSDictionary",C,D)
+  property privacyProxyEnabled (TB,D)
+  property movingAttribute (Tq,D)
+  property publicAttribute (Tq,D)
+  property lowDataMode (TQ,D)
+  property ssidData (T@"NSData",C,D)
+  property security (Tq,D)
+  -setUserPreferredTimestamp:networkProfile: v32@0:8@16@24  imp=+0x1a68f65f8
+@class CWNetwork : NSObject <NSCopying, NSSecureCoding> instanceSize=16
+  ivar +8 _scanRecord @"NSDictionary"
+  property supportsEasyConnect (TB,R,D)
+  property supportsWPS (TB,R,D)
+  property scanRecord (T@"NSDictionary",R,C,D)
+  property securityType (TQ,R,D)
+  property physicalLayerMode (TQ,R,D)
+  property bssidData (T@"NSData",R,D)
+  property isP2P (TB,R,D)
+  property hasNon6GHzRNRChannel (TB,R,D)
+  property isCarPlayNetwork (TB,R,D)
+  property isPersonalHotspot (TB,R,D)
+  property isPasspoint (TB,R,D)
+  property anqpDomainID (Tq,R,D)
+  property hasInterworkingIE (TB,R,D)
+  property accessNetworkType (Tq,R,D)
+  property hasInternet (TB,R,D)
+  property isAdditionalStepRequiredForAccess (TB,R,D)
+  property isEmergencyServicesReachable (TB,R,D)
+  property isUnauthenticatedEmergencyServiceAccessible (TB,R,D)
+  property venueGroup (Tq,R,D)
+  property venueType (Tq,R,D)
+  property hessid (T@"NSString",R,C,D)
+  property aggregateRSSI (Tq,R,D)
+  property scanRecord (T@"NSDictionary",C,V_scanRecord)
+  property ssid (T@"NSString",R,D)
+  property ssidData (T@"NSData",R,D)
+  property bssid (T@"NSString",R,D)
+  property wlanChannel (T@"CWChannel",R,D)
+  property rssiValue (Tq,R,D)
+  property noiseMeasurement (Tq,R,D)
+  property informationElementData (T@"NSData",R,D)
+  property countryCode (T@"NSString",R,D)
+  property beaconInterval (Tq,R,D)
+  property ibss (TB,R,D)
+  +supportsSecureCoding B16@0:8  imp=+0x1a68d0be4
+  -accessNetworkType q16@0:8  imp=+0x1a68d1548
+  -accessoryFriendlyName @16@0:8  imp=+0x1a68d1a5c
+  -aggregateRSSI q16@0:8  imp=+0x1a6904a58
+  -anqpDomainID q16@0:8  imp=+0x1a68d14dc
+  -beaconInterval q16@0:8  imp=+0x1a68d0704
+  -bssid @16@0:8  imp=+0x1a68d0588
+  -bssidData @16@0:8  imp=+0x1a68d13dc
+  -channel @16@0:8  imp=+0x1a6904b2c
+  -comparePHYMode: q24@0:8@16  imp=+0x1a68d1e30
+  -compareSecurity: q24@0:8@16  imp=+0x1a68d1d24
+  -conformsToProtocol: B24@0:8@16  imp=+0x1a68d0a40
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68d0b90
+  -coreWiFiScanResult @16@0:8  imp=+0x1a68d1f70
+  -countryCode @16@0:8  imp=+0x1a68d0738
+  -dealloc v16@0:8  imp=+0x1a68d04bc
+  -description @16@0:8  imp=+0x1a68d0940
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a68d0bec
+  -fastestSupportedPHYMode q16@0:8  imp=+0x1a68d1c0c
+  -hasInternet B16@0:8  imp=+0x1a68d1588
+  -hasInterworkingIE B16@0:8  imp=+0x1a68d151c
+  -hasNon6GHzRNRChannel B16@0:8  imp=+0x1a68d20dc
+  -hash Q16@0:8  imp=+0x1a68d0b54
+  -hessid @16@0:8  imp=+0x1a68d1708
+  -ibss B16@0:8  imp=+0x1a68d0538
+  -ieData @16@0:8  imp=+0x1a6904bb0
+  -informationElementData @16@0:8  imp=+0x1a68d06f4
+  -initWithCoder: @24@0:8@16  imp=+0x1a68d0c30
+  -initWithCoreWiFiScanResult: @24@0:8@16  imp=+0x1a68d1f30
+  -initWithScanRecord: @24@0:8@16  imp=+0x1a68d0c90
+  -isAdditionalStepRequiredForAccess B16@0:8  imp=+0x1a68d15c8
+  -isAppleSWAP B16@0:8  imp=+0x1a68d1aa4
+  -isCarPlayNetwork B16@0:8  imp=+0x1a68d1430
+  -isEmergencyServicesReachable B16@0:8  imp=+0x1a68d1608
+  -isEqual: B24@0:8@16  imp=+0x1a68d0ae0
+  -isEqualToNetwork: B24@0:8@16  imp=+0x1a68d0774
+  -isIBSS B16@0:8  imp=+0x1a6904a5c
+  -isOpen B16@0:8  imp=+0x1a68d1d04
+  -isP2P B16@0:8  imp=+0x1a68d20a8
+  -isPasspoint B16@0:8  imp=+0x1a68d14b0
+  -isPersonalHotspot B16@0:8  imp=+0x1a68d1484
+  -isSecureWACDevice B16@0:8  imp=+0x1a68d19e4
+  -isUnauthenticatedEmergencyServiceAccessible B16@0:8  imp=+0x1a68d1648
+  -isUnconfiguredAccessory B16@0:8  imp=+0x1a68d1854
+  -isUnconfiguredAirPlayAccessory B16@0:8  imp=+0x1a68d190c
+  -isUnconfiguredAirPrintAccessory B16@0:8  imp=+0x1a68d1978
+  -isUnconfiguredBaseStation: B24@0:8^@16  imp=+0x1a68d17bc
+  -isWiFiNetworkChargeablePublicNetwork B16@0:8  imp=+0x1a68d1ad8
+  -isWiFiNetworkMetered B16@0:8  imp=+0x1a68d1af8
+  -matchesKnownNetworkSecurity: B24@0:8q16  imp=+0x1a68d1fc8
+  -noise @16@0:8  imp=+0x1a6904b70
+  -noiseMeasurement q16@0:8  imp=+0x1a68d06c0
+  -phyMode @16@0:8  imp=+0x1a6904c64
+  -physicalLayerMode Q16@0:8  imp=+0x1a68d1180
+  -rssi @16@0:8  imp=+0x1a6904aec
+  -rssiValue q16@0:8  imp=+0x1a68d068c
+  -scanRecord @16@0:8  imp=+0x1a68d0c7c
+  -securityMode @16@0:8  imp=+0x1a6904a60
+  -securityType Q16@0:8  imp=+0x1a68d0de0
+  -setScanRecord: v24@0:8@16  imp=+0x1a68d0c88
+  -ssid @16@0:8  imp=+0x1a68d0568
+  -ssidData @16@0:8  imp=+0x1a68d0578
+  -strongestSupportedSecurity q16@0:8  imp=+0x1a68d1b3c
+  -supportsEAP B16@0:8  imp=+0x1a68d1cbc
+  -supportsEasyConnect B16@0:8  imp=+0x1a68d0d18
+  -supportsPHYMode: B24@0:8q16  imp=+0x1a68d088c
+  -supportsPSK B16@0:8  imp=+0x1a68d1ce0
+  -supportsSecurity: B24@0:8q16  imp=+0x1a68d0850
+  -supportsWPS B16@0:8  imp=+0x1a68d0d64
+  -unconfiguredBaseStationName: @20@0:8C16  imp=+0x1a68d1744
+  -venueGroup q16@0:8  imp=+0x1a68d1688
+  -venueType q16@0:8  imp=+0x1a68d16c8
+  -wirelessProfile @16@0:8  imp=+0x1a6904bb4
+  -wlanChannel @16@0:8  imp=+0x1a68d05bc
+@class CWNetworkProfile : NSObject <NSCopying, NSMutableCopying, NSSecureCoding> instanceSize=320
+  ivar +8 _ssidData @"NSData"
+  ivar +16 _ssid @"NSString"
+  ivar +24 _securityType Q
+  ivar +32 _disabled B
+  ivar +33 _systemMode B
+  ivar +34 _hiddenNetwork B
+  ivar +40 _lastAutoJoinAt @"NSDate"
+  ivar +48 _lastManualJoinAt @"NSDate"
+  ivar +56 _captiveNetworkStatus q
+  ivar +64 _wasCaptiveNetwork B
+  ivar +65 _temporarilyDisabled B
+  ivar +66 _captiveBypass B
+  ivar +72 _captiveSheetTimestamp @"NSDate"
+  ivar +80 _isPasspoint B
+  ivar +81 _standalone6G B
+  ivar +88 _transitionDisabledFlags Q
+  ivar +96 _domainName @"NSString"
+  ivar +104 _displayName @"NSString"
+  ivar +112 _roamingConsortiumList @"NSArray"
+  ivar +120 _naiRealmList @"NSArray"
+  ivar +128 _isServiceProviderRoamingEnabled B
+  ivar +129 _possiblyHiddenNetwork B
+  ivar +136 _collocatedGroup @"NSSet"
+  ivar +144 _channelHistory @"NSSet"
+  ivar +152 _roamingProfileType q
+  ivar +160 _isPersonalHotspot B
+  ivar +168 _bssidList @"NSArray"
+  ivar +176 _shareMode q
+  ivar +184 _userRole q
+  ivar +192 _payloadUUID @"NSString"
+  ivar +200 _addedBy Q
+  ivar +208 _addedAt @"NSDate"
+  ivar +216 _wasHiddenBefore @"NSDate"
+  ivar +224 _userPreferredOrderTimestamp @"NSDate"
+  ivar +232 _updatedAt @"NSDate"
+  ivar +240 _discoveredAt @"NSDate"
+  ivar +248 _userPreferredNetworkNames @"NSDictionary"
+  ivar +256 _userPreferredPasspointDomains @"NSDictionary"
+  ivar +264 _networkGroupID @"NSString"
+  ivar +272 _networkGroupPriority Q
+  ivar +280 _privacyProxyEnabled B
+  ivar +288 _movingAttribute q
+  ivar +296 _publicAttribute q
+  ivar +304 _lowDataMode Q
+  ivar +312 _coreWiFiSpecificAttributes @"NSDictionary"
+  property ssidData (T@"NSData",C,D)
+  property security (Tq,D)
+  property lastConnected (T@"NSDate",R,C,D)
+  property lastAutoJoinAt (T@"NSDate",C,V_lastAutoJoinAt)
+  property lastManualJoinAt (T@"NSDate",C,V_lastManualJoinAt)
+  property captiveNetworkStatus (Tq,V_captiveNetworkStatus)
+  property captiveNetwork (TB,D)
+  property wasCaptiveNetwork (TB,V_wasCaptiveNetwork)
+  property temporarilyDisabled (TB,V_temporarilyDisabled)
+  property systemMode (TB,V_systemMode)
+  property autoLogin (TB,D)
+  property captiveBypass (TB,V_captiveBypass)
+  property hiddenNetwork (TB,V_hiddenNetwork)
+  property securityType (TQ,D)
+  property disabled (TB,V_disabled)
+  property isPasspoint (TB,V_isPasspoint)
+  property transitionDisabledFlags (TQ,V_transitionDisabledFlags)
+  property standalone6G (TB,V_standalone6G)
+  property domainName (T@"NSString",C,V_domainName)
+  property displayName (T@"NSString",C,V_displayName)
+  property roamingConsortiumList (T@"NSArray",C,V_roamingConsortiumList)
+  property naiRealmList (T@"NSArray",C,V_naiRealmList)
+  property isServiceProviderRoamingEnabled (TB,V_isServiceProviderRoamingEnabled)
+  property possiblyHiddenNetwork (TB,V_possiblyHiddenNetwork)
+  property collocatedGroup (T@"NSSet",C,V_collocatedGroup)
+  property channelHistory (T@"NSSet",C,V_channelHistory)
+  property roamingProfileType (Tq,V_roamingProfileType)
+  property isPersonalHotspot (TB,V_isPersonalHotspot)
+  property bssidList (T@"NSArray",C,V_bssidList)
+  property shareMode (Tq,D)
+  property userRole (Tq,V_userRole)
+  property payloadUUID (T@"NSString",C,V_payloadUUID)
+  property addedBy (TQ,V_addedBy)
+  property addedAt (T@"NSDate",C,V_addedAt)
+  property wasHiddenBefore (T@"NSDate",C,V_wasHiddenBefore)
+  property captiveSheetTimestamp (T@"NSDate",C,V_captiveSheetTimestamp)
+  property userPreferredOrderTimestamp (T@"NSDate",C,V_userPreferredOrderTimestamp)
+  property updatedAt (T@"NSDate",C,V_updatedAt)
+  property discoveredAt (T@"NSDate",C,V_discoveredAt)
+  property networkGroupID (T@"NSString",C,V_networkGroupID)
+  property networkGroupPriority (TQ,V_networkGroupPriority)
+  property userPreferredNetworkNames (T@"NSDictionary",C,V_userPreferredNetworkNames)
+  property userPreferredPasspointDomains (T@"NSDictionary",C,V_userPreferredPasspointDomains)
+  property privacyProxyEnabled (TB,V_privacyProxyEnabled)
+  property movingAttribute (Tq,D)
+  property publicAttribute (Tq,D)
+  property coreWiFiSpecificAttributes (T@"NSDictionary",C,V_coreWiFiSpecificAttributes)
+  property lowDataMode (TQ,D)
+  property ssid (T@"NSString",R,C,V_ssid)
+  +__dataWithHexString: @24@0:8@16  imp=+0x1a68f4ba0
+  +allNetworkProfiles @16@0:8  imp=+0x1a68f2c88
+  +minimalNetworkProfileWithID: @24@0:8@16  imp=+0x1a68f4ca0
+  +networkProfile @16@0:8  imp=+0x1a68f58ac
+  +networkProfileWithNetworkProfile: @24@0:8@16  imp=+0x1a68f591c
+  +supportsSecureCoding B16@0:8  imp=+0x1a68f6288
+  -__compareSecurity: q24@0:8@16  imp=+0x1a68f5b1c
+  -__identifier: @20@0:8B16  imp=+0x1a68f59e0
+  -__supportedSecurityType: Q24@0:8Q16  imp=+0x1a68f27fc
+  -addedAt @16@0:8  imp=+0x1a68f650c
+  -addedBy Q16@0:8  imp=+0x1a68f64fc
+  -autoLogin B16@0:8  imp=+0x1a68f277c
+  -bssidList @16@0:8  imp=+0x1a68f64c4
+  -captiveBypass B16@0:8  imp=+0x1a68f638c
+  -captiveNetwork B16@0:8  imp=+0x1a68f2a6c
+  -captiveNetworkStatus q16@0:8  imp=+0x1a68f6354
+  -captiveSheetTimestamp @16@0:8  imp=+0x1a68f6534
+  -channelHistory @16@0:8  imp=+0x1a68f648c
+  -collocatedGroup @16@0:8  imp=+0x1a68f6478
+  -conformsToProtocol: B24@0:8@16  imp=+0x1a68f6140
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68f6208
+  -coreWiFiNetworkProfile @16@0:8  imp=+0x1a68f4d80
+  -coreWiFiSpecificAttributes @16@0:8  imp=+0x1a68f65e4
+  -dealloc v16@0:8  imp=+0x1a68f2cbc
+  -description @16@0:8  imp=+0x1a68f5e40
+  -disabled B16@0:8  imp=+0x1a68f63b4
+  -discoveredAt @16@0:8  imp=+0x1a68f6570
+  -displayName @16@0:8  imp=+0x1a68f6414
+  -domainName @16@0:8  imp=+0x1a68f6400
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a68f6290
+  -externalForm @16@0:8  imp=+0x1a68f2ddc
+  -hash Q16@0:8  imp=+0x1a68f5e18
+  -hiddenNetwork B16@0:8  imp=+0x1a68f63a0
+  -identifier @16@0:8  imp=+0x1a68f5a6c
+  -init @16@0:8  imp=+0x1a68f3564
+  -initWithCoder: @24@0:8@16  imp=+0x1a68f62d4
+  -initWithExternalForm: @24@0:8@16  imp=+0x1a68f356c
+  -initWithExternalForm:coreWiFiNetworkProfile:includeProperties: @40@0:8@16@24@32  imp=+0x1a68f3e84
+  -initWithNetworkProfile: @24@0:8@16  imp=+0x1a68f58dc
+  -isEqual: B24@0:8@16  imp=+0x1a68f5d8c
+  -isEqualToNetworkProfile: B24@0:8@16  imp=+0x1a68f5958
+  -isMorePreferredThan: q24@0:8@16  imp=+0x1a68f5c28
+  -isPasspoint B16@0:8  imp=+0x1a68f63c8
+  -isPersonalHotspot B16@0:8  imp=+0x1a68f64b0
+  -isServiceProviderRoamingEnabled B16@0:8  imp=+0x1a68f6450
+  -lastAutoJoinAt @16@0:8  imp=+0x1a68f632c
+  -lastConnected @16@0:8  imp=+0x1a68f2b98
+  -lastManualJoinAt @16@0:8  imp=+0x1a68f6340
+  -lowDataMode Q16@0:8  imp=+0x1a68f2c78
+  -movingAttribute q16@0:8  imp=+0x1a68f2c58
+  -mutableCopyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68f6248
+  -naiRealmList @16@0:8  imp=+0x1a68f643c
+  -networkGroupID @16@0:8  imp=+0x1a68f6584
+  -networkGroupPriority Q16@0:8  imp=+0x1a68f6598
+  -payloadUUID @16@0:8  imp=+0x1a68f64e8
+  -possiblyHiddenNetwork B16@0:8  imp=+0x1a68f6464
+  -preferredOrderTimestamp @16@0:8  imp=+0x1a68f5a74
+  -privacyProxyEnabled B16@0:8  imp=+0x1a68f65d0
+  -publicAttribute q16@0:8  imp=+0x1a68f2c68
+  -roamingConsortiumList @16@0:8  imp=+0x1a68f6428
+  -roamingProfileType q16@0:8  imp=+0x1a68f64a0
+  -security q16@0:8  imp=+0x1a68f2920
+  -securityType Q16@0:8  imp=+0x1a68f286c
+  -setAddedAt: v24@0:8@16  imp=+0x1a68f6518
+  -setAddedBy: v24@0:8Q16  imp=+0x1a68f6504
+  -setAutoLogin: v20@0:8B16  imp=+0x1a68f2798
+  -setBssidList: v24@0:8@16  imp=+0x1a68f64d0
+  -setCaptiveBypass: v20@0:8B16  imp=+0x1a68f6398
+  -setCaptiveNetwork: v20@0:8B16  imp=+0x1a68f2abc
+  -setCaptiveNetworkStatus: v24@0:8q16  imp=+0x1a68f635c
+  -setCaptiveSheetTimestamp: v24@0:8@16  imp=+0x1a68f6540
+  -setChannelHistory: v24@0:8@16  imp=+0x1a68f6498
+  -setCollocatedGroup: v24@0:8@16  imp=+0x1a68f6484
+  -setCoreWiFiSpecificAttributes: v24@0:8@16  imp=+0x1a68f65f0
+  -setDisabled: v20@0:8B16  imp=+0x1a68f63c0
+  -setDiscoveredAt: v24@0:8@16  imp=+0x1a68f657c
+  -setDisplayName: v24@0:8@16  imp=+0x1a68f6420
+  -setDomainName: v24@0:8@16  imp=+0x1a68f640c
+  -setHiddenNetwork: v20@0:8B16  imp=+0x1a68f63ac
+  -setIsPasspoint: v20@0:8B16  imp=+0x1a68f63d4
+  -setIsPersonalHotspot: v20@0:8B16  imp=+0x1a68f64bc
+  -setIsServiceProviderRoamingEnabled: v20@0:8B16  imp=+0x1a68f645c
+  -setLastAutoJoinAt: v24@0:8@16  imp=+0x1a68f6338
+  -setLastManualJoinAt: v24@0:8@16  imp=+0x1a68f634c
+  -setLowDataMode: v24@0:8Q16  imp=+0x1a68f2c80
+  -setMovingAttribute: v24@0:8q16  imp=+0x1a68f2c60
+  -setNaiRealmList: v24@0:8@16  imp=+0x1a68f6448
+  -setNetworkGroupID: v24@0:8@16  imp=+0x1a68f6590
+  -setNetworkGroupPriority: v24@0:8Q16  imp=+0x1a68f65a0
+  -setPayloadUUID: v24@0:8@16  imp=+0x1a68f64f4
+  -setPossiblyHiddenNetwork: v20@0:8B16  imp=+0x1a68f6470
+  -setPrivacyProxyEnabled: v20@0:8B16  imp=+0x1a68f65dc
+  -setPublicAttribute: v24@0:8q16  imp=+0x1a68f2c70
+  -setRoamingConsortiumList: v24@0:8@16  imp=+0x1a68f6434
+  -setRoamingProfileType: v24@0:8q16  imp=+0x1a68f64a8
+  -setSecurity: v24@0:8q16  imp=+0x1a68f2948
+  -setSecurityType: v24@0:8Q16  imp=+0x1a68f28c0
+  -setShareMode: v24@0:8q16  imp=+0x1a68f27f4
+  -setSsidData: v24@0:8@16  imp=+0x1a68f29e8
+  -setStandalone6G: v20@0:8B16  imp=+0x1a68f63f8
+  -setSystemMode: v20@0:8B16  imp=+0x1a68f6384
+  -setTemporarilyDisabled: v20@0:8B16  imp=+0x1a68f6370
+  -setTransitionDisabledFlags: v24@0:8Q16  imp=+0x1a68f63e4
+  -setUpdatedAt: v24@0:8@16  imp=+0x1a68f6568
+  -setUserPreferredNetworkNames: v24@0:8@16  imp=+0x1a68f65b4
+  -setUserPreferredOrderTimestamp: v24@0:8@16  imp=+0x1a68f6554
+  -setUserPreferredPasspointDomains: v24@0:8@16  imp=+0x1a68f65c8
+  -setUserRole: v24@0:8q16  imp=+0x1a68f64e0
+  -setWasCaptiveNetwork: v20@0:8B16  imp=+0x1a68f2b58
+  -setWasHiddenBefore: v24@0:8@16  imp=+0x1a68f652c
+  -shareMode q16@0:8  imp=+0x1a68f27a0
+  -ssid @16@0:8  imp=+0x1a68f6320
+  -ssidData @16@0:8  imp=+0x1a68f2988
+  -standalone6G B16@0:8  imp=+0x1a68f63ec
+  -systemMode B16@0:8  imp=+0x1a68f6378
+  -temporarilyDisabled B16@0:8  imp=+0x1a68f6364
+  -transitionDisabledFlags Q16@0:8  imp=+0x1a68f63dc
+  -updatedAt @16@0:8  imp=+0x1a68f655c
+  -userPreferredNetworkNames @16@0:8  imp=+0x1a68f65a8
+  -userPreferredOrderTimestamp @16@0:8  imp=+0x1a68f6548
+  -userPreferredPasspointDomains @16@0:8  imp=+0x1a68f65bc
+  -userPreferredTimestampWithNetworkProfile: @24@0:8@16  imp=+0x1a68f5d00
+  -userRole q16@0:8  imp=+0x1a68f64d8
+  -wasCaptiveNetwork B16@0:8  imp=+0x1a68f2b08
+  -wasHiddenBefore @16@0:8  imp=+0x1a68f6520
+@class CWPasswordSharingSimulator : NSObject <SFPasswordSharingServiceDelegate> instanceSize=32
+  ivar +8 _service @"SFPasswordSharingService"
+  ivar +16 _interface @"CWInterface"
+  ivar +24 _ssid @"NSString"
+  property interface (T@"CWInterface",R,V_interface)
+  property ssid (T@"NSString",R,V_ssid)
+  -initWithInterface:ssid: @32@0:8@16@24  imp=+0x1a69028f4
+  -interface @16@0:8  imp=+0x1a6902bf8
+  -run v16@0:8  imp=+0x1a69029b4
+  -service:receivedNetworkInfo: v32@0:8@16@24  imp=+0x1a69029cc
+  -service:shouldPromptForNetwork: B32@0:8@16@24  imp=+0x1a6902bf0
+  -ssid @16@0:8  imp=+0x1a6902c00
+@class CWRecommendationItem : NSObject <NSCopying, NSSecureCoding> instanceSize=48
+  ivar +8 _title @"NSString"
+  ivar +16 _desc @"NSString"
+  ivar +24 _recommendation @"NSString"
+  ivar +32 _externalLink @"NSString"
+  ivar +40 _issueType Q
+  property title (T@"NSString",C,V_title)
+  property desc (T@"NSString",C,V_desc)
+  property recommendation (T@"NSString",C,V_recommendation)
+  property externalLink (T@"NSString",C,V_externalLink)
+  property issueType (TQ,V_issueType)
+  +supportsSecureCoding B16@0:8  imp=+0x1a68b9cbc
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68b9c58
+  -dealloc v16@0:8  imp=+0x1a68b9a94
+  -desc @16@0:8  imp=+0x1a68b9ec8
+  -description @16@0:8  imp=+0x1a68b9b24
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a68b9cc4
+  -externalLink @16@0:8  imp=+0x1a68b9ef0
+  -hash Q16@0:8  imp=+0x1a68b9c50
+  -initWithCoder: @24@0:8@16  imp=+0x1a68b9d68
+  -isEqual: B24@0:8@16  imp=+0x1a68b9bdc
+  -isEqualToRecommendationItem: B24@0:8@16  imp=+0x1a68b9b94
+  -issueType Q16@0:8  imp=+0x1a68b9f04
+  -recommendation @16@0:8  imp=+0x1a68b9edc
+  -setDesc: v24@0:8@16  imp=+0x1a68b9ed4
+  -setExternalLink: v24@0:8@16  imp=+0x1a68b9efc
+  -setIssueType: v24@0:8Q16  imp=+0x1a68b9f0c
+  -setRecommendation: v24@0:8@16  imp=+0x1a68b9ee8
+  -setTitle: v24@0:8@16  imp=+0x1a68b9ec0
+  -title @16@0:8  imp=+0x1a68b9eb4
+@class CWRoamStatistics : NSObject <NSCopying, NSSecureCoding> instanceSize=120
+  ivar +8 _active2GHzProfile q
+  ivar +16 _active5GHzProfile q
+  ivar +24 _startedAt @"NSDate"
+  ivar +32 _endedAt @"NSDate"
+  ivar +40 _fromBSSID @"NSString"
+  ivar +48 _toBSSID @"NSString"
+  ivar +56 _fromChannel @"CWChannel"
+  ivar +64 _toChannel @"CWChannel"
+  ivar +72 _fromRSSI q
+  ivar +80 _toRSSI q
+  ivar +88 _ssid @"NSData"
+  ivar +96 _reason q
+  ivar +104 _status q
+  ivar +112 _active6GHzProfile q
+  property active2GHzProfile (Tq,V_active2GHzProfile)
+  property active5GHzProfile (Tq,V_active5GHzProfile)
+  property active6GHzProfile (Tq,V_active6GHzProfile)
+  property startedAt (T@"NSDate",C,V_startedAt)
+  property endedAt (T@"NSDate",C,V_endedAt)
+  property fromBSSID (T@"NSString",C,V_fromBSSID)
+  property toBSSID (T@"NSString",C,V_toBSSID)
+  property fromChannel (T@"CWChannel",C,V_fromChannel)
+  property toChannel (T@"CWChannel",C,V_toChannel)
+  property fromRSSI (Tq,V_fromRSSI)
+  property toRSSI (Tq,V_toRSSI)
+  property ssid (T@"NSData",C,V_ssid)
+  property reason (Tq,V_reason)
+  property status (Tq,V_status)
+  +supportsSecureCoding B16@0:8  imp=+0x1a6904114
+  -active2GHzProfile q16@0:8  imp=+0x1a690446c
+  -active5GHzProfile q16@0:8  imp=+0x1a690447c
+  -active6GHzProfile q16@0:8  imp=+0x1a690448c
+  -conformsToProtocol: B24@0:8@16  imp=+0x1a6903eb4
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a6904044
+  -dealloc v16@0:8  imp=+0x1a6903e0c
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a690411c
+  -endedAt @16@0:8  imp=+0x1a69044b0
+  -fromBSSID @16@0:8  imp=+0x1a69044e4
+  -fromChannel @16@0:8  imp=+0x1a690450c
+  -fromRSSI q16@0:8  imp=+0x1a69044c4
+  -hash Q16@0:8  imp=+0x1a690400c
+  -initWithCoder: @24@0:8@16  imp=+0x1a6904250
+  -isEqual: B24@0:8@16  imp=+0x1a6903f98
+  -isEqualToRoamStatistics: B24@0:8@16  imp=+0x1a6903f54
+  -reason q16@0:8  imp=+0x1a6904548
+  -setActive2GHzProfile: v24@0:8q16  imp=+0x1a6904474
+  -setActive5GHzProfile: v24@0:8q16  imp=+0x1a6904484
+  -setActive6GHzProfile: v24@0:8q16  imp=+0x1a6904494
+  -setEndedAt: v24@0:8@16  imp=+0x1a69044bc
+  -setFromBSSID: v24@0:8@16  imp=+0x1a69044f0
+  -setFromChannel: v24@0:8@16  imp=+0x1a6904518
+  -setFromRSSI: v24@0:8q16  imp=+0x1a69044cc
+  -setReason: v24@0:8q16  imp=+0x1a6904550
+  -setSsid: v24@0:8@16  imp=+0x1a6904540
+  -setStartedAt: v24@0:8@16  imp=+0x1a69044a8
+  -setStatus: v24@0:8q16  imp=+0x1a6904560
+  -setToBSSID: v24@0:8@16  imp=+0x1a6904504
+  -setToChannel: v24@0:8@16  imp=+0x1a690452c
+  -setToRSSI: v24@0:8q16  imp=+0x1a69044dc
+  -ssid @16@0:8  imp=+0x1a6904534
+  -startedAt @16@0:8  imp=+0x1a690449c
+  -status q16@0:8  imp=+0x1a6904558
+  -toBSSID @16@0:8  imp=+0x1a69044f8
+  -toChannel @16@0:8  imp=+0x1a6904520
+  -toRSSI q16@0:8  imp=+0x1a69044d4
+@class CWTetherDevice : NSObject <NSCopying, NSSecureCoding> instanceSize=56
+  ivar +8 _deviceIdentifier @"NSString"
+  ivar +16 _deviceName @"NSString"
+  ivar +24 _batteryLife @"NSNumber"
+  ivar +32 _signalStrength @"NSNumber"
+  ivar +40 _networkType Q
+  ivar +48 _deviceGroup Q
+  property deviceIdentifier (T@"NSString",C,V_deviceIdentifier)
+  property deviceName (T@"NSString",C,V_deviceName)
+  property batteryLife (T@"NSNumber",C,V_batteryLife)
+  property signalStrength (T@"NSNumber",C,V_signalStrength)
+  property networkType (TQ,V_networkType)
+  property deviceGroup (TQ,V_deviceGroup)
+  +supportsSecureCoding B16@0:8  imp=+0x1a68cc9d8
+  -batteryLife @16@0:8  imp=+0x1a68ccbf0
+  -conformsToProtocol: B24@0:8@16  imp=+0x1a68cc7dc
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68cc95c
+  -dealloc v16@0:8  imp=+0x1a68cc66c
+  -description @16@0:8  imp=+0x1a68cc6fc
+  -deviceGroup Q16@0:8  imp=+0x1a68ccc28
+  -deviceIdentifier @16@0:8  imp=+0x1a68ccbc8
+  -deviceName @16@0:8  imp=+0x1a68ccbdc
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a68cc9e0
+  -hash Q16@0:8  imp=+0x1a68cc954
+  -initWithCoder: @24@0:8@16  imp=+0x1a68ccaac
+  -isEqual: B24@0:8@16  imp=+0x1a68cc8dc
+  -isEqualToTetherDevice: B24@0:8@16  imp=+0x1a68cc890
+  -networkType Q16@0:8  imp=+0x1a68ccc18
+  -setBatteryLife: v24@0:8@16  imp=+0x1a68ccbfc
+  -setDeviceGroup: v24@0:8Q16  imp=+0x1a68ccc30
+  -setDeviceIdentifier: v24@0:8@16  imp=+0x1a68ccbd4
+  -setDeviceName: v24@0:8@16  imp=+0x1a68ccbe8
+  -setNetworkType: v24@0:8Q16  imp=+0x1a68ccc20
+  -setSignalStrength: v24@0:8@16  imp=+0x1a68ccc10
+  -signalStrength @16@0:8  imp=+0x1a68ccc04
+@class CWTrimmedNetwork : NSObject <NSCopying, NSSecureCoding> instanceSize=16
+  ivar +8 _scanRecord @"NSDictionary"
+  property scanRecord (T@"NSDictionary",R,D)
+  property includedProperties (T@"NSArray",R,D)
+  property ssidData (T@"NSData",R,D)
+  property ssid (T@"NSString",R,D)
+  property bssid (T@"NSString",R,D)
+  property channelNumber (TQ,R,D)
+  property wlanChannel (T@"CWChannel",R,D)
+  property securityType (TQ,R,D)
+  property physicalLayerMode (TQ,R,D)
+  property rssiValue (Tq,R,D)
+  property noiseMeasurement (Tq,R,D)
+  property ibss (TB,R,D)
+  property countryCode (T@"NSString",R,D)
+  property isPersonalHotspot (TB,R,D)
+  property isPasspoint (TB,R,D)
+  property isUnconfiguredBaseStation (TB,R,D)
+  property baseStationName (T@"NSString",R,D)
+  property isUnconfiguredAccessory (TB,R,D)
+  property accessoryFriendlyName (T@"NSString",R,D)
+  property isUnconfiguredAirPlayAccessory (TB,R,D)
+  property isUnconfiguredAirPrintAccessory (TB,R,D)
+  property isSecureWACDevice (TB,R,D)
+  property isP2P (TB,R,D)
+  property hasNon6GHzRNRChannel (TB,R,D)
+  property supportsWPS (TB,R,D)
+  +supportsSecureCoding B16@0:8  imp=+0x1a68f8238
+  -__trimmedScanRecordForNetwork:properties: @32@0:8@16@24  imp=+0x1a68f6e1c
+  -accessoryFriendlyName @16@0:8  imp=+0x1a68f7b50
+  -baseStationName @16@0:8  imp=+0x1a68f7b40
+  -bssid @16@0:8  imp=+0x1a68f778c
+  -channelNumber Q16@0:8  imp=+0x1a68f7838
+  -compareSecurity: q24@0:8@16  imp=+0x1a68f7d78
+  -conformsToProtocol: B24@0:8@16  imp=+0x1a68f7fb4
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68f81f4
+  -countryCode @16@0:8  imp=+0x1a68f77c0
+  -dealloc v16@0:8  imp=+0x1a68f769c
+  -description @16@0:8  imp=+0x1a68f7e84
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a68f8240
+  -hasNon6GHzRNRChannel B16@0:8  imp=+0x1a68f79a0
+  -hash Q16@0:8  imp=+0x1a68f81b8
+  -ibss B16@0:8  imp=+0x1a68f7938
+  -includedProperties @16@0:8  imp=+0x1a68f7740
+  -initWithCoder: @24@0:8@16  imp=+0x1a68f8258
+  -initWithNetwork:properties: @32@0:8@16@24  imp=+0x1a68f75d8
+  -initWithScanRecord: @24@0:8@16  imp=+0x1a68f7614
+  -isEqual: B24@0:8@16  imp=+0x1a68f8144
+  -isEqualToTrimmedNetwork: B24@0:8@16  imp=+0x1a68f8068
+  -isOpen B16@0:8  imp=+0x1a68f7d58
+  -isP2P B16@0:8  imp=+0x1a68f796c
+  -isPasspoint B16@0:8  imp=+0x1a68f79d4
+  -isPersonalHotspot B16@0:8  imp=+0x1a68f7a08
+  -isSecureWACDevice B16@0:8  imp=+0x1a68f7b0c
+  -isUnconfiguredAccessory B16@0:8  imp=+0x1a68f7a70
+  -isUnconfiguredAirPlayAccessory B16@0:8  imp=+0x1a68f7aa4
+  -isUnconfiguredAirPrintAccessory B16@0:8  imp=+0x1a68f7ad8
+  -isUnconfiguredBaseStation B16@0:8  imp=+0x1a68f7a3c
+  -matchesKnownNetworkSecurity: B24@0:8q16  imp=+0x1a68f7b9c
+  -noiseMeasurement q16@0:8  imp=+0x1a68f7804
+  -physicalLayerMode Q16@0:8  imp=+0x1a68f7904
+  -rssiValue q16@0:8  imp=+0x1a68f77d0
+  -scanRecord @16@0:8  imp=+0x1a68f7714
+  -securityType Q16@0:8  imp=+0x1a68f78d0
+  -ssid @16@0:8  imp=+0x1a68f7758
+  -ssidData @16@0:8  imp=+0x1a68f7748
+  -strongestSupportedSecurity q16@0:8  imp=+0x1a68f7cb0
+  -supportsSecurity: B24@0:8q16  imp=+0x1a68f7b60
+  -supportsWPS B16@0:8  imp=+0x1a68f7c7c
+  -wlanChannel @16@0:8  imp=+0x1a68f786c
+@class CWUnlockSimulator : NSObject <CWEventDelegate> instanceSize=144
+  ivar +8 _wifiClient @"CWWiFiClient"
+  ivar +16 _interface @"CWInterface"
+  ivar +24 _awdlInterface @"CWInterface"
+  ivar +32 _error @"NSError"
+  ivar +40 _peer @"NSString"
+  ivar +48 _pmk @"NSString"
+  ivar +56 _channel @"NSNumber"
+  ivar +64 _secChannel @"NSNumber"
+  ivar +72 _measurements @"NSNumber"
+  ivar +80 _peerAddr {ether_addr="octet"[6C]}
+  ivar +88 _completion @"NSObject<OS_dispatch_semaphore>"
+  ivar +96 _queue @"NSObject<OS_dispatch_queue>"
+  ivar +104 _isRanging B
+  ivar +105 _isAwdlUp B
+  ivar +112 _requestTimestamp @"NSDate"
+  ivar +120 _linkUpTimestamp @"NSDate"
+  ivar +128 _discoveryTimestamp @"NSDate"
+  ivar +136 _measurementTimestamp @"NSDate"
+  -.cxx_destruct v16@0:8  imp=+0x1a6903d2c
+  -_doRanging v16@0:8  imp=+0x1a69030b8
+  -doUnlockWithPeer:andPmk:onChannel:andMeasurements:secChannel: @56@0:8@16@24@32@40@48  imp=+0x1a690326c
+  -initWithInterfaceName: @24@0:8@16  imp=+0x1a6902de8
+  -rangingReportEventForWiFiInterfaceWithName:data:error: v40@0:8@16@24@32  imp=+0x1a690394c
+  -virtualInterfaceStateChangedForWiFiInterfaceWithName: v24@0:8@16  imp=+0x1a6903598
+@class CWWiFiClient : NSObject instanceSize=72
+  ivar +8 _xpcClient @"CWXPCClient"
+  ivar +16 _eventList @"NSMutableSet"
+  ivar +24 _eventQueue @"NSObject<OS_dispatch_queue>"
+  ivar +32 _defaultInterfaceName @"NSString"
+  ivar +40 _interfaceMap @"NSMutableDictionary"
+  ivar +48 _mutex @"NSObject<OS_dispatch_queue>"
+  ivar +56 _delegate @
+  ivar +64 _legacy B
+  property xpcClient (T@"CWXPCClient",&,V_xpcClient)
+  property legacy (TB,V_legacy)
+  property delegate (T@,W,N,V_delegate)
+  +confirmAPIAccessWithRequestType:info:xpcConnection: B40@0:8q16@24@32  imp=+0x1a68d5ab8
+  +interfaceByRole: @24@0:8q16  imp=+0x1a68db0ec
+  +interfaceNames @16@0:8  imp=+0x1a68b5820
+  +legacyWiFiClient @16@0:8  imp=+0x1a68d5a80
+  +platformCapabilities Q16@0:8  imp=+0x1a68b5884
+  +sharedTemporaryClient @16@0:8  imp=+0x1a68d58f8
+  +sharedWiFiClient @16@0:8  imp=+0x1a68b5480
+  +virtualInterfaceNames @16@0:8  imp=+0x1a68db6ec
+  -__interfaceWithName: @24@0:8@16  imp=+0x1a68b56d8
+  -__startMonitoringEventWithType:reply: v32@0:8q16@?24  imp=+0x1a68b5d40
+  -acquireBluetoothPagingLockAndReply: v24@0:8@?16  imp=+0x1a68db748
+  -addWiFiProfile:event:addToBottom:authorization:error: B52@0:8@16Q24B32@36^@44  imp=+0x1a68ddccc
+  -airPlayDidCompleteForWiFiInterfaceWithName: v24@0:8@16  imp=+0x1a68d8bf0
+  -asymmetricInterferenceDetected:channelGroup: v24@0:8C16c20  imp=+0x1a68daed4
+  -autoHotspotMode q16@0:8  imp=+0x1a68df63c
+  -autoJoinDidCompleteForWiFiInterfaceWithName: v24@0:8@16  imp=+0x1a68d84d8
+  -autoJoinDidStartForWiFiInterfaceWithName: v24@0:8@16  imp=+0x1a68d83d8
+  -autoJoinDidUpdate: v24@0:8@16  imp=+0x1a68d86d8
+  -autoJoinTemporarilyDisabled B16@0:8  imp=+0x1a68dcc10
+  -autoJoinTemporarilyDisabledUntilDate @16@0:8  imp=+0x1a68dc540
+  -bssidDidChangeForWiFiInterfaceWithName: v24@0:8@16  imp=+0x1a68d76c0
+  -btCoexModeStats: v24@0:8@16  imp=+0x1a68dabc4
+  -commitConfiguration:interfaceName:authorization:error: B48@0:8@16@24@32^@40  imp=+0x1a68decb0
+  -configurationWithInterfaceName: @24@0:8@16  imp=+0x1a68dea24
+  -countryCodeDidChangeForWiFiInterfaceWithName: v24@0:8@16  imp=+0x1a68d77c0
+  -dealloc v16@0:8  imp=+0x1a68d6658
+  -delegate @16@0:8  imp=+0x1a68da830
+  -deviceAvailabilityChangedForWiFiInterfaceWithName:isAvailable: v28@0:8@16B24  imp=+0x1a68d8ef0
+  -dextCrashDetected v16@0:8  imp=+0x1a68d85d8
+  -forgetPasspointWiFiProfileWithDomainName:event:error: B40@0:8@16Q24^@32  imp=+0x1a68ddbd4
+  -forgetWiFiProfileWithID:event:error: B40@0:8@16Q24^@32  imp=+0x1a68dd79c
+  -forgetWiFiProfileWithSSID:event:error: B40@0:8@16Q24^@32  imp=+0x1a68ddae8
+  -foundTetherDevices: v24@0:8@16  imp=+0x1a68d8cf0
+  -init @16@0:8  imp=+0x1a68b54f0
+  -initForWiFiUserAgent @16@0:8  imp=+0x1a68df858
+  -initWithXPCClientType: @24@0:8q16  imp=+0x1a68d5c34
+  -interface @16@0:8  imp=+0x1a68b5580
+  -interfaceAddedWithName: v24@0:8@16  imp=+0x1a68d7dd8
+  -interfaceNames @16@0:8  imp=+0x1a68d662c
+  -interfaceRemovedWithName: v24@0:8@16  imp=+0x1a68d7ed8
+  -interfaceWithName: @24@0:8@16  imp=+0x1a68b59e0
+  -interfaceWithRole: @24@0:8q16  imp=+0x1a68da84c
+  -interfaces @16@0:8  imp=+0x1a68b58bc
+  -internal_addCloudProfile: v24@0:8@16  imp=+0x1a68e0244
+  -internal_confirmAPIAccessWithRequestType:info:processName:reply: v48@0:8q16@24@32@?40  imp=+0x1a68da70c
+  -internal_enableTetherDevice:reply: v32@0:8@16@?24  imp=+0x1a68da258
+  -internal_foundTetherDevices: v24@0:8@16  imp=+0x1a68df860
+  -internal_getWiFiPasswordForUserKeychainWithSSID:reply: v32@0:8@16@?24  imp=+0x1a68d9a80
+  -internal_joinWiFiNetworkWithUserAgent:interfaceName:timestamp:reply: v48@0:8@16@24d32@?40  imp=+0x1a68da3a8
+  -internal_queryCloudKVSAndReply: v24@0:8@?16  imp=+0x1a68dfec4
+  -internal_queryLegacyCloudKVSAndReply: v24@0:8@?16  imp=+0x1a68e0004
+  -internal_receivedAutoHotspotNotificationResponse:updateMode:tetherDevice:authorization:interfaceName:error: B60@0:8B16q20@28@36@44^@52  imp=+0x1a68dfba4
+  -internal_removeCloudProfile: v24@0:8@16  imp=+0x1a68e0344
+  -internal_setWiFiPasswordForUserKeychain:ssid:reply: v40@0:8@16@24@?32  imp=+0x1a68d993c
+  -internal_showAutoHotspotNotificationForTetherDevice:retry:interfaceName: v36@0:8@16B24@28  imp=+0x1a68da4f4
+  -internal_showAvailableWiFiNetworks:interfaceName:recommendOnly: v36@0:8@16@24B32  imp=+0x1a68d9bc8
+  -internal_showDHCPMessage:networkName: v32@0:8@16@24  imp=+0x1a68d9ed8
+  -internal_showLowBatteryNotificationForTetherDevice:interfaceName: v32@0:8@16@24  imp=+0x1a68da604
+  -internal_showMICErrorWithNetworkName: v24@0:8@16  imp=+0x1a68d9cd8
+  -internal_showPHNetworkExpensiveAlertWithNetworkName: v24@0:8@16  imp=+0x1a68d9dd8
+  -internal_startBrowsingForTetherDevicesAndReply: v24@0:8@?16  imp=+0x1a68d9fe0
+  -internal_startUserMode8021XWithAuthenticationInfo:interfaceWithName:reply: v40@0:8@16@24@?32  imp=+0x1a68d92dc
+  -internal_startUserMode8021XWithPasspointDomainName:interfaceWithName:reply: v40@0:8@16@24@?32  imp=+0x1a68d96b4
+  -internal_startUserMode8021XWithProfile:interfaceWithName:reply: v40@0:8@16@24@?32  imp=+0x1a68d97f8
+  -internal_startUserMode8021XWithSSID:username:password:identity:disableUserInteraction:remember:interfaceWithName:reply: v72@0:8@16@24@32@40B48B52@56@?64  imp=+0x1a68d9420
+  -internal_stopBrowsingForTetherDevicesAndReply: v24@0:8@?16  imp=+0x1a68da11c
+  -internal_updateCloudProfile: v24@0:8@16  imp=+0x1a68e0144
+  -internal_userAgentWillShowJoinUIForWiFiNetwork:interfaceName:timestamp:error: B48@0:8@16@24d32^@40  imp=+0x1a68df8a0
+  -joinDidCompleteForWiFiInterfaceWithName:isAutoJoin:error: v36@0:8@16B24@28  imp=+0x1a68d88e0
+  -joinDidStartForWiFiInterfaceWithName:ssid: v32@0:8@16@24  imp=+0x1a68d87d8
+  -legacy B16@0:8  imp=+0x1a68da838
+  -linkDidChangeForWiFiInterfaceWithName: v24@0:8@16  imp=+0x1a68d7ac8
+  -linkQualityDidChangeForWiFiInterfaceWithName:rssi:transmitRate: v40@0:8@16q24d32  imp=+0x1a68d7bc8
+  -modeDidChangeForWiFiInterfaceWithName: v24@0:8@16  imp=+0x1a68d7cd8
+  -platformCapabilities Q16@0:8  imp=+0x1a68dd2d8
+  -powerStateDidChangeForWiFiInterfaceWithName: v24@0:8@16  imp=+0x1a68d74c0
+  -preferencesDidChangeForWiFiInterfaceWithName: v24@0:8@16  imp=+0x1a68d8ff8
+  -queryAllWiFiProfilesAndReturnError: @24@0:8^@16  imp=+0x1a68de6d0
+  -rangingEndedForWiFiInterfaceWithName: v24@0:8@16  imp=+0x1a68d82d8
+  -rangingReportEventForWiFiInterfaceWithName:data:error: v40@0:8@16@24@32  imp=+0x1a68d79c0
+  -rangingStartedForWiFiInterfaceWithName: v24@0:8@16  imp=+0x1a68d81d8
+  -realTimeModeDidEndForWiFiInterfaceWithName: v24@0:8@16  imp=+0x1a68d8af0
+  -realTimeModeDidStartForWiFiInterfaceWithName: v24@0:8@16  imp=+0x1a68d89f0
+  -relinquishBluetoothPagingLockAndReply: v24@0:8@?16  imp=+0x1a68db878
+  -rememberWiFiProfile:event:error: B40@0:8@16Q24^@32  imp=+0x1a68dd450
+  -removeWiFiProfileWithID:event:authorization:error: B48@0:8@16Q24@32^@40  imp=+0x1a68de37c
+  -rsnHandshakeDidCompleteForWiFiInterfaceWithName: v24@0:8@16  imp=+0x1a68d7fd8
+  -scanCacheUpdatedForWiFiInterfaceWithName: v24@0:8@16  imp=+0x1a68d80d8
+  -sdbOpModeDidChange:channelGroup: v24@0:8C16c20  imp=+0x1a68dadc4
+  -setAutoHotspotMode:error: B32@0:8q16^@24  imp=+0x1a68df350
+  -setAutoJoinEnabled:error: B28@0:8B16^@20  imp=+0x1a68dc204
+  -setAutoJoinTemporarilyDisabled:error: B28@0:8B16^@20  imp=+0x1a68dcc5c
+  -setAutoJoinTemporarilyDisabledUntilDate:error: B32@0:8@16^@24  imp=+0x1a68dc8cc
+  -setDelegate: v24@0:8@16  imp=+0x1a68b58b4
+  -setLegacy: v20@0:8B16  imp=+0x1a68da844
+  -setThermalIndex:error: B32@0:8q16^@24  imp=+0x1a68dbab8
+  -setWiFiPasswordInSystemKeychain:ssid:error: B40@0:8@16@24^@32  imp=+0x1a68df004
+  -setWoWEnabled:error: B28@0:8B16^@20  imp=+0x1a68dcf9c
+  -setXpcClient: v24@0:8@16  imp=+0x1a68da828
+  -softErrorWiFiTCPKATimeoutMitigationDetected:enabled: v28@0:8@16B24  imp=+0x1a68dafe4
+  -ssidDidChangeForWiFiInterfaceWithName: v24@0:8@16  imp=+0x1a68d75c0
+  -startBrowsingForTetherDevicesAndReturnError: B24@0:8^@16  imp=+0x1a68db134
+  -startMonitoringEventWithType:error: B32@0:8q16o^@24  imp=+0x1a68b5b3c
+  -stopBrowsingForTetherDevicesAndReturnError: B24@0:8^@16  imp=+0x1a68db410
+  -stopMonitoringAllEventsAndReturnError: B24@0:8o^@16  imp=+0x1a68d7124
+  -stopMonitoringEventWithType:error: B32@0:8q16o^@24  imp=+0x1a68d6d40
+  -submitAWDMetric:metricID:reply: v40@0:8@16@24@?32  imp=+0x1a68db98c
+  -thermalIndex q16@0:8  imp=+0x1a68dbdf4
+  -updateWiFiProfile:authorization:error: B40@0:8@16@24^@32  imp=+0x1a68de030
+  -virtualInterfaceNames @16@0:8  imp=+0x1a68db71c
+  -virtualInterfaceStateChangedForWiFiInterfaceWithName: v24@0:8@16  imp=+0x1a68d78c0
+  -weightedWiFiAvgLQM: v24@0:8@16  imp=+0x1a68dacc4
+  -willShowJoinUIForWiFiNetwork:interfaceName:reply: v40@0:8@16@24@?32  imp=+0x1a68d90f8
+  -wowStateDidChangeForWiFiInterfaceWithName: v24@0:8@16  imp=+0x1a68d8df0
+  -xpcClient @16@0:8  imp=+0x1a68da81c
+@class CWWiFiUIProxyClient : NSObject instanceSize=40
+  ivar +8 _xpcConnection @"NSXPCConnection"
+  ivar +16 _queue @"NSObject<OS_dispatch_queue>"
+  ivar +24 _delegate @
+  ivar +32 _isMonitoringEvents B
+  property delegate (T@"<CWWiFiUIProxyClientDelegate>",N,V_delegate)
+  +sharedWiFiUIProxyClient @16@0:8  imp=+0x1a68f82a4
+  -__startMonitoringEventsAndReply: v24@0:8@?16  imp=+0x1a68f926c
+  -addCloudWiFiProfile:authorization:error: B40@0:8@16@24o^@32  imp=+0x1a68fd5e8
+  -createDiagnosticsReportWithAuthorization:error: @32@0:8@16o^@24  imp=+0x1a68faf6c
+  -createIBSSNetworkWithConfiguration:authorization:error: B40@0:8@16@24o^@32  imp=+0x1a68fc19c
+  -dealloc v16@0:8  imp=+0x1a68f87d0
+  -delegate @16@0:8  imp=+0x1a68febbc
+  -deleteUserWiFiKeychainPasswordWithSSID:error: B32@0:8@16o^@24  imp=+0x1a68fce88
+  -didCompleteDiagnostics: v24@0:8@16  imp=+0x1a68feafc
+  -didFindScanResults: v24@0:8@16  imp=+0x1a68fea9c
+  -didReceiveSharedPassword:uuid: v32@0:8@16@24  imp=+0x1a68fe684
+  -didUpdateUIState:previous: v32@0:8Q16Q24  imp=+0x1a68fea28
+  -dismissUIWithUUID: v24@0:8@16  imp=+0x1a68fe9c8
+  -displayWiFiRecommendationItem: v24@0:8@16  imp=+0x1a68fbf08
+  -displayWiFiRecommendationUI v16@0:8  imp=+0x1a68fbc84
+  -init @16@0:8  imp=+0x1a68f8314
+  -joinScanResult:configuration:authorization:error: B48@0:8@16@24@32o^@40  imp=+0x1a68f9e60
+  -queryCachedScanResultsAndReturnError: @24@0:8o^@16  imp=+0x1a68f8d80
+  -queryDiagnosticsAndReturnError: @24@0:8o^@16  imp=+0x1a68fab48
+  -queryIsWiFiCloudSyncEngineRunningAndReturnError: B24@0:8^@16  imp=+0x1a68fe1e8
+  -queryUserWiFiKeychainPasswordWithSSID:error: @32@0:8@16o^@24  imp=+0x1a68fc688
+  -queryWiFiDebugLoggingEnabled B16@0:8  imp=+0x1a68fb4d8
+  -queryWiFiUIState Q16@0:8  imp=+0x1a68f9b78
+  -removeCloudWiFiProfileWithSSID:authorization:error: B40@0:8@16@24o^@32  imp=+0x1a68fdde8
+  -setDelegate: v24@0:8@16  imp=+0x1a68febc4
+  -setUserWiFiKeychainPasswordWithSSID:password:error: B40@0:8@16@24o^@32  imp=+0x1a68fcac0
+  -setWiFiDebugLoggingEnabled:authorization:error: B36@0:8B16@20o^@28  imp=+0x1a68fb7bc
+  -showErrorUIWithScanResult:uuid: v32@0:8@16@24  imp=+0x1a68fe8e0
+  -showInfoUIWithTitle:description:uuid: v40@0:8@16@24@32  imp=+0x1a68fe864
+  -showJoinUIWithScanResult:previousError:previousPassword:supportsWiFiPasswordSharing:remember:uuid: v56@0:8@16@24@32B40B44@48  imp=+0x1a68fe5d8
+  -showLimitedNetworkOptionUIForScanResult:candidates:uuid: v40@0:8@16@24@32  imp=+0x1a68fe76c
+  -showLockdownModeUIWithScanResult:uuid: v32@0:8@16@24  imp=+0x1a68fe954
+  -showSecurityMismatchUIWithScanResult:uuid: v32@0:8@16@24  imp=+0x1a68fe6f8
+  -showWPSUIWithScanResult:pin:uuid: v40@0:8@16@24@32  imp=+0x1a68fe7e8
+  -startMonitoringEvents v16@0:8  imp=+0x1a68f95d0
+  -startScanning v16@0:8  imp=+0x1a68f8878
+  -stopMonitoringEvents v16@0:8  imp=+0x1a68f97f4
+  -stopScanning v16@0:8  imp=+0x1a68f8afc
+  -synchronizeCloudWiFiProfilesAndReturnError: B24@0:8^@16  imp=+0x1a68fd244
+  -updateCloudWiFiProfile:authorization:error: B40@0:8@16@24o^@32  imp=+0x1a68fd9e8
+  -updatedWiFiConfiguration: v24@0:8@16  imp=+0x1a68feb5c
+  -userDidConfirmJoin:uuid: v28@0:8B16@20  imp=+0x1a68fa614
+  -userDidDismissJoinUIWithUUID: v24@0:8@16  imp=+0x1a68fa8b4
+  -userDidJoinWithConfiguration:uuid: v32@0:8@16@24  imp=+0x1a68fa378
+@class CWWirelessProfile : NSObject <NSCopying, NSCoding> instanceSize=24
+  ivar +8 _ssid @"NSString"
+  ivar +16 _securityMode @"NSNumber"
+  property ssid (T@"NSString",C,V_ssid)
+  property securityMode (T@"NSNumber",&,V_securityMode)
+  property passphrase (T@"NSString",C,D)
+  property user8021XProfile (T@"CW8021XProfile",&,D)
+  +profile @16@0:8  imp=+0x1a68c4df4
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a68c4e6c
+  -dealloc v16@0:8  imp=+0x1a68c4d08
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a68c4f34
+  -init @16@0:8  imp=+0x1a68c4d90
+  -initWithCoder: @24@0:8@16  imp=+0x1a68c4ecc
+  -isEqualToProfile: B24@0:8@16  imp=+0x1a68c4e24
+  -passphrase @16@0:8  imp=+0x1a68c4f98
+  -securityMode @16@0:8  imp=+0x1a68c5088
+  -setPassphrase: v24@0:8@16  imp=+0x1a68c5020
+  -setSecurityMode: v24@0:8@16  imp=+0x1a68c5094
+  -setSsid: v24@0:8@16  imp=+0x1a68c5080
+  -setUser8021XProfile: v24@0:8@16  imp=+0x1a68c5070
+  -ssid @16@0:8  imp=+0x1a68c5074
+  -user8021XProfile @16@0:8  imp=+0x1a68c5068
+@class CWXPCClient : NSObject instanceSize=24
+  ivar +8 _xpcConnection @"NSXPCConnection"
+  ivar +16 _corewifi @"CWFInterface"
+  property xpcConnection (T@"NSXPCConnection",&,V_xpcConnection)
+  property corewifi (T@"CWFInterface",R,D)
+  -__corewifi @16@0:8  imp=+0x1a6905050
+  -__corewifiEndpoint @16@0:8  imp=+0x1a6904cd4
+  -corewifi @16@0:8  imp=+0x1a690518c
+  -dealloc v16@0:8  imp=+0x1a69051dc
+  -setXpcConnection: v24@0:8@16  imp=+0x1a6905280
+  -xpcConnection @16@0:8  imp=+0x1a6905274
+@class WiFiDeviceClientInternal : NSObject instanceSize=112
+  ivar +8 _interfaceName @"NSString"
+  ivar +16 _internalClient @"WiFiManagerClientInternal"
+  ivar +24 _awdlServiceManager @"AWDLServiceDiscoveryManager"
+  ivar +32 _callbacks {WiFiDeviceClientInternalCallbacks="powerChangedCallback"{?="callback"^?"refcon"^v}"scanAsyncCallback"{?="callback"^?"refcon"^v}"extendedLinkCallcback"{?="callback"^?"refcon"^v}"deviceAvailabilityCallback"{?="callback"^?"refcon"^v}"virtualInterfaceStateCallback"{?="callback"^?"refcon"^v}}
+  property interface (T@"CWInterface",R,D)
+  property internalClient (T@"WiFiManagerClientInternal",R,V_internalClient)
+  property awdlServiceManager (T@"AWDLServiceDiscoveryManager",&,V_awdlServiceManager)
+  property interfaceName (T@"NSString",R,V_interfaceName)
+  property callbacks (T^{WiFiDeviceClientInternalCallbacks={?=^?^v}{?=^?^v}{?=^?^v}{?=^?^v}{?=^?^v}},D)
+  -awdlServiceManager @16@0:8  imp=+0x1a68c8740
+  -callbacks ^{WiFiDeviceClientInternalCallbacks={?=^?^v}{?=^?^v}{?=^?^v}{?=^?^v}{?=^?^v}}16@0:8  imp=+0x1a68c85f8
+  -dealloc v16@0:8  imp=+0x1a68c86b0
+  -initWithClient:interfaceName: @32@0:8@16@24  imp=+0x1a68c8600
+  -interface @16@0:8  imp=+0x1a68c85bc
+  -interfaceName @16@0:8  imp=+0x1a68c8738
+  -internalClient @16@0:8  imp=+0x1a68c8730
+  -setAwdlServiceManager: v24@0:8@16  imp=+0x1a68c874c
+@class WiFiManagerClientInternal : NSObject <CWInternalEventDelegate> instanceSize=80
+  ivar +8 _wifiClient @"CWWiFiClient"
+  ivar +16 _eventCounters @"NSCountedSet"
+  ivar +24 _runLoopRef ^{__CFRunLoop=}
+  ivar +32 _runLoopMode ^{__CFString=}
+  ivar +40 _mutableDeviceMap @"NSMutableDictionary"
+  ivar +48 _callbacks {WiFiManagerClientInternalCallbacks="deviceAttachedCallback"{?="callback"^?"refcon"^v}"wowStateChangedCallback"{?="callback"^?"refcon"^v}}
+  property wifiClient (T@"CWWiFiClient",R,V_wifiClient)
+  property mutableDeviceMap (T@"NSMutableDictionary",R,V_mutableDeviceMap)
+  property runLoopRef (T^{__CFRunLoop=},V_runLoopRef)
+  property runLoopMode (T^{__CFString=},V_runLoopMode)
+  property callbacks (T^{WiFiManagerClientInternalCallbacks={?=^?^v}{?=^?^v}},D)
+  -callbacks ^{WiFiManagerClientInternalCallbacks={?=^?^v}{?=^?^v}}16@0:8  imp=+0x1a68d4cc8
+  -dealloc v16@0:8  imp=+0x1a68d4e60
+  -deviceAvailabilityChangedForWiFiInterfaceWithName:isAvailable: v28@0:8@16B24  imp=+0x1a68d5510
+  -init @16@0:8  imp=+0x1a68d4d98
+  -interfaceAddedWithName: v24@0:8@16  imp=+0x1a68d4f30
+  -linkDidChangeForWiFiInterfaceWithName: v24@0:8@16  imp=+0x1a68d51d0
+  -mutableDeviceMap @16@0:8  imp=+0x1a68d58f0
+  -powerStateDidChangeForWiFiInterfaceWithName: v24@0:8@16  imp=+0x1a68d506c
+  -runLoopMode ^{__CFString=}16@0:8  imp=+0x1a68d58e0
+  -runLoopRef ^{__CFRunLoop=}16@0:8  imp=+0x1a68d58d0
+  -setDeviceAttachCallback:refcon: v32@0:8^?16^v24  imp=+0x1a68d4f0c
+  -setEventMonitoringEnabled:event: v28@0:8B16q20  imp=+0x1a68d4cd0
+  -setRunLoopMode: v24@0:8^{__CFString=}16  imp=+0x1a68d58e8
+  -setRunLoopRef: v24@0:8^{__CFRunLoop=}16  imp=+0x1a68d58d8
+  -setWoWStateChangeCallback:refcon: v32@0:8^?16^v24  imp=+0x1a68d4ee8
+  -virtualInterfaceStateChangedForWiFiInterfaceWithName: v24@0:8@16  imp=+0x1a68d56e8
+  -wifiClient @16@0:8  imp=+0x1a68d58c8
+  -wowStateDidChangeForWiFiInterfaceWithName: v24@0:8@16  imp=+0x1a68d53c4
+@class WiFiNetworkInternal : NSObject instanceSize=48
+  ivar +8 _scanResult @"CWNetwork"
+  ivar +16 _profile @"CWMutableNetworkProfile"
+  ivar +24 _ssidStr @"NSString"
+  ivar +32 _ssidData @"NSData"
+  ivar +40 _wasAutoJoined B
+  property scanResult (T@"CWNetwork",R,V_scanResult)
+  property profile (T@"CWMutableNetworkProfile",R,V_profile)
+  property wasAutoJoined (TB,V_wasAutoJoined)
+  -dealloc v16@0:8  imp=+0x1a68c038c
+  -initWithScanResult:profile: @32@0:8@16@24  imp=+0x1a68c02a0
+  -profile @16@0:8  imp=+0x1a68c0424
+  -scanResult @16@0:8  imp=+0x1a68c041c
+  -setWasAutoJoined: v20@0:8B16  imp=+0x1a68c0438
+  -wasAutoJoined B16@0:8  imp=+0x1a68c042c
+@protocol CWEventDelegate
+  optional -clientConnectionInterrupted v16@0:8
+  optional -ssidDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -powerStateDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -modeDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -linkDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -linkQualityDidChangeForWiFiInterfaceWithName:rssi:transmitRate: v40@0:8@16q24d32
+  optional -bssidDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -clientConnectionInvalidated v16@0:8
+  optional -countryCodeDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -scanCacheUpdatedForWiFiInterfaceWithName: v24@0:8@16
+@protocol CWFAssetMgmtProtocol
+  required -processQueryResults:withError: v32@0:8@16@24
+  required -invalidate v16@0:8
+  required -setEventHandler: v24@0:8@?16
+  required -eventHandler @?16@0:8
+  required -activate v16@0:8
+@protocol CWFAssetPowerTableElectorDelegate
+  required -powerTableReadiness:voter:vote: B36@0:8@16q24B32
+  required -performVersionFetch: B24@0:8@16
+  required -powerTableVote:voter:vote: B36@0:8@16q24B32
+@protocol CWFAssetRootMonitorDelegate
+  required -rootMonitorDetectedAdd:deleted:updated: v40@0:8@16@24@32
+@protocol CWFDeviceDiscoveryManagerDelegate
+  required -didDiscoverDevice: v24@0:8@16
+  required -didLoseDevice: v24@0:8@16
+  optional -didFetchWifiInfoForDevice: v24@0:8@16
+@protocol CWFJSONEncodable
+  required -JSONCompatibleKeyValueMap @16@0:8
+@protocol CWFXPCConnectionDelegate
+  required -XPCConnection:canceledXPCRequestsWithUUID: v32@0:8@16@24
+  required -XPCConnection:completedXPCRequest: v32@0:8@16@24
+  required -XPCConnection:receivedXPCRequest: v32@0:8@16@24
+  required -XPCConnection:updatedProcessState: v32@0:8@16@24
+  required -XPCConnection:updatedRegisteredEventIDs: v32@0:8@16@24
+@protocol CWFXPCEventProtocolPrivate
+  required -receivedAcknowledgedXPCEvent:reply: v32@0:8@16@?24
+@protocol CWFXPCEventProtocolPublic
+  required -receivedXPCEvent: v24@0:8@16
+@protocol CWFXPCEventProtocolWiFiNetworkSharingApp
+@protocol CWFXPCEventProtocolWiFiNetworkSharingExtension
+  required -receivedXPCEvent: v24@0:8@16
+  required -performWiFiNetworkSharingAccessoryScanWithReply: v24@0:8@?16
+@protocol CWFXPCEventProtocolWiFiNetworkSharingUIService
+  required -receivedXPCEvent: v24@0:8@16
+@protocol CWFXPCEventProtocolWiFiUserAgent
+  required -forgetCloudNetworkProfile:reply: v32@0:8@16@?24
+  required -queryCloudNetworksAndReply: v24@0:8@?16
+  required -dumpLogs:reply: v32@0:8@16@?24
+  required -rememberCloudNetworkProfile:reply: v32@0:8@16@?24
+  required -setCaptivePortalCredentials:knownNetworkProfile:reply: v40@0:8@16@24@?32
+  required -cancelWiFiNetworkSharingAskToShareUserNotificationForClientID: v24@0:8@16
+  required -allowBrokenBackhaulPersonalHotspotFallbackForNetwork:reply: v32@0:8@16@?24
+  required -presentWiFiNetworkSharingAskToShareUserNotificationForClientID:network:accessoryName:reply: v48@0:8@16@24@32@?40
+  required -cancelWiFiNetworkSharingAuthorizationProxCardForClientID: v24@0:8@16
+  required -queryNearbyRecommendedNetworksAndReply: v24@0:8@?16
+  required -queryCaptivePortalCredentialsForKnownNetworkProfile:reply: v32@0:8@16@?24
+  required -nearbyConfirmBrokenBackhaulUsingTimeout:count:network:minimumCacheTimestamp:reply: v56@0:8Q16Q24@32Q40@?48
+  required -presentWiFiNetworkSharingAuthorizationProxCardForClientID:accessoryName:reply: v40@0:8@16@24@?32
+  required -cancelWiFiNetworkSharingAskToShareProxCardForClientID: v24@0:8@16
+  required -presentWiFiNetworkSharingAskToShareProxCardForClientID:accessoryName:reply: v40@0:8@16@24@?32
+@protocol CWFXPCListenerDelegate
+  required -XPCListener:XPCConnection:completedXPCRequest: v40@0:8@16@24@32
+  required -XPCListener:XPCConnection:updatedRegisteredEventIDs: v40@0:8@16@24@32
+  required -XPCListener:XPCConnection:canceledXPCRequestsWithUUID: v40@0:8@16@24@32
+  required -XPCListener:invalidatedXPCConnection: v32@0:8@16@24
+  required -XPCListener:XPCConnection:updatedProcessState: v40@0:8@16@24@32
+  required -XPCListener:addedXPCConnection: v32@0:8@16@24
+  required -XPCListener:XPCConnection:receivedXPCRequest: v40@0:8@16@24@32
+@protocol CWFXPCRequestProtocolCoreWLAN
+  required -queryMCSIndexWithRequestParams:reply: v32@0:8@16@?24
+  required -queryRSSIWithRequestParams:reply: v32@0:8@16@?24
+  required -setPower:requestParams:reply: v36@0:8B16@20@?28
+  required -queryWoWEnabledWithRequestParams:reply: v32@0:8@16@?24
+  required -querySupportedChannelsWithCountryCode:requestParams:reply: v40@0:8@16@24@?32
+  required -queryCountryCodeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryCurrentScanResultWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPHYModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryHardwareMACAddressWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowersaveWithRequestParams:reply: v32@0:8@16@?24
+  required -querySupportedPHYModesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLOpModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLSidecarDiagnosticsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInterfaceCapabilitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryHardwareSupportedChannelsWithRequestParams:reply: v32@0:8@16@?24
+  required -disassociateWithReason:requestParams:reply: v40@0:8q16@24@?32
+  required -cancelRequestsWithUUID:reply: v32@0:8@16@?24
+  required -queryTxRateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryMACAddressWithRequestParams:reply: v32@0:8@16@?24
+  required -queryParentInterfaceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -setCarPlayInternet:requestParams:reply: v36@0:8B16@20@?28
+  required -associateWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -queryInterfaceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -startMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -queryNumberOfSpatialStreamsWithRequestParams:reply: v32@0:8@16@?24
+  required -querySSIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryChannelWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIsNetworkServiceEnabledWithRequestParams:reply: v32@0:8@16@?24
+  required -queryVirtualInterfaceRoleWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAuthTypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryOpModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBSSIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowerStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIsQuickProbeRequiredForNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -querySecurityWithRequestParams:reply: v32@0:8@16@?24
+  required -queryTxNSSWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLPeerTrafficRegistrationWithRequestParams:reply: v32@0:8@16@?24
+  required -reportQuickProbeResult:networkProfile:requestParams:reply: v44@0:8B16@20@28@?36
+  required -updateKnownNetworkProfile:properties:OSSpecificKeys:requestParams:reply: v56@0:8@16@24@32@40@?48
+  required -queryPowerDebugInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -queryMaxLinkSpeedWithRequestParams:reply: v32@0:8@16@?24
+  required -updateSoftAPBand:requestParams:reply: v36@0:8I16@20@?28
+  required -queryNoiseWithRequestParams:reply: v32@0:8@16@?24
+  required -queryVirtualInterfaceNamesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowerTableInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -stopMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -queryTxPowerWithRequestParams:reply: v32@0:8@16@?24
+  required -performScanWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -setChannel:requestParams:reply: v40@0:8@16@24@?32
+  required -stopMonitoringAllEventsWithRequestParams:reply: v32@0:8@16@?24
+  required -removeKnownNetworkProfile:reason:requestParams:reply: v48@0:8@16q24@32@?40
+  required -queryPowerWithRequestParams:reply: v32@0:8@16@?24
+  required -queryMaxNSSForAPWithRequestParams:reply: v32@0:8@16@?24
+  required -addKnownNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryWEPSubtypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryWAPISubtypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInterfaceNamesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryKnownNetworkProfilesWithProperties:requestParams:reply: v40@0:8@16@24@?32
+  required -queryStateWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolInternal
+  required -resetWiFiNetworkSharingForBundleID:accessoryID:requestParams:reply: v48@0:8@16@24@32@?40
+  required -querySystemEventIDsWithRequestParams:reply: v32@0:8@16@?24
+  required -querySystemActivitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -dumpLogs:requestParams:reply: v40@0:8@16@24@?32
+  required -getCloudNetworksWithRequestParams:reply: v32@0:8@16@?24
+  required -confirmBrokenBackhaulUsingTimeout:count:requestParams:reply: v48@0:8Q16Q24@32@?40
+  required -queryDeviceUUIDWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolMobileWiFi
+  required -queryCurrentScanResultWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolPrivate
+  required -setRangingIdentifier:requestParams:reply: v40@0:8@16@24@?32
+  required -requestWiFiNetworkSharingAuthorizationWithRequestParams:reply: v32@0:8@16@?24
+  required -setUserAutoJoinState:requestParams:reply: v36@0:8B16@20@?28
+  required -performAutoJoinWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -performRangingWithPeerList:timeout:requestParams:reply: v48@0:8@16Q24@32@?40
+  required -setBlockedBands:requestParams:reply: v40@0:8@16@24@?32
+  required -setPower:requestParams:reply: v36@0:8B16@20@?28
+  required -performNearbyDeviceDiscovery:requestParams:reply: v40@0:8@16@24@?32
+  required -updateKnownBSS:knownNetworkProfile:properties:OSSpecificKeys:requestParams:reply: v64@0:8@16@24@32@40@48@?56
+  required -setSensingEnabled:requestParams:reply: v36@0:8B16@20@?28
+  required -resetInternetSharingStatsWithRequestParams:reply: v32@0:8@16@?24
+  required -setPrivateMACAddressUserJoinFailureUIState:networkProfile:requestParams:reply: v44@0:8B16@20@28@?36
+  required -setBackgroundScanConfiguration:requestParams:reply: v40@0:8@16@24@?32
+  required -setPrivateMACAddressModeSystemSetting:requestParams:reply: v40@0:8q16@24@?32
+  required -addKnownBSS:knownNetworkProfile:requestParams:reply: v48@0:8@16@24@32@?40
+  required -askToShareWiFiNetworkSharingNetworkFromAppWithRequestParams:reply: v32@0:8@16@?24
+  required -setLQMConfiguration:requestParams:reply: v40@0:8@16@24@?32
+  required -acknowledgeWiFiNetworkSharingConnectedAPUpdate:requestParams:reply: v40@0:8@16@24@?32
+  required -startAWDLPeerAssistedDiscoveryWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -setWiFiNetworkSharingAskToShareStatus:networkID:requestParams:reply: v48@0:8q16@24@32@?40
+  required -stopHostAPModeWithRequestParams:reply: v32@0:8@16@?24
+  required -setInternetSharingPassword:requestParams:reply: v40@0:8@16@24@?32
+  required -disassociateWithReason:requestParams:reply: v40@0:8q16@24@?32
+  required -resetAutoJoinStatisticsWithRequestParams:reply: v32@0:8@16@?24
+  required -setCompanionCountryCode:requestParams:reply: v40@0:8@16@24@?32
+  required -setThermalIndex:requestParams:reply: v40@0:8q16@24@?32
+  required -setCarPlayInternet:requestParams:reply: v36@0:8B16@20@?28
+  required -setUCMExtProfile:requestParams:error: v40@0:8@16@24@?32
+  required -associateWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -provideDTCStats:requestParams:reply: v40@0:8@16@24@?32
+  required -setRangeable:peerList:requestParams:reply: v44@0:8B16@20@28@?36
+  required -setInternetSharingDiscoveryState:immediateDisable:requestParams:reply: v40@0:8B16B20@24@?32
+  required -endAllActivitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -startHostAPModeWithConfiguration:requestParams:reply: v40@0:8@16@24@?32
+  required -askToShareWiFiNetworkSharingNetworkFromAppexWithRequestParams:reply: v32@0:8@16@?24
+  required -performANQPWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -setFamilyHotspotPreferences:requestParams:reply: v40@0:8@16@24@?32
+  required -acknowledgeWiFiNetworkSharingNetworkListUpdate:requestParams:reply: v40@0:8@16@24@?32
+  required -setShareMyPersonalHotspotMode:requestParams:reply: v40@0:8q16@24@?32
+  required -startUIScanWithRequestParams:reply: v32@0:8@16@?24
+  required -setAutoHotspotMode:requestParams:reply: v40@0:8q16@24@?32
+  required -setBTCoexActiveProfileName:requestParams:error: v40@0:8@16@24@?32
+  required -performUIBeaconCacheQuery:reply: v32@0:8@16@?24
+  required -stopAWDLPeerAssistedDiscoveryWithRequestParams:reply: v32@0:8@16@?24
+  required -setInternetSharingDiscoveryStateExt:request:requestParams:reply: v44@0:8B16@20@28@?36
+  required -setPrivateMACAddressMode:networkProfile:requestParams:reply: v48@0:8q16@24@32@?40
+  required -reportQuickProbeResult:networkProfile:requestParams:reply: v44@0:8B16@20@28@?36
+  required -updateKnownNetworkProfile:properties:OSSpecificKeys:requestParams:reply: v56@0:8@16@24@32@40@?48
+  required -setUserSettings:properties:requestParams:reply: v48@0:8@16@24@32@?40
+  required -setInternetSharingNetworkName:requestParams:reply: v40@0:8@16@24@?32
+  required -clearAutoJoinDenyListForNetwork:reason:requestParams:reply: v48@0:8@16Q24@32@?40
+  required -updateSoftAPBand:requestParams:reply: v36@0:8I16@20@?28
+  required -setPassword:knownNetworkProfile:requestParams:reply: v48@0:8@16@24@32@?40
+  required -performScanWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -stopUIScanWithRequestParams:reply: v32@0:8@16@?24
+  required -setChannel:requestParams:reply: v40@0:8@16@24@?32
+  required -removeKnownNetworkProfile:reason:requestParams:reply: v48@0:8@16q24@32@?40
+  required -setAutoJoinDenyListForNetwork:reason:requestParams:reply: v48@0:8@16Q24@32@?40
+  required -beginActivity:requestParams:reply: v40@0:8@16@24@?32
+  required -setCaptivePortalCredentials:knownNetworkProfile:requestParams:reply: v48@0:8@16@24@32@?40
+  required -addKnownNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -configureSensing:requestParams:reply: v40@0:8@16@24@?32
+  required -removeKnownBSS:knownNetworkProfile:requestParams:reply: v48@0:8@16@24@32@?40
+  required -endActivityWithUUID:requestParams:reply: v40@0:8@16@24@?32
+  required -setInternetSharingState:requestParams:reply: v36@0:8B16@20@?28
+  required -setMISDiscoveryState:immediateDisable:requestParams:reply: v40@0:8B16B20@24@?32
+  required -setMISDiscoveryStateExt:request:requestParams:reply: v44@0:8B16@20@28@?36
+  required -setMISPassword:requestParams:reply: v40@0:8@16@24@?32
+  required -setMISState:requestParams:reply: v36@0:8B16@20@?28
+@protocol CWFXPCRequestProtocolPrivateReadonly
+  required -queryMCSIndexWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAutoJoinStatisticsWithRequestParams:reply: v32@0:8@16@?24
+  required -wifiNetworkSharingAskToShareStatusForNetworkID:requestParams:reply: v40@0:8@16@24@?32
+  required -queryNANRadioScheduleWithRequestParams:reply: v32@0:8@16@?24
+  required -queryRSSIWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkServiceIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLElectionMetricWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAutoJoinDenyListWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalDNSServerAddressesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryCountryBandSupport:reply: v32@0:8@16@?24
+  required -queryInternetSharingDiscoveryStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryLQMConfigurationWithRequestParams:reply: v32@0:8@16@?24
+  required -queryWoWEnabledWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLStatisticsWithRequestParams:reply: v32@0:8@16@?24
+  required -querySupportedChannelsWithCountryCode:requestParams:reply: v40@0:8@16@24@?32
+  required -queryCountryCodeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAutoJoinStatusWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv4RouterWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLGuardTimeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryChannelsInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAutoJoinUserActionMetricWithRequestParams:reply: v32@0:8@16@?24
+  required -queryFamilyHotspotPreferencesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkManagedByMDM:requestParams:reply: v40@0:8@16@24@?32
+  required -queryAWDLStrategyWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLAvailabilityWindowAPAlignmentWithRequestParams:reply: v32@0:8@16@?24
+  required -queryCurrentScanResultWithRequestParams:reply: v32@0:8@16@?24
+  required -queryUserSettingsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPHYModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBluetoothCoexConfigWithRequestParams:reply: v32@0:8@16@?24
+  required -queryHardwareMACAddressWithRequestParams:reply: v32@0:8@16@?24
+  required -queryTxChainPowerWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowersaveWithRequestParams:reply: v32@0:8@16@?24
+  required -querySupportedPHYModesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDHCPLeaseExpirationTimeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBrokenBackhaulStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLOpModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLSidecarDiagnosticsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInterfaceCapabilitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLSecondaryMasterChannelWithRequestParams:reply: v32@0:8@16@?24
+  required -querySSIDForVendorWithRequestParams:reply: v32@0:8@16@?24
+  required -queryLeakyAPStatsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLElectionRSSIThresholdsWithRequestParams:reply: v32@0:8@16@?24
+  required -wifiNetworkSharingAuthorizationLevelWithRequestParams:reply: v32@0:8@16@?24
+  required -queryCCAWithRequestParams:reply: v32@0:8@16@?24
+  required -queryHardwareSupportedChannelsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv6RouterWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLAFTxModeWithRequestParams:reply: v32@0:8@16@?24
+  required -cancelRequestsWithUUID:reply: v32@0:8@16@?24
+  required -queryDeviceSupervisedWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv6AddressesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryTxRateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv4AddressesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLPresenceModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryMACAddressWithRequestParams:reply: v32@0:8@16@?24
+  required -queryHotspotClientDataUsageWithRequestParams:reply: v32@0:8@16@?24
+  required -queryLinkDownStatusWithRequestParams:reply: v32@0:8@16@?24
+  required -queryParentInterfaceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryRangingCapabilitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInterfaceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv4InterfaceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLElectionParametersWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkReachabilityWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBluetoothCoexProfiles2GHzWithRequestParams:reply: v32@0:8@16@?24
+  required -startMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -queryAWDLSyncStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv4ARPResolvedIPAddressWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNumberOfSpatialStreamsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv4AddressesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryWiFiUIStateFlagsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv6NetworkServiceIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryWiFiAssistOverrideReasonsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIO80211InterfaceInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -querySSIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBluetoothCoexModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryHostAPStationListWithRequestParams:reply: v32@0:8@16@?24
+  required -queryChannelWithRequestParams:reply: v32@0:8@16@?24
+  required -queryJoinStatusWithRequestParams:reply: v32@0:8@16@?24
+  required -queryLinkQualityMetricWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIsNetworkServiceEnabledWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPrivateMACAddressModeForNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryIPv4NetworkSignatureWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLEncryptionTypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryVirtualInterfaceRoleWithRequestParams:reply: v32@0:8@16@?24
+  required -getNearbyRecommendedNetworksWithRequestParams:reply: v32@0:8@16@?24
+  required -queryKnownNetworkInfoForLocalNetworkPromptWithOptions:requestParams:reply: v40@0:8@16@24@?32
+  required -queryNetworkOfInterestWorkStateForKnownNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryAutoHotspotModeWithRequestParams:reply: v32@0:8@16@?24
+  required -wifiNetworkSharingConnectedAPListWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPasswordForKnownNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryAuthTypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv6RouterWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLExtensionStateMachineParamsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryOpModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryEAP8021XControlModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBSSIDWithRequestParams:reply: v32@0:8@16@?24
+  required -getRecommendedKnownNetworksWithRequestParams:reply: v32@0:8@16@?24
+  required -queryChainAckWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowerStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIsQuickProbeRequiredForNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryInternetSharingNetworkNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv6InterfaceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkServiceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -querySecurityWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDNSServerAddressesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDHCPServerIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryTxNSSWithRequestParams:reply: v32@0:8@16@?24
+  required -queryRoamStatusWithRequestParams:reply: v32@0:8@16@?24
+  required -queryEAP8021XSupplicantStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryShareMyPersonalHotspotModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLPeerTrafficRegistrationWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkOfInterestHomeStateForKnownNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryIPv6NetworkSignatureWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowerDebugInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBluetoothCoexProfiles5GHzWithRequestParams:reply: v32@0:8@16@?24
+  required -queryMaxLinkSpeedWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv4NetworkServiceIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryKnownNetworksWithNetworkSignature:requestParams:reply: v40@0:8@16@24@?32
+  required -queryAWDLSocialTimeSlotsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkWarningFlagsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNoiseWithRequestParams:reply: v32@0:8@16@?24
+  required -queryEAP8021XClientStatusWithRequestParams:reply: v32@0:8@16@?24
+  required -queryVirtualInterfaceNamesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowerTableInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -queryTetheringSupportedWithRequestParams:reply: v32@0:8@16@?24
+  required -queryKnownNetworksInSameLanAs:requestParams:reply: v40@0:8@16@24@?32
+  required -stopMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -queryPrivateMACAddressModeSystemSettingWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLElectionIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryRxRateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIO80211ControllerInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv4NetworkServiceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBlockedBandsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPersonalHotspotModificationDisabledWithRequestParams:reply: v32@0:8@16@?24
+  required -queryTxPowerWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLPreferredChannelsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDHCPv6ServerIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLSyncEnabledWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLSyncParametersWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv4SubnetMasksWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBeaconCacheWithRequestParams:reply: v32@0:8@16@?24
+  required -stopMonitoringAllEventsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryCaptivePortalCredentialsForKnownNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryDesenseLevelWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLSyncChannelSequenceWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowerWithRequestParams:reply: v32@0:8@16@?24
+  required -queryCurrentKnownNetworkProfileWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBrokenBackhaulStateTimestampWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInternetSharingPasswordWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDHCPLeaseStartTimeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInternetSharingStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryMaxNSSForAPWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLBTLEStateParamsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDTIMIntervalWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAutoJoinMetricWithType:requestParams:reply: v40@0:8Q16@24@?32
+  required -queryKnownNetworkProfileMatchingScanResult:requestParams:reply: v40@0:8@16@24@?32
+  required -queryKnownNetworkProfileMatchingNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryWEPSubtypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLPeerDatabaseWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLContinuousElectionAlgorithmEnabledWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBackgroundScanConfigurationWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv4RouterWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv6NetworkServiceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryEAP8021XControlStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv4ARPResolvedHardwareAddressWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBackgroundScanCacheWithRequestParams:reply: v32@0:8@16@?24
+  required -queryLQMSummaryWithRequestParams:reply: v32@0:8@16@?24
+  required -queryWAPISubtypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInterfaceNamesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGuardIntervalWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInternetSharingStatsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkSignatureForNetwork:isBSSID:requestParams:reply: v44@0:8@16B24@28@?36
+  required -queryKnownNetworkProfilesWithProperties:requestParams:reply: v40@0:8@16@24@?32
+  required -wifiNetworkSharingAskToShareNetworkListWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv6AddressesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryActivitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryLinkQualityAssessmentWithRequestParams:reply: v32@0:8@16@?24
+  required -queryUserAutoJoinStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDesenseWithRequestParams:reply: v32@0:8@16@?24
+  required -queryEventIDsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLMasterChannelWithRequestParams:reply: v32@0:8@16@?24
+  required -queryThermalIndexWithRequestParams:reply: v32@0:8@16@?24
+  required -queryStateWithRequestParams:reply: v32@0:8@16@?24
+  required -wifiNetworkSharingNetworkListWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPrivateMACAddressForNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryBSSIDForVendorWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolPublicWiFi
+  required -querySSIDForVendorWithRequestParams:reply: v32@0:8@16@?24
+  required -startMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -querySSIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBSSIDWithRequestParams:reply: v32@0:8@16@?24
+  required -stopMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -stopMonitoringAllEventsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBSSIDForVendorWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolUnrestricted
+  required -queryInterfaceCapabilitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryOpModeWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolWiFiNetworkSharingApp
+  required -requestWiFiNetworkSharingAuthorizationWithRequestParams:reply: v32@0:8@16@?24
+  required -askToShareWiFiNetworkSharingNetworkFromAppWithRequestParams:reply: v32@0:8@16@?24
+  required -checkinWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolWiFiNetworkSharingExtension
+  required -acknowledgeWiFiNetworkSharingConnectedAPUpdate:requestParams:reply: v40@0:8@16@24@?32
+  required -startMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -askToShareWiFiNetworkSharingNetworkFromAppexWithRequestParams:reply: v32@0:8@16@?24
+  required -acknowledgeWiFiNetworkSharingNetworkListUpdate:requestParams:reply: v40@0:8@16@24@?32
+  required -checkinWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolWiFiNetworkSharingUI
+  required -setWiFiNetworkSharingAskToShareStatus:networkID:requestParams:reply: v48@0:8q16@24@32@?40
+  required -startMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -wifiNetworkSharingAskToShareNetworkListWithRequestParams:reply: v32@0:8@16@?24
+  required -checkinWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolWiFiUserAgent
+  required -sendXPCEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -checkinWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProxyDelegate
+  required -XPCRequestProxy:XPCConnection:canceledXPCRequestsWithUUID: v40@0:8@16@24@32
+  required -XPCRequestProxy:getAdaptiveInterfaceRankDurationAndReply: v32@0:8@16@?24
+  required -XPCRequestProxy:sendXPCEvent:reply: v40@0:8@16@24@?32
+  required -XPCRequestProxy:XPCConnection:receivedXPCRequest: v40@0:8@16@24@32
+  required -XPCRequestProxy:invalidatedXPCConnection: v32@0:8@16@24
+@protocol CWInternalEventDelegate
+  optional -joinDidStartForWiFiInterfaceWithName:ssid: v32@0:8@16@24
+  optional -internal_queryCloudKVSAndReply: v24@0:8@?16
+  optional -internal_startUserMode8021XWithProfile:interfaceWithName:reply: v40@0:8@16@24@?32
+  optional -internal_showAvailableWiFiNetworks:interfaceName:recommendOnly: v36@0:8@16@24B32
+  optional -autoJoinDidCompleteForWiFiInterfaceWithName: v24@0:8@16
+  optional -autoJoinDidStartForWiFiInterfaceWithName: v24@0:8@16
+  optional -autoJoinDidUpdate: v24@0:8@16
+  optional -btCoexModeStats: v24@0:8@16
+  optional -deviceAvailabilityChangedForWiFiInterfaceWithName:isAvailable: v28@0:8@16B24
+  optional -dextCrashDetected v16@0:8
+  optional -interfaceAddedWithName: v24@0:8@16
+  optional -interfaceRemovedWithName: v24@0:8@16
+  optional -internal_addCloudProfile: v24@0:8@16
+  optional -internal_confirmAPIAccessWithRequestType:info:processName:reply: v48@0:8q16@24@32@?40
+  optional -internal_enableTetherDevice:reply: v32@0:8@16@?24
+  optional -internal_foundTetherDevices: v24@0:8@16
+  optional -internal_getWiFiPasswordForUserKeychainWithSSID:reply: v32@0:8@16@?24
+  optional -internal_joinWiFiNetworkWithUserAgent:interfaceName:timestamp:reply: v48@0:8@16@24d32@?40
+  optional -internal_queryLegacyCloudKVSAndReply: v24@0:8@?16
+  optional -internal_removeCloudProfile: v24@0:8@16
+  optional -internal_setWiFiPasswordForUserKeychain:ssid:reply: v40@0:8@16@24@?32
+  optional -internal_showAutoHotspotNotificationForTetherDevice:retry:interfaceName: v36@0:8@16B24@28
+  optional -internal_showDHCPMessage:networkName: v32@0:8@16@24
+  optional -internal_showLowBatteryNotificationForTetherDevice:interfaceName: v32@0:8@16@24
+  optional -internal_showMICErrorWithNetworkName: v24@0:8@16
+  optional -internal_showPHNetworkExpensiveAlertWithNetworkName: v24@0:8@16
+  optional -internal_startBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  optional -internal_startUserMode8021XWithAuthenticationInfo:interfaceWithName:reply: v40@0:8@16@24@?32
+  optional -internal_startUserMode8021XWithPasspointDomainName:interfaceWithName:reply: v40@0:8@16@24@?32
+  optional -internal_startUserMode8021XWithSSID:username:password:identity:disableUserInteraction:remember:interfaceWithName:reply: v72@0:8@16@24@32@40B48B52@56@?64
+  optional -internal_stopBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  optional -internal_updateCloudProfile: v24@0:8@16
+  optional -joinDidCompleteForWiFiInterfaceWithName:isAutoJoin:error: v36@0:8@16B24@28
+  optional -preferencesDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -rangingEndedForWiFiInterfaceWithName: v24@0:8@16
+  optional -rangingReportEventForWiFiInterfaceWithName:data:error: v40@0:8@16@24@32
+  optional -rangingStartedForWiFiInterfaceWithName: v24@0:8@16
+  optional -realTimeModeDidEndForWiFiInterfaceWithName: v24@0:8@16
+  optional -realTimeModeDidStartForWiFiInterfaceWithName: v24@0:8@16
+  optional -rsnHandshakeDidCompleteForWiFiInterfaceWithName: v24@0:8@16
+  optional -virtualInterfaceStateChangedForWiFiInterfaceWithName: v24@0:8@16
+  optional -willShowJoinUIForWiFiNetwork:interfaceName: v32@0:8@16@24
+  optional -wowStateDidChangeForWiFiInterfaceWithName: v24@0:8@16
+@protocol CWWiFiShareKitXPCRequestProtocol
+  required -cancelPendingRequestWithToken:reply: v32@0:8q16@?24
+  required -corewifiEndpointWithReply: v24@0:8@?16
+  required -disassociateForInterfaceName:token:priority:authorization:reply: v56@0:8@16q24q32@40@?48
+  required -setWiFiPowerState:interfaceName:authorization:reply: v44@0:8B16@20@28@?36
+@protocol CWWiFiUIProxyEvent
+  required -showErrorUIWithScanResult:uuid: v32@0:8@16@24
+  required -didCompleteDiagnostics: v24@0:8@16
+  required -didFindScanResults: v24@0:8@16
+  required -didReceiveSharedPassword:uuid: v32@0:8@16@24
+  required -didUpdateUIState:previous: v32@0:8Q16Q24
+  required -dismissUIWithUUID: v24@0:8@16
+  required -showInfoUIWithTitle:description:uuid: v40@0:8@16@24@32
+  required -showJoinUIWithScanResult:previousError:previousPassword:supportsWiFiPasswordSharing:remember:uuid: v56@0:8@16@24@32B40B44@48
+  required -showLimitedNetworkOptionUIForScanResult:candidates:uuid: v40@0:8@16@24@32
+  required -showLockdownModeUIWithScanResult:uuid: v32@0:8@16@24
+  required -showSecurityMismatchUIWithScanResult:uuid: v32@0:8@16@24
+  required -showWPSUIWithScanResult:pin:uuid: v40@0:8@16@24@32
+  required -updatedWiFiConfiguration: v24@0:8@16
+@protocol CWWiFiUIProxyRequest
+  required -queryCachedScanResultsAndReply: v24@0:8@?16
+  required -addCloudWiFiProfile:authorization:reply: v40@0:8@16@24@?32
+  required -createDiagnosticsReportWithAuthorization:reply: v32@0:8@16@?24
+  required -createIBSSNetworkWithConfiguration:authorization:reply: v40@0:8@16@24@?32
+  required -deleteUserWiFiKeychainPasswordWithSSID:reply: v32@0:8@16@?24
+  required -displayWiFiRecommendationItem:reply: v32@0:8@16@?24
+  required -displayWiFiRecommendationUIAndReply: v24@0:8@?16
+  required -joinScanResult:configuration:authorization:reply: v48@0:8@16@24@32@?40
+  required -queryDiagnosticsAndReply: v24@0:8@?16
+  required -queryIsWiFiCloudSyncEngineRunningWithReply: v24@0:8@?16
+  required -queryUserWiFiKeychainPasswordWithSSID:reply: v32@0:8@16@?24
+  required -queryWiFiDebugLoggingEnabledAndReply: v24@0:8@?16
+  required -queryWiFiUIStateAndReply: v24@0:8@?16
+  required -removeCloudWiFiProfileWithSSID:authorization:reply: v40@0:8@16@24@?32
+  required -setUserWiFiKeychainPasswordWithSSID:password:reply: v40@0:8@16@24@?32
+  required -setWiFiDebugLoggingEnabled:authorization:reply: v36@0:8B16@20@?28
+  required -startMonitoringEventsAndReply: v24@0:8@?16
+  required -startScanningAndReply: v24@0:8@?16
+  required -stopMonitoringEventsAndReply: v24@0:8@?16
+  required -stopScanningAndReply: v24@0:8@?16
+  required -synchronizeCloudWiFiProfilesAndReply: v24@0:8@?16
+  required -updateCloudWiFiProfile:authorization:reply: v40@0:8@16@24@?32
+  required -userDidConfirmJoin:uuid:reply: v36@0:8B16@20@?28
+  required -userDidDismissJoinUIWithUUID:reply: v32@0:8@16@?24
+  required -userDidJoinWithConfiguration:uuid:reply: v40@0:8@16@24@?32
+@protocol CWWiFiUserAgentXPCEventProtocol
+  required -internal_queryCloudKVSAndReply: v24@0:8@?16
+  required -internal_startUserMode8021XWithProfile:interfaceWithName:reply: v40@0:8@16@24@?32
+  required -internal_showAvailableWiFiNetworks:interfaceName:recommendOnly: v36@0:8@16@24B32
+  required -internal_addCloudProfile: v24@0:8@16
+  required -internal_confirmAPIAccessWithRequestType:info:processName:reply: v48@0:8q16@24@32@?40
+  required -internal_enableTetherDevice:reply: v32@0:8@16@?24
+  required -internal_getWiFiPasswordForUserKeychainWithSSID:reply: v32@0:8@16@?24
+  required -internal_joinWiFiNetworkWithUserAgent:interfaceName:timestamp:reply: v48@0:8@16@24d32@?40
+  required -internal_queryLegacyCloudKVSAndReply: v24@0:8@?16
+  required -internal_removeCloudProfile: v24@0:8@16
+  required -internal_setWiFiPasswordForUserKeychain:ssid:reply: v40@0:8@16@24@?32
+  required -internal_showAutoHotspotNotificationForTetherDevice:retry:interfaceName: v36@0:8@16B24@28
+  required -internal_showDHCPMessage:networkName: v32@0:8@16@24
+  required -internal_showLowBatteryNotificationForTetherDevice:interfaceName: v32@0:8@16@24
+  required -internal_showMICErrorWithNetworkName: v24@0:8@16
+  required -internal_showPHNetworkExpensiveAlertWithNetworkName: v24@0:8@16
+  required -internal_startBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  required -internal_startUserMode8021XWithAuthenticationInfo:interfaceWithName:reply: v40@0:8@16@24@?32
+  required -internal_startUserMode8021XWithPasspointDomainName:interfaceWithName:reply: v40@0:8@16@24@?32
+  required -internal_startUserMode8021XWithSSID:username:password:identity:disableUserInteraction:remember:interfaceWithName:reply: v72@0:8@16@24@32@40B48B52@56@?64
+  required -internal_stopBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  required -internal_updateCloudProfile: v24@0:8@16
+@protocol CWWiFiUserAgentXPCRequestProtocol
+  required -internal_foundTetherDevices: v24@0:8@16
+  required -internal_receivedAutoHotspotNotificationResponse:updateMode:tetherDevice:authorization:interfaceName:reply: v60@0:8B16q20@28@36@44@?52
+  required -internal_userAgentWillShowJoinUIForWiFiNetwork:interfaceName:timestamp:reply: v48@0:8@16@24d32@?40
+@protocol CWWiFiXPCEventProtocol
+  required -ssidDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -joinDidStartForWiFiInterfaceWithName:ssid: v32@0:8@16@24
+  required -powerStateDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -modeDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -linkDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -linkQualityDidChangeForWiFiInterfaceWithName:rssi:transmitRate: v40@0:8@16q24d32
+  required -asymmetricInterferenceDetected:channelGroup: v24@0:8C16c20
+  required -autoJoinDidCompleteForWiFiInterfaceWithName: v24@0:8@16
+  required -autoJoinDidStartForWiFiInterfaceWithName: v24@0:8@16
+  required -autoJoinDidUpdate: v24@0:8@16
+  required -bssidDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -btCoexModeStats: v24@0:8@16
+  required -countryCodeDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -deviceAvailabilityChangedForWiFiInterfaceWithName:isAvailable: v28@0:8@16B24
+  required -dextCrashDetected v16@0:8
+  required -foundTetherDevices: v24@0:8@16
+  required -interfaceAddedWithName: v24@0:8@16
+  required -interfaceRemovedWithName: v24@0:8@16
+  required -joinDidCompleteForWiFiInterfaceWithName:isAutoJoin:error: v36@0:8@16B24@28
+  required -preferencesDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -rangingEndedForWiFiInterfaceWithName: v24@0:8@16
+  required -rangingReportEventForWiFiInterfaceWithName:data:error: v40@0:8@16@24@32
+  required -rangingStartedForWiFiInterfaceWithName: v24@0:8@16
+  required -realTimeModeDidEndForWiFiInterfaceWithName: v24@0:8@16
+  required -realTimeModeDidStartForWiFiInterfaceWithName: v24@0:8@16
+  required -rsnHandshakeDidCompleteForWiFiInterfaceWithName: v24@0:8@16
+  required -scanCacheUpdatedForWiFiInterfaceWithName: v24@0:8@16
+  required -sdbOpModeDidChange:channelGroup: v24@0:8C16c20
+  required -softErrorWiFiTCPKATimeoutMitigationDetected:enabled: v28@0:8@16B24
+  required -virtualInterfaceStateChangedForWiFiInterfaceWithName: v24@0:8@16
+  required -weightedWiFiAvgLQM: v24@0:8@16
+  required -willShowJoinUIForWiFiNetwork:interfaceName:reply: v40@0:8@16@24@?32
+  required -wowStateDidChangeForWiFiInterfaceWithName: v24@0:8@16
+@protocol CWWiFiXPCRequestProtocol
+  required -clearANQPCacheForNetwork:reply: v32@0:8@16@?24
+  required -submitAWDMetric:metricID:reply: v40@0:8@16@24@?32
+  required -acquireBluetoothPagingLockAndReply: v24@0:8@?16
+  required -acquireBluetoothPagingLockWithInterfaceName:reply: v32@0:8@16@?24
+  required -acquirePriorityLockWithType:priority:maximumAge:token:reply: v56@0:8q16q24d32q40@?48
+  required -acquireRequestLockWithType:interfaceName:priority:maximumAge:reply: v56@0:8q16@24q32d40@?48
+  required -addWiFiProfile:event:addToBottom:authorization:reply: v52@0:8@16Q24B32@36@?44
+  required -associateTo8021XWiFiNetwork:remember:interfaceName:token:priority:authorization:reply: v68@0:8@16B24@28q36q44@52@?60
+  required -associateToLoginWindowMode8021XWiFiNetwork:interfaceName:token:priority:authorization:reply: v64@0:8@16@24q32q40@48@?56
+  required -associateToPasspointWiFiNetwork:domainName:interfaceName:token:priority:authorization:reply: v72@0:8@16@24@32q40q48@56@?64
+  required -associateToSystemMode8021XWiFiNetwork:interfaceName:token:priority:authorization:reply: v64@0:8@16@24q32q40@48@?56
+  required -associateToUserMode8021XWiFiNetwork:username:password:identity:disableUserInteraction:remember:possiblyHidden:interfaceName:token:priority:authorization:reply: v100@0:8@16@24@32@40B48B52B56@60q68q76@84@?92
+  required -associateToWPSNetwork:pin:remember:interfaceName:token:priority:authorization:reply: v76@0:8@16@24B32@36q44q52@60@?68
+  required -associateToWiFiNetwork:password:remember:possiblyHidden:interfaceName:token:priority:authorization:reply: v80@0:8@16@24B32B36@40q48q56@64@?72
+  required -associateToWiFiNetworkUsingSystemKeychain:interfaceName:token:priority:authorization:reply: v64@0:8@16@24q32q40@48@?56
+  required -cancelPendingRequestWithToken:reply: v32@0:8q16@?24
+  required -clearScanCacheWithInterfaceName:reply: v32@0:8@16@?24
+  required -commitConfiguration:interfaceName:authorization:reply: v48@0:8@16@24@32@?40
+  required -confirmAPIAccessWithRequestType:info:reply: v40@0:8q16@24@?32
+  required -connectToTetherDevice:remember:interfaceName:token:authorization:reply: v60@0:8@16B24@28q36@44@?52
+  required -corewifiEndpointWithReply: v24@0:8@?16
+  required -currentTetherDeviceWithInterfaceName:reply: v32@0:8@16@?24
+  required -disassociateForInterfaceName:token:priority:authorization:reply: v56@0:8@16q24q32@40@?48
+  required -dumpWiFiTemporaryLogAndReply: v24@0:8@?16
+  required -forgetWiFiProfileWithID:event:reply: v40@0:8@16Q24@?32
+  required -get2GChainDisableForInterfaceName:reply: v32@0:8@16@?24
+  required -joinWiFiNetwork:interfaceName:reply: v40@0:8@16@24@?32
+  required -performScanWithChannels:ssidList:legacyScanSSID:includeHiddenNetworks:mergeScanResults:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:interfaceName:waitForWiFi:waitForBluetooth:token:priority:reply: v120@0:8@16@24@32B40B44d48q56q64q72@80B88B92q96q104@?112
+  required -performScanWithChannels:ssidList:legacyScanSSID:includeHiddenNetworks:mergeScanResults:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:interfaceName:waitForWiFi:waitForBluetooth:trimmedScanResultProperties:token:priority:lowPriority:lowLatency:scanType:reply: v144@0:8@16@24@32B40B44d48q56q64q72@80B88B92@96q104q112B120B124q128@?136
+  required -performScanWithChannels:ssidList:legacyScanSSID:includeHiddenNetworks:mergeScanResults:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:interfaceName:waitForWiFi:waitForBluetooth:trimmedScanResultProperties:token:priority:reply: v128@0:8@16@24@32B40B44d48q56q64q72@80B88B92@96q104q112@?120
+  required -queryANQPCacheWithElements:network:maxAge:reply: v48@0:8Q16@24d32@?40
+  required -queryANQPElements:network:maxAge:interfaceName:waitForWiFi:waitForBluetooth:token:priority:reply: v80@0:8Q16@24d32@40B48B52q56q64@?72
+  required -queryAllWiFiProfilesAndReply: v24@0:8@?16
+  required -queryAutoHotspotModeAndReply: v24@0:8@?16
+  required -queryAutoJoinHistoryWithInterfaceName:reply: v32@0:8@16@?24
+  required -queryAutoJoinTemporarilyDisabledAndReply: v24@0:8@?16
+  required -queryBSSIDForInterfaceWithName:reply: v32@0:8@16@?24
+  required -queryConfigurationWithInterfaceName:reply: v32@0:8@16@?24
+  required -queryCountryCodeForInterfaceWithName:reply: v32@0:8@16@?24
+  required -queryHostAPModeConfigurationWithInterfaceName:reply: v32@0:8@16@?24
+  required -queryJoinHistoryWithInterfaceName:reply: v32@0:8@16@?24
+  required -queryRoamHistoryWithInterfaceName:reply: v32@0:8@16@?24
+  required -queryScanCacheWithChannels:ssidList:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:interfaceName:reply: v80@0:8@16@24d32q40q48q56@64@?72
+  required -queryScanCacheWithChannels:ssidList:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:trimmedScanResultProperties:interfaceName:reply: v88@0:8@16@24d32q40q48q56@64@72@?80
+  required -queryThermalIndexAndReply: v24@0:8@?16
+  required -relinquishBluetoothPagingLockAndReply: v24@0:8@?16
+  required -relinquishBluetoothPagingLockWithInterfaceName:reply: v32@0:8@16@?24
+  required -relinquishPriorityLockWithToken:reply: v32@0:8q16@?24
+  required -relinquishRequestLockWithType:interfaceName:reply: v40@0:8q16@24@?32
+  required -rememberWiFiProfile:event:reply: v40@0:8@16Q24@?32
+  required -removeWiFiProfileWithID:event:authorization:reply: v48@0:8@16Q24@32@?40
+  required -restoreJoinConfigurationWithInterfaceName:uuid:reply: v40@0:8@16@24@?32
+  required -saveJoinConfigurationWithInterfaceName:reply: v32@0:8@16@?24
+  required -set2GChainDisable:reassocRequired:forIntefaceName:reply: v40@0:8B16B20@24@?32
+  required -setAutoHotspotMode:reply: v32@0:8q16@?24
+  required -setAutoJoinEnabled:reply: v28@0:8B16@?20
+  required -setAutoJoinTemporarilyDisabled:untilDate:reply: v36@0:8B16@20@?28
+  required -setBluetoothCoexProperty:forKey:interfaceName:reply: v48@0:8@16@24@32@?40
+  required -setBluetoothConnectionReport:forIntefaceName:reply: v40@0:8@16@24@?32
+  required -setCachedLocaleTimeout:timeout:reply: v40@0:8@16d24@?32
+  required -setHostAPModeConfiguration:password:interfaceName:authorization:reply: v56@0:8@16@24@32@40@?48
+  required -setPairwiseMasterKey:interfaceName:token:priority:reply: v56@0:8@16@24q32q40@?48
+  required -setPeerTrafficRegistrationWithConfiguration:interfaceName:reply: v40@0:8@16@24@?32
+  required -setRangeableWithInterfaceName:rangeable:peers:token:priority:reply: v60@0:8@16B24@28q36q44@?52
+  required -setThermalIndex:reply: v32@0:8q16@?24
+  required -setUCMActiveProfileIndices:forIntefaceName:reply: v40@0:8@16@24@?32
+  required -setUCMProfile:atIndex:forInterfaceName:reply: v48@0:8@16@24@32@?40
+  required -setULOFDMAStateForBluetoothCoexistence:forIntefaceName:reply: v36@0:8B16@20@?28
+  required -setWEPKey:flags:index:interfaceName:token:priority:reply: v72@0:8@16Q24q32@40q48q56@?64
+  required -setWiFiChannel:interfaceName:reply: v40@0:8@16@24@?32
+  required -setWiFiEAPKeychainItemforSSID:identity:reply: v40@0:8@16@24@?32
+  required -setWiFiEAPKeychainItemforSSID:username:password:reply: v48@0:8@16@24@32@?40
+  required -setWiFiHostAPModeKeychainItemforInterfaceName:password:reply: v40@0:8@16@24@?32
+  required -setWiFiKeychainItemforSSID:password:reply: v40@0:8@16@24@?32
+  required -setWiFiPowerState:interfaceName:authorization:reply: v44@0:8B16@20@28@?36
+  required -setWoWEnabled:reply: v28@0:8B16@?20
+  required -startAWDLWithInterfaceName:request:token:priority:reply: v56@0:8@16@24q32q40@?48
+  required -startAutoJoinForInterfaceName:reply: v32@0:8@16@?24
+  required -startBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  required -startHostAPModeUsingConfigurationWithInterfaceName:token:priority:reply: v48@0:8@16q24q32@?40
+  required -startHostAPModeWithNetworkName:securityType:channel:password:interfaceName:token:priority:reply: v80@0:8@16Q24@32@40@48q56q64@?72
+  required -startIBSSModeWithSSID:securityType:channel:password:interfaceName:token:priority:authorization:reply: v88@0:8@16Q24@32@40@48q56q64@72@?80
+  required -startMonitoringEventWithType:reply: v32@0:8q16@?24
+  required -startRangingWithInterfaceName:peers:timeout:token:priority:reply: v64@0:8@16@24d32q40q48@?56
+  required -stateInfoWithInterfaceName:reply: v32@0:8@16@?24
+  required -stopAWDLWithInterfaceName:token:priority:reply: v48@0:8@16q24q32@?40
+  required -stopBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  required -stopHostAPModeWithInterfaceName:token:priority:reply: v48@0:8@16q24q32@?40
+  required -stopIBSSModeForInterfaceName:token:priority:authorization:reply: v56@0:8@16q24q32@40@?48
+  required -stopMonitoringAllEventsAndReply: v24@0:8@?16
+  required -stopMonitoringEventWithType:reply: v32@0:8q16@?24
+  required -ucmActiveProfileIndicesForIntefaceName:reply: v32@0:8@16@?24
+  required -ucmProfileAtIndex:forInterfaceName:reply: v40@0:8@16@24@?32
+  required -updateWiFiProfile:authorization:reply: v40@0:8@16@24@?32
