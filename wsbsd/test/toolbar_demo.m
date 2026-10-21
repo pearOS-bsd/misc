@@ -13,7 +13,9 @@
 		[sc setSegmentCount: 2];
 		[sc setImage: [NSImage imageWithSystemSymbolName: @"plus" accessibilityDescription: nil] forSegment: 0];
 		[sc setImage: [NSImage imageWithSystemSymbolName: @"minus" accessibilityDescription: nil] forSegment: 1];
-		[it setView: sc]; [it setLabel: @"Zoom"];
+		NSView *box = [[NSView alloc] initWithFrame: NSMakeRect(0, 0, 122, 61)]; [sc setFrame: NSMakeRect(18, 18, 86, 24)];
+		for (int k = 0; k < 2; k++) [sc setWidth: 26 forSegment: k];
+		[box addSubview: sc]; [sc removeFromSuperview]; [it setView: sc]; (void)box; [it setLabel: @"Zoom"];
 	} else {
 		[it setImage: [NSImage imageWithSystemSymbolName: i accessibilityDescription: nil] ?: [NSImage imageWithSystemSymbolName: @"folder" accessibilityDescription: nil]];
 		[it setLabel: i];
