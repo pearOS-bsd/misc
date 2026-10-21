@@ -363,7 +363,13 @@ static int wsdShapeForStyle(int style)
 	for (NSWindow *nw in [NSApp windows]) if ([nw windowNumber] == wid) { [nw deminiaturize: nil]; break; }
 }
 - (BOOL) appOwnsMiniwindow { return NO; }
-- (void) setinputfocus: (int)win { WLOG(@"setinputfocus %d", win); keyWindow = win; }
+- (void) setinputfocus: (int)win
+{
+	WLOG(@"setinputfocus %d", win); keyWindow = win;
+	struct wsd_window *w = [self wsdWindow: win];
+	NSWindow *nw = nil; for (NSWindow *x in [NSApp windows]) if ([x windowNumber] == win) { nw = x; break; }
+	if (w && [nw isKeyWindow]) ws_win_set_key(conn, &w->win);                                       /* the server keeps one key window for the session: panels above the normal level get it only this way */
+}
 - (void) setalpha: (float)alpha : (int)win
 {
 	WLOG(@"setalpha %d %g", win, (double)alpha);
@@ -427,9 +433,11 @@ static int wsdShapeForStyle(int style)
 		case WS_EV_FOCUS_IN:
 			ev = [NSEvent otherEventWithType: NSAppKitDefined location: NSZeroPoint modifierFlags: 0 timestamp: ts windowNumber: w->number context: GSCurrentContext() subtype: GSAppKitWindowFocusIn data1: 0 data2: 0];
 			break;
-		case WS_EV_FOCUS_OUT:
-			ev = [NSEvent otherEventWithType: NSAppKitDefined location: NSZeroPoint modifierFlags: 0 timestamp: ts windowNumber: w->number context: GSCurrentContext() subtype: GSAppKitWindowFocusOut data1: 0 data2: 0];
-			break;
+		case WS_EV_FOCUS_OUT: {                                                       /* gui ignores the focus-out event: the window gives up key itself, and the application deactivates when the keyboard went to another one */
+			NSWindow *nw = nil; for (NSWindow *x in [NSApp windows]) if ([x windowNumber] == w->number) { nw = x; break; }
+			if ([nw isKeyWindow]) [nw resignKeyWindow];
+			[NSApp performSelector: @selector(wsdDeactivateIfIdle) withObject: nil afterDelay: 0.05];
+			break; }
 		default: break;
 		}
 		if (ev) [NSApp postEvent: ev atStart: NO];
@@ -475,4 +483,8 @@ static int wsdShapeForStyle(int style)
 - (void) recolorcursor: (NSColor *)fg : (NSColor *)bg : (void *)cid {}
 - (void) freecursor: (void *)cid {}
 
+@end
+
+@implementation NSApplication (WsdFocus)
+- (void) wsdDeactivateIfIdle { if ([self isActive] && ![self keyWindow]) [self deactivate]; }
 @end

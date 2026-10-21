@@ -677,6 +677,7 @@ int ws_next_event(ws_server *s, ws_wid id, ws_event *out)
 static void set_key_window(ws_server *s, ws_wid id)
 {
 	if (s->key_win == id) return;
+	if (getenv("WSD_DEBUG")) fprintf(stderr, "wsd: key window %u -> %u\n", (unsigned)s->key_win, (unsigned)id);
 	window *o = get(s, s->key_win), *n = get(s, id);
 	if (o) post(o, WS_EV_FOCUS_OUT, 0, 0, 0, 0);
 	s->key_win = id;
@@ -751,6 +752,7 @@ int ws_window_event_mask(ws_server *s, ws_wid id, int *m) { window *w = get(s, i
 
 void ws_cursor_pos(ws_server *s, int *x, int *y) { *x = s->cx; *y = s->cy; }
 ws_wid ws_key_window(ws_server *s) { return s->key_win; }
+int ws_set_key_window(ws_server *s, ws_wid id) { window *w = get(s, id); if (!w || !w->on_screen) return -1; set_key_window(s, id); return 0; }
 void ws_cursor_show(ws_server *s, int v) { if ((v != 0) != s->cursor_visible) s->cursor_serial++; s->cursor_visible = v != 0; }
 
 /* ---- cursor: an image with a hotspot, independent of every window buffer ---- */

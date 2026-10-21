@@ -496,6 +496,10 @@ int main(void)
 	  ws_order_window(srv, k1, WS_ABOVE, 0); CHECK(ws_key_window(srv) == k1);
 	  ws_order_window(srv, k2, WS_ABOVE, 0); CHECK(ws_key_window(srv) == k2);
 	  ws_order_window(srv, k2, WS_OUT, 0); CHECK(ws_key_window(srv) == k1);
+	  { ws_wid pn = ws_create_window(srv, (ws_rect){ 90, 90, 300, 200 }); ws_set_window_level(srv, pn, 3); ws_order_window(srv, pn, WS_ABOVE, 0); CHECK(ws_key_window(srv) == k1);       /* a floating panel does not take the keys by itself ... */
+	    CHECK(ws_set_key_window(srv, pn) == 0 && ws_key_window(srv) == pn);                  /* ... until its application asks (makeKeyWindow) */
+	    CHECK(ws_set_key_window(srv, 0x7fff) == -1);
+	    ws_order_window(srv, pn, WS_OUT, 0); ws_release_window(srv, pn); }
 	  ws_order_window(srv, k1, WS_OUT, 0); ws_release_window(srv, k1); ws_release_window(srv, k2); }
 	ws_server_mouse(srv, 250, 140, 1); ws_server_mouse(srv, 250, 140, 0);   /* click on b: raise + focus */
 	CHECK(ws_key_window(srv) == b && ws_find_window(srv, 250, 140) == b);
