@@ -1,0 +1,195 @@
+#!/usr/bin/env python3
+"""gen_objc_stubs.py DUMP.txt NAME OUTDIR [--skip FILE]: turns an inventory written by tools/objc_dump.m (a framework of the real Mac, read at run time) into
+  OUTDIR/NAME_Generated.h   every class (with ivars, properties) and protocol, with the exact selectors and types
+  OUTDIR/NAME_Generated.m   the implementation: properties with a backing ivar are synthesized, every other method is a stub returning 0 / nil / NO (init methods return self)
+A method listed in the skip file (one "+Class sel" or "-Class sel" per line, collected from the `/* impl: -[Class sel] */` markers of the hand-written files) is not generated.
+The hand-written code then replaces the stubs one method at a time, the interface stays the one of the real framework."""
+import re, sys, os
+dump, name, outdir = sys.argv[1], sys.argv[2], sys.argv[3]
+skip = set()
+if "--skip" in sys.argv:
+    for l in open(sys.argv[sys.argv.index("--skip") + 1]):
+        l = l.strip()
+        if l: skip.add(l)
+os.makedirs(outdir, exist_ok=True)
+
+def split_enc(enc):
+    """encoding string of a method -> list of type encodings (return, self, _cmd, args...), offsets dropped"""
+    out = []; i = 0; n = len(enc)
+    def one(i):
+        j = i
+        while j < n and enc[j] in "rnNoORV": j += 1
+        c = enc[j]
+        if c in "{(":
+            close = "}" if c == "{" else ")"; depth = 0
+            while True:
+                if enc[j] == c: depth += 1
+                elif enc[j] == close:
+                    depth -= 1
+                    if depth == 0: j += 1; break
+                j += 1
+        elif c == "[":
+            while enc[j] != "]": j += 1
+            j += 1
+        elif c == "^":
+            _, k = one(j + 1); return enc[i:k], k
+        elif c == "@":
+            j += 1
+            if j < n and enc[j] == "?": j += 1
+            elif j < n and enc[j] == '"':
+                j = enc.index('"', j + 1) + 1
+        else:
+            j += 1
+        return enc[i:j], j
+    while i < n:
+        t, j = one(i)
+        if isinstance(t, str) is False: pass
+        out.append(t if isinstance(t, str) else t); i = j
+        while i < n and enc[i].isdigit(): i += 1
+    return out
+
+def one_type(t):
+    """encoding of one type -> (C type used in declarations)"""
+    t = t.lstrip("rnNoORV")
+    base = {"c": "char", "C": "unsigned char", "s": "short", "S": "unsigned short", "i": "int", "I": "unsigned int", "l": "long", "L": "unsigned long",
+            "q": "long long", "Q": "unsigned long long", "f": "float", "d": "double", "B": "BOOL", "v": "void", "*": "char *", "#": "Class", ":": "SEL", "@": "id", "@?": "id"}
+    if t in base: return base[t]
+    if t.startswith("@"):
+        m = re.match(r'@"([A-Za-z_0-9]+)', t)
+        return "id" if not m else "id"
+    if t.startswith("^"):
+        inner = t[1:]
+        if inner.startswith("@"): return "id *"
+        if inner.startswith("{") or inner.startswith("v") or inner.startswith("("): return "void *"
+        return one_type(inner) + " *"
+    if t.startswith("{") or t.startswith("(") or t.startswith("["): return "void *"
+    return "id"
+
+def sig(sel, enc):
+    ts = split_enc(enc)
+    ret = one_type(ts[0]); args = [one_type(a) for a in ts[3:]]
+    parts = sel.split(":")
+    if len(parts) == 1: return ret, parts[0], ""
+    if len(args) != len(parts) - 1: args = (args + ["id"] * len(parts))[:len(parts) - 1]
+    return ret, sel, " ".join("%s:(%s)a%d" % (p, a, i) for i, (p, a) in enumerate(zip(parts[:-1], args)))
+
+classes = []; protocols = []
+cur = None
+for line in open(dump, errors="replace"):
+    line = line.rstrip("\n")
+    if line.startswith("@class "):
+        m = re.match(r"@class (\S+) : (\S+?)(?: <(.*)>)? instanceSize=(\d+)", line)
+        if "." in m.group(1) or "$" in m.group(1): cur = None; continue
+        cur = {"name": m.group(1), "super": m.group(2), "protos": [p.strip() for p in (m.group(3) or "").split(",") if p.strip()], "ivars": [], "props": [], "methods": []}
+        classes.append(cur)
+    elif line.startswith("@protocol "):
+        cur = {"name": line.split()[1], "methods": []}; protocols.append(cur)
+    elif cur is None: continue
+    elif "methods" in cur and line.startswith("  ivar "):
+        _, off, nm, enc = line.split(None, 3); cur["ivars"].append((nm, enc.strip()))
+    elif line.startswith("  property "):
+        m = re.match(r"  property (\S+) \((.*)\)$", line)
+        if m.group(1) not in [x[0] for x in cur["props"]]: cur["props"].append((m.group(1), m.group(2)))
+    elif line.startswith("  optional ") or line.startswith("  required "):
+        kind, rest = line.split(None, 2)[0:2] + [None] if False else (line.split(None, 1)[0], line.split(None, 1)[1]); sign = rest[0]; sel, enc = (rest[1:].split(None, 1) + [""])[:2]
+        cur["methods"].append((kind, sign, sel, enc.strip()))
+    elif line.startswith("  -") or line.startswith("  +"):
+        body = line.strip(); sign = body[0]; rest = body[1:]; rest = re.sub(r"\s+imp=.*$", "", rest)
+        sel, enc = (rest.split(None, 1) + [""])[:2]
+        cur["methods"].append((sign, sel, enc.strip()))
+
+known = {c["name"] for c in classes}
+def ivar_type(enc):
+    m = re.match(r'@"([A-Za-z_0-9]+)(?:<.*>)?"$', enc)
+    if m: return "%s *" % m.group(1) if m.group(1) in known or m.group(1).startswith("NS") else "id"
+    return one_type(enc) if enc != "@" else "id"
+def prop_decl(nm, attrs):
+    parts = attrs.split(","); t = parts[0][1:]; flags = set(parts[1:]); ivar = None
+    mods = ["nonatomic" if "N" in flags else "atomic"]
+    if "R" in flags: mods.append("readonly")
+    isobj = t.startswith("@")
+    if "C" in flags and isobj: mods.append("copy")
+    elif "&" in flags and isobj: mods.append("strong")
+    elif "W" in flags and isobj: mods.append("weak")
+    getter = setter = None
+    for f in parts[1:]:
+        if f.startswith("G"): getter = f[1:]
+        if f.startswith("S"): setter = f[1:]
+        if f.startswith("V"): ivar = f[1:]
+    if getter: mods.append("getter=%s" % getter)
+    if setter: mods.append("setter=%s" % setter)
+    m = re.match(r'@"([A-Za-z_0-9]+)(<.*>)?"$', t)
+    if m and m.group(1) in known | {"NSString", "NSArray", "NSData", "NSDictionary", "NSSet", "NSNumber", "NSDate", "NSURL", "NSUUID", "NSMutableArray", "NSMutableDictionary", "NSError", "NSOrderedSet", "NSSet"}: ctype = m.group(1) + " *"
+    elif m and m.group(2) is None and m.group(1).startswith("NS"): ctype = m.group(1) + " *"
+    else: ctype = one_type(t) if not t.startswith("@") else "id"
+    return "@property (%s) %s %s;" % (", ".join(mods), ctype, nm), ivar, (getter or nm), (setter or ("set" + nm[0].upper() + nm[1:] + ":"))
+
+# header
+order = []; seen = set(); byname = {c["name"]: c for c in classes}
+def visit(c):
+    if c["name"] in seen: return
+    seen.add(c["name"])
+    s = byname.get(c["super"])
+    if s: visit(s)
+    order.append(c)
+for c in classes: visit(c)
+H = ['/* generated by tools/gen_objc_stubs.py from the inventory of the real %s: every class, ivar, property, protocol and selector with its type */' % name, '#import <Foundation/Foundation.h>', '']
+H += ["@class %s;" % c["name"] for c in classes] + [""]
+H += ["@protocol %s;" % p["name"] for p in protocols] + [""]
+for p in protocols:
+    H.append("@protocol %s" % p["name"]); cur_kind = None
+    for kind, sign, sel, enc in p["methods"]:
+        if kind != cur_kind: H.append("@%s" % kind); cur_kind = kind
+        ret, s, args = sig(sel, enc) if enc else ("void", sel, "")
+        H.append("%s (%s)%s%s;" % (sign, ret, s if not args else "", args))
+    H.append("@end"); H.append("")
+for c in order:
+    pnames = {p["name"] for p in protocols}
+    protos = [p for p in c["protos"] if p not in ("NSObject",) and (p in pnames or p in ("NSCopying", "NSMutableCopying", "NSCoding", "NSSecureCoding", "NSFastEnumeration", "NSXPCListenerDelegate", "NSURLSessionDelegate"))]
+    H.append("@interface %s : %s%s" % (c["name"], c["super"], (" <%s>" % ", ".join(protos)) if protos else ""))
+    if c["ivars"]:
+        H.append("{")
+        for nm, enc in c["ivars"]: H.append("\t%s %s;" % (ivar_type(enc), nm))
+        H.append("}")
+    accessors = set()
+    for nm, attrs in c["props"]:
+        d, iv, g, s = prop_decl(nm, attrs); H.append(d); accessors.add(g)
+        if "R" not in attrs.split(",")[1:]: accessors.add(s)
+    for sign, sel, enc in c["methods"]:
+        if sign == "-" and sel in accessors: continue
+        if sel in (".cxx_destruct", "dealloc"): continue
+        ret, s, args = sig(sel, enc); H.append("%s (%s)%s%s;" % (sign, ret, s if not args else "", args))
+    H.append("@end"); H.append("")
+open(os.path.join(outdir, name + "_Generated.h"), "w").write("\n".join(H))
+
+# implementation
+M = ['/* generated by tools/gen_objc_stubs.py, see the header; the stubs are replaced by hand-written code method by method (a skip file lists those) */', '#import <%s/%s_Generated.h>' % (name, name), '']
+nstub = nreal = 0
+for c in order:
+    M.append("@implementation %s" % c["name"]); accessors = set(); done_props = set()
+    for nm, attrs in c["props"]:
+        d, iv, g, s = prop_decl(nm, attrs)
+        parts = attrs.split(",")
+        if nm in done_props: continue
+        done_props.add(nm)
+        if iv and any(i == iv for i, _ in [(x[0], 0) for x in c["ivars"]]): M.append("@synthesize %s = %s;" % (nm, iv)); nreal += 1
+        else: M.append("@dynamic %s;" % nm)
+        accessors.add(g)
+        if "R" not in parts[1:]: accessors.add(s)
+    for sign, sel, enc in c["methods"]:
+        if sel in (".cxx_destruct", "dealloc", "conformsToProtocol:"): continue
+        if "%s%s %s" % (sign, c["name"], sel) in skip: continue
+        ret, s, args = sig(sel, enc)
+        if sign == "-" and sel in accessors:
+            if any(sel == (prop_decl(nm, a)[2]) or sel == prop_decl(nm, a)[3] for nm, a in c["props"]):
+                nm_ = [nm for nm, a in c["props"] if sel in (prop_decl(nm, a)[2], prop_decl(nm, a)[3])][0]
+                a_ = dict(c["props"])[nm_]; iv = prop_decl(nm_, a_)[1]
+                if iv and any(i == iv for i, _ in c["ivars"]): continue
+        if ret == "id": body = "return self;" if sel.startswith("init") else "return nil;"
+        elif ret == "void": body = ""
+        elif ret in ("float", "double"): body = "return 0;"
+        else: body = "return 0;"
+        M.append("%s (%s)%s%s { %s }" % (sign, ret, s if not args else "", args, body)); nstub += 1
+    M.append("@end"); M.append("")
+open(os.path.join(outdir, name + "_Generated.m"), "w").write("\n".join(M))
+print("%s: %d classes, %d protocols, %d stub methods, %d synthesized properties" % (name, len(classes), len(protocols), nstub, nreal))
