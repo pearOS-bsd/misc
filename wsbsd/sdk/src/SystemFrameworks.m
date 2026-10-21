@@ -118,3 +118,45 @@ NSString *const WebElementLinkURLKey = @"WebElementLinkURL";
 - (void)close { _frameLoad = _policy = _ui = _resource = nil; }
 - (void)drawRect:(NSRect)r { if (_draws) { [[NSColor whiteColor] set]; NSRectFill(r); } }
 @end
+
+NSString *const WebViewProgressStartedNotification = @"WebProgressStartedNotification";
+NSString *const WebViewProgressEstimateChangedNotification = @"WebProgressEstimateChangedNotification";
+NSString *const WebViewProgressFinishedNotification = @"WebProgressFinishedNotification";
+@implementation WebFrameView (WsbsdDocument) - (NSView *)documentView { return nil; } @end
+
+@implementation WKNavigation @end
+@implementation WKNavigationAction { NSURLRequest *_req; WKNavigationType _type; } - (NSURLRequest *)request { return _req; } - (WKNavigationType)navigationType { return _type; } @end
+@implementation WKScriptMessage { NSString *_name; id _body; } - (NSString *)name { return _name; } - (id)body { return _body; } @end
+@implementation WKUserContentController
+{ NSMutableDictionary *_handlers; }
+- (void)addScriptMessageHandler:(id<WKScriptMessageHandler>)h name:(NSString *)name { if (!_handlers) _handlers = [NSMutableDictionary dictionary]; _handlers[name] = h; }
+- (void)removeScriptMessageHandlerForName:(NSString *)name { [_handlers removeObjectForKey: name]; }
+- (void)removeAllUserScripts { }
+@end
+@implementation WKWebViewConfiguration
+{ WKUserContentController *_ucc; }
+- (WKUserContentController *)userContentController { return _ucc ?: (_ucc = [WKUserContentController new]); }
+- (void)setUserContentController:(WKUserContentController *)c { _ucc = c; }
+@end
+@implementation WKWebView
+{ WKWebViewConfiguration *_cfg; __weak id<WKNavigationDelegate> _nav; __weak id<WKUIDelegate> _ui; BOOL _gestures; }
+- (instancetype)initWithFrame:(NSRect)frame configuration:(WKWebViewConfiguration *)c { if ((self = [super initWithFrame: frame])) _cfg = c ?: [WKWebViewConfiguration new]; return self; }
+- (instancetype)initWithFrame:(NSRect)frame { return [self initWithFrame: frame configuration: nil]; }
+- (id<WKNavigationDelegate>)navigationDelegate { return _nav; } - (void)setNavigationDelegate:(id<WKNavigationDelegate>)d { _nav = d; }
+- (id<WKUIDelegate>)UIDelegate { return _ui; } - (void)setUIDelegate:(id<WKUIDelegate>)d { _ui = d; }
+- (WKWebViewConfiguration *)configuration { return _cfg; }
+- (NSURL *)URL { return nil; } - (NSString *)title { return nil; } - (BOOL)isLoading { return NO; }
+- (BOOL)allowsBackForwardNavigationGestures { return _gestures; } - (void)setAllowsBackForwardNavigationGestures:(BOOL)b { _gestures = b; }
+- (WKNavigation *)fail
+{
+	WKNavigation *n = [WKNavigation new]; NSError *e = [NSError errorWithDomain: @"WKErrorDomain" code: 1 userInfo: @{ NSLocalizedDescriptionKey: @"There is no web engine" }];
+	if ([_nav respondsToSelector: @selector(webView:didFailProvisionalNavigation:withError:)]) [_nav webView: self didFailProvisionalNavigation: n withError: e];
+	return n;
+}
+- (WKNavigation *)loadRequest:(NSURLRequest *)r { return [self fail]; }
+- (WKNavigation *)loadHTMLString:(NSString *)s baseURL:(NSURL *)b { return [self fail]; }
+- (WKNavigation *)loadFileURL:(NSURL *)u allowingReadAccessToURL:(NSURL *)r { return [self fail]; }
+- (void)evaluateJavaScript:(NSString *)js completionHandler:(void (^)(id, NSError *))h { if (h) h(nil, [NSError errorWithDomain: @"WKErrorDomain" code: 4 userInfo: @{ NSLocalizedDescriptionKey: @"There is no web engine" }]); }
+- (void)stopLoading { } - (WKNavigation *)reload { return [self fail]; }
+- (void)drawRect:(NSRect)r { [[NSColor whiteColor] set]; NSRectFill(r); }
+@end

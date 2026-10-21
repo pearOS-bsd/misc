@@ -17,6 +17,7 @@ enum { typeNull = 0x6e756c6c, typeChar = 0x54455854, typeUTF8Text = 0x75746638, 
        typeAERecord = 0x7265636f, typeObjectSpecifier = 0x6f626a20, typeFileURL = 0x6675726c, typeProcessSerialNumber = 0x70736e20, typeApplicationBundleID = 0x62756e64 };
 enum { kAEOpenApplication = 0x6f617070, kAEOpenDocuments = 0x6f646f63, kAEQuitApplication = 0x71756974, kAEReopenApplication = 0x72617070, kCoreEventClass = 0x61657674,
        kAEGetURL = 0x4755524c, kInternetEventClass = 0x4755524c, keyDirectObject = 0x2d2d2d2d, keyAEPropData = 0x70726f70 };
+enum { typeWildCard = 0x2a2a2a2a, kAutoGenerateReturnID = -1, kAnyTransactionID = 0 };
 enum { errAEEventNotHandled = -1708, errAENoSuchObject = -1728 };
 #ifdef __cplusplus
 }

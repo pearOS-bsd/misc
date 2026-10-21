@@ -223,3 +223,73 @@ CFRunLoopSourceRef CFNetworkExecuteProxyAutoConfigurationURL(CFURLRef pacURL, CF
 {
 	(void)pacURL; (void)target; (void)cb; (void)ctx; return NULL;                    /* PAC scripts are not run: the caller sees no source and goes on without a proxy */
 }
+
+/* ---- AppKit names ---- */
+NSString *const NSImageBinding = @"image";
+@implementation NSObject (WsbsdMenuDelegateProperties)
+- (NSMenuProperties)propertiesToUpdate { return NSMenuPropertyItemTitle | NSMenuPropertyItemAttributedTitle | NSMenuPropertyItemKeyEquivalent | NSMenuPropertyItemImage | NSMenuPropertyItemEnabled; }
+@end
+@implementation NSStringDrawingContext
+{ CGFloat _minScale, _minTracking; NSRect _total; }
+@synthesize minimumScaleFactor = _minScale, minimumTrackingAdjustment = _minTracking;
+- (CGFloat)actualScaleFactor { return 1; }
+- (CGFloat)actualTrackingAdjustment { return 0; }
+- (NSRect)totalBounds { return _total; }
+- (void)wsbsdSetTotal:(NSRect)r { _total = r; }
+@end
+@implementation NSString (WsbsdDrawingContext)
+- (NSRect)boundingRectWithSize:(NSSize)size options:(NSStringDrawingOptions)options attributes:(NSDictionary *)attributes context:(NSStringDrawingContext *)context
+{
+	NSRect r = [self boundingRectWithSize: size options: options attributes: attributes]; [context wsbsdSetTotal: r]; return r;
+}
+@end
+@implementation NSAttributedString (WsbsdDrawingContext)
+- (NSRect)boundingRectWithSize:(NSSize)size options:(NSStringDrawingOptions)options context:(NSStringDrawingContext *)context
+{
+	NSRect r = [self boundingRectWithSize: size options: options]; [context wsbsdSetTotal: r]; return r;
+}
+@end
+@implementation NSWorkspace (WsbsdFileViewer)
+- (void)activateFileViewerSelectingURLs:(NSArray *)urls { for (NSURL *u in urls) [self selectFile: [u path] inFileViewerRootedAtPath: @""]; }
+@end
+@implementation NSTitlebarAccessoryViewController
+{ NSLayoutAttribute _attr; CGFloat _fsmin; BOOL _hidden, _auto; }
+- (NSLayoutAttribute)layoutAttribute { return _attr; } - (void)setLayoutAttribute:(NSLayoutAttribute)a { _attr = a; }
+- (CGFloat)fullScreenMinHeight { return _fsmin; } - (void)setFullScreenMinHeight:(CGFloat)h { _fsmin = h; }
+- (BOOL)isHidden { return _hidden; } - (void)setHidden:(BOOL)h { _hidden = h; }
+- (BOOL)automaticallyAdjustsSize { return _auto; } - (void)setAutomaticallyAdjustsSize:(BOOL)b { _auto = b; }
+@end
+static char kTAC;
+@implementation NSWindow (WsbsdTitlebarAccessories)
+- (NSArray *)titlebarAccessoryViewControllers { return [objc_getAssociatedObject(self, &kTAC) copy] ?: @[]; }
+- (void)insertTitlebarAccessoryViewController:(NSTitlebarAccessoryViewController *)vc atIndex:(NSInteger)i
+{
+	NSMutableArray *a = [objc_getAssociatedObject(self, &kTAC) mutableCopy] ?: [NSMutableArray array]; if (i < 0 || i > (NSInteger)[a count]) i = (NSInteger)[a count];
+	[a insertObject: vc atIndex: (NSUInteger)i]; objc_setAssociatedObject(self, &kTAC, a, OBJC_ASSOCIATION_RETAIN_NONATOMIC);                    /* kept; the title bar draws no accessory yet */
+}
+- (void)addTitlebarAccessoryViewController:(NSTitlebarAccessoryViewController *)vc { [self insertTitlebarAccessoryViewController: vc atIndex: -1]; }
+- (void)removeTitlebarAccessoryViewControllerAtIndex:(NSInteger)i
+{
+	NSMutableArray *a = [objc_getAssociatedObject(self, &kTAC) mutableCopy]; if (i >= 0 && i < (NSInteger)[a count]) { [a removeObjectAtIndex: (NSUInteger)i]; objc_setAssociatedObject(self, &kTAC, a, OBJC_ASSOCIATION_RETAIN_NONATOMIC); }
+}
+@end
+
+NSString *const NSImageNameApplicationIcon = @"NSApplicationIcon";
+NSString *const NSProgressFileOperationKindKey = @"NSProgressFileOperationKindKey";
+NSString *const NSProgressFileOperationKindDownloading = @"NSProgressFileOperationKindDownloading";
+NSString *const NSProgressFileOperationKindCopying = @"NSProgressFileOperationKindCopying";
+NSValue *NSAccessibilityFrameInView(NSView *parent, NSRect frame)                                       /* the frame in screen coordinates, as an NSValue */
+{
+	NSRect r = [parent convertRect: frame toView: nil]; r.origin = [[parent window] convertBaseToScreen: r.origin];
+	return [NSValue valueWithRect: r];
+}
+@implementation NSView (WsbsdFitting)
+- (NSSize)fittingSize                                                                                     /* what the view needs: its intrinsic size, else the size it has */
+{
+	NSSize s = [self intrinsicContentSize]; NSSize f = [self frame].size;
+	return NSMakeSize(s.width >= 0 ? s.width : f.width, s.height >= 0 ? s.height : f.height);
+}
+@end
+@implementation NSResponder (WsbsdRestoration)
+- (void)invalidateRestorableState { }                                                                      /* there is no state restoration: nothing to invalidate */
+@end

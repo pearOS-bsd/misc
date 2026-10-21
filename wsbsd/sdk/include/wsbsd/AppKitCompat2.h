@@ -125,4 +125,61 @@ extern NSString *const NSFontFeatureSettingsAttribute;
 @property (nonatomic, readonly, strong) NSLayoutGuide *safeAreaLayoutGuide;
 @property (nonatomic, readonly, strong) NSLayoutGuide *layoutMarginsGuide;
 @end
+
+/* types and names of newer AppKit that were missing (TextMate build) */
+typedef NSUInteger NSTableColumnResizingOptions;
+typedef NS_ENUM(NSInteger, NSWindowTitleVisibility) { NSWindowTitleVisible = 0, NSWindowTitleHidden = 1 };
+typedef NSUInteger NSMenuProperties;
+enum { NSMenuPropertyItemTitle = 1 << 0, NSMenuPropertyItemAttributedTitle = 1 << 1, NSMenuPropertyItemKeyEquivalent = 1 << 2, NSMenuPropertyItemImage = 1 << 3, NSMenuPropertyItemEnabled = 1 << 4, NSMenuPropertyItemAccessibilityDescription = 1 << 5 };
+@interface NSObject (WsbsdMenuDelegateProperties)
+- (NSMenuProperties)propertiesToUpdate;
+@end
+extern NSString *const NSImageBinding;
+typedef uint64_t CGEventFlags;
+enum { kCGEventFlagMaskAlphaShift = 0x10000, kCGEventFlagMaskShift = 0x20000, kCGEventFlagMaskControl = 0x40000, kCGEventFlagMaskAlternate = 0x80000, kCGEventFlagMaskCommand = 0x100000,
+       kCGEventFlagMaskHelp = 0x400000, kCGEventFlagMaskSecondaryFn = 0x800000, kCGEventFlagMaskNumericPad = 0x200000 };
+extern const CFStringRef kUTTypeFileURL;
+@interface NSStringDrawingContext : NSObject
+@property (nonatomic) CGFloat minimumScaleFactor, minimumTrackingAdjustment;
+@property (nonatomic, readonly) CGFloat actualScaleFactor, actualTrackingAdjustment;
+@property (nonatomic, readonly) NSRect totalBounds;
+@end
+@interface NSString (WsbsdDrawingContext)
+- (NSRect)boundingRectWithSize:(NSSize)size options:(NSStringDrawingOptions)options attributes:(NSDictionary *)attributes context:(NSStringDrawingContext *)context;
+@end
+@interface NSAttributedString (WsbsdDrawingContext)
+- (NSRect)boundingRectWithSize:(NSSize)size options:(NSStringDrawingOptions)options context:(NSStringDrawingContext *)context;
+@end
+@interface NSWorkspace (WsbsdFileViewer)
+- (void)activateFileViewerSelectingURLs:(NSArray *)fileURLs;
+@end
+@interface NSTitlebarAccessoryViewController : NSViewController
+@property (nonatomic) NSLayoutAttribute layoutAttribute;
+@property (nonatomic) CGFloat fullScreenMinHeight;
+@property (nonatomic, getter=isHidden) BOOL hidden;
+@property (nonatomic) BOOL automaticallyAdjustsSize;
+@end
+@interface NSWindow (WsbsdTitlebarAccessories)
+@property (nonatomic, readonly, copy) NSArray *titlebarAccessoryViewControllers;
+- (void)addTitlebarAccessoryViewController:(NSTitlebarAccessoryViewController *)childViewController;
+- (void)insertTitlebarAccessoryViewController:(NSTitlebarAccessoryViewController *)childViewController atIndex:(NSInteger)index;
+- (void)removeTitlebarAccessoryViewControllerAtIndex:(NSInteger)index;
+@end
+
+/* more names (TextMate build) */
+#ifndef NSVisualEffectMaterialHeaderView
+#define NSVisualEffectMaterialHeaderView ((NSVisualEffectMaterial)10)
+#define NSVisualEffectMaterialToolTip ((NSVisualEffectMaterial)17)
+#endif
+NSValue *NSAccessibilityFrameInView(NSView *parentView, NSRect frame);
+extern NSString *const NSImageNameApplicationIcon;
+extern NSString *const NSProgressFileOperationKindKey, *const NSProgressFileOperationKindDownloading, *const NSProgressFileOperationKindCopying;
+@interface NSView (WsbsdFitting)
+@property (nonatomic, readonly) NSSize fittingSize;
+- (void)updateTrackingAreas;
+@end
+@interface NSResponder (WsbsdRestoration)
+- (void)invalidateRestorableState;
+@end
+#define O_EVTONLY O_RDONLY
 #endif
