@@ -29,8 +29,6 @@ static const gen_entry gen_table[] = {
 	{ 30191, 40, 0, 0, 36 },   /* __XRemoveWindowFromWindowMovementGroup */
 	{ 30194, 36, 0, 0, 36 },   /* __XRemoveWindowFromWindowOrderingGroup */
 	{ 30214, 56, 1, 1, 36 },   /* __XUpdateSessionWorkspaceData */
-	{ 30217, 56, 0, 0, 40 },   /* __XNewTransition */
-	{ 30219, 36, 0, 0, 36 },   /* __XReleaseTransition */
 	{ 30221, 56, 1, 1, 40 },   /* __XNewCIFilter */
 	{ 30222, 36, 0, 0, 36 },   /* __XReleaseCIFilter */
 	{ 30223, 60, 1, 1, 36 },   /* __XSetCIFilterValues */

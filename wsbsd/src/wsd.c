@@ -1286,7 +1286,7 @@ int main(int argc, char **argv)
 		(void)frame;
 #endif
 		if (vnc_ls >= 0 && wsd_vnc_connected()) to = &frame;                      /* a viewer is attached: wake up to send updates */
-		struct timespec held; { int ms = sls_tap_poll(); if (ms >= 0) { held.tv_sec = ms / 1000; held.tv_nsec = (long)(ms % 1000) * 1000000L; if (!to || ms < 16) to = &held; } }   /* a key event held by an active tap times out */
+		struct timespec held; { int ms = sls_tap_poll(); { int tm = sls_transition_poll(); if (tm >= 0 && (ms < 0 || tm < ms)) ms = tm; } if (ms >= 0) { held.tv_sec = ms / 1000; held.tv_nsec = (long)(ms % 1000) * 1000000L; if (!to || ms < 16) to = &held; } }   /* a key event held by an active tap times out */
 #ifdef WS_KMS
 		struct timespec scan_to = { 1, 0 };                                       /* USB keyboards and mice enumerate late (or are plugged in later): look for new input devices every second */
 		if (input && (!to || to->tv_sec > 0)) to = &scan_to;
