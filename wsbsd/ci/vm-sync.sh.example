@@ -1,0 +1,3 @@
+#!/bin/sh
+cd /Users/alxb421/Desktop/app/misc
+rsync -a --exclude='*.dSYM' --exclude='*.o' --exclude='*.a' --exclude='.git' --exclude='lab-out' --exclude='coreui/assets/CoreGlyphs.car' --exclude='coreui/assets/CoreTypes.car' --exclude='coreui/assets/Aqua.car' --exclude='coreui/assets/DarkAqua.car' --exclude='dist' --exclude='/wsd' --exclude='/ws[a-z]*' --exclude='!(*.*)' --exclude='/test_*' --exclude='/soak' --exclude='/scen_wsd' --exclude='*.ppm' --exclude='coreui/test_car' --exclude='coreui/cardump' -e /tmp/vmssh wsbsd/ root@localhost:/root/wsbsd/
