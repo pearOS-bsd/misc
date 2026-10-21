@@ -46,6 +46,15 @@ The stack: `wsd` (this repo: window server and compositor speaking the SkyLight 
 - **AirDrop** (sharingd, `NSSharingService` AirDrop, `com.apple.sharing.*`, AWDL-less transport on FreeBSD): after CoreWLAN, also by decompilation with REA and reimplemented as on the Mac. Reference to study (not to copy blindly): github.com/BenItBuhner/AirDrop-for-Everything. Status: 0 %.
 - **Filesystem mirror rule:** the file layout of this Mac is the layout of the BSD system. Whatever exists under `/System`, `/Library`, `/usr/libexec`, `/Applications`... on the Mac (frameworks, daemons, launchd plists, resources) must be found at the same path on wsbsd, with the same names. New components are installed at the Mac paths (for example `/System/Library/Frameworks/CoreWLAN.framework`, `/usr/libexec/airportd`, `/System/Library/CoreServices/...`) and the ISO builder (`iso/build.sh`) places them there.
 
+### Ported application work (TextMate, Chess, Hex Fiend, GrandPerspective, Pashua)
+Goal: compile unmodified open source Cocoa applications on FreeBSD. What the TextMate port needed, all in `sdk/`, `ci/patch-*.py` and `ports/textmate/`:
+- **Build:** ninja + rave build with an `xcrun` shim, ninja/rave bash-ism fixers, GNUstep-layout bundle assembly (`ports/textmate/`), libc++ hardening off, C++ `main` through a `gnustep_base_user_main` trampoline.
+- **Auto Layout (libs-gui patches):** constraints kept for views without a window, VFL predicate connections, vertical axis as in Cocoa, `invalidateIntrinsicContentSize`, `view.constraints` = constraints the view owns, solver rebuilt after removals, scrollers without intrinsic size (this one gave the gutter 327 of 428 points), `menuNeedsUpdate:` re-entry guard. Tests: `sdk/tests/vfl_tests.m`.
+- **Runtime:** libdispatch main queue and `CFRunLoopPerformBlock` run on the GNUstep run loop (`DispatchMain.m`), `CGEventRef` is a CF object, `NSTextInputContext handleEvent:` (typing), CF/CoreText/CoreGraphics header wrappers, CFString / CFAttributedString / CFURL bridges, `os_log`, process arguments, Apple-event classes, touch bar and accessibility shims, `NSURLSession` over libcurl, QuickLook + CFPlugIn, Security / Keychain / Authorization.
+- **Debug aids:** `WSBSD_VIEWDUMP`, `WSBSD_LOGEVENTS`, `WSBSD_SNAPVIEW=Class`, `WSBSD_ALDEBUG`, `WSBSD_LOGEXC`.
+- **State of TextMate:** builds, links, starts, shows its real menus, dialogs and window layout (gutter, text area, status bar), keys reach the editor and the buffer. Open: the text of the editor is not drawn yet (the layout is not told about buffer changes), no bundles shipped by `assemble.sh`, WebKit is a stub, bindings and `.tmplugin` loading.
+- **ISO:** built from CI (`iso.yml`, manual run) and published as the `iso-latest` release; last build 2026-10-22, not tested by the author (a colleague tests it).
+
 ### Applications that run today (CI, FreeBSD x86_64, software compositor)
 | Application | What it exercises |
 |---|---|
