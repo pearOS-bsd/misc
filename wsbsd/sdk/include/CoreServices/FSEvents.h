@@ -22,6 +22,8 @@ enum { kFSEventStreamEventFlagNone = 0, kFSEventStreamEventFlagMustScanSubDirs =
        kFSEventStreamEventFlagItemModified = 0x1000, kFSEventStreamEventFlagItemIsFile = 0x10000, kFSEventStreamEventFlagItemIsDir = 0x20000 };
 FSEventStreamRef FSEventStreamCreate(CFAllocatorRef allocator, FSEventStreamCallback callback, FSEventStreamContext *context, CFArrayRef pathsToWatch,
                                      FSEventStreamEventId sinceWhen, CFTimeInterval latency, uint32_t flags);
+FSEventStreamRef FSEventStreamCreateRelativeToDevice(CFAllocatorRef allocator, FSEventStreamCallback callback, FSEventStreamContext *context, dev_t deviceToWatch, CFArrayRef pathsToWatchRelativeToDevice,
+                                                   FSEventStreamEventId sinceWhen, CFTimeInterval latency, uint32_t flags);
 void FSEventStreamScheduleWithRunLoop(FSEventStreamRef streamRef, CFRunLoopRef runLoop, CFStringRef runLoopMode);
 void FSEventStreamUnscheduleFromRunLoop(FSEventStreamRef streamRef, CFRunLoopRef runLoop, CFStringRef runLoopMode);
 void FSEventStreamFlushSync(FSEventStreamRef streamRef);

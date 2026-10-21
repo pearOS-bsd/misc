@@ -4,6 +4,7 @@
 #import <Foundation/Foundation.h>
 @interface OSAScript : NSObject
 - (instancetype)initWithSource:(NSString *)source;
+- (instancetype)initWithContentsOfURL:(NSURL *)url error:(NSDictionary **)errorInfo;
 - (instancetype)initWithSource:(NSString *)source language:(id)language;
 - (BOOL)compileAndReturnError:(NSDictionary **)errorInfo;
 - (NSAppleEventDescriptor *)executeAndReturnError:(NSDictionary **)errorInfo;

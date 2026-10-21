@@ -53,3 +53,21 @@ const CFStringRef kQLPreviewPropertyTextEncodingNameKey = CFS("TextEncodingName"
 const CFStringRef kQLPreviewPropertyBackgroundColorKey = CFS("BackgroundColor");
 const CFStringRef kQLThumbnailPropertyExtensionKey = CFS("Extension");
 const CFStringRef kQLThumbnailPropertyBadgeImageKey = CFS("BadgeImage");
+/* more uniform type identifiers */
+const CFStringRef kUTTypeRTF = CFS("public.rtf");
+const CFStringRef kUTTypeHTML = CFS("public.html");
+const CFStringRef kUTTypeXML = CFS("public.xml");
+const CFStringRef kUTTypeImage = CFS("public.image");
+const CFStringRef kUTTypePNG = CFS("public.png");
+const CFStringRef kUTTypeJPEG = CFS("public.jpeg");
+const CFStringRef kUTTypeGIF = CFS("com.compuserve.gif");
+const CFStringRef kUTTypeTIFF = CFS("public.tiff");
+const CFStringRef kUTTypePDF = CFS("com.adobe.pdf");
+const CFStringRef kUTTypeSourceCode = CFS("public.source-code");
+const CFStringRef kUTTypeUTF8PlainText = CFS("public.utf8-plain-text");
+const CFStringRef kUTTypeURL = CFS("public.url");
+/* NSImage names */
+NSString *const NSImageNameStatusAvailable = @"NSStatusAvailable";
+NSString *const NSImageNameStatusUnavailable = @"NSStatusUnavailable";
+NSString *const NSImageNameStatusPartiallyAvailable = @"NSStatusPartiallyAvailable";
+NSString *const NSImageNameStatusNone = @"NSStatusNone";

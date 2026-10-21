@@ -135,9 +135,7 @@ enum { NSMenuPropertyItemTitle = 1 << 0, NSMenuPropertyItemAttributedTitle = 1 <
 - (NSMenuProperties)propertiesToUpdate;
 @end
 extern NSString *const NSImageBinding;
-typedef uint64_t CGEventFlags;
-enum { kCGEventFlagMaskAlphaShift = 0x10000, kCGEventFlagMaskShift = 0x20000, kCGEventFlagMaskControl = 0x40000, kCGEventFlagMaskAlternate = 0x80000, kCGEventFlagMaskCommand = 0x100000,
-       kCGEventFlagMaskHelp = 0x400000, kCGEventFlagMaskSecondaryFn = 0x800000, kCGEventFlagMaskNumericPad = 0x200000 };
+#include <wsbsd/CGEvent.h>
 extern const CFStringRef kUTTypeFileURL;
 @interface NSStringDrawingContext : NSObject
 @property (nonatomic) CGFloat minimumScaleFactor, minimumTrackingAdjustment;
@@ -238,4 +236,27 @@ typedef NS_ENUM(NSInteger, NSWindowAnimationBehavior) { NSWindowAnimationBehavio
 - (NSURL *)URLForApplicationWithBundleIdentifier:(NSString *)bundleIdentifier;
 @end
 extern NSString *const NSWorkspaceLaunchConfigurationArguments, *const NSWorkspaceLaunchConfigurationEnvironment;
+/* a process this one started with -launchApplicationAtURL:...: GNUstep's NSRunningApplication answers nil / 0 for everything, this subclass knows its pid and bundle */
+@interface WsbsdRunningApplication : NSRunningApplication
+@end
+#ifndef NSWorkspaceLaunchWithoutAddingToRecents
+enum { NSWorkspaceLaunchWithoutAddingToRecents_wsbsd = 0x100 };
+#define NSWorkspaceLaunchWithoutAddingToRecents 0x100
+#endif
+@interface NSWorkspace (WsbsdLaunchAtURL)
+- (NSRunningApplication *)launchApplicationAtURL:(NSURL *)url options:(NSUInteger)options configuration:(NSDictionary *)configuration error:(NSError **)error;
+@end
+extern NSString *const NSImageNameStatusAvailable, *const NSImageNameStatusUnavailable, *const NSImageNameStatusPartiallyAvailable, *const NSImageNameStatusNone;
+/* GNUstep declares these as methods only */
+@interface NSTableRowView (WsbsdSelectedProperty)
+@property (getter=isSelected) BOOL selected;
+@end
+@interface NSCell (WsbsdAccessibilitySet)
+- (void)accessibilitySetValue:(id)value forAttribute:(NSString *)attribute;
+@end
+/* swipe gestures from scroll events: there is no trackpad here */
+@interface NSEvent (WsbsdSwipe)
++ (BOOL)isSwipeTrackingFromScrollEventsEnabled;
+- (void)trackSwipeEventWithOptions:(NSUInteger)options dampenAmountThresholdMin:(CGFloat)minDampenThreshold max:(CGFloat)maxDampenThreshold usingHandler:(void (^)(CGFloat gestureAmount, NSUInteger phase, BOOL isComplete, BOOL *stop))trackingHandler;
+@end
 #endif

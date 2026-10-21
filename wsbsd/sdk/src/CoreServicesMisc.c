@@ -71,3 +71,26 @@ int32_t LSCopyItemInfoForURL(CFURLRef inURL, LSRequestedInfo inWhichInfo, LSItem
 	(void)inURL; (void)inWhichInfo; if (outItemInfo) { outItemInfo->flags = 0; outItemInfo->filetype = 0; outItemInfo->creator = 0; outItemInfo->extension = NULL; } return 0;
 }
 
+
+/* gethostuuid: kern.hostuuid is the UUID string of the machine (SMBIOS); all zeros when the kernel has none */
+#include <time.h>
+int gethostuuid(unsigned char uuid[16], const struct timespec *wait)
+{
+	(void)wait; char buf[64] = ""; size_t n = sizeof buf; memset(uuid, 0, 16);
+	if (sysctlbyname("kern.hostuuid", buf, &n, NULL, 0) != 0) return -1;
+	unsigned int b[16]; if (sscanf(buf, "%2x%2x%2x%2x-%2x%2x-%2x%2x-%2x%2x-%2x%2x%2x%2x%2x%2x", &b[0], &b[1], &b[2], &b[3], &b[4], &b[5], &b[6], &b[7], &b[8], &b[9], &b[10], &b[11], &b[12], &b[13], &b[14], &b[15]) != 16) return -1;
+	for (int i = 0; i < 16; i++) uuid[i] = (unsigned char)b[i]; return 0;
+}
+
+/* basename_r / dirname_r: the POSIX results copied into the caller's buffer (NULL with errno on failure) */
+#include <libgen.h>
+char *basename_r(const char *path, char *bname)
+{
+	char tmp[1024]; if (!path) path = ""; strncpy(tmp, path, sizeof tmp - 1); tmp[sizeof tmp - 1] = 0;
+	char *r = basename(tmp); if (!r) return NULL; strcpy(bname, r); return bname;
+}
+char *dirname_r(const char *path, char *dname)
+{
+	char tmp[1024]; if (!path) path = ""; strncpy(tmp, path, sizeof tmp - 1); tmp[sizeof tmp - 1] = 0;
+	char *r = dirname(tmp); if (!r) return NULL; strcpy(dname, r); return dname;
+}
