@@ -1,4 +1,5 @@
-/* cardump FILE [name]: lists the renditions of an asset catalogue (name, size, layout, state, value) or writes the data of one rendition to stdout */
+/* cardump FILE [name]: lists the renditions of an asset catalogue (name, size, layout, state, value) or writes the data of one rendition to stdout.
+ * CAR_TSV=1: one tab-separated line per rendition (name, width, height, scale, pixel format, layout, every attribute of the key that is set as id=value, payload size) for tools/accept_assets.py */
 #include "car.h"
 #include <stdio.h>
 #include <string.h>
@@ -11,6 +12,7 @@ int main(int argc, char **argv)
 		size_t n; uint8_t *d = car_data(&r, &n); if (!d) { fprintf(stderr, "no data rendition (layout %d, payload %zu):", r.layout, r.payload_len); for (int i = 0; i < 28 && i < (int)r.payload_len; i++) fprintf(stderr, " %02x", r.payload[i]); fputc(10, stderr); return 1; }
 		fwrite(d, 1, n, stdout); return 0;
 	}
+	if (getenv("CAR_TSV")) { for (int i = 0; i < car_count(c); i++) { CarRendition r; if (car_rendition(c, i, &r)) continue; printf("%s\t%d\t%d\t%d\t%.4s\t%d\t", r.name, r.width, r.height, r.scale, (const char *)&r.pixel_format, r.layout); for (int k = 1; k < 32; k++) if (r.attr[k] != -1) printf("%d=%d;", k, r.attr[k]); printf("\t%zu\n", r.payload_len); } return 0; }
 	for (int i = 0; i < car_count(c); i++) { CarRendition r; if (car_rendition(c, i, &r)) continue;
 		printf("%-48s %4dx%-4d @%dx layout %d fmt %.4s state %d value %d appearance %d payload %zu\n", r.name, r.width, r.height, r.scale, r.layout, (const char *)&r.pixel_format, r.attr[CAR_STATE], r.attr[CAR_VALUE], r.attr[CAR_APPEARANCE], r.payload_len); if (getenv("CAR_ATTRS")) { printf("    attrs:"); for (int k = 1; k < 20; k++) if (r.attr[k] > 0) printf(" %d=%d", k, r.attr[k]); printf("\n"); } }
 	return 0;
