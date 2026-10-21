@@ -325,3 +325,19 @@ static const char kFullPrev;
 @implementation NSView (WsbsdDefinition)
 - (void)showDefinitionForAttributedString:(NSAttributedString *)s atPoint:(NSPoint)p { (void)s; (void)p; }                    /* no dictionary service yet */
 @end
+
+/* +[NSBundle bundleForClass:] given an instance (TextMate passes `self`): macOS takes its class, GNUstep dereferences the object as a class and crashes. The wrapper maps an instance to its class. */
+@implementation NSBundle (WsbsdBundleForObject)
++ (void)load
+{
+	Class c = objc_getClass("NSBundle");                              /* no message to NSBundle: its +initialize needs the process arguments and the name service, not yet available while images load */
+	Method a = class_getClassMethod(c, @selector(bundleForClass:)), b = class_getClassMethod(c, @selector(wsbsdBundleForClass:));
+	if (a && b) method_exchangeImplementations(a, b);
+}
++ (NSBundle *)wsbsdBundleForClass:(id)aClass
+{
+	if (aClass && !class_isMetaClass(object_getClass(aClass))) aClass = object_getClass(aClass);                  /* an instance: its class */
+	return [self wsbsdBundleForClass: aClass];                                                                  /* the original, after the exchange */
+}
+@end
+
