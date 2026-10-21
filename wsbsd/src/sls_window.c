@@ -92,6 +92,20 @@ static int do_delete_property(conn *c, const uint8_t *buf, size_t len)
 	return reply_simple(c->fd, h, 0);
 }
 
+/* per-window shapes kept for screen capture (exclude) and for the pointer (cursor restriction); kind 0 = capture exclude, 1 = cursor restriction */
+#define MAXSHAPES 256
+static struct { uint32_t wid; int kind, n; ws_rect *r; } shapes[MAXSHAPES];
+static void shape_store(int kind, uint32_t wid, ws_rect *r, int n)
+{
+	int slot = -1;
+	for (int i = 0; i < MAXSHAPES; i++) { if (shapes[i].wid == wid && shapes[i].kind == kind && shapes[i].wid) { slot = i; break; } if (!shapes[i].wid && slot < 0) slot = i; }
+	if (slot < 0) { free(r); return; }
+	free(shapes[slot].r); shapes[slot].r = NULL; shapes[slot].n = 0;
+	if (!n) { shapes[slot].wid = 0; free(r); return; }
+	shapes[slot].wid = wid; shapes[slot].kind = kind; shapes[slot].r = r; shapes[slot].n = n;
+}
+int sls_window_shape(int kind, uint32_t wid, const ws_rect **r) { for (int i = 0; i < MAXSHAPES; i++) if (shapes[i].wid == wid && shapes[i].kind == kind) { *r = shapes[i].r; return shapes[i].n; } return 0; }
+
 /* complex requests with one OOL descriptor (count@0x18 = 1, type byte@0x27 = 1, size@0x28), NDR@0x2c; returns the checked descriptor size or -1 with *err set */
 int ool_request(const mach_msg_header_t *h, const uint8_t *buf, size_t len, uint32_t want_size, int *err)
 {
@@ -244,6 +258,21 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		struct iovec v = { m, 0x2c + 4 * n };
 		return ws_ipc_send(c->fd, &v, 1, NULL, 0);
 	}
+	case 30475: {                                                      /* __XSetWindowCursorRestrictionShape: OOL region, wid@0x34, region size repeated@0x38, size 0x3c (-304 / -300 as everywhere); answers 1001 for an unknown window, 1002 without rights (a non-empty region replaces the window's, an empty one removes it). The restriction is kept but not yet applied to the pointer (the flags that make it active were not decompiled). */
+		int err; int osz = ool_request(h, buf, len, 0x3c, &err);
+		if (osz < 0) return reply_simple(c->fd, h, err);
+		if ((uint32_t)osz != rd32(buf, 0x38)) return reply_simple(c->fd, h, -300);
+		uint32_t wid = rd32(buf, 0x34); int restrict_shape = 1;
+		if (restrict_shape && (!wid || !ws_window_exists(srv, wid))) return reply_simple(c->fd, h, 1001);
+		if (restrict_shape && !holds_rights(c, wid)) return reply_simple(c->fd, h, 1002);
+		ws_rect *rc = NULL; int nr = 0; ws_rect bb;
+		if (osz && ws_region_parse(buf + 0x3c, (uint32_t)osz, &rc, &nr, &bb) != 0) { free(rc); rc = NULL; nr = 0; }
+		shape_store(restrict_shape ? 1 : 0, wid, rc, nr);
+		return reply_simple(c->fd, h, 0);
+	}
+	case 30486:                                                                    /* __XSetZoomDisplay: size 0x24 (display@0x20); only the session owner may (we are it): the screen zoom is reset, reply 0 */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		return reply_simple(c->fd, h, 0);
 	case SLS_MSG_SetWindowOpaqueShape: {                                           /* OOL region, wid@0x34, region size@0x38 (= descriptor size), size 0x3c */
 		int err; int osz = ool_request(h, buf, len, 0x3c, &err);
 		if (osz < 0) return reply_simple(c->fd, h, err);
@@ -1090,4 +1119,4 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 }
 
 uint32_t cursor_lock_owner;
-void sls_window_owner_cleanup(uint32_t owner) { ws_server_decouple(srv, owner, 0); if (cursor_lock_owner == owner) { cursor_lock_owner = 0; ws_cursor_lock(srv, NULL); } purge_dead(); }
+void sls_window_owner_cleanup(uint32_t owner) { ws_server_decouple(srv, owner, 0); if (cursor_lock_owner == owner) { cursor_lock_owner = 0; ws_cursor_lock(srv, NULL); } purge_dead(); for (int i = 0; i < MAXSHAPES; i++) if (shapes[i].wid && !ws_window_exists(srv, shapes[i].wid)) shape_store(shapes[i].kind, shapes[i].wid, NULL, 0); }

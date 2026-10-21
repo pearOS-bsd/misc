@@ -1159,6 +1159,18 @@ int main(void)
 		m[0x26] = 0x12; CHECK(rc(fd, m, 0x28) == -300); m[0x26] = 0x11; hdr(m, 0x28, 30038, 0); CHECK(rc(fd, m, 0x28) == -304);
 		hdr(m, 0x24, 30038, 1); CHECK(rc(fd, m, 0x24) == -304); w32(m, 0x18, 2); hdr(m, 0x28, 30038, 1); w32(m, 0x18, 2); CHECK(rc(fd, m, 0x28) == -304);
 	}
+	{ /* SetWindowCursorRestrictionShape, SetZoomDisplay (decompiled) */
+		uint8_t m[0x100]; uint32_t one = 1; ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 5, 5, 30, 30 }, 0, &tw) == 0);
+		uint8_t reg[] = { 0,0,0,0 };                                                       /* an empty region body is enough for the protocol checks */
+		for (int k = 1; k < 2; k++) {
+			int id = k ? 30475 : 30237; memset(m, 0, sizeof m); hdr(m, 0x3c, id, 1); memcpy(m + 0x18, &one, 4); m[0x27] = 1; w32(m, 0x28, 0); w32(m, 0x34, tw.id); w32(m, 0x38, 0);
+			CHECK(rc(fd, m, 0x3c) == 0); w32(m, 0x38, 4); CHECK(rc(fd, m, 0x3c) == -300); w32(m, 0x38, 0);
+			m[0x27] = 0; CHECK(rc(fd, m, 0x3c) == -300); m[0x27] = 1; hdr(m, 0x3c, id, 0); CHECK(rc(fd, m, 0x3c) == -304); hdr(m, 0x3c, id, 1);
+			w32(m, 0x34, 0x7fffff); CHECK(rc(fd, m, 0x3c) == (k ? 1001 : 0));
+		}
+		(void)reg;
+				memset(m, 0, sizeof m); hdr(m, 0x24, 30486, 0); CHECK(rc(fd, m, 0x24) == 0); hdr(m, 0x28, 30486, 0); CHECK(rc(fd, m, 0x28) == -304);
+	}
 	ws_server_quit(c);
 	printf(failures ? "%d failures\n" : "window extension routines: all checks passed\n", failures);
 	return failures != 0;
