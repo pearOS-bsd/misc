@@ -341,3 +341,9 @@ static const char kFullPrev;
 }
 @end
 
+
+/* An NSAttributedString subclass that keeps its own storage (TextMate's MenuAttributedString) starts with [super init]; GNUstep's NSAttributedString -init goes to -initWithString:attributes:, which the abstract
+ * class raises "subclass responsibility" for. Instances of the class itself are made as GSAttributedString (which has its own), so only such subclasses get here: the initializer just returns the object. */
+@implementation NSAttributedString (WsbsdSubclassInit)
+- (instancetype)initWithString:(NSString *)string attributes:(NSDictionary *)attributes { (void)string; (void)attributes; return self; }
+@end
