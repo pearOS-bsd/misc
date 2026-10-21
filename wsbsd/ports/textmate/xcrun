@@ -1,0 +1,11 @@
+#!/bin/sh
+# build shim for TextMate: xcrun --sdk macosx TOOL args -> TOOL with the wsbsd SDK flags (clang), ibtool -> copy the xib, codesign -> no-op
+[ "$1" = "--sdk" ] && shift 2
+tool="$1"; shift
+XF="-fmodule-map-file=/root/wsbsd/sdk/modules/module.modulemap -I/root/wsbsd/sdk/modules -I/root/cfwrap -I/root/wsbsd/quartzcore/include -I/root/wsbsd/sdk/include -include /root/wsbsd/sdk/include/wsbsd/prelude.h -w"
+case "$tool" in
+  clang|clang++) exec "$tool" "$@" $XF $(. /usr/local/GNUstep/System/Library/Makefiles/GNUstep.sh; gnustep-config --objc-flags) ;;
+  codesign) exit 0 ;;
+  ibtool) out=""; in=""; while [ $# -gt 0 ]; do case "$1" in --compile) out="$2"; shift 2;; --*) shift;; *) in="$1"; shift;; esac; done; cp "$in" "$out" ;;
+  *) exec "$tool" "$@" ;;
+esac
