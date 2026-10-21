@@ -27,6 +27,9 @@ clang $F -fobjc-arc -c "$D/src/ProcessArgs.m" -o "$OUT/ProcessArgs.o" 2>&1 | gre
 clang $F -fobjc-arc -c "$D/src/OSLog.m" -o "$OUT/OSLog.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/CFStringBridge.m" -o "$OUT/CFStringBridge.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/CFAttributedStringBridge.m" -o "$OUT/CFAttributedStringBridge.o" 2>&1 | grep -E "error" | head -3
+clang $F -fobjc-arc -c "$D/src/DispatchMain.m" -o "$OUT/DispatchMain.o" 2>&1 | grep -E "error" | head
+clang $F -fobjc-arc -c "$D/src/EventLog.m" -o "$OUT/EventLog.o" 2>&1 | grep -E "error" | head
+clang $F -fobjc-arc -c "$D/src/InputContext.m" -o "$OUT/InputContext.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/Keychain.m" -o "$OUT/Keychain.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/QuickLook.m" -o "$OUT/QuickLook.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/SystemFrameworks.m" -o "$OUT/SystemFrameworks.o" 2>&1 | grep -E "error" | head
