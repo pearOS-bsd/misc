@@ -10,6 +10,7 @@ clang $F -fobjc-arc -c "$D/src/AppKitCompat.m" -o "$OUT/AppKitCompat.o" 2>&1 | g
 clang $F -fobjc-arc -c "$D/src/AppKitAnimation.m" -o "$OUT/AppKitAnimation.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/AppKitLayers.m" -o "$OUT/AppKitLayers.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/FSEvents.m" -o "$OUT/FSEvents.o" 2>&1 | grep -E "error" | head
+clang $F -fobjc-arc -c "$D/src/AppleEvents.m" -o "$OUT/AppleEvents.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/AppKitCompat2.m" -o "$OUT/AppKitCompat2.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/SystemFrameworks.m" -o "$OUT/SystemFrameworks.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/Quarantine.m" -o "$OUT/Quarantine.o" 2>&1 | grep -E "error" | head

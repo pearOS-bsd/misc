@@ -252,13 +252,6 @@ NSString *const NSImageBinding = @"image";
 @implementation NSWorkspace (WsbsdFileViewer)
 - (void)activateFileViewerSelectingURLs:(NSArray *)urls { for (NSURL *u in urls) [self selectFile: [u path] inFileViewerRootedAtPath: @""]; }
 @end
-@implementation NSTitlebarAccessoryViewController
-{ NSLayoutAttribute _attr; CGFloat _fsmin; BOOL _hidden, _auto; }
-- (NSLayoutAttribute)layoutAttribute { return _attr; } - (void)setLayoutAttribute:(NSLayoutAttribute)a { _attr = a; }
-- (CGFloat)fullScreenMinHeight { return _fsmin; } - (void)setFullScreenMinHeight:(CGFloat)h { _fsmin = h; }
-- (BOOL)isHidden { return _hidden; } - (void)setHidden:(BOOL)h { _hidden = h; }
-- (BOOL)automaticallyAdjustsSize { return _auto; } - (void)setAutomaticallyAdjustsSize:(BOOL)b { _auto = b; }
-@end
 static char kTAC;
 @implementation NSWindow (WsbsdTitlebarAccessories)
 - (NSArray *)titlebarAccessoryViewControllers { return [objc_getAssociatedObject(self, &kTAC) copy] ?: @[]; }

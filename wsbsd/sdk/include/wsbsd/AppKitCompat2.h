@@ -153,12 +153,7 @@ extern const CFStringRef kUTTypeFileURL;
 @interface NSWorkspace (WsbsdFileViewer)
 - (void)activateFileViewerSelectingURLs:(NSArray *)fileURLs;
 @end
-@interface NSTitlebarAccessoryViewController : NSViewController
-@property (nonatomic) NSLayoutAttribute layoutAttribute;
-@property (nonatomic) CGFloat fullScreenMinHeight;
-@property (nonatomic, getter=isHidden) BOOL hidden;
-@property (nonatomic) BOOL automaticallyAdjustsSize;
-@end
+#import <AppKit/NSTitlebarAccessoryViewController.h>   /* the class is GNUstep's */
 @interface NSWindow (WsbsdTitlebarAccessories)
 @property (nonatomic, readonly, copy) NSArray *titlebarAccessoryViewControllers;
 - (void)addTitlebarAccessoryViewController:(NSTitlebarAccessoryViewController *)childViewController;

@@ -42,6 +42,10 @@ int main(void)
 		CFDictionaryRef p1 = (CFDictionaryRef)CFArrayGetValueAtIndex(a1, 0), p2 = (CFDictionaryRef)CFArrayGetValueAtIndex(a2, 0);
 		CHECK(CFEqual(CFDictionaryGetValue(p1, kCFProxyTypeKey), kCFProxyTypeHTTP) && CFEqual(CFDictionaryGetValue(p1, kCFProxyHostNameKey), CFSTR("proxy.example"))); CHECK(CFEqual(CFDictionaryGetValue(p2, kCFProxyTypeKey), kCFProxyTypeNone));
 		CFRelease(a1); CFRelease(a2); CFRelease(u1); CFRelease(u2); CFRelease(ps);
+		AppleEvent ev; CHECK(AECreateAppleEvent('aevt', 'odoc', NULL, 0, 0, &ev) == 0); CHECK(AEPutParamPtr(&ev, '----', typeUTF8Text, "hello", 5) == 0);
+		AEDesc got; CHECK(AEGetParamDesc(&ev, '----', typeWildCard, &got) == 0 && got.descriptorType == typeUTF8Text && AEGetDescDataSize(&got) == 5); char tb[8] = { 0 }; CHECK(AEGetDescData(&got, tb, 7) == 0 && !strcmp(tb, "hello")); AEDisposeDesc(&got);
+		AEDesc uni; CHECK(AEGetParamDesc(&ev, '----', typeUnicodeText, &uni) == 0 && AEGetDescDataSize(&uni) == 10); AEDisposeDesc(&uni); CHECK(AEGetParamDesc(&ev, 'zzzz', typeWildCard, &got) == errAEDescNotFound);
+		AEDesc dup; CHECK(AEDuplicateDesc(&ev, &dup) == 0); long cnt = 0; CHECK(AECountItems(&dup, &cnt) == 0 && cnt == 3); AEDisposeDesc(&dup); AEDisposeDesc(&ev);
 		[[NSFileManager defaultManager] removeItemAtPath: d error: NULL];
 		printf(fails ? "%d failures\n" : "sys tests ok\n", fails);
 	}
