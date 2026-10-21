@@ -65,5 +65,8 @@ enum { noErr = 0, userCanceledErr = -128, fnfErr = -43, paramErr = -50, permErr 
 #endif
 #endif
 #include <CoreServices/Gestalt.h>
+#include <CoreServices/LaunchServices.h>
+#include <CoreServices/ResourceManager.h>
+#include <CoreFoundation/CFUserNotification.h>
 #include <CoreServices/AppleEvents.h>
 #endif

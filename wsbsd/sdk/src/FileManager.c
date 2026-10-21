@@ -135,3 +135,5 @@ int wsbsd_fcntl(int fd, int cmd, ...)
 	}
 	return fcntl(fd, cmd, arg);
 }
+
+OSStatus FSPathMakeRefWithOptions(const UInt8 *path, uint32_t options, FSRef *ref, Boolean *isDirectory) { (void)options; return FSPathMakeRef(path, ref, isDirectory); }

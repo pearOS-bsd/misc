@@ -115,3 +115,30 @@ NSDictionary *_NSDictionaryOfVariableBindings(NSString *keys, id first, ...)
 NSString *const NSFontFeatureTypeIdentifierKey = @"CTFeatureTypeIdentifier";
 NSString *const NSFontFeatureSelectorIdentifierKey = @"CTFeatureSelectorIdentifier";
 NSString *const NSFontFeatureSettingsAttribute = @"NSCTFontFeatureSettingsAttribute";
+
+/* ---- CFUserNotification and Launch Services over AppKit ---- */
+#import <CoreFoundation/CFUserNotification.h>
+#import <CoreServices/LaunchServices.h>
+int32_t CFUserNotificationDisplayAlert(CFTimeInterval timeout, CFOptionFlags flags, CFURLRef iconURL, CFURLRef soundURL, CFURLRef localizationURL, CFStringRef alertHeader, CFStringRef alertMessage,
+                                       CFStringRef defaultButtonTitle, CFStringRef alternateButtonTitle, CFStringRef otherButtonTitle, CFOptionFlags *responseFlags)
+{
+	(void)timeout; (void)iconURL; (void)soundURL; (void)localizationURL;
+	@autoreleasepool {
+		NSAlert *a = [[NSAlert alloc] init];
+		[a setMessageText: (__bridge NSString *)alertHeader ?: @""]; [a setInformativeText: (__bridge NSString *)alertMessage ?: @""];
+		[a setAlertStyle: (flags & 3) == kCFUserNotificationStopAlertLevel ? NSAlertStyleCritical : (flags & 3) == kCFUserNotificationCautionAlertLevel ? NSAlertStyleWarning : NSAlertStyleInformational];
+		[a addButtonWithTitle: (__bridge NSString *)defaultButtonTitle ?: @"OK"];
+		if (alternateButtonTitle) [a addButtonWithTitle: (__bridge NSString *)alternateButtonTitle];
+		if (otherButtonTitle) [a addButtonWithTitle: (__bridge NSString *)otherButtonTitle];
+		NSInteger r = [a runModal]; CFOptionFlags out = kCFUserNotificationCancelResponse;
+		if (r == NSAlertFirstButtonReturn) out = kCFUserNotificationDefaultResponse; else if (r == NSAlertSecondButtonReturn) out = kCFUserNotificationAlternateResponse; else if (r == NSAlertThirdButtonReturn) out = kCFUserNotificationOtherResponse;
+		if (responseFlags) *responseFlags = out;
+	}
+	return 0;
+}
+int32_t LSOpenURLsWithRole(CFArrayRef inURLs, LSRolesMask inRole, const void *inAEParam, const void *inAppParams, CFArrayRef *outLaunchedURLs, CFIndex inMaxLaunchedURLs)
+{
+	(void)inRole; (void)inAEParam; (void)inAppParams; if (outLaunchedURLs) *outLaunchedURLs = NULL; (void)inMaxLaunchedURLs;
+	BOOL ok = YES; for (NSURL *u in (__bridge NSArray *)inURLs) ok = [[NSWorkspace sharedWorkspace] openURL: u] && ok;
+	return ok ? 0 : -43;
+}
