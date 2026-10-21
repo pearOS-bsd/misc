@@ -286,3 +286,66 @@ NSValue *NSAccessibilityFrameInView(NSView *parent, NSRect frame)               
 @implementation NSResponder (WsbsdRestoration)
 - (void)invalidateRestorableState { }                                                                      /* there is no state restoration: nothing to invalidate */
 @end
+
+/* ---- Foundation / AppKit odds and ends ---- */
+@implementation NSIndexSet (WsbsdTests)
+- (NSIndexSet *)indexesInRange:(NSRange)range options:(NSEnumerationOptions)opts passingTest:(BOOL (^)(NSUInteger, BOOL *))test
+{
+	NSMutableIndexSet *out = [NSMutableIndexSet indexSet]; __block BOOL stop = NO;
+	NSEnumerationOptions o = opts & NSEnumerationReverse;
+	[self enumerateIndexesInRange: range options: o usingBlock: ^(NSUInteger i, BOOL *s) { if (test(i, &stop)) [out addIndex: i]; if (stop) *s = YES; }];
+	return out;
+}
+- (NSIndexSet *)indexesWithOptions:(NSEnumerationOptions)opts passingTest:(BOOL (^)(NSUInteger, BOOL *))test { return [self indexesInRange: NSMakeRange(0, NSUIntegerMax) options: opts passingTest: test]; }
+- (NSIndexSet *)indexesPassingTest:(BOOL (^)(NSUInteger, BOOL *))test { return [self indexesWithOptions: 0 passingTest: test]; }
+@end
+@implementation NSFileManager (WsbsdReplace)
+- (NSString *)destinationOfSymbolicLinkAtPath:(NSString *)path error:(NSError **)error
+{
+	char buf[PATH_MAX]; ssize_t n = readlink([path fileSystemRepresentation], buf, sizeof buf - 1);
+	if (n < 0) { if (error) *error = [NSError errorWithDomain: NSPOSIXErrorDomain code: errno userInfo: nil]; return nil; }
+	return [self stringWithFileSystemRepresentation: buf length: (NSUInteger)n];
+}
+- (BOOL)replaceItemAtURL:(NSURL *)orig withItemAtURL:(NSURL *)new backupItemName:(NSString *)backup options:(NSFileManagerItemReplacementOptions)opts resultingItemURL:(NSURL **)result error:(NSError **)error
+{
+	NSString *o = [orig path], *n = [new path]; NSString *bak = backup ? [[o stringByDeletingLastPathComponent] stringByAppendingPathComponent: backup] : nil;
+	if ([self fileExistsAtPath: o]) {
+		if (bak) { [self removeItemAtPath: bak error: NULL]; if (rename([o fileSystemRepresentation], [bak fileSystemRepresentation]) != 0) goto fail; }
+		else { NSString *tmp = [o stringByAppendingString: @".wsbsd-old"]; if (rename([o fileSystemRepresentation], [tmp fileSystemRepresentation]) != 0) goto fail; [self removeItemAtPath: tmp error: NULL]; }
+	}
+	if (rename([n fileSystemRepresentation], [o fileSystemRepresentation]) != 0) goto fail;
+	if (result) *result = orig; return YES;
+fail:
+	if (error) *error = [NSError errorWithDomain: NSPOSIXErrorDomain code: errno userInfo: nil]; return NO;
+}
+@end
+@implementation NSUserDefaults (WsbsdSuite)
+- (instancetype)initWithSuiteName:(NSString *)suite
+{
+	if (!suite || [suite isEqual: [[NSBundle mainBundle] bundleIdentifier]]) return [NSUserDefaults standardUserDefaults];
+	NSUserDefaults *d = [[NSUserDefaults alloc] initWithUser: NSUserName()]; [d addSuiteNamed: suite]; return d;
+}
+@end
+static char kHelpMenu, kMenuFont, kAnimBehavior, kGroupRows;
+@implementation NSApplication (WsbsdHelpMenu)
+- (NSMenu *)helpMenu { return objc_getAssociatedObject(self, &kHelpMenu); }
+- (void)setHelpMenu:(NSMenu *)m { objc_setAssociatedObject(self, &kHelpMenu, m, OBJC_ASSOCIATION_RETAIN_NONATOMIC); }
+- (NSAppearance *)effectiveAppearance { const char *e = getenv("WSD_APPEARANCE"); BOOL light = e && !strcmp(e, "light"); return [NSAppearance appearanceNamed: light ? @"NSAppearanceNameAqua" : @"NSAppearanceNameDarkAqua"]; }
+@end
+@implementation NSMenu (WsbsdFont)
+- (NSFont *)font { return objc_getAssociatedObject(self, &kMenuFont) ?: [NSFont menuFontOfSize: 0]; }
+- (void)setFont:(NSFont *)f { objc_setAssociatedObject(self, &kMenuFont, f, OBJC_ASSOCIATION_RETAIN_NONATOMIC); }
+@end
+@implementation NSWindow (WsbsdAnimationBehavior)
+- (NSWindowAnimationBehavior)animationBehavior { return (NSWindowAnimationBehavior)[objc_getAssociatedObject(self, &kAnimBehavior) integerValue]; }
+- (void)setAnimationBehavior:(NSWindowAnimationBehavior)b { objc_setAssociatedObject(self, &kAnimBehavior, @(b), OBJC_ASSOCIATION_RETAIN_NONATOMIC); }
+@end
+@implementation NSTableView (WsbsdGroupRows)
+- (BOOL)floatsGroupRows { NSNumber *n = objc_getAssociatedObject(self, &kGroupRows); return n ? [n boolValue] : YES; }
+- (void)setFloatsGroupRows:(BOOL)b { objc_setAssociatedObject(self, &kGroupRows, @(b), OBJC_ASSOCIATION_RETAIN_NONATOMIC); [self setNeedsDisplay: YES]; }
+@end
+@implementation NSOutlineView (WsbsdItemAnimation)                                                          /* the data source has already changed: the parent's children are read again */
+- (void)insertItemsAtIndexes:(NSIndexSet *)indexes inParent:(id)parent withAnimation:(NSTableViewAnimationOptions)o { [self reloadItem: parent reloadChildren: YES]; }
+- (void)removeItemsAtIndexes:(NSIndexSet *)indexes inParent:(id)parent withAnimation:(NSTableViewAnimationOptions)o { [self reloadItem: parent reloadChildren: YES]; }
+- (void)moveItemAtIndex:(NSInteger)from inParent:(id)oldParent toIndex:(NSInteger)to inParent:(id)newParent { [self reloadItem: oldParent reloadChildren: YES]; if (newParent != oldParent) [self reloadItem: newParent reloadChildren: YES]; }
+@end

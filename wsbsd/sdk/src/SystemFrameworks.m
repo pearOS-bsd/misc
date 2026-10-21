@@ -62,6 +62,7 @@ NSString *const WebElementLinkURLKey = @"WebElementLinkURL";
 - (void)setValue:(id)value forKey:(NSString *)key { }
 @end
 @implementation WebPreferences
+- (instancetype)initWithIdentifier:(NSString *)i { return [super init]; }
 + (WebPreferences *)standardPreferences { static WebPreferences *p; static dispatch_once_t once; dispatch_once(&once, ^{ p = [WebPreferences new]; }); return p; }
 - (void)setStandardFontFamily:(NSString *)family { } - (void)setFixedFontFamily:(NSString *)family { }
 - (void)setDefaultFontSize:(int)size { } - (void)setDefaultFixedFontSize:(int)size { }
@@ -69,7 +70,7 @@ NSString *const WebElementLinkURLKey = @"WebElementLinkURL";
 - (void)setUserStyleSheetEnabled:(BOOL)flag { } - (void)setUserStyleSheetLocation:(NSURL *)url { }
 @end
 @implementation WebDataSource
-- (NSURLRequest *)request { return nil; } - (NSURLResponse *)response { return nil; } - (NSData *)data { return nil; } - (WebFrame *)webFrame { return nil; }
+- (NSURLRequest *)initialRequest { return nil; } - (NSURLRequest *)request { return nil; } - (NSURLResponse *)response { return nil; } - (NSData *)data { return nil; } - (WebFrame *)webFrame { return nil; }
 @end
 @implementation WebFrameView
 - (BOOL)allowsScrolling { return YES; } - (void)setAllowsScrolling:(BOOL)flag { }

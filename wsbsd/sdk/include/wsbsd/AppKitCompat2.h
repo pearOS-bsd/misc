@@ -177,4 +177,44 @@ extern NSString *const NSProgressFileOperationKindKey, *const NSProgressFileOper
 - (void)invalidateRestorableState;
 @end
 #define O_EVTONLY O_RDONLY
+
+/* Foundation / AppKit odds and ends (TextMate build) */
+#ifndef NSEventMaskMouseEntered
+#define NSEventMaskMouseEntered (1ULL << NSEventTypeMouseEntered)
+#define NSEventMaskMouseExited (1ULL << NSEventTypeMouseExited)
+#endif
+typedef uint16_t CGKeyCode;
+enum { NSFileManagerItemReplacementUsingNewMetadataOnly = 1 << 0, NSFileManagerItemReplacementWithoutDeletingBackupItem = 1 << 1 };
+typedef NSUInteger NSFileManagerItemReplacementOptions;
+@interface NSIndexSet (WsbsdTests)
+- (NSIndexSet *)indexesPassingTest:(BOOL (^)(NSUInteger idx, BOOL *stop))predicate;
+- (NSIndexSet *)indexesWithOptions:(NSEnumerationOptions)opts passingTest:(BOOL (^)(NSUInteger idx, BOOL *stop))predicate;
+- (NSIndexSet *)indexesInRange:(NSRange)range options:(NSEnumerationOptions)opts passingTest:(BOOL (^)(NSUInteger idx, BOOL *stop))predicate;
+@end
+@interface NSFileManager (WsbsdReplace)
+- (NSString *)destinationOfSymbolicLinkAtPath:(NSString *)path error:(NSError **)error;
+- (BOOL)replaceItemAtURL:(NSURL *)originalItemURL withItemAtURL:(NSURL *)newItemURL backupItemName:(NSString *)backupItemName options:(NSFileManagerItemReplacementOptions)options resultingItemURL:(NSURL **)resultingURL error:(NSError **)error;
+@end
+@interface NSUserDefaults (WsbsdSuite)
+- (instancetype)initWithSuiteName:(NSString *)suitename;
+@end
+@interface NSApplication (WsbsdHelpMenu)
+@property (nonatomic, strong) NSMenu *helpMenu;
+@property (nonatomic, readonly, strong) NSAppearance *effectiveAppearance;
+@end
+@interface NSMenu (WsbsdFont)
+@property (nonatomic, strong) NSFont *font;
+@end
+typedef NS_ENUM(NSInteger, NSWindowAnimationBehavior) { NSWindowAnimationBehaviorDefault = 0, NSWindowAnimationBehaviorNone = 2, NSWindowAnimationBehaviorDocumentWindow = 3, NSWindowAnimationBehaviorUtilityWindow = 4, NSWindowAnimationBehaviorAlertPanel = 5 };
+@interface NSWindow (WsbsdAnimationBehavior)
+@property (nonatomic) NSWindowAnimationBehavior animationBehavior;
+@end
+@interface NSTableView (WsbsdGroupRows)
+@property (nonatomic) BOOL floatsGroupRows;
+@end
+@interface NSOutlineView (WsbsdItemAnimation)
+- (void)insertItemsAtIndexes:(NSIndexSet *)indexes inParent:(id)parent withAnimation:(NSTableViewAnimationOptions)animationOptions;
+- (void)removeItemsAtIndexes:(NSIndexSet *)indexes inParent:(id)parent withAnimation:(NSTableViewAnimationOptions)animationOptions;
+- (void)moveItemAtIndex:(NSInteger)fromIndex inParent:(id)oldParent toIndex:(NSInteger)toIndex inParent:(id)newParent;
+@end
 #endif
