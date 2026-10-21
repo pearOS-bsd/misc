@@ -8,3 +8,8 @@ CFTypeRef MDItemCopyAttribute(MDItemRef item, CFStringRef name) { (void)item; (v
 CFDictionaryRef MDItemCopyAttributes(MDItemRef item, CFArrayRef names) { (void)item; (void)names; return NULL; }
 OSStatus GetProcessForPID(pid_t pid, ProcessSerialNumber *psn) { (void)pid; if (psn) psn->highLongOfPSN = psn->lowLongOfPSN = 0; return procNotFound; }
 OSStatus CopyProcessName(const ProcessSerialNumber *psn, CFStringRef *name) { (void)psn; if (name) *name = NULL; return paramErr; }
+
+/* AudioToolbox: the alert sound is the bell of the terminal this process was started from (no sound server) */
+#include <unistd.h>
+void AudioServicesPlayAlertSound(uint32_t id) { (void)id; if (write(2, "\a", 1) < 0) { } }
+void AudioServicesPlaySystemSound(uint32_t id) { AudioServicesPlayAlertSound(id); }
