@@ -851,6 +851,7 @@ static int do_flush_surface(conn *c, const uint8_t *buf, size_t len)
 		free(r);
 		has_region = 1;
 	}
+	if (sls_updates_hold(c->id, sf->wid, has_region ? &bb : NULL)) return reply_simple(c->fd, h, 0);      /* UI updates disabled for this connection: applied when they are enabled again */
 	if (sf->kind == SLS_BIND_CONTEXT) ws_window_flush_rect(srv, sf->wid, has_region ? &bb : NULL);   /* copies and marks only this rectangle */
 	return reply_simple(c->fd, h, 0);
 }
@@ -1111,7 +1112,7 @@ static int do_private(conn *c, const uint8_t *buf, size_t len)
 	if (!test_mode && (h->msgh_id == WSX_SCREENSHOT || h->msgh_id == WSX_INJECT_MOUSE || h->msgh_id == WSX_INJECT_KEY || h->msgh_id == WSX_QUIT))
 		return reply_mig_error(c->fd, h, MIG_BAD_ID);          /* a client must not write files, forge input or stop the server */
 	switch (h->msgh_id) {
-	case WSX_FLUSH: r.retcode = holds_rights(c, (uint32_t)a[0]) ? 0 : CGS_ERROR_FAILURE; if (!r.retcode) ws_window_damage(srv, (ws_wid)a[0], NULL); break;
+	case WSX_FLUSH: r.retcode = holds_rights(c, (uint32_t)a[0]) ? 0 : CGS_ERROR_FAILURE; if (!r.retcode && !sls_updates_hold(c->id, (uint32_t)a[0], NULL)) ws_window_damage(srv, (ws_wid)a[0], NULL); break;
 	case WSX_SCREENSHOT:
 		q.s[sizeof q.s - 1] = 0;
 		render_frame(screen, !(a[0] & 1));                       /* a[0] bit 0: leave the cursor out */

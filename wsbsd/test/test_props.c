@@ -1152,6 +1152,13 @@ int main(void)
 		memset(m, 0, sizeof m); hdr(m, 0x24, 30440, 0); m[0x20] = 1; CHECK(rc(fd, m, 0x24) == 0);
 		hdr(m, 0x24, 30265, 0); w32(m, 0x20, 1); CHECK(rc(fd, m, 0x24) == 0); hdr(m, 0x24, 30266, 0); CHECK(rc(fd, m, 0x24) == 0); hdr(m, 0x28, 30266, 0); CHECK(rc(fd, m, 0x28) == -304);
 	}
+	{ /* DisableUpdateForConnection / ReenableUpdateForConnectionSync (decompiled): header-only disable, complex single-port reenable, counts that never go below 0 */
+		uint8_t m[0x40]; uint32_t one = 1; memset(m, 0, sizeof m); hdr(m, 0x18, 30036, 0); CHECK(rc(fd, m, 0x18) == 0); CHECK(rc(fd, m, 0x18) == 0);
+		hdr(m, 0x1c, 30036, 0); CHECK(rc(fd, m, 0x1c) == -304); hdr(m, 0x18, 30036, 1); CHECK(rc(fd, m, 0x18) == -304);
+		memset(m, 0, sizeof m); hdr(m, 0x28, 30038, 1); memcpy(m + 0x18, &one, 4); m[0x26] = 0x11; m[0x27] = 0; CHECK(rc(fd, m, 0x28) == 0); CHECK(rc(fd, m, 0x28) == 0); CHECK(rc(fd, m, 0x28) == 0);
+		m[0x26] = 0x12; CHECK(rc(fd, m, 0x28) == -300); m[0x26] = 0x11; hdr(m, 0x28, 30038, 0); CHECK(rc(fd, m, 0x28) == -304);
+		hdr(m, 0x24, 30038, 1); CHECK(rc(fd, m, 0x24) == -304); w32(m, 0x18, 2); hdr(m, 0x28, 30038, 1); w32(m, 0x18, 2); CHECK(rc(fd, m, 0x28) == -304);
+	}
 	ws_server_quit(c);
 	printf(failures ? "%d failures\n" : "window extension routines: all checks passed\n", failures);
 	return failures != 0;
