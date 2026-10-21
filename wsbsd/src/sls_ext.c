@@ -12,6 +12,8 @@ int sls_display_dispatch(conn *c, const uint8_t *buf, size_t len);
 int sls_sessctl_dispatch(conn *c, const uint8_t *buf, size_t len);
 int sls_cursor_dispatch(conn *c, const uint8_t *buf, size_t len);
 void sls_cursor_owner_cleanup(uint32_t owner);
+int sls_transition_dispatch(conn *c, const uint8_t *buf, size_t len);
+void sls_transition_owner_cleanup(uint32_t owner);
 int sls_space_dispatch(conn *c, const uint8_t *buf, size_t len);
 void sls_space_owner_cleanup(uint32_t owner);
 int sls_hotkey_dispatch(conn *c, const uint8_t *buf, size_t len);
@@ -33,6 +35,8 @@ int sls_ext_dispatch(conn *c, const uint8_t *buf, size_t len)
 	if (rc != -2) return rc;
 	rc = sls_cursor_dispatch(c, buf, len);
 	if (rc != -2) return rc;
+	rc = sls_transition_dispatch(c, buf, len);
+	if (rc != -2) return rc;
 	rc = sls_display_dispatch(c, buf, len);
 	if (rc != -2) return rc;
 	rc = sls_transaction_dispatch(c, buf, len);
@@ -45,4 +49,4 @@ int sls_ext_dispatch(conn *c, const uint8_t *buf, size_t len)
 }
 
 void sls_sessctl_owner_cleanup(uint32_t owner);
-void sls_ext_owner_cleanup(uint32_t owner) { sls_sessctl_owner_cleanup(owner); sls_cursor_owner_cleanup(owner); sls_session_owner_cleanup(owner); sls_window_owner_cleanup(owner); sls_hotkey_owner_cleanup(owner); sls_space_owner_cleanup(owner); sls_tap_owner_cleanup(owner); }
+void sls_ext_owner_cleanup(uint32_t owner) { sls_sessctl_owner_cleanup(owner); sls_cursor_owner_cleanup(owner); sls_transition_owner_cleanup(owner); sls_session_owner_cleanup(owner); sls_window_owner_cleanup(owner); sls_hotkey_owner_cleanup(owner); sls_space_owner_cleanup(owner); sls_tap_owner_cleanup(owner); }

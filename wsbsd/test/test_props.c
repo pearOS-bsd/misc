@@ -1186,6 +1186,18 @@ int main(void)
 		memcpy(g + 0x28, "nocur", 5); CHECK(rc(fd, g, 0x34) == 1007); memcpy(g + 0x28, "wscur", 5); w32(g, 0x30, 2); CHECK(rc(fd, g, 0x34) == 1001);
 		w32(g, 0x24, 0x81); CHECK(rc(fd, g, 0x34) == -304);
 	}
+	{ /* NewTransition / InvokeTransition / ReleaseTransition (decompiled) */
+		uint8_t m[0x40], rep[0x100]; memset(m, 0, sizeof m); hdr(m, 0x38, 30217, 0); w32(m, 0x20, 1); w32(m, 0x24, 0);
+		int gn = call(fd, m, 0x38, rep, sizeof rep); uint32_t id1 = r32(rep, 0x24); CHECK(gn == 0x28 && r32(rep, 0x20) == 0 && id1 != 0);
+		w32(m, 0x20, 0x10000003); gn = call(fd, m, 0x38, rep, sizeof rep); uint32_t id2 = r32(rep, 0x24); CHECK(gn == 0x28 && id2 != 0 && id2 != id1);
+		w32(m, 0x20, 0); gn = call(fd, m, 0x38, rep, sizeof rep); CHECK(gn == 0x28 && r32(rep, 0x24) == 0);
+		w32(m, 0x20, 10); CHECK(rc(fd, m, 0x38) == 1001); w32(m, 0x20, 1); w32(m, 0x28, 0x7fffff); CHECK(rc(fd, m, 0x38) == 1001); w32(m, 0x28, 0);
+		hdr(m, 0x3c, 30217, 0); CHECK(rc(fd, m, 0x3c) == -304);
+		memset(m, 0, sizeof m); hdr(m, 0x28, 30218, 0); w32(m, 0x20, id1); { float d = 10; memcpy(m + 0x24, &d, 4); } CHECK(rc(fd, m, 0x28) == 0);
+		w32(m, 0x20, 999999); CHECK(rc(fd, m, 0x28) == 1003); hdr(m, 0x24, 30218, 0); CHECK(rc(fd, m, 0x24) == -304);
+		memset(m, 0, sizeof m); hdr(m, 0x24, 30219, 0); w32(m, 0x20, id1); CHECK(rc(fd, m, 0x24) == 0); CHECK(rc(fd, m, 0x24) == 1003);
+		w32(m, 0x20, id2); CHECK(rc(fd, m, 0x24) == 0); hdr(m, 0x28, 30219, 0); CHECK(rc(fd, m, 0x28) == -304);
+	}
 	ws_server_quit(c);
 	printf(failures ? "%d failures\n" : "window extension routines: all checks passed\n", failures);
 	return failures != 0;

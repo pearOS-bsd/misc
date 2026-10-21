@@ -77,4 +77,5 @@ static inline void wr32(uint8_t *b, size_t off, uint32_t v) { __builtin_memcpy(b
 void sls_tap_deliver(int cgtype, const uint8_t *rec, size_t n);
 int sls_tap_filter_key(int key, int down);                                  /* 1 when an active tap holds the key event */
 void sls_tap_post_result(uint32_t tap_id, uint32_t seq, const uint8_t *data, size_t n);
+int sls_transition_poll(void);                                                 /* ends the due transitions; ms until the next one, -1 when none */
 int sls_tap_poll(void);                                                      /* ms until a held event times out, -1 when none */
