@@ -44,3 +44,12 @@ const CFStringRef kSecCodeInfoEntitlementsDict = CFS("entitlements-dict"), kSecC
 CFStringRef kMDItemContentType = CFS("kMDItemContentType"), kMDItemDisplayName = CFS("kMDItemDisplayName"), kMDItemKind = CFS("kMDItemKind"), kMDItemFSSize = CFS("kMDItemFSSize"),
 	kMDItemLastUsedDate = CFS("kMDItemLastUsedDate"), kMDItemContentTypeTree = CFS("kMDItemContentTypeTree");
 NSString *NSWorkspaceDidRenameVolumeNotification = @"NSWorkspaceDidRenameVolumeNotification";
+/* QuickLook */
+const CFStringRef kQLPreviewPropertyDisplayNameKey = CFS("DisplayName");
+const CFStringRef kQLPreviewPropertyWidthKey = CFS("Width");
+const CFStringRef kQLPreviewPropertyHeightKey = CFS("Height");
+const CFStringRef kQLPreviewPropertyMIMETypeKey = CFS("MIMEType");
+const CFStringRef kQLPreviewPropertyTextEncodingNameKey = CFS("TextEncodingName");
+const CFStringRef kQLPreviewPropertyBackgroundColorKey = CFS("BackgroundColor");
+const CFStringRef kQLThumbnailPropertyExtensionKey = CFS("Extension");
+const CFStringRef kQLThumbnailPropertyBadgeImageKey = CFS("BadgeImage");
