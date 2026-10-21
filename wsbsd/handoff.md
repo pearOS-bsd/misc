@@ -38,6 +38,9 @@ Acoperire măsurată: **72,3 %** selectoare din SDK (`tools/appkit_probe.m`; REA
 
 - **Auto Layout din xib**: libs-gui nu construia constrângerile din xib și rezolva axa verticală invers. `ci/patch-gsxib-constraints.py` + `ci/patch-autolayout-vertical.py` (aplicate în `ci/gnustep-setup.sh` după clone) repară asta; în VM aplică-le manual pe `/tmp/gs/gui/Source/` și rebuild (`gmake`, copiază `libgnustep-gui.so.0.32.0` dacă `gmake install` nu o face). GP: Welcome și fereastra principală se așază ca pe Mac. Neacoperit: multiplicator ≠ 1 pe atribute verticale, layout guides / safeArea, stack views din xib (netestat). Debug: `LD_PRELOAD` cu un .so care dump-ează ierarhia view-urilor dintr-un thread (vezi scratchpad tbdump.m, de refăcut).
 
+- **TextMate**: build reproductibil în `ports/textmate/` (build.sh, shim `xcrun`, README cu blocajele). Prelude-urile compilează, 114/850 pași eșuează (io, TMFileReference, document, OakAppKit, FileBrowser, Preferences, Find, license/updater). Disc VM: era plin (18G); curățat `iso-out`, `isowork`, `outs2`, loguri (un `/tmp/live-hexfiend.log` de 2.8G).
+- **AppKit apps**: GrandPerspective complet (toolbar, Zoom/Focus, Welcome, fereastra principală). Neverificate după patch-urile Auto Layout: Pashua, Hex Fiend (nu folosește constrângeri), Sloth.
+
 ## Teste
 - Mac: `make check` în `misc/wsbsd` (rulează `test_bplist … test_props, test_generic, test_golden, test_shim*, vnc`, ~20 s). Fuzz cu sanitizere în CI.
 - `test/test_props.c` = locul testelor de protocol SkyLight (helpers `hdr`, `rc`, `call`; adaugă un bloc înainte de `ws_server_quit`). Un ID dedicat nou: scoate-l și din `tools/generic_ids.txt`, `test/generic_cases.txt`, `src/sls_generic.c`, altfel `test_generic` pică.
