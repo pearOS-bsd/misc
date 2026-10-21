@@ -55,7 +55,13 @@ extern NSString *const NSAccessibilityException;
 @protocol NSStandardKeyBindingResponding <NSObject> @end
 typedef NSString *NSTouchBarItemIdentifier;
 #define NSDictionaryOfVariableBindings(...) _NSDictionaryOfVariableBindings(@"" # __VA_ARGS__, __VA_ARGS__, nil)
+#ifdef __cplusplus
+extern "C" {
+#endif
 NSDictionary *_NSDictionaryOfVariableBindings(NSString *commaSeparatedKeysString, id firstValue, ...);
+#ifdef __cplusplus
+}
+#endif
 extern NSString *const NSFontFeatureTypeIdentifierKey;
 extern NSString *const NSFontFeatureSelectorIdentifierKey;
 extern NSString *const NSFontFeatureSettingsAttribute;
@@ -164,7 +170,13 @@ extern const CFStringRef kUTTypeFileURL;
 #define NSVisualEffectMaterialHeaderView ((NSVisualEffectMaterial)10)
 #define NSVisualEffectMaterialToolTip ((NSVisualEffectMaterial)17)
 #endif
+#ifdef __cplusplus
+extern "C" {
+#endif
 NSRect NSAccessibilityFrameInView(NSView *parentView, NSRect frame);
+#ifdef __cplusplus
+}
+#endif
 extern NSString *const NSImageNameApplicationIcon;
 extern NSString *const NSProgressFileOperationKindKey, *const NSProgressFileOperationKindDownloading, *const NSProgressFileOperationKindCopying;
 @interface NSView (WsbsdFitting)

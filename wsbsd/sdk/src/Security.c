@@ -19,6 +19,3 @@ CFStringRef SecCopyErrorMessageString(OSStatus status, void *reserved)
 	}
 	return CFSTR("Unknown security error.");
 }
-SecTransformRef SecVerifyTransformCreate(SecKeyRef key, CFDataRef signature, CFErrorRef *error) { (void)key; (void)signature; if (error) *error = NULL; return NULL; }
-Boolean SecTransformSetAttribute(SecTransformRef transform, CFStringRef key, CFTypeRef value, CFErrorRef *error) { (void)transform; (void)key; (void)value; if (error) *error = NULL; return false; }
-CFTypeRef SecTransformExecute(SecTransformRef transform, CFErrorRef *error) { (void)transform; if (error) *error = NULL; return NULL; }

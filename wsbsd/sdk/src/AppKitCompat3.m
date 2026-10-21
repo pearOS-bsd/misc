@@ -301,6 +301,8 @@ static const char kRotRange, kRotLabel;
 @implementation NSAccessibilityCustomRotorSearchParameters
 @synthesize currentItem, searchDirection, filterString;
 @end
+NSString *const NSImageNameStopProgressFreestandingTemplate = @"NSStopProgressFreestandingTemplate";
+NSString *const NSImageNameRefreshFreestandingTemplate = @"NSRefreshFreestandingTemplate";
 NSString *const NSImageNameTouchBarGoUpTemplate = @"NSTouchBarGoUpTemplate";
 NSString *const NSImageNameTouchBarGoDownTemplate = @"NSTouchBarGoDownTemplate";
 /* full screen: the window takes the screen's visible frame and gives it back on the second call (no space of its own yet) */

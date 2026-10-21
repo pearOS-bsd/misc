@@ -181,3 +181,25 @@ static CFDataRef RSARaw(SecKeyRef key, CFDataRef in, BOOL decrypt, CFErrorRef *e
 }
 CFDataRef SecKeyCreateDecryptedData(SecKeyRef key, SecKeyAlgorithm algorithm, CFDataRef ciphertext, CFErrorRef *error) { (void)algorithm; return RSARaw(key, ciphertext, YES, error); }
 CFDataRef SecKeyCreateEncryptedData(SecKeyRef key, SecKeyAlgorithm algorithm, CFDataRef plaintext, CFErrorRef *error) { (void)algorithm; return RSARaw(key, plaintext, NO, error); }
+
+/* signature verification: SecVerifyTransformCreate / SecTransformSetAttribute / SecTransformExecute for an RSA key and a signature over the input data (PKCS#1 v1.5, SHA-1 unless the digest type says otherwise) */
+@interface WsbsdTransform : NSObject { @public WsbsdSecKey *key; NSData *signature; NSData *input; const EVP_MD *md; } @end
+@implementation WsbsdTransform @end
+SecTransformRef SecVerifyTransformCreate(SecKeyRef key, CFDataRef signature, CFErrorRef *error)
+{
+	if (error) *error = NULL; if (!key || !signature) return NULL;
+	WsbsdTransform *t = [WsbsdTransform new]; t->key = (__bridge WsbsdSecKey *)key; t->signature = [(__bridge NSData *)signature copy]; t->md = EVP_sha1(); return (SecTransformRef)CFBridgingRetain(t);
+}
+Boolean SecTransformSetAttribute(SecTransformRef transform, CFStringRef key, CFTypeRef value, CFErrorRef *error)
+{
+	if (error) *error = NULL; WsbsdTransform *t = (__bridge WsbsdTransform *)transform; if (!t || !key) return false;
+	if (CFEqual(key, kSecTransformInputAttributeName)) { t->input = [(__bridge NSData *)value copy]; return true; }
+	if (CFEqual(key, kSecDigestTypeAttribute)) { if (CFEqual(value, kSecDigestSHA1)) t->md = EVP_sha1(); else if (CFEqual(value, kSecDigestSHA2)) t->md = EVP_sha256(); else if (CFEqual(value, kSecDigestMD5)) t->md = EVP_md5(); else return false; return true; }
+	return true;                                                                                               /* attributes the verification does not use are accepted */
+}
+CFTypeRef SecTransformExecute(SecTransformRef transform, CFErrorRef *error)
+{
+	if (error) *error = NULL; WsbsdTransform *t = (__bridge WsbsdTransform *)transform; if (!t || !t->input || !t->key) return NULL;
+	EVP_MD_CTX *c = EVP_MD_CTX_new(); int ok = EVP_DigestVerifyInit(c, NULL, t->md, NULL, t->key->pkey) == 1 && EVP_DigestVerifyUpdate(c, [t->input bytes], [t->input length]) == 1
+		&& EVP_DigestVerifyFinal(c, [t->signature bytes], [t->signature length]) == 1; EVP_MD_CTX_free(c); return ok ? kCFBooleanTrue : kCFBooleanFalse;
+}

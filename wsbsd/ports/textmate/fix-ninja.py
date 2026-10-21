@@ -7,5 +7,8 @@ old = """[[ "$$(head -c2 $in)" == $$'\\xFF\\xFE' || "$$(head -c2 $in)" == $$'\\x
 t = """"$$(head -c2 $in | od -An -tx1 | tr -d ' \\n')\""""
 new = "[ %s = fffe ] || [ %s = feff ]" % (t, t)
 n = s.count(old)
-open(path, "w").write(s.replace(old, new))
-print("fix-ninja: %d rule(s) rewritten" % n)
+s = s.replace(old, new)
+import re
+s, m = re.subn(r"\$\$\(<(\S+?)\)", r"$$(cat \1)", s)             # bash's $(<file) is $(cat file) in sh
+open(path, "w").write(s)
+print("fix-ninja: %d + %d rule(s) rewritten" % (n, m))
