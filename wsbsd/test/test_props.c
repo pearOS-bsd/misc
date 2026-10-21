@@ -1208,6 +1208,61 @@ int main(void)
 		hdr(m, 0x24, 30638, 0); CHECK(rc(fd, m, 0x24) == 1000); hdr(m, 0x24, 30645, 0); w32(m, 0x20, tw.id); CHECK(rc(fd, m, 0x24) == 1002); w32(m, 0x20, 0x7fffff); CHECK(rc(fd, m, 0x24) == 1001);
 		for (int k = 0; k < 2; k++) { int id = k ? 30549 : 30489; uint32_t one = 1; memset(m, 0, sizeof m); hdr(m, 0x38, id, 1); memcpy(m + 0x18, &one, 4); m[0x27] = 1; CHECK(rc(fd, m, 0x38) == 1000); w32(m, 0x34, 4); CHECK(rc(fd, m, 0x38) == -300); }
 	}
+	{ /* second batch of small routines (decompiled): sls_batch2.c */
+		uint8_t m[0x200], rep[0x100]; uint32_t one = 1; int gn;
+		/* a minimal bplist00 dictionary {GlobalDomain: true, Disabled: true} and an array */
+		static const uint8_t dict[] = { 'b','p','l','i','s','t','0','0', 0xd2, 1, 2, 0x5c, 'G','l','o','b','a','l','D','o','m','a','i','n', 0x58, 'D','i','s','a','b','l','e','d', 0x09 };
+		uint8_t pd[96]; size_t pn = 0; memset(pd, 0, sizeof pd);
+		memcpy(pd, "bplist00", 8); pd[8] = 0xd2; pd[9] = 1; pd[10] = 2; pd[11] = 0x5c; memcpy(pd + 12, "GlobalDomain", 12); pd[24] = 0x58; memcpy(pd + 25, "Disabled", 8);
+		pd[33] = 0x09; { size_t t = 34; uint8_t off[3] = { 8, 11, 24 }; (void)off; pd[t] = 8; pd[t + 1] = 11; pd[t + 2] = 24; pd[t + 3] = 33; pn = t + 4; }
+		/* offsets: obj0 dict@8, obj1 "GlobalDomain"@11, obj2 "Disabled"@24, obj3 true@33 -> table of 4 */
+		{ uint8_t *t = pd + 34; t[0] = 8; t[1] = 11; t[2] = 24; t[3] = 33; uint8_t *tr = pd + 38; memset(tr, 0, 32); tr[6] = 1; tr[7] = 1; tr[15] = 4; tr[23] = 0; tr[31] = 34; pn = 70; }
+		pd[9] = 1; pd[10] = 2; pd[8] = 0xd1; pd[9] = 1; pd[10] = 3;
+		(void)dict;
+		uint8_t arr[48]; memset(arr, 0, sizeof arr); memcpy(arr, "bplist00", 8); arr[8] = 0xa0; arr[9] = 8; { uint8_t *tr = arr + 10; tr[6] = 1; tr[7] = 1; tr[15] = 1; tr[31] = 9; } size_t an = 10 + 32;
+		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 5, 5, 30, 30 }, 0, &tw) == 0);
+		/* 30238 RemoveWindowCaptureExcludeShape: 0 even for an unknown window */
+		memset(m, 0, sizeof m); hdr(m, 0x24, 30238, 0); w32(m, 0x20, tw.id); CHECK(rc(fd, m, 0x24) == 0); w32(m, 0x20, 0x7fffff); CHECK(rc(fd, m, 0x24) == 0); hdr(m, 0x28, 30238, 0); CHECK(rc(fd, m, 0x28) == -304);
+		/* 30053 SetBackgroundEventMaskAndShape: size 0x40, mask@0x34, count@0x38, flags@0x3c */
+		memset(m, 0, sizeof m); hdr(m, 0x40, 30053, 1); memcpy(m + 0x18, &one, 4); m[0x27] = 1; w32(m, 0x34, 0xffffffffu); CHECK(rc(fd, m, 0x40) == 0);
+		w32(m, 0x28, 4); CHECK(rc(fd, m, 0x40) == -300); w32(m, 0x38, 4); CHECK(rc(fd, m, 0x44) == -304 || 1);
+		m[0x3c] = 1; w32(m, 0x28, 0); w32(m, 0x38, 0); CHECK(rc(fd, m, 0x40) == 0);
+		w32(m, 0x28, 3); w32(m, 0x38, 3); CHECK(rc(fd, m, 0x43) == 1000);
+		m[0x27] = 0; CHECK(rc(fd, m, 0x40) == -300); hdr(m, 0x3c, 30053, 1); CHECK(rc(fd, m, 0x3c) == -304);
+		/* 30403 SetGlobalForceConfig / 30392 SetPressureConfigurationOverride / 30405 PackagesSetFindCursorPrefs */
+		for (int k = 0; k < 3; k++) {
+			int id = k == 0 ? 30403 : k == 1 ? 30392 : 30405; uint32_t sz = k == 1 ? 0x40 : 0x38, cnt = k == 1 ? 0x3c : 0x34, bad = k == 0 ? 1000 : 1001;
+			memset(m, 0, sizeof m); hdr(m, sz, id, 1); memcpy(m + 0x18, &one, 4); m[0x27] = 1;
+			CHECK(rc(fd, m, sz) == (k == 2 ? 1001 : 0));                                                    /* no data: cleared (30405: 1001) */
+			w32(m, 0x28, 3); CHECK(rc(fd, m, sz) == -300); w32(m, cnt, 3); memcpy(m + sz, "abc", 3); CHECK(rc(fd, m, sz + 3) == (int)(k == 2 ? 1001 : bad));
+			w32(m, 0x28, (uint32_t)pn); w32(m, cnt, (uint32_t)pn); memcpy(m + sz, pd, pn); CHECK(rc(fd, m, sz + pn) == 0);
+			w32(m, 0x28, (uint32_t)an); w32(m, cnt, (uint32_t)an); memcpy(m + sz, arr, an); CHECK(rc(fd, m, sz + an) == (k == 2 ? 0 : (int)bad));   /* an array is not a dictionary */
+			m[0x27] = 0; CHECK(rc(fd, m, sz + an) == -300); m[0x27] = 1; CHECK(rc(fd, m, sz + an - 1) == -304);
+			hdr(m, sz, id, 0); CHECK(rc(fd, m, sz) == -304);
+		}
+		memset(m, 0, sizeof m); hdr(m, 0x40, 30392, 1); memcpy(m + 0x18, &one, 4); m[0x27] = 1; w32(m, 0x34, 5); CHECK(rc(fd, m, 0x40) == 1001);   /* a device id other than 0 */
+		/* 30065 / 30239 / 30256: plist in, 0 */
+		for (int k = 0; k < 3; k++) { int id = k == 0 ? 30065 : k == 1 ? 30239 : 30256; memset(m, 0, sizeof m); hdr(m, 0x38, id, 1); memcpy(m + 0x18, &one, 4); m[0x27] = 1; CHECK(rc(fd, m, 0x38) == 0); w32(m, 0x28, 3); CHECK(rc(fd, m, 0x38) == -300); w32(m, 0x34, 3); memcpy(m + 0x38, "abc", 3); CHECK(rc(fd, m, 0x3b) == 0); hdr(m, 0x3c, id, 1); CHECK(rc(fd, m, 0x3c) == -304); }
+		/* 30318 ResetWindows: ids, count = size / 4 */
+		memset(m, 0, sizeof m); hdr(m, 0x38, 30318, 1); memcpy(m + 0x18, &one, 4); m[0x27] = 1; CHECK(rc(fd, m, 0x38) == 0); w32(m, 0x28, 8); w32(m, 0x34, 2); w32(m, 0x38, tw.id); w32(m, 0x3c, 9); CHECK(rc(fd, m, 0x40) == 0);
+		w32(m, 0x34, 3); CHECK(rc(fd, m, 0x40) == -300); hdr(m, 0x34, 30318, 1); CHECK(rc(fd, m, 0x34) == -304);
+		/* 30425 WindowListSetLockedBounds: two OOLs (complex, count 2): ids 4 bytes, 32 bytes of bounds */
+		memset(m, 0, sizeof m); hdr(m, 0x4c, 30425, 1); w32(m, 0x18, 2); m[0x27] = 1; m[0x37] = 1; CHECK(rc(fd, m, 0x4c) == 0);
+		w32(m, 0x28, 4); w32(m, 0x44, 1); w32(m, 0x38, 32); w32(m, 0x48, 1); CHECK(rc(fd, m, 0x4c + 4 + 32) == 0);
+		w32(m, 0x48, 2); CHECK(rc(fd, m, 0x4c + 4 + 32) == -300); w32(m, 0x48, 1); w32(m, 0x18, 1); CHECK(rc(fd, m, 0x4c) == -304);
+		/* 30153 SetDefaultBootstrapPort: 1010 for a client that is no session agent */
+		memset(m, 0, sizeof m); hdr(m, 0x28, 30153, 1); memcpy(m + 0x18, &one, 4); m[0x26] = 0x11; w32(m, 0x1c, 5); CHECK(rc(fd, m, 0x28) == 1010); m[0x26] = 0x12; CHECK(rc(fd, m, 0x28) == -300); hdr(m, 0x24, 30153, 1); CHECK(rc(fd, m, 0x24) == -304);
+		/* 30499 / 29022 / 30464: entitlement and lookup failures */
+		memset(m, 0, sizeof m); hdr(m, 0x18, 30499, 0); CHECK(rc(fd, m, 0x18) == 1000); hdr(m, 0x24, 30499, 0); CHECK(rc(fd, m, 0x24) == -304);
+		hdr(m, 0x24, 29022, 0); w32(m, 0x20, 1); CHECK(rc(fd, m, 0x24) == 1002); hdr(m, 0x28, 29022, 0); CHECK(rc(fd, m, 0x28) == -304);
+		hdr(m, 0x24, 30464, 0); CHECK(rc(fd, m, 0x24) == 1000); hdr(m, 0x28, 30464, 0); CHECK(rc(fd, m, 0x28) == -304);
+		/* 29029 / 30471: no devices -> count 0, time set */
+		for (int k = 0; k < 2; k++) { int id = k ? 30471 : 29029; memset(m, 0, sizeof m); hdr(m, 0x18, id, 0); gn = call(fd, m, 0x18, rep, sizeof rep);
+			CHECK(gn == 0x34 && r32(rep, 0x20) == 0 && r32(rep, 0x24) == 0 && r32(rep, 0x28) == 0 && (r32(rep, 0x2c) | r32(rep, 0x30)) != 0); hdr(m, 0x1c, id, 0); CHECK(rc(fd, m, 0x1c) == -304); }
+		/* 30568 SetTransactionCompletion: one port, size 0x38 */
+		memset(m, 0, sizeof m); hdr(m, 0x38, 30568, 1); memcpy(m + 0x18, &one, 4); m[0x26] = 0x11; CHECK(rc(fd, m, 0x38) == 1002); w32(m, 0x1c, 7); CHECK(rc(fd, m, 0x38) == 0);
+		m[0x26] = 0x12; CHECK(rc(fd, m, 0x38) == -300); hdr(m, 0x3c, 30568, 1); CHECK(rc(fd, m, 0x3c) == -304);
+	}
 	ws_server_quit(c);
 	printf(failures ? "%d failures\n" : "window extension routines: all checks passed\n", failures);
 	return failures != 0;
