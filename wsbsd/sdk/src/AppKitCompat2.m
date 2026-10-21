@@ -142,3 +142,84 @@ int32_t LSOpenURLsWithRole(CFArrayRef inURLs, LSRolesMask inRole, const void *in
 	BOOL ok = YES; for (NSURL *u in (__bridge NSArray *)inURLs) ok = [[NSWorkspace sharedWorkspace] openURL: u] && ok;
 	return ok ? 0 : -43;
 }
+
+/* ---- CFPreferences over NSUserDefaults ---- */
+#import <CoreFoundation/CFPreferences.h>
+#import <CFNetwork/CFNetwork.h>
+#import <SystemConfiguration/SystemConfiguration.h>
+static BOOL IsCurrentApp(CFStringRef app) { return !app || CFEqual(app, kCFPreferencesCurrentApplication) || CFEqual(app, kCFPreferencesAnyApplication); }
+CFPropertyListRef CFPreferencesCopyAppValue(CFStringRef key, CFStringRef app)
+{
+	NSString *k = (__bridge NSString *)key; id v;
+	if (IsCurrentApp(app)) v = [[NSUserDefaults standardUserDefaults] objectForKey: k];
+	else v = [[[NSUserDefaults standardUserDefaults] persistentDomainForName: (__bridge NSString *)app] objectForKey: k];
+	if ([v isKindOfClass: [NSNumber class]] && !strcmp([v objCType], @encode(BOOL)) ) return CFRetain([v boolValue] ? kCFBooleanTrue : kCFBooleanFalse);     /* a boolean comes back as a CFBoolean */
+	return v ? CFBridgingRetain(v) : NULL;
+}
+Boolean CFPreferencesGetAppBooleanValue(CFStringRef key, CFStringRef app, Boolean *ok)
+{
+	CFTypeRef c = CFPreferencesCopyAppValue(key, app); Boolean good = false, v = false;
+	if (c) {
+		if (CFGetTypeID(c) == CFBooleanGetTypeID()) { good = true; v = CFBooleanGetValue(c); }
+		else { id o = (__bridge id)c; if ([o isKindOfClass: [NSNumber class]] || [o isKindOfClass: [NSString class]]) { good = true; v = [o boolValue]; } }
+		CFRelease(c);
+	}
+	if (ok) *ok = good; return v;
+}
+CFIndex CFPreferencesGetAppIntegerValue(CFStringRef key, CFStringRef app, Boolean *ok)
+{
+	CFTypeRef c = CFPreferencesCopyAppValue(key, app); Boolean good = false; CFIndex v = 0;
+	if (c) { id o = (__bridge id)c; if ([o isKindOfClass: [NSNumber class]] || [o isKindOfClass: [NSString class]]) { good = true; v = [o integerValue]; } CFRelease(c); }
+	if (ok) *ok = good; return v;
+}
+void CFPreferencesSetAppValue(CFStringRef key, CFPropertyListRef value, CFStringRef app)
+{
+	NSString *k = (__bridge NSString *)key;
+	id obj = !value ? nil : (CFGetTypeID(value) == CFBooleanGetTypeID()) ? (id)[NSNumber numberWithBool: CFBooleanGetValue(value)] : (__bridge id)value;
+	if (IsCurrentApp(app)) { if (value) [[NSUserDefaults standardUserDefaults] setObject: obj forKey: k]; else [[NSUserDefaults standardUserDefaults] removeObjectForKey: k]; return; }
+	NSUserDefaults *d = [NSUserDefaults standardUserDefaults]; NSMutableDictionary *dom = [[d persistentDomainForName: (__bridge NSString *)app] mutableCopy] ?: [NSMutableDictionary dictionary];
+	if (value) dom[k] = obj; else [dom removeObjectForKey: k]; [d setPersistentDomain: dom forName: (__bridge NSString *)app];
+}
+Boolean CFPreferencesAppSynchronize(CFStringRef app) { (void)app; return [[NSUserDefaults standardUserDefaults] synchronize]; }
+CFPropertyListRef CFPreferencesCopyValue(CFStringRef key, CFStringRef app, CFStringRef user, CFStringRef host) { (void)user; (void)host; return CFPreferencesCopyAppValue(key, app); }
+void CFPreferencesSetValue(CFStringRef key, CFPropertyListRef value, CFStringRef app, CFStringRef user, CFStringRef host) { (void)user; (void)host; CFPreferencesSetAppValue(key, value, app); }
+Boolean CFPreferencesSynchronize(CFStringRef app, CFStringRef user, CFStringRef host) { (void)user; (void)host; return CFPreferencesAppSynchronize(app); }
+CFArrayRef CFPreferencesCopyKeyList(CFStringRef app, CFStringRef user, CFStringRef host)
+{
+	(void)user; (void)host; NSDictionary *d = IsCurrentApp(app) ? [[NSUserDefaults standardUserDefaults] dictionaryRepresentation] : [[NSUserDefaults standardUserDefaults] persistentDomainForName: (__bridge NSString *)app];
+	return d ? CFBridgingRetain([d allKeys]) : NULL;
+}
+
+/* ---- proxies from the environment ---- */
+static BOOL SplitProxy(const char *env, NSString **host, int *port)                    /* "http://user@host:port/" -> host, port */
+{
+	const char *v = getenv(env); if (!v || !*v) return NO;
+	NSURL *u = [NSURL URLWithString: [[NSString stringWithUTF8String: v] containsString: @"://"] ? [NSString stringWithUTF8String: v] : [@"http://" stringByAppendingString: [NSString stringWithUTF8String: v]]];
+	if (![u host]) return NO; *host = [u host]; *port = [u port] ? [[u port] intValue] : 80; return YES;
+}
+CFDictionaryRef CFNetworkCopySystemProxySettings(void)
+{
+	NSMutableDictionary *d = [NSMutableDictionary dictionary]; NSString *h; int p;
+	if (SplitProxy("http_proxy", &h, &p) || SplitProxy("HTTP_PROXY", &h, &p) || SplitProxy("all_proxy", &h, &p)) { d[@"HTTPEnable"] = @1; d[@"HTTPProxy"] = h; d[@"HTTPPort"] = @(p); }
+	if (SplitProxy("https_proxy", &h, &p) || SplitProxy("HTTPS_PROXY", &h, &p)) { d[@"HTTPSEnable"] = @1; d[@"HTTPSProxy"] = h; d[@"HTTPSPort"] = @(p); }
+	const char *no = getenv("no_proxy"); if (!no) no = getenv("NO_PROXY"); if (no && *no) d[@"ExceptionsList"] = [[NSString stringWithUTF8String: no] componentsSeparatedByString: @","];
+	return (CFDictionaryRef)CFBridgingRetain(d);
+}
+CFDictionaryRef SCDynamicStoreCopyProxies(SCDynamicStoreRef store) { (void)store; return CFNetworkCopySystemProxySettings(); }
+static CFArrayRef RetArray(NSArray *a) { return (CFArrayRef)CFBridgingRetain(a); }          /* a function: the commas of an array literal confuse CFBridgingRetain as a macro */
+CFArrayRef CFNetworkCopyProxiesForURL(CFURLRef url, CFDictionaryRef settings)
+{
+	NSDictionary *s = (__bridge NSDictionary *)settings;
+	NSString *host = (NSString *)CFBridgingRelease(CFURLCopyHostName(url)), *scheme = [(NSString *)CFBridgingRelease(CFURLCopyScheme(url)) lowercaseString];
+	NSDictionary *none = @{ (__bridge NSString *)kCFProxyTypeKey: (__bridge NSString *)kCFProxyTypeNone };
+	for (NSString *ex in s[@"ExceptionsList"]) { NSString *e = [ex stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]]; if ([e hasPrefix: @"."] ? [host hasSuffix: e] : [host isEqualToString: e]) return RetArray(@[ none ]); }
+	BOOL https = [scheme isEqualToString: @"https"];
+	if ([s[https ? @"HTTPSEnable" : @"HTTPEnable"] boolValue])
+		return RetArray(@[ @{ (__bridge NSString *)kCFProxyTypeKey: (__bridge NSString *)(https ? kCFProxyTypeHTTPS : kCFProxyTypeHTTP), (__bridge NSString *)kCFProxyHostNameKey: s[https ? @"HTTPSProxy" : @"HTTPProxy"],
+			(__bridge NSString *)kCFProxyPortNumberKey: s[https ? @"HTTPSPort" : @"HTTPPort"] } ]);
+	return RetArray(@[ none ]);
+}
+CFRunLoopSourceRef CFNetworkExecuteProxyAutoConfigurationURL(CFURLRef pacURL, CFURLRef target, CFProxyAutoConfigurationResultCallback cb, CFStreamClientContext *ctx)
+{
+	(void)pacURL; (void)target; (void)cb; (void)ctx; return NULL;                    /* PAC scripts are not run: the caller sees no source and goes on without a proxy */
+}

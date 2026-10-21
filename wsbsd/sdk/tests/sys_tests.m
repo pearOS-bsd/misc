@@ -4,6 +4,8 @@
 #include <CommonCrypto/CommonDigest.h>
 #include <copyfile.h>
 #include <uuid/uuid.h>
+#include <CoreFoundation/CFPreferences.h>
+#include <CFNetwork/CFNetwork.h>
 static int fails;
 #define CHECK(c) do { if (!(c)) { printf("FAIL %s:%d %s\n", __FILE__, __LINE__, #c); fails++; } } while (0)
 static void put(const char *p, const char *s) { FILE *f = fopen(p, "w"); fputs(s, f); fclose(f); }
@@ -31,6 +33,15 @@ int main(void)
 		snprintf(dd, sizeof dd, "%s/new", dir); put(dd, "n"); FSEventStreamFlushSync(st);
 		for (int i = 0; i < 20 && !events; i++) [[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.1]];
 		CHECK(events >= 1); CHECK(FSEventsGetCurrentEventId() > before); FSEventStreamStop(st); FSEventStreamInvalidate(st); FSEventStreamRelease(st);
+		CFPreferencesSetAppValue(CFSTR("wsbsd.test.key"), CFSTR("value"), kCFPreferencesCurrentApplication); CFPropertyListRef pv = CFPreferencesCopyAppValue(CFSTR("wsbsd.test.key"), kCFPreferencesCurrentApplication);
+		CHECK(pv && CFEqual(pv, CFSTR("value"))); if (pv) CFRelease(pv); Boolean ok = false; CFPreferencesSetAppValue(CFSTR("wsbsd.test.b"), kCFBooleanTrue, kCFPreferencesCurrentApplication); CHECK(CFPreferencesGetAppBooleanValue(CFSTR("wsbsd.test.b"), kCFPreferencesCurrentApplication, &ok) && ok);
+		CFPreferencesSetAppValue(CFSTR("wsbsd.test.key"), NULL, kCFPreferencesCurrentApplication); CFPreferencesSetAppValue(CFSTR("wsbsd.test.b"), NULL, kCFPreferencesCurrentApplication); CHECK(CFPreferencesCopyAppValue(CFSTR("wsbsd.test.key"), kCFPreferencesCurrentApplication) == NULL);
+		setenv("http_proxy", "http://proxy.example:3128/", 1); setenv("no_proxy", "localhost,.internal", 1); CFDictionaryRef ps = CFNetworkCopySystemProxySettings(); CHECK(ps != NULL);
+		CFURLRef u1 = CFURLCreateWithString(NULL, CFSTR("http://example.org/x"), NULL), u2 = CFURLCreateWithString(NULL, CFSTR("http://host.internal/y"), NULL);
+		CFArrayRef a1 = CFNetworkCopyProxiesForURL(u1, ps), a2 = CFNetworkCopyProxiesForURL(u2, ps);
+		CFDictionaryRef p1 = (CFDictionaryRef)CFArrayGetValueAtIndex(a1, 0), p2 = (CFDictionaryRef)CFArrayGetValueAtIndex(a2, 0);
+		CHECK(CFEqual(CFDictionaryGetValue(p1, kCFProxyTypeKey), kCFProxyTypeHTTP) && CFEqual(CFDictionaryGetValue(p1, kCFProxyHostNameKey), CFSTR("proxy.example"))); CHECK(CFEqual(CFDictionaryGetValue(p2, kCFProxyTypeKey), kCFProxyTypeNone));
+		CFRelease(a1); CFRelease(a2); CFRelease(u1); CFRelease(u2); CFRelease(ps);
 		[[NSFileManager defaultManager] removeItemAtPath: d error: NULL];
 		printf(fails ? "%d failures\n" : "sys tests ok\n", fails);
 	}
