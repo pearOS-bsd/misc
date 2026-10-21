@@ -16,6 +16,27 @@ extern "C"
 #endif
 int wsbsd_fcntl(int fd, int cmd, ...);
 #define fcntl wsbsd_fcntl
+/* the Darwin system calls and constants that sources use without a second thought (sdk/src/CoreServicesMisc.c): exchangedata, confstr's user directories, and flags FreeBSD has no use for */
+#include <spawn.h>
+#include <sys/mount.h>
+#ifndef POSIX_SPAWN_CLOEXEC_DEFAULT
+#define POSIX_SPAWN_CLOEXEC_DEFAULT 0   /* descriptors without O_CLOEXEC are inherited here */
+#endif
+#ifndef MNT_DONTBROWSE
+#define MNT_DONTBROWSE 0
+#endif
+#define _CS_DARWIN_USER_DIR 65536
+#define _CS_DARWIN_USER_TEMP_DIR 65537
+#define _CS_DARWIN_USER_CACHE_DIR 65538
+#ifdef __cplusplus
+extern "C" {
+#endif
+size_t wsbsd_confstr(int name, char *buf, size_t len);
+int exchangedata(const char *path1, const char *path2, unsigned int options);
+#ifdef __cplusplus
+}
+#endif
+#define confstr wsbsd_confstr
 /* <libutil.h> of FreeBSD declares a type called `properties`, which collides with instance variables of that name */
 #define properties wsbsd_libutil_properties
 #include <libutil.h>

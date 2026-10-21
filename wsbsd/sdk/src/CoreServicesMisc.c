@@ -32,3 +32,41 @@ int16_t Gestalt(uint32_t selector, int32_t *response)
 	}
 	*response = 0; return -5551;                                                    /* gestaltUndefSelectorErr */
 }
+
+/* confstr with Darwin's per-user directories, exchangedata, the Resource Manager and Launch Services info (no forks, no type codes) */
+#include <errno.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <CoreServices/ResourceManager.h>
+#include <CoreServices/LaunchServices.h>
+#undef confstr
+size_t wsbsd_confstr(int name, char *buf, size_t len)
+{
+	if (name < 65536 || name > 65538) return confstr(name, buf, len);
+	char dir[128]; const char *sub = name == 65536 ? "0" : name == 65537 ? "T" : "C";
+	snprintf(dir, sizeof dir, "/var/tmp/wsbsd-%u", (unsigned)getuid()); mkdir(dir, 0700);
+	char full[160]; snprintf(full, sizeof full, "%s/%s", dir, sub); mkdir(full, 0700);
+	strlcat(full, "/", sizeof full); size_t n = strlen(full) + 1; if (buf && len) strlcpy(buf, full, len);   /* the length wanted, NUL included, as confstr answers */
+	return n;
+}
+int exchangedata(const char *path1, const char *path2, unsigned int options)                 /* swaps the two files' contents: three renames (the names swap, not the inodes) */
+{
+	(void)options; char tmp[PATH_MAX + 16];
+	if (snprintf(tmp, sizeof tmp, "%s.wsbsd-swap", path1) >= (int)sizeof tmp) { errno = ENAMETOOLONG; return -1; }
+	if (rename(path1, tmp) != 0) return -1;
+	if (rename(path2, path1) != 0) { int e = errno; rename(tmp, path1); errno = e; return -1; }
+	if (rename(tmp, path2) != 0) return -1;
+	return 0;
+}
+ResFileRefNum FSOpenResFile(const FSRef *ref, int8_t permission) { (void)ref; (void)permission; return 0; }
+void CloseResFile(ResFileRefNum refNum) { (void)refNum; }
+Handle Get1Resource(ResType theType, ResID theID) { (void)theType; (void)theID; return NULL; }
+void HLock(Handle h) { (void)h; }
+void HUnlock(Handle h) { (void)h; }
+long GetHandleSize(Handle h) { (void)h; return 0; }
+void ReleaseResource(Handle h) { (void)h; }
+int32_t LSCopyItemInfoForURL(CFURLRef inURL, LSRequestedInfo inWhichInfo, LSItemInfoRecord *outItemInfo)
+{
+	(void)inURL; (void)inWhichInfo; if (outItemInfo) { outItemInfo->flags = 0; outItemInfo->filetype = 0; outItemInfo->creator = 0; outItemInfo->extension = NULL; } return 0;
+}

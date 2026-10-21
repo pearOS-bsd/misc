@@ -10,7 +10,14 @@ struct __FSEventStream {
 	FSEventStreamCallback callback; void *info; NSArray *paths; double latency; uint32_t flags;
 	dispatch_queue_t queue; pthread_t thread; volatile int running; int started; FSEventStreamEventId lastId;
 	NSMutableDictionary *snapshot;
+	NSThread *rlThread; pthread_mutex_t lock;                                          /* ScheduleWithRunLoop: events are delivered on the thread of that run loop; the lock keeps a flush and the poller apart */
 };
+static FSEventStreamEventId gEventId;                                                  /* the newest event id handed out (FSEventsGetCurrentEventId) */
+@interface WsbsdFSDelivery : NSObject { dispatch_block_t _b; } - (id)initWithBlock:(dispatch_block_t)b; - (void)fire; @end
+@implementation WsbsdFSDelivery
+- (id)initWithBlock:(dispatch_block_t)b { if ((self = [super init])) _b = [b copy]; return self; }
+- (void)fire { _b(); }
+@end
 
 static void scan(NSString *path, NSMutableDictionary *out)
 {
@@ -28,36 +35,46 @@ static void scan(NSString *path, NSMutableDictionary *out)
 	closedir(d);
 }
 
+static void pass(FSEventStreamRef s)
+{
+	@autoreleasepool {
+		pthread_mutex_lock(&s->lock);
+		NSMutableDictionary *now = [NSMutableDictionary dictionary];
+		for (NSString *p in s->paths) scan(p, now);
+		NSMutableArray *changed = [NSMutableArray array]; NSMutableArray *flags = [NSMutableArray array];
+		for (NSString *k in now) {
+			NSString *old = [s->snapshot objectForKey: k];
+			if (!old) { [changed addObject: k]; [flags addObject: @(kFSEventStreamEventFlagItemCreated)]; }
+			else if (![old isEqualToString: [now objectForKey: k]]) { [changed addObject: k]; [flags addObject: @(kFSEventStreamEventFlagItemModified)]; }
+		}
+		for (NSString *k in s->snapshot) if (![now objectForKey: k]) { [changed addObject: k]; [flags addObject: @(kFSEventStreamEventFlagItemRemoved)]; }
+		s->snapshot = now;
+		size_t n = [changed count];
+		FSEventStreamEventFlags *fl = n ? malloc(n * sizeof *fl) : NULL; FSEventStreamEventId *ids = n ? malloc(n * sizeof *ids) : NULL;
+		for (size_t i = 0; i < n; i++) { fl[i] = (FSEventStreamEventFlags)[[flags objectAtIndex: i] unsignedIntValue]; ids[i] = ++gEventId; }
+		s->lastId = gEventId;
+		NSThread *th = s->rlThread; dispatch_queue_t q = s->queue;
+		pthread_mutex_unlock(&s->lock);
+		if (n && (q || th) && s->callback) {
+			NSArray *paths = [changed copy]; FSEventStreamCallback cb = s->callback; void *info = s->info; uint32_t cf = s->flags;
+			dispatch_block_t deliver = ^{
+				if (cf & kFSEventStreamCreateFlagUseCFTypes) cb(s, info, n, (__bridge void *)paths, fl, ids);
+				else {
+					const char **c = malloc(n * sizeof *c); for (size_t i = 0; i < n; i++) c[i] = [[paths objectAtIndex: i] fileSystemRepresentation];
+					cb(s, info, n, (void *)c, fl, ids); free(c);
+				}
+				free(fl); free(ids);
+			};
+			if (th) [[[WsbsdFSDelivery alloc] initWithBlock: deliver] performSelector: @selector(fire) onThread: th withObject: nil waitUntilDone: NO];
+			else dispatch_async(q, deliver);
+		} else { free(fl); free(ids); }
+	}
+}
 static void *poller(void *arg)
 {
 	FSEventStreamRef s = arg;
 	while (s->running) {
-		@autoreleasepool {
-			NSMutableDictionary *now = [NSMutableDictionary dictionary];
-			for (NSString *p in s->paths) scan(p, now);
-			NSMutableArray *changed = [NSMutableArray array]; NSMutableArray *flags = [NSMutableArray array];
-			for (NSString *k in now) {
-				NSString *old = [s->snapshot objectForKey: k];
-				if (!old) { [changed addObject: k]; [flags addObject: @(kFSEventStreamEventFlagItemCreated)]; }
-				else if (![old isEqualToString: [now objectForKey: k]]) { [changed addObject: k]; [flags addObject: @(kFSEventStreamEventFlagItemModified)]; }
-			}
-			for (NSString *k in s->snapshot) if (![now objectForKey: k]) { [changed addObject: k]; [flags addObject: @(kFSEventStreamEventFlagItemRemoved)]; }
-			s->snapshot = now;
-			if ([changed count] && s->queue && s->callback) {
-				size_t n = [changed count];
-				FSEventStreamEventFlags *fl = malloc(n * sizeof *fl); FSEventStreamEventId *ids = malloc(n * sizeof *ids);
-				for (size_t i = 0; i < n; i++) { fl[i] = (FSEventStreamEventFlags)[[flags objectAtIndex: i] unsignedIntValue]; ids[i] = ++s->lastId; }
-				NSArray *paths = [changed copy]; FSEventStreamCallback cb = s->callback; void *info = s->info; uint32_t cf = s->flags;
-				dispatch_async(s->queue, ^{
-					if (cf & kFSEventStreamCreateFlagUseCFTypes) cb(s, info, n, (__bridge void *)paths, fl, ids);
-					else {
-						const char **c = malloc(n * sizeof *c); for (size_t i = 0; i < n; i++) c[i] = [[paths objectAtIndex: i] fileSystemRepresentation];
-						cb(s, info, n, (void *)c, fl, ids); free(c);
-					}
-					free(fl); free(ids);
-				});
-			}
-		}
+		pass(s);
 		for (double t = 0; t < s->latency && s->running; t += 0.1) usleep(100000);
 	}
 	return NULL;
@@ -68,9 +85,19 @@ FSEventStreamRef FSEventStreamCreate(CFAllocatorRef a, FSEventStreamCallback cb,
 	(void)a; (void)since;
 	FSEventStreamRef s = calloc(1, sizeof *s);
 	s->callback = cb; s->info = ctx ? ctx->info : NULL; s->paths = [(__bridge NSArray *)paths copy]; s->latency = latency < 0.5 ? 0.5 : latency; s->flags = flags;
-	s->snapshot = [NSMutableDictionary dictionary];
+	s->snapshot = [NSMutableDictionary dictionary]; pthread_mutex_init(&s->lock, NULL);
 	return s;
 }
+void FSEventStreamScheduleWithRunLoop(FSEventStreamRef s, CFRunLoopRef rl, CFStringRef mode)
+{
+	(void)mode; if (!s) return;
+	s->rlThread = (rl == CFRunLoopGetMain()) ? [NSThread mainThread] : [NSThread currentThread];
+}
+void FSEventStreamUnscheduleFromRunLoop(FSEventStreamRef s, CFRunLoopRef rl, CFStringRef mode) { (void)rl; (void)mode; if (s) s->rlThread = nil; }
+void FSEventStreamFlushSync(FSEventStreamRef s) { if (s && s->started) pass(s); }                 /* looks now instead of waiting for the next scan */
+void FSEventStreamFlushAsync(FSEventStreamRef s) { FSEventStreamFlushSync(s); }
+FSEventStreamEventId FSEventsGetCurrentEventId(void) { return gEventId; }
+FSEventStreamEventId FSEventStreamGetLatestEventId(ConstFSEventStreamRef s) { return s ? s->lastId : 0; }
 void FSEventStreamSetDispatchQueue(FSEventStreamRef s, dispatch_queue_t q) { if (s) s->queue = q; }
 Boolean FSEventStreamStart(FSEventStreamRef s)
 {
