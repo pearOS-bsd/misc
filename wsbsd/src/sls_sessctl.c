@@ -41,6 +41,7 @@ static double real_time(void) { struct timespec ts; clock_gettime(CLOCK_MONOTONI
 typedef struct { uint32_t wid; int whole; ws_rect r; } held_rect;
 static struct { uint32_t owner; int disabled, strict; double since, deadline; held_rect held[MAX_HELD]; } upd[MAX_UPD];
 static double disable_update_timeout = 1.0;
+static double persistence_deadline; static int appearance_auto, appearance_override;
 
 static int upd_idx(uint32_t owner, int create)
 {
@@ -107,6 +108,43 @@ int sls_sessctl_dispatch(conn *c, const uint8_t *buf, size_t len)
 		if (buf[0x26] != 0x11 || buf[0x27] != 0) return reply_simple(c->fd, h, -300);
 		upd_reenable(c->id);
 		return reply_simple(c->fd, h, 0);
+	}
+	case 30268:                                                                   /* __XPersistenceWillLaunchApps: size 0x28, seconds (double)@0x20: the persistence timeout is armed for that long; 0 */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		{ double sec; memcpy(&sec, buf + 0x20, 8); persistence_deadline = real_time() + sec; }
+		return reply_simple(c->fd, h, 0);
+	case 30490:                                                                   /* __XSetAppearanceThemeSwitchesAutomatically: size 0x28, on byte@0x20, byte@0x24 (the idle-timer variant); switching it off clears a schedule override; 0 */
+		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
+		appearance_auto = buf[0x20] != 0; if (!appearance_auto) appearance_override = 0;
+		return reply_simple(c->fd, h, 0);
+	case 30492: {                                                                 /* __XGetAutomaticAppearanceScheduleOverride: header only (0x18); reply 0x2c: override active byte@0x24, state u32@0x28 (both 0 while there is no blue light schedule) */
+		if (!simple_ok(h, len, 0x18)) return reply_simple(c->fd, h, -304);
+		uint8_t r[0x2c]; memset(r, 0, sizeof r); fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0); memcpy(r + 0x18, &WS_NDR, 8); r[0x24] = (uint8_t)appearance_override;
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
+	case 30644: {                                                                 /* __XMenuBarPrivacyIndicatorInset: size 0x24, display id@0x20 (1003 for an unknown one); reply 0x2c: the inset (8 bytes)@0x24, zero on a display without a notch */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		uint32_t d = rd32(buf, 0x20); if (d != 1 && d != 13) return reply_simple(c->fd, h, 0x3eb);
+		uint8_t r[0x2c]; memset(r, 0, sizeof r); fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 0); memcpy(r + 0x18, &WS_NDR, 8);
+		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
+	}
+	case 30452: {                                                                 /* __XSystemStatusBarPrepareToUnregisterWindow: size 0x24, wid@0x20: 1000 for an unknown window, 1010 without rights; otherwise the status items are told (none exist here); 0 */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		uint32_t wid = rd32(buf, 0x20); if (!wid || !ws_window_exists(srv, wid)) return reply_simple(c->fd, h, 1000);
+		return reply_simple(c->fd, h, holds_rights(c, wid) ? 0 : 0x3f2);
+	}
+	case 30638:                                                                   /* __XRegisterMenuBarAgent: size 0x24, byte@0x20: only a client with the menu bar agent entitlement may; none of ours has it: 1000 */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		return reply_simple(c->fd, h, 1000);
+	case 30489: case 30549: {                                                     /* __XScreenTimeSuppressWindows / __XUpdateAssessmentMode: complex, one OOL plist, size 0x38, size@0x28 = size@0x34 (-300 otherwise); both are for agents with a private entitlement that no client here holds: 1000 */
+		if (!(h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || h->msgh_size != 0x38 || len < 0x38 || rd32(buf, 0x18) != 1) return reply_simple(c->fd, h, -304);
+		if (buf[0x27] != 1 || rd32(buf, 0x28) != rd32(buf, 0x34)) return reply_simple(c->fd, h, -300);
+		return reply_simple(c->fd, h, 1000);
+	}
+	case 30645: {                                                                 /* __XWindowRegisterForSystemGestures: size 0x24, wid@0x20: 1001 for an unknown window, 1002 without rights or without the system gestures entitlement (nobody here has it) */
+		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
+		uint32_t wid = rd32(buf, 0x20); if (!wid || !ws_window_exists(srv, wid)) return reply_simple(c->fd, h, 1001);
+		return reply_simple(c->fd, h, 1002);
 	}
 	case 30087: {                                                                 /* __XSetSecureEventInput: flag@0x20; the connection's bit 0 of its flags is set / cleared and the system's secure input follows (any connection holding it) */
 		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);

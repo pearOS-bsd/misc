@@ -38,7 +38,6 @@ static const gen_entry gen_table[] = {
 	{ 30239, 56, 1, 1, 36 },   /* __XSetApplicationBindingsForWorkspaces */
 	{ 30256, 56, 1, 1, 36 },   /* __XSetPreferencesForWorkspaces */
 	{ 30258, 104, 0, 0, 84 },   /* __XHWCaptureDesktop */
-	{ 30268, 40, 0, 0, 36 },   /* __XPersistenceWillLaunchApps */
 	{ 30278, 88, 1, 1, 44 },   /* __XHWCaptureDisplayIntoIOSurface */
 	{ 30313, 132, 0, 0, 36 },   /* __XDisplayStreamCreate */
 	{ 30314, 40, 1, 1, 36 },   /* __XDisplayStreamStart */
@@ -66,14 +65,10 @@ static const gen_entry gen_table[] = {
 	{ 30424, 64, 1, 1, 52 },   /* __XSpaceGetSizeForProposedTile */
 	{ 30425, 76, 0, 0, 36 },   /* __XWindowListSetLockedBounds */
 	{ 30448, 72, 1, 1, 36 },   /* __XTileSpaceMoveSpacersForSize */
-	{ 30452, 36, 0, 0, 36 },   /* __XSystemStatusBarPrepareToUnregisterWindow */
 	{ 30464, 36, 0, 0, 36 },   /* __XHMDRelease */
 	{ 30465, 40, 1, 1, 36 },   /* __XHMDSetNotificationPort */
 	{ 30469, 60, 1, 1, 36 },   /* __XHMDConfigureQueue */
 	{ 30471, 24, 0, 0, 52 },   /* __XHMDGetTotalUpdateCount */
-	{ 30489, 56, 1, 1, 36 },   /* __XScreenTimeSuppressWindows */
-	{ 30490, 40, 0, 0, 36 },   /* __XSetAppearanceThemeSwitchesAutomatically */
-	{ 30492, 24, 0, 0, 44 },   /* __XGetAutomaticAppearanceScheduleOverride */
 	{ 30493, 124, 0, 0, 36 },   /* __XHWCaptureStreamCreate */
 	{ 30499, 24, 0, 0, 36 },   /* __XSecureCursorPositionTakeAssertion */
 	{ 30511, 40, 0, 0, 52 },   /* __XDisplayCopyPresetUniqueID */
@@ -83,7 +78,6 @@ static const gen_entry gen_table[] = {
 	{ 30538, 76, 0, 0, 52 },   /* __XSelectiveSharingContextCreate */
 	{ 30539, 48, 0, 0, 36 },   /* __XSelectiveSharingContextDestroy */
 	{ 30544, 48, 0, 0, 36 },   /* __XSelectiveSharingContextStop */
-	{ 30549, 56, 1, 1, 36 },   /* __XUpdateAssessmentMode */
 	{ 30558, 48, 0, 0, 36 },   /* __XSelectiveSharingContextCancelPicker */
 	{ 30568, 56, 1, 1, 36 },   /* __XSetTransactionCompletion */
 	{ 30570, 84, 0, 0, 36 },   /* __XContentStreamCreate */
@@ -103,11 +97,8 @@ static const gen_entry gen_table[] = {
 	{ 30631, 36, 0, 0, 56 },   /* __XDisplayGetCustomPresetInfo */
 	{ 30632, 64, 1, 1, 36 },   /* __XDisplaySetCustomPresetData */
 	{ 30633, 60, 1, 1, 44 },   /* __XDisplayGetLuminanceCorrectionFactor */
-	{ 30638, 36, 0, 0, 56 },   /* __XRegisterMenuBarAgent */
 	{ 30639, 36, 0, 0, 52 },   /* __XDisplayCopyCADisplayUniqueID */
 	{ 30640, 40, 0, 0, 56 },   /* __XGetSpecifiedWindowPath */
-	{ 30644, 36, 0, 0, 44 },   /* __XMenuBarPrivacyIndicatorInset */
-	{ 30645, 36, 0, 0, 36 },   /* __XWindowRegisterForSystemGestures */
 	{ 32009, 56, 1, 1, 36 },   /* __XSetPerUserConfigurationData */
 	{ 32028, 68, 1, 1, 44 },   /* __XPlaceTap */
 	{ 32029, 68, 1, 1, 44 },   /* __XPlaceTapOnConnection */
