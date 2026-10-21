@@ -58,6 +58,7 @@ static int WeightIndex(double w) { static const double v[] = { -0.8, -0.6, -0.4,
 	WsdSymbolDraw(_sym, dst, p, [self wsdWeight], tint);
 }
 - (void)drawInRect:(NSRect)r fromRect:(NSRect)from operation:(NSCompositingOperation)op fraction:(CGFloat)f { [self wsdDrawIn: r fraction: f]; }
+- (void)drawInRect:(NSRect)r fromRect:(NSRect)from operation:(NSCompositingOperation)op fraction:(CGFloat)f respectFlipped:(BOOL)flip hints:(NSDictionary *)h { [self wsdDrawIn: r fraction: f]; }   /* what the cells (NSButtonCell, NSImageCell, NSCell) call */
 - (void)drawInRect:(NSRect)r { [self wsdDrawIn: r fraction: 1]; }
 - (void)drawAtPoint:(NSPoint)p fromRect:(NSRect)from operation:(NSCompositingOperation)op fraction:(CGFloat)f { [self wsdDrawIn: NSMakeRect(p.x, p.y, [self size].width, [self size].height) fraction: f]; }
 - (void)compositeToPoint:(NSPoint)p operation:(NSCompositingOperation)op { [self wsdDrawIn: NSMakeRect(p.x, p.y, [self size].width, [self size].height) fraction: 1]; }

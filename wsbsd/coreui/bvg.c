@@ -114,9 +114,10 @@ static int decode_path(const uint8_t *d, size_t n, Path *P)
 int bvg_parse(const uint8_t *b, size_t len, BvgGlyph *g)
 {
 	memset(g, 0, sizeof *g); if (len < 16 || memcmp(b, "BVG ", 4)) return -1;
-	int n = b[10]; if (n < 3 || 11 + 2 * (size_t)(n + 1) > len) return -1;
+	int v11 = b[5] == 0x11;                                                                        /* version 0x11: the part count at 8 and one-byte offsets from 9; 0x12: count at 10, 16-bit offsets from 11 */
+	int n = v11 ? b[8] : b[10]; if (n < 3 || (v11 ? 9 + (size_t)(n + 1) : 11 + 2 * (size_t)(n + 1)) > len) return -1;
 	uint32_t off[40]; if (n >= 40) return -1;
-	for (int i = 0; i <= n; i++) off[i] = (uint32_t)(b[11 + 2 * i] | b[12 + 2 * i] << 8);
+	for (int i = 0; i <= n; i++) off[i] = v11 ? b[9 + i] : (uint32_t)(b[11 + 2 * i] | b[12 + 2 * i] << 8);
 	for (int i = 0; i < n; i++) if (off[i] > off[i + 1] || off[i + 1] > len) return -1;
 	int mi = -1; for (int i = 0; i < n; i++) if (off[i + 1] - off[i] > 7 && !memcmp(b + off[i], "matrix(", 7)) { mi = i; break; }
 	if (mi < 0) return -1;
