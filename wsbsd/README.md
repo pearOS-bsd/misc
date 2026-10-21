@@ -31,6 +31,18 @@ The stack: `wsd` (this repo: window server and compositor speaking the SkyLight 
 | SkyLight server routines (744) | ~74 % have a handler of their own, 192 only a generic acceptor | the handlers include replays of recorded replies; the share that is decompiled and verified is smaller (probably under half) |
 | Quartz Compositor (window server composition) | ~35 to 40 % | windows, shadows, blur, warp are solid; colour management / HDR, general Core Image filters, Spaces / Mission Control / multi-display and real-GPU verification are mostly missing |
 | AppKit (GNUstep with the wsd back-end and the macOS theme) | ~35 to 45 % for running real applications; 72.1 % of the SDK's selectors answered by the runtime with an implementation that does something (measured with `tools/appkit_probe.m`; the 142 methods that only answer (`WsdAppKitPlaceholder` categories) are not counted). Real since the last measurement: tracking areas, NSMenuItem (hidden, view, badge, section headers), NSGlassEffectView, SF Symbols as NSImage, NSWorkspace lookup / open configuration, NSTextView constructors and smart quotes, NSDocument duplicate / lock / move, NSViewController hierarchy and presentation, NSEvent local monitors, click / pan / press gesture recognizers, NSControl / NSMenu additions, each with a test in CI | looks and behaves like a Mac only in places (menus, Open / Save panels); SwiftUI and UIKit are out of scope for now |
+| Core Animation (QuartzCore, own implementation) | ~50 % | layers, animations, timing curves, presentation tree, differential tests against a Mac; GPU-backed rendering, filters and many layer subclasses missing |
+| Security / Keychain / Authorization | ~40 % | sealed AES-GCM store, SecItem, keys, certificates, SecTransform verify, Authorization; no Secure Enclave, no iCloud keychain, no trust evaluation against system roots (Pico 2 token planned) |
+| QuickLook / CFPlugIn | ~55 % | generators, thumbnails, preview panel; no third-party generator ecosystem tested |
+| Foundation networking (NSURLSession over libcurl) | ~45 % | data / download / upload tasks, delegates; no background sessions, no HTTP/3 |
+| TextMate port (unmodified source) | ~55 % | builds, starts, real menus, gutter and layout, key input reaches the editor; the text of the editor is not drawn yet, no bundles shipped, WebKit is a stub |
+| **CoreWLAN / airportd** | **0 % (required, not started)** | see "Required next" below |
+
+### Required next (decided by the project owner)
+- **CoreWLAN.framework** (`CWWiFiClient`, `CWInterface`, `CWNetwork`, `CWConfiguration`, `CWNetworkProfile`, events) and **airportd** (the daemon behind it): scanning, seamless joining of known
+  networks, hotspot (Instant Hotspot / Personal Hotspot) detection. Method: decompile the real framework and daemon on this Mac with REA, reimplement them 1:1 (same classes, selectors, XPC
+  protocol, error codes, notification names), differential tests against the real Mac, on FreeBSD over wpa_supplicant / `ifconfig wlan` / net80211. Status: 0 %.
+  Plan: (1) REA inventory of CoreWLAN classes, airportd XPC interface and entitlements; (2) wire protocol and header set; (3) airportd on FreeBSD (wpa_supplicant control socket, scan cache, join, known networks, keychain-backed passwords); (4) framework with the exact API; (5) tests; (6) hotspot detection.
 
 ### Applications that run today (CI, FreeBSD x86_64, software compositor)
 | Application | What it exercises |
