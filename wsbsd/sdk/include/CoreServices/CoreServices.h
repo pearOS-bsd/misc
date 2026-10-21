@@ -62,11 +62,14 @@ enum { noErr = 0, userCanceledErr = -128, fnfErr = -43, paramErr = -50, permErr 
 #endif
 #if __has_include(<CoreText/CoreText.h>) && !defined(__APPLE__)
 #include <CoreText/CoreText.h>
+#include <wsbsd/CoreTextNames.h>
 #endif
 #endif
 #include <CoreServices/Gestalt.h>
 #include <CoreServices/LaunchServices.h>
 #include <CoreServices/ResourceManager.h>
 #include <CoreFoundation/CFUserNotification.h>
+#include <CoreFoundation/CFPreferences.h>
+#include <CFNetwork/CFNetwork.h>
 #include <CoreServices/AppleEvents.h>
 #endif

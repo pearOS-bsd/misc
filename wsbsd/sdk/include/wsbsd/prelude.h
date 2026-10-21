@@ -2,6 +2,9 @@
 #ifndef WSBSD_PRELUDE_H
 #define WSBSD_PRELUDE_H
 #include <stdint.h>
+#if defined(__cplusplus) && !defined(__OBJC__) && !defined(nil)
+#define nil nullptr   /* Apple's headers reach objc.h's nil from C++ */
+#endif
 #include <stddef.h>
 #include <stdbool.h>
 #include <fcntl.h>

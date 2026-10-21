@@ -1,0 +1,63 @@
+/* The string constants of CFPreferences and CFNetwork: CFSTR of this CoreFoundation is not a constant expression, so they are set when the library loads (the headers declare them const). */
+#include <CoreFoundation/CoreFoundation.h>
+CFStringRef kCFPreferencesAnyApplication;
+CFStringRef kCFPreferencesCurrentApplication;
+CFStringRef kCFPreferencesAnyHost;
+CFStringRef kCFPreferencesCurrentHost;
+CFStringRef kCFPreferencesAnyUser;
+CFStringRef kCFPreferencesCurrentUser;
+CFStringRef kCFProxyTypeKey;
+CFStringRef kCFProxyTypeNone;
+CFStringRef kCFProxyTypeHTTP;
+CFStringRef kCFProxyTypeHTTPS;
+CFStringRef kCFProxyTypeSOCKS;
+CFStringRef kCFProxyTypeFTP;
+CFStringRef kCFProxyTypeAutoConfigurationURL;
+CFStringRef kCFProxyTypeAutoConfigurationJavaScript;
+CFStringRef kCFProxyHostNameKey;
+CFStringRef kCFProxyPortNumberKey;
+CFStringRef kCFProxyAutoConfigurationURLKey;
+CFStringRef kCFProxyAutoConfigurationJavaScriptKey;
+CFStringRef kCFProxyUsernameKey;
+CFStringRef kCFProxyPasswordKey;
+CFStringRef kCFNetworkProxiesHTTPEnable;
+CFStringRef kCFNetworkProxiesHTTPProxy;
+CFStringRef kCFNetworkProxiesHTTPPort;
+CFStringRef kCFNetworkProxiesHTTPSEnable;
+CFStringRef kCFNetworkProxiesHTTPSProxy;
+CFStringRef kCFNetworkProxiesHTTPSPort;
+CFStringRef kCFNetworkProxiesProxyAutoConfigEnable;
+CFStringRef kCFNetworkProxiesProxyAutoConfigURLString;
+CFStringRef kCFNetworkProxiesExceptionsList;
+__attribute__((constructor)) static void wsbsd_cf_constants(void)
+{
+	kCFPreferencesAnyApplication = CFSTR("kCFPreferencesAnyApplication");
+	kCFPreferencesCurrentApplication = CFSTR("kCFPreferencesCurrentApplication");
+	kCFPreferencesAnyHost = CFSTR("kCFPreferencesAnyHost");
+	kCFPreferencesCurrentHost = CFSTR("kCFPreferencesCurrentHost");
+	kCFPreferencesAnyUser = CFSTR("kCFPreferencesAnyUser");
+	kCFPreferencesCurrentUser = CFSTR("kCFPreferencesCurrentUser");
+	kCFProxyTypeKey = CFSTR("kCFProxyTypeKey");
+	kCFProxyTypeNone = CFSTR("kCFProxyTypeNone");
+	kCFProxyTypeHTTP = CFSTR("kCFProxyTypeHTTP");
+	kCFProxyTypeHTTPS = CFSTR("kCFProxyTypeHTTPS");
+	kCFProxyTypeSOCKS = CFSTR("kCFProxyTypeSOCKS");
+	kCFProxyTypeFTP = CFSTR("kCFProxyTypeFTP");
+	kCFProxyTypeAutoConfigurationURL = CFSTR("kCFProxyTypeAutoConfigurationURL");
+	kCFProxyTypeAutoConfigurationJavaScript = CFSTR("kCFProxyTypeAutoConfigurationJavaScript");
+	kCFProxyHostNameKey = CFSTR("kCFProxyHostNameKey");
+	kCFProxyPortNumberKey = CFSTR("kCFProxyPortNumberKey");
+	kCFProxyAutoConfigurationURLKey = CFSTR("kCFProxyAutoConfigurationURLKey");
+	kCFProxyAutoConfigurationJavaScriptKey = CFSTR("kCFProxyAutoConfigurationJavaScriptKey");
+	kCFProxyUsernameKey = CFSTR("kCFProxyUsernameKey");
+	kCFProxyPasswordKey = CFSTR("kCFProxyPasswordKey");
+	kCFNetworkProxiesHTTPEnable = CFSTR("HTTPEnable");
+	kCFNetworkProxiesHTTPProxy = CFSTR("HTTPProxy");
+	kCFNetworkProxiesHTTPPort = CFSTR("HTTPPort");
+	kCFNetworkProxiesHTTPSEnable = CFSTR("HTTPSEnable");
+	kCFNetworkProxiesHTTPSProxy = CFSTR("HTTPSProxy");
+	kCFNetworkProxiesHTTPSPort = CFSTR("HTTPSPort");
+	kCFNetworkProxiesProxyAutoConfigEnable = CFSTR("ProxyAutoConfigEnable");
+	kCFNetworkProxiesProxyAutoConfigURLString = CFSTR("ProxyAutoConfigURLString");
+	kCFNetworkProxiesExceptionsList = CFSTR("ExceptionsList");
+}
