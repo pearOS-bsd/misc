@@ -217,4 +217,17 @@ typedef NS_ENUM(NSInteger, NSWindowAnimationBehavior) { NSWindowAnimationBehavio
 - (void)removeItemsAtIndexes:(NSIndexSet *)indexes inParent:(id)parent withAnimation:(NSTableViewAnimationOptions)animationOptions;
 - (void)moveItemAtIndex:(NSInteger)fromIndex inParent:(id)oldParent toIndex:(NSInteger)toIndex inParent:(id)newParent;
 @end
+
+@protocol NSSearchFieldDelegate <NSTextFieldDelegate> @optional
+- (void)searchFieldDidStartSearching:(NSSearchField *)sender;
+- (void)searchFieldDidEndSearching:(NSSearchField *)sender;
+@end
+@protocol NSTouchBarDelegate <NSObject> @end
+@interface NSTitlebarAccessoryViewController (WsbsdHidden)
+@property (nonatomic, getter=isHidden) BOOL hidden;
+@end
+@interface NSFileManager (WsbsdLinks)
+- (BOOL)createSymbolicLinkAtURL:(NSURL *)url withDestinationURL:(NSURL *)destURL error:(NSError **)error;
+- (BOOL)getRelationship:(NSInteger *)outRelationship ofDirectory:(NSSearchPathDirectory)directory inDomain:(NSSearchPathDomainMask)domainMask toItemAtURL:(NSURL *)url error:(NSError **)error;
+@end
 #endif

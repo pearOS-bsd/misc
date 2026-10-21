@@ -349,3 +349,25 @@ static char kHelpMenu, kMenuFont, kAnimBehavior, kGroupRows;
 - (void)removeItemsAtIndexes:(NSIndexSet *)indexes inParent:(id)parent withAnimation:(NSTableViewAnimationOptions)o { [self reloadItem: parent reloadChildren: YES]; }
 - (void)moveItemAtIndex:(NSInteger)from inParent:(id)oldParent toIndex:(NSInteger)to inParent:(id)newParent { [self reloadItem: oldParent reloadChildren: YES]; if (newParent != oldParent) [self reloadItem: newParent reloadChildren: YES]; }
 @end
+
+static char kTACHidden;
+@implementation NSTitlebarAccessoryViewController (WsbsdHidden)
+- (BOOL)isHidden { return [objc_getAssociatedObject(self, &kTACHidden) boolValue]; }
+- (void)setHidden:(BOOL)h { objc_setAssociatedObject(self, &kTACHidden, @(h), OBJC_ASSOCIATION_RETAIN_NONATOMIC); }
+@end
+@implementation NSFileManager (WsbsdLinks)
+- (BOOL)createSymbolicLinkAtURL:(NSURL *)url withDestinationURL:(NSURL *)dest error:(NSError **)error
+{
+	return [self createSymbolicLinkAtPath: [url path] withDestinationPath: [dest path] error: error];
+}
+- (BOOL)getRelationship:(NSInteger *)rel ofDirectory:(NSSearchPathDirectory)dir inDomain:(NSSearchPathDomainMask)mask toItemAtURL:(NSURL *)url error:(NSError **)error
+{
+	NSString *p = [[url path] stringByStandardizingPath]; NSString *home = NSHomeDirectory(); BOOL in = NO;
+	if (dir == NSTrashDirectory) in = [p hasPrefix: [home stringByAppendingPathComponent: @".Trash/"]] || [p rangeOfString: @"/.Trashes/"].length > 0;      /* 0: contains, 1: same, 2: other */
+	else { NSArray *ds = NSSearchPathForDirectoriesInDomains(dir, mask, YES); for (NSString *d in ds) if ([p hasPrefix: [d stringByAppendingString: @"/"]]) in = YES; }
+	*rel = in ? 0 : 2; return YES;
+}
+@end
+
+#import <QuickLook/QuickLook.h>
+CGImageRef QLThumbnailImageCreate(CFAllocatorRef a, CFURLRef u, CGSize s, CFDictionaryRef o) { (void)a; (void)u; (void)s; (void)o; return NULL; }

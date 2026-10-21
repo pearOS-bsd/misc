@@ -161,3 +161,12 @@ NSString *const WebViewProgressFinishedNotification = @"WebProgressFinishedNotif
 - (void)stopLoading { } - (WKNavigation *)reload { return [self fail]; }
 - (void)drawRect:(NSRect)r { [[NSColor whiteColor] set]; NSRectFill(r); }
 @end
+
+#import <OSAKit/OSAKit.h>
+@implementation OSAScript { NSString *_src; }
+- (instancetype)initWithSource:(NSString *)s { if ((self = [super init])) _src = [s copy]; return self; }
+- (instancetype)initWithSource:(NSString *)s language:(id)l { return [self initWithSource: s]; }
+- (NSString *)source { return _src; }
+- (BOOL)compileAndReturnError:(NSDictionary **)e { if (e) *e = @{ @"OSAScriptErrorMessage": @"There is no scripting engine" }; return NO; }
+- (NSAppleEventDescriptor *)executeAndReturnError:(NSDictionary **)e { if (e) *e = @{ @"OSAScriptErrorMessage": @"There is no scripting engine" }; return nil; }
+@end
