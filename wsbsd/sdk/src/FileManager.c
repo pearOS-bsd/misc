@@ -115,3 +115,23 @@ OSStatus FSGetVolumeInfo(FSVolumeRefNum v, ItemCount idx, FSVolumeRefNum *actual
 	if (root) put_path(root, "/");
 	return noErr;
 }
+
+/* fcntl with Darwin's F_GETPATH (the path of an open descriptor, PATH_MAX bytes) over FreeBSD's F_KINFO; the other commands pass through */
+#include <fcntl.h>
+#include <stdarg.h>
+#include <sys/user.h>
+#undef fcntl
+#ifndef F_GETPATH
+#define F_GETPATH 50
+#endif
+int wsbsd_fcntl(int fd, int cmd, ...)
+{
+	va_list ap; va_start(ap, cmd); void *arg = va_arg(ap, void *); va_end(ap);
+	if (cmd == F_GETPATH) {
+		struct kinfo_file kf; memset(&kf, 0, sizeof kf); kf.kf_structsize = sizeof kf;
+		if (fcntl(fd, F_KINFO, &kf) == -1) return -1;
+		if (kf.kf_path[0] == 0) { errno = ENOENT; return -1; }
+		strlcpy((char *)arg, kf.kf_path, PATH_MAX); return 0;
+	}
+	return fcntl(fd, cmd, arg);
+}

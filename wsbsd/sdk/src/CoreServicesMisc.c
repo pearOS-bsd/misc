@@ -13,3 +13,22 @@ OSStatus CopyProcessName(const ProcessSerialNumber *psn, CFStringRef *name) { (v
 #include <unistd.h>
 void AudioServicesPlayAlertSound(uint32_t id) { (void)id; if (write(2, "\a", 1) < 0) { } }
 void AudioServicesPlaySystemSound(uint32_t id) { AudioServicesPlayAlertSound(id); }
+
+/* Gestalt: system version as macOS 10.16, the memory and processor count of this machine */
+#include <CoreServices/Gestalt.h>
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#undef sysctl
+int16_t Gestalt(uint32_t selector, int32_t *response)
+{
+	if (!response) return -50;
+	switch (selector) {
+	case gestaltSystemVersion: *response = 0x1160; return 0;
+	case gestaltSystemVersionMajor: *response = 10; return 0;
+	case gestaltSystemVersionMinor: *response = 16; return 0;
+	case gestaltSystemVersionBugFix: *response = 0; return 0;
+	case gestaltPhysicalRAMSize: { unsigned long mem = 0; size_t n = sizeof mem; if (sysctlbyname("hw.physmem", &mem, &n, NULL, 0) == 0) *response = (int32_t)(mem >> 20); else *response = 0; return 0; }
+	case gestaltProcessorCount: { int cpus = 1; size_t n = sizeof cpus; sysctlbyname("hw.ncpu", &cpus, &n, NULL, 0); *response = cpus; return 0; }
+	}
+	*response = 0; return -5551;                                                    /* gestaltUndefSelectorErr */
+}

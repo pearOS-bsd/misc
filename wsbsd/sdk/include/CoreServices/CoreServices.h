@@ -56,4 +56,14 @@ enum { kToolbarHomeIcon = 'tHom', kLockedIcon = 'lock', kUnlockedIcon = 'ulck', 
 enum { noErr = 0, userCanceledErr = -128, fnfErr = -43, paramErr = -50, permErr = -54 };
 #include <CoreServices/FileManager.h>
 #endif
+#if defined(__has_include)
+#if __has_include(<CoreGraphics/CoreGraphics.h>) && !defined(__APPLE__)
+#include <CoreGraphics/CoreGraphics.h>   /* on a Mac CoreServices / ApplicationServices bring CoreGraphics and CoreText along */
+#endif
+#if __has_include(<CoreText/CoreText.h>) && !defined(__APPLE__)
+#include <CoreText/CoreText.h>
+#endif
+#endif
+#include <CoreServices/Gestalt.h>
+#include <CoreServices/AppleEvents.h>
 #endif

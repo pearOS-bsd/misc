@@ -8,6 +8,14 @@
 #include <unistd.h>
 #ifndef __APPLE__
 #include <sys/wait.h>                 /* WNOHANG and friends: Apple's headers reach them through <sys/types.h> users */
+#include <sys/resource.h>             /* RLIMIT_NOFILE, getrlimit: Apple's <sys/wait.h> includes it */
+/* fcntl(F_GETPATH): the path of an open descriptor, answered through FreeBSD's F_KINFO (sdk/src/FileManager.c); every other command goes to the system call */
+#define F_GETPATH 50
+#ifdef __cplusplus
+extern "C"
+#endif
+int wsbsd_fcntl(int fd, int cmd, ...);
+#define fcntl wsbsd_fcntl
 /* <libutil.h> of FreeBSD declares a type called `properties`, which collides with instance variables of that name */
 #define properties wsbsd_libutil_properties
 #include <libutil.h>
@@ -37,7 +45,12 @@ typedef uint64_t uint64; typedef uint32_t uint32; typedef uint16_t uint16; typed
 #define DKIOCGETBLOCKCOUNT 0x40086419UL   /* Darwin's request number: not a disk ioctl here, it fails and callers take their error path */
 #endif
 #if defined(__FreeBSD__)
-#include <sys/disk.h>
+/* the two disk ioctls by number: <sys/disk.h> pulls in <sys/conf.h>, which declares `struct file` and breaks C++ code that has a namespace of that name */
+#include <sys/ioccom.h>
+#ifndef DIOCGSECTORSIZE
+#define DIOCGSECTORSIZE _IOR('d', 128, unsigned int)
+#define DIOCGMEDIASIZE _IOR('d', 129, off_t)
+#endif
 #ifndef DKIOCGETBLOCKSIZE
 #define DKIOCGETBLOCKSIZE DIOCGSECTORSIZE
 #endif
