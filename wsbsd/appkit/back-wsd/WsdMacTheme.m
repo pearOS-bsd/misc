@@ -325,8 +325,32 @@ static NSRect wsdConstrain(id self, SEL _cmd, NSRect f, NSScreen *scr)
 	if (f.origin.x < sf.origin.x) f.origin.x = sf.origin.x;
 	return f;
 }
+/* a toolbar item's view sits at the origin of the item (a view loaded from a nib keeps the position it had in its old superview, which puts it outside the item here) */
+/* a nib names a segment's image from the system catalogue by a string ("plus"): it becomes the symbol image the first time it is asked for */
+static IMP origSegImage, origSegSetImage;
+static id wsdSegImage(id self, SEL _cmd, NSInteger seg)
+{
+	id im = ((id (*)(id, SEL, NSInteger))origSegImage)(self, _cmd, seg);
+	if ([im isKindOfClass: [NSString class]]) {
+		NSImage *sym = [NSImage imageWithSystemSymbolName: im accessibilityDescription: nil];
+		if (!sym) sym = [NSImage imageNamed: im];
+		((void (*)(id, SEL, id, NSInteger))origSegSetImage)(self, @selector(setImage:forSegment:), sym, seg);
+		im = sym;
+	}
+	return im;
+}
+static IMP origItemSetView;
+static void wsdItemSetView(id self, SEL _cmd, NSView *v)
+{
+	if (v && [v superview]) { [[v retain] autorelease]; [v removeFromSuperview]; }   /* the toolbar only adopts a view without a superview (GSToolbarBackView -layout) */
+	if (v) [v setFrameOrigin: NSZeroPoint];
+	((void (*)(id, SEL, NSView *))origItemSetView)(self, _cmd, v);
+}
 static void swizzleTableDefaults(void)
 {
+	{ Class sc = [NSSegmentedCell class]; Method mi = class_getInstanceMethod(sc, @selector(imageForSegment:)), ms = class_getInstanceMethod(sc, @selector(setImage:forSegment:));
+	  if (mi && ms && !origSegImage) { origSegSetImage = method_getImplementation(ms); origSegImage = method_getImplementation(mi); class_replaceMethod(sc, @selector(imageForSegment:), (IMP)wsdSegImage, method_getTypeEncoding(mi)); } }
+	{ Method mv = class_getInstanceMethod([NSToolbarItem class], @selector(setView:)); if (mv && !origItemSetView) origItemSetView = method_setImplementation(mv, (IMP)wsdItemSetView); }
 	Method mt = class_getInstanceMethod([NSTableView class], @selector(_initDefaults));
 	if (mt && !origTableInit) origTableInit = method_setImplementation(mt, (IMP)wsdTableInit);
 	Method mb = class_getInstanceMethod([NSButtonCell class], @selector(drawInteriorWithFrame:inView:));

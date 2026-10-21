@@ -34,7 +34,7 @@ Acoperire măsurată: **72,3 %** selectoare din SDK (`tools/appkit_probe.m`; REA
 7. **Designer**: utilizatorul a comandat active noi (21.000 €, gata în ~2 săptămâni de la 2026-10-18), directorul `/Users/alxb421/Desktop/app/assets-designer/` (în afara git: `orig/`, `mod/`, inventar CSV). De făcut: script de acceptanță (compară `.car` livrat cu orig: nume, atribute, dimensiuni, lipsă/extra) și căutare `mod/` înaintea `orig/` în cod (`CarPath` din `WsdFilePanel.m`). Până atunci se folosesc `.car` originale.
 8. Dacă SIP trebuie dezactivat la ceva, spune-i utilizatorului.
 
-- BVG: `coreui/bvgscan.c` (parcurge CoreGlyphs.car, numără containerele decodate/eșuate) și `coreui/bvgdump.c` (segmentele unui simbol); versiunea 0x11 a containerului (329 simboluri) e decodată, rămân 3 `timelapse` pe 0x12. GrandPerspective: toolbar are iconițe, fereastra intră în ecran; rămân Zoom/Focus fără imagini (xcassets al aplicației, `setImagesToTemplate`) și golul mare sub toolbar. NSImageView cu simbol iese turtit.
+- BVG: `coreui/bvgscan.c` (parcurge CoreGlyphs.car, numără containerele decodate/eșuate) și `coreui/bvgdump.c` (segmentele unui simbol); versiunea 0x11 a containerului (329 simboluri) e decodată, rămân 3 `timelapse` pe 0x12. GrandPerspective: toolbar are iconițe, fereastra intră în ecran; Zoom/Focus acum au simboluri (nib dă numele ca NSString: convertit în `imageForSegment:`; view-ul din nib e scos din superview în `setView:` ca GSToolbarBackView să-l adopte). Rămân: golul mare sub toolbar, fereastra Welcome cu conținut tăiat la dreapta, NSImageView cu simbol iese turtit.
 
 ## Teste
 - Mac: `make check` în `misc/wsbsd` (rulează `test_bplist … test_props, test_generic, test_golden, test_shim*, vnc`, ~20 s). Fuzz cu sanitizere în CI.
