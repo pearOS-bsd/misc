@@ -28,13 +28,86 @@ const uint8_t *sls_session_client_dict(uint32_t id, uint32_t *len) { int i = sid
 
 static uint64_t last_deactivated; static float unresponsive_timeout = 1.0f; static uint32_t secure_ids[64];       /* the connections that hold secure event input */
 int sls_secure_input_active(void) { for (int i = 0; i < 64; i++) if (secure_ids[i]) return 1; return 0; }
-void sls_sessctl_owner_cleanup(uint32_t owner) { for (int i = 0; i < 64; i++) if (secure_ids[i] == owner) secure_ids[i] = 0; }
+static void upd_drop(uint32_t owner);
+void sls_sessctl_owner_cleanup(uint32_t owner) { for (int i = 0; i < 64; i++) if (secure_ids[i] == owner) secure_ids[i] = 0; upd_drop(owner); }
 static double real_time(void) { struct timespec ts; clock_gettime(CLOCK_MONOTONIC, &ts); return ts.tv_sec + ts.tv_nsec * 1e-9; }
+
+/* Per-connection update disabling (disable_update_for_connection / common_reenable_update, Updater.cc): the count (+0xb4) goes up with every Disable and down with every Reenable (never below 0);
+ * the strict count (+0xb8) does the same and remembers when it left 0; while the count is above 0 the connection's flushes are held back as one rectangle per window and applied when it
+ * returns to 0 (the real server accumulates the update shape and schedules all displays); a connection that stays disabled longer than gWSDisableUpdateTimeout is re-enabled by the server
+ * (disable_update_timeout; the default value of that global is not read from the binary, 1 s is used). */
+#define MAX_UPD 32
+#define MAX_HELD 16
+typedef struct { uint32_t wid; int whole; ws_rect r; } held_rect;
+static struct { uint32_t owner; int disabled, strict; double since, deadline; held_rect held[MAX_HELD]; } upd[MAX_UPD];
+static double disable_update_timeout = 1.0;
+
+static int upd_idx(uint32_t owner, int create)
+{
+	int free_i = -1;
+	for (int i = 0; i < MAX_UPD; i++) { if (upd[i].owner == owner) return i; if (!upd[i].owner && free_i < 0) free_i = i; }
+	if (!create || free_i < 0) return -1;
+	memset(&upd[free_i], 0, sizeof upd[free_i]); upd[free_i].owner = owner; return free_i;
+}
+static void upd_release(int i)
+{
+	for (int k = 0; k < MAX_HELD; k++) if (upd[i].held[k].wid) {
+		if (upd[i].held[k].whole) ws_window_damage(srv, upd[i].held[k].wid, NULL); else ws_window_flush_rect(srv, upd[i].held[k].wid, &upd[i].held[k].r);
+	}
+	memset(&upd[i], 0, sizeof upd[i]); wsd_dirty = 1;
+}
+static void upd_reenable(uint32_t owner)                                       /* common_reenable_update(conn, true) */
+{
+	int i = upd_idx(owner, 0); if (i < 0) return;
+	if (upd[i].strict > 0) upd[i].strict--;
+	if (upd[i].disabled > 0 && --upd[i].disabled == 0) upd_release(i);
+}
+static void upd_expire(void)                                                   /* disable_update_timeout: the server forces updates back on */
+{
+	double now = real_time();
+	for (int i = 0; i < MAX_UPD; i++) if (upd[i].owner && upd[i].disabled > 0 && now >= upd[i].deadline) upd_release(i);
+}
+static void upd_drop(uint32_t owner) { int i = upd_idx(owner, 0); if (i >= 0) memset(&upd[i], 0, sizeof upd[i]); }   /* the connection went away: nothing left to apply */
+int sls_updates_disabled(uint32_t owner) { upd_expire(); int i = upd_idx(owner, 0); return i >= 0 && upd[i].disabled > 0; }
+int sls_updates_hold(uint32_t owner, uint32_t wid, const ws_rect *r)           /* 1 = the flush is kept until the connection's updates are enabled again (r NULL: the whole window) */
+{
+	upd_expire();
+	int i = upd_idx(owner, 0); if (i < 0 || upd[i].disabled <= 0) return 0;
+	int slot = -1;
+	for (int k = 0; k < MAX_HELD; k++) { if (upd[i].held[k].wid == wid) { slot = k; break; } if (!upd[i].held[k].wid && slot < 0) slot = k; }
+	if (slot < 0) { for (int k = 0; k < MAX_HELD; k++) if (upd[i].held[k].wid) { upd[i].held[k].whole = 1; } return 1; }   /* table full: the oldest windows are repainted whole */
+	held_rect *e = &upd[i].held[slot];
+	if (!e->wid) { e->wid = wid; e->whole = r == NULL; if (r) e->r = *r; }
+	else if (!e->whole) {
+		if (!r) e->whole = 1;
+		else {
+			int32_t x0 = e->r.x < r->x ? e->r.x : r->x, y0 = e->r.y < r->y ? e->r.y : r->y;
+			int32_t x1 = e->r.x + e->r.w > r->x + r->w ? e->r.x + e->r.w : r->x + r->w, y1 = e->r.y + e->r.h > r->y + r->h ? e->r.y + e->r.h : r->y + r->h;
+			e->r = (ws_rect){ x0, y0, x1 - x0, y1 - y0 };
+		}
+	}
+	return 1;
+}
 
 int sls_sessctl_dispatch(conn *c, const uint8_t *buf, size_t len)
 {
 	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
 	switch (h->msgh_id) {
+	case 30036: {                                                                 /* __XDisableUpdateForConnection: header only (0x18); count + 1, strict count + 1 (time of the first), timeout armed; reply 0 */
+		if (h->msgh_bits & MACH_MSGH_BITS_COMPLEX || h->msgh_size != 0x18 || len != 0x18) return reply_simple(c->fd, h, -304);
+		int i = upd_idx(c->id, 1);
+		if (i >= 0) {
+			upd[i].disabled++; if (upd[i].strict++ == 0) upd[i].since = real_time();
+			upd[i].deadline = real_time() + disable_update_timeout;
+		}
+		return reply_simple(c->fd, h, 0);
+	}
+	case 30038: {                                                                 /* __XReenableUpdateForConnectionSync: complex, one descriptor (the port told once the displays updated), size 0x28; descriptor disposition@0x26 must be 0x11 (else -300), wrong header -304; counts - 1, held flushes applied at 0; reply 0 */
+		if (!(h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || rd32(buf, 0x18) != 1 || h->msgh_size != 0x28 || len < 0x28) return reply_simple(c->fd, h, -304);
+		if (buf[0x26] != 0x11 || buf[0x27] != 0) return reply_simple(c->fd, h, -300);
+		upd_reenable(c->id);
+		return reply_simple(c->fd, h, 0);
+	}
 	case 30087: {                                                                 /* __XSetSecureEventInput: flag@0x20; the connection's bit 0 of its flags is set / cleared and the system's secure input follows (any connection holding it) */
 		if (!simple_ok(h, len, 0x24)) return reply_simple(c->fd, h, -304);
 		int on = rd32(buf, 0x20) != 0;

@@ -1,11 +1,10 @@
 name: iso
 
-# A bootable FreeBSD image with the macOS file layout that starts the window server by itself. Built on every change of the system (and on demand) and published as the release `iso-latest`;
+# A bootable FreeBSD image with the macOS file layout that starts the window server by itself. Built on demand (the everyday image is built locally) and published as the release `iso-latest`;
 # a tag `v*` makes a release of its own.
 on:
+  # no push trigger: the image is built locally (wsbsd/iso/build.sh in the dev VM, run in QEMU); this runs on demand or for a release tag
   push:
-    branches: [main]
-    paths: ['wsbsd/iso/**', 'wsbsd/src/**', 'wsbsd/include/**', 'wsbsd/appkit/**', 'wsbsd/sdk/**', 'wsbsd/ci/**', 'terminal/**', 'ksa/**', 'uitest/**', '.github/workflows/iso.yml']
     tags: ['v*']
   workflow_dispatch:
 
