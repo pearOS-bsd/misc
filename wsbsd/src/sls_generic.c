@@ -156,9 +156,7 @@ static const gen_var_entry gen_var_table[] = {
 	{ 30439, 0, 40, 3 },   /* __XGetMenuBarUsesRTLLayoutOnDisplayLegacy */
 	{ 30453, 0, 36, 3 },   /* __XSetAccessibilityAdjustments */
 	{ 30463, 0, 40, 5 },   /* __XHMDAcquire */
-	{ 30475, 0, 36, 4 },   /* __XSetWindowCursorRestrictionShape */
 	{ 30479, 0, 40, 5 },   /* __XValidateUnobscuredRemoteRegionSecurityToken */
-	{ 30486, 0, 36, 2 },   /* __XSetZoomDisplay */
 	{ 30496, 0, 36, 3 },   /* __XSetMenuBarVisibilityOverrideOnDisplay */
 	{ 30497, 0, 40, 3 },   /* __XGetMenuBarVisibilityOverrideOnDisplay */
 	{ 30517, 0, 36, 3 },   /* __XDisplayResetPreset */
