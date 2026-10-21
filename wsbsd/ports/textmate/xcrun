@@ -21,8 +21,9 @@ case "$tool" in
 		set -- "$@" "$a"
 	done
 	if [ $link = 1 ]; then
-		exec "$tool" "$@" -L/root/compat -Wl,-rpath,/root/compat -lwsbsdcompat -lQuartzCore $(gnustep-config --gui-libs) -lopal -lgnustep-corebase -ldispatch -lz -lcrypto -lsqlite3 -lcurl -L/usr/local/lib
+		exec "$tool" "$@" -Wl,-rpath,/root/compat /root/compat/libwsbsdcompat.so /root/compat/libQuartzCore.so $(gnustep-config --gui-libs) -lopal -lgnustep-corebase -ldispatch -lz -lcrypto -lsqlite3 -lcurl -L/usr/local/lib
 	fi
+	for a in "$@"; do case "$a" in */crash/src/info.cc) set -- "$@" '-Dasm(x)=' ;; esac; done     # info.cc names a Mach-O symbol attribute in a top-level asm(): ELF has no .desc
 	exec "$tool" "$@" $XF $(gnustep-config --objc-flags) ;;
   codesign) exit 0 ;;
   ibtool) out=""; in=""; while [ $# -gt 0 ]; do case "$1" in --compile) out="$2"; shift 2;; --*) shift;; *) in="$1"; shift;; esac; done; cp "$in" "$out" ;;

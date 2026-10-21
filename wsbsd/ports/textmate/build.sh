@@ -11,5 +11,7 @@ printf 'add FLAGS    "-I/usr/local/include"\nadd LN_FLAGS "-L/usr/local/lib"\n' 
 for f in bin/*; do [ -f "$f" ] && sed -i '' '1s#^\#!/System/Library/Frameworks/Ruby.framework/Versions/Current/usr/bin/ruby#\#!/usr/bin/env ruby#' "$f"; done
 sed -i '' 's#cp -Xp#cp -p#' bin/rave                                                 # BSD cp has no -X
 ruby bin/rave -crelease -tTextMate
-sed -i '' 's#${env}bin/rave#${env}ruby bin/rave#' build.ninja
+python3 /root/wsbsd/ports/textmate/fix-ninja.py build.ninja      # rave writes bash tests ([[ ... ]]) into rules that ninja runs with /bin/sh
+sed -i '' 's#${env}bin/rave#${env}sh /root/wsbsd/ports/textmate/rave.sh#' build.ninja
+export RUBYLIB=/root/wsbsd/ports/textmate/rubylib       # dbm, gone from Ruby 3.4 (bin/gen_credits.rb)
 ninja -k 0 -j4 "$@"

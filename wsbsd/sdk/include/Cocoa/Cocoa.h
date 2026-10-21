@@ -7,6 +7,9 @@
 #import <CoreText/CoreText.h>
 #endif
 #import <wsbsd/CGEvent.h>
+#if __has_include(<ApplicationServices/ApplicationServices.h>)
+#import <ApplicationServices/ApplicationServices.h>
+#endif
 #import <wsbsd/AppKitCompat.h>
 #import <wsbsd/AppKitCompat3.h>
 #if !GS_HAVE_NSURLSESSION

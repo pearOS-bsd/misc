@@ -107,3 +107,25 @@ NSString *const NSWorkspaceLaunchConfigurationAppleEvent = @"NSWorkspaceLaunchCo
 - (NSString *)stringForObjectValue:(id)o { return [o isKindOfClass: [NSDate class]] ? [self localizedStringForDate: o relativeToDate: [NSDate date]] : nil; }
 - (BOOL)getObjectValue:(id *)o forString:(NSString *)s errorDescription:(NSString **)e { (void)o; (void)s; if (e) *e = @"not supported"; return NO; }
 @end
+
+/* the C descriptor of an event or value: built from the object (the AEDesc is owned by the descriptor and stays until it goes away) */
+static const char kAEDescBox;
+static void Fill(NSAppleEventDescriptor *d, AEDesc *out)
+{
+	uint32_t t = [d descriptorType];
+	if (t == typeAEList || t == typeAERecord || t == 'aevt') {
+		if (t == 'aevt') { AEAddressDesc target = { typeNull, NULL }; AECreateAppleEvent([d eventClass], [d eventID], &target, kAutoGenerateReturnID, kAnyTransactionID, out); }
+		else AECreateList(NULL, 0, t == typeAERecord, out);
+		for (NSInteger i = 1; i <= [d numberOfItems]; i++) {
+			AEDesc item = { typeNull, NULL }; Fill([d descriptorAtIndex: i], &item);
+			if (t == typeAEList) AEPutParamDesc(out, 0, &item); else AEPutParamDesc(out, [d keywordForDescriptorAtIndex: i], &item); AEDisposeDesc(&item);
+		}
+	} else { NSData *data = [d data]; AECreateDesc(t, [data bytes], (long)[data length], out); }
+}
+@implementation NSAppleEventDescriptor (WsbsdAEDesc)
+- (const AEDesc *)aeDesc
+{
+	NSMutableData *box = objc_getAssociatedObject(self, &kAEDescBox); if (!box) { box = [NSMutableData dataWithLength: sizeof(AEDesc)]; objc_setAssociatedObject(self, &kAEDescBox, box, OBJC_ASSOCIATION_RETAIN_NONATOMIC); }
+	AEDesc *d = (AEDesc *)[box mutableBytes]; AEDisposeDesc(d); Fill(self, d); return d;
+}
+@end

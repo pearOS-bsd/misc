@@ -130,6 +130,9 @@ NSString *const NSDocumentEditedBinding = @"documentEdited";
 
 /* accessibility: the attribute list is empty and nothing is settable; element links are kept */
 @implementation NSObject (WsbsdAccessibility)
+- (NSUInteger)accessibilityArrayAttributeCount:(NSString *)a { (void)a; return 0; }
+- (NSArray *)accessibilityArrayAttributeValues:(NSString *)a index:(NSUInteger)i maxCount:(NSUInteger)m { (void)a; (void)i; (void)m; return @[]; }
+- (NSUInteger)accessibilityIndexOfChild:(id)c { (void)c; return NSNotFound; }
 - (NSArray *)accessibilityAttributeNames { return @[]; }
 - (BOOL)accessibilityIsAttributeSettable:(NSString *)a { (void)a; return NO; }
 - (void)accessibilitySetValue:(id)v forAttribute:(NSString *)a { (void)v; (void)a; }
@@ -156,8 +159,49 @@ static const char kTBDel, kTBDef, kTBAllowed, kTBCust, kTBItemId, kTBView;
 - (instancetype)initWithIdentifier:(NSString *)i { if ((self = [self init])) Set(self, &kTBItemId, [i copy]); return self; }
 - (NSString *)identifier { return Get(self, &kTBItemId); }
 @end
+static const char kCustLabel, kPriority, kInputCtx, kAnimDest;
 @implementation NSCustomTouchBarItem (WsbsdCompat3)
 - (NSView *)view { return Get(self, &kTBView); } - (void)setView:(NSView *)v { Set(self, &kTBView, v); }
+- (NSString *)customizationLabel { return Get(self, &kCustLabel); } - (void)setCustomizationLabel:(NSString *)l { Set(self, &kCustLabel, [l copy]); }
+@end
+@implementation NSTouchBarItem (WsbsdPriority)
+- (float)visibilityPriority { return [Get(self, &kPriority) floatValue]; } - (void)setVisibilityPriority:(float)p { Set(self, &kPriority, @(p)); }
+@end
+NSString *const NSImageNameTouchBarSearchTemplate = @"NSTouchBarSearchTemplate";
+NSString *const NSImageNameTouchBarBookmarksTemplate = @"NSTouchBarBookmarksTemplate";
+NSString *const NSImageNameTouchBarAddTemplate = @"NSTouchBarAddTemplate";
+NSString *const NSImageNameTouchBarRefreshTemplate = @"NSTouchBarRefreshTemplate";
+NSString *const NSImageNameTouchBarSidebarTemplate = @"NSTouchBarSidebarTemplate";
+@implementation NSView (WsbsdInput)
+- (NSTextInputContext *)inputContext
+{
+	if (![self conformsToProtocol: @protocol(NSTextInputClient)]) return nil; NSTextInputContext *c = Get(self, &kInputCtx);
+	if (!c) { c = [[NSTextInputContext alloc] initWithClient: (id<NSTextInputClient>)self]; Set(self, &kInputCtx, c); } return c;
+}
+- (BOOL)isInFullScreenMode { return NO; }
+@end
+@implementation NSObject (WsbsdDraggingInfo)
+- (BOOL)animatesToDestination { return GetBool(self, &kAnimDest); } - (void)setAnimatesToDestination:(BOOL)f { Set(self, &kAnimDest, @(f)); }
+- (void)enumerateDraggingItemsWithOptions:(NSUInteger)o forView:(NSView *)v classes:(NSArray *)classes searchOptions:(NSDictionary *)so usingBlock:(void (^)(NSDraggingItem *, NSInteger, BOOL *))block
+{
+	if (![self respondsToSelector: @selector(draggingPasteboard)]) return; NSPasteboard *pb = [(id)self draggingPasteboard]; NSArray *objs = [pb readObjectsForClasses: classes options: so] ?: @[]; BOOL stop = NO; NSInteger i = 0;
+	for (id obj in objs) { NSDraggingItem *it = [[NSDraggingItem alloc] initWithPasteboardWriter: (id)obj]; block(it, i++, &stop); if (stop) break; }
+}
+@end
+@implementation NSSpellChecker (WsbsdLearn)
+static NSMutableSet *Learned(void) { static NSMutableSet *s; static dispatch_once_t o; dispatch_once(&o, ^{ s = [NSMutableSet setWithArray: [[NSUserDefaults standardUserDefaults] arrayForKey: @"WsbsdLearnedWords"] ?: @[]]; }); return s; }
+- (void)learnWord:(NSString *)w { [Learned() addObject: w]; [[NSUserDefaults standardUserDefaults] setObject: [Learned() allObjects] forKey: @"WsbsdLearnedWords"]; }
+- (void)unlearnWord:(NSString *)w { [Learned() removeObject: w]; [[NSUserDefaults standardUserDefaults] setObject: [Learned() allObjects] forKey: @"WsbsdLearnedWords"]; }
+@end
+/* request properties: kept per request object (GNUstep's own store only accepts the first property) */
+static const char kReqProps;
+@implementation NSURLProtocol (WsbsdProperties)
++ (id)propertyForKey:(NSString *)key inRequest:(NSURLRequest *)request { return [Get(request, &kReqProps) objectForKey: key]; }
++ (void)setProperty:(id)value forKey:(NSString *)key inRequest:(NSMutableURLRequest *)request
+{
+	NSMutableDictionary *d = Get(request, &kReqProps); if (!d) { d = [NSMutableDictionary dictionary]; Set(request, &kReqProps, d); } if (value) d[key] = value; else [d removeObjectForKey: key];
+}
++ (void)removePropertyForKey:(NSString *)key inRequest:(NSMutableURLRequest *)request { [Get(request, &kReqProps) removeObjectForKey: key]; }
 @end
 
 @implementation NSDraggingItem { id _item; NSRect _frame; NSArray *_comps; NSArray *(^_provider)(void); }
@@ -194,3 +238,88 @@ CGPathRef CGPathCreateWithRoundedRect(CGRect r, CGFloat cw, CGFloat ch, const CG
 	CGPathAddLineToPoint(p, t, x0 + cw, y1); CGPathAddCurveToPoint(p, t, x0 + cw * 0.4477, y1, x0, y1 - ch * 0.4477, x0, y1 - ch);
 	CGPathAddLineToPoint(p, t, x0, y0 + ch); CGPathAddCurveToPoint(p, t, x0, y0 + ch * 0.4477, x0 + cw * 0.4477, y0, x0 + cw, y0); CGPathCloseSubpath(p); return p;
 }
+
+/* ---- the is-getters need no code: the declarations in the header only ---- */
+@implementation NSProgress (WsbsdCompat3)
+static const char kLD, kLAD;
+- (void)setLocalizedDescription:(NSString *)d { Set(self, &kLD, [d copy]); [self setUserInfoObject: d forKey: @"NSProgressLocalizedDescription"]; }
+- (void)setLocalizedAdditionalDescription:(NSString *)d { Set(self, &kLAD, [d copy]); }
+@end
+NSString *const NSProgressKindFile = @"NSProgressKindFile";
+NSString *const NSProgressEstimatedTimeRemainingKey = @"NSProgressEstimatedTimeRemainingKey";
+NSString *const NSProgressThroughputKey = @"NSProgressThroughputKey";
+
+@implementation NSTask (WsbsdTermination)
+static const char kTermH;
+- (void (^)(NSTask *))terminationHandler { return Get(self, &kTermH); }
+- (void)setTerminationHandler:(void (^)(NSTask *))h
+{
+	Set(self, &kTermH, [h copy]); if (!h) return;
+	__block id token = [[NSNotificationCenter defaultCenter] addObserverForName: NSTaskDidTerminateNotification object: self queue: nil usingBlock: ^(NSNotification *n) {
+		[[NSNotificationCenter defaultCenter] removeObserver: token]; void (^hh)(NSTask *) = [(NSTask *)n.object terminationHandler]; if (hh) hh(n.object); }];
+}
+@end
+@implementation NSStackView (WsbsdCompat3)
+- (NSArray *)views { return [self respondsToSelector: @selector(arrangedSubviews)] ? [self arrangedSubviews] : [self subviews]; }
+@end
+@implementation NSGridRow (WsbsdCompat3)
+static const char kRowAlign;
+- (NSGridRowAlignment)rowAlignment { return (NSGridRowAlignment)[Get(self, &kRowAlign) integerValue]; }
+- (void)setRowAlignment:(NSGridRowAlignment)a { Set(self, &kRowAlign, @(a)); }
+@end
+@implementation NSViewController (WsbsdChildren)
+static const char kChildren, kVCIdent, kParent;
+- (NSArray<NSViewController *> *)childViewControllers { return [Get(self, &kChildren) copy] ?: @[]; }
+- (void)addChildViewController:(NSViewController *)c { NSMutableArray *a = Get(self, &kChildren); if (!a) { a = [NSMutableArray array]; Set(self, &kChildren, a); } [a addObject: c]; objc_setAssociatedObject(c, &kParent, self, OBJC_ASSOCIATION_ASSIGN); }
+- (void)removeFromParentViewController { NSViewController *p = objc_getAssociatedObject(self, &kParent); [Get(p, &kChildren) removeObject: self]; objc_setAssociatedObject(self, &kParent, nil, OBJC_ASSOCIATION_ASSIGN); }
+- (NSString *)identifier { return Get(self, &kVCIdent); }
+- (void)setIdentifier:(NSString *)i { Set(self, &kVCIdent, [i copy]); }
+@end
+@implementation NSSplitViewItem (WsbsdCompat3)
+static void SetIvar(id o, const char *name, const void *src, size_t n) { Ivar iv = class_getInstanceVariable([NSSplitViewItem class], name); if (iv) memcpy((char *)(__bridge void *)o + ivar_getOffset(iv), src, n); }
+- (void)setCanCollapse:(BOOL)f { SetIvar(self, "_canCollapse", &f, sizeof f); }
+- (void)setHoldingPriority:(float)p { CGFloat v = p; SetIvar(self, "_holdingPriority", &v, sizeof v); }
+@end
+@implementation NSURL (WsbsdPasteboardWriting)
+- (NSArray *)writableTypesForPasteboard:(NSPasteboard *)pb { (void)pb; return @[ NSURLPboardType, NSStringPboardType ]; }
+- (id)pasteboardPropertyListForType:(NSString *)type { return [type isEqual: NSURLPboardType] ? [self absoluteString] : [self isFileURL] ? [self path] : [self absoluteString]; }
+@end
+@implementation NSView (WsbsdDragSource)
+- (void)draggingSession:(NSDraggingSession *)s endedAtPoint:(NSPoint)p operation:(NSDragOperation)op { (void)s; (void)p; (void)op; }
+- (void)draggingSession:(NSDraggingSession *)s movedToPoint:(NSPoint)p { (void)s; (void)p; }
+@end
+@implementation NSSpellChecker (WsbsdCompat4)
+- (BOOL)hasLearnedWord:(NSString *)w { (void)w; return NO; }
+- (NSArray *)guessesForWordRange:(NSRange)r inString:(NSString *)s language:(NSString *)l inSpellDocumentWithTag:(NSInteger)t { (void)r; (void)s; (void)l; (void)t; return @[]; }
+@end
+
+static const char kRotRange, kRotLabel;
+@implementation NSAccessibilityCustomRotorItemResult (WsbsdSetters)
+- (NSRange)targetRange { return [Get(self, &kRotRange) rangeValue]; } - (void)setTargetRange:(NSRange)r { Set(self, &kRotRange, [NSValue valueWithRange: r]); }
+- (NSString *)customLabel { return Get(self, &kRotLabel); } - (void)setCustomLabel:(NSString *)l { Set(self, &kRotLabel, [l copy]); }
+@end
+@implementation NSAccessibilityCustomRotorSearchParameters
+@synthesize currentItem, searchDirection, filterString;
+@end
+NSString *const NSImageNameTouchBarGoUpTemplate = @"NSTouchBarGoUpTemplate";
+NSString *const NSImageNameTouchBarGoDownTemplate = @"NSTouchBarGoDownTemplate";
+/* full screen: the window takes the screen's visible frame and gives it back on the second call (no space of its own yet) */
+static const char kFullPrev;
+@implementation NSWindow (WsbsdFullScreen)
+- (void)toggleFullScreen:(id)sender
+{
+	(void)sender; NSValue *prev = Get(self, &kFullPrev);
+	if (prev) { [self setFrame: [prev rectValue] display: YES animate: NO]; Set(self, &kFullPrev, nil); }
+	else { Set(self, &kFullPrev, [NSValue valueWithRect: [self frame]]); [self setFrame: [[self screen] frame] display: YES animate: NO]; }
+}
+@end
+@implementation NSAlert (WsbsdLayout)
+- (void)layout {}
+@end
+@implementation NSEvent (WsbsdForce)
+- (NSInteger)stage { return 0; }
+- (CGFloat)stageTransition { return 0; }
+@end
+@implementation NSView (WsbsdDefinition)
+- (void)showDefinitionForAttributedString:(NSAttributedString *)s atPoint:(NSPoint)p { (void)s; (void)p; }                    /* no dictionary service yet */
+@end

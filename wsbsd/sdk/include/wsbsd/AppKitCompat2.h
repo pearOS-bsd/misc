@@ -164,7 +164,7 @@ extern const CFStringRef kUTTypeFileURL;
 #define NSVisualEffectMaterialHeaderView ((NSVisualEffectMaterial)10)
 #define NSVisualEffectMaterialToolTip ((NSVisualEffectMaterial)17)
 #endif
-NSValue *NSAccessibilityFrameInView(NSView *parentView, NSRect frame);
+NSRect NSAccessibilityFrameInView(NSView *parentView, NSRect frame);
 extern NSString *const NSImageNameApplicationIcon;
 extern NSString *const NSProgressFileOperationKindKey, *const NSProgressFileOperationKindDownloading, *const NSProgressFileOperationKindCopying;
 @interface NSView (WsbsdFitting)

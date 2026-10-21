@@ -271,10 +271,10 @@ NSString *const NSImageNameApplicationIcon = @"NSApplicationIcon";
 NSString *const NSProgressFileOperationKindKey = @"NSProgressFileOperationKindKey";
 NSString *const NSProgressFileOperationKindDownloading = @"NSProgressFileOperationKindDownloading";
 NSString *const NSProgressFileOperationKindCopying = @"NSProgressFileOperationKindCopying";
-NSValue *NSAccessibilityFrameInView(NSView *parent, NSRect frame)                                       /* the frame in screen coordinates, as an NSValue */
+NSRect NSAccessibilityFrameInView(NSView *parent, NSRect frame)                                       /* the frame in screen coordinates */
 {
 	NSRect r = [parent convertRect: frame toView: nil]; r.origin = [[parent window] convertBaseToScreen: r.origin];
-	return [NSValue valueWithRect: r];
+	return r;
 }
 @implementation NSView (WsbsdFitting)
 - (NSSize)fittingSize                                                                                     /* what the view needs: its intrinsic size, else the size it has */
