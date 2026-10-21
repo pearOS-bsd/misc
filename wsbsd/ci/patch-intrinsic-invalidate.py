@@ -14,7 +14,7 @@ if "intrinsicContentSizeDidChangeForView" not in s:
 
   if (getenv("WSBSD_ALDEBUG"))
     {
-      fprintf(stderr, "AL intrinsic changed %s %g x %g (width var %s, height var %s)\n",
+      fprintf(stderr, "AL intrinsic changed %s %g x %g (width var %s, height var %s)\\n",
         object_getClassName(view), size.width, size.height,
         [self getExistingVariableForView: view withViewAttribute: GSLayoutViewAttributeIntrinsicWidth] ? "yes" : "no",
         [self getExistingVariableForView: view withViewAttribute: GSLayoutViewAttributeIntrinsicHeight] ? "yes" : "no");
