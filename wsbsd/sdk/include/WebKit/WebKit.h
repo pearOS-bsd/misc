@@ -39,13 +39,14 @@ typedef enum { WebNavigationTypeLinkClicked, WebNavigationTypeFormSubmitted, Web
 @end
 @interface WebPreferences : NSObject
 + (WebPreferences *)standardPreferences;
+- (instancetype)initWithIdentifier:(NSString *)anIdentifier;
 - (void)setStandardFontFamily:(NSString *)family; - (void)setFixedFontFamily:(NSString *)family;
 - (void)setDefaultFontSize:(int)size; - (void)setDefaultFixedFontSize:(int)size;
 - (void)setJavaScriptEnabled:(BOOL)flag; - (void)setPlugInsEnabled:(BOOL)flag;
 - (void)setUserStyleSheetEnabled:(BOOL)flag; - (void)setUserStyleSheetLocation:(NSURL *)url;
 @end
 @interface WebDataSource : NSObject
-- (NSURLRequest *)request; - (NSURLResponse *)response; - (NSData *)data; - (WebFrame *)webFrame;
+- (NSURLRequest *)initialRequest; - (NSURLRequest *)request; - (NSURLResponse *)response; - (NSData *)data; - (WebFrame *)webFrame;
 @end
 @interface WebFrameView : NSView
 - (BOOL)allowsScrolling; - (void)setAllowsScrolling:(BOOL)flag;

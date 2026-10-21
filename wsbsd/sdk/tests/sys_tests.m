@@ -1,5 +1,5 @@
 /* The Darwin system interfaces of the SDK layer: copyfile, uuid, exchangedata, confstr user directories, fcntl F_GETPATH, CommonCrypto digests, Gestalt, FSEvents flush */
-#import <Foundation/Foundation.h>
+#import <Cocoa/Cocoa.h>
 #include <CoreServices/CoreServices.h>
 #include <CommonCrypto/CommonDigest.h>
 #include <copyfile.h>
@@ -46,6 +46,11 @@ int main(void)
 		AEDesc got; CHECK(AEGetParamDesc(&ev, '----', typeWildCard, &got) == 0 && got.descriptorType == typeUTF8Text && AEGetDescDataSize(&got) == 5); char tb[8] = { 0 }; CHECK(AEGetDescData(&got, tb, 7) == 0 && !strcmp(tb, "hello")); AEDisposeDesc(&got);
 		AEDesc uni; CHECK(AEGetParamDesc(&ev, '----', typeUnicodeText, &uni) == 0 && AEGetDescDataSize(&uni) == 10); AEDisposeDesc(&uni); CHECK(AEGetParamDesc(&ev, 'zzzz', typeWildCard, &got) == errAEDescNotFound);
 		AEDesc dup; CHECK(AEDuplicateDesc(&ev, &dup) == 0); long cnt = 0; CHECK(AECountItems(&dup, &cnt) == 0 && cnt == 3); AEDisposeDesc(&dup); AEDisposeDesc(&ev);
+		NSMutableIndexSet *is = [NSMutableIndexSet indexSet]; [is addIndexesInRange: NSMakeRange(0, 10)]; NSIndexSet *evens = [is indexesPassingTest: ^BOOL(NSUInteger i, BOOL *stop) { return i % 2 == 0; }]; CHECK([evens count] == 5 && [evens containsIndex: 4] && ![evens containsIndex: 3]);
+		char ln[256]; snprintf(ln, sizeof ln, "%s/link", dir); symlink("/tmp/target", ln); CHECK([[[NSFileManager defaultManager] destinationOfSymbolicLinkAtPath: [NSString stringWithUTF8String: ln] error: NULL] isEqual: @"/tmp/target"]);
+		char o1[256], n1[256]; snprintf(o1, sizeof o1, "%s/orig", dir); snprintf(n1, sizeof n1, "%s/new1", dir); put(o1, "old"); put(n1, "fresh"); NSURL *res = nil;
+		CHECK([[NSFileManager defaultManager] replaceItemAtURL: [NSURL fileURLWithPath: [NSString stringWithUTF8String: o1]] withItemAtURL: [NSURL fileURLWithPath: [NSString stringWithUTF8String: n1]] backupItemName: @"orig.bak" options: 0 resultingItemURL: &res error: NULL]);
+		CHECK([get(o1) isEqual: @"fresh"]); char bk[256]; snprintf(bk, sizeof bk, "%s/orig.bak", dir); CHECK([get(bk) isEqual: @"old"]); CHECK(res != nil);
 		[[NSFileManager defaultManager] removeItemAtPath: d error: NULL];
 		printf(fails ? "%d failures\n" : "sys tests ok\n", fails);
 	}
