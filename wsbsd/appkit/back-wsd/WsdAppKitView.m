@@ -57,7 +57,6 @@ static NSNumber *B(BOOL v) { return [NSNumber numberWithBool: v]; }
 - (void)viewDidChangeEffectiveAppearance {}
 - (void)viewDidChangeEffectiveCornerRadii {}
 - (NSSize)fittingSize { return [self frame].size; }
-- (void)invalidateIntrinsicContentSize {}
 - (CGFloat)lastBaselineOffsetFromBottom { return 0; }
 - (BOOL)hasAmbiguousLayout { return NO; }
 - (void)exerciseAmbiguityInLayout {}

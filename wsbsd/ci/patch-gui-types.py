@@ -37,7 +37,7 @@ if fd:
             open(p, "w").write(s.replace(a, b))
 ALL = [("NSMenu.h", "id <NSMenuItem>", "NSMenuItem *"),                                         # menu items are objects of the class on macOS, not of a protocol
        ("NSTableColumn.h", "- (NSCell *) dataCell;", "- (__kindof NSCell *) dataCell;"),
-       ("NSDragging.h", "@protocol NSDraggingInfo\n", "@protocol NSDraggingInfo\n@property BOOL animatesToDestination;\n- (void)enumerateDraggingItemsWithOptions:(NSUInteger)enumOpts forView:(NSView *)view classes:(NSArray *)classArray searchOptions:(NSDictionary *)searchOptions usingBlock:(void (^)(NSDraggingItem *draggingItem, NSInteger idx, BOOL *stop))block;\n")]
+       ("NSDragging.h", "@protocol NSDraggingInfo\n", "@protocol NSDraggingInfo\n@property BOOL animatesToDestination;\n- (void)enumerateDraggingItemsWithOptions:(NSUInteger)enumOpts forView:(id)view classes:(NSArray *)classArray searchOptions:(NSDictionary *)searchOptions usingBlock:(void (^)(NSDraggingItem *draggingItem, NSInteger idx, BOOL *stop))block;\n")]
 for f, a, b in ALL:
     p = d + "/" + f
     try:

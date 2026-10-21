@@ -182,7 +182,7 @@ NSString *const NSImageNameTouchBarSidebarTemplate = @"NSTouchBarSidebarTemplate
 @end
 @implementation NSObject (WsbsdDraggingInfo)
 - (BOOL)animatesToDestination { return GetBool(self, &kAnimDest); } - (void)setAnimatesToDestination:(BOOL)f { Set(self, &kAnimDest, @(f)); }
-- (void)enumerateDraggingItemsWithOptions:(NSUInteger)o forView:(NSView *)v classes:(NSArray *)classes searchOptions:(NSDictionary *)so usingBlock:(void (^)(NSDraggingItem *, NSInteger, BOOL *))block
+- (void)enumerateDraggingItemsWithOptions:(NSUInteger)o forView:(id)v classes:(NSArray *)classes searchOptions:(NSDictionary *)so usingBlock:(void (^)(NSDraggingItem *, NSInteger, BOOL *))block
 {
 	if (![self respondsToSelector: @selector(draggingPasteboard)]) return; NSPasteboard *pb = [(id)self draggingPasteboard]; NSArray *objs = [pb readObjectsForClasses: classes options: so] ?: @[]; BOOL stop = NO; NSInteger i = 0;
 	for (id obj in objs) { NSDraggingItem *it = [[NSDraggingItem alloc] initWithPasteboardWriter: (id)obj]; block(it, i++, &stop); if (stop) break; }
@@ -346,4 +346,112 @@ static const char kFullPrev;
  * class raises "subclass responsibility" for. Instances of the class itself are made as GSAttributedString (which has its own), so only such subclasses get here: the initializer just returns the object. */
 @implementation NSAttributedString (WsbsdSubclassInit)
 - (instancetype)initWithString:(NSString *)string attributes:(NSDictionary *)attributes { (void)string; (void)attributes; return self; }
+@end
+
+/* WSBSD_VIEWDUMP=seconds: that long after launch every window's view tree (class, frame, hidden, translatesAutoresizing, constraint count) is written to stderr; a debugging aid for ported applications */
+static void DumpView(NSView *v, int depth)
+{
+	NSRect f = [v frame]; NSSize in = [v intrinsicContentSize]; fprintf(stderr, "%*s%s f=(%.0f,%.0f %.0fx%.0f) %s%s cons=%lu intr=(%g,%g)\n", depth * 2, "", class_getName(object_getClass(v)), f.origin.x, f.origin.y, f.size.width, f.size.height, [v isHidden] ? "hidden " : "", [v translatesAutoresizingMaskIntoConstraints] ? "tamic" : "AL", (unsigned long)[[v constraints] count], in.width, in.height);
+	if (getenv("WSBSD_VIEWDUMP_CONS")) for (NSLayoutConstraint *c in [v constraints]) fprintf(stderr, "%*s  - %s.%ld %s %s.%ld *%g +%g @%g\n", depth * 2, "", class_getName(object_getClass([c firstItem])), (long)[c firstAttribute], [c relation] == NSLayoutRelationEqual ? "==" : [c relation] == NSLayoutRelationGreaterThanOrEqual ? ">=" : "<=", [c secondItem] ? class_getName(object_getClass([c secondItem])) : "-", (long)[c secondAttribute], (double)[c multiplier], (double)[c constant], (double)[c priority]);
+	for (NSView *s in [v subviews]) DumpView(s, depth + 1);
+}
+@interface WsbsdViewDumper : NSObject @end
+@implementation WsbsdViewDumper
++ (void)load
+{
+	if (!getenv("WSBSD_VIEWDUMP")) return; double secs = atof(getenv("WSBSD_VIEWDUMP"));
+	[[NSNotificationCenter defaultCenter] addObserverForName: @"NSApplicationDidFinishLaunchingNotification" object: nil queue: nil usingBlock: ^(NSNotification *n) {
+		[NSTimer scheduledTimerWithTimeInterval: secs repeats: NO block: ^(NSTimer *t) { for (NSWindow *w in [NSApp windows]) { fprintf(stderr, "WINDOW %s frame=(%.0f,%.0f %.0fx%.0f) visible=%d\n", [[w title] UTF8String] ?: "", [w frame].origin.x, [w frame].origin.y, [w frame].size.width, [w frame].size.height, (int)[w isVisible]); if ([w contentView]) { if (getenv("WSBSD_VIEWDUMP_LAYOUT") && [[w contentView] respondsToSelector: @selector(layoutSubtreeIfNeeded)]) { [[w contentView] layoutSubtreeIfNeeded]; fprintf(stderr, "(after layoutSubtreeIfNeeded)\n"); } DumpView([w contentView], 1); } } }]; }];
+}
+@end
+
+/* Auto Layout before drawing: GNUstep solves the constraints of a window only when something asks (layoutSubtreeIfNeeded); AppKit does it at the start of every display cycle. -displayIfNeeded and
+ * -display of a window now lay the content view out first. */
+@interface NSWindow (WsbsdLayoutBeforeDisplay) - (void)wsbsdDisplayIfNeeded; - (void)wsbsdDisplay; @end
+@implementation NSWindow (WsbsdLayoutBeforeDisplay)
++ (void)load
+{
+	Class c = objc_getClass("NSWindow");
+	Method a = class_getInstanceMethod(c, @selector(displayIfNeeded)), b = class_getInstanceMethod(c, @selector(wsbsdDisplayIfNeeded));
+	if (a && b) method_exchangeImplementations(a, b);
+	a = class_getInstanceMethod(c, @selector(display)); b = class_getInstanceMethod(c, @selector(wsbsdDisplay)); if (a && b) method_exchangeImplementations(a, b);
+}
+static void LayoutFirst(NSWindow *w)
+{
+	static __thread int busy; if (busy) return; NSView *cv = [w contentView]; if (!cv || ![cv respondsToSelector: @selector(layoutSubtreeIfNeeded)]) return;
+	busy = 1; [cv layoutSubtreeIfNeeded]; busy = 0;
+}
+- (void)wsbsdDisplayIfNeeded { LayoutFirst(self); [self wsbsdDisplayIfNeeded]; }
+- (void)wsbsdDisplay { LayoutFirst(self); [self wsbsdDisplay]; }
+@end
+
+/* -[NSGraphicsContext CGContext] (declared by GNUstep, not implemented): the CGContext of the cairo surface, as graphicsPort gives it */
+@implementation NSGraphicsContext (WsbsdCGContext)
+- (CGContextRef)CGContext { return (CGContextRef)[self graphicsPort]; }
+@end
+
+/* WSBSD_LOGEXC=1: every raised NSException is written to stderr with its name, reason and a stack (a debugging aid; run loops swallow exceptions with a message that omits the reason) */
+@interface NSException (WsbsdLog) - (void)wsbsdRaise; @end
+@implementation NSException (WsbsdLog)
++ (void)load
+{
+	if (!getenv("WSBSD_LOGEXC")) return;
+	Class c = objc_getClass("NSException"); Method a = class_getInstanceMethod(c, @selector(raise)), b = class_getInstanceMethod(c, @selector(wsbsdRaise)); if (a && b) method_exchangeImplementations(a, b);
+}
+- (void)wsbsdRaise
+{
+	fprintf(stderr, "EXC name=%s reason=%s\n", [[self name] UTF8String] ?: "(nil)", [[self reason] UTF8String] ?: "(nil)");
+	[self wsbsdRaise];
+}
+@end
+
+/* -[NSImage CGImageForProposedRect:context:hints:]: the image drawn into a bitmap of the proposed size (the image's own size when none is proposed); the CGImage lives as long as the NSImage */
+@interface NSImage (WsbsdCGImage) - (CGImageRef)CGImageForProposedRect:(NSRect *)proposedDestRect context:(NSGraphicsContext *)referenceContext hints:(NSDictionary *)hints; @end
+@implementation NSImage (WsbsdCGImage)
+- (CGImageRef)CGImageForProposedRect:(NSRect *)proposed context:(NSGraphicsContext *)ref hints:(NSDictionary *)hints
+{
+	(void)ref; (void)hints; NSSize sz = (proposed && proposed->size.width > 0 && proposed->size.height > 0) ? proposed->size : [self size]; if (sz.width < 1 || sz.height < 1) return NULL;
+	size_t w = (size_t)ceil(sz.width), h = (size_t)ceil(sz.height); CGColorSpaceRef cs = CGColorSpaceCreateDeviceRGB();
+	CGContextRef c = CGBitmapContextCreate(NULL, w, h, 8, w * 4, cs, kCGImageAlphaPremultipliedLast); CGColorSpaceRelease(cs); if (!c) return NULL;
+	NSGraphicsContext *gc = [NSGraphicsContext graphicsContextWithGraphicsPort: c flipped: NO]; [NSGraphicsContext saveGraphicsState]; [NSGraphicsContext setCurrentContext: gc];
+	[self drawInRect: NSMakeRect(0, 0, w, h) fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; [NSGraphicsContext restoreGraphicsState];
+	CGImageRef img = CGBitmapContextCreateImage(c); CGContextRelease(c); if (proposed) *proposed = NSMakeRect(0, 0, w, h);
+	if (img) { objc_setAssociatedObject(self, "wsbsd.cgimage", (__bridge id)img, OBJC_ASSOCIATION_RETAIN_NONATOMIC); CGImageRelease(img); }
+	return (__bridge CGImageRef)objc_getAssociatedObject(self, "wsbsd.cgimage");
+}
+@end
+
+/* Non-finite geometry: GNUstep's Auto Layout and clip views can produce an infinite or NaN origin or size while a scroll view's contents are being laid out for the first time (the clip view is still 0x0); once a NaN sits in
+ * a clip view's bounds it never leaves and every later computation is NaN (TextMate's gutter ends up infinitely tall). Frames and bounds are cleaned on their way in: a non-finite component becomes 0.
+ * WSBSD_LOGNEG=1 reports each case with the class of the view. */
+static CGFloat Fin(CGFloat v) { return isfinite(v) ? v : 0; }
+static void Report(NSView *v, const char *what) { if (getenv("WSBSD_LOGNEG")) fprintf(stderr, "NONFINITE %s in %s\n", what, class_getName(object_getClass(v))); }
+@interface NSView (WsbsdFinite) - (void)wsbsdSetFrame:(NSRect)f; - (void)wsbsdSetFrameSize:(NSSize)s; - (void)wsbsdSetFrameOrigin:(NSPoint)p; - (void)wsbsdSetBoundsOrigin:(NSPoint)p; - (void)wsbsdSetBounds:(NSRect)b; @end
+@implementation NSView (WsbsdFinite)
++ (void)load
+{
+	Class c = objc_getClass("NSView"); const char *pairs[][2] = { { "setFrame:", "wsbsdSetFrame:" }, { "setFrameSize:", "wsbsdSetFrameSize:" }, { "setFrameOrigin:", "wsbsdSetFrameOrigin:" }, { "setBoundsOrigin:", "wsbsdSetBoundsOrigin:" }, { "setBounds:", "wsbsdSetBounds:" } };
+	for (int i = 0; i < 5; i++) { Method a = class_getInstanceMethod(c, sel_registerName(pairs[i][0])), b = class_getInstanceMethod(c, sel_registerName(pairs[i][1])); if (a && b) method_exchangeImplementations(a, b); }
+}
+- (void)wsbsdSetFrame:(NSRect)f { if (!isfinite(f.origin.x) || !isfinite(f.origin.y) || !isfinite(f.size.width) || !isfinite(f.size.height)) { Report(self, "frame"); f = NSMakeRect(Fin(f.origin.x), Fin(f.origin.y), Fin(f.size.width), Fin(f.size.height)); } [self wsbsdSetFrame: f]; }
+- (void)wsbsdSetFrameSize:(NSSize)s { if (!isfinite(s.width) || !isfinite(s.height)) { Report(self, "size"); s = NSMakeSize(Fin(s.width), Fin(s.height)); } [self wsbsdSetFrameSize: s]; }
+- (void)wsbsdSetFrameOrigin:(NSPoint)p { if (!isfinite(p.x) || !isfinite(p.y)) { Report(self, "origin"); p = NSMakePoint(Fin(p.x), Fin(p.y)); } [self wsbsdSetFrameOrigin: p]; }
+- (void)wsbsdSetBoundsOrigin:(NSPoint)p { if (!isfinite(p.x) || !isfinite(p.y)) { Report(self, "bounds origin"); p = NSMakePoint(Fin(p.x), Fin(p.y)); } [self wsbsdSetBoundsOrigin: p]; }
+- (void)wsbsdSetBounds:(NSRect)b { if (!isfinite(b.origin.x) || !isfinite(b.origin.y) || !isfinite(b.size.width) || !isfinite(b.size.height)) { Report(self, "bounds"); b = NSMakeRect(Fin(b.origin.x), Fin(b.origin.y), Fin(b.size.width), Fin(b.size.height)); } [self wsbsdSetBounds: b]; }
+@end
+
+/* -[NSView visibleRect] of a view that is not in a window: Apple answers NSZeroRect, GNUstep an unbounded rectangle (height CGFLOAT_MAX). Applications add it to their own sizes (TextMate's gutter height, which then
+ * reaches Auto Layout as an intrinsic height of 1.8e308). */
+@interface NSView (WsbsdVisibleRect) - (NSRect)wsbsdVisibleRect; @end
+@implementation NSView (WsbsdVisibleRect)
++ (void)load
+{
+	Class c = objc_getClass("NSView"); Method a = class_getInstanceMethod(c, @selector(visibleRect)), b = class_getInstanceMethod(c, @selector(wsbsdVisibleRect)); if (a && b) method_exchangeImplementations(a, b);
+}
+- (NSRect)wsbsdVisibleRect
+{
+	NSRect r = [self wsbsdVisibleRect];
+	if (![self window] || !isfinite(r.size.width) || !isfinite(r.size.height) || r.size.width > 1e12 || r.size.height > 1e12) return NSZeroRect;
+	return r;
+}
 @end

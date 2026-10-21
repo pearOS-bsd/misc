@@ -162,7 +162,7 @@ extern NSString *const NSImageNameTouchBarSearchTemplate, *const NSImageNameTouc
 @end
 @interface NSObject (WsbsdDraggingInfo)
 @property BOOL animatesToDestination;
-- (void)enumerateDraggingItemsWithOptions:(NSUInteger)enumOpts forView:(NSView *)view classes:(NSArray *)classArray searchOptions:(NSDictionary *)searchOptions usingBlock:(void (^)(NSDraggingItem *draggingItem, NSInteger idx, BOOL *stop))block;
+- (void)enumerateDraggingItemsWithOptions:(NSUInteger)enumOpts forView:(id)view classes:(NSArray *)classArray searchOptions:(NSDictionary *)searchOptions usingBlock:(void (^)(NSDraggingItem *draggingItem, NSInteger idx, BOOL *stop))block;
 @end
 @interface NSSpellChecker (WsbsdLearn)
 - (void)learnWord:(NSString *)word;
