@@ -70,3 +70,4 @@ int32_t LSCopyItemInfoForURL(CFURLRef inURL, LSRequestedInfo inWhichInfo, LSItem
 {
 	(void)inURL; (void)inWhichInfo; if (outItemInfo) { outItemInfo->flags = 0; outItemInfo->filetype = 0; outItemInfo->creator = 0; outItemInfo->extension = NULL; } return 0;
 }
+
