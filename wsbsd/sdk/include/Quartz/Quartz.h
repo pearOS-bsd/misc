@@ -20,7 +20,7 @@
 @end
 @interface QLPreviewPanel : NSPanel
 @property (assign) id<QLPreviewPanelDataSource> dataSource;
-@property (assign) id<QLPreviewPanelDelegate> delegate;
+@property (assign) id delegate;
 @property NSInteger currentPreviewItemIndex;
 + (QLPreviewPanel *)sharedPreviewPanel;
 + (BOOL)sharedPreviewPanelExists;

@@ -7,4 +7,15 @@
 #include <CoreText/CoreText.h>
 #endif
 #include <wsbsd/CGEvent.h>
+/* UniversalAccess: the screen magnifier is not there */
+#ifdef __cplusplus
+extern "C" {
+#endif
+enum { kUAZoomFocusTypeOther = 0, kUAZoomFocusTypeInsertionPoint = 1 };
+typedef int UAZoomFocusType;
+static inline Boolean UAZoomEnabled(void) { return false; }
+static inline OSStatus UAZoomChangeFocus(const CGRect *viewRect, const CGRect *selectedRect, UAZoomFocusType type) { (void)viewRect; (void)selectedRect; (void)type; return 0; }
+#ifdef __cplusplus
+}
+#endif
 #endif

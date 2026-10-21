@@ -19,6 +19,7 @@ enum { errSecSuccess = 0, errSecNotAvailable = -25291, errSecItemNotFound = -253
 enum { kSecCSDefaultFlags = 0, kSecCSDynamicInformation = 1 << 3, kSecCSSigningInformation = 1 << 1, kSecCSRequirementInformation = 1 << 2 };
 extern const CFStringRef kSecCodeInfoEntitlementsDict, kSecCodeInfoEntitlements, kSecCodeInfoIdentifier;
 
+#pragma clang arc_cf_code_audited begin
 /* Keychain and keys: there is no keychain here; the queries answer errSecNotAvailable / errSecItemNotFound (an application then behaves as for a user without stored items). Implemented in sdk/src/Security.c */
 typedef const struct __SecKey *SecKeyRef;
 typedef const struct __SecKeychainItem *SecKeychainItemRef;
@@ -60,6 +61,7 @@ Boolean SecTransformSetAttribute(SecTransformRef transform, CFStringRef key, CFT
 CFTypeRef SecTransformExecute(SecTransformRef transform, CFErrorRef *error);
 int32_t SecCodeCopySelf(SecCSFlags flags, SecCodeRef *self);
 int32_t SecCodeCopySigningInformation(SecCodeRef code, SecCSFlags flags, CFDictionaryRef *information);
+#pragma clang arc_cf_code_audited end
 #ifdef __cplusplus
 }
 #endif

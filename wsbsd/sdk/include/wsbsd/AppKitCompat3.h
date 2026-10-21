@@ -4,6 +4,7 @@
 #define WSBSD_APPKITCOMPAT3_H
 #import <AppKit/AppKit.h>
 #include <wsbsd/CGEvent.h>
+@class NSDraggingItem;
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -117,10 +118,14 @@ extern NSString *const NSApplicationLaunchUserNotificationKey, *const NSAnimateB
 @end
 
 /* accessibility */
+typedef NSString *NSAccessibilityRole, *NSAccessibilitySubrole, *NSAccessibilityAttributeName, *NSAccessibilityParameterizedAttributeName, *NSAccessibilityActionName, *NSAccessibilityNotificationName, *NSAccessibilityOrientationValue;
 @interface NSObject (WsbsdAccessibility)
 - (NSArray *)accessibilityAttributeNames;
 - (BOOL)accessibilityIsAttributeSettable:(NSString *)attribute;
 - (void)accessibilitySetValue:(id)value forAttribute:(NSString *)attribute;
+- (NSUInteger)accessibilityArrayAttributeCount:(NSString *)attribute;
+- (NSArray *)accessibilityArrayAttributeValues:(NSString *)attribute index:(NSUInteger)index maxCount:(NSUInteger)maxCount;
+- (NSUInteger)accessibilityIndexOfChild:(id)child;
 @property (nonatomic, strong) id accessibilityTitleUIElement;
 @property (nonatomic, copy) NSArray *accessibilitySharedFocusElements;
 @end
@@ -138,6 +143,33 @@ extern NSString *const NSTouchBarItemIdentifierOtherItemsProxy, *const NSTouchBa
 @end
 @interface NSCustomTouchBarItem (WsbsdCompat3)
 @property (strong) NSView *view;
+@property (copy) NSString *customizationLabel;
+@end
+@interface NSTouchBarItem (WsbsdPriority)
+@property float visibilityPriority;
+@end
+enum { NSTouchBarItemPriorityHigh = 1000, NSTouchBarItemPriorityNormal = 0, NSTouchBarItemPriorityLow = -1000 };
+extern NSString *const NSImageNameTouchBarSearchTemplate, *const NSImageNameTouchBarBookmarksTemplate, *const NSImageNameTouchBarAddTemplate, *const NSImageNameTouchBarRefreshTemplate, *const NSImageNameTouchBarSidebarTemplate;
+@interface NSView (WsbsdInput)
+@property (readonly, strong) NSTextInputContext *inputContext;
+- (BOOL)isInFullScreenMode;
+@end
+#include <CoreServices/AppleEvents.h>
+@interface NSAppleEventDescriptor (WsbsdAEDesc)
+- (const AEDesc *)aeDesc;
+@end
+@interface NSDraggingSessionItemsHelper : NSObject
+@end
+@interface NSObject (WsbsdDraggingInfo)
+@property BOOL animatesToDestination;
+- (void)enumerateDraggingItemsWithOptions:(NSUInteger)enumOpts forView:(NSView *)view classes:(NSArray *)classArray searchOptions:(NSDictionary *)searchOptions usingBlock:(void (^)(NSDraggingItem *draggingItem, NSInteger idx, BOOL *stop))block;
+@end
+@interface NSSpellChecker (WsbsdLearn)
+- (void)learnWord:(NSString *)word;
+- (void)unlearnWord:(NSString *)word;
+@end
+@interface NSURLProtocol (WsbsdProperties)
++ (void)removePropertyForKey:(NSString *)key inRequest:(NSMutableURLRequest *)request;
 @end
 
 /* Apple events as objects (GNUstep's NSAppleEventDescriptor and NSAppleEventManager are empty shells): in-memory descriptors, and handlers registered for event class / id that -dispatch calls */
@@ -195,11 +227,112 @@ extern NSString *const NSWorkspaceLaunchConfigurationAppleEvent;
 @property NSInteger dateTimeStyle, unitsStyle, formattingContext;
 - (NSString *)localizedStringForDate:(NSDate *)date relativeToDate:(NSDate *)referenceDate;
 @end
-/* the C++ view of NS_OPTIONS-less enums: `a | b` stays the enum type */
-#ifdef __cplusplus
-inline NSTableViewAnimationOptions operator|(NSTableViewAnimationOptions a, NSTableViewAnimationOptions b) { return (NSTableViewAnimationOptions)((int)a | (int)b); }
-#endif
+/* the is-getters GNUstep declares as methods only: Apple declares @property (getter=isX), and `view.hidden` needs the declaration */
+@interface NSView (WsbsdProps)
+@property (getter=isHidden) BOOL hidden;
+@end
+@interface NSText (WsbsdProps)
+@property (getter=isEditable) BOOL editable;
+@property (getter=isSelectable) BOOL selectable;
+@property (getter=isRichText) BOOL richText;
+@property (getter=isFieldEditor) BOOL fieldEditor;
+@end
+@interface NSControl (WsbsdProps)
+@property (getter=isEnabled) BOOL enabled;
+@end
+@interface NSCell (WsbsdProps)
+@property (getter=isEnabled) BOOL enabled;
+@property (getter=isEditable) BOOL editable;
+@property (getter=isSelectable) BOOL selectable;
+@property (getter=isBordered) BOOL bordered;
+@property (getter=isScrollable) BOOL scrollable;
+@property (getter=isHighlighted) BOOL highlighted;
+@end
+@interface NSWindow (WsbsdProps)
+@property (getter=isVisible) BOOL visible;
+@property (getter=isOpaque) BOOL opaque;
+@property (readonly, getter=isKeyWindow) BOOL keyWindow;
+@property (readonly, getter=isMainWindow) BOOL mainWindow;
+@property (readonly, getter=isMiniaturized) BOOL miniaturized;
+@property (getter=isZoomed) BOOL zoomed;
+@property (getter=isDocumentEdited) BOOL documentEdited;
+@property (strong) NSButtonCell *defaultButtonCell;
+@end
+@interface NSMenuItem (WsbsdProps)
+@property (getter=isEnabled) BOOL enabled;
+@property (getter=isHidden) BOOL hidden;
+@property (readonly, getter=isSeparatorItem) BOOL separatorItem;
+@end
+@interface NSApplication (WsbsdProps)
+@property (readonly, getter=isActive) BOOL active;
+@property (readonly, getter=isRunning) BOOL running;
+@property (readonly, getter=isHidden) BOOL hidden;
+@end
+/* Foundation additions */
+@interface NSProgress (WsbsdCompat3)
+- (void)setLocalizedDescription:(NSString *)description;
+- (void)setLocalizedAdditionalDescription:(NSString *)description;
+@end
+extern NSString *const NSProgressKindFile, *const NSProgressEstimatedTimeRemainingKey, *const NSProgressThroughputKey;
+@interface NSTask (WsbsdTermination)
+@property (copy) void (^terminationHandler)(NSTask *task);
+@end
+@interface NSStackView (WsbsdCompat3)
+@property (readonly, copy) NSArray *views;
+@end
+@interface NSGridRow (WsbsdCompat3)
+@property NSGridRowAlignment rowAlignment;
+@end
+@interface NSViewController (WsbsdChildren)
+- (void)addChildViewController:(NSViewController *)childViewController;
+- (void)removeFromParentViewController;
+@property (readonly, copy) NSArray<NSViewController *> *childViewControllers;
+@property (nonatomic, copy) NSString *identifier;
+@end
+@interface NSSplitViewItem (WsbsdCompat3)
+- (void)setCanCollapse:(BOOL)flag;
+- (void)setHoldingPriority:(float)priority;
+@end
+@protocol NSTextStorageDelegate <NSObject>
+@optional
+- (void)textStorage:(NSTextStorage *)textStorage willProcessEditing:(NSUInteger)editedMask range:(NSRange)editedRange changeInLength:(NSInteger)delta;
+- (void)textStorage:(NSTextStorage *)textStorage didProcessEditing:(NSUInteger)editedMask range:(NSRange)editedRange changeInLength:(NSInteger)delta;
+@end
+@interface NSURL (WsbsdPasteboardWriting) <NSPasteboardWriting>
+@end
+@interface NSView (WsbsdDragSource)
+- (void)draggingSession:(NSDraggingSession *)session endedAtPoint:(NSPoint)screenPoint operation:(NSDragOperation)operation;
+- (void)draggingSession:(NSDraggingSession *)session movedToPoint:(NSPoint)screenPoint;
+@end
+@interface NSSpellChecker (WsbsdCompat4)
+- (BOOL)hasLearnedWord:(NSString *)word;
+- (NSArray *)guessesForWordRange:(NSRange)range inString:(NSString *)string language:(NSString *)language inSpellDocumentWithTag:(NSInteger)tag;
+@end
+typedef NSString *NSURLFileResourceType;
 
+@interface NSAccessibilityCustomRotorItemResult (WsbsdSetters)
+@property NSRange targetRange;
+@property (copy) NSString *customLabel;
+@end
+@interface NSAccessibilityCustomRotorSearchParameters : NSObject
+@property (strong) NSAccessibilityCustomRotorItemResult *currentItem;
+@property NSInteger searchDirection;
+@property (copy) NSString *filterString;
+@end
+extern NSString *const NSImageNameTouchBarGoUpTemplate, *const NSImageNameTouchBarGoDownTemplate;
+@interface NSWindow (WsbsdFullScreen)
+- (void)toggleFullScreen:(id)sender;
+@end
+@interface NSAlert (WsbsdLayout)
+- (void)layout;
+@end
+@interface NSEvent (WsbsdForce)
+@property (readonly) NSInteger stage;
+@property (readonly) CGFloat stageTransition;
+@end
+@interface NSView (WsbsdDefinition)
+- (void)showDefinitionForAttributedString:(NSAttributedString *)attrString atPoint:(NSPoint)textBaselineOrigin;
+@end
 @interface NSDraggingItem : NSObject
 @property (readonly, retain) id item;
 @property NSRect draggingFrame;
