@@ -18,7 +18,7 @@ pkg info -e zsh >/dev/null 2>&1 || pkg install -y zsh >/dev/null 2>&1 || true
 if [ -z "$SKIP_SOFTWARE" ]; then
 	pkg install -y python3 gmake pkgconf git >/dev/null 2>&1 || true
 	sh "$WS/ci/gnustep-setup.sh" > "$WORK/gnustep.log" 2>&1 || { tail -30 "$WORK/gnustep.log"; exit 1; }
-	sh "$WS/ci/opal-build.sh" > "$WORK/opal.log" 2>&1 || { tail -30 "$WORK/opal.log"; exit 1; }
+	sh "$WS/ci/opal-build.sh" > "$WORK/opal.log" 2>&1 || true      # the script ends with a demo that is not needed here; the libraries are checked below
 fi
 . /usr/local/GNUstep/System/Library/Makefiles/GNUstep.sh
 for need in /usr/local/GNUstep/System/Library/Libraries/libgnustep-gui.so.0.32 /usr/local/GNUstep/System/Library/Libraries/libgnustep-base.so.1.31 /usr/local/GNUstep/Local/Library/Libraries/libgnustep-corebase.so.0 /usr/local/GNUstep/Local/Library/Libraries/libopal.so.0; do
