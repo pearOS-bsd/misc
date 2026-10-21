@@ -26,14 +26,6 @@ F = [("NSDictionary.h", "GSKeysAndObjectsEnumeratorBlock, void, GS_GENERIC_TYPE_
      ("NSUUID.h", "#if\tdefined(uuid_t)\n#undef\tuuid_t\n#endif\n#define\tuuid_t\tgsuuid_t\n", "")]      # a block over a raw NSDictionary takes (id key, id obj, BOOL *stop), as on macOS
 import os
 fd = os.path.join(os.path.dirname(d), "Foundation") if os.path.isdir(os.path.join(os.path.dirname(d), "Foundation")) else None
-# GNUstep's `#define main gnustep_base_user_main` gives a C++ main() a mangled name the library cannot call; the argument capture moves to a constructor of libwsbsdcompat (sdk/src/ProcessArgs.m)
-gd = os.path.join(os.path.dirname(d), "GNUstepBase")
-try:
-    s = open(gd + "/GSConfig.h").read()
-    if "#define GS_FAKE_MAIN\t1" in s:
-        open(gd + "/GSConfig.h", "w").write(s.replace("#define GS_FAKE_MAIN\t1", "#define GS_FAKE_MAIN\t0"))
-except OSError:
-    pass
 if fd:
     for f, a, b in F:
         p = fd + "/" + f

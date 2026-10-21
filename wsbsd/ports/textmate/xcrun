@@ -3,7 +3,7 @@
 # Link steps lose the linker flags of Apple's ld (-dead_strip, -cache_path_lto, -framework X) and gain the libraries of this stack.
 [ "$1" = "--sdk" ] && shift 2
 tool="$1"; shift
-XF="-fmodule-map-file=/root/wsbsd/sdk/modules/module.modulemap -I/root/wsbsd/sdk/modules -I/root/cfwrap -I/root/wsbsd/quartzcore/include -I/root/wsbsd/sdk/include -include /root/wsbsd/sdk/include/wsbsd/prelude.h -w"
+XF="-fmodule-map-file=/root/wsbsd/sdk/modules/module.modulemap -I/root/wsbsd/sdk/modules -I/root/cfwrap -I/root/wsbsd/quartzcore/include -I/root/wsbsd/sdk/include -include /root/wsbsd/sdk/include/wsbsd/prelude.h -D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_NONE -w"
 case "$tool" in
   clang|clang++)
 	. /usr/local/GNUstep/System/Library/Makefiles/GNUstep.sh
