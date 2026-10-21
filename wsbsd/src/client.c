@@ -276,6 +276,7 @@ static int wsx_call(ws_conn *c, int id, const int32_t *a, int na, const char *s,
 	return r.retcode;
 }
 
+int ws_win_set_key(ws_conn *c, ws_win *w) { int32_t a[8] = { (int32_t)w->id }; return wsx_call(c, WSX_SET_KEY, a, 8, NULL, NULL); }
 int ws_win_glass_slot(ws_conn *c, ws_win *w, int slot, ws_rect r, int radius, int mode) { int32_t a[8] = { (int32_t)w->id, r.x, r.y, r.w, r.h, radius, mode, slot }; return wsx_call(c, WSX_SET_GLASS, a, 8, NULL, NULL); }
 int ws_win_glass(ws_conn *c, ws_win *w, ws_rect r, int radius, int mode) { return ws_win_glass_slot(c, w, 0, r, radius, mode); }
 int ws_win_shadow(ws_conn *c, ws_win *w, int cr, int on) { int32_t a[3] = { (int32_t)w->id, cr, on }; return wsx_call(c, WSX_SET_SHADOW, a, 3, NULL, NULL); }

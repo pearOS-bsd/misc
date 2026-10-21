@@ -155,6 +155,7 @@ uint32_t ws_server_modifier_flags(const ws_server *);
 int ws_next_event(ws_server *, ws_wid, ws_event *out);          /* 1 if an event was returned */
 void ws_cursor_pos(ws_server *, int *x, int *y);
 ws_wid ws_key_window(ws_server *);
+int ws_set_key_window(ws_server *, ws_wid id);                     /* the application asked for the keyboard (makeKeyWindow): a floating panel, which the pointer rule alone would not make key */
 typedef void (*ws_event_sink)(void *ctx, uint32_t owner, const ws_event *e);
 void ws_server_set_event_sink(ws_server *, ws_event_sink fn, void *ctx);          /* called for every event queued for a window */
 typedef int (*ws_key_filter)(void *ctx, int key, int down);                  /* returns nonzero when it holds the key event back (active event taps); the holder re-injects it with ws_server_key_unfiltered */
