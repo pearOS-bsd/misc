@@ -35,6 +35,9 @@ git clone --depth 1 https://github.com/gnustep/libs-gui gui 2>&1 | tail -1
 # Auto Layout from xibs: libs-gui parses <constraint> but never builds it, and solves the vertical attributes upwards (ci/patch-*.py)
 python3 "$WS"/ci/patch-gsxib-constraints.py gui/Source/GSXib5KeyedUnarchiver.m; python3 "$WS"/ci/patch-autolayout-vertical.py gui/Source/GSAutoLayoutEngine.m
 python3 "$WS"/ci/patch-pending-constraints.py gui/Source/NSView.m   # constraints added before the view has a window are kept
+python3 "$WS"/ci/patch-owned-constraints.py gui/Source/NSView.m     # -constraints answers the constraints a view owns
+python3 "$WS"/ci/patch-engine-rebuild.py gui/Source/GSAutoLayoutEngine.m   # the solver is built again after constraints were removed
+python3 "$WS"/ci/patch-scroller-intrinsic.py gui/Source/NSScroller.m          # scrollers have no intrinsic size
 python3 "$WS"/ci/patch-intrinsic-invalidate.py gui/Source/GSAutoLayoutEngine.m gui/Source/NSView.m   # invalidateIntrinsicContentSize reaches the engine
 python3 "$WS"/ci/patch-vfl-predicates.py gui/Source/GSAutoLayoutVFLParser.m   # -(>=3@53)- connections
 
