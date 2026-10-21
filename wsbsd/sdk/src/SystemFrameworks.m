@@ -3,6 +3,7 @@
 #import <AddressBook/AddressBook.h>
 #import <ExceptionHandling/NSExceptionHandler.h>
 #import <WebKit/WebKit.h>
+#import <objc/runtime.h>
 
 NSString *const kABEmailProperty = @"Email";
 NSString *const kABFirstNameProperty = @"First";
@@ -69,8 +70,19 @@ NSString *const WebElementLinkURLKey = @"WebElementLinkURL";
 - (void)setDefaultFontSize:(int)size { } - (void)setDefaultFixedFontSize:(int)size { }
 - (void)setJavaScriptEnabled:(BOOL)flag { } - (void)setPlugInsEnabled:(BOOL)flag { }
 - (void)setUserStyleSheetEnabled:(BOOL)flag { } - (void)setUserStyleSheetLocation:(NSURL *)url { }
+- (void)setUsesPageCache:(BOOL)flag { } - (void)setCacheModel:(WebCacheModel)m { }
 @end
+@implementation WebUndefined
++ (WebUndefined *)undefined { static WebUndefined *u; static dispatch_once_t once; dispatch_once(&once, ^{ u = [WebUndefined new]; }); return u; }
+@end
+@implementation DOMObject @end
+@implementation DOMNode - (NSString *)nodeValue { return nil; } - (NSString *)textContent { return nil; } @end
+@implementation DOMDocumentFragment @end
+@implementation DOMNodeIterator - (DOMNode *)nextNode { return nil; } @end
+@implementation DOMDocument - (DOMNodeIterator *)createNodeIterator:(DOMNode *)root whatToShow:(unsigned)w filter:(id)f expandEntityReferences:(BOOL)e { return nil; } @end
+@implementation DOMRange - (DOMDocumentFragment *)cloneContents { return nil; } - (NSString *)text { return @""; } @end
 @implementation WebDataSource
+- (NSString *)textEncodingName { return @"utf-8"; }
 - (NSURLRequest *)initialRequest { return nil; } - (NSURLRequest *)request { return nil; } - (NSURLResponse *)response { return nil; } - (NSData *)data { return nil; } - (WebFrame *)webFrame { return nil; }
 @end
 @implementation WebFrameView
@@ -83,6 +95,7 @@ NSString *const WebElementLinkURLKey = @"WebElementLinkURL";
 { __weak WebView *_view; WebFrameView *_frameView; }
 - (id)initWithWebView:(WebView *)v { if ((self = [super init])) { _view = v; _frameView = [WebFrameView new]; } return self; }
 - (WebView *)webView { return _view; } - (WebFrameView *)frameView { return _frameView; }
+- (DOMDocument *)DOMDocument { return nil; }
 - (WebDataSource *)dataSource { return nil; } - (WebDataSource *)provisionalDataSource { return nil; }
 - (void)failLoad
 {
@@ -118,6 +131,10 @@ NSString *const WebElementLinkURLKey = @"WebElementLinkURL";
 - (IBAction)goBack:(id)sender { } - (IBAction)goForward:(id)sender { } - (IBAction)reload:(id)sender { } - (IBAction)stopLoading:(id)sender { }
 - (BOOL)isLoading { return NO; } - (double)estimatedProgress { return 1; }
 - (void)close { _frameLoad = _policy = _ui = _resource = nil; }
+- (NSString *)preferencesIdentifier { return objc_getAssociatedObject(self, "wsbsd.prefid"); } - (void)setPreferencesIdentifier:(NSString *)i { objc_setAssociatedObject(self, "wsbsd.prefid", [i copy], OBJC_ASSOCIATION_RETAIN_NONATOMIC); }
+- (DOMRange *)selectedDOMRange { return nil; } - (WebFrame *)selectedFrame { return _main; }
+- (BOOL)searchFor:(NSString *)s direction:(BOOL)f caseSensitive:(BOOL)c wrap:(BOOL)w { return NO; }
++ (void)registerURLSchemeAsLocal:(NSString *)scheme { (void)scheme; }
 - (void)drawRect:(NSRect)r { if (_draws) { [[NSColor whiteColor] set]; NSRectFill(r); } }
 @end
 
@@ -134,6 +151,11 @@ NSString *const WebViewProgressFinishedNotification = @"WebProgressFinishedNotif
 - (void)addScriptMessageHandler:(id<WKScriptMessageHandler>)h name:(NSString *)name { if (!_handlers) _handlers = [NSMutableDictionary dictionary]; _handlers[name] = h; }
 - (void)removeScriptMessageHandlerForName:(NSString *)name { [_handlers removeObjectForKey: name]; }
 - (void)removeAllUserScripts { }
+- (void)addUserScript:(WKUserScript *)s { (void)s; }                                                          /* there is no page to run it in */
+@end
+@implementation WKUserScript { NSString *_src; WKUserScriptInjectionTime _t; BOOL _main; }
+- (instancetype)initWithSource:(NSString *)s injectionTime:(WKUserScriptInjectionTime)t forMainFrameOnly:(BOOL)m { if ((self = [super init])) { _src = [s copy]; _t = t; _main = m; } return self; }
+- (NSString *)source { return _src; } - (WKUserScriptInjectionTime)injectionTime { return _t; } - (BOOL)isForMainFrameOnly { return _main; }
 @end
 @implementation WKWebViewConfiguration
 { WKUserContentController *_ucc; }

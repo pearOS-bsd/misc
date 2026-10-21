@@ -41,6 +41,11 @@ CFStringRef kSecMatchSearchList;
 CFStringRef kSecMatchItemList;
 CFStringRef kSecKeyAlgorithmRSAEncryptionRaw;
 CFStringRef kSecKeyAlgorithmRSASignatureRaw;
+CFStringRef kSecDigestTypeAttribute;
+CFStringRef kSecDigestLengthAttribute;
+CFStringRef kSecDigestSHA1;
+CFStringRef kSecDigestSHA2;
+CFStringRef kSecDigestMD5;
 __attribute__((constructor)) static void wsbsd_security_constants(void)
 {
 	kSecClass = CFSTR("class");
@@ -84,4 +89,9 @@ __attribute__((constructor)) static void wsbsd_security_constants(void)
 	kSecMatchItemList = CFSTR("m_ItemList");
 	kSecKeyAlgorithmRSAEncryptionRaw = CFSTR("algid:encrypt:RSA:raw");
 	kSecKeyAlgorithmRSASignatureRaw = CFSTR("algid:sign:RSA:raw");
+	kSecDigestTypeAttribute = CFSTR("digest-type");
+	kSecDigestLengthAttribute = CFSTR("digest-length");
+	kSecDigestSHA1 = CFSTR("SHA-1");
+	kSecDigestSHA2 = CFSTR("SHA-2");
+	kSecDigestMD5 = CFSTR("MD5");
 }

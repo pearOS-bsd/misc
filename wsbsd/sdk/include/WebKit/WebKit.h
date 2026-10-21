@@ -37,7 +37,36 @@ typedef enum { WebNavigationTypeLinkClicked, WebNavigationTypeFormSubmitted, Web
 - (id)valueForKey:(NSString *)key;
 - (void)setValue:(id)value forKey:(NSString *)key;
 @end
+typedef NS_ENUM(NSUInteger, WebCacheModel) { WebCacheModelDocumentViewer = 0, WebCacheModelDocumentBrowser = 1, WebCacheModelPrimaryWebBrowser = 2 };
+@interface WebUndefined : NSObject
++ (WebUndefined *)undefined;
+@end
+@protocol WebOpenPanelResultListener <NSObject>
+- (void)chooseFilename:(NSString *)fileName;
+- (void)chooseFilenames:(NSArray *)fileNames;
+- (void)cancel;
+@end
+/* the DOM: no engine, so no document: the selection is empty and nothing is found */
+enum { DOM_SHOW_ALL = 0xFFFFFFFF, DOM_SHOW_ELEMENT = 0x1, DOM_SHOW_ATTRIBUTE = 0x2, DOM_SHOW_TEXT = 0x4 };
+@interface DOMObject : NSObject @end
+@interface DOMNode : DOMObject
+- (NSString *)nodeValue;
+- (NSString *)textContent;
+@end
+@interface DOMDocumentFragment : DOMNode @end
+@interface DOMNodeIterator : DOMObject
+- (DOMNode *)nextNode;
+@end
+@interface DOMDocument : DOMNode
+- (DOMNodeIterator *)createNodeIterator:(DOMNode *)root whatToShow:(unsigned)whatToShow filter:(id)filter expandEntityReferences:(BOOL)expandEntityReferences;
+@end
+@interface DOMRange : DOMObject
+- (DOMDocumentFragment *)cloneContents;
+- (NSString *)text;
+@end
 @interface WebPreferences : NSObject
+- (void)setUsesPageCache:(BOOL)flag;
+- (void)setCacheModel:(WebCacheModel)cacheModel;
 + (WebPreferences *)standardPreferences;
 - (instancetype)initWithIdentifier:(NSString *)anIdentifier;
 - (void)setStandardFontFamily:(NSString *)family; - (void)setFixedFontFamily:(NSString *)family;
@@ -46,6 +75,7 @@ typedef enum { WebNavigationTypeLinkClicked, WebNavigationTypeFormSubmitted, Web
 - (void)setUserStyleSheetEnabled:(BOOL)flag; - (void)setUserStyleSheetLocation:(NSURL *)url;
 @end
 @interface WebDataSource : NSObject
+- (NSString *)textEncodingName;
 - (NSURLRequest *)initialRequest; - (NSURLRequest *)request; - (NSURLResponse *)response; - (NSData *)data; - (WebFrame *)webFrame;
 @end
 @interface WebFrameView : NSView
@@ -53,6 +83,7 @@ typedef enum { WebNavigationTypeLinkClicked, WebNavigationTypeFormSubmitted, Web
 - (NSView *)documentView;
 @end
 @interface WebFrame : NSObject
+- (DOMDocument *)DOMDocument;
 - (WebView *)webView; - (WebFrameView *)frameView; - (WebDataSource *)dataSource; - (WebDataSource *)provisionalDataSource;
 - (void)loadRequest:(NSURLRequest *)request;
 - (void)loadHTMLString:(NSString *)string baseURL:(NSURL *)baseURL;
@@ -84,6 +115,11 @@ typedef enum { WebNavigationTypeLinkClicked, WebNavigationTypeFormSubmitted, Web
 - (IBAction)goBack:(id)sender; - (IBAction)goForward:(id)sender; - (IBAction)reload:(id)sender; - (IBAction)stopLoading:(id)sender;
 - (BOOL)isLoading; - (double)estimatedProgress;
 - (void)close;
+- (NSString *)preferencesIdentifier; - (void)setPreferencesIdentifier:(NSString *)anIdentifier;
+- (DOMRange *)selectedDOMRange;
+- (WebFrame *)selectedFrame;
+- (BOOL)searchFor:(NSString *)string direction:(BOOL)forward caseSensitive:(BOOL)caseFlag wrap:(BOOL)wrapFlag;
++ (void)registerURLSchemeAsLocal:(NSString *)scheme;
 @end
 
 extern NSString *const WebViewProgressStartedNotification, *const WebViewProgressEstimateChangedNotification, *const WebViewProgressFinishedNotification;
@@ -111,7 +147,15 @@ typedef NS_ENUM(NSInteger, WKNavigationType) { WKNavigationTypeLinkActivated = 0
 @property (nonatomic, readonly, copy) NSString *name;
 @property (nonatomic, readonly) id body;
 @end
+typedef NS_ENUM(NSInteger, WKUserScriptInjectionTime) { WKUserScriptInjectionTimeAtDocumentStart = 0, WKUserScriptInjectionTimeAtDocumentEnd = 1 };
+@interface WKUserScript : NSObject
+@property (nonatomic, readonly, copy) NSString *source;
+@property (nonatomic, readonly) WKUserScriptInjectionTime injectionTime;
+@property (nonatomic, readonly, getter=isForMainFrameOnly) BOOL forMainFrameOnly;
+- (instancetype)initWithSource:(NSString *)source injectionTime:(WKUserScriptInjectionTime)injectionTime forMainFrameOnly:(BOOL)forMainFrameOnly;
+@end
 @interface WKUserContentController : NSObject
+- (void)addUserScript:(WKUserScript *)userScript;
 - (void)addScriptMessageHandler:(id<WKScriptMessageHandler>)handler name:(NSString *)name;
 - (void)removeScriptMessageHandlerForName:(NSString *)name;
 - (void)removeAllUserScripts;

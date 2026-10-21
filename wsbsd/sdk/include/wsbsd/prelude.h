@@ -7,6 +7,9 @@
 #endif
 #include <stddef.h>
 #include <stdbool.h>
+#if __has_include(<CoreFoundation/CFCGTypes.h>)
+#include <CoreFoundation/CFCGTypes.h>     /* struct CGRect first: Opal otherwise names the rectangle _NSRect in C++ files (the symbols of CGRect parameters then differ from the Objective-C++ ones) */
+#endif
 #include <fcntl.h>
 #include <unistd.h>
 #ifndef __APPLE__

@@ -118,3 +118,20 @@ Boolean SCNetworkReachabilityGetFlags(SCNetworkReachabilityRef t, SCNetworkReach
 	for (i = ifs; i; i = i->ifa_next) if (i->ifa_addr && (i->ifa_addr->sa_family == AF_INET || i->ifa_addr->sa_family == AF_INET6) && (i->ifa_flags & IFF_UP) && !(i->ifa_flags & IFF_LOOPBACK)) up = 1;
 	freeifaddrs(ifs); if (up) *flags = kSCNetworkReachabilityFlagsReachable; return true;
 }
+
+/* gnustep-corebase: CFStringGetBytes on a mutable string (the result of CFStringLowercase, say) leaves the last byte unwritten when the buffer is exactly as long as the encoded text, while
+ * reporting that every character was converted. The wrapper converts into a buffer one byte longer and copies what the text needs. */
+#include <dlfcn.h>
+#include <stdlib.h>
+CFIndex CFStringGetBytes(CFStringRef theString, CFRange range, CFStringEncoding encoding, UInt8 lossByte, Boolean isExternalRepresentation, UInt8 *buffer, CFIndex maxBufLen, CFIndex *usedBufLen)
+{
+	typedef CFIndex (*fn_t)(CFStringRef, CFRange, CFStringEncoding, UInt8, Boolean, UInt8 *, CFIndex, CFIndex *);
+	static fn_t real; CFIndex used = 0;
+	if (!real) real = (fn_t)dlsym(RTLD_NEXT, "CFStringGetBytes");
+	if (!buffer || maxBufLen <= 0) { CFIndex n = real(theString, range, encoding, lossByte, isExternalRepresentation, buffer, maxBufLen, &used); if (usedBufLen) *usedBufLen = used; return n; }
+	UInt8 *tmp = malloc((size_t)maxBufLen + 1); if (!tmp) return real(theString, range, encoding, lossByte, isExternalRepresentation, buffer, maxBufLen, usedBufLen);
+	CFIndex n = real(theString, range, encoding, lossByte, isExternalRepresentation, tmp, maxBufLen + 1, &used);
+	if (used <= maxBufLen) { memcpy(buffer, tmp, (size_t)used); free(tmp); if (usedBufLen) *usedBufLen = used; return n; }
+	free(tmp);                                                                                                  /* the text does not fit: the library's own truncation */
+	n = real(theString, range, encoding, lossByte, isExternalRepresentation, buffer, maxBufLen, &used); if (usedBufLen) *usedBufLen = used; return n;
+}

@@ -319,7 +319,7 @@ typedef NSString *NSURLFileResourceType;
 @property NSInteger searchDirection;
 @property (copy) NSString *filterString;
 @end
-extern NSString *const NSImageNameTouchBarGoUpTemplate, *const NSImageNameTouchBarGoDownTemplate;
+extern NSString *const NSImageNameTouchBarGoUpTemplate, *const NSImageNameTouchBarGoDownTemplate, *const NSImageNameStopProgressFreestandingTemplate, *const NSImageNameStopProgressTemplate, *const NSImageNameRefreshFreestandingTemplate;
 @interface NSWindow (WsbsdFullScreen)
 - (void)toggleFullScreen:(id)sender;
 @end

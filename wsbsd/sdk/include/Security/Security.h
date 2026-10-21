@@ -35,6 +35,7 @@ typedef struct { uint32_t version; SecItemImportExportFlags flags; CFTypeRef pas
 enum { kSecFormatUnknown = 0, kSecFormatOpenSSL = 1, kSecFormatPEMSequence = 10 };
 enum { kSecItemTypeUnknown = 0, kSecItemTypePrivateKey = 1, kSecItemTypePublicKey = 2 };
 typedef const void *SecTransformRef;
+extern const CFStringRef kSecDigestTypeAttribute, kSecDigestLengthAttribute, kSecDigestSHA1, kSecDigestSHA2, kSecDigestMD5;
 extern const CFStringRef kSecClass, kSecClassGenericPassword, kSecAttrService, kSecAttrDescription, kSecAttrAccount, kSecAttrLabel, kSecAttrComment, kSecValueData, kSecValueRef,
 	kSecReturnData, kSecReturnRef, kSecReturnAttributes, kSecMatchLimit, kSecMatchLimitAll, kSecMatchLimitOne, kSecTransformInputAttributeName,
 	kSecClassInternetPassword, kSecAttrServer, kSecAttrPort, kSecAttrProtocol, kSecAttrPath, kSecAttrSecurityDomain, kSecAttrAuthenticationType, kSecAttrGeneric, kSecAttrCreationDate, kSecAttrModificationDate,

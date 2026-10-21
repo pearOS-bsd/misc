@@ -16,6 +16,7 @@ case "$tool" in
 			-bundle) a=-shared ;;                                        # plug-ins (.qlgenerator, .bundle) are shared objects here
 			-bundle_loader|-undefined|-install_name|-compatibility_version|-current_version) skip=1; continue ;;
 			-framework|-cache_path_lto|-object_path_lto) skip=1; continue ;;
+			-Wl,-U,*|-U) continue ;;
 			-dead_strip|-dead_strip_dylibs|-Wl,-dead_strip|-Wl,-dead_strip_dylibs|-Wl,-cache_path_lto*|-Wl,-object_path_lto*|-mmacosx-version-min=*) continue ;;
 		esac
 		set -- "$@" "$a"

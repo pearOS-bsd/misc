@@ -145,9 +145,15 @@ extern NSString *const NSImageNameGoLeftTemplate;
 extern NSString *const NSImageNameGoRightTemplate;
 extern NSString *const NSImageNameAddTemplate;
 extern NSString *const NSImageNameRemoveTemplate;
+#ifdef __cplusplus
+extern "C" {
+#endif
 void memset_pattern4(void *b, const void *pattern, size_t len);
 void memset_pattern8(void *b, const void *pattern, size_t len);
 void memset_pattern16(void *b, const void *pattern, size_t len);
+#ifdef __cplusplus
+}
+#endif
 #ifndef NSRectEdgeMinX
 #define NSRectEdgeMinX NSMinXEdge
 #define NSRectEdgeMinY NSMinYEdge

@@ -44,6 +44,12 @@ int main(void)
 		sc = EVP_PKEY_CTX_new(pk, NULL); EVP_PKEY_sign_init(sc); EVP_PKEY_CTX_set_rsa_padding(sc, RSA_NO_PADDING); CHECK(EVP_PKEY_sign(sc, sig, &sl, msg, 256) == 1); EVP_PKEY_CTX_free(sc);
 		CFDataRef sigd = CFDataCreate(NULL, sig, sl); CFDataRef rec = SecKeyCreateDecryptedData((SecKeyRef)CFArrayGetValueAtIndex(items, 0), kSecKeyAlgorithmRSAEncryptionRaw, sigd, NULL);
 		CHECK(rec && CFDataGetLength(rec) == 256 && !memcmp(CFDataGetBytePtr(rec) + 200, "hello", 5)); CHECK(SecKeyGetBlockSize((SecKeyRef)CFArrayGetValueAtIndex(items, 0)) == 256);
+		/* a verify transform: RSA PKCS#1 v1.5 over SHA-1 */
+		{ const char *text = "the data that was signed"; EVP_MD_CTX *mc = EVP_MD_CTX_new(); unsigned char sg[512]; size_t sgl = sizeof sg;
+		  CHECK(EVP_DigestSignInit(mc, NULL, EVP_sha1(), NULL, pk) == 1 && EVP_DigestSign(mc, sg, &sgl, (const unsigned char *)text, strlen(text)) == 1); EVP_MD_CTX_free(mc);
+		  CFDataRef sd = CFDataCreate(NULL, sg, sgl); CFDataRef good = CFDataCreate(NULL, (const UInt8 *)text, strlen(text)), bad = CFDataCreate(NULL, (const UInt8 *)"another text", 12); CFErrorRef er = NULL;
+		  SecTransformRef v = SecVerifyTransformCreate((SecKeyRef)CFArrayGetValueAtIndex(items, 0), sd, &er); CHECK(v != NULL && SecTransformSetAttribute(v, kSecTransformInputAttributeName, good, &er)); CHECK(SecTransformExecute(v, &er) == kCFBooleanTrue);
+		  SecTransformRef w = SecVerifyTransformCreate((SecKeyRef)CFArrayGetValueAtIndex(items, 0), sd, &er); SecTransformSetAttribute(w, kSecTransformInputAttributeName, bad, &er); CHECK(SecTransformExecute(w, &er) == kCFBooleanFalse); }
 		/* Authorization: root edits the rights database; a right defined as "allow" is held, an undefined one is not (no interaction) */
 		AuthorizationRef ar = NULL; CHECK(AuthorizationCreate(NULL, kAuthorizationEmptyEnvironment, kAuthorizationFlagDefaults, &ar) == errAuthorizationSuccess && ar);
 		AuthorizationItem it = { "org.wsbsd.test.right", 0, NULL, 0 }; AuthorizationRights rights = { 1, &it }; AuthorizationRights *granted = NULL;
