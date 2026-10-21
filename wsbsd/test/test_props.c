@@ -1198,6 +1198,16 @@ int main(void)
 		memset(m, 0, sizeof m); hdr(m, 0x24, 30219, 0); w32(m, 0x20, id1); CHECK(rc(fd, m, 0x24) == 0); CHECK(rc(fd, m, 0x24) == 1003);
 		w32(m, 0x20, id2); CHECK(rc(fd, m, 0x24) == 0); hdr(m, 0x28, 30219, 0); CHECK(rc(fd, m, 0x28) == -304);
 	}
+	{ /* small session routines (decompiled): PersistenceWillLaunchApps, appearance switching, privacy indicator inset, status bar unregister, entitlement-gated agents */
+		uint8_t m[0x40], rep[0x100]; memset(m, 0, sizeof m); hdr(m, 0x28, 30268, 0); { double s = 3; memcpy(m + 0x20, &s, 8); } CHECK(rc(fd, m, 0x28) == 0); hdr(m, 0x24, 30268, 0); CHECK(rc(fd, m, 0x24) == -304);
+		memset(m, 0, sizeof m); hdr(m, 0x28, 30490, 0); m[0x20] = 1; CHECK(rc(fd, m, 0x28) == 0); m[0x20] = 0; CHECK(rc(fd, m, 0x28) == 0);
+		memset(m, 0, sizeof m); hdr(m, 0x18, 30492, 0); int gn = call(fd, m, 0x18, rep, sizeof rep); CHECK(gn == 0x2c && rep[0x24] == 0 && r32(rep, 0x28) == 0);
+		memset(m, 0, sizeof m); hdr(m, 0x24, 30644, 0); w32(m, 0x20, 13); gn = call(fd, m, 0x24, rep, sizeof rep); CHECK(gn == 0x2c && r32(rep, 0x24) == 0 && r32(rep, 0x28) == 0); w32(m, 0x20, 77); CHECK(rc(fd, m, 0x24) == 0x3eb);
+		memset(m, 0, sizeof m); hdr(m, 0x24, 30452, 0); w32(m, 0x20, 0x7fffff); CHECK(rc(fd, m, 0x24) == 1000);
+		ws_win tw; CHECK(ws_win_create(c, (ws_rect){ 5, 5, 30, 30 }, 0, &tw) == 0); w32(m, 0x20, tw.id); CHECK(rc(fd, m, 0x24) == 0);
+		hdr(m, 0x24, 30638, 0); CHECK(rc(fd, m, 0x24) == 1000); hdr(m, 0x24, 30645, 0); w32(m, 0x20, tw.id); CHECK(rc(fd, m, 0x24) == 1002); w32(m, 0x20, 0x7fffff); CHECK(rc(fd, m, 0x24) == 1001);
+		for (int k = 0; k < 2; k++) { int id = k ? 30549 : 30489; uint32_t one = 1; memset(m, 0, sizeof m); hdr(m, 0x38, id, 1); memcpy(m + 0x18, &one, 4); m[0x27] = 1; CHECK(rc(fd, m, 0x38) == 1000); w32(m, 0x34, 4); CHECK(rc(fd, m, 0x38) == -300); }
+	}
 	ws_server_quit(c);
 	printf(failures ? "%d failures\n" : "window extension routines: all checks passed\n", failures);
 	return failures != 0;
