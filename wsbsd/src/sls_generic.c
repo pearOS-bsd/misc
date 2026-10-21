@@ -10,19 +10,14 @@ static const gen_entry gen_table[] = {
 	{ 29018, 40, 1, 1, 36 },   /* __XEstablishTimelineConnection */
 	{ 29019, 40, 1, 1, 36 },   /* __XEstablishXPCClientConnection */
 	{ 29020, 40, 1, 1, 36 },   /* __XEstablishScreenTelemetryConnection */
-	{ 29022, 36, 0, 0, 36 },   /* __XTBRelease */
 	{ 29023, 40, 1, 1, 36 },   /* __XTBSetNotificationPort */
 	{ 29027, 60, 1, 1, 36 },   /* __XTBConfigureQueue */
-	{ 29029, 24, 0, 0, 52 },   /* __XTBGetTotalUpdateCount */
 	{ 29033, 40, 0, 0, 56 },   /* __XDisplayCopyPreset */
 	{ 29037, 40, 1, 1, 36 },   /* __XEstablishBootstrapXPCServiceConnection */
 	{ 29038, 56, 1, 1, 40 },   /* __XVerifyEventAuthenticationMessageSignature */
 	{ 29040, 36, 0, 0, 56 },   /* __XDisplayCopyActivePreset */
 	{ 30043, 24, 0, 0, 52 },   /* __XGetPerformanceData */
-	{ 30053, 64, 1, 1, 36 },   /* __XSetBackgroundEventMaskAndShape */
-	{ 30065, 56, 1, 1, 36 },   /* __XSnappingInfoSetPrefs */
 	{ 30148, 36, 0, 0, 36 },   /* __XExitSpecialKeyMode */
-	{ 30153, 40, 1, 1, 36 },   /* __XSetDefaultBootstrapPort */
 	{ 30158, 140, 0, 0, 36 },   /* __XAddTrackingAreas */
 	{ 30184, 36, 0, 0, 36 },   /* __XPackagesAddWindowToDraggingSpace */
 	{ 30185, 36, 0, 0, 36 },   /* __XPackagesRemoveWindowFromDraggingSpace */
@@ -34,9 +29,6 @@ static const gen_entry gen_table[] = {
 	{ 30223, 60, 1, 1, 36 },   /* __XSetCIFilterValues */
 	{ 30232, 24, 0, 0, 56 },   /* __XFetchDirtyScreenRegion */
 	{ 30237, 60, 1, 1, 36 },   /* __XSetWindowCaptureExcludeShape */
-	{ 30238, 36, 0, 0, 36 },   /* __XRemoveWindowCaptureExcludeShape */
-	{ 30239, 56, 1, 1, 36 },   /* __XSetApplicationBindingsForWorkspaces */
-	{ 30256, 56, 1, 1, 36 },   /* __XSetPreferencesForWorkspaces */
 	{ 30258, 104, 0, 0, 84 },   /* __XHWCaptureDesktop */
 	{ 30278, 88, 1, 1, 44 },   /* __XHWCaptureDisplayIntoIOSurface */
 	{ 30313, 132, 0, 0, 36 },   /* __XDisplayStreamCreate */
@@ -44,7 +36,6 @@ static const gen_entry gen_table[] = {
 	{ 30315, 40, 1, 1, 36 },   /* __XDisplayStreamStop */
 	{ 30316, 40, 1, 1, 36 },   /* __XDisplayStreamDestroy */
 	{ 30317, 40, 1, 1, 36 },   /* __XSetUpdateInfoHandler */
-	{ 30318, 56, 1, 1, 36 },   /* __XResetWindows */
 	{ 30332, 64, 1, 1, 36 },   /* __XSpaceRemoveValuesForKeys */
 	{ 30340, 64, 1, 1, 36 },   /* __XSpaceSetOwners */
 	{ 30342, 44, 0, 0, 36 },   /* __XSpaceRemoveOwner */
@@ -55,22 +46,15 @@ static const gen_entry gen_table[] = {
 	{ 30376, 64, 1, 1, 56 },   /* __XManagedDisplaysCopyRoleWindows */
 	{ 30386, 64, 0, 0, 36 },   /* __XWindowFreezeWithOptions */
 	{ 30387, 36, 0, 0, 36 },   /* __XWindowThaw */
-	{ 30392, 64, 0, 0, 36 },   /* __XSetPressureConfigurationOverride */
 	{ 30402, 64, 1, 1, 36 },   /* __XTrackingRegionSetForceConfig */
-	{ 30403, 56, 1, 1, 36 },   /* __XSetGlobalForceConfig */
-	{ 30405, 56, 1, 1, 36 },   /* __XPackagesSetFindCursorPrefs */
 	{ 30410, 60, 0, 0, 36 },   /* __XPackagesRemoveWindowDragTransform */
 	{ 30414, 64, 0, 0, 44 },   /* __XSpaceCreateTile */
 	{ 30421, 96, 1, 1, 36 },   /* __XSpaceMoveSpacersToPoint */
 	{ 30424, 64, 1, 1, 52 },   /* __XSpaceGetSizeForProposedTile */
-	{ 30425, 76, 0, 0, 36 },   /* __XWindowListSetLockedBounds */
 	{ 30448, 72, 1, 1, 36 },   /* __XTileSpaceMoveSpacersForSize */
-	{ 30464, 36, 0, 0, 36 },   /* __XHMDRelease */
 	{ 30465, 40, 1, 1, 36 },   /* __XHMDSetNotificationPort */
 	{ 30469, 60, 1, 1, 36 },   /* __XHMDConfigureQueue */
-	{ 30471, 24, 0, 0, 52 },   /* __XHMDGetTotalUpdateCount */
 	{ 30493, 124, 0, 0, 36 },   /* __XHWCaptureStreamCreate */
-	{ 30499, 24, 0, 0, 36 },   /* __XSecureCursorPositionTakeAssertion */
 	{ 30511, 40, 0, 0, 52 },   /* __XDisplayCopyPresetUniqueID */
 	{ 30514, 64, 1, 1, 36 },   /* __XDisplaySetPreset */
 	{ 30519, 56, 1, 1, 40 },   /* __XDisplayGetUserAdjustmentLuminanceCorrectionFactor */
@@ -79,7 +63,6 @@ static const gen_entry gen_table[] = {
 	{ 30539, 48, 0, 0, 36 },   /* __XSelectiveSharingContextDestroy */
 	{ 30544, 48, 0, 0, 36 },   /* __XSelectiveSharingContextStop */
 	{ 30558, 48, 0, 0, 36 },   /* __XSelectiveSharingContextCancelPicker */
-	{ 30568, 56, 1, 1, 36 },   /* __XSetTransactionCompletion */
 	{ 30570, 84, 0, 0, 36 },   /* __XContentStreamCreate */
 	{ 30571, 84, 0, 0, 36 },   /* __XContentStreamUpdate */
 	{ 30575, 56, 1, 1, 40 },   /* __XVirtualDisplayCreate */
