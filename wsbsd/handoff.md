@@ -41,6 +41,8 @@ Acoperire măsurată: **72,3 %** selectoare din SDK (`tools/appkit_probe.m`; REA
 - **TextMate**: build reproductibil în `ports/textmate/` (build.sh, shim `xcrun`, README cu blocajele). Prelude-urile compilează, 114/850 pași eșuează (io, TMFileReference, document, OakAppKit, FileBrowser, Preferences, Find, license/updater). Disc VM: era plin (18G); curățat `iso-out`, `isowork`, `outs2`, loguri (un `/tmp/live-hexfiend.log` de 2.8G).
 - **AppKit apps**: GrandPerspective complet (toolbar, Zoom/Focus, Welcome, fereastra principală). Neverificate după patch-urile Auto Layout: Pashua, Hex Fiend (nu folosește constrângeri), Sloth.
 
+- **SkyLight rămas**: lista REALĂ (fără handlere dedicate) se calculează cu `python3 tools/generic_remaining.py` (rezultat în `docs/skylight-remaining.txt`); tabelul din `sls_generic.c` conține multe intrări umbrite de handlere dedicate, nu decompila după el. Făcute în sesiunea 2026-10-21: Disable/ReenableUpdate, Freeze/Thaw (generic e corect), CursorRestrictionShape, SetZoomDisplay, Register/GetRegisteredCursorImages, New/Invoke/ReleaseTransition. Decompilate dar nefăcute (nevoie de compozitor/IOSurface): FetchDirtyScreenRegion, ResetWindows, WindowListSetLockedBounds, SetBackgroundEventMaskAndShape, Packages*DraggingSpace, SpaceCreateTile.
+
 ## Teste
 - Mac: `make check` în `misc/wsbsd` (rulează `test_bplist … test_props, test_generic, test_golden, test_shim*, vnc`, ~20 s). Fuzz cu sanitizere în CI.
 - `test/test_props.c` = locul testelor de protocol SkyLight (helpers `hdr`, `rc`, `call`; adaugă un bloc înainte de `ws_server_quit`). Un ID dedicat nou: scoate-l și din `tools/generic_ids.txt`, `test/generic_cases.txt`, `src/sls_generic.c`, altfel `test_generic` pică.
