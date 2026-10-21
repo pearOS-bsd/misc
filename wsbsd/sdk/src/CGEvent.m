@@ -4,11 +4,14 @@
 #include <wsbsd/CGEvent.h>
 #include <Carbon/Carbon.h>
 
-struct __CGEventSource { int state; };
-struct __CGEvent { CGEventType type; CGKeyCode key; CGEventFlags flags; CGPoint where; uint32_t button; UniChar chars[4]; size_t nchars; };
+/* CGEventRef and CGEventSourceRef are CF types: callers CFRelease them (TextMate does), so they are objects whose payload follows the isa */
+@interface WsbsdCGObject : NSObject @end
+@implementation WsbsdCGObject @end
+struct __CGEventSource { Class isa; int state; };
+struct __CGEvent { Class isa; CGEventType type; CGKeyCode key; CGEventFlags flags; CGPoint where; uint32_t button; UniChar chars[4]; size_t nchars; };
 
-CGEventSourceRef CGEventSourceCreate(CGEventSourceStateID s) { struct __CGEventSource *o = calloc(1, sizeof *o); o->state = s; return o; }
-CGEventRef CGEventCreate(CGEventSourceRef s) { (void)s; return calloc(1, sizeof(struct __CGEvent)); }
+CGEventSourceRef CGEventSourceCreate(CGEventSourceStateID s) { struct __CGEventSource *o = (struct __CGEventSource *)(__bridge_retained void *)NSAllocateObject([WsbsdCGObject class], sizeof *o - sizeof(Class), NULL); o->state = s; return o; }
+CGEventRef CGEventCreate(CGEventSourceRef s) { (void)s; return (CGEventRef)(__bridge_retained void *)NSAllocateObject([WsbsdCGObject class], sizeof(struct __CGEvent) - sizeof(Class), NULL); }
 CGEventRef CGEventCreateKeyboardEvent(CGEventSourceRef s, CGKeyCode k, bool down) { struct __CGEvent *e = (struct __CGEvent *)CGEventCreate(s); e->type = down ? kCGEventKeyDown : kCGEventKeyUp; e->key = k; return e; }
 CGEventRef CGEventCreateMouseEvent(CGEventSourceRef s, CGEventType t, CGPoint p, uint32_t b) { struct __CGEvent *e = (struct __CGEvent *)CGEventCreate(s); e->type = t; e->where = p; e->button = b; return e; }
 CGEventType CGEventGetType(CGEventRef e) { return e ? e->type : kCGEventNull; }

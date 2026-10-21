@@ -38,6 +38,7 @@ python3 "$WS"/ci/patch-pending-constraints.py gui/Source/NSView.m   # constraint
 python3 "$WS"/ci/patch-owned-constraints.py gui/Source/NSView.m     # -constraints answers the constraints a view owns
 python3 "$WS"/ci/patch-engine-rebuild.py gui/Source/GSAutoLayoutEngine.m   # the solver is built again after constraints were removed
 python3 "$WS"/ci/patch-scroller-intrinsic.py gui/Source/NSScroller.m          # scrollers have no intrinsic size
+python3 "$WS"/ci/patch-menu-delegate-reentry.py gui/Source/NSMenu.m       # menuNeedsUpdate: does not recurse through the menu update
 python3 "$WS"/ci/patch-intrinsic-invalidate.py gui/Source/GSAutoLayoutEngine.m gui/Source/NSView.m   # invalidateIntrinsicContentSize reaches the engine
 python3 "$WS"/ci/patch-vfl-predicates.py gui/Source/GSAutoLayoutVFLParser.m   # -(>=3@53)- connections
 
