@@ -49,6 +49,7 @@ typedef enum { WebNavigationTypeLinkClicked, WebNavigationTypeFormSubmitted, Web
 @end
 @interface WebFrameView : NSView
 - (BOOL)allowsScrolling; - (void)setAllowsScrolling:(BOOL)flag;
+- (NSView *)documentView;
 @end
 @interface WebFrame : NSObject
 - (WebView *)webView; - (WebFrameView *)frameView; - (WebDataSource *)dataSource; - (WebDataSource *)provisionalDataSource;
@@ -82,5 +83,55 @@ typedef enum { WebNavigationTypeLinkClicked, WebNavigationTypeFormSubmitted, Web
 - (IBAction)goBack:(id)sender; - (IBAction)goForward:(id)sender; - (IBAction)reload:(id)sender; - (IBAction)stopLoading:(id)sender;
 - (BOOL)isLoading; - (double)estimatedProgress;
 - (void)close;
+@end
+
+extern NSString *const WebViewProgressStartedNotification, *const WebViewProgressEstimateChangedNotification, *const WebViewProgressFinishedNotification;
+
+/* WKWebView of the modern WebKit: the same, no engine; loads report failure to the navigation delegate and scripts evaluate to an error */
+typedef NS_ENUM(NSInteger, WKNavigationActionPolicy) { WKNavigationActionPolicyCancel = 0, WKNavigationActionPolicyAllow = 1 };
+typedef NS_ENUM(NSInteger, WKNavigationType) { WKNavigationTypeLinkActivated = 0, WKNavigationTypeFormSubmitted = 1, WKNavigationTypeBackForward = 2, WKNavigationTypeReload = 3, WKNavigationTypeFormResubmitted = 4, WKNavigationTypeOther = -1 };
+@class WKWebView, WKNavigation, WKNavigationAction, WKScriptMessage, WKUserContentController, WKWebViewConfiguration;
+@protocol WKNavigationDelegate <NSObject> @optional
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler;
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation;
+- (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error;
+- (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error;
+@end
+@protocol WKScriptMessageHandler <NSObject>
+- (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message;
+@end
+@protocol WKUIDelegate <NSObject> @end
+@interface WKNavigation : NSObject @end
+@interface WKNavigationAction : NSObject
+@property (nonatomic, readonly, copy) NSURLRequest *request;
+@property (nonatomic, readonly) WKNavigationType navigationType;
+@end
+@interface WKScriptMessage : NSObject
+@property (nonatomic, readonly, copy) NSString *name;
+@property (nonatomic, readonly) id body;
+@end
+@interface WKUserContentController : NSObject
+- (void)addScriptMessageHandler:(id<WKScriptMessageHandler>)handler name:(NSString *)name;
+- (void)removeScriptMessageHandlerForName:(NSString *)name;
+- (void)removeAllUserScripts;
+@end
+@interface WKWebViewConfiguration : NSObject
+@property (nonatomic, strong) WKUserContentController *userContentController;
+@end
+@interface WKWebView : NSView
+- (instancetype)initWithFrame:(NSRect)frame configuration:(WKWebViewConfiguration *)configuration;
+@property (nonatomic, weak) id<WKNavigationDelegate> navigationDelegate;
+@property (nonatomic, weak) id<WKUIDelegate> UIDelegate;
+@property (nonatomic, readonly, copy) WKWebViewConfiguration *configuration;
+@property (nonatomic, readonly, copy) NSURL *URL;
+@property (nonatomic, readonly, copy) NSString *title;
+@property (nonatomic, readonly, getter=isLoading) BOOL loading;
+@property (nonatomic) BOOL allowsBackForwardNavigationGestures;
+- (WKNavigation *)loadRequest:(NSURLRequest *)request;
+- (WKNavigation *)loadHTMLString:(NSString *)string baseURL:(NSURL *)baseURL;
+- (WKNavigation *)loadFileURL:(NSURL *)URL allowingReadAccessToURL:(NSURL *)readAccessURL;
+- (void)evaluateJavaScript:(NSString *)javaScriptString completionHandler:(void (^)(id, NSError *))completionHandler;
+- (void)stopLoading;
+- (WKNavigation *)reload;
 @end
 #endif

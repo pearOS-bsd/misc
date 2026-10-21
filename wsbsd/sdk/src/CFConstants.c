@@ -61,3 +61,5 @@ __attribute__((constructor)) static void wsbsd_cf_constants(void)
 	kCFNetworkProxiesProxyAutoConfigURLString = CFSTR("ProxyAutoConfigURLString");
 	kCFNetworkProxiesExceptionsList = CFSTR("ExceptionsList");
 }
+CFStringRef kUTTypeFileURL;
+__attribute__((constructor)) static void wsbsd_ut_constants(void) { kUTTypeFileURL = CFSTR("public.file-url"); }

@@ -15,5 +15,8 @@ typedef unsigned char os_log_type_t;
 #define os_log_debug(log, ...) ((void)(log))
 #define os_log_error(log, ...) ((void)(log))
 #define os_log_fault(log, ...) ((void)(log))
+#define os_log_info_enabled(log) (0)
+#define os_log_debug_enabled(log) (0)
+#define os_log_type_enabled(log, type) (0)
 #define os_log_with_type(log, type, ...) ((void)(log))
 #endif
