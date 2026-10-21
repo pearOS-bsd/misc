@@ -12,6 +12,7 @@ NSString *const kABLastNameProperty = @"Last";
 - (id)valueAtIndex:(NSUInteger)index { return nil; }
 - (NSString *)labelAtIndex:(NSUInteger)index { return nil; }
 - (NSString *)primaryIdentifier { return nil; }
+- (NSUInteger)indexForIdentifier:(NSString *)identifier { return NSNotFound; }
 @end
 @implementation ABMutableMultiValue @end
 @implementation ABRecord

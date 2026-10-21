@@ -22,6 +22,9 @@ typedef int16_t OSErr_ae;
 typedef uint32_t AEEventClass, AEEventID;
 typedef int16_t AEReturnID; typedef int32_t AETransactionID; typedef int32_t AESendMode; typedef long AESize;
 enum { keyEventClassAttr = 0x6576636c, keyEventIDAttr = 0x65766964, kAENoReply = 1, kAEWaitReply = 3, kAEDefaultTimeout = -1, kAEDoNotRecord = 0x1000, errAEDescNotFound = -1701, errAECoercionFail = -1700 };
+enum { typeType = 0x74797065, typeApplSignature = 0x7369676e, typeFSRef = 0x66737266, typeEnumerated = 0x656e756d, typeTrue = 0x74727565, typeFalse = 0x66616c73, typeSInt16 = 0x73686f72, typeIEEE64BitFloatingPoint = 0x646f7562,
+       typeAlias = 0x616c6973, typeFileURL_ = 0x6675726c, keyAEPosition = 0x6b706f73, keyAESearchText = 0x73747874, keyAEPropData_ = 0x70726f70, keyErrorNumber = 0x6572726e, keyErrorString = 0x65727273,
+       keyAddressAttr = 0x61646472, keyOriginalAddressAttr = 0x66726f6d, keyTimeoutAttr = 0x74696d6f, keyMissedKeywordAttr = 0x6d697373, keyReturnIDAttr = 0x72746964, keyTransactionIDAttr = 0x7472616e };
 enum { errAEEventNotHandled = -1708, errAENoSuchObject = -1728 };
 
 /* in-memory descriptors (sdk/src/AppleEvents.m): typed data, lists and records; there is no inter-process delivery, AESendMessage reports that the target is not there */

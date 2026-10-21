@@ -94,3 +94,27 @@ char *dirname_r(const char *path, char *dname)
 	char tmp[1024]; if (!path) path = ""; strncpy(tmp, path, sizeof tmp - 1); tmp[sizeof tmp - 1] = 0;
 	char *r = dirname(tmp); if (!r) return NULL; strcpy(dname, r); return dname;
 }
+
+/* system sounds: ids for files are handed out and remembered; playing any of them is the terminal bell */
+#include <ifaddrs.h>
+#include <net/if.h>
+#include <netdb.h>
+#include <SystemConfiguration/SystemConfiguration.h>
+#include <AudioToolbox/AudioToolbox.h>
+OSStatus AudioServicesCreateSystemSoundID(CFURLRef url, SystemSoundID *out) { static SystemSoundID next = 0x2000; (void)url; if (!out) return -50; *out = next++; return 0; }
+OSStatus AudioServicesDisposeSystemSoundID(SystemSoundID id) { (void)id; return 0; }
+
+/* symbolic hot keys: no-ops */
+void *PushSymbolicHotKeyMode(uint32_t options) { (void)options; return (void *)1; }
+void PopSymbolicHotKeyMode(void *token) { (void)token; }
+
+/* reachability: a host is reachable when some non-loopback interface is up and has an address (the name is not resolved) */
+struct __SCNetworkReachability { int dummy; };
+SCNetworkReachabilityRef SCNetworkReachabilityCreateWithName(CFAllocatorRef a, const char *name) { (void)a; (void)name; return calloc(1, sizeof(struct __SCNetworkReachability)); }
+SCNetworkReachabilityRef SCNetworkReachabilityCreateWithAddress(CFAllocatorRef a, const void *addr) { (void)a; (void)addr; return calloc(1, sizeof(struct __SCNetworkReachability)); }
+Boolean SCNetworkReachabilityGetFlags(SCNetworkReachabilityRef t, SCNetworkReachabilityFlags *flags)
+{
+	(void)t; struct ifaddrs *ifs, *i; int up = 0; if (!flags) return false; *flags = 0; if (getifaddrs(&ifs)) return false;
+	for (i = ifs; i; i = i->ifa_next) if (i->ifa_addr && (i->ifa_addr->sa_family == AF_INET || i->ifa_addr->sa_family == AF_INET6) && (i->ifa_flags & IFF_UP) && !(i->ifa_flags & IFF_LOOPBACK)) up = 1;
+	freeifaddrs(ifs); if (up) *flags = kSCNetworkReachabilityFlagsReachable; return true;
+}

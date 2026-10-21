@@ -330,11 +330,11 @@ typedef CGFloat NSFontWeight;
 @property NSTimeInterval tolerance;
 @end
 @interface NSView (WsbsdAnimator)
-- (id)animator;
+- (instancetype)animator;
 + (id)defaultAnimationForKey:(NSString *)key;
 @end
 @interface NSWindow (WsbsdAnimator)
-- (id)animator;
+- (instancetype)animator;
 @end
 @class CAMediaTimingFunction;
 @interface NSAnimationContext (WsbsdContext)
