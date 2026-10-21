@@ -43,6 +43,8 @@ The stack: `wsd` (this repo: window server and compositor speaking the SkyLight 
   networks, hotspot (Instant Hotspot / Personal Hotspot) detection. Method: decompile the real framework and daemon on this Mac with REA, reimplement them 1:1 (same classes, selectors, XPC
   protocol, error codes, notification names), differential tests against the real Mac, on FreeBSD over wpa_supplicant / `ifconfig wlan` / net80211. Status: 0 %.
   Plan: (1) REA inventory of CoreWLAN classes, airportd XPC interface and entitlements; (2) wire protocol and header set; (3) airportd on FreeBSD (wpa_supplicant control socket, scan cache, join, known networks, keychain-backed passwords); (4) framework with the exact API; (5) tests; (6) hotspot detection.
+- **AirDrop** (sharingd, `NSSharingService` AirDrop, `com.apple.sharing.*`, AWDL-less transport on FreeBSD): after CoreWLAN, also by decompilation with REA and reimplemented as on the Mac. Reference to study (not to copy blindly): github.com/BenItBuhner/AirDrop-for-Everything. Status: 0 %.
+- **Filesystem mirror rule:** the file layout of this Mac is the layout of the BSD system. Whatever exists under `/System`, `/Library`, `/usr/libexec`, `/Applications`... on the Mac (frameworks, daemons, launchd plists, resources) must be found at the same path on wsbsd, with the same names. New components are installed at the Mac paths (for example `/System/Library/Frameworks/CoreWLAN.framework`, `/usr/libexec/airportd`, `/System/Library/CoreServices/...`) and the ISO builder (`iso/build.sh`) places them there.
 
 ### Applications that run today (CI, FreeBSD x86_64, software compositor)
 | Application | What it exercises |
