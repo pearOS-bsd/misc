@@ -43,9 +43,16 @@ NSImage *TFIcon(NSString *path)
 	static NSMutableDictionary *cache; if (!cache) cache = [NSMutableDictionary dictionary]; NSString *ext = [[path pathExtension] lowercaseString]; BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &d];
 	NSString *key = d || ![ext length] ? path : [@"." stringByAppendingString: ext]; NSImage *i = cache[key]; if (!i) { i = [[NSWorkspace sharedWorkspace] iconForFile: path]; if (i) cache[key] = i; } return i;
 }
+extern "C" NSImage *WsbsdCoreTypesIcon(NSString *file, CGFloat pt);
+static NSString *VolumeKind(NSString *path)                                                  /* internal / external / optical for a mount point, nil otherwise (the list is read once a second) */
+{
+	static NSArray *vols; static time_t at; time_t now = time(NULL); if (!vols || now != at) { vols = TFVolumes(); at = now; } for (NSDictionary *v in vols) if ([v[@"path"] isEqual: path]) return v[@"kind"]; return nil;
+}
 void TFDrawIcon(NSString *path, NSRect r)                                                    /* the icon as the Mac draws it (the panel's recipes: folder bitmap, document page with symbol and label), the volume and the apps from the system icons */
 {
 	NSFileManager *fm = [NSFileManager defaultManager]; BOOL d = NO; [fm fileExistsAtPath: path isDirectory: &d]; Class k = NSClassFromString(@"WsdFinderSupport");
+	NSString *vk = d ? VolumeKind(path) : nil;
+	if (vk) { const char *e = getenv("WSBSD_IOSTORAGE"); NSString *dir = e ? @(e) : @"/System/Library/Extensions/IOStorageFamily.kext/Contents/Resources"; NSImage *vi = WsbsdCoreTypesIcon([dir stringByAppendingPathComponent: [vk isEqual: @"internal"] ? @"Internal.icns" : [vk isEqual: @"optical"] ? @"Removable.icns" : @"External.icns"], MAX(r.size.width, r.size.height)); if (vi) { [vi drawInRect: r fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; return; } }
 	if (k && ![path isEqual: @"/"] && ![[path pathExtension] isEqual: @"app"]) { [k drawIconOfName: [path lastPathComponent] directory: d inRect: r]; return; }
 	NSImage *i = TFIcon(path); if (i) [i drawInRect: r fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1];
 }
@@ -152,24 +159,27 @@ static void TextAt(NSString *s, CGFloat x, CGFloat cy, NSDictionary *at) { NSSiz
 /* ---------- the icon view ---------- */
 static const CGFloat kCW = 112, kCH = 126, kPad = 10, kIcon = 64;
 @implementation TIconView
-- (CGFloat)cw { return MAX(112, _isz + 48); }
+- (void)reloadKeepingSelectionOrFolder:(NSString *)folder { NSArray *keep = [self selectedPaths]; CGFloat o = off; [self setFolder: folder]; for (NSUInteger i = 0; i < [_items count]; i++) if ([keep containsObject: _items[i][@"path"]]) [_sel addIndex: i]; off = o; [self setNeedsDisplay: YES]; }
+- (CGFloat)cw { return desktop ? _isz + 36 : MAX(112, _isz + 48); }
 - (CGFloat)ch { return _isz + 62; }
 - (void)setIconSize:(CGFloat)z { z = MAX(16, MIN(256, z)); if (z == _isz) return; _isz = z; for (NSMutableDictionary *it in _items) [it removeObjectForKey: @"lines"]; [self scrollTo: off]; [self _save]; [self setNeedsDisplay: YES]; }
 - (CGFloat)iconSize { return _isz; }
 - (instancetype)initWithFrame:(NSRect)f { if ((self = [super initWithFrame: f])) { _isz = 64; _items = [NSMutableArray array]; _sel = [NSMutableIndexSet indexSet]; _anchor = -1; _dropTarget = -1; } return self; }/* the settings of a folder (the arrangement and the places of the icons), kept in ~/Library/Application Support/Finder/ViewSettings.plist until .DS_Store is read and written the way the Finder does */
 static NSString *SettingsFile(void) { return [NSHomeDirectory() stringByAppendingPathComponent: @"Library/Application Support/Finder/ViewSettings.plist"]; }
+- (void)drawBackground { if (desktop) { [[NSColor clearColor] set]; NSRectFillUsingOperation([self bounds], NSCompositeCopy); } else [super drawBackground]; }
+- (BOOL)isOpaque { return !desktop; }
 - (void)setFolder:(NSString *)folder
 {
 	NSMutableArray *paths = [NSMutableArray array]; for (NSString *n in [[[NSFileManager defaultManager] contentsOfDirectoryAtPath: folder error: NULL] sortedArrayUsingSelector: @selector(localizedStandardCompare:)]) [paths addObject: [folder stringByAppendingPathComponent: n]];
-	_folder = [folder copy]; [self setPaths: paths];
+	_folder = [folder copy]; if (desktop) { NSMutableArray *vp = [NSMutableArray array]; for (NSDictionary *v in TFVolumes()) { BOOL root = [v[@"path"] isEqual: @"/"]; if (root ? TFPrefBool(@"ShowHardDrivesOnDesktop", NO) : [v[@"kind"] isEqual: @"external"] ? TFPrefBool(@"ShowExternalHardDrivesOnDesktop", YES) : [v[@"kind"] isEqual: @"optical"] ? TFPrefBool(@"ShowRemovableMediaOnDesktop", YES) : TFPrefBool(@"ShowMountedServersOnDesktop", NO)) [vp addObject: v[@"path"]]; } _prefix = vp; [paths insertObjects: vp atIndexes: [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0, [vp count])]]; } [self setPaths: paths];
 }
 - (void)setPaths:(NSArray *)paths
 {
 	[_items removeAllObjects]; [_sel removeAllIndexes]; NSFileManager *fm = [NSFileManager defaultManager]; NSDictionary *st = _folder ? [NSDictionary dictionaryWithContentsOfFile: SettingsFile()][_folder] : nil; NSDictionary *pos = st[@"icons"]; _arrange = st[@"arrange"]; _isz = st[@"isz"] ? [st[@"isz"] doubleValue] : 64;
 	for (NSString *p in paths) {
-		NSString *n = [p lastPathComponent]; if ([n hasPrefix: @"."] || ([filter length] && [n rangeOfString: filter options: NSCaseInsensitiveSearch].location == NSNotFound)) continue;
+		NSString *n = TFDisplayName(p); if ([n hasPrefix: @"."] || ([filter length] && [n rangeOfString: filter options: NSCaseInsensitiveSearch].location == NSNotFound)) continue; BOOL isVol = [_prefix containsObject: p];
 		NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory] && ![[p pathExtension] isEqual: @"app"]; NSString *info = @"";
-		if (dir) { NSUInteger c = 0; for (NSString *s in [fm contentsOfDirectoryAtPath: p error: NULL]) if (![s hasPrefix: @"."]) c++; info = [NSString stringWithFormat: @"%lu item%s", (unsigned long)c, c == 1 ? "" : "s"]; }
+		if (isVol) info = @""; else if (dir) { NSUInteger c = 0; for (NSString *s in [fm contentsOfDirectoryAtPath: p error: NULL]) if (![s hasPrefix: @"."]) c++; info = [NSString stringWithFormat: @"%lu item%s", (unsigned long)c, c == 1 ? "" : "s"]; }
 		else if (![[p pathExtension] isEqual: @"app"]) info = TFSizeString([at[NSFileSize] unsignedLongLongValue]);
 		NSMutableDictionary *it = [@{ @"name": n, @"path": p, @"info": info, @"tags": TFTagsOf(p), @"dir": @(dir), @"mod": at[NSFileModificationDate] ?: [NSDate distantPast], @"cre": at[NSFileCreationDate] ?: [NSDate distantPast], @"size": at[NSFileSize] ?: @0 } mutableCopy];
 		NSArray *xy = pos[n]; if ([xy count] == 2) it[@"pos"] = [NSValue valueWithPoint: NSMakePoint([xy[0] doubleValue], [xy[1] doubleValue])];
@@ -186,7 +196,7 @@ static NSString *SettingsFile(void) { return [NSHomeDirectory() stringByAppendin
 }
 - (void)reloadKeepingSelection { NSArray *keep = [self selectedPaths]; if (![_items count]) return; NSMutableArray *ps = [NSMutableArray array]; for (NSDictionary *d in _items) [ps addObject: d[@"path"]]; CGFloat o = off; [self setPaths: ps]; for (NSUInteger i = 0; i < [_items count]; i++) if ([keep containsObject: _items[i][@"path"]]) [_sel addIndex: i]; off = o; [self setNeedsDisplay: YES]; }
 - (NSInteger)_cols { return MAX(1, (NSInteger)floor(([self bounds].size.width - 2 * kPad) / [self cw])); }
-- (NSPoint)_slot:(NSInteger)i { NSInteger c = [self _cols]; return NSMakePoint(kPad + (i % c) * [self cw], kPad + (i / c) * [self ch]); }
+- (NSPoint)_slot:(NSInteger)i { if (desktop) { CGFloat H = [self bounds].size.height, W = [self bounds].size.width; NSInteger per = MAX(1, (NSInteger)floor((H - 30 - 2 * 10) / [self ch])); return NSMakePoint(W - 10 - (i / per + 1) * [self cw], 30 + 10 + (i % per) * [self ch]); } NSInteger c = [self _cols]; return NSMakePoint(kPad + (i % c) * [self cw], kPad + (i / c) * [self ch]); }
 - (NSPoint)_target:(NSInteger)i { NSValue *v = _items[i][@"pos"]; return v ? [v pointValue] : [self _slot: i]; }
 - (CGFloat)contentHeight { NSInteger c = [self _cols]; CGFloat h = 2 * kPad + ceil((double)[_items count] / c) * [self ch]; for (NSInteger i = 0; i < (NSInteger)[_items count]; i++) h = MAX(h, [self _target: i].y + [self ch] + kPad); return h; }
 - (NSRect)_cell:(NSInteger)i
@@ -237,7 +247,7 @@ static NSString *SettingsFile(void) { return [NSHomeDirectory() stringByAppendin
 }
 - (void)drawContent:(NSRect)v
 {
-	NSDictionary *lab = Font(12, NO, TF_TEXT); NSDictionary *labSel = Font(12, NO, TFRGB(255, 255, 255)); NSDictionary *inf = Font(10.5, NO, TFDark() ? TFRGB(66, 140, 235) : TFRGB(0, 100, 220)); BOOL key = KeyWin(self);
+	NSDictionary *lab = Font(12, NO, desktop ? TFRGB(255, 255, 255) : TF_TEXT); NSDictionary *labSel = Font(12, NO, TFRGB(255, 255, 255)); NSDictionary *inf = Font(10.5, NO, TFDark() ? TFRGB(66, 140, 235) : TFRGB(0, 100, 220)); BOOL key = KeyWin(self);
 	for (NSInteger pass = 0; pass < 2; pass++) for (NSInteger i = 0; i < (NSInteger)[_items count]; i++) {                                                                    /* the dragged icons last, on top */
 		BOOL moving = _dragging && [_sel containsIndex: i]; if ((pass == 1) != moving) continue;
 		NSRect c = [self _cell: i]; if (NSMaxY(c) < v.origin.y || c.origin.y > NSMaxY(v)) continue; NSMutableDictionary *it = _items[i]; BOOL sel = [_sel containsIndex: i];
@@ -254,7 +264,7 @@ static NSString *SettingsFile(void) { return [NSHomeDirectory() stringByAppendin
 			if (sel) FillRound(NSMakeRect(NSMidX(c) - z.width / 2 - 5, y - 9, z.width + 10, 18), 5, key ? TF_ACCENT : TFDark() ? TFRGB(90, 90, 90) : TFRGB(190, 190, 194));
 			[ln drawAtPoint: NSMakePoint(NSMidX(c) - z.width / 2, y - z.height / 2) withAttributes: sel ? labSel : lab]; y += lh;
 		}
-		if ([it[@"info"] length]) { NSSize z = [it[@"info"] sizeWithAttributes: inf]; [it[@"info"] drawAtPoint: NSMakePoint(NSMidX(c) - z.width / 2, y - z.height / 2 - 1) withAttributes: inf]; }
+		if (!desktop && [it[@"info"] length]) { NSSize z = [it[@"info"] sizeWithAttributes: inf]; [it[@"info"] drawAtPoint: NSMakePoint(NSMidX(c) - z.width / 2, y - z.height / 2 - 1) withAttributes: inf]; }
 	}
 	if (!NSIsEmptyRect(_band)) { [TFRGBA(120, 160, 255, 0.18) setFill]; NSRectFill(_band); [TFRGBA(120, 160, 255, 0.6) setStroke]; NSFrameRect(_band); }
 }
@@ -530,8 +540,10 @@ static const CGFloat kColW = 240, kColRow = 24;
 
 /* ---------- the sidebar ---------- */
 @implementation TSidebarView
-- (instancetype)initWithFrame:(NSRect)f { if ((self = [super initWithFrame: f])) { [self _build]; [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(_prefs:) name: @"TFPrefsChanged" object: nil]; } return self; }
+- (instancetype)initWithFrame:(NSRect)f { if ((self = [super initWithFrame: f])) { _sig = [self _volSig]; [self _build]; [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(_prefs:) name: @"TFPrefsChanged" object: nil]; [NSTimer scheduledTimerWithTimeInterval: 2 target: self selector: @selector(_poll:) userInfo: nil repeats: YES]; } return self; }
 - (void)_prefs:(NSNotification *)n { [self _build]; [self setNeedsDisplay: YES]; }
+- (NSString *)_volSig { NSMutableString *s = [NSMutableString string]; for (NSDictionary *v in TFVolumes()) [s appendFormat: @"%@;", v[@"path"]]; return s; }
+- (void)_poll:(NSTimer *)t { NSString *sig = [self _volSig]; if (![sig isEqual: _sig]) { _sig = sig; [self _build]; [self setNeedsDisplay: YES]; } }
 - (void)_build
 {
 	{
@@ -540,7 +552,7 @@ static const CGFloat kColW = 240, kColRow = 24;
 		void (^head)(NSString *) = ^(NSString *t) { [r addObject: @{ @"k": @"head", @"t": t }]; };
 		item(@"Recents", @"clock", @"recents://"); item(@"Shared", @"person.2", @"shared://");
 		head(@"Favorites"); item(@"Applications", @"a.square", @"/Applications"); item(@"Desktop", @"menubar.dock.rectangle", [home stringByAppendingPathComponent: @"Desktop"]); item(@"Documents", @"doc", [home stringByAppendingPathComponent: @"Documents"]); item(@"Downloads", @"arrow.down.circle", [home stringByAppendingPathComponent: @"Downloads"]);
-		head(@"Locations"); item(@"iCloud Drive", @"icloud", [home stringByAppendingPathComponent: @"Library/Mobile Documents/com~apple~CloudDocs"]); item(NSUserName(), @"house", home); item(@"Macintosh HD", @"internaldrive", @"/"); item(@"AirDrop", @"airdrop", @"airdrop://"); item(@"Trash", @"trash", [home stringByAppendingPathComponent: @".Trash"]);
+		head(@"Locations"); item(@"iCloud Drive", @"icloud", [home stringByAppendingPathComponent: @"Library/Mobile Documents/com~apple~CloudDocs"]); item(NSUserName(), @"house", home); item(@"Macintosh HD", @"internaldrive", @"/"); for (NSDictionary *v in TFVolumes()) if (![v[@"path"] isEqual: @"/"]) [r addObject: @{ @"k": @"item", @"t": v[@"name"], @"s": [v[@"kind"] isEqual: @"optical"] ? @"opticaldisc" : [v[@"kind"] isEqual: @"server"] ? @"server.rack" : @"externaldrive", @"p": v[@"path"], @"eject": @YES }]; item(@"AirDrop", @"airdrop", @"airdrop://"); item(@"Trash", @"trash", [home stringByAppendingPathComponent: @".Trash"]);
 		head(@"Tags"); for (NSString *t in @[ @"Red", @"Orange", @"Yellow", @"Green", @"Blue", @"Purple", @"Gray" ]) if (TFPrefBool([@"SidebarTag" stringByAppendingString: t], YES)) [r addObject: @{ @"k": @"tag", @"t": t, @"p": [@"tag://" stringByAppendingString: t] }];
 		item(@"All Tags…", @"", @"tags://"); _rows = r;
 	}
@@ -565,7 +577,8 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 		if ([k isEqual: @"tag"]) { [TagColorFor(it[@"t"]) setFill]; [[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(22, NSMidY(r) - 6, 13, 13)] fill]; }
 		else if ([it[@"t"] isEqual: @"All Tags…"]) { [[NSColor colorWithCalibratedWhite: 0.6 alpha: 1] setFill]; [[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(21, NSMidY(r) - 5, 10, 10)] fill]; [[NSColor colorWithCalibratedWhite: 0.45 alpha: 1] setFill]; [[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(27, NSMidY(r) - 5, 10, 10)] fill]; }
 		else if (![it[@"s"] length] || !TFSymbol(it[@"s"], ic, 15, tint)) { }
-		TextAt(it[@"t"], 45, NSMidY(r), Font(13, NO, TF_TEXT));
+		BOOL ej = [it[@"eject"] boolValue]; TextAt(Truncated(it[@"t"], Font(13, NO, TF_TEXT), r.size.width - (ej ? 70 : 52)), 45, NSMidY(r), Font(13, NO, TF_TEXT));
+		if (ej) TFSymbol(@"eject.fill", NSMakeRect(NSMaxX(r) - 30, NSMidY(r) - 8, 16, 16), 10, TF_DIM);
 	}
 }
 - (NSString *)dropPathAtWindowPoint:(NSPoint)wp
@@ -576,7 +589,7 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 }
 - (void)contentMouseDown:(NSPoint)p event:(NSEvent *)e
 {
-	for (NSInteger i = 0; i < (NSInteger)[_rows count]; i++) if (![_rows[i][@"k"] isEqual: @"head"] && NSPointInRect(p, [self _rect: i])) { NSString *path = _rows[i][@"p"]; if ([path hasPrefix: @"/"] || [path hasPrefix: @"tag://"]) [delegate sidebarGoTo: path]; return; }
+	for (NSInteger i = 0; i < (NSInteger)[_rows count]; i++) if (![_rows[i][@"k"] isEqual: @"head"] && NSPointInRect(p, [self _rect: i])) { NSString *path = _rows[i][@"p"]; if ([_rows[i][@"eject"] boolValue] && p.x > NSMaxX([self _rect: i]) - 40) { if (TFEject(path)) { _sig = nil; [self _poll: nil]; } else NSBeep(); return; } if ([path hasPrefix: @"/"] || [path hasPrefix: @"tag://"]) [delegate sidebarGoTo: path]; return; }
 }
 @end
 

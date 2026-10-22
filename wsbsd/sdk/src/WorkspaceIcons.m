@@ -57,4 +57,4 @@ static id NewIconForFileType(id self, SEL _cmd, NSString *type)
 @end
 
 /* an icon of CoreTypes.bundle by file name (the sidebar icons, GenericFolderIcon ...) */
-NSImage *WsbsdCoreTypesIcon(NSString *file, CGFloat pt) { return ImageFromICNS([TypesDir() stringByAppendingPathComponent: file], pt); }
+NSImage *WsbsdCoreTypesIcon(NSString *file, CGFloat pt) { return ImageFromICNS([file hasPrefix: @"/"] ? file : [TypesDir() stringByAppendingPathComponent: file], pt); }       /* a name of CoreTypes.bundle, or an absolute path */
