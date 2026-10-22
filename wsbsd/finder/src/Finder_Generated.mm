@@ -2,7 +2,12 @@
 #import <AppKit/AppKit.h>
 #import <QuartzCore/QuartzCore.h>
 
+@interface TBrowserWindowController : NSWindowController @end
+@interface TDesktopView : NSView @end
 #import "TDesktopWindow.h"
+@interface TDesktopWindowController : NSWindowController @end
+@interface TIconView : NSView @end
+@interface TSidebarView : NSOutlineView @end
 @interface TCompressWithOptionsController : NSWindowController @end
 @interface TNotificationCenterDelegate : NSObject @end
 @interface TAlertHelpDelegate : NSObject @end
@@ -63,7 +68,6 @@
 @interface TBVDSBulkConfigChangedState : NSObject @end
 @interface TBrowserViewDataSource : NSObject @end
 @interface TTextFieldWithoutFontSmoothingCell : TTextCell @end
-@interface TIconView : TUpdateLayerView @end
 @interface TTextView : NSTextView @end
 @interface TPreviewOptionsGroupViewController : TViewController @end
 @interface TPreviewOptionsSingleCheckboxGroupViewController : TPreviewOptionsGroupViewController @end
@@ -365,7 +369,6 @@
 @interface TApplicationController : NSResponder @end
 @interface TFullScreenCoverWindow : NSWindow @end
 @interface TCA3PartLayer : CALayer @end
-@interface TBrowserWindowController : TBaseBrowserWindowController @end
 @interface TContextMenuItem : NSMenuItem @end
 @interface TContextMenu : NSMenu @end
 @interface TQuickActionsMenuItem : TContextMenuItem @end
@@ -584,7 +587,6 @@
 @interface TMouseOverButton : TButton @end
 @interface TSidebarItemCell : NSTableCellView @end
 @interface TPreviewOptionsController : NSObject @end
-@interface TSidebarView : NSOutlineView @end
 @interface TSidebarViewController : TViewController @end
 @interface TDrawRectView : TView @end
 @interface TViewAnimationHelper : TAnimationDelegate @end
@@ -2959,165 +2961,6 @@
 - (id)setHandlingPendingCallbacks:(id)a0 { /* 0x1001A9990 */ return nil; }
 @end
 @implementation TTextFieldWithoutFontSmoothingCell
-@end
-@implementation TIconView
-- (id)initCommon { /* 0x1001BC948 */ return nil; }
-- (id)gestureRecognizer:(id)a0 shouldRecognizeSimultaneouslyWithGestureRecognizer:(id)a1 { /* 0x1001BCD6C */ return nil; }
-- (id)setIconToolTip:(id)a0 { /* 0x1001BCE68 */ return nil; }
-- (id)aboutToTearDown { /* 0x1001BCE7C */ return nil; }
-- (id)updateSuperViewsBackgroundColor:(id)a0 { /* 0x1001BD170 */ return nil; }
-- (id)popoverAnchorView { /* 0x1001BD210 */ return nil; }
-- (id)iconView { /* 0x1001BD230 */ return nil; }
-- (id)delegate { /* 0x1001BD244 */ return nil; }
-- (id)setDelegate:(id)a0 { /* 0x10004FD04 */ return nil; }
-- (id)iconImage { /* 0x1001BD2C8 */ return nil; }
-- (id)setIconImage:(id)a0 { /* 0x1001BD2DC */ return nil; }
-- (id)iconSize { /* 0x1001BD3E4 */ return nil; }
-- (id)setIconSize:(id)a0 { /* 0x1001BD3F8 */ return nil; }
-- (id)titleStr { /* 0x1001BD44C */ return nil; }
-- (id)startFolderAnimation:(id)a0 assetGetter:(id)a1 completion:(id)a2 { /* 0x1001BD484 */ return nil; }
-- (id)startFolderAnimation:(id)a0 assetGetter:(id)a1 completion:(id)a2 sequencer:(id)a3 { /* 0x1001BD4D8 */ return nil; }
-- (id)setTitleStr:(id)a0 { /* 0x1001BD9E8 */ return nil; }
-- (id)titleFont { /* 0x1001BDAB4 */ return nil; }
-- (id)setTitleFont:(id)a0 { /* 0x1001BDAC8 */ return nil; }
-- (id)titleFontSize { /* 0x1001BDCA4 */ return nil; }
-- (id)titleFontColor { /* 0x1001BDCFC */ return nil; }
-- (id)_titleFontColor { /* 0x1001BDD10 */ return nil; }
-- (id)setTitleFontColor:(id)a0 { /* 0x1001BDED4 */ return nil; }
-- (id)subtitleStringSet { /* 0x1001BDFD0 */ return nil; }
-- (id)setSubtitleStringSet:(id)a0 { /* 0x1001BDFE4 */ return nil; }
-- (id)subtitleFont { /* 0x1001BE0F0 */ return nil; }
-- (id)setSubtitleFont:(id)a0 { /* 0x1001BE104 */ return nil; }
-- (id)updateSubtitleFontForTitleFontChange { /* 0x1001BE23C */ return nil; }
-- (id)subtitleFontSize { /* 0x1001BE29C */ return nil; }
-- (id)_subtitleFontSize { /* 0x1001BE2F4 */ return nil; }
-- (id)subtitleFontColor { /* 0x1001BE320 */ return nil; }
-- (id)_subtitleFontColor { /* 0x1001BE334 */ return nil; }
-- (id)setSubtitleFontColor:(id)a0 { /* 0x1001BE394 */ return nil; }
-- (id)setBadgeImage:(id)a0 { /* 0x1001BE430 */ return nil; }
-- (id)setVendorBadgeImage:(id)a0 { /* 0x1001BE4F8 */ return nil; }
-- (id)tagColorIndexes { /* 0x1001BE5C0 */ return nil; }
-- (id)setTagColorIndexes:(id)a0 { /* 0x1001BE5D0 */ return nil; }
-- (id)gridSpacing { /* 0x1001BE690 */ return nil; }
-- (id)setGridSpacing:(id)a0 { /* 0x1001BE6A4 */ return nil; }
-- (id)isIconHidden { /* 0x1001BE72C */ return nil; }
-- (id)setIconHidden:(id)a0 { /* 0x1001BE75C */ return nil; }
-- (id)isTitleOnBottom { /* 0x1001BE7F0 */ return nil; }
-- (id)setTitleOnBottom:(id)a0 { /* 0x1001BE804 */ return nil; }
-- (id)isTitleEnabled { /* 0x1001BE878 */ return nil; }
-- (id)setTitleEnabled:(id)a0 { /* 0x1001BE88C */ return nil; }
-- (id)isSubtitleEnabled { /* 0x1001BE8B0 */ return nil; }
-- (id)setSubtitleEnabled:(id)a0 { /* 0x1001BE8C4 */ return nil; }
-- (id)isDimmed { /* 0x1001BE8E8 */ return nil; }
-- (id)isIconDimmed { /* 0x1001BE8FC */ return nil; }
-- (id)setIconDimmed:(id)a0 { /* 0x1001BE910 */ return nil; }
-- (id)isTitleDimmed { /* 0x1001BEB04 */ return nil; }
-- (id)setTitleDimmed:(id)a0 { /* 0x1001BEB18 */ return nil; }
-- (id)setSelected:(id)a0 { /* 0x1001BEB70 */ return nil; }
-- (id)selectWithAnimation { /* 0x1001BEB78 */ return nil; }
-- (id)setSelected:(id)a0 withAnimation:(id)a1 { /* 0x1001BEB84 */ return nil; }
-- (id)isSelectionBordered { /* 0x1001BEC40 */ return nil; }
-- (id)setSelectionBordered:(id)a0 { /* 0x1001BEC54 */ return nil; }
-- (id)isOverlappingTitle { /* 0x1001BEC88 */ return nil; }
-- (id)setOverlappingTitle:(id)a0 { /* 0x1001BEC9C */ return nil; }
-- (id)isDropTarget { /* 0x1001BECD0 */ return nil; }
-- (id)showSelection:(id)a0 withAnimation:(id)a1 { /* 0x1001BECE4 */ return nil; }
-- (id)updateSelection { /* 0x1001BEF84 */ return nil; }
-- (id)setDropTarget:(id)a0 { /* 0x1001BEFC4 */ return nil; }
-- (id)isDragItem { /* 0x1001BF050 */ return nil; }
-- (id)setDragItem:(id)a0 { /* 0x1001BF064 */ return nil; }
-- (id)useActiveAppearance { /* 0x1001BF100 */ return nil; }
-- (id)setUseActiveAppearance:(id)a0 { /* 0x1001BF114 */ return nil; }
-- (id)isLTRLocalization { /* 0x1001BF1B0 */ return nil; }
-- (id)_titleViews { /* 0x1001BF1D0 */ return nil; }
-- (id)dragFlockingIconImage { /* 0x1001BF2A8 */ return nil; }
-- (id)dragFlockingTitleImageCommon { /* 0x1001BF394 */ return nil; }
-- (id)dragFlockingTitleImage { /* 0x1001BF628 */ return nil; }
-- (id)dragTitleImageForCollectionViewItem { /* 0x1001BF6F0 */ return nil; }
-- (id)iconFrame { /* 0x1001BF7D4 */ return nil; }
-- (id)_iconFrame { /* 0x1001BF80C */ return nil; }
-- (id)titleFrame { /* 0x1001BF8A4 */ return nil; }
-- (id)titleBubbleFrame { /* 0x1001BF90C */ return nil; }
-- (id)titleBubbleView { /* 0x1001BF974 */ return nil; }
-- (id)overlappingTitle:(id)a0 inCollectionView:(id)a1 { /* 0x1001BF988 */ return nil; }
-- (id)titleDraggingFrame { /* 0x1001BFCFC */ return nil; }
-- (id)titleEditingFrame { /* 0x1001BFD54 */ return nil; }
-- (id)_windowChangedKeyState { /* 0x1001BFF30 */ return nil; }
-- (id)draggingEntered:(id)a0 { /* 0x1000F3B08 */ return nil; }
-- (id)draggingUpdated:(id)a0 { /* 0x1000F3C28 */ return nil; }
-- (id)draggingExited:(id)a0 { /* 0x1000F3E68 */ return nil; }
-- (id)draggingEnded:(id)a0 { /* 0x1001BFF88 */ return nil; }
-- (id)updateDraggingItemsForDrag:(id)a0 { /* 0x1000F3DC4 */ return nil; }
-- (id)prepareForDragOperation:(id)a0 { /* 0x1001C002C */ return nil; }
-- (id)performDragOperation:(id)a0 { /* 0x1001C00F8 */ return nil; }
-- (id)concludeDragOperation:(id)a0 { /* 0x1001C01C4 */ return nil; }
-- (id)wantsPeriodicDraggingUpdates { /* 0x1001C0288 */ return nil; }
-- (id)springLoadingActivated:(id)a0 draggingInfo:(id)a1 { /* 0x1001C02FC */ return nil; }
-- (id)springLoadingHighlightChanged:(id)a0 { /* 0x1001C0394 */ return nil; }
-- (id)springLoadingUpdated:(id)a0 { /* 0x1001C0444 */ return nil; }
-- (id)_hitTestWithLocalPoint:(id)a0 { /* 0x1001C04E0 */ return nil; }
-- (id)_hitTestInIconWithLocalPoint:(id)a0 { /* 0x1001C06F0 */ return nil; }
-- (id)hitTestInIcon:(id)a0 { /* 0x1001C07AC */ return nil; }
-- (id)_hitTestInTextWithLocalPoint:(id)a0 { /* 0x1001C0844 */ return nil; }
-- (id)hitTestInText:(id)a0 { /* 0x1001C08C4 */ return nil; }
-- (id)_hitTestInIconOrTextWithLocalPoint:(id)a0 { /* 0x1001C0958 */ return nil; }
-- (id)hitTestInIconOrText:(id)a0 { /* 0x1001C09A8 */ return nil; }
-- (id)isIconOrTextInRect:(id)a0 { /* 0x1001C0A3C */ return nil; }
-- (id)startIconTracking:(id)a0 options:(id)a1 userInfo:(id)a2 { /* 0x1001C0BA8 */ return nil; }
-- (id)stopIconTracking:(id)a0 { /* 0x1001C0BBC */ return nil; }
-- (id)isIconTracking:(id)a0 { /* 0x1001C0BD0 */ return nil; }
-- (id)clearIconTracking { /* 0x1001C0BE4 */ return nil; }
-- (id)iconSelectionViewShouldShow { /* 0x1001C0BF8 */ return nil; }
-- (id)titleBubbleViewIsSelected { /* 0x1001C0C80 */ return nil; }
-- (id)titleBubbleViewIsHidden { /* 0x1001C0D14 */ return nil; }
-- (id)titleBubbleViewIsHiddenForLayout { /* 0x1001C0D50 */ return nil; }
-- (id)subtitleFieldIsHidden { /* 0x1001C0DB4 */ return nil; }
-- (id)subtitleFieldIsHiddenForLayout { /* 0x1001C0E2C */ return nil; }
-- (id)setInlineProgressStatus:(id)a0 cancelHandler:(id)a1 { /* 0x1001C0E98 */ return nil; }
-- (id)updateInlineProgressViewCancelHandler:(id)a0 { /* 0x1001C0EF0 */ return nil; }
-- (id)updateInlineProgressView { /* 0x1001C0FE8 */ return nil; }
-- (id)updateInlineProgressBaselineLayout:(id)a0 { /* 0x1001C125C */ return nil; }
-- (id)updateTitleFieldAttributes { /* 0x1001C146C */ return nil; }
-- (id)titleFieldAttributesWithParagraphStyleHint:(id)a0 { /* 0x1001C16F8 */ return nil; }
-- (id)updateSubtitleFieldAttributes { /* 0x1001C17D4 */ return nil; }
-- (id)subtitleFieldAttributesWithParagraphStyleHint:(id)a0 { /* 0x1001C1B40 */ return nil; }
-- (id)isAnimating { /* 0x1001C1C14 */ return nil; }
-- (id)layoutTitleAndSubtitleInBounds:(id)a0 iconViewFrame:(id)a1 { /* 0x1001C2074 */ return nil; }
-- (id)layoutIconSelectionView:(id)a0 { /* 0x1001C22D0 */ return nil; }
-- (id)dirtyLayoutForTitleBubbleViewIfNeeded { /* 0x1001C2544 */ return nil; }
-- (id)setBadgeConfigurator:(id)a0 { /* 0x1001C25AC */ return nil; }
-- (id)configureTitleBubbleViewBeforeLayout { /* 0x1001C26B0 */ return nil; }
-- (id)layoutTitleBubbleView:(id)a0 { /* 0x1001C28C4 */ return nil; }
-- (id)dirtyLayoutForSubtitleBubbleViewIfNeeded { /* 0x1001C3120 */ return nil; }
-- (id)configureSubtitleFieldBeforeLayout { /* 0x1001C3188 */ return nil; }
-- (id)layoutSubtitleField:(id)a0 { /* 0x1001C326C */ return nil; }
-- (id)dirtyLayoutIfNeededWithBadge:(id)a0 badgeImageView:(id)a1 { /* 0x1001C39A4 */ return nil; }
-- (id)layoutBadgeImageView:(id)a0 { /* 0x1001C3A4C */ return nil; }
-- (id)layoutVendorBadgeImageView:(id)a0 { /* 0x1001C3BE4 */ return nil; }
-- (id)isAccessibilityEnabled { /* 0x1001C3FD0 */ return nil; }
-- (id)accessibilityFrame { /* 0x1001C3FEC */ return nil; }
-- (id)accessibilityFilename { /* 0x1001C4040 */ return nil; }
-- (id)isAccessibilitySelected { /* 0x1001C42FC */ return nil; }
-- (id)accessibilityActionNames { /* 0x1001C4300 */ return nil; }
-- (id)accessibilityPerformAction:(id)a0 { /* 0x1001C438C */ return nil; }
-- (id)accessibilityHitTest:(id)a0 { /* 0x1001C446C */ return nil; }
-- (id)isEditing { /* 0x1001C4504 */ return nil; }
-- (id)setEditing:(id)a0 { /* 0x1001C4518 */ return nil; }
-- (id)isSpringBlinkingOff { /* 0x1001C452C */ return nil; }
-- (id)setSpringBlinkingOff:(id)a0 { /* 0x1001C4540 */ return nil; }
-- (id)isTornDown { /* 0x1001C4554 */ return nil; }
-- (id)setTornDown:(id)a0 { /* 0x1001C456C */ return nil; }
-- (id)iCloudSubtitleToolTip { /* 0x1001C4580 */ return nil; }
-- (id)setICloudSubtitleToolTip:(id)a0 { /* 0x1001C4594 */ return nil; }
-- (id)accessibilityAnnotations { /* 0x1001C45A0 */ return nil; }
-- (id)setAccessibilityAnnotations:(id)a0 { /* 0x1001C45B4 */ return nil; }
-- (id)badgeImage { /* 0x1001C45C0 */ return nil; }
-- (id)vendorBadgeImage { /* 0x1001C45D4 */ return nil; }
-- (id)isSelected { /* 0x1001C45E8 */ return nil; }
-+ (id)iconSelectionViewClass { /* 0x1001BD224 */ return nil; }
-+ (id)keyPathsForValuesAffectingTitleBubbleViewIsSelected { /* 0x1001C0C38 */ return nil; }
-+ (id)keyPathsForValuesAffectingTitleBubbleViewIsHidden { /* 0x1001C0CD8 */ return nil; }
-+ (id)keyPathsForValuesAffectingSubtitleFieldIsHidden { /* 0x1001C0D6C */ return nil; }
 @end
 @implementation TTextView
 - (id)initCommon { /* 0x1001C7B70 */ return nil; }
@@ -6563,7 +6406,6 @@
 @implementation TApplicationController
 - (id)scheduleRemovingOldTrashItems { /* 0x10040651C */ return nil; }
 - (id)handleAction:(id)a0 { /* 0x100406860 */ return nil; }
-- (id)validateMenuItem:(id)a0 { /* 0x10001B8F4 */ return nil; }
 - (id)validateToolbarItem:(id)a0 { /* 0x10010AA74 */ return nil; }
 - (id)setMenuDelegateForItem:(id)a0 inMenu:(id)a1 { /* 0x100013698 */ return nil; }
 - (id)configureTrashMenuItems { /* 0x1000131B4 */ return nil; }
@@ -6658,232 +6500,6 @@
 - (id)leftWidth { /* 0x10040DE8C */ return nil; }
 - (id)rightWidth { /* 0x10040DEA0 */ return nil; }
 + (id)layerWithLeftWidth:(id)a0 andRightWidth:(id)a1 andScaleFactor:(id)a2 { /* 0x10010DD74 */ return nil; }
-@end
-@implementation TBrowserWindowController
-- (id)completeInitialization:(id)a0 targetPath:(id)a1 spawnOrigin:(id)a2 { /* 0x10040DEB4 */ return nil; }
-- (id)initWithState:(id)a0 targetPath:(id)a1 spawnOrigin:(id)a2 { /* 0x100044278 */ return nil; }
-- (id)initForBackupWithState:(id)a0 targetPath:(id)a1 forSnapshotGenerator:(id)a2 withTMTarget:(id)a3 { /* 0x10040E154 */ return nil; }
-- (id)initWithTargetPath:(id)a0 forceContainer:(id)a1 spawnOrigin:(id)a2 desiredLocation:(id)a3 { /* 0x10040E400 */ return nil; }
-- (id)initWithTargetPath:(id)a0 forceContainer:(id)a1 spawnOrigin:(id)a2 desiredLocation:(id)a3 creationState:(id)a4 { /* 0x100043A5C */ return nil; }
-- (id)initWithState:(id)a0 { /* 0x100114624 */ return nil; }
-- (id)contentViewController { /* 0x10040E478 */ return nil; }
-- (id)setContentViewController:(id)a0 { /* 0x10040E4FC */ return nil; }
-- (id)browserContainerClass { /* 0x100048B7C */ return nil; }
-- (id)composedWindowState { /* 0x10040E63C */ return nil; }
-- (id)tabbedWindowsDidChange { /* 0x10040F30C */ return nil; }
-- (id)viewStyle { /* 0x100058678 */ return nil; }
-- (id)viewSettings { /* 0x100058614 */ return nil; }
-- (id)setViewSettings:(id)a0 { /* 0x10040FA0C */ return nil; }
-- (id)searchFieldCancel { /* 0x10040FA98 */ return nil; }
-- (id)makeKeyAndOrderFront { /* 0x10005BCA4 */ return nil; }
-- (id)drawCompletelyIntoBackBuffer { /* 0x10040FB24 */ return nil; }
-- (id)window:(id)a0 willEncodeRestorableState:(id)a1 { /* 0x100067CB4 */ return nil; }
-- (id)restorableStateRepresentedURL { /* 0x10040FB78 */ return nil; }
-- (id)effectiveAppearanceChanged { /* 0x10040FBE4 */ return nil; }
-- (id)aboutToTearDown { /* 0x10040FE34 */ return nil; }
-- (id)cloudFolderTypeForNode:(id)a0 { /* 0x100410018 */ return nil; }
-- (id)nodeIsAnICloudRoot:(id)a0 { /* 0x100410070 */ return nil; }
-- (id)popupPathForNode:(id)a0 { /* 0x1004100C8 */ return nil; }
-- (id)titleForICloudContainer:(id)a0 { /* 0x100410148 */ return nil; }
-- (id)pathPrettyStringForNode:(id)a0 { /* 0x1004101C4 */ return nil; }
-- (id)saveWindowState { /* 0x1000612AC */ return nil; }
-- (id)windowStateWithContainer:(id)a0 forFinderWindowRestore:(id)a1 { /* 0x100410260 */ return nil; }
-- (id)restorableWindowState:(id)a0 { /* 0x1004104D4 */ return nil; }
-- (id)containerWindowState:(id)a0 { /* 0x100078BF8 */ return nil; }
-- (id)windowState { /* 0x1000614D8 */ return nil; }
-- (id)windowStateIsValid:(id)a0 { /* 0x100044C6C */ return nil; }
-- (id)pinWindowFrame:(id)a0 toScreenContainingPoint:(id)a1 includingMouse:(id)a2 { /* 0x1000EFF50 */ return nil; }
-- (id)configureWindowForBackup { /* 0x1000D38A0 */ return nil; }
-- (id)forceFrameToMainScreen:(id)a0 { /* 0x10005767C */ return nil; }
-- (id)configureWindowFrameWithState:(id)a0 { /* 0x100410554 */ return nil; }
-- (id)unlockOverlayScrollerStateOnMainThread { /* 0x1000D8678 */ return nil; }
-- (id)configureWindowWithState:(id)a0 targetPath:(id)a1 spawnOrigin:(id)a2 { /* 0x100410A24 */ return nil; }
-- (id)configureWindowForTargetChange { /* 0x1000586C8 */ return nil; }
-- (id)target { /* 0x10004815C */ return nil; }
-- (id)finderScriptingModelKind { /* 0x10041111C */ return nil; }
-- (id)finderScriptingFrameRectForContentRect:(id)a0 { /* 0x100411128 */ return nil; }
-- (id)finderScriptingContentRectForFrameRect:(id)a0 { /* 0x1004112E8 */ return nil; }
-- (id)shouldStaggerWindowPositionsForWindowState:(id)a0 { /* 0x1000578E8 */ return nil; }
-- (id)adjustWindowProxyNode:(id)a0 { /* 0x1004113A4 */ return nil; }
-- (id)fetchWindowProxyNode { /* 0x1000588B0 */ return nil; }
-- (id)browserWindow { /* 0x100057174 */ return nil; }
-- (id)windowNumber { /* 0x10005CC34 */ return nil; }
-- (id)isDesktop { /* 0x10006154C */ return nil; }
-- (id)shouldShowRecents { /* 0x100411534 */ return nil; }
-- (id)setWindowFrame:(id)a0 { /* 0x10041153C */ return nil; }
-- (id)resizeWindowWithSize:(id)a0 { /* 0x10041165C */ return nil; }
-- (id)inBrowseMode { /* 0x10004C4F0 */ return nil; }
-- (id)setInBrowseMode:(id)a0 { /* 0x100411780 */ return nil; }
-- (id)setInBrowseModeAnimated:(id)a0 { /* 0x100411870 */ return nil; }
-- (id)configureWindowForFullScreen:(id)a0 { /* 0x1000572C4 */ return nil; }
-- (id)configureToolbarForMode:(id)a0 { /* 0x100411900 */ return nil; }
-- (id)updateICloudTabs { /* 0x100411984 */ return nil; }
-- (id)closeIfDataSeparatedTarget { /* 0x100411D30 */ return nil; }
-- (id)closeIfTargetHiddenFromManagedVisibility { /* 0x100411D9C */ return nil; }
-- (id)closeIfTargetedToDomain:(id)a0 { /* 0x100411E10 */ return nil; }
-- (id)createShadowImage:(id)a0 andFrame:(id)a1 andContentFrame:(id)a2 forWindow:(id)a3 { /* 0x10010B83C */ return nil; }
-- (id)copyCGSWindowImageIncludeShadow:(id)a0 { /* 0x100412070 */ return nil; }
-- (id)animateToBrowseMode:(id)a0 { /* 0x100412210 */ return nil; }
-- (id)stopSpringToFrontTimer { /* 0x100070864 */ return nil; }
-- (id)springUpdateAnchorRect:(id)a0 { /* 0x1000F0494 */ return nil; }
-- (id)springDragEnterWindow:(id)a0 { /* 0x1000F0280 */ return nil; }
-- (id)springDragLeaveWindow:(id)a0 { /* 0x1000F1620 */ return nil; }
-- (id)springDragInsideWindow:(id)a0 { /* 0x1000F1408 */ return nil; }
-- (id)rememberSpringState { /* 0x1000F20A8 */ return nil; }
-- (id)springWindowIntoView { /* 0x1004126EC */ return nil; }
-- (id)forgetSpringState { /* 0x1004128F8 */ return nil; }
-- (id)setCloseWhenDragLeavesWindow { /* 0x1000F01A8 */ return nil; }
-- (id)windowIsSpringing { /* 0x10005D044 */ return nil; }
-- (id)revertToPreviousSpringState { /* 0x1000705BC */ return nil; }
-- (id)isSprungAwayFromOriginalTarget { /* 0x1000F3CF4 */ return nil; }
-- (id)isTabBarVisible { /* 0x100412988 */ return nil; }
-- (id)frameForContainer { /* 0x100412A04 */ return nil; }
-- (id)activeBaseBrowserViewController { /* 0x10005D2A4 */ return nil; }
-- (id)activeBrowserViewController { /* 0x1000571D8 */ return nil; }
-- (id)backupDelegate { /* 0x100058040 */ return nil; }
-- (id)iconAppearancePrefChanged:(id)a0 { /* 0x100412ACC */ return nil; }
-- (id)newWindowForTab:(id)a0 { /* 0x100412B28 */ return nil; }
-- (id)setDefaultTabVisibility { /* 0x100412BB4 */ return nil; }
-- (id)cmdToggleTabView:(id)a0 { /* 0x1000FC270 */ return nil; }
-- (id)showTabViewForBackup { /* 0x1000DB738 */ return nil; }
-- (id)hideTabViewForBackup { /* 0x1000D35B4 */ return nil; }
-- (id)toolbar { /* 0x10004C540 */ return nil; }
-- (id)isToolbarVisible { /* 0x100412BB8 */ return nil; }
-- (id)isStatusBarVisible { /* 0x100412C08 */ return nil; }
-- (id)isPathBarVisible { /* 0x100412C58 */ return nil; }
-- (id)statusBarHeightDeltaForVisibility:(id)a0 { /* 0x100412CA8 */ return nil; }
-- (id)resizeForStatusBarChange:(id)a0 { /* 0x100412D1C */ return nil; }
-- (id)toggleStatusBarVisibility:(id)a0 { /* 0x100412DB8 */ return nil; }
-- (id)configureStatusBar:(id)a0 { /* 0x100412E20 */ return nil; }
-- (id)searchFieldTextChanged { /* 0x100412E7C */ return nil; }
-- (id)addingSearchToolbarItem:(id)a0 { /* 0x100047AD4 */ return nil; }
-- (id)copySearchFieldFromOther:(id)a0 { /* 0x100412F08 */ return nil; }
-- (id)validateTargetForMenuItem:(id)a0 { /* 0x1000A7F18 */ return nil; }
-- (id)containerValidateToolbarItem:(id)a0 { /* 0x100412FF8 */ return nil; }
-- (id)validateToolbarItem:(id)a0 { /* 0x10005F70C */ return nil; }
-- (id)cmdClose:(id)a0 { /* 0x10041308C */ return nil; }
-- (id)validateToggleToolbar:(id)a0 { /* 0x1000A1E50 */ return nil; }
-- (id)cmdToggleToolbar:(id)a0 { /* 0x100413090 */ return nil; }
-- (id)handlePendingAddOrRemoveToolbarItemsForSyncExtensions { /* 0x1004130E8 */ return nil; }
-- (id)refreshToolbarItemsForSyncExtensionChange { /* 0x1004130FC */ return nil; }
-- (id)runToolbarCustomizationPalette:(id)a0 { /* 0x100413110 */ return nil; }
-- (id)validateRunToolbarCustomizationPalette:(id)a0 { /* 0x10041319C */ return nil; }
-- (id)validateToggleStatusBar:(id)a0 { /* 0x1000A1C58 */ return nil; }
-- (id)cmdToggleStatusBar:(id)a0 { /* 0x100109F30 */ return nil; }
-- (id)canSetFocusToSearchField { /* 0x1004131A0 */ return nil; }
-- (id)cmdSearchFromToolbar:(id)a0 { /* 0x100413218 */ return nil; }
-- (id)shouldEnablePathMenuItem:(id)a0 forNode:(id)a1 { /* 0x1004132D0 */ return nil; }
-- (id)pathPopupSelectedWithNode:(id)a0 { /* 0x1004133CC */ return nil; }
-- (id)containerViewStyleChanged:(id)a0 { /* 0x100085308 */ return nil; }
-- (id)containerTargetWillChange:(id)a0 { /* 0x100078AC8 */ return nil; }
-- (id)containerTargetDidChange:(id)a0 { /* 0x100056118 */ return nil; }
-- (id)containerHistoryDidChange:(id)a0 { /* 0x100413494 */ return nil; }
-- (id)container:(id)a0 adjustProposedTargetPath:(id)a1 { /* 0x100078A1C */ return nil; }
-- (id)containerForgetSpringState:(id)a0 { /* 0x100413520 */ return nil; }
-- (id)containerQuerySearchUTIs:(id)a0 { /* 0x1000526E0 */ return nil; }
-- (id)toolbarSearchItemIsVisible { /* 0x100413524 */ return nil; }
-- (id)toolbarSearchField { /* 0x1000515A8 */ return nil; }
-- (id)toolbarMakeSearchFieldFirstResponder { /* 0x1000FC128 */ return nil; }
-- (id)toolbarDisplayModeChanged { /* 0x100413538 */ return nil; }
-- (id)toolbarHistorySearchTemplate { /* 0x10009FBC4 */ return nil; }
-- (id)updateIsSearching { /* 0x100413590 */ return nil; }
-- (id)searchDidBeginWithScopes:(id)a0 selectedScopeIndex:(id)a1 { /* 0x1004136C0 */ return nil; }
-- (id)searchWasChanged { /* 0x1004137AC */ return nil; }
-- (id)searchScopeTitlesAndScopeIndex { /* 0x10041389C */ return nil; }
-- (id)containerInBrowseMode:(id)a0 { /* 0x10004C4EC */ return nil; }
-- (id)containerSelectionChanged:(id)a0 { /* 0x1000581B8 */ return nil; }
-- (id)containerContentChanged:(id)a0 { /* 0x100054014 */ return nil; }
-- (id)containerWindowDidChange:(id)a0 { /* 0x10004C600 */ return nil; }
-- (id)containerConnectBackupDelegate:(id)a0 { /* 0x100413990 */ return nil; }
-- (id)containerCloseContainer:(id)a0 { /* 0x1004139D8 */ return nil; }
-- (id)containerTitleSeparatorChanged:(id)a0 { /* 0x1004139DC */ return nil; }
-- (id)useDefaultFullScreenAnimation:(id)a0 { /* 0x100413A70 */ return nil; }
-- (id)window:(id)a0 willUseFullScreenContentSize:(id)a1 { /* 0x10010C350 */ return nil; }
-- (id)window:(id)a0 willUseFullScreenPresentationOptions:(id)a1 { /* 0x10010AE58 */ return nil; }
-- (id)windowWillEnterFullScreen:(id)a0 { /* 0x10010C3B0 */ return nil; }
-- (id)windowDidEnterFullScreen:(id)a0 { /* 0x100413B90 */ return nil; }
-- (id)customWindowsToEnterFullScreenForWindow:(id)a0 { /* 0x10010AE60 */ return nil; }
-- (id)prepareWindowsToAnimateToFullScreen:(id)a0 forWindow:(id)a1 { /* 0x10010AEEC */ return nil; }
-- (id)window:(id)a0 startCustomAnimationToEnterFullScreenWithDuration:(id)a1 { /* 0x10010C458 */ return nil; }
-- (id)customWindowsToExitFullScreenForWindow:(id)a0 { /* 0x10010E5DC */ return nil; }
-- (id)window:(id)a0 startCustomAnimationToExitFullScreenWithDuration:(id)a1 { /* 0x10010E680 */ return nil; }
-- (id)windowWillExitFullScreen:(id)a0 { /* 0x10010E668 */ return nil; }
-- (id)windowDidExitFullScreen:(id)a0 { /* 0x10010E774 */ return nil; }
-- (id)setExitFullScreenCallback:(id)a0 { /* 0x100413BA4 */ return nil; }
-- (id)prepareNonFullScreenAnimationInfo:(id)a0 { /* 0x10010B994 */ return nil; }
-- (id)setShowsTitleBarViews:(id)a0 { /* 0x10010C224 */ return nil; }
-- (id)prepareFullScreenAnimationInfo:(id)a0 { /* 0x10010BE74 */ return nil; }
-- (id)titleBarRect { /* 0x10010BDF4 */ return nil; }
-- (id)prepareAnimateToInfo:(id)a0 { /* 0x10010C354 */ return nil; }
-- (id)prepareAnimateFromInfo:(id)a0 { /* 0x10010BC68 */ return nil; }
-- (id)prepareToAnimateToFullScreen:(id)a0 { /* 0x10010B178 */ return nil; }
-- (id)fullScreenAnimationInProgress { /* 0x100045A14 */ return nil; }
-- (id)lastVisibleToolbarItemWidth { /* 0x10010BCAC */ return nil; }
-- (id)prepareCoverWindowLayersAndAnimationInfo { /* 0x100413BB8 */ return nil; }
-- (id)prepareDestinationWindowImage:(id)a0 { /* 0x1004143DC */ return nil; }
-- (id)animateToOrFromFullScreenWithDuration:(id)a0 { /* 0x10010C554 */ return nil; }
-- (id)showOrHideScrollbars:(id)a0 { /* 0x10010AD9C */ return nil; }
-- (id)windowWillUseStandardFrame:(id)a0 defaultFrame:(id)a1 { /* 0x100114204 */ return nil; }
-- (id)windowDidMiniaturize:(id)a0 { /* 0x100114128 */ return nil; }
-- (id)windowDidBecomeMain:(id)a0 { /* 0x10005D12C */ return nil; }
-- (id)windowDidChange { /* 0x10004C604 */ return nil; }
-- (id)windowDidMove:(id)a0 { /* 0x100060F20 */ return nil; }
-- (id)sidebarWidthDidChange { /* 0x1004145A4 */ return nil; }
-- (id)windowDidEndMove:(id)a0 { /* 0x100060F24 */ return nil; }
-- (id)windowDidResize:(id)a0 { /* 0x10009B814 */ return nil; }
-- (id)windowShouldClose:(id)a0 { /* 0x100073E78 */ return nil; }
-- (id)window:(id)a0 shouldDragDocumentWithEvent:(id)a1 from:(id)a2 withPasteboard:(id)a3 { /* 0x1004145A8 */ return nil; }
-- (id)windowWillStartLiveResize:(id)a0 { /* 0x10009B738 */ return nil; }
-- (id)windowDidEndLiveResize:(id)a0 { /* 0x10009BAF4 */ return nil; }
-- (id)windowWillBeginSheet:(id)a0 { /* 0x100414710 */ return nil; }
-- (id)windowDidEndSheet:(id)a0 { /* 0x100414794 */ return nil; }
-- (id)window:(id)a0 draggedTypesForTab:(id)a1 { /* 0x100414818 */ return nil; }
-- (id)window:(id)a0 draggingDelegateForTab:(id)a1 { /* 0x100414978 */ return nil; }
-- (id)configureWindowForContentChange { /* 0x10007C348 */ return nil; }
-- (id)draggingEntered:(id)a0 { /* 0x100414A7C */ return nil; }
-- (id)draggingUpdated:(id)a0 { /* 0x100414B30 */ return nil; }
-- (id)prepareForDragOperation:(id)a0 { /* 0x100414C70 */ return nil; }
-- (id)performDragOperation:(id)a0 { /* 0x100414C78 */ return nil; }
-- (id)draggingExited:(id)a0 { /* 0x100414D5C */ return nil; }
-- (id)concludeDragOperation:(id)a0 { /* 0x100414D68 */ return nil; }
-- (id)draggingEnded:(id)a0 { /* 0x100414D6C */ return nil; }
-- (id)updateDraggingItemsForDrag:(id)a0 { /* 0x100414D78 */ return nil; }
-- (id)wantsPeriodicDraggingUpdates { /* 0x100414D7C */ return nil; }
-- (id)tearDownPersistentViews { /* 0x1000756D8 */ return nil; }
-- (id)configureAccessoryViews { /* 0x1000590C4 */ return nil; }
-- (id)springInstallDragTrackingHandler { /* 0x10005CBDC */ return nil; }
-- (id)springRemoveDragTrackingHandler { /* 0x100074038 */ return nil; }
-- (id)sidebarWidthForScripting { /* 0x100414D84 */ return nil; }
-- (id)setSidebarWidthForScripting:(id)a0 { /* 0x100414DDC */ return nil; }
-- (id)destinationForTabDragOperation:(id)a0 { /* 0x100414E40 */ return nil; }
-- (id)tabDraggingEntered:(id)a0 { /* 0x100414E44 */ return nil; }
-- (id)tabDraggingUpdated:(id)a0 { /* 0x100414F60 */ return nil; }
-- (id)performTabDragOperation:(id)a0 { /* 0x10041507C */ return nil; }
-- (id)touchBar:(id)a0 makeItemForIdentifier:(id)a1 { /* 0x1004154A0 */ return nil; }
-- (id)searchScopeViewController { /* 0x1004159F0 */ return nil; }
-- (id)_testContentURLCreateIfNeeded { /* 0x100415A8C */ return nil; }
-- (id)_prepareForTestWithOptions:(id)a0 { /* 0x100415D0C */ return nil; }
-- (id)runScrollTestWithOptions:(id)a0 { /* 0x100416338 */ return nil; }
-- (id)runResizeTestWithOptions:(id)a0 { /* 0x100416484 */ return nil; }
-- (id)initingWindow { /* 0x10004C7B0 */ return nil; }
-- (id)setInitingWindow:(id)a0 { /* 0x100044C58 */ return nil; }
-- (id)isSearching { /* 0x1004165D0 */ return nil; }
-- (id)setIsSearching:(id)a0 { /* 0x1004165E4 */ return nil; }
-- (id)activeContainer { /* 0x100044C44 */ return nil; }
-- (id)setActiveContainer:(id)a0 { /* 0x100057150 */ return nil; }
-- (id)windowCreationTime { /* 0x1004165F8 */ return nil; }
-- (id)isEnteringFullScreen { /* 0x10041660C */ return nil; }
-- (id)isExitingFullScreen { /* 0x100416620 */ return nil; }
-- (id)iTunesDeviceIdentifier { /* 0x100416634 */ return nil; }
-- (id)setITunesDeviceIdentifier:(id)a0 { /* 0x100416648 */ return nil; }
-+ (id)restoreWindowWithIdentifier:(id)a0 state:(id)a1 completionHandler:(id)a2 { /* 0x10040FBE8 */ return nil; }
-+ (id)defaultWindowStateForNode:(id)a0 { /* 0x100071F6C */ return nil; }
-+ (id)windowStateForNode:(id)a0 forceContainer:(id)a1 { /* 0x100043DDC */ return nil; }
-+ (id)windowStaggerOffset { /* 0x1000729CC */ return nil; }
-+ (id)windowWillBeAddedAsTab:(id)a0 existingWindow:(id)a1 forceNewWindow:(id)a2 { /* 0x100410924 */ return nil; }
-+ (id)shouldShowTabView { /* 0x100057164 */ return nil; }
-+ (id)shouldShowStatusBar { /* 0x100059184 */ return nil; }
-+ (id)shouldForwardSelectorToContainer:(id)a0 { /* 0x100058A08 */ return nil; }
 @end
 @implementation TContextMenuItem
 - (id)showMeAnyway { /* 0x10008B864 */ return nil; }
@@ -10286,33 +9902,6 @@
 - (id)optionsForUTI:(id)a0 { /* 0x100575310 */ return nil; }
 - (id)saveOptions:(id)a0 { /* 0x100575760 */ return nil; }
 + (id)sharedInstance { /* 0x100574F50 */ return nil; }
-@end
-@implementation TSidebarView
-- (id)controller { /* 0x10005CBD8 */ return nil; }
-- (id)setRowSizeStyle:(id)a0 { /* 0x100576660 */ return nil; }
-- (id)nodeForRow:(id)a0 { /* 0x1005767B8 */ return nil; }
-- (id)hitTestForEvent:(id)a0 row:(id)a1 { /* 0x100576864 */ return nil; }
-- (id)_setUpImmediateActionGestureRecognizers { /* 0x100576A1C */ return nil; }
-- (id)quickLookWithEvent:(id)a0 { /* 0x100577130 */ return nil; }
-- (id)rowHit:(id)a0 { /* 0x1000838B0 */ return nil; }
-- (id)updateDraggingItemsForDrag:(id)a0 { /* 0x1000F29F8 */ return nil; }
-- (id)draggingEnded:(id)a0 { /* 0x1005774C4 */ return nil; }
-- (id)_wantsUserCancelledOperationForDraggingSession:(id)a0 { /* 0x100577588 */ return nil; }
-- (id)startEditingWithNode:(id)a0 { /* 0x100577590 */ return nil; }
-- (id)stopEditing:(id)a0 { /* 0x1005776B4 */ return nil; }
-- (id)updateSTFEditorLocation { /* 0x1005776D0 */ return nil; }
-- (id)setUpToEditRow:(id)a0 column:(id)a1 { /* 0x1005777C4 */ return nil; }
-- (id)internalSTFTextViewAboutToOpenNode:(id)a0 { /* 0x100577A44 */ return nil; }
-- (id)shrinkToFitTextViewAboutToOpen { /* 0x100577CB8 */ return nil; }
-- (id)shrinkToFitTextViewEditingComplete:(id)a0 { /* 0x100577D4C */ return nil; }
-- (id)shrinkToFitTextViewAboutToClose { /* 0x100577E7C */ return nil; }
-- (id)stfEditorController { /* 0x10005C624 */ return nil; }
-- (id)_drawClearForSelectionArea { /* 0x100577F48 */ return nil; }
-- (id)selectionRect { /* 0x100577F94 */ return nil; }
-- (id)handlingItemClick { /* 0x10057862C */ return nil; }
-- (id)setHandlingItemClick:(id)a0 { /* 0x100578640 */ return nil; }
-- (id)suppressSelectionClearForScreenCapture { /* 0x100578654 */ return nil; }
-- (id)setSuppressSelectionClearForScreenCapture:(id)a0 { /* 0x100578668 */ return nil; }
 @end
 @implementation TSidebarViewController
 - (id)init:(id)a0 frame:(id)a1 containerLayoutManager:(id)a2 { /* 0x10057A788 */ return nil; }

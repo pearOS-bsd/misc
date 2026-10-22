@@ -55,3 +55,6 @@ static id NewIconForFileType(id self, SEL _cmd, NSString *type)
 	if ((m = class_getInstanceMethod(c, @selector(iconForFileType:)))) { origIconForFileType = method_getImplementation(m); method_setImplementation(m, (IMP)NewIconForFileType); }
 }
 @end
+
+/* an icon of CoreTypes.bundle by file name (the sidebar icons, GenericFolderIcon ...) */
+NSImage *WsbsdCoreTypesIcon(NSString *file, CGFloat pt) { return ImageFromICNS([TypesDir() stringByAppendingPathComponent: file], pt); }

@@ -56,7 +56,12 @@ if handdir:
 hand = set(n for n in order if n in handnames or (handdir and (os.path.exists(os.path.join(handdir, n + ".mm")) or os.path.exists(os.path.join(handdir, n + ".m")))))
 good = [n for n in order if not bad(n) and n not in hand]
 def declared(n): return n in classes and not bad(n)
-for n in sorted(hand): O.append('#import "%s.h"' % n) if os.path.exists(os.path.join(handdir, n + ".h")) else None
+for n in sorted(hand):
+    if os.path.exists(os.path.join(handdir, n + ".h")): O.append('#import "%s.h"' % n)
+    elif n in classes:      # a hand-written class without header: its interface is repeated here (no instance variables: the layout of the subclasses does not change)
+        s0 = classes[n]["super"]
+        while s0 in classes: s0 = classes[s0]["super"]
+        O.append("@interface %s : %s @end" % (n, s0 if s0 in KNOWN_SYSTEM else nearest(s0)))
 for n in good:
     s = classes[n]["super"]; sup = s if (s in classes and not bad(s)) or s in KNOWN_SYSTEM or (not KNOWN_SYSTEM and s and s.startswith("NS")) else nearest(s)
     O.append("@interface %s : %s @end" % (n, sup))

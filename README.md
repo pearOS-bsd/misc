@@ -213,7 +213,7 @@ Rough estimates, not measurements:
 - **AirDrop:** postponed by the project owner (needs AWDL and Bluetooth; plan in `wsbsd/docs/airdrop/PLAN.md`).
 - **iPhone Mirroring:** not started and not researched (Continuity needs Apple-account services and AWDL/Bluetooth; iOS developer mode is what the owner wants to avoid). AirPlay-receiver mirroring is a possible alternative.
 
-- **Desktop (Finder):** planned: the whole Finder and its subsystems are decompiled with REA and rewritten (inventory and order in `wsbsd/docs/desktop`: 871 classes, 125 linked images, placeholders for iCloud, Time Machine, Sidecar, Biome ...). Finder installs at `/System/Library/CoreServices/Finder.app`.
+- **Desktop (Finder), started:** `wsbsd/finder/` builds `/System/Library/CoreServices/Finder.app` (868 classes as stubs with the addresses of the originals, 11.8k methods; the real Finder's menu bar loaded from the Mac's compiled nib through `tools/nib2plist.py`). Working: desktop window at the desktop icon level with the items of `~/Desktop`, Finder window (toolbar, sidebar, icon view, path bar, back/forward, Go menu) with the Mac's file icons chosen through the UTI table (CoreTypes.bundle). Missing: list/column/gallery views, Get Info, tags, search, Trash, drag and drop, copy/move operations, preferences, the rest of the 14.5k decompiled methods. Inventory and order of work in `wsbsd/docs/desktop`; resources of the Mac's Finder are imported at build time by `finder/import-resources.sh` and never committed.
 
 **Other open work:** Chess, the SkyLight routines that need a compositor, KMS/GPU hardware, the Dock, real WebKit, the designers' assets (ordered, 21,000 EUR) and the Pico 2 secure-element token.
 

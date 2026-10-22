@@ -20,3 +20,22 @@
 }
 - (BOOL)localizedStandardContainsString:(NSString *)s { return [self rangeOfString: s options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch].location != NSNotFound; }
 @end
+
+/* an application started as Name.app/Contents/MacOS/Name (the layout of the Mac) has Name.app as its main bundle (GNUstep would look for Resources beside the executable) */
+#import <objc/runtime.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/sysctl.h>
+static IMP origMainBundle; static NSBundle *gMainBundle; static BOOL gMainBundleChecked;
+static id NewMainBundle(id self, SEL _cmd)
+{
+	if (!gMainBundleChecked) {
+		gMainBundleChecked = YES; char buf[4096]; size_t len = sizeof buf; int mib[4] = { CTL_KERN, KERN_PROC, KERN_PROC_PATHNAME, -1 }; ssize_t n = sysctl(mib, 4, buf, &len, NULL, 0) == 0 ? (ssize_t)len - 1 : -1;
+		if (n > 0) { buf[n] = 0; NSString *p = @(buf); NSRange r = [p rangeOfString: @".app/Contents/MacOS/"]; if (r.location != NSNotFound) { NSString *app = [p substringToIndex: NSMaxRange(r) - [@"/Contents/MacOS/" length]]; gMainBundle = [NSBundle bundleWithPath: app]; } }
+	}
+	return gMainBundle ?: ((id (*)(id, SEL))origMainBundle)(self, _cmd);
+}
+@interface WsbsdMainBundle : NSObject @end
+@implementation WsbsdMainBundle
++ (void)load { Method m = class_getClassMethod(objc_getClass("NSBundle"), @selector(mainBundle)); if (m) { origMainBundle = method_getImplementation(m); method_setImplementation(m, (IMP)NewMainBundle); } }
+@end
