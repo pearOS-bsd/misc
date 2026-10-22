@@ -30,7 +30,7 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 	return b;
 }
 
-@interface Del : NSObject { NSWindow *w; }
+@interface Del : NSObject <NSTouchBarDelegate, NSScrubberDataSource, NSScrubberDelegate> { NSWindow *w; }
 @end
 @interface Src : NSObject
 @end
@@ -53,6 +53,12 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 	if (getenv("UI_APPEARANCE") && [NSApp respondsToSelector: @selector(setAppearance:)] && NSClassFromString(@"NSAppearance")) {
 		NSString *an = !strcmp(getenv("UI_APPEARANCE"), "light") ? @"NSAppearanceNameAqua" : @"NSAppearanceNameDarkAqua";
 		id ap = [NSClassFromString(@"NSAppearance") performSelector: @selector(appearanceNamed:) withObject: an]; [NSApp performSelector: @selector(setAppearance:) withObject: ap];
+	}
+	if (getenv("UI_MODE") && !strcmp(getenv("UI_MODE"), "touchbar")) {     /* only the window and its Touch Bar (the page is UI_TB=1..5) */
+		int page = getenv("UI_TB") ? atoi(getenv("UI_TB")) : 1; [w setTitle: @"UI Gallery: Touch Bar"]; caption([NSString stringWithFormat: @"Touch Bar page %d: the bar of this window is shown at the bottom of the screen", page], 20, 20);
+		[w setTouchBar: [self tbBarForPage: page]]; [w center]; [w makeKeyAndOrderFront: nil]; printf("TOUCHBAR page %d\n", page);
+		const char *ex2 = getenv("UI_EXIT_AFTER"); if (ex2) [NSTimer scheduledTimerWithTimeInterval: atof(ex2) target: NSApp selector: @selector(terminate:) userInfo: nil repeats: NO];
+		return;
 	}
 	CGFloat cx[4] = { 20, 250, 480, 710 }, y = 20; int col = 0;
 #define CELL(label, name, view) do { caption(label, cx[col], y); place(view, name, cx[col], y + 16); col++; if (col == 4) { col = 0; y += 66; } } while (0)
@@ -107,6 +113,51 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 	if (getenv("UI_MODE") && !strcmp(getenv("UI_MODE"), "vibrancy")) [self performSelector: @selector(showVibrancy:) withObject: nil afterDelay: 0.6];
 	const char *ex = getenv("UI_EXIT_AFTER"); if (ex) [NSTimer scheduledTimerWithTimeInterval: atof(ex) target: NSApp selector: @selector(terminate:) userInfo: nil repeats: NO];
 }
+
+/* ---- Touch Bar: UI_MODE=touchbar UI_TB=1..5 (a page of items each); the bar is the one of the window ---- */
+- (NSTouchBar *) tbBarForPage: (int)page
+{
+	NSTouchBar *b = [[[NSTouchBar alloc] init] autorelease]; [b setDelegate: self]; NSArray *ids = nil;
+	switch (page) {
+	case 1: ids = [NSArray arrayWithObjects: @"tb.button", @"tb.image", @"tb.group", NSTouchBarItemIdentifierFlexibleSpace, @"tb.slider", nil]; break;
+	case 5: ids = [NSArray arrayWithObjects: @"tb.stepper", NSTouchBarItemIdentifierFixedSpaceSmall, @"tb.picker", NSTouchBarItemIdentifierFlexibleSpace, @"tb.image", nil]; break;
+	case 2: ids = [NSArray arrayWithObjects: @"tb.scrubber.text", NSTouchBarItemIdentifierFixedSpaceSmall, @"tb.scrubber.image", nil]; break;
+	case 3: ids = [NSArray arrayWithObjects: @"tb.popover", @"tb.color", @"tb.share", NSTouchBarItemIdentifierFlexibleSpace, @"tb.candidates", nil]; break;
+	default: ids = [NSArray arrayWithObjects: @"tb.label", @"tb.principal", @"tb.low1", @"tb.low2", @"tb.low3", @"tb.low4", nil]; [b setPrincipalItemIdentifier: @"tb.principal"]; break;
+	}
+	[b setDefaultItemIdentifiers: ids]; [b setCustomizationIdentifier: @"com.test.touchbar"]; [b setCustomizationAllowedItemIdentifiers: ids];
+	if (page == 3) [b setEscapeKeyReplacementItemIdentifier: @"tb.esc"];
+	return b;
+}
+- (NSTouchBarItem *) touchBar: (NSTouchBar *)bar makeItemForIdentifier: (NSTouchBarItemIdentifier)i
+{
+	printf("TOUCHBAR make %s\n", [i UTF8String]);
+	if ([i isEqual: @"tb.button"]) { NSButtonTouchBarItem *it = [NSButtonTouchBarItem buttonTouchBarItemWithIdentifier: i title: @"Button" target: self action: @selector(tbHit:)]; [it setBezelColor: [NSColor colorWithCalibratedRed: 0.1 green: 0.45 blue: 1 alpha: 1]]; return it; }
+	if ([i isEqual: @"tb.image"]) return [NSButtonTouchBarItem buttonTouchBarItemWithIdentifier: i image: [NSImage imageNamed: NSImageNameTouchBarAddTemplate] target: self action: @selector(tbHit:)];
+	if ([i isEqual: @"tb.group"]) return [NSGroupTouchBarItem groupItemWithIdentifier: i items: [NSArray arrayWithObjects: [NSButtonTouchBarItem buttonTouchBarItemWithIdentifier: @"tb.g1" title: @"One" target: self action: @selector(tbHit:)], [NSButtonTouchBarItem buttonTouchBarItemWithIdentifier: @"tb.g2" title: @"Two" target: self action: @selector(tbHit:)], nil]];
+	if ([i isEqual: @"tb.slider"]) { NSSliderTouchBarItem *it = [[[NSSliderTouchBarItem alloc] initWithIdentifier: i] autorelease]; [[it slider] setMinValue: 0]; [[it slider] setMaxValue: 100]; [it setDoubleValue: 35]; [it setCustomizationLabel: @"Slider"]; return it; }
+	if ([i isEqual: @"tb.stepper"]) { NSStepperTouchBarItem *it = [NSStepperTouchBarItem stepperTouchBarItemWithIdentifier: i formatter: nil]; [it setMinValue: 0]; [it setMaxValue: 10]; [it setValue: 4]; [it setTarget: self]; [it setAction: @selector(tbHit:)]; return it; }
+	if ([i isEqual: @"tb.picker"]) return [NSPickerTouchBarItem pickerTouchBarItemWithIdentifier: i labels: [NSArray arrayWithObjects: @"S", @"M", @"L", nil] selectionMode: NSPickerTouchBarItemSelectionModeSelectOne target: self action: @selector(tbHit:)];
+	if ([i isEqual: @"tb.scrubber.text"]) { NSCustomTouchBarItem *it = [[[NSCustomTouchBarItem alloc] initWithIdentifier: i] autorelease]; NSScrubber *s = [[[NSScrubber alloc] initWithFrame: NSMakeRect(0, 0, 420, 30)] autorelease]; [s registerClass: [NSScrubberTextItemView class] forItemIdentifier: @"text"]; NSScrubberFlowLayout *l = [[[NSScrubberFlowLayout alloc] init] autorelease]; [l setItemSize: NSMakeSize(90, 30)]; [l setItemSpacing: 6]; [s setScrubberLayout: l]; [s setMode: NSScrubberModeFree]; [s setSelectionBackgroundStyle: [NSScrubberSelectionStyle roundedBackgroundStyle]]; [s setDataSource: self]; [s setDelegate: self]; [s setSelectedIndex: 1]; [it setView: s]; return it; }
+	if ([i isEqual: @"tb.scrubber.image"]) { NSCustomTouchBarItem *it = [[[NSCustomTouchBarItem alloc] initWithIdentifier: i] autorelease]; NSScrubber *s = [[[NSScrubber alloc] initWithFrame: NSMakeRect(0, 0, 300, 30)] autorelease]; [s registerClass: [NSScrubberImageItemView class] forItemIdentifier: @"image"]; [s setScrubberLayout: [[[NSScrubberProportionalLayout alloc] initWithNumberOfVisibleItems: 5] autorelease]]; [s setMode: NSScrubberModeFixed]; [s setSelectionOverlayStyle: [NSScrubberSelectionStyle outlineOverlayStyle]]; [s setDataSource: self]; [s setDelegate: self]; [it setView: s]; return it; }
+	if ([i isEqual: @"tb.popover"]) { NSPopoverTouchBarItem *it = [[[NSPopoverTouchBarItem alloc] initWithIdentifier: i] autorelease]; [it setCollapsedRepresentationLabel: @"Popover"]; NSTouchBar *pb = [[[NSTouchBar alloc] init] autorelease]; [pb setDelegate: self]; [pb setDefaultItemIdentifiers: [NSArray arrayWithObjects: @"tb.button", @"tb.slider", nil]]; [it setPopoverTouchBar: pb]; [it setShowsCloseButton: YES]; return it; }
+	if ([i isEqual: @"tb.color"]) { NSColorPickerTouchBarItem *it = [NSColorPickerTouchBarItem colorPickerWithIdentifier: i]; [it setTarget: self]; [it setAction: @selector(tbHit:)]; return it; }
+	if ([i isEqual: @"tb.share"]) { NSSharingServicePickerTouchBarItem *it = [[[NSSharingServicePickerTouchBarItem alloc] initWithIdentifier: i] autorelease]; return it; }
+	if ([i isEqual: @"tb.candidates"]) { NSCandidateListTouchBarItem *it = [[[NSCandidateListTouchBarItem alloc] initWithIdentifier: i] autorelease]; [it setCandidates: [NSArray arrayWithObjects: @"apple", @"apply", @"apple pie", @"application", nil] forSelectedRange: NSMakeRange(0, 0) inString: @"app"]; return it; }
+	if ([i isEqual: @"tb.esc"]) return [NSButtonTouchBarItem buttonTouchBarItemWithIdentifier: i title: @"Done" target: self action: @selector(tbHit:)];
+	if ([i isEqual: @"tb.label"]) { NSCustomTouchBarItem *it = [[[NSCustomTouchBarItem alloc] initWithIdentifier: i] autorelease]; NSTextField *t = [NSTextField labelWithString: @"left"]; [t setTextColor: [NSColor whiteColor]]; [it setView: t]; [it setVisibilityPriority: NSTouchBarItemPriorityHigh]; return it; }
+	if ([i isEqual: @"tb.principal"]) { NSCustomTouchBarItem *it = [[[NSCustomTouchBarItem alloc] initWithIdentifier: i] autorelease]; NSTextField *t = [NSTextField labelWithString: @"principal (centered)"]; [t setTextColor: [NSColor whiteColor]]; [t sizeToFit]; [it setView: t]; return it; }
+	if ([i hasPrefix: @"tb.low"]) { NSButtonTouchBarItem *it = [NSButtonTouchBarItem buttonTouchBarItemWithIdentifier: i title: [@"Low " stringByAppendingString: [i substringFromIndex: 6]] target: self action: @selector(tbHit:)]; [it setVisibilityPriority: NSTouchBarItemPriorityLow]; return it; }
+	return nil;
+}
+- (void) tbHit: (id)sender { printf("TOUCHBAR hit %s\n", [NSStringFromClass([sender class]) UTF8String]); fflush(stdout); }
+- (NSInteger) numberOfItemsForScrubber: (NSScrubber *)s { return 12; }
+- (NSScrubberItemView *) scrubber: (NSScrubber *)s viewForItemAtIndex: (NSInteger)i
+{
+	if ([[[s scrubberLayout] class] isEqual: [NSScrubberProportionalLayout class]]) { NSScrubberImageItemView *v = [s makeItemWithIdentifier: @"image" owner: nil]; [v setImage: [NSImage imageNamed: i % 2 ? NSImageNameTouchBarGoForwardTemplate : NSImageNameTouchBarGoBackTemplate]]; return v; }
+	NSScrubberTextItemView *v = [s makeItemWithIdentifier: @"text" owner: nil]; [v setTitle: [NSString stringWithFormat: @"Item %d", (int)i + 1]]; return v;
+}
+- (void) scrubber: (NSScrubber *)s didSelectItemAtIndex: (NSInteger)i { printf("TOUCHBAR scrubber select %d\n", (int)i); fflush(stdout); }
 - (void) showAlert: (id)unused
 {
 	NSAlert *a = [[[NSAlert alloc] init] autorelease];
