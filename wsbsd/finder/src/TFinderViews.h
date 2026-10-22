@@ -49,6 +49,12 @@ NSImage *TFIcon(NSString *path);
 - (NSArray *)selectedPaths;
 @end
 
+/* the column view: one column per level, the last selected file shown as a preview */
+@interface TColumnView : NSView { @public __weak id<TIconViewDelegate> delegate; NSString *filter; NSMutableArray *_cols; CGFloat _hoff; }
+- (void)setFolder:(NSString *)folder;
+- (NSArray *)selectedPaths;
+@end
+
 @interface TSidebarView : TScrollBase { @public NSString *current; __weak id<TSidebarDelegate> delegate; NSArray *_rows; }
 @end
 

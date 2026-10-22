@@ -3,6 +3,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 @interface TBrowserWindowController : NSWindowController @end
+@interface TColumnView : NSBrowser @end
 @interface TDesktopView : NSView @end
 #import "TDesktopWindow.h"
 @interface TDesktopWindowController : NSWindowController @end
@@ -569,7 +570,6 @@
 @interface TIconViewController : TCollectionViewItem @end
 @interface TBrowserTableColumnViewController : NSViewController @end
 @interface TViewBasedBrowserTableColumnViewController : TBrowserTableColumnViewController @end
-@interface TColumnView : NSBrowser @end
 @interface TColumnRowView : NSTableRowView @end
 @interface TColumnViewController : TBrowserViewController @end
 @interface FITagEditorView : NSControl @end
@@ -9149,32 +9149,6 @@
 - (id)shouldAddColumnForSelection { /* 0x10052F3BC */ return nil; }
 - (id)willBeginResizingColumn:(id)a0 { /* 0x10052F4B4 */ return nil; }
 - (id)didEndResizingColumn:(id)a0 { /* 0x10052F540 */ return nil; }
-@end
-@implementation TColumnView
-- (id)_browserSupportsGestureRecognizers { /* 0x10052F5C8 */ return nil; }
-- (id)controller { /* 0x100086DF4 */ return nil; }
-- (id)indexForBrowserTableView:(id)a0 { /* 0x10052F65C */ return nil; }
-- (id)browserTableViewAtIndex:(id)a0 { /* 0x100086BDC */ return nil; }
-- (id)setFocusOnColumn:(id)a0 { /* 0x10052F700 */ return nil; }
-- (id)addColumnForItem:(id)a0 { /* 0x10052F808 */ return nil; }
-- (id)_ensureValidSelection { /* 0x10052F9D4 */ return nil; }
-- (id)updateDraggingItemsForDrag:(id)a0 { /* 0x10052FC88 */ return nil; }
-- (id)draggingEnded:(id)a0 { /* 0x10052FDF4 */ return nil; }
-- (id)cancelDropFeedback { /* 0x10052FEBC */ return nil; }
-- (id)isDropCandidateAtRow:(id)a0 column:(id)a1 { /* 0x10052FF94 */ return nil; }
-- (id)selectRowIndexes:(id)a0 inColumn:(id)a1 { /* 0x1000926A8 */ return nil; }
-- (id)_collapseAutoExpandedItems { /* 0x10052FFF0 */ return nil; }
-- (id)_drawDropHighlight { /* 0x10008A4CC */ return nil; }
-- (id)_setDropTargetColumn:(id)a0 targetRow:(id)a1 targetDropOperation:(id)a2 dragOperation:(id)a3 { /* 0x100530088 */ return nil; }
-- (id)shouldIgnoreNextDoClick { /* 0x100530234 */ return nil; }
-- (id)setShouldIgnoreNextDoClick:(id)a0 { /* 0x100530248 */ return nil; }
-- (id)shouldPerformDoClickOnMouseUp { /* 0x10053025C */ return nil; }
-- (id)setShouldPerformDoClickOnMouseUp:(id)a0 { /* 0x100530270 */ return nil; }
-- (id)currentResizingColumnIndex { /* 0x100530284 */ return nil; }
-- (id)setCurrentResizingColumnIndex:(id)a0 { /* 0x100530298 */ return nil; }
-+ (id)browserTableViewClass { /* 0x100087B5C */ return nil; }
-+ (id)setGlobalGroupingForAllColumns:(id)a0 { /* 0x1000854F8 */ return nil; }
-+ (id)tableColumnViewControllerClass { /* 0x1000879F0 */ return nil; }
 @end
 @implementation TColumnRowView
 @end
