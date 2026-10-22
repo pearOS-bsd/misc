@@ -155,6 +155,35 @@ static NSView *StripForBar(NSTouchBar *bar, CGFloat width, NSSet *skip)
 - (NSTouchBar *)makeTouchBar { return nil; }
 @end
 
+/* the black rounded background of the strip, and the control strip at its right (brightness, volume, mute, Siri) */
+@interface WsbsdTBBackground : NSView @end
+@implementation WsbsdTBBackground
+- (BOOL)isFlipped { return YES; }
+- (void)drawRect:(NSRect)r { [[NSColor clearColor] set]; NSRectFill([self bounds]); [[NSColor colorWithCalibratedWhite: 0.02 alpha: 1] setFill]; [[NSBezierPath bezierPathWithRoundedRect: NSInsetRect([self bounds], 1, 1) xRadius: 9 yRadius: 9] fill]; [[NSColor colorWithCalibratedWhite: 0.28 alpha: 1] setStroke]; [[NSBezierPath bezierPathWithRoundedRect: NSInsetRect([self bounds], 1.5, 1.5) xRadius: 9 yRadius: 9] stroke]; }
+@end
+@interface WsbsdTBControlStrip : NSView @end
+@implementation WsbsdTBControlStrip
+- (BOOL)isFlipped { return YES; }
+- (void)drawRect:(NSRect)r
+{
+	NSColor *w = [NSColor colorWithCalibratedWhite: 0.9 alpha: 1]; [w setStroke]; [w setFill]; CGFloat cy = [self bounds].size.height / 2, x = 20;
+	/* brightness: a disc with rays */
+	NSBezierPath *p = [NSBezierPath bezierPathWithOvalInRect: NSMakeRect(x - 4, cy - 4, 8, 8)]; [p setLineWidth: 1.5]; [p stroke];
+	for (int i = 0; i < 8; i++) { double a = i * M_PI / 4; NSBezierPath *l = [NSBezierPath bezierPath]; [l moveToPoint: NSMakePoint(x + cos(a) * 7, cy + sin(a) * 7)]; [l lineToPoint: NSMakePoint(x + cos(a) * 10, cy + sin(a) * 10)]; [l setLineWidth: 1.5]; [l stroke]; }
+	/* volume: a speaker with waves */
+	x = 85; NSBezierPath *sp = [NSBezierPath bezierPath]; [sp moveToPoint: NSMakePoint(x - 9, cy - 3)]; [sp lineToPoint: NSMakePoint(x - 5, cy - 3)]; [sp lineToPoint: NSMakePoint(x + 1, cy - 8)]; [sp lineToPoint: NSMakePoint(x + 1, cy + 8)]; [sp lineToPoint: NSMakePoint(x - 5, cy + 3)]; [sp lineToPoint: NSMakePoint(x - 9, cy + 3)]; [sp closePath]; [sp fill];
+	for (int i = 1; i <= 2; i++) { NSBezierPath *a = [NSBezierPath bezierPath]; [a appendBezierPathWithArcWithCenter: NSMakePoint(x + 2, cy) radius: 4 + i * 4 startAngle: -40 endAngle: 40]; [a setLineWidth: 1.5]; [a stroke]; }
+	/* mute: a speaker crossed out */
+	x = 150; NSBezierPath *m = [NSBezierPath bezierPath]; [m moveToPoint: NSMakePoint(x - 9, cy - 3)]; [m lineToPoint: NSMakePoint(x - 5, cy - 3)]; [m lineToPoint: NSMakePoint(x + 1, cy - 8)]; [m lineToPoint: NSMakePoint(x + 1, cy + 8)]; [m lineToPoint: NSMakePoint(x - 5, cy + 3)]; [m lineToPoint: NSMakePoint(x - 9, cy + 3)]; [m closePath]; [m fill];
+	NSBezierPath *c = [NSBezierPath bezierPath]; [c moveToPoint: NSMakePoint(x + 5, cy - 5)]; [c lineToPoint: NSMakePoint(x + 14, cy + 5)]; [c setLineWidth: 1.5]; [c stroke];
+	/* Siri: a ring with a gradient-less dot */
+	x = 215; NSBezierPath *o = [NSBezierPath bezierPathWithOvalInRect: NSMakeRect(x - 9, cy - 9, 18, 18)]; [o setLineWidth: 2]; [[NSColor colorWithCalibratedRed: 0.55 green: 0.45 blue: 1 alpha: 1] setStroke]; [o stroke];
+}
+- (void)mouseDown:(NSEvent *)e
+{
+	CGFloat x = [self convertPoint: [e locationInWindow] fromView: nil].x; const char *cmd = x < 55 ? NULL : x < 118 ? "volume" : x < 182 ? "mute" : NULL; (void)cmd;
+}
+@end
 /* ---- the host: the bar of the key window in a panel at the bottom of the screen ---- */
 @implementation WsbsdTouchBarHost { NSTouchBar *_bar; NSPanel *_panel; NSView *_content; NSString *_signature; }
 @synthesize currentTouchBar = _bar, panel = _panel;
@@ -175,8 +204,9 @@ static NSTouchBar *BarOfResponder(NSResponder *r)
 {
 	if (_panel) return; NSRect sf = [[NSScreen mainScreen] frame];
 	_panel = [[NSPanel alloc] initWithContentRect: NSMakeRect(NSMidX(sf) - 560, 40, 1120, 46) styleMask: NSWindowStyleMaskBorderless | NSWindowStyleMaskNonactivatingPanel backing: NSBackingStoreBuffered defer: NO];
-	[_panel setLevel: NSStatusWindowLevel]; [_panel setBecomesKeyOnlyIfNeeded: YES]; [_panel setHidesOnDeactivate: NO]; [_panel setBackgroundColor: [NSColor blackColor]]; [_panel setOpaque: YES]; [_panel setTitle: @"Touch Bar"]; [_panel setReleasedWhenClosed: NO];
+	[_panel setLevel: NSStatusWindowLevel]; [_panel setBecomesKeyOnlyIfNeeded: YES]; [_panel setHidesOnDeactivate: NO]; [_panel setBackgroundColor: [NSColor clearColor]]; [_panel setOpaque: NO]; [_panel setHasShadow: NO]; [_panel setTitle: @"Touch Bar"]; [_panel setReleasedWhenClosed: NO];
 }
+- (void)_escape:(id)sender { [NSApp sendAction: @selector(cancelOperation:) to: nil from: sender]; }
 - (void)update
 {
 	NSTouchBar *b = [self _resolve];
@@ -185,9 +215,11 @@ static NSTouchBar *BarOfResponder(NSResponder *r)
 	[self _ensurePanel];
 	if (b != _bar || ![sig isEqual: _signature]) {
 		[_bar _wsSetVisible: NO]; _bar = b; _signature = sig; [_content removeFromSuperview];
-		NSView *root = [[NSView alloc] initWithFrame: NSMakeRect(0, 0, 1120, 46)]; NSTouchBarItem *e = esc ? [b itemForIdentifier: esc] : nil; CGFloat x = 17;
-		if ([e view]) { NSView *ev = [e view]; [ev setFrameOrigin: NSMakePoint(x, 8)]; [root addSubview: ev]; x += [ev frame].size.width + 17; }
-		NSView *strip = StripForBar(b, 1085 - (x - 17), esc ? [NSSet setWithObject: esc] : nil); [strip setFrameOrigin: NSMakePoint(x, 8)]; [root addSubview: strip];
+		NSView *root = [[WsbsdTBBackground alloc] initWithFrame: NSMakeRect(0, 0, 1120, 46)]; NSTouchBarItem *e = esc ? [b itemForIdentifier: esc] : nil; CGFloat x = 17, csw = 245;
+		NSView *ev = [e view]; if (!ev) { NSButtonTouchBarItem *eb = [NSButtonTouchBarItem buttonTouchBarItemWithIdentifier: @"esc" title: @"esc" target: self action: @selector(_escape:)]; ev = [eb view]; [ev setFrameSize: NSMakeSize(64, 30)]; objc_setAssociatedObject(root, "escItem", eb, OBJC_ASSOCIATION_RETAIN_NONATOMIC); }
+		[ev setFrameOrigin: NSMakePoint(x, 8)]; [root addSubview: ev]; x += [ev frame].size.width + 17;
+		NSView *strip = StripForBar(b, 1120 - 17 - csw - 17 - x, esc ? [NSSet setWithObject: esc] : nil); [strip setFrameOrigin: NSMakePoint(x, 8)]; [root addSubview: strip];
+		WsbsdTBControlStrip *cs = [[WsbsdTBControlStrip alloc] initWithFrame: NSMakeRect(1120 - 17 - csw, 8, csw, 30)]; [root addSubview: cs];
 		_content = root; [_panel setContentView: root];
 	}
 	[b _wsSetVisible: YES]; if (![_panel isVisible]) [_panel orderFront: nil];
