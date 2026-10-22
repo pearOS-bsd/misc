@@ -176,8 +176,15 @@ for c in order:
         else: M.append("@dynamic %s;" % nm)
         accessors.add(g)
         if "R" not in parts[1:]: accessors.add(s)
+    cprotos = c["protos"]; nvals = any(True for nm, attrs in c["props"] if any(i == prop_decl(nm, attrs)[1] for i, _ in c["ivars"]))
+    auto = set()
+    if nvals and ("NSCoding" in cprotos or "NSSecureCoding" in cprotos): auto |= {"encodeWithCoder:", "initWithCoder:"}
+    if "NSSecureCoding" in cprotos: auto |= {"supportsSecureCoding"}
+    if nvals and ("NSCopying" in cprotos or "NSMutableCopying" in cprotos): auto |= {"copyWithZone:"}
+    if any(True for nm, attrs in c["props"]): auto |= {"dealloc"}
     for sign, sel, enc in c["methods"]:
         if sel in (".cxx_destruct", "dealloc", "conformsToProtocol:"): continue
+        if sel in auto and "%s%s %s" % (sign, c["name"], sel) not in skip: continue
         if "%s%s %s" % (sign, c["name"], sel) in skip: continue
         ret, s, args = sig(sel, enc)
         if sign == "-" and sel in accessors:
@@ -190,6 +197,42 @@ for c in order:
         elif ret in ("float", "double"): body = "return 0;"
         else: body = "return 0;"
         M.append("%s (%s)%s%s { %s }" % (sign, ret, s if not args else "", args, body)); nstub += 1
+    # value-class behaviour: dealloc of owned properties, NSCoding / NSSecureCoding, NSCopying
+    owned = []; vals = []
+    for nm, attrs in c["props"]:
+        d, iv, g, st = prop_decl(nm, attrs); parts = attrs.split(",")
+        if not (iv and any(i == iv for i, _ in c["ivars"])): continue
+        t = parts[0][1:]; flags = set(parts[1:])
+        if t.startswith("@") and ("C" in flags or "&" in flags): owned.append(iv)
+        vals.append((nm, iv, t))
+    has = lambda pr: pr in c["protos"]
+    sup_has = lambda pr: byname.get(c["super"]) is not None and pr in byname[c["super"]]["protos"]
+    if owned and "%s%s %s" % ("-", c["name"], "dealloc") not in skip:
+        M.append("- (void)dealloc { " + " ".join("[%s release]; %s = nil;" % (v, v) for v in owned) + " [super dealloc]; }")
+    def enc_stmt(nm, iv, t):
+        k = '@"%s"' % nm
+        if t.startswith("@"): return "[c encodeObject:%s forKey:%s];" % (iv, k)
+        if t in ("B",): return "[c encodeBool:%s forKey:%s];" % (iv, k)
+        if t in ("f", "d"): return "[c encodeDouble:%s forKey:%s];" % (iv, k)
+        if t in ("c", "C", "s", "S", "i", "I", "l", "L", "q", "Q"): return "[c encodeInt64:(long long)%s forKey:%s];" % (iv, k)
+        return ""
+    def dec_stmt(nm, iv, t):
+        k = '@"%s"' % nm
+        if t.startswith("@"): return "%s = [[c decodeObjectForKey:%s] retain];" % (iv, k)
+        if t == "B": return "%s = [c decodeBoolForKey:%s];" % (iv, k)
+        if t in ("f", "d"): return "%s = [c decodeDoubleForKey:%s];" % (iv, k)
+        if t in ("c", "C", "s", "S", "i", "I", "l", "L", "q", "Q"): return "%s = (%s)[c decodeInt64ForKey:%s];" % (iv, one_type(t), k)
+        return ""
+    if (has("NSCoding") or has("NSSecureCoding")) and vals:
+        if "-%s encodeWithCoder:" % c["name"] not in skip:
+            M.append("- (void)encodeWithCoder:(NSCoder *)c { " + ("[super encodeWithCoder:c]; " if sup_has("NSCoding") or sup_has("NSSecureCoding") else "") + " ".join(enc_stmt(*v) for v in vals) + " }")
+        if "-%s initWithCoder:" % c["name"] not in skip:
+            M.append("- (id)initWithCoder:(NSCoder *)c { self = " + ("[super initWithCoder:c]" if sup_has("NSCoding") or sup_has("NSSecureCoding") else "[super init]") + "; if (!self) return nil; " + " ".join(dec_stmt(*v) for v in vals) + " return self; }")
+    if has("NSSecureCoding") and "+%s supportsSecureCoding" % c["name"] not in skip: M.append("+ (BOOL)supportsSecureCoding { return YES; }")
+    if (has("NSCopying") or has("NSMutableCopying")) and "-%s copyWithZone:" % c["name"] not in skip and vals:
+        cp = []
+        for nm, iv, t in vals: cp.append("o->%s = %s;" % (iv, ("[%s retain]" % iv) if t.startswith("@") and iv in owned else iv) if not t.startswith("{") else "")
+        M.append("- (id)copyWithZone:(NSZone *)z { %s *o = %s; " % (c["name"], "[super copyWithZone:z]" if sup_has("NSCopying") else "[[self class] allocWithZone:z] init]".replace("[[self class] allocWithZone:z] init]", "[[[self class] allocWithZone:z] init]")) + " ".join(cp) + " return o; }")
     M.append("@end"); M.append("")
 open(os.path.join(outdir, name + "_Generated.m"), "w").write("\n".join(M))
 print("%s: %d classes, %d protocols, %d stub methods, %d synthesized properties" % (name, len(classes), len(protocols), nstub, nreal))

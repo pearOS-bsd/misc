@@ -10,18 +10,19 @@
 @dynamic maximumCacheAge;
 @dynamic cacheOnly;
 @synthesize includeMatchingKnownNetworkProfiles = _includeMatchingKnownNetworkProfiles;
-+ (BOOL)supportsSecureCoding { return 0; }
 - (BOOL)cacheOnly { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToANQPParameters:(id)a0 { return 0; }
 - (unsigned long long)maximumCacheAge { return 0; }
 - (void)setCacheOnly:(BOOL)a0 {  }
 - (void)setMaximumCacheAge:(unsigned long long)a0 {  }
+- (void)dealloc { [_scanResults release]; _scanResults = nil; [_ANQPElementIDList release]; _ANQPElementIDList = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_scanResults forKey:@"scanResults"]; [c encodeObject:_ANQPElementIDList forKey:@"ANQPElementIDList"]; [c encodeInt64:(long long)_acceptableCacheAge forKey:@"acceptableCacheAge"]; [c encodeInt64:(long long)_maximumAge forKey:@"maximumAge"]; [c encodeInt64:(long long)_minimumTimestamp forKey:@"minimumTimestamp"]; [c encodeBool:_includeMatchingKnownNetworkProfiles forKey:@"includeMatchingKnownNetworkProfiles"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _scanResults = [[c decodeObjectForKey:@"scanResults"] retain]; _ANQPElementIDList = [[c decodeObjectForKey:@"ANQPElementIDList"] retain]; _acceptableCacheAge = (unsigned long long)[c decodeInt64ForKey:@"acceptableCacheAge"]; _maximumAge = (unsigned long long)[c decodeInt64ForKey:@"maximumAge"]; _minimumTimestamp = (unsigned long long)[c decodeInt64ForKey:@"minimumTimestamp"]; _includeMatchingKnownNetworkProfiles = [c decodeBoolForKey:@"includeMatchingKnownNetworkProfiles"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFANQPParameters *o = [[[self class] allocWithZone:z] init]; o->_scanResults = [_scanResults retain]; o->_ANQPElementIDList = [_ANQPElementIDList retain]; o->_acceptableCacheAge = _acceptableCacheAge; o->_maximumAge = _maximumAge; o->_minimumTimestamp = _minimumTimestamp; o->_includeMatchingKnownNetworkProfiles = _includeMatchingKnownNetworkProfiles; return o; }
 @end
 
 @implementation CWFAWDLPeerAssistedDiscoveryParameters
@@ -37,28 +38,30 @@
 @synthesize peerSupportedChannelFlags = _peerSupportedChannelFlags;
 @synthesize followMode = _followMode;
 @synthesize followModePreferredBand = _followModePreferredBand;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToAWDLParameters:(id)a0 { return 0; }
+- (void)dealloc { [_peerMACAddress release]; _peerMACAddress = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeInt64:(long long)_localMasterChannel forKey:@"localMasterChannel"]; [c encodeInt64:(long long)_localPreferredChannel forKey:@"localPreferredChannel"]; [c encodeInt64:(long long)_localSecondaryPreferredChannel forKey:@"localSecondaryPreferredChannel"]; [c encodeInt64:(long long)_localAssistedDiscoveryMetric forKey:@"localAssistedDiscoveryMetric"]; [c encodeObject:_peerMACAddress forKey:@"peerMACAddress"]; [c encodeInt64:(long long)_peerMasterChannel forKey:@"peerMasterChannel"]; [c encodeInt64:(long long)_peerPreferredChannel forKey:@"peerPreferredChannel"]; [c encodeInt64:(long long)_peerSecondaryPreferredChannel forKey:@"peerSecondaryPreferredChannel"]; [c encodeInt64:(long long)_peerAssistedDiscoveryMetric forKey:@"peerAssistedDiscoveryMetric"]; [c encodeInt64:(long long)_peerSupportedChannelFlags forKey:@"peerSupportedChannelFlags"]; [c encodeBool:_followMode forKey:@"followMode"]; [c encodeInt64:(long long)_followModePreferredBand forKey:@"followModePreferredBand"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _localMasterChannel = (unsigned long long)[c decodeInt64ForKey:@"localMasterChannel"]; _localPreferredChannel = (unsigned long long)[c decodeInt64ForKey:@"localPreferredChannel"]; _localSecondaryPreferredChannel = (unsigned long long)[c decodeInt64ForKey:@"localSecondaryPreferredChannel"]; _localAssistedDiscoveryMetric = (unsigned long long)[c decodeInt64ForKey:@"localAssistedDiscoveryMetric"]; _peerMACAddress = [[c decodeObjectForKey:@"peerMACAddress"] retain]; _peerMasterChannel = (unsigned long long)[c decodeInt64ForKey:@"peerMasterChannel"]; _peerPreferredChannel = (unsigned long long)[c decodeInt64ForKey:@"peerPreferredChannel"]; _peerSecondaryPreferredChannel = (unsigned long long)[c decodeInt64ForKey:@"peerSecondaryPreferredChannel"]; _peerAssistedDiscoveryMetric = (unsigned long long)[c decodeInt64ForKey:@"peerAssistedDiscoveryMetric"]; _peerSupportedChannelFlags = (int)[c decodeInt64ForKey:@"peerSupportedChannelFlags"]; _followMode = [c decodeBoolForKey:@"followMode"]; _followModePreferredBand = (unsigned long long)[c decodeInt64ForKey:@"followModePreferredBand"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFAWDLPeerAssistedDiscoveryParameters *o = [[[self class] allocWithZone:z] init]; o->_localMasterChannel = _localMasterChannel; o->_localPreferredChannel = _localPreferredChannel; o->_localSecondaryPreferredChannel = _localSecondaryPreferredChannel; o->_localAssistedDiscoveryMetric = _localAssistedDiscoveryMetric; o->_peerMACAddress = [_peerMACAddress retain]; o->_peerMasterChannel = _peerMasterChannel; o->_peerPreferredChannel = _peerPreferredChannel; o->_peerSecondaryPreferredChannel = _peerSecondaryPreferredChannel; o->_peerAssistedDiscoveryMetric = _peerAssistedDiscoveryMetric; o->_peerSupportedChannelFlags = _peerSupportedChannelFlags; o->_followMode = _followMode; o->_followModePreferredBand = _followModePreferredBand; return o; }
 @end
 
 @implementation CWFAWDLPeerContext
 @synthesize MACAddress = _MACAddress;
 @synthesize interfaceName = _interfaceName;
 + (id)AWDLPeerContextWithMACAddress:(id)a0 interfaceName:(id)a1 { return nil; }
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToAWDLPeerContext:(id)a0 { return 0; }
+- (void)dealloc { [_MACAddress release]; _MACAddress = nil; [_interfaceName release]; _interfaceName = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_MACAddress forKey:@"MACAddress"]; [c encodeObject:_interfaceName forKey:@"interfaceName"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _MACAddress = [[c decodeObjectForKey:@"MACAddress"] retain]; _interfaceName = [[c decodeObjectForKey:@"interfaceName"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFAWDLPeerContext *o = [[[self class] allocWithZone:z] init]; o->_MACAddress = [_MACAddress retain]; o->_interfaceName = [_interfaceName retain]; return o; }
 @end
 
 @implementation CWFAWDLPeerTrafficRegistration
@@ -70,15 +73,16 @@
 @synthesize preferredChannel = _preferredChannel;
 @synthesize secondaryPreferredChannel = _secondaryPreferredChannel;
 @synthesize peerContextList = _peerContextList;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToAWDLPeerTrafficRegistration:(id)a0 { return 0; }
 - (id)serializedRegistrationInfo { return nil; }
+- (void)dealloc { [_serviceName release]; _serviceName = nil; [_peerContextList release]; _peerContextList = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_serviceName forKey:@"serviceName"]; [c encodeBool:_active forKey:@"active"]; [c encodeInt64:(long long)_sessionFlags forKey:@"sessionFlags"]; [c encodeInt64:(long long)_desiredBandwidth forKey:@"desiredBandwidth"]; [c encodeInt64:(long long)_desiredLatency forKey:@"desiredLatency"]; [c encodeInt64:(long long)_preferredChannel forKey:@"preferredChannel"]; [c encodeInt64:(long long)_secondaryPreferredChannel forKey:@"secondaryPreferredChannel"]; [c encodeObject:_peerContextList forKey:@"peerContextList"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _serviceName = [[c decodeObjectForKey:@"serviceName"] retain]; _active = [c decodeBoolForKey:@"active"]; _sessionFlags = (int)[c decodeInt64ForKey:@"sessionFlags"]; _desiredBandwidth = (unsigned long long)[c decodeInt64ForKey:@"desiredBandwidth"]; _desiredLatency = (unsigned long long)[c decodeInt64ForKey:@"desiredLatency"]; _preferredChannel = (unsigned long long)[c decodeInt64ForKey:@"preferredChannel"]; _secondaryPreferredChannel = (unsigned long long)[c decodeInt64ForKey:@"secondaryPreferredChannel"]; _peerContextList = [[c decodeObjectForKey:@"peerContextList"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFAWDLPeerTrafficRegistration *o = [[[self class] allocWithZone:z] init]; o->_serviceName = [_serviceName retain]; o->_active = _active; o->_sessionFlags = _sessionFlags; o->_desiredBandwidth = _desiredBandwidth; o->_desiredLatency = _desiredLatency; o->_preferredChannel = _preferredChannel; o->_secondaryPreferredChannel = _secondaryPreferredChannel; o->_peerContextList = [_peerContextList retain]; return o; }
 @end
 
 @implementation CWFActivity
@@ -89,15 +93,16 @@
 @synthesize timeout = _timeout;
 + (id)activityWithType:(long long)a0 reason:(id)a1 { return nil; }
 + (id)activityWithType:(long long)a0 reason:(id)a1 UUID:(id)a2 { return nil; }
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
 - (id)init { return self; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToActivity:(id)a0 { return 0; }
+- (void)dealloc { [_UUID release]; _UUID = nil; [_reason release]; _reason = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_UUID forKey:@"UUID"]; [c encodeInt64:(long long)_processIdentifier forKey:@"processIdentifier"]; [c encodeObject:_reason forKey:@"reason"]; [c encodeInt64:(long long)_type forKey:@"type"]; [c encodeInt64:(long long)_timeout forKey:@"timeout"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _UUID = [[c decodeObjectForKey:@"UUID"] retain]; _processIdentifier = (int)[c decodeInt64ForKey:@"processIdentifier"]; _reason = [[c decodeObjectForKey:@"reason"] retain]; _type = (long long)[c decodeInt64ForKey:@"type"]; _timeout = (unsigned long long)[c decodeInt64ForKey:@"timeout"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFActivity *o = [[[self class] allocWithZone:z] init]; o->_UUID = [_UUID retain]; o->_processIdentifier = _processIdentifier; o->_reason = [_reason retain]; o->_type = _type; o->_timeout = _timeout; return o; }
 @end
 
 @implementation CWFApple80211
@@ -212,6 +217,7 @@
 - (id)virtualInterfaceParent:(id *)a0 { return nil; }
 - (id)virtualInterfaceRole:(id *)a0 { return nil; }
 - (id)wowEnabled:(id *)a0 { return nil; }
+- (void)dealloc { [_interfaceName release]; _interfaceName = nil; [_virtualInterfaceParent release]; _virtualInterfaceParent = nil; [_eventHandler release]; _eventHandler = nil; [super dealloc]; }
 @end
 
 @implementation CWFAssetCreatorFromRoot
@@ -227,6 +233,7 @@
 - (id)initWithPaths:(id)a0 { return self; }
 - (id)loadTopLevelInfoPlistFromPaths:(id)a0 { return nil; }
 - (id)newerVersionAttributes { return nil; }
+- (void)dealloc { [_formatter release]; _formatter = nil; [_infoPlist release]; _infoPlist = nil; [_creationDate release]; _creationDate = nil; [_rootCatalogInfo release]; _rootCatalogInfo = nil; [_localContentURL release]; _localContentURL = nil; [_AssetSpecifier release]; _AssetSpecifier = nil; [_AssetVersion release]; _AssetVersion = nil; [super dealloc]; }
 @end
 
 @implementation CWFAssetLocal
@@ -287,6 +294,7 @@
 - (id)init { return self; }
 - (void)processLocalAsset:(id)a0 {  }
 - (id)transferAssetFromSrc:(id)a0 toDst:(id)a1 withAsseID:(id)a2 withVersion:(id)a3 assetBuild:(id)a4 firstSupportedOS:(id)a5 lastSupportedOS:(id)a6 firstSupportedBuild:(id)a7 lastSupportedBuild:(id)a8 ptVersionInfo:(id)a9 lastTimeCatalogChecked:(id)a10 catalogPostedDate:(id)a11 { return nil; }
+- (void)dealloc { [__elector release]; __elector = nil; [_powerTableAPIMajorVersion release]; _powerTableAPIMajorVersion = nil; [super dealloc]; }
 @end
 
 @implementation CWFAssetPowerTableElector
@@ -350,6 +358,7 @@
 - (void)setupInterfaceAddedAndDriverAvailMonitor {  }
 - (BOOL)waitForInterfaceAdded:(id)a0 { return 0; }
 - (void)waitForPowerTableBootedThenVoteInBlock:(id)a0 completion:(id)a1 {  }
+- (void)dealloc { [_wifiInterface release]; _wifiInterface = nil; [__coordinationQueue release]; __coordinationQueue = nil; [__apiQueue release]; __apiQueue = nil; [__signalQueue release]; __signalQueue = nil; [__waitingQueue release]; __waitingQueue = nil; [__notificationCenter release]; __notificationCenter = nil; [__distNotificationCenter release]; __distNotificationCenter = nil; [__powerTableSession release]; __powerTableSession = nil; [__powerTableSessionStartDate release]; __powerTableSessionStartDate = nil; [__powerTableEvaluationStartDate release]; __powerTableEvaluationStartDate = nil; [__powerTableRequestingVotesStartDate release]; __powerTableRequestingVotesStartDate = nil; [__interfaceAddedEventCondition release]; __interfaceAddedEventCondition = nil; [__driverAvailEventCondition release]; __driverAvailEventCondition = nil; [__readyToFetchLoadedPTCondition release]; __readyToFetchLoadedPTCondition = nil; [__condPowerTableFetched release]; __condPowerTableFetched = nil; [_error release]; _error = nil; [super dealloc]; }
 @end
 
 @implementation CWFAssetPowerTableElectionManager
@@ -446,6 +455,7 @@
 - (void)rootMonitorDetectedAdd:(id)a0 deleted:(id)a1 updated:(id)a2 {  }
 - (void)scheduleReadinessRetry {  }
 - (void)unlockAssetWithReason:(id)a0 {  }
+- (void)dealloc { [_eventQueue release]; _eventQueue = nil; [_assetDownloadedHandler release]; _assetDownloadedHandler = nil; [_assetDiscoveredHandler release]; _assetDiscoveredHandler = nil; [_currentLockedAutoAssetSelector release]; _currentLockedAutoAssetSelector = nil; [_currentLockedAutoAsset release]; _currentLockedAutoAsset = nil; [_assetSpecifier release]; _assetSpecifier = nil; [_periodicCheckA11Timer release]; _periodicCheckA11Timer = nil; [_apiMajorVersion release]; _apiMajorVersion = nil; [_forTestingPeriodicCheckTimer release]; _forTestingPeriodicCheckTimer = nil; [_atomicInstanceTrackedForDownloaded release]; _atomicInstanceTrackedForDownloaded = nil; [_assetPowerTable release]; _assetPowerTable = nil; [_assetFromRoot release]; _assetFromRoot = nil; [_assetRootMonitor release]; _assetRootMonitor = nil; [eventHandler release]; eventHandler = nil; [super dealloc]; }
 @end
 
 @implementation CWFAssocParameters
@@ -460,14 +470,15 @@
 @synthesize has6GHzOnlyBSS = _has6GHzOnlyBSS;
 @synthesize remoteHotspotDevice = _remoteHotspotDevice;
 @synthesize findAndJoinNetwork = _findAndJoinNetwork;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToAssocParameters:(id)a0 { return 0; }
+- (void)dealloc { [_scanResult release]; _scanResult = nil; [_knownNetworkProfile release]; _knownNetworkProfile = nil; [_password release]; _password = nil; [_EAPCredentials release]; _EAPCredentials = nil; [_colocatedScopeID release]; _colocatedScopeID = nil; [_remoteHotspotDevice release]; _remoteHotspotDevice = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_scanResult forKey:@"scanResult"]; [c encodeObject:_knownNetworkProfile forKey:@"knownNetworkProfile"]; [c encodeObject:_password forKey:@"password"]; [c encodeObject:_EAPCredentials forKey:@"EAPCredentials"]; [c encodeBool:_rememberUponSuccessfulAssociation forKey:@"rememberUponSuccessfulAssociation"]; [c encodeInt64:(long long)_bandPreference forKey:@"bandPreference"]; [c encodeObject:_colocatedScopeID forKey:@"colocatedScopeID"]; [c encodeBool:_forceBSSID forKey:@"forceBSSID"]; [c encodeBool:_has6GHzOnlyBSS forKey:@"has6GHzOnlyBSS"]; [c encodeObject:_remoteHotspotDevice forKey:@"remoteHotspotDevice"]; [c encodeBool:_findAndJoinNetwork forKey:@"findAndJoinNetwork"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _scanResult = [[c decodeObjectForKey:@"scanResult"] retain]; _knownNetworkProfile = [[c decodeObjectForKey:@"knownNetworkProfile"] retain]; _password = [[c decodeObjectForKey:@"password"] retain]; _EAPCredentials = [[c decodeObjectForKey:@"EAPCredentials"] retain]; _rememberUponSuccessfulAssociation = [c decodeBoolForKey:@"rememberUponSuccessfulAssociation"]; _bandPreference = (long long)[c decodeInt64ForKey:@"bandPreference"]; _colocatedScopeID = [[c decodeObjectForKey:@"colocatedScopeID"] retain]; _forceBSSID = [c decodeBoolForKey:@"forceBSSID"]; _has6GHzOnlyBSS = [c decodeBoolForKey:@"has6GHzOnlyBSS"]; _remoteHotspotDevice = [[c decodeObjectForKey:@"remoteHotspotDevice"] retain]; _findAndJoinNetwork = [c decodeBoolForKey:@"findAndJoinNetwork"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFAssocParameters *o = [[[self class] allocWithZone:z] init]; o->_scanResult = [_scanResult retain]; o->_knownNetworkProfile = [_knownNetworkProfile retain]; o->_password = [_password retain]; o->_EAPCredentials = [_EAPCredentials retain]; o->_rememberUponSuccessfulAssociation = _rememberUponSuccessfulAssociation; o->_bandPreference = _bandPreference; o->_colocatedScopeID = [_colocatedScopeID retain]; o->_forceBSSID = _forceBSSID; o->_has6GHzOnlyBSS = _has6GHzOnlyBSS; o->_remoteHotspotDevice = [_remoteHotspotDevice retain]; o->_findAndJoinNetwork = _findAndJoinNetwork; return o; }
 @end
 
 @implementation CWFAsyncBlockOperation
@@ -520,10 +531,11 @@
 @synthesize skip6GHzFollowupScan = _skip6GHzFollowupScan;
 @synthesize skip6GHzSameSSIDFollowupScan = _skip6GHzSameSSIDFollowupScan;
 @synthesize prioritize6GHzChannel = _prioritize6GHzChannel;
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (unsigned long long)hash { return 0; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToAutoJoinContext:(id)a0 { return 0; }
+- (void)dealloc { [_autoJoinParameters release]; _autoJoinParameters = nil; [_knownNetworks release]; _knownNetworks = nil; [_recentChannelList release]; _recentChannelList = nil; [_remainingChannelList release]; _remainingChannelList = nil; [_SSIDList release]; _SSIDList = nil; [_ANQPElementIDList release]; _ANQPElementIDList = nil; [super dealloc]; }
+- (id)copyWithZone:(NSZone *)z { CWFAutoJoinContext *o = [[[self class] allocWithZone:z] init]; o->_autoJoinParameters = [_autoJoinParameters retain]; o->_knownNetworks = [_knownNetworks retain]; o->_recentChannelList = [_recentChannelList retain]; o->_remainingChannelList = [_remainingChannelList retain]; o->_SSIDList = [_SSIDList retain]; o->_ANQPElementIDList = [_ANQPElementIDList retain]; o->_maxScanChannelCount = _maxScanChannelCount; o->_BSSChannelsOnly = _BSSChannelsOnly; o->_maxBSSChannelCount = _maxBSSChannelCount; o->_maxBSSChannelAge = _maxBSSChannelAge; o->_maxScanSSIDCount = _maxScanSSIDCount; o->_maxHiddenKnownNetworkSSIDAge = _maxHiddenKnownNetworkSSIDAge; o->_maxScanCacheAge = _maxScanCacheAge; o->_maxANQPCacheAge = _maxANQPCacheAge; o->_maxScanCycles = _maxScanCycles; o->_minRSSI = _minRSSI; o->_dwellTime = _dwellTime; o->_passiveScan = _passiveScan; o->_cacheOnly = _cacheOnly; o->_useCacheBeforeScan = _useCacheBeforeScan; o->_useCacheForPreviouslyScannedChannels = _useCacheForPreviouslyScannedChannels; o->_minBSSLocationAccuracy = _minBSSLocationAccuracy; o->_maxBSSLocationDistance = _maxBSSLocationDistance; o->_includeAdjacent5GHzChannel = _includeAdjacent5GHzChannel; o->_includeOnlyRemaining5GHzChannels = _includeOnlyRemaining5GHzChannels; o->_allowStandalone6GHz = _allowStandalone6GHz; o->_include6GHzChannels = _include6GHzChannels; o->_alwaysIncludeRemainingNon2GHzChannels = _alwaysIncludeRemainingNon2GHzChannels; o->_allowDeferredCandidates = _allowDeferredCandidates; o->_allowRecentlyJoinedDeferrableCandidates = _allowRecentlyJoinedDeferrableCandidates; o->_didForceAllRemainingChannels = _didForceAllRemainingChannels; o->_skipRemainingNon2GHzChannelsUnlessKnownNetworkFound = _skipRemainingNon2GHzChannelsUnlessKnownNetworkFound; o->_preferUserConfiguredNetworks = _preferUserConfiguredNetworks; o->_allowSSIDBasedMatchingForPasspointNetworks = _allowSSIDBasedMatchingForPasspointNetworks; o->_skipMorePreferredNetworkDiscovery = _skipMorePreferredNetworkDiscovery; o->_skip6GHzFollowupScan = _skip6GHzFollowupScan; o->_skip6GHzSameSSIDFollowupScan = _skip6GHzSameSSIDFollowupScan; o->_prioritize6GHzChannel = _prioritize6GHzChannel; return o; }
 @end
 
 @implementation CWFAutoJoinManager
@@ -722,6 +734,7 @@
 - (id)statistics { return nil; }
 - (id)supportedChannels { return nil; }
 - (id)userActionMetric { return nil; }
+- (void)dealloc { [_allowAutoJoinHandler release]; _allowAutoJoinHandler = nil; [_allowKnownNetworkHandler release]; _allowKnownNetworkHandler = nil; [_knownNetworkComparator release]; _knownNetworkComparator = nil; [_scanForNetworksHandler release]; _scanForNetworksHandler = nil; [_performGASQueryHandler release]; _performGASQueryHandler = nil; [_allowJoinCandidateHandler release]; _allowJoinCandidateHandler = nil; [_joinCandidateComparator release]; _joinCandidateComparator = nil; [_associateToNetworkHandler release]; _associateToNetworkHandler = nil; [_allowAutoHotspotHandler release]; _allowAutoHotspotHandler = nil; [_allowHotspotHandler release]; _allowHotspotHandler = nil; [_browseForHotspotsHandler release]; _browseForHotspotsHandler = nil; [_connectToHotspotHandler release]; _connectToHotspotHandler = nil; [_updateKnownNetworkHandler release]; _updateKnownNetworkHandler = nil; [_allowBrokenBackhaulPersonalHotspotFallbackHandler release]; _allowBrokenBackhaulPersonalHotspotFallbackHandler = nil; [_detectBrokenBackhaulHandler release]; _detectBrokenBackhaulHandler = nil; [_isDeviceSupervisedHandler release]; _isDeviceSupervisedHandler = nil; [_eventHandler release]; _eventHandler = nil; [_invalidationHandler release]; _invalidationHandler = nil; [_targetQueue release]; _targetQueue = nil; [_colocatedScopeID release]; _colocatedScopeID = nil; [super dealloc]; }
 @end
 
 @implementation CWFAutoJoinMetric
@@ -840,20 +853,21 @@
 @synthesize hotspot = _hotspot;
 @dynamic coreAnalyticsEventName;
 @dynamic coreAnalyticsEventPayload;
-+ (BOOL)supportsSecureCoding { return 0; }
 - (id)JSONCompatibleKeyValueMap { return nil; }
 - (id)__descriptionForError:(id)a0 { return nil; }
 - (unsigned long long)combinedDuration { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)coreAnalyticsEventName { return nil; }
 - (id)coreAnalyticsEventPayload { return nil; }
 - (id)description { return nil; }
 - (unsigned long long)duration { return 0; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToAutoJoinMetric:(id)a0 { return 0; }
+- (void)dealloc { [_UUID release]; _UUID = nil; [_startedAt release]; _startedAt = nil; [_endedAt release]; _endedAt = nil; [_matchedCandidateAt release]; _matchedCandidateAt = nil; [_joinStartedAt release]; _joinStartedAt = nil; [_joinEndedAt release]; _joinEndedAt = nil; [_linkUpAt release]; _linkUpAt = nil; [_routableIPv4AddressAt release]; _routableIPv4AddressAt = nil; [_primaryIPv4InterfaceAt release]; _primaryIPv4InterfaceAt = nil; [_routableIPv6AddressAt release]; _routableIPv6AddressAt = nil; [_primaryIPv6InterfaceAt release]; _primaryIPv6InterfaceAt = nil; [_triggeredByLinkDownAt release]; _triggeredByLinkDownAt = nil; [_triggeredByDeviceWakeAt release]; _triggeredByDeviceWakeAt = nil; [_triggeredByFirstUnlockAt release]; _triggeredByFirstUnlockAt = nil; [_triggeredByWiFiOnAt release]; _triggeredByWiFiOnAt = nil; [_triggeredByMotionEndedAt release]; _triggeredByMotionEndedAt = nil; [_triggeredByAutoJoinEnabledAt release]; _triggeredByAutoJoinEnabledAt = nil; [_error release]; _error = nil; [_autoJoinParameters release]; _autoJoinParameters = nil; [_wasAlreadyAssociatedToNetwork release]; _wasAlreadyAssociatedToNetwork = nil; [_scanChannels release]; _scanChannels = nil; [_preAssociationScanChannels release]; _preAssociationScanChannels = nil; [_scanErrors release]; _scanErrors = nil; [_GASQueryNetworks release]; _GASQueryNetworks = nil; [_GASQueryErrors release]; _GASQueryErrors = nil; [_autoJoinedNetwork release]; _autoJoinedNetwork = nil; [_joinErrors release]; _joinErrors = nil; [_preferredChannelList release]; _preferredChannelList = nil; [_recentChannelList release]; _recentChannelList = nil; [_remainingChannelList release]; _remainingChannelList = nil; [_channelList release]; _channelList = nil; [_followup6GHzScanChannels release]; _followup6GHzScanChannels = nil; [_autoHotspotStartedAt release]; _autoHotspotStartedAt = nil; [_autoHotspotEndedAt release]; _autoHotspotEndedAt = nil; [_autoHotspotError release]; _autoHotspotError = nil; [_autoHotspotBrowseError release]; _autoHotspotBrowseError = nil; [_autoHotspotJoinStartedAt release]; _autoHotspotJoinStartedAt = nil; [_autoHotspotJoinEndedAt release]; _autoHotspotJoinEndedAt = nil; [_autoHotspotJoinErrors release]; _autoHotspotJoinErrors = nil; [_hotspot release]; _hotspot = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_UUID forKey:@"UUID"]; [c encodeObject:_startedAt forKey:@"startedAt"]; [c encodeObject:_endedAt forKey:@"endedAt"]; [c encodeObject:_matchedCandidateAt forKey:@"matchedCandidateAt"]; [c encodeObject:_joinStartedAt forKey:@"joinStartedAt"]; [c encodeObject:_joinEndedAt forKey:@"joinEndedAt"]; [c encodeObject:_linkUpAt forKey:@"linkUpAt"]; [c encodeInt64:(long long)_combinedJoinDuration forKey:@"combinedJoinDuration"]; [c encodeObject:_routableIPv4AddressAt forKey:@"routableIPv4AddressAt"]; [c encodeObject:_primaryIPv4InterfaceAt forKey:@"primaryIPv4InterfaceAt"]; [c encodeObject:_routableIPv6AddressAt forKey:@"routableIPv6AddressAt"]; [c encodeObject:_primaryIPv6InterfaceAt forKey:@"primaryIPv6InterfaceAt"]; [c encodeInt64:(long long)_adaptiveInterfaceRankDuration forKey:@"adaptiveInterfaceRankDuration"]; [c encodeObject:_triggeredByLinkDownAt forKey:@"triggeredByLinkDownAt"]; [c encodeObject:_triggeredByDeviceWakeAt forKey:@"triggeredByDeviceWakeAt"]; [c encodeObject:_triggeredByFirstUnlockAt forKey:@"triggeredByFirstUnlockAt"]; [c encodeObject:_triggeredByWiFiOnAt forKey:@"triggeredByWiFiOnAt"]; [c encodeObject:_triggeredByMotionEndedAt forKey:@"triggeredByMotionEndedAt"]; [c encodeObject:_triggeredByAutoJoinEnabledAt forKey:@"triggeredByAutoJoinEnabledAt"]; [c encodeInt64:(long long)_linkRecoveryDelay forKey:@"linkRecoveryDelay"]; [c encodeBool:_didJoinPreviouslyAssociatedNetwork forKey:@"didJoinPreviouslyAssociatedNetwork"]; [c encodeBool:_result forKey:@"result"]; [c encodeInt64:(long long)_outcome forKey:@"outcome"]; [c encodeInt64:(long long)_autoJoinNotAllowedReason forKey:@"autoJoinNotAllowedReason"]; [c encodeInt64:(long long)_candidateNotAllowedReason forKey:@"candidateNotAllowedReason"]; [c encodeObject:_error forKey:@"error"]; [c encodeBool:_wasCancelled forKey:@"wasCancelled"]; [c encodeBool:_wasAborted forKey:@"wasAborted"]; [c encodeObject:_autoJoinParameters forKey:@"autoJoinParameters"]; [c encodeInt64:(long long)_retrySchedule forKey:@"retrySchedule"]; [c encodeInt64:(long long)_retryScheduleIndex forKey:@"retryScheduleIndex"]; [c encodeBool:_was6EDisabled forKey:@"was6EDisabled"]; [c encodeBool:_was6EPreferOn forKey:@"was6EPreferOn"]; [c encodeBool:_was6GHzDeprioritized forKey:@"was6GHzDeprioritized"]; [c encodeObject:_wasAlreadyAssociatedToNetwork forKey:@"wasAlreadyAssociatedToNetwork"]; [c encodeBool:_didUseLocationOptimizedChannelList forKey:@"didUseLocationOptimizedChannelList"]; [c encodeBool:_didDetectColocatedNetworkEnvironment forKey:@"didDetectColocatedNetworkEnvironment"]; [c encodeBool:_didDeferJoinToDiscoverMorePreferredNetwork forKey:@"didDeferJoinToDiscoverMorePreferredNetwork"]; [c encodeBool:_didFallbackToJoinLessPreferredNetwork forKey:@"didFallbackToJoinLessPreferredNetwork"]; [c encodeBool:_didJoinDeferredNetwork forKey:@"didJoinDeferredNetwork"]; [c encodeBool:_didJoinPreviouslyLowRSSINetwork forKey:@"didJoinPreviouslyLowRSSINetwork"]; [c encodeBool:_didPrioritizeMostRecentlyJoinedNetwork forKey:@"didPrioritizeMostRecentlyJoinedNetwork"]; [c encodeBool:_didSkip6GHzFollowupScans forKey:@"didSkip6GHzFollowupScans"]; [c encodeBool:_didSkipMorePreferredNetworkJoin forKey:@"didSkipMorePreferredNetworkJoin"]; [c encodeBool:_didPrioritize6GHzChannel forKey:@"didPrioritize6GHzChannel"]; [c encodeBool:_didSkipLessRecentlyJoinedNetwork forKey:@"didSkipLessRecentlyJoinedNetwork"]; [c encodeInt64:(long long)_scanDuration forKey:@"scanDuration"]; [c encodeObject:_scanChannels forKey:@"scanChannels"]; [c encodeInt64:(long long)_preAssociationScanDuration forKey:@"preAssociationScanDuration"]; [c encodeObject:_preAssociationScanChannels forKey:@"preAssociationScanChannels"]; [c encodeObject:_scanErrors forKey:@"scanErrors"]; [c encodeInt64:(long long)_scanResultCount forKey:@"scanResultCount"]; [c encodeInt64:(long long)_GASQueryDuration forKey:@"GASQueryDuration"]; [c encodeObject:_GASQueryNetworks forKey:@"GASQueryNetworks"]; [c encodeObject:_GASQueryErrors forKey:@"GASQueryErrors"]; [c encodeObject:_autoJoinedNetwork forKey:@"autoJoinedNetwork"]; [c encodeObject:_joinErrors forKey:@"joinErrors"]; [c encodeBool:_didExcludeLowRSSINetwork forKey:@"didExcludeLowRSSINetwork"]; [c encodeBool:_didExcludePartiallyMatchedNetwork forKey:@"didExcludePartiallyMatchedNetwork"]; [c encodeBool:_didExcludeDisabledNetwork forKey:@"didExcludeDisabledNetwork"]; [c encodeBool:_didExcludeDisallowedNetwork forKey:@"didExcludeDisallowedNetwork"]; [c encodeBool:_didPerformSeamlessSSIDTransition forKey:@"didPerformSeamlessSSIDTransition"]; [c encodeBool:_didTriggerReassoc forKey:@"didTriggerReassoc"]; [c encodeObject:_preferredChannelList forKey:@"preferredChannelList"]; [c encodeObject:_recentChannelList forKey:@"recentChannelList"]; [c encodeObject:_remainingChannelList forKey:@"remainingChannelList"]; [c encodeObject:_channelList forKey:@"channelList"]; [c encodeBool:_didExcludeStandalone6GHzNetwork forKey:@"didExcludeStandalone6GHzNetwork"]; [c encodeBool:_didExclude6GHzOnlyNetwork forKey:@"didExclude6GHzOnlyNetwork"]; [c encodeBool:_wasDiscoveredVia6GHzFollowup forKey:@"wasDiscoveredVia6GHzFollowup"]; [c encodeBool:_wasDiscoveredViaRNR forKey:@"wasDiscoveredViaRNR"]; [c encodeBool:_wasDiscoveredViaFILSD forKey:@"wasDiscoveredViaFILSD"]; [c encodeInt64:(long long)_followup6GHzScanDuration forKey:@"followup6GHzScanDuration"]; [c encodeObject:_followup6GHzScanChannels forKey:@"followup6GHzScanChannels"]; [c encodeBool:_didIncludeRemainingNon2GHzChannels forKey:@"didIncludeRemainingNon2GHzChannels"]; [c encodeInt64:(long long)_candidateBSSCount forKey:@"candidateBSSCount"]; [c encodeInt64:(long long)_candidateSSIDCount forKey:@"candidateSSIDCount"]; [c encodeInt64:(long long)_bestCandidateRSSI forKey:@"bestCandidateRSSI"]; [c encodeBool:_wasLockdownModeEnabled forKey:@"wasLockdownModeEnabled"]; [c encodeBool:_wasBeforeFirstUnlock forKey:@"wasBeforeFirstUnlock"]; [c encodeDouble:_durationForJoinPMAssertion forKey:@"durationForJoinPMAssertion"]; [c encodeInt64:(long long)_autoJoinNetworkConsecutiveJoinFailureCount forKey:@"autoJoinNetworkConsecutiveJoinFailureCount"]; [c encodeInt64:(long long)_secondsUntilNextAttempt forKey:@"secondsUntilNextAttempt"]; [c encodeInt64:(long long)_secondsSincePreviousNonAbortedAttempt forKey:@"secondsSincePreviousNonAbortedAttempt"]; [c encodeInt64:(long long)_secondsSincePreviousAttempt forKey:@"secondsSincePreviousAttempt"]; [c encodeInt64:(long long)_secondsSincePreviousTrigger forKey:@"secondsSincePreviousTrigger"]; [c encodeBool:_didNotFindNetworkAfterJoinFailure forKey:@"didNotFindNetworkAfterJoinFailure"]; [c encodeBool:_hasAttemptedJoinRSNO forKey:@"hasAttemptedJoinRSNO"]; [c encodeBool:_hasAttemptedJoinMRSNO forKey:@"hasAttemptedJoinMRSNO"]; [c encodeBool:_hasAttemptedJoinRSNOFallback forKey:@"hasAttemptedJoinRSNOFallback"]; [c encodeBool:_hasAttemptedJoinMRSNOFallback forKey:@"hasAttemptedJoinMRSNOFallback"]; [c encodeBool:_hasFailedJoinRSNO forKey:@"hasFailedJoinRSNO"]; [c encodeBool:_hasFailedJoinMRSNO forKey:@"hasFailedJoinMRSNO"]; [c encodeBool:_wasFirstJoinSinceBoot forKey:@"wasFirstJoinSinceBoot"]; [c encodeBool:_autoHotspotWasAttempted forKey:@"autoHotspotWasAttempted"]; [c encodeBool:_autoHotspotResult forKey:@"autoHotspotResult"]; [c encodeObject:_autoHotspotStartedAt forKey:@"autoHotspotStartedAt"]; [c encodeObject:_autoHotspotEndedAt forKey:@"autoHotspotEndedAt"]; [c encodeBool:_autoHotspotWasAborted forKey:@"autoHotspotWasAborted"]; [c encodeObject:_autoHotspotError forKey:@"autoHotspotError"]; [c encodeInt64:(long long)_autoHotspotMode forKey:@"autoHotspotMode"]; [c encodeInt64:(long long)_autoHotspotBrowseDuration forKey:@"autoHotspotBrowseDuration"]; [c encodeObject:_autoHotspotBrowseError forKey:@"autoHotspotBrowseError"]; [c encodeObject:_autoHotspotJoinStartedAt forKey:@"autoHotspotJoinStartedAt"]; [c encodeObject:_autoHotspotJoinEndedAt forKey:@"autoHotspotJoinEndedAt"]; [c encodeObject:_autoHotspotJoinErrors forKey:@"autoHotspotJoinErrors"]; [c encodeObject:_hotspot forKey:@"hotspot"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _UUID = [[c decodeObjectForKey:@"UUID"] retain]; _startedAt = [[c decodeObjectForKey:@"startedAt"] retain]; _endedAt = [[c decodeObjectForKey:@"endedAt"] retain]; _matchedCandidateAt = [[c decodeObjectForKey:@"matchedCandidateAt"] retain]; _joinStartedAt = [[c decodeObjectForKey:@"joinStartedAt"] retain]; _joinEndedAt = [[c decodeObjectForKey:@"joinEndedAt"] retain]; _linkUpAt = [[c decodeObjectForKey:@"linkUpAt"] retain]; _combinedJoinDuration = (unsigned long long)[c decodeInt64ForKey:@"combinedJoinDuration"]; _routableIPv4AddressAt = [[c decodeObjectForKey:@"routableIPv4AddressAt"] retain]; _primaryIPv4InterfaceAt = [[c decodeObjectForKey:@"primaryIPv4InterfaceAt"] retain]; _routableIPv6AddressAt = [[c decodeObjectForKey:@"routableIPv6AddressAt"] retain]; _primaryIPv6InterfaceAt = [[c decodeObjectForKey:@"primaryIPv6InterfaceAt"] retain]; _adaptiveInterfaceRankDuration = (unsigned long long)[c decodeInt64ForKey:@"adaptiveInterfaceRankDuration"]; _triggeredByLinkDownAt = [[c decodeObjectForKey:@"triggeredByLinkDownAt"] retain]; _triggeredByDeviceWakeAt = [[c decodeObjectForKey:@"triggeredByDeviceWakeAt"] retain]; _triggeredByFirstUnlockAt = [[c decodeObjectForKey:@"triggeredByFirstUnlockAt"] retain]; _triggeredByWiFiOnAt = [[c decodeObjectForKey:@"triggeredByWiFiOnAt"] retain]; _triggeredByMotionEndedAt = [[c decodeObjectForKey:@"triggeredByMotionEndedAt"] retain]; _triggeredByAutoJoinEnabledAt = [[c decodeObjectForKey:@"triggeredByAutoJoinEnabledAt"] retain]; _linkRecoveryDelay = (unsigned long long)[c decodeInt64ForKey:@"linkRecoveryDelay"]; _didJoinPreviouslyAssociatedNetwork = [c decodeBoolForKey:@"didJoinPreviouslyAssociatedNetwork"]; _result = [c decodeBoolForKey:@"result"]; _outcome = (unsigned long long)[c decodeInt64ForKey:@"outcome"]; _autoJoinNotAllowedReason = (unsigned long long)[c decodeInt64ForKey:@"autoJoinNotAllowedReason"]; _candidateNotAllowedReason = (unsigned long long)[c decodeInt64ForKey:@"candidateNotAllowedReason"]; _error = [[c decodeObjectForKey:@"error"] retain]; _wasCancelled = [c decodeBoolForKey:@"wasCancelled"]; _wasAborted = [c decodeBoolForKey:@"wasAborted"]; _autoJoinParameters = [[c decodeObjectForKey:@"autoJoinParameters"] retain]; _retrySchedule = (long long)[c decodeInt64ForKey:@"retrySchedule"]; _retryScheduleIndex = (unsigned long long)[c decodeInt64ForKey:@"retryScheduleIndex"]; _was6EDisabled = [c decodeBoolForKey:@"was6EDisabled"]; _was6EPreferOn = [c decodeBoolForKey:@"was6EPreferOn"]; _was6GHzDeprioritized = [c decodeBoolForKey:@"was6GHzDeprioritized"]; _wasAlreadyAssociatedToNetwork = [[c decodeObjectForKey:@"wasAlreadyAssociatedToNetwork"] retain]; _didUseLocationOptimizedChannelList = [c decodeBoolForKey:@"didUseLocationOptimizedChannelList"]; _didDetectColocatedNetworkEnvironment = [c decodeBoolForKey:@"didDetectColocatedNetworkEnvironment"]; _didDeferJoinToDiscoverMorePreferredNetwork = [c decodeBoolForKey:@"didDeferJoinToDiscoverMorePreferredNetwork"]; _didFallbackToJoinLessPreferredNetwork = [c decodeBoolForKey:@"didFallbackToJoinLessPreferredNetwork"]; _didJoinDeferredNetwork = [c decodeBoolForKey:@"didJoinDeferredNetwork"]; _didJoinPreviouslyLowRSSINetwork = [c decodeBoolForKey:@"didJoinPreviouslyLowRSSINetwork"]; _didPrioritizeMostRecentlyJoinedNetwork = [c decodeBoolForKey:@"didPrioritizeMostRecentlyJoinedNetwork"]; _didSkip6GHzFollowupScans = [c decodeBoolForKey:@"didSkip6GHzFollowupScans"]; _didSkipMorePreferredNetworkJoin = [c decodeBoolForKey:@"didSkipMorePreferredNetworkJoin"]; _didPrioritize6GHzChannel = [c decodeBoolForKey:@"didPrioritize6GHzChannel"]; _didSkipLessRecentlyJoinedNetwork = [c decodeBoolForKey:@"didSkipLessRecentlyJoinedNetwork"]; _scanDuration = (unsigned long long)[c decodeInt64ForKey:@"scanDuration"]; _scanChannels = [[c decodeObjectForKey:@"scanChannels"] retain]; _preAssociationScanDuration = (unsigned long long)[c decodeInt64ForKey:@"preAssociationScanDuration"]; _preAssociationScanChannels = [[c decodeObjectForKey:@"preAssociationScanChannels"] retain]; _scanErrors = [[c decodeObjectForKey:@"scanErrors"] retain]; _scanResultCount = (unsigned long long)[c decodeInt64ForKey:@"scanResultCount"]; _GASQueryDuration = (unsigned long long)[c decodeInt64ForKey:@"GASQueryDuration"]; _GASQueryNetworks = [[c decodeObjectForKey:@"GASQueryNetworks"] retain]; _GASQueryErrors = [[c decodeObjectForKey:@"GASQueryErrors"] retain]; _autoJoinedNetwork = [[c decodeObjectForKey:@"autoJoinedNetwork"] retain]; _joinErrors = [[c decodeObjectForKey:@"joinErrors"] retain]; _didExcludeLowRSSINetwork = [c decodeBoolForKey:@"didExcludeLowRSSINetwork"]; _didExcludePartiallyMatchedNetwork = [c decodeBoolForKey:@"didExcludePartiallyMatchedNetwork"]; _didExcludeDisabledNetwork = [c decodeBoolForKey:@"didExcludeDisabledNetwork"]; _didExcludeDisallowedNetwork = [c decodeBoolForKey:@"didExcludeDisallowedNetwork"]; _didPerformSeamlessSSIDTransition = [c decodeBoolForKey:@"didPerformSeamlessSSIDTransition"]; _didTriggerReassoc = [c decodeBoolForKey:@"didTriggerReassoc"]; _preferredChannelList = [[c decodeObjectForKey:@"preferredChannelList"] retain]; _recentChannelList = [[c decodeObjectForKey:@"recentChannelList"] retain]; _remainingChannelList = [[c decodeObjectForKey:@"remainingChannelList"] retain]; _channelList = [[c decodeObjectForKey:@"channelList"] retain]; _didExcludeStandalone6GHzNetwork = [c decodeBoolForKey:@"didExcludeStandalone6GHzNetwork"]; _didExclude6GHzOnlyNetwork = [c decodeBoolForKey:@"didExclude6GHzOnlyNetwork"]; _wasDiscoveredVia6GHzFollowup = [c decodeBoolForKey:@"wasDiscoveredVia6GHzFollowup"]; _wasDiscoveredViaRNR = [c decodeBoolForKey:@"wasDiscoveredViaRNR"]; _wasDiscoveredViaFILSD = [c decodeBoolForKey:@"wasDiscoveredViaFILSD"]; _followup6GHzScanDuration = (unsigned long long)[c decodeInt64ForKey:@"followup6GHzScanDuration"]; _followup6GHzScanChannels = [[c decodeObjectForKey:@"followup6GHzScanChannels"] retain]; _didIncludeRemainingNon2GHzChannels = [c decodeBoolForKey:@"didIncludeRemainingNon2GHzChannels"]; _candidateBSSCount = (unsigned long long)[c decodeInt64ForKey:@"candidateBSSCount"]; _candidateSSIDCount = (unsigned long long)[c decodeInt64ForKey:@"candidateSSIDCount"]; _bestCandidateRSSI = (long long)[c decodeInt64ForKey:@"bestCandidateRSSI"]; _wasLockdownModeEnabled = [c decodeBoolForKey:@"wasLockdownModeEnabled"]; _wasBeforeFirstUnlock = [c decodeBoolForKey:@"wasBeforeFirstUnlock"]; _durationForJoinPMAssertion = [c decodeDoubleForKey:@"durationForJoinPMAssertion"]; _autoJoinNetworkConsecutiveJoinFailureCount = (unsigned long long)[c decodeInt64ForKey:@"autoJoinNetworkConsecutiveJoinFailureCount"]; _secondsUntilNextAttempt = (unsigned long long)[c decodeInt64ForKey:@"secondsUntilNextAttempt"]; _secondsSincePreviousNonAbortedAttempt = (unsigned long long)[c decodeInt64ForKey:@"secondsSincePreviousNonAbortedAttempt"]; _secondsSincePreviousAttempt = (unsigned long long)[c decodeInt64ForKey:@"secondsSincePreviousAttempt"]; _secondsSincePreviousTrigger = (unsigned long long)[c decodeInt64ForKey:@"secondsSincePreviousTrigger"]; _didNotFindNetworkAfterJoinFailure = [c decodeBoolForKey:@"didNotFindNetworkAfterJoinFailure"]; _hasAttemptedJoinRSNO = [c decodeBoolForKey:@"hasAttemptedJoinRSNO"]; _hasAttemptedJoinMRSNO = [c decodeBoolForKey:@"hasAttemptedJoinMRSNO"]; _hasAttemptedJoinRSNOFallback = [c decodeBoolForKey:@"hasAttemptedJoinRSNOFallback"]; _hasAttemptedJoinMRSNOFallback = [c decodeBoolForKey:@"hasAttemptedJoinMRSNOFallback"]; _hasFailedJoinRSNO = [c decodeBoolForKey:@"hasFailedJoinRSNO"]; _hasFailedJoinMRSNO = [c decodeBoolForKey:@"hasFailedJoinMRSNO"]; _wasFirstJoinSinceBoot = [c decodeBoolForKey:@"wasFirstJoinSinceBoot"]; _autoHotspotWasAttempted = [c decodeBoolForKey:@"autoHotspotWasAttempted"]; _autoHotspotResult = [c decodeBoolForKey:@"autoHotspotResult"]; _autoHotspotStartedAt = [[c decodeObjectForKey:@"autoHotspotStartedAt"] retain]; _autoHotspotEndedAt = [[c decodeObjectForKey:@"autoHotspotEndedAt"] retain]; _autoHotspotWasAborted = [c decodeBoolForKey:@"autoHotspotWasAborted"]; _autoHotspotError = [[c decodeObjectForKey:@"autoHotspotError"] retain]; _autoHotspotMode = (long long)[c decodeInt64ForKey:@"autoHotspotMode"]; _autoHotspotBrowseDuration = (unsigned long long)[c decodeInt64ForKey:@"autoHotspotBrowseDuration"]; _autoHotspotBrowseError = [[c decodeObjectForKey:@"autoHotspotBrowseError"] retain]; _autoHotspotJoinStartedAt = [[c decodeObjectForKey:@"autoHotspotJoinStartedAt"] retain]; _autoHotspotJoinEndedAt = [[c decodeObjectForKey:@"autoHotspotJoinEndedAt"] retain]; _autoHotspotJoinErrors = [[c decodeObjectForKey:@"autoHotspotJoinErrors"] retain]; _hotspot = [[c decodeObjectForKey:@"hotspot"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFAutoJoinMetric *o = [[[self class] allocWithZone:z] init]; o->_UUID = [_UUID retain]; o->_startedAt = [_startedAt retain]; o->_endedAt = [_endedAt retain]; o->_matchedCandidateAt = [_matchedCandidateAt retain]; o->_joinStartedAt = [_joinStartedAt retain]; o->_joinEndedAt = [_joinEndedAt retain]; o->_linkUpAt = [_linkUpAt retain]; o->_combinedJoinDuration = _combinedJoinDuration; o->_routableIPv4AddressAt = [_routableIPv4AddressAt retain]; o->_primaryIPv4InterfaceAt = [_primaryIPv4InterfaceAt retain]; o->_routableIPv6AddressAt = [_routableIPv6AddressAt retain]; o->_primaryIPv6InterfaceAt = [_primaryIPv6InterfaceAt retain]; o->_adaptiveInterfaceRankDuration = _adaptiveInterfaceRankDuration; o->_triggeredByLinkDownAt = [_triggeredByLinkDownAt retain]; o->_triggeredByDeviceWakeAt = [_triggeredByDeviceWakeAt retain]; o->_triggeredByFirstUnlockAt = [_triggeredByFirstUnlockAt retain]; o->_triggeredByWiFiOnAt = [_triggeredByWiFiOnAt retain]; o->_triggeredByMotionEndedAt = [_triggeredByMotionEndedAt retain]; o->_triggeredByAutoJoinEnabledAt = [_triggeredByAutoJoinEnabledAt retain]; o->_linkRecoveryDelay = _linkRecoveryDelay; o->_didJoinPreviouslyAssociatedNetwork = _didJoinPreviouslyAssociatedNetwork; o->_result = _result; o->_outcome = _outcome; o->_autoJoinNotAllowedReason = _autoJoinNotAllowedReason; o->_candidateNotAllowedReason = _candidateNotAllowedReason; o->_error = [_error retain]; o->_wasCancelled = _wasCancelled; o->_wasAborted = _wasAborted; o->_autoJoinParameters = [_autoJoinParameters retain]; o->_retrySchedule = _retrySchedule; o->_retryScheduleIndex = _retryScheduleIndex; o->_was6EDisabled = _was6EDisabled; o->_was6EPreferOn = _was6EPreferOn; o->_was6GHzDeprioritized = _was6GHzDeprioritized; o->_wasAlreadyAssociatedToNetwork = [_wasAlreadyAssociatedToNetwork retain]; o->_didUseLocationOptimizedChannelList = _didUseLocationOptimizedChannelList; o->_didDetectColocatedNetworkEnvironment = _didDetectColocatedNetworkEnvironment; o->_didDeferJoinToDiscoverMorePreferredNetwork = _didDeferJoinToDiscoverMorePreferredNetwork; o->_didFallbackToJoinLessPreferredNetwork = _didFallbackToJoinLessPreferredNetwork; o->_didJoinDeferredNetwork = _didJoinDeferredNetwork; o->_didJoinPreviouslyLowRSSINetwork = _didJoinPreviouslyLowRSSINetwork; o->_didPrioritizeMostRecentlyJoinedNetwork = _didPrioritizeMostRecentlyJoinedNetwork; o->_didSkip6GHzFollowupScans = _didSkip6GHzFollowupScans; o->_didSkipMorePreferredNetworkJoin = _didSkipMorePreferredNetworkJoin; o->_didPrioritize6GHzChannel = _didPrioritize6GHzChannel; o->_didSkipLessRecentlyJoinedNetwork = _didSkipLessRecentlyJoinedNetwork; o->_scanDuration = _scanDuration; o->_scanChannels = [_scanChannels retain]; o->_preAssociationScanDuration = _preAssociationScanDuration; o->_preAssociationScanChannels = [_preAssociationScanChannels retain]; o->_scanErrors = [_scanErrors retain]; o->_scanResultCount = _scanResultCount; o->_GASQueryDuration = _GASQueryDuration; o->_GASQueryNetworks = [_GASQueryNetworks retain]; o->_GASQueryErrors = [_GASQueryErrors retain]; o->_autoJoinedNetwork = [_autoJoinedNetwork retain]; o->_joinErrors = [_joinErrors retain]; o->_didExcludeLowRSSINetwork = _didExcludeLowRSSINetwork; o->_didExcludePartiallyMatchedNetwork = _didExcludePartiallyMatchedNetwork; o->_didExcludeDisabledNetwork = _didExcludeDisabledNetwork; o->_didExcludeDisallowedNetwork = _didExcludeDisallowedNetwork; o->_didPerformSeamlessSSIDTransition = _didPerformSeamlessSSIDTransition; o->_didTriggerReassoc = _didTriggerReassoc; o->_preferredChannelList = [_preferredChannelList retain]; o->_recentChannelList = [_recentChannelList retain]; o->_remainingChannelList = [_remainingChannelList retain]; o->_channelList = [_channelList retain]; o->_didExcludeStandalone6GHzNetwork = _didExcludeStandalone6GHzNetwork; o->_didExclude6GHzOnlyNetwork = _didExclude6GHzOnlyNetwork; o->_wasDiscoveredVia6GHzFollowup = _wasDiscoveredVia6GHzFollowup; o->_wasDiscoveredViaRNR = _wasDiscoveredViaRNR; o->_wasDiscoveredViaFILSD = _wasDiscoveredViaFILSD; o->_followup6GHzScanDuration = _followup6GHzScanDuration; o->_followup6GHzScanChannels = [_followup6GHzScanChannels retain]; o->_didIncludeRemainingNon2GHzChannels = _didIncludeRemainingNon2GHzChannels; o->_candidateBSSCount = _candidateBSSCount; o->_candidateSSIDCount = _candidateSSIDCount; o->_bestCandidateRSSI = _bestCandidateRSSI; o->_wasLockdownModeEnabled = _wasLockdownModeEnabled; o->_wasBeforeFirstUnlock = _wasBeforeFirstUnlock; o->_durationForJoinPMAssertion = _durationForJoinPMAssertion; o->_autoJoinNetworkConsecutiveJoinFailureCount = _autoJoinNetworkConsecutiveJoinFailureCount; o->_secondsUntilNextAttempt = _secondsUntilNextAttempt; o->_secondsSincePreviousNonAbortedAttempt = _secondsSincePreviousNonAbortedAttempt; o->_secondsSincePreviousAttempt = _secondsSincePreviousAttempt; o->_secondsSincePreviousTrigger = _secondsSincePreviousTrigger; o->_didNotFindNetworkAfterJoinFailure = _didNotFindNetworkAfterJoinFailure; o->_hasAttemptedJoinRSNO = _hasAttemptedJoinRSNO; o->_hasAttemptedJoinMRSNO = _hasAttemptedJoinMRSNO; o->_hasAttemptedJoinRSNOFallback = _hasAttemptedJoinRSNOFallback; o->_hasAttemptedJoinMRSNOFallback = _hasAttemptedJoinMRSNOFallback; o->_hasFailedJoinRSNO = _hasFailedJoinRSNO; o->_hasFailedJoinMRSNO = _hasFailedJoinMRSNO; o->_wasFirstJoinSinceBoot = _wasFirstJoinSinceBoot; o->_autoHotspotWasAttempted = _autoHotspotWasAttempted; o->_autoHotspotResult = _autoHotspotResult; o->_autoHotspotStartedAt = [_autoHotspotStartedAt retain]; o->_autoHotspotEndedAt = [_autoHotspotEndedAt retain]; o->_autoHotspotWasAborted = _autoHotspotWasAborted; o->_autoHotspotError = [_autoHotspotError retain]; o->_autoHotspotMode = _autoHotspotMode; o->_autoHotspotBrowseDuration = _autoHotspotBrowseDuration; o->_autoHotspotBrowseError = [_autoHotspotBrowseError retain]; o->_autoHotspotJoinStartedAt = [_autoHotspotJoinStartedAt retain]; o->_autoHotspotJoinEndedAt = [_autoHotspotJoinEndedAt retain]; o->_autoHotspotJoinErrors = [_autoHotspotJoinErrors retain]; o->_hotspot = [_hotspot retain]; return o; }
 @end
 
 @implementation CWFAutoJoinParameters
@@ -861,14 +875,15 @@
 @synthesize mode = _mode;
 @synthesize targetNetworkProfile = _targetNetworkProfile;
 @synthesize preferredChannels = _preferredChannels;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToAutoJoinParameters:(id)a0 { return 0; }
+- (void)dealloc { [_targetNetworkProfile release]; _targetNetworkProfile = nil; [_preferredChannels release]; _preferredChannels = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeInt64:(long long)_trigger forKey:@"trigger"]; [c encodeInt64:(long long)_mode forKey:@"mode"]; [c encodeObject:_targetNetworkProfile forKey:@"targetNetworkProfile"]; [c encodeObject:_preferredChannels forKey:@"preferredChannels"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _trigger = (long long)[c decodeInt64ForKey:@"trigger"]; _mode = (long long)[c decodeInt64ForKey:@"mode"]; _targetNetworkProfile = [[c decodeObjectForKey:@"targetNetworkProfile"] retain]; _preferredChannels = [[c decodeObjectForKey:@"preferredChannels"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFAutoJoinParameters *o = [[[self class] allocWithZone:z] init]; o->_trigger = _trigger; o->_mode = _mode; o->_targetNetworkProfile = [_targetNetworkProfile retain]; o->_preferredChannels = [_preferredChannels retain]; return o; }
 @end
 
 @implementation CWFAutoJoinRequest
@@ -878,8 +893,9 @@
 @synthesize addedAt = _addedAt;
 @synthesize throttled = _throttled;
 @synthesize reply = _reply;
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
+- (void)dealloc { [_UUID release]; _UUID = nil; [_parameters release]; _parameters = nil; [_addedAt release]; _addedAt = nil; [_reply release]; _reply = nil; [super dealloc]; }
+- (id)copyWithZone:(NSZone *)z { CWFAutoJoinRequest *o = [[[self class] allocWithZone:z] init]; o->_UUID = [_UUID retain]; o->_parameters = [_parameters retain]; o->_allowAutoHotspotFallback = _allowAutoHotspotFallback; o->_addedAt = [_addedAt retain]; o->_throttled = _throttled; o->_reply = [_reply retain]; return o; }
 @end
 
 @implementation CWFAutoJoinRetryInterval
@@ -896,8 +912,8 @@
 @synthesize alwaysIncludeRemainingNon2GHzChannels = _alwaysIncludeRemainingNon2GHzChannels;
 @synthesize alwaysInclude6GHzPSCChannels = _alwaysInclude6GHzPSCChannels;
 - (id)autoJoinRetryInterval:(unsigned long long)a0 count:(unsigned long long)a1 { return nil; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
+- (id)copyWithZone:(NSZone *)z { CWFAutoJoinRetryInterval *o = [[[self class] allocWithZone:z] init]; o->_interval = _interval; o->_count = _count; o->_BSSChannelsOnly = _BSSChannelsOnly; o->_maxBSSChannelCount = _maxBSSChannelCount; o->_maxBSSChannelAge = _maxBSSChannelAge; o->_dwellTime = _dwellTime; o->_passiveScan = _passiveScan; o->_allowAutoHotspotFallback = _allowAutoHotspotFallback; o->_includeAdjacent5GHzChannel = _includeAdjacent5GHzChannel; o->_includeOnlyRemaining5GHzChannels = _includeOnlyRemaining5GHzChannels; o->_alwaysIncludeRemainingNon2GHzChannels = _alwaysIncludeRemainingNon2GHzChannels; o->_alwaysInclude6GHzPSCChannels = _alwaysInclude6GHzPSCChannels; return o; }
 @end
 
 @implementation CWFAutoJoinStatistics
@@ -964,7 +980,6 @@
 @synthesize knownNetworks = _knownNetworks;
 @dynamic coreAnalyticsEventName;
 @dynamic coreAnalyticsEventPayload;
-+ (BOOL)supportsSecureCoding { return 0; }
 - (id)JSONCompatibleKeyValueMap { return nil; }
 - (unsigned long long)autoJoinCount { return 0; }
 - (unsigned long long)autoJoinRetryCount { return 0; }
@@ -972,19 +987,21 @@
 - (unsigned long long)combinedScanChannelCount2GHz { return 0; }
 - (unsigned long long)combinedScanChannelCount5GHz { return 0; }
 - (unsigned long long)combinedScanChannelCount6GHz { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)coreAnalyticsEventName { return nil; }
 - (id)coreAnalyticsEventPayload { return nil; }
 - (id)debugInfo { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
 - (id)init { return self; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToAutoJoinStatistics:(id)a0 { return 0; }
 - (unsigned long long)timeUnassocSkippedCandidate { return 0; }
 - (unsigned long long)userJoinedCandidateCount { return 0; }
+- (void)dealloc { [_autoJoinTriggerCounts release]; _autoJoinTriggerCounts = nil; [_knownNetworks release]; _knownNetworks = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_autoJoinTriggerCounts forKey:@"autoJoinTriggerCounts"]; [c encodeInt64:(long long)_startTimestampUptime forKey:@"startTimestampUptime"]; [c encodeInt64:(long long)_startTimestampMonotonic forKey:@"startTimestampMonotonic"]; [c encodeInt64:(long long)_autoJoinAlreadyAssociatedCount forKey:@"autoJoinAlreadyAssociatedCount"]; [c encodeInt64:(long long)_autoJoinDidFindCandidateCount forKey:@"autoJoinDidFindCandidateCount"]; [c encodeInt64:(long long)_autoJoinDidJoinCount forKey:@"autoJoinDidJoinCount"]; [c encodeInt64:(long long)_autoJoinDidJoinWithDisplayOnCount forKey:@"autoJoinDidJoinWithDisplayOnCount"]; [c encodeInt64:(long long)_autoJoinRetryDidFindCandidateCount forKey:@"autoJoinRetryDidFindCandidateCount"]; [c encodeInt64:(long long)_autoJoinRetryDidJoinCount forKey:@"autoJoinRetryDidJoinCount"]; [c encodeInt64:(long long)_autoJoinAbortedCount forKey:@"autoJoinAbortedCount"]; [c encodeInt64:(long long)_autoJoinAbortedRetryCount forKey:@"autoJoinAbortedRetryCount"]; [c encodeInt64:(long long)_scanChannelCount forKey:@"scanChannelCount"]; [c encodeInt64:(long long)_scanChannelCount2GHz forKey:@"scanChannelCount2GHz"]; [c encodeInt64:(long long)_scanChannelCount5GHz forKey:@"scanChannelCount5GHz"]; [c encodeInt64:(long long)_scanChannelCount6GHz forKey:@"scanChannelCount6GHz"]; [c encodeInt64:(long long)_preAssocScanChannelCount forKey:@"preAssocScanChannelCount"]; [c encodeInt64:(long long)_preAssocScanChannelCount2GHz forKey:@"preAssocScanChannelCount2GHz"]; [c encodeInt64:(long long)_preAssocScanChannelCount5GHz forKey:@"preAssocScanChannelCount5GHz"]; [c encodeInt64:(long long)_preAssocScanChannelCount6GHz forKey:@"preAssocScanChannelCount6GHz"]; [c encodeInt64:(long long)_followup6GHzScanChannelCount forKey:@"followup6GHzScanChannelCount"]; [c encodeInt64:(long long)_GASQueryCount forKey:@"GASQueryCount"]; [c encodeInt64:(long long)_timeWiFiOff forKey:@"timeWiFiOff"]; [c encodeInt64:(long long)_timeAssoc forKey:@"timeAssoc"]; [c encodeInt64:(long long)_timeUnassocAutoJoinDisabled forKey:@"timeUnassocAutoJoinDisabled"]; [c encodeInt64:(long long)_timeUnassocAutoJoinIdle forKey:@"timeUnassocAutoJoinIdle"]; [c encodeInt64:(long long)_timeUnassocNoNetworks forKey:@"timeUnassocNoNetworks"]; [c encodeInt64:(long long)_timeUnassocNoCandidates forKey:@"timeUnassocNoCandidates"]; [c encodeInt64:(long long)_timeUnassocJoinFailed forKey:@"timeUnassocJoinFailed"]; [c encodeInt64:(long long)_timeUnassocSkippedDisabledCandidate forKey:@"timeUnassocSkippedDisabledCandidate"]; [c encodeInt64:(long long)_timeUnassocSkippedDisallowedCandidate forKey:@"timeUnassocSkippedDisallowedCandidate"]; [c encodeInt64:(long long)_timeUnassocSkippedLowRSSICandidate forKey:@"timeUnassocSkippedLowRSSICandidate"]; [c encodeInt64:(long long)_timeUnassocSkippedPartiallyMatchedCandidate forKey:@"timeUnassocSkippedPartiallyMatchedCandidate"]; [c encodeInt64:(long long)_timeUnassocSkippedUnclassifiedCandidate forKey:@"timeUnassocSkippedUnclassifiedCandidate"]; [c encodeInt64:(long long)_userJoinedPartiallyMatchedCandidateCount forKey:@"userJoinedPartiallyMatchedCandidateCount"]; [c encodeInt64:(long long)_userJoinedLowRSSICandidateCount forKey:@"userJoinedLowRSSICandidateCount"]; [c encodeInt64:(long long)_userJoinedDisabledCandidateCount forKey:@"userJoinedDisabledCandidateCount"]; [c encodeInt64:(long long)_userJoinedDisallowedCandidateCount forKey:@"userJoinedDisallowedCandidateCount"]; [c encodeInt64:(long long)_userJoined6GHzOnlyCandidateCount forKey:@"userJoined6GHzOnlyCandidateCount"]; [c encodeInt64:(long long)_userJoinedDeferredCandidateCount forKey:@"userJoinedDeferredCandidateCount"]; [c encodeInt64:(long long)_userJoinedStandalone6GHzCandidateCount forKey:@"userJoinedStandalone6GHzCandidateCount"]; [c encodeInt64:(long long)_userJoinedLessPreferredCandidateCount forKey:@"userJoinedLessPreferredCandidateCount"]; [c encodeInt64:(long long)_userJoinedFailedJoinCandidateCount forKey:@"userJoinedFailedJoinCandidateCount"]; [c encodeInt64:(long long)_userJoinedUnclassifiedCandidateCount forKey:@"userJoinedUnclassifiedCandidateCount"]; [c encodeInt64:(long long)_autoHotspotCount forKey:@"autoHotspotCount"]; [c encodeInt64:(long long)_autoHotspotDidFindCandidateCount forKey:@"autoHotspotDidFindCandidateCount"]; [c encodeInt64:(long long)_autoHotspotDidJoinCount forKey:@"autoHotspotDidJoinCount"]; [c encodeInt64:(long long)_autoHotspotAbortedCount forKey:@"autoHotspotAbortedCount"]; [c encodeObject:_knownNetworks forKey:@"knownNetworks"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _autoJoinTriggerCounts = [[c decodeObjectForKey:@"autoJoinTriggerCounts"] retain]; _startTimestampUptime = (unsigned long long)[c decodeInt64ForKey:@"startTimestampUptime"]; _startTimestampMonotonic = (unsigned long long)[c decodeInt64ForKey:@"startTimestampMonotonic"]; _autoJoinAlreadyAssociatedCount = (unsigned long long)[c decodeInt64ForKey:@"autoJoinAlreadyAssociatedCount"]; _autoJoinDidFindCandidateCount = (unsigned long long)[c decodeInt64ForKey:@"autoJoinDidFindCandidateCount"]; _autoJoinDidJoinCount = (unsigned long long)[c decodeInt64ForKey:@"autoJoinDidJoinCount"]; _autoJoinDidJoinWithDisplayOnCount = (unsigned long long)[c decodeInt64ForKey:@"autoJoinDidJoinWithDisplayOnCount"]; _autoJoinRetryDidFindCandidateCount = (unsigned long long)[c decodeInt64ForKey:@"autoJoinRetryDidFindCandidateCount"]; _autoJoinRetryDidJoinCount = (unsigned long long)[c decodeInt64ForKey:@"autoJoinRetryDidJoinCount"]; _autoJoinAbortedCount = (unsigned long long)[c decodeInt64ForKey:@"autoJoinAbortedCount"]; _autoJoinAbortedRetryCount = (unsigned long long)[c decodeInt64ForKey:@"autoJoinAbortedRetryCount"]; _scanChannelCount = (unsigned long long)[c decodeInt64ForKey:@"scanChannelCount"]; _scanChannelCount2GHz = (unsigned long long)[c decodeInt64ForKey:@"scanChannelCount2GHz"]; _scanChannelCount5GHz = (unsigned long long)[c decodeInt64ForKey:@"scanChannelCount5GHz"]; _scanChannelCount6GHz = (unsigned long long)[c decodeInt64ForKey:@"scanChannelCount6GHz"]; _preAssocScanChannelCount = (unsigned long long)[c decodeInt64ForKey:@"preAssocScanChannelCount"]; _preAssocScanChannelCount2GHz = (unsigned long long)[c decodeInt64ForKey:@"preAssocScanChannelCount2GHz"]; _preAssocScanChannelCount5GHz = (unsigned long long)[c decodeInt64ForKey:@"preAssocScanChannelCount5GHz"]; _preAssocScanChannelCount6GHz = (unsigned long long)[c decodeInt64ForKey:@"preAssocScanChannelCount6GHz"]; _followup6GHzScanChannelCount = (unsigned long long)[c decodeInt64ForKey:@"followup6GHzScanChannelCount"]; _GASQueryCount = (unsigned long long)[c decodeInt64ForKey:@"GASQueryCount"]; _timeWiFiOff = (unsigned long long)[c decodeInt64ForKey:@"timeWiFiOff"]; _timeAssoc = (unsigned long long)[c decodeInt64ForKey:@"timeAssoc"]; _timeUnassocAutoJoinDisabled = (unsigned long long)[c decodeInt64ForKey:@"timeUnassocAutoJoinDisabled"]; _timeUnassocAutoJoinIdle = (unsigned long long)[c decodeInt64ForKey:@"timeUnassocAutoJoinIdle"]; _timeUnassocNoNetworks = (unsigned long long)[c decodeInt64ForKey:@"timeUnassocNoNetworks"]; _timeUnassocNoCandidates = (unsigned long long)[c decodeInt64ForKey:@"timeUnassocNoCandidates"]; _timeUnassocJoinFailed = (unsigned long long)[c decodeInt64ForKey:@"timeUnassocJoinFailed"]; _timeUnassocSkippedDisabledCandidate = (unsigned long long)[c decodeInt64ForKey:@"timeUnassocSkippedDisabledCandidate"]; _timeUnassocSkippedDisallowedCandidate = (unsigned long long)[c decodeInt64ForKey:@"timeUnassocSkippedDisallowedCandidate"]; _timeUnassocSkippedLowRSSICandidate = (unsigned long long)[c decodeInt64ForKey:@"timeUnassocSkippedLowRSSICandidate"]; _timeUnassocSkippedPartiallyMatchedCandidate = (unsigned long long)[c decodeInt64ForKey:@"timeUnassocSkippedPartiallyMatchedCandidate"]; _timeUnassocSkippedUnclassifiedCandidate = (unsigned long long)[c decodeInt64ForKey:@"timeUnassocSkippedUnclassifiedCandidate"]; _userJoinedPartiallyMatchedCandidateCount = (unsigned long long)[c decodeInt64ForKey:@"userJoinedPartiallyMatchedCandidateCount"]; _userJoinedLowRSSICandidateCount = (unsigned long long)[c decodeInt64ForKey:@"userJoinedLowRSSICandidateCount"]; _userJoinedDisabledCandidateCount = (unsigned long long)[c decodeInt64ForKey:@"userJoinedDisabledCandidateCount"]; _userJoinedDisallowedCandidateCount = (unsigned long long)[c decodeInt64ForKey:@"userJoinedDisallowedCandidateCount"]; _userJoined6GHzOnlyCandidateCount = (unsigned long long)[c decodeInt64ForKey:@"userJoined6GHzOnlyCandidateCount"]; _userJoinedDeferredCandidateCount = (unsigned long long)[c decodeInt64ForKey:@"userJoinedDeferredCandidateCount"]; _userJoinedStandalone6GHzCandidateCount = (unsigned long long)[c decodeInt64ForKey:@"userJoinedStandalone6GHzCandidateCount"]; _userJoinedLessPreferredCandidateCount = (unsigned long long)[c decodeInt64ForKey:@"userJoinedLessPreferredCandidateCount"]; _userJoinedFailedJoinCandidateCount = (unsigned long long)[c decodeInt64ForKey:@"userJoinedFailedJoinCandidateCount"]; _userJoinedUnclassifiedCandidateCount = (unsigned long long)[c decodeInt64ForKey:@"userJoinedUnclassifiedCandidateCount"]; _autoHotspotCount = (unsigned long long)[c decodeInt64ForKey:@"autoHotspotCount"]; _autoHotspotDidFindCandidateCount = (unsigned long long)[c decodeInt64ForKey:@"autoHotspotDidFindCandidateCount"]; _autoHotspotDidJoinCount = (unsigned long long)[c decodeInt64ForKey:@"autoHotspotDidJoinCount"]; _autoHotspotAbortedCount = (unsigned long long)[c decodeInt64ForKey:@"autoHotspotAbortedCount"]; _knownNetworks = [[c decodeObjectForKey:@"knownNetworks"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFAutoJoinStatistics *o = [[[self class] allocWithZone:z] init]; o->_autoJoinTriggerCounts = [_autoJoinTriggerCounts retain]; o->_startTimestampUptime = _startTimestampUptime; o->_startTimestampMonotonic = _startTimestampMonotonic; o->_autoJoinAlreadyAssociatedCount = _autoJoinAlreadyAssociatedCount; o->_autoJoinDidFindCandidateCount = _autoJoinDidFindCandidateCount; o->_autoJoinDidJoinCount = _autoJoinDidJoinCount; o->_autoJoinDidJoinWithDisplayOnCount = _autoJoinDidJoinWithDisplayOnCount; o->_autoJoinRetryDidFindCandidateCount = _autoJoinRetryDidFindCandidateCount; o->_autoJoinRetryDidJoinCount = _autoJoinRetryDidJoinCount; o->_autoJoinAbortedCount = _autoJoinAbortedCount; o->_autoJoinAbortedRetryCount = _autoJoinAbortedRetryCount; o->_scanChannelCount = _scanChannelCount; o->_scanChannelCount2GHz = _scanChannelCount2GHz; o->_scanChannelCount5GHz = _scanChannelCount5GHz; o->_scanChannelCount6GHz = _scanChannelCount6GHz; o->_preAssocScanChannelCount = _preAssocScanChannelCount; o->_preAssocScanChannelCount2GHz = _preAssocScanChannelCount2GHz; o->_preAssocScanChannelCount5GHz = _preAssocScanChannelCount5GHz; o->_preAssocScanChannelCount6GHz = _preAssocScanChannelCount6GHz; o->_followup6GHzScanChannelCount = _followup6GHzScanChannelCount; o->_GASQueryCount = _GASQueryCount; o->_timeWiFiOff = _timeWiFiOff; o->_timeAssoc = _timeAssoc; o->_timeUnassocAutoJoinDisabled = _timeUnassocAutoJoinDisabled; o->_timeUnassocAutoJoinIdle = _timeUnassocAutoJoinIdle; o->_timeUnassocNoNetworks = _timeUnassocNoNetworks; o->_timeUnassocNoCandidates = _timeUnassocNoCandidates; o->_timeUnassocJoinFailed = _timeUnassocJoinFailed; o->_timeUnassocSkippedDisabledCandidate = _timeUnassocSkippedDisabledCandidate; o->_timeUnassocSkippedDisallowedCandidate = _timeUnassocSkippedDisallowedCandidate; o->_timeUnassocSkippedLowRSSICandidate = _timeUnassocSkippedLowRSSICandidate; o->_timeUnassocSkippedPartiallyMatchedCandidate = _timeUnassocSkippedPartiallyMatchedCandidate; o->_timeUnassocSkippedUnclassifiedCandidate = _timeUnassocSkippedUnclassifiedCandidate; o->_userJoinedPartiallyMatchedCandidateCount = _userJoinedPartiallyMatchedCandidateCount; o->_userJoinedLowRSSICandidateCount = _userJoinedLowRSSICandidateCount; o->_userJoinedDisabledCandidateCount = _userJoinedDisabledCandidateCount; o->_userJoinedDisallowedCandidateCount = _userJoinedDisallowedCandidateCount; o->_userJoined6GHzOnlyCandidateCount = _userJoined6GHzOnlyCandidateCount; o->_userJoinedDeferredCandidateCount = _userJoinedDeferredCandidateCount; o->_userJoinedStandalone6GHzCandidateCount = _userJoinedStandalone6GHzCandidateCount; o->_userJoinedLessPreferredCandidateCount = _userJoinedLessPreferredCandidateCount; o->_userJoinedFailedJoinCandidateCount = _userJoinedFailedJoinCandidateCount; o->_userJoinedUnclassifiedCandidateCount = _userJoinedUnclassifiedCandidateCount; o->_autoHotspotCount = _autoHotspotCount; o->_autoHotspotDidFindCandidateCount = _autoHotspotDidFindCandidateCount; o->_autoHotspotDidJoinCount = _autoHotspotDidJoinCount; o->_autoHotspotAbortedCount = _autoHotspotAbortedCount; o->_knownNetworks = [_knownNetworks retain]; return o; }
 @end
 
 @implementation CWFAutoJoinStatus
@@ -1001,18 +1018,19 @@
 @synthesize trigger = _trigger;
 @synthesize state = _state;
 @synthesize result = _result;
-+ (BOOL)supportsSecureCoding { return 0; }
 - (id)JSONCompatibleKeyValueMap { return nil; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)deepCopy { return nil; }
 - (id)description { return nil; }
 - (double)duration { return 0; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
 - (id)init { return self; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToAutoJoinStatus:(id)a0 { return 0; }
+- (void)dealloc { [_UUID release]; _UUID = nil; [_interfaceName release]; _interfaceName = nil; [_startedAt release]; _startedAt = nil; [_endedAt release]; _endedAt = nil; [_joinAttempts release]; _joinAttempts = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_UUID forKey:@"UUID"]; [c encodeObject:_interfaceName forKey:@"interfaceName"]; [c encodeObject:_startedAt forKey:@"startedAt"]; [c encodeObject:_endedAt forKey:@"endedAt"]; [c encodeObject:_joinAttempts forKey:@"joinAttempts"]; [c encodeInt64:(long long)_trigger forKey:@"trigger"]; [c encodeInt64:(long long)_state forKey:@"state"]; [c encodeBool:_result forKey:@"result"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _UUID = [[c decodeObjectForKey:@"UUID"] retain]; _interfaceName = [[c decodeObjectForKey:@"interfaceName"] retain]; _startedAt = [[c decodeObjectForKey:@"startedAt"] retain]; _endedAt = [[c decodeObjectForKey:@"endedAt"] retain]; _joinAttempts = [[c decodeObjectForKey:@"joinAttempts"] retain]; _trigger = (long long)[c decodeInt64ForKey:@"trigger"]; _state = (long long)[c decodeInt64ForKey:@"state"]; _result = [c decodeBoolForKey:@"result"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFAutoJoinStatus *o = [[[self class] allocWithZone:z] init]; o->_UUID = [_UUID retain]; o->_interfaceName = [_interfaceName retain]; o->_startedAt = [_startedAt retain]; o->_endedAt = [_endedAt retain]; o->_joinAttempts = [_joinAttempts retain]; o->_trigger = _trigger; o->_state = _state; o->_result = _result; return o; }
 @end
 
 @implementation CWFAutoJoinThrottle
@@ -1020,8 +1038,9 @@
 @synthesize intervals = _intervals;
 @synthesize intervalsBasedOnTriggerTimestamp = _intervalsBasedOnTriggerTimestamp;
 + (id)autoJoinThrottleWithTrigger:(long long)a0 intervals:(id)a1 { return nil; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
+- (void)dealloc { [_intervals release]; _intervals = nil; [_intervalsBasedOnTriggerTimestamp release]; _intervalsBasedOnTriggerTimestamp = nil; [super dealloc]; }
+- (id)copyWithZone:(NSZone *)z { CWFAutoJoinThrottle *o = [[[self class] allocWithZone:z] init]; o->_trigger = _trigger; o->_intervals = [_intervals retain]; o->_intervalsBasedOnTriggerTimestamp = [_intervalsBasedOnTriggerTimestamp retain]; return o; }
 @end
 
 @implementation CWFAutoJoinUserActionMetric
@@ -1046,21 +1065,22 @@
 @synthesize autoJoinEndedAt = _autoJoinEndedAt;
 @dynamic coreAnalyticsEventName;
 @dynamic coreAnalyticsEventPayload;
-+ (BOOL)supportsSecureCoding { return 0; }
 - (id)JSONCompatibleKeyValueMap { return nil; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)coreAnalyticsEventName { return nil; }
 - (id)coreAnalyticsEventPayload { return nil; }
 - (BOOL)didUserJoin6GHzOnlyNetwork { return 0; }
 - (BOOL)didUserJoinDisabledNetwork { return 0; }
 - (BOOL)didUserJoinLessPreferredNetwork { return 0; }
 - (BOOL)didUserJoinStandalone6GHzNetwork { return 0; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToAutoJoinUserActionMetric:(id)a0 { return 0; }
 - (unsigned long long)userJoinDelay { return 0; }
+- (void)dealloc { [_userJoinedNetwork release]; _userJoinedNetwork = nil; [_userJoinedNetworkAt release]; _userJoinedNetworkAt = nil; [_autoJoinedNetwork release]; _autoJoinedNetwork = nil; [_autoJoinEndedAt release]; _autoJoinEndedAt = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_userJoinedNetwork forKey:@"userJoinedNetwork"]; [c encodeObject:_userJoinedNetworkAt forKey:@"userJoinedNetworkAt"]; [c encodeBool:_didUserJoinLowRSSINetwork forKey:@"didUserJoinLowRSSINetwork"]; [c encodeBool:_didUserJoinPartiallyMatchedNetwork forKey:@"didUserJoinPartiallyMatchedNetwork"]; [c encodeBool:_didUserJoinDisallowedNetwork forKey:@"didUserJoinDisallowedNetwork"]; [c encodeBool:_didUserJoinKnownNetwork forKey:@"didUserJoinKnownNetwork"]; [c encodeBool:_didUserJoinDeferredNetwork forKey:@"didUserJoinDeferredNetwork"]; [c encodeBool:_didUserJoinFailedToJoinNetwork forKey:@"didUserJoinFailedToJoinNetwork"]; [c encodeObject:_autoJoinedNetwork forKey:@"autoJoinedNetwork"]; [c encodeObject:_autoJoinEndedAt forKey:@"autoJoinEndedAt"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _userJoinedNetwork = [[c decodeObjectForKey:@"userJoinedNetwork"] retain]; _userJoinedNetworkAt = [[c decodeObjectForKey:@"userJoinedNetworkAt"] retain]; _didUserJoinLowRSSINetwork = [c decodeBoolForKey:@"didUserJoinLowRSSINetwork"]; _didUserJoinPartiallyMatchedNetwork = [c decodeBoolForKey:@"didUserJoinPartiallyMatchedNetwork"]; _didUserJoinDisallowedNetwork = [c decodeBoolForKey:@"didUserJoinDisallowedNetwork"]; _didUserJoinKnownNetwork = [c decodeBoolForKey:@"didUserJoinKnownNetwork"]; _didUserJoinDeferredNetwork = [c decodeBoolForKey:@"didUserJoinDeferredNetwork"]; _didUserJoinFailedToJoinNetwork = [c decodeBoolForKey:@"didUserJoinFailedToJoinNetwork"]; _autoJoinedNetwork = [[c decodeObjectForKey:@"autoJoinedNetwork"] retain]; _autoJoinEndedAt = [[c decodeObjectForKey:@"autoJoinEndedAt"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFAutoJoinUserActionMetric *o = [[[self class] allocWithZone:z] init]; o->_userJoinedNetwork = [_userJoinedNetwork retain]; o->_userJoinedNetworkAt = [_userJoinedNetworkAt retain]; o->_didUserJoinLowRSSINetwork = _didUserJoinLowRSSINetwork; o->_didUserJoinPartiallyMatchedNetwork = _didUserJoinPartiallyMatchedNetwork; o->_didUserJoinDisallowedNetwork = _didUserJoinDisallowedNetwork; o->_didUserJoinKnownNetwork = _didUserJoinKnownNetwork; o->_didUserJoinDeferredNetwork = _didUserJoinDeferredNetwork; o->_didUserJoinFailedToJoinNetwork = _didUserJoinFailedToJoinNetwork; o->_autoJoinedNetwork = [_autoJoinedNetwork retain]; o->_autoJoinEndedAt = [_autoJoinEndedAt retain]; return o; }
 @end
 
 @implementation CWFBSS
@@ -1083,7 +1103,6 @@
 @dynamic colocated5GHzRNRChannel;
 @dynamic OSSpecificAttributes;
 + (id)supportedOSSpecificKeys { return nil; }
-+ (BOOL)supportsSecureCoding { return 0; }
 - (id)AWDLRealTimeModeTimestamp { return nil; }
 - (id)BSSID { return nil; }
 - (id)DHCPServerID { return nil; }
@@ -1104,19 +1123,16 @@
 - (id)channel { return nil; }
 - (id)colocated2GHzRNRChannel { return nil; }
 - (id)colocated5GHzRNRChannel { return nil; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)coreWiFiSpecificAttributes { return nil; }
 - (id)debugDescription { return nil; }
 - (id)deepCopy { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (id)externalForm { return nil; }
 - (id)filteredBSSForClassDStorage { return nil; }
 - (id)filteredBSSWithProperties:(id)a0 { return nil; }
 - (id)filteredBSSWithProperties:(id)a0 OSSpecificKeys:(id)a1 { return nil; }
 - (unsigned long long)hash { return 0; }
 - (id)init { return self; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithExternalForm:(id)a0 { return self; }
 - (id)initWithInternal:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
@@ -1140,6 +1156,11 @@
 - (void)setOSSpecificAttributes:(id)a0 {  }
 - (void)setOSSpecificValue:(id)a0 forKey:(id)a1 {  }
 - (BOOL)wasJoinedRecentlyInProximityOf:(id)a0 { return 0; }
+- (void)dealloc { [_internal release]; _internal = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_internal forKey:@"internal"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _internal = [[c decodeObjectForKey:@"internal"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFBSS *o = [[[self class] allocWithZone:z] init]; o->_internal = [_internal retain]; return o; }
 @end
 
 @implementation CWFBackgroundScanConfiguration
@@ -1154,17 +1175,18 @@
 @synthesize cacheRollover = _cacheRollover;
 @synthesize scanFrequency = _scanFrequency;
 @synthesize lostNetworkScanCount = _lostNetworkScanCount;
-+ (BOOL)supportsSecureCoding { return 0; }
 - (id)JSONCompatibleKeyValueMap { return nil; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToBackgroundScanConfiguration:(id)a0 { return 0; }
 - (void)merge:(id)a0 {  }
 - (BOOL)modified { return 0; }
+- (void)dealloc { [_networks release]; _networks = nil; [_channels release]; _channels = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c {  [c encodeObject:_networks forKey:@"networks"]; [c encodeObject:_channels forKey:@"channels"]; [c encodeBool:_cacheEnabled forKey:@"cacheEnabled"]; [c encodeBool:_cacheRollover forKey:@"cacheRollover"]; [c encodeInt64:(long long)_scanFrequency forKey:@"scanFrequency"]; [c encodeInt64:(long long)_lostNetworkScanCount forKey:@"lostNetworkScanCount"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil;  _networks = [[c decodeObjectForKey:@"networks"] retain]; _channels = [[c decodeObjectForKey:@"channels"] retain]; _cacheEnabled = [c decodeBoolForKey:@"cacheEnabled"]; _cacheRollover = [c decodeBoolForKey:@"cacheRollover"]; _scanFrequency = (unsigned long long)[c decodeInt64ForKey:@"scanFrequency"]; _lostNetworkScanCount = (unsigned long long)[c decodeInt64ForKey:@"lostNetworkScanCount"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFBackgroundScanConfiguration *o = [[[self class] allocWithZone:z] init];  o->_networks = [_networks retain]; o->_channels = [_channels retain]; o->_cacheEnabled = _cacheEnabled; o->_cacheRollover = _cacheRollover; o->_scanFrequency = _scanFrequency; o->_lostNetworkScanCount = _lostNetworkScanCount; return o; }
 @end
 
 @implementation CWFBackgroundScanNetwork
@@ -1176,15 +1198,16 @@
 @synthesize entry = _entry;
 @synthesize exit = _exit;
 @synthesize channel = _channel;
-+ (BOOL)supportsSecureCoding { return 0; }
 - (id)JSONCompatibleKeyValueMap { return nil; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToBackgroundScanNetwork:(id)a0 { return 0; }
+- (void)dealloc { [_BSSID release]; _BSSID = nil; [_channel release]; _channel = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_BSSID forKey:@"BSSID"]; [c encodeBool:_entry forKey:@"entry"]; [c encodeBool:_exit forKey:@"exit"]; [c encodeObject:_channel forKey:@"channel"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _BSSID = [[c decodeObjectForKey:@"BSSID"] retain]; _entry = [c decodeBoolForKey:@"entry"]; _exit = [c decodeBoolForKey:@"exit"]; _channel = [[c decodeObjectForKey:@"channel"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFBackgroundScanNetwork *o = [[[self class] allocWithZone:z] init]; o->_BSSID = [_BSSID retain]; o->_entry = _entry; o->_exit = _exit; o->_channel = [_channel retain]; return o; }
 @end
 
 @implementation CWFBonjourServiceRecord
@@ -1193,6 +1216,7 @@
 @synthesize rawString = _rawString;
 + (id)serviceRecordFromRecordName:(id)a0 { return nil; }
 - (id)description { return nil; }
+- (void)dealloc { [_deviceName release]; _deviceName = nil; [_serviceName release]; _serviceName = nil; [_rawString release]; _rawString = nil; [super dealloc]; }
 @end
 
 @implementation CWFBrokenBackhaulMonitor
@@ -1212,6 +1236,7 @@
 - (id)init { return self; }
 - (void)invalidate {  }
 - (void)reset {  }
+- (void)dealloc { [_brokenBackhaulStateUpdatedAt release]; _brokenBackhaulStateUpdatedAt = nil; [_targetQueue release]; _targetQueue = nil; [_updatedBrokenBackhaulState release]; _updatedBrokenBackhaulState = nil; [super dealloc]; }
 @end
 
 @implementation CWFChannel
@@ -1230,17 +1255,13 @@
 @dynamic overlapsWithUWB;
 @dynamic isDFS;
 + (id)channelWithNumber:(unsigned long long)a0 band:(unsigned int)a1 width:(int)a2 { return nil; }
-+ (BOOL)supportsSecureCoding { return 0; }
 - (id)JSONCompatibleKeyValueMap { return nil; }
 - (unsigned int)band { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)debugDescription { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (BOOL)extAbove { return 0; }
 - (id)externalForm { return nil; }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithExternalForm:(id)a0 { return self; }
 - (BOOL)is2GHz { return 0; }
 - (BOOL)is5GHz { return 0; }
@@ -1251,6 +1272,10 @@
 - (BOOL)isEqualToChannel:(id)a0 { return 0; }
 - (BOOL)overlapsWithUWB { return 0; }
 - (int)width { return 0; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeInt64:(long long)_channel forKey:@"channel"]; [c encodeInt64:(long long)_flags forKey:@"flags"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _channel = (unsigned long long)[c decodeInt64ForKey:@"channel"]; _flags = (unsigned int)[c decodeInt64ForKey:@"flags"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFChannel *o = [[[self class] allocWithZone:z] init]; o->_channel = _channel; o->_flags = _flags; return o; }
 @end
 
 @implementation CWFCloudSyncManager
@@ -1289,6 +1314,7 @@
 - (id)init { return self; }
 - (void)invalidate {  }
 - (BOOL)rememberCloudNetwork:(id)a0 error:(id *)a1 { return 0; }
+- (void)dealloc { [_targetQueue release]; _targetQueue = nil; [_allowCloudSyncableNetworkHandler release]; _allowCloudSyncableNetworkHandler = nil; [_rememberLocalNetworkHandler release]; _rememberLocalNetworkHandler = nil; [_forgetLocalNetworkHandler release]; _forgetLocalNetworkHandler = nil; [_fetchAllLocalNetworksHandler release]; _fetchAllLocalNetworksHandler = nil; [_hasKeychainPasswordHandler release]; _hasKeychainPasswordHandler = nil; [super dealloc]; }
 @end
 
 @implementation CWFConfigurationProfileManager
@@ -1320,6 +1346,7 @@
 - (id)initWithUserInfo:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (id)userInfo { return nil; }
+- (void)dealloc { [_deviceRapportEffectiveIdentifier release]; _deviceRapportEffectiveIdentifier = nil; [_macAddress release]; _macAddress = nil; [_ipAddress release]; _ipAddress = nil; [_deviceName release]; _deviceName = nil; [_model release]; _model = nil; [_productMarketingName release]; _productMarketingName = nil; [_productType release]; _productType = nil; [_productColor release]; _productColor = nil; [super dealloc]; }
 @end
 
 @implementation CWFDeviceDiscoveryManager
@@ -1357,6 +1384,7 @@
 - (void)registerDelegate:(id)a0 {  }
 - (void)startDiscoveringDevicesIfNeeded:(id)a0 withReason:(unsigned long long)a1 {  }
 - (void)unregisterDelegate:(id)a0 {  }
+- (void)dealloc { [_rapportClient release]; _rapportClient = nil; [_activeDevices release]; _activeDevices = nil; [_retryDevices release]; _retryDevices = nil; [_wifiInfoRetryRequestTimer release]; _wifiInfoRetryRequestTimer = nil; [_rapportTeardownTimer release]; _rapportTeardownTimer = nil; [_rapportQueue release]; _rapportQueue = nil; [_thisDeviceMACAddress release]; _thisDeviceMACAddress = nil; [_delegates release]; _delegates = nil; [_rapportErrorRegex release]; _rapportErrorRegex = nil; [super dealloc]; }
 @end
 
 @implementation CWFDiagnosticReporter
@@ -1372,15 +1400,16 @@
 @synthesize bundleID = _bundleID;
 @synthesize hostName = _hostName;
 @synthesize iRATRecommendsWiFi = _iRATRecommendsWiFi;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithParams:(id)a0 hostName:(id)a1 iRATWiFiRecommendation:(BOOL)a2 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToDTCStats:(id)a0 { return 0; }
+- (void)dealloc { [_bundleID release]; _bundleID = nil; [_hostName release]; _hostName = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_bundleID forKey:@"bundleID"]; [c encodeObject:_hostName forKey:@"hostName"]; [c encodeBool:_iRATRecommendsWiFi forKey:@"iRATRecommendsWiFi"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _bundleID = [[c decodeObjectForKey:@"bundleID"] retain]; _hostName = [[c decodeObjectForKey:@"hostName"] retain]; _iRATRecommendsWiFi = [c decodeBoolForKey:@"iRATRecommendsWiFi"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFDirectToCloudClientStats *o = [[[self class] allocWithZone:z] init]; o->_bundleID = [_bundleID retain]; o->_hostName = [_hostName retain]; o->_iRATRecommendsWiFi = _iRATRecommendsWiFi; return o; }
 @end
 
 @implementation CWFDriverAvailabilityMessage
@@ -1400,21 +1429,22 @@
 @synthesize sub_reason = _sub_reason;
 @synthesize minor_reason = _minor_reason;
 @synthesize trapInfoSequenceNum = _trapInfoSequenceNum;
-+ (BOOL)supportsSecureCoding { return 0; }
 - (BOOL)availabilityFlagFwLoaded { return 0; }
 - (BOOL)availabilityFlagHasJoinTimeoutInfo { return 0; }
 - (BOOL)availabilityFlagHasTrapCrashTracerMiniDump { return 0; }
 - (BOOL)availabilityFlagHasTrapInfo { return 0; }
 - (BOOL)availabilityFlagIsNonFatal { return 0; }
 - (BOOL)availabilityFlagIsRetry { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithDriverAvailabiltyData:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToDriverAvailabiltyMessage:(id)a0 { return 0; }
+- (void)dealloc { [_rawEventData release]; _rawEventData = nil; [_timestamp release]; _timestamp = nil; [_reasonString release]; _reasonString = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_rawEventData forKey:@"rawEventData"]; [c encodeObject:_timestamp forKey:@"timestamp"]; [c encodeBool:_available forKey:@"available"]; [c encodeInt64:(long long)_flags forKey:@"flags"]; [c encodeInt64:(long long)_event_id forKey:@"event_id"]; [c encodeInt64:(long long)_reason forKey:@"reason"]; [c encodeObject:_reasonString forKey:@"reasonString"]; [c encodeInt64:(long long)_sub_reason forKey:@"sub_reason"]; [c encodeInt64:(long long)_minor_reason forKey:@"minor_reason"]; [c encodeInt64:(long long)_trapInfoSequenceNum forKey:@"trapInfoSequenceNum"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _rawEventData = [[c decodeObjectForKey:@"rawEventData"] retain]; _timestamp = [[c decodeObjectForKey:@"timestamp"] retain]; _available = [c decodeBoolForKey:@"available"]; _flags = (long long)[c decodeInt64ForKey:@"flags"]; _event_id = (long long)[c decodeInt64ForKey:@"event_id"]; _reason = (long long)[c decodeInt64ForKey:@"reason"]; _reasonString = [[c decodeObjectForKey:@"reasonString"] retain]; _sub_reason = (long long)[c decodeInt64ForKey:@"sub_reason"]; _minor_reason = (long long)[c decodeInt64ForKey:@"minor_reason"]; _trapInfoSequenceNum = (long long)[c decodeInt64ForKey:@"trapInfoSequenceNum"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFDriverAvailabilityMessage *o = [[[self class] allocWithZone:z] init]; o->_rawEventData = [_rawEventData retain]; o->_timestamp = [_timestamp retain]; o->_available = _available; o->_flags = _flags; o->_event_id = _event_id; o->_reason = _reason; o->_reasonString = [_reasonString retain]; o->_sub_reason = _sub_reason; o->_minor_reason = _minor_reason; o->_trapInfoSequenceNum = _trapInfoSequenceNum; return o; }
 @end
 
 @implementation CWFEAP8021X
@@ -1430,6 +1460,7 @@
 - (void)startEventMonitoring {  }
 - (void)stopEventMonitoring {  }
 - (id)supplicantState:(id *)a0 { return nil; }
+- (void)dealloc { [_interfaceName release]; _interfaceName = nil; [_eventHandler release]; _eventHandler = nil; [super dealloc]; }
 @end
 
 @implementation CWFEAPCredentials
@@ -1437,18 +1468,19 @@
 @synthesize password = _password;
 @dynamic TLSIdentity;
 @dynamic TLSIdentityHandle;
-+ (BOOL)supportsSecureCoding { return 0; }
 - (void *)TLSIdentity { return 0; }
 - (void *)TLSIdentityHandle { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToEAPCredentials:(id)a0 { return 0; }
 - (void)setTLSIdentity:(void *)a0 {  }
 - (void)setTLSIdentityHandle:(void *)a0 {  }
+- (void)dealloc { [_username release]; _username = nil; [_password release]; _password = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_username forKey:@"username"]; [c encodeObject:_password forKey:@"password"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _username = [[c decodeObjectForKey:@"username"] retain]; _password = [[c decodeObjectForKey:@"password"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFEAPCredentials *o = [[[self class] allocWithZone:z] init]; o->_username = [_username retain]; o->_password = [_password retain]; return o; }
 @end
 
 @implementation CWFEvent
@@ -1460,7 +1492,6 @@
 @synthesize timestamp = _timestamp;
 @synthesize info = _info;
 - (id)JSONCompatibleKeyValueMap { return nil; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
 - (unsigned long long)hash { return 0; }
 - (id)init { return self; }
@@ -1468,20 +1499,23 @@
 - (BOOL)isEqualToEvent:(id)a0 { return 0; }
 - (void)setType:(long long)a0 {  }
 - (long long)type { return 0; }
+- (void)dealloc { [_UUID release]; _UUID = nil; [_eventID release]; _eventID = nil; [_acknowledge release]; _acknowledge = nil; [_timestamp release]; _timestamp = nil; [_info release]; _info = nil; [super dealloc]; }
+- (id)copyWithZone:(NSZone *)z { CWFEvent *o = [[[self class] allocWithZone:z] init]; o->_UUID = [_UUID retain]; o->_eventID = [_eventID retain]; o->_acknowledgementTimeout = _acknowledgementTimeout; o->_acknowledge = [_acknowledge retain]; o->_timestamp = [_timestamp retain]; o->_info = [_info retain]; return o; }
 @end
 
 @implementation CWFEventID
 @synthesize type = _type;
 @synthesize interfaceName = _interfaceName;
 + (id)eventIDWithType:(long long)a0 interfaceName:(id)a1 { return nil; }
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToEventID:(id)a0 { return 0; }
+- (void)dealloc { [_interfaceName release]; _interfaceName = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeInt64:(long long)_type forKey:@"type"]; [c encodeObject:_interfaceName forKey:@"interfaceName"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _type = (long long)[c decodeInt64ForKey:@"type"]; _interfaceName = [[c decodeObjectForKey:@"interfaceName"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFEventID *o = [[[self class] allocWithZone:z] init]; o->_type = _type; o->_interfaceName = [_interfaceName retain]; return o; }
 @end
 
 @implementation CWFHomeManager
@@ -1506,6 +1540,7 @@
 - (id)initWithDelegate:(id)a0 { return self; }
 - (int)registerForAccessoryStateChange:(id)a0 withParams:(id)a1 forCWFHMServiceType:(long long)a2 { return 0; }
 - (void)removeObjectForServieType:(long long)a0 withUUID:(id)a1 {  }
+- (void)dealloc { [__homeManager release]; __homeManager = nil; [__serviceObjects release]; __serviceObjects = nil; [__serviceQueue release]; __serviceQueue = nil; [__activeAssertion release]; __activeAssertion = nil; [__homeLocationAuthorization release]; __homeLocationAuthorization = nil; [__autoDataColletor release]; __autoDataColletor = nil; [__delegate release]; __delegate = nil; [super dealloc]; }
 @end
 
 @implementation CWFHostAPConfiguration
@@ -1523,14 +1558,15 @@
 @synthesize h2eonly = _h2eonly;
 @synthesize transitiondisabledflags = _transitiondisabledflags;
 @synthesize mfpc = _mfpc;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToHostAPConfiguration:(id)a0 { return 0; }
+- (void)dealloc { [_SSID release]; _SSID = nil; [_channel release]; _channel = nil; [_password release]; _password = nil; [_IEList release]; _IEList = nil; [_bridgeInterfaceName release]; _bridgeInterfaceName = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_SSID forKey:@"SSID"]; [c encodeObject:_channel forKey:@"channel"]; [c encodeInt64:(long long)_securityType forKey:@"securityType"]; [c encodeObject:_password forKey:@"password"]; [c encodeInt64:(long long)_PHYMode forKey:@"PHYMode"]; [c encodeObject:_IEList forKey:@"IEList"]; [c encodeBool:_forceHiddenMode forKey:@"forceHiddenMode"]; [c encodeBool:_forceBeaconInterval100ms forKey:@"forceBeaconInterval100ms"]; [c encodeInt64:(long long)_bridgeMode forKey:@"bridgeMode"]; [c encodeInt64:(long long)_bridgeType forKey:@"bridgeType"]; [c encodeObject:_bridgeInterfaceName forKey:@"bridgeInterfaceName"]; [c encodeInt64:(long long)_h2eonly forKey:@"h2eonly"]; [c encodeInt64:(long long)_transitiondisabledflags forKey:@"transitiondisabledflags"]; [c encodeBool:_mfpc forKey:@"mfpc"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _SSID = [[c decodeObjectForKey:@"SSID"] retain]; _channel = [[c decodeObjectForKey:@"channel"] retain]; _securityType = (unsigned long long)[c decodeInt64ForKey:@"securityType"]; _password = [[c decodeObjectForKey:@"password"] retain]; _PHYMode = (int)[c decodeInt64ForKey:@"PHYMode"]; _IEList = [[c decodeObjectForKey:@"IEList"] retain]; _forceHiddenMode = [c decodeBoolForKey:@"forceHiddenMode"]; _forceBeaconInterval100ms = [c decodeBoolForKey:@"forceBeaconInterval100ms"]; _bridgeMode = (int)[c decodeInt64ForKey:@"bridgeMode"]; _bridgeType = (int)[c decodeInt64ForKey:@"bridgeType"]; _bridgeInterfaceName = [[c decodeObjectForKey:@"bridgeInterfaceName"] retain]; _h2eonly = (long long)[c decodeInt64ForKey:@"h2eonly"]; _transitiondisabledflags = (long long)[c decodeInt64ForKey:@"transitiondisabledflags"]; _mfpc = [c decodeBoolForKey:@"mfpc"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFHostAPConfiguration *o = [[[self class] allocWithZone:z] init]; o->_SSID = [_SSID retain]; o->_channel = [_channel retain]; o->_securityType = _securityType; o->_password = [_password retain]; o->_PHYMode = _PHYMode; o->_IEList = [_IEList retain]; o->_forceHiddenMode = _forceHiddenMode; o->_forceBeaconInterval100ms = _forceBeaconInterval100ms; o->_bridgeMode = _bridgeMode; o->_bridgeType = _bridgeType; o->_bridgeInterfaceName = [_bridgeInterfaceName retain]; o->_h2eonly = _h2eonly; o->_transitiondisabledflags = _transitiondisabledflags; o->_mfpc = _mfpc; return o; }
 @end
 
 @implementation CWFHostAPStation
@@ -1539,15 +1575,16 @@
 @dynamic description;
 @dynamic debugDescription;
 @synthesize BSSID = _BSSID;
-+ (BOOL)supportsSecureCoding { return 0; }
 - (id)JSONCompatibleKeyValueMap { return nil; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToHostAPStation:(id)a0 { return 0; }
+- (void)dealloc { [_BSSID release]; _BSSID = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_BSSID forKey:@"BSSID"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _BSSID = [[c decodeObjectForKey:@"BSSID"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFHostAPStation *o = [[[self class] allocWithZone:z] init]; o->_BSSID = [_BSSID retain]; return o; }
 @end
 
 @implementation CWFHotspotClient
@@ -1560,12 +1597,13 @@
 @synthesize dataUsageLastBytes = _dataUsageLastBytes;
 @synthesize dataUsageTotalBytes = _dataUsageTotalBytes;
 @synthesize dataUsageLastUpdated = _dataUsageLastUpdated;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithDisplayName:(id)a0 MACAddress:(id)a1 productColor:(id)a2 productMarketingName:(id)a3 productType:(id)a4 peerIdentifier:(id)a5 dataUsageLastBytes:(id)a6 dataUsageTotalBytes:(id)a7 dataUsageLastUpdated:(id)a8 { return self; }
+- (void)dealloc { [_displayName release]; _displayName = nil; [_MACAddress release]; _MACAddress = nil; [_productColor release]; _productColor = nil; [_productMarketingName release]; _productMarketingName = nil; [_productType release]; _productType = nil; [_peerIdentifier release]; _peerIdentifier = nil; [_dataUsageLastBytes release]; _dataUsageLastBytes = nil; [_dataUsageTotalBytes release]; _dataUsageTotalBytes = nil; [_dataUsageLastUpdated release]; _dataUsageLastUpdated = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_displayName forKey:@"displayName"]; [c encodeObject:_MACAddress forKey:@"MACAddress"]; [c encodeObject:_productColor forKey:@"productColor"]; [c encodeObject:_productMarketingName forKey:@"productMarketingName"]; [c encodeObject:_productType forKey:@"productType"]; [c encodeObject:_peerIdentifier forKey:@"peerIdentifier"]; [c encodeObject:_dataUsageLastBytes forKey:@"dataUsageLastBytes"]; [c encodeObject:_dataUsageTotalBytes forKey:@"dataUsageTotalBytes"]; [c encodeObject:_dataUsageLastUpdated forKey:@"dataUsageLastUpdated"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _displayName = [[c decodeObjectForKey:@"displayName"] retain]; _MACAddress = [[c decodeObjectForKey:@"MACAddress"] retain]; _productColor = [[c decodeObjectForKey:@"productColor"] retain]; _productMarketingName = [[c decodeObjectForKey:@"productMarketingName"] retain]; _productType = [[c decodeObjectForKey:@"productType"] retain]; _peerIdentifier = [[c decodeObjectForKey:@"peerIdentifier"] retain]; _dataUsageLastBytes = [[c decodeObjectForKey:@"dataUsageLastBytes"] retain]; _dataUsageTotalBytes = [[c decodeObjectForKey:@"dataUsageTotalBytes"] retain]; _dataUsageLastUpdated = [[c decodeObjectForKey:@"dataUsageLastUpdated"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFHotspotClient *o = [[[self class] allocWithZone:z] init]; o->_displayName = [_displayName retain]; o->_MACAddress = [_MACAddress retain]; o->_productColor = [_productColor retain]; o->_productMarketingName = [_productMarketingName retain]; o->_productType = [_productType retain]; o->_peerIdentifier = [_peerIdentifier retain]; o->_dataUsageLastBytes = [_dataUsageLastBytes retain]; o->_dataUsageTotalBytes = [_dataUsageTotalBytes retain]; o->_dataUsageLastUpdated = [_dataUsageLastUpdated retain]; return o; }
 @end
 
 @implementation CWFHotspotClientManager
@@ -1584,18 +1622,20 @@
 - (void)hotspotDisabled {  }
 - (id)init { return self; }
 - (void)saveCellularInterfaceType:(unsigned long long)a0 {  }
+- (void)dealloc { [_deviceDiscoveryManager release]; _deviceDiscoveryManager = nil; [_activeHotspotClients release]; _activeHotspotClients = nil; [_hotspotQueue release]; _hotspotQueue = nil; [super dealloc]; }
 @end
 
 @implementation CWFHotspotFamilyMember
 @synthesize displayName = _displayName;
 @synthesize identifier = _identifier;
 @synthesize sharingMode = _sharingMode;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithDisplayName:(id)a0 identifier:(id)a1 sharingMode:(long long)a2 { return self; }
+- (void)dealloc { [_displayName release]; _displayName = nil; [_identifier release]; _identifier = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_displayName forKey:@"displayName"]; [c encodeObject:_identifier forKey:@"identifier"]; [c encodeInt64:(long long)_sharingMode forKey:@"sharingMode"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _displayName = [[c decodeObjectForKey:@"displayName"] retain]; _identifier = [[c decodeObjectForKey:@"identifier"] retain]; _sharingMode = (long long)[c decodeInt64ForKey:@"sharingMode"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFHotspotFamilyMember *o = [[[self class] allocWithZone:z] init]; o->_displayName = [_displayName retain]; o->_identifier = [_identifier retain]; o->_sharingMode = _sharingMode; return o; }
 @end
 
 @implementation CWFIO80211
@@ -1607,6 +1647,7 @@
 - (BOOL)isMonitoringEvents { return 0; }
 - (void)startEventMonitoring {  }
 - (void)stopEventMonitoring {  }
+- (void)dealloc { [_eventHandler release]; _eventHandler = nil; [super dealloc]; }
 @end
 
 @implementation CWFInterface
@@ -1974,6 +2015,7 @@
 - (id)wifiNetworkSharingConnectedAPList { return nil; }
 - (id)wifiNetworkSharingNetworkList { return nil; }
 - (unsigned long long)wifiUIStateFlags { return 0; }
+- (void)dealloc { [_awdlServiceManager release]; _awdlServiceManager = nil; [super dealloc]; }
 @end
 
 @implementation CWFJITTDImpactEstimator
@@ -2021,6 +2063,7 @@
 - (void)stopCellularDataUsageAccountingPostTD {  }
 - (void)storeCellularDataUsage:(id)a0 {  }
 - (id)twoSigFig:(unsigned long long)a0 { return nil; }
+- (void)dealloc { [__tdNetwork release]; __tdNetwork = nil; [__startTime release]; __startTime = nil; [__timerQueue release]; __timerQueue = nil; [__serviceQueue release]; __serviceQueue = nil; [__boundaryTimer release]; __boundaryTimer = nil; [__periodicTimer release]; __periodicTimer = nil; [__totalCellularInBytes release]; __totalCellularInBytes = nil; [__totalCellularOutBytes release]; __totalCellularOutBytes = nil; [__totalCellularInPackets release]; __totalCellularInPackets = nil; [__totalCellularOutPackets release]; __totalCellularOutPackets = nil; [__lastSubmissionTimePreAJ release]; __lastSubmissionTimePreAJ = nil; [__lastSubmissionTimePostTD release]; __lastSubmissionTimePostTD = nil; [__previousCellularDataUsageInPostTD release]; __previousCellularDataUsageInPostTD = nil; [__cellularDataUsageInLegacyBoundary release]; __cellularDataUsageInLegacyBoundary = nil; [_scanForNetworkHandler release]; _scanForNetworkHandler = nil; [_gatherCellularDataStats release]; _gatherCellularDataStats = nil; [super dealloc]; }
 @end
 
 @implementation CWFJoinStatus
@@ -2057,9 +2100,7 @@
 @dynamic durationUntilIPv6Primary;
 @synthesize error = _error;
 @synthesize autoJoin = _autoJoin;
-+ (BOOL)supportsSecureCoding { return 0; }
 - (id)JSONCompatibleKeyValueMap { return nil; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
 - (id)descriptionForEAP8021XControlState { return nil; }
 - (id)descriptionForEAPOLClientStatus { return nil; }
@@ -2072,13 +2113,16 @@
 - (double)durationUntilIPv6Assigned { return 0; }
 - (double)durationUntilIPv6Primary { return 0; }
 - (double)durationUntilLinkUp { return 0; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (id)endedAt { return nil; }
 - (unsigned long long)hash { return 0; }
 - (id)init { return self; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToJoinStatus:(id)a0 { return 0; }
+- (void)dealloc { [_UUID release]; _UUID = nil; [_interfaceName release]; _interfaceName = nil; [_scanResult release]; _scanResult = nil; [_knownNetworkProfile release]; _knownNetworkProfile = nil; [_startedAt release]; _startedAt = nil; [_associationEndedAt release]; _associationEndedAt = nil; [_authenticationEndedAt release]; _authenticationEndedAt = nil; [_linkUpAt release]; _linkUpAt = nil; [_IPv4AssignedAt release]; _IPv4AssignedAt = nil; [_IPv4PrimaryAt release]; _IPv4PrimaryAt = nil; [_IPv6AssignedAt release]; _IPv6AssignedAt = nil; [_IPv6PrimaryAt release]; _IPv6PrimaryAt = nil; [_error release]; _error = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_UUID forKey:@"UUID"]; [c encodeObject:_interfaceName forKey:@"interfaceName"]; [c encodeObject:_scanResult forKey:@"scanResult"]; [c encodeObject:_knownNetworkProfile forKey:@"knownNetworkProfile"]; [c encodeInt64:(long long)_EAP8021XSupplicantState forKey:@"EAP8021XSupplicantState"]; [c encodeInt64:(long long)_EAP8021XControlMode forKey:@"EAP8021XControlMode"]; [c encodeInt64:(long long)_EAP8021XControlState forKey:@"EAP8021XControlState"]; [c encodeInt64:(long long)_EAP8021XClientStatus forKey:@"EAP8021XClientStatus"]; [c encodeObject:_startedAt forKey:@"startedAt"]; [c encodeObject:_associationEndedAt forKey:@"associationEndedAt"]; [c encodeDouble:_durationForJoinPMAssertion forKey:@"durationForJoinPMAssertion"]; [c encodeObject:_authenticationEndedAt forKey:@"authenticationEndedAt"]; [c encodeObject:_linkUpAt forKey:@"linkUpAt"]; [c encodeObject:_IPv4AssignedAt forKey:@"IPv4AssignedAt"]; [c encodeObject:_IPv4PrimaryAt forKey:@"IPv4PrimaryAt"]; [c encodeInt64:(long long)_durationForAdaptiveInterfaceRankInMilliseconds forKey:@"durationForAdaptiveInterfaceRankInMilliseconds"]; [c encodeObject:_IPv6AssignedAt forKey:@"IPv6AssignedAt"]; [c encodeObject:_IPv6PrimaryAt forKey:@"IPv6PrimaryAt"]; [c encodeObject:_error forKey:@"error"]; [c encodeBool:_autoJoin forKey:@"autoJoin"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _UUID = [[c decodeObjectForKey:@"UUID"] retain]; _interfaceName = [[c decodeObjectForKey:@"interfaceName"] retain]; _scanResult = [[c decodeObjectForKey:@"scanResult"] retain]; _knownNetworkProfile = [[c decodeObjectForKey:@"knownNetworkProfile"] retain]; _EAP8021XSupplicantState = (unsigned int)[c decodeInt64ForKey:@"EAP8021XSupplicantState"]; _EAP8021XControlMode = (unsigned int)[c decodeInt64ForKey:@"EAP8021XControlMode"]; _EAP8021XControlState = (unsigned int)[c decodeInt64ForKey:@"EAP8021XControlState"]; _EAP8021XClientStatus = (int)[c decodeInt64ForKey:@"EAP8021XClientStatus"]; _startedAt = [[c decodeObjectForKey:@"startedAt"] retain]; _associationEndedAt = [[c decodeObjectForKey:@"associationEndedAt"] retain]; _durationForJoinPMAssertion = [c decodeDoubleForKey:@"durationForJoinPMAssertion"]; _authenticationEndedAt = [[c decodeObjectForKey:@"authenticationEndedAt"] retain]; _linkUpAt = [[c decodeObjectForKey:@"linkUpAt"] retain]; _IPv4AssignedAt = [[c decodeObjectForKey:@"IPv4AssignedAt"] retain]; _IPv4PrimaryAt = [[c decodeObjectForKey:@"IPv4PrimaryAt"] retain]; _durationForAdaptiveInterfaceRankInMilliseconds = (unsigned long long)[c decodeInt64ForKey:@"durationForAdaptiveInterfaceRankInMilliseconds"]; _IPv6AssignedAt = [[c decodeObjectForKey:@"IPv6AssignedAt"] retain]; _IPv6PrimaryAt = [[c decodeObjectForKey:@"IPv6PrimaryAt"] retain]; _error = [[c decodeObjectForKey:@"error"] retain]; _autoJoin = [c decodeBoolForKey:@"autoJoin"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFJoinStatus *o = [[[self class] allocWithZone:z] init]; o->_UUID = [_UUID retain]; o->_interfaceName = [_interfaceName retain]; o->_scanResult = [_scanResult retain]; o->_knownNetworkProfile = [_knownNetworkProfile retain]; o->_EAP8021XSupplicantState = _EAP8021XSupplicantState; o->_EAP8021XControlMode = _EAP8021XControlMode; o->_EAP8021XControlState = _EAP8021XControlState; o->_EAP8021XClientStatus = _EAP8021XClientStatus; o->_startedAt = [_startedAt retain]; o->_associationEndedAt = [_associationEndedAt retain]; o->_durationForJoinPMAssertion = _durationForJoinPMAssertion; o->_authenticationEndedAt = [_authenticationEndedAt retain]; o->_linkUpAt = [_linkUpAt retain]; o->_IPv4AssignedAt = [_IPv4AssignedAt retain]; o->_IPv4PrimaryAt = [_IPv4PrimaryAt retain]; o->_durationForAdaptiveInterfaceRankInMilliseconds = _durationForAdaptiveInterfaceRankInMilliseconds; o->_IPv6AssignedAt = [_IPv6AssignedAt retain]; o->_IPv6PrimaryAt = [_IPv6PrimaryAt retain]; o->_error = [_error retain]; o->_autoJoin = _autoJoin; return o; }
 @end
 
 @implementation CWFKernelEventMonitor
@@ -2089,6 +2133,7 @@
 - (BOOL)isMonitoringEvents { return 0; }
 - (void)startEventMonitoring {  }
 - (void)stopEventMonitoring {  }
+- (void)dealloc { [_eventHandler release]; _eventHandler = nil; [super dealloc]; }
 @end
 
 @implementation CWFKeyValueStore
@@ -2109,6 +2154,7 @@
 - (void)removeAllEntries {  }
 - (void)setObject:(id)a0 forKey:(id)a1 {  }
 - (BOOL)synchronize { return 0; }
+- (void)dealloc { [_identifier release]; _identifier = nil; [_invalidationHandler release]; _invalidationHandler = nil; [_eventHandler release]; _eventHandler = nil; [super dealloc]; }
 @end
 
 @implementation CWFKnownNetworkPreparer
@@ -2128,6 +2174,7 @@
 - (id)localNetworkPromptProfiles { return nil; }
 - (id)prepareLocalNetworkProfilesForPresentation:(id)a0 { return nil; }
 - (BOOL)profilesContainsHomeProfile:(id)a0 { return 0; }
+- (void)dealloc { [_profiles release]; _profiles = nil; [super dealloc]; }
 @end
 
 @implementation CWFLinkChangeStatus
@@ -2141,14 +2188,15 @@
 @synthesize RSSI = _RSSI;
 @synthesize noise = _noise;
 @synthesize CCA = _CCA;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToLinkChangeStatus:(id)a0 { return 0; }
+- (void)dealloc { [_timestamp release]; _timestamp = nil; [_interfaceName release]; _interfaceName = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_timestamp forKey:@"timestamp"]; [c encodeObject:_interfaceName forKey:@"interfaceName"]; [c encodeBool:_linkDown forKey:@"linkDown"]; [c encodeBool:_linkDownDebounceInProgress forKey:@"linkDownDebounceInProgress"]; [c encodeBool:_involuntaryLinkDown forKey:@"involuntaryLinkDown"]; [c encodeInt64:(long long)_reason forKey:@"reason"]; [c encodeInt64:(long long)_subreason forKey:@"subreason"]; [c encodeInt64:(long long)_RSSI forKey:@"RSSI"]; [c encodeInt64:(long long)_noise forKey:@"noise"]; [c encodeInt64:(long long)_CCA forKey:@"CCA"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _timestamp = [[c decodeObjectForKey:@"timestamp"] retain]; _interfaceName = [[c decodeObjectForKey:@"interfaceName"] retain]; _linkDown = [c decodeBoolForKey:@"linkDown"]; _linkDownDebounceInProgress = [c decodeBoolForKey:@"linkDownDebounceInProgress"]; _involuntaryLinkDown = [c decodeBoolForKey:@"involuntaryLinkDown"]; _reason = (int)[c decodeInt64ForKey:@"reason"]; _subreason = (long long)[c decodeInt64ForKey:@"subreason"]; _RSSI = (long long)[c decodeInt64ForKey:@"RSSI"]; _noise = (long long)[c decodeInt64ForKey:@"noise"]; _CCA = (unsigned long long)[c decodeInt64ForKey:@"CCA"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFLinkChangeStatus *o = [[[self class] allocWithZone:z] init]; o->_timestamp = [_timestamp retain]; o->_interfaceName = [_interfaceName retain]; o->_linkDown = _linkDown; o->_linkDownDebounceInProgress = _linkDownDebounceInProgress; o->_involuntaryLinkDown = _involuntaryLinkDown; o->_reason = _reason; o->_subreason = _subreason; o->_RSSI = _RSSI; o->_noise = _noise; o->_CCA = _CCA; return o; }
 @end
 
 @implementation CWFLinkQualityAssessment
@@ -2162,18 +2210,19 @@
 @synthesize RSSI = _RSSI;
 @synthesize updatedAt = _updatedAt;
 + (id)descriptionForQualityAssessment:(long long)a0 { return nil; }
-+ (BOOL)supportsSecureCoding { return 0; }
 - (id)JSONCompatibleKeyValueMap { return nil; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
 - (id)initWithAssessmentData:(void *)a0 { return self; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithLSMData:(void *)a0 andlinkQualityMetric:(id)a1 { return self; }
 - (id)initWithLinkQualityMetric:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToLinkQualityAssessment:(id)a0 { return 0; }
+- (void)dealloc { [_updatedAt release]; _updatedAt = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeInt64:(long long)_qualityAssessment forKey:@"qualityAssessment"]; [c encodeInt64:(long long)_estimatedMaxThroughputMbps forKey:@"estimatedMaxThroughputMbps"]; [c encodeInt64:(long long)_estimatedMedianLatencyMs forKey:@"estimatedMedianLatencyMs"]; [c encodeInt64:(long long)_RSSI forKey:@"RSSI"]; [c encodeObject:_updatedAt forKey:@"updatedAt"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _qualityAssessment = (long long)[c decodeInt64ForKey:@"qualityAssessment"]; _estimatedMaxThroughputMbps = (unsigned long long)[c decodeInt64ForKey:@"estimatedMaxThroughputMbps"]; _estimatedMedianLatencyMs = (unsigned long long)[c decodeInt64ForKey:@"estimatedMedianLatencyMs"]; _RSSI = (long long)[c decodeInt64ForKey:@"RSSI"]; _updatedAt = [[c decodeObjectForKey:@"updatedAt"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFLinkQualityAssessment *o = [[[self class] allocWithZone:z] init]; o->_qualityAssessment = _qualityAssessment; o->_estimatedMaxThroughputMbps = _estimatedMaxThroughputMbps; o->_estimatedMedianLatencyMs = _estimatedMedianLatencyMs; o->_RSSI = _RSSI; o->_updatedAt = [_updatedAt retain]; return o; }
 @end
 
 @implementation CWFLinkQualityMetric
@@ -2190,15 +2239,11 @@
 @dynamic CCA;
 @dynamic mLOLinks;
 @synthesize linkQualityMetricData = _linkQualityMetricData;
-+ (BOOL)supportsSecureCoding { return 0; }
 - (unsigned long long)CCA { return 0; }
 - (id)JSONCompatibleKeyValueMap { return nil; }
 - (long long)RSSI { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToLinkQualityMetric:(id)a0 { return 0; }
 - (id)mLOLinks { return nil; }
@@ -2206,6 +2251,11 @@
 - (double)rxRate { return 0; }
 - (unsigned long long)txPacketErrorRate { return 0; }
 - (double)txRate { return 0; }
+- (void)dealloc { [_updatedAt release]; _updatedAt = nil; [_linkQualityMetricData release]; _linkQualityMetricData = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_updatedAt forKey:@"updatedAt"]; [c encodeObject:_linkQualityMetricData forKey:@"linkQualityMetricData"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _updatedAt = [[c decodeObjectForKey:@"updatedAt"] retain]; _linkQualityMetricData = [[c decodeObjectForKey:@"linkQualityMetricData"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFLinkQualityMetric *o = [[[self class] allocWithZone:z] init]; o->_updatedAt = [_updatedAt retain]; o->_linkQualityMetricData = [_linkQualityMetricData retain]; return o; }
 @end
 
 @implementation CWFLocalDeviceDiscovery
@@ -2224,6 +2274,7 @@
 - (id)init { return self; }
 - (void)invalidate {  }
 - (void)processRecords:(id)a0 {  }
+- (void)dealloc { [_mrcQueue release]; _mrcQueue = nil; [_tokenizationCharacterSet release]; _tokenizationCharacterSet = nil; [_mrcInquiry release]; _mrcInquiry = nil; [_handler release]; _handler = nil; [super dealloc]; }
 @end
 
 @implementation CWFLocalNetworkDevice
@@ -2235,6 +2286,7 @@
 - (unsigned long long)hash { return 0; }
 - (id)preferredSourceAddress { return nil; }
 - (id)sanitizedName { return nil; }
+- (void)dealloc { [_sourceAddresses release]; _sourceAddresses = nil; [_deviceInfo release]; _deviceInfo = nil; [_name release]; _name = nil; [_serviceNames release]; _serviceNames = nil; [super dealloc]; }
 @end
 
 @implementation CWFLocalNetworkFilteredName
@@ -2242,6 +2294,7 @@
 @synthesize reason = _reason;
 + (id)filteredName:(id)a0 reason:(unsigned long long)a1 { return nil; }
 - (id)description { return nil; }
+- (void)dealloc { [_name release]; _name = nil; [super dealloc]; }
 @end
 
 @implementation CWFMACAddressHash
@@ -2252,12 +2305,8 @@
 + (id)hashMethodFromString:(id)a0 { return nil; }
 + (id)parseMACAddress:(id)a0 { return nil; }
 + (id)stringFromHashMethod:(long long)a0 { return nil; }
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithHashData:(id)a0 andSalt:(id)a1 andHashMethod:(long long)a2 { return self; }
 - (id)initWithMACAddress:(id)a0 { return self; }
 - (id)initWithMACAddress:(id)a0 andSalt:(id)a1 { return self; }
@@ -2266,6 +2315,11 @@
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)matchesMACAddress:(id)a0 { return 0; }
 - (BOOL)matchesMACAddressData:(id)a0 { return 0; }
+- (void)dealloc { [_salt release]; _salt = nil; [_hashData release]; _hashData = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_salt forKey:@"salt"]; [c encodeObject:_hashData forKey:@"hashData"]; [c encodeInt64:(long long)_hashMethod forKey:@"hashMethod"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _salt = [[c decodeObjectForKey:@"salt"] retain]; _hashData = [[c decodeObjectForKey:@"hashData"] retain]; _hashMethod = (long long)[c decodeInt64ForKey:@"hashMethod"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFMACAddressHash *o = [[[self class] allocWithZone:z] init]; o->_salt = [_salt retain]; o->_hashData = [_hashData retain]; o->_hashMethod = _hashMethod; return o; }
 @end
 
 @implementation CWFMLOLink
@@ -2274,14 +2328,14 @@
 @synthesize width = _width;
 @synthesize subchannel = _subchannel;
 @synthesize isPrimaryLink = _isPrimaryLink;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToMLOLink:(id)a0 { return 0; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeInt64:(long long)_band forKey:@"band"]; [c encodeInt64:(long long)_channel forKey:@"channel"]; [c encodeInt64:(long long)_width forKey:@"width"]; [c encodeInt64:(long long)_subchannel forKey:@"subchannel"]; [c encodeBool:_isPrimaryLink forKey:@"isPrimaryLink"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _band = (int)[c decodeInt64ForKey:@"band"]; _channel = (unsigned char)[c decodeInt64ForKey:@"channel"]; _width = (int)[c decodeInt64ForKey:@"width"]; _subchannel = (int)[c decodeInt64ForKey:@"subchannel"]; _isPrimaryLink = [c decodeBoolForKey:@"isPrimaryLink"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFMLOLink *o = [[[self class] allocWithZone:z] init]; o->_band = _band; o->_channel = _channel; o->_width = _width; o->_subchannel = _subchannel; o->_isPrimaryLink = _isPrimaryLink; return o; }
 @end
 
 @implementation CWFNearbyDeviceDiscoveryFilter
@@ -2290,15 +2344,16 @@
 @synthesize bssid = _bssid;
 @synthesize numReports = _numReports;
 @synthesize frameType = _frameType;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
 - (id)init { return self; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToNDDFilter:(id)a0 { return 0; }
+- (void)dealloc { [_receiverMacAddress release]; _receiverMacAddress = nil; [_transmitterMacAddress release]; _transmitterMacAddress = nil; [_bssid release]; _bssid = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_receiverMacAddress forKey:@"receiverMacAddress"]; [c encodeObject:_transmitterMacAddress forKey:@"transmitterMacAddress"]; [c encodeObject:_bssid forKey:@"bssid"]; [c encodeInt64:(long long)_numReports forKey:@"numReports"]; [c encodeInt64:(long long)_frameType forKey:@"frameType"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _receiverMacAddress = [[c decodeObjectForKey:@"receiverMacAddress"] retain]; _transmitterMacAddress = [[c decodeObjectForKey:@"transmitterMacAddress"] retain]; _bssid = [[c decodeObjectForKey:@"bssid"] retain]; _numReports = (long long)[c decodeInt64ForKey:@"numReports"]; _frameType = (long long)[c decodeInt64ForKey:@"frameType"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFNearbyDeviceDiscoveryFilter *o = [[[self class] allocWithZone:z] init]; o->_receiverMacAddress = [_receiverMacAddress retain]; o->_transmitterMacAddress = [_transmitterMacAddress retain]; o->_bssid = [_bssid retain]; o->_numReports = _numReports; o->_frameType = _frameType; return o; }
 @end
 
 @implementation CWFNearbyDeviceDiscoveryManager
@@ -2320,6 +2375,7 @@
 - (int)handleRequest:(long long)a0 withData:(id)a1 interface:(id)a2 { return 0; }
 - (id)init { return self; }
 - (int)isNDDRequestValid:(id)a0 { return 0; }
+- (void)dealloc { [__currentNDDRequest release]; __currentNDDRequest = nil; [__interface release]; __interface = nil; [__serviceQueue release]; __serviceQueue = nil; [_isNDDAllowed release]; _isNDDAllowed = nil; [_sendNDDRequest release]; _sendNDDRequest = nil; [_sendNDDXPCEvent release]; _sendNDDXPCEvent = nil; [super dealloc]; }
 @end
 
 @implementation CWFNearbyDeviceDiscoveryParameter
@@ -2329,15 +2385,16 @@
 @synthesize bandwidth = _bandwidth;
 @synthesize type = _type;
 @synthesize operation = _operation;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
 - (id)init { return self; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToNDDParameters:(id)a0 { return 0; }
+- (void)dealloc { [_filters release]; _filters = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_filters forKey:@"filters"]; [c encodeInt64:(long long)_channel forKey:@"channel"]; [c encodeInt64:(long long)_band forKey:@"band"]; [c encodeInt64:(long long)_bandwidth forKey:@"bandwidth"]; [c encodeInt64:(long long)_type forKey:@"type"]; [c encodeInt64:(long long)_operation forKey:@"operation"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _filters = [[c decodeObjectForKey:@"filters"] retain]; _channel = (long long)[c decodeInt64ForKey:@"channel"]; _band = (long long)[c decodeInt64ForKey:@"band"]; _bandwidth = (long long)[c decodeInt64ForKey:@"bandwidth"]; _type = (long long)[c decodeInt64ForKey:@"type"]; _operation = (long long)[c decodeInt64ForKey:@"operation"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFNearbyDeviceDiscoveryParameter *o = [[[self class] allocWithZone:z] init]; o->_filters = [_filters retain]; o->_channel = _channel; o->_band = _band; o->_bandwidth = _bandwidth; o->_type = _type; o->_operation = _operation; return o; }
 @end
 
 @implementation CWFNearbyDeviceDiscoveryReport
@@ -2352,15 +2409,16 @@
 @synthesize band = _band;
 @synthesize rateMbps = _rateMbps;
 @synthesize isLowConfidence = _isLowConfidence;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
 - (id)init { return self; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToNDDReport:(id)a0 { return 0; }
+- (void)dealloc { [_timeStamp release]; _timeStamp = nil; [_receiver release]; _receiver = nil; [_transmitter release]; _transmitter = nil; [_bssid release]; _bssid = nil; [_rssi release]; _rssi = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_timeStamp forKey:@"timeStamp"]; [c encodeObject:_receiver forKey:@"receiver"]; [c encodeObject:_transmitter forKey:@"transmitter"]; [c encodeObject:_bssid forKey:@"bssid"]; [c encodeObject:_rssi forKey:@"rssi"]; [c encodeInt64:(long long)_frameType forKey:@"frameType"]; [c encodeInt64:(long long)_bandwidth forKey:@"bandwidth"]; [c encodeInt64:(long long)_channel forKey:@"channel"]; [c encodeInt64:(long long)_band forKey:@"band"]; [c encodeInt64:(long long)_rateMbps forKey:@"rateMbps"]; [c encodeBool:_isLowConfidence forKey:@"isLowConfidence"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _timeStamp = [[c decodeObjectForKey:@"timeStamp"] retain]; _receiver = [[c decodeObjectForKey:@"receiver"] retain]; _transmitter = [[c decodeObjectForKey:@"transmitter"] retain]; _bssid = [[c decodeObjectForKey:@"bssid"] retain]; _rssi = [[c decodeObjectForKey:@"rssi"] retain]; _frameType = (long long)[c decodeInt64ForKey:@"frameType"]; _bandwidth = (long long)[c decodeInt64ForKey:@"bandwidth"]; _channel = (long long)[c decodeInt64ForKey:@"channel"]; _band = (long long)[c decodeInt64ForKey:@"band"]; _rateMbps = (long long)[c decodeInt64ForKey:@"rateMbps"]; _isLowConfidence = [c decodeBoolForKey:@"isLowConfidence"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFNearbyDeviceDiscoveryReport *o = [[[self class] allocWithZone:z] init]; o->_timeStamp = [_timeStamp retain]; o->_receiver = [_receiver retain]; o->_transmitter = [_transmitter retain]; o->_bssid = [_bssid retain]; o->_rssi = [_rssi retain]; o->_frameType = _frameType; o->_bandwidth = _bandwidth; o->_channel = _channel; o->_band = _band; o->_rateMbps = _rateMbps; o->_isLowConfidence = _isLowConfidence; return o; }
 @end
 
 @implementation CWFNearbySyncManager
@@ -2408,6 +2466,7 @@
 - (void)nearbyConfirmBrokenBackhaulUsingTimeout:(unsigned long long)a0 count:(unsigned long long)a1 network:(id)a2 minimumCacheTimestamp:(unsigned long long)a3 completion:(id)a4 {  }
 - (id)nearbySyncNetwork { return nil; }
 - (void)setNearbySyncNetwork:(id)a0 {  }
+- (void)dealloc { [_targetQueue release]; _targetQueue = nil; [_allowNearbySyncableNetworkHandler release]; _allowNearbySyncableNetworkHandler = nil; [_autoJoinAssistEventHandler release]; _autoJoinAssistEventHandler = nil; [_restoredBackhaulEventHandler release]; _restoredBackhaulEventHandler = nil; [_confirmBrokenBackhaulHandler release]; _confirmBrokenBackhaulHandler = nil; [super dealloc]; }
 @end
 
 @implementation CWFNearbySyncNetwork
@@ -2433,6 +2492,7 @@
 - (BOOL)isNearbySyncable { return 0; }
 - (id)knownNetworkProfile { return nil; }
 - (void)setKnownNetworkProfile:(id)a0 {  }
+- (void)dealloc { [_password release]; _password = nil; [_captivePortalCredentials release]; _captivePortalCredentials = nil; [_channel release]; _channel = nil; [super dealloc]; }
 @end
 
 @implementation CWFNetworkDenyList
@@ -2481,6 +2541,7 @@
 - (void)setDenyListedStateExpiryIntervalInSec:(double)a0 state:(unsigned long long)a1 {  }
 - (void)setDenyListingThresholds:(unsigned long long)a0 value:(unsigned int)a1 forSSIDThresholds:(BOOL)a2 {  }
 - (void)setNetworkDenyListInfo:(id)a0 forScanResult:(id)a1 {  }
+- (void)dealloc { [_batteryInfoHandler release]; _batteryInfoHandler = nil; [_isUserModeInteractiveHandler release]; _isUserModeInteractiveHandler = nil; [_denyListDidUpdateHandler release]; _denyListDidUpdateHandler = nil; [_SSIDThresholds release]; _SSIDThresholds = nil; [_BSSIDThresholds release]; _BSSIDThresholds = nil; [super dealloc]; }
 @end
 
 @implementation CWFNetworkDenyListInfo
@@ -2493,6 +2554,7 @@
 @synthesize state = _state;
 @synthesize stateString = _stateString;
 - (id)init { return self; }
+- (void)dealloc { [_reasonString release]; _reasonString = nil; [_BSSID release]; _BSSID = nil; [_stateString release]; _stateString = nil; [super dealloc]; }
 @end
 
 @implementation CWFNetworkDenyListItem
@@ -2512,6 +2574,7 @@
 - (void)processDenyListStateMetric:(id)a0 denyListRemove:(BOOL)a1 denyListRemoveReason:(unsigned long long)a2 {  }
 - (void)processDenyListedBSSForMetrics {  }
 - (BOOL)updateNetwork:(id)a0 { return 0; }
+- (void)dealloc { [_scanResultForNetworkDenyListItem release]; _scanResultForNetworkDenyListItem = nil; [_denyListTriggers release]; _denyListTriggers = nil; [_statesCurrent release]; _statesCurrent = nil; [_statesHistory release]; _statesHistory = nil; [super dealloc]; }
 @end
 
 @implementation CWFNetworkOfInterestManager
@@ -2538,6 +2601,7 @@
 - (void)setColocatedLANNetworks:(id)a0 {  }
 - (long long)workTypeForNetworkName:(id)a0 { return 0; }
 - (long long)workTypeForNetworkSignature:(id)a0 { return 0; }
+- (void)dealloc { [_homeNetworkDeterminationChangedHandler release]; _homeNetworkDeterminationChangedHandler = nil; [_workNetworkDeterminationChangedHandler release]; _workNetworkDeterminationChangedHandler = nil; [super dealloc]; }
 @end
 
 @implementation CWFNetworkPathMonitor
@@ -2563,6 +2627,7 @@
 - (void)startMonitoring {  }
 - (void)stopMonitoring {  }
 - (BOOL)wifiPathSatisfied { return 0; }
+- (void)dealloc { [_internalQueue release]; _internalQueue = nil; [_pathMonitor release]; _pathMonitor = nil; [_delayTimer release]; _delayTimer = nil; [_targetQueue release]; _targetQueue = nil; [_networkPathStatusChanged release]; _networkPathStatusChanged = nil; [super dealloc]; }
 @end
 
 @implementation CWFNetworkProfile
@@ -2720,7 +2785,6 @@
 @dynamic networkOfInterestWorkState;
 @dynamic networkOfInterestWorkStateUpdatedAt;
 + (id)supportedOSSpecificKeys { return nil; }
-+ (BOOL)supportsSecureCoding { return 0; }
 - (id)BSSList { return nil; }
 - (unsigned long long)CWFNetworkWarningFlagsFromNetworkProfile { return 0; }
 - (id)DNSHeuristicsFailureStateInfo { return nil; }
@@ -2789,7 +2853,6 @@
 - (long long)compareReceivedFromDeviceFlags:(id)a0 { return 0; }
 - (long long)compareSupportedSecurityTypes:(id)a0 { return 0; }
 - (long long)compareUserPriority:(id)a0 { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)coreWiFiSpecificAttributes { return nil; }
 - (id)debugDescription { return nil; }
 - (id)deepCopy { return nil; }
@@ -2806,7 +2869,6 @@
 - (unsigned long long)emlsrStallCount { return 0; }
 - (id)emlsrStallWindowLatestDate { return nil; }
 - (id)emlsrStallWindowStartDate { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (id)expirationDate { return nil; }
 - (id)externalForm { return nil; }
 - (id)filteredClassDStorageNetworkProfile { return nil; }
@@ -2825,7 +2887,6 @@
 - (id)identifier { return nil; }
 - (id)init { return self; }
 - (id)initWithCloudSyncExternalForm:(id)a0 { return self; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithExternalForm:(id)a0 { return self; }
 - (id)initWithInternal:(id)a0 { return self; }
 - (id)initWithMigrationData:(id)a0 { return self; }
@@ -3093,22 +3154,28 @@
 - (BOOL)wasRecentlyHidden { return 0; }
 - (unsigned long long)weakestSupportedSecurityType { return 0; }
 - (id)wifiNetworkSharingNetworkID { return nil; }
+- (void)dealloc { [_internal release]; _internal = nil; [_cachedIdentifier release]; _cachedIdentifier = nil; [_cachedNetworkName release]; _cachedNetworkName = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_internal forKey:@"internal"]; [c encodeBool:_useCachedIdentifier forKey:@"useCachedIdentifier"]; [c encodeObject:_cachedIdentifier forKey:@"cachedIdentifier"]; [c encodeBool:_useCachedNetworkName forKey:@"useCachedNetworkName"]; [c encodeObject:_cachedNetworkName forKey:@"cachedNetworkName"]; [c encodeBool:_useCachedShortSSID forKey:@"useCachedShortSSID"]; [c encodeInt64:(long long)_cachedShortSSID forKey:@"cachedShortSSID"]; [c encodeInt64:(long long)_emlsrStallsLastWeek forKey:@"emlsrStallsLastWeek"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _internal = [[c decodeObjectForKey:@"internal"] retain]; _useCachedIdentifier = [c decodeBoolForKey:@"useCachedIdentifier"]; _cachedIdentifier = [[c decodeObjectForKey:@"cachedIdentifier"] retain]; _useCachedNetworkName = [c decodeBoolForKey:@"useCachedNetworkName"]; _cachedNetworkName = [[c decodeObjectForKey:@"cachedNetworkName"] retain]; _useCachedShortSSID = [c decodeBoolForKey:@"useCachedShortSSID"]; _cachedShortSSID = (unsigned long long)[c decodeInt64ForKey:@"cachedShortSSID"]; _emlsrStallsLastWeek = (unsigned long long)[c decodeInt64ForKey:@"emlsrStallsLastWeek"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFNetworkProfile *o = [[[self class] allocWithZone:z] init]; o->_internal = [_internal retain]; o->_useCachedIdentifier = _useCachedIdentifier; o->_cachedIdentifier = [_cachedIdentifier retain]; o->_useCachedNetworkName = _useCachedNetworkName; o->_cachedNetworkName = [_cachedNetworkName retain]; o->_useCachedShortSSID = _useCachedShortSSID; o->_cachedShortSSID = _cachedShortSSID; o->_emlsrStallsLastWeek = _emlsrStallsLastWeek; return o; }
 @end
 
 @implementation CWFNetworkSignature
 @synthesize IPv4NetworkSignature = _IPv4NetworkSignature;
 @synthesize IPv6NetworkSignature = _IPv6NetworkSignature;
 + (id)createHexStringFromBytes:(id)a0 { return nil; }
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithIPv4NetworkSignature:(id)a0 { return self; }
 - (id)initWithIPv4NetworkSignature:(id)a0 IPv6NetworkSignature:(id)a1 { return self; }
 - (id)initWithIPv4NetworkSignatureBytes:(id)a0 IPv6NetworkSignatureBytes:(id)a1 { return self; }
 - (id)initWithIPv6NetworkSignature:(id)a0 { return self; }
 - (id)initWithNetworkSignatureWithString:(id)a0 { return self; }
+- (void)dealloc { [_IPv4NetworkSignature release]; _IPv4NetworkSignature = nil; [_IPv6NetworkSignature release]; _IPv6NetworkSignature = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_IPv4NetworkSignature forKey:@"IPv4NetworkSignature"]; [c encodeObject:_IPv6NetworkSignature forKey:@"IPv6NetworkSignature"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _IPv4NetworkSignature = [[c decodeObjectForKey:@"IPv4NetworkSignature"] retain]; _IPv6NetworkSignature = [[c decodeObjectForKey:@"IPv6NetworkSignature"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFNetworkSignature *o = [[[self class] allocWithZone:z] init]; o->_IPv4NetworkSignature = [_IPv4NetworkSignature retain]; o->_IPv6NetworkSignature = [_IPv6NetworkSignature retain]; return o; }
 @end
 
 @implementation CWFPinger
@@ -3131,6 +3198,7 @@
 - (void)sendPing {  }
 - (void)startPingingToHost:(id)a0 withNumberOfPings:(unsigned long long)a1 completion:(id)a2 {  }
 - (void)stop {  }
+- (void)dealloc { [_connection release]; _connection = nil; [_networkQueue release]; _networkQueue = nil; [_completion release]; _completion = nil; [_latencyValues release]; _latencyValues = nil; [super dealloc]; }
 @end
 
 @implementation CWFPowerTableElectionTelemetry
@@ -3186,6 +3254,7 @@
 - (void)submitPrivateMACStatsMetricWithEventType:(id)a0 networkProfile:(id)a1 {  }
 - (long long)systemSetting { return 0; }
 - (long long)temporaryUserSettingForNetworkProfile:(id)a0 { return 0; }
+- (void)dealloc { [_updatedSystemSettingHandler release]; _updatedSystemSettingHandler = nil; [_updatedDeviceKeyHandler release]; _updatedDeviceKeyHandler = nil; [_updatedNetworkIDHandler release]; _updatedNetworkIDHandler = nil; [_updatedRotationKeyHandler release]; _updatedRotationKeyHandler = nil; [_effectiveHardwareMACAddress release]; _effectiveHardwareMACAddress = nil; [_allowRotationHandler release]; _allowRotationHandler = nil; [_isNetworkManagedByMDMHandler release]; _isNetworkManagedByMDMHandler = nil; [_targetQueue release]; _targetQueue = nil; [super dealloc]; }
 @end
 
 @implementation CWFRNRBSS
@@ -3204,15 +3273,16 @@
 @synthesize colocatedAP = _colocatedAP;
 @synthesize TBTTOffset = _TBTTOffset;
 @synthesize primary20MHzPSD = _primary20MHzPSD;
-+ (BOOL)supportsSecureCoding { return 0; }
 - (id)JSONCompatibleKeyValueMap { return nil; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToRNRBSS:(id)a0 { return 0; }
+- (void)dealloc { [_BSSID release]; _BSSID = nil; [_channel release]; _channel = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeInt64:(long long)_shortSSID forKey:@"shortSSID"]; [c encodeObject:_BSSID forKey:@"BSSID"]; [c encodeObject:_channel forKey:@"channel"]; [c encodeBool:_UPRActive forKey:@"UPRActive"]; [c encodeBool:_sameSSID forKey:@"sameSSID"]; [c encodeBool:_multipleBSSID forKey:@"multipleBSSID"]; [c encodeBool:_transmittedBSSID forKey:@"transmittedBSSID"]; [c encodeBool:_multiband6GHz forKey:@"multiband6GHz"]; [c encodeBool:_colocatedAP forKey:@"colocatedAP"]; [c encodeInt64:(long long)_TBTTOffset forKey:@"TBTTOffset"]; [c encodeInt64:(long long)_primary20MHzPSD forKey:@"primary20MHzPSD"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _shortSSID = (unsigned long long)[c decodeInt64ForKey:@"shortSSID"]; _BSSID = [[c decodeObjectForKey:@"BSSID"] retain]; _channel = [[c decodeObjectForKey:@"channel"] retain]; _UPRActive = [c decodeBoolForKey:@"UPRActive"]; _sameSSID = [c decodeBoolForKey:@"sameSSID"]; _multipleBSSID = [c decodeBoolForKey:@"multipleBSSID"]; _transmittedBSSID = [c decodeBoolForKey:@"transmittedBSSID"]; _multiband6GHz = [c decodeBoolForKey:@"multiband6GHz"]; _colocatedAP = [c decodeBoolForKey:@"colocatedAP"]; _TBTTOffset = (unsigned long long)[c decodeInt64ForKey:@"TBTTOffset"]; _primary20MHzPSD = (unsigned long long)[c decodeInt64ForKey:@"primary20MHzPSD"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFRNRBSS *o = [[[self class] allocWithZone:z] init]; o->_shortSSID = _shortSSID; o->_BSSID = [_BSSID retain]; o->_channel = [_channel retain]; o->_UPRActive = _UPRActive; o->_sameSSID = _sameSSID; o->_multipleBSSID = _multipleBSSID; o->_transmittedBSSID = _transmittedBSSID; o->_multiband6GHz = _multiband6GHz; o->_colocatedAP = _colocatedAP; o->_TBTTOffset = _TBTTOffset; o->_primary20MHzPSD = _primary20MHzPSD; return o; }
 @end
 
 @implementation CWFRangingMeasurement
@@ -3221,14 +3291,14 @@
 @synthesize channel = _channel;
 @synthesize SNR = _SNR;
 @synthesize coreID = _coreID;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToRangingMeasurement:(id)a0 { return 0; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeInt64:(long long)_roundTripTime forKey:@"roundTripTime"]; [c encodeInt64:(long long)_RSSI forKey:@"RSSI"]; [c encodeInt64:(long long)_channel forKey:@"channel"]; [c encodeInt64:(long long)_SNR forKey:@"SNR"]; [c encodeInt64:(long long)_coreID forKey:@"coreID"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _roundTripTime = (long long)[c decodeInt64ForKey:@"roundTripTime"]; _RSSI = (long long)[c decodeInt64ForKey:@"RSSI"]; _channel = (unsigned long long)[c decodeInt64ForKey:@"channel"]; _SNR = (long long)[c decodeInt64ForKey:@"SNR"]; _coreID = (unsigned long long)[c decodeInt64ForKey:@"coreID"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFRangingMeasurement *o = [[[self class] allocWithZone:z] init]; o->_roundTripTime = _roundTripTime; o->_RSSI = _RSSI; o->_channel = _channel; o->_SNR = _SNR; o->_coreID = _coreID; return o; }
 @end
 
 @implementation CWFRangingPeer
@@ -3238,14 +3308,15 @@
 @synthesize numberOfMeasurements = _numberOfMeasurements;
 @synthesize useCoreRotation = _useCoreRotation;
 + (id)rangingPeerWithMACAddress:(id)a0 PMK:(id)a1 { return nil; }
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToRangingPeer:(id)a0 { return 0; }
+- (void)dealloc { [_MACAddress release]; _MACAddress = nil; [_identifier release]; _identifier = nil; [_PMK release]; _PMK = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_MACAddress forKey:@"MACAddress"]; [c encodeObject:_identifier forKey:@"identifier"]; [c encodeObject:_PMK forKey:@"PMK"]; [c encodeInt64:(long long)_numberOfMeasurements forKey:@"numberOfMeasurements"]; [c encodeBool:_useCoreRotation forKey:@"useCoreRotation"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _MACAddress = [[c decodeObjectForKey:@"MACAddress"] retain]; _identifier = [[c decodeObjectForKey:@"identifier"] retain]; _PMK = [[c decodeObjectForKey:@"PMK"] retain]; _numberOfMeasurements = (unsigned long long)[c decodeInt64ForKey:@"numberOfMeasurements"]; _useCoreRotation = [c decodeBoolForKey:@"useCoreRotation"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFRangingPeer *o = [[[self class] allocWithZone:z] init]; o->_MACAddress = [_MACAddress retain]; o->_identifier = [_identifier retain]; o->_PMK = [_PMK retain]; o->_numberOfMeasurements = _numberOfMeasurements; o->_useCoreRotation = _useCoreRotation; return o; }
 @end
 
 @implementation CWFRangingResult
@@ -3256,14 +3327,15 @@
 @synthesize status = _status;
 @synthesize numberOfValidMeasurements = _numberOfValidMeasurements;
 @synthesize measurements = _measurements;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToRangingResult:(id)a0 { return 0; }
+- (void)dealloc { [_MACAddress release]; _MACAddress = nil; [_identifier release]; _identifier = nil; [_measurements release]; _measurements = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_MACAddress forKey:@"MACAddress"]; [c encodeObject:_identifier forKey:@"identifier"]; [c encodeDouble:_distance forKey:@"distance"]; [c encodeDouble:_standardDeviation forKey:@"standardDeviation"]; [c encodeInt64:(long long)_status forKey:@"status"]; [c encodeInt64:(long long)_numberOfValidMeasurements forKey:@"numberOfValidMeasurements"]; [c encodeObject:_measurements forKey:@"measurements"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _MACAddress = [[c decodeObjectForKey:@"MACAddress"] retain]; _identifier = [[c decodeObjectForKey:@"identifier"] retain]; _distance = [c decodeDoubleForKey:@"distance"]; _standardDeviation = [c decodeDoubleForKey:@"standardDeviation"]; _status = (int)[c decodeInt64ForKey:@"status"]; _numberOfValidMeasurements = (unsigned long long)[c decodeInt64ForKey:@"numberOfValidMeasurements"]; _measurements = [[c decodeObjectForKey:@"measurements"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFRangingResult *o = [[[self class] allocWithZone:z] init]; o->_MACAddress = [_MACAddress retain]; o->_identifier = [_identifier retain]; o->_distance = _distance; o->_standardDeviation = _standardDeviation; o->_status = _status; o->_numberOfValidMeasurements = _numberOfValidMeasurements; o->_measurements = [_measurements retain]; return o; }
 @end
 
 @implementation CWFRemoteInterfaceManager
@@ -3282,6 +3354,7 @@
 - (id)init { return self; }
 - (void)scanAvailableNetworksWithCompletion:(id)a0 {  }
 - (void)wifiStatusWithCompletion:(id)a0 {  }
+- (void)dealloc { [_interface release]; _interface = nil; [_requestQueue release]; _requestQueue = nil; [_interfaceDeactivationTimer release]; _interfaceDeactivationTimer = nil; [super dealloc]; }
 @end
 
 @implementation CWFRemoteInterfaceNetworkInfo
@@ -3299,6 +3372,7 @@
 - (id)initWithInterface:(id)a0 { return self; }
 - (id)initWithSSID:(id)a0 { return self; }
 - (id)initWithScanResult:(id)a0 { return self; }
+- (void)dealloc { [_SSID release]; _SSID = nil; [_BSSID release]; _BSSID = nil; [_macAddress release]; _macAddress = nil; [_networkName release]; _networkName = nil; [super dealloc]; }
 @end
 
 @implementation CWFRequestParameters
@@ -3314,16 +3388,17 @@
 @synthesize qualityOfService = _qualityOfService;
 @synthesize queuePriority = _queuePriority;
 @synthesize authorization = _authorization;
-+ (BOOL)supportsSecureCoding { return 0; }
 - (id)authorizationData { return nil; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
 - (id)init { return self; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToRequestParameters:(id)a0 { return 0; }
+- (void)dealloc { [_UUID release]; _UUID = nil; [_authorizationExternalFormData release]; _authorizationExternalFormData = nil; [_wifiNetworkSharingBundleIDOverride release]; _wifiNetworkSharingBundleIDOverride = nil; [_wifiNetworkSharingAccessoryID release]; _wifiNetworkSharingAccessoryID = nil; [_wifiNetworkSharingNetworkListUpdateEventPredicateData release]; _wifiNetworkSharingNetworkListUpdateEventPredicateData = nil; [_wifiNetworkSharingConnectedAPUpdateEventPredicateData release]; _wifiNetworkSharingConnectedAPUpdateEventPredicateData = nil; [_interfaceName release]; _interfaceName = nil; [_authorization release]; _authorization = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_UUID forKey:@"UUID"]; [c encodeObject:_authorizationExternalFormData forKey:@"authorizationExternalFormData"]; [c encodeObject:_wifiNetworkSharingBundleIDOverride forKey:@"wifiNetworkSharingBundleIDOverride"]; [c encodeObject:_wifiNetworkSharingAccessoryID forKey:@"wifiNetworkSharingAccessoryID"]; [c encodeObject:_wifiNetworkSharingNetworkListUpdateEventPredicateData forKey:@"wifiNetworkSharingNetworkListUpdateEventPredicateData"]; [c encodeObject:_wifiNetworkSharingConnectedAPUpdateEventPredicateData forKey:@"wifiNetworkSharingConnectedAPUpdateEventPredicateData"]; [c encodeObject:_interfaceName forKey:@"interfaceName"]; [c encodeInt64:(long long)_virtualInterfaceRole forKey:@"virtualInterfaceRole"]; [c encodeInt64:(long long)_timeout forKey:@"timeout"]; [c encodeInt64:(long long)_qualityOfService forKey:@"qualityOfService"]; [c encodeInt64:(long long)_queuePriority forKey:@"queuePriority"]; [c encodeObject:_authorization forKey:@"authorization"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _UUID = [[c decodeObjectForKey:@"UUID"] retain]; _authorizationExternalFormData = [[c decodeObjectForKey:@"authorizationExternalFormData"] retain]; _wifiNetworkSharingBundleIDOverride = [[c decodeObjectForKey:@"wifiNetworkSharingBundleIDOverride"] retain]; _wifiNetworkSharingAccessoryID = [[c decodeObjectForKey:@"wifiNetworkSharingAccessoryID"] retain]; _wifiNetworkSharingNetworkListUpdateEventPredicateData = [[c decodeObjectForKey:@"wifiNetworkSharingNetworkListUpdateEventPredicateData"] retain]; _wifiNetworkSharingConnectedAPUpdateEventPredicateData = [[c decodeObjectForKey:@"wifiNetworkSharingConnectedAPUpdateEventPredicateData"] retain]; _interfaceName = [[c decodeObjectForKey:@"interfaceName"] retain]; _virtualInterfaceRole = (int)[c decodeInt64ForKey:@"virtualInterfaceRole"]; _timeout = (unsigned long long)[c decodeInt64ForKey:@"timeout"]; _qualityOfService = (long long)[c decodeInt64ForKey:@"qualityOfService"]; _queuePriority = (long long)[c decodeInt64ForKey:@"queuePriority"]; _authorization = [[c decodeObjectForKey:@"authorization"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFRequestParameters *o = [[[self class] allocWithZone:z] init]; o->_UUID = [_UUID retain]; o->_authorizationExternalFormData = [_authorizationExternalFormData retain]; o->_wifiNetworkSharingBundleIDOverride = [_wifiNetworkSharingBundleIDOverride retain]; o->_wifiNetworkSharingAccessoryID = [_wifiNetworkSharingAccessoryID retain]; o->_wifiNetworkSharingNetworkListUpdateEventPredicateData = [_wifiNetworkSharingNetworkListUpdateEventPredicateData retain]; o->_wifiNetworkSharingConnectedAPUpdateEventPredicateData = [_wifiNetworkSharingConnectedAPUpdateEventPredicateData retain]; o->_interfaceName = [_interfaceName retain]; o->_virtualInterfaceRole = _virtualInterfaceRole; o->_timeout = _timeout; o->_qualityOfService = _qualityOfService; o->_queuePriority = _queuePriority; o->_authorization = [_authorization retain]; return o; }
 @end
 
 @implementation CWFRoamStatus
@@ -3350,18 +3425,19 @@
 @synthesize toRSSI = _toRSSI;
 @synthesize reason = _reason;
 @synthesize status = _status;
-+ (BOOL)supportsSecureCoding { return 0; }
 - (id)JSONCompatibleKeyValueMap { return nil; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
 - (double)duration { return 0; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
 - (id)init { return self; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToRoamStatus:(id)a0 { return 0; }
 - (id)networkName { return nil; }
+- (void)dealloc { [_UUID release]; _UUID = nil; [_interfaceName release]; _interfaceName = nil; [_startedAt release]; _startedAt = nil; [_endedAt release]; _endedAt = nil; [_SSID release]; _SSID = nil; [_originOUI release]; _originOUI = nil; [_targetOUI release]; _targetOUI = nil; [_fromBSSID release]; _fromBSSID = nil; [_toBSSID release]; _toBSSID = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_UUID forKey:@"UUID"]; [c encodeObject:_interfaceName forKey:@"interfaceName"]; [c encodeInt64:(long long)_timeStarted forKey:@"timeStarted"]; [c encodeInt64:(long long)_timeEnded forKey:@"timeEnded"]; [c encodeObject:_startedAt forKey:@"startedAt"]; [c encodeObject:_endedAt forKey:@"endedAt"]; [c encodeObject:_SSID forKey:@"SSID"]; [c encodeObject:_originOUI forKey:@"originOUI"]; [c encodeObject:_targetOUI forKey:@"targetOUI"]; [c encodeObject:_fromBSSID forKey:@"fromBSSID"]; [c encodeObject:_toBSSID forKey:@"toBSSID"]; [c encodeInt64:(long long)_fromChannel forKey:@"fromChannel"]; [c encodeInt64:(long long)_toChannel forKey:@"toChannel"]; [c encodeInt64:(long long)_fromRSSI forKey:@"fromRSSI"]; [c encodeInt64:(long long)_toRSSI forKey:@"toRSSI"]; [c encodeInt64:(long long)_reason forKey:@"reason"]; [c encodeInt64:(long long)_status forKey:@"status"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _UUID = [[c decodeObjectForKey:@"UUID"] retain]; _interfaceName = [[c decodeObjectForKey:@"interfaceName"] retain]; _timeStarted = (unsigned long long)[c decodeInt64ForKey:@"timeStarted"]; _timeEnded = (unsigned long long)[c decodeInt64ForKey:@"timeEnded"]; _startedAt = [[c decodeObjectForKey:@"startedAt"] retain]; _endedAt = [[c decodeObjectForKey:@"endedAt"] retain]; _SSID = [[c decodeObjectForKey:@"SSID"] retain]; _originOUI = [[c decodeObjectForKey:@"originOUI"] retain]; _targetOUI = [[c decodeObjectForKey:@"targetOUI"] retain]; _fromBSSID = [[c decodeObjectForKey:@"fromBSSID"] retain]; _toBSSID = [[c decodeObjectForKey:@"toBSSID"] retain]; _fromChannel = (unsigned long long)[c decodeInt64ForKey:@"fromChannel"]; _toChannel = (unsigned long long)[c decodeInt64ForKey:@"toChannel"]; _fromRSSI = (long long)[c decodeInt64ForKey:@"fromRSSI"]; _toRSSI = (long long)[c decodeInt64ForKey:@"toRSSI"]; _reason = (int)[c decodeInt64ForKey:@"reason"]; _status = (int)[c decodeInt64ForKey:@"status"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFRoamStatus *o = [[[self class] allocWithZone:z] init]; o->_UUID = [_UUID retain]; o->_interfaceName = [_interfaceName retain]; o->_timeStarted = _timeStarted; o->_timeEnded = _timeEnded; o->_startedAt = [_startedAt retain]; o->_endedAt = [_endedAt retain]; o->_SSID = [_SSID retain]; o->_originOUI = [_originOUI retain]; o->_targetOUI = [_targetOUI retain]; o->_fromBSSID = [_fromBSSID retain]; o->_toBSSID = [_toBSSID retain]; o->_fromChannel = _fromChannel; o->_toChannel = _toChannel; o->_fromRSSI = _fromRSSI; o->_toRSSI = _toRSSI; o->_reason = _reason; o->_status = _status; return o; }
 @end
 
 @implementation CWFSCNetworkConfiguration
@@ -3398,6 +3474,7 @@
 - (id)networkInterfaceNames { return nil; }
 - (void)startEventMonitoring {  }
 - (void)stopEventMonitoring {  }
+- (void)dealloc { [_eventHandler release]; _eventHandler = nil; [super dealloc]; }
 @end
 
 @implementation CWFSCNetworkInterface
@@ -3423,6 +3500,7 @@
 - (BOOL)isMonitoringEvents { return 0; }
 - (void)startEventMonitoring {  }
 - (void)stopEventMonitoring {  }
+- (void)dealloc { [_interfaceName release]; _interfaceName = nil; [_hardwareAddress release]; _hardwareAddress = nil; [_eventHandler release]; _eventHandler = nil; [super dealloc]; }
 @end
 
 @implementation CWFSCNetworkReachability
@@ -3432,6 +3510,7 @@
 - (BOOL)isMonitoringEvents { return 0; }
 - (void)startEventMonitoring {  }
 - (void)stopEventMonitoring {  }
+- (void)dealloc { [_eventHandler release]; _eventHandler = nil; [super dealloc]; }
 @end
 
 @implementation CWFSCNetworkService
@@ -3477,6 +3556,7 @@
 - (id)serviceName { return nil; }
 - (void)startEventMonitoring {  }
 - (void)stopEventMonitoring {  }
+- (void)dealloc { [_eventHandler release]; _eventHandler = nil; [_interfaceName release]; _interfaceName = nil; [super dealloc]; }
 @end
 
 @implementation CWFScanParameters
@@ -3516,13 +3596,9 @@
 @synthesize includeBeaconCacheResults = _includeBeaconCacheResults;
 @synthesize includeBackgroundScanCacheResults = _includeBackgroundScanCacheResults;
 @synthesize sortByAutoJoinPreference = _sortByAutoJoinPreference;
-+ (BOOL)supportsSecureCoding { return 0; }
 - (BOOL)cacheOnly { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToScanParameters:(id)a0 { return 0; }
 - (unsigned long long)maximumANQPCacheAgeForPasspointScanResults { return 0; }
@@ -3533,6 +3609,11 @@
 - (void)visitPredicate:(id)a0 {  }
 - (void)visitPredicateExpression:(id)a0 {  }
 - (void)visitPredicateOperator:(id)a0 {  }
+- (void)dealloc { [_channels release]; _channels = nil; [_SSID release]; _SSID = nil; [_SSIDList release]; _SSIDList = nil; [_BSSID release]; _BSSID = nil; [_includeProperties release]; _includeProperties = nil; [_includeScanResults release]; _includeScanResults = nil; [_ANQPElementIDListForPasspointScanResults release]; _ANQPElementIDListForPasspointScanResults = nil; [_matchNetworkNamePrefix release]; _matchNetworkNamePrefix = nil; [_filterPredicate release]; _filterPredicate = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeBool:_invalidPredicate forKey:@"invalidPredicate"]; [c encodeObject:_channels forKey:@"channels"]; [c encodeObject:_SSID forKey:@"SSID"]; [c encodeInt64:(long long)_shortSSID forKey:@"shortSSID"]; [c encodeObject:_SSIDList forKey:@"SSIDList"]; [c encodeObject:_BSSID forKey:@"BSSID"]; [c encodeInt64:(long long)_numberOfScans forKey:@"numberOfScans"]; [c encodeInt64:(long long)_restTime forKey:@"restTime"]; [c encodeInt64:(long long)_dwellTime forKey:@"dwellTime"]; [c encodeInt64:(long long)_acceptableCacheAge forKey:@"acceptableCacheAge"]; [c encodeInt64:(long long)_BSSType forKey:@"BSSType"]; [c encodeInt64:(long long)_PHYMode forKey:@"PHYMode"]; [c encodeInt64:(long long)_scanType forKey:@"scanType"]; [c encodeInt64:(long long)_minimumRSSI forKey:@"minimumRSSI"]; [c encodeInt64:(long long)_maximumAge forKey:@"maximumAge"]; [c encodeInt64:(long long)_minimumTimestamp forKey:@"minimumTimestamp"]; [c encodeBool:_mergeScanResults forKey:@"mergeScanResults"]; [c encodeBool:_includeHiddenNetworks forKey:@"includeHiddenNetworks"]; [c encodeBool:_addScanDurationToMaxAge forKey:@"addScanDurationToMaxAge"]; [c encodeInt64:(long long)_scanFlags forKey:@"scanFlags"]; [c encodeInt64:(long long)_excludeScanFlags forKey:@"excludeScanFlags"]; [c encodeObject:_includeProperties forKey:@"includeProperties"]; [c encodeObject:_includeScanResults forKey:@"includeScanResults"]; [c encodeBool:_includeMatchingKnownNetworkProfiles forKey:@"includeMatchingKnownNetworkProfiles"]; [c encodeObject:_ANQPElementIDListForPasspointScanResults forKey:@"ANQPElementIDListForPasspointScanResults"]; [c encodeInt64:(long long)_acceptableANQPCacheAgeForPasspointScanResults forKey:@"acceptableANQPCacheAgeForPasspointScanResults"]; [c encodeInt64:(long long)_maximumANQPAgeForPasspointScanResults forKey:@"maximumANQPAgeForPasspointScanResults"]; [c encodeBool:_exclude6GChannels forKey:@"exclude6GChannels"]; [c encodeObject:_matchNetworkNamePrefix forKey:@"matchNetworkNamePrefix"]; [c encodeObject:_filterPredicate forKey:@"filterPredicate"]; [c encodeBool:_includeBeaconCacheResults forKey:@"includeBeaconCacheResults"]; [c encodeBool:_includeBackgroundScanCacheResults forKey:@"includeBackgroundScanCacheResults"]; [c encodeBool:_sortByAutoJoinPreference forKey:@"sortByAutoJoinPreference"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _invalidPredicate = [c decodeBoolForKey:@"invalidPredicate"]; _channels = [[c decodeObjectForKey:@"channels"] retain]; _SSID = [[c decodeObjectForKey:@"SSID"] retain]; _shortSSID = (unsigned long long)[c decodeInt64ForKey:@"shortSSID"]; _SSIDList = [[c decodeObjectForKey:@"SSIDList"] retain]; _BSSID = [[c decodeObjectForKey:@"BSSID"] retain]; _numberOfScans = (unsigned long long)[c decodeInt64ForKey:@"numberOfScans"]; _restTime = (unsigned long long)[c decodeInt64ForKey:@"restTime"]; _dwellTime = (unsigned long long)[c decodeInt64ForKey:@"dwellTime"]; _acceptableCacheAge = (unsigned long long)[c decodeInt64ForKey:@"acceptableCacheAge"]; _BSSType = (int)[c decodeInt64ForKey:@"BSSType"]; _PHYMode = (int)[c decodeInt64ForKey:@"PHYMode"]; _scanType = (int)[c decodeInt64ForKey:@"scanType"]; _minimumRSSI = (long long)[c decodeInt64ForKey:@"minimumRSSI"]; _maximumAge = (unsigned long long)[c decodeInt64ForKey:@"maximumAge"]; _minimumTimestamp = (unsigned long long)[c decodeInt64ForKey:@"minimumTimestamp"]; _mergeScanResults = [c decodeBoolForKey:@"mergeScanResults"]; _includeHiddenNetworks = [c decodeBoolForKey:@"includeHiddenNetworks"]; _addScanDurationToMaxAge = [c decodeBoolForKey:@"addScanDurationToMaxAge"]; _scanFlags = (unsigned long long)[c decodeInt64ForKey:@"scanFlags"]; _excludeScanFlags = (unsigned long long)[c decodeInt64ForKey:@"excludeScanFlags"]; _includeProperties = [[c decodeObjectForKey:@"includeProperties"] retain]; _includeScanResults = [[c decodeObjectForKey:@"includeScanResults"] retain]; _includeMatchingKnownNetworkProfiles = [c decodeBoolForKey:@"includeMatchingKnownNetworkProfiles"]; _ANQPElementIDListForPasspointScanResults = [[c decodeObjectForKey:@"ANQPElementIDListForPasspointScanResults"] retain]; _acceptableANQPCacheAgeForPasspointScanResults = (unsigned long long)[c decodeInt64ForKey:@"acceptableANQPCacheAgeForPasspointScanResults"]; _maximumANQPAgeForPasspointScanResults = (unsigned long long)[c decodeInt64ForKey:@"maximumANQPAgeForPasspointScanResults"]; _exclude6GChannels = [c decodeBoolForKey:@"exclude6GChannels"]; _matchNetworkNamePrefix = [[c decodeObjectForKey:@"matchNetworkNamePrefix"] retain]; _filterPredicate = [[c decodeObjectForKey:@"filterPredicate"] retain]; _includeBeaconCacheResults = [c decodeBoolForKey:@"includeBeaconCacheResults"]; _includeBackgroundScanCacheResults = [c decodeBoolForKey:@"includeBackgroundScanCacheResults"]; _sortByAutoJoinPreference = [c decodeBoolForKey:@"sortByAutoJoinPreference"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFScanParameters *o = [[[self class] allocWithZone:z] init]; o->_invalidPredicate = _invalidPredicate; o->_channels = [_channels retain]; o->_SSID = [_SSID retain]; o->_shortSSID = _shortSSID; o->_SSIDList = [_SSIDList retain]; o->_BSSID = [_BSSID retain]; o->_numberOfScans = _numberOfScans; o->_restTime = _restTime; o->_dwellTime = _dwellTime; o->_acceptableCacheAge = _acceptableCacheAge; o->_BSSType = _BSSType; o->_PHYMode = _PHYMode; o->_scanType = _scanType; o->_minimumRSSI = _minimumRSSI; o->_maximumAge = _maximumAge; o->_minimumTimestamp = _minimumTimestamp; o->_mergeScanResults = _mergeScanResults; o->_includeHiddenNetworks = _includeHiddenNetworks; o->_addScanDurationToMaxAge = _addScanDurationToMaxAge; o->_scanFlags = _scanFlags; o->_excludeScanFlags = _excludeScanFlags; o->_includeProperties = [_includeProperties retain]; o->_includeScanResults = [_includeScanResults retain]; o->_includeMatchingKnownNetworkProfiles = _includeMatchingKnownNetworkProfiles; o->_ANQPElementIDListForPasspointScanResults = [_ANQPElementIDListForPasspointScanResults retain]; o->_acceptableANQPCacheAgeForPasspointScanResults = _acceptableANQPCacheAgeForPasspointScanResults; o->_maximumANQPAgeForPasspointScanResults = _maximumANQPAgeForPasspointScanResults; o->_exclude6GChannels = _exclude6GChannels; o->_matchNetworkNamePrefix = [_matchNetworkNamePrefix retain]; o->_filterPredicate = [_filterPredicate retain]; o->_includeBeaconCacheResults = _includeBeaconCacheResults; o->_includeBackgroundScanCacheResults = _includeBackgroundScanCacheResults; o->_sortByAutoJoinPreference = _sortByAutoJoinPreference; return o; }
 @end
 
 @implementation CWFScanResult
@@ -3651,7 +3732,6 @@
 @dynamic isNonTransmittedBSSID;
 @dynamic privateMACAddress;
 + (id)supportedOSSpecificKeys { return nil; }
-+ (BOOL)supportsSecureCoding { return 0; }
 - (id)ANQPResponse { return nil; }
 - (int)APMode { return 0; }
 - (id)BSSID { return nil; }
@@ -3693,13 +3773,11 @@
 - (long long)compareLowDataModes:(id)a0 { return 0; }
 - (long long)compareSupportedPHYModes:(id)a0 { return 0; }
 - (long long)compareSupportedSecurityTypes:(id)a0 { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)countryCode { return nil; }
 - (id)description { return nil; }
 - (id)deviceID { return nil; }
 - (id)displayName { return nil; }
 - (id)domainNameList { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (int)fastestSupportedPHYMode { return 0; }
 - (id)filteredScanResultWithProperties:(id)a0 { return nil; }
 - (id)friendlyName { return nil; }
@@ -3709,7 +3787,6 @@
 - (BOOL)hasWEP40Cipher { return 0; }
 - (unsigned long long)hash { return 0; }
 - (id)informationElementData { return nil; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithInternal:(id)a0 { return self; }
 - (id)initWithScanRecord:(id)a0 includeProperties:(id)a1 { return self; }
 - (id)initWithScanRecord:(id)a0 knownNetworkProfile:(id)a1 includeProperties:(id)a2 { return self; }
@@ -3796,6 +3873,11 @@
 - (id)venueURLList { return nil; }
 - (BOOL)wasConnectedDuringSleep { return 0; }
 - (unsigned long long)weakestSupportedSecurityType { return 0; }
+- (void)dealloc { [_internal release]; _internal = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_internal forKey:@"internal"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _internal = [[c decodeObjectForKey:@"internal"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFScanResult *o = [[[self class] allocWithZone:z] init]; o->_internal = [_internal retain]; return o; }
 @end
 
 @implementation CWFSensingAutoDataCollector
@@ -3808,6 +3890,7 @@
 - (id)initWithHomes:(id)a0 { return self; }
 - (void)registerForAccessoriesInRoomWithDelegate:(id)a0 {  }
 - (void)updateRegisteredServiceWithDelegate:(id)a0 {  }
+- (void)dealloc { [__serviceObjects release]; __serviceObjects = nil; [__serviceQueue release]; __serviceQueue = nil; [__currentAccessory release]; __currentAccessory = nil; [super dealloc]; }
 @end
 
 @implementation CWFSensingHMADataCollector
@@ -3828,6 +3911,7 @@
 - (void)handleSensingResult:(id)a0 {  }
 - (id)initWithAccessory:(id)a0 andOptions:(id)a1 andDelegate:(id)a2 { return self; }
 - (void)registerForPrimaryServiceNotificationWith:(id)a0 {  }
+- (void)dealloc { [__sensingParams release]; __sensingParams = nil; [__accessory release]; __accessory = nil; [__serviceRegistrationError release]; __serviceRegistrationError = nil; [__serviceQueue release]; __serviceQueue = nil; [__delegate release]; __delegate = nil; [super dealloc]; }
 @end
 
 @implementation CWFTrialFactorProvider
@@ -3842,6 +3926,7 @@
 - (void)setUpdateHandler:(id)a0 queue:(id)a1 {  }
 - (void)startMonitoring {  }
 - (void)stopMonitoring {  }
+- (void)dealloc { [_consumerKey release]; _consumerKey = nil; [super dealloc]; }
 @end
 
 @implementation CWFUIScanManager
@@ -3869,6 +3954,7 @@
 - (void)resetCache {  }
 - (id)sanitizeCacheResult:(id)a0 { return nil; }
 - (BOOL)startScansForInterfaceName:(id)a0 { return 0; }
+- (void)dealloc { [_bandChannels release]; _bandChannels = nil; [_issueScanHandler release]; _issueScanHandler = nil; [_finishedScanHandler release]; _finishedScanHandler = nil; [_hiddenNetworkNameHandler release]; _hiddenNetworkNameHandler = nil; [super dealloc]; }
 @end
 
 @implementation CWFUserSettings
@@ -3881,32 +3967,34 @@
 @synthesize autoHotspotMode = _autoHotspotMode;
 @synthesize compatibilityMode = _compatibilityMode;
 @synthesize OSSpecificAttributes = _OSSpecificAttributes;
-+ (BOOL)supportsSecureCoding { return 0; }
 - (id)JSONCompatibleKeyValueMap { return nil; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
 - (id)descriptionForAskToJoinMode { return nil; }
 - (id)descriptionForAutoHotspotMode { return nil; }
 - (id)descriptionForCompatibilityMode { return nil; }
 - (id)descriptionForSyncMode { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToUserSettings:(id)a0 { return 0; }
+- (void)dealloc { [_OSSpecificAttributes release]; _OSSpecificAttributes = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeInt64:(long long)_syncMode forKey:@"syncMode"]; [c encodeInt64:(long long)_askToJoinMode forKey:@"askToJoinMode"]; [c encodeInt64:(long long)_autoHotspotMode forKey:@"autoHotspotMode"]; [c encodeInt64:(long long)_compatibilityMode forKey:@"compatibilityMode"]; [c encodeObject:_OSSpecificAttributes forKey:@"OSSpecificAttributes"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _syncMode = (long long)[c decodeInt64ForKey:@"syncMode"]; _askToJoinMode = (long long)[c decodeInt64ForKey:@"askToJoinMode"]; _autoHotspotMode = (long long)[c decodeInt64ForKey:@"autoHotspotMode"]; _compatibilityMode = (long long)[c decodeInt64ForKey:@"compatibilityMode"]; _OSSpecificAttributes = [[c decodeObjectForKey:@"OSSpecificAttributes"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFUserSettings *o = [[[self class] allocWithZone:z] init]; o->_syncMode = _syncMode; o->_askToJoinMode = _askToJoinMode; o->_autoHotspotMode = _autoHotspotMode; o->_compatibilityMode = _compatibilityMode; o->_OSSpecificAttributes = [_OSSpecificAttributes retain]; return o; }
 @end
 
 @implementation CWFWiFiNetworkSharingAskToShareNetwork
 @synthesize network = _network;
 @synthesize scanResult = _scanResult;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToWiFiNetworkSharingAskToShareNetwork:(id)a0 { return 0; }
+- (void)dealloc { [_network release]; _network = nil; [_scanResult release]; _scanResult = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_network forKey:@"network"]; [c encodeObject:_scanResult forKey:@"scanResult"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _network = [[c decodeObjectForKey:@"network"] retain]; _scanResult = [[c decodeObjectForKey:@"scanResult"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFWiFiNetworkSharingAskToShareNetwork *o = [[[self class] allocWithZone:z] init]; o->_network = [_network retain]; o->_scanResult = [_scanResult retain]; return o; }
 @end
 
 @implementation CWFWiFiNetworkSharingAskToShareScanResult
@@ -3917,71 +4005,76 @@
 @synthesize wasFoundOnAccessory = _wasFoundOnAccessory;
 @synthesize signalStrengthOnAccessory = _signalStrengthOnAccessory;
 @synthesize isConnectedOnAccessory = _isConnectedOnAccessory;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToWiFiNetworkSharingAskToShareScanResult:(id)a0 { return 0; }
 - (id)networkName { return nil; }
+- (void)dealloc { [_SSID release]; _SSID = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_SSID forKey:@"SSID"]; [c encodeDouble:_signalStrength forKey:@"signalStrength"]; [c encodeBool:_isConnected forKey:@"isConnected"]; [c encodeBool:_wasFoundOnAccessory forKey:@"wasFoundOnAccessory"]; [c encodeDouble:_signalStrengthOnAccessory forKey:@"signalStrengthOnAccessory"]; [c encodeBool:_isConnectedOnAccessory forKey:@"isConnectedOnAccessory"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _SSID = [[c decodeObjectForKey:@"SSID"] retain]; _signalStrength = [c decodeDoubleForKey:@"signalStrength"]; _isConnected = [c decodeBoolForKey:@"isConnected"]; _wasFoundOnAccessory = [c decodeBoolForKey:@"wasFoundOnAccessory"]; _signalStrengthOnAccessory = [c decodeDoubleForKey:@"signalStrengthOnAccessory"]; _isConnectedOnAccessory = [c decodeBoolForKey:@"isConnectedOnAccessory"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFWiFiNetworkSharingAskToShareScanResult *o = [[[self class] allocWithZone:z] init]; o->_SSID = [_SSID retain]; o->_signalStrength = _signalStrength; o->_isConnected = _isConnected; o->_wasFoundOnAccessory = _wasFoundOnAccessory; o->_signalStrengthOnAccessory = _signalStrengthOnAccessory; o->_isConnectedOnAccessory = _isConnectedOnAccessory; return o; }
 @end
 
 @implementation CWFWiFiNetworkSharingClientID
 @synthesize bundleID = _bundleID;
 @synthesize accessoryID = _accessoryID;
 + (id)clientIDWithAccessoryID:(id)a0 bundleID:(id)a1 { return nil; }
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
 - (id)initWithAccessoryID:(id)a0 bundleID:(id)a1 { return self; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToWiFiNetworkSharingClientID:(id)a0 { return 0; }
+- (void)dealloc { [_bundleID release]; _bundleID = nil; [_accessoryID release]; _accessoryID = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_bundleID forKey:@"bundleID"]; [c encodeObject:_accessoryID forKey:@"accessoryID"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _bundleID = [[c decodeObjectForKey:@"bundleID"] retain]; _accessoryID = [[c decodeObjectForKey:@"accessoryID"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFWiFiNetworkSharingClientID *o = [[[self class] allocWithZone:z] init]; o->_bundleID = [_bundleID retain]; o->_accessoryID = [_accessoryID retain]; return o; }
 @end
 
 @implementation CWFWiFiNetworkSharingConnectedAP
 @dynamic networkName;
 @synthesize SSID = _SSID;
 @synthesize links = _links;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToWiFiNetworkSharingConnectedAP:(id)a0 { return 0; }
 - (id)networkName { return nil; }
+- (void)dealloc { [_SSID release]; _SSID = nil; [_links release]; _links = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_SSID forKey:@"SSID"]; [c encodeObject:_links forKey:@"links"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _SSID = [[c decodeObjectForKey:@"SSID"] retain]; _links = [[c decodeObjectForKey:@"links"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFWiFiNetworkSharingConnectedAP *o = [[[self class] allocWithZone:z] init]; o->_SSID = [_SSID retain]; o->_links = [_links retain]; return o; }
 @end
 
 @implementation CWFWiFiNetworkSharingConnectedAPLink
 @synthesize channel = _channel;
 @synthesize bssidHash = _bssidHash;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToWiFiNetworkSharingConnectedAPLink:(id)a0 { return 0; }
+- (void)dealloc { [_channel release]; _channel = nil; [_bssidHash release]; _bssidHash = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_channel forKey:@"channel"]; [c encodeObject:_bssidHash forKey:@"bssidHash"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _channel = [[c decodeObjectForKey:@"channel"] retain]; _bssidHash = [[c decodeObjectForKey:@"bssidHash"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFWiFiNetworkSharingConnectedAPLink *o = [[[self class] allocWithZone:z] init]; o->_channel = [_channel retain]; o->_bssidHash = [_bssidHash retain]; return o; }
 @end
 
 @implementation CWFWiFiNetworkSharingConnectedAPUpdate
 @synthesize connectedAPs = _connectedAPs;
 @synthesize connectedAPsUpdateCounter = _connectedAPsUpdateCounter;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToWiFiNetworkSharingConnectedAPUpdate:(id)a0 { return 0; }
+- (void)dealloc { [_connectedAPs release]; _connectedAPs = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_connectedAPs forKey:@"connectedAPs"]; [c encodeInt64:(long long)_connectedAPsUpdateCounter forKey:@"connectedAPsUpdateCounter"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _connectedAPs = [[c decodeObjectForKey:@"connectedAPs"] retain]; _connectedAPsUpdateCounter = (unsigned long long)[c decodeInt64ForKey:@"connectedAPsUpdateCounter"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFWiFiNetworkSharingConnectedAPUpdate *o = [[[self class] allocWithZone:z] init]; o->_connectedAPs = [_connectedAPs retain]; o->_connectedAPsUpdateCounter = _connectedAPsUpdateCounter; return o; }
 @end
 
 @implementation CWFWiFiNetworkSharingEAPCredentials
@@ -3998,28 +4091,30 @@
 @synthesize TTLSInnerAuthenticationType = _TTLSInnerAuthenticationType;
 @synthesize FASTUsePAC = _FASTUsePAC;
 @synthesize FASTProvisionPACAnonymously = _FASTProvisionPACAnonymously;
-+ (BOOL)supportsSecureCoding { return 0; }
 - (long long)__TTLSInnerAuthenticationTypeForString:(id)a0 { return 0; }
 - (id)__acceptedCWFWiFiNetworkSharingEAPTypes:(id)a0 { return nil; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithShareableEAPConfiguration:(id)a0 { return self; }
+- (void)dealloc { [_outerIdentity release]; _outerIdentity = nil; [_trustedServerCertificates release]; _trustedServerCertificates = nil; [_trustedServerNames release]; _trustedServerNames = nil; [_clientCertificateChain release]; _clientCertificateChain = nil; [_clientPrivateKey release]; _clientPrivateKey = nil; [_username release]; _username = nil; [_acceptedEAPTypes release]; _acceptedEAPTypes = nil; [_TLSMinimumVersion release]; _TLSMinimumVersion = nil; [_TLSMaximumVersion release]; _TLSMaximumVersion = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_outerIdentity forKey:@"outerIdentity"]; [c encodeObject:_trustedServerCertificates forKey:@"trustedServerCertificates"]; [c encodeObject:_trustedServerNames forKey:@"trustedServerNames"]; [c encodeObject:_clientCertificateChain forKey:@"clientCertificateChain"]; [c encodeObject:_clientPrivateKey forKey:@"clientPrivateKey"]; [c encodeObject:_username forKey:@"username"]; [c encodeObject:_acceptedEAPTypes forKey:@"acceptedEAPTypes"]; [c encodeObject:_TLSMinimumVersion forKey:@"TLSMinimumVersion"]; [c encodeObject:_TLSMaximumVersion forKey:@"TLSMaximumVersion"]; [c encodeBool:_TLSCertificateRequired forKey:@"TLSCertificateRequired"]; [c encodeInt64:(long long)_TTLSInnerAuthenticationType forKey:@"TTLSInnerAuthenticationType"]; [c encodeBool:_FASTUsePAC forKey:@"FASTUsePAC"]; [c encodeBool:_FASTProvisionPACAnonymously forKey:@"FASTProvisionPACAnonymously"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _outerIdentity = [[c decodeObjectForKey:@"outerIdentity"] retain]; _trustedServerCertificates = [[c decodeObjectForKey:@"trustedServerCertificates"] retain]; _trustedServerNames = [[c decodeObjectForKey:@"trustedServerNames"] retain]; _clientCertificateChain = [[c decodeObjectForKey:@"clientCertificateChain"] retain]; _clientPrivateKey = [[c decodeObjectForKey:@"clientPrivateKey"] retain]; _username = [[c decodeObjectForKey:@"username"] retain]; _acceptedEAPTypes = [[c decodeObjectForKey:@"acceptedEAPTypes"] retain]; _TLSMinimumVersion = [[c decodeObjectForKey:@"TLSMinimumVersion"] retain]; _TLSMaximumVersion = [[c decodeObjectForKey:@"TLSMaximumVersion"] retain]; _TLSCertificateRequired = [c decodeBoolForKey:@"TLSCertificateRequired"]; _TTLSInnerAuthenticationType = (long long)[c decodeInt64ForKey:@"TTLSInnerAuthenticationType"]; _FASTUsePAC = [c decodeBoolForKey:@"FASTUsePAC"]; _FASTProvisionPACAnonymously = [c decodeBoolForKey:@"FASTProvisionPACAnonymously"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFWiFiNetworkSharingEAPCredentials *o = [[[self class] allocWithZone:z] init]; o->_outerIdentity = [_outerIdentity retain]; o->_trustedServerCertificates = [_trustedServerCertificates retain]; o->_trustedServerNames = [_trustedServerNames retain]; o->_clientCertificateChain = [_clientCertificateChain retain]; o->_clientPrivateKey = [_clientPrivateKey retain]; o->_username = [_username retain]; o->_acceptedEAPTypes = [_acceptedEAPTypes retain]; o->_TLSMinimumVersion = [_TLSMinimumVersion retain]; o->_TLSMaximumVersion = [_TLSMaximumVersion retain]; o->_TLSCertificateRequired = _TLSCertificateRequired; o->_TTLSInnerAuthenticationType = _TTLSInnerAuthenticationType; o->_FASTUsePAC = _FASTUsePAC; o->_FASTProvisionPACAnonymously = _FASTProvisionPACAnonymously; return o; }
 @end
 
 @implementation CWFWiFiNetworkSharingEventID
 @synthesize clientID = _clientID;
 @synthesize networkListUpdateEventPredicateData = _networkListUpdateEventPredicateData;
 @synthesize connectedAPUpdateEventPredicateData = _connectedAPUpdateEventPredicateData;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToWiFiNetworkSharingEventID:(id)a0 { return 0; }
+- (void)dealloc { [_clientID release]; _clientID = nil; [_networkListUpdateEventPredicateData release]; _networkListUpdateEventPredicateData = nil; [_connectedAPUpdateEventPredicateData release]; _connectedAPUpdateEventPredicateData = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [super encodeWithCoder:c]; [c encodeObject:_clientID forKey:@"clientID"]; [c encodeObject:_networkListUpdateEventPredicateData forKey:@"networkListUpdateEventPredicateData"]; [c encodeObject:_connectedAPUpdateEventPredicateData forKey:@"connectedAPUpdateEventPredicateData"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super initWithCoder:c]; if (!self) return nil; _clientID = [[c decodeObjectForKey:@"clientID"] retain]; _networkListUpdateEventPredicateData = [[c decodeObjectForKey:@"networkListUpdateEventPredicateData"] retain]; _connectedAPUpdateEventPredicateData = [[c decodeObjectForKey:@"connectedAPUpdateEventPredicateData"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFWiFiNetworkSharingEventID *o = [super copyWithZone:z]; o->_clientID = [_clientID retain]; o->_networkListUpdateEventPredicateData = [_networkListUpdateEventPredicateData retain]; o->_connectedAPUpdateEventPredicateData = [_connectedAPUpdateEventPredicateData retain]; return o; }
 @end
 
 @implementation CWFWiFiNetworkSharingManager
@@ -4175,6 +4270,7 @@
 - (void)setAskToShareStatus:(long long)a0 clientID:(id)a1 networkID:(id)a2 {  }
 - (void)setAssociatedNetwork:(id)a0 {  }
 - (void)setLocation:(id)a0 {  }
+- (void)dealloc { [_internalQueue release]; _internalQueue = nil; [_store release]; _store = nil; [_registeredWiFiNetworkSharingEventIDs release]; _registeredWiFiNetworkSharingEventIDs = nil; [_appexRelaunchAttemptCounts release]; _appexRelaunchAttemptCounts = nil; [_appexInvalidationTimestamps release]; _appexInvalidationTimestamps = nil; [_nextAppexRelaunchTimer release]; _nextAppexRelaunchTimer = nil; [_waitingForNetworkListUpdateAcknowledgement release]; _waitingForNetworkListUpdateAcknowledgement = nil; [_waitingForConnectedAPUpdateAcknowledgement release]; _waitingForConnectedAPUpdateAcknowledgement = nil; [_askToShareFromAppClientID release]; _askToShareFromAppClientID = nil; [_askToShareFromAppCompletion release]; _askToShareFromAppCompletion = nil; [_askToShareRequestFromAppTimestampCache release]; _askToShareRequestFromAppTimestampCache = nil; [_waitForAppexTimer release]; _waitForAppexTimer = nil; [_askToShareFromAppexClientID release]; _askToShareFromAppexClientID = nil; [_askToShareFromAppexCompletion release]; _askToShareFromAppexCompletion = nil; [_askToShareRequestFromAppexTimestampCache release]; _askToShareRequestFromAppexTimestampCache = nil; [_askToShareNetworksCache release]; _askToShareNetworksCache = nil; [_localScanResults release]; _localScanResults = nil; [_accessoryScanResults release]; _accessoryScanResults = nil; [_accessoryScanTimer release]; _accessoryScanTimer = nil; [_authorizationClientID release]; _authorizationClientID = nil; [_authorizationCompletion release]; _authorizationCompletion = nil; [_authorizationRequestTimestampCache release]; _authorizationRequestTimestampCache = nil; [_clientIDDeviceAccessAuthorizationRequestMap release]; _clientIDDeviceAccessAuthorizationRequestMap = nil; [_targetQueue release]; _targetQueue = nil; [_connectedAPUpdateHandler release]; _connectedAPUpdateHandler = nil; [_networkListUpdateHandler release]; _networkListUpdateHandler = nil; [_askToShareNetworkListChangeHandler release]; _askToShareNetworkListChangeHandler = nil; [_askToShareStatusChangeHandler release]; _askToShareStatusChangeHandler = nil; [_authorizationLevelChangeHandler release]; _authorizationLevelChangeHandler = nil; [_hiddenNetworkSSIDListHandler release]; _hiddenNetworkSSIDListHandler = nil; [_knownNetworksHandler release]; _knownNetworksHandler = nil; [_shareableEAPNetworkHandler release]; _shareableEAPNetworkHandler = nil; [_shareableEAPNetworkTrustedServerCertificatesHandler release]; _shareableEAPNetworkTrustedServerCertificatesHandler = nil; [_passwordHandler release]; _passwordHandler = nil; [_captivePortalCredentialsHandler release]; _captivePortalCredentialsHandler = nil; [_performAskToShareAccessoryScanHandler release]; _performAskToShareAccessoryScanHandler = nil; [_performAskToShareScanHandler release]; _performAskToShareScanHandler = nil; [_appForegroundStateHandler release]; _appForegroundStateHandler = nil; [_presentAskToShareProxCardHandler release]; _presentAskToShareProxCardHandler = nil; [_cancelAskToShareProxCardHandler release]; _cancelAskToShareProxCardHandler = nil; [_presentAskToShareUserNotificationHandler release]; _presentAskToShareUserNotificationHandler = nil; [_cancelAskToShareUserNotificationHandler release]; _cancelAskToShareUserNotificationHandler = nil; [_presentAuthorizationProxCardHandler release]; _presentAuthorizationProxCardHandler = nil; [_cancelAuthorizationProxCardHandler release]; _cancelAuthorizationProxCardHandler = nil; [super dealloc]; }
 @end
 
 @implementation CWFWiFiNetworkSharingNetwork
@@ -4189,22 +4285,22 @@
 @synthesize lastModifiedDate = _lastModifiedDate;
 @synthesize isCaptive = _isCaptive;
 @synthesize captivePortalCredentials = _captivePortalCredentials;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToWiFiNetworkSharingNetwork:(id)a0 { return 0; }
 - (id)networkName { return nil; }
 - (id)wifiNetworkSharingNetworkID { return nil; }
+- (void)dealloc { [_SSID release]; _SSID = nil; [_password release]; _password = nil; [_EAPCredentials release]; _EAPCredentials = nil; [_firstSharedDate release]; _firstSharedDate = nil; [_lastModifiedDate release]; _lastModifiedDate = nil; [_captivePortalCredentials release]; _captivePortalCredentials = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_SSID forKey:@"SSID"]; [c encodeInt64:(long long)_supportedSecurityTypes forKey:@"supportedSecurityTypes"]; [c encodeBool:_isHidden forKey:@"isHidden"]; [c encodeObject:_password forKey:@"password"]; [c encodeObject:_EAPCredentials forKey:@"EAPCredentials"]; [c encodeObject:_firstSharedDate forKey:@"firstSharedDate"]; [c encodeObject:_lastModifiedDate forKey:@"lastModifiedDate"]; [c encodeBool:_isCaptive forKey:@"isCaptive"]; [c encodeObject:_captivePortalCredentials forKey:@"captivePortalCredentials"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _SSID = [[c decodeObjectForKey:@"SSID"] retain]; _supportedSecurityTypes = (unsigned long long)[c decodeInt64ForKey:@"supportedSecurityTypes"]; _isHidden = [c decodeBoolForKey:@"isHidden"]; _password = [[c decodeObjectForKey:@"password"] retain]; _EAPCredentials = [[c decodeObjectForKey:@"EAPCredentials"] retain]; _firstSharedDate = [[c decodeObjectForKey:@"firstSharedDate"] retain]; _lastModifiedDate = [[c decodeObjectForKey:@"lastModifiedDate"] retain]; _isCaptive = [c decodeBoolForKey:@"isCaptive"]; _captivePortalCredentials = [[c decodeObjectForKey:@"captivePortalCredentials"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFWiFiNetworkSharingNetwork *o = [[[self class] allocWithZone:z] init]; o->_SSID = [_SSID retain]; o->_supportedSecurityTypes = _supportedSecurityTypes; o->_isHidden = _isHidden; o->_password = [_password retain]; o->_EAPCredentials = [_EAPCredentials retain]; o->_firstSharedDate = [_firstSharedDate retain]; o->_lastModifiedDate = [_lastModifiedDate retain]; o->_isCaptive = _isCaptive; o->_captivePortalCredentials = [_captivePortalCredentials retain]; return o; }
 @end
 
 @implementation CWFWiFiNetworkSharingNetworkID
 @dynamic SSID;
 @dynamic descriptor;
-+ (BOOL)supportsSecureCoding { return 0; }
 - (id)SSID { return nil; }
 - (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
@@ -4217,6 +4313,7 @@
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToWiFiNetworkSharingNetworkID:(id)a0 { return 0; }
 - (void)setSSID:(id)a0 {  }
++ (BOOL)supportsSecureCoding { return YES; }
 @end
 
 @implementation CWFWiFiNetworkSharingNetworkListUpdate
@@ -4224,14 +4321,15 @@
 @synthesize networkListUpdateCounter = _networkListUpdateCounter;
 @synthesize isAskToShareNetworkAvailable = _isAskToShareNetworkAvailable;
 @synthesize isAskToShareRequestFromAppPending = _isAskToShareRequestFromAppPending;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToWiFiNetworkSharingNetworksUpdate:(id)a0 { return 0; }
+- (void)dealloc { [_networkList release]; _networkList = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_networkList forKey:@"networkList"]; [c encodeInt64:(long long)_networkListUpdateCounter forKey:@"networkListUpdateCounter"]; [c encodeBool:_isAskToShareNetworkAvailable forKey:@"isAskToShareNetworkAvailable"]; [c encodeBool:_isAskToShareRequestFromAppPending forKey:@"isAskToShareRequestFromAppPending"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _networkList = [[c decodeObjectForKey:@"networkList"] retain]; _networkListUpdateCounter = (unsigned long long)[c decodeInt64ForKey:@"networkListUpdateCounter"]; _isAskToShareNetworkAvailable = [c decodeBoolForKey:@"isAskToShareNetworkAvailable"]; _isAskToShareRequestFromAppPending = [c decodeBoolForKey:@"isAskToShareRequestFromAppPending"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFWiFiNetworkSharingNetworkListUpdate *o = [[[self class] allocWithZone:z] init]; o->_networkList = [_networkList retain]; o->_networkListUpdateCounter = _networkListUpdateCounter; o->_isAskToShareNetworkAvailable = _isAskToShareNetworkAvailable; o->_isAskToShareRequestFromAppPending = _isAskToShareRequestFromAppPending; return o; }
 @end
 
 @implementation CWFWiFiNetworkSharingNetworkMetadata
@@ -4241,14 +4339,15 @@
 @synthesize askToShareStatus = _askToShareStatus;
 @synthesize askToShareStatusUpdatedTimestamp = _askToShareStatusUpdatedTimestamp;
 @synthesize lastModifiedDate = _lastModifiedDate;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToWiFiNetworkSharingNetworkMetadata:(id)a0 { return 0; }
+- (void)dealloc { [_firstSharedDate release]; _firstSharedDate = nil; [_mostRecentlySharedDate release]; _mostRecentlySharedDate = nil; [_askToShareStatusUpdatedTimestamp release]; _askToShareStatusUpdatedTimestamp = nil; [_lastModifiedDate release]; _lastModifiedDate = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeBool:_waitingForAssociation forKey:@"waitingForAssociation"]; [c encodeObject:_firstSharedDate forKey:@"firstSharedDate"]; [c encodeObject:_mostRecentlySharedDate forKey:@"mostRecentlySharedDate"]; [c encodeInt64:(long long)_askToShareStatus forKey:@"askToShareStatus"]; [c encodeObject:_askToShareStatusUpdatedTimestamp forKey:@"askToShareStatusUpdatedTimestamp"]; [c encodeObject:_lastModifiedDate forKey:@"lastModifiedDate"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _waitingForAssociation = [c decodeBoolForKey:@"waitingForAssociation"]; _firstSharedDate = [[c decodeObjectForKey:@"firstSharedDate"] retain]; _mostRecentlySharedDate = [[c decodeObjectForKey:@"mostRecentlySharedDate"] retain]; _askToShareStatus = (long long)[c decodeInt64ForKey:@"askToShareStatus"]; _askToShareStatusUpdatedTimestamp = [[c decodeObjectForKey:@"askToShareStatusUpdatedTimestamp"] retain]; _lastModifiedDate = [[c decodeObjectForKey:@"lastModifiedDate"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFWiFiNetworkSharingNetworkMetadata *o = [[[self class] allocWithZone:z] init]; o->_waitingForAssociation = _waitingForAssociation; o->_firstSharedDate = [_firstSharedDate retain]; o->_mostRecentlySharedDate = [_mostRecentlySharedDate retain]; o->_askToShareStatus = _askToShareStatus; o->_askToShareStatusUpdatedTimestamp = [_askToShareStatusUpdatedTimestamp retain]; o->_lastModifiedDate = [_lastModifiedDate retain]; return o; }
 @end
 
 @implementation CWFWiFiNetworkSharingStore
@@ -4321,6 +4420,7 @@
 - (void)relayPickerCompletion:(id)a0 {  }
 - (void)setNearbyRecommendedNetworks:(id)a0 {  }
 - (void)userNotificationCenter:(id)a0 didReceiveNotificationResponse:(id)a1 withCompletionHandler:(id)a2 {  }
+- (void)dealloc { [_askToShareUserNotificationRequest release]; _askToShareUserNotificationRequest = nil; [_userNotificationCenter release]; _userNotificationCenter = nil; [_presentAskToShareUserNotificationCompletionHandler release]; _presentAskToShareUserNotificationCompletionHandler = nil; [_launchAngelConnection release]; _launchAngelConnection = nil; [_askToShareProxCardClientID release]; _askToShareProxCardClientID = nil; [_presentAskToShareProxCardCompletionHandler release]; _presentAskToShareProxCardCompletionHandler = nil; [_presentAuthorizationProxCardCompletionHandler release]; _presentAuthorizationProxCardCompletionHandler = nil; [_authorizationProxCardClientID release]; _authorizationProxCardClientID = nil; [_allowCloudSyncableNetworkHandler release]; _allowCloudSyncableNetworkHandler = nil; [_allowNearbySyncableNetworkHandler release]; _allowNearbySyncableNetworkHandler = nil; [super dealloc]; }
 @end
 
 @implementation CWFXPCClient
@@ -4394,6 +4494,7 @@
 - (void)stopMonitoringEvent:(id)a0 requestParameters:(id)a1 {  }
 - (void)suspend {  }
 - (id)synchronousRemoteObjectProxyWithErrorHandler:(id)a0 { return nil; }
+- (void)dealloc { [_remoteXPCProxyConnection release]; _remoteXPCProxyConnection = nil; [_targetQueue release]; _targetQueue = nil; [_invalidationHandler release]; _invalidationHandler = nil; [_interruptionHandler release]; _interruptionHandler = nil; [_performWiFiNetworkSharingAccessoryScanHandler release]; _performWiFiNetworkSharingAccessoryScanHandler = nil; [_presentWiFiNetworkSharingAskToShareProxCardHandler release]; _presentWiFiNetworkSharingAskToShareProxCardHandler = nil; [_cancelWiFiNetworkSharingAskToShareProxCardHandler release]; _cancelWiFiNetworkSharingAskToShareProxCardHandler = nil; [_presentWiFiNetworkSharingAuthorizationProxCardHandler release]; _presentWiFiNetworkSharingAuthorizationProxCardHandler = nil; [_cancelWiFiNetworkSharingAuthorizationProxCardHandler release]; _cancelWiFiNetworkSharingAuthorizationProxCardHandler = nil; [_presentWiFiNetworkSharingAskToShareUserNotificationHandler release]; _presentWiFiNetworkSharingAskToShareUserNotificationHandler = nil; [_cancelWiFiNetworkSharingAskToShareUserNotificationHandler release]; _cancelWiFiNetworkSharingAskToShareUserNotificationHandler = nil; [_queryNearbyRecommendedNetworksHandler release]; _queryNearbyRecommendedNetworksHandler = nil; [_rememberCloudNetworkHandler release]; _rememberCloudNetworkHandler = nil; [_forgetCloudNetworkHandler release]; _forgetCloudNetworkHandler = nil; [_queryCloudNetworksHandler release]; _queryCloudNetworksHandler = nil; [_dumpLogsHandler release]; _dumpLogsHandler = nil; [_queryCaptivePortalCredentialsHandler release]; _queryCaptivePortalCredentialsHandler = nil; [_setCaptivePortalCredentialsHandler release]; _setCaptivePortalCredentialsHandler = nil; [_nearbyConfirmBrokenBackhaulHandler release]; _nearbyConfirmBrokenBackhaulHandler = nil; [_allowBrokenBackhaulPersonalHotspotFallbackHandler release]; _allowBrokenBackhaulPersonalHotspotFallbackHandler = nil; [super dealloc]; }
 @end
 
 @implementation CWFXPCConnection
@@ -4769,6 +4870,7 @@
 - (void)wifiNetworkSharingAuthorizationLevelWithRequestParams:(id)a0 reply:(id)a1 {  }
 - (void)wifiNetworkSharingConnectedAPListWithRequestParams:(id)a0 reply:(id)a1 {  }
 - (void)wifiNetworkSharingNetworkListWithRequestParams:(id)a0 reply:(id)a1 {  }
+- (void)dealloc { [_containingAppProcessName release]; _containingAppProcessName = nil; [_containingAppBundleID release]; _containingAppBundleID = nil; [_containingAppCodesignID release]; _containingAppCodesignID = nil; [_delegate release]; _delegate = nil; [_XPCConnection release]; _XPCConnection = nil; [_bootArgs release]; _bootArgs = nil; [_processName release]; _processName = nil; [_bundleID release]; _bundleID = nil; [_codesignID release]; _codesignID = nil; [_UUID release]; _UUID = nil; [_invalidationHandler release]; _invalidationHandler = nil; [_remoteXPCProxyConnection release]; _remoteXPCProxyConnection = nil; [super dealloc]; }
 @end
 
 @implementation CWFXPCConnectionMessageProxy
@@ -4792,17 +4894,18 @@
 @synthesize timestamp = _timestamp;
 @synthesize acknowledgementTimeout = _acknowledgementTimeout;
 @dynamic eventID;
-+ (BOOL)supportsSecureCoding { return 0; }
 - (id)__descriptionForEventType { return nil; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (id)eventID { return nil; }
 - (unsigned long long)hash { return 0; }
 - (id)init { return self; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToXPCEvent:(id)a0 { return 0; }
+- (void)dealloc { [_UUID release]; _UUID = nil; [_wifiNetworkSharingClientID release]; _wifiNetworkSharingClientID = nil; [_wifiNetworkSharingNetworkListUpdateEventPredicateData release]; _wifiNetworkSharingNetworkListUpdateEventPredicateData = nil; [_wifiNetworkSharingConnectedAPUpdateEventPredicateData release]; _wifiNetworkSharingConnectedAPUpdateEventPredicateData = nil; [_interfaceName release]; _interfaceName = nil; [_info release]; _info = nil; [_timestamp release]; _timestamp = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_UUID forKey:@"UUID"]; [c encodeInt64:(long long)_type forKey:@"type"]; [c encodeInt64:(long long)_internalType forKey:@"internalType"]; [c encodeObject:_wifiNetworkSharingClientID forKey:@"wifiNetworkSharingClientID"]; [c encodeObject:_wifiNetworkSharingNetworkListUpdateEventPredicateData forKey:@"wifiNetworkSharingNetworkListUpdateEventPredicateData"]; [c encodeObject:_wifiNetworkSharingConnectedAPUpdateEventPredicateData forKey:@"wifiNetworkSharingConnectedAPUpdateEventPredicateData"]; [c encodeObject:_interfaceName forKey:@"interfaceName"]; [c encodeObject:_info forKey:@"info"]; [c encodeObject:_timestamp forKey:@"timestamp"]; [c encodeInt64:(long long)_acknowledgementTimeout forKey:@"acknowledgementTimeout"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _UUID = [[c decodeObjectForKey:@"UUID"] retain]; _type = (long long)[c decodeInt64ForKey:@"type"]; _internalType = (long long)[c decodeInt64ForKey:@"internalType"]; _wifiNetworkSharingClientID = [[c decodeObjectForKey:@"wifiNetworkSharingClientID"] retain]; _wifiNetworkSharingNetworkListUpdateEventPredicateData = [[c decodeObjectForKey:@"wifiNetworkSharingNetworkListUpdateEventPredicateData"] retain]; _wifiNetworkSharingConnectedAPUpdateEventPredicateData = [[c decodeObjectForKey:@"wifiNetworkSharingConnectedAPUpdateEventPredicateData"] retain]; _interfaceName = [[c decodeObjectForKey:@"interfaceName"] retain]; _info = [[c decodeObjectForKey:@"info"] retain]; _timestamp = [[c decodeObjectForKey:@"timestamp"] retain]; _acknowledgementTimeout = (unsigned long long)[c decodeInt64ForKey:@"acknowledgementTimeout"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWFXPCEvent *o = [[[self class] allocWithZone:z] init]; o->_UUID = [_UUID retain]; o->_type = _type; o->_internalType = _internalType; o->_wifiNetworkSharingClientID = [_wifiNetworkSharingClientID retain]; o->_wifiNetworkSharingNetworkListUpdateEventPredicateData = [_wifiNetworkSharingNetworkListUpdateEventPredicateData retain]; o->_wifiNetworkSharingConnectedAPUpdateEventPredicateData = [_wifiNetworkSharingConnectedAPUpdateEventPredicateData retain]; o->_interfaceName = [_interfaceName retain]; o->_info = [_info retain]; o->_timestamp = [_timestamp retain]; o->_acknowledgementTimeout = _acknowledgementTimeout; return o; }
 @end
 
 @implementation CWFXPCListener
@@ -4831,6 +4934,7 @@
 - (void)resume {  }
 - (void)sendXPCEvent:(id)a0 reply:(id)a1 {  }
 - (void)suspend {  }
+- (void)dealloc { [_delegate release]; _delegate = nil; [_XPCListener release]; _XPCListener = nil; [super dealloc]; }
 @end
 
 @implementation CWFXPCManager
@@ -4888,6 +4992,7 @@
 - (void)setTargetQueue:(id)a0 requestType:(long long)a1 interfaceName:(id)a2 {  }
 - (void)suspend {  }
 - (id)wifiNetworkSharingManager { return nil; }
+- (void)dealloc { [_delegate release]; _delegate = nil; [_supportedRequestTypes release]; _supportedRequestTypes = nil; [_allowCloudSyncableNetworkHandler release]; _allowCloudSyncableNetworkHandler = nil; [_allowNearbySyncableNetworkHandler release]; _allowNearbySyncableNetworkHandler = nil; [_getAdaptiveInterfaceRankDurationHandler release]; _getAdaptiveInterfaceRankDurationHandler = nil; [super dealloc]; }
 @end
 
 @implementation CWFXPCProxy
@@ -4898,6 +5003,7 @@
 - (void)forwardInvocation:(id)a0 {  }
 - (id)init { return self; }
 - (id)methodSignatureForSelector:(SEL)a0 { return nil; }
+- (void)dealloc { [_target release]; _target = nil; [_queue release]; _queue = nil; [super dealloc]; }
 @end
 
 @implementation CWFXPCProxyConnection
@@ -4910,6 +5016,7 @@
 - (void)resume {  }
 - (void)suspend {  }
 - (id)synchronousRemoteObjectProxyWithErrorHandler:(id)a0 { return nil; }
+- (void)dealloc { [_invalidationHandler release]; _invalidationHandler = nil; [super dealloc]; }
 @end
 
 @implementation CWFXPCRequest
@@ -4929,6 +5036,7 @@
 - (id)response { return nil; }
 - (void)setCompletionBlock:(id)a0 {  }
 - (void)setResponse:(id)a0 {  }
+- (void)dealloc { [_forwardToCompletionBlock release]; _forwardToCompletionBlock = nil; [_UUID release]; _UUID = nil; [_requestParameters release]; _requestParameters = nil; [_receivedAt release]; _receivedAt = nil; [_info release]; _info = nil; [_cancelationHandler release]; _cancelationHandler = nil; [super dealloc]; }
 @end
 
 @implementation CWFXPCRequestProxy
@@ -5207,4 +5315,5 @@
 - (void)updateJoinStatusWithIPv6:(id)a0 {  }
 - (id)virtualInterfaceNames { return nil; }
 - (id)wifiInterfaceNames { return nil; }
+- (void)dealloc { [_delegate release]; _delegate = nil; [_location release]; _location = nil; [_associatedNetwork release]; _associatedNetwork = nil; [_wifiUserAgentConnection release]; _wifiUserAgentConnection = nil; [_wifiNetworkSharingUIServiceXPCConnection release]; _wifiNetworkSharingUIServiceXPCConnection = nil; [_wifiNetworkSharingAppexXPCConnections release]; _wifiNetworkSharingAppexXPCConnections = nil; [_wifiNetworkSharingAppXPCConnection release]; _wifiNetworkSharingAppXPCConnection = nil; [super dealloc]; }
 @end
