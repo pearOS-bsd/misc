@@ -137,71 +137,154 @@ static void TextAt(NSString *s, CGFloat x, CGFloat cy, NSDictionary *at) { NSSiz
 static const CGFloat kCW = 112, kCH = 126, kPad = 10, kIcon = 64;
 @implementation TIconView
 - (instancetype)initWithFrame:(NSRect)f { if ((self = [super initWithFrame: f])) { _items = [NSMutableArray array]; _sel = [NSMutableIndexSet indexSet]; _anchor = -1; } return self; }
+/* the settings of a folder (the arrangement and the places of the icons), kept in ~/Library/Application Support/Finder/ViewSettings.plist until .DS_Store is read and written the way the Finder does */
+static NSString *SettingsFile(void) { return [NSHomeDirectory() stringByAppendingPathComponent: @"Library/Application Support/Finder/ViewSettings.plist"]; }
 - (void)setFolder:(NSString *)folder
 {
 	NSMutableArray *paths = [NSMutableArray array]; for (NSString *n in [[[NSFileManager defaultManager] contentsOfDirectoryAtPath: folder error: NULL] sortedArrayUsingSelector: @selector(localizedStandardCompare:)]) [paths addObject: [folder stringByAppendingPathComponent: n]];
-	[self setPaths: paths];
+	_folder = [folder copy]; [self setPaths: paths];
 }
 - (void)setPaths:(NSArray *)paths
 {
-	[_items removeAllObjects]; [_sel removeAllIndexes]; NSFileManager *fm = [NSFileManager defaultManager];
+	[_items removeAllObjects]; [_sel removeAllIndexes]; NSFileManager *fm = [NSFileManager defaultManager]; NSDictionary *st = _folder ? [NSDictionary dictionaryWithContentsOfFile: SettingsFile()][_folder] : nil; NSDictionary *pos = st[@"icons"]; _arrange = st[@"arrange"];
 	for (NSString *p in paths) {
 		NSString *n = [p lastPathComponent]; if ([n hasPrefix: @"."] || ([filter length] && [n rangeOfString: filter options: NSCaseInsensitiveSearch].location == NSNotFound)) continue;
 		NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory] && ![[p pathExtension] isEqual: @"app"]; NSString *info = @"";
 		if (dir) { NSUInteger c = 0; for (NSString *s in [fm contentsOfDirectoryAtPath: p error: NULL]) if (![s hasPrefix: @"."]) c++; info = [NSString stringWithFormat: @"%lu item%s", (unsigned long)c, c == 1 ? "" : "s"]; }
 		else if (![[p pathExtension] isEqual: @"app"]) info = TFSizeString([at[NSFileSize] unsignedLongLongValue]);
-		[_items addObject: [@{ @"name": n, @"path": p, @"info": info, @"tags": TFTagsOf(p) } mutableCopy]];
+		NSMutableDictionary *it = [@{ @"name": n, @"path": p, @"info": info, @"tags": TFTagsOf(p), @"dir": @(dir), @"mod": at[NSFileModificationDate] ?: [NSDate distantPast], @"cre": at[NSFileCreationDate] ?: [NSDate distantPast], @"size": at[NSFileSize] ?: @0 } mutableCopy];
+		NSArray *xy = pos[n]; if ([xy count] == 2) it[@"pos"] = [NSValue valueWithPoint: NSMakePoint([xy[0] doubleValue], [xy[1] doubleValue])];
+		[_items addObject: it];
 	}
-	off = 0; [self setNeedsDisplay: YES]; [self _notify];
+	if ([_arrange length]) [self _sortItems]; off = 0; [self setNeedsDisplay: YES]; [self _notify];
+}
+- (void)_save
+{
+	if (!_folder) return; NSMutableDictionary *all = [[NSDictionary dictionaryWithContentsOfFile: SettingsFile()] mutableCopy] ?: [NSMutableDictionary dictionary]; NSMutableDictionary *icons = [NSMutableDictionary dictionary];
+	for (NSDictionary *it in _items) if (it[@"pos"]) { NSPoint q = [it[@"pos"] pointValue]; icons[it[@"name"]] = @[ @(q.x), @(q.y) ]; }
+	NSMutableDictionary *st = [all[_folder] mutableCopy] ?: [NSMutableDictionary dictionary]; st[@"icons"] = icons; if (_arrange) st[@"arrange"] = _arrange; else [st removeObjectForKey: @"arrange"]; all[_folder] = st;
+	[[NSFileManager defaultManager] createDirectoryAtPath: [SettingsFile() stringByDeletingLastPathComponent] withIntermediateDirectories: YES attributes: nil error: NULL]; [all writeToFile: SettingsFile() atomically: YES];
 }
 - (void)reloadKeepingSelection { NSArray *keep = [self selectedPaths]; if (![_items count]) return; NSMutableArray *ps = [NSMutableArray array]; for (NSDictionary *d in _items) [ps addObject: d[@"path"]]; CGFloat o = off; [self setPaths: ps]; for (NSUInteger i = 0; i < [_items count]; i++) if ([keep containsObject: _items[i][@"path"]]) [_sel addIndex: i]; off = o; [self setNeedsDisplay: YES]; }
 - (NSInteger)_cols { return MAX(1, (NSInteger)floor(([self bounds].size.width - 2 * kPad) / kCW)); }
-- (CGFloat)contentHeight { NSInteger c = [self _cols]; return 2 * kPad + ceil((double)[_items count] / c) * kCH; }
-- (NSRect)_cell:(NSInteger)i { NSInteger c = [self _cols]; return NSMakeRect(kPad + (i % c) * kCW, kPad + (i / c) * kCH, kCW, kCH); }
-- (NSInteger)_index:(NSPoint)p { NSInteger c = [self _cols]; if (p.x < kPad || p.y < kPad) return -1; NSInteger col = (NSInteger)((p.x - kPad) / kCW), row = (NSInteger)((p.y - kPad) / kCH); if (col >= c) return -1; NSInteger i = row * c + col; return i < (NSInteger)[_items count] ? i : -1; }
+- (NSPoint)_slot:(NSInteger)i { NSInteger c = [self _cols]; return NSMakePoint(kPad + (i % c) * kCW, kPad + (i / c) * kCH); }
+- (NSPoint)_target:(NSInteger)i { NSValue *v = _items[i][@"pos"]; return v ? [v pointValue] : [self _slot: i]; }
+- (CGFloat)contentHeight { NSInteger c = [self _cols]; CGFloat h = 2 * kPad + ceil((double)[_items count] / c) * kCH; for (NSInteger i = 0; i < (NSInteger)[_items count]; i++) h = MAX(h, [self _target: i].y + kCH + kPad); return h; }
+- (NSRect)_cell:(NSInteger)i
+{
+	NSPoint t = [self _target: i]; NSValue *from = _items[i][@"from"];
+	if (from && _animStart) { double k = ([NSDate timeIntervalSinceReferenceDate] - _animStart) / 0.28; if (k >= 1) k = 1; double e = 1 - pow(1 - k, 3); NSPoint f = [from pointValue]; t = NSMakePoint(f.x + (t.x - f.x) * e, f.y + (t.y - f.y) * e); }
+	return NSMakeRect(t.x, t.y, kCW, kCH);
+}
+- (NSInteger)_index:(NSPoint)p { for (NSInteger i = (NSInteger)[_items count] - 1; i >= 0; i--) { NSRect c = [self _cell: i]; if (NSPointInRect(p, NSMakeRect(c.origin.x + 12, c.origin.y, c.size.width - 24, 100))) return i; } return -1; }
+- (void)_animateFrom:(NSArray *)old                                                       /* the icons glide from where they were to where they now belong */
+{
+	for (NSInteger i = 0; i < (NSInteger)[_items count] && i < (NSInteger)[old count]; i++) if (old[i] != [NSNull null]) _items[i][@"from"] = old[i];
+	_animStart = [NSDate timeIntervalSinceReferenceDate]; [_animTimer invalidate]; _animTimer = [NSTimer scheduledTimerWithTimeInterval: 1.0 / 60 target: self selector: @selector(_tick:) userInfo: nil repeats: YES]; [self setNeedsDisplay: YES];
+}
+- (void)_tick:(NSTimer *)t { [self setNeedsDisplay: YES]; if ([NSDate timeIntervalSinceReferenceDate] - _animStart > 0.3) { [t invalidate]; _animTimer = nil; _animStart = 0; for (NSMutableDictionary *it in _items) [it removeObjectForKey: @"from"]; } }
+- (NSArray *)_origins { NSMutableArray *o = [NSMutableArray array]; for (NSInteger i = 0; i < (NSInteger)[_items count]; i++) [o addObject: [NSValue valueWithPoint: [self _cell: i].origin]]; return o; }
+- (void)_sortItems
+{
+	NSString *k = _arrange; if (![k length]) return;
+	[_items sortUsingComparator: ^NSComparisonResult(NSDictionary *a, NSDictionary *b) {
+		NSComparisonResult r;
+		if ([k isEqual: @"kind"]) { r = [(a[@"dir"] ? TFKindString(a[@"path"], [a[@"dir"] boolValue]) : @"") localizedStandardCompare: (b[@"dir"] ? TFKindString(b[@"path"], [b[@"dir"] boolValue]) : @"")]; }
+		else if ([k isEqual: @"modified"]) r = [b[@"mod"] compare: a[@"mod"]]; else if ([k isEqual: @"created"]) r = [b[@"cre"] compare: a[@"cre"]];
+		else if ([k isEqual: @"size"]) r = [b[@"size"] compare: a[@"size"]]; else if ([k isEqual: @"tags"]) r = (NSComparisonResult)((int)[b[@"tags"] count] - (int)[a[@"tags"] count]);
+		else r = [a[@"name"] localizedStandardCompare: b[@"name"]];
+		return r == NSOrderedSame ? [a[@"name"] localizedStandardCompare: b[@"name"]] : r;
+	}];
+	[_sel removeAllIndexes];
+}
+- (void)arrangeBy:(NSString *)key                                                          /* Sort By: nil is None (the icons stay where they are put) */
+{
+	NSArray *old = [self _origins]; NSArray *names = nil; NSMutableArray *sel = [NSMutableArray array]; [_sel enumerateIndexesUsingBlock: ^(NSUInteger i, BOOL *s) { [sel addObject: self->_items[i][@"path"]]; }]; (void)names;
+	NSMutableArray *oldPaths = [NSMutableArray array]; for (NSDictionary *d in _items) [oldPaths addObject: d[@"path"]];
+	_arrange = [key copy]; if (key) { for (NSMutableDictionary *it in _items) [it removeObjectForKey: @"pos"]; [self _sortItems]; }
+	NSMutableArray *remap = [NSMutableArray array]; for (NSDictionary *d in _items) { NSUInteger k = [oldPaths indexOfObject: d[@"path"]]; [remap addObject: k < [old count] ? old[k] : (id)[NSNull null]]; }
+	for (NSUInteger i = 0; i < [_items count]; i++) if ([sel containsObject: _items[i][@"path"]]) [_sel addIndex: i];
+	[self _save]; [self _animateFrom: remap]; [self _notify];
+}
+- (void)cleanUp:(BOOL)selectionOnly
+{
+	NSArray *old = [self _origins]; NSMutableArray *oldPaths = [NSMutableArray array]; for (NSDictionary *d in _items) [oldPaths addObject: d[@"path"]];
+	NSMutableArray *sel = [NSMutableArray array]; [_sel enumerateIndexesUsingBlock: ^(NSUInteger i, BOOL *s) { [sel addObject: self->_items[i][@"path"]]; }];
+	for (NSMutableDictionary *it in _items) if (!selectionOnly || [sel containsObject: it[@"path"]]) [it removeObjectForKey: @"pos"];
+	if (!selectionOnly && [_arrange length]) [self _sortItems]; else if (!selectionOnly) { [_items sortUsingComparator: ^NSComparisonResult(NSDictionary *a, NSDictionary *b) { return [a[@"name"] localizedStandardCompare: b[@"name"]]; }]; }
+	NSMutableArray *remap = [NSMutableArray array]; for (NSDictionary *d in _items) { NSUInteger k = [oldPaths indexOfObject: d[@"path"]]; [remap addObject: k < [old count] ? old[k] : (id)[NSNull null]]; }
+	[_sel removeAllIndexes]; for (NSUInteger i = 0; i < [_items count]; i++) if ([sel containsObject: _items[i][@"path"]]) [_sel addIndex: i];
+	[self _save]; [self _animateFrom: remap];
+}
 - (void)drawContent:(NSRect)v
 {
 	NSDictionary *lab = Font(12, NO, TF_TEXT); NSDictionary *labSel = Font(12, NO, TFRGB(255, 255, 255)); NSDictionary *inf = Font(10.5, NO, TFDark() ? TFRGB(66, 140, 235) : TFRGB(0, 100, 220)); BOOL key = KeyWin(self);
-	for (NSInteger i = 0; i < (NSInteger)[_items count]; i++) {
+	for (NSInteger pass = 0; pass < 2; pass++) for (NSInteger i = 0; i < (NSInteger)[_items count]; i++) {                                                                    /* the dragged icons last, on top */
+		BOOL moving = _dragging && [_sel containsIndex: i]; if ((pass == 1) != moving) continue;
 		NSRect c = [self _cell: i]; if (NSMaxY(c) < v.origin.y || c.origin.y > NSMaxY(v)) continue; NSMutableDictionary *it = _items[i]; BOOL sel = [_sel containsIndex: i];
 		NSRect ir = NSMakeRect(c.origin.x + 24, c.origin.y + 4, kIcon, kIcon);
+		if (_dropTarget == i) FillRound(NSInsetRect(ir, -6, -6), 8, key ? TFRGBA(0, 98, 225, 0.55) : TFRGBA(120, 120, 120, 0.4));
 		if (sel) FillRound(NSInsetRect(ir, -4, -4), 6, TFDark() ? (key ? TFRGBA(255, 255, 255, 0.14) : TFRGB(52, 52, 52)) : TFRGBA(0, 0, 0, 0.09));
-		NSImage *thumb = Thumb(it[@"path"]); 
+		NSImage *thumb = Thumb(it[@"path"]);
 		if (thumb) { NSSize z = [thumb size]; CGFloat k = MIN(kIcon / z.width, kIcon / z.height); NSRect tr = NSMakeRect(NSMidX(ir) - z.width * k / 2, NSMidY(ir) - z.height * k / 2, z.width * k, z.height * k); [TFRGBA(0, 0, 0, 0.35) setFill]; NSRectFill(NSOffsetRect(tr, 0, 1)); [thumb drawInRect: tr fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; }
 		else TFDrawIcon(it[@"path"], ir);
 		NSArray *lines = it[@"lines"]; if (!lines) { lines = WrapLabel(it[@"name"], lab, kCW - 12, 2); it[@"lines"] = lines; }
 		CGFloat y = c.origin.y + 81; CGFloat lh = 16;
 		for (NSString *ln in lines) {
-			NSSize z = [ln sizeWithAttributes: lab]; if (ln == [lines firstObject] && [it[@"tags"] count]) { double w = [NSClassFromString(@"WsdFinderSupport") tagDotsWidth: it[@"tags"]]; [NSClassFromString(@"WsdFinderSupport") drawTagDots: it[@"tags"] rightEdge: NSMidX(c) - z.width / 2 - 9 centerY: y]; }
+			NSSize z = [ln sizeWithAttributes: lab]; if (ln == [lines firstObject] && [it[@"tags"] count]) [NSClassFromString(@"WsdFinderSupport") drawTagDots: it[@"tags"] rightEdge: NSMidX(c) - z.width / 2 - 9 centerY: y];
 			if (sel) FillRound(NSMakeRect(NSMidX(c) - z.width / 2 - 5, y - 9, z.width + 10, 18), 5, key ? TF_ACCENT : TFDark() ? TFRGB(90, 90, 90) : TFRGB(190, 190, 194));
 			[ln drawAtPoint: NSMakePoint(NSMidX(c) - z.width / 2, y - z.height / 2) withAttributes: sel ? labSel : lab]; y += lh;
 		}
 		if ([it[@"info"] length]) { NSSize z = [it[@"info"] sizeWithAttributes: inf]; [it[@"info"] drawAtPoint: NSMakePoint(NSMidX(c) - z.width / 2, y - z.height / 2 - 1) withAttributes: inf]; }
 	}
+	if (!NSIsEmptyRect(_band)) { [TFRGBA(120, 160, 255, 0.18) setFill]; NSRectFill(_band); [TFRGBA(120, 160, 255, 0.6) setStroke]; NSFrameRect(_band); }
 }
 - (void)_notify { if ([delegate respondsToSelector: @selector(iconViewSelectionChanged:)]) [delegate iconViewSelectionChanged: [self selectedPaths]]; }
 - (NSArray *)selectedPaths { NSMutableArray *a = [NSMutableArray array]; [_sel enumerateIndexesUsingBlock: ^(NSUInteger i, BOOL *s) { [a addObject: self->_items[i][@"path"]]; }]; return a; }
 - (void)contentMouseDown:(NSPoint)p event:(NSEvent *)e
 {
 	NSInteger i = [self _index: p]; NSUInteger fl = [e modifierFlags]; BOOL multi = (fl & NSCommandKeyMask) != 0;
-	if (i >= 0) {
-		NSRect c = [self _cell: i]; NSRect hit = NSMakeRect(c.origin.x + 12, c.origin.y, c.size.width - 24, 100); if (!NSPointInRect(p, hit)) i = -1;      /* the empty corners of a cell belong to the background */
-	}
 	if (i < 0) {                                                                                                                                  /* a rubber band over the background */
 		NSIndexSet *base = multi ? [_sel copy] : [NSIndexSet indexSet]; NSPoint a = p; NSEvent *ev = e; [_sel removeAllIndexes]; [_sel addIndexes: base];
 		while ([ev type] != NSLeftMouseUp) {
 			ev = [[self window] nextEventMatchingMask: NSLeftMouseDraggedMask | NSLeftMouseUpMask untilDate: [NSDate distantFuture] inMode: NSEventTrackingRunLoopMode dequeue: YES];
-			NSPoint q = [self convertPoint: [ev locationInWindow] fromView: nil]; q.y = q.y - topInset + off; NSRect band = NSMakeRect(MIN(a.x, q.x), MIN(a.y, q.y), fabs(q.x - a.x), fabs(q.y - a.y));
-			[_sel removeAllIndexes]; [_sel addIndexes: base]; for (NSInteger k = 0; k < (NSInteger)[_items count]; k++) { NSRect c = [self _cell: k]; if (NSIntersectsRect(band, NSMakeRect(c.origin.x + 24, c.origin.y + 4, kIcon, kIcon + 40))) [_sel addIndex: k]; }
+			NSPoint q = [self convertPoint: [ev locationInWindow] fromView: nil]; q.y = q.y - topInset + off; _band = NSMakeRect(MIN(a.x, q.x), MIN(a.y, q.y), fabs(q.x - a.x), fabs(q.y - a.y));
+			[_sel removeAllIndexes]; [_sel addIndexes: base]; for (NSInteger k = 0; k < (NSInteger)[_items count]; k++) { NSRect c = [self _cell: k]; if (NSIntersectsRect(_band, NSMakeRect(c.origin.x + 24, c.origin.y + 4, kIcon, kIcon + 40))) [_sel addIndex: k]; }
 			[self setNeedsDisplay: YES];
 		}
-		[self _notify]; return;
+		_band = NSZeroRect; [self setNeedsDisplay: YES]; [self _notify]; return;
 	}
+	BOOL wasSel = [_sel containsIndex: i];
 	if (fl & NSShiftKeyMask && _anchor >= 0) { [_sel removeAllIndexes]; [_sel addIndexesInRange: NSMakeRange(MIN(_anchor, i), labs(i - _anchor) + 1)]; }
-	else if (multi) { if ([_sel containsIndex: i]) [_sel removeIndex: i]; else [_sel addIndex: i]; _anchor = i; }
-	else { if (![_sel containsIndex: i]) { [_sel removeAllIndexes]; [_sel addIndex: i]; } _anchor = i; }
+	else if (multi) { if (wasSel) [_sel removeIndex: i]; else [_sel addIndex: i]; _anchor = i; }
+	else { if (!wasSel) { [_sel removeAllIndexes]; [_sel addIndex: i]; } _anchor = i; }
 	[self setNeedsDisplay: YES]; [self _notify];
-	if ([e clickCount] == 2 && [delegate respondsToSelector: @selector(iconViewOpenItem:)]) [delegate iconViewOpenItem: _items[i][@"path"]];
+	if ([e clickCount] == 2 && [delegate respondsToSelector: @selector(iconViewOpenItem:)]) { [delegate iconViewOpenItem: _items[i][@"path"]]; return; }
+	[self _dragFrom: p event: e];
+}
+- (void)_dragFrom:(NSPoint)start event:(NSEvent *)e                                              /* the selected icons follow the pointer; dropped on a folder they move into it, on the sidebar or another window the controller decides, elsewhere they stay where they are put */
+{
+	NSMutableArray *idx = [NSMutableArray array], *orig = [NSMutableArray array]; [_sel enumerateIndexesUsingBlock: ^(NSUInteger k, BOOL *s) { [idx addObject: @(k)]; [orig addObject: [NSValue valueWithPoint: [self _target: (NSInteger)k]]]; }];
+	NSEvent *ev = e; BOOL moved = NO; NSArray *paths = [self selectedPaths];
+	while ([ev type] != NSLeftMouseUp) {
+		ev = [[self window] nextEventMatchingMask: NSLeftMouseDraggedMask | NSLeftMouseUpMask untilDate: [NSDate distantFuture] inMode: NSEventTrackingRunLoopMode dequeue: YES];
+		NSPoint q = [self convertPoint: [ev locationInWindow] fromView: nil]; q.y = q.y - topInset + off; if (!moved && hypot(q.x - start.x, q.y - start.y) < 4) continue;
+		moved = YES; _dragging = YES; _dropTarget = -1;
+		for (NSUInteger k = 0; k < [idx count]; k++) { NSPoint o = [orig[k] pointValue]; _items[[idx[k] integerValue]][@"pos"] = [NSValue valueWithPoint: NSMakePoint(o.x + q.x - start.x, o.y + q.y - start.y)]; }
+		NSInteger over = [self _index: q]; if (over >= 0 && [_items[over][@"dir"] boolValue] && ![_sel containsIndex: over]) _dropTarget = over;
+		[self setNeedsDisplay: YES]; [self reveal: NSMakeRect(q.x - 20, q.y - 20, 40, 40)];
+	}
+	_dragging = NO; if (!moved) return;
+	NSPoint wp = [ev locationInWindow]; BOOL copy = ([ev modifierFlags] & NSAlternateKeyMask) != 0; NSInteger target = _dropTarget; _dropTarget = -1;
+	NSString *into = target >= 0 ? _items[target][@"path"] : nil;
+	BOOL inside = NSPointInRect([self convertPoint: wp fromView: nil], [self bounds]);
+	for (NSUInteger k = 0; k < [idx count]; k++) _items[[idx[k] integerValue]][@"pos"] = orig[k];                                                                                       /* back to where they were, then: */
+	if (into || !inside) { if ([delegate respondsToSelector: @selector(iconViewDropPaths:intoFolder:atWindowPoint:copy:)] && [(id)delegate iconViewDropPaths: paths intoFolder: into atWindowPoint: wp copy: copy]) { [self setNeedsDisplay: YES]; return; } }
+	else {                                                                                                                                                                                        /* put down on the background: the icons take the new places */
+		_arrange = nil; for (NSUInteger k = 0; k < [idx count]; k++) { NSPoint o = [orig[k] pointValue]; NSPoint q = [self convertPoint: [ev locationInWindow] fromView: nil]; q.y = q.y - topInset + off; NSPoint np = NSMakePoint(o.x + q.x - start.x, o.y + q.y - start.y); np.x = MAX(0, np.x); np.y = MAX(0, np.y); _items[[idx[k] integerValue]][@"pos"] = [NSValue valueWithPoint: np]; }
+		[self _save];
+	}
+	[self setNeedsDisplay: YES];
 }
 - (NSMenu *)menuForEvent:(NSEvent *)e
 {
@@ -412,9 +495,25 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 		TextAt(it[@"t"], 45, NSMidY(r), Font(13, NO, TF_TEXT));
 	}
 }
+- (NSString *)dropPathAtWindowPoint:(NSPoint)wp
+{
+	NSPoint p = [self convertPoint: wp fromView: nil]; if (p.x < 0 || p.x > [self bounds].size.width || p.y < 0 || p.y > [self bounds].size.height) return nil; p.y += off;
+	for (NSInteger i = 0; i < (NSInteger)[_rows count]; i++) if (![_rows[i][@"k"] isEqual: @"head"] && NSPointInRect(p, [self _rect: i])) { NSString *path = _rows[i][@"p"]; return [path hasPrefix: @"/"] ? path : nil; }
+	return nil;
+}
 - (void)contentMouseDown:(NSPoint)p event:(NSEvent *)e
 {
 	for (NSInteger i = 0; i < (NSInteger)[_rows count]; i++) if (![_rows[i][@"k"] isEqual: @"head"] && NSPointInRect(p, [self _rect: i])) { NSString *path = _rows[i][@"p"]; if ([path hasPrefix: @"/"] || [path hasPrefix: @"tag://"]) [delegate sidebarGoTo: path]; return; }
+}
+@end
+
+/* ---------- the status bar ---------- */
+@implementation TStatusBarView
+- (BOOL)isFlipped { return YES; }
+- (void)drawRect:(NSRect)r
+{
+	NSRect b = [self bounds]; [TF_CONTENT setFill]; NSRectFill(b); [TF_LINE setFill]; NSRectFill(NSMakeRect(0, 0, b.size.width, 1)); NSDictionary *at = Font(11, NO, TF_DIM); NSSize z = [text sizeWithAttributes: at];
+	[text ?: @"" drawAtPoint: NSMakePoint(b.size.width / 2 - z.width / 2, b.size.height / 2 - z.height / 2) withAttributes: at];
 }
 @end
 
