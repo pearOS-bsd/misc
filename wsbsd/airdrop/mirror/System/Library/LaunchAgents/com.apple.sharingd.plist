@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.apple.sharingd</string>
+	<key>POSIXSpawnType</key>
+	<string>Interactive</string>
+	<key>LimitLoadToSessionType</key>
+	<string>Aqua</string>
+	<key>MachServices</key>
+	<dict>
+		<key>com.apple.sharing.classroom-transfer</key>
+		<true/>
+		<key>com.apple.AutoUnlock.AuthenticationHintsProvider</key>
+		<true/>
+		<key>com.apple.coreservices.appleid.aps</key>
+		<true/>
+		<key>com.apple.sharing.transfer-observer</key>
+		<true/>
+		<key>com.apple.sharing.handoff.advertising</key>
+		<true/>
+		<key>com.apple.sharing.handoff.scanning</key>
+		<true/>
+		<key>com.apple.sharing.sharesheet</key>
+		<true/>
+		<key>com.apple.sharing.sharesheetrecipients</key>
+		<true/>
+		<key>com.apple.sharing.collaborationuserdefaults</key>
+		<true/>
+		<key>com.apple.sharingd</key>
+		<true/>
+		<key>com.apple.sharingd.nsxpc</key>
+		<true/>
+		<key>com.apple.sharingd.pairedcontactmanager</key>
+		<true/>
+		<key>com.apple.SharingServices</key>
+		<true/>
+		<key>com.apple.sharing.airdrop.service</key>
+		<true/>
+		<key>com.apple.StatusKit.local.client-com.apple.sharingd</key>
+		<true/>
+	</dict>
+	<key>RunAtLoad</key>
+	<true/>
+	<key>KeepAlive</key>
+	<true/>
+	<key>Program</key>
+	<string>/usr/libexec/sharingd</string>
+	<key>EnableTransactions</key>
+	<true/>
+	<key>EnablePressuredExit</key>
+	<false/>
+</dict>
+</plist>
