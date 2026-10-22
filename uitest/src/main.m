@@ -54,9 +54,9 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 		NSString *an = !strcmp(getenv("UI_APPEARANCE"), "light") ? @"NSAppearanceNameAqua" : @"NSAppearanceNameDarkAqua";
 		id ap = [NSClassFromString(@"NSAppearance") performSelector: @selector(appearanceNamed:) withObject: an]; [NSApp performSelector: @selector(setAppearance:) withObject: ap];
 	}
-	if (getenv("UI_MODE") && !strcmp(getenv("UI_MODE"), "touchbar")) {     /* only the window and its Touch Bar (the page is UI_TB=1..5) */
+	if (getenv("UI_MODE") && !strcmp(getenv("UI_MODE"), "touchbar")) {     /* only the window and its Touch Bar (the page is UI_TB=1..6) */
 		int page = getenv("UI_TB") ? atoi(getenv("UI_TB")) : 1; [w setTitle: @"UI Gallery: Touch Bar"]; caption([NSString stringWithFormat: @"Touch Bar page %d: the bar of this window is shown at the bottom of the screen", page], 20, 20);
-		[w setTouchBar: [self tbBarForPage: page]]; [w center]; [w makeKeyAndOrderFront: nil]; printf("TOUCHBAR page %d\n", page);
+		[w setTouchBar: [self tbBarForPage: page]]; [w center]; [w makeKeyAndOrderFront: nil]; printf("TOUCHBAR page %d\n", page); if (getenv("UI_TB_CUSTOMIZE")) [NSApp performSelector: @selector(toggleTouchBarCustomizationPalette:) withObject: nil afterDelay: 1.0];
 		const char *ex2 = getenv("UI_EXIT_AFTER"); if (ex2) [NSTimer scheduledTimerWithTimeInterval: atof(ex2) target: NSApp selector: @selector(terminate:) userInfo: nil repeats: NO];
 		return;
 	}
@@ -114,18 +114,19 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 	const char *ex = getenv("UI_EXIT_AFTER"); if (ex) [NSTimer scheduledTimerWithTimeInterval: atof(ex) target: NSApp selector: @selector(terminate:) userInfo: nil repeats: NO];
 }
 
-/* ---- Touch Bar: UI_MODE=touchbar UI_TB=1..5 (a page of items each); the bar is the one of the window ---- */
+/* ---- Touch Bar: UI_MODE=touchbar UI_TB=1..6 (a page of items each); the bar is the one of the window ---- */
 - (NSTouchBar *) tbBarForPage: (int)page
 {
 	NSTouchBar *b = [[[NSTouchBar alloc] init] autorelease]; [b setDelegate: self]; NSArray *ids = nil;
 	switch (page) {
 	case 1: ids = [NSArray arrayWithObjects: @"tb.button", @"tb.image", @"tb.group", NSTouchBarItemIdentifierFlexibleSpace, @"tb.slider", nil]; break;
+	case 6: ids = [NSArray arrayWithObjects: @"tb.label", NSTouchBarItemIdentifierFlexibleSpace, @"tb.button", nil]; { NSButtonTouchBarItem *tray = [NSButtonTouchBarItem buttonTouchBarItemWithIdentifier: @"tb.tray" title: @"Tray" target: self action: @selector(tbHit:)]; [NSTouchBarItem addSystemTrayItem: tray]; } break;
 	case 5: ids = [NSArray arrayWithObjects: @"tb.stepper", NSTouchBarItemIdentifierFixedSpaceSmall, @"tb.picker", NSTouchBarItemIdentifierFlexibleSpace, @"tb.image", nil]; break;
 	case 2: ids = [NSArray arrayWithObjects: @"tb.scrubber.text", NSTouchBarItemIdentifierFixedSpaceSmall, @"tb.scrubber.image", nil]; break;
 	case 3: ids = [NSArray arrayWithObjects: @"tb.popover", @"tb.color", @"tb.share", NSTouchBarItemIdentifierFlexibleSpace, @"tb.candidates", nil]; break;
 	default: ids = [NSArray arrayWithObjects: @"tb.label", @"tb.principal", @"tb.low1", @"tb.low2", @"tb.low3", @"tb.low4", nil]; [b setPrincipalItemIdentifier: @"tb.principal"]; break;
 	}
-	[b setDefaultItemIdentifiers: ids]; [b setCustomizationIdentifier: @"com.test.touchbar"]; [b setCustomizationAllowedItemIdentifiers: ids];
+	[b setDefaultItemIdentifiers: ids]; [b setCustomizationIdentifier: [NSString stringWithFormat: @"com.test.touchbar.%d", page]]; [b setCustomizationAllowedItemIdentifiers: ids];
 	if (page == 3) [b setEscapeKeyReplacementItemIdentifier: @"tb.esc"];
 	return b;
 }

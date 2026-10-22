@@ -31,6 +31,8 @@ fc-list | grep -ci inter | sed 's/^/FONT: inter faces installed: /'
 pkg install -y libxkbcommon xkeyboard-config >/dev/null 2>&1 || pkg install -y libxkbcommon >/dev/null 2>&1 || true
 echo "xkb: $(pkg info -e libxkbcommon && echo installed || echo MISSING) $(pkg-config --cflags xkbcommon 2>&1)"
 pkg install -y giflib >/dev/null 2>&1 || true
+# PDF template images (libpoppler-glib is loaded at run time by sdk/src/PDFImage.m)
+pkg install -y poppler-glib >/dev/null 2>&1 || true
 git clone --depth 1 https://github.com/gnustep/libs-gui gui 2>&1 | tail -1
 # Auto Layout from xibs: libs-gui parses <constraint> but never builds it, and solves the vertical attributes upwards (ci/patch-*.py)
 python3 "$WS"/ci/patch-gsxib-constraints.py gui/Source/GSXib5KeyedUnarchiver.m; python3 "$WS"/ci/patch-autolayout-vertical.py gui/Source/GSAutoLayoutEngine.m
