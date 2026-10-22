@@ -30,6 +30,7 @@ clang $F -fobjc-arc -c "$D/src/CFAttributedStringBridge.m" -o "$OUT/CFAttributed
 clang $F -fobjc-arc -c "$D/src/DispatchMain.m" -o "$OUT/DispatchMain.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/EventLog.m" -o "$OUT/EventLog.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/InputContext.m" -o "$OUT/InputContext.o" 2>&1 | grep -E "error" | head
+clang $F -fobjc-arc -I/usr/local/include -c "$D/src/XPC.m" -o "$OUT/XPC.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/Keychain.m" -o "$OUT/Keychain.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/QuickLook.m" -o "$OUT/QuickLook.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/SystemFrameworks.m" -o "$OUT/SystemFrameworks.o" 2>&1 | grep -E "error" | head
@@ -37,5 +38,5 @@ clang $F -fobjc-arc -c "$D/src/Quarantine.m" -o "$OUT/Quarantine.o" 2>&1 | grep 
 for c in Launch xattr DiskArb UTType FileManager Security CoreServicesMisc ProcCompat CopyFile SecurityConstants CFConstants; do clang $F -c "$D/src/$c.c" -o "$OUT/$c.o" 2>&1 | grep -E "error" | head; done
 clang $F $(pkg-config --cflags cairo fontconfig freetype2) -c "$D/src/CoreTextFixes.c" -o "$OUT/CoreTextFixes.o" 2>&1 | grep -E "error" | head
 clang $F -fno-objc-arc -c "$D/src/Constants.m" -o "$OUT/Constants.o" 2>&1 | grep -E "error" | head
-clang -shared -Wl,-rpath,'$ORIGIN' -o "$OUT/libwsbsdcompat.so" "$OUT"/*.o -L"$OUT" -lQuartzCore $(gnustep-config --gui-libs) -lopal -lgnustep-corebase -lcrypto -L/usr/local/lib -lcurl $(pkg-config --libs cairo fontconfig freetype2) 2>&1 | grep -E "error|undefined" | head
+clang -shared -Wl,-rpath,'$ORIGIN' -o "$OUT/libwsbsdcompat.so" "$OUT"/*.o -L"$OUT" -lQuartzCore $(gnustep-config --gui-libs) -lopal -lgnustep-corebase -lcrypto -L/usr/local/lib -lcurl -lffi $(pkg-config --libs cairo fontconfig freetype2) 2>&1 | grep -E "error|undefined" | head
 ls -l "$OUT/libQuartzCore.so" "$OUT/libwsbsdcompat.so" | awk '{print "built", $9, $5, "bytes"}'
