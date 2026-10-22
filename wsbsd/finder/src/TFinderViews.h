@@ -25,6 +25,9 @@ NSString *TFKindString(NSString *path, BOOL dir);
 NSArray *TFTagsOf(NSString *path);
 void TFSetTags(NSArray *names, NSString *path);
 NSArray *TFPathsTagged(NSString *tag);
+NSWindow *TFOpenInfoWindow(NSString *path);
+void TFDrawIcon(NSString *path, NSRect r);
+@interface NSObject (TFRound) + (void)roundWindow:(NSWindow *)w radius:(int)r; @end
 void TFPopupMenu(NSView *view, NSPoint p, NSMenu *menu);
 BOOL TFSymbol(NSString *name, NSRect cell, CGFloat pt, NSColor *tint);
 NSImage *TFIcon(NSString *path);
@@ -47,7 +50,9 @@ NSImage *TFIcon(NSString *path);
 - (void)reveal:(NSRect)r;
 @end
 
-@interface TIconView : TScrollBase { @public __weak id<TIconViewDelegate> delegate; NSString *filter; NSMutableArray *_items; NSMutableIndexSet *_sel; NSInteger _anchor; NSString *_folder, *_arrange; NSRect _band; BOOL _dragging; NSInteger _dropTarget; double _animStart; NSTimer *_animTimer; }
+@interface TIconView : TScrollBase { @public __weak id<TIconViewDelegate> delegate; NSString *filter; NSMutableArray *_items; NSMutableIndexSet *_sel; NSInteger _anchor; NSString *_folder, *_arrange; NSRect _band; BOOL _dragging; NSInteger _dropTarget; double _animStart; NSTimer *_animTimer; CGFloat _isz; }
+- (void)setIconSize:(CGFloat)z;
+- (CGFloat)iconSize;
 - (void)arrangeBy:(NSString *)key;
 - (void)cleanUp:(BOOL)selectionOnly;
 - (void)setFolder:(NSString *)folder;
@@ -68,12 +73,19 @@ NSImage *TFIcon(NSString *path);
 - (NSArray *)selectedPaths;
 @end
 
+/* the gallery: the selected item large above a strip of thumbnails, its information to the right */
+@interface TGalleryView : NSView { @public __weak id<TIconViewDelegate> delegate; NSString *filter; NSMutableArray *_paths; NSInteger _sel; CGFloat _hoff; }
+- (void)setFolder:(NSString *)folder;
+- (void)setPaths:(NSArray *)paths;
+- (NSArray *)selectedPaths;
+@end
+
 @interface TSidebarView : TScrollBase { @public NSString *current; __weak id<TSidebarDelegate> delegate; NSArray *_rows; }
 - (NSString *)dropPathAtWindowPoint:(NSPoint)p;
 @end
 
 /* the line under the items: how many, how many selected, how much room is left */
-@interface TStatusBarView : NSView { @public NSString *text; }
+@interface TStatusBarView : NSView { @public NSString *text; BOOL showSlider; double value; id target; }
 @end
 
 @interface TPathBarView : NSView { @public NSString *path; __weak id<TPathBarDelegate> delegate; NSArray *_paths; NSMutableArray *_rects; }
