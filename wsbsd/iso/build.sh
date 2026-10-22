@@ -83,6 +83,7 @@ for d in etc private/etc; do
 done
 mkdir -p "$ROOT/System/Library/LaunchDaemons"
 (cd "$WORK/cw" && tar -cf - System usr 2>/dev/null) | tar -C "$ROOT" -xpf -
+install -d "$ROOT/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources" && install -m 644 "$WS/launchservices/uti_table.json" "$ROOT/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/uti_table.json"
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-airportd" "$ROOT/$d/rc.d/airportd"; done
 # no text login on the screen: the window server owns it (the serial console keeps its login)
 for d in etc private/etc; do sed -i '' -E 's/^(ttyv[0-9a-f]+[[:space:]].*[[:space:]])(onifexists|on)([[:space:]]|$)/\1off\3/' "$ROOT/$d/ttys"; done

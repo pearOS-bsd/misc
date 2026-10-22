@@ -22,6 +22,8 @@ const CFStringRef kDADiskDescriptionVolumePathKey = CFS("DAVolumePath");
 const CFStringRef kDADiskDescriptionDeviceModelKey = CFS("DADeviceModel");
 /* uniform type identifiers */
 const CFStringRef kUTTagClassFilenameExtension = CFS("public.filename-extension");
+const CFStringRef kUTTagClassOSType = CFS("com.apple.ostype");
+const CFStringRef kUTTagClassNSPboardType = CFS("com.apple.nspboard-type");
 const CFStringRef kUTTagClassMIMEType = CFS("public.mime-type");
 const CFStringRef kUTTypeData = CFS("public.data");
 const CFStringRef kUTTypeItem = CFS("public.item");

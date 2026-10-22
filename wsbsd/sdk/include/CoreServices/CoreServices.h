@@ -29,6 +29,10 @@ CFStringRef UTTypeCopyDescription(CFStringRef inUTI);
 extern const CFStringRef kUTTypeDescriptionKey, kUTTypeConformsToKey, kUTTypeIdentifierKey, kUTTypeTagSpecificationKey;
 extern const CFStringRef kUTTagClassFilenameExtension;
 extern const CFStringRef kUTTagClassMIMEType;
+extern const CFStringRef kUTTagClassOSType, kUTTagClassNSPboardType;
+CFArrayRef UTTypeCreateAllIdentifiersForTag(CFStringRef inTagClass, CFStringRef inTag, CFStringRef inConformingToUTI);
+Boolean UTTypeIsDeclared(CFStringRef inUTI);
+Boolean UTTypeIsDynamic(CFStringRef inUTI);
 extern const CFStringRef kUTTypeRTF, kUTTypeHTML, kUTTypeXML, kUTTypeImage, kUTTypePNG, kUTTypeJPEG, kUTTypeGIF, kUTTypeTIFF, kUTTypePDF, kUTTypeSourceCode, kUTTypeUTF8PlainText, kUTTypeURL, kUTTypeData, kUTTypeItem, kUTTypeContent, kUTTypePlainText, kUTTypeText, kUTTypeApplicationBundle, kUTTypeFolder, kUTTypeDirectory, kUTTypeBundle;
 /* Launch Services: no application database; the lookups find nothing */
 typedef uint32_t LSRolesMask;
