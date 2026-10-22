@@ -32,6 +32,9 @@ BOOL TFPrefBool(NSString *key, BOOL def);
 void TFSetPref(NSString *key, id value);
 void TFDrawIcon(NSString *path, NSRect r);
 @interface NSObject (TFRound) + (void)roundWindow:(NSWindow *)w radius:(int)r; @end
+NSArray *TFVolumes(void);
+NSString *TFDisplayName(NSString *path);
+BOOL TFEject(NSString *mount);
 void TFPopupMenu(NSView *view, NSPoint p, NSMenu *menu);
 BOOL TFSymbol(NSString *name, NSRect cell, CGFloat pt, NSColor *tint);
 NSImage *TFIcon(NSString *path);
@@ -54,7 +57,8 @@ NSImage *TFIcon(NSString *path);
 - (void)reveal:(NSRect)r;
 @end
 
-@interface TIconView : TScrollBase { @public __weak id<TIconViewDelegate> delegate; NSString *filter; NSMutableArray *_items; NSMutableIndexSet *_sel; NSInteger _anchor; NSString *_folder, *_arrange; NSRect _band; BOOL _dragging; NSInteger _dropTarget; double _animStart; NSTimer *_animTimer; CGFloat _isz; }
+@interface TIconView : TScrollBase { @public __weak id<TIconViewDelegate> delegate; NSString *filter; NSMutableArray *_items; NSMutableIndexSet *_sel; NSInteger _anchor; NSString *_folder, *_arrange; NSRect _band; BOOL _dragging; NSInteger _dropTarget; double _animStart; NSTimer *_animTimer; CGFloat _isz; BOOL desktop; NSArray *_prefix; }
+- (void)reloadKeepingSelectionOrFolder:(NSString *)folder;
 - (void)setIconSize:(CGFloat)z;
 - (CGFloat)iconSize;
 - (void)arrangeBy:(NSString *)key;
@@ -84,7 +88,7 @@ NSImage *TFIcon(NSString *path);
 - (NSArray *)selectedPaths;
 @end
 
-@interface TSidebarView : TScrollBase { @public NSString *current; __weak id<TSidebarDelegate> delegate; NSArray *_rows; }
+@interface TSidebarView : TScrollBase { @public NSString *current; __weak id<TSidebarDelegate> delegate; NSArray *_rows; NSString *_sig; }
 - (NSString *)dropPathAtWindowPoint:(NSPoint)p;
 @end
 
