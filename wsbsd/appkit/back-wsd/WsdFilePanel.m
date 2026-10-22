@@ -239,8 +239,16 @@ static NSArray *TagsOf(NSString *path)
 	NSArray *a = db[path]; return a ? [a mutableCopy] : out;
 	(void)attr;
 }
+static NSString *TagIndexPath(void) { return [NSHomeDirectory() stringByAppendingPathComponent: @"Library/Preferences/com.wsbsd.tags.index.plist"]; }
+static void IndexTags(NSString *path, NSArray *names)                                                       /* tag -> paths, so a tag can be listed without walking the disk (the Mac asks Spotlight) */
+{
+	NSMutableDictionary *ix = [[NSDictionary dictionaryWithContentsOfFile: TagIndexPath()] mutableCopy] ?: [NSMutableDictionary dictionary];
+	for (NSString *t in TagNames()) { NSMutableArray *a = [ix[t] mutableCopy] ?: [NSMutableArray array]; [a removeObject: path]; if ([names containsObject: t]) [a addObject: path]; ix[t] = a; }
+	[[NSFileManager defaultManager] createDirectoryAtPath: [TagIndexPath() stringByDeletingLastPathComponent] withIntermediateDirectories: YES attributes: nil error: NULL]; [ix writeToFile: TagIndexPath() atomically: YES];
+}
 static void SetTags(NSString *path, NSArray *names)
 {
+	IndexTags(path, names);
 	NSMutableArray *lines = [NSMutableArray array]; for (NSString *n in names) [lines addObject: [NSString stringWithFormat: @"%@\n%d", n, TagNumber(n)]];
 #ifdef __FreeBSD__
 	NSData *d = [NSPropertyListSerialization dataWithPropertyList: lines format: NSPropertyListBinaryFormat_v1_0 options: 0 error: NULL];
@@ -699,19 +707,22 @@ static void DrawSideIcon(NSString *name, NSRect r, NSColor *tint)               
 @end
 @class WsdPopup;
 @interface WsdPopupCatcher : NSView { @public WsdPopup *popup; } @end
-@interface WsdPopup : NSView { NSArray *titles, *dots; NSInteger checked, hover; void (^pick)(NSInteger); NSWindow *parent, *owned; WsdPopupCatcher *catcher; }
+@interface WsdPopup : NSView { NSArray *titles, *dots; NSIndexSet *checks; NSInteger checked, hover; void (^pick)(NSInteger); NSWindow *parent, *owned; WsdPopupCatcher *catcher; }
 - (void)finish:(NSInteger)i; - (void)keyDown:(NSEvent *)e;
 + (void)showIn:(NSView *)root titles:(NSArray *)t checked:(NSInteger)c at:(NSPoint)p pick:(void (^)(NSInteger))block;
 + (void)showIn:(NSView *)root titles:(NSArray *)t dots:(NSArray *)d at:(NSPoint)p pick:(void (^)(NSInteger))block;
++ (void)showIn:(NSView *)root titles:(NSArray *)t dots:(NSArray *)d checks:(NSIndexSet *)c at:(NSPoint)p pick:(void (^)(NSInteger))block;
 @end
+static NSIndexSet *gPendingChecks;
 @implementation WsdPopup
 + (void)showIn:(NSView *)root titles:(NSArray *)t checked:(NSInteger)c at:(NSPoint)p pick:(void (^)(NSInteger))block { [self showIn: root titles: t dots: nil checked: c at: p pick: block]; }
 + (void)showIn:(NSView *)root titles:(NSArray *)t dots:(NSArray *)d at:(NSPoint)p pick:(void (^)(NSInteger))block { [self showIn: root titles: t dots: d checked: -1 at: p pick: block]; }
++ (void)showIn:(NSView *)root titles:(NSArray *)t dots:(NSArray *)d checks:(NSIndexSet *)c at:(NSPoint)p pick:(void (^)(NSInteger))block { gPendingChecks = c; [self showIn: root titles: t dots: d checked: -1 at: p pick: block]; }
 + (void)showIn:(NSView *)root titles:(NSArray *)t dots:(NSArray *)d checked:(NSInteger)c at:(NSPoint)p pick:(void (^)(NSInteger))block
 {
 	double w = 60; for (NSString *s in t) w = fmax(w, [s sizeWithAttributes: Attr(13, NO, P_TEXT)].width + 44); double h = 10 + 24 * (double)[t count];
 	NSPoint scr = [[root window] convertBaseToScreen: [root convertPoint: p toView: nil]];
-	WsdPopup *v = [[WsdPopup alloc] initWithFrame: NSMakeRect(0, 0, w, h)]; v->titles = t; v->dots = d; v->checked = c; v->hover = -1; v->pick = block; v->parent = [root window];
+	WsdPopup *v = [[WsdPopup alloc] initWithFrame: NSMakeRect(0, 0, w, h)]; v->titles = t; v->dots = d; v->checked = c; v->checks = gPendingChecks; gPendingChecks = nil; v->hover = -1; v->pick = block; v->parent = [root window];
 	WsdPopupWindow *win = [[WsdPopupWindow alloc] initWithContentRect: NSMakeRect(scr.x, scr.y - h, w, h) styleMask: NSBorderlessWindowMask backing: NSBackingStoreBuffered defer: NO];
 	[win setOpaque: NO]; [win setBackgroundColor: [NSColor clearColor]]; [win setReleasedWhenClosed: NO]; [win setLevel: NSPopUpMenuWindowLevel]; [win setContentView: v]; [win setAcceptsMouseMovedEvents: YES];
 	WsdPopupCatcher *cat = [[WsdPopupCatcher alloc] initWithFrame: [root bounds]]; cat->popup = v; v->catcher = cat; [root addSubview: cat]; [[root window] makeFirstResponder: cat];
@@ -728,7 +739,7 @@ static void DrawSideIcon(NSString *name, NSRect r, NSColor *tint)               
 	[(PDark() ? RGBA(255, 255, 255, 0.14) : RGBA(0, 0, 0, 0.12)) setStroke]; NSBezierPath *o = [NSBezierPath bezierPathWithRoundedRect: NSInsetRect(box, 0.5, 0.5) xRadius: 10 yRadius: 10]; [o setLineWidth: 1]; [o stroke];
 	for (NSInteger i = 0; i < (NSInteger)[titles count]; i++) {
 		NSRect r = [self rowRect: i]; if (i == hover) FillRound(r, 5, RGB(10, 132, 255));
-		NSColor *tc = i == hover ? RGB(255, 255, 255) : P_TEXT; if (i == checked) Text(@"✓", NSMakePoint(r.origin.x + 8, NSMidY(r)), 12, YES, tc, YES);
+		NSColor *tc = i == hover ? RGB(255, 255, 255) : P_TEXT; if (i == checked || [checks containsIndex: (NSUInteger)i]) Text(@"✓", NSMakePoint(r.origin.x + 8, NSMidY(r)), 12, YES, tc, YES);
 		if (dots && dots[i] != [NSNull null]) { [dots[i] setFill]; [[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(r.origin.x + 8, NSMidY(r) - 5, 10, 10)] fill]; }
 		Text(titles[i], NSMakePoint(r.origin.x + 26, NSMidY(r)), 13, NO, tc, YES);
 	}
@@ -1101,6 +1112,14 @@ static void wsdSetName(id self, SEL _cmd, NSString *v) { objc_setAssociatedObjec
 + (void)roundWindow:(NSWindow *)w radius:(int)r { RoundWindow(w, r); }
 + (BOOL)drawSymbol:(NSString *)name inRect:(NSRect)cell size:(CGFloat)pt weight:(int)weight color:(NSColor *)c { return WsdSymbolDraw(name, cell, pt, weight, c); }
 + (BOOL)isDark { return WsdAppearanceIsDark(); }
++ (void)popupInView:(NSView *)root titles:(NSArray *)t dots:(NSArray *)d checks:(NSIndexSet *)c at:(NSPoint)p pick:(void (^)(NSInteger))b { [WsdPopup showIn: root titles: t dots: d checks: c at: p pick: b]; }
++ (NSArray *)tagsOfPath:(NSString *)path { return TagsOf(path); }
++ (void)setTags:(NSArray *)names ofPath:(NSString *)path { SetTags(path, names); }
++ (NSArray *)tagNames { return TagNames(); }
++ (NSArray *)pathsTagged:(NSString *)tag { NSMutableArray *out = [NSMutableArray array]; for (NSString *p in [NSDictionary dictionaryWithContentsOfFile: TagIndexPath()][tag]) if ([[NSFileManager defaultManager] fileExistsAtPath: p] && [TagsOf(p) containsObject: tag]) [out addObject: p]; return out; }
++ (NSColor *)colorOfTag:(NSString *)name { return TagColor(name); }
++ (void)drawTagDots:(NSArray *)names rightEdge:(double)x centerY:(double)cy { DrawTagDots(names, x, cy); }
++ (double)tagDotsWidth:(NSArray *)names { return TagDotsWidth(names); }
 + (void)drawIconOfName:(NSString *)name directory:(BOOL)dir inRect:(NSRect)r { if (dir) DrawDirIcon(r, name); else DrawFileIcon(r, name); }
 @end
 void WsdInstallFilePanel(void)

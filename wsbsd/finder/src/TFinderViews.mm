@@ -7,6 +7,8 @@
 + (void)roundWindow:(NSWindow *)w radius:(int)r;
 + (BOOL)drawSymbol:(NSString *)name inRect:(NSRect)cell size:(CGFloat)pt weight:(int)weight color:(NSColor *)c;
 + (void)drawIconOfName:(NSString *)name directory:(BOOL)dir inRect:(NSRect)r;
++ (NSArray *)pathsTagged:(NSString *)tag;
++ (void)popupInView:(NSView *)root titles:(NSArray *)t dots:(NSArray *)d checks:(NSIndexSet *)c at:(NSPoint)p pick:(void (^)(NSInteger))b;
 @end
 
 NSString *TFSizeString(unsigned long long b)                                              /* as the Finder writes it: bytes below 1000, then KB / MB / GB with decimal units */
@@ -29,6 +31,9 @@ NSString *TFKindString(NSString *path, BOOL dir)
 	NSString *d = u && ![u hasPrefix: @"dyn."] ? (__bridge_transfer NSString *)UTTypeCopyDescription((__bridge CFStringRef)u) : nil; if ([d isKindOfClass: [NSString class]] && [d length]) return [[[d substringToIndex: 1] uppercaseString] stringByAppendingString: [d substringFromIndex: 1]];
 	return [ext length] ? [NSString stringWithFormat: @"%@ document", [ext uppercaseString]] : @"Document";
 }
+NSArray *TFTagsOf(NSString *path) { Class k = NSClassFromString(@"WsdFinderSupport"); return k ? [k tagsOfPath: path] : @[]; }
+void TFSetTags(NSArray *names, NSString *path) { Class k = NSClassFromString(@"WsdFinderSupport"); if (k) [k setTags: names ofPath: path]; }
+NSArray *TFPathsTagged(NSString *tag) { Class k = NSClassFromString(@"WsdFinderSupport"); return k ? [k pathsTagged: tag] : @[]; }
 BOOL TFSymbol(NSString *name, NSRect cell, CGFloat pt, NSColor *tint)
 {
 	Class k = NSClassFromString(@"WsdFinderSupport"); if (!k) return NO; return [k drawSymbol: name inRect: cell size: pt weight: 4 color: tint];
@@ -43,6 +48,17 @@ void TFDrawIcon(NSString *path, NSRect r)                                       
 	NSFileManager *fm = [NSFileManager defaultManager]; BOOL d = NO; [fm fileExistsAtPath: path isDirectory: &d]; Class k = NSClassFromString(@"WsdFinderSupport");
 	if (k && ![path isEqual: @"/"] && ![[path pathExtension] isEqual: @"app"]) { [k drawIconOfName: [path lastPathComponent] directory: d inRect: r]; return; }
 	NSImage *i = TFIcon(path); if (i) [i drawInRect: r fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1];
+}
+void TFPopupMenu(NSView *view, NSPoint p, NSMenu *menu)                                       /* an NSMenu shown as the panel's own pop-up (GNUstep's pop-up windows come out far too big under this window server) */
+{
+	NSMutableArray *items = [NSMutableArray array], *titles = [NSMutableArray array], *dots = [NSMutableArray array]; NSMutableIndexSet *checks = [NSMutableIndexSet indexSet]; Class sp = NSClassFromString(@"WsdFinderSupport");
+	for (NSMenuItem *it in [menu itemArray]) {
+		if ([it isSeparatorItem]) continue; id t = [it target]; if ([t respondsToSelector: @selector(validateMenuItem:)] && [it action] && ![t validateMenuItem: it]) continue;
+		[items addObject: it]; [titles addObject: [it submenu] ? [[it title] stringByAppendingString: @"  ▸"] : [it title]]; [dots addObject: [it tag] == 1 && [[it representedObject] isKindOfClass: [NSString class]] ? (id)[sp colorOfTag: [it representedObject]] : (id)[NSNull null]];
+		if ([it state] == NSOnState) [checks addIndex: [items count] - 1];
+	}
+	if (![items count] || !sp) return; NSView *root = [[view window] contentView]; NSPoint q = [root convertPoint: p fromView: view];
+	[sp popupInView: root titles: titles dots: dots checks: checks at: q pick: ^(NSInteger k) { NSMenuItem *it = items[k]; if ([it submenu]) TFPopupMenu(view, NSMakePoint(p.x + 40, p.y), [it submenu]); else [NSApp sendAction: [it action] to: [it target] from: it]; }];
 }
 static NSImage *Thumb(NSString *path)                                                       /* the picture itself for image files, scaled once */
 {
@@ -123,17 +139,22 @@ static const CGFloat kCW = 112, kCH = 126, kPad = 10, kIcon = 64;
 - (instancetype)initWithFrame:(NSRect)f { if ((self = [super initWithFrame: f])) { _items = [NSMutableArray array]; _sel = [NSMutableIndexSet indexSet]; _anchor = -1; } return self; }
 - (void)setFolder:(NSString *)folder
 {
-	[_items removeAllObjects]; [_sel removeAllIndexes]; NSFileManager *fm = [NSFileManager defaultManager]; NSMutableArray *names = [NSMutableArray array];
-	for (NSString *n in [fm contentsOfDirectoryAtPath: folder error: NULL]) if (![n hasPrefix: @"."] && (![filter length] || [n rangeOfString: filter options: NSCaseInsensitiveSearch].location != NSNotFound)) [names addObject: n];
-	for (NSString *n in [names sortedArrayUsingSelector: @selector(localizedStandardCompare:)]) {
-		NSString *p = [folder stringByAppendingPathComponent: n]; NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory] && ![[p pathExtension] isEqual: @"app"]; NSString *info = @"";
+	NSMutableArray *paths = [NSMutableArray array]; for (NSString *n in [[[NSFileManager defaultManager] contentsOfDirectoryAtPath: folder error: NULL] sortedArrayUsingSelector: @selector(localizedStandardCompare:)]) [paths addObject: [folder stringByAppendingPathComponent: n]];
+	[self setPaths: paths];
+}
+- (void)setPaths:(NSArray *)paths
+{
+	[_items removeAllObjects]; [_sel removeAllIndexes]; NSFileManager *fm = [NSFileManager defaultManager];
+	for (NSString *p in paths) {
+		NSString *n = [p lastPathComponent]; if ([n hasPrefix: @"."] || ([filter length] && [n rangeOfString: filter options: NSCaseInsensitiveSearch].location == NSNotFound)) continue;
+		NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory] && ![[p pathExtension] isEqual: @"app"]; NSString *info = @"";
 		if (dir) { NSUInteger c = 0; for (NSString *s in [fm contentsOfDirectoryAtPath: p error: NULL]) if (![s hasPrefix: @"."]) c++; info = [NSString stringWithFormat: @"%lu item%s", (unsigned long)c, c == 1 ? "" : "s"]; }
 		else if (![[p pathExtension] isEqual: @"app"]) info = TFSizeString([at[NSFileSize] unsignedLongLongValue]);
-		[_items addObject: [@{ @"name": n, @"path": p, @"info": info } mutableCopy]];
+		[_items addObject: [@{ @"name": n, @"path": p, @"info": info, @"tags": TFTagsOf(p) } mutableCopy]];
 	}
 	off = 0; [self setNeedsDisplay: YES]; [self _notify];
 }
-- (void)reloadKeepingSelection { NSArray *keep = [self selectedPaths]; NSString *dir = [_items count] ? [_items[0][@"path"] stringByDeletingLastPathComponent] : nil; if (!dir) return; CGFloat o = off; [self setFolder: dir]; for (NSUInteger i = 0; i < [_items count]; i++) if ([keep containsObject: _items[i][@"path"]]) [_sel addIndex: i]; off = o; [self setNeedsDisplay: YES]; }
+- (void)reloadKeepingSelection { NSArray *keep = [self selectedPaths]; if (![_items count]) return; NSMutableArray *ps = [NSMutableArray array]; for (NSDictionary *d in _items) [ps addObject: d[@"path"]]; CGFloat o = off; [self setPaths: ps]; for (NSUInteger i = 0; i < [_items count]; i++) if ([keep containsObject: _items[i][@"path"]]) [_sel addIndex: i]; off = o; [self setNeedsDisplay: YES]; }
 - (NSInteger)_cols { return MAX(1, (NSInteger)floor(([self bounds].size.width - 2 * kPad) / kCW)); }
 - (CGFloat)contentHeight { NSInteger c = [self _cols]; return 2 * kPad + ceil((double)[_items count] / c) * kCH; }
 - (NSRect)_cell:(NSInteger)i { NSInteger c = [self _cols]; return NSMakeRect(kPad + (i % c) * kCW, kPad + (i / c) * kCH, kCW, kCH); }
@@ -151,7 +172,8 @@ static const CGFloat kCW = 112, kCH = 126, kPad = 10, kIcon = 64;
 		NSArray *lines = it[@"lines"]; if (!lines) { lines = WrapLabel(it[@"name"], lab, kCW - 12, 2); it[@"lines"] = lines; }
 		CGFloat y = c.origin.y + 81; CGFloat lh = 16;
 		for (NSString *ln in lines) {
-			NSSize z = [ln sizeWithAttributes: lab]; if (sel) FillRound(NSMakeRect(NSMidX(c) - z.width / 2 - 5, y - 9, z.width + 10, 18), 5, key ? TF_ACCENT : TFDark() ? TFRGB(90, 90, 90) : TFRGB(190, 190, 194));
+			NSSize z = [ln sizeWithAttributes: lab]; if (ln == [lines firstObject] && [it[@"tags"] count]) { double w = [NSClassFromString(@"WsdFinderSupport") tagDotsWidth: it[@"tags"]]; [NSClassFromString(@"WsdFinderSupport") drawTagDots: it[@"tags"] rightEdge: NSMidX(c) - z.width / 2 - 9 centerY: y]; }
+			if (sel) FillRound(NSMakeRect(NSMidX(c) - z.width / 2 - 5, y - 9, z.width + 10, 18), 5, key ? TF_ACCENT : TFDark() ? TFRGB(90, 90, 90) : TFRGB(190, 190, 194));
 			[ln drawAtPoint: NSMakePoint(NSMidX(c) - z.width / 2, y - z.height / 2) withAttributes: sel ? labSel : lab]; y += lh;
 		}
 		if ([it[@"info"] length]) { NSSize z = [it[@"info"] sizeWithAttributes: inf]; [it[@"info"] drawAtPoint: NSMakePoint(NSMidX(c) - z.width / 2, y - z.height / 2 - 1) withAttributes: inf]; }
@@ -185,7 +207,7 @@ static const CGFloat kCW = 112, kCH = 126, kPad = 10, kIcon = 64;
 {
 	NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; NSInteger i = [self _index: NSMakePoint(p.x, p.y - topInset + off)];
 	if (i >= 0 && ![_sel containsIndex: i]) { [_sel removeAllIndexes]; [_sel addIndex: i]; [self setNeedsDisplay: YES]; [self _notify]; } else if (i < 0) { [_sel removeAllIndexes]; [self setNeedsDisplay: YES]; [self _notify]; }
-	return [self menu];
+	TFPopupMenu(self, p, [self menu]); return nil;
 }
 - (void)selectAll:(id)s { [_sel addIndexesInRange: NSMakeRange(0, [_items count])]; [self setNeedsDisplay: YES]; [self _notify]; }
 - (void)keyDown:(NSEvent *)e
@@ -210,12 +232,16 @@ static const CGFloat kRow = 24, kHead = 28;
 - (instancetype)initWithFrame:(NSRect)f { if ((self = [super initWithFrame: f])) { _items = [NSMutableArray array]; _sel = [NSMutableIndexSet indexSet]; _sortKey = @"name"; _asc = YES; topInset = kHead; _anchor = -1; } return self; }
 - (void)setFolder:(NSString *)folder
 {
+	NSMutableArray *paths = [NSMutableArray array]; for (NSString *n in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: folder error: NULL]) [paths addObject: [folder stringByAppendingPathComponent: n]]; [self setPaths: paths];
+}
+- (void)setPaths:(NSArray *)paths
+{
 	[_items removeAllObjects]; [_sel removeAllIndexes]; NSFileManager *fm = [NSFileManager defaultManager];
-	for (NSString *n in [fm contentsOfDirectoryAtPath: folder error: NULL]) @try {
+	for (NSString *p in paths) @try { NSString *n = [p lastPathComponent];
 		if ([n hasPrefix: @"."] || ([filter length] && [n rangeOfString: filter options: NSCaseInsensitiveSearch].location == NSNotFound)) continue;
-		NSString *p = [folder stringByAppendingPathComponent: n]; NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory] && ![[p pathExtension] isEqual: @"app"];
-		[_items addObject: @{ @"name": n, @"path": p, @"dir": @(dir), @"date": at[NSFileModificationDate] ?: [NSDate distantPast], @"size": dir ? @(-1) : at[NSFileSize] ?: @0, @"kind": TFKindString(p, dir) }];
-	} @catch (NSException *x) { NSLog(@"TListView %@: %@", n, x); }
+		NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory] && ![[p pathExtension] isEqual: @"app"];
+		[_items addObject: @{ @"name": n, @"path": p, @"dir": @(dir), @"date": at[NSFileModificationDate] ?: [NSDate distantPast], @"size": dir ? @(-1) : at[NSFileSize] ?: @0, @"kind": TFKindString(p, dir), @"tags": TFTagsOf(p) }];
+	} @catch (NSException *x) { NSLog(@"TListView %@: %@", p, x); }
 	[self _sort]; off = 0; [self setNeedsDisplay: YES]; [self _notify];
 }
 - (void)_sort { NSString *k = _sortKey; BOOL asc = _asc; NSArray *sorted = [_items sortedArrayUsingComparator: ^NSComparisonResult(NSDictionary *a, NSDictionary *b) { NSComparisonResult r = [k isEqual: @"name"] || [k isEqual: @"kind"] ? [a[k] localizedStandardCompare: b[k]] : [a[k] compare: b[k]]; return asc ? r : (NSComparisonResult)(-r); }]; if (getenv("FINDER_DEBUG")) NSLog(@"Finder: list sort %lu -> %lu", (unsigned long)[_items count], (unsigned long)[sorted count]); [_items setArray: sorted]; }
@@ -232,6 +258,7 @@ static const CGFloat kRow = 24, kHead = 28;
 			NSString *k = c[0], *s; CGFloat x = [c[2] doubleValue] + ([k isEqual: @"name"] ? 42 : 8), cw = [c[3] doubleValue] - ([k isEqual: @"name"] ? 50 : 16); NSDictionary *at = Font(13, NO, [k isEqual: @"name"] ? tc : dc);
 			if ([k isEqual: @"name"]) s = it[@"name"]; else if ([k isEqual: @"date"]) s = TFDateString(it[@"date"]); else if ([k isEqual: @"size"]) s = [it[@"size"] longLongValue] < 0 ? @"--" : TFSizeString([it[@"size"] unsignedLongLongValue]); else s = it[@"kind"];
 			s = Truncated(s, at, cw); if ([k isEqual: @"size"]) x += cw - [s sizeWithAttributes: at].width; TextAt(s, x, cy, at);
+			if ([k isEqual: @"name"] && [it[@"tags"] count]) { Class sp = NSClassFromString(@"WsdFinderSupport"); double w = [sp tagDotsWidth: it[@"tags"]]; [sp drawTagDots: it[@"tags"] rightEdge: x + [s sizeWithAttributes: at].width + 8 + w centerY: cy]; }
 		}
 	}
 }
@@ -262,7 +289,7 @@ static const CGFloat kRow = 24, kHead = 28;
 	else { if (![_sel containsIndex: i]) { [_sel removeAllIndexes]; [_sel addIndex: i]; } _anchor = i; }
 	[self setNeedsDisplay: YES]; [self _notify]; if ([e clickCount] == 2) [delegate iconViewOpenItem: _items[i][@"path"]];
 }
-- (NSMenu *)menuForEvent:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; NSInteger i = [self _row: NSMakePoint(p.x, p.y - topInset + off)]; if (i >= 0 && ![_sel containsIndex: i]) { [_sel removeAllIndexes]; [_sel addIndex: i]; [self setNeedsDisplay: YES]; [self _notify]; } return [self menu]; }
+- (NSMenu *)menuForEvent:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; NSInteger i = [self _row: NSMakePoint(p.x, p.y - topInset + off)]; if (i >= 0 && ![_sel containsIndex: i]) { [_sel removeAllIndexes]; [_sel addIndex: i]; [self setNeedsDisplay: YES]; [self _notify]; } TFPopupMenu(self, p, [self menu]); return nil; }
 - (void)selectAll:(id)s { [_sel addIndexesInRange: NSMakeRange(0, [_items count])]; [self setNeedsDisplay: YES]; [self _notify]; }
 - (void)keyDown:(NSEvent *)e
 {
@@ -387,7 +414,7 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 }
 - (void)contentMouseDown:(NSPoint)p event:(NSEvent *)e
 {
-	for (NSInteger i = 0; i < (NSInteger)[_rows count]; i++) if (![_rows[i][@"k"] isEqual: @"head"] && NSPointInRect(p, [self _rect: i])) { NSString *path = _rows[i][@"p"]; if ([path hasPrefix: @"/"]) [delegate sidebarGoTo: path]; return; }
+	for (NSInteger i = 0; i < (NSInteger)[_rows count]; i++) if (![_rows[i][@"k"] isEqual: @"head"] && NSPointInRect(p, [self _rect: i])) { NSString *path = _rows[i][@"p"]; if ([path hasPrefix: @"/"] || [path hasPrefix: @"tag://"]) [delegate sidebarGoTo: path]; return; }
 }
 @end
 
@@ -445,7 +472,7 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 	NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; NSRect nav = [self _pill: 0], md = [self _pill: 1];
 	if (NSPointInRect(p, nav)) { if (p.x < NSMidX(nav)) { if (canBack) [NSApp sendAction: @selector(cmdBack:) to: target from: self]; } else if (canForward) [NSApp sendAction: @selector(cmdForward:) to: target from: self]; return; }
 	if (NSPointInRect(p, md)) { SEL a[4] = { @selector(cmdViewAsIcons:), @selector(cmdViewAsList:), @selector(cmdViewAsColumns:), @selector(cmdViewAsGallery:) }; [NSApp sendAction: a[(int)((p.x - md.origin.x) / (md.size.width / 4)) & 3] to: target from: self]; return; }
-	NSRect ac = [self _pill: 3]; if (NSPointInRect(p, ac)) { if (p.x > ac.origin.x + 2 * ac.size.width / 3) { NSMenu *m = [target performSelector: @selector(actionMenu)]; [NSMenu popUpContextMenu: m withEvent: e forView: self]; } return; }
+	NSRect ac = [self _pill: 3]; if (NSPointInRect(p, ac)) { CGFloat aw = ac.size.width / 3; if (p.x > ac.origin.x + 2 * aw) TFPopupMenu(self, NSMakePoint(ac.origin.x + 2 * aw, 46), [target performSelector: @selector(actionMenu)]); else if (p.x > ac.origin.x + aw) { NSMenu *tm = [target performSelector: @selector(tagMenu)]; [target performSelector: @selector(_markTagMenu:) withObject: tm]; TFPopupMenu(self, NSMakePoint(ac.origin.x + aw, 46), tm); } return; }
 	if (NSPointInRect(p, [self _pill: 4]) && !searching) [NSApp sendAction: @selector(cmdToggleSearch:) to: target from: self];
 }
 @end
