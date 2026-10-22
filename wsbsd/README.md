@@ -36,7 +36,7 @@ The stack: `wsd` (this repo: window server and compositor speaking the SkyLight 
 | QuickLook / CFPlugIn | ~55 % | generators, thumbnails, preview panel; no third-party generator ecosystem tested |
 | Foundation networking (NSURLSession over libcurl) | ~45 % | data / download / upload tasks, delegates; no background sessions, no HTTP/3 |
 | TextMate port (unmodified source) | ~55 % | builds, starts, real menus, gutter and layout, key input reaches the editor; the text of the editor is not drawn yet, no bundles shipped, WebKit is a stub |
-| **CoreWLAN / airportd** | **0 % (required, not started)** | see "Required next" below |
+| **CoreWLAN / airportd** | **~45 % (required, in progress)** | see "Required next" below |
 
 ### Required next (decided by the project owner)
 - **CoreWLAN.framework** (`CWWiFiClient`, `CWInterface`, `CWNetwork`, `CWConfiguration`, `CWNetworkProfile`, events) and **airportd** (the daemon behind it): scanning, seamless joining of known

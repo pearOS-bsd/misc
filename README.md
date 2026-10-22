@@ -176,7 +176,7 @@ yet; the amd64 image is built by CI (first result pending), the arm64 image has 
 | **Security / Keychain / Authorization** | Partial | Sealed AES-GCM keychain, SecItem, keys and certificates, SecTransform verify, Authorization (`wsbsd/sdk/src/Keychain.m`); no Secure Enclave (a Raspberry Pi Pico 2 token is planned) |
 | **QuickLook / CFPlugIn** | Partial | Generators, thumbnails, the preview panel on Space |
 | **XPC (`NSXPCConnection`)** | Yes (own) | Listeners, connections, interfaces and reply blocks over unix sockets (`wsbsd/sdk/src/XPC.m`); gnustep-base only has stubs that raise |
-| **CoreWLAN / airportd** | Started | The inventory of the real frameworks is in `wsbsd/docs/corewlan`; `CWNetwork` and `CWChannel` match the real ones on 2,484 generated cases; the daemon (scan, join, auto-join, hotspot detection) is being written. Required, see below |
+| **CoreWLAN / airportd** | In progress | The inventory of the real frameworks is in `wsbsd/docs/corewlan`; `CWNetwork` and `CWChannel` match the real ones on 2,484 generated cases; airportd (XPC services of the real names, scan, join, events, known networks, auto-join that prefers non-hotspot networks, hotspot detection through the iOS IE) works against a simulated Wi-Fi world and against a wpa_supplicant control-socket backend (tested with a fake supplicant); real hardware not tried yet. Required, see below |
 | **UIKit** | No | Out of scope; the target is AppKit apps. |
 | **SwiftUI** | No | Swift on FreeBSD has no Objective-C interoperability, so it cannot subclass `NSObject` or use AppKit. SwiftUI also relies on RenderBox, which is absent. A later target, not started. |
 | **RenderBox / Metal** | No | Not provided. |
@@ -197,7 +197,7 @@ Rough estimates, not measurements:
 | QuickLook / CFPlugIn | ~55 % | |
 | Foundation networking (`NSURLSession` over libcurl) | ~45 % | |
 | TextMate port | ~55 % | text drawing in the editor is the open problem |
-| CoreWLAN / airportd | ~10 % | data classes done and verified; framework API and daemon in progress |
+| CoreWLAN / airportd | ~45 % | data classes verified against the Mac; CWWiFiClient/CWInterface over XPC; airportd with sim and wpa backends; missing: differential tests for profiles/configuration, tether/IBSS/host AP, keychain, the other mach services of the real plist, ISO install, real hardware |
 | AirDrop | 0 % | after CoreWLAN, by decompilation |
 
 **Required next (decided by the project owner)**
