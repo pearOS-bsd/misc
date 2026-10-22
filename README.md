@@ -213,6 +213,8 @@ Rough estimates, not measurements:
 - **AirDrop:** postponed by the project owner (needs AWDL and Bluetooth; plan in `wsbsd/docs/airdrop/PLAN.md`).
 - **iPhone Mirroring:** not started and not researched (Continuity needs Apple-account services and AWDL/Bluetooth; iOS developer mode is what the owner wants to avoid). AirPlay-receiver mirroring is a possible alternative.
 
+- **Desktop (Finder):** planned: the whole Finder and its subsystems are decompiled with REA and rewritten (inventory and order in `wsbsd/docs/desktop`: 871 classes, 125 linked images, placeholders for iCloud, Time Machine, Sidecar, Biome ...). Finder installs at `/System/Library/CoreServices/Finder.app`.
+
 **Other open work:** Chess, the SkyLight routines that need a compositor, KMS/GPU hardware, the Dock, real WebKit, the designers' assets (ordered, 21,000 EUR) and the Pico 2 secure-element token.
 
 ## Known limits

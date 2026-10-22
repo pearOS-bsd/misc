@@ -1,0 +1,60 @@
+[Dict]
+	[Key] com.apple.accounts.appleaccount.fullaccess
+	[Value]
+		[Bool] true
+	[Key] com.apple.amp.devices.client
+	[Value]
+		[Bool] true
+	[Key] com.apple.application-identifier
+	[Value]
+		[String] RD13622867.com.apple.finder
+	[Key] com.apple.authkit.client.private
+	[Value]
+		[Bool] true
+	[Key] com.apple.bluetooth.system
+	[Value]
+		[Bool] true
+	[Key] com.apple.campo-client
+	[Value]
+		[Bool] true
+	[Key] com.apple.developer.associated-domains
+	[Value]
+		[Array]
+	[Key] com.apple.developer.icloud-extended-share-access
+	[Value]
+		[Array]
+			[String] InProcessShareOwnerParticipantInfo
+	[Key] com.apple.developer.ubiquity-kvstore-identifier
+	[Value]
+		[String] com.apple.finder
+	[Key] com.apple.dock.add-item
+	[Value]
+		[Bool] true
+	[Key] com.apple.feedbackd.remote-evaluation
+	[Value]
+		[Bool] true
+	[Key] com.apple.filederivatives.derive
+	[Value]
+		[Bool] true
+	[Key] com.apple.fileprovider.acl-read
+	[Value]
+		[Bool] true
+	[Key] com.apple.fileprovider.enumerate
+	[Value]
+		[Bool] true
+	[Key] com.apple.fileprovider.extension-host
+	[Value]
+		[Bool] true
+	[Key] com.apple.fileprovider.fetch-url
+	[Value]
+		[Bool] true
+	[Key] com.apple.imdpersistence.IMDPersistenceAgent-Syndication
+	[Value]
+		[Bool] true
+	[Key] com.apple.internal.fileprovider.sync-root-management
+	[Value]
+		[Bool] true
+	[Key] com.apple.launchservices.changeurlschemehandler
+	[Value]
+		[Bool] true
+	[Key] com.apple.private.ArchiveService.XPC
