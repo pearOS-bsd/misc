@@ -10,3 +10,13 @@
 	if (!s) s = [c decodeObjectForKey: @"NSDev"]; return (id)[s copy] ?: (id)@"";
 }
 @end
+
+/* the order of the Finder: numbers by value, case and accents ignored */
+@interface NSString (WsbsdLocalizedStandard) @end
+@implementation NSString (WsbsdLocalizedStandard)
+- (NSComparisonResult)localizedStandardCompare:(NSString *)other
+{
+	return [self compare: other options: NSNumericSearch | NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch range: NSMakeRange(0, [self length]) locale: [NSLocale currentLocale]];
+}
+- (BOOL)localizedStandardContainsString:(NSString *)s { return [self rangeOfString: s options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch].location != NSNotFound; }
+@end
