@@ -1,11 +1,12 @@
 /* NSColor's semantic and system colours that GNUstep lacks, with the values AppKit of macOS 27 returns in the light and the dark appearance (read from the real class on a Mac, sRGB);
  * the appearance is the one the theme uses (WSD_APPEARANCE=light, dark otherwise). */
 #import <AppKit/AppKit.h>
-static BOOL WsdDark(void) { const char *e = getenv("WSD_APPEARANCE"); return !(e && !strcmp(e, "light")); }
+extern BOOL WsdAppearanceIsDark(void); extern void WsdAccentRGB(BOOL, double *, double *, double *);
+static BOOL WsdDark(void) { return WsdAppearanceIsDark(); }
 static NSColor *C(double r, double g, double b, double a) { return [NSColor colorWithCalibratedRed: r green: g blue: b alpha: a]; }
 #define PICK(l0, l1, l2, l3, d0, d1, d2, d3) return WsdDark() ? C(d0, d1, d2, d3) : C(l0, l1, l2, l3)
 @implementation NSColor (WsdAppKit)
-+ (NSColor *)controlAccentColor { PICK(0.0000, 0.4784, 1.0000, 1.0000, 0.0000, 0.4784, 1.0000, 1.0000); }
++ (NSColor *)controlAccentColor { double r, g, b; WsdAccentRGB(WsdDark(), &r, &g, &b); return C(r, g, b, 1); }
 + (NSColor *)findHighlightColor { PICK(1.0000, 1.0000, 0.0000, 1.0000, 1.0000, 1.0000, 0.0000, 1.0000); }
 + (NSColor *)linkColor { PICK(0.0000, 0.4078, 0.8549, 1.0000, 0.2549, 0.6118, 1.0000, 1.0000); }
 + (NSColor *)placeholderTextColor { PICK(0.0000, 0.0000, 0.0000, 0.4980, 1.0000, 1.0000, 1.0000, 0.5490); }

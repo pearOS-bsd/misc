@@ -144,14 +144,14 @@ static const CGFloat kCW = 112, kCH = 126, kPad = 10, kIcon = 64;
 	for (NSInteger i = 0; i < (NSInteger)[_items count]; i++) {
 		NSRect c = [self _cell: i]; if (NSMaxY(c) < v.origin.y || c.origin.y > NSMaxY(v)) continue; NSMutableDictionary *it = _items[i]; BOOL sel = [_sel containsIndex: i];
 		NSRect ir = NSMakeRect(c.origin.x + 24, c.origin.y + 4, kIcon, kIcon);
-		if (sel) FillRound(NSInsetRect(ir, -4, -4), 6, key ? TFRGBA(255, 255, 255, 0.14) : TFRGB(52, 52, 52));
+		if (sel) FillRound(NSInsetRect(ir, -4, -4), 6, TFDark() ? (key ? TFRGBA(255, 255, 255, 0.14) : TFRGB(52, 52, 52)) : TFRGBA(0, 0, 0, 0.09));
 		NSImage *thumb = Thumb(it[@"path"]); 
 		if (thumb) { NSSize z = [thumb size]; CGFloat k = MIN(kIcon / z.width, kIcon / z.height); NSRect tr = NSMakeRect(NSMidX(ir) - z.width * k / 2, NSMidY(ir) - z.height * k / 2, z.width * k, z.height * k); [TFRGBA(0, 0, 0, 0.35) setFill]; NSRectFill(NSOffsetRect(tr, 0, 1)); [thumb drawInRect: tr fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; }
 		else TFDrawIcon(it[@"path"], ir);
 		NSArray *lines = it[@"lines"]; if (!lines) { lines = WrapLabel(it[@"name"], lab, kCW - 12, 2); it[@"lines"] = lines; }
 		CGFloat y = c.origin.y + 81; CGFloat lh = 16;
 		for (NSString *ln in lines) {
-			NSSize z = [ln sizeWithAttributes: lab]; if (sel) FillRound(NSMakeRect(NSMidX(c) - z.width / 2 - 5, y - 9, z.width + 10, 18), 5, key ? TF_ACCENT : TFRGB(90, 90, 90));
+			NSSize z = [ln sizeWithAttributes: lab]; if (sel) FillRound(NSMakeRect(NSMidX(c) - z.width / 2 - 5, y - 9, z.width + 10, 18), 5, key ? TF_ACCENT : TFDark() ? TFRGB(90, 90, 90) : TFRGB(190, 190, 194));
 			[ln drawAtPoint: NSMakePoint(NSMidX(c) - z.width / 2, y - z.height / 2) withAttributes: sel ? labSel : lab]; y += lh;
 		}
 		if ([it[@"info"] length]) { NSSize z = [it[@"info"] sizeWithAttributes: inf]; [it[@"info"] drawAtPoint: NSMakePoint(NSMidX(c) - z.width / 2, y - z.height / 2 - 1) withAttributes: inf]; }
@@ -226,7 +226,7 @@ static const CGFloat kRow = 24, kHead = 28;
 	BOOL key = KeyWin(self); NSArray *cols = [self _cols]; CGFloat w = [self bounds].size.width;
 	for (NSInteger i = 0; i < (NSInteger)[_items count]; i++) {
 		CGFloat y = 4 + i * kRow; if (y + kRow < v.origin.y || y > NSMaxY(v)) continue; NSDictionary *it = _items[i]; BOOL sel = [_sel containsIndex: i]; CGFloat cy = y + kRow / 2;
-		if (sel) FillRound(NSMakeRect(8, y, w - 16 - 10, kRow), 6, key ? TF_ACCENT : TFRGB(70, 70, 70)); else if (i % 2) FillRound(NSMakeRect(8, y, w - 16 - 10, kRow), 6, TFDark() ? TFRGBA(255, 255, 255, 0.04) : TFRGBA(0, 0, 0, 0.04));
+		if (sel) FillRound(NSMakeRect(8, y, w - 16 - 10, kRow), 6, key ? TF_ACCENT : (TFDark() ? TFRGB(70, 70, 70) : TFRGB(200, 200, 204))); else if (i % 2) FillRound(NSMakeRect(8, y, w - 16 - 10, kRow), 6, TFDark() ? TFRGBA(255, 255, 255, 0.04) : TFRGBA(0, 0, 0, 0.04));
 		NSColor *tc = sel ? TFRGB(255, 255, 255) : TF_TEXT, *dc = sel ? TFRGBA(255, 255, 255, 0.8) : TF_DIM; TFDrawIcon(it[@"path"], NSMakeRect(18, cy - 8, 16, 16));
 		for (NSArray *c in cols) {
 			NSString *k = c[0], *s; CGFloat x = [c[2] doubleValue] + ([k isEqual: @"name"] ? 42 : 8), cw = [c[3] doubleValue] - ([k isEqual: @"name"] ? 50 : 16); NSDictionary *at = Font(13, NO, [k isEqual: @"name"] ? tc : dc);
@@ -300,7 +300,7 @@ static const CGFloat kColW = 240, kColRow = 24;
 		NSGraphicsContext *g = [NSGraphicsContext currentContext]; [g saveGraphicsState]; NSRectClip(NSMakeRect(x, 0, kColW, b.size.height));
 		for (NSInteger i = 0; i < (NSInteger)[items count]; i++) {
 			CGFloat y = 6 + i * kColRow - off; if (y + kColRow < 0 || y > b.size.height) continue; NSDictionary *it = items[i]; BOOL isSel = i == sel, active = ci == [_cols count] - 1 || ![it[@"dir"] boolValue];
-			if (isSel) FillRound(NSMakeRect(x + 6, y, kColW - 12, kColRow), 6, key && ci + 1 >= [_cols count] ? TF_ACCENT : TFRGB(70, 70, 70)); (void)active;
+			if (isSel) FillRound(NSMakeRect(x + 6, y, kColW - 12, kColRow), 6, key && ci + 1 >= [_cols count] ? TF_ACCENT : (TFDark() ? TFRGB(70, 70, 70) : TFRGB(200, 200, 204))); (void)active;
 			TFDrawIcon(it[@"path"], NSMakeRect(x + 14, y + 4, 16, 16));
 			NSDictionary *at = isSel ? Font(13, NO, TFRGB(255, 255, 255)) : tx; TextAt(Truncated(it[@"name"], at, kColW - 70), x + 38, y + kColRow / 2, at);
 			if ([it[@"dir"] boolValue]) TFSymbol(@"chevron.right", NSMakeRect(x + kColW - 26, y, 12, kColRow), 9, isSel ? TFRGB(255, 255, 255) : TF_DIM);
@@ -377,7 +377,7 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 	for (NSInteger i = 0; i < (NSInteger)[_rows count]; i++) {
 		NSDictionary *it = _rows[i]; NSRect r = [self _rect: i]; if (NSMaxY(r) < v.origin.y || r.origin.y > NSMaxY(v)) continue; NSString *k = it[@"k"];
 		if ([k isEqual: @"head"]) { TextAt(it[@"t"], r.origin.x, NSMidY(r), Font(11, YES, TFDark() ? TFRGBA(255, 255, 255, 0.40) : TFRGBA(0, 0, 0, 0.45))); continue; }
-		BOOL cur = [it[@"p"] length] && [current isEqual: it[@"p"]]; if (cur) FillRound(r, 11, key ? TFRGBA(255, 255, 255, 0.13) : TFRGB(51, 51, 51));
+		BOOL cur = [it[@"p"] length] && [current isEqual: it[@"p"]]; if (cur) FillRound(r, 11, TFDark() ? (key ? TFRGBA(255, 255, 255, 0.13) : TFRGB(51, 51, 51)) : TFRGBA(0, 0, 0, key ? 0.10 : 0.07));
 		NSRect ic = NSMakeRect(18, NSMidY(r) - 11, 22, 22);
 		if ([k isEqual: @"tag"]) { [TagColorFor(it[@"t"]) setFill]; [[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(22, NSMidY(r) - 6, 13, 13)] fill]; }
 		else if ([it[@"t"] isEqual: @"All Tags…"]) { [[NSColor colorWithCalibratedWhite: 0.6 alpha: 1] setFill]; [[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(21, NSMidY(r) - 5, 10, 10)] fill]; [[NSColor colorWithCalibratedWhite: 0.45 alpha: 1] setFill]; [[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(27, NSMidY(r) - 5, 10, 10)] fill]; }

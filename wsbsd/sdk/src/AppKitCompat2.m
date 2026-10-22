@@ -327,10 +327,11 @@ fail:
 }
 @end
 static char kHelpMenu, kMenuFont, kAnimBehavior, kGroupRows;
+@interface NSObject (WsbsdDarkProbe) + (BOOL)isDark; @end
 @implementation NSApplication (WsbsdHelpMenu)
 - (NSMenu *)helpMenu { return objc_getAssociatedObject(self, &kHelpMenu); }
 - (void)setHelpMenu:(NSMenu *)m { objc_setAssociatedObject(self, &kHelpMenu, m, OBJC_ASSOCIATION_RETAIN_NONATOMIC); }
-- (NSAppearance *)effectiveAppearance { const char *e = getenv("WSD_APPEARANCE"); BOOL light = e && !strcmp(e, "light"); return [NSAppearance appearanceNamed: light ? @"NSAppearanceNameAqua" : @"NSAppearanceNameDarkAqua"]; }
+- (NSAppearance *)effectiveAppearance { const char *e = getenv("WSD_APPEARANCE"); Class sup = NSClassFromString(@"WsdFinderSupport"); BOOL light = e ? !strcmp(e, "light") : (sup && [(id)sup respondsToSelector: @selector(isDark)] ? ![(id)sup isDark] : NO); return [NSAppearance appearanceNamed: light ? @"NSAppearanceNameAqua" : @"NSAppearanceNameDarkAqua"]; }
 @end
 @implementation NSMenu (WsbsdFont)
 - (NSFont *)font { return objc_getAssociatedObject(self, &kMenuFont) ?: [NSFont menuFontOfSize: 0]; }
