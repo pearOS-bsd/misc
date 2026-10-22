@@ -32,6 +32,8 @@ NSImage *TFIcon(NSString *path);
 @protocol TIconViewDelegate <NSObject>
 - (void)iconViewOpenItem:(NSString *)path;
 - (void)iconViewSelectionChanged:(NSArray *)paths;
+@optional
+- (BOOL)iconViewDropPaths:(NSArray *)paths intoFolder:(NSString *)folder atWindowPoint:(NSPoint)p copy:(BOOL)copy;
 @end
 @protocol TSidebarDelegate <NSObject> - (void)sidebarGoTo:(NSString *)path; @end
 @protocol TPathBarDelegate <NSObject> - (void)pathBarGoTo:(NSString *)path; @end
@@ -45,7 +47,9 @@ NSImage *TFIcon(NSString *path);
 - (void)reveal:(NSRect)r;
 @end
 
-@interface TIconView : TScrollBase { @public __weak id<TIconViewDelegate> delegate; NSString *filter; NSMutableArray *_items; NSMutableIndexSet *_sel; NSInteger _anchor; }
+@interface TIconView : TScrollBase { @public __weak id<TIconViewDelegate> delegate; NSString *filter; NSMutableArray *_items; NSMutableIndexSet *_sel; NSInteger _anchor; NSString *_folder, *_arrange; NSRect _band; BOOL _dragging; NSInteger _dropTarget; double _animStart; NSTimer *_animTimer; }
+- (void)arrangeBy:(NSString *)key;
+- (void)cleanUp:(BOOL)selectionOnly;
 - (void)setFolder:(NSString *)folder;
 - (void)setPaths:(NSArray *)paths;
 - (NSArray *)selectedPaths;
@@ -65,6 +69,11 @@ NSImage *TFIcon(NSString *path);
 @end
 
 @interface TSidebarView : TScrollBase { @public NSString *current; __weak id<TSidebarDelegate> delegate; NSArray *_rows; }
+- (NSString *)dropPathAtWindowPoint:(NSPoint)p;
+@end
+
+/* the line under the items: how many, how many selected, how much room is left */
+@interface TStatusBarView : NSView { @public NSString *text; }
 @end
 
 @interface TPathBarView : NSView { @public NSString *path; __weak id<TPathBarDelegate> delegate; NSArray *_paths; NSMutableArray *_rects; }
