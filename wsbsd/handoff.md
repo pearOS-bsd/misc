@@ -100,3 +100,6 @@ Pași: (1) NSXPCConnection/NSXPCListener/NSXPCInterface + xpc_* peste socket uni
 
 ## Backlog (fără prioritate, de făcut mai târziu): iOS pe QEMU
 Idee a utilizatorului (2026-10-22): cercetează cum se pornește o sesiune iOS pe macOS cu Xcode CLI (`xcrun simctl`, simulatorul iOS; ce rulează de fapt: runtime iOS x86_64/arm64 simulator pe kernelul macOS, nu emulare), și dacă putem face la fel noi. Referință: github.com/dipa-studio/ios-sweet (iOS rulat pe un Xiaomi). Întrebare de lămurit: poate QEMU să pornească iOS? (QEMU are mașina `iPhone 11` din proiectul alephsecurity/xnu-qemu-arm64, doar pentru XNU/iOS 12-14 în moduri limitate.) De raportat concluzia înainte de orice implementare. Fără UIKit în wsbsd (vezi memoria no-uikit), deci probabil e un proiect separat.
+
+## Regula de proveniență (2026-10-22)
+Codul Apple REScris (reimplementat din decompilare cu REA) e permis; nu avem voie doar cu cod/binare ORIGINALE Apple. Se aplică la Finder și la toate subsistemele lui.
