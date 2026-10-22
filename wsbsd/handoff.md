@@ -103,3 +103,6 @@ Idee a utilizatorului (2026-10-22): cercetează cum se pornește o sesiune iOS p
 
 ## Regula de proveniență (2026-10-22)
 Codul Apple REScris (reimplementat din decompilare cu REA) e permis; nu avem voie doar cu cod/binare ORIGINALE Apple. Se aplică la Finder și la toate subsistemele lui.
+
+## Desktop (2026-10-22)
+Finder se decompilează și rescrie în întregime cu subsistemele lui (ordine: FSEvents/metadate, Launch Services, IconServices/CoreUI, DesktopServices, QuickLook/Sharing, Finder). Finder stă în /System/Library/CoreServices/Finder.app ca pe Mac. Ce nu ne trebuie încă (iCloud, Time Machine, Sidecar, Biome...) există ca placeholdere care răspund OK/gol. Regula de oglindire a căilor e permanentă. Pico 2 a sosit: devine cip de securitate (keychain/unlock).
