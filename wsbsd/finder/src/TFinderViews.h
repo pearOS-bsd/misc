@@ -26,6 +26,10 @@ NSArray *TFTagsOf(NSString *path);
 void TFSetTags(NSArray *names, NSString *path);
 NSArray *TFPathsTagged(NSString *tag);
 NSWindow *TFOpenInfoWindow(NSString *path);
+void TFOpenSettings(void);
+id TFPref(NSString *key, id def);
+BOOL TFPrefBool(NSString *key, BOOL def);
+void TFSetPref(NSString *key, id value);
 void TFDrawIcon(NSString *path, NSRect r);
 @interface NSObject (TFRound) + (void)roundWindow:(NSWindow *)w radius:(int)r; @end
 void TFPopupMenu(NSView *view, NSPoint p, NSMenu *menu);
