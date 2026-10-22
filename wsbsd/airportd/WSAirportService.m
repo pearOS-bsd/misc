@@ -26,7 +26,8 @@ static NSError *Err(NSInteger code, NSString *why) { return [NSError errorWithDo
 - (void)startListening
 {
 	NSMutableArray *ls = [NSMutableArray array];
-	for (NSString *n in @[ WSAirportServiceCoreWLAN, WSAirportServiceAirportd ]) { NSXPCListener *l = [[NSXPCListener alloc] initWithMachServiceName: n]; [l setDelegate: self]; [l resume]; [ls addObject: l]; }
+	/* every MachServices entry of com.apple.airportd.plist */
+	for (NSString *n in @[ WSAirportServiceCoreWLAN, WSAirportServiceAirportd, @"com.apple.private.corewifi-xpc", @"com.apple.private.corewifi.internal-xpc", @"com.apple.private.corewifi.readonly-xpc", @"com.apple.private.corewifi.unrestricted-xpc", @"com.apple.private.corewifi.user-agent-xpc", @"com.apple.wifi-xpc", @"com.apple.wifi.sharekit", @"com.apple.wifi.useragent" ]) { NSXPCListener *l = [[NSXPCListener alloc] initWithMachServiceName: n]; [l setDelegate: self]; [l resume]; [ls addObject: l]; }
 	_listeners = ls; dispatch_async(_q, ^{ [self _autoJoinAll]; });
 }
 - (void)stopListening { for (NSXPCListener *l in _listeners) [l invalidate]; _listeners = nil; }
