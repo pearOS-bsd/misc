@@ -130,25 +130,8 @@ typedef NSString *NSAccessibilityRole, *NSAccessibilitySubrole, *NSAccessibility
 @property (nonatomic, copy) NSArray *accessibilitySharedFocusElements;
 @end
 
-/* touch bar: the objects exist and keep what is set on them, nothing is shown */
-extern NSString *const NSTouchBarItemIdentifierOtherItemsProxy, *const NSTouchBarItemIdentifierFlexibleSpace, *const NSTouchBarItemIdentifierFixedSpaceSmall, *const NSImageNameTouchBarGoBackTemplate, *const NSImageNameTouchBarGoForwardTemplate;
-@interface NSTouchBar (WsbsdCompat3)
-@property (assign) id delegate;
-@property (copy) NSArray *defaultItemIdentifiers, *customizationAllowedItemIdentifiers;
-@property (copy) NSString *customizationIdentifier;
-@end
-@interface NSTouchBarItem (WsbsdCompat3)
-- (instancetype)initWithIdentifier:(NSString *)identifier;
-@property (readonly, copy) NSString *identifier;
-@end
-@interface NSCustomTouchBarItem (WsbsdCompat3)
-@property (strong) NSView *view;
-@property (copy) NSString *customizationLabel;
-@end
-@interface NSTouchBarItem (WsbsdPriority)
-@property float visibilityPriority;
-@end
-enum { NSTouchBarItemPriorityHigh = 1000, NSTouchBarItemPriorityNormal = 0, NSTouchBarItemPriorityLow = -1000 };
+#import <wsbsd/TouchBar.h>
+extern NSString *const NSImageNameTouchBarGoBackTemplate, *const NSImageNameTouchBarGoForwardTemplate;
 extern NSString *const NSImageNameTouchBarSearchTemplate, *const NSImageNameTouchBarBookmarksTemplate, *const NSImageNameTouchBarAddTemplate, *const NSImageNameTouchBarRefreshTemplate, *const NSImageNameTouchBarSidebarTemplate;
 @interface NSView (WsbsdInput)
 @property (readonly, strong) NSTextInputContext *inputContext;

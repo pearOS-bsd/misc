@@ -142,31 +142,9 @@ NSString *const NSDocumentEditedBinding = @"documentEdited";
 - (void)setAccessibilitySharedFocusElements:(NSArray *)a { Set(self, &kSharedFocus, [a copy]); }
 @end
 
-/* touch bar */
-NSString *const NSTouchBarItemIdentifierOtherItemsProxy = @"NSTouchBarItemIdentifierOtherItemsProxy";
-NSString *const NSTouchBarItemIdentifierFlexibleSpace = @"NSTouchBarItemIdentifierFlexibleSpace";
-NSString *const NSTouchBarItemIdentifierFixedSpaceSmall = @"NSTouchBarItemIdentifierFixedSpaceSmall";
 NSString *const NSImageNameTouchBarGoBackTemplate = @"NSTouchBarGoBackTemplate";
 NSString *const NSImageNameTouchBarGoForwardTemplate = @"NSTouchBarGoForwardTemplate";
-static const char kTBDel, kTBDef, kTBAllowed, kTBCust, kTBItemId, kTBView;
-@implementation NSTouchBar (WsbsdCompat3)
-- (id)delegate { return Get(self, &kTBDel); } - (void)setDelegate:(id)d { objc_setAssociatedObject(self, &kTBDel, d, OBJC_ASSOCIATION_ASSIGN); }
-- (NSArray *)defaultItemIdentifiers { return Get(self, &kTBDef); } - (void)setDefaultItemIdentifiers:(NSArray *)a { Set(self, &kTBDef, [a copy]); }
-- (NSArray *)customizationAllowedItemIdentifiers { return Get(self, &kTBAllowed); } - (void)setCustomizationAllowedItemIdentifiers:(NSArray *)a { Set(self, &kTBAllowed, [a copy]); }
-- (NSString *)customizationIdentifier { return Get(self, &kTBCust); } - (void)setCustomizationIdentifier:(NSString *)s { Set(self, &kTBCust, [s copy]); }
-@end
-@implementation NSTouchBarItem (WsbsdCompat3)
-- (instancetype)initWithIdentifier:(NSString *)i { if ((self = [self init])) Set(self, &kTBItemId, [i copy]); return self; }
-- (NSString *)identifier { return Get(self, &kTBItemId); }
-@end
 static const char kCustLabel, kPriority, kInputCtx, kAnimDest;
-@implementation NSCustomTouchBarItem (WsbsdCompat3)
-- (NSView *)view { return Get(self, &kTBView); } - (void)setView:(NSView *)v { Set(self, &kTBView, v); }
-- (NSString *)customizationLabel { return Get(self, &kCustLabel); } - (void)setCustomizationLabel:(NSString *)l { Set(self, &kCustLabel, [l copy]); }
-@end
-@implementation NSTouchBarItem (WsbsdPriority)
-- (float)visibilityPriority { return [Get(self, &kPriority) floatValue]; } - (void)setVisibilityPriority:(float)p { Set(self, &kPriority, @(p)); }
-@end
 NSString *const NSImageNameTouchBarSearchTemplate = @"NSTouchBarSearchTemplate";
 NSString *const NSImageNameTouchBarBookmarksTemplate = @"NSTouchBarBookmarksTemplate";
 NSString *const NSImageNameTouchBarAddTemplate = @"NSTouchBarAddTemplate";

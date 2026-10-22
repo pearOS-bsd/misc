@@ -53,7 +53,6 @@ extern NSString *const NSAccessibilityException;
 @end
 
 @protocol NSStandardKeyBindingResponding <NSObject> @end
-typedef NSString *NSTouchBarItemIdentifier;
 #define NSDictionaryOfVariableBindings(...) _NSDictionaryOfVariableBindings(@"" # __VA_ARGS__, __VA_ARGS__, nil)
 #ifdef __cplusplus
 extern "C" {
@@ -232,7 +231,6 @@ typedef NS_ENUM(NSInteger, NSWindowAnimationBehavior) { NSWindowAnimationBehavio
 - (void)searchFieldDidStartSearching:(NSSearchField *)sender;
 - (void)searchFieldDidEndSearching:(NSSearchField *)sender;
 @end
-@protocol NSTouchBarDelegate <NSObject> @end
 @interface NSTitlebarAccessoryViewController (WsbsdHidden)
 @property (nonatomic, getter=isHidden) BOOL hidden;
 @end
