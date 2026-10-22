@@ -3,3 +3,5 @@
 #if !GS_HAVE_NSURLSESSION
 #import <wsbsd/NSURLSession.h>
 #endif
+
+#import <wsbsd/NSXPCConnection.h>

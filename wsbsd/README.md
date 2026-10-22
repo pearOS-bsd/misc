@@ -54,6 +54,7 @@ Goal: compile unmodified open source Cocoa applications on FreeBSD. What the Tex
 - **Debug aids:** `WSBSD_VIEWDUMP`, `WSBSD_LOGEVENTS`, `WSBSD_SNAPVIEW=Class`, `WSBSD_ALDEBUG`, `WSBSD_LOGEXC`.
 - **State of TextMate:** builds, links, starts, shows its real menus, dialogs and window layout (gutter, text area, status bar), keys reach the editor and the buffer. Open: the text of the editor is not drawn yet (the layout is not told about buffer changes), no bundles shipped by `assemble.sh`, WebKit is a stub, bindings and `.tmplugin` loading.
 - **ISO:** built from CI (`iso.yml`, manual run) and published as the `iso-latest` release; last build 2026-10-22, not tested by the author (a colleague tests it).
+- **Backlog (not a priority):** research how an iOS session is started on macOS with the Xcode command line tools and whether a QEMU VM could boot iOS (reference: github.com/dipa-studio/ios-sweet).
 
 ### Applications that run today (CI, FreeBSD x86_64, software compositor)
 | Application | What it exercises |
