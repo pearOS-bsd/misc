@@ -198,13 +198,20 @@ Rough estimates, not measurements:
 | Foundation networking (`NSURLSession` over libcurl) | ~45 % | |
 | TextMate port | ~55 % | text drawing in the editor is the open problem |
 | CoreWLAN / airportd | ~55 % | data classes (CWNetwork, CWChannel, CWNetworkProfile, CWConfiguration incl. the external form and archives) verified against the Mac; CWWiFiClient/CWInterface over XPC; airportd with sim and wpa backends; missing: differential tests for profiles/configuration, tether/IBSS/host AP, keychain, the other mach services of the real plist, ISO install, real hardware |
-| AirDrop | 0 % | after CoreWLAN, by decompilation |
+| AirDrop | 0 % | postponed by the project owner |
 
 **Required next (decided by the project owner)**
 - **CoreWLAN.framework** (`CWWiFiClient`, `CWInterface`, `CWNetwork`, ...) and **airportd**: scanning, seamless joining of known networks, hotspot detection, decompiled with REA from the reference Mac and reimplemented as on the Mac, over `wpa_supplicant` / net80211 on FreeBSD.
 - **AirDrop** (sharingd), also by decompilation; reference to study: github.com/BenItBuhner/AirDrop-for-Everything.
 - **File layout mirror:** whatever exists under `/System`, `/Library`, `/usr/libexec`, `/Applications` on the Mac is found at the same path on the BSD system (`/System/Library/Frameworks/CoreWLAN.framework`, `/usr/libexec/airportd`, `/System/Library/LaunchDaemons/com.apple.airportd.plist` ...).
 - Backlog, not a priority: research how an iOS session is started with the Xcode command line tools and whether QEMU could boot iOS (github.com/dipa-studio/ios-sweet).
+
+**Known gaps, written down so they are not forgotten (2026-10-22)**
+- **Public `NS*` classes missing:** 99 of the 462 public Foundation/AppKit classes that exist on the Mac do not exist here (~79 % present). Full list: `wsbsd/docs/missing-ns-classes.txt`. By group: scripting (`NSScriptObjectSpecifier` and the command/specifier classes), drag and file promises (`NSDraggingItem`, `NSDraggingSession`, `NSFilePromiseProvider/Receiver`), modern text (`NSDataDetector`, `NSListFormatter`, `NSRelativeDateTimeFormatter`, `NSMorphology`, `NSInflectionRule`, `NSTextSelectionManager`, `NSWritingToolsCoordinator`), recent AppKit (`NSGlassEffectView`, `NSComboButton`, `NSViewCornerConfiguration`, `NSTintConfiguration`, `NSWindowTab`, `NSWindowTabGroup`, `NSSearchToolbarItem`), Touch Bar (`NSScrubber*`), and others (`NSHapticFeedbackManager`, `NSWorkspaceOpenConfiguration`, `NSXPCCoder`, `NSPurgeableData`). Only the class names were checked, not their behaviour.
+- **Touch Bar:** `NSTouchBar` and its items exist only as empty classes. Planned: real `NSTouchBar`/items/`NSScrubber` and a window that emulates the Touch Bar (1085x30 pt strip taken from this Mac's DFR resources); inventory in `wsbsd/docs/touchbar`.
+- **Wi-Fi:** not tried on real hardware; no network-picker UI; passwords not in the keychain; Instant Hotspot/tether (`connectToTetherDevice`) missing.
+- **AirDrop:** postponed by the project owner (needs AWDL and Bluetooth; plan in `wsbsd/docs/airdrop/PLAN.md`).
+- **iPhone Mirroring:** not started and not researched (Continuity needs Apple-account services and AWDL/Bluetooth; iOS developer mode is what the owner wants to avoid). AirPlay-receiver mirroring is a possible alternative.
 
 **Other open work:** Chess, the SkyLight routines that need a compositor, KMS/GPU hardware, the Dock, real WebKit, the designers' assets (ordered, 21,000 EUR) and the Pico 2 secure-element token.
 
