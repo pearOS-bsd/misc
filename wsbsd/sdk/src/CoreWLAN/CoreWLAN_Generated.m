@@ -9,11 +9,12 @@
 @synthesize alwaysPromptForPassword = _alwaysPromptForPassword;
 + (id)allUser8021XProfiles { return nil; }
 + (id)profile { return nil; }
-- (id)copyWithZone:(void *)a0 { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (id)init { return self; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqualToProfile:(id)a0 { return 0; }
+- (void)dealloc { [_userDefinedName release]; _userDefinedName = nil; [_ssid release]; _ssid = nil; [_username release]; _username = nil; [_password release]; _password = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_userDefinedName forKey:@"userDefinedName"]; [c encodeObject:_ssid forKey:@"ssid"]; [c encodeObject:_username forKey:@"username"]; [c encodeObject:_password forKey:@"password"]; [c encodeBool:_alwaysPromptForPassword forKey:@"alwaysPromptForPassword"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _userDefinedName = [[c decodeObjectForKey:@"userDefinedName"] retain]; _ssid = [[c decodeObjectForKey:@"ssid"] retain]; _username = [[c decodeObjectForKey:@"username"] retain]; _password = [[c decodeObjectForKey:@"password"] retain]; _alwaysPromptForPassword = [c decodeBoolForKey:@"alwaysPromptForPassword"]; return self; }
+- (id)copyWithZone:(NSZone *)z { CW8021XProfile *o = [[[self class] allocWithZone:z] init]; o->_userDefinedName = [_userDefinedName retain]; o->_ssid = [_ssid retain]; o->_username = [_username retain]; o->_password = [_password retain]; o->_alwaysPromptForPassword = _alwaysPromptForPassword; return o; }
 @end
 
 @implementation CWANQPElement
@@ -21,26 +22,28 @@
 @synthesize network = _network;
 @synthesize type = _type;
 @synthesize anqpResult = _anqpResult;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithNetwork:(id)a0 timestamp:(id)a1 type:(unsigned long long)a2 anqpResult:(id)a3 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualtoANQPElement:(id)a0 { return 0; }
 - (id)typeString { return nil; }
+- (void)dealloc { [_timestamp release]; _timestamp = nil; [_network release]; _network = nil; [_anqpResult release]; _anqpResult = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_timestamp forKey:@"timestamp"]; [c encodeObject:_network forKey:@"network"]; [c encodeInt64:(long long)_type forKey:@"type"]; [c encodeObject:_anqpResult forKey:@"anqpResult"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _timestamp = [[c decodeObjectForKey:@"timestamp"] retain]; _network = [[c decodeObjectForKey:@"network"] retain]; _type = (unsigned long long)[c decodeInt64ForKey:@"type"]; _anqpResult = [[c decodeObjectForKey:@"anqpResult"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWANQPElement *o = [[[self class] allocWithZone:z] init]; o->_timestamp = [_timestamp retain]; o->_network = [_network retain]; o->_type = _type; o->_anqpResult = [_anqpResult retain]; return o; }
 @end
 
 @implementation CWANQP3GPPCellular
 @synthesize cellularInfoList = _cellularInfoList;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithNetwork:(id)a0 timestamp:(id)a1 anqpResult:(id)a2 { return self; }
+- (void)dealloc { [_cellularInfoList release]; _cellularInfoList = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [super encodeWithCoder:c]; [c encodeObject:_cellularInfoList forKey:@"cellularInfoList"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super initWithCoder:c]; if (!self) return nil; _cellularInfoList = [[c decodeObjectForKey:@"cellularInfoList"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWANQP3GPPCellular *o = [super copyWithZone:z]; o->_cellularInfoList = [_cellularInfoList retain]; return o; }
 @end
 
 @implementation CWANQPCapabilityList
@@ -49,32 +52,34 @@
 @synthesize supportsRoamingConsortium = _supportsRoamingConsortium;
 @synthesize supportsNAIRealm = _supportsNAIRealm;
 @synthesize supportsDomainName = _supportsDomainName;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithNetwork:(id)a0 timestamp:(id)a1 anqpResult:(id)a2 { return self; }
+- (void)encodeWithCoder:(NSCoder *)c { [super encodeWithCoder:c]; [c encodeBool:_supportsVenueName forKey:@"supportsVenueName"]; [c encodeBool:_supportsNetworkAuthenticationType forKey:@"supportsNetworkAuthenticationType"]; [c encodeBool:_supportsRoamingConsortium forKey:@"supportsRoamingConsortium"]; [c encodeBool:_supportsNAIRealm forKey:@"supportsNAIRealm"]; [c encodeBool:_supportsDomainName forKey:@"supportsDomainName"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super initWithCoder:c]; if (!self) return nil; _supportsVenueName = [c decodeBoolForKey:@"supportsVenueName"]; _supportsNetworkAuthenticationType = [c decodeBoolForKey:@"supportsNetworkAuthenticationType"]; _supportsRoamingConsortium = [c decodeBoolForKey:@"supportsRoamingConsortium"]; _supportsNAIRealm = [c decodeBoolForKey:@"supportsNAIRealm"]; _supportsDomainName = [c decodeBoolForKey:@"supportsDomainName"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWANQPCapabilityList *o = [super copyWithZone:z]; o->_supportsVenueName = _supportsVenueName; o->_supportsNetworkAuthenticationType = _supportsNetworkAuthenticationType; o->_supportsRoamingConsortium = _supportsRoamingConsortium; o->_supportsNAIRealm = _supportsNAIRealm; o->_supportsDomainName = _supportsDomainName; return o; }
 @end
 
 @implementation CWANQPConnectionCapability
 @synthesize protoPortList = _protoPortList;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithNetwork:(id)a0 timestamp:(id)a1 anqpResult:(id)a2 { return self; }
+- (void)dealloc { [_protoPortList release]; _protoPortList = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [super encodeWithCoder:c]; [c encodeObject:_protoPortList forKey:@"protoPortList"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super initWithCoder:c]; if (!self) return nil; _protoPortList = [[c decodeObjectForKey:@"protoPortList"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWANQPConnectionCapability *o = [super copyWithZone:z]; o->_protoPortList = [_protoPortList retain]; return o; }
 @end
 
 @implementation CWANQPDomainName
 @synthesize domainNameList = _domainNameList;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithNetwork:(id)a0 timestamp:(id)a1 anqpResult:(id)a2 { return self; }
+- (void)dealloc { [_domainNameList release]; _domainNameList = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [super encodeWithCoder:c]; [c encodeObject:_domainNameList forKey:@"domainNameList"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super initWithCoder:c]; if (!self) return nil; _domainNameList = [[c decodeObjectForKey:@"domainNameList"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWANQPDomainName *o = [super copyWithZone:z]; o->_domainNameList = [_domainNameList retain]; return o; }
 @end
 
 @implementation CWANQPHS20CapabilityList
@@ -85,76 +90,82 @@
 @synthesize supportsConnectionCapability = _supportsConnectionCapability;
 @synthesize supportsNAIHomeRealmQuery = _supportsNAIHomeRealmQuery;
 @synthesize supportsOperatingClassIndication = _supportsOperatingClassIndication;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithNetwork:(id)a0 timestamp:(id)a1 anqpResult:(id)a2 { return self; }
+- (void)encodeWithCoder:(NSCoder *)c { [super encodeWithCoder:c]; [c encodeBool:_supportsHSQueryList forKey:@"supportsHSQueryList"]; [c encodeBool:_supportsHSCapabilityList forKey:@"supportsHSCapabilityList"]; [c encodeBool:_supportsOperatorFriendlyName forKey:@"supportsOperatorFriendlyName"]; [c encodeBool:_supportsWANMetrics forKey:@"supportsWANMetrics"]; [c encodeBool:_supportsConnectionCapability forKey:@"supportsConnectionCapability"]; [c encodeBool:_supportsNAIHomeRealmQuery forKey:@"supportsNAIHomeRealmQuery"]; [c encodeBool:_supportsOperatingClassIndication forKey:@"supportsOperatingClassIndication"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super initWithCoder:c]; if (!self) return nil; _supportsHSQueryList = [c decodeBoolForKey:@"supportsHSQueryList"]; _supportsHSCapabilityList = [c decodeBoolForKey:@"supportsHSCapabilityList"]; _supportsOperatorFriendlyName = [c decodeBoolForKey:@"supportsOperatorFriendlyName"]; _supportsWANMetrics = [c decodeBoolForKey:@"supportsWANMetrics"]; _supportsConnectionCapability = [c decodeBoolForKey:@"supportsConnectionCapability"]; _supportsNAIHomeRealmQuery = [c decodeBoolForKey:@"supportsNAIHomeRealmQuery"]; _supportsOperatingClassIndication = [c decodeBoolForKey:@"supportsOperatingClassIndication"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWANQPHS20CapabilityList *o = [super copyWithZone:z]; o->_supportsHSQueryList = _supportsHSQueryList; o->_supportsHSCapabilityList = _supportsHSCapabilityList; o->_supportsOperatorFriendlyName = _supportsOperatorFriendlyName; o->_supportsWANMetrics = _supportsWANMetrics; o->_supportsConnectionCapability = _supportsConnectionCapability; o->_supportsNAIHomeRealmQuery = _supportsNAIHomeRealmQuery; o->_supportsOperatingClassIndication = _supportsOperatingClassIndication; return o; }
 @end
 
 @implementation CWANQPNAIRealm
 @synthesize realmList = _realmList;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithNetwork:(id)a0 timestamp:(id)a1 anqpResult:(id)a2 { return self; }
+- (void)dealloc { [_realmList release]; _realmList = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [super encodeWithCoder:c]; [c encodeObject:_realmList forKey:@"realmList"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super initWithCoder:c]; if (!self) return nil; _realmList = [[c decodeObjectForKey:@"realmList"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWANQPNAIRealm *o = [super copyWithZone:z]; o->_realmList = [_realmList retain]; return o; }
 @end
 
 @implementation CWANQPNAIRealmEntry
 @synthesize encodingType = _encodingType;
 @synthesize realmName = _realmName;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithEncodingType:(long long)a0 realmName:(id)a1 { return self; }
+- (void)dealloc { [_realmName release]; _realmName = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeInt64:(long long)_encodingType forKey:@"encodingType"]; [c encodeObject:_realmName forKey:@"realmName"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _encodingType = (long long)[c decodeInt64ForKey:@"encodingType"]; _realmName = [[c decodeObjectForKey:@"realmName"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWANQPNAIRealmEntry *o = [[[self class] allocWithZone:z] init]; o->_encodingType = _encodingType; o->_realmName = [_realmName retain]; return o; }
 @end
 
 @implementation CWANQPNetworkAuthenticationType
 @synthesize networkAuthTypeList = _networkAuthTypeList;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithNetwork:(id)a0 timestamp:(id)a1 anqpResult:(id)a2 { return self; }
+- (void)dealloc { [_networkAuthTypeList release]; _networkAuthTypeList = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [super encodeWithCoder:c]; [c encodeObject:_networkAuthTypeList forKey:@"networkAuthTypeList"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super initWithCoder:c]; if (!self) return nil; _networkAuthTypeList = [[c decodeObjectForKey:@"networkAuthTypeList"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWANQPNetworkAuthenticationType *o = [super copyWithZone:z]; o->_networkAuthTypeList = [_networkAuthTypeList retain]; return o; }
 @end
 
 @implementation CWANQPNetworkAuthenticationTypeEntry
 @synthesize typeIndicator = _typeIndicator;
 @synthesize localizedTypeIndicator = _localizedTypeIndicator;
 @synthesize redirectURL = _redirectURL;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithTypeIndicator:(long long)a0 redirectURL:(id)a1 { return self; }
+- (void)dealloc { [_localizedTypeIndicator release]; _localizedTypeIndicator = nil; [_redirectURL release]; _redirectURL = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeInt64:(long long)_typeIndicator forKey:@"typeIndicator"]; [c encodeObject:_localizedTypeIndicator forKey:@"localizedTypeIndicator"]; [c encodeObject:_redirectURL forKey:@"redirectURL"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _typeIndicator = (long long)[c decodeInt64ForKey:@"typeIndicator"]; _localizedTypeIndicator = [[c decodeObjectForKey:@"localizedTypeIndicator"] retain]; _redirectURL = [[c decodeObjectForKey:@"redirectURL"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWANQPNetworkAuthenticationTypeEntry *o = [[[self class] allocWithZone:z] init]; o->_typeIndicator = _typeIndicator; o->_localizedTypeIndicator = [_localizedTypeIndicator retain]; o->_redirectURL = [_redirectURL retain]; return o; }
 @end
 
 @implementation CWANQPOperatorFriendlyName
 @synthesize operatorFriendlyNameList = _operatorFriendlyNameList;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithNetwork:(id)a0 timestamp:(id)a1 anqpResult:(id)a2 { return self; }
+- (void)dealloc { [_operatorFriendlyNameList release]; _operatorFriendlyNameList = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [super encodeWithCoder:c]; [c encodeObject:_operatorFriendlyNameList forKey:@"operatorFriendlyNameList"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super initWithCoder:c]; if (!self) return nil; _operatorFriendlyNameList = [[c decodeObjectForKey:@"operatorFriendlyNameList"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWANQPOperatorFriendlyName *o = [super copyWithZone:z]; o->_operatorFriendlyNameList = [_operatorFriendlyNameList retain]; return o; }
 @end
 
 @implementation CWANQPOperatorFriendlyNameEntry
 @synthesize languageCode = _languageCode;
 @synthesize name = _name;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithOperatorFriendlyName:(id)a0 languageCode:(id)a1 { return self; }
+- (void)dealloc { [_languageCode release]; _languageCode = nil; [_name release]; _name = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_languageCode forKey:@"languageCode"]; [c encodeObject:_name forKey:@"name"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _languageCode = [[c decodeObjectForKey:@"languageCode"] retain]; _name = [[c decodeObjectForKey:@"name"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWANQPOperatorFriendlyNameEntry *o = [[[self class] allocWithZone:z] init]; o->_languageCode = [_languageCode retain]; o->_name = [_name retain]; return o; }
 @end
 
 @implementation CWANQPProtoPortTuple
@@ -162,22 +173,23 @@
 @synthesize portNumber = _portNumber;
 @synthesize status = _status;
 + (id)stringForProtoPortStatus:(long long)a0 { return nil; }
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithIPProtocol:(long long)a0 portNumber:(long long)a1 status:(long long)a2 { return self; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeInt64:(long long)_ipProtocol forKey:@"ipProtocol"]; [c encodeInt64:(long long)_portNumber forKey:@"portNumber"]; [c encodeInt64:(long long)_status forKey:@"status"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _ipProtocol = (long long)[c decodeInt64ForKey:@"ipProtocol"]; _portNumber = (long long)[c decodeInt64ForKey:@"portNumber"]; _status = (long long)[c decodeInt64ForKey:@"status"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWANQPProtoPortTuple *o = [[[self class] allocWithZone:z] init]; o->_ipProtocol = _ipProtocol; o->_portNumber = _portNumber; o->_status = _status; return o; }
 @end
 
 @implementation CWANQPRoamingConsortium
 @synthesize roamingConsortiumList = _roamingConsortiumList;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithNetwork:(id)a0 timestamp:(id)a1 anqpResult:(id)a2 { return self; }
+- (void)dealloc { [_roamingConsortiumList release]; _roamingConsortiumList = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [super encodeWithCoder:c]; [c encodeObject:_roamingConsortiumList forKey:@"roamingConsortiumList"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super initWithCoder:c]; if (!self) return nil; _roamingConsortiumList = [[c decodeObjectForKey:@"roamingConsortiumList"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWANQPRoamingConsortium *o = [super copyWithZone:z]; o->_roamingConsortiumList = [_roamingConsortiumList retain]; return o; }
 @end
 
 @implementation CWANQPVenueName
@@ -186,30 +198,36 @@
 @synthesize localizedVenueGroup = _localizedVenueGroup;
 @synthesize localizedVenueType = _localizedVenueType;
 @synthesize venueNameList = _venueNameList;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithNetwork:(id)a0 timestamp:(id)a1 anqpResult:(id)a2 { return self; }
+- (void)dealloc { [_localizedVenueGroup release]; _localizedVenueGroup = nil; [_localizedVenueType release]; _localizedVenueType = nil; [_venueNameList release]; _venueNameList = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [super encodeWithCoder:c]; [c encodeInt64:(long long)_venueGroup forKey:@"venueGroup"]; [c encodeInt64:(long long)_venueType forKey:@"venueType"]; [c encodeObject:_localizedVenueGroup forKey:@"localizedVenueGroup"]; [c encodeObject:_localizedVenueType forKey:@"localizedVenueType"]; [c encodeObject:_venueNameList forKey:@"venueNameList"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super initWithCoder:c]; if (!self) return nil; _venueGroup = (long long)[c decodeInt64ForKey:@"venueGroup"]; _venueType = (long long)[c decodeInt64ForKey:@"venueType"]; _localizedVenueGroup = [[c decodeObjectForKey:@"localizedVenueGroup"] retain]; _localizedVenueType = [[c decodeObjectForKey:@"localizedVenueType"] retain]; _venueNameList = [[c decodeObjectForKey:@"venueNameList"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWANQPVenueName *o = [super copyWithZone:z]; o->_venueGroup = _venueGroup; o->_venueType = _venueType; o->_localizedVenueGroup = [_localizedVenueGroup retain]; o->_localizedVenueType = [_localizedVenueType retain]; o->_venueNameList = [_venueNameList retain]; return o; }
 @end
 
 @implementation CWANQPVenueNameEntry
 @synthesize languageCode = _languageCode;
 @synthesize name = _name;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithVenueName:(id)a0 languageCode:(id)a1 { return self; }
+- (void)dealloc { [_languageCode release]; _languageCode = nil; [_name release]; _name = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_languageCode forKey:@"languageCode"]; [c encodeObject:_name forKey:@"name"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _languageCode = [[c decodeObjectForKey:@"languageCode"] retain]; _name = [[c decodeObjectForKey:@"name"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWANQPVenueNameEntry *o = [[[self class] allocWithZone:z] init]; o->_languageCode = [_languageCode retain]; o->_name = [_name retain]; return o; }
 @end
 
 @implementation CWANQPVenueUrl
 @synthesize venueUrlList = _venueUrlList;
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
 - (id)initWithNetwork:(id)a0 timestamp:(id)a1 anqpResult:(id)a2 { return self; }
+- (void)dealloc { [_venueUrlList release]; _venueUrlList = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [super encodeWithCoder:c]; [c encodeObject:_venueUrlList forKey:@"venueUrlList"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super initWithCoder:c]; if (!self) return nil; _venueUrlList = [[c decodeObjectForKey:@"venueUrlList"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWANQPVenueUrl *o = [super copyWithZone:z]; o->_venueUrlList = [_venueUrlList retain]; return o; }
 @end
 
 @implementation CWANQPWANMetrics
@@ -222,12 +240,12 @@
 @synthesize uplinkLoad = _uplinkLoad;
 @synthesize loadMeasurementDuration = _loadMeasurementDuration;
 + (id)stringForWANMetricsLinkStatus:(long long)a0 { return nil; }
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithNetwork:(id)a0 timestamp:(id)a1 anqpResult:(id)a2 { return self; }
+- (void)encodeWithCoder:(NSCoder *)c { [super encodeWithCoder:c]; [c encodeInt64:(long long)_linkStatus forKey:@"linkStatus"]; [c encodeBool:_hasSymmetricLink forKey:@"hasSymmetricLink"]; [c encodeBool:_isAtCapacity forKey:@"isAtCapacity"]; [c encodeInt64:(long long)_downlinkSpeed forKey:@"downlinkSpeed"]; [c encodeInt64:(long long)_uplinkSpeed forKey:@"uplinkSpeed"]; [c encodeInt64:(long long)_downlinkLoad forKey:@"downlinkLoad"]; [c encodeInt64:(long long)_uplinkLoad forKey:@"uplinkLoad"]; [c encodeInt64:(long long)_loadMeasurementDuration forKey:@"loadMeasurementDuration"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super initWithCoder:c]; if (!self) return nil; _linkStatus = (long long)[c decodeInt64ForKey:@"linkStatus"]; _hasSymmetricLink = [c decodeBoolForKey:@"hasSymmetricLink"]; _isAtCapacity = [c decodeBoolForKey:@"isAtCapacity"]; _downlinkSpeed = (long long)[c decodeInt64ForKey:@"downlinkSpeed"]; _uplinkSpeed = (long long)[c decodeInt64ForKey:@"uplinkSpeed"]; _downlinkLoad = (long long)[c decodeInt64ForKey:@"downlinkLoad"]; _uplinkLoad = (long long)[c decodeInt64ForKey:@"uplinkLoad"]; _loadMeasurementDuration = (long long)[c decodeInt64ForKey:@"loadMeasurementDuration"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWANQPWANMetrics *o = [super copyWithZone:z]; o->_linkStatus = _linkStatus; o->_hasSymmetricLink = _hasSymmetricLink; o->_isAtCapacity = _isAtCapacity; o->_downlinkSpeed = _downlinkSpeed; o->_uplinkSpeed = _uplinkSpeed; o->_downlinkLoad = _downlinkLoad; o->_uplinkLoad = _uplinkLoad; o->_loadMeasurementDuration = _loadMeasurementDuration; return o; }
 @end
 
 @implementation CWAutoJoinStatistics
@@ -241,14 +259,15 @@
 @synthesize error = _error;
 @synthesize result = _result;
 @dynamic totalDuration;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToAutoJoinStatistics:(id)a0 { return 0; }
 - (id)totalDuration { return nil; }
+- (void)dealloc { [_interfaceName release]; _interfaceName = nil; [_startedAt release]; _startedAt = nil; [_endedAt release]; _endedAt = nil; [_joinAttempts release]; _joinAttempts = nil; [_error release]; _error = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_interfaceName forKey:@"interfaceName"]; [c encodeInt64:(long long)_trigger forKey:@"trigger"]; [c encodeObject:_startedAt forKey:@"startedAt"]; [c encodeObject:_endedAt forKey:@"endedAt"]; [c encodeObject:_joinAttempts forKey:@"joinAttempts"]; [c encodeInt64:(long long)_scannedChannelCount forKey:@"scannedChannelCount"]; [c encodeDouble:_scanDuration forKey:@"scanDuration"]; [c encodeObject:_error forKey:@"error"]; [c encodeBool:_result forKey:@"result"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _interfaceName = [[c decodeObjectForKey:@"interfaceName"] retain]; _trigger = (long long)[c decodeInt64ForKey:@"trigger"]; _startedAt = [[c decodeObjectForKey:@"startedAt"] retain]; _endedAt = [[c decodeObjectForKey:@"endedAt"] retain]; _joinAttempts = [[c decodeObjectForKey:@"joinAttempts"] retain]; _scannedChannelCount = (long long)[c decodeInt64ForKey:@"scannedChannelCount"]; _scanDuration = [c decodeDoubleForKey:@"scanDuration"]; _error = [[c decodeObjectForKey:@"error"] retain]; _result = [c decodeBoolForKey:@"result"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWAutoJoinStatistics *o = [[[self class] allocWithZone:z] init]; o->_interfaceName = [_interfaceName retain]; o->_trigger = _trigger; o->_startedAt = [_startedAt retain]; o->_endedAt = [_endedAt retain]; o->_joinAttempts = [_joinAttempts retain]; o->_scannedChannelCount = _scannedChannelCount; o->_scanDuration = _scanDuration; o->_error = [_error retain]; o->_result = _result; return o; }
 @end
 
 @implementation CWBTCStatus
@@ -272,17 +291,17 @@
 @synthesize antennaRequestedDueToOther = _antennaRequestedDueToOther;
 @synthesize psnullRetryCountExceededCount = _psnullRetryCountExceededCount;
 @synthesize ucodeHighLatencyDetectedCount = _ucodeHighLatencyDetectedCount;
-+ (BOOL)supportsSecureCoding { return 0; }
 - (BOOL)IsEqualToBTCStatus:(id)a0 { return 0; }
 - (id)__getSampleDictionary { return nil; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
 - (id)init { return self; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)update { return 0; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeBool:_coexEnabled forKey:@"coexEnabled"]; [c encodeBool:_tdmEnabled forKey:@"tdmEnabled"]; [c encodeBool:_hybridEnabled forKey:@"hybridEnabled"]; [c encodeInt64:(long long)_btAntennaRequestsCount forKey:@"btAntennaRequestsCount"]; [c encodeInt64:(long long)_btAntennaGrantCount forKey:@"btAntennaGrantCount"]; [c encodeInt64:(long long)_btAntennaGrantDurationMicroseconds forKey:@"btAntennaGrantDurationMicroseconds"]; [c encodeInt64:(long long)_btAbortCount forKey:@"btAbortCount"]; [c encodeBool:_antennaRequestedDueToACL forKey:@"antennaRequestedDueToACL"]; [c encodeBool:_antennaRequestedDueToSCO forKey:@"antennaRequestedDueToSCO"]; [c encodeBool:_antennaRequestedDueToeSCO forKey:@"antennaRequestedDueToeSCO"]; [c encodeBool:_antennaRequestedDueToA2DP forKey:@"antennaRequestedDueToA2DP"]; [c encodeBool:_antennaRequestedDueToSniff forKey:@"antennaRequestedDueToSniff"]; [c encodeBool:_antennaRequestedDueToPageScan forKey:@"antennaRequestedDueToPageScan"]; [c encodeBool:_antennaRequestedDueToInquiryScan forKey:@"antennaRequestedDueToInquiryScan"]; [c encodeBool:_antennaRequestedDueToPage forKey:@"antennaRequestedDueToPage"]; [c encodeBool:_antennaRequestedDueToInquiry forKey:@"antennaRequestedDueToInquiry"]; [c encodeBool:_antennaRequestedDueToBLE forKey:@"antennaRequestedDueToBLE"]; [c encodeBool:_antennaRequestedDueToOther forKey:@"antennaRequestedDueToOther"]; [c encodeInt64:(long long)_psnullRetryCountExceededCount forKey:@"psnullRetryCountExceededCount"]; [c encodeInt64:(long long)_ucodeHighLatencyDetectedCount forKey:@"ucodeHighLatencyDetectedCount"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _coexEnabled = [c decodeBoolForKey:@"coexEnabled"]; _tdmEnabled = [c decodeBoolForKey:@"tdmEnabled"]; _hybridEnabled = [c decodeBoolForKey:@"hybridEnabled"]; _btAntennaRequestsCount = (long long)[c decodeInt64ForKey:@"btAntennaRequestsCount"]; _btAntennaGrantCount = (long long)[c decodeInt64ForKey:@"btAntennaGrantCount"]; _btAntennaGrantDurationMicroseconds = (long long)[c decodeInt64ForKey:@"btAntennaGrantDurationMicroseconds"]; _btAbortCount = (long long)[c decodeInt64ForKey:@"btAbortCount"]; _antennaRequestedDueToACL = [c decodeBoolForKey:@"antennaRequestedDueToACL"]; _antennaRequestedDueToSCO = [c decodeBoolForKey:@"antennaRequestedDueToSCO"]; _antennaRequestedDueToeSCO = [c decodeBoolForKey:@"antennaRequestedDueToeSCO"]; _antennaRequestedDueToA2DP = [c decodeBoolForKey:@"antennaRequestedDueToA2DP"]; _antennaRequestedDueToSniff = [c decodeBoolForKey:@"antennaRequestedDueToSniff"]; _antennaRequestedDueToPageScan = [c decodeBoolForKey:@"antennaRequestedDueToPageScan"]; _antennaRequestedDueToInquiryScan = [c decodeBoolForKey:@"antennaRequestedDueToInquiryScan"]; _antennaRequestedDueToPage = [c decodeBoolForKey:@"antennaRequestedDueToPage"]; _antennaRequestedDueToInquiry = [c decodeBoolForKey:@"antennaRequestedDueToInquiry"]; _antennaRequestedDueToBLE = [c decodeBoolForKey:@"antennaRequestedDueToBLE"]; _antennaRequestedDueToOther = [c decodeBoolForKey:@"antennaRequestedDueToOther"]; _psnullRetryCountExceededCount = (long long)[c decodeInt64ForKey:@"psnullRetryCountExceededCount"]; _ucodeHighLatencyDetectedCount = (long long)[c decodeInt64ForKey:@"ucodeHighLatencyDetectedCount"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWBTCStatus *o = [[[self class] allocWithZone:z] init]; o->_coexEnabled = _coexEnabled; o->_tdmEnabled = _tdmEnabled; o->_hybridEnabled = _hybridEnabled; o->_btAntennaRequestsCount = _btAntennaRequestsCount; o->_btAntennaGrantCount = _btAntennaGrantCount; o->_btAntennaGrantDurationMicroseconds = _btAntennaGrantDurationMicroseconds; o->_btAbortCount = _btAbortCount; o->_antennaRequestedDueToACL = _antennaRequestedDueToACL; o->_antennaRequestedDueToSCO = _antennaRequestedDueToSCO; o->_antennaRequestedDueToeSCO = _antennaRequestedDueToeSCO; o->_antennaRequestedDueToA2DP = _antennaRequestedDueToA2DP; o->_antennaRequestedDueToSniff = _antennaRequestedDueToSniff; o->_antennaRequestedDueToPageScan = _antennaRequestedDueToPageScan; o->_antennaRequestedDueToInquiryScan = _antennaRequestedDueToInquiryScan; o->_antennaRequestedDueToPage = _antennaRequestedDueToPage; o->_antennaRequestedDueToInquiry = _antennaRequestedDueToInquiry; o->_antennaRequestedDueToBLE = _antennaRequestedDueToBLE; o->_antennaRequestedDueToOther = _antennaRequestedDueToOther; o->_psnullRetryCountExceededCount = _psnullRetryCountExceededCount; o->_ucodeHighLatencyDetectedCount = _ucodeHighLatencyDetectedCount; return o; }
 @end
 
 @implementation CWBaseStationPPPController
@@ -297,6 +316,7 @@
 - (void)setPollInterval:(double)a0 {  }
 - (void)startPollingPPP {  }
 - (void)stopPollingPPP {  }
+- (void)dealloc { [_pppStatus release]; _pppStatus = nil; [super dealloc]; }
 @end
 
 @implementation CWChannel
@@ -306,7 +326,6 @@
 @dynamic channelNumber;
 @dynamic channelWidth;
 @dynamic channelBand;
-+ (BOOL)supportsSecureCoding { return 0; }
 - (long long)channelBand { return 0; }
 - (long long)channelNumber { return 0; }
 - (unsigned long long)channelProperties { return 0; }
@@ -323,13 +342,13 @@
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToChannel:(id)a0 { return 0; }
 - (void)setInfo:(id)a0 {  }
++ (BOOL)supportsSecureCoding { return YES; }
 @end
 
 @implementation CWChannelHistoryItem
 @synthesize channel = _channel;
 @synthesize timestamp = _timestamp;
 + (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
 - (void)encodeWithCoder:(id)a0 {  }
 - (id)externalForm { return nil; }
@@ -338,6 +357,8 @@
 - (id)initWithInfo:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToChannelHistoryItem:(id)a0 { return 0; }
+- (void)dealloc { [_timestamp release]; _timestamp = nil; [super dealloc]; }
+- (id)copyWithZone:(NSZone *)z { CWChannelHistoryItem *o = [[[self class] allocWithZone:z] init]; o->_channel = _channel; o->_timestamp = [_timestamp retain]; return o; }
 @end
 
 @implementation CWConfiguration
@@ -350,15 +371,11 @@
 + (id)configuration { return nil; }
 + (id)configurationForInterfaceWithName:(id)a0 { return nil; }
 + (id)configurationWithConfiguration:(id)a0 { return nil; }
-+ (BOOL)supportsSecureCoding { return 0; }
 - (BOOL)commitForInterfaceWithName:(id)a0 authorization:(id)a1 error:(id *)a2 { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
 - (id)init { return self; }
 - (id)initForInterfaceWithName:(id)a0 { return self; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithConfiguration:(id)a0 { return self; }
 - (id)initWithInfo:(id)a0 knownNetworks:(id)a1 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
@@ -366,6 +383,11 @@
 - (id)mutableCopyWithZone:(void *)a0 { return nil; }
 - (id)networkProfileWithSSID:(id)a0 securityType:(unsigned long long)a1 { return nil; }
 - (id)preferredNetworks { return nil; }
+- (void)dealloc { [_info release]; _info = nil; [_networkProfiles release]; _networkProfiles = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_info forKey:@"info"]; [c encodeObject:_networkProfiles forKey:@"networkProfiles"]; [c encodeBool:_requireAdministratorForAssociation forKey:@"requireAdministratorForAssociation"]; [c encodeBool:_requireAdministratorForPower forKey:@"requireAdministratorForPower"]; [c encodeBool:_requireAdministratorForIBSSMode forKey:@"requireAdministratorForIBSSMode"]; [c encodeBool:_rememberJoinedNetworks forKey:@"rememberJoinedNetworks"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _info = [[c decodeObjectForKey:@"info"] retain]; _networkProfiles = [[c decodeObjectForKey:@"networkProfiles"] retain]; _requireAdministratorForAssociation = [c decodeBoolForKey:@"requireAdministratorForAssociation"]; _requireAdministratorForPower = [c decodeBoolForKey:@"requireAdministratorForPower"]; _requireAdministratorForIBSSMode = [c decodeBoolForKey:@"requireAdministratorForIBSSMode"]; _rememberJoinedNetworks = [c decodeBoolForKey:@"rememberJoinedNetworks"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWConfiguration *o = [[[self class] allocWithZone:z] init]; o->_info = [_info retain]; o->_networkProfiles = [_networkProfiles retain]; o->_requireAdministratorForAssociation = _requireAdministratorForAssociation; o->_requireAdministratorForPower = _requireAdministratorForPower; o->_requireAdministratorForIBSSMode = _requireAdministratorForIBSSMode; o->_rememberJoinedNetworks = _rememberJoinedNetworks; return o; }
 @end
 
 @implementation CWDisplayedScanResult
@@ -376,15 +398,16 @@
 @synthesize groupTag = _groupTag;
 + (id)displayedScanResultWithDisplayName:(id)a0 groupTag:(long long)a1 { return nil; }
 + (id)displayedScanResultsWithNetworks:(id)a0 anqpElements:(id)a1 tetherDevices:(id)a2 cachedTetherDevices:(id)a3 filterCurrentNetworkWithInterface:(id)a4 noBSSID:(BOOL)a5 { return nil; }
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithDisplayName:(id)a0 groupTag:(long long)a1 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToDisplayedScanResult:(id)a0 { return 0; }
+- (void)dealloc { [_tetherDevice release]; _tetherDevice = nil; [_network release]; _network = nil; [_profile release]; _profile = nil; [_displayName release]; _displayName = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_tetherDevice forKey:@"tetherDevice"]; [c encodeObject:_network forKey:@"network"]; [c encodeObject:_profile forKey:@"profile"]; [c encodeObject:_displayName forKey:@"displayName"]; [c encodeInt64:(long long)_groupTag forKey:@"groupTag"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _tetherDevice = [[c decodeObjectForKey:@"tetherDevice"] retain]; _network = [[c decodeObjectForKey:@"network"] retain]; _profile = [[c decodeObjectForKey:@"profile"] retain]; _displayName = [[c decodeObjectForKey:@"displayName"] retain]; _groupTag = (long long)[c decodeInt64ForKey:@"groupTag"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWDisplayedScanResult *o = [[[self class] allocWithZone:z] init]; o->_tetherDevice = [_tetherDevice retain]; o->_network = [_network retain]; o->_profile = [_profile retain]; o->_displayName = [_displayName retain]; o->_groupTag = _groupTag; return o; }
 @end
 
 @implementation CWEAPOLClient
@@ -412,6 +435,7 @@
 - (BOOL)startSystemModeEAPOLForSSID:(id)a0 error:(id *)a1 { return 0; }
 - (void)stopEAPOL {  }
 - (BOOL)userCancelledAuthentication { return 0; }
+- (void)dealloc { [_interfaceName release]; _interfaceName = nil; [super dealloc]; }
 @end
 
 @implementation CWIPMonitor
@@ -493,6 +517,7 @@
 - (id)queryWiFiIPv6StateConfig { return nil; }
 - (id)queryWiFiNetworkServiceID { return nil; }
 - (void)updateActiveWiFiNetworkServiceIDs {  }
+- (void)dealloc { [_topLevelWiFiServiceID release]; _topLevelWiFiServiceID = nil; [_activeWiFiServiceIDs release]; _activeWiFiServiceIDs = nil; [_wifiServiceID release]; _wifiServiceID = nil; [_interfaceName release]; _interfaceName = nil; [_ipv4WiFiStateKey release]; _ipv4WiFiStateKey = nil; [_ipv4WiFiStateConfig release]; _ipv4WiFiStateConfig = nil; [_ipv4WiFiSetupKey release]; _ipv4WiFiSetupKey = nil; [_ipv4WiFiSetupConfig release]; _ipv4WiFiSetupConfig = nil; [_ipv4GlobalStateKey release]; _ipv4GlobalStateKey = nil; [_ipv4GlobalStateConfig release]; _ipv4GlobalStateConfig = nil; [_ipv4GlobalSetupKey release]; _ipv4GlobalSetupKey = nil; [_ipv4GlobalSetupConfig release]; _ipv4GlobalSetupConfig = nil; [_ipv6WiFiStateKey release]; _ipv6WiFiStateKey = nil; [_ipv6WiFiStateConfig release]; _ipv6WiFiStateConfig = nil; [_ipv6WiFiSetupKey release]; _ipv6WiFiSetupKey = nil; [_ipv6WiFiSetupConfig release]; _ipv6WiFiSetupConfig = nil; [_ipv6GlobalStateKey release]; _ipv6GlobalStateKey = nil; [_ipv6GlobalStateConfig release]; _ipv6GlobalStateConfig = nil; [_ipv6GlobalSetupKey release]; _ipv6GlobalSetupKey = nil; [_ipv6GlobalSetupConfig release]; _ipv6GlobalSetupConfig = nil; [super dealloc]; }
 @end
 
 @implementation CWInterface
@@ -685,6 +710,7 @@
 - (id)virtualInterfaceRole { return nil; }
 - (BOOL)wakeOnWirelessEnabled { return 0; }
 - (id)wlanChannel { return nil; }
+- (void)dealloc { [_interfaceName release]; _interfaceName = nil; [_awdlServiceManager release]; _awdlServiceManager = nil; [_corewifi release]; _corewifi = nil; [_xpcClient release]; _xpcClient = nil; [super dealloc]; }
 @end
 
 @implementation CWInterfaceManager
@@ -713,17 +739,18 @@
 @dynamic authDuration;
 @dynamic assocDuration;
 @dynamic joinDuration;
-+ (BOOL)supportsSecureCoding { return 0; }
 - (id)assocDuration { return nil; }
 - (id)authDuration { return nil; }
-- (id)copyWithZone:(void *)a0 { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)ipDuration { return nil; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToJoinStatistics:(id)a0 { return 0; }
 - (id)joinDuration { return nil; }
+- (void)dealloc { [_interfaceName release]; _interfaceName = nil; [_processName release]; _processName = nil; [_network release]; _network = nil; [_profile release]; _profile = nil; [_startedAt release]; _startedAt = nil; [_assocEndedAt release]; _assocEndedAt = nil; [_authEndedAt release]; _authEndedAt = nil; [_ipAssignedAt release]; _ipAssignedAt = nil; [_endedAt release]; _endedAt = nil; [_error release]; _error = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_interfaceName forKey:@"interfaceName"]; [c encodeObject:_processName forKey:@"processName"]; [c encodeObject:_network forKey:@"network"]; [c encodeObject:_profile forKey:@"profile"]; [c encodeObject:_startedAt forKey:@"startedAt"]; [c encodeObject:_assocEndedAt forKey:@"assocEndedAt"]; [c encodeObject:_authEndedAt forKey:@"authEndedAt"]; [c encodeObject:_ipAssignedAt forKey:@"ipAssignedAt"]; [c encodeObject:_endedAt forKey:@"endedAt"]; [c encodeObject:_error forKey:@"error"]; [c encodeBool:_result forKey:@"result"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _interfaceName = [[c decodeObjectForKey:@"interfaceName"] retain]; _processName = [[c decodeObjectForKey:@"processName"] retain]; _network = [[c decodeObjectForKey:@"network"] retain]; _profile = [[c decodeObjectForKey:@"profile"] retain]; _startedAt = [[c decodeObjectForKey:@"startedAt"] retain]; _assocEndedAt = [[c decodeObjectForKey:@"assocEndedAt"] retain]; _authEndedAt = [[c decodeObjectForKey:@"authEndedAt"] retain]; _ipAssignedAt = [[c decodeObjectForKey:@"ipAssignedAt"] retain]; _endedAt = [[c decodeObjectForKey:@"endedAt"] retain]; _error = [[c decodeObjectForKey:@"error"] retain]; _result = [c decodeBoolForKey:@"result"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWJoinStatistics *o = [[[self class] allocWithZone:z] init]; o->_interfaceName = [_interfaceName retain]; o->_processName = [_processName retain]; o->_network = [_network retain]; o->_profile = [_profile retain]; o->_startedAt = [_startedAt retain]; o->_assocEndedAt = [_assocEndedAt retain]; o->_authEndedAt = [_authEndedAt retain]; o->_ipAssignedAt = [_ipAssignedAt retain]; o->_endedAt = [_endedAt retain]; o->_error = [_error retain]; o->_result = _result; return o; }
 @end
 
 @implementation CWLocationChannel
@@ -826,21 +853,17 @@
 + (id)minimalNetworkProfileWithID:(id)a0 { return nil; }
 + (id)networkProfile { return nil; }
 + (id)networkProfileWithNetworkProfile:(id)a0 { return nil; }
-+ (BOOL)supportsSecureCoding { return 0; }
 - (long long)__compareSecurity:(id)a0 { return 0; }
 - (id)__identifier:(BOOL)a0 { return nil; }
 - (unsigned long long)__supportedSecurityType:(unsigned long long)a0 { return 0; }
 - (BOOL)autoLogin { return 0; }
 - (BOOL)captiveNetwork { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)coreWiFiNetworkProfile { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (id)externalForm { return nil; }
 - (unsigned long long)hash { return 0; }
 - (id)identifier { return nil; }
 - (id)init { return self; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (id)initWithExternalForm:(id)a0 { return self; }
 - (id)initWithExternalForm:(id)a0 coreWiFiNetworkProfile:(id)a1 includeProperties:(id)a2 { return self; }
 - (id)initWithNetworkProfile:(id)a0 { return self; }
@@ -867,6 +890,11 @@
 - (long long)shareMode { return 0; }
 - (id)ssidData { return nil; }
 - (id)userPreferredTimestampWithNetworkProfile:(id)a0 { return nil; }
+- (void)dealloc { [_lastAutoJoinAt release]; _lastAutoJoinAt = nil; [_lastManualJoinAt release]; _lastManualJoinAt = nil; [_domainName release]; _domainName = nil; [_displayName release]; _displayName = nil; [_roamingConsortiumList release]; _roamingConsortiumList = nil; [_naiRealmList release]; _naiRealmList = nil; [_collocatedGroup release]; _collocatedGroup = nil; [_channelHistory release]; _channelHistory = nil; [_bssidList release]; _bssidList = nil; [_payloadUUID release]; _payloadUUID = nil; [_addedAt release]; _addedAt = nil; [_wasHiddenBefore release]; _wasHiddenBefore = nil; [_captiveSheetTimestamp release]; _captiveSheetTimestamp = nil; [_userPreferredOrderTimestamp release]; _userPreferredOrderTimestamp = nil; [_updatedAt release]; _updatedAt = nil; [_discoveredAt release]; _discoveredAt = nil; [_networkGroupID release]; _networkGroupID = nil; [_userPreferredNetworkNames release]; _userPreferredNetworkNames = nil; [_userPreferredPasspointDomains release]; _userPreferredPasspointDomains = nil; [_coreWiFiSpecificAttributes release]; _coreWiFiSpecificAttributes = nil; [_ssid release]; _ssid = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_lastAutoJoinAt forKey:@"lastAutoJoinAt"]; [c encodeObject:_lastManualJoinAt forKey:@"lastManualJoinAt"]; [c encodeInt64:(long long)_captiveNetworkStatus forKey:@"captiveNetworkStatus"]; [c encodeBool:_wasCaptiveNetwork forKey:@"wasCaptiveNetwork"]; [c encodeBool:_temporarilyDisabled forKey:@"temporarilyDisabled"]; [c encodeBool:_systemMode forKey:@"systemMode"]; [c encodeBool:_captiveBypass forKey:@"captiveBypass"]; [c encodeBool:_hiddenNetwork forKey:@"hiddenNetwork"]; [c encodeBool:_disabled forKey:@"disabled"]; [c encodeBool:_isPasspoint forKey:@"isPasspoint"]; [c encodeInt64:(long long)_transitionDisabledFlags forKey:@"transitionDisabledFlags"]; [c encodeBool:_standalone6G forKey:@"standalone6G"]; [c encodeObject:_domainName forKey:@"domainName"]; [c encodeObject:_displayName forKey:@"displayName"]; [c encodeObject:_roamingConsortiumList forKey:@"roamingConsortiumList"]; [c encodeObject:_naiRealmList forKey:@"naiRealmList"]; [c encodeBool:_isServiceProviderRoamingEnabled forKey:@"isServiceProviderRoamingEnabled"]; [c encodeBool:_possiblyHiddenNetwork forKey:@"possiblyHiddenNetwork"]; [c encodeObject:_collocatedGroup forKey:@"collocatedGroup"]; [c encodeObject:_channelHistory forKey:@"channelHistory"]; [c encodeInt64:(long long)_roamingProfileType forKey:@"roamingProfileType"]; [c encodeBool:_isPersonalHotspot forKey:@"isPersonalHotspot"]; [c encodeObject:_bssidList forKey:@"bssidList"]; [c encodeInt64:(long long)_userRole forKey:@"userRole"]; [c encodeObject:_payloadUUID forKey:@"payloadUUID"]; [c encodeInt64:(long long)_addedBy forKey:@"addedBy"]; [c encodeObject:_addedAt forKey:@"addedAt"]; [c encodeObject:_wasHiddenBefore forKey:@"wasHiddenBefore"]; [c encodeObject:_captiveSheetTimestamp forKey:@"captiveSheetTimestamp"]; [c encodeObject:_userPreferredOrderTimestamp forKey:@"userPreferredOrderTimestamp"]; [c encodeObject:_updatedAt forKey:@"updatedAt"]; [c encodeObject:_discoveredAt forKey:@"discoveredAt"]; [c encodeObject:_networkGroupID forKey:@"networkGroupID"]; [c encodeInt64:(long long)_networkGroupPriority forKey:@"networkGroupPriority"]; [c encodeObject:_userPreferredNetworkNames forKey:@"userPreferredNetworkNames"]; [c encodeObject:_userPreferredPasspointDomains forKey:@"userPreferredPasspointDomains"]; [c encodeBool:_privacyProxyEnabled forKey:@"privacyProxyEnabled"]; [c encodeObject:_coreWiFiSpecificAttributes forKey:@"coreWiFiSpecificAttributes"]; [c encodeObject:_ssid forKey:@"ssid"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _lastAutoJoinAt = [[c decodeObjectForKey:@"lastAutoJoinAt"] retain]; _lastManualJoinAt = [[c decodeObjectForKey:@"lastManualJoinAt"] retain]; _captiveNetworkStatus = (long long)[c decodeInt64ForKey:@"captiveNetworkStatus"]; _wasCaptiveNetwork = [c decodeBoolForKey:@"wasCaptiveNetwork"]; _temporarilyDisabled = [c decodeBoolForKey:@"temporarilyDisabled"]; _systemMode = [c decodeBoolForKey:@"systemMode"]; _captiveBypass = [c decodeBoolForKey:@"captiveBypass"]; _hiddenNetwork = [c decodeBoolForKey:@"hiddenNetwork"]; _disabled = [c decodeBoolForKey:@"disabled"]; _isPasspoint = [c decodeBoolForKey:@"isPasspoint"]; _transitionDisabledFlags = (unsigned long long)[c decodeInt64ForKey:@"transitionDisabledFlags"]; _standalone6G = [c decodeBoolForKey:@"standalone6G"]; _domainName = [[c decodeObjectForKey:@"domainName"] retain]; _displayName = [[c decodeObjectForKey:@"displayName"] retain]; _roamingConsortiumList = [[c decodeObjectForKey:@"roamingConsortiumList"] retain]; _naiRealmList = [[c decodeObjectForKey:@"naiRealmList"] retain]; _isServiceProviderRoamingEnabled = [c decodeBoolForKey:@"isServiceProviderRoamingEnabled"]; _possiblyHiddenNetwork = [c decodeBoolForKey:@"possiblyHiddenNetwork"]; _collocatedGroup = [[c decodeObjectForKey:@"collocatedGroup"] retain]; _channelHistory = [[c decodeObjectForKey:@"channelHistory"] retain]; _roamingProfileType = (long long)[c decodeInt64ForKey:@"roamingProfileType"]; _isPersonalHotspot = [c decodeBoolForKey:@"isPersonalHotspot"]; _bssidList = [[c decodeObjectForKey:@"bssidList"] retain]; _userRole = (long long)[c decodeInt64ForKey:@"userRole"]; _payloadUUID = [[c decodeObjectForKey:@"payloadUUID"] retain]; _addedBy = (unsigned long long)[c decodeInt64ForKey:@"addedBy"]; _addedAt = [[c decodeObjectForKey:@"addedAt"] retain]; _wasHiddenBefore = [[c decodeObjectForKey:@"wasHiddenBefore"] retain]; _captiveSheetTimestamp = [[c decodeObjectForKey:@"captiveSheetTimestamp"] retain]; _userPreferredOrderTimestamp = [[c decodeObjectForKey:@"userPreferredOrderTimestamp"] retain]; _updatedAt = [[c decodeObjectForKey:@"updatedAt"] retain]; _discoveredAt = [[c decodeObjectForKey:@"discoveredAt"] retain]; _networkGroupID = [[c decodeObjectForKey:@"networkGroupID"] retain]; _networkGroupPriority = (unsigned long long)[c decodeInt64ForKey:@"networkGroupPriority"]; _userPreferredNetworkNames = [[c decodeObjectForKey:@"userPreferredNetworkNames"] retain]; _userPreferredPasspointDomains = [[c decodeObjectForKey:@"userPreferredPasspointDomains"] retain]; _privacyProxyEnabled = [c decodeBoolForKey:@"privacyProxyEnabled"]; _coreWiFiSpecificAttributes = [[c decodeObjectForKey:@"coreWiFiSpecificAttributes"] retain]; _ssid = [[c decodeObjectForKey:@"ssid"] retain]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWNetworkProfile *o = [[[self class] allocWithZone:z] init]; o->_lastAutoJoinAt = [_lastAutoJoinAt retain]; o->_lastManualJoinAt = [_lastManualJoinAt retain]; o->_captiveNetworkStatus = _captiveNetworkStatus; o->_wasCaptiveNetwork = _wasCaptiveNetwork; o->_temporarilyDisabled = _temporarilyDisabled; o->_systemMode = _systemMode; o->_captiveBypass = _captiveBypass; o->_hiddenNetwork = _hiddenNetwork; o->_disabled = _disabled; o->_isPasspoint = _isPasspoint; o->_transitionDisabledFlags = _transitionDisabledFlags; o->_standalone6G = _standalone6G; o->_domainName = [_domainName retain]; o->_displayName = [_displayName retain]; o->_roamingConsortiumList = [_roamingConsortiumList retain]; o->_naiRealmList = [_naiRealmList retain]; o->_isServiceProviderRoamingEnabled = _isServiceProviderRoamingEnabled; o->_possiblyHiddenNetwork = _possiblyHiddenNetwork; o->_collocatedGroup = [_collocatedGroup retain]; o->_channelHistory = [_channelHistory retain]; o->_roamingProfileType = _roamingProfileType; o->_isPersonalHotspot = _isPersonalHotspot; o->_bssidList = [_bssidList retain]; o->_userRole = _userRole; o->_payloadUUID = [_payloadUUID retain]; o->_addedBy = _addedBy; o->_addedAt = [_addedAt retain]; o->_wasHiddenBefore = [_wasHiddenBefore retain]; o->_captiveSheetTimestamp = [_captiveSheetTimestamp retain]; o->_userPreferredOrderTimestamp = [_userPreferredOrderTimestamp retain]; o->_updatedAt = [_updatedAt retain]; o->_discoveredAt = [_discoveredAt retain]; o->_networkGroupID = [_networkGroupID retain]; o->_networkGroupPriority = _networkGroupPriority; o->_userPreferredNetworkNames = [_userPreferredNetworkNames retain]; o->_userPreferredPasspointDomains = [_userPreferredPasspointDomains retain]; o->_privacyProxyEnabled = _privacyProxyEnabled; o->_coreWiFiSpecificAttributes = [_coreWiFiSpecificAttributes retain]; o->_ssid = [_ssid retain]; return o; }
 @end
 
 @implementation CWMutableNetworkProfile
@@ -952,7 +980,6 @@
 @dynamic countryCode;
 @dynamic beaconInterval;
 @dynamic ibss;
-+ (BOOL)supportsSecureCoding { return 0; }
 - (long long)accessNetworkType { return 0; }
 - (id)accessoryFriendlyName { return nil; }
 - (long long)aggregateRSSI { return 0; }
@@ -1024,6 +1051,7 @@
 - (long long)venueType { return 0; }
 - (id)wirelessProfile { return nil; }
 - (id)wlanChannel { return nil; }
++ (BOOL)supportsSecureCoding { return YES; }
 @end
 
 @implementation CWPasswordSharingSimulator
@@ -1041,14 +1069,15 @@
 @synthesize recommendation = _recommendation;
 @synthesize externalLink = _externalLink;
 @synthesize issueType = _issueType;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToRecommendationItem:(id)a0 { return 0; }
+- (void)dealloc { [_title release]; _title = nil; [_desc release]; _desc = nil; [_recommendation release]; _recommendation = nil; [_externalLink release]; _externalLink = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_title forKey:@"title"]; [c encodeObject:_desc forKey:@"desc"]; [c encodeObject:_recommendation forKey:@"recommendation"]; [c encodeObject:_externalLink forKey:@"externalLink"]; [c encodeInt64:(long long)_issueType forKey:@"issueType"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _title = [[c decodeObjectForKey:@"title"] retain]; _desc = [[c decodeObjectForKey:@"desc"] retain]; _recommendation = [[c decodeObjectForKey:@"recommendation"] retain]; _externalLink = [[c decodeObjectForKey:@"externalLink"] retain]; _issueType = (unsigned long long)[c decodeInt64ForKey:@"issueType"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWRecommendationItem *o = [[[self class] allocWithZone:z] init]; o->_title = [_title retain]; o->_desc = [_desc retain]; o->_recommendation = [_recommendation retain]; o->_externalLink = [_externalLink retain]; o->_issueType = _issueType; return o; }
 @end
 
 @implementation CWRoamStatistics
@@ -1066,13 +1095,14 @@
 @synthesize ssid = _ssid;
 @synthesize reason = _reason;
 @synthesize status = _status;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToRoamStatistics:(id)a0 { return 0; }
+- (void)dealloc { [_startedAt release]; _startedAt = nil; [_endedAt release]; _endedAt = nil; [_fromBSSID release]; _fromBSSID = nil; [_toBSSID release]; _toBSSID = nil; [_fromChannel release]; _fromChannel = nil; [_toChannel release]; _toChannel = nil; [_ssid release]; _ssid = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeInt64:(long long)_active2GHzProfile forKey:@"active2GHzProfile"]; [c encodeInt64:(long long)_active5GHzProfile forKey:@"active5GHzProfile"]; [c encodeInt64:(long long)_active6GHzProfile forKey:@"active6GHzProfile"]; [c encodeObject:_startedAt forKey:@"startedAt"]; [c encodeObject:_endedAt forKey:@"endedAt"]; [c encodeObject:_fromBSSID forKey:@"fromBSSID"]; [c encodeObject:_toBSSID forKey:@"toBSSID"]; [c encodeObject:_fromChannel forKey:@"fromChannel"]; [c encodeObject:_toChannel forKey:@"toChannel"]; [c encodeInt64:(long long)_fromRSSI forKey:@"fromRSSI"]; [c encodeInt64:(long long)_toRSSI forKey:@"toRSSI"]; [c encodeObject:_ssid forKey:@"ssid"]; [c encodeInt64:(long long)_reason forKey:@"reason"]; [c encodeInt64:(long long)_status forKey:@"status"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _active2GHzProfile = (long long)[c decodeInt64ForKey:@"active2GHzProfile"]; _active5GHzProfile = (long long)[c decodeInt64ForKey:@"active5GHzProfile"]; _active6GHzProfile = (long long)[c decodeInt64ForKey:@"active6GHzProfile"]; _startedAt = [[c decodeObjectForKey:@"startedAt"] retain]; _endedAt = [[c decodeObjectForKey:@"endedAt"] retain]; _fromBSSID = [[c decodeObjectForKey:@"fromBSSID"] retain]; _toBSSID = [[c decodeObjectForKey:@"toBSSID"] retain]; _fromChannel = [[c decodeObjectForKey:@"fromChannel"] retain]; _toChannel = [[c decodeObjectForKey:@"toChannel"] retain]; _fromRSSI = (long long)[c decodeInt64ForKey:@"fromRSSI"]; _toRSSI = (long long)[c decodeInt64ForKey:@"toRSSI"]; _ssid = [[c decodeObjectForKey:@"ssid"] retain]; _reason = (long long)[c decodeInt64ForKey:@"reason"]; _status = (long long)[c decodeInt64ForKey:@"status"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWRoamStatistics *o = [[[self class] allocWithZone:z] init]; o->_active2GHzProfile = _active2GHzProfile; o->_active5GHzProfile = _active5GHzProfile; o->_active6GHzProfile = _active6GHzProfile; o->_startedAt = [_startedAt retain]; o->_endedAt = [_endedAt retain]; o->_fromBSSID = [_fromBSSID retain]; o->_toBSSID = [_toBSSID retain]; o->_fromChannel = [_fromChannel retain]; o->_toChannel = [_toChannel retain]; o->_fromRSSI = _fromRSSI; o->_toRSSI = _toRSSI; o->_ssid = [_ssid retain]; o->_reason = _reason; o->_status = _status; return o; }
 @end
 
 @implementation CWTetherDevice
@@ -1082,14 +1112,15 @@
 @synthesize signalStrength = _signalStrength;
 @synthesize networkType = _networkType;
 @synthesize deviceGroup = _deviceGroup;
-+ (BOOL)supportsSecureCoding { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
 - (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (unsigned long long)hash { return 0; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqual:(id)a0 { return 0; }
 - (BOOL)isEqualToTetherDevice:(id)a0 { return 0; }
+- (void)dealloc { [_deviceIdentifier release]; _deviceIdentifier = nil; [_deviceName release]; _deviceName = nil; [_batteryLife release]; _batteryLife = nil; [_signalStrength release]; _signalStrength = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_deviceIdentifier forKey:@"deviceIdentifier"]; [c encodeObject:_deviceName forKey:@"deviceName"]; [c encodeObject:_batteryLife forKey:@"batteryLife"]; [c encodeObject:_signalStrength forKey:@"signalStrength"]; [c encodeInt64:(long long)_networkType forKey:@"networkType"]; [c encodeInt64:(long long)_deviceGroup forKey:@"deviceGroup"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _deviceIdentifier = [[c decodeObjectForKey:@"deviceIdentifier"] retain]; _deviceName = [[c decodeObjectForKey:@"deviceName"] retain]; _batteryLife = [[c decodeObjectForKey:@"batteryLife"] retain]; _signalStrength = [[c decodeObjectForKey:@"signalStrength"] retain]; _networkType = (unsigned long long)[c decodeInt64ForKey:@"networkType"]; _deviceGroup = (unsigned long long)[c decodeInt64ForKey:@"deviceGroup"]; return self; }
++ (BOOL)supportsSecureCoding { return YES; }
+- (id)copyWithZone:(NSZone *)z { CWTetherDevice *o = [[[self class] allocWithZone:z] init]; o->_deviceIdentifier = [_deviceIdentifier retain]; o->_deviceName = [_deviceName retain]; o->_batteryLife = [_batteryLife retain]; o->_signalStrength = [_signalStrength retain]; o->_networkType = _networkType; o->_deviceGroup = _deviceGroup; return o; }
 @end
 
 @implementation CWTrimmedNetwork
@@ -1118,7 +1149,6 @@
 @dynamic isP2P;
 @dynamic hasNon6GHzRNRChannel;
 @dynamic supportsWPS;
-+ (BOOL)supportsSecureCoding { return 0; }
 - (id)__trimmedScanRecordForNetwork:(id)a0 properties:(id)a1 { return nil; }
 - (id)accessoryFriendlyName { return nil; }
 - (id)baseStationName { return nil; }
@@ -1159,6 +1189,7 @@
 - (BOOL)supportsSecurity:(long long)a0 { return 0; }
 - (BOOL)supportsWPS { return 0; }
 - (id)wlanChannel { return nil; }
++ (BOOL)supportsSecureCoding { return YES; }
 @end
 
 @implementation CWUnlockSimulator
@@ -1281,6 +1312,7 @@
 - (void)weightedWiFiAvgLQM:(id)a0 {  }
 - (void)willShowJoinUIForWiFiNetwork:(id)a0 interfaceName:(id)a1 reply:(id)a2 {  }
 - (void)wowStateDidChangeForWiFiInterfaceWithName:(id)a0 {  }
+- (void)dealloc { [_xpcClient release]; _xpcClient = nil; [super dealloc]; }
 @end
 
 @implementation CWWiFiUIProxyClient
@@ -1334,15 +1366,16 @@
 @dynamic passphrase;
 @dynamic user8021XProfile;
 + (id)profile { return nil; }
-- (id)copyWithZone:(void *)a0 { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
 - (id)init { return self; }
-- (id)initWithCoder:(id)a0 { return self; }
 - (BOOL)isEqualToProfile:(id)a0 { return 0; }
 - (id)passphrase { return nil; }
 - (void)setPassphrase:(id)a0 {  }
 - (void)setUser8021XProfile:(id)a0 {  }
 - (id)user8021XProfile { return nil; }
+- (void)dealloc { [_ssid release]; _ssid = nil; [_securityMode release]; _securityMode = nil; [super dealloc]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_ssid forKey:@"ssid"]; [c encodeObject:_securityMode forKey:@"securityMode"]; }
+- (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _ssid = [[c decodeObjectForKey:@"ssid"] retain]; _securityMode = [[c decodeObjectForKey:@"securityMode"] retain]; return self; }
+- (id)copyWithZone:(NSZone *)z { CWWirelessProfile *o = [[[self class] allocWithZone:z] init]; o->_ssid = [_ssid retain]; o->_securityMode = [_securityMode retain]; return o; }
 @end
 
 @implementation CWXPCClient
@@ -1351,6 +1384,7 @@
 - (id)__corewifi { return nil; }
 - (id)__corewifiEndpoint { return nil; }
 - (id)corewifi { return nil; }
+- (void)dealloc { [_xpcConnection release]; _xpcConnection = nil; [super dealloc]; }
 @end
 
 @implementation WiFiDeviceClientInternal
@@ -1362,6 +1396,7 @@
 - (void *)callbacks { return 0; }
 - (id)initWithClient:(id)a0 interfaceName:(id)a1 { return self; }
 - (id)interface { return nil; }
+- (void)dealloc { [_awdlServiceManager release]; _awdlServiceManager = nil; [super dealloc]; }
 @end
 
 @implementation WiFiManagerClientInternal
