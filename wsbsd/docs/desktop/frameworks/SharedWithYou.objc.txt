@@ -1,0 +1,1548 @@
+@class NSItemProviderExtraction : NSObject instanceSize=8
+  +_composeMessageUsingMessagesAppAppleEventWithExtensionItem:completionHandler: v32@0:8@16@?24  imp=+0x238127e5c
+  +_messagesInfoDictionaryForExtensionItem:parameters:completionHandler: v40@0:8@16@24@?32  imp=+0x238127084
+@class SWAttributionView : NSView <SLAttributionViewDelegate> instanceSize=632
+  ivar +540 _enablesMarquee B
+  ivar +544 _highlightMenu @"NSMenu"
+  ivar +552 _blurEffectGroupName @"NSString"
+  ivar +560 _highlight @"SWHighlight"
+  ivar +568 _displayContext q
+  ivar +576 _horizontalAlignment q
+  ivar +584 _backgroundStyle q
+  ivar +592 _preferredMaxLayoutWidth d
+  ivar +600 _menuTitleForHideAction @"NSString"
+  ivar +608 _supplementalMenu @"NSMenuItem"
+  ivar +616 _slAttributionView @"SLAttributionView"
+  ivar +624 _constraints @"NSArray"
+  property slAttributionView (T@"SLAttributionView",&,N,V_slAttributionView)
+  property constraints (T@"NSArray",&,N,V_constraints)
+  property blurEffectGroupName (T@"NSString",&,N,V_blurEffectGroupName)
+  property highlight (T@"SWHighlight",&,N,V_highlight)
+  property displayContext (Tq,N,V_displayContext)
+  property horizontalAlignment (Tq,N,V_horizontalAlignment)
+  property backgroundStyle (Tq,N,V_backgroundStyle)
+  property preferredMaxLayoutWidth (Td,N,V_preferredMaxLayoutWidth)
+  property highlightMenu (T@"NSMenu",R,N,V_highlightMenu)
+  property menuTitleForHideAction (T@"NSString",&,N,V_menuTitleForHideAction)
+  property supplementalMenu (T@"NSMenuItem",&,N,V_supplementalMenu)
+  property enablesMarquee (TB,N,V_enablesMarquee)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x23812922c
+  -_sendFeedbackForCurrentDisplayContext v16@0:8  imp=+0x2381290ac
+  -_updateSLAttributionViewAlignment v16@0:8  imp=+0x238128b6c
+  -_updateSLAttributionViewBackgroundStyle v16@0:8  imp=+0x238128be8
+  -_updateSLAttributionViewEnablesMarquee v16@0:8  imp=+0x238128f70
+  -_updateSLAttributionViewHideMenuItemTitle v16@0:8  imp=+0x238128f0c
+  -_updateSLAttributionViewSupplementalMenu v16@0:8  imp=+0x238128e30
+  -backgroundStyle q16@0:8  imp=+0x238129178
+  -blurEffectGroupName @16@0:8  imp=+0x238129128
+  -closeButton @16@0:8  imp=+0x238128f74
+  -constraints @16@0:8  imp=+0x238129204
+  -displayContext q16@0:8  imp=+0x238129150
+  -enablesMarquee B16@0:8  imp=+0x2381291c8
+  -highlight @16@0:8  imp=+0x23812913c
+  -highlightMenu @16@0:8  imp=+0x238128cc4
+  -horizontalAlignment q16@0:8  imp=+0x238129164
+  -init @16@0:8  imp=+0x238128310
+  -intrinsicContentSize {CGSize=dd}16@0:8  imp=+0x238128914
+  -menuTitleForHideAction @16@0:8  imp=+0x2381291a0
+  -preferredMaxLayoutWidth d16@0:8  imp=+0x23812918c
+  -setBackgroundStyle: v24@0:8q16  imp=+0x238128bd4
+  -setBlurEffectGroupName: v24@0:8@16  imp=+0x238129004
+  -setConstraints: v24@0:8@16  imp=+0x238129218
+  -setDisplayContext: v24@0:8q16  imp=+0x238128ae8
+  -setEnablesMarquee: v20@0:8B16  imp=+0x238128f6c
+  -setHighlight: v24@0:8@16  imp=+0x23812896c
+  -setHorizontalAlignment: v24@0:8q16  imp=+0x238128b58
+  -setMenuTitleForHideAction: v24@0:8@16  imp=+0x238128e90
+  -setPreferredMaxLayoutWidth: v24@0:8d16  imp=+0x238128c48
+  -setSlAttributionView: v24@0:8@16  imp=+0x2381291f0
+  -setSupplementalMenu: v24@0:8@16  imp=+0x238128dbc
+  -slAttributionView @16@0:8  imp=+0x2381291dc
+  -supplementalMenu @16@0:8  imp=+0x2381291b4
+  -updateConstraints v16@0:8  imp=+0x2381283cc
+  -useBannerLayout v16@0:8  imp=+0x238128fc4
+  -viewDidMoveToWindow v16@0:8  imp=+0x238128368
+@class SWBackgroundSendUtility : NSObject <SFCollaborationCompositionDictionaryProviderDelegate, SLDServiceProxyDelegate> instanceSize=56
+  ivar +8 _serviceProxy @"SLDServiceProxy"
+  ivar +16 _compositionDictionaryProvider @"SFCollaborationCompositionDictionaryProvider"
+  ivar +24 _faceTimeConversation @"TUConversation"
+  ivar +32 _pendingCollaborationRequest @?
+  ivar +40 _completion @?
+  ivar +48 _queue @"NSObject<OS_dispatch_queue>"
+  property serviceProxy (T@"SLDServiceProxy",&,N,V_serviceProxy)
+  property compositionDictionaryProvider (T@"SFCollaborationCompositionDictionaryProvider",&,N,V_compositionDictionaryProvider)
+  property faceTimeConversation (T@"TUConversation",&,N,V_faceTimeConversation)
+  property pendingCollaborationRequest (T@?,C,N,V_pendingCollaborationRequest)
+  property completion (T@?,C,N,V_completion)
+  property queue (T@"NSObject<OS_dispatch_queue>",&,N,V_queue)
+  -.cxx_destruct v16@0:8  imp=+0x238129d6c
+  -_addCollaborationRequest: v24@0:8@?16  imp=+0x23812964c
+  -_processPendingCollaborationRequest v16@0:8  imp=+0x238129800
+  -completion @?16@0:8  imp=+0x238129d48
+  -compositionDictionaryProvider @16@0:8  imp=+0x238129d10
+  -dictionaryDidBecomeAvailable:forProvider: v32@0:8@16@24  imp=+0x238129428
+  -faceTimeConversation @16@0:8  imp=+0x238129d24
+  -initWithItemProvider:faceTimeConversation:queue:completion: @48@0:8@16@24@32@?40  imp=+0x2381292e4
+  -pendingCollaborationRequest @?16@0:8  imp=+0x238129d38
+  -queue @16@0:8  imp=+0x238129d58
+  -remoteService @16@0:8  imp=+0x238129bc0
+  -sendCollaboration:faceTimeConversationUUID:completionHandler: v40@0:8@16@24@?32  imp=+0x238129914
+  -serviceProxy @16@0:8  imp=+0x238129b24
+  -serviceProxyDidConnect: v24@0:8@16  imp=+0x238129c10
+  -serviceProxyDidDisconnect: v24@0:8@16  imp=+0x238129c88
+  -setCompletion: v24@0:8@?16  imp=+0x238129d50
+  -setCompositionDictionaryProvider: v24@0:8@16  imp=+0x238129d18
+  -setFaceTimeConversation: v24@0:8@16  imp=+0x238129d2c
+  -setPendingCollaborationRequest: v24@0:8@?16  imp=+0x238129d40
+  -setQueue: v24@0:8@16  imp=+0x238129d60
+  -setServiceProxy: v24@0:8@16  imp=+0x238129d04
+@class SWCachedHighlightEvent : NSObject <NSCopying> instanceSize=32
+  ivar +8 _uuid @"NSUUID"
+  ivar +16 _event @"<SWHighlightEvent>"
+  ivar +24 _highlight @"SWHighlight"
+  property uuid (T@"NSUUID",R,N,V_uuid)
+  property event (T@"<SWHighlightEvent>",R,N,V_event)
+  property highlight (T@"SWHighlight",R,N,V_highlight)
+  +cachedEvent:forHighlight: @32@0:8@16@24  imp=+0x23812af54
+  -.cxx_destruct v16@0:8  imp=+0x23812b130
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x23812b09c
+  -event @16@0:8  imp=+0x23812b120
+  -highlight @16@0:8  imp=+0x23812b128
+  -initWithEvent:forHighlight: @32@0:8@16@24  imp=+0x23812afd4
+  -uuid @16@0:8  imp=+0x23812b118
+@class SWCollaborationCoordinatorAppleEventHandler : NSObject instanceSize=8
+  +load v16@0:8  imp=+0x2381344e4
+  +sharedEventHandler @16@0:8  imp=+0x2381345cc
+  -_registerForAppleEvents v16@0:8  imp=+0x23813454c
+  -handleAppleEvent:withReplyEvent: v32@0:8@16@24  imp=+0x2381346a8
+@class SWCollaborationDetailViewModel : NSObject <SWHighlightCenterDelegate> instanceSize=232
+  ivar +8 itemProvider @"NSItemProvider"
+  ivar +16 $__lazy_storage_$_highlightCenter 
+  ivar +24 cloudSharingServiceDelegate ?
+  ivar +32 _collaborationInfo 
+  ivar +56 _highlight 
+  ivar +72 _customContentTitle 
+  ivar +96 _headerFallback 
+  ivar +144 _customCollaborators 
+  ivar +160 _manageButtonTitle 
+  ivar +184 _showManageButton 
+  ivar +200 _pendingAccessRequestsCount 
+  ivar +216 _hasPendingAccessRequests 
+  property itemProvider (T@"NSItemProvider",N,&,VitemProvider)
+  property cloudSharingServiceDelegate (T@"<NSCloudSharingServiceDelegate>",N,W,VcloudSharingServiceDelegate)
+  property highlight (T@"SWHighlight",N,&)
+  property customContentTitle (T@"NSString",N,C)
+  property customCollaborators (T@"NSArray",N,C)
+  property manageButtonTitle (T@"NSString",N,C)
+  property showManageButton (TB,N)
+  property pendingAccessRequestsCount (TQ,N)
+  property hasPendingAccessRequests (TB,N)
+  -.cxx_destruct v16@0:8  imp=+0x238141b1c
+  -cloudSharingServiceDelegate @16@0:8  imp=+0x23813b6f8
+  -customCollaborators @16@0:8  imp=+0x23813bcec
+  -customContentTitle @16@0:8  imp=+0x23813ba9c
+  -hasPendingAccessRequests B16@0:8  imp=+0x23813d1e0
+  -highlight @16@0:8  imp=+0x23813b974
+  -highlightCenterHighlightsDidChange: v24@0:8@16  imp=+0x238141f1c
+  -init @16@0:8  imp=+0x238141ab4
+  -initWithHighlight: @24@0:8@16  imp=+0x23813db80
+  -initWithItemProvider: @24@0:8@16  imp=+0x23813dc48
+  -itemProvider @16@0:8  imp=+0x23813b1f8
+  -manageButtonTitle @16@0:8  imp=+0x23813bee4
+  -pendingAccessRequestsCount Q16@0:8  imp=+0x23813cae4
+  -setCloudSharingServiceDelegate: v24@0:8@16  imp=+0x23813b7a0
+  -setCustomCollaborators: v24@0:8@16  imp=+0x23813be44
+  -setCustomContentTitle: v24@0:8@16  imp=+0x23813bbd0
+  -setHasPendingAccessRequests: v20@0:8B16  imp=+0x23813d2f8
+  -setHighlight: v24@0:8@16  imp=+0x23813ba20
+  -setItemProvider: v24@0:8@16  imp=+0x23813b29c
+  -setManageButtonTitle: v24@0:8@16  imp=+0x23813c008
+  -setPendingAccessRequestsCount: v24@0:8Q16  imp=+0x23813cbe0
+  -setShowManageButton: v20@0:8B16  imp=+0x23813c660
+  -showManageButton B16@0:8  imp=+0x23813c638
+@class SWCollaborationHighlight : SWHighlight <NSSecureCoding, NSCopying> instanceSize=48
+  ivar +24 _highlightType C
+  ivar +32 _collaborationIdentifier @"NSString"
+  ivar +40 _slCollaborationHighlight @"SLCollaborationHighlight"
+  property collaborationIdentifier (T@"NSString",C,N,V_collaborationIdentifier)
+  property slCollaborationHighlight (T@"SLCollaborationHighlight",R,N,V_slCollaborationHighlight)
+  property highlightType (TC,R,N,V_highlightType)
+  property earliestAttributionIdentifiers (T@"NSDictionary",R,N)
+  property fileProviderID (T@"NSString",R,N)
+  property localProofOfInclusion (T@"SWPersonIdentityProof",R,N)
+  property handleToIdentityMap (T@"NSDictionary",R,C,N)
+  property type (T@"UTType",R,C,N)
+  property localIdentity (T@"SWPersonIdentity",R,C,N)
+  property title (T@"NSString",R,C,N)
+  property creationDate (T@"NSDate",R,C,N)
+  property contentType (T@"UTType",R,C,N)
+  +requiredSpotlightAttributeKeysforHighlightType: @20@0:8C16  imp=+0x238126870
+  +supportsSecureCoding B16@0:8  imp=+0x238126ca8
+  -.cxx_destruct v16@0:8  imp=+0x238127030
+  -URL @16@0:8  imp=+0x238126988
+  -attributions @16@0:8  imp=+0x2381269d8
+  -collaborationIdentifier @16@0:8  imp=+0x238126a78
+  -contentType @16@0:8  imp=+0x2381268bc
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x238126e58
+  -creationDate @16@0:8  imp=+0x238126c58
+  -earliestAttributionIdentifiers @16@0:8  imp=+0x238126ac8
+  -encodeWithCoder: v24@0:8@16  imp=+0x238126cb0
+  -fileProviderID @16@0:8  imp=+0x238126c08
+  -handleToIdentityMap @16@0:8  imp=+0x238126bb8
+  -hash Q16@0:8  imp=+0x238126fc0
+  -highlightType C16@0:8  imp=+0x23812701c
+  -initWithCSSearchableItem:error: @32@0:8@16^@24  imp=+0x23812671c
+  -initWithCSSearchableItemUniqueIdentifier:error: @32@0:8@16^@24  imp=+0x23812668c
+  -initWithCSSearchableItemUniqueIdentifier:forType:error: @36@0:8@16C24^@28  imp=+0x2381265e4
+  -initWithCoder: @24@0:8@16  imp=+0x238126d70
+  -initWithDictionary: @24@0:8@16  imp=+0x2381267c8
+  -initWithSLCollaborationHighlight: @24@0:8@16  imp=+0x238126478
+  -initWithSLCollaborationHighlight:andType: @28@0:8@16C24  imp=+0x238126524
+  -isEqual: B24@0:8@16  imp=+0x238126eb0
+  -localIdentity @16@0:8  imp=+0x238126b18
+  -localProofOfInclusion @16@0:8  imp=+0x238126b68
+  -setCollaborationIdentifier: v24@0:8@16  imp=+0x238126ffc
+  -slCollaborationHighlight @16@0:8  imp=+0x238127008
+  -timestamp @16@0:8  imp=+0x238126a28
+  -title @16@0:8  imp=+0x238126938
+  -type @16@0:8  imp=+0x2381268b8
+@class SWCollaborationView : NSView instanceSize=624
+  ivar +536 _typeErasedButtonView @"NSView"
+  ivar +544 _cloudSharingDelegate @"<NSCloudSharingServiceDelegate>"
+  ivar +552 _activeParticipantCount Q
+  ivar +560 _delegate @"<SWCollaborationViewDelegate>"
+  ivar +568 _headerTitle @"NSString"
+  ivar +576 _headerSubtitle @"NSString"
+  ivar +584 _headerImage @"NSImage"
+  ivar +592 _menuFormRepresentation @"NSMenuItem"
+  ivar +600 _cloudSharingServiceDelegate @"<NSCloudSharingServiceDelegate>"
+  ivar +608 _manageButtonTitle @"NSString"
+  ivar +616 _buttonView @"_SWCollaborationButtonViewImpl"
+  property menuFormRepresentation (T@"NSMenuItem",N,R)
+  property buttonView (T@"_SWCollaborationButtonViewImpl",N,R)
+  property buttonView (T@"_SWCollaborationButtonViewImpl",&,N,V_buttonView)
+  property typeErasedButtonView (T@"NSView",&,N,V_typeErasedButtonView)
+  property typeErasedButtonView (T@"NSView",&,N)
+  property cloudSharingDelegate (T@"<NSCloudSharingServiceDelegate>",W,V_cloudSharingDelegate)
+  property activeParticipantCount (TQ,N,V_activeParticipantCount)
+  property pendingAccessRequestsCount (TQ,N)
+  property delegate (T@"<SWCollaborationViewDelegate>",W,N,V_delegate)
+  property headerTitle (T@"NSString",C,N,V_headerTitle)
+  property headerSubtitle (T@"NSString",C,N,V_headerSubtitle)
+  property headerImage (T@"NSImage",&,N,V_headerImage)
+  property menuFormRepresentation (T@"NSMenuItem",R,V_menuFormRepresentation)
+  property cloudSharingServiceDelegate (T@"<NSCloudSharingServiceDelegate>",W,N,V_cloudSharingServiceDelegate)
+  property manageButtonTitle (T@"NSString",C,N,V_manageButtonTitle)
+  -.cxx_destruct v16@0:8  imp=+0x238139dd0
+  -_shouldOverrideSymbolConfigForIWork B16@0:8  imp=+0x2381394fc
+  -_shouldOverrideSymbolConfigForVisionFreeform B16@0:8  imp=+0x2381394ac
+  -activeParticipantCount Q16@0:8  imp=+0x238139cb8
+  -buttonView @16@0:8  imp=+0x238139da8
+  -buttonView @16@0:8  imp=+0x23814c1b0
+  -cloudSharingDelegate @16@0:8  imp=+0x238139c70
+  -cloudSharingServiceDelegate @16@0:8  imp=+0x238139d4c
+  -controlSize Q16@0:8  imp=+0x238139b84
+  -delegate @16@0:8  imp=+0x238139ccc
+  -dismissPopover: v24@0:8@?16  imp=+0x238139678
+  -dismissPopoverAnimated:completion: v28@0:8B16@?20  imp=+0x23813973c
+  -headerImage @16@0:8  imp=+0x238139d28
+  -headerSubtitle @16@0:8  imp=+0x238139d14
+  -headerTitle @16@0:8  imp=+0x238139d00
+  -initWithButtonView: @24@0:8@16  imp=+0x2381391f4
+  -initWithItemProvider: @24@0:8@16  imp=+0x2381395a4
+  -initWithTypeErasedButtonView: @24@0:8@16  imp=+0x2381395a0
+  -isEnabled B16@0:8  imp=+0x238139ab8
+  -manageButtonTitle @16@0:8  imp=+0x238139d94
+  -menuFormRepresentation @16@0:8  imp=+0x238139d3c
+  -menuFormRepresentation @16@0:8  imp=+0x23814bfb0
+  -pendingAccessRequestsCount Q16@0:8  imp=+0x2381397f4
+  -present: v24@0:8@16  imp=+0x23814c150
+  -setActiveParticipantCount: v24@0:8Q16  imp=+0x2381397ac
+  -setButtonView: v24@0:8@16  imp=+0x238139dbc
+  -setCloudSharingDelegate: v24@0:8@16  imp=+0x238139ca4
+  -setCloudSharingServiceDelegate: v24@0:8@16  imp=+0x238139d80
+  -setContentView: v24@0:8@16  imp=+0x2381396dc
+  -setControlSize: v24@0:8Q16  imp=+0x238139b3c
+  -setDelegate: v24@0:8@16  imp=+0x238139618
+  -setEnabled: v20@0:8B16  imp=+0x238139af4
+  -setHeaderImage: v24@0:8@16  imp=+0x238139a58
+  -setHeaderSubtitle: v24@0:8@16  imp=+0x2381399f8
+  -setHeaderTitle: v24@0:8@16  imp=+0x238139998
+  -setManageButtonTitle: v24@0:8@16  imp=+0x238139878
+  -setPendingAccessRequestsCount: v24@0:8Q16  imp=+0x238139830
+  -setShowManageButton: v20@0:8B16  imp=+0x238139950
+  -setTypeErasedButtonView: v24@0:8@16  imp=+0x238139c5c
+  -typeErasedButtonView @16@0:8  imp=+0x238139c48
+  -updatePlaceholderGlyphScale:weight:pointSize:name: v48@0:8q16d24d32@40  imp=+0x238139bc0
+@class SWCoreSpotlightUtilities : NSObject instanceSize=8
+  +CSQueryStringForAutodonatingChatsWithDecay: @20@0:8B16  imp=+0x238134d1c
+  +CSQueryStringForSLHighlightsForContentType:forChatIdentifiers: @28@0:8C16@20  imp=+0x238134d70
+  +CSSearchQueryContextForAutodonatingChats @16@0:8  imp=+0x238134d10
+  +CSSearchQueryContextForSLHighlightsForContentType: @20@0:8C16  imp=+0x238134d28
+  +fetchCSSearchableItemForUniqueIdentifier:forContentType:withRequiredAttributes:error: @44@0:8@16C24@28^@36  imp=+0x238134c60
+  +requiredSpotlightAttributeKeysForFiles @16@0:8  imp=+0x238134c48
+  +requiredSpotlightAttributeKeysForLinks @16@0:8  imp=+0x238134c54
+@class SWHighlight : NSObject <NSSecureCoding, NSCopying> instanceSize=24
+  ivar +8 _identifier @"<NSSecureCoding><NSCopying>"
+  ivar +16 _slHighlight @"SLHighlight"
+  property slHighlight (T@"SLHighlight",&,N,S_setSLHighlight:,V_slHighlight)
+  property identifier (T@"<NSSecureCoding><NSCopying>",R,C,N,V_identifier)
+  property URL (T@"NSURL",R,C,N)
+  +highlightContentTypeForType: C20@0:8C16  imp=+0x2381368f8
+  +highlightsForSLHighlights: @24@0:8@16  imp=+0x23813611c
+  +requiredSpotlightAttributeKeys @16@0:8  imp=+0x2381362c8
+  +supportsSecureCoding B16@0:8  imp=+0x2381365e8
+  -.cxx_destruct v16@0:8  imp=+0x238136fec
+  -URL @16@0:8  imp=+0x23813602c
+  -_setSLHighlight: v24@0:8@16  imp=+0x238136fe0
+  -attributions @16@0:8  imp=+0x23813607c
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x238136790
+  -encodeWithCoder: v24@0:8@16  imp=+0x2381365f0
+  -hash Q16@0:8  imp=+0x2381368bc
+  -hideContextMenu @16@0:8  imp=+0x238136b88
+  -identifier @16@0:8  imp=+0x238136fd0
+  -initWithCSSearchableItem:error: @32@0:8@16^@24  imp=+0x2381362d4
+  -initWithCSSearchableItemUniqueIdentifier:error: @32@0:8@16^@24  imp=+0x238136370
+  -initWithCSSearchableItemUniqueIdentifier:forType:error: @36@0:8@16C24^@28  imp=+0x23813640c
+  -initWithCoder: @24@0:8@16  imp=+0x23813665c
+  -initWithSLHighlight: @24@0:8@16  imp=+0x238135f04
+  -isEqual: B24@0:8@16  imp=+0x2381367fc
+  -isLocalResource B16@0:8  imp=+0x2381364d0
+  -isSyndicatableMedia B16@0:8  imp=+0x23813650c
+  -livePhotoComplementURL @16@0:8  imp=+0x238136548
+  -replyContextMenu @16@0:8  imp=+0x238136904
+  -resourceUTI @16@0:8  imp=+0x238136598
+  -slHighlight @16@0:8  imp=+0x238136fd8
+  -stringIdentifier @16@0:8  imp=+0x238135fdc
+  -timestamp @16@0:8  imp=+0x2381360cc
+@class SWHighlightCenter : NSObject <SLHighlightCenterAPIAdapting, SLDServiceProxyDelegate> instanceSize=120
+  ivar +8 _highlights @"NSArray"
+  ivar +16 _delegate @"<SWHighlightCenterDelegate>"
+  ivar +24 __highlightArrayQueue @"NSObject<OS_dispatch_queue>"
+  ivar +32 __highlightCenterAdapter @"SLHighlightCenter"
+  ivar +40 _urlToHighlightCache @"NSCache"
+  ivar +48 _urlToCollaborationHighlightCache @"NSCache"
+  ivar +56 _supplementaryURLToCollaborationHighlightCache @"NSCache"
+  ivar +64 _identifierToCollaborationHighlightCache @"NSCache"
+  ivar +72 _fileURLToShareURLCache @"NSCache"
+  ivar +80 _noticeServiceProxy @"SLDServiceProxy"
+  ivar +88 _pendingEventCache @"NSCache"
+  ivar +96 _pendingClearCache @"NSCache"
+  ivar +104 _cloudDocsServiceProxy @"SLDServiceProxy"
+  ivar +112 _variant @"NSString"
+  property _highlightArrayQueue (T@"NSObject<OS_dispatch_queue>",R,N,V__highlightArrayQueue)
+  property _highlightCenterAdapter (T@"SLHighlightCenter",R,N,V__highlightCenterAdapter)
+  property urlToHighlightCache (T@"NSCache",&,N,V_urlToHighlightCache)
+  property urlToCollaborationHighlightCache (T@"NSCache",&,N,V_urlToCollaborationHighlightCache)
+  property supplementaryURLToCollaborationHighlightCache (T@"NSCache",&,N,V_supplementaryURLToCollaborationHighlightCache)
+  property identifierToCollaborationHighlightCache (T@"NSCache",&,N,V_identifierToCollaborationHighlightCache)
+  property fileURLToShareURLCache (T@"NSCache",&,N,V_fileURLToShareURLCache)
+  property noticeServiceProxy (T@"SLDServiceProxy",&,N,V_noticeServiceProxy)
+  property pendingEventCache (T@"NSCache",&,N,V_pendingEventCache)
+  property pendingClearCache (T@"NSCache",&,N,V_pendingClearCache)
+  property cloudDocsServiceProxy (T@"SLDServiceProxy",&,N,V_cloudDocsServiceProxy)
+  property highlightsRankingScore (Td,R,N)
+  property variant (T@"NSString",&,N,V_variant)
+  property delegate (T@"<SWHighlightCenterDelegate>",W,N,V_delegate)
+  property highlights (T@"NSArray",R,C,N,V_highlights)
+  +SWVariantDefault @16@0:8  imp=+0x23812b1a0
+  +SWVariantNewsToday @16@0:8  imp=+0x23812b1ac
+  +highlightCollectionTitle @16@0:8  imp=+0x23812b180
+  +isEnabled B16@0:8  imp=+0x23812b194
+  +isSystemCollaborationSupportAvailable B16@0:8  imp=+0x23812b18c
+  +noticeHandlerQueue @16@0:8  imp=+0x23812b268
+  +shareURLFetchQueue @16@0:8  imp=+0x23812b1b8
+  +signingQueue @16@0:8  imp=+0x23812b314
+  -.cxx_destruct v16@0:8  imp=+0x238130bf8
+  -_attributionIdentifiersForHighlight: @24@0:8@16  imp=+0x2381307ac
+  -_disconnectNoticeServiceConnectionIfNecessary v16@0:8  imp=+0x2381305c8
+  -_fetchHighlightFromAnyCacheForURL: @24@0:8@16  imp=+0x23812f028
+  -_getCollaborationHighlightForShareURL:fileURL:completionHandler: v40@0:8@16@24@?32  imp=+0x23812d074
+  -_getShareURLForFileURL:completionHandler: v32@0:8@16@?24  imp=+0x23812c898
+  -_highlightArrayQueue @16@0:8  imp=+0x238130b68
+  -_highlightCenterAdapter @16@0:8  imp=+0x238130b70
+  -_notifyDelegateHighlightsDidChange v16@0:8  imp=+0x23812ec00
+  -_postNoticeForHighlightEvent: v24@0:8@16  imp=+0x23812c3cc
+  -_processClearNoticesFor: v24@0:8@16  imp=+0x23812f504
+  -_processPendingHighlightEvent: v24@0:8@16  imp=+0x23812f294
+  -_sandboxExtensionIssueFileURL:withAuditToken: @56@0:8@16{?=[8I]}24  imp=+0x238130a2c
+  -_sendCurrentClearNoticesToDaemonAndDisconnect v16@0:8  imp=+0x23812f6a4
+  -_sendCurrentNoticesToDaemonAndDisconnect v16@0:8  imp=+0x23812fd38
+  -apiAdapterHighlightsDidChange: v24@0:8@16  imp=+0x23813097c
+  -clearNoticesForHighlight: v24@0:8@16  imp=+0x23812c208
+  -cloudDocsServiceProxy @16@0:8  imp=+0x23812bd74
+  -collaborationHighlightForIdentifier:error: @32@0:8@16^@24  imp=+0x23812ea6c
+  -collaborationHighlightForURL:error: @32@0:8@16^@24  imp=+0x238130ee4
+  -delegate @16@0:8  imp=+0x238130b3c
+  -fetchAttributionForAttributionIdentifier: @24@0:8@16  imp=+0x23812c3d0
+  -fetchAttributionsForHighlight: @24@0:8@16  imp=+0x23812c76c
+  -fileURLToShareURLCache @16@0:8  imp=+0x23812b9cc
+  -getCollaborationHighlightForURL:completionHandler: v32@0:8@16@?24  imp=+0x23812de5c
+  -getHighlightForURL:completionHandler: v32@0:8@16@?24  imp=+0x23812d9e0
+  -getShareURLForFileURL: @24@0:8@16  imp=+0x238131174
+  -getSignedIdentityProofForCollaborationHighlight:usingData:completionHandler: v40@0:8@16@24@?32  imp=+0x23812be14
+  -highlightForURL:error: @32@0:8@16^@24  imp=+0x238130cc8
+  -highlights @16@0:8  imp=+0x23812b4bc
+  -highlightsRankingScore d16@0:8  imp=+0x23812c854
+  -identifierToCollaborationHighlightCache @16@0:8  imp=+0x23812ba30
+  -init @16@0:8  imp=+0x23812b4b4
+  -initWithAppIdentifier: @24@0:8@16  imp=+0x23812b3c4
+  -noticeServiceProxy @16@0:8  imp=+0x23812bcb8
+  -originalSenderForCollaborationHighlight: @24@0:8@16  imp=+0x23812c448
+  -pendingClearCache @16@0:8  imp=+0x23812bc60
+  -pendingEventCache @16@0:8  imp=+0x23812bc08
+  -postNoticeForEvent: v24@0:8@16  imp=+0x23812c204
+  -postNoticeForHighlightEvent: v24@0:8@16  imp=+0x23812c2c0
+  -serviceProxyDidConnect: v24@0:8@16  imp=+0x23812ed20
+  -serviceProxyDidDisconnect: v24@0:8@16  imp=+0x23812ee58
+  -setCloudDocsServiceProxy: v24@0:8@16  imp=+0x238130bd8
+  -setDelegate: v24@0:8@16  imp=+0x23812b538
+  -setFileURLToShareURLCache: v24@0:8@16  imp=+0x238130ba8
+  -setIdentifierToCollaborationHighlightCache: v24@0:8@16  imp=+0x238130b9c
+  -setNoticeServiceProxy: v24@0:8@16  imp=+0x238130bb4
+  -setPendingClearCache: v24@0:8@16  imp=+0x238130bcc
+  -setPendingEventCache: v24@0:8@16  imp=+0x238130bc0
+  -setSupplementaryURLToCollaborationHighlightCache: v24@0:8@16  imp=+0x238130b90
+  -setUrlToCollaborationHighlightCache: v24@0:8@16  imp=+0x238130b84
+  -setUrlToHighlightCache: v24@0:8@16  imp=+0x238130b78
+  -setVariant: v24@0:8@16  imp=+0x238130bec
+  -supplementaryURLToCollaborationHighlightCache @16@0:8  imp=+0x23812b968
+  -urlToCollaborationHighlightCache @16@0:8  imp=+0x23812b77c
+  -urlToHighlightCache @16@0:8  imp=+0x23812b5d0
+  -variant @16@0:8  imp=+0x238130be4
+@class SWHighlightChangeEvent : NSObject <SWHighlightEvent> instanceSize=24
+  ivar +8 _highlightURL @"NSURL"
+  ivar +16 _changeEventType q
+  property changeEventType (Tq,R,N,V_changeEventType)
+  property changeEventTrigger (Tq,R,N)
+  property highlightURL (T@"NSURL",R,C,N,V_highlightURL)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +supportsSecureCoding B16@0:8  imp=+0x238131a84
+  -.cxx_destruct v16@0:8  imp=+0x238131cf0
+  -changeEventTrigger q16@0:8  imp=+0x238131a80
+  -changeEventType q16@0:8  imp=+0x238131ce8
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x238131c74
+  -encodeWithCoder: v24@0:8@16  imp=+0x238131a8c
+  -highlightURL @16@0:8  imp=+0x238131ce0
+  -initWithCoder: @24@0:8@16  imp=+0x238131b50
+  -initWithHighlight:trigger: @32@0:8@16q24  imp=+0x238131a24
+  -initWithHighlight:type: @32@0:8@16q24  imp=+0x2381319c8
+  -initWithHighlightURL:type: @32@0:8@16q24  imp=+0x238131944
+@class SWHighlightContextMenu : NSObject instanceSize=32
+  ivar +8 _title @"NSString"
+  ivar +16 _identifier @"NSString"
+  ivar +24 _actionBlock @?
+  property title (T@"NSString",&,N,V_title)
+  property identifier (T@"NSString",&,N,V_identifier)
+  property actionBlock (T@?,C,N,V_actionBlock)
+  -.cxx_destruct v16@0:8  imp=+0x238135eb4
+  -actionBlock @?16@0:8  imp=+0x238135ea4
+  -identifier @16@0:8  imp=+0x238135e90
+  -setActionBlock: v24@0:8@?16  imp=+0x238135eac
+  -setIdentifier: v24@0:8@16  imp=+0x238135e98
+  -setTitle: v24@0:8@16  imp=+0x238135e84
+  -title @16@0:8  imp=+0x238135e7c
+@class SWHighlightIdentifier : NSObject <NSSecureCoding, NSCopying> instanceSize=16
+  ivar +8 _stringIdentifier @"NSString"
+  property stringIdentifier (T@"NSString",C,N,V_stringIdentifier)
+  +supportsSecureCoding B16@0:8  imp=+0x238135b3c
+  -.cxx_destruct v16@0:8  imp=+0x238135e70
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x238135ccc
+  -description @16@0:8  imp=+0x238135bb4
+  -encodeWithCoder: v24@0:8@16  imp=+0x238135bb8
+  -hash Q16@0:8  imp=+0x238135e24
+  -initWithCoder: @24@0:8@16  imp=+0x238135c24
+  -initWithStringIdentifier: @24@0:8@16  imp=+0x238135b44
+  -isEqual: B24@0:8@16  imp=+0x238135d18
+  -setStringIdentifier: v24@0:8@16  imp=+0x238135e68
+  -stringIdentifier @16@0:8  imp=+0x238135e60
+@class SWHighlightMembershipEvent : NSObject <SWHighlightEvent> instanceSize=24
+  ivar +8 _highlightURL @"NSURL"
+  ivar +16 _membershipEventType q
+  property membershipEventType (Tq,R,N,V_membershipEventType)
+  property membershipEventTrigger (Tq,R,N)
+  property highlightURL (T@"NSURL",R,C,N,V_highlightURL)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +supportsSecureCoding B16@0:8  imp=+0x23812aca4
+  -.cxx_destruct v16@0:8  imp=+0x23812af10
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x23812ae94
+  -encodeWithCoder: v24@0:8@16  imp=+0x23812acac
+  -highlightURL @16@0:8  imp=+0x23812af00
+  -initWithCoder: @24@0:8@16  imp=+0x23812ad70
+  -initWithHighlight:trigger: @32@0:8@16q24  imp=+0x23812ac44
+  -initWithHighlightURL:type: @32@0:8@16q24  imp=+0x23812abc0
+  -membershipEventTrigger q16@0:8  imp=+0x23812aca0
+  -membershipEventType q16@0:8  imp=+0x23812af08
+@class SWHighlightMentionEvent : NSObject <SWHighlightEvent> instanceSize=32
+  ivar +8 _highlightURL @"NSURL"
+  ivar +16 _mentionedPersonHandle @"NSString"
+  ivar +24 _mentionedPersonIdentity @"_SWPersonIdentity"
+  property mentionedPersonIdentity (T@"_SWPersonIdentity",R,N,V_mentionedPersonIdentity)
+  property mentionedPersonHandle (T@"NSString",R,N,V_mentionedPersonHandle)
+  property highlightURL (T@"NSURL",R,C,N,V_highlightURL)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +supportsSecureCoding B16@0:8  imp=+0x23812a768
+  -.cxx_destruct v16@0:8  imp=+0x23812aac8
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x23812aa18
+  -encodeWithCoder: v24@0:8@16  imp=+0x23812a770
+  -highlightURL @16@0:8  imp=+0x23812aab0
+  -initWithCoder: @24@0:8@16  imp=+0x23812a884
+  -initWithHighlight:mentionedPersonCloudKitShareHandle: @32@0:8@16@24  imp=+0x23812a67c
+  -initWithHighlight:mentionedPersonIdentity: @32@0:8@16@24  imp=+0x23812a6f0
+  -initWithHighlightURL:mentionedPersonHandle:mentionedPersonIdentity: @40@0:8@16@24@32  imp=+0x23812a5a8
+  -mentionedPersonHandle @16@0:8  imp=+0x23812aab8
+  -mentionedPersonIdentity @16@0:8  imp=+0x23812aac0
+@class SWHighlightPersistenceEvent : NSObject <SWHighlightEvent> instanceSize=24
+  ivar +8 _highlightURL @"NSURL"
+  ivar +16 _persistenceEventType q
+  property persistenceEventType (Tq,R,N,V_persistenceEventType)
+  property persistenceEventTrigger (Tq,R,N)
+  property highlightURL (T@"NSURL",R,C,N,V_highlightURL)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +supportsSecureCoding B16@0:8  imp=+0x238137170
+  -.cxx_destruct v16@0:8  imp=+0x2381373dc
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x238137360
+  -encodeWithCoder: v24@0:8@16  imp=+0x238137178
+  -highlightURL @16@0:8  imp=+0x2381373cc
+  -initWithCoder: @24@0:8@16  imp=+0x23813723c
+  -initWithHighlight:trigger: @32@0:8@16q24  imp=+0x238137114
+  -initWithHighlight:type: @32@0:8@16q24  imp=+0x2381370b8
+  -initWithHighlightURL:type: @32@0:8@16q24  imp=+0x238137034
+  -persistenceEventTrigger q16@0:8  imp=+0x238137030
+  -persistenceEventType q16@0:8  imp=+0x2381373d4
+@class SWRemoveParticipantAlert : NSObject instanceSize=8
+  +alertWithParticipant:highlight:inWindow: v40@0:8@16@24@32  imp=+0x2381342ac
+  +showAlertWithParticipant:highlight:inWindow: v40@0:8@16@24@32  imp=+0x2381342b0
+@class SWShareableContent : NSObject <NSSecureCoding> instanceSize=72
+  ivar +8 _metadata @"LPLinkMetadata"
+  ivar +16 _highlightURL @"NSURL"
+  ivar +24 _initiatorHandle @"NSString"
+  ivar +32 _initiatorNameComponents @"NSPersonNameComponents"
+  ivar +40 _sourceSceneIdentifier @"NSString"
+  ivar +48 _sourceBundleIdentifier @"NSString"
+  ivar +56 _representations @"NSArray"
+  ivar +64 _representationProvider @"<SWShareableContentRepresentationProvider>"
+  property sourceSceneIdentifier (T@"NSString",R,C,N,V_sourceSceneIdentifier)
+  property sourceBundleIdentifier (T@"NSString",R,C,N,V_sourceBundleIdentifier)
+  property representations (T@"NSArray",R,C,N,V_representations)
+  property representationProvider (T@"<SWShareableContentRepresentationProvider>",&,N,V_representationProvider)
+  property metadata (T@"LPLinkMetadata",R,N,V_metadata)
+  property hasPossibleCollaborationRepresentation (TB,R,N)
+  property itemProvider (T@"NSItemProvider",R,N)
+  property itemProviders (T@"NSArray",R,C,N)
+  property highlightURL (T@"NSURL",R,N,V_highlightURL)
+  property initiatorHandle (T@"NSString",R,C,N,V_initiatorHandle)
+  property initiatorNameComponents (T@"NSPersonNameComponents",R,N,V_initiatorNameComponents)
+  +supportsSecureCoding B16@0:8  imp=+0x238138a70
+  -.cxx_destruct v16@0:8  imp=+0x238139168
+  -canLoadObjectOfClass: B24@0:8#16  imp=+0x2381381c8
+  -description @16@0:8  imp=+0x238137bdc
+  -encodeWithCoder: v24@0:8@16  imp=+0x238138e28
+  -hasPossibleCollaborationRepresentation B16@0:8  imp=+0x2381382d4
+  -hasRepresentationConformingToTypeIdentifier: B24@0:8@16  imp=+0x2381380a4
+  -highlightURL @16@0:8  imp=+0x238139124
+  -initWithCoder: @24@0:8@16  imp=+0x238138a78
+  -initWithSourceSceneIdentifier:sourceBundleIdentifier:metadata:representations:highlightURL:initiatorHandle:initiatorNameComponents: @72@0:8@16@24@32@40@48@56@64  imp=+0x238137a20
+  -initiatorHandle @16@0:8  imp=+0x23813912c
+  -initiatorNameComponents @16@0:8  imp=+0x238139134
+  -itemProvider @16@0:8  imp=+0x2381384a0
+  -itemProviders @16@0:8  imp=+0x2381384f0
+  -loadRepresentationForTypeIdentifier:itemProviderIndex:completionHandler: v40@0:8@16q24@?32  imp=+0x2381383d4
+  -metadata @16@0:8  imp=+0x23813911c
+  -registeredOpenInPlaceTypeIdentifiers @16@0:8  imp=+0x238137f18
+  -registeredTypeIdentifiers @16@0:8  imp=+0x238137da0
+  -representationProvider @16@0:8  imp=+0x238139154
+  -representations @16@0:8  imp=+0x23813914c
+  -setRepresentationProvider: v24@0:8@16  imp=+0x23813915c
+  -sourceApplicationIdentifier @16@0:8  imp=+0x238139118
+  -sourceBundleIdentifier @16@0:8  imp=+0x238139144
+  -sourceIdentifier @16@0:8  imp=+0x238139114
+  -sourceSceneIdentifier @16@0:8  imp=+0x23813913c
+@class SWShareableContentExtractor : NSObject <SWShareableContentRepresentationProvider, SLDServiceProxyDelegate> instanceSize=24
+  ivar +8 _serviceProxy @"SLDServiceProxy"
+  ivar +16 _pendingContentExtractionRequests @"NSMutableArray"
+  property serviceProxy (T@"SLDServiceProxy",&,N,V_serviceProxy)
+  property pendingContentExtractionRequests (T@"NSMutableArray",&,N,V_pendingContentExtractionRequests)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +_buildStartCollaborationURLForContentSceneIdentifier:shareOptions:recipients:faceTimeConversationUUID: @48@0:8@16@24@32@40  imp=+0x238133760
+  +contentExtractorQueue @16@0:8  imp=+0x238132158
+  -.cxx_destruct v16@0:8  imp=+0x238134268
+  -_addContentExtractionRequest: v24@0:8@?16  imp=+0x238133a68
+  -_processPendingContentExtractionRequests v16@0:8  imp=+0x238133c50
+  -init @16@0:8  imp=+0x238132208
+  -initiateBackgroundCollaborationForContent:faceTimeConversation: v32@0:8@16@24  imp=+0x2381331bc
+  -initiateBackgroundCollaborationForContent:recipients:faceTimeConversationUUID: v40@0:8@16@24@32  imp=+0x238133398
+  -initiateBackgroundCollaborationForContent:shareOptions:recipients:faceTimeConversationUUID: v48@0:8@16@24@32@40  imp=+0x2381333a8
+  -loadRepresentationForContent:typeIdentifier:itemProviderIndex:completionHandler: v48@0:8@16@24q32@?40  imp=+0x238133dfc
+  -pendingContentExtractionRequests @16@0:8  imp=+0x238134254
+  -presentMessageComposeSheetForContent:completion: v32@0:8@16@?24  imp=+0x238132ff8
+  -remoteService @16@0:8  imp=+0x2381340c8
+  -retrieveAsynchronousLPMetadataForBundleIdentifier:completion: v32@0:8@16@?24  imp=+0x2381326e8
+  -retrieveAsynchronousLPMetadataForBundleIdentifier:sceneIdentifier:completion: v40@0:8@16@24@?32  imp=+0x238132534
+  -retrieveAsynchronousLPMetadataForSceneIdentifier:completion: v32@0:8@16@?24  imp=+0x238132624
+  -retrieveAsynchronousLPMetadataMatchingBundleIdentifier:sceneIdentifier:completion: v40@0:8@16@24@?32  imp=+0x238132d2c
+  -retrieveAsynchronousLPMetadataWithCompletion: v24@0:8@?16  imp=+0x2381327ac
+  -retrieveShareableContentForBundleIdentifier:completion: v32@0:8@16@?24  imp=+0x238132518
+  -retrieveShareableContentForBundleIdentifier:sceneIdentifier:completion: v40@0:8@16@24@?32  imp=+0x2381322bc
+  -retrieveShareableContentForSceneIdentifier:completion: v32@0:8@16@?24  imp=+0x2381323ec
+  -retrieveShareableContentMatchingBundleIdentifier:sceneIdentifier:completion: v40@0:8@16@24@?32  imp=+0x23813284c
+  -retrieveShareableContentWithCompletion: v24@0:8@?16  imp=+0x238132524
+  -serviceProxy @16@0:8  imp=+0x238134028
+  -serviceProxyDidConnect: v24@0:8@16  imp=+0x238134118
+  -serviceProxyDidDisconnect: v24@0:8@16  imp=+0x2381341cc
+  -setPendingContentExtractionRequests: v24@0:8@16  imp=+0x23813425c
+  -setServiceProxy: v24@0:8@16  imp=+0x238134248
+@class SharedWithYou.CloudSharingServiceDelegate : NSObject <NSCloudSharingServiceDelegate> instanceSize=24
+  ivar +8 showingManagementController 
+  ivar +16 externalDelegate 
+  -.cxx_destruct v16@0:8  imp=+0x238156d54
+  -init @16@0:8  imp=+0x238156cc0
+  -optionsForSharingService:shareProvider: Q32@0:8@16@24  imp=+0x238156b08
+  -sharingService:didCompleteForItems:error: v40@0:8@16@24@32  imp=+0x238156a58
+  -sharingService:didSaveShare: v32@0:8@16@24  imp=+0x238156b98
+  -sharingService:didStopSharing: v32@0:8@16@24  imp=+0x238156c2c
+@class SharedWithYou.CommunicationControl : NSControl <NSMenuDelegate> instanceSize=648
+  ivar +0 sBehaviors 
+  ivar +600 communicationChannel 
+  ivar +608 itemProvider 
+  ivar +616 highlight 
+  ivar +624 contentView 
+  ivar +632 imageView 
+  ivar +640 disambiguationMenu 
+  property intrinsicContentSize (T{CGSize=dd},N,R)
+  property enabled (TB,N)
+  -.cxx_destruct v16@0:8  imp=+0x238153970
+  -attributionMenuItemTapped: v24@0:8@16  imp=+0x23815354c
+  -hitTest: @32@0:8{CGPoint=dd}16  imp=+0x238151d58
+  -initWithCoder: @24@0:8@16  imp=+0x238151cc4
+  -initWithFrame: @48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16  imp=+0x238153908
+  -intrinsicContentSize {CGSize=dd}16@0:8  imp=+0x238151724
+  -isEnabled B16@0:8  imp=+0x238151858
+  -layout v16@0:8  imp=+0x238151cf4
+  -menu:willHighlightItem: v32@0:8@16@24  imp=+0x23815388c
+  -mouseDown: v24@0:8@16  imp=+0x238151de0
+  -mouseUp: v24@0:8@16  imp=+0x238152c18
+  -setEnabled: v20@0:8B16  imp=+0x238151898
+@class SharedWithYou.CommunicationManager : NSObject <SLDServiceProxyDelegate> instanceSize=40
+  ivar +8 $__lazy_storage_$_facetimeServiceProxy 
+  ivar +16 attributionIdentifier 
+  ivar +32 videoEnabled 
+  -.cxx_destruct v16@0:8  imp=+0x23815e49c
+  -init @16@0:8  imp=+0x23815e400
+  -serviceProxyDidConnect: v24@0:8@16  imp=+0x23815e39c
+  -serviceProxyDidDisconnect: v24@0:8@16  imp=+0x23815e3fc
+@class SharedWithYou.SandboxExtendedURL : _TtCs12_SwiftObject instanceSize=40
+  ivar +16 url 
+  ivar +32 state 
+@class _SWCollaborationButtonView : SWCollaborationView instanceSize=624
+  -accessibilityRole @16@0:8  imp=+0x238139ef8
+  -isAccessibilityElement B16@0:8  imp=+0x238139ef0
+  -setDetailViewListContent: v24@0:8@16  imp=+0x238139eb8
+@class _SWCollaborationButtonViewImpl : NSView <NSPopoverDelegate> instanceSize=760
+  ivar +0 sBehaviors 
+  ivar +536 sharedWithYouCenter 
+  ivar +544 activeParticipantCount Q
+  ivar +552 hasPendingAccessRequests B
+  ivar +560 pendingAccessRequestsCount Q
+  ivar +568 headerTitle ?
+  ivar +584 headerSubtitle ?
+  ivar +600 headerImage @"NSImage"
+  ivar +608 _isContentShared 
+  ivar +616 highlightSubscriptionCancellable 
+  ivar +624 collaborationInfoCancellable 
+  ivar +632 attributionView 
+  ivar +640 centerXAnchorHiddenLabel 
+  ivar +648 attributionViewXAnchorVisibleLabel 
+  ivar +656 labelXAnchorHidden 
+  ivar +664 containerLeadingConstraint 
+  ivar +672 containerTrailingConstraint 
+  ivar +680 outerButton ?
+  ivar +688 delegate ?
+  ivar +696 containerView 
+  ivar +704 label 
+  ivar +712 button 
+  ivar +720 detailViewController 
+  ivar +728 isRTL 
+  ivar +736 numberFormatter 
+  ivar +744 popover 
+  ivar +752 popoverDidCloseNotificationObserver 
+  property itemProvider (T@"NSItemProvider",N,&)
+  property isContentShared (TB,N)
+  property tintColor (T@"NSColor",N,&)
+  property activeParticipantCount (TQ,N,VactiveParticipantCount)
+  property hasPendingAccessRequests (TB,N,VhasPendingAccessRequests)
+  property pendingAccessRequestsCount (TQ,N,VpendingAccessRequestsCount)
+  property headerTitle (T@"NSString",N,C)
+  property headerSubtitle (T@"NSString",N,C)
+  property headerImage (T@"NSImage",N,&,VheaderImage)
+  property outerButton (T@"SWCollaborationView",N,W,VouterButton)
+  property delegate (T@"<SWCollaborationViewDelegate>",N,W,Vdelegate)
+  property isEnabled (TB,N)
+  property controlSize (TQ,N)
+  -.cxx_destruct v16@0:8  imp=+0x23814ba4c
+  -activeParticipantCount Q16@0:8  imp=+0x2381489d4
+  -buttonTapped: v24@0:8@16  imp=+0x23814b664
+  -controlSize Q16@0:8  imp=+0x23814a5a8
+  -delegate @16@0:8  imp=+0x23814a20c
+  -dismissPopoverAnimated:completion: v28@0:8B16@?20  imp=+0x23814b8dc
+  -hasPendingAccessRequests B16@0:8  imp=+0x238149118
+  -headerImage @16@0:8  imp=+0x238149dd4
+  -headerSubtitle @16@0:8  imp=+0x238149998
+  -headerTitle @16@0:8  imp=+0x2381498b8
+  -initWithCoder: @24@0:8@16  imp=+0x23814b550
+  -initWithFrame: @48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16  imp=+0x23814b9e4
+  -initWithItemProvider: @24@0:8@16  imp=+0x23814d300
+  -isContentShared B16@0:8  imp=+0x23814c3c8
+  -isEnabled B16@0:8  imp=+0x23814a40c
+  -itemProvider @16@0:8  imp=+0x23814c260
+  -outerButton @16@0:8  imp=+0x23814a07c
+  -pendingAccessRequestsCount Q16@0:8  imp=+0x2381494e8
+  -popoverDidClose: v24@0:8@16  imp=+0x23814bda4
+  -popoverWillShow: v24@0:8@16  imp=+0x23814bca4
+  -setActiveParticipantCount: v24@0:8Q16  imp=+0x238148a64
+  -setControlSize: v24@0:8Q16  imp=+0x23814a5c8
+  -setDelegate: v24@0:8@16  imp=+0x23814a2c4
+  -setDetailViewListContent: v24@0:8@16  imp=+0x23814d9ec
+  -setHasPendingAccessRequests: v20@0:8B16  imp=+0x2381491a8
+  -setHeaderImage: v24@0:8@16  imp=+0x238149e74
+  -setHeaderSubtitle: v24@0:8@16  imp=+0x238149a7c
+  -setHeaderTitle: v24@0:8@16  imp=+0x2381498d0
+  -setIsContentShared: v20@0:8B16  imp=+0x23814c464
+  -setIsEnabled: v20@0:8B16  imp=+0x23814a440
+  -setItemProvider: v24@0:8@16  imp=+0x23814c2d4
+  -setManageButtonTitle: v24@0:8@16  imp=+0x23814d9a0
+  -setOuterButton: v24@0:8@16  imp=+0x23814a094
+  -setPendingAccessRequestsCount: v24@0:8Q16  imp=+0x238149578
+  -setShowManageButton: v20@0:8B16  imp=+0x23814d9c8
+  -setTintColor: v24@0:8@16  imp=+0x238148924
+  -tintColor @16@0:8  imp=+0x2381488e8
+  -updatePlaceHolderSymbolScale:weight:pointSize:name: v48@0:8q16d24d32@40  imp=+0x23814b79c
+  -viewDidChangeEffectiveAppearance v16@0:8  imp=+0x23814b628
+@class _SWCollaborationDetailViewController : NSViewController instanceSize=144
+  ivar +120 _typeErasedHostingController @"NSViewController"
+  ivar +128 _itemProvider @"NSItemProvider"
+  ivar +136 _typeErasedViewModel @"NSObject"
+  property viewModel (T@"SWCollaborationDetailViewModel",N,&)
+  property collaborationHighlight (T@"SWHighlight",N,&)
+  property typeErasedHostingController (T@"NSViewController",&,N,V_typeErasedHostingController)
+  property itemProvider (T@"NSItemProvider",&,N,V_itemProvider)
+  property typeErasedViewModel (T@"NSObject",&,N,V_typeErasedViewModel)
+  property typeErasedHostingController (T@"NSViewController",&,N)
+  property itemProvider (T@"NSItemProvider",&,N)
+  property typeErasedViewModel (T@"NSObject",&,N)
+  -.cxx_destruct v16@0:8  imp=+0x2381320f0
+  -cloudSharingServiceDelegate @16@0:8  imp=+0x238131f28
+  -collaborationHighlight @16@0:8  imp=+0x238161048
+  -initWithCoder: @24@0:8@16  imp=+0x238131dfc
+  -initWithHighlight: @24@0:8@16  imp=+0x238161b90
+  -initWithHighlight:listContent: @32@0:8@16@24  imp=+0x2381618f4
+  -initWithItemProvider: @24@0:8@16  imp=+0x23813205c
+  -initWithItemProvider_impl: @24@0:8@16  imp=+0x238160c0c
+  -itemProvider @16@0:8  imp=+0x238131e78
+  -loadView v16@0:8  imp=+0x238131dac
+  -setCloudSharingServiceDelegate: v24@0:8@16  imp=+0x238131ec8
+  -setCollaborationHighlight: v24@0:8@16  imp=+0x238161198
+  -setItemProvider: v24@0:8@16  imp=+0x238131e18
+  -setListContent: v24@0:8@16  imp=+0x23813209c
+  -setListContentView: v24@0:8@16  imp=+0x238160eec
+  -setManageButtonTitle: v24@0:8@16  imp=+0x238131f78
+  -setShowManageButton: v20@0:8B16  imp=+0x238132014
+  -setTypeErasedHostingController: v24@0:8@16  imp=+0x2381320b4
+  -setTypeErasedViewModel: v24@0:8@16  imp=+0x2381320dc
+  -setViewModel: v24@0:8@16  imp=+0x238160d00
+  -typeErasedHostingController @16@0:8  imp=+0x2381320a0
+  -typeErasedViewModel @16@0:8  imp=+0x2381320c8
+  -viewModel @16@0:8  imp=+0x238160c38
+@class _SWCollaborationToolbarItem : NSToolbarItem instanceSize=248
+  ivar +232 _contentShared B
+  ivar +240 _collaborationButtonView @"_SWCollaborationButtonView"
+  property collaborationHighlight (T@"SWHighlight",N,&)
+  property contentShared (TB,N,GisContentShared,V_contentShared)
+  property collaborationButtonView (T@"_SWCollaborationButtonView",&,N,V_collaborationButtonView)
+  property itemProvider (T@"NSItemProvider",&,N)
+  property activeParticipantCount (TQ,N)
+  property hasPendingAccessRequests (TB,N)
+  property pendingAccessRequestsCount (TQ,N)
+  property isContentShared (TB,N)
+  -.cxx_destruct v16@0:8  imp=+0x23812a594
+  -activeParticipantCount Q16@0:8  imp=+0x238129ec8
+  -collaborationButtonView @16@0:8  imp=+0x23812a56c
+  -collaborationHighlight @16@0:8  imp=+0x238147848
+  -dismissPopoverAnimated:completion: v28@0:8B16@?20  imp=+0x23812a378
+  -hasPendingAccessRequests B16@0:8  imp=+0x238129f84
+  -initWithCollaborationButtonView: @24@0:8@16  imp=+0x23812a210
+  -initWithHighlight: @24@0:8@16  imp=+0x238148604
+  -initWithHighlight:detailViewListContent: @32@0:8@16@24  imp=+0x238148430
+  -initWithItemProvider: @24@0:8@16  imp=+0x23812a304
+  -isContentShared B16@0:8  imp=+0x23812a154
+  -itemProvider @16@0:8  imp=+0x238129de0
+  -pendingAccessRequestsCount Q16@0:8  imp=+0x23812a040
+  -setActiveParticipantCount: v24@0:8Q16  imp=+0x238129f20
+  -setCollaborationButtonView: v24@0:8@16  imp=+0x23812a580
+  -setCollaborationHighlight: v24@0:8@16  imp=+0x238147954
+  -setContentShared: v20@0:8B16  imp=+0x23812a558
+  -setDetailViewListContent: v24@0:8@16  imp=+0x23812a3fc
+  -setHasPendingAccessRequests: v20@0:8B16  imp=+0x238129fdc
+  -setIsContentShared: v20@0:8B16  imp=+0x23812a1ac
+  -setItemProvider: v24@0:8@16  imp=+0x238129e4c
+  -setManageButtonTitle: v24@0:8@16  imp=+0x23812a478
+  -setPendingAccessRequestsCount: v24@0:8Q16  imp=+0x23812a098
+  -setShowManageButton: v20@0:8B16  imp=+0x23812a4f4
+@class _SWHighlightChangeEvent : SWHighlightChangeEvent <_SWHighlightEventProtocol> instanceSize=24
+  property highlightURL (T@"NSURL",R,C,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -initWithHighlight:type: @32@0:8@16q24  imp=+0x238131d34
+  -initWithHighlightURL:type: @32@0:8@16q24  imp=+0x238131cfc
+@class _SWHighlightEvent : NSObject <SWHighlightEventProtocol> instanceSize=24
+  ivar +8 _highlightURL @"NSURL"
+  ivar +16 _action q
+  property action (Tq,R,N,V_action)
+  property highlightURL (T@"NSURL",R,C,N,V_highlightURL)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +supportsSecureCoding B16@0:8  imp=+0x238134ed4
+  -.cxx_destruct v16@0:8  imp=+0x238135140
+  -action q16@0:8  imp=+0x238135138
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x2381350c4
+  -encodeWithCoder: v24@0:8@16  imp=+0x238134edc
+  -highlightURL @16@0:8  imp=+0x238135130
+  -initWithCoder: @24@0:8@16  imp=+0x238134fa0
+  -initWithHighlight:action: @32@0:8@16q24  imp=+0x238134e78
+  -initWithHighlightURL:action: @32@0:8@16q24  imp=+0x238134df4
+@class _SWHighlightEventAllowList : NSObject instanceSize=8
+  +_eventClassToTypeMap @16@0:8  imp=+0x2381375f0
+  +allowedClasses @16@0:8  imp=+0x2381377d4
+  +eventClassForType: #24@0:8q16  imp=+0x238137850
+  +eventTypeForClass: q24@0:8#16  imp=+0x23813799c
+@class _SWHighlightMembershipEvent : SWHighlightMembershipEvent instanceSize=24
+  -initWithHighlight:type: @32@0:8@16q24  imp=+0x23812af1c
+@class _SWHighlightMentionEvent : SWHighlightMentionEvent <_SWHighlightEventProtocol> instanceSize=32
+  property highlightURL (T@"NSURL",R,C,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -initWithHighlight:mentionedPerson: @32@0:8@16@24  imp=+0x23812ab18
+@class _SWHighlightPersistenceEvent : SWHighlightPersistenceEvent <_SWHighlightEventProtocol> instanceSize=24
+  property highlightURL (T@"NSURL",R,C,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -initWithHighlight:type: @32@0:8@16q24  imp=+0x2381373e8
+@class _TtC13SharedWithYouP33_7AD6272FC1509AED9C7A89EA05FE81C235ConversationAttributionMenuItemView : NSView instanceSize=560
+  ivar +0 sBehaviors 
+  ivar +536 conversationAttributionView 
+  ivar +544 highlightEffectView 
+  ivar +552 attribution 
+  -.cxx_destruct v16@0:8  imp=+0x2381516a4
+  -drawRect: v48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16  imp=+0x23815155c
+  -initWithCoder: @24@0:8@16  imp=+0x2381514e8
+  -initWithFrame: @48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16  imp=+0x2381514c4
+  -mouseUp: v24@0:8@16  imp=+0x2381515f0
+@class _TtCV13SharedWithYou19CommunicationButton13ContainerView : NSView instanceSize=552
+  ivar +0 sBehaviors 
+  ivar +536 control 
+  ivar +544 label 
+  -.cxx_destruct v16@0:8  imp=+0x2381507d0
+  -initWithCoder: @24@0:8@16  imp=+0x23815072c
+  -initWithFrame: @48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16  imp=+0x238150788
+@protocol CWEventDelegate
+  optional -clientConnectionInterrupted v16@0:8
+  optional -ssidDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -powerStateDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -modeDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -linkDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -linkQualityDidChangeForWiFiInterfaceWithName:rssi:transmitRate: v40@0:8@16q24d32
+  optional -bssidDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -clientConnectionInvalidated v16@0:8
+  optional -countryCodeDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -scanCacheUpdatedForWiFiInterfaceWithName: v24@0:8@16
+@protocol CWFAssetMgmtProtocol
+  required -processQueryResults:withError: v32@0:8@16@24
+  required -invalidate v16@0:8
+  required -setEventHandler: v24@0:8@?16
+  required -eventHandler @?16@0:8
+  required -activate v16@0:8
+@protocol CWFAssetPowerTableElectorDelegate
+  required -powerTableReadiness:voter:vote: B36@0:8@16q24B32
+  required -performVersionFetch: B24@0:8@16
+  required -powerTableVote:voter:vote: B36@0:8@16q24B32
+@protocol CWFAssetRootMonitorDelegate
+  required -rootMonitorDetectedAdd:deleted:updated: v40@0:8@16@24@32
+@protocol CWFDeviceDiscoveryManagerDelegate
+  required -didDiscoverDevice: v24@0:8@16
+  required -didLoseDevice: v24@0:8@16
+  optional -didFetchWifiInfoForDevice: v24@0:8@16
+@protocol CWFJSONEncodable
+  required -JSONCompatibleKeyValueMap @16@0:8
+@protocol CWFXPCConnectionDelegate
+  required -XPCConnection:canceledXPCRequestsWithUUID: v32@0:8@16@24
+  required -XPCConnection:completedXPCRequest: v32@0:8@16@24
+  required -XPCConnection:receivedXPCRequest: v32@0:8@16@24
+  required -XPCConnection:updatedProcessState: v32@0:8@16@24
+  required -XPCConnection:updatedRegisteredEventIDs: v32@0:8@16@24
+@protocol CWFXPCEventProtocolPrivate
+  required -receivedAcknowledgedXPCEvent:reply: v32@0:8@16@?24
+@protocol CWFXPCEventProtocolPublic
+  required -receivedXPCEvent: v24@0:8@16
+@protocol CWFXPCEventProtocolWiFiNetworkSharingApp
+@protocol CWFXPCEventProtocolWiFiNetworkSharingExtension
+  required -receivedXPCEvent: v24@0:8@16
+  required -performWiFiNetworkSharingAccessoryScanWithReply: v24@0:8@?16
+@protocol CWFXPCEventProtocolWiFiNetworkSharingUIService
+  required -receivedXPCEvent: v24@0:8@16
+@protocol CWFXPCEventProtocolWiFiUserAgent
+  required -forgetCloudNetworkProfile:reply: v32@0:8@16@?24
+  required -queryCloudNetworksAndReply: v24@0:8@?16
+  required -dumpLogs:reply: v32@0:8@16@?24
+  required -rememberCloudNetworkProfile:reply: v32@0:8@16@?24
+  required -setCaptivePortalCredentials:knownNetworkProfile:reply: v40@0:8@16@24@?32
+  required -cancelWiFiNetworkSharingAskToShareUserNotificationForClientID: v24@0:8@16
+  required -allowBrokenBackhaulPersonalHotspotFallbackForNetwork:reply: v32@0:8@16@?24
+  required -presentWiFiNetworkSharingAskToShareUserNotificationForClientID:network:accessoryName:reply: v48@0:8@16@24@32@?40
+  required -cancelWiFiNetworkSharingAuthorizationProxCardForClientID: v24@0:8@16
+  required -queryNearbyRecommendedNetworksAndReply: v24@0:8@?16
+  required -queryCaptivePortalCredentialsForKnownNetworkProfile:reply: v32@0:8@16@?24
+  required -nearbyConfirmBrokenBackhaulUsingTimeout:count:network:minimumCacheTimestamp:reply: v56@0:8Q16Q24@32Q40@?48
+  required -presentWiFiNetworkSharingAuthorizationProxCardForClientID:accessoryName:reply: v40@0:8@16@24@?32
+  required -cancelWiFiNetworkSharingAskToShareProxCardForClientID: v24@0:8@16
+  required -presentWiFiNetworkSharingAskToShareProxCardForClientID:accessoryName:reply: v40@0:8@16@24@?32
+@protocol CWFXPCListenerDelegate
+  required -XPCListener:XPCConnection:completedXPCRequest: v40@0:8@16@24@32
+  required -XPCListener:XPCConnection:updatedRegisteredEventIDs: v40@0:8@16@24@32
+  required -XPCListener:XPCConnection:canceledXPCRequestsWithUUID: v40@0:8@16@24@32
+  required -XPCListener:invalidatedXPCConnection: v32@0:8@16@24
+  required -XPCListener:XPCConnection:updatedProcessState: v40@0:8@16@24@32
+  required -XPCListener:addedXPCConnection: v32@0:8@16@24
+  required -XPCListener:XPCConnection:receivedXPCRequest: v40@0:8@16@24@32
+@protocol CWFXPCRequestProtocolCoreWLAN
+  required -queryMCSIndexWithRequestParams:reply: v32@0:8@16@?24
+  required -queryRSSIWithRequestParams:reply: v32@0:8@16@?24
+  required -setPower:requestParams:reply: v36@0:8B16@20@?28
+  required -queryWoWEnabledWithRequestParams:reply: v32@0:8@16@?24
+  required -querySupportedChannelsWithCountryCode:requestParams:reply: v40@0:8@16@24@?32
+  required -queryCountryCodeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryCurrentScanResultWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPHYModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryHardwareMACAddressWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowersaveWithRequestParams:reply: v32@0:8@16@?24
+  required -querySupportedPHYModesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLOpModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLSidecarDiagnosticsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInterfaceCapabilitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryHardwareSupportedChannelsWithRequestParams:reply: v32@0:8@16@?24
+  required -disassociateWithReason:requestParams:reply: v40@0:8q16@24@?32
+  required -cancelRequestsWithUUID:reply: v32@0:8@16@?24
+  required -queryTxRateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryMACAddressWithRequestParams:reply: v32@0:8@16@?24
+  required -queryParentInterfaceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -setCarPlayInternet:requestParams:reply: v36@0:8B16@20@?28
+  required -associateWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -queryInterfaceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -startMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -queryNumberOfSpatialStreamsWithRequestParams:reply: v32@0:8@16@?24
+  required -querySSIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryChannelWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIsNetworkServiceEnabledWithRequestParams:reply: v32@0:8@16@?24
+  required -queryVirtualInterfaceRoleWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAuthTypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryOpModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBSSIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowerStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIsQuickProbeRequiredForNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -querySecurityWithRequestParams:reply: v32@0:8@16@?24
+  required -queryTxNSSWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLPeerTrafficRegistrationWithRequestParams:reply: v32@0:8@16@?24
+  required -reportQuickProbeResult:networkProfile:requestParams:reply: v44@0:8B16@20@28@?36
+  required -updateKnownNetworkProfile:properties:OSSpecificKeys:requestParams:reply: v56@0:8@16@24@32@40@?48
+  required -queryPowerDebugInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -queryMaxLinkSpeedWithRequestParams:reply: v32@0:8@16@?24
+  required -updateSoftAPBand:requestParams:reply: v36@0:8I16@20@?28
+  required -queryNoiseWithRequestParams:reply: v32@0:8@16@?24
+  required -queryVirtualInterfaceNamesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowerTableInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -stopMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -queryTxPowerWithRequestParams:reply: v32@0:8@16@?24
+  required -performScanWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -setChannel:requestParams:reply: v40@0:8@16@24@?32
+  required -stopMonitoringAllEventsWithRequestParams:reply: v32@0:8@16@?24
+  required -removeKnownNetworkProfile:reason:requestParams:reply: v48@0:8@16q24@32@?40
+  required -queryPowerWithRequestParams:reply: v32@0:8@16@?24
+  required -queryMaxNSSForAPWithRequestParams:reply: v32@0:8@16@?24
+  required -addKnownNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryWEPSubtypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryWAPISubtypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInterfaceNamesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryKnownNetworkProfilesWithProperties:requestParams:reply: v40@0:8@16@24@?32
+  required -queryStateWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolInternal
+  required -resetWiFiNetworkSharingForBundleID:accessoryID:requestParams:reply: v48@0:8@16@24@32@?40
+  required -querySystemEventIDsWithRequestParams:reply: v32@0:8@16@?24
+  required -querySystemActivitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -dumpLogs:requestParams:reply: v40@0:8@16@24@?32
+  required -getCloudNetworksWithRequestParams:reply: v32@0:8@16@?24
+  required -confirmBrokenBackhaulUsingTimeout:count:requestParams:reply: v48@0:8Q16Q24@32@?40
+  required -queryDeviceUUIDWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolMobileWiFi
+  required -queryCurrentScanResultWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolPrivate
+  required -setRangingIdentifier:requestParams:reply: v40@0:8@16@24@?32
+  required -requestWiFiNetworkSharingAuthorizationWithRequestParams:reply: v32@0:8@16@?24
+  required -setUserAutoJoinState:requestParams:reply: v36@0:8B16@20@?28
+  required -performAutoJoinWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -performRangingWithPeerList:timeout:requestParams:reply: v48@0:8@16Q24@32@?40
+  required -setBlockedBands:requestParams:reply: v40@0:8@16@24@?32
+  required -setPower:requestParams:reply: v36@0:8B16@20@?28
+  required -performNearbyDeviceDiscovery:requestParams:reply: v40@0:8@16@24@?32
+  required -updateKnownBSS:knownNetworkProfile:properties:OSSpecificKeys:requestParams:reply: v64@0:8@16@24@32@40@48@?56
+  required -setSensingEnabled:requestParams:reply: v36@0:8B16@20@?28
+  required -resetInternetSharingStatsWithRequestParams:reply: v32@0:8@16@?24
+  required -setPrivateMACAddressUserJoinFailureUIState:networkProfile:requestParams:reply: v44@0:8B16@20@28@?36
+  required -setBackgroundScanConfiguration:requestParams:reply: v40@0:8@16@24@?32
+  required -setPrivateMACAddressModeSystemSetting:requestParams:reply: v40@0:8q16@24@?32
+  required -addKnownBSS:knownNetworkProfile:requestParams:reply: v48@0:8@16@24@32@?40
+  required -askToShareWiFiNetworkSharingNetworkFromAppWithRequestParams:reply: v32@0:8@16@?24
+  required -setLQMConfiguration:requestParams:reply: v40@0:8@16@24@?32
+  required -acknowledgeWiFiNetworkSharingConnectedAPUpdate:requestParams:reply: v40@0:8@16@24@?32
+  required -startAWDLPeerAssistedDiscoveryWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -setWiFiNetworkSharingAskToShareStatus:networkID:requestParams:reply: v48@0:8q16@24@32@?40
+  required -stopHostAPModeWithRequestParams:reply: v32@0:8@16@?24
+  required -setInternetSharingPassword:requestParams:reply: v40@0:8@16@24@?32
+  required -disassociateWithReason:requestParams:reply: v40@0:8q16@24@?32
+  required -resetAutoJoinStatisticsWithRequestParams:reply: v32@0:8@16@?24
+  required -setCompanionCountryCode:requestParams:reply: v40@0:8@16@24@?32
+  required -setThermalIndex:requestParams:reply: v40@0:8q16@24@?32
+  required -setCarPlayInternet:requestParams:reply: v36@0:8B16@20@?28
+  required -setUCMExtProfile:requestParams:error: v40@0:8@16@24@?32
+  required -associateWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -provideDTCStats:requestParams:reply: v40@0:8@16@24@?32
+  required -setRangeable:peerList:requestParams:reply: v44@0:8B16@20@28@?36
+  required -setInternetSharingDiscoveryState:immediateDisable:requestParams:reply: v40@0:8B16B20@24@?32
+  required -endAllActivitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -startHostAPModeWithConfiguration:requestParams:reply: v40@0:8@16@24@?32
+  required -askToShareWiFiNetworkSharingNetworkFromAppexWithRequestParams:reply: v32@0:8@16@?24
+  required -performANQPWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -setFamilyHotspotPreferences:requestParams:reply: v40@0:8@16@24@?32
+  required -acknowledgeWiFiNetworkSharingNetworkListUpdate:requestParams:reply: v40@0:8@16@24@?32
+  required -setShareMyPersonalHotspotMode:requestParams:reply: v40@0:8q16@24@?32
+  required -startUIScanWithRequestParams:reply: v32@0:8@16@?24
+  required -setAutoHotspotMode:requestParams:reply: v40@0:8q16@24@?32
+  required -setBTCoexActiveProfileName:requestParams:error: v40@0:8@16@24@?32
+  required -performUIBeaconCacheQuery:reply: v32@0:8@16@?24
+  required -stopAWDLPeerAssistedDiscoveryWithRequestParams:reply: v32@0:8@16@?24
+  required -setInternetSharingDiscoveryStateExt:request:requestParams:reply: v44@0:8B16@20@28@?36
+  required -setPrivateMACAddressMode:networkProfile:requestParams:reply: v48@0:8q16@24@32@?40
+  required -reportQuickProbeResult:networkProfile:requestParams:reply: v44@0:8B16@20@28@?36
+  required -updateKnownNetworkProfile:properties:OSSpecificKeys:requestParams:reply: v56@0:8@16@24@32@40@?48
+  required -setUserSettings:properties:requestParams:reply: v48@0:8@16@24@32@?40
+  required -setInternetSharingNetworkName:requestParams:reply: v40@0:8@16@24@?32
+  required -clearAutoJoinDenyListForNetwork:reason:requestParams:reply: v48@0:8@16Q24@32@?40
+  required -updateSoftAPBand:requestParams:reply: v36@0:8I16@20@?28
+  required -setPassword:knownNetworkProfile:requestParams:reply: v48@0:8@16@24@32@?40
+  required -performScanWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -stopUIScanWithRequestParams:reply: v32@0:8@16@?24
+  required -setChannel:requestParams:reply: v40@0:8@16@24@?32
+  required -removeKnownNetworkProfile:reason:requestParams:reply: v48@0:8@16q24@32@?40
+  required -setAutoJoinDenyListForNetwork:reason:requestParams:reply: v48@0:8@16Q24@32@?40
+  required -beginActivity:requestParams:reply: v40@0:8@16@24@?32
+  required -setCaptivePortalCredentials:knownNetworkProfile:requestParams:reply: v48@0:8@16@24@32@?40
+  required -addKnownNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -configureSensing:requestParams:reply: v40@0:8@16@24@?32
+  required -removeKnownBSS:knownNetworkProfile:requestParams:reply: v48@0:8@16@24@32@?40
+  required -endActivityWithUUID:requestParams:reply: v40@0:8@16@24@?32
+  required -setInternetSharingState:requestParams:reply: v36@0:8B16@20@?28
+  required -setMISDiscoveryState:immediateDisable:requestParams:reply: v40@0:8B16B20@24@?32
+  required -setMISDiscoveryStateExt:request:requestParams:reply: v44@0:8B16@20@28@?36
+  required -setMISPassword:requestParams:reply: v40@0:8@16@24@?32
+  required -setMISState:requestParams:reply: v36@0:8B16@20@?28
+@protocol CWFXPCRequestProtocolPrivateReadonly
+  required -queryMCSIndexWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAutoJoinStatisticsWithRequestParams:reply: v32@0:8@16@?24
+  required -wifiNetworkSharingAskToShareStatusForNetworkID:requestParams:reply: v40@0:8@16@24@?32
+  required -queryNANRadioScheduleWithRequestParams:reply: v32@0:8@16@?24
+  required -queryRSSIWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkServiceIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLElectionMetricWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAutoJoinDenyListWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalDNSServerAddressesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryCountryBandSupport:reply: v32@0:8@16@?24
+  required -queryInternetSharingDiscoveryStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryLQMConfigurationWithRequestParams:reply: v32@0:8@16@?24
+  required -queryWoWEnabledWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLStatisticsWithRequestParams:reply: v32@0:8@16@?24
+  required -querySupportedChannelsWithCountryCode:requestParams:reply: v40@0:8@16@24@?32
+  required -queryCountryCodeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAutoJoinStatusWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv4RouterWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLGuardTimeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryChannelsInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAutoJoinUserActionMetricWithRequestParams:reply: v32@0:8@16@?24
+  required -queryFamilyHotspotPreferencesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkManagedByMDM:requestParams:reply: v40@0:8@16@24@?32
+  required -queryAWDLStrategyWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLAvailabilityWindowAPAlignmentWithRequestParams:reply: v32@0:8@16@?24
+  required -queryCurrentScanResultWithRequestParams:reply: v32@0:8@16@?24
+  required -queryUserSettingsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPHYModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBluetoothCoexConfigWithRequestParams:reply: v32@0:8@16@?24
+  required -queryHardwareMACAddressWithRequestParams:reply: v32@0:8@16@?24
+  required -queryTxChainPowerWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowersaveWithRequestParams:reply: v32@0:8@16@?24
+  required -querySupportedPHYModesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDHCPLeaseExpirationTimeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBrokenBackhaulStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLOpModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLSidecarDiagnosticsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInterfaceCapabilitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLSecondaryMasterChannelWithRequestParams:reply: v32@0:8@16@?24
+  required -querySSIDForVendorWithRequestParams:reply: v32@0:8@16@?24
+  required -queryLeakyAPStatsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLElectionRSSIThresholdsWithRequestParams:reply: v32@0:8@16@?24
+  required -wifiNetworkSharingAuthorizationLevelWithRequestParams:reply: v32@0:8@16@?24
+  required -queryCCAWithRequestParams:reply: v32@0:8@16@?24
+  required -queryHardwareSupportedChannelsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv6RouterWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLAFTxModeWithRequestParams:reply: v32@0:8@16@?24
+  required -cancelRequestsWithUUID:reply: v32@0:8@16@?24
+  required -queryDeviceSupervisedWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv6AddressesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryTxRateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv4AddressesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLPresenceModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryMACAddressWithRequestParams:reply: v32@0:8@16@?24
+  required -queryHotspotClientDataUsageWithRequestParams:reply: v32@0:8@16@?24
+  required -queryLinkDownStatusWithRequestParams:reply: v32@0:8@16@?24
+  required -queryParentInterfaceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryRangingCapabilitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInterfaceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv4InterfaceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLElectionParametersWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkReachabilityWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBluetoothCoexProfiles2GHzWithRequestParams:reply: v32@0:8@16@?24
+  required -startMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -queryAWDLSyncStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv4ARPResolvedIPAddressWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNumberOfSpatialStreamsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv4AddressesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryWiFiUIStateFlagsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv6NetworkServiceIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryWiFiAssistOverrideReasonsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIO80211InterfaceInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -querySSIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBluetoothCoexModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryHostAPStationListWithRequestParams:reply: v32@0:8@16@?24
+  required -queryChannelWithRequestParams:reply: v32@0:8@16@?24
+  required -queryJoinStatusWithRequestParams:reply: v32@0:8@16@?24
+  required -queryLinkQualityMetricWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIsNetworkServiceEnabledWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPrivateMACAddressModeForNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryIPv4NetworkSignatureWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLEncryptionTypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryVirtualInterfaceRoleWithRequestParams:reply: v32@0:8@16@?24
+  required -getNearbyRecommendedNetworksWithRequestParams:reply: v32@0:8@16@?24
+  required -queryKnownNetworkInfoForLocalNetworkPromptWithOptions:requestParams:reply: v40@0:8@16@24@?32
+  required -queryNetworkOfInterestWorkStateForKnownNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryAutoHotspotModeWithRequestParams:reply: v32@0:8@16@?24
+  required -wifiNetworkSharingConnectedAPListWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPasswordForKnownNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryAuthTypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv6RouterWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLExtensionStateMachineParamsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryOpModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryEAP8021XControlModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBSSIDWithRequestParams:reply: v32@0:8@16@?24
+  required -getRecommendedKnownNetworksWithRequestParams:reply: v32@0:8@16@?24
+  required -queryChainAckWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowerStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIsQuickProbeRequiredForNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryInternetSharingNetworkNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv6InterfaceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkServiceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -querySecurityWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDNSServerAddressesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDHCPServerIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryTxNSSWithRequestParams:reply: v32@0:8@16@?24
+  required -queryRoamStatusWithRequestParams:reply: v32@0:8@16@?24
+  required -queryEAP8021XSupplicantStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryShareMyPersonalHotspotModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLPeerTrafficRegistrationWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkOfInterestHomeStateForKnownNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryIPv6NetworkSignatureWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowerDebugInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBluetoothCoexProfiles5GHzWithRequestParams:reply: v32@0:8@16@?24
+  required -queryMaxLinkSpeedWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv4NetworkServiceIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryKnownNetworksWithNetworkSignature:requestParams:reply: v40@0:8@16@24@?32
+  required -queryAWDLSocialTimeSlotsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkWarningFlagsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNoiseWithRequestParams:reply: v32@0:8@16@?24
+  required -queryEAP8021XClientStatusWithRequestParams:reply: v32@0:8@16@?24
+  required -queryVirtualInterfaceNamesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowerTableInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -queryTetheringSupportedWithRequestParams:reply: v32@0:8@16@?24
+  required -queryKnownNetworksInSameLanAs:requestParams:reply: v40@0:8@16@24@?32
+  required -stopMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -queryPrivateMACAddressModeSystemSettingWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLElectionIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryRxRateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIO80211ControllerInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv4NetworkServiceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBlockedBandsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPersonalHotspotModificationDisabledWithRequestParams:reply: v32@0:8@16@?24
+  required -queryTxPowerWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLPreferredChannelsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDHCPv6ServerIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLSyncEnabledWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLSyncParametersWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv4SubnetMasksWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBeaconCacheWithRequestParams:reply: v32@0:8@16@?24
+  required -stopMonitoringAllEventsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryCaptivePortalCredentialsForKnownNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryDesenseLevelWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLSyncChannelSequenceWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowerWithRequestParams:reply: v32@0:8@16@?24
+  required -queryCurrentKnownNetworkProfileWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBrokenBackhaulStateTimestampWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInternetSharingPasswordWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDHCPLeaseStartTimeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInternetSharingStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryMaxNSSForAPWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLBTLEStateParamsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDTIMIntervalWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAutoJoinMetricWithType:requestParams:reply: v40@0:8Q16@24@?32
+  required -queryKnownNetworkProfileMatchingScanResult:requestParams:reply: v40@0:8@16@24@?32
+  required -queryKnownNetworkProfileMatchingNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryWEPSubtypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLPeerDatabaseWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLContinuousElectionAlgorithmEnabledWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBackgroundScanConfigurationWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv4RouterWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv6NetworkServiceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryEAP8021XControlStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv4ARPResolvedHardwareAddressWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBackgroundScanCacheWithRequestParams:reply: v32@0:8@16@?24
+  required -queryLQMSummaryWithRequestParams:reply: v32@0:8@16@?24
+  required -queryWAPISubtypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInterfaceNamesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGuardIntervalWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInternetSharingStatsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkSignatureForNetwork:isBSSID:requestParams:reply: v44@0:8@16B24@28@?36
+  required -queryKnownNetworkProfilesWithProperties:requestParams:reply: v40@0:8@16@24@?32
+  required -wifiNetworkSharingAskToShareNetworkListWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv6AddressesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryActivitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryLinkQualityAssessmentWithRequestParams:reply: v32@0:8@16@?24
+  required -queryUserAutoJoinStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDesenseWithRequestParams:reply: v32@0:8@16@?24
+  required -queryEventIDsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLMasterChannelWithRequestParams:reply: v32@0:8@16@?24
+  required -queryThermalIndexWithRequestParams:reply: v32@0:8@16@?24
+  required -queryStateWithRequestParams:reply: v32@0:8@16@?24
+  required -wifiNetworkSharingNetworkListWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPrivateMACAddressForNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryBSSIDForVendorWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolPublicWiFi
+  required -querySSIDForVendorWithRequestParams:reply: v32@0:8@16@?24
+  required -startMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -querySSIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBSSIDWithRequestParams:reply: v32@0:8@16@?24
+  required -stopMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -stopMonitoringAllEventsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBSSIDForVendorWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolUnrestricted
+  required -queryInterfaceCapabilitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryOpModeWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolWiFiNetworkSharingApp
+  required -requestWiFiNetworkSharingAuthorizationWithRequestParams:reply: v32@0:8@16@?24
+  required -askToShareWiFiNetworkSharingNetworkFromAppWithRequestParams:reply: v32@0:8@16@?24
+  required -checkinWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolWiFiNetworkSharingExtension
+  required -acknowledgeWiFiNetworkSharingConnectedAPUpdate:requestParams:reply: v40@0:8@16@24@?32
+  required -startMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -askToShareWiFiNetworkSharingNetworkFromAppexWithRequestParams:reply: v32@0:8@16@?24
+  required -acknowledgeWiFiNetworkSharingNetworkListUpdate:requestParams:reply: v40@0:8@16@24@?32
+  required -checkinWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolWiFiNetworkSharingUI
+  required -setWiFiNetworkSharingAskToShareStatus:networkID:requestParams:reply: v48@0:8q16@24@32@?40
+  required -startMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -wifiNetworkSharingAskToShareNetworkListWithRequestParams:reply: v32@0:8@16@?24
+  required -checkinWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolWiFiUserAgent
+  required -sendXPCEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -checkinWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProxyDelegate
+  required -XPCRequestProxy:XPCConnection:canceledXPCRequestsWithUUID: v40@0:8@16@24@32
+  required -XPCRequestProxy:getAdaptiveInterfaceRankDurationAndReply: v32@0:8@16@?24
+  required -XPCRequestProxy:sendXPCEvent:reply: v40@0:8@16@24@?32
+  required -XPCRequestProxy:XPCConnection:receivedXPCRequest: v40@0:8@16@24@32
+  required -XPCRequestProxy:invalidatedXPCConnection: v32@0:8@16@24
+@protocol CWInternalEventDelegate
+  optional -joinDidStartForWiFiInterfaceWithName:ssid: v32@0:8@16@24
+  optional -internal_queryCloudKVSAndReply: v24@0:8@?16
+  optional -internal_startUserMode8021XWithProfile:interfaceWithName:reply: v40@0:8@16@24@?32
+  optional -internal_showAvailableWiFiNetworks:interfaceName:recommendOnly: v36@0:8@16@24B32
+  optional -autoJoinDidCompleteForWiFiInterfaceWithName: v24@0:8@16
+  optional -autoJoinDidStartForWiFiInterfaceWithName: v24@0:8@16
+  optional -autoJoinDidUpdate: v24@0:8@16
+  optional -btCoexModeStats: v24@0:8@16
+  optional -deviceAvailabilityChangedForWiFiInterfaceWithName:isAvailable: v28@0:8@16B24
+  optional -dextCrashDetected v16@0:8
+  optional -interfaceAddedWithName: v24@0:8@16
+  optional -interfaceRemovedWithName: v24@0:8@16
+  optional -internal_addCloudProfile: v24@0:8@16
+  optional -internal_confirmAPIAccessWithRequestType:info:processName:reply: v48@0:8q16@24@32@?40
+  optional -internal_enableTetherDevice:reply: v32@0:8@16@?24
+  optional -internal_foundTetherDevices: v24@0:8@16
+  optional -internal_getWiFiPasswordForUserKeychainWithSSID:reply: v32@0:8@16@?24
+  optional -internal_joinWiFiNetworkWithUserAgent:interfaceName:timestamp:reply: v48@0:8@16@24d32@?40
+  optional -internal_queryLegacyCloudKVSAndReply: v24@0:8@?16
+  optional -internal_removeCloudProfile: v24@0:8@16
+  optional -internal_setWiFiPasswordForUserKeychain:ssid:reply: v40@0:8@16@24@?32
+  optional -internal_showAutoHotspotNotificationForTetherDevice:retry:interfaceName: v36@0:8@16B24@28
+  optional -internal_showDHCPMessage:networkName: v32@0:8@16@24
+  optional -internal_showLowBatteryNotificationForTetherDevice:interfaceName: v32@0:8@16@24
+  optional -internal_showMICErrorWithNetworkName: v24@0:8@16
+  optional -internal_showPHNetworkExpensiveAlertWithNetworkName: v24@0:8@16
+  optional -internal_startBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  optional -internal_startUserMode8021XWithAuthenticationInfo:interfaceWithName:reply: v40@0:8@16@24@?32
+  optional -internal_startUserMode8021XWithPasspointDomainName:interfaceWithName:reply: v40@0:8@16@24@?32
+  optional -internal_startUserMode8021XWithSSID:username:password:identity:disableUserInteraction:remember:interfaceWithName:reply: v72@0:8@16@24@32@40B48B52@56@?64
+  optional -internal_stopBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  optional -internal_updateCloudProfile: v24@0:8@16
+  optional -joinDidCompleteForWiFiInterfaceWithName:isAutoJoin:error: v36@0:8@16B24@28
+  optional -preferencesDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -rangingEndedForWiFiInterfaceWithName: v24@0:8@16
+  optional -rangingReportEventForWiFiInterfaceWithName:data:error: v40@0:8@16@24@32
+  optional -rangingStartedForWiFiInterfaceWithName: v24@0:8@16
+  optional -realTimeModeDidEndForWiFiInterfaceWithName: v24@0:8@16
+  optional -realTimeModeDidStartForWiFiInterfaceWithName: v24@0:8@16
+  optional -rsnHandshakeDidCompleteForWiFiInterfaceWithName: v24@0:8@16
+  optional -virtualInterfaceStateChangedForWiFiInterfaceWithName: v24@0:8@16
+  optional -willShowJoinUIForWiFiNetwork:interfaceName: v32@0:8@16@24
+  optional -wowStateDidChangeForWiFiInterfaceWithName: v24@0:8@16
+@protocol CWWiFiShareKitXPCRequestProtocol
+  required -cancelPendingRequestWithToken:reply: v32@0:8q16@?24
+  required -corewifiEndpointWithReply: v24@0:8@?16
+  required -disassociateForInterfaceName:token:priority:authorization:reply: v56@0:8@16q24q32@40@?48
+  required -setWiFiPowerState:interfaceName:authorization:reply: v44@0:8B16@20@28@?36
+@protocol CWWiFiUIProxyEvent
+  required -showErrorUIWithScanResult:uuid: v32@0:8@16@24
+  required -didCompleteDiagnostics: v24@0:8@16
+  required -didFindScanResults: v24@0:8@16
+  required -didReceiveSharedPassword:uuid: v32@0:8@16@24
+  required -didUpdateUIState:previous: v32@0:8Q16Q24
+  required -dismissUIWithUUID: v24@0:8@16
+  required -showInfoUIWithTitle:description:uuid: v40@0:8@16@24@32
+  required -showJoinUIWithScanResult:previousError:previousPassword:supportsWiFiPasswordSharing:remember:uuid: v56@0:8@16@24@32B40B44@48
+  required -showLimitedNetworkOptionUIForScanResult:candidates:uuid: v40@0:8@16@24@32
+  required -showLockdownModeUIWithScanResult:uuid: v32@0:8@16@24
+  required -showSecurityMismatchUIWithScanResult:uuid: v32@0:8@16@24
+  required -showWPSUIWithScanResult:pin:uuid: v40@0:8@16@24@32
+  required -updatedWiFiConfiguration: v24@0:8@16
+@protocol CWWiFiUIProxyRequest
+  required -queryCachedScanResultsAndReply: v24@0:8@?16
+  required -addCloudWiFiProfile:authorization:reply: v40@0:8@16@24@?32
+  required -createDiagnosticsReportWithAuthorization:reply: v32@0:8@16@?24
+  required -createIBSSNetworkWithConfiguration:authorization:reply: v40@0:8@16@24@?32
+  required -deleteUserWiFiKeychainPasswordWithSSID:reply: v32@0:8@16@?24
+  required -displayWiFiRecommendationItem:reply: v32@0:8@16@?24
+  required -displayWiFiRecommendationUIAndReply: v24@0:8@?16
+  required -joinScanResult:configuration:authorization:reply: v48@0:8@16@24@32@?40
+  required -queryDiagnosticsAndReply: v24@0:8@?16
+  required -queryIsWiFiCloudSyncEngineRunningWithReply: v24@0:8@?16
+  required -queryUserWiFiKeychainPasswordWithSSID:reply: v32@0:8@16@?24
+  required -queryWiFiDebugLoggingEnabledAndReply: v24@0:8@?16
+  required -queryWiFiUIStateAndReply: v24@0:8@?16
+  required -removeCloudWiFiProfileWithSSID:authorization:reply: v40@0:8@16@24@?32
+  required -setUserWiFiKeychainPasswordWithSSID:password:reply: v40@0:8@16@24@?32
+  required -setWiFiDebugLoggingEnabled:authorization:reply: v36@0:8B16@20@?28
+  required -startMonitoringEventsAndReply: v24@0:8@?16
+  required -startScanningAndReply: v24@0:8@?16
+  required -stopMonitoringEventsAndReply: v24@0:8@?16
+  required -stopScanningAndReply: v24@0:8@?16
+  required -synchronizeCloudWiFiProfilesAndReply: v24@0:8@?16
+  required -updateCloudWiFiProfile:authorization:reply: v40@0:8@16@24@?32
+  required -userDidConfirmJoin:uuid:reply: v36@0:8B16@20@?28
+  required -userDidDismissJoinUIWithUUID:reply: v32@0:8@16@?24
+  required -userDidJoinWithConfiguration:uuid:reply: v40@0:8@16@24@?32
+@protocol CWWiFiUserAgentXPCEventProtocol
+  required -internal_queryCloudKVSAndReply: v24@0:8@?16
+  required -internal_startUserMode8021XWithProfile:interfaceWithName:reply: v40@0:8@16@24@?32
+  required -internal_showAvailableWiFiNetworks:interfaceName:recommendOnly: v36@0:8@16@24B32
+  required -internal_addCloudProfile: v24@0:8@16
+  required -internal_confirmAPIAccessWithRequestType:info:processName:reply: v48@0:8q16@24@32@?40
+  required -internal_enableTetherDevice:reply: v32@0:8@16@?24
+  required -internal_getWiFiPasswordForUserKeychainWithSSID:reply: v32@0:8@16@?24
+  required -internal_joinWiFiNetworkWithUserAgent:interfaceName:timestamp:reply: v48@0:8@16@24d32@?40
+  required -internal_queryLegacyCloudKVSAndReply: v24@0:8@?16
+  required -internal_removeCloudProfile: v24@0:8@16
+  required -internal_setWiFiPasswordForUserKeychain:ssid:reply: v40@0:8@16@24@?32
+  required -internal_showAutoHotspotNotificationForTetherDevice:retry:interfaceName: v36@0:8@16B24@28
+  required -internal_showDHCPMessage:networkName: v32@0:8@16@24
+  required -internal_showLowBatteryNotificationForTetherDevice:interfaceName: v32@0:8@16@24
+  required -internal_showMICErrorWithNetworkName: v24@0:8@16
+  required -internal_showPHNetworkExpensiveAlertWithNetworkName: v24@0:8@16
+  required -internal_startBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  required -internal_startUserMode8021XWithAuthenticationInfo:interfaceWithName:reply: v40@0:8@16@24@?32
+  required -internal_startUserMode8021XWithPasspointDomainName:interfaceWithName:reply: v40@0:8@16@24@?32
+  required -internal_startUserMode8021XWithSSID:username:password:identity:disableUserInteraction:remember:interfaceWithName:reply: v72@0:8@16@24@32@40B48B52@56@?64
+  required -internal_stopBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  required -internal_updateCloudProfile: v24@0:8@16
+@protocol CWWiFiUserAgentXPCRequestProtocol
+  required -internal_foundTetherDevices: v24@0:8@16
+  required -internal_receivedAutoHotspotNotificationResponse:updateMode:tetherDevice:authorization:interfaceName:reply: v60@0:8B16q20@28@36@44@?52
+  required -internal_userAgentWillShowJoinUIForWiFiNetwork:interfaceName:timestamp:reply: v48@0:8@16@24d32@?40
+@protocol CWWiFiXPCEventProtocol
+  required -ssidDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -joinDidStartForWiFiInterfaceWithName:ssid: v32@0:8@16@24
+  required -powerStateDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -modeDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -linkDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -linkQualityDidChangeForWiFiInterfaceWithName:rssi:transmitRate: v40@0:8@16q24d32
+  required -asymmetricInterferenceDetected:channelGroup: v24@0:8C16c20
+  required -autoJoinDidCompleteForWiFiInterfaceWithName: v24@0:8@16
+  required -autoJoinDidStartForWiFiInterfaceWithName: v24@0:8@16
+  required -autoJoinDidUpdate: v24@0:8@16
+  required -bssidDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -btCoexModeStats: v24@0:8@16
+  required -countryCodeDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -deviceAvailabilityChangedForWiFiInterfaceWithName:isAvailable: v28@0:8@16B24
+  required -dextCrashDetected v16@0:8
+  required -foundTetherDevices: v24@0:8@16
+  required -interfaceAddedWithName: v24@0:8@16
+  required -interfaceRemovedWithName: v24@0:8@16
+  required -joinDidCompleteForWiFiInterfaceWithName:isAutoJoin:error: v36@0:8@16B24@28
+  required -preferencesDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -rangingEndedForWiFiInterfaceWithName: v24@0:8@16
+  required -rangingReportEventForWiFiInterfaceWithName:data:error: v40@0:8@16@24@32
+  required -rangingStartedForWiFiInterfaceWithName: v24@0:8@16
+  required -realTimeModeDidEndForWiFiInterfaceWithName: v24@0:8@16
+  required -realTimeModeDidStartForWiFiInterfaceWithName: v24@0:8@16
+  required -rsnHandshakeDidCompleteForWiFiInterfaceWithName: v24@0:8@16
+  required -scanCacheUpdatedForWiFiInterfaceWithName: v24@0:8@16
+  required -sdbOpModeDidChange:channelGroup: v24@0:8C16c20
+  required -softErrorWiFiTCPKATimeoutMitigationDetected:enabled: v28@0:8@16B24
+  required -virtualInterfaceStateChangedForWiFiInterfaceWithName: v24@0:8@16
+  required -weightedWiFiAvgLQM: v24@0:8@16
+  required -willShowJoinUIForWiFiNetwork:interfaceName:reply: v40@0:8@16@24@?32
+  required -wowStateDidChangeForWiFiInterfaceWithName: v24@0:8@16
+@protocol CWWiFiXPCRequestProtocol
+  required -clearANQPCacheForNetwork:reply: v32@0:8@16@?24
+  required -submitAWDMetric:metricID:reply: v40@0:8@16@24@?32
+  required -acquireBluetoothPagingLockAndReply: v24@0:8@?16
+  required -acquireBluetoothPagingLockWithInterfaceName:reply: v32@0:8@16@?24
+  required -acquirePriorityLockWithType:priority:maximumAge:token:reply: v56@0:8q16q24d32q40@?48
+  required -acquireRequestLockWithType:interfaceName:priority:maximumAge:reply: v56@0:8q16@24q32d40@?48
+  required -addWiFiProfile:event:addToBottom:authorization:reply: v52@0:8@16Q24B32@36@?44
+  required -associateTo8021XWiFiNetwork:remember:interfaceName:token:priority:authorization:reply: v68@0:8@16B24@28q36q44@52@?60
+  required -associateToLoginWindowMode8021XWiFiNetwork:interfaceName:token:priority:authorization:reply: v64@0:8@16@24q32q40@48@?56
+  required -associateToPasspointWiFiNetwork:domainName:interfaceName:token:priority:authorization:reply: v72@0:8@16@24@32q40q48@56@?64
+  required -associateToSystemMode8021XWiFiNetwork:interfaceName:token:priority:authorization:reply: v64@0:8@16@24q32q40@48@?56
+  required -associateToUserMode8021XWiFiNetwork:username:password:identity:disableUserInteraction:remember:possiblyHidden:interfaceName:token:priority:authorization:reply: v100@0:8@16@24@32@40B48B52B56@60q68q76@84@?92
+  required -associateToWPSNetwork:pin:remember:interfaceName:token:priority:authorization:reply: v76@0:8@16@24B32@36q44q52@60@?68
+  required -associateToWiFiNetwork:password:remember:possiblyHidden:interfaceName:token:priority:authorization:reply: v80@0:8@16@24B32B36@40q48q56@64@?72
+  required -associateToWiFiNetworkUsingSystemKeychain:interfaceName:token:priority:authorization:reply: v64@0:8@16@24q32q40@48@?56
+  required -cancelPendingRequestWithToken:reply: v32@0:8q16@?24
+  required -clearScanCacheWithInterfaceName:reply: v32@0:8@16@?24
+  required -commitConfiguration:interfaceName:authorization:reply: v48@0:8@16@24@32@?40
+  required -confirmAPIAccessWithRequestType:info:reply: v40@0:8q16@24@?32
+  required -connectToTetherDevice:remember:interfaceName:token:authorization:reply: v60@0:8@16B24@28q36@44@?52
+  required -corewifiEndpointWithReply: v24@0:8@?16
+  required -currentTetherDeviceWithInterfaceName:reply: v32@0:8@16@?24
+  required -disassociateForInterfaceName:token:priority:authorization:reply: v56@0:8@16q24q32@40@?48
+  required -dumpWiFiTemporaryLogAndReply: v24@0:8@?16
+  required -forgetWiFiProfileWithID:event:reply: v40@0:8@16Q24@?32
+  required -get2GChainDisableForInterfaceName:reply: v32@0:8@16@?24
+  required -joinWiFiNetwork:interfaceName:reply: v40@0:8@16@24@?32
+  required -performScanWithChannels:ssidList:legacyScanSSID:includeHiddenNetworks:mergeScanResults:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:interfaceName:waitForWiFi:waitForBluetooth:token:priority:reply: v120@0:8@16@24@32B40B44d48q56q64q72@80B88B92q96q104@?112
+  required -performScanWithChannels:ssidList:legacyScanSSID:includeHiddenNetworks:mergeScanResults:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:interfaceName:waitForWiFi:waitForBluetooth:trimmedScanResultProperties:token:priority:lowPriority:lowLatency:scanType:reply: v144@0:8@16@24@32B40B44d48q56q64q72@80B88B92@96q104q112B120B124q128@?136
+  required -performScanWithChannels:ssidList:legacyScanSSID:includeHiddenNetworks:mergeScanResults:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:interfaceName:waitForWiFi:waitForBluetooth:trimmedScanResultProperties:token:priority:reply: v128@0:8@16@24@32B40B44d48q56q64q72@80B88B92@96q104q112@?120
+  required -queryANQPCacheWithElements:network:maxAge:reply: v48@0:8Q16@24d32@?40
+  required -queryANQPElements:network:maxAge:interfaceName:waitForWiFi:waitForBluetooth:token:priority:reply: v80@0:8Q16@24d32@40B48B52q56q64@?72
+  required -queryAllWiFiProfilesAndReply: v24@0:8@?16
+  required -queryAutoHotspotModeAndReply: v24@0:8@?16
+  required -queryAutoJoinHistoryWithInterfaceName:reply: v32@0:8@16@?24
+  required -queryAutoJoinTemporarilyDisabledAndReply: v24@0:8@?16
+  required -queryBSSIDForInterfaceWithName:reply: v32@0:8@16@?24
+  required -queryConfigurationWithInterfaceName:reply: v32@0:8@16@?24
+  required -queryCountryCodeForInterfaceWithName:reply: v32@0:8@16@?24
+  required -queryHostAPModeConfigurationWithInterfaceName:reply: v32@0:8@16@?24
+  required -queryJoinHistoryWithInterfaceName:reply: v32@0:8@16@?24
+  required -queryRoamHistoryWithInterfaceName:reply: v32@0:8@16@?24
+  required -queryScanCacheWithChannels:ssidList:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:interfaceName:reply: v80@0:8@16@24d32q40q48q56@64@?72
+  required -queryScanCacheWithChannels:ssidList:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:trimmedScanResultProperties:interfaceName:reply: v88@0:8@16@24d32q40q48q56@64@72@?80
+  required -queryThermalIndexAndReply: v24@0:8@?16
+  required -relinquishBluetoothPagingLockAndReply: v24@0:8@?16
+  required -relinquishBluetoothPagingLockWithInterfaceName:reply: v32@0:8@16@?24
+  required -relinquishPriorityLockWithToken:reply: v32@0:8q16@?24
+  required -relinquishRequestLockWithType:interfaceName:reply: v40@0:8q16@24@?32
+  required -rememberWiFiProfile:event:reply: v40@0:8@16Q24@?32
+  required -removeWiFiProfileWithID:event:authorization:reply: v48@0:8@16Q24@32@?40
+  required -restoreJoinConfigurationWithInterfaceName:uuid:reply: v40@0:8@16@24@?32
+  required -saveJoinConfigurationWithInterfaceName:reply: v32@0:8@16@?24
+  required -set2GChainDisable:reassocRequired:forIntefaceName:reply: v40@0:8B16B20@24@?32
+  required -setAutoHotspotMode:reply: v32@0:8q16@?24
+  required -setAutoJoinEnabled:reply: v28@0:8B16@?20
+  required -setAutoJoinTemporarilyDisabled:untilDate:reply: v36@0:8B16@20@?28
+  required -setBluetoothCoexProperty:forKey:interfaceName:reply: v48@0:8@16@24@32@?40
+  required -setBluetoothConnectionReport:forIntefaceName:reply: v40@0:8@16@24@?32
+  required -setCachedLocaleTimeout:timeout:reply: v40@0:8@16d24@?32
+  required -setHostAPModeConfiguration:password:interfaceName:authorization:reply: v56@0:8@16@24@32@40@?48
+  required -setPairwiseMasterKey:interfaceName:token:priority:reply: v56@0:8@16@24q32q40@?48
+  required -setPeerTrafficRegistrationWithConfiguration:interfaceName:reply: v40@0:8@16@24@?32
+  required -setRangeableWithInterfaceName:rangeable:peers:token:priority:reply: v60@0:8@16B24@28q36q44@?52
+  required -setThermalIndex:reply: v32@0:8q16@?24
+  required -setUCMActiveProfileIndices:forIntefaceName:reply: v40@0:8@16@24@?32
+  required -setUCMProfile:atIndex:forInterfaceName:reply: v48@0:8@16@24@32@?40
+  required -setULOFDMAStateForBluetoothCoexistence:forIntefaceName:reply: v36@0:8B16@20@?28
+  required -setWEPKey:flags:index:interfaceName:token:priority:reply: v72@0:8@16Q24q32@40q48q56@?64
+  required -setWiFiChannel:interfaceName:reply: v40@0:8@16@24@?32
+  required -setWiFiEAPKeychainItemforSSID:identity:reply: v40@0:8@16@24@?32
+  required -setWiFiEAPKeychainItemforSSID:username:password:reply: v48@0:8@16@24@32@?40
+  required -setWiFiHostAPModeKeychainItemforInterfaceName:password:reply: v40@0:8@16@24@?32
+  required -setWiFiKeychainItemforSSID:password:reply: v40@0:8@16@24@?32
+  required -setWiFiPowerState:interfaceName:authorization:reply: v44@0:8B16@20@28@?36
+  required -setWoWEnabled:reply: v28@0:8B16@?20
+  required -startAWDLWithInterfaceName:request:token:priority:reply: v56@0:8@16@24q32q40@?48
+  required -startAutoJoinForInterfaceName:reply: v32@0:8@16@?24
+  required -startBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  required -startHostAPModeUsingConfigurationWithInterfaceName:token:priority:reply: v48@0:8@16q24q32@?40
+  required -startHostAPModeWithNetworkName:securityType:channel:password:interfaceName:token:priority:reply: v80@0:8@16Q24@32@40@48q56q64@?72
+  required -startIBSSModeWithSSID:securityType:channel:password:interfaceName:token:priority:authorization:reply: v88@0:8@16Q24@32@40@48q56q64@72@?80
+  required -startMonitoringEventWithType:reply: v32@0:8q16@?24
+  required -startRangingWithInterfaceName:peers:timeout:token:priority:reply: v64@0:8@16@24d32q40q48@?56
+  required -stateInfoWithInterfaceName:reply: v32@0:8@16@?24
+  required -stopAWDLWithInterfaceName:token:priority:reply: v48@0:8@16q24q32@?40
+  required -stopBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  required -stopHostAPModeWithInterfaceName:token:priority:reply: v48@0:8@16q24q32@?40
+  required -stopIBSSModeForInterfaceName:token:priority:authorization:reply: v56@0:8@16q24q32@40@?48
+  required -stopMonitoringAllEventsAndReply: v24@0:8@?16
+  required -stopMonitoringEventWithType:reply: v32@0:8q16@?24
+  required -ucmActiveProfileIndicesForIntefaceName:reply: v32@0:8@16@?24
+  required -ucmProfileAtIndex:forInterfaceName:reply: v40@0:8@16@24@?32
+  required -updateWiFiProfile:authorization:reply: v40@0:8@16@24@?32

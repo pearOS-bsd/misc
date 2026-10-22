@@ -1,0 +1,134 @@
+@class DeprecationWarningClient : NSObject instanceSize=24
+  ivar +8 machService 
+  -.cxx_destruct v16@0:8  imp=+0x257ac24fc
+  -init @16@0:8  imp=+0x257ac1dfc
+  -shouldShowRosettaDeprecationWarning B16@0:8  imp=+0x257ac248c
+@class ECODeprecationWarningClient : NSObject instanceSize=24
+  ivar +8 machService 
+  -.cxx_destruct v16@0:8  imp=+0x257ac3390
+  -init @16@0:8  imp=+0x257ac2cb8
+  -shouldShowRosettaDeprecationWarning B16@0:8  imp=+0x257ac3320
+@class ECOProcessReporterClient : NSObject instanceSize=32
+  ivar +8 session 
+  ivar +16 machService 
+  -.cxx_destruct v16@0:8  imp=+0x257acdb78
+  -getProcessItems @16@0:8  imp=+0x257acdad4
+  -init @16@0:8  imp=+0x257acd4cc
+@class ECORosettaPreferenceNotificationClient : NSObject instanceSize=24
+  ivar +8 machService 
+  -.cxx_destruct v16@0:8  imp=+0x257ac7a58
+  -init @16@0:8  imp=+0x257ac72c0
+  -notifyRosettaPreferenceDetected:bundleID: B32@0:8@16@24  imp=+0x257ac797c
+@class ECOUnsupportedApplication : NSObject instanceSize=128
+  ivar +8 bundleDisplayableName ?
+  ivar +24 bundlePath ?
+  ivar +40 bundleID ?
+  ivar +56 bundleDeveloper ?
+  ivar +72 hasAdditionalComponents B
+  ivar +80 lastOpenedDate 
+  ivar +96 websiteURL 
+  ivar +112 isCurrentUserApp B
+  ivar +120 additionalBundlePaths ?
+  property bundleDisplayableName (T@"NSString",N,R)
+  property bundlePath (T@"NSString",N,R)
+  property bundleID (T@"NSString",N,R)
+  property bundleDeveloper (T@"NSString",N,R)
+  property hasAdditionalComponents (TB,N,R,VhasAdditionalComponents)
+  property lastOpenedDate (T@"NSDate",N,R)
+  property websiteURL (T@"NSURL",N,R)
+  property isCurrentUserApp (TB,N,R,VisCurrentUserApp)
+  property additionalBundlePaths (T@"NSArray",N,R)
+  -.cxx_destruct v16@0:8  imp=+0x257ac46f4
+  -additionalBundlePaths @16@0:8  imp=+0x257ac3928
+  -bundleDeveloper @16@0:8  imp=+0x257ac34fc
+  -bundleDisplayableName @16@0:8  imp=+0x257ac33c8
+  -bundleID @16@0:8  imp=+0x257ac34b4
+  -bundlePath @16@0:8  imp=+0x257ac3410
+  -hasAdditionalComponents B16@0:8  imp=+0x257ac35b0
+  -init @16@0:8  imp=+0x257ac46c0
+  -initWithBundleDisplayableName:bundlePath:bundleID:bundleDeveloper:hasAdditionalComponents:lastOpenedDate:websiteURL:isCurrentUserApp: @72@0:8@16@24@32@40B48@52@60B68  imp=+0x257ac4418
+  -initWithBundleDisplayableName:bundlePath:bundleID:bundleDeveloper:hasAdditionalComponents:lastOpenedDate:websiteURL:isCurrentUserApp:additionalBundlePaths: @80@0:8@16@24@32@40B48@52@60B68@72  imp=+0x257ac3cdc
+  -isCurrentUserApp B16@0:8  imp=+0x257ac3908
+  -lastOpenedDate @16@0:8  imp=+0x257ac35d0
+  -websiteURL @16@0:8  imp=+0x257ac373c
+@class ECOUnsupportedApplicationListClient : NSObject instanceSize=24
+  ivar +8 machService 
+  -.cxx_destruct v16@0:8  imp=+0x257ac6070
+  -getApplications @16@0:8  imp=+0x257ac533c
+  -getApplicationsWithContext @16@0:8  imp=+0x257ac5f48
+  -init @16@0:8  imp=+0x257ac4820
+  -isSupportedRosettaUsageForBundleID: B24@0:8@16  imp=+0x257ac5fb0
+  -isSupportedRosettaUsageForPath: B24@0:8@16  imp=+0x257ac5f94
+@class ECOUnsupportedApplicationListResult : NSObject instanceSize=24
+  ivar +8 applications ?
+  ivar +16 isAdmin B
+  property applications (T@"NSArray",N,R)
+  property isAdmin (TB,N,R,VisAdmin)
+  -.cxx_destruct v16@0:8  imp=+0x257ac5474
+  -applications @16@0:8  imp=+0x257ac53b0
+  -init @16@0:8  imp=+0x257ac5444
+  -isAdmin B16@0:8  imp=+0x257ac5424
+@class Ecosystem.UncachedBundle : _TtCs12_SwiftObject instanceSize=40
+  ivar +16 cfBundle 
+  ivar +24 bundlePath 
+@class EcosystemNotificationPreferences : NSObject instanceSize=8
+  +clearNotifications v16@0:8  imp=+0x257acc27c
+  +getNotifyOnRosettaUsagePreference B16@0:8  imp=+0x257acbb9c
+  +setNotifyOnRosettaUsagePreference: v20@0:8B16  imp=+0x257acbc8c
+  -init @16@0:8  imp=+0x257acc2e4
+@class ProcessReporterClient : NSObject instanceSize=32
+  ivar +8 session 
+  ivar +16 machService 
+  -.cxx_destruct v16@0:8  imp=+0x257acd244
+  -getProcessItems @16@0:8  imp=+0x257acd22c
+  -init @16@0:8  imp=+0x257acc33c
+@class UnsupportedApplication : NSObject instanceSize=128
+  ivar +8 bundleDisplayableName ?
+  ivar +24 bundlePath ?
+  ivar +40 bundleID ?
+  ivar +56 bundleDeveloper ?
+  ivar +72 hasAdditionalComponents B
+  ivar +80 lastOpenedDate 
+  ivar +96 websiteURL 
+  ivar +112 isCurrentUserApp B
+  ivar +120 additionalBundlePaths ?
+  property bundleDisplayableName (T@"NSString",N,R)
+  property bundlePath (T@"NSString",N,R)
+  property bundleID (T@"NSString",N,R)
+  property bundleDeveloper (T@"NSString",N,R)
+  property hasAdditionalComponents (TB,N,R,VhasAdditionalComponents)
+  property lastOpenedDate (T@"NSDate",N,R)
+  property websiteURL (T@"NSURL",N,R)
+  property isCurrentUserApp (TB,N,R,VisCurrentUserApp)
+  property additionalBundlePaths (T@"NSArray",N,R)
+  -.cxx_destruct v16@0:8  imp=+0x257ac8c94
+  -additionalBundlePaths @16@0:8  imp=+0x257ac7ec8
+  -bundleDeveloper @16@0:8  imp=+0x257ac7b68
+  -bundleDisplayableName @16@0:8  imp=+0x257ac7a90
+  -bundleID @16@0:8  imp=+0x257ac7b20
+  -bundlePath @16@0:8  imp=+0x257ac7ad8
+  -hasAdditionalComponents B16@0:8  imp=+0x257ac7bb0
+  -init @16@0:8  imp=+0x257ac8c60
+  -initWithBundleDisplayableName:bundlePath:bundleID:bundleDeveloper:hasAdditionalComponents:lastOpenedDate:websiteURL:isCurrentUserApp: @72@0:8@16@24@32@40B48@52@60B68  imp=+0x257ac89b8
+  -initWithBundleDisplayableName:bundlePath:bundleID:bundleDeveloper:hasAdditionalComponents:lastOpenedDate:websiteURL:isCurrentUserApp:additionalBundlePaths: @80@0:8@16@24@32@40B48@52@60B68@72  imp=+0x257ac827c
+  -isCurrentUserApp B16@0:8  imp=+0x257ac7ea8
+  -lastOpenedDate @16@0:8  imp=+0x257ac7bd0
+  -websiteURL @16@0:8  imp=+0x257ac7d3c
+@class UnsupportedApplicationListClient : NSObject instanceSize=24
+  ivar +8 machService 
+  -.cxx_destruct v16@0:8  imp=+0x257acaa68
+  -getApplicationList @16@0:8  imp=+0x257aca9e4
+  -getApplications @16@0:8  imp=+0x257ac98ac
+  -getApplicationsWithContext @16@0:8  imp=+0x257aca4c8
+  -init @16@0:8  imp=+0x257ac8dc0
+  -isSupportedRosettaUsageForBundleID: B24@0:8@16  imp=+0x257aca530
+  -isSupportedRosettaUsageForPath: B24@0:8@16  imp=+0x257aca514
+@class UnsupportedApplicationListResult : NSObject instanceSize=24
+  ivar +8 applications ?
+  ivar +16 isAdmin B
+  property applications (T@"NSArray",N,R)
+  property isAdmin (TB,N,R,VisAdmin)
+  -.cxx_destruct v16@0:8  imp=+0x257ac99e4
+  -applications @16@0:8  imp=+0x257ac9920
+  -init @16@0:8  imp=+0x257ac99b4
+  -isAdmin B16@0:8  imp=+0x257ac9994

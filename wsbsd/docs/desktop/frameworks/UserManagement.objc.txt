@@ -1,0 +1,792 @@
+@class UMAbort : NSObject instanceSize=8
+@class UMError : NSObject instanceSize=8
+@class UMGenerationCache : NSObject instanceSize=64
+  ivar +8 _lock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +12 _notifyToken i
+  ivar +16 _name @"NSString"
+  ivar +24 _notification @"NSString"
+  ivar +32 _log @"NSObject<OS_os_log>"
+  ivar +40 _se @"NSObject<UMSideEffectsProviding>"
+  ivar +48 _fetcher @?
+  ivar +56 _cachedValue Q
+  -.cxx_destruct v16@0:8  imp=+0x1a1de0978
+@class UMLibInfoProvider : NSObject <UMLibInfoProviding> instanceSize=8
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -passwdForUID:error: @28@0:8I16^@20  imp=+0x1a1de9cc0
+@class UMLibNotifyProvider : NSObject <UMLibNotifyProviding> instanceSize=8
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -notificationHasPostedForToken:error: B28@0:8i16^@20  imp=+0x1a1de8778
+  -post: B24@0:8@16  imp=+0x1a1de8158
+  -registerCheck: i24@0:8@16  imp=+0x1a1de8554
+  -registerPlain: i24@0:8@16  imp=+0x1a1de8330
+  -setState:forToken: B28@0:8Q16i24  imp=+0x1a1de89c8
+  -stateForToken:error: Q28@0:8i16^@20  imp=+0x1a1de8bb4
+@class UMLog : NSObject instanceSize=16
+  ivar +8 _type Q
+@class UMLogMessage : NSObject instanceSize=24
+  ivar +8 _publicStrings @"NSMutableArray"
+  ivar +16 _privateStrings @"NSMutableArray"
+  -.cxx_destruct v16@0:8  imp=+0x1a1de9a40
+  -init @16@0:8  imp=+0x1a1de9838
+@class UMMobileKeyBag : NSObject instanceSize=8
+  +allSyncBubbleUsers @16@0:8  imp=+0x1a1de4594
+  +clearSyncBubblesWithOutError: B24@0:8^@16  imp=+0x1a1de4634
+  +currentSyncBubbleUser @16@0:8  imp=+0x1a1de4460
+  +initialize v16@0:8  imp=+0x1a1de0188
+  +lastLoggedInUser @16@0:8  imp=+0x1a1de2814
+  +queuedSyncBubbleUsers @16@0:8  imp=+0x1a1de4468
+  +startSyncBubbleForUser:outError: B32@0:8@16^@24  imp=+0x1a1de45a4
+  +stopSyncBubbleForUser:outError: B32@0:8@16^@24  imp=+0x1a1de4604
+  +syncBubbleMachServiceNamesForUser: @24@0:8@16  imp=+0x1a1de459c
+@class UMMutableUser : UMUser instanceSize=232
+  property uid (TI,D,N)
+  property gid (TI,D,N)
+  property alternateDSID (T@"NSString",C,D,N)
+  property homeDirectoryURL (T@"NSURL",C,D,N)
+  property username (T@"NSString",C,D,N)
+  property givenName (T@"NSString",C,D,N)
+  property familyName (T@"NSString",C,D,N)
+  property displayName (T@"NSString",C,D,N)
+  property photoURL (T@"NSURL",C,D,N)
+  property userAuxiliaryString (T@"NSString",C,D,N)
+  property creationDate (T@"NSDate",C,D,N)
+  property lastLoginDate (T@"NSDate",C,D,N)
+  property lastRemoteAuthDate (T@"NSDate",C,D,N)
+  property passcodeType (TQ,D,N)
+  property isLoginUser (TB,D,N)
+  property isAuditor (TB,D,N)
+  property isDisabled (TB,D,N)
+  property isTransientUser (TB,D,N)
+  property isPrimaryUser (TB,D,N)
+  property isAdminUser (TB,D,N)
+  property passcodeLockGracePeriod (TQ,D,N)
+  property languages (T@"NSArray",C,D,N)
+  property hasManagedCredentials (TB,D,N)
+  property dataQuota (TQ,D,N)
+  property dataUsed (TQ,D,N)
+  property hasDataToSync (TB,D,N)
+  property errorCausingLogout (T@"NSError",&,D,N)
+  -commitChanges B16@0:8  imp=+0x1a1df64e4
+  -commitChangesWithError: B24@0:8^@16  imp=+0x1a1df651c
+@class UMPasswd : NSObject instanceSize=16
+  ivar +8 _pw_gid I
+@class UMPersonaCallbackListener : NSObject <NSXPCListenerDelegate, UMXPCClient> instanceSize=40
+  ivar +8 _machServiceName @"NSString"
+  ivar +16 _xpcConnections @"NSMutableSet"
+  ivar +24 _xpcListener @"NSXPCListener"
+  ivar +32 _personaUpdateCallbackHandler @?
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a1df3b4c
+  -bubbleDidPop v16@0:8  imp=+0x1a1df3244
+  -deviceLoginSessionStateDidUpdate v16@0:8  imp=+0x1a1df306c
+  -init @16@0:8  imp=+0x1a1df2bc8
+  -listener:shouldAcceptNewConnection: B32@0:8@16@24  imp=+0x1a1df354c
+  -personaListDidUpdateCompletionHandler: v24@0:8@?16  imp=+0x1a1df32ec
+  -personaUpdateCallbackForMachServiceCompletionHandler: v24@0:8@?16  imp=+0x1a1df341c
+  -readyToSwitchToLoginSession:completionHandler: v32@0:8@16@?24  imp=+0x1a1df2e94
+  -readyToSwitchToUser:completionHandler: v32@0:8@16@?24  imp=+0x1a1df2d64
+  -uploadContentWithCompletionHandler: v24@0:8@?16  imp=+0x1a1df3114
+  -userSwitchTaskListDidUpdate v16@0:8  imp=+0x1a1df2fc4
+  -willSwitchToUser:completionHandler: v32@0:8@16@?24  imp=+0x1a1df2c34
+@class UMPersonaMachPort : NSMachPort <NSSecureCoding> instanceSize=56
+  +supportsSecureCoding B16@0:8  imp=+0x1a1de1af4
+  -classForCoder #16@0:8  imp=+0x1a1de1ae8
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a1de1afc
+  -initWithCoder: @24@0:8@16  imp=+0x1a1de1bc4
+  -replacementObjectForCoder: @24@0:8@16  imp=+0x1a1de1a48
+@class UMQueue : NSObject instanceSize=16
+  ivar +8 _queue @"NSObject<OS_dispatch_queue>"
+  -.cxx_destruct v16@0:8  imp=+0x1a1de0884
+@class UMSideEffects : NSObject <UMSideEffectsProviding> instanceSize=24
+  ivar +8 _libInfo @"NSObject<UMLibInfoProviding>"
+  ivar +16 _libNotify @"NSObject<UMLibNotifyProviding>"
+  property libInfo (T@"NSObject<UMLibInfoProviding>",&,N,V_libInfo)
+  property libNotify (T@"NSObject<UMLibNotifyProviding>",&,N,V_libNotify)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a1de72c4
+  -libInfo @16@0:8  imp=+0x1a1de729c
+  -libNotify @16@0:8  imp=+0x1a1de72b0
+  -setLibInfo: v24@0:8@16  imp=+0x1a1de72a4
+  -setLibNotify: v24@0:8@16  imp=+0x1a1de72b8
+@class UMTask : NSObject instanceSize=48
+  ivar +8 _isFinished B
+  ivar +12 _pid i
+  ivar +16 _name @"NSString"
+  ivar +24 _reason @"NSString"
+  ivar +32 _bundleID @"NSString"
+  ivar +40 _uuid @"NSUUID"
+  property name (T@"NSString",C,N,V_name)
+  property reason (T@"NSString",C,N,V_reason)
+  property bundleID (T@"NSString",C,N,V_bundleID)
+  property isFinished (TB,N,V_isFinished)
+  property pid (Ti,N,V_pid)
+  +taskWithName:reason: @32@0:8@16@24  imp=+0x1a1df6554
+  +taskWithName:reason:forBundleID: @40@0:8@16@24@32  imp=+0x1a1df663c
+  -.cxx_destruct v16@0:8  imp=+0x1a1df693c
+  -begin v16@0:8  imp=+0x1a1df67a8
+  -bundleID @16@0:8  imp=+0x1a1df690c
+  -description @16@0:8  imp=+0x1a1df6850
+  -end v16@0:8  imp=+0x1a1df67f8
+  -init @16@0:8  imp=+0x1a1df66f8
+  -isFinished B16@0:8  imp=+0x1a1df691c
+  -name @16@0:8  imp=+0x1a1df68ec
+  -pid i16@0:8  imp=+0x1a1df692c
+  -reason @16@0:8  imp=+0x1a1df68fc
+  -setBundleID: v24@0:8@16  imp=+0x1a1df6914
+  -setIsFinished: v20@0:8B16  imp=+0x1a1df6924
+  -setName: v24@0:8@16  imp=+0x1a1df68f4
+  -setPid: v20@0:8i16  imp=+0x1a1df6934
+  -setReason: v24@0:8@16  imp=+0x1a1df6904
+@class UMUser : NSObject <NSCopying, NSMutableCopying> instanceSize=232
+  ivar +8 _displayName @"NSString"
+  ivar +16 _isLoginUser B
+  ivar +17 _isAuditor B
+  ivar +18 _isDisabled B
+  ivar +19 _isTransientUser B
+  ivar +20 _isPrimaryUser B
+  ivar +21 _isAdminUser B
+  ivar +22 _hasManagedCredentials B
+  ivar +23 _hasDataToSync B
+  ivar +24 _shouldFetchAttributes B
+  ivar +28 _uid I
+  ivar +32 _gid I
+  ivar +40 _alternateDSID @"NSString"
+  ivar +48 _homeDirectoryURL @"NSURL"
+  ivar +56 _username @"NSString"
+  ivar +64 _givenName @"NSString"
+  ivar +72 _familyName @"NSString"
+  ivar +80 _photoURL @"NSURL"
+  ivar +88 _userAuxiliaryString @"NSString"
+  ivar +96 _creationDate @"NSDate"
+  ivar +104 _lastLoginDate @"NSDate"
+  ivar +112 _lastRemoteAuthDate @"NSDate"
+  ivar +120 _passcodeType Q
+  ivar +128 _passcodeLockGracePeriod Q
+  ivar +136 _languages @"NSArray"
+  ivar +144 _dataQuota Q
+  ivar +152 _dataUsed Q
+  ivar +160 _errorCausingLogout @"NSError"
+  ivar +168 __photo @
+  ivar +176 _firstLoginStartDate @"NSDate"
+  ivar +184 _firstLoginEndDate @"NSDate"
+  ivar +192 _lastCachedLoginStartDate @"NSDate"
+  ivar +200 _lastCachedLoginEndDate @"NSDate"
+  ivar +208 _lastLogoutStartDate @"NSDate"
+  ivar +216 _lastLogoutEndDate @"NSDate"
+  ivar +224 _debugErrorCausingLogout @"NSError"
+  property uid (TI,N,V_uid)
+  property gid (TI,N,V_gid)
+  property alternateDSID (T@"NSString",C,N,V_alternateDSID)
+  property homeDirectoryURL (T@"NSURL",C,N,V_homeDirectoryURL)
+  property username (T@"NSString",C,N,V_username)
+  property givenName (T@"NSString",C,N,V_givenName)
+  property familyName (T@"NSString",C,N,V_familyName)
+  property displayName (T@"NSString",C,N)
+  property photoURL (T@"NSURL",C,N,V_photoURL)
+  property userAuxiliaryString (T@"NSString",C,N,V_userAuxiliaryString)
+  property creationDate (T@"NSDate",C,N,V_creationDate)
+  property lastLoginDate (T@"NSDate",C,N,V_lastLoginDate)
+  property lastRemoteAuthDate (T@"NSDate",C,N,V_lastRemoteAuthDate)
+  property isLoginUser (TB,N,V_isLoginUser)
+  property isAuditor (TB,N,V_isAuditor)
+  property isDisabled (TB,N,V_isDisabled)
+  property isTransientUser (TB,N,V_isTransientUser)
+  property isPrimaryUser (TB,N,V_isPrimaryUser)
+  property isAdminUser (TB,N,V_isAdminUser)
+  property passcodeLockGracePeriod (TQ,N,V_passcodeLockGracePeriod)
+  property languages (T@"NSArray",C,N,V_languages)
+  property hasManagedCredentials (TB,N,V_hasManagedCredentials)
+  property dataQuota (TQ,N,V_dataQuota)
+  property dataUsed (TQ,N,V_dataUsed)
+  property hasDataToSync (TB,N,V_hasDataToSync)
+  property errorCausingLogout (T@"NSError",&,N,V_errorCausingLogout)
+  property _photo (T@,C,N,V__photo)
+  property passcodeType (TQ,N,V_passcodeType)
+  property shouldFetchAttributes (TB,N,V_shouldFetchAttributes)
+  property firstLoginStartDate (T@"NSDate",C,N,V_firstLoginStartDate)
+  property firstLoginEndDate (T@"NSDate",C,N,V_firstLoginEndDate)
+  property lastCachedLoginStartDate (T@"NSDate",C,N,V_lastCachedLoginStartDate)
+  property lastCachedLoginEndDate (T@"NSDate",C,N,V_lastCachedLoginEndDate)
+  property lastLogoutStartDate (T@"NSDate",C,N,V_lastLogoutStartDate)
+  property lastLogoutEndDate (T@"NSDate",C,N,V_lastLogoutEndDate)
+  property debugErrorCausingLogout (T@"NSError",C,N,V_debugErrorCausingLogout)
+  property allUserPersonas (T@"NSArray",R,W,N)
+  property userType (TQ,R,N)
+  property passcodeBackOffInterval (Td,R,N)
+  -.cxx_destruct v16@0:8  imp=+0x1a1df63bc
+  -_photo @16@0:8  imp=+0x1a1df6364
+  -allUserPersonas @16@0:8  imp=+0x1a1df61c8
+  -alternateDSID @16@0:8  imp=+0x1a1df571c
+  -commitChanges B16@0:8  imp=+0x1a1df6154
+  -commitChangesWithError: B24@0:8^@16  imp=+0x1a1df615c
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a1dfe570
+  -creationDate @16@0:8  imp=+0x1a1df58a4
+  -dataQuota Q16@0:8  imp=+0x1a1df5d28
+  -dataUsed Q16@0:8  imp=+0x1a1df5d88
+  -debugErrorCausingLogout @16@0:8  imp=+0x1a1df5b3c
+  -description @16@0:8  imp=+0x1a1df5f04
+  -displayName @16@0:8  imp=+0x1a1df5df4
+  -errorCausingLogout @16@0:8  imp=+0x1a1df5b04
+  -familyName @16@0:8  imp=+0x1a1df57fc
+  -firstLoginEndDate @16@0:8  imp=+0x1a1df5bd4
+  -firstLoginStartDate @16@0:8  imp=+0x1a1df5b9c
+  -gid I16@0:8  imp=+0x1a1df56f4
+  -givenName @16@0:8  imp=+0x1a1df57c4
+  -hasDataToSync B16@0:8  imp=+0x1a1df5cfc
+  -hasManagedCredentials B16@0:8  imp=+0x1a1df5adc
+  -homeDirectoryURL @16@0:8  imp=+0x1a1df5754
+  -inFirstLoginSession B16@0:8  imp=+0x1a1df5a3c
+  -init @16@0:8  imp=+0x1a1df54e4
+  -isAdminUser B16@0:8  imp=+0x1a1df5a14
+  -isAuditor B16@0:8  imp=+0x1a1df5974
+  -isDisabled B16@0:8  imp=+0x1a1df599c
+  -isEqual: B24@0:8@16  imp=+0x1a1df5f4c
+  -isEqualToUser: B24@0:8@16  imp=+0x1a1df5fcc
+  -isLoginUser B16@0:8  imp=+0x1a1df594c
+  -isPrimaryUser B16@0:8  imp=+0x1a1df59ec
+  -isTransientUser B16@0:8  imp=+0x1a1df59c4
+  -languages @16@0:8  imp=+0x1a1df5aa4
+  -lastCachedLoginEndDate @16@0:8  imp=+0x1a1df5c44
+  -lastCachedLoginStartDate @16@0:8  imp=+0x1a1df5c0c
+  -lastLoginDate @16@0:8  imp=+0x1a1df58dc
+  -lastLogoutEndDate @16@0:8  imp=+0x1a1df5cb4
+  -lastLogoutStartDate @16@0:8  imp=+0x1a1df5c7c
+  -lastRemoteAuthDate @16@0:8  imp=+0x1a1df5914
+  -mutableCopyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a1dfe5ac
+  -passcodeBackOffInterval d16@0:8  imp=+0x1a1df5cec
+  -passcodeLockGracePeriod Q16@0:8  imp=+0x1a1df5a7c
+  -passcodeType Q16@0:8  imp=+0x1a1df5b74
+  -photoURL @16@0:8  imp=+0x1a1df5834
+  -refetchUser v16@0:8  imp=+0x1a1df60f4
+  -setAlternateDSID: v24@0:8@16  imp=+0x1a1df62a0
+  -setCreationDate: v24@0:8@16  imp=+0x1a1df62d8
+  -setDataQuota: v24@0:8Q16  imp=+0x1a1df6340
+  -setDataUsed: v24@0:8Q16  imp=+0x1a1df6348
+  -setDebugErrorCausingLogout: v24@0:8@16  imp=+0x1a1df63b4
+  -setDisplayName: v24@0:8@16  imp=+0x1a1df5de8
+  -setErrorCausingLogout: v24@0:8@16  imp=+0x1a1df6358
+  -setFamilyName: v24@0:8@16  imp=+0x1a1df62c0
+  -setFirstLoginEndDate: v24@0:8@16  imp=+0x1a1df638c
+  -setFirstLoginStartDate: v24@0:8@16  imp=+0x1a1df6384
+  -setGid: v20@0:8I16  imp=+0x1a1df6298
+  -setGivenName: v24@0:8@16  imp=+0x1a1df62b8
+  -setHasDataToSync: v20@0:8B16  imp=+0x1a1df6350
+  -setHasManagedCredentials: v20@0:8B16  imp=+0x1a1df6338
+  -setHomeDirectoryURL: v24@0:8@16  imp=+0x1a1df62a8
+  -setIsAdminUser: v20@0:8B16  imp=+0x1a1df6320
+  -setIsAuditor: v20@0:8B16  imp=+0x1a1df6300
+  -setIsDisabled: v20@0:8B16  imp=+0x1a1df6308
+  -setIsLoginUser: v20@0:8B16  imp=+0x1a1df62f8
+  -setIsPrimaryUser: v20@0:8B16  imp=+0x1a1df6318
+  -setIsTransientUser: v20@0:8B16  imp=+0x1a1df6310
+  -setLanguages: v24@0:8@16  imp=+0x1a1df6330
+  -setLastCachedLoginEndDate: v24@0:8@16  imp=+0x1a1df639c
+  -setLastCachedLoginStartDate: v24@0:8@16  imp=+0x1a1df6394
+  -setLastLoginDate: v24@0:8@16  imp=+0x1a1df62e0
+  -setLastLogoutEndDate: v24@0:8@16  imp=+0x1a1df63ac
+  -setLastLogoutStartDate: v24@0:8@16  imp=+0x1a1df63a4
+  -setLastRemoteAuthDate: v24@0:8@16  imp=+0x1a1df62e8
+  -setPasscodeLockGracePeriod: v24@0:8Q16  imp=+0x1a1df6328
+  -setPasscodeType: v24@0:8Q16  imp=+0x1a1df62f0
+  -setPhotoURL: v24@0:8@16  imp=+0x1a1df62c8
+  -setShouldFetchAttributes: v20@0:8B16  imp=+0x1a1df637c
+  -setUid: v20@0:8I16  imp=+0x1a1df6290
+  -setUserAuxiliaryString: v24@0:8@16  imp=+0x1a1df62d0
+  -setUsername: v24@0:8@16  imp=+0x1a1df62b0
+  -set_photo: v24@0:8@16  imp=+0x1a1df636c
+  -shouldFetchAttributes B16@0:8  imp=+0x1a1df6374
+  -uid I16@0:8  imp=+0x1a1df6288
+  -userAuxiliaryString @16@0:8  imp=+0x1a1df586c
+  -userPersonaFromIdentityString: @24@0:8@16  imp=+0x1a1df6238
+  -userType Q16@0:8  imp=+0x1a1df5ef8
+  -username @16@0:8  imp=+0x1a1df578c
+@class UMUserManager : NSObject <UMUserManagement_Private, UMUserSwitchManagement_Private, UMUserKeybagOpaqueDataManagement_Private, UMUserPersonaUserProfileManagement_Private, UMUserListUpdateObserver, UMUserManagement, UMUserSwitchManagement, UMUserPersonaManagement, UMUserPersonaAttributesList, UMUserPersonaLoginSessionManagement, UMUserSessionProvisioning, UMUserVolumeMigration, UMUserPersonaBundleManagement, UMUserPersonaBundleMappingMigration, UMUserBootStrapUserManagement> instanceSize=40
+  ivar +8 _allUsers @"NSArray"
+  ivar +16 _switchIsOccurring B
+  ivar +24 _userListUpdateObserver @"<UMUserListUpdateObserver>"
+  ivar +32 _userPersonaUpdateObserver @"<UMUserPersonaUpdateObserver>"
+  property allUsers (T@"NSArray",R,W,N)
+  property allUsersUnfiltered (T@"NSArray",R,W,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  property isMultiUser (TB,R,N)
+  property isSharedIPad (TB,R,N)
+  property currentUser (T@"UMUser",R,C,N)
+  property loginUser (T@"UMUser",R,C,N)
+  property isLoginSession (TB,R,N)
+  property maxNumberOfUsers (TQ,R,N)
+  property userQuotaSize (TQ,R,N)
+  property currentPersona (T@"UMUserPersona",R,C,N)
+  +sharedManager @16@0:8  imp=+0x1a1de0060
+  -.cxx_destruct v16@0:8  imp=+0x1a1de6ba0
+  -allUsers @16@0:8  imp=+0x1a1de6be8
+  -allUsersUnfiltered @16@0:8  imp=+0x1a1de6bf0
+  -bundleIdentifiersforPersonaWithPersonaUniqueString:withError: @32@0:8@16^@24  imp=+0x1a1de58e0
+  -canAccessUserProperties B16@0:8  imp=+0x1a1de46fc
+  -changeBootstrapUserTokenFromOldToken:toNewToken:withError: B40@0:8@16@24^@32  imp=+0x1a1df80d4
+  -changeBootstrapUserTokenFromOldTokenInACMCredential:toNewTokenInACMCredential:withError: B40@0:8@16@24^@32  imp=+0x1a1df80d8
+  -checkBootstrapUserExistsWithError: B24@0:8^@16  imp=+0x1a1de6b48
+  -createBootstrapUserWithToken:withDevicePasscode:withError: B40@0:8@16@24^@32  imp=+0x1a1df80cc
+  -createBootstrapUserWithTokenInACMCredential:withDevicePasscodeInACMCredential:withError: B40@0:8@16@24^@32  imp=+0x1a1df80d0
+  -createUser:passcodeData:completionHandler: v40@0:8@16@24@?32  imp=+0x1a1de479c
+  -createUserPersona:passcodeData:completionHandler: v40@0:8@16@24@?32  imp=+0x1a1de4cdc
+  -createUserPersona:passcodeData:passcodeDataType:completionHandler: v48@0:8@16@24Q32@?40  imp=+0x1a1de4ce8
+  -currentPersona @16@0:8  imp=+0x1a1de017c
+  -currentUser @16@0:8  imp=+0x1a1de4704
+  -currentUserSwitchContext @16@0:8  imp=+0x1a1de6e1c
+  -currentUserSwitchContextHasBeenUsed v16@0:8  imp=+0x1a1de6e24
+  -deleteBootstrapUserWithToken:withDevicePasscode:withError: B40@0:8@16@24^@32  imp=+0x1a1df80dc
+  -deleteBootstrapUserWithTokenInACMCredential:withDevicePasscodeInACMCredential:withError: B40@0:8@16@24^@32  imp=+0x1a1df80e0
+  -deleteUser:completionHandler: v32@0:8@16@?24  imp=+0x1a1de4820
+  -deleteUserPersonaWithIDString:passcodeData:completionHandler: v40@0:8@16@24@?32  imp=+0x1a1de4d9c
+  -deleteUserPersonaWithPersonaUniqueString:passcodeData:completionHandler: v40@0:8@16@24@?32  imp=+0x1a1de4da0
+  -deleteUserPersonaWithProfileInfo:passcodeData:completionHandler: v40@0:8@16@24@?32  imp=+0x1a1de4fc0
+  -deleteUserPersonaWithType:passcodeData:completionHandler: v36@0:8i16@20@?28  imp=+0x1a1de4eac
+  -directSwitchToUser:passcodeData:context:preferences:completionHandler: v56@0:8@16@24@32@40@?48  imp=+0x1a1de4b3c
+  -disableUser:completionHandler: v32@0:8@16@?24  imp=+0x1a1de48a4
+  -disableUserPersonaWithProfileInfo:completionHandler: v32@0:8@16@?24  imp=+0x1a1de5064
+  -fetchAllPersonasForAllUsersWithCompletionHandler: v24@0:8@?16  imp=+0x1a1de532c
+  -fetchAllPersonasWithCompletionHandler: v24@0:8@?16  imp=+0x1a1de52c8
+  -fetchAsidMapOfAllUsersWithCompletionHandler: v24@0:8@?16  imp=+0x1a1de5390
+  -fetchBundleIdentifierForPersonaWithIDString:completionHandler: v32@0:8@16@?24  imp=+0x1a1de56a0
+  -fetchBundleIdentifierForPersonaWithPersonaUniqueString:completionHandler: v32@0:8@16@?24  imp=+0x1a1de56a4
+  -fetchBundleIdentifierForType:completionHandler: v28@0:8i16@?20  imp=+0x1a1de578c
+  -fetchMultiPersonaBundleIdentifierWithcompletionHandler: v24@0:8@?16  imp=+0x1a1de587c
+  -fetchPersonaWithIDString:CompletionHandler: v32@0:8@16@?24  imp=+0x1a1de50ec
+  -fetchPersonaWithPersonaUniqueString:completionHandler: v32@0:8@16@?24  imp=+0x1a1de50f0
+  -fetchPersonaWithType:CompletionHandler: v28@0:8i16@?20  imp=+0x1a1de51d8
+  -haveValidPersonaContextForIDString: B24@0:8@16  imp=+0x1a1de6170
+  -haveValidPersonaContextForPersonaUniqueString: B24@0:8@16  imp=+0x1a1de6174
+  -init @16@0:8  imp=+0x1a1de013c
+  -isLoginSession B16@0:8  imp=+0x1a1de46e4
+  -isMultiUser B16@0:8  imp=+0x1a1de46d4
+  -isSharedIPad B16@0:8  imp=+0x1a1de46dc
+  -keybagOpaqueDataForUser:withError: @32@0:8@16^@24  imp=+0x1a1de6c00
+  -listAllPersonaAttributesWithError: @24@0:8^@16  imp=+0x1a1de5c84
+  -listAllPersonaWithAttributes @16@0:8  imp=+0x1a1de60f8
+  -loadUser:passcodeData:completionHandler: v40@0:8@16@24@?32  imp=+0x1a1de4718
+  -loginUICheckInWithCompletionHandler: v24@0:8@?16  imp=+0x1a1de4bc0
+  -loginUser @16@0:8  imp=+0x1a1de470c
+  -logoutToLoginSessionWithCompletionHandler: v24@0:8@?16  imp=+0x1a1de4a34
+  -maxNumberOfUsers Q16@0:8  imp=+0x1a1de46ec
+  -migrateGuestUserVolume:withError: B32@0:8@16^@24  imp=+0x1a1de6b38
+  -migrateSharedAndPrimaryUserVolumeWithError: B24@0:8^@16  imp=+0x1a1de6b28
+  -personaBundleIDMigrationCompleteWithError: B24@0:8^@16  imp=+0x1a1de5bc0
+  -personaBundleIDMigrationStartWithError: @24@0:8^@16  imp=+0x1a1de5ae8
+  -personaGenerationIdentifierWithError: Q24@0:8^@16  imp=+0x1a1de60ac
+  -personaLoginWithUserODuuid:withUid:WithError: B36@0:8@16I24^@28  imp=+0x1a1de6200
+  -personaLogoutWithUserODuuid:withUid:WithError: B36@0:8@16I24^@28  imp=+0x1a1de63ac
+  -personaProfileCreateForUserODuuid:withUid:WithError: B36@0:8@16I24^@28  imp=+0x1a1de6558
+  -personaProfileDeleteForUserODuuid:withUid:WithError: B36@0:8@16I24^@28  imp=+0x1a1de6748
+  -registerCriticalUserSwitchStakeHolder: v24@0:8@16  imp=+0x1a1de6cb0
+  -registerPersonaListUpdateObserver:completionHandler: v32@0:8@16@?24  imp=+0x1a1de6938
+  -registerPersonaListUpdateObserver:withMachService:completionHandler: v40@0:8@16@24@?32  imp=+0x1a1de6944
+  -registerUserListUpdateObserver: v24@0:8@16  imp=+0x1a1de4928
+  -registerUserSwitchStakeHolder: v24@0:8@16  imp=+0x1a1de4c44
+  -registerUserSwitchStakeHolder:completionHandler: v32@0:8@16@?24  imp=+0x1a1de4c48
+  -registerUserSyncStakeholder:withMachServiceName: v32@0:8@16@24  imp=+0x1a1de4ccc
+  -resumeQuotas v16@0:8  imp=+0x1a1de6dbc
+  -resumeSync v16@0:8  imp=+0x1a1de4cd8
+  -setBundleIdentifiers:forPersonaWithPersonaUniqueString:withError: B40@0:8@16@24^@32  imp=+0x1a1de59e0
+  -setBundlesIdentifiers:forPersonaWithPersonaUniqueString:completionHandler: v40@0:8@16@24@?32  imp=+0x1a1de53f8
+  -setBundlesIdentifiers:forUniquePersonaType:completionHandler: v36@0:8@16i24@?28  imp=+0x1a1de5504
+  -setBundlesIdentifiers:forUniquePersonaWithIDString:completionHandler: v40@0:8@16@24@?32  imp=+0x1a1de53f4
+  -setKeybagOpaqueDataForUser:withOpaqueData:withError: B40@0:8@16@24^@32  imp=+0x1a1de6c58
+  -setMultiPersonaBundleIdentifiers:completionHandler: v32@0:8@16@?24  imp=+0x1a1de5618
+  -setupUMUserSessionProvisioning:WithCompletionHandler: v32@0:8@16@?24  imp=+0x1a1de6a94
+  -suspendQuotasWithCompletionHandler: v24@0:8@?16  imp=+0x1a1de6d38
+  -switchToLoginUserWithCompletionHandler: v24@0:8@?16  imp=+0x1a1de492c
+  -switchToLoginUserWithError:completionHandler: v32@0:8@16@?24  imp=+0x1a1de49b0
+  -switchToUser:passcodeData:context:completionHandler: v48@0:8@16@24@32@?40  imp=+0x1a1de4ab8
+  -switchToUser:passcodeData:context:preferences:completionHandler: v56@0:8@16@24@32@40@?48  imp=+0x1a1de6cb4
+  -terminateSyncWithCompletionHandler: v24@0:8@?16  imp=+0x1a1de4cd4
+  -unregisterStakeHolder:status:reason: v40@0:8@16Q24@32  imp=+0x1a1de4cd0
+  -userExists: B24@0:8@16  imp=+0x1a1de6bf8
+  -userInteractionIsEnabled v16@0:8  imp=+0x1a1de6dc0
+  -userListDidUpdate v16@0:8  imp=+0x1a1de4714
+  -userQuotaSize Q16@0:8  imp=+0x1a1de46f4
+  -validateBootstrapUserWithToken:withError: B32@0:8@16^@24  imp=+0x1a1df812c
+  -validateBootstrapUserWithTokenInACMCredential:withError: B32@0:8@16^@24  imp=+0x1a1df8130
+@class UMUserMutablePersona : UMUserPersona instanceSize=56
+  property uid (TI,D,N)
+  property gid (TI,D,N)
+  property isEnterprisePersona (TB,D,N)
+  property isPersonalPersona (TB,D,N)
+  property isSystemPersona (TB,D,N)
+  property isDefaultPersona (TB,D,N)
+  property isGuestPersona (TB,D,N)
+  property isDataSeparatedPersona (TB,D,N)
+  property isDisabled (TB,D,N)
+  property userPersonaUniqueString (T@"NSString",C,D,N)
+  property userPersonaNickName (T@"NSString",C,D,N)
+  property userPersonaType (TQ,D,N)
+  -commitChanges B16@0:8  imp=+0x1a1df726c
+  -commitChangesWithError: B24@0:8^@16  imp=+0x1a1df72a4
+@class UMUserPersona : NSObject <NSCopying, NSMutableCopying> instanceSize=56
+  ivar +8 personaName @"NSString"
+  ivar +16 shouldFetchAttributes B
+  ivar +17 _isEnterprisePersona B
+  ivar +18 _isPersonalPersona B
+  ivar +19 _isSystemPersona B
+  ivar +20 _isDefaultPersona B
+  ivar +21 _isGuestPersona B
+  ivar +22 _isDataSeparatedPersona B
+  ivar +23 _isDisabled B
+  ivar +24 _uid I
+  ivar +28 _gid I
+  ivar +32 _userPersonaUniqueString @"NSString"
+  ivar +40 _userPersonaNickName @"NSString"
+  ivar +48 _userPersonaType Q
+  property uid (TI,N,V_uid)
+  property gid (TI,N,V_gid)
+  property isEnterprisePersona (TB,N,V_isEnterprisePersona)
+  property isPersonalPersona (TB,N,V_isPersonalPersona)
+  property isSystemPersona (TB,N,V_isSystemPersona)
+  property isDefaultPersona (TB,N,V_isDefaultPersona)
+  property isGuestPersona (TB,N,V_isGuestPersona)
+  property isDataSeparatedPersona (TB,N,V_isDataSeparatedPersona)
+  property isDisabled (TB,N,V_isDisabled)
+  property userPersonaUniqueString (T@"NSString",C,N,V_userPersonaUniqueString)
+  property userPersonaNickName (T@"NSString",C,N,V_userPersonaNickName)
+  property userPersonaType (TQ,N,V_userPersonaType)
+  +currentPersona @16@0:8  imp=+0x1a1df6998
+  +currentPersonaMatchesPath: B24@0:8@16  imp=+0x1a1df69ec
+  +launchPersona @16@0:8  imp=+0x1a1df69c0
+  -.cxx_destruct v16@0:8  imp=+0x1a1de0360
+  -commitChanges B16@0:8  imp=+0x1a1df6fc8
+  -commitChangesWithError: B24@0:8^@16  imp=+0x1a1df6fd0
+  -copyCurrentPersonaContextWithError: @24@0:8^@16  imp=+0x1a1de03b0
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a1dfea84
+  -createPersonaContextForBackgroundProcessingWithIdentityString: @24@0:8@16  imp=+0x1a1df6c14
+  -createPersonaContextForBackgroundProcessingWithPersonaUniqueString: @24@0:8@16  imp=+0x1a1df6c18
+  -generateAndRestorePersonaContextWithIdentity: @24@0:8@16  imp=+0x1a1df6f04
+  -generateAndRestorePersonaContextWithIdentityString: @24@0:8@16  imp=+0x1a1df6a24
+  -generateAndRestorePersonaContextWithPersonaUniqueString: @24@0:8@16  imp=+0x1a1df6a28
+  -gid I16@0:8  imp=+0x1a1df69fc
+  -hash Q16@0:8  imp=+0x1a1df7180
+  -init @16@0:8  imp=+0x1a1de01c0
+  -isDataSeparatedPersona B16@0:8  imp=+0x1a1df723c
+  -isDefaultPersona B16@0:8  imp=+0x1a1df721c
+  -isDisabled B16@0:8  imp=+0x1a1df6a0c
+  -isEnterprisePersona B16@0:8  imp=+0x1a1de04ac
+  -isEqual: B24@0:8@16  imp=+0x1a1df6fd8
+  -isEqualToPersona: B24@0:8@16  imp=+0x1a1df7058
+  -isGuestPersona B16@0:8  imp=+0x1a1df722c
+  -isPersonalPersona B16@0:8  imp=+0x1a1df6a04
+  -isSystemPersona B16@0:8  imp=+0x1a1df720c
+  -mutableCopyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a1dfeac0
+  -restorePersonaWithSavedPersonaContext: @24@0:8@16  imp=+0x1a1de0424
+  -setGid: v20@0:8I16  imp=+0x1a1df71f4
+  -setIsDataSeparatedPersona: v20@0:8B16  imp=+0x1a1df7244
+  -setIsDefaultPersona: v20@0:8B16  imp=+0x1a1df7224
+  -setIsDisabled: v20@0:8B16  imp=+0x1a1df724c
+  -setIsEnterprisePersona: v20@0:8B16  imp=+0x1a1df71fc
+  -setIsGuestPersona: v20@0:8B16  imp=+0x1a1df7234
+  -setIsPersonalPersona: v20@0:8B16  imp=+0x1a1df7204
+  -setIsSystemPersona: v20@0:8B16  imp=+0x1a1df7214
+  -setUid: v20@0:8I16  imp=+0x1a1df71ec
+  -setUserPersonaNickName: v24@0:8@16  imp=+0x1a1df725c
+  -setUserPersonaType: v24@0:8Q16  imp=+0x1a1df7264
+  -setUserPersonaUniqueString: v24@0:8@16  imp=+0x1a1df7254
+  -uid I16@0:8  imp=+0x1a1df69f4
+  -userPersonaNickName @16@0:8  imp=+0x1a1df6a14
+  -userPersonaType Q16@0:8  imp=+0x1a1df6a1c
+  -userPersonaUniqueString @16@0:8  imp=+0x1a1de0354
+@class UMUserPersonaAttributes : NSObject <NSCopying> instanceSize=104
+  ivar +8 _isEnterprisePersona B
+  ivar +9 _isPersonalPersona B
+  ivar +10 _isUniversalPersona B
+  ivar +11 _isSystemPersona B
+  ivar +12 _isDefaultPersona B
+  ivar +13 _isGuestPersona B
+  ivar +14 _isDataSeparatedPersona B
+  ivar +15 _isDisabled B
+  ivar +16 _userPersona_id I
+  ivar +24 _userPersonaUniqueString @"NSString"
+  ivar +32 _userPersonaType Q
+  ivar +40 _personaLayoutPathURL @"NSURL"
+  ivar +48 _disablementReason @"NSString"
+  ivar +56 _userPersonaBundleIDList @"NSArray"
+  ivar +64 _userPersonaDisplayName @"NSString"
+  ivar +72 _creationDate @"NSDate"
+  ivar +80 _lastLoginDate @"NSDate"
+  ivar +88 _lastDisableDate @"NSDate"
+  ivar +96 _lastEnableDate @"NSDate"
+  property personaLayoutPathURL (T@"NSURL",C,N,V_personaLayoutPathURL)
+  property userPersonaUniqueString (T@"NSString",C,N,V_userPersonaUniqueString)
+  property userPersonaType (TQ,N,V_userPersonaType)
+  property userPersona_id (TI,N,V_userPersona_id)
+  property isEnterprisePersona (TB,N,V_isEnterprisePersona)
+  property isPersonalPersona (TB,N,V_isPersonalPersona)
+  property isUniversalPersona (TB,N,V_isUniversalPersona)
+  property isSystemPersona (TB,N,V_isSystemPersona)
+  property isDefaultPersona (TB,N,V_isDefaultPersona)
+  property isGuestPersona (TB,N,V_isGuestPersona)
+  property isDataSeparatedPersona (TB,N,V_isDataSeparatedPersona)
+  property isDisabled (TB,N,V_isDisabled)
+  property disablementReason (T@"NSString",C,N,V_disablementReason)
+  property userPersonaDisplayName (T@"NSString",C,N,V_userPersonaDisplayName)
+  property userPersonaBundleIDList (T@"NSArray",C,N,V_userPersonaBundleIDList)
+  property creationDate (T@"NSDate",C,N,V_creationDate)
+  property lastLoginDate (T@"NSDate",C,N,V_lastLoginDate)
+  property lastDisableDate (T@"NSDate",C,N,V_lastDisableDate)
+  property lastEnableDate (T@"NSDate",C,N,V_lastEnableDate)
+  +currentContextIdentifier @16@0:8  imp=+0x1a1de7d70
+  +personaAttributes @16@0:8  imp=+0x1a1de7314
+  +personaAttributesForIdentifier: @24@0:8@16  imp=+0x1a1de77c0
+  +personaAttributesForPersonaType: @24@0:8Q16  imp=+0x1a1de7a18
+  +personaAttributesForPersonaType:withError: @32@0:8Q16^@24  imp=+0x1a1de7a20
+  +personaAttributesForPersonaUniqueString: @24@0:8@16  imp=+0x1a1de77c4
+  +personaAttributesForPersonaUniqueString:withError: @32@0:8@16^@24  imp=+0x1a1de77cc
+  +personaAttributesWithIdentity:withError: @32@0:8@16^@24  imp=+0x1a1de7c70
+  +setUpPersonaAttributesWithDictionary: @24@0:8@16  imp=+0x1a1de73dc
+  -.cxx_destruct v16@0:8  imp=+0x1a1de80a4
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a1df87b0
+  -creationDate @16@0:8  imp=+0x1a1de8064
+  -description @16@0:8  imp=+0x1a1de7e4c
+  -disablementReason @16@0:8  imp=+0x1a1de8034
+  -isDataSeparatedPersona B16@0:8  imp=+0x1a1de8014
+  -isDefaultPersona B16@0:8  imp=+0x1a1de7ff4
+  -isDisabled B16@0:8  imp=+0x1a1de8024
+  -isEnterprisePersona B16@0:8  imp=+0x1a1de7fb4
+  -isGuestPersona B16@0:8  imp=+0x1a1de8004
+  -isPersonalPersona B16@0:8  imp=+0x1a1de7fc4
+  -isSystemPersona B16@0:8  imp=+0x1a1de7fe4
+  -isUniversalPersona B16@0:8  imp=+0x1a1de7fd4
+  -lastDisableDate @16@0:8  imp=+0x1a1de8084
+  -lastEnableDate @16@0:8  imp=+0x1a1de8094
+  -lastLoginDate @16@0:8  imp=+0x1a1de8074
+  -personaLayoutPathURL @16@0:8  imp=+0x1a1de7fa4
+  -sandboxExtensionForPersonaLayoutPath @16@0:8  imp=+0x1a1de7ed4
+  -setCreationDate: v24@0:8@16  imp=+0x1a1de806c
+  -setDisablementReason: v24@0:8@16  imp=+0x1a1de803c
+  -setIsDataSeparatedPersona: v20@0:8B16  imp=+0x1a1de801c
+  -setIsDefaultPersona: v20@0:8B16  imp=+0x1a1de7ffc
+  -setIsDisabled: v20@0:8B16  imp=+0x1a1de802c
+  -setIsEnterprisePersona: v20@0:8B16  imp=+0x1a1de7fbc
+  -setIsGuestPersona: v20@0:8B16  imp=+0x1a1de800c
+  -setIsPersonalPersona: v20@0:8B16  imp=+0x1a1de7fcc
+  -setIsSystemPersona: v20@0:8B16  imp=+0x1a1de7fec
+  -setIsUniversalPersona: v20@0:8B16  imp=+0x1a1de7fdc
+  -setLastDisableDate: v24@0:8@16  imp=+0x1a1de808c
+  -setLastEnableDate: v24@0:8@16  imp=+0x1a1de809c
+  -setLastLoginDate: v24@0:8@16  imp=+0x1a1de807c
+  -setPersonaLayoutPathURL: v24@0:8@16  imp=+0x1a1de7fac
+  -setUserPersonaBundleIDList: v24@0:8@16  imp=+0x1a1de804c
+  -setUserPersonaDisplayName: v24@0:8@16  imp=+0x1a1de805c
+  -setUserPersonaType: v24@0:8Q16  imp=+0x1a1de7f8c
+  -setUserPersonaUniqueString: v24@0:8@16  imp=+0x1a1de7f7c
+  -setUserPersona_id: v20@0:8I16  imp=+0x1a1de7f9c
+  -userPersonaBundleIDList @16@0:8  imp=+0x1a1de8044
+  -userPersonaDisplayName @16@0:8  imp=+0x1a1de8054
+  -userPersonaType Q16@0:8  imp=+0x1a1de7f84
+  -userPersonaUniqueString @16@0:8  imp=+0x1a1de7f74
+  -userPersona_id I16@0:8  imp=+0x1a1de7f94
+@class UMUserPersonaContext : NSObject <NSCopying> instanceSize=16
+  ivar +8 _voucher @"NSObject<OS_voucher>"
+  +currentPersonaContext @16@0:8  imp=+0x1a1df72e0
+  -.cxx_destruct v16@0:8  imp=+0x1a1de04a0
+  -contextAdopt v16@0:8  imp=+0x1a1de044c
+  -copyPersonaContext: @24@0:8^@16  imp=+0x1a1df7310
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a1df7308
+  -init @16@0:8  imp=+0x1a1de03c4
+@class UMUserPersonaIdentity : NSObject <NSCopying> instanceSize=24
+  ivar +8 _userPersonaType Q
+  ivar +16 _userPersonaUniqueString @"NSString"
+  property userPersonaType (TQ,N,V_userPersonaType)
+  property userPersonaUniqueString (T@"NSString",C,N,V_userPersonaUniqueString)
+  +identityForCurrentPersona @16@0:8  imp=+0x1a1de8f2c
+  +identityWithPersonaType:uniqueString: @32@0:8Q16@24  imp=+0x1a1de8ec0
+  -.cxx_destruct v16@0:8  imp=+0x1a1de939c
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a1de8fd4
+  -description @16@0:8  imp=+0x1a1de91dc
+  -hash Q16@0:8  imp=+0x1a1de9170
+  -initWithPersonaType:uniqueString: @32@0:8Q16@24  imp=+0x1a1de8e34
+  -isEqual: B24@0:8@16  imp=+0x1a1de8fd8
+  -setUserPersonaType: v24@0:8Q16  imp=+0x1a1de9384
+  -setUserPersonaUniqueString: v24@0:8@16  imp=+0x1a1de9394
+  -userPersonaType Q16@0:8  imp=+0x1a1de937c
+  -userPersonaUniqueString @16@0:8  imp=+0x1a1de938c
+@class UMUserPersonaProperties : NSObject <NSCopying> instanceSize=64
+  ivar +8 _isEnterprisePersona B
+  ivar +9 _isPersonalPersona B
+  ivar +10 _isUniversalPersona B
+  ivar +11 _isSystemPersona B
+  ivar +12 _isDefaultPersona B
+  ivar +13 _isGuestPersona B
+  ivar +14 _isDataSeparatedPersona B
+  ivar +16 _userPersona_id I
+  ivar +20 _userPersonaSessionuid I
+  ivar +24 _userPersonaUniqueString @"NSString"
+  ivar +32 _userPersonaType Q
+  ivar +40 _userPersonaPath @"NSURL"
+  ivar +48 _userPersonaTypeName @"NSString"
+  ivar +56 _personaLayoutPathURL @"NSURL"
+  property userPersonaUniqueString (T@"NSString",C,N,V_userPersonaUniqueString)
+  property userPersonaType (TQ,N,V_userPersonaType)
+  property userPersona_id (TI,N,V_userPersona_id)
+  property personaLayoutPathURL (T@"NSURL",C,N,V_personaLayoutPathURL)
+  property isEnterprisePersona (TB,N,V_isEnterprisePersona)
+  property isPersonalPersona (TB,N,V_isPersonalPersona)
+  property isUniversalPersona (TB,N,V_isUniversalPersona)
+  property isSystemPersona (TB,N,V_isSystemPersona)
+  property isDefaultPersona (TB,N,V_isDefaultPersona)
+  property isGuestPersona (TB,N,V_isGuestPersona)
+  property isDataSeparatedPersona (TB,N,V_isDataSeparatedPersona)
+  property userPersonaTypeName (T@"NSString",C,N,V_userPersonaTypeName)
+  property userPersonaSessionuid (TI,N,V_userPersonaSessionuid)
+  property userPersonaPath (T@"NSURL",R,C,N,V_userPersonaPath)
+  +allPersonaPropertiesWithError: @24@0:8^@16  imp=+0x1a1df49bc
+  +currentPersonaProperties @16@0:8  imp=+0x1a1df439c
+  +invalidPersonaProperties @16@0:8  imp=+0x1a1df4dc4
+  +launchPersonaProperties @16@0:8  imp=+0x1a1df441c
+  +personaPropertiesForPersonaType:withError: @32@0:8Q16^@24  imp=+0x1a1df4714
+  +personaPropertiesForPersonaUniqueString:withError: @32@0:8@16^@24  imp=+0x1a1df4658
+  +personaPropertiesWithIdentity:error: @32@0:8@16^@24  imp=+0x1a1df48b8
+  +propertiesWithPersonaID:error: @28@0:8I16^@20  imp=+0x1a1df4b9c
+  -.cxx_destruct v16@0:8  imp=+0x1a1df5440
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a1df51c0
+  -description @16@0:8  imp=+0x1a1df51c4
+  -filePathForPersonaID:withError: @28@0:8i16^@20  imp=+0x1a1df509c
+  -invalidPersonaSetup v16@0:8  imp=+0x1a1df5030
+  -isDataSeparatedPersona B16@0:8  imp=+0x1a1df5400
+  -isDefaultPersona B16@0:8  imp=+0x1a1df53e0
+  -isEnterprisePersona B16@0:8  imp=+0x1a1df53a0
+  -isGuestPersona B16@0:8  imp=+0x1a1df53f0
+  -isPersonalPersona B16@0:8  imp=+0x1a1df53b0
+  -isSystemPersona B16@0:8  imp=+0x1a1df53d0
+  -isUniversalPersona B16@0:8  imp=+0x1a1df53c0
+  -personaLayoutPathURL @16@0:8  imp=+0x1a1df5430
+  -setIsDataSeparatedPersona: v20@0:8B16  imp=+0x1a1df5408
+  -setIsDefaultPersona: v20@0:8B16  imp=+0x1a1df53e8
+  -setIsEnterprisePersona: v20@0:8B16  imp=+0x1a1df53a8
+  -setIsGuestPersona: v20@0:8B16  imp=+0x1a1df53f8
+  -setIsPersonalPersona: v20@0:8B16  imp=+0x1a1df53b8
+  -setIsSystemPersona: v20@0:8B16  imp=+0x1a1df53d8
+  -setIsUniversalPersona: v20@0:8B16  imp=+0x1a1df53c8
+  -setPersonaLayoutPathURL: v24@0:8@16  imp=+0x1a1df5438
+  -setUserPersonaSessionuid: v20@0:8I16  imp=+0x1a1df5428
+  -setUserPersonaType: v24@0:8Q16  imp=+0x1a1df5380
+  -setUserPersonaTypeName: v24@0:8@16  imp=+0x1a1df5418
+  -setUserPersonaUniqueString: v24@0:8@16  imp=+0x1a1df5370
+  -setUserPersona_id: v20@0:8I16  imp=+0x1a1df5390
+  -updateWithKernelInfo:andVolumePath: v32@0:8^{kpersona_info=IIiII[16I]I[256c]I}16@24  imp=+0x1a1df4e08
+  -userPersonaPath @16@0:8  imp=+0x1a1df5398
+  -userPersonaSessionuid I16@0:8  imp=+0x1a1df5420
+  -userPersonaType Q16@0:8  imp=+0x1a1df5378
+  -userPersonaTypeName @16@0:8  imp=+0x1a1df5410
+  -userPersonaUniqueString @16@0:8  imp=+0x1a1df5368
+  -userPersona_id I16@0:8  imp=+0x1a1df5388
+@class UMUserSwitchBlockingTask : UMTask instanceSize=48
+@class UMUserSwitchContext : NSObject instanceSize=40
+  ivar +8 _secondaryActionRequired B
+  ivar +16 _setupData @"NSData"
+  ivar +24 _shortLivedToken @"NSString"
+  ivar +32 _environmentsByServices @"NSDictionary"
+  property setupData (T@"NSData",C,N,V_setupData)
+  property shortLivedToken (T@"NSString",C,N,V_shortLivedToken)
+  property secondaryActionRequired (TB,N,V_secondaryActionRequired)
+  +contextWithSetupData:shortLivedToken:secondaryActionRequired: @36@0:8@16@24B32  imp=+0x1a1df406c
+  -.cxx_destruct v16@0:8  imp=+0x1a1df4340
+  -description @16@0:8  imp=+0x1a1dfe10c
+  -secondaryActionRequired B16@0:8  imp=+0x1a1df4330
+  -setSecondaryActionRequired: v20@0:8B16  imp=+0x1a1df4338
+  -setSetupData: v24@0:8@16  imp=+0x1a1df4318
+  -setShortLivedToken: v24@0:8@16  imp=+0x1a1df4328
+  -setupData @16@0:8  imp=+0x1a1df4310
+  -shortLivedToken @16@0:8  imp=+0x1a1df4320
+@class UMUserSyncTask : UMTask instanceSize=56
+  ivar +48 _contentSize Q
+  property contentSize (TQ,N,V_contentSize)
+  -contentSize Q16@0:8  imp=+0x1a1de9fb0
+  -setContentSize: v24@0:8Q16  imp=+0x1a1de9fc4
+@class UMXPCServer : NSObject <NSXPCListenerDelegate, UMXPCClient, UMUserSwitchManagement, UMUserSwitchManagement_Private> instanceSize=272
+  ivar +8 _currentlyBroadcastingWillSwitchToUser B
+  ivar +9 _didRegisterStakeholder B
+  ivar +10 _didBroadcastWillSwitchToUser B
+  ivar +11 _didSendTasks B
+  ivar +12 _didBroadcastUploadContent B
+  ivar +13 _didRegisterPersonaCalbackStakeholder B
+  ivar +16 _interruptionRetryCount I
+  ivar +24 _xpcConnection @"NSXPCConnection"
+  ivar +32 _se @"NSObject<UMSideEffectsProviding>"
+  ivar +40 _stakeholder @
+  ivar +48 _stakeholderType Q
+  ivar +56 _machServiceName @"NSString"
+  ivar +64 _unregistrationStatus Q
+  ivar +72 _unregistrationReason @"NSString"
+  ivar +80 _personaSpec @"NSDictionary"
+  ivar +88 _passcodeData @"NSData"
+  ivar +96 _contextData @"NSData"
+  ivar +104 _preferencesDict @"NSDictionary"
+  ivar +112 _personaProfileDict @"NSDictionary"
+  ivar +120 _provisionDict @"NSDictionary"
+  ivar +128 _provisionCompletionHandler @?
+  ivar +136 _registrationCompletionHandler @?
+  ivar +144 _switchCompletionHandler @?
+  ivar +152 _suspendQuotasCompletionHandler @?
+  ivar +160 _directSwitchCompletionHandler @?
+  ivar +168 _logoutToLoginSessionCompletionHandler @?
+  ivar +176 _loginUICheckinSessionCompletionHandler @?
+  ivar +184 _uploadContentCompletionHandler @?
+  ivar +192 _willSwitchCompletionHandler @?
+  ivar +200 _switchBlockingTasks @"NSMutableArray"
+  ivar +208 _syncTasks @"NSMutableArray"
+  ivar +216 _bubblePopHandler @?
+  ivar +224 _willSwitchToUserAddedTaskCount Q
+  ivar +232 _syncConnection @"NSXPCConnection"
+  ivar +240 _xpcListener @"NSXPCListener"
+  ivar +248 _personaStakeholder @
+  ivar +256 _personaRegistrationCompletionHandler @?
+  ivar +264 _personaUpdateCallbackStakeholder @
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a1df2a1c
+  -bubbleDidPop v16@0:8  imp=+0x1a1dedf04
+  -deviceLoginSessionStateDidUpdate v16@0:8  imp=+0x1a1dedc38
+  -directSwitchToUser:passcodeData:context:preferences:completionHandler: v56@0:8@16@24@32@40@?48  imp=+0x1a1deaa9c
+  -init @16@0:8  imp=+0x1a1dea0b8
+  -listener:shouldAcceptNewConnection: B32@0:8@16@24  imp=+0x1a1dee1bc
+  -loginUICheckInWithCompletionHandler: v24@0:8@?16  imp=+0x1a1deac30
+  -logoutToLoginSessionWithCompletionHandler: v24@0:8@?16  imp=+0x1a1dea77c
+  -personaListDidUpdateCompletionHandler: v24@0:8@?16  imp=+0x1a1dedf5c
+  -personaUpdateCallbackForMachServiceCompletionHandler: v24@0:8@?16  imp=+0x1a1dee08c
+  -readyToSwitchToLoginSession:completionHandler: v32@0:8@16@?24  imp=+0x1a1ded700
+  -readyToSwitchToUser:completionHandler: v32@0:8@16@?24  imp=+0x1a1ded5a0
+  -registerCriticalUserSwitchStakeHolder: v24@0:8@16  imp=+0x1a1dea300
+  -registerUserSwitchStakeHolder: v24@0:8@16  imp=+0x1a1dea17c
+  -registerUserSwitchStakeHolder:completionHandler: v32@0:8@16@?24  imp=+0x1a1dea184
+  -registerUserSyncStakeholder:withMachServiceName: v32@0:8@16@24  imp=+0x1a1dea3cc
+  -resumeQuotas v16@0:8  imp=+0x1a1deadc8
+  -resumeSync v16@0:8  imp=+0x1a1deaeec
+  -suspendQuotasWithCompletionHandler: v24@0:8@?16  imp=+0x1a1deacfc
+  -switchToLoginUserWithCompletionHandler: v24@0:8@?16  imp=+0x1a1dea694
+  -switchToLoginUserWithError:completionHandler: v32@0:8@16@?24  imp=+0x1a1dea6a0
+  -switchToUser:passcodeData:context:completionHandler: v48@0:8@16@24@32@?40  imp=+0x1a1dea848
+  -switchToUser:passcodeData:context:preferences:completionHandler: v56@0:8@16@24@32@40@?48  imp=+0x1a1dea854
+  -terminateSyncWithCompletionHandler: v24@0:8@?16  imp=+0x1a1deae20
+  -unregisterStakeHolder:status:reason: v40@0:8@16Q24@32  imp=+0x1a1dea550
+  -uploadContentWithCompletionHandler: v24@0:8@?16  imp=+0x1a1dedc94
+  -userInteractionIsEnabled v16@0:8  imp=+0x1a1dfa8e8
+  -userSwitchTaskListDidUpdate v16@0:8  imp=+0x1a1dfbb1c
+  -willSwitchToUser:completionHandler: v32@0:8@16@?24  imp=+0x1a1ded3bc

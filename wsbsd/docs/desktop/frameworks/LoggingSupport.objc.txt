@@ -1,0 +1,2031 @@
+@class CacheIndex : NSObject <NSCopying> instanceSize=24
+  ivar +8 _fileIndex S
+  ivar +16 _chunk_offset q
+  property fileIndex (TS,R,N,V_fileIndex)
+  property chunk_offset (Tq,R,N,V_chunk_offset)
+  -chunk_offset q16@0:8  imp=+0x1c76725f8
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1c76725b4
+  -fileIndex S16@0:8  imp=+0x1c7672600
+  -hash Q16@0:8  imp=+0x1c76724cc
+  -initWithCDHash:identifier: @28@0:8S16q20  imp=+0x1c7672478
+  -isEqual: B24@0:8@16  imp=+0x1c7672544
+  -isEqualToCacheIndex: B24@0:8@16  imp=+0x1c76724dc
+@class CatalogsCache : NSObject <CatalogsCache> instanceSize=16
+  ivar +8 _cache @"<_OSLogCache>"
+  property cache (T@"<_OSLogCache>",R,N,V_cache)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1c7671280
+  -cache @16@0:8  imp=+0x1c7671278
+  -catalogForCDHash:identifier:generator: ^{catalog_s={catalog_hdr_s=SQ}^{_os_opaque_128_map_s}^{_os_opaque_str_map_s}^{_os_opaque_32_map_s}QQ^{_os_opaque_128_map_s}QQ{subchunk_queue_t=^{catalog_subchunk_s}^^{catalog_subchunk_s}}Q}36@0:8S16q20@?28  imp=+0x1c7671164
+  -flush v16@0:8  imp=+0x1c7671124
+  -init:evictionHandler: @28@0:8I16@?20  imp=+0x1c7670e98
+@class DataCache : NSObject <DataCache> instanceSize=16
+  ivar +8 _cache @"<_OSLogCache>"
+  property cache (T@"<_OSLogCache>",R,N,V_cache)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1c76748ec
+  -cache @16@0:8  imp=+0x1c76748e4
+  -dataForCDHash:identifier:size:generator: *44@0:8S16q20^Q28@?36  imp=+0x1c76746b0
+  -flush v16@0:8  imp=+0x1c7674670
+  -init:evictionHandler: @28@0:8I16@?20  imp=+0x1c767438c
+@class LoggingSupport_OSLogCoder : NSObject <OSLogCoder> instanceSize=216
+  ivar +8 _fmt_cmd ^{?=b4b4C[0C]}
+  ivar +16 _ob ^{os_trace_blob_s=(?=*^v**)IIISB}
+  ivar +24 _ob_pub ^{os_trace_blob_s=(?=*^v**)IIISB}
+  ivar +32 _ob_priv ^{os_trace_blob_s=(?=*^v**)IIISB}
+  ivar +40 _privacy_level C
+  ivar +48 _ob_mask {os_trace_blob_s=""(?="ob_b"*"ob_v"^v"ob_s"*"ob_c"*)"ob_len"I"ob_size"I"ob_maxsize"I"ob_flags"S"ob_binary"B}
+  ivar +72 _maskbuf [128c]
+  ivar +200 _maxsz Q
+  ivar +208 _written S
+  ivar +210 _offset S
+  ivar +212 _truncated B
+  ivar +213 _initialized B
+  ivar +214 _mask B
+  -_initBlob v16@0:8  imp=+0x1c7673f80
+  -appendBytes:length: v32@0:8r^v16Q24  imp=+0x1c7674134
+  -setPublic v16@0:8  imp=+0x1c76740f0
+  -setTruncated v16@0:8  imp=+0x1c7674128
+@class OSActivityCreateEvent : OSActivityEvent instanceSize=192
+  ivar +168 _creatorActivityID Q
+  ivar +176 _creatorProcessUniqueID Q
+  ivar +184 _senderProgramCounter Q
+  property creatorActivityID (TQ,R,N,V_creatorActivityID)
+  property creatorProcessUniqueID (TQ,R,N,V_creatorProcessUniqueID)
+  property senderProgramCounter (TQ,R,N,V_senderProgramCounter)
+  -_addProperties: v24@0:8@16  imp=+0x1c76600bc
+  -creatorActivityID Q16@0:8  imp=+0x1c76601c0
+  -creatorProcessUniqueID Q16@0:8  imp=+0x1c76601d4
+  -initWithEntry: @24@0:8^{os_activity_stream_entry_s=IiQI**QQ(?={os_activity_stream_common_s=QQQ**{timeval=qi}{timezone=ii}QQI}{os_activity_stream_common_with_name_s=QQQ**{timeval=qi}{timezone=ii}QQI*}{os_activity_create_s=QQQ**{timeval=qi}{timezone=ii}QQI*QQ}{os_activity_transition_s=QQQ**{timeval=qi}{timezone=ii}QQIQ}{os_log_message_s=QQQ**{timeval=qi}{timezone=ii}QQI**Q*Q**ICB(?=QQ)*(?=CC)C*}{os_trace_message_s=QQQ**{timeval=qi}{timezone=ii}QQI*^vQ@}{os_activity_useraction_s=QQQ**{timeval=qi}{timezone=ii}QQI*B}{os_activity_statedump_s=QQQ**{timeval=qi}{timezone=ii}QQI*Q}{os_activity_timesync_s=QQQ**{timeval=qi}{timezone=ii}QQI[16C]QQQC}{os_activity_loss_s=QQQ**{timeval=qi}{timezone=ii}QQIQQI}{os_activity_breadcrumb_s=IQQ***}{os_activity_stream_activity_s=QQQ**{timeval=qi}{timezone=ii}QQI*}{os_trace_message_s=QQQ**{timeval=qi}{timezone=ii}QQI*^vQ@})[0c]}16  imp=+0x1c7660008
+  -senderProgramCounter Q16@0:8  imp=+0x1c76601e8
+@class OSActivityEvent : NSObject instanceSize=168
+  ivar +8 _persisted B
+  ivar +12 _processID i
+  ivar +16 _userID I
+  ivar +24 _processUniqueID Q
+  ivar +32 _processImageUUID @"NSUUID"
+  ivar +40 _processImagePath @"NSString"
+  ivar +48 _eventType Q
+  ivar +56 _parentActivityID Q
+  ivar +64 _activityID Q
+  ivar +72 _traceID Q
+  ivar +80 _threadID Q
+  ivar +88 _machTimestamp Q
+  ivar +96 _timestamp @"NSDate"
+  ivar +104 _timezone @"NSTimeZone"
+  ivar +112 _senderImageUUID @"NSUUID"
+  ivar +120 _senderImagePath @"NSString"
+  ivar +128 _eventMessage @"NSString"
+  ivar +136 _tz {timezone="tz_minuteswest"i"tz_dsttime"i}
+  ivar +144 _timezoneName @"NSString"
+  ivar +152 _timeGMT {timeval="tv_sec"q"tv_usec"i}
+  property timeGMT (T{timeval=qi},R,N,V_timeGMT)
+  property tz (T{timezone=ii},R,N,V_tz)
+  property timezoneName (T@"NSString",&,N,V_timezoneName)
+  property processID (Ti,R,N,V_processID)
+  property processUniqueID (TQ,R,N,V_processUniqueID)
+  property processImageUUID (T@"NSUUID",R,C,N,V_processImageUUID)
+  property processImagePath (T@"NSString",R,C,N,V_processImagePath)
+  property process (T@"NSString",R,C,N)
+  property userID (TI,R,N,V_userID)
+  property eventType (TQ,R,N,V_eventType)
+  property parentActivityID (TQ,R,N,V_parentActivityID)
+  property activityID (TQ,R,N,V_activityID)
+  property traceID (TQ,R,N,V_traceID)
+  property threadID (TQ,R,N,V_threadID)
+  property machTimestamp (TQ,R,N,V_machTimestamp)
+  property timestamp (T@"NSDate",R,C,N,V_timestamp)
+  property timezone (T@"NSTimeZone",R,C,N,V_timezone)
+  property senderImageUUID (T@"NSUUID",R,C,N,V_senderImageUUID)
+  property senderImagePath (T@"NSString",R,C,N,V_senderImagePath)
+  property sender (T@"NSString",R,C,N)
+  property eventMessage (T@"NSString",C,N,V_eventMessage)
+  property persisted (TB,R,N,V_persisted)
+  +activityEventFromStreamEntry: @24@0:8^{os_activity_stream_entry_s=IiQI**QQ(?={os_activity_stream_common_s=QQQ**{timeval=qi}{timezone=ii}QQI}{os_activity_stream_common_with_name_s=QQQ**{timeval=qi}{timezone=ii}QQI*}{os_activity_create_s=QQQ**{timeval=qi}{timezone=ii}QQI*QQ}{os_activity_transition_s=QQQ**{timeval=qi}{timezone=ii}QQIQ}{os_log_message_s=QQQ**{timeval=qi}{timezone=ii}QQI**Q*Q**ICB(?=QQ)*(?=CC)C*}{os_trace_message_s=QQQ**{timeval=qi}{timezone=ii}QQI*^vQ@}{os_activity_useraction_s=QQQ**{timeval=qi}{timezone=ii}QQI*B}{os_activity_statedump_s=QQQ**{timeval=qi}{timezone=ii}QQI*Q}{os_activity_timesync_s=QQQ**{timeval=qi}{timezone=ii}QQI[16C]QQQC}{os_activity_loss_s=QQQ**{timeval=qi}{timezone=ii}QQIQQI}{os_activity_breadcrumb_s=IQQ***}{os_activity_stream_activity_s=QQQ**{timeval=qi}{timezone=ii}QQI*}{os_trace_message_s=QQQ**{timeval=qi}{timezone=ii}QQI*^vQ@})[0c]}16  imp=+0x1c76613ec
+  -.cxx_destruct v16@0:8  imp=+0x1c7661f50
+  -_addProperties: v24@0:8@16  imp=+0x1c76618c0
+  -_initWithProperties: v24@0:8@16  imp=+0x1c766155c
+  -activityID Q16@0:8  imp=+0x1c7661ed8
+  -description @16@0:8  imp=+0x1c7661070
+  -eventMessage @16@0:8  imp=+0x1c7661f10
+  -eventType Q16@0:8  imp=+0x1c7661ec8
+  -fillFromStreamEntry:eventMessage:persisted: v36@0:8^{os_activity_stream_entry_s=IiQI**QQ(?={os_activity_stream_common_s=QQQ**{timeval=qi}{timezone=ii}QQI}{os_activity_stream_common_with_name_s=QQQ**{timeval=qi}{timezone=ii}QQI*}{os_activity_create_s=QQQ**{timeval=qi}{timezone=ii}QQI*QQ}{os_activity_transition_s=QQQ**{timeval=qi}{timezone=ii}QQIQ}{os_log_message_s=QQQ**{timeval=qi}{timezone=ii}QQI**Q*Q**ICB(?=QQ)*(?=CC)C*}{os_trace_message_s=QQQ**{timeval=qi}{timezone=ii}QQI*^vQ@}{os_activity_useraction_s=QQQ**{timeval=qi}{timezone=ii}QQI*B}{os_activity_statedump_s=QQQ**{timeval=qi}{timezone=ii}QQI*Q}{os_activity_timesync_s=QQQ**{timeval=qi}{timezone=ii}QQI[16C]QQQC}{os_activity_loss_s=QQQ**{timeval=qi}{timezone=ii}QQIQQI}{os_activity_breadcrumb_s=IQQ***}{os_activity_stream_activity_s=QQQ**{timeval=qi}{timezone=ii}QQI*}{os_trace_message_s=QQQ**{timeval=qi}{timezone=ii}QQI*^vQ@})[0c]}16r*24B32  imp=+0x1c76611f4
+  -machTimestamp Q16@0:8  imp=+0x1c7661ef0
+  -parentActivityID Q16@0:8  imp=+0x1c7661ed0
+  -persisted B16@0:8  imp=+0x1c7661f20
+  -process @16@0:8  imp=+0x1c7661e90
+  -processID i16@0:8  imp=+0x1c7661ea0
+  -processImagePath @16@0:8  imp=+0x1c7661eb8
+  -processImageUUID @16@0:8  imp=+0x1c7661eb0
+  -processUniqueID Q16@0:8  imp=+0x1c7661ea8
+  -properties @16@0:8  imp=+0x1c766150c
+  -sender @16@0:8  imp=+0x1c7661e98
+  -senderImagePath @16@0:8  imp=+0x1c7661f08
+  -senderImageUUID @16@0:8  imp=+0x1c7661f00
+  -setEventMessage: v24@0:8@16  imp=+0x1c7661f18
+  -setTimezoneName: v24@0:8@16  imp=+0x1c7661f44
+  -threadID Q16@0:8  imp=+0x1c7661ee8
+  -timeGMT {timeval=qi}16@0:8  imp=+0x1c7661f28
+  -timestamp @16@0:8  imp=+0x1c7661ef8
+  -timezone @16@0:8  imp=+0x1c7661138
+  -timezoneName @16@0:8  imp=+0x1c7661f3c
+  -traceID Q16@0:8  imp=+0x1c7661ee0
+  -tz {timezone=ii}16@0:8  imp=+0x1c7661f34
+  -userID I16@0:8  imp=+0x1c7661ec0
+@class OSActivityEventMessage : OSActivityEvent instanceSize=184
+  ivar +168 _bufferPrivateData @"NSData"
+  ivar +176 _bufferData @"NSData"
+  property arguments (T@"NSMutableArray",R,N)
+  property format (T@"NSString",R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1c766213c
+  -arguments @16@0:8  imp=+0x1c766205c
+  -fillEventData:length:privateBuffer:length: v48@0:8r*16Q24r*32Q40  imp=+0x1c7661fdc
+  -format @16@0:8  imp=+0x1c7662064
+@class OSActivityLogMessageEvent : OSActivityEventMessage instanceSize=216
+  ivar +184 _messageType C
+  ivar +192 _subsystem @"NSString"
+  ivar +200 _category @"NSString"
+  ivar +208 _senderProgramCounter Q
+  property subsystem (T@"NSString",R,C,N,V_subsystem)
+  property category (T@"NSString",R,C,N,V_category)
+  property senderProgramCounter (TQ,R,N,V_senderProgramCounter)
+  property messageType (TC,R,N,V_messageType)
+  -.cxx_destruct v16@0:8  imp=+0x1c76607ac
+  -_addProperties: v24@0:8@16  imp=+0x1c76605a4
+  -category @16@0:8  imp=+0x1c7660770
+  -initWithEntry: @24@0:8^{os_activity_stream_entry_s=IiQI**QQ(?={os_activity_stream_common_s=QQQ**{timeval=qi}{timezone=ii}QQI}{os_activity_stream_common_with_name_s=QQQ**{timeval=qi}{timezone=ii}QQI*}{os_activity_create_s=QQQ**{timeval=qi}{timezone=ii}QQI*QQ}{os_activity_transition_s=QQQ**{timeval=qi}{timezone=ii}QQIQ}{os_log_message_s=QQQ**{timeval=qi}{timezone=ii}QQI**Q*Q**ICB(?=QQ)*(?=CC)C*}{os_trace_message_s=QQQ**{timeval=qi}{timezone=ii}QQI*^vQ@}{os_activity_useraction_s=QQQ**{timeval=qi}{timezone=ii}QQI*B}{os_activity_statedump_s=QQQ**{timeval=qi}{timezone=ii}QQI*Q}{os_activity_timesync_s=QQQ**{timeval=qi}{timezone=ii}QQI[16C]QQQC}{os_activity_loss_s=QQQ**{timeval=qi}{timezone=ii}QQIQQI}{os_activity_breadcrumb_s=IQQ***}{os_activity_stream_activity_s=QQQ**{timeval=qi}{timezone=ii}QQI*}{os_trace_message_s=QQQ**{timeval=qi}{timezone=ii}QQI*^vQ@})[0c]}16  imp=+0x1c7660468
+  -messageType C16@0:8  imp=+0x1c7660798
+  -senderProgramCounter Q16@0:8  imp=+0x1c7660784
+  -subsystem @16@0:8  imp=+0x1c766075c
+@class OSActivityLossEvent : OSActivityEvent instanceSize=192
+  ivar +168 _saturated B
+  ivar +172 _count I
+  ivar +176 _startMachTimestamp Q
+  ivar +184 _endMachTimestamp Q
+  property startMachTimestamp (TQ,R,N,V_startMachTimestamp)
+  property endMachTimestamp (TQ,R,N,V_endMachTimestamp)
+  property count (TI,R,N,V_count)
+  property saturated (TB,R,N,V_saturated)
+  -_addProperties: v24@0:8@16  imp=+0x1c7660ec4
+  -count I16@0:8  imp=+0x1c7661048
+  -endMachTimestamp Q16@0:8  imp=+0x1c7661034
+  -initWithEntry: @24@0:8^{os_activity_stream_entry_s=IiQI**QQ(?={os_activity_stream_common_s=QQQ**{timeval=qi}{timezone=ii}QQI}{os_activity_stream_common_with_name_s=QQQ**{timeval=qi}{timezone=ii}QQI*}{os_activity_create_s=QQQ**{timeval=qi}{timezone=ii}QQI*QQ}{os_activity_transition_s=QQQ**{timeval=qi}{timezone=ii}QQIQ}{os_log_message_s=QQQ**{timeval=qi}{timezone=ii}QQI**Q*Q**ICB(?=QQ)*(?=CC)C*}{os_trace_message_s=QQQ**{timeval=qi}{timezone=ii}QQI*^vQ@}{os_activity_useraction_s=QQQ**{timeval=qi}{timezone=ii}QQI*B}{os_activity_statedump_s=QQQ**{timeval=qi}{timezone=ii}QQI*Q}{os_activity_timesync_s=QQQ**{timeval=qi}{timezone=ii}QQI[16C]QQQC}{os_activity_loss_s=QQQ**{timeval=qi}{timezone=ii}QQIQQI}{os_activity_breadcrumb_s=IQQ***}{os_activity_stream_activity_s=QQQ**{timeval=qi}{timezone=ii}QQI*}{os_trace_message_s=QQQ**{timeval=qi}{timezone=ii}QQI*^vQ@})[0c]}16  imp=+0x1c7660da4
+  -saturated B16@0:8  imp=+0x1c766105c
+  -startMachTimestamp Q16@0:8  imp=+0x1c7661020
+@class OSActivitySignpostEvent : OSActivityLogMessageEvent instanceSize=224
+  ivar +216 _signpostID Q
+  property signpostID (TQ,R,N,V_signpostID)
+  -initWithEntry: @24@0:8^{os_activity_stream_entry_s=IiQI**QQ(?={os_activity_stream_common_s=QQQ**{timeval=qi}{timezone=ii}QQI}{os_activity_stream_common_with_name_s=QQQ**{timeval=qi}{timezone=ii}QQI*}{os_activity_create_s=QQQ**{timeval=qi}{timezone=ii}QQI*QQ}{os_activity_transition_s=QQQ**{timeval=qi}{timezone=ii}QQIQ}{os_log_message_s=QQQ**{timeval=qi}{timezone=ii}QQI**Q*Q**ICB(?=QQ)*(?=CC)C*}{os_trace_message_s=QQQ**{timeval=qi}{timezone=ii}QQI*^vQ@}{os_activity_useraction_s=QQQ**{timeval=qi}{timezone=ii}QQI*B}{os_activity_statedump_s=QQQ**{timeval=qi}{timezone=ii}QQI*Q}{os_activity_timesync_s=QQQ**{timeval=qi}{timezone=ii}QQI[16C]QQQC}{os_activity_loss_s=QQQ**{timeval=qi}{timezone=ii}QQIQQI}{os_activity_breadcrumb_s=IQQ***}{os_activity_stream_activity_s=QQQ**{timeval=qi}{timezone=ii}QQI*}{os_trace_message_s=QQQ**{timeval=qi}{timezone=ii}QQI*^vQ@})[0c]}16  imp=+0x1c7660800
+  -signpostID Q16@0:8  imp=+0x1c766085c
+@class OSActivityStatedumpEvent : OSActivityEvent instanceSize=168
+  -_addProperties: v24@0:8@16  imp=+0x1c7660bac
+  -initWithEntry: @24@0:8^{os_activity_stream_entry_s=IiQI**QQ(?={os_activity_stream_common_s=QQQ**{timeval=qi}{timezone=ii}QQI}{os_activity_stream_common_with_name_s=QQQ**{timeval=qi}{timezone=ii}QQI*}{os_activity_create_s=QQQ**{timeval=qi}{timezone=ii}QQI*QQ}{os_activity_transition_s=QQQ**{timeval=qi}{timezone=ii}QQIQ}{os_log_message_s=QQQ**{timeval=qi}{timezone=ii}QQI**Q*Q**ICB(?=QQ)*(?=CC)C*}{os_trace_message_s=QQQ**{timeval=qi}{timezone=ii}QQI*^vQ@}{os_activity_useraction_s=QQQ**{timeval=qi}{timezone=ii}QQI*B}{os_activity_statedump_s=QQQ**{timeval=qi}{timezone=ii}QQI*Q}{os_activity_timesync_s=QQQ**{timeval=qi}{timezone=ii}QQI[16C]QQQC}{os_activity_loss_s=QQQ**{timeval=qi}{timezone=ii}QQIQQI}{os_activity_breadcrumb_s=IQQ***}{os_activity_stream_activity_s=QQQ**{timeval=qi}{timezone=ii}QQI*}{os_trace_message_s=QQQ**{timeval=qi}{timezone=ii}QQI*^vQ@})[0c]}16  imp=+0x1c7660b34
+@class OSActivityStream : NSObject instanceSize=112
+  ivar +8 _stream ^{os_activity_stream_s=}
+  ivar +16 _pids @"NSMutableSet"
+  ivar +24 _uids @"NSMutableSet"
+  ivar +32 _deviceSearchSession ^v
+  ivar +40 _deviceEventSession ^v
+  ivar +48 _delegateStreamErrorLess B
+  ivar +49 _delegateStreamWithError B
+  ivar +50 _delegateHasDidFail B
+  ivar +56 _streamFilter @"_OSLogStreamFilter"
+  ivar +64 _deviceDelegate @"<OSDeviceDelegate>"
+  ivar +72 _delegate @"<OSActivityStreamDelegate>"
+  ivar +80 _options Q
+  ivar +88 _eventFilter Q
+  ivar +96 _predicate @"NSCompoundPredicate"
+  ivar +104 _device @"OSLogDevice"
+  property options (TQ,N,V_options)
+  property eventFilter (TQ,N,V_eventFilter)
+  property events (TQ,N)
+  property delegate (T@"<OSActivityStreamDelegate>",W,N,V_delegate)
+  property predicate (T@"NSCompoundPredicate",C,N,V_predicate)
+  property deviceDelegate (T@"<OSDeviceDelegate>",W,N,V_deviceDelegate)
+  property device (T@"OSLogDevice",&,N,V_device)
+  -.cxx_destruct v16@0:8  imp=+0x1c765f7d8
+  -addProcessID: v20@0:8i16  imp=+0x1c765d680
+  -addUserID: v20@0:8I16  imp=+0x1c765d6d8
+  -dealloc v16@0:8  imp=+0x1c765d5c0
+  -delegate @16@0:8  imp=+0x1c765f770
+  -device @16@0:8  imp=+0x1c765f7c4
+  -deviceDelegate @16@0:8  imp=+0x1c765f744
+  -establishTrust: B24@0:8@16  imp=+0x1c765f32c
+  -eventFilter Q16@0:8  imp=+0x1c765f7ac
+  -events Q16@0:8  imp=+0x1c765d654
+  -getInfoForDevice:andKey: @32@0:8@16@24  imp=+0x1c765f09c
+  -init @16@0:8  imp=+0x1c765d528
+  -initWithDevice: @24@0:8^v16  imp=+0x1c765d67c
+  -options Q16@0:8  imp=+0x1c765f79c
+  -predicate @16@0:8  imp=+0x1c765f7bc
+  -setDelegate: v24@0:8@16  imp=+0x1c765d480
+  -setDevice: v24@0:8@16  imp=+0x1c765f7cc
+  -setDeviceDelegate: v24@0:8@16  imp=+0x1c765ea74
+  -setEventFilter: v24@0:8Q16  imp=+0x1c765f7b4
+  -setEvents: v24@0:8Q16  imp=+0x1c765d624
+  -setOptions: v24@0:8Q16  imp=+0x1c765f7a4
+  -setPredicate: v24@0:8@16  imp=+0x1c765d730
+  -start v16@0:8  imp=+0x1c765d8f4
+  -startLocal v16@0:8  imp=+0x1c765e21c
+  -startRemote v16@0:8  imp=+0x1c765dabc
+  -stop v16@0:8  imp=+0x1c765e840
+  -stopLocal v16@0:8  imp=+0x1c765e850
+  -stopRemote v16@0:8  imp=+0x1c765e8ec
+  -streamEvent:error: B32@0:8@16@24  imp=+0x1c765d904
+@class OSActivityTimesyncEvent : OSActivityEvent instanceSize=168
+  -initWithEntry: @24@0:8^{os_activity_stream_entry_s=IiQI**QQ(?={os_activity_stream_common_s=QQQ**{timeval=qi}{timezone=ii}QQI}{os_activity_stream_common_with_name_s=QQQ**{timeval=qi}{timezone=ii}QQI*}{os_activity_create_s=QQQ**{timeval=qi}{timezone=ii}QQI*QQ}{os_activity_transition_s=QQQ**{timeval=qi}{timezone=ii}QQIQ}{os_log_message_s=QQQ**{timeval=qi}{timezone=ii}QQI**Q*Q**ICB(?=QQ)*(?=CC)C*}{os_trace_message_s=QQQ**{timeval=qi}{timezone=ii}QQI*^vQ@}{os_activity_useraction_s=QQQ**{timeval=qi}{timezone=ii}QQI*B}{os_activity_statedump_s=QQQ**{timeval=qi}{timezone=ii}QQI*Q}{os_activity_timesync_s=QQQ**{timeval=qi}{timezone=ii}QQI[16C]QQQC}{os_activity_loss_s=QQQ**{timeval=qi}{timezone=ii}QQIQQI}{os_activity_breadcrumb_s=IQQ***}{os_activity_stream_activity_s=QQQ**{timeval=qi}{timezone=ii}QQI*}{os_trace_message_s=QQQ**{timeval=qi}{timezone=ii}QQI*^vQ@})[0c]}16  imp=+0x1c7660c20
+@class OSActivityTraceMessageEvent : OSActivityEventMessage instanceSize=208
+  ivar +184 _messageType C
+  ivar +192 _payload @"NSObject<OS_xpc_object>"
+  ivar +200 _senderProgramCounter Q
+  property payload (T@"NSObject<OS_xpc_object>",R,N,V_payload)
+  property senderProgramCounter (TQ,R,N,V_senderProgramCounter)
+  property messageType (TC,R,N,V_messageType)
+  -.cxx_destruct v16@0:8  imp=+0x1c7660454
+  -_addProperties: v24@0:8@16  imp=+0x1c76602e8
+  -initWithEntry: @24@0:8^{os_activity_stream_entry_s=IiQI**QQ(?={os_activity_stream_common_s=QQQ**{timeval=qi}{timezone=ii}QQI}{os_activity_stream_common_with_name_s=QQQ**{timeval=qi}{timezone=ii}QQI*}{os_activity_create_s=QQQ**{timeval=qi}{timezone=ii}QQI*QQ}{os_activity_transition_s=QQQ**{timeval=qi}{timezone=ii}QQIQ}{os_log_message_s=QQQ**{timeval=qi}{timezone=ii}QQI**Q*Q**ICB(?=QQ)*(?=CC)C*}{os_trace_message_s=QQQ**{timeval=qi}{timezone=ii}QQI*^vQ@}{os_activity_useraction_s=QQQ**{timeval=qi}{timezone=ii}QQI*B}{os_activity_statedump_s=QQQ**{timeval=qi}{timezone=ii}QQI*Q}{os_activity_timesync_s=QQQ**{timeval=qi}{timezone=ii}QQI[16C]QQQC}{os_activity_loss_s=QQQ**{timeval=qi}{timezone=ii}QQIQQI}{os_activity_breadcrumb_s=IQQ***}{os_activity_stream_activity_s=QQQ**{timeval=qi}{timezone=ii}QQI*}{os_trace_message_s=QQQ**{timeval=qi}{timezone=ii}QQI*^vQ@})[0c]}16  imp=+0x1c76601fc
+  -messageType C16@0:8  imp=+0x1c7660440
+  -payload @16@0:8  imp=+0x1c7660418
+  -senderProgramCounter Q16@0:8  imp=+0x1c766042c
+@class OSActivityTransitionEvent : OSActivityEvent instanceSize=176
+  ivar +168 _transitionToActivityID Q
+  property transitionToActivityID (TQ,R,N,V_transitionToActivityID)
+  -_addProperties: v24@0:8@16  imp=+0x1c7660a78
+  -initWithEntry: @24@0:8^{os_activity_stream_entry_s=IiQI**QQ(?={os_activity_stream_common_s=QQQ**{timeval=qi}{timezone=ii}QQI}{os_activity_stream_common_with_name_s=QQQ**{timeval=qi}{timezone=ii}QQI*}{os_activity_create_s=QQQ**{timeval=qi}{timezone=ii}QQI*QQ}{os_activity_transition_s=QQQ**{timeval=qi}{timezone=ii}QQIQ}{os_log_message_s=QQQ**{timeval=qi}{timezone=ii}QQI**Q*Q**ICB(?=QQ)*(?=CC)C*}{os_trace_message_s=QQQ**{timeval=qi}{timezone=ii}QQI*^vQ@}{os_activity_useraction_s=QQQ**{timeval=qi}{timezone=ii}QQI*B}{os_activity_statedump_s=QQQ**{timeval=qi}{timezone=ii}QQI*Q}{os_activity_timesync_s=QQQ**{timeval=qi}{timezone=ii}QQI[16C]QQQC}{os_activity_loss_s=QQQ**{timeval=qi}{timezone=ii}QQIQQI}{os_activity_breadcrumb_s=IQQ***}{os_activity_stream_activity_s=QQQ**{timeval=qi}{timezone=ii}QQI*}{os_trace_message_s=QQQ**{timeval=qi}{timezone=ii}QQI*^vQ@})[0c]}16  imp=+0x1c76609b8
+  -transitionToActivityID Q16@0:8  imp=+0x1c7660b20
+@class OSActivityUserActionEvent : OSActivityEvent instanceSize=176
+  ivar +168 _senderProgramCounter Q
+  property senderProgramCounter (TQ,R,N,V_senderProgramCounter)
+  -_addProperties: v24@0:8@16  imp=+0x1c76608fc
+  -initWithEntry: @24@0:8^{os_activity_stream_entry_s=IiQI**QQ(?={os_activity_stream_common_s=QQQ**{timeval=qi}{timezone=ii}QQI}{os_activity_stream_common_with_name_s=QQQ**{timeval=qi}{timezone=ii}QQI*}{os_activity_create_s=QQQ**{timeval=qi}{timezone=ii}QQI*QQ}{os_activity_transition_s=QQQ**{timeval=qi}{timezone=ii}QQIQ}{os_log_message_s=QQQ**{timeval=qi}{timezone=ii}QQI**Q*Q**ICB(?=QQ)*(?=CC)C*}{os_trace_message_s=QQQ**{timeval=qi}{timezone=ii}QQI*^vQ@}{os_activity_useraction_s=QQQ**{timeval=qi}{timezone=ii}QQI*B}{os_activity_statedump_s=QQQ**{timeval=qi}{timezone=ii}QQI*Q}{os_activity_timesync_s=QQQ**{timeval=qi}{timezone=ii}QQI[16C]QQQC}{os_activity_loss_s=QQQ**{timeval=qi}{timezone=ii}QQIQQI}{os_activity_breadcrumb_s=IQQ***}{os_activity_stream_activity_s=QQQ**{timeval=qi}{timezone=ii}QQI*}{os_trace_message_s=QQQ**{timeval=qi}{timezone=ii}QQI*^vQ@})[0c]}16  imp=+0x1c7660870
+  -senderProgramCounter Q16@0:8  imp=+0x1c76609a4
+@class OSLogBootEntry : NSObject instanceSize=40
+  ivar +8 _uuid @"NSUUID"
+  ivar +16 _unixTimeNs Q
+  ivar +24 _tz {timezone="tz_minuteswest"i"tz_dsttime"i}
+  ivar +32 _mach_info {mach_timebase_info="numer"I"denom"I}
+  property unixTimeNs (TQ,R,N,V_unixTimeNs)
+  property uuid (T@"NSUUID",R,N,V_uuid)
+  property mach_info (T{mach_timebase_info=II},R,N,V_mach_info)
+  property tz (T{timezone=ii},R,N,V_tz)
+  property bootDate (T@"NSDate",R,N)
+  -.cxx_destruct v16@0:8  imp=+0x1c7678e04
+  -bootDate @16@0:8  imp=+0x1c7678d94
+  -init: @24@0:8^{os_timesync_boot_entry_s={os_timesync_header_s=SSI}[16C]{mach_timebase_info=II}Q{timezone=ii}}16  imp=+0x1c7678d08
+  -mach_info {mach_timebase_info=II}16@0:8  imp=+0x1c7678dfc
+  -tz {timezone=ii}16@0:8  imp=+0x1c7678df4
+  -unixTimeNs Q16@0:8  imp=+0x1c7678dec
+  -uuid @16@0:8  imp=+0x1c7678de4
+@class OSLogDecomposedMessageSegment : NSObject instanceSize=40
+  ivar +8 _backingDict @"NSDictionary"
+  ivar +16 _literalPrefix @"NSString"
+  ivar +24 _placeholder @"OSLogDeserializedMessagePlaceholder"
+  ivar +32 _argument @"OSLogDeserializedEventMessageArgument"
+  property backingDict (T@"NSDictionary",R,N,V_backingDict)
+  property literalPrefix (T@"NSString",R,N,V_literalPrefix)
+  property placeholder (T@"OSLogDeserializedMessagePlaceholder",R,N,V_placeholder)
+  property argument (T@"OSLogDeserializedEventMessageArgument",R,N,V_argument)
+  -.cxx_destruct v16@0:8  imp=+0x1c76960e8
+  -argument @16@0:8  imp=+0x1c76960e0
+  -backingDict @16@0:8  imp=+0x1c76960c8
+  -initWithDict:metadata: @32@0:8@16@24  imp=+0x1c7695d14
+  -literalPrefix @16@0:8  imp=+0x1c76960d0
+  -placeholder @16@0:8  imp=+0x1c76960d8
+@class OSLogDeserializedEventDecomposedMessage : OSLogEventDecomposedMessage instanceSize=112
+  ivar +96 _backingDict @"NSDictionary"
+  ivar +104 _segments @"NSArray"
+  property segments (T@"NSArray",R,N,V_segments)
+  property backingDict (T@"NSDictionary",R,N,V_backingDict)
+  -.cxx_destruct v16@0:8  imp=+0x1c7696864
+  -argumentAtIndex: @24@0:8Q16  imp=+0x1c7696794
+  -backingDict @16@0:8  imp=+0x1c769683c
+  -initWithDict:metadata: @32@0:8@16@24  imp=+0x1c7696144
+  -literalPrefixAtIndex: @24@0:8Q16  imp=+0x1c7696644
+  -placeholderAtIndex: @24@0:8Q16  imp=+0x1c76966ec
+  -placeholderCount Q16@0:8  imp=+0x1c7696444
+  -segments @16@0:8  imp=+0x1c7696850
+  -state Q16@0:8  imp=+0x1c7696544
+@class OSLogDeserializedEventMessageArgument : OSLogEventMessageArgument instanceSize=48
+  ivar +32 _backingDict @"NSDictionary"
+  ivar +40 _metadata @"_OSLogEventSerializationMetadata"
+  property backingDict (T@"NSDictionary",R,N,V_backingDict)
+  property metadata (T@"_OSLogEventSerializationMetadata",R,N,V_metadata)
+  -.cxx_destruct v16@0:8  imp=+0x1c7695308
+  -_numValue @16@0:8  imp=+0x1c7695134
+  -availability Q16@0:8  imp=+0x1c76948d4
+  -backingDict @16@0:8  imp=+0x1c76952e0
+  -category Q16@0:8  imp=+0x1c7694ad4
+  -doubleValue d16@0:8  imp=+0x1c7695258
+  -initWithDict:metadata: @32@0:8@16@24  imp=+0x1c769481c
+  -int64Value q16@0:8  imp=+0x1c769521c
+  -longDoubleValue D16@0:8  imp=+0x1c769529c
+  -metadata @16@0:8  imp=+0x1c76952f4
+  -objectRepresentation @16@0:8  imp=+0x1c7694dd4
+  -privacy Q16@0:8  imp=+0x1c76949d4
+  -rawBytes r^v16@0:8  imp=+0x1c7694f70
+  -rawBytesLength S16@0:8  imp=+0x1c7695064
+  -scalarCategory Q16@0:8  imp=+0x1c7694bd4
+  -scalarType Q16@0:8  imp=+0x1c7694cd4
+  -unsignedInt64Value Q16@0:8  imp=+0x1c76951e0
+@class OSLogDeserializedEventStream : OSLogEventStreamBase instanceSize=112
+  ivar +72 _hasActivated B
+  ivar +80 _metadata @"_OSLogEventSerializationMetadata"
+  ivar +88 _dataSourceDelegate @"<OSLogEventDeserializerDataSourceDelegate>"
+  ivar +96 _curEventArray @"NSArray"
+  ivar +104 _eventDictionaryEnumerator @"NSEnumerator"
+  property hasActivated (TB,N,V_hasActivated)
+  property metadata (T@"_OSLogEventSerializationMetadata",R,N,V_metadata)
+  property dataSourceDelegate (T@"<OSLogEventDeserializerDataSourceDelegate>",R,N,V_dataSourceDelegate)
+  property curEventArray (T@"NSArray",R,N,V_curEventArray)
+  property eventDictionaryEnumerator (T@"NSEnumerator",R,N,V_eventDictionaryEnumerator)
+  property firstDate (T@"NSDate",R,N)
+  property lastDate (T@"NSDate",R,N)
+  property observedSubsystemCategories (T@"NSDictionary",R,N)
+  -.cxx_destruct v16@0:8  imp=+0x1c7690528
+  -_eventArrayFromData: @24@0:8@16  imp=+0x1c7690040
+  -_iterateThroughEventsWithProxy:filter:startingDate: v40@0:8@16@24@32  imp=+0x1c768fe60
+  -_nextEventDictionary @16@0:8  imp=+0x1c768fd30
+  -_runInvalidationHandler: v24@0:8Q16  imp=+0x1c768fdbc
+  -_updateEventArray v16@0:8  imp=+0x1c76901ac
+  -activate v16@0:8  imp=+0x1c76904a8
+  -activateStreamFromDate: v24@0:8@16  imp=+0x1c7690270
+  -curEventArray @16@0:8  imp=+0x1c7690500
+  -dataSourceDelegate @16@0:8  imp=+0x1c76904ec
+  -eventDictionaryEnumerator @16@0:8  imp=+0x1c7690514
+  -firstDate @16@0:8  imp=+0x1c768fb20
+  -hasActivated B16@0:8  imp=+0x1c76904b0
+  -initWithDataSourceDelegate: @24@0:8@16  imp=+0x1c768fc28
+  -lastDate @16@0:8  imp=+0x1c768fb70
+  -metadata @16@0:8  imp=+0x1c76904d8
+  -observedSubsystemCategories @16@0:8  imp=+0x1c768fbc0
+  -setHasActivated: v20@0:8B16  imp=+0x1c76904c4
+@class OSLogDeserializedMessagePlaceholder : OSLogMessagePlaceholder instanceSize=48
+  ivar +32 _backingDict @"NSDictionary"
+  ivar +40 _metadata @"_OSLogEventSerializationMetadata"
+  property backingDict (T@"NSDictionary",R,N,V_backingDict)
+  property metadata (T@"_OSLogEventSerializationMetadata",R,N,V_metadata)
+  -.cxx_destruct v16@0:8  imp=+0x1c7695cc0
+  -backingDict @16@0:8  imp=+0x1c7695c98
+  -initWithDict:metadata: @32@0:8@16@24  imp=+0x1c769535c
+  -metadata @16@0:8  imp=+0x1c7695cac
+  -precision i16@0:8  imp=+0x1c7695514
+  -rawString @16@0:8  imp=+0x1c769583c
+  -tokens @16@0:8  imp=+0x1c7695614
+  -type @16@0:8  imp=+0x1c7695b24
+  -typeNamespace @16@0:8  imp=+0x1c76959b0
+  -width i16@0:8  imp=+0x1c7695414
+@class OSLogDevice : NSObject instanceSize=40
+  ivar +8 _devType q
+  ivar +16 _mobileDeviceRef ^v
+  ivar +24 _simDev @"SimDevice"
+  ivar +32 _uid @"NSString"
+  property devType (Tq,N,V_devType)
+  property mobileDeviceRef (T^v,N,V_mobileDeviceRef)
+  property simDev (T@"SimDevice",&,N,V_simDev)
+  property uid (T@"NSString",&,N,V_uid)
+  -.cxx_destruct v16@0:8  imp=+0x1c765d43c
+  -dealloc v16@0:8  imp=+0x1c765d3a4
+  -description @16@0:8  imp=+0x1c765d134
+  -devType q16@0:8  imp=+0x1c765d3f4
+  -init @16@0:8  imp=+0x1c765d0cc
+  -initWithMobileDevice:andUDID: @32@0:8^v16@24  imp=+0x1c765d284
+  -initWithSimualatedDevice: @24@0:8@16  imp=+0x1c765d304
+  -mobileDeviceRef ^v16@0:8  imp=+0x1c765d404
+  -setDevType: v24@0:8q16  imp=+0x1c765d3fc
+  -setMobileDeviceRef: v24@0:8^v16  imp=+0x1c765d40c
+  -setSimDev: v24@0:8@16  imp=+0x1c765d41c
+  -setUid: v24@0:8@16  imp=+0x1c765d430
+  -simDev @16@0:8  imp=+0x1c765d414
+  -uid @16@0:8  imp=+0x1c765d428
+@class OSLogDoublyLinkedList : NSObject instanceSize=32
+  ivar +8 _count Q
+  ivar +16 head @"OSLogDoublyLinkedListNode"
+  ivar +24 tail @"OSLogDoublyLinkedListNode"
+  property count (TQ,N,V_count)
+  property head (T@"OSLogDoublyLinkedListNode",&,N,Vhead)
+  property tail (T@"OSLogDoublyLinkedListNode",&,N,Vtail)
+  -.cxx_destruct v16@0:8  imp=+0x1c76717b8
+  -addToTail: v24@0:8@16  imp=+0x1c76714e4
+  -count Q16@0:8  imp=+0x1c7671780
+  -head @16@0:8  imp=+0x1c7671790
+  -removeAllObjects v16@0:8  imp=+0x1c7671748
+  -removeFromHead @16@0:8  imp=+0x1c7671400
+  -removeNodeAndAddToTail: v24@0:8@16  imp=+0x1c76715dc
+  -setCount: v24@0:8Q16  imp=+0x1c7671788
+  -setHead: v24@0:8@16  imp=+0x1c7671798
+  -setTail: v24@0:8@16  imp=+0x1c76717ac
+  -tail @16@0:8  imp=+0x1c76717a4
+@class OSLogDoublyLinkedListNode : NSObject instanceSize=40
+  ivar +8 _data @
+  ivar +16 _key @
+  ivar +24 _prev @"OSLogDoublyLinkedListNode"
+  ivar +32 _next @"OSLogDoublyLinkedListNode"
+  property data (T@,&,N,V_data)
+  property key (T@,&,N,V_key)
+  property prev (T@"OSLogDoublyLinkedListNode",W,N,V_prev)
+  property next (T@"OSLogDoublyLinkedListNode",&,N,V_next)
+  -.cxx_destruct v16@0:8  imp=+0x1c76713a8
+  -data @16@0:8  imp=+0x1c7671334
+  -initWithKey:data: @32@0:8@16@24  imp=+0x1c767128c
+  -key @16@0:8  imp=+0x1c7671348
+  -next @16@0:8  imp=+0x1c7671394
+  -prev @16@0:8  imp=+0x1c767135c
+  -setData: v24@0:8@16  imp=+0x1c767133c
+  -setKey: v24@0:8@16  imp=+0x1c7671350
+  -setNext: v24@0:8@16  imp=+0x1c767139c
+  -setPrev: v24@0:8@16  imp=+0x1c7671388
+@class OSLogEventBacktrace : NSObject instanceSize=16
+  ivar +8 _frames @"NSArray"
+  property frames (T@"NSArray",R,N,V_frames)
+  -dealloc v16@0:8  imp=+0x1c764e4c0
+  -frames @16@0:8  imp=+0x1c764c8a4
+  -initWithBacktrace: @24@0:8^{os_log_backtrace_s=^{os_log_backtrace_frame_s}i}16  imp=+0x1c765ce68
+  -initWithFrames: @24@0:8@16  imp=+0x1c765cf44
+  -initWithSingleFrame: @24@0:8@16  imp=+0x1c764c838
+@class OSLogEventBacktraceFrame : NSObject instanceSize=40
+  ivar +8 _uuid [16C]
+  ivar +24 _imageUUID @"NSUUID"
+  ivar +32 _imageOffset Q
+  property imageUUID (T@"NSUUID",R,N)
+  property imageUUIDBytes (Tr*,R,N)
+  property imageOffset (TQ,R,N,V_imageOffset)
+  -dealloc v16@0:8  imp=+0x1c764e50c
+  -imageOffset Q16@0:8  imp=+0x1c764c8ec
+  -imageUUID @16@0:8  imp=+0x1c764c8ac
+  -imageUUIDBytes r*16@0:8  imp=+0x1c765ce60
+  -initWithUUIDBytes:andOffset: @32@0:8r*16Q24  imp=+0x1c764c7e0
+@class OSLogEventDecomposedMessage : NSObject instanceSize=96
+  ivar +8 _hasPopulatedFields B
+  ivar +9 _hdrNeedsFree B
+  ivar +10 _pubsize S
+  ivar +12 _privsize S
+  ivar +14 _placeholderCount S
+  ivar +16 _variant Q
+  ivar +24 _sizeof_long Q
+  ivar +32 _hdr r^{os_log_fmt_hdr_s=CC[0C]}
+  ivar +40 _pubdata r^v
+  ivar +48 _privdata r^v
+  ivar +56 _fmt r*
+  ivar +64 _messageState Q
+  ivar +72 _rawPlaceholders ^{os_log_fmt_raw_placeholder=^v{os_log_fmt_cspec_s=*SCSSSSii***Q}(?=qQdD)CCSQB}
+  ivar +80 _hdr_buffer ^v
+  ivar +88 _proxy @"OSLogEventProxy"
+  property proxy (T@"OSLogEventProxy",R,N,V_proxy)
+  property sizeOfLong (TQ,R,N,V_sizeof_long)
+  property placeholderCount (TQ,R)
+  property state (TQ,R,N)
+  -_initializePlaceholders v16@0:8  imp=+0x1c764e100
+  -_populateFields v16@0:8  imp=+0x1c764de94
+  -_rawPlaceholderForIndex: ^{os_log_fmt_raw_placeholder=^v{os_log_fmt_cspec_s=*SCSSSSii***Q}(?=qQdD)CCSQB}24@0:8Q16  imp=+0x1c76507f8
+  -_unmake v16@0:8  imp=+0x1c764e558
+  -argumentAtIndex: @24@0:8Q16  imp=+0x1c7650714
+  -dealloc v16@0:8  imp=+0x1c765277c
+  -initWithEventProxy: @24@0:8@16  imp=+0x1c764de38
+  -literalPrefixAtIndex: @24@0:8Q16  imp=+0x1c764e340
+  -placeholderAtIndex: @24@0:8Q16  imp=+0x1c76503d0
+  -placeholderCount Q16@0:8  imp=+0x1c764e328
+  -proxy @16@0:8  imp=+0x1c765cad0
+  -sizeOfLong Q16@0:8  imp=+0x1c7650840
+  -state Q16@0:8  imp=+0x1c764e320
+@class OSLogEventLiveSource : NSObject instanceSize=8
+@class OSLogEventLiveStore : NSObject instanceSize=8
+  +liveLocalStore @16@0:8  imp=+0x1c766fcac
+  -prepareWithCompletionHandler: v24@0:8@?16  imp=+0x1c766fcdc
+@class OSLogEventLiveStream : OSLogEventStreamBase instanceSize=112
+  ivar +72 _streamFilter @"_OSLogStreamFilter"
+  ivar +80 _reason Q
+  ivar +88 _diagdconn @"NSObject<OS_xpc_object>"
+  ivar +96 _source @"OSLogEventLiveSource"
+  ivar +104 _dropnoteHandler @?
+  property diagdconn (T@"NSObject<OS_xpc_object>",&,N,V_diagdconn)
+  property dropnoteHandler (T@?,C,N,V_dropnoteHandler)
+  property source (T@"OSLogEventLiveSource",R,N,V_source)
+  -.cxx_destruct v16@0:8  imp=+0x1c766ac98
+  -_activateLiveStream v16@0:8  imp=+0x1c766a18c
+  -_handleStreamedObject:usingProxy: v32@0:8@16@24  imp=+0x1c766a078
+  -activate v16@0:8  imp=+0x1c766aadc
+  -diagdconn @16@0:8  imp=+0x1c766ac3c
+  -dropnoteHandler @?16@0:8  imp=+0x1c766ac78
+  -initWithLiveSource: @24@0:8@16  imp=+0x1c7669f24
+  -invalidate v16@0:8  imp=+0x1c766ab70
+  -setDiagdconn: v24@0:8@16  imp=+0x1c766ac50
+  -setDropnoteHandler: v24@0:8@?16  imp=+0x1c766ac8c
+  -setDroppedEventHandler: v24@0:8@?16  imp=+0x1c7669f8c
+  -setFilterPredicate: v24@0:8@16  imp=+0x1c7669fdc
+  -source @16@0:8  imp=+0x1c766ac64
+@class OSLogEventLocalStore : OSLogEventStore instanceSize=64
+  ivar +56 _livefd i
+  -_createEventSource:metadata:timesync: @40@0:8@16@24^{_os_timesync_db_s=}32  imp=+0x1c769cd24
+  -_createLCR: @24@0:8^@16  imp=+0x1c769ca98
+  -_createLiveFD:error: B32@0:8^i16^@24  imp=+0x1c769cb9c
+  -_createTSDB:error: ^{_os_timesync_db_s=}28@0:8i16^@20  imp=+0x1c769cb44
+  -_finalizeEventSource: v24@0:8@16  imp=+0x1c769cdb0
+@class OSLogEventMessageArgument : NSObject instanceSize=32
+  ivar +8 _decomposedMessage @"OSLogEventDecomposedMessage"
+  ivar +16 _rawArg ^{os_log_fmt_raw_placeholder=^v{os_log_fmt_cspec_s=*SCSSSSii***Q}(?=qQdD)CCSQB}
+  ivar +24 _sizeofLong Q
+  property availability (TQ,R,N)
+  property privacy (TQ,R,N)
+  property category (TQ,R,N)
+  property scalarCategory (TQ,R,N)
+  property scalarType (TQ,R,N)
+  property objectRepresentation (T@"NSObject",R,N)
+  property rawBytes (Tr^v,R,N)
+  property rawBytesLength (TS,R,N)
+  property unsignedInt64Value (TQ,R,N)
+  property int64Value (Tq,R,N)
+  property doubleValue (Td,R,N)
+  property longDoubleValue (TD,R,N)
+  -availability Q16@0:8  imp=+0x1c765cb40
+  -category Q16@0:8  imp=+0x1c765172c
+  -doubleValue d16@0:8  imp=+0x1c765cd28
+  -initWithProxy:index: @32@0:8@16Q24  imp=+0x1c765077c
+  -int64Value q16@0:8  imp=+0x1c765cca8
+  -longDoubleValue D16@0:8  imp=+0x1c765cdc4
+  -objectRepresentation @16@0:8  imp=+0x1c7650848
+  -privacy Q16@0:8  imp=+0x1c765cba8
+  -rawBytes r^v16@0:8  imp=+0x1c765cbb4
+  -rawBytesLength S16@0:8  imp=+0x1c765cbc0
+  -scalarCategory Q16@0:8  imp=+0x1c76516d0
+  -scalarType Q16@0:8  imp=+0x1c765cbcc
+  -unsignedInt64Value Q16@0:8  imp=+0x1c765cc28
+@class OSLogEventProxy : NSObject <OSLogEventProvider> instanceSize=512
+  ivar +8 _eint {?="type"Q"pid"i"uid"I"proc_id"Q"pidversion"I"proc_imageuuid"*"proc_imagepath"*"activity_id"Q"parent_id"Q"common"{?="trace_id"Q"timestamp"Q"persona_id"I"launch_persona_id"I"persona_name"*"launch_persona_name"*"persona_type"i"launch_persona_type"i"thread"Q"timebase"{mach_timebase_info="numer"I"denom"I}"dsc_uuid"*"image_uuid"*"image_path"*"tv_gmt"{timeval="tv_sec"q"tv_usec"i}"tz"{timezone="tz_minuteswest"i"tz_dsttime"i}"offset"Q"format_offset"Q"opaque_flags"I"message"*"sz"Q}""(?="activity_create"{?="creator_aid"Q"unique_pid"Q}"activity_transition"{?="transition_id"Q}"log_message"{?="buffer"*"buffer_sz"Q"hdr"^{os_log_fmt_hdr_s}"pubdata"^v"pubdata_sz"S"privdata"*"privdata_sz"Q"subsystem"*"category"*"oversize_id"I"ttl"C"persisted"B"signpost_scope"C""(?="signpost_type"C"metric_base_type"C)""(?="signpost_id"Q"metric_value"Q)"signpost_name_offset"Q"signpost_name"*"has_context_data"B}"useraction"{?="persisted"B}"timesync"{?="boot_uuid"[16C]"flags"Q"continuous_time"Q"wallclock_nsec"Q"ttl"C}"loss"{?="start"{?="stamp"Q"tv_gmt"{timeval="tv_sec"q"tv_usec"i}"tz"{timezone="tz_minuteswest"i"tz_dsttime"i}}"end"{?="stamp"Q"tv_gmt"{timeval="tv_sec"q"tv_usec"i}"tz"{timezone="tz_minuteswest"i"tz_dsttime"i}}"count"I})"statedump"{?="message_size"Q"ttl"C}}
+  ivar +352 _aid_map ^{_os_opaque_64_map_s=[3^v]}
+  ivar +360 _event ^{?=IQSqq(?={?=^{tracev3_chunk_s}^{catalog_s}{_OSLogEventChunkContext=^{tracev3_chunk_s}^{_firehose_unaligned_chunk_s}{iovec=^vQ}^{catalog_procinfo_s}}^{_firehose_unaligned_tracepoint_s}}{?=[16C]{os_timesync_time_entry_s={os_timesync_header_s=SSI}QQ{timezone=ii}}}{?=[16C]CB})}
+  ivar +368 _efv Q
+  ivar +376 _tsdb ^{_os_timesync_db_s=}
+  ivar +384 _uuiddbfd i
+  ivar +388 _tz {timezone="tz_minuteswest"i"tz_dsttime"i}
+  ivar +396 _sensitive B
+  ivar +397 _trackActivities B
+  ivar +400 _thread Q
+  ivar +408 _retainCount Q
+  ivar +416 _processImagePath @"NSString"
+  ivar +424 _senderImagePath @"NSString"
+  ivar +432 _backtrace @"OSLogEventBacktrace"
+  ivar +440 _logMessage @"NSString"
+  ivar +448 _decomposedMessage @"OSLogEventDecomposedMessage"
+  ivar +456 _metricLabel @"NSString"
+  ivar +464 _metricDimensions @"NSDictionary"
+  ivar +472 _metricMetadata @"NSDictionary"
+  ivar +480 _personaName @"NSString"
+  ivar +488 _launchPersonaName @"NSString"
+  ivar +496 _unreliableIdentifier B
+  ivar +497 _realTimeIdentifier B
+  ivar +504 _uuidi Q
+  property _oversizeIdentifier (TI,R,N)
+  property _timesyncRangeUUIDIndex (TQ,N,V_uuidi)
+  property _unreliableIdentifier (TB,N,V_unreliableIdentifier)
+  property _realTimeIdentifier (TB,N,V_realTimeIdentifier)
+  property composedMessage (T@"NSString",R,N)
+  property type (TQ,R,N)
+  property logType (TQ,R,N)
+  property size (TQ,R,N)
+  property timeToLive (TQ,R,N)
+  property traceIdentifier (TQ,R,N)
+  property threadIdentifier (TQ,R,N)
+  property personaIdentifier (TI,R,N)
+  property personaName (T@"NSString",R,N)
+  property personaType (Ti,R,N)
+  property date (T@"NSDate",R,N)
+  property timeZone (T@"NSTimeZone",R,N)
+  property unixDate (T^{timeval=qi},R,N)
+  property unixTimeZone (T^{timezone=ii},R,N)
+  property processIdentifier (Ti,R,N)
+  property userIdentifier (TI,R,N)
+  property processIdentifierVersion (TI,R,N)
+  property launchPersonaIdentifier (TI,R,N)
+  property launchPersonaName (T@"NSString",R,N)
+  property launchPersonaType (Ti,R,N)
+  property activityIdentifier (TQ,R,N)
+  property parentActivityIdentifier (TQ,R,N)
+  property transitionActivityIdentifier (TQ,R,N)
+  property bootUUID (T@"NSUUID",R,N)
+  property continuousNanosecondsSinceBoot (TQ,R,N)
+  property machContinuousTimestamp (TQ,R,N)
+  property processImageUUID (T@"NSUUID",R,N)
+  property processImageUUIDBytes (Tr*,R,N)
+  property processImagePath (T@"NSString",R,N)
+  property process (T@"NSString",R,N)
+  property senderImageUUID (T@"NSUUID",R,N)
+  property senderImageUUIDBytes (Tr*,R,N)
+  property senderImagePath (T@"NSString",R,N)
+  property sender (T@"NSString",R,N)
+  property senderImageOffset (TQ,R,N)
+  property backtrace (T@"OSLogEventBacktrace",R,N)
+  property subsystem (T@"NSString",R,N)
+  property category (T@"NSString",R,N)
+  property formatString (T@"NSString",R,N)
+  property decomposedMessage (T@"OSLogEventDecomposedMessage",R,N)
+  property signpostIdentifier (TQ,R,N)
+  property signpostType (TQ,R,N)
+  property signpostScope (TQ,R,N)
+  property signpostName (T@"NSString",R,N)
+  property metricLabel (T@"NSString",R,N)
+  property metricDimensions (T@"NSDictionary",R,N)
+  property metricMetadata (T@"NSDictionary",R,N)
+  property metricData (T@"NSDictionary",R,N)
+  property creatorActivityIdentifier (TQ,R,N)
+  property creatorProcessUniqueIdentifier (TQ,R,N)
+  property lossStartMachContinuousTimestamp (TQ,R,N)
+  property lossStartUnixDate (T^{timeval=qi},R,N)
+  property lossStartUnixTimeZone (T^{timezone=ii},R,N)
+  property lossEndMachContinuousTimestamp (TQ,R,N)
+  property lossEndUnixDate (T^{timeval=qi},R,N)
+  property lossEndUnixTimeZone (T^{timezone=ii},R,N)
+  property lossCount (T{?=IB},R,N)
+  +_make @16@0:8  imp=+0x1c76461bc
+  -_assertBalanced v16@0:8  imp=+0x1c764b208
+  -_fillFromMessageV1:withTimebase: v32@0:8@16{mach_timebase_info=II}24  imp=+0x1c765afbc
+  -_fillFromMessageV2:withTimebase: v32@0:8@16{mach_timebase_info=II}24  imp=+0x1c765b3f0
+  -_fillFromOSLogMessage: v24@0:8@16  imp=+0x1c765b658
+  -_oversizeIdentifier I16@0:8  imp=+0x1c76523a0
+  -_realTimeIdentifier B16@0:8  imp=+0x1c765cac0
+  -_setBuffer:size:privateBuffer:privateSize: v48@0:8r^v16Q24r^v32Q40  imp=+0x1c765258c
+  -_setDoNotTrackActivites: v20@0:8B16  imp=+0x1c7646270
+  -_setFallbackTimezone v16@0:8  imp=+0x1c76596d4
+  -_setIncludeSensitive: v20@0:8B16  imp=+0x1c7646260
+  -_setLogEvent:rangeUUIDIndex:machTimebase:traceFilename: B48@0:8^{?=IQSqq(?={?=^{tracev3_chunk_s}^{catalog_s}{_OSLogEventChunkContext=^{tracev3_chunk_s}^{_firehose_unaligned_chunk_s}{iovec=^vQ}^{catalog_procinfo_s}}^{_firehose_unaligned_tracepoint_s}}{?=[16C]{os_timesync_time_entry_s={os_timesync_header_s=SSI}QQ{timezone=ii}}}{?=[16C]CB})}16Q24^{mach_timebase_info=II}32@40  imp=+0x1c7659754
+  -_setThreadCrumb v16@0:8  imp=+0x1c76596c4
+  -_setTimesyncDatabase: v24@0:8^{_os_timesync_db_s=}16  imp=+0x1c7646258
+  -_setUUIDDBFileDescriptor: v20@0:8i16  imp=+0x1c7646268
+  -_shouldIncludeSensitive B16@0:8  imp=+0x1c764e318
+  -_timesyncRangeUUIDIndex Q16@0:8  imp=+0x1c764ae2c
+  -_unmake Vv16@0:8  imp=+0x1c7652694
+  -_unreliableIdentifier B16@0:8  imp=+0x1c765cab0
+  -activityIdentifier Q16@0:8  imp=+0x1c765baa8
+  -backtrace @16@0:8  imp=+0x1c764c604
+  -bootUUID @16@0:8  imp=+0x1c765bae0
+  -category @16@0:8  imp=+0x1c764c5b8
+  -composedMessage @16@0:8  imp=+0x1c764ae44
+  -continuousNanosecondsSinceBoot Q16@0:8  imp=+0x1c764c5f0
+  -creatorActivityIdentifier Q16@0:8  imp=+0x1c765c9d8
+  -creatorProcessUniqueIdentifier Q16@0:8  imp=+0x1c764b43c
+  -date @16@0:8  imp=+0x1c765b9ec
+  -decomposedMessage @16@0:8  imp=+0x1c764ddb0
+  -description @16@0:8  imp=+0x1c765b894
+  -formatArguments @16@0:8  imp=+0x1c76a8c34
+  -formatString @16@0:8  imp=+0x1c764c9dc
+  -init @16@0:8  imp=+0x1c76a8c14
+  -launchPersonaIdentifier I16@0:8  imp=+0x1c765ba4c
+  -launchPersonaName @16@0:8  imp=+0x1c765ba54
+  -launchPersonaType i16@0:8  imp=+0x1c765baa0
+  -logType Q16@0:8  imp=+0x1c765b8f8
+  -lossCount {?=IB}16@0:8  imp=+0x1c765ca7c
+  -lossEndMachContinuousTimestamp Q16@0:8  imp=+0x1c765ca38
+  -lossEndUnixDate ^{timeval=qi}16@0:8  imp=+0x1c765ca54
+  -lossEndUnixTimeZone ^{timezone=ii}16@0:8  imp=+0x1c765ca68
+  -lossStartMachContinuousTimestamp Q16@0:8  imp=+0x1c765c9f4
+  -lossStartUnixDate ^{timeval=qi}16@0:8  imp=+0x1c765ca10
+  -lossStartUnixTimeZone ^{timezone=ii}16@0:8  imp=+0x1c765ca24
+  -machContinuousTimestamp Q16@0:8  imp=+0x1c764ae34
+  -methodSignatureForSelector: @24@0:8:16  imp=+0x1c765af84
+  -metricData @16@0:8  imp=+0x1c765c330
+  -metricDimensions @16@0:8  imp=+0x1c765bf38
+  -metricLabel @16@0:8  imp=+0x1c765bc90
+  -metricMetadata @16@0:8  imp=+0x1c765c150
+  -parentActivityIdentifier Q16@0:8  imp=+0x1c765bab4
+  -personaIdentifier I16@0:8  imp=+0x1c765b948
+  -personaName @16@0:8  imp=+0x1c765b950
+  -personaType i16@0:8  imp=+0x1c765b99c
+  -process @16@0:8  imp=+0x1c764b458
+  -processIdentifier i16@0:8  imp=+0x1c764b434
+  -processIdentifierVersion I16@0:8  imp=+0x1c765ba3c
+  -processImagePath @16@0:8  imp=+0x1c764b480
+  -processImageUUID @16@0:8  imp=+0x1c764dd08
+  -processImageUUIDBytes r*16@0:8  imp=+0x1c765bb80
+  -processUniqueIdentifier Q16@0:8  imp=+0x1c765bb78
+  -release Vv16@0:8  imp=+0x1c764b1a4
+  -respondsToSelector: B24@0:8:16  imp=+0x1c765af7c
+  -retain @16@0:8  imp=+0x1c764adc8
+  -sender @16@0:8  imp=+0x1c765bc68
+  -senderImageOffset Q16@0:8  imp=+0x1c764c7a4
+  -senderImagePath @16@0:8  imp=+0x1c765bc2c
+  -senderImageUUID @16@0:8  imp=+0x1c765bb88
+  -senderImageUUIDBytes r*16@0:8  imp=+0x1c764c738
+  -set_realTimeIdentifier: v20@0:8B16  imp=+0x1c765cac8
+  -set_timesyncRangeUUIDIndex: v24@0:8Q16  imp=+0x1c765caa8
+  -set_unreliableIdentifier: v20@0:8B16  imp=+0x1c765cab8
+  -signpostIdentifier Q16@0:8  imp=+0x1c764dd5c
+  -signpostName @16@0:8  imp=+0x1c764c8fc
+  -signpostScope Q16@0:8  imp=+0x1c764dd94
+  -signpostType Q16@0:8  imp=+0x1c764dd78
+  -size Q16@0:8  imp=+0x1c765b938
+  -subsystem @16@0:8  imp=+0x1c764c580
+  -threadIdentifier Q16@0:8  imp=+0x1c764dd00
+  -timeToLive Q16@0:8  imp=+0x1c765b9a4
+  -timeZone @16@0:8  imp=+0x1c765ba18
+  -traceIdentifier Q16@0:8  imp=+0x1c765b940
+  -transitionActivityIdentifier Q16@0:8  imp=+0x1c765bac0
+  -type Q16@0:8  imp=+0x1c764ae24
+  -unixDate ^{timeval=qi}16@0:8  imp=+0x1c764ae3c
+  -unixTimeZone ^{timezone=ii}16@0:8  imp=+0x1c764c8f4
+  -userIdentifier I16@0:8  imp=+0x1c765ba44
+@class OSLogEventSerializer : NSObject instanceSize=72
+  ivar +8 _stream @"OSLogEventStream"
+  ivar +16 _maxLogEventBatchSize Q
+  ivar +24 _curBatchSize Q
+  ivar +32 _curBatchDictionaries @"NSMutableArray"
+  ivar +40 _metadata @"_OSLogEventSerializationMetadata"
+  ivar +48 _serializedEventCount Q
+  ivar +56 _argumentRedactionBlock @?
+  ivar +64 _subsystemToCategories @"NSMutableDictionary"
+  property source (T@"OSLogEventSource",R,N)
+  property stream (T@"OSLogEventStream",R,N,V_stream)
+  property curBatchSize (TQ,N,V_curBatchSize)
+  property curBatchDictionaries (T@"NSMutableArray",R,N,V_curBatchDictionaries)
+  property metadata (T@"_OSLogEventSerializationMetadata",R,N,V_metadata)
+  property subsystemToCategories (T@"NSMutableDictionary",R,N,V_subsystemToCategories)
+  property flags (TQ,N)
+  property filterPredicate (T@"NSPredicate",C,N)
+  property target (T@"NSObject<OS_dispatch_queue>",&,N)
+  property maxLogEventBatchSize (TQ,N,V_maxLogEventBatchSize)
+  property argumentRedactionBlock (T@?,C,N,V_argumentRedactionBlock)
+  property serializedEventCount (TQ,R,N,V_serializedEventCount)
+  -.cxx_destruct v16@0:8  imp=+0x1c768fab8
+  -_arrayForDecomposedMessage:indicesToRedact: @32@0:8@16@24  imp=+0x1c768ddd4
+  -_completeBatch: v24@0:8@?16  imp=+0x1c768f8b8
+  -_dictForArg:shouldRedactValue: @28@0:8@16B24  imp=+0x1c768d988
+  -_dictForDecomposedMessage:index:shouldRedact: @36@0:8@16Q24B32  imp=+0x1c768dc40
+  -_dictForDecomposedMessage:indicesToRedact: @32@0:8@16@24  imp=+0x1c768deb8
+  -_dictForPlaceholder: @24@0:8@16  imp=+0x1c768d610
+  -_dictionaryForProxy: @24@0:8@16  imp=+0x1c768e0b4
+  -_isBatchCompleted B16@0:8  imp=+0x1c768d5d8
+  -_serializeEvent: v24@0:8@16  imp=+0x1c768d448
+  -argumentRedactionBlock @?16@0:8  imp=+0x1c768faa0
+  -curBatchDictionaries @16@0:8  imp=+0x1c768fa88
+  -curBatchSize Q16@0:8  imp=+0x1c768fa78
+  -filterPredicate @16@0:8  imp=+0x1c768d078
+  -flags Q16@0:8  imp=+0x1c768cfdc
+  -initWithSource:dataProcessingBlock:completionBlock: @40@0:8@16@?24@?32  imp=+0x1c768c864
+  -invalidate v16@0:8  imp=+0x1c768d408
+  -maxLogEventBatchSize Q16@0:8  imp=+0x1c768fa68
+  -metadata @16@0:8  imp=+0x1c768fa90
+  -serializeFromDate: v24@0:8@16  imp=+0x1c768d1c8
+  -serializeFromDate:toDate: v32@0:8@16@24  imp=+0x1c768d264
+  -serializeFromLastBoot v16@0:8  imp=+0x1c768d368
+  -serializeFromPosition: v24@0:8@16  imp=+0x1c768d3a8
+  -serializedEventCount Q16@0:8  imp=+0x1c768fa98
+  -setArgumentRedactionBlock: v24@0:8@?16  imp=+0x1c768faa8
+  -setCurBatchSize: v24@0:8Q16  imp=+0x1c768fa80
+  -setFilterPredicate: v24@0:8@16  imp=+0x1c768d018
+  -setFlags: v24@0:8Q16  imp=+0x1c768cf94
+  -setMaxLogEventBatchSize: v24@0:8Q16  imp=+0x1c768fa70
+  -setTarget: v24@0:8@16  imp=+0x1c768d0c8
+  -source @16@0:8  imp=+0x1c768d178
+  -stream @16@0:8  imp=+0x1c768fa60
+  -subsystemToCategories @16@0:8  imp=+0x1c768fab0
+  -target @16@0:8  imp=+0x1c768d128
+@class OSLogEventSource : NSObject instanceSize=48
+  ivar +8 _fileRefs @"NSMutableArray"
+  ivar +16 _lcr @"_OSLogCollectionReference"
+  ivar +24 _lesm @"_OSLogEventStoreMetadata"
+  ivar +32 _oldestTimeRef @"_OSLogEventStoreTimeRef"
+  ivar +40 _tsdb ^{_os_timesync_db_s=}
+  property _fileRefs (T@"NSMutableArray",&,N,V_fileRefs)
+  property tsdb (T^{_os_timesync_db_s=},R,N,V_tsdb)
+  property lcr (T@"_OSLogCollectionReference",R,N,V_lcr)
+  property lesm (T@"_OSLogEventStoreMetadata",R,N,V_lesm)
+  property oldestTimeRef (T@"_OSLogEventStoreTimeRef",R,N,V_oldestTimeRef)
+  property newestTimeRef (T@"_OSLogEventStoreTimeRef",R,N)
+  property uniqueIdentifier (T@"NSUUID",R,N)
+  property oldestDate (T@"NSDate",R,N)
+  property newestDate (T@"NSDate",R,N)
+  -.cxx_destruct v16@0:8  imp=+0x1c7652d8c
+  -_enumerateIndexFiles: v24@0:8@?16  imp=+0x1c76431e0
+  -_fileRefs @16@0:8  imp=+0x1c7680554
+  -_insertIndexFile: v24@0:8@16  imp=+0x1c7642900
+  -dealloc v16@0:8  imp=+0x1c7652c70
+  -initWithCollection:metadata:timesync: @40@0:8@16@24^{_os_timesync_db_s=}32  imp=+0x1c7641610
+  -lcr @16@0:8  imp=+0x1c7642c9c
+  -lesm @16@0:8  imp=+0x1c7642ca4
+  -newestDate @16@0:8  imp=+0x1c764590c
+  -newestTimeRef @16@0:8  imp=+0x1c76804ac
+  -oldestDate @16@0:8  imp=+0x1c76804b4
+  -oldestTimeRef @16@0:8  imp=+0x1c7680568
+  -set_fileRefs: v24@0:8@16  imp=+0x1c768055c
+  -tsdb ^{_os_timesync_db_s=}16@0:8  imp=+0x1c7642c94
+  -uniqueIdentifier @16@0:8  imp=+0x1c7652984
+@class OSLogEventStore : NSObject instanceSize=56
+  ivar +8 _archiveURL @"NSURL"
+  ivar +16 _directoryURL @"NSURL"
+  ivar +24 _relativeFilePaths @"NSArray"
+  ivar +32 _progressHandler @?
+  ivar +40 _upgradeHandler @?
+  ivar +48 _progress @"NSProgress"
+  property _archiveURL (T@"NSURL",&,N,V_archiveURL)
+  property _directoryURL (T@"NSURL",&,N,V_directoryURL)
+  property _relativeFilePaths (T@"NSArray",&,N,V_relativeFilePaths)
+  property _progressHandler (T@?,C,N,V_progressHandler)
+  property _upgradeHandler (T@?,C,N,V_upgradeHandler)
+  property _progress (T@"NSProgress",&,N,V_progress)
+  +localStore @16@0:8  imp=+0x1c7640180
+  +localStoreWithRelativePaths: @24@0:8@16  imp=+0x1c769b014
+  +storeWithArchiveURL: @24@0:8@16  imp=+0x1c769b074
+  +storeWithArchiveURL:relativePaths: @32@0:8@16@24  imp=+0x1c769b310
+  +storeWithDirectoryURL: @24@0:8@16  imp=+0x1c769b0d4
+  +storeWithFileURL: @24@0:8@16  imp=+0x1c769b134
+  -.cxx_destruct v16@0:8  imp=+0x1c7652aa8
+  -_addIndexFileForTraceFile:orChunkStore:toSource: v40@0:8@16@24@32  imp=+0x1c769b4dc
+  -_advanceProgress v16@0:8  imp=+0x1c769b87c
+  -_archiveURL @16@0:8  imp=+0x1c769ca38
+  -_createArchiveLCR: @24@0:8^@16  imp=+0x1c769bdfc
+  -_createArchiveStoreMetadata:error: @32@0:8@16^@24  imp=+0x1c769c55c
+  -_createDirectoryStoreMetadata:error: @32@0:8@16^@24  imp=+0x1c769c348
+  -_createEventSource:metadata:timesync: @40@0:8@16@24^{_os_timesync_db_s=}32  imp=+0x1c769c730
+  -_createLCR: @24@0:8^@16  imp=+0x1c769bd68
+  -_createLiveFD:error: B32@0:8^i16^@24  imp=+0x1c769c720
+  -_createStoreMetadata:error: @32@0:8@16^@24  imp=+0x1c769c308
+  -_createTSDB:error: ^{_os_timesync_db_s=}28@0:8i16^@20  imp=+0x1c769c2a0
+  -_directoryURL @16@0:8  imp=+0x1c769ca4c
+  -_enumerateArchiveIntoSource:error: B32@0:8@16^@24  imp=+0x1c769ba88
+  -_enumerateDirectoryIntoSource:directory:dirname: v40@0:8@16^{?=iQQ*iqqi{_opaque_pthread_mutex_t=q[56c]}^{_telldir}}24r*32  imp=+0x1c769b8d8
+  -_finalizeEventSource: v24@0:8@16  imp=+0x1c769c7d0
+  -_progress @16@0:8  imp=+0x1c769ca84
+  -_progressHandler @?16@0:8  imp=+0x1c7641ea0
+  -_relativeFilePaths @16@0:8  imp=+0x1c769ca60
+  -_reportProgressWithError: v24@0:8@16  imp=+0x1c769b7d4
+  -_upgradeHandler @?16@0:8  imp=+0x1c769ca7c
+  -addFiles:toSource: v32@0:8@16@24  imp=+0x1c769b644
+  -initWithArchiveURL: @24@0:8@16  imp=+0x1c769b390
+  -initWithArchiveURL:relativePaths: @32@0:8@16@24  imp=+0x1c769b450
+  -initWithDirectoryURL: @24@0:8@16  imp=+0x1c769b3f0
+  -prepareWithCompletionHandler: v24@0:8@?16  imp=+0x1c769c7d4
+  -setProgressHandler: v24@0:8@?16  imp=+0x1c769b7d0
+  -setUpgradeConfirmationHandler: v24@0:8@?16  imp=+0x1c76401b0
+  -set_archiveURL: v24@0:8@16  imp=+0x1c769ca40
+  -set_directoryURL: v24@0:8@16  imp=+0x1c769ca54
+  -set_progress: v24@0:8@16  imp=+0x1c769ca8c
+  -set_progressHandler: v24@0:8@?16  imp=+0x1c769ca74
+  -set_relativeFilePaths: v24@0:8@16  imp=+0x1c769ca68
+  -set_upgradeHandler: v24@0:8@?16  imp=+0x1c76401b4
+@class OSLogEventStream : OSLogEventStreamBase instanceSize=104
+  ivar +72 _catalogFilter @"_OSLogCatalogFilter"
+  ivar +80 _index @"_OSLogIndex"
+  ivar +88 _source @"OSLogEventSource"
+  ivar +96 _tsdb ^{_os_timesync_db_s=}
+  property index (T@"_OSLogIndex",&,N,V_index)
+  property tsdb (T^{_os_timesync_db_s=},N,V_tsdb)
+  property catalogFilter (T@"_OSLogCatalogFilter",&,N,V_catalogFilter)
+  property source (T@"OSLogEventSource",R,N,V_source)
+  property flags (TQ,D,N)
+  property filterPredicate (T@"NSPredicate",C,D,N)
+  property target (T@"NSObject<OS_dispatch_queue>",&,D,N)
+  -.cxx_destruct v16@0:8  imp=+0x1c7652c08
+  -_activateStreamFromDate:toDate:useMemEffic:catalogCacheSize:dataCacheSize: v44@0:8@16@24B32I36I40  imp=+0x1c7670358
+  -_activateStreamFromTimeIntervalSinceLastBoot: v24@0:8d16  imp=+0x1c7670764
+  -_activateStreamInRange:useMemEffic:catalogCacheSize:dataCacheSize: v36@0:8^{os_timesync_range_s=^{_os_opaque_128_map_s}QQ[0[16C]]}16B24I28I32  imp=+0x1c766fd68
+  -_foreachIndexFile: v24@0:8@?16  imp=+0x1c766fd54
+  -_initWithSource:flags: @32@0:8@16Q24  imp=+0x1c7642a58
+  -_setQueue: v24@0:8@16  imp=+0x1d69169d4
+  -activateStreamFromDate: v24@0:8@16  imp=+0x1c764583c
+  -activateStreamFromDate:catalogCacheSize:dataCacheSize: v32@0:8@16I24I28  imp=+0x1c76706b8
+  -activateStreamFromDate:toDate: v32@0:8@16@24  imp=+0x1c7670754
+  -activateStreamFromLastBoot v16@0:8  imp=+0x1c7670988
+  -activateStreamFromPosition: v24@0:8@16  imp=+0x1c7670990
+  -catalogFilter @16@0:8  imp=+0x1c7645c2c
+  -dealloc v16@0:8  imp=+0x1c7652b1c
+  -index @16@0:8  imp=+0x1c7670c78
+  -initWithSource: @24@0:8@16  imp=+0x1c766fd4c
+  -initWithSource:skipNonSignpostFiles: @28@0:8@16B24  imp=+0x1c7642a50
+  -setCatalogFilter: v24@0:8@16  imp=+0x1c7670c64
+  -setFilterPredicate: v24@0:8@16  imp=+0x1c76435dc
+  -setIndex: v24@0:8@16  imp=+0x1c7670c8c
+  -setTsdb: v24@0:8^{_os_timesync_db_s=}16  imp=+0x1c7670cc8
+  -source @16@0:8  imp=+0x1c7670ca0
+  -tsdb ^{_os_timesync_db_s=}16@0:8  imp=+0x1c7670cb4
+@class OSLogEventStreamBase : NSObject instanceSize=72
+  ivar +8 _invalidated I
+  ivar +16 _queue @"NSObject<OS_dispatch_queue>"
+  ivar +24 _target @"NSObject<OS_dispatch_queue>"
+  ivar +32 _flags Q
+  ivar +40 _filterPredicate @"NSPredicate"
+  ivar +48 _compiledPredicate @"NSPredicate"
+  ivar +56 _streamHandler @?
+  ivar +64 _invalidationHandler @?
+  property flags (TQ,N,V_flags)
+  property filterPredicate (T@"NSPredicate",C,N,V_filterPredicate)
+  property compiledPredicate (T@"NSPredicate",C,N,V_compiledPredicate)
+  property target (T@"NSObject<OS_dispatch_queue>",&,N,V_target)
+  property queue (T@"NSObject<OS_dispatch_queue>",&,N,V_queue)
+  property streamHandler (T@?,C,N,V_streamHandler)
+  property invalidated (TI,N,V_invalidated)
+  property invalidationHandler (T@?,C,N,V_invalidationHandler)
+  -.cxx_destruct v16@0:8  imp=+0x1c7653024
+  -compiledPredicate @16@0:8  imp=+0x1c766c924
+  -filterPredicate @16@0:8  imp=+0x1c7644784
+  -flags Q16@0:8  imp=+0x1c76433b8
+  -init @16@0:8  imp=+0x1c7642c00
+  -invalidate v16@0:8  imp=+0x1c76531d8
+  -invalidated I16@0:8  imp=+0x1c764b200
+  -invalidationHandler @?16@0:8  imp=+0x1c7652aa0
+  -queue @16@0:8  imp=+0x1c76458c8
+  -setCompiledPredicate: v24@0:8@16  imp=+0x1c766c92c
+  -setEventHandler: v24@0:8@?16  imp=+0x1c76433c0
+  -setFilterPredicate: v24@0:8@16  imp=+0x1c76436a0
+  -setFlags: v24@0:8Q16  imp=+0x1c76433b0
+  -setInvalidated: v20@0:8I16  imp=+0x1c7652a98
+  -setInvalidationHandler: v24@0:8@?16  imp=+0x1c76434a8
+  -setQueue: v24@0:8@16  imp=+0x1c766c904
+  -setStreamHandler: v24@0:8@?16  imp=+0x1c7643550
+  -setTarget: v24@0:8@16  imp=+0x1c766c918
+  -streamHandler @?16@0:8  imp=+0x1c7645c24
+  -target @16@0:8  imp=+0x1c766c910
+@class OSLogEventStreamPosition : NSObject <NSSecureCoding> instanceSize=48
+  ivar +8 _source [16C]
+  ivar +24 _uuid [16C]
+  ivar +40 _ct Q
+  property sourceUUID (Tr*,R)
+  property UUID (Tr*,R)
+  property continuousTime (TQ,R)
+  +supportsSecureCoding B16@0:8  imp=+0x1c7670e78
+  -UUID r*16@0:8  imp=+0x1c7670e88
+  -continuousTime Q16@0:8  imp=+0x1c7670e90
+  -encodeWithCoder: v24@0:8@16  imp=+0x1c7670db4
+  -initWithCoder: @24@0:8@16  imp=+0x1c7670cdc
+  -initWithSource:bootUUID:time: @40@0:8r*16r*24Q32  imp=+0x1c7652994
+  -sourceUUID r*16@0:8  imp=+0x1c7670e80
+@class OSLogMessagePlaceholder : NSObject instanceSize=32
+  ivar +8 _placeholder ^{os_log_fmt_cspec_s=*SCSSSSii***Q}
+  ivar +16 _placeholderString @"NSString"
+  ivar +24 _placeholderTokens @"NSArray"
+  property rawString (T@"NSString",R,N)
+  property tokens (T@"NSArray",R,N)
+  property typeNamespace (T@"NSString",R,N)
+  property type (T@"NSString",R,N)
+  property width (Ti,R,N)
+  property precision (Ti,R,N)
+  -dealloc v16@0:8  imp=+0x1c7650970
+  -initWithPlaceholderStruct: @24@0:8^{os_log_fmt_cspec_s=*SCSSSSii***Q}16  imp=+0x1c765044c
+  -precision i16@0:8  imp=+0x1c765cae4
+  -rawString @16@0:8  imp=+0x1c765caf0
+  -tokens @16@0:8  imp=+0x1c7650578
+  -type @16@0:8  imp=+0x1c7650510
+  -typeNamespace @16@0:8  imp=+0x1c76504a8
+  -width i16@0:8  imp=+0x1c765cad8
+@class OSLogPersistence : NSObject instanceSize=144
+  ivar +8 _oslcr @"_OSLogCollectionReference"
+  ivar +16 _version @"_OSLogVersioning"
+  ivar +24 _index @"_OSLogIndex"
+  ivar +32 _verbose B
+  ivar +40 _logFile @"NSURL"
+  ivar +48 _logArchive @"NSURL"
+  ivar +56 _delegate @"<OSLogPersistenceDelegate>"
+  ivar +64 _predicate @"NSCompoundPredicate"
+  ivar +72 _batchSize Q
+  ivar +80 _options Q
+  ivar +88 _currentFile @"NSString"
+  ivar +96 _startDate @"NSDate"
+  ivar +104 _sparseDataStart @"NSDate"
+  ivar +112 _endDate @"NSDate"
+  ivar +120 _decodeFailures Q
+  ivar +128 _messagesFiltered Q
+  ivar +136 _logMessageCount Q
+  property statistics (T@"NSDictionary",R,&,N)
+  property timesync (T^{_os_timesync_db_s=},R,N)
+  property logFile (T@"NSURL",C,N,V_logFile)
+  property logArchive (T@"NSURL",C,N,V_logArchive)
+  property delegate (T@"<OSLogPersistenceDelegate>",W,N,V_delegate)
+  property predicate (T@"NSCompoundPredicate",C,N,V_predicate)
+  property batchSize (TQ,N,V_batchSize)
+  property options (TQ,N,V_options)
+  property archiveState (Tq,R,N)
+  property archiveVersion (Tq,R,N)
+  property currentFile (T@"NSString",R,C,N,V_currentFile)
+  property startDate (T@"NSDate",R,C,N,V_startDate)
+  property sparseDataStart (T@"NSDate",R,C,N,V_sparseDataStart)
+  property endDate (T@"NSDate",R,C,N,V_endDate)
+  property decodeFailures (TQ,R,N,V_decodeFailures)
+  property messagesFiltered (TQ,R,N,V_messagesFiltered)
+  property logMessageCount (TQ,R,N,V_logMessageCount)
+  property verbose (TB,N,V_verbose)
+  -.cxx_destruct v16@0:8  imp=+0x1c76697f8
+  -_openFiles v16@0:8  imp=+0x1c7667c4c
+  -_openLocalPersistenceDir v16@0:8  imp=+0x1c76677a4
+  -_openPath: v24@0:8@16  imp=+0x1c7667994
+  -allowSensitive B16@0:8  imp=+0x1c7668348
+  -archiveState q16@0:8  imp=+0x1c76683f4
+  -archiveVersion q16@0:8  imp=+0x1c76683e0
+  -batchSize Q16@0:8  imp=+0x1c7669790
+  -currentFile @16@0:8  imp=+0x1c76697b0
+  -dealloc v16@0:8  imp=+0x1c7667ddc
+  -decodeFailures Q16@0:8  imp=+0x1c76697d0
+  -delegate @16@0:8  imp=+0x1c7669750
+  -endDate @16@0:8  imp=+0x1c76697c8
+  -enumerateFromLastBootWithBlock: v24@0:8@?16  imp=+0x1c766890c
+  -enumerateFromStartDate:toEndDate:withBlock: v40@0:8@16@24@?32  imp=+0x1c76686d0
+  -fetchFromStartDate:toEndDate: v32@0:8@16@24  imp=+0x1c7668a8c
+  -init @16@0:8  imp=+0x1c7667d94
+  -logArchive @16@0:8  imp=+0x1c7669748
+  -logFile @16@0:8  imp=+0x1c7669740
+  -logMessageCount Q16@0:8  imp=+0x1c76697e0
+  -messagesFiltered Q16@0:8  imp=+0x1c76697d8
+  -options Q16@0:8  imp=+0x1c76697a0
+  -predicate @16@0:8  imp=+0x1c7669788
+  -resetWorkingState v16@0:8  imp=+0x1c7668434
+  -setBatchSize: v24@0:8Q16  imp=+0x1c7669798
+  -setDelegate: v24@0:8@16  imp=+0x1c766977c
+  -setLogArchive: v24@0:8@16  imp=+0x1c7667ff0
+  -setLogFile: v24@0:8@16  imp=+0x1c7667e28
+  -setOptions: v24@0:8Q16  imp=+0x1c76697a8
+  -setPredicate: v24@0:8@16  imp=+0x1c76681a8
+  -setVerbose: v20@0:8B16  imp=+0x1c76697f0
+  -sparseDataStart @16@0:8  imp=+0x1c76697c0
+  -startDate @16@0:8  imp=+0x1c76697b8
+  -statistics @16@0:8  imp=+0x1c7668d08
+  -streamChunks:andEntries:flags: B36@0:8@?16@?24I32  imp=+0x1c7668438
+  -timesync ^{_os_timesync_db_s=}16@0:8  imp=+0x1c7668d00
+  -verbose B16@0:8  imp=+0x1c76697e8
+@class OSLogPreferencesCategory : NSObject instanceSize=24
+  ivar +8 _name @"NSString"
+  ivar +16 _subsystem @"OSLogPreferencesSubsystem"
+  property name (T@"NSString",R,N,V_name)
+  property subsystem (T@"OSLogPreferencesSubsystem",R,N,V_subsystem)
+  property isLocked (TB,R,N)
+  property effectiveEnabledLevel (Tq,R,N)
+  property effectivePersistedLevel (Tq,R,N)
+  property enabledLevel (Tq,N)
+  property persistedLevel (Tq,N)
+  property signpostEnabled (TB,N)
+  property signpostPersisted (TB,N)
+  property signpostBacktracesEnabled (TB,N)
+  property signpostAllowStreaming (TB,N)
+  property oversizeMessagesEnabled (TB,N)
+  -.cxx_destruct v16@0:8  imp=+0x1c7688634
+  -defaultEnabledLevel q16@0:8  imp=+0x1c7687e10
+  -defaultPersistedLevel q16@0:8  imp=+0x1c7687e78
+  -effectiveEnabledLevel q16@0:8  imp=+0x1c7687d50
+  -effectivePersistedLevel q16@0:8  imp=+0x1c7687db0
+  -enabledLevel q16@0:8  imp=+0x1c7687ee0
+  -initWithName:subsystem: @32@0:8@16@24  imp=+0x1c7687c6c
+  -isLocked B16@0:8  imp=+0x1c7687d14
+  -name @16@0:8  imp=+0x1c7688624
+  -oversizeMessagesEnabled B16@0:8  imp=+0x1c7688150
+  -persistedLevel q16@0:8  imp=+0x1c7687f48
+  -reset v16@0:8  imp=+0x1c76885a8
+  -setEnabledLevel: v24@0:8q16  imp=+0x1c76881b8
+  -setOversizeMessagesEnabled: v20@0:8B16  imp=+0x1c7688518
+  -setPersistedLevel: v24@0:8q16  imp=+0x1c7688248
+  -setSignpostAllowStreaming: v20@0:8B16  imp=+0x1c7688488
+  -setSignpostBacktracesEnabled: v20@0:8B16  imp=+0x1c76883f8
+  -setSignpostEnabled: v20@0:8B16  imp=+0x1c76882d8
+  -setSignpostPersisted: v20@0:8B16  imp=+0x1c7688368
+  -signpostAllowStreaming B16@0:8  imp=+0x1c76880e8
+  -signpostBacktracesEnabled B16@0:8  imp=+0x1c7688080
+  -signpostEnabled B16@0:8  imp=+0x1c7687fb0
+  -signpostPersisted B16@0:8  imp=+0x1c7688018
+  -subsystem @16@0:8  imp=+0x1c768862c
+@class OSLogPreferencesManager : NSObject instanceSize=32
+  ivar +8 _name @"NSString"
+  ivar +16 _prefsFile @"NSString"
+  ivar +24 _prefs @"NSMutableDictionary"
+  property processes (T@"NSArray",R,N)
+  property subsystems (T@"NSArray",R,N)
+  property enabledLevel (Tq,N)
+  property persistedLevel (Tq,N)
+  +sharedManager @16@0:8  imp=+0x1c7684c0c
+  -.cxx_destruct v16@0:8  imp=+0x1c768553c
+  -_levelPrefs @16@0:8  imp=+0x1c7685104
+  -enabledLevel q16@0:8  imp=+0x1c7684f84
+  -init @16@0:8  imp=+0x1c7684ca0
+  -persistedLevel q16@0:8  imp=+0x1c76850ac
+  -processes @16@0:8  imp=+0x1c7684d8c
+  -reset v16@0:8  imp=+0x1c7685354
+  -resetAll v16@0:8  imp=+0x1c768539c
+  -resetAllProcesses v16@0:8  imp=+0x1c76853dc
+  -resetAllSubsystems v16@0:8  imp=+0x1c768548c
+  -setEnabledLevel: v24@0:8q16  imp=+0x1c76851a4
+  -setPersistedLevel: v24@0:8q16  imp=+0x1c768527c
+  -subsystems @16@0:8  imp=+0x1c7684f78
+@class OSLogPreferencesProcess : NSObject instanceSize=64
+  ivar +8 _systemPrefsFile @"NSString"
+  ivar +16 _systemPrefs @"NSDictionary"
+  ivar +24 _internalPrefsFile @"NSString"
+  ivar +32 _internalPrefs @"NSDictionary"
+  ivar +40 _prefsFile @"NSString"
+  ivar +48 _prefs @"NSMutableDictionary"
+  ivar +56 _bundleID @"NSString"
+  property bundleID (T@"NSString",R,N,V_bundleID)
+  property isLocked (TB,R,N)
+  property effectiveEnabledLevel (Tq,R,N)
+  property effectivePersistedLevel (Tq,R,N)
+  property enabledLevel (Tq,N)
+  property persistedLevel (Tq,N)
+  -.cxx_destruct v16@0:8  imp=+0x1c7685dc8
+  -_levelPrefs @16@0:8  imp=+0x1c7685ae4
+  -bundleID @16@0:8  imp=+0x1c7685dc0
+  -defaultEnabledLevel q16@0:8  imp=+0x1c7685904
+  -defaultPersistedLevel q16@0:8  imp=+0x1c76859a4
+  -effectiveEnabledLevel q16@0:8  imp=+0x1c768583c
+  -effectivePersistedLevel q16@0:8  imp=+0x1c76858a0
+  -enabledLevel q16@0:8  imp=+0x1c7685a44
+  -initWithBundleID: @24@0:8@16  imp=+0x1c768558c
+  -isLocked B16@0:8  imp=+0x1c76857fc
+  -persistedLevel q16@0:8  imp=+0x1c7685a94
+  -reset v16@0:8  imp=+0x1c7685d64
+  -setEnabledLevel: v24@0:8q16  imp=+0x1c7685b84
+  -setPersistedLevel: v24@0:8q16  imp=+0x1c7685c74
+@class OSLogPreferencesSubsystem : NSObject instanceSize=56
+  ivar +8 _systemPrefs @"NSDictionary"
+  ivar +16 _internalPrefsFile @"NSString"
+  ivar +24 _internalPrefs @"NSDictionary"
+  ivar +32 _prefsFile @"NSString"
+  ivar +40 _prefs @"NSMutableDictionary"
+  ivar +48 _name @"NSString"
+  property name (T@"NSString",R,N,V_name)
+  property categories (T@"NSArray",R,N)
+  property isLocked (TB,R,N)
+  property effectiveEnabledLevel (Tq,R,N)
+  property effectivePersistedLevel (Tq,R,N)
+  property enabledLevel (Tq,N)
+  property persistedLevel (Tq,N)
+  property signpostEnabled (TB,N)
+  property signpostPersisted (TB,N)
+  property signpostBacktracesEnabled (TB,N)
+  property signpostAllowStreaming (TB,N)
+  property oversizeMessagesEnabled (TB,N)
+  -.cxx_destruct v16@0:8  imp=+0x1c7687bf8
+  -_defaultEnabledLevelForCategory: q24@0:8@16  imp=+0x1c7686968
+  -_defaultPersistedLevelForCategory: q24@0:8@16  imp=+0x1c7686a58
+  -_enabledLevelForCategory: q24@0:8@16  imp=+0x1c7686b48
+  -_levelPrefsForCategory: @24@0:8@16  imp=+0x1c7687654
+  -_oversizeMessagesEnabledForCategory: B24@0:8@16  imp=+0x1c76873c4
+  -_persistedLevelForCategory: q24@0:8@16  imp=+0x1c7686bb0
+  -_prefsForCategory: @24@0:8@16  imp=+0x1c76875a0
+  -_resetCategory: v24@0:8@16  imp=+0x1c7687b6c
+  -_setEnabledLevel:forCategory: v32@0:8q16@24  imp=+0x1c76876d8
+  -_setOversizeMessagesEnabled:forCategory: v28@0:8B16@20  imp=+0x1c7687ad8
+  -_setPersistedLevel:forCategory: v32@0:8q16@24  imp=+0x1c76877b0
+  -_setSignpostAllowStreaming:forCategory: v28@0:8B16@20  imp=+0x1c7687a44
+  -_setSignpostBacktracesEnabled:forCategory: v28@0:8B16@20  imp=+0x1c76879b0
+  -_setSignpostEnabled:forCategory: v28@0:8B16@20  imp=+0x1c7687888
+  -_setSignpostPersisted:forCategory: v28@0:8B16@20  imp=+0x1c768791c
+  -_signpostAllowStreamingForCategory: B24@0:8@16  imp=+0x1c76871e8
+  -_signpostBacktracesEnabledForCategory: B24@0:8@16  imp=+0x1c7686ffc
+  -_signpostEnabledForCategory: B24@0:8@16  imp=+0x1c7686c18
+  -_signpostPersistedForCategory: B24@0:8@16  imp=+0x1c7686e20
+  -categories @16@0:8  imp=+0x1c76861f0
+  -defaultEnabledLevel q16@0:8  imp=+0x1c76865e8
+  -defaultPersistedLevel q16@0:8  imp=+0x1c76865f4
+  -effectiveEnabledLevel q16@0:8  imp=+0x1c7686520
+  -effectivePersistedLevel q16@0:8  imp=+0x1c7686584
+  -enabledLevel q16@0:8  imp=+0x1c7686600
+  -initWithName: @24@0:8@16  imp=+0x1c7685e48
+  -isLocked B16@0:8  imp=+0x1c76864e0
+  -name @16@0:8  imp=+0x1c7687bf0
+  -oversizeMessagesEnabled B16@0:8  imp=+0x1c7686858
+  -persistedLevel q16@0:8  imp=+0x1c768660c
+  -reset v16@0:8  imp=+0x1c76868bc
+  -resetAll v16@0:8  imp=+0x1c768690c
+  -setEnabledLevel: v24@0:8q16  imp=+0x1c7686618
+  -setOversizeMessagesEnabled: v20@0:8B16  imp=+0x1c7686864
+  -setPersistedLevel: v24@0:8q16  imp=+0x1c7686670
+  -setSignpostAllowStreaming: v20@0:8B16  imp=+0x1c7686800
+  -setSignpostBacktracesEnabled: v20@0:8B16  imp=+0x1c768679c
+  -setSignpostEnabled: v20@0:8B16  imp=+0x1c76866d4
+  -setSignpostPersisted: v20@0:8B16  imp=+0x1c7686738
+  -signpostAllowStreaming B16@0:8  imp=+0x1c76867f4
+  -signpostBacktracesEnabled B16@0:8  imp=+0x1c7686790
+  -signpostEnabled B16@0:8  imp=+0x1c76866c8
+  -signpostPersisted B16@0:8  imp=+0x1c768672c
+@class OSLogStatistics : NSObject instanceSize=40
+  ivar +8 _eventSource @"OSLogEventSource"
+  ivar +16 _processingError @"NSError"
+  ivar +24 _archivePath @"NSString"
+  ivar +32 _handler @?
+  property eventSource (T@"OSLogEventSource",&,N,V_eventSource)
+  property processingError (T@"NSError",&,N,V_processingError)
+  property handler (T@?,C,N,V_handler)
+  property start (T@"NSDate",R,N)
+  property end (T@"NSDate",R,N)
+  property archivePath (T@"NSString",R,N,V_archivePath)
+  -.cxx_destruct v16@0:8  imp=+0x1c7678938
+  -_initializeEventSourceWithPaths: @24@0:8@16  imp=+0x1c7677cd4
+  -aggregationForLogReporterWithStartDate:endDate:predicate:withOptions:catalogCacheSize:dataCacheSize:errorOut: @64@0:8@16@24@32Q40I48I52^@56  imp=+0x1c7678060
+  -aggregationForStartDate:endDate:predicate:withOptions:errorOut: @56@0:8@16@24@32Q40^@48  imp=+0x1c7678090
+  -aggregationForStartDate_impl:endDate:predicate:withOptions:catalogCacheSize:dataCacheSize:useMemEffic:errorOut: @68@0:8@16@24@32Q40I48I52B56^@60  imp=+0x1c76780c0
+  -archivePath @16@0:8  imp=+0x1c7678920
+  -end @16@0:8  imp=+0x1c7677ccc
+  -eventSource @16@0:8  imp=+0x1c76788f8
+  -handler @?16@0:8  imp=+0x1c7678928
+  -initWithLogArchivePath:errorOut: @32@0:8@16^@24  imp=+0x1c7677cb8
+  -initWithLogArchivePath:forRelativePaths:errorOut: @40@0:8@16@24^@32  imp=+0x1c7677b20
+  -processingError @16@0:8  imp=+0x1c767890c
+  -setEventHandler: v24@0:8@?16  imp=+0x1c76788f4
+  -setEventSource: v24@0:8@16  imp=+0x1c7678900
+  -setHandler: v24@0:8@?16  imp=+0x1c7678930
+  -setProcessingError: v24@0:8@16  imp=+0x1c7678914
+  -start @16@0:8  imp=+0x1c7677cc4
+@class OSLogStatisticsAggregation : NSObject instanceSize=72
+  ivar +8 _tier C
+  ivar +16 _labelToChildTiers @"NSMutableDictionary"
+  ivar +24 _eventCount Q
+  ivar +32 _eventBytes Q
+  ivar +40 _formatString @"NSString"
+  ivar +48 _label @"NSString"
+  ivar +56 _senderUUID @"NSUUID"
+  ivar +64 _senderOffset @"NSNumber"
+  property eventCount (TQ,N,V_eventCount)
+  property eventBytes (TQ,N,V_eventBytes)
+  property labelToChildTiers (T@"NSMutableDictionary",R,N,V_labelToChildTiers)
+  property tier (TC,R,N,V_tier)
+  property formatString (T@"NSString",R,N,V_formatString)
+  property tierString (T@"NSString",R,N)
+  property label (T@"NSString",R,N,V_label)
+  property senderUUID (T@"NSUUID",R,N,V_senderUUID)
+  property senderOffset (T@"NSNumber",R,N,V_senderOffset)
+  +_labelFromProxy:forTier: @28@0:8@16C24  imp=+0x1c76767e4
+  +_stringForTier: @20@0:8C16  imp=+0x1c76767c0
+  -.cxx_destruct v16@0:8  imp=+0x1c7677ab8
+  -_addToChildren: v24@0:8@16  imp=+0x1c7676cd8
+  -_addTraceEvent: v24@0:8@16  imp=+0x1c7676e10
+  -_childTier C16@0:8  imp=+0x1c7676ab4
+  -_descendingChildren @16@0:8  imp=+0x1c7676f78
+  -_descriptionTierCap:withDepth: @28@0:8C16Q20  imp=+0x1c767750c
+  -_dictRepresentation: @20@0:8C16  imp=+0x1c7677080
+  -_tracePointSizeString @16@0:8  imp=+0x1c76774c8
+  -aggregationForTier:withLabel: @28@0:8C16@20  imp=+0x1c76778f0
+  -aggregationsForTier: @20@0:8C16  imp=+0x1c767772c
+  -descriptionWithTierCap: @20@0:8C16  imp=+0x1c7677724
+  -eventBytes Q16@0:8  imp=+0x1c7677a80
+  -eventCount Q16@0:8  imp=+0x1c7677a70
+  -formatString @16@0:8  imp=+0x1c7677a98
+  -initWithLabel:tier: @28@0:8@16C24  imp=+0x1c7676afc
+  -initWithOSLogProxy:tier: @28@0:8@16C24  imp=+0x1c7676b80
+  -jsonDescription: @24@0:8Q16  imp=+0x1c76774c0
+  -jsonDescription:tierCap: @28@0:8Q16C24  imp=+0x1c76773fc
+  -label @16@0:8  imp=+0x1c7677aa0
+  -labelToChildTiers @16@0:8  imp=+0x1c7677a68
+  -senderOffset @16@0:8  imp=+0x1c7677ab0
+  -senderUUID @16@0:8  imp=+0x1c7677aa8
+  -setEventBytes: v24@0:8Q16  imp=+0x1c7677a88
+  -setEventCount: v24@0:8Q16  imp=+0x1c7677a78
+  -tier C16@0:8  imp=+0x1c7677a90
+  -tierString @16@0:8  imp=+0x1c7676ac4
+@class OSLogTermDumper : NSObject instanceSize=48
+  ivar +8 _ob {os_trace_blob_s=""(?="ob_b"*"ob_v"^v"ob_s"*"ob_c"*)"ob_len"I"ob_size"I"ob_maxsize"I"ob_flags"S"ob_binary"B}
+  ivar +32 _last_attrs S
+  ivar +34 _ob_slop [1C]
+  ivar +35 _fancy B
+  ivar +36 _fd i
+  ivar +40 _vis B
+  ivar +41 _colorMode C
+  ivar +42 _cur_attrs S
+  property colorMode (TC,R,N,V_colorMode)
+  property isFancy (TB,R,N,V_fancy)
+  property style (TS,N,V_cur_attrs)
+  property bold (TB,N,GisBold)
+  property oblique (TB,N,GisOblique)
+  property underline (TB,N,GisUnderlined)
+  property bgColor (TC,N)
+  property fgColor (TC,N)
+  -_flushAttrs v16@0:8  imp=+0x1c766b3e8
+  -_resetAttrsForNewline v16@0:8  imp=+0x1c766b8bc
+  -beginEditing v16@0:8  imp=+0x1c766b980
+  -bgColor C16@0:8  imp=+0x1c766ad38
+  -close v16@0:8  imp=+0x1c766af30
+  -colorMode C16@0:8  imp=+0x1c766c320
+  -dealloc v16@0:8  imp=+0x1c766af98
+  -endEditing v16@0:8  imp=+0x1c766b9a4
+  -fgColor C16@0:8  imp=+0x1c766ad44
+  -flush: v20@0:8B16  imp=+0x1c766b9bc
+  -format: I24@0:8r*16  imp=+0x1c766c230
+  -hexdump:length: v32@0:8r^v16Q24  imp=+0x1c766be24
+  -init @16@0:8  imp=+0x1c766ade4
+  -initWithFd:colorMode: @24@0:8i16C20  imp=+0x1c766adf0
+  -isBold B16@0:8  imp=+0x1c766ad14
+  -isFancy B16@0:8  imp=+0x1c766c328
+  -isOblique B16@0:8  imp=+0x1c766ad20
+  -isUnderlined B16@0:8  imp=+0x1c766ad2c
+  -pad:count: v28@0:8i16Q20  imp=+0x1c766c188
+  -putUUID: v24@0:8[16C]16  imp=+0x1c766c2a4
+  -putc: v20@0:8i16  imp=+0x1c766bcb8
+  -puts: v24@0:8r*16  imp=+0x1c766c25c
+  -resetStyle v16@0:8  imp=+0x1c766add8
+  -setBgColor: v20@0:8C16  imp=+0x1c766adb0
+  -setBold: v20@0:8B16  imp=+0x1c766ad50
+  -setFgColor: v20@0:8C16  imp=+0x1c766adc4
+  -setOblique: v20@0:8B16  imp=+0x1c766ad70
+  -setStyle: v20@0:8S16  imp=+0x1c766c338
+  -setUnderline: v20@0:8B16  imp=+0x1c766ad90
+  -startPager v16@0:8  imp=+0x1c766affc
+  -style S16@0:8  imp=+0x1c766c330
+  -vformat:args: I32@0:8r*16*24  imp=+0x1c766bdbc
+  -write:size: v32@0:8r^v16Q24  imp=+0x1c766ba28
+  -writeln v16@0:8  imp=+0x1c766c180
+@class OversizeIndex : NSObject instanceSize=64
+  ivar +8 _timestamp Q
+  ivar +16 _processID Q
+  ivar +24 _pidversion I
+  ivar +28 _msgID I
+  ivar +32 _fileIndex S
+  ivar +40 _chunk_offset q
+  ivar +48 _tp_offset q
+  ivar +56 _catalog_offset q
+  property fileIndex (TS,N,V_fileIndex)
+  property chunk_offset (Tq,N,V_chunk_offset)
+  property tp_offset (Tq,N,V_tp_offset)
+  property catalog_offset (Tq,N,V_catalog_offset)
+  property processID (TQ,N,V_processID)
+  property pidversion (TI,N,V_pidversion)
+  property msgID (TI,N,V_msgID)
+  property timestamp (TQ,N,V_timestamp)
+  -catalog_offset q16@0:8  imp=+0x1c769d0e8
+  -chunk_offset q16@0:8  imp=+0x1c769d0b8
+  -compareTimestamp: q24@0:8@16  imp=+0x1c769d034
+  -fileIndex S16@0:8  imp=+0x1c769d0c8
+  -hash64 Q16@0:8  imp=+0x1c769d01c
+  -init:msgID:pidV:timestamp: @40@0:8Q16I24I28Q32  imp=+0x1c769cfb8
+  -msgID I16@0:8  imp=+0x1c769d118
+  -pidversion I16@0:8  imp=+0x1c769d108
+  -processID Q16@0:8  imp=+0x1c769d0f8
+  -setCatalog_offset: v24@0:8q16  imp=+0x1c769d0f0
+  -setChunk_offset: v24@0:8q16  imp=+0x1c769d0c0
+  -setFileIndex: v20@0:8S16  imp=+0x1c769d0d0
+  -setMsgID: v20@0:8I16  imp=+0x1c769d120
+  -setPidversion: v20@0:8I16  imp=+0x1c769d110
+  -setProcessID: v24@0:8Q16  imp=+0x1c769d100
+  -setTimestamp: v24@0:8Q16  imp=+0x1c769d130
+  -setTp_offset: v24@0:8q16  imp=+0x1c769d0e0
+  -timestamp Q16@0:8  imp=+0x1c769d128
+  -tp_offset q16@0:8  imp=+0x1c769d0d8
+@class _BaseTracepointBuffer : NSObject instanceSize=56
+  ivar +8 _events ^{?=IQSqq(?={?=^{tracev3_chunk_s}^{catalog_s}{_OSLogEventChunkContext=^{tracev3_chunk_s}^{_firehose_unaligned_chunk_s}{iovec=^vQ}^{catalog_procinfo_s}}^{_firehose_unaligned_tracepoint_s}}{?=[16C]{os_timesync_time_entry_s={os_timesync_header_s=SSI}QQ{timezone=ii}}}{?=[16C]CB})}
+  ivar +16 _canMutate B
+  ivar +24 _cursor Q
+  ivar +32 _count Q
+  ivar +40 _size Q
+  ivar +48 _fileNames @"NSMutableOrderedSet"
+  property canMutate (TB,N,V_canMutate)
+  property cursor (TQ,N,V_cursor)
+  property count (TQ,N,V_count)
+  property size (TQ,N,V_size)
+  property fileNames (T@"NSMutableOrderedSet",&,N,V_fileNames)
+  -.cxx_destruct v16@0:8  imp=+0x1c76660f8
+  -_isEmpty B16@0:8  imp=+0x1c7664cd0
+  -advanceCursorToTime: v24@0:8Q16  imp=+0x1c7664d4c
+  -allocateRow Q16@0:8  imp=+0x1c7664f78
+  -beginInsertingTracepointsClippingFromTime: v24@0:8Q16  imp=+0x1c7665018
+  -bufferHasFreeSpace B16@0:8  imp=+0x1c7664cf0
+  -canMutate B16@0:8  imp=+0x1c76660a4
+  -consolidate v16@0:8  imp=+0x1c7664e18
+  -count Q16@0:8  imp=+0x1c76660c4
+  -cursor Q16@0:8  imp=+0x1c76660b4
+  -dealloc v16@0:8  imp=+0x1c7664c84
+  -enumerateEventsFromTime:to:options:usingBlock: v44@0:8Q16Q24I32@?36  imp=+0x1c7665f78
+  -fileNames @16@0:8  imp=+0x1c76660e4
+  -finishedInsertingTracepointsWithNextMajorTime:options: v28@0:8Q16I24  imp=+0x1c7665bc4
+  -getFileNameAt: @20@0:8S16  imp=+0x1c7666098
+  -growBuffer: v24@0:8Q16  imp=+0x1c7664ec4
+  -growBufferImmediatelyIfNeeded v16@0:8  imp=+0x1c7664f1c
+  -init @16@0:8  imp=+0x1c7664c0c
+  -insertChunk:chunkOffset:chunkSetStartAddr:timestamp:subchunk: v56@0:8^{tracev3_chunk_s={tracev3_chunk_preamble_s=IIQ}(?={tracev3_chunk_header_s={mach_timebase_info=II}QqiiiI{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_continuous_s=Q}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_systeminfo_s=ii[16c][32c]}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_generation_s=[16C]ii}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_timezone_s=[48c]}}{tracev3_chunk_catalog_s=SSSS[0C]}{tracev3_chunk_catalog_v2_s=SSSSSSS[1S]Q[0C]}{tracev3_chunk_log_preamble_s=QIC[3C]}{tracev3_chunk_firehose_s=QICC[2C][0C]}{tracev3_chunk_firehose_old_s=QiCC[0C]}{tracev3_chunk_oversize_s=QIC[3C]QISS[0C]}{tracev3_chunk_oversize_old_s=QISS[0C]}{tracev3_chunk_statedump_s=QIC[3C]QQ[16C][0C]}{tracev3_chunk_simple_s=QICC[2C]QQQ[16C][16C][0C]}[0C])}16q24^v32Q40@48  imp=+0x1c7665310
+  -insertNonsparsePoint:uuid:ttl:inMemory: v40@0:8Q16[16C]24C32B36  imp=+0x1c7665240
+  -insertOversizedChunk:chunkOffset:chunkSetStartAddr:subchunk:chunkList: v56@0:8^{tracev3_chunk_s={tracev3_chunk_preamble_s=IIQ}(?={tracev3_chunk_header_s={mach_timebase_info=II}QqiiiI{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_continuous_s=Q}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_systeminfo_s=ii[16c][32c]}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_generation_s=[16C]ii}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_timezone_s=[48c]}}{tracev3_chunk_catalog_s=SSSS[0C]}{tracev3_chunk_catalog_v2_s=SSSSSSS[1S]Q[0C]}{tracev3_chunk_log_preamble_s=QIC[3C]}{tracev3_chunk_firehose_s=QICC[2C][0C]}{tracev3_chunk_firehose_old_s=QiCC[0C]}{tracev3_chunk_oversize_s=QIC[3C]QISS[0C]}{tracev3_chunk_oversize_old_s=QISS[0C]}{tracev3_chunk_statedump_s=QIC[3C]QQ[16C][0C]}{tracev3_chunk_simple_s=QICC[2C]QQQ[16C][16C][0C]}[0C])}16q24^v32@40@48  imp=+0x1c7665680
+  -insertSimpleChunk:chunkOffset:chunkSetStartAddr:subchunk:options: v52@0:8^{tracev3_chunk_s={tracev3_chunk_preamble_s=IIQ}(?={tracev3_chunk_header_s={mach_timebase_info=II}QqiiiI{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_continuous_s=Q}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_systeminfo_s=ii[16c][32c]}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_generation_s=[16C]ii}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_timezone_s=[48c]}}{tracev3_chunk_catalog_s=SSSS[0C]}{tracev3_chunk_catalog_v2_s=SSSSSSS[1S]Q[0C]}{tracev3_chunk_log_preamble_s=QIC[3C]}{tracev3_chunk_firehose_s=QICC[2C][0C]}{tracev3_chunk_firehose_old_s=QiCC[0C]}{tracev3_chunk_oversize_s=QIC[3C]QISS[0C]}{tracev3_chunk_oversize_old_s=QISS[0C]}{tracev3_chunk_statedump_s=QIC[3C]QQ[16C][0C]}{tracev3_chunk_simple_s=QICC[2C]QQQ[16C][16C][0C]}[0C])}16q24^v32@40I48  imp=+0x1c76655d4
+  -insertStatedumpChunk:chunkOffset:chunkSetStartAddr:subchunk: v48@0:8^{tracev3_chunk_s={tracev3_chunk_preamble_s=IIQ}(?={tracev3_chunk_header_s={mach_timebase_info=II}QqiiiI{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_continuous_s=Q}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_systeminfo_s=ii[16c][32c]}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_generation_s=[16C]ii}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_timezone_s=[48c]}}{tracev3_chunk_catalog_s=SSSS[0C]}{tracev3_chunk_catalog_v2_s=SSSSSSS[1S]Q[0C]}{tracev3_chunk_log_preamble_s=QIC[3C]}{tracev3_chunk_firehose_s=QICC[2C][0C]}{tracev3_chunk_firehose_old_s=QiCC[0C]}{tracev3_chunk_oversize_s=QIC[3C]QISS[0C]}{tracev3_chunk_oversize_old_s=QISS[0C]}{tracev3_chunk_statedump_s=QIC[3C]QQ[16C][0C]}{tracev3_chunk_simple_s=QICC[2C]QQQ[16C][16C][0C]}[0C])}16q24^v32@40  imp=+0x1c7665674
+  -insertTimesyncPoints:forBoot:oldestContinuousTime: v40@0:8^{_os_timesync_db_s=}16[16C]24Q32  imp=+0x1c766505c
+  -insertTracepoints:chunkOffset:chunkSetStartAddr:subchunk:options: v52@0:8^{tracev3_chunk_s={tracev3_chunk_preamble_s=IIQ}(?={tracev3_chunk_header_s={mach_timebase_info=II}QqiiiI{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_continuous_s=Q}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_systeminfo_s=ii[16c][32c]}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_generation_s=[16C]ii}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_timezone_s=[48c]}}{tracev3_chunk_catalog_s=SSSS[0C]}{tracev3_chunk_catalog_v2_s=SSSSSSS[1S]Q[0C]}{tracev3_chunk_log_preamble_s=QIC[3C]}{tracev3_chunk_firehose_s=QICC[2C][0C]}{tracev3_chunk_firehose_old_s=QiCC[0C]}{tracev3_chunk_oversize_s=QIC[3C]QISS[0C]}{tracev3_chunk_oversize_old_s=QISS[0C]}{tracev3_chunk_statedump_s=QIC[3C]QQ[16C][0C]}{tracev3_chunk_simple_s=QICC[2C]QQQ[16C][16C][0C]}[0C])}16q24^v32@40I48  imp=+0x1c7665714
+  -setCanMutate: v20@0:8B16  imp=+0x1c76660ac
+  -setCount: v24@0:8Q16  imp=+0x1c76660cc
+  -setCursor: v24@0:8Q16  imp=+0x1c76660bc
+  -setFileNames: v24@0:8@16  imp=+0x1c76660ec
+  -setSize: v24@0:8Q16  imp=+0x1c76660dc
+  -size Q16@0:8  imp=+0x1c76660d4
+@class _MemoryEfficientEnumeratorCatalogSubchunk : NSObject <EnumeratorCatalogSubchunk> instanceSize=80
+  ivar +8 _had_subchunk B
+  ivar +16 _range {_NSRange="location"Q"length"Q}
+  ivar +32 _algo I
+  ivar +36 _usize I
+  ivar +40 _ot Q
+  ivar +48 _et Q
+  ivar +56 _catalog_offset q
+  ivar +64 _store @"_OSLogChunkStore"
+  ivar +72 _buuid @"NSUUID"
+  property catalog_offset (Tq,R,N,V_catalog_offset)
+  property store (T@"_OSLogChunkStore",R,N,V_store)
+  property buuid (T@"NSUUID",R,N,V_buuid)
+  property algo (TI,R,N,V_algo)
+  property usize (TI,R,N,V_usize)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  property oldestTime (TQ,R,N,V_ot)
+  property endTime (TQ,R,N,V_et)
+  -.cxx_destruct v16@0:8  imp=+0x1c768ba18
+  -algo I16@0:8  imp=+0x1c768ba08
+  -buuid @16@0:8  imp=+0x1c768ba00
+  -catalog_offset q16@0:8  imp=+0x1c768b9f0
+  -decompressedBufferForChunk: @24@0:8^{tracev3_chunk_s={tracev3_chunk_preamble_s=IIQ}(?={tracev3_chunk_header_s={mach_timebase_info=II}QqiiiI{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_continuous_s=Q}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_systeminfo_s=ii[16c][32c]}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_generation_s=[16C]ii}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_timezone_s=[48c]}}{tracev3_chunk_catalog_s=SSSS[0C]}{tracev3_chunk_catalog_v2_s=SSSSSSS[1S]Q[0C]}{tracev3_chunk_log_preamble_s=QIC[3C]}{tracev3_chunk_firehose_s=QICC[2C][0C]}{tracev3_chunk_firehose_old_s=QiCC[0C]}{tracev3_chunk_oversize_s=QIC[3C]QISS[0C]}{tracev3_chunk_oversize_old_s=QISS[0C]}{tracev3_chunk_statedump_s=QIC[3C]QQ[16C][0C]}{tracev3_chunk_simple_s=QICC[2C]QQQ[16C][16C][0C]}[0C])}16  imp=+0x1c768b740
+  -endTime Q16@0:8  imp=+0x1c768b9e8
+  -enumerateChunksUsingBlock: v24@0:8@?16  imp=+0x1c768b7cc
+  -getBootUUIDIndex: Q24@0:8^{_os_opaque_128_map_s=[3^v]}16  imp=+0x1c768b950
+  -initWithCatalog:subchunk:range: @48@0:8@16^{catalog_subchunk_s={?=^{catalog_subchunk_s}^^{catalog_subchunk_s}}QQII^{hashtable}^{hashtable}}24{_NSRange=QQ}32  imp=+0x1c768b60c
+  -initWithCatalog:subchunk:range:oldestTime:endTime: @64@0:8@16^{catalog_subchunk_s={?=^{catalog_subchunk_s}^^{catalog_subchunk_s}}QQII^{hashtable}^{hashtable}}24{_NSRange=QQ}32Q48Q56  imp=+0x1c768b624
+  -oldestTime Q16@0:8  imp=+0x1c768b9e0
+  -store @16@0:8  imp=+0x1c768b9f8
+  -usize I16@0:8  imp=+0x1c768ba10
+@class _MemoryEfficientTracepointBuffer : _BaseTracepointBuffer instanceSize=144
+  ivar +56 _traceEvents ^{tp_element=SqqQC(?={?=qQQ}{?=SCB}{?=Si})}
+  ivar +64 _oversizeTable @"NSMutableDictionary"
+  ivar +72 _ocount Q
+  ivar +80 _osize Q
+  ivar +88 _uuids @"NSMutableOrderedSet"
+  ivar +96 catalogCache @"CatalogsCache"
+  ivar +104 dataCache @"DataCache"
+  ivar +112 storeArray @"NSMutableDictionary"
+  ivar +120 _tsEntries ^{os_timesync_time_entry_s={os_timesync_header_s=SSI}QQ{timezone=ii}}
+  ivar +128 _tscount Q
+  ivar +136 _tssize Q
+  -.cxx_destruct v16@0:8  imp=+0x1c769f924
+  -addTSEntry: Q48@0:8{os_timesync_time_entry_s={os_timesync_header_s=SSI}QQ{timezone=ii}}16  imp=+0x1c769d3a4
+  -advanceCursorToTime: v24@0:8Q16  imp=+0x1c769d4a0
+  -consolidate v16@0:8  imp=+0x1c769d574
+  -dealloc v16@0:8  imp=+0x1c769d2f0
+  -enumerateEventsFromTime:to:options:usingBlock: v44@0:8Q16Q24I32@?36  imp=+0x1c769e998
+  -findOversize:process:oversize_id:pidversion:timestamp:block: B56@0:8@16Q24I32I36Q40@?48  imp=+0x1c769ec74
+  -finishedInsertingTracepointsWithNextMajorTime:options: v28@0:8Q16I24  imp=+0x1c769d65c
+  -indexOfUUID: S24@0:8[16C]16  imp=+0x1c769dc60
+  -init:dataCacheSize: @24@0:8I16I20  imp=+0x1c769d138
+  -insertChunk:chunkOffset:chunkSetStartAddr:timestamp:subchunk: v56@0:8^{tracev3_chunk_s={tracev3_chunk_preamble_s=IIQ}(?={tracev3_chunk_header_s={mach_timebase_info=II}QqiiiI{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_continuous_s=Q}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_systeminfo_s=ii[16c][32c]}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_generation_s=[16C]ii}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_timezone_s=[48c]}}{tracev3_chunk_catalog_s=SSSS[0C]}{tracev3_chunk_catalog_v2_s=SSSSSSS[1S]Q[0C]}{tracev3_chunk_log_preamble_s=QIC[3C]}{tracev3_chunk_firehose_s=QICC[2C][0C]}{tracev3_chunk_firehose_old_s=QiCC[0C]}{tracev3_chunk_oversize_s=QIC[3C]QISS[0C]}{tracev3_chunk_oversize_old_s=QISS[0C]}{tracev3_chunk_statedump_s=QIC[3C]QQ[16C][0C]}{tracev3_chunk_simple_s=QICC[2C]QQQ[16C][16C][0C]}[0C])}16q24^v32Q40@48  imp=+0x1c769e0f8
+  -insertNonsparsePoint:uuid:ttl:inMemory: v40@0:8Q16[16C]24C32B36  imp=+0x1c769e07c
+  -insertOversizedChunk:chunkOffset:chunkSetStartAddr:subchunk:chunkList: v56@0:8^{tracev3_chunk_s={tracev3_chunk_preamble_s=IIQ}(?={tracev3_chunk_header_s={mach_timebase_info=II}QqiiiI{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_continuous_s=Q}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_systeminfo_s=ii[16c][32c]}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_generation_s=[16C]ii}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_timezone_s=[48c]}}{tracev3_chunk_catalog_s=SSSS[0C]}{tracev3_chunk_catalog_v2_s=SSSSSSS[1S]Q[0C]}{tracev3_chunk_log_preamble_s=QIC[3C]}{tracev3_chunk_firehose_s=QICC[2C][0C]}{tracev3_chunk_firehose_old_s=QiCC[0C]}{tracev3_chunk_oversize_s=QIC[3C]QISS[0C]}{tracev3_chunk_oversize_old_s=QISS[0C]}{tracev3_chunk_statedump_s=QIC[3C]QQ[16C][0C]}{tracev3_chunk_simple_s=QICC[2C]QQQ[16C][16C][0C]}[0C])}16q24^v32@40@48  imp=+0x1c769e708
+  -insertTimesyncPoints:forBoot:oldestContinuousTime: v40@0:8^{_os_timesync_db_s=}16[16C]24Q32  imp=+0x1c769def0
+  -insertTracepoints:chunkOffset:chunkSetStartAddr:subchunk:options: v52@0:8^{tracev3_chunk_s={tracev3_chunk_preamble_s=IIQ}(?={tracev3_chunk_header_s={mach_timebase_info=II}QqiiiI{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_continuous_s=Q}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_systeminfo_s=ii[16c][32c]}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_generation_s=[16C]ii}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_timezone_s=[48c]}}{tracev3_chunk_catalog_s=SSSS[0C]}{tracev3_chunk_catalog_v2_s=SSSSSSS[1S]Q[0C]}{tracev3_chunk_log_preamble_s=QIC[3C]}{tracev3_chunk_firehose_s=QICC[2C][0C]}{tracev3_chunk_firehose_old_s=QiCC[0C]}{tracev3_chunk_oversize_s=QIC[3C]QISS[0C]}{tracev3_chunk_oversize_old_s=QISS[0C]}{tracev3_chunk_statedump_s=QIC[3C]QQ[16C][0C]}{tracev3_chunk_simple_s=QICC[2C]QQQ[16C][16C][0C]}[0C])}16q24^v32@40I48  imp=+0x1c769e258
+  -insertValuesIntoIndex:coffset:fileName:sortKey:type: ^{tp_element=SqqQC(?={?=qQQ}{?=SCB}{?=Si})}52@0:8q16q24@32Q40C48  imp=+0x1c769dd00
+  -iterateChunksAndFillEvent:block: B32@0:8^{tp_element=SqqQC(?={?=qQQ}{?=SCB}{?=Si})}16@?24  imp=+0x1c769f12c
+  -retireOversize: v24@0:8Q16  imp=+0x1c769eafc
+  -setupStoresForIndex: v24@0:8@16  imp=+0x1c769d9e8
+@class _OSLogCatalogFilter : NSObject <NSPredicateVisitor> instanceSize=64
+  ivar +8 _processLookupSubstr @"NSMutableSet"
+  ivar +16 _senderLookupSubstr @"NSMutableSet"
+  ivar +24 _uuidtext_path *
+  ivar +32 _hasItems B
+  ivar +33 _hasSharedCacheItems B
+  ivar +40 _structuredPredicate @"NSPredicate"
+  ivar +48 _processNameToUUIDs @"NSMutableDictionary"
+  ivar +56 _senderNameToUUIDs @"NSMutableDictionary"
+  -.cxx_destruct v16@0:8  imp=+0x1c76457d4
+  -dealloc v16@0:8  imp=+0x1c7645788
+  -initWithPredicate:collection: @32@0:8@16@24  imp=+0x1c764478c
+  -visitPredicate: v24@0:8@16  imp=+0x1c766ec98
+  -visitPredicateExpression: v24@0:8@16  imp=+0x1c766ed68
+  -visitPredicateOperator: v24@0:8@16  imp=+0x1c766ed6c
+@class _OSLogChunkBuffer : NSObject instanceSize=32
+  ivar +8 _allocated B
+  ivar +16 _data r*
+  ivar +24 _sz Q
+  property data (Tr*,R,N,V_data)
+  property size (TQ,R,N,V_sz)
+  -data r*16@0:8  imp=+0x1c764a664
+  -dealloc v16@0:8  imp=+0x1c765176c
+  -initWithChunk:subchunk: @32@0:8^{tracev3_chunk_s={tracev3_chunk_preamble_s=IIQ}(?={tracev3_chunk_header_s={mach_timebase_info=II}QqiiiI{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_continuous_s=Q}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_systeminfo_s=ii[16c][32c]}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_generation_s=[16C]ii}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_timezone_s=[48c]}}{tracev3_chunk_catalog_s=SSSS[0C]}{tracev3_chunk_catalog_v2_s=SSSSSSS[1S]Q[0C]}{tracev3_chunk_log_preamble_s=QIC[3C]}{tracev3_chunk_firehose_s=QICC[2C][0C]}{tracev3_chunk_firehose_old_s=QiCC[0C]}{tracev3_chunk_oversize_s=QIC[3C]QISS[0C]}{tracev3_chunk_oversize_old_s=QISS[0C]}{tracev3_chunk_statedump_s=QIC[3C]QQ[16C][0C]}{tracev3_chunk_simple_s=QICC[2C]QQQ[16C][16C][0C]}[0C])}16^{catalog_subchunk_s={?=^{catalog_subchunk_s}^^{catalog_subchunk_s}}QQII^{hashtable}^{hashtable}}24  imp=+0x1c764a4d4
+  -size Q16@0:8  imp=+0x1c764a66c
+@class _OSLogChunkFile : _OSLogChunkStore instanceSize=32
+  -dealloc v16@0:8  imp=+0x1c7642894
+  -initWithFileDescriptor:error: @28@0:8i16^@20  imp=+0x1c7642160
+@class _OSLogChunkFileReference : NSObject instanceSize=40
+  ivar +8 _oslcr @"_OSLogCollectionReference"
+  ivar +16 _path *
+  ivar +24 _xot Q
+  ivar +32 _xet Q
+  property path (T*,R,N,V_path)
+  property xattrOldestTime (TQ,R,N,V_xot)
+  property xattrEndTime (TQ,R,N,V_xet)
+  -.cxx_destruct v16@0:8  imp=+0x1c7652ec4
+  -copyMappedChunkFile: @24@0:8^@16  imp=+0x1c7642040
+  -dealloc v16@0:8  imp=+0x1c7652e78
+  -initWithCollection:subpath: @32@0:8@16r*24  imp=+0x1c7641ea8
+  -path *16@0:8  imp=+0x1c7642038
+  -readXattrForTimespan: B24@0:8^@16  imp=+0x1c764776c
+  -xattrEndTime Q16@0:8  imp=+0x1c76479b0
+  -xattrOldestTime Q16@0:8  imp=+0x1c76479a8
+@class _OSLogChunkMemory : _OSLogChunkStore instanceSize=40
+  ivar +32 _deallocator @?
+  -.cxx_destruct v16@0:8  imp=+0x1c76531cc
+  -dealloc v16@0:8  imp=+0x1c7653174
+  -initWithBytes:size:deallocator: @40@0:8r^v16Q24@?32  imp=+0x1c7642908
+@class _OSLogChunkStore : NSObject instanceSize=32
+  ivar +8 _ptr r^v
+  ivar +16 _sz Q
+  ivar +24 fileName @"NSString"
+  property fileName (T@"NSString",C,N,VfileName)
+  -.cxx_destruct v16@0:8  imp=+0x1c7662190
+  -enumerateChunksInRange:usingBlock: v40@0:8{_NSRange=QQ}16@?32  imp=+0x1c764254c
+  -enumerateChunksUsingBlock: v24@0:8@?16  imp=+0x1c764253c
+  -fileName @16@0:8  imp=+0x1c7662180
+  -initWithBytes:size: @32@0:8r^v16Q24  imp=+0x1c76423fc
+  -setFileName: v24@0:8@16  imp=+0x1c7662188
+@class _OSLogCollectionReference : NSObject instanceSize=32
+  ivar +8 _diagnosticsDirectoryReference @"_OSLogDirectoryReference"
+  ivar +16 _timesyncReference @"_OSLogDirectoryReference"
+  ivar +24 _UUIDTextReference @"_OSLogDirectoryReference"
+  property diagnosticsDirectoryReference (T@"_OSLogDirectoryReference",R,N,V_diagnosticsDirectoryReference)
+  property timesyncReference (T@"_OSLogDirectoryReference",R,N,V_timesyncReference)
+  property UUIDTextReference (T@"_OSLogDirectoryReference",R,N,V_UUIDTextReference)
+  +URLDBRef:warningBlock:error: @40@0:8@16@?24^@32  imp=+0x1c766f66c
+  +_filesystemDBRef:timesyncPath:uuidPath:warningBlock:error: @56@0:8r*16r*24r*32@?40^@48  imp=+0x1c766efec
+  +localDBRefFromFilesystem:error: @32@0:8@?16^@24  imp=+0x1c766f78c
+  +localDBRefFromLogdWithError: @24@0:8^@16  imp=+0x1c766f838
+  +logarchiveDBRef:error: @32@0:8@16^@24  imp=+0x1c766f2b0
+  +referenceWithURL:error: @32@0:8@16^@24  imp=+0x1c766f4ec
+  -.cxx_destruct v16@0:8  imp=+0x1c7653098
+  -UUIDTextReference @16@0:8  imp=+0x1c7645040
+  -close v16@0:8  imp=+0x1c7652cc4
+  -diagnosticsDirectoryReference @16@0:8  imp=+0x1c76408dc
+  -initWithDiagnosticsDirectory:timesyncDirectory:UUIDTextDirectory: @40@0:8@16@24@32  imp=+0x1c7640308
+  -timesyncReference @16@0:8  imp=+0x1c76403dc
+@class _OSLogDeserializedEventProxy : OSLogEventProxy instanceSize=640
+  ivar +512 _unixDateNeedsLookup B
+  ivar +513 _unixTimeZoneNeedsLookup B
+  ivar +516 _unixTimeZone {timezone="tz_minuteswest"i"tz_dsttime"i}
+  ivar +528 _unixDate {timeval="tv_sec"q"tv_usec"i}
+  ivar +544 _lossStartUnixDateNeedsLookup B
+  ivar +545 _lossStartUnixTimeZoneNeedsLookup B
+  ivar +552 _lossStartUnixDate {timeval="tv_sec"q"tv_usec"i}
+  ivar +568 _lossStartUnixTimeZone {timezone="tz_minuteswest"i"tz_dsttime"i}
+  ivar +576 _lossEndUnixDateNeedsLookup B
+  ivar +577 _lossEndUnixTimeZoneNeedsLookup B
+  ivar +584 _lossEndUnixDate {timeval="tv_sec"q"tv_usec"i}
+  ivar +600 _lossEndUnixTimeZone {timezone="tz_minuteswest"i"tz_dsttime"i}
+  ivar +608 _needsTypeLookup B
+  ivar +616 _curEventDictionary @"NSDictionary"
+  ivar +624 _metadata @"_OSLogEventSerializationMetadata"
+  ivar +632 _type Q
+  property metadata (T@"_OSLogEventSerializationMetadata",&,N,V_metadata)
+  property curEventDictionary (T@"NSDictionary",&,N,V_curEventDictionary)
+  property needsTypeLookup (TB,N,V_needsTypeLookup)
+  -.cxx_destruct v16@0:8  imp=+0x1c76947c8
+  -_frameForDict: @24@0:8@16  imp=+0x1c76940c8
+  -_populate_timeval:withDict: v32@0:8^{timeval=qi}16@24  imp=+0x1c76933ac
+  -_populate_timezone:withDict: v32@0:8^{timezone=ii}16@24  imp=+0x1c76934d4
+  -_resetNeedsLookup v16@0:8  imp=+0x1c76905a4
+  -activityIdentifier Q16@0:8  imp=+0x1c7690cdc
+  -backtrace @16@0:8  imp=+0x1c76942e8
+  -bootUUID @16@0:8  imp=+0x1c7693240
+  -category @16@0:8  imp=+0x1c769245c
+  -composedMessage @16@0:8  imp=+0x1c7691b6c
+  -continuousNanosecondsSinceBoot Q16@0:8  imp=+0x1c7690fdc
+  -creatorActivityIdentifier Q16@0:8  imp=+0x1c769160c
+  -creatorProcessUniqueIdentifier Q16@0:8  imp=+0x1c7691724
+  -curEventDictionary @16@0:8  imp=+0x1c7694764
+  -date @16@0:8  imp=+0x1c76938e4
+  -decomposedMessage @16@0:8  imp=+0x1c76945ec
+  -formatString @16@0:8  imp=+0x1c7692608
+  -logType Q16@0:8  imp=+0x1c76907dc
+  -lossCount {?=IB}16@0:8  imp=+0x1c7693f88
+  -lossEndMachContinuousTimestamp Q16@0:8  imp=+0x1c7691954
+  -lossEndUnixDate ^{timeval=qi}16@0:8  imp=+0x1c7693ce0
+  -lossEndUnixTimeZone ^{timezone=ii}16@0:8  imp=+0x1c7693e34
+  -lossStartMachContinuousTimestamp Q16@0:8  imp=+0x1c769183c
+  -lossStartUnixDate ^{timeval=qi}16@0:8  imp=+0x1c7693a38
+  -lossStartUnixTimeZone ^{timezone=ii}16@0:8  imp=+0x1c7693b8c
+  -machContinuousTimestamp Q16@0:8  imp=+0x1c76910dc
+  -metadata @16@0:8  imp=+0x1c7694778
+  -metricData @16@0:8  imp=+0x1c7692cd4
+  -metricDimensions @16@0:8  imp=+0x1c7692acc
+  -metricLabel @16@0:8  imp=+0x1c7692940
+  -metricMetadata @16@0:8  imp=+0x1c7692bd0
+  -needsTypeLookup B16@0:8  imp=+0x1c76947a0
+  -parentActivityIdentifier Q16@0:8  imp=+0x1c7690ddc
+  -process @16@0:8  imp=+0x1c7691e54
+  -processIdentifier i16@0:8  imp=+0x1c7691a6c
+  -processImagePath @16@0:8  imp=+0x1c7691ce0
+  -processImageUUID @16@0:8  imp=+0x1c7692dd8
+  -processImageUUIDBytes r*16@0:8  imp=+0x1c7692f08
+  -sender @16@0:8  imp=+0x1c769213c
+  -senderImageOffset Q16@0:8  imp=+0x1c76911dc
+  -senderImagePath @16@0:8  imp=+0x1c7691fc8
+  -senderImageUUID @16@0:8  imp=+0x1c769300c
+  -senderImageUUIDBytes r*16@0:8  imp=+0x1c769313c
+  -setCurEventDictionary: v24@0:8@16  imp=+0x1c769061c
+  -setMetadata: v24@0:8@16  imp=+0x1c769478c
+  -setNeedsTypeLookup: v20@0:8B16  imp=+0x1c76947b4
+  -signpostIdentifier Q16@0:8  imp=+0x1c76912dc
+  -signpostName @16@0:8  imp=+0x1c76927b4
+  -signpostScope Q16@0:8  imp=+0x1c76914f4
+  -signpostType Q16@0:8  imp=+0x1c76913dc
+  -size Q16@0:8  imp=+0x1c76908dc
+  -subsystem @16@0:8  imp=+0x1c76922b0
+  -threadIdentifier Q16@0:8  imp=+0x1c7690bdc
+  -timeToLive Q16@0:8  imp=+0x1c76909dc
+  -timeZone @16@0:8  imp=+0x1c7693994
+  -traceIdentifier Q16@0:8  imp=+0x1c7690adc
+  -transitionActivityIdentifier Q16@0:8  imp=+0x1c7690edc
+  -type Q16@0:8  imp=+0x1c7690664
+  -unixDate ^{timeval=qi}16@0:8  imp=+0x1c76935fc
+  -unixTimeZone ^{timezone=ii}16@0:8  imp=+0x1c7693770
+@class _OSLogDirectoryReference : NSObject instanceSize=24
+  ivar +8 _fd i
+  ivar +16 _etk q
+  property fileDescriptor (Ti,R,N)
+  -close v16@0:8  imp=+0x1c7652d08
+  -dealloc v16@0:8  imp=+0x1c76530e8
+  -fileDescriptor i16@0:8  imp=+0x1c76403e4
+  -initWithDescriptor: @20@0:8i16  imp=+0x1c766efe4
+  -initWithDescriptor:sandboxExtensionToken: @28@0:8i16r*20  imp=+0x1c7640288
+@class _OSLogEnumeratorCatalog : NSObject <_OSLogIndexTimeRangable> instanceSize=88
+  ivar +8 _storeCatalogsAndSubchunks B
+  ivar +16 _index @"_OSLogIndex"
+  ivar +24 _catalog ^{catalog_s={catalog_hdr_s=SQ}^{_os_opaque_128_map_s}^{_os_opaque_str_map_s}^{_os_opaque_32_map_s}QQ^{_os_opaque_128_map_s}QQ{subchunk_queue_t=^{catalog_subchunk_s}^^{catalog_subchunk_s}}Q}
+  ivar +32 _chunk ^{tracev3_chunk_s={tracev3_chunk_preamble_s=IIQ}(?={tracev3_chunk_header_s={mach_timebase_info=II}QqiiiI{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_continuous_s=Q}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_systeminfo_s=ii[16c][32c]}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_generation_s=[16C]ii}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_timezone_s=[48c]}}{tracev3_chunk_catalog_s=SSSS[0C]}{tracev3_chunk_catalog_v2_s=SSSSSSS[1S]Q[0C]}{tracev3_chunk_log_preamble_s=QIC[3C]}{tracev3_chunk_firehose_s=QICC[2C][0C]}{tracev3_chunk_firehose_old_s=QiCC[0C]}{tracev3_chunk_oversize_s=QIC[3C]QISS[0C]}{tracev3_chunk_oversize_old_s=QISS[0C]}{tracev3_chunk_statedump_s=QIC[3C]QQ[16C][0C]}{tracev3_chunk_simple_s=QICC[2C]QQQ[16C][16C][0C]}[0C])}
+  ivar +40 _fileHeader ^{tracev3_chunk_s={tracev3_chunk_preamble_s=IIQ}(?={tracev3_chunk_header_s={mach_timebase_info=II}QqiiiI{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_continuous_s=Q}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_systeminfo_s=ii[16c][32c]}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_generation_s=[16C]ii}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_timezone_s=[48c]}}{tracev3_chunk_catalog_s=SSSS[0C]}{tracev3_chunk_catalog_v2_s=SSSSSSS[1S]Q[0C]}{tracev3_chunk_log_preamble_s=QIC[3C]}{tracev3_chunk_firehose_s=QICC[2C][0C]}{tracev3_chunk_firehose_old_s=QiCC[0C]}{tracev3_chunk_oversize_s=QIC[3C]QISS[0C]}{tracev3_chunk_oversize_old_s=QISS[0C]}{tracev3_chunk_statedump_s=QIC[3C]QQ[16C][0C]}{tracev3_chunk_simple_s=QICC[2C]QQQ[16C][16C][0C]}[0C])}
+  ivar +48 _store @"_OSLogChunkStore"
+  ivar +56 _ot Q
+  ivar +64 _et Q
+  ivar +72 _chunkRange {_NSRange="location"Q"length"Q}
+  property bootUUID (Tr*,R,N)
+  property catalog (T^{catalog_s={catalog_hdr_s=SQ}^{_os_opaque_128_map_s}^{_os_opaque_str_map_s}^{_os_opaque_32_map_s}QQ^{_os_opaque_128_map_s}QQ{subchunk_queue_t=^{catalog_subchunk_s}^^{catalog_subchunk_s}}Q},R,N,V_catalog)
+  property fileHeader (T^{tracev3_chunk_s={tracev3_chunk_preamble_s=IIQ}(?={tracev3_chunk_header_s={mach_timebase_info=II}QqiiiI{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_continuous_s=Q}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_systeminfo_s=ii[16c][32c]}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_generation_s=[16C]ii}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_timezone_s=[48c]}}{tracev3_chunk_catalog_s=SSSS[0C]}{tracev3_chunk_catalog_v2_s=SSSSSSS[1S]Q[0C]}{tracev3_chunk_log_preamble_s=QIC[3C]}{tracev3_chunk_firehose_s=QICC[2C][0C]}{tracev3_chunk_firehose_old_s=QiCC[0C]}{tracev3_chunk_oversize_s=QIC[3C]QISS[0C]}{tracev3_chunk_oversize_old_s=QISS[0C]}{tracev3_chunk_statedump_s=QIC[3C]QQ[16C][0C]}{tracev3_chunk_simple_s=QICC[2C]QQQ[16C][16C][0C]}[0C])},R,N,V_fileHeader)
+  property chunk (T^{tracev3_chunk_s={tracev3_chunk_preamble_s=IIQ}(?={tracev3_chunk_header_s={mach_timebase_info=II}QqiiiI{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_continuous_s=Q}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_systeminfo_s=ii[16c][32c]}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_generation_s=[16C]ii}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_timezone_s=[48c]}}{tracev3_chunk_catalog_s=SSSS[0C]}{tracev3_chunk_catalog_v2_s=SSSSSSS[1S]Q[0C]}{tracev3_chunk_log_preamble_s=QIC[3C]}{tracev3_chunk_firehose_s=QICC[2C][0C]}{tracev3_chunk_firehose_old_s=QiCC[0C]}{tracev3_chunk_oversize_s=QIC[3C]QISS[0C]}{tracev3_chunk_oversize_old_s=QISS[0C]}{tracev3_chunk_statedump_s=QIC[3C]QQ[16C][0C]}{tracev3_chunk_simple_s=QICC[2C]QQQ[16C][16C][0C]}[0C])},R,N,V_chunk)
+  property index (T@"_OSLogIndex",R,W,N,V_index)
+  property store (T@"_OSLogChunkStore",R,N,V_store)
+  property chunkRange (T{_NSRange=QQ},N,V_chunkRange)
+  property storeCatalogsAndSubchunks (TB,R,N,V_storeCatalogsAndSubchunks)
+  property oldestTime (TQ,R,N,V_ot)
+  property endTime (TQ,R,N,V_et)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1c7647e98
+  -bootUUID r*16@0:8  imp=+0x1c7662388
+  -catalog ^{catalog_s={catalog_hdr_s=SQ}^{_os_opaque_128_map_s}^{_os_opaque_str_map_s}^{_os_opaque_32_map_s}QQ^{_os_opaque_128_map_s}QQ{subchunk_queue_t=^{catalog_subchunk_s}^^{catalog_subchunk_s}}Q}16@0:8  imp=+0x1c7647ed8
+  -chunk ^{tracev3_chunk_s={tracev3_chunk_preamble_s=IIQ}(?={tracev3_chunk_header_s={mach_timebase_info=II}QqiiiI{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_continuous_s=Q}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_systeminfo_s=ii[16c][32c]}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_generation_s=[16C]ii}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_timezone_s=[48c]}}{tracev3_chunk_catalog_s=SSSS[0C]}{tracev3_chunk_catalog_v2_s=SSSSSSS[1S]Q[0C]}{tracev3_chunk_log_preamble_s=QIC[3C]}{tracev3_chunk_firehose_s=QICC[2C][0C]}{tracev3_chunk_firehose_old_s=QiCC[0C]}{tracev3_chunk_oversize_s=QIC[3C]QISS[0C]}{tracev3_chunk_oversize_old_s=QISS[0C]}{tracev3_chunk_statedump_s=QIC[3C]QQ[16C][0C]}{tracev3_chunk_simple_s=QICC[2C]QQQ[16C][16C][0C]}[0C])}16@0:8  imp=+0x1c76626e8
+  -chunkRange {_NSRange=QQ}16@0:8  imp=+0x1c76626f0
+  -dealloc v16@0:8  imp=+0x1c7647e48
+  -endTime Q16@0:8  imp=+0x1c7647e40
+  -enumerateSubchunksUsingBlock: v24@0:8@?16  imp=+0x1c7649c14
+  -fileHeader ^{tracev3_chunk_s={tracev3_chunk_preamble_s=IIQ}(?={tracev3_chunk_header_s={mach_timebase_info=II}QqiiiI{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_continuous_s=Q}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_systeminfo_s=ii[16c][32c]}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_generation_s=[16C]ii}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_timezone_s=[48c]}}{tracev3_chunk_catalog_s=SSSS[0C]}{tracev3_chunk_catalog_v2_s=SSSSSSS[1S]Q[0C]}{tracev3_chunk_log_preamble_s=QIC[3C]}{tracev3_chunk_firehose_s=QICC[2C][0C]}{tracev3_chunk_firehose_old_s=QiCC[0C]}{tracev3_chunk_oversize_s=QIC[3C]QISS[0C]}{tracev3_chunk_oversize_old_s=QISS[0C]}{tracev3_chunk_statedump_s=QIC[3C]QQ[16C][0C]}{tracev3_chunk_simple_s=QICC[2C]QQQ[16C][16C][0C]}[0C])}16@0:8  imp=+0x1c764aaa0
+  -index @16@0:8  imp=+0x1c76626bc
+  -initWithStore:index:fileHeader:range:chunk:storeCatalogsAndSubchunks: @68@0:8@16@24^{tracev3_chunk_s={tracev3_chunk_preamble_s=IIQ}(?={tracev3_chunk_header_s={mach_timebase_info=II}QqiiiI{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_continuous_s=Q}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_systeminfo_s=ii[16c][32c]}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_generation_s=[16C]ii}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_timezone_s=[48c]}}{tracev3_chunk_catalog_s=SSSS[0C]}{tracev3_chunk_catalog_v2_s=SSSSSSS[1S]Q[0C]}{tracev3_chunk_log_preamble_s=QIC[3C]}{tracev3_chunk_firehose_s=QICC[2C][0C]}{tracev3_chunk_firehose_old_s=QiCC[0C]}{tracev3_chunk_oversize_s=QIC[3C]QISS[0C]}{tracev3_chunk_oversize_old_s=QISS[0C]}{tracev3_chunk_statedump_s=QIC[3C]QQ[16C][0C]}{tracev3_chunk_simple_s=QICC[2C]QQQ[16C][16C][0C]}[0C])}32{_NSRange=QQ}40^{tracev3_chunk_s={tracev3_chunk_preamble_s=IIQ}(?={tracev3_chunk_header_s={mach_timebase_info=II}QqiiiI{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_continuous_s=Q}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_systeminfo_s=ii[16c][32c]}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_generation_s=[16C]ii}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_timezone_s=[48c]}}{tracev3_chunk_catalog_s=SSSS[0C]}{tracev3_chunk_catalog_v2_s=SSSSSSS[1S]Q[0C]}{tracev3_chunk_log_preamble_s=QIC[3C]}{tracev3_chunk_firehose_s=QICC[2C][0C]}{tracev3_chunk_firehose_old_s=QiCC[0C]}{tracev3_chunk_oversize_s=QIC[3C]QISS[0C]}{tracev3_chunk_oversize_old_s=QISS[0C]}{tracev3_chunk_statedump_s=QIC[3C]QQ[16C][0C]}{tracev3_chunk_simple_s=QICC[2C]QQQ[16C][16C][0C]}[0C])}56B64  imp=+0x1c7662274
+  -oldestTime Q16@0:8  imp=+0x1c7647e38
+  -setChunkRange: v32@0:8{_NSRange=QQ}16  imp=+0x1c76626fc
+  -store @16@0:8  imp=+0x1c764a1f0
+  -storeCatalogsAndSubchunks B16@0:8  imp=+0x1c7662704
+  -unionWithRange: v32@0:8{_NSRange=QQ}16  imp=+0x1c7647d30
+@class _OSLogEnumeratorCatalogSubchunk : NSObject <EnumeratorCatalogSubchunk> instanceSize=64
+  ivar +8 _decompressedChunks @"NSMutableDictionary"
+  ivar +16 _subchunk ^{catalog_subchunk_s={?=^{catalog_subchunk_s}^^{catalog_subchunk_s}}QQII^{hashtable}^{hashtable}}
+  ivar +24 _range {_NSRange="location"Q"length"Q}
+  ivar +40 _catalog @"_OSLogEnumeratorCatalog"
+  ivar +48 _ot Q
+  ivar +56 _et Q
+  property catalog (T@"_OSLogEnumeratorCatalog",R,N,V_catalog)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  property oldestTime (TQ,R,N,V_ot)
+  property endTime (TQ,R,N,V_et)
+  -.cxx_destruct v16@0:8  imp=+0x1c764aaa8
+  -catalog @16@0:8  imp=+0x1c764a834
+  -decompressedBufferForChunk: @24@0:8^{tracev3_chunk_s={tracev3_chunk_preamble_s=IIQ}(?={tracev3_chunk_header_s={mach_timebase_info=II}QqiiiI{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_continuous_s=Q}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_systeminfo_s=ii[16c][32c]}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_generation_s=[16C]ii}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_timezone_s=[48c]}}{tracev3_chunk_catalog_s=SSSS[0C]}{tracev3_chunk_catalog_v2_s=SSSSSSS[1S]Q[0C]}{tracev3_chunk_log_preamble_s=QIC[3C]}{tracev3_chunk_firehose_s=QICC[2C][0C]}{tracev3_chunk_firehose_old_s=QiCC[0C]}{tracev3_chunk_oversize_s=QIC[3C]QISS[0C]}{tracev3_chunk_oversize_old_s=QISS[0C]}{tracev3_chunk_statedump_s=QIC[3C]QQ[16C][0C]}{tracev3_chunk_simple_s=QICC[2C]QQQ[16C][16C][0C]}[0C])}16  imp=+0x1c766ee40
+  -endTime Q16@0:8  imp=+0x1c764a118
+  -enumerateChunksUsingBlock: v24@0:8@?16  imp=+0x1c764a120
+  -getBootUUIDIndex: Q24@0:8^{_os_opaque_128_map_s=[3^v]}16  imp=+0x1c766eef4
+  -initWithCatalog:subchunk:range: @48@0:8@16^{catalog_subchunk_s={?=^{catalog_subchunk_s}^^{catalog_subchunk_s}}QQII^{hashtable}^{hashtable}}24{_NSRange=QQ}32  imp=+0x1c7649f80
+  -initWithCatalog:subchunk:range:oldestTime:endTime: @64@0:8@16^{catalog_subchunk_s={?=^{catalog_subchunk_s}^^{catalog_subchunk_s}}QQII^{hashtable}^{hashtable}}24{_NSRange=QQ}32Q48Q56  imp=+0x1c766ed70
+  -oldestTime Q16@0:8  imp=+0x1c764a038
+@class _OSLogEnumeratorOversizeChunk : NSObject instanceSize=24
+  ivar +8 _subchunk @"<EnumeratorCatalogSubchunk>"
+  ivar +16 _chunk ^{tracev3_chunk_s={tracev3_chunk_preamble_s=IIQ}(?={tracev3_chunk_header_s={mach_timebase_info=II}QqiiiI{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_continuous_s=Q}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_systeminfo_s=ii[16c][32c]}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_generation_s=[16C]ii}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_timezone_s=[48c]}}{tracev3_chunk_catalog_s=SSSS[0C]}{tracev3_chunk_catalog_v2_s=SSSSSSS[1S]Q[0C]}{tracev3_chunk_log_preamble_s=QIC[3C]}{tracev3_chunk_firehose_s=QICC[2C][0C]}{tracev3_chunk_firehose_old_s=QiCC[0C]}{tracev3_chunk_oversize_s=QIC[3C]QISS[0C]}{tracev3_chunk_oversize_old_s=QISS[0C]}{tracev3_chunk_statedump_s=QIC[3C]QQ[16C][0C]}{tracev3_chunk_simple_s=QICC[2C]QQQ[16C][16C][0C]}[0C])}
+  property timestamp (TQ,R,N)
+  -.cxx_destruct v16@0:8  imp=+0x1c7652688
+  -compare: q24@0:8@16  imp=+0x1c76524b8
+  -fillMessage: v24@0:8^{os_log_message_s=QQQ**{timeval=qi}{timezone=ii}QQI**Q*Q**ICB(?=QQ)*(?=CC)C*}16  imp=+0x1c7662224
+  -fillProxy: v24@0:8@16  imp=+0x1c765253c
+  -initWithSubchunk:chunk: @32@0:8@16^{tracev3_chunk_s={tracev3_chunk_preamble_s=IIQ}(?={tracev3_chunk_header_s={mach_timebase_info=II}QqiiiI{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_continuous_s=Q}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_systeminfo_s=ii[16c][32c]}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_generation_s=[16C]ii}{tracev3_subchunk_preamble_s=II}{tracev3_subchunk_timezone_s=[48c]}}{tracev3_chunk_catalog_s=SSSS[0C]}{tracev3_chunk_catalog_v2_s=SSSSSSS[1S]Q[0C]}{tracev3_chunk_log_preamble_s=QIC[3C]}{tracev3_chunk_firehose_s=QICC[2C][0C]}{tracev3_chunk_firehose_old_s=QiCC[0C]}{tracev3_chunk_oversize_s=QIC[3C]QISS[0C]}{tracev3_chunk_oversize_old_s=QISS[0C]}{tracev3_chunk_statedump_s=QIC[3C]QQ[16C][0C]}{tracev3_chunk_simple_s=QICC[2C]QQQ[16C][16C][0C]}[0C])}24  imp=+0x1c76523b0
+  -matches:procinfo: B28@0:8I16^{catalog_procinfo_s=SSiQIII[16C][16C]^{hashtable}^{hashtable}}20  imp=+0x1c7652458
+  -timestamp Q16@0:8  imp=+0x1c7652434
+@class _OSLogEventSerializationMetadata : NSObject instanceSize=80
+  ivar +8 _indexToStringMapping @"NSMutableDictionary"
+  ivar +16 _stringToIndexMapping @"NSMutableDictionary"
+  ivar +24 _flags Q
+  ivar +32 _filterPredicateDescription @"NSString"
+  ivar +40 _maxLogEventBatchSize Q
+  ivar +48 _serializedEventCount Q
+  ivar +56 _firstDate @"NSDate"
+  ivar +64 _lastDate @"NSDate"
+  ivar +72 _subsystemToCategories @"NSDictionary"
+  property stringToIndexMapping (T@"NSMutableDictionary",R,N,V_stringToIndexMapping)
+  property indexToStringMapping (T@"NSMutableDictionary",R,N,V_indexToStringMapping)
+  property flags (TQ,N,V_flags)
+  property filterPredicateDescription (T@"NSString",&,N,V_filterPredicateDescription)
+  property maxLogEventBatchSize (TQ,N,V_maxLogEventBatchSize)
+  property serializedEventCount (TQ,N,V_serializedEventCount)
+  property firstDate (T@"NSDate",&,N,V_firstDate)
+  property lastDate (T@"NSDate",&,N,V_lastDate)
+  property subsystemToCategories (T@"NSDictionary",&,N,V_subsystemToCategories)
+  -.cxx_destruct v16@0:8  imp=+0x1c768c7f0
+  -dataRepresentation @16@0:8  imp=+0x1c768c12c
+  -filterPredicateDescription @16@0:8  imp=+0x1c768c780
+  -firstDate @16@0:8  imp=+0x1c768c7b4
+  -flags Q16@0:8  imp=+0x1c768c770
+  -indexForString: @24@0:8@16  imp=+0x1c768c5c0
+  -indexToStringMapping @16@0:8  imp=+0x1c768c760
+  -init @16@0:8  imp=+0x1c768ba5c
+  -initWithDataRepresentation: @24@0:8@16  imp=+0x1c768bac8
+  -lastDate @16@0:8  imp=+0x1c768c7c8
+  -maxLogEventBatchSize Q16@0:8  imp=+0x1c768c794
+  -serializedEventCount Q16@0:8  imp=+0x1c768c7a4
+  -setFilterPredicateDescription: v24@0:8@16  imp=+0x1c768c788
+  -setFirstDate: v24@0:8@16  imp=+0x1c768c7bc
+  -setFlags: v24@0:8Q16  imp=+0x1c768c778
+  -setLastDate: v24@0:8@16  imp=+0x1c768c7d0
+  -setMaxLogEventBatchSize: v24@0:8Q16  imp=+0x1c768c79c
+  -setSerializedEventCount: v24@0:8Q16  imp=+0x1c768c7ac
+  -setSubsystemToCategories: v24@0:8@16  imp=+0x1c768c7e4
+  -stringForIndex: @24@0:8@16  imp=+0x1c768c698
+  -stringToIndexMapping @16@0:8  imp=+0x1c768c768
+  -subsystemToCategories @16@0:8  imp=+0x1c768c7dc
+@class _OSLogEventStoreMetadata : NSObject instanceSize=112
+  ivar +8 _ttls [5@"_OSLogEventStoreTimeRef"]
+  ivar +48 _oldestPersist @"_OSLogEventStoreTimeRef"
+  ivar +56 _oldestSpecial @"_OSLogEventStoreTimeRef"
+  ivar +64 _oldestSignpost @"_OSLogEventStoreTimeRef"
+  ivar +72 _oldestHighVolume @"_OSLogEventStoreTimeRef"
+  ivar +80 _oldestLive @"_OSLogEventStoreTimeRef"
+  ivar +88 _end @"_OSLogEventStoreTimeRef"
+  ivar +96 _archiveUUID @"NSUUID"
+  ivar +104 _sourceUUID @"NSUUID"
+  property oldestPersist (T@"_OSLogEventStoreTimeRef",R,N,V_oldestPersist)
+  property oldestSpecial (T@"_OSLogEventStoreTimeRef",R,N,V_oldestSpecial)
+  property oldestSignpost (T@"_OSLogEventStoreTimeRef",R,N,V_oldestSignpost)
+  property oldestHighVolume (T@"_OSLogEventStoreTimeRef",R,N,V_oldestHighVolume)
+  property oldestLive (T@"_OSLogEventStoreTimeRef",R,N,V_oldestLive)
+  property end (T@"_OSLogEventStoreTimeRef",R,N,V_end)
+  property archiveUUID (T@"NSUUID",R,N,V_archiveUUID)
+  property sourceUUID (T@"NSUUID",R,N,V_sourceUUID)
+  -.cxx_destruct v16@0:8  imp=+0x1c7652f7c
+  -archiveUUID @16@0:8  imp=+0x1c765298c
+  -end @16@0:8  imp=+0x1c7643080
+  -initWithCollection:localStorePlist:liveDataDescriptor: @36@0:8@16@24i32  imp=+0x1c7640b98
+  -initWithDictionary: @24@0:8@16  imp=+0x1c769abac
+  -oldestHighVolume @16@0:8  imp=+0x1c7643078
+  -oldestLive @16@0:8  imp=+0x1c7641b68
+  -oldestPersist @16@0:8  imp=+0x1c7641d18
+  -oldestSignpost @16@0:8  imp=+0x1c7643070
+  -oldestSpecial @16@0:8  imp=+0x1c7641db4
+  -sourceUUID @16@0:8  imp=+0x1c769b00c
+  -timeRefForTTLClass: @20@0:8C16  imp=+0x1c7643088
+@class _OSLogEventStoreTimeRef : NSObject instanceSize=32
+  ivar +8 _uuid [16C]
+  ivar +24 _ct Q
+  property UUID (Tr*,R,N)
+  property continuousTime (TQ,R,N,V_ct)
+  +timeRef @16@0:8  imp=+0x1c764145c
+  -UUID r*16@0:8  imp=+0x1c7641c84
+  -continuousTime Q16@0:8  imp=+0x1c7641c8c
+  -initWithDictionary: @24@0:8@16  imp=+0x1c76414ec
+  -initWithUUID:continuous: @32@0:8[16C]16Q24  imp=+0x1c7641424
+@class _OSLogIndex : NSObject instanceSize=368
+  ivar +8 _fileq @"NSMutableArray"
+  ivar +16 _lcr @"_OSLogCollectionReference"
+  ivar +24 _file @"NSString"
+  ivar +32 _metadata {?="olim_oldestpersist"{_os_log_index_timeref="uuid"[16C]"continuous"Q}"olim_oldestspecial"{_os_log_index_timeref="uuid"[16C]"continuous"Q}"olim_oldestsignpost"{_os_log_index_timeref="uuid"[16C]"continuous"Q}"olim_oldesthighvol"{_os_log_index_timeref="uuid"[16C]"continuous"Q}"olim_oldestlive"{_os_log_index_timeref="uuid"[16C]"continuous"Q}"olim_end"{_os_log_index_timeref="uuid"[16C]"continuous"Q}"olim_oldest"^{_os_log_index_timeref}"olim_ttl"[5{?="timeref"{_os_log_index_timeref="uuid"[16C]"continuous"Q}"ttl"C}]}
+  ivar +344 _metadataValid B
+  ivar +352 _metadata2 @"_OSLogEventStoreMetadata"
+  ivar +360 _tsdb ^{_os_timesync_db_s=}
+  property timesync (T^{_os_timesync_db_s=},R,N,V_tsdb)
+  property persistStartWalltime (TQ,R,N)
+  property specialStartWalltime (TQ,R,N)
+  property endWalltime (TQ,R,N)
+  -.cxx_destruct v16@0:8  imp=+0x1c7652f20
+  -_addFileToIndex:error: B32@0:8r*16^@24  imp=+0x1c76633c4
+  -_buildFileIndex B16@0:8  imp=+0x1c76635c8
+  -_buildSingleFileIndex: B24@0:8^@16  imp=+0x1c76637cc
+  -_enumerateEntriesInRange:options:usingBlock: v36@0:8^{os_timesync_range_s=^{_os_opaque_128_map_s}QQ[0[16C]]}16I24@?28  imp=+0x1c7663a10
+  -_foreachIndexFile: v24@0:8@?16  imp=+0x1c7663430
+  -_openTimesyncDatabase B16@0:8  imp=+0x1c76632d8
+  -_readArchiveMetadata: B24@0:8^@16  imp=+0x1c7662a64
+  -addReferenceToIndex:error: B32@0:8@16^@24  imp=+0x1c7663340
+  -dealloc v16@0:8  imp=+0x1c7652ed0
+  -endWalltime Q16@0:8  imp=+0x1c76638c4
+  -enumerateEntriesFrom:to:options:usingBlock: v44@0:8Q16Q24I32@?36  imp=+0x1c76638f0
+  -enumerateEntriesFromLastBootWithOptions:usingBlock: v28@0:8I16@?20  imp=+0x1c766398c
+  -enumerateEntriesInRange:options:usingCatalogFilter:catalogCacheSize:dataCacheSize:usingBlock: v52@0:8^{os_timesync_range_s=^{_os_opaque_128_map_s}QQ[0[16C]]}16I24@28I36I40@?44  imp=+0x1c7664154
+  -enumerateEntriesUsingBlock: v24@0:8@?16  imp=+0x1c7664870
+  -enumerateFilesUsingBlock: v24@0:8@?16  imp=+0x1c7664884
+  -init @16@0:8  imp=+0x1c7643008
+  -initWithCollection:buildLocalIndex: @28@0:8@16B24  imp=+0x1c76629bc
+  -initWithCollection:timesync:metadata: @40@0:8@16^{_os_timesync_db_s=}24@32  imp=+0x1c7642cac
+  -insertChunkStore: v24@0:8@16  imp=+0x1c766354c
+  -insertIndexFile: v24@0:8@16  imp=+0x1c76433a8
+  -persistStartWalltime Q16@0:8  imp=+0x1c766386c
+  -specialStartWalltime Q16@0:8  imp=+0x1c7663898
+  -timesync ^{_os_timesync_db_s=}16@0:8  imp=+0x1c76460bc
+@class _OSLogIndexEnumerator : NSObject instanceSize=152
+  ivar +8 _subchunkStartQ @"NSMutableArray"
+  ivar +16 _subchunkEndQ @"NSMutableArray"
+  ivar +24 _catalogStartQ @"NSMutableArray"
+  ivar +32 _fileStartQ @"NSMutableArray"
+  ivar +40 _fileEndQ @"NSMutableArray"
+  ivar +48 _fileBootQ @"NSMutableArray"
+  ivar +56 _oversizeChunks @"NSMutableArray"
+  ivar +64 _bounds [6^{os_timesync_range_s}]
+  ivar +112 _live_bound ^{os_timesync_range_s=^{_os_opaque_128_map_s}QQ[0[16C]]}
+  ivar +120 _memEffic B
+  ivar +128 _tracepoints @"_BaseTracepointBuffer"
+  ivar +136 _index @"_OSLogIndex"
+  ivar +144 _catalogFilter @"_OSLogCatalogFilter"
+  property oversizeChunks (T@"NSMutableArray",R,N,V_oversizeChunks)
+  property tracepoints (T@"_BaseTracepointBuffer",R,N,V_tracepoints)
+  -.cxx_destruct v16@0:8  imp=+0x1c76528e0
+  -_initTimesyncBounds: v24@0:8^{?={_os_log_index_timeref=[16C]Q}{_os_log_index_timeref=[16C]Q}{_os_log_index_timeref=[16C]Q}{_os_log_index_timeref=[16C]Q}{_os_log_index_timeref=[16C]Q}{_os_log_index_timeref=[16C]Q}^{_os_log_index_timeref}[5{?={_os_log_index_timeref=[16C]Q}C}]}16  imp=+0x1c7645ee8
+  -dealloc v16@0:8  imp=+0x1c7652818
+  -enumerateTracepointsInRange:timesync:options:usingBlock: v44@0:8^{os_timesync_range_s=^{_os_opaque_128_map_s}QQ[0[16C]]}16^{_os_timesync_db_s=}24I32@?36  imp=+0x1c764627c
+  -initWithIndex:metadata:fileBootList:catalogFilter:options:catalogCacheSize:dataCacehSize: @60@0:8@16^{?={_os_log_index_timeref=[16C]Q}{_os_log_index_timeref=[16C]Q}{_os_log_index_timeref=[16C]Q}{_os_log_index_timeref=[16C]Q}{_os_log_index_timeref=[16C]Q}{_os_log_index_timeref=[16C]Q}^{_os_log_index_timeref}[5{?={_os_log_index_timeref=[16C]Q}C}]}24@32@40I48I52I56  imp=+0x1c766270c
+  -oversizeChunks @16@0:8  imp=+0x1c76523a8
+  -tracepoints @16@0:8  imp=+0x1c76629b4
+@class _OSLogIndexFile : NSObject <_OSLogIndexTimeRangable> instanceSize=96
+  ivar +8 _cfr @"_OSLogChunkFileReference"
+  ivar +16 _cs @"_OSLogChunkStore"
+  ivar +24 _bootu [16C]
+  ivar +40 _timespanDetermined B
+  ivar +48 _cot_header Q
+  ivar +56 _cot Q
+  ivar +64 _cet Q
+  ivar +72 _et Q
+  ivar +80 _ot Q
+  ivar +88 _path *
+  property bootUUID (Tr*,R,N)
+  property path (T*,R,N,V_path)
+  property oldestTime (TQ,R,N,V_ot)
+  property endTime (TQ,R,N,V_et)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1c7652e34
+  -_determineTimespan B16@0:8  imp=+0x1c7647514
+  -_loadCatalogMetadataForTimespan B16@0:8  imp=+0x1c7652134
+  -_loadHeaderMetadata: B24@0:8@16  imp=+0x1c7642468
+  -bootUUID r*16@0:8  imp=+0x1c7645c80
+  -copyMappedChunkStore: @24@0:8^@16  imp=+0x1c76479c0
+  -dealloc v16@0:8  imp=+0x1c7652de8
+  -endTime Q16@0:8  imp=+0x1c764aaec
+  -initWithChunkStore:error: @32@0:8@16^@24  imp=+0x1c764299c
+  -initWithTraceFile:error: @32@0:8@16^@24  imp=+0x1c7641f34
+  -oldestTime Q16@0:8  imp=+0x1c76479b8
+  -path *16@0:8  imp=+0x1c76433a0
+@class _OSLogLRUCache : NSObject <_OSLogCache> instanceSize=56
+  ivar +8 _lock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +16 evictionHandler @?
+  ivar +24 _maxCount Q
+  ivar +32 _storage @"NSMutableDictionary"
+  ivar +40 _mruItems @"OSLogDoublyLinkedList"
+  ivar +48 _name @"NSString"
+  property maxCount (TQ,R,N,V_maxCount)
+  property storage (T@"NSMutableDictionary",R,N,V_storage)
+  property mruItems (T@"OSLogDoublyLinkedList",R,N,V_mruItems)
+  property name (T@"NSString",R,N,V_name)
+  property count (TQ,R,N)
+  property evictionHandler (T@?,C,N,VevictionHandler)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1c767241c
+  -count Q16@0:8  imp=+0x1c7672348
+  -dealloc v16@0:8  imp=+0x1c76723a4
+  -evictAllEntries v16@0:8  imp=+0x1c767212c
+  -evictionHandler @?16@0:8  imp=+0x1c76723ec
+  -initWithName:maxCount:evictionHandler: @40@0:8@16Q24@?32  imp=+0x1c76717fc
+  -maxCount Q16@0:8  imp=+0x1c76723fc
+  -mruItems @16@0:8  imp=+0x1c767240c
+  -name @16@0:8  imp=+0x1c7672414
+  -objectForKey: @24@0:8@16  imp=+0x1c76718fc
+  -removeAllObjects v16@0:8  imp=+0x1c76722cc
+  -setEvictionHandler: v24@0:8@?16  imp=+0x1c76723f4
+  -setObject:forKey: v32@0:8@16@24  imp=+0x1c7671c4c
+  -storage @16@0:8  imp=+0x1c7672404
+@class _OSLogLegacyPredicateMapper : _OSLogPredicateMapper instanceSize=64
+  -mapLeftExpression:andRightExpression: v32@0:8^@16^@24  imp=+0x1c7667694
+  -validKeyPaths @16@0:8  imp=+0x1c7667454
+@class _OSLogPredicateCompiler : NSObject <NSPredicateVisitor> instanceSize=24
+  ivar +8 _compiledPredicate @"NSPredicate"
+  ivar +16 _stack @"NSMutableArray"
+  property compiledPredicate (T@"NSPredicate",R,N,V_compiledPredicate)
+  +expressionForOSLogEventProxyBlock: @24@0:8@?16  imp=+0x1c7666b38
+  -.cxx_destruct v16@0:8  imp=+0x1c7667410
+  -compileComparisonPredicate: @24@0:8@16  imp=+0x1c76670a0
+  -compileExpression: @24@0:8@16  imp=+0x1c76671b8
+  -compileKeyPathExpression: @24@0:8@16  imp=+0x1c7666d10
+  -compiledPredicate @16@0:8  imp=+0x1c7667408
+  -initWithPredicate: @24@0:8@16  imp=+0x1c7666a88
+  -processCompoundPredicate: v24@0:8@16  imp=+0x1c766722c
+  -visitPredicate: v24@0:8@16  imp=+0x1c7667340
+  -visitPredicateExpression: v24@0:8@16  imp=+0x1c76a8c5c
+  -visitPredicateOperator: v24@0:8@16  imp=+0x1c76a8c80
+@class _OSLogPredicateMapper : NSObject <NSPredicateVisitor> instanceSize=64
+  ivar +8 _pass i
+  ivar +16 _validationErrors @"NSMutableArray"
+  ivar +24 _validKeyPathPrefixes @"NSMutableArray"
+  ivar +32 _flags Q
+  ivar +40 _predicate @"NSPredicate"
+  ivar +48 _compiledPredicate @"NSPredicate"
+  ivar +56 _stack @"NSMutableArray"
+  property stack (T@"NSMutableArray",&,N,V_stack)
+  property validKeyPaths (T@"NSMutableSet",R,N)
+  property flags (TQ,R,N,V_flags)
+  property mappedPredicate (T@"NSPredicate",R,N,V_predicate)
+  property compiledPredicate (T@"NSPredicate",R,N,V_compiledPredicate)
+  property validationErrors (T@"NSArray",R,N,V_validationErrors)
+  -.cxx_destruct v16@0:8  imp=+0x1c764471c
+  -caseInsensitiveMapKeywordToConstantExpression:keywordMap: @32@0:8@16@24  imp=+0x1c7666554
+  -compiledPredicate @16@0:8  imp=+0x1c7666a64
+  -flags Q16@0:8  imp=+0x1c7644714
+  -initWithPredicate: @24@0:8@16  imp=+0x1c7643814
+  -initWithPredicate:andValidate: @28@0:8@16B24  imp=+0x1c764381c
+  -mapEventTypeExpression: @24@0:8@16  imp=+0x1c7643e08
+  -mapKeywordToConstantExpression:keywordMap: @32@0:8@16@24  imp=+0x1c7643eb4
+  -mapLeftExpression:andRightExpression: v32@0:8^@16^@24  imp=+0x1c7643b14
+  -mapMessageTypeExpression: @24@0:8@16  imp=+0x1c766668c
+  -mapSignpostScopeExpression: @24@0:8@16  imp=+0x1c7666738
+  -mapSignpostTypeExpression: @24@0:8@16  imp=+0x1c76667e4
+  -mappedPredicate @16@0:8  imp=+0x1c764470c
+  -processComparisonPredicate: v24@0:8@16  imp=+0x1c7643a08
+  -processCompoundPredicate: v24@0:8@16  imp=+0x1c7644058
+  -setStack: v24@0:8@16  imp=+0x1c7666a74
+  -stack @16@0:8  imp=+0x1c7666a6c
+  -validKeyPaths @16@0:8  imp=+0x1c76444dc
+  -validateExpression: v24@0:8@16  imp=+0x1c7644284
+  -validateKeyPath: v24@0:8@16  imp=+0x1c7666890
+  -validationErrors @16@0:8  imp=+0x1c7666a80
+  -visitPredicate: v24@0:8@16  imp=+0x1c764395c
+  -visitPredicateExpression: v24@0:8@16  imp=+0x1c764416c
+  -visitPredicateOperator: v24@0:8@16  imp=+0x1c76a8c38
+@class _OSLogSimplePredicate : NSObject <NSPredicateVisitor> instanceSize=48
+  ivar +8 _keys @"NSSet"
+  ivar +16 _operators @"NSSet"
+  ivar +24 _compoundTypes @"NSSet"
+  ivar +32 _stack @"NSMutableArray"
+  ivar +40 _predicate @"NSPredicate"
+  property predicate (T@"NSPredicate",R,N,V_predicate)
+  -.cxx_destruct v16@0:8  imp=+0x1c7645720
+  -initWithPredicate:supportedKeys:supportedOperators:supportedCompoundTypes: @48@0:8@16@24@32@40  imp=+0x1c76748f8
+  -isSupportedCompoundType: B24@0:8Q16  imp=+0x1c7674a70
+  -isSupportedExpression: B24@0:8@16  imp=+0x1c76453fc
+  -predicate @16@0:8  imp=+0x1c7645718
+  -processComparisonPredicate: v24@0:8@16  imp=+0x1c76451f0
+  -processCompoundPredicate: v24@0:8@16  imp=+0x1c764547c
+  -visitPredicate: v24@0:8@16  imp=+0x1c7645124
+  -visitPredicateExpression: v24@0:8@16  imp=+0x1c7674ac8
+  -visitPredicateOperator: v24@0:8@16  imp=+0x1c7674ac4
+@class _OSLogStreamFilter : NSObject <NSPredicateVisitor> instanceSize=64
+  ivar +8 _filter @"NSMutableDictionary"
+  ivar +16 _pids @"NSMutableDictionary"
+  ivar +24 _processes @"NSMutableDictionary"
+  ivar +32 _processImagePaths @"NSMutableDictionary"
+  ivar +40 _uids @"NSMutableDictionary"
+  ivar +48 _subsystems @"NSMutableDictionary"
+  ivar +56 _categories @"NSMutableDictionary"
+  property data (T@"NSData",R,N)
+  -.cxx_destruct v16@0:8  imp=+0x1c76764e4
+  -addCategory:flags:returningDict: v40@0:8@16Q24^@32  imp=+0x1c7675f18
+  -addProcess:flags:returningDict: v40@0:8@16Q24^@32  imp=+0x1c76759e8
+  -addProcessID:flags:returningDict: v40@0:8@16Q24^@32  imp=+0x1c7675884
+  -addProcessImagePath:flags:returningDict: v40@0:8@16Q24^@32  imp=+0x1c7675b2c
+  -addSubsystem:flags:returningDict: v40@0:8@16Q24^@32  imp=+0x1c7675dd4
+  -addUserID:flags:returningDict: v40@0:8@16Q24^@32  imp=+0x1c7675c70
+  -data @16@0:8  imp=+0x1c7675824
+  -dictionaryForComparisonPredicate: @24@0:8@16  imp=+0x1c76762d0
+  -encodePredicate: @24@0:8@16  imp=+0x1c7674dd8
+  -flagsForPredicate: Q24@0:8@16  imp=+0x1c7676294
+  -initWithPredicate: @24@0:8@16  imp=+0x1c7674acc
+  -processComparisonPredicate: v24@0:8@16  imp=+0x1c76763c0
+  -processLeftExpression:andRightExpression:flags: v40@0:8@16@24Q32  imp=+0x1c767628c
+  -processLeftExpression:andRightExpression:flags:returningDict: v48@0:8@16@24Q32^@40  imp=+0x1c767605c
+  -reduceFilter: v24@0:8@16  imp=+0x1c767506c
+  -visitPredicate: v24@0:8@16  imp=+0x1c7676474
+  -visitPredicateExpression: v24@0:8@16  imp=+0x1c76764dc
+  -visitPredicateOperator: v24@0:8@16  imp=+0x1c76764e0
+@class _OSLogVersioning : NSObject instanceSize=40
+  ivar +8 _lcr @"_OSLogCollectionReference"
+  ivar +16 _closeOnRelease B
+  ivar +17 _hasEndTimeRef B
+  ivar +24 _state q
+  ivar +32 _version q
+  property state (Tq,R,N,V_state)
+  property hasEndTimeRef (TB,R,N,V_hasEndTimeRef)
+  property version (Tq,R,N,V_version)
+  -.cxx_destruct v16@0:8  imp=+0x1c7673e14
+  -checkTimesyncDB:error: B32@0:8^B16^@24  imp=+0x1c7673b74
+  -dealloc v16@0:8  imp=+0x1c7672cc4
+  -hasEndTimeRef B16@0:8  imp=+0x1c7673dfc
+  -initWithCollection:closeOnRelease:error: @36@0:8@16B24^@28  imp=+0x1c7672710
+  -initWithCollection:error: @32@0:8@16^@24  imp=+0x1c7672c34
+  -initWithURL:error: @32@0:8@16^@24  imp=+0x1c7672c40
+  -performDestructiveUpdates: B24@0:8^@16  imp=+0x1c7672d1c
+  -repairTimesyncDB: B24@0:8^@16  imp=+0x1c7673cc8
+  -state q16@0:8  imp=+0x1c7673e04
+  -version q16@0:8  imp=+0x1c7673e0c

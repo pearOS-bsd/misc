@@ -1,0 +1,3189 @@
+@class ICQAMSEngagementPresenter : NSObject instanceSize=24
+  ivar +8 _taskLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +16 _pendingTask @"AMSSystemEngagementTask"
+  +sharedPresenter @16@0:8  imp=+0x26bc6d4bc
+  -.cxx_destruct v16@0:8  imp=+0x26bc6e568
+  -_clientDataFromActParams: @24@0:8@16  imp=+0x26bc6d59c
+  -_launchAMSEngagementWithURL:params:originatorBundleId:bag:completion: v56@0:8@16@24@32@40@?48  imp=+0x26bc6dd5c
+  -_metricsOverlayFromActParams:account: @32@0:8@16@24  imp=+0x26bc6d7ac
+  -_performPostPurchaseTeardown v16@0:8  imp=+0x26bc6e390
+  -clearPendingEngagement v16@0:8  imp=+0x26bc6e348
+  -init @16@0:8  imp=+0x26bc6d540
+  -performAMSEngagementWithParameters:completion: v32@0:8@16@?24  imp=+0x26bc6d94c
+  -reactivatePendingEngagementWithCompletion: v24@0:8@?16  imp=+0x26bc6e25c
+@class ICQAMSFlowManager : NSObject instanceSize=40
+  ivar +8 _flowLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +12 _isFlowPresented B
+  ivar +16 _flowStartTime @"NSDate"
+  ivar +24 _activeDaemonConnection @"INDaemonConnection"
+  ivar +32 _foregroundObserverToken @"<NSObject>"
+  +sharedManager @16@0:8  imp=+0x26bc48b80
+  -.cxx_destruct v16@0:8  imp=+0x26bc49730
+  -_enrichedParametersFromParameters:bundleId:isICQ: @36@0:8@16@24B32  imp=+0x26bc48ddc
+  -_handleFlowCompletionWithSuccess:error:userCompletion: v36@0:8B16@20@?28  imp=+0x26bc48c7c
+  -_tryStartFlowWithCompletion: B24@0:8@?16  imp=+0x26bc48f50
+  -beginFlowWithParameters:completion: v32@0:8@16@?24  imp=+0x26bc49150
+  -init @16@0:8  imp=+0x26bc48c04
+@class ICQActionBasedUniversalLinkSpecification : NSObject instanceSize=24
+  ivar +8 _serverDict @"NSDictionary"
+  ivar +16 _links @"NSDictionary"
+  property links (T@"NSDictionary",R,C,N,V_links)
+  property defaultLink (T@"ICQLink",R,N)
+  property defaultServerUIURL (T@"NSURL",R,N)
+  property defaultDynamicUIRouteURL (T@"NSURL",R,N)
+  property defaultPurchaseAttribution (T@"NSString",R,N)
+  +icqLinkForContext:inSpecifications: @32@0:8@16@24  imp=+0x26bc53618
+  +specificationsFromServerDictionary: @24@0:8@16  imp=+0x26bc53ad0
+  -.cxx_destruct v16@0:8  imp=+0x26bc53f34
+  -defaultDynamicUIRouteURL @16@0:8  imp=+0x26bc53118
+  -defaultLink @16@0:8  imp=+0x26bc530b4
+  -defaultPurchaseAttribution @16@0:8  imp=+0x26bc53124
+  -defaultServerUIURL @16@0:8  imp=+0x26bc5310c
+  -dynamicUIRouteURLForKey: @24@0:8@16  imp=+0x26bc531c0
+  -icqLinkForContext: @24@0:8@16  imp=+0x26bc532e0
+  -initWithServerDictionary: @24@0:8@16  imp=+0x26bc53038
+  -links @16@0:8  imp=+0x26bc53f2c
+  -purchaseAttributionForKey: @24@0:8@16  imp=+0x26bc53250
+  -serverUIURLForKey: @24@0:8@16  imp=+0x26bc53130
+@class ICQActionInfo : NSObject <NSCopying, NSSecureCoding> instanceSize=56
+  ivar +8 _isDefault B
+  ivar +9 _isDestructive B
+  ivar +16 _title @"NSString"
+  ivar +24 _subtitle @"NSString"
+  ivar +32 _icqLink @"ICQLink"
+  ivar +40 _actionURL @"NSURL"
+  ivar +48 _confirmation @"ICQConfirmationInfo"
+  property isDefault (TB,N,V_isDefault)
+  property isDestructive (TB,N,V_isDestructive)
+  property title (T@"NSString",C,N,V_title)
+  property subtitle (T@"NSString",C,N,V_subtitle)
+  property icqLink (T@"ICQLink",&,N,V_icqLink)
+  property actionURL (T@"NSURL",&,N,V_actionURL)
+  property confirmation (T@"ICQConfirmationInfo",&,N,V_confirmation)
+  +supportsSecureCoding B16@0:8  imp=+0x26bc46740
+  -.cxx_destruct v16@0:8  imp=+0x26bc46a2c
+  -actionURL @16@0:8  imp=+0x26bc46a04
+  -confirmation @16@0:8  imp=+0x26bc46a18
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x26bc466bc
+  -description @16@0:8  imp=+0x26bc4664c
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc46748
+  -icqLink @16@0:8  imp=+0x26bc469f0
+  -initFromConfirmationAction: @24@0:8@16  imp=+0x26bc46528
+  -initFromDictionary: @24@0:8@16  imp=+0x26bc46090
+  -initWithCoder: @24@0:8@16  imp=+0x26bc4681c
+  -isDefault B16@0:8  imp=+0x26bc469b0
+  -isDestructive B16@0:8  imp=+0x26bc469c0
+  -setActionURL: v24@0:8@16  imp=+0x26bc46a0c
+  -setConfirmation: v24@0:8@16  imp=+0x26bc46a20
+  -setIcqLink: v24@0:8@16  imp=+0x26bc469f8
+  -setIsDefault: v20@0:8B16  imp=+0x26bc469b8
+  -setIsDestructive: v20@0:8B16  imp=+0x26bc469c8
+  -setSubtitle: v24@0:8@16  imp=+0x26bc469e8
+  -setTitle: v24@0:8@16  imp=+0x26bc469d8
+  -subtitle @16@0:8  imp=+0x26bc469e0
+  -title @16@0:8  imp=+0x26bc469d0
+@class ICQAppCloudStorage : NSObject <NSCopying, NSSecureCoding> instanceSize=40
+  ivar +8 _bundleID @"NSString"
+  ivar +16 _storageUsed @"NSNumber"
+  ivar +24 _ruiURL @"NSURL"
+  ivar +32 _liftUIURL @"NSURL"
+  property bundleID (T@"NSString",C,N,V_bundleID)
+  property storageUsed (T@"NSNumber",&,N,V_storageUsed)
+  property ruiURL (T@"NSURL",&,N,V_ruiURL)
+  property liftUIURL (T@"NSURL",&,N,V_liftUIURL)
+  +supportsSecureCoding B16@0:8  imp=+0x26bc499dc
+  -.cxx_destruct v16@0:8  imp=+0x26bc49c00
+  -bundleID @16@0:8  imp=+0x26bc49bb4
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x26bc4997c
+  -description @16@0:8  imp=+0x26bc49938
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc499e4
+  -initWithCoder: @24@0:8@16  imp=+0x26bc49a7c
+  -liftUIURL @16@0:8  imp=+0x26bc49bec
+  -ruiURL @16@0:8  imp=+0x26bc49bd8
+  -setBundleID: v24@0:8@16  imp=+0x26bc49bbc
+  -setLiftUIURL: v24@0:8@16  imp=+0x26bc49bf4
+  -setRuiURL: v24@0:8@16  imp=+0x26bc49be0
+  -setStorageUsed: v24@0:8@16  imp=+0x26bc49bcc
+  -storageUsed @16@0:8  imp=+0x26bc49bc4
+@class ICQAppCloudStorageCache : NSObject instanceSize=24
+  ivar +8 _hashMap @"NSMutableDictionary"
+  ivar +16 _cacheLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  +sharedInstance @16@0:8  imp=+0x26bc501e4
+  -.cxx_destruct v16@0:8  imp=+0x26bc50478
+  -cloudStorageByApp:forAltDSID: @32@0:8@16@24  imp=+0x26bc503d0
+  -init @16@0:8  imp=+0x26bc50268
+  -setCloudStorage:byApp:forAltDSID: v40@0:8@16@24@32  imp=+0x26bc502d4
+@class ICQAppInfo : NSObject <NSCopying, NSSecureCoding> instanceSize=64
+  ivar +8 _fetchLocally B
+  ivar +16 _bundleIds @"NSArray"
+  ivar +24 _label @"NSString"
+  ivar +32 _iconURL @"ICQImageURL"
+  ivar +40 _detailLabel @"NSString"
+  ivar +48 _detailLabelColor @"NSString"
+  ivar +56 _action @"ICQActionInfo"
+  property bundleIds (T@"NSArray",&,N,V_bundleIds)
+  property label (T@"NSString",C,N,V_label)
+  property fetchLocally (TB,N,V_fetchLocally)
+  property iconURL (T@"ICQImageURL",&,N,V_iconURL)
+  property detailLabel (T@"NSString",C,N,V_detailLabel)
+  property detailLabelColor (T@"NSString",C,N,V_detailLabelColor)
+  property action (T@"ICQActionInfo",&,N,V_action)
+  +supportsSecureCoding B16@0:8  imp=+0x26bc44820
+  -.cxx_destruct v16@0:8  imp=+0x26bc44bb8
+  -action @16@0:8  imp=+0x26bc44ba4
+  -bundleIds @16@0:8  imp=+0x26bc44b3c
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x26bc4479c
+  -description @16@0:8  imp=+0x26bc44748
+  -detailLabel @16@0:8  imp=+0x26bc44b84
+  -detailLabelColor @16@0:8  imp=+0x26bc44b94
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc44828
+  -fetchLocally B16@0:8  imp=+0x26bc44b60
+  -iconURL @16@0:8  imp=+0x26bc44b70
+  -initFromDictionary: @24@0:8@16  imp=+0x26bc443cc
+  -initWithCoder: @24@0:8@16  imp=+0x26bc448fc
+  -label @16@0:8  imp=+0x26bc44b50
+  -setAction: v24@0:8@16  imp=+0x26bc44bac
+  -setBundleIds: v24@0:8@16  imp=+0x26bc44b44
+  -setDetailLabel: v24@0:8@16  imp=+0x26bc44b8c
+  -setDetailLabelColor: v24@0:8@16  imp=+0x26bc44b9c
+  -setFetchLocally: v20@0:8B16  imp=+0x26bc44b68
+  -setIconURL: v24@0:8@16  imp=+0x26bc44b78
+  -setLabel: v24@0:8@16  imp=+0x26bc44b58
+@class ICQAppLaunchLinkTracker : NSObject instanceSize=16
+  ivar +8 userDefaults 
+  +neverShown q16@0:8  imp=+0x26bc937c4
+  +shared @16@0:8  imp=+0x26bc93a40
+  -.cxx_destruct v16@0:8  imp=+0x26bc96098
+  -allDaysSinceLastShown @16@0:8  imp=+0x26bc95320
+  -daysSinceLastShownForBundleID: q24@0:8@16  imp=+0x26bc94734
+  -init @16@0:8  imp=+0x26bcaca40
+  -lastShownDateForBundleID: @24@0:8@16  imp=+0x26bc93ff4
+  -osUpgradeSinceLastShownForBundleID: B24@0:8@16  imp=+0x26bc9563c
+  -setLastShownDate:forBundleID: v32@0:8@16@24  imp=+0x26bc95f1c
+@class ICQAppsSyncingToDrive : NSObject <NSCopying, NSSecureCoding> instanceSize=16
+  ivar +8 _apps @"NSArray"
+  property apps (T@"NSArray",&,N,V_apps)
+  +supportsSecureCoding B16@0:8  imp=+0x26bc6b2d0
+  -.cxx_destruct v16@0:8  imp=+0x26bc6b42c
+  -apps @16@0:8  imp=+0x26bc6b418
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x26bc6b294
+  -description @16@0:8  imp=+0x26bc6b258
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc6b2d8
+  -initFromDictionary: @24@0:8@16  imp=+0x26bc6b098
+  -initWithCoder: @24@0:8@16  imp=+0x26bc6b2f0
+  -setApps: v24@0:8@16  imp=+0x26bc6b420
+@class ICQAppsSyncingToDriveCache : NSObject instanceSize=24
+  ivar +8 _hashMap @"NSMutableDictionary"
+  ivar +16 _cacheLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  +sharedInstance @16@0:8  imp=+0x26bc63d08
+  -.cxx_destruct v16@0:8  imp=+0x26bc63eec
+  -appsSyncingToDriveforAltDSID: @24@0:8@16  imp=+0x26bc63e78
+  -init @16@0:8  imp=+0x26bc63d8c
+  -setAppsSyncingToDrive:forAltDSID: v32@0:8@16@24  imp=+0x26bc63df8
+@class ICQAsyncValueLoader : NSObject instanceSize=40
+  ivar +8 _valueLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +16 _value @
+  ivar +24 _didUpdate @?
+  ivar +32 _fetchValue @?
+  property fetchValue (T@?,C,N,V_fetchValue)
+  property value (T@,&,N,V_value)
+  property didUpdate (T@?,C,N,V_didUpdate)
+  -.cxx_destruct v16@0:8  imp=+0x26bc74284
+  -didUpdate @?16@0:8  imp=+0x26bc74264
+  -fetchValue @?16@0:8  imp=+0x26bc74274
+  -fetchValueAsynchronously v16@0:8  imp=+0x26bc740c0
+  -initWithDefaultValue:valueFetcher: @32@0:8@16@?24  imp=+0x26bc74008
+  -setDidUpdate: v24@0:8@?16  imp=+0x26bc7426c
+  -setFetchValue: v24@0:8@?16  imp=+0x26bc7427c
+  -setValue: v24@0:8@16  imp=+0x26bc74258
+  -value @16@0:8  imp=+0x26bc74208
+@class ICQBackupDevice : NSObject <NSCopying, NSSecureCoding> instanceSize=128
+  ivar +8 _isActive B
+  ivar +9 _isLocalBackup B
+  ivar +10 _isIncomplete B
+  ivar +16 _deviceName @"NSString"
+  ivar +24 _deviceUDID @"NSString"
+  ivar +32 _deviceSubtitle @"NSString"
+  ivar +40 _storageUsedLabel @"NSString"
+  ivar +48 _storageUsed @"NSNumber"
+  ivar +56 _backupSize @"NSNumber"
+  ivar +64 _imageURL @"ICQImageURL"
+  ivar +72 _largeImageURL @"ICQImageURL"
+  ivar +80 _detailViewController @"NSString"
+  ivar +88 _backupTimestamp @"NSNumber"
+  ivar +96 _deleteURL @"NSURL"
+  ivar +104 _deleteButtonLabel @"NSString"
+  ivar +112 _backupFailedByinBytes @"NSNumber"
+  ivar +120 _bytesRequiredForBackup @"NSNumber"
+  property deviceName (T@"NSString",C,N,V_deviceName)
+  property deviceUDID (T@"NSString",C,N,V_deviceUDID)
+  property deviceSubtitle (T@"NSString",C,N,V_deviceSubtitle)
+  property storageUsedLabel (T@"NSString",C,N,V_storageUsedLabel)
+  property storageUsed (T@"NSNumber",&,N,V_storageUsed)
+  property backupSize (T@"NSNumber",&,N,V_backupSize)
+  property imageURL (T@"ICQImageURL",&,N,V_imageURL)
+  property largeImageURL (T@"ICQImageURL",&,N,V_largeImageURL)
+  property detailViewController (T@"NSString",C,N,V_detailViewController)
+  property backupTimestamp (T@"NSNumber",&,N,V_backupTimestamp)
+  property deleteURL (T@"NSURL",&,N,V_deleteURL)
+  property deleteButtonLabel (T@"NSString",C,N,V_deleteButtonLabel)
+  property backupFailedByinBytes (T@"NSNumber",&,N,V_backupFailedByinBytes)
+  property bytesRequiredForBackup (T@"NSNumber",&,N,V_bytesRequiredForBackup)
+  property isActive (TB,N,V_isActive)
+  property isLocalBackup (TB,N,V_isLocalBackup)
+  property isIncomplete (TB,N,V_isIncomplete)
+  property rawDictionary (T@"NSDictionary",R,N)
+  +supportsSecureCoding B16@0:8  imp=+0x26bc6bb94
+  -.cxx_destruct v16@0:8  imp=+0x26bc6c564
+  -backupFailedByinBytes @16@0:8  imp=+0x26bc6c50c
+  -backupSize @16@0:8  imp=+0x26bc6c488
+  -backupTimestamp @16@0:8  imp=+0x26bc6c4d4
+  -bytesRequiredForBackup @16@0:8  imp=+0x26bc6c520
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x26bc6ba98
+  -deleteButtonLabel @16@0:8  imp=+0x26bc6c4fc
+  -deleteURL @16@0:8  imp=+0x26bc6c4e8
+  -description @16@0:8  imp=+0x26bc6ba30
+  -detailViewController @16@0:8  imp=+0x26bc6c4c4
+  -deviceName @16@0:8  imp=+0x26bc6c434
+  -deviceSubtitle @16@0:8  imp=+0x26bc6c454
+  -deviceUDID @16@0:8  imp=+0x26bc6c444
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc6bb9c
+  -imageURL @16@0:8  imp=+0x26bc6c49c
+  -initWithCoder: @24@0:8@16  imp=+0x26bc6bd38
+  -isActive B16@0:8  imp=+0x26bc6c534
+  -isIncomplete B16@0:8  imp=+0x26bc6c554
+  -isLocalBackup B16@0:8  imp=+0x26bc6c544
+  -largeImageURL @16@0:8  imp=+0x26bc6c4b0
+  -rawDictionary @16@0:8  imp=+0x26bc6c098
+  -setBackupFailedByinBytes: v24@0:8@16  imp=+0x26bc6c514
+  -setBackupSize: v24@0:8@16  imp=+0x26bc6c490
+  -setBackupTimestamp: v24@0:8@16  imp=+0x26bc6c4dc
+  -setBytesRequiredForBackup: v24@0:8@16  imp=+0x26bc6c528
+  -setDeleteButtonLabel: v24@0:8@16  imp=+0x26bc6c504
+  -setDeleteURL: v24@0:8@16  imp=+0x26bc6c4f0
+  -setDetailViewController: v24@0:8@16  imp=+0x26bc6c4cc
+  -setDeviceName: v24@0:8@16  imp=+0x26bc6c43c
+  -setDeviceSubtitle: v24@0:8@16  imp=+0x26bc6c45c
+  -setDeviceUDID: v24@0:8@16  imp=+0x26bc6c44c
+  -setImageURL: v24@0:8@16  imp=+0x26bc6c4a4
+  -setIsActive: v20@0:8B16  imp=+0x26bc6c53c
+  -setIsIncomplete: v20@0:8B16  imp=+0x26bc6c55c
+  -setIsLocalBackup: v20@0:8B16  imp=+0x26bc6c54c
+  -setLargeImageURL: v24@0:8@16  imp=+0x26bc6c4b8
+  -setStorageUsed: v24@0:8@16  imp=+0x26bc6c47c
+  -setStorageUsedLabel: v24@0:8@16  imp=+0x26bc6c46c
+  -storageUsed @16@0:8  imp=+0x26bc6c474
+  -storageUsedLabel @16@0:8  imp=+0x26bc6c464
+@class ICQBackupDeviceGroup : NSObject <NSCopying, NSSecureCoding> instanceSize=32
+  ivar +8 _sectionHeader @"NSString"
+  ivar +16 _sectionFooter @"NSString"
+  ivar +24 _backupDevices @"NSArray"
+  property sectionHeader (T@"NSString",C,N,V_sectionHeader)
+  property sectionFooter (T@"NSString",C,N,V_sectionFooter)
+  property backupDevices (T@"NSArray",&,N,V_backupDevices)
+  +supportsSecureCoding B16@0:8  imp=+0x26bc6b794
+  -.cxx_destruct v16@0:8  imp=+0x26bc6b9e0
+  -backupDevices @16@0:8  imp=+0x26bc6b9cc
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x26bc6b740
+  -description @16@0:8  imp=+0x26bc6b6fc
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc6b79c
+  -initWithCoder: @24@0:8@16  imp=+0x26bc6b820
+  -sectionFooter @16@0:8  imp=+0x26bc6b9bc
+  -sectionHeader @16@0:8  imp=+0x26bc6b9ac
+  -setBackupDevices: v24@0:8@16  imp=+0x26bc6b9d4
+  -setSectionFooter: v24@0:8@16  imp=+0x26bc6b9c4
+  -setSectionHeader: v24@0:8@16  imp=+0x26bc6b9b4
+@class ICQBackupInfo : NSObject <NSCopying, NSSecureCoding> instanceSize=24
+  ivar +8 _noOfBackupDevices @"NSNumber"
+  ivar +16 _deviceGroups @"NSArray"
+  property noOfBackupDevices (T@"NSNumber",&,N,V_noOfBackupDevices)
+  property deviceGroups (T@"NSArray",&,N,V_deviceGroups)
+  +supportsSecureCoding B16@0:8  imp=+0x26bc6b4bc
+  -.cxx_destruct v16@0:8  imp=+0x26bc6b6b8
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x26bc6b474
+  -description @16@0:8  imp=+0x26bc6b438
+  -deviceGroups @16@0:8  imp=+0x26bc6b6a4
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc6b4c4
+  -initWithCoder: @24@0:8@16  imp=+0x26bc6b534
+  -noOfBackupDevices @16@0:8  imp=+0x26bc6b690
+  -setDeviceGroups: v24@0:8@16  imp=+0x26bc6b6ac
+  -setNoOfBackupDevices: v24@0:8@16  imp=+0x26bc6b698
+@class ICQBubbleBannerTracker : NSObject instanceSize=96
+  ivar +8 userDefaults 
+  ivar +16 kBubbleBannerDismissedKey 
+  ivar +32 kBubbleBannerDisplayedKey 
+  ivar +48 kBubbleBannerCAEventKey 
+  ivar +64 kFullReason 
+  ivar +80 kAlmostFullReason 
+  +shared @16@0:8  imp=+0x26bc97d9c
+  -.cxx_destruct v16@0:8  imp=+0x26bc9acc8
+  -account:lastUpdated:decayUntil: @40@0:8@16@24d32  imp=+0x26bc9aadc
+  -account:shouldDisplay:forReason:dismissedInSession:supressUntil: B52@0:8@16@24@32B40d44  imp=+0x26bc9978c
+  -init @16@0:8  imp=+0x26bcacaa0
+  -trackLastDismissed:date:reason: v40@0:8@16@24@32  imp=+0x26bc97f44
+  -trackLastDisplayedAtTheTop:date:reason: v40@0:8@16@24@32  imp=+0x26bc97f34
+@class ICQCloudStorageApps : NSObject <NSCopying, NSSecureCoding> instanceSize=24
+  ivar +8 _apps @"NSArray"
+  ivar +16 _genericErrorMessage @"NSString"
+  property apps (T@"NSArray",&,N,V_apps)
+  property genericErrorMessage (T@"NSString",C,N,V_genericErrorMessage)
+  +supportsSecureCoding B16@0:8  imp=+0x26bc44eb8
+  -.cxx_destruct v16@0:8  imp=+0x26bc450b0
+  -apps @16@0:8  imp=+0x26bc4508c
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x26bc44e70
+  -description @16@0:8  imp=+0x26bc44e34
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc44ec0
+  -genericErrorMessage @16@0:8  imp=+0x26bc450a0
+  -initFromDictionary: @24@0:8@16  imp=+0x26bc44c2c
+  -initWithCoder: @24@0:8@16  imp=+0x26bc44f30
+  -setApps: v24@0:8@16  imp=+0x26bc45094
+  -setGenericErrorMessage: v24@0:8@16  imp=+0x26bc450a8
+@class ICQCloudStorageDataController : NSObject instanceSize=24
+  ivar +8 _account @"ACAccount"
+  ivar +16 _shouldIgnoreCache B
+  property shouldIgnoreCache (TB,N,V_shouldIgnoreCache)
+  property cachediCloudDetailsPage (T@"ICQiCloudDetailsPageInfo",R,N)
+  property iCloudDetailsPageShown (TB,N)
+  +_requestQueue @16@0:8  imp=+0x26bc7d63c
+  -.cxx_destruct v16@0:8  imp=+0x26bc80218
+  -cachedStorageSummary @16@0:8  imp=+0x26bc7e03c
+  -cachediCloudDetailsPage @16@0:8  imp=+0x26bc7e0c0
+  -fetchAppsSyncingToiCloudDriveWithCompletion: v24@0:8@?16  imp=+0x26bc7fa84
+  -fetchBackupinfoWithCompletion: v24@0:8@?16  imp=+0x26bc7eee4
+  -fetchStorageAppsWithCompletion: v24@0:8@?16  imp=+0x26bc7e1e0
+  -fetchStorageByApp:completion: v32@0:8@16@?24  imp=+0x26bc7e770
+  -fetchStorageSummaryWithCompletion: v24@0:8@?16  imp=+0x26bc7d784
+  -iCloudDetailsPageShown B16@0:8  imp=+0x26bc7e150
+  -initWithAccount: @24@0:8@16  imp=+0x26bc7d704
+  -sendTipState:forTip:completion: v40@0:8q16@24@?32  imp=+0x26bc7f4b4
+  -setICloudDetailsPageShown: v20@0:8B16  imp=+0x26bc7e194
+  -setShouldIgnoreCache: v20@0:8B16  imp=+0x26bc80210
+  -shouldIgnoreCache B16@0:8  imp=+0x26bc80208
+@class ICQCloudStorageSummary : NSObject <NSCopying, NSSecureCoding> instanceSize=120
+  ivar +8 _displayLabel @"NSString"
+  ivar +16 _totalStorage @"NSNumber"
+  ivar +24 _usedStorage @"NSNumber"
+  ivar +32 _freeStorage @"NSNumber"
+  ivar +40 _commerceStorage @"NSNumber"
+  ivar +48 _mediaStorage @"NSArray"
+  ivar +56 _tips @"NSArray"
+  ivar +64 _backupInfo @"ICQBackupInfo"
+  ivar +72 _subscriptionInfo @"ICQSubscriptionInfo"
+  ivar +80 _iCloudDetailsPageInfo @"ICQiCloudDetailsPageInfo"
+  ivar +88 _manageStorageURL @"NSURL"
+  ivar +96 _manageStorageTitle @"NSString"
+  ivar +104 _manageStorageActionButtonText @"NSString"
+  ivar +112 _manageStoragePage @"ICQManageStoragePageInfo"
+  property displayLabel (T@"NSString",C,N,V_displayLabel)
+  property totalStorage (T@"NSNumber",&,N,V_totalStorage)
+  property usedStorage (T@"NSNumber",&,N,V_usedStorage)
+  property freeStorage (T@"NSNumber",&,N,V_freeStorage)
+  property commerceStorage (T@"NSNumber",&,N,V_commerceStorage)
+  property mediaStorage (T@"NSArray",&,N,V_mediaStorage)
+  property tips (T@"NSArray",&,N,V_tips)
+  property backupInfo (T@"ICQBackupInfo",&,N,V_backupInfo)
+  property subscriptionInfo (T@"ICQSubscriptionInfo",&,N,V_subscriptionInfo)
+  property iCloudDetailsPageInfo (T@"ICQiCloudDetailsPageInfo",&,N,V_iCloudDetailsPageInfo)
+  property manageStorageURL (T@"NSURL",&,N,V_manageStorageURL)
+  property manageStorageTitle (T@"NSString",C,N,V_manageStorageTitle)
+  property manageStorageActionButtonText (T@"NSString",C,N,V_manageStorageActionButtonText)
+  property manageStoragePage (T@"ICQManageStoragePageInfo",&,N,V_manageStoragePage)
+  property shouldUseNativeManageStorage (TB,R,N)
+  +supportsSecureCoding B16@0:8  imp=+0x26bc546a4
+  -.cxx_destruct v16@0:8  imp=+0x26bc54d44
+  -backupInfo @16@0:8  imp=+0x26bc54cc0
+  -commerceStorage @16@0:8  imp=+0x26bc54c84
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x26bc545cc
+  -description @16@0:8  imp=+0x26bc54534
+  -displayLabel @16@0:8  imp=+0x26bc54c38
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc546ac
+  -freeStorage @16@0:8  imp=+0x26bc54c70
+  -iCloudDetailsPageInfo @16@0:8  imp=+0x26bc54ce8
+  -initWithCoder: @24@0:8@16  imp=+0x26bc5480c
+  -manageStorageActionButtonText @16@0:8  imp=+0x26bc54d20
+  -manageStoragePage @16@0:8  imp=+0x26bc54d30
+  -manageStorageTitle @16@0:8  imp=+0x26bc54d10
+  -manageStorageURL @16@0:8  imp=+0x26bc54cfc
+  -mediaStorage @16@0:8  imp=+0x26bc54c98
+  -setBackupInfo: v24@0:8@16  imp=+0x26bc54cc8
+  -setCommerceStorage: v24@0:8@16  imp=+0x26bc54c8c
+  -setDisplayLabel: v24@0:8@16  imp=+0x26bc54c40
+  -setFreeStorage: v24@0:8@16  imp=+0x26bc54c78
+  -setICloudDetailsPageInfo: v24@0:8@16  imp=+0x26bc54cf0
+  -setManageStorageActionButtonText: v24@0:8@16  imp=+0x26bc54d28
+  -setManageStoragePage: v24@0:8@16  imp=+0x26bc54d38
+  -setManageStorageTitle: v24@0:8@16  imp=+0x26bc54d18
+  -setManageStorageURL: v24@0:8@16  imp=+0x26bc54d04
+  -setMediaStorage: v24@0:8@16  imp=+0x26bc54ca0
+  -setSubscriptionInfo: v24@0:8@16  imp=+0x26bc54cdc
+  -setTips: v24@0:8@16  imp=+0x26bc54cb4
+  -setTotalStorage: v24@0:8@16  imp=+0x26bc54c50
+  -setUsedStorage: v24@0:8@16  imp=+0x26bc54c64
+  -shouldUseNativeManageStorage B16@0:8  imp=+0x26bc54c28
+  -subscriptionInfo @16@0:8  imp=+0x26bc54cd4
+  -tips @16@0:8  imp=+0x26bc54cac
+  -totalStorage @16@0:8  imp=+0x26bc54c48
+  -usedStorage @16@0:8  imp=+0x26bc54c5c
+@class ICQCloudStorageSummaryCache : NSObject instanceSize=56
+  ivar +8 _summaryCache @"NSMutableDictionary"
+  ivar +16 _cacheLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +24 _quotaChangeNotificationObserver @
+  ivar +32 _quotaInfoChangeNotificationObserver @
+  ivar +40 _cloudSubscriptionFeaturesObserver @
+  ivar +48 _hasDisplayedDetailsPage B
+  property hasDisplayedDetailsPage (TB,N)
+  +sharedInstance @16@0:8  imp=+0x26bc564e4
+  -.cxx_destruct v16@0:8  imp=+0x26bc56d84
+  -_cleanupCacheForPrimaryAccount v16@0:8  imp=+0x26bc56ce4
+  -_startObservingCloudSubscriptionFeaturesNotifications v16@0:8  imp=+0x26bc56aec
+  -_startObservingQuotaChangeNotifications v16@0:8  imp=+0x26bc567a4
+  -_stopObservingCloudSubscriptionFeaturesNotifications v16@0:8  imp=+0x26bc56c94
+  -_stopObservingQuotaChangeNotifications v16@0:8  imp=+0x26bc56bf8
+  -dealloc v16@0:8  imp=+0x26bc565e4
+  -hasDisplayedDetailsPage B16@0:8  imp=+0x26bc56634
+  -init @16@0:8  imp=+0x26bc56568
+  -setHasDisplayedDetailsPage: v20@0:8B16  imp=+0x26bc5666c
+  -setStorageSummary:forAltDSID: v32@0:8@16@24  imp=+0x26bc566b0
+  -storageSummaryForAltDSID: @24@0:8@16  imp=+0x26bc56730
+@class ICQConfirmationActionInfo : NSObject <NSCopying, NSSecureCoding> instanceSize=48
+  ivar +8 _isDefault B
+  ivar +9 _isDestructive B
+  ivar +16 _title @"NSString"
+  ivar +24 _subtitle @"NSString"
+  ivar +32 _icqLink @"ICQLink"
+  ivar +40 _actionURL @"NSURL"
+  property title (T@"NSString",C,N,V_title)
+  property subtitle (T@"NSString",C,N,V_subtitle)
+  property icqLink (T@"ICQLink",&,N,V_icqLink)
+  property actionURL (T@"NSURL",&,N,V_actionURL)
+  property isDefault (TB,N,V_isDefault)
+  property isDestructive (TB,N,V_isDestructive)
+  +supportsSecureCoding B16@0:8  imp=+0x26bc45708
+  -.cxx_destruct v16@0:8  imp=+0x26bc45998
+  -actionURL @16@0:8  imp=+0x26bc45964
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x26bc45690
+  -description @16@0:8  imp=+0x26bc45628
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc45710
+  -icqLink @16@0:8  imp=+0x26bc45950
+  -initFromDictionary: @24@0:8@16  imp=+0x26bc452a4
+  -initWithCoder: @24@0:8@16  imp=+0x26bc457d0
+  -isDefault B16@0:8  imp=+0x26bc45978
+  -isDestructive B16@0:8  imp=+0x26bc45988
+  -setActionURL: v24@0:8@16  imp=+0x26bc4596c
+  -setIcqLink: v24@0:8@16  imp=+0x26bc45958
+  -setIsDefault: v20@0:8B16  imp=+0x26bc45980
+  -setIsDestructive: v20@0:8B16  imp=+0x26bc45990
+  -setSubtitle: v24@0:8@16  imp=+0x26bc45948
+  -setTitle: v24@0:8@16  imp=+0x26bc45938
+  -subtitle @16@0:8  imp=+0x26bc45940
+  -title @16@0:8  imp=+0x26bc45930
+@class ICQConfirmationInfo : NSObject <NSCopying, NSSecureCoding> instanceSize=40
+  ivar +8 _title @"NSString"
+  ivar +16 _subtitle @"NSString"
+  ivar +24 _iconURL @"ICQImageURL"
+  ivar +32 _actions @"NSArray"
+  property title (T@"NSString",C,N,V_title)
+  property subtitle (T@"NSString",C,N,V_subtitle)
+  property iconURL (T@"ICQImageURL",&,N,V_iconURL)
+  property actions (T@"NSArray",&,N,V_actions)
+  +supportsSecureCoding B16@0:8  imp=+0x26bc45d8c
+  -.cxx_destruct v16@0:8  imp=+0x26bc46034
+  -actions @16@0:8  imp=+0x26bc46020
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x26bc45d2c
+  -description @16@0:8  imp=+0x26bc45ce8
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc45d94
+  -iconURL @16@0:8  imp=+0x26bc4600c
+  -initFromDictionary: @24@0:8@16  imp=+0x26bc459f4
+  -initWithCoder: @24@0:8@16  imp=+0x26bc45e2c
+  -setActions: v24@0:8@16  imp=+0x26bc46028
+  -setIconURL: v24@0:8@16  imp=+0x26bc46014
+  -setSubtitle: v24@0:8@16  imp=+0x26bc46004
+  -setTitle: v24@0:8@16  imp=+0x26bc45ff4
+  -subtitle @16@0:8  imp=+0x26bc45ffc
+  -title @16@0:8  imp=+0x26bc45fec
+@class ICQDaemonAlert : NSObject instanceSize=64
+  ivar +8 _alertLock @"NSLock"
+  ivar +16 _alertState q
+  ivar +24 _cfAlert ^{__CFUserNotification=}
+  ivar +32 _alertSema @"NSObject<OS_dispatch_semaphore>"
+  ivar +40 _alertQueue @"NSObject<OS_dispatch_queue>"
+  ivar +48 _showOnlyInSpringboard B
+  ivar +49 _handleActionsBeforeCallingCompletionHandler B
+  ivar +56 _daemonOffer @"ICQDaemonOffer"
+  property daemonOffer (T@"ICQDaemonOffer",R,N,V_daemonOffer)
+  property showOnlyInSpringboard (TB,N,V_showOnlyInSpringboard)
+  property handleActionsBeforeCallingCompletionHandler (TB,N,V_handleActionsBeforeCallingCompletionHandler)
+  +dismissAlertsWithNotificationID: v24@0:8@16  imp=+0x26bc4f980
+  +shouldShowForDaemonOffer: B24@0:8@16  imp=+0x26bc4f35c
+  -.cxx_destruct v16@0:8  imp=+0x26bc4fc68
+  -_handleLink: v24@0:8@16  imp=+0x26bc4f61c
+  -daemonOffer @16@0:8  imp=+0x26bc4fc40
+  -dealloc v16@0:8  imp=+0x26bc4f5c8
+  -dismissAlert v16@0:8  imp=+0x26bc4f6cc
+  -handleActionsBeforeCallingCompletionHandler B16@0:8  imp=+0x26bc4fc58
+  -init @16@0:8  imp=+0x26bc4f3c8
+  -initWithDaemonOffer: @24@0:8@16  imp=+0x26bc4f444
+  -setHandleActionsBeforeCallingCompletionHandler: v20@0:8B16  imp=+0x26bc4fc60
+  -setShowOnlyInSpringboard: v20@0:8B16  imp=+0x26bc4fc50
+  -showAlertWithCompletion: B24@0:8@?16  imp=+0x26bc4f628
+  -showOnlyInSpringboard B16@0:8  imp=+0x26bc4fc48
+@class ICQDaemonBuddyOffer : ICQDaemonOffer instanceSize=104
+  +_mutablePlaceholderPersistanceDictionary @16@0:8  imp=+0x26bc6d440
+  +persistenceKey @16@0:8  imp=+0x26bc6d4b0
+@class ICQDaemonDefaultOffer : ICQDaemonOffer instanceSize=104
+  +_mutablePlaceholderPersistanceDictionary @16@0:8  imp=+0x26bc4b288
+  +clearPersistedObject v16@0:8  imp=+0x26bc4b240
+  +persistenceKey @16@0:8  imp=+0x26bc4b2f8
+  -isDefaultOffer B16@0:8  imp=+0x26bc4b304
+@class ICQDaemonEventOffer : ICQDaemonOffer instanceSize=104
+  +_mutablePlaceholderPersistanceDictionary @16@0:8  imp=+0x26bc44228
+  +persistenceKey @16@0:8  imp=+0x26bc4421c
+  -_initWithAccount:error: @32@0:8@16@24  imp=+0x26bc4429c
+@class ICQDaemonOffer : ICQDaemonPersisted instanceSize=104
+  ivar +56 _notificationID @"NSString"
+  ivar +64 _offerId @"NSString"
+  ivar +72 _internalAlertSpecification @"_ICQAlertSpecification"
+  ivar +80 _internalFollowupSpecification @"_ICQFollowupSpecification"
+  ivar +88 _internalAppLaunchLinks @"NSArray"
+  ivar +96 _savedEligibleAppLaunchLinks @"NSArray"
+  property alertSpecification (T@"_ICQAlertSpecification",R,N)
+  property followupSpecification (T@"_ICQFollowupSpecification",R,N)
+  property lockScreenInfo (T@"NSDictionary",R,N)
+  property internalAlertSpecification (T@"_ICQAlertSpecification",&,N,V_internalAlertSpecification)
+  property internalFollowupSpecification (T@"_ICQFollowupSpecification",&,N,V_internalFollowupSpecification)
+  property internalAppLaunchLinks (T@"NSArray",&,N,V_internalAppLaunchLinks)
+  property savedEligibleAppLaunchLinks (T@"NSArray",&,N,V_savedEligibleAppLaunchLinks)
+  property level (Tq,R,N)
+  property buddyOffer (TB,R,N,GisBuddyOffer)
+  property defaultOffer (TB,R,N,GisDefaultOffer)
+  property premiumOffer (TB,R,N,GisPremiumOffer)
+  property eventOffer (TB,R,N,GisEventOffer)
+  property notificationID (T@"NSString",&,N,V_notificationID)
+  property offerId (T@"NSString",C,N,V_offerId)
+  +defaultPlaceholderKeys @16@0:8  imp=+0x26bc4e148
+  +persistenceKey @16@0:8  imp=+0x26bc4d0b8
+  +placeholderExistsInString: B24@0:8@16  imp=+0x26bc4e138
+  +placeholderKeysInString:fromKeys: @32@0:8@16@24  imp=+0x26bc4e24c
+  +stringWithPlaceholderFormat: @24@0:8@16  imp=+0x26bc4e918
+  +stringWithPlaceholderFormat:alternateString: @32@0:8@16@24  imp=+0x26bc4e920
+  +stringWithPlaceholderFormat:substitutions: @32@0:8@16@24  imp=+0x26bc4ea6c
+  +substitutionForPlaceholderKey:outIsBelowMin: @32@0:8@16^B24  imp=+0x26bc4e434
+  +substitutionsForPlaceholderKeys: @24@0:8@16  imp=+0x26bc4e90c
+  +substitutionsForPlaceholderKeys:checkIfBelowMin:outIsMissingSubstitution: @36@0:8@16B24^B28  imp=+0x26bc4e6e4
+  -.cxx_destruct v16@0:8  imp=+0x26bc4dc30
+  -_eligibleAppLaunchLinks @16@0:8  imp=+0x26bc4d9dc
+  -_initSubclassFromServerDictionary v16@0:8  imp=+0x26bc4d1d0
+  -_initWithAccount:error: @32@0:8@16@24  imp=+0x26bc4d080
+  -_initWithAccount:serverDictionary: @32@0:8@16@24  imp=+0x26bc4d048
+  -_mutablePersistenceDictionary @16@0:8  imp=+0x26bc4d110
+  -alertSpecification @16@0:8  imp=+0x26bc4dcd4
+  -alertSpecificationForAlertKey: @24@0:8@16  imp=+0x26bc4dec4
+  -appLaunchLinkForBundleID: @24@0:8@16  imp=+0x26bc4dcdc
+  -cacheLiftUIContent v16@0:8  imp=+0x26bc4ceb8
+  -followupSpecification @16@0:8  imp=+0x26bc4dcd8
+  -initWithDictionary: @24@0:8@16  imp=+0x26bc4cfa8
+  -internalAlertSpecification @16@0:8  imp=+0x26bc4db90
+  -internalAppLaunchLinks @16@0:8  imp=+0x26bc4dbe0
+  -internalFollowupSpecification @16@0:8  imp=+0x26bc4dbb8
+  -isBuddyOffer B16@0:8  imp=+0x26bc4cd58
+  -isDefaultOffer B16@0:8  imp=+0x26bc4cd94
+  -isEventOffer B16@0:8  imp=+0x26bc4ce0c
+  -isPremiumOffer B16@0:8  imp=+0x26bc4cdd0
+  -level q16@0:8  imp=+0x26bc4ccf8
+  -lockScreenInfo @16@0:8  imp=+0x26bc4de6c
+  -notificationID @16@0:8  imp=+0x26bc4db48
+  -offerId @16@0:8  imp=+0x26bc4db70
+  -requestType q16@0:8  imp=+0x26bc4ce48
+  -savedEligibleAppLaunchLinks @16@0:8  imp=+0x26bc4dc08
+  -setInternalAlertSpecification: v24@0:8@16  imp=+0x26bc4dba4
+  -setInternalAppLaunchLinks: v24@0:8@16  imp=+0x26bc4dbf4
+  -setInternalFollowupSpecification: v24@0:8@16  imp=+0x26bc4dbcc
+  -setNotificationID: v24@0:8@16  imp=+0x26bc4db5c
+  -setOfferId: v24@0:8@16  imp=+0x26bc4db84
+  -setSavedEligibleAppLaunchLinks: v24@0:8@16  imp=+0x26bc4dc1c
+  -setServerDictionary: v24@0:8@16  imp=+0x26bc4d0c4
+@class ICQDaemonOfferConditions : NSObject <NSCopying> instanceSize=24
+  ivar +8 _deviceStorageAlmostFull B
+  ivar +9 _photosCloudEnabled B
+  ivar +10 _photosOptimizeEnabled B
+  ivar +11 _backupRestoreComplete B
+  ivar +16 _photosLibrarySize @"NSNumber"
+  property deviceStorageAlmostFull (TB,N,GisDeviceStorageAlmostFull,V_deviceStorageAlmostFull)
+  property photosCloudEnabled (TB,N,GisPhotosCloudEnabled,V_photosCloudEnabled)
+  property photosOptimizeEnabled (TB,N,GisPhotosOptimizeEnabled,V_photosOptimizeEnabled)
+  property photosLibrarySize (T@"NSNumber",C,N,V_photosLibrarySize)
+  property backupRestoreComplete (TB,N,GisBackupRestoreComplete,V_backupRestoreComplete)
+  +backupRestoreComplete B16@0:8  imp=+0x26bc4c5dc
+  +currentConditions @16@0:8  imp=+0x26bc4b30c
+  +getPhotosLibrarySizeWithCompletion: v24@0:8@?16  imp=+0x26bc4bddc
+  +getPhotosLibraryUploadSizeWithCompletion: v24@0:8@?16  imp=+0x26bc4c240
+  +hasPhotosCloudEverBeenEnabled B16@0:8  imp=+0x26bc4b88c
+  +isCachedCloudQuotaAlmostFullOrFull B16@0:8  imp=+0x26bc4c67c
+  +isDeviceStorageAlmostFull B16@0:8  imp=+0x26bc4b4e8
+  +isDeviceStorageNearLowButNotLow B16@0:8  imp=+0x26bc4c678
+  +isPhotosCloudEnabled B16@0:8  imp=+0x26bc4b798
+  +isPhotosOptimizeEnabled B16@0:8  imp=+0x26bc4b980
+  +isSimulatedDeviceStorageAlmostFull B16@0:8  imp=+0x26bc4c5e4
+  +photosLibrarySize @16@0:8  imp=+0x26bc4ba80
+  +photosLibraryUploadSize @16@0:8  imp=+0x26bc4bf94
+  +photosVideosCount @16@0:8  imp=+0x26bc4c410
+  +setSimulatedDeviceStorageAlmostFull: v20@0:8B16  imp=+0x26bc4c628
+  -.cxx_destruct v16@0:8  imp=+0x26bc4c810
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x26bc4b43c
+  -initWithCurrentConditions @16@0:8  imp=+0x26bc4b338
+  -isBackupRestoreComplete B16@0:8  imp=+0x26bc4c800
+  -isDeviceStorageAlmostFull B16@0:8  imp=+0x26bc4c7c0
+  -isPhotosCloudEnabled B16@0:8  imp=+0x26bc4c7d0
+  -isPhotosOptimizeEnabled B16@0:8  imp=+0x26bc4c7e0
+  -photosLibrarySize @16@0:8  imp=+0x26bc4c7f0
+  -setBackupRestoreComplete: v20@0:8B16  imp=+0x26bc4c808
+  -setDeviceStorageAlmostFull: v20@0:8B16  imp=+0x26bc4c7c8
+  -setPhotosCloudEnabled: v20@0:8B16  imp=+0x26bc4c7d8
+  -setPhotosLibrarySize: v24@0:8@16  imp=+0x26bc4c7f8
+  -setPhotosOptimizeEnabled: v20@0:8B16  imp=+0x26bc4c7e8
+@class ICQDaemonOfferCriteria : NSObject instanceSize=16
+  ivar +8 _serverDict @"NSDictionary"
+  property serverDictionary (T@"NSDictionary",R,N)
+  -.cxx_destruct v16@0:8  imp=+0x26bc677ac
+  -initWithServerDictionary: @24@0:8@16  imp=+0x26bc675ec
+  -isSatisfiedByConditions: B24@0:8@16  imp=+0x26bc67010
+  -serverDictionary @16@0:8  imp=+0x26bc677a4
+@class ICQDaemonOfferManager : NSObject instanceSize=48
+  ivar +8 _sharedURLSession @"NSURLSession"
+  ivar +16 _followUpController @"FLFollowUpController"
+  ivar +24 _throttleController @"ICQNetworkThrottleController"
+  ivar +32 _taskLimiters @"_TtC11iCloudQuota15ICQTaskLimiters"
+  ivar +40 _accountManager @"_ICQAccountManager"
+  property accountManager (T@"_ICQAccountManager",R,N,V_accountManager)
+  property sharedURLSession (T@"NSURLSession",R,N,V_sharedURLSession)
+  property taskLimiters (T@"_TtC11iCloudQuota15ICQTaskLimiters",&,N,V_taskLimiters)
+  property shouldDirectToStorageManagement (TB,N)
+  property buddyOfferEnabled (TB,N,GisBuddyOfferEnabled)
+  property simulatedDeviceStorageAlmostFull (TB,N,GisSimulatedDeviceStorageAlmostFull)
+  property simulatedPhotosLibrarySize (T@"NSNumber",&,N)
+  property legacyDeviceStorageLevelNotificationEnabled (TB,N,GisLegacyDeviceStorageLevelNotificationEnabled)
+  +ckBackupDeviceID @16@0:8  imp=+0x26bc40928
+  +getCkBackupDeviceIDWithCompletionHandler: @24@0:8@?16  imp=+0x26bc40938
+  +logDailyQuotaUsageAnalytics v16@0:8  imp=+0x26bc38f98
+  +logDailyQuotaUsageAnalyticsIgnoringThrottle: v20@0:8B16  imp=+0x26bc38fa4
+  +persistedOffer @16@0:8  imp=+0x26bc38f80
+  +persistedOfferStubs @16@0:8  imp=+0x26bc38f8c
+  +sharedDaemonOfferManager @16@0:8  imp=+0x26bc37b88
+  -.cxx_destruct v16@0:8  imp=+0x26bc43f2c
+  -_classForOfferStub: #24@0:8@16  imp=+0x26bc3ef6c
+  -_clearCachedStubsIfOfferIDIsNew: v24@0:8@16  imp=+0x26bc3cc14
+  -_clearStorageManagementFollowup v16@0:8  imp=+0x26bc399e8
+  -_coalescedDaemonOfferStubsDictionaryForAccount:requestType:quotaReason:completion: v48@0:8@16q24@32@?40  imp=+0x26bc3afb0
+  -_coalescedFetchDaemonOfferForAccount:stub:notificationID:completion: v48@0:8@16@24@32@?40  imp=+0x26bc3e418
+  -_coalescedReconsiderOffersForAccount:isForBuddy:quotaReason:options:choiceHandler:completion: v60@0:8@16B24@28@36@?44@?52  imp=+0x26bc4120c
+  -_daemonLocalOfferStubsDictionaryForAccount:requestType:completion: v40@0:8@16q24@?32  imp=+0x26bc3b558
+  -_daemonOfferClassForRequestType: #24@0:8q16  imp=+0x26bc40d54
+  -_daemonOfferStubsDictionaryForAccount:requestType:quotaReason:completion: v48@0:8@16q24@32@?40  imp=+0x26bc3acdc
+  -_fetchDaemonOfferForAccount:stub:notificationID:completion: v48@0:8@16@24@32@?40  imp=+0x26bc3e0b8
+  -_fetchDaemonOfferStubsForAccount:isForBuddy:quotaReason:completion: v44@0:8@16B24@28@?36  imp=+0x26bc3f004
+  -_fetchDictionaryForAccount:quotaKey:quotaReason:stub:notificationID:contextDictionary:mlDaemonExtraFields:completion: v80@0:8@16@24@32@40@48@56@64@?72  imp=+0x26bc3ccd4
+  -_getFetchOfferStubsFromStubs: @24@0:8@16  imp=+0x26bc42430
+  -_getHandlerForBundleId:options: @?32@0:8@16@24  imp=+0x26bc38b54
+  -_getStubsForRequestType:fromDaemonStubs: @32@0:8q16@24  imp=+0x26bc42094
+  -_handlerMultipleStubs:forAccount:requestType:completion: v48@0:8@16@24q32@?40  imp=+0x26bc426c4
+  -_isCacheValidForRequestType:offerStubs: B32@0:8q16@24  imp=+0x26bc3b958
+  -_isCachedDaemonOfferValid:forAccount: B32@0:8@16@24  imp=+0x26bc3a49c
+  -_logErrorsForFetchOfferResultWithOffer:error:isForBuddy: v36@0:8@16@24B32  imp=+0x26bc42acc
+  -_mockFetchDictionaryForAccount:quotaKey:stub:notificationID:contextDictionary:completion: v64@0:8@16@24@32@40@48@?56  imp=+0x26bc3d98c
+  -_persistAndNotifyMissingPlaceholdersForRequestType:account: v32@0:8q16@24  imp=+0x26bc3fbac
+  -_placeholderOfferForAccount:requestType:error: @40@0:8@16q24@32  imp=+0x26bc40da8
+  -_postDaemonOfferChangedDueToPushDarwinNotificationRequestType: v24@0:8q16  imp=+0x26bc3f9f0
+  -_postFollowupForDaemonOffer:replaceExisting:completion: v36@0:8@16B24@?28  imp=+0x26bc42c38
+  -_postOfferType:isForBuddy: v28@0:8@16B24  imp=+0x26bc434ac
+  -_postStorageManagementFollowup v16@0:8  imp=+0x26bc398e0
+  -_postUserNotification:replaceExisting:offerID:completion: v44@0:8@16B24@28@?36  imp=+0x26bc42f50
+  -_processOfferStub:account:offerType:completion: v48@0:8@16@24q32@?40  imp=+0x26bc3a4f4
+  -_processPushNotificationCheckHardwareIDWithDictionary:completion: v32@0:8@16@?24  imp=+0x26bc3b9a0
+  -_processPushNotificationDictionary:completion: v32@0:8@16@?24  imp=+0x26bc3be38
+  -_reconsiderLocalOffersWithReason:account:completion: v40@0:8@16@24@?32  imp=+0x26bc3a050
+  -_reconsiderOffersForAccount:isForBuddy:quotaReason:choiceHandler:completion: v52@0:8@16B24@28@?36@?44  imp=+0x26bc40e44
+  -_reconsiderOffersForAccount:isForBuddy:quotaReason:options:choiceHandler:completion: v60@0:8@16B24@28@36@?44@?52  imp=+0x26bc40e54
+  -_showDaemonAlertForOffer:notificationDictionary:store:account:completion: v56@0:8@16@24@32@40@?48  imp=+0x26bc3f3c4
+  -_storageManagementFollowupActions @16@0:8  imp=+0x26bc3915c
+  -_storageManagementFollowupItem @16@0:8  imp=+0x26bc39708
+  -_storageManagementFollowupNotification @16@0:8  imp=+0x26bc39340
+  -_teardownCachedBuddyOffer v16@0:8  imp=+0x26bc40524
+  -_teardownCachedDefaultOfferAndNotify: v20@0:8B16  imp=+0x26bc403c8
+  -_teardownCachedEventOfferAndNotify: v20@0:8B16  imp=+0x26bc4068c
+  -_teardownCachedOfferAndNotify: v20@0:8B16  imp=+0x26bc4025c
+  -_teardownCachedOffersAndNotify: v20@0:8B16  imp=+0x26bc407e8
+  -_teardownCachedPremiumOfferAndNotify: v20@0:8B16  imp=+0x26bc40530
+  -_updateOffer:buttonId:info:account:accountStore:completion: v64@0:8@16@24@32@40@48@?56  imp=+0x26bc3ff5c
+  -_updateQuotaForAccount:withServerDictionary: v32@0:8@16@24  imp=+0x26bc3de14
+  -_useFetchOffersDataDirectly B16@0:8  imp=+0x26bc3ac78
+  -accountManager @16@0:8  imp=+0x26bc43f1c
+  -addCommonHeadersToRequest: v24@0:8@16  imp=+0x26bc38fb0
+  -addPremiumOffersHeaderIfNeededForRequest: v24@0:8@16  imp=+0x26bc3d7b8
+  -clearAllFollowupsWithCompletion: v24@0:8@?16  imp=+0x26bc3a808
+  -clearFollowupsOfferType:completion: v32@0:8q16@?24  imp=+0x26bc3aa40
+  -clearLegacyFollowups v16@0:8  imp=+0x26bc3aa2c
+  -daemonBuddyOfferDictionaryForAccount:completion: v32@0:8@16@?24  imp=+0x26bc38c2c
+  -daemonOfferClassFromBundleId:options: #32@0:8@16@24  imp=+0x26bc38bbc
+  -daemonOfferDictionaryForAccount:options:completion: v40@0:8@16@24@?32  imp=+0x26bc37f0c
+  -displayDelayedOfferWithContext:completion: v32@0:8@16@?24  imp=+0x26bc43e9c
+  -forcePostFollowup v16@0:8  imp=+0x26bc43704
+  -init @16@0:8  imp=+0x26bc37c68
+  -initWithAccountManager: @24@0:8@16  imp=+0x26bc37cb4
+  -isBuddyOfferEnabled B16@0:8  imp=+0x26bc43c5c
+  -isLegacyDeviceStorageLevelNotificationEnabled B16@0:8  imp=+0x26bc43e0c
+  -isSimulatedDeviceStorageAlmostFull B16@0:8  imp=+0x26bc43a84
+  -postBuddyOfferType: v24@0:8@16  imp=+0x26bc434a4
+  -postOfferType: v24@0:8@16  imp=+0x26bc4349c
+  -processPushNotificationDictionary:completion: v32@0:8@16@?24  imp=+0x26bc38d74
+  -reconsiderOffersWithCompletion: v24@0:8@?16  imp=+0x26bc39d1c
+  -reconsiderOffersWithReason:reuseLocalOffers:completion: v36@0:8@16B24@?28  imp=+0x26bc39d30
+  -renewCredentialsWithCompletion: v24@0:8@?16  imp=+0x26bc39078
+  -setBuddyOfferEnabled: v20@0:8B16  imp=+0x26bc43cc0
+  -setLegacyDeviceStorageLevelNotificationEnabled: v20@0:8B16  imp=+0x26bc43e40
+  -setShouldDirectToStorageManagement: v20@0:8B16  imp=+0x26bc4391c
+  -setSimulatedDeviceStorageAlmostFull: v20@0:8B16  imp=+0x26bc43b58
+  -setSimulatedPhotosLibrarySize: v24@0:8@16  imp=+0x26bc43dc0
+  -setTaskLimiters: v24@0:8@16  imp=+0x26bc43f10
+  -sharedURLSession @16@0:8  imp=+0x26bc43f24
+  -shouldDirectToStorageManagement B16@0:8  imp=+0x26bc43848
+  -simulatedPhotosLibrarySize @16@0:8  imp=+0x26bc43d1c
+  -soonestOfferOrStubExpirationDate @16@0:8  imp=+0x26bc38ea8
+  -startDirectingToStorageManagement v16@0:8  imp=+0x26bc39abc
+  -stopDirectingToStorageManagement v16@0:8  imp=+0x26bc39be4
+  -taskLimiters @16@0:8  imp=+0x26bc43f08
+  -tearDownCachedEventOffer v16@0:8  imp=+0x26bc43838
+  -tearDownCachedPremiumOffer v16@0:8  imp=+0x26bc43830
+  -teardownCachedBuddyOffer v16@0:8  imp=+0x26bc4382c
+  -teardownCachedOffer v16@0:8  imp=+0x26bc43824
+  -teardownCachedOffers v16@0:8  imp=+0x26bc43840
+  -teardownOffersForAccount:completion: v32@0:8@16@?24  imp=+0x26bc38d78
+  -updateOfferForAccount:offerId:buttonId:info:completion: v56@0:8@16@24@32@40@?48  imp=+0x26bc3fe70
+@class ICQDaemonOfferRequestBuilder : NSObject instanceSize=32
+  ivar +8 _account @"ACAccount"
+  ivar +16 _requestProvider @"ICQRequestProvider"
+  ivar +24 _accountManager @"_ICQAccountManager"
+  -.cxx_destruct v16@0:8  imp=+0x26bc6d3c8
+  -addPremiumOffersHeaderIfNeededForRequest: v24@0:8@16  imp=+0x26bc6d1f4
+  -initWithAccount:accountManager: @32@0:8@16@24  imp=+0x26bc6c638
+  -renewAuthHeadersForRequest:completion: v32@0:8@16@?24  imp=+0x26bc6d098
+  -requestWithQuotaKey:reason:offerStub:notificationID:contextDictionary:mlDaemonExtraFields: @64@0:8@16@24@32@40@48@56  imp=+0x26bc6c704
+@class ICQDaemonOfferStub : NSObject instanceSize=24
+  ivar +8 _serverDict @"NSDictionary"
+  ivar +16 _conditionsWhenChosen @"ICQDaemonOfferConditions"
+  property offerId (T@"NSString",R,N)
+  property buddyOffer (TB,R,N,GisBuddyOffer)
+  property defaultOffer (TB,R,N,GisDefaultOffer)
+  property premiumOffer (TB,R,N,GisPremiumOffer)
+  property eventOffer (TB,R,N,GisEventOffer)
+  property offerResetURL (T@"NSString",R,N)
+  property offerResetPayload (T@"NSDictionary",R,N)
+  property criteria (T@"ICQDaemonOfferCriteria",R,N)
+  property conditionsWhenChosen (T@"ICQDaemonOfferConditions",C,N,V_conditionsWhenChosen)
+  property serverDictionary (T@"NSDictionary",R,N)
+  -.cxx_destruct v16@0:8  imp=+0x26bc4a408
+  -conditionsWhenChosen @16@0:8  imp=+0x26bc4a3f8
+  -criteria @16@0:8  imp=+0x26bc4a0e0
+  -initWithServerDictionary: @24@0:8@16  imp=+0x26bc49fe4
+  -isBuddyOffer B16@0:8  imp=+0x26bc4a0c0
+  -isDefaultOffer B16@0:8  imp=+0x26bc4a0c8
+  -isEventOffer B16@0:8  imp=+0x26bc4a0d8
+  -isPremiumOffer B16@0:8  imp=+0x26bc4a0d0
+  -offerClass #16@0:8  imp=+0x26bc4a158
+  -offerId @16@0:8  imp=+0x26bc4a068
+  -offerResetPayload @16@0:8  imp=+0x26bc4a344
+  -offerResetURL @16@0:8  imp=+0x26bc4a290
+  -persistedOffer @16@0:8  imp=+0x26bc4a1f8
+  -requestType q16@0:8  imp=+0x26bc4a220
+  -serverDictionary @16@0:8  imp=+0x26bc4a060
+  -setConditionsWhenChosen: v24@0:8@16  imp=+0x26bc4a400
+@class ICQDaemonOfferStubs : ICQDaemonPersisted instanceSize=96
+  ivar +56 _serverStubs @"NSArray"
+  ivar +64 _buddyStubs @"NSArray"
+  ivar +72 _defaultStubs @"NSArray"
+  ivar +80 _premiumStubs @"NSArray"
+  ivar +88 _eventStubs @"NSArray"
+  property serverStubs (T@"NSArray",R,N,V_serverStubs)
+  property buddyStubs (T@"NSArray",R,N,V_buddyStubs)
+  property defaultStubs (T@"NSArray",R,N,V_defaultStubs)
+  property premiumStubs (T@"NSArray",R,N,V_premiumStubs)
+  property eventStubs (T@"NSArray",R,N,V_eventStubs)
+  +persistenceKey @16@0:8  imp=+0x26bc623b0
+  -.cxx_destruct v16@0:8  imp=+0x26bc63000
+  -_chooseStubFromServerStubs:conditions: @32@0:8@16@24  imp=+0x26bc62aec
+  -_chooseStubFromServerStubs:offerType: @32@0:8@16q24  imp=+0x26bc63168
+  -_initServerStubsFromServerDictionary v16@0:8  imp=+0x26bc624fc
+  -_initWithAccount:error: @32@0:8@16@24  imp=+0x26bc62290
+  -_initWithAccount:serverDictionary: @32@0:8@16@24  imp=+0x26bc6223c
+  -_isValidServerStubs:key: B32@0:8@16@24  imp=+0x26bc627d0
+  -_stubsArrayContainsOfferID:stubs: B32@0:8@16@24  imp=+0x26bc62e3c
+  -buddyStubs @16@0:8  imp=+0x26bc62fb0
+  -chooseBuddyStub @16@0:8  imp=+0x26bc61ae0
+  -chooseBuddyStubForConditions: @24@0:8@16  imp=+0x26bc61b64
+  -chooseBuddyStubForOfferType: @24@0:8q16  imp=+0x26bc630fc
+  -chooseDefaultStub @16@0:8  imp=+0x26bc61be4
+  -chooseDefaultStubForConditions: @24@0:8@16  imp=+0x26bc61c68
+  -chooseEventStub @16@0:8  imp=+0x26bc61f3c
+  -chooseEventStubForConditions: @24@0:8@16  imp=+0x26bc61fa0
+  -chooseFirstDefaultStub @16@0:8  imp=+0x26bc61ce8
+  -chooseFirstEventStub @16@0:8  imp=+0x26bc62020
+  -chooseFirstPremiumStub @16@0:8  imp=+0x26bc61e94
+  -chooseFirstStub @16@0:8  imp=+0x26bc61a38
+  -choosePremiumStub @16@0:8  imp=+0x26bc61d90
+  -choosePremiumStubForConditions: @24@0:8@16  imp=+0x26bc61e14
+  -chooseStub @16@0:8  imp=+0x26bc61934
+  -chooseStubForConditions: @24@0:8@16  imp=+0x26bc619b8
+  -chooseStubForOfferType: @24@0:8q16  imp=+0x26bc63090
+  -containsOfferID: B24@0:8@16  imp=+0x26bc620f0
+  -defaultStubs @16@0:8  imp=+0x26bc62fc4
+  -eventStubs @16@0:8  imp=+0x26bc62fec
+  -initWithDictionary: @24@0:8@16  imp=+0x26bc6235c
+  -premiumStubs @16@0:8  imp=+0x26bc62fd8
+  -serverStubs @16@0:8  imp=+0x26bc62f9c
+  -setServerDictionary: v24@0:8@16  imp=+0x26bc623bc
+  -sortedServerStubs: @24@0:8@16  imp=+0x26bc62408
+@class ICQDaemonPersisted : NSObject instanceSize=56
+  ivar +8 _failedToFetchFromServer B
+  ivar +16 _retrievalDate @"NSDate"
+  ivar +24 _callbackInterval d
+  ivar +32 _accountAltDSID @"NSString"
+  ivar +40 _serverDictionary @"NSDictionary"
+  ivar +48 _failureDetails @"NSDictionary"
+  property _persistenceDictionary (T@"NSDictionary",R,N)
+  property retrievalDate (T@"NSDate",&,N,V_retrievalDate)
+  property callbackInterval (Td,N,V_callbackInterval)
+  property expirationDate (T@"NSDate",R,N)
+  property expired (TB,R,N,GisExpired)
+  property accountAltDSID (T@"NSString",C,N,V_accountAltDSID)
+  property serverDictionary (T@"NSDictionary",&,N,V_serverDictionary)
+  property failedToFetchFromServer (TB,N,V_failedToFetchFromServer)
+  property failureDetails (T@"NSDictionary",&,N,V_failureDetails)
+  property _mutablePersistenceDictionary (T@"NSMutableDictionary",R,N)
+  property _cachedQuotaAvailable (T@"NSNumber",R,N)
+  +_mutablePlaceholderPersistanceDictionary @16@0:8  imp=+0x26bc37580
+  +_placeholderObject @16@0:8  imp=+0x26bc36990
+  +_placeholderPersistenceDictionary @16@0:8  imp=+0x26bc37974
+  +clearPersistedObject v16@0:8  imp=+0x26bc36a98
+  +defaultCallbackInterval d16@0:8  imp=+0x26bc36e78
+  +persistedObject @16@0:8  imp=+0x26bc369f4
+  +persistenceDomain @16@0:8  imp=+0x26bc36e68
+  +persistenceKey @16@0:8  imp=+0x26bc36e74
+  +userDefaults @16@0:8  imp=+0x26bc3687c
+  -.cxx_destruct v16@0:8  imp=+0x26bc37918
+  -_cachedQuotaAvailable @16@0:8  imp=+0x26bc377cc
+  -_callbackIntervalFromServerObject: d24@0:8@16  imp=+0x26bc3771c
+  -_initWithAccount:error: @32@0:8@16@24  imp=+0x26bc372f8
+  -_initWithAccount:serverDictionary: @32@0:8@16@24  imp=+0x26bc371e8
+  -_initWithAccountAltDSID:error: @32@0:8@16@24  imp=+0x26bc37368
+  -_mutablePersistenceDictionary @16@0:8  imp=+0x26bc375b0
+  -_persistenceDictionary @16@0:8  imp=+0x26bc379c0
+  -accountAltDSID @16@0:8  imp=+0x26bc378d0
+  -callbackInterval d16@0:8  imp=+0x26bc378c0
+  -expirationDate @16@0:8  imp=+0x26bc36d1c
+  -failedToFetchFromServer B16@0:8  imp=+0x26bc378f4
+  -failureDetails @16@0:8  imp=+0x26bc37904
+  -initWithDictionary: @24@0:8@16  imp=+0x26bc36e84
+  -isExpired B16@0:8  imp=+0x26bc36d7c
+  -isValidForAccount: B24@0:8@16  imp=+0x26bc36de8
+  -persistObject v16@0:8  imp=+0x26bc36b9c
+  -retrievalDate @16@0:8  imp=+0x26bc378ac
+  -serverDictionary @16@0:8  imp=+0x26bc378e0
+  -setAccountAltDSID: v24@0:8@16  imp=+0x26bc378d8
+  -setCallbackInterval: v24@0:8d16  imp=+0x26bc378c8
+  -setFailedToFetchFromServer: v20@0:8B16  imp=+0x26bc378fc
+  -setFailureDetails: v24@0:8@16  imp=+0x26bc3790c
+  -setRetrievalDate: v24@0:8@16  imp=+0x26bc378b4
+  -setServerDictionary: v24@0:8@16  imp=+0x26bc378e8
+@class ICQDaemonPlanRecommendation : NSObject instanceSize=8
+  +accountForID: @24@0:8@16  imp=+0x26bc7d09c
+  +calculateExtraQuotaNeededToSyncForAccountWithID:isAccountFull:completion: v36@0:8@16B24@?28  imp=+0x26bc7ce04
+  +calculateExtraQuotaNeededToSyncWithBackupSize: q24@0:8q16  imp=+0x26bc7d01c
+  +fullBackupSize @16@0:8  imp=+0x26bc7d258
+  +getLocalPhotoLibrarySizeWithCompletion: v24@0:8@?16  imp=+0x26bc7d1a8
+  +isBackupEnabledForAccount: B24@0:8@16  imp=+0x26bc7d130
+  +isICPLEnabledForAccount: B24@0:8@16  imp=+0x26bc7d118
+  +isPhotosLibraryIncludedInBackupForAccount: B24@0:8@16  imp=+0x26bc7d124
+@class ICQDaemonPremiumOffer : ICQDaemonOffer instanceSize=104
+  +_mutablePlaceholderPersistanceDictionary @16@0:8  imp=+0x26bc450f4
+  +persistenceKey @16@0:8  imp=+0x26bc45168
+  -_initWithAccount:error: @32@0:8@16@24  imp=+0x26bc45174
+@class ICQDriveAppInfo : NSObject <NSCopying, NSSecureCoding> instanceSize=40
+  ivar +8 _excludeOnClient B
+  ivar +16 _bundleIds @"NSArray"
+  ivar +24 _label @"NSString"
+  ivar +32 _containerID @"NSString"
+  property bundleIds (T@"NSArray",&,N,V_bundleIds)
+  property label (T@"NSString",C,N,V_label)
+  property containerID (T@"NSString",C,N,V_containerID)
+  property excludeOnClient (TB,N,V_excludeOnClient)
+  +supportsSecureCoding B16@0:8  imp=+0x26bc6adc0
+  -.cxx_destruct v16@0:8  imp=+0x26bc6b048
+  -bundleIds @16@0:8  imp=+0x26bc6b004
+  -containerID @16@0:8  imp=+0x26bc6b028
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x26bc6ad60
+  -description @16@0:8  imp=+0x26bc6ad18
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc6adc8
+  -excludeOnClient B16@0:8  imp=+0x26bc6b038
+  -initFromDictionary: @24@0:8@16  imp=+0x26bc6aab4
+  -initWithCoder: @24@0:8@16  imp=+0x26bc6ae60
+  -label @16@0:8  imp=+0x26bc6b018
+  -setBundleIds: v24@0:8@16  imp=+0x26bc6b00c
+  -setContainerID: v24@0:8@16  imp=+0x26bc6b030
+  -setExcludeOnClient: v20@0:8B16  imp=+0x26bc6b040
+  -setLabel: v24@0:8@16  imp=+0x26bc6b020
+@class ICQEngagementReporter : NSObject instanceSize=8
+  +_createOpportunityBubbleFrom:bundleID: @32@0:8@16@24  imp=+0x26bc7b1a0
+  +_eventNameForEngagementType: @24@0:8q16  imp=+0x26bc7c2f0
+  +_placementDictionary @16@0:8  imp=+0x26bc7c314
+  +_sendBubbleDisplayedEventFor: v24@0:8@16  imp=+0x26bc7b6e0
+  +_sendImpressionEventWithName:bundleID: v32@0:8@16@24  imp=+0x26bc7a2f8
+  +_sendSubscriptionChangedEvent v16@0:8  imp=+0x26bc7bba8
+  +fetchBubbleContentWithBundleID:completion: v32@0:8@16@?24  imp=+0x26bc7ab98
+  +sendEventFor:withBundleID:link: v40@0:8q16@24@32  imp=+0x26bc7a210
+  +shouldShowOpportunityBubbleWithBundleID:completion: v32@0:8@16@?24  imp=+0x26bc7a514
+@class ICQError : NSObject instanceSize=8
+  +_errorWithCode:retryAfter: @32@0:8q16@24  imp=+0x26bc4fe58
+  +_errorWithCode:statusCode: @32@0:8q16q24  imp=+0x26bc50114
+  +_formatterForHTTPDate @16@0:8  imp=+0x26bc50070
+  +_retryAfterDateFromString: @24@0:8@16  imp=+0x26bc4fff8
+  +_retryAfterDelayFromString: @24@0:8@16  imp=+0x26bc4ff74
+  +clientErrorWithStatusCode: @24@0:8q16  imp=+0x26bc4fe4c
+  +retryErrorWithRetryAfter: @24@0:8@16  imp=+0x26bc4fe34
+  +serviceUnavailableWithRetryAfter: @24@0:8@16  imp=+0x26bc4fe40
+@class ICQIconSpecification : NSObject <NSSecureCoding> instanceSize=48
+  ivar +8 _bundleID @"NSString"
+  ivar +16 _assetID @"NSString"
+  ivar +24 _sfSymbolId @"NSString"
+  ivar +32 _sfSymbolColor @"NSString"
+  ivar +40 _imageURL @"ICQImageURL"
+  property bundleID (T@"NSString",R,C,N,V_bundleID)
+  property assetID (T@"NSString",R,C,N,V_assetID)
+  property sfSymbolId (T@"NSString",R,C,N,V_sfSymbolId)
+  property sfSymbolColor (T@"NSString",R,C,N,V_sfSymbolColor)
+  property imageURL (T@"ICQImageURL",R,N,V_imageURL)
+  +supportsSecureCoding B16@0:8  imp=+0x26bc7441c
+  -.cxx_destruct v16@0:8  imp=+0x26bc746d4
+  -assetID @16@0:8  imp=+0x26bc746b4
+  -bundleID @16@0:8  imp=+0x26bc746ac
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc74424
+  -imageURL @16@0:8  imp=+0x26bc746cc
+  -initWithCoder: @24@0:8@16  imp=+0x26bc74548
+  -initWithDictionary: @24@0:8@16  imp=+0x26bc742d4
+  -sfSymbolColor @16@0:8  imp=+0x26bc746c4
+  -sfSymbolId @16@0:8  imp=+0x26bc746bc
+@class ICQImageURL : NSObject <NSCopying, NSSecureCoding> instanceSize=32
+  ivar +8 _URL1x @"NSURL"
+  ivar +16 _URL2x @"NSURL"
+  ivar +24 _URL3x @"NSURL"
+  property URL1x (T@"NSURL",&,N,V_URL1x)
+  property URL2x (T@"NSURL",&,N,V_URL2x)
+  property URL3x (T@"NSURL",&,N,V_URL3x)
+  +supportsSecureCoding B16@0:8  imp=+0x26bc63728
+  -.cxx_destruct v16@0:8  imp=+0x26bc638f0
+  -URL1x @16@0:8  imp=+0x26bc638b4
+  -URL2x @16@0:8  imp=+0x26bc638c8
+  -URL3x @16@0:8  imp=+0x26bc638dc
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x26bc636d4
+  -description @16@0:8  imp=+0x26bc63690
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc63730
+  -initFromDictionary: @24@0:8@16  imp=+0x26bc634ec
+  -initWithCoder: @24@0:8@16  imp=+0x26bc637b4
+  -setURL1x: v24@0:8@16  imp=+0x26bc638bc
+  -setURL2x: v24@0:8@16  imp=+0x26bc638d0
+  -setURL3x: v24@0:8@16  imp=+0x26bc638e4
+@class ICQInlineTip : NSObject <NSCopying, NSSecureCoding> instanceSize=88
+  ivar +8 _id @"NSString"
+  ivar +16 _anchor @"NSString"
+  ivar +24 _title @"NSString"
+  ivar +32 _subTitle @"NSString"
+  ivar +40 _icon @"ICQTipIcon"
+  ivar +48 _actions @"NSArray"
+  ivar +56 _criteria @"ICQTipCriteria"
+  ivar +64 _arrowConfiguration @"NSString"
+  ivar +72 _dismissURL @"NSURL"
+  ivar +80 _displayURL @"NSURL"
+  property id (T@"NSString",C,N,V_id)
+  property anchor (T@"NSString",C,N,V_anchor)
+  property title (T@"NSString",C,N,V_title)
+  property subTitle (T@"NSString",C,N,V_subTitle)
+  property icon (T@"ICQTipIcon",&,N,V_icon)
+  property actions (T@"NSArray",&,N,V_actions)
+  property criteria (T@"ICQTipCriteria",&,N,V_criteria)
+  property arrowConfiguration (T@"NSString",C,N,V_arrowConfiguration)
+  property dismissURL (T@"NSURL",&,N,V_dismissURL)
+  property displayURL (T@"NSURL",&,N,V_displayURL)
+  +downwardArrowConfigurationStrings @16@0:8  imp=+0x26bc81370
+  +supportsSecureCoding B16@0:8  imp=+0x26bc814f8
+  +upwardArrowConfigurationStrings @16@0:8  imp=+0x26bc81290
+  -.cxx_destruct v16@0:8  imp=+0x26bc819b4
+  -actions @16@0:8  imp=+0x26bc81954
+  -anchor @16@0:8  imp=+0x26bc81910
+  -arrowConfiguration @16@0:8  imp=+0x26bc8197c
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x26bc81450
+  -criteria @16@0:8  imp=+0x26bc81968
+  -description @16@0:8  imp=+0x26bc81234
+  -dismissURL @16@0:8  imp=+0x26bc8198c
+  -displayURL @16@0:8  imp=+0x26bc819a0
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc81500
+  -icon @16@0:8  imp=+0x26bc81940
+  -id @16@0:8  imp=+0x26bc81900
+  -initWithCoder: @24@0:8@16  imp=+0x26bc81610
+  -setActions: v24@0:8@16  imp=+0x26bc8195c
+  -setAnchor: v24@0:8@16  imp=+0x26bc81918
+  -setArrowConfiguration: v24@0:8@16  imp=+0x26bc81984
+  -setCriteria: v24@0:8@16  imp=+0x26bc81970
+  -setDismissURL: v24@0:8@16  imp=+0x26bc81994
+  -setDisplayURL: v24@0:8@16  imp=+0x26bc819a8
+  -setIcon: v24@0:8@16  imp=+0x26bc81948
+  -setId: v24@0:8@16  imp=+0x26bc81908
+  -setSubTitle: v24@0:8@16  imp=+0x26bc81938
+  -setTitle: v24@0:8@16  imp=+0x26bc81928
+  -subTitle @16@0:8  imp=+0x26bc81930
+  -title @16@0:8  imp=+0x26bc81920
+@class ICQInlineTipAction : NSObject <NSCopying, NSSecureCoding> instanceSize=40
+  ivar +8 _buttonTitle @"NSString"
+  ivar +16 _actionName @"NSString"
+  ivar +24 _actionURL @"NSURL"
+  ivar +32 _link @"ICQLink"
+  property buttonTitle (T@"NSString",C,N,V_buttonTitle)
+  property actionName (T@"NSString",C,N,V_actionName)
+  property actionURL (T@"NSURL",&,N,V_actionURL)
+  property link (T@"ICQLink",&,N,V_link)
+  +supportsSecureCoding B16@0:8  imp=+0x26bc806b8
+  -.cxx_destruct v16@0:8  imp=+0x26bc808d8
+  -actionName @16@0:8  imp=+0x26bc808a0
+  -actionURL @16@0:8  imp=+0x26bc808b0
+  -buttonTitle @16@0:8  imp=+0x26bc80890
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x26bc80658
+  -description @16@0:8  imp=+0x26bc80614
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc806c0
+  -initWithCoder: @24@0:8@16  imp=+0x26bc80758
+  -link @16@0:8  imp=+0x26bc808c4
+  -setActionName: v24@0:8@16  imp=+0x26bc808a8
+  -setActionURL: v24@0:8@16  imp=+0x26bc808b8
+  -setButtonTitle: v24@0:8@16  imp=+0x26bc80898
+  -setLink: v24@0:8@16  imp=+0x26bc808cc
+@class ICQLiftUICache : SwiftNativeNSObject instanceSize=192
+  ivar +112 defaults 
+  ivar +152 fileManager 
+  +sharedCache @16@0:8  imp=+0x26bc9e59c
+  -cacheResponseFromURL: v24@0:8@16  imp=+0x26bc9eef4
+  -discardCaches v16@0:8  imp=+0x26bca4854
+  -fetchResponseForURL:completion: v32@0:8@"NSURL"16@?<v@?@"NSData">24  imp=+0x26bca2708
+@class ICQLink : NSObject <NSSecureCoding> instanceSize=64
+  ivar +8 _text @"NSString"
+  ivar +16 _options q
+  ivar +24 _action q
+  ivar +32 _parameters @"NSDictionary"
+  ivar +40 _serverUIContent @"NSData"
+  ivar +48 _actionIdentifier @"NSString"
+  ivar +56 _actionURL @"NSURL"
+  property actionURL (T@"NSURL",&,N,V_actionURL)
+  property text (T@"NSString",R,C,N,V_text)
+  property options (Tq,R,N,V_options)
+  property action (Tq,R,N,V_action)
+  property parameters (T@"NSDictionary",R,C,N,V_parameters)
+  property serverUIURL (T@"NSURL",&,N)
+  property dynamicUIRouteURL (T@"NSURL",R,N)
+  property purchaseAttribution (T@"NSString",R,N)
+  property serverUIContent (T@"NSData",&,N,V_serverUIContent)
+  property actionIdentifier (T@"NSString",C,N,V_actionIdentifier)
+  +_icqDismissLinkForServerMessageParameters: @24@0:8@16  imp=+0x26bc4caf4
+  +addHeadersToRequest: v24@0:8@16  imp=+0x26bc6f9ac
+  +addPOSTParams:toRequest: v32@0:8@16@24  imp=+0x26bc6fa54
+  +linkWithText:action:parameters: @40@0:8@16q24@32  imp=+0x26bc6e9cc
+  +linkWithText:options:action:parameters: @48@0:8@16q24q32@40  imp=+0x26bc6e9dc
+  +performAction:parameters:options: B40@0:8q16@24q32  imp=+0x26bc6f018
+  +performAsyncHTTPPostCallWithURL:parameters: v32@0:8@16@24  imp=+0x26bc6f700
+  +performHTTPGETCallWithParams:options: v32@0:8@16q24  imp=+0x26bc6f828
+  +performHTTPPOSTCallWithParams:options: v32@0:8@16q24  imp=+0x26bc6f7a0
+  +startDataTaskWithRequest: v24@0:8@16  imp=+0x26bc6f874
+  +supportsSecureCoding B16@0:8  imp=+0x26bc6fbb0
+  +urlRequestWithParams:options: @32@0:8@16q24  imp=+0x26bc6f5b8
+  +urlSession @16@0:8  imp=+0x26bc6f524
+  -.cxx_destruct v16@0:8  imp=+0x26bc700b8
+  -action q16@0:8  imp=+0x26bc70078
+  -actionIdentifier @16@0:8  imp=+0x26bc7009c
+  -actionURL @16@0:8  imp=+0x26bc6edc0
+  -description @16@0:8  imp=+0x26bc6eb64
+  -dynamicUIRouteURL @16@0:8  imp=+0x26bc6ee04
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc6fbb8
+  -getCachedContentWithCompletion: v24@0:8@?16  imp=+0x26bc6ffd8
+  -hasServerUIAction B16@0:8  imp=+0x26bc6eeb8
+  -init @16@0:8  imp=+0x26bc6ea74
+  -initWithAction: @24@0:8q16  imp=+0x26bc6ff40
+  -initWithAction:url: @32@0:8q16@24  imp=+0x26bc6ff5c
+  -initWithActionString: @24@0:8@16  imp=+0x26bc6fe68
+  -initWithActionString:url: @32@0:8@16@24  imp=+0x26bc6febc
+  -initWithCoder: @24@0:8@16  imp=+0x26bc6fc78
+  -initWithText:action:parameters: @40@0:8@16q24@32  imp=+0x26bc6ea8c
+  -initWithText:options:action:parameters: @48@0:8@16q24q32@40  imp=+0x26bc6ea9c
+  -options q16@0:8  imp=+0x26bc70070
+  -parameters @16@0:8  imp=+0x26bc70080
+  -performAction B16@0:8  imp=+0x26bc6ef9c
+  -performActionWithOptions: B24@0:8q16  imp=+0x26bc6efa4
+  -purchaseAttribution @16@0:8  imp=+0x26bc6eefc
+  -serverUIContent @16@0:8  imp=+0x26bc70088
+  -serverUIURL @16@0:8  imp=+0x26bc6ec1c
+  -setActionIdentifier: v24@0:8@16  imp=+0x26bc700a4
+  -setActionURL: v24@0:8@16  imp=+0x26bc700ac
+  -setParameter:forKey: v32@0:8@16@24  imp=+0x26bc6ecf0
+  -setServerUIContent: v24@0:8@16  imp=+0x26bc70090
+  -setServerUIURL: v24@0:8@16  imp=+0x26bc6ec94
+  -text @16@0:8  imp=+0x26bc70068
+@class ICQManageStoragePageInfo : NSObject <NSCopying, NSSecureCoding> instanceSize=40
+  ivar +8 _title @"NSString"
+  ivar +16 _storageGraphFooterText @"NSString"
+  ivar +24 _specifiers @"NSArray"
+  ivar +32 _tips @"NSArray"
+  property title (T@"NSString",C,N,V_title)
+  property storageGraphFooterText (T@"NSString",C,N,V_storageGraphFooterText)
+  property specifiers (T@"NSArray",&,N,V_specifiers)
+  property tips (T@"NSArray",&,N,V_tips)
+  +supportsSecureCoding B16@0:8  imp=+0x26bc48518
+  -.cxx_destruct v16@0:8  imp=+0x26bc4881c
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x26bc484b8
+  -description @16@0:8  imp=+0x26bc48474
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc48520
+  -initFromDictionary: @24@0:8@16  imp=+0x26bc480d0
+  -initWithCoder: @24@0:8@16  imp=+0x26bc485b8
+  -setSpecifiers: v24@0:8@16  imp=+0x26bc487fc
+  -setStorageGraphFooterText: v24@0:8@16  imp=+0x26bc487ec
+  -setTips: v24@0:8@16  imp=+0x26bc48810
+  -setTitle: v24@0:8@16  imp=+0x26bc487dc
+  -specifiers @16@0:8  imp=+0x26bc487f4
+  -storageGraphFooterText @16@0:8  imp=+0x26bc487e4
+  -tips @16@0:8  imp=+0x26bc48808
+  -title @16@0:8  imp=+0x26bc487d4
+@class ICQManageStorageSpecifierInfo : NSObject <NSCopying, NSSecureCoding> instanceSize=48
+  ivar +8 _type @"NSString"
+  ivar +16 _title @"NSString"
+  ivar +24 _subtitle @"NSString"
+  ivar +32 _iconURL @"ICQImageURL"
+  ivar +40 _actions @"NSArray"
+  property type (T@"NSString",C,N,V_type)
+  property title (T@"NSString",C,N,V_title)
+  property subtitle (T@"NSString",C,N,V_subtitle)
+  property iconURL (T@"ICQImageURL",&,N,V_iconURL)
+  property actions (T@"NSArray",&,N,V_actions)
+  +supportsSecureCoding B16@0:8  imp=+0x26bc47d6c
+  -.cxx_destruct v16@0:8  imp=+0x26bc48068
+  -actions @16@0:8  imp=+0x26bc48054
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x26bc47d00
+  -description @16@0:8  imp=+0x26bc47cb8
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc47d74
+  -iconURL @16@0:8  imp=+0x26bc48040
+  -initFromDictionary: @24@0:8@16  imp=+0x26bc47904
+  -initWithCoder: @24@0:8@16  imp=+0x26bc47e20
+  -setActions: v24@0:8@16  imp=+0x26bc4805c
+  -setIconURL: v24@0:8@16  imp=+0x26bc48048
+  -setSubtitle: v24@0:8@16  imp=+0x26bc48038
+  -setTitle: v24@0:8@16  imp=+0x26bc48028
+  -setType: v24@0:8@16  imp=+0x26bc48018
+  -subtitle @16@0:8  imp=+0x26bc48030
+  -title @16@0:8  imp=+0x26bc48020
+  -type @16@0:8  imp=+0x26bc48010
+@class ICQMediaCloudStorage : NSObject <NSCopying, NSSecureCoding> instanceSize=48
+  ivar +8 _mediaType @"NSString"
+  ivar +16 _displayLabel @"NSString"
+  ivar +24 _displayColor @"NSString"
+  ivar +32 _displayColorDark @"NSString"
+  ivar +40 _storageUsed @"NSNumber"
+  property mediaType (T@"NSString",C,N,V_mediaType)
+  property displayLabel (T@"NSString",C,N,V_displayLabel)
+  property displayColor (T@"NSString",C,N,V_displayColor)
+  property displayColorDark (T@"NSString",C,N,V_displayColorDark)
+  property storageUsed (T@"NSNumber",&,N,V_storageUsed)
+  +supportsSecureCoding B16@0:8  imp=+0x26bc49d10
+  -.cxx_destruct v16@0:8  imp=+0x26bc49f7c
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x26bc49ca4
+  -description @16@0:8  imp=+0x26bc49c5c
+  -displayColor @16@0:8  imp=+0x26bc49f48
+  -displayColorDark @16@0:8  imp=+0x26bc49f58
+  -displayLabel @16@0:8  imp=+0x26bc49f38
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc49d18
+  -initWithCoder: @24@0:8@16  imp=+0x26bc49dc4
+  -mediaType @16@0:8  imp=+0x26bc49f28
+  -setDisplayColor: v24@0:8@16  imp=+0x26bc49f50
+  -setDisplayColorDark: v24@0:8@16  imp=+0x26bc49f60
+  -setDisplayLabel: v24@0:8@16  imp=+0x26bc49f40
+  -setMediaType: v24@0:8@16  imp=+0x26bc49f30
+  -setStorageUsed: v24@0:8@16  imp=+0x26bc49f70
+  -storageUsed @16@0:8  imp=+0x26bc49f68
+@class ICQNetworkRequestController : NSObject instanceSize=24
+  ivar +8 _session @"NSURLSession"
+  ivar +16 _numberOfSecondsBetweenRetries @"NSArray"
+  -.cxx_destruct v16@0:8  imp=+0x26bc58310
+  -executeRequest:acceptedStatusCodes:renewHeadersBlock:completion: v48@0:8@16@24@?32@?40  imp=+0x26bc5716c
+  -init @16@0:8  imp=+0x26bc57018
+  -initWithSession: @24@0:8@16  imp=+0x26bc570c0
+  -initWithSession:numberOfSecondsBetweenRetries: @32@0:8@16@24  imp=+0x26bc570cc
+@class ICQNetworkThrottleController : NSObject instanceSize=16
+  ivar +8 _defaults @"NSUserDefaults"
+  property defaults (T@"NSUserDefaults",&,N,V_defaults)
+  -.cxx_destruct v16@0:8  imp=+0x26bc54528
+  -defaults @16@0:8  imp=+0x26bc54514
+  -init @16@0:8  imp=+0x26bc53f78
+  -request:didCompleteWithError: v32@0:8@16@24  imp=+0x26bc54190
+  -requestShouldThrottle: B24@0:8@16  imp=+0x26bc53fec
+  -setDefaults: v24@0:8@16  imp=+0x26bc5451c
+@class ICQOffer : NSObject <NSSecureCoding> instanceSize=288
+  ivar +8 _serverDictionary @"NSDictionary"
+  ivar +16 _planDetailsOverride @"NSDictionary"
+  ivar +24 _actionOverride q
+  ivar +32 _iTunesAccountExists B
+  ivar +40 _retrievalDate @"NSDate"
+  ivar +48 _expirationDate @"NSDate"
+  ivar +56 _offerType q
+  ivar +64 _level q
+  ivar +72 _bundleIdentifier @"NSString"
+  ivar +80 _appVersionId @"NSString"
+  ivar +88 _accountAltDSID @"NSString"
+  ivar +96 _notificationID @"NSString"
+  ivar +104 _offerId @"NSString"
+  ivar +112 _actionBasedUniversalLinkSpecification @"ICQActionBasedUniversalLinkSpecification"
+  ivar +120 _actionBasedUniversalLinks @"NSArray"
+  ivar +128 _bannerSpecification @"_ICQBannerSpecification"
+  ivar +136 _recommendationSpecification @"_ICQBannerSpecification"
+  ivar +144 _inAppMessageSpecification @"_ICQBannerSpecification"
+  ivar +152 _conciseInAppMessageSpecification @"_ICQBannerSpecification"
+  ivar +160 _settingsBannerSpecification @"_ICQBannerSpecification"
+  ivar +168 _buttonSpecification @"_ICQButtonSpecification"
+  ivar +176 _followupSpecification @"_ICQFollowupSpecification"
+  ivar +184 _upgradeFlowSpecification @"_ICQUpgradeFlowSpecification"
+  ivar +192 _XMLSpecification @"_ICQXMLSpecification"
+  ivar +200 _deviceInfo @"_ICQDeviceInfo"
+  ivar +208 _universalLinkSpecification @"_ICQBannerSpecification"
+  ivar +216 _universalSuccessInfoSpecification @"_ICQBannerSpecification"
+  ivar +224 _context @"NSString"
+  ivar +232 _appLaunchLink @"_ICQAppLaunchLink"
+  ivar +240 _requestedServerUIURL @"NSURL"
+  ivar +248 _sharedAlbumOwnerSpecification @"_ICQBannerSpecification"
+  ivar +256 _sharedAlbumParticipantSpecification @"_ICQBannerSpecification"
+  ivar +264 _sharedAlbumConvertSpecification @"_ICQBannerSpecification"
+  ivar +272 _sharedAlbumCreationSpecification @"_ICQBannerSpecification"
+  ivar +280 _sharedAlbumUpdateSpecification @"_ICQBannerSpecification"
+  property iTunesAccountExists (TB,R,N)
+  property buddyOffer (TB,R,N,GisBuddyOffer)
+  property defaultOffer (TB,R,N,GisDefaultOffer)
+  property premiumOffer (TB,R,N,GisPremiumOffer)
+  property bannerSpecification (T@"_ICQBannerSpecification",R,N)
+  property recommendationSpecification (T@"_ICQBannerSpecification",&,N)
+  property buttonSpecification (T@"_ICQButtonSpecification",R,N)
+  property followupSpecification (T@"_ICQFollowupSpecification",R,N)
+  property upgradeFlowSpecification (T@"_ICQUpgradeFlowSpecification",R,N)
+  property XMLSpecification (T@"_ICQXMLSpecification",R,N)
+  property deviceInfo (T@"_ICQDeviceInfo",&,N)
+  property context (T@"NSString",&,N)
+  property appVersionId (T@"NSString",&,N)
+  property appLaunchLink (T@"_ICQAppLaunchLink",R,N)
+  property lastUpdated (T@"NSDate",R,N)
+  property bannerPriority (TQ,N)
+  property requestedServerUIURL (T@"NSURL",R,N)
+  property action (Tq,R,N)
+  property _callbackInterval (Td,R,N)
+  property retrievalDate (T@"NSDate",&,N,V_retrievalDate)
+  property level (Tq,N,V_level)
+  property bundleIdentifier (T@"NSString",&,N,V_bundleIdentifier)
+  property appVersionId (T@"NSString",&,N,V_appVersionId)
+  property accountAltDSID (T@"NSString",&,N,V_accountAltDSID)
+  property notificationID (T@"NSString",&,N,V_notificationID)
+  property offerId (T@"NSString",&,N,V_offerId)
+  property bannerSpecification (T@"_ICQBannerSpecification",&,N,V_bannerSpecification)
+  property recommendationSpecification (T@"_ICQBannerSpecification",&,N,V_recommendationSpecification)
+  property inAppMessageSpecification (T@"_ICQBannerSpecification",&,N,V_inAppMessageSpecification)
+  property conciseInAppMessageSpecification (T@"_ICQBannerSpecification",&,N,V_conciseInAppMessageSpecification)
+  property settingsBannerSpecification (T@"_ICQBannerSpecification",&,N,V_settingsBannerSpecification)
+  property buttonSpecification (T@"_ICQButtonSpecification",&,N,V_buttonSpecification)
+  property followupSpecification (T@"_ICQFollowupSpecification",&,N,V_followupSpecification)
+  property upgradeFlowSpecification (T@"_ICQUpgradeFlowSpecification",&,N,V_upgradeFlowSpecification)
+  property XMLSpecification (T@"_ICQXMLSpecification",&,N,V_XMLSpecification)
+  property deviceInfo (T@"_ICQDeviceInfo",&,N,V_deviceInfo)
+  property universalLinkSpecification (T@"_ICQBannerSpecification",&,N,V_universalLinkSpecification)
+  property universalSuccessInfoSpecification (T@"_ICQBannerSpecification",&,N,V_universalSuccessInfoSpecification)
+  property context (T@"NSString",&,N,V_context)
+  property iTunesAccountExists (TB,N,V_iTunesAccountExists)
+  property appLaunchLink (T@"_ICQAppLaunchLink",&,N,V_appLaunchLink)
+  property requestedServerUIURL (T@"NSURL",&,N,V_requestedServerUIURL)
+  property sharedAlbumOwnerSpecification (T@"_ICQBannerSpecification",&,N,V_sharedAlbumOwnerSpecification)
+  property sharedAlbumParticipantSpecification (T@"_ICQBannerSpecification",&,N,V_sharedAlbumParticipantSpecification)
+  property sharedAlbumConvertSpecification (T@"_ICQBannerSpecification",&,N,V_sharedAlbumConvertSpecification)
+  property sharedAlbumCreationSpecification (T@"_ICQBannerSpecification",&,N,V_sharedAlbumCreationSpecification)
+  property sharedAlbumUpdateSpecification (T@"_ICQBannerSpecification",&,N,V_sharedAlbumUpdateSpecification)
+  property expirationDate (T@"NSDate",R,N,V_expirationDate)
+  property expired (TB,R,N,GisExpired)
+  property offerType (Tq,R,N,V_offerType)
+  property serverUIURL (T@"NSURL",R,N)
+  property remoteUIURL (T@"NSURL",R,N)
+  property dynamicUISpecification (T@"_ICQDynamicUISpecification",R,N)
+  property actionBasedUniversalLinkSpecification (T@"ICQActionBasedUniversalLinkSpecification",R,N,V_actionBasedUniversalLinkSpecification)
+  property actionBasedUniversalLinks (T@"NSArray",R,N,V_actionBasedUniversalLinks)
+  +_settingsBannerSpecificationWithServerDictionary:bundleId: @32@0:8@16@24  imp=+0x26bc767d8
+  +offerReasonForServerReason: @24@0:8@16  imp=+0x26bc78cd4
+  +supportsSecureCoding B16@0:8  imp=+0x26bc751ac
+  -.cxx_destruct v16@0:8  imp=+0x26bc76c48
+  -XMLSpecification @16@0:8  imp=+0x26bc76b48
+  -_callbackInterval d16@0:8  imp=+0x26bc78700
+  -_processICQURL: @24@0:8@16  imp=+0x26bc75a10
+  -_updateRequestedServerUIURLWithURL: v24@0:8@16  imp=+0x26bc78cd0
+  -accountAltDSID @16@0:8  imp=+0x26bc76a5c
+  -action q16@0:8  imp=+0x26bc78608
+  -actionBasedLinkForContext: @24@0:8@16  imp=+0x26bc75df0
+  -actionBasedUniversalLinkSpecification @16@0:8  imp=+0x26bc76a98
+  -actionBasedUniversalLinks @16@0:8  imp=+0x26bc76aa0
+  -alertSpecificationAtIndex: @24@0:8Q16  imp=+0x26bc78af0
+  -alertSpecificationForAlertKey: @24@0:8@16  imp=+0x26bc78830
+  -appLaunchLink @16@0:8  imp=+0x26bc76bbc
+  -appVersionId @16@0:8  imp=+0x26bc76a48
+  -bannerPriority Q16@0:8  imp=+0x26bc78f14
+  -bannerSpecification @16@0:8  imp=+0x26bc76aa8
+  -bundleIdentifier @16@0:8  imp=+0x26bc76a34
+  -buttonSpecification @16@0:8  imp=+0x26bc76b0c
+  -conciseInAppMessageSpecification @16@0:8  imp=+0x26bc76ae4
+  -context @16@0:8  imp=+0x26bc76b98
+  -debugDescription @16@0:8  imp=+0x26bc7679c
+  -deviceInfo @16@0:8  imp=+0x26bc76b5c
+  -dynamicUISpecification @16@0:8  imp=+0x26bc75754
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc751b4
+  -expirationDate @16@0:8  imp=+0x26bc76a14
+  -followupSpecification @16@0:8  imp=+0x26bc76b20
+  -iTunesAccountExists B16@0:8  imp=+0x26bc76bac
+  -inAppMessageSpecification @16@0:8  imp=+0x26bc76ad0
+  -inAppMessageSpecificationForReason:bundleId: @32@0:8@16@24  imp=+0x26bc76004
+  -initWithCoder: @24@0:8@16  imp=+0x26bc752f4
+  -initWithServerDictionary:accountAltDSID:notificationID:retrievalDate:callbackInterval:appLaunchLink:bundleIdentifier: @72@0:8@16@24@32@40d48@56@64  imp=+0x26bc76de8
+  -isBuddyOffer B16@0:8  imp=+0x26bc78768
+  -isDefaultOffer B16@0:8  imp=+0x26bc78770
+  -isDetailAppBannerOffer B16@0:8  imp=+0x26bc78cc0
+  -isExpired B16@0:8  imp=+0x26bc7507c
+  -isPremiumOffer B16@0:8  imp=+0x26bc78778
+  -journeyLinkForId: @24@0:8@16  imp=+0x26bc75a8c
+  -lastUpdated @16@0:8  imp=+0x26bc78d60
+  -level q16@0:8  imp=+0x26bc76a24
+  -messageSpecificationForPlacement: @24@0:8@16  imp=+0x26bc75e04
+  -messageSpecificationForReason:bundleId:placement: @40@0:8@16@24@32  imp=+0x26bc75f54
+  -notificationID @16@0:8  imp=+0x26bc76a70
+  -offerId @16@0:8  imp=+0x26bc76a84
+  -offerType q16@0:8  imp=+0x26bc76a1c
+  -placeholderExists B16@0:8  imp=+0x26bc78cc8
+  -recommendationSpecification @16@0:8  imp=+0x26bc76abc
+  -remoteUIURL @16@0:8  imp=+0x26bc75620
+  -requestedServerUIURL @16@0:8  imp=+0x26bc76bd0
+  -retrievalDate @16@0:8  imp=+0x26bc76a00
+  -serverUIURL @16@0:8  imp=+0x26bc75624
+  -setAccountAltDSID: v24@0:8@16  imp=+0x26bc76a64
+  -setAppLaunchLink: v24@0:8@16  imp=+0x26bc76bc4
+  -setAppVersionId: v24@0:8@16  imp=+0x26bc76a50
+  -setBannerSpecification: v24@0:8@16  imp=+0x26bc76ab0
+  -setBundleIdentifier: v24@0:8@16  imp=+0x26bc76a3c
+  -setButtonSpecification: v24@0:8@16  imp=+0x26bc76b14
+  -setConciseInAppMessageSpecification: v24@0:8@16  imp=+0x26bc76aec
+  -setContext: v24@0:8@16  imp=+0x26bc76ba0
+  -setDeviceInfo: v24@0:8@16  imp=+0x26bc76b64
+  -setFollowupSpecification: v24@0:8@16  imp=+0x26bc76b28
+  -setITunesAccountExists: v20@0:8B16  imp=+0x26bc76bb4
+  -setInAppMessageSpecification: v24@0:8@16  imp=+0x26bc76ad8
+  -setLevel: v24@0:8q16  imp=+0x26bc76a2c
+  -setNotificationID: v24@0:8@16  imp=+0x26bc76a78
+  -setOfferId: v24@0:8@16  imp=+0x26bc76a8c
+  -setRecommendationSpecification: v24@0:8@16  imp=+0x26bc76ac4
+  -setRequestedServerUIURL: v24@0:8@16  imp=+0x26bc76bd8
+  -setRetrievalDate: v24@0:8@16  imp=+0x26bc76a08
+  -setSettingsBannerSpecification: v24@0:8@16  imp=+0x26bc76b00
+  -setSharedAlbumConvertSpecification: v24@0:8@16  imp=+0x26bc76c14
+  -setSharedAlbumCreationSpecification: v24@0:8@16  imp=+0x26bc76c28
+  -setSharedAlbumOwnerSpecification: v24@0:8@16  imp=+0x26bc76bec
+  -setSharedAlbumParticipantSpecification: v24@0:8@16  imp=+0x26bc76c00
+  -setSharedAlbumUpdateSpecification: v24@0:8@16  imp=+0x26bc76c3c
+  -setUniversalLinkSpecification: v24@0:8@16  imp=+0x26bc76b78
+  -setUniversalSuccessInfoSpecification: v24@0:8@16  imp=+0x26bc76b8c
+  -setUpgradeFlowSpecification: v24@0:8@16  imp=+0x26bc76b3c
+  -setXMLSpecification: v24@0:8@16  imp=+0x26bc76b50
+  -settingsBannerSpecification @16@0:8  imp=+0x26bc76af8
+  -settingsBannerSpecificationForReason:bundleId: @32@0:8@16@24  imp=+0x26bc76530
+  -sharedAlbumConvertSpecification @16@0:8  imp=+0x26bc76c0c
+  -sharedAlbumCreationSpecification @16@0:8  imp=+0x26bc76c20
+  -sharedAlbumOwnerSpecification @16@0:8  imp=+0x26bc76be4
+  -sharedAlbumParticipantSpecification @16@0:8  imp=+0x26bc76bf8
+  -sharedAlbumUpdateSpecification @16@0:8  imp=+0x26bc76c34
+  -showsPhotoVideoCounts B16@0:8  imp=+0x26bc750d4
+  -storagePurchaseKeybagForButtonId: @24@0:8@16  imp=+0x26bc78780
+  -universalLink @16@0:8  imp=+0x26bc75850
+  -universalLinkForContext: @24@0:8@16  imp=+0x26bc75cb0
+  -universalLinkSpecification @16@0:8  imp=+0x26bc76b70
+  -universalSuccessInfoSpecification @16@0:8  imp=+0x26bc76b84
+  -universalSuccessLink @16@0:8  imp=+0x26bc75930
+  -updateOfferWithAction: v24@0:8q16  imp=+0x26bc786f8
+  -updateOfferWithPlanDetails:actionString: v32@0:8@16@24  imp=+0x26bc78690
+  -upgradeFlowSpecification @16@0:8  imp=+0x26bc76b34
+@class ICQOfferCacheObject : NSObject instanceSize=24
+  ivar +8 _daemonOffer @"ICQDaemonOffer"
+  ivar +16 _bundleIdentifier @"NSString"
+  property daemonOffer (T@"ICQDaemonOffer",&,N,V_daemonOffer)
+  property bundleIdentifier (T@"NSString",C,N,V_bundleIdentifier)
+  -.cxx_destruct v16@0:8  imp=+0x26bc58ffc
+  -bundleIdentifier @16@0:8  imp=+0x26bc58fec
+  -daemonOffer @16@0:8  imp=+0x26bc58fd8
+  -initWithDaemonOffer:bundleIdentifier: @32@0:8@16@24  imp=+0x26bc58d80
+  -offer @16@0:8  imp=+0x26bc58e28
+  -setBundleIdentifier: v24@0:8@16  imp=+0x26bc58ff4
+  -setDaemonOffer: v24@0:8@16  imp=+0x26bc58fe0
+@class ICQOfferManager : NSObject instanceSize=56
+  ivar +8 _regularOfferInvalidationTimer @"NSTimer"
+  ivar +16 _premiumOfferInvalidationTimer @"NSTimer"
+  ivar +24 _cachedOffers @"NSMutableDictionary"
+  ivar +32 _registeredDarwinNotifications @"NSMutableDictionary"
+  ivar +40 _cachedOffersLock @"ICQUnfairLock"
+  ivar +48 _dismissedRecommendations @"NSMutableDictionary"
+  property cachedOffers (T@"NSMutableDictionary",&,N,V_cachedOffers)
+  property registeredDarwinNotifications (T@"NSMutableDictionary",&,N,V_registeredDarwinNotifications)
+  property cachedOffersLock (T@"ICQUnfairLock",&,N,V_cachedOffersLock)
+  property dismissedRecommendations (T@"NSMutableDictionary",&,N,V_dismissedRecommendations)
+  +_legacyBuddyOfferMightNeedPresenting B16@0:8  imp=+0x26bc5e318
+  +buddyOfferMightNeedPresenting B16@0:8  imp=+0x26bc5e310
+  +ckBackupDeviceID @16@0:8  imp=+0x26bc5e664
+  +defaultBundleIdentifier @16@0:8  imp=+0x26bc59b38
+  +defaultPlaceholderKeys @16@0:8  imp=+0x26bc5df08
+  +sharedOfferManager @16@0:8  imp=+0x26bc59a58
+  +stringWithPlaceholderFormat:alternateString: @32@0:8@16@24  imp=+0x26bc5df14
+  -.cxx_destruct v16@0:8  imp=+0x26bc5de94
+  -_currentOfferForBundleIdentifier:options: @32@0:8@16@24  imp=+0x26bc5b3e8
+  -_firedPremiumOfferInvalidationTimer: v24@0:8@16  imp=+0x26bc5ddc4
+  -_firedRegularOfferInvalidationTimer: v24@0:8@16  imp=+0x26bc5dd44
+  -_funnelCloudServerOfferForAccount:options:completion: v40@0:8@16@24@?32  imp=+0x26bc5b698
+  -_getOfferForAccount:bundleIdentifier:options:offerContext:completion: v56@0:8@16@24@32@40@?48  imp=+0x26bc5baa0
+  -_getOfferForBundleIdentifier:options:offerContext:completion: v48@0:8@16@24@32@?40  imp=+0x26bc5b7f4
+  -_handlePushReceivedDarwinNotificationRequestType: v24@0:8q16  imp=+0x26bc5d840
+  -_offerTypeMatchesRequestOptions:offer: B32@0:8@16@24  imp=+0x26bc5ba08
+  -_premiumOptions @16@0:8  imp=+0x26bc5b358
+  -_refetchDefaultOffer v16@0:8  imp=+0x26bc5cffc
+  -_refetchPremiumOffer v16@0:8  imp=+0x26bc5ce48
+  -_refetchRegularOffer v16@0:8  imp=+0x26bc5cc94
+  -_refreshOfferWithDaemonOfferDict:offerRequestType:bundleId: @40@0:8@16q24@32  imp=+0x26bc5c494
+  -_registerForDarwinNotification: v24@0:8@16  imp=+0x26bc5d474
+  -_setupTimerForInvalidationDate:forType: v32@0:8@16q24  imp=+0x26bc5d978
+  -_setupTimerForPremiumOfferInvalidationDate: v24@0:8@16  imp=+0x26bc5db40
+  -_setupTimerForRegularOfferInvalidationDate: v24@0:8@16  imp=+0x26bc5d9f0
+  -_shouldUseOffer:forBundleIdentifier: B32@0:8@16@24  imp=+0x26bc5b780
+  -_teardownInvalidationTimerForRequestType: v24@0:8q16  imp=+0x26bc5dc90
+  -_teardownPremiumOfferInvalidationTimer v16@0:8  imp=+0x26bc5dcf8
+  -_teardownRegularOfferInvalidationTimer v16@0:8  imp=+0x26bc5dcac
+  -_unregisterForAllDarwinNotifications v16@0:8  imp=+0x26bc5d7dc
+  -_unregisterForDarwinNotification: v24@0:8@16  imp=+0x26bc5d690
+  -appLaunchLinkDidPresentForBundleIdentifier: v24@0:8@16  imp=+0x26bc5ac64
+  -cachedOfferForType: @24@0:8q16  imp=+0x26bc5c81c
+  -cachedOffers @16@0:8  imp=+0x26bc5de44
+  -cachedOffersLock @16@0:8  imp=+0x26bc5de6c
+  -clearFollowups v16@0:8  imp=+0x26bc5df20
+  -currentDefaultOffer @16@0:8  imp=+0x26bc59e6c
+  -currentOffer @16@0:8  imp=+0x26bc59cc4
+  -currentOfferForBundleIdentifier: @24@0:8@16  imp=+0x26bc59f50
+  -currentPremiumOffer @16@0:8  imp=+0x26bc59d24
+  -currentPremiumOfferForBundleIdentifier: @24@0:8@16  imp=+0x26bc59f58
+  -dealloc v16@0:8  imp=+0x26bc59c6c
+  -didDismissRecommendationForBundleId: B24@0:8@16  imp=+0x26bc5e248
+  -dismissRecommendationForBundleId: v24@0:8@16  imp=+0x26bc5e180
+  -dismissedRecommendations @16@0:8  imp=+0x26bc5de80
+  -fetchOfferIfNeeded B16@0:8  imp=+0x26bc5d334
+  -forcePostFollowup v16@0:8  imp=+0x26bc5e3ec
+  -getDefaultOfferWithCompletion: v24@0:8@?16  imp=+0x26bc59d84
+  -getEventOfferWithOptions:completion: v32@0:8@16@?24  imp=+0x26bc5b09c
+  -getOfferForBundleIdentifier:completion: v32@0:8@16@?24  imp=+0x26bc5a1bc
+  -getOfferForBundleIdentifier:offerContext:completion: v40@0:8@16@24@?32  imp=+0x26bc5a9fc
+  -getOfferWithCompletion: v24@0:8@?16  imp=+0x26bc5a0d4
+  -getPremiumOfferAndOpportunityBubbleForBundleIdentifier:completion: v32@0:8@16@?24  imp=+0x26bc5a474
+  -getPremiumOfferAndOpportunityBubbleWithCompletion: v24@0:8@?16  imp=+0x26bc5a400
+  -getPremiumOfferForBundleIdentifier:completion: v32@0:8@16@?24  imp=+0x26bc5a280
+  -getPremiumOfferForBundleIdentifier:offerContext:completion: v40@0:8@16@24@?32  imp=+0x26bc5aac4
+  -getPremiumOfferWithCompletion: v24@0:8@?16  imp=+0x26bc5a148
+  -init @16@0:8  imp=+0x26bc59bf0
+  -isBuddyOfferEnabled B16@0:8  imp=+0x26bc5e7d8
+  -isDeviceStorageAlmostFull B16@0:8  imp=+0x26bc5e670
+  -isSimulatedDeviceStorageAlmostFull B16@0:8  imp=+0x26bc5e67c
+  -photosLibrarySize @16@0:8  imp=+0x26bc5e7cc
+  -postBackupRestoredOffer: v24@0:8@?16  imp=+0x26bc5a744
+  -postBuddyOfferType: v24@0:8@16  imp=+0x26bc5e498
+  -postOfferType: v24@0:8@16  imp=+0x26bc5e434
+  -registeredDarwinNotifications @16@0:8  imp=+0x26bc5de58
+  -removeCachedOfferForType: v24@0:8q16  imp=+0x26bc5c9ec
+  -setBuddyOfferEnabled: v20@0:8B16  imp=+0x26bc5e81c
+  -setCachedOfferForType:daemonOffer:bundleIdentifier: v40@0:8q16@24@32  imp=+0x26bc5c9f8
+  -setCachedOffers: v24@0:8@16  imp=+0x26bc5de4c
+  -setCachedOffersLock: v24@0:8@16  imp=+0x26bc5de74
+  -setDismissedRecommendations: v24@0:8@16  imp=+0x26bc5de88
+  -setRegisteredDarwinNotifications: v24@0:8@16  imp=+0x26bc5de60
+  -setSimulatedDeviceStorageAlmostFull: v20@0:8B16  imp=+0x26bc5e6c0
+  -setSimulatedPhotosLibrarySize: v24@0:8@16  imp=+0x26bc5e768
+  -shouldPresentAppLaunchLink: B24@0:8@16  imp=+0x26bc5af68
+  -simulatedPhotosLibrarySize @16@0:8  imp=+0x26bc5e710
+  -teardownCachedBuddyOffer v16@0:8  imp=+0x26bc5e544
+  -teardownCachedEventOffer v16@0:8  imp=+0x26bc5e5d4
+  -teardownCachedOffer v16@0:8  imp=+0x26bc5e4fc
+  -teardownCachedOffers v16@0:8  imp=+0x26bc5e61c
+  -teardownCachedPremiumOffer v16@0:8  imp=+0x26bc5e58c
+  -updateOfferId:buttonId:info:completion: v48@0:8@16@24@32@?40  imp=+0x26bc5df70
+@class ICQOfferUpdateController : NSObject instanceSize=16
+  ivar +8 _sharedURLSession @"NSURLSession"
+  -.cxx_destruct v16@0:8  imp=+0x26bc58d74
+  -initWithSession: @24@0:8@16  imp=+0x26bc585a4
+  -performOfferUpdateWithContext:completion: v32@0:8@16@?24  imp=+0x26bc58604
+@class ICQOfferUpdateRequestContext : NSObject instanceSize=48
+  ivar +8 _zeroAction B
+  ivar +16 _account @"ACAccount"
+  ivar +24 _accountStore @"ACAccountStore"
+  ivar +32 _buttonId @"NSString"
+  ivar +40 _offerId @"NSString"
+  property account (T@"ACAccount",&,N,V_account)
+  property accountStore (T@"ACAccountStore",&,N,V_accountStore)
+  property buttonId (T@"NSString",C,N,V_buttonId)
+  property offerId (T@"NSString",&,N,V_offerId)
+  property zeroAction (TB,N,GisZeroAction,V_zeroAction)
+  -.cxx_destruct v16@0:8  imp=+0x26bc7d5e0
+  -account @16@0:8  imp=+0x26bc7d584
+  -accountStore @16@0:8  imp=+0x26bc7d598
+  -buttonId @16@0:8  imp=+0x26bc7d5ac
+  -isZeroAction B16@0:8  imp=+0x26bc7d5d0
+  -offerId @16@0:8  imp=+0x26bc7d5bc
+  -setAccount: v24@0:8@16  imp=+0x26bc7d58c
+  -setAccountStore: v24@0:8@16  imp=+0x26bc7d5a0
+  -setButtonId: v24@0:8@16  imp=+0x26bc7d5b4
+  -setOfferId: v24@0:8@16  imp=+0x26bc7d5c4
+  -setZeroAction: v20@0:8B16  imp=+0x26bc7d5d8
+@class ICQOpportunityBubbleDetailsSpecification : ICQOpportunityFlowSpecification instanceSize=40
+@class ICQOpportunityBubbleSpecification : NSObject instanceSize=40
+  ivar +8 _appId @"NSString"
+  ivar +16 _bubbleDetails @"ICQOpportunityBubbleDetailsSpecification"
+  ivar +24 _sheetDetails @"ICQOpportunitySheetDetailsSpecification"
+  ivar +32 _reportingDetails @"_ICQOpportunityBubbleReportingSpecification"
+  property appId (T@"NSString",C,N,V_appId)
+  property bubbleDetails (T@"ICQOpportunityBubbleDetailsSpecification",&,N,V_bubbleDetails)
+  property sheetDetails (T@"ICQOpportunitySheetDetailsSpecification",&,N,V_sheetDetails)
+  property reportingDetails (T@"_ICQOpportunityBubbleReportingSpecification",&,N,V_reportingDetails)
+  -.cxx_destruct v16@0:8  imp=+0x26bc67c6c
+  -appId @16@0:8  imp=+0x26bc67c20
+  -bubbleDetails @16@0:8  imp=+0x26bc67c30
+  -initWithOpportunityBubble:andOpportunitySheet: @32@0:8@16@24  imp=+0x26bc67870
+  -reportingDetails @16@0:8  imp=+0x26bc67c58
+  -serverUIURL @16@0:8  imp=+0x26bc67ab8
+  -setAppId: v24@0:8@16  imp=+0x26bc67c28
+  -setBubbleDetails: v24@0:8@16  imp=+0x26bc67c38
+  -setReportingDetails: v24@0:8@16  imp=+0x26bc67c60
+  -setSheetDetails: v24@0:8@16  imp=+0x26bc67c4c
+  -sheetDetails @16@0:8  imp=+0x26bc67c44
+@class ICQOpportunityFlowSpecification : NSObject instanceSize=40
+  ivar +8 _title @"NSString"
+  ivar +16 _message @"NSString"
+  ivar +24 _actions @"NSArray"
+  ivar +32 _imageDetails @"_ICQOpportunityBubbleImageDetails"
+  property title (T@"NSString",C,N,V_title)
+  property message (T@"NSString",C,N,V_message)
+  property imageDetails (T@"_ICQOpportunityBubbleImageDetails",&,N,V_imageDetails)
+  property actions (T@"NSArray",&,N,V_actions)
+  -.cxx_destruct v16@0:8  imp=+0x26bc7a1b4
+  -actions @16@0:8  imp=+0x26bc7a18c
+  -imageDetails @16@0:8  imp=+0x26bc7a1a0
+  -initWithServerDictionary: @24@0:8@16  imp=+0x26bc799a4
+  -makeActionsFromServerDict: v24@0:8@16  imp=+0x26bc79ccc
+  -makeMessageFromServerDict: v24@0:8@16  imp=+0x26bc79bdc
+  -message @16@0:8  imp=+0x26bc7a17c
+  -setActions: v24@0:8@16  imp=+0x26bc7a194
+  -setImageDetails: v24@0:8@16  imp=+0x26bc7a1a8
+  -setMessage: v24@0:8@16  imp=+0x26bc7a184
+  -setTitle: v24@0:8@16  imp=+0x26bc7a174
+  -title @16@0:8  imp=+0x26bc7a16c
+@class ICQOpportunitySheetDetailsSpecification : ICQOpportunityFlowSpecification instanceSize=48
+  ivar +40 _messagesInfo @"NSDictionary"
+  property messagesInfo (T@"NSDictionary",&,N,V_messagesInfo)
+  -.cxx_destruct v16@0:8  imp=+0x26bc7cdf0
+  -makeMessageFromServerDict: v24@0:8@16  imp=+0x26bc7ca04
+  -messageForKey: @24@0:8@16  imp=+0x26bc7cd20
+  -messagesInfo @16@0:8  imp=+0x26bc7cdc8
+  -setMessagesInfo: v24@0:8@16  imp=+0x26bc7cddc
+@class ICQPreferences : NSObject instanceSize=8
+  +setShouldEnableUnifiedMessaging: v20@0:8B16  imp=+0x26bc345e8
+  +shouldEnableUnifiedMessaging B16@0:8  imp=+0x26bc345b4
+@class ICQPremiumOffer : ICQOffer instanceSize=320
+  ivar +288 _isBadgeApp B
+  ivar +289 _shouldStartOnDeviceJourney B
+  ivar +290 _dismissed B
+  ivar +296 _opportunityBubble @"ICQOpportunityBubbleSpecification"
+  ivar +304 _bundleQuotaInfo @"NSNumber"
+  ivar +312 _commerceQuotaInfo @"NSNumber"
+  property dismissed (TB,N,V_dismissed)
+  property isBadgeApp (TB,N,V_isBadgeApp)
+  property shouldStartOnDeviceJourney (TB,N,V_shouldStartOnDeviceJourney)
+  property opportunityBubble (T@"ICQOpportunityBubbleSpecification",&,N,V_opportunityBubble)
+  property bundleQuotaInfo (T@"NSNumber",&,N,V_bundleQuotaInfo)
+  property commerceQuotaInfo (T@"NSNumber",&,N,V_commerceQuotaInfo)
+  -.cxx_destruct v16@0:8  imp=+0x26bc52344
+  -_ICQOpportunityBubbleSpecificationForServerDict:bundleId: @32@0:8@16@24  imp=+0x26bc5196c
+  -_bundleStorageLevelFromServerDict: @24@0:8@16  imp=+0x26bc51d18
+  -_commerceStorageLevelFromServerDict: @24@0:8@16  imp=+0x26bc51e04
+  -_hasFollowupEnabledFromServerDict: B24@0:8@16  imp=+0x26bc5187c
+  -_parseQuotaInfo: @24@0:8@16  imp=+0x26bc51ef0
+  -_serverUIURLFromOfferContents @16@0:8  imp=+0x26bc51c84
+  -bundleQuotaInfo @16@0:8  imp=+0x26bc522cc
+  -commerceQuotaInfo @16@0:8  imp=+0x26bc522f4
+  -dismissed B16@0:8  imp=+0x26bc5231c
+  -getBadgeAppFromServerDict: B24@0:8@16  imp=+0x26bc5178c
+  -initWithServerDictionary:accountAltDSID:notificationID:retrievalDate:callbackInterval:appLaunchLink:bundleIdentifier: @72@0:8@16@24@32@40d48@56@64  imp=+0x26bc51530
+  -isBadgeApp B16@0:8  imp=+0x26bc52254
+  -opportunityBubble @16@0:8  imp=+0x26bc522a4
+  -serverUIURL @16@0:8  imp=+0x26bc51bd4
+  -setBundleQuotaInfo: v24@0:8@16  imp=+0x26bc522e0
+  -setCommerceQuotaInfo: v24@0:8@16  imp=+0x26bc52308
+  -setDismissed: v20@0:8B16  imp=+0x26bc52330
+  -setIsBadgeApp: v20@0:8B16  imp=+0x26bc52268
+  -setOpportunityBubble: v24@0:8@16  imp=+0x26bc522b8
+  -setShouldStartOnDeviceJourney: v20@0:8B16  imp=+0x26bc52290
+  -shouldShowOpportunityBubbleWithCompletion: v24@0:8@?16  imp=+0x26bc51f7c
+  -shouldShowOpportunityBubbleWithDisplayRuleResult:completion: v28@0:8B16@?20  imp=+0x26bc520c0
+  -shouldStartOnDeviceJourney B16@0:8  imp=+0x26bc5227c
+@class ICQRequestProvider : NSObject instanceSize=16
+  ivar +8 _account @"ACAccount"
+  +_keyIsEligibleForURLStringReplacement: B24@0:8@16  imp=+0x26bc55dc4
+  +_newAccountBagKeyForOldKey: @24@0:8@16  imp=+0x26bc55ee4
+  +_urlReplacementDictionaryForKey:withOfferID:withNotificationID: @40@0:8@16@24@32  imp=+0x26bc55ca0
+  +addEntriesToPostDictionary:forStub: v32@0:8@16@24  imp=+0x26bc56154
+  +attemptSetRequest:toPostWithJSONDict: B32@0:8@16@24  imp=+0x26bc55fe8
+  -.cxx_destruct v16@0:8  imp=+0x26bc564d8
+  -_bagURLForKey:withOfferID:withNotificationID: @40@0:8@16@24@32  imp=+0x26bc55940
+  -_stringTimeOfLastBackup @16@0:8  imp=+0x26bc56480
+  -_urlForQuotaKey:offerID:notificationID: @40@0:8@16@24@32  imp=+0x26bc55044
+  -addBasicAndCloudBackupHeadersToRequest: v24@0:8@16  imp=+0x26bc55808
+  -addBasicHeadersToRequest: v24@0:8@16  imp=+0x26bc553ec
+  -addCommonHeadersToRequest: v24@0:8@16  imp=+0x26bc558b8
+  -getBackupDeviceUUID @16@0:8  imp=+0x26bc55938
+  -httpMethodForKey:offerID:notificationID: @40@0:8@16@24@32  imp=+0x26bc55be4
+  -initWithAccount: @24@0:8@16  imp=+0x26bc54e18
+  -urlForQuotaKey:offerStub:notificationID: @40@0:8@16@24@32  imp=+0x26bc54e78
+  -urlForUpdateOfferWithContext: @24@0:8@16  imp=+0x26bc54fd8
+  -willUseNewKey:offerID:notificationID: B40@0:8@16@24@32  imp=+0x26bc55ae0
+@class ICQRetryController : NSObject instanceSize=40
+  ivar +8 _numberOfAttempts Q
+  ivar +16 _maxNumberOfRetries Q
+  ivar +24 _queue @"NSObject<OS_dispatch_queue>"
+  ivar +32 _executionBlock @?
+  property numberOfAttempts (TQ,R,N)
+  -.cxx_destruct v16@0:8  imp=+0x26bc48a98
+  -executeBlock B16@0:8  imp=+0x26bc48920
+  -initWithMaxNumberOfRetries:block: @32@0:8Q16@?24  imp=+0x26bc48878
+  -numberOfAttempts Q16@0:8  imp=+0x26bc48a90
+  -retryAfterSeconds: B24@0:8Q16  imp=+0x26bc48928
+@class ICQSpecifierInfo : NSObject <NSCopying, NSSecureCoding> instanceSize=72
+  ivar +8 _identifier @"NSString"
+  ivar +16 _type @"NSString"
+  ivar +24 _title @"NSString"
+  ivar +32 _subTitle @"NSString"
+  ivar +40 _iconURL @"ICQImageURL"
+  ivar +48 _actionURL @"NSURL"
+  ivar +56 _icqLink @"ICQLink"
+  ivar +64 _actions @"NSArray"
+  property identifier (T@"NSString",C,N,V_identifier)
+  property type (T@"NSString",C,N,V_type)
+  property title (T@"NSString",C,N,V_title)
+  property subTitle (T@"NSString",C,N,V_subTitle)
+  property iconURL (T@"ICQImageURL",&,N,V_iconURL)
+  property actionURL (T@"NSURL",&,N,V_actionURL)
+  property icqLink (T@"ICQLink",&,N,V_icqLink)
+  property actions (T@"NSArray",&,N,V_actions)
+  +supportsSecureCoding B16@0:8  imp=+0x26bc4a7b8
+  -.cxx_destruct v16@0:8  imp=+0x26bc4ab38
+  -actionURL @16@0:8  imp=+0x26bc4aafc
+  -actions @16@0:8  imp=+0x26bc4ab24
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x26bc4a728
+  -description @16@0:8  imp=+0x26bc4a6d8
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc4a7c0
+  -iconURL @16@0:8  imp=+0x26bc4aae8
+  -icqLink @16@0:8  imp=+0x26bc4ab10
+  -identifier @16@0:8  imp=+0x26bc4aaa8
+  -initWithCoder: @24@0:8@16  imp=+0x26bc4a8a8
+  -setActionURL: v24@0:8@16  imp=+0x26bc4ab04
+  -setActions: v24@0:8@16  imp=+0x26bc4ab2c
+  -setIconURL: v24@0:8@16  imp=+0x26bc4aaf0
+  -setIcqLink: v24@0:8@16  imp=+0x26bc4ab18
+  -setIdentifier: v24@0:8@16  imp=+0x26bc4aab0
+  -setSubTitle: v24@0:8@16  imp=+0x26bc4aae0
+  -setTitle: v24@0:8@16  imp=+0x26bc4aad0
+  -setType: v24@0:8@16  imp=+0x26bc4aac0
+  -subTitle @16@0:8  imp=+0x26bc4aad8
+  -title @16@0:8  imp=+0x26bc4aac8
+  -type @16@0:8  imp=+0x26bc4aab8
+@class ICQStoragePlanRecommendation : NSObject instanceSize=16
+  ivar +8 _account @"ACAccount"
+  property account (T@"ACAccount",&,N,V_account)
+  +_requestQueue @16@0:8  imp=+0x26bc713bc
+  -.cxx_destruct v16@0:8  imp=+0x26bc71ca8
+  -account @16@0:8  imp=+0x26bc71c94
+  -calculateExtraQuotaNeededToSyncIsAccountFull:completion: v28@0:8B16@?20  imp=+0x26bc71468
+  -initWithAccount: @24@0:8@16  imp=+0x26bc71340
+  -setAccount: v24@0:8@16  imp=+0x26bc71c9c
+@class ICQStoragePlanRecommendationCache : NSObject instanceSize=32
+  ivar +8 _extraQuotaNeeded @"NSNumber"
+  ivar +16 _expiry @"NSDate"
+  ivar +24 _cacheLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  +sharedInstance @16@0:8  imp=+0x26bc803dc
+  -.cxx_destruct v16@0:8  imp=+0x26bc805d0
+  -extraQuotaNeeded @16@0:8  imp=+0x26bc80530
+  -init @16@0:8  imp=+0x26bc80460
+  -setExtraQuotaNeeded:expiry: v32@0:8@16@24  imp=+0x26bc804a0
+@class ICQSubscriptionInfo : NSObject <NSCopying, NSSecureCoding> instanceSize=24
+  ivar +8 _iCloudPlusSubscriber B
+  ivar +16 _specifiersInfo @"NSArray"
+  property iCloudPlusSubscriber (TB,N,GisiCloudPlusSubscriber,V_iCloudPlusSubscriber)
+  property specifiersInfo (T@"NSArray",&,N,V_specifiersInfo)
+  +supportsSecureCoding B16@0:8  imp=+0x26bc4a4f4
+  -.cxx_destruct v16@0:8  imp=+0x26bc4a6cc
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x26bc4a4ac
+  -description @16@0:8  imp=+0x26bc4a46c
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc4a4fc
+  -initWithCoder: @24@0:8@16  imp=+0x26bc4a56c
+  -isiCloudPlusSubscriber B16@0:8  imp=+0x26bc4a6a8
+  -setICloudPlusSubscriber: v20@0:8B16  imp=+0x26bc4a6b0
+  -setSpecifiersInfo: v24@0:8@16  imp=+0x26bc4a6c0
+  -specifiersInfo @16@0:8  imp=+0x26bc4a6b8
+@class ICQTipCriteria : NSObject <NSCopying, NSSecureCoding> instanceSize=40
+  ivar +8 _minimumRange @"NSNumber"
+  ivar +16 _maximumRange @"NSNumber"
+  ivar +24 _criteriaURL @"NSURL"
+  ivar +32 _excludeApps @"NSArray"
+  property minimumRange (T@"NSNumber",&,N,V_minimumRange)
+  property maximumRange (T@"NSNumber",&,N,V_maximumRange)
+  property criteriaURL (T@"NSURL",&,N,V_criteriaURL)
+  property excludeApps (T@"NSArray",&,N,V_excludeApps)
+  +supportsSecureCoding B16@0:8  imp=+0x26bc809d8
+  -.cxx_destruct v16@0:8  imp=+0x26bc80c88
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x26bc80978
+  -criteriaURL @16@0:8  imp=+0x26bc80c60
+  -description @16@0:8  imp=+0x26bc80934
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc809e0
+  -excludeApps @16@0:8  imp=+0x26bc80c74
+  -initWithCoder: @24@0:8@16  imp=+0x26bc80a78
+  -maximumRange @16@0:8  imp=+0x26bc80c4c
+  -minimumRange @16@0:8  imp=+0x26bc80c38
+  -setCriteriaURL: v24@0:8@16  imp=+0x26bc80c68
+  -setExcludeApps: v24@0:8@16  imp=+0x26bc80c7c
+  -setMaximumRange: v24@0:8@16  imp=+0x26bc80c54
+  -setMinimumRange: v24@0:8@16  imp=+0x26bc80c40
+@class ICQTipIcon : NSObject <NSCopying, NSSecureCoding> instanceSize=16
+  ivar +8 _type @"NSString"
+  property type (T@"NSString",&,N,V_type)
+  +supportsSecureCoding B16@0:8  imp=+0x26bc80d5c
+  -.cxx_destruct v16@0:8  imp=+0x26bc80e28
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x26bc80d20
+  -description @16@0:8  imp=+0x26bc80ce4
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc80d64
+  -initWithCoder: @24@0:8@16  imp=+0x26bc80d7c
+  -setType: v24@0:8@16  imp=+0x26bc80e1c
+  -type @16@0:8  imp=+0x26bc80e14
+@class ICQTipIconSymbol : ICQTipIcon instanceSize=40
+  ivar +16 _id @"NSString"
+  ivar +24 _path @"NSString"
+  ivar +32 _systemColorName @"NSString"
+  property id (T@"NSString",&,N,V_id)
+  property path (T@"NSString",&,N,V_path)
+  property systemColorName (T@"NSString",&,N,V_systemColorName)
+  +supportsSecureCoding B16@0:8  imp=+0x26bc80ecc
+  -.cxx_destruct v16@0:8  imp=+0x26bc81094
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x26bc80e78
+  -description @16@0:8  imp=+0x26bc80e34
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc80ed4
+  -id @16@0:8  imp=+0x26bc81058
+  -initWithCoder: @24@0:8@16  imp=+0x26bc80f58
+  -path @16@0:8  imp=+0x26bc8106c
+  -setId: v24@0:8@16  imp=+0x26bc81060
+  -setPath: v24@0:8@16  imp=+0x26bc81074
+  -setSystemColorName: v24@0:8@16  imp=+0x26bc81088
+  -systemColorName @16@0:8  imp=+0x26bc81080
+@class ICQTipIconURL : ICQTipIcon instanceSize=24
+  ivar +16 _imageURL @"ICQImageURL"
+  property imageURL (T@"ICQImageURL",&,N,V_imageURL)
+  +supportsSecureCoding B16@0:8  imp=+0x26bc8115c
+  -.cxx_destruct v16@0:8  imp=+0x26bc81228
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x26bc81120
+  -description @16@0:8  imp=+0x26bc810e4
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc81164
+  -imageURL @16@0:8  imp=+0x26bc81214
+  -initWithCoder: @24@0:8@16  imp=+0x26bc8117c
+  -setImageURL: v24@0:8@16  imp=+0x26bc8121c
+@class ICQTipInfo : NSObject <NSCopying, NSSecureCoding> instanceSize=64
+  ivar +8 _title @"NSString"
+  ivar +16 _subtitle @"NSString"
+  ivar +24 _anchor @"NSString"
+  ivar +32 _id @"NSString"
+  ivar +40 _dismissURL @"NSURL"
+  ivar +48 _actions @"NSArray"
+  ivar +56 _icon @"ICQTipIcon"
+  property title (T@"NSString",C,N,V_title)
+  property subtitle (T@"NSString",C,N,V_subtitle)
+  property anchor (T@"NSString",C,N,V_anchor)
+  property id (T@"NSString",C,N,V_id)
+  property dismissURL (T@"NSURL",&,N,V_dismissURL)
+  property actions (T@"NSArray",&,N,V_actions)
+  property icon (T@"ICQTipIcon",&,N,V_icon)
+  +supportsSecureCoding B16@0:8  imp=+0x26bc474d8
+  -.cxx_destruct v16@0:8  imp=+0x26bc47884
+  -_parseTipIcon: @24@0:8@16  imp=+0x26bc4724c
+  -actions @16@0:8  imp=+0x26bc4785c
+  -anchor @16@0:8  imp=+0x26bc47828
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x26bc47454
+  -description @16@0:8  imp=+0x26bc47400
+  -dismissURL @16@0:8  imp=+0x26bc47848
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc474e0
+  -icon @16@0:8  imp=+0x26bc47870
+  -id @16@0:8  imp=+0x26bc47838
+  -initFromDictionary: @24@0:8@16  imp=+0x26bc46a94
+  -initWithCoder: @24@0:8@16  imp=+0x26bc475b4
+  -setActions: v24@0:8@16  imp=+0x26bc47864
+  -setAnchor: v24@0:8@16  imp=+0x26bc47830
+  -setDismissURL: v24@0:8@16  imp=+0x26bc47850
+  -setIcon: v24@0:8@16  imp=+0x26bc47878
+  -setId: v24@0:8@16  imp=+0x26bc47840
+  -setSubtitle: v24@0:8@16  imp=+0x26bc47820
+  -setTitle: v24@0:8@16  imp=+0x26bc47810
+  -subtitle @16@0:8  imp=+0x26bc47818
+  -title @16@0:8  imp=+0x26bc47808
+@class ICQUnfairLock : NSObject instanceSize=16
+  ivar +8 _lock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  -init @16@0:8  imp=+0x26bc48adc
+  -synchronized: v24@0:8@?16  imp=+0x26bc48b1c
+@class ICQUpsellHeaderSignalProvider : NSObject instanceSize=48
+  ivar +8 familyReader 
+  +inFamilyHeaderName @16@0:8  imp=+0x26bca7d60
+  +under18HeaderName @16@0:8  imp=+0x26bca7dc8
+  -.cxx_destruct v16@0:8  imp=+0x26bca8c6c
+  -headerValuesWithCompletion: v24@0:8@?16  imp=+0x26bca8af0
+  -init @16@0:8  imp=+0x26bca7fe0
+@class ICQUserNotifications : NSObject instanceSize=8
+  +postUserNotificationWithIdentifier:title:subTitle:bodyText:url:replaceExisting:offerID:completion: v76@0:8@16@24@32@40@48B56@60@?68  imp=+0x26bc4ee34
+@class ICQiCloudDetailsPageInfo : NSObject <NSCopying, NSSecureCoding> instanceSize=24
+  ivar +8 _actionURL @"NSURL"
+  ivar +16 _actionType @"NSString"
+  property actionURL (T@"NSURL",&,N,V_actionURL)
+  property actionType (T@"NSString",C,N,V_actionType)
+  property icqLink (T@"ICQLink",R,N)
+  +supportsSecureCoding B16@0:8  imp=+0x26bc648bc
+  -.cxx_destruct v16@0:8  imp=+0x26bc64a24
+  -actionType @16@0:8  imp=+0x26bc64a14
+  -actionURL @16@0:8  imp=+0x26bc64a00
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x26bc647e4
+  -description @16@0:8  imp=+0x26bc647a8
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc648c4
+  -icqLink @16@0:8  imp=+0x26bc6482c
+  -initWithCoder: @24@0:8@16  imp=+0x26bc64934
+  -setActionType: v24@0:8@16  imp=+0x26bc64a1c
+  -setActionURL: v24@0:8@16  imp=+0x26bc64a08
+@class ICQiCloudPlusFeature : NSObject <NSCopying, NSSecureCoding> instanceSize=32
+  ivar +8 _label @"NSString"
+  ivar +16 _sublabel @"NSString"
+  ivar +24 _iconURL @"ICQImageURL"
+  property label (T@"NSString",C,N,V_label)
+  property sublabel (T@"NSString",C,N,V_sublabel)
+  property iconURL (T@"ICQImageURL",&,N,V_iconURL)
+  +supportsSecureCoding B16@0:8  imp=+0x26bc4b02c
+  -.cxx_destruct v16@0:8  imp=+0x26bc4b1f0
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x26bc4afd8
+  -description @16@0:8  imp=+0x26bc4af94
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc4b034
+  -iconURL @16@0:8  imp=+0x26bc4b1dc
+  -initWithCoder: @24@0:8@16  imp=+0x26bc4b0b8
+  -label @16@0:8  imp=+0x26bc4b1bc
+  -setIconURL: v24@0:8@16  imp=+0x26bc4b1e4
+  -setLabel: v24@0:8@16  imp=+0x26bc4b1c4
+  -setSublabel: v24@0:8@16  imp=+0x26bc4b1d4
+  -sublabel @16@0:8  imp=+0x26bc4b1cc
+@class ICQiCloudPlusSpecifierInfo : ICQSpecifierInfo <NSCopying, NSSecureCoding> instanceSize=80
+  ivar +72 _featureList @"NSArray"
+  property featureList (T@"NSArray",&,N,V_featureList)
+  +supportsSecureCoding B16@0:8  imp=+0x26bc4adc4
+  -.cxx_destruct v16@0:8  imp=+0x26bc4af88
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x26bc4ac5c
+  -description @16@0:8  imp=+0x26bc4abc4
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc4adcc
+  -featureList @16@0:8  imp=+0x26bc4af74
+  -initWithCoder: @24@0:8@16  imp=+0x26bc4ae48
+  -setFeatureList: v24@0:8@16  imp=+0x26bc4af7c
+@class QuotaAnalytics : NSObject instanceSize=8
+  +logDailyQuotaUsageAnalytics v16@0:8  imp=+0x26bc9cbf8
+  +logDailyQuotaUsageAnalyticsIgnoringThrottle: v20@0:8B16  imp=+0x26bc9cd64
+  -.cxx_destruct v16@0:8  imp=+0x26bc9ce70
+  -init @16@0:8  imp=+0x26bc9cdf8
+@class _ICQAccountManager : NSObject instanceSize=16
+  ivar +8 _accountStore @"ACAccountStore"
+  property accountStore (T@"ACAccountStore",R,V_accountStore)
+  -.cxx_destruct v16@0:8  imp=+0x26bc64b40
+  -accountStore @16@0:8  imp=+0x26bc64b34
+  -init @16@0:8  imp=+0x26bc64a68
+  -initWithAccountStore: @24@0:8@16  imp=+0x26bc64ab8
+@class _ICQAlertSpecification : NSObject instanceSize=88
+  ivar +8 _serverDict @"NSDictionary"
+  ivar +16 _disableLockScreenAlert B
+  ivar +24 _title @"NSString"
+  ivar +32 _message @"NSString"
+  ivar +40 _altMessage @"NSString"
+  ivar +48 _lockScreenTitle @"NSString"
+  ivar +56 _lockScreenMessage @"NSString"
+  ivar +64 _altLockScreenMessage @"NSString"
+  ivar +72 _defaultButtonIndex q
+  ivar +80 _linkForButtonIndex @"NSMutableDictionary"
+  property linkForButtonIndex (T@"NSMutableDictionary",&,V_linkForButtonIndex)
+  property serverDict (T@"NSDictionary",&,N)
+  property title (T@"NSString",&,N,V_title)
+  property message (T@"NSString",&,N,V_message)
+  property altMessage (T@"NSString",&,N,V_altMessage)
+  property lockScreenTitle (T@"NSString",&,N,V_lockScreenTitle)
+  property lockScreenMessage (T@"NSString",&,N,V_lockScreenMessage)
+  property altLockScreenMessage (T@"NSString",&,N,V_altLockScreenMessage)
+  property disableLockScreenAlert (TB,N,V_disableLockScreenAlert)
+  property defaultButtonIndex (Tq,N,V_defaultButtonIndex)
+  -.cxx_destruct v16@0:8  imp=+0x26bc599cc
+  -_setLinks:defaultIndex: v32@0:8@16Q24  imp=+0x26bc593ac
+  -altLockScreenMessage @16@0:8  imp=+0x26bc59984
+  -altMessage @16@0:8  imp=+0x26bc59948
+  -defaultButtonIndex q16@0:8  imp=+0x26bc599a8
+  -disableLockScreenAlert B16@0:8  imp=+0x26bc59998
+  -init @16@0:8  imp=+0x26bc5914c
+  -initWithServerDictionary: @24@0:8@16  imp=+0x26bc591b4
+  -linkForButtonIndex @16@0:8  imp=+0x26bc599b8
+  -linkForButtonIndex: @24@0:8q16  imp=+0x26bc59208
+  -lockScreenMessage @16@0:8  imp=+0x26bc59970
+  -lockScreenTitle @16@0:8  imp=+0x26bc5995c
+  -message @16@0:8  imp=+0x26bc59934
+  -serverDict @16@0:8  imp=+0x26bc594b0
+  -setAltLockScreenMessage: v24@0:8@16  imp=+0x26bc5998c
+  -setAltMessage: v24@0:8@16  imp=+0x26bc59950
+  -setDefaultButtonIndex: v24@0:8q16  imp=+0x26bc599b0
+  -setDisableLockScreenAlert: v20@0:8B16  imp=+0x26bc599a0
+  -setLink:forButtonIndex: v32@0:8@16q24  imp=+0x26bc5928c
+  -setLink:forButtonIndex:defaultButton: v36@0:8@16q24B32  imp=+0x26bc5933c
+  -setLinkForButtonIndex: v24@0:8@16  imp=+0x26bc599c4
+  -setLockScreenMessage: v24@0:8@16  imp=+0x26bc59978
+  -setLockScreenTitle: v24@0:8@16  imp=+0x26bc59964
+  -setMessage: v24@0:8@16  imp=+0x26bc5993c
+  -setServerDict: v24@0:8@16  imp=+0x26bc594b8
+  -setTitle: v24@0:8@16  imp=+0x26bc59928
+  -title @16@0:8  imp=+0x26bc59920
+@class _ICQAppLaunchLink : NSObject <NSSecureCoding> instanceSize=32
+  ivar +8 _appId @"NSString"
+  ivar +16 _link @"ICQLink"
+  ivar +24 _minDisplayIntervalDays @"NSNumber"
+  property appId (T@"NSString",R,C,N,V_appId)
+  property link (T@"ICQLink",R,N,V_link)
+  property minDisplayIntervalDays (T@"NSNumber",R,N,V_minDisplayIntervalDays)
+  property isEligible (TB,R,N)
+  +supportsSecureCoding B16@0:8  imp=+0x26bc68424
+  -.cxx_destruct v16@0:8  imp=+0x26bc685ec
+  -appId @16@0:8  imp=+0x26bc685d4
+  -cacheLiftUIContentIfNeeded v16@0:8  imp=+0x26bc68338
+  -encodeWithCoder: v24@0:8@16  imp=+0x26bc6842c
+  -initWithCoder: @24@0:8@16  imp=+0x26bc684f8
+  -initWithServerDictionary: @24@0:8@16  imp=+0x26bc67fb0
+  -isEligible B16@0:8  imp=+0x26bc680f8
+  -link @16@0:8  imp=+0x26bc685dc
+  -minDisplayIntervalDays @16@0:8  imp=+0x26bc685e4
+@class _ICQBannerSpecification : NSObject instanceSize=128
+  ivar +8 _serverDict @"NSDictionary"
+  ivar +16 _isDetailBannerInfoAvailable B
+  ivar +17 _placeholderExists B
+  ivar +24 _messageTemplates @"NSDictionary"
+  ivar +32 _titleTemplates @"NSDictionary"
+  ivar +40 _conciseTitleTemplates @"NSDictionary"
+  ivar +48 _iconDetails @"NSDictionary"
+  ivar +56 _linksFormat @"NSString"
+  ivar +64 _links @"NSArray"
+  ivar +72 _dismissLink @"ICQLink"
+  ivar +80 _serverUIURL @"NSURL"
+  ivar +88 _bannerSource @"NSString"
+  ivar +96 _iconSpecification @"ICQIconSpecification"
+  ivar +104 _symbolSpecification @"ICQIconSpecification"
+  ivar +112 _supressUntil @"NSNumber"
+  ivar +120 _decayUntil @"NSNumber"
+  property bannerSource (T@"NSString",C,N,V_bannerSource)
+  property iconSpecification (T@"ICQIconSpecification",&,N,V_iconSpecification)
+  property messageTemplates (T@"NSDictionary",R,N,V_messageTemplates)
+  property titleTemplates (T@"NSDictionary",R,N,V_titleTemplates)
+  property conciseTitleTemplates (T@"NSDictionary",R,N,V_conciseTitleTemplates)
+  property iconDetails (T@"NSDictionary",R,N,V_iconDetails)
+  property linksFormat (T@"NSString",&,N,V_linksFormat)
+  property links (T@"NSArray",&,N,V_links)
+  property dismissLink (T@"ICQLink",&,N,V_dismissLink)
+  property isDetailBannerInfoAvailable (TB,R,N,V_isDetailBannerInfoAvailable)
+  property placeholderExists (TB,R,N,V_placeholderExists)
+  property serverUIURL (T@"NSURL",&,N,V_serverUIURL)
+  property dynamicUIRouteURL (T@"NSURL",R,N)
+  property purchaseAttribution (T@"NSString",R,N)
+  property reason (T@"NSString",R,N)
+  property symbolSpecification (T@"ICQIconSpecification",R,N,V_symbolSpecification)
+  property supressUntil (T@"NSNumber",&,N,V_supressUntil)
+  property decayUntil (T@"NSNumber",&,N,V_decayUntil)
+  -.cxx_destruct v16@0:8  imp=+0x26bc7126c
+  -_bannerSpecificationParams @16@0:8  imp=+0x26bc70a4c
+  -_setDisplayConfigurations: v24@0:8@16  imp=+0x26bc708e4
+  -bannerSource @16@0:8  imp=+0x26bc71218
+  -conciseTitleTemplates @16@0:8  imp=+0x26bc711b0
+  -conciseTitleWithKey: @24@0:8@16  imp=+0x26bc70f54
+  -decayUntil @16@0:8  imp=+0x26bc71258
+  -dismissLink @16@0:8  imp=+0x26bc711e8
+  -dynamicUIRouteURL @16@0:8  imp=+0x26bc70c00
+  -iconDetails @16@0:8  imp=+0x26bc711b8
+  -iconPath @16@0:8  imp=+0x26bc710dc
+  -iconSpecification @16@0:8  imp=+0x26bc71228
+  -initWithDetailBannerInfo:source: @32@0:8@16@24  imp=+0x26bc701dc
+  -initWithServerDictionary: @24@0:8@16  imp=+0x26bc70138
+  -isDetailBannerInfoAvailable B16@0:8  imp=+0x26bc711fc
+  -links @16@0:8  imp=+0x26bc711d4
+  -linksFormat @16@0:8  imp=+0x26bc711c0
+  -messageTemplates @16@0:8  imp=+0x26bc711a0
+  -messageWithKey: @24@0:8@16  imp=+0x26bc71018
+  -placeholderExists B16@0:8  imp=+0x26bc71204
+  -purchaseAttribution @16@0:8  imp=+0x26bc70d58
+  -reason @16@0:8  imp=+0x26bc71134
+  -serverUIURL @16@0:8  imp=+0x26bc70aa8
+  -setBannerSource: v24@0:8@16  imp=+0x26bc71220
+  -setDecayUntil: v24@0:8@16  imp=+0x26bc71260
+  -setDismissLink: v24@0:8@16  imp=+0x26bc711f0
+  -setIconSpecification: v24@0:8@16  imp=+0x26bc71230
+  -setLinks: v24@0:8@16  imp=+0x26bc711dc
+  -setLinksFormat: v24@0:8@16  imp=+0x26bc711c8
+  -setMessageWithServerMessage: v24@0:8@16  imp=+0x26bc7075c
+  -setServerUIURL: v24@0:8@16  imp=+0x26bc7120c
+  -setSupressUntil: v24@0:8@16  imp=+0x26bc7124c
+  -supressUntil @16@0:8  imp=+0x26bc71244
+  -symbolSpecification @16@0:8  imp=+0x26bc7123c
+  -titleTemplates @16@0:8  imp=+0x26bc711a8
+  -titleWithKey: @24@0:8@16  imp=+0x26bc70e90
+@class _ICQButtonSpecification : NSObject instanceSize=56
+  ivar +8 _serverDict @"NSDictionary"
+  ivar +16 _buttonLink @"ICQLink"
+  ivar +24 _buttonFormat @"NSString"
+  ivar +32 _textFormat @"NSString"
+  ivar +40 _linkFormat @"NSString"
+  ivar +48 _linkForBundleIdentifier @"NSDictionary"
+  property buttonFormat (T@"NSString",R,N,V_buttonFormat)
+  property buttonLink (T@"ICQLink",R,N)
+  property textFormat (T@"NSString",R,N,V_textFormat)
+  property linkFormat (T@"NSString",R,N,V_linkFormat)
+  property linkForBundleIdentifier (T@"NSDictionary",&,N,V_linkForBundleIdentifier)
+  -.cxx_destruct v16@0:8  imp=+0x26bc7c6b8
+  -buttonFormat @16@0:8  imp=+0x26bc7c68c
+  -buttonLink @16@0:8  imp=+0x26bc7c560
+  -initWithServerDictionary: @24@0:8@16  imp=+0x26bc7c3b0
+  -linkForBundleIdentifier @16@0:8  imp=+0x26bc7c6a4
+  -linkForBundleIdentifier: @24@0:8@16  imp=+0x26bc7c5f8
+  -linkFormat @16@0:8  imp=+0x26bc7c69c
+  -setLinkForBundleIdentifier: v24@0:8@16  imp=+0x26bc7c6ac
+  -textFormat @16@0:8  imp=+0x26bc7c694
+@class _ICQDetailFollowupSpecification : _ICQFollowupSpecification instanceSize=216
+  ivar +152 _lockScreenInfo @"NSDictionary"
+  ivar +160 _followUpInfo @"NSDictionary"
+  ivar +168 _mesgTemplates @"NSDictionary"
+  ivar +176 _titleTemplates @"NSDictionary"
+  ivar +184 _subTitleTemplates @"NSDictionary"
+  ivar +192 _followupMesgTemplates @"NSDictionary"
+  ivar +200 _followupTitleTemplates @"NSDictionary"
+  ivar +208 _bundleId @"NSString"
+  property lockScreenInfo (T@"NSDictionary",&,N,V_lockScreenInfo)
+  property followUpInfo (T@"NSDictionary",&,N,V_followUpInfo)
+  property mesgTemplates (T@"NSDictionary",&,N,V_mesgTemplates)
+  property titleTemplates (T@"NSDictionary",&,N,V_titleTemplates)
+  property subTitleTemplates (T@"NSDictionary",&,N,V_subTitleTemplates)
+  property followupMesgTemplates (T@"NSDictionary",&,N,V_followupMesgTemplates)
+  property followupTitleTemplates (T@"NSDictionary",&,N,V_followupTitleTemplates)
+  property bundleId (T@"NSString",&,N,V_bundleId)
+  +replaceWordsIn:with: @32@0:8@16@24  imp=+0x26bc65644
+  -.cxx_destruct v16@0:8  imp=+0x26bc661a4
+  -bundleId @16@0:8  imp=+0x26bc6617c
+  -followUpInfo @16@0:8  imp=+0x26bc660a0
+  -followupMesgTemplates @16@0:8  imp=+0x26bc6612c
+  -followupTitleTemplates @16@0:8  imp=+0x26bc66154
+  -initWithServerDictionary: @24@0:8@16  imp=+0x26bc64b4c
+  -lockScreenInfo @16@0:8  imp=+0x26bc6608c
+  -mesgTemplates @16@0:8  imp=+0x26bc660b4
+  -mesgWithKey: @24@0:8@16  imp=+0x26bc65900
+  -postFollowupWithController:replaceExisting:completion: v36@0:8@16B24@?28  imp=+0x26bc659b0
+  -setBundleId: v24@0:8@16  imp=+0x26bc66190
+  -setFollowUpInfo: v24@0:8@16  imp=+0x26bc652e4
+  -setFollowupMesgTemplates: v24@0:8@16  imp=+0x26bc66140
+  -setFollowupTitleTemplates: v24@0:8@16  imp=+0x26bc66168
+  -setLockScreenInfo: v24@0:8@16  imp=+0x26bc64cac
+  -setMesgTemplates: v24@0:8@16  imp=+0x26bc660c8
+  -setSubTitleTemplates: v24@0:8@16  imp=+0x26bc66118
+  -setTitleTemplates: v24@0:8@16  imp=+0x26bc660f0
+  -subTitleTemplates @16@0:8  imp=+0x26bc66104
+  -subTitleWithKey: @24@0:8@16  imp=+0x26bc65850
+  -titleTemplates @16@0:8  imp=+0x26bc660dc
+  -titleWithKey: @24@0:8@16  imp=+0x26bc657a0
+@class _ICQDeviceInfo : NSObject instanceSize=32
+  ivar +8 _key @"NSString"
+  ivar +16 _wordsToReplace @"NSDictionary"
+  ivar +24 _bundleId @"NSString"
+  property key (T@"NSString",&,N,V_key)
+  property wordsToReplace (T@"NSDictionary",&,N,V_wordsToReplace)
+  property bundleId (T@"NSString",&,N,V_bundleId)
+  +defaultDeviceInfoWithBundleId: @24@0:8@16  imp=+0x26bc72434
+  +getInfoWithBundleId: @24@0:8@16  imp=+0x26bc724c8
+  +getInfoWithBundleId:completion: v32@0:8@16@?24  imp=+0x26bc72078
+  +templateKeyForItemCount: @24@0:8@16  imp=+0x26bc71f3c
+  +templateKeyForPhotos:video: @32@0:8Q16Q24  imp=+0x26bc71e90
+  +wordsToReplaceForItemCount: @24@0:8@16  imp=+0x26bc71fb8
+  -.cxx_destruct v16@0:8  imp=+0x26bc727d4
+  -bundleId @16@0:8  imp=+0x26bc727c0
+  -key @16@0:8  imp=+0x26bc72798
+  -setBundleId: v24@0:8@16  imp=+0x26bc727c8
+  -setKey: v24@0:8@16  imp=+0x26bc727a0
+  -setWordsToReplace: v24@0:8@16  imp=+0x26bc727b4
+  -wordsToReplace @16@0:8  imp=+0x26bc727ac
+@class _ICQDynamicUISpecification : NSObject instanceSize=32
+  ivar +8 _routeURL @"NSURL"
+  ivar +16 _pageContentsURL @"NSURL"
+  ivar +24 _attributionSuffix @"NSString"
+  property routeURL (T@"NSURL",R,N,V_routeURL)
+  property pageContentsURL (T@"NSURL",R,N,V_pageContentsURL)
+  property attributionSuffix (T@"NSString",R,N,V_attributionSuffix)
+  -.cxx_destruct v16@0:8  imp=+0x26bc365a4
+  -attributionSuffix @16@0:8  imp=+0x26bc3659c
+  -initWithRouteURL:pageContentsURL:attributionSuffix: @40@0:8@16@24@32  imp=+0x26bc364b8
+  -pageContentsURL @16@0:8  imp=+0x26bc36594
+  -routeURL @16@0:8  imp=+0x26bc3658c
+@class _ICQFlowSpecification : NSObject instanceSize=32
+  ivar +8 _startPage @"_ICQPageSpecification"
+  ivar +16 _pagesByIdentifier @"NSDictionary"
+  ivar +24 _startAlert @"_ICQAlertSpecification"
+  property startPage (T@"_ICQPageSpecification",R,N,V_startPage)
+  property pagesByIdentifier (T@"NSDictionary",R,N,V_pagesByIdentifier)
+  property startAlert (T@"_ICQAlertSpecification",&,N,V_startAlert)
+  -.cxx_destruct v16@0:8  imp=+0x26bc58554
+  -initWithPages: @24@0:8@16  imp=+0x26bc58370
+  -pagesByIdentifier @16@0:8  imp=+0x26bc58538
+  -setStartAlert: v24@0:8@16  imp=+0x26bc58548
+  -startAlert @16@0:8  imp=+0x26bc58540
+  -startPage @16@0:8  imp=+0x26bc58530
+@class _ICQFollowupSpecification : NSObject instanceSize=152
+  ivar +8 _serverDict @"NSDictionary"
+  ivar +16 _forAccountGroup B
+  ivar +17 _zeroAction B
+  ivar +18 _badgeApp B
+  ivar +19 _premiumOffer B
+  ivar +20 _eventOffer B
+  ivar +24 _title @"NSString"
+  ivar +32 _message @"NSString"
+  ivar +40 _altMessage @"NSString"
+  ivar +48 _links @"NSArray"
+  ivar +56 _noteTitle @"NSString"
+  ivar +64 _noteSubTitle @"NSString"
+  ivar +72 _noteMessage @"NSString"
+  ivar +80 _altNoteMessage @"NSString"
+  ivar +88 _noteActivateLink @"ICQLink"
+  ivar +96 _noteClearLink @"ICQLink"
+  ivar +104 _followupDisplayStyle q
+  ivar +112 _sfSymbolID @"NSString"
+  ivar +120 _sfSymbolBundlePath @"NSString"
+  ivar +128 _notifyingAppId @"NSString"
+  ivar +136 _groupIdentifier @"NSString"
+  ivar +144 _offerId @"NSString"
+  property premiumOffer (TB,N,V_premiumOffer)
+  property eventOffer (TB,N,V_eventOffer)
+  property offerId (T@"NSString",C,N,V_offerId)
+  property serverDict (T@"NSDictionary",&,N)
+  property title (T@"NSString",C,N,V_title)
+  property message (T@"NSString",C,N,V_message)
+  property altMessage (T@"NSString",C,N,V_altMessage)
+  property links (T@"NSArray",&,N,V_links)
+  property noteTitle (T@"NSString",C,N,V_noteTitle)
+  property noteSubTitle (T@"NSString",C,N,V_noteSubTitle)
+  property noteMessage (T@"NSString",C,N,V_noteMessage)
+  property altNoteMessage (T@"NSString",C,N,V_altNoteMessage)
+  property noteActivateLink (T@"ICQLink",&,N,V_noteActivateLink)
+  property noteClearLink (T@"ICQLink",&,N,V_noteClearLink)
+  property forAccountGroup (TB,N,GisForAccountGroup,V_forAccountGroup)
+  property zeroAction (TB,N,GisZeroAction,V_zeroAction)
+  property badgeApp (TB,N,V_badgeApp)
+  property followupDisplayStyle (Tq,N,V_followupDisplayStyle)
+  property sfSymbolID (T@"NSString",C,N,V_sfSymbolID)
+  property sfSymbolBundlePath (T@"NSString",C,N,V_sfSymbolBundlePath)
+  property serverUIURL (T@"NSURL",R,N)
+  property dynamicUIRouteURL (T@"NSURL",R,N)
+  property purchaseAttribution (T@"NSString",R,N)
+  property notifyingAppId (T@"NSString",C,N,V_notifyingAppId)
+  property groupIdentifier (T@"NSString",C,N,V_groupIdentifier)
+  +clearFollowupWithController:offerType:completion: v40@0:8@16q24@?32  imp=+0x26bc603cc
+  +clearLegacyFollowupWithController: v24@0:8@16  imp=+0x26bc601a8
+  +clearNotificationWithController:offerType:completion: v40@0:8@16q24@?32  imp=+0x26bc605b4
+  +sharedFollowUpController @16@0:8  imp=+0x26bc60524
+  -.cxx_destruct v16@0:8  imp=+0x26bc615ec
+  -_buildFollowupItem @16@0:8  imp=+0x26bc5fa98
+  -_postFollowupWithController:completion: v32@0:8@16@?24  imp=+0x26bc5f870
+  -addNotifyingAppIdForItem: v24@0:8@16  imp=+0x26bc613ac
+  -altMessage @16@0:8  imp=+0x26bc614b0
+  -altNoteMessage @16@0:8  imp=+0x26bc61504
+  -badgeApp B16@0:8  imp=+0x26bc6155c
+  -dynamicUIRouteURL @16@0:8  imp=+0x26bc5f0a0
+  -eventOffer B16@0:8  imp=+0x26bc615cc
+  -followupActionForLink: @24@0:8@16  imp=+0x26bc5edb4
+  -followupActionForLink:needsFlow: @28@0:8@16B24  imp=+0x26bc5edbc
+  -followupDisplayStyle q16@0:8  imp=+0x26bc6156c
+  -groupIdentifier @16@0:8  imp=+0x26bc615ac
+  -identifierPrefix @16@0:8  imp=+0x26bc5ed4c
+  -init @16@0:8  imp=+0x26bc5ebc4
+  -initWithServerDictionary: @24@0:8@16  imp=+0x26bc5ec28
+  -isForAccountGroup B16@0:8  imp=+0x26bc6153c
+  -isZeroAction B16@0:8  imp=+0x26bc6154c
+  -links @16@0:8  imp=+0x26bc614c0
+  -message @16@0:8  imp=+0x26bc614a0
+  -noteActivateLink @16@0:8  imp=+0x26bc61514
+  -noteClearLink @16@0:8  imp=+0x26bc61528
+  -noteMessage @16@0:8  imp=+0x26bc614f4
+  -noteSubTitle @16@0:8  imp=+0x26bc614e4
+  -noteTitle @16@0:8  imp=+0x26bc614d4
+  -notifyingAppId @16@0:8  imp=+0x26bc6159c
+  -offerId @16@0:8  imp=+0x26bc615dc
+  -postFollowupWithController: v24@0:8@16  imp=+0x26bc5f308
+  -postFollowupWithController:replaceExisting:completion: v36@0:8@16B24@?28  imp=+0x26bc5f4a8
+  -premiumOffer B16@0:8  imp=+0x26bc615bc
+  -primaryAction q16@0:8  imp=+0x26bc61234
+  -purchaseAttribution @16@0:8  imp=+0x26bc5f1d4
+  -serverDict @16@0:8  imp=+0x26bc60838
+  -serverUIURL @16@0:8  imp=+0x26bc5ef6c
+  -setAltMessage: v24@0:8@16  imp=+0x26bc614b8
+  -setAltNoteMessage: v24@0:8@16  imp=+0x26bc6150c
+  -setBadgeApp: v20@0:8B16  imp=+0x26bc61564
+  -setEventOffer: v20@0:8B16  imp=+0x26bc615d4
+  -setFollowupDisplayStyle: v24@0:8q16  imp=+0x26bc61574
+  -setForAccountGroup: v20@0:8B16  imp=+0x26bc61544
+  -setGroupIdentifier: v24@0:8@16  imp=+0x26bc615b4
+  -setLinks: v24@0:8@16  imp=+0x26bc614c8
+  -setMessage: v24@0:8@16  imp=+0x26bc614a8
+  -setNoteActivateLink: v24@0:8@16  imp=+0x26bc6151c
+  -setNoteClearLink: v24@0:8@16  imp=+0x26bc61530
+  -setNoteMessage: v24@0:8@16  imp=+0x26bc614fc
+  -setNoteSubTitle: v24@0:8@16  imp=+0x26bc614ec
+  -setNoteTitle: v24@0:8@16  imp=+0x26bc614dc
+  -setNotifyingAppId: v24@0:8@16  imp=+0x26bc615a4
+  -setOfferId: v24@0:8@16  imp=+0x26bc615e4
+  -setPremiumOffer: v20@0:8B16  imp=+0x26bc615c4
+  -setServerDict: v24@0:8@16  imp=+0x26bc60840
+  -setSfSymbolBundlePath: v24@0:8@16  imp=+0x26bc61594
+  -setSfSymbolID: v24@0:8@16  imp=+0x26bc61584
+  -setTitle: v24@0:8@16  imp=+0x26bc61498
+  -setZeroAction: v20@0:8B16  imp=+0x26bc61554
+  -sfSymbolBundlePath @16@0:8  imp=+0x26bc6158c
+  -sfSymbolID @16@0:8  imp=+0x26bc6157c
+  -title @16@0:8  imp=+0x26bc61490
+@class _ICQHelperFunctions : NSObject instanceSize=8
+  +_checkOptions:forKey: B32@0:8@16@24  imp=+0x26bc35334
+  +_darwinNotificationNameForRequestType: @24@0:8q16  imp=+0x26bc355bc
+  +_getOfferDescriptionFromRequestType: @24@0:8q16  imp=+0x26bc35598
+  +_getOfferRequestTypeFromOptions:bundleId:isBuddy: q36@0:8@16@24B32  imp=+0x26bc353d8
+  +_offerRequestTypeForStub: q24@0:8@16  imp=+0x26bc354e8
+  +_remoteBackupSizeOperationQueue @16@0:8  imp=+0x26bc35f64
+  +_requestedDefaultOfferInOptions: B24@0:8@16  imp=+0x26bc35388
+  +_requestedEventOfferInOptions: B24@0:8@16  imp=+0x26bc35398
+  +_requestedFetchOffersInOptions: B24@0:8@16  imp=+0x26bc353b8
+  +_requestedPremiumOfferInOptions: B24@0:8@16  imp=+0x26bc353a8
+  +appLaunchLinkTrackerSetLastShownDate:forBundleID: v32@0:8@16@24  imp=+0x26bc361b8
+  +backupRestoreCompletedInOptions: B24@0:8@16  imp=+0x26bc353c8
+  +base64EncodeString: @24@0:8@16  imp=+0x26bc3527c
+  +bubbleBannerTrackLastDismissed:forReason: v32@0:8@16@24  imp=+0x26bc36240
+  +defaultKeyExists: B24@0:8@16  imp=+0x26bc34df4
+  +defaultStringValueForKey: @24@0:8@16  imp=+0x26bc34e6c
+  +defaultValueForKey: @24@0:8@16  imp=+0x26bc34e38
+  +dictionaryForKey:from: @32@0:8@16@24  imp=+0x26bc35ffc
+  +findPlaceholdersInString: @24@0:8@16  imp=+0x26bc348c0
+  +followUpGroupIdentifierForString: @24@0:8@16  imp=+0x26bc360f4
+  +followUpIdentifierPrefixForRequestType: @24@0:8q16  imp=+0x26bc3556c
+  +getOriginalPhotosSizeWithCompletion: v24@0:8@?16  imp=+0x26bc356fc
+  +getStringFromNumber: @24@0:8@16  imp=+0x26bc351b4
+  +isBackupEnabledForAccount:accountStore: B32@0:8@16@24  imp=+0x26bc355e0
+  +isICPLEnabledForAccount: B24@0:8@16  imp=+0x26bc3569c
+  +isPhotosLibraryIncludedInBackupForAccount: B24@0:8@16  imp=+0x26bc356b0
+  +isServerMockingEnabled B16@0:8  imp=+0x26bc351a0
+  +isSolariumEnabled B16@0:8  imp=+0x26bc364a4
+  +lastUpdatedForReason:decayUntil: @32@0:8@16d24  imp=+0x26bc363dc
+  +numberForKey:from: @32@0:8@16@24  imp=+0x26bc36078
+  +parseTemplates: @24@0:8@16  imp=+0x26bc34f68
+  +remoteBackupSizeForAccount:timeoutInSeconds:completion: v40@0:8@16d24@?32  imp=+0x26bc35b90
+  +replaceWordsIn:with: @32@0:8@16@24  imp=+0x26bc346cc
+  +setUserDefaultsBool:forKey: v28@0:8B16@20  imp=+0x26bc34a7c
+  +setUserDefaultsObject:forKey: v32@0:8@16@24  imp=+0x26bc34b58
+  +shouldDisplay:forReason:dismissedInSession:supressUntil: B44@0:8@16@24B32d36  imp=+0x26bc362fc
+  +standardDateFormat: @24@0:8Q16  imp=+0x26bc35130
+  +stringFromTemplates:key: @32@0:8@16@24  imp=+0x26bc34828
+  +usedCapacityForVolume: @24@0:8@16  imp=+0x26bc35858
+  +userDefaultsBoolValueForKey: B24@0:8@16  imp=+0x26bc34af0
+  +userDefaultsDictionaryForKey: @24@0:8@16  imp=+0x26bc34c5c
+  +userDefaultsObjectForKey: @24@0:8@16  imp=+0x26bc34be0
+  +userDefaultsStringForKey: @24@0:8@16  imp=+0x26bc34d28
+@class _ICQOpportunityBubbleImageDetails : NSObject instanceSize=32
+  ivar +8 _urlFor3x @"NSString"
+  ivar +16 _urlFor2x @"NSString"
+  ivar +24 _urlFor1x @"NSString"
+  property urlFor3x (T@"NSString",C,N,V_urlFor3x)
+  property urlFor2x (T@"NSString",C,N,V_urlFor2x)
+  property urlFor1x (T@"NSString",C,N,V_urlFor1x)
+  -.cxx_destruct v16@0:8  imp=+0x26bc618e4
+  -getURLForScale: @24@0:8q16  imp=+0x26bc617c8
+  -initWithServerDictionary: @24@0:8@16  imp=+0x26bc616d8
+  -setUrlFor1x: v24@0:8@16  imp=+0x26bc618dc
+  -setUrlFor2x: v24@0:8@16  imp=+0x26bc618cc
+  -setUrlFor3x: v24@0:8@16  imp=+0x26bc618bc
+  -urlFor1x @16@0:8  imp=+0x26bc618d4
+  -urlFor2x @16@0:8  imp=+0x26bc618c4
+  -urlFor3x @16@0:8  imp=+0x26bc618b4
+@class _ICQOpportunityBubbleReportingSpecification : NSObject instanceSize=40
+  ivar +8 _displayRuleServerAlwaysShow B
+  ivar +16 _dimissServerParam @"NSDictionary"
+  ivar +24 _displayRuleType Q
+  ivar +32 _dismissRuleType Q
+  property dimissServerParam (T@"NSDictionary",&,N,V_dimissServerParam)
+  property displayRuleType (TQ,N,V_displayRuleType)
+  property dismissRuleType (TQ,N,V_dismissRuleType)
+  property displayRuleServerAlwaysShow (TB,N,V_displayRuleServerAlwaysShow)
+  -.cxx_destruct v16@0:8  imp=+0x26bc63c34
+  -_getDismissReportingRuleFromServerDict: @24@0:8@16  imp=+0x26bc63a9c
+  -_setDisplayRuleFromServerDict: v24@0:8@16  imp=+0x26bc639d0
+  -dimissServerParam @16@0:8  imp=+0x26bc63bf0
+  -dismissRuleType Q16@0:8  imp=+0x26bc63c14
+  -displayRuleServerAlwaysShow B16@0:8  imp=+0x26bc63c24
+  -displayRuleType Q16@0:8  imp=+0x26bc63c04
+  -initWithServerDictionary: @24@0:8@16  imp=+0x26bc63940
+  -setDimissServerParam: v24@0:8@16  imp=+0x26bc63bf8
+  -setDismissRuleType: v24@0:8Q16  imp=+0x26bc63c1c
+  -setDisplayRuleServerAlwaysShow: v20@0:8B16  imp=+0x26bc63c2c
+  -setDisplayRuleType: v24@0:8Q16  imp=+0x26bc63c0c
+@class _ICQPageSpecification : NSObject instanceSize=40
+  ivar +8 _hasCancelButtonForBack B
+  ivar +16 _pageIdentifier @"NSString"
+  ivar +24 _pageTitle @"NSString"
+  ivar +32 _pageClassIdentifier @"NSString"
+  property pageIdentifier (T@"NSString",&,N,V_pageIdentifier)
+  property pageTitle (T@"NSString",&,N,V_pageTitle)
+  property hasCancelButtonForBack (TB,N,V_hasCancelButtonForBack)
+  property pageClassIdentifier (T@"NSString",&,N,V_pageClassIdentifier)
+  -.cxx_destruct v16@0:8  imp=+0x26bc7c91c
+  -copyWithBindings: @24@0:8@16  imp=+0x26bc7c864
+  -debugDescription @16@0:8  imp=+0x26bc7c72c
+  -hasCancelButtonForBack B16@0:8  imp=+0x26bc7c900
+  -pageClassIdentifier @16@0:8  imp=+0x26bc7c83c
+  -pageIdentifier @16@0:8  imp=+0x26bc7c8d8
+  -pageTitle @16@0:8  imp=+0x26bc7c8ec
+  -setHasCancelButtonForBack: v20@0:8B16  imp=+0x26bc7c908
+  -setPageClassIdentifier: v24@0:8@16  imp=+0x26bc7c910
+  -setPageIdentifier: v24@0:8@16  imp=+0x26bc7c8e0
+  -setPageTitle: v24@0:8@16  imp=+0x26bc7c8f4
+@class _ICQPhotosInfo : NSObject instanceSize=24
+  ivar +8 _photoCount Q
+  ivar +16 _videoCount Q
+  property photoCount (TQ,N,V_photoCount)
+  property videoCount (TQ,N,V_videoCount)
+  +_photosShutdownQueue @16@0:8  imp=+0x26bc73694
+  +_shutDownPhotoLibrary v16@0:8  imp=+0x26bc73fe4
+  +getInfoWithCompletion: v24@0:8@?16  imp=+0x26bc737e0
+  +hasPhotoBulkCreation B16@0:8  imp=+0x26bc73c14
+  +isPhotosSyncOverQuota B16@0:8  imp=+0x26bc73c10
+  +mockCount: @24@0:8@16  imp=+0x26bc73740
+  -photoCount Q16@0:8  imp=+0x26bc73fe8
+  -setPhotoCount: v24@0:8Q16  imp=+0x26bc73ff0
+  -setVideoCount: v24@0:8Q16  imp=+0x26bc74000
+  -videoCount Q16@0:8  imp=+0x26bc73ff8
+@class _ICQUpgradeFlowSpecification : _ICQFlowSpecification instanceSize=56
+  ivar +32 _serverDict @"NSDictionary"
+  ivar +40 _needsWiFi B
+  ivar +48 _offerType q
+  property offerType (Tq,N,V_offerType)
+  property needsWiFi (TB,N,V_needsWiFi)
+  property serverDict (T@"NSDictionary",R,N)
+  +_upgradePageIdentifierForError: @24@0:8@16  imp=+0x26bc66698
+  +sanitizedUpgradeFlowServerDict: @24@0:8@16  imp=+0x26bc667b4
+  -.cxx_destruct v16@0:8  imp=+0x26bc66ffc
+  -initWithServerDictionary: @24@0:8@16  imp=+0x26bc66ce8
+  -needsWiFi B16@0:8  imp=+0x26bc66fd4
+  -offerType q16@0:8  imp=+0x26bc66fac
+  -serverDict @16@0:8  imp=+0x26bc66f98
+  -setNeedsWiFi: v20@0:8B16  imp=+0x26bc66fe8
+  -setOfferType: v24@0:8q16  imp=+0x26bc66fc0
+  -upgradeFailurePage @16@0:8  imp=+0x26bc6631c
+  -upgradeFailurePageForNetwork @16@0:8  imp=+0x26bc664cc
+  -upgradePageForError: @24@0:8@16  imp=+0x26bc66594
+  -upgradePageForSuccess: @20@0:8B16  imp=+0x26bc663c8
+  -upgradeSuccessPage @16@0:8  imp=+0x26bc66270
+  -upgradeSuccessPageForWiFi @16@0:8  imp=+0x26bc66404
+@class _ICQUpgradeOfferPageSpecification : _ICQPageSpecification instanceSize=152
+  ivar +40 _serverDict @"NSDictionary"
+  ivar +48 _iconBundleIdentifier @"NSString"
+  ivar +56 _title @"NSString"
+  ivar +64 _message @"NSString"
+  ivar +72 _messageLinks @"NSArray"
+  ivar +80 _altMessage @"NSString"
+  ivar +88 _altMessageLinks @"NSArray"
+  ivar +96 _purchaseLink @"ICQLink"
+  ivar +104 _purchase2Link @"ICQLink"
+  ivar +112 _bottomLink @"ICQLink"
+  ivar +120 _fineprintFormat @"NSString"
+  ivar +128 _fineprintLinks @"NSArray"
+  ivar +136 _purchase2LinkVisibleKey @"NSString"
+  ivar +144 _bottomLinkVisibleKey @"NSString"
+  property serverDict (T@"NSDictionary",R,N,V_serverDict)
+  property iconBundleIdentifier (T@"NSString",&,N,V_iconBundleIdentifier)
+  property title (T@"NSString",&,N,V_title)
+  property message (T@"NSString",&,N,V_message)
+  property messageLinks (T@"NSArray",&,N,V_messageLinks)
+  property altMessage (T@"NSString",&,N,V_altMessage)
+  property altMessageLinks (T@"NSArray",&,N,V_altMessageLinks)
+  property purchaseLink (T@"ICQLink",&,N,V_purchaseLink)
+  property purchase2Link (T@"ICQLink",&,N,V_purchase2Link)
+  property bottomLink (T@"ICQLink",&,N,V_bottomLink)
+  property fineprintFormat (T@"NSString",&,N,V_fineprintFormat)
+  property fineprintLinks (T@"NSArray",&,N,V_fineprintLinks)
+  property purchase2LinkVisibleKey (T@"NSString",&,N,V_purchase2LinkVisibleKey)
+  property bottomLinkVisibleKey (T@"NSString",&,N,V_bottomLinkVisibleKey)
+  -.cxx_destruct v16@0:8  imp=+0x26bc52ef4
+  -altMessage @16@0:8  imp=+0x26bc52d8c
+  -altMessageLinks @16@0:8  imp=+0x26bc52db4
+  -bottomLink @16@0:8  imp=+0x26bc52e2c
+  -bottomLinkVisibleKey @16@0:8  imp=+0x26bc52ecc
+  -copy @16@0:8  imp=+0x26bc52b3c
+  -copyWithBindings: @24@0:8@16  imp=+0x26bc52bb8
+  -debugDescription @16@0:8  imp=+0x26bc529b0
+  -fineprintFormat @16@0:8  imp=+0x26bc52e54
+  -fineprintLinks @16@0:8  imp=+0x26bc52e7c
+  -iconBundleIdentifier @16@0:8  imp=+0x26bc52cec
+  -initWithServerDictionary: @24@0:8@16  imp=+0x26bc523ac
+  -initWithServerDictionary:pageIdentifier: @32@0:8@16@24  imp=+0x26bc52434
+  -message @16@0:8  imp=+0x26bc52d3c
+  -messageLinks @16@0:8  imp=+0x26bc52d64
+  -purchase2Link @16@0:8  imp=+0x26bc52e04
+  -purchase2LinkVisibleKey @16@0:8  imp=+0x26bc52ea4
+  -purchaseLink @16@0:8  imp=+0x26bc52ddc
+  -serverDict @16@0:8  imp=+0x26bc52cd8
+  -setAltMessage: v24@0:8@16  imp=+0x26bc52da0
+  -setAltMessageLinks: v24@0:8@16  imp=+0x26bc52dc8
+  -setBottomLink: v24@0:8@16  imp=+0x26bc52e40
+  -setBottomLinkVisibleKey: v24@0:8@16  imp=+0x26bc52ee0
+  -setFineprintFormat: v24@0:8@16  imp=+0x26bc52e68
+  -setFineprintLinks: v24@0:8@16  imp=+0x26bc52e90
+  -setIconBundleIdentifier: v24@0:8@16  imp=+0x26bc52d00
+  -setMessage: v24@0:8@16  imp=+0x26bc52d50
+  -setMessageLinks: v24@0:8@16  imp=+0x26bc52d78
+  -setPurchase2Link: v24@0:8@16  imp=+0x26bc52e18
+  -setPurchase2LinkVisibleKey: v24@0:8@16  imp=+0x26bc52eb8
+  -setPurchaseLink: v24@0:8@16  imp=+0x26bc52df0
+  -setTitle: v24@0:8@16  imp=+0x26bc52d28
+  -title @16@0:8  imp=+0x26bc52d14
+@class _ICQXMLSpecification : NSObject instanceSize=16
+  ivar +8 _placeholderInfo @"NSDictionary"
+  -.cxx_destruct v16@0:8  imp=+0x26bc79998
+  -initWithPlaceholderInfo: @24@0:8@16  imp=+0x26bc78f3c
+  -placeholderReplacementsWithDeviceInfo: @24@0:8@16  imp=+0x26bc793e4
+  -stringForPlaceholder: @24@0:8@16  imp=+0x26bc78f9c
+  -stringForPlaceholder:withDeviceInfo: @32@0:8@16@24  imp=+0x26bc78fa4
+@class iCloudQuota.DarwinRegistrar : _TtCs12_SwiftObject instanceSize=16
+@class iCloudQuota.ICQLiftUIDataSource : NSObject <NSURLSessionTaskDelegate> instanceSize=40
+  ivar +8 account 
+  ivar +16 $__lazy_storage_$_backupDeviceUUID 
+  ivar +32 headerSignalProvider 
+  -.cxx_destruct v16@0:8  imp=+0x26bc8c460
+  -URLSession:task:willPerformHTTPRedirection:newRequest:completionHandler: v56@0:8@16@24@32@40@?48  imp=+0x26bc8cb40
+  -init @16@0:8  imp=+0x26bcac9e0
+  -initWithAccount: @24@0:8@16  imp=+0x26bc88a5c
+@class iCloudQuota.ICQTaskLimiters : NSObject instanceSize=16
+  ivar +8 taskLimiters 
+  -.cxx_destruct v16@0:8  imp=+0x26bc87a74
+  -init @16@0:8  imp=+0x26bc879dc
+  -performClosureNoParamsWithIdentifier:task:completion: v40@0:8@16@?24@?32  imp=+0x26bc876e4
+  -performWithIdentifier:task:completion: v40@0:8@16@?24@?32  imp=+0x26bc867e8
+@class iCloudQuota.ManageStorageAnalytics : _TtCs12_SwiftObject instanceSize=32
+  ivar +16 signposter 
+  ivar +24 manageStorageDrilldownLoad 
+@class iCloudQuota.RealFamilyCircleFetcher : _TtCs12_SwiftObject instanceSize=56
+  ivar +16 provider 
+@class iCloudQuota.RealFamilyMembershipReader : _TtCs12_SwiftObject instanceSize=56
+  ivar +16 fetcher 
+@class iCloudQuota.StorageAppsModel : _TtCs12_SwiftObject instanceSize=88
+  ivar +16 _storageApps 
+  ivar +32 _didError 
+  ivar +48 _navigationPath 
+  ivar +64 account 
+  ivar +72 needsNavigatingToBundleId 
+@class iCloudQuota.StorageSummaryModel : _TtCs12_SwiftObject instanceSize=64
+  ivar +16 _storageSummary 
+  ivar +32 _didError 
+  ivar +48 account 
+  ivar +56 $__lazy_storage_$_dataController 
+@class iCloudQuota.TaskLimiter : _TtCs12_SwiftObject instanceSize=120
+  ivar +112 requests 
+@class iCloudQuota.TaskLimiters : _TtCs12_SwiftObject instanceSize=120
+  ivar +112 limiters 
+@protocol CWEventDelegate
+  optional -clientConnectionInterrupted v16@0:8
+  optional -ssidDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -powerStateDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -modeDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -linkDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -linkQualityDidChangeForWiFiInterfaceWithName:rssi:transmitRate: v40@0:8@16q24d32
+  optional -bssidDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -clientConnectionInvalidated v16@0:8
+  optional -countryCodeDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -scanCacheUpdatedForWiFiInterfaceWithName: v24@0:8@16
+@protocol CWFAssetMgmtProtocol
+  required -processQueryResults:withError: v32@0:8@16@24
+  required -invalidate v16@0:8
+  required -setEventHandler: v24@0:8@?16
+  required -eventHandler @?16@0:8
+  required -activate v16@0:8
+@protocol CWFAssetPowerTableElectorDelegate
+  required -powerTableReadiness:voter:vote: B36@0:8@16q24B32
+  required -performVersionFetch: B24@0:8@16
+  required -powerTableVote:voter:vote: B36@0:8@16q24B32
+@protocol CWFAssetRootMonitorDelegate
+  required -rootMonitorDetectedAdd:deleted:updated: v40@0:8@16@24@32
+@protocol CWFDeviceDiscoveryManagerDelegate
+  required -didDiscoverDevice: v24@0:8@16
+  required -didLoseDevice: v24@0:8@16
+  optional -didFetchWifiInfoForDevice: v24@0:8@16
+@protocol CWFJSONEncodable
+  required -JSONCompatibleKeyValueMap @16@0:8
+@protocol CWFXPCConnectionDelegate
+  required -XPCConnection:canceledXPCRequestsWithUUID: v32@0:8@16@24
+  required -XPCConnection:completedXPCRequest: v32@0:8@16@24
+  required -XPCConnection:receivedXPCRequest: v32@0:8@16@24
+  required -XPCConnection:updatedProcessState: v32@0:8@16@24
+  required -XPCConnection:updatedRegisteredEventIDs: v32@0:8@16@24
+@protocol CWFXPCEventProtocolPrivate
+  required -receivedAcknowledgedXPCEvent:reply: v32@0:8@16@?24
+@protocol CWFXPCEventProtocolPublic
+  required -receivedXPCEvent: v24@0:8@16
+@protocol CWFXPCEventProtocolWiFiNetworkSharingApp
+@protocol CWFXPCEventProtocolWiFiNetworkSharingExtension
+  required -receivedXPCEvent: v24@0:8@16
+  required -performWiFiNetworkSharingAccessoryScanWithReply: v24@0:8@?16
+@protocol CWFXPCEventProtocolWiFiNetworkSharingUIService
+  required -receivedXPCEvent: v24@0:8@16
+@protocol CWFXPCEventProtocolWiFiUserAgent
+  required -forgetCloudNetworkProfile:reply: v32@0:8@16@?24
+  required -queryCloudNetworksAndReply: v24@0:8@?16
+  required -dumpLogs:reply: v32@0:8@16@?24
+  required -rememberCloudNetworkProfile:reply: v32@0:8@16@?24
+  required -setCaptivePortalCredentials:knownNetworkProfile:reply: v40@0:8@16@24@?32
+  required -cancelWiFiNetworkSharingAskToShareUserNotificationForClientID: v24@0:8@16
+  required -allowBrokenBackhaulPersonalHotspotFallbackForNetwork:reply: v32@0:8@16@?24
+  required -presentWiFiNetworkSharingAskToShareUserNotificationForClientID:network:accessoryName:reply: v48@0:8@16@24@32@?40
+  required -cancelWiFiNetworkSharingAuthorizationProxCardForClientID: v24@0:8@16
+  required -queryNearbyRecommendedNetworksAndReply: v24@0:8@?16
+  required -queryCaptivePortalCredentialsForKnownNetworkProfile:reply: v32@0:8@16@?24
+  required -nearbyConfirmBrokenBackhaulUsingTimeout:count:network:minimumCacheTimestamp:reply: v56@0:8Q16Q24@32Q40@?48
+  required -presentWiFiNetworkSharingAuthorizationProxCardForClientID:accessoryName:reply: v40@0:8@16@24@?32
+  required -cancelWiFiNetworkSharingAskToShareProxCardForClientID: v24@0:8@16
+  required -presentWiFiNetworkSharingAskToShareProxCardForClientID:accessoryName:reply: v40@0:8@16@24@?32
+@protocol CWFXPCListenerDelegate
+  required -XPCListener:XPCConnection:completedXPCRequest: v40@0:8@16@24@32
+  required -XPCListener:XPCConnection:updatedRegisteredEventIDs: v40@0:8@16@24@32
+  required -XPCListener:XPCConnection:canceledXPCRequestsWithUUID: v40@0:8@16@24@32
+  required -XPCListener:invalidatedXPCConnection: v32@0:8@16@24
+  required -XPCListener:XPCConnection:updatedProcessState: v40@0:8@16@24@32
+  required -XPCListener:addedXPCConnection: v32@0:8@16@24
+  required -XPCListener:XPCConnection:receivedXPCRequest: v40@0:8@16@24@32
+@protocol CWFXPCRequestProtocolCoreWLAN
+  required -queryMCSIndexWithRequestParams:reply: v32@0:8@16@?24
+  required -queryRSSIWithRequestParams:reply: v32@0:8@16@?24
+  required -setPower:requestParams:reply: v36@0:8B16@20@?28
+  required -queryWoWEnabledWithRequestParams:reply: v32@0:8@16@?24
+  required -querySupportedChannelsWithCountryCode:requestParams:reply: v40@0:8@16@24@?32
+  required -queryCountryCodeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryCurrentScanResultWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPHYModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryHardwareMACAddressWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowersaveWithRequestParams:reply: v32@0:8@16@?24
+  required -querySupportedPHYModesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLOpModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLSidecarDiagnosticsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInterfaceCapabilitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryHardwareSupportedChannelsWithRequestParams:reply: v32@0:8@16@?24
+  required -disassociateWithReason:requestParams:reply: v40@0:8q16@24@?32
+  required -cancelRequestsWithUUID:reply: v32@0:8@16@?24
+  required -queryTxRateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryMACAddressWithRequestParams:reply: v32@0:8@16@?24
+  required -queryParentInterfaceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -setCarPlayInternet:requestParams:reply: v36@0:8B16@20@?28
+  required -associateWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -queryInterfaceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -startMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -queryNumberOfSpatialStreamsWithRequestParams:reply: v32@0:8@16@?24
+  required -querySSIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryChannelWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIsNetworkServiceEnabledWithRequestParams:reply: v32@0:8@16@?24
+  required -queryVirtualInterfaceRoleWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAuthTypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryOpModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBSSIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowerStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIsQuickProbeRequiredForNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -querySecurityWithRequestParams:reply: v32@0:8@16@?24
+  required -queryTxNSSWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLPeerTrafficRegistrationWithRequestParams:reply: v32@0:8@16@?24
+  required -reportQuickProbeResult:networkProfile:requestParams:reply: v44@0:8B16@20@28@?36
+  required -updateKnownNetworkProfile:properties:OSSpecificKeys:requestParams:reply: v56@0:8@16@24@32@40@?48
+  required -queryPowerDebugInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -queryMaxLinkSpeedWithRequestParams:reply: v32@0:8@16@?24
+  required -updateSoftAPBand:requestParams:reply: v36@0:8I16@20@?28
+  required -queryNoiseWithRequestParams:reply: v32@0:8@16@?24
+  required -queryVirtualInterfaceNamesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowerTableInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -stopMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -queryTxPowerWithRequestParams:reply: v32@0:8@16@?24
+  required -performScanWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -setChannel:requestParams:reply: v40@0:8@16@24@?32
+  required -stopMonitoringAllEventsWithRequestParams:reply: v32@0:8@16@?24
+  required -removeKnownNetworkProfile:reason:requestParams:reply: v48@0:8@16q24@32@?40
+  required -queryPowerWithRequestParams:reply: v32@0:8@16@?24
+  required -queryMaxNSSForAPWithRequestParams:reply: v32@0:8@16@?24
+  required -addKnownNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryWEPSubtypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryWAPISubtypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInterfaceNamesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryKnownNetworkProfilesWithProperties:requestParams:reply: v40@0:8@16@24@?32
+  required -queryStateWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolInternal
+  required -resetWiFiNetworkSharingForBundleID:accessoryID:requestParams:reply: v48@0:8@16@24@32@?40
+  required -querySystemEventIDsWithRequestParams:reply: v32@0:8@16@?24
+  required -querySystemActivitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -dumpLogs:requestParams:reply: v40@0:8@16@24@?32
+  required -getCloudNetworksWithRequestParams:reply: v32@0:8@16@?24
+  required -confirmBrokenBackhaulUsingTimeout:count:requestParams:reply: v48@0:8Q16Q24@32@?40
+  required -queryDeviceUUIDWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolMobileWiFi
+  required -queryCurrentScanResultWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolPrivate
+  required -setRangingIdentifier:requestParams:reply: v40@0:8@16@24@?32
+  required -requestWiFiNetworkSharingAuthorizationWithRequestParams:reply: v32@0:8@16@?24
+  required -setUserAutoJoinState:requestParams:reply: v36@0:8B16@20@?28
+  required -performAutoJoinWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -performRangingWithPeerList:timeout:requestParams:reply: v48@0:8@16Q24@32@?40
+  required -setBlockedBands:requestParams:reply: v40@0:8@16@24@?32
+  required -setPower:requestParams:reply: v36@0:8B16@20@?28
+  required -performNearbyDeviceDiscovery:requestParams:reply: v40@0:8@16@24@?32
+  required -updateKnownBSS:knownNetworkProfile:properties:OSSpecificKeys:requestParams:reply: v64@0:8@16@24@32@40@48@?56
+  required -setSensingEnabled:requestParams:reply: v36@0:8B16@20@?28
+  required -resetInternetSharingStatsWithRequestParams:reply: v32@0:8@16@?24
+  required -setPrivateMACAddressUserJoinFailureUIState:networkProfile:requestParams:reply: v44@0:8B16@20@28@?36
+  required -setBackgroundScanConfiguration:requestParams:reply: v40@0:8@16@24@?32
+  required -setPrivateMACAddressModeSystemSetting:requestParams:reply: v40@0:8q16@24@?32
+  required -addKnownBSS:knownNetworkProfile:requestParams:reply: v48@0:8@16@24@32@?40
+  required -askToShareWiFiNetworkSharingNetworkFromAppWithRequestParams:reply: v32@0:8@16@?24
+  required -setLQMConfiguration:requestParams:reply: v40@0:8@16@24@?32
+  required -acknowledgeWiFiNetworkSharingConnectedAPUpdate:requestParams:reply: v40@0:8@16@24@?32
+  required -startAWDLPeerAssistedDiscoveryWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -setWiFiNetworkSharingAskToShareStatus:networkID:requestParams:reply: v48@0:8q16@24@32@?40
+  required -stopHostAPModeWithRequestParams:reply: v32@0:8@16@?24
+  required -setInternetSharingPassword:requestParams:reply: v40@0:8@16@24@?32
+  required -disassociateWithReason:requestParams:reply: v40@0:8q16@24@?32
+  required -resetAutoJoinStatisticsWithRequestParams:reply: v32@0:8@16@?24
+  required -setCompanionCountryCode:requestParams:reply: v40@0:8@16@24@?32
+  required -setThermalIndex:requestParams:reply: v40@0:8q16@24@?32
+  required -setCarPlayInternet:requestParams:reply: v36@0:8B16@20@?28
+  required -setUCMExtProfile:requestParams:error: v40@0:8@16@24@?32
+  required -associateWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -provideDTCStats:requestParams:reply: v40@0:8@16@24@?32
+  required -setRangeable:peerList:requestParams:reply: v44@0:8B16@20@28@?36
+  required -setInternetSharingDiscoveryState:immediateDisable:requestParams:reply: v40@0:8B16B20@24@?32
+  required -endAllActivitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -startHostAPModeWithConfiguration:requestParams:reply: v40@0:8@16@24@?32
+  required -askToShareWiFiNetworkSharingNetworkFromAppexWithRequestParams:reply: v32@0:8@16@?24
+  required -performANQPWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -setFamilyHotspotPreferences:requestParams:reply: v40@0:8@16@24@?32
+  required -acknowledgeWiFiNetworkSharingNetworkListUpdate:requestParams:reply: v40@0:8@16@24@?32
+  required -setShareMyPersonalHotspotMode:requestParams:reply: v40@0:8q16@24@?32
+  required -startUIScanWithRequestParams:reply: v32@0:8@16@?24
+  required -setAutoHotspotMode:requestParams:reply: v40@0:8q16@24@?32
+  required -setBTCoexActiveProfileName:requestParams:error: v40@0:8@16@24@?32
+  required -performUIBeaconCacheQuery:reply: v32@0:8@16@?24
+  required -stopAWDLPeerAssistedDiscoveryWithRequestParams:reply: v32@0:8@16@?24
+  required -setInternetSharingDiscoveryStateExt:request:requestParams:reply: v44@0:8B16@20@28@?36
+  required -setPrivateMACAddressMode:networkProfile:requestParams:reply: v48@0:8q16@24@32@?40
+  required -reportQuickProbeResult:networkProfile:requestParams:reply: v44@0:8B16@20@28@?36
+  required -updateKnownNetworkProfile:properties:OSSpecificKeys:requestParams:reply: v56@0:8@16@24@32@40@?48
+  required -setUserSettings:properties:requestParams:reply: v48@0:8@16@24@32@?40
+  required -setInternetSharingNetworkName:requestParams:reply: v40@0:8@16@24@?32
+  required -clearAutoJoinDenyListForNetwork:reason:requestParams:reply: v48@0:8@16Q24@32@?40
+  required -updateSoftAPBand:requestParams:reply: v36@0:8I16@20@?28
+  required -setPassword:knownNetworkProfile:requestParams:reply: v48@0:8@16@24@32@?40
+  required -performScanWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -stopUIScanWithRequestParams:reply: v32@0:8@16@?24
+  required -setChannel:requestParams:reply: v40@0:8@16@24@?32
+  required -removeKnownNetworkProfile:reason:requestParams:reply: v48@0:8@16q24@32@?40
+  required -setAutoJoinDenyListForNetwork:reason:requestParams:reply: v48@0:8@16Q24@32@?40
+  required -beginActivity:requestParams:reply: v40@0:8@16@24@?32
+  required -setCaptivePortalCredentials:knownNetworkProfile:requestParams:reply: v48@0:8@16@24@32@?40
+  required -addKnownNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -configureSensing:requestParams:reply: v40@0:8@16@24@?32
+  required -removeKnownBSS:knownNetworkProfile:requestParams:reply: v48@0:8@16@24@32@?40
+  required -endActivityWithUUID:requestParams:reply: v40@0:8@16@24@?32
+  required -setInternetSharingState:requestParams:reply: v36@0:8B16@20@?28
+  required -setMISDiscoveryState:immediateDisable:requestParams:reply: v40@0:8B16B20@24@?32
+  required -setMISDiscoveryStateExt:request:requestParams:reply: v44@0:8B16@20@28@?36
+  required -setMISPassword:requestParams:reply: v40@0:8@16@24@?32
+  required -setMISState:requestParams:reply: v36@0:8B16@20@?28
+@protocol CWFXPCRequestProtocolPrivateReadonly
+  required -queryMCSIndexWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAutoJoinStatisticsWithRequestParams:reply: v32@0:8@16@?24
+  required -wifiNetworkSharingAskToShareStatusForNetworkID:requestParams:reply: v40@0:8@16@24@?32
+  required -queryNANRadioScheduleWithRequestParams:reply: v32@0:8@16@?24
+  required -queryRSSIWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkServiceIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLElectionMetricWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAutoJoinDenyListWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalDNSServerAddressesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryCountryBandSupport:reply: v32@0:8@16@?24
+  required -queryInternetSharingDiscoveryStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryLQMConfigurationWithRequestParams:reply: v32@0:8@16@?24
+  required -queryWoWEnabledWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLStatisticsWithRequestParams:reply: v32@0:8@16@?24
+  required -querySupportedChannelsWithCountryCode:requestParams:reply: v40@0:8@16@24@?32
+  required -queryCountryCodeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAutoJoinStatusWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv4RouterWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLGuardTimeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryChannelsInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAutoJoinUserActionMetricWithRequestParams:reply: v32@0:8@16@?24
+  required -queryFamilyHotspotPreferencesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkManagedByMDM:requestParams:reply: v40@0:8@16@24@?32
+  required -queryAWDLStrategyWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLAvailabilityWindowAPAlignmentWithRequestParams:reply: v32@0:8@16@?24
+  required -queryCurrentScanResultWithRequestParams:reply: v32@0:8@16@?24
+  required -queryUserSettingsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPHYModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBluetoothCoexConfigWithRequestParams:reply: v32@0:8@16@?24
+  required -queryHardwareMACAddressWithRequestParams:reply: v32@0:8@16@?24
+  required -queryTxChainPowerWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowersaveWithRequestParams:reply: v32@0:8@16@?24
+  required -querySupportedPHYModesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDHCPLeaseExpirationTimeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBrokenBackhaulStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLOpModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLSidecarDiagnosticsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInterfaceCapabilitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLSecondaryMasterChannelWithRequestParams:reply: v32@0:8@16@?24
+  required -querySSIDForVendorWithRequestParams:reply: v32@0:8@16@?24
+  required -queryLeakyAPStatsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLElectionRSSIThresholdsWithRequestParams:reply: v32@0:8@16@?24
+  required -wifiNetworkSharingAuthorizationLevelWithRequestParams:reply: v32@0:8@16@?24
+  required -queryCCAWithRequestParams:reply: v32@0:8@16@?24
+  required -queryHardwareSupportedChannelsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv6RouterWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLAFTxModeWithRequestParams:reply: v32@0:8@16@?24
+  required -cancelRequestsWithUUID:reply: v32@0:8@16@?24
+  required -queryDeviceSupervisedWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv6AddressesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryTxRateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv4AddressesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLPresenceModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryMACAddressWithRequestParams:reply: v32@0:8@16@?24
+  required -queryHotspotClientDataUsageWithRequestParams:reply: v32@0:8@16@?24
+  required -queryLinkDownStatusWithRequestParams:reply: v32@0:8@16@?24
+  required -queryParentInterfaceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryRangingCapabilitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInterfaceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv4InterfaceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLElectionParametersWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkReachabilityWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBluetoothCoexProfiles2GHzWithRequestParams:reply: v32@0:8@16@?24
+  required -startMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -queryAWDLSyncStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv4ARPResolvedIPAddressWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNumberOfSpatialStreamsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv4AddressesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryWiFiUIStateFlagsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv6NetworkServiceIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryWiFiAssistOverrideReasonsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIO80211InterfaceInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -querySSIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBluetoothCoexModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryHostAPStationListWithRequestParams:reply: v32@0:8@16@?24
+  required -queryChannelWithRequestParams:reply: v32@0:8@16@?24
+  required -queryJoinStatusWithRequestParams:reply: v32@0:8@16@?24
+  required -queryLinkQualityMetricWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIsNetworkServiceEnabledWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPrivateMACAddressModeForNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryIPv4NetworkSignatureWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLEncryptionTypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryVirtualInterfaceRoleWithRequestParams:reply: v32@0:8@16@?24
+  required -getNearbyRecommendedNetworksWithRequestParams:reply: v32@0:8@16@?24
+  required -queryKnownNetworkInfoForLocalNetworkPromptWithOptions:requestParams:reply: v40@0:8@16@24@?32
+  required -queryNetworkOfInterestWorkStateForKnownNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryAutoHotspotModeWithRequestParams:reply: v32@0:8@16@?24
+  required -wifiNetworkSharingConnectedAPListWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPasswordForKnownNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryAuthTypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv6RouterWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLExtensionStateMachineParamsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryOpModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryEAP8021XControlModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBSSIDWithRequestParams:reply: v32@0:8@16@?24
+  required -getRecommendedKnownNetworksWithRequestParams:reply: v32@0:8@16@?24
+  required -queryChainAckWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowerStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIsQuickProbeRequiredForNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryInternetSharingNetworkNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv6InterfaceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkServiceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -querySecurityWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDNSServerAddressesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDHCPServerIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryTxNSSWithRequestParams:reply: v32@0:8@16@?24
+  required -queryRoamStatusWithRequestParams:reply: v32@0:8@16@?24
+  required -queryEAP8021XSupplicantStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryShareMyPersonalHotspotModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLPeerTrafficRegistrationWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkOfInterestHomeStateForKnownNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryIPv6NetworkSignatureWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowerDebugInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBluetoothCoexProfiles5GHzWithRequestParams:reply: v32@0:8@16@?24
+  required -queryMaxLinkSpeedWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv4NetworkServiceIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryKnownNetworksWithNetworkSignature:requestParams:reply: v40@0:8@16@24@?32
+  required -queryAWDLSocialTimeSlotsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkWarningFlagsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNoiseWithRequestParams:reply: v32@0:8@16@?24
+  required -queryEAP8021XClientStatusWithRequestParams:reply: v32@0:8@16@?24
+  required -queryVirtualInterfaceNamesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowerTableInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -queryTetheringSupportedWithRequestParams:reply: v32@0:8@16@?24
+  required -queryKnownNetworksInSameLanAs:requestParams:reply: v40@0:8@16@24@?32
+  required -stopMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -queryPrivateMACAddressModeSystemSettingWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLElectionIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryRxRateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIO80211ControllerInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv4NetworkServiceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBlockedBandsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPersonalHotspotModificationDisabledWithRequestParams:reply: v32@0:8@16@?24
+  required -queryTxPowerWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLPreferredChannelsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDHCPv6ServerIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLSyncEnabledWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLSyncParametersWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv4SubnetMasksWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBeaconCacheWithRequestParams:reply: v32@0:8@16@?24
+  required -stopMonitoringAllEventsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryCaptivePortalCredentialsForKnownNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryDesenseLevelWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLSyncChannelSequenceWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowerWithRequestParams:reply: v32@0:8@16@?24
+  required -queryCurrentKnownNetworkProfileWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBrokenBackhaulStateTimestampWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInternetSharingPasswordWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDHCPLeaseStartTimeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInternetSharingStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryMaxNSSForAPWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLBTLEStateParamsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDTIMIntervalWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAutoJoinMetricWithType:requestParams:reply: v40@0:8Q16@24@?32
+  required -queryKnownNetworkProfileMatchingScanResult:requestParams:reply: v40@0:8@16@24@?32
+  required -queryKnownNetworkProfileMatchingNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryWEPSubtypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLPeerDatabaseWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLContinuousElectionAlgorithmEnabledWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBackgroundScanConfigurationWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv4RouterWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv6NetworkServiceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryEAP8021XControlStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv4ARPResolvedHardwareAddressWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBackgroundScanCacheWithRequestParams:reply: v32@0:8@16@?24
+  required -queryLQMSummaryWithRequestParams:reply: v32@0:8@16@?24
+  required -queryWAPISubtypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInterfaceNamesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGuardIntervalWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInternetSharingStatsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkSignatureForNetwork:isBSSID:requestParams:reply: v44@0:8@16B24@28@?36
+  required -queryKnownNetworkProfilesWithProperties:requestParams:reply: v40@0:8@16@24@?32
+  required -wifiNetworkSharingAskToShareNetworkListWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv6AddressesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryActivitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryLinkQualityAssessmentWithRequestParams:reply: v32@0:8@16@?24
+  required -queryUserAutoJoinStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDesenseWithRequestParams:reply: v32@0:8@16@?24
+  required -queryEventIDsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLMasterChannelWithRequestParams:reply: v32@0:8@16@?24
+  required -queryThermalIndexWithRequestParams:reply: v32@0:8@16@?24
+  required -queryStateWithRequestParams:reply: v32@0:8@16@?24
+  required -wifiNetworkSharingNetworkListWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPrivateMACAddressForNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryBSSIDForVendorWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolPublicWiFi
+  required -querySSIDForVendorWithRequestParams:reply: v32@0:8@16@?24
+  required -startMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -querySSIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBSSIDWithRequestParams:reply: v32@0:8@16@?24
+  required -stopMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -stopMonitoringAllEventsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBSSIDForVendorWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolUnrestricted
+  required -queryInterfaceCapabilitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryOpModeWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolWiFiNetworkSharingApp
+  required -requestWiFiNetworkSharingAuthorizationWithRequestParams:reply: v32@0:8@16@?24
+  required -askToShareWiFiNetworkSharingNetworkFromAppWithRequestParams:reply: v32@0:8@16@?24
+  required -checkinWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolWiFiNetworkSharingExtension
+  required -acknowledgeWiFiNetworkSharingConnectedAPUpdate:requestParams:reply: v40@0:8@16@24@?32
+  required -startMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -askToShareWiFiNetworkSharingNetworkFromAppexWithRequestParams:reply: v32@0:8@16@?24
+  required -acknowledgeWiFiNetworkSharingNetworkListUpdate:requestParams:reply: v40@0:8@16@24@?32
+  required -checkinWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolWiFiNetworkSharingUI
+  required -setWiFiNetworkSharingAskToShareStatus:networkID:requestParams:reply: v48@0:8q16@24@32@?40
+  required -startMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -wifiNetworkSharingAskToShareNetworkListWithRequestParams:reply: v32@0:8@16@?24
+  required -checkinWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolWiFiUserAgent
+  required -sendXPCEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -checkinWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProxyDelegate
+  required -XPCRequestProxy:XPCConnection:canceledXPCRequestsWithUUID: v40@0:8@16@24@32
+  required -XPCRequestProxy:getAdaptiveInterfaceRankDurationAndReply: v32@0:8@16@?24
+  required -XPCRequestProxy:sendXPCEvent:reply: v40@0:8@16@24@?32
+  required -XPCRequestProxy:XPCConnection:receivedXPCRequest: v40@0:8@16@24@32
+  required -XPCRequestProxy:invalidatedXPCConnection: v32@0:8@16@24
+@protocol CWInternalEventDelegate
+  optional -joinDidStartForWiFiInterfaceWithName:ssid: v32@0:8@16@24
+  optional -internal_queryCloudKVSAndReply: v24@0:8@?16
+  optional -internal_startUserMode8021XWithProfile:interfaceWithName:reply: v40@0:8@16@24@?32
+  optional -internal_showAvailableWiFiNetworks:interfaceName:recommendOnly: v36@0:8@16@24B32
+  optional -autoJoinDidCompleteForWiFiInterfaceWithName: v24@0:8@16
+  optional -autoJoinDidStartForWiFiInterfaceWithName: v24@0:8@16
+  optional -autoJoinDidUpdate: v24@0:8@16
+  optional -btCoexModeStats: v24@0:8@16
+  optional -deviceAvailabilityChangedForWiFiInterfaceWithName:isAvailable: v28@0:8@16B24
+  optional -dextCrashDetected v16@0:8
+  optional -interfaceAddedWithName: v24@0:8@16
+  optional -interfaceRemovedWithName: v24@0:8@16
+  optional -internal_addCloudProfile: v24@0:8@16
+  optional -internal_confirmAPIAccessWithRequestType:info:processName:reply: v48@0:8q16@24@32@?40
+  optional -internal_enableTetherDevice:reply: v32@0:8@16@?24
+  optional -internal_foundTetherDevices: v24@0:8@16
+  optional -internal_getWiFiPasswordForUserKeychainWithSSID:reply: v32@0:8@16@?24
+  optional -internal_joinWiFiNetworkWithUserAgent:interfaceName:timestamp:reply: v48@0:8@16@24d32@?40
+  optional -internal_queryLegacyCloudKVSAndReply: v24@0:8@?16
+  optional -internal_removeCloudProfile: v24@0:8@16
+  optional -internal_setWiFiPasswordForUserKeychain:ssid:reply: v40@0:8@16@24@?32
+  optional -internal_showAutoHotspotNotificationForTetherDevice:retry:interfaceName: v36@0:8@16B24@28
+  optional -internal_showDHCPMessage:networkName: v32@0:8@16@24
+  optional -internal_showLowBatteryNotificationForTetherDevice:interfaceName: v32@0:8@16@24
+  optional -internal_showMICErrorWithNetworkName: v24@0:8@16
+  optional -internal_showPHNetworkExpensiveAlertWithNetworkName: v24@0:8@16
+  optional -internal_startBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  optional -internal_startUserMode8021XWithAuthenticationInfo:interfaceWithName:reply: v40@0:8@16@24@?32
+  optional -internal_startUserMode8021XWithPasspointDomainName:interfaceWithName:reply: v40@0:8@16@24@?32
+  optional -internal_startUserMode8021XWithSSID:username:password:identity:disableUserInteraction:remember:interfaceWithName:reply: v72@0:8@16@24@32@40B48B52@56@?64
+  optional -internal_stopBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  optional -internal_updateCloudProfile: v24@0:8@16
+  optional -joinDidCompleteForWiFiInterfaceWithName:isAutoJoin:error: v36@0:8@16B24@28
+  optional -preferencesDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -rangingEndedForWiFiInterfaceWithName: v24@0:8@16
+  optional -rangingReportEventForWiFiInterfaceWithName:data:error: v40@0:8@16@24@32
+  optional -rangingStartedForWiFiInterfaceWithName: v24@0:8@16
+  optional -realTimeModeDidEndForWiFiInterfaceWithName: v24@0:8@16
+  optional -realTimeModeDidStartForWiFiInterfaceWithName: v24@0:8@16
+  optional -rsnHandshakeDidCompleteForWiFiInterfaceWithName: v24@0:8@16
+  optional -virtualInterfaceStateChangedForWiFiInterfaceWithName: v24@0:8@16
+  optional -willShowJoinUIForWiFiNetwork:interfaceName: v32@0:8@16@24
+  optional -wowStateDidChangeForWiFiInterfaceWithName: v24@0:8@16
+@protocol CWWiFiShareKitXPCRequestProtocol
+  required -cancelPendingRequestWithToken:reply: v32@0:8q16@?24
+  required -corewifiEndpointWithReply: v24@0:8@?16
+  required -disassociateForInterfaceName:token:priority:authorization:reply: v56@0:8@16q24q32@40@?48
+  required -setWiFiPowerState:interfaceName:authorization:reply: v44@0:8B16@20@28@?36
+@protocol CWWiFiUIProxyEvent
+  required -showErrorUIWithScanResult:uuid: v32@0:8@16@24
+  required -didCompleteDiagnostics: v24@0:8@16
+  required -didFindScanResults: v24@0:8@16
+  required -didReceiveSharedPassword:uuid: v32@0:8@16@24
+  required -didUpdateUIState:previous: v32@0:8Q16Q24
+  required -dismissUIWithUUID: v24@0:8@16
+  required -showInfoUIWithTitle:description:uuid: v40@0:8@16@24@32
+  required -showJoinUIWithScanResult:previousError:previousPassword:supportsWiFiPasswordSharing:remember:uuid: v56@0:8@16@24@32B40B44@48
+  required -showLimitedNetworkOptionUIForScanResult:candidates:uuid: v40@0:8@16@24@32
+  required -showLockdownModeUIWithScanResult:uuid: v32@0:8@16@24
+  required -showSecurityMismatchUIWithScanResult:uuid: v32@0:8@16@24
+  required -showWPSUIWithScanResult:pin:uuid: v40@0:8@16@24@32
+  required -updatedWiFiConfiguration: v24@0:8@16
+@protocol CWWiFiUIProxyRequest
+  required -queryCachedScanResultsAndReply: v24@0:8@?16
+  required -addCloudWiFiProfile:authorization:reply: v40@0:8@16@24@?32
+  required -createDiagnosticsReportWithAuthorization:reply: v32@0:8@16@?24
+  required -createIBSSNetworkWithConfiguration:authorization:reply: v40@0:8@16@24@?32
+  required -deleteUserWiFiKeychainPasswordWithSSID:reply: v32@0:8@16@?24
+  required -displayWiFiRecommendationItem:reply: v32@0:8@16@?24
+  required -displayWiFiRecommendationUIAndReply: v24@0:8@?16
+  required -joinScanResult:configuration:authorization:reply: v48@0:8@16@24@32@?40
+  required -queryDiagnosticsAndReply: v24@0:8@?16
+  required -queryIsWiFiCloudSyncEngineRunningWithReply: v24@0:8@?16
+  required -queryUserWiFiKeychainPasswordWithSSID:reply: v32@0:8@16@?24
+  required -queryWiFiDebugLoggingEnabledAndReply: v24@0:8@?16
+  required -queryWiFiUIStateAndReply: v24@0:8@?16
+  required -removeCloudWiFiProfileWithSSID:authorization:reply: v40@0:8@16@24@?32
+  required -setUserWiFiKeychainPasswordWithSSID:password:reply: v40@0:8@16@24@?32
+  required -setWiFiDebugLoggingEnabled:authorization:reply: v36@0:8B16@20@?28
+  required -startMonitoringEventsAndReply: v24@0:8@?16
+  required -startScanningAndReply: v24@0:8@?16
+  required -stopMonitoringEventsAndReply: v24@0:8@?16
+  required -stopScanningAndReply: v24@0:8@?16
+  required -synchronizeCloudWiFiProfilesAndReply: v24@0:8@?16
+  required -updateCloudWiFiProfile:authorization:reply: v40@0:8@16@24@?32
+  required -userDidConfirmJoin:uuid:reply: v36@0:8B16@20@?28
+  required -userDidDismissJoinUIWithUUID:reply: v32@0:8@16@?24
+  required -userDidJoinWithConfiguration:uuid:reply: v40@0:8@16@24@?32
+@protocol CWWiFiUserAgentXPCEventProtocol
+  required -internal_queryCloudKVSAndReply: v24@0:8@?16
+  required -internal_startUserMode8021XWithProfile:interfaceWithName:reply: v40@0:8@16@24@?32
+  required -internal_showAvailableWiFiNetworks:interfaceName:recommendOnly: v36@0:8@16@24B32
+  required -internal_addCloudProfile: v24@0:8@16
+  required -internal_confirmAPIAccessWithRequestType:info:processName:reply: v48@0:8q16@24@32@?40
+  required -internal_enableTetherDevice:reply: v32@0:8@16@?24
+  required -internal_getWiFiPasswordForUserKeychainWithSSID:reply: v32@0:8@16@?24
+  required -internal_joinWiFiNetworkWithUserAgent:interfaceName:timestamp:reply: v48@0:8@16@24d32@?40
+  required -internal_queryLegacyCloudKVSAndReply: v24@0:8@?16
+  required -internal_removeCloudProfile: v24@0:8@16
+  required -internal_setWiFiPasswordForUserKeychain:ssid:reply: v40@0:8@16@24@?32
+  required -internal_showAutoHotspotNotificationForTetherDevice:retry:interfaceName: v36@0:8@16B24@28
+  required -internal_showDHCPMessage:networkName: v32@0:8@16@24
+  required -internal_showLowBatteryNotificationForTetherDevice:interfaceName: v32@0:8@16@24
+  required -internal_showMICErrorWithNetworkName: v24@0:8@16
+  required -internal_showPHNetworkExpensiveAlertWithNetworkName: v24@0:8@16
+  required -internal_startBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  required -internal_startUserMode8021XWithAuthenticationInfo:interfaceWithName:reply: v40@0:8@16@24@?32
+  required -internal_startUserMode8021XWithPasspointDomainName:interfaceWithName:reply: v40@0:8@16@24@?32
+  required -internal_startUserMode8021XWithSSID:username:password:identity:disableUserInteraction:remember:interfaceWithName:reply: v72@0:8@16@24@32@40B48B52@56@?64
+  required -internal_stopBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  required -internal_updateCloudProfile: v24@0:8@16
+@protocol CWWiFiUserAgentXPCRequestProtocol
+  required -internal_foundTetherDevices: v24@0:8@16
+  required -internal_receivedAutoHotspotNotificationResponse:updateMode:tetherDevice:authorization:interfaceName:reply: v60@0:8B16q20@28@36@44@?52
+  required -internal_userAgentWillShowJoinUIForWiFiNetwork:interfaceName:timestamp:reply: v48@0:8@16@24d32@?40
+@protocol CWWiFiXPCEventProtocol
+  required -ssidDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -joinDidStartForWiFiInterfaceWithName:ssid: v32@0:8@16@24
+  required -powerStateDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -modeDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -linkDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -linkQualityDidChangeForWiFiInterfaceWithName:rssi:transmitRate: v40@0:8@16q24d32
+  required -asymmetricInterferenceDetected:channelGroup: v24@0:8C16c20
+  required -autoJoinDidCompleteForWiFiInterfaceWithName: v24@0:8@16
+  required -autoJoinDidStartForWiFiInterfaceWithName: v24@0:8@16
+  required -autoJoinDidUpdate: v24@0:8@16
+  required -bssidDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -btCoexModeStats: v24@0:8@16
+  required -countryCodeDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -deviceAvailabilityChangedForWiFiInterfaceWithName:isAvailable: v28@0:8@16B24
+  required -dextCrashDetected v16@0:8
+  required -foundTetherDevices: v24@0:8@16
+  required -interfaceAddedWithName: v24@0:8@16
+  required -interfaceRemovedWithName: v24@0:8@16
+  required -joinDidCompleteForWiFiInterfaceWithName:isAutoJoin:error: v36@0:8@16B24@28
+  required -preferencesDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -rangingEndedForWiFiInterfaceWithName: v24@0:8@16
+  required -rangingReportEventForWiFiInterfaceWithName:data:error: v40@0:8@16@24@32
+  required -rangingStartedForWiFiInterfaceWithName: v24@0:8@16
+  required -realTimeModeDidEndForWiFiInterfaceWithName: v24@0:8@16
+  required -realTimeModeDidStartForWiFiInterfaceWithName: v24@0:8@16
+  required -rsnHandshakeDidCompleteForWiFiInterfaceWithName: v24@0:8@16
+  required -scanCacheUpdatedForWiFiInterfaceWithName: v24@0:8@16
+  required -sdbOpModeDidChange:channelGroup: v24@0:8C16c20
+  required -softErrorWiFiTCPKATimeoutMitigationDetected:enabled: v28@0:8@16B24
+  required -virtualInterfaceStateChangedForWiFiInterfaceWithName: v24@0:8@16
+  required -weightedWiFiAvgLQM: v24@0:8@16
+  required -willShowJoinUIForWiFiNetwork:interfaceName:reply: v40@0:8@16@24@?32
+  required -wowStateDidChangeForWiFiInterfaceWithName: v24@0:8@16
+@protocol CWWiFiXPCRequestProtocol
+  required -clearANQPCacheForNetwork:reply: v32@0:8@16@?24
+  required -submitAWDMetric:metricID:reply: v40@0:8@16@24@?32
+  required -acquireBluetoothPagingLockAndReply: v24@0:8@?16
+  required -acquireBluetoothPagingLockWithInterfaceName:reply: v32@0:8@16@?24
+  required -acquirePriorityLockWithType:priority:maximumAge:token:reply: v56@0:8q16q24d32q40@?48
+  required -acquireRequestLockWithType:interfaceName:priority:maximumAge:reply: v56@0:8q16@24q32d40@?48
+  required -addWiFiProfile:event:addToBottom:authorization:reply: v52@0:8@16Q24B32@36@?44
+  required -associateTo8021XWiFiNetwork:remember:interfaceName:token:priority:authorization:reply: v68@0:8@16B24@28q36q44@52@?60
+  required -associateToLoginWindowMode8021XWiFiNetwork:interfaceName:token:priority:authorization:reply: v64@0:8@16@24q32q40@48@?56
+  required -associateToPasspointWiFiNetwork:domainName:interfaceName:token:priority:authorization:reply: v72@0:8@16@24@32q40q48@56@?64
+  required -associateToSystemMode8021XWiFiNetwork:interfaceName:token:priority:authorization:reply: v64@0:8@16@24q32q40@48@?56
+  required -associateToUserMode8021XWiFiNetwork:username:password:identity:disableUserInteraction:remember:possiblyHidden:interfaceName:token:priority:authorization:reply: v100@0:8@16@24@32@40B48B52B56@60q68q76@84@?92
+  required -associateToWPSNetwork:pin:remember:interfaceName:token:priority:authorization:reply: v76@0:8@16@24B32@36q44q52@60@?68
+  required -associateToWiFiNetwork:password:remember:possiblyHidden:interfaceName:token:priority:authorization:reply: v80@0:8@16@24B32B36@40q48q56@64@?72
+  required -associateToWiFiNetworkUsingSystemKeychain:interfaceName:token:priority:authorization:reply: v64@0:8@16@24q32q40@48@?56
+  required -cancelPendingRequestWithToken:reply: v32@0:8q16@?24
+  required -clearScanCacheWithInterfaceName:reply: v32@0:8@16@?24
+  required -commitConfiguration:interfaceName:authorization:reply: v48@0:8@16@24@32@?40
+  required -confirmAPIAccessWithRequestType:info:reply: v40@0:8q16@24@?32
+  required -connectToTetherDevice:remember:interfaceName:token:authorization:reply: v60@0:8@16B24@28q36@44@?52
+  required -corewifiEndpointWithReply: v24@0:8@?16
+  required -currentTetherDeviceWithInterfaceName:reply: v32@0:8@16@?24
+  required -disassociateForInterfaceName:token:priority:authorization:reply: v56@0:8@16q24q32@40@?48
+  required -dumpWiFiTemporaryLogAndReply: v24@0:8@?16
+  required -forgetWiFiProfileWithID:event:reply: v40@0:8@16Q24@?32
+  required -get2GChainDisableForInterfaceName:reply: v32@0:8@16@?24
+  required -joinWiFiNetwork:interfaceName:reply: v40@0:8@16@24@?32
+  required -performScanWithChannels:ssidList:legacyScanSSID:includeHiddenNetworks:mergeScanResults:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:interfaceName:waitForWiFi:waitForBluetooth:token:priority:reply: v120@0:8@16@24@32B40B44d48q56q64q72@80B88B92q96q104@?112
+  required -performScanWithChannels:ssidList:legacyScanSSID:includeHiddenNetworks:mergeScanResults:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:interfaceName:waitForWiFi:waitForBluetooth:trimmedScanResultProperties:token:priority:lowPriority:lowLatency:scanType:reply: v144@0:8@16@24@32B40B44d48q56q64q72@80B88B92@96q104q112B120B124q128@?136
+  required -performScanWithChannels:ssidList:legacyScanSSID:includeHiddenNetworks:mergeScanResults:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:interfaceName:waitForWiFi:waitForBluetooth:trimmedScanResultProperties:token:priority:reply: v128@0:8@16@24@32B40B44d48q56q64q72@80B88B92@96q104q112@?120
+  required -queryANQPCacheWithElements:network:maxAge:reply: v48@0:8Q16@24d32@?40
+  required -queryANQPElements:network:maxAge:interfaceName:waitForWiFi:waitForBluetooth:token:priority:reply: v80@0:8Q16@24d32@40B48B52q56q64@?72
+  required -queryAllWiFiProfilesAndReply: v24@0:8@?16
+  required -queryAutoHotspotModeAndReply: v24@0:8@?16
+  required -queryAutoJoinHistoryWithInterfaceName:reply: v32@0:8@16@?24
+  required -queryAutoJoinTemporarilyDisabledAndReply: v24@0:8@?16
+  required -queryBSSIDForInterfaceWithName:reply: v32@0:8@16@?24
+  required -queryConfigurationWithInterfaceName:reply: v32@0:8@16@?24
+  required -queryCountryCodeForInterfaceWithName:reply: v32@0:8@16@?24
+  required -queryHostAPModeConfigurationWithInterfaceName:reply: v32@0:8@16@?24
+  required -queryJoinHistoryWithInterfaceName:reply: v32@0:8@16@?24
+  required -queryRoamHistoryWithInterfaceName:reply: v32@0:8@16@?24
+  required -queryScanCacheWithChannels:ssidList:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:interfaceName:reply: v80@0:8@16@24d32q40q48q56@64@?72
+  required -queryScanCacheWithChannels:ssidList:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:trimmedScanResultProperties:interfaceName:reply: v88@0:8@16@24d32q40q48q56@64@72@?80
+  required -queryThermalIndexAndReply: v24@0:8@?16
+  required -relinquishBluetoothPagingLockAndReply: v24@0:8@?16
+  required -relinquishBluetoothPagingLockWithInterfaceName:reply: v32@0:8@16@?24
+  required -relinquishPriorityLockWithToken:reply: v32@0:8q16@?24
+  required -relinquishRequestLockWithType:interfaceName:reply: v40@0:8q16@24@?32
+  required -rememberWiFiProfile:event:reply: v40@0:8@16Q24@?32
+  required -removeWiFiProfileWithID:event:authorization:reply: v48@0:8@16Q24@32@?40
+  required -restoreJoinConfigurationWithInterfaceName:uuid:reply: v40@0:8@16@24@?32
+  required -saveJoinConfigurationWithInterfaceName:reply: v32@0:8@16@?24
+  required -set2GChainDisable:reassocRequired:forIntefaceName:reply: v40@0:8B16B20@24@?32
+  required -setAutoHotspotMode:reply: v32@0:8q16@?24
+  required -setAutoJoinEnabled:reply: v28@0:8B16@?20
+  required -setAutoJoinTemporarilyDisabled:untilDate:reply: v36@0:8B16@20@?28
+  required -setBluetoothCoexProperty:forKey:interfaceName:reply: v48@0:8@16@24@32@?40
+  required -setBluetoothConnectionReport:forIntefaceName:reply: v40@0:8@16@24@?32
+  required -setCachedLocaleTimeout:timeout:reply: v40@0:8@16d24@?32
+  required -setHostAPModeConfiguration:password:interfaceName:authorization:reply: v56@0:8@16@24@32@40@?48
+  required -setPairwiseMasterKey:interfaceName:token:priority:reply: v56@0:8@16@24q32q40@?48
+  required -setPeerTrafficRegistrationWithConfiguration:interfaceName:reply: v40@0:8@16@24@?32
+  required -setRangeableWithInterfaceName:rangeable:peers:token:priority:reply: v60@0:8@16B24@28q36q44@?52
+  required -setThermalIndex:reply: v32@0:8q16@?24
+  required -setUCMActiveProfileIndices:forIntefaceName:reply: v40@0:8@16@24@?32
+  required -setUCMProfile:atIndex:forInterfaceName:reply: v48@0:8@16@24@32@?40
+  required -setULOFDMAStateForBluetoothCoexistence:forIntefaceName:reply: v36@0:8B16@20@?28
+  required -setWEPKey:flags:index:interfaceName:token:priority:reply: v72@0:8@16Q24q32@40q48q56@?64
+  required -setWiFiChannel:interfaceName:reply: v40@0:8@16@24@?32
+  required -setWiFiEAPKeychainItemforSSID:identity:reply: v40@0:8@16@24@?32
+  required -setWiFiEAPKeychainItemforSSID:username:password:reply: v48@0:8@16@24@32@?40
+  required -setWiFiHostAPModeKeychainItemforInterfaceName:password:reply: v40@0:8@16@24@?32
+  required -setWiFiKeychainItemforSSID:password:reply: v40@0:8@16@24@?32
+  required -setWiFiPowerState:interfaceName:authorization:reply: v44@0:8B16@20@28@?36
+  required -setWoWEnabled:reply: v28@0:8B16@?20
+  required -startAWDLWithInterfaceName:request:token:priority:reply: v56@0:8@16@24q32q40@?48
+  required -startAutoJoinForInterfaceName:reply: v32@0:8@16@?24
+  required -startBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  required -startHostAPModeUsingConfigurationWithInterfaceName:token:priority:reply: v48@0:8@16q24q32@?40
+  required -startHostAPModeWithNetworkName:securityType:channel:password:interfaceName:token:priority:reply: v80@0:8@16Q24@32@40@48q56q64@?72
+  required -startIBSSModeWithSSID:securityType:channel:password:interfaceName:token:priority:authorization:reply: v88@0:8@16Q24@32@40@48q56q64@72@?80
+  required -startMonitoringEventWithType:reply: v32@0:8q16@?24
+  required -startRangingWithInterfaceName:peers:timeout:token:priority:reply: v64@0:8@16@24d32q40q48@?56
+  required -stateInfoWithInterfaceName:reply: v32@0:8@16@?24
+  required -stopAWDLWithInterfaceName:token:priority:reply: v48@0:8@16q24q32@?40
+  required -stopBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  required -stopHostAPModeWithInterfaceName:token:priority:reply: v48@0:8@16q24q32@?40
+  required -stopIBSSModeForInterfaceName:token:priority:authorization:reply: v56@0:8@16q24q32@40@?48
+  required -stopMonitoringAllEventsAndReply: v24@0:8@?16
+  required -stopMonitoringEventWithType:reply: v32@0:8q16@?24
+  required -ucmActiveProfileIndicesForIntefaceName:reply: v32@0:8@16@?24
+  required -ucmProfileAtIndex:forInterfaceName:reply: v40@0:8@16@24@?32
+  required -updateWiFiProfile:authorization:reply: v40@0:8@16@24@?32

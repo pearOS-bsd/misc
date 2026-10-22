@@ -1,0 +1,90 @@
+@class WOWidget : NSObject instanceSize=72
+  ivar +8 _impl 
+  property identifier (T@"NSUUID",N,R)
+  property screen (T@"NSScreen",N,R)
+  property frame (T{CGRect={CGPoint=dd}{CGSize=dd}},N,R)
+  property debugDescription (T@"NSString",N,R)
+  -.cxx_destruct v16@0:8  imp=+0x2c1a7b1c4
+  -debugDescription @16@0:8  imp=+0x2c1a7af38
+  -frame {CGRect={CGPoint=dd}{CGSize=dd}}16@0:8  imp=+0x2c1a7aed4
+  -identifier @16@0:8  imp=+0x2c1a7ad70
+  -init @16@0:8  imp=+0x2c1a7ad60
+  -screen @16@0:8  imp=+0x2c1a7aec4
+@class WOWidgetChange : NSObject instanceSize=80
+  ivar +8 _impl 
+  property kind (TQ,N,R)
+  property widgetIdentfier (T@"NSUUID",N,R)
+  property widgetIdentifier (T@"NSUUID",N,R)
+  property widget (T@"WOWidget",N,R)
+  property debugDescription (T@"NSString",N,R)
+  -.cxx_destruct v16@0:8  imp=+0x2c1a74250
+  -debugDescription @16@0:8  imp=+0x2c1a74048
+  -init @16@0:8  imp=+0x2c1a73c2c
+  -kind Q16@0:8  imp=+0x2c1a73cc8
+  -widget @16@0:8  imp=+0x2c1a73f58
+  -widgetIdentfier @16@0:8  imp=+0x2c1a73d28
+  -widgetIdentifier @16@0:8  imp=+0x2c1a73d90
+@class WOWidgetObservationController : NSObject instanceSize=56
+  ivar +8 _proxy 
+  ivar +16 _delegate 
+  ivar +24 _all 
+  ivar +32 _pendingChanges 
+  ivar +40 _sem 
+  ivar +48 _isDragging 
+  ivar +49 _hasPendingSignificantWidgetChange 
+  property delegate (T@"<WOWidgetObservationControllerDelegate>",N,&)
+  property all (T@"NSArray",N,R)
+  property isDragging (TB,N,R)
+  -.cxx_destruct v16@0:8  imp=+0x2c1a77c10
+  -all @16@0:8  imp=+0x2c1a75590
+  -delegate @16@0:8  imp=+0x2c1a753dc
+  -init @16@0:8  imp=+0x2c1a753b8
+  -isDragging B16@0:8  imp=+0x2c1a756f4
+  -requestAllWidgetsWithCompletionHandler: v24@0:8@?16  imp=+0x2c1a75e64
+  -setDelegate: v24@0:8@16  imp=+0x2c1a75484
+  -showAddWidgetsSheet v16@0:8  imp=+0x2c1a75f80
+@class WidgetObservation.Connection : NSObject <WidgetObservation.ProxyServerInterface> instanceSize=24
+  ivar +8 connectionsManager 
+  ivar +16 xpcConnection 
+  -.cxx_destruct v16@0:8  imp=+0x2c1a824fc
+  -init @16@0:8  imp=+0x2c1a824ec
+  -xpcRequestWidgetsWithCompletion: v24@0:8@?16  imp=+0x2c1a81d64
+  -xpcShowAddSheet v16@0:8  imp=+0x2c1a81f24
+@class WidgetObservation.ConnectionsManager : NSObject <NSXPCListenerDelegate> instanceSize=48
+  ivar +8 delegate 
+  ivar +16 xpcListener 
+  ivar +24 connections 
+  ivar +32 notificationName 
+  -.cxx_destruct v16@0:8  imp=+0x2c1a8172c
+  -init @16@0:8  imp=+0x2c1a80728
+  -listener:shouldAcceptNewConnection: B32@0:8@16@24  imp=+0x2c1a80b78
+@class WidgetObservation.Proxy : NSObject <WidgetObservation.ProxyClientInterface> instanceSize=72
+  ivar +8 connection 
+  ivar +16 delegate 
+  ivar +32 machServiceName 
+  ivar +48 notificationName 
+  ivar +64 notifyToken 
+  ivar +68 xpcHandlersOnMainQueue 
+  -.cxx_destruct v16@0:8  imp=+0x2c1a71b08
+  -init @16@0:8  imp=+0x2c1a6faa4
+  -xpcSignificantWidgetChange v16@0:8  imp=+0x2c1a70c14
+  -xpcWidgetDragStateDidChangeWithIsDragging: v20@0:8B16  imp=+0x2c1a70a68
+  -xpcWidgetsDidChangeWithChanges: v24@0:8@16  imp=+0x2c1a70894
+@class WidgetObservation.WidgetPositionPublisher : _TtCs12_SwiftObject instanceSize=48
+  ivar +16 connections 
+  ivar +24 delegate 
+  ivar +40 widgets 
+@class XPCWidgetChange : NSObject <NSSecureCoding> instanceSize=16
+  ivar +8 box 
+  +supportsSecureCoding B16@0:8  imp=+0x2c1a7428c
+  -.cxx_destruct v16@0:8  imp=+0x2c1a74438
+  -encodeWithCoder: v24@0:8@16  imp=+0x2c1a743c4
+  -init @16@0:8  imp=+0x2c1a74428
+  -initWithCoder: @24@0:8@16  imp=+0x2c1a74388
+@class XPCWidgets : NSObject <NSSecureCoding> instanceSize=16
+  ivar +8 box 
+  +supportsSecureCoding B16@0:8  imp=+0x2c1a7b1d8
+  -.cxx_destruct v16@0:8  imp=+0x2c1a7b388
+  -encodeWithCoder: v24@0:8@16  imp=+0x2c1a7b310
+  -init @16@0:8  imp=+0x2c1a7b374
+  -initWithCoder: @24@0:8@16  imp=+0x2c1a7b2d4

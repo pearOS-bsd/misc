@@ -1,0 +1,245 @@
+@class PAPerfLoggingClientOperation : PAPerfLoggingCoreOperation instanceSize=152
+  ivar +141 _shouldLogResultsToSystemLog B
+  ivar +142 _shouldMonitorWSUpdates B
+  ivar +143 _ended B
+  ivar +144 timeoutTimerSource @"NSObject<OS_dispatch_source>"
+  +existingOperationWithOperationCategory:operationName: @32@0:8@16@24  imp=+0x1a1b35004
+  -_ktraceMarkIntervalTransition:withTransitionType: v28@0:8@16i24  imp=+0x1a1b39454
+  -_ktraceMarkOperationEndWithType: v24@0:8Q16  imp=+0x1a1b35cc8
+  -_ktraceMarkOperationStart v16@0:8  imp=+0x1a1b3563c
+  -_ktraceOperationEventWithID: v20@0:8I16  imp=+0x1a1b35648
+  -_ktraceOperationEventWithID:andString: v28@0:8I16@20  imp=+0x1a1b3947c
+  -dealloc v16@0:8  imp=+0x1a1b35ed0
+  -endWithType:truncateDurationInSeconds: v32@0:8Q16d24  imp=+0x1a1b35814
+  -initAndStartWithOperationCategory:andOperationName:andPid:shouldMonitorWSUpdates: @40@0:8@16@24i32B36  imp=+0x1a1b35158
+  -markIntervalTransition:transitionType:atCGSTimestampInSec:withContext:isWSIntervalTransition: v48@0:8@16i24d28@36B44  imp=+0x1a1b395fc
+  -markOperationStart v16@0:8  imp=+0x1a1b354b4
+@class PAPerfLoggingCoreOperation : NSObject instanceSize=144
+  ivar +8 _operationName @"NSString"
+  ivar +16 _operationCategory @"NSString"
+  ivar +24 _processName @"NSString"
+  ivar +32 _matchingCategoryRegexString @"NSString"
+  ivar +40 _matchingNameRegexString @"NSString"
+  ivar +48 _matchingProcessNameRegexString @"NSString"
+  ivar +56 _pid i
+  ivar +64 _intervalList @"NSMutableArray"
+  ivar +72 _dictionaryOfIntervalTypesEventArrays @"NSMutableDictionary"
+  ivar +80 _intervalTypesSeenOrder @"NSMutableArray"
+  ivar +88 _startTimeInSec d
+  ivar +96 _endTimeInSec d
+  ivar +104 _serialNumber Q
+  ivar +112 _intervalDataDictionary @"NSDictionary"
+  ivar +120 _contextProcessingConfigurationsForAllIntervalTypes @"NSMutableDictionary"
+  ivar +128 _slowWSUpdateInfoArray @"NSMutableArray"
+  ivar +136 _numSlowWSUpdates I
+  ivar +140 _hasSeenWSUpdate B
+  property operationName (T@"NSString",C,N,V_operationName)
+  property operationCategory (T@"NSString",C,N,V_operationCategory)
+  property processName (T@"NSString",C,N,V_processName)
+  property pid (Ti,R,V_pid)
+  property startTimeInSec (Td,R,V_startTimeInSec)
+  property endTimeInSec (Td,R,V_endTimeInSec)
+  property serialNumber (TQ,R,V_serialNumber)
+  property hasSeenWSUpdate (TB,R,V_hasSeenWSUpdate)
+  property slowWSUpdateInfoArray (T@"NSArray",R)
+  property numSlowWSUpdates (TI,R,V_numSlowWSUpdates)
+  +keyForProcessName:operationCategory:andOperationName: @40@0:8@16@24@32  imp=+0x1a1b35120
+  -_addResultsForIntervalsToResultsDict: v24@0:8@16  imp=+0x1a1b38850
+  -_logNumSlowWSUpdates: v20@0:8B16  imp=+0x1a1b38b50
+  -_numWSUpdatesDuringOperation I16@0:8  imp=+0x1a1b35d30
+  -_processIntervalEventStream:withContextProcessingConfiguration: @32@0:8@16@24  imp=+0x1a1b38350
+  -dealloc v16@0:8  imp=+0x1a1b35f2c
+  -endTimeInSec d16@0:8  imp=+0x1a1b3921c
+  -getIntervalDataDictionary @16@0:8  imp=+0x1a1b38ab8
+  -hasSeenWSUpdate B16@0:8  imp=+0x1a1b3922c
+  -initWithProcessName:andOperationCategory:andOperationName:andPid: @44@0:8@16@24@32i40  imp=+0x1a1b35348
+  -logIntervalData: v20@0:8B16  imp=+0x1a1b38c68
+  -markIntervalTransition:transitionType:atCGSTimestampInSec:withContext:isWSIntervalTransition: v48@0:8@16i24d28@36B44  imp=+0x1a1b38d10
+  -markOperationEndTruncatedByDuration: B24@0:8d16  imp=+0x1a1b3604c
+  -markOperationStart v16@0:8  imp=+0x1a1b35734
+  -markSlowFrameFrame:withIntervalRange: v32@0:8^{__CFBoolean=}16@24  imp=+0x1a1b390f4
+  -numSlowWSUpdates I16@0:8  imp=+0x1a1b39224
+  -operationCategory @16@0:8  imp=+0x1a1b357f4
+  -operationDurationInMs d16@0:8  imp=+0x1a1b38338
+  -operationKey @16@0:8  imp=+0x1a1b35448
+  -operationName @16@0:8  imp=+0x1a1b357fc
+  -pid i16@0:8  imp=+0x1a1b39214
+  -processName @16@0:8  imp=+0x1a1b3920c
+  -serialNumber Q16@0:8  imp=+0x1a1b3572c
+  -setContextProcessingConfiguration:forIntervalType: B32@0:8@16@24  imp=+0x1a1b38f64
+  -setOperationCategory: v24@0:8@16  imp=+0x1a1b35438
+  -setOperationName: v24@0:8@16  imp=+0x1a1b35430
+  -setProcessName: v24@0:8@16  imp=+0x1a1b35440
+  -slowWSUpdateInfoArray @16@0:8  imp=+0x1a1b39204
+  -startTimeInSec d16@0:8  imp=+0x1a1b360cc
+  -stringForIntervalEventTimeline @16@0:8  imp=+0x1a1b38ed8
+@class PAPerfLoggingIntervalData : NSObject <PAPerfLoggingResult> instanceSize=144
+  ivar +8 _intervalType @"NSString"
+  ivar +16 _processName @"NSString"
+  ivar +24 _operationCategory @"NSString"
+  ivar +32 _operationName @"NSString"
+  ivar +40 _processedContextDataArray @"NSArray"
+  ivar +48 _processedContextDataUOMsArray @"NSArray"
+  ivar +56 _intervalDurationInMsArray ^d
+  ivar +64 _intervalStartTimeInSecArray ^d
+  ivar +72 _averageIntervalDurationInMs d
+  ivar +80 _standardDeviationIntervalDurationInMs d
+  ivar +88 _normalizedStandardDeviation d
+  ivar +96 _intervalCount Q
+  ivar +104 _numUnpairedTransitions Q
+  ivar +112 _operationStartTimeInSec d
+  ivar +120 _operationEndTimeInSec d
+  ivar +128 _firstIntervalStartInSec d
+  ivar +136 _endOfLastIntervalInSec d
+  property processName (T@"NSString",&,V_processName)
+  property operationCategory (T@"NSString",&,V_operationCategory)
+  property operationName (T@"NSString",&,V_operationName)
+  property intervalType (T@"NSString",&,N,V_intervalType)
+  property intervalDurationInMsArray (T^d,R,V_intervalDurationInMsArray)
+  property intervalStartTimeInSecArray (Tr^d,R,V_intervalStartTimeInSecArray)
+  property averageIntervalDurationInMs (Td,R,V_averageIntervalDurationInMs)
+  property standardDeviationIntervalDurationInMs (Td,R,V_standardDeviationIntervalDurationInMs)
+  property normalizedStandardDeviation (Td,R,V_normalizedStandardDeviation)
+  property intervalRateOverOperationInIntervalsPerSec (Td,R)
+  property intervalRateOverOperationIgnoringDelayInIntervalsPerSec (Td,R)
+  property intervalCount (TQ,V_intervalCount)
+  property numUnpairedIntervalEndsOrStarts (TQ,V_numUnpairedTransitions)
+  property totalOperationDurationInMs (Td,R)
+  property operationStartTimeInSec (Td,R,V_operationStartTimeInSec)
+  property operationEndTimeInSec (Td,R,V_operationEndTimeInSec)
+  property initialDelayDurationInMs (Td,R)
+  property trailingDelayDurationInMs (Td,R)
+  property startOfFirstIntervalInSec (Td,R,V_firstIntervalStartInSec)
+  property endOfLastIntervalInSec (Td,R,V_endOfLastIntervalInSec)
+  property timeBetweenOperationStartAndFirstIntervalInMs (Td,R)
+  property processedContextDataArray (T@"NSArray",R,V_processedContextDataArray)
+  property processedContextDataUOMsArray (T@"NSArray",R,V_processedContextDataUOMsArray)
+  -_initializeFieldsFromParentOperationInformation: v24@0:8@16  imp=+0x1a1b37020
+  -_isWSFrameInterval B16@0:8  imp=+0x1a1b36ecc
+  -_logPAPerfLoggingDataValue:uom:doLocalLogging: v36@0:8d16@24B32  imp=+0x1a1b373f4
+  -averageIntervalDurationInMs d16@0:8  imp=+0x1a1b37b90
+  -dealloc v16@0:8  imp=+0x1a1b37260
+  -description @16@0:8  imp=+0x1a1b37348
+  -endOfLastIntervalInSec d16@0:8  imp=+0x1a1b37c2c
+  -finalize v16@0:8  imp=+0x1a1b372ec
+  -initWithIntervalType:andIntervalDurationInMSArray:andIntervalStartTimeInSecArray:ofLength:andNumUnpairedTransitions:andTimeOfFirstIntervalStartInSec:andTimeOfLastIntervalEndInSec:andProcessedMetaDataArray:andProcessedMetaDataUOMsArray:withPAPerfLoggingData: @96@0:8@16^d24^d32Q40Q48d56d64@72@80@88  imp=+0x1a1b370a4
+  -initialDelayDurationInMs d16@0:8  imp=+0x1a1b36fe8
+  -intervalCount Q16@0:8  imp=+0x1a1b37ba8
+  -intervalDurationInMsArray ^d16@0:8  imp=+0x1a1b37c14
+  -intervalRateOverOperationIgnoringDelayInIntervalsPerSec d16@0:8  imp=+0x1a1b36f80
+  -intervalRateOverOperationInIntervalsPerSec d16@0:8  imp=+0x1a1b36f38
+  -intervalStartTimeInSecArray r^d16@0:8  imp=+0x1a1b37c1c
+  -intervalType @16@0:8  imp=+0x1a1b36efc
+  -logIntervalData: v20@0:8B16  imp=+0x1a1b374f0
+  -normalizedStandardDeviation d16@0:8  imp=+0x1a1b37ba0
+  -numUnpairedIntervalEndsOrStarts Q16@0:8  imp=+0x1a1b37bb8
+  -operationCategory @16@0:8  imp=+0x1a1b37bdc
+  -operationEndTimeInSec d16@0:8  imp=+0x1a1b37c0c
+  -operationName @16@0:8  imp=+0x1a1b37bf0
+  -operationStartTimeInSec d16@0:8  imp=+0x1a1b37c04
+  -printTimelineToMutableData: v24@0:8@16  imp=+0x1a1b37778
+  -processName @16@0:8  imp=+0x1a1b37bc8
+  -processedContextDataArray @16@0:8  imp=+0x1a1b37c34
+  -processedContextDataUOMsArray @16@0:8  imp=+0x1a1b37c3c
+  -setIntervalCount: v24@0:8Q16  imp=+0x1a1b37bb0
+  -setIntervalType: v24@0:8@16  imp=+0x1a1b37b88
+  -setNumUnpairedIntervalEndsOrStarts: v24@0:8Q16  imp=+0x1a1b37bc0
+  -setOperationCategory: v24@0:8@16  imp=+0x1a1b37be8
+  -setOperationName: v24@0:8@16  imp=+0x1a1b37bfc
+  -setProcessName: v24@0:8@16  imp=+0x1a1b37bd4
+  -standardDeviationIntervalDurationInMs d16@0:8  imp=+0x1a1b37b98
+  -startOfFirstIntervalInSec d16@0:8  imp=+0x1a1b37c24
+  -timeBetweenOperationStartAndFirstIntervalInMs d16@0:8  imp=+0x1a1b36fe4
+  -totalOperationDurationInMs d16@0:8  imp=+0x1a1b36ee4
+  -trailingDelayDurationInMs d16@0:8  imp=+0x1a1b37004
+@class PAPerfLoggingIntervalTransitionEvent : NSObject instanceSize=40
+  ivar +8 _transitionTimeInSec d
+  ivar +16 _startTransitionCauseIntervalType @"NSString"
+  ivar +24 _transitionType i
+  ivar +32 _context @"NSDictionary"
+  property transitionTimeInSec (Td,R,V_transitionTimeInSec)
+  property transitioningIntervalType (T@"NSString",R,V_startTransitionCauseIntervalType)
+  property transitionType (Ti,R,V_transitionType)
+  property transitionTypeString (T@"NSString",R)
+  property context (T@"NSDictionary",R,V_context)
+  +stringForTransitionTimeline:withStartTimeInSec:andEndTimeInSec: @40@0:8@16d24d32  imp=+0x1a1b36608
+  -_stringForTransitionWithOperationStartTimeInSec:andPreviousEventTimeInSec: @32@0:8d16d24  imp=+0x1a1b364d0
+  -compare: q24@0:8@16  imp=+0x1a1b365a0
+  -context @16@0:8  imp=+0x1a1b36d90
+  -dealloc v16@0:8  imp=+0x1a1b3647c
+  -initWithTransitionType:ofIntervalType:atTimestamp:withContext: @44@0:8i16@20d28@36  imp=+0x1a1b363f0
+  -transitionTimeInSec d16@0:8  imp=+0x1a1b36d80
+  -transitionType i16@0:8  imp=+0x1a1b36d88
+  -transitionTypeString @16@0:8  imp=+0x1a1b36390
+  -transitioningIntervalType @16@0:8  imp=+0x1a1b363cc
+@class PAPerfLoggingOperationCompletionNotification : NSObject instanceSize=40
+  ivar +8 _pid i
+  ivar +16 _matchingProcessNameRegex @"NSString"
+  ivar +24 _startTimeInMachAbsTime Q
+  ivar +32 _endTimeInMachAbsTime Q
+  property processName (T@"NSString",R)
+  property pid (Ti,R,V_pid)
+  property operationCategory (T@"NSString",R)
+  property operationName (T@"NSString",R)
+  property matchingCategoryRegex (T@"NSString",R)
+  property matchingNameRegex (T@"NSString",R)
+  property matchingProcessNameRegex (T@"NSString",R,V_matchingProcessNameRegex)
+  property startTimeInMachAbsTime (TQ,R,V_startTimeInMachAbsTime)
+  property endTimeInMachAbsTime (TQ,R,V_endTimeInMachAbsTime)
+  property durationInMachAbsTime (TQ,R)
+  property detailedReportData (T@"NSData",R)
+  property startTimeInMs (Td,R)
+  property endTimeInMs (Td,R)
+  property durationInMs (Td,R)
+  property intervalTypeToIntervalDataDict (T@"NSDictionary",R)
+  +registerForCompletionNotificationsOnQueue:withHandler: v32@0:8@16@?24  imp=+0x1a1b362b4
+  +unregisterForCompletionNotifications v16@0:8  imp=+0x1a1b362b8
+  -dealloc v16@0:8  imp=+0x1a1b362bc
+  -detailedReportData @16@0:8  imp=+0x1a1b36274
+  -durationInMachAbsTime Q16@0:8  imp=+0x1a1b362ac
+  -durationInMs d16@0:8  imp=+0x1a1b362a4
+  -endTimeInMachAbsTime Q16@0:8  imp=+0x1a1b3630c
+  -endTimeInMs d16@0:8  imp=+0x1a1b3629c
+  -intervalTypeToIntervalDataDict @16@0:8  imp=+0x1a1b3627c
+  -matchingCategoryRegex @16@0:8  imp=+0x1a1b36284
+  -matchingNameRegex @16@0:8  imp=+0x1a1b3628c
+  -matchingProcessNameRegex @16@0:8  imp=+0x1a1b362fc
+  -operationCategory @16@0:8  imp=+0x1a1b36264
+  -operationName @16@0:8  imp=+0x1a1b3626c
+  -pid i16@0:8  imp=+0x1a1b362f4
+  -processName @16@0:8  imp=+0x1a1b3625c
+  -startTimeInMachAbsTime Q16@0:8  imp=+0x1a1b36304
+  -startTimeInMs d16@0:8  imp=+0x1a1b36294
+@class PAPerfLoggingOperationCompletionNotificationIntervalData : NSObject instanceSize=72
+  ivar +8 _intervalType @"NSString"
+  ivar +16 _intervalRateInIntervalsPerSecond d
+  ivar +24 _intervalRateIgnoringDelayInIntervalsPerSecond d
+  ivar +32 _intervalCount Q
+  ivar +40 _averageDurationInMachAbsTime Q
+  ivar +48 _durationStandardDeviationInMachAbsTime Q
+  ivar +56 _initialDelayInMachAbsTime Q
+  ivar +64 _trailingDelayInMachAbsTime Q
+  property intervalType (T@"NSString",R,V_intervalType)
+  property intervalRateInIntervalsPerSecond (Td,R,V_intervalRateInIntervalsPerSecond)
+  property intervalRateIgnoringDelayInIntervalsPerSecond (Td,R,V_intervalRateIgnoringDelayInIntervalsPerSecond)
+  property intervalCount (TQ,R,V_intervalCount)
+  property averageDurationInMachAbsTime (TQ,R,V_averageDurationInMachAbsTime)
+  property durationStandardDeviationInMachAbsTime (TQ,R,V_durationStandardDeviationInMachAbsTime)
+  property initialDelayInMachAbsTime (TQ,R,V_initialDelayInMachAbsTime)
+  property trailingDelayInMachAbsTime (TQ,R,V_trailingDelayInMachAbsTime)
+  property averageDurationInMs (Td,R)
+  property durationStandardDeviationInMs (Td,R)
+  property initialDelayInMs (Td,R)
+  property trailingDelayInMs (Td,R)
+  -averageDurationInMachAbsTime Q16@0:8  imp=+0x1a1b3623c
+  -averageDurationInMs d16@0:8  imp=+0x1a1b361fc
+  -durationStandardDeviationInMachAbsTime Q16@0:8  imp=+0x1a1b36244
+  -durationStandardDeviationInMs d16@0:8  imp=+0x1a1b36204
+  -initialDelayInMachAbsTime Q16@0:8  imp=+0x1a1b3624c
+  -initialDelayInMs d16@0:8  imp=+0x1a1b3620c
+  -intervalCount Q16@0:8  imp=+0x1a1b36234
+  -intervalRateIgnoringDelayInIntervalsPerSecond d16@0:8  imp=+0x1a1b3622c
+  -intervalRateInIntervalsPerSecond d16@0:8  imp=+0x1a1b36224
+  -intervalType @16@0:8  imp=+0x1a1b3621c
+  -trailingDelayInMachAbsTime Q16@0:8  imp=+0x1a1b36254
+  -trailingDelayInMs d16@0:8  imp=+0x1a1b36214

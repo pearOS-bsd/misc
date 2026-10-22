@@ -74,6 +74,7 @@ def one_type(t):
 
 def sig(sel, enc):
     ts = split_enc(enc)
+    if len(ts) < 3: ts = ["@", "@", ":"] + ["@"] * max(0, sel.count(":"))   # unparseable encoding: everything is an object
     ret = one_type(ts[0]); args = [one_type(a) for a in ts[3:]]
     parts = sel.split(":")
     if len(parts) == 1: return ret, parts[0], ""
@@ -87,7 +88,7 @@ for line in open(dump, errors="replace"):
     if line.startswith("@class "):
         m = re.match(r"@class (\S+) : (\S+?)(?: <(.*)>)? instanceSize=(\d+)", line)
         if "." in m.group(1) or "$" in m.group(1): cur = None; continue
-        cur = {"name": m.group(1), "super": m.group(2), "protos": [p.strip() for p in (m.group(3) or "").split(",") if p.strip()], "ivars": [], "props": [], "methods": []}
+        cur = {"name": m.group(1), "super": ("NSObject" if m.group(2) == "-" else m.group(2)), "protos": [p.strip() for p in (m.group(3) or "").split(",") if p.strip()], "ivars": [], "props": [], "methods": []}
         classes.append(cur)
     elif line.startswith("@protocol "):
         cur = {"name": line.split()[1], "methods": []}; protocols.append(cur)
@@ -159,7 +160,10 @@ for c in classes:
     for nm_, enc_ in c["ivars"]: refd.update(re.findall(r'@"([A-Za-z_][A-Za-z_0-9]*)', enc_))
     for nm_, at_ in c["props"]: refd.update(re.findall(r'@"([A-Za-z_][A-Za-z_0-9]*)', at_))
 H += ["@class %s;" % n for n in sorted(refd - dumped)] + ["@class %s;" % c["name"] for c in classes] + [""]
-H += ["@interface %s : NSObject @end   /* stand-in: the class of the real system is not part of this stack */" % n for n in missing_supers] + [""]
+if "--standins" in sys.argv:        # the stand-ins of all frameworks go to one shared header (tools/regen_frameworks.sh merges the lists)
+    open(os.path.join(sys.argv[sys.argv.index("--standins") + 1], name + ".txt"), "w").write("\n".join(missing_supers) + "\n")
+else:
+    H += ["@interface %s : NSObject @end   /* stand-in: the class of the real system is not part of this stack */" % n for n in missing_supers] + [""]
 H += ["@protocol %s;" % p["name"] for p in protocols] + [""]
 for p in protocols:
     H.append("@protocol %s" % p["name"]); cur_kind = None
