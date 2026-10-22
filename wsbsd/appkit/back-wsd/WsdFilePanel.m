@@ -1099,6 +1099,7 @@ static void wsdSetName(id self, SEL _cmd, NSString *v) { objc_setAssociatedObjec
 @implementation WsdFinderSupport
 + (void)roundWindow:(NSWindow *)w radius:(int)r { RoundWindow(w, r); }
 + (BOOL)drawSymbol:(NSString *)name inRect:(NSRect)cell size:(CGFloat)pt weight:(int)weight color:(NSColor *)c { return WsdSymbolDraw(name, cell, pt, weight, c); }
++ (void)drawIconOfName:(NSString *)name directory:(BOOL)dir inRect:(NSRect)r { if (dir) DrawDirIcon(r, name); else DrawFileIcon(r, name); }
 @end
 void WsdInstallFilePanel(void)
 {

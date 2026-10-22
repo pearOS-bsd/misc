@@ -6,9 +6,16 @@
 @interface NSObject (WsdFinderSupport)
 + (void)roundWindow:(NSWindow *)w radius:(int)r;
 + (BOOL)drawSymbol:(NSString *)name inRect:(NSRect)cell size:(CGFloat)pt weight:(int)weight color:(NSColor *)c;
++ (void)drawIconOfName:(NSString *)name directory:(BOOL)dir inRect:(NSRect)r;
 @end
 
-NSString *TFSizeString(unsigned long long b) { return [NSByteCountFormatter stringFromByteCount: (long long)b countStyle: NSByteCountFormatterCountStyleFile]; }
+NSString *TFSizeString(unsigned long long b)                                              /* as the Finder writes it: bytes below 1000, then KB / MB / GB with decimal units */
+{
+	if (b == 0) return @"Zero bytes"; if (b < 1000) return [NSString stringWithFormat: @"%llu byte%s", b, b == 1 ? "" : "s"];
+	double v = b / 1000.0; if (v < 1000) return [NSString stringWithFormat: @"%.0f KB", v];
+	const char *u[] = { "MB", "GB", "TB" }; int k = 0; v /= 1000; while (v >= 1000 && k < 2) { v /= 1000; k++; }
+	NSString *n = [NSString stringWithFormat: @"%.1f", v]; if ([n hasSuffix: @".0"]) n = [n substringToIndex: [n length] - 2]; return [NSString stringWithFormat: @"%@ %s", n, u[k]];
+}
 NSString *TFDateString(NSDate *d)
 {
 	if (!d) return @""; NSCalendar *cal = [NSCalendar currentCalendar]; NSDateFormatter *tf = [[NSDateFormatter alloc] init]; [tf setDateFormat: @"HH:mm"]; NSString *t = [tf stringFromDate: d];
@@ -30,6 +37,19 @@ NSImage *TFIcon(NSString *path)
 {
 	static NSMutableDictionary *cache; if (!cache) cache = [NSMutableDictionary dictionary]; NSString *ext = [[path pathExtension] lowercaseString]; BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &d];
 	NSString *key = d || ![ext length] ? path : [@"." stringByAppendingString: ext]; NSImage *i = cache[key]; if (!i) { i = [[NSWorkspace sharedWorkspace] iconForFile: path]; if (i) cache[key] = i; } return i;
+}
+void TFDrawIcon(NSString *path, NSRect r)                                                    /* the icon as the Mac draws it (the panel's recipes: folder bitmap, document page with symbol and label), the volume and the apps from the system icons */
+{
+	NSFileManager *fm = [NSFileManager defaultManager]; BOOL d = NO; [fm fileExistsAtPath: path isDirectory: &d]; Class k = NSClassFromString(@"WsdFinderSupport");
+	if (k && ![path isEqual: @"/"] && ![[path pathExtension] isEqual: @"app"]) { [k drawIconOfName: [path lastPathComponent] directory: d inRect: r]; return; }
+	NSImage *i = TFIcon(path); if (i) [i drawInRect: r fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1];
+}
+static NSImage *Thumb(NSString *path)                                                       /* the picture itself for image files, scaled once */
+{
+	static NSMutableDictionary *cache; if (!cache) cache = [NSMutableDictionary dictionary]; NSString *ext = [[path pathExtension] lowercaseString]; if (![@[ @"png", @"jpg", @"jpeg", @"gif", @"tiff", @"tif", @"bmp" ] containsObject: ext]) return nil;
+	id hit = cache[path]; if (hit) return hit == [NSNull null] ? nil : hit; NSDictionary *at = [[NSFileManager defaultManager] attributesOfItemAtPath: path error: NULL]; NSImage *src = [at[NSFileSize] unsignedLongLongValue] < 24000000 ? [[NSImage alloc] initWithContentsOfFile: path] : nil;
+	if (!src || [src size].width < 1) { cache[path] = [NSNull null]; return nil; } NSSize z = [src size]; CGFloat k = 128.0 / MAX(z.width, z.height); NSSize t = NSMakeSize(MAX(1, round(z.width * k)), MAX(1, round(z.height * k)));
+	NSImage *out = [[NSImage alloc] initWithSize: t]; [out lockFocus]; [src drawInRect: NSMakeRect(0, 0, t.width, t.height) fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; [out unlockFocus]; cache[path] = out; return out;
 }
 static NSString *Truncated(NSString *s, NSDictionary *at, CGFloat w)             /* the middle replaced by an ellipsis until it fits */
 {
@@ -125,7 +145,9 @@ static const CGFloat kCW = 112, kCH = 126, kPad = 10, kIcon = 64;
 		NSRect c = [self _cell: i]; if (NSMaxY(c) < v.origin.y || c.origin.y > NSMaxY(v)) continue; NSMutableDictionary *it = _items[i]; BOOL sel = [_sel containsIndex: i];
 		NSRect ir = NSMakeRect(c.origin.x + 24, c.origin.y + 4, kIcon, kIcon);
 		if (sel) FillRound(NSInsetRect(ir, -4, -4), 6, key ? TFRGBA(255, 255, 255, 0.14) : TFRGB(52, 52, 52));
-		NSImage *icon = TFIcon(it[@"path"]); if (icon) [icon drawInRect: ir fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1];
+		NSImage *thumb = Thumb(it[@"path"]); 
+		if (thumb) { NSSize z = [thumb size]; CGFloat k = MIN(kIcon / z.width, kIcon / z.height); NSRect tr = NSMakeRect(NSMidX(ir) - z.width * k / 2, NSMidY(ir) - z.height * k / 2, z.width * k, z.height * k); [TFRGBA(0, 0, 0, 0.35) setFill]; NSRectFill(NSOffsetRect(tr, 0, 1)); [thumb drawInRect: tr fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; }
+		else TFDrawIcon(it[@"path"], ir);
 		NSArray *lines = it[@"lines"]; if (!lines) { lines = WrapLabel(it[@"name"], lab, kCW - 12, 2); it[@"lines"] = lines; }
 		CGFloat y = c.origin.y + 81; CGFloat lh = 16;
 		for (NSString *ln in lines) {
@@ -205,7 +227,7 @@ static const CGFloat kRow = 24, kHead = 28;
 	for (NSInteger i = 0; i < (NSInteger)[_items count]; i++) {
 		CGFloat y = 4 + i * kRow; if (y + kRow < v.origin.y || y > NSMaxY(v)) continue; NSDictionary *it = _items[i]; BOOL sel = [_sel containsIndex: i]; CGFloat cy = y + kRow / 2;
 		if (sel) FillRound(NSMakeRect(8, y, w - 16 - 10, kRow), 6, key ? TF_ACCENT : TFRGB(70, 70, 70)); else if (i % 2) FillRound(NSMakeRect(8, y, w - 16 - 10, kRow), 6, TFDark() ? TFRGBA(255, 255, 255, 0.04) : TFRGBA(0, 0, 0, 0.04));
-		NSColor *tc = sel ? TFRGB(255, 255, 255) : TF_TEXT, *dc = sel ? TFRGBA(255, 255, 255, 0.8) : TF_DIM; NSImage *ic = TFIcon(it[@"path"]); if (ic) [ic drawInRect: NSMakeRect(18, cy - 8, 16, 16) fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1];
+		NSColor *tc = sel ? TFRGB(255, 255, 255) : TF_TEXT, *dc = sel ? TFRGBA(255, 255, 255, 0.8) : TF_DIM; TFDrawIcon(it[@"path"], NSMakeRect(18, cy - 8, 16, 16));
 		for (NSArray *c in cols) {
 			NSString *k = c[0], *s; CGFloat x = [c[2] doubleValue] + ([k isEqual: @"name"] ? 42 : 8), cw = [c[3] doubleValue] - ([k isEqual: @"name"] ? 50 : 16); NSDictionary *at = Font(13, NO, [k isEqual: @"name"] ? tc : dc);
 			if ([k isEqual: @"name"]) s = it[@"name"]; else if ([k isEqual: @"date"]) s = TFDateString(it[@"date"]); else if ([k isEqual: @"size"]) s = [it[@"size"] longLongValue] < 0 ? @"--" : TFSizeString([it[@"size"] unsignedLongLongValue]); else s = it[@"kind"];
@@ -279,7 +301,7 @@ static const CGFloat kColW = 240, kColRow = 24;
 		for (NSInteger i = 0; i < (NSInteger)[items count]; i++) {
 			CGFloat y = 6 + i * kColRow - off; if (y + kColRow < 0 || y > b.size.height) continue; NSDictionary *it = items[i]; BOOL isSel = i == sel, active = ci == [_cols count] - 1 || ![it[@"dir"] boolValue];
 			if (isSel) FillRound(NSMakeRect(x + 6, y, kColW - 12, kColRow), 6, key && ci + 1 >= [_cols count] ? TF_ACCENT : TFRGB(70, 70, 70)); (void)active;
-			NSImage *ic = TFIcon(it[@"path"]); if (ic) [ic drawInRect: NSMakeRect(x + 14, y + 4, 16, 16) fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1];
+			TFDrawIcon(it[@"path"], NSMakeRect(x + 14, y + 4, 16, 16));
 			NSDictionary *at = isSel ? Font(13, NO, TFRGB(255, 255, 255)) : tx; TextAt(Truncated(it[@"name"], at, kColW - 70), x + 38, y + kColRow / 2, at);
 			if ([it[@"dir"] boolValue]) TFSymbol(@"chevron.right", NSMakeRect(x + kColW - 26, y, 12, kColRow), 9, isSel ? TFRGB(255, 255, 255) : TF_DIM);
 		}
@@ -287,8 +309,7 @@ static const CGFloat kColW = 240, kColRow = 24;
 	}
 	NSMutableDictionary *last = [_cols lastObject]; NSInteger ls = [last[@"sel"] integerValue];
 	if (ls >= 0 && ![last[@"items"][ls][@"dir"] boolValue]) {                                                                                                    /* the preview of a file */
-		NSString *p = last[@"items"][ls][@"path"]; CGFloat x = [_cols count] * kColW - _hoff; NSDictionary *at = [[NSFileManager defaultManager] attributesOfItemAtPath: p error: NULL]; NSImage *ic = TFIcon(p);
-		if (ic) [ic drawInRect: NSMakeRect(x + kColW / 2 - 48, 30, 96, 96) fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1];
+		NSString *p = last[@"items"][ls][@"path"]; CGFloat x = [_cols count] * kColW - _hoff; NSDictionary *at = [[NSFileManager defaultManager] attributesOfItemAtPath: p error: NULL]; TFDrawIcon(p, NSMakeRect(x + kColW / 2 - 48, 30, 96, 96));
 		NSMutableParagraphStyle *ps = [[NSMutableParagraphStyle alloc] init]; [ps setAlignment: NSTextAlignmentCenter]; [ps setLineBreakMode: NSLineBreakByTruncatingMiddle];
 		[[p lastPathComponent] drawInRect: NSMakeRect(x + 10, 134, kColW - 20, 18) withAttributes: @{ NSFontAttributeName: [NSFont boldSystemFontOfSize: 13], NSForegroundColorAttributeName: TF_TEXT, NSParagraphStyleAttributeName: ps }];
 		[[NSString stringWithFormat: @"%@ - %@", TFKindString(p, NO), TFSizeString([at[NSFileSize] unsignedLongLongValue])] drawInRect: NSMakeRect(x + 10, 154, kColW - 20, 16) withAttributes: @{ NSFontAttributeName: [NSFont systemFontOfSize: 11], NSForegroundColorAttributeName: TF_DIM, NSParagraphStyleAttributeName: ps }];
@@ -378,8 +399,7 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 {
 	NSRect b = [self bounds]; [TF_PATHBAR setFill]; NSRectFill(b); [TF_LINE setFill]; NSRectFill(NSMakeRect(0, 0, b.size.width, 1)); _rects = [NSMutableArray array]; CGFloat x = 5; NSDictionary *at = Font(11, NO, TF_TEXT);
 	for (NSString *p in _paths) {
-		NSString *name = [p isEqual: @"/"] ? @"Macintosh HD" : [p lastPathComponent]; CGFloat tw = [name sizeWithAttributes: at].width, w = tw + 34; NSImage *ic = TFIcon(p);
-		if (ic) [ic drawInRect: NSMakeRect(x + 6, 8, 14, 14) fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; TextAt(name, x + 24, 15, at);
+		NSString *name = [p isEqual: @"/"] ? @"Macintosh HD" : [p lastPathComponent]; CGFloat tw = [name sizeWithAttributes: at].width, w = tw + 34; TFDrawIcon(p, NSMakeRect(x + 6, 8, 14, 14)); TextAt(name, x + 24, 15, at);
 		if (p != [_paths lastObject]) TFSymbol(@"chevron.right", NSMakeRect(x + w - 12, 0, 8, 30), 8, TF_DIM);
 		[_rects addObject: [NSValue valueWithRect: NSMakeRect(x, 0, w, 30)]]; x += w;
 	}
