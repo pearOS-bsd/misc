@@ -7,6 +7,11 @@ The hand-written code then replaces the stubs one method at a time, the interfac
 import re, sys, os
 dump, name, outdir = sys.argv[1], sys.argv[2], sys.argv[3]
 skip = set(); skipclass = set()
+coding = {}   # class -> [(key, kind)] the real encodeWithCoder: writes (docs/corewlan/coding.txt, from tools/cwprobe/coding_probe.m)
+if "--coding" in sys.argv:
+    for l in open(sys.argv[sys.argv.index("--coding") + 1]):
+        if ": " not in l: continue
+        cn, rest = l.rstrip("\n").split(": ", 1); coding[cn] = [tuple(x.split(":", 1)[0:2]) for x in rest.split(" ") if ":" in x]
 if "--skip-class" in sys.argv: skipclass = set(sys.argv[sys.argv.index("--skip-class") + 1].split(","))
 if "--skip" in sys.argv:
     for l in open(sys.argv[sys.argv.index("--skip") + 1]):
@@ -180,7 +185,7 @@ for c in order:
     if c["name"] in skipclass: M.append("/* the methods of %s are hand-written (sdk/src/CoreWLAN/%s_impl.m) */" % (c["name"], c["name"])); M.append("@end"); M.append(""); continue
     cprotos = c["protos"]; nvals = any(True for nm, attrs in c["props"] if any(i == prop_decl(nm, attrs)[1] for i, _ in c["ivars"]))
     auto = set()
-    if nvals and ("NSCoding" in cprotos or "NSSecureCoding" in cprotos): auto |= {"encodeWithCoder:", "initWithCoder:"}
+    if (nvals or c["name"] in coding) and ("NSCoding" in cprotos or "NSSecureCoding" in cprotos): auto |= {"encodeWithCoder:", "initWithCoder:"}
     if "NSSecureCoding" in cprotos: auto |= {"supportsSecureCoding"}
     if nvals and ("NSCopying" in cprotos or "NSMutableCopying" in cprotos): auto |= {"copyWithZone:"}
     if any(True for nm, attrs in c["props"]): auto |= {"dealloc"}
@@ -225,7 +230,35 @@ for c in order:
         if t in ("f", "d"): return "%s = [c decodeDoubleForKey:%s];" % (iv, k)
         if t in ("c", "C", "s", "S", "i", "I", "l", "L", "q", "Q"): return "%s = (%s)[c decodeInt64ForKey:%s];" % (iv, one_type(t), k)
         return ""
-    if (has("NSCoding") or has("NSSecureCoding")) and vals:
+    if (has("NSCoding") or has("NSSecureCoding")) and c["name"] in coding:
+        # the keys and kinds the real class writes: "_ivar" keys, the superclass's first
+        ents = [(k, kd.split("=")[0]) for k, kd in coding[c["name"]]]
+        sup = [(k, kd.split("=")[0]) for k, kd in coding.get(c["super"], [])] if c["super"] in coding else []
+        callsuper = bool(sup) and ents[:len(sup)] == sup and (sup_has("NSCoding") or sup_has("NSSecureCoding"))
+        own = ents[len(sup):] if callsuper else ents
+        ivt = dict(c["ivars"]); E = []; D = []
+        for k, kind in own:
+            iv_ = k if k in ivt else "_" + k if "_" + k in ivt else next((i for i in ivt if i.lstrip("_").lower() == k.lstrip("_").lower()), None)
+            if iv_ is None: continue
+            t = ivt[iv_]; q = '@"%s"' % k; k_ = k; k = iv_
+            isobj = t.startswith("@")
+            if kind == "object":
+                if t.startswith("^"): E.append("[c encodeObject:(id)%s forKey:%s];" % (k, q)); D.append("%s = (void *)[[c decodeObjectForKey:%s] retain];" % (k, q))
+                elif t.startswith("{"): E.append("[c encodeObject:({ unsigned long long r_ = 0; memcpy(&r_, &%s, sizeof %s < 8 ? sizeof %s : 8); [NSNumber numberWithUnsignedLongLong:r_]; }) forKey:%s];" % (k, k, k, q)); D.append("{ unsigned long long r_ = [[c decodeObjectOfClass:[NSNumber class] forKey:%s] unsignedLongLongValue]; memcpy(&%s, &r_, sizeof %s < 8 ? sizeof %s : 8); }" % (q, k, k, k))
+                elif isobj: E.append("[c encodeObject:%s forKey:%s];" % (k, q)); D.append("%s = [[c decodeObjectForKey:%s] retain];" % (k, q))
+                elif t == "B": E.append("[c encodeObject:[NSNumber numberWithBool:%s] forKey:%s];" % (k, q)); D.append("%s = [[c decodeObjectOfClass:[NSNumber class] forKey:%s] boolValue];" % (k, q))
+                elif t in ("f", "d"): E.append("[c encodeObject:[NSNumber numberWithDouble:%s] forKey:%s];" % (k, q)); D.append("%s = [[c decodeObjectOfClass:[NSNumber class] forKey:%s] doubleValue];" % (k, q))
+                elif t in ("C", "S", "I", "L", "Q"): E.append("[c encodeObject:[NSNumber numberWithUnsignedLongLong:%s] forKey:%s];" % (k, q)); D.append("%s = (%s)[[c decodeObjectOfClass:[NSNumber class] forKey:%s] unsignedLongLongValue];" % (k, one_type(t), q))
+                else: E.append("[c encodeObject:[NSNumber numberWithLongLong:%s] forKey:%s];" % (k, q)); D.append("%s = (%s)[[c decodeObjectOfClass:[NSNumber class] forKey:%s] longLongValue];" % (k, one_type(t), q))
+            else:
+                fn = {"bool": "Bool", "int": "Int", "int32": "Int32", "int64": "Int64", "integer": "Integer", "float": "Float", "double": "Double"}.get(kind)
+                if not fn: continue
+                E.append("[c encode%s:%s forKey:%s];" % (fn, k, q)); D.append("%s = (%s)[c decode%sForKey:%s];" % (k, one_type(t), fn, q))
+        if "-%s encodeWithCoder:" % c["name"] not in skip:
+            M.append("- (void)encodeWithCoder:(NSCoder *)c { " + ("[super encodeWithCoder:c]; " if callsuper else "") + " ".join(E) + " }")
+        if "-%s initWithCoder:" % c["name"] not in skip:
+            M.append("- (id)initWithCoder:(NSCoder *)c { self = " + ("[super initWithCoder:c]" if callsuper else "[super init]") + "; if (!self) return nil; " + " ".join(D) + " return self; }")
+    elif (has("NSCoding") or has("NSSecureCoding")) and vals:
         if "-%s encodeWithCoder:" % c["name"] not in skip:
             M.append("- (void)encodeWithCoder:(NSCoder *)c { " + ("[super encodeWithCoder:c]; " if sup_has("NSCoding") or sup_has("NSSecureCoding") else "") + " ".join(enc_stmt(*v) for v in vals) + " }")
         if "-%s initWithCoder:" % c["name"] not in skip:

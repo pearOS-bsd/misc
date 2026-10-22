@@ -20,10 +20,10 @@ static void Lookup(unsigned long long flags, int *band, int *width)
 }
 - (instancetype)initWithCoder:(NSCoder *)c
 {
-	if ((self = [super init])) { NSMutableDictionary *d = [NSMutableDictionary dictionary]; if ([c containsValueForKey: @"channelNumber"]) d[@"CHANNEL"] = @([c decodeInt64ForKey: @"channelNumber"]); if ([c containsValueForKey: @"flags"]) d[@"CHANNEL_FLAGS"] = @([c decodeInt64ForKey: @"flags"]); _info = [d copy]; }
+	if ((self = [super init])) _info = [[c decodeObjectOfClasses: [NSSet setWithObjects: [NSDictionary class], [NSString class], [NSNumber class], nil] forKey: @"_info"] copy];
 	return self;
 }
-- (void)encodeWithCoder:(NSCoder *)c { NSNumber *n = _info[@"CHANNEL"], *f = _info[@"CHANNEL_FLAGS"]; if (n) [c encodeInt64: [n longLongValue] forKey: @"channelNumber"]; if (f) [c encodeInt64: [f longLongValue] forKey: @"flags"]; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject: _info forKey: @"_info"]; }
 - (id)copyWithZone:(NSZone *)z { return [[CWChannel allocWithZone: z] initWithChannel: self]; }
 - (NSDictionary *)info { return _info; }
 - (void)setInfo:(NSDictionary *)i { if (_info != i) { [_info release]; _info = [i copy]; } }
