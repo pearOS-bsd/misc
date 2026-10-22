@@ -1,0 +1,22 @@
+#!/bin/sh
+# PROVIDE: airportd
+# REQUIRE: NETWORKING wpa_supplicant
+# BEFORE: macdesktop
+# KEYWORD: shutdown
+# /usr/libexec/airportd: the Wi-Fi daemon behind CoreWLAN (XPC services com.apple.airportd and com.apple.corewlan-xpc). It uses wpa_supplicant when /var/run/wpa_supplicant exists.
+. /etc/rc.subr
+name="airportd"
+rcvar="airportd_enable"
+command="/usr/libexec/airportd"
+pidfile="/var/run/airportd.pid"
+start_cmd="airportd_start"
+stop_cmd="airportd_stop"
+airportd_start()
+{
+	mkdir -p /var/run/xpc /Library/Preferences
+	export WSBSD_XPC_DIR=/var/run/xpc
+	daemon -f -o /var/log/airportd.log -p $pidfile $command
+}
+airportd_stop() { [ -f $pidfile ] && kill "$(cat $pidfile)" 2>/dev/null; }
+load_rc_config $name
+run_rc_command "$1"
