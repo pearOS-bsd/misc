@@ -352,26 +352,11 @@
 @synthesize requireAdministratorForPower = _requireAdministratorForPower;
 @synthesize requireAdministratorForIBSSMode = _requireAdministratorForIBSSMode;
 @synthesize rememberJoinedNetworks = _rememberJoinedNetworks;
-+ (id)configuration { return nil; }
-+ (id)configurationForInterfaceWithName:(id)a0 { return nil; }
-+ (id)configurationWithConfiguration:(id)a0 { return nil; }
 - (BOOL)commitForInterfaceWithName:(id)a0 authorization:(id)a1 error:(id *)a2 { return 0; }
-- (id)description { return nil; }
-- (unsigned long long)hash { return 0; }
-- (id)init { return self; }
-- (id)initForInterfaceWithName:(id)a0 { return self; }
-- (id)initWithConfiguration:(id)a0 { return self; }
-- (id)initWithInfo:(id)a0 knownNetworks:(id)a1 { return self; }
-- (BOOL)isEqual:(id)a0 { return 0; }
-- (BOOL)isEqualToConfiguration:(id)a0 { return 0; }
-- (id)mutableCopyWithZone:(void *)a0 { return nil; }
 - (id)networkProfileWithSSID:(id)a0 securityType:(unsigned long long)a1 { return nil; }
-- (id)preferredNetworks { return nil; }
 - (void)dealloc { [_info release]; _info = nil; [_networkProfiles release]; _networkProfiles = nil; [super dealloc]; }
 - (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_info forKey:@"info"]; [c encodeObject:_networkProfiles forKey:@"networkProfiles"]; [c encodeBool:_requireAdministratorForAssociation forKey:@"requireAdministratorForAssociation"]; [c encodeBool:_requireAdministratorForPower forKey:@"requireAdministratorForPower"]; [c encodeBool:_requireAdministratorForIBSSMode forKey:@"requireAdministratorForIBSSMode"]; [c encodeBool:_rememberJoinedNetworks forKey:@"rememberJoinedNetworks"]; }
 - (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _info = [[c decodeObjectForKey:@"info"] retain]; _networkProfiles = [[c decodeObjectForKey:@"networkProfiles"] retain]; _requireAdministratorForAssociation = [c decodeBoolForKey:@"requireAdministratorForAssociation"]; _requireAdministratorForPower = [c decodeBoolForKey:@"requireAdministratorForPower"]; _requireAdministratorForIBSSMode = [c decodeBoolForKey:@"requireAdministratorForIBSSMode"]; _rememberJoinedNetworks = [c decodeBoolForKey:@"rememberJoinedNetworks"]; return self; }
-+ (BOOL)supportsSecureCoding { return YES; }
-- (id)copyWithZone:(NSZone *)z { CWConfiguration *o = [[[self class] allocWithZone:z] init]; o->_info = [_info retain]; o->_networkProfiles = [_networkProfiles retain]; o->_requireAdministratorForAssociation = _requireAdministratorForAssociation; o->_requireAdministratorForPower = _requireAdministratorForPower; o->_requireAdministratorForIBSSMode = _requireAdministratorForIBSSMode; o->_rememberJoinedNetworks = _rememberJoinedNetworks; return o; }
 @end
 
 @implementation CWDisplayedScanResult
@@ -525,10 +510,6 @@
 @synthesize corewifi = _corewifi;
 @synthesize xpcClient = _xpcClient;
 @synthesize legacy = _legacy;
-+ (id)interface { return nil; }
-+ (id)interfaceNames { return nil; }
-+ (id)interfaceWithName:(id)a0 { return nil; }
-+ (id)supportedInterfaces { return nil; }
 - (id)IO80211ControllerInfo { return nil; }
 - (BOOL)__powerOfAllRadiosMatches:(int)a0 { return 0; }
 - (id)__scanForLoginWindowModeEnterpriseNetworkWithEAPProfile:(void *)a0 error:(id *)a1 { return nil; }
@@ -536,10 +517,7 @@
 - (void)__setupLegacyEventMonitoring {  }
 - (id)__supportedWLANChannelForChannelNumber:(unsigned long long)a0 { return nil; }
 - (void)acquireBluetoothPagingLockAndReply:(id)a0 {  }
-- (long long)activePHYMode { return 0; }
 - (long long)activeUCMProfileIndexForBand:(long long)a0 error:(id *)a1 { return 0; }
-- (long long)aggregateNoise { return 0; }
-- (long long)aggregateRSSI { return 0; }
 - (id)airplayStatistics { return nil; }
 - (BOOL)associateTo8021XNetwork:(id)a0 error:(id *)a1 { return 0; }
 - (BOOL)associateTo8021XNetwork:(id)a0 remember:(BOOL)a1 error:(id *)a2 { return 0; }
@@ -552,76 +530,50 @@
 - (BOOL)associateToEnterpriseNetwork:(id)a0 username:(id)a1 password:(id)a2 identity:(void *)a3 disableUserInteraction:(BOOL)a4 forceBSSID:(BOOL)a5 remember:(BOOL)a6 possiblyHidden:(BOOL)a7 error:(id *)a8 { return 0; }
 - (BOOL)associateToLoginWindowModeEnterpriseNetworkWithEAPProfile:(void *)a0 username:(id)a1 password:(id)a2 error:(id *)a3 { return 0; }
 - (BOOL)associateToNetwork:(id)a0 parameters:(id)a1 error:(id *)a2 { return 0; }
-- (BOOL)associateToNetwork:(id)a0 password:(id)a1 error:(id *)a2 { return 0; }
-- (BOOL)associateToNetwork:(id)a0 password:(id)a1 forceBSSID:(BOOL)a2 remember:(BOOL)a3 error:(id *)a4 { return 0; }
-- (BOOL)associateToNetwork:(id)a0 password:(id)a1 forceBSSID:(BOOL)a2 remember:(BOOL)a3 possiblyHidden:(BOOL)a4 error:(id *)a5 { return 0; }
 - (BOOL)associateToPasspointNetwork:(id)a0 usingDomainName:(id)a1 error:(id *)a2 { return 0; }
 - (BOOL)associateToSystemModeEnterpriseNetwork:(id)a0 error:(id *)a1 { return 0; }
 - (id)autoJoinHistory { return nil; }
-- (id)availableWLANChannels { return nil; }
 - (id)awdlOperatingMode { return nil; }
-- (id)bssid { return nil; }
-- (id)bssidData { return nil; }
 - (id)btcStatus { return nil; }
 - (BOOL)busy { return 0; }
 - (BOOL)busyUI { return 0; }
-- (id)cachedScanResults { return nil; }
 - (id)cachedTrimmedScanResultsWithProperties:(id)a0 { return nil; }
 - (id)capabilities { return nil; }
 - (BOOL)causedLastWake { return 0; }
 - (id)channel { return nil; }
 - (void)clearANQPCacheForNetwork:(id)a0 {  }
 - (void)clearScanCache {  }
-- (BOOL)commitConfiguration:(id)a0 authorization:(id)a1 error:(id *)a2 { return 0; }
-- (id)configuration { return nil; }
 - (BOOL)connectToTetherDevice:(id)a0 remember:(BOOL)a1 error:(id *)a2 { return 0; }
-- (id)countryCode { return nil; }
-- (id)countryCodeInternal { return nil; }
-- (id)description { return nil; }
 - (void *)device { return 0; }
 - (BOOL)deviceAttached { return 0; }
 - (void)disableHostAPMode {  }
-- (void)disassociate {  }
 - (id)eapolClient { return nil; }
 - (void)enableHostAPMode {  }
 - (BOOL)enableIBSSWithParameters:(id)a0 error:(id *)a1 { return 0; }
-- (id)hardwareAddress { return nil; }
 - (id)hostAPModeConfigurationAndPassword:(id *)a0 { return nil; }
-- (id)hwSupportedWLANChannels { return nil; }
-- (id)initWithInterfaceName:(id)a0 { return self; }
-- (id)initWithInterfaceName:(id)a0 xpcClient:(id)a1 legacy:(BOOL)a2 { return self; }
 - (unsigned long long)interfaceCapabilities { return 0; }
 - (long long)interfaceControlState { return 0; }
-- (long long)interfaceMode { return 0; }
 - (id)interfaceState { return nil; }
 - (id)ipMonitor { return nil; }
 - (BOOL)isAWDLRealTimeModeInProgress { return 0; }
 - (BOOL)isAirPlayInProgress { return 0; }
 - (id)joinHistory { return nil; }
 - (void)joinNetwork:(id)a0 reply:(id)a1 {  }
-- (id)lastNetworkJoined { return nil; }
 - (id)lastPreferredNetworkJoined { return nil; }
 - (id)lastTetherDeviceJoined { return nil; }
-- (id)macAddress { return nil; }
 - (long long)maxNSSSupportedForAP { return 0; }
 - (unsigned long long)maximumLinkSpeed { return 0; }
 - (long long)maximumUCMProfileCount { return 0; }
 - (unsigned long long)mcsIndex { return 0; }
 - (BOOL)monitorMode { return 0; }
-- (id)name { return nil; }
 - (BOOL)networkInterfaceAvailable { return 0; }
 - (id)networkServiceIDs { return nil; }
-- (id)noise { return nil; }
-- (long long)noiseMeasurement { return 0; }
 - (long long)numTXStreams { return 0; }
 - (unsigned long long)numberOfSpatialStreams { return 0; }
 - (id)opMode { return nil; }
 - (id)parentInterfaceName { return nil; }
 - (id)phyMode { return nil; }
-- (unsigned long long)physicalLayerMode { return 0; }
-- (BOOL)power { return 0; }
 - (id)powerDebugInfo { return nil; }
-- (BOOL)powerOn { return 0; }
 - (BOOL)powerRX { return 0; }
 - (BOOL)powerSaveModeEnabled { return 0; }
 - (BOOL)powerTX { return 0; }
@@ -632,8 +584,6 @@
 - (void)relinquishBluetoothPagingLockAndReply:(id)a0 {  }
 - (void)restoreJoinConfigurationWithUUID:(id)a0 reply:(id)a1 {  }
 - (id)roamHistory { return nil; }
-- (id)rssi { return nil; }
-- (long long)rssiValue { return 0; }
 - (void)saveJoinConfigurationAndReply:(id)a0 {  }
 - (id)scanForNetworksWithChannels:(id)a0 ssid:(id)a1 bssid:(id)a2 error:(id *)a3 { return nil; }
 - (id)scanForNetworksWithChannels:(id)a0 ssid:(id)a1 bssid:(id)a2 restTime:(unsigned long long)a3 dwellTime:(unsigned long long)a4 ssidList:(id)a5 error:(id *)a6 { return nil; }
@@ -641,16 +591,10 @@
 - (id)scanForNetworksWithChannels:(id)a0 ssidList:(id)a1 legacyScanSSID:(id)a2 includeHiddenNetworks:(BOOL)a3 mergedScanResults:(BOOL)a4 maxAge:(double)a5 maxMissCount:(long long)a6 maxWakeCount:(long long)a7 maxAutoJoinCount:(long long)a8 waitForWiFi:(BOOL)a9 waitForBluetooth:(BOOL)a10 priority:(long long)a11 error:(id *)a12 { return nil; }
 - (id)scanForNetworksWithChannels:(id)a0 ssidList:(id)a1 legacyScanSSID:(id)a2 includeHiddenNetworks:(BOOL)a3 mergedScanResults:(BOOL)a4 maxAge:(double)a5 maxMissCount:(long long)a6 maxWakeCount:(long long)a7 maxAutoJoinCount:(long long)a8 waitForWiFi:(BOOL)a9 waitForBluetooth:(BOOL)a10 priority:(long long)a11 trimmedScanResultProperties:(id)a12 lowPriority:(BOOL)a13 lowLatency:(BOOL)a14 scanType:(long long)a15 error:(id *)a16 { return nil; }
 - (id)scanForNetworksWithChannels:(id)a0 ssidList:(id)a1 legacyScanSSID:(id)a2 includeHiddenNetworks:(BOOL)a3 mergedScanResults:(BOOL)a4 maxAge:(double)a5 maxMissCount:(long long)a6 maxWakeCount:(long long)a7 maxAutoJoinCount:(long long)a8 waitForWiFi:(BOOL)a9 waitForBluetooth:(BOOL)a10 trimmedScanResultProperties:(id)a11 priority:(long long)a12 error:(id *)a13 { return nil; }
-- (id)scanForNetworksWithName:(id)a0 error:(id *)a1 { return nil; }
-- (id)scanForNetworksWithName:(id)a0 includeHidden:(BOOL)a1 error:(id *)a2 { return nil; }
 - (id)scanForNetworksWithParameters:(id)a0 error:(id *)a1 { return nil; }
-- (id)scanForNetworksWithSSID:(id)a0 error:(id *)a1 { return nil; }
-- (id)scanForNetworksWithSSID:(id)a0 includeHidden:(BOOL)a1 error:(id *)a2 { return nil; }
-- (long long)security { return 0; }
 - (id)securityMode { return nil; }
 - (unsigned long long)securityType { return 0; }
 - (unsigned long long)securityTypeWithNetwork:(id)a0 { return 0; }
-- (BOOL)serviceActive { return 0; }
 - (BOOL)set2GHzChainDisabled:(BOOL)a0 andReassocRequired:(BOOL)a1 error:(id *)a2 { return 0; }
 - (BOOL)setActiveUCMProfileIndexFor2g:(long long)a0 and5g:(long long)a1 error:(id *)a2 { return 0; }
 - (BOOL)setBluetoothCoexProperty:(id)a0 forKey:(id)a1 error:(id *)a2 { return 0; }
@@ -663,15 +607,11 @@
 - (BOOL)setIORegistryBTCoexBooleanPropertyWithName:(id)a0 value:(BOOL)a1 error:(id *)a2 { return 0; }
 - (BOOL)setPairwiseMasterKey:(id)a0 error:(id *)a1 { return 0; }
 - (BOOL)setPeerTrafficRegistrationWithConfiguration:(id)a0 error:(id *)a1 { return 0; }
-- (BOOL)setPower:(BOOL)a0 error:(id *)a1 { return 0; }
 - (BOOL)setRangeable:(BOOL)a0 peers:(id)a1 error:(id *)a2 { return 0; }
 - (BOOL)setUCMProfile:(id)a0 atIndex:(long long)a1 error:(id *)a2 { return 0; }
 - (BOOL)setULOFDMAStateForBluetoothCoexistence:(BOOL)a0 error:(id *)a1 { return 0; }
 - (BOOL)setWEPKey:(id)a0 flags:(unsigned long long)a1 index:(long long)a2 error:(id *)a3 { return 0; }
-- (BOOL)setWLANChannel:(id)a0 error:(id *)a1 { return 0; }
 - (id)sidecarDiagnostics { return nil; }
-- (id)ssid { return nil; }
-- (id)ssidData { return nil; }
 - (BOOL)startAWDL:(id)a0 error:(id *)a1 { return 0; }
 - (BOOL)startHostAPMode:(id *)a0 { return 0; }
 - (BOOL)startHostAPModeWithSSID:(id)a0 securityType:(unsigned long long)a1 channel:(id)a2 password:(id)a3 error:(id *)a4 { return 0; }
@@ -682,19 +622,12 @@
 - (void)stopAWDL {  }
 - (void)stopHostAPMode {  }
 - (void)stopIBSSMode {  }
-- (id)supportedISMChannels { return nil; }
 - (unsigned long long)supportedPhysicalLayerModes { return 0; }
-- (id)supportedWLANChannels { return nil; }
 - (BOOL)supportsShortGI40MHz { return 0; }
-- (long long)transmitPower { return 0; }
-- (double)transmitRate { return 0; }
 - (BOOL)twoGHzChainDisabledAndReturnReassocRequired:(BOOL *)a0 error:(id *)a1 { return 0; }
-- (id)txRate { return nil; }
 - (id)ucmProfileAtIndex:(long long)a0 error:(id *)a1 { return nil; }
 - (id)virtualInterfaceRole { return nil; }
 - (BOOL)wakeOnWirelessEnabled { return 0; }
-- (id)wlanChannel { return nil; }
-- (void)dealloc { [_interfaceName release]; _interfaceName = nil; [_awdlServiceManager release]; _awdlServiceManager = nil; [_corewifi release]; _corewifi = nil; [_xpcClient release]; _xpcClient = nil; [super dealloc]; }
 @end
 
 @implementation CWInterfaceManager
@@ -835,50 +768,19 @@
 + (id)__dataWithHexString:(id)a0 { return nil; }
 + (id)allNetworkProfiles { return nil; }
 + (id)minimalNetworkProfileWithID:(id)a0 { return nil; }
-+ (id)networkProfile { return nil; }
-+ (id)networkProfileWithNetworkProfile:(id)a0 { return nil; }
 - (long long)__compareSecurity:(id)a0 { return 0; }
 - (id)__identifier:(BOOL)a0 { return nil; }
 - (unsigned long long)__supportedSecurityType:(unsigned long long)a0 { return 0; }
-- (BOOL)autoLogin { return 0; }
-- (BOOL)captiveNetwork { return 0; }
 - (id)coreWiFiNetworkProfile { return nil; }
-- (id)description { return nil; }
 - (id)externalForm { return nil; }
-- (unsigned long long)hash { return 0; }
-- (id)identifier { return nil; }
-- (id)init { return self; }
 - (id)initWithExternalForm:(id)a0 { return self; }
 - (id)initWithExternalForm:(id)a0 coreWiFiNetworkProfile:(id)a1 includeProperties:(id)a2 { return self; }
-- (id)initWithNetworkProfile:(id)a0 { return self; }
-- (BOOL)isEqual:(id)a0 { return 0; }
-- (BOOL)isEqualToNetworkProfile:(id)a0 { return 0; }
 - (long long)isMorePreferredThan:(id)a0 { return 0; }
-- (id)lastConnected { return nil; }
-- (unsigned long long)lowDataMode { return 0; }
-- (long long)movingAttribute { return 0; }
-- (id)mutableCopyWithZone:(void *)a0 { return nil; }
 - (id)preferredOrderTimestamp { return nil; }
-- (long long)publicAttribute { return 0; }
-- (long long)security { return 0; }
-- (unsigned long long)securityType { return 0; }
-- (void)setAutoLogin:(BOOL)a0 {  }
-- (void)setCaptiveNetwork:(BOOL)a0 {  }
-- (void)setLowDataMode:(unsigned long long)a0 {  }
-- (void)setMovingAttribute:(long long)a0 {  }
-- (void)setPublicAttribute:(long long)a0 {  }
-- (void)setSecurity:(long long)a0 {  }
-- (void)setSecurityType:(unsigned long long)a0 {  }
-- (void)setShareMode:(long long)a0 {  }
-- (void)setSsidData:(id)a0 {  }
-- (long long)shareMode { return 0; }
-- (id)ssidData { return nil; }
 - (id)userPreferredTimestampWithNetworkProfile:(id)a0 { return nil; }
 - (void)dealloc { [_lastAutoJoinAt release]; _lastAutoJoinAt = nil; [_lastManualJoinAt release]; _lastManualJoinAt = nil; [_domainName release]; _domainName = nil; [_displayName release]; _displayName = nil; [_roamingConsortiumList release]; _roamingConsortiumList = nil; [_naiRealmList release]; _naiRealmList = nil; [_collocatedGroup release]; _collocatedGroup = nil; [_channelHistory release]; _channelHistory = nil; [_bssidList release]; _bssidList = nil; [_payloadUUID release]; _payloadUUID = nil; [_addedAt release]; _addedAt = nil; [_wasHiddenBefore release]; _wasHiddenBefore = nil; [_captiveSheetTimestamp release]; _captiveSheetTimestamp = nil; [_userPreferredOrderTimestamp release]; _userPreferredOrderTimestamp = nil; [_updatedAt release]; _updatedAt = nil; [_discoveredAt release]; _discoveredAt = nil; [_networkGroupID release]; _networkGroupID = nil; [_userPreferredNetworkNames release]; _userPreferredNetworkNames = nil; [_userPreferredPasspointDomains release]; _userPreferredPasspointDomains = nil; [_coreWiFiSpecificAttributes release]; _coreWiFiSpecificAttributes = nil; [_ssid release]; _ssid = nil; [super dealloc]; }
 - (void)encodeWithCoder:(NSCoder *)c { [c encodeObject:_lastAutoJoinAt forKey:@"lastAutoJoinAt"]; [c encodeObject:_lastManualJoinAt forKey:@"lastManualJoinAt"]; [c encodeInt64:(long long)_captiveNetworkStatus forKey:@"captiveNetworkStatus"]; [c encodeBool:_wasCaptiveNetwork forKey:@"wasCaptiveNetwork"]; [c encodeBool:_temporarilyDisabled forKey:@"temporarilyDisabled"]; [c encodeBool:_systemMode forKey:@"systemMode"]; [c encodeBool:_captiveBypass forKey:@"captiveBypass"]; [c encodeBool:_hiddenNetwork forKey:@"hiddenNetwork"]; [c encodeBool:_disabled forKey:@"disabled"]; [c encodeBool:_isPasspoint forKey:@"isPasspoint"]; [c encodeInt64:(long long)_transitionDisabledFlags forKey:@"transitionDisabledFlags"]; [c encodeBool:_standalone6G forKey:@"standalone6G"]; [c encodeObject:_domainName forKey:@"domainName"]; [c encodeObject:_displayName forKey:@"displayName"]; [c encodeObject:_roamingConsortiumList forKey:@"roamingConsortiumList"]; [c encodeObject:_naiRealmList forKey:@"naiRealmList"]; [c encodeBool:_isServiceProviderRoamingEnabled forKey:@"isServiceProviderRoamingEnabled"]; [c encodeBool:_possiblyHiddenNetwork forKey:@"possiblyHiddenNetwork"]; [c encodeObject:_collocatedGroup forKey:@"collocatedGroup"]; [c encodeObject:_channelHistory forKey:@"channelHistory"]; [c encodeInt64:(long long)_roamingProfileType forKey:@"roamingProfileType"]; [c encodeBool:_isPersonalHotspot forKey:@"isPersonalHotspot"]; [c encodeObject:_bssidList forKey:@"bssidList"]; [c encodeInt64:(long long)_userRole forKey:@"userRole"]; [c encodeObject:_payloadUUID forKey:@"payloadUUID"]; [c encodeInt64:(long long)_addedBy forKey:@"addedBy"]; [c encodeObject:_addedAt forKey:@"addedAt"]; [c encodeObject:_wasHiddenBefore forKey:@"wasHiddenBefore"]; [c encodeObject:_captiveSheetTimestamp forKey:@"captiveSheetTimestamp"]; [c encodeObject:_userPreferredOrderTimestamp forKey:@"userPreferredOrderTimestamp"]; [c encodeObject:_updatedAt forKey:@"updatedAt"]; [c encodeObject:_discoveredAt forKey:@"discoveredAt"]; [c encodeObject:_networkGroupID forKey:@"networkGroupID"]; [c encodeInt64:(long long)_networkGroupPriority forKey:@"networkGroupPriority"]; [c encodeObject:_userPreferredNetworkNames forKey:@"userPreferredNetworkNames"]; [c encodeObject:_userPreferredPasspointDomains forKey:@"userPreferredPasspointDomains"]; [c encodeBool:_privacyProxyEnabled forKey:@"privacyProxyEnabled"]; [c encodeObject:_coreWiFiSpecificAttributes forKey:@"coreWiFiSpecificAttributes"]; [c encodeObject:_ssid forKey:@"ssid"]; }
 - (id)initWithCoder:(NSCoder *)c { self = [super init]; if (!self) return nil; _lastAutoJoinAt = [[c decodeObjectForKey:@"lastAutoJoinAt"] retain]; _lastManualJoinAt = [[c decodeObjectForKey:@"lastManualJoinAt"] retain]; _captiveNetworkStatus = (long long)[c decodeInt64ForKey:@"captiveNetworkStatus"]; _wasCaptiveNetwork = [c decodeBoolForKey:@"wasCaptiveNetwork"]; _temporarilyDisabled = [c decodeBoolForKey:@"temporarilyDisabled"]; _systemMode = [c decodeBoolForKey:@"systemMode"]; _captiveBypass = [c decodeBoolForKey:@"captiveBypass"]; _hiddenNetwork = [c decodeBoolForKey:@"hiddenNetwork"]; _disabled = [c decodeBoolForKey:@"disabled"]; _isPasspoint = [c decodeBoolForKey:@"isPasspoint"]; _transitionDisabledFlags = (unsigned long long)[c decodeInt64ForKey:@"transitionDisabledFlags"]; _standalone6G = [c decodeBoolForKey:@"standalone6G"]; _domainName = [[c decodeObjectForKey:@"domainName"] retain]; _displayName = [[c decodeObjectForKey:@"displayName"] retain]; _roamingConsortiumList = [[c decodeObjectForKey:@"roamingConsortiumList"] retain]; _naiRealmList = [[c decodeObjectForKey:@"naiRealmList"] retain]; _isServiceProviderRoamingEnabled = [c decodeBoolForKey:@"isServiceProviderRoamingEnabled"]; _possiblyHiddenNetwork = [c decodeBoolForKey:@"possiblyHiddenNetwork"]; _collocatedGroup = [[c decodeObjectForKey:@"collocatedGroup"] retain]; _channelHistory = [[c decodeObjectForKey:@"channelHistory"] retain]; _roamingProfileType = (long long)[c decodeInt64ForKey:@"roamingProfileType"]; _isPersonalHotspot = [c decodeBoolForKey:@"isPersonalHotspot"]; _bssidList = [[c decodeObjectForKey:@"bssidList"] retain]; _userRole = (long long)[c decodeInt64ForKey:@"userRole"]; _payloadUUID = [[c decodeObjectForKey:@"payloadUUID"] retain]; _addedBy = (unsigned long long)[c decodeInt64ForKey:@"addedBy"]; _addedAt = [[c decodeObjectForKey:@"addedAt"] retain]; _wasHiddenBefore = [[c decodeObjectForKey:@"wasHiddenBefore"] retain]; _captiveSheetTimestamp = [[c decodeObjectForKey:@"captiveSheetTimestamp"] retain]; _userPreferredOrderTimestamp = [[c decodeObjectForKey:@"userPreferredOrderTimestamp"] retain]; _updatedAt = [[c decodeObjectForKey:@"updatedAt"] retain]; _discoveredAt = [[c decodeObjectForKey:@"discoveredAt"] retain]; _networkGroupID = [[c decodeObjectForKey:@"networkGroupID"] retain]; _networkGroupPriority = (unsigned long long)[c decodeInt64ForKey:@"networkGroupPriority"]; _userPreferredNetworkNames = [[c decodeObjectForKey:@"userPreferredNetworkNames"] retain]; _userPreferredPasspointDomains = [[c decodeObjectForKey:@"userPreferredPasspointDomains"] retain]; _privacyProxyEnabled = [c decodeBoolForKey:@"privacyProxyEnabled"]; _coreWiFiSpecificAttributes = [[c decodeObjectForKey:@"coreWiFiSpecificAttributes"] retain]; _ssid = [[c decodeObjectForKey:@"ssid"] retain]; return self; }
-+ (BOOL)supportsSecureCoding { return YES; }
-- (id)copyWithZone:(NSZone *)z { CWNetworkProfile *o = [[[self class] allocWithZone:z] init]; o->_lastAutoJoinAt = [_lastAutoJoinAt retain]; o->_lastManualJoinAt = [_lastManualJoinAt retain]; o->_captiveNetworkStatus = _captiveNetworkStatus; o->_wasCaptiveNetwork = _wasCaptiveNetwork; o->_temporarilyDisabled = _temporarilyDisabled; o->_systemMode = _systemMode; o->_captiveBypass = _captiveBypass; o->_hiddenNetwork = _hiddenNetwork; o->_disabled = _disabled; o->_isPasspoint = _isPasspoint; o->_transitionDisabledFlags = _transitionDisabledFlags; o->_standalone6G = _standalone6G; o->_domainName = [_domainName retain]; o->_displayName = [_displayName retain]; o->_roamingConsortiumList = [_roamingConsortiumList retain]; o->_naiRealmList = [_naiRealmList retain]; o->_isServiceProviderRoamingEnabled = _isServiceProviderRoamingEnabled; o->_possiblyHiddenNetwork = _possiblyHiddenNetwork; o->_collocatedGroup = [_collocatedGroup retain]; o->_channelHistory = [_channelHistory retain]; o->_roamingProfileType = _roamingProfileType; o->_isPersonalHotspot = _isPersonalHotspot; o->_bssidList = [_bssidList retain]; o->_userRole = _userRole; o->_payloadUUID = [_payloadUUID retain]; o->_addedBy = _addedBy; o->_addedAt = [_addedAt retain]; o->_wasHiddenBefore = [_wasHiddenBefore retain]; o->_captiveSheetTimestamp = [_captiveSheetTimestamp retain]; o->_userPreferredOrderTimestamp = [_userPreferredOrderTimestamp retain]; o->_updatedAt = [_updatedAt retain]; o->_discoveredAt = [_discoveredAt retain]; o->_networkGroupID = [_networkGroupID retain]; o->_networkGroupPriority = _networkGroupPriority; o->_userPreferredNetworkNames = [_userPreferredNetworkNames retain]; o->_userPreferredPasspointDomains = [_userPreferredPasspointDomains retain]; o->_privacyProxyEnabled = _privacyProxyEnabled; o->_coreWiFiSpecificAttributes = [_coreWiFiSpecificAttributes retain]; o->_ssid = [_ssid retain]; return o; }
 @end
 
 @implementation CWMutableNetworkProfile
@@ -1119,24 +1021,17 @@
 @synthesize delegate = _delegate;
 + (BOOL)confirmAPIAccessWithRequestType:(long long)a0 info:(id)a1 xpcConnection:(id)a2 { return 0; }
 + (id)interfaceByRole:(long long)a0 { return nil; }
-+ (id)interfaceNames { return nil; }
-+ (id)legacyWiFiClient { return nil; }
 + (unsigned long long)platformCapabilities { return 0; }
 + (id)sharedTemporaryClient { return nil; }
-+ (id)sharedWiFiClient { return nil; }
-+ (id)virtualInterfaceNames { return nil; }
 - (id)__interfaceWithName:(id)a0 { return nil; }
 - (void)__startMonitoringEventWithType:(long long)a0 reply:(id)a1 {  }
 - (void)acquireBluetoothPagingLockAndReply:(id)a0 {  }
 - (BOOL)addWiFiProfile:(id)a0 event:(unsigned long long)a1 addToBottom:(BOOL)a2 authorization:(id)a3 error:(id *)a4 { return 0; }
 - (void)airPlayDidCompleteForWiFiInterfaceWithName:(id)a0 {  }
 - (void)asymmetricInterferenceDetected:(unsigned char)a0 channelGroup:(char)a1 {  }
-- (long long)autoHotspotMode { return 0; }
 - (void)autoJoinDidCompleteForWiFiInterfaceWithName:(id)a0 {  }
 - (void)autoJoinDidStartForWiFiInterfaceWithName:(id)a0 {  }
 - (void)autoJoinDidUpdate:(id)a0 {  }
-- (BOOL)autoJoinTemporarilyDisabled { return 0; }
-- (id)autoJoinTemporarilyDisabledUntilDate { return nil; }
 - (void)bssidDidChangeForWiFiInterfaceWithName:(id)a0 {  }
 - (void)btCoexModeStats:(id)a0 {  }
 - (BOOL)commitConfiguration:(id)a0 interfaceName:(id)a1 authorization:(id)a2 error:(id *)a3 { return 0; }
@@ -1148,16 +1043,8 @@
 - (BOOL)forgetWiFiProfileWithID:(id)a0 event:(unsigned long long)a1 error:(id *)a2 { return 0; }
 - (BOOL)forgetWiFiProfileWithSSID:(id)a0 event:(unsigned long long)a1 error:(id *)a2 { return 0; }
 - (void)foundTetherDevices:(id)a0 {  }
-- (id)init { return self; }
-- (id)initForWiFiUserAgent { return self; }
-- (id)initWithXPCClientType:(long long)a0 { return self; }
-- (id)interface { return nil; }
 - (void)interfaceAddedWithName:(id)a0 {  }
-- (id)interfaceNames { return nil; }
 - (void)interfaceRemovedWithName:(id)a0 {  }
-- (id)interfaceWithName:(id)a0 { return nil; }
-- (id)interfaceWithRole:(long long)a0 { return nil; }
-- (id)interfaces { return nil; }
 - (void)internal_addCloudProfile:(id)a0 {  }
 - (void)internal_confirmAPIAccessWithRequestType:(long long)a0 info:(id)a1 processName:(id)a2 reply:(id)a3 {  }
 - (void)internal_enableTetherDevice:(id)a0 reply:(id)a1 {  }
@@ -1186,12 +1073,10 @@
 - (void)joinDidCompleteForWiFiInterfaceWithName:(id)a0 isAutoJoin:(BOOL)a1 error:(id)a2 {  }
 - (void)joinDidStartForWiFiInterfaceWithName:(id)a0 ssid:(id)a1 {  }
 - (void)linkDidChangeForWiFiInterfaceWithName:(id)a0 {  }
-- (void)linkQualityDidChangeForWiFiInterfaceWithName:(id)a0 rssi:(long long)a1 transmitRate:(double)a2 {  }
 - (void)modeDidChangeForWiFiInterfaceWithName:(id)a0 {  }
 - (unsigned long long)platformCapabilities { return 0; }
 - (void)powerStateDidChangeForWiFiInterfaceWithName:(id)a0 {  }
 - (void)preferencesDidChangeForWiFiInterfaceWithName:(id)a0 {  }
-- (id)queryAllWiFiProfilesAndReturnError:(id *)a0 { return nil; }
 - (void)rangingEndedForWiFiInterfaceWithName:(id)a0 {  }
 - (void)rangingReportEventForWiFiInterfaceWithName:(id)a0 data:(id)a1 error:(id)a2 {  }
 - (void)rangingStartedForWiFiInterfaceWithName:(id)a0 {  }
@@ -1203,9 +1088,6 @@
 - (void)rsnHandshakeDidCompleteForWiFiInterfaceWithName:(id)a0 {  }
 - (void)scanCacheUpdatedForWiFiInterfaceWithName:(id)a0 {  }
 - (void)sdbOpModeDidChange:(unsigned char)a0 channelGroup:(char)a1 {  }
-- (BOOL)setAutoHotspotMode:(long long)a0 error:(id *)a1 { return 0; }
-- (BOOL)setAutoJoinEnabled:(BOOL)a0 error:(id *)a1 { return 0; }
-- (BOOL)setAutoJoinTemporarilyDisabled:(BOOL)a0 error:(id *)a1 { return 0; }
 - (BOOL)setAutoJoinTemporarilyDisabledUntilDate:(id)a0 error:(id *)a1 { return 0; }
 - (BOOL)setThermalIndex:(long long)a0 error:(id *)a1 { return 0; }
 - (BOOL)setWiFiPasswordInSystemKeychain:(id)a0 ssid:(id)a1 error:(id *)a2 { return 0; }
@@ -1213,10 +1095,7 @@
 - (void)softErrorWiFiTCPKATimeoutMitigationDetected:(id)a0 enabled:(BOOL)a1 {  }
 - (void)ssidDidChangeForWiFiInterfaceWithName:(id)a0 {  }
 - (BOOL)startBrowsingForTetherDevicesAndReturnError:(id *)a0 { return 0; }
-- (BOOL)startMonitoringEventWithType:(long long)a0 error:(id *)a1 { return 0; }
 - (BOOL)stopBrowsingForTetherDevicesAndReturnError:(id *)a0 { return 0; }
-- (BOOL)stopMonitoringAllEventsAndReturnError:(id *)a0 { return 0; }
-- (BOOL)stopMonitoringEventWithType:(long long)a0 error:(id *)a1 { return 0; }
 - (void)submitAWDMetric:(id)a0 metricID:(id)a1 reply:(id)a2 {  }
 - (long long)thermalIndex { return 0; }
 - (BOOL)updateWiFiProfile:(id)a0 authorization:(id)a1 error:(id *)a2 { return 0; }
@@ -1225,7 +1104,6 @@
 - (void)weightedWiFiAvgLQM:(id)a0 {  }
 - (void)willShowJoinUIForWiFiNetwork:(id)a0 interfaceName:(id)a1 reply:(id)a2 {  }
 - (void)wowStateDidChangeForWiFiInterfaceWithName:(id)a0 {  }
-- (void)dealloc { [_xpcClient release]; _xpcClient = nil; [super dealloc]; }
 @end
 
 @implementation CWWiFiUIProxyClient
@@ -1297,7 +1175,6 @@
 - (id)__corewifi { return nil; }
 - (id)__corewifiEndpoint { return nil; }
 - (id)corewifi { return nil; }
-- (void)dealloc { [_xpcConnection release]; _xpcConnection = nil; [super dealloc]; }
 @end
 
 @implementation WiFiDeviceClientInternal

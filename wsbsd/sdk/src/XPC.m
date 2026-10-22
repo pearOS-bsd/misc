@@ -8,6 +8,7 @@
 #include <ffi.h>
 #include <dispatch/dispatch.h>
 #include <sys/socket.h>
+#include <poll.h>
 #include <sys/stat.h>
 #include <sys/un.h>
 #include <sys/ucred.h>
@@ -25,6 +26,10 @@ static const char *BlockSignature(id block)
 	const char *p = (const char *)b->descriptor + 2 * sizeof(unsigned long); if (b->flags & (1 << 25)) p += 2 * sizeof(void *);
 	return *(const char **)p;
 }
+/* blocking loops (read, accept) get their own thread: the worker pool of libdispatch is small and a loop that blocks in read(2) would starve the next one */
+static void *ThreadMain(void *arg) { @autoreleasepool { void (^b)(void) = (__bridge_transfer void (^)(void))arg; b(); } return NULL; }
+static void RunDetached(void (^block)(void)) { pthread_t t; pthread_attr_t a; pthread_attr_init(&a); pthread_attr_setdetachstate(&a, PTHREAD_CREATE_DETACHED); pthread_create(&t, &a, ThreadMain, (__bridge_retained void *)[block copy]); pthread_attr_destroy(&a); }
+static BOOL IsBlock(id o) { if (!o) return NO; const char *n = class_getName(object_getClass(o)); return strstr(n, "Block") != NULL; }
 static ffi_type *FfiFor(const char *t)
 {
 	while (*t && strchr("rnNoORV", *t)) t++;
@@ -92,11 +97,15 @@ static NSString *Key(SEL s, NSUInteger a, BOOL r) { return [NSString stringWithF
 - (NSSet *)classesForSelector:(SEL)s argumentIndex:(NSUInteger)a ofReply:(BOOL)r { return _classes[Key(s, a, r)]; }
 - (void)setInterface:(id)i forSelector:(SEL)s argumentIndex:(NSUInteger)a ofReply:(BOOL)r { _ifaces[Key(s, a, r)] = i; }
 - (id)interfaceForSelector:(SEL)s argumentIndex:(NSUInteger)a ofReply:(BOOL)r { return _ifaces[Key(s, a, r)]; }
-- (const char *)typesForSelector:(SEL)s
+static const char *FindTypes(Protocol *p, SEL s, int depth)
 {
-	for (int req = 1; req >= 0; req--) { struct objc_method_description d = protocol_getMethodDescription(_proto, s, req, YES); if (d.name) return d.types; }
-	return NULL;
+	for (int req = 1; req >= 0; req--) { struct objc_method_description d = protocol_getMethodDescription(p, s, req, YES); if (d.name) return d.types; }
+	if (depth > 8) return NULL;
+	unsigned n = 0; Protocol * __unsafe_unretained *adopted = protocol_copyProtocolList(p, &n); const char *r = NULL;
+	for (unsigned i = 0; i < n && !r; i++) r = FindTypes(adopted[i], s, depth + 1);
+	free(adopted); return r;
 }
+- (const char *)typesForSelector:(SEL)s { return FindTypes(_proto, s, 0); }
 @end
 
 @implementation NSXPCListenerEndpoint (Wsbsd)
@@ -126,7 +135,7 @@ static const char kEndpointPath;
 	if (!t) { if ([NSObject instancesRespondToSelector: s]) return [NSObject instanceMethodSignatureForSelector: s]; return nil; }
 	return [NSMethodSignature signatureWithObjCTypes: t];
 }
-- (void)forwardInvocation:(NSInvocation *)inv { [inv retainArguments]; [_conn _sendInvocation: inv proxy: self]; }
+- (void)forwardInvocation:(NSInvocation *)inv { [_conn _sendInvocation: inv proxy: self]; }             /* the arguments are archived before this returns: retainArguments would retain a stack block */
 - (BOOL)respondsToSelector:(SEL)s { return [self methodSignatureForSelector: s] != nil; }
 @end
 
@@ -139,7 +148,7 @@ static void MakeKey(void) { pthread_key_create(&gCurrentKey, NULL); }
 
 @implementation WsXPCConnection {
 	int _fd; NSString *_name, *_path; NSLock *_wlock; NSMutableDictionary *_pending; uint64_t _nextID; dispatch_queue_t _callQ, _replyQ; BOOL _resumed, _invalidated, _server, _eof;
-	pid_t _pid; uid_t _uid; gid_t _gid; NSMutableArray *_blocks; NSMutableArray<NSData *> *_early;
+	BOOL _reading; pid_t _pid; uid_t _uid; gid_t _gid; NSMutableArray *_blocks; NSMutableArray<NSData *> *_early;
 }
 @synthesize exportedInterface, exportedObject, remoteObjectInterface, interruptionHandler, invalidationHandler, facade, exportedIfaceFacade, remoteIfaceFacade;
 - (NSString *)serviceName { return _name; } - (NSString *)path { return _path; }
@@ -162,10 +171,11 @@ static void MakeKey(void) { pthread_key_create(&gCurrentKey, NULL); }
 - (pid_t)processIdentifier { return _pid; } - (uid_t)effectiveUserIdentifier { return _uid; } - (gid_t)effectiveGroupIdentifier { return _gid; }
 - (id)remoteObjectProxyWithErrorHandler:(void (^)(NSError *))h { WsXPCProxy *p = [WsXPCProxy alloc]; p->_conn = self; p->_errorHandler = [h copy]; return p; }
 - (id)synchronousRemoteObjectProxyWithErrorHandler:(void (^)(NSError *))h { WsXPCProxy *p = [WsXPCProxy alloc]; p->_conn = self; p->_errorHandler = [h copy]; p->_sync = YES; return p; }
-- (void)resume { if (_resumed) return; _resumed = YES; dispatch_async(dispatch_get_global_queue(0, 0), ^{ [self _readLoop]; }); }
+- (void)_startReading { @synchronized (self) { if (_reading || _fd < 0 || !_resumed) return; _reading = YES; } RunDetached(^{ [self _readLoop]; }); }
+- (void)resume { _resumed = YES; [self _startReading]; }
 - (void)suspend { }
 - (void)scheduleSendBarrierBlock:(void (^)(void))b { dispatch_async(_callQ, b); }
-- (BOOL)_connectIfNeeded { if (_fd >= 0) return YES; if (_server || !_path) return NO; _fd = ConnectPath(_path); if (_fd >= 0 && _resumed) { dispatch_async(dispatch_get_global_queue(0, 0), ^{ [self _readLoop]; }); } return _fd >= 0; }
+- (BOOL)_connectIfNeeded { if (_fd >= 0) return YES; if (_server || !_path) return NO; _fd = ConnectPath(_path); [self _startReading]; return _fd >= 0; }
 - (void)invalidate
 {
 	if (_invalidated) return; _invalidated = YES; if (_fd >= 0) { shutdown(_fd, SHUT_RDWR); close(_fd); _fd = -1; }
@@ -181,19 +191,19 @@ static void MakeKey(void) { pthread_key_create(&gCurrentKey, NULL); }
 - (void)_sendInvocation:(NSInvocation *)inv proxy:(WsXPCProxy *)proxy
 {
 	WsXPCInterface *ifc = remoteObjectInterface; NSMethodSignature *ms = [inv methodSignature]; NSUInteger n = [ms numberOfArguments];
-	NSMutableArray *args = [NSMutableArray array]; id block = nil; const char *blockSig = NULL;
+	NSMutableArray *args = [NSMutableArray array]; id block = nil; const char *blockSig = NULL; int blockIndex = -1;
 	for (NSUInteger i = 2; i < n; i++) {
 		const char *t = [ms getArgumentTypeAtIndex: i]; char buf[64]; [inv getArgument: buf atIndex: i];
-		if (strncmp(t, "@?", 2) == 0) { block = (__bridge id)*(void **)buf; blockSig = BlockSignature(block); [args addObject: [NSNull null]]; continue; }
+		if (t[0] == '@' && IsBlock((__bridge id)*(void **)buf)) { block = (__bridge id)*(void **)buf; blockSig = BlockSignature(block); blockIndex = (int)i; [args addObject: [NSNull null]]; continue; }
 		[args addObject: Boxed(t, buf)];
 	}
 	(void)ifc;
-	void (^fail)(NSInteger) = ^(NSInteger code) { NSError *e = XPCError(code); if (proxy->_errorHandler) proxy->_errorHandler(e); };
+	void (^fail)(NSInteger) = ^(NSInteger code) { if (getenv("WSBSD_XPC_DEBUG")) fprintf(stderr, "xpc client %s: failed %ld (path %s)\n", [NSStringFromSelector([inv selector]) UTF8String], (long)code, [_path UTF8String]); NSError *e = XPCError(code); if (proxy->_errorHandler) proxy->_errorHandler(e); };
 	if (_invalidated) { fail(4099); return; }
 	if (![self _connectIfNeeded]) { fail(4097); return; }
 	uint64_t cid; WsXPCPending *p = nil;
 	@synchronized (self) { cid = ++_nextID; if (block) { p = [WsXPCPending new]; p->block = [block copy]; p->sig = blockSig ? @(blockSig) : nil; p->errorHandler = proxy->_errorHandler; if (proxy->_sync) p->sem = dispatch_semaphore_create(0); _pending[@(cid)] = p; } }
-	NSMutableDictionary *m = [@{ @"k": @"call", @"id": @(cid), @"sel": NSStringFromSelector([inv selector]), @"args": args } mutableCopy]; if (blockSig) m[@"sig"] = @(blockSig);
+	NSMutableDictionary *m = [@{ @"k": @"call", @"id": @(cid), @"sel": NSStringFromSelector([inv selector]), @"args": args } mutableCopy]; if (blockSig) { m[@"sig"] = @(blockSig); m[@"bi"] = @(blockIndex); }
 	[self _send: m];
 	if (p && p->sem) dispatch_semaphore_wait(p->sem, dispatch_time(DISPATCH_TIME_NOW, 30 * NSEC_PER_SEC));
 	else if (!block && proxy->_sync) { /* no reply: a barrier */ }
@@ -221,12 +231,13 @@ static void ReplyThunk(ffi_cif *cif, void *ret, void **args, void *user)
 {
 	SEL sel = NSSelectorFromString(m[@"sel"]); id target = exportedObject; WsXPCInterface *ifc = exportedInterface; uint64_t cid = [m[@"id"] unsignedLongLongValue];
 	const char *t = ifc ? [ifc typesForSelector: sel] : NULL;
+	if (getenv("WSBSD_XPC_DEBUG")) fprintf(stderr, "xpc call %s types=%s target=%s responds=%d\n", sel_getName(sel), t ?: "(none)", target ? class_getName(object_getClass(target)) : "nil", [target respondsToSelector: sel]);
 	if (!t || ![target respondsToSelector: sel]) { if (m[@"sig"]) { /* answer nothing: the caller's error handler fires on invalidation only */ } return; }
 	NSMethodSignature *ms = [NSMethodSignature signatureWithObjCTypes: t]; NSInvocation *inv = [NSInvocation invocationWithMethodSignature: ms]; [inv setSelector: sel]; [inv setTarget: target];
 	NSArray *args = m[@"args"]; NSMutableArray *keep = [NSMutableArray array];
 	for (NSUInteger i = 2; i < [ms numberOfArguments]; i++) {
 		const char *at = [ms getArgumentTypeAtIndex: i]; char buf[64] = { 0 };
-		if (strncmp(at, "@?", 2) == 0) { id b = m[@"sig"] ? [self _makeReplyBlock: cid sig: m[@"sig"]] : nil; *(void **)buf = (__bridge void *)b; }
+		if (m[@"sig"] && (int)i == [m[@"bi"] intValue]) { id b = [self _makeReplyBlock: cid sig: m[@"sig"]]; *(void **)buf = (__bridge void *)b; }
 		else Unbox(at, i - 2 < [args count] ? args[i - 2] : nil, buf, keep);
 		[inv setArgument: buf atIndex: i];
 	}
@@ -250,9 +261,11 @@ static void ReplyThunk(ffi_cif *cif, void *ret, void **args, void *user)
 	for (;;) {
 		uint32_t n; if (!ReadAll(fd, &n, 4) || n > (64u << 20)) break; NSMutableData *d = [NSMutableData dataWithLength: n]; if (!ReadAll(fd, [d mutableBytes], n)) break;
 		NSKeyedUnarchiver *u = [[NSKeyedUnarchiver alloc] initForReadingWithData: d]; [u setRequiresSecureCoding: NO]; NSDictionary *m = [u decodeObjectForKey: @"m"]; [u finishDecoding]; if (![m isKindOfClass: [NSDictionary class]]) continue;
+		if (getenv("WSBSD_XPC_DEBUG")) fprintf(stderr, "xpc %s fd %d got %s %s\n", _server ? "server" : "client", fd, [[m[@"k"] description] UTF8String], [[m[@"sel"] description] UTF8String]);
 		if ([m[@"k"] isEqual: @"call"]) dispatch_async(_callQ, ^{ [self _handleCall: m]; });
 		else if ([m[@"k"] isEqual: @"reply"]) dispatch_async(_replyQ, ^{ [self _handleReply: m]; });
 	}
+	@synchronized (self) { _reading = NO; }
 	if (_fd == fd && !_invalidated) {
 		close(_fd); _fd = -1;
 		NSArray *ps; @synchronized (self) { ps = [_pending allValues]; [_pending removeAllObjects]; }
@@ -264,7 +277,7 @@ static void ReplyThunk(ffi_cif *cif, void *ret, void **args, void *user)
 @end
 
 /* ---- listener ---- */
-@interface WsXPCListener : NSObject { @public NSString *_name, *_path; int _fd; __weak NSXPCListener *facade; }
+@interface WsXPCListener : NSObject { @public NSString *_name, *_path; int _fd; __weak NSXPCListener *facade; volatile int *_stop; }
 - (void)resume; - (void)invalidate;
 @end
 @implementation WsXPCListener
@@ -273,15 +286,17 @@ static void ReplyThunk(ffi_cif *cif, void *ret, void **args, void *user)
 	if (_fd >= 0 && _fd != 0) return; [[NSFileManager defaultManager] createDirectoryAtPath: XPCDir() withIntermediateDirectories: YES attributes: @{ NSFilePosixPermissions: @0755 } error: nil];
 	unlink([_path fileSystemRepresentation]); _fd = socket(AF_UNIX, SOCK_STREAM, 0); struct sockaddr_un a = { .sun_family = AF_UNIX }; strlcpy(a.sun_path, [_path fileSystemRepresentation], sizeof a.sun_path);
 	if (bind(_fd, (struct sockaddr *)&a, sizeof a) != 0 || listen(_fd, 16) != 0) { close(_fd); _fd = -1; return; } chmod([_path fileSystemRepresentation], 0666);
-	int lfd = _fd; NSXPCListener *f = facade; dispatch_async(dispatch_get_global_queue(0, 0), ^{
-		for (;;) { int c = accept(lfd, NULL, NULL); if (c < 0) { if (errno == EINTR) continue; break; }
+	int lfd = _fd; NSXPCListener *f = facade; volatile int *stop = calloc(1, sizeof(int)); _stop = stop; RunDetached(^{      /* the flag, not the closed descriptor, ends the loop: the number is reused by the next socket */
+		for (;;) { struct pollfd pf = { .fd = lfd, .events = POLLIN }; int pr = poll(&pf, 1, 100); if (*stop) break; if (pr <= 0) continue; int c = accept(lfd, NULL, NULL); if (c < 0) { if (errno == EINTR || errno == EAGAIN) continue; break; }
 			NSXPCConnection *conn = [[NSXPCConnection alloc] init]; WsXPCConnection *st = [[WsXPCConnection alloc] _initWithFD: c]; st.facade = conn; objc_setAssociatedObject(conn, &kConnState, st, OBJC_ASSOCIATION_RETAIN);
 			id<NSXPCListenerDelegate> d = [f delegate];
+			if (getenv("WSBSD_XPC_DEBUG")) fprintf(stderr, "xpc accept on %s (fd %d) delegate=%s\n", [_path UTF8String], c, d ? class_getName(object_getClass(d)) : "nil");
 			BOOL ok = [d respondsToSelector: @selector(listener:shouldAcceptNewConnection:)] ? [d listener: f shouldAcceptNewConnection: conn] : NO;
+			if (getenv("WSBSD_XPC_DEBUG")) fprintf(stderr, "xpc accept: delegate says %d\n", ok);
 			if (ok) { [st resume]; } else close(c); }
 	});
 }
-- (void)invalidate { if (_fd > 0) { close(_fd); _fd = -1; unlink([_path fileSystemRepresentation]); } }
+- (void)invalidate { if (_fd > 0) { if (_stop) *_stop = 1; usleep(150000); close(_fd); _fd = -1; unlink([_path fileSystemRepresentation]); } }
 @end
 
 /* ---- the classes of gnustep-base are stubs that raise "not implemented": their methods are replaced here, the state lives in the helper objects above ---- */
@@ -336,3 +351,31 @@ static WsXPCInterface *IS(NSXPCInterface *i) { return objc_getAssociatedObject(i
 - (void)setInterface:(NSXPCInterface *)i forSelector:(SEL)s argumentIndex:(NSUInteger)a ofReply:(BOOL)r { [IS(self) setInterface: i forSelector: s argumentIndex: a ofReply: r]; }
 - (NSXPCInterface *)interfaceForSelector:(SEL)s argumentIndex:(NSUInteger)a ofReply:(BOOL)r { return [IS(self) interfaceForSelector: s argumentIndex: a ofReply: r]; }
 @end
+
+
+/* ---- default replies: the methods of a protocol a service does not implement answer with a zeroed reply, so that a client never waits for them ---- */
+static void CallBlockZeros(id block)
+{
+	const char *sig = BlockSignature(block); if (!sig) return; NSMethodSignature *ms = [NSMethodSignature signatureWithObjCTypes: sig]; NSUInteger n = [ms numberOfArguments];
+	ffi_type **ats = calloc(n, sizeof(ffi_type *)); void **av = calloc(n, sizeof(void *)); void *bp = (__bridge void *)block; ats[0] = &ffi_type_pointer; av[0] = &bp;
+	for (NSUInteger i = 1; i < n; i++) { const char *at = [ms getArgumentTypeAtIndex: i]; NSUInteger sz, al; NSGetSizeAndAlignment(at, &sz, &al); av[i] = calloc(1, sz < 8 ? 8 : sz); ats[i] = FfiFor(at); }
+	ffi_cif cif; if (ffi_prep_cif(&cif, FFI_DEFAULT_ABI, (unsigned)n, &ffi_type_void, ats) == FFI_OK) ffi_call(&cif, FFI_FN(((struct WsBlock *)bp)->invoke), NULL, av);
+	for (NSUInteger i = 1; i < n; i++) free(av[i]); free(av); free(ats);
+}
+struct DefaultCtx { int blockIndex; };
+static void DefaultThunk(ffi_cif *cif, void *ret, void **args, void *user)
+{
+	struct DefaultCtx *c = user; if (c->blockIndex >= 0) { void *b = *(void **)args[c->blockIndex]; if (b) CallBlockZeros((__bridge id)b); }
+}
+static void InstallFor(Class cls, Protocol *p, int depth)
+{
+	for (int req = 1; req >= 0; req--) { unsigned n = 0; struct objc_method_description *d = protocol_copyMethodDescriptionList(p, req, YES, &n);
+		for (unsigned i = 0; i < n; i++) { if (class_respondsToSelector(cls, d[i].name)) continue; NSMethodSignature *ms = [NSMethodSignature signatureWithObjCTypes: d[i].types]; NSUInteger na = [ms numberOfArguments];
+			ffi_cif *cif = calloc(1, sizeof *cif); ffi_type **ats = calloc(na, sizeof(ffi_type *)); struct DefaultCtx *ctx = calloc(1, sizeof *ctx); ctx->blockIndex = -1;
+			for (NSUInteger k = 0; k < na; k++) { const char *at = [ms getArgumentTypeAtIndex: k]; ats[k] = FfiFor(at); if (strncmp(at, "@?", 2) == 0) ctx->blockIndex = (int)k; }
+			if (ffi_prep_cif(cif, FFI_DEFAULT_ABI, (unsigned)na, &ffi_type_void, ats) != FFI_OK) continue;
+			void *code; ffi_closure *cl = ffi_closure_alloc(sizeof(ffi_closure), &code); ffi_prep_closure_loc(cl, cif, DefaultThunk, ctx, code); class_addMethod(cls, d[i].name, (IMP)code, d[i].types); }
+		free(d); }
+	if (depth > 8) return; unsigned n = 0; Protocol * __unsafe_unretained *adopted = protocol_copyProtocolList(p, &n); for (unsigned i = 0; i < n; i++) InstallFor(cls, adopted[i], depth + 1); free(adopted);
+}
+void WsbsdXPCInstallDefaultReplies(Class cls, Protocol *proto) { InstallFor(cls, proto, 0); }
