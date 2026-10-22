@@ -7231,8 +7231,6 @@
 - (id)windowMenuDidSendAction:(id)a0 { /* 0x100407008 */ return nil; }
 - (id)configureHelpMenu { /* 0x1004071E8 */ return nil; }
 - (id)configureDebugMenu { /* 0x1000157E0 */ return nil; }
-- (id)loadMenuBar { /* 0x1000115A8 */ return nil; }
-- (id)configureMenuBar { /* 0x100013144 */ return nil; }
 - (id)buildRecentFoldersMenu:(id)a0 { /* 0x1000A0994 */ return nil; }
 - (id)resolveNodesAndUpdateRecentFoldersMenu:(id)a0 history:(id)a1 { /* 0x100407284 */ return nil; }
 - (id)resetEditMenuItemTitles { /* 0x1000A7BC0 */ return nil; }
@@ -7276,8 +7274,6 @@
 - (id)cmdEnterTimeMachine:(id)a0 { /* 0x100407D20 */ return nil; }
 - (id)notifyWithFrontPaths { /* 0x100407DD8 */ return nil; }
 - (id)cmdBrowseOtherTimeMachineDisks:(id)a0 { /* 0x100408158 */ return nil; }
-- (id)applicationWillFinishLaunching:(id)a0 { /* 0x100011330 */ return nil; }
-- (id)applicationDidFinishLaunching:(id)a0 { /* 0x10001B3CC */ return nil; }
 - (id)applicationDidBecomeActive:(id)a0 { /* 0x10001B64C */ return nil; }
 - (id)applicationDidResignActive:(id)a0 { /* 0x100408210 */ return nil; }
 - (id)applicationShouldTerminate:(id)a0 { /* 0x100114DF8 */ return nil; }
@@ -7289,7 +7285,6 @@
 - (id)revealHandoffItemWithURL:(id)a0 viewingContainer:(id)a1 { /* 0x100409274 */ return nil; }
 - (id)openUniversalLink:(id)a0 { /* 0x100409358 */ return nil; }
 + (id)startQuitSequence { /* 0x100114C94 */ return nil; }
-+ (id)sharedApplicationController { /* 0x100029A34 */ return nil; }
 + (id)shouldForwardSelectorToGlobalWindowController:(id)a0 { /* 0x100011294 */ return nil; }
 + (id)instanceMethodSignatureForSelector:(id)a0 { /* 0x1004067D4 */ return nil; }
 + (id)menubar { /* 0x1000133C0 */ return nil; }
