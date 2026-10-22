@@ -7,6 +7,7 @@ ls /usr/local/GNUstep/*/Library/Libraries/libopal.so >/dev/null 2>&1 || { sh "$W
 WS="$(cd "$(dirname "$0")/.." && pwd)"; O=/tmp/sdk-compat; mkdir -p $O
 # the CoreFoundation headers of corebase are reached through the wrappers the application builds use
 sh "$WS/sdk/gen-cf-wrappers.sh" $O/cfwrap 2>&1 | tail -1
+export WSBSD_UTI_TABLE="$WS/launchservices/uti_table.json"      # the uniform type table (installed at /System/Library/CoreServices/CoreTypes.bundle/Contents/Resources in the image)
 export CPATH="$O/cfwrap${CPATH:+:$CPATH}"
 sh "$WS/sdk/build-compat.sh" $O 2>&1 | tail -4
 GSL="$(gnustep-config --gui-libs)"
@@ -30,6 +31,12 @@ for pr in "profile_probe cwprofile_probe" "profile_probe2 cwprofile_probe2" "cfg
 	set -- $pr; src=$1; gold=$2
 	clang -x objective-c -fblocks -fobjc-arc -w -I"$WS/sdk/include" -I/usr/local/include $(gnustep-config --objc-flags) "$WS/tools/cwprobe/$src.m" -o "$O/$src" $(gnustep-config --base-libs) -L"$CWL" -L"$CWF" -l:CoreWLAN -l:CoreWiFi -Wl,-rpath,"$CWL" -Wl,-rpath,"$CWF" -L/usr/local/lib -lffi -ldispatch 2>&1 | grep error | head -3
 	if [ -x "$O/$src" ]; then LD_LIBRARY_PATH=/usr/local/GNUstep/System/Library/Libraries:/usr/local/lib "$O/$src" 2>&1 | sed -e 's/0x[0-9a-f]*/PTR/g' -e 's/_processIdentifier:integer=[0-9]*/_processIdentifier:integer=N/' > "$O/$gold.out"; if cmp -s "$O/$gold.out" "$WS/sdk/tests/golden/$gold.txt"; then echo "SDK TEST $gold: ok"; else echo "SDK TEST $gold: FAILED"; diff "$WS/sdk/tests/golden/$gold.txt" "$O/$gold.out" | head -6; FAIL=1; fi; else echo "SDK TEST $gold: did not build"; FAIL=1; fi
+done
+# uniform type identifiers against what the real system printed (tags, conformances, dynamic identifiers): tools/utprobe
+for pr in "ut_probe ut_tags" "ut_probe2 ut_types"; do
+	set -- $pr; src=$1; gold=$2
+	clang -x objective-c -fblocks -w -fobjc-arc -I"$WS/sdk/include" -include "$WS/sdk/include/wsbsd/prelude.h" $(gnustep-config --objc-flags) "$WS/tools/utprobe/$src.m" -o "$O/$src" -L$O -lwsbsdcompat -lQuartzCore -Wl,-rpath,$O $GSL -lopal -lgnustep-corebase -ldispatch -lcrypto -lcurl -lffi 2>&1 | grep error | head -3
+	if [ -x "$O/$src" ]; then WSBSD_UTI_TABLE="$WS/launchservices/uti_table.json" LD_LIBRARY_PATH=$O:/usr/local/GNUstep/System/Library/Libraries:/usr/local/GNUstep/Local/Library/Libraries:/usr/local/lib "$O/$src" "$WS/launchservices/uti_table.json" 2>/dev/null | grep -E '^(ext|mime|ostype) |conf=' > "$O/$gold.out"; if cmp -s "$O/$gold.out" "$WS/sdk/tests/golden/$gold.txt"; then echo "SDK TEST $gold: ok"; else echo "SDK TEST $gold: FAILED"; diff "$WS/sdk/tests/golden/$gold.txt" "$O/$gold.out" | head -6; FAIL=1; fi; else echo "SDK TEST $gold: did not build"; FAIL=1; fi
 done
 # wpa_supplicant backend of airportd against a fake control socket and the IE parser
 clang -x objective-c -fblocks -fobjc-arc -w -I"$WS/sdk/include" -I"$WS/airportd" -I/usr/local/include $(gnustep-config --objc-flags) "$WS/sdk/tests/wpa_backend_tests.m" "$WS/airportd/WSWiFiWpaBackend.m" "$WS/airportd/WSIEParser.m" "$WS/airportd/WSWiFiSimBackend.m" -o "$O/wpa_backend_tests" $(gnustep-config --base-libs) -L/usr/local/lib -ldispatch 2>&1 | grep error | head -5
