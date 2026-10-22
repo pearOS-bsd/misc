@@ -1,0 +1,734 @@
+@class DMAPFS : NSObject instanceSize=16
+  ivar +8 _instPriv @
+  -EFIDriverVersionForContainer:version: i32@0:8^{__DADisk=}16^Q24  imp=+0x1b280a1b4
+  -EFIDriverVersionForMacOSSystemVolume:version: i32@0:8^{__DADisk=}16^Q24  imp=+0x1b280a2f0
+  -addCryptoUsersToVolume:user:newUserRecords:options: i48@0:8^{__DADisk=}16@24@32@40  imp=+0x1b27fdc3c
+  -addCryptoUsersToVolume:user:passdata:newUserRecords:options: i56@0:8^{__DADisk=}16@24@32@40@48  imp=+0x1b27fdc4c
+  -addVolumeToContainer:newFilesystem:newName:options: i48@0:8^{__DADisk=}16@24@32@40  imp=+0x1b27fb1fc
+  -cancelCurrentOperation v16@0:8  imp=+0x1b27f8ca4
+  -capacityCeilingForContainer:size: i32@0:8^{__DADisk=}16^@24  imp=+0x1b280780c
+  -capacityFreeForContainer:free: i32@0:8^{__DADisk=}16^@24  imp=+0x1b2807978
+  -capacityInUseForVolume:used: i32@0:8^{__DADisk=}16^@24  imp=+0x1b2807dac
+  -capacityQuotaForVolume:quotaOrNull: i32@0:8^{__DADisk=}16^@24  imp=+0x1b28081fc
+  -capacityReserveForVolume:reserveOrNull: i32@0:8^{__DADisk=}16^@24  imp=+0x1b2808084
+  -capacityResizeMinimumForContainer:minimum:dpsMinimum:designatedPhysicalStore: i48@0:8^{__DADisk=}16^@24^@32^^{__DADisk}40  imp=+0x1b2807ae4
+  -changeCryptoUserPassdataForVolume:user:oldPassdata:newPassdata:options: i56@0:8^{__DADisk=}16@24@32@40@48  imp=+0x1b27fe21c
+  -changeCryptoUserPassdataForVolume:user:options: i40@0:8^{__DADisk=}16@24@32  imp=+0x1b27fe20c
+  -containerForContainerUUID:container: i32@0:8@16^^{__DADisk}24  imp=+0x1b2806fac
+  -containerForPhysicalStore:container: i32@0:8^{__DADisk=}16^^{__DADisk}24  imp=+0x1b28058fc
+  -containerForVolume:container: i32@0:8^{__DADisk=}16^^{__DADisk}24  imp=+0x1b27a546c
+  -containerSchemeDiskForContainer:schemeDisk: i32@0:8^{__DADisk=}16^^{__DADisk}24  imp=+0x1b2804a2c
+  -containerUUIDForContainer:UUID: i32@0:8^{__DADisk=}16^@24  imp=+0x1b2806e34
+  -containers: i24@0:8^@16  imp=+0x1b280413c
+  -convertFromHFS:dryRun:options: i36@0:8^{__DADisk=}16B24@28  imp=+0x1b27f988c
+  -convertFromHFS:options: i32@0:8^{__DADisk=}16@24  imp=+0x1b27f9cb8
+  -convertFromHFSDryRun:options: i32@0:8^{__DADisk=}16@24  imp=+0x1b27f9d5c
+  -createContainerFromDisks:options: i32@0:8@16@24  imp=+0x1b27fa460
+  -credentialRequirementsForVolume:details: i32@0:8^{__DADisk=}16^@24  imp=+0x1b27ffce4
+  -cryptoMigrationProgressForVolume:percentComplete: i32@0:8^{__DADisk=}16^@24  imp=+0x1b2802810
+  -cryptoMigrationStateForVolume:type:state:pausedState: i48@0:8^{__DADisk=}16^C24^C32^C40  imp=+0x1b28024c8
+  -cryptoMigrationTimeForVolume:timeRemaining: i32@0:8^{__DADisk=}16^d24  imp=+0x1b2802acc
+  -cryptoUserForMacOSUserForVolume:macOSUser:apfsCryptoUser:options: i48@0:8^{__DADisk=}16@24^@32@40  imp=+0x1b28031d4
+  -cryptoUserPassdataHintForVolume:user:hintMessage: i40@0:8^{__DADisk=}16@24^@32  imp=+0x1b28017a4
+  -cryptoUserTypeForVolume:user:type: i40@0:8^{__DADisk=}16@24^C32  imp=+0x1b2800408
+  -cryptoUsersForVolume:users: i32@0:8^{__DADisk=}16^@24  imp=+0x1b2800250
+  -dataRecordForVolume:user:data:options: i48@0:8^{__DADisk=}16@24^@32@40  imp=+0x1b2802d38
+  -dealloc v16@0:8  imp=+0x1b27a5e3c
+  -deleteContainer:reformatToNewNames:options: i40@0:8^{__DADisk=}16@24@32  imp=+0x1b27fa6b4
+  -deleteCryptoUserFromVolume:user:options: i40@0:8^{__DADisk=}16@24@32  imp=+0x1b27fdf4c
+  -deleteSnapshotForVolume:uuid:options: i40@0:8^{__DADisk=}16@24@32  imp=+0x1b27fc00c
+  -deleteVolume:options: i32@0:8^{__DADisk=}16@24  imp=+0x1b27fb688
+  -deleteVolumeGroup:options: i32@0:8@16@24  imp=+0x1b27fc308
+  -designatedPhysicalStoreForContainer:designatedPhysicalStore: i32@0:8^{__DADisk=}16^^{__DADisk}24  imp=+0x1b28045e8
+  -disksForVolumeGroup:volumeDisks:systemVolumeDisks:dataVolumeDisks:userVolumeDisks:container: i64@0:8@16^@24^@32^@40^@48^^{__DADisk}56  imp=+0x1b2805c10
+  -ensureRecoveryBooter:options: i32@0:8^{__DADisk=}16@24  imp=+0x1b27f9e00
+  -eraseVolume:newFilesystem:newName:options: i48@0:8^{__DADisk=}16@24@32@40  imp=+0x1b27fb8cc
+  -getSealedState:sealedState: i32@0:8^{__DADisk=}16^@24  imp=+0x1b280196c
+  -hasCryptoUserForVolume:user:hasUser: i40@0:8^{__DADisk=}16@24^B32  imp=+0x1b27fff9c
+  -init @16@0:8  imp=+0x1b27f8c44
+  -initWithManager: @24@0:8@16  imp=+0x1b27a531c
+  -inquiryCacheEnable: i20@0:8B16  imp=+0x1b27f8d2c
+  -institutionalRecoveryKeyBlobForVolume:keychainFilePath:keyBlob: i40@0:8^{DMUDSPrivRec=Qq[150c]}16@24^@32  imp=+0x1b27f8ff0
+  -isBackupVolume:backupRole: i32@0:8^{__DADisk=}16^B24  imp=+0x1b2808c14
+  -isBasebandVolume:basebandRole: i32@0:8^{__DADisk=}16^B24  imp=+0x1b2808ef4
+  -isCryptoMigratingForVolume:migrating:encrypting: i40@0:8^{__DADisk=}16^B24^B32  imp=+0x1b27a562c
+  -isCryptoUserVolumeOwnerForVolume:user:isOwner: i40@0:8^{__DADisk=}16@24^B32  imp=+0x1b2800a60
+  -isDataVolume:dataRole: i32@0:8^{__DADisk=}16^B24  imp=+0x1b2808d84
+  -isDefragmentationEnabledForContainer:enabled: i32@0:8^{__DADisk=}16^B24  imp=+0x1b27fc99c
+  -isDefragmentationEnabledForVolume:enabled: i32@0:8^{__DADisk=}16^B24  imp=+0x1b27fcb14
+  -isDiskSuitableForConversionFromHFS:suitable:why:options: i48@0:8^{__DADisk=}16^B24^i32@40  imp=+0x1b27f94d8
+  -isEncryptedVolume:encrypted: i32@0:8^{__DADisk=}16^B24  imp=+0x1b2801ad0
+  -isEncryptedVolumeLocked:locked: i32@0:8^{__DADisk=}16^B24  imp=+0x1b2801e10
+  -isEnterpriseDataVolume:enterpriseDataRole: i32@0:8^{__DADisk=}16^B24  imp=+0x1b2809794
+  -isFileVaultEnabled:enabled: i32@0:8^{__DADisk=}16^B24  imp=+0x1b27a5868
+  -isFusionContainer:fusion: i32@0:8^{__DADisk=}16^B24  imp=+0x1b27a5a38
+  -isHardwareVolume:hardwareRole: i32@0:8^{__DADisk=}16^B24  imp=+0x1b2809344
+  -isIDiagsVolume:iDiagsRole: i32@0:8^{__DADisk=}16^B24  imp=+0x1b2809904
+  -isInstallerVolume:installerRole: i32@0:8^{__DADisk=}16^B24  imp=+0x1b2808aa4
+  -isInternalVolume:internalRole: i32@0:8^{__DADisk=}16^B24  imp=+0x1b28094b4
+  -isNoBrowseRoleVolume:shouldNotBrowse: i32@0:8^{__DADisk=}16^B24  imp=+0x1b280a048
+  -isPrebootVolume:prebootRole: i32@0:8^{__DADisk=}16^B24  imp=+0x1b2808374
+  -isRawEncryptedVolume:encrypted: i32@0:8^{__DADisk=}16^B24  imp=+0x1b2801ca0
+  -isRecoveryVolume:recoveryRole: i32@0:8^{__DADisk=}16^B24  imp=+0x1b28087c4
+  -isSidecarVolume:sidecarRole: i32@0:8^{__DADisk=}16^B24  imp=+0x1b2809624
+  -isSystemVolume:systemRole: i32@0:8^{__DADisk=}16^B24  imp=+0x1b2808654
+  -isUpdateVolume:updateRole: i32@0:8^{__DADisk=}16^B24  imp=+0x1b2809064
+  -isUserVolume:userRole: i32@0:8^{__DADisk=}16^B24  imp=+0x1b28084e4
+  -isVMVolume:vmRole: i32@0:8^{__DADisk=}16^B24  imp=+0x1b2808934
+  -isXartVolume:xartRole: i32@0:8^{__DADisk=}16^B24  imp=+0x1b28091d4
+  -macOSUserForCryptoUserForVolume:cryptoUser:macOSUserGUID:options: i48@0:8^{__DADisk=}16@24^@32@40  imp=+0x1b28034b0
+  -mountPointForSnapshot:forVolume:mountPoint: i40@0:8@16^{__DADisk=}24^@32  imp=+0x1b280584c
+  -mountedSnapshotsWithVolumePrefix:snapshots: i32@0:8^{__DADisk=}16^@24  imp=+0x1b2804bec
+  -nameForSnapshot:forVolume:name: i40@0:8@16^{__DADisk=}24^@32  imp=+0x1b28056a0
+  -normalizedVolumeForSnapshotOrNotVolume:volume:snapshot: i40@0:8^{__DADisk=}16^^{__DADisk}24^B32  imp=+0x1b2806c24
+  -physicalStoreForPhysicalStoreUUID:physicalStore: i32@0:8@16^^{__DADisk}24  imp=+0x1b2807350
+  -physicalStoreUUIDForPhysicalStore:UUID: i32@0:8^{__DADisk=}16^@24  imp=+0x1b28071a4
+  -physicalStoresForContainer:physicalStores: i32@0:8^{__DADisk=}16^@24  imp=+0x1b2804370
+  -prebootInfoForLockedOrUnlockedVolume:user:info:options: i48@0:8^{__DADisk=}16@24^@32@40  imp=+0x1b2803790
+  -purgeableSnapshotsForVolume:snapshots: i32@0:8^{__DADisk=}16^@24  imp=+0x1b280513c
+  -rawCapacityInUseForVolume:used: i32@0:8^{__DADisk=}16^@24  imp=+0x1b2807f18
+  -rawDataRecordForVolume:user:data:options: i48@0:8^{__DADisk=}16@24^@32@40  imp=+0x1b2802fb0
+  -resetCryptoUserPassdataForVolume:recoveryUser:recoveryUserPassdata:userToReset:userNewPassdata:options: i64@0:8^{__DADisk=}16@24@32@40@48@56  imp=+0x1b27fe54c
+  -resetCryptoUserPassdataForVolume:recoveryUser:userToReset:options: i48@0:8^{__DADisk=}16@24@32@40  imp=+0x1b27fe538
+  -resizeContainer:newSize:newMapEntries:options: i48@0:8^{__DADisk=}16@24@32@40  imp=+0x1b27faac0
+  -roleForVolume:roleKey:unlocalizedTechnicalName:localizedUserName:symbol:APFSFormat16: i64@0:8^{__DADisk=}16^@24^@32^@40^@48^S56  imp=+0x1b2809a74
+  -runWithPrebootMountedForVolume:blockToRun:options: i40@0:8^{__DADisk=}16@?24@32  imp=+0x1b2803b74
+  -setCryptoUserPassdataHintForVolume:user:hintMessage:options: i48@0:8^{__DADisk=}16@24@32@40  imp=+0x1b27fe878
+  -setDataRecordForVolume:user:data:options: i48@0:8^{__DADisk=}16@24@32@40  imp=+0x1b27feb50
+  -setDefragmentationForContainer:enable:options: i36@0:8^{__DADisk=}16B24@28  imp=+0x1b27fc4f4
+  -setDefragmentationForVolume:enable:options: i36@0:8^{__DADisk=}16B24@28  imp=+0x1b27fc74c
+  -setRoleForVolume:options: i32@0:8^{__DADisk=}16@24  imp=+0x1b27fbdc8
+  -snapshotForMountPoint:uuid:name:volume:container: i56@0:8@16^@24^@32^^{__DADisk}40^^{__DADisk}48  imp=+0x1b2806688
+  -snapshotForName:forVolume:uuid: i40@0:8@16^{__DADisk=}24^@32  imp=+0x1b2805524
+  -snapshotsForVolume:snapshots: i32@0:8^{__DADisk=}16^@24  imp=+0x1b2805094
+  -snapshotsForVolumeOnly:snapshots: i32@0:8^{__DADisk=}16^@24  imp=+0x1b2804d90
+  -startMigrationToDecryptedVolume:options: i32@0:8^{__DADisk=}16@24  imp=+0x1b27ff110
+  -startMigrationToEncryptedVolume:user:newUserRecords:options: i48@0:8^{__DADisk=}16@24@32@40  imp=+0x1b27fede0
+  -startMigrationToEncryptedVolume:user:passdata:newUserRecords:options: i56@0:8^{__DADisk=}16@24@32@40@48  imp=+0x1b27fedf0
+  -stateForLockedVolume:user:rateLimitBackoff:backoffTime:rateLimitLockout: i56@0:8^{__DADisk=}16@24^B32^d40^B48  imp=+0x1b2802054
+  -syncCryptoUserDataRecordsForVolumeGroupSystemToDataRoleVolumes:options: i32@0:8^{__DADisk=}16@24  imp=+0x1b27ff850
+  -unEnsureRecoveryBooter:targetSubject:options: i40@0:8^{__DADisk=}16@24@32  imp=+0x1b27fa0b4
+  -unlockEncryptedVolume:diskUser:anyUser:user:options:details: i56@0:8^{__DADisk=}16B24B28@32@40^@48  imp=+0x1b27fcc84
+  -unlockEncryptedVolume:diskUser:anyUser:user:passphrase:passdata:options: i64@0:8^{__DADisk=}16B24B28@32r*40@48@56  imp=+0x1b27fdc14
+  -unlockEncryptedVolume:diskUser:anyUser:user:passphrase:passdata:options:details: i72@0:8^{__DADisk=}16B24B28@32r*40@48@56^@64  imp=+0x1b27fccb0
+  -updatePrebootForVolume:options: i32@0:8^{__DADisk=}16@24  imp=+0x1b27ffa84
+  -updatePrebootForVolumeFire:completion:options: i40@0:8^{__DADisk=}16@?24@32  imp=+0x1b27ff5e0
+  -verifyCryptoUserPassdataForVolume:options:success: i40@0:8^{__DADisk=}16@24^B32  imp=+0x1b2800eac
+  -verifyCryptoUserPassdataForVolume:user:passdata:success: i48@0:8^{__DADisk=}16@24@32^B40  imp=+0x1b2801184
+  -verifyMDMKeyForVolume:keydata:options:success:details: i56@0:8^{__DADisk=}16@24@32^B40^@48  imp=+0x1b2801330
+  -volumeForVolumeUUID:volume: i32@0:8@16^^{__DADisk}24  imp=+0x1b2807664
+  -volumeGroupForVolume:id: i32@0:8^{__DADisk=}16^@24  imp=+0x1b2805abc
+  -volumeGroupsForContainer:volumeGroups: i32@0:8^{__DADisk=}16^@24  imp=+0x1b28064c8
+  -volumeUUIDForVolume:UUID: i32@0:8^{__DADisk=}16^@24  imp=+0x1b28074f4
+  -volumesForContainer:volumes: i32@0:8^{__DADisk=}16^@24  imp=+0x1b28047b8
+@class DMAPFSPrivVars : NSObject instanceSize=32
+  ivar +8 _dmManager @"DMManager"
+  ivar +16 _inquiryCache_Enable B
+  ivar +24 _inquiryCache_MDict @"NSMutableDictionary"
+@class DMAppleRAID : NSObject instanceSize=16
+  ivar +8 _instPriv @
+  -DADiskToUUID: @24@0:8^{__DADisk=}16  imp=+0x1b2810a6c
+  -DADiskToUUID:lookupMembers:lookupSpares: @32@0:8^{__DADisk=}16B24B28  imp=+0x1b281095c
+  -UUIDToDADisk: ^{__DADisk=}24@0:8@16  imp=+0x1b2810a78
+  -addToRAIDSet:newDisk:type: i40@0:8^{__DADisk=}16^{__DADisk=}24@32  imp=+0x1b2811784
+  -addToRAIDSetUUID:newDisk:type: i40@0:8@16^{__DADisk=}24@32  imp=+0x1b281155c
+  -childrenOfRAID: @24@0:8^{__DADisk=}16  imp=+0x1b2810dfc
+  -createRAIDSetWithDisks:setType:name:format:options: i56@0:8@16@24@32@40@48  imp=+0x1b2810eac
+  -dealloc v16@0:8  imp=+0x1b28108bc
+  -deleteRAIDSet: i24@0:8^{__DADisk=}16  imp=+0x1b2811bb8
+  -deleteRAIDSetUUID: i24@0:8@16  imp=+0x1b28119cc
+  -directRAIDLevelForSet: @24@0:8^{__DADisk=}16  imp=+0x1b2810c28
+  -directRAIDLevelForSetUUID: @24@0:8@16  imp=+0x1b2810d20
+  -enableRAIDSetWithDisk:setType:options: i40@0:8^{__DADisk=}16@24@32  imp=+0x1b281132c
+  -init @16@0:8  imp=+0x1b281072c
+  -initWithManager: @24@0:8@16  imp=+0x1b281078c
+  -isRAIDMember: B24@0:8^{__DADisk=}16  imp=+0x1b2810b8c
+  -isRAIDSet: B24@0:8^{__DADisk=}16  imp=+0x1b2810af0
+  -raidMembers:returnMembers:returnSpares:master: @40@0:8@16B24B28^@32  imp=+0x1b2810ac8
+  -removeFromRAIDSet:disk: i32@0:8^{__DADisk=}16^{__DADisk=}24  imp=+0x1b2811cec
+  -removeFromRAIDSetUUID:memberUUID: i32@0:8@16@24  imp=+0x1b2811ea0
+  -repairRAIDSet:newDisk: i32@0:8^{__DADisk=}16^{__DADisk=}24  imp=+0x1b2812160
+  -repairRAIDSetUUID:newDisk: i32@0:8@16^{__DADisk=}24  imp=+0x1b28120c0
+  -updateRAIDSetParameters:setKey:value: i40@0:8^{__DADisk=}16@24@32  imp=+0x1b2812200
+@class DMAppleRAIDPrivVars : NSObject instanceSize=16
+  ivar +8 _dmManager @"DMManager"
+@class DMCoreStorage : NSObject instanceSize=16
+  ivar +8 _instPriv @
+  -addPhysicalVolumeDisk:toLogicalVolumeGroup: i32@0:8^{__DADisk=}16@24  imp=+0x1b280b4e0
+  -changePassphraseForLogicalVolume:options: i32@0:8@16@24  imp=+0x1b2810550
+  -checkNotUsedOrExportedByCoreStorage: i24@0:8^{DMUDSPrivRec=Qq[150c]}16  imp=+0x1b280ac00
+  -checkPartitionScheme: i24@0:8^{DMUDSPrivRec=Qq[150c]}16  imp=+0x1b280ab40
+  -convertDisk:options: i32@0:8^{__DADisk=}16@24  imp=+0x1b280ae00
+  -copyDiskForLogicalVolume:disk: i32@0:8@16^^{__DADisk}24  imp=+0x1b280ca54
+  -copyDiskForPhysicalVolume:disk: i32@0:8@16^^{__DADisk}24  imp=+0x1b280c8f0
+  -createLogicalVolumeGroup:withDisks:options: i40@0:8@16@24@32  imp=+0x1b280b218
+  -createLogicalVolumeOnLogicalVolumeGroup:fs:name:size:options: i56@0:8@16@24@32@40@48  imp=+0x1b280b6bc
+  -dealloc v16@0:8  imp=+0x1b280a524
+  -decryptLogicalVolume:options: i32@0:8@16@24  imp=+0x1b280ef70
+  -decryptSuitableDisk:options: i32@0:8^{__DADisk=}16@24  imp=+0x1b280f6e8
+  -designatedPhysicalVolumeForResizeLogicalAndPhysicalStackForLogicalVolume:physicalVolume:disk: i40@0:8@16^@24^^{__DADisk}32  imp=+0x1b280be70
+  -destroyLogicalVolume:options: i32@0:8@16@24  imp=+0x1b280b920
+  -destroyLogicalVolumeGroup:options: i32@0:8@16@24  imp=+0x1b280c680
+  -doCallDaemonForCoreStorage:inputDict:outputDict:checkDelegate:sync: i48@0:8@16@24^@32B40B44  imp=+0x1b280a5c4
+  -encodeReserveKekAuthRefIfAnyInDMCoreStorageOptions: i24@0:8@16  imp=+0x1b280acc0
+  -encryptLogicalVolume:options: i32@0:8@16@24  imp=+0x1b280ed18
+  -encryptSuitableDisk:options: i32@0:8^{__DADisk=}16@24  imp=+0x1b280f200
+  -finishRevertVolume: i24@0:8@16  imp=+0x1b280b118
+  -freeSpaceForLogicalVolumeGroup:freeSpace: i32@0:8@16^@24  imp=+0x1b280d70c
+  -init @16@0:8  imp=+0x1b280a4c4
+  -initWithManager: @24@0:8@16  imp=+0x1b27aa20c
+  -isCompositeDiskForLogicalVolume:composite: i32@0:8@16^B24  imp=+0x1b280e0b8
+  -isDamagedLogicalVolumeGroup:damaged:how: i40@0:8@16^B24^@32  imp=+0x1b280d7e0
+  -isDiskLogicalVolumeWithDesignatedBootCampVolume:bootCamp: i32@0:8^{__DADisk=}16^B24  imp=+0x1b280c0cc
+  -isDiskSuitableForDecryption:suitable:why:options: i48@0:8^{__DADisk=}16^B24^@32@40  imp=+0x1b280ff90
+  -isDiskSuitableForEncryption:suitable:why:options: i48@0:8^{__DADisk=}16^B24^@32@40  imp=+0x1b280fb54
+  -isEncryptedDiskForLogicalVolume:encrypted:locked:type: i48@0:8@16^B24^B32^@40  imp=+0x1b280df68
+  -isLogicalVolumeFamilyEncrypted:isFullyOrPartiallyEncrypted:isFullyEncrypted:encryptionType:isLocked: i56@0:8@16^B24^B32^@40^B48  imp=+0x1b280e9dc
+  -isLogicalVolumeFamilyEncrypted:isFullyOrPartiallyEncrypted:isLocked: i40@0:8@16^B24^B32  imp=+0x1b280e814
+  -isSparseLogicalVolumeGroup:sparse: i32@0:8@16^B24  imp=+0x1b280ec24
+  -isValidLVFUUID: i24@0:8@16  imp=+0x1b280a9f8
+  -isValidLVGUUID: i24@0:8@16  imp=+0x1b280a858
+  -isValidLVUUID: i24@0:8@16  imp=+0x1b280aa9c
+  -isValidPVUUID: i24@0:8@16  imp=+0x1b280a954
+  -logicalVolumeAndLogicalVolumeGroupForDisk:logicalVolume:logicalVolumeGroup: i40@0:8^{__DADisk=}16^@24^@32  imp=+0x1b280cd00
+  -logicalVolumeFamilyForLogicalVolume:logicalVolumeFamily: i32@0:8@16^@24  imp=+0x1b280e74c
+  -logicalVolumeForDisk:logicalVolume: i32@0:8^{__DADisk=}16^@24  imp=+0x1b27abd30
+  -logicalVolumeGroupForLogicalVolume:logicalVolumeGroup: i32@0:8@16^@24  imp=+0x1b280e684
+  -logicalVolumeGroupForLogicalVolumeFamily:logicalVolumeGroup: i32@0:8@16^@24  imp=+0x1b280e4d0
+  -logicalVolumeGroupForPhysicalVolume:logicalVolumeGroup: i32@0:8@16^@24  imp=+0x1b280e224
+  -logicalVolumeGroups: i24@0:8^@16  imp=+0x1b280ce4c
+  -logicalVolumesForLogicalVolumeGroup:dictionaries: i32@0:8@16^@24  imp=+0x1b280cef8
+  -makeSparseLogicalVolumeGroup:options: i32@0:8@16@24  imp=+0x1b2810230
+  -nameForLogicalVolume:name: i32@0:8@16^@24  imp=+0x1b280dcd8
+  -nameForLogicalVolumeGroup:name: i32@0:8@16^@24  imp=+0x1b280db90
+  -physicalVolumeAndLogicalVolumeGroupForDisk:physicalVolume:logicalVolumeGroup: i40@0:8^{__DADisk=}16^@24^@32  imp=+0x1b280cbb8
+  -physicalVolumesForLogicalVolumeGroup:dictionaries: i32@0:8@16^@24  imp=+0x1b280d378
+  -removePhysicalVolume:options: i32@0:8@16@24  imp=+0x1b280c564
+  -renameLogicalVolumeGroup:newName:options: i40@0:8@16@24@32  imp=+0x1b280c79c
+  -resizeLogicalAndPhysicalStackForLogicalVolume:size:withNewMapEntries:options: i48@0:8@16@24@32@40  imp=+0x1b280bd00
+  -resizeLogicalVolume:size:options: i40@0:8@16@24@32  imp=+0x1b280ba3c
+  -resizePhysicalVolume:size:withNewMapEntries:options: i48@0:8@16@24@32@40  imp=+0x1b280bb90
+  -revertVolume:options: i32@0:8@16@24  imp=+0x1b280afd8
+  -sizeForLogicalVolume:size: i32@0:8@16^@24  imp=+0x1b280de20
+  -sizeForLogicalVolumeGroup:size: i32@0:8@16^@24  imp=+0x1b280d638
+  -unlockLogicalVolume:options: i32@0:8@16@24  imp=+0x1b2810374
+@class DMCoreStoragePrivVars : NSObject instanceSize=16
+  ivar +8 _dmManager @"DMManager"
+@class DMEraseDisk : NSObject instanceSize=16
+  ivar +8 _instPriv @
+  +defaultFilesystemForDisk: @24@0:8^{__DADisk=}16  imp=+0x1b27b1c20
+  +eraseTypesForDisk: @24@0:8^{__DADisk=}16  imp=+0x1b27b25d0
+  -armWindowsInstallerPartitionRemoverOnBootCampWholeDisk: i24@0:8^{__DADisk=}16  imp=+0x1b27f72dc
+  -cancelCurrentOperation v16@0:8  imp=+0x1b27f63b8
+  -dealloc v16@0:8  imp=+0x1b27f6318
+  -eraseDisk:synchronous:filesystem:bootable:name:doNewfs: @52@0:8^{__DADisk=}16B24@28B36@40B48  imp=+0x1b27f69b8
+  -eraseDisk:synchronous:filesystem:bootable:name:doNewfs:doBooterCleanup: @56@0:8^{__DADisk=}16B24@28B36@40B48B52  imp=+0x1b27f6450
+  -eraseOpticalAsync:quick:format: i32@0:8^{__DADisk=}16B24B28  imp=+0x1b27f7038
+  -fulfillWindowsInstallerPartitionRemovalFromCurrentBootDisk i16@0:8  imp=+0x1b27f74c4
+  -init @16@0:8  imp=+0x1b27f6184
+  -initWithManager: @24@0:8@16  imp=+0x1b27f61e4
+  -securelyEraseDisk:level: i28@0:8^{__DADisk=}16I24  imp=+0x1b27f6c40
+  -securelyEraseFreespace:level: i28@0:8^{__DADisk=}16I24  imp=+0x1b27f6e40
+  -wipeDisk:level:count: i36@0:8^{__DADisk=}16I24Q28  imp=+0x1b27f6c38
+  -wipeDisk:level:count:force: i40@0:8^{__DADisk=}16I24Q28B36  imp=+0x1b27f69e0
+@class DMEraseDiskPrivVars : NSObject instanceSize=24
+  ivar +8 _clientDASession ^{__DASession=}
+  ivar +16 _dmManager @"DMManager"
+@class DMFilesystem : NSObject instanceSize=16
+  ivar +8 _instPriv @
+  +bootableFilesystems @16@0:8  imp=+0x1b27d8db8
+  +ensureDatabaseAndForceRebuild: v20@0:8B16  imp=+0x1b279f27c
+  +filesystemForIOContent: @24@0:8@16  imp=+0x1b27adc6c
+  +filesystemForLocalizedName: @24@0:8@16  imp=+0x1b27b41b0
+  +filesystemForPersonality: @24@0:8@16  imp=+0x1b27b1de0
+  +filesystemForType:considerDisk: @32@0:8@16^{__DADisk=}24  imp=+0x1b279ea90
+  +filesystems @16@0:8  imp=+0x1b27b2ad4
+  +isCanonicalPersonalityNameEqual:withInformalName: B32@0:8@16@24  imp=+0x1b27b214c
+  -awareNameSanitizer:allowToUpper:allowReplace:isValid:correctedName: v48@0:8@16B24B28^B32^@40  imp=+0x1b27d97b8
+  -bootable B16@0:8  imp=+0x1b27da990
+  -bundlePath @16@0:8  imp=+0x1b27da03c
+  -canBeFormatted B16@0:8  imp=+0x1b27b2c64
+  -canBeRepaired B16@0:8  imp=+0x1b27da6ac
+  -canBeVerified B16@0:8  imp=+0x1b27da4f0
+  -canFormatWholeDisk B16@0:8  imp=+0x1b27b2da0
+  -canHavePermissionsOff B16@0:8  imp=+0x1b27daac8
+  -contentMask @16@0:8  imp=+0x1b27ade74
+  -correctedVolumeNameForName: @24@0:8@16  imp=+0x1b27d9d70
+  -dealloc v16@0:8  imp=+0x1b27d8c1c
+  -description @16@0:8  imp=+0x1b27d8d58
+  -encryptedUserVisibleName @16@0:8  imp=+0x1b27db010
+  -fileObjectsAreCasePreserving B16@0:8  imp=+0x1b27d9f2c
+  -fileObjectsAreCaseSensitive B16@0:8  imp=+0x1b27d9fb4
+  -filesystemDictionary @16@0:8  imp=+0x1b27d9120
+  -filesystemPersonality @16@0:8  imp=+0x1b27b20b8
+  -filesystemType @16@0:8  imp=+0x1b27b253c
+  -formatArguments @16@0:8  imp=+0x1b27da740
+  -formatExecutable @16@0:8  imp=+0x1b27b4d78
+  -hardcodedAttribute:available:datum: v40@0:8r*16^B24^Q32  imp=+0x1b27a0278
+  -initWithPersonality:majorType:locUsrVisName:locUsrVisCrpName:personalityDict:bundlePath: @64@0:8@16@24@32@40@48@56  imp=+0x1b279fca8
+  -isEqual: B24@0:8@16  imp=+0x1b27d8da4
+  -isValidName: B24@0:8@16  imp=+0x1b27d9c04
+  -isValidName:correctedName: B32@0:8@16^@24  imp=+0x1b27d9cb0
+  -liveVerifyArguments @16@0:8  imp=+0x1b27da1f8
+  -localizedVerifyRepairString: @24@0:8@16  imp=+0x1b27db208
+  -localizedVerifyRepairString:found: @32@0:8@16^B24  imp=+0x1b27db1ec
+  -maximumSize @16@0:8  imp=+0x1b27b2bd0
+  -minimumSize @16@0:8  imp=+0x1b27b24a8
+  -nameSanitizer:correctedName:doToUpper:illegalChars:replacementChar:leadingDotOK:controlCharsOK:minChars:maxChars:maxBytes:limitEncoding: B80@0:8@16^@24B32@36@44B52B56I60I64I68Q72  imp=+0x1b27d91b4
+  -percentageVerifyArguments @16@0:8  imp=+0x1b27da28c
+  -repairArguments @16@0:8  imp=+0x1b27da618
+  -repairExecutable @16@0:8  imp=+0x1b27da584
+  -requiresBooterToBoot B16@0:8  imp=+0x1b27da7d4
+  -requiresWholeDiskFormat B16@0:8  imp=+0x1b27da89c
+  -serverOnly B16@0:8  imp=+0x1b27b2d18
+  -setVerifyRepairStringLocale: v24@0:8@16  imp=+0x1b27db0a4
+  -shouldBeUserFormattable B16@0:8  imp=+0x1b27b2e10
+  -supportedAsFullyFeaturedMacOS B16@0:8  imp=+0x1b27dae80
+  -supportedAsFullyFeaturedMacOSHFS B16@0:8  imp=+0x1b27daf60
+  -supportedByAPFS B16@0:8  imp=+0x1b27a3874
+  -supportedByCoreStorage B16@0:8  imp=+0x1b27b2f2c
+  -supportedByWindows B16@0:8  imp=+0x1b27dad50
+  -supportsJournaling B16@0:8  imp=+0x1b27dabd0
+  -supportsLiveVerify B16@0:8  imp=+0x1b27dacb0
+  -supportsPercentageVerifies B16@0:8  imp=+0x1b27da3b0
+  -supportsResize B16@0:8  imp=+0x1b27b3a10
+  -supportsXMLVerifies B16@0:8  imp=+0x1b27da450
+  -unlocalizedEncryptedUserVisibleName @16@0:8  imp=+0x1b27a06d4
+  -unlocalizedUserVisibleName @16@0:8  imp=+0x1b27a0640
+  -userVisibleName @16@0:8  imp=+0x1b27b2e98
+  -userVisibleNameForLanguage: @24@0:8@16  imp=+0x1b27d8f88
+  -verifyArguments @16@0:8  imp=+0x1b27da164
+  -verifyExecutable @16@0:8  imp=+0x1b27da0d0
+  -verifyRepairOutputXMLArguments @16@0:8  imp=+0x1b27da318
+  -volumeNameIsCasePreserving B16@0:8  imp=+0x1b27d9e1c
+  -volumeNameIsCaseSensitive B16@0:8  imp=+0x1b27d9ea4
+@class DMFilesystemPrivVars : NSObject instanceSize=192
+  ivar +8 _fsPersonality @"NSString"
+  ivar +16 _contentMask @"NSString"
+  ivar +24 _fsType @"NSString"
+  ivar +32 _serverOnly B
+  ivar +40 _fsUnlocalizedName @"NSString"
+  ivar +48 _fsLocalizedName @"NSString"
+  ivar +56 _fsUnlocalizedEncryptionName @"NSString"
+  ivar +64 _fsLocalizedEncryptionName @"NSString"
+  ivar +72 _bundlePath @"NSString"
+  ivar +80 _fsDictionary @"NSDictionary"
+  ivar +88 _minimumSize @"NSNumber"
+  ivar +96 _maximumSize @"NSNumber"
+  ivar +104 _verifyExecutable @"NSString"
+  ivar +112 _verifyArgs @"NSString"
+  ivar +120 _liveVerifyArgs @"NSString"
+  ivar +128 _verifyRepairOutputXMLArgs @"NSString"
+  ivar +136 _repairExecutable @"NSString"
+  ivar +144 _repairArgs @"NSString"
+  ivar +152 _verifyRepairOutputLocale @"NSString"
+  ivar +160 _shouldBeUserFormattable B
+  ivar +168 _formatExecutable @"NSString"
+  ivar +176 _formatArgs @"NSString"
+  ivar +184 _volumeNameIsCasePreserving B
+  ivar +185 _volumeNameIsCaseSensitive B
+  ivar +186 _fileObjectsAreCasePreserving B
+  ivar +187 _fileObjectsAreCaseSensitive B
+@class DMManager : NSObject instanceSize=16
+  ivar +8 _instPriv @
+  property SK_DM_delegate (T@,R,N)
+  +daemonRunning B16@0:8  imp=+0x1b27dc968
+  +initialize v16@0:8  imp=+0x1b279a3c0
+  +sharedManager @16@0:8  imp=+0x1b27dcb0c
+  +sharedManagerForThread @16@0:8  imp=+0x1b27a5ee4
+  +systemResourcesSufficient B16@0:8  imp=+0x1b27dc8ac
+  -DMAppleRAIDMemberRebuildProgress:error: @32@0:8@16^i24  imp=+0x1b27e73f4
+  -DMAppleRAIDParentUUIDForUUID:error: @32@0:8@16^i24  imp=+0x1b27e7338
+  -DMAppleRAIDUUIDForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27aad18
+  -DMAppleRAIDUUIDLookup: ^{__DADisk=}24@0:8@16  imp=+0x1b27e6e54
+  -SK_DM_delegate @16@0:8  imp=+0x1b27dba54
+  -_setNetBootPreference:server:interface:nextOnly: i40@0:8I16@20@28B36  imp=+0x1b27eeb04
+  -authorization ^{AuthorizationOpaqueRef=}16@0:8  imp=+0x1b27dc1e8
+  -authorizationInteraction B16@0:8  imp=+0x1b27dc2f8
+  -bayNameForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27b10c4
+  -blockSizeForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27b15b4
+  -busSpecificKeysForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27b0f7c
+  -canRepairPermissions:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e67f4
+  -cancelCurrentOperationWithShortExpertName: v24@0:8@16  imp=+0x1b27dcf74
+  -checkAbilityToMakeBootable:onAnyMachine:atAll:yesButDestructively: i44@0:8^{__DADisk=}16B24^B28^B36  imp=+0x1b27f18e4
+  -checkAbilityToMakeBootable_actualsimplepartition_:onAnyMachine:atAll:yesButDestructively: i44@0:8^{__DADisk=}16B24^B28^B36  imp=+0x1b27edb50
+  -checkBootabilityOnThisMachine:isBootable: i32@0:8^{__DADisk=}16^B24  imp=+0x1b27f0b54
+  -checkBootabilityOnThisMachine_actualsimplepartition_:isBootable: i32@0:8^{__DADisk=}16^B24  imp=+0x1b27edff0
+  -checkClientDelegate B16@0:8  imp=+0x1b27dcc6c
+  -checkLegacyBootSupport: i24@0:8^B16  imp=+0x1b27ee69c
+  -checkLegacyBootabilityForNonOpticalPartition:isLegacyBootable:os: i40@0:8^{__DADisk=}16^B24^@32  imp=+0x1b27efd10
+  -checkLegacyBootabilityForNonOpticalWholeDisk:isLegacyBootable:os: i40@0:8^{__DADisk=}16^B24^@32  imp=+0x1b27ef98c
+  -checkLegacyBootabilityForOpticalWholeDisk:isLegacyBootable:os: i40@0:8^{__DADisk=}16^B24^@32  imp=+0x1b27ef55c
+  -checkMacOSXBootability:isBootable: i32@0:8^{__DADisk=}16^B24  imp=+0x1b27f0f4c
+  -checkOpticalDiscBootability:isBootable: i32@0:8^{__DADisk=}16^B24  imp=+0x1b27ef208
+  -checkPrebootContentForMacOSAPFSVolume:isValidForBoot: i32@0:8^{DMUDSPrivRec=Qq[150c]}16^B24  imp=+0x1b27ee354
+  -checkWindowsUEFIBootabilityForNonOpticalPartition:isWindowsUEFIBootable:os: i40@0:8^{__DADisk=}16^B24^@32  imp=+0x1b27f0118
+  -checkWindowsUEFIBootabilityForOpticalWholeDisk:isWindowsUEFIBootable:os: i40@0:8^{__DADisk=}16^B24^@32  imp=+0x1b27f06ac
+  -childrenForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27df954
+  -clientConforms:error: B32@0:8@16^i24  imp=+0x1b279b498
+  -clientInfos: i24@0:8^@16  imp=+0x1b27dc560
+  -conversionProgressForCoreStorageDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27e7ad4
+  -conversionProgressForLogicalVolume:error: @32@0:8@16^i24  imp=+0x1b27e7748
+  -conversionProgressForLogicalVolumeDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27e797c
+  -conversionStateForLogicalVolumeDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27e75d4
+  -copyBooterDiskForDisk:error: ^{__DADisk=}32@0:8^{__DADisk=}16^i24  imp=+0x1b27e6160
+  -copyDiskForArgumentName:timeout:complete: ^{__DADisk=}40@0:8@16d24^B32  imp=+0x1b27dedac
+  -copyDiskForBootPreference: i24@0:8^^{__DADisk}16  imp=+0x1b27eef94
+  -copyDiskForDisk:error: ^{__DADisk=}32@0:8^{__DADisk=}16^i24  imp=+0x1b27e103c
+  -copyDiskForDiskUUID:error: ^{__DADisk=}32@0:8@16^i24  imp=+0x1b27e0c30
+  -copyDiskForMountPoint:error: ^{__DADisk=}32@0:8@16^i24  imp=+0x1b27a4bfc
+  -copyDiskForPartitionIdentifier:forWholeDisk:error: ^{__DADisk=}40@0:8@16^{__DADisk=}24^i32  imp=+0x1b27e0e68
+  -copyDiskForPath:error: ^{__DADisk=}32@0:8@16^i24  imp=+0x1b279b1b0
+  -copyDiskForPathNoFollow:error: ^{__DADisk=}32@0:8@16^i24  imp=+0x1b27df4d0
+  -copyDiskForVolumeName:error: ^{__DADisk=}32@0:8@16^i24  imp=+0x1b27e293c
+  -copyDiskForVolumeUUID:error: ^{__DADisk=}32@0:8@16^i24  imp=+0x1b27e0d4c
+  -copyFirstDiskInMapForWholeDisk:error: ^{__DADisk=}32@0:8^{__DADisk=}16^i24  imp=+0x1b27dfd44
+  -copyLastDiskInMapForWholeDisk:error: ^{__DADisk=}32@0:8^{__DADisk=}16^i24  imp=+0x1b27dfec4
+  -copyNextDiskInMapForDisk:error: ^{__DADisk=}32@0:8^{__DADisk=}16^i24  imp=+0x1b27e0044
+  -copyPreviousDiskInMapForDisk:error: ^{__DADisk=}32@0:8^{__DADisk=}16^i24  imp=+0x1b27e01c4
+  -copyRecoveryDiskForDisk:error: ^{__DADisk=}32@0:8^{__DADisk=}16^i24  imp=+0x1b27e6434
+  -copyRootDisk: ^{__DADisk=}24@0:8^i16  imp=+0x1b27a601c
+  -copyWholeDiskForDisk:error: ^{__DADisk=}32@0:8^{__DADisk=}16^i24  imp=+0x1b27ad4b4
+  -coreStorageStatusSummaryForDisk:orForCSUUID:error: @40@0:8^{__DADisk=}16@24^i32  imp=+0x1b27e885c
+  -cryptoMigrationPlanForLOG:transform:currentOldSS:supported:planScript:plannedNewSS:plannedChangeSS:plannedChangeLOG: i80@0:8^{DMUDSPrivRec=Qq[150c]}16@24^@32^B40^@48^@56^B64^B72  imp=+0x1b279ca14
+  -cryptoStateForDisk:options:details: i40@0:8^{__DADisk=}16@24^@32  imp=+0x1b279b7c4
+  -cryptoStatusForLOG:inSS:yesInfoFileVaulted:yesInfoFullyEncrypted:yesInfoBusy:yesInfoDirection:yesInfoLocked:nonNilInfoProgress:apfsDataVolSubCase: v88@0:8^{DMUDSPrivRec=Qq[150c]}16@24^B32^B40^B48^B56^B64^@72^B80  imp=+0x1b27f2104
+  -dealloc v16@0:8  imp=+0x1b27a48dc
+  -decryptDisk:options:details: i40@0:8^{__DADisk=}16@24^@32  imp=+0x1b27f315c
+  -defaultDASession ^{__DASession=}16@0:8  imp=+0x1b27dbee0
+  -delegate @16@0:8  imp=+0x1b27dbf58
+  -descriptionForDisk: @24@0:8^{__DADisk=}16  imp=+0x1b27e11bc
+  -deviceNameForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27aeb90
+  -deviceNodeForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27e2160
+  -deviceTreePathForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27e23f0
+  -directChildrenForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27acbe8
+  -diskForPath:error: ^{__DADisk=}32@0:8@16^i24  imp=+0x1b27b05c4
+  -diskIdentifierForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27aa8c4
+  -diskUUIDForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27e1d90
+  -disks @16@0:8  imp=+0x1b27df6e4
+  -dmManagerPrivVars @16@0:8  imp=+0x1b27dcef4
+  -doMountDisk:atPath:readOnly:otherArguments:timeout:errorDict: B60@0:8^{__DADisk=}16@24B32@36d44^@52  imp=+0x1b27ea7c8
+  -done v16@0:8  imp=+0x1b27dc82c
+  -ejectDisk: B24@0:8^{__DADisk=}16  imp=+0x1b27ec138
+  -ejectDisk:errorDict: B32@0:8^{__DADisk=}16^@24  imp=+0x1b27eba70
+  -ejectDiskOnly:errorDict: i32@0:8^{__DADisk=}16^@24  imp=+0x1b27ec140
+  -encryptDisk:user:passdata:hint:options:details: i64@0:8^{__DADisk=}16@24@32@40@48^@56  imp=+0x1b27f2cf4
+  -ensureRecoveryPartitionForVolume:macOSXDiskImageFile:macOSXDiskImageChunkListFile:diagnosticsDiskImageFile:diagnosticsDiskImageChunkListFile:verifyImage:repairDonor:bless: i68@0:8^{__DADisk=}16@24@32@40@48B56B60B64  imp=+0x1b27f207c
+  -filesystemForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27adb30
+  -getDiskForBootPreference: i24@0:8^^{__DADisk}16  imp=+0x1b27ef204
+  -getNetBootPreference:withServer:forInterface: i40@0:8^I16^@24^@32  imp=+0x1b27eeb58
+  -init @16@0:8  imp=+0x1b279a414
+  -initWithSK_DM_Delegate: @24@0:8@16  imp=+0x1b27dba5c
+  -ioContentOfDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27ab92c
+  -ioContentToHuman:context:error: @40@0:8@16@24^i32  imp=+0x1b27e68cc
+  -ioContentToHuman:error: @32@0:8@16^i24  imp=+0x1b27e69a8
+  -ioKitNameForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27e1ed4
+  -ioKitSizeForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27ae954
+  -isAESHardwareDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e3a18
+  -isAPFSContainerReferenceDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e9de8
+  -isAPFSContainerSchemeDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e9f20
+  -isAPFSPhysicalStoreDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27ea054
+  -isAPFSSnapshotDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27ea188
+  -isAPFSVolumeDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27a6138
+  -isAppleDiskImage:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e3b24
+  -isAppleRAIDDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e6fb8
+  -isAppleRAIDMemberDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27ad6a0
+  -isAppleRAIDSetDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e70f0
+  -isAppleRAIDSpareDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e720c
+  -isAppleRAIDUUID:error: B32@0:8@16^i24  imp=+0x1b27e6efc
+  -isBooterDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e5be8
+  -isBooterPartitionDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e5768
+  -isCD:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27ae6f4
+  -isChildDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e1438
+  -isChildOfWholeDisk:wholeDisk:error: B40@0:8^{__DADisk=}16^{__DADisk=}24^i32  imp=+0x1b27e16d4
+  -isCoreStorageCompositeLogicalVolumeDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27a6438
+  -isCoreStorageEncryptedLogicalVolumeDisk:locked:type:error: B48@0:8^{__DADisk=}16^B24^@32^i40  imp=+0x1b27b1a78
+  -isCoreStorageLogicalVolumeDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27aa78c
+  -isCoreStoragePhysicalVolumeDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27abe4c
+  -isDVD:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27ae494
+  -isDisallowedCoreStorageOperationsForLogicalVolumeDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e86e4
+  -isDiskSuitableForDecryption:options:suitable:details: i48@0:8^{__DADisk=}16@24^B32^@40  imp=+0x1b27f2ad0
+  -isDiskSuitableForEncryption:options:suitable:details: i48@0:8^{__DADisk=}16@24^B32^@40  imp=+0x1b27f28b4
+  -isEjectableDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27b0368
+  -isEqualDisks:anotherDisk:error: B40@0:8^{__DADisk=}16^{__DADisk=}24^i32  imp=+0x1b27e1264
+  -isErasableOpticalMedia:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27b17f0
+  -isFileCasePreservingDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e3454
+  -isFileCaseSensitiveDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e35b0
+  -isFirstDiskInMap:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e0344
+  -isIPodDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e3c6c
+  -isInternalDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27a5068
+  -isJournaledDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e53b0
+  -isLastDiskInMap:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e0488
+  -isLeafDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e54bc
+  -isLiveResizablePartitionForDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27b49c4
+  -isModificationSuccessLikelyForPartitionMap:why:error: B40@0:8^{__DADisk=}16^@24^i32  imp=+0x1b27e42c4
+  -isMountableVolume:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e6a48
+  -isMountedVolume:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e27f4
+  -isNetworkDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e4ae8
+  -isOSInternalDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e4858
+  -isOnSameWholeDiskAsRoot:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e2680
+  -isOpenDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e5604
+  -isOpticalDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27ac264
+  -isPartitionDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e158c
+  -isRecoveryBooterPartitionDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e58fc
+  -isRecoveryDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e5ddc
+  -isRemovableDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e4cd0
+  -isRemovableMediaOrExternalDeviceDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e4e18
+  -isRootVolume:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e2538
+  -isSiblingDisks:anotherDisk:reflexive:error: B44@0:8^{__DADisk=}16^{__DADisk=}24B32^i36  imp=+0x1b27e18f0
+  -isSolidStateDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27a5b68
+  -isSuitableTransformForLOG:transform:suitable:plan:details: i56@0:8^{DMUDSPrivRec=Qq[150c]}16@24^B32^@40@48  imp=+0x1b279bfdc
+  -isSystemImage:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e472c
+  -isUnrecognizedCoreStoragePhysicalVolumeDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e81bc
+  -isUserDataVolume:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e49a0
+  -isVirtualWholeDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e4f20
+  -isVolumeNameCasePreservingDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e319c
+  -isVolumeNameCaseSensitiveDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e32f8
+  -isWholeDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27ab6e4
+  -isWritableDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e3054
+  -isWritableMedia:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27b135c
+  -isWritableVolume:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27b451c
+  -isXsanComponentDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e3dac
+  -isXsanFilesystemDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e3eec
+  -makeBootable:filesystem:newDisk: i40@0:8^{__DADisk=}16@24^^{__DADisk}32  imp=+0x1b27f1c34
+  -makeVolumeCaseSensitive: i24@0:8^{__DADisk=}16  imp=+0x1b27ed924
+  -mapLayoutMatching:matchScheme:matchPartitions:error: B44@0:8^{__DADisk=}16i24@28^i36  imp=+0x1b27e05cc
+  -mediaNameForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27af068
+  -mediaTypeForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27af88c
+  -modifyJournalOnDisk:enableJournaling:force: i32@0:8^{__DADisk=}16B24B28  imp=+0x1b27ed1e8
+  -modifyOwnershipForDisk:enableOwnership: i28@0:8^{__DADisk=}16B24  imp=+0x1b27ed490
+  -mountDisk:entireDisk:atPath:readOnly:otherArguments: B48@0:8^{__DADisk=}16B24@28B36@40  imp=+0x1b27eb0b0
+  -mountDisk:entireDisk:atPath:readOnly:otherArguments:errorDict: B56@0:8^{__DADisk=}16B24@28B36@40^@48  imp=+0x1b27eb0a8
+  -mountDisk:entireDisk:atPath:readOnly:otherArguments:timeout:errorDict: B64@0:8^{__DADisk=}16B24@28B36@40d48^@56  imp=+0x1b27ead2c
+  -mountEFISystemPartition:options:espDisk:espMountPoint: i48@0:8^{__DADisk=}16@24^^{__DADisk}32^@40  imp=+0x1b27ec538
+  -mountPointForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27ad8b8
+  -moveJournalInternal: i24@0:8^{__DADisk=}16  imp=+0x1b27ecfc0
+  -needsRebootToBeginCoreStorageConversion:checkRoot:error: B36@0:8^{__DADisk=}16B24^i28  imp=+0x1b27e83a0
+  -obtainedClientDASession: ^{__DASession=}24@0:8^{__DADisk=}16  imp=+0x1b279b72c
+  -opticalDeviceTypeForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27adf08
+  -opticalMediaTypeForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27ac758
+  -opticalMediaUserVisibleNameForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27e370c
+  -optimizationProgressForCoreStorageDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27e7fec
+  -optimizationProgressForLogicalVolume:error: @32@0:8@16^i24  imp=+0x1b27e7ca4
+  -optimizationProgressForLogicalVolumeDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27e7e94
+  -partitionChildrenForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27dfac0
+  -partitionIdentifierForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27ad1cc
+  -partitionMapSchemeForDisk:error: i32@0:8^{__DADisk=}16^i24  imp=+0x1b27b14a4
+  -permissionsEnabledForDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e66ec
+  -physicalDisksForDisk:storageSystemName:error: @40@0:8^{__DADisk=}16^@24^i32  imp=+0x1b27e6b90
+  -preBootEnvironment i16@0:8  imp=+0x1b27aa33c
+  -protocolForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27aba34
+  -rawDeviceNodeForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27e22a8
+  -rawDisks @16@0:8  imp=+0x1b27df7b4
+  -rawTopLevelDisks @16@0:8  imp=+0x1b27df884
+  -recoveryPartitionInfoForVolume:what:info: i40@0:8^{__DADisk=}16@24^@32  imp=+0x1b27a6774
+  -renameDisk:toName: i32@0:8^{__DADisk=}16@24  imp=+0x1b27ecd44
+  -renameDisk:toName:errorDict: i40@0:8^{__DADisk=}16@24^@32  imp=+0x1b27eca54
+  -rootDisk: ^{__DADisk=}24@0:8^i16  imp=+0x1b27df6e0
+  -setAuthorization: v24@0:8^{AuthorizationOpaqueRef=}16  imp=+0x1b27dbfd0
+  -setAuthorizationInteraction: v20@0:8B16  imp=+0x1b27dc260
+  -setClientDelegate: v24@0:8@16  imp=+0x1b27dcbe0
+  -setDefaultDASession: v24@0:8^{__DASession=}16  imp=+0x1b279b114
+  -setDelegate: v24@0:8@16  imp=+0x1b27aa180
+  -setDiskForBootPreference:atFolderLocation:isOS9: i36@0:8^{__DADisk=}16@24B32  imp=+0x1b27eeef4
+  -setDiskForBootPreference:atFolderLocation:personalize: i36@0:8^{__DADisk=}16@24B32  imp=+0x1b27eef44
+  -setLanguage: v24@0:8@16  imp=+0x1b27dc370
+  -setNVRAM:forKey: i32@0:8@16@24  imp=+0x1b27ee988
+  -setNetBootPreference:withServer:forInterface: i36@0:8I16@20@28  imp=+0x1b27eeb50
+  -setUserID:groupID: i32@0:8@16@24  imp=+0x1b27dc470
+  -smartStatusForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27af1a4
+  -stopDiskManagementLog v16@0:8  imp=+0x1b27dc55c
+  -stopInstanceAsNeeded v16@0:8  imp=+0x1b27a496c
+  -supportedNetBootProtocols I16@0:8  imp=+0x1b27ee61c
+  -timeoutHint: d24@0:8@16  imp=+0x1b27dcd60
+  -topLevelDisks @16@0:8  imp=+0x1b27aa4ac
+  -totalSizeForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27e2f0c
+  -unmountDisk:entireDisk:force: B32@0:8^{__DADisk=}16B24B28  imp=+0x1b27eb850
+  -unmountDisk:entireDisk:force:errorDict: B40@0:8^{__DADisk=}16B24B28^@32  imp=+0x1b27eb848
+  -unmountDisk:entireDisk:force:timeout:errorDict: B48@0:8^{__DADisk=}16B24B28d32^@40  imp=+0x1b27eb50c
+  -unmountDisksDeepForPartitionMap:force:timeout: i36@0:8^{__DADisk=}16B24d28  imp=+0x1b27eb85c
+  -unmountEFISystemPartition:options: i32@0:8^{__DADisk=}16@24  imp=+0x1b27ec860
+  -unmountVolumePath:force:errorDict: B36@0:8@16B24^@28  imp=+0x1b27eb0bc
+  -upgradeDisk:enablePermissions: i28@0:8^{__DADisk=}16B24  imp=+0x1b27ecd4c
+  -uuidForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27e1c4c
+  -volumeAllocationBlockSizeForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27e2dc0
+  -volumeFreeSpaceForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27e2b70
+  -volumeInfoForUnmountedDisk:info: i32@0:8^{__DADisk=}16^@24  imp=+0x1b27ed630
+  -volumeNameForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27af650
+  -volumeTotalSizeForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27e2c78
+  -volumeUUIDForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27aaa98
+  -wholeDiskForDisk:error: ^{__DADisk=}32@0:8^{__DADisk=}16^i24  imp=+0x1b27ad4b8
+  -wholeDiskHasOS9Drivers:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e402c
+  -wholeDiskIdentifierForDisk:error: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27e2018
+  -wholeDiskSupportsLowLevelFormat:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27e4178
+@class DMManagerPrivVars : NSObject instanceSize=120
+  ivar +8 _clientDefaultDASession ^{__DASession=}
+  ivar +16 _clientDelegate @
+  ivar +24 _clientThread I
+  ivar +32 _implicitAuthorization ^{AuthorizationOpaqueRef=}
+  ivar +40 _explicitAuthorization ^{AuthorizationOpaqueRef=}
+  ivar +48 _authorizationUIOK B
+  ivar +56 _locale @"NSLocale"
+  ivar +64 _preferredLocale @"NSString"
+  ivar +72 _installEnvironment B
+  ivar +73 _delegateCreated B
+  ivar +80 _SK_DM_delegate @"<SK_DM_Client2DaemonProtocol>"
+  ivar +88 _xpcInvalidatedSem @"NSObject<OS_dispatch_semaphore>"
+  ivar +96 _xpcConnection @"NSXPCConnection"
+  ivar +104 _callbackPort @"NSPort"
+  ivar +112 _callbackDelegate @"SK_DM_Daemon2ClientDelegate"
+  property xpcConnection (T@"NSXPCConnection",&,N,V_xpcConnection)
+  property SK_DM_delegate (T@"<SK_DM_Client2DaemonProtocol>",R,N)
+  property callbackPort (T@"NSPort",R,N,V_callbackPort)
+  property callbackDelegate (T@"SK_DM_Daemon2ClientDelegate",R,N,V_callbackDelegate)
+  -SK_DM_delegate @16@0:8  imp=+0x1b27db8fc
+  -beginXPCSessionWithAuthorization: i48@0:8{?=[32c]}16  imp=+0x1b27db6a0
+  -callbackDelegate @16@0:8  imp=+0x1b27dba4c
+  -callbackPort @16@0:8  imp=+0x1b27dba44
+  -createXPCConnection v16@0:8  imp=+0x1b27db4f4
+  -dealloc v16@0:8  imp=+0x1b27db388
+  -initWithDirectConnection: @20@0:8B16  imp=+0x1b27db2d8
+  -setDirectSK_DM_Delegate: B24@0:8@16  imp=+0x1b27db9f4
+  -setXpcConnection: v24@0:8@16  imp=+0x1b27dba3c
+  -startSession v16@0:8  imp=+0x1b27db7e0
+  -teardownXPCConnectionWaitingForQuiesce: v20@0:8B16  imp=+0x1b27db494
+  -xpcConnection @16@0:8  imp=+0x1b27dba34
+@class DMPartitionDisk : NSObject instanceSize=16
+  ivar +8 _instPriv @
+  -addPartitionFollowingPartition:newFilesystemOrContentNoFormat:newName:newSize:options: i56@0:8^{__DADisk=}16@24@32@40@48  imp=+0x1b27f4888
+  -adjustMapToFitGrownWholeDisk: i24@0:8^{__DADisk=}16  imp=+0x1b27f4e84
+  -changeFilesystemSizeOnDisk:toSize:fitPartition: i36@0:8^{__DADisk=}16@24B32  imp=+0x1b27f5c18
+  -createExternalJournalOnDisk:forDisk: i32@0:8^{__DADisk=}16^{__DADisk=}24  imp=+0x1b27f5e50
+  -dealloc v16@0:8  imp=+0x1b27b3970
+  -defaultSchemeTypeForSingleFilesystem:forWholeDisk: i32@0:8@16^{__DADisk=}24  imp=+0x1b27f3580
+  -getFreespaceFollowingPartition:skipBooter:gapSize:reserveSize:usableSize: i52@0:8^{__DADisk=}16B24^@28^@36^@44  imp=+0x1b27f5814
+  -getPartitionMapSizeForWholeDisk:totalSize:usableSize:overheadSize: i48@0:8^{__DADisk=}16^@24^@32^@40  imp=+0x1b27f52f8
+  -getPartitionStartLocationForDisk: @24@0:8^{__DADisk=}16  imp=+0x1b27b3678
+  -getResizeLimits:returningInfo: i32@0:8^{__DADisk=}16^@24  imp=+0x1b27b4748
+  -getResizeLimitsForCoreStorageLogicalVolume:forPhysicalVolume:returningInfo: i40@0:8^{__DADisk=}16^{__DADisk=}24^@32  imp=+0x1b27f3c48
+  -getResizeLimitsForCoreStorageLogicalVolume:returningInfo: i32@0:8^{__DADisk=}16^@24  imp=+0x1b27f3f60
+  -init @16@0:8  imp=+0x1b27f3520
+  -initWithManager: @24@0:8@16  imp=+0x1b27b3544
+  -mergePartitions:filesystem:name:erase: i44@0:8@16@24@32B40  imp=+0x1b27f463c
+  -mergePartitions:filesystem:name:erase:options: i52@0:8@16@24@32B40@44  imp=+0x1b27f4280
+  -partitionDisk:withMap:formatVolumes: i36@0:8^{__DADisk=}16@24B32  imp=+0x1b27f3928
+  -partitionDisk:withMap:formatVolumes:options: i44@0:8^{__DADisk=}16@24B32@36  imp=+0x1b27f36dc
+  -removePartition:wipe:options: i36@0:8^{__DADisk=}16B24@28  imp=+0x1b27f4c40
+  -resizePartition:toBytes:withNewMapEntries: i40@0:8^{__DADisk=}16@24@32  imp=+0x1b27f4278
+  -resizeVolume:toBytes:withNewMapEntries: i40@0:8^{__DADisk=}16@24@32  imp=+0x1b27f4270
+  -resizeVolume:toBytes:withNewMapEntries:options: i48@0:8^{__DADisk=}16@24@32@40  imp=+0x1b27f3f6c
+  -setLabelForPartition:label:options: i40@0:8^{__DADisk=}16@24@32  imp=+0x1b27f4644
+  -splitPartition:intoNewPartitions: i32@0:8^{__DADisk=}16@24  imp=+0x1b27f3930
+  -touchPartitionMapForWholeDisk: i24@0:8^{__DADisk=}16  imp=+0x1b27f50d0
+@class DMPartitionDiskPrivVars : NSObject instanceSize=16
+  ivar +8 _dmManager @"DMManager"
+@class DMRepairDisk : NSObject instanceSize=16
+  ivar +8 _instPriv @
+  property kextcacheEnabled (TB)
+  -beginPartitionMapRepairForDisk: i24@0:8^{__DADisk=}16  imp=+0x1b27f8910
+  -beginPartitionMapVerifyForDisk: i24@0:8^{__DADisk=}16  imp=+0x1b27f8824
+  -beginPartitionMapVerifyOrRepairForDisk:repair: i28@0:8^{__DADisk=}16B24  imp=+0x1b27f85c8
+  -beginRepairEFISystemPartition:mode: i28@0:8^{__DADisk=}16I24  imp=+0x1b27f89fc
+  -beginResetUserPermissionsForDisk:forUID:level: i40@0:8^{__DADisk=}16q24q32  imp=+0x1b27f7bbc
+  -beginStoragesystemFilesystemRepairForDisk: i24@0:8^{__DADisk=}16  imp=+0x1b27f852c
+  -beginStoragesystemFilesystemVerifyForDisk: i24@0:8^{__DADisk=}16  imp=+0x1b27f8490
+  -beginStoragesystemFilesystemVerifyOrRepairForDisk:repair: i28@0:8^{__DADisk=}16B24  imp=+0x1b27f8204
+  -canRepairPartitionMapForDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27b079c
+  -canRepairStoragesystemFilesystemForDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27f8018
+  -canVerifyPartitionMapForDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27b0a2c
+  -canVerifyStoragesystemFilesystemForDisk:error: B32@0:8^{__DADisk=}16^i24  imp=+0x1b27f7e2c
+  -cancelCurrentOperation v16@0:8  imp=+0x1b27f7718
+  -dealloc v16@0:8  imp=+0x1b27f7678
+  -init @16@0:8  imp=+0x1b27f7618
+  -initWithManager: @24@0:8@16  imp=+0x1b27b0668
+  -kextcacheEnabled B16@0:8  imp=+0x1b27f786c
+  -setKextcacheEnabled: v20@0:8B16  imp=+0x1b27f77f8
+  -userAccountsForDisk:getError: @32@0:8^{__DADisk=}16^i24  imp=+0x1b27f78d8
+@class DMRepairDiskPrivVars : NSObject instanceSize=32
+  ivar +8 _clientDASession ^{__DASession=}
+  ivar +16 _dmManager @"DMManager"
+  ivar +24 _verb q
+@class DMUDSWrapper : NSObject <NSSecureCoding> instanceSize=176
+  ivar +8 _uds {DMUDSPrivRec="signature_LE64"Q"snap_num"q"bsd_without_snap"[150c]}
+  +supportsSecureCoding B16@0:8  imp=+0x1b27b54cc
+  +wrapperFromDADisk: @24@0:8^{__DADisk=}16  imp=+0x1b27b4f04
+  +wrapperWithDiskIdentifier: @24@0:8@16  imp=+0x1b27a3658
+  +wrapperWithUDS: @24@0:8^{DMUDSPrivRec=Qq[150c]}16  imp=+0x1b27b4e60
+  -UDSPtr ^{DMUDSPrivRec=Qq[150c]}16@0:8  imp=+0x1b27a3714
+  -description @16@0:8  imp=+0x1b27b5390
+  -encodeWithCoder: v24@0:8@16  imp=+0x1b27b5224
+  -initWithCoder: @24@0:8@16  imp=+0x1b27b50a4
+  -initWithUDS: @24@0:8^{DMUDSPrivRec=Qq[150c]}16  imp=+0x1b27b4fc0
+  -isEqual: B24@0:8@16  imp=+0x1b27b53a0
+  -isEqualSnapshot: B24@0:8@16  imp=+0x1b27b5430
+  -redactedDescription @16@0:8  imp=+0x1b27b5398
+  -vettedWholeDiskWrapper @16@0:8  imp=+0x1b27b52b4
+@class DMXMLInputStream : NSObject instanceSize=24
+  ivar +8 _toolTextOutputAccumulator @"NSMutableString"
+  ivar +16 _xmlDocAccumulator @"NSMutableString"
+  -chunksToLines:lineHandler: i32@0:8@16@?24  imp=+0x1b27beff0
+  -controlStringToFilledString:parameters:numberFormat:outString: i48@0:8@16@24@32^@40  imp=+0x1b27bf64c
+  -dealloc v16@0:8  imp=+0x1b27bef58
+  -init @16@0:8  imp=+0x1b27beea0
+  -linesToDictionaries:dictionaryHandler: i32@0:8@16@?24  imp=+0x1b27bf22c
+  -renderParameter:numberFormat:outString: i40@0:8@16@24^@32  imp=+0x1b27bf8a8
+@class SK_DM_Daemon2ClientDelegate : NSObject <SK_DM_Daemon2ClientProtocol, NSPortDelegate> instanceSize=24
+  ivar +8 _dmPrivVars @"DMManagerPrivVars"
+  ivar +16 _allowedClasses @"NSSet"
+  property dmPrivVars (T@"DMManagerPrivVars",R,N,V_dmPrivVars)
+  property allowedClasses (T@"NSSet",R,N,V_allowedClasses)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -SK_DM_AsyncCallbackWithDict: v24@0:8@16  imp=+0x1b27dead0
+  -allowedClasses @16@0:8  imp=+0x1b27deda4
+  -callbackClientInRunloopWithDict: v24@0:8@16  imp=+0x1b27de9d4
+  -dealloc v16@0:8  imp=+0x1b27dd814
+  -diskWrapperFromCallbackDict: @24@0:8@16  imp=+0x1b27dd860
+  -dmPrivVars @16@0:8  imp=+0x1b27ded9c
+  -finishedCallbackWithDict: v24@0:8@16  imp=+0x1b27de258
+  -handlePortMessage: v24@0:8@16  imp=+0x1b27de8f4
+  -initWithPrivVars: @24@0:8@16  imp=+0x1b27dd720
+  -interruptibilityChangedCallbackWithDict: v24@0:8@16  imp=+0x1b27de828
+  -messageCallbackWithDict: v24@0:8@16  imp=+0x1b27dde8c
+  -progressCallbackWithDict: v24@0:8@16  imp=+0x1b27ddb90
+  -startedCallbackWithDict: v24@0:8@16  imp=+0x1b27dd918
+@class _DMListDA : NSObject instanceSize=64
+  ivar +8 _givenTimeout d
+  ivar +16 _givenDASession ^{__DASession=}
+  ivar +24 _currentDAIdle B
+  ivar +32 _currentList @"NSPointerArray"
+  ivar +40 _once B
+  ivar +48 _dmToolOrNil @"DMTool"
+  ivar +56 _stopOnDAIdle B
+  ivar +57 _stopOn1ItemFound B
+  property stopOnDAIdle (TB,V_stopOnDAIdle)
+  property stopOn1ItemFound (TB,V_stopOn1ItemFound)
+  +waitAndCopyDiskForBSD:daSession:timeout:preWait:withDMTool: ^{__DADisk=}56@0:8@16^{__DASession=}24d32d40@48  imp=+0x1b27bbdc8
+  +waitForDADiskAppeared:daSession:timeout:withDMTool: i48@0:8@16^{__DASession=}24d32@40  imp=+0x1b27bbfc0
+  +waitForDAIdleWithDASession:timeout:withDMTool: B40@0:8^{__DASession=}16d24@32  imp=+0x1b27bbee8
+  -anticipatingMoreDisks B16@0:8  imp=+0x1b27bbd4c
+  -copyCurrentDiskForKey:value: ^{__DADisk=}32@0:8@16@24  imp=+0x1b27bbc0c
+  -dealloc v16@0:8  imp=+0x1b27bb720
+  -doBlockingSearchCopyingDisksForKeyPriv:value: v32@0:8@16@24  imp=+0x1b27bb7b8
+  -doReleaseAndRemoveDisksFromListPriv v16@0:8  imp=+0x1b27bbaf8
+  -initWithSession:timeout:withDMTool: @40@0:8^{__DASession=}16d24@32  imp=+0x1b27bb630
+  -setStopOn1ItemFound: v20@0:8B16  imp=+0x1b27bc1d4
+  -setStopOnDAIdle: v20@0:8B16  imp=+0x1b27bc1c0
+  -stopOn1ItemFound B16@0:8  imp=+0x1b27bc1c8
+  -stopOnDAIdle B16@0:8  imp=+0x1b27bc1b4
+@class _DMPreventUnmount : NSObject instanceSize=184
+  ivar +8 _givenDisk {DMUDSPrivRec="signature_LE64"Q"snap_num"q"bsd_without_snap"[150c]}
+  ivar +176 _openDirFD i
+  -dealloc v16@0:8  imp=+0x1b27bc280
+  -init @16@0:8  imp=+0x1b27bc1dc
+  -startPreventingUnmountOfMountedDisk: i24@0:8^{DMUDSPrivRec=Qq[150c]}16  imp=+0x1b27bc308
+  -stopPreventingUnmount v16@0:8  imp=+0x1b27bc504
+@class _DMWaitIdleDA : NSObject instanceSize=32
+  ivar +8 _givenTimeout d
+  ivar +16 _givenDASession ^{__DASession=}
+  ivar +24 _currentDAIdle B
+  +waitForDAIdleWithDASession:timeout:withDMTool:didGoIdle: v48@0:8^{__DASession=}16d24@32^B40  imp=+0x1b27bc7b0
+  -dealloc v16@0:8  imp=+0x1b27bc728
+  -init @16@0:8  imp=+0x1b27bc694

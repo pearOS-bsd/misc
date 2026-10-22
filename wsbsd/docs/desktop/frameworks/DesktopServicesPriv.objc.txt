@@ -1,0 +1,2346 @@
+@class DSArchiveService : NSObject <DSArchiveServiceStreamingInternal, DSArchiveServiceProtocol> instanceSize=16
+  ivar +8 _unarchivingDelegate @"<DSArchiveServiceUnarchivingDelegate>"
+  property unarchivingDelegate (T@"<DSArchiveServiceUnarchivingDelegate>",W,N,V_unarchivingDelegate)
+  -.cxx_destruct v16@0:8  imp=+0x19cd20d10
+  -archiveItemsAtURLs:toURL:options:compressionFormat:passphrase:completionHandler: @64@0:8@16@24Q32Q40@48@?56  imp=+0x19cd1e340
+  -archiveItemsWithURLs:compressionFormat:destinationFolderURL:completionHandler: @48@0:8@16Q24@32@?40  imp=+0x19cd1f770
+  -archiveItemsWithURLs:passphrase:addToKeychain:compressionFormat:destinationFolderURL:completionHandler: @60@0:8@16@24B32Q36@44@?52  imp=+0x19cd1f7b0
+  -itemDescriptorsForItemAtURL:passphrase:completionHandler: v40@0:8@16@24@?32  imp=+0x19cd1dc30
+  -itemDescriptorsForItemAtURL:passphrases:completionHandler: v40@0:8@16@24@?32  imp=+0x19cd1dd64
+  -receiveArchivedItemsDescriptors:placeholderName:placeholderTypeIdentifier: v40@0:8@16@24@32  imp=+0x19cd20bbc
+  -setUnarchivingDelegate: v24@0:8@16  imp=+0x19cd20d04
+  -unarchiveItemAtURL:passphrase:destinationFolderURL:completionHandler: @48@0:8@16@24@32@?40  imp=+0x19cd1fffc
+  -unarchiveItemAtURL:passphrases:addToKeychain:destinationFolderURL:acceptedFormats:completionHandler: @60@0:8@16@24B32@36Q44@?52  imp=+0x19cd201f0
+  -unarchiveItemAtURL:passphrases:destinationFolderURL:acceptedFormats:completionHandler: @56@0:8@16@24@32Q40@?48  imp=+0x19cd201b4
+  -unarchiveItemAtURL:passphrases:destinationFolderURL:completionHandler: @48@0:8@16@24@32@?40  imp=+0x19cd20178
+  -unarchiveItemAtURL:toURL:options:acceptedFormats:passphrases:completionHandler: @64@0:8@16@24Q32Q40@48@?56  imp=+0x19cd1ecb0
+  -unarchivingDelegate @16@0:8  imp=+0x19cd20cd8
+@class DSArchivedItemDescriptor : NSObject <NSSecureCoding> instanceSize=32
+  ivar +8 _filePath @"NSString"
+  ivar +16 _fileSize @"NSNumber"
+  ivar +24 _typeIdentifier @"NSString"
+  property filePath (T@"NSString",C,N,V_filePath)
+  property fileSize (T@"NSNumber",C,N,V_fileSize)
+  property typeIdentifier (T@"NSString",C,N,V_typeIdentifier)
+  +supportsSecureCoding B16@0:8  imp=+0x19cd1d9e0
+  -.cxx_destruct v16@0:8  imp=+0x19cd1dbe0
+  -encodeWithCoder: v24@0:8@16  imp=+0x19cd1db24
+  -filePath @16@0:8  imp=+0x19cd1dbb0
+  -fileSize @16@0:8  imp=+0x19cd1dbc0
+  -initWithCoder: @24@0:8@16  imp=+0x19cd1d9e8
+  -setFilePath: v24@0:8@16  imp=+0x19cd1dbb8
+  -setFileSize: v24@0:8@16  imp=+0x19cd1dbc8
+  -setTypeIdentifier: v24@0:8@16  imp=+0x19cd1dbd8
+  -typeIdentifier @16@0:8  imp=+0x19cd1dbd0
+@class DSFPItemStatusObserver : NSObject <FPItemCollectionItemIDBasedDelegate> instanceSize=120
+  ivar +8 _parentNode {TNodePtr="fFINode"@"FINode"}
+  ivar +16 _parentIdentifier {TString="fString"{TRef<const __CFString *, TRetainReleasePolicy<CFStringRef>>="fRef"^{__CFString}}}
+  ivar +24 _collection @"FPItemCollection"
+  ivar +32 _FPError @"NSError"
+  ivar +40 _observingLock {mutex="__m_"{_opaque_pthread_mutex_t="__sig"q"__opaque"[56c]}}
+  ivar +104 _createdFromURL B
+  ivar +112 _gatheringSignpost {unique_ptr<AutoSignpostInterval_FPProvider_Gathering, std::default_delete<AutoSignpostInterval_FPProvider_Gathering>>=""{?="__ptr_"^{AutoSignpostInterval_FPProvider_Gathering}}}
+  property populated (TB,R,N,GisPopulated)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_construct @16@0:8  imp=+0x19cbfd26c
+  -.cxx_destruct v16@0:8  imp=+0x19cbfd204
+  -collection:didEncounterError: v32@0:8@16@24  imp=+0x19cbfccc0
+  -collection:didUpdateItems:replaceItemsByFormerID:deleteItemsWithIDs: v48@0:8@16@24@32@40  imp=+0x19cbfca28
+  -collection:didUpdateObservedItem: v32@0:8@16@24  imp=+0x19cbfc0f8
+  -collectionDidFinishGathering: v24@0:8@16  imp=+0x19cbfc3c8
+  -dataForCollectionShouldBeReloaded: v24@0:8@16  imp=+0x19cbfc730
+  -fpError @16@0:8  imp=+0x19cbfd1ac
+  -fpItems @16@0:8  imp=+0x19cbfb864
+  -isPopulated B16@0:8  imp=+0x19cbfaf0c
+  -resetError v16@0:8  imp=+0x19cbfd11c
+  -startObserving:forParent:withQueue: v40@0:8@16r^{TNodePtr=@}24@32  imp=+0x19cbfa12c
+  -stopObserving v16@0:8  imp=+0x19cbfac48
+  -updateFPItems: v24@0:8@16  imp=+0x19cbfaf34
+  -updateNodesFPItemsFromCollection: v24@0:8r^v16  imp=+0x19cbfc95c
+@class DSFileProgress : NSObject instanceSize=40
+  ivar +8 _observers {vector<TKeyValueObserver, std::allocator<TKeyValueObserver>>="__begin_"^{TKeyValueObserver}"__end_"^{TKeyValueObserver}""{?="__cap_"^{TKeyValueObserver}}}
+  ivar +32 _progressNode @"FINode"
+  property progressNode (T@"FINode",W,V_progressNode)
+  -.cxx_construct @16@0:8  imp=+0x19cc6db00
+  -.cxx_destruct v16@0:8  imp=+0x19cc6dac0
+  -progressChanged: v24@0:8@16  imp=+0x19cc6d0c4
+  -progressNode @16@0:8  imp=+0x19cc6da88
+  -setProgressNode: v24@0:8@16  imp=+0x19cc6dab4
+  -startObserving: v24@0:8@16  imp=+0x19cc6cab4
+  -stopObserving v16@0:8  imp=+0x19cc6d080
+@class DSHighlightCenterTracker : NSObject <SWHighlightCenterDelegate> instanceSize=168
+  ivar +8 _highlightCenter @"SWHighlightCenter"
+  ivar +16 _trackedIdentifiers {unordered_set<TString, std::hash<TString>, std::equal_to<TString>, std::allocator<TString>>="__table_"{__hash_table<TString, std::hash<TString>, std::equal_to<TString>, std::allocator<TString>>="__bucket_list_"{unique_ptr<std::__hash_node_base<std::__hash_node<TString, void *> *> *[], std::__bucket_list_deallocator<std::allocator<std::__hash_node_base<std::__hash_node<TString, void *> *> *>>>=""{?="__ptr_"^^v"__deleter_"{__bucket_list_deallocator<std::allocator<std::__hash_node_base<std::__hash_node<TString, void *> *> *>>=""{?="__size_"Q}}}}""{?="__first_node_"{__hash_node_base<std::__hash_node<TString, void *> *>="__next_"^v}}""{?="__size_"Q}""{?="__max_load_factor_"f}}}
+  ivar +56 _missedIdentifiers {unordered_set<TString, std::hash<TString>, std::equal_to<TString>, std::allocator<TString>>="__table_"{__hash_table<TString, std::hash<TString>, std::equal_to<TString>, std::allocator<TString>>="__bucket_list_"{unique_ptr<std::__hash_node_base<std::__hash_node<TString, void *> *> *[], std::__bucket_list_deallocator<std::allocator<std::__hash_node_base<std::__hash_node<TString, void *> *> *>>>=""{?="__ptr_"^^v"__deleter_"{__bucket_list_deallocator<std::allocator<std::__hash_node_base<std::__hash_node<TString, void *> *> *>>=""{?="__size_"Q}}}}""{?="__first_node_"{__hash_node_base<std::__hash_node<TString, void *> *>="__next_"^v}}""{?="__size_"Q}""{?="__max_load_factor_"f}}}
+  ivar +96 fLock {mutex="__m_"{_opaque_pthread_mutex_t="__sig"q"__opaque"[56c]}}
+  ivar +160 _queryQueue @"NSObject<OS_dispatch_queue>"
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +shared @16@0:8  imp=+0x19cca58c0
+  -.cxx_construct @16@0:8  imp=+0x19cca67ac
+  -.cxx_destruct v16@0:8  imp=+0x19cca6750
+  -fetchAttributionsForHighlight: @24@0:8@16  imp=+0x19cca5bdc
+  -highlightCenterHighlightsDidChange: v24@0:8@16  imp=+0x19cca5c44
+  -highlightForIdentifier: @24@0:8^{__CFString=}16  imp=+0x19cca595c
+  -init @16@0:8  imp=+0x19cca5750
+@class DSITunesObserver : NSObject <DeviceCollectionDelegate> instanceSize=32
+  ivar +8 fParentNode {TNodePtr="fFINode"@"FINode"}
+  ivar +16 fDevices @"NSMutableArray"
+  ivar +24 fCollection @"DeviceCollection"
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_construct @16@0:8  imp=+0x19cbfeae4
+  -.cxx_destruct v16@0:8  imp=+0x19cbfea98
+  -allDevicesDetached v16@0:8  imp=+0x19cbfe4a4
+  -completedOperationForDevice: v24@0:8@16  imp=+0x19cbfe9ac
+  -copyCollection @16@0:8  imp=+0x19cbfdc88
+  -deviceAttached: v24@0:8@16  imp=+0x19cbfdcfc
+  -deviceChanged: v24@0:8@16  imp=+0x19cbfe220
+  -deviceDetached: v24@0:8@16  imp=+0x19cbfdfb0
+  -iTunesDevices @16@0:8  imp=+0x19cbfdc08
+  -nameChangedForDevice: v24@0:8@16  imp=+0x19cbfde2c
+  -startObserving v16@0:8  imp=+0x19cbfdaa0
+  -startedOperationForDevice:allowCancel: v28@0:8@16B24  imp=+0x19cbfe888
+  -startedOperationForDevice:withProgress:allowCancel: v36@0:8@16@24B32  imp=+0x19cbfe564
+  -stopObserving v16@0:8  imp=+0x19cbfdb94
+  -syncDeviceList v16@0:8  imp=+0x19cbfdc90
+@class DSProvidersObserver : NSObject instanceSize=112
+  ivar +8 fParentNode {TNodePtr="fFINode"@"FINode"}
+  ivar +16 _token @"NSObject"
+  ivar +24 _providers @"NSArray"
+  ivar +32 _gatheringSignpost {unique_ptr<AutoSignpostInterval_FPProvider_Gathering, std::default_delete<AutoSignpostInterval_FPProvider_Gathering>>=""{?="__ptr_"^{AutoSignpostInterval_FPProvider_Gathering}}}
+  ivar +40 _receiveChangesLock {mutex="__m_"{_opaque_pthread_mutex_t="__sig"q"__opaque"[56c]}}
+  ivar +104 _populated B
+  property populated (TB,R,V_populated)
+  -.cxx_construct @16@0:8  imp=+0x19cbfa108
+  -.cxx_destruct v16@0:8  imp=+0x19cbfa0a8
+  -populated B16@0:8  imp=+0x19cbfa09c
+  -providers @16@0:8  imp=+0x19cbf9d68
+  -providersByAddingProviderIfNeeded: @24@0:8@16  imp=+0x19cbf9f50
+  -receivedChanges: v24@0:8@16  imp=+0x19cbf93d4
+  -setProviders: v24@0:8@16  imp=+0x19cbf9e40
+  -startObserving v16@0:8  imp=+0x19cbf90ac
+  -stopObserving v16@0:8  imp=+0x19cbf9d18
+@class DSQuarantine : NSObject instanceSize=8
+  +applyDefaultQuarantineToURL:error: B32@0:8@16^@24  imp=+0x19cd21494
+  +applyQuarantine:toURL:error: B40@0:8@16@24^@32  imp=+0x19cd21530
+  +defaultQuarantineData @16@0:8  imp=+0x19cd20d18
+  +writeDefaultQuarantineTemplateFile @16@0:8  imp=+0x19cd20e18
+@class DSSandboxingURLWrapper : NSObject <NSSecureCoding> instanceSize=40
+  ivar +8 _url @"NSURL"
+  ivar +16 _scope @"NSData"
+  ivar +24 _promiseScope @"NSData"
+  ivar +32 _promiseURL @"NSURL"
+  property url (T@"NSURL",C,N,V_url)
+  property promiseURL (T@"NSURL",&,N,V_promiseURL)
+  property scope (T@"NSData",&,N,V_scope)
+  property promiseScope (T@"NSData",&,N,V_promiseScope)
+  +supportsSecureCoding B16@0:8  imp=+0x19cd2242c
+  +wrapperWithURL:extensionClass:error: @40@0:8@16r*24^@32  imp=+0x19cd21a98
+  +wrapperWithURL:extensionClass:report:error: @44@0:8@16r*24B32^@36  imp=+0x19cd21acc
+  +wrapperWithURL:readonly:error: @36@0:8@16B24^@28  imp=+0x19cd21a50
+  -.cxx_destruct v16@0:8  imp=+0x19cd227c4
+  -description @16@0:8  imp=+0x19cd2230c
+  -encodeWithCoder: v24@0:8@16  imp=+0x19cd22434
+  -initWithCoder: @24@0:8@16  imp=+0x19cd22574
+  -initWithURL:extensionClass:report:error: @44@0:8@16r*24B32^@36  imp=+0x19cd21b64
+  -promiseScope @16@0:8  imp=+0x19cd2279c
+  -promiseURL @16@0:8  imp=+0x19cd227b0
+  -scope @16@0:8  imp=+0x19cd22788
+  -setPromiseScope: v24@0:8@16  imp=+0x19cd227a4
+  -setPromiseURL: v24@0:8@16  imp=+0x19cd227b8
+  -setScope: v24@0:8@16  imp=+0x19cd22790
+  -setUrl: v24@0:8@16  imp=+0x19cd22780
+  -url @16@0:8  imp=+0x19cd22778
+@class DS_TDSHelperConnectionHandler : NSObject instanceSize=80
+  ivar +8 _helper ^v
+  ivar +16 _mutex {mutex="__m_"{_opaque_pthread_mutex_t="__sig"q"__opaque"[56c]}}
+  -.cxx_construct @16@0:8  imp=+0x19cd0e0f0
+  -.cxx_destruct v16@0:8  imp=+0x19cd0e0e8
+  -clearHelper v16@0:8  imp=+0x19cd0e0a8
+  -handleHelperEvent: v24@0:8@16  imp=+0x19cd0df24
+  -initWithHelper: @24@0:8^v16  imp=+0x19cd0defc
+@class DS_TKeyValueObserverGlue : NSObject instanceSize=192
+  ivar +8 _functor {function<void ()>="__f_"{__value_func<void ()>="__buf_"(type="__data"[24C])"__f_"^v}}
+  ivar +40 _functorWithChange {function<void (NSDictionary<NSString *,NSObject *> *)>="__f_"{__value_func<void (NSDictionary<NSString *,NSObject *> *)>="__buf_"(type="__data"[24C])"__f_"^v}}
+  ivar +72 _functorLock {mutex="__m_"{_opaque_pthread_mutex_t="__sig"q"__opaque"[56c]}}
+  ivar +136 _observedObjects {unordered_set<NSObject *__unsafe_unretained, std::hash<NSObject *__unsafe_unretained>, std::equal_to<NSObject *__unsafe_unretained>, std::allocator<NSObject *__unsafe_unretained>>="__table_"{__hash_table<NSObject *__unsafe_unretained, std::hash<NSObject *__unsafe_unretained>, std::equal_to<NSObject *__unsafe_unretained>, std::allocator<NSObject *__unsafe_unretained>>="__bucket_list_"{unique_ptr<std::__hash_node_base<std::__hash_node<NSObject *__unsafe_unretained, void *> *> *[], std::__bucket_list_deallocator<std::allocator<std::__hash_node_base<std::__hash_node<NSObject *__unsafe_unretained, void *> *> *>>>=""{?="__ptr_"^^v"__deleter_"{__bucket_list_deallocator<std::allocator<std::__hash_node_base<std::__hash_node<NSObject *__unsafe_unretained, void *> *> *>>=""{?="__size_"Q}}}}""{?="__first_node_"{__hash_node_base<std::__hash_node<NSObject *__unsafe_unretained, void *> *>="__next_"^v}}""{?="__size_"Q"__hasher_"{hash<NSObject *__unsafe_unretained>="fHash"{hash<NSObject *>=}}}""{?="__max_load_factor_"f"__key_eq_"{equal_to<NSObject *__unsafe_unretained>="fEqual"{equal_to<NSObject *>=}}}}}
+  ivar +184 _observedKeyPath {TString="fString"{TRef<const __CFString *, TRetainReleasePolicy<CFStringRef>>="fRef"^{__CFString}}}
+  -.cxx_construct @16@0:8  imp=+0x19cd05c84
+  -.cxx_destruct v16@0:8  imp=+0x19cd05c30
+  -initCommon:observedKeyPath: v32@0:8r^v16r^v24  imp=+0x19cd0592c
+  -initWithFunctor:observedObjects:observedKeyPath: @40@0:8r^v16r^v24r^v32  imp=+0x19cd05778
+  -initWithFunctorWithChange:observedObjects:observedKeyPath: @40@0:8r^v16r^v24r^v32  imp=+0x19cd05818
+  -invalidate v16@0:8  imp=+0x19cd05988
+  -observeValueForKeyPath:ofObject:change:context: v48@0:8@16@24@32^v40  imp=+0x19cd059dc
+@class DS_TNotificationCenterObserverGlue : NSObject instanceSize=72
+  ivar +8 _invokeSimple {function<void ()>="__f_"{__value_func<void ()>="__buf_"(type="__data"[24C])"__f_"^v}}
+  ivar +40 _invokeWithNote {function<void (NSNotification *)>="__f_"{__value_func<void (NSNotification *)>="__buf_"(type="__data"[24C])"__f_"^v}}
+  -.cxx_construct @16@0:8  imp=+0x19cc97f14
+  -.cxx_destruct v16@0:8  imp=+0x19cc97ed8
+  -initSimple: @24@0:8r^v16  imp=+0x19cc97c0c
+  -initWithNote: @24@0:8r^v16  imp=+0x19cc97cdc
+  -invoke: v24@0:8@16  imp=+0x19cc97dac
+@class DSiTunesProgress : NSObject instanceSize=64
+  ivar +8 _progress @"NSProgress"
+  ivar +16 _device @"AMPDevice"
+  ivar +24 _deviceNode {TNodePtr="fFINode"@"FINode"}
+  ivar +32 _lastProgressSent d
+  ivar +40 _observers {vector<TKeyValueObserver, std::allocator<TKeyValueObserver>>="__begin_"^{TKeyValueObserver}"__end_"^{TKeyValueObserver}""{?="__cap_"^{TKeyValueObserver}}}
+  +nodeForDevice: {TNodePtr=@}24@0:8@16  imp=+0x19cbfd4b4
+  -.cxx_construct @16@0:8  imp=+0x19cbfd6ec
+  -.cxx_destruct v16@0:8  imp=+0x19cbfd694
+  -aboutToTearDown v16@0:8  imp=+0x19cbfd470
+  -initWithDevice:andProgress: @32@0:8@16@24  imp=+0x19cbfd2c0
+  -progress @16@0:8  imp=+0x19cbfd5a4
+  -sendUpdate v16@0:8  imp=+0x19cbfd5ac
+@class FIAllTagsNode : FINode instanceSize=8
+  +colorForTagName: i24@0:8@16  imp=+0x19cc1b364
+  +disableTagBasedIconTinting B16@0:8  imp=+0x19cc1b51c
+  +folderTintColorForLabel: q24@0:8q16  imp=+0x19cc1b4ec
+  +setCurrentTagsColorMappings: v24@0:8@16  imp=+0x19cc1b434
+  +setDisableTagBasedIconTinting: v20@0:8B16  imp=+0x19cc1b57c
+@class FIAnalytics : NSObject instanceSize=8
+  +sharedAnalytics @16@0:8  imp=+0x19cc97a9c
+  -sendAnalytics: v24@0:8@16  imp=+0x19cc97b00
+  -sendEvent:eventDictionary: v32@0:8@16@?24  imp=+0x19cc97c00
+@class FIAnalyticsOperationRecord : FIAnalyticsRecord instanceSize=24
+  -initWithEventName: @24@0:8@16  imp=+0x19ccfc3f8
+  -setFileSystem:forKey: v32@0:8Q16@24  imp=+0x19ccfc51c
+  -setItemType: v24@0:8Q16  imp=+0x19ccfc4ac
+  -setObject:forKey: v32@0:8@16@24  imp=+0x19ccfc5bc
+  -validate B16@0:8  imp=+0x19ccfc430
+@class FIAnalyticsRecord : NSObject instanceSize=24
+  ivar +8 _eventName @"NSString"
+  ivar +16 _eventDict @"NSMutableDictionary"
+  property eventName (T@"NSString",R,N,V_eventName)
+  property eventDict (T@"NSMutableDictionary",R,N,V_eventDict)
+  -.cxx_destruct v16@0:8  imp=+0x19cc97a58
+  -eventDict @16@0:8  imp=+0x19cc97a50
+  -eventName @16@0:8  imp=+0x19cc97a48
+  -initWithEventName: @24@0:8@16  imp=+0x19cc977fc
+  -initWithEventName:initialDictionary: @32@0:8@16@24  imp=+0x19cc97804
+  -objectForKey: @24@0:8@16  imp=+0x19cc9796c
+  -objectForKeyedSubscript: @24@0:8@16  imp=+0x19cc97940
+  -setBool:forKey: v28@0:8B16@20  imp=+0x19cc979a8
+  -setObject:forKey: v32@0:8@16@24  imp=+0x19cc979a0
+  -setObject:forKeyedSubscript: v32@0:8@16@24  imp=+0x19cc9799c
+  -validate B16@0:8  imp=+0x19cc97914
+@class FIArchiveOperation : FIOperation instanceSize=1184
+  ivar +1168 _archiveFormat Q
+  ivar +1176 _destinationNode @"FINode"
+  property destinationNode (T@"FINode",&,V_destinationNode)
+  property archiveFormat (TQ,V_archiveFormat)
+  -.cxx_destruct v16@0:8  imp=+0x19cbad4bc
+  -_initWithSourceNodes:destinationFolder: @32@0:8@16@24  imp=+0x19cbacd7c
+  -archiveFormat Q16@0:8  imp=+0x19cbad478
+  -destinationForNode: @24@0:8@16  imp=+0x19cbad1e0
+  -destinationNode @16@0:8  imp=+0x19cbad4a0
+  -filterSourceNodes v16@0:8  imp=+0x19cbad028
+  -initWithSourceNodes:destinationFolder: @32@0:8@16@24  imp=+0x19cbad024
+  -nodes @16@0:8  imp=+0x19cbad168
+  -operationUserData @16@0:8  imp=+0x19cbad298
+  -progressFileOperationKind @16@0:8  imp=+0x19cbad468
+  -progressURL @16@0:8  imp=+0x19cbad3e8
+  -setArchiveFormat: v24@0:8Q16  imp=+0x19cbad48c
+  -setDestinationNode: v24@0:8@16  imp=+0x19cbad4b0
+  -shouldExecuteDSOperation B16@0:8  imp=+0x19cbad224
+@class FIBaseCopyMoveOperation : FIOperation instanceSize=1192
+  ivar +1168 _duplication B
+  ivar +1176 _targetFilenamesByNode @"NSDictionary"
+  ivar +1184 _destinationNode @"FINode"
+  property destinationNode (T@"FINode",&,V_destinationNode)
+  property duplication (TB,N,GisDuplication,V_duplication)
+  property targetFilenamesByNode (T@"NSDictionary",C,N,V_targetFilenamesByNode)
+  -.cxx_destruct v16@0:8  imp=+0x19cd233e8
+  -_applyResolution:toRemainingConflicts: v24@0:8I16I20  imp=+0x19cd232a0
+  -destinationForNode: @24@0:8@16  imp=+0x19cd23064
+  -destinationNode @16@0:8  imp=+0x19cd233a4
+  -filterSourceNodes v16@0:8  imp=+0x19cd22f80
+  -isDuplication B16@0:8  imp=+0x19cd233c0
+  -makeOperationRecordForNode: @24@0:8@16  imp=+0x19cd2311c
+  -progressURL @16@0:8  imp=+0x19cd23220
+  -setDestinationNode: v24@0:8@16  imp=+0x19cd233b4
+  -setDuplication: v20@0:8B16  imp=+0x19cd233d4
+  -setTargetFilenamesByNode: v24@0:8@16  imp=+0x19cd23398
+  -shouldExecuteDSOperation B16@0:8  imp=+0x19cd230a8
+  -targetFilenamesByNode @16@0:8  imp=+0x19cd23384
+@class FIChildrenIterator : NSObject <FINodeIterator> instanceSize=32
+  ivar +8 _fullyPopulated B
+  ivar +9 _includeInvisible B
+  ivar +16 _children @"NSArray"
+  ivar +24 _index Q
+  property children (T@"NSArray",C,N,V_children)
+  property includeInvisible (TB,R,N,V_includeInvisible)
+  property index (TQ,N,V_index)
+  property fullyPopulated (TB,R,N)
+  property estimatedSize (TQ,R,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x19cc72f00
+  -children @16@0:8  imp=+0x19cc72ed8
+  -estimatedSize Q16@0:8  imp=+0x19cc72ed0
+  -first @16@0:8  imp=+0x19cc72e0c
+  -fullyPopulated B16@0:8  imp=+0x19cc72ec8
+  -includeInvisible B16@0:8  imp=+0x19cc72ee8
+  -index Q16@0:8  imp=+0x19cc72ef0
+  -initWithChildren:fullyPopulated:options: @32@0:8@16B24I28  imp=+0x19cc72d58
+  -next @16@0:8  imp=+0x19cc72e14
+  -setChildren: v24@0:8@16  imp=+0x19cc72ee0
+  -setIndex: v24@0:8Q16  imp=+0x19cc72ef8
+@class FICompoundNode : FICustomNode instanceSize=168
+  ivar +104 _nodesToComplete {unordered_set<FINode *, std::hash<FINode *>, std::equal_to<FINode *>, std::allocator<FINode *>>="__table_"{__hash_table<FINode *, std::hash<FINode *>, std::equal_to<FINode *>, std::allocator<FINode *>>="__bucket_list_"{unique_ptr<std::__hash_node_base<std::__hash_node<FINode *, void *> *> *[], std::__bucket_list_deallocator<std::allocator<std::__hash_node_base<std::__hash_node<FINode *, void *> *> *>>>=""{?="__ptr_"^^v"__deleter_"{__bucket_list_deallocator<std::allocator<std::__hash_node_base<std::__hash_node<FINode *, void *> *> *>>=""{?="__size_"Q}}}}""{?="__first_node_"{__hash_node_base<std::__hash_node<FINode *, void *> *>="__next_"^v}}""{?="__size_"Q}""{?="__max_load_factor_"f}}}
+  ivar +144 _openSyncStartedSent B
+  ivar +152 _subjectNode @"FINode"
+  ivar +160 _nodes @"NSSet"
+  property subjectNode (T@"FINode",R,N,V_subjectNode)
+  property nodes (T@"NSSet",R,N,V_nodes)
+  -.cxx_construct @16@0:8  imp=+0x19cd03778
+  -.cxx_destruct v16@0:8  imp=+0x19cd03714
+  -copyFromAlias:allowUI:followAliasChain: @28@0:8I16B20B24  imp=+0x19cd00d64
+  -copyProgress @16@0:8  imp=+0x19cd008ac
+  -dispatchEvent:forObserver: v32@0:8@16@24  imp=+0x19cd02f74
+  -downloadProgress @16@0:8  imp=+0x19cd00810
+  -enumeratorError @16@0:8  imp=+0x19cd00434
+  -fiDomain @16@0:8  imp=+0x19cd00398
+  -fileOpNode @16@0:8  imp=+0x19cd00064
+  -fileParent @16@0:8  imp=+0x19cd00bc8
+  -fileURL @16@0:8  imp=+0x19cd001c4
+  -fpDomain @16@0:8  imp=+0x19cd002fc
+  -fpItem @16@0:8  imp=+0x19cd00260
+  -initWithFINodes: @24@0:8@16  imp=+0x19ccfffec
+  -initWithNodes: @24@0:8@16  imp=+0x19ccffe60
+  -initWithNodes:subject: @32@0:8@16@24  imp=+0x19ccfff74
+  -inlineProgressCancel v16@0:8  imp=+0x19cd00600
+  -isPopulated B16@0:8  imp=+0x19cd00948
+  -isValid B16@0:8  imp=+0x19cd00e20
+  -iteratorWithOptions: @20@0:8I16  imp=+0x19cd02660
+  -longDescription @16@0:8  imp=+0x19cd026f0
+  -markAsUsed: B24@0:8^@16  imp=+0x19cd025c4
+  -nodeIs:error: Q32@0:8Q16^@24  imp=+0x19cd01028
+  -nodePermissions:error: I28@0:8I16^@20  imp=+0x19cd01170
+  -nodeRestartObservingWithOptions: v20@0:8I16  imp=+0x19cd0146c
+  -nodes @16@0:8  imp=+0x19cd03700
+  -nodesForSizing @16@0:8  imp=+0x19cd0265c
+  -nodesToObserve @16@0:8  imp=+0x19cd00e1c
+  -nodesWithSubject @16@0:8  imp=+0x19cd00100
+  -parent @16@0:8  imp=+0x19cd00c64
+  -propertyAsArray:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cd0181c
+  -propertyAsBool:async:options:error: B36@0:8I16B20I24^@28  imp=+0x19cd01ab0
+  -propertyAsBoolean:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cd01b74
+  -propertyAsData:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cd01c50
+  -propertyAsDate:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cd01664
+  -propertyAsDictionary:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cd019d4
+  -propertyAsNSObject:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cd018f8
+  -propertyAsNumber:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cd01588
+  -propertyAsString:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cd01740
+  -removePropertyValue:error: B28@0:8I16^@20  imp=+0x19cd02520
+  -setProperty:asArray:async:options:error: B44@0:8I16@20B28I32^@36  imp=+0x19cd02038
+  -setProperty:asBool:async:options:error: B40@0:8I16B20B24I28^@32  imp=+0x19cd02240
+  -setProperty:asData:async:options:error: B44@0:8I16@20B28I32^@36  imp=+0x19cd02318
+  -setProperty:asDate:async:options:error: B44@0:8I16@20B28I32^@36  imp=+0x19cd01e30
+  -setProperty:asDictionary:async:options:error: B44@0:8I16@20B28I32^@36  imp=+0x19cd0213c
+  -setProperty:asNumber:async:options:error: B44@0:8I16@20B28I32^@36  imp=+0x19cd01d2c
+  -setProperty:asObject:async:options:error: B44@0:8I16@20B28I32^@36  imp=+0x19cd0241c
+  -setProperty:asString:async:options:error: B44@0:8I16@20B28I32^@36  imp=+0x19cd01f34
+  -shortDescription @16@0:8  imp=+0x19cd02ae8
+  -source @16@0:8  imp=+0x19cd00d00
+  -startObserving:with: v28@0:8I16^{OpaqueEventNotifier=}20  imp=+0x19cd02c14
+  -stopObserving:with: v28@0:8I16^{OpaqueEventNotifier=}20  imp=+0x19cd02ec8
+  -subjectNode @16@0:8  imp=+0x19cd036ec
+  -synchronizeChildren:events: v28@0:8I16^v20  imp=+0x19cd01340
+  -synchronizeWithOptions:async: v24@0:8I16B20  imp=+0x19cd01214
+  -volumeIs:error: I28@0:8I16^@20  imp=+0x19cd010cc
+@class FICompoundNodeIterator : NSObject <FINodeIterator> instanceSize=40
+  ivar +8 _subIterators {vector<NSObject<FINodeIterator> *, std::allocator<NSObject<FINodeIterator> *>>="__begin_"^@"__end_"^@""{?="__cap_"^@}}
+  ivar +32 fCurrentIterator Q
+  property fullyPopulated (TB,R,N)
+  property estimatedSize (TQ,R,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_construct @16@0:8  imp=+0x19cc736a0
+  -.cxx_destruct v16@0:8  imp=+0x19cc73674
+  -estimatedSize Q16@0:8  imp=+0x19cc73620
+  -first @16@0:8  imp=+0x19cc73450
+  -fullyPopulated B16@0:8  imp=+0x19cc735dc
+  -initWithNodes:options: @28@0:8@16I24  imp=+0x19cc731d4
+  -next @16@0:8  imp=+0x19cc73500
+@class FICopyOperation : FIBaseCopyMoveOperation instanceSize=1192
+  property duplication (TB,R,D,N,GisDuplication)
+  -_canContinueAfterConflict: B20@0:8I16  imp=+0x19cbaee28
+  -_resolutionToContinueAfterConflict: I20@0:8I16  imp=+0x19cbaefb8
+  -canContinueAfterCopyConflict: B20@0:8I16  imp=+0x19cbaed98
+  -canContinueAfterDuplicationConflict: B20@0:8I16  imp=+0x19cbaede0
+  -dsOperationOptions I16@0:8  imp=+0x19cbae948
+  -initWithSourceNodes:destinationFolder: @32@0:8@16@24  imp=+0x19cbae7e0
+  -initWithSourceNodes:destinationFolder:isDuplication: @36@0:8@16@24B32  imp=+0x19cbae7e8
+  -initialResolutionForConflict: I20@0:8I16  imp=+0x19cbaed30
+  -initialResolutionForCopyConflict: I20@0:8I16  imp=+0x19cbaeaf8
+  -initialResolutionForDuplicationConflict: I20@0:8I16  imp=+0x19cbaec64
+  -mostImportantConflict: I20@0:8I16  imp=+0x19cbaea90
+  -mostImportantCopyConflict: I20@0:8I16  imp=+0x19cbae96c
+  -mostImportantDuplicationConflict: I20@0:8I16  imp=+0x19cbaea14
+  -progressFileOperationKind @16@0:8  imp=+0x19cbae904
+  -resolutionToContinueAfterCopyConflict: I20@0:8I16  imp=+0x19cbaee90
+  -resolutionToContinueAfterDuplicationConflict: I20@0:8I16  imp=+0x19cbaef80
+@class FICustomNode : FIDSNode instanceSize=104
+  -dealloc v16@0:8  imp=+0x19cd234a4
+  -fileOpNode @16@0:8  imp=+0x19cd2352c
+  -init @16@0:8  imp=+0x19cd2343c
+  -iteratorWithOptions: @20@0:8I16  imp=+0x19cd254d0
+  -nodesForSizing @16@0:8  imp=+0x19cd235bc
+  -presentationNode @16@0:8  imp=+0x19cd23528
+  -propertyAsNumber:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cd235c4
+@class FIDSNode : FINode instanceSize=104
+  ivar +8 _node {TPrivateNodeInstantiationEnabler="fVolumeInfoPtr"{shared_ptr<TFSVolumeInfo>="__ptr_"^{TFSVolumeInfo}"__cntrl_"^{__shared_weak_count}}"fFSInfo"{shared_ptr<TFSInfo>="__ptr_"^{TFSInfo}"__cntrl_"^{__shared_weak_count}}"fAliasTarget"{TNodePtr="fFINode"@"FINode"}"fOperationLock"{unique_ptr<TOperationLock, std::default_delete<TOperationLock>>=""{?="__ptr_"^{TOperationLock}}}"fParent"^{TNode}"fChildrenList"{unique_ptr<TChildrenList, std::default_delete<TChildrenList>>=""{?="__ptr_"^{TChildrenList}}}"fCustomNode"^v"fNotifierList"{unique_ptr<TNotifierList, std::default_delete<TNotifierList>>=""{?="__ptr_"^{TNotifierList}}}"fOpenSyncSignpost"{unique_ptr<AutoSignpostInterval_General_OpenSync, std::default_delete<AutoSignpostInterval_General_OpenSync>>=""{?="__ptr_"^{AutoSignpostInterval_General_OpenSync}}}"fFlags"{atomic<unsigned short>="__a_"{__cxx_atomic_impl<unsigned short, std::__cxx_atomic_base_impl<unsigned short>>="__a_value"AS}}}
+  +_makeWithCoder: @24@0:8@16  imp=+0x19ccd4e48
+  +appContainersForContainerRoot:showAllFiles:showSystemFiles: @32@0:8@16B24B28  imp=+0x19ccd8d38
+  +registerClassForFIDSNodeCoding: v24@0:8@16  imp=+0x19ccd54c0
+  -.cxx_construct @16@0:8  imp=+0x19ccd8ed4
+  -.cxx_destruct v16@0:8  imp=+0x19ccd8ec4
+  -_sendNotification:node:property: v32@0:8I16@20I28  imp=+0x19ccd8bdc
+  -allObservedOptions I16@0:8  imp=+0x19ccd5948
+  -asTNode ^v16@0:8  imp=+0x19ccd5618
+  -brContainer @16@0:8  imp=+0x19ccd61d8
+  -brContainerDocuments @16@0:8  imp=+0x19ccd6204
+  -copyProgress @16@0:8  imp=+0x19ccd61a8
+  -dispatchEvent:forObserver: v32@0:8@16@24  imp=+0x19ccd59f0
+  -downloadProgress @16@0:8  imp=+0x19ccd61a0
+  -encodeWithCoder: v24@0:8@16  imp=+0x19ccd5174
+  -enumeratorError @16@0:8  imp=+0x19ccd64bc
+  -fiDomain @16@0:8  imp=+0x19ccd6494
+  -fileParent @16@0:8  imp=+0x19ccd629c
+  -fileURL @16@0:8  imp=+0x19ccd5ecc
+  -fpDomain @16@0:8  imp=+0x19ccd62ec
+  -fpItem @16@0:8  imp=+0x19ccd6518
+  -fsInfo {shared_ptr<TFSInfo>=^{TFSInfo}^{__shared_weak_count}}16@0:8  imp=+0x19ccd5e60
+  -inlineProgressCancel v16@0:8  imp=+0x19ccd6178
+  -isObserved B16@0:8  imp=+0x19ccd59d0
+  -isObservedForAll: B20@0:8I16  imp=+0x19ccd594c
+  -isObservedForAny: B20@0:8I16  imp=+0x19ccd5978
+  -isObservedForNone: B20@0:8I16  imp=+0x19ccd59a4
+  -isPopulated B16@0:8  imp=+0x19ccd61b0
+  -isValid B16@0:8  imp=+0x19ccd5ffc
+  -iteratorWithOptions: @20@0:8I16  imp=+0x19ccd5db4
+  -longDescription @16@0:8  imp=+0x19ccd86dc
+  -markAsUsed: B24@0:8^@16  imp=+0x19ccd7954
+  -nodeIs:error: Q32@0:8Q16^@24  imp=+0x19ccd6044
+  -nodePermissions:error: I28@0:8I16^@20  imp=+0x19ccd6114
+  -nodeRestartObservingWithOptions: v20@0:8I16  imp=+0x19ccd790c
+  -propertyAsArray:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19ccd6908
+  -propertyAsBool:async:options:error: B36@0:8I16B20I24^@28  imp=+0x19ccd6c84
+  -propertyAsData:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19ccd6d54
+  -propertyAsDate:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19ccd6678
+  -propertyAsDictionary:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19ccd6b54
+  -propertyAsNSObject:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19ccd6a50
+  -propertyAsNumber:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19ccd658c
+  -propertyAsString:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19ccd6764
+  -removePropertyValue:error: B28@0:8I16^@20  imp=+0x19ccd7898
+  -sanitizedName @16@0:8  imp=+0x19ccd7ad0
+  -sanitizedURLOrPath @16@0:8  imp=+0x19ccd7c58
+  -setProperty:asArray:async:options:error: B44@0:8I16@20B28I32^@36  imp=+0x19ccd73b4
+  -setProperty:asBool:async:options:error: B40@0:8I16B20B24I28^@32  imp=+0x19ccd74e4
+  -setProperty:asData:async:options:error: B44@0:8I16@20B28I32^@36  imp=+0x19ccd75b8
+  -setProperty:asDate:async:options:error: B44@0:8I16@20B28I32^@36  imp=+0x19ccd71a0
+  -setProperty:asNumber:async:options:error: B44@0:8I16@20B28I32^@36  imp=+0x19ccd6f4c
+  -setProperty:asObject:async:options:error: B44@0:8I16@20B28I32^@36  imp=+0x19ccd7778
+  -setProperty:asString:async:options:error: B44@0:8I16@20B28I32^@36  imp=+0x19ccd7284
+  -shortDescription @16@0:8  imp=+0x19ccd81ec
+  -startObserving:with: v28@0:8I16^{OpaqueEventNotifier=}20  imp=+0x19ccd5640
+  -stopObserving:with: v28@0:8I16^{OpaqueEventNotifier=}20  imp=+0x19ccd57c4
+  -synchronizeChildren:events: v28@0:8I16^v20  imp=+0x19ccd5628
+  -synchronizeWithOptions:async: v24@0:8I16B20  imp=+0x19ccd7a54
+  -volumeIs:error: I28@0:8I16^@20  imp=+0x19ccd60b0
+@class FIDSNode_AirDrop : FIDSNode instanceSize=104
+@class FIDSNode_AllFPProviders : FIDSNode instanceSize=104
+  -markAsUsed: B24@0:8^@16  imp=+0x19ccd4a80
+@class FIDSNode_AllTags : FIDSNode instanceSize=104
+@class FIDSNode_BackedUpCloudLibs : FIDSNode instanceSize=104
+@class FIDSNode_Computer : FIDSNode <FIDSNodeCoding> instanceSize=104
+  +makeWithCoder: @24@0:8@16  imp=+0x19ccd49ec
+@class FIDSNode_Desktop : FIDSNode instanceSize=104
+@class FIDSNode_FPProvider : FIDSNode <FIDSNodeCoding> instanceSize=104
+  property useFPFS (TB,R,N,GisUsingFPFS)
+  property isFPv2 (TB,R,N)
+  +makeWithCoder: @24@0:8@16  imp=+0x19ccd4ac4
+  -encodeWithCoder: v24@0:8@16  imp=+0x19ccd4acc
+  -isFPv2 B16@0:8  imp=+0x19ccd4cd8
+  -isUsingFPFS B16@0:8  imp=+0x19ccd4c88
+  -longDescription @16@0:8  imp=+0x19ccd4bc0
+  -shortDescription @16@0:8  imp=+0x19ccd4ad0
+@class FIDSNode_ICloudContainer : FIDSNode instanceSize=104
+@class FIDSNode_ITunesDevice : FIDSNode instanceSize=104
+@class FIDSNode_ITunesDevicesContainer : FIDSNode instanceSize=104
+@class FIDSNode_NetworkNearby : FIDSNode instanceSize=104
+@class FIDSNode_NetworkSidebar : FIDSNode instanceSize=104
+@class FIDSNode_PublishedFolders : FIDSNode instanceSize=104
+@class FIDSNode_QueryAlias : FIDSNode instanceSize=104
+@class FIDSNode_QueryHit : FIDSNode instanceSize=104
+@class FIDSNode_QueryHitsContainer : FIDSNode instanceSize=104
+@class FIDSNode_RecentDocuments : FIDSNode instanceSize=104
+@class FIDSNode_SavedSearches : FIDSNode instanceSize=104
+@class FIDSNode_SidebarFavorites : FIDSNode instanceSize=104
+@class FIDSNode_SidebarLocations : FIDSNode instanceSize=104
+@class FIDSNode_SidebarTopSection : FIDSNode instanceSize=104
+@class FIDSNode_Tags : FIDSNode instanceSize=104
+@class FIDSNode_Trash : FIDSNode instanceSize=104
+@class FIDSNode_UnresolvedAlias : FIDSNode instanceSize=104
+@class FIDSNode_VirtualAlias : FIDSNode instanceSize=104
+@class FIDSNode_VirtualDocument : FIDSNode instanceSize=104
+@class FIDSNode_VirtualFolder : FIDSNode instanceSize=104
+@class FIDataSeparatedICloudDrive : FIICloudDrive instanceSize=184
+  +findUnderlyingNodes {pair<FINode *, FINode *>=@@}16@0:8  imp=+0x19cc66038
+@class FIDeleteOperation : FIOperation instanceSize=1168
+  property nodes (T@"NSArray",R)
+  +fileProviderWillShowPreflightAlertForItems: B24@0:8@16  imp=+0x19cbad760
+  -_canContinueAfterConflict: B20@0:8I16  imp=+0x19cbada70
+  -_canSkipAfterConflict: B20@0:8I16  imp=+0x19cbada84
+  -_initWithNodes: @24@0:8@16  imp=+0x19cbad4d0
+  -_resolutionToContinueAfterConflict: I20@0:8I16  imp=+0x19cbada78
+  -dsOperationOptions I16@0:8  imp=+0x19cbad718
+  -initWithNodes: @24@0:8@16  imp=+0x19cbad69c
+  -initWithSourceNodes: @24@0:8@16  imp=+0x19cbadacc
+  -initialResolutionForConflict: I20@0:8I16  imp=+0x19cbad970
+  -nodes @16@0:8  imp=+0x19cbad6a0
+  -progressFileOperationKind @16@0:8  imp=+0x19cbad750
+  -setResolution:forConflict: v24@0:8I16I20  imp=+0x19cbad9d0
+@class FIFolderSize : NSObject instanceSize=72
+  ivar +8 _totalItems q
+  ivar +16 _userVisibleItems q
+  ivar +24 _logicalBytes q
+  ivar +32 _compressionAdjustedLogicalBytes q
+  ivar +40 _physicalBytes q
+  ivar +48 _skippedItemCount q
+  ivar +56 _folderCount q
+  ivar +64 _error @"NSError"
+  property totalItems (Tq,R,N,V_totalItems)
+  property userVisibleItems (Tq,R,N,V_userVisibleItems)
+  property logicalBytes (Tq,R,N,V_logicalBytes)
+  property compressionAdjustedLogicalBytes (Tq,R,N,V_compressionAdjustedLogicalBytes)
+  property physicalBytes (Tq,R,N,V_physicalBytes)
+  property skippedItemCount (Tq,R,N,V_skippedItemCount)
+  property folderCount (Tq,R,N,V_folderCount)
+  property error (T@"NSError",R,C,N,V_error)
+  -.cxx_destruct v16@0:8  imp=+0x19cc1b698
+  -compressionAdjustedLogicalBytes q16@0:8  imp=+0x19cc1b670
+  -error @16@0:8  imp=+0x19cc1b690
+  -folderCount q16@0:8  imp=+0x19cc1b688
+  -logicalBytes q16@0:8  imp=+0x19cc1b668
+  -physicalBytes q16@0:8  imp=+0x19cc1b678
+  -skippedItemCount q16@0:8  imp=+0x19cc1b680
+  -totalItems q16@0:8  imp=+0x19cc1b658
+  -userVisibleItems q16@0:8  imp=+0x19cc1b660
+@class FIICloudDrive : FICompoundNode instanceSize=184
+  ivar +168 __libraries @"FINode"
+  ivar +176 __documents @"FINode"
+  property _libraries (T@"FINode",&,V__libraries)
+  property _documents (T@"FINode",&,V__documents)
+  +findUnderlyingNodes {pair<FINode *, FINode *>=@@}16@0:8  imp=+0x19cc65d6c
+  -.cxx_destruct v16@0:8  imp=+0x19cc65fe4
+  -_documents @16@0:8  imp=+0x19cc65fc8
+  -_libraries @16@0:8  imp=+0x19cc65fac
+  -dropTargetNode @16@0:8  imp=+0x19cc65dd0
+  -fileOpNode @16@0:8  imp=+0x19cc65dcc
+  -init @16@0:8  imp=+0x19cc65bbc
+  -nodePermissions:error: I28@0:8I16^@20  imp=+0x19cc65dd4
+  -propertyAsNumber:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cc65e18
+  -propertyAsString:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cc65f2c
+  -set_documents: v24@0:8@16  imp=+0x19cc65fd8
+  -set_libraries: v24@0:8@16  imp=+0x19cc65fbc
+@class FIMoveOperation : FIBaseCopyMoveOperation instanceSize=1192
+  -_canContinueAfterConflict: B20@0:8I16  imp=+0x19cc04650
+  -_resolutionToContinueAfterConflict: I20@0:8I16  imp=+0x19cc04664
+  -destinationForNode: @24@0:8@16  imp=+0x19cc0446c
+  -dsOperationOptions I16@0:8  imp=+0x19cc044b0
+  -initWithSourceNodes:destinationFolder: @32@0:8@16@24  imp=+0x19cc04360
+  -initialResolutionForConflict: I20@0:8I16  imp=+0x19cc04538
+  -mostImportantConflict: I20@0:8I16  imp=+0x19cc044f8
+  -progressFileOperationKind @16@0:8  imp=+0x19cc044e8
+@class FIMoveToTrashOperation : FIOperation instanceSize=1216
+  ivar +1168 _nodeToTrashMap {unordered_map<FINode *, FINode *, std::hash<FINode *>, std::equal_to<FINode *>, std::allocator<std::pair<FINode *const, FINode *>>>="__table_"{__hash_table<std::__hash_value_type<FINode *, FINode *>, std::__unordered_map_hasher<FINode *, std::pair<FINode *const, FINode *>, std::hash<FINode *>, std::equal_to<FINode *>>, std::__unordered_map_equal<FINode *, std::pair<FINode *const, FINode *>, std::equal_to<FINode *>, std::hash<FINode *>>, std::allocator<std::pair<FINode *const, FINode *>>>="__bucket_list_"{unique_ptr<std::__hash_node_base<std::__hash_node<std::__hash_value_type<FINode *, FINode *>, void *> *> *[], std::__bucket_list_deallocator<std::allocator<std::__hash_node_base<std::__hash_node<std::__hash_value_type<FINode *, FINode *>, void *> *> *>>>=""{?="__ptr_"^^v"__deleter_"{__bucket_list_deallocator<std::allocator<std::__hash_node_base<std::__hash_node<std::__hash_value_type<FINode *, FINode *>, void *> *> *>>=""{?="__size_"Q}}}}""{?="__first_node_"{__hash_node_base<std::__hash_node<std::__hash_value_type<FINode *, FINode *>, void *> *>="__next_"^v}}""{?="__size_"Q}""{?="__max_load_factor_"f}}}
+  ivar +1208 _fiDeleteImmediatelyOp @"FIDeleteOperation"
+  property fiDeleteImmediatelyOp (T@"FIDeleteOperation",&,N,V_fiDeleteImmediatelyOp)
+  property nodesToMove (T@"NSArray",R)
+  property nodesToDelete (T@"NSArray",R)
+  -.cxx_construct @16@0:8  imp=+0x19cc5b554
+  -.cxx_destruct v16@0:8  imp=+0x19cc5b504
+  -_canContinueAfterConflict: B20@0:8I16  imp=+0x19cc5b474
+  -_initWithNodes: @24@0:8@16  imp=+0x19cc5974c
+  -_resolutionToContinueAfterConflict: I20@0:8I16  imp=+0x19cc5b488
+  -cancel v16@0:8  imp=+0x19cc5adb0
+  -configureDeleteImmediatelyOp: v24@0:8@16  imp=+0x19cc5ae90
+  -destinationForNode: @24@0:8@16  imp=+0x19cc5a0ec
+  -fiDeleteImmediatelyOp @16@0:8  imp=+0x19cc5b4dc
+  -filterSourceNodes v16@0:8  imp=+0x19cc5a318
+  -initWithNodes: @24@0:8@16  imp=+0x19cc59928
+  -initialResolutionForConflict: I20@0:8I16  imp=+0x19cc5b41c
+  -makeOperationRecordForNode: @24@0:8@16  imp=+0x19cc59a4c
+  -markAsCancelled v16@0:8  imp=+0x19cc5ae20
+  -mostImportantConflict: I20@0:8I16  imp=+0x19cc5b3dc
+  -nodesToDelete @16@0:8  imp=+0x19cc599a4
+  -nodesToMove @16@0:8  imp=+0x19cc5992c
+  -progressFileOperationKind @16@0:8  imp=+0x19cc59c5c
+  -schedule v16@0:8  imp=+0x19cc5a168
+  -setFiDeleteImmediatelyOp: v24@0:8@16  imp=+0x19cc5b4f0
+  -trashExistsForNode: B24@0:8@16  imp=+0x19cc5a0b8
+  -trashNodeForNode: @24@0:8@16  imp=+0x19cc59c6c
+@class FIMutableNodePropertyList : FINodePropertyList instanceSize=16
+  -removeProperty:error: B28@0:8I16^@20  imp=+0x19cbae78c
+  -setAsArray:forProperty:error: B36@0:8@16I24^@28  imp=+0x19cbae664
+  -setAsBool:forProperty:error: B32@0:8B16I20^@24  imp=+0x19cbae2dc
+  -setAsData:forProperty:error: B36@0:8@16I24^@28  imp=+0x19cbae6f8
+  -setAsData:size:forProperty:error: B40@0:8^v16I24I28^@32  imp=+0x19cbae484
+  -setAsDate:forProperty:error: B36@0:8@16I24^@28  imp=+0x19cbae5cc
+  -setAsIconRef:forProperty:error: B36@0:8^{OpaqueIconRef=}16I24^@28  imp=+0x19cbae4e4
+  -setAsInt16:forProperty:error: B32@0:8s16I20^@24  imp=+0x19cbae388
+  -setAsInt32:forProperty:error: B32@0:8i16I20^@24  imp=+0x19cbae3dc
+  -setAsInt64:forProperty:error: B36@0:8q16I24^@28  imp=+0x19cbae430
+  -setAsInt8:forProperty:error: B32@0:8c16I20^@24  imp=+0x19cbae330
+  -setAsString:forProperty:error: B36@0:8@16I24^@28  imp=+0x19cbae538
+@class FINewFolderOperation : FIOperation instanceSize=1224
+  ivar +1168 _rawName @"NSString"
+  ivar +1176 _folderNode @"FINode"
+  ivar +1184 _nameConflictHandler @?
+  ivar +1192 _postOpRenameHandler @?
+  ivar +1200 _subOperation @"FISubOperation"
+  ivar +1208 _propertyList @"FINodePropertyList"
+  ivar +1216 _destinationNode @"FINode"
+  property subOperation (T@"FISubOperation",&,N,V_subOperation)
+  property propertyList (T@"FINodePropertyList",&,N,V_propertyList)
+  property destinationNode (T@"FINode",&,V_destinationNode)
+  property rawName (T@"NSString",R,V_rawName)
+  property folderNode (T@"FINode",R,V_folderNode)
+  property nameConflictHandler (T@?,C,N,V_nameConflictHandler)
+  property postOpRenameHandler (T@?,C,N,V_postOpRenameHandler)
+  -.cxx_destruct v16@0:8  imp=+0x19cc93914
+  -_initWithName:destinationFolderNode:propertyList: @40@0:8@16@24@32  imp=+0x19cc922ac
+  -cancel v16@0:8  imp=+0x19cc935ac
+  -destinationForNode: @24@0:8@16  imp=+0x19cc928b8
+  -destinationNode @16@0:8  imp=+0x19cc938f8
+  -filterSourceNodes v16@0:8  imp=+0x19cc92630
+  -folderNode @16@0:8  imp=+0x19cc93858
+  -initWithName:destinationFolder:propertyList: @40@0:8@16@24@32  imp=+0x19cc9262c
+  -isRenaming B16@0:8  imp=+0x19cc92800
+  -makeOperationRecordForNode: @24@0:8@16  imp=+0x19cc92978
+  -markAsCancelled v16@0:8  imp=+0x19cc93660
+  -nameConflictHandler @?16@0:8  imp=+0x19cc93868
+  -nameConflictHandler:fileExtension:error: @40@0:8@16@24^@32  imp=+0x19cc92aec
+  -postOpRenameHandler @?16@0:8  imp=+0x19cc93888
+  -postOpRenameHandler:suboperation: B28@0:8@16I24  imp=+0x19cc92c90
+  -progressDisplayName @16@0:8  imp=+0x19cc937c8
+  -progressFileTotalCount q16@0:8  imp=+0x19cc93794
+  -progressURL @16@0:8  imp=+0x19cc93714
+  -propertyList @16@0:8  imp=+0x19cc938d0
+  -rawName @16@0:8  imp=+0x19cc93848
+  -schedule v16@0:8  imp=+0x19cc9327c
+  -setDestinationNode: v24@0:8@16  imp=+0x19cc93908
+  -setNameConflictHandler: v24@0:8@?16  imp=+0x19cc9387c
+  -setPostOpRenameHandler: v24@0:8@?16  imp=+0x19cc9389c
+  -setPropertyList: v24@0:8@16  imp=+0x19cc938e4
+  -setSubOperation: v24@0:8@16  imp=+0x19cc938bc
+  -shouldExecuteDSOperation B16@0:8  imp=+0x19cc92944
+  -subOperation @16@0:8  imp=+0x19cc938a8
+  -tearDownCallbacks v16@0:8  imp=+0x19cc92770
+@class FINode : NSObject <NSCopying, NSSecureCoding> instanceSize=8
+  property creationDate (T@"NSDate",R,C,N)
+  property contentModificationDate (T@"NSDate",R,C,N)
+  property displayName (T@"NSString",R,C,N)
+  property fileName (T@"NSString",R,C,N)
+  property itemIdentifier (T@"NSString",R,C,N)
+  property documentSize (T@"NSNumber",R,C,N)
+  property fileURL (T@"NSURL",R,C,N)
+  property fpItem (T@"FPItem",R,C,N)
+  property isFolder (TB,R,N)
+  property isPackage (TB,R,N)
+  property isContainer (TB,R,N)
+  property lastUsedDate (T@"NSDate",R,C,N)
+  property contentType (T@"UTType",R,C,N)
+  property typeIdentifier (T@"NSString",R,C,N)
+  property simplifiedFolderIcon (T@"NSObject",R,C,N)
+  property fpDomain (T@"FPProviderDomain",R,C,N)
+  property fiDomain (T@"FIProviderDomain",R,C,N)
+  property fiTags (T@"NSArray",R,C,N)
+  property tags (T@"NSArray",R,C,N)
+  property enumeratorError (T@"NSError",R,N)
+  property downloadProgress (T@"NSProgress",R,N)
+  property copyProgress (T@"NSProgress",R,N)
+  property childItemCount (T@"NSNumber",R,N)
+  property isPopulated (TB,R,N)
+  property itemDecorations (T@"NSArray",R,N)
+  property isShared (TB,R,N)
+  property isSharedByCurrentUser (TB,R,N)
+  property isTopLevelSharedItem (TB,R,N)
+  property isTrashed (TB,R,N)
+  property ownerNameComponents (T@"NSPersonNameComponents",R,N)
+  property requiresForcedSyncing (TB,R,N)
+  property isVisible (TB,R,N)
+  property presentationNode (T@"FINode",R,N)
+  property parent (T@"FINode",R,N)
+  property fileParent (T@"FINode",R,N)
+  property _uiParent (T@"FINode",R,N)
+  property brContainer (T@"BRContainer",R,C,N)
+  property brContainerDocuments (T@"FINode",R,C,N)
+  +_allInstances @16@0:8  imp=+0x19cc1e2b4
+  +_allRootInstances @16@0:8  imp=+0x19cc1e2c0
+  +_dataSeparatedICloudDrive @16@0:8  imp=+0x19cc1bf2c
+  +_forEachNodeDeep: v24@0:8@?16  imp=+0x19cc1e2cc
+  +_iCloudDrive @16@0:8  imp=+0x19cc1befc
+  +dataSeparatedICloudDefaultContainer @16@0:8  imp=+0x19cc1be08
+  +dataSeparatedICloudLibrariesContainer @16@0:8  imp=+0x19cc1bd98
+  +desktopServicesAPIVersion i16@0:8  imp=+0x19cc1b760
+  +end v16@0:8  imp=+0x19cc1b768
+  +fiNodeFromURL: @24@0:8@16  imp=+0x19cc1b76c
+  +fileSystemNodeFromURL:options: @28@0:8@16I24  imp=+0x19cc1b79c
+  +iCloudDefaultContainer @16@0:8  imp=+0x19cc1b964
+  +iCloudLibrariesContainer @16@0:8  imp=+0x19cc1b8f4
+  +isContextOpen B16@0:8  imp=+0x19cc1da94
+  +nodeFromNodeRef: @24@0:8^{OpaqueNodeRef=}16  imp=+0x19cb02920
+  +providerDomainsContainer @16@0:8  imp=+0x19cc1bf5c
+  +sizeFolder: @24@0:8@16  imp=+0x19cc1d7d8
+  +sizeFolder:forCopyInto:withDelegate: @40@0:8@16@24@32  imp=+0x19cc1d80c
+  +start v16@0:8  imp=+0x19cc1b75c
+  +supportsSecureCoding B16@0:8  imp=+0x19cc1b738
+  +trackNodeCreated: v24@0:8@16  imp=+0x19cc1e2b0
+  -_debugChildren @16@0:8  imp=+0x19cc1e2d8
+  -_forEachNodeDeep: v24@0:8@?16  imp=+0x19cc1e2d0
+  -_longDescription @16@0:8  imp=+0x19cc1e114
+  -_sendNotification:node:property: v32@0:8I16@20I28  imp=+0x19cc1dd3c
+  -_uiParent @16@0:8  imp=+0x19cc1c5fc
+  -bladeRunnerFlags I16@0:8  imp=+0x19cc1c41c
+  -brContainer @16@0:8  imp=+0x19cc1c580
+  -brContainerDocuments @16@0:8  imp=+0x19cc1c588
+  -childItemCount @16@0:8  imp=+0x19cc1c290
+  -classForArchiver #16@0:8  imp=+0x19cc1b740
+  -contentModificationDate @16@0:8  imp=+0x19cc1bfd8
+  -contentType @16@0:8  imp=+0x19cc1c4fc
+  -copyFromAlias:allowUI:followAliasChain: @28@0:8I16B20B24  imp=+0x19cc1db88
+  -copyProgress @16@0:8  imp=+0x19cc1c280
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x19cc1b750
+  -creationDate @16@0:8  imp=+0x19cc1bfcc
+  -debugDescription @16@0:8  imp=+0x19cc1e2a8
+  -description @16@0:8  imp=+0x19cc1e2a4
+  -displayName @16@0:8  imp=+0x19cc1bfe4
+  -documentSize @16@0:8  imp=+0x19cc1c10c
+  -downloadProgress @16@0:8  imp=+0x19cc1c288
+  -dropTargetNode @16@0:8  imp=+0x19cc1dc58
+  -encodeWithCoder: v24@0:8@16  imp=+0x19cc1b734
+  -enumeratorError @16@0:8  imp=+0x19cc1cb88
+  -fetchLastUsedDate: @20@0:8B16  imp=+0x19cc1c12c
+  -fiDomain @16@0:8  imp=+0x19cc1c858
+  -fiTags @16@0:8  imp=+0x19cc1c860
+  -fileName @16@0:8  imp=+0x19cc1c100
+  -fileOpNode @16@0:8  imp=+0x19cc1dc50
+  -fileParent @16@0:8  imp=+0x19cc1c5f4
+  -fileURL @16@0:8  imp=+0x19cc1c124
+  -fpDomain @16@0:8  imp=+0x19cc1c850
+  -fpItem @16@0:8  imp=+0x19cc1cb90
+  -hash Q16@0:8  imp=+0x19cc1b754
+  -infoNode @16@0:8  imp=+0x19cc1dc4c
+  -initWithCoder: @24@0:8@16  imp=+0x19cc1b6a4
+  -inlineProgressCancel v16@0:8  imp=+0x19cc1c27c
+  -isContainer B16@0:8  imp=+0x19cc1d7b8
+  -isFolder B16@0:8  imp=+0x19cc1d7c0
+  -isPackage B16@0:8  imp=+0x19cc1d7c8
+  -isPopulated B16@0:8  imp=+0x19cc1c2e0
+  -isShared B16@0:8  imp=+0x19cc1c3cc
+  -isSharedByCurrentUser B16@0:8  imp=+0x19cc1c3ec
+  -isTopLevelSharedItem B16@0:8  imp=+0x19cc1c408
+  -isTrashed B16@0:8  imp=+0x19cc1c414
+  -isValid B16@0:8  imp=+0x19cc1c144
+  -isVisible B16@0:8  imp=+0x19cc1d7d0
+  -itemDecorations @16@0:8  imp=+0x19cc1c360
+  -itemIdentifier @16@0:8  imp=+0x19cc1bff0
+  -iteratorWithOptions: @20@0:8I16  imp=+0x19cd2474c
+  -lastUsedDate @16@0:8  imp=+0x19cc1c4f0
+  -longDescription @16@0:8  imp=+0x19cc1e2d4
+  -markAsUsed: B24@0:8^@16  imp=+0x19cc1dcb0
+  -mutableCopy @16@0:8  imp=+0x19cc1b74c
+  -nodeIs: Q24@0:8Q16  imp=+0x19cc1c190
+  -nodeIs:error: Q32@0:8Q16^@24  imp=+0x19cc1c14c
+  -nodeIsAll: B24@0:8Q16  imp=+0x19cc1c198
+  -nodeIsAny: B24@0:8Q16  imp=+0x19cc1c1c4
+  -nodePermissions: I20@0:8I16  imp=+0x19cc1c274
+  -nodePermissions:error: I28@0:8I16^@20  imp=+0x19cc1c230
+  -nodeRef ^{OpaqueNodeRef=}16@0:8  imp=+0x19cb02894
+  -nodeRestartObservingWithOptions: v20@0:8I16  imp=+0x19cc1dcac
+  -nodeToMoveOrDelete @16@0:8  imp=+0x19cc1dc54
+  -nodesToObserve @16@0:8  imp=+0x19cc1c2e8
+  -original @16@0:8  imp=+0x19cb0459c
+  -ownerNameComponents @16@0:8  imp=+0x19cc1c484
+  -parent @16@0:8  imp=+0x19cc1c590
+  -presentationNode @16@0:8  imp=+0x19cc1dc5c
+  -propertyAsArray: @20@0:8I16  imp=+0x19cc1cd98
+  -propertyAsArray:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cc1cd54
+  -propertyAsBool: B20@0:8I16  imp=+0x19cc1d000
+  -propertyAsBool:async:options:error: B36@0:8I16B20I24^@28  imp=+0x19cc1cf10
+  -propertyAsBoolean:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cc1cf54
+  -propertyAsData: @20@0:8I16  imp=+0x19cc1d094
+  -propertyAsData:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cc1d050
+  -propertyAsDate: @20@0:8I16  imp=+0x19cc1cc70
+  -propertyAsDate:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cc1cc2c
+  -propertyAsDictionary: @20@0:8I16  imp=+0x19cc1cec0
+  -propertyAsDictionary:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cc1ce7c
+  -propertyAsNSObject: @20@0:8I16  imp=+0x19cc1ce2c
+  -propertyAsNSObject:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cc1cde8
+  -propertyAsNumber: @20@0:8I16  imp=+0x19cc1cbdc
+  -propertyAsNumber:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cc1cb98
+  -propertyAsString: @20@0:8I16  imp=+0x19cc1cd04
+  -propertyAsString:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cc1ccc0
+  -redactedDescription @16@0:8  imp=+0x19cc1e2ac
+  -registeringChangeNotification: v20@0:8I16  imp=+0x19cc1dd40
+  -removePropertyValue:error: B28@0:8I16^@20  imp=+0x19cc1d774
+  -requiresForcedSyncing B16@0:8  imp=+0x19cc1dc00
+  -sanitizedName @16@0:8  imp=+0x19cc1dd48
+  -setProperty:asArray: B28@0:8I16@20  imp=+0x19cc1d3a4
+  -setProperty:asArray:async:options:error: B44@0:8I16@20B28I32^@36  imp=+0x19cc1d360
+  -setProperty:asBool: B24@0:8I16B20  imp=+0x19cc1d52c
+  -setProperty:asBool:async:options:error: B40@0:8I16B20B24I28^@32  imp=+0x19cc1d4e8
+  -setProperty:asData: B28@0:8I16@20  imp=+0x19cc1d600
+  -setProperty:asData:async:options:error: B44@0:8I16@20B28I32^@36  imp=+0x19cc1d58c
+  -setProperty:asDate: B28@0:8I16@20  imp=+0x19cc1d21c
+  -setProperty:asDate:async:options:error: B44@0:8I16@20B28I32^@36  imp=+0x19cc1d1d8
+  -setProperty:asDictionary: B28@0:8I16@20  imp=+0x19cc1d468
+  -setProperty:asDictionary:async:options:error: B44@0:8I16@20B28I32^@36  imp=+0x19cc1d424
+  -setProperty:asNumber: B28@0:8I16@20  imp=+0x19cc1d158
+  -setProperty:asNumber:async:options:error: B44@0:8I16@20B28I32^@36  imp=+0x19cc1d0e4
+  -setProperty:asObject: B28@0:8I16@20  imp=+0x19cc1d6f4
+  -setProperty:asObject:async:options:error: B44@0:8I16@20B28I32^@36  imp=+0x19cc1d680
+  -setProperty:asString: B28@0:8I16@20  imp=+0x19cc1d2e0
+  -setProperty:asString:async:options:error: B44@0:8I16@20B28I32^@36  imp=+0x19cc1d29c
+  -shortDescription @16@0:8  imp=+0x19cc1df88
+  -simplifiedFolderIcon @16@0:8  imp=+0x19cc1c750
+  -source @16@0:8  imp=+0x19cc1dc48
+  -synchronize v16@0:8  imp=+0x19cc1dcf8
+  -synchronizeWithOptions:async: v24@0:8I16B20  imp=+0x19cc1dcf4
+  -tags @16@0:8  imp=+0x19cc1cb48
+  -typeIdentifier @16@0:8  imp=+0x19cc1c744
+  -unregisteringChangeNotification: v20@0:8I16  imp=+0x19cc1dd44
+  -volume @16@0:8  imp=+0x19cc1c6cc
+  -volumeIs: I20@0:8I16  imp=+0x19cc1c228
+  -volumeIs:error: I28@0:8I16^@20  imp=+0x19cc1c1e4
+@class FINodeEvent : NSObject instanceSize=88
+  ivar +8 _event {TNodeEvent="fEventKind"I"fFINode"@"FINode""fFINodes"@"NSArray""fProperty"I"fPropertyValue"{TPropertyValue="fData"{variant<std::monostate, bool, unsigned char, short, int, long long, unsigned int, double, Point, UTCDateTime, TRef<OpaqueIconRef *>, Blob, NSObject *, TString, TRef<const __CFString *>, TRef<const __CFNumber *>, TRef<const __CFData *>, TRef<const __CFDictionary *>, TRef<const __CFURL *>, TRef<const __CFArray *>, TRef<__CFFileSecurity *>, TRef<TReferenceCounted *>, NodeNotificationOptions, Property, NodeRequestOptions, NodeDSStoreStatus, DSBladeRunnerFlags>="__impl_"{__impl<std::monostate, bool, unsigned char, short, int, long long, unsigned int, double, Point, UTCDateTime, TRef<OpaqueIconRef *>, Blob, NSObject *, TString, TRef<const __CFString *>, TRef<const __CFNumber *>, TRef<const __CFData *>, TRef<const __CFDictionary *>, TRef<const __CFURL *>, TRef<const __CFArray *>, TRef<__CFFileSecurity *>, TRef<TReferenceCounted *>, NodeNotificationOptions, Property, NodeRequestOptions, NodeDSStoreStatus, DSBladeRunnerFlags>="__data"(__union<std::__variant_detail::_Trait::_Available, 0UL, std::monostate, bool, unsigned char, short, int, long long, unsigned int, double, Point, UTCDateTime, TRef<OpaqueIconRef *>, Blob, NSObject *, TString, TRef<const __CFString *>, TRef<const __CFNumber *>, TRef<const __CFData *>, TRef<const __CFDictionary *>, TRef<const __CFURL *>, TRef<const __CFArray *>, TRef<__CFFileSecurity *>, TRef<TReferenceCounted *>, NodeNotificationOptions, Property, NodeRequestOptions, NodeDSStoreStatus, DSBladeRunnerFlags>="__dummy"c"__head"{__alt<0UL, std::monostate>="__value"{monostate=}}"__tail"(__union<std::__variant_detail::_Trait::_Available, 1UL, bool, unsigned char, short, int, long long, unsigned int, double, Point, UTCDateTime, TRef<OpaqueIconRef *>, Blob, NSObject *, TString, TRef<const __CFString *>, TRef<const __CFNumber *>, TRef<const __CFData *>, TRef<const __CFDictionary *>, TRef<const __CFURL *>, TRef<const __CFArray *>, TRef<__CFFileSecurity *>, TRef<TReferenceCounted *>, NodeNotificationOptions, Property, NodeRequestOptions, NodeDSStoreStatus, DSBladeRunnerFlags>="__dummy"c"__head"{__alt<1UL, bool>="__value"B}"__tail"(__union<std::__variant_detail::_Trait::_Available, 2UL, unsigned char, short, int, long long, unsigned int, double, Point, UTCDateTime, TRef<OpaqueIconRef *>, Blob, NSObject *, TString, TRef<const __CFString *>, TRef<const __CFNumber *>, TRef<const __CFData *>, TRef<const __CFDictionary *>, TRef<const __CFURL *>, TRef<const __CFArray *>, TRef<__CFFileSecurity *>, TRef<TReferenceCounted *>, NodeNotificationOptions, Property, NodeRequestOptions, NodeDSStoreStatus, DSBladeRunnerFlags>="__dummy"c"__head"{__alt<2UL, unsigned char>="__value"C}"__tail"(__union<std::__variant_detail::_Trait::_Available, 3UL, short, int, long long, unsigned int, double, Point, UTCDateTime, TRef<OpaqueIconRef *>, Blob, NSObject *, TString, TRef<const __CFString *>, TRef<const __CFNumber *>, TRef<const __CFData *>, TRef<const __CFDictionary *>, TRef<const __CFURL *>, TRef<const __CFArray *>, TRef<__CFFileSecurity *>, TRef<TReferenceCounted *>, NodeNotificationOptions, Property, NodeRequestOptions, NodeDSStoreStatus, DSBladeRunnerFlags>="__dummy"c"__head"{__alt<3UL, short>="__value"s}"__tail"(__union<std::__variant_detail::_Trait::_Available, 4UL, int, long long, unsigned int, double, Point, UTCDateTime, TRef<OpaqueIconRef *>, Blob, NSObject *, TString, TRef<const __CFString *>, TRef<const __CFNumber *>, TRef<const __CFData *>, TRef<const __CFDictionary *>, TRef<const __CFURL *>, TRef<const __CFArray *>, TRef<__CFFileSecurity *>, TRef<TReferenceCounted *>, NodeNotificationOptions, Property, NodeRequestOptions, NodeDSStoreStatus, DSBladeRunnerFlags>="__dummy"c"__head"{__alt<4UL, int>="__value"i}"__tail"(__union<std::__variant_detail::_Trait::_Available, 5UL, long long, unsigned int, double, Point, UTCDateTime, TRef<OpaqueIconRef *>, Blob, NSObject *, TString, TRef<const __CFString *>, TRef<const __CFNumber *>, TRef<const __CFData *>, TRef<const __CFDictionary *>, TRef<const __CFURL *>, TRef<const __CFArray *>, TRef<__CFFileSecurity *>, TRef<TReferenceCounted *>, NodeNotificationOptions, Property, NodeRequestOptions, NodeDSStoreStatus, DSBladeRunnerFlags>="__dummy"c"__head"{__alt<5UL, long long>="__value"q}"__tail"(__union<std::__variant_detail::_Trait::_Available, 6UL, unsigned int, double, Point, UTCDateTime, TRef<OpaqueIconRef *>, Blob, NSObject *, TString, TRef<const __CFString *>, TRef<const __CFNumber *>, TRef<const __CFData *>, TRef<const __CFDictionary *>, TRef<const __CFURL *>, TRef<const __CFArray *>, TRef<__CFFileSecurity *>, TRef<TReferenceCounted *>, NodeNotificationOptions, Property, NodeRequestOptions, NodeDSStoreStatus, DSBladeRunnerFlags>="__dummy"c"__head"{__alt<6UL, unsigned int>="__value"I}"__tail"(__union<std::__variant_detail::_Trait::_Available, 7UL, double, Point, UTCDateTime, TRef<OpaqueIconRef *>, Blob, NSObject *, TString, TRef<const __CFString *>, TRef<const __CFNumber *>, TRef<const __CFData *>, TRef<const __CFDictionary *>, TRef<const __CFURL *>, TRef<const __CFArray *>, TRef<__CFFileSecurity *>, TRef<TReferenceCounted *>, NodeNotificationOptions, Property, NodeRequestOptions, NodeDSStoreStatus, DSBladeRunnerFlags>="__dummy"c"__head"{__alt<7UL, double>="__value"d}"__tail"(__union<std::__variant_detail::_Trait::_Available, 8UL, Point, UTCDateTime, TRef<OpaqueIconRef *>, Blob, NSObject *, TString, TRef<const __CFString *>, TRef<const __CFNumber *>, TRef<const __CFData *>, TRef<const __CFDictionary *>, TRef<const __CFURL *>, TRef<const __CFArray *>, TRef<__CFFileSecurity *>, TRef<TReferenceCounted *>, NodeNotificationOptions, Property, NodeRequestOptions, NodeDSStoreStatus, DSBladeRunnerFlags>="__dummy"c"__head"{__alt<8UL, Point>="__value"{Point="v"s"h"s}}"__tail"(__union<std::__variant_detail::_Trait::_Available, 9UL, UTCDateTime, TRef<OpaqueIconRef *>, Blob, NSObject *, TString, TRef<const __CFString *>, TRef<const __CFNumber *>, TRef<const __CFData *>, TRef<const __CFDictionary *>, TRef<const __CFURL *>, TRef<const __CFArray *>, TRef<__CFFileSecurity *>, TRef<TReferenceCounted *>, NodeNotificationOptions, Property, NodeRequestOptions, NodeDSStoreStatus, DSBladeRunnerFlags>="__dummy"c"__head"{__alt<9UL, UTCDateTime>="__value"{UTCDateTime="highSeconds"S"lowSeconds"I"fraction"S}}"__tail"(__union<std::__variant_detail::_Trait::_Available, 10UL, TRef<OpaqueIconRef *>, Blob, NSObject *, TString, TRef<const __CFString *>, TRef<const __CFNumber *>, TRef<const __CFData *>, TRef<const __CFDictionary *>, TRef<const __CFURL *>, TRef<const __CFArray *>, TRef<__CFFileSecurity *>, TRef<TReferenceCounted *>, NodeNotificationOptions, Property, NodeRequestOptions, NodeDSStoreStatus, DSBladeRunnerFlags>="__dummy"c"__head"{__alt<10UL, TRef<OpaqueIconRef *>>="__value"{TRef<OpaqueIconRef *, TRetainReleasePolicy<IconRef>>="fRef"^{OpaqueIconRef}}}"__tail"(__union<std::__variant_detail::_Trait::_Available, 11UL, Blob, NSObject *, TString, TRef<const __CFString *>, TRef<const __CFNumber *>, TRef<const __CFData *>, TRef<const __CFDictionary *>, TRef<const __CFURL *>, TRef<const __CFArray *>, TRef<__CFFileSecurity *>, TRef<TReferenceCounted *>, NodeNotificationOptions, Property, NodeRequestOptions, NodeDSStoreStatus, DSBladeRunnerFlags>="__dummy"c"__head"{__alt<11UL, Blob>="__value"{Blob="capacity"I"length"I"buffer"*}}"__tail"(__union<std::__variant_detail::_Trait::_Available, 12UL, NSObject *, TString, TRef<const __CFString *>, TRef<const __CFNumber *>, TRef<const __CFData *>, TRef<const __CFDictionary *>, TRef<const __CFURL *>, TRef<const __CFArray *>, TRef<__CFFileSecurity *>, TRef<TReferenceCounted *>, NodeNotificationOptions, Property, NodeRequestOptions, NodeDSStoreStatus, DSBladeRunnerFlags>="__dummy"c"__head"{__alt<12UL, NSObject *>="__value"@"NSObject"}"__tail"(__union<std::__variant_detail::_Trait::_Available, 13UL, TString, TRef<const __CFString *>, TRef<const __CFNumber *>, TRef<const __CFData *>, TRef<const __CFDictionary *>, TRef<const __CFURL *>, TRef<const __CFArray *>, TRef<__CFFileSecurity *>, TRef<TReferenceCounted *>, NodeNotificationOptions, Property, NodeRequestOptions, NodeDSStoreStatus, DSBladeRunnerFlags>="__dummy"c"__head"{__alt<13UL, TString>="__value"{TString="fString"{TRef<const __CFString *, TRetainReleasePolicy<CFStringRef>>="fRef"^{__CFString}}}}"__tail"(__union<std::__variant_detail::_Trait::_Available, 14UL, TRef<const __CFString *>, TRef<const __CFNumber *>, TRef<const __CFData *>, TRef<const __CFDictionary *>, TRef<const __CFURL *>, TRef<const __CFArray *>, TRef<__CFFileSecurity *>, TRef<TReferenceCounted *>, NodeNotificationOptions, Property, NodeRequestOptions, NodeDSStoreStatus, DSBladeRunnerFlags>="__dummy"c"__head"{__alt<14UL, TRef<const __CFString *>>="__value"{TRef<const __CFString *, TRetainReleasePolicy<CFStringRef>>="fRef"^{__CFString}}}"__tail"(__union<std::__variant_detail::_Trait::_Available, 15UL, TRef<const __CFNumber *>, TRef<const __CFData *>, TRef<const __CFDictionary *>, TRef<const __CFURL *>, TRef<const __CFArray *>, TRef<__CFFileSecurity *>, TRef<TReferenceCounted *>, NodeNotificationOptions, Property, NodeRequestOptions, NodeDSStoreStatus, DSBladeRunnerFlags>="__dummy"c"__head"{__alt<15UL, TRef<const __CFNumber *>>="__value"{TRef<const __CFNumber *, TRetainReleasePolicy<CFNumberRef>>="fRef"^{__CFNumber}}}"__tail"(__union<std::__variant_detail::_Trait::_Available, 16UL, TRef<const __CFData *>, TRef<const __CFDictionary *>, TRef<const __CFURL *>, TRef<const __CFArray *>, TRef<__CFFileSecurity *>, TRef<TReferenceCounted *>, NodeNotificationOptions, Property, NodeRequestOptions, NodeDSStoreStatus, DSBladeRunnerFlags>="__dummy"c"__head"{__alt<16UL, TRef<const __CFData *>>="__value"{TRef<const __CFData *, TRetainReleasePolicy<CFDataRef>>="fRef"^{__CFData}}}"__tail"(__union<std::__variant_detail::_Trait::_Available, 17UL, TRef<const __CFDictionary *>, TRef<const __CFURL *>, TRef<const __CFArray *>, TRef<__CFFileSecurity *>, TRef<TReferenceCounted *>, NodeNotificationOptions, Property, NodeRequestOptions, NodeDSStoreStatus, DSBladeRunnerFlags>="__dummy"c"__head"{__alt<17UL, TRef<const __CFDictionary *>>="__value"{TRef<const __CFDictionary *, TRetainReleasePolicy<CFDictionaryRef>>="fRef"^{__CFDictionary}}}"__tail"(__union<std::__variant_detail::_Trait::_Available, 18UL, TRef<const __CFURL *>, TRef<const __CFArray *>, TRef<__CFFileSecurity *>, TRef<TReferenceCounted *>, NodeNotificationOptions, Property, NodeRequestOptions, NodeDSStoreStatus, DSBladeRunnerFlags>="__dummy"c"__head"{__alt<18UL, TRef<const __CFURL *>>="__value"{TRef<const __CFURL *, TRetainReleasePolicy<CFURLRef>>="fRef"^{__CFURL}}}"__tail"(__union<std::__variant_detail::_Trait::_Available, 19UL, TRef<const __CFArray *>, TRef<__CFFileSecurity *>, TRef<TReferenceCounted *>, NodeNotificationOptions, Property, NodeRequestOptions, NodeDSStoreStatus, DSBladeRunnerFlags>="__dummy"c"__head"{__alt<19UL, TRef<const __CFArray *>>="__value"{TRef<const __CFArray *, TRetainReleasePolicy<CFArrayRef>>="fRef"^{__CFArray}}}"__tail"(__union<std::__variant_detail::_Trait::_Available, 20UL, TRef<__CFFileSecurity *>, TRef<TReferenceCounted *>, NodeNotificationOptions, Property, NodeRequestOptions, NodeDSStoreStatus, DSBladeRunnerFlags>="__dummy"c"__head"{__alt<20UL, TRef<__CFFileSecurity *>>="__value"{TRef<__CFFileSecurity *, TRetainReleasePolicy<CFFileSecurityRef>>="fRef"^{__CFFileSecurity}}}"__tail"(__union<std::__variant_detail::_Trait::_Available, 21UL, TRef<TReferenceCounted *>, NodeNotificationOptions, Property, NodeRequestOptions, NodeDSStoreStatus, DSBladeRunnerFlags>="__dummy"c"__head"{__alt<21UL, TRef<TReferenceCounted *>>="__value"{TRef<TReferenceCounted *, TRetainReleasePolicy<TReferenceCounted *>>="fRef"^{TReferenceCounted}}}"__tail"(__union<std::__variant_detail::_Trait::_Available, 22UL, NodeNotificationOptions, Property, NodeRequestOptions, NodeDSStoreStatus, DSBladeRunnerFlags>="__dummy"c"__head"{__alt<22UL, NodeNotificationOptions>="__value"I}"__tail"(__union<std::__variant_detail::_Trait::_Available, 23UL, Property, NodeRequestOptions, NodeDSStoreStatus, DSBladeRunnerFlags>="__dummy"c"__head"{__alt<23UL, Property>="__value"I}"__tail"(__union<std::__variant_detail::_Trait::_Available, 24UL, NodeRequestOptions, NodeDSStoreStatus, DSBladeRunnerFlags>="__dummy"c"__head"{__alt<24UL, NodeRequestOptions>="__value"I}"__tail"(__union<std::__variant_detail::_Trait::_Available, 25UL, NodeDSStoreStatus, DSBladeRunnerFlags>="__dummy"c"__head"{__alt<25UL, NodeDSStoreStatus>="__value"I}"__tail"(__union<std::__variant_detail::_Trait::_Available, 26UL, DSBladeRunnerFlags>="__dummy"c"__head"{__alt<26UL, DSBladeRunnerFlags>="__value"I}"__tail"(__union<std::__variant_detail::_Trait::_Available, 27UL>=))))))))))))))))))))))))))))"__index"I}}}"fTask"{shared_ptr<TNodeTask>="__ptr_"^{TNodeTask}"__cntrl_"^{__shared_weak_count}}"fNotifier"{TRef<TDSNotifier *, TRetainReleasePolicy<TDSNotifier *>>="fRef"^{TDSNotifier}}}
+  -.cxx_construct @16@0:8  imp=+0x19cbcb004
+  -.cxx_destruct v16@0:8  imp=+0x19cbcaffc
+  -init: @24@0:8r^v16  imp=+0x19cbcaf24
+@class FINodeIterator : NSObject <FINodeIterator> instanceSize=16
+  ivar +8 _iterator ^{OpaqueNodeIterator=}
+  property fullyPopulated (TB,R,N)
+  property estimatedSize (TQ,R,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -dealloc v16@0:8  imp=+0x19cc72cdc
+  -estimatedSize Q16@0:8  imp=+0x19cc72cbc
+  -first @16@0:8  imp=+0x19cc72ba8
+  -fullyPopulated B16@0:8  imp=+0x19cc72c98
+  -initWithIterator: @24@0:8^{OpaqueNodeIterator=}16  imp=+0x19cc72b60
+  -next @16@0:8  imp=+0x19cc72c20
+@class FINodeIteratorWithExtraChildren : NSObject <FINodeIterator> instanceSize=32
+  ivar +8 _baseIteratorDone B
+  ivar +16 _baseIterator @"NSObject<FINodeIterator>"
+  ivar +24 _extraIterator @"NSObject<FINodeIterator>"
+  property baseIterator (T@"NSObject<FINodeIterator>",&,N,V_baseIterator)
+  property baseIteratorDone (TB,N,V_baseIteratorDone)
+  property extraIterator (T@"NSObject<FINodeIterator>",&,N,V_extraIterator)
+  property fullyPopulated (TB,R,N)
+  property estimatedSize (TQ,R,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x19cc73190
+  -baseIterator @16@0:8  imp=+0x19cc73158
+  -baseIteratorDone B16@0:8  imp=+0x19cc7316c
+  -estimatedSize Q16@0:8  imp=+0x19cc73120
+  -extraIterator @16@0:8  imp=+0x19cc7317c
+  -first @16@0:8  imp=+0x19cc73010
+  -fullyPopulated B16@0:8  imp=+0x19cc730d4
+  -initWithIterator:extraChildren:extraChildrenFullyPopulated:options: @40@0:8@16@24B32I36  imp=+0x19cc72f0c
+  -next @16@0:8  imp=+0x19cc73068
+  -setBaseIterator: v24@0:8@16  imp=+0x19cc73160
+  -setBaseIteratorDone: v20@0:8B16  imp=+0x19cc73174
+  -setExtraIterator: v24@0:8@16  imp=+0x19cc73184
+@class FINodeObserver : NSObject instanceSize=40
+  ivar +8 _observedNode @"FINode"
+  ivar +16 _notifier ^{OpaqueEventNotifier=}
+  ivar +24 _parentUbiquityCount i
+  ivar +32 _parentObserver @"FINodeObserver"
+  +observerForFINode:withObserver: @32@0:8@16@24  imp=+0x19cce0b6c
+  +propertyName: @20@0:8I16  imp=+0x19cce165c
+  -.cxx_destruct v16@0:8  imp=+0x19cce19b8
+  -dealloc v16@0:8  imp=+0x19cce16b8
+  -debugDescription @16@0:8  imp=+0x19cce1734
+  -startObserving: v20@0:8I16  imp=+0x19cce129c
+  -stopObserving: v20@0:8I16  imp=+0x19cce14c0
+@class FINodePropertyList : NSObject <NSCopying, NSMutableCopying> instanceSize=16
+  ivar +8 _propertyList {TRef<OpaquePropertyListRef *, TRetainReleasePolicy<NodePropertyListRef>>="fRef"^{OpaquePropertyListRef}}
+  -.cxx_construct @16@0:8  imp=+0x19cbae2d4
+  -.cxx_destruct v16@0:8  imp=+0x19cbae2b4
+  -asArray:error: @28@0:8I16^@20  imp=+0x19cbae19c
+  -asBool:error: B28@0:8I16^@20  imp=+0x19cbade24
+  -asData:capacity:length:forProperty:error: B48@0:8^v16I24^I28I36^@40  imp=+0x19cbadfdc
+  -asData:error: @28@0:8I16^@20  imp=+0x19cbae228
+  -asDate:error: @28@0:8I16^@20  imp=+0x19cbae124
+  -asIconRef:error: ^{OpaqueIconRef=}28@0:8I16^@20  imp=+0x19cbae040
+  -asInt16:error: s28@0:8I16^@20  imp=+0x19cbaded4
+  -asInt32:error: i28@0:8I16^@20  imp=+0x19cbadf2c
+  -asInt64:error: q28@0:8I16^@20  imp=+0x19cbadf84
+  -asInt8:error: c28@0:8I16^@20  imp=+0x19cbade7c
+  -asString:error: @28@0:8I16^@20  imp=+0x19cbae098
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x19cbadd04
+  -init @16@0:8  imp=+0x19cbadbd8
+  -initWithPropertyListRef: @24@0:8^{OpaquePropertyListRef=}16  imp=+0x19cbadc5c
+  -mutableCopyWithZone: @24@0:8^{_NSZone=}16  imp=+0x19cbadd74
+  -propertyListRef ^{OpaquePropertyListRef=}16@0:8  imp=+0x19cbadde4
+  -setPropertyListRef: v24@0:8^{OpaquePropertyListRef=}16  imp=+0x19cbaddec
+@class FINodeTask : NSObject instanceSize=24
+  ivar +8 _nodeTask {shared_ptr<TNodeTask>="__ptr_"^{TNodeTask}"__cntrl_"^{__shared_weak_count}}
+  -.cxx_construct @16@0:8  imp=+0x19cbbcc20
+  -.cxx_destruct v16@0:8  imp=+0x19cbbcc10
+  -init: @24@0:8r^v16  imp=+0x19cbbcbbc
+@class FINode_AllCloudLibraries : FIDSNode instanceSize=104
+@class FINode_ICloudAppLibrary : FIDSNode <FIAppLibrary> instanceSize=120
+  ivar +104 _documentsFolder @"FINode"
+  ivar +112 _appIdentifier {TString="fString"{TRef<const __CFString *, TRetainReleasePolicy<CFStringRef>>="fRef"^{__CFString}}}
+  property documentsFolder (T@"FINode",R,W,N)
+  property appIdentifier (T@"NSString",R)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_construct @16@0:8  imp=+0x19cc66ffc
+  -.cxx_destruct v16@0:8  imp=+0x19cc66fb0
+  -appIdentifier @16@0:8  imp=+0x19cc661d8
+  -dealloc v16@0:8  imp=+0x19cc66098
+  -dispatchEvent:forObserver: v32@0:8@16@24  imp=+0x19cc66728
+  -documentsFolder @16@0:8  imp=+0x19cc663e8
+  -dropTargetNode @16@0:8  imp=+0x19cc66580
+  -fileOpNode @16@0:8  imp=+0x19cc66518
+  -isValid B16@0:8  imp=+0x19cc6611c
+  -iteratorWithOptions: @20@0:8I16  imp=+0x19cc662b4
+  -nodeToMoveOrDelete @16@0:8  imp=+0x19cc6651c
+  -nodesToObserve @16@0:8  imp=+0x19cc66584
+  -parent @16@0:8  imp=+0x19cc66488
+  -propertyAsArray:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cc66ca0
+  -propertyAsDate:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cc66990
+  -propertyAsNSObject:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cc66e28
+  -propertyAsNumber:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cc66b18
+  -updateDocumentsFolder @16@0:8  imp=+0x19cc66320
+@class FIOperation : NSObject instanceSize=1168
+  ivar +8 _nodeToChildProgressDataMap {unordered_multimap<FINode *, ChildProgressData, std::hash<FINode *>, std::equal_to<FINode *>, std::allocator<std::pair<FINode *const, ChildProgressData>>>="__table_"{__hash_table<std::__hash_value_type<FINode *, ChildProgressData>, std::__unordered_map_hasher<FINode *, std::pair<FINode *const, ChildProgressData>, std::hash<FINode *>, std::equal_to<FINode *>>, std::__unordered_map_equal<FINode *, std::pair<FINode *const, ChildProgressData>, std::equal_to<FINode *>, std::hash<FINode *>>, std::allocator<std::pair<FINode *const, ChildProgressData>>>="__bucket_list_"{unique_ptr<std::__hash_node_base<std::__hash_node<std::__hash_value_type<FINode *, ChildProgressData>, void *> *> *[], std::__bucket_list_deallocator<std::allocator<std::__hash_node_base<std::__hash_node<std::__hash_value_type<FINode *, ChildProgressData>, void *> *> *>>>=""{?="__ptr_"^^v"__deleter_"{__bucket_list_deallocator<std::allocator<std::__hash_node_base<std::__hash_node<std::__hash_value_type<FINode *, ChildProgressData>, void *> *> *>>=""{?="__size_"Q}}}}""{?="__first_node_"{__hash_node_base<std::__hash_node<std::__hash_value_type<FINode *, ChildProgressData>, void *> *>="__next_"^v}}""{?="__size_"Q}""{?="__max_load_factor_"f}}}
+  ivar +48 _dispatchQueue @"NSObject<OS_dispatch_queue>"
+  ivar +56 _opNodeToOrigNodeMap {unordered_map<FINode *, FINode *, std::hash<FINode *>, std::equal_to<FINode *>, std::allocator<std::pair<FINode *const, FINode *>>>="__table_"{__hash_table<std::__hash_value_type<FINode *, FINode *>, std::__unordered_map_hasher<FINode *, std::pair<FINode *const, FINode *>, std::hash<FINode *>, std::equal_to<FINode *>>, std::__unordered_map_equal<FINode *, std::pair<FINode *const, FINode *>, std::equal_to<FINode *>, std::hash<FINode *>>, std::allocator<std::pair<FINode *const, FINode *>>>="__bucket_list_"{unique_ptr<std::__hash_node_base<std::__hash_node<std::__hash_value_type<FINode *, FINode *>, void *> *> *[], std::__bucket_list_deallocator<std::allocator<std::__hash_node_base<std::__hash_node<std::__hash_value_type<FINode *, FINode *>, void *> *> *>>>=""{?="__ptr_"^^v"__deleter_"{__bucket_list_deallocator<std::allocator<std::__hash_node_base<std::__hash_node<std::__hash_value_type<FINode *, FINode *>, void *> *> *>>=""{?="__size_"Q}}}}""{?="__first_node_"{__hash_node_base<std::__hash_node<std::__hash_value_type<FINode *, FINode *>, void *> *>="__next_"^v}}""{?="__size_"Q}""{?="__max_load_factor_"f}}}
+  ivar +96 _dsOpCompletionHandler {unique_function<void (NSArray<FINode *> *, NSError *)>="fCallableHolder"{unique_ptr<fstd::callable_details::callable_holder_base<void, NSArray<FINode *> *, NSError *>, std::default_delete<fstd::callable_details::callable_holder_base<void, NSArray<FINode *> *, NSError *>>>=""{?="__ptr_"^v}}}
+  ivar +104 _conflictToResolutionMap {unordered_map<OperationConflict, OperationResolution, std::hash<OperationConflict>, std::equal_to<OperationConflict>, std::allocator<std::pair<const OperationConflict, OperationResolution>>>="__table_"{__hash_table<std::__hash_value_type<OperationConflict, OperationResolution>, std::__unordered_map_hasher<OperationConflict, std::pair<const OperationConflict, OperationResolution>, std::hash<OperationConflict>, std::equal_to<OperationConflict>>, std::__unordered_map_equal<OperationConflict, std::pair<const OperationConflict, OperationResolution>, std::equal_to<OperationConflict>, std::hash<OperationConflict>>, std::allocator<std::pair<const OperationConflict, OperationResolution>>>="__bucket_list_"{unique_ptr<std::__hash_node_base<std::__hash_node<std::__hash_value_type<OperationConflict, OperationResolution>, void *> *> *[], std::__bucket_list_deallocator<std::allocator<std::__hash_node_base<std::__hash_node<std::__hash_value_type<OperationConflict, OperationResolution>, void *> *> *>>>=""{?="__ptr_"^^v"__deleter_"{__bucket_list_deallocator<std::allocator<std::__hash_node_base<std::__hash_node<std::__hash_value_type<OperationConflict, OperationResolution>, void *> *> *>>=""{?="__size_"Q}}}}""{?="__first_node_"{__hash_node_base<std::__hash_node<std::__hash_value_type<OperationConflict, OperationResolution>, void *> *>="__next_"^v}}""{?="__size_"Q}""{?="__max_load_factor_"f}}}
+  ivar +144 _completionGroup @"NSObject<OS_dispatch_group>"
+  ivar +152 _completionGroupEntryCount Q
+  ivar +160 _additionalCompletedNodes @"NSMutableArray"
+  ivar +168 _progressUpdateQueue @"NSObject<OS_dispatch_queue>"
+  ivar +176 _progressUpdateSource @"NSObject<OS_dispatch_source>"
+  ivar +184 _progressObserver {TKeyValueObserver="fLock"{mutex="__m_"{_opaque_pthread_mutex_t="__sig"q"__opaque"[56c]}}"fObserver"@"DS_TKeyValueObserverGlue""fObjectToObserve"@"NSObject""fArrayOfObjectsToObserve"@"NSArray""fIndexesOfObjectsToObserve"@"NSIndexSet""fKeyPathToObserve"{TString="fString"{TRef<const __CFString *, TRetainReleasePolicy<CFStringRef>>="fRef"^{__CFString}}}"fRegistered"B"fStopRequested"B}
+  ivar +296 _updateTimeRemainingTimer @"NSObject<OS_dispatch_source>"
+  ivar +304 _runtimeSignpost {unique_ptr<AutoSignpostInterval_FIOperation_Runtime, std::default_delete<AutoSignpostInterval_FIOperation_Runtime>>=""{?="__ptr_"^{AutoSignpostInterval_FIOperation_Runtime}}}
+  ivar +312 _dsOpSignpost {unique_ptr<AutoSignpostInterval_FIOperation_ExecuteDSOp, std::default_delete<AutoSignpostInterval_FIOperation_ExecuteDSOp>>=""{?="__ptr_"^{AutoSignpostInterval_FIOperation_ExecuteDSOp}}}
+  ivar +320 _executedAsFPAction B
+  ivar +321 _markedAsCancelled B
+  ivar +322 _bypassCancellationHandler B
+  ivar +323 _scheduleWasDeferred B
+  ivar +324 _operationType I
+  ivar +328 _operationOptions I
+  ivar +336 _qualityOfService q
+  ivar +344 _stageChangedHandler @?
+  ivar +352 _conflictHandler @?
+  ivar +360 _warningHandler @?
+  ivar +368 _errorHandler @?
+  ivar +376 _subOperationStartedHandler @?
+  ivar +384 _subOperationCompletedHandler @?
+  ivar +392 _completionHandler @?
+  ivar +400 _progress @"NSProgress"
+  ivar +408 _operationUUID @"NSUUID"
+  ivar +416 _scriptingAuditToken @"NSData"
+  ivar +424 _errorRecoveryHandler @?
+  ivar +432 _progressSubscribers @"NSArray"
+  ivar +440 _operationRef ^{OpaqueOperationRef=}
+  ivar +448 _sourceNodes @"NSArray"
+  ivar +456 _authorizationPrompt @"NSString"
+  ivar +464 _currentIndex Q
+  ivar +472 _opRecords @"NSArray"
+  ivar +480 _conflictOpRecord @"FIOperationRecord"
+  ivar +488 _iterator {OperationIterator="fData"^{OpaqueOperationData}"fFirstProc"^?"fNextProc"^?}
+  ivar +512 _operationMonitor {OperationMonitorEx="fMonitorData"^{OpaqueMonitorData}"fCancelRequested"C"fStatus"^{OperationStatus}"fAccumulatedStatusMask"I"fStatusChangeInterval"I"fRequestSemaphoreID"^{DSSemaphore}"fQueue"^{OpaqueEventQueue}"fTickleProc"^?"fUniqueNameProc"^?"fVersion"i"fEventHandler"@?}
+  ivar +592 _operationStatus {OperationStatus="fStage"I"fCurrentName"{HFSUniStr255="length"S"unicode"[255S]}"fTimeEstimate"q"fItemsTotal"q"fItemsCompleted"q"fBytesTotal"q"fBytesCompleted"q"fFSItemsTotal"q"fFSItemsCompleted"q}
+  property progressSubscribers (T@"NSArray",&,V_progressSubscribers)
+  property markedAsCancelled (TB,V_markedAsCancelled)
+  property bypassCancellationHandler (TB,V_bypassCancellationHandler)
+  property dispatchQueue (T@"NSObject<OS_dispatch_queue>",R)
+  property operationRef (T^{OpaqueOperationRef=},N,V_operationRef)
+  property operationType (TI,N,V_operationType)
+  property operationOptions (TI,N,V_operationOptions)
+  property sourceNodes (T@"NSArray",C,V_sourceNodes)
+  property shouldScheduleBeDeferred (TB,R,N)
+  property scheduleWasDeferred (TB,R,N,V_scheduleWasDeferred)
+  property authorizationPrompt (T@"NSString",C,N,V_authorizationPrompt)
+  property operationMonitor (T{OperationMonitorEx=^{OpaqueMonitorData}C^{OperationStatus}II^{DSSemaphore}^{OpaqueEventQueue}^?^?i@?},N,V_operationMonitor)
+  property operationStatus (T{OperationStatus=I{HFSUniStr255=S[255S]}qqqqqqq},N,V_operationStatus)
+  property iterator (T{OperationIterator=^{OpaqueOperationData}^?^?},N,V_iterator)
+  property currentIndex (TQ,V_currentIndex)
+  property opRecords (T@"NSArray",&,V_opRecords)
+  property operationUserData (T@"NSDictionary",R,N)
+  property conflictOpRecord (T@"FIOperationRecord",&,V_conflictOpRecord)
+  property qualityOfService (Tq,N,V_qualityOfService)
+  property stageChangedHandler (T@?,C,N,V_stageChangedHandler)
+  property conflictHandler (T@?,C,N,V_conflictHandler)
+  property warningHandler (T@?,C,N,V_warningHandler)
+  property errorHandler (T@?,C,N,V_errorHandler)
+  property subOperationStartedHandler (T@?,C,N,V_subOperationStartedHandler)
+  property subOperationCompletedHandler (T@?,C,N,V_subOperationCompletedHandler)
+  property completionHandler (T@?,C,N,V_completionHandler)
+  property progress (T@"NSProgress",R,N,V_progress)
+  property operationUUID (T@"NSUUID",R,C,V_operationUUID)
+  property cancellable (TB,R,N)
+  property cancelled (TB,R,N)
+  property pausable (TB,R,N)
+  property paused (TB,R,N)
+  property scriptingAuditToken (T@"NSData",C,N,V_scriptingAuditToken)
+  property errorRecoveryHandler (T@?,C,N,V_errorRecoveryHandler)
+  property executedAsFPAction (TB,R,N,V_executedAsFPAction)
+  +progressDisplayNameForNode:orItem: @32@0:8@16@24  imp=+0x19cc4f4c0
+  +progressURLForNode:orItem: @32@0:8@16@24  imp=+0x19cc4f3e4
+  +uniqueNameByAppendingNumber:fileExtension: @32@0:8@16@24  imp=+0x19cc4758c
+  -.cxx_construct @16@0:8  imp=+0x19cc50a44
+  -.cxx_destruct v16@0:8  imp=+0x19cc508a8
+  -_addChildProgress:isRunning:updateCounts: B32@0:8^v16B24B28  imp=+0x19cc4c908
+  -_applyResolution:toRemainingConflicts: v24@0:8I16I20  imp=+0x19cc495d0
+  -_canContinueAfterConflict: B20@0:8I16  imp=+0x19cc49424
+  -_canSkipAfterConflict: B20@0:8I16  imp=+0x19cc494d0
+  -_cancel: v20@0:8B16  imp=+0x19cc46418
+  -_init @16@0:8  imp=+0x19cc458d8
+  -_nodeForOperation:isDestination: @28@0:8@16B24  imp=+0x19cc4f904
+  -_postCancel v16@0:8  imp=+0x19cc505c4
+  -_postReplyWithResolution:result: v24@0:8I16i20  imp=+0x19cc505b4
+  -_resolutionForStopAfterConflict: I20@0:8I16  imp=+0x19cc4953c
+  -_resolutionToContinueAfterConflict: I20@0:8I16  imp=+0x19cc4948c
+  -addChildProgress:subscribedNode:isRunning:updateCounts: B40@0:8@16@24B32B36  imp=+0x19cc4c6bc
+  -addPendingChildProgress: v20@0:8B16  imp=+0x19cc4c604
+  -applyResolution:toRemainingConflicts: v24@0:8I16I20  imp=+0x19cc49558
+  -authorizationPrompt @16@0:8  imp=+0x19cc50714
+  -bypassCancellationHandler B16@0:8  imp=+0x19cc506b4
+  -cacheOrigNode:forNode: v32@0:8@16@24  imp=+0x19cc4fc34
+  -cachedResolutionForConflict: {optional<OperationResolution>=(?=cI)B}20@0:8I16  imp=+0x19cc49750
+  -callOnOperationQueue: v24@0:8@?16  imp=+0x19cc4737c
+  -canApplyResolutionToConflict: B20@0:8I16  imp=+0x19cc49544
+  -canContinueAfterConflict: B20@0:8I16  imp=+0x19cc493e8
+  -canSkipAfterConflict: B20@0:8I16  imp=+0x19cc49494
+  -cancel v16@0:8  imp=+0x19cc464e0
+  -cancelWithError: v24@0:8@16  imp=+0x19cc46594
+  -cancellable B16@0:8  imp=+0x19cc463c8
+  -cancelled B16@0:8  imp=+0x19cc464f0
+  -completionHandler @?16@0:8  imp=+0x19cc50640
+  -configureCompletionHandlers:fpOperation: v24@0:8B16B20  imp=+0x19cc4fe40
+  -configureForNodes: v24@0:8@16  imp=+0x19cc47730
+  -configureProgress v16@0:8  imp=+0x19cc4e7cc
+  -configureProgressUpdateSource v16@0:8  imp=+0x19cc4c3a8
+  -conflictHandler @?16@0:8  imp=+0x19cc505f0
+  -conflictHandler:conflictIter: v32@0:8^{OperationErrorRecord=iII[1024c]B@}16r^{OperationIterator=^{OpaqueOperationData}^?^?}24  imp=+0x19cc49814
+  -conflictOpRecord @16@0:8  imp=+0x19cc50894
+  -createFPOperation @16@0:8  imp=+0x19cd249ec
+  -createProgress v16@0:8  imp=+0x19cc4598c
+  -currentIndex Q16@0:8  imp=+0x19cc50870
+  -currentOperationRecord @16@0:8  imp=+0x19cc47ab0
+  -dealloc v16@0:8  imp=+0x19cc45cb8
+  -description @16@0:8  imp=+0x19cc45e98
+  -destinationForNode: @24@0:8@16  imp=+0x19cc479b4
+  -destinationNodeForOperation: @24@0:8@16  imp=+0x19cc4fb48
+  -dispatchQueue @16@0:8  imp=+0x19cc47200
+  -dsOperationOptions I16@0:8  imp=+0x19cc4abfc
+  -enterCompletionGroup v16@0:8  imp=+0x19cc4fd1c
+  -errorHandler @?16@0:8  imp=+0x19cc50610
+  -errorHandler:errorIter: v32@0:8^{OperationErrorRecord=iII[1024c]B@}16r^{OperationIterator=^{OpaqueOperationData}^?^?}24  imp=+0x19cc49ea8
+  -errorRecoveryHandler @?16@0:8  imp=+0x19cc50674
+  -executeDSOperation @16@0:8  imp=+0x19cc4a454
+  -executedAsFPAction B16@0:8  imp=+0x19cc50684
+  -filterSourceNodes v16@0:8  imp=+0x19cc4f5e0
+  -finishOpWithNodes:error: v32@0:8@16@24  imp=+0x19cc46cf4
+  -handleCancelBeforeSchedule v16@0:8  imp=+0x19cc46958
+  -handleCancelUnattachedChildProgress v16@0:8  imp=+0x19cc4689c
+  -initIterator v16@0:8  imp=+0x19cc47704
+  -initOperationMonitor v16@0:8  imp=+0x19cc47404
+  -initOperationStatus: v24@0:8Q16  imp=+0x19cc473f0
+  -initialResolutionForConflict: I20@0:8I16  imp=+0x19cc49384
+  -isRunning B16@0:8  imp=+0x19cc4adf4
+  -isRunning: B24@0:8r^{OperationStatus=I{HFSUniStr255=S[255S]}qqqqqqq}16  imp=+0x19cc4ad78
+  -iterator {OperationIterator=^{OpaqueOperationData}^?^?}16@0:8  imp=+0x19cc50840
+  -leaveCompletionGroupWithNodes: v24@0:8@16  imp=+0x19cc4fd70
+  -makeOperationRecordForNode: @24@0:8@16  imp=+0x19cc479bc
+  -markAsCancelled v16@0:8  imp=+0x19cc464e8
+  -markedAsCancelled B16@0:8  imp=+0x19cc506a0
+  -mostImportantConflict: I20@0:8I16  imp=+0x19cc4937c
+  -opRecords @16@0:8  imp=+0x19cc50880
+  -operationCompleted v16@0:8  imp=+0x19cc487d4
+  -operationCompletedWhileLocked v16@0:8  imp=+0x19cc488f8
+  -operationMonitor {OperationMonitorEx=^{OpaqueMonitorData}C^{OperationStatus}II^{DSSemaphore}^{OpaqueEventQueue}^?^?i@?}16@0:8  imp=+0x19cc50724
+  -operationOptions I16@0:8  imp=+0x19cc506e8
+  -operationRef ^{OpaqueOperationRef=}16@0:8  imp=+0x19cc506c8
+  -operationStatus {OperationStatus=I{HFSUniStr255=S[255S]}qqqqqqq}16@0:8  imp=+0x19cc507d8
+  -operationType I16@0:8  imp=+0x19cc506d8
+  -operationUUID @16@0:8  imp=+0x19cc50658
+  -operationUserData @16@0:8  imp=+0x19cc4ac04
+  -origNodeForNode: @24@0:8@16  imp=+0x19cc4fb78
+  -pausable B16@0:8  imp=+0x19cc46de0
+  -pause v16@0:8  imp=+0x19cc46e30
+  -paused B16@0:8  imp=+0x19cc46ed8
+  -progress @16@0:8  imp=+0x19cc50650
+  -progressDisplayName @16@0:8  imp=+0x19cc4f4f0
+  -progressFileOperationKind @16@0:8  imp=+0x19cc45cb0
+  -progressFileTotalCount q16@0:8  imp=+0x19cc4ae78
+  -progressShortDescription @16@0:8  imp=+0x19cc45f38
+  -progressSubscribers @16@0:8  imp=+0x19cc5068c
+  -progressURL @16@0:8  imp=+0x19cc4f414
+  -progressUpdateQueue @16@0:8  imp=+0x19cc47144
+  -qualityOfService q16@0:8  imp=+0x19cc505d8
+  -registerChildProgress:subscribedNode: v32@0:8@16@24  imp=+0x19cc4cbf4
+  -reportOperationError: v24@0:8@16  imp=+0x19cc50304
+  -resetIterator v16@0:8  imp=+0x19cc47728
+  -resolutionForStopAfterConflict: I20@0:8I16  imp=+0x19cc49500
+  -resolutionToContinueAfterConflict: I20@0:8I16  imp=+0x19cc4942c
+  -resume v16@0:8  imp=+0x19cc46e84
+  -schedule v16@0:8  imp=+0x19cc503f8
+  -scheduleWasDeferred B16@0:8  imp=+0x19cc5070c
+  -scriptingAuditToken @16@0:8  imp=+0x19cc50664
+  -setAuthorizationPrompt: v24@0:8@16  imp=+0x19cc5071c
+  -setBypassCancellationHandler: v20@0:8B16  imp=+0x19cc506c0
+  -setCompletionHandler: v24@0:8@?16  imp=+0x19cc50648
+  -setConflictHandler: v24@0:8@?16  imp=+0x19cc505f8
+  -setConflictOpRecord: v24@0:8@16  imp=+0x19cc508a0
+  -setCurrentIndex: v24@0:8Q16  imp=+0x19cc50878
+  -setErrorHandler: v24@0:8@?16  imp=+0x19cc50618
+  -setErrorRecoveryHandler: v24@0:8@?16  imp=+0x19cc5067c
+  -setIterator: v40@0:8{OperationIterator=^{OpaqueOperationData}^?^?}16  imp=+0x19cc50858
+  -setMarkedAsCancelled: v20@0:8B16  imp=+0x19cc506ac
+  -setOpRecords: v24@0:8@16  imp=+0x19cc5088c
+  -setOperationMonitor: v96@0:8{OperationMonitorEx=^{OpaqueMonitorData}C^{OperationStatus}II^{DSSemaphore}^{OpaqueEventQueue}^?^?i@?}16  imp=+0x19cc50768
+  -setOperationOptions: v20@0:8I16  imp=+0x19cc506f0
+  -setOperationRef: v24@0:8^{OpaqueOperationRef=}16  imp=+0x19cc506d0
+  -setOperationStatus: v592@0:8{OperationStatus=I{HFSUniStr255=S[255S]}qqqqqqq}16  imp=+0x19cc50830
+  -setOperationType: v20@0:8I16  imp=+0x19cc506e0
+  -setProgressSubscribers: v24@0:8@16  imp=+0x19cc50698
+  -setQualityOfService: v24@0:8q16  imp=+0x19cc46f28
+  -setResolution:forConflict: v24@0:8I16I20  imp=+0x19cc4938c
+  -setScheduleWasDeferred: v20@0:8B16  imp=+0x19cc503f0
+  -setScriptingAuditToken: v24@0:8@16  imp=+0x19cc5066c
+  -setSourceNodes: v24@0:8@16  imp=+0x19cc50704
+  -setStageChangedHandler: v24@0:8@?16  imp=+0x19cc505e8
+  -setSubOperationCompletedHandler: v24@0:8@?16  imp=+0x19cc50638
+  -setSubOperationStartedHandler: v24@0:8@?16  imp=+0x19cc50628
+  -setWarningHandler: v24@0:8@?16  imp=+0x19cc50608
+  -shouldExecuteDSOperation B16@0:8  imp=+0x19cc4a400
+  -shouldScheduleBeDeferred B16@0:8  imp=+0x19cc4f8c8
+  -sourceNodeForOperation: @24@0:8@16  imp=+0x19cc4fb18
+  -sourceNodes @16@0:8  imp=+0x19cc506f8
+  -stageChangedHandler @?16@0:8  imp=+0x19cc505e0
+  -startEstimatingTimeRemaining v16@0:8  imp=+0x19cc4c2fc
+  -startFractionCompletedObserver v16@0:8  imp=+0x19cc4beec
+  -startUpdateTimeRemainingTimer v16@0:8  imp=+0x19cc4c100
+  -statusChangedHandlerPriv: v24@0:8r^{OperationStatus=I{HFSUniStr255=S[255S]}qqqqqqq}16  imp=+0x19cc47b80
+  -subOperationCompletedHandler @?16@0:8  imp=+0x19cc50630
+  -subOperationCompletedHandler:targetNode: v28@0:8I16@20  imp=+0x19cc4a334
+  -subOperationStartedHandler @?16@0:8  imp=+0x19cc50620
+  -subOperationStartedHandler: v20@0:8I16  imp=+0x19cc4a298
+  -tearDownCallbacks v16@0:8  imp=+0x19cc4acc8
+  -transformDSResultNodes: @24@0:8@16  imp=+0x19cc49374
+  -updateCompletedCountsFromChildProgress: v20@0:8B16  imp=+0x19cc4b94c
+  -updateCountsFromOpStatus: v24@0:8r^{OperationStatus=I{HFSUniStr255=S[255S]}qqqqqqq}16  imp=+0x19cc4b4b8
+  -updateTotalCountsFromChildProgress: v20@0:8B16  imp=+0x19cc4aec8
+  -waitForProgressToFinish v16@0:8  imp=+0x19cc48018
+  -warningHandler @?16@0:8  imp=+0x19cc50600
+  -warningHandler: v24@0:8^{OperationErrorRecord=iII[1024c]B@}16  imp=+0x19cc4a0b4
+@class FIOperationError : NSObject instanceSize=32
+  ivar +8 _node @"FINode"
+  ivar +16 _url @"NSURL"
+  ivar +24 _error @"NSError"
+  property node (T@"FINode",R,N,V_node)
+  property url (T@"NSURL",R,N,V_url)
+  property error (T@"NSError",R,N,V_error)
+  +addUserInfoForNode:url:path:to: v48@0:8@16@24@32@40  imp=+0x19cc456f8
+  -.cxx_destruct v16@0:8  imp=+0x19cc45888
+  -debugDescription @16@0:8  imp=+0x19cc455a0
+  -description @16@0:8  imp=+0x19cc456f4
+  -error @16@0:8  imp=+0x19cc45880
+  -initWithError: @24@0:8@16  imp=+0x19cc453e4
+  -initWithErrorRecord: @24@0:8r^{OperationErrorRecord=iII[1024c]B@}16  imp=+0x19cc44e2c
+  -initWithNode:domain:code: @40@0:8@16@24q32  imp=+0x19cc45224
+  -node @16@0:8  imp=+0x19cc45870
+  -url @16@0:8  imp=+0x19cc45878
+@class FIOperationRecord : NSObject instanceSize=56
+  ivar +8 _operationRecord {shared_ptr<TDSOperationRecord>="__ptr_"^{TDSOperationRecord}"__cntrl_"^{__shared_weak_count}}
+  ivar +24 _translocationChanged B
+  ivar +32 _physicalSizeNeeded q
+  ivar +40 _logicalSizeOfItems q
+  ivar +48 _itemCount q
+  property nodePropertyList (T@"FINodePropertyList",C)
+  property propertyList (T^{OpaquePropertyListRef=})
+  property operationRecord (T{shared_ptr<TDSOperationRecord>=^{TDSOperationRecord}^{__shared_weak_count}},R,V_operationRecord)
+  property source (T@"FINode",R)
+  property destination (T@"FINode",R)
+  property requestedOperation (TI)
+  property targetName (T@"NSString",C)
+  property originalSourceParent (T@"FINode",R)
+  property resolvedDestination (T@"FINode",R)
+  property targetNode (T@"FINode",R)
+  property operationOptions (TI,R)
+  property conflict (TI,R)
+  property completedOperation (TI)
+  property resolution (TI)
+  property physicalSizeNeeded (Tq,R,V_physicalSizeNeeded)
+  property logicalSizeOfItems (Tq,R,V_logicalSizeOfItems)
+  property itemCount (Tq,R,V_itemCount)
+  property translocationChanged (TB,R,V_translocationChanged)
+  property needsAuthentication (TB)
+  -.cxx_construct @16@0:8  imp=+0x19cd163b0
+  -.cxx_destruct v16@0:8  imp=+0x19cd163a0
+  -addConflict: v20@0:8I16  imp=+0x19cd16300
+  -addOperationOptions: v20@0:8I16  imp=+0x19cd162cc
+  -clearConflict: v20@0:8I16  imp=+0x19cd1630c
+  -clearOperationOptions: v20@0:8I16  imp=+0x19cd162d8
+  -completedOperation I16@0:8  imp=+0x19cd162e4
+  -conflict I16@0:8  imp=+0x19cd162f8
+  -destination @16@0:8  imp=+0x19cd15eec
+  -initWithOperationRecord: @24@0:8r^v16  imp=+0x19cd15c18
+  -initWithSource:destination:nodePropertyList:requestedOperation: @44@0:8@16@24@32I40  imp=+0x19cd15dac
+  -initWithSource:destination:propertyList:requestedOperation: @44@0:8@16@24^{OpaquePropertyListRef=}32I40  imp=+0x19cd15c8c
+  -itemCount q16@0:8  imp=+0x19cd16350
+  -logicalSizeOfItems q16@0:8  imp=+0x19cd16348
+  -needsAuthentication B16@0:8  imp=+0x19cd1632c
+  -nodePropertyList @16@0:8  imp=+0x19cd15f60
+  -operationOptions I16@0:8  imp=+0x19cd162c4
+  -operationRecord {shared_ptr<TDSOperationRecord>=^{TDSOperationRecord}^{__shared_weak_count}}16@0:8  imp=+0x19cd16384
+  -originalSourceParent @16@0:8  imp=+0x19cd16168
+  -physicalSizeNeeded q16@0:8  imp=+0x19cd16340
+  -propertyList ^{OpaquePropertyListRef=}16@0:8  imp=+0x19cd16018
+  -requestedOperation I16@0:8  imp=+0x19cd1602c
+  -resolution I16@0:8  imp=+0x19cd16318
+  -resolvedDestination @16@0:8  imp=+0x19cd161dc
+  -setCompletedOperation: v20@0:8I16  imp=+0x19cd162ec
+  -setNeedsAuthentication: v20@0:8B16  imp=+0x19cd16334
+  -setNodePropertyList: v24@0:8@16  imp=+0x19cd15fb4
+  -setPropertyList: v24@0:8^{OpaquePropertyListRef=}16  imp=+0x19cd16020
+  -setRequestedOperation: v20@0:8I16  imp=+0x19cd16034
+  -setResolution: v20@0:8I16  imp=+0x19cd16320
+  -setTargetName: v24@0:8@16  imp=+0x19cd1609c
+  -source @16@0:8  imp=+0x19cd15e78
+  -targetName @16@0:8  imp=+0x19cd16040
+  -targetNode @16@0:8  imp=+0x19cd16250
+  -translocationChanged B16@0:8  imp=+0x19cd16358
+@class FIOperationReply : NSObject instanceSize=24
+  ivar +8 _resolution I
+  ivar +16 _error @"NSError"
+  property resolution (TI,V_resolution)
+  property error (T@"NSError",&,V_error)
+  -.cxx_destruct v16@0:8  imp=+0x19cc44e20
+  -error @16@0:8  imp=+0x19cc44e0c
+  -initWithResolution:error: @28@0:8I16@20  imp=+0x19cc44d54
+  -resolution I16@0:8  imp=+0x19cc44dfc
+  -setError: v24@0:8@16  imp=+0x19cc44e18
+  -setResolution: v20@0:8I16  imp=+0x19cc44e04
+@class FIPresentationNodeMap : NSObject instanceSize=80
+  ivar +8 _lookupTable @"NSMapTable"
+  ivar +16 _modLock {mutex="__m_"{_opaque_pthread_mutex_t="__sig"q"__opaque"[56c]}}
+  +finalize v16@0:8  imp=+0x19ccf1818
+  +presentationNodeForKeyNode: @24@0:8@16  imp=+0x19ccf1a04
+  +shared @16@0:8  imp=+0x19ccf172c
+  +sharedIfAvailable @16@0:8  imp=+0x19ccf17c0
+  +unregisterAllForPresentationNode: v24@0:8@16  imp=+0x19ccf2050
+  +unregisterKeyNode: v24@0:8@16  imp=+0x19ccf2298
+  -.cxx_construct @16@0:8  imp=+0x19ccf236c
+  -.cxx_destruct v16@0:8  imp=+0x19ccf232c
+  -init @16@0:8  imp=+0x19ccf18d8
+  -locked_registerPresentationNode:forNode: @32@0:8@16@24  imp=+0x19ccf1aa0
+  -locked_unregisterAllForPresentationNode: @24@0:8@16  imp=+0x19ccf1ce8
+  -locked_unregisterKeyNode: @24@0:8@16  imp=+0x19ccf20e4
+  -presentationNodeForKeyNode: @24@0:8@16  imp=+0x19ccf196c
+  -registerPresentationNode:forNode: v32@0:8@16@24  imp=+0x19ccf1ce0
+  -registerPresentationNode:forNode:clearOlderKeyNodes: v36@0:8@16@24B32  imp=+0x19ccf1b88
+  -unregisterAllForPresentationNode: v24@0:8@16  imp=+0x19ccf1f50
+  -unregisterKeyNode: v24@0:8@16  imp=+0x19ccf218c
+@class FIProviderDomain : NSObject instanceSize=152
+  ivar +8 _cachedSyncsTrash {optional_bool=""(?="__null_state_"c"__val_"B)"__engaged_"B}
+  ivar +16 _rootURL @"NSURL"
+  ivar +24 _replicatedKnownFolders {optional<unsigned long>=""(?="__null_state_"c"__val_"Q)"__engaged_"B}
+  ivar +40 _lock {mutex="__m_"{_opaque_pthread_mutex_t="__sig"q"__opaque"[56c]}}
+  ivar +104 _asyncResultAvailable B
+  ivar +112 _domainID @"NSString"
+  ivar +120 _domain @"FPProviderDomain"
+  ivar +128 _asyncFetchedDomain @"FPProviderDomain"
+  ivar +136 _asyncError @"NSError"
+  ivar +144 _cachePolicy Q
+  property cachePolicy (TQ,R,N,V_cachePolicy)
+  property asyncResultAvailable (TB,V_asyncResultAvailable)
+  property asyncFetchedDomain (T@"FPProviderDomain",&,V_asyncFetchedDomain)
+  property asyncError (T@"NSError",&,V_asyncError)
+  property domainID (T@"NSString",R,N,V_domainID)
+  property identifier (T@"NSString",R,N)
+  property rootURL (T@"NSURL",R,N)
+  property domain (T@"FPProviderDomain",R,N,V_domain)
+  property expectFPItems (TB,R,N)
+  property supportsSyncingTrash (TB,R,N)
+  property useFPFS (TB,R,N,GisUsingFPFS)
+  property isFPv2 (TB,R,N)
+  property isiCloudDriveProvider (TB,R,N)
+  property isMainiCloudDriveDomain (TB,R,N)
+  property isDataSeparatedDomain (TB,R,N)
+  property isLocalStorageDomain (TB,R,N)
+  property isUSBOrSMBDeviceDomain (TB,R,N)
+  property isUSBOrSMBDeviceFPv2Domain (TB,R,N)
+  property isUSBDomain (TB,R,N)
+  property isUSBFPv2Domain (TB,R,N)
+  property isSMBDomain (TB,R,N)
+  property isSMBFPv2Domain (TB,R,N)
+  property replicatedKnownFolders (TQ,R,N)
+  property disconnectionState (TQ,R,N)
+  property supportsEnumeration (TB,R,N)
+  +providerDomainForDomain: @24@0:8@16  imp=+0x19cc6578c
+  +providerDomainForID:cachePolicy:error: @40@0:8@16Q24^@32  imp=+0x19cc657fc
+  +providerDomainForItem:cachePolicy:error: @40@0:8@16Q24^@32  imp=+0x19cc65988
+  +providerDomainForRootURL:cachePolicy:error: @40@0:8@16Q24^@32  imp=+0x19cc65878
+  +providerDomainForURL:cachePolicy:error: @40@0:8@16Q24^@32  imp=+0x19cc65900
+  +rootURLForProviderDomainID:cachePolicy:error: @40@0:8@16Q24^@32  imp=+0x19cc65a48
+  -.cxx_construct @16@0:8  imp=+0x19cc65b90
+  -.cxx_destruct v16@0:8  imp=+0x19cc65b20
+  -asyncError @16@0:8  imp=+0x19cc65b04
+  -asyncFetchedDomain @16@0:8  imp=+0x19cc65af0
+  -asyncResultAvailable B16@0:8  imp=+0x19cc65adc
+  -cachePolicy Q16@0:8  imp=+0x19cc65b18
+  -description @16@0:8  imp=+0x19cc65570
+  -disconnectionState Q16@0:8  imp=+0x19cc648d8
+  -domain @16@0:8  imp=+0x19cc65ad4
+  -domainID @16@0:8  imp=+0x19cc65acc
+  -expectFPItems B16@0:8  imp=+0x19cc654dc
+  -hash Q16@0:8  imp=+0x19cc64888
+  -identifier @16@0:8  imp=+0x19cc648d0
+  -initWithDomain: @24@0:8@16  imp=+0x19cc644b4
+  -initWithDomainID:cachePolicy:rootURL:domain: @48@0:8@16Q24@32@40  imp=+0x19cc645d4
+  -isDataSeparatedDomain B16@0:8  imp=+0x19cc64c7c
+  -isEqual: B24@0:8@16  imp=+0x19cc64760
+  -isFPv2 B16@0:8  imp=+0x19cc648c8
+  -isLocalStorageDomain B16@0:8  imp=+0x19cc64d5c
+  -isMainiCloudDriveDomain B16@0:8  imp=+0x19cc64b9c
+  -isSMBDomain B16@0:8  imp=+0x19cc64f88
+  -isSMBFPv2Domain B16@0:8  imp=+0x19cc6503c
+  -isUSBDomain B16@0:8  imp=+0x19cc64ecc
+  -isUSBFPv2Domain B16@0:8  imp=+0x19cc64f80
+  -isUSBOrSMBDeviceDomain B16@0:8  imp=+0x19cc64e10
+  -isUSBOrSMBDeviceFPv2Domain B16@0:8  imp=+0x19cc64ec4
+  -isUsingFPFS B16@0:8  imp=+0x19cc64890
+  -isiCloudDriveProvider B16@0:8  imp=+0x19cc648ec
+  -replicatedKnownFolders Q16@0:8  imp=+0x19cc65314
+  -rootURL @16@0:8  imp=+0x19cc64ac8
+  -setAsyncError: v24@0:8@16  imp=+0x19cc65b10
+  -setAsyncFetchedDomain: v24@0:8@16  imp=+0x19cc65afc
+  -setAsyncResultAvailable: v20@0:8B16  imp=+0x19cc65ae8
+  -supportsEnumeration B16@0:8  imp=+0x19cc6555c
+  -supportsSyncingTrash B16@0:8  imp=+0x19cc65044
+  -updateRootURLIfDetached B16@0:8  imp=+0x19cc649cc
+  -urlForKnownFolder: @24@0:8Q16  imp=+0x19cc65184
+@class FIProxyNode : FICustomNode instanceSize=112
+  ivar +104 _subjectNode @"FINode"
+  property subjectNode (T@"FINode",&,N,V_subjectNode)
+  -.cxx_destruct v16@0:8  imp=+0x19cc6ca50
+  -copyFromAlias:allowUI:followAliasChain: @28@0:8I16B20B24  imp=+0x19cc6c340
+  -copyProgress @16@0:8  imp=+0x19cc6c2dc
+  -dispatchEvent:forObserver: v32@0:8@16@24  imp=+0x19cc6c7c0
+  -downloadProgress @16@0:8  imp=+0x19cc6c2c8
+  -enumeratorError @16@0:8  imp=+0x19cc6c2a0
+  -fiDomain @16@0:8  imp=+0x19cc6c28c
+  -fileOpNode @16@0:8  imp=+0x19cc6c32c
+  -fileParent @16@0:8  imp=+0x19cc6c304
+  -fileURL @16@0:8  imp=+0x19cc6c250
+  -fpDomain @16@0:8  imp=+0x19cc6c278
+  -fpItem @16@0:8  imp=+0x19cc6c264
+  -initWithSubject: @24@0:8@16  imp=+0x19cc6c1cc
+  -inlineProgressCancel v16@0:8  imp=+0x19cc6c2b4
+  -isPopulated B16@0:8  imp=+0x19cc6c2f0
+  -isValid B16@0:8  imp=+0x19cc6c3ec
+  -iteratorWithOptions: @20@0:8I16  imp=+0x19cc6c5f4
+  -longDescription @16@0:8  imp=+0x19cc6c6e4
+  -markAsUsed: B24@0:8^@16  imp=+0x19cc6c5e0
+  -nodeIs:error: Q32@0:8Q16^@24  imp=+0x19cc6c400
+  -nodePermissions:error: I28@0:8I16^@20  imp=+0x19cc6c428
+  -nodeRestartObservingWithOptions: v20@0:8I16  imp=+0x19cc6c464
+  -nodesToObserve @16@0:8  imp=+0x19cc6c368
+  -parent @16@0:8  imp=+0x19cc6c318
+  -propertyAsArray:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cc6c4b4
+  -propertyAsBool:async:options:error: B36@0:8I16B20I24^@28  imp=+0x19cc6c4f0
+  -propertyAsBoolean:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cc6c504
+  -propertyAsData:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cc6c518
+  -propertyAsDate:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cc6c48c
+  -propertyAsDictionary:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cc6c4dc
+  -propertyAsNSObject:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cc6c4c8
+  -propertyAsNumber:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cc6c478
+  -propertyAsString:async:options:error: @36@0:8I16B20I24^@28  imp=+0x19cc6c4a0
+  -removePropertyValue:error: B28@0:8I16^@20  imp=+0x19cc6c5cc
+  -setProperty:asArray:async:options:error: B44@0:8I16@20B28I32^@36  imp=+0x19cc6c568
+  -setProperty:asBool:async:options:error: B40@0:8I16B20B24I28^@32  imp=+0x19cc6c590
+  -setProperty:asData:async:options:error: B44@0:8I16@20B28I32^@36  imp=+0x19cc6c5a4
+  -setProperty:asDate:async:options:error: B44@0:8I16@20B28I32^@36  imp=+0x19cc6c540
+  -setProperty:asDictionary:async:options:error: B44@0:8I16@20B28I32^@36  imp=+0x19cc6c57c
+  -setProperty:asNumber:async:options:error: B44@0:8I16@20B28I32^@36  imp=+0x19cc6c52c
+  -setProperty:asObject:async:options:error: B44@0:8I16@20B28I32^@36  imp=+0x19cc6c5b8
+  -setProperty:asString:async:options:error: B44@0:8I16@20B28I32^@36  imp=+0x19cc6c554
+  -setSubjectNode: v24@0:8@16  imp=+0x19cc6ca3c
+  -shortDescription @16@0:8  imp=+0x19cc6c608
+  -source @16@0:8  imp=+0x19cc6c354
+  -subjectNode @16@0:8  imp=+0x19cc6ca28
+  -synchronizeChildren:events: v28@0:8I16^v20  imp=+0x19cc6c450
+  -synchronizeWithOptions:async: v24@0:8I16B20  imp=+0x19cc6c43c
+  -volumeIs:error: I28@0:8I16^@20  imp=+0x19cc6c414
+@class FIPutBackOperation : FIOperation instanceSize=1216
+  ivar +1168 _nodeToPayloadMap {unordered_map<FINode *, TPutBackPayload, std::hash<FINode *>, std::equal_to<FINode *>, std::allocator<std::pair<FINode *const, TPutBackPayload>>>="__table_"{__hash_table<std::__hash_value_type<FINode *, TPutBackPayload>, std::__unordered_map_hasher<FINode *, std::pair<FINode *const, TPutBackPayload>, std::hash<FINode *>, std::equal_to<FINode *>>, std::__unordered_map_equal<FINode *, std::pair<FINode *const, TPutBackPayload>, std::equal_to<FINode *>, std::hash<FINode *>>, std::allocator<std::pair<FINode *const, TPutBackPayload>>>="__bucket_list_"{unique_ptr<std::__hash_node_base<std::__hash_node<std::__hash_value_type<FINode *, TPutBackPayload>, void *> *> *[], std::__bucket_list_deallocator<std::allocator<std::__hash_node_base<std::__hash_node<std::__hash_value_type<FINode *, TPutBackPayload>, void *> *> *>>>=""{?="__ptr_"^^v"__deleter_"{__bucket_list_deallocator<std::allocator<std::__hash_node_base<std::__hash_node<std::__hash_value_type<FINode *, TPutBackPayload>, void *> *> *>>=""{?="__size_"Q}}}}""{?="__first_node_"{__hash_node_base<std::__hash_node<std::__hash_value_type<FINode *, TPutBackPayload>, void *> *>="__next_"^v}}""{?="__size_"Q}""{?="__max_load_factor_"f}}}
+  ivar +1208 _fetchedDestinationNodesAndOrigNames B
+  ivar +1209 _filterSourceNodesWasCalled B
+  property fetchedDestinationNodesAndOrigNames (TB,N,V_fetchedDestinationNodesAndOrigNames)
+  property filterSourceNodesWasCalled (TB,N,V_filterSourceNodesWasCalled)
+  property nodes (T@"NSArray",R,C)
+  +originalParentFrom:to: @32@0:8@16@24  imp=+0x19cd08240
+  +relativePathTo: @24@0:8@16  imp=+0x19cd07cb4
+  -.cxx_construct @16@0:8  imp=+0x19cd087fc
+  -.cxx_destruct v16@0:8  imp=+0x19cd087ec
+  -_applyResolution:toRemainingConflicts: v24@0:8I16I20  imp=+0x19cd086c4
+  -_canContinueAfterConflict: B20@0:8I16  imp=+0x19cd08650
+  -_initWithNodes: @24@0:8@16  imp=+0x19cd06a9c
+  -_resolutionToContinueAfterConflict: I20@0:8I16  imp=+0x19cd08664
+  -destinationForNode: @24@0:8@16  imp=+0x19cd06f24
+  -fetchOriginalLocationsAndNames v16@0:8  imp=+0x19cd07258
+  -fetchedDestinationNodesAndOrigNames B16@0:8  imp=+0x19cd0879c
+  -filterSourceNodes v16@0:8  imp=+0x19cd071bc
+  -filterSourceNodesWasCalled B16@0:8  imp=+0x19cd087c4
+  -initWithNodes: @24@0:8@16  imp=+0x19cd06c74
+  -initialResolutionForConflict: I20@0:8I16  imp=+0x19cd08560
+  -makeOperationRecordForNode: @24@0:8@16  imp=+0x19cd06d20
+  -mostImportantConflict: I20@0:8I16  imp=+0x19cd08520
+  -nodes @16@0:8  imp=+0x19cd06c78
+  -progressFileOperationKind @16@0:8  imp=+0x19cd06f14
+  -setFetchedDestinationNodesAndOrigNames: v20@0:8B16  imp=+0x19cd087b0
+  -setFilterSourceNodesWasCalled: v20@0:8B16  imp=+0x19cd087d8
+  -shouldExecuteDSOperation B16@0:8  imp=+0x19cd07058
+  -shouldScheduleBeDeferred B16@0:8  imp=+0x19cd07128
+@class FIRenameOperation : FIOperation instanceSize=1192
+  ivar +1168 _hideExtension {optional_bool=""(?="__null_state_"c"__val_"B)"__engaged_"B}
+  ivar +1176 _rawName @"NSString"
+  ivar +1184 _subOperation @"FIRenameSubOperation"
+  property subOperation (T@"FIRenameSubOperation",&,N,V_subOperation)
+  property hideExtension (T{optional_bool=(?=cB)B},N,V_hideExtension)
+  property node (T@"FINode",R)
+  property rawName (T@"NSString",R,V_rawName)
+  -.cxx_construct @16@0:8  imp=+0x19cd0ca28
+  -.cxx_destruct v16@0:8  imp=+0x19cd0c9d4
+  -_initWithNode:rawName:hideExtension: @40@0:8@16@24r^v32  imp=+0x19cd0c138
+  -cancel v16@0:8  imp=+0x19cd0c80c
+  -hideExtension {optional_bool=(?=cB)B}16@0:8  imp=+0x19cd0c9ac
+  -initWithNode:rawName: @32@0:8@16@24  imp=+0x19cd0c3dc
+  -initWithNode:rawName:hideExtension: @36@0:8@16@24B32  imp=+0x19cd0c404
+  -makeOperationRecordForNode: @24@0:8@16  imp=+0x19cd0c554
+  -markAsCancelled v16@0:8  imp=+0x19cd0c8c0
+  -node @16@0:8  imp=+0x19cd0c4ac
+  -rawName @16@0:8  imp=+0x19cd0c974
+  -schedule v16@0:8  imp=+0x19cd0c650
+  -setHideExtension: v18@0:8{optional_bool=(?=cB)B}16  imp=+0x19cd0c9c0
+  -setSubOperation: v24@0:8@16  imp=+0x19cd0c998
+  -subOperation @16@0:8  imp=+0x19cd0c984
+  -tearDownCallbacks v16@0:8  imp=+0x19cd0c434
+@class FIRenameSubOperation : FISubOperation instanceSize=32
+  -configureOperationRecord:rawName:hideExtension: @40@0:8@16@24r^v32  imp=+0x19cd0cc20
+  -reconfigureOpForRename:error: B32@0:8@16^@24  imp=+0x19cd0ca3c
+  -startRename: B24@0:8^@16  imp=+0x19cd0cc08
+@class FIReplicaNode : NSObject instanceSize=16
+  ivar +8 _original @"FINode"
+  -.cxx_destruct v16@0:8  imp=+0x19cc2407c
+  -conformsToProtocol: B24@0:8@16  imp=+0x19cc23fec
+  -dealloc v16@0:8  imp=+0x19cc23d88
+  -description @16@0:8  imp=+0x19cc23e90
+  -forwardingTargetForSelector: @24@0:8:16  imp=+0x19cc23f68
+  -init: @24@0:8@16  imp=+0x19cc23d10
+  -isKindOfClass: B24@0:8#16  imp=+0x19cc23f70
+  -nodeRef ^{OpaqueNodeRef=}16@0:8  imp=+0x19cc23e8c
+  -original @16@0:8  imp=+0x19cc23f60
+@class FIResumableCopyCrypto : NSObject instanceSize=16
+  ivar +8 _cachedKey @"NSData"
+  property keyData (T@"NSData",&,N)
+  +shared @16@0:8  imp=+0x19ccda94c
+  -.cxx_destruct v16@0:8  imp=+0x19ccdbae0
+  -createKey @16@0:8  imp=+0x19ccdb1e8
+  -decryptData: @24@0:8@16  imp=+0x19ccdad74
+  -deleteKey B16@0:8  imp=+0x19ccdb39c
+  -encryptData: @24@0:8@16  imp=+0x19ccdab50
+  -init @16@0:8  imp=+0x19ccda914
+  -isKeychainUnlocked B16@0:8  imp=+0x19ccdb508
+  -keyData @16@0:8  imp=+0x19ccdaa4c
+  -readKey @16@0:8  imp=+0x19ccdb664
+  -roundTrip: @24@0:8@16  imp=+0x19ccdb474
+  -setKeyData: v24@0:8@16  imp=+0x19ccda9e8
+  -sharedKeyDict @16@0:8  imp=+0x19ccdaf44
+  -storeKey: B24@0:8@16  imp=+0x19ccdb048
+@class FIResumableCopySourceInfo : NSObject instanceSize=48
+  ivar +8 _targetURL @"NSURL"
+  ivar +16 _targetPath @"NSString"
+  ivar +24 _sourcePath @"NSString"
+  ivar +32 _sourceVolumeUUID @"NSString"
+  ivar +40 _sourceInode Q
+  property targetURL (T@"NSURL",R,N,V_targetURL)
+  property targetPath (T@"NSString",R,N,V_targetPath)
+  property sourcePath (T@"NSString",R,N,V_sourcePath)
+  property sourceVolumeUUID (T@"NSString",R,N,V_sourceVolumeUUID)
+  property sourceInode (TQ,R,N,V_sourceInode)
+  property hasValidPropertiesForResuming (TB,R,N)
+  +_newInfoWithSourceURL: @24@0:8@16  imp=+0x19ccdeb58
+  +invalidSourceInfo @16@0:8  imp=+0x19ccdd8ac
+  +isPossibleResumableCopyTarget: B24@0:8@16  imp=+0x19ccdeb24
+  +newInfoWithSourceURLInfo: @24@0:8r^v16  imp=+0x19ccde0e8
+  +readCheckpointTimeForPath: {optional<double>=(?=cd)B}24@0:8r^v16  imp=+0x19ccde828
+  +readInfoFromTargetURL: @24@0:8@16  imp=+0x19ccdda04
+  -.cxx_destruct v16@0:8  imp=+0x19ccdeff8
+  -_writeToTargetURL: B24@0:8@16  imp=+0x19ccdec08
+  -hasValidPropertiesForResuming B16@0:8  imp=+0x19ccde324
+  -initWithSourcePath:volumeUUID:inode: @40@0:8@16@24Q32  imp=+0x19ccde01c
+  -initWithTargetURL:sourcePath:volumeUUID:inode: @48@0:8@16@24@32Q40  imp=+0x19ccdd948
+  -isSuspendedCopyOfSourceURLInfo:checkpointTime: B32@0:8r^v16^d24  imp=+0x19ccde8fc
+  -sourceInode Q16@0:8  imp=+0x19ccdeff0
+  -sourcePath @16@0:8  imp=+0x19ccdefe0
+  -sourceVolumeUUID @16@0:8  imp=+0x19ccdefe8
+  -targetPath @16@0:8  imp=+0x19ccdefd8
+  -targetURL @16@0:8  imp=+0x19ccdefd0
+  -writeToTarget:useCheckpoints: B32@0:8r^v16^B24  imp=+0x19ccde368
+@class FISetTagsOperation : FIOperation instanceSize=1200
+  ivar +1168 _nodeToTagsMap @"NSDictionary"
+  ivar +1176 _subOperation @"FISetTagsSubOperation"
+  ivar +1184 _pendingNodes @"NSMutableArray"
+  ivar +1192 _itemToTagsMap @"NSDictionary"
+  property subOperation (T@"FISetTagsSubOperation",&,N,V_subOperation)
+  property pendingNodes (T@"NSMutableArray",&,V_pendingNodes)
+  property itemToTagsMap (T@"NSDictionary",&,V_itemToTagsMap)
+  property nodes (T@"NSArray",R)
+  property nodeToTagsMap (T@"NSDictionary",R,V_nodeToTagsMap)
+  -.cxx_destruct v16@0:8  imp=+0x19cc5d3bc
+  -_initWithNodeToTagsMap: @24@0:8@16  imp=+0x19cc5c9dc
+  -cancel v16@0:8  imp=+0x19cc5d1e4
+  -initWithNodeToTagsMap: @24@0:8@16  imp=+0x19cc5cb9c
+  -itemToTagsMap @16@0:8  imp=+0x19cc5d3a0
+  -makeOperationRecordForNode: @24@0:8@16  imp=+0x19cc5cca4
+  -markAsCancelled v16@0:8  imp=+0x19cc5d298
+  -nodeToTagsMap @16@0:8  imp=+0x19cc5d34c
+  -nodes @16@0:8  imp=+0x19cc5cc2c
+  -pendingNodes @16@0:8  imp=+0x19cc5d384
+  -schedule v16@0:8  imp=+0x19cc5d0f4
+  -scheduleSetTagsSubOperation: B24@0:8^@16  imp=+0x19cc5cdfc
+  -setItemToTagsMap: v24@0:8@16  imp=+0x19cc5d3b0
+  -setPendingNodes: v24@0:8@16  imp=+0x19cc5d394
+  -setSubOperation: v24@0:8@16  imp=+0x19cc5d370
+  -subOperation @16@0:8  imp=+0x19cc5d35c
+@class FISetTagsSubOperation : FISubOperation instanceSize=32
+  -configureOperationRecord:forNode:tags: @40@0:8@16@24@32  imp=+0x19cc5d444
+  -startSetTags: B24@0:8^@16  imp=+0x19cc5d438
+@class FISubOperation : NSObject instanceSize=32
+  ivar +8 _cancelled B
+  ivar +9 _didPostCancelSuboperation B
+  ivar +16 _nameConflictHandler @?
+  ivar +24 _operation @"FIOperation"
+  property cancelled (TB,N,V_cancelled)
+  property didPostCancelSuboperation (TB,N,V_didPostCancelSuboperation)
+  property nameConflictHandler (T@?,C,N,V_nameConflictHandler)
+  property operation (T@"FIOperation",R,W,N,V_operation)
+  -.cxx_destruct v16@0:8  imp=+0x19cbd2ea0
+  -cancel v16@0:8  imp=+0x19cbd2bb8
+  -cancelled B16@0:8  imp=+0x19cbd2e80
+  -didPostCancelSuboperation B16@0:8  imp=+0x19cbd2e90
+  -done v16@0:8  imp=+0x19cbd2ae0
+  -initWithOperation: @24@0:8@16  imp=+0x19cbd183c
+  -isValidSuboperation:callingFunc: @28@0:8I16{TString={TRef<const __CFString *, TRetainReleasePolicy<CFStringRef>>=^{__CFString}}}20  imp=+0x19cbd19d8
+  -nameConflictHandler @?16@0:8  imp=+0x19cbd2e44
+  -operation @16@0:8  imp=+0x19cbd2e54
+  -postCancelSuboperation v16@0:8  imp=+0x19cbd2c9c
+  -setCancelled: v20@0:8B16  imp=+0x19cbd2e88
+  -setDidPostCancelSuboperation: v20@0:8B16  imp=+0x19cbd2e98
+  -setNameConflictHandler: v24@0:8@?16  imp=+0x19cbd2e4c
+  -startFileSystemSuboperation:newAliasOrFolderName:propertyList:aliasTarget:error: B52@0:8I16@20^{OpaquePropertyListRef=}28@36^@44  imp=+0x19cbd1cd4
+  -startPermissionsSuboperation:fileSec:error: B36@0:8I16@20^@28  imp=+0x19cbd2398
+  -startTagStampingSuboperation:error: B28@0:8I16^@20  imp=+0x19cbd2618
+  -startUnarchiveSuboperation:passwords:error: B36@0:8I16@20^@28  imp=+0x19cbd2868
+@class FITag : NSObject <NSSecureCoding, NSCopying> instanceSize=24
+  ivar +8 _isVisible B
+  ivar +9 _isPinned B
+  ivar +10 _color s
+  ivar +16 _name @"NSString"
+  property cloudDictionary (T@"NSDictionary",R)
+  property name (T@"NSString",R,N,V_name)
+  property color (Ts,R,N,V_color)
+  property isVisible (TB,R,N,V_isVisible)
+  property isPinned (TB,R,N,V_isPinned)
+  +supportsSecureCoding B16@0:8  imp=+0x19cc1ec08
+  +tagFromCloudDictionary: @24@0:8@16  imp=+0x19cc224b8
+  +tagFromDictionary: @24@0:8@16  imp=+0x19cc1ef48
+  -.cxx_destruct v16@0:8  imp=+0x19cc1f3e0
+  -cloudDictionary @16@0:8  imp=+0x19cc226d4
+  -color s16@0:8  imp=+0x19cc1f3c8
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x19cc1ee8c
+  -description @16@0:8  imp=+0x19cc1ea44
+  -encodeWithCoder: v24@0:8@16  imp=+0x19cc1ed84
+  -hash Q16@0:8  imp=+0x19cc1e900
+  -initWithCoder: @24@0:8@16  imp=+0x19cc1ec10
+  -initWithName:color: @28@0:8@16s24  imp=+0x19cc1e794
+  -initWithName:color:isVisible:isPinned: @36@0:8@16s24B28B32  imp=+0x19cc1e7a0
+  -isEqual: B24@0:8@16  imp=+0x19cc1e950
+  -isEqualToTag: B24@0:8@16  imp=+0x19cc1ee90
+  -isPinned B16@0:8  imp=+0x19cc1f3d8
+  -isVisible B16@0:8  imp=+0x19cc1f3d0
+  -name @16@0:8  imp=+0x19cc1f3c0
+  -toDictionary @16@0:8  imp=+0x19cc1f220
+@class FITagCloudSync : NSObject instanceSize=176
+  ivar +8 _store @"NSUbiquitousKeyValueStore"
+  ivar +16 _delegate @"<FITagCloudSyncDelegate>"
+  ivar +24 _iCloudToken @"NSObject"
+  ivar +32 _storeChangeObserver {TNotificationCenterObserver="fObservedObject"@"NSObject""fNotificationName"{TString="fString"{TRef<const __CFString *, TRetainReleasePolicy<CFStringRef>>="fRef"^{__CFString}}}"fFunctorGlue"@"DS_TNotificationCenterObserverGlue""fIsDistributedObserving"B"fCenterProvider"{function<NSNotificationCenter *()>="__f_"{__value_func<NSNotificationCenter *()>="__buf_"(type="__data"[24C])"__f_"^v}}}
+  ivar +96 _identityObserver {TNotificationCenterObserver="fObservedObject"@"NSObject""fNotificationName"{TString="fString"{TRef<const __CFString *, TRetainReleasePolicy<CFStringRef>>="fRef"^{__CFString}}}"fFunctorGlue"@"DS_TNotificationCenterObserverGlue""fIsDistributedObserving"B"fCenterProvider"{function<NSNotificationCenter *()>="__f_"{__value_func<NSNotificationCenter *()>="__buf_"(type="__data"[24C])"__f_"^v}}}
+  ivar +160 _serializationQueue @"NSObject<OS_dispatch_queue>"
+  ivar +168 _storeAccessWrapper @?
+  property storeAccessWrapper (T@?,C,N,V_storeAccessWrapper)
+  property serializationQueue (T@"NSObject<OS_dispatch_queue>",R,N,V_serializationQueue)
+  +defaultStore @16@0:8  imp=+0x19cc1f3ec
+  -.cxx_construct @16@0:8  imp=+0x19cc216c0
+  -.cxx_destruct v16@0:8  imp=+0x19cc2164c
+  -_initialMerge v16@0:8  imp=+0x19cc1ffdc
+  -dealloc v16@0:8  imp=+0x19cc1f570
+  -iCloudDictionary @16@0:8  imp=+0x19cc207e4
+  -initWithDelegate: @24@0:8@16  imp=+0x19cc1f42c
+  -kvsStoreDidChange: v24@0:8@16  imp=+0x19cc200b4
+  -performStoreAccess: v24@0:8@?16  imp=+0x19cc1f770
+  -readTagsFromCloud: v20@0:8B16  imp=+0x19cc208f8
+  -recreateStore @16@0:8  imp=+0x19cc1f5a8
+  -serializationQueue @16@0:8  imp=+0x19cc21634
+  -setStore: v24@0:8@16  imp=+0x19cc1f7f0
+  -setStoreAccessWrapper: v24@0:8@?16  imp=+0x19cc21644
+  -startMonitoring v16@0:8  imp=+0x19cc1fac4
+  -stopMonitoring v16@0:8  imp=+0x19cc1fe84
+  -storeAccessWrapper @?16@0:8  imp=+0x19cc2163c
+  -ubiquityIdentityDidChange: v24@0:8@16  imp=+0x19cc20410
+  -writeTagsToCloud v16@0:8  imp=+0x19cc20f2c
+@class FIUnarchiveOperation : FIOperation instanceSize=1200
+  ivar +1168 _passwords @"NSMutableArray"
+  ivar +1176 _needsPasswordHandler @?
+  ivar +1184 _subOperation @"FIUnarchiveSubOperation"
+  ivar +1192 _destinationNode @"FINode"
+  property subOperation (T@"FIUnarchiveSubOperation",&,N,V_subOperation)
+  property destinationNode (T@"FINode",&,V_destinationNode)
+  property needsPasswordHandler (T@?,C,N,V_needsPasswordHandler)
+  -.cxx_destruct v16@0:8  imp=+0x19cbac744
+  -_initWithArchiveNode:destinationFolderNode: @32@0:8@16@24  imp=+0x19cbabcf4
+  -cancel v16@0:8  imp=+0x19cbac578
+  -destinationForNode: @24@0:8@16  imp=+0x19cbac1a8
+  -destinationNode @16@0:8  imp=+0x19cbac728
+  -filterSourceNodes v16@0:8  imp=+0x19cbac018
+  -initWithArchiveNode:destinationFolderNode: @32@0:8@16@24  imp=+0x19cbabf7c
+  -initWithSourceNodes:destinationFolder: @32@0:8@16@24  imp=+0x19cbabf80
+  -markAsCancelled v16@0:8  imp=+0x19cbac62c
+  -needsPasswordHandler @?16@0:8  imp=+0x19cbac6e0
+  -progressFileOperationKind @16@0:8  imp=+0x19cbac2e0
+  -progressURL @16@0:8  imp=+0x19cbac260
+  -schedule v16@0:8  imp=+0x19cbac2f0
+  -setDestinationNode: v24@0:8@16  imp=+0x19cbac738
+  -setNeedsPasswordHandler: v24@0:8@?16  imp=+0x19cbac6f4
+  -setSubOperation: v24@0:8@16  imp=+0x19cbac714
+  -shouldExecuteDSOperation B16@0:8  imp=+0x19cbac1ec
+  -subOperation @16@0:8  imp=+0x19cbac700
+  -tearDownCallbacks v16@0:8  imp=+0x19cbac158
+@class FIUnarchiveSubOperation : FISubOperation instanceSize=40
+  ivar +32 _willRerun B
+  property willRerun (TB,V_willRerun)
+  -setWillRerun: v20@0:8B16  imp=+0x19cbac7e8
+  -startUnarchive: B24@0:8^@16  imp=+0x19cbac7c0
+  -willRerun B16@0:8  imp=+0x19cbac7d0
+@class _FINullObserver : NSObject <FINodeObserverProtocol> instanceSize=8
+@protocol CWEventDelegate
+  optional -clientConnectionInterrupted v16@0:8
+  optional -ssidDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -powerStateDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -modeDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -linkDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -linkQualityDidChangeForWiFiInterfaceWithName:rssi:transmitRate: v40@0:8@16q24d32
+  optional -bssidDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -clientConnectionInvalidated v16@0:8
+  optional -countryCodeDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -scanCacheUpdatedForWiFiInterfaceWithName: v24@0:8@16
+@protocol CWFAssetMgmtProtocol
+  required -processQueryResults:withError: v32@0:8@16@24
+  required -invalidate v16@0:8
+  required -setEventHandler: v24@0:8@?16
+  required -eventHandler @?16@0:8
+  required -activate v16@0:8
+@protocol CWFAssetPowerTableElectorDelegate
+  required -powerTableReadiness:voter:vote: B36@0:8@16q24B32
+  required -performVersionFetch: B24@0:8@16
+  required -powerTableVote:voter:vote: B36@0:8@16q24B32
+@protocol CWFAssetRootMonitorDelegate
+  required -rootMonitorDetectedAdd:deleted:updated: v40@0:8@16@24@32
+@protocol CWFDeviceDiscoveryManagerDelegate
+  required -didDiscoverDevice: v24@0:8@16
+  required -didLoseDevice: v24@0:8@16
+  optional -didFetchWifiInfoForDevice: v24@0:8@16
+@protocol CWFJSONEncodable
+  required -JSONCompatibleKeyValueMap @16@0:8
+@protocol CWFXPCConnectionDelegate
+  required -XPCConnection:canceledXPCRequestsWithUUID: v32@0:8@16@24
+  required -XPCConnection:completedXPCRequest: v32@0:8@16@24
+  required -XPCConnection:receivedXPCRequest: v32@0:8@16@24
+  required -XPCConnection:updatedProcessState: v32@0:8@16@24
+  required -XPCConnection:updatedRegisteredEventIDs: v32@0:8@16@24
+@protocol CWFXPCEventProtocolPrivate
+  required -receivedAcknowledgedXPCEvent:reply: v32@0:8@16@?24
+@protocol CWFXPCEventProtocolPublic
+  required -receivedXPCEvent: v24@0:8@16
+@protocol CWFXPCEventProtocolWiFiNetworkSharingApp
+@protocol CWFXPCEventProtocolWiFiNetworkSharingExtension
+  required -receivedXPCEvent: v24@0:8@16
+  required -performWiFiNetworkSharingAccessoryScanWithReply: v24@0:8@?16
+@protocol CWFXPCEventProtocolWiFiNetworkSharingUIService
+  required -receivedXPCEvent: v24@0:8@16
+@protocol CWFXPCEventProtocolWiFiUserAgent
+  required -forgetCloudNetworkProfile:reply: v32@0:8@16@?24
+  required -queryCloudNetworksAndReply: v24@0:8@?16
+  required -dumpLogs:reply: v32@0:8@16@?24
+  required -rememberCloudNetworkProfile:reply: v32@0:8@16@?24
+  required -setCaptivePortalCredentials:knownNetworkProfile:reply: v40@0:8@16@24@?32
+  required -cancelWiFiNetworkSharingAskToShareUserNotificationForClientID: v24@0:8@16
+  required -allowBrokenBackhaulPersonalHotspotFallbackForNetwork:reply: v32@0:8@16@?24
+  required -presentWiFiNetworkSharingAskToShareUserNotificationForClientID:network:accessoryName:reply: v48@0:8@16@24@32@?40
+  required -cancelWiFiNetworkSharingAuthorizationProxCardForClientID: v24@0:8@16
+  required -queryNearbyRecommendedNetworksAndReply: v24@0:8@?16
+  required -queryCaptivePortalCredentialsForKnownNetworkProfile:reply: v32@0:8@16@?24
+  required -nearbyConfirmBrokenBackhaulUsingTimeout:count:network:minimumCacheTimestamp:reply: v56@0:8Q16Q24@32Q40@?48
+  required -presentWiFiNetworkSharingAuthorizationProxCardForClientID:accessoryName:reply: v40@0:8@16@24@?32
+  required -cancelWiFiNetworkSharingAskToShareProxCardForClientID: v24@0:8@16
+  required -presentWiFiNetworkSharingAskToShareProxCardForClientID:accessoryName:reply: v40@0:8@16@24@?32
+@protocol CWFXPCListenerDelegate
+  required -XPCListener:XPCConnection:completedXPCRequest: v40@0:8@16@24@32
+  required -XPCListener:XPCConnection:updatedRegisteredEventIDs: v40@0:8@16@24@32
+  required -XPCListener:XPCConnection:canceledXPCRequestsWithUUID: v40@0:8@16@24@32
+  required -XPCListener:invalidatedXPCConnection: v32@0:8@16@24
+  required -XPCListener:XPCConnection:updatedProcessState: v40@0:8@16@24@32
+  required -XPCListener:addedXPCConnection: v32@0:8@16@24
+  required -XPCListener:XPCConnection:receivedXPCRequest: v40@0:8@16@24@32
+@protocol CWFXPCRequestProtocolCoreWLAN
+  required -queryMCSIndexWithRequestParams:reply: v32@0:8@16@?24
+  required -queryRSSIWithRequestParams:reply: v32@0:8@16@?24
+  required -setPower:requestParams:reply: v36@0:8B16@20@?28
+  required -queryWoWEnabledWithRequestParams:reply: v32@0:8@16@?24
+  required -querySupportedChannelsWithCountryCode:requestParams:reply: v40@0:8@16@24@?32
+  required -queryCountryCodeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryCurrentScanResultWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPHYModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryHardwareMACAddressWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowersaveWithRequestParams:reply: v32@0:8@16@?24
+  required -querySupportedPHYModesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLOpModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLSidecarDiagnosticsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInterfaceCapabilitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryHardwareSupportedChannelsWithRequestParams:reply: v32@0:8@16@?24
+  required -disassociateWithReason:requestParams:reply: v40@0:8q16@24@?32
+  required -cancelRequestsWithUUID:reply: v32@0:8@16@?24
+  required -queryTxRateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryMACAddressWithRequestParams:reply: v32@0:8@16@?24
+  required -queryParentInterfaceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -setCarPlayInternet:requestParams:reply: v36@0:8B16@20@?28
+  required -associateWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -queryInterfaceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -startMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -queryNumberOfSpatialStreamsWithRequestParams:reply: v32@0:8@16@?24
+  required -querySSIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryChannelWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIsNetworkServiceEnabledWithRequestParams:reply: v32@0:8@16@?24
+  required -queryVirtualInterfaceRoleWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAuthTypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryOpModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBSSIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowerStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIsQuickProbeRequiredForNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -querySecurityWithRequestParams:reply: v32@0:8@16@?24
+  required -queryTxNSSWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLPeerTrafficRegistrationWithRequestParams:reply: v32@0:8@16@?24
+  required -reportQuickProbeResult:networkProfile:requestParams:reply: v44@0:8B16@20@28@?36
+  required -updateKnownNetworkProfile:properties:OSSpecificKeys:requestParams:reply: v56@0:8@16@24@32@40@?48
+  required -queryPowerDebugInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -queryMaxLinkSpeedWithRequestParams:reply: v32@0:8@16@?24
+  required -updateSoftAPBand:requestParams:reply: v36@0:8I16@20@?28
+  required -queryNoiseWithRequestParams:reply: v32@0:8@16@?24
+  required -queryVirtualInterfaceNamesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowerTableInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -stopMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -queryTxPowerWithRequestParams:reply: v32@0:8@16@?24
+  required -performScanWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -setChannel:requestParams:reply: v40@0:8@16@24@?32
+  required -stopMonitoringAllEventsWithRequestParams:reply: v32@0:8@16@?24
+  required -removeKnownNetworkProfile:reason:requestParams:reply: v48@0:8@16q24@32@?40
+  required -queryPowerWithRequestParams:reply: v32@0:8@16@?24
+  required -queryMaxNSSForAPWithRequestParams:reply: v32@0:8@16@?24
+  required -addKnownNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryWEPSubtypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryWAPISubtypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInterfaceNamesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryKnownNetworkProfilesWithProperties:requestParams:reply: v40@0:8@16@24@?32
+  required -queryStateWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolInternal
+  required -resetWiFiNetworkSharingForBundleID:accessoryID:requestParams:reply: v48@0:8@16@24@32@?40
+  required -querySystemEventIDsWithRequestParams:reply: v32@0:8@16@?24
+  required -querySystemActivitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -dumpLogs:requestParams:reply: v40@0:8@16@24@?32
+  required -getCloudNetworksWithRequestParams:reply: v32@0:8@16@?24
+  required -confirmBrokenBackhaulUsingTimeout:count:requestParams:reply: v48@0:8Q16Q24@32@?40
+  required -queryDeviceUUIDWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolMobileWiFi
+  required -queryCurrentScanResultWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolPrivate
+  required -setRangingIdentifier:requestParams:reply: v40@0:8@16@24@?32
+  required -requestWiFiNetworkSharingAuthorizationWithRequestParams:reply: v32@0:8@16@?24
+  required -setUserAutoJoinState:requestParams:reply: v36@0:8B16@20@?28
+  required -performAutoJoinWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -performRangingWithPeerList:timeout:requestParams:reply: v48@0:8@16Q24@32@?40
+  required -setBlockedBands:requestParams:reply: v40@0:8@16@24@?32
+  required -setPower:requestParams:reply: v36@0:8B16@20@?28
+  required -performNearbyDeviceDiscovery:requestParams:reply: v40@0:8@16@24@?32
+  required -updateKnownBSS:knownNetworkProfile:properties:OSSpecificKeys:requestParams:reply: v64@0:8@16@24@32@40@48@?56
+  required -setSensingEnabled:requestParams:reply: v36@0:8B16@20@?28
+  required -resetInternetSharingStatsWithRequestParams:reply: v32@0:8@16@?24
+  required -setPrivateMACAddressUserJoinFailureUIState:networkProfile:requestParams:reply: v44@0:8B16@20@28@?36
+  required -setBackgroundScanConfiguration:requestParams:reply: v40@0:8@16@24@?32
+  required -setPrivateMACAddressModeSystemSetting:requestParams:reply: v40@0:8q16@24@?32
+  required -addKnownBSS:knownNetworkProfile:requestParams:reply: v48@0:8@16@24@32@?40
+  required -askToShareWiFiNetworkSharingNetworkFromAppWithRequestParams:reply: v32@0:8@16@?24
+  required -setLQMConfiguration:requestParams:reply: v40@0:8@16@24@?32
+  required -acknowledgeWiFiNetworkSharingConnectedAPUpdate:requestParams:reply: v40@0:8@16@24@?32
+  required -startAWDLPeerAssistedDiscoveryWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -setWiFiNetworkSharingAskToShareStatus:networkID:requestParams:reply: v48@0:8q16@24@32@?40
+  required -stopHostAPModeWithRequestParams:reply: v32@0:8@16@?24
+  required -setInternetSharingPassword:requestParams:reply: v40@0:8@16@24@?32
+  required -disassociateWithReason:requestParams:reply: v40@0:8q16@24@?32
+  required -resetAutoJoinStatisticsWithRequestParams:reply: v32@0:8@16@?24
+  required -setCompanionCountryCode:requestParams:reply: v40@0:8@16@24@?32
+  required -setThermalIndex:requestParams:reply: v40@0:8q16@24@?32
+  required -setCarPlayInternet:requestParams:reply: v36@0:8B16@20@?28
+  required -setUCMExtProfile:requestParams:error: v40@0:8@16@24@?32
+  required -associateWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -provideDTCStats:requestParams:reply: v40@0:8@16@24@?32
+  required -setRangeable:peerList:requestParams:reply: v44@0:8B16@20@28@?36
+  required -setInternetSharingDiscoveryState:immediateDisable:requestParams:reply: v40@0:8B16B20@24@?32
+  required -endAllActivitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -startHostAPModeWithConfiguration:requestParams:reply: v40@0:8@16@24@?32
+  required -askToShareWiFiNetworkSharingNetworkFromAppexWithRequestParams:reply: v32@0:8@16@?24
+  required -performANQPWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -setFamilyHotspotPreferences:requestParams:reply: v40@0:8@16@24@?32
+  required -acknowledgeWiFiNetworkSharingNetworkListUpdate:requestParams:reply: v40@0:8@16@24@?32
+  required -setShareMyPersonalHotspotMode:requestParams:reply: v40@0:8q16@24@?32
+  required -startUIScanWithRequestParams:reply: v32@0:8@16@?24
+  required -setAutoHotspotMode:requestParams:reply: v40@0:8q16@24@?32
+  required -setBTCoexActiveProfileName:requestParams:error: v40@0:8@16@24@?32
+  required -performUIBeaconCacheQuery:reply: v32@0:8@16@?24
+  required -stopAWDLPeerAssistedDiscoveryWithRequestParams:reply: v32@0:8@16@?24
+  required -setInternetSharingDiscoveryStateExt:request:requestParams:reply: v44@0:8B16@20@28@?36
+  required -setPrivateMACAddressMode:networkProfile:requestParams:reply: v48@0:8q16@24@32@?40
+  required -reportQuickProbeResult:networkProfile:requestParams:reply: v44@0:8B16@20@28@?36
+  required -updateKnownNetworkProfile:properties:OSSpecificKeys:requestParams:reply: v56@0:8@16@24@32@40@?48
+  required -setUserSettings:properties:requestParams:reply: v48@0:8@16@24@32@?40
+  required -setInternetSharingNetworkName:requestParams:reply: v40@0:8@16@24@?32
+  required -clearAutoJoinDenyListForNetwork:reason:requestParams:reply: v48@0:8@16Q24@32@?40
+  required -updateSoftAPBand:requestParams:reply: v36@0:8I16@20@?28
+  required -setPassword:knownNetworkProfile:requestParams:reply: v48@0:8@16@24@32@?40
+  required -performScanWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -stopUIScanWithRequestParams:reply: v32@0:8@16@?24
+  required -setChannel:requestParams:reply: v40@0:8@16@24@?32
+  required -removeKnownNetworkProfile:reason:requestParams:reply: v48@0:8@16q24@32@?40
+  required -setAutoJoinDenyListForNetwork:reason:requestParams:reply: v48@0:8@16Q24@32@?40
+  required -beginActivity:requestParams:reply: v40@0:8@16@24@?32
+  required -setCaptivePortalCredentials:knownNetworkProfile:requestParams:reply: v48@0:8@16@24@32@?40
+  required -addKnownNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -configureSensing:requestParams:reply: v40@0:8@16@24@?32
+  required -removeKnownBSS:knownNetworkProfile:requestParams:reply: v48@0:8@16@24@32@?40
+  required -endActivityWithUUID:requestParams:reply: v40@0:8@16@24@?32
+  required -setInternetSharingState:requestParams:reply: v36@0:8B16@20@?28
+  required -setMISDiscoveryState:immediateDisable:requestParams:reply: v40@0:8B16B20@24@?32
+  required -setMISDiscoveryStateExt:request:requestParams:reply: v44@0:8B16@20@28@?36
+  required -setMISPassword:requestParams:reply: v40@0:8@16@24@?32
+  required -setMISState:requestParams:reply: v36@0:8B16@20@?28
+@protocol CWFXPCRequestProtocolPrivateReadonly
+  required -queryMCSIndexWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAutoJoinStatisticsWithRequestParams:reply: v32@0:8@16@?24
+  required -wifiNetworkSharingAskToShareStatusForNetworkID:requestParams:reply: v40@0:8@16@24@?32
+  required -queryNANRadioScheduleWithRequestParams:reply: v32@0:8@16@?24
+  required -queryRSSIWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkServiceIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLElectionMetricWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAutoJoinDenyListWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalDNSServerAddressesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryCountryBandSupport:reply: v32@0:8@16@?24
+  required -queryInternetSharingDiscoveryStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryLQMConfigurationWithRequestParams:reply: v32@0:8@16@?24
+  required -queryWoWEnabledWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLStatisticsWithRequestParams:reply: v32@0:8@16@?24
+  required -querySupportedChannelsWithCountryCode:requestParams:reply: v40@0:8@16@24@?32
+  required -queryCountryCodeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAutoJoinStatusWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv4RouterWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLGuardTimeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryChannelsInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAutoJoinUserActionMetricWithRequestParams:reply: v32@0:8@16@?24
+  required -queryFamilyHotspotPreferencesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkManagedByMDM:requestParams:reply: v40@0:8@16@24@?32
+  required -queryAWDLStrategyWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLAvailabilityWindowAPAlignmentWithRequestParams:reply: v32@0:8@16@?24
+  required -queryCurrentScanResultWithRequestParams:reply: v32@0:8@16@?24
+  required -queryUserSettingsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPHYModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBluetoothCoexConfigWithRequestParams:reply: v32@0:8@16@?24
+  required -queryHardwareMACAddressWithRequestParams:reply: v32@0:8@16@?24
+  required -queryTxChainPowerWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowersaveWithRequestParams:reply: v32@0:8@16@?24
+  required -querySupportedPHYModesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDHCPLeaseExpirationTimeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBrokenBackhaulStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLOpModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLSidecarDiagnosticsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInterfaceCapabilitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLSecondaryMasterChannelWithRequestParams:reply: v32@0:8@16@?24
+  required -querySSIDForVendorWithRequestParams:reply: v32@0:8@16@?24
+  required -queryLeakyAPStatsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLElectionRSSIThresholdsWithRequestParams:reply: v32@0:8@16@?24
+  required -wifiNetworkSharingAuthorizationLevelWithRequestParams:reply: v32@0:8@16@?24
+  required -queryCCAWithRequestParams:reply: v32@0:8@16@?24
+  required -queryHardwareSupportedChannelsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv6RouterWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLAFTxModeWithRequestParams:reply: v32@0:8@16@?24
+  required -cancelRequestsWithUUID:reply: v32@0:8@16@?24
+  required -queryDeviceSupervisedWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv6AddressesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryTxRateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv4AddressesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLPresenceModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryMACAddressWithRequestParams:reply: v32@0:8@16@?24
+  required -queryHotspotClientDataUsageWithRequestParams:reply: v32@0:8@16@?24
+  required -queryLinkDownStatusWithRequestParams:reply: v32@0:8@16@?24
+  required -queryParentInterfaceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryRangingCapabilitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInterfaceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv4InterfaceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLElectionParametersWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkReachabilityWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBluetoothCoexProfiles2GHzWithRequestParams:reply: v32@0:8@16@?24
+  required -startMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -queryAWDLSyncStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv4ARPResolvedIPAddressWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNumberOfSpatialStreamsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv4AddressesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryWiFiUIStateFlagsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv6NetworkServiceIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryWiFiAssistOverrideReasonsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIO80211InterfaceInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -querySSIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBluetoothCoexModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryHostAPStationListWithRequestParams:reply: v32@0:8@16@?24
+  required -queryChannelWithRequestParams:reply: v32@0:8@16@?24
+  required -queryJoinStatusWithRequestParams:reply: v32@0:8@16@?24
+  required -queryLinkQualityMetricWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIsNetworkServiceEnabledWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPrivateMACAddressModeForNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryIPv4NetworkSignatureWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLEncryptionTypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryVirtualInterfaceRoleWithRequestParams:reply: v32@0:8@16@?24
+  required -getNearbyRecommendedNetworksWithRequestParams:reply: v32@0:8@16@?24
+  required -queryKnownNetworkInfoForLocalNetworkPromptWithOptions:requestParams:reply: v40@0:8@16@24@?32
+  required -queryNetworkOfInterestWorkStateForKnownNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryAutoHotspotModeWithRequestParams:reply: v32@0:8@16@?24
+  required -wifiNetworkSharingConnectedAPListWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPasswordForKnownNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryAuthTypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv6RouterWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLExtensionStateMachineParamsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryOpModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryEAP8021XControlModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBSSIDWithRequestParams:reply: v32@0:8@16@?24
+  required -getRecommendedKnownNetworksWithRequestParams:reply: v32@0:8@16@?24
+  required -queryChainAckWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowerStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIsQuickProbeRequiredForNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryInternetSharingNetworkNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv6InterfaceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkServiceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -querySecurityWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDNSServerAddressesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDHCPServerIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryTxNSSWithRequestParams:reply: v32@0:8@16@?24
+  required -queryRoamStatusWithRequestParams:reply: v32@0:8@16@?24
+  required -queryEAP8021XSupplicantStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryShareMyPersonalHotspotModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLPeerTrafficRegistrationWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkOfInterestHomeStateForKnownNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryIPv6NetworkSignatureWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowerDebugInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBluetoothCoexProfiles5GHzWithRequestParams:reply: v32@0:8@16@?24
+  required -queryMaxLinkSpeedWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv4NetworkServiceIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryKnownNetworksWithNetworkSignature:requestParams:reply: v40@0:8@16@24@?32
+  required -queryAWDLSocialTimeSlotsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkWarningFlagsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNoiseWithRequestParams:reply: v32@0:8@16@?24
+  required -queryEAP8021XClientStatusWithRequestParams:reply: v32@0:8@16@?24
+  required -queryVirtualInterfaceNamesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowerTableInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -queryTetheringSupportedWithRequestParams:reply: v32@0:8@16@?24
+  required -queryKnownNetworksInSameLanAs:requestParams:reply: v40@0:8@16@24@?32
+  required -stopMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -queryPrivateMACAddressModeSystemSettingWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLElectionIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryRxRateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIO80211ControllerInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv4NetworkServiceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBlockedBandsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPersonalHotspotModificationDisabledWithRequestParams:reply: v32@0:8@16@?24
+  required -queryTxPowerWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLPreferredChannelsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDHCPv6ServerIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLSyncEnabledWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLSyncParametersWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv4SubnetMasksWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBeaconCacheWithRequestParams:reply: v32@0:8@16@?24
+  required -stopMonitoringAllEventsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryCaptivePortalCredentialsForKnownNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryDesenseLevelWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLSyncChannelSequenceWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowerWithRequestParams:reply: v32@0:8@16@?24
+  required -queryCurrentKnownNetworkProfileWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBrokenBackhaulStateTimestampWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInternetSharingPasswordWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDHCPLeaseStartTimeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInternetSharingStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryMaxNSSForAPWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLBTLEStateParamsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDTIMIntervalWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAutoJoinMetricWithType:requestParams:reply: v40@0:8Q16@24@?32
+  required -queryKnownNetworkProfileMatchingScanResult:requestParams:reply: v40@0:8@16@24@?32
+  required -queryKnownNetworkProfileMatchingNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryWEPSubtypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLPeerDatabaseWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLContinuousElectionAlgorithmEnabledWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBackgroundScanConfigurationWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv4RouterWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv6NetworkServiceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryEAP8021XControlStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv4ARPResolvedHardwareAddressWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBackgroundScanCacheWithRequestParams:reply: v32@0:8@16@?24
+  required -queryLQMSummaryWithRequestParams:reply: v32@0:8@16@?24
+  required -queryWAPISubtypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInterfaceNamesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGuardIntervalWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInternetSharingStatsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkSignatureForNetwork:isBSSID:requestParams:reply: v44@0:8@16B24@28@?36
+  required -queryKnownNetworkProfilesWithProperties:requestParams:reply: v40@0:8@16@24@?32
+  required -wifiNetworkSharingAskToShareNetworkListWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv6AddressesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryActivitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryLinkQualityAssessmentWithRequestParams:reply: v32@0:8@16@?24
+  required -queryUserAutoJoinStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDesenseWithRequestParams:reply: v32@0:8@16@?24
+  required -queryEventIDsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLMasterChannelWithRequestParams:reply: v32@0:8@16@?24
+  required -queryThermalIndexWithRequestParams:reply: v32@0:8@16@?24
+  required -queryStateWithRequestParams:reply: v32@0:8@16@?24
+  required -wifiNetworkSharingNetworkListWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPrivateMACAddressForNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryBSSIDForVendorWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolPublicWiFi
+  required -querySSIDForVendorWithRequestParams:reply: v32@0:8@16@?24
+  required -startMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -querySSIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBSSIDWithRequestParams:reply: v32@0:8@16@?24
+  required -stopMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -stopMonitoringAllEventsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBSSIDForVendorWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolUnrestricted
+  required -queryInterfaceCapabilitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryOpModeWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolWiFiNetworkSharingApp
+  required -requestWiFiNetworkSharingAuthorizationWithRequestParams:reply: v32@0:8@16@?24
+  required -askToShareWiFiNetworkSharingNetworkFromAppWithRequestParams:reply: v32@0:8@16@?24
+  required -checkinWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolWiFiNetworkSharingExtension
+  required -acknowledgeWiFiNetworkSharingConnectedAPUpdate:requestParams:reply: v40@0:8@16@24@?32
+  required -startMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -askToShareWiFiNetworkSharingNetworkFromAppexWithRequestParams:reply: v32@0:8@16@?24
+  required -acknowledgeWiFiNetworkSharingNetworkListUpdate:requestParams:reply: v40@0:8@16@24@?32
+  required -checkinWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolWiFiNetworkSharingUI
+  required -setWiFiNetworkSharingAskToShareStatus:networkID:requestParams:reply: v48@0:8q16@24@32@?40
+  required -startMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -wifiNetworkSharingAskToShareNetworkListWithRequestParams:reply: v32@0:8@16@?24
+  required -checkinWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolWiFiUserAgent
+  required -sendXPCEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -checkinWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProxyDelegate
+  required -XPCRequestProxy:XPCConnection:canceledXPCRequestsWithUUID: v40@0:8@16@24@32
+  required -XPCRequestProxy:getAdaptiveInterfaceRankDurationAndReply: v32@0:8@16@?24
+  required -XPCRequestProxy:sendXPCEvent:reply: v40@0:8@16@24@?32
+  required -XPCRequestProxy:XPCConnection:receivedXPCRequest: v40@0:8@16@24@32
+  required -XPCRequestProxy:invalidatedXPCConnection: v32@0:8@16@24
+@protocol CWInternalEventDelegate
+  optional -joinDidStartForWiFiInterfaceWithName:ssid: v32@0:8@16@24
+  optional -internal_queryCloudKVSAndReply: v24@0:8@?16
+  optional -internal_startUserMode8021XWithProfile:interfaceWithName:reply: v40@0:8@16@24@?32
+  optional -internal_showAvailableWiFiNetworks:interfaceName:recommendOnly: v36@0:8@16@24B32
+  optional -autoJoinDidCompleteForWiFiInterfaceWithName: v24@0:8@16
+  optional -autoJoinDidStartForWiFiInterfaceWithName: v24@0:8@16
+  optional -autoJoinDidUpdate: v24@0:8@16
+  optional -btCoexModeStats: v24@0:8@16
+  optional -deviceAvailabilityChangedForWiFiInterfaceWithName:isAvailable: v28@0:8@16B24
+  optional -dextCrashDetected v16@0:8
+  optional -interfaceAddedWithName: v24@0:8@16
+  optional -interfaceRemovedWithName: v24@0:8@16
+  optional -internal_addCloudProfile: v24@0:8@16
+  optional -internal_confirmAPIAccessWithRequestType:info:processName:reply: v48@0:8q16@24@32@?40
+  optional -internal_enableTetherDevice:reply: v32@0:8@16@?24
+  optional -internal_foundTetherDevices: v24@0:8@16
+  optional -internal_getWiFiPasswordForUserKeychainWithSSID:reply: v32@0:8@16@?24
+  optional -internal_joinWiFiNetworkWithUserAgent:interfaceName:timestamp:reply: v48@0:8@16@24d32@?40
+  optional -internal_queryLegacyCloudKVSAndReply: v24@0:8@?16
+  optional -internal_removeCloudProfile: v24@0:8@16
+  optional -internal_setWiFiPasswordForUserKeychain:ssid:reply: v40@0:8@16@24@?32
+  optional -internal_showAutoHotspotNotificationForTetherDevice:retry:interfaceName: v36@0:8@16B24@28
+  optional -internal_showDHCPMessage:networkName: v32@0:8@16@24
+  optional -internal_showLowBatteryNotificationForTetherDevice:interfaceName: v32@0:8@16@24
+  optional -internal_showMICErrorWithNetworkName: v24@0:8@16
+  optional -internal_showPHNetworkExpensiveAlertWithNetworkName: v24@0:8@16
+  optional -internal_startBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  optional -internal_startUserMode8021XWithAuthenticationInfo:interfaceWithName:reply: v40@0:8@16@24@?32
+  optional -internal_startUserMode8021XWithPasspointDomainName:interfaceWithName:reply: v40@0:8@16@24@?32
+  optional -internal_startUserMode8021XWithSSID:username:password:identity:disableUserInteraction:remember:interfaceWithName:reply: v72@0:8@16@24@32@40B48B52@56@?64
+  optional -internal_stopBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  optional -internal_updateCloudProfile: v24@0:8@16
+  optional -joinDidCompleteForWiFiInterfaceWithName:isAutoJoin:error: v36@0:8@16B24@28
+  optional -preferencesDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -rangingEndedForWiFiInterfaceWithName: v24@0:8@16
+  optional -rangingReportEventForWiFiInterfaceWithName:data:error: v40@0:8@16@24@32
+  optional -rangingStartedForWiFiInterfaceWithName: v24@0:8@16
+  optional -realTimeModeDidEndForWiFiInterfaceWithName: v24@0:8@16
+  optional -realTimeModeDidStartForWiFiInterfaceWithName: v24@0:8@16
+  optional -rsnHandshakeDidCompleteForWiFiInterfaceWithName: v24@0:8@16
+  optional -virtualInterfaceStateChangedForWiFiInterfaceWithName: v24@0:8@16
+  optional -willShowJoinUIForWiFiNetwork:interfaceName: v32@0:8@16@24
+  optional -wowStateDidChangeForWiFiInterfaceWithName: v24@0:8@16
+@protocol CWWiFiShareKitXPCRequestProtocol
+  required -cancelPendingRequestWithToken:reply: v32@0:8q16@?24
+  required -corewifiEndpointWithReply: v24@0:8@?16
+  required -disassociateForInterfaceName:token:priority:authorization:reply: v56@0:8@16q24q32@40@?48
+  required -setWiFiPowerState:interfaceName:authorization:reply: v44@0:8B16@20@28@?36
+@protocol CWWiFiUIProxyEvent
+  required -showErrorUIWithScanResult:uuid: v32@0:8@16@24
+  required -didCompleteDiagnostics: v24@0:8@16
+  required -didFindScanResults: v24@0:8@16
+  required -didReceiveSharedPassword:uuid: v32@0:8@16@24
+  required -didUpdateUIState:previous: v32@0:8Q16Q24
+  required -dismissUIWithUUID: v24@0:8@16
+  required -showInfoUIWithTitle:description:uuid: v40@0:8@16@24@32
+  required -showJoinUIWithScanResult:previousError:previousPassword:supportsWiFiPasswordSharing:remember:uuid: v56@0:8@16@24@32B40B44@48
+  required -showLimitedNetworkOptionUIForScanResult:candidates:uuid: v40@0:8@16@24@32
+  required -showLockdownModeUIWithScanResult:uuid: v32@0:8@16@24
+  required -showSecurityMismatchUIWithScanResult:uuid: v32@0:8@16@24
+  required -showWPSUIWithScanResult:pin:uuid: v40@0:8@16@24@32
+  required -updatedWiFiConfiguration: v24@0:8@16
+@protocol CWWiFiUIProxyRequest
+  required -queryCachedScanResultsAndReply: v24@0:8@?16
+  required -addCloudWiFiProfile:authorization:reply: v40@0:8@16@24@?32
+  required -createDiagnosticsReportWithAuthorization:reply: v32@0:8@16@?24
+  required -createIBSSNetworkWithConfiguration:authorization:reply: v40@0:8@16@24@?32
+  required -deleteUserWiFiKeychainPasswordWithSSID:reply: v32@0:8@16@?24
+  required -displayWiFiRecommendationItem:reply: v32@0:8@16@?24
+  required -displayWiFiRecommendationUIAndReply: v24@0:8@?16
+  required -joinScanResult:configuration:authorization:reply: v48@0:8@16@24@32@?40
+  required -queryDiagnosticsAndReply: v24@0:8@?16
+  required -queryIsWiFiCloudSyncEngineRunningWithReply: v24@0:8@?16
+  required -queryUserWiFiKeychainPasswordWithSSID:reply: v32@0:8@16@?24
+  required -queryWiFiDebugLoggingEnabledAndReply: v24@0:8@?16
+  required -queryWiFiUIStateAndReply: v24@0:8@?16
+  required -removeCloudWiFiProfileWithSSID:authorization:reply: v40@0:8@16@24@?32
+  required -setUserWiFiKeychainPasswordWithSSID:password:reply: v40@0:8@16@24@?32
+  required -setWiFiDebugLoggingEnabled:authorization:reply: v36@0:8B16@20@?28
+  required -startMonitoringEventsAndReply: v24@0:8@?16
+  required -startScanningAndReply: v24@0:8@?16
+  required -stopMonitoringEventsAndReply: v24@0:8@?16
+  required -stopScanningAndReply: v24@0:8@?16
+  required -synchronizeCloudWiFiProfilesAndReply: v24@0:8@?16
+  required -updateCloudWiFiProfile:authorization:reply: v40@0:8@16@24@?32
+  required -userDidConfirmJoin:uuid:reply: v36@0:8B16@20@?28
+  required -userDidDismissJoinUIWithUUID:reply: v32@0:8@16@?24
+  required -userDidJoinWithConfiguration:uuid:reply: v40@0:8@16@24@?32
+@protocol CWWiFiUserAgentXPCEventProtocol
+  required -internal_queryCloudKVSAndReply: v24@0:8@?16
+  required -internal_startUserMode8021XWithProfile:interfaceWithName:reply: v40@0:8@16@24@?32
+  required -internal_showAvailableWiFiNetworks:interfaceName:recommendOnly: v36@0:8@16@24B32
+  required -internal_addCloudProfile: v24@0:8@16
+  required -internal_confirmAPIAccessWithRequestType:info:processName:reply: v48@0:8q16@24@32@?40
+  required -internal_enableTetherDevice:reply: v32@0:8@16@?24
+  required -internal_getWiFiPasswordForUserKeychainWithSSID:reply: v32@0:8@16@?24
+  required -internal_joinWiFiNetworkWithUserAgent:interfaceName:timestamp:reply: v48@0:8@16@24d32@?40
+  required -internal_queryLegacyCloudKVSAndReply: v24@0:8@?16
+  required -internal_removeCloudProfile: v24@0:8@16
+  required -internal_setWiFiPasswordForUserKeychain:ssid:reply: v40@0:8@16@24@?32
+  required -internal_showAutoHotspotNotificationForTetherDevice:retry:interfaceName: v36@0:8@16B24@28
+  required -internal_showDHCPMessage:networkName: v32@0:8@16@24
+  required -internal_showLowBatteryNotificationForTetherDevice:interfaceName: v32@0:8@16@24
+  required -internal_showMICErrorWithNetworkName: v24@0:8@16
+  required -internal_showPHNetworkExpensiveAlertWithNetworkName: v24@0:8@16
+  required -internal_startBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  required -internal_startUserMode8021XWithAuthenticationInfo:interfaceWithName:reply: v40@0:8@16@24@?32
+  required -internal_startUserMode8021XWithPasspointDomainName:interfaceWithName:reply: v40@0:8@16@24@?32
+  required -internal_startUserMode8021XWithSSID:username:password:identity:disableUserInteraction:remember:interfaceWithName:reply: v72@0:8@16@24@32@40B48B52@56@?64
+  required -internal_stopBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  required -internal_updateCloudProfile: v24@0:8@16
+@protocol CWWiFiUserAgentXPCRequestProtocol
+  required -internal_foundTetherDevices: v24@0:8@16
+  required -internal_receivedAutoHotspotNotificationResponse:updateMode:tetherDevice:authorization:interfaceName:reply: v60@0:8B16q20@28@36@44@?52
+  required -internal_userAgentWillShowJoinUIForWiFiNetwork:interfaceName:timestamp:reply: v48@0:8@16@24d32@?40
+@protocol CWWiFiXPCEventProtocol
+  required -ssidDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -joinDidStartForWiFiInterfaceWithName:ssid: v32@0:8@16@24
+  required -powerStateDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -modeDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -linkDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -linkQualityDidChangeForWiFiInterfaceWithName:rssi:transmitRate: v40@0:8@16q24d32
+  required -asymmetricInterferenceDetected:channelGroup: v24@0:8C16c20
+  required -autoJoinDidCompleteForWiFiInterfaceWithName: v24@0:8@16
+  required -autoJoinDidStartForWiFiInterfaceWithName: v24@0:8@16
+  required -autoJoinDidUpdate: v24@0:8@16
+  required -bssidDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -btCoexModeStats: v24@0:8@16
+  required -countryCodeDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -deviceAvailabilityChangedForWiFiInterfaceWithName:isAvailable: v28@0:8@16B24
+  required -dextCrashDetected v16@0:8
+  required -foundTetherDevices: v24@0:8@16
+  required -interfaceAddedWithName: v24@0:8@16
+  required -interfaceRemovedWithName: v24@0:8@16
+  required -joinDidCompleteForWiFiInterfaceWithName:isAutoJoin:error: v36@0:8@16B24@28
+  required -preferencesDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -rangingEndedForWiFiInterfaceWithName: v24@0:8@16
+  required -rangingReportEventForWiFiInterfaceWithName:data:error: v40@0:8@16@24@32
+  required -rangingStartedForWiFiInterfaceWithName: v24@0:8@16
+  required -realTimeModeDidEndForWiFiInterfaceWithName: v24@0:8@16
+  required -realTimeModeDidStartForWiFiInterfaceWithName: v24@0:8@16
+  required -rsnHandshakeDidCompleteForWiFiInterfaceWithName: v24@0:8@16
+  required -scanCacheUpdatedForWiFiInterfaceWithName: v24@0:8@16
+  required -sdbOpModeDidChange:channelGroup: v24@0:8C16c20
+  required -softErrorWiFiTCPKATimeoutMitigationDetected:enabled: v28@0:8@16B24
+  required -virtualInterfaceStateChangedForWiFiInterfaceWithName: v24@0:8@16
+  required -weightedWiFiAvgLQM: v24@0:8@16
+  required -willShowJoinUIForWiFiNetwork:interfaceName:reply: v40@0:8@16@24@?32
+  required -wowStateDidChangeForWiFiInterfaceWithName: v24@0:8@16
+@protocol CWWiFiXPCRequestProtocol
+  required -clearANQPCacheForNetwork:reply: v32@0:8@16@?24
+  required -submitAWDMetric:metricID:reply: v40@0:8@16@24@?32
+  required -acquireBluetoothPagingLockAndReply: v24@0:8@?16
+  required -acquireBluetoothPagingLockWithInterfaceName:reply: v32@0:8@16@?24
+  required -acquirePriorityLockWithType:priority:maximumAge:token:reply: v56@0:8q16q24d32q40@?48
+  required -acquireRequestLockWithType:interfaceName:priority:maximumAge:reply: v56@0:8q16@24q32d40@?48
+  required -addWiFiProfile:event:addToBottom:authorization:reply: v52@0:8@16Q24B32@36@?44
+  required -associateTo8021XWiFiNetwork:remember:interfaceName:token:priority:authorization:reply: v68@0:8@16B24@28q36q44@52@?60
+  required -associateToLoginWindowMode8021XWiFiNetwork:interfaceName:token:priority:authorization:reply: v64@0:8@16@24q32q40@48@?56
+  required -associateToPasspointWiFiNetwork:domainName:interfaceName:token:priority:authorization:reply: v72@0:8@16@24@32q40q48@56@?64
+  required -associateToSystemMode8021XWiFiNetwork:interfaceName:token:priority:authorization:reply: v64@0:8@16@24q32q40@48@?56
+  required -associateToUserMode8021XWiFiNetwork:username:password:identity:disableUserInteraction:remember:possiblyHidden:interfaceName:token:priority:authorization:reply: v100@0:8@16@24@32@40B48B52B56@60q68q76@84@?92
+  required -associateToWPSNetwork:pin:remember:interfaceName:token:priority:authorization:reply: v76@0:8@16@24B32@36q44q52@60@?68
+  required -associateToWiFiNetwork:password:remember:possiblyHidden:interfaceName:token:priority:authorization:reply: v80@0:8@16@24B32B36@40q48q56@64@?72
+  required -associateToWiFiNetworkUsingSystemKeychain:interfaceName:token:priority:authorization:reply: v64@0:8@16@24q32q40@48@?56
+  required -cancelPendingRequestWithToken:reply: v32@0:8q16@?24
+  required -clearScanCacheWithInterfaceName:reply: v32@0:8@16@?24
+  required -commitConfiguration:interfaceName:authorization:reply: v48@0:8@16@24@32@?40
+  required -confirmAPIAccessWithRequestType:info:reply: v40@0:8q16@24@?32
+  required -connectToTetherDevice:remember:interfaceName:token:authorization:reply: v60@0:8@16B24@28q36@44@?52
+  required -corewifiEndpointWithReply: v24@0:8@?16
+  required -currentTetherDeviceWithInterfaceName:reply: v32@0:8@16@?24
+  required -disassociateForInterfaceName:token:priority:authorization:reply: v56@0:8@16q24q32@40@?48
+  required -dumpWiFiTemporaryLogAndReply: v24@0:8@?16
+  required -forgetWiFiProfileWithID:event:reply: v40@0:8@16Q24@?32
+  required -get2GChainDisableForInterfaceName:reply: v32@0:8@16@?24
+  required -joinWiFiNetwork:interfaceName:reply: v40@0:8@16@24@?32
+  required -performScanWithChannels:ssidList:legacyScanSSID:includeHiddenNetworks:mergeScanResults:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:interfaceName:waitForWiFi:waitForBluetooth:token:priority:reply: v120@0:8@16@24@32B40B44d48q56q64q72@80B88B92q96q104@?112
+  required -performScanWithChannels:ssidList:legacyScanSSID:includeHiddenNetworks:mergeScanResults:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:interfaceName:waitForWiFi:waitForBluetooth:trimmedScanResultProperties:token:priority:lowPriority:lowLatency:scanType:reply: v144@0:8@16@24@32B40B44d48q56q64q72@80B88B92@96q104q112B120B124q128@?136
+  required -performScanWithChannels:ssidList:legacyScanSSID:includeHiddenNetworks:mergeScanResults:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:interfaceName:waitForWiFi:waitForBluetooth:trimmedScanResultProperties:token:priority:reply: v128@0:8@16@24@32B40B44d48q56q64q72@80B88B92@96q104q112@?120
+  required -queryANQPCacheWithElements:network:maxAge:reply: v48@0:8Q16@24d32@?40
+  required -queryANQPElements:network:maxAge:interfaceName:waitForWiFi:waitForBluetooth:token:priority:reply: v80@0:8Q16@24d32@40B48B52q56q64@?72
+  required -queryAllWiFiProfilesAndReply: v24@0:8@?16
+  required -queryAutoHotspotModeAndReply: v24@0:8@?16
+  required -queryAutoJoinHistoryWithInterfaceName:reply: v32@0:8@16@?24
+  required -queryAutoJoinTemporarilyDisabledAndReply: v24@0:8@?16
+  required -queryBSSIDForInterfaceWithName:reply: v32@0:8@16@?24
+  required -queryConfigurationWithInterfaceName:reply: v32@0:8@16@?24
+  required -queryCountryCodeForInterfaceWithName:reply: v32@0:8@16@?24
+  required -queryHostAPModeConfigurationWithInterfaceName:reply: v32@0:8@16@?24
+  required -queryJoinHistoryWithInterfaceName:reply: v32@0:8@16@?24
+  required -queryRoamHistoryWithInterfaceName:reply: v32@0:8@16@?24
+  required -queryScanCacheWithChannels:ssidList:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:interfaceName:reply: v80@0:8@16@24d32q40q48q56@64@?72
+  required -queryScanCacheWithChannels:ssidList:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:trimmedScanResultProperties:interfaceName:reply: v88@0:8@16@24d32q40q48q56@64@72@?80
+  required -queryThermalIndexAndReply: v24@0:8@?16
+  required -relinquishBluetoothPagingLockAndReply: v24@0:8@?16
+  required -relinquishBluetoothPagingLockWithInterfaceName:reply: v32@0:8@16@?24
+  required -relinquishPriorityLockWithToken:reply: v32@0:8q16@?24
+  required -relinquishRequestLockWithType:interfaceName:reply: v40@0:8q16@24@?32
+  required -rememberWiFiProfile:event:reply: v40@0:8@16Q24@?32
+  required -removeWiFiProfileWithID:event:authorization:reply: v48@0:8@16Q24@32@?40
+  required -restoreJoinConfigurationWithInterfaceName:uuid:reply: v40@0:8@16@24@?32
+  required -saveJoinConfigurationWithInterfaceName:reply: v32@0:8@16@?24
+  required -set2GChainDisable:reassocRequired:forIntefaceName:reply: v40@0:8B16B20@24@?32
+  required -setAutoHotspotMode:reply: v32@0:8q16@?24
+  required -setAutoJoinEnabled:reply: v28@0:8B16@?20
+  required -setAutoJoinTemporarilyDisabled:untilDate:reply: v36@0:8B16@20@?28
+  required -setBluetoothCoexProperty:forKey:interfaceName:reply: v48@0:8@16@24@32@?40
+  required -setBluetoothConnectionReport:forIntefaceName:reply: v40@0:8@16@24@?32
+  required -setCachedLocaleTimeout:timeout:reply: v40@0:8@16d24@?32
+  required -setHostAPModeConfiguration:password:interfaceName:authorization:reply: v56@0:8@16@24@32@40@?48
+  required -setPairwiseMasterKey:interfaceName:token:priority:reply: v56@0:8@16@24q32q40@?48
+  required -setPeerTrafficRegistrationWithConfiguration:interfaceName:reply: v40@0:8@16@24@?32
+  required -setRangeableWithInterfaceName:rangeable:peers:token:priority:reply: v60@0:8@16B24@28q36q44@?52
+  required -setThermalIndex:reply: v32@0:8q16@?24
+  required -setUCMActiveProfileIndices:forIntefaceName:reply: v40@0:8@16@24@?32
+  required -setUCMProfile:atIndex:forInterfaceName:reply: v48@0:8@16@24@32@?40
+  required -setULOFDMAStateForBluetoothCoexistence:forIntefaceName:reply: v36@0:8B16@20@?28
+  required -setWEPKey:flags:index:interfaceName:token:priority:reply: v72@0:8@16Q24q32@40q48q56@?64
+  required -setWiFiChannel:interfaceName:reply: v40@0:8@16@24@?32
+  required -setWiFiEAPKeychainItemforSSID:identity:reply: v40@0:8@16@24@?32
+  required -setWiFiEAPKeychainItemforSSID:username:password:reply: v48@0:8@16@24@32@?40
+  required -setWiFiHostAPModeKeychainItemforInterfaceName:password:reply: v40@0:8@16@24@?32
+  required -setWiFiKeychainItemforSSID:password:reply: v40@0:8@16@24@?32
+  required -setWiFiPowerState:interfaceName:authorization:reply: v44@0:8B16@20@28@?36
+  required -setWoWEnabled:reply: v28@0:8B16@?20
+  required -startAWDLWithInterfaceName:request:token:priority:reply: v56@0:8@16@24q32q40@?48
+  required -startAutoJoinForInterfaceName:reply: v32@0:8@16@?24
+  required -startBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  required -startHostAPModeUsingConfigurationWithInterfaceName:token:priority:reply: v48@0:8@16q24q32@?40
+  required -startHostAPModeWithNetworkName:securityType:channel:password:interfaceName:token:priority:reply: v80@0:8@16Q24@32@40@48q56q64@?72
+  required -startIBSSModeWithSSID:securityType:channel:password:interfaceName:token:priority:authorization:reply: v88@0:8@16Q24@32@40@48q56q64@72@?80
+  required -startMonitoringEventWithType:reply: v32@0:8q16@?24
+  required -startRangingWithInterfaceName:peers:timeout:token:priority:reply: v64@0:8@16@24d32q40q48@?56
+  required -stateInfoWithInterfaceName:reply: v32@0:8@16@?24
+  required -stopAWDLWithInterfaceName:token:priority:reply: v48@0:8@16q24q32@?40
+  required -stopBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  required -stopHostAPModeWithInterfaceName:token:priority:reply: v48@0:8@16q24q32@?40
+  required -stopIBSSModeForInterfaceName:token:priority:authorization:reply: v56@0:8@16q24q32@40@?48
+  required -stopMonitoringAllEventsAndReply: v24@0:8@?16
+  required -stopMonitoringEventWithType:reply: v32@0:8q16@?24
+  required -ucmActiveProfileIndicesForIntefaceName:reply: v32@0:8@16@?24
+  required -ucmProfileAtIndex:forInterfaceName:reply: v40@0:8@16@24@?32
+  required -updateWiFiProfile:authorization:reply: v40@0:8@16@24@?32

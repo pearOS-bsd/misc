@@ -1,0 +1,771 @@
+@class AKELData : NSObject instanceSize=32
+  ivar +8 _bundle @"BundleData"
+  ivar +16 _signatureExceptionData @"NSDictionary"
+  ivar +24 _timestampExceptionData @"NSDictionary"
+  -.cxx_destruct v16@0:8  imp=+0x1c62886b4
+  -findLegacyKextBundleID: @24@0:8@16  imp=+0x1c62885ec
+  -init @16@0:8  imp=+0x1c6288334
+  -initWithURL: @24@0:8@16  imp=+0x1c62884a4
+  -isKextAllowedWithoutSecureTimestamp: B24@0:8@16  imp=+0x1c628867c
+  -isLegacyKextAllowed: B24@0:8@16  imp=+0x1c62885b4
+  -loadFromBundleData: v24@0:8@16  imp=+0x1c6288168
+  -reloadIfNecessary B16@0:8  imp=+0x1c62885ac
+@class AMFI : NSObject instanceSize=8
+  +isAvailable B16@0:8  imp=+0x1c629ca08
+  +preflightBinary:withPlatform:error: B36@0:8@16i24^@28  imp=+0x1c629ca2c
+@class AppWrapper : NSObject instanceSize=8
+  +checkAppWrapperWithURL:withProcessURL: B32@0:8@16@24  imp=+0x1c628e690
+  +isAppWrapper: B24@0:8@16  imp=+0x1c628e54c
+  +wrappedAppURL: @24@0:8@16  imp=+0x1c628e848
+@class AppWrapperPolicy : NSObject instanceSize=8
+  +appWrapperPolicyResult:forDeviceID:installProfile:checkResources:withProgressCallback: @48@0:8@16@24B32B36@?40  imp=+0x1c629ce9c
+  +appWrapperProfileIsTrusted: B24@0:8@16  imp=+0x1c629d120
+@class AppWrapperPolicyResult : NSObject instanceSize=24
+  ivar +8 isValid B
+  ivar +9 isModified B
+  ivar +16 signerCategory Q
+  property isValid (TB,R,N,VisValid)
+  property isModified (TB,R,N,VisModified)
+  property signerCategory (TQ,R,N,VsignerCategory)
+  -description @16@0:8  imp=+0x1c629ce80
+  -initWithValid:withSignerCategory:withModified: @32@0:8B16Q20B28  imp=+0x1c629cdd4
+  -isModified B16@0:8  imp=+0x1c629ce94
+  -isValid B16@0:8  imp=+0x1c629ce84
+  -redactedDescription @16@0:8  imp=+0x1c629ce38
+  -signerCategory Q16@0:8  imp=+0x1c629ce8c
+@class BundleData : NSObject instanceSize=64
+  ivar +8 _url @"NSURL"
+  ivar +16 _isSignedBundle B
+  ivar +24 _reloadHandler @?
+  ivar +32 _stream ^{__FSEventStream=}
+  ivar +40 _version @"NSString"
+  ivar +48 _versionNumber @"NSString"
+  ivar +56 _timestamp @"NSDate"
+  property url (T@"NSURL",R,N,V_url)
+  property isSigned (TB,R,N,V_isSignedBundle)
+  property version (T@"NSString",R,N,V_version)
+  property versionNumber (T@"NSString",R,N,V_versionNumber)
+  property timestamp (T@"NSDate",R,N,V_timestamp)
+  -.cxx_destruct v16@0:8  imp=+0x1c628e4d0
+  -dealloc v16@0:8  imp=+0x1c628dce4
+  -doReload v16@0:8  imp=+0x1c628e16c
+  -forceReload v16@0:8  imp=+0x1c628e4a4
+  -init @16@0:8  imp=+0x1c628dcc8
+  -initWithURL:withReloadBlock:watchForUpdates: @36@0:8@16@?24B32  imp=+0x1c628dd7c
+  -isSigned B16@0:8  imp=+0x1c628e4b0
+  -loadInternalData: v24@0:8@16  imp=+0x1c628e1c8
+  -reloadIfNecessary B16@0:8  imp=+0x1c628e43c
+  -setupFSStream v16@0:8  imp=+0x1c628ded4
+  -timestamp @16@0:8  imp=+0x1c628e4c8
+  -url @16@0:8  imp=+0x1c628e4a8
+  -version @16@0:8  imp=+0x1c628e4b8
+  -versionNumber @16@0:8  imp=+0x1c628e4c0
+@class GKScanResult : NSObject <NSSecureCoding> instanceSize=24
+  ivar +8 allowed B
+  ivar +16 gkError @"NSError"
+  property allowed (TB,N,Vallowed)
+  property gkError (T@"NSError",&,N,VgkError)
+  +supportsSecureCoding B16@0:8  imp=+0x1c629c400
+  -.cxx_destruct v16@0:8  imp=+0x1c629c564
+  -allowed B16@0:8  imp=+0x1c629c540
+  -encodeWithCoder: v24@0:8@16  imp=+0x1c629c4b8
+  -gkError @16@0:8  imp=+0x1c629c550
+  -initWithCoder: @24@0:8@16  imp=+0x1c629c408
+  -setAllowed: v20@0:8B16  imp=+0x1c629c548
+  -setGkError: v24@0:8@16  imp=+0x1c629c558
+@class MIS : NSObject instanceSize=8
+  +currentDeviceID @16@0:8  imp=+0x1c6296150
+  +findProvisioningProfile: @24@0:8@16  imp=+0x1c62961d8
+  +installProvisioningProfile: B24@0:8@16  imp=+0x1c62966c0
+  +isAvailable B16@0:8  imp=+0x1c6296130
+  +isProvisioningProfileTrusted: B24@0:8@16  imp=+0x1c62965e0
+  +isProvisioningProfileValid: B24@0:8@16  imp=+0x1c6296530
+  +isProvisioningProfileValid:forDevice: B32@0:8@16@24  imp=+0x1c6296358
+  +isValidApplication:checkResources:withSignerCategory:withModified:withProgressCallback: B52@0:8@16B24^Q28^B36@?44  imp=+0x1c62968b8
+  +uninstallProvisioningProfile: B24@0:8@16  imp=+0x1c62967ac
+@class PolicyCacheMeta : NSObject instanceSize=56
+  ivar +8 _metaId @"NSNumber"
+  ivar +16 _missCount @"NSNumber"
+  ivar +24 _lastMiss @"NSDate"
+  ivar +32 _forEntry @"NSNumber"
+  ivar +40 _sourceTable q
+  ivar +48 _target @"PolicyScanCacheTarget"
+  property metaId (T@"NSNumber",&,N,V_metaId)
+  property missCount (T@"NSNumber",&,N,V_missCount)
+  property lastMiss (T@"NSDate",&,N,V_lastMiss)
+  property forEntry (T@"NSNumber",&,N,V_forEntry)
+  property sourceTable (Tq,N,V_sourceTable)
+  property resolvedEntry (T@"PolicyScanCacheTarget",&,N,V_target)
+  -.cxx_destruct v16@0:8  imp=+0x1c6289a6c
+  -forEntry @16@0:8  imp=+0x1c6289a34
+  -lastMiss @16@0:8  imp=+0x1c6289a20
+  -metaId @16@0:8  imp=+0x1c62899f8
+  -missCount @16@0:8  imp=+0x1c6289a0c
+  -resolvedEntry @16@0:8  imp=+0x1c6289a58
+  -setForEntry: v24@0:8@16  imp=+0x1c6289a3c
+  -setLastMiss: v24@0:8@16  imp=+0x1c6289a28
+  -setMetaId: v24@0:8@16  imp=+0x1c6289a00
+  -setMissCount: v24@0:8@16  imp=+0x1c6289a14
+  -setResolvedEntry: v24@0:8@16  imp=+0x1c6289a60
+  -setSourceTable: v24@0:8q16  imp=+0x1c6289a50
+  -sourceTable q16@0:8  imp=+0x1c6289a48
+@class PolicyScanTarget : NSObject instanceSize=304
+  ivar +8 _volumeUUID @"NSUUID"
+  ivar +16 _pathOnVolume @"NSString"
+  ivar +24 _objectID Q
+  ivar +32 _fsTypeName @"NSString"
+  ivar +40 _volumePath @"NSString"
+  ivar +48 _blockDevice @"NSString"
+  ivar +56 _mountTime @"NSDate"
+  ivar +64 _modTime @"NSDate"
+  ivar +72 _chgTime @"NSDate"
+  ivar +80 _checkValidity B
+  ivar +88 _url @"NSURL"
+  ivar +96 _originalURL @"NSURL"
+  ivar +104 _mainExecutableURL @"NSURL"
+  ivar +112 _bundleID @"NSString"
+  ivar +120 _bundleVersion @"NSString"
+  ivar +128 _isDirectory B
+  ivar +129 _isAppWrapper B
+  ivar +130 _isBadAppWrapper B
+  ivar +136 _bundle ^{__CFBundle=}
+  ivar +144 _staticCodeRef ^{__SecCode=}
+  ivar +152 _signingInfo @"NSDictionary"
+  ivar +160 _cdhash @"NSString"
+  ivar +168 _cdhashData @"NSData"
+  ivar +176 _cdhashDigestAlgorithm I
+  ivar +184 _teamID @"NSString"
+  ivar +192 _signingID @"NSString"
+  ivar +200 _entitlements @"NSDictionary"
+  ivar +208 _quarantineChecked B
+  ivar +209 _isQuarantinedMount B
+  ivar +210 _isQuarantined B
+  ivar +211 _isUserApproved B
+  ivar +212 _quarantineFlags I
+  ivar +216 _quarantineOverrideURL @"NSURL"
+  ivar +224 _isScript B
+  ivar +225 _isBundled B
+  ivar +226 _triggeredByLibraryLoad B
+  ivar +227 _resourceDirectorySlotChecked B
+  ivar +228 _unsealedInfoPlistChecked B
+  ivar +232 _infoPlistHash @"NSData"
+  ivar +240 _powerfulEntitlementsChecked B
+  ivar +241 _backingStoreChecked B
+  ivar +242 _isBackingDMGNotarizationChecked B
+  ivar +248 _trashedMainExe @"NSURL"
+  ivar +256 _validationCategory @"NSNumber"
+  ivar +264 _pid i
+  ivar +268 _csflags i
+  ivar +272 _isBackingDMGNotarized B
+  ivar +273 _hasResourceDirectorySlot B
+  ivar +274 _hasUnsealedInfoPlist B
+  ivar +275 _hasPowerfulEntitlements B
+  ivar +276 _isMovedToTrash B
+  ivar +280 _createdTime @"NSDate"
+  ivar +288 _backingStore q
+  ivar +296 _trashedURL @"NSURL"
+  property originalURL (T@"NSURL",R,N,V_originalURL)
+  property url (T@"NSURL",R,N,V_url)
+  property volumeUUID (T@"NSUUID",R,N,V_volumeUUID)
+  property volumePath (T@"NSString",R,N,V_volumePath)
+  property pathOnVolume (T@"NSString",R,N,V_pathOnVolume)
+  property blockDevice (T@"NSString",R,N,V_blockDevice)
+  property fsTypeName (T@"NSString",R,N,V_fsTypeName)
+  property objectID (TQ,R,N,V_objectID)
+  property bundleID (T@"NSString",R,N)
+  property bundleVersion (T@"NSString",R,N)
+  property createdTime (T@"NSDate",R,N,V_createdTime)
+  property modTime (T@"NSDate",R,N,V_modTime)
+  property mountTime (T@"NSDate",R,N,V_mountTime)
+  property mainExecutableURL (T@"NSURL",R,N)
+  property staticCodeRef (T^{__SecCode=},R,N)
+  property cdhash (T@"NSString",R,N)
+  property cdhashData (T@"NSData",R,N)
+  property cdhashDigestAlgorithm (TI,R,N)
+  property teamID (T@"NSString",R,N)
+  property signingID (T@"NSString",R,N)
+  property entitlements (T@"NSDictionary",R,N)
+  property infoPlist (T@"NSDictionary",R,N)
+  property isQuarantinedMount (TB,R,N,V_isQuarantinedMount)
+  property isBackingDMGNotarized (TB,R,N,V_isBackingDMGNotarized)
+  property isQuarantined (TB,R,N)
+  property isUserApproved (TB,R,N)
+  property quarantineFlags (TI,R,N)
+  property isNotarized (TB,R,N)
+  property isDirectory (TB,R,N,V_isDirectory)
+  property quarantineOverrideURL (T@"NSURL",&,N,V_quarantineOverrideURL)
+  property isAppWrapper (TB,R,N,V_isAppWrapper)
+  property isBadAppWrapper (TB,N,V_isBadAppWrapper)
+  property checkValidity (TB,N,V_checkValidity)
+  property triggeredByLibraryLoad (TB,N,V_triggeredByLibraryLoad)
+  property isBundled (TB,N,V_isBundled)
+  property hasResourceDirectorySlot (TB,N,V_hasResourceDirectorySlot)
+  property hasUnsealedInfoPlist (TB,N,V_hasUnsealedInfoPlist)
+  property infoPlistHash (T@"NSData",R,N,V_infoPlistHash)
+  property hasPowerfulEntitlements (TB,N,V_hasPowerfulEntitlements)
+  property backingStore (Tq,N,V_backingStore)
+  property isScript (TB,N,V_isScript)
+  property pid (Ti,N,V_pid)
+  property csflags (Ti,N,V_csflags)
+  property isMovedToTrash (TB,N,V_isMovedToTrash)
+  property trashedURL (T@"NSURL",&,N,V_trashedURL)
+  property trashedMainExe (T@"NSURL",R,N)
+  property validationCategory (T@"NSNumber",&,N,V_validationCategory)
+  -.cxx_destruct v16@0:8  imp=+0x1c629af7c
+  -backingStore q16@0:8  imp=+0x1c629ab00
+  -blockDevice @16@0:8  imp=+0x1c629ae60
+  -bundleID @16@0:8  imp=+0x1c6299b9c
+  -bundleVersion @16@0:8  imp=+0x1c6299c54
+  -cdhash @16@0:8  imp=+0x1c6299ef4
+  -cdhashData @16@0:8  imp=+0x1c6299fa8
+  -cdhashDigestAlgorithm I16@0:8  imp=+0x1c629a038
+  -checkValidity B16@0:8  imp=+0x1c629ae88
+  -createdTime @16@0:8  imp=+0x1c629a264
+  -csflags i16@0:8  imp=+0x1c629acd0
+  -dealloc v16@0:8  imp=+0x1c6299438
+  -description @16@0:8  imp=+0x1c629a4e8
+  -ensureQuarantineStateChecked v16@0:8  imp=+0x1c629a1ec
+  -entitlements @16@0:8  imp=+0x1c6299e74
+  -fsTypeName @16@0:8  imp=+0x1c629ae70
+  -hasPowerfulEntitlements B16@0:8  imp=+0x1c629aa94
+  -hasResourceDirectorySlot B16@0:8  imp=+0x1c629a6e0
+  -hasUnsealedInfoPlist B16@0:8  imp=+0x1c629a750
+  -infoPlist @16@0:8  imp=+0x1c6299d64
+  -infoPlistHash @16@0:8  imp=+0x1c629aa50
+  -init @16@0:8  imp=+0x1c629941c
+  -initWithURL: @24@0:8@16  imp=+0x1c629949c
+  -isAppWrapper B16@0:8  imp=+0x1c629ae98
+  -isBackingDMGNotarized B16@0:8  imp=+0x1c629ad58
+  -isBadAppWrapper B16@0:8  imp=+0x1c629aea0
+  -isBundled B16@0:8  imp=+0x1c629aed8
+  -isDirectory B16@0:8  imp=+0x1c629aee8
+  -isMovedToTrash B16@0:8  imp=+0x1c629af30
+  -isNotarized B16@0:8  imp=+0x1c629a324
+  -isQuarantined B16@0:8  imp=+0x1c629a23c
+  -isQuarantinedMount B16@0:8  imp=+0x1c629aec0
+  -isScript B16@0:8  imp=+0x1c629aec8
+  -isUserApproved B16@0:8  imp=+0x1c629a2d4
+  -mainExecutableURL @16@0:8  imp=+0x1c6299b04
+  -modTime @16@0:8  imp=+0x1c629ae80
+  -mountTime @16@0:8  imp=+0x1c629af28
+  -objectID Q16@0:8  imp=+0x1c629ae68
+  -originalURL @16@0:8  imp=+0x1c629ae48
+  -pathOnVolume @16@0:8  imp=+0x1c629ae58
+  -pid i16@0:8  imp=+0x1c629af10
+  -quarantineFlags I16@0:8  imp=+0x1c629a2fc
+  -quarantineOverrideURL @16@0:8  imp=+0x1c629af68
+  -redactedDescription @16@0:8  imp=+0x1c629a404
+  -reloadSigningInfo v16@0:8  imp=+0x1c629a578
+  -setBackingStore: v24@0:8q16  imp=+0x1c629af08
+  -setCheckValidity: v20@0:8B16  imp=+0x1c629ae90
+  -setCsflags: v20@0:8i16  imp=+0x1c629af20
+  -setHasPowerfulEntitlements: v20@0:8B16  imp=+0x1c629af00
+  -setHasResourceDirectorySlot: v20@0:8B16  imp=+0x1c629aef0
+  -setHasUnsealedInfoPlist: v20@0:8B16  imp=+0x1c629aef8
+  -setIsBadAppWrapper: v20@0:8B16  imp=+0x1c629aea8
+  -setIsBundled: v20@0:8B16  imp=+0x1c629aee0
+  -setIsMovedToTrash: v20@0:8B16  imp=+0x1c629af38
+  -setIsScript: v20@0:8B16  imp=+0x1c629aed0
+  -setPid: v20@0:8i16  imp=+0x1c629af18
+  -setQuarantineOverrideURL: v24@0:8@16  imp=+0x1c629af70
+  -setTrashedURL: v24@0:8@16  imp=+0x1c629af48
+  -setTriggeredByLibraryLoad: v20@0:8B16  imp=+0x1c629aeb8
+  -setValidationCategory: v24@0:8@16  imp=+0x1c629af5c
+  -signingID @16@0:8  imp=+0x1c629a15c
+  -signingInfo @16@0:8  imp=+0x1c6299e38
+  -staticCodeRef ^{__SecCode=}16@0:8  imp=+0x1c6299d98
+  -teamID @16@0:8  imp=+0x1c629a0cc
+  -trashedMainExe @16@0:8  imp=+0x1c629a5c4
+  -trashedURL @16@0:8  imp=+0x1c629af40
+  -triggeredByLibraryLoad B16@0:8  imp=+0x1c629aeb0
+  -url @16@0:8  imp=+0x1c629ae40
+  -validationCategory @16@0:8  imp=+0x1c629af54
+  -volumePath @16@0:8  imp=+0x1c629ae78
+  -volumeUUID @16@0:8  imp=+0x1c629ae50
+@class ProvenanceEntry : NSObject instanceSize=72
+  ivar +8 uniqueID @"NSNumber"
+  ivar +16 flags @"NSNumber"
+  ivar +24 rootID @"NSNumber"
+  ivar +32 url @"NSURL"
+  ivar +40 teamID @"NSString"
+  ivar +48 signingID @"NSString"
+  ivar +56 cdhash @"NSString"
+  ivar +64 bundleID @"NSString"
+  property uniqueID (T@"NSNumber",&,N,VuniqueID)
+  property flags (T@"NSNumber",&,N,Vflags)
+  property attributes (T@"TrackingAttributes",R,N)
+  property rootID (T@"NSNumber",&,N,VrootID)
+  property url (T@"NSURL",&,N,Vurl)
+  property teamID (T@"NSString",&,N,VteamID)
+  property signingID (T@"NSString",&,N,VsigningID)
+  property cdhash (T@"NSString",&,N,Vcdhash)
+  property bundleID (T@"NSString",&,N,VbundleID)
+  -.cxx_destruct v16@0:8  imp=+0x1c628678c
+  -attributes @16@0:8  imp=+0x1c6286380
+  -bundleID @16@0:8  imp=+0x1c6286778
+  -cdhash @16@0:8  imp=+0x1c6286764
+  -createMetadata @16@0:8  imp=+0x1c62865a4
+  -description @16@0:8  imp=+0x1c62864e0
+  -flags @16@0:8  imp=+0x1c6286700
+  -redactedDescription @16@0:8  imp=+0x1c6286404
+  -rootID @16@0:8  imp=+0x1c6286714
+  -setBundleID: v24@0:8@16  imp=+0x1c6286780
+  -setCdhash: v24@0:8@16  imp=+0x1c628676c
+  -setFlags: v24@0:8@16  imp=+0x1c6286708
+  -setRootID: v24@0:8@16  imp=+0x1c628671c
+  -setSigningID: v24@0:8@16  imp=+0x1c6286758
+  -setTeamID: v24@0:8@16  imp=+0x1c6286744
+  -setUniqueID: v24@0:8@16  imp=+0x1c62866f4
+  -setUrl: v24@0:8@16  imp=+0x1c6286730
+  -signingID @16@0:8  imp=+0x1c6286750
+  -teamID @16@0:8  imp=+0x1c628673c
+  -uniqueID @16@0:8  imp=+0x1c62866ec
+  -url @16@0:8  imp=+0x1c6286728
+@class SPBundleProtection : NSObject instanceSize=24
+  ivar +8 _interface @"NSXPCInterface"
+  ivar +16 _connection @"NSXPCConnection"
+  -.cxx_destruct v16@0:8  imp=+0x1c629cd90
+  -dealloc v16@0:8  imp=+0x1c629cc60
+  -init @16@0:8  imp=+0x1c629cbb0
+  -sendMetricFromTCCWithURL:withPID:withError: B36@0:8@16i24^@28  imp=+0x1c629ccac
+@class SPCodeEvaluationProxy : NSObject instanceSize=24
+  ivar +8 _interface @"NSXPCInterface"
+  ivar +16 _connection @"NSXPCConnection"
+  -.cxx_destruct v16@0:8  imp=+0x1c6289c90
+  -dealloc v16@0:8  imp=+0x1c6289b84
+  -init @16@0:8  imp=+0x1c6289ad4
+  -showXProtectBlockedPrompt:forUser:error: B36@0:8q16I24^@28  imp=+0x1c6289bd0
+@class SPDeveloperPolicy : NSObject instanceSize=24
+  ivar +8 _interface @"NSXPCInterface"
+  ivar +16 _connection @"NSXPCConnection"
+  property developerModeEnabled (TB,R,GisDeveloperModeEnabled)
+  -.cxx_destruct v16@0:8  imp=+0x1c629d5ac
+  -createLocalDevelopmentCertificateForUser:error: @28@0:8I16^@20  imp=+0x1c629d53c
+  -dealloc v16@0:8  imp=+0x1c629d404
+  -init @16@0:8  imp=+0x1c629d354
+  -isDeveloperModeEnabled B16@0:8  imp=+0x1c629d450
+  -isDeveloperToolEnvironmentWithError: B24@0:8^@16  imp=+0x1c629d524
+  -registerDevelopmentTeamWithIdentifier:error: B32@0:8@16^@24  imp=+0x1c629d59c
+  -removeLocalDevelopmentCertificateForUser:error: B28@0:8I16^@20  imp=+0x1c629d594
+  -setDeveloperModeEnabled:error: B28@0:8B16^@20  imp=+0x1c629d46c
+  -unregisterDevelopmentTeamWithIdentifier:error: B32@0:8@16^@24  imp=+0x1c629d5a4
+@class SPExecutionHistoryItem : NSObject <NSSecureCoding> instanceSize=72
+  ivar +8 _execPath @"NSString"
+  ivar +16 _mmapPath @"NSString"
+  ivar +24 _signingID @"NSString"
+  ivar +32 _teamID @"NSString"
+  ivar +40 _cdHash @"NSString"
+  ivar +48 _responsiblePath @"NSString"
+  ivar +56 _developerName @"NSString"
+  ivar +64 _lastSeen @"NSDate"
+  property execPath (T@"NSString",R,N,V_execPath)
+  property mmapPath (T@"NSString",R,N,V_mmapPath)
+  property signingID (T@"NSString",R,N,V_signingID)
+  property teamID (T@"NSString",R,N,V_teamID)
+  property cdHash (T@"NSString",R,N,V_cdHash)
+  property responsiblePath (T@"NSString",R,N,V_responsiblePath)
+  property developerName (T@"NSString",R,N,V_developerName)
+  property lastSeen (T@"NSDate",R,N,V_lastSeen)
+  +executionHistoryItemWithExecPath:mmapPath:signingID:teamID:cdHash:responsiblePath:developerName:lasSeen: @80@0:8@16@24@32@40@48@56@64@72  imp=+0x1c62900c8
+  +supportsSecureCoding B16@0:8  imp=+0x1c6290208
+  -.cxx_destruct v16@0:8  imp=+0x1c62905ec
+  -cdHash @16@0:8  imp=+0x1c62905cc
+  -developerName @16@0:8  imp=+0x1c62905dc
+  -encodeWithCoder: v24@0:8@16  imp=+0x1c6290404
+  -execPath @16@0:8  imp=+0x1c62905ac
+  -init @16@0:8  imp=+0x1c628fef4
+  -initWithCoder: @24@0:8@16  imp=+0x1c6290210
+  -initWithExecPath:mmapPath:signingID:teamID:cdHash:responsiblePath:developerName:lasSeen: @80@0:8@16@24@32@40@48@56@64@72  imp=+0x1c628ff10
+  -lastSeen @16@0:8  imp=+0x1c62905e4
+  -mmapPath @16@0:8  imp=+0x1c62905b4
+  -responsiblePath @16@0:8  imp=+0x1c62905d4
+  -signingID @16@0:8  imp=+0x1c62905bc
+  -teamID @16@0:8  imp=+0x1c62905c4
+@class SPExecutionPolicy : NSObject instanceSize=48
+  ivar +8 _interface @"NSXPCInterface"
+  ivar +16 _connection @"NSXPCConnection"
+  ivar +24 _lock @"NSLock"
+  ivar +32 _progressBlock @?
+  ivar +40 _exportedObject @"SPExecutionPolicyExportedObject"
+  -.cxx_destruct v16@0:8  imp=+0x1c6293f24
+  -addBlockedSoftwareOverride:error: B32@0:8@16^@24  imp=+0x1c6292cc0
+  -addGatekeeperOverrideForPersistentIdentifier:error: B32@0:8@16^@24  imp=+0x1c6292bd4
+  -addGatekeeperUserIntent:error: B32@0:8@16^@24  imp=+0x1c6292ae8
+  -allowGatekeeperPolicy:error: B32@0:8Q16^@24  imp=+0x1c6293750
+  -blockedExecutionPolicyItems @16@0:8  imp=+0x1c6292a84
+  -connection @16@0:8  imp=+0x1c6292834
+  -dealloc v16@0:8  imp=+0x1c62925e8
+  -doGatekeeperProgressUpdate:withTotal: v32@0:8q16q24  imp=+0x1c6292768
+  -getBlockedSoftwareOverride:error: B32@0:8@16^@24  imp=+0x1c6292ea4
+  -getGatekeeperInsightEnabled: B24@0:8^@16  imp=+0x1c6293348
+  -getGatekeeperPolicyWithError: Q24@0:8^@16  imp=+0x1c6293618
+  -getStrictGatekeeperEnabledForDomain:error: B32@0:8Q16^@24  imp=+0x1c6293150
+  -init @16@0:8  imp=+0x1c6292544
+  -isBlockedSoftware:error: B32@0:8@16^@24  imp=+0x1c6292f90
+  -isFastGatekeeperOverrideModeEnabled B16@0:8  imp=+0x1c6293410
+  -isGatekeeperPolicyAllowed:error: B32@0:8Q16^@24  imp=+0x1c6293684
+  -legacyExecutionHistory @16@0:8  imp=+0x1c6292a78
+  -logGatekeeperOverrideForURL:withError: B32@0:8@16^@24  imp=+0x1c6293460
+  -myProgressHandler @?16@0:8  imp=+0x1c629263c
+  -notifyInstalledContent:withInstallationType:error: B40@0:8@16Q24^@32  imp=+0x1c628f650
+  -performGatekeeperPreflight:withPreflightOptions:withResult: v40@0:8@16Q24@?32  imp=+0x1c628ef28
+  -performGatekeeperScan:withScanOptions:withProgressHandler:error: @48@0:8@16Q24@?32^@40  imp=+0x1c628f990
+  -performGatekeeperScan:withScanOptions:withShouldOverridePolicy:withPolicy:withProgressHandler:error: @60@0:8@16Q24B32Q36@?44^@52  imp=+0x1c628f740
+  -progressBlock @16@0:8  imp=+0x1c6292634
+  -purgeUnmountedPolicyScanCacheEntries: @24@0:8^@16  imp=+0x1c6293ebc
+  -setBlockedSoftwareOverride:isEnabled:error: B36@0:8@16B24^@28  imp=+0x1c6292dac
+  -setDownloadURL:andDataURL:forURL: B40@0:8@16@24@32  imp=+0x1c629381c
+  -setGatekeeperInsightDefault: B24@0:8^@16  imp=+0x1c6293404
+  -setGatekeeperInsightEnabled:error: B28@0:8B16^@20  imp=+0x1c629321c
+  -setGatekeeperPolicy:error: B32@0:8Q16^@24  imp=+0x1c629354c
+  -setProgressHandler: B24@0:8@?16  imp=+0x1c6292668
+  -setStrictGatekeeperEnabled:forDomain:error: B36@0:8B16Q20^@28  imp=+0x1c629307c
+@class SPExecutionPolicyExportedObject : NSObject <ExecManagerRemote> instanceSize=16
+  ivar +8 _parent @"SPExecutionPolicy"
+  property parent (T@"SPExecutionPolicy",W,N,V_parent)
+  -.cxx_destruct v16@0:8  imp=+0x1c629253c
+  -doGatekeeperProgressUpdate:withTotal: v32@0:8q16q24  imp=+0x1c62924ac
+  -initWithParent: @24@0:8@16  imp=+0x1c629243c
+  -parent @16@0:8  imp=+0x1c6292504
+  -setParent: v24@0:8@16  imp=+0x1c6292530
+@class SPExecutionPolicyItem : NSObject <NSSecureCoding> instanceSize=56
+  ivar +8 _itemPath @"NSString"
+  ivar +16 _signingID @"NSString"
+  ivar +24 _teamID @"NSString"
+  ivar +32 _cdHash @"NSString"
+  ivar +40 _needsApproval B
+  ivar +41 _needsOverride B
+  ivar +42 _knownMalware B
+  ivar +48 _blockedReasonDescription @"NSString"
+  property itemPath (T@"NSString",R,N,V_itemPath)
+  property signingID (T@"NSString",R,N,V_signingID)
+  property teamID (T@"NSString",R,N,V_teamID)
+  property cdHash (T@"NSString",R,N,V_cdHash)
+  property needsApproval (TB,R,N,V_needsApproval)
+  property needsOverride (TB,R,N,V_needsOverride)
+  property knownMalware (TB,R,N,V_knownMalware)
+  property blockedReasonDescription (T@"NSString",R,N,V_blockedReasonDescription)
+  +supportsSecureCoding B16@0:8  imp=+0x1c628ea8c
+  -.cxx_destruct v16@0:8  imp=+0x1c628eec0
+  -blockedReasonDescription @16@0:8  imp=+0x1c628eeb8
+  -cdHash @16@0:8  imp=+0x1c628ee98
+  -encodeWithCoder: v24@0:8@16  imp=+0x1c628eca4
+  -init @16@0:8  imp=+0x1c628e918
+  -initWithCoder: @24@0:8@16  imp=+0x1c628ea94
+  -initWithItemPath:signingID:teamID:cdHash:needsApproval:needsOverride:knownMalware:blockedReasonDescription: @68@0:8@16@24@32@40B48B52B56@60  imp=+0x1c628e934
+  -itemPath @16@0:8  imp=+0x1c628ee80
+  -knownMalware B16@0:8  imp=+0x1c628eeb0
+  -needsApproval B16@0:8  imp=+0x1c628eea0
+  -needsOverride B16@0:8  imp=+0x1c628eea8
+  -signingID @16@0:8  imp=+0x1c628ee88
+  -teamID @16@0:8  imp=+0x1c628ee90
+@class SPFilePolicy : NSObject instanceSize=8
+  +dragIsAllowedToTarget:fromAliasOrSymlink:withError: B40@0:8@16@24^@32  imp=+0x1c6289514
+  +dragIsAllowedToTarget:fromQuarantinedVolume:withError: B40@0:8@16@24^@32  imp=+0x1c628908c
+  +getAllowedPaths @16@0:8  imp=+0x1c6288c18
+  +getAllowedUrls @16@0:8  imp=+0x1c6288ea8
+@class SPInstallationPolicy : NSObject instanceSize=32
+  ivar +8 _interface @"NSXPCInterface"
+  ivar +16 _connection @"NSXPCConnection"
+  ivar +24 _requireDaemon B
+  -.cxx_destruct v16@0:8  imp=+0x1c62993d8
+  -canInstallPackage:withUserConsent:withHash:evaluateOnly:synchronousPrompt:error: B52@0:8@16B24@28B36B40^@44  imp=+0x1c62990f4
+  -dealloc v16@0:8  imp=+0x1c62990a8
+  -init @16@0:8  imp=+0x1c6298fdc
+  -trustPackagePayload:withDestinationTarget:withHashMap:withUserConsent:afterPreInstallScript:error: B56@0:8@16@24@32B40B44^@48  imp=+0x1c6299264
+  -trustPackagePayload:withDestinationTarget:withHashMap:withUserConsent:error: B52@0:8@16@24@32B40^@44  imp=+0x1c6299258
+  -trustPackagePayload:withDestinationTarget:withUserConsent:error: B44@0:8@16@24B32^@36  imp=+0x1c6299244
+@class SPKernelExtensionHistory : NSObject instanceSize=24
+  ivar +8 _interface @"NSXPCInterface"
+  ivar +16 _connection @"NSXPCConnection"
+  -.cxx_destruct v16@0:8  imp=+0x1c629080c
+  -dealloc v16@0:8  imp=+0x1c62907a4
+  -init @16@0:8  imp=+0x1c6290678
+  -kernelExtensionHistory @16@0:8  imp=+0x1c62907f0
+@class SPKernelExtensionHistoryItem : NSObject <NSSecureCoding> instanceSize=56
+  ivar +8 isNotarized B
+  ivar +9 isDeprecated B
+  ivar +10 isUnsupported B
+  ivar +11 isCodeless B
+  ivar +16 path @"NSString"
+  ivar +24 bundleID @"NSString"
+  ivar +32 teamID @"NSString"
+  ivar +40 cdHash @"NSString"
+  ivar +48 lastUsed @"NSDate"
+  property path (T@"NSString",R,N,Vpath)
+  property teamID (T@"NSString",R,N,VteamID)
+  property bundleID (T@"NSString",R,N,VbundleID)
+  property cdHash (T@"NSString",R,N,VcdHash)
+  property isNotarized (TB,R,N,VisNotarized)
+  property isDeprecated (TB,R,N,VisDeprecated)
+  property isUnsupported (TB,R,N,VisUnsupported)
+  property isCodeless (TB,R,N,VisCodeless)
+  property lastUsed (T@"NSDate",R,N,VlastUsed)
+  +supportsSecureCoding B16@0:8  imp=+0x1c6295d2c
+  -.cxx_destruct v16@0:8  imp=+0x1c62960c8
+  -bundleID @16@0:8  imp=+0x1c6296088
+  -cdHash @16@0:8  imp=+0x1c6296098
+  -encodeWithCoder: v24@0:8@16  imp=+0x1c6295eec
+  -init @16@0:8  imp=+0x1c6295ba0
+  -initWithCoder: @24@0:8@16  imp=+0x1c6295d34
+  -initWithPath:teamID:bundleID:cdHash:isNotarized:isDeprecated:isUnsupported:isCodeless:lastUsed: @72@0:8@16@24@32@40B48B52B56B60@64  imp=+0x1c6295bbc
+  -isCodeless B16@0:8  imp=+0x1c62960b8
+  -isDeprecated B16@0:8  imp=+0x1c62960a8
+  -isNotarized B16@0:8  imp=+0x1c62960a0
+  -isUnsupported B16@0:8  imp=+0x1c62960b0
+  -lastUsed @16@0:8  imp=+0x1c62960c0
+  -path @16@0:8  imp=+0x1c6296080
+  -teamID @16@0:8  imp=+0x1c6296090
+@class SPKernelExtensionPolicy : NSObject instanceSize=40
+  ivar +8 _currentPolicy @"NSArray"
+  ivar +16 _interface @"NSXPCInterface"
+  ivar +24 _connection @"NSXPCConnection"
+  ivar +32 currentUAKL @"NSURL"
+  property currentPolicy (T@"NSArray",R,C,N)
+  property pendingApprovals (T@"NSArray",R,C,N)
+  property requiresSecurityDowngrade (TB,R,N)
+  property requiresRebootForInstallation (TB,R,N)
+  property requiresAuthenticationOnUpdates (TB,R,N)
+  property requiresAdministratorToApproveUpdates (TB,R,N)
+  property currentUAKL (T@"NSURL",R,N,VcurrentUAKL)
+  +findBundledKernelExtensions: @24@0:8@16  imp=+0x1c6290850
+  -.cxx_destruct v16@0:8  imp=+0x1c6291934
+  -areKernelExtensionsApproved:withError: @32@0:8@16^@24  imp=+0x1c62912c0
+  -canLoadKernelExtension:error: B32@0:8@16^@24  imp=+0x1c6290d0c
+  -canLoadKernelExtensionInCache:error: B32@0:8@16^@24  imp=+0x1c6290de4
+  -clearConnection v16@0:8  imp=+0x1c6290cbc
+  -connection @16@0:8  imp=+0x1c6290cb4
+  -currentPolicy @16@0:8  imp=+0x1c6291288
+  -currentUAKL @16@0:8  imp=+0x1c629192c
+  -dealloc v16@0:8  imp=+0x1c6290c68
+  -enableKernelExtensionManagementForMDM:error: B32@0:8@16^@24  imp=+0x1c6295ab4
+  -getCurrentUAKLHash:withError: B32@0:8@?16^@24  imp=+0x1c6291728
+  -init @16@0:8  imp=+0x1c6290940
+  -installMDMPayload:withTeams:withExtensions:withContext:error: B56@0:8@16@24@32@40^@48  imp=+0x1c6295654
+  -isKernelExtensionApprovedByUser:withBundleID:error: B40@0:8@16@24^@32  imp=+0x1c6290f94
+  -notifyLoadedKernelExtension:withPath: v32@0:8@16@24  imp=+0x1c629155c
+  -notifyUnsupportedKernelExtension:error: B32@0:8@16^@24  imp=+0x1c6291650
+  -pendingApprovals @16@0:8  imp=+0x1c62912a4
+  -removeMDMPayload:withContext:error: B40@0:8@16@24^@32  imp=+0x1c6295874
+  -requestKernelExtensionApprovals:withError: B32@0:8@16^@24  imp=+0x1c62913a8
+  -requiresAdministratorToApproveUpdates B16@0:8  imp=+0x1c6291910
+  -requiresAuthenticationOnUpdates B16@0:8  imp=+0x1c62918f4
+  -requiresRebootForInstallation B16@0:8  imp=+0x1c62918d8
+  -requiresSecurityDowngrade B16@0:8  imp=+0x1c62918bc
+  -setApprovalRequiresAdministrator:error: B28@0:8B16^@20  imp=+0x1c6295588
+  -setUserApprovalAllowed:error: B28@0:8B16^@20  imp=+0x1c62954bc
+  -teamIdentifierIsAllowed:error: B32@0:8@16^@24  imp=+0x1c6290ebc
+  -triggerKernelCollectionRebuildFlow:withKernelExtensions:withError: B40@0:8Q16@24^@32  imp=+0x1c6291480
+  -triggerKernelCollectionRebuildForMDM:withContext:error: B40@0:8@16@24^@32  imp=+0x1c6295994
+  -triggerPanicMedicWithError: B24@0:8^@16  imp=+0x1c62918a4
+  -triggerRecoveryJumpToSecurityStartupUtilityWithError: B24@0:8^@16  imp=+0x1c629188c
+  -updateLastUsedTimes:withError: B32@0:8@16^@24  imp=+0x1c62917b4
+  -updatePolicyItems:error: B32@0:8@16^@24  imp=+0x1c62911ac
+  -updatePolicyItems:withExternalContext:error: B40@0:8@16@24^@32  imp=+0x1c62910a0
+@class SPKernelExtensionPolicyItem : NSObject <NSSecureCoding> instanceSize=56
+  ivar +8 _originalAllowed B
+  ivar +9 allowed B
+  ivar +10 rebootRequired B
+  ivar +11 isPendingUpgrade B
+  ivar +16 applicationName @"NSString"
+  ivar +24 applicationPath @"NSString"
+  ivar +32 developerName @"NSString"
+  ivar +40 teamID @"NSString"
+  ivar +48 bundleIDs @"NSArray"
+  property developerName (T@"NSString",R,N,VdeveloperName)
+  property applicationName (T@"NSString",R,N,VapplicationName)
+  property applicationPath (T@"NSString",R,N,VapplicationPath)
+  property teamID (T@"NSString",R,N,VteamID)
+  property bundleIDs (T@"NSArray",R,N,VbundleIDs)
+  property allowed (TB,N,GisAllowed,Vallowed)
+  property rebootRequired (TB,R,N,GisRebootRequired,VrebootRequired)
+  property modified (TB,R,N,GisModified)
+  property isPendingUpgrade (TB,R,N,VisPendingUpgrade)
+  +supportsSecureCoding B16@0:8  imp=+0x1c62875a0
+  -.cxx_destruct v16@0:8  imp=+0x1c6287944
+  -applicationName @16@0:8  imp=+0x1c62878fc
+  -applicationPath @16@0:8  imp=+0x1c6287904
+  -bundleIDs @16@0:8  imp=+0x1c628791c
+  -description @16@0:8  imp=+0x1c62878f8
+  -developerName @16@0:8  imp=+0x1c628790c
+  -encodeWithCoder: v24@0:8@16  imp=+0x1c62877ac
+  -init @16@0:8  imp=+0x1c628731c
+  -initWithApplication:path:developerName:teamID:bundleIDs:allowed:rebootRequired:isPendingUpgrade: @68@0:8@16@24@32@40@48B56B60B64  imp=+0x1c6287338
+  -initWithCoder: @24@0:8@16  imp=+0x1c62875bc
+  -initWithDeveloper:teamID:bundleIDs:allowed:rebootRequired:isPendingUpgrade: @52@0:8@16@24@32B40B44B48  imp=+0x1c6287490
+  -isAllowed B16@0:8  imp=+0x1c6287924
+  -isModified B16@0:8  imp=+0x1c62875a8
+  -isPendingUpgrade B16@0:8  imp=+0x1c628793c
+  -isRebootRequired B16@0:8  imp=+0x1c6287934
+  -redactedDescription @16@0:8  imp=+0x1c62878a8
+  -setAllowed: v20@0:8B16  imp=+0x1c628792c
+  -teamID @16@0:8  imp=+0x1c6287914
+@class SPLog : NSObject instanceSize=8
+  +downloads @16@0:8  imp=+0x1c628fcec
+  +exec @16@0:8  imp=+0x1c628fabc
+  +generateSignpostID Q16@0:8  imp=+0x1c628feb0
+  +generic @16@0:8  imp=+0x1c628f9a4
+  +kext @16@0:8  imp=+0x1c628fa30
+  +measurements @16@0:8  imp=+0x1c628fb48
+  +sampling @16@0:8  imp=+0x1c628fc60
+  +setVerboseLogging: v20@0:8B16  imp=+0x1c628fea4
+  +signposts @16@0:8  imp=+0x1c628fbd4
+  +verboseLoggingEnabled B16@0:8  imp=+0x1c628fd78
+@class SPMalwareSampling : NSObject instanceSize=24
+  ivar +8 _interface @"NSXPCInterface"
+  ivar +16 _connection @"NSXPCConnection"
+  -.cxx_destruct v16@0:8  imp=+0x1c6286bd4
+  -dealloc v16@0:8  imp=+0x1c6286918
+  -init @16@0:8  imp=+0x1c6286818
+  -lookupSampling: @24@0:8@16  imp=+0x1c6286964
+  -stageSampleAt:forTasking: B32@0:8@16@24  imp=+0x1c6286a5c
+@class SPMetrics : NSObject instanceSize=24
+  ivar +8 _interface @"NSXPCInterface"
+  ivar +16 _connection @"NSXPCConnection"
+  -.cxx_destruct v16@0:8  imp=+0x1c628a568
+  -dealloc v16@0:8  imp=+0x1c628a310
+  -init @16@0:8  imp=+0x1c628a260
+  -reportEvent:andData: B32@0:8@16@24  imp=+0x1c628a35c
+  -reportMalwareBlock:path:error: B40@0:8@16@24^@32  imp=+0x1c628a45c
+@class SPMigration : NSObject instanceSize=8
+  +createGatekeeperMigrationData: @24@0:8@16  imp=+0x1c6298920
+  +createKernelExtensionMigrationData: @24@0:8@16  imp=+0x1c629840c
+  +createMigrationPolicy:forTarget: v32@0:8@16@24  imp=+0x1c62979c0
+  +gatekeeperMigrationDataPath: @24@0:8@16  imp=+0x1c629782c
+  +kernelExtensionMigrationDataPath: @24@0:8@16  imp=+0x1c6297818
+  +readKernelExtensionMigrationPolicy: @24@0:8@16  imp=+0x1c6297d58
+  +volumeRequiresGatekeeperMigration: B24@0:8@16  imp=+0x1c629797c
+  +volumeRequiresKernelExtensionMigration: B24@0:8@16  imp=+0x1c6297840
+@class SPMigrationScanner : NSObject instanceSize=32
+  ivar +8 _volumeRoot @"NSURL"
+  ivar +16 _allKextURLs @"NSArray"
+  ivar +24 _allBundleURLs @"NSArray"
+  property volumeRoot (T@"NSURL",R,N,V_volumeRoot)
+  property allKextURLs (T@"NSArray",R,N,V_allKextURLs)
+  property allBundleURLs (T@"NSArray",R,N,V_allBundleURLs)
+  -.cxx_destruct v16@0:8  imp=+0x1c629b83c
+  -allBundleURLs @16@0:8  imp=+0x1c629b834
+  -allKextURLs @16@0:8  imp=+0x1c629b82c
+  -initWithRoot: @24@0:8@16  imp=+0x1c629b51c
+  -performMigrationScan B16@0:8  imp=+0x1c629b5b0
+  -volumeRoot @16@0:8  imp=+0x1c629b824
+@class SPProvenanceMetadata : NSObject <NSSecureCoding> instanceSize=64
+  ivar +8 uniqueID @"NSNumber"
+  ivar +16 rootID @"NSNumber"
+  ivar +24 url @"NSURL"
+  ivar +32 bundleID @"NSString"
+  ivar +40 teamID @"NSString"
+  ivar +48 signingID @"NSString"
+  ivar +56 cdhash @"NSString"
+  property uniqueID (T@"NSNumber",&,N,VuniqueID)
+  property rootID (T@"NSNumber",&,N,VrootID)
+  property url (T@"NSURL",&,N,Vurl)
+  property bundleID (T@"NSString",&,N,VbundleID)
+  property teamID (T@"NSString",&,N,VteamID)
+  property signingID (T@"NSString",&,N,VsigningID)
+  property cdhash (T@"NSString",&,N,Vcdhash)
+  +supportsSecureCoding B16@0:8  imp=+0x1c629b0d4
+  -.cxx_destruct v16@0:8  imp=+0x1c629b49c
+  -bundleID @16@0:8  imp=+0x1c629b44c
+  -cdhash @16@0:8  imp=+0x1c629b488
+  -description @16@0:8  imp=+0x1c629b3c0
+  -encodeWithCoder: v24@0:8@16  imp=+0x1c629b2a4
+  -initWithCoder: @24@0:8@16  imp=+0x1c629b0dc
+  -redactedDescription @16@0:8  imp=+0x1c629b378
+  -rootID @16@0:8  imp=+0x1c629b424
+  -setBundleID: v24@0:8@16  imp=+0x1c629b454
+  -setCdhash: v24@0:8@16  imp=+0x1c629b490
+  -setRootID: v24@0:8@16  imp=+0x1c629b42c
+  -setSigningID: v24@0:8@16  imp=+0x1c629b47c
+  -setTeamID: v24@0:8@16  imp=+0x1c629b468
+  -setUniqueID: v24@0:8@16  imp=+0x1c629b418
+  -setUrl: v24@0:8@16  imp=+0x1c629b440
+  -signingID @16@0:8  imp=+0x1c629b474
+  -teamID @16@0:8  imp=+0x1c629b460
+  -uniqueID @16@0:8  imp=+0x1c629b410
+  -url @16@0:8  imp=+0x1c629b438
+@class SPProvenanceTracking : NSObject instanceSize=24
+  ivar +8 _interface @"NSXPCInterface"
+  ivar +16 _connection @"NSXPCConnection"
+  -.cxx_destruct v16@0:8  imp=+0x1c628a21c
+  -dealloc v16@0:8  imp=+0x1c6289e40
+  -findAssociatedProvenanceEntries: @24@0:8@16  imp=+0x1c628a118
+  -findProvenanceEntryForID: @24@0:8@16  imp=+0x1c628a030
+  -findProvenanceEntryForURL: @24@0:8@16  imp=+0x1c6289e8c
+  -getAllProvenanceEntries @16@0:8  imp=+0x1c628a200
+  -getProvenanceIDForURL: @24@0:8@16  imp=+0x1c6289f74
+  -init @16@0:8  imp=+0x1c6289cd4
+@class SPSamplingTasking : NSObject <NSSecureCoding> instanceSize=48
+  ivar +8 uuid @"NSUUID"
+  ivar +16 name @"NSString"
+  ivar +24 expiration @"NSDate"
+  ivar +32 samplingRate @"NSNumber"
+  ivar +40 publicKey @"NSData"
+  property uuid (T@"NSUUID",&,N,Vuuid)
+  property name (T@"NSString",&,N,Vname)
+  property expiration (T@"NSDate",&,N,Vexpiration)
+  property samplingRate (T@"NSNumber",&,N,VsamplingRate)
+  property publicKey (T@"NSData",&,N,VpublicKey)
+  +supportsSecureCoding B16@0:8  imp=+0x1c6286c18
+  -.cxx_destruct v16@0:8  imp=+0x1c6286ee4
+  -description @16@0:8  imp=+0x1c6286e38
+  -encodeWithCoder: v24@0:8@16  imp=+0x1c6286d88
+  -expiration @16@0:8  imp=+0x1c6286ea8
+  -initWithCoder: @24@0:8@16  imp=+0x1c6286c20
+  -name @16@0:8  imp=+0x1c6286e94
+  -publicKey @16@0:8  imp=+0x1c6286ed0
+  -redactedDescription @16@0:8  imp=+0x1c6286e34
+  -samplingRate @16@0:8  imp=+0x1c6286ebc
+  -setExpiration: v24@0:8@16  imp=+0x1c6286eb0
+  -setName: v24@0:8@16  imp=+0x1c6286e9c
+  -setPublicKey: v24@0:8@16  imp=+0x1c6286ed8
+  -setSamplingRate: v24@0:8@16  imp=+0x1c6286ec4
+  -setUuid: v24@0:8@16  imp=+0x1c6286e88
+  -uuid @16@0:8  imp=+0x1c6286e80
+@class SPScriptScanEvaluation : NSObject <NSSecureCoding> instanceSize=16
+  ivar +8 allowed @"NSNumber"
+  property allowed (T@"NSNumber",&,N,Vallowed)
+  +supportsSecureCoding B16@0:8  imp=+0x1c6288b40
+  -.cxx_destruct v16@0:8  imp=+0x1c6288c0c
+  -allowed @16@0:8  imp=+0x1c6288bf8
+  -encodeWithCoder: v24@0:8@16  imp=+0x1c6288be0
+  -initWithCoder: @24@0:8@16  imp=+0x1c6288b48
+  -setAllowed: v24@0:8@16  imp=+0x1c6288c00
+@class SPScriptScanner : NSObject instanceSize=24
+  ivar +8 _interface @"NSXPCInterface"
+  ivar +16 _connection @"NSXPCConnection"
+  +isHardQuarantinedUnapproved: B24@0:8@16  imp=+0x1c628723c
+  -.cxx_destruct v16@0:8  imp=+0x1c62872d8
+  -dealloc v16@0:8  imp=+0x1c628700c
+  -getScriptScanEvaluationFor:scriptData:scanResult: @40@0:8@16@24@32  imp=+0x1c6287058
+  -init @16@0:8  imp=+0x1c6286f4c
+@class StagedBundleData : NSObject instanceSize=72
+  ivar +8 _stagedUrl @"NSURL"
+  ivar +16 _bundleUrl @"NSURL"
+  ivar +24 _accessQueue @"NSObject<OS_dispatch_queue>"
+  ivar +32 _stagedBundle @"BundleData"
+  ivar +40 _bundle @"BundleData"
+  ivar +48 _fileManager @"NSFileManager"
+  ivar +56 _reloadBlock @?
+  ivar +64 _prepareBlock @?
+  property bundle (T@"BundleData",R,N,V_bundle)
+  property stagedBundle (T@"BundleData",R,N,V_stagedBundle)
+  -.cxx_destruct v16@0:8  imp=+0x1c62880dc
+  -access: v24@0:8@?16  imp=+0x1c62880c0
+  -bundle @16@0:8  imp=+0x1c62880d4
+  -handleReload v16@0:8  imp=+0x1c6287c20
+  -initWithURL:withStagedURL:withReloadBlock:withPrepareBlock: @48@0:8@16@24@?32@?40  imp=+0x1c62879ac
+  -stagedBundle @16@0:8  imp=+0x1c62880cc
+@class TrackingAttributes : NSObject instanceSize=24
+  ivar +8 flags S
+  ivar +16 identifier Q
+  property identifier (TQ,N,Videntifier)
+  property flags (TS,N,Vflags)
+  -description @16@0:8  imp=+0x1c6286300
+  -flags S16@0:8  imp=+0x1c6286370
+  -identifier Q16@0:8  imp=+0x1c6286360
+  -initWithData: @24@0:8@16  imp=+0x1c62861d0
+  -redactedDescription @16@0:8  imp=+0x1c6286304
+  -serialize @16@0:8  imp=+0x1c6286290
+  -setFlags: v20@0:8S16  imp=+0x1c6286378
+  -setIdentifier: v24@0:8Q16  imp=+0x1c6286368

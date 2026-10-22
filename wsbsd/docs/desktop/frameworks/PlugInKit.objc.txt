@@ -1,0 +1,1083 @@
+@class PKApplicationProxy : PKBundleProxy <PKApplicationProxy> instanceSize=16
+  property plugInKitPlugins (T@"NSArray",R,N)
+  property placeholder (TB,R,N,GisPlaceholder)
+  property bundleURL (T@"NSURL",R,N)
+  property bundleIdentifier (T@"NSString",R,N)
+  property localizedName (T@"NSString",R,C,N)
+  property entitlements (T@"NSDictionary",R,N)
+  property dataContainerURL (T@"NSURL",R,N)
+  property bundleVersion (T@"NSString",R,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +applicationProxyForBundleURL: @24@0:8@16  imp=+0x1a928566c
+  -isPlaceholder B16@0:8  imp=+0x1a9288d68
+  -plugInKitPlugins @16@0:8  imp=+0x1a9288d34
+@class PKApplicationWorkspaceProxy : NSObject <PKApplicationWorkspaceProxy> instanceSize=16
+  ivar +8 _lsObject @"LSApplicationWorkspace"
+  property lsObject (T@"LSApplicationWorkspace",R,N,V_lsObject)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +defaultWorkspace @16@0:8  imp=+0x1a92800a4
+  -.cxx_destruct v16@0:8  imp=+0x1a92803b4
+  -addObserver: v24@0:8@16  imp=+0x1a9280178
+  -init @16@0:8  imp=+0x1a9280038
+  -installedPlugins @16@0:8  imp=+0x1a9280128
+  -lsObject @16@0:8  imp=+0x1a92803ac
+  -pluginsMatchingQuery:applyFilter: @32@0:8@16@?24  imp=+0x1a9280250
+  -registerPlugin: B24@0:8@16  imp=+0x1a92802e4
+  -removeObserver: v24@0:8@16  imp=+0x1a92801f0
+  -unregisterPlugin: B24@0:8@16  imp=+0x1a9280348
+@class PKBundle : NSObject instanceSize=24
+  ivar +8 _supportPath @"NSString"
+  ivar +16 __bundle @"NSObject<OS_xpc_object>"
+  property _bundle (T@"NSObject<OS_xpc_object>",&,V__bundle)
+  property url (T@"NSURL",R)
+  property path (T@"NSString",R)
+  property infoDictionary (T@"NSDictionary",R)
+  property bundleIdentifier (T@"NSString",R)
+  property supportPath (T@"NSString",R,V_supportPath)
+  property executablePath (T@"NSString",R)
+  property plugInsPath (T@"NSString",R)
+  -.cxx_destruct v16@0:8  imp=+0x1a927fccc
+  -_bundle @16@0:8  imp=+0x1a927fcb8
+  -bundleDirectory: @24@0:8@16  imp=+0x1a927fbbc
+  -bundleIdentifier @16@0:8  imp=+0x1a927fa0c
+  -executablePath @16@0:8  imp=+0x1a927fc34
+  -infoDictionary @16@0:8  imp=+0x1a927f928
+  -initForMainBundle @16@0:8  imp=+0x1a927f50c
+  -initWithExecutablePath: @24@0:8@16  imp=+0x1a927f7b4
+  -initWithExecutableURL: @24@0:8@16  imp=+0x1a927f768
+  -initWithPath: @24@0:8@16  imp=+0x1a927f59c
+  -initWithURL: @24@0:8@16  imp=+0x1a927f550
+  -initWithXPCBundle: @24@0:8@16  imp=+0x1a927f848
+  -path @16@0:8  imp=+0x1a927faf8
+  -plugInsPath @16@0:8  imp=+0x1a927fc84
+  -set_bundle: v24@0:8@16  imp=+0x1a927fcc4
+  -stringProperty: @20@0:8i16  imp=+0x1a927f8b8
+  -supportPath @16@0:8  imp=+0x1a927fb28
+  -url @16@0:8  imp=+0x1a927fa98
+@class PKBundleProxy : NSObject <PKBundleProxy> instanceSize=16
+  ivar +8 _lsObject @"LSBundleProxy"
+  property lsObject (T@"LSBundleProxy",R,N,V_lsObject)
+  property bundleURL (T@"NSURL",R,N)
+  property bundleIdentifier (T@"NSString",R,N)
+  property localizedName (T@"NSString",R,C,N)
+  property entitlements (T@"NSDictionary",R,N)
+  property dataContainerURL (T@"NSURL",R,N)
+  property bundleVersion (T@"NSString",R,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a92813d0
+  -bundleIdentifier @16@0:8  imp=+0x1a9281238
+  -bundleURL @16@0:8  imp=+0x1a92811e8
+  -bundleVersion @16@0:8  imp=+0x1a9281378
+  -dataContainerURL @16@0:8  imp=+0x1a9281328
+  -entitlements @16@0:8  imp=+0x1a92812d8
+  -initWithLSBundleProxy: @24@0:8@16  imp=+0x1a928116c
+  -localizedName @16@0:8  imp=+0x1a9281288
+  -lsObject @16@0:8  imp=+0x1a92813c8
+@class PKCapabilities : NSObject instanceSize=8
+  +frameworkQueueAttr @16@0:8  imp=+0x1a926e870
+  +supportsAutoreleasePoolDuringPlugInLaunch B16@0:8  imp=+0x1a926e864
+@class PKDaemonClient : NSObject instanceSize=32
+  ivar +8 _protocolVersion q
+  ivar +16 _pkd @"NSObject<OS_xpc_object>"
+  ivar +24 _replyQueue @"NSObject<OS_dispatch_queue>"
+  property pkd (T@"NSObject<OS_xpc_object>",&,V_pkd)
+  property replyQueue (T@"NSObject<OS_dispatch_queue>",&,V_replyQueue)
+  property protocolVersion (Tq,V_protocolVersion)
+  +convertToXPC:version: @32@0:8@16Q24  imp=+0x1a927f394
+  -.cxx_destruct v16@0:8  imp=+0x1a927f420
+  -accessPlugIns:synchronously:flags:reply: v44@0:8@16B24Q28@?36  imp=+0x1a927e1e4
+  -addPlugIns:reply: v32@0:8@16@?24  imp=+0x1a927ddd0
+  -bulkPlugins:reply: v32@0:8Q16@?24  imp=+0x1a927ded0
+  -bulkSetPluginAnnotations:reply: v32@0:8@16@?24  imp=+0x1a927e594
+  -convertFromXPC: @24@0:8@16  imp=+0x1a926209c
+  -errorInReply: @24@0:8@16  imp=+0x1a9261f50
+  -findPlugInByPathURL:reply: v32@0:8@16@?24  imp=+0x1a927e394
+  -findPlugInByUUID:synchronously:reply: v36@0:8@16B24@?28  imp=+0x1a927e2a8
+  -holdPlugins:extensionPointName:platforms:excludedExtensionPoints:flags:reply: v64@0:8@16@24@32@40Q48@?56  imp=+0x1a927e654
+  -initWithConnection:queue:user: @36@0:8@16@24I32  imp=+0x1a927dbc4
+  -initWithServiceName: @24@0:8r*16  imp=+0x1a92613e4
+  -initWithServiceName:user: @28@0:8r*16I24  imp=+0x1a927db10
+  -matchPlugIns:flags:uuid:reply: v48@0:8@16Q24@32@?40  imp=+0x1a927e464
+  -pkd @16@0:8  imp=+0x1a927f408
+  -protocolVersion q16@0:8  imp=+0x1a9261a08
+  -rawConnection @16@0:8  imp=+0x1a927ddc8
+  -readyPlugIns:synchronously:flags:environment:languages:persona:sandbox:reply: v76@0:8@16B24Q28@36@44@52@60@?68  imp=+0x1a927df5c
+  -releaseHold:flags:reply: v40@0:8@16Q24@?32  imp=+0x1a927e9d8
+  -removePlugIns:reply: v32@0:8@16@?24  imp=+0x1a927de50
+  -replyQueue @16@0:8  imp=+0x1a927f414
+  -request: @24@0:8r*16  imp=+0x1a9261988
+  -request:paths: @32@0:8r*16@24  imp=+0x1a927eaec
+  -send:reply: v32@0:8@16@?24  imp=+0x1a9261a10
+  -sendSynchronously:request:reply: v36@0:8B16@20@?28  imp=+0x1a927eb7c
+  -sendSynchronously:request:retry:reply: v40@0:8B16@20B28@?32  imp=+0x1a927eb88
+  -set:plugins: v32@0:8@16@24  imp=+0x1a927f100
+  -set:uuids: v32@0:8@16@24  imp=+0x1a9264534
+  -setPkd: v24@0:8@16  imp=+0x1a92613f4
+  -setPluginAnnotations:annotations:reply: v40@0:8@16@24@?32  imp=+0x1a926444c
+  -setProtocolVersion: v24@0:8q16  imp=+0x1a92613fc
+  -setReplyQueue: v24@0:8@16  imp=+0x1a92613ec
+@class PKDiscoveryDriver : NSObject <PKApplicationWorkspaceObserverProtocol> instanceSize=96
+  ivar +8 _annotationNotifyToken i
+  ivar +16 _attributes @"NSDictionary"
+  ivar +24 _flags Q
+  ivar +32 _report @?
+  ivar +40 _relatedActivity @"NSObject<OS_os_activity>"
+  ivar +48 _lastResults @"NSSet"
+  ivar +56 _mcNotificationToken @
+  ivar +64 _lsWatcher @"PKDiscoveryLSWatcher"
+  ivar +72 _queue @"NSObject<OS_dispatch_queue>"
+  ivar +80 _sync @"NSObject<OS_dispatch_queue>"
+  ivar +88 _host @"PKHost"
+  property attributes (T@"NSDictionary",&,V_attributes)
+  property flags (TQ,V_flags)
+  property report (T@?,C,V_report)
+  property relatedActivity (T@"NSObject<OS_os_activity>",&,V_relatedActivity)
+  property lastResults (T@"NSSet",&,V_lastResults)
+  property annotationNotifyToken (Ti,V_annotationNotifyToken)
+  property mcNotificationToken (T@,&,V_mcNotificationToken)
+  property lsWatcher (T@"PKDiscoveryLSWatcher",&,V_lsWatcher)
+  property queue (T@"NSObject<OS_dispatch_queue>",&,V_queue)
+  property sync (T@"NSObject<OS_dispatch_queue>",&,V_sync)
+  property host (T@"PKHost",&,V_host)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a926e3e0
+  -_performWithPreviousResults:forceNotify:uninstalledProxies: v36@0:8@16B24@28  imp=+0x1a926da80
+  -annotationNotifyToken i16@0:8  imp=+0x1a926e390
+  -attributes @16@0:8  imp=+0x1a9261594
+  -cancel v16@0:8  imp=+0x1a926df70
+  -dealloc v16@0:8  imp=+0x1a926d5d0
+  -flags Q16@0:8  imp=+0x1a92615a0
+  -host @16@0:8  imp=+0x1a926e3cc
+  -initWithAttributes:flags:host:report: @48@0:8@16Q24@32@?40  imp=+0x1a926d1a4
+  -installWatchers v16@0:8  imp=+0x1a9263238
+  -lastResults @16@0:8  imp=+0x1a9264958
+  -lsWatcher @16@0:8  imp=+0x1a926e3ac
+  -mcNotificationToken @16@0:8  imp=+0x1a926e398
+  -performWithPreviousResults:forceNotify: v28@0:8@16B24  imp=+0x1a92614d0
+  -queue @16@0:8  imp=+0x1a9262e64
+  -relatedActivity @16@0:8  imp=+0x1a926e37c
+  -removeWatchers v16@0:8  imp=+0x1a926e2b0
+  -report @?16@0:8  imp=+0x1a9262e58
+  -setAnnotationNotifyToken: v20@0:8i16  imp=+0x1a92634c8
+  -setAttributes: v24@0:8@16  imp=+0x1a92614b8
+  -setFlags: v24@0:8Q16  imp=+0x1a92614c0
+  -setHost: v24@0:8@16  imp=+0x1a926e3d8
+  -setLastResults: v24@0:8@16  imp=+0x1a9262fd0
+  -setLsWatcher: v24@0:8@16  imp=+0x1a92634c0
+  -setMcNotificationToken: v24@0:8@16  imp=+0x1a926e3a4
+  -setQueue: v24@0:8@16  imp=+0x1a92614b0
+  -setRelatedActivity: v24@0:8@16  imp=+0x1a926e388
+  -setReport: v24@0:8@?16  imp=+0x1a92614c8
+  -setSync: v24@0:8@16  imp=+0x1a926e3c4
+  -sync @16@0:8  imp=+0x1a926e3b8
+@class PKDiscoveryLSWatcher : NSObject <PKApplicationWorkspaceObserverProtocol> instanceSize=24
+  ivar +8 _wdriver @"PKDiscoveryDriver"
+  ivar +16 _workspace @"<PKApplicationWorkspaceProxy>"
+  property wdriver (T@"PKDiscoveryDriver",W,V_wdriver)
+  property workspace (T@"<PKApplicationWorkspaceProxy>",&,V_workspace)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a926e824
+  -initWithDriver: @24@0:8@16  imp=+0x1a92633b4
+  -pluginsDidInstall: v24@0:8@16  imp=+0x1a926e4c0
+  -pluginsDidUninstall: v24@0:8@16  imp=+0x1a926e590
+  -setWdriver: v24@0:8@16  imp=+0x1a92634b4
+  -setWorkspace: v24@0:8@16  imp=+0x1a926e81c
+  -stopUpdates v16@0:8  imp=+0x1a926e478
+  -update v16@0:8  imp=+0x1a926e664
+  -updateWithUninstalledProxies: v24@0:8@16  imp=+0x1a926e670
+  -wdriver @16@0:8  imp=+0x1a926e7e4
+  -workspace @16@0:8  imp=+0x1a926e810
+@class PKEnumerator : NSEnumerator instanceSize=24
+  ivar +8 _filter @?
+  ivar +16 _underlyingEnumerator @"NSEnumerator"
+  property underlyingEnumerator (T@"NSEnumerator",R,N,V_underlyingEnumerator)
+  property filter (T@?,C,N,V_filter)
+  +defaultFilter @?16@0:8  imp=+0x1a9280ba8
+  -.cxx_destruct v16@0:8  imp=+0x1a9280e78
+  -filter @?16@0:8  imp=+0x1a9280e50
+  -init @16@0:8  imp=+0x1a9280bbc
+  -initWithNSEnumerator: @24@0:8@16  imp=+0x1a9280c4c
+  -nextObject @16@0:8  imp=+0x1a9280d90
+  -setFilter: v24@0:8@?16  imp=+0x1a9280cfc
+  -underlyingEnumerator @16@0:8  imp=+0x1a9280e64
+@class PKExtensionPointProxy : NSObject <PKExtensionPointProxy> instanceSize=8
+  property platform (T@"NSNumber",R,N)
+  property sdkEntry (T@"NSDictionary",R,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +extensionPointForIdentifier:platform: @32@0:8@16@24  imp=+0x1a9271f84
+  -platform @16@0:8  imp=+0x1a92871ac
+  -sdkEntry @16@0:8  imp=+0x1a92871e0
+@class PKExternalProviders : NSObject <PKExternalProviders> instanceSize=56
+  ivar +8 _ls @"<PKLaunchServicesProvider>"
+  ivar +16 _filesystem @"<PKFilesystemProvider>"
+  ivar +24 _launch @"<PKLaunchProvider>"
+  ivar +32 _sandbox @"<PKSandboxProvider>"
+  ivar +40 _runningboard @"<PKRunningBoardProvider>"
+  ivar +48 _sys @"<PKSystemProvider>"
+  property ls (T@"<PKLaunchServicesProvider>",R,N,V_ls)
+  property filesystem (T@"<PKFilesystemProvider>",R,N,V_filesystem)
+  property launch (T@"<PKLaunchProvider>",R,N,V_launch)
+  property sandbox (T@"<PKSandboxProvider>",R,N,V_sandbox)
+  property runningboard (T@"<PKRunningBoardProvider>",R,N,V_runningboard)
+  property sys (T@"<PKSystemProvider>",R,N,V_sys)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a92805ec
+  -filesystem @16@0:8  imp=+0x1a92805c4
+  -init @16@0:8  imp=+0x1a92803c0
+  -initWithLaunchServicesProvider: @24@0:8@16  imp=+0x1a92804b4
+  -launch @16@0:8  imp=+0x1a92805cc
+  -ls @16@0:8  imp=+0x1a92805bc
+  -runningboard @16@0:8  imp=+0x1a92805dc
+  -sandbox @16@0:8  imp=+0x1a92805d4
+  -sys @16@0:8  imp=+0x1a92805e4
+@class PKFilesystemProvider : NSObject <PKFilesystemProvider> instanceSize=8
+  property mainBundle (T@"<PKNSBundleProxy>",R)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -bundleWithURL: @24@0:8@16  imp=+0x1a9264a14
+  -contentsOfDirectoryAtURL:includingPropertiesForKeys:options:error: @48@0:8@16@24Q32^@40  imp=+0x1a9264bc8
+  -createDirectoryAtURL:withIntermediateDirectories:attributes:error: B44@0:8@16B24@28^@36  imp=+0x1a9264b2c
+  -dataWithContentsOfURL:options:error: @40@0:8@16Q24^@32  imp=+0x1a9264aa4
+  -mainBundle @16@0:8  imp=+0x1a92649a8
+  -writeToURL:withData:options:error: B48@0:8@16@24Q32^@40  imp=+0x1a9264b1c
+@class PKHost : NSObject instanceSize=64
+  ivar +8 _hostInfoPlist @"NSDictionary"
+  ivar +16 _activePlugIns @"NSMutableDictionary"
+  ivar +24 _activeOneShots @"NSMutableDictionary"
+  ivar +32 _discoveryMap @"NSMapTable"
+  ivar +40 _hostQueue @"NSObject<OS_dispatch_queue>"
+  ivar +48 _daemon @"PKDaemonClient"
+  ivar +56 _external @"<PKExternalProviders>"
+  property activePlugIns (T@"NSMutableDictionary",&,V_activePlugIns)
+  property activeOneShots (T@"NSMutableDictionary",&,V_activeOneShots)
+  property discoveryMap (T@"NSMapTable",&,V_discoveryMap)
+  property hostQueue (T@"NSObject<OS_dispatch_queue>",&,V_hostQueue)
+  property daemon (T@"PKDaemonClient",&,V_daemon)
+  property hostInfoPlist (T@"NSDictionary",R,V_hostInfoPlist)
+  property external (T@"<PKExternalProviders>",R,V_external)
+  +defaultHost @16@0:8  imp=+0x1a92612d0
+  -.cxx_destruct v16@0:8  imp=+0x1a92713b8
+  -_findPlugInByUUID:synchronously:reply: v36@0:8@16B24@?28  imp=+0x1a926e9d8
+  -accessPlugIns:synchronously:flags:extensions: v44@0:8@16B24Q28@?36  imp=+0x1a9270178
+  -activatePlugIn: @24@0:8@16  imp=+0x1a92709b8
+  -activeOneShots @16@0:8  imp=+0x1a9271378
+  -activePlugInForIdentifier: @24@0:8@16  imp=+0x1a92707a4
+  -activePlugIns @16@0:8  imp=+0x1a9262128
+  -cancelPlugInDiscovery: v24@0:8@16  imp=+0x1a9270170
+  -continuouslyDiscoverPlugInsForAttributes:flags:found: @40@0:8@16Q24@?32  imp=+0x1a9261404
+  -daemon @16@0:8  imp=+0x1a9271398
+  -deactivatePlugIn: v24@0:8@16  imp=+0x1a9270ed0
+  -discoverPlugInsForAttributes:flags:found: v40@0:8@16Q24@?32  imp=+0x1a92615a8
+  -discoveryMap @16@0:8  imp=+0x1a9271384
+  -external @16@0:8  imp=+0x1a92713ac
+  -findPlugInByPathURL:reply: v32@0:8@16@?24  imp=+0x1a926f2b4
+  -findPlugInByUUID:reply: v32@0:8@16@?24  imp=+0x1a926f004
+  -findPlugInByUUID:withError: @32@0:8@16^@24  imp=+0x1a926f010
+  -hostInfoPlist @16@0:8  imp=+0x1a9271278
+  -hostQueue @16@0:8  imp=+0x1a926211c
+  -init @16@0:8  imp=+0x1a9261354
+  -initWithDaemon:externalProviders: @32@0:8@16@24  imp=+0x1a926e878
+  -readyPlugIns:synchronously:environment:languages:persona:sandbox:ready: v68@0:8@16B24@28@36@44@52@?60  imp=+0x1a92702f8
+  -rewriteDiscoveryAttributes:flags: @32@0:8@16Q24  imp=+0x1a92616e8
+  -setActiveOneShots: v24@0:8@16  imp=+0x1a92613dc
+  -setActivePlugIns: v24@0:8@16  imp=+0x1a92613d4
+  -setDaemon: v24@0:8@16  imp=+0x1a92713a4
+  -setDiscoveryMap: v24@0:8@16  imp=+0x1a9271390
+  -setElection:forPlugIn: v32@0:8q16@24  imp=+0x1a926429c
+  -setExtensionState:forPlugIn: v32@0:8@16@24  imp=+0x1a92705f0
+  -setHostQueue: v24@0:8@16  imp=+0x1a92613cc
+@class PKHostDefaults : NSUserDefaults instanceSize=48
+  ivar +40 _plugin @"PKHostPlugIn"
+  property plugin (T@"PKHostPlugIn",W,V_plugin)
+  -.cxx_destruct v16@0:8  imp=+0x1a927d8c8
+  -initWithPlugIn: @24@0:8@16  imp=+0x1a927d574
+  -objectForKey: @24@0:8@16  imp=+0x1a927d5e4
+  -plugin @16@0:8  imp=+0x1a927d880
+  -registerDefaults: v24@0:8@16  imp=+0x1a927d87c
+  -setObject:forKey: v32@0:8@16@24  imp=+0x1a927d794
+  -setPlugin: v24@0:8@16  imp=+0x1a927d8b4
+  -synchronize B16@0:8  imp=+0x1a927d874
+@class PKHostPlugIn : PKPlugInCore <PKPlugInPrivate, NSXPCConnectionDelegate> instanceSize=448
+  ivar +216 _terminating B
+  ivar +220 _useCount I
+  ivar +224 _defaults @"NSUserDefaults"
+  ivar +232 _notificationBlock @?
+  ivar +240 _preferredLanguages @"NSArray"
+  ivar +248 _sandboxProfile @"NSString"
+  ivar +256 _pluginConnection @"NSXPCConnection"
+  ivar +264 __replyQueue @"NSObject<OS_dispatch_queue>"
+  ivar +272 __syncQueue @"NSObject<OS_dispatch_queue>"
+  ivar +280 __startQueue @"NSObject<OS_dispatch_queue>"
+  ivar +288 _service @"<PKCorePlugInProtocol>"
+  ivar +296 _syncService @"<PKCorePlugInProtocol>"
+  ivar +304 _supersedingUUID @"NSUUID"
+  ivar +312 _supersededBy @"<PKPlugIn>"
+  ivar +320 _multipleInstanceUUID @"NSUUID"
+  ivar +328 _serviceExtension @"NSString"
+  ivar +336 _serviceExtensions @"NSArray"
+  ivar +344 _discoveryExtensions @"NSDictionary"
+  ivar +352 _sandboxExtensions @"NSArray"
+  ivar +360 _queuedHostPrincipal @
+  ivar +368 _queuedHostProtocol @"Protocol"
+  ivar +376 _state Q
+  ivar +384 _plugInPrincipal @
+  ivar +392 _embeddedPrincipal @
+  ivar +400 _embeddedBundle @"NSBundle"
+  ivar +408 _beganUsingAt @"NSDate"
+  ivar +416 _sourceForm @"NSDictionary"
+  ivar +424 _environment @"NSDictionary"
+  ivar +432 _requests @"NSMutableSet"
+  ivar +440 _host @"PKHost"
+  property host (T@"PKHost",&,V_host)
+  property pluginConnection (T@"NSXPCConnection",&,V_pluginConnection)
+  property _replyQueue (T@"NSObject<OS_dispatch_queue>",&,V__replyQueue)
+  property _syncQueue (T@"NSObject<OS_dispatch_queue>",&,V__syncQueue)
+  property _startQueue (T@"NSObject<OS_dispatch_queue>",&,V__startQueue)
+  property service (T@"<PKCorePlugInProtocol>",&,V_service)
+  property syncService (T@"<PKCorePlugInProtocol>",&,V_syncService)
+  property supersedingUUID (T@"NSUUID",&,V_supersedingUUID)
+  property supersededBy (T@"<PKPlugIn>",W,V_supersededBy)
+  property multipleInstanceUUID (T@"NSUUID",&,V_multipleInstanceUUID)
+  property effectiveUUID (T@"NSUUID",R)
+  property serviceExtension (T@"NSString",&,V_serviceExtension)
+  property serviceExtensions (T@"NSArray",&,V_serviceExtensions)
+  property discoveryExtensions (T@"NSDictionary",&,V_discoveryExtensions)
+  property sandboxExtensions (T@"NSArray",&,V_sandboxExtensions)
+  property queuedHostPrincipal (T@,&,V_queuedHostPrincipal)
+  property queuedHostProtocol (T@"Protocol",&,V_queuedHostProtocol)
+  property state (TQ,V_state)
+  property useCount (TI,V_useCount)
+  property plugInPrincipal (T@,&,V_plugInPrincipal)
+  property embeddedPrincipal (T@,&,V_embeddedPrincipal)
+  property embeddedBundle (T@"NSBundle",&,V_embeddedBundle)
+  property defaults (T@"NSUserDefaults",R,V_defaults)
+  property terminating (TB,V_terminating)
+  property beganUsingAt (T@"NSDate",&,V_beganUsingAt)
+  property sourceForm (T@"NSDictionary",&,V_sourceForm)
+  property environment (T@"NSDictionary",&,V_environment)
+  property requests (T@"NSMutableSet",R,V_requests)
+  property uuid (T@"NSUUID",R)
+  property timestamp (T@"NSDate",R)
+  property extensionState (T@"NSDictionary",&)
+  property preferredLanguages (T@"NSArray",C,V_preferredLanguages)
+  property launchPersonas (T@"NSArray",R)
+  property sandboxProfile (T@"NSString",C,V_sandboxProfile)
+  property extensionPointPlatform (TI,R)
+  property identifier (T@"NSString",R)
+  property version (T@"NSString",R)
+  property url (T@"NSURL",R)
+  property containingUrl (T@"NSURL",R)
+  property onSystemVolume (TB,R)
+  property bundleInfoDictionary (T@"NSDictionary",R)
+  property plugInDictionary (T@"NSDictionary",R)
+  property attributes (T@"NSDictionary",R)
+  property entitlements (T@"NSDictionary",R)
+  property localizedName (T@"NSString",R)
+  property localizedShortName (T@"NSString",R)
+  property localizedContainingName (T@"NSString",R)
+  property localizedFileProviderActionNames (T@"NSDictionary",R)
+  property userElection (Tq)
+  property spent (TB,R)
+  property active (TB,R)
+  property notificationBlock (T@?,C,V_notificationBlock)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a9263abc
+  -_replyQueue @16@0:8  imp=+0x1a926c874
+  -_startQueue @16@0:8  imp=+0x1a926c890
+  -_syncQueue @16@0:8  imp=+0x1a92631a0
+  -_validatePersona v16@0:8  imp=+0x1a9265d3c
+  -active B16@0:8  imp=+0x1a92658e0
+  -addRequestUUID: v24@0:8@16  imp=+0x1a9266898
+  -beganUsingAt @16@0:8  imp=+0x1a926ca40
+  -beginUsing: v24@0:8@?16  imp=+0x1a9265f54
+  -beginUsingRequest:completion: v32@0:8@16@?24  imp=+0x1a92663d4
+  -beginUsingRequest:error: B32@0:8@16^@24  imp=+0x1a926688c
+  -beginUsingRequest:withSubsystemOptions:completion: v40@0:8@16@24@?32  imp=+0x1a9265f70
+  -beginUsingRequest:withSubsystemOptions:error: B40@0:8@16@24^@32  imp=+0x1a92663fc
+  -beginUsingWithError: B24@0:8^@16  imp=+0x1a92663e0
+  -beginUsingWithSubsystemOptions:completion: v32@0:8@16@?24  imp=+0x1a9265f60
+  -beginUsingWithSubsystemOptions:error: B32@0:8@16^@24  imp=+0x1a92663ec
+  -changeState: v24@0:8Q16  imp=+0x1a926c5b8
+  -connection:handleInvocation:isReply: v36@0:8@16@24B32  imp=+0x1a9265924
+  -createInstanceWithUUID: @24@0:8@16  imp=+0x1a9265aec
+  -defaults @16@0:8  imp=+0x1a9265534
+  -description @16@0:8  imp=+0x1a9265460
+  -discoveryExtensions @16@0:8  imp=+0x1a9263758
+  -effectiveUUID @16@0:8  imp=+0x1a9265ce0
+  -embeddedBundle @16@0:8  imp=+0x1a926c9f8
+  -embeddedPrincipal @16@0:8  imp=+0x1a926c9dc
+  -endUsing: v24@0:8@?16  imp=+0x1a926b614
+  -endUsingRequest:completion: v32@0:8@16@?24  imp=+0x1a926b620
+  -endUsingRequest:error: B32@0:8@16^@24  imp=+0x1a926bb80
+  -endUsingWithError: B24@0:8^@16  imp=+0x1a926bb74
+  -environment @16@0:8  imp=+0x1a926ca6c
+  -extensionState @16@0:8  imp=+0x1a9263f6c
+  -host @16@0:8  imp=+0x1a926ca98
+  -initWithForm:host: @32@0:8@16@24  imp=+0x1a92651bc
+  -isSandboxed B16@0:8  imp=+0x1a926b5a8
+  -loadEmbeddedCode: B24@0:8^@16  imp=+0x1a926b320
+  -loadExtensions:error: B32@0:8@16^@24  imp=+0x1a9263768
+  -messageTraceUsage v16@0:8  imp=+0x1a926c250
+  -multipleInstanceUUID @16@0:8  imp=+0x1a926c8e4
+  -notificationBlock @?16@0:8  imp=+0x1a926c804
+  -plugInPrincipal @16@0:8  imp=+0x1a926c9c0
+  -pluginConnection @16@0:8  imp=+0x1a926c858
+  -preferredLanguages @16@0:8  imp=+0x1a926c820
+  -prepareEmbeddedCode: @24@0:8^@16  imp=+0x1a926b414
+  -preparePlugInUsingService:completion: v32@0:8@16@?24  imp=+0x1a926ac1c
+  -queuedHostPrincipal @16@0:8  imp=+0x1a926c938
+  -queuedHostProtocol @16@0:8  imp=+0x1a926c954
+  -requests @16@0:8  imp=+0x1a926ca88
+  -resume v16@0:8  imp=+0x1a92658cc
+  -sandboxExtensions @16@0:8  imp=+0x1a9263aa0
+  -sandboxProfile @16@0:8  imp=+0x1a926c83c
+  -service @16@0:8  imp=+0x1a926c8a0
+  -serviceExtension @16@0:8  imp=+0x1a926c900
+  -serviceExtensions @16@0:8  imp=+0x1a926c91c
+  -setBeganUsingAt: v24@0:8@16  imp=+0x1a926ca50
+  -setBootstrapWithSubsystemOptions: v24@0:8@16  imp=+0x1a926b264
+  -setDiscoveryExtensions: v24@0:8@16  imp=+0x1a9262b3c
+  -setEmbeddedBundle: v24@0:8@16  imp=+0x1a926ca08
+  -setEmbeddedPrincipal: v24@0:8@16  imp=+0x1a926c9ec
+  -setEnvironment: v24@0:8@16  imp=+0x1a926ca7c
+  -setExtensionState: v24@0:8@16  imp=+0x1a9265650
+  -setHost: v24@0:8@16  imp=+0x1a926caa8
+  -setHostPrincipal:withProtocol: v32@0:8@16@24  imp=+0x1a9265a5c
+  -setMultipleInstanceUUID: v24@0:8@16  imp=+0x1a926c8f4
+  -setNotificationBlock: v24@0:8@?16  imp=+0x1a926c814
+  -setPlugInPrincipal: v24@0:8@16  imp=+0x1a926c9d0
+  -setPluginConnection: v24@0:8@16  imp=+0x1a926c868
+  -setPreferredLanguages: v24@0:8@16  imp=+0x1a926c830
+  -setQueuedHostPrincipal: v24@0:8@16  imp=+0x1a926c948
+  -setQueuedHostProtocol: v24@0:8@16  imp=+0x1a926c964
+  -setReplyQueue: v24@0:8@16  imp=+0x1a9265920
+  -setSandboxExtensions: v24@0:8@16  imp=+0x1a9263ab0
+  -setSandboxProfile: v24@0:8@16  imp=+0x1a926c84c
+  -setService: v24@0:8@16  imp=+0x1a926c8b0
+  -setServiceExtension: v24@0:8@16  imp=+0x1a926c910
+  -setServiceExtensions: v24@0:8@16  imp=+0x1a926c92c
+  -setSourceForm: v24@0:8@16  imp=+0x1a9262b0c
+  -setState: v24@0:8Q16  imp=+0x1a926c984
+  -setSupersededBy: v24@0:8@16  imp=+0x1a9262d18
+  -setSupersedingUUID: v24@0:8@16  imp=+0x1a926c8d8
+  -setSyncService: v24@0:8@16  imp=+0x1a926c8cc
+  -setTerminating: v20@0:8B16  imp=+0x1a926ca2c
+  -setUseCount: v20@0:8I16  imp=+0x1a926c9ac
+  -setUserElection: v24@0:8q16  imp=+0x1a9264108
+  -set_replyQueue: v24@0:8@16  imp=+0x1a926c884
+  -set_startQueue: v24@0:8@16  imp=+0x1a9262b30
+  -set_syncQueue: v24@0:8@16  imp=+0x1a9262b24
+  -sourceForm @16@0:8  imp=+0x1a926ca5c
+  -spent B16@0:8  imp=+0x1a9265900
+  -startPlugInRequest:synchronously:subsystemOptions:completion: v44@0:8@16B24@28@?36  imp=+0x1a9266a40
+  -state Q16@0:8  imp=+0x1a926c970
+  -supersededBy @16@0:8  imp=+0x1a92634d0
+  -supersedingUUID @16@0:8  imp=+0x1a9262d08
+  -suspend v16@0:8  imp=+0x1a92658b8
+  -syncService @16@0:8  imp=+0x1a926c8bc
+  -terminating B16@0:8  imp=+0x1a926ca14
+  -unwind:force: v28@0:8Q16B24  imp=+0x1a926bcb8
+  -updateFromForm:host: v32@0:8@16@24  imp=+0x1a92657c0
+  -useBundle:error: B32@0:8@16^@24  imp=+0x1a9263510
+  -useCount I16@0:8  imp=+0x1a926c998
+  -userElection q16@0:8  imp=+0x1a9262fe4
+@class PKLaunchProvider : NSObject <PKLaunchProvider> instanceSize=8
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -add_external_service:path:overlay: i36@0:8i16r*20@28  imp=+0x1a927f4cc
+  -copy_busy_extension_instances:cnt: @32@0:8r^*16Q24  imp=+0x1a927f500
+  -copy_extension_properties: @24@0:8@16  imp=+0x1a927f4f0
+  -copy_extension_properties_for_pid: @20@0:8i16  imp=+0x1a927f4f8
+  -remove_external_service:version:targetq:callback: v48@0:8r*16r*24@32@?40  imp=+0x1a927f4dc
+@class PKLaunchRequest : NSObject <PKLaunchRequest> instanceSize=24
+  ivar +8 _uuid @"NSUUID"
+  ivar +16 _launchPersona @"<PKPersona>"
+  property uuid (T@"NSUUID",C,V_uuid)
+  property launchPersona (T@"<PKPersona>",&,V_launchPersona)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +launchRequestWithUUID:launchPersona: @32@0:8@16@24  imp=+0x1a9285768
+  -.cxx_destruct v16@0:8  imp=+0x1a9285810
+  -_initWithUUID:launchPersona: @32@0:8@16@24  imp=+0x1a92856c0
+  -launchPersona @16@0:8  imp=+0x1a92857fc
+  -setLaunchPersona: v24@0:8@16  imp=+0x1a9285808
+  -setUuid: v24@0:8@16  imp=+0x1a92857f4
+  -uuid @16@0:8  imp=+0x1a92857e8
+@class PKLaunchServicesProvider : NSObject <PKLaunchServicesProvider> instanceSize=8
+  property hasLSDatabaseAccess (TB,R)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -applicationProxyForBundleURL: @24@0:8@16  imp=+0x1a926cd14
+  -defaultApplicationWorkspace @16@0:8  imp=+0x1a926cd48
+  -extensionPointForIdentifier:platform: @32@0:8@16@24  imp=+0x1a926ce18
+  -extensionPointRecordEnumeratorForExtensionPointIdentifier: @24@0:8@16  imp=+0x1a926d078
+  -hasLSDatabaseAccess B16@0:8  imp=+0x1a926cd08
+  -plugInKitProxyForURL: @24@0:8@16  imp=+0x1a926cd7c
+  -plugInKitProxyForUUID: @24@0:8@16  imp=+0x1a926cdb0
+  -plugInRecordEnumerator @16@0:8  imp=+0x1a926cf48
+  -plugInRecordEnumeratorForExtensionPointRecord: @24@0:8@16  imp=+0x1a926d0ec
+  -plugInRecordEnumeratorWithExtensionPointName:platform: @28@0:8@16I24  imp=+0x1a926cf80
+  -plugInRecordForIdentifier: @24@0:8@16  imp=+0x1a926ceb0
+  -plugInRecordForUUID: @24@0:8@16  imp=+0x1a926ce4c
+  -pluginKitProxyForIdentifier: @24@0:8@16  imp=+0x1a926cde4
+@class PKManager : NSObject instanceSize=24
+  ivar +8 _client @"PKDaemonClient"
+  ivar +16 _external @"<PKExternalProviders>"
+  property client (T@"PKDaemonClient",&,V_client)
+  property external (T@"<PKExternalProviders>",R,V_external)
+  +defaultManager @16@0:8  imp=+0x1a92813dc
+  +managerForUser: @20@0:8I16  imp=+0x1a9281468
+  -.cxx_destruct v16@0:8  imp=+0x1a9285584
+  -client @16@0:8  imp=+0x1a9285564
+  -containingAppForExtensionProperties: @24@0:8@16  imp=+0x1a9282fb4
+  -containingAppForPlugInConnectedTo: @24@0:8@16  imp=+0x1a9282e78
+  -containingAppForPlugInWithPid: @20@0:8i16  imp=+0x1a9282f24
+  -external @16@0:8  imp=+0x1a9285578
+  -forceHoldPlugIn:result: v32@0:8@16@?24  imp=+0x1a928312c
+  -forceHoldPlugIn:withError: @32@0:8@16^@24  imp=+0x1a9283bb4
+  -holdPlugInsInApplication:excludingExtensionPoints:result: v40@0:8@16@24@?32  imp=+0x1a9283208
+  -holdPlugInsInApplication:excludingExtensionPoints:withError: @40@0:8@16@24^@32  imp=+0x1a9283490
+  -holdPlugInsInApplication:result: v32@0:8@16@?24  imp=+0x1a92830e0
+  -holdPlugInsInApplication:withError: @32@0:8@16^@24  imp=+0x1a92836e4
+  -holdPlugInsWithExtensionPointName:error: @32@0:8@16^@24  imp=+0x1a9283b78
+  -holdPlugInsWithExtensionPointName:platforms:terminate:error: @44@0:8@16@24B32^@36  imp=+0x1a9283910
+  -holdPlugInsWithExtensionPointName:platforms:terminate:result: v44@0:8@16@24B32@?36  imp=+0x1a92830ec
+  -holdPlugInsWithExtensionPointName:result: v32@0:8@16@?24  imp=+0x1a9283118
+  -holdRequest:extensionPointName:platforms:excludedExtensionPoints:flags:result: v64@0:8@16@24@32@40Q48@?56  imp=+0x1a92842d0
+  -holdRequest:flags:result: v40@0:8@16Q24@?32  imp=+0x1a92842b4
+  -informationForPlugInWithPid: @20@0:8i16  imp=+0x1a9282b4c
+  -initForService: @24@0:8r*16  imp=+0x1a9281574
+  -initForUser: @20@0:8I16  imp=+0x1a92815cc
+  -initWithDaemon: @24@0:8@16  imp=+0x1a9281628
+  -initWithDaemon:externalProviders: @32@0:8@16@24  imp=+0x1a9281698
+  -initWithExternalProviders: @24@0:8@16  imp=+0x1a9281734
+  -registerPlugInAtURL:result: v32@0:8@16@?24  imp=+0x1a92817ac
+  -registerPlugInsInBundle:result: v32@0:8@16@?24  imp=+0x1a9281f50
+  -releaseHold: v24@0:8@16  imp=+0x1a92849dc
+  -releaseHold:flags:withError: B40@0:8@16Q24^@32  imp=+0x1a9284f2c
+  -releaseHold:reply: v32@0:8@16@?24  imp=+0x1a9284c84
+  -releaseHold:withError: B32@0:8@16^@24  imp=+0x1a92852a0
+  -setClient: v24@0:8@16  imp=+0x1a9285570
+  -terminatePlugInAtURL:withError: B32@0:8@16^@24  imp=+0x1a9283de0
+  -terminatePlugInsInApplication:excludingExtensionPoints:result: v40@0:8@16@24@?32  imp=+0x1a92831ec
+  -terminatePlugInsInApplication:excludingExtensionPoints:withError: @40@0:8@16@24^@32  imp=+0x1a9283224
+  -terminatePlugInsInApplication:options:result: v40@0:8@16q24@?32  imp=+0x1a9283138
+  -terminatePlugInsInApplication:options:withError: @40@0:8@16q24^@32  imp=+0x1a9284054
+  -unregisterPlugInAtURL:result: v32@0:8@16@?24  imp=+0x1a9281bd4
+  -unregisterPlugInsInBundle:result: v32@0:8@16@?24  imp=+0x1a92825c0
+  -updateExtensionStatesForPlugIns:result: v32@0:8@16@?24  imp=+0x1a92852ac
+@class PKNSBundleProxy : NSObject <PKNSBundleProxy> instanceSize=16
+  ivar +8 __underlyingNSBundle @"NSBundle"
+  property _underlyingNSBundle (T@"NSBundle",R,V__underlyingNSBundle)
+  property bundleURL (T@"NSURL",R,C)
+  property bundleIdentifier (T@"NSString",R,C)
+  property builtInPlugInsURL (T@"NSURL",R,C)
+  property infoDictionary (T@"NSDictionary",R,C)
+  property localizedInfoDictionary (T@"NSDictionary",R,C)
+  property principalClass (T#,R)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a9280b9c
+  -_underlyingNSBundle @16@0:8  imp=+0x1a9280b90
+  -builtInPlugInsURL @16@0:8  imp=+0x1a9280954
+  -bundleIdentifier @16@0:8  imp=+0x1a9280904
+  -bundleURL @16@0:8  imp=+0x1a92808b4
+  -infoDictionary @16@0:8  imp=+0x1a92809a4
+  -initWithNSBundle: @24@0:8@16  imp=+0x1a9280838
+  -loadAndReturnError: B24@0:8^@16  imp=+0x1a9280a94
+  -localizedInfoDictionary @16@0:8  imp=+0x1a92809f4
+  -localizedStringForKey:value:table: @40@0:8@16@24@32  imp=+0x1a9280ad8
+  -principalClass #16@0:8  imp=+0x1a9280a44
+@class PKPlugInCore : NSObject instanceSize=216
+  ivar +8 _identifier @"NSString"
+  ivar +16 _originalIdentifier @"NSString"
+  ivar +24 _url @"NSURL"
+  ivar +32 _containingUrl @"NSURL"
+  ivar +40 _containingBundleIdentifier @"NSString"
+  ivar +48 _onSystemVolume B
+  ivar +56 _bundleInfoDictionary @"NSDictionary"
+  ivar +64 _plugInDictionary @"NSDictionary"
+  ivar +72 _entitlements @"NSDictionary"
+  ivar +80 _hubProtocolVersion Q
+  ivar +88 _localizedName @"NSString"
+  ivar +96 _localizedShortName @"NSString"
+  ivar +104 _localizedContainingName @"NSString"
+  ivar +112 _localizedFileProviderActionNames @"NSDictionary"
+  ivar +120 _annotations @"NSDictionary"
+  ivar +128 _lastModified q
+  ivar +136 _uuid @"NSUUID"
+  ivar +144 _cdhash @"NSData"
+  ivar +152 _requirement @"NSString"
+  ivar +160 _dataContainerURL @"NSURL"
+  ivar +168 _extensionPointPlatform I
+  ivar +176 _launchPersonas @"NSArray"
+  ivar +184 _isRBManaged B
+  ivar +192 _discoveryInstanceUUID @"NSUUID"
+  ivar +200 _annotationTimestamp Q
+  ivar +208 _external @"<PKExternalProviders>"
+  property identifier (T@"NSString",&,V_identifier)
+  property originalIdentifier (T@"NSString",&,V_originalIdentifier)
+  property url (T@"NSURL",&,V_url)
+  property bundleInfoDictionary (T@"NSDictionary",&,V_bundleInfoDictionary)
+  property plugInDictionary (T@"NSDictionary",&,V_plugInDictionary)
+  property entitlements (T@"NSDictionary",&,V_entitlements)
+  property annotations (T@"NSDictionary",&,V_annotations)
+  property containingUrl (T@"NSURL",C,V_containingUrl)
+  property containingBundleIdentifier (T@"NSString",C,V_containingBundleIdentifier)
+  property launchPersonas (T@"NSArray",&,V_launchPersonas)
+  property oldStyle (TB,R)
+  property path (T@"NSString",R)
+  property containingPath (T@"NSString",R)
+  property onSystemVolume (TB,V_onSystemVolume)
+  property discoveryInstanceUUID (T@"NSUUID",R,V_discoveryInstanceUUID)
+  property attributes (T@"NSDictionary",R)
+  property version (T@"NSString",R)
+  property protocolSpec (T@,R)
+  property principalSpec (T@"NSString",R)
+  property hubProtocolVersion (TQ,V_hubProtocolVersion)
+  property sdkSpec (T@"NSString",R)
+  property localizedName (T@"NSString",R,V_localizedName)
+  property localizedShortName (T@"NSString",R,V_localizedShortName)
+  property localizedContainingName (T@"NSString",C,V_localizedContainingName)
+  property localizedFileProviderActionNames (T@"NSDictionary",R,V_localizedFileProviderActionNames)
+  property lastModified (Tq,V_lastModified)
+  property timestamp (T@"NSDate",R)
+  property uuid (T@"NSUUID",&,V_uuid)
+  property cdhash (T@"NSData",&,V_cdhash)
+  property requirement (T@"NSString",C,V_requirement)
+  property embeddedCodePath (T@"NSString",R)
+  property embeddedProtocolSpec (T@,R)
+  property isAppExtension (TB,R)
+  property isMultiplexed (TB,R)
+  property isHybrid (TB,R)
+  property isDedicated (TB,R)
+  property isData (TB,R)
+  property isRBManaged (TB,V_isRBManaged)
+  property extensionPointPlatform (TI,R,V_extensionPointPlatform)
+  property dataContainerURL (T@"NSURL",R,N,V_dataContainerURL)
+  property bootInstance (T@"NSString",R,N)
+  property annotationTimestamp (TQ,N,V_annotationTimestamp)
+  property shouldTerminateOnHold (TB,R)
+  property external (T@"<PKExternalProviders>",R,N,V_external)
+  +readSDKDictionary:forPlatform:externalProviders: @36@0:8@16I24@28  imp=+0x1a9274cf4
+  -.cxx_destruct v16@0:8  imp=+0x1a9263e50
+  -_loadLocalizedFileProviderActionNames v16@0:8  imp=+0x1a927788c
+  -_loadLocalizedNames v16@0:8  imp=+0x1a92774a8
+  -_localizedFileProviderActionNamesForPKDict:fromBundle: @32@0:8@16@24  imp=+0x1a9277a18
+  -annotationTimestamp Q16@0:8  imp=+0x1a9277f5c
+  -annotations @16@0:8  imp=+0x1a926322c
+  -attribute: @24@0:8@16  imp=+0x1a92769c8
+  -attributes @16@0:8  imp=+0x1a9262b80
+  -augmentInterface: @24@0:8@16  imp=+0x1a9276bc0
+  -bootInstance @16@0:8  imp=+0x1a9275ea8
+  -bundleInfoDictionary @16@0:8  imp=+0x1a9262fd8
+  -canonicalize v16@0:8  imp=+0x1a9274bc0
+  -cdhash @16@0:8  imp=+0x1a9277f0c
+  -containingBundleIdentifier @16@0:8  imp=+0x1a9277ea0
+  -containingPath @16@0:8  imp=+0x1a92763cc
+  -containingUrl @16@0:8  imp=+0x1a9277e94
+  -dataContainerURL @16@0:8  imp=+0x1a9277f24
+  -debugDescription @16@0:8  imp=+0x1a9277d40
+  -description @16@0:8  imp=+0x1a9277c4c
+  -diagnose @16@0:8  imp=+0x1a9275de8
+  -discoveryInstanceUUID @16@0:8  imp=+0x1a9277ee4
+  -embeddedCodePath @16@0:8  imp=+0x1a9276514
+  -embeddedProtocolSpec @16@0:8  imp=+0x1a92765dc
+  -entitlements @16@0:8  imp=+0x1a9277ed0
+  -export: @24@0:8^@16  imp=+0x1a9275880
+  -extensionPointPlatform I16@0:8  imp=+0x1a9277f54
+  -external @16@0:8  imp=+0x1a9277f6c
+  -hasEntitlement: B24@0:8@16  imp=+0x1a9276ab8
+  -hash Q16@0:8  imp=+0x1a9262bc4
+  -hubProtocolVersion Q16@0:8  imp=+0x1a9277ef0
+  -identifier @16@0:8  imp=+0x1a9262b18
+  -infoKey: @24@0:8@16  imp=+0x1a9276800
+  -init @16@0:8  imp=+0x1a9262134
+  -initWithExternalProviders: @24@0:8@16  imp=+0x1a927403c
+  -initWithForm:externalProviders: @32@0:8@16@24  imp=+0x1a92741dc
+  -initWithName:extensionPointPlatform:url:bundleInfo:uuid:discoveryInstanceUUID:extensionPointCache:externalProviders: @76@0:8@16I24@28@36@44@52@60@68  imp=+0x1a92740b8
+  -isAppExtension B16@0:8  imp=+0x1a9276630
+  -isData B16@0:8  imp=+0x1a9276720
+  -isDedicated B16@0:8  imp=+0x1a92766d8
+  -isEqual: B24@0:8@16  imp=+0x1a9262c1c
+  -isHybrid B16@0:8  imp=+0x1a9276698
+  -isMultiplexed B16@0:8  imp=+0x1a9276690
+  -isRBManaged B16@0:8  imp=+0x1a9277f2c
+  -lastModified q16@0:8  imp=+0x1a9277f04
+  -launchPersonas @16@0:8  imp=+0x1a9277f40
+  -localizedContainingName @16@0:8  imp=+0x1a9277ef8
+  -localizedFileProviderActionNames @16@0:8  imp=+0x1a9277430
+  -localizedInfoDictionaryForKeys:completion: v32@0:8@16@?24  imp=+0x1a9276d8c
+  -localizedName @16@0:8  imp=+0x1a92771a0
+  -localizedShortName @16@0:8  imp=+0x1a92772e8
+  -mergeProxyPass:into: @32@0:8@16@24  imp=+0x1a9275798
+  -mergeSDKDictionary:intoExtensionDictionary: @32@0:8@16@24  imp=+0x1a9275204
+  -mergeSharedResources:into: @32@0:8@16@24  imp=+0x1a92757f4
+  -newAttributesFrom: @24@0:8@16  imp=+0x1a9274964
+  -newMultiplesFrom: @24@0:8@16  imp=+0x1a92747dc
+  -newPlugInKitDictionaryFrom: @24@0:8@16  imp=+0x1a9274560
+  -normalizeInfoDictionary: @24@0:8@16  imp=+0x1a92627a8
+  -oldStyle B16@0:8  imp=+0x1a92762f4
+  -onSystemVolume B16@0:8  imp=+0x1a9277eb4
+  -originalIdentifier @16@0:8  imp=+0x1a9277e88
+  -path @16@0:8  imp=+0x1a927637c
+  -plugInDictionary @16@0:8  imp=+0x1a9262ab8
+  -pluginKey: @24@0:8@16  imp=+0x1a9276950
+  -principalSpec @16@0:8  imp=+0x1a927647c
+  -protocolSpec @16@0:8  imp=+0x1a927641c
+  -requirement @16@0:8  imp=+0x1a9277f18
+  -resolveSDKWithInfoPlist:extensionPointCache: @32@0:8@16@24  imp=+0x1a9275128
+  -sdkDictionaryWithInfoPlist:extensionPointCache: @32@0:8@16@24  imp=+0x1a9274f24
+  -sdkOnlyKeyPaths @16@0:8  imp=+0x1a927565c
+  -sdkSpec @16@0:8  imp=+0x1a92764dc
+  -setAnnotation:value: v32@0:8@16@24  imp=+0x1a9264718
+  -setAnnotationTimestamp: v24@0:8Q16  imp=+0x1a9277f64
+  -setAnnotations: v24@0:8@16  imp=+0x1a9262afc
+  -setBundleInfoDictionary: v24@0:8@16  imp=+0x1a9277ec0
+  -setCdhash: v24@0:8@16  imp=+0x1a9262adc
+  -setContainingBundleIdentifier: v24@0:8@16  imp=+0x1a9277eac
+  -setContainingUrl: v24@0:8@16  imp=+0x1a9262d00
+  -setDictionaries: B24@0:8@16  imp=+0x1a9262894
+  -setEntitlements: v24@0:8@16  imp=+0x1a9277edc
+  -setHubProtocolVersion: v24@0:8Q16  imp=+0x1a9262acc
+  -setIdentifier: v24@0:8@16  imp=+0x1a9262798
+  -setIsRBManaged: v20@0:8B16  imp=+0x1a9277f38
+  -setLastModified: v24@0:8q16  imp=+0x1a9262aec
+  -setLaunchPersonas: v24@0:8@16  imp=+0x1a9277f4c
+  -setLocalizedContainingName: v24@0:8@16  imp=+0x1a9262b04
+  -setOnSystemVolume: v20@0:8B16  imp=+0x1a9262af4
+  -setOriginalIdentifier: v24@0:8@16  imp=+0x1a9262ad4
+  -setPlugInDictionary: v24@0:8@16  imp=+0x1a9277ec8
+  -setRequirement: v24@0:8@16  imp=+0x1a9262ae4
+  -setUrl: v24@0:8@16  imp=+0x1a92627a0
+  -setUuid: v24@0:8@16  imp=+0x1a9262ac4
+  -setupWithForm: B24@0:8@16  imp=+0x1a9262180
+  -setupWithName:extensionPointPlatform:url:bundleInfo:uuid:discoveryInstanceUUID:extensionPointCache: B68@0:8@16I24@28@36@44@52@60  imp=+0x1a9274250
+  -shouldTerminateOnHold B16@0:8  imp=+0x1a92767b8
+  -timestamp @16@0:8  imp=+0x1a9276770
+  -updateFromForm: v24@0:8@16  imp=+0x1a9276004
+  -url @16@0:8  imp=+0x1a9263504
+  -useBundle:error: B32@0:8@16^@24  imp=+0x1a92774a0
+  -usesHostPersona B16@0:8  imp=+0x1a9276b0c
+  -uuid @16@0:8  imp=+0x1a9262bb8
+  -valueForEntitlement: @24@0:8@16  imp=+0x1a9276a40
+  -version @16@0:8  imp=+0x1a9262b48
+@class PKPlugInProxy : PKBundleProxy <PKPlugInProxy> instanceSize=16
+  property pluginUUID (T@"NSUUID",R,N)
+  property containingBundle (T@"<PKBundleProxy>",R,N)
+  property pluginIdentifier (T@"NSString",R,N)
+  property registrationDate (T@"NSDate",R,N)
+  property onSystemPartition (TB,R,N,GisOnSystemPartition)
+  property originalIdentifier (T@"NSString",R,N)
+  property infoPlist (T@"NSDictionary",R,N)
+  property platform (T@"NSNumber",R,N)
+  property extensionPoint (T@"<PKExtensionPointProxy>",R,N)
+  property launchPersonas (T@"NSArray",R,N)
+  property pluginKitDictionary (T@"NSDictionary",R,N)
+  property bundleURL (T@"NSURL",R,N)
+  property bundleIdentifier (T@"NSString",R,N)
+  property localizedName (T@"NSString",R,C,N)
+  property entitlements (T@"NSDictionary",R,N)
+  property dataContainerURL (T@"NSURL",R,N)
+  property bundleVersion (T@"NSString",R,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -containingBundle @16@0:8  imp=+0x1a9264e28
+  -extensionPoint @16@0:8  imp=+0x1a9265044
+  -infoPlist @16@0:8  imp=+0x1a9264fa4
+  -initWithLSPlugInKitProxy: @24@0:8@16  imp=+0x1a9264da0
+  -initWithURL: @24@0:8@16  imp=+0x1a9264c78
+  -initWithUUID: @24@0:8@16  imp=+0x1a9264d0c
+  -isOnSystemPartition B16@0:8  imp=+0x1a9264f18
+  -launchPersonas @16@0:8  imp=+0x1a9265094
+  -objectForInfoDictionaryKey:ofClass:inScope: @40@0:8@16#24Q32  imp=+0x1a9265134
+  -originalIdentifier @16@0:8  imp=+0x1a9264f54
+  -platform @16@0:8  imp=+0x1a9264ff4
+  -pluginIdentifier @16@0:8  imp=+0x1a9264e78
+  -pluginKitDictionary @16@0:8  imp=+0x1a92650e4
+  -pluginUUID @16@0:8  imp=+0x1a9264dd8
+  -registrationDate @16@0:8  imp=+0x1a9264ec8
+@class PKPlugInRecordProxy : NSObject <PKPlugInRecordProxy> instanceSize=16
+  ivar +8 _lsRecord @"LSApplicationExtensionRecord"
+  property lsRecord (T@"LSApplicationExtensionRecord",&,N,V_lsRecord)
+  property localizedName (T@"NSString",R)
+  property localizedShortName (T@"NSString",R)
+  property bundleIdentifier (T@"NSString",R)
+  property bundleVersion (T@"NSString",R)
+  property uniqueIdentifier (T@"NSUUID",R)
+  property compatibilityObject (T@"<PKPlugInProxy>",R)
+  property entitlements (T@"<PKPropertyList>",R)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a9273ec4
+  -bundleIdentifier @16@0:8  imp=+0x1a9273d20
+  -bundleVersion @16@0:8  imp=+0x1a9273d70
+  -compatibilityObject @16@0:8  imp=+0x1a9273e10
+  -entitlements @16@0:8  imp=+0x1a9273e60
+  -initWithBundleIdentifier:error: @32@0:8@16^@24  imp=+0x1a9273bc8
+  -initWithUUID:error: @32@0:8@16^@24  imp=+0x1a9273b10
+  -localizedName @16@0:8  imp=+0x1a9273c80
+  -localizedShortName @16@0:8  imp=+0x1a9273cd0
+  -lsRecord @16@0:8  imp=+0x1a9273eb0
+  -setLsRecord: v24@0:8@16  imp=+0x1a9273eb8
+  -uniqueIdentifier @16@0:8  imp=+0x1a9273dc0
+@class PKProcessAssertionProxy : NSObject <PKProcessAssertionProxy> instanceSize=16
+  ivar +8 __bksObject @"BKSProcessAssertion"
+  property _bksObject (T@"BKSProcessAssertion",R,V__bksObject)
+  property invalidationHandler (T@?,C,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a9271f78
+  -_bksObject @16@0:8  imp=+0x1a9271f6c
+  -acquire B16@0:8  imp=+0x1a9271ef0
+  -initWithPID:flags:reason:name: @36@0:8i16I20I24@28  imp=+0x1a9271d90
+  -invalidate v16@0:8  imp=+0x1a9271f2c
+  -invalidationHandler @?16@0:8  imp=+0x1a9271e40
+  -setInvalidationHandler: v24@0:8@?16  imp=+0x1a9271e90
+@class PKRunningBoardProvider : NSObject <PKRunningBoardProvider> instanceSize=8
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -plugInHandshakeComplete v16@0:8  imp=+0x1a9273ff4
+  -processAssertionWithPID:flags:reason:name: @36@0:8i16I20I24@28  imp=+0x1a9273ed0
+  -taskStatesForPID:error: @32@0:8@16^@24  imp=+0x1a9273f58
+@class PKSandboxExtension : NSObject instanceSize=32
+  ivar +8 _handle q
+  ivar +16 _token @"NSString"
+  ivar +24 _provider @"<PKSandboxProvider>"
+  property token (T@"NSString",R,N,V_token)
+  property provider (T@"<PKSandboxProvider>",R,N,V_provider)
+  property handle (Tq,V_handle)
+  -.cxx_destruct v16@0:8  imp=+0x1a9263e0c
+  -consume v16@0:8  imp=+0x1a92639a4
+  -dealloc v16@0:8  imp=+0x1a9263d00
+  -expel v16@0:8  imp=+0x1a9263d48
+  -handle q16@0:8  imp=+0x1a9263a88
+  -initWithExtension:provider: @32@0:8@16@24  imp=+0x1a92806a4
+  -isEqual: B24@0:8@16  imp=+0x1a9280754
+  -provider @16@0:8  imp=+0x1a9280808
+  -setHandle: v24@0:8q16  imp=+0x1a9263a98
+  -token @16@0:8  imp=+0x1a9263a90
+@class PKSandboxProvider : NSObject <PKSandboxProvider> instanceSize=8
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -sandbox_container_path_for_pid:buffer:bufsize: i36@0:8i16*20Q28  imp=+0x1a9280684
+  -sandbox_extension_consume: q24@0:8r*16  imp=+0x1a9280674
+  -sandbox_extension_issue_file:path:flags: *36@0:8r*16r*24I32  imp=+0x1a9280694
+  -sandbox_extension_release: i24@0:8q16  imp=+0x1a928067c
+  -sandbox_init_with_parameters:flags:parameters:errorbuf: i48@0:8r*16Q24r^*32^*40  imp=+0x1a9280660
+@class PKService : NSObject <NSXPCListenerDelegate> instanceSize=96
+  ivar +8 _shared B
+  ivar +9 _isSystemService B
+  ivar +12 _extensionPointPlatform I
+  ivar +16 _personalityLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +24 _solePersonality @"PKServicePersonality"
+  ivar +32 _timerQueue @"NSObject<OS_dispatch_queue>"
+  ivar +40 _delegate @"<PKServiceDelegate>"
+  ivar +48 _serviceListener @"NSXPCListener"
+  ivar +56 _personalities @"NSMutableDictionary"
+  ivar +64 _subsystems @"NSArray"
+  ivar +72 _terminationTimer @"NSObject<OS_dispatch_source>"
+  ivar +80 _firstHostRequestTimer @"NSObject<OS_dispatch_source>"
+  ivar +88 _external @"<PKExternalProviders>"
+  property extensionPointPlatform (TI,V_extensionPointPlatform)
+  property personalityLock (T{os_unfair_lock_s=I},R,V_personalityLock)
+  property timerQueue (T@"NSObject<OS_dispatch_queue>",R,V_timerQueue)
+  property serviceListener (T@"NSXPCListener",&,V_serviceListener)
+  property personalities (T@"NSMutableDictionary",&,V_personalities)
+  property solePersonality (T@"PKServicePersonality",&,V_solePersonality)
+  property subsystems (T@"NSArray",&,V_subsystems)
+  property shared (TB,V_shared)
+  property isSystemService (TB,V_isSystemService)
+  property terminationTimer (T@"NSObject<OS_dispatch_source>",&,V_terminationTimer)
+  property firstHostRequestTimer (T@"NSObject<OS_dispatch_source>",&,V_firstHostRequestTimer)
+  property external (T@"<PKExternalProviders>",R,N,V_external)
+  property endpoint (T@"NSXPCListenerEndpoint",R)
+  property delegate (T@"<PKServiceDelegate>",&,V_delegate)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +_defaultRun:arguments: i28@0:8i16r^*20  imp=+0x1a927b508
+  +defaultService @16@0:8  imp=+0x1a927af08
+  +main v16@0:8  imp=+0x1a927aadc
+  -.cxx_destruct v16@0:8  imp=+0x1a927d484
+  -_prepareToRunUsingServiceListener: v20@0:8B16  imp=+0x1a927b2f8
+  -_processDefaultSubsystemName: B24@0:8@16  imp=+0x1a927b5f0
+  -beganUsingServicePersonality: v24@0:8@16  imp=+0x1a927a7b8
+  -cancelTermination v16@0:8  imp=+0x1a927d280
+  -checkEnvironment: v24@0:8@16  imp=+0x1a927cd64
+  -checkIn v16@0:8  imp=+0x1a927a77c
+  -configuredSubsystemList @16@0:8  imp=+0x1a927bd40
+  -connectionForPlugInNamed: @24@0:8@16  imp=+0x1a927c5b0
+  -defaultsForPlugInNamed: @24@0:8@16  imp=+0x1a927c470
+  -delegate @16@0:8  imp=+0x1a927d3dc
+  -discoverSubsystemNamed:options:required: @36@0:8@16@24B32  imp=+0x1a927c15c
+  -discoverSubsystems v16@0:8  imp=+0x1a927b9e0
+  -embeddedPrincipalForPlugInNamed: @24@0:8@16  imp=+0x1a927c560
+  -endpoint @16@0:8  imp=+0x1a927ad28
+  -extensionPointPlatform I16@0:8  imp=+0x1a927d3b8
+  -external @16@0:8  imp=+0x1a927d47c
+  -firstHostRequestTimer @16@0:8  imp=+0x1a927d468
+  -hostPrincipalForPlugInNamed: @24@0:8@16  imp=+0x1a927c510
+  -init @16@0:8  imp=+0x1a927ad78
+  -initWithExternalProviders: @24@0:8@16  imp=+0x1a927adc4
+  -isSystemService B16@0:8  imp=+0x1a927d440
+  -launchContainingApplicationForPlugInNamed: v24@0:8@16  imp=+0x1a927c424
+  -listener:shouldAcceptNewConnection: B32@0:8@16@24  imp=+0x1a927b524
+  -mergeSubsystemList:from: v32@0:8@16@24  imp=+0x1a927c020
+  -mergeSubsystems:from: v32@0:8@16@24  imp=+0x1a927be3c
+  -personalities @16@0:8  imp=+0x1a927d404
+  -personalityLock {os_unfair_lock_s=I}16@0:8  imp=+0x1a927d3c8
+  -personalityNamed: @24@0:8@16  imp=+0x1a927c6e4
+  -personalityNamed:forHostPid: @28@0:8@16i24  imp=+0x1a927c7d0
+  -plugInPrincipalForPlugInNamed: @24@0:8@16  imp=+0x1a927c4c0
+  -registerPersonality: v24@0:8@16  imp=+0x1a927c8a0
+  -run v16@0:8  imp=+0x1a92881a8
+  -runUsingServiceListener: v20@0:8B16  imp=+0x1a927b01c
+  -scheduleTermination: v24@0:8d16  imp=+0x1a927cf9c
+  -serviceListener @16@0:8  imp=+0x1a927d3f0
+  -setDelegate: v24@0:8@16  imp=+0x1a927d3e8
+  -setExtensionPointPlatform: v20@0:8I16  imp=+0x1a927d3c0
+  -setFirstHostRequestTimer: v24@0:8@16  imp=+0x1a927d474
+  -setIsSystemService: v20@0:8B16  imp=+0x1a927d44c
+  -setPersonalities: v24@0:8@16  imp=+0x1a927d410
+  -setServiceListener: v24@0:8@16  imp=+0x1a927d3fc
+  -setShared: v20@0:8B16  imp=+0x1a927d438
+  -setSolePersonality: v24@0:8@16  imp=+0x1a927c600
+  -setSubsystems: v24@0:8@16  imp=+0x1a927d424
+  -setTerminationTimer: v24@0:8@16  imp=+0x1a927d460
+  -shared B16@0:8  imp=+0x1a927d42c
+  -solePersonality @16@0:8  imp=+0x1a927c654
+  -subsystems @16@0:8  imp=+0x1a927d418
+  -terminationTimer @16@0:8  imp=+0x1a927d454
+  -timerQueue @16@0:8  imp=+0x1a927d3d0
+  -unregisterPersonality: B24@0:8@16  imp=+0x1a927cb48
+@class PKServiceDefaults : NSUserDefaults instanceSize=48
+  ivar +40 _personality @"PKServicePersonality"
+  property personality (T@"PKServicePersonality",W,V_personality)
+  -.cxx_destruct v16@0:8  imp=+0x1a927db00
+  -initWithPersonality: @24@0:8@16  imp=+0x1a927d8d8
+  -objectForKey: @24@0:8@16  imp=+0x1a927d948
+  -personality @16@0:8  imp=+0x1a927dab8
+  -setObject:forKey: v32@0:8@16@24  imp=+0x1a927d9d0
+  -setPersonality: v24@0:8@16  imp=+0x1a927daec
+  -synchronize B16@0:8  imp=+0x1a927da68
+@class PKServicePersonality : PKPlugInCore <PKCorePlugInProtocol, PKSubsystemServicePersonality> instanceSize=264
+  ivar +216 _plugInPrincipal @
+  ivar +224 _hostPrincipal @
+  ivar +232 _embeddedPrincipal @
+  ivar +240 _connection @"NSXPCConnection"
+  ivar +248 _preferences @"NSUserDefaults"
+  ivar +256 _service @"PKService"
+  property service (T@"PKService",R,N,V_service)
+  property plugInPrincipal (T@,&,V_plugInPrincipal)
+  property hostPrincipal (T@,&,V_hostPrincipal)
+  property embeddedPrincipal (T@,&,V_embeddedPrincipal)
+  property connection (T@"NSXPCConnection",&,V_connection)
+  property preferences (T@"NSUserDefaults",&,V_preferences)
+  property _userInfo (T@"NSDictionary",C,D)
+  property identifier (T@"NSString",R)
+  property version (T@"NSString",R)
+  property url (T@"NSURL",R)
+  property uuid (T@"NSUUID",R)
+  property bundleInfoDictionary (T@"NSDictionary",R)
+  property plugInDictionary (T@"NSDictionary",R)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a927a62c
+  -beginUsingPlugIn:ready: v32@0:8@16@?24  imp=+0x1a9279634
+  -cleanExitTimeout d16@0:8  imp=+0x1a9279f04
+  -connection @16@0:8  imp=+0x1a927a5e0
+  -defaultPrincipalObject @16@0:8  imp=+0x1a9279df8
+  -description @16@0:8  imp=+0x1a927a4d8
+  -embeddedPrincipal @16@0:8  imp=+0x1a927a5c4
+  -findProtocol: @24@0:8@16  imp=+0x1a9279b90
+  -hostHasControl v16@0:8  imp=+0x1a9279db0
+  -hostPrincipal @16@0:8  imp=+0x1a927a5a8
+  -initWithConnection:service: @32@0:8@16@24  imp=+0x1a9278050
+  -plugInPrincipal @16@0:8  imp=+0x1a927a58c
+  -preferences @16@0:8  imp=+0x1a927a5fc
+  -prefsObjectForKey:inPlugIn:result: v40@0:8@16@24@?32  imp=+0x1a927a388
+  -prefsSetObject:forKey:inPlugIn:result: v48@0:8@16@24@32@?40  imp=+0x1a927a42c
+  -prepareUsing:reply: v32@0:8@16@?24  imp=+0x1a9278a10
+  -prepareUsingPlugIn:hostProtocol:reply: v40@0:8@16@24@?32  imp=+0x1a927943c
+  -service @16@0:8  imp=+0x1a927a618
+  -setConnection: v24@0:8@16  imp=+0x1a927a5f0
+  -setEmbeddedContext: v24@0:8@16  imp=+0x1a9279dac
+  -setEmbeddedPrincipal: v24@0:8@16  imp=+0x1a927a5d4
+  -setHostPrincipal: v24@0:8@16  imp=+0x1a927a5b8
+  -setPlugInPrincipal: v24@0:8@16  imp=+0x1a927a59c
+  -setPreferences: v24@0:8@16  imp=+0x1a927a60c
+  -setupWithIdentifier:extensionPointPlatform: @28@0:8@16I24  imp=+0x1a92787e4
+  -shutdownPlugIn v16@0:8  imp=+0x1a927a0f8
+@class PKSystemProvider : NSObject <PKSystemProvider> instanceSize=8
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -CFRunLoopRun v16@0:8  imp=+0x1a9264978
+  -access:amode: i28@0:8r*16i24  imp=+0x1a9264994
+  -exit: v20@0:8i16  imp=+0x1a9264964
+  -getenv: r*24@0:8r*16  imp=+0x1a926497c
+  -getpid i16@0:8  imp=+0x1a9264990
+  -getpwuid: ^{passwd=**IIq****q}20@0:8I16  imp=+0x1a9264988
+  -getuid I16@0:8  imp=+0x1a9264984
+  -xpc_transaction_exit_clean v16@0:8  imp=+0x1a92649a0
+  -xpc_transaction_interrupt_clean_exit v16@0:8  imp=+0x1a92649a4
+@class PKXPCObject : NSObject <NSSecureCoding> instanceSize=16
+  ivar +8 _object @"NSObject<OS_xpc_object>"
+  property object (T@"NSObject<OS_xpc_object>",&,V_object)
+  +object: @24@0:8@16  imp=+0x1a9280ecc
+  +supportsSecureCoding B16@0:8  imp=+0x1a9281144
+  -.cxx_destruct v16@0:8  imp=+0x1a9281160
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a928109c
+  -initWithCoder: @24@0:8@16  imp=+0x1a9280f9c
+  -initWithObject: @24@0:8@16  imp=+0x1a9280f2c
+  -object @16@0:8  imp=+0x1a928114c
+  -setObject: v24@0:8@16  imp=+0x1a9281158

@@ -1,0 +1,3 @@
+@class FIFinderSyncExtensionHost : NSExtensionContext instanceSize=24
+  +_allowedItemPayloadClasses @16@0:8  imp=+0x1df474c38
+  -initWithInputItems: @24@0:8@16  imp=+0x1df474ad8
