@@ -13,7 +13,7 @@ extern "C" NSImage *WsbsdCoreTypesIcon(NSString *file, CGFloat pt);
 @interface NSObject (TFSupport) + (void)roundWindow:(NSWindow *)w radius:(int)r; @end
 
 /* ---------- the window controller ---------- */
-@interface TBrowserWindowController : NSWindowController <TIconViewDelegate, TSidebarDelegate, TPathBarDelegate, NSWindowDelegate> { NSURL *_url; NSMutableArray<NSString *> *_history; NSInteger _hi; TToolbarView *_toolbar; TSidebarView *_sidebar; TIconView *_icons; TListView *_list; TPathBarView *_pathBar; TWindowTrim *_trim; NSMenu *_ctxMenu; NSString *_filter; NSArray *_selection; NSInteger _mode; }
+@interface TBrowserWindowController : NSWindowController <TIconViewDelegate, TSidebarDelegate, TPathBarDelegate, NSWindowDelegate> { NSURL *_url; NSMutableArray<NSString *> *_history; NSInteger _hi; TToolbarView *_toolbar; TSidebarView *_sidebar; TIconView *_icons; TListView *_list; TColumnView *_cols; TPathBarView *_pathBar; TWindowTrim *_trim; NSMenu *_ctxMenu; NSString *_filter; NSArray *_selection; NSInteger _mode; }
 + (instancetype)newBrowserWithPath:(NSString *)path;
 - (void)goToPath:(NSString *)path;
 @end
@@ -36,6 +36,7 @@ static NSString *UniquePath(NSString *dir, NSString *base, NSString *ext)
 	[w setReleasedWhenClosed: NO]; [w setOpaque: NO]; [w setBackgroundColor: [NSColor clearColor]]; [w setMinSize: NSMakeSize(560, 320)]; [self setWindow: w]; [w setDelegate: self]; [w setWindowController: self]; NSView *cv = [w contentView];
 	_icons = [[TIconView alloc] initWithFrame: NSZeroRect]; _icons->delegate = self; [cv addSubview: _icons];
 	_list = [[TListView alloc] initWithFrame: NSZeroRect]; _list->delegate = self; [_list setHidden: YES]; [cv addSubview: _list];
+	_cols = [[TColumnView alloc] initWithFrame: NSZeroRect]; _cols->delegate = self; [_cols setHidden: YES]; [cv addSubview: _cols];
 	_sidebar = [[TSidebarView alloc] initWithFrame: NSZeroRect]; _sidebar->delegate = self; [cv addSubview: _sidebar];
 	_toolbar = [[TToolbarView alloc] initWithFrame: NSZeroRect]; _toolbar->target = self; [cv addSubview: _toolbar];
 	_pathBar = [[TPathBarView alloc] initWithFrame: NSZeroRect]; _pathBar->delegate = self; [cv addSubview: _pathBar]; _history = [NSMutableArray array]; _hi = -1;
@@ -49,15 +50,15 @@ static NSString *UniquePath(NSString *dir, NSString *base, NSString *ext)
 - (NSMenu *)actionMenu { return _ctxMenu; }
 - (void)cmdToggleSearch:(id)s { [_toolbar setSearching: !_toolbar->searching]; if (!_toolbar->searching) [self searchChanged: @""]; }
 - (void)searchChanged:(NSString *)text { _filter = [text length] ? text : nil; _icons->filter = _filter; _list->filter = _filter; [self reload]; }
-- (id)_view { return _mode == 1 ? (id)_list : (id)_icons; }
+- (id)_view { return _mode == 1 ? (id)_list : _mode == 2 ? (id)_cols : (id)_icons; }
 - (void)_show:(NSString *)path
 {
 	_url = [NSURL fileURLWithPath: path]; NSString *name = [path isEqual: @"/"] ? @"Macintosh HD" : [path lastPathComponent]; [[self window] setTitle: name]; _toolbar->title = name;
 	_toolbar->canBack = _hi > 0; _toolbar->canForward = _hi + 1 < (NSInteger)[_history count]; _sidebar->current = path; [_pathBar setPath: path]; [self reload]; [_toolbar setNeedsDisplay: YES]; [_sidebar setNeedsDisplay: YES];
 }
-- (void)reload { NSString *p = [_url path]; if (_mode == 1) [_list setFolder: p]; else [_icons setFolder: p]; _selection = @[]; [[self window] makeFirstResponder: [self _view]]; }
+- (void)reload { NSString *p = [_url path]; if (_mode == 1) [_list setFolder: p]; else if (_mode == 2) [_cols setFolder: p]; else [_icons setFolder: p]; _selection = @[]; [[self window] makeFirstResponder: [self _view]]; }
 - (void)goToPath:(NSString *)path { BOOL d = NO; if (![[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &d] || !d) return; if (_hi >= 0 && [_history[_hi] isEqual: path]) return; [_history removeObjectsInRange: NSMakeRange(_hi + 1, [_history count] - _hi - 1)]; [_history addObject: path]; _hi = [_history count] - 1; [self _show: path]; }
-- (void)_setMode:(NSInteger)m { _mode = m; _toolbar->mode = m; [_icons setHidden: m == 1]; [_list setHidden: m != 1]; [self reload]; [_toolbar setNeedsDisplay: YES]; }  /* the column and gallery views come later: the icon view stands in */
+- (void)_setMode:(NSInteger)m { _mode = m; _toolbar->mode = m; [_icons setHidden: m == 1 || m == 2]; [_list setHidden: m != 1]; [_cols setHidden: m != 2]; [self reload]; [_toolbar setNeedsDisplay: YES]; }  /* the column and gallery views come later: the icon view stands in */
 /* navigation */
 - (void)cmdBack:(id)s { if (_hi > 0) { _hi--; [self _show: _history[_hi]]; } }
 - (void)cmdForward:(id)s { if (_hi + 1 < (NSInteger)[_history count]) { _hi++; [self _show: _history[_hi]]; } }
@@ -82,8 +83,8 @@ static NSString *UniquePath(NSString *dir, NSString *base, NSString *ext)
 {
 	NSRect b = [[[self window] contentView] bounds]; CGFloat W = b.size.width, H = b.size.height, sw = [_sidebar isHidden] ? 0 : 238, pb = [_pathBar isHidden] ? 0 : 30;
 	NSRect (^R)(CGFloat, CGFloat, CGFloat, CGFloat) = ^NSRect(CGFloat x, CGFloat top, CGFloat w, CGFloat h) { return NSMakeRect(x, H - top - h, w, h); };
-	[_sidebar setFrame: R(0, 0, sw, H)]; [_toolbar setFrame: R(sw, 0, W - sw, 52)]; NSRect c = R(sw, 52, W - sw, H - 52 - pb); [_icons setFrame: c]; [_list setFrame: c]; [_pathBar setFrame: R(sw, H - pb, W - sw, pb)]; [_trim setFrame: b];
-	for (NSView *v in @[ _sidebar, _toolbar, _icons, _list, _pathBar, _trim ]) [v setNeedsDisplay: YES];
+	[_sidebar setFrame: R(0, 0, sw, H)]; [_toolbar setFrame: R(sw, 0, W - sw, 52)]; NSRect c = R(sw, 52, W - sw, H - 52 - pb); [_icons setFrame: c]; [_list setFrame: c]; [_cols setFrame: c]; [_pathBar setFrame: R(sw, H - pb, W - sw, pb)]; [_trim setFrame: b];
+	for (NSView *v in @[ _sidebar, _toolbar, _icons, _list, _cols, _pathBar, _trim ]) [v setNeedsDisplay: YES];
 }
 /* what the file operations act on */
 - (NSArray *)_targets { return [_selection count] ? _selection : @[]; }

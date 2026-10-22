@@ -250,6 +250,81 @@ static const CGFloat kRow = 24, kHead = 28;
 }
 @end
 
+/* ---------- the column view ---------- */
+static const CGFloat kColW = 240, kColRow = 24;
+@implementation TColumnView
+- (BOOL)isFlipped { return YES; } - (BOOL)acceptsFirstResponder { return YES; } - (BOOL)acceptsFirstMouse:(NSEvent *)e { return YES; }
+- (NSMutableDictionary *)_load:(NSString *)dir
+{
+	NSFileManager *fm = [NSFileManager defaultManager]; NSMutableArray *items = [NSMutableArray array];
+	for (NSString *n in [[fm contentsOfDirectoryAtPath: dir error: NULL] sortedArrayUsingSelector: @selector(localizedStandardCompare:)]) {
+		if ([n hasPrefix: @"."]) continue; NSString *p = [dir stringByAppendingPathComponent: n]; BOOL d = NO; [fm fileExistsAtPath: p isDirectory: &d]; if (d && [[p pathExtension] isEqual: @"app"]) d = NO;
+		[items addObject: @{ @"name": n, @"path": p, @"dir": @(d) }];
+	}
+	return [@{ @"dir": dir, @"items": items, @"sel": @(-1), @"off": @0.0 } mutableCopy];
+}
+- (void)setFolder:(NSString *)folder { _cols = [NSMutableArray arrayWithObject: [self _load: folder]]; _hoff = 0; [self setNeedsDisplay: YES]; [self _notify]; }
+- (NSString *)_selPath { NSMutableDictionary *c = [_cols lastObject]; NSInteger s = [c[@"sel"] integerValue]; if (s < 0) { if ([_cols count] > 1) { NSMutableDictionary *p = _cols[[_cols count] - 2]; return p[@"items"][[p[@"sel"] integerValue]][@"path"]; } return nil; } return c[@"items"][s][@"path"]; }
+- (NSArray *)selectedPaths { NSString *p = [self _selPath]; return p ? @[ p ] : @[]; }
+- (void)_notify { if ([delegate respondsToSelector: @selector(iconViewSelectionChanged:)]) [delegate iconViewSelectionChanged: [self selectedPaths]]; }
+- (CGFloat)_previewW { return kColW; }
+- (CGFloat)_totalW { NSMutableDictionary *c = [_cols lastObject]; BOOL pre = [c[@"sel"] integerValue] >= 0 && ![c[@"items"][[c[@"sel"] integerValue]][@"dir"] boolValue]; return ([_cols count] + (pre ? 1 : 0)) * kColW; }
+- (void)_fit { CGFloat w = [self bounds].size.width, t = [self _totalW]; _hoff = MAX(0, t - w); }
+- (void)drawRect:(NSRect)r
+{
+	NSRect b = [self bounds]; [TF_CONTENT setFill]; NSRectFill(b); BOOL key = KeyWin(self); NSDictionary *tx = Font(13, NO, TF_TEXT);
+	for (NSUInteger ci = 0; ci < [_cols count]; ci++) {
+		CGFloat x = ci * kColW - _hoff; if (x + kColW < 0 || x > b.size.width) continue; NSMutableDictionary *c = _cols[ci]; NSArray *items = c[@"items"]; CGFloat off = [c[@"off"] doubleValue]; NSInteger sel = [c[@"sel"] integerValue];
+		NSGraphicsContext *g = [NSGraphicsContext currentContext]; [g saveGraphicsState]; NSRectClip(NSMakeRect(x, 0, kColW, b.size.height));
+		for (NSInteger i = 0; i < (NSInteger)[items count]; i++) {
+			CGFloat y = 6 + i * kColRow - off; if (y + kColRow < 0 || y > b.size.height) continue; NSDictionary *it = items[i]; BOOL isSel = i == sel, active = ci == [_cols count] - 1 || ![it[@"dir"] boolValue];
+			if (isSel) FillRound(NSMakeRect(x + 6, y, kColW - 12, kColRow), 6, key && ci + 1 >= [_cols count] ? TF_ACCENT : TFRGB(70, 70, 70)); (void)active;
+			NSImage *ic = TFIcon(it[@"path"]); if (ic) [ic drawInRect: NSMakeRect(x + 14, y + 4, 16, 16) fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1];
+			NSDictionary *at = isSel ? Font(13, NO, TFRGB(255, 255, 255)) : tx; TextAt(Truncated(it[@"name"], at, kColW - 70), x + 38, y + kColRow / 2, at);
+			if ([it[@"dir"] boolValue]) TFSymbol(@"chevron.right", NSMakeRect(x + kColW - 26, y, 12, kColRow), 9, isSel ? TFRGB(255, 255, 255) : TF_DIM);
+		}
+		[g restoreGraphicsState]; [TF_LINE setFill]; NSRectFill(NSMakeRect(x + kColW - 1, 0, 1, b.size.height));
+	}
+	NSMutableDictionary *last = [_cols lastObject]; NSInteger ls = [last[@"sel"] integerValue];
+	if (ls >= 0 && ![last[@"items"][ls][@"dir"] boolValue]) {                                                                                                    /* the preview of a file */
+		NSString *p = last[@"items"][ls][@"path"]; CGFloat x = [_cols count] * kColW - _hoff; NSDictionary *at = [[NSFileManager defaultManager] attributesOfItemAtPath: p error: NULL]; NSImage *ic = TFIcon(p);
+		if (ic) [ic drawInRect: NSMakeRect(x + kColW / 2 - 48, 30, 96, 96) fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1];
+		NSMutableParagraphStyle *ps = [[NSMutableParagraphStyle alloc] init]; [ps setAlignment: NSTextAlignmentCenter]; [ps setLineBreakMode: NSLineBreakByTruncatingMiddle];
+		[[p lastPathComponent] drawInRect: NSMakeRect(x + 10, 134, kColW - 20, 18) withAttributes: @{ NSFontAttributeName: [NSFont boldSystemFontOfSize: 13], NSForegroundColorAttributeName: TF_TEXT, NSParagraphStyleAttributeName: ps }];
+		[[NSString stringWithFormat: @"%@ - %@", TFKindString(p, NO), TFSizeString([at[NSFileSize] unsignedLongLongValue])] drawInRect: NSMakeRect(x + 10, 154, kColW - 20, 16) withAttributes: @{ NSFontAttributeName: [NSFont systemFontOfSize: 11], NSForegroundColorAttributeName: TF_DIM, NSParagraphStyleAttributeName: ps }];
+		[[NSString stringWithFormat: @"Modified  %@", TFDateString(at[NSFileModificationDate])] drawInRect: NSMakeRect(x + 10, 180, kColW - 20, 16) withAttributes: @{ NSFontAttributeName: [NSFont systemFontOfSize: 11], NSForegroundColorAttributeName: TF_DIM, NSParagraphStyleAttributeName: ps }];
+	}
+}
+- (void)_select:(NSInteger)row inColumn:(NSUInteger)ci
+{
+	NSMutableDictionary *c = _cols[ci]; c[@"sel"] = @(row); while ([_cols count] > ci + 1) [_cols removeLastObject];
+	if (row >= 0) { NSDictionary *it = c[@"items"][row]; if ([it[@"dir"] boolValue]) [_cols addObject: [self _load: it[@"path"]]]; }
+	[self _fit]; [self setNeedsDisplay: YES]; [self _notify];
+}
+- (void)mouseDown:(NSEvent *)e
+{
+	[[self window] makeFirstResponder: self]; NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; NSUInteger ci = (NSUInteger)floor((p.x + _hoff) / kColW); if (ci >= [_cols count]) return;
+	NSMutableDictionary *c = _cols[ci]; NSInteger row = (NSInteger)floor((p.y - 6 + [c[@"off"] doubleValue]) / kColRow); NSArray *items = c[@"items"]; if (row < 0 || row >= (NSInteger)[items count]) { [self _select: -1 inColumn: ci]; return; }
+	[self _select: row inColumn: ci]; if ([e clickCount] == 2) [delegate iconViewOpenItem: items[row][@"path"]];
+}
+- (void)scrollWheel:(NSEvent *)e
+{
+	NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; NSUInteger ci = (NSUInteger)floor((p.x + _hoff) / kColW);
+	if (fabs([e deltaX]) > fabs([e deltaY])) { _hoff = MAX(0, MIN(_hoff - [e deltaX] * 24, MAX(0, [self _totalW] - [self bounds].size.width))); [self setNeedsDisplay: YES]; return; }
+	if (ci >= [_cols count]) return; NSMutableDictionary *c = _cols[ci]; CGFloat mx = MAX(0, 12 + [c[@"items"] count] * kColRow - [self bounds].size.height); c[@"off"] = @(MAX(0, MIN([c[@"off"] doubleValue] - [e deltaY] * 24, mx))); [self setNeedsDisplay: YES];
+}
+- (void)keyDown:(NSEvent *)e
+{
+	NSString *k = [e charactersIgnoringModifiers]; if (![k length]) return; unichar c = [k characterAtIndex: 0];
+	NSUInteger ci = [_cols count] - 1; NSMutableDictionary *col = _cols[ci]; if ([col[@"sel"] integerValue] < 0 && ci > 0) { ci--; col = _cols[ci]; } NSInteger sel = [col[@"sel"] integerValue], n = (NSInteger)[col[@"items"] count];
+	if (c == NSDownArrowFunctionKey) [self _select: MIN(n - 1, sel + 1) inColumn: ci]; else if (c == NSUpArrowFunctionKey) [self _select: MAX(0, sel < 0 ? 0 : sel - 1) inColumn: ci];
+	else if (c == NSLeftArrowFunctionKey && ci > 0) { [self _select: -1 inColumn: ci]; [_cols removeObjectAtIndex: ci]; [self _fit]; [self setNeedsDisplay: YES]; [self _notify]; }
+	else if (c == NSRightArrowFunctionKey && sel >= 0 && [col[@"items"][sel][@"dir"] boolValue] && [_cols count] > ci + 1) { NSMutableDictionary *nx = _cols[ci + 1]; if ([nx[@"items"] count]) [self _select: 0 inColumn: ci + 1]; }
+	else if (c == '\r' && sel >= 0) [delegate iconViewOpenItem: col[@"items"][sel][@"path"]]; else { [super keyDown: e]; return; }
+	CGFloat vis = [self bounds].size.height; NSMutableDictionary *cc = _cols[MIN(ci, [_cols count] - 1)]; NSInteger s2 = [cc[@"sel"] integerValue]; if (s2 >= 0) { CGFloat y = 6 + s2 * kColRow, off = [cc[@"off"] doubleValue]; if (y < off) cc[@"off"] = @(y - 6); else if (y + kColRow > off + vis) cc[@"off"] = @(y + kColRow - vis + 6); }
+}
+@end
+
 /* ---------- the sidebar ---------- */
 @implementation TSidebarView
 - (instancetype)initWithFrame:(NSRect)f
