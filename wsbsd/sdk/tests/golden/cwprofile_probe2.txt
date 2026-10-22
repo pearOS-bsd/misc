@@ -1,0 +1,47 @@
+status 0 captive 0 wasCaptive 0 desc:Captive: No|Was Captive: No
+status 1 captive 0 wasCaptive 0 desc:Captive: No|Was Captive: No
+status 2 captive 0 wasCaptive 0 desc:Captive: No|Was Captive: No
+status 3 captive 0 wasCaptive 0 desc:Captive: No|Was Captive: No
+status 4 captive 0 wasCaptive 0 desc:Captive: No|Was Captive: No
+status 5 captive 0 wasCaptive 0 desc:Captive: No|Was Captive: No
+status 6 captive 0 wasCaptive 0 desc:Captive: No|Was Captive: No
+status 7 captive 0 wasCaptive 0 desc:Captive: No|Was Captive: No
+status 8 captive 0 wasCaptive 0 desc:Captive: No|Was Captive: No
+was 0 cap 0 -> status 1 captive 0 was 0 line:Captive: No
+was 0 cap 1 -> status 2 captive 0 was 0 line:Captive: No
+was 1 cap 0 -> status 1 captive 0 was 0 line:Captive: No
+was 1 cap 1 -> status 2 captive 0 was 0 line:Captive: No
+sec 0 setShare 0 -> share 1 line:Share Mode: NotSupported
+sec 0 setShare 1 -> share 1 line:Share Mode: NotSupported
+sec 0 setShare 2 -> share 1 line:Share Mode: NotSupported
+sec 0 setShare 3 -> share 1 line:Share Mode: NotSupported
+sec 3 setShare 0 -> share 0 line:Share Mode: None
+sec 3 setShare 1 -> share 1 line:Share Mode: NotSupported
+sec 3 setShare 2 -> share 2 line:Share Mode: Disabled
+sec 3 setShare 3 -> share 3 line:Share Mode: Enabled
+sec 4 setShare 0 -> share 0 line:Share Mode: None
+sec 4 setShare 1 -> share 1 line:Share Mode: NotSupported
+sec 4 setShare 2 -> share 2 line:Share Mode: Disabled
+sec 4 setShare 3 -> share 3 line:Share Mode: Enabled
+sec 11 setShare 0 -> share 0 line:Share Mode: None
+sec 11 setShare 1 -> share 1 line:Share Mode: NotSupported
+sec 11 setShare 2 -> share 2 line:Share Mode: Disabled
+sec 11 setShare 3 -> share 3 line:Share Mode: Enabled
+sec 13 setShare 0 -> share 0 line:Share Mode: None
+sec 13 setShare 1 -> share 1 line:Share Mode: NotSupported
+sec 13 setShare 2 -> share 2 line:Share Mode: Disabled
+sec 13 setShare 3 -> share 3 line:Share Mode: Enabled
+sec 14 setShare 0 -> share 1 line:Share Mode: NotSupported
+sec 14 setShare 1 -> share 1 line:Share Mode: NotSupported
+sec 14 setShare 2 -> share 1 line:Share Mode: NotSupported
+sec 14 setShare 3 -> share 1 line:Share Mode: NotSupported
+role 0 share 1 Share Mode: NotSupported
+role 1 share 1 Share Mode: NotSupported
+role 2 share 1 Share Mode: NotSupported
+role 3 share 1 Share Mode: NotSupported
+nil ssid: desc line0 SSID: (null) ((null)) ident wifi.ssid.(null) ssid nil
+hash empty 1
+eq empty 0
+SSID: Long ssid with more than twenty four bytes in it ({length = 48, bytes = PTR 20737369 64207769 7468206d ... 65732069 6e206974 })
+SSID: 0123456789abcdefghijklmn ({length = 24, bytes = PTR})
+SSID: 0123456789abcdefghijklmno ({length = 25, bytes = PTR 34353637 38396162 63646566 ... 68696a6b 6c6d6e6f })

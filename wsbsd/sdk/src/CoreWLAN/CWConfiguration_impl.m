@@ -18,6 +18,16 @@
 - (BOOL)requireAdministratorForAssociation { return _requireAdministratorForAssociation; } - (void)setRequireAdministratorForAssociation:(BOOL)b { _requireAdministratorForAssociation = b; }
 - (BOOL)requireAdministratorForPower { return _requireAdministratorForPower; } - (void)setRequireAdministratorForPower:(BOOL)b { _requireAdministratorForPower = b; }
 - (BOOL)requireAdministratorForIBSSMode { return _requireAdministratorForIBSSMode; } - (void)setRequireAdministratorForIBSSMode:(BOOL)b { _requireAdministratorForIBSSMode = b; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject: _info forKey: @"_info"]; [c encodeObject: _networkProfiles forKey: @"_networkProfiles"]; [c encodeBool: _requireAdministratorForAssociation forKey: @"_requireAdministratorForAssociation"]; [c encodeBool: _requireAdministratorForPower forKey: @"_requireAdministratorForPower"]; [c encodeBool: _requireAdministratorForIBSSMode forKey: @"_requireAdministratorForIBSSMode"]; [c encodeBool: _rememberJoinedNetworks forKey: @"_rememberJoinedNetworks"]; }
+- (instancetype)initWithCoder:(NSCoder *)c
+{
+	if ((self = [self init])) {
+		_info = [[c decodeObjectOfClasses: [NSSet setWithObjects: [NSDictionary class], [NSArray class], [NSString class], [NSNumber class], [NSData class], [NSDate class], nil] forKey: @"_info"] retain];
+		NSOrderedSet *p = [c decodeObjectOfClasses: [NSSet setWithObjects: [NSOrderedSet class], [CWNetworkProfile class], nil] forKey: @"_networkProfiles"]; if (p) { [_networkProfiles release]; _networkProfiles = [p copy]; }
+		_requireAdministratorForAssociation = [c decodeBoolForKey: @"_requireAdministratorForAssociation"]; _requireAdministratorForPower = [c decodeBoolForKey: @"_requireAdministratorForPower"]; _requireAdministratorForIBSSMode = [c decodeBoolForKey: @"_requireAdministratorForIBSSMode"]; _rememberJoinedNetworks = [c decodeBoolForKey: @"_rememberJoinedNetworks"];
+	}
+	return self;
+}
 - (BOOL)isEqualToConfiguration:(CWConfiguration *)o { return o && [[self networkProfiles] isEqual: [o networkProfiles]] && _rememberJoinedNetworks == [o rememberJoinedNetworks] && _requireAdministratorForAssociation == [o requireAdministratorForAssociation] && _requireAdministratorForPower == [o requireAdministratorForPower] && _requireAdministratorForIBSSMode == [o requireAdministratorForIBSSMode]; }
 - (BOOL)isEqual:(id)o { return o == self || ([o isKindOfClass: [CWConfiguration class]] && [self isEqualToConfiguration: o]); }
 - (NSUInteger)hash { return [_networkProfiles hash]; }

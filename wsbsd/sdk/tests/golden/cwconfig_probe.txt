@@ -1,0 +1,58 @@
+== empty config
+class CWConfiguration
+desc: <CWConfiguration: PTR>
+hash-self-equal 1
+archive ok
+roundtrip equal 1
+== empty mutable
+class CWMutableConfiguration
+desc: <CWMutableConfiguration: PTR>
+hash-self-equal 1
+archive ok
+roundtrip equal 1
+== two profiles
+class CWMutableConfiguration
+desc: <CWMutableConfiguration: PTR>
+hash-self-equal 1
+archive ok
+roundtrip equal 1
+== flags
+class CWMutableConfiguration
+desc: <CWMutableConfiguration: PTR>
+hash-self-equal 1
+archive ok
+roundtrip equal 1
+copy equal 1 hash eq 1
+reordered equal 0
+three count 2
+copy class CWConfiguration mutable 0
+preferred? 1
+hash1 1 hash2 1
+p1 equal p3 1 p1 hash eq p3 1
+p1 eq q 1
+== profile
+class CWMutableNetworkProfile
+desc: SSID: Home ({length = 4, bytes = PTR})
+Captive: No
+Was Captive: No
+Domain Name: (null)
+Passpoint: No
+Display Name: (null)
+Roaming Consortium List: (null)
+NAI Realm List: (null)
+SP Roaming Enabled: Yes
+Security: WPA2/WPA3 Personal
+Hidden: No
+Possibly Hidden: No
+Was Hidden Before: No
+System Mode: No
+Roaming Profile Type: None
+Personal Hotspot: No
+BSSID List: (null)
+Share Mode: Enabled
+User Role: Owner
+PayloadUUID: (null)
+
+hash-self-equal 1
+archive ok
+roundtrip equal 1
