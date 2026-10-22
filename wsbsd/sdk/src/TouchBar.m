@@ -32,7 +32,10 @@ PROP(NSTouchBar, defaultItemIdentifiers, setDefaultItemIdentifiers, NSArray *, "
 PROP(NSTouchBar, principalItemIdentifier, setPrincipalItemIdentifier, NSString *, "pi", [v copy])
 PROP(NSTouchBar, escapeKeyReplacementItemIdentifier, setEscapeKeyReplacementItemIdentifier, NSString *, "ek", [v copy])
 - (NSSet *)templateItems { return St(self)[@"ti"]; } - (void)setTemplateItems:(NSSet *)s { St(self)[@"ti"] = [s copy] ?: [NSSet set]; [St(self) removeObjectForKey: @"items"]; }
-- (NSArray *)itemIdentifiers { return [self defaultItemIdentifiers] ?: @[]; }
+static id self_palette(void) { static id o; if (!o) o = [NSObject new]; return o; }
+static NSString *CustomKey(NSTouchBar *b) { NSString *c = [b customizationIdentifier]; return [c length] ? [@"NSTouchBar Configuration " stringByAppendingString: c] : nil; }
+- (NSArray *)itemIdentifiers { NSString *k = CustomKey(self); NSArray *saved = k ? [[NSUserDefaults standardUserDefaults] arrayForKey: k] : nil; if (saved) { NSArray *allowed = [self customizationAllowedItemIdentifiers]; NSMutableArray *r = [NSMutableArray array]; for (NSString *i in saved) if (!allowed || [allowed containsObject: i] || [i hasPrefix: @"NSTouchBarItemIdentifier"]) [r addObject: i]; for (NSString *i in [self customizationRequiredItemIdentifiers]) if (![r containsObject: i]) [r addObject: i]; return r; } return [self defaultItemIdentifiers] ?: @[]; }
+- (void)_wsSaveItems:(NSArray *)ids { NSString *k = CustomKey(self); if (!k) return; if (ids) [[NSUserDefaults standardUserDefaults] setObject: ids forKey: k]; else [[NSUserDefaults standardUserDefaults] removeObjectForKey: k]; St(self)[@"items"] = nil; [St(self) removeObjectForKey: @"items"]; }
 - (BOOL)isVisible { return [St(self)[@"visible"] boolValue]; }
 - (void)_wsSetVisible:(BOOL)v { St(self)[@"visible"] = @(v); }
 - (NSTouchBarItem *)itemForIdentifier:(NSTouchBarItemIdentifier)ident
@@ -304,6 +307,21 @@ static void Speaker(CGFloat x, CGFloat cy) { NSBezierPath *sp = [NSBezierPath be
 	if (x < 50) [h showSystemSlider: 0]; else if (x < 105) [h showSystemSlider: 1]; else if (x < 152) { [WsbsdSysControls setMuted: ![WsbsdSysControls muted]]; [self setNeedsDisplay: YES]; } else { if (getenv("WSBSD_TBDUMP")) fprintf(stderr, "control strip: Siri\n"); }
 }
 @end
+@implementation NSApplication (WsbsdTouchBar)
+- (void)toggleTouchBarCustomizationPalette:(id)sender { WsbsdTouchBarHost *h = [WsbsdTouchBarHost sharedHost]; if ([self isTouchBarCustomizationPaletteVisible]) { [WsbsdTouchBarHost _dismissBar: St(self_palette())[@"p"]]; St(self_palette())[@"p"] = nil; [St(self_palette()) removeObjectForKey: @"p"]; return; } NSTouchBar *b = [h currentTouchBar]; if ([[b customizationIdentifier] length]) [h _showPalette: b]; }
+- (BOOL)isTouchBarCustomizationPaletteVisible { NSTouchBar *p = St(self_palette())[@"p"]; return p && [p isVisible]; }
+@end
+static NSMutableArray *TrayItems(void) { static NSMutableArray *a; if (!a) a = [NSMutableArray array]; return a; }
+@implementation NSTouchBarItem (WsbsdSystemTray)
++ (void)addSystemTrayItem:(NSTouchBarItem *)item { if (item && ![TrayItems() containsObject: item]) { [TrayItems() addObject: item]; [[WsbsdTouchBarHost sharedHost] update]; } }
++ (void)removeSystemTrayItem:(NSTouchBarItem *)item { [TrayItems() removeObject: item]; [[WsbsdTouchBarHost sharedHost] update]; }
+@end
+@implementation NSTouchBar (WsbsdSystemModal)
++ (void)presentSystemModalTouchBar:(NSTouchBar *)b placement:(long long)p systemTrayItemIdentifier:(NSTouchBarItemIdentifier)i { [WsbsdTouchBarHost _presentBar: b closeButton: NO]; }
++ (void)presentSystemModalTouchBar:(NSTouchBar *)b systemTrayItemIdentifier:(NSTouchBarItemIdentifier)i { [WsbsdTouchBarHost _presentBar: b closeButton: NO]; }
++ (void)dismissSystemModalTouchBar:(NSTouchBar *)b { [WsbsdTouchBarHost _dismissBar: b]; }
++ (void)minimizeSystemModalTouchBar:(NSTouchBar *)b { [WsbsdTouchBarHost _dismissBar: b]; }
+@end
 /* ---- the host: the bar of the key window in a panel at the bottom of the screen ---- */
 @implementation WsbsdTouchBarHost { NSTouchBar *_bar; NSPanel *_panel; NSView *_content; NSString *_signature; NSMutableArray *_overrides; NSMutableDictionary *_closeFlags; }
 @synthesize currentTouchBar = _bar, panel = _panel;
@@ -337,6 +355,20 @@ static NSArray *BarChain(NSResponder *r)
 	NSTouchBar *bar = [NSTouchBar new]; NSSliderTouchBarItem *it = [[NSSliderTouchBarItem alloc] initWithIdentifier: which ? @"com.apple.system.volume" : @"com.apple.system.brightness"]; NSSlider *sl = [it slider]; [sl setMinValue: 0]; [sl setMaxValue: 1]; [sl setTag: which]; [sl setFrameSize: NSMakeSize(420, 30)]; [it setDoubleValue: which ? [WsbsdSysControls volume] : [WsbsdSysControls brightness]]; [sl setTarget: self]; [sl setAction: @selector(_sysSlide:)]; [sl setContinuous: YES];
 	[bar setTemplateItems: [NSSet setWithObject: it]]; [bar setDefaultItemIdentifiers: @[ NSTouchBarItemIdentifierFlexibleSpace, [it identifier], NSTouchBarItemIdentifierFlexibleSpace ]]; [WsbsdTouchBarHost _presentBar: bar closeButton: YES];
 }
+/* the customization palette: every allowed item as a switch, the items in the bar highlighted; Done leaves, Default restores */
+- (void)_toggleItem:(NSButton *)b { NSTouchBar *bar = objc_getAssociatedObject(b, "palBar"); NSString *ident = objc_getAssociatedObject(b, "palId"); NSMutableArray *cur = [[bar itemIdentifiers] mutableCopy]; if ([cur containsObject: ident]) { if (![[bar customizationRequiredItemIdentifiers] containsObject: ident]) [cur removeObject: ident]; } else [cur addObject: ident]; [bar _wsSaveItems: cur]; [self _showPalette: bar]; }
+- (void)_resetItems:(NSButton *)b { NSTouchBar *bar = objc_getAssociatedObject(b, "palBar"); [bar _wsSaveItems: nil]; [self _showPalette: bar]; }
+- (void)_showPalette:(NSTouchBar *)target
+{
+	NSTouchBar *pal = [NSTouchBar new]; NSMutableSet *items = [NSMutableSet set]; NSMutableArray *ids = [NSMutableArray array]; NSArray *cur = [target itemIdentifiers];
+	for (NSString *ident in [target customizationAllowedItemIdentifiers]) {
+		if ([ident hasPrefix: @"NSTouchBarItemIdentifier"]) continue; NSTouchBarItem *it = [target itemForIdentifier: ident]; NSString *label = [it customizationLabel] ?: ident;
+		NSButtonTouchBarItem *b = [NSButtonTouchBarItem buttonTouchBarItemWithIdentifier: [@"pal." stringByAppendingString: ident] title: label target: self action: @selector(_toggleItem:)]; WsbsdTBButton *v = (WsbsdTBButton *)[b view]; objc_setAssociatedObject(v, "palBar", target, OBJC_ASSOCIATION_ASSIGN); objc_setAssociatedObject(v, "palId", ident, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+		[b setBezelColor: [cur containsObject: ident] ? [NSColor colorWithCalibratedRed: 0.1 green: 0.45 blue: 1 alpha: 1] : nil]; [items addObject: b]; [ids addObject: [b identifier]];
+	}
+	NSButtonTouchBarItem *rs = [NSButtonTouchBarItem buttonTouchBarItemWithIdentifier: @"pal.default" title: @"Default" target: self action: @selector(_resetItems:)]; objc_setAssociatedObject([rs view], "palBar", target, OBJC_ASSOCIATION_ASSIGN); [items addObject: rs]; [ids addObject: NSTouchBarItemIdentifierFlexibleSpace]; [ids addObject: @"pal.default"];
+	[pal setTemplateItems: items]; [pal setDefaultItemIdentifiers: ids]; if (St(self_palette())[@"p"]) [WsbsdTouchBarHost _dismissBar: St(self_palette())[@"p"]]; St(self_palette())[@"p"] = pal; [WsbsdTouchBarHost _presentBar: pal closeButton: YES];
+}
 - (void)_escape:(id)sender { [NSApp sendAction: @selector(cancelOperation:) to: nil from: sender]; }
 - (void)_close:(id)sender { [_overrides removeLastObject]; [self update]; }
 - (void)update
@@ -345,7 +377,7 @@ static NSArray *BarChain(NSResponder *r)
 	if (!b) { if (_panel && [_panel isVisible]) [_panel orderOut: nil]; [_bar _wsSetVisible: NO]; _bar = nil; _signature = nil; return; }
 	BOOL isOverride = [_overrides count] > 0, closeBtn = isOverride && [_closeFlags[[NSValue valueWithNonretainedObject: b]] boolValue];
 	NSString *esc = isOverride ? nil : [b escapeKeyReplacementItemIdentifier]; NSMutableString *sig = [NSMutableString stringWithFormat: @"%d|%d", isOverride, closeBtn];
-	for (NSTouchBar *c in chain) [sig appendFormat: @"|%p:%@:%@", c, [[c itemIdentifiers] componentsJoinedByString: @","], [c escapeKeyReplacementItemIdentifier] ?: @""];
+	for (NSTouchBarItem *t in TrayItems()) [sig appendFormat: @"|tray:%p", t]; for (NSTouchBar *c in chain) [sig appendFormat: @"|%p:%@:%@", c, [[c itemIdentifiers] componentsJoinedByString: @","], [c escapeKeyReplacementItemIdentifier] ?: @""];
 	[self _ensurePanel];
 	if (b != _bar || ![sig isEqual: _signature]) {
 		[_bar _wsSetVisible: NO]; _bar = b; _signature = sig; [_content removeFromSuperview];
@@ -353,7 +385,9 @@ static NSArray *BarChain(NSResponder *r)
 		NSView *ev = [e view]; if (ev) Restyle(ev);
 		if (!ev) { NSButtonTouchBarItem *eb = closeBtn ? [NSButtonTouchBarItem buttonTouchBarItemWithIdentifier: @"close" title: @"x" target: self action: @selector(_close:)] : [NSButtonTouchBarItem buttonTouchBarItemWithIdentifier: @"esc" title: @"esc" target: self action: @selector(_escape:)]; ev = [eb view]; [ev setFrameSize: NSMakeSize(64, 30)]; objc_setAssociatedObject(root, "escItem", eb, OBJC_ASSOCIATION_RETAIN_NONATOMIC); }
 		[ev setFrameOrigin: NSMakePoint(x, 8)]; [root addSubview: ev]; x += [ev frame].size.width + 17;
-		NSView *strip = StripForBars(chain, 1120 - 17 - csw - 17 - x, esc ? [NSSet setWithObject: esc] : nil); [strip setFrameOrigin: NSMakePoint(x, 8)]; [root addSubview: strip];
+		CGFloat trayW = 0; NSMutableArray *trayViews = [NSMutableArray array]; for (NSTouchBarItem *t in TrayItems()) { NSView *tv = [t view]; if (!tv) continue; Restyle(tv); [trayViews addObject: tv]; trayW += [tv frame].size.width + 8; }
+		CGFloat tx = 1120 - 17 - csw - trayW; for (NSView *tv in trayViews) { [tv setFrameOrigin: NSMakePoint(tx, 8)]; [root addSubview: tv]; tx += [tv frame].size.width + 8; }
+		NSView *strip = StripForBars(chain, 1120 - 17 - csw - trayW - 17 - x, esc ? [NSSet setWithObject: esc] : nil); [strip setFrameOrigin: NSMakePoint(x, 8)]; [root addSubview: strip];
 		WsbsdTBControlStrip *cs = [[WsbsdTBControlStrip alloc] initWithFrame: NSMakeRect(1120 - 17 - csw, 8, csw, 30)]; [root addSubview: cs];
 		_content = root; [_panel setContentView: root];
 	}
