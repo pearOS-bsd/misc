@@ -254,14 +254,45 @@ static void SegFit(NSSegmentedControl *s) { NSInteger n = [s segmentCount]; for 
 - (void (^)(BOOL))updateWithInsertionPointVisibility { return St(self)[@"upd"]; } - (void)setUpdateWithInsertionPointVisibility:(void (^)(BOOL))b { St(self)[@"upd"] = [b copy] ?: [NSNull null]; }
 - (NSView *)client { return [St(self)[@"client"] nonretainedObjectValue]; } - (void)setClient:(NSView *)c { St(self)[@"client"] = [NSValue valueWithNonretainedObject: c]; }
 - (NSString *)customizationLabel { return St(self)[@"label"]; } - (void)setCustomizationLabel:(NSString *)l { St(self)[@"label"] = [l copy]; }
-- (void)setCandidates:(NSArray *)c forSelectedRange:(NSRange)r inString:(NSString *)s { St(self)[@"cands"] = [c copy] ?: @[]; NSScrubber *sc = [self _scrubber]; [sc reloadData]; }
+- (void)setCandidates:(NSArray *)c forSelectedRange:(NSRange)r inString:(NSString *)s { St(self)[@"cands"] = [c copy] ?: @[]; NSScrubber *sc = [self _scrubber]; [sc reloadData]; [[WsbsdTouchBarHost sharedHost] invalidate]; }
 - (NSInteger)numberOfItemsForScrubber:(NSScrubber *)s { return [St(self)[@"cands"] count]; }
 - (NSScrubberItemView *)scrubber:(NSScrubber *)s viewForItemAtIndex:(NSInteger)i { NSScrubberTextItemView *v = [s makeItemWithIdentifier: @"cand" owner: nil]; id c = St(self)[@"cands"][i]; [v setTitle: [c isKindOfClass: [NSString class]] ? c : [c description]]; NSFont *f = [NSFont systemFontOfSize: 15]; CGFloat w = [[v title] sizeWithAttributes: @{ NSFontAttributeName: f }].width + 24; [v setFrameSize: NSMakeSize(w, 30)]; return v; }
 - (void)scrubber:(NSScrubber *)s didSelectItemAtIndex:(NSInteger)i { id<NSCandidateListTouchBarItemDelegate> d = [self delegate]; if ([d respondsToSelector: @selector(candidateListTouchBarItem:endSelectingCandidateAtIndex:)]) [d candidateListTouchBarItem: self endSelectingCandidateAtIndex: i]; }
 - (NSScrubber *)_scrubber { NSScrubber *s = St(self)[@"scr"]; if (!s) { s = [[NSScrubber alloc] initWithFrame: NSMakeRect(0, 0, 420, 30)]; [s registerClass: [NSScrubberTextItemView class] forItemIdentifier: @"cand"]; NSScrubberFlowLayout *l = [NSScrubberFlowLayout new]; l.itemSize = NSMakeSize(80, 30); l.itemSpacing = 4; [s setScrubberLayout: l]; [s setMode: NSScrubberModeFree]; [s setDataSource: self]; [s setDelegate: self]; St(self)[@"scr"] = s; } return s; }
-- (NSView *)view { return [self _scrubber]; }
+- (NSView *)view { return [St(self)[@"cands"] count] ? [self _scrubber] : nil; }
 @end
 
 @implementation NSGroupTouchBarItem (WsbsdTouchBarAlert)
 + (instancetype)alertStyleGroupItemWithIdentifier:(NSTouchBarItemIdentifier)i { NSGroupTouchBarItem *g = [self groupItemWithIdentifier: i items: @[]]; objc_setAssociatedObject(g, "alert", @YES, OBJC_ASSOCIATION_RETAIN_NONATOMIC); return g; }
+@end
+
+/* ================= the bar of a text view ================= */
+@interface WsbsdTextBarActions : NSObject { @public __weak NSTextView *tv; } @end
+@implementation WsbsdTextBarActions
+- (void)_trait:(NSFontTraitMask)t on:(BOOL)on
+{
+	NSTextView *v = tv; NSRange r = [v selectedRange]; NSFontManager *fm = [NSFontManager sharedFontManager];
+	if (r.length == 0) { NSMutableDictionary *a = [[v typingAttributes] mutableCopy]; NSFont *f = a[NSFontAttributeName] ?: [v font]; if (f) { a[NSFontAttributeName] = on ? [fm convertFont: f toHaveTrait: t] : [fm convertFont: f toNotHaveTrait: t]; [v setTypingAttributes: a]; } return; }
+	NSTextStorage *ts = [v textStorage]; [ts beginEditing]; [ts enumerateAttribute: NSFontAttributeName inRange: r options: 0 usingBlock: ^(id f, NSRange rr, BOOL *stop) { if (f) [ts addAttribute: NSFontAttributeName value: on ? [fm convertFont: f toHaveTrait: t] : [fm convertFont: f toNotHaveTrait: t] range: rr]; }]; [ts endEditing]; [v didChangeText];
+}
+- (void)format:(NSSegmentedControl *)c { NSInteger n = [c selectedSegment]; BOOL on = [c isSelectedForSegment: n]; if (n == 0) [self _trait: NSBoldFontMask on: on]; else if (n == 1) [self _trait: NSItalicFontMask on: on]; else { NSTextView *v = tv; NSRange r = [v selectedRange]; if (r.length) { if (on) [[v textStorage] addAttribute: NSUnderlineStyleAttributeName value: @(NSUnderlineStyleSingle) range: r]; else [[v textStorage] removeAttribute: NSUnderlineStyleAttributeName range: r]; [v didChangeText]; } } }
+- (void)align:(NSSegmentedControl *)c { NSTextView *v = tv; switch ([c selectedSegment]) { case 0: [v alignLeft: c]; break; case 1: [v alignCenter: c]; break; case 2: [v alignRight: c]; break; default: [v alignJustified: c]; } }
+- (void)color:(NSColorPickerTouchBarItem *)it { NSTextView *v = tv; NSRange r = [v selectedRange]; if (r.length) { [[v textStorage] addAttribute: NSForegroundColorAttributeName value: [it color] range: r]; [v didChangeText]; } else { NSMutableDictionary *a = [[v typingAttributes] mutableCopy]; a[NSForegroundColorAttributeName] = [it color]; [v setTypingAttributes: a]; } }
+@end
+@implementation NSTextView (WsbsdTouchBar)
+- (NSTouchBar *)makeTouchBar
+{
+	if (![self isEditable] && ![self isSelectable]) return nil; NSTouchBar *b = [NSTouchBar new]; [b setDelegate: (id)self]; BOOL rich = [self isEditable] && [self isRichText];
+	NSArray *ids = rich ? @[ NSTouchBarItemIdentifierTextFormat, NSTouchBarItemIdentifierTextAlignment, NSTouchBarItemIdentifierTextColorPicker, NSTouchBarItemIdentifierOtherItemsProxy, NSTouchBarItemIdentifierCandidateList ] : @[ NSTouchBarItemIdentifierOtherItemsProxy, NSTouchBarItemIdentifierCandidateList ];
+	[b setDefaultItemIdentifiers: ids]; [b setCustomizationAllowedItemIdentifiers: ids]; return b;
+}
+- (NSTouchBarItem *)touchBar:(NSTouchBar *)bar makeItemForIdentifier:(NSTouchBarItemIdentifier)ident
+{
+	WsbsdTextBarActions *a = objc_getAssociatedObject(self, "tbActions"); if (!a) { a = [WsbsdTextBarActions new]; a->tv = self; objc_setAssociatedObject(self, "tbActions", a, OBJC_ASSOCIATION_RETAIN_NONATOMIC); }
+	if ([ident isEqual: NSTouchBarItemIdentifierTextFormat]) { NSPickerTouchBarItem *p = [NSPickerTouchBarItem pickerTouchBarItemWithIdentifier: ident labels: @[ @"B", @"I", @"U" ] selectionMode: NSPickerTouchBarItemSelectionModeSelectAny target: a action: @selector(format:)]; [p setCustomizationLabel: @"Text Format"]; return p; }
+	if ([ident isEqual: NSTouchBarItemIdentifierTextAlignment]) { NSPickerTouchBarItem *p = [NSPickerTouchBarItem pickerTouchBarItemWithIdentifier: ident images: @[ [NSImage imageNamed: @"NSTouchBarTextLeftAlignTemplate"], [NSImage imageNamed: @"NSTouchBarTextCenterAlignTemplate"], [NSImage imageNamed: @"NSTouchBarTextRightAlignTemplate"], [NSImage imageNamed: @"NSTouchBarTextJustifiedAlignTemplate"] ] selectionMode: NSPickerTouchBarItemSelectionModeSelectOne target: a action: @selector(align:)]; [p setCustomizationLabel: @"Text Alignment"]; return p; }
+	if ([ident isEqual: NSTouchBarItemIdentifierTextColorPicker]) { NSColorPickerTouchBarItem *c = [NSColorPickerTouchBarItem textColorPickerWithIdentifier: ident]; [c setTarget: a]; [c setAction: @selector(color:)]; [c setCustomizationLabel: @"Text Color"]; return c; }
+	if ([ident isEqual: NSTouchBarItemIdentifierCandidateList]) { NSCandidateListTouchBarItem *c = [[NSCandidateListTouchBarItem alloc] initWithIdentifier: ident]; [c setClient: self]; [c setCustomizationLabel: @"Candidates"]; return c; }
+	return nil;
+}
 @end

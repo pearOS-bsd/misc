@@ -84,6 +84,10 @@ static NSDictionary *GlyphTable(void)
 		@"Play": ^{ Tri(6, 10, YES); }, @"Pause": ^{ [[NSBezierPath bezierPathWithRect: NSMakeRect(5, 4, 3.5, 12)] fill]; [[NSBezierPath bezierPathWithRect: NSMakeRect(11.5, 4, 3.5, 12)] fill]; },
 		@"Rewind": ^{ Tri(2, 8, NO); Tri(10, 8, NO); }, @"FastForward": ^{ Tri(2, 8, YES); Tri(10, 8, YES); },
 		@"NewFolder": ^{ NSBezierPath *b = [NSBezierPath bezierPathWithRoundedRect: NSMakeRect(3, 4.5, 14, 10) xRadius: 1.5 yRadius: 1.5]; [b setLineWidth: 1.8]; [b stroke]; [Line(3, 14.5, 8, 14.5) stroke]; [Line(10, 7, 10, 12) stroke]; [Line(7.5, 9.5, 12.5, 9.5) stroke]; },
+		@"TextLeftAlign": ^{ [Line(4, 16, 16, 16) stroke]; [Line(4, 12, 12, 12) stroke]; [Line(4, 8, 16, 8) stroke]; [Line(4, 4, 11, 4) stroke]; },
+		@"TextCenterAlign": ^{ [Line(4, 16, 16, 16) stroke]; [Line(6, 12, 14, 12) stroke]; [Line(4, 8, 16, 8) stroke]; [Line(7, 4, 13, 4) stroke]; },
+		@"TextRightAlign": ^{ [Line(4, 16, 16, 16) stroke]; [Line(8, 12, 16, 12) stroke]; [Line(4, 8, 16, 8) stroke]; [Line(9, 4, 16, 4) stroke]; },
+		@"TextJustifiedAlign": ^{ [Line(4, 16, 16, 16) stroke]; [Line(4, 12, 16, 12) stroke]; [Line(4, 8, 16, 8) stroke]; [Line(4, 4, 16, 4) stroke]; },
 		@"Download": ^{ [Line(10, 16, 10, 5) stroke]; [Line(6.5, 8.5, 10, 5) stroke]; [Line(13.5, 8.5, 10, 5) stroke]; [Line(4, 3.5, 16, 3.5) stroke]; },
 	};
 }
@@ -111,8 +115,10 @@ static NSImage *Tinted(NSImage *img, NSColor *c)
 {
 	NSRect b = NSInsetRect([self bounds], 0.5, 1.5); NSColor *fill = [(NSCell *)[self cell] isHighlighted] ? [NSColor colorWithCalibratedWhite: 0.45 alpha: 1] : [NSColor colorWithCalibratedWhite: 0.22 alpha: 1];
 	NSColor *tint = [self respondsToSelector: @selector(bezelColor)] ? [self performSelector: @selector(bezelColor)] : nil; if (tint && ![(NSCell *)[self cell] isHighlighted]) fill = tint;
-	NSColor *sw = [self isKindOfClass: [WsbsdTBSwatchButton class]] ? ((WsbsdTBSwatchButton *)self)->swatchColor : nil; if (sw) fill = sw;
-	[fill setFill]; [[NSBezierPath bezierPathWithRoundedRect: b xRadius: 6 yRadius: 6] fill]; if (sw) return;
+	NSColor *sw = [self isKindOfClass: [WsbsdTBSwatchButton class]] ? ((WsbsdTBSwatchButton *)self)->swatchColor : nil; BOOL letter = sw && [[self title] length];
+	if (sw && !letter) fill = sw;
+	[fill setFill]; [[NSBezierPath bezierPathWithRoundedRect: b xRadius: 6 yRadius: 6] fill]; if (sw && !letter) return;
+	if (letter) { NSDictionary *la = @{ NSForegroundColorAttributeName: [NSColor whiteColor], NSFontAttributeName: [NSFont boldSystemFontOfSize: 15] }; NSSize lz = [[self title] sizeWithAttributes: la]; [[self title] drawAtPoint: NSMakePoint(floor((b.size.width - lz.width) / 2), floor((b.size.height - lz.height) / 2) - 2) withAttributes: la]; [sw setFill]; [[NSBezierPath bezierPathWithRoundedRect: NSMakeRect(b.origin.x + 12, b.size.height - 8, b.size.width - 24, 4) xRadius: 2 yRadius: 2] fill]; return; }
 	NSImage *img = Tinted([self image], [self isEnabled] ? [NSColor whiteColor] : [NSColor grayColor]); NSString *t = [self title]; NSDictionary *at = @{ NSForegroundColorAttributeName: [self isEnabled] ? [NSColor whiteColor] : [NSColor grayColor], NSFontAttributeName: [NSFont systemFontOfSize: 15] };
 	NSSize ts = [t sizeWithAttributes: at], is = img ? [img size] : NSZeroSize; CGFloat total = ts.width + (img && [t length] ? 6 : 0) + (img ? MIN(is.width, 20) : 0), x = floor((b.size.width - total) / 2);
 	if (img) { NSRect ir = NSMakeRect(x, floor((b.size.height - 20) / 2) + 1, MIN(is.width, 20), 20); [img drawInRect: ir fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; x += ir.size.width + 6; }
@@ -369,6 +375,7 @@ static NSArray *BarChain(NSResponder *r)
 	NSButtonTouchBarItem *rs = [NSButtonTouchBarItem buttonTouchBarItemWithIdentifier: @"pal.default" title: @"Default" target: self action: @selector(_resetItems:)]; objc_setAssociatedObject([rs view], "palBar", target, OBJC_ASSOCIATION_ASSIGN); [items addObject: rs]; [ids addObject: NSTouchBarItemIdentifierFlexibleSpace]; [ids addObject: @"pal.default"];
 	[pal setTemplateItems: items]; [pal setDefaultItemIdentifiers: ids]; if (St(self_palette())[@"p"]) [WsbsdTouchBarHost _dismissBar: St(self_palette())[@"p"]]; St(self_palette())[@"p"] = pal; [WsbsdTouchBarHost _presentBar: pal closeButton: YES];
 }
+- (void)invalidate { _signature = nil; }
 - (void)_escape:(id)sender { [NSApp sendAction: @selector(cancelOperation:) to: nil from: sender]; }
 - (void)_close:(id)sender { [_overrides removeLastObject]; [self update]; }
 - (void)update

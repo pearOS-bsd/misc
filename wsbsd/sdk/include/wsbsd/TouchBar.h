@@ -212,6 +212,7 @@ typedef NS_ENUM(NSInteger, NSPickerTouchBarItemControlRepresentation) { NSPicker
 @property (readonly, strong) NSTouchBar *currentTouchBar;
 @property (readonly, strong) NSPanel *panel;
 - (void)update;
+- (void)invalidate;   /* the bar is built again at the next update */
 - (void)_showPalette:(NSTouchBar *)target;
 - (void)showSystemSlider:(int)which;   /* 0 brightness, 1 volume */
 + (void)_presentBar:(NSTouchBar *)bar closeButton:(BOOL)close;
