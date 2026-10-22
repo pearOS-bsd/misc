@@ -17,7 +17,8 @@ static void wsdTFRect(id self, SEL _cmd, NSRect r);
 /* WSD_APPEARANCE=light switches the palette; the measurements are of the dark appearance (the light one is typical macOS, not measured) */
 static void wsdMenuSizeToFit(id self, SEL _cmd); static NSColor *wsdMenuTextColor(id self, SEL _cmd); static void wsdMenuDrawKeyEq(id self, SEL _cmd, NSRect f, NSView *v); static void wsdMenuDrawState(id self, SEL _cmd, NSRect f, NSView *v);
 extern void WsdInstallFilePanel(void);
-static BOOL isDark(void) { const char *e = getenv("WSD_APPEARANCE"); return !(e && !strcmp(e, "light")); }
+extern BOOL WsdAppearanceIsDark(void); extern void WsdInstallAppearanceWatch(void);
+static BOOL isDark(void) { return WsdAppearanceIsDark(); }
 
 static NSColor *rgb(int r, int g, int b, CGFloat a) { return [NSColor colorWithCalibratedRed: r / 255.0 green: g / 255.0 blue: b / 255.0 alpha: a]; }
 
@@ -370,7 +371,7 @@ static void swizzleTableDefaults(void)
 	Method mtc = class_getInstanceMethod([NSButtonCell class], @selector(textColor));
 	if (mtc && !origButtonTextColor) origButtonTextColor = method_setImplementation(mtc, (IMP)wsdButtonTextColor);
 	{ Method mk = class_getInstanceMethod([NSMenuItemCell class], @selector(_keyEquivalentString)); if (mk && !origKeyEqStr) origKeyEqStr = method_setImplementation(mk, (IMP)wsdKeyEqString); }
-	WsdInstallFilePanel();
+	WsdInstallFilePanel(); WsdInstallAppearanceWatch();
 	{ Method m1 = class_getInstanceMethod([NSMenuView class], @selector(sizeToFit)); if (m1 && !origMenuSize) origMenuSize = method_setImplementation(m1, (IMP)wsdMenuSizeToFit); }
 	{ Method m2 = class_getInstanceMethod([NSMenuItemCell class], @selector(textColor)); if (m2 && !origMenuTextColor) origMenuTextColor = method_setImplementation(m2, (IMP)wsdMenuTextColor); }
 	{ Method m3 = class_getInstanceMethod([NSMenuItemCell class], @selector(drawKeyEquivalentWithFrame:inView:)); if (m3 && !origMenuKeyEq) origMenuKeyEq = method_setImplementation(m3, (IMP)wsdMenuDrawKeyEq); }

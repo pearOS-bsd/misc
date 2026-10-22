@@ -52,7 +52,8 @@ static NSTextField *SearchField(NSView *root, NSRect f);
 static NSTextField *Field(NSRect f, NSString *val); static NSButton *Btn(NSString *title, NSRect f, id target, SEL action, BOOL def);
 static NSColor *RGB(int r, int g, int b) { return [NSColor colorWithCalibratedRed: r / 255.0 green: g / 255.0 blue: b / 255.0 alpha: 1]; }
 static NSColor *RGBA(int r, int g, int b, double a) { return [NSColor colorWithCalibratedRed: r / 255.0 green: g / 255.0 blue: b / 255.0 alpha: a]; }
-static BOOL PDark(void) { const char *e = getenv("WSD_APPEARANCE"); return !(e && !strcmp(e, "light")); }
+extern BOOL WsdAppearanceIsDark(void);
+static BOOL PDark(void) { return WsdAppearanceIsDark(); }
 /* the palette: measured on the dark panel (the light one is the same structure on white) */
 #define P_CONTENT   (PDark() ? RGB(28, 36, 44) : RGB(255, 255, 255))
 #define P_SIDEBAR   (PDark() ? RGB(31, 41, 50) : RGB(236, 236, 238))
@@ -1099,6 +1100,7 @@ static void wsdSetName(id self, SEL _cmd, NSString *v) { objc_setAssociatedObjec
 @implementation WsdFinderSupport
 + (void)roundWindow:(NSWindow *)w radius:(int)r { RoundWindow(w, r); }
 + (BOOL)drawSymbol:(NSString *)name inRect:(NSRect)cell size:(CGFloat)pt weight:(int)weight color:(NSColor *)c { return WsdSymbolDraw(name, cell, pt, weight, c); }
++ (BOOL)isDark { return WsdAppearanceIsDark(); }
 + (void)drawIconOfName:(NSString *)name directory:(BOOL)dir inRect:(NSRect)r { if (dir) DrawDirIcon(r, name); else DrawFileIcon(r, name); }
 @end
 void WsdInstallFilePanel(void)
