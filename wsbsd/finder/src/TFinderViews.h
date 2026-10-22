@@ -21,6 +21,11 @@ TF_ATTR static BOOL TFDark(void) { Class k = NSClassFromString(@"WsdFinderSuppor
 NSString *TFSizeString(unsigned long long bytes);
 NSString *TFDateString(NSDate *d);
 NSString *TFKindString(NSString *path, BOOL dir);
+@interface NSObject (TFTags) + (NSArray *)tagsOfPath:(NSString *)p; + (void)setTags:(NSArray *)n ofPath:(NSString *)p; + (NSArray *)tagNames; + (NSColor *)colorOfTag:(NSString *)n; + (void)drawTagDots:(NSArray *)n rightEdge:(double)x centerY:(double)y; + (double)tagDotsWidth:(NSArray *)n; @end
+NSArray *TFTagsOf(NSString *path);
+void TFSetTags(NSArray *names, NSString *path);
+NSArray *TFPathsTagged(NSString *tag);
+void TFPopupMenu(NSView *view, NSPoint p, NSMenu *menu);
 BOOL TFSymbol(NSString *name, NSRect cell, CGFloat pt, NSColor *tint);
 NSImage *TFIcon(NSString *path);
 
@@ -42,12 +47,14 @@ NSImage *TFIcon(NSString *path);
 
 @interface TIconView : TScrollBase { @public __weak id<TIconViewDelegate> delegate; NSString *filter; NSMutableArray *_items; NSMutableIndexSet *_sel; NSInteger _anchor; }
 - (void)setFolder:(NSString *)folder;
+- (void)setPaths:(NSArray *)paths;
 - (NSArray *)selectedPaths;
 - (void)reloadKeepingSelection;
 @end
 
 @interface TListView : TScrollBase { @public __weak id<TIconViewDelegate> delegate; NSString *filter; NSMutableArray *_items; NSMutableIndexSet *_sel; NSString *_sortKey; BOOL _asc; NSInteger _anchor; }
 - (void)setFolder:(NSString *)folder;
+- (void)setPaths:(NSArray *)paths;
 - (NSArray *)selectedPaths;
 @end
 
