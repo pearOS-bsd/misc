@@ -41,8 +41,8 @@ static NSString *SecurityName(unsigned long long st)
 + (BOOL)supportsSecureCoding { return YES; }
 - (instancetype)initWithScanRecord:(NSDictionary *)r { if ((self = [super init])) _scanRecord = [r copy]; return self; }
 - (instancetype)initWithCoreWiFiScanResult:(id)r { [self release]; return nil; }
-- (instancetype)initWithCoder:(NSCoder *)c { if ((self = [super init])) _scanRecord = [[c decodeObjectForKey: @"scanRecord"] copy]; return self; }
-- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject: _scanRecord forKey: @"scanRecord"]; }
+- (instancetype)initWithCoder:(NSCoder *)c { if ((self = [super init])) _scanRecord = [[c decodeObjectOfClasses: [NSSet setWithObjects: [NSDictionary class], [NSArray class], [NSString class], [NSNumber class], [NSData class], [NSDate class], nil] forKey: @"_scanRecord"] copy]; return self; }
+- (void)encodeWithCoder:(NSCoder *)c { [c encodeObject: _scanRecord forKey: @"_scanRecord"]; }
 - (id)copyWithZone:(NSZone *)z { return [[CWNetwork allocWithZone: z] initWithScanRecord: _scanRecord]; }
 - (NSDictionary *)scanRecord { return _scanRecord; }
 - (void)setScanRecord:(NSDictionary *)r { if (_scanRecord != r) { [_scanRecord release]; _scanRecord = [r copy]; } }
