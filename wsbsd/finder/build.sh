@@ -6,4 +6,7 @@ F="-fobjc-arc -fblocks -w -ferror-limit=0 -I$Q -I$D/../sdk/include -I$D/src $(gn
 for f in "$D"/src/*.mm; do b=$(basename "$f" .mm); clang++ -x objective-c++ $F -c "$f" -o "$OUT/obj/finder_$b.o" 2>&1 | grep -E "error" | head -5; done
 clang++ -o "$APP/MacOS/Finder" "$OUT"/obj/finder_*.o $(gnustep-config --gui-libs) -L"${COMPAT:-/usr/local/lib}" -lwsbsdcompat -lQuartzCore -lopal -lgnustep-corebase -ldispatch -lffi -Wl,-rpath,"${COMPAT:-/usr/local/lib}" 2>&1 | head -5
 cp "$D/Info.plist" "$APP/Info.plist"; [ -d "$D/Resources" ] && cp -R "$D/Resources/." "$APP/Resources/" 2>/dev/null
+# GNUstep looks for the resources of an application beside it (Finder.app/Resources): a link to the Mac layout
+APPDIR="$(dirname "$APP")"; [ -e "$APPDIR/Resources" ] || ln -s Contents/Resources "$APPDIR/Resources"
+[ -d "$APP/Resources/Base.lproj" ] && [ ! -e "$APP/Resources/English.lproj" ] && ln -s Base.lproj "$APP/Resources/English.lproj"
 ls -l "$APP/MacOS/Finder" | awk '{print "built", $9, $5, "bytes"}'
