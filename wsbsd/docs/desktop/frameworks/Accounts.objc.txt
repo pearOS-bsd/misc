@@ -1,0 +1,1800 @@
+@class ACAccount : NSObject <ACProtobufCoding, NSCoding, NSCopying, NSSecureCoding> instanceSize=248
+  ivar +8 _accountStore @"ACAccountStore"
+  ivar +16 _identifier @"NSString"
+  ivar +24 _accountDescription @"NSString"
+  ivar +32 _owningBundleID @"NSString"
+  ivar +40 _username @"NSString"
+  ivar +48 _authenticationType @"NSString"
+  ivar +56 _credentialType @"NSString"
+  ivar +64 _clientToken @"NSString"
+  ivar +72 _accountType @"ACAccountType"
+  ivar +80 _credential @"ACAccountCredential"
+  ivar +88 _properties @"NSMutableDictionary"
+  ivar +96 _dataclassProperties @"NSMutableDictionary"
+  ivar +104 _objectID @"NSURL"
+  ivar +112 _date @"NSDate"
+  ivar +120 _lastCredentialRenewalRejectionDate @"NSDate"
+  ivar +128 _modificationID @"NSString"
+  ivar +136 _cachedParentAccountID @"NSString"
+  ivar +144 _parentAccount @"ACAccount"
+  ivar +152 _childAccounts @"NSArray"
+  ivar +160 _provisionedEnumDataclasses @"NSSet"
+  ivar +168 _trackedProvisionedDataclasses @"ACMutableTrackedSet"
+  ivar +176 _enabledEnumDataclasses @"NSSet"
+  ivar +184 _trackedEnabledDataclasses @"ACMutableTrackedSet"
+  ivar +192 _dirtyProperties @"NSMutableSet"
+  ivar +200 _dirtyAccountProperties @"NSMutableSet"
+  ivar +208 _dirtyDataclassProperties @"NSMutableSet"
+  ivar +216 _credentialsDidChangeObserver @"<NSObject>"
+  ivar +224 _accountPropertiesTransformer @?
+  ivar +232 _haveCheckedForClientToken B
+  ivar +233 _accountAccessAvailable B
+  ivar +234 _authenticated B
+  ivar +235 _active B
+  ivar +236 _warmingUp B
+  ivar +237 _supportsAuthentication B
+  ivar +238 _visible B
+  ivar +239 _haveCheckedForChildAccounts B
+  ivar +240 _wasProvisionedDataclassesReset B
+  ivar +241 _wasEnabledDataclassesReset B
+  property trackedProvisionedDataclasses (T@"ACTrackedSet",C,N,V_trackedProvisionedDataclasses)
+  property provisionedEnumDataclasses (T@"NSSet",C,N,V_provisionedEnumDataclasses)
+  property wasProvisionedDataclassesReset (TB,R,N,V_wasProvisionedDataclassesReset)
+  property trackedEnabledDataclasses (T@"ACTrackedSet",C,N,V_trackedEnabledDataclasses)
+  property enabledEnumDataclasses (T@"NSSet",C,N,V_enabledEnumDataclasses)
+  property wasEnabledDataclassesReset (TB,R,N,V_wasEnabledDataclassesReset)
+  property internalCredential (T@"ACAccountCredential",R)
+  property modificationID (T@"NSString",R)
+  property notifyGenerationID (TQ,R)
+  property objectID (T@"NSURL",R)
+  property accountStore (T@"ACAccountStore",R)
+  property parentAccount (T@"ACAccount",&)
+  property parentAccountIdentifier (T@"NSString",R)
+  property childAccounts (T@"NSArray",R)
+  property enabledDataclasses (T@"NSMutableSet",&)
+  property provisionedDataclasses (T@"NSMutableSet",&)
+  property dataclassProperties (T@"NSDictionary",R,W)
+  property authenticated (TB,GisAuthenticated)
+  property accountProperties (T@"NSDictionary",R,W)
+  property displayAccount (T@"ACAccount",R,W)
+  property active (TB,GisActive)
+  property supportsAuthentication (TB)
+  property warmingUp (TB,GisWarmingUp)
+  property credentialLocation (TQ)
+  property dirty (TB,R,GisDirty)
+  property dirtyProperties (T@"NSSet",R)
+  property dirtyAccountProperties (T@"NSSet",R)
+  property dirtyDataclassProperties (T@"NSSet",R)
+  property authenticationType (T@"NSString",R)
+  property credentialType (T@"NSString",R)
+  property supportsPush (TB,R)
+  property creationDate (T@"NSDate",&)
+  property visible (TB,GisVisible)
+  property lastCredentialRenewalRejectionDate (T@"NSDate",&)
+  property shortDebugName (T@"NSString",R,N)
+  property clientToken (T@"NSString",R)
+  property accountPropertiesTransformer (T@?,C,V_accountPropertiesTransformer)
+  property managingOwnerIdentifier (T@"NSString",&)
+  property managingSourceName (T@"NSString",&)
+  property identifier (T@"NSString",R,W)
+  property accountType (T@"ACAccountType",&)
+  property accountDescription (T@"NSString",C)
+  property username (T@"NSString",C)
+  property userFullName (T@"NSString",R)
+  property credential (T@"ACAccountCredential",&)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +keypathsRequiredForInitialization @16@0:8  imp=+0x19f37789c
+  +supportsSecureCoding B16@0:8  imp=+0x19f349000
+  -.cxx_destruct v16@0:8  imp=+0x19f34a6c4
+  -_applyDirtyStateFromAccount: v24@0:8@16  imp=+0x19f37cf24
+  -_cacheParentAccountID v16@0:8  imp=+0x19f37a804
+  -_cachedParentAccountID @16@0:8  imp=+0x19f37a884
+  -_clearCachedChildAccounts v16@0:8  imp=+0x19f34f8c8
+  -_clearCachedCredentials v16@0:8  imp=+0x19f379170
+  -_clearCachedTrackedSets v16@0:8  imp=+0x19f3791c0
+  -_clearDirtyProperties v16@0:8  imp=+0x19f34f9ac
+  -_encodeProtobuf @16@0:8  imp=+0x19f3787e0
+  -_encodeProtobufData @16@0:8  imp=+0x19f378b88
+  -_initWithProtobuf: @24@0:8@16  imp=+0x19f378158
+  -_initWithProtobufData: @24@0:8@16  imp=+0x19f378720
+  -_installCredentialsChangedObserver v16@0:8  imp=+0x19f349f9c
+  -_isDifferentFrom: B24@0:8@16  imp=+0x19f37d490
+  -_loadAllCachedProperties v16@0:8  imp=+0x19f37c0dc
+  -_markAccountPropertyDirty: v24@0:8@16  imp=+0x19f34e1cc
+  -_markCredentialDirty v16@0:8  imp=+0x19f379684
+  -_markDataclassPropertyDirty: v24@0:8@16  imp=+0x19f37958c
+  -_markPropertyDirty: v24@0:8@16  imp=+0x19f354dec
+  -_resetParentAccount: v24@0:8@16  imp=+0x19f37a774
+  -_setAccountStore: v24@0:8@16  imp=+0x19f34a250
+  -_setModID: v24@0:8@16  imp=+0x19f37aa10
+  -_setObjectID: v24@0:8@16  imp=+0x19f34f730
+  -_unsafe_loadEnabledDataclasses v16@0:8  imp=+0x19f37b1f8
+  -_unsafe_loadProvisionedDataclasses v16@0:8  imp=+0x19f37ac8c
+  -_unsafe_markAccountPropertyDirty: v24@0:8@16  imp=+0x19f34e24c
+  -_unsafe_markDataclassPropertyDirty: v24@0:8@16  imp=+0x19f37960c
+  -_unsafe_markPropertyDirty: v24@0:8@16  imp=+0x19f34e154
+  -_useParentForCredentials B16@0:8  imp=+0x19f34cdc8
+  -accountByCleaningThirdPartyTransformations @16@0:8  imp=+0x19f37c150
+  -accountDescription @16@0:8  imp=+0x19f34cb88
+  -accountProperties @16@0:8  imp=+0x19f34f428
+  -accountPropertiesTransformer @?16@0:8  imp=+0x19f34f480
+  -accountPropertyForKey: @24@0:8@16  imp=+0x19f34b230
+  -accountStore @16@0:8  imp=+0x19f34b320
+  -accountType @16@0:8  imp=+0x19f34b1d4
+  -addClientToken: B24@0:8@16  imp=+0x19f37c314
+  -authenticated B16@0:8  imp=+0x19f379f68
+  -authenticationType @16@0:8  imp=+0x19f34ce10
+  -changeTypeForEnabledDataclass: @24@0:8@16  imp=+0x19f37b0cc
+  -changeTypeForProvisionedDataclass: @24@0:8@16  imp=+0x19f37ab5c
+  -childAccounts @16@0:8  imp=+0x19f37a8dc
+  -childAccountsWithAccountTypeIdentifier: @24@0:8@16  imp=+0x19f353c58
+  -childCardDAVAccountIdentifier @16@0:8  imp=+0x19f37e578
+  -clientToken @16@0:8  imp=+0x19f37c1e8
+  -copySecIdentity ^{__SecIdentity=}16@0:8  imp=+0x19f34db1c
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x19f35003c
+  -correctPersonaScopedForAccount B16@0:8  imp=+0x19f37e474
+  -creationDate @16@0:8  imp=+0x19f379c28
+  -credential @16@0:8  imp=+0x19f34ce68
+  -credentialLocation Q16@0:8  imp=+0x19f37a18c
+  -credentialType @16@0:8  imp=+0x19f351e98
+  -credentialWithError: @24@0:8^@16  imp=+0x19f34ce70
+  -credentialsChanged: v24@0:8@16  imp=+0x19f37902c
+  -dataclassProperties @16@0:8  imp=+0x19f351b00
+  -dealloc v16@0:8  imp=+0x19f34a654
+  -defaultAutodiscoverDomainForChildType: @24@0:8@16  imp=+0x19f37c6c0
+  -description @16@0:8  imp=+0x19f34e974
+  -dirtyAccountProperties @16@0:8  imp=+0x19f37cda4
+  -dirtyDataclassProperties @16@0:8  imp=+0x19f37ce10
+  -dirtyProperties @16@0:8  imp=+0x19f350ff8
+  -displayAccount @16@0:8  imp=+0x19f34dc3c
+  -enabledDataclasses @16@0:8  imp=+0x19f34bac8
+  -enabledEnumDataclasses @16@0:8  imp=+0x19f37e8b8
+  -encodeWithCoder: v24@0:8@16  imp=+0x19f34eb24
+  -fullDescription @16@0:8  imp=+0x19f378c20
+  -identifier @16@0:8  imp=+0x19f34b17c
+  -init @16@0:8  imp=+0x19f350420
+  -initWithAccountType: @24@0:8@16  imp=+0x19f350428
+  -initWithCoder: @24@0:8@16  imp=+0x19f349008
+  -initWithManagedAccount: @24@0:8@16  imp=+0x19f377940
+  -initWithManagedAccount:accountStore: @32@0:8@16@24  imp=+0x19f377838
+  -internalCredential @16@0:8  imp=+0x19f379a48
+  -isActive B16@0:8  imp=+0x19f351c80
+  -isAuthenticated B16@0:8  imp=+0x19f351b6c
+  -isDataSeparatedAccount B16@0:8  imp=+0x19f37e1dc
+  -isDirty B16@0:8  imp=+0x19f34cce0
+  -isEnabledForDataclass: B24@0:8@16  imp=+0x19f34ba20
+  -isEnabledToSyncDataclass: B24@0:8@16  imp=+0x19f37b4c8
+  -isPropertyDirty: B24@0:8@16  imp=+0x19f3790ec
+  -isProvisionedForDataclass: B24@0:8@16  imp=+0x19f354198
+  -isVisible B16@0:8  imp=+0x19f37a348
+  -isWarmingUp B16@0:8  imp=+0x19f37a0dc
+  -lastCredentialRenewalRejectionDate @16@0:8  imp=+0x19f351bf8
+  -managingOwnerIdentifier @16@0:8  imp=+0x19f37e640
+  -managingSourceName @16@0:8  imp=+0x19f37e768
+  -markAllPropertiesDirty v16@0:8  imp=+0x19f37921c
+  -modificationID @16@0:8  imp=+0x19f37a9b8
+  -notifyGenerationID Q16@0:8  imp=+0x19f37aa74
+  -objectForKeyedSubscript: @24@0:8@16  imp=+0x19f34b22c
+  -objectID @16@0:8  imp=+0x19f351cc0
+  -owningBundleID @16@0:8  imp=+0x19f351aa8
+  -parentAccount @16@0:8  imp=+0x19f34b2c8
+  -parentAccountIdentifier @16@0:8  imp=+0x19f34ffcc
+  -personaIdentifier @16@0:8  imp=+0x19f37e348
+  -portableCopy @16@0:8  imp=+0x19f378bd8
+  -propertiesForDataclass: @24@0:8@16  imp=+0x19f34a578
+  -propertyForKey: @24@0:8@16  imp=+0x19f379f60
+  -provisionedDataclasses @16@0:8  imp=+0x19f3541fc
+  -provisionedEnumDataclasses @16@0:8  imp=+0x19f37e898
+  -qualifiedUsername @16@0:8  imp=+0x19f37c400
+  -refresh v16@0:8  imp=+0x19f350680
+  -reload v16@0:8  imp=+0x19f351064
+  -secCertificates @16@0:8  imp=+0x19f37df80
+  -setAccountDescription: v24@0:8@16  imp=+0x19f379ad0
+  -setAccountProperties: v24@0:8@16  imp=+0x19f379d1c
+  -setAccountPropertiesTransformer: v24@0:8@?16  imp=+0x19f37e8d0
+  -setAccountProperty:forKey: v32@0:8@16@24  imp=+0x19f34e014
+  -setAccountType: v24@0:8@16  imp=+0x19f37a544
+  -setActive: v20@0:8B16  imp=+0x19f354aac
+  -setAuthenticated: v20@0:8B16  imp=+0x19f379f6c
+  -setAuthenticationType: v24@0:8@16  imp=+0x19f379690
+  -setChildCardDAVAccountIdentifier: v24@0:8@16  imp=+0x19f37e634
+  -setCreationDate: v24@0:8@16  imp=+0x19f379c80
+  -setCredential: v24@0:8@16  imp=+0x19f37994c
+  -setCredentialLocation: v24@0:8Q16  imp=+0x19f37a27c
+  -setCredentialType: v24@0:8@16  imp=+0x19f37972c
+  -setDataclassProperties: v24@0:8@16  imp=+0x19f37b558
+  -setDirty:forProperty: v28@0:8B16@20  imp=+0x19f3794ec
+  -setEnabled:forDataclass: v28@0:8B16@20  imp=+0x19f354c80
+  -setEnabledDataclasses: v24@0:8@16  imp=+0x19f37b33c
+  -setEnabledEnumDataclasses: v24@0:8@16  imp=+0x19f37e8c0
+  -setIdentifier: v24@0:8@16  imp=+0x19f354b1c
+  -setLastCredentialRenewalRejectionDate: v24@0:8@16  imp=+0x19f37a018
+  -setManagingOwnerIdentifier: v24@0:8@16  imp=+0x19f37e6d0
+  -setManagingSourceName: v24@0:8@16  imp=+0x19f37e7f8
+  -setObject:forKeyedSubscript: v32@0:8@16@24  imp=+0x19f34e010
+  -setOwningBundleID: v24@0:8@16  imp=+0x19f379b8c
+  -setParentAccount: v24@0:8@16  imp=+0x19f37a5e0
+  -setProperties:forDataclass: v32@0:8@16@24  imp=+0x19f37b7b0
+  -setProperty:forKey: v32@0:8@16@24  imp=+0x19f379f64
+  -setProvisioned:forDataclass: v28@0:8B16@20  imp=+0x19f37aed4
+  -setProvisionedDataclasses: v24@0:8@16  imp=+0x19f37add0
+  -setProvisionedEnumDataclasses: v24@0:8@16  imp=+0x19f37e8a0
+  -setSecCertificates: v24@0:8@16  imp=+0x19f37dd6c
+  -setSecIdentity: v24@0:8^{__SecIdentity=}16  imp=+0x19f37dbe4
+  -setSupportsAuthentication: v20@0:8B16  imp=+0x19f37a464
+  -setTrackedEnabledDataclasses: v24@0:8@16  imp=+0x19f37e8b0
+  -setTrackedProvisionedDataclasses: v24@0:8@16  imp=+0x19f37e890
+  -setUsername: v24@0:8@16  imp=+0x19f354bb8
+  -setVisible: v20@0:8B16  imp=+0x19f37a388
+  -setWarmingUp: v20@0:8B16  imp=+0x19f37a11c
+  -shortDebugName @16@0:8  imp=+0x19f37ce7c
+  -supportsAuthentication B16@0:8  imp=+0x19f37a3f8
+  -supportsPush B16@0:8  imp=+0x19f37a500
+  -takeValuesFromModifiedAccount: v24@0:8@16  imp=+0x19f37b8ec
+  -trackedEnabledDataclasses @16@0:8  imp=+0x19f37b060
+  -trackedProvisionedDataclasses @16@0:8  imp=+0x19f37aaf0
+  -userFullName @16@0:8  imp=+0x19f3797f0
+  -username @16@0:8  imp=+0x19f34cd40
+  -wasEnabledDataclassesReset B16@0:8  imp=+0x19f37e8c8
+  -wasProvisionedDataclassesReset B16@0:8  imp=+0x19f37e8a8
+@class ACAccountCredential : NSObject <ACProtobufCoding, NSCoding, NSCopying, NSSecureCoding> instanceSize=48
+  ivar +8 _credentialItems @"NSDictionary"
+  ivar +16 _credentialType @"NSString"
+  ivar +24 _dirtyProperties @"NSMutableSet"
+  ivar +32 _owningAccount @"ACAccount"
+  ivar +40 _requiresTouchID B
+  ivar +41 _dirty B
+  ivar +42 _empty B
+  property requiresTouchID (TB,V_requiresTouchID)
+  property token (T@"NSString",C)
+  property oauthTokenSecret (T@"NSString",C)
+  property password (T@"NSString",C)
+  property credentialType (T@"NSString",C,N)
+  property dirtyProperties (T@"NSSet",R,N)
+  property dirty (TB,N,GisDirty,V_dirty)
+  property empty (TB,N,GisEmpty,V_empty)
+  property oauthTokenNoSync (T@"NSString",C,N)
+  property oauthRefreshToken (T@"NSString",C)
+  property expiryDate (T@"NSDate",&,N)
+  property findMyiPhoneToken (T@"NSString",C,N)
+  property mapsToken (T@"NSString",C,N)
+  property mdmServerToken (T@"NSString",C,N)
+  property hsaToken (T@"NSString",C,N)
+  property tokenExpiryDate (T@"NSDate",C,N)
+  property oauthToken (T@"NSString",C,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +additionalServiceSegmentForAccountTypeIdentifier: @24@0:8@16  imp=+0x19f3857a0
+  +allSupportedKeys @16@0:8  imp=+0x19f383f78
+  +credentialPolicyForAccountTypeIdentifier:key:clientID: @40@0:8@16@24@32  imp=+0x19f385510
+  +credentialPolicyIsMixedForAccountTypeIdentifier: B24@0:8@16  imp=+0x19f385738
+  +credentialWithOAuthToken:tokenSecret: @32@0:8@16@24  imp=+0x19f383e94
+  +credentialWithPassword: @24@0:8@16  imp=+0x19f383f18
+  +nonPersistentKeysForAccountTypeIdentifier:credentialType: @32@0:8@16@24  imp=+0x19f384878
+  +supportedKeysForAccountTypeIdentifier:credentialType:clientID: @40@0:8@16@24@32  imp=+0x19f3841d8
+  +supportsSecureCoding B16@0:8  imp=+0x19f34d5c8
+  -.cxx_destruct v16@0:8  imp=+0x19f351f2c
+  -_clearDirtyProperties v16@0:8  imp=+0x19f34fb98
+  -_encodeProtobuf @16@0:8  imp=+0x19f384da0
+  -_encodeProtobufData @16@0:8  imp=+0x19f384f70
+  -_initWithProtobuf: @24@0:8@16  imp=+0x19f384a34
+  -_initWithProtobufData: @24@0:8@16  imp=+0x19f384ce0
+  -_markPropertyDirty: v24@0:8@16  imp=+0x19f385034
+  -_setOwningAccount: v24@0:8@16  imp=+0x19f34da9c
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x19f383a80
+  -credentialItemForKey: @24@0:8@16  imp=+0x19f34dab4
+  -credentialItems @16@0:8  imp=+0x19f3850e0
+  -credentialType @16@0:8  imp=+0x19f3854b4
+  -description @16@0:8  imp=+0x19f383de8
+  -dirtyProperties @16@0:8  imp=+0x19f385008
+  -encodeWithCoder: v24@0:8@16  imp=+0x19f34f08c
+  -expiryDate @16@0:8  imp=+0x19f385270
+  -findMyiPhoneToken @16@0:8  imp=+0x19f385368
+  -hash Q16@0:8  imp=+0x19f383a14
+  -hsaToken @16@0:8  imp=+0x19f385398
+  -init @16@0:8  imp=+0x19f3849d4
+  -initWithCoder: @24@0:8@16  imp=+0x19f34d5d0
+  -initWithOAuth2Token:refreshToken:expiryDate: @40@0:8@16@24@32  imp=+0x19f383b40
+  -initWithOAuthToken:tokenSecret: @32@0:8@16@24  imp=+0x19f383c3c
+  -initWithPassword: @24@0:8@16  imp=+0x19f383d48
+  -isDirty B16@0:8  imp=+0x19f384fc0
+  -isEmpty B16@0:8  imp=+0x19f384fe4
+  -isEqual: B24@0:8@16  imp=+0x19f3838d0
+  -keysForCredentialItems @16@0:8  imp=+0x19f3850e8
+  -mapsToken @16@0:8  imp=+0x19f385380
+  -mdmServerToken @16@0:8  imp=+0x19f3853b0
+  -oauthRefreshToken @16@0:8  imp=+0x19f385258
+  -oauthToken @16@0:8  imp=+0x19f34daa8
+  -oauthTokenNoSync @16@0:8  imp=+0x19f385240
+  -oauthTokenSecret @16@0:8  imp=+0x19f385228
+  -password @16@0:8  imp=+0x19f34f5d4
+  -requiresTouchID B16@0:8  imp=+0x19f3857a8
+  -setCredentialItem:forKey: v32@0:8@16@24  imp=+0x19f3850f0
+  -setCredentialType: v24@0:8@16  imp=+0x19f3854bc
+  -setDirty: v20@0:8B16  imp=+0x19f3857bc
+  -setEmpty: v20@0:8B16  imp=+0x19f3857c4
+  -setExpiryDate: v24@0:8@16  imp=+0x19f3852e4
+  -setFindMyiPhoneToken: v24@0:8@16  imp=+0x19f385374
+  -setHsaToken: v24@0:8@16  imp=+0x19f3853a4
+  -setMapsToken: v24@0:8@16  imp=+0x19f38538c
+  -setMdmServerToken: v24@0:8@16  imp=+0x19f3853bc
+  -setOauthRefreshToken: v24@0:8@16  imp=+0x19f385264
+  -setOauthToken: v24@0:8@16  imp=+0x19f38521c
+  -setOauthTokenNoSync: v24@0:8@16  imp=+0x19f38524c
+  -setOauthTokenSecret: v24@0:8@16  imp=+0x19f385234
+  -setPassword: v24@0:8@16  imp=+0x19f38535c
+  -setRequiresTouchID: v20@0:8B16  imp=+0x19f3857b4
+  -setToken: v24@0:8@16  imp=+0x19f385210
+  -setTokenExpiryDate: v24@0:8@16  imp=+0x19f38543c
+  -token @16@0:8  imp=+0x19f351f20
+  -tokenExpiryDate @16@0:8  imp=+0x19f3853c8
+@class ACAccountMigrationState : NSObject instanceSize=8
+  +_currentSystemVersion @16@0:8  imp=+0x19f3a02fc
+  +isMigrationFinished B16@0:8  imp=+0x19f3a0264
+  +migrationFinishedForKey: B24@0:8^{__CFString=}16  imp=+0x19f3a0270
+  +writeMigrationVersionPref v16@0:8  imp=+0x19f3a0368
+  +writeMigrationVersionPrefForKey: v24@0:8^{__CFString=}16  imp=+0x19f3a0374
+@class ACAccountStore : NSObject instanceSize=104
+  ivar +8 _daemonAccountStoreDidChangeObserver @
+  ivar +16 _endpoint @"NSXPCListenerEndpoint"
+  ivar +24 _remoteAccountStoreSession @"ACRemoteAccountStoreSession"
+  ivar +32 _remoteAccountStoreSessionLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +40 _remoteAccountStoreSessionExpirer @"ACTimedExpirer"
+  ivar +48 _longLivedRemoteAccountStoreSession @"ACRemoteAccountStoreSession"
+  ivar +56 _longLivedRemoteAccountStoreSessionLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +64 _longLivedRemoteAccountStoreSessionExpirer @"ACTimedExpirer"
+  ivar +72 _replyQueue @"NSObject<OS_dispatch_queue>"
+  ivar +80 __primaryAppleAccountCache @"ACNotifyAccountCache"
+  ivar +88 __testCache @"ACAccountStoreCache"
+  ivar +96 _effectiveBundleID @"NSString"
+  property replyQueue (T@"NSObject<OS_dispatch_queue>",R,N,V_replyQueue)
+  property remoteAccountStoreSession (T@"ACRemoteAccountStoreSession",R,N)
+  property longLivedRemoteAccountStoreSession (T@"ACRemoteAccountStoreSession",R,N)
+  property _primaryAppleAccountCache (T@"ACNotifyAccountCache",&,V__primaryAppleAccountCache)
+  property _testCache (T@"ACAccountStoreCache",&,V__testCache)
+  property effectiveBundleID (T@"NSString",R,V_effectiveBundleID)
+  property accounts (T@"NSArray",R,W)
+  +_obsoleteAccountTypeIDsToRemove @16@0:8  imp=+0x19f3729a4
+  +_setConnectionTimeout: v24@0:8Q16  imp=+0x19f35b324
+  +_setDefaultStore: v24@0:8@16  imp=+0x19f35b314
+  +accountsWithAccountTypeIdentifierExist: i24@0:8@16  imp=+0x19f360bc0
+  +canSaveAccountsOfAccountTypeIdentifier: B24@0:8@16  imp=+0x19f362ed8
+  +countOfAccountsWithAccountTypeIdentifier: q24@0:8@16  imp=+0x19f360ec0
+  +defaultStore @16@0:8  imp=+0x19f35b274
+  -.cxx_destruct v16@0:8  imp=+0x19f34dd98
+  -_cache @16@0:8  imp=+0x19f3770e4
+  -_cacheFetchedAccountsOfMixedType:accountTypeIDs: v32@0:8@16@24  imp=+0x19f35db40
+  -_cachedAccountsWithAccountTypeIdentifiers:completion: v32@0:8@16@?24  imp=+0x19f35dec0
+  -_checkSaveRateLimitForAccountType: v24@0:8@16  imp=+0x19f363eec
+  -_connectionFailureError @16@0:8  imp=+0x19f354a8c
+  -_createSMTPAccountForServerAccount: @24@0:8@16  imp=+0x19f374f34
+  -_primaryAppleAccountCache @16@0:8  imp=+0x19f377150
+  -_removeObsoleteAccountsInternal:completion: v32@0:8@16@?24  imp=+0x19f3730f8
+  -_removeObsoleteOSXServerAccountForMacOS: @24@0:8@16  imp=+0x19f373964
+  -_removeObsoleteOSXServerAccountForiOS: v24@0:8@16  imp=+0x19f37454c
+  -_sanitizeOptionsDictionary: @24@0:8@16  imp=+0x19f377024
+  -_saveAccount:verify:dataclassActions:completion: v44@0:8@16B24@28@?36  imp=+0x19f34e2d4
+  -_testCache @16@0:8  imp=+0x19f377164
+  -_uidOfAccountsd I16@0:8  imp=+0x19f376ec4
+  -_unsanitizeError: @24@0:8@16  imp=+0x19f34fba8
+  -accessKeysForAccountType: @24@0:8@16  imp=+0x19f3647f4
+  -accountIdentifiersEnabledForDataclass: @24@0:8@16  imp=+0x19f35378c
+  -accountIdentifiersEnabledForDataclasses:withAccountTypeIdentifiers:completion: v40@0:8@16@24@?32  imp=+0x19f36d544
+  -accountIdentifiersEnabledToSyncDataclass: @24@0:8@16  imp=+0x19f36ae8c
+  -accountTypeWithAccountTypeIdentifier: @24@0:8@16  imp=+0x19f34ccb8
+  -accountTypeWithAccountTypeIdentifier:error: @32@0:8@16^@24  imp=+0x19f346918
+  -accountTypeWithIdentifier:completion: v32@0:8@16@?24  imp=+0x19f352cac
+  -accountWithIdentifier: @24@0:8@16  imp=+0x19f351434
+  -accountWithIdentifier:completion: v32@0:8@16@?24  imp=+0x19f3528f0
+  -accountWithIdentifier:error: @32@0:8@16^@24  imp=+0x19f35143c
+  -accounts @16@0:8  imp=+0x19f35bf48
+  -accountsOnPairedDeviceWithAccountType:completion: v32@0:8@16@?24  imp=+0x19f35e188
+  -accountsOnPairedDeviceWithAccountTypes:withOptions:completion: v40@0:8@16@24@?32  imp=+0x19f35e224
+  -accountsWithAccountType: @24@0:8@16  imp=+0x19f348650
+  -accountsWithAccountType:completion: v32@0:8@16@?24  imp=+0x19f353030
+  -accountsWithAccountType:options:completion: v40@0:8@16Q24@?32  imp=+0x19f35c9d4
+  -accountsWithAccountType:options:error: @40@0:8@16Q24^@32  imp=+0x19f352000
+  -accountsWithAccountTypeIdentifiers:completion: v32@0:8@16@?24  imp=+0x19f349b38
+  -accountsWithAccountTypeIdentifiers:error: @32@0:8@16^@24  imp=+0x19f34a8fc
+  -accountsWithAccountTypeIdentifiers:preloadedProperties:completion: v40@0:8@16@24@?32  imp=+0x19f349b44
+  -accountsWithAccountTypeIdentifiers:preloadedProperties:error: @40@0:8@16@24^@32  imp=+0x19f34a908
+  -addClientToken:forAccount: B32@0:8@16@24  imp=+0x19f36e160
+  -allAccountTypes @16@0:8  imp=+0x19f35ef04
+  -allDataclasses @16@0:8  imp=+0x19f35ea7c
+  -appPermissionsForAccountType: @24@0:8@16  imp=+0x19f364cc0
+  -cachedAccountWithIdentifier:completion: v32@0:8@16@?24  imp=+0x19f35283c
+  -cachedAccountsWithAccountType:options:completion: v40@0:8@16Q24@?32  imp=+0x19f35e184
+  -canSaveAccount:withCompletionHandler: v32@0:8@16@?24  imp=+0x19f362814
+  -childAccountsForAccount: @24@0:8@16  imp=+0x19f369c88
+  -childAccountsForAccount:error: @32@0:8@16^@24  imp=+0x19f369c90
+  -childAccountsForAccount:withTypeIdentifier: @32@0:8@16@24  imp=+0x19f353e78
+  -clearAllPermissionsGrantedForAccountType: v24@0:8@16  imp=+0x19f3656f4
+  -clearGrantedPermissionsForAccountType: v24@0:8@16  imp=+0x19f366488
+  -clientTokenForAccount: @24@0:8@16  imp=+0x19f36dbdc
+  -credentialForAccount: @24@0:8@16  imp=+0x19f368c80
+  -credentialForAccount:bundleID: @32@0:8@16@24  imp=+0x19f369c34
+  -credentialForAccount:error: @32@0:8@16^@24  imp=+0x19f34cf94
+  -credentialForAccount:serviceID: @32@0:8@16@24  imp=+0x19f368cd8
+  -credentialForAccount:serviceID:error: @40@0:8@16@24^@32  imp=+0x19f368ce0
+  -dataclassActionsForAccountDeletion: @24@0:8@16  imp=+0x19f36c0e8
+  -dataclassActionsForAccountDeletion:error: @32@0:8@16^@24  imp=+0x19f36c0f0
+  -dataclassActionsForAccountSave: @24@0:8@16  imp=+0x19f36bacc
+  -dataclassActionsForAccountSave:error: @32@0:8@16^@24  imp=+0x19f36bad4
+  -dealloc v16@0:8  imp=+0x19f34dd30
+  -disconnectFromRemoteAccountStore v16@0:8  imp=+0x19f354c7c
+  -discoverPropertiesForAccount:options:completion: v40@0:8@16@24@?32  imp=+0x19f36e6e0
+  -displayTypeForAccountWithIdentifier: @24@0:8@16  imp=+0x19f36a9a0
+  -effectiveBundleID @16@0:8  imp=+0x19f346578
+  -enabledDataclassesForAccount: @24@0:8@16  imp=+0x19f354f48
+  -enabledDataclassesForAccount:error: @32@0:8@16^@24  imp=+0x19f34bc48
+  -generationForCacheSuffix: Q24@0:8@16  imp=+0x19f376e60
+  -grantedPermissionsForAccountType: @24@0:8@16  imp=+0x19f365fbc
+  -handleURL: v24@0:8@16  imp=+0x19f375284
+  -hasAccountWithDescription: B24@0:8@16  imp=+0x19f35fd00
+  -init @16@0:8  imp=+0x19f346298
+  -initWithEffectiveBundleID: @24@0:8@16  imp=+0x19f35b338
+  -initWithRemoteEndpoint: @24@0:8@16  imp=+0x19f35b330
+  -initWithRemoteEndpoint:effectiveBundleID: @32@0:8@16@24  imp=+0x19f3462a4
+  -insertAccountType:withCompletionHandler: v32@0:8@16@?24  imp=+0x19f361208
+  -isPerformingDataclassActionsForAccount: B24@0:8@16  imp=+0x19f36c704
+  -isPerformingDataclassActionsForAccount:error: B32@0:8@16^@24  imp=+0x19f36c70c
+  -isPushSupportedForAccount: B24@0:8@16  imp=+0x19f3607c0
+  -isTetheredSyncingEnabledForDataclass: B24@0:8@16  imp=+0x19f36cce8
+  -kerberosAccountsForDomainFromURL:completion: v32@0:8@16@?24  imp=+0x19f360100
+  -longLivedRemoteAccountStoreSession @16@0:8  imp=+0x19f34ea50
+  -migrateCredentialForAccount:completion: v32@0:8@16@?24  imp=+0x19f368124
+  -notifyRemoteDevicesOfModifiedAccount: v24@0:8@16  imp=+0x19f36fd30
+  -notifyRemoteDevicesOfModifiedAccount:withOptions: v32@0:8@16@24  imp=+0x19f36fd3c
+  -notifyRemoteDevicesOfModifiedAccount:withOptions:completion: v40@0:8@16@24@?32  imp=+0x19f36fd44
+  -notifyRemoteDevicesOfUpdatedCredentials: v24@0:8@16  imp=+0x19f3704f0
+  -notifyRemoteDevicesOfUpdatedCredentials:withOptions: v32@0:8@16@24  imp=+0x19f3704f8
+  -notifyRemoteDevicesOfUpdatedCredentials:withOptions:completion: v40@0:8@16@24@?32  imp=+0x19f370500
+  -openAuthenticationURL:forAccount:shouldConfirm:completion: v44@0:8@16@24B32@?36  imp=+0x19f36eecc
+  -openAuthenticationURLForAccount:withDelegateClassName:fromBundleAtPath:shouldConfirm:completion: v52@0:8@16@24@32B40@?44  imp=+0x19f36f594
+  -parentAccountForAccount: @24@0:8@16  imp=+0x19f34b3b4
+  -parentAccountForAccount:error: @32@0:8@16^@24  imp=+0x19f34b3bc
+  -permissionForAccountType: B24@0:8@16  imp=+0x19f365b40
+  -preloadDataclassOwnersWithCompletion: v24@0:8@?16  imp=+0x19f36b358
+  -provisionedDataclassesForAccount: @24@0:8@16  imp=+0x19f36a47c
+  -provisionedDataclassesForAccount:error: @32@0:8@16^@24  imp=+0x19f354380
+  -remoteAccountStoreSession @16@0:8  imp=+0x19f346bc4
+  -removeAccount:withCompletionHandler: v32@0:8@16@?24  imp=+0x19f362070
+  -removeAccount:withDataclassActions:completion: v40@0:8@16@24@?32  imp=+0x19f36207c
+  -removeAccount:withDeleteSync:completion: v36@0:8@16B24@?28  imp=+0x19f361fb8
+  -removeAccountFromPairedDevice:withCompletion: v32@0:8@16@?24  imp=+0x19f371bf4
+  -removeAccountFromPairedDevice:withOptions:completion: v40@0:8@16@24@?32  imp=+0x19f371c00
+  -removeAccountType:withCompletionHandler: v32@0:8@16@?24  imp=+0x19f361960
+  -removeAccountsFromPairedDeviceWithCompletion: v24@0:8@?16  imp=+0x19f3714b0
+  -removeAccountsFromPairedDeviceWithOptions:completion: v32@0:8@16@?24  imp=+0x19f3714bc
+  -removeObsoleteAccounts: v24@0:8@?16  imp=+0x19f372adc
+  -renewCredentialsForAccount:completion: v32@0:8@16@?24  imp=+0x19f368050
+  -renewCredentialsForAccount:force:reason:completion: v44@0:8@16B24@28@?36  imp=+0x19f367f3c
+  -renewCredentialsForAccount:options:completion: v40@0:8@16@24@?32  imp=+0x19f36741c
+  -renewCredentialsForAccount:reason:completion: v40@0:8@16@24@?32  imp=+0x19f368040
+  -renewCredentialsForAccount:services:completion: v40@0:8@16@24@?32  imp=+0x19f368060
+  -replyQueue @16@0:8  imp=+0x19f377148
+  -reportTelemetryForLandmarkEvent: v24@0:8@?16  imp=+0x19f3756cc
+  -requestAccessToAccountsWithType:options:completion: v40@0:8@16@24@?32  imp=+0x19f363ff8
+  -requestAccessToAccountsWithType:withCompletionHandler: v32@0:8@16@?24  imp=+0x19f363fec
+  -resetDatabaseToVersion:withCompletion: v32@0:8@16@?24  imp=+0x19f375e58
+  -runAccountMigrationPlugins: v24@0:8@?16  imp=+0x19f3687fc
+  -saveAccount:toPairedDeviceWithOptions:completion: v40@0:8@16@24@?32  imp=+0x19f370cac
+  -saveAccount:withCompletionHandler: v32@0:8@16@?24  imp=+0x19f3632e4
+  -saveAccount:withDataclassActions:completion: v40@0:8@16@24@?32  imp=+0x19f363668
+  -saveAccount:withDataclassActions:doVerify:completion: v44@0:8@16@24B32@?36  imp=+0x19f352c9c
+  -saveVerifiedAccount:error: B32@0:8@16^@24  imp=+0x19f363678
+  -saveVerifiedAccount:withCompletionHandler: v32@0:8@16@?24  imp=+0x19f34e2c4
+  -scheduleBackupIfNonexistent: v24@0:8@?16  imp=+0x19f375764
+  -setCredential:forAccount:serviceID:error: v48@0:8@16@24@32^@40  imp=+0x19f36948c
+  -setCredentialItemCleanupVolatilityDuration:withCompletion: v32@0:8d16@?24  imp=+0x19f376444
+  -setNotificationsEnabled: v20@0:8B16  imp=+0x19f35b86c
+  -setPermissionGranted:forBundleID:onAccountType: v36@0:8B16@20@28  imp=+0x19f36518c
+  -set_primaryAppleAccountCache: v24@0:8@16  imp=+0x19f37715c
+  -set_testCache: v24@0:8@16  imp=+0x19f377170
+  -shutdownAccountsD: v24@0:8@?16  imp=+0x19f3768b4
+  -supportedDataclassesForAccountType: @24@0:8@16  imp=+0x19f34c6bc
+  -syncableDataclassesForAccountType: @24@0:8@16  imp=+0x19f36a4d4
+  -tetheredSyncSourceTypeForDataclass: @24@0:8@16  imp=+0x19f36d10c
+  -triggerCredentialItemCleanupWithCompletion: v24@0:8@?16  imp=+0x19f376688
+  -triggerKeychainMigrationIfNecessary: B24@0:8^@16  imp=+0x19f3723c8
+  -updateExistenceCacheOfAccountWithTypeIdentifier: i24@0:8@16  imp=+0x19f363ee0
+  -verifyCredentialsForAccount:options:completion: v40@0:8@16@24@?32  imp=+0x19f3669e8
+  -verifyCredentialsForAccount:saveWhenAuthorized:withHandler: v36@0:8@16B24@?28  imp=+0x19f3668e0
+  -verifyCredentialsForAccount:withHandler: v32@0:8@16@?24  imp=+0x19f3668d4
+  -visibleTopLevelAccountsWithAccountTypeIdentifiers:completion: v32@0:8@16@?24  imp=+0x19f35f4b8
+@class ACAccountStoreCache : NSObject instanceSize=64
+  ivar +8 _allAccountTypeCached B
+  ivar +12 _accountTypeCacheLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +16 _accountTypeCache @"NSMutableDictionary"
+  ivar +24 _accountNotifyCachesLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +32 _accountNotifyCaches @"NSMutableDictionary"
+  ivar +40 _memoryNotificationSource @"NSObject<OS_dispatch_source>"
+  ivar +48 _uniquingCache @"ACAccountUniquingCache"
+  ivar +56 _credentialCache @"ACCredentialCache"
+  property credentialCache (T@"ACCredentialCache",&,V_credentialCache)
+  +sharedCache @16@0:8  imp=+0x19f39a2e4
+  -.cxx_destruct v16@0:8  imp=+0x19f39bb4c
+  -_clearAllCaches v16@0:8  imp=+0x19f39b998
+  -_lock_cacheAccountType: v24@0:8@16  imp=+0x19f39b4c0
+  -_lock_clearCachedAccountsForType: v24@0:8@16  imp=+0x19f39b1e4
+  -cacheAccount: v24@0:8@16  imp=+0x19f39af30
+  -cacheAccountType: v24@0:8@16  imp=+0x19f39b3c0
+  -cacheAccounts:forSuffix: v32@0:8@16@24  imp=+0x19f39a9dc
+  -cacheAccounts:forSuffix:clearIfWrong: v36@0:8@16@24B32  imp=+0x19f39a9e4
+  -cacheAllAccountTypes: v24@0:8@16  imp=+0x19f39b548
+  -cachedAccountForIdentifier: @24@0:8@16  imp=+0x19f39abe8
+  -cachedAccountTypeWithIdentifier: @24@0:8@16  imp=+0x19f39b2b4
+  -cachedAccountsForSuffix: @24@0:8@16  imp=+0x19f39a78c
+  -cachedAllAccountTypes @16@0:8  imp=+0x19f39b73c
+  -clearCachedAccountType: v24@0:8@16  imp=+0x19f39b854
+  -clearCachedAccountsForType: v24@0:8@16  imp=+0x19f39b0d4
+  -credentialCache @16@0:8  imp=+0x19f39bb38
+  -generationForCacheSuffix: Q24@0:8@16  imp=+0x19f39a57c
+  -init @16@0:8  imp=+0x19f39a4a0
+  -setCredentialCache: v24@0:8@16  imp=+0x19f39bb44
+  -setupMemoryNotifications v16@0:8  imp=+0x19f39a368
+@class ACAccountStoreClientSideListener : NSObject instanceSize=8
+  -accountCredentialsDidChangeForAccountWithIdentifier: v24@0:8@16  imp=+0x19f388c50
+  -init @16@0:8  imp=+0x19f388c18
+@class ACAccountType : NSObject <ACProtobufCoding, NSCopying, NSSecureCoding> instanceSize=120
+  ivar +8 _accountTypeDescription @"NSString"
+  ivar +16 _identifier @"NSString"
+  ivar +24 _credentialType @"NSString"
+  ivar +32 _objectID @"NSURL"
+  ivar +40 _visibility i
+  ivar +48 _credentialProtectionPolicy @"NSString"
+  ivar +56 _accountStore @"ACAccountStore"
+  ivar +64 _supportsAuthentication i
+  ivar +68 _supportsMultipleAccounts B
+  ivar +69 _obsolete B
+  ivar +72 _supportedDataclasses @"NSSet"
+  ivar +80 _syncableDataclasses @"NSSet"
+  ivar +88 _supportedEnumDataclasses @"NSSet"
+  ivar +96 _syncableEnumDataclasses @"NSSet"
+  ivar +104 _accessKeys @"NSSet"
+  ivar +112 _owningBundleID @"NSString"
+  property objectID (T@"NSURL",&,N,V_objectID)
+  property visibility (Ti,N)
+  property credentialProtectionPolicy (T@,C,N)
+  property credentialType (T@"NSString",&,N,V_credentialType)
+  property accountStore (T@"ACAccountStore",W,N,V_accountStore)
+  property supportsAuthentication (Ti,N,V_supportsAuthentication)
+  property supportsMultipleAccounts (TB,N,V_supportsMultipleAccounts)
+  property owningBundleID (T@"NSString",&,N,V_owningBundleID)
+  property obsolete (TB,N,GisObsolete,V_obsolete)
+  property supportedDataclasses (T@"NSSet",R,N,V_supportedDataclasses)
+  property syncableDataclasses (T@"NSSet",R,N,V_syncableDataclasses)
+  property accessKeys (T@"NSSet",R,N,V_accessKeys)
+  property fullDescription (T@"NSString",R,N)
+  property accountTypeDescription (T@"NSString",R,N,V_accountTypeDescription)
+  property identifier (T@"NSString",R,N,V_identifier)
+  property accessGranted (TB,R,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +allIdentifiers @16@0:8  imp=+0x19f37e97c
+  +supportsSecureCoding B16@0:8  imp=+0x19f3480b0
+  -.cxx_destruct v16@0:8  imp=+0x19f34a844
+  -_encodeProtobuf @16@0:8  imp=+0x19f37f3b4
+  -_encodeProtobufData @16@0:8  imp=+0x19f37f4fc
+  -_initWithProtobuf: @24@0:8@16  imp=+0x19f37f0b4
+  -_initWithProtobufData: @24@0:8@16  imp=+0x19f37f2f4
+  -accessGranted B16@0:8  imp=+0x19f37fa68
+  -accessKeys @16@0:8  imp=+0x19f37faf8
+  -accountStore @16@0:8  imp=+0x19f37fc98
+  -accountTypeDescription @16@0:8  imp=+0x19f348efc
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x19f351d18
+  -credentialProtectionPolicy @16@0:8  imp=+0x19f348f14
+  -credentialType @16@0:8  imp=+0x19f37f9cc
+  -description @16@0:8  imp=+0x19f37f54c
+  -encodeWithCoder: v24@0:8@16  imp=+0x19f348c74
+  -fullDescription @16@0:8  imp=+0x19f37f5e0
+  -hash Q16@0:8  imp=+0x19f37fc44
+  -identifier @16@0:8  imp=+0x19f348ef4
+  -initWithCoder: @24@0:8@16  imp=+0x19f3480b8
+  -initWithIdentifier:description: @32@0:8@16@24  imp=+0x19f37eca4
+  -initWithManagedAccountType: @24@0:8@16  imp=+0x19f37edbc
+  -initWithManagedAccountType:accountStore: @32@0:8@16@24  imp=+0x19f37ed58
+  -isEqual: B24@0:8@16  imp=+0x19f37fb9c
+  -isObsolete B16@0:8  imp=+0x19f348ff8
+  -objectID @16@0:8  imp=+0x19f348f04
+  -owningBundleID @16@0:8  imp=+0x19f348ff0
+  -setAccountStore: v24@0:8@16  imp=+0x19f348644
+  -setAccountTypeDescription: v24@0:8@16  imp=+0x19f37f938
+  -setCredentialProtectionPolicy: v24@0:8@16  imp=+0x19f37f9dc
+  -setCredentialType: v24@0:8@16  imp=+0x19f37f988
+  -setIdentifier: v24@0:8@16  imp=+0x19f37f8f4
+  -setObjectID: v24@0:8@16  imp=+0x19f37f97c
+  -setObsolete: v20@0:8B16  imp=+0x19f37fccc
+  -setOwningBundleID: v24@0:8@16  imp=+0x19f37fcd4
+  -setSupportedDataclasses: v24@0:8@16  imp=+0x19f37f73c
+  -setSupportsAuthentication: v20@0:8i16  imp=+0x19f37faac
+  -setSupportsMultipleAccounts: v20@0:8B16  imp=+0x19f37fcc4
+  -setSyncableDataclasses: v24@0:8@16  imp=+0x19f37f884
+  -setVisibility: v20@0:8i16  imp=+0x19f37f9d4
+  -supportedDataclasses @16@0:8  imp=+0x19f34c5e4
+  -supportsAuthentication i16@0:8  imp=+0x19f348fa8
+  -supportsMultipleAccounts B16@0:8  imp=+0x19f348fe8
+  -syncableDataclasses @16@0:8  imp=+0x19f37f7ac
+  -visibility i16@0:8  imp=+0x19f348f0c
+@class ACAccountUniquingCache : NSObject instanceSize=24
+  ivar +8 _uniqueCachedAccountsLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +16 _cachedAccounts @"NSMutableDictionary"
+  -.cxx_destruct v16@0:8  imp=+0x19f38819c
+  -_lock_cacheParentChain: v24@0:8@16  imp=+0x19f38776c
+  -_lock_clearParentChains: v24@0:8@16  imp=+0x19f387ff4
+  -_lock_hydrateParentChain: B24@0:8@16  imp=+0x19f387c9c
+  -_nonCopied_nonHydrated_cachedAccountByIdentifier: @24@0:8@16  imp=+0x19f387854
+  -cacheAccounts: v24@0:8@16  imp=+0x19f387540
+  -cachedAccountsByIdentifiers: @24@0:8@16  imp=+0x19f387a10
+  -clearAccountsByIdentifiers: v24@0:8@16  imp=+0x19f387da4
+  -clearAllCaches v16@0:8  imp=+0x19f3880c0
+  -init @16@0:8  imp=+0x19f3874d4
+@class ACCredentialCache : NSObject instanceSize=40
+  ivar +8 _validityDuration I
+  ivar +12 _credentialCacheLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +16 _expirersLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +24 _expirersByCredentialKey @"NSMutableDictionary"
+  ivar +32 _cachedCredentials @"NSMutableDictionary"
+  property expirersByCredentialKey (T@"NSMutableDictionary",&,V_expirersByCredentialKey)
+  property cachedCredentials (T@"NSMutableDictionary",&,V_cachedCredentials)
+  +__enableCache v16@0:8  imp=+0x19f39f2c8
+  +_cacheEnabled B16@0:8  imp=+0x19f39f2d8
+  +_credentialKeyForAccount:serviceID: @32@0:8@16@24  imp=+0x19f3a0050
+  -.cxx_destruct v16@0:8  imp=+0x19f3a0220
+  -_clearAllCaches v16@0:8  imp=+0x19f39fe64
+  -_handleKeybagFirstUnlocked v16@0:8  imp=+0x19f39f444
+  -cacheCredential:forAccount:serviceID: v40@0:8@16@24@32  imp=+0x19f39f658
+  -cachedCredentialForAccount:serviceID: @32@0:8@16@24  imp=+0x19f39f448
+  -cachedCredentials @16@0:8  imp=+0x19f3a020c
+  -clearCachedCredentialsForAccount: v24@0:8@16  imp=+0x19f39fb9c
+  -clearCachedCredentialsForAccountID: v24@0:8@16  imp=+0x19f39fc1c
+  -expirersByCredentialKey @16@0:8  imp=+0x19f3a01f8
+  -initWithValidityDuration: @20@0:8I16  imp=+0x19f39f330
+  -setCachedCredentials: v24@0:8@16  imp=+0x19f3a0218
+  -setExpirersByCredentialKey: v24@0:8@16  imp=+0x19f3a0204
+@class ACCredentialItem : NSObject <NSSecureCoding> instanceSize=64
+  ivar +8 _accountIdentifier @"NSString"
+  ivar +16 _expirationDate @"NSDate"
+  ivar +24 _serviceName @"NSString"
+  ivar +32 _persistent B
+  ivar +40 _objectID @"NSURL"
+  ivar +48 _accountStore @"ACAccountStore"
+  ivar +56 _dirtyProperties @"NSMutableSet"
+  property accountIdentifier (T@"NSString",R)
+  property expirationDate (T@"NSDate",&)
+  property expired (TB,R,GisExpired)
+  property serviceName (T@"NSString",R)
+  property persistent (TB,GisPersistent)
+  property objectID (T@"NSURL",&)
+  property accountStore (T@"ACAccountStore",W,V_accountStore)
+  property dirty (TB,R,GisDirty)
+  property dirtyProperties (T@"NSSet",R,V_dirtyProperties)
+  +supportsSecureCoding B16@0:8  imp=+0x19f39cd90
+  -.cxx_destruct v16@0:8  imp=+0x19f39da0c
+  -_markPropertyDirty: v24@0:8@16  imp=+0x19f39d940
+  -accountIdentifier @16@0:8  imp=+0x19f39d6d0
+  -accountStore @16@0:8  imp=+0x19f39d9c8
+  -clearDirtyProperties v16@0:8  imp=+0x19f39d9b8
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x19f39d5d8
+  -description @16@0:8  imp=+0x19f39d450
+  -dirtyProperties @16@0:8  imp=+0x19f39da00
+  -encodeWithCoder: v24@0:8@16  imp=+0x19f39d2ec
+  -expirationDate @16@0:8  imp=+0x19f39d72c
+  -fullDescription @16@0:8  imp=+0x19f39d4e4
+  -initWithAccountIdentifier:serviceName: @32@0:8@16@24  imp=+0x19f39cffc
+  -initWithCoder: @24@0:8@16  imp=+0x19f39d0e0
+  -initWithManagedCredentialItem: @24@0:8@16  imp=+0x19f39cdfc
+  -initWithManagedCredentialItem:accountStore: @32@0:8@16@24  imp=+0x19f39cd98
+  -isDirty B16@0:8  imp=+0x19f39d89c
+  -isExpired B16@0:8  imp=+0x19f39d734
+  -isPersistent B16@0:8  imp=+0x19f39d830
+  -isPropertyDirty: B24@0:8@16  imp=+0x19f39d8c0
+  -markAllPropertiesDirty v16@0:8  imp=+0x19f39d8c8
+  -objectID @16@0:8  imp=+0x19f39d84c
+  -serviceName @16@0:8  imp=+0x19f39d7d4
+  -setAccountIdentifier: v24@0:8@16  imp=+0x19f39d6d8
+  -setAccountStore: v24@0:8@16  imp=+0x19f39d9f4
+  -setExpirationDate: v24@0:8@16  imp=+0x19f39d78c
+  -setObjectID: v24@0:8@16  imp=+0x19f39d854
+  -setPersistent: v20@0:8B16  imp=+0x19f39d838
+  -setServiceName: v24@0:8@16  imp=+0x19f39d7dc
+@class ACDManagedAccessOptionsKey : NSManagedObject instanceSize=64
+  property name (T@"NSString",&,D,N)
+  property owningAccountTypes (T@"NSSet",&,D,N)
+@class ACDManagedAccount : NSManagedObject instanceSize=64
+  property lastCredentialRenewalRejectionDate (T@"NSDate",&,D,N)
+  property dataclassProperties (T@,&,D,N)
+  property active (T@"NSNumber",&,D,N)
+  property warmingUp (T@"NSNumber",&,D,N)
+  property authenticated (T@"NSNumber",&,D,N)
+  property identifier (T@"NSString",&,D,N)
+  property date (T@"NSDate",&,D,N)
+  property authenticationType (T@"NSString",&,D,N)
+  property accountDescription (T@"NSString",&,D,N)
+  property supportsAuthentication (T@"NSNumber",&,D,N)
+  property owningBundleID (T@"NSString",&,D,N)
+  property username (T@"NSString",&,D,N)
+  property credentialType (T@"NSString",&,D,N)
+  property childAccounts (T@"NSSet",&,D,N)
+  property provisionedDataclasses (T@"NSSet",&,D,N)
+  property parentAccount (T@"ACDManagedAccount",&,D,N)
+  property accountType (T@"ACDManagedAccountType",&,D,N)
+  property customProperties (T@"NSSet",&,D,N)
+  property enabledDataclasses (T@"NSSet",&,D,N)
+  property visible (T@"NSNumber",&,D,N)
+  property modificationID (T@"NSString",&,D,N)
+  -description @16@0:8  imp=+0x19f358314
+@class ACDManagedAccountProperty : NSManagedObject instanceSize=64
+  property value (T@,&,D,N)
+  property key (T@"NSString",&,D,N)
+  property owner (T@"ACDManagedAccount",&,D,N)
+@class ACDManagedAccountType : NSManagedObject instanceSize=64
+  property identifier (T@"NSString",&,D,N)
+  property supportsMultipleAccounts (T@"NSNumber",&,D,N)
+  property accountTypeDescription (T@"NSString",&,D,N)
+  property credentialProtectionPolicy (T@"NSString",&,D,N)
+  property supportsAuthentication (T@"NSNumber",&,D,N)
+  property visibility (T@"NSNumber",&,D,N)
+  property credentialType (T@"NSString",&,D,N)
+  property owningBundleID (T@"NSString",&,D,N)
+  property supportedDataclasses (T@"NSSet",&,D,N)
+  property permission (T@"NSSet",&,D,N)
+  property accounts (T@"NSSet",&,D,N)
+  property accessKeys (T@"NSSet",&,D,N)
+  property syncableDataclasses (T@"NSSet",&,D,N)
+  property obsolete (T@"NSNumber",&,D,N)
+  -_dataclassStringsFromManaged: @24@0:8@16  imp=+0x19f35a4bc
+  -description @16@0:8  imp=+0x19f35a394
+  -supportedDataclassStrings @16@0:8  imp=+0x19f35a404
+  -syncableDataclassStrings @16@0:8  imp=+0x19f35a460
+@class ACDManagedAuthorization : NSManagedObject instanceSize=64
+  property options (T@,&,D,N)
+  property grantedPermissions (T@"NSString",&,D,N)
+  property bundleID (T@"NSString",&,D,N)
+  property accountType (T@"ACDManagedAccountType",&,D,N)
+@class ACDManagedCredentialItem : NSManagedObject instanceSize=64
+  property accountIdentifier (T@"NSString",&,D,N)
+  property expirationDate (T@"NSDate",&,D,N)
+  property serviceName (T@"NSString",&,D,N)
+  property persistent (T@"NSNumber",&,D,N)
+@class ACDManagedDataclass : NSManagedObject instanceSize=64
+  property name (T@"NSString",&,D,N)
+  property enumValue (T@"NSNumber",&,D,N)
+  property provisionedAccounts (T@"NSSet",&,D,N)
+  property syncableTypes (T@"NSSet",&,D,N)
+  property supportedTypes (T@"NSSet",&,D,N)
+  property enabledAccounts (T@"NSSet",&,D,N)
+@class ACDMockManagedDataclass : ACDManagedDataclass instanceSize=104
+  ivar +64 name @"NSString"
+  ivar +72 provisionedAccounts @"NSSet"
+  ivar +80 syncableTypes @"NSSet"
+  ivar +88 supportedTypes @"NSSet"
+  ivar +96 enabledAccounts @"NSSet"
+  -.cxx_destruct v16@0:8  imp=+0x19f3965b8
+  -enabledAccounts @16@0:8  imp=+0x19f396590
+  -name @16@0:8  imp=+0x19f3964f0
+  -provisionedAccounts @16@0:8  imp=+0x19f396518
+  -setEnabledAccounts: v24@0:8@16  imp=+0x19f3965a4
+  -setName: v24@0:8@16  imp=+0x19f396504
+  -setProvisionedAccounts: v24@0:8@16  imp=+0x19f39652c
+  -setSupportedTypes: v24@0:8@16  imp=+0x19f39657c
+  -setSyncableTypes: v24@0:8@16  imp=+0x19f396554
+  -supportedTypes @16@0:8  imp=+0x19f396568
+  -syncableTypes @16@0:8  imp=+0x19f396540
+@class ACDataclassAction : NSObject <ACProtobufCoding, NSSecureCoding> instanceSize=48
+  ivar +8 _isDestructive B
+  ivar +16 _type q
+  ivar +24 _affectedContainers @"NSArray"
+  ivar +32 _undoAlertTitle @"NSString"
+  ivar +40 _undoAlertMessage @"NSString"
+  property _error (TB,R,G_isError)
+  property type (Tq,R,N,V_type)
+  property isDestructive (TB,R,N,V_isDestructive)
+  property affectedContainers (T@"NSArray",R,N,V_affectedContainers)
+  property undoAlertTitle (T@"NSString",&,N,V_undoAlertTitle)
+  property undoAlertMessage (T@"NSString",&,N,V_undoAlertMessage)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +_actionForError: @24@0:8@16  imp=+0x19f395714
+  +actionWithType: @24@0:8q16  imp=+0x19f39561c
+  +destructiveActionWithType: @24@0:8q16  imp=+0x19f395660
+  +destructiveActionWithType:affectedContainers: @32@0:8q16@24  imp=+0x19f3956a4
+  +supportsSecureCoding B16@0:8  imp=+0x19f395614
+  -.cxx_destruct v16@0:8  imp=+0x19f395f04
+  -_encodeProtobuf @16@0:8  imp=+0x19f395ca0
+  -_encodeProtobufData @16@0:8  imp=+0x19f395d60
+  -_initWithProtobuf: @24@0:8@16  imp=+0x19f395acc
+  -_initWithProtobufData: @24@0:8@16  imp=+0x19f395be0
+  -_isError B16@0:8  imp=+0x19f395ea8
+  -affectedContainers @16@0:8  imp=+0x19f395ed4
+  -description @16@0:8  imp=+0x19f395db0
+  -encodeWithCoder: v24@0:8@16  imp=+0x19f3959dc
+  -hash Q16@0:8  imp=+0x19f395ea0
+  -initWithCoder: @24@0:8@16  imp=+0x19f3957e0
+  -initWithType:destructivity:affectedContainers: @36@0:8q16B24@28  imp=+0x19f39574c
+  -isDestructive B16@0:8  imp=+0x19f395ecc
+  -isEqual: B24@0:8@16  imp=+0x19f395de8
+  -setUndoAlertMessage: v24@0:8@16  imp=+0x19f395ef8
+  -setUndoAlertTitle: v24@0:8@16  imp=+0x19f395ee4
+  -type q16@0:8  imp=+0x19f395ec4
+  -undoAlertMessage @16@0:8  imp=+0x19f395ef0
+  -undoAlertTitle @16@0:8  imp=+0x19f395edc
+@class ACLoggingHashCache : NSObject instanceSize=40
+  ivar +8 _cacheLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +16 _cacheDictionary @"NSMutableDictionary"
+  ivar +24 _oldestKeys @"NSMutableArray"
+  ivar +32 _maxCapacity Q
+  +sharedCache @16@0:8  imp=+0x19f3960f0
+  -.cxx_destruct v16@0:8  imp=+0x19f3964ac
+  -hashedString: @24@0:8@16  imp=+0x19f39621c
+  -initWithMaxCapacity: @24@0:8Q16  imp=+0x19f39617c
+@class ACManagedDefaults : NSObject instanceSize=8
+  +sharedInstance @16@0:8  imp=+0x19f354f50
+  -setValue:forManagedDefault: v32@0:8@16@24  imp=+0x19f358384
+  -valueForManagedDefault: @24@0:8@16  imp=+0x19f354e6c
+@class ACMonitoredAccountStore : ACAccountStore instanceSize=168
+  ivar +104 _accountTypesToMonitor @"NSSet"
+  ivar +112 _monitoringReaders @"NSSet"
+  ivar +120 _propertiesToPrefetch @"NSArray"
+  ivar +128 _accountsByID @"NSMutableDictionary"
+  ivar +136 _delegates @"NSHashTable"
+  ivar +144 _credentialsDidChangeObserver @"<NSObject>"
+  ivar +152 _didBecomeActiveObserver @"<NSObject>"
+  ivar +160 _monitoredAccountsCacheLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  property monitoredAccounts (T@"NSArray",R)
+  -.cxx_destruct v16@0:8  imp=+0x19f358204
+  -_accountsListPopulated: v24@0:8@16  imp=+0x19f357208
+  -_allDelegates @16@0:8  imp=+0x19f3579a8
+  -_lock_accountWasAdded: v24@0:8@16  imp=+0x19f357a28
+  -_lock_accountWasModified: v24@0:8@16  imp=+0x19f357cd0
+  -_lock_accountWasRemoved: v24@0:8@16  imp=+0x19f357f78
+  -_lock_processAccountsListForNotifications:forType: v32@0:8@16@24  imp=+0x19f356ec0
+  -_registerAccountMonitorSynchronouslyWithCompletion: v24@0:8@?16  imp=+0x19f356400
+  -_registerAccountMonitorWithCompletion: v24@0:8@?16  imp=+0x19f35606c
+  -_registerForApplicationStateDidChangeNotification v16@0:8  imp=+0x19f3575e4
+  -_registerForCredentialChangedNotifications v16@0:8  imp=+0x19f357468
+  -_registerNotifyReaders v16@0:8  imp=+0x19f356610
+  -_reregisterForAccountType: v24@0:8@16  imp=+0x19f356958
+  -_sendNotificationOfChange v16@0:8  imp=+0x19f356014
+  -addDelegate: v24@0:8@16  imp=+0x19f355eec
+  -credentialsChangedNotification: v24@0:8@16  imp=+0x19f357764
+  -dealloc v16@0:8  imp=+0x19f355228
+  -initWithAccountTypes:delegate: @32@0:8@16@24  imp=+0x19f3550a0
+  -initWithAccountTypes:propertiesToPrefetch:delegate: @40@0:8@16@24@32  imp=+0x19f3550ac
+  -initWithWithRemoteEndpoint:effectiveBundleID:accountTypes:propertiesToPrefetch:delegate: @56@0:8@16@24@32@40@48  imp=+0x19f3550c4
+  -monitoredAccountWithIdentifier: @24@0:8@16  imp=+0x19f355dc4
+  -monitoredAccounts @16@0:8  imp=+0x19f355c18
+  -registerSynchronouslyWithError: v24@0:8^@16  imp=+0x19f3557d0
+  -registerWithCompletion: v24@0:8@?16  imp=+0x19f3552e0
+  -removeDelegate: v24@0:8@16  imp=+0x19f355f80
+@class ACMutableTrackedSet : ACTrackedSet instanceSize=24
+  -addObject: v24@0:8@16  imp=+0x19f39e6e8
+  -addObjectsFromArray: v24@0:8@16  imp=+0x19f39e7c0
+  -removeObject: v24@0:8@16  imp=+0x19f39e754
+@class ACNotificationRebroadcaster : NSObject instanceSize=24
+  ivar +8 _daemonAccountStoreDidChangeObserver @
+  ivar +16 _queue @"NSOperationQueue"
+  +sharedRebroadcaster @16@0:8  imp=+0x19f3466c0
+  -.cxx_destruct v16@0:8  imp=+0x19f3905d4
+  -_accountStoreDidChange: v24@0:8@16  imp=+0x19f34f67c
+  -_beginObservingAccountStoreDidChangeNotifications v16@0:8  imp=+0x19f3467dc
+  -_endObservingAccountStoreDidChangeNotifications v16@0:8  imp=+0x19f390558
+  -dealloc v16@0:8  imp=+0x19f3904ac
+  -init @16@0:8  imp=+0x19f346744
+@class ACNotifyAccountCache : NSObject instanceSize=48
+  ivar +8 _notifyAccountCacheLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +16 _cachedAccountIDs @"NSArray"
+  ivar +24 _uniquingCache @"ACAccountUniquingCache"
+  ivar +32 _reader @"<ACNotifyReading>"
+  ivar +40 _key @"NSString"
+  property key (T@"NSString",&,N,V_key)
+  property reader (T@"<ACNotifyReading>",&,V_reader)
+  +__enableTestCacheID v16@0:8  imp=+0x19f38587c
+  +_getUID I16@0:8  imp=+0x19f3857cc
+  +cacheKeyForSuffix: @24@0:8@16  imp=+0x19f38588c
+  +generationForAccounts: Q24@0:8@16  imp=+0x19f385948
+  +suffixForAccountsForAccountType:fetchOptions: @32@0:8@16Q24  imp=+0x19f385a88
+  -.cxx_destruct v16@0:8  imp=+0x19f386454
+  -_lock_clearCachedAccounts v16@0:8  imp=+0x19f3863e8
+  -cacheAccounts: v24@0:8@16  imp=+0x19f386018
+  -cacheAccounts:clearIfWrong: v28@0:8@16B24  imp=+0x19f386020
+  -cachedAccounts @16@0:8  imp=+0x19f385e04
+  -clearCachedAccounts v16@0:8  imp=+0x19f386310
+  -generation Q16@0:8  imp=+0x19f385c3c
+  -initWithKey:reader:uniquingCache: @40@0:8@16@24@32  imp=+0x19f385ad4
+  -initWithKey:uniquingCache: @32@0:8@16@24  imp=+0x19f385ba0
+  -key @16@0:8  imp=+0x19f386440
+  -reader @16@0:8  imp=+0x19f38642c
+  -setKey: v24@0:8@16  imp=+0x19f386448
+  -setReader: v24@0:8@16  imp=+0x19f386438
+@class ACNotifyReader : NSObject <ACNotifyReading> instanceSize=32
+  ivar +8 _notifierToken i
+  ivar +12 _dispatchToken i
+  ivar +16 _cachedValue Q
+  ivar +24 _key @"NSString"
+  property key (T@"NSString",&,N,V_key)
+  property cachedValue (TQ,N,V_cachedValue)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x19f388568
+  -cachedValue Q16@0:8  imp=+0x19f388544
+  -currentValue Q16@0:8  imp=+0x19f3883d0
+  -dealloc v16@0:8  imp=+0x19f38836c
+  -initWithKey:updateQueue:updateBlock: @40@0:8@16@24@?32  imp=+0x19f3881a8
+  -key @16@0:8  imp=+0x19f388554
+  -setCachedValue: v24@0:8Q16  imp=+0x19f38854c
+  -setKey: v24@0:8@16  imp=+0x19f38855c
+@class ACNotifyWriter : NSObject <ACNotifyWriting> instanceSize=24
+  ivar +8 notifierToken i
+  ivar +12 lock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +16 _key @"NSString"
+  property key (T@"NSString",&,N,V_key)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x19f39f2bc
+  -dealloc v16@0:8  imp=+0x19f39ef98
+  -initWithKey: @24@0:8@16  imp=+0x19f39eeb0
+  -key @16@0:8  imp=+0x19f39f2a8
+  -setKey: v24@0:8@16  imp=+0x19f39f2b0
+  -write: v24@0:8Q16  imp=+0x19f39efec
+@class ACOAuthSigner : NSObject instanceSize=40
+  ivar +8 _connection @"NSXPCConnection"
+  ivar +16 _account @"ACAccount"
+  ivar +24 _proxyShim @"<ACDOAuthSignerProtocol>"
+  ivar +32 _shouldIncludeAppIdInRequest B
+  property shouldIncludeAppIdInRequest (TB,V_shouldIncludeAppIdInRequest)
+  -.cxx_destruct v16@0:8  imp=+0x19f381fa8
+  -_connectToRemoteOAuthSignerUsingEndpoint: v24@0:8@16  imp=+0x19f381e38
+  -dealloc v16@0:8  imp=+0x19f38190c
+  -disconnectFromRemoteOAuthSigner v16@0:8  imp=+0x19f381f8c
+  -initWithAccount: @24@0:8@16  imp=+0x19f3817c0
+  -initWithAccount:remoteEndpoint: @32@0:8@16@24  imp=+0x19f3817c8
+  -setShouldIncludeAppIdInRequest: v20@0:8B16  imp=+0x19f381fa0
+  -shouldIncludeAppIdInRequest B16@0:8  imp=+0x19f381f94
+  -signedURLRequestWithURLRequest: @24@0:8@16  imp=+0x19f381e2c
+  -signedURLRequestWithURLRequest:applicationID:timestamp: @40@0:8@16@24@32  imp=+0x19f381bd8
+  -signedURLRequestWithURLRequest:callingPID:timestamp: @40@0:8@16@24@32  imp=+0x19f381954
+@class ACPersonaManager : NSObject instanceSize=64
+  ivar +8 _personaGenerationID Q
+  ivar +16 _personaStorageLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +24 _enterprisePersonaUID @"NSString"
+  ivar +32 _personalPersonaUID @"NSString"
+  ivar +40 _guestPersonasUID @"NSSet"
+  ivar +48 _dataSeparatedPersonasUIDs @"NSArray"
+  ivar +56 _store @"ACAccountStore"
+  property enterprisePersonaUID (T@"NSString",R,C,N)
+  property personalPersonaUID (T@"NSString",R,C,N)
+  property guestPersonasUIDs (T@"NSSet",R,C,N)
+  property dataSeparatedPersonasUIDs (T@"NSArray",R,C,N)
+  +_changePersonaContextUsingPersonaID:withCompletion: v32@0:8@16@?24  imp=+0x19f381444
+  +performWithinPersona:withBlock: B32@0:8@16@?24  imp=+0x19f3810fc
+  +performWithinPersonaForAccount:withBlock: v32@0:8@16@?24  imp=+0x19f380fac
+  +performWithinPersonaForAccountIdentifier:withBlock: v32@0:8@16@?24  imp=+0x19f380eec
+  +sharedInstance @16@0:8  imp=+0x19f37fce0
+  -.cxx_destruct v16@0:8  imp=+0x19f3816fc
+  -_cacheURL @16@0:8  imp=+0x19f380390
+  -_lockedLoadCache v16@0:8  imp=+0x19f3806c0
+  -_lockedSaveCurrentCache v16@0:8  imp=+0x19f380450
+  -_lockedUpdatePersonasUIDsIfNeeded v16@0:8  imp=+0x19f37fec8
+  -dataSeparatedPersonasUIDs @16@0:8  imp=+0x19f380dd0
+  -enterprisePersonaUID @16@0:8  imp=+0x19f380ae4
+  -guestPersonasUIDs @16@0:8  imp=+0x19f380d0c
+  -init @16@0:8  imp=+0x19f37fd64
+  -personalPersonaUID @16@0:8  imp=+0x19f380c48
+  -store @16@0:8  imp=+0x19f380e94
+  -updatePersonasUIDs v16@0:8  imp=+0x19f37fdf0
+@class ACPluginLoader : NSObject instanceSize=8
+  +_accountsPluginDirectoryURLs:inAppleInternal: @28@0:8@16B24  imp=+0x19f35a618
+  +_pluginWithName:inSubpath:inAppleInternal: @36@0:8@16@24B32  imp=+0x19f35afb4
+  +_populatePluginBundles:atSubpath:inAppleInternal: v36@0:8@16@24B32  imp=+0x19f35aad8
+  +_validatedBundleAtURL: @24@0:8@16  imp=+0x19f35a850
+  +pluginBundlesAtSubpath: @24@0:8@16  imp=+0x19f35aee4
+  +pluginWithName:inSubpath: @32@0:8@16@24  imp=+0x19f35b138
+@class ACProtobufAccount : PBCodable <NSCopying> instanceSize=200
+  ivar +8 _accountDescription @"NSString"
+  ivar +16 _accountType @"ACProtobufAccountType"
+  ivar +24 _authenticationType @"NSString"
+  ivar +32 _credential @"ACProtobufAccountCredential"
+  ivar +40 _credentialType @"NSString"
+  ivar +48 _dataclassProperties @"NSMutableArray"
+  ivar +56 _date @"ACProtobufDate"
+  ivar +64 _dirtyAccountProperties @"NSMutableArray"
+  ivar +72 _dirtyDataclassProperties @"NSMutableArray"
+  ivar +80 _dirtyProperties @"NSMutableArray"
+  ivar +88 _enabledDataclasses @"NSMutableArray"
+  ivar +96 _enabledEnumDataclasses @"NSMutableArray"
+  ivar +104 _identifier @"NSString"
+  ivar +112 _lastCredentialRenewalRejectionDate @"ACProtobufDate"
+  ivar +120 _modificationID @"NSString"
+  ivar +128 _objectID @"ACProtobufURL"
+  ivar +136 _owningBundleID @"NSString"
+  ivar +144 _parentAccount @"ACProtobufAccount"
+  ivar +152 _properties @"NSMutableArray"
+  ivar +160 _provisionedDataclasses @"NSMutableArray"
+  ivar +168 _provisionedEnumDataclasses @"NSMutableArray"
+  ivar +176 _username @"NSString"
+  ivar +184 _active B
+  ivar +185 _authenticated B
+  ivar +186 _supportsAuthentication B
+  ivar +187 _visible B
+  ivar +188 _warmingUp B
+  ivar +192 _has {?="warmingUp"b1}
+  property propertiesDictionary (T@"NSDictionary",C,N)
+  property dataclassPropertiesDictionary (T@"NSDictionary",C,N)
+  property accountType (T@"ACProtobufAccountType",&,N,V_accountType)
+  property hasCredential (TB,R,N)
+  property credential (T@"ACProtobufAccountCredential",&,N,V_credential)
+  property identifier (T@"NSString",&,N,V_identifier)
+  property hasAccountDescription (TB,R,N)
+  property accountDescription (T@"NSString",&,N,V_accountDescription)
+  property hasUsername (TB,R,N)
+  property username (T@"NSString",&,N,V_username)
+  property properties (T@"NSMutableArray",&,N,V_properties)
+  property authenticated (TB,N,V_authenticated)
+  property hasLastCredentialRenewalRejectionDate (TB,R,N)
+  property lastCredentialRenewalRejectionDate (T@"ACProtobufDate",&,N,V_lastCredentialRenewalRejectionDate)
+  property active (TB,N,V_active)
+  property visible (TB,N,V_visible)
+  property supportsAuthentication (TB,N,V_supportsAuthentication)
+  property dataclassProperties (T@"NSMutableArray",&,N,V_dataclassProperties)
+  property hasObjectID (TB,R,N)
+  property objectID (T@"ACProtobufURL",&,N,V_objectID)
+  property hasParentAccount (TB,R,N)
+  property parentAccount (T@"ACProtobufAccount",&,N,V_parentAccount)
+  property enabledDataclasses (T@"NSMutableArray",&,N,V_enabledDataclasses)
+  property provisionedDataclasses (T@"NSMutableArray",&,N,V_provisionedDataclasses)
+  property hasAuthenticationType (TB,R,N)
+  property authenticationType (T@"NSString",&,N,V_authenticationType)
+  property hasCredentialType (TB,R,N)
+  property credentialType (T@"NSString",&,N,V_credentialType)
+  property hasDate (TB,R,N)
+  property date (T@"ACProtobufDate",&,N,V_date)
+  property hasOwningBundleID (TB,R,N)
+  property owningBundleID (T@"NSString",&,N,V_owningBundleID)
+  property dirtyProperties (T@"NSMutableArray",&,N,V_dirtyProperties)
+  property dirtyAccountProperties (T@"NSMutableArray",&,N,V_dirtyAccountProperties)
+  property dirtyDataclassProperties (T@"NSMutableArray",&,N,V_dirtyDataclassProperties)
+  property hasWarmingUp (TB,N)
+  property warmingUp (TB,N,V_warmingUp)
+  property hasModificationID (TB,R,N)
+  property modificationID (T@"NSString",&,N,V_modificationID)
+  property enabledEnumDataclasses (T@"NSMutableArray",&,N,V_enabledEnumDataclasses)
+  property provisionedEnumDataclasses (T@"NSMutableArray",&,N,V_provisionedEnumDataclasses)
+  +dataclassPropertiesType #16@0:8  imp=+0x19f38aec4
+  +dirtyAccountPropertiesType #16@0:8  imp=+0x19f38b29c
+  +dirtyDataclassPropertiesType #16@0:8  imp=+0x19f38b368
+  +dirtyPropertiesType #16@0:8  imp=+0x19f38b1d0
+  +enabledDataclassesType #16@0:8  imp=+0x19f38afc8
+  +enabledEnumDataclassesType #16@0:8  imp=+0x19f38b4b4
+  +propertiesType #16@0:8  imp=+0x19f38addc
+  +provisionedDataclassesType #16@0:8  imp=+0x19f38b094
+  +provisionedEnumDataclassesType #16@0:8  imp=+0x19f38b580
+  -.cxx_destruct v16@0:8  imp=+0x19f38f680
+  -accountDescription @16@0:8  imp=+0x19f38f2d4
+  -accountType @16@0:8  imp=+0x19f38f25c
+  -active B16@0:8  imp=+0x19f38f39c
+  -addDataclassProperties: v24@0:8@16  imp=+0x19f38ae18
+  -addDirtyAccountProperties: v24@0:8@16  imp=+0x19f38b1f0
+  -addDirtyDataclassProperties: v24@0:8@16  imp=+0x19f38b2bc
+  -addDirtyProperties: v24@0:8@16  imp=+0x19f38b124
+  -addEnabledDataclasses: v24@0:8@16  imp=+0x19f38af1c
+  -addEnabledEnumDataclasses: v24@0:8@16  imp=+0x19f38b408
+  -addProperties: v24@0:8@16  imp=+0x19f38ad30
+  -addProvisionedDataclasses: v24@0:8@16  imp=+0x19f38afe8
+  -addProvisionedEnumDataclasses: v24@0:8@16  imp=+0x19f38b4d4
+  -authenticated B16@0:8  imp=+0x19f38f34c
+  -authenticationType @16@0:8  imp=+0x19f38f4dc
+  -clearDataclassProperties v16@0:8  imp=+0x19f38ae04
+  -clearDirtyAccountProperties v16@0:8  imp=+0x19f38b1dc
+  -clearDirtyDataclassProperties v16@0:8  imp=+0x19f38b2a8
+  -clearDirtyProperties v16@0:8  imp=+0x19f38b110
+  -clearEnabledDataclasses v16@0:8  imp=+0x19f38af08
+  -clearEnabledEnumDataclasses v16@0:8  imp=+0x19f38b3f4
+  -clearProperties v16@0:8  imp=+0x19f38ad1c
+  -clearProvisionedDataclasses v16@0:8  imp=+0x19f38afd4
+  -clearProvisionedEnumDataclasses v16@0:8  imp=+0x19f38b4c0
+  -copyTo: v24@0:8@16  imp=+0x19f38d200
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x19f38d784
+  -credential @16@0:8  imp=+0x19f38f284
+  -credentialType @16@0:8  imp=+0x19f38f504
+  -dataclassProperties @16@0:8  imp=+0x19f38f414
+  -dataclassPropertiesAtIndex: @24@0:8Q16  imp=+0x19f38aeb0
+  -dataclassPropertiesCount Q16@0:8  imp=+0x19f38ae9c
+  -dataclassPropertiesDictionary @16@0:8  imp=+0x19f394eb4
+  -date @16@0:8  imp=+0x19f38f52c
+  -description @16@0:8  imp=+0x19f38b58c
+  -dictionaryRepresentation @16@0:8  imp=+0x19f38b638
+  -dirtyAccountProperties @16@0:8  imp=+0x19f38f5a4
+  -dirtyAccountPropertiesAtIndex: @24@0:8Q16  imp=+0x19f38b288
+  -dirtyAccountPropertiesCount Q16@0:8  imp=+0x19f38b274
+  -dirtyDataclassProperties @16@0:8  imp=+0x19f38f5cc
+  -dirtyDataclassPropertiesAtIndex: @24@0:8Q16  imp=+0x19f38b354
+  -dirtyDataclassPropertiesCount Q16@0:8  imp=+0x19f38b340
+  -dirtyProperties @16@0:8  imp=+0x19f38f57c
+  -dirtyPropertiesAtIndex: @24@0:8Q16  imp=+0x19f38b1bc
+  -dirtyPropertiesCount Q16@0:8  imp=+0x19f38b1a8
+  -enabledDataclasses @16@0:8  imp=+0x19f38f48c
+  -enabledDataclassesAtIndex: @24@0:8Q16  imp=+0x19f38afb4
+  -enabledDataclassesCount Q16@0:8  imp=+0x19f38afa0
+  -enabledEnumDataclasses @16@0:8  imp=+0x19f38f630
+  -enabledEnumDataclassesAtIndex: @24@0:8Q16  imp=+0x19f38b4a0
+  -enabledEnumDataclassesCount Q16@0:8  imp=+0x19f38b48c
+  -hasAccountDescription B16@0:8  imp=+0x19f38ace4
+  -hasAuthenticationType B16@0:8  imp=+0x19f38b0a0
+  -hasCredential B16@0:8  imp=+0x19f38acc8
+  -hasCredentialType B16@0:8  imp=+0x19f38b0bc
+  -hasDate B16@0:8  imp=+0x19f38b0d8
+  -hasLastCredentialRenewalRejectionDate B16@0:8  imp=+0x19f38ade8
+  -hasModificationID B16@0:8  imp=+0x19f38b3d8
+  -hasObjectID B16@0:8  imp=+0x19f38aed0
+  -hasOwningBundleID B16@0:8  imp=+0x19f38b0f4
+  -hasParentAccount B16@0:8  imp=+0x19f38aeec
+  -hasUsername B16@0:8  imp=+0x19f38ad00
+  -hasWarmingUp B16@0:8  imp=+0x19f38b3c0
+  -hash Q16@0:8  imp=+0x19f38e638
+  -identifier @16@0:8  imp=+0x19f38f2ac
+  -isEqual: B24@0:8@16  imp=+0x19f38e160
+  -lastCredentialRenewalRejectionDate @16@0:8  imp=+0x19f38f374
+  -mergeFrom: v24@0:8@16  imp=+0x19f38e9a8
+  -modificationID @16@0:8  imp=+0x19f38f608
+  -objectID @16@0:8  imp=+0x19f38f43c
+  -owningBundleID @16@0:8  imp=+0x19f38f554
+  -parentAccount @16@0:8  imp=+0x19f38f464
+  -properties @16@0:8  imp=+0x19f38f324
+  -propertiesAtIndex: @24@0:8Q16  imp=+0x19f38adc8
+  -propertiesCount Q16@0:8  imp=+0x19f38adb4
+  -propertiesDictionary @16@0:8  imp=+0x19f394bf4
+  -provisionedDataclasses @16@0:8  imp=+0x19f38f4b4
+  -provisionedDataclassesAtIndex: @24@0:8Q16  imp=+0x19f38b080
+  -provisionedDataclassesCount Q16@0:8  imp=+0x19f38b06c
+  -provisionedEnumDataclasses @16@0:8  imp=+0x19f38f658
+  -provisionedEnumDataclassesAtIndex: @24@0:8Q16  imp=+0x19f38b56c
+  -provisionedEnumDataclassesCount Q16@0:8  imp=+0x19f38b558
+  -readFrom: B24@0:8@16  imp=+0x19f38c980
+  -setAccountDescription: v24@0:8@16  imp=+0x19f38f2e8
+  -setAccountType: v24@0:8@16  imp=+0x19f38f270
+  -setActive: v20@0:8B16  imp=+0x19f38f3b0
+  -setAuthenticated: v20@0:8B16  imp=+0x19f38f360
+  -setAuthenticationType: v24@0:8@16  imp=+0x19f38f4f0
+  -setCredential: v24@0:8@16  imp=+0x19f38f298
+  -setCredentialType: v24@0:8@16  imp=+0x19f38f518
+  -setDataclassProperties: v24@0:8@16  imp=+0x19f38f428
+  -setDataclassPropertiesDictionary: v24@0:8@16  imp=+0x19f394d88
+  -setDate: v24@0:8@16  imp=+0x19f38f540
+  -setDirtyAccountProperties: v24@0:8@16  imp=+0x19f38f5b8
+  -setDirtyDataclassProperties: v24@0:8@16  imp=+0x19f38f5e0
+  -setDirtyProperties: v24@0:8@16  imp=+0x19f38f590
+  -setEnabledDataclasses: v24@0:8@16  imp=+0x19f38f4a0
+  -setEnabledEnumDataclasses: v24@0:8@16  imp=+0x19f38f644
+  -setHasWarmingUp: v20@0:8B16  imp=+0x19f38b3a0
+  -setIdentifier: v24@0:8@16  imp=+0x19f38f2c0
+  -setLastCredentialRenewalRejectionDate: v24@0:8@16  imp=+0x19f38f388
+  -setModificationID: v24@0:8@16  imp=+0x19f38f61c
+  -setObjectID: v24@0:8@16  imp=+0x19f38f450
+  -setOwningBundleID: v24@0:8@16  imp=+0x19f38f568
+  -setParentAccount: v24@0:8@16  imp=+0x19f38f478
+  -setProperties: v24@0:8@16  imp=+0x19f38f338
+  -setPropertiesDictionary: v24@0:8@16  imp=+0x19f394ac8
+  -setProvisionedDataclasses: v24@0:8@16  imp=+0x19f38f4c8
+  -setProvisionedEnumDataclasses: v24@0:8@16  imp=+0x19f38f66c
+  -setSupportsAuthentication: v20@0:8B16  imp=+0x19f38f400
+  -setUsername: v24@0:8@16  imp=+0x19f38f310
+  -setVisible: v20@0:8B16  imp=+0x19f38f3d8
+  -setWarmingUp: v20@0:8B16  imp=+0x19f38b374
+  -supportsAuthentication B16@0:8  imp=+0x19f38f3ec
+  -username @16@0:8  imp=+0x19f38f2fc
+  -visible B16@0:8  imp=+0x19f38f3c4
+  -warmingUp B16@0:8  imp=+0x19f38f5f4
+  -writeTo: v24@0:8@16  imp=+0x19f38c988
+@class ACProtobufAccountCredential : PBCodable <NSCopying> instanceSize=40
+  ivar +8 _credentialItems @"NSMutableArray"
+  ivar +16 _credentialType @"NSString"
+  ivar +24 _dirtyProperties @"NSMutableArray"
+  ivar +32 _requiresTouchID B
+  property credentialItemsDictionary (T@"NSDictionary",C,N)
+  property credentialItems (T@"NSMutableArray",&,N,V_credentialItems)
+  property credentialType (T@"NSString",&,N,V_credentialType)
+  property dirtyProperties (T@"NSMutableArray",&,N,V_dirtyProperties)
+  property requiresTouchID (TB,N,V_requiresTouchID)
+  +credentialItemsType #16@0:8  imp=+0x19f39bc74
+  +dirtyPropertiesType #16@0:8  imp=+0x19f39bd40
+  -.cxx_destruct v16@0:8  imp=+0x19f39cd28
+  -addCredentialItems: v24@0:8@16  imp=+0x19f39bbc8
+  -addDirtyProperties: v24@0:8@16  imp=+0x19f39bc94
+  -clearCredentialItems v16@0:8  imp=+0x19f39bbb4
+  -clearDirtyProperties v16@0:8  imp=+0x19f39bc80
+  -copyTo: v24@0:8@16  imp=+0x19f39c594
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x19f39c6cc
+  -credentialItems @16@0:8  imp=+0x19f39cc88
+  -credentialItemsAtIndex: @24@0:8Q16  imp=+0x19f39bc60
+  -credentialItemsCount Q16@0:8  imp=+0x19f39bc4c
+  -credentialItemsDictionary @16@0:8  imp=+0x19f394950
+  -credentialType @16@0:8  imp=+0x19f39ccb0
+  -description @16@0:8  imp=+0x19f39bd4c
+  -dictionaryRepresentation @16@0:8  imp=+0x19f39bdf8
+  -dirtyProperties @16@0:8  imp=+0x19f39ccd8
+  -dirtyPropertiesAtIndex: @24@0:8Q16  imp=+0x19f39bd2c
+  -dirtyPropertiesCount Q16@0:8  imp=+0x19f39bd18
+  -hash Q16@0:8  imp=+0x19f39ca0c
+  -isEqual: B24@0:8@16  imp=+0x19f39c910
+  -mergeFrom: v24@0:8@16  imp=+0x19f39ca94
+  -readFrom: B24@0:8@16  imp=+0x19f39c38c
+  -requiresTouchID B16@0:8  imp=+0x19f39cd00
+  -setCredentialItems: v24@0:8@16  imp=+0x19f39cc9c
+  -setCredentialItemsDictionary: v24@0:8@16  imp=+0x19f394824
+  -setCredentialType: v24@0:8@16  imp=+0x19f39ccc4
+  -setDirtyProperties: v24@0:8@16  imp=+0x19f39ccec
+  -setRequiresTouchID: v20@0:8B16  imp=+0x19f39cd14
+  -writeTo: v24@0:8@16  imp=+0x19f39c394
+@class ACProtobufAccountType : PBCodable <NSCopying> instanceSize=96
+  ivar +8 _accountTypeDescription @"NSString"
+  ivar +16 _credentialProtectionPolicy @"NSString"
+  ivar +24 _credentialType @"NSString"
+  ivar +32 _identifier @"NSString"
+  ivar +40 _objectID @"ACProtobufURL"
+  ivar +48 _owningBundleID @"NSString"
+  ivar +56 _supportedEnumDataclasses @"NSMutableArray"
+  ivar +64 _supportsAuthentication i
+  ivar +72 _syncableEnumDataclasses @"NSMutableArray"
+  ivar +80 _visibility i
+  ivar +84 _obsolete B
+  ivar +85 _supportsMultipleAccounts B
+  ivar +88 _has {?="supportsAuthentication"b1"visibility"b1"obsolete"b1"supportsMultipleAccounts"b1}
+  property accountTypeDescription (T@"NSString",&,N,V_accountTypeDescription)
+  property identifier (T@"NSString",&,N,V_identifier)
+  property hasObjectID (TB,R,N)
+  property objectID (T@"ACProtobufURL",&,N,V_objectID)
+  property hasVisibility (TB,N)
+  property visibility (Ti,N,V_visibility)
+  property hasCredentialType (TB,R,N)
+  property credentialType (T@"NSString",&,N,V_credentialType)
+  property hasCredentialProtectionPolicy (TB,R,N)
+  property credentialProtectionPolicy (T@"NSString",&,N,V_credentialProtectionPolicy)
+  property hasSupportsAuthentication (TB,N)
+  property supportsAuthentication (Ti,N,V_supportsAuthentication)
+  property hasSupportsMultipleAccounts (TB,N)
+  property supportsMultipleAccounts (TB,N,V_supportsMultipleAccounts)
+  property hasOwningBundleID (TB,R,N)
+  property owningBundleID (T@"NSString",&,N,V_owningBundleID)
+  property hasObsolete (TB,N)
+  property obsolete (TB,N,V_obsolete)
+  property syncableEnumDataclasses (T@"NSMutableArray",&,N,V_syncableEnumDataclasses)
+  property supportedEnumDataclasses (T@"NSMutableArray",&,N,V_supportedEnumDataclasses)
+  +supportedEnumDataclassesType #16@0:8  imp=+0x19f3975cc
+  +syncableEnumDataclassesType #16@0:8  imp=+0x19f397500
+  -.cxx_destruct v16@0:8  imp=+0x19f399524
+  -accountTypeDescription @16@0:8  imp=+0x19f399394
+  -addSupportedEnumDataclasses: v24@0:8@16  imp=+0x19f397520
+  -addSyncableEnumDataclasses: v24@0:8@16  imp=+0x19f397454
+  -clearSupportedEnumDataclasses v16@0:8  imp=+0x19f39750c
+  -clearSyncableEnumDataclasses v16@0:8  imp=+0x19f397440
+  -copyTo: v24@0:8@16  imp=+0x19f3985a0
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x19f398800
+  -credentialProtectionPolicy @16@0:8  imp=+0x19f399448
+  -credentialType @16@0:8  imp=+0x19f399420
+  -description @16@0:8  imp=+0x19f3975d8
+  -dictionaryRepresentation @16@0:8  imp=+0x19f397684
+  -hasCredentialProtectionPolicy B16@0:8  imp=+0x19f3972c4
+  -hasCredentialType B16@0:8  imp=+0x19f3972a8
+  -hasObjectID B16@0:8  imp=+0x19f39721c
+  -hasObsolete B16@0:8  imp=+0x19f397428
+  -hasOwningBundleID B16@0:8  imp=+0x19f3973b4
+  -hasSupportsAuthentication B16@0:8  imp=+0x19f39732c
+  -hasSupportsMultipleAccounts B16@0:8  imp=+0x19f39739c
+  -hasVisibility B16@0:8  imp=+0x19f397290
+  -hash Q16@0:8  imp=+0x19f398e74
+  -identifier @16@0:8  imp=+0x19f3993bc
+  -isEqual: B24@0:8@16  imp=+0x19f398bc4
+  -mergeFrom: v24@0:8@16  imp=+0x19f399058
+  -objectID @16@0:8  imp=+0x19f3993e4
+  -obsolete B16@0:8  imp=+0x19f3994c0
+  -owningBundleID @16@0:8  imp=+0x19f399498
+  -readFrom: B24@0:8@16  imp=+0x19f398280
+  -setAccountTypeDescription: v24@0:8@16  imp=+0x19f3993a8
+  -setCredentialProtectionPolicy: v24@0:8@16  imp=+0x19f39945c
+  -setCredentialType: v24@0:8@16  imp=+0x19f399434
+  -setHasObsolete: v20@0:8B16  imp=+0x19f3973fc
+  -setHasSupportsAuthentication: v20@0:8B16  imp=+0x19f39730c
+  -setHasSupportsMultipleAccounts: v20@0:8B16  imp=+0x19f397370
+  -setHasVisibility: v20@0:8B16  imp=+0x19f397264
+  -setIdentifier: v24@0:8@16  imp=+0x19f3993d0
+  -setObjectID: v24@0:8@16  imp=+0x19f3993f8
+  -setObsolete: v20@0:8B16  imp=+0x19f3973d0
+  -setOwningBundleID: v24@0:8@16  imp=+0x19f3994ac
+  -setSupportedEnumDataclasses: v24@0:8@16  imp=+0x19f399510
+  -setSupportsAuthentication: v20@0:8i16  imp=+0x19f3972e0
+  -setSupportsMultipleAccounts: v20@0:8B16  imp=+0x19f397344
+  -setSyncableEnumDataclasses: v24@0:8@16  imp=+0x19f3994e8
+  -setVisibility: v20@0:8i16  imp=+0x19f397238
+  -supportedEnumDataclasses @16@0:8  imp=+0x19f3994fc
+  -supportedEnumDataclassesAtIndex: @24@0:8Q16  imp=+0x19f3975b8
+  -supportedEnumDataclassesCount Q16@0:8  imp=+0x19f3975a4
+  -supportsAuthentication i16@0:8  imp=+0x19f399470
+  -supportsMultipleAccounts B16@0:8  imp=+0x19f399484
+  -syncableEnumDataclasses @16@0:8  imp=+0x19f3994d4
+  -syncableEnumDataclassesAtIndex: @24@0:8Q16  imp=+0x19f3974ec
+  -syncableEnumDataclassesCount Q16@0:8  imp=+0x19f3974d8
+  -visibility i16@0:8  imp=+0x19f39940c
+  -writeTo: v24@0:8@16  imp=+0x19f398288
+@class ACProtobufDataclassAction : PBCodable <NSCopying> instanceSize=48
+  ivar +8 _affectedContainers @"NSMutableArray"
+  ivar +16 _type i
+  ivar +24 _undoAlertMessage @"NSString"
+  ivar +32 _undoAlertTitle @"NSString"
+  ivar +40 _destructive B
+  property type (Ti,N,V_type)
+  property destructive (TB,N,V_destructive)
+  property affectedContainers (T@"NSMutableArray",&,N,V_affectedContainers)
+  property hasUndoAlertTitle (TB,R,N)
+  property undoAlertTitle (T@"NSString",&,N,V_undoAlertTitle)
+  property hasUndoAlertMessage (TB,R,N)
+  property undoAlertMessage (T@"NSString",&,N,V_undoAlertMessage)
+  +affectedContainersType #16@0:8  imp=+0x19f386570
+  -.cxx_destruct v16@0:8  imp=+0x19f38746c
+  -addAffectedContainers: v24@0:8@16  imp=+0x19f3864c4
+  -affectedContainers @16@0:8  imp=+0x19f3873f4
+  -affectedContainersAtIndex: @24@0:8Q16  imp=+0x19f38655c
+  -affectedContainersCount Q16@0:8  imp=+0x19f386548
+  -clearAffectedContainers v16@0:8  imp=+0x19f3864b0
+  -copyTo: v24@0:8@16  imp=+0x19f386d60
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x19f386e74
+  -description @16@0:8  imp=+0x19f3865b4
+  -destructive B16@0:8  imp=+0x19f3873cc
+  -dictionaryRepresentation @16@0:8  imp=+0x19f386660
+  -hasUndoAlertMessage B16@0:8  imp=+0x19f386598
+  -hasUndoAlertTitle B16@0:8  imp=+0x19f38657c
+  -hash Q16@0:8  imp=+0x19f387174
+  -isEqual: B24@0:8@16  imp=+0x19f387044
+  -mergeFrom: v24@0:8@16  imp=+0x19f38721c
+  -readFrom: B24@0:8@16  imp=+0x19f386bc0
+  -setAffectedContainers: v24@0:8@16  imp=+0x19f387408
+  -setDestructive: v20@0:8B16  imp=+0x19f3873e0
+  -setType: v20@0:8i16  imp=+0x19f3873b8
+  -setUndoAlertMessage: v24@0:8@16  imp=+0x19f387458
+  -setUndoAlertTitle: v24@0:8@16  imp=+0x19f387430
+  -type i16@0:8  imp=+0x19f3873a4
+  -undoAlertMessage @16@0:8  imp=+0x19f387444
+  -undoAlertTitle @16@0:8  imp=+0x19f38741c
+  -writeTo: v24@0:8@16  imp=+0x19f386bc8
+@class ACProtobufDate : PBCodable <NSCopying> instanceSize=16
+  ivar +8 _value d
+  property date (T@"NSDate",&,N)
+  property value (Td,N,V_value)
+  -copyTo: v24@0:8@16  imp=+0x19f39998c
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x19f3999a8
+  -date @16@0:8  imp=+0x19f39369c
+  -description @16@0:8  imp=+0x19f3995f0
+  -dictionaryRepresentation @16@0:8  imp=+0x19f39969c
+  -hash Q16@0:8  imp=+0x19f399a6c
+  -initWithDate: @24@0:8@16  imp=+0x19f3935dc
+  -isEqual: B24@0:8@16  imp=+0x19f3999f4
+  -mergeFrom: v24@0:8@16  imp=+0x19f399af0
+  -readFrom: B24@0:8@16  imp=+0x19f399968
+  -setDate: v24@0:8@16  imp=+0x19f393660
+  -setValue: v24@0:8d16  imp=+0x19f399b20
+  -value d16@0:8  imp=+0x19f399b0c
+  -writeTo: v24@0:8@16  imp=+0x19f399970
+@class ACProtobufKeyValuePair : PBCodable <NSCopying> instanceSize=24
+  ivar +8 _key @"NSString"
+  ivar +16 _value @"NSString"
+  property key (T@"NSString",&,N,V_key)
+  property value (T@"NSString",&,N,V_value)
+  -.cxx_destruct v16@0:8  imp=+0x19f393588
+  -copyTo: v24@0:8@16  imp=+0x19f3932a0
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x19f393318
+  -description @16@0:8  imp=+0x19f392eec
+  -dictionaryRepresentation @16@0:8  imp=+0x19f392f98
+  -hash Q16@0:8  imp=+0x19f393470
+  -initWithValue:forKey: @32@0:8@16@24  imp=+0x19f393ee8
+  -isEqual: B24@0:8@16  imp=+0x19f3933b4
+  -key @16@0:8  imp=+0x19f393538
+  -mergeFrom: v24@0:8@16  imp=+0x19f3934c0
+  -readFrom: B24@0:8@16  imp=+0x19f393218
+  -setKey: v24@0:8@16  imp=+0x19f39354c
+  -setValue: v24@0:8@16  imp=+0x19f393574
+  -value @16@0:8  imp=+0x19f393560
+  -writeTo: v24@0:8@16  imp=+0x19f393220
+@class ACProtobufURL : PBCodable <NSCopying> instanceSize=16
+  ivar +8 _value @"NSString"
+  property url (T@"NSURL",&,N)
+  property value (T@"NSString",&,N,V_value)
+  -.cxx_destruct v16@0:8  imp=+0x19f39a2d0
+  -copyTo: v24@0:8@16  imp=+0x19f39a158
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x19f39a174
+  -description @16@0:8  imp=+0x19f399e58
+  -dictionaryRepresentation @16@0:8  imp=+0x19f399f04
+  -hash Q16@0:8  imp=+0x19f39a278
+  -initWithURL: @24@0:8@16  imp=+0x19f3936ec
+  -isEqual: B24@0:8@16  imp=+0x19f39a1e4
+  -mergeFrom: v24@0:8@16  imp=+0x19f39a28c
+  -readFrom: B24@0:8@16  imp=+0x19f39a134
+  -setUrl: v24@0:8@16  imp=+0x19f393784
+  -setValue: v24@0:8@16  imp=+0x19f39a2bc
+  -url @16@0:8  imp=+0x19f3937d4
+  -value @16@0:8  imp=+0x19f39a2a8
+  -writeTo: v24@0:8@16  imp=+0x19f39a13c
+@class ACProtobufUUID : PBCodable <NSCopying> instanceSize=16
+  ivar +8 _value @"NSString"
+  property uuid (T@"NSUUID",&,N)
+  property value (T@"NSString",&,N,V_value)
+  -.cxx_destruct v16@0:8  imp=+0x19f3a08b4
+  -copyTo: v24@0:8@16  imp=+0x19f3a073c
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x19f3a0758
+  -description @16@0:8  imp=+0x19f3a043c
+  -dictionaryRepresentation @16@0:8  imp=+0x19f3a04e8
+  -hash Q16@0:8  imp=+0x19f3a085c
+  -initWithUUID: @24@0:8@16  imp=+0x19f393840
+  -isEqual: B24@0:8@16  imp=+0x19f3a07c8
+  -mergeFrom: v24@0:8@16  imp=+0x19f3a0870
+  -readFrom: B24@0:8@16  imp=+0x19f3a0718
+  -setUuid: v24@0:8@16  imp=+0x19f3938d8
+  -setValue: v24@0:8@16  imp=+0x19f3a08a0
+  -uuid @16@0:8  imp=+0x19f393928
+  -value @16@0:8  imp=+0x19f3a088c
+  -writeTo: v24@0:8@16  imp=+0x19f3a0720
+@class ACProtobufVariableKeyValuePair : PBCodable <NSCopying> instanceSize=24
+  ivar +8 _key @"NSString"
+  ivar +16 _value @"ACProtobufVariableValue"
+  property key (T@"NSString",&,N,V_key)
+  property value (T@"ACProtobufVariableValue",&,N,V_value)
+  -.cxx_destruct v16@0:8  imp=+0x19f382710
+  -copyTo: v24@0:8@16  imp=+0x19f382410
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x19f382488
+  -description @16@0:8  imp=+0x19f381ff8
+  -dictionaryRepresentation @16@0:8  imp=+0x19f3820a4
+  -hash Q16@0:8  imp=+0x19f3825e0
+  -initWithObjectValue:forKey: @32@0:8@16@24  imp=+0x19f393f78
+  -isEqual: B24@0:8@16  imp=+0x19f382524
+  -key @16@0:8  imp=+0x19f3826c0
+  -mergeFrom: v24@0:8@16  imp=+0x19f382630
+  -readFrom: B24@0:8@16  imp=+0x19f382388
+  -setKey: v24@0:8@16  imp=+0x19f3826d4
+  -setValue: v24@0:8@16  imp=+0x19f3826fc
+  -value @16@0:8  imp=+0x19f3826e8
+  -writeTo: v24@0:8@16  imp=+0x19f382390
+@class ACProtobufVariableValue : PBCodable <NSCopying> instanceSize=104
+  ivar +8 _doubleValue d
+  ivar +16 _integerValue q
+  ivar +24 _unsignedIntegerValue Q
+  ivar +32 _arrayValue @"ACProtobufVariableValueList"
+  ivar +40 _dataValue @"NSData"
+  ivar +48 _dateValue @"ACProtobufDate"
+  ivar +56 _dictionaryValue @"ACProtobufVariableValueDictionary"
+  ivar +64 _setValue @"ACProtobufVariableValueList"
+  ivar +72 _stringValue @"NSString"
+  ivar +80 _urlValue @"ACProtobufURL"
+  ivar +88 _uuidValue @"ACProtobufUUID"
+  ivar +96 _has {?="doubleValue"b1"integerValue"b1"unsignedIntegerValue"b1}
+  property object (T@,&,N)
+  property hasStringValue (TB,R,N)
+  property stringValue (T@"NSString",&,N,V_stringValue)
+  property hasIntegerValue (TB,N)
+  property integerValue (Tq,N,V_integerValue)
+  property hasUnsignedIntegerValue (TB,N)
+  property unsignedIntegerValue (TQ,N,V_unsignedIntegerValue)
+  property hasDoubleValue (TB,N)
+  property doubleValue (Td,N,V_doubleValue)
+  property hasDataValue (TB,R,N)
+  property dataValue (T@"NSData",&,N,V_dataValue)
+  property hasUuidValue (TB,R,N)
+  property uuidValue (T@"ACProtobufUUID",&,N,V_uuidValue)
+  property hasDateValue (TB,R,N)
+  property dateValue (T@"ACProtobufDate",&,N,V_dateValue)
+  property hasUrlValue (TB,R,N)
+  property urlValue (T@"ACProtobufURL",&,N,V_urlValue)
+  property hasArrayValue (TB,R,N)
+  property arrayValue (T@"ACProtobufVariableValueList",&,N,V_arrayValue)
+  property hasSetValue (TB,R,N)
+  property setValue (T@"ACProtobufVariableValueList",&,N,V_setValue)
+  property hasDictionaryValue (TB,R,N)
+  property dictionaryValue (T@"ACProtobufVariableValueDictionary",&,N,V_dictionaryValue)
+  -.cxx_destruct v16@0:8  imp=+0x19f359e20
+  -_setObject: B24@0:8@16  imp=+0x19f393a10
+  -arrayValue @16@0:8  imp=+0x19f359da8
+  -copyTo: v24@0:8@16  imp=+0x19f359234
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x19f3593f0
+  -dataValue @16@0:8  imp=+0x19f359d08
+  -dateValue @16@0:8  imp=+0x19f359d58
+  -description @16@0:8  imp=+0x19f35864c
+  -dictionaryRepresentation @16@0:8  imp=+0x19f3586f8
+  -dictionaryValue @16@0:8  imp=+0x19f359df8
+  -doubleValue d16@0:8  imp=+0x19f359cf4
+  -hasArrayValue B16@0:8  imp=+0x19f3585f8
+  -hasDataValue B16@0:8  imp=+0x19f358588
+  -hasDateValue B16@0:8  imp=+0x19f3585c0
+  -hasDictionaryValue B16@0:8  imp=+0x19f358630
+  -hasDoubleValue B16@0:8  imp=+0x19f358570
+  -hasIntegerValue B16@0:8  imp=+0x19f35849c
+  -hasSetValue B16@0:8  imp=+0x19f358614
+  -hasStringValue B16@0:8  imp=+0x19f358428
+  -hasUnsignedIntegerValue B16@0:8  imp=+0x19f35850c
+  -hasUrlValue B16@0:8  imp=+0x19f3585dc
+  -hasUuidValue B16@0:8  imp=+0x19f3585a4
+  -hash Q16@0:8  imp=+0x19f359884
+  -initWithObjectValue: @24@0:8@16  imp=+0x19f393994
+  -integerValue q16@0:8  imp=+0x19f359ccc
+  -isEqual: B24@0:8@16  imp=+0x19f359630
+  -mergeFrom: v24@0:8@16  imp=+0x19f359a58
+  -object @16@0:8  imp=+0x19f393cf0
+  -readFrom: B24@0:8@16  imp=+0x19f359060
+  -setArrayValue: v24@0:8@16  imp=+0x19f359dbc
+  -setDataValue: v24@0:8@16  imp=+0x19f359d1c
+  -setDateValue: v24@0:8@16  imp=+0x19f359d6c
+  -setDictionaryValue: v24@0:8@16  imp=+0x19f359e0c
+  -setDoubleValue: v24@0:8d16  imp=+0x19f358524
+  -setHasDoubleValue: v20@0:8B16  imp=+0x19f358550
+  -setHasIntegerValue: v20@0:8B16  imp=+0x19f358470
+  -setHasUnsignedIntegerValue: v20@0:8B16  imp=+0x19f3584e0
+  -setIntegerValue: v24@0:8q16  imp=+0x19f358444
+  -setObject: v24@0:8@16  imp=+0x19f393cec
+  -setSetValue: v24@0:8@16  imp=+0x19f359de4
+  -setStringValue: v24@0:8@16  imp=+0x19f359cb8
+  -setUnsignedIntegerValue: v24@0:8Q16  imp=+0x19f3584b4
+  -setUrlValue: v24@0:8@16  imp=+0x19f359d94
+  -setUuidValue: v24@0:8@16  imp=+0x19f359d44
+  -setValue @16@0:8  imp=+0x19f359dd0
+  -stringValue @16@0:8  imp=+0x19f359ca4
+  -unsignedIntegerValue Q16@0:8  imp=+0x19f359ce0
+  -urlValue @16@0:8  imp=+0x19f359d80
+  -uuidValue @16@0:8  imp=+0x19f359d30
+  -writeTo: v24@0:8@16  imp=+0x19f359068
+@class ACProtobufVariableValueDictionary : PBCodable <NSCopying> instanceSize=16
+  ivar +8 _pairs @"NSMutableArray"
+  property dictionary (T@"NSDictionary",C,N)
+  property pairs (T@"NSMutableArray",&,N,V_pairs)
+  +pairType #16@0:8  imp=+0x19f3968cc
+  -.cxx_destruct v16@0:8  imp=+0x19f397208
+  -addPair: v24@0:8@16  imp=+0x19f396820
+  -clearPairs v16@0:8  imp=+0x19f39680c
+  -copyTo: v24@0:8@16  imp=+0x19f396e48
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x19f396ef4
+  -description @16@0:8  imp=+0x19f3968d8
+  -dictionary @16@0:8  imp=+0x19f394690
+  -dictionaryRepresentation @16@0:8  imp=+0x19f396984
+  -hash Q16@0:8  imp=+0x19f3970c8
+  -initWithDictionary: @24@0:8@16  imp=+0x19f394478
+  -isEqual: B24@0:8@16  imp=+0x19f397034
+  -mergeFrom: v24@0:8@16  imp=+0x19f3970dc
+  -pairAtIndex: @24@0:8Q16  imp=+0x19f3968b8
+  -pairs @16@0:8  imp=+0x19f3971e0
+  -pairsCount Q16@0:8  imp=+0x19f3968a4
+  -readFrom: B24@0:8@16  imp=+0x19f396d24
+  -setDictionary: v24@0:8@16  imp=+0x19f39450c
+  -setPairs: v24@0:8@16  imp=+0x19f3971f4
+  -writeTo: v24@0:8@16  imp=+0x19f396d2c
+@class ACProtobufVariableValueList : PBCodable <NSCopying> instanceSize=16
+  ivar +8 _values @"NSMutableArray"
+  property array (T@"NSArray",C,N)
+  property set (T@"NSSet",C,N)
+  property values (T@"NSMutableArray",&,N,V_values)
+  +valueType #16@0:8  imp=+0x19f38a378
+  -.cxx_destruct v16@0:8  imp=+0x19f38acb4
+  -_convertArray: @24@0:8@16  imp=+0x19f394144
+  -addValue: v24@0:8@16  imp=+0x19f38a2cc
+  -array @16@0:8  imp=+0x19f394290
+  -clearValues v16@0:8  imp=+0x19f38a2b8
+  -copyTo: v24@0:8@16  imp=+0x19f38a8f4
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x19f38a9a0
+  -description @16@0:8  imp=+0x19f38a384
+  -dictionaryRepresentation @16@0:8  imp=+0x19f38a430
+  -hash Q16@0:8  imp=+0x19f38ab74
+  -initWithArray: @24@0:8@16  imp=+0x19f394048
+  -initWithSet: @24@0:8@16  imp=+0x19f3940f8
+  -isEqual: B24@0:8@16  imp=+0x19f38aae0
+  -mergeFrom: v24@0:8@16  imp=+0x19f38ab88
+  -readFrom: B24@0:8@16  imp=+0x19f38a7d0
+  -set @16@0:8  imp=+0x19f39440c
+  -setArray: v24@0:8@16  imp=+0x19f394220
+  -setSet: v24@0:8@16  imp=+0x19f39436c
+  -setValues: v24@0:8@16  imp=+0x19f38aca0
+  -valueAtIndex: @24@0:8Q16  imp=+0x19f38a364
+  -values @16@0:8  imp=+0x19f38ac8c
+  -valuesCount Q16@0:8  imp=+0x19f38a350
+  -writeTo: v24@0:8@16  imp=+0x19f38a7d8
+@class ACRateLimiter : NSObject instanceSize=72
+  ivar +8 _isVacuumInProgress B
+  ivar +16 _maximum Q
+  ivar +24 _timeInterval d
+  ivar +32 _instanceQueue @"NSObject<OS_dispatch_queue>"
+  ivar +40 _vacuumQueue @"NSObject<OS_dispatch_queue>"
+  ivar +48 _keyToSimpleRateLimiter @"NSMutableDictionary"
+  ivar +56 _vacuumTimeInterval d
+  ivar +64 _nextVacuumDate @"NSDate"
+  property instanceQueue (T@"NSObject<OS_dispatch_queue>",R,V_instanceQueue)
+  property vacuumQueue (T@"NSObject<OS_dispatch_queue>",R,V_vacuumQueue)
+  property keyToSimpleRateLimiter (T@"NSMutableDictionary",&,V_keyToSimpleRateLimiter)
+  property vacuumTimeInterval (Td,R,V_vacuumTimeInterval)
+  property isVacuumInProgress (TB,V_isVacuumInProgress)
+  property nextVacuumDate (T@"NSDate",&,V_nextVacuumDate)
+  property maximum (TQ,R,V_maximum)
+  property timeInterval (Td,R,V_timeInterval)
+  -.cxx_destruct v16@0:8  imp=+0x19f389e54
+  -_vacuumQueue_vacuum v16@0:8  imp=+0x19f3898dc
+  -_vacuumQueue_vacuumKey: B24@0:8@16  imp=+0x19f389c34
+  -initWithMaximum:inTimeInterval: @32@0:8Q16d24  imp=+0x19f389314
+  -instanceQueue @16@0:8  imp=+0x19f389df8
+  -isVacuumInProgress B16@0:8  imp=+0x19f389e2c
+  -keyToSimpleRateLimiter @16@0:8  imp=+0x19f389e10
+  -maximum Q16@0:8  imp=+0x19f389de8
+  -nextVacuumDate @16@0:8  imp=+0x19f389e40
+  -reservePerformActionForKey: B24@0:8@16  imp=+0x19f389480
+  -setIsVacuumInProgress: v20@0:8B16  imp=+0x19f389e38
+  -setKeyToSimpleRateLimiter: v24@0:8@16  imp=+0x19f389e1c
+  -setNextVacuumDate: v24@0:8@16  imp=+0x19f389e4c
+  -simpleRateLimiterForKey: @24@0:8@16  imp=+0x19f3894d0
+  -timeInterval d16@0:8  imp=+0x19f389df0
+  -vacuumIfNeeded v16@0:8  imp=+0x19f38972c
+  -vacuumQueue @16@0:8  imp=+0x19f389e04
+  -vacuumTimeInterval d16@0:8  imp=+0x19f389e24
+@class ACRemoteAccountStoreInterface : NSObject instanceSize=8
+  +XPCInterface @16@0:8  imp=+0x19f34726c
+  +_buildXPCInterface @16@0:8  imp=+0x19f34734c
+@class ACRemoteAccountStoreSession : NSObject <NSXPCProxyCreating> instanceSize=56
+  ivar +8 _connection @"NSXPCConnection"
+  ivar +16 _connectionLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +24 _clientSideListener @"ACAccountStoreClientSideListener"
+  ivar +32 _notificationsEnabled B
+  ivar +40 _listenerEndpoint @"NSXPCListenerEndpoint"
+  ivar +48 _effectiveBundleID @"NSString"
+  property listenerEndpoint (T@"NSXPCListenerEndpoint",R,N,V_listenerEndpoint)
+  property effectiveBundleID (T@"NSString",C,N,V_effectiveBundleID)
+  property notificationsEnabled (TB,N,V_notificationsEnabled)
+  -.cxx_destruct v16@0:8  imp=+0x19f34df28
+  -_connection @16@0:8  imp=+0x19f346ea8
+  -_locked_configureRemoteAccountStoreWithConnection: v24@0:8@16  imp=+0x19f347e50
+  -_locked_connection:setEffectiveBundleID: v32@0:8@16@24  imp=+0x19f388930
+  -_locked_connection:setNotificationsEnabled: v28@0:8@16B24  imp=+0x19f388b28
+  -_setConnectionInterrupted v16@0:8  imp=+0x19f388808
+  -_setConnectionInvalidated v16@0:8  imp=+0x19f3549bc
+  -dealloc v16@0:8  imp=+0x19f34de3c
+  -effectiveBundleID @16@0:8  imp=+0x19f388c08
+  -init @16@0:8  imp=+0x19f388588
+  -initWithListenerEndpoint: @24@0:8@16  imp=+0x19f3464d4
+  -listenerEndpoint @16@0:8  imp=+0x19f388c00
+  -notificationsEnabled B16@0:8  imp=+0x19f388c10
+  -remoteObjectProxy @16@0:8  imp=+0x19f388bb0
+  -remoteObjectProxyWithErrorHandler: @24@0:8@?16  imp=+0x19f34a0b0
+  -setEffectiveBundleID: v24@0:8@16  imp=+0x19f346584
+  -setNotificationsEnabled: v20@0:8B16  imp=+0x19f388708
+  -synchronousRemoteObjectProxyWithErrorHandler: @24@0:8@?16  imp=+0x19f346e30
+@class ACSimpleRateLimiter : NSObject instanceSize=40
+  ivar +8 _maximum Q
+  ivar +16 _timeInterval d
+  ivar +24 _instanceLock @"NSLock"
+  ivar +32 _sortedActionDates @"NSMutableArray"
+  property rateLimitingStartDate (T@"NSDate",R)
+  property instanceLock (T@"NSLock",&,V_instanceLock)
+  property sortedActionDates (T@"NSMutableArray",&,V_sortedActionDates)
+  property maximum (TQ,R,V_maximum)
+  property timeInterval (Td,R,V_timeInterval)
+  -.cxx_destruct v16@0:8  imp=+0x19f3892d0
+  -initWithMaximum:inTimeInterval: @32@0:8Q16d24  imp=+0x19f388eac
+  -instanceLock @16@0:8  imp=+0x19f3892a8
+  -isEmptyAfterFlushing B16@0:8  imp=+0x19f38903c
+  -locked_addDate: v24@0:8@16  imp=+0x19f38921c
+  -locked_indexOfFirstAfter: Q24@0:8@16  imp=+0x19f389124
+  -locked_removeDatesBefore: v24@0:8@16  imp=+0x19f3891c4
+  -maximum Q16@0:8  imp=+0x19f389298
+  -rateLimitingStartDate @16@0:8  imp=+0x19f3890e4
+  -reservePerformActionNow B16@0:8  imp=+0x19f388f4c
+  -setInstanceLock: v24@0:8@16  imp=+0x19f3892b4
+  -setSortedActionDates: v24@0:8@16  imp=+0x19f3892c8
+  -sortedActionDates @16@0:8  imp=+0x19f3892bc
+  -timeInterval d16@0:8  imp=+0x19f3892a0
+@class ACSystemConfigManager : NSObject instanceSize=32
+  ivar +8 _preferencesQueue @"NSObject<OS_dispatch_queue>"
+  ivar +16 _preferencesSession ^{__SCPreferences=}
+  ivar +24 _applySkipCount i
+  +_livingInstance @16@0:8  imp=+0x19f38f8ec
+  +_scheduleSharedInstanceTeardown v16@0:8  imp=+0x19f38f900
+  +_tearDown v16@0:8  imp=+0x19f38fa1c
+  +_timeoutInterval Q16@0:8  imp=+0x19f38f8f8
+  +sharedInstance @16@0:8  imp=+0x19f38f864
+  -.cxx_destruct v16@0:8  imp=+0x19f3904a0
+  -_createSCPreferencesSession v16@0:8  imp=+0x19f38fd68
+  -_destroySCPreferencesSession v16@0:8  imp=+0x19f38ffdc
+  -_getValueForKey: ^v24@0:8@16  imp=+0x19f3901c4
+  -_handleSCPreferencesSessionNotification: v20@0:8I16  imp=+0x19f3900f8
+  -_setValue:forKey: v32@0:8^v16@24  imp=+0x19f3902d0
+  -accountsWithAccountTypeIdentifierExist: i24@0:8@16  imp=+0x19f38fb44
+  -countOfAccountsWithAccountTypeIdentifier: q24@0:8@16  imp=+0x19f38fc50
+  -dealloc v16@0:8  imp=+0x19f38fafc
+  -init @16@0:8  imp=+0x19f38fa6c
+  -setAccountsWithAccountTypeIdentifier:exist: v28@0:8@16B24  imp=+0x19f38fbc4
+  -setCountOfAccounts:withAccountTypeIdentifier: v32@0:8q16@24  imp=+0x19f38fce0
+@class ACTimedExpirer : NSObject instanceSize=32
+  ivar +8 _invalidationInterval Q
+  ivar +16 _invalidationTimer @"NSObject<OS_dispatch_source>"
+  ivar +24 _invalidationTimerLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  +expirerWithTimeout: @24@0:8Q16  imp=+0x19f389eb0
+  -.cxx_destruct v16@0:8  imp=+0x19f38a2ac
+  -cancelTimer v16@0:8  imp=+0x19f38a1bc
+  -dealloc v16@0:8  imp=+0x19f389f28
+  -init @16@0:8  imp=+0x19f389ee8
+  -scheduleExpiration: v24@0:8@?16  imp=+0x19f389f70
+@class ACTrackedSet : NSObject <NSCoding, NSCopying, NSMutableCopying, NSSecureCoding> instanceSize=24
+  ivar +8 _underlyingSet @"NSMutableSet"
+  ivar +16 _changesDictionary @"NSMutableDictionary"
+  property count (TQ,R)
+  +set @16@0:8  imp=+0x19f39e238
+  +setWithArray: @24@0:8@16  imp=+0x19f39e2bc
+  +setWithSet: @24@0:8@16  imp=+0x19f39e260
+  +supportsSecureCoding B16@0:8  imp=+0x19f39e230
+  -.cxx_destruct v16@0:8  imp=+0x19f34fb54
+  -_initWithEnumerable:count: @32@0:8@16Q24  imp=+0x19f34c2c4
+  -_initWithUnderlyingSet:changesDictionary: @32@0:8@16@24  imp=+0x19f3505a0
+  -allModifications @16@0:8  imp=+0x19f39e4e4
+  -allObjects @16@0:8  imp=+0x19f34fad8
+  -anyObject @16@0:8  imp=+0x19f39e510
+  -containsObject: B24@0:8@16  imp=+0x19f39e518
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x19f39e5b8
+  -count Q16@0:8  imp=+0x19f39e4cc
+  -description @16@0:8  imp=+0x19f39e5f8
+  -encodeWithCoder: v24@0:8@16  imp=+0x19f34f48c
+  -enumerateModificationsUsingBlock: v24@0:8@?16  imp=+0x19f39e5a4
+  -enumerateModificationsWithOptions:usingBlock: v32@0:8Q16@?24  imp=+0x19f39e5b0
+  -enumerateObjectsUsingBlock: v24@0:8@?16  imp=+0x19f39e590
+  -enumerateObjectsWithOptions:usingBlock: v32@0:8Q16@?24  imp=+0x19f39e59c
+  -hash Q16@0:8  imp=+0x19f39e6b0
+  -init @16@0:8  imp=+0x19f39e318
+  -initWithArray: @24@0:8@16  imp=+0x19f34fae0
+  -initWithCoder: @24@0:8@16  imp=+0x19f39e324
+  -initWithObjects:count: @32@0:8r^@16Q24  imp=+0x19f34c44c
+  -initWithSet: @24@0:8@16  imp=+0x19f34c250
+  -isEqual: B24@0:8@16  imp=+0x19f39e634
+  -isEqualToTrackedSet: B24@0:8@16  imp=+0x19f39e520
+  -member: @24@0:8@16  imp=+0x19f39e4d4
+  -mutableCopyWithZone: @24@0:8^{_NSZone=}16  imp=+0x19f350560
+  -objectEnumerator @16@0:8  imp=+0x19f39e4dc
+@class ACTrackedXPCConnection : NSXPCConnection instanceSize=160
+  -dealloc v16@0:8  imp=+0x19f39678c
+  -init @16@0:8  imp=+0x19f396648
+@class ACXPCEventSubscriber : NSObject instanceSize=24
+  ivar +8 _registerLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +12 _registered B
+  ivar +16 _replyQueue @"NSObject<OS_dispatch_queue>"
+  property replyQueue (T@"NSObject<OS_dispatch_queue>",R,N,V_replyQueue)
+  +sharedSubscriber @16@0:8  imp=+0x19f395048
+  -.cxx_destruct v16@0:8  imp=+0x19f395608
+  -_lock_registerAccountChangeEventHandler: v24@0:8@?16  imp=+0x19f395318
+  -init @16@0:8  imp=+0x19f3950e8
+  -registerAccountChangeEventHandler: v24@0:8@?16  imp=+0x19f39517c
+  -replyQueue @16@0:8  imp=+0x19f395600
+@class ACZeroingString : NSString instanceSize=24
+  ivar +8 _characters ^S
+  ivar +16 _length Q
+  property characters (T^S,R,V_characters)
+  property length (TQ,R)
+  +_emptyString @16@0:8  imp=+0x19f39e8a0
+  +classForKeyedUnarchiver #16@0:8  imp=+0x19f39ecec
+  +supportsSecureCoding B16@0:8  imp=+0x19f34d7b4
+  -_allowsDirectEncoding B16@0:8  imp=+0x19f34f1c8
+  -_compatibleCopy @16@0:8  imp=+0x19f39ee28
+  -characterAtIndex: S24@0:8Q16  imp=+0x19f39edbc
+  -characters ^S16@0:8  imp=+0x19f39ee7c
+  -classForCoder #16@0:8  imp=+0x19f34f1d0
+  -classForKeyedArchiver #16@0:8  imp=+0x19f39ece0
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x19f39ecf8
+  -dealloc v16@0:8  imp=+0x19f351f84
+  -encodeWithCoder: v24@0:8@16  imp=+0x19f34f1d4
+  -getCharacters:range: v40@0:8^S16{_NSRange=QQ}24  imp=+0x19f34f5f4
+  -initWithBytes:length:encoding: @40@0:8r^v16Q24Q32  imp=+0x19f39eaf0
+  -initWithCharacters:length: @32@0:8r^S16Q24  imp=+0x19f39e9d8
+  -initWithCoder: @24@0:8@16  imp=+0x19f34d7bc
+  -initWithString: @24@0:8@16  imp=+0x19f39e8d4
+  -initWithUTF8String: @24@0:8r*16  imp=+0x19f39ec80
+  -length Q16@0:8  imp=+0x19f34f5e0
+  -replacementObjectForCoder: @24@0:8@16  imp=+0x19f34f144

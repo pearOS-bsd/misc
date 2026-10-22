@@ -1,0 +1,345 @@
+@class SidecarAlertController : NSWindowController instanceSize=152
+  ivar +104 _alert @"NSAlert"
+  ivar +112 _condition @"SidecarRunLoopCondition"
+  ivar +120 _observer @"SidecarRunLoopSource"
+  ivar +128 _parentWindow @"NSWindow"
+  ivar +136 _request @"SidecarRequest"
+  ivar +144 _modal AB
+  property alert (T@"NSAlert",&,N)
+  property request (T@"SidecarRequest",R,N,V_request)
+  -.cxx_destruct v16@0:8  imp=+0x1c7f0e980
+  -_modalResponse: v24@0:8q16  imp=+0x1c7f0df2c
+  -_prepareModelessPanel v16@0:8  imp=+0x1c7f0df98
+  -_startObserver v16@0:8  imp=+0x1c7f0e0ec
+  -_stopObserver v16@0:8  imp=+0x1c7f0e3d4
+  -alert @16@0:8  imp=+0x1c7f0db14
+  -autoDismissOnFinished B16@0:8  imp=+0x1c7f0e510
+  -buttonPressed: v24@0:8@16  imp=+0x1c7f0df50
+  -close v16@0:8  imp=+0x1c7f0e6cc
+  -dealloc v16@0:8  imp=+0x1c7f0da84
+  -initWithRequest:parentWindow: @32@0:8@16@24  imp=+0x1c7f0d9c8
+  -isWindowLoaded B16@0:8  imp=+0x1c7f0dba8
+  -loadWindow v16@0:8  imp=+0x1c7f0dbdc
+  -request @16@0:8  imp=+0x1c7f0e96c
+  -runModal q16@0:8  imp=+0x1c7f0e798
+  -setAlert: v24@0:8@16  imp=+0x1c7f0db28
+  -showErrorOnFinished B16@0:8  imp=+0x1c7f0e518
+  -showWindow: v24@0:8@16  imp=+0x1c7f0e520
+@class SidecarDisplayMenuController : NSObject instanceSize=104
+  ivar +8 _displayManager @"SidecarDisplayManager"
+  ivar +16 _recentItemsCache @"NSArray"
+  ivar +24 _otherItemsCache @"NSArray"
+  ivar +32 _recents @"NSMutableSet"
+  ivar +40 _buttonImage @"NSImage"
+  ivar +48 _buttonImageTinted @"NSImage"
+  ivar +56 _noButtonImage @"NSImage"
+  ivar +64 _noButtonImageTinted @"NSImage"
+  ivar +72 _defaults @"NSUserDefaults"
+  ivar +80 statusToken i
+  ivar +88 _prefsURL @"NSURL"
+  ivar +96 _touchbarAllowed B
+  property deviceAvailable (TB,R)
+  property connectedDeviceName (T@"NSString",R)
+  +sharedController @16@0:8  imp=+0x1c7f0ef24
+  -.cxx_destruct v16@0:8  imp=+0x1c7f10818
+  -_connectToDevice: v24@0:8@16  imp=+0x1c7f1028c
+  -_connectedDisplayPreferenceItems @16@0:8  imp=+0x1c7f0f7ac
+  -_deviceSelected: v24@0:8@16  imp=+0x1c7f100ac
+  -_devicesChanged v16@0:8  imp=+0x1c7f0fce4
+  -_devicesHaveHomeButton: B24@0:8@16  imp=+0x1c7f10704
+  -_disconnectFromDevice: v24@0:8@16  imp=+0x1c7f10444
+  -_menuItemForDevice:isConnected: @28@0:8@16B24  imp=+0x1c7f104f0
+  -_openPreferences: v24@0:8@16  imp=+0x1c7f0fed4
+  -_tintedImage:color: @32@0:8@16@24  imp=+0x1c7f105bc
+  -_toggleSidebar: v24@0:8@16  imp=+0x1c7f101a4
+  -_toggleTouchbar: v24@0:8@16  imp=+0x1c7f10218
+  -_updateMenuItems v16@0:8  imp=+0x1c7f0f3f4
+  -connectedDeviceName @16@0:8  imp=+0x1c7f0f384
+  -connectedDisplayPreferenceItems @16@0:8  imp=+0x1c7f0fb34
+  -dealloc v16@0:8  imp=+0x1c7f0f0fc
+  -deviceAvailable B16@0:8  imp=+0x1c7f0f16c
+  -deviceImage: @20@0:8B16  imp=+0x1c7f0f1b0
+  -disconnect v16@0:8  imp=+0x1c7f0fd90
+  -init @16@0:8  imp=+0x1c7f0ef7c
+  -otherItems @16@0:8  imp=+0x1c7f0f774
+  -preferenceItems @16@0:8  imp=+0x1c7f0fc3c
+  -preferencePaneItem @16@0:8  imp=+0x1c7f0fb38
+  -recentItems @16@0:8  imp=+0x1c7f0f73c
+@class SidecarEncryptionAlertController : SidecarErrorAlertController instanceSize=152
+  -_errorController @16@0:8  imp=+0x1c7f10e30
+  -_modalResponse: v24@0:8q16  imp=+0x1c7f10de0
+  -_openPrefPane v16@0:8  imp=+0x1c7f10e38
+  -initWithRequest: @24@0:8@16  imp=+0x1c7f10bf0
+  -loadWindow v16@0:8  imp=+0x1c7f10c2c
+@class SidecarErrorAlertController : SidecarAlertController instanceSize=152
+  +alertControllerWithRequest: @24@0:8@16  imp=+0x1c7f1090c
+  -_errorController @16@0:8  imp=+0x1c7f10be8
+  -autoDismissOnFinished B16@0:8  imp=+0x1c7f10bd8
+  -initWithRequest: @24@0:8@16  imp=+0x1c7f109f4
+  -loadWindow v16@0:8  imp=+0x1c7f10a30
+  -showErrorOnFinished B16@0:8  imp=+0x1c7f10be0
+@class SidecarKeyValueObserver : SidecarRunLoopSource instanceSize=56
+  ivar +32 _representedObject @
+  ivar +40 _keys @"NSSet"
+  ivar +48 _handler @?
+  property handler (T@?,C,V_handler)
+  +observeObject:forKeys: @32@0:8@16@24  imp=+0x1c7f14f8c
+  -.cxx_destruct v16@0:8  imp=+0x1c7f153a0
+  -dealloc v16@0:8  imp=+0x1c7f15150
+  -handler @?16@0:8  imp=+0x1c7f1538c
+  -observeValueForKeyPath:ofObject:change:context: v48@0:8@16@24@32^v40  imp=+0x1c7f152b8
+  -perform v16@0:8  imp=+0x1c7f15298
+  -setHandler: v24@0:8@?16  imp=+0x1c7f15398
+@class SidecarMenuController : NSObject <NSMenuItemValidation> instanceSize=56
+  ivar +8 _importTitle @"NSString"
+  ivar +16 _importTitleGeneration q
+  ivar +24 _insertTitle @"NSString"
+  ivar +32 _insertTitleGeneration q
+  ivar +40 _deviceSymbolName @"NSString"
+  ivar +48 _menuItems @"NSPointerArray"
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +sharedController @16@0:8  imp=+0x1c7f0c3e8
+  -.cxx_destruct v16@0:8  imp=+0x1c7f121f8
+  -_validateImportFromDeviceItem: B24@0:8@16  imp=+0x1c7f0d024
+  -importFromDevice: v24@0:8@16  imp=+0x1c7f111e8
+  -importFromDeviceTitle @16@0:8  imp=+0x1c7f0d520
+  -init @16@0:8  imp=+0x1c7f0c440
+  -insertFromDeviceTitle @16@0:8  imp=+0x1c7f11d00
+  -menuWithOptions: @24@0:8Q16  imp=+0x1c7f12178
+  -menuWithServices:options: @32@0:8@16Q24  imp=+0x1c7f12184
+  -menuWithTarget:action:options: @40@0:8@16:24Q32  imp=+0x1c7f0c58c
+  -registerMenuItem:target:action:options: v48@0:8@16@24:32Q40  imp=+0x1c7f0c488
+  -showPhotosBrowser: v24@0:8@16  imp=+0x1c7f11170
+  -updateMenu:withEvent:withFlags: B40@0:8@16@24Q32  imp=+0x1c7f11c6c
+  -updateMenu:withEvent:withFlags:withResponder: B48@0:8@16@24Q32@40  imp=+0x1c7f116a4
+  -validateMenuItem: B24@0:8@16  imp=+0x1c7f11db8
+@class SidecarPopover : NSPopover instanceSize=224
+  ivar +216 _request @"SidecarRequest"
+  +sidecarPopoverWithRequest: @24@0:8@16  imp=+0x1c7f12378
+  -.cxx_destruct v16@0:8  imp=+0x1c7f12bf8
+  -_startEventMonitor @16@0:8  imp=+0x1c7f124e8
+  -_stopEventMonitor: v24@0:8@16  imp=+0x1c7f1270c
+  -cancel: v24@0:8@16  imp=+0x1c7f12718
+  -cancelOperation: v24@0:8@16  imp=+0x1c7f12860
+  -initWithRequest: @24@0:8@16  imp=+0x1c7f123d8
+  -performClose: v24@0:8@16  imp=+0x1c7f12864
+  -popoverWillClose: v24@0:8@16  imp=+0x1c7f12868
+  -runModal q16@0:8  imp=+0x1c7f128a8
+  -window @16@0:8  imp=+0x1c7f124e4
+@class SidecarPopoverButton : NSButton instanceSize=648
+  ivar +640 _highlightView @"NSView"
+  -.cxx_destruct v16@0:8  imp=+0x1c7f143dc
+  -allowsVibrancy B16@0:8  imp=+0x1c7f14170
+  -initWithFrame: @48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16  imp=+0x1c7f14188
+  -layout v16@0:8  imp=+0x1c7f1423c
+  -wantsLayer B16@0:8  imp=+0x1c7f14178
+  -wantsUpdateLayer B16@0:8  imp=+0x1c7f14180
+@class SidecarPopoverButtonHighlight : NSView instanceSize=536
+  -allowsVibrancy B16@0:8  imp=+0x1c7f13fac
+  -updateLayer v16@0:8  imp=+0x1c7f13fc4
+  -wantsLayer B16@0:8  imp=+0x1c7f13fb4
+  -wantsUpdateLayer B16@0:8  imp=+0x1c7f13fbc
+@class SidecarPopoverViewController : NSViewController instanceSize=176
+  ivar +120 _imageViewCache @"NSMutableDictionary"
+  ivar +128 _horizontalLine @"NSBox"
+  ivar +136 _cancelButton @"NSButton"
+  ivar +144 _imageStack @"NSStackView"
+  ivar +152 _progress @"NSProgressIndicator"
+  ivar +160 _textField @"NSTextField"
+  ivar +168 _deallocating b1
+  property cancelButton (T@"NSButton",&,V_cancelButton)
+  -.cxx_destruct v16@0:8  imp=+0x1c7f13f08
+  -_showProgress v16@0:8  imp=+0x1c7f13c80
+  -cancel: v24@0:8@16  imp=+0x1c7f12d80
+  -cancelButton @16@0:8  imp=+0x1c7f13eec
+  -cancelOperation: v24@0:8@16  imp=+0x1c7f12ed4
+  -dealloc v16@0:8  imp=+0x1c7f12c0c
+  -imageViewForDeviceType: @24@0:8@16  imp=+0x1c7f12ed8
+  -loadView v16@0:8  imp=+0x1c7f13484
+  -observeValueForKeyPath:ofObject:change:context: v48@0:8@16@24@32^v40  imp=+0x1c7f1320c
+  -setCancelButton: v24@0:8@16  imp=+0x1c7f13efc
+  -setRepresentedObject: v24@0:8@16  imp=+0x1c7f12c70
+  -update v16@0:8  imp=+0x1c7f13010
+@class SidecarRunLoopCondition : SidecarRunLoopSource instanceSize=40
+  ivar +28 _flag AB
+  ivar +29 _modal AB
+  ivar +32 _handler @?
+  property handler (T@?,C,V_handler)
+  -.cxx_destruct v16@0:8  imp=+0x1c7f14f80
+  -_description @16@0:8  imp=+0x1c7f14a30
+  -handler @?16@0:8  imp=+0x1c7f14f6c
+  -perform v16@0:8  imp=+0x1c7f14af8
+  -runModalForWindow: q24@0:8@16  imp=+0x1c7f14da0
+  -setHandler: v24@0:8@?16  imp=+0x1c7f14f78
+  -signal v16@0:8  imp=+0x1c7f14b70
+  -waitInMode: v24@0:8@16  imp=+0x1c7f14bbc
+  -waitInMode:withTimeout: v32@0:8@16d24  imp=+0x1c7f14bc8
+@class SidecarRunLoopSource : NSObject instanceSize=32
+  ivar +8 _source ^{__CFRunLoopSource=}
+  ivar +16 _modes ^{__CFDictionary=}
+  ivar +24 _lock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  -_description @16@0:8  imp=+0x1c7f14610
+  -_scheduleWithRunLoop:inMode: v32@0:8^{__CFRunLoop=}16^{__CFString=}24  imp=+0x1c7f1481c
+  -_unscheduleFromRunLoop:inMode: v32@0:8^{__CFRunLoop=}16^{__CFString=}24  imp=+0x1c7f14930
+  -dealloc v16@0:8  imp=+0x1c7f1458c
+  -description @16@0:8  imp=+0x1c7f14720
+  -init @16@0:8  imp=+0x1c7f14448
+  -perform v16@0:8  imp=+0x1c7f149cc
+  -scheduleWithRunLoop:inMode: v32@0:8@16@24  imp=+0x1c7f147bc
+  -signal v16@0:8  imp=+0x1c7f149d0
+  -unscheduleFromRunLoop:inMode: v32@0:8@16@24  imp=+0x1c7f148d0
+@class SidecarServiceAction : NSObject <_NSServiceAction> instanceSize=40
+  ivar +8 _sidecarService @"SidecarService"
+  ivar +16 _keyboardShortcut @"NSKeyboardShortcut"
+  ivar +24 _presentationModes @"NSMutableSet"
+  ivar +32 _uuid @"NSUUID"
+  property sidecarService (T@"SidecarService",R,N)
+  property qualifiedServiceMessage (T@"NSString",R,N)
+  property title (T@"NSString",R,N)
+  property localizedTitle (T@"NSString",R,N)
+  property categoryTitle (T@"NSString",R,N)
+  property localizedCategoryTitle (T@"NSString",R,N)
+  property bundlePath (T@"NSString",R,N)
+  property localizedServiceDescription (T@"NSString",R,N)
+  property presentationModes (T@"NSSet",C,N)
+  property defaultPresentationModes (T@"NSSet",R,C,N)
+  property availablePresentationModes (T@"NSSet",R,C,N)
+  property hasCustomIcon (TB,R,N)
+  property hasBackgroundColor (TB,R,N)
+  property combinedSendTypes (T@"NSArray",R,N)
+  property sendFileTypes (T@"NSArray",R,N)
+  property returnTypes (T@"NSArray",R,N)
+  property defaultKeyboardShortcut (T@"NSKeyboardShortcut",R,N)
+  property keyboardShortcut (T@"NSKeyboardShortcut",C,N)
+  property keyEquivalent (T@"NSString",C,N)
+  property serviceUUID (T@"NSUUID",R,N)
+  property shortcutIdentifier (T@"NSString",R,N)
+  property bundleIdentifier (T@"NSString",R,N)
+  property isWorkflow (TB,R,N)
+  property isShortcut (TB,R,N)
+  property isRestricted (TB,R,N)
+  property isAvailableInContextMenu (TB,N)
+  property isAvailableInServicesMenu (TB,N)
+  property isSpellChecker (TB,R,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1c7f17774
+  -_getIsAvailableInPresentationMode: B24@0:8@16  imp=+0x1c7f1752c
+  -_setIsAvailable:inPresentationMode: v28@0:8B16@20  imp=+0x1c7f17590
+  -availablePresentationModes @16@0:8  imp=+0x1c7f16a34
+  -bundleIdentifier @16@0:8  imp=+0x1c7f17468
+  -bundlePath @16@0:8  imp=+0x1c7f168e8
+  -categoryTitle @16@0:8  imp=+0x1c7f16884
+  -combinedSendTypes @16@0:8  imp=+0x1c7f16db4
+  -defaultKeyboardShortcut @16@0:8  imp=+0x1c7f17160
+  -defaultPresentationModes @16@0:8  imp=+0x1c7f16a1c
+  -hasBackgroundColor B16@0:8  imp=+0x1c7f16dac
+  -hasCustomIcon B16@0:8  imp=+0x1c7f16c64
+  -initWithService: @24@0:8@16  imp=+0x1c7f16760
+  -invokeWithPasteboard: B24@0:8@16  imp=+0x1c7f170bc
+  -invokeWithResponder: B24@0:8@16  imp=+0x1c7f16e34
+  -isAvailableInContextMenu B16@0:8  imp=+0x1c7f176d0
+  -isAvailableInServicesMenu B16@0:8  imp=+0x1c7f176f0
+  -isRestricted B16@0:8  imp=+0x1c7f1775c
+  -isSpellChecker B16@0:8  imp=+0x1c7f17764
+  -isWorkflow B16@0:8  imp=+0x1c7f1776c
+  -keyEquivalent @16@0:8  imp=+0x1c7f17290
+  -keyboardShortcut @16@0:8  imp=+0x1c7f1716c
+  -loadBackgroundColorOnQueue:completionHandler: v32@0:8@16@?24  imp=+0x1c7f16c6c
+  -loadImageOnQueue:completionHandler: v32@0:8@16@?24  imp=+0x1c7f16a4c
+  -localizedCategoryTitle @16@0:8  imp=+0x1c7f16890
+  -localizedServiceDescription @16@0:8  imp=+0x1c7f16938
+  -localizedTitle @16@0:8  imp=+0x1c7f16834
+  -presentationModes @16@0:8  imp=+0x1c7f16944
+  -resetToDefaultAvailability v16@0:8  imp=+0x1c7f17710
+  -resetToDefaultKeyboardShortcut v16@0:8  imp=+0x1c7f17244
+  -returnTypes @16@0:8  imp=+0x1c7f16dcc
+  -sendFileTypes @16@0:8  imp=+0x1c7f16dc0
+  -serviceUUID @16@0:8  imp=+0x1c7f172e4
+  -setIsAvailableInContextMenu: v20@0:8B16  imp=+0x1c7f176e0
+  -setIsAvailableInServicesMenu: v20@0:8B16  imp=+0x1c7f17700
+  -setKeyEquivalent: v24@0:8@16  imp=+0x1c7f172e0
+  -setKeyboardShortcut: v24@0:8@16  imp=+0x1c7f171b0
+  -setPresentationModes: v24@0:8@16  imp=+0x1c7f16988
+  -sidecarService @16@0:8  imp=+0x1c7f167dc
+  -title @16@0:8  imp=+0x1c7f167e4
+  -validateWithResponder:completionHandler: v32@0:8@16@?24  imp=+0x1c7f1715c
+@class SidecarSubmenu : NSMenu instanceSize=96
+  ivar +56 _generation q
+  ivar +64 _options Q
+  ivar +72 _services @"NSArray"
+  ivar +80 _target @
+  ivar +88 _action :
+  property target (T@,W,N,V_target)
+  property action (T:,N,V_action)
+  property services (T@"NSArray",C,N,V_services)
+  -.cxx_destruct v16@0:8  imp=+0x1c7f0d8ac
+  -action :16@0:8  imp=+0x1c7f0d86c
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1c7f0d74c
+  -initWithOptions: @24@0:8Q16  imp=+0x1c7f0c610
+  -services @16@0:8  imp=+0x1c7f0d010
+  -setAction: v24@0:8:16  imp=+0x1c7f0c698
+  -setServices: v24@0:8@16  imp=+0x1c7f0d82c
+  -setTarget: v24@0:8@16  imp=+0x1c7f0c684
+  -target @16@0:8  imp=+0x1c7f0d838
+  -update v16@0:8  imp=+0x1c7f0c6c8
+@protocol CWEventDelegate
+  optional -clientConnectionInterrupted v16@0:8
+  optional -ssidDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -powerStateDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -modeDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -linkDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -linkQualityDidChangeForWiFiInterfaceWithName:rssi:transmitRate: v40@0:8@16q24d32
+  optional -bssidDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -clientConnectionInvalidated v16@0:8
+  optional -countryCodeDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -scanCacheUpdatedForWiFiInterfaceWithName: v24@0:8@16
+@protocol CWInternalEventDelegate
+  optional -joinDidStartForWiFiInterfaceWithName:ssid: v32@0:8@16@24
+  optional -internal_queryCloudKVSAndReply: v24@0:8@?16
+  optional -internal_startUserMode8021XWithProfile:interfaceWithName:reply: v40@0:8@16@24@?32
+  optional -internal_showAvailableWiFiNetworks:interfaceName:recommendOnly: v36@0:8@16@24B32
+  optional -autoJoinDidCompleteForWiFiInterfaceWithName: v24@0:8@16
+  optional -autoJoinDidStartForWiFiInterfaceWithName: v24@0:8@16
+  optional -autoJoinDidUpdate: v24@0:8@16
+  optional -btCoexModeStats: v24@0:8@16
+  optional -deviceAvailabilityChangedForWiFiInterfaceWithName:isAvailable: v28@0:8@16B24
+  optional -dextCrashDetected v16@0:8
+  optional -interfaceAddedWithName: v24@0:8@16
+  optional -interfaceRemovedWithName: v24@0:8@16
+  optional -internal_addCloudProfile: v24@0:8@16
+  optional -internal_confirmAPIAccessWithRequestType:info:processName:reply: v48@0:8q16@24@32@?40
+  optional -internal_enableTetherDevice:reply: v32@0:8@16@?24
+  optional -internal_foundTetherDevices: v24@0:8@16
+  optional -internal_getWiFiPasswordForUserKeychainWithSSID:reply: v32@0:8@16@?24
+  optional -internal_joinWiFiNetworkWithUserAgent:interfaceName:timestamp:reply: v48@0:8@16@24d32@?40
+  optional -internal_queryLegacyCloudKVSAndReply: v24@0:8@?16
+  optional -internal_removeCloudProfile: v24@0:8@16
+  optional -internal_setWiFiPasswordForUserKeychain:ssid:reply: v40@0:8@16@24@?32
+  optional -internal_showAutoHotspotNotificationForTetherDevice:retry:interfaceName: v36@0:8@16B24@28
+  optional -internal_showDHCPMessage:networkName: v32@0:8@16@24
+  optional -internal_showLowBatteryNotificationForTetherDevice:interfaceName: v32@0:8@16@24
+  optional -internal_showMICErrorWithNetworkName: v24@0:8@16
+  optional -internal_showPHNetworkExpensiveAlertWithNetworkName: v24@0:8@16
+  optional -internal_startBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  optional -internal_startUserMode8021XWithAuthenticationInfo:interfaceWithName:reply: v40@0:8@16@24@?32
+  optional -internal_startUserMode8021XWithPasspointDomainName:interfaceWithName:reply: v40@0:8@16@24@?32
+  optional -internal_startUserMode8021XWithSSID:username:password:identity:disableUserInteraction:remember:interfaceWithName:reply: v72@0:8@16@24@32@40B48B52@56@?64
+  optional -internal_stopBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  optional -internal_updateCloudProfile: v24@0:8@16
+  optional -joinDidCompleteForWiFiInterfaceWithName:isAutoJoin:error: v36@0:8@16B24@28
+  optional -preferencesDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -rangingEndedForWiFiInterfaceWithName: v24@0:8@16
+  optional -rangingReportEventForWiFiInterfaceWithName:data:error: v40@0:8@16@24@32
+  optional -rangingStartedForWiFiInterfaceWithName: v24@0:8@16
+  optional -realTimeModeDidEndForWiFiInterfaceWithName: v24@0:8@16
+  optional -realTimeModeDidStartForWiFiInterfaceWithName: v24@0:8@16
+  optional -rsnHandshakeDidCompleteForWiFiInterfaceWithName: v24@0:8@16
+  optional -virtualInterfaceStateChangedForWiFiInterfaceWithName: v24@0:8@16
+  optional -willShowJoinUIForWiFiNetwork:interfaceName: v32@0:8@16@24
+  optional -wowStateDidChangeForWiFiInterfaceWithName: v24@0:8@16

@@ -1,0 +1,50 @@
+@class DIHelperProxy : NSObject <DIHLHelperMasterProtocol, NSXPCListenerDelegate> instanceSize=136
+  ivar +8 _context ^v
+  ivar +16 _operation @"NSDictionary"
+  ivar +24 _statusProc ^?
+  ivar +32 _threadCondLock @"NSConditionLock"
+  ivar +40 _helperDoneLock @"NSConditionLock"
+  ivar +48 _workerRunLoop ^{__CFRunLoop=}
+  ivar +56 _threadResultsError i
+  ivar +64 _threadResultsDictionary @"NSDictionary"
+  ivar +72 _helperPath @"NSString"
+  ivar +80 _intermediaryConnection @"NSXPCConnection"
+  ivar +88 _helperListener @"NSXPCListener"
+  ivar +96 _helperConnection @"NSXPCConnection"
+  ivar +104 _helperRegistered B
+  ivar +105 _helperDone B
+  ivar +112 _serverName @"NSString"
+  ivar +120 _authorizationRef ^{AuthorizationOpaqueRef=}
+  ivar +128 _helperPid i
+  ivar +132 _withAuthentication B
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -askForPassword i16@0:8  imp=+0x1b5478650
+  -authWithFlags: i20@0:8I16  imp=+0x1b547855c
+  -authenticate i16@0:8  imp=+0x1b54784ec
+  -autorelease @16@0:8  imp=+0x1b54065bc
+  -checkHelperStatusWaitingForExit: i20@0:8B16  imp=+0x1b54780e0
+  -connectToFramework v16@0:8  imp=+0x1b54065f4
+  -dealloc v16@0:8  imp=+0x1b541d9bc
+  -disconnectFromHelper: v24@0:8@16  imp=+0x1b541d738
+  -frameworkCallbackWithDictionary:withReply: v32@0:8@16@?24  imp=+0x1b5406764
+  -helperDied v16@0:8  imp=+0x1b54783fc
+  -helperToolPath @16@0:8  imp=+0x1b540648c
+  -initWithDictionary:andStatusProc:andContext: @40@0:8@16^?24^v32  imp=+0x1b54057dc
+  -initWithDictionary:andStatusProc:andContext:withAuthentication: @44@0:8@16^?24^v32B40  imp=+0x1b54057e4
+  -isAuthenticated B16@0:8  imp=+0x1b5478538
+  -listener:shouldAcceptNewConnection: B32@0:8@16@24  imp=+0x1b5477d28
+  -performOperationReturning: i24@0:8^@16  imp=+0x1b540596c
+  -release Vv16@0:8  imp=+0x1b5406584
+  -reportResultsToFramework:withReply: v32@0:8@16@?24  imp=+0x1b541d62c
+  -retain @16@0:8  imp=+0x1b5405ac4
+  -sendOperationToHelper: v24@0:8@16  imp=+0x1b5406650
+  -setHelperDoneWithResult: v20@0:8i16  imp=+0x1b547838c
+  -synchronousFrameworkCallbackWithDictionary:withReply: v32@0:8@16@?24  imp=+0x1b5478448
+  -threadLaunchToolAuthenticated: i20@0:8B16  imp=+0x1b5406054
+  -threadSetupServer B16@0:8  imp=+0x1b5405c7c
+  -waitForHelperDone v16@0:8  imp=+0x1b5477fc8
+  -watchForHelperDeath v16@0:8  imp=+0x1b54781f4
+  -workerThread: v24@0:8@16  imp=+0x1b5405afc

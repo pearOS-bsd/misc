@@ -1,0 +1,43 @@
+@class AnalyticsConfigurationObserver : NSObject instanceSize=48
+  ivar +8 observer {shared_ptr<(anonymous namespace)::ConfigurationObserverImpl>="__ptr_"^{ConfigurationObserverImpl}"__cntrl_"^{__shared_weak_count}}
+  ivar +24 _queue @"NSObject<OS_dispatch_queue>"
+  ivar +32 _delegate @"<AnalyticsConfigurationObserverDelegate>"
+  ivar +40 _delegateQueue @"NSObject<OS_dispatch_queue>"
+  property queue (T@"NSObject<OS_dispatch_queue>",&,N,V_queue)
+  property delegate (T@"<AnalyticsConfigurationObserverDelegate>",W,N,V_delegate)
+  property delegateQueue (T@"NSObject<OS_dispatch_queue>",&,N,V_delegateQueue)
+  -.cxx_construct @16@0:8  imp=+0x1a0e956bc
+  -.cxx_destruct v16@0:8  imp=+0x1a0e95658
+  -dealloc v16@0:8  imp=+0x1a0e94e08
+  -delegate @16@0:8  imp=+0x1a0e9560c
+  -delegateQueue @16@0:8  imp=+0x1a0e95644
+  -init @16@0:8  imp=+0x1a0e94d2c
+  -queue @16@0:8  imp=+0x1a0e955f8
+  -setConfigurationObserverDelegate:queue: v32@0:8@16@24  imp=+0x1a0e94e88
+  -setDelegate: v24@0:8@16  imp=+0x1a0e95638
+  -setDelegateQueue: v24@0:8@16  imp=+0x1a0e9564c
+  -setQueue: v24@0:8@16  imp=+0x1a0e95600
+  -startObservingConfigurationType: B24@0:8@16  imp=+0x1a0e950a0
+  -stopObservingConfigurationType: B24@0:8@16  imp=+0x1a0e95520
+@class AnalyticsEventObserver : NSObject instanceSize=48
+  ivar +8 observer {shared_ptr<(anonymous namespace)::EventObserverImpl>="__ptr_"^{EventObserverImpl}"__cntrl_"^{__shared_weak_count}}
+  ivar +24 _queue @"NSObject<OS_dispatch_queue>"
+  ivar +32 _delegate @"<AnalyticsEventObserverDelegate>"
+  ivar +40 _delegateQueue @"NSObject<OS_dispatch_queue>"
+  property queue (T@"NSObject<OS_dispatch_queue>",&,N,V_queue)
+  property delegate (T@"<AnalyticsEventObserverDelegate>",W,N,V_delegate)
+  property delegateQueue (T@"NSObject<OS_dispatch_queue>",&,N,V_delegateQueue)
+  -.cxx_construct @16@0:8  imp=+0x1a0e975d4
+  -.cxx_destruct v16@0:8  imp=+0x1a0e97570
+  -dealloc v16@0:8  imp=+0x1a0e96978
+  -delegate @16@0:8  imp=+0x1a0e97524
+  -delegateQueue @16@0:8  imp=+0x1a0e9755c
+  -init @16@0:8  imp=+0x1a0e9689c
+  -queue @16@0:8  imp=+0x1a0e97510
+  -setDelegate: v24@0:8@16  imp=+0x1a0e97550
+  -setDelegateQueue: v24@0:8@16  imp=+0x1a0e97564
+  -setEventObserverDelegate:queue: v32@0:8@16@24  imp=+0x1a0e969f8
+  -setQueue: v24@0:8@16  imp=+0x1a0e97518
+  -startObservingEventList: B24@0:8@16  imp=+0x1a0e96b88
+  -startObservingEventList:withErrorHandler: B32@0:8@16@?24  imp=+0x1a0e96b90
+  -stopObserving B16@0:8  imp=+0x1a0e97434

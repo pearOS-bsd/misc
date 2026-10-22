@@ -1,0 +1,567 @@
+@class BTMAgentConnection : NSObject instanceSize=16
+  ivar +8 _connection @"NSXPCConnection"
+  +serviceName @16@0:8  imp=+0x1a6b0ac18
+  +sharedInstance @16@0:8  imp=+0x1a6b0ab94
+  -.cxx_destruct v16@0:8  imp=+0x1a6b0bd8c
+  -addLoginItem:reply: v32@0:8@16@?24  imp=+0x1a6b0b040
+  -connection @16@0:8  imp=+0x1a6b0ac24
+  -getBackgroundItemsWithReply: v24@0:8@?16  imp=+0x1a6b0b3d8
+  -getLoginItemsWithTypeMask:reply: v32@0:8Q16@?24  imp=+0x1a6b0ad78
+  -openLoginItemsWithReply: v24@0:8@?16  imp=+0x1a6b0bafc
+  -removeLoginItem:reply: v32@0:8@16@?24  imp=+0x1a6b0b20c
+  -setUserElection:forBackgroundItem:reply: v40@0:8q16@24@?32  imp=+0x1a6b0b86c
+  -setUserElection:forURL:reply: v40@0:8q16@24@?32  imp=+0x1a6b0b694
+@class BTMBackgroundItem : NSObject <BTMBackgroundItem, NSSecureCoding> instanceSize=40
+  ivar +8 _identifier @"NSUUID"
+  ivar +16 _bookmark @"NSData"
+  ivar +24 _userElection q
+  ivar +32 _type Q
+  property identifier (T@"NSUUID",&,V_identifier)
+  property bookmark (T@"NSData",&,V_bookmark)
+  property userElection (Tq,V_userElection)
+  property type (TQ,V_type)
+  property name (T@"NSString",R)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +supportsSecureCoding B16@0:8  imp=+0x1a6b01fc0
+  -.cxx_destruct v16@0:8  imp=+0x1a6b024dc
+  -bookmark @16@0:8  imp=+0x1a6b024a8
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a6b023ac
+  -identifier @16@0:8  imp=+0x1a6b02494
+  -initWithCoder: @24@0:8@16  imp=+0x1a6b022b8
+  -initWithIdentifier:type:bookmark:userElection: @48@0:8@16Q24@32q40  imp=+0x1a6b021fc
+  -initWithType:bookmark: @32@0:8Q16@24  imp=+0x1a6b0217c
+  -initWithURL: @24@0:8@16  imp=+0x1a6b01fc8
+  -name @16@0:8  imp=+0x1a6b02444
+  -setBookmark: v24@0:8@16  imp=+0x1a6b024b4
+  -setIdentifier: v24@0:8@16  imp=+0x1a6b024a0
+  -setType: v24@0:8Q16  imp=+0x1a6b024d4
+  -setUserElection: v24@0:8q16  imp=+0x1a6b024c4
+  -type Q16@0:8  imp=+0x1a6b024cc
+  -userElection q16@0:8  imp=+0x1a6b024bc
+@class BTMBackgroundItemController : NSObject instanceSize=32
+  ivar +8 _delegate @"<BTMBackgroundItemControllerDelegate>"
+  ivar +16 _internalItems @"NSSet"
+  ivar +24 _internalQueue @"NSObject<OS_dispatch_queue>"
+  property internalItems (T@"NSSet",&,V_internalItems)
+  property internalQueue (T@"NSObject<OS_dispatch_queue>",R,V_internalQueue)
+  property delegate (T@"<BTMBackgroundItemControllerDelegate>",W,V_delegate)
+  property items (T@"NSSet",R)
+  -.cxx_destruct v16@0:8  imp=+0x1a6b07a24
+  -_notifyDidChangeItems v16@0:8  imp=+0x1a6b078a4
+  -_setBackgroundItems: v24@0:8@16  imp=+0x1a6b07820
+  -dealloc v16@0:8  imp=+0x1a6b06f38
+  -delegate @16@0:8  imp=+0x1a6b079cc
+  -fetchBackgroundTasks v16@0:8  imp=+0x1a6b0761c
+  -handleBackgroundItemsChangeNotification: v24@0:8@16  imp=+0x1a6b07568
+  -initWithDelegate: @24@0:8@16  imp=+0x1a6b06ddc
+  -internalItems @16@0:8  imp=+0x1a6b07a04
+  -internalQueue @16@0:8  imp=+0x1a6b07a18
+  -items @16@0:8  imp=+0x1a6b06fb0
+  -setDelegate: v24@0:8@16  imp=+0x1a6b079f8
+  -setInternalItems: v24@0:8@16  imp=+0x1a6b07a10
+  -setUserElection:forBackgroundItem:completion: v40@0:8q16@24@?32  imp=+0x1a6b07190
+  -setUserElection:forURL:completion: v40@0:8q16@24@?32  imp=+0x1a6b07338
+@class BTMBackgroundTaskManager : NSObject instanceSize=8
+  +sharedInstance @16@0:8  imp=+0x1a6b12fc0
+  -_init @16@0:8  imp=+0x1a6b13048
+  -canLoadLaunchdJobWithURL:completion: v32@0:8@16@?24  imp=+0x1a6b13080
+  -canLoadLaunchdJobWithURLs:completion: v32@0:8@16@?24  imp=+0x1a6b13214
+  -canLoadServiceLoginItemWithURL:completion: v32@0:8@16@?24  imp=+0x1a6b131ec
+  -canLoadServiceLoginItemWithURLs:completion: v32@0:8@16@?24  imp=+0x1a6b13200
+  -getPromptingEnabledWithCompletion: v24@0:8@?16  imp=+0x1a6b13384
+  -openLoginItemsWithCompletion: v24@0:8@?16  imp=+0x1a6b13228
+  -setPromptingEnabled:completion: v28@0:8B16@?20  imp=+0x1a6b13374
+@class BTMCodeSignInfo : NSObject instanceSize=24
+  ivar +8 _secCode ^{__SecCode=}
+  ivar +16 _information ^{__CFDictionary=}
+  property bundleIdentifier (T@"NSString",R)
+  property signingIdentifier (T@"NSString",R)
+  property teamIdentifier (T@"NSString",R)
+  property developerName (T@"NSString",R)
+  property designatedRequirement (T@"NSString",R)
+  property lightweightCodeRequirement (T@"NSData",R)
+  property hasAssociatedBundleIdentifiersEntitlement (TB,R)
+  property isSandboxed (TB,R)
+  property isSystemApp (TB,R)
+  +codeSignInfoForURL: @24@0:8@16  imp=+0x1a6b088fc
+  +codeSignInfoForURL:error: @32@0:8@16^@24  imp=+0x1a6b0895c
+  -_initWithSecCode i16@0:8  imp=+0x1a6b089c8
+  -bundleIdentifier @16@0:8  imp=+0x1a6b08c04
+  -dealloc v16@0:8  imp=+0x1a6b08ba8
+  -debugDescription @16@0:8  imp=+0x1a6b09218
+  -description @16@0:8  imp=+0x1a6b09148
+  -designatedRequirement @16@0:8  imp=+0x1a6b08f58
+  -developerName @16@0:8  imp=+0x1a6b08fe4
+  -hasAssociatedBundleIdentifiersEntitlement B16@0:8  imp=+0x1a6b08d0c
+  -initWithURL:error: @32@0:8@16^@24  imp=+0x1a6b08a40
+  -isSandboxed B16@0:8  imp=+0x1a6b090f4
+  -isSystemApp B16@0:8  imp=+0x1a6b08c68
+  -lightweightCodeRequirement @16@0:8  imp=+0x1a6b08e00
+  -signingIdentifier @16@0:8  imp=+0x1a6b08c54
+  -teamIdentifier @16@0:8  imp=+0x1a6b08da4
+@class BTMFetchResult : NSObject <NSCoding, NSSecureCoding> instanceSize=40
+  ivar +8 _code q
+  ivar +16 _items @"NSArray"
+  ivar +24 _containers @"NSArray"
+  ivar +32 _encodedItems @"NSArray"
+  property containers (T@"NSArray",&,V_containers)
+  property encodedItems (T@"NSArray",&,V_encodedItems)
+  property code (Tq,V_code)
+  property items (T@"NSArray",C,V_items)
+  property firstItem (T@"BTMItem",R)
+  property error (T@"NSError",R)
+  +resultWithCode:item: @32@0:8q16@24  imp=+0x1a6b048a8
+  +resultWithCode:items: @32@0:8q16@24  imp=+0x1a6b04998
+  +supportsSecureCoding B16@0:8  imp=+0x1a6b048a0
+  -.cxx_destruct v16@0:8  imp=+0x1a6b05260
+  -code q16@0:8  imp=+0x1a6b05214
+  -containers @16@0:8  imp=+0x1a6b05238
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a6b05174
+  -encodedItems @16@0:8  imp=+0x1a6b0524c
+  -error @16@0:8  imp=+0x1a6b051ec
+  -firstItem @16@0:8  imp=+0x1a6b051e4
+  -initWithCode:items: @32@0:8q16@24  imp=+0x1a6b04a04
+  -initWithCoder: @24@0:8@16  imp=+0x1a6b04d78
+  -items @16@0:8  imp=+0x1a6b05224
+  -setCode: v24@0:8q16  imp=+0x1a6b0521c
+  -setContainers: v24@0:8@16  imp=+0x1a6b05244
+  -setEncodedItems: v24@0:8@16  imp=+0x1a6b05258
+  -setItems: v24@0:8@16  imp=+0x1a6b05230
+@class BTMItem : NSObject <NSCopying, NSSecureCoding> instanceSize=200
+  ivar +8 _type q
+  ivar +16 _flags q
+  ivar +24 _name @"NSString"
+  ivar +32 _developerName @"NSString"
+  ivar +40 _container @"BTMItem"
+  ivar +48 _embeddedItems @"NSSet"
+  ivar +56 _editable B
+  ivar +57 _canHide B
+  ivar +58 _isResolvedURLStale B
+  ivar +59 _hasGlobalDataType B
+  ivar +64 _uuid @"NSUUID"
+  ivar +72 _identifier @"NSString"
+  ivar +80 _url @"NSURL"
+  ivar +88 _modificationDate d
+  ivar +96 _sha256 @"NSData"
+  ivar +104 _executablePath @"NSString"
+  ivar +112 _executableModificationDate d
+  ivar +120 _programArguments @"NSArray"
+  ivar +128 _disposition q
+  ivar +136 _bundleIdentifier @"NSString"
+  ivar +144 _associatedBundleIdentifiers @"NSArray"
+  ivar +152 _bookmark @"NSData"
+  ivar +160 _teamIdentifier @"NSString"
+  ivar +168 _designatedRequirement @"NSString"
+  ivar +176 _lightweightRequirement @"NSData"
+  ivar +184 _lastUseDate @"NSDate"
+  ivar +192 _generation q
+  property isDaemon (TB,R)
+  property isUnknownDeveloper (TB,R)
+  property isUnknownDeveloperRecord (TB,R,N)
+  property uuid (T@"NSUUID",C,V_uuid)
+  property identifier (T@"NSString",C,V_identifier)
+  property generation (Tq,V_generation)
+  property flags (Tq)
+  property url (T@"NSURL",&,V_url)
+  property modificationDate (Td,V_modificationDate)
+  property sha256 (T@"NSData",C,V_sha256)
+  property executablePath (T@"NSString",C,V_executablePath)
+  property executableModificationDate (Td,V_executableModificationDate)
+  property programArguments (T@"NSArray",C,V_programArguments)
+  property name (T@"NSString",C)
+  property developerName (T@"NSString",C)
+  property editable (TB,GisEditable,V_editable)
+  property canHide (TB,V_canHide)
+  property bundleIdentifier (T@"NSString",C,V_bundleIdentifier)
+  property associatedBundleIdentifiers (T@"NSArray",C,V_associatedBundleIdentifiers)
+  property teamIdentifier (T@"NSString",C,V_teamIdentifier)
+  property bookmark (T@"NSData",C,V_bookmark)
+  property isResolvedURLStale (TB,V_isResolvedURLStale)
+  property lastUseDate (T@"NSDate",&,V_lastUseDate)
+  property container (T@"BTMItem",W)
+  property embeddedItems (T@"NSSet",C,V_embeddedItems)
+  property hasGlobalDataType (TB,R,V_hasGlobalDataType)
+  property sha256String (T@"NSString",R)
+  property localizedName (T@"NSString",R,C)
+  property disposition (Tq,V_disposition)
+  property aggregateAllowed (TB,GisAggregateAllowed)
+  property aggregateNotified (TB,GisAggregateNotified)
+  property pendingAuthorization (TB,GhasPendingAuthorization)
+  property type (Tq,R)
+  property baseIdentifier (T@"NSString",R)
+  property resolvedURL (T@"NSURL",R)
+  property fullPath (T@"NSString",R)
+  property designatedRequirement (T@"NSString",C,N,V_designatedRequirement)
+  property lightweightRequirement (T@"NSData",C,N,V_lightweightRequirement)
+  property iconURL (T@"NSURL",R)
+  property aggregateLastUseDate (T@"NSDate",R)
+  property dumpVerboseDescription (T@"NSString",R)
+  property containsDaemon (TB,R)
+  +baseItemFromItemRecord: @24@0:8@16  imp=+0x1a6b0ca18
+  +developerItemForItem: @24@0:8@16  imp=+0x1a6b0c7b4
+  +itemWithType:identifier: @32@0:8q16@24  imp=+0x1a6b0c4d4
+  +itemWithType:url: @32@0:8q16@24  imp=+0x1a6b0c544
+  +itemWithType:url:identifier: @40@0:8q16@24@32  imp=+0x1a6b0c5b4
+  +itemWithType:url:identifier:container: @48@0:8q16@24@32@40  imp=+0x1a6b0c64c
+  +legacyAgentOrDaemonItemWithType:URL:identifier:config:containerURL:uid: @60@0:8q16@24@32@40^@48I56  imp=+0x1a6b0c8ac
+  +supportsSecureCoding B16@0:8  imp=+0x1a6b0be94
+  -.cxx_destruct v16@0:8  imp=+0x1a6b11aec
+  -_appendToString:title:value:showNull: v44@0:8@16r*24@32B40  imp=+0x1a6b0ce44
+  -_initPropertiesWithURL:containerURL: v32@0:8@16@24  imp=+0x1a6b0bf68
+  -_setContainer: v24@0:8@16  imp=+0x1a6b10b08
+  -_setExecutableModificationDateFromURL: v24@0:8@16  imp=+0x1a6b0e21c
+  -_urlForBundleIdentifier: @24@0:8@16  imp=+0x1a6b0f734
+  -addEmbeddedItemsObject: v24@0:8@16  imp=+0x1a6b10fe4
+  -addedByDDM B16@0:8  imp=+0x1a6b11eec
+  -addedByProfile B16@0:8  imp=+0x1a6b11ec0
+  -aggregateLastUseDate @16@0:8  imp=+0x1a6b10e60
+  -alerted B16@0:8  imp=+0x1a6b1052c
+  -alertedCount q16@0:8  imp=+0x1a6b10558
+  -associatedBundleIdentifiers @16@0:8  imp=+0x1a6b11a38
+  -baseIdentifier @16@0:8  imp=+0x1a6b0df30
+  -bookmark @16@0:8  imp=+0x1a6b11a4c
+  -bundleIdentifier @16@0:8  imp=+0x1a6b11a24
+  -canHide B16@0:8  imp=+0x1a6b11a10
+  -container @16@0:8  imp=+0x1a6b10adc
+  -containsDaemon B16@0:8  imp=+0x1a6b10be0
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a6b0d4fc
+  -countOfEmbeddedItems Q16@0:8  imp=+0x1a6b10fcc
+  -description @16@0:8  imp=+0x1a6b0cd90
+  -designatedRequirement @16@0:8  imp=+0x1a6b11a88
+  -developerName @16@0:8  imp=+0x1a6b0e164
+  -disposition q16@0:8  imp=+0x1a6b119ec
+  -dumpVerboseDescription @16@0:8  imp=+0x1a6b0ce84
+  -effectiveDisposition q16@0:8  imp=+0x1a6b105a4
+  -embeddedItems @16@0:8  imp=+0x1a6b11abc
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a6b0d6fc
+  -enumerateFamilyTreeUsingBlock: v24@0:8@?16  imp=+0x1a6b113ec
+  -enumerateFamilyTreeWithOptions:block: v32@0:8q16@?24  imp=+0x1a6b11164
+  -enumeratorOfEmbeddedItems @16@0:8  imp=+0x1a6b10fd4
+  -executableModificationDate d16@0:8  imp=+0x1a6b119c8
+  -executableModificationDateMatchesFileSystem B16@0:8  imp=+0x1a6b1183c
+  -executablePath @16@0:8  imp=+0x1a6b119b4
+  -flags q16@0:8  imp=+0x1a6b10bd0
+  -fullPath @16@0:8  imp=+0x1a6b0febc
+  -generation q16@0:8  imp=+0x1a6b11ad0
+  -hasGlobalDataType B16@0:8  imp=+0x1a6b11ae0
+  -hasGlobalDataType B16@0:8  imp=+0x1a6b11c50
+  -hasPendingAuthorization B16@0:8  imp=+0x1a6b10578
+  -hash Q16@0:8  imp=+0x1a6b0ccf8
+  -iconURL @16@0:8  imp=+0x1a6b0f7c8
+  -identifier @16@0:8  imp=+0x1a6b11968
+  -includesType: B24@0:8q16  imp=+0x1a6b10ba8
+  -initWithCoder: @24@0:8@16  imp=+0x1a6b0d97c
+  -initWithType:identifier: @32@0:8q16@24  imp=+0x1a6b0be9c
+  -initWithType:url: @32@0:8q16@24  imp=+0x1a6b0c244
+  -intersectEmbeddedItems: v24@0:8@16  imp=+0x1a6b110e4
+  -intersectsType: B24@0:8q16  imp=+0x1a6b10b98
+  -intersectsType:andIncludesType: B32@0:8q16q24  imp=+0x1a6b10bb8
+  -isAggregateAllowed B16@0:8  imp=+0x1a6b100e0
+  -isAggregateManaged B16@0:8  imp=+0x1a6b11cc8
+  -isAggregateNotified B16@0:8  imp=+0x1a6b10334
+  -isAllowed B16@0:8  imp=+0x1a6b100b4
+  -isCurated B16@0:8  imp=+0x1a6b11c70
+  -isDaemon B16@0:8  imp=+0x1a6b11be0
+  -isEditable B16@0:8  imp=+0x1a6b119fc
+  -isEnabled B16@0:8  imp=+0x1a6b10090
+  -isEqual: B24@0:8@16  imp=+0x1a6b0cd00
+  -isGlobal B16@0:8  imp=+0x1a6b11f18
+  -isHidden B16@0:8  imp=+0x1a6b102dc
+  -isLegacy B16@0:8  imp=+0x1a6b11c64
+  -isManaged B16@0:8  imp=+0x1a6b11c9c
+  -isResolvedURLStale B16@0:8  imp=+0x1a6b11a60
+  -isSandboxed B16@0:8  imp=+0x1a6b11f44
+  -isType: B24@0:8q16  imp=+0x1a6b10b84
+  -isUnknownDeveloper B16@0:8  imp=+0x1a6b11bec
+  -isUnknownDeveloperRecord B16@0:8  imp=+0x1a6b11c30
+  -lastUseDate @16@0:8  imp=+0x1a6b11aa8
+  -lightweightRequirement @16@0:8  imp=+0x1a6b11a98
+  -localizedName @16@0:8  imp=+0x1a6b0dfe8
+  -matchesType: B24@0:8q16  imp=+0x1a6b10b94
+  -memberOfEmbeddedItems: @24@0:8@16  imp=+0x1a6b10fdc
+  -modificationDate d16@0:8  imp=+0x1a6b11990
+  -modificationDateMatchesFileSystem B16@0:8  imp=+0x1a6b1176c
+  -name @16@0:8  imp=+0x1a6b0decc
+  -notified B16@0:8  imp=+0x1a6b10308
+  -programArguments @16@0:8  imp=+0x1a6b119d8
+  -removeEmbeddedItemsObject: v24@0:8@16  imp=+0x1a6b11064
+  -resolvedURL @16@0:8  imp=+0x1a6b0fd9c
+  -setAddedByDDM: v20@0:8B16  imp=+0x1a6b11ef8
+  -setAddedByProfile: v20@0:8B16  imp=+0x1a6b11ecc
+  -setAggregateAllowed: v20@0:8B16  imp=+0x1a6b101e4
+  -setAggregateManaged: v20@0:8B16  imp=+0x1a6b11dc8
+  -setAggregateNotified: v20@0:8B16  imp=+0x1a6b10434
+  -setAlerted: v20@0:8B16  imp=+0x1a6b10538
+  -setAlertedCount: v24@0:8q16  imp=+0x1a6b10564
+  -setAllowed: v20@0:8B16  imp=+0x1a6b100c0
+  -setAssociatedBundleIdentifiers: v24@0:8@16  imp=+0x1a6b11a44
+  -setBookmark: v24@0:8@16  imp=+0x1a6b11a58
+  -setBundleIdentifier: v24@0:8@16  imp=+0x1a6b11a30
+  -setCanHide: v20@0:8B16  imp=+0x1a6b11a1c
+  -setContainer: v24@0:8@16  imp=+0x1a6b10a1c
+  -setCurated: v20@0:8B16  imp=+0x1a6b11c7c
+  -setDesignatedRequirement: v24@0:8@16  imp=+0x1a6b11a90
+  -setDeveloperName: v24@0:8@16  imp=+0x1a6b0e1ac
+  -setDisposition: v24@0:8q16  imp=+0x1a6b119f4
+  -setEditable: v20@0:8B16  imp=+0x1a6b11a08
+  -setEmbeddedItems: v24@0:8@16  imp=+0x1a6b11ac8
+  -setEnabled: v20@0:8B16  imp=+0x1a6b1009c
+  -setExecutableModificationDate: v24@0:8d16  imp=+0x1a6b119d0
+  -setExecutablePath: v24@0:8@16  imp=+0x1a6b119c0
+  -setExecutablePathFromLauncherTargetWithConfig: B24@0:8@16  imp=+0x1a6b0ef50
+  -setFlags: v24@0:8q16  imp=+0x1a6b10bd8
+  -setGeneration: v24@0:8q16  imp=+0x1a6b11ad8
+  -setGlobal: v20@0:8B16  imp=+0x1a6b11f24
+  -setHidden: v20@0:8B16  imp=+0x1a6b102e8
+  -setIdentifier: v24@0:8@16  imp=+0x1a6b11974
+  -setIsResolvedURLStale: v20@0:8B16  imp=+0x1a6b11a6c
+  -setLastUseDate: v24@0:8@16  imp=+0x1a6b11ab4
+  -setLightweightRequirement: v24@0:8@16  imp=+0x1a6b11aa0
+  -setManaged: v20@0:8B16  imp=+0x1a6b11ca8
+  -setModificationDate: v24@0:8d16  imp=+0x1a6b11998
+  -setName: v24@0:8@16  imp=+0x1a6b0ded4
+  -setNotified: v20@0:8B16  imp=+0x1a6b10314
+  -setPendingAuthorization: v20@0:8B16  imp=+0x1a6b10584
+  -setProgramArguments: v24@0:8@16  imp=+0x1a6b119e4
+  -setPropertiesWithBTMConfig: @24@0:8@16  imp=+0x1a6b0e278
+  -setSandboxed: v20@0:8B16  imp=+0x1a6b11f50
+  -setSha256: v24@0:8@16  imp=+0x1a6b119ac
+  -setTeamIdentifier: v24@0:8@16  imp=+0x1a6b11a80
+  -setType: v24@0:8q16  imp=+0x1a6b10b0c
+  -setUrl: v24@0:8@16  imp=+0x1a6b11988
+  -setUuid: v24@0:8@16  imp=+0x1a6b11960
+  -sha256 @16@0:8  imp=+0x1a6b119a0
+  -sha256String @16@0:8  imp=+0x1a6b10ce0
+  -syncURLAndBookmark B16@0:8  imp=+0x1a6b113f8
+  -teamIdentifier @16@0:8  imp=+0x1a6b11a74
+  -type q16@0:8  imp=+0x1a6b10b7c
+  -url @16@0:8  imp=+0x1a6b1197c
+  -uuid @16@0:8  imp=+0x1a6b11954
+@class BTMList : NSObject <NSSecureCoding> instanceSize=56
+  ivar +8 _manager @"BTMManager"
+  ivar +16 _containers @"NSSet"
+  ivar +24 _observersLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +28 _uid I
+  ivar +32 _type q
+  ivar +40 _items @"NSArray"
+  ivar +48 _observers @"NSMutableSet"
+  property items (T@"NSArray",&,V_items)
+  property observers (T@"NSMutableSet",R,V_observers)
+  property uid (TI,V_uid)
+  property type (Tq,R,V_type)
+  +supportsSecureCoding B16@0:8  imp=+0x1a6b08444
+  -.cxx_destruct v16@0:8  imp=+0x1a6b085e8
+  -addItem:error: B32@0:8@16^@24  imp=+0x1a6b07e84
+  -addListObserver: v24@0:8@16  imp=+0x1a6b08314
+  -containsItem: B24@0:8@16  imp=+0x1a6b07e7c
+  -description @16@0:8  imp=+0x1a6b07dc8
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a6b0852c
+  -indexOfItem: Q24@0:8@16  imp=+0x1a6b07e74
+  -init @16@0:8  imp=+0x1a6b07acc
+  -initWithCoder: @24@0:8@16  imp=+0x1a6b0844c
+  -initWithItems:uid:type: @36@0:8@16I24q28  imp=+0x1a6b07b3c
+  -initWithItems:uid:type:manager: @44@0:8@16I24q28@36  imp=+0x1a6b07bc8
+  -itemAtIndex: @24@0:8Q16  imp=+0x1a6b07e6c
+  -items @16@0:8  imp=+0x1a6b085c8
+  -observers @16@0:8  imp=+0x1a6b085dc
+  -refresh B16@0:8  imp=+0x1a6b08274
+  -refreshWithError: B24@0:8^@16  imp=+0x1a6b08164
+  -removeItem:error: B32@0:8@16^@24  imp=+0x1a6b07f3c
+  -removeListObserver: v24@0:8@16  imp=+0x1a6b083ac
+  -setItems: v24@0:8@16  imp=+0x1a6b085d4
+  -setUid: v20@0:8I16  imp=+0x1a6b085b8
+  -type q16@0:8  imp=+0x1a6b085c0
+  -uid I16@0:8  imp=+0x1a6b085b0
+  -updateItem:error: B32@0:8@16^@24  imp=+0x1a6b07ff4
+  -updateItems:error: B32@0:8@16^@24  imp=+0x1a6b080ac
+@class BTMLoginItem : NSObject <NSSecureCoding> instanceSize=48
+  ivar +8 _hidden B
+  ivar +16 _identifier @"NSUUID"
+  ivar +24 _bookmark @"NSData"
+  ivar +32 _installerBookmark @"NSData"
+  ivar +40 _type Q
+  property type (TQ,V_type)
+  property installerBookmark (T@"NSData",&,V_installerBookmark)
+  property identifier (T@"NSUUID",R,V_identifier)
+  property bookmark (T@"NSData",R,V_bookmark)
+  property name (T@"NSString",R)
+  property hidden (TB,V_hidden)
+  +supportsSecureCoding B16@0:8  imp=+0x1a6b127e8
+  -.cxx_destruct v16@0:8  imp=+0x1a6b12f28
+  -bookmark @16@0:8  imp=+0x1a6b12ee4
+  -description @16@0:8  imp=+0x1a6b12e0c
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a6b12bb8
+  -getURLByResolvingBookmarkCompletion: v24@0:8@?16  imp=+0x1a6b08798
+  -hash Q16@0:8  imp=+0x1a6b12e04
+  -hidden B16@0:8  imp=+0x1a6b12f14
+  -identifier @16@0:8  imp=+0x1a6b12ed8
+  -initWithBookmark:hidden: @28@0:8@16B24  imp=+0x1a6b086bc
+  -initWithCoder: @24@0:8@16  imp=+0x1a6b12a74
+  -initWithType:identifier:bookmark: @40@0:8Q16@24@32  imp=+0x1a6b129b8
+  -initWithType:identifier:bookmark:hidden: @44@0:8Q16@24@32B40  imp=+0x1a6b129c0
+  -initWithURL: @24@0:8@16  imp=+0x1a6b127f0
+  -initWithURL:hidden: @28@0:8@16B24  imp=+0x1a6b127f8
+  -installerBookmark @16@0:8  imp=+0x1a6b12ef0
+  -isEqual: B24@0:8@16  imp=+0x1a6b12d88
+  -isEqualToLoginItem: B24@0:8@16  imp=+0x1a6b12cb4
+  -isIdenticalToLoginItem: B24@0:8@16  imp=+0x1a6b08830
+  -name @16@0:8  imp=+0x1a6b12c64
+  -setHidden: v20@0:8B16  imp=+0x1a6b12f20
+  -setInstallerBookmark: v24@0:8@16  imp=+0x1a6b12efc
+  -setType: v24@0:8Q16  imp=+0x1a6b12f0c
+  -type Q16@0:8  imp=+0x1a6b12f04
+@class BTMLoginItemController : NSObject instanceSize=40
+  ivar +8 _delegate @"<BTMLoginItemControllerDelegate>"
+  ivar +16 _internalItems @"NSSet"
+  ivar +24 _typeMask Q
+  ivar +32 _internalQueue @"NSObject<OS_dispatch_queue>"
+  property internalItems (T@"NSSet",&,V_internalItems)
+  property typeMask (TQ,R,V_typeMask)
+  property internalQueue (T@"NSObject<OS_dispatch_queue>",R,V_internalQueue)
+  property delegate (T@"<BTMLoginItemControllerDelegate>",R,W,V_delegate)
+  property items (T@"NSSet",R)
+  -.cxx_destruct v16@0:8  imp=+0x1a6b0a0d4
+  -_notifyDidChangeItems v16@0:8  imp=+0x1a6b09f58
+  -_setLoginItems: v24@0:8@16  imp=+0x1a6b09ed4
+  -addLoginItem: v24@0:8@16  imp=+0x1a6b0993c
+  -dealloc v16@0:8  imp=+0x1a6b098c4
+  -delegate @16@0:8  imp=+0x1a6b0a080
+  -fetchLoginItems v16@0:8  imp=+0x1a6b09d08
+  -handleLoginItemsChangeNotification: v24@0:8@16  imp=+0x1a6b09c54
+  -initWithTypeMask:delegate: @32@0:8Q16@24  imp=+0x1a6b09760
+  -internalItems @16@0:8  imp=+0x1a6b0a0ac
+  -internalQueue @16@0:8  imp=+0x1a6b0a0c8
+  -items @16@0:8  imp=+0x1a6b09afc
+  -removeLoginItem: v24@0:8@16  imp=+0x1a6b09a1c
+  -setInternalItems: v24@0:8@16  imp=+0x1a6b0a0b8
+  -typeMask Q16@0:8  imp=+0x1a6b0a0c0
+@class BTMManager : NSObject <BTMForceQuitHandlerClient> instanceSize=48
+  ivar +8 _mode q
+  ivar +16 _lists @"NSHashTable"
+  ivar +24 _listsLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +32 _forceQuitHandler @"<BTMForceQuitHandler>"
+  ivar +40 _connection @"NSXPCConnection"
+  property connection (T@"NSXPCConnection",R,V_connection)
+  property UIDs (T@"NSArray",R)
+  +shared @16@0:8  imp=+0x1a6b133dc
+  +sharedSFLManager @16@0:8  imp=+0x1a6b134c0
+  -.cxx_destruct v16@0:8  imp=+0x1a6b1e218
+  -UIDs @16@0:8  imp=+0x1a6b1846c
+  -_canLaunchItemWithAppURL:type:relativeURL:configuration:uid:canLaunch:error: v68@0:8@16q24@32@40I48^B52^@60  imp=+0x1a6b14cec
+  -_getItemsMatching:uid:error: @36@0:8q16I24^@28  imp=+0x1a6b199a0
+  -addItem:uid:error: B36@0:8@16I24^@28  imp=+0x1a6b18698
+  -addSFLItemWithURL:type:global:managed:error: @48@0:8@16q24B32B36^@40  imp=+0x1a6b1adcc
+  -addUserItemForURL:error: @32@0:8@16^@24  imp=+0x1a6b1a670
+  -addUserItemForURL:uid:error: @36@0:8@16I24^@28  imp=+0x1a6b19ee8
+  -canLaunchItemWithAppURL:type:relativeURL:configuration: B48@0:8@16q24@32@40  imp=+0x1a6b15050
+  -checkBackgroundAppRefreshAllowedForAppURL:shouldNotify:uid:allowed: q40@0:8@16B24I28^B32  imp=+0x1a6b17230
+  -checkBackgroundAppRefreshAllowedForAppURL:shouldRegister:uid:allowed: q40@0:8@16B24I28^B32  imp=+0x1a6b1724c
+  -checkBackgroundTasksAllowedForAppURL:ASN:shouldRegister:promptType:allowed: q52@0:8@16^{__LSASN=}24B32q36^B44  imp=+0x1a6b179fc
+  -checkTasksAllowedInBackgroundForAppURL:shouldRegister:allowed: q36@0:8@16B24^B28  imp=+0x1a6b17cec
+  -connection @16@0:8  imp=+0x1a6b1e20c
+  -dumpDatabaseWithAuthorization:error: @32@0:8@16^@24  imp=+0x1a6b1d040
+  -eraseDatabaseWithAuthorization:error: B32@0:8@16^@24  imp=+0x1a6b1d378
+  -fetchItemWithAppURL:type:relativeURL:configuration:uid: @52@0:8@16q24@32@40I48  imp=+0x1a6b15ff8
+  -fetchItemWithUUID:uid:error: @36@0:8@16I24^@28  imp=+0x1a6b19570
+  -fetchSFLItemsMatching:error: @32@0:8q16^@24  imp=+0x1a6b1aa34
+  -forceQuitAppWithURL: v24@0:8@16  imp=+0x1a6b18378
+  -getAlwaysPostNotifications: B24@0:8^B16  imp=+0x1a6b1d8ac
+  -getEffectiveDisposition:andLWCR:forAppURL:type:relativeURL:configuration:uid: B68@0:8^q16^@24@32q40@48@56I64  imp=+0x1a6b15524
+  -getEffectiveDisposition:andLWCR:withAuditToken:type:relativeURL:configuration:uid: B68@0:8^q16^@24^{?=[8I]}32q40@48@56I64  imp=+0x1a6b15a98
+  -getItemDisposition:withAppURL:type:relativeURL:configuration:uid: B60@0:8^q16@24q32@40@48I56  imp=+0x1a6b15168
+  -getItemWithIdentifier:uid:error: @36@0:8@16I24^@28  imp=+0x1a6b19254
+  -getItemsMatching:error: @32@0:8q16^@24  imp=+0x1a6b19e94
+  -getItemsMatching:uid:error: @36@0:8q16I24^@28  imp=+0x1a6b19de4
+  -getTasksAllowedInBackground:appURL: q32@0:8^B16@24  imp=+0x1a6b1775c
+  -handleNotificationResponseWithIdentifier:action: v32@0:8@16@24  imp=+0x1a6b1e178
+  -handleUserDataDidChangeNotification: v24@0:8@16  imp=+0x1a6b1db34
+  -importSFLLoginItemsAndDeleteWhenDone: B20@0:8B16  imp=+0x1a6b1bb9c
+  -initWithMode: @24@0:8q16  imp=+0x1a6b135a4
+  -invalidateLaunchItemWithBundleURL:type:itemURL:configuration:uid: @52@0:8@16q24@32@40I48  imp=+0x1a6b149f4
+  -launchdDidScanPath: v24@0:8@16  imp=+0x1a6b13d9c
+  -launchdWillScanPath: v24@0:8@16  imp=+0x1a6b13c98
+  -mdmPayloadForIdentifier: @24@0:8@16  imp=+0x1a6b1bba4
+  -noteLogoutForUID: v20@0:8I16  imp=+0x1a6b1cc5c
+  -noteUseOfItemWithIdentifier:uid: v28@0:8@16I24  imp=+0x1a6b1a834
+  -noteUseOfItemWithURL:relativeToURL:type:configuration:uid: v52@0:8@16@24q32@40I48  imp=+0x1a6b1a6e4
+  -noteUseOfItemWithUUID:uid: v28@0:8@16I24  imp=+0x1a6b1a934
+  -openLoginItemsWithCompletion: v24@0:8@?16  imp=+0x1a6b16554
+  -promptUserToAlwaysAllowQuittingASN: q24@0:8^{__LSASN=}16  imp=+0x1a6b17f4c
+  -promptUserToAlwaysAllowQuittingURL: q24@0:8@16  imp=+0x1a6b17d00
+  -refreshManagedItems v16@0:8  imp=+0x1a6b1c044
+  -registerForceQuitHandler: B24@0:8@16  imp=+0x1a6b18188
+  -registerItem:withAuditToken:type:relativeURL:configuration:uid: q60@0:8^@16^{?=[8I]}24q32@40@48I56  imp=+0x1a6b165b8
+  -registerItem:withBundleURL:type:relativeURL:configuration:uid: q60@0:8^@16@24q32@40@48I56  imp=+0x1a6b168f0
+  -registerLaunchItemWithAuditToken:type:relativeURL:configuration: B48@0:8^{?=[8I]}16q24@32@40  imp=+0x1a6b143f4
+  -registerLaunchItemWithAuditToken:type:relativeURL:configuration:uid: B52@0:8^{?=[8I]}16q24@32@40I48  imp=+0x1a6b14154
+  -registerLaunchItemWithBundleURL:type:relativeURL:configuration:uid: B52@0:8@16q24@32@40I48  imp=+0x1a6b13ea0
+  -removeItem:uid:error: B36@0:8@16I24^@28  imp=+0x1a6b18a1c
+  -removeManagedJobAtPath:error: B32@0:8@16^@24  imp=+0x1a6b1c394
+  -removeManagedJobWithLabel:error: B32@0:8@16^@24  imp=+0x1a6b1c6e0
+  -removeSFLItem:error: B32@0:8@16^@24  imp=+0x1a6b1b7a8
+  -removeUserWithIdentifier: q24@0:8@16  imp=+0x1a6b1cdfc
+  -saveUserSettings: B24@0:8@16  imp=+0x1a6b13a10
+  -scheduleGarbageCollection B16@0:8  imp=+0x1a6b17050
+  -setAlwaysPostNotifications: B20@0:8B16  imp=+0x1a6b1d660
+  -setMDMPayload:identifier: v32@0:8@16@24  imp=+0x1a6b1c03c
+  -setMDMPayload:identifier:updateImmediately: v36@0:8@16@24B32  imp=+0x1a6b1be0c
+  -setTasksAllowedInBackground:forAppURL: B28@0:8B16@20  imp=+0x1a6b174f8
+  -submitManagedJobAtPath:error: B32@0:8@16^@24  imp=+0x1a6b1c048
+  -unregisterItemWithAuditToken:type:relativeURL:uid: q44@0:8^{?=[8I]}16q24@32I40  imp=+0x1a6b16bf4
+  -unregisterItemWithBundleURL:type:relativeURL:uid: q44@0:8@16q24@32I40  imp=+0x1a6b16e18
+  -unregisterLaunchItemWithAuditToken:type:relativeURL: B40@0:8^{?=[8I]}16q24@32  imp=+0x1a6b1498c
+  -unregisterLaunchItemWithAuditToken:type:relativeURL:uid: B44@0:8^{?=[8I]}16q24@32I40  imp=+0x1a6b14710
+  -unregisterLaunchItemWithBundleURL:type:relativeURL:uid: B44@0:8@16q24@32I40  imp=+0x1a6b14480
+  -updateItem:uid:error: B36@0:8@16I24^@28  imp=+0x1a6b18ce8
+  -updateItems:uid:error: B36@0:8@16I24^@28  imp=+0x1a6b18dcc
+  -updateSFLItem:error: B32@0:8@16^@24  imp=+0x1a6b1b368
+  -userIdentifiersAndUIDs @16@0:8  imp=+0x1a6b1ca38
+  -userSettingsForUID: @20@0:8I16  imp=+0x1a6b13744
+@class BTMRegistrar : NSObject instanceSize=24
+  ivar +8 _UIDs @"NSArray"
+  ivar +16 _connection @"NSXPCConnection"
+  property connection (T@"NSXPCConnection",R,V_connection)
+  property UIDs (T@"NSArray",R,V_UIDs)
+  +shared @16@0:8  imp=+0x1a6b05318
+  -.cxx_destruct v16@0:8  imp=+0x1a6b069d0
+  -UIDs @16@0:8  imp=+0x1a6b069b8
+  -checkBackgroundAppRefreshAllowedForAppURL:shouldRegister:uid:allowed: q40@0:8@16B24I28^B32  imp=+0x1a6b06678
+  -connection @16@0:8  imp=+0x1a6b069c4
+  -fetchItemWithAppURL:type:relativeURL:configuration:uid: @52@0:8@16q24@32@40I48  imp=+0x1a6b062ec
+  -getEffectiveDisposition:andLWCR:forAppURL:type:relativeURL:configuration:uid: B68@0:8^q16^@24@32q40@48@56I64  imp=+0x1a6b05cac
+  -init @16@0:8  imp=+0x1a6b053f4
+  -registerItem:withAuditToken:type:relativeURL:configuration:uid: q60@0:8^@16^{?=[8I]}24q32@40@48I56  imp=+0x1a6b058cc
+  -registerItem:withBundleURL:type:relativeURL:configuration:uid: q60@0:8^@16@24q32@40@48I56  imp=+0x1a6b054a4
+@class BTMUserSettings : NSObject <NSCopying, NSSecureCoding> instanceSize=40
+  ivar +8 _serviceManagementLoginItemsMigrated B
+  ivar +9 _launchServicesItemsImported B
+  ivar +12 _uid I
+  ivar +16 _backgroundAppRefreshLoadCount q
+  ivar +24 _generation q
+  ivar +32 _enablementStatusByIdentifier @"NSMutableDictionary"
+  property uid (TI,N,V_uid)
+  property generation (Tq,V_generation)
+  property enablementStatusByIdentifier (T@"NSMutableDictionary",&,N,V_enablementStatusByIdentifier)
+  property serviceManagementLoginItemsMigrated (TB,N,V_serviceManagementLoginItemsMigrated)
+  property launchServicesItemsImported (TB,N,V_launchServicesItemsImported)
+  property backgroundAppRefreshLoadCount (Tq,R,V_backgroundAppRefreshLoadCount)
+  +supportsSecureCoding B16@0:8  imp=+0x1a6b06abc
+  -.cxx_destruct v16@0:8  imp=+0x1a6b06dd0
+  -backgroundAppRefreshLoadCount q16@0:8  imp=+0x1a6b06d94
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a6b06cfc
+  -enablementStatusByIdentifier @16@0:8  imp=+0x1a6b06dbc
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a6b06c50
+  -generation q16@0:8  imp=+0x1a6b06dac
+  -init @16@0:8  imp=+0x1a6b06ac4
+  -initWithCoder: @24@0:8@16  imp=+0x1a6b06b2c
+  -launchServicesItemsImported B16@0:8  imp=+0x1a6b06d84
+  -serviceManagementLoginItemsMigrated B16@0:8  imp=+0x1a6b06d74
+  -setEnablementStatusByIdentifier: v24@0:8@16  imp=+0x1a6b06dc4
+  -setGeneration: v24@0:8q16  imp=+0x1a6b06db4
+  -setLaunchServicesItemsImported: v20@0:8B16  imp=+0x1a6b06d8c
+  -setServiceManagementLoginItemsMigrated: v20@0:8B16  imp=+0x1a6b06d7c
+  -setUid: v20@0:8I16  imp=+0x1a6b06da4
+  -uid I16@0:8  imp=+0x1a6b06d9c

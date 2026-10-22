@@ -1,0 +1,1207 @@
+@class UABestAppSuggestion : NSObject <NSSecureCoding> instanceSize=112
+  ivar +8 _isActive B
+  ivar +16 _type Q
+  ivar +24 _uniqueIdentifier @"NSUUID"
+  ivar +32 _options @"NSDictionary"
+  ivar +40 _bundleIdentifier @"NSString"
+  ivar +48 _activityType @"NSString"
+  ivar +56 _dynamicIdentifier @"NSString"
+  ivar +64 _lastUpdateTime @"NSDate"
+  ivar +72 _confidence d
+  ivar +80 _originatingDeviceIdentifier @"NSString"
+  ivar +88 _originatingDeviceName @"NSString"
+  ivar +96 _originatingDeviceType @"NSString"
+  ivar +104 _lastActiveTime @"NSDate"
+  property userActivityTypeIdentifier (T@"NSString",R,C,D)
+  property uniqueIdentifier (T@"NSUUID",C,V_uniqueIdentifier)
+  property activityType (T@"NSString",C,V_activityType)
+  property type (TQ,R,V_type)
+  property bundleIdentifier (T@"NSString",R,C,V_bundleIdentifier)
+  property dynamicIdentifier (T@"NSString",R,C,V_dynamicIdentifier)
+  property lastUpdateTime (T@"NSDate",R,C,V_lastUpdateTime)
+  property lastActiveTime (T@"NSDate",R,C,V_lastActiveTime)
+  property when (T@"NSDate",R,C,D)
+  property options (T@"NSDictionary",R,C,V_options)
+  property confidence (Td,R,V_confidence)
+  property originatingDeviceIdentifier (T@"NSString",R,C,V_originatingDeviceIdentifier)
+  property originatingDeviceName (T@"NSString",R,C,V_originatingDeviceName)
+  property originatingDeviceType (T@"NSString",R,C,V_originatingDeviceType)
+  property isActive (TB,R,V_isActive)
+  +supportsSecureCoding B16@0:8  imp=+0x1aa645b50
+  -.cxx_destruct v16@0:8  imp=+0x1aa612cec
+  -activityType @16@0:8  imp=+0x1aa612bf0
+  -bundleIdentifier @16@0:8  imp=+0x1aa612be4
+  -confidence d16@0:8  imp=+0x1aa6461d8
+  -debugDescription @16@0:8  imp=+0x1aa645c10
+  -description @16@0:8  imp=+0x1aa645b58
+  -dynamicIdentifier @16@0:8  imp=+0x1aa6461c0
+  -encodeWithCoder: v24@0:8@16  imp=+0x1aa645fc0
+  -hash Q16@0:8  imp=+0x1aa645d7c
+  -initWithBundleIdentifier:uuid:activityType:dynamicIdentifier:lastUpdateTime:lastActiveTime:type:deviceName:deviceIdentifier:deviceType:options:isActive: @108@0:8@16@24@32@40@48@56Q64@72@80@88@96B104  imp=+0x1aa612874
+  -initWithCoder: @24@0:8@16  imp=+0x1aa645d84
+  -isActive B16@0:8  imp=+0x1aa646210
+  -isEqual: B24@0:8@16  imp=+0x1aa612b04
+  -lastActiveTime @16@0:8  imp=+0x1aa646204
+  -lastUpdateTime @16@0:8  imp=+0x1aa6461cc
+  -options @16@0:8  imp=+0x1aa612bfc
+  -originatingDeviceIdentifier @16@0:8  imp=+0x1aa6461e0
+  -originatingDeviceName @16@0:8  imp=+0x1aa6461ec
+  -originatingDeviceType @16@0:8  imp=+0x1aa6461f8
+  -setActivityType: v24@0:8@16  imp=+0x1aa6461b8
+  -setUniqueIdentifier: v24@0:8@16  imp=+0x1aa6461b0
+  -type Q16@0:8  imp=+0x1aa612bd0
+  -uniqueIdentifier @16@0:8  imp=+0x1aa612bd8
+  -userActivityTypeIdentifier @16@0:8  imp=+0x1aa64621c
+  -when @16@0:8  imp=+0x1aa612c08
+@class UABestAppSuggestionManager : NSObject <UABestAppSuggestionManagerResponseProtocol> instanceSize=48
+  ivar +8 _delegate @"<UABestAppSuggestionManagerDelegate>"
+  ivar +16 _listeningForBestAppSuggestions B
+  ivar +20 _bestAppNotificationCount i
+  ivar +24 _lastBestAppSuggestion @"UABestAppSuggestion"
+  ivar +32 _connection @"NSXPCConnection"
+  ivar +40 _proxyManager @"UABestAppSuggestionManagerProxy"
+  property connection (T@"NSXPCConnection",&,V_connection)
+  property proxyManager (T@"UABestAppSuggestionManagerProxy",&,V_proxyManager)
+  property delegate (T@"<UABestAppSuggestionManagerDelegate>",W,V_delegate)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1aa6457b4
+  -bestAppSuggestion @16@0:8  imp=+0x1aa643b9c
+  -bestAppSuggestionLaunchWasCancelled: v24@0:8@16  imp=+0x1aa644a80
+  -bestAppSuggestionWasLaunched:withInteractionType: v32@0:8@16Q24  imp=+0x1aa6449d4
+  -bestAppSuggestions: @24@0:8q16  imp=+0x1aa643d20
+  -connection @16@0:8  imp=+0x1aa610e60
+  -createAppSuggestionFromActivityInfo:atTime: @32@0:8@16@24  imp=+0x1aa612680
+  -dealloc v16@0:8  imp=+0x1aa6435e0
+  -delegate @16@0:8  imp=+0x1aa610e6c
+  -determineBestAppWithDelay:withBlock: B32@0:8d16@?24  imp=+0x1aa643c00
+  -fetchAllNearbyAppSuggestions B16@0:8  imp=+0x1aa644454
+  -init @16@0:8  imp=+0x1aa610848
+  -invalidate v16@0:8  imp=+0x1aa643994
+  -isActivityInfo:atTime:similarToAppSuggestion: B40@0:8@16@24@32  imp=+0x1aa61234c
+  -launchAppWithBestAppSuggestion: v24@0:8@16  imp=+0x1aa6454e4
+  -launchAppWithBundleIdentifier:taskContinuationIdentifier: v32@0:8@16@24  imp=+0x1aa644c70
+  -launchAppWithBundleIdentifier:userActivityUniqueIdentifier:userActivityTypeIdentifier: v40@0:8@16@24@32  imp=+0x1aa6454d4
+  -launchAppWithBundleIdentifier:userActivityUniqueIdentifier:userActivityTypeIdentifier:deviceName:deviceIdentifier:deviceType: v64@0:8@16@24@32@40@48@56  imp=+0x1aa644d44
+  -notifyBestAppsChanged:when:confidence: v40@0:8@16@24d32  imp=+0x1aa610e98
+  -proxyManager @16@0:8  imp=+0x1aa6457a0
+  -queueFetchOfPayloadForBestAppSuggestion: v24@0:8@16  imp=+0x1aa6446f0
+  -removeBestApp:options: v32@0:8@16@24  imp=+0x1aa643838
+  -removeBestAppByUUID:options: v32@0:8@16@24  imp=+0x1aa64364c
+  -setConnection: v24@0:8@16  imp=+0x1aa645798
+  -setDelegate: v24@0:8@16  imp=+0x1aa610cf0
+  -setProxyManager: v24@0:8@16  imp=+0x1aa6457ac
+  -startListeningForBestAppSuggestions v16@0:8  imp=+0x1aa610cfc
+  -stopListeningForBestAppSuggestions v16@0:8  imp=+0x1aa612c10
+  -targetAEDescForBundleIdentifierIfRunning:sendBringForward: @28@0:8@16B24  imp=+0x1aa644b28
+@class UABestAppSuggestionManagerProxy : NSObject <UABestAppSuggestionManagerResponseProtocol> instanceSize=16
+  ivar +8 _weakManager @"UABestAppSuggestionManager"
+  property weakManager (T@"UABestAppSuggestionManager",W,V_weakManager)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1aa6458d8
+  -notifyBestAppsChanged:when:confidence: v40@0:8@16@24d32  imp=+0x1aa64580c
+  -setWeakManager: v24@0:8@16  imp=+0x1aa6458cc
+  -weakManager @16@0:8  imp=+0x1aa6458a0
+@class UAFileChunkInputStream : NSInputStream instanceSize=184
+  ivar +136 _file @"NSFileHandle"
+  ivar +144 _chunkOffset @"NSNumber"
+  ivar +152 _chunkSize q
+  ivar +160 _currentOffset @"NSNumber"
+  ivar +168 _readSize q
+  ivar +176 _status Q
+  property file (T@"NSFileHandle",&,V_file)
+  property chunkOffset (T@"NSNumber",&,V_chunkOffset)
+  property chunkSize (Tq,V_chunkSize)
+  property currentOffset (T@"NSNumber",&,V_currentOffset)
+  property readSize (Tq,V_readSize)
+  property status (TQ,V_status)
+  -.cxx_destruct v16@0:8  imp=+0x1aa638560
+  -chunkOffset @16@0:8  imp=+0x1aa6384b0
+  -chunkSize q16@0:8  imp=+0x1aa6384cc
+  -close v16@0:8  imp=+0x1aa638480
+  -currentOffset @16@0:8  imp=+0x1aa6384f4
+  -file @16@0:8  imp=+0x1aa638494
+  -getBuffer:length: B32@0:8^*16^Q24  imp=+0x1aa638418
+  -hasBytesAvailable B16@0:8  imp=+0x1aa638118
+  -initWithFileHandle:offsetInFile:size: @40@0:8@16@24q32  imp=+0x1aa638048
+  -open v16@0:8  imp=+0x1aa638430
+  -propertyForKey: @24@0:8@16  imp=+0x1aa638420
+  -read:maxLength: q32@0:8*16Q24  imp=+0x1aa63816c
+  -readSize q16@0:8  imp=+0x1aa638510
+  -setChunkOffset: v24@0:8@16  imp=+0x1aa6384c0
+  -setChunkSize: v24@0:8q16  imp=+0x1aa6384e0
+  -setCurrentOffset: v24@0:8@16  imp=+0x1aa638504
+  -setFile: v24@0:8@16  imp=+0x1aa6384a4
+  -setProperty:forKey: B32@0:8@16@24  imp=+0x1aa638428
+  -setReadSize: v24@0:8q16  imp=+0x1aa638524
+  -setStatus: v24@0:8Q16  imp=+0x1aa63854c
+  -status Q16@0:8  imp=+0x1aa638538
+  -streamError @16@0:8  imp=+0x1aa63848c
+  -streamStatus Q16@0:8  imp=+0x1aa638488
+@class UAPBIRFileURLConverter : NSObject <UAPBIRConverter> instanceSize=8
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +registerConverter v16@0:8  imp=+0x1aa6430a0
+  -convertIRDataToPlatform: @24@0:8@16  imp=+0x1aa6432fc
+  -convertPlatformDataToIR: @24@0:8@16  imp=+0x1aa643104
+  -typeString @16@0:8  imp=+0x1aa6430f8
+@class UAPBIRIdentityConverter : NSObject <UAPBIRConverter> instanceSize=8
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +registerConverter v16@0:8  imp=+0x1aa6458e0
+  -convertIRDataToPlatform: @24@0:8@16  imp=+0x1aa64594c
+  -convertPlatformDataToIR: @24@0:8@16  imp=+0x1aa645944
+  -typeString @16@0:8  imp=+0x1aa645938
+@class UAPBIRPublicURLConverter : NSObject <UAPBIRConverter> instanceSize=8
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +registerConverter v16@0:8  imp=+0x1aa613288
+  -convertIRDataToPlatform: @24@0:8@16  imp=+0x1aa613484
+  -convertPlatformDataToIR: @24@0:8@16  imp=+0x1aa613358
+  -typeString @16@0:8  imp=+0x1aa61334c
+@class UAPBIRSandboxExtConverter : NSObject <UAPBIRConverter> instanceSize=8
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +registerConverter v16@0:8  imp=+0x1aa622898
+  -convertIRDataToPlatform: @24@0:8@16  imp=+0x1aa622904
+  -convertPlatformDataToIR: @24@0:8@16  imp=+0x1aa6228fc
+  -typeString @16@0:8  imp=+0x1aa6228f0
+@class UAPasteboardDataProvider : NSObject <UAPasteboardItemProviding> instanceSize=32
+  ivar +8 _type @"NSString"
+  ivar +16 _uuid @"NSUUID"
+  ivar +24 _data @"NSData"
+  property data (T@"NSData",&,N,V_data)
+  property uuid (T@"NSUUID",C,N,V_uuid)
+  property type (T@"NSString",C,N,V_type)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1aa640084
+  -data @16@0:8  imp=+0x1aa640070
+  -getDataWithCompletionBlock: v24@0:8@?16  imp=+0x1aa63fe24
+  -initWithData:type: @32@0:8@16@24  imp=+0x1aa63fd60
+  -setData: v24@0:8@16  imp=+0x1aa640078
+  -setType: v24@0:8@16  imp=+0x1aa640058
+  -setUuid: v24@0:8@16  imp=+0x1aa640068
+  -type @16@0:8  imp=+0x1aa640050
+  -uuid @16@0:8  imp=+0x1aa640060
+@class UAPasteboardFileChunkItemProvider : NSObject <UAPasteboardItemProviding> instanceSize=48
+  ivar +8 _type @"NSString"
+  ivar +16 _uuid @"NSUUID"
+  ivar +24 _dataFile @"NSFileHandle"
+  ivar +32 _offsetInFile @"NSNumber"
+  ivar +40 _chunkSize q
+  property dataFile (T@"NSFileHandle",&,V_dataFile)
+  property offsetInFile (T@"NSNumber",&,V_offsetInFile)
+  property chunkSize (Tq,V_chunkSize)
+  property uuid (T@"NSUUID",C,N,V_uuid)
+  property type (T@"NSString",C,N,V_type)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1aa6243bc
+  -chunkSize q16@0:8  imp=+0x1aa6243ac
+  -dataFile @16@0:8  imp=+0x1aa624384
+  -getDataWithCompletionBlock: v24@0:8@?16  imp=+0x1aa623e0c
+  -initWithType:fileHandle:offsetInFile:size: @48@0:8@16@24@32q40  imp=+0x1aa623d0c
+  -offsetInFile @16@0:8  imp=+0x1aa624398
+  -setChunkSize: v24@0:8q16  imp=+0x1aa6243b4
+  -setDataFile: v24@0:8@16  imp=+0x1aa624390
+  -setOffsetInFile: v24@0:8@16  imp=+0x1aa6243a4
+  -setType: v24@0:8@16  imp=+0x1aa62436c
+  -setUuid: v24@0:8@16  imp=+0x1aa62437c
+  -type @16@0:8  imp=+0x1aa624364
+  -uuid @16@0:8  imp=+0x1aa624374
+@class UAPasteboardFileItemProvider : NSObject <UAPasteboardFileItemProviding> instanceSize=48
+  ivar +8 _preferFileRep B
+  ivar +9 _isDir B
+  ivar +16 _type @"NSString"
+  ivar +24 _uuid @"NSUUID"
+  ivar +32 _fileURL @"NSURL"
+  ivar +40 _sandboxExtension @"NSData"
+  property fileURL (T@"NSURL",&,V_fileURL)
+  property sandboxExtension (T@"NSData",&,V_sandboxExtension)
+  property isDir (TB,V_isDir)
+  property preferFileRep (TB,N,V_preferFileRep)
+  property uuid (T@"NSUUID",C,N,V_uuid)
+  property type (T@"NSString",C,N,V_type)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +conformsToProtocol: B24@0:8@16  imp=+0x1aa63f3d0
+  -.cxx_destruct v16@0:8  imp=+0x1aa63fd04
+  -accessFileAtURLWithCompletion: v24@0:8@?16  imp=+0x1aa63f664
+  -fileURL @16@0:8  imp=+0x1aa63fcc8
+  -getDataFileWithCompletionBlock: v24@0:8@?16  imp=+0x1aa63f49c
+  -getDataWithCompletionBlock: v24@0:8@?16  imp=+0x1aa63f4a0
+  -getFileName @16@0:8  imp=+0x1aa63f44c
+  -initWithURL:sandboxExtension: @32@0:8@16@24  imp=+0x1aa63eed8
+  -initWithURL:sandboxExtension:fileContentType: @40@0:8@16@24@32  imp=+0x1aa63eee0
+  -isDir B16@0:8  imp=+0x1aa63fcf0
+  -preferFileRep B16@0:8  imp=+0x1aa63fcb8
+  -sandboxExtension @16@0:8  imp=+0x1aa63fcdc
+  -setFileURL: v24@0:8@16  imp=+0x1aa63fcd4
+  -setIsDir: v20@0:8B16  imp=+0x1aa63fcfc
+  -setPreferFileRep: v20@0:8B16  imp=+0x1aa63fcc0
+  -setSandboxExtension: v24@0:8@16  imp=+0x1aa63fce8
+  -setType: v24@0:8@16  imp=+0x1aa63fca0
+  -setUuid: v24@0:8@16  imp=+0x1aa63fcb0
+  -type @16@0:8  imp=+0x1aa63fc98
+  -uuid @16@0:8  imp=+0x1aa63fca8
+@class UAPasteboardGeneration : NSObject instanceSize=48
+  ivar +8 _generation Q
+  ivar +16 _allTypes @"NSSet"
+  ivar +24 _items @"NSArray"
+  ivar +32 _typePaths @"NSMutableDictionary"
+  ivar +40 _fileURLTypeContentTypes @"NSMutableDictionary"
+  property allTypes (T@"NSSet",C,V_allTypes)
+  property items (T@"NSArray",C,V_items)
+  property typePaths (T@"NSMutableDictionary",&,V_typePaths)
+  property fileURLTypeContentTypes (T@"NSMutableDictionary",&,V_fileURLTypeContentTypes)
+  property generation (TQ,R,V_generation)
+  -.cxx_destruct v16@0:8  imp=+0x1aa640da8
+  -addItem: B24@0:8@16  imp=+0x1aa640254
+  -addType:toItemAtIndex: B32@0:8@16Q24  imp=+0x1aa640420
+  -allTypes @16@0:8  imp=+0x1aa640d58
+  -fetchTypeURL: v24@0:8@16  imp=+0x1aa64089c
+  -fileURLTypeContentTypes @16@0:8  imp=+0x1aa640d94
+  -generation Q16@0:8  imp=+0x1aa640d50
+  -getFileURLTypeContentTypes @16@0:8  imp=+0x1aa640208
+  -getTypePaths @16@0:8  imp=+0x1aa6401bc
+  -initWithGeneration: @24@0:8Q16  imp=+0x1aa6400d4
+  -items @16@0:8  imp=+0x1aa640d6c
+  -setAllTypes: v24@0:8@16  imp=+0x1aa640d64
+  -setFileURLTypeContentTypes: v24@0:8@16  imp=+0x1aa640da0
+  -setItems: v24@0:8@16  imp=+0x1aa640d78
+  -setTypePaths: v24@0:8@16  imp=+0x1aa640d8c
+  -typePaths @16@0:8  imp=+0x1aa640d80
+@class UAPasteboardItem : NSObject instanceSize=16
+  ivar +8 _types @"NSArray"
+  property types (T@"NSArray",C,N,V_types)
+  -.cxx_destruct v16@0:8  imp=+0x1aa6249c0
+  -addType: v24@0:8@16  imp=+0x1aa624608
+  -description @16@0:8  imp=+0x1aa6247e0
+  -init @16@0:8  imp=+0x1aa624598
+  -setTypes: v24@0:8@16  imp=+0x1aa6249b8
+  -types @16@0:8  imp=+0x1aa6249b0
+@class UAResumableActivitiesControlManager : NSObject instanceSize=32
+  ivar +8 _pid i
+  ivar +12 _recordingPath i
+  ivar +16 connection @"NSXPCConnection"
+  ivar +24 _delegate @
+  property connection (T@"NSXPCConnection",&,Vconnection)
+  property serverPID (Ti,R)
+  property delegate (T@,V_delegate)
+  property recordingPath (Ti,V_recordingPath)
+  +resumableActivitiesControlManager @16@0:8  imp=+0x1aa62a8c8
+  -.cxx_destruct v16@0:8  imp=+0x1aa62d09c
+  -advertisedItemUUID @16@0:8  imp=+0x1aa62b014
+  -allUUIDsOfType: @24@0:8Q16  imp=+0x1aa62b1e8
+  -callDidSaveDelegate: v24@0:8@16  imp=+0x1aa62c77c
+  -callWillSaveDelegate: v24@0:8@16  imp=+0x1aa62c6f4
+  -callWillSaveDelegate:completionHandler: v32@0:8@16@?24  imp=+0x1aa62c6f8
+  -connectToRemote:port: v32@0:8@16q24  imp=+0x1aa62c780
+  -connection @16@0:8  imp=+0x1aa62d068
+  -currentAdvertisedItemUUID @16@0:8  imp=+0x1aa62b5f8
+  -debuggingInfo @16@0:8  imp=+0x1aa62b768
+  -defaults: @20@0:8B16  imp=+0x1aa62c110
+  -delegate @16@0:8  imp=+0x1aa62d07c
+  -dynamicUserActivities @16@0:8  imp=+0x1aa62b8dc
+  -enabledUUIDs @16@0:8  imp=+0x1aa62b488
+  -fetchMoreAppSuggestions v16@0:8  imp=+0x1aa62c0c0
+  -getAdvertisedBytes:completionHandler: B32@0:8@16@?24  imp=+0x1aa62cf68
+  -getSysdiagnoseStringsIncludingPrivateData: @20@0:8B16  imp=+0x1aa62c9e4
+  -init @16@0:8  imp=+0x1aa62a8f8
+  -injectBTLEItem:type:identifier:title:activityPayload:webPageURL:remoteModel:duration:payloadDelay: v88@0:8@16Q24@32@40@48@56@64d72d80  imp=+0x1aa62c5b8
+  -matchingUUIDForString: @24@0:8@16  imp=+0x1aa62adc8
+  -peerDevices:completionHandler: v32@0:8@16@?24  imp=+0x1aa62c87c
+  -recentActions: @20@0:8B16  imp=+0x1aa62bbcc
+  -recordingPath i16@0:8  imp=+0x1aa62d08c
+  -rendevous:domain:active: v36@0:8@16@24B32  imp=+0x1aa62c7f0
+  -replayCommands:completionHandler: v32@0:8@16@?24  imp=+0x1aa62cd94
+  -restartServer v16@0:8  imp=+0x1aa62c340
+  -serverPID i16@0:8  imp=+0x1aa62aa50
+  -setConnection: v24@0:8@16  imp=+0x1aa62d074
+  -setDebugOption:value: v32@0:8@16@24  imp=+0x1aa62c534
+  -setDefault:value: v32@0:8@16@24  imp=+0x1aa62c290
+  -setDelegate: v24@0:8@16  imp=+0x1aa62d084
+  -setLocalReflect: v20@0:8B16  imp=+0x1aa62cee8
+  -setRecordingPath: v20@0:8i16  imp=+0x1aa62d094
+  -simulatorStatus @16@0:8  imp=+0x1aa62bd94
+  -status @16@0:8  imp=+0x1aa62ba50
+  -status:options: @32@0:8@16@24  imp=+0x1aa62bf10
+  -synchronize v16@0:8  imp=+0x1aa62ce88
+  -terminateServer v16@0:8  imp=+0x1aa62c3b4
+@class UASharedPasteboard : NSObject instanceSize=16
+  ivar +8 _manager @"UASharedPasteboardManager"
+  property manager (T@"UASharedPasteboardManager",V_manager)
+  +clearLocalPasteboardInformation v16@0:8  imp=+0x1aa646b30
+  +initialize v16@0:8  imp=+0x1aa646844
+  +localPasteboardDidAddData:toItemAtIndex:generation: v40@0:8@16Q24Q32  imp=+0x1aa646848
+  +localPasteboardDidAddItems:forGeneration: v32@0:8@16Q24  imp=+0x1aa646940
+  +localPasteboardDidPasteGeneration: v24@0:8Q16  imp=+0x1aa646bc0
+  +remotePasteboard @16@0:8  imp=+0x1aa646c40
+  +startPreventingPasteboardSharing v16@0:8  imp=+0x1aa647024
+  +stopPreventingPasteboardSharing v16@0:8  imp=+0x1aa64706c
+  -currentRemoteDeviceName @16@0:8  imp=+0x1aa646f60
+  -manager @16@0:8  imp=+0x1aa6470b4
+  -prefetchRemotePasteboardTypes: v24@0:8@16  imp=+0x1aa646ed8
+  -requestRemotePasteboardDataForProcess:withCompletion: v28@0:8i16@?20  imp=+0x1aa646e08
+  -requestRemotePasteboardTypesForProcess:withCompletion: v28@0:8i16@?20  imp=+0x1aa646d38
+  -returnPasteboardDataBeforeArchives B16@0:8  imp=+0x1aa646cf4
+  -setManager: v24@0:8@16  imp=+0x1aa6470bc
+@class UASharedPasteboardIRManager : NSObject instanceSize=16
+  ivar +8 _lookupTable @"NSMutableDictionary"
+  property lookupTable (T@"NSMutableDictionary",&,V_lookupTable)
+  +sharedIRManager @16@0:8  imp=+0x1aa640e04
+  -.cxx_destruct v16@0:8  imp=+0x1aa64111c
+  -converterForType: @24@0:8@16  imp=+0x1aa64107c
+  -init @16@0:8  imp=+0x1aa640e88
+  -initializeConverters v16@0:8  imp=+0x1aa640ef8
+  -lookupTable @16@0:8  imp=+0x1aa641108
+  -registerIRHandlerClass:forType: v32@0:8#16@24  imp=+0x1aa640ff8
+  -registeredConverters @16@0:8  imp=+0x1aa640fac
+  -setLookupTable: v24@0:8@16  imp=+0x1aa641114
+@class UASharedPasteboardInfo : NSObject <NSSecureCoding, NSCopying> instanceSize=48
+  ivar +8 _dataFile @"NSFileHandle"
+  ivar +16 _dataSize q
+  ivar +24 _items @"NSArray"
+  ivar +32 _sharedDataPath @"NSString"
+  ivar +40 _sandboxExtensions @"NSDictionary"
+  property dataFile (T@"NSFileHandle",&,V_dataFile)
+  property dataSize (Tq,V_dataSize)
+  property items (T@"NSArray",C,V_items)
+  property sharedDataPath (T@"NSString",C,V_sharedDataPath)
+  property sandboxExtensions (T@"NSDictionary",C,V_sandboxExtensions)
+  +supportsSecureCoding B16@0:8  imp=+0x1aa62dde4
+  -.cxx_destruct v16@0:8  imp=+0x1aa62e4cc
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1aa62e1cc
+  -dataFile @16@0:8  imp=+0x1aa62e46c
+  -dataSize q16@0:8  imp=+0x1aa62e480
+  -description @16@0:8  imp=+0x1aa62e2c8
+  -encodeWithCoder: v24@0:8@16  imp=+0x1aa62dfd4
+  -initWithCoder: @24@0:8@16  imp=+0x1aa62ddec
+  -isEqual: B24@0:8@16  imp=+0x1aa62e0e8
+  -items @16@0:8  imp=+0x1aa62e490
+  -sandboxExtensions @16@0:8  imp=+0x1aa62e4b8
+  -setDataFile: v24@0:8@16  imp=+0x1aa62e478
+  -setDataSize: v24@0:8q16  imp=+0x1aa62e488
+  -setItems: v24@0:8@16  imp=+0x1aa62e49c
+  -setSandboxExtensions: v24@0:8@16  imp=+0x1aa62e4c4
+  -setSharedDataPath: v24@0:8@16  imp=+0x1aa62e4b0
+  -sharedDataPath @16@0:8  imp=+0x1aa62e4a4
+@class UASharedPasteboardItemInfo : NSObject <NSSecureCoding, NSCopying> instanceSize=16
+  ivar +8 _types @"NSDictionary"
+  property types (T@"NSDictionary",C,V_types)
+  +supportsSecureCoding B16@0:8  imp=+0x1aa62e528
+  -.cxx_destruct v16@0:8  imp=+0x1aa62e964
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1aa62e744
+  -description @16@0:8  imp=+0x1aa62e7bc
+  -encodeWithCoder: v24@0:8@16  imp=+0x1aa62e618
+  -initWithCoder: @24@0:8@16  imp=+0x1aa62e530
+  -isEqual: B24@0:8@16  imp=+0x1aa62e684
+  -setTypes: v24@0:8@16  imp=+0x1aa62e95c
+  -types @16@0:8  imp=+0x1aa62e950
+@class UASharedPasteboardManager : NSObject <UASharedPasteboardManagerResponseProtocol> instanceSize=120
+  ivar +8 _remotePasteboardAvailable B
+  ivar +9 _currentGenerationHasUpdates B
+  ivar +10 _updateScheduled B
+  ivar +12 _disableCount i
+  ivar +16 _localPasteboardWasFetched @?
+  ivar +24 _currentGeneration @"UAPasteboardGeneration"
+  ivar +32 _serverQ @"NSObject<OS_dispatch_queue>"
+  ivar +40 _connection @"NSXPCConnection"
+  ivar +48 _controllConnection @"NSXPCConnection"
+  ivar +56 _controllSyncObject @
+  ivar +64 _pasteboardReadQ @"NSObject<OS_dispatch_queue>"
+  ivar +72 _disallowedTypesForSending @"NSSet"
+  ivar +80 _disallowedTypesForReceiving @"NSSet"
+  ivar +88 _bomCheckTypes @"NSSet"
+  ivar +96 _typeBOMs @"NSDictionary"
+  ivar +104 _typeAliases @"NSDictionary"
+  ivar +112 _completionBlock @?
+  property serverQ (T@"NSObject<OS_dispatch_queue>",&,V_serverQ)
+  property connection (T@"NSXPCConnection",&,V_connection)
+  property controllConnection (T@"NSXPCConnection",&,V_controllConnection)
+  property disableCount (Ti,V_disableCount)
+  property controllSyncObject (T@,&,V_controllSyncObject)
+  property remotePasteboardAvailable (TB,V_remotePasteboardAvailable)
+  property currentGenerationHasUpdates (TB,V_currentGenerationHasUpdates)
+  property updateScheduled (TB,V_updateScheduled)
+  property pasteboardReadQ (T@"NSObject<OS_dispatch_queue>",&,V_pasteboardReadQ)
+  property disallowedTypesForSending (T@"NSSet",&,V_disallowedTypesForSending)
+  property disallowedTypesForReceiving (T@"NSSet",&,V_disallowedTypesForReceiving)
+  property bomCheckTypes (T@"NSSet",&,V_bomCheckTypes)
+  property typeBOMs (T@"NSDictionary",&,V_typeBOMs)
+  property typeAliases (T@"NSDictionary",&,V_typeAliases)
+  property completionBlock (T@?,V_completionBlock)
+  property localPasteboardWasFetched (T@?,C,V_localPasteboardWasFetched)
+  property currentGeneration (T@"UAPasteboardGeneration",&,V_currentGeneration)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +dontConnectToServer B16@0:8  imp=+0x1aa62fef0
+  +initialize v16@0:8  imp=+0x1aa62fe24
+  +sharedManager @16@0:8  imp=+0x1aa62fe6c
+  -.cxx_destruct v16@0:8  imp=+0x1aa637f8c
+  -addData:toItemAtIndex:generation: B40@0:8@16Q24Q32  imp=+0x1aa6312d8
+  -bomCheckTypes @16@0:8  imp=+0x1aa637f40
+  -clearLocalPasteboardInformation v16@0:8  imp=+0x1aa6321b0
+  -completionBlock @?16@0:8  imp=+0x1aa637f7c
+  -connection @16@0:8  imp=+0x1aa637e7c
+  -controllConnection @16@0:8  imp=+0x1aa637e90
+  -controllSyncObject @16@0:8  imp=+0x1aa637eb4
+  -currentGeneration @16@0:8  imp=+0x1aa637e54
+  -currentGenerationHasUpdates B16@0:8  imp=+0x1aa637edc
+  -currentRemoteDeviceName @16@0:8  imp=+0x1aa635930
+  -dealloc v16@0:8  imp=+0x1aa6309e8
+  -disableCount i16@0:8  imp=+0x1aa637ea4
+  -disallowedTypesForReceiving @16@0:8  imp=+0x1aa637f2c
+  -disallowedTypesForSending @16@0:8  imp=+0x1aa637f18
+  -doClearLocalPasteboardInfo v16@0:8  imp=+0x1aa637910
+  -fetchPasteboardDataForProcess:withCompletion: v28@0:8i16@?20  imp=+0x1aa637964
+  -fetchPasteboardStatus: v24@0:8@?16  imp=+0x1aa637a60
+  -fetchPasteboardTypesForProcess:withCompletion: v28@0:8i16@?20  imp=+0x1aa637814
+  -fetchRemoteName @16@0:8  imp=+0x1aa637adc
+  -init @16@0:8  imp=+0x1aa62ff20
+  -isRemotePasteboardAvailable B16@0:8  imp=+0x1aa635708
+  -localPasteboardWasFetched @?16@0:8  imp=+0x1aa637e40
+  -pasteboardReadQ @16@0:8  imp=+0x1aa637f04
+  -pickupLocalChanges:iterNumber:cloneDir:completionHandler: v48@0:8@16q24@32@?40  imp=+0x1aa632a78
+  -remotePasteboardAvailable B16@0:8  imp=+0x1aa637ec8
+  -requestPasteboardFetchReturnEarly B16@0:8  imp=+0x1aa637540
+  -requestRemotePasteboardDataForProcess:withCompletion: v28@0:8i16@?20  imp=+0x1aa636424
+  -requestRemotePasteboardTypesForProcess:withCompletion: v28@0:8i16@?20  imp=+0x1aa635934
+  -sendUpdateToServer: v24@0:8@16  imp=+0x1aa6317d4
+  -serializeFileType:intoInfo:withFile:intoDir: @48@0:8@16@24@32@40  imp=+0x1aa6339a4
+  -serializeItem:intoInfo:withFile:intoDir: @48@0:8@16@24@32@40  imp=+0x1aa633474
+  -serializeType:intoInfo:withFile: @40@0:8@16@24@32  imp=+0x1aa634558
+  -serverQ @16@0:8  imp=+0x1aa637e68
+  -setBomCheckTypes: v24@0:8@16  imp=+0x1aa637f4c
+  -setCompletionBlock: v24@0:8@?16  imp=+0x1aa637f84
+  -setConnection: v24@0:8@16  imp=+0x1aa637e88
+  -setControllConnection: v24@0:8@16  imp=+0x1aa637e9c
+  -setControllSyncObject: v24@0:8@16  imp=+0x1aa637ec0
+  -setCurrentGeneration: v24@0:8@16  imp=+0x1aa637e60
+  -setCurrentGenerationHasUpdates: v20@0:8B16  imp=+0x1aa637ee8
+  -setDisableCount: v20@0:8i16  imp=+0x1aa637eac
+  -setDisallowedTypesForReceiving: v24@0:8@16  imp=+0x1aa637f38
+  -setDisallowedTypesForSending: v24@0:8@16  imp=+0x1aa637f24
+  -setLocalPasteboardWasFetched: v24@0:8@?16  imp=+0x1aa637e4c
+  -setPasteboardReadQ: v24@0:8@16  imp=+0x1aa637f10
+  -setRemotePasteboardAvailable: v20@0:8B16  imp=+0x1aa637ed4
+  -setServerQ: v24@0:8@16  imp=+0x1aa637e74
+  -setTypeAliases: v24@0:8@16  imp=+0x1aa637f74
+  -setTypeBOMs: v24@0:8@16  imp=+0x1aa637f60
+  -setUpdateScheduled: v20@0:8B16  imp=+0x1aa637efc
+  -startPreventingPasteboardSharing v16@0:8  imp=+0x1aa630a60
+  -stopPreventingPasteboardSharing v16@0:8  imp=+0x1aa630dcc
+  -tellClientDebuggingEnabled:logFileHandle: v28@0:8B16@20  imp=+0x1aa637dac
+  -typeAliases @16@0:8  imp=+0x1aa637f68
+  -typeBOMs @16@0:8  imp=+0x1aa637f54
+  -typeIsDisallowedForReceiving: B24@0:8@16  imp=+0x1aa631110
+  -typeIsDisallowedForSending: B24@0:8@16  imp=+0x1aa630f48
+  -updateScheduled B16@0:8  imp=+0x1aa637ef0
+  -writeLocalPasteboardToFile:itemDir:extension:withCompletion: v48@0:8@16@24@32@?40  imp=+0x1aa63223c
+  -writeLocalPasteboardToFile:itemDir:withCompletion: v40@0:8@16@24@?32  imp=+0x1aa632490
+@class UASharedPasteboardTypeInfo : NSObject <NSSecureCoding, NSCopying> instanceSize=80
+  ivar +8 _preferFileRep B
+  ivar +16 _type @"NSString"
+  ivar +24 _uuid @"NSUUID"
+  ivar +32 _offset @"NSNumber"
+  ivar +40 _size q
+  ivar +48 _dataFile @"NSFileHandle"
+  ivar +56 _typeHint @"NSString"
+  ivar +64 _index @"NSNumber"
+  ivar +72 _fileContentType @"NSString"
+  property type (T@"NSString",C,V_type)
+  property uuid (T@"NSUUID",C,V_uuid)
+  property offset (T@"NSNumber",C,V_offset)
+  property size (Tq,V_size)
+  property dataFile (T@"NSFileHandle",&,V_dataFile)
+  property preferFileRep (TB,V_preferFileRep)
+  property typeHint (T@"NSString",C,V_typeHint)
+  property index (T@"NSNumber",C,V_index)
+  property fileContentType (T@"NSString",C,V_fileContentType)
+  +supportsSecureCoding B16@0:8  imp=+0x1aa62e970
+  -.cxx_destruct v16@0:8  imp=+0x1aa62f438
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1aa62eed0
+  -dataFile @16@0:8  imp=+0x1aa62f3d4
+  -description @16@0:8  imp=+0x1aa62f0a0
+  -encodeWithCoder: v24@0:8@16  imp=+0x1aa62eba0
+  -fileContentType @16@0:8  imp=+0x1aa62f424
+  -index @16@0:8  imp=+0x1aa62f410
+  -initWithCoder: @24@0:8@16  imp=+0x1aa62e978
+  -isEqual: B24@0:8@16  imp=+0x1aa62ed54
+  -offset @16@0:8  imp=+0x1aa62f3b0
+  -preferFileRep B16@0:8  imp=+0x1aa62f3e8
+  -setDataFile: v24@0:8@16  imp=+0x1aa62f3e0
+  -setFileContentType: v24@0:8@16  imp=+0x1aa62f430
+  -setIndex: v24@0:8@16  imp=+0x1aa62f41c
+  -setOffset: v24@0:8@16  imp=+0x1aa62f3bc
+  -setPreferFileRep: v20@0:8B16  imp=+0x1aa62f3f4
+  -setSize: v24@0:8q16  imp=+0x1aa62f3cc
+  -setType: v24@0:8@16  imp=+0x1aa62f394
+  -setTypeHint: v24@0:8@16  imp=+0x1aa62f408
+  -setUuid: v24@0:8@16  imp=+0x1aa62f3a8
+  -size q16@0:8  imp=+0x1aa62f3c4
+  -type @16@0:8  imp=+0x1aa62f388
+  -typeHint @16@0:8  imp=+0x1aa62f3fc
+  -uuid @16@0:8  imp=+0x1aa62f39c
+@class UAUserActivity : NSObject <SFCompanionAdvertiserDelegate> instanceSize=376
+  ivar +8 _frameworkPayload @"NSMutableDictionary"
+  ivar +16 _title @"NSString"
+  ivar +24 _webpageURL @"NSURL"
+  ivar +32 _referrerURL @"NSURL"
+  ivar +40 _targetContentIdentifier @"NSString"
+  ivar +48 _advertiser @"SFCompanionAdvertiser"
+  ivar +56 _advertiserCompletedGroup @"NSObject<OS_dispatch_group>"
+  ivar +64 _resumerAdvertiser @"SFCompanionAdvertiser"
+  ivar +72 _dirtyPayloadIdentifiers @"NSMutableSet"
+  ivar +80 _lastSaveTime d
+  ivar +88 _saveScheduled B
+  ivar +89 _createsNewUUIDIfSaved B
+  ivar +96 _decodeUserInfoError @"NSError"
+  ivar +104 _needsSave B
+  ivar +105 _needsSaveValueAtEndOfWillSaveCallback B
+  ivar +106 _dirty B
+  ivar +107 _sendToServerPending B
+  ivar +108 _activityHasBeenSentToServer B
+  ivar +109 _supportsContinuationStreams B
+  ivar +110 _forceImmediateSendToServer B
+  ivar +111 _encodedContainsUnsynchronizedCloudDocument B
+  ivar +112 _encodedFileProviderURL B
+  ivar +113 _userActivityWasCreatedSent B
+  ivar +114 _indexInProcess B
+  ivar +120 _inWillSaveCallback q
+  ivar +128 _keywords @"NSSet"
+  ivar +136 _expirationDate @"NSDate"
+  ivar +144 _contentUserAction @"NSString"
+  ivar +152 _requiredUserInfoKeys @"NSSet"
+  ivar +160 _teamIdentifier @"NSString"
+  ivar +168 _forwardToCoreSpotlightIndexerCount i
+  ivar +172 _eligibleForHandoff B
+  ivar +173 _eligibleForSearch B
+  ivar +174 _eligibleForReminders B
+  ivar +175 _eligibleForPublicIndexing B
+  ivar +176 _eligibleForPrediction B
+  ivar +184 _persistentIdentifier @"NSString"
+  ivar +192 _delegate @"<UAUserActivityDelegate>"
+  ivar +200 _userInfoChangeCount I
+  ivar +208 _savedUserInfo @"NSDictionary"
+  ivar +216 _willCallSaveSerializationQueue @"NSObject<OS_dispatch_queue>"
+  ivar +224 _invalidated B
+  ivar +225 _userInfoContainsFileURLs B
+  ivar +226 _universalLink B
+  ivar +227 _canCreateStreams B
+  ivar +232 _madeCurrentDate @"NSDate"
+  ivar +240 _madeCurrentEndDate @"NSDate"
+  ivar +248 _madeCurrentInterval d
+  ivar +256 _madeInitiallyCurrentDate @"NSDate"
+  ivar +264 _sentToIndexerDate @"NSDate"
+  ivar +272 _cachedEncodedUserInfo @"NSData"
+  ivar +280 _userInfo @"NSDictionary"
+  ivar +288 delegate @"<UAUserActivityDelegate>"
+  ivar +296 _manager @"UAUserActivityManager"
+  ivar +304 _typeIdentifier @"NSString"
+  ivar +312 _dynamicIdentifier @"NSString"
+  ivar +320 _uniqueIdentifier @"NSUUID"
+  ivar +328 _suggestedActionType Q
+  ivar +336 _options @"NSDictionary"
+  ivar +344 _originalUniqueIdentifier @"NSUUID"
+  ivar +352 _payloadObjects @"NSMutableDictionary"
+  ivar +360 _payloadUpdateBlocks @"NSMutableDictionary"
+  ivar +368 _payloadDataCache @"NSMutableDictionary"
+  property subtitle (T@"NSString",C,D)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  property contentUserAction (T@"NSString",C,D)
+  property requiredUserInfoKeys (T@"NSSet",C,D)
+  property keywords (T@"NSSet",C,D)
+  property contentIdentifier (T@"NSString",C,D)
+  property expirationDate (T@"NSDate",C,D)
+  property eligibleForHandoff (TB,D,GisEligibleForHandoff)
+  property eligibleForSearch (TB,D,GisEligibleForSearch)
+  property eligibleForReminders (TB,D,GisEligibleForReminders)
+  property eligibleForPublicIndexing (TB,D,GisEligibleForPublicIndexing)
+  property contentAttributeSet (T@"CSSearchableItemAttributeSet",C,D)
+  property forwardToCoreSpotlightIndexer (TB,R)
+  property eligibleForPrediction (TB,D,GisEligibleForPrediction)
+  property persistentIdentifier (T@"NSString",C)
+  property manager (T@"UAUserActivityManager",R,W,V_manager)
+  property originalUniqueIdentifier (T@"NSUUID",R,C,V_originalUniqueIdentifier)
+  property dirty (TB,D)
+  property sendToServerPending (TB,V_sendToServerPending)
+  property createsNewUUIDIfSaved (TB,V_createsNewUUIDIfSaved)
+  property decodeUserInfoError (T@"NSError",&,V_decodeUserInfoError)
+  property encodedContainsUnsynchronizedCloudDocument (TB,V_encodedContainsUnsynchronizedCloudDocument)
+  property encodedFileProviderURL (TB,V_encodedFileProviderURL)
+  property cachedEncodedUserInfo (T@"NSData",C,V_cachedEncodedUserInfo)
+  property userInfoChangeCount (TQ,R)
+  property payloadObjects (T@"NSMutableDictionary",&,V_payloadObjects)
+  property payloadUpdateBlocks (T@"NSMutableDictionary",&,V_payloadUpdateBlocks)
+  property payloadDataCache (T@"NSMutableDictionary",&,V_payloadDataCache)
+  property dirtyPayloadIdentifiers (T@"NSMutableSet",&,V_dirtyPayloadIdentifiers)
+  property willCallSaveSerializationQueue (T@"NSObject<OS_dispatch_queue>",R,&)
+  property userInfoContainsFileURLs (TB,V_userInfoContainsFileURLs)
+  property typeIdentifier (T@"NSString",C,V_typeIdentifier)
+  property dynamicIdentifier (T@"NSString",C,V_dynamicIdentifier)
+  property title (T@"NSString",C,D)
+  property userInfo (T@"NSDictionary",C,V_userInfo)
+  property webpageURL (T@"NSURL",C,D)
+  property referrerURL (T@"NSURL",C,D)
+  property targetContentIdentifier (T@"NSString",C)
+  property needsSave (TB,D)
+  property supportsContinuationStreams (TB,D)
+  property forceImmediateSendToServer (TB,V_forceImmediateSendToServer)
+  property delegate (T@"<UAUserActivityDelegate>",W,Vdelegate)
+  property isCurrent (TB,R)
+  property madeCurrentDate (T@"NSDate",C,V_madeCurrentDate)
+  property madeCurrentEndDate (T@"NSDate",C,V_madeCurrentEndDate)
+  property madeCurrentInterval (Td,R,V_madeCurrentInterval)
+  property madeInitiallyCurrentDate (T@"NSDate",R,C,V_madeInitiallyCurrentDate)
+  property sentToIndexerDate (T@"NSDate",C,V_sentToIndexerDate)
+  property parentUserActivity (T@"NSUserActivity",W)
+  property activityHasBeenSentToServer (TB,R,V_activityHasBeenSentToServer)
+  property invalidated (TB,R,GisInvalidated,V_invalidated)
+  property uniqueIdentifier (T@"NSUUID",R,C,V_uniqueIdentifier)
+  property suggestedActionType (TQ,R,V_suggestedActionType)
+  property options (T@"NSDictionary",C,V_options)
+  property streamsData (T@"NSData",C)
+  property canCreateStreams (TB,V_canCreateStreams)
+  property teamIdentifier (T@"NSString",C,V_teamIdentifier)
+  property universalLink (TB,GisUniversalLink,V_universalLink)
+  +_decodeFromEntireString: @24@0:8@16  imp=+0x1aa62238c
+  +_decodeFromScanner: @24@0:8@16  imp=+0x1aa621abc
+  +_decodeFromString: @24@0:8@16  imp=+0x1aa622314
+  +_encodeKeyAndValueIntoString:value: @32@0:8@16@24  imp=+0x1aa6103c0
+  +_encodeToString: @24@0:8@16  imp=+0x1aa60ef78
+  +addDynamicUserActivity:matching: v32@0:8@16@24  imp=+0x1aa61a724
+  +addUserActivityObserver: v24@0:8@16  imp=+0x1aa61ad20
+  +allowedWebpageURLSchemes @16@0:8  imp=+0x1aa61f02c
+  +checkWebpageURL:actionType:throwIfFailed: B36@0:8@16Q24B32  imp=+0x1aa611fc8
+  +currentUserActivityProxiesWithOptions:matching:completionHandler: B40@0:8@16@24@?32  imp=+0x1aa61f874
+  +currentUserActivityUUID @16@0:8  imp=+0x1aa613190
+  +currentUserActivityUUIDWithOptions:completionHandler: B32@0:8@16@?24  imp=+0x1aa61f604
+  +deleteAllSavedUserActivitiesWithCompletionHandler: v24@0:8@?16  imp=+0x1aa642d30
+  +deleteSavedUserActivitiesWithPersistentIdentifiers:completionHandler: v32@0:8@16@?24  imp=+0x1aa642a00
+  +determineIfUserActivityIsCurrent:completionHandler: B32@0:8@16@?24  imp=+0x1aa61f740
+  +fetchUserActivityWithUUID:completionHandler: v32@0:8@16@?24  imp=+0x1aa613aac
+  +fetchUserActivityWithUUID:intervalToWaitForDocumentSynchronizationToComplete:completionHandler: @40@0:8@16d24@?32  imp=+0x1aa613b74
+  +isIndexPendingForUUID: B24@0:8@16  imp=+0x1aa60a3c0
+  +mainBundleIdentifier @16@0:8  imp=+0x1aa64295c
+  +observers @16@0:8  imp=+0x1aa6038f8
+  +registerAsProxyForApplication:options:completionBlock: B36@0:8i16@20@?28  imp=+0x1aa622438
+  +registerForSuggestedActionNudgeOfType:withOptions:block: @40@0:8Q16@24@?32  imp=+0x1aa61f268
+  +removeDynamicUserActivity:matching: v32@0:8@16@24  imp=+0x1aa61a83c
+  +removeUserActivityObserver: v24@0:8@16  imp=+0x1aa61add4
+  +setIndexPending:forUUID: v28@0:8B16@20  imp=+0x1aa60a174
+  +supportsUserActivityAppLinks B16@0:8  imp=+0x1aa609f08
+  +unregisterForSuggestedActionNudgeOfType: v24@0:8@16  imp=+0x1aa61f4f8
+  +userActivityContinuationSupported B16@0:8  imp=+0x1aa613694
+  +userActivityFromUUID:timeout:withError: @40@0:8@16d24^@32  imp=+0x1aa6136a0
+  +userActivityFromUUID:withError: @32@0:8@16^@24  imp=+0x1aa613a7c
+  -.cxx_destruct v16@0:8  imp=+0x1aa608ee4
+  -_encodeIntoUserActivityDataWithSave:options:error: @36@0:8B16@20^@28  imp=+0x1aa621440
+  -_encodeIntoUserActivityStringWithSave:options:completionHandler: B36@0:8B16@20@?28  imp=+0x1aa620f54
+  -_encodeIntoUserActivityStringWithSave:options:optionalString:optionalData:error: @52@0:8B16@20^@28^@36^@44  imp=+0x1aa620d38
+  -_resignCurrent v16@0:8  imp=+0x1aa615fc8
+  -_setWebpageURL:throwOnFailure: v28@0:8@16B24  imp=+0x1aa614060
+  -activityHasBeenSentToServer B16@0:8  imp=+0x1aa6024a0
+  -addContentAttribute:forKey: v32@0:8@16@24  imp=+0x1aa61b3ec
+  -addKeywordsFromArray: v24@0:8@16  imp=+0x1aa61fca8
+  -addUserInfoEntriesFromDictionary: v24@0:8@16  imp=+0x1aa60b468
+  -advertiser:didReceiveInputStream:outputStream: v40@0:8@16@24@32  imp=+0x1aa61f0d0
+  -archiveURL:completionHandler: B32@0:8@16@?24  imp=+0x1aa6166d4
+  -archiver:willEncodeObject: @32@0:8@16@24  imp=+0x1aa616ca8
+  -becomeCurrent v16@0:8  imp=+0x1aa601e40
+  -beginUserInfoUpdate: Q24@0:8@16  imp=+0x1aa613f3c
+  -cachedEncodedUserInfo @16@0:8  imp=+0x1aa602c7c
+  -callWillSaveDelegateIfDirtyAndPackageUpData:options:clearDirty: @32@0:8B16@20B28  imp=+0x1aa61d3f4
+  -callWillSaveDelegateIfDirtyAndPackageUpData:options:clearDirty:completionHandler: @40@0:8B16@20B28@?32  imp=+0x1aa61e25c
+  -canCreateStreams B16@0:8  imp=+0x1aa61af1c
+  -contentAttributeSet @16@0:8  imp=+0x1aa60d594
+  -contentAttributes @16@0:8  imp=+0x1aa61b258
+  -contentIdentifier @16@0:8  imp=+0x1aa61fbd0
+  -contentType @16@0:8  imp=+0x1aa61b0c4
+  -contentUserAction @16@0:8  imp=+0x1aa60517c
+  -copyWithNewUUID: @20@0:8B16  imp=+0x1aa60a644
+  -createUserActivityDataWithSaving:options:completionHandler: B36@0:8B16@20@?28  imp=+0x1aa62166c
+  -createUserActivityDataWithSaving:options:error: @36@0:8B16@20^@28  imp=+0x1aa6215d0
+  -createUserActivityStringsWithSaving:options:completionHandler: B36@0:8B16@20@?28  imp=+0x1aa60d908
+  -createUserActivityStringsWithSaving:options:optionalString:data:error: @52@0:8B16@20^@28^@36^@44  imp=+0x1aa62119c
+  -createsNewUUIDIfSaved B16@0:8  imp=+0x1aa61aed4
+  -dealloc v16@0:8  imp=+0x1aa608ab0
+  -debugDescription @16@0:8  imp=+0x1aa61aacc
+  -decodeUserInfo: @24@0:8@16  imp=+0x1aa61a6f4
+  -decodeUserInfo:options: @32@0:8@16@24  imp=+0x1aa618d0c
+  -decodeUserInfoError @16@0:8  imp=+0x1aa61aee8
+  -delegate @16@0:8  imp=+0x1aa605a18
+  -description @16@0:8  imp=+0x1aa6029c8
+  -determineMatchingApplicationBundleIdentfierWithOptions: @24@0:8@16  imp=+0x1aa61a9f0
+  -didReceiveInputStream:outputStream: v32@0:8@16@24  imp=+0x1aa61c770
+  -didSynchronizeUserActivity v16@0:8  imp=+0x1aa61c160
+  -dirty B16@0:8  imp=+0x1aa6059d8
+  -dirtyPayloadIdentifiers @16@0:8  imp=+0x1aa60982c
+  -displayInDtrace v16@0:8  imp=+0x1aa607ce4
+  -dynamicIdentifier @16@0:8  imp=+0x1aa601a80
+  -encodeUserInfo: @24@0:8@16  imp=+0x1aa618cdc
+  -encodeUserInfo:error: @32@0:8@16^@24  imp=+0x1aa618ca8
+  -encodeUserInfo:options:error: @40@0:8@16@24^@32  imp=+0x1aa618a08
+  -encodedContainsUnsynchronizedCloudDocument B16@0:8  imp=+0x1aa6043c4
+  -encodedFileProviderURL B16@0:8  imp=+0x1aa605064
+  -expirationDate @16@0:8  imp=+0x1aa604758
+  -finishUserInfoUpdate B16@0:8  imp=+0x1aa613ffc
+  -forceImmediateSendToServer B16@0:8  imp=+0x1aa6042b0
+  -forwardToCoreSpotlightIndexer B16@0:8  imp=+0x1aa6042d0
+  -getContinuationStreamsWithCompletionHandler: v24@0:8@?16  imp=+0x1aa61575c
+  -hash Q16@0:8  imp=+0x1aa601d24
+  -indexActivity:forceIndexing: v28@0:8d16B24  imp=+0x1aa6098c8
+  -init @16@0:8  imp=+0x1aa613c44
+  -initDynamicActivityWithTypeIdentifier:dynamicIdentifier:suggestedActionType:options: @48@0:8@16@24Q32@40  imp=+0x1aa600c18
+  -initWithManager:userActivityInfo: @32@0:8@16@24  imp=+0x1aa61b5e4
+  -initWithTypeIdentifier: @24@0:8@16  imp=+0x1aa613c54
+  -initWithTypeIdentifier:dynamicIdentifier:options: @40@0:8@16@24@32  imp=+0x1aa613c60
+  -initWithTypeIdentifier:options: @32@0:8@16@24  imp=+0x1aa6002f0
+  -initWithTypeIdentifier:suggestedActionType:options: @40@0:8@16Q24@32  imp=+0x1aa6002fc
+  -initWithUserActivityData:options: @32@0:8@16@24  imp=+0x1aa620b80
+  -initWithUserActivityStrings:optionalString:tertiaryData:options: @48@0:8@16@24@32@40  imp=+0x1aa61ff54
+  -invalidate v16@0:8  imp=+0x1aa6067fc
+  -isCurrent B16@0:8  imp=+0x1aa615ec8
+  -isEligibleForHandoff B16@0:8  imp=+0x1aa605070
+  -isEligibleForPrediction B16@0:8  imp=+0x1aa604374
+  -isEligibleForPublicIndexing B16@0:8  imp=+0x1aa605088
+  -isEligibleForReminders B16@0:8  imp=+0x1aa605098
+  -isEligibleForSearch B16@0:8  imp=+0x1aa60436c
+  -isEqual: B24@0:8@16  imp=+0x1aa60f8dc
+  -isInvalidated B16@0:8  imp=+0x1aa601df4
+  -isPayloadDirty: B24@0:8@16  imp=+0x1aa645a58
+  -isUniversalLink B16@0:8  imp=+0x1aa614854
+  -keywords @16@0:8  imp=+0x1aa6051dc
+  -madeCurrentDate @16@0:8  imp=+0x1aa61ae70
+  -madeCurrentEndDate @16@0:8  imp=+0x1aa61ae84
+  -madeCurrentInterval d16@0:8  imp=+0x1aa6164dc
+  -madeInitiallyCurrentDate @16@0:8  imp=+0x1aa61ae98
+  -manager @16@0:8  imp=+0x1aa6023a8
+  -needsSave B16@0:8  imp=+0x1aa604e94
+  -objectForIdentifier: @24@0:8@16  imp=+0x1aa609400
+  -options @16@0:8  imp=+0x1aa605058
+  -originalUniqueIdentifier @16@0:8  imp=+0x1aa60b270
+  -parentUserActivity @16@0:8  imp=+0x1aa614bd0
+  -payloadDataCache @16@0:8  imp=+0x1aa608628
+  -payloadForIdentifier: @24@0:8@16  imp=+0x1aa60b27c
+  -payloadIdentifiers @16@0:8  imp=+0x1aa6084f4
+  -payloadObjects @16@0:8  imp=+0x1aa6094ac
+  -payloadUpdateBlockForIdentifier: @?24@0:8@16  imp=+0x1aa645974
+  -payloadUpdateBlocks @16@0:8  imp=+0x1aa60861c
+  -persistentIdentifier @16@0:8  imp=+0x1aa6050f8
+  -pinUserActivityWithCompletionHandler: v24@0:8@?16  imp=+0x1aa61a9e4
+  -prepareUserActivityForLaunchingWithOptions:completionHandler: v32@0:8@16@?24  imp=+0x1aa61a954
+  -priority q16@0:8  imp=+0x1aa606280
+  -referrerURL @16@0:8  imp=+0x1aa6146c0
+  -removeContentAttribute: v24@0:8@16  imp=+0x1aa61b4fc
+  -requiredUserInfoKeys @16@0:8  imp=+0x1aa604fdc
+  -resignCurrent v16@0:8  imp=+0x1aa615fcc
+  -scheduleSendUserActivityInfoToLSUserActivityd v16@0:8  imp=+0x1aa606fc0
+  -sendToCoreSpotlightIndexer v16@0:8  imp=+0x1aa60bcac
+  -sendToServerPending B16@0:8  imp=+0x1aa61aec0
+  -sendUserActivityInfoToLSUserActivityd:onAsyncQueue: v24@0:8B16B20  imp=+0x1aa6047b0
+  -sentToIndexerDate @16@0:8  imp=+0x1aa61aea4
+  -setCachedEncodedUserInfo: v24@0:8@16  imp=+0x1aa6042c8
+  -setCanCreateStreams: v20@0:8B16  imp=+0x1aa61af28
+  -setContentAttributeSet: v24@0:8@16  imp=+0x1aa60912c
+  -setContentAttributes: v24@0:8@16  imp=+0x1aa61b304
+  -setContentIdentifier: v24@0:8@16  imp=+0x1aa61fbd8
+  -setContentType: v24@0:8@16  imp=+0x1aa61b170
+  -setContentUserAction: v24@0:8@16  imp=+0x1aa61fb10
+  -setCreatesNewUUIDIfSaved: v20@0:8B16  imp=+0x1aa61aee0
+  -setDecodeUserInfoError: v24@0:8@16  imp=+0x1aa61aef4
+  -setDelegate: v24@0:8@16  imp=+0x1aa601e34
+  -setDirty: v20@0:8B16  imp=+0x1aa603c8c
+  -setDirty:identifier: v28@0:8B16@20  imp=+0x1aa60972c
+  -setDirtyPayloadIdentifiers: v24@0:8@16  imp=+0x1aa609838
+  -setDynamicIdentifier: v24@0:8@16  imp=+0x1aa61af14
+  -setEligibleForHandoff: v20@0:8B16  imp=+0x1aa609f10
+  -setEligibleForPrediction: v20@0:8B16  imp=+0x1aa6426dc
+  -setEligibleForPublicIndexing: v20@0:8B16  imp=+0x1aa60a4b8
+  -setEligibleForReminders: v20@0:8B16  imp=+0x1aa61fed4
+  -setEligibleForSearch: v20@0:8B16  imp=+0x1aa609fe8
+  -setEncodedContainsUnsynchronizedCloudDocument: v20@0:8B16  imp=+0x1aa60d4d4
+  -setEncodedFileProviderURL: v20@0:8B16  imp=+0x1aa61aefc
+  -setExpirationDate: v24@0:8@16  imp=+0x1aa61fbdc
+  -setForceImmediateSendToServer: v20@0:8B16  imp=+0x1aa60bc44
+  -setKeywords: v24@0:8@16  imp=+0x1aa612e68
+  -setMadeCurrentDate: v24@0:8@16  imp=+0x1aa61ae7c
+  -setMadeCurrentEndDate: v24@0:8@16  imp=+0x1aa61ae90
+  -setNeedsSave: v20@0:8B16  imp=+0x1aa606358
+  -setOptions: v24@0:8@16  imp=+0x1aa60d4dc
+  -setParentUserActivity: v24@0:8@16  imp=+0x1aa601aa0
+  -setPayload:object:identifier: v40@0:8@16@24@32  imp=+0x1aa64596c
+  -setPayload:object:identifier:dirty: v44@0:8@16@24@32B40  imp=+0x1aa60b8fc
+  -setPayloadDataCache: v24@0:8@16  imp=+0x1aa60bc3c
+  -setPayloadIdentifier:object:withBlock: v40@0:8@16@24@?32  imp=+0x1aa6094b8
+  -setPayloadObjects: v24@0:8@16  imp=+0x1aa60971c
+  -setPayloadUpdateBlocks: v24@0:8@16  imp=+0x1aa609724
+  -setPersistentIdentifier: v24@0:8@16  imp=+0x1aa642744
+  -setReferrerURL: v24@0:8@16  imp=+0x1aa614718
+  -setRequiredUserInfoKeys: v24@0:8@16  imp=+0x1aa612d90
+  -setSendToServerPending: v20@0:8B16  imp=+0x1aa61aecc
+  -setSentToIndexerDate: v24@0:8@16  imp=+0x1aa61aeb0
+  -setStreamsData: v24@0:8@16  imp=+0x1aa614fb0
+  -setSubtitle: v24@0:8@16  imp=+0x1aa61afdc
+  -setSupportsContinuationStreams: v20@0:8B16  imp=+0x1aa615110
+  -setTargetContentIdentifier: v24@0:8@16  imp=+0x1aa61496c
+  -setTeamIdentifier: v24@0:8@16  imp=+0x1aa61aeb8
+  -setTitle: v24@0:8@16  imp=+0x1aa60b03c
+  -setTypeIdentifier: v24@0:8@16  imp=+0x1aa61af0c
+  -setUniversalLink: v20@0:8B16  imp=+0x1aa614894
+  -setUserInfo: v24@0:8@16  imp=+0x1aa607830
+  -setUserInfoContainsFileURLs: v20@0:8B16  imp=+0x1aa61af04
+  -setWebpageURL: v24@0:8@16  imp=+0x1aa6143c0
+  -stateString @16@0:8  imp=+0x1aa60764c
+  -streamsData @16@0:8  imp=+0x1aa614d04
+  -subtitle @16@0:8  imp=+0x1aa61af30
+  -suggestedActionType Q16@0:8  imp=+0x1aa601a98
+  -supportsContinuationStreams B16@0:8  imp=+0x1aa602c88
+  -synchronouslyEncodeUserInfo:options:completionHandler: v40@0:8@16@24@?32  imp=+0x1aa61769c
+  -targetContentIdentifier @16@0:8  imp=+0x1aa614914
+  -teamID @16@0:8  imp=+0x1aa614bcc
+  -teamIdentifier @16@0:8  imp=+0x1aa604fa8
+  -tellDaemonAboutNewLSUserActivity v16@0:8  imp=+0x1aa6024ac
+  -title @16@0:8  imp=+0x1aa604eec
+  -typeIdentifier @16@0:8  imp=+0x1aa601a74
+  -unarchiveURL:error: @32@0:8@16^@24  imp=+0x1aa616a20
+  -unarchiver:didDecodeObject: @32@0:8@16@24  imp=+0x1aa616fb0
+  -uniqueIdentifier @16@0:8  imp=+0x1aa601a8c
+  -updateForwardToCoreSpotlightIndexer: v20@0:8c16  imp=+0x1aa624418
+  -userActivityInfoForSelfWithPayload:options: @28@0:8B16@20  imp=+0x1aa61c884
+  -userInfo @16@0:8  imp=+0x1aa6077bc
+  -userInfoChangeCount Q16@0:8  imp=+0x1aa613e10
+  -userInfoContainsFileURLs B16@0:8  imp=+0x1aa6046f4
+  -webpageURL @16@0:8  imp=+0x1aa604700
+  -willCallSaveSerializationQueue @16@0:8  imp=+0x1aa616524
+  -willSynchronizeUserActivityWithHandler: v24@0:8@?16  imp=+0x1aa61be24
+@class UAUserActivityInfo : NSObject <NSCopying, NSSecureCoding> instanceSize=224
+  ivar +8 _payloads @"NSMutableDictionary"
+  ivar +16 _eligibleForHandoff B
+  ivar +17 _eligibleForSearch B
+  ivar +18 _eligibleForPublicIndexing B
+  ivar +19 _eligibleForReminders B
+  ivar +20 _eligibleForPrediction B
+  ivar +21 _eligibleToAdvertise B
+  ivar +22 _eligibleToAlwaysAdvertise B
+  ivar +23 _dirty B
+  ivar +24 _payloadAvailable B
+  ivar +25 _payloadRequested B
+  ivar +26 _active B
+  ivar +27 _universalLink B
+  ivar +32 _uuid @"NSUUID"
+  ivar +40 _type Q
+  ivar +48 _title @"NSString"
+  ivar +56 _activityType @"NSString"
+  ivar +64 _dynamicActivityType @"NSString"
+  ivar +72 _teamIdentifier @"NSString"
+  ivar +80 _webpageURL @"NSURL"
+  ivar +88 _referrerURL @"NSURL"
+  ivar +96 _targetContentIdentifier @"NSString"
+  ivar +104 _options @"NSDictionary"
+  ivar +112 _encodedUserInfoError @"NSError"
+  ivar +120 _requiredUserInfoKeys @"NSSet"
+  ivar +128 _when @"NSDate"
+  ivar +136 _lastInterestingTime @"NSDate"
+  ivar +144 _encodingOptions @"NSDictionary"
+  ivar +152 _contentUserAction @"NSString"
+  ivar +160 _keywords @"NSSet"
+  ivar +168 _expirationDate @"NSDate"
+  ivar +176 _persistentIdentifier @"NSString"
+  ivar +184 _error @"NSError"
+  ivar +192 _peerDevice @"SFPeerDevice"
+  ivar +200 _peerDeviceType @"NSString"
+  ivar +208 _bundleIdentifier @"NSString"
+  ivar +216 _wasContinuedInfo @"UAUserActivityAnalyticsInfo"
+  property uuid (T@"NSUUID",C,V_uuid)
+  property type (TQ,V_type)
+  property title (T@"NSString",C,V_title)
+  property activityType (T@"NSString",C,V_activityType)
+  property dynamicActivityType (T@"NSString",C,V_dynamicActivityType)
+  property teamIdentifier (T@"NSString",C,V_teamIdentifier)
+  property webpageURL (T@"NSURL",C,V_webpageURL)
+  property referrerURL (T@"NSURL",C,V_referrerURL)
+  property targetContentIdentifier (T@"NSString",C,V_targetContentIdentifier)
+  property options (T@"NSDictionary",C,V_options)
+  property encodedUserInfoError (T@"NSError",C,V_encodedUserInfoError)
+  property requiredUserInfoKeys (T@"NSSet",C,V_requiredUserInfoKeys)
+  property when (T@"NSDate",C,V_when)
+  property lastInterestingTime (T@"NSDate",C,V_lastInterestingTime)
+  property payloads (T@"NSDictionary",C)
+  property eligibleForHandoff (TB,V_eligibleForHandoff)
+  property eligibleForSearch (TB,V_eligibleForSearch)
+  property eligibleForPublicIndexing (TB,V_eligibleForPublicIndexing)
+  property eligibleForReminders (TB,V_eligibleForReminders)
+  property eligibleForPrediction (TB,V_eligibleForPrediction)
+  property eligibleToAdvertise (TB,R,V_eligibleToAdvertise)
+  property eligibleToAlwaysAdvertise (TB,R,V_eligibleToAlwaysAdvertise)
+  property encodingOptions (T@"NSDictionary",C,V_encodingOptions)
+  property contentUserAction (T@"NSString",C,V_contentUserAction)
+  property keywords (T@"NSSet",C,V_keywords)
+  property expirationDate (T@"NSDate",C,V_expirationDate)
+  property persistentIdentifier (T@"NSString",C,V_persistentIdentifier)
+  property error (T@"NSError",C,V_error)
+  property dirty (TB,R,GisDirty,V_dirty)
+  property payloadAvailable (TB,GisPayloadAvailable,V_payloadAvailable)
+  property payloadRequested (TB,GisPayloadRequested,V_payloadRequested)
+  property active (TB,V_active)
+  property universalLink (TB,GisUniversalLink,V_universalLink)
+  property peerDevice (T@"SFPeerDevice",&,V_peerDevice)
+  property peerDeviceType (T@"NSString",C,V_peerDeviceType)
+  property bundleIdentifier (T@"NSString",C,V_bundleIdentifier)
+  property wasContinuedInfo (T@"UAUserActivityAnalyticsInfo",&,V_wasContinuedInfo)
+  +encodedInfoToOldEncodedInfo: @24@0:8@16  imp=+0x1aa625bd8
+  +supportsSecureCoding B16@0:8  imp=+0x1aa61161c
+  -.cxx_destruct v16@0:8  imp=+0x1aa606134
+  -_createUserActivityStrings:secondaryString:optionalData: v40@0:8@16@24@32  imp=+0x1aa60da5c
+  -active B16@0:8  imp=+0x1aa626948
+  -activityType @16@0:8  imp=+0x1aa605a88
+  -archiveUserActivityInfo @16@0:8  imp=+0x1aa625b58
+  -bundleIdentifier @16@0:8  imp=+0x1aa605aac
+  -clearPayload v16@0:8  imp=+0x1aa625b50
+  -contentUserAction @16@0:8  imp=+0x1aa605b60
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1aa6254a4
+  -description @16@0:8  imp=+0x1aa626010
+  -dynamicActivityType @16@0:8  imp=+0x1aa605a94
+  -eligibleForHandoff B16@0:8  imp=+0x1aa605c34
+  -eligibleForPrediction B16@0:8  imp=+0x1aa605db0
+  -eligibleForPublicIndexing B16@0:8  imp=+0x1aa605d8c
+  -eligibleForReminders B16@0:8  imp=+0x1aa605da4
+  -eligibleForSearch B16@0:8  imp=+0x1aa605c40
+  -eligibleToAdvertise B16@0:8  imp=+0x1aa6268fc
+  -eligibleToAlwaysAdvertise B16@0:8  imp=+0x1aa626908
+  -encodeWithCoder: v24@0:8@16  imp=+0x1aa605270
+  -encodedUserInfoError @16@0:8  imp=+0x1aa605c28
+  -encodingOptions @16@0:8  imp=+0x1aa605adc
+  -error @16@0:8  imp=+0x1aa6059c0
+  -expirationDate @16@0:8  imp=+0x1aa605dc8
+  -fetchAllNearbyAppSuggestions: v24@0:8@?16  imp=+0x1aa625ae8
+  -initWithArchivedUserActivityInfo: @24@0:8@16  imp=+0x1aa624ecc
+  -initWithCoder: @24@0:8@16  imp=+0x1aa611624
+  -initWithUUID:type:options: @40@0:8@16Q24@32  imp=+0x1aa6249cc
+  -initWithUserActivityInfo: @24@0:8@16  imp=+0x1aa624ac4
+  -isDirty B16@0:8  imp=+0x1aa626914
+  -isPayloadAvailable B16@0:8  imp=+0x1aa626920
+  -isPayloadRequested B16@0:8  imp=+0x1aa626934
+  -isUniversalLink B16@0:8  imp=+0x1aa62695c
+  -keywords @16@0:8  imp=+0x1aa605b6c
+  -lastInterestingTime @16@0:8  imp=+0x1aa6268e8
+  -logString @16@0:8  imp=+0x1aa625cb0
+  -optionalUserActivityData @16@0:8  imp=+0x1aa625a54
+  -options @16@0:8  imp=+0x1aa605a4c
+  -payloadForIdentifier: @24@0:8@16  imp=+0x1aa605b78
+  -payloadIdentifiers @16@0:8  imp=+0x1aa6258c8
+  -payloads @16@0:8  imp=+0x1aa605ae8
+  -peerDevice @16@0:8  imp=+0x1aa605ab8
+  -peerDeviceType @16@0:8  imp=+0x1aa605ac4
+  -persistentIdentifier @16@0:8  imp=+0x1aa605dbc
+  -provenance @16@0:8  imp=+0x1aa626828
+  -referrerURL @16@0:8  imp=+0x1aa605a70
+  -requestPayloadWithCompletionHandler: B24@0:8@?16  imp=+0x1aa625adc
+  -requestPayloadWithCompletionHandlerEvenIfClean:withCompletionHandler: B28@0:8B16@?20  imp=+0x1aa625af8
+  -requiredUserInfoKeys @16@0:8  imp=+0x1aa610234
+  -secondaryUserActivityString @16@0:8  imp=+0x1aa6259cc
+  -setActive: v20@0:8B16  imp=+0x1aa626954
+  -setActivityType: v24@0:8@16  imp=+0x1aa604f98
+  -setBundleIdentifier: v24@0:8@16  imp=+0x1aa626980
+  -setContentUserAction: v24@0:8@16  imp=+0x1aa6051d4
+  -setDynamicActivityType: v24@0:8@16  imp=+0x1aa604fa0
+  -setEligibleForHandoff: v20@0:8B16  imp=+0x1aa605078
+  -setEligibleForPrediction: v20@0:8B16  imp=+0x1aa6050f0
+  -setEligibleForPublicIndexing: v20@0:8B16  imp=+0x1aa605090
+  -setEligibleForReminders: v20@0:8B16  imp=+0x1aa6050e8
+  -setEligibleForSearch: v20@0:8B16  imp=+0x1aa605080
+  -setEncodedUserInfoError: v24@0:8@16  imp=+0x1aa60d4e4
+  -setEncodingOptions: v24@0:8@16  imp=+0x1aa605268
+  -setError: v24@0:8@16  imp=+0x1aa611e5c
+  -setExpirationDate: v24@0:8@16  imp=+0x1aa605258
+  -setKeywords: v24@0:8@16  imp=+0x1aa605250
+  -setLastInterestingTime: v24@0:8@16  imp=+0x1aa6268f4
+  -setOptions: v24@0:8@16  imp=+0x1aa605260
+  -setPayload:identifier: B32@0:8@16@24  imp=+0x1aa608634
+  -setPayloadAvailable: v20@0:8B16  imp=+0x1aa62692c
+  -setPayloadRequested: v20@0:8B16  imp=+0x1aa626940
+  -setPayloads: v24@0:8@16  imp=+0x1aa625830
+  -setPeerDevice: v24@0:8@16  imp=+0x1aa626970
+  -setPeerDeviceType: v24@0:8@16  imp=+0x1aa626978
+  -setPersistentIdentifier: v24@0:8@16  imp=+0x1aa605174
+  -setReferrerURL: v24@0:8@16  imp=+0x1aa604fc4
+  -setRequiredUserInfoKeys: v24@0:8@16  imp=+0x1aa605050
+  -setTargetContentIdentifier: v24@0:8@16  imp=+0x1aa604fcc
+  -setTeamIdentifier: v24@0:8@16  imp=+0x1aa604fb4
+  -setTitle: v24@0:8@16  imp=+0x1aa604f44
+  -setType: v24@0:8Q16  imp=+0x1aa604ee4
+  -setUniversalLink: v20@0:8B16  imp=+0x1aa626968
+  -setUuid: v24@0:8@16  imp=+0x1aa604edc
+  -setWasContinuedInfo: v24@0:8@16  imp=+0x1aa626994
+  -setWebpageURL: v24@0:8@16  imp=+0x1aa604fbc
+  -setWhen: v24@0:8@16  imp=+0x1aa604fd4
+  -statusString @16@0:8  imp=+0x1aa62664c
+  -targetContentIdentifier @16@0:8  imp=+0x1aa605a7c
+  -teamIdentifier @16@0:8  imp=+0x1aa605aa0
+  -title @16@0:8  imp=+0x1aa605a58
+  -type Q16@0:8  imp=+0x1aa605a44
+  -userActivityString @16@0:8  imp=+0x1aa625944
+  -uuid @16@0:8  imp=+0x1aa6059cc
+  -wasContinuedInfo @16@0:8  imp=+0x1aa626988
+  -wasResumedOnAnotherDeviceWithCompletionHandler: B24@0:8@?16  imp=+0x1aa625b24
+  -webpageURL @16@0:8  imp=+0x1aa605a64
+  -when @16@0:8  imp=+0x1aa605ad0
+@class UAUserActivityManager : NSObject <UAUserActivityClientResponseProtocol> instanceSize=80
+  ivar +8 _connection @"NSXPCConnection"
+  ivar +16 _serverQ @"NSObject<OS_dispatch_queue>"
+  ivar +24 _connectionInitializationSucceeded B
+  ivar +25 _supportsActivityContinuation B
+  ivar +26 _activityContinuationIsEnabled B
+  ivar +27 _allowedToConnect B
+  ivar +32 _userActivitiesByUUID @"NSMapTable"
+  ivar +40 _userActivityUUIDsSendToServer @"NSMutableSet"
+  ivar +48 _useractivitydpid i
+  ivar +52 _registeredForAppResignationMessages B
+  ivar +53 _needToSendInitialMessage B
+  ivar +56 _activeUserActivityUUID @"NSUUID"
+  ivar +64 _serialQueueForSendingActivitiesToServer @"NSObject<OS_dispatch_queue>"
+  ivar +72 _activeUserActivitiesByUUID @"NSMapTable"
+  property serverQ (T@"NSObject<OS_dispatch_queue>",R,V_serverQ)
+  property activeUserActivityUUID (T@"NSUUID",C,V_activeUserActivityUUID)
+  property userActivitiesByUUID (T@"NSMapTable",&,V_userActivitiesByUUID)
+  property activeUserActivitiesByUUID (T@"NSMapTable",&,V_activeUserActivitiesByUUID)
+  property userActivityUUIDsSendToServer (T@"NSSet",R,C)
+  property needToSendInitialMessage (TB,V_needToSendInitialMessage)
+  property registeredForAppResignationMessages (TB,V_registeredForAppResignationMessages)
+  property connection (T@"NSXPCConnection",R)
+  property allowedToConnect (TB)
+  property supportsActivityContinuation (TB,R,V_supportsActivityContinuation)
+  property activityContinuationIsEnabled (TB,R)
+  property serialQueueForSendingActivitiesToServer (T@"NSObject<OS_dispatch_queue>",R,C,V_serialQueueForSendingActivitiesToServer)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +_determineMatchingApplicationBundleIdentfierWithOptionsForActivityType:dynamicType:kind:teamIdentifier: @48@0:8@16@24Q32@40  imp=+0x1aa63d8d4
+  +defaultManager @16@0:8  imp=+0x1aa601354
+  +shouldSupportActivityContinuation B16@0:8  imp=+0x1aa6015b8
+  +userActivityContinuationSupported B16@0:8  imp=+0x1aa610834
+  -.cxx_destruct v16@0:8  imp=+0x1aa63e43c
+  -activeActivitiesByPriority @16@0:8  imp=+0x1aa63abf8
+  -activeUserActivitiesByUUID @16@0:8  imp=+0x1aa6038e4
+  -activeUserActivityUUID @16@0:8  imp=+0x1aa602494
+  -activities @16@0:8  imp=+0x1aa63d844
+  -activityContinuationIsEnabled B16@0:8  imp=+0x1aa6074d4
+  -addDynamicUserActivity:matching: v32@0:8@16@24  imp=+0x1aa63a64c
+  -addUserActivity: v24@0:8@16  imp=+0x1aa602cc8
+  -allowedToConnect B16@0:8  imp=+0x1aa6385c8
+  -askClientUserActivityToSave: v24@0:8@16  imp=+0x1aa63adb4
+  -askClientUserActivityToSave:completionHandler: v32@0:8@16@?24  imp=+0x1aa63af4c
+  -connection @16@0:8  imp=+0x1aa6038fc
+  -connectionInterrupted v16@0:8  imp=+0x1aa638ce4
+  -connectionInvalidated v16@0:8  imp=+0x1aa638f38
+  -createByDecodingUserActivity: @24@0:8@16  imp=+0x1aa63be24
+  -currentUserActivityProxiesWithOptions:predicate:completionHandler: B40@0:8@16@24@?32  imp=+0x1aa63c8f8
+  -currentUserActivityUUIDWithOptions:completionHandler: B32@0:8@16@?24  imp=+0x1aa63c218
+  -dealloc v16@0:8  imp=+0x1aa6389a4
+  -determineIfUserActivityIsCurrent:completionHandler: B32@0:8@16@?24  imp=+0x1aa63cf2c
+  -didReceiveInputStreamWithUUID:inputStream:outputStream: v40@0:8@16@24@32  imp=+0x1aa63b9fc
+  -encodeUserActivity: @24@0:8@16  imp=+0x1aa63bdf4
+  -encodeUserActivity:options: @32@0:8@16@24  imp=+0x1aa63bb54
+  -fetchUUID:intervalToWaitForDocumentSynchonization:withCompletionHandler: @40@0:8@16d24@?32  imp=+0x1aa638fd0
+  -hasUserActivityWithUUID: B24@0:8@16  imp=+0x1aa63d7a4
+  -init @16@0:8  imp=+0x1aa601404
+  -initWithConnection: @24@0:8@16  imp=+0x1aa6388a4
+  -initialServerHandshake: B20@0:8B16  imp=+0x1aa63e4bc
+  -makeActive: v24@0:8@16  imp=+0x1aa603174
+  -makeInactive: v24@0:8@16  imp=+0x1aa63aa5c
+  -markUserActivityAsDirty:forceImmediate: v28@0:8@16B24  imp=+0x1aa6043d0
+  -needToSendInitialMessage B16@0:8  imp=+0x1aa6042bc
+  -pinUserActivity:withCompletionHandler: v32@0:8@16@?24  imp=+0x1aa63d3d0
+  -registerAsProxyForApplication:options:completionBlock: B36@0:8i16@20@?28  imp=+0x1aa63dfa0
+  -registerForApplicationDeactivateIfNecessary v16@0:8  imp=+0x1aa609840
+  -registeredForAppResignationMessages B16@0:8  imp=+0x1aa6098b4
+  -removeDynamicUserActivity:matching: v32@0:8@16@24  imp=+0x1aa63a854
+  -removeUserActivity: v24@0:8@16  imp=+0x1aa606cdc
+  -sendCurrentActivityToIndexer: v24@0:8@16  imp=+0x1aa6104ec
+  -sendToIndexerIfAppropriate:force: v28@0:8@16B24  imp=+0x1aa6105c8
+  -sendUserActivityInfoToLSUserActivityd:makeCurrent: v28@0:8@16B24  imp=+0x1aa608760
+  -serialQueueForSendingActivitiesToServer @16@0:8  imp=+0x1aa63e420
+  -serverQ @16@0:8  imp=+0x1aa601a64
+  -setActiveUserActivitiesByUUID: v24@0:8@16  imp=+0x1aa63e434
+  -setActiveUserActivityUUID: v24@0:8@16  imp=+0x1aa6038f0
+  -setAllowedToConnect: v20@0:8B16  imp=+0x1aa638608
+  -setNeedToSendInitialMessage: v20@0:8B16  imp=+0x1aa604364
+  -setRegisteredForAppResignationMessages: v20@0:8B16  imp=+0x1aa6098c0
+  -setUserActivitiesByUUID: v24@0:8@16  imp=+0x1aa63e42c
+  -supportsActivityContinuation B16@0:8  imp=+0x1aa6074c8
+  -tellClientDebuggingEnabled:logFileHandle: v28@0:8B16@20  imp=+0x1aa63b91c
+  -tellClientUserActivityItWasResumed: v24@0:8@16  imp=+0x1aa63b73c
+  -tellDaemonAboutNewLSUserActivity: v24@0:8@16  imp=+0x1aa602778
+  -unregisterForApplicationDeactivation v16@0:8  imp=+0x1aa63dde8
+  -userActivitiesByUUID @16@0:8  imp=+0x1aa605d98
+  -userActivityForUUID: @24@0:8@16  imp=+0x1aa60a578
+  -userActivityIsActive: B24@0:8@16  imp=+0x1aa6023d4
+  -userActivityUUIDsSendToServer @16@0:8  imp=+0x1aa603870
+@class UAUserActivityProxy : NSObject <NSSecureCoding> instanceSize=64
+  ivar +8 _isRemoteActivity B
+  ivar +16 _activityType @"NSString"
+  ivar +24 _dynamicActivityType @"NSString"
+  ivar +32 _bundleIdentifier @"NSString"
+  ivar +40 _uuid @"NSUUID"
+  ivar +48 _internalActivity @"NSUserActivity"
+  ivar +56 _suggestedActivity @"UABestAppSuggestion"
+  property uuid (T@"NSUUID",C,V_uuid)
+  property internalActivity (T@"NSUserActivity",&,V_internalActivity)
+  property suggestedActivity (T@"UABestAppSuggestion",&,V_suggestedActivity)
+  property activityType (T@"NSString",R,V_activityType)
+  property dynamicActivityType (T@"NSString",R,V_dynamicActivityType)
+  property bundleIdentifier (T@"NSString",R,V_bundleIdentifier)
+  property isRemoteActivity (TB,R,V_isRemoteActivity)
+  +supportsSecureCoding B16@0:8  imp=+0x1aa62385c
+  -.cxx_destruct v16@0:8  imp=+0x1aa623c98
+  -accessActivity: v24@0:8@?16  imp=+0x1aa622d60
+  -activityIfAvailible @16@0:8  imp=+0x1aa6235a0
+  -activitySubTitle @16@0:8  imp=+0x1aa623670
+  -activityTitle @16@0:8  imp=+0x1aa6235f8
+  -activityType @16@0:8  imp=+0x1aa623c2c
+  -bundleIdentifier @16@0:8  imp=+0x1aa623c44
+  -contentAttributeSet @16@0:8  imp=+0x1aa623718
+  -description @16@0:8  imp=+0x1aa62378c
+  -dynamicActivityType @16@0:8  imp=+0x1aa623c38
+  -encodeWithCoder: v24@0:8@16  imp=+0x1aa623864
+  -hash Q16@0:8  imp=+0x1aa623564
+  -initWithActivity:bundleId: @32@0:8@16@24  imp=+0x1aa622a90
+  -initWithCoder: @24@0:8@16  imp=+0x1aa6239d4
+  -initWithSuggestion: @24@0:8@16  imp=+0x1aa622c50
+  -initWithUUID:activityType:bundleID: @40@0:8@16@24@32  imp=+0x1aa622a84
+  -initWithUUID:activityType:dynamicActivityType:bundleID: @48@0:8@16@24@32@40  imp=+0x1aa62290c
+  -internalActivity @16@0:8  imp=+0x1aa623c70
+  -isRemoteActivity B16@0:8  imp=+0x1aa623c64
+  -launchActivityWithOptions:completionHandler: v32@0:8@16@?24  imp=+0x1aa623124
+  -setInternalActivity: v24@0:8@16  imp=+0x1aa623c7c
+  -setSuggestedActivity: v24@0:8@16  imp=+0x1aa623c90
+  -setUuid: v24@0:8@16  imp=+0x1aa623c5c
+  -suggestedActivity @16@0:8  imp=+0x1aa623c84
+  -uuid @16@0:8  imp=+0x1aa623c50

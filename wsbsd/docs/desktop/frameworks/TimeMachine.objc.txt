@@ -1,0 +1,2997 @@
+@class TMAPFSBackup : TMBackup instanceSize=168
+  +URLForBuildUnderURL:error: @32@0:8@16^@24  imp=+0x1b56fa424
+  +structurePathComponentPattern @16@0:8  imp=+0x1b56fa40c
+  +structureType @16@0:8  imp=+0x1b56fa418
+  -description @16@0:8  imp=+0x1b56fae44
+  -moveUnderURL:newParent:error: @40@0:8@16@24^@32  imp=+0x1b56faad8
+  -setBackupState:error: B32@0:8Q16^@24  imp=+0x1b56fa718
+@class TMAPFSBackupListener : NSObject <TMBackupListener> instanceSize=24
+  ivar +8 _machineStoreURL @"NSURL"
+  ivar +16 _liveVolumeUUID @"NSString"
+  property machineStoreURL (T@"NSURL",R,V_machineStoreURL)
+  property liveVolumeUUID (T@"NSString",R,C,V_liveVolumeUUID)
+  property listenerID (T@"NSString",R)
+  +_extractDateFromBackupMountPoint: @24@0:8@16  imp=+0x1b56ae6d4
+  +_extractLiveVolumeUUIDFromBackupMountPoint: @24@0:8@16  imp=+0x1b56ae680
+  -.cxx_destruct v16@0:8  imp=+0x1b56ae774
+  -changesForDiskDisappear:invalidator: @32@0:8@16@24  imp=+0x1b56ae11c
+  -changesForDiskMount:invalidator: @32@0:8@16@24  imp=+0x1b56adf6c
+  -changesForNotification:invalidator: @32@0:8@16@24  imp=+0x1b56ae24c
+  -initWithMachineStoreURL: @24@0:8@16  imp=+0x1b56ada48
+  -initialBackupsByStateWithInvalidator:error: @32@0:8@16^@24  imp=+0x1b56adb00
+  -listenerID @16@0:8  imp=+0x1b56ad9f8
+  -liveVolumeUUID @16@0:8  imp=+0x1b56ae768
+  -machineStoreURL @16@0:8  imp=+0x1b56ae75c
+@class TMAPFSDisk : NSObject instanceSize=80
+  ivar +8 _volumeRole @"NSNumber"
+  ivar +16 _volumeGroupUUID @"NSString"
+  ivar +24 _bytesUsed @"NSNumber"
+  ivar +32 _bytesFree @"NSNumber"
+  ivar +40 _capacity @"NSNumber"
+  ivar +48 _quota @"NSNumber"
+  ivar +56 _maximumVolumeSize @"NSNumber"
+  ivar +64 _snapshotUUID @"NSString"
+  ivar +72 _snapshotXID Q
+  property volumeRole (T@"NSNumber",R,C,V_volumeRole)
+  property volumeGroupUUID (T@"NSString",R,C,V_volumeGroupUUID)
+  property bytesUsed (T@"NSNumber",R,C,V_bytesUsed)
+  property bytesFree (T@"NSNumber",R,C,V_bytesFree)
+  property capacity (T@"NSNumber",R,C,V_capacity)
+  property quota (T@"NSNumber",R,C,V_quota)
+  property maximumVolumeSize (T@"NSNumber",R,C,V_maximumVolumeSize)
+  property snapshotUUID (T@"NSString",R,C,V_snapshotUUID)
+  property snapshotXID (TQ,R,V_snapshotXID)
+  +_apfsVolumeGroupUUIDForDevicePath:mountPointPath: @32@0:8@16@24  imp=+0x1b56b67b0
+  +_apfsVolumeRoleForDeviceNode:mountPointPath: @32@0:8@16@24  imp=+0x1b56b66d0
+  +_containerBytesFreeForAPFSVolumeDevicePath: Q24@0:8@16  imp=+0x1b56b6a38
+  -.cxx_destruct v16@0:8  imp=+0x1b56b6bb0
+  -bytesFree @16@0:8  imp=+0x1b56b6b6c
+  -bytesUsed @16@0:8  imp=+0x1b56b6b60
+  -capacity @16@0:8  imp=+0x1b56b6b78
+  -initWithDevicePath:mountPoint:traitsSoFar:error: @48@0:8@16@24Q32^@40  imp=+0x1b56b62d0
+  -maximumVolumeSize @16@0:8  imp=+0x1b56b6b90
+  -quota @16@0:8  imp=+0x1b56b6b84
+  -snapshotUUID @16@0:8  imp=+0x1b56b6b9c
+  -snapshotXID Q16@0:8  imp=+0x1b56b6ba8
+  -volumeGroupUUID @16@0:8  imp=+0x1b56b6b54
+  -volumeRole @16@0:8  imp=+0x1b56b6b48
+@class TMAPFSMachineStore : TMMachineStore <TMBackupStoreRoot> instanceSize=56
+  property machineStoreURL (T@"NSURL",R)
+  property inheritanceHistoryURL (T@"NSURL",R)
+  property liveVolumeMountPoint (T@"NSURL",R)
+  property baselineBackupCandidate (T@"TMBackup",R)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  property sortedCompleteBackups (T@"NSArray",R)
+  property backupHistoryDictionary (T@"NSDictionary",R)
+  property backupDateHistory (T@"NSArray",R)
+  +URLForBuildUnderURL:error: @32@0:8@16^@24  imp=+0x1b56fb1b8
+  +_makeMachineStoreDirectoryAtURL:error: B32@0:8@16^@24  imp=+0x1b56fb694
+  +addMachineStoreRootACLsToURL:error: B32@0:8@16^@24  imp=+0x1b56fafb0
+  +annotatedStateAtURL: @24@0:8@16  imp=+0x1b56fb6a0
+  +enumerateURLsForReuseUnderURL:enumerator: v32@0:8@16@?24  imp=+0x1b56fba38
+  +machineAddress @16@0:8  imp=+0x1b56fafa4
+  +structureType @16@0:8  imp=+0x1b56faf98
+  +validateMachineStoreAttributesAtURL: B24@0:8@16  imp=+0x1b56fb69c
+  -_readOnlyBackups @16@0:8  imp=+0x1b56fc730
+  -_updateMachineStoreNameAtURL:previousComputerName:error: B40@0:8@16@24^@32  imp=+0x1b56fba4c
+  -baselineBackupCandidate @16@0:8  imp=+0x1b56fc098
+  -buildAtURL:parentURL:error: B40@0:8@16@24^@32  imp=+0x1b56fb3d8
+  -completedBackups @16@0:8  imp=+0x1b56fb8a4
+  -computerName @16@0:8  imp=+0x1b56fc174
+  -description @16@0:8  imp=+0x1b56fcc10
+  -finishBrowsingBackups: B24@0:8^@16  imp=+0x1b56fc808
+  -inheritanceHistoryURL @16@0:8  imp=+0x1b56fc034
+  -liveVolumeMountPoint @16@0:8  imp=+0x1b56fc094
+  -machineStoreURL @16@0:8  imp=+0x1b56fc030
+  -machineUUID @16@0:8  imp=+0x1b56fc118
+  -prepareAllBackupsForBrowsing: @24@0:8^@16  imp=+0x1b56fc224
+  -prepareBackupForBrowsingWithDate:error: @32@0:8@16^@24  imp=+0x1b56fc4d8
+  -refreshFromDisk q16@0:8  imp=+0x1b56fb7ac
+  -rename:error: B32@0:8@16^@24  imp=+0x1b56fbbd8
+  -revertToBackup:error: B32@0:8@16^@24  imp=+0x1b56fc990
+  -snapshotClass #16@0:8  imp=+0x1b56fbda8
+  -sortedCompleteBackups @16@0:8  imp=+0x1b56fbf44
+  -sortedWritableBackupsWithState: @24@0:8Q16  imp=+0x1b56fbdb4
+@class TMAsyncDelegate : NSObject <DMAsyncDelegate> instanceSize=56
+  ivar +8 _manager @"DMManager"
+  ivar +16 _startBlock @?
+  ivar +24 _progressBlock @?
+  ivar +32 _messageBlock @?
+  ivar +40 _errorBlock @?
+  ivar +48 _finishBlock @?
+  property startBlock (T@?,C,V_startBlock)
+  property progressBlock (T@?,C,V_progressBlock)
+  property messageBlock (T@?,C,V_messageBlock)
+  property errorBlock (T@?,C,V_errorBlock)
+  property finishBlock (T@?,C,V_finishBlock)
+  -.cxx_destruct v16@0:8  imp=+0x1b56c8bd4
+  -dealloc v16@0:8  imp=+0x1b56c8b18
+  -dmAsyncFinishedForDisk:mainError:detailError:dictionary: v40@0:8^{__DADisk=}16i24i28@32  imp=+0x1b56c89cc
+  -dmAsyncMessageForDisk:string:dictionary: v40@0:8^{__DADisk=}16@24@32  imp=+0x1b56c8918
+  -dmAsyncProgressForDisk:barberPole:percent: v32@0:8^{__DADisk=}16B24f28  imp=+0x1b56c8878
+  -dmAsyncStartedForDisk: v24@0:8^{__DADisk=}16  imp=+0x1b56c87f4
+  -errorBlock @?16@0:8  imp=+0x1b56c8bac
+  -finishBlock @?16@0:8  imp=+0x1b56c8bc0
+  -initWithManager: @24@0:8@16  imp=+0x1b56c8778
+  -messageBlock @?16@0:8  imp=+0x1b56c8b98
+  -progressBlock @?16@0:8  imp=+0x1b56c8b84
+  -setErrorBlock: v24@0:8@?16  imp=+0x1b56c8bb8
+  -setFinishBlock: v24@0:8@?16  imp=+0x1b56c8bcc
+  -setMessageBlock: v24@0:8@?16  imp=+0x1b56c8ba4
+  -setProgressBlock: v24@0:8@?16  imp=+0x1b56c8b90
+  -setStartBlock: v24@0:8@?16  imp=+0x1b56c8b7c
+  -startBlock @?16@0:8  imp=+0x1b56c8b70
+@class TMAttrListDiskFactory : NSObject instanceSize=8
+  +attrVolumeWithMountPoint:error: @32@0:8@16^@24  imp=+0x1b56b6c54
+  +bootedDataVolume @16@0:8  imp=+0x1b56b6c48
+  +mountedVolumes: @24@0:8^@16  imp=+0x1b56b6c3c
+@class TMBackup : TMStructure <TMAdoptableStructure, TMMountableBackupProtocol, TMMountedBackupProtocol> instanceSize=168
+  ivar +48 _snapshotVolumeIdentifier @"NSString"
+  ivar +56 _snapshotState i
+  ivar +64 _totalBytesCopied @"NSNumber"
+  ivar +72 _snapshotNumber @"NSNumber"
+  ivar +80 _backupVersion @"NSNumber"
+  ivar +88 _isInWorkingSet B
+  ivar +96 _attemptStartDate @"NSDate"
+  ivar +104 _attemptStartEventID Q
+  ivar +112 _attemptStartFileID Q
+  ivar +120 _dateStarted @"NSDate"
+  ivar +128 _dateCompleted @"NSDate"
+  ivar +136 _dateStartedAsInt Q
+  ivar +144 _dateCompletedAsInt Q
+  ivar +152 _state Q
+  ivar +160 _maximumFileID Q
+  property snapshotPath (T@"NSString",R)
+  property name (T@"NSString",R)
+  property state (TQ,R,V_state)
+  property isComplete (TB,R)
+  property attemptStartDate (T@"NSDate",R,V_attemptStartDate)
+  property attemptStartEventID (TQ,R,V_attemptStartEventID)
+  property attemptStartFileID (TQ,R,V_attemptStartFileID)
+  property dateStarted (T@"NSDate",R,V_dateStarted)
+  property dateCompleted (T@"NSDate",R,V_dateCompleted)
+  property dateStartedAsInt (TQ,R,V_dateStartedAsInt)
+  property dateCompletedAsInt (TQ,R,V_dateCompletedAsInt)
+  property isInWorkingSet (TB,V_isInWorkingSet)
+  property children (T@"NSArray",R)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  property rootURL (T@"NSURL",R)
+  property expectedBackupURL (T@"NSURL",R)
+  property maximumFileID (TQ,R,V_maximumFileID)
+  property url (T@"NSURL",R)
+  +URLForBuildUnderURL:error: @32@0:8@16^@24  imp=+0x1b56fcdd0
+  +annotatedStateAtURL: @24@0:8@16  imp=+0x1b56fcd00
+  +currentBackupVersion @16@0:8  imp=+0x1b56fd3f0
+  +deleteBackupAtURL:bytesDeleted:willUnlinkBlock:cancelBlock:error: B56@0:8@16^Q24@?32@?40^@48  imp=+0x1b56ff010
+  +fileEndOfLifeHandler @16@0:8  imp=+0x1b56fccc0
+  +setFileEndOfLifeHandler: v24@0:8@16  imp=+0x1b56fccb0
+  +standardDirectoryCreationOptions Q16@0:8  imp=+0x1b56fccd4
+  +standardDirectoryPermissions S16@0:8  imp=+0x1b56fcccc
+  +structureType @16@0:8  imp=+0x1b56fccf4
+  -.cxx_destruct v16@0:8  imp=+0x1b56ff800
+  -_backupStateFromLegacySnapshotState Q16@0:8  imp=+0x1b56fd9b8
+  -_dateFromDateInt: @24@0:8Q16  imp=+0x1b56fdb7c
+  -_legacySnapshotState i16@0:8  imp=+0x1b56fd9f0
+  -_markForDeletion i16@0:8  imp=+0x1b56fe8f4
+  -_setLegacySnapshotStateFromBackupState:error: B32@0:8Q16^@24  imp=+0x1b56fda78
+  -attemptStartDate @16@0:8  imp=+0x1b56fdba4
+  -attemptStartEventID Q16@0:8  imp=+0x1b56fdc60
+  -attemptStartFileID Q16@0:8  imp=+0x1b56fdce4
+  -backupVersion @16@0:8  imp=+0x1b56fd4d0
+  -buildAtURL:parentURL:error: B40@0:8@16@24^@32  imp=+0x1b56fcf40
+  -compare: q24@0:8@16  imp=+0x1b56ff524
+  -dateCompleted @16@0:8  imp=+0x1b56fde44
+  -dateCompletedAsInt Q16@0:8  imp=+0x1b56fdebc
+  -dateStarted @16@0:8  imp=+0x1b56fdd44
+  -dateStartedAsInt Q16@0:8  imp=+0x1b56fddbc
+  -deleteFromDiskWithCancelBlock:error: @32@0:8@?16^@24  imp=+0x1b56fe930
+  -description @16@0:8  imp=+0x1b56ff680
+  -expectedBackupURL @16@0:8  imp=+0x1b56fe05c
+  -finishBrowsing: B24@0:8^@16  imp=+0x1b56ff678
+  -isComplete B16@0:8  imp=+0x1b56fe000
+  -isInWorkingSet B16@0:8  imp=+0x1b56ff7d4
+  -isMounted B16@0:8  imp=+0x1b56fe050
+  -isNewerThanSnapshot: B24@0:8@16  imp=+0x1b56fd760
+  -maximumFileID Q16@0:8  imp=+0x1b56fe1ac
+  -moveUnderURL:newParent:error: @40@0:8@16@24^@32  imp=+0x1b56fe608
+  -name @16@0:8  imp=+0x1b56fd590
+  -readyForBrowsingWithOptions:error: @32@0:8Q16^@24  imp=+0x1b56ff674
+  -refreshFromDisk q16@0:8  imp=+0x1b56fe234
+  -rootURL @16@0:8  imp=+0x1b56fe058
+  -setBackupState:error: B32@0:8Q16^@24  imp=+0x1b56fd8f0
+  -setBackupVersion:error: B32@0:8@16^@24  imp=+0x1b56fd400
+  -setIsInWorkingSet: v20@0:8B16  imp=+0x1b56ff7ec
+  -setSnapshotNumber: B24@0:8@16  imp=+0x1b56fd5e0
+  -snapshotNumber @16@0:8  imp=+0x1b56fd6a0
+  -snapshotPath @16@0:8  imp=+0x1b56fe060
+  -state Q16@0:8  imp=+0x1b56fd850
+  -totalBytesCopied @16@0:8  imp=+0x1b56fdf44
+  -updateMaximumFileID: B24@0:8^@16  imp=+0x1b56fe0b0
+  -volumeStoreForVolumeUUID: @24@0:8@16  imp=+0x1b56fe48c
+  -volumeStoreVolumeUUIDs @16@0:8  imp=+0x1b56fe33c
+  -volumeStores @16@0:8  imp=+0x1b56fe32c
+@class TMBackupDataSource : NSObject instanceSize=96
+  ivar +8 _stateChangeBlock @?
+  ivar +16 _options Q
+  ivar +24 _prepareQueue @"NSObject<OS_dispatch_queue>"
+  ivar +32 _queue @"NSObject<OS_dispatch_queue>"
+  ivar +40 _observer @"TMVFSEventObserver"
+  ivar +48 _listeners @"NSMutableArray"
+  ivar +56 _installedListenerIDs @"NSMutableSet"
+  ivar +64 _listenersToAdd @"NSArray"
+  ivar +72 _invalidator @"TMXPCConnectionInvalidator"
+  ivar +80 _foundDates @"NSMutableSet"
+  ivar +88 _deletedDates @"NSMutableSet"
+  property stateChangeBlock (T@?,R,C,V_stateChangeBlock)
+  property options (TQ,R,V_options)
+  property prepareQueue (T@"NSObject<OS_dispatch_queue>",R,V_prepareQueue)
+  property queue (T@"NSObject<OS_dispatch_queue>",&,V_queue)
+  property observer (T@"TMVFSEventObserver",R,V_observer)
+  property listeners (T@"NSMutableArray",R,V_listeners)
+  property installedListenerIDs (T@"NSMutableSet",R,V_installedListenerIDs)
+  property listenersToAdd (T@"NSArray",R,V_listenersToAdd)
+  property invalidator (T@"TMXPCConnectionInvalidator",R,V_invalidator)
+  property foundDates (T@"NSMutableSet",R,V_foundDates)
+  property deletedDates (T@"NSMutableSet",R,V_deletedDates)
+  +_allDestinationIDs @16@0:8  imp=+0x1b56b0d7c
+  +checkBrowsingAvailabilityWithMask:completion: v32@0:8Q16@?24  imp=+0x1b56b168c
+  -.cxx_destruct v16@0:8  imp=+0x1b56b0cd8
+  -_backup:changedState: v32@0:8@16Q24  imp=+0x1b56b03a8
+  -_backups:changedState: v32@0:8@16Q24  imp=+0x1b56b0554
+  -_dispatchStateChanges: v24@0:8@16  imp=+0x1b56afdd0
+  -_handleBackupNotification: v24@0:8@16  imp=+0x1b56af7f4
+  -_handleMountNotificationWithDisk: v24@0:8@16  imp=+0x1b56afb50
+  -_installListenerForDisk: v24@0:8@16  imp=+0x1b56b0acc
+  -_installNewBackupListener: v24@0:8@16  imp=+0x1b56af32c
+  -_mountDestinationForDestinationID:error: @32@0:8@16^@24  imp=+0x1b56b13a4
+  -_shouldNotifyDelegateOfStateChange:forDate: B32@0:8Q16@24  imp=+0x1b56b028c
+  -_startObserversOnQueue: v24@0:8@16  imp=+0x1b56aee4c
+  -dealloc v16@0:8  imp=+0x1b56b08a8
+  -deletedDates @16@0:8  imp=+0x1b56b0ccc
+  -foundDates @16@0:8  imp=+0x1b56b0cc0
+  -initForAllDestinations:stateChangeBlock: @32@0:8^@16@?24  imp=+0x1b56ae7b8
+  -initForLocalSnapshotsOfVolume:error:stateChangeBlock: @40@0:8@16^@24@?32  imp=+0x1b56ae984
+  -initWithBackupVolumeMountPoint:error:stateChangeBlock: @40@0:8@16^@24@?32  imp=+0x1b56b08f0
+  -initWithMachineStoreURL:error:stateChangeBlock: @40@0:8@16^@24@?32  imp=+0x1b56ae7cc
+  -initWithOptions:listenersToAdd:stateChangeBlock: @40@0:8Q16@24@?32  imp=+0x1b56aea7c
+  -installedListenerIDs @16@0:8  imp=+0x1b56b0c9c
+  -invalidator @16@0:8  imp=+0x1b56b0cb4
+  -listeners @16@0:8  imp=+0x1b56b0c90
+  -listenersToAdd @16@0:8  imp=+0x1b56b0ca8
+  -mountAllDestinations v16@0:8  imp=+0x1b56b0f68
+  -observer @16@0:8  imp=+0x1b56b0c84
+  -options Q16@0:8  imp=+0x1b56b0c5c
+  -prepareQueue @16@0:8  imp=+0x1b56b0c64
+  -queue @16@0:8  imp=+0x1b56b0c70
+  -setQueue: v24@0:8@16  imp=+0x1b56b0c7c
+  -start v16@0:8  imp=+0x1b56aec18
+  -stateChangeBlock @?16@0:8  imp=+0x1b56b0c50
+  -stop v16@0:8  imp=+0x1b56b075c
+@class TMBackupDeleter : NSObject instanceSize=8
+  +defaultDeleter @16@0:8  imp=+0x1b56ff8b8
+  +setDefaultDeleter: v24@0:8@16  imp=+0x1b56ff958
+@class TMBackupInfo : NSObject <NSSecureCoding> instanceSize=72
+  ivar +8 _isTombstone B
+  ivar +16 _name @"NSString"
+  ivar +24 _dateOfPrecedingBackup @"NSDate"
+  ivar +32 _dateCompleted @"NSDate"
+  ivar +40 _expectedBackupURL @"NSURL"
+  ivar +48 _minimumFileID Q
+  ivar +56 _maximumFileID Q
+  ivar +64 _kind Q
+  property name (T@"NSString",R,V_name)
+  property dateOfPrecedingBackup (T@"NSDate",R,V_dateOfPrecedingBackup)
+  property dateCompleted (T@"NSDate",R,V_dateCompleted)
+  property expectedBackupURL (T@"NSURL",R,V_expectedBackupURL)
+  property minimumFileID (TQ,R,V_minimumFileID)
+  property maximumFileID (TQ,R,V_maximumFileID)
+  property kind (TQ,R,V_kind)
+  property isTombstone (TB,R,V_isTombstone)
+  +supportsSecureCoding B16@0:8  imp=+0x1b56d16bc
+  -.cxx_destruct v16@0:8  imp=+0x1b56d199c
+  -dateCompleted @16@0:8  imp=+0x1b56d1960
+  -dateOfPrecedingBackup @16@0:8  imp=+0x1b56d1954
+  -description @16@0:8  imp=+0x1b56d18c4
+  -encodeWithCoder: v24@0:8@16  imp=+0x1b56d16c4
+  -expectedBackupURL @16@0:8  imp=+0x1b56d196c
+  -initTombstoneWithName:date:expectedBackupURL:kind: @48@0:8@16@24@32Q40  imp=+0x1b56d1450
+  -initWithCoder: @24@0:8@16  imp=+0x1b56d148c
+  -initWithName:date:dateOfPrecedingBackup:minimumFileID:maximumFileID:expectedBackupURL:kind: @72@0:8@16@24@32Q40Q48@56Q64  imp=+0x1b56d1424
+  -initWithName:date:dateOfPrecedingBackup:minimumFileID:maximumFileID:expectedBackupURL:kind:isTombstone: @76@0:8@16@24@32Q40Q48@56Q64B72  imp=+0x1b56d12f0
+  -isTombstone B16@0:8  imp=+0x1b56d1990
+  -kind Q16@0:8  imp=+0x1b56d1988
+  -maximumFileID Q16@0:8  imp=+0x1b56d1980
+  -minimumFileID Q16@0:8  imp=+0x1b56d1978
+  -name @16@0:8  imp=+0x1b56d1948
+@class TMBackupProxy : NSObject <TMMountedBackupProtocol, TMBackupDataSourceBackup> instanceSize=24
+  ivar +8 _info @"TMBackupInfo"
+  ivar +16 _machineStoreURL @"NSURL"
+  property url (T@"NSURL",R)
+  property rootURL (T@"NSURL",R)
+  property expectedBackupURL (T@"NSURL",R)
+  property name (T@"NSString",R)
+  property isComplete (TB,R)
+  property dateCompleted (T@"NSDate",R)
+  property maximumFileID (TQ,R)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  property machineStoreURL (T@"NSURL",R,V_machineStoreURL)
+  property dateStarted (T@"NSDate",R)
+  property isTombstone (TB,R)
+  property info (T@"TMBackupInfo",R,V_info)
+  property kind (TQ,R)
+  property rootURL (T@"NSURL",R)
+  property expectedBackupURL (T@"NSURL",R)
+  property name (T@"NSString",R)
+  property isComplete (TB,R)
+  property dateCompleted (T@"NSDate",R)
+  property maximumFileID (TQ,R)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +proxiesFromInfo:machineStoreURL: @32@0:8@16@24  imp=+0x1b56e40b0
+  +proxiesFromLocalSnapshotInfo: @24@0:8@16  imp=+0x1b56e41d8
+  -.cxx_destruct v16@0:8  imp=+0x1b56e65cc
+  -_deleteBackupFromDisk: B24@0:8^@16  imp=+0x1b56e5e98
+  -_deleteLocalSnapshotFromDisk: B24@0:8^@16  imp=+0x1b56e61f4
+  -_finishBrowsingBackup: B24@0:8^@16  imp=+0x1b56e5af0
+  -_finishBrowsingLocalSnapshot: B24@0:8^@16  imp=+0x1b56e57a4
+  -_readyBackupForBrowsingWithOptions:error: @32@0:8Q16^@24  imp=+0x1b56e4fbc
+  -_readyLocalSnapshotForBrowsingWithOptions:error: @32@0:8Q16^@24  imp=+0x1b56e5370
+  -compare: q24@0:8@16  imp=+0x1b56e651c
+  -dateCompleted @16@0:8  imp=+0x1b56e3fac
+  -dateStarted @16@0:8  imp=+0x1b56e4ca8
+  -deleteFromDisk: B24@0:8^@16  imp=+0x1b56e5e18
+  -expectedBackupURL @16@0:8  imp=+0x1b56e3f5c
+  -finishBrowsing: B24@0:8^@16  imp=+0x1b56e5724
+  -info @16@0:8  imp=+0x1b56e65b4
+  -initTombstoneWithName:date:expectedBackupURL:kind: @48@0:8@16@24@32Q40  imp=+0x1b56e4a88
+  -initWithAPFSBackupDisk:machineStoreURL:error: @40@0:8@16@24^@32  imp=+0x1b56e465c
+  -initWithAPFSLocalSnapshotDisk:error: @32@0:8@16^@24  imp=+0x1b56e4834
+  -initWithBackupURL:machineStoreURL:error: @40@0:8@16@24^@32  imp=+0x1b56e4248
+  -initWithInfo:machineStoreURL: @32@0:8@16@24  imp=+0x1b56e4b78
+  -initWithLocalSnapshotsInfo: @24@0:8@16  imp=+0x1b56e4c20
+  -isComplete B16@0:8  imp=+0x1b56e4cf8
+  -isTombstone B16@0:8  imp=+0x1b56e4074
+  -kind Q16@0:8  imp=+0x1b56e4038
+  -machineStoreURL @16@0:8  imp=+0x1b56e65c0
+  -maximumFileID Q16@0:8  imp=+0x1b56e3ffc
+  -name @16@0:8  imp=+0x1b56e3f0c
+  -readyForBrowsingWithOptions:error: @32@0:8Q16^@24  imp=+0x1b56e4e40
+  -rootURL @16@0:8  imp=+0x1b56e4d00
+  -url @16@0:8  imp=+0x1b56e6610
+@class TMBackupStorage : TMMonoStructure <TMCompleteBackupProvider, TMBackupStoreRoot> instanceSize=56
+  ivar +48 _currentMachineStore @"TMMachineStore"
+  property machineStoreClass (T#,R)
+  property currentMachineStore (T@"TMMachineStore",&,V_currentMachineStore)
+  property sortedCompleteBackups (T@"NSArray",R)
+  property backupHistoryDictionary (T@"NSDictionary",R)
+  property backupDateHistory (T@"NSArray",R)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  property machineStoreURL (T@"NSURL",R)
+  property inheritanceHistoryURL (T@"NSURL",R)
+  property liveVolumeMountPoint (T@"NSURL",R)
+  property baselineBackupCandidate (T@"TMBackup",R)
+  +URLForBuildUnderURL:error: @32@0:8@16^@24  imp=+0x1b56ffae0
+  +annotatedStateAtURL: @24@0:8@16  imp=+0x1b56ffa0c
+  +readAtURL:parent:error: @40@0:8@16@24^@32  imp=+0x1b5700344
+  +structureType @16@0:8  imp=+0x1b56ffa00
+  -.cxx_destruct v16@0:8  imp=+0x1b5700f68
+  -backupDateHistory @16@0:8  imp=+0x1b5700b2c
+  -backupHistoryDictionary @16@0:8  imp=+0x1b5700adc
+  -baselineBackupCandidate @16@0:8  imp=+0x1b5700c98
+  -buildAtURL:parentURL:error: B40@0:8@16@24^@32  imp=+0x1b56ffecc
+  -currentMachineStore @16@0:8  imp=+0x1b5700f4c
+  -description @16@0:8  imp=+0x1b5700ebc
+  -finishBrowsingBackups: B24@0:8^@16  imp=+0x1b5700e5c
+  -inheritanceHistoryURL @16@0:8  imp=+0x1b5700bcc
+  -latestWritableBackupWithState: @24@0:8Q16  imp=+0x1b5700a34
+  -liveVolumeMountPoint @16@0:8  imp=+0x1b5700c48
+  -machineStoreClass #16@0:8  imp=+0x1b57009d0
+  -machineStoreURL @16@0:8  imp=+0x1b5700b7c
+  -prepareAllBackupsForBrowsing: @24@0:8^@16  imp=+0x1b5700ce8
+  -prepareBackupForBrowsingWithDate:error: @32@0:8@16^@24  imp=+0x1b5700ddc
+  -prepareForReuse: B24@0:8^@16  imp=+0x1b57006cc
+  -refreshFromDisk q16@0:8  imp=+0x1b57005f4
+  -removeInProgressBackups: @24@0:8^@16  imp=+0x1b5700e64
+  -setCurrentMachineStore: v24@0:8@16  imp=+0x1b5700f5c
+  -sortedCompleteBackups @16@0:8  imp=+0x1b5700a8c
+  -sortedWritableBackupsWithState: @24@0:8Q16  imp=+0x1b57009dc
+@class TMBackupdConnection : NSObject instanceSize=8
+  +backupProxy @16@0:8  imp=+0x1b56d0a70
+  +connectToBackupd:connectionBlock: B32@0:8^@16@?24  imp=+0x1b56d0af8
+  +connectToBackupd:timeout:connectionBlock: B40@0:8^@16Q24@?32  imp=+0x1b56d0b04
+  +connectToBackupd:timeout:invalidator:connectionBlock: B48@0:8^@16Q24@32@?40  imp=+0x1b56d0b10
+  +isUsingTestProxy B16@0:8  imp=+0x1b56d0f90
+  +setTestBackupProxy: v24@0:8@16  imp=+0x1b56d0fa4
+  +testBackupProxy @16@0:8  imp=+0x1b56d1004
+@class TMConfiguration : NSObject instanceSize=80
+  ivar +8 _outstandingChanges q
+  ivar +16 _outstandingChangesLock {_opaque_pthread_mutex_t="__sig"q"__opaque"[56c]}
+  property isTimeMachineConfigured (TB,R)
+  property automaticBackupsEnabled (TB)
+  property destinationDictionaries (T@"NSArray",C)
+  property errorForLastDestination (T@"NSError",R)
+  property globalPathExclusions (T@"NSArray",R)
+  property includedDisks (T@"NSSet",R)
+  property backupQoS (Tq,R)
+  property outstandingChanges (Tq,V_outstandingChanges)
+  property outstandingChangesLock (T{_opaque_pthread_mutex_t=q[56c]},V_outstandingChangesLock)
+  property restrictedSettings (Tq,R)
+  +_configurationChangesForKey: q24@0:8@16  imp=+0x1b56b34e8
+  +_expectedClassForKey: #24@0:8@16  imp=+0x1b56b2d24
+  +_keysImpactingExclusions @16@0:8  imp=+0x1b56b3428
+  +_notifyClientsOfConfigurationChanges: v24@0:8q16  imp=+0x1b56b5a94
+  +_synchronize: B24@0:8^@16  imp=+0x1b56b5a10
+  +adapter @16@0:8  imp=+0x1b56b58d4
+  +automaticBackupsEnabled B16@0:8  imp=+0x1b56b5b20
+  +destinationsPlist @16@0:8  imp=+0x1b56b5c00
+  +errorForLastDestination @16@0:8  imp=+0x1b56b5bac
+  +includedDisks @16@0:8  imp=+0x1b56b5c54
+  +isTimeMachineConfigured B16@0:8  imp=+0x1b56b5ae0
+  +save: B24@0:8^@16  imp=+0x1b56b598c
+  +setAdapter: v24@0:8@16  imp=+0x1b56b592c
+  +setAutomaticBackupsEnabled: B20@0:8B16  imp=+0x1b56b5b60
+  -_checkClassOfValue:forKey: B32@0:8@16@24  imp=+0x1b56b37e4
+  -_exclusionsDict @16@0:8  imp=+0x1b56b418c
+  -_isIncludedDisk:context: B32@0:8@16@24  imp=+0x1b56b4ac4
+  -_notifyClientsOfConfigurationChanges: v24@0:8q16  imp=+0x1b56b3c50
+  -_outstandingConfigurationChanges q16@0:8  imp=+0x1b56b397c
+  -_pathExclusionsForDestinationUUID:includePerDestinationExclusions: @28@0:8@16B24  imp=+0x1b56b4400
+  -_pathsForLegacyAliasArrayPrefsKey: @24@0:8@16  imp=+0x1b56b47f0
+  -_pathsForMountedDestinations @16@0:8  imp=+0x1b56b4950
+  -_postNotification: v24@0:8@16  imp=+0x1b56b3cd8
+  -_recordConfigurationChanges: v24@0:8q16  imp=+0x1b56b3930
+  -automaticBackupsEnabled B16@0:8  imp=+0x1b56b3eb0
+  -backupQoS q16@0:8  imp=+0x1b56b546c
+  -boolForKey: B24@0:8@16  imp=+0x1b56b3b28
+  -destinationDictionaries @16@0:8  imp=+0x1b56b3f88
+  -errorForLastDestination @16@0:8  imp=+0x1b56b3fa0
+  -excludedDisksForDestinationUUID: @24@0:8@16  imp=+0x1b56b5190
+  -excludedVolumeUUIDsForDestinationUUID: @24@0:8@16  imp=+0x1b56b50f0
+  -exclusionStatusForURL: q24@0:8@16  imp=+0x1b56b43f8
+  -exclusionStatusForURL:error: q32@0:8@16^@24  imp=+0x1b56b43e4
+  -globalPathExclusions @16@0:8  imp=+0x1b56b47dc
+  -includedDisks @16@0:8  imp=+0x1b56b4ec0
+  -isTimeMachineConfigured B16@0:8  imp=+0x1b56b3e70
+  -objectForKeyedSubscript: @24@0:8@16  imp=+0x1b56b3b20
+  -outstandingChanges q16@0:8  imp=+0x1b56b37a4
+  -outstandingChangesLock {_opaque_pthread_mutex_t=q[56c]}16@0:8  imp=+0x1b56b37b4
+  -pathExclusionsForDestinationUUID: @24@0:8@16  imp=+0x1b56b47e8
+  -postConfigurationChangedNotifications v16@0:8  imp=+0x1b56b3d34
+  -rawValueForKey: @24@0:8@16  imp=+0x1b56b359c
+  -restrictedSettings q16@0:8  imp=+0x1b56b364c
+  -save: B24@0:8^@16  imp=+0x1b56b3630
+  -setAutomaticBackupsEnabled: v20@0:8B16  imp=+0x1b56b3f2c
+  -setDestinationDictionaries: v24@0:8@16  imp=+0x1b56b3f94
+  -setObject:forKeyedSubscript: v32@0:8@16@24  imp=+0x1b56b3b24
+  -setOutstandingChanges: v24@0:8q16  imp=+0x1b56b37ac
+  -setOutstandingChangesLock: v80@0:8{_opaque_pthread_mutex_t=q[56c]}16  imp=+0x1b56b37cc
+  -setRawValue:forKey: v32@0:8@16@24  imp=+0x1b56b3570
+  -setValue:forKey: v32@0:8@16@24  imp=+0x1b56b3a4c
+  -valueForKey: @24@0:8@16  imp=+0x1b56b39b4
+@class TMConfigurationDiskEnumerationContext : NSObject instanceSize=56
+  ivar +8 _excludedVolumeUUIDs @"NSSet"
+  ivar +16 _includedVolumeUUIDs @"NSSet"
+  ivar +24 _pathsForVolumesExcludedByAliases @"NSSet"
+  ivar +32 _pathsForVolumesIncludedByAliases @"NSSet"
+  ivar +40 _pathsForVolumesWithLocalUserAccounts @"NSSet"
+  ivar +48 _pathsForDestinationVolumes @"NSSet"
+  property excludedVolumeUUIDs (T@"NSSet",C,V_excludedVolumeUUIDs)
+  property includedVolumeUUIDs (T@"NSSet",C,V_includedVolumeUUIDs)
+  property pathsForVolumesExcludedByAliases (T@"NSSet",C,V_pathsForVolumesExcludedByAliases)
+  property pathsForVolumesIncludedByAliases (T@"NSSet",C,V_pathsForVolumesIncludedByAliases)
+  property pathsForVolumesWithLocalUserAccounts (T@"NSSet",C,V_pathsForVolumesWithLocalUserAccounts)
+  property pathsForDestinationVolumes (T@"NSSet",C,V_pathsForDestinationVolumes)
+  -.cxx_destruct v16@0:8  imp=+0x1b56b3dfc
+  -excludedVolumeUUIDs @16@0:8  imp=+0x1b56b3d84
+  -includedVolumeUUIDs @16@0:8  imp=+0x1b56b3d98
+  -pathsForDestinationVolumes @16@0:8  imp=+0x1b56b3de8
+  -pathsForVolumesExcludedByAliases @16@0:8  imp=+0x1b56b3dac
+  -pathsForVolumesIncludedByAliases @16@0:8  imp=+0x1b56b3dc0
+  -pathsForVolumesWithLocalUserAccounts @16@0:8  imp=+0x1b56b3dd4
+  -setExcludedVolumeUUIDs: v24@0:8@16  imp=+0x1b56b3d90
+  -setIncludedVolumeUUIDs: v24@0:8@16  imp=+0x1b56b3da4
+  -setPathsForDestinationVolumes: v24@0:8@16  imp=+0x1b56b3df4
+  -setPathsForVolumesExcludedByAliases: v24@0:8@16  imp=+0x1b56b3db8
+  -setPathsForVolumesIncludedByAliases: v24@0:8@16  imp=+0x1b56b3dcc
+  -setPathsForVolumesWithLocalUserAccounts: v24@0:8@16  imp=+0x1b56b3de0
+@class TMDADisk : NSObject instanceSize=40
+  ivar +8 _sharesSpaceWithROSPDataOrSystemVolume B
+  ivar +16 _daVolumeName @"NSString"
+  ivar +24 _daBSDName @"NSString"
+  ivar +32 _volumeUUID @"NSString"
+  property sharesSpaceWithROSPDataOrSystemVolume (TB,R,V_sharesSpaceWithROSPDataOrSystemVolume)
+  property daVolumeName (T@"NSString",R,C,V_daVolumeName)
+  property daBSDName (T@"NSString",R,C,V_daBSDName)
+  property volumeUUID (T@"NSString",R,C,V_volumeUUID)
+  -.cxx_destruct v16@0:8  imp=+0x1b56b72d0
+  -daBSDName @16@0:8  imp=+0x1b56b72b8
+  -daVolumeName @16@0:8  imp=+0x1b56b72ac
+  -initWithMountPoint:traitsSoFar:dmManager:apfsManager:error: @56@0:8@16Q24@32@40^@48  imp=+0x1b56b70bc
+  -initWithMountPoint:traitsSoFar:error: @40@0:8@16Q24^@32  imp=+0x1b56b6d2c
+  -sharesSpaceWithROSPDataOrSystemVolume B16@0:8  imp=+0x1b56b72a0
+  -volumeUUID @16@0:8  imp=+0x1b56b72c4
+@class TMDefaultConfigurationAdapter : NSObject <TMConfigurationAdapter> instanceSize=16
+  ivar +8 _configuration @"TMConfiguration"
+  property configuration (T@"TMConfiguration",R,V_configuration)
+  property restrictedSettings (Tq,R)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1b56b58c8
+  -configuration @16@0:8  imp=+0x1b56b58bc
+  -init @16@0:8  imp=+0x1b56b5628
+  -objectForKeyedSubscript: @24@0:8@16  imp=+0x1b56b5784
+  -restrictedSettings q16@0:8  imp=+0x1b56b5880
+  -setObject:forKeyedSubscript: v32@0:8@16@24  imp=+0x1b56b57fc
+  -setValue:forKey:error: B40@0:8@16@24^@32  imp=+0x1b56b5708
+  -valueForKey: @24@0:8@16  imp=+0x1b56b5690
+@class TMDeviceRulesEngine : NSObject instanceSize=144
+  ivar +8 _disk @"TMDisk"
+  ivar +16 _baseFilter @"MDSPathFilter"
+  ivar +24 _customExclusionsFilter @"MDSPathFilter"
+  ivar +32 _spotlightOracle @"TMSpotlightOracle"
+  ivar +40 _stickyExclusionPaths @"NSSet"
+  ivar +48 _stats {_TMRulesEngineStatistics="urlQueryCount"Q"pathQueryCount"Q"rawPathQueryCount"Q"deviceIDFaults"Q"isDirectoryFaults"Q"contentsExcludedHits"Q"fileContentsExcludedHits"Q"spotlightMisses"Q"stickyXattrFaults"Q}
+  ivar +120 _stickyExclusionCacheLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +128 _undiscoveredStickyExclusionCache ^{_CFBurstTrie=}
+  ivar +136 _neverEnumeratePaths @"NSArray"
+  property stickyExclusionPaths (T@"NSSet",C,V_stickyExclusionPaths)
+  property disk (T@"TMDisk",R,V_disk)
+  property baseFilter (T@"MDSPathFilter",R,V_baseFilter)
+  property customExclusionsFilter (T@"MDSPathFilter",R,V_customExclusionsFilter)
+  property spotlightOracle (T@"TMSpotlightOracle",R,V_spotlightOracle)
+  property neverEnumeratePaths (T@"NSArray",R,C,V_neverEnumeratePaths)
+  property statistics (T{_TMRulesEngineStatistics=QQQQQQQQQ},R,V_stats)
+  -.cxx_destruct v16@0:8  imp=+0x1b56df364
+  -URLIsExcluded:hints: B32@0:8@16^{_TMRulesQueryHints=SiBBB}24  imp=+0x1b56de714
+  -URLIsExcluded:hints:details: B40@0:8@16^{_TMRulesQueryHints=SiBBB}24^{_TMRulesQueryDetails=BBBBQ}32  imp=+0x1b56de798
+  -URLIsExcluded:isDir: B28@0:8@16B24  imp=+0x1b56de71c
+  -_cacheContainsRawPath:length:isExcluded: B40@0:8r*16Q24^B32  imp=+0x1b56df0e4
+  -_dumpCache v16@0:8  imp=+0x1b56df24c
+  -_exclusionStatusForFilesystemRepresentation:hints:details:error: q48@0:8r*16^{_TMRulesQueryHints=SiBBB}24^{_TMRulesQueryDetails=BBBBQ}32^@40  imp=+0x1b56deb54
+  -_fillCachedExclusionAnswer:forParentLevels:ofRawPath:length: v40@0:8B16I20r*24Q32  imp=+0x1b56df16c
+  -_fillCachedExclusionAnswer:forRawPath:length: v36@0:8B16r*20Q28  imp=+0x1b56df1e0
+  -_rawPathIsExcluded:hints:details: B40@0:8r*16^{_TMRulesQueryHints=SiBBB}24^{_TMRulesQueryDetails=BBBBQ}32  imp=+0x1b56dea80
+  -_rawPathIsFile:hints: B32@0:8r*16^{_TMRulesQueryHints=SiBBB}24  imp=+0x1b56ded30
+  -_undiscoveredStickyExclusionStatusForRawPath:filterRules:hints:error: q68@0:8r*16{?=QQSSSSSS}24^{_TMRulesQueryHints=SiBBB}52^@60  imp=+0x1b56dee78
+  -baseFilter @16@0:8  imp=+0x1b56df308
+  -customExclusionsFilter @16@0:8  imp=+0x1b56df314
+  -dealloc v16@0:8  imp=+0x1b56de6c4
+  -disk @16@0:8  imp=+0x1b56df2fc
+  -exclusionStatusForFilesystemRepresentation:hints:error: q40@0:8r*16^{_TMRulesQueryHints=SiBBB}24^@32  imp=+0x1b56deaa4
+  -initWithDisk:baseFilter:customExclusionsFilter:spotlightOracle: @48@0:8@16@24@32@40  imp=+0x1b56de4b8
+  -neverEnumeratePaths @16@0:8  imp=+0x1b56df358
+  -pathIsExcluded:hints: B32@0:8@16^{_TMRulesQueryHints=SiBBB}24  imp=+0x1b56de878
+  -pathIsExcluded:hints:details: B40@0:8@16^{_TMRulesQueryHints=SiBBB}24^{_TMRulesQueryDetails=BBBBQ}32  imp=+0x1b56de880
+  -pathIsExcluded:isDir: B28@0:8@16B24  imp=+0x1b56de838
+  -rawPathIsExcluded:hints: B32@0:8r*16^{_TMRulesQueryHints=SiBBB}24  imp=+0x1b56de918
+  -rawPathIsExcluded:hints:details: B40@0:8r*16^{_TMRulesQueryHints=SiBBB}24^{_TMRulesQueryDetails=BBBBQ}32  imp=+0x1b56de920
+  -realmForPath: Q24@0:8@16  imp=+0x1b56de9b4
+  -realmForRawPath: Q24@0:8r*16  imp=+0x1b56dea30
+  -realmForURL: Q24@0:8@16  imp=+0x1b56de930
+  -setStickyExclusionPaths: v24@0:8@16  imp=+0x1b56df350
+  -spotlightOracle @16@0:8  imp=+0x1b56df320
+  -statistics {_TMRulesEngineStatistics=QQQQQQQQQ}16@0:8  imp=+0x1b56df32c
+  -stickyExclusionPaths @16@0:8  imp=+0x1b56df344
+@class TMDisk : NSObject instanceSize=40
+  ivar +8 _attrInfo @"<TMAttrListDisk>"
+  ivar +16 _ioInfo @"TMIOKitDisk"
+  ivar +24 _otherIOInfo @"TMOtherIODisk"
+  ivar +32 _traits Q
+  property liveDisk (T@"TMDisk",R)
+  property mountedDisksInVolumeGroup (T@"NSArray",R)
+  property deviceNode (T@"NSString",R,C)
+  property attrInfo (T@"<TMAttrListDisk>",R,V_attrInfo)
+  property ioInfo (T@"TMIOKitDisk",R,V_ioInfo)
+  property otherIOInfo (T@"TMOtherIODisk",R,V_otherIOInfo)
+  property traits (TQ,R,V_traits)
+  property mountPointURL (T@"NSURL",R)
+  property mountPoint (T@"NSString",R)
+  property devicePath (T@"NSString",R)
+  property fsid (T{fsid=[2i]},R)
+  property device (Ti,R)
+  property filesystemTypeName (T@"NSString",R)
+  property capacity (T@"NSNumber",R)
+  property volumeUUID (T@"NSString",R)
+  property volumeName (T@"NSString",R)
+  property userVisibleVolumeName (T@"NSString",R)
+  property mediumType (TQ,R)
+  property bytesUsed (T@"NSNumber",R)
+  property bytesFree (T@"NSNumber",R)
+  property quota (T@"NSNumber",R)
+  property maximumVolumeSize (T@"NSNumber",R)
+  property apfsVolumeGroupUUID (T@"NSString",R)
+  property apfsVolumeRole (T@"NSNumber",R)
+  property apfsSnapshotName (T@"NSString",R)
+  property apfsSnapshotXID (TQ,R)
+  property liveDiskDevice (T@"NSString",R)
+  property eligibleForBackup (TB,R)
+  property includedByDefault (TB,R)
+  property backedByDiskImage (TB,R)
+  property isAppleBootPartition (TB,R)
+  property supportsBackupStores (TB,R)
+  property supportsBackupDiskImages (TB,R)
+  property hasRecoveryRole (TB,R)
+  property isCaseSensitive (TB,R)
+  property mountedTargetDiskMode (TB,R)
+  property supportsProtectedFiles (TB,R)
+  property isROSPSystemVolume (TB,R)
+  property isROSPDataVolume (TB,R)
+  property hasBackupVolumeRole (TB,R)
+  property isInternalDevice (TB,R)
+  property isFullDiskEncrypted (TB,R)
+  property isStartupDisk (TB,R)
+  property isInStartupVolumeGroup (TB,R)
+  property mountedLocally (TB,R)
+  property mountedVisibly (TB,R)
+  property userVisibleVolume (TB,R)
+  property mountedReadOnly (TB,R)
+  property isJournaled (TB,R)
+  property ignoringOwnership (TB,R)
+  property isBackupVolume (TB,R)
+  property isAPFS (TB,R)
+  property isHFSExtended (TB,R)
+  property isHFS (TB,R)
+  property isXSAN (TB,R)
+  property isEXFAT (TB,R)
+  property isFAT (TB,R)
+  property isNTFS (TB,R)
+  property isSMB (TB,R)
+  property isAFP (TB,R)
+  property isWindows (TB,R)
+  property isAPFSSnapshot (TB,R)
+  +_logTraitsPreventingSetupOffer:mountPoint: v32@0:8Q16@24  imp=+0x1b56baef0
+  +bootedROSPDataVolume @16@0:8  imp=+0x1b56b7a94
+  +bootedROSPSystemVolume @16@0:8  imp=+0x1b56b7a54
+  +dataDiskForVolumeGroupUUID: @24@0:8@16  imp=+0x1b56b782c
+  +diskForMountPoint: @24@0:8@16  imp=+0x1b56bb3bc
+  +diskForMountPoint:error: @32@0:8@16^@24  imp=+0x1b56bb350
+  +diskForVolumeUUID: @24@0:8@16  imp=+0x1b56b7320
+  +diskForVolumeUUID:error: @32@0:8@16^@24  imp=+0x1b56b73ec
+  +disksWithAPFSSnapshots @16@0:8  imp=+0x1b56b9120
+  +enumerateMountedDisksUsingBlock: v24@0:8@?16  imp=+0x1b56bb160
+  +shouldPresentSetupOfferForDisk: B24@0:8@16  imp=+0x1b56baca0
+  +systemDiskForVolumeGroupUUID: @24@0:8@16  imp=+0x1b56b75ec
+  -.cxx_destruct v16@0:8  imp=+0x1b56b8974
+  -apfsSnapshotName @16@0:8  imp=+0x1b56b82f4
+  -apfsSnapshotXID Q16@0:8  imp=+0x1b56b82fc
+  -apfsVolumeGroupUUID @16@0:8  imp=+0x1b56b82ec
+  -apfsVolumeRole @16@0:8  imp=+0x1b56b82e4
+  -attrInfo @16@0:8  imp=+0x1b56b8948
+  -backedByDiskImage B16@0:8  imp=+0x1b56b8510
+  -bytesFree @16@0:8  imp=+0x1b56b8774
+  -bytesUsed @16@0:8  imp=+0x1b56b878c
+  -calculateBytesUsedByAllSnapshots: @24@0:8^@16  imp=+0x1b56ba254
+  -calculateLiveVolumeBytesUsed @16@0:8  imp=+0x1b56ba118
+  -calculateVolumeBytesUsedIncludingSnapshots @16@0:8  imp=+0x1b56ba018
+  -capacity @16@0:8  imp=+0x1b56b8784
+  -checkIsCoreStorage B16@0:8  imp=+0x1b56b8f48
+  -configureNetworkVolumeOptionsAndDisablePrimaryReconnect: B20@0:8B16  imp=+0x1b56bac98
+  -configureReconnectTimeoutsDisablePrimaryReconnect:disableNetworkQoS: B24@0:8B16B20  imp=+0x1b56ba508
+  -createAPFSSnapshot:error: B32@0:8@16^@24  imp=+0x1b56b9270
+  -deleteAPFSSnapshot:error: B32@0:8@16^@24  imp=+0x1b56b9500
+  -description @16@0:8  imp=+0x1b56b8154
+  -device i16@0:8  imp=+0x1b56b8754
+  -deviceNode @16@0:8  imp=+0x1b56bb15c
+  -devicePath @16@0:8  imp=+0x1b56b82dc
+  -eligibleForBackup B16@0:8  imp=+0x1b56b85fc
+  -filesystemTypeName @16@0:8  imp=+0x1b56b876c
+  -fsid {fsid=[2i]}16@0:8  imp=+0x1b56b874c
+  -hasBackupVolumeRole B16@0:8  imp=+0x1b56b8540
+  -hasRecoveryRole B16@0:8  imp=+0x1b56b854c
+  -hash Q16@0:8  imp=+0x1b56b8200
+  -ignoringOwnership B16@0:8  imp=+0x1b56b84ec
+  -includedByDefault B16@0:8  imp=+0x1b56b867c
+  -initWithAttrInfo:error: @32@0:8@16^@24  imp=+0x1b56b7d64
+  -initWithAttrInfo:ioInfo:otherIOInfo: @40@0:8@16@24@32  imp=+0x1b56b7ff0
+  -initWithMountPoint:error: @32@0:8@16^@24  imp=+0x1b56b7b38
+  -initWithMountPointPath:error: @32@0:8@16^@24  imp=+0x1b56b7ad4
+  -ioInfo @16@0:8  imp=+0x1b56b8954
+  -isAFP B16@0:8  imp=+0x1b56b83e8
+  -isAPFS B16@0:8  imp=+0x1b56ac4f8
+  -isAPFSSnapshot B16@0:8  imp=+0x1b56ac504
+  -isAppleBootPartition B16@0:8  imp=+0x1b56b851c
+  -isBackupVolume B16@0:8  imp=+0x1b56b8310
+  -isCaseSensitive B16@0:8  imp=+0x1b56b8558
+  -isEXFAT B16@0:8  imp=+0x1b56b83b8
+  -isEqual: B24@0:8@16  imp=+0x1b56b823c
+  -isFAT B16@0:8  imp=+0x1b56b83c4
+  -isFullDiskEncrypted B16@0:8  imp=+0x1b56b8564
+  -isHFS B16@0:8  imp=+0x1b56b83a0
+  -isHFSExtended B16@0:8  imp=+0x1b56b8384
+  -isInStartupVolumeGroup B16@0:8  imp=+0x1b56b84bc
+  -isInternalDevice B16@0:8  imp=+0x1b56b8504
+  -isJournaled B16@0:8  imp=+0x1b56b84e0
+  -isNTFS B16@0:8  imp=+0x1b56b83d0
+  -isROSPDataVolume B16@0:8  imp=+0x1b56b8534
+  -isROSPSystemVolume B16@0:8  imp=+0x1b56b8528
+  -isSMB B16@0:8  imp=+0x1b56b83dc
+  -isStartupDisk B16@0:8  imp=+0x1b56b84b0
+  -isWindows B16@0:8  imp=+0x1b56b83f4
+  -isXSAN B16@0:8  imp=+0x1b56b83ac
+  -liveDisk @16@0:8  imp=+0x1b56ba2ec
+  -liveDiskDevice @16@0:8  imp=+0x1b56b873c
+  -makeDatalessAPFSSnapshot:error: B32@0:8@16^@24  imp=+0x1b56b9b04
+  -maximumVolumeSize @16@0:8  imp=+0x1b56b8880
+  -mediumType Q16@0:8  imp=+0x1b56b8714
+  -mountAPFSSnapshot:atMountPoint:error: B40@0:8@16@24^@32  imp=+0x1b56b9e0c
+  -mountPoint @16@0:8  imp=+0x1b56ac6c8
+  -mountPointURL @16@0:8  imp=+0x1b56ac528
+  -mountedDisksInVolumeGroup @16@0:8  imp=+0x1b56ba388
+  -mountedLocally B16@0:8  imp=+0x1b56b84c8
+  -mountedReadOnly B16@0:8  imp=+0x1b56ac51c
+  -mountedTargetDiskMode B16@0:8  imp=+0x1b56b8304
+  -mountedVisibly B16@0:8  imp=+0x1b56b84d4
+  -otherIOInfo @16@0:8  imp=+0x1b56b8960
+  -quota @16@0:8  imp=+0x1b56b877c
+  -quotaGB @16@0:8  imp=+0x1b56b8404
+  -renameAPFSSnapshot:to:error: B40@0:8@16@24^@32  imp=+0x1b56b96e4
+  -settingIgnoreOwnership: @20@0:8B16  imp=+0x1b56b89c4
+  -settingQuota:error: @32@0:8@16^@24  imp=+0x1b56b8c64
+  -settingQuotaGB:error: @32@0:8@16^@24  imp=+0x1b56b8ebc
+  -supportsBackupDiskImages B16@0:8  imp=+0x1b56b85c4
+  -supportsBackupStores B16@0:8  imp=+0x1b56b8594
+  -supportsProtectedFiles B16@0:8  imp=+0x1b56b84f8
+  -traits Q16@0:8  imp=+0x1b56b896c
+  -userVisibleVolume B16@0:8  imp=+0x1b56b8330
+  -userVisibleVolumeName @16@0:8  imp=+0x1b56b8734
+  -volumeName @16@0:8  imp=+0x1b56b872c
+  -volumeUUID @16@0:8  imp=+0x1b56b8744
+  -waitForSnapshotDeletionUntil:error: B32@0:8@16^@24  imp=+0x1b56b98f0
+@class TMDiskArbiter : NSObject instanceSize=24
+  ivar +8 _daSession ^{__DASession=}
+  ivar +16 _dmManager @"DMManager"
+  -.cxx_destruct v16@0:8  imp=+0x1b5707b9c
+  -_performSynchronousOperation:withDisk:options:diskInfo:error: B48@0:8I16^{__DADisk=}20I28o^@32o^@40  imp=+0x1b570775c
+  -copyDiskForDevice: ^{__DADisk=}24@0:8@16  imp=+0x1b5707638
+  -dealloc v16@0:8  imp=+0x1b570753c
+  -ejectDisk:error: B32@0:8^{__DADisk=}16o^@24  imp=+0x1b5707744
+  -init @16@0:8  imp=+0x1b5707490
+  -isDevicePresent: B24@0:8@16  imp=+0x1b5707b40
+  -manager @16@0:8  imp=+0x1b57075a0
+  -mountDisk:error: @32@0:8^{__DADisk=}16o^@24  imp=+0x1b570769c
+  -unmountDisk:error: B32@0:8^{__DADisk=}16o^@24  imp=+0x1b5707708
+  -unmountDisk:force:error: B36@0:8^{__DADisk=}16B24o^@28  imp=+0x1b5707720
+@class TMDiskImage : NSObject instanceSize=24
+  ivar +8 _qos q
+  ivar +16 _diskImageURL @"NSURL"
+  property diskImageURL (T@"NSURL",C,V_diskImageURL)
+  property qos (Tq,R,V_qos)
+  property displayName (T@"NSString",R)
+  property hostUUID (T@"NSString",R)
+  property macAddress (T@"NSString",R)
+  property encryptionState (TI,R)
+  property backupDiskMountPoint (T@"NSURL",R)
+  property backupDiskDeviceName (T@"NSString",R)
+  property _backupDiskDescription (T@"NSDictionary",R)
+  property backupDiskIsWritable (TB,R)
+  property backupDiskIsMountable (TB,R)
+  property backupDiskIsAPFS (TB,R)
+  property backupDiskIsHFS (TB,R)
+  property isIncomplete (TB,R)
+  property isPurgeable (TB,R)
+  property isPartiallyCreated (TB,R)
+  property isSafeToDelete (TB,R)
+  +diskImageMatchingThisComputerInDirectory:qos: @32@0:8@16q24  imp=+0x1b56bb960
+  +diskImagesInDirectory:error: @32@0:8@16^@24  imp=+0x1b56bb954
+  +diskImagesInDirectory:qos:error: @40@0:8@16q24^@32  imp=+0x1b56bb41c
+  +diskImagesInDirectory:qos:includeIncomplete:error: @44@0:8@16q24B32^@36  imp=+0x1b56bb428
+  -.cxx_destruct v16@0:8  imp=+0x1b56c02b0
+  -_backupDiskDescription @16@0:8  imp=+0x1b56bd8fc
+  -_bsdNameForMedia: @20@0:8I16  imp=+0x1b56bcdf8
+  -_detachOrphanDiskImages v16@0:8  imp=+0x1b56bd3fc
+  -_deviceNames @16@0:8  imp=+0x1b56bcfec
+  -_deviceNamesForDiskImagePath: @24@0:8@16  imp=+0x1b56bd064
+  -_ejectDeviceNames: v24@0:8@16  imp=+0x1b56bee5c
+  -_encryptionStateForDrive: I20@0:8I16  imp=+0x1b56be4b0
+  -_fullfsync: B24@0:8^@16  imp=+0x1b56bf334
+  -_imagePathForDrive: @20@0:8I16  imp=+0x1b56bce80
+  -_iterate:options:usingBlock: v32@0:8I16B20@?24  imp=+0x1b56bcd54
+  -_setHostUUID:modelID: B32@0:8@16@24  imp=+0x1b56bcc20
+  -_tokenURL @16@0:8  imp=+0x1b56bbf98
+  -_unmountDeviceNames:force: B28@0:8@16B24  imp=+0x1b56befd0
+  -associatedDictionaryForName:error: @32@0:8@16^@24  imp=+0x1b56bc1c4
+  -asynchronouslyDelete: B24@0:8^@16  imp=+0x1b56bff90
+  -attachFileMode:autoMount:error: @36@0:8q16B24^@28  imp=+0x1b56beb7c
+  -attemptToEnsureImageIsNotInUse v16@0:8  imp=+0x1b56bf534
+  -backupDiskDeviceName @16@0:8  imp=+0x1b56bdfa0
+  -backupDiskIsAPFS B16@0:8  imp=+0x1b56be3b0
+  -backupDiskIsHFS B16@0:8  imp=+0x1b56be1b4
+  -backupDiskIsMountable B16@0:8  imp=+0x1b56be150
+  -backupDiskIsWritable B16@0:8  imp=+0x1b56be0ec
+  -backupDiskMountPoint @16@0:8  imp=+0x1b56be090
+  -diskImageURL @16@0:8  imp=+0x1b56c029c
+  -displayName @16@0:8  imp=+0x1b56bc12c
+  -eject v16@0:8  imp=+0x1b56bee10
+  -encryptionState I16@0:8  imp=+0x1b56be53c
+  -encryptionUUID @16@0:8  imp=+0x1b56be7fc
+  -hostUUID @16@0:8  imp=+0x1b56bc88c
+  -imageInfoOpenEncryption:returningError: @28@0:8B16^@20  imp=+0x1b56be8b0
+  -initWithDiskImageURL: @24@0:8@16  imp=+0x1b56bbf90
+  -initWithDiskImageURL:qos: @32@0:8@16q24  imp=+0x1b56bbe28
+  -isImmutable B16@0:8  imp=+0x1b56bc028
+  -isIncomplete B16@0:8  imp=+0x1b56bf794
+  -isPartiallyCreated B16@0:8  imp=+0x1b56bf670
+  -isPurgeable B16@0:8  imp=+0x1b56bf578
+  -isSafeToDelete B16@0:8  imp=+0x1b56bf964
+  -macAddress @16@0:8  imp=+0x1b56bc8ec
+  -matchesAnyHostUUIDs: B24@0:8@16  imp=+0x1b56bbd10
+  -matchesHostUUID: B24@0:8@16  imp=+0x1b56bbb8c
+  -matchesMACAddress: B24@0:8@16  imp=+0x1b56bbbfc
+  -matchesThisComputer B16@0:8  imp=+0x1b56bbc88
+  -qos q16@0:8  imp=+0x1b56c0294
+  -readTimeMachineInfo: @24@0:8^@16  imp=+0x1b56bc86c
+  -renameUniquelyUsingBaseName:extension:error: @40@0:8@16@24^@32  imp=+0x1b56bfa18
+  -setAssociatedDictionary:forName:error: B40@0:8@16@24^@32  imp=+0x1b56bc424
+  -setDiskImageURL: v24@0:8@16  imp=+0x1b56c02a8
+  -setImmutable: B20@0:8B16  imp=+0x1b56bc098
+  -setSyncablePasswordID: B24@0:8@16  imp=+0x1b56beae8
+  -syncablePasswordID @16@0:8  imp=+0x1b56bea8c
+  -unmountForce: B20@0:8B16  imp=+0x1b56bef78
+  -updateAndRenameForThisComputer @16@0:8  imp=+0x1b56bcacc
+  -updateMachineInfoForThisComputer B16@0:8  imp=+0x1b56bcbac
+  -writeTimeMachineInfo:error: B32@0:8@16^@24  imp=+0x1b56bc87c
+@class TMFirmLinkMap : NSObject instanceSize=32
+  ivar +8 _group ^{_fakelink_group=}
+  ivar +16 _systemDisk @"TMDisk"
+  ivar +24 _dataDisk @"TMDisk"
+  property systemDisk (T@"TMDisk",R,C,V_systemDisk)
+  property dataDisk (T@"TMDisk",R,C,V_dataDisk)
+  property virtualLinksOnSystemVolume (T@"NSArray",R,C)
+  +currentRootFirmLinkMap @16@0:8  imp=+0x1b56d6094
+  -.cxx_destruct v16@0:8  imp=+0x1b56d68b0
+  -absolutePathOnDataVolumeByResolvingFirmLinkInPath: @24@0:8@16  imp=+0x1b56d6680
+  -dataDisk @16@0:8  imp=+0x1b56d68a4
+  -dealloc v16@0:8  imp=+0x1b56d6474
+  -firmLinkedPathByUnresolvingAbsolutePathOnDataVolume: @24@0:8@16  imp=+0x1b56d678c
+  -initWithMountPoint: @24@0:8@16  imp=+0x1b56d6124
+  -initWithSystemDisk:dataDisk:firmLinkManifest:syntheticManifest: @48@0:8@16@24@32@40  imp=+0x1b56d62d0
+  -systemDisk @16@0:8  imp=+0x1b56d6898
+  -virtualLinksOnSystemVolume @16@0:8  imp=+0x1b56d64c4
+@class TMHFSBackupListener : NSObject <TMBackupListener> instanceSize=16
+  ivar +8 _machineStoreURL @"NSURL"
+  property machineStoreURL (T@"NSURL",R,V_machineStoreURL)
+  property listenerID (T@"NSString",R)
+  -.cxx_destruct v16@0:8  imp=+0x1b56b2374
+  -changesForDiskDisappear:invalidator: @32@0:8@16@24  imp=+0x1b56b1f18
+  -changesForDiskMount:invalidator: @32@0:8@16@24  imp=+0x1b56b1f10
+  -changesForNotification:invalidator: @32@0:8@16@24  imp=+0x1b56b1f20
+  -initWithMachineStoreURL: @24@0:8@16  imp=+0x1b56b1ae0
+  -initialBackupsByStateWithInvalidator:error: @32@0:8@16^@24  imp=+0x1b56b1b5c
+  -listenerID @16@0:8  imp=+0x1b56b1a90
+  -machineStoreURL @16@0:8  imp=+0x1b56b2368
+@class TMIOKitDisk : NSObject instanceSize=48
+  ivar +8 _traits Q
+  ivar +16 _name @"NSString"
+  ivar +24 _volumeUUID @"NSString"
+  ivar +32 _volumeRole @"NSNumber"
+  ivar +40 _volumeGroupUUID @"NSString"
+  property traits (TQ,R,V_traits)
+  property name (T@"NSString",R,C,V_name)
+  property volumeUUID (T@"NSString",R,C,V_volumeUUID)
+  property volumeRole (T@"NSNumber",R,C,V_volumeRole)
+  property volumeGroupUUID (T@"NSString",R,C,V_volumeGroupUUID)
+  +startupVolumeGroupUUID @16@0:8  imp=+0x1b56c0fe4
+  -.cxx_destruct v16@0:8  imp=+0x1b56c1134
+  -_initWithMountPoint:deviceName:isKnownSystem:error: @44@0:8@16@24B32^@36  imp=+0x1b56c0c60
+  -initWithMountPoint:deviceName:error: @40@0:8@16@24^@32  imp=+0x1b56c0c54
+  -name @16@0:8  imp=+0x1b56c1104
+  -traits Q16@0:8  imp=+0x1b56c10fc
+  -volumeGroupUUID @16@0:8  imp=+0x1b56c1128
+  -volumeRole @16@0:8  imp=+0x1b56c111c
+  -volumeUUID @16@0:8  imp=+0x1b56c1110
+@class TMIdentity : NSObject instanceSize=8
+  +_enumerateLocalUserHomeDirectoriesWithBlock: v24@0:8@?16  imp=+0x1b56d6c4c
+  +localUserHomes @16@0:8  imp=+0x1b56d6a10
+  +localUsers @16@0:8  imp=+0x1b56d695c
+  +mountPointsForVolumesContainingLocalUserHomes @16@0:8  imp=+0x1b56d6b10
+  +shouldDisplayUIForUser: B24@0:8@16  imp=+0x1b56d68f4
+@class TMImageDisk : TMTestDisk instanceSize=136
+  ivar +120 _imageType I
+  ivar +128 _imagePath @"NSString"
+  property imagePath (T@"NSString",&,V_imagePath)
+  property imageType (TI,R,V_imageType)
+  -.cxx_destruct v16@0:8  imp=+0x1b5708704
+  -_attachNewDeviceWithCapacity: @24@0:8Q16  imp=+0x1b5708394
+  -_create: B24@0:8Q16  imp=+0x1b5707c48
+  -description @16@0:8  imp=+0x1b5708574
+  -imagePath @16@0:8  imp=+0x1b57086e8
+  -imageType I16@0:8  imp=+0x1b57086d4
+  -initWithVolumeName:capacity:arbiter: @40@0:8@16Q24@32  imp=+0x1b5707ba8
+  -initWithVolumeName:fileSystemType:capacity:arbiter: @44@0:8@16I24Q28@36  imp=+0x1b5707bb8
+  -initWithVolumeName:imageType:fileSystemType:capacity:arbiter: @48@0:8@16I24I28Q32@40  imp=+0x1b5707bcc
+  -setImagePath: v24@0:8@16  imp=+0x1b57086f8
+@class TMInProgressContainer : TMMonoStructure <TMWritableBackupProvider> instanceSize=48
+  +URLForBuildUnderURL:error: @32@0:8@16^@24  imp=+0x1b5701004
+  +_containerNameWithDate: @24@0:8@16  imp=+0x1b5700f88
+  +annotatedStateAtURL: @24@0:8@16  imp=+0x1b5701118
+  +structureType @16@0:8  imp=+0x1b5700f7c
+  -_updateContainerTimestamp: B24@0:8^@16  imp=+0x1b5701908
+  -buildAtURL:parentURL:error: B40@0:8@16@24^@32  imp=+0x1b5701224
+  -deleteFromDiskWithCancelBlock:error: @32@0:8@?16^@24  imp=+0x1b5701ab8
+  -description @16@0:8  imp=+0x1b5701da4
+  -latestWritableBackupWithState: @24@0:8Q16  imp=+0x1b5701d54
+  -prepareForReuse: B24@0:8^@16  imp=+0x1b5701648
+  -refreshFromDisk q16@0:8  imp=+0x1b57019c8
+  -sortedWritableBackupsWithState: @24@0:8Q16  imp=+0x1b5701bd4
+  -updateContainerWithDate:error: B32@0:8@16^@24  imp=+0x1b57016a8
+@class TMLocalSnapshot : NSObject instanceSize=8
+  +dateFromLocalSnapshotName: @24@0:8@16  imp=+0x1b56c1288
+  +legacyLocalSnapshotNameFromDate: @24@0:8@16  imp=+0x1b56c1410
+  +localSnapshotBackupRootPathForDate:unitTest: @28@0:8@16B24  imp=+0x1b56c11ac
+  +localSnapshotBasePathForUnitTesting: @20@0:8B16  imp=+0x1b56c1190
+  +localSnapshotNameFromDate: @24@0:8@16  imp=+0x1b56c1378
+@class TMLocalSnapshotListener : NSObject <TMBackupListener> instanceSize=16
+  ivar +8 _liveVolumeMountPoint @"NSURL"
+  property liveVolumeMountPoint (T@"NSURL",R,V_liveVolumeMountPoint)
+  property listenerID (T@"NSString",R)
+  -.cxx_destruct v16@0:8  imp=+0x1b56b2d18
+  -changesForDiskDisappear:invalidator: @32@0:8@16@24  imp=+0x1b56b2bec
+  -changesForDiskMount:invalidator: @32@0:8@16@24  imp=+0x1b56b2acc
+  -changesForNotification:invalidator: @32@0:8@16@24  imp=+0x1b56b2824
+  -init @16@0:8  imp=+0x1b56b2464
+  -initWithSourceVolumeMountPoint: @24@0:8@16  imp=+0x1b56b23e8
+  -initialBackupsByStateWithInvalidator:error: @32@0:8@16^@24  imp=+0x1b56b24bc
+  -listenerID @16@0:8  imp=+0x1b56b2380
+  -liveVolumeMountPoint @16@0:8  imp=+0x1b56b2d0c
+@class TMLocalSnapshotMessenger : NSObject instanceSize=8
+  +_copyReplyToXPCMessage:connectionName:timeOut: @40@0:8@16r*24d32  imp=+0x1b56d19f8
+  +_copyReplyToXPCMessageWithId:connectionName:timeOut: @40@0:8Q16r*24d32  imp=+0x1b56d1d80
+  +_sendMessageWithId:disk:date:completionHandler: B48@0:8Q16@24@32@?40  imp=+0x1b56d1e20
+  +createLocalSnapshots @16@0:8  imp=+0x1b56d2234
+  +deleteLocalSnapshotsForDates: @24@0:8@16  imp=+0x1b56d2650
+  +deleteLocalSnapshotsForDisk: @24@0:8@16  imp=+0x1b56d2768
+  +localSnapshotDates @16@0:8  imp=+0x1b56d2308
+  +localSnapshotDatesForDisk: @24@0:8@16  imp=+0x1b56d2310
+  +mountLocalSnapshotForDate:forDisk:completionHandler: B40@0:8@16@24@?32  imp=+0x1b56d2a14
+  +mountLocalSnapshotsForDate:completionHandler: B32@0:8@16@?24  imp=+0x1b56d2a38
+  +mountLocalSnapshotsForDisk:completionHandler: B32@0:8@16@?24  imp=+0x1b56d2a24
+  +mountedLocalSnapshotsForDisk: @24@0:8@16  imp=+0x1b56d2454
+  +purgeLocalSnapshotsForVolumeGroupContaining:purgeAmount:urgency: @36@0:8@16Q24i32  imp=+0x1b56d28a0
+  +snapshot B16@0:8  imp=+0x1b56d2200
+  +unmountLocalSnapshotForDate:forDisk:completionHandler: B40@0:8@16@24@?32  imp=+0x1b56d2a4c
+  +unmountLocalSnapshotsForDate:completionHandler: B32@0:8@16@?24  imp=+0x1b56d2a70
+  +unmountLocalSnapshotsForDisk:completionHandler: B32@0:8@16@?24  imp=+0x1b56d2a5c
+@class TMLogRecord : NSObject instanceSize=56
+  ivar +8 _message @"NSString"
+  ivar +16 _date @"NSDate"
+  ivar +24 _level I
+  ivar +32 _key @"NSString"
+  ivar +40 _file @"NSString"
+  ivar +48 _line I
+  property message (T@"NSString",R,V_message)
+  property date (T@"NSDate",R,V_date)
+  property level (TI,R,V_level)
+  property isDebug (TB,R)
+  property key (T@"NSString",R,V_key)
+  property file (T@"NSString",R,V_file)
+  property line (TI,R,V_line)
+  -.cxx_destruct v16@0:8  imp=+0x1b56d3984
+  -date @16@0:8  imp=+0x1b56d3964
+  -description @16@0:8  imp=+0x1b56d38c4
+  -file @16@0:8  imp=+0x1b56d3970
+  -initWithMessage:date:level:key:file:line: @56@0:8@16@24I32@36@44I52  imp=+0x1b56ab3fc
+  -isDebug B16@0:8  imp=+0x1b56abad8
+  -key @16@0:8  imp=+0x1b56abc64
+  -level I16@0:8  imp=+0x1b56ab900
+  -line I16@0:8  imp=+0x1b56d397c
+  -message @16@0:8  imp=+0x1b56abaf8
+@class TMLogging : NSObject instanceSize=8
+  +_dispatchRecord: v24@0:8@16  imp=+0x1b56ab524
+  +_logMessage:withLevel:forKey:inFile:atLine: v48@0:8@16I24@28r*36I44  imp=+0x1b56ab300
+  +addHandler: v24@0:8@16  imp=+0x1b56ab828
+  +clearCountsForKeys: v24@0:8@16  imp=+0x1b56d379c
+  +commonDebugLoggingEnabled B16@0:8  imp=+0x1b56ad3c0
+  +configuration @16@0:8  imp=+0x1b56d3100
+  +countDictionary @16@0:8  imp=+0x1b56d34f8
+  +getCountForKey: q24@0:8@16  imp=+0x1b56d3708
+  +handlers @16@0:8  imp=+0x1b56d31f0
+  +incrementCountForKey: v24@0:8@16  imp=+0x1b56d357c
+  +logMessageForKey:inFile:atLine:format: v44@0:8@16r*24i32@36  imp=+0x1b56ad2fc
+  +logMessageWithInterval:lastDate:level:forKey:inFile:atLine:format: @64@0:8d16@24I32@36r*44i52@56  imp=+0x1b56d33dc
+  +logMessageWithLevel:forKey:inFile:atLine:format: v48@0:8I16@20r*28i36@40  imp=+0x1b56ab128
+  +logMessageWithLevel:forKey:inFile:atLine:format:args: v56@0:8I16@20r*28i36@40*48  imp=+0x1b56ab154
+  +loggingEnabledForKey: B24@0:8@16  imp=+0x1b56ab248
+  +removeHandler: v24@0:8@16  imp=+0x1b56d317c
+  +setCommonDebugLoggingEnabled: v20@0:8B16  imp=+0x1b56d33d0
+  +setConfiguration: v24@0:8@16  imp=+0x1b56d30a4
+  +setCount:forKey: v32@0:8q16@24  imp=+0x1b56d3660
+  +setLoggingEnabled:forKey: v28@0:8B16@20  imp=+0x1b56d32b0
+@class TMLoggingFormatter : NSObject instanceSize=8
+  +standardFormatter @16@0:8  imp=+0x1b56ab7a4
+  -stringForRecord: @24@0:8@16  imp=+0x1b56ab9c0
+@class TMLoggingHandler : NSObject instanceSize=24
+  ivar +8 _formatter @"TMLoggingFormatter"
+  ivar +16 _filterLevel I
+  property formatter (T@"TMLoggingFormatter",&,V_formatter)
+  property filterLevel (TI,V_filterLevel)
+  +handler @16@0:8  imp=+0x1b56ab654
+  -.cxx_destruct v16@0:8  imp=+0x1b56d38b8
+  -filterLevel I16@0:8  imp=+0x1b56ab908
+  -formatter @16@0:8  imp=+0x1b56ab9b4
+  -handleMessage:forRecord: v32@0:8@16@24  imp=+0x1b56d3860
+  -handleRecord: v24@0:8@16  imp=+0x1b56ab910
+  -init @16@0:8  imp=+0x1b56ab730
+  -setFilterLevel: v20@0:8I16  imp=+0x1b56d38b0
+  -setFormatter: v24@0:8@16  imp=+0x1b56d38a8
+  -shouldHandleRecord: B24@0:8@16  imp=+0x1b56ab8c4
+@class TMMachineStore : TMMonoStructure <TMCompleteBackupProvider, TMWritableBackupProvider, TMMachineStoreInfo> instanceSize=56
+  ivar +48 _inProgressContainer @"TMInProgressContainer"
+  property snapshotClass (T#,R)
+  property inProgressContainer (T@"TMInProgressContainer",&,V_inProgressContainer)
+  property sortedCompleteBackups (T@"NSArray",R)
+  property backupHistoryDictionary (T@"NSDictionary",R)
+  property backupDateHistory (T@"NSArray",R)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  property name (T@"NSString",R)
+  property hostUUID (T@"NSString",R)
+  property hardwareModelIdentifier (T@"NSString",R)
+  property latestCompleteBackupDate (T@"NSDate",R)
+  +URLForBuildUnderURL:error: @32@0:8@16^@24  imp=+0x1b5701f18
+  +_findValidURLForMachineStoreUnderURL:error: @32@0:8@16^@24  imp=+0x1b5702904
+  +_makeMachineStoreDirectoryAtURL:error: B32@0:8@16^@24  imp=+0x1b5702a88
+  +annotatedStateAtURL: @24@0:8@16  imp=+0x1b5701e40
+  +machineAddress @16@0:8  imp=+0x1b5701f0c
+  +machineStoreAttributesExistAtURL: B24@0:8@16  imp=+0x1b5703bcc
+  +machineStoreAttributesMatchCurrentMachineAtURL: B24@0:8@16  imp=+0x1b5703c58
+  +machineStoreAttributesMatchHostUUIDs:macAddresses:atURL: B40@0:8@16@24@32  imp=+0x1b5703da0
+  +setMachineStoreAttributesAtURL:error: B32@0:8@16^@24  imp=+0x1b5702c18
+  +structureType @16@0:8  imp=+0x1b5701e34
+  +validateMachineStoreAttributesAtURL: B24@0:8@16  imp=+0x1b5703bc8
+  -.cxx_destruct v16@0:8  imp=+0x1b5704134
+  -_updateMachineStoreNameAtURL:previousComputerName:error: B40@0:8@16@24^@32  imp=+0x1b57023e0
+  -backupDateHistory @16@0:8  imp=+0x1b5703a44
+  -backupHistoryDictionary @16@0:8  imp=+0x1b57037ac
+  -baselineBackupCandidate @16@0:8  imp=+0x1b5703420
+  -buildAtURL:parentURL:error: B40@0:8@16@24^@32  imp=+0x1b57024f8
+  -description @16@0:8  imp=+0x1b5704088
+  -didAdoptChildStructure: v24@0:8@16  imp=+0x1b5703bc0
+  -hardwareModelIdentifier @16@0:8  imp=+0x1b57032e4
+  -hostUUID @16@0:8  imp=+0x1b5703340
+  -inProgressContainer @16@0:8  imp=+0x1b5704118
+  -inProgressContainerClass #16@0:8  imp=+0x1b5703414
+  -latestCompleteBackupDate @16@0:8  imp=+0x1b570339c
+  -latestCompleteBackupInfo @16@0:8  imp=+0x1b5703204
+  -latestWritableBackupWithState: @24@0:8Q16  imp=+0x1b57035f4
+  -name @16@0:8  imp=+0x1b5703254
+  -prepareBackupForBrowsingWithDate:error: @32@0:8@16^@24  imp=+0x1b5703060
+  -prepareForReuse: B24@0:8^@16  imp=+0x1b5702060
+  -refreshFromDisk q16@0:8  imp=+0x1b5702ec0
+  -removeInProgressBackups: @24@0:8^@16  imp=+0x1b5703ff0
+  -setInProgressContainer: v24@0:8@16  imp=+0x1b5704128
+  -snapshotClass #16@0:8  imp=+0x1b5703408
+  -sortedCompleteBackups @16@0:8  imp=+0x1b5703644
+  -sortedWritableBackupsWithState: @24@0:8Q16  imp=+0x1b5703428
+@class TMMailPersistenceInfo : NSObject instanceSize=16
+  ivar +8 _info @
+  property v4MigratedAccountDirectories (T@"NSDictionary",R,C,N)
+  +currentMailVersionDirectoryName @16@0:8  imp=+0x1b56d6d08
+  -.cxx_destruct v16@0:8  imp=+0x1b56d6f00
+  -initWithMailLibraryDirectory: @24@0:8@16  imp=+0x1b56d6e6c
+  -previousMailVersionDirectoryNamesForVersionDirectoryName: @24@0:8@16  imp=+0x1b56d6ef8
+  -v4MigratedAccountDirectories @16@0:8  imp=+0x1b56d6ef0
+@class TMMessageSerializer : NSObject instanceSize=16
+  ivar +8 _messageClass #
+  property messageClass (T#,R,V_messageClass)
+  -.cxx_destruct v16@0:8  imp=+0x1b56d762c
+  -enumerateEntriesInFile:error:enumerator: B40@0:8@16^@24@?32  imp=+0x1b56d7120
+  -initWithMessageClass: @24@0:8#16  imp=+0x1b56d70c4
+  -messageClass #16@0:8  imp=+0x1b56d7620
+@class TMMonoStructure : TMStructure instanceSize=48
+  +enumerateURLsForReuseUnderURL:enumerator: v32@0:8@16@?24  imp=+0x1b56f4754
+  +readOrBuiltUnderURL:parent:error: @40@0:8@16@24^@32  imp=+0x1b56f4988
+  +readUnderURL:parent:error: @40@0:8@16@24^@32  imp=+0x1b56f4b40
+@class TMNodeCache : TMMonoStructure instanceSize=96
+  ivar +48 _uncommittedEntries {vector<NodeCacheEntry, std::allocator<NodeCacheEntry>>="__begin_"^{NodeCacheEntry}"__end_"^{NodeCacheEntry}""{?="__cap_"^{NodeCacheEntry}}}
+  ivar +72 _updatingStableCacheURL @"NSURL"
+  ivar +80 _updatingCloneCacheURL @"NSURL"
+  ivar +88 _serializer @"TMMessageSerializer"
+  property updatingStableCacheURL (T@"NSURL",&,V_updatingStableCacheURL)
+  property updatingCloneCacheURL (T@"NSURL",&,V_updatingCloneCacheURL)
+  property serializer (T@"TMMessageSerializer",R,V_serializer)
+  +URLForBuildUnderURL:error: @32@0:8@16^@24  imp=+0x1b56dd330
+  +_appendEntries:toURL:error: B56@0:8{vector<NodeCacheEntry, std::allocator<NodeCacheEntry>>=^{NodeCacheEntry}^{NodeCacheEntry}{?=^{NodeCacheEntry}}}16@40^@48  imp=+0x1b56da1a8
+  +annotatedStateAtURL: @24@0:8@16  imp=+0x1b56dd7d4
+  +cacheFileURLForSourceUUID:backupStartDate:underURL: @40@0:8@16@24@32  imp=+0x1b56dd9ac
+  +immemorialFileURLUnderURL: @24@0:8@16  imp=+0x1b56dd970
+  +isTemporaryCacheFileAtURL: B24@0:8@16  imp=+0x1b56ddb20
+  +nearestFutureDateForDate:inDates: @32@0:8@16@24  imp=+0x1b56dcb04
+  +structureType @16@0:8  imp=+0x1b56dd324
+  +tempCacheFileURLForSourceUUID:backupStartDate:underURL: @40@0:8@16@24@32  imp=+0x1b56ddab4
+  -.cxx_construct @16@0:8  imp=+0x1b56ddcb0
+  -.cxx_destruct v16@0:8  imp=+0x1b56ddc20
+  -WIP_storeBackupCompletionDate:forBackupStartDate:error: B40@0:8@16@24^@32  imp=+0x1b56dc3a8
+  -_addEntry: v40@0:8{NodeCacheEntry=b60b60b16}16  imp=+0x1b56da14c
+  -_allSourceUUIDs @16@0:8  imp=+0x1b56dc394
+  -_enumerateAllFilesStartedBetweenDate:endDate:sourceUUID:error:enumerator: B56@0:8@16@24@32^@40@?48  imp=+0x1b56db214
+  -_enumerateEntriesForBackupStartDate:sourceUUID:error:enumerator: B48@0:8@16@24^@32@?40  imp=+0x1b56da330
+  -_enumerateEntriesInFile:error:enumerator: B40@0:8@16^@24@?32  imp=+0x1b56db730
+  -_enumerateEntriesStartedBetweenDate:endDate:sourceUUID:error:enumerator: B56@0:8@16@24@32^@40@?48  imp=+0x1b56dadb0
+  -_enumerateFilesForBackupStartDate:sourceUUID:backupCompletionDate:error:enumerator: B56@0:8@16@24@32^@40@?48  imp=+0x1b56da848
+  -_mergeCacheFilesBetweenStartDate:endDate:sourceUUID:intoDate:error: @56@0:8@16@24@32@40^@48  imp=+0x1b56dbdc8
+  -_mostRecentCompletionDate @16@0:8  imp=+0x1b56dc3a0
+  -buildAtURL:parentURL:error: B40@0:8@16@24^@32  imp=+0x1b56dd368
+  -cleanCache: B24@0:8^@16  imp=+0x1b56dbb1c
+  -collectFileIDsToBeDeletedUnderURL:sourceUUID:backupStartDate:error: B48@0:8@16@24@32^@40  imp=+0x1b56ddcc8
+  -description @16@0:8  imp=+0x1b56ddb7c
+  -destinationDeletedFileIDsSetForBackupStartDate:error: @32@0:8@16^@24  imp=+0x1b56d9adc
+  -destinationFileIDsDeletedForBackupStartDate:error: @32@0:8@16^@24  imp=+0x1b56d9760
+  -finishUpdatingCurrentCache: B24@0:8^@16  imp=+0x1b56d9f9c
+  -flushCache: B24@0:8^@16  imp=+0x1b56dcb0c
+  -immemorialCacheURL @16@0:8  imp=+0x1b56dd8f4
+  -initWithUUID:url: @32@0:8@16@24  imp=+0x1b56d9654
+  -purgeEntriesForAllBackupCompletionDatesExcept:error: B32@0:8@16^@24  imp=+0x1b56dc87c
+  -recordBackupAction:sourceFileID:destinationFileID: v40@0:8Q16Q24Q32  imp=+0x1b56da0b8
+  -recordUnlinkOfFile:wasLastUnlink: v28@0:8Q16B24  imp=+0x1b56da100
+  -serializer @16@0:8  imp=+0x1b56ddc10
+  -setUpdatingCloneCacheURL: v24@0:8@16  imp=+0x1b56ddc04
+  -setUpdatingStableCacheURL: v24@0:8@16  imp=+0x1b56ddbe8
+  -startUpdatingCacheForSourceUUID:backupStartDate:error: B40@0:8@16@24^@32  imp=+0x1b56d9c5c
+  -storeBackupCompletionDate:forBackupStartDate:error: B40@0:8@16@24^@32  imp=+0x1b56dc708
+  -updatingCloneCacheURL @16@0:8  imp=+0x1b56ddbf4
+  -updatingStableCacheURL @16@0:8  imp=+0x1b56ddbd8
+@class TMNodeCacheEntry : PBCodable <NSCopying> instanceSize=32
+  ivar +8 _destinationFileID Q
+  ivar +16 _sourceFileID Q
+  ivar +24 _flags I
+  ivar +28 _has {?="destinationFileID"b1"sourceFileID"b1}
+  property hasSourceFileID (TB,N)
+  property sourceFileID (TQ,N,V_sourceFileID)
+  property hasDestinationFileID (TB,N)
+  property destinationFileID (TQ,N,V_destinationFileID)
+  property flags (TI,N,V_flags)
+  -copyTo: v24@0:8@16  imp=+0x1b570cc74
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1b570ccf4
+  -description @16@0:8  imp=+0x1b570c504
+  -destinationFileID Q16@0:8  imp=+0x1b570c470
+  -dictionaryRepresentation @16@0:8  imp=+0x1b570c5b0
+  -flags I16@0:8  imp=+0x1b570cf98
+  -hasDestinationFileID B16@0:8  imp=+0x1b570c4ec
+  -hasSourceFileID B16@0:8  imp=+0x1b570c458
+  -hash Q16@0:8  imp=+0x1b570cea0
+  -isEqual: B24@0:8@16  imp=+0x1b570cda4
+  -mergeFrom: v24@0:8@16  imp=+0x1b570cf18
+  -readFrom: B24@0:8@16  imp=+0x1b570cbb4
+  -setDestinationFileID: v24@0:8Q16  imp=+0x1b570c4a0
+  -setFlags: v20@0:8I16  imp=+0x1b570cfac
+  -setHasDestinationFileID: v20@0:8B16  imp=+0x1b570c4cc
+  -setHasSourceFileID: v20@0:8B16  imp=+0x1b570c42c
+  -setSourceFileID: v24@0:8Q16  imp=+0x1b570c400
+  -sourceFileID Q16@0:8  imp=+0x1b570c3d0
+  -writeTo: v24@0:8@16  imp=+0x1b570cbbc
+@class TMOSLogHandler : TMLoggingHandler instanceSize=48
+  ivar +24 _generalLogObject @"NSObject<OS_os_log>"
+  ivar +32 _categoryLogObjects @"NSMutableDictionary"
+  ivar +40 _lock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  -.cxx_destruct v16@0:8  imp=+0x1b56d39e0
+  -_oslogForCategory: @24@0:8@16  imp=+0x1b56abc70
+  -handleMessage:forRecord: v32@0:8@16@24  imp=+0x1b56abb04
+  -init @16@0:8  imp=+0x1b56ab67c
+@class TMOtherIODisk : NSObject instanceSize=32
+  ivar +8 _traits Q
+  ivar +16 _containerBytesFree @"NSNumber"
+  ivar +24 _snapshotXID Q
+  property traits (TQ,R,V_traits)
+  property containerBytesFree (T@"NSNumber",R,C,V_containerBytesFree)
+  property snapshotXID (TQ,R,V_snapshotXID)
+  +_containerBytesFreeForAPFSVolumeDevicePath: @24@0:8@16  imp=+0x1b56c1914
+  -.cxx_destruct v16@0:8  imp=+0x1b56c1a3c
+  -containerBytesFree @16@0:8  imp=+0x1b56c1a28
+  -initWithMountPoint:devicePath:traitsSoFar:error: @48@0:8@16@24Q32^@40  imp=+0x1b56c1638
+  -snapshotXID Q16@0:8  imp=+0x1b56c1a34
+  -traits Q16@0:8  imp=+0x1b56c1a20
+@class TMOtherMachineStore : TMMachineStore instanceSize=56
+  +validateMachineStoreAttributesAtURL: B24@0:8@16  imp=+0x1b5704148
+@class TMPathExclusion : NSObject instanceSize=32
+  ivar +8 _type C
+  ivar +16 _standardizedPath @"NSString"
+  ivar +24 _destinationUUID @"NSString"
+  property type (TC,R,V_type)
+  property standardizedPath (T@"NSString",R,V_standardizedPath)
+  property destinationUUID (T@"NSString",R,V_destinationUUID)
+  property appManaged (TB,R)
+  property userManagedGlobal (TB,R)
+  property userManagedPerDestination (TB,R)
+  +appManagedExclusionWithPath: @24@0:8@16  imp=+0x1b56b5ca8
+  +userManagedExclusionWithPath: @24@0:8@16  imp=+0x1b56b5d0c
+  +userManagedExclusionWithPath:destinationUUID: @32@0:8@16@24  imp=+0x1b56b5d70
+  -.cxx_destruct v16@0:8  imp=+0x1b56b628c
+  -_initWithPath:type:destinationUUID: @36@0:8@16C24@28  imp=+0x1b56b5df4
+  -appManaged B16@0:8  imp=+0x1b56b61ac
+  -description @16@0:8  imp=+0x1b56b5ec8
+  -destinationUUID @16@0:8  imp=+0x1b56b6278
+  -hash Q16@0:8  imp=+0x1b56b5fc8
+  -isEqual: B24@0:8@16  imp=+0x1b56b6030
+  -standardizedPath @16@0:8  imp=+0x1b56b626c
+  -type C16@0:8  imp=+0x1b56b6284
+  -userManagedGlobal B16@0:8  imp=+0x1b56b61cc
+  -userManagedPerDestination B16@0:8  imp=+0x1b56b621c
+@class TMPathFilterGenerator : NSObject instanceSize=48
+  ivar +8 _baseRuleSet I
+  ivar +16 _mountPoint @"NSString"
+  ivar +24 _baseFilterGenerator @"MDSPathFilterGenerator"
+  ivar +32 _customExclusionsFilterGenerator @"MDSPathFilterGenerator"
+  ivar +40 _stickyExclusionPaths @"NSMutableSet"
+  property baseRuleSet (TI,R,V_baseRuleSet)
+  property mountPoint (T@"NSString",R,V_mountPoint)
+  property stickyExclusionPaths (T@"NSSet",R,V_stickyExclusionPaths)
+  +_extensionMapForRuleSet: @20@0:8I16  imp=+0x1b56df58c
+  -.cxx_destruct v16@0:8  imp=+0x1b56df9e8
+  -_addCustomExclusionForPath: v24@0:8@16  imp=+0x1b56df8c0
+  -_copyCompiledFilterGenerator: @24@0:8@16  imp=+0x1b56df6b4
+  -_customExclusionsFilterGenerator @16@0:8  imp=+0x1b56df608
+  -_rerootPath: @24@0:8@16  imp=+0x1b56df95c
+  -addExclusionForPath: v24@0:8@16  imp=+0x1b56df81c
+  -addRulesForUserHome: v24@0:8@16  imp=+0x1b56df7ac
+  -addStickyExclusionForPath: v24@0:8@16  imp=+0x1b56df868
+  -addUserLibraryMailRealm: v24@0:8@16  imp=+0x1b56df708
+  -baseRuleSet I16@0:8  imp=+0x1b56df9c8
+  -copyBasePathFilter @16@0:8  imp=+0x1b56df68c
+  -copyCustomExclusionsPathFilter @16@0:8  imp=+0x1b56df6a0
+  -initWithBaseRuleSet:forMountPoint: @28@0:8I16@20  imp=+0x1b56df3d8
+  -mountPoint @16@0:8  imp=+0x1b56df9d0
+  -stickyExclusionPaths @16@0:8  imp=+0x1b56df9dc
+@class TMPathTreeNode : NSObject instanceSize=48
+  ivar +8 _name @"NSString"
+  ivar +16 _childMap @"NSMutableDictionary"
+  ivar +24 _parentNode @"TMPathTreeNode"
+  ivar +32 _isRootNode B
+  ivar +33 _isTerminalNode B
+  ivar +40 _data @
+  property parentNode (T@"TMPathTreeNode",W,V_parentNode)
+  property isRootNode (TB,V_isRootNode)
+  property _totalSubtreeNodeCount (TQ,R)
+  property _totalSubtreeLeafNodeCount (TQ,R)
+  property name (T@"NSString",R,V_name)
+  property path (T@"NSString",R)
+  property extension (T@"NSString",R)
+  property data (T@,&,V_data)
+  property children (T@"NSArray",R)
+  property isLeafNode (TB,R)
+  property isTerminalNode (TB,V_isTerminalNode)
+  +rootNode @16@0:8  imp=+0x1b56d7940
+  +rootNode: @24@0:8@16  imp=+0x1b56d7948
+  -.cxx_destruct v16@0:8  imp=+0x1b56d8b74
+  -_enumerateTree:path:depth:outStop: v48@0:8@?16@24q32^B40  imp=+0x1b56d8890
+  -_totalSubtreeLeafNodeCount Q16@0:8  imp=+0x1b56d7ddc
+  -_totalSubtreeNodeCount Q16@0:8  imp=+0x1b56d7d08
+  -addChildNode: v24@0:8@16  imp=+0x1b56d7f38
+  -childNodeNamed: @24@0:8@16  imp=+0x1b56d7efc
+  -children @16@0:8  imp=+0x1b56d7d00
+  -containsChildNodeNamed: B24@0:8@16  imp=+0x1b56d7f04
+  -data @16@0:8  imp=+0x1b56d8b60
+  -dataForPath: @24@0:8@16  imp=+0x1b56d83c4
+  -description @16@0:8  imp=+0x1b56d7b00
+  -enumerateSubtreeUsingBlock: v24@0:8@?16  imp=+0x1b56d86d0
+  -extension @16@0:8  imp=+0x1b56d7cf8
+  -hash Q16@0:8  imp=+0x1b56d7a68
+  -initWithName: @24@0:8@16  imp=+0x1b56d79b8
+  -initWithName:data: @32@0:8@16@24  imp=+0x1b56d79c0
+  -insertPath: @24@0:8@16  imp=+0x1b56d8000
+  -insertPath:data: @32@0:8@16@24  imp=+0x1b56d800c
+  -insertPath:data:usingBlock: @40@0:8@16@24@?32  imp=+0x1b56d8020
+  -insertPath:usingBlock: @32@0:8@16@?24  imp=+0x1b56d8014
+  -isEqual: B24@0:8@16  imp=+0x1b56d7a70
+  -isLeafNode B16@0:8  imp=+0x1b56d7ed8
+  -isRootNode B16@0:8  imp=+0x1b56d8b38
+  -isTerminalNode B16@0:8  imp=+0x1b56d8b4c
+  -name @16@0:8  imp=+0x1b56d8af4
+  -nodeForPath: @24@0:8@16  imp=+0x1b56d8414
+  -parentNode @16@0:8  imp=+0x1b56d8b00
+  -path @16@0:8  imp=+0x1b56d7bac
+  -pathMatchForPath: q24@0:8@16  imp=+0x1b56d8550
+  -postOrderEnumerateTree: v24@0:8@?16  imp=+0x1b56d887c
+  -removeChildNodeNamed: v24@0:8@16  imp=+0x1b56d7fe4
+  -removePath: v24@0:8@16  imp=+0x1b56d8340
+  -removeWholePath: v24@0:8@16  imp=+0x1b56d821c
+  -setData: v24@0:8@16  imp=+0x1b56d8b6c
+  -setIsRootNode: v20@0:8B16  imp=+0x1b56d8b44
+  -setIsTerminalNode: v20@0:8B16  imp=+0x1b56d8b58
+  -setParentNode: v24@0:8@16  imp=+0x1b56d8b2c
+@class TMQueryScopeInfo : NSObject instanceSize=24
+  ivar +8 _kind q
+  ivar +16 _locations @"NSArray"
+  property kind (Tq,R,V_kind)
+  property locations (T@"NSArray",R,V_locations)
+  +scopePathForVolumeRelativePath:volumeUUID:computerMACAddress: @40@0:8@16@24@32  imp=+0x1b56e6bb4
+  -.cxx_destruct v16@0:8  imp=+0x1b56e6d70
+  -initWithKind:locations: @32@0:8q16@24  imp=+0x1b56e6cc4
+  -kind q16@0:8  imp=+0x1b56e6d5c
+  -locations @16@0:8  imp=+0x1b56e6d64
+@class TMQueryTarget : NSObject instanceSize=48
+  ivar +8 _originDeviceID i
+  ivar +16 _originTarget @"TMTarget"
+  ivar +24 _originBackupDate @"NSDate"
+  ivar +32 _originFileID Q
+  ivar +40 _revisionDate @"NSDate"
+  property originTarget (T@"TMTarget",R,C,V_originTarget)
+  property originBackupDate (T@"NSDate",R,C,V_originBackupDate)
+  property originFileID (TQ,R,V_originFileID)
+  property originDeviceID (Ti,R,V_originDeviceID)
+  property revisionDate (T@"NSDate",R,C,V_revisionDate)
+  property targetKey (T{TMQueryTargetKey=Qid},R)
+  -.cxx_destruct v16@0:8  imp=+0x1b56e6b64
+  -hash Q16@0:8  imp=+0x1b56e69a0
+  -initWithOriginTarget:backupDate:deviceID:fileID:revisionDate: @52@0:8@16@24i32Q36@44  imp=+0x1b56e6614
+  -isEqual: B24@0:8@16  imp=+0x1b56e6724
+  -originBackupDate @16@0:8  imp=+0x1b56e6b3c
+  -originDeviceID i16@0:8  imp=+0x1b56e6b50
+  -originFileID Q16@0:8  imp=+0x1b56e6b48
+  -originTarget @16@0:8  imp=+0x1b56e6b30
+  -revisionDate @16@0:8  imp=+0x1b56e6b58
+  -targetKey {TMQueryTargetKey=Qid}16@0:8  imp=+0x1b56e6ab8
+@class TMRAMDisk : TMTestDisk instanceSize=120
+  -_attachNewDeviceWithCapacity: @24@0:8Q16  imp=+0x1b5708778
+  -initWithVolumeName:capacity:arbiter: @40@0:8@16Q24@32  imp=+0x1b5708718
+  -initWithVolumeName:fileSystemType:capacity:arbiter: @44@0:8@16I24Q28@36  imp=+0x1b5708728
+@class TMReadOnlyBackup : TMStructure <TMAPFSSnapshotProtocol, TMMountableBackupProtocol> instanceSize=72
+  ivar +48 _isInWorkingSet B
+  ivar +56 _nestedBackup @"TMAPFSBackup"
+  ivar +64 _dateCompleted @"NSDate"
+  property snapshot (T@"TMSnapshot",R)
+  property isInWorkingSet (TB,V_isInWorkingSet)
+  property maximumFileID (TQ,R)
+  property nestedBackup (T@"TMAPFSBackup",R,V_nestedBackup)
+  property liveVolumeMountPoint (T@"NSURL",R,C)
+  property xid (TQ,R)
+  property fileID (TQ,R)
+  property snapshotName (T@"NSString",R,C)
+  property flags (Ti,R)
+  property rootURL (T@"NSURL",R)
+  property expectedBackupURL (T@"NSURL",R)
+  property name (T@"NSString",R)
+  property isComplete (TB,R)
+  property dateCompleted (T@"NSDate",R,V_dateCompleted)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +_URLForSnapshot:liveVolumeMountPoint:liveVolumeUUID: @40@0:8@16@24@32  imp=+0x1b5704414
+  +_liveVolumeUUIDForURL: @24@0:8@16  imp=+0x1b5704718
+  +_snapshotForURL: @24@0:8@16  imp=+0x1b5704590
+  +annotatedStateAtURL: @24@0:8@16  imp=+0x1b5704f7c
+  +dateFromBackupName: @24@0:8@16  imp=+0x1b570423c
+  +dateFromBackupSnapshotName: @24@0:8@16  imp=+0x1b57042a4
+  +enumerateUnderURL:parent:enumerator: v40@0:8@16@24@?32  imp=+0x1b5704790
+  +expectedBackupURLForDate:backupDataVolumeUUID:inUnitTest: @36@0:8@16@24B32  imp=+0x1b5705b60
+  +expectedBackupURLForTimestamp:backupDataVolumeUUID:inUnitTest: @36@0:8@16@24B32  imp=+0x1b5705bec
+  +expectedNestedBackupURLFromLiveVolumeMountPoint:snapshot: @32@0:8@16@24  imp=+0x1b5705e00
+  +mountPointFromLiveVolumeMountPoint:snapshot: @32@0:8@16@24  imp=+0x1b5705cd4
+  +readAtURL:parent:error: @40@0:8@16@24^@32  imp=+0x1b5704cc8
+  +readOnlyBackupNameWithDate: @24@0:8@16  imp=+0x1b570414c
+  +structureType @16@0:8  imp=+0x1b5704408
+  +validateSnapshotName: B24@0:8@16  imp=+0x1b5704ef8
+  -.cxx_destruct v16@0:8  imp=+0x1b5706858
+  -compare: q24@0:8@16  imp=+0x1b5705ac8
+  -dateCompleted @16@0:8  imp=+0x1b5705280
+  -delete: B24@0:8^@16  imp=+0x1b57059d4
+  -deleteFromDiskWithCancelBlock:error: @32@0:8@?16^@24  imp=+0x1b5705324
+  -description @16@0:8  imp=+0x1b5706798
+  -expectedBackupURL @16@0:8  imp=+0x1b5706160
+  -fileID Q16@0:8  imp=+0x1b57058a0
+  -finishBrowsing: B24@0:8^@16  imp=+0x1b57066fc
+  -flags i16@0:8  imp=+0x1b570592c
+  -isComplete B16@0:8  imp=+0x1b570604c
+  -isInWorkingSet B16@0:8  imp=+0x1b570682c
+  -liveVolumeMountPoint @16@0:8  imp=+0x1b57058dc
+  -makeDataless: B24@0:8^@16  imp=+0x1b5705a84
+  -maximumFileID Q16@0:8  imp=+0x1b5706794
+  -mountAtURL:error: B32@0:8@16^@24  imp=+0x1b5705968
+  -name @16@0:8  imp=+0x1b5705794
+  -nestedBackup @16@0:8  imp=+0x1b5705ee8
+  -readyForBrowsingWithOptions:error: @32@0:8Q16^@24  imp=+0x1b57061ec
+  -rootURL @16@0:8  imp=+0x1b5706054
+  -setIsInWorkingSet: v20@0:8B16  imp=+0x1b5706844
+  -snapshot @16@0:8  imp=+0x1b5705218
+  -snapshotName @16@0:8  imp=+0x1b5705814
+  -waitForDeletionUntil:error: B32@0:8@16^@24  imp=+0x1b5705a18
+  -xid Q16@0:8  imp=+0x1b5705864
+@class TMRulesEngine : NSObject <TMRulesEngineProtocol> instanceSize=48
+  ivar +8 _deviceEngineMap @"NSMutableDictionary"
+  ivar +16 _systemFilesExcluded B
+  ivar +24 _pathExclusions @"NSArray"
+  ivar +32 _standardExclusionPaths @"NSArray"
+  ivar +40 _volumeUUIDExclusions @"NSArray"
+  property systemFilesExcluded (TB,V_systemFilesExcluded)
+  property pathExclusions (T@"NSArray",C,V_pathExclusions)
+  property volumeUUIDExclusions (T@"NSArray",C,V_volumeUUIDExclusions)
+  property standardExclusionPaths (T@"NSArray",C,V_standardExclusionPaths)
+  property deviceRulesEngines (T@"NSArray",R,C)
+  property appManagedExclusionPaths (T@"NSArray",R,C)
+  property userManagedExclusionPaths (T@"NSArray",R,C)
+  property mountPointsForIncludedDisks (T@"NSArray",R,C)
+  +_standardExclusionPathsForRuleSet: @20@0:8I16  imp=+0x1b56e0988
+  +exclusionStatusForURL:configuration:error: q40@0:8@16@24^@32  imp=+0x1b56e01e8
+  +rulesEngineForStandardBackupOfVolumes:pathExclusions:excludedVolumeUUIDs:findStickyExclusionsUsingSpotlight:qos:error:cancelBlock: @68@0:8@16@24@32B40q44^@52@?60  imp=+0x1b56dfd2c
+  +rulesEngineUsingBOM:findStickyExclusionsUsingSpotlight:qos:error:cancelBlock: @52@0:8@16B24q28^@36@?44  imp=+0x1b56e0078
+  +rulesEngineUsingBaseRuleSet:sourceVolumes:pathExclusions:excludedVolumeUUIDs:findStickyExclusionsUsingSpotlight:qos:error:cancelBlock: @72@0:8I16@20@28@36B44q48^@56@?64  imp=+0x1b56dfd70
+  -.cxx_destruct v16@0:8  imp=+0x1b56e0e00
+  -addDeviceRulesEngine: v24@0:8@16  imp=+0x1b56e0880
+  -appManagedExclusionPaths @16@0:8  imp=+0x1b56e0c2c
+  -deviceRulesEngines @16@0:8  imp=+0x1b56e0980
+  -includedDisks @16@0:8  imp=+0x1b56e0b20
+  -init @16@0:8  imp=+0x1b56dfcc4
+  -mountPointsForIncludedDisks @16@0:8  imp=+0x1b56e0b80
+  -pathExclusions @16@0:8  imp=+0x1b56e0dc4
+  -rulesEngineForDevice: @20@0:8i16  imp=+0x1b56e0918
+  -setPathExclusions: v24@0:8@16  imp=+0x1b56e0dd0
+  -setStandardExclusionPaths: v24@0:8@16  imp=+0x1b56e0df8
+  -setSystemFilesExcluded: v20@0:8B16  imp=+0x1b56e0dbc
+  -setVolumeUUIDExclusions: v24@0:8@16  imp=+0x1b56e0de4
+  -standardExclusionPaths @16@0:8  imp=+0x1b56e0dec
+  -systemFilesExcluded B16@0:8  imp=+0x1b56e0db0
+  -userManagedExclusionPaths @16@0:8  imp=+0x1b56e0ce8
+  -volumeUUIDExclusions @16@0:8  imp=+0x1b56e0dd8
+@class TMRulesEngineBOM : NSObject instanceSize=72
+  ivar +8 _baseRuleSet I
+  ivar +16 _sourceDisks @"NSSet"
+  ivar +24 _spotlightOracles @"NSSet"
+  ivar +32 _userHomes @"NSSet"
+  ivar +40 _pathExclusions @"NSArray"
+  ivar +48 _systemFilesExcludedMap @"NSMutableDictionary"
+  ivar +56 _mailRealmSubpath @"NSString"
+  ivar +64 _volumeUUIDExclusions @"NSArray"
+  property baseRuleSet (TI,V_baseRuleSet)
+  property sourceDisks (T@"NSSet",C,V_sourceDisks)
+  property spotlightOracles (T@"NSSet",C,V_spotlightOracles)
+  property userHomes (T@"NSSet",C,V_userHomes)
+  property pathExclusions (T@"NSArray",C,V_pathExclusions)
+  property volumeUUIDExclusions (T@"NSArray",C,V_volumeUUIDExclusions)
+  property mailRealmSubpath (T@"NSString",C,V_mailRealmSubpath)
+  -.cxx_destruct v16@0:8  imp=+0x1b56e0fa4
+  -baseRuleSet I16@0:8  imp=+0x1b56e0f1c
+  -init @16@0:8  imp=+0x1b56e0e5c
+  -mailRealmSubpath @16@0:8  imp=+0x1b56e0f7c
+  -pathExclusions @16@0:8  imp=+0x1b56e0f68
+  -setBaseRuleSet: v20@0:8I16  imp=+0x1b56e0f24
+  -setMailRealmSubpath: v24@0:8@16  imp=+0x1b56e0f88
+  -setPathExclusions: v24@0:8@16  imp=+0x1b56e0f74
+  -setSourceDisks: v24@0:8@16  imp=+0x1b56e0f38
+  -setSpotlightOracles: v24@0:8@16  imp=+0x1b56e0f4c
+  -setSystemFilesExcludedForMountPoint: v24@0:8@16  imp=+0x1b56e0ec8
+  -setUserHomes: v24@0:8@16  imp=+0x1b56e0f60
+  -setVolumeUUIDExclusions: v24@0:8@16  imp=+0x1b56e0f9c
+  -sourceDisks @16@0:8  imp=+0x1b56e0f2c
+  -spotlightOracles @16@0:8  imp=+0x1b56e0f40
+  -systemFilesExcludedForMountPoint: B24@0:8@16  imp=+0x1b56e0edc
+  -userHomes @16@0:8  imp=+0x1b56e0f54
+  -volumeUUIDExclusions @16@0:8  imp=+0x1b56e0f90
+@class TMRulesEngineBuilder : NSObject instanceSize=24
+  ivar +8 _cancelBlock @?
+  ivar +16 _bom @"TMRulesEngineBOM"
+  -.cxx_destruct v16@0:8  imp=+0x1b56e2124
+  -_assembleDeviceEnginesUsingContext: @24@0:8@16  imp=+0x1b56e1df8
+  -_generateConstructionContext @16@0:8  imp=+0x1b56e132c
+  -_processMailRealmsUsingContext: v24@0:8@16  imp=+0x1b56e1cc4
+  -_processPathExclusionsUsingContext: v24@0:8@16  imp=+0x1b56e17e8
+  -_processStickyExclusionsUsingContext: B24@0:8@16  imp=+0x1b56e1598
+  -_processSystemFilesUsingContext:qos: v32@0:8@16q24  imp=+0x1b56e1aac
+  -_processUserHomesUsingContext: v24@0:8@16  imp=+0x1b56e1960
+  -buildRulesEngineFindStickyExclusionsUsingSpotlight:qos:error: @36@0:8B16q20^@28  imp=+0x1b56e1108
+  -init @16@0:8  imp=+0x1b56e10d4
+  -initWithBOM:cancelBlock: @32@0:8@16@?24  imp=+0x1b56e1024
+@class TMRulesEngineConstructionContext : NSObject instanceSize=40
+  ivar +8 _sourceDiskMap @"NSMutableDictionary"
+  ivar +16 _filterGeneratorMap @"NSMutableDictionary"
+  ivar +24 _spotlightOracleMap @"NSMutableDictionary"
+  ivar +32 _spotlightOracles @"NSArray"
+  property sourceDisks (T@"NSArray",R)
+  property spotlightOracles (T@"NSArray",R,V_spotlightOracles)
+  property filterGenerators (T@"NSArray",R)
+  -.cxx_destruct v16@0:8  imp=+0x1b56e28e4
+  -enumerateRelatedConstructionMaterialsUsingBlock: v24@0:8@?16  imp=+0x1b56e2740
+  -filterGeneratorCorrespondingToPath: @24@0:8@16  imp=+0x1b56e265c
+  -filterGeneratorForDevice: @20@0:8i16  imp=+0x1b56e2388
+  -filterGeneratorForMountPoint: @24@0:8@16  imp=+0x1b56e23f0
+  -filterGenerators @16@0:8  imp=+0x1b56e2654
+  -init @16@0:8  imp=+0x1b56e2168
+  -setFilterGenerator:forDevice: v28@0:8@16i24  imp=+0x1b56e22f8
+  -setSourceDisk:forDevice: v28@0:8@16i24  imp=+0x1b56e2200
+  -setSpotlightOracle:forDevice: v28@0:8@16i24  imp=+0x1b56e2554
+  -sourceDiskForDevice: @20@0:8i16  imp=+0x1b56e2290
+  -sourceDisks @16@0:8  imp=+0x1b56e264c
+  -spotlightOracleForDevice: @20@0:8i16  imp=+0x1b56e25e4
+  -spotlightOracles @16@0:8  imp=+0x1b56e28d8
+@class TMSerialDeleter : NSObject <TMBackupDeleterProtocol> instanceSize=8
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -deleteBackupAtURL:willUnlinkBlock:cancelBlock:error: @48@0:8@16@?24@?32^@40  imp=+0x1b56ff968
+@class TMSession : NSObject instanceSize=88
+  ivar +8 _backupsLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +16 _backupMountedBlock @?
+  ivar +24 _backupUnmountedBlock @?
+  ivar +32 _cachedBackupDates @"NSSet"
+  ivar +40 _dataVolumeMountPoint @"NSURL"
+  ivar +48 _currentMachineStoreURL @"NSURL"
+  ivar +56 _options q
+  ivar +64 _daSession @
+  ivar +72 _sessionRunLoop @"NSRunLoop"
+  ivar +80 _backups @"NSMutableOrderedSet"
+  property options (Tq,R,V_options)
+  property daSession (T@,&,V_daSession)
+  property sessionRunLoop (T@"NSRunLoop",&,V_sessionRunLoop)
+  property backups (T@"NSMutableOrderedSet",R,V_backups)
+  property backupsLock (T{os_unfair_lock_s=I},R,V_backupsLock)
+  property cachedBackupDates (T@"NSSet",&,V_cachedBackupDates)
+  property currentMachineStoreURL (T@"NSURL",&,V_currentMachineStoreURL)
+  property backupMountedBlock (T@?,C,V_backupMountedBlock)
+  property backupUnmountedBlock (T@?,C,V_backupUnmountedBlock)
+  property browsableBackupDates (T@"NSArray",R)
+  property dataVolumeMountPoint (T@"NSURL",R,V_dataVolumeMountPoint)
+  +ROSPVolumeStoreInfoCache @16@0:8  imp=+0x1b56eae90
+  +_backupPathRangesInPath: {TMBackupPathRanges={_NSRange=QQ}{_NSRange=QQ}{_NSRange=QQ}{_NSRange=QQ}{_NSRange=QQ}{_NSRange=QQ}{_NSRange=QQ}{_NSRange=QQ}Q}24@0:8@16  imp=+0x1b56ed314
+  +_backupPathRangesInPath:matchUnfinishedBackupPaths: {TMBackupPathRanges={_NSRange=QQ}{_NSRange=QQ}{_NSRange=QQ}{_NSRange=QQ}{_NSRange=QQ}{_NSRange=QQ}{_NSRange=QQ}{_NSRange=QQ}Q}28@0:8@16B24  imp=+0x1b56ed31c
+  +_backupRelativePathFromBackedUpItemPath: @24@0:8@16  imp=+0x1b56ecee4
+  +_browsingSessionForDestinationID:error: @32@0:8@16^@24  imp=+0x1b56eb3dc
+  +_cachedVolumeStorePathForVolumeUUID:backupURL: @32@0:8@16@24  imp=+0x1b56eb9a4
+  +_failOverVolumeStoreNameForVolumeRelativePath:volumeName:volumeUUID:currentDataVolumeName:currentDataVolumeUUID:currentSystemVolumeName:currentSystemVolumeUUID:firmLinkMap: @80@0:8@16@24@32@40@48@56@64@72  imp=+0x1b56ec4d4
+  +_inferBackupRootPathFromBackedUpItemPath: @24@0:8@16  imp=+0x1b56ecce0
+  +_inferOriginalPathFromBackedUpItemPath: @24@0:8@16  imp=+0x1b56ecacc
+  +_inheritanceHistoryForBackupURL: @24@0:8@16  imp=+0x1b56ec394
+  +_machineStoreURLForBackupURL: @24@0:8@16  imp=+0x1b56ec0b0
+  +_mostRecentVolumeUUIDForBackupRootURL:volumeStoreName: @32@0:8@16@24  imp=+0x1b56ec268
+  +_mountDestinationForDestinationID:error: @32@0:8@16^@24  imp=+0x1b56eb5ac
+  +_originalLocationForBackedUpItem:error: @32@0:8@16^@24  imp=+0x1b56ed8f8
+  +_pathInBackupForVolumeRelativePath:volumeName:volumeUUID:pathToBackup: @48@0:8@16@24@32@40  imp=+0x1b56ec640
+  +_pathInBackupForVolumeRelativePath:volumeName:volumeUUID:pathToBackup:currentDataVolumeName:currentDataVolumeUUID:currentSystemVolumeName:currentSystemVolumeUUID:firmLinkMap: @88@0:8@16@24@32@40@48@56@64@72@80  imp=+0x1b56ec7f0
+  +_replaceBackupPathForBackedUpItemPath:newBackupPath: @32@0:8@16@24  imp=+0x1b56ecda4
+  +_synthesizedDirectoryPathForBackupPath:backupMountPoint: @32@0:8@16@24  imp=+0x1b56edd6c
+  +_tryROSPVolumeNameRemapInBackupForVolumeUUID:backupURL:currentDataVolumeUUID:currentSystemVolumeName: @48@0:8@16@24@32@40  imp=+0x1b56ebb48
+  +_tryUUIDSearchInBackupURL:forVolumeUUID:alternateSystemUUID:inheritanceHistory: @48@0:8@16@24@32@40  imp=+0x1b56ebc68
+  +_tryVolumeNameRemapInBackupForVolumeName:volumeUUID:backupURL: @40@0:8@16@24@32  imp=+0x1b56eba78
+  +_volumeUUIDForVolumeStoreAtURL: @24@0:8@16  imp=+0x1b56ed240
+  +browsingSessionForTMVolumeMountPoint:error: @32@0:8@16^@24  imp=+0x1b56e6f30
+  +browsingSessionForTMVolumeMountPoint:options:error: @40@0:8@16q24^@32  imp=+0x1b56e6f3c
+  +cache @16@0:8  imp=+0x1b56eae0c
+  +cacheVolumeStoreName:forVolumeUUID:backupURL: v40@0:8@16@24@32  imp=+0x1b56eb854
+  +cachedBackupDatesForDestinationID: @24@0:8@16  imp=+0x1b56edf88
+  +calculateTotalSizeForBackupDate:liveVolume:allowCachedValue:error: @44@0:8@16@24B32^@36  imp=+0x1b56ee538
+  +calculateUniqueSizeForBackupDate:liveVolume:allowCachedValue:error: @44@0:8@16@24B32^@36  imp=+0x1b56ee220
+  +checkAndSetIsInCurrentSystemDataVolumeForPath:ranges: B160@0:8@16{TMBackupPathRanges={_NSRange=QQ}{_NSRange=QQ}{_NSRange=QQ}{_NSRange=QQ}{_NSRange=QQ}{_NSRange=QQ}{_NSRange=QQ}{_NSRange=QQ}Q}24  imp=+0x1b56ecfd4
+  +clearPathMappingCaches v16@0:8  imp=+0x1b56eb01c
+  +clearROSPCache v16@0:8  imp=+0x1b57666f0
+  +currentDataVolume @16@0:8  imp=+0x1b56eb1a8
+  +currentDataVolumeMountPoint @16@0:8  imp=+0x1b56eb370
+  +currentDataVolumeUUID @16@0:8  imp=+0x1b56eb304
+  +currentSystemVolume @16@0:8  imp=+0x1b56eb0ec
+  +currentVolumeUUIDForHistoricVolumeUUID:usingInheritanceHistory:currentDataVolumeUUID: @40@0:8@16@24@32  imp=+0x1b56e9b6c
+  +deleteBackupForCurrentMachineOnBackupVolume:date:error: @40@0:8@16@24^@32  imp=+0x1b56e8b0c
+  +deleteBackupForMachineStoreURL:date:error: @40@0:8@16@24^@32  imp=+0x1b56e8eac
+  +deleteBackupForMountPoint:date:error: @40@0:8@16@24^@32  imp=+0x1b56e92f8
+  +deleteInProgressBackupsForMountPoint:error: @32@0:8@16^@24  imp=+0x1b56e92fc
+  +existingSessionForMountPoint: @24@0:8@16  imp=+0x1b56e6e04
+  +inheritanceHistoryCache @16@0:8  imp=+0x1b56eaf98
+  +migrationSessionForTMVolumeMountPoint:error: @32@0:8@16^@24  imp=+0x1b56e99a4
+  +remappingCache @16@0:8  imp=+0x1b56eaf14
+  +sessionForTMVolumeMountPoint:options:error: @40@0:8@16q24^@32  imp=+0x1b56e6f40
+  +sessionTable @16@0:8  imp=+0x1b56e6d7c
+  +setCurrentROSPDataVolumeMountPoint: v24@0:8@16  imp=+0x1b56ee8ac
+  +setCurrentROSPDataVolumeUUID: v24@0:8@16  imp=+0x1b56ee850
+  +setNextVolumeStoreVolumeUUID: v24@0:8@16  imp=+0x1b56ee908
+  +setSession:forMountPoint: v32@0:8@16@24  imp=+0x1b56e6e94
+  +volumeTypeForMountPoint: q24@0:8@16  imp=+0x1b56e8964
+  +volumeTypeSupportsStoringSpotlightIndex: B24@0:8q16  imp=+0x1b56e9994
+  -.cxx_destruct v16@0:8  imp=+0x1b56e9908
+  -_copyUnmountDissenterForDisk: ^{__DADissenter=}24@0:8^{__DADisk=}16  imp=+0x1b56e9678
+  -_enumeratorForMountedBackupsForMachineStoreInfo: @24@0:8@16  imp=+0x1b56e9a4c
+  -_fetchProxies: @24@0:8^@16  imp=+0x1b56e8284
+  -_finishSessionWithCompletion: v24@0:8@?16  imp=+0x1b56e7d30
+  -_prepareBackupsForTMVolumeMountPoint:options:error: B40@0:8@16q24^@32  imp=+0x1b56e7254
+  -_synthesizeLegacyBackupDB: @24@0:8^@16  imp=+0x1b56ee964
+  -backupMountedBlock @?16@0:8  imp=+0x1b56e9868
+  -backupUnmountedBlock @?16@0:8  imp=+0x1b56e987c
+  -backups @16@0:8  imp=+0x1b56e98f4
+  -backupsLock {os_unfair_lock_s=I}16@0:8  imp=+0x1b56e9900
+  -browsableBackupDates @16@0:8  imp=+0x1b56e81f0
+  -browsableBackupEnumerator: @24@0:8^@16  imp=+0x1b56e88b8
+  -cachedBackupDates @16@0:8  imp=+0x1b56e9890
+  -completeBackupInfoEnumerator: @24@0:8^@16  imp=+0x1b56e8584
+  -currentMachineStoreURL @16@0:8  imp=+0x1b56e98b0
+  -daSession @16@0:8  imp=+0x1b56e98cc
+  -dataVolumeMountPoint @16@0:8  imp=+0x1b56e98a4
+  -dealloc v16@0:8  imp=+0x1b56e81a4
+  -enumeratorForVolumeStoreInfosMatchingVolumeStoreInfo:error: @32@0:8@16^@24  imp=+0x1b56ea320
+  -finishSession: B24@0:8^@16  imp=+0x1b56e7d08
+  -initWithLiveVolumeMountPoint:options: @32@0:8@16q24  imp=+0x1b56e787c
+  -latestVolumeStoreInfoEnumeratorForMachineStoreInfo:error: @32@0:8@16^@24  imp=+0x1b56e9ce4
+  -machineStoreInfoEnumerator: @24@0:8^@16  imp=+0x1b56e99b0
+  -options q16@0:8  imp=+0x1b56e98c4
+  -sessionRunLoop @16@0:8  imp=+0x1b56e98e0
+  -setBackupMountedBlock: v24@0:8@?16  imp=+0x1b56e9874
+  -setBackupUnmountedBlock: v24@0:8@?16  imp=+0x1b56e9888
+  -setCachedBackupDates: v24@0:8@16  imp=+0x1b56e989c
+  -setCurrentMachineStoreURL: v24@0:8@16  imp=+0x1b56e98bc
+  -setDaSession: v24@0:8@16  imp=+0x1b56e98d8
+  -setSessionRunLoop: v24@0:8@16  imp=+0x1b56e98ec
+@class TMSessionCache : NSObject instanceSize=24
+  ivar +8 _lock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +16 _regularExpressions @"NSMutableDictionary"
+  -.cxx_destruct v16@0:8  imp=+0x1b56eae00
+  -init @16@0:8  imp=+0x1b56ead94
+@class TMSessionVolumeStore : NSObject <TMVolumeStoreInfo> instanceSize=80
+  ivar +8 _isCaseSensitive B
+  ivar +16 _name @"NSString"
+  ivar +24 _url @"NSURL"
+  ivar +32 _volumeUUID @"NSString"
+  ivar +40 _fstype @"NSString"
+  ivar +48 _volumeGroupUUID @"NSString"
+  ivar +56 _volumeRole @"NSNumber"
+  ivar +64 _dateBackupCompleted @"NSDate"
+  ivar +72 _machineStoreInfo @"<TMMachineStoreInfo>"
+  property name (T@"NSString",R,C,V_name)
+  property url (T@"NSURL",R,C,V_url)
+  property volumeUUID (T@"NSString",R,C,V_volumeUUID)
+  property fstype (T@"NSString",R,C,V_fstype)
+  property volumeGroupUUID (T@"NSString",R,C,V_volumeGroupUUID)
+  property volumeRole (T@"NSNumber",R,C,V_volumeRole)
+  property isCaseSensitive (TB,R,V_isCaseSensitive)
+  property dateBackupCompleted (T@"NSDate",R,V_dateBackupCompleted)
+  property machineStoreInfo (T@"<TMMachineStoreInfo>",R,V_machineStoreInfo)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1b56ead08
+  -dateBackupCompleted @16@0:8  imp=+0x1b56eacf0
+  -description @16@0:8  imp=+0x1b56eabc4
+  -fstype @16@0:8  imp=+0x1b56eacc0
+  -initWithVolumeStore:machineStoreInfo:backup: @40@0:8@16@24@32  imp=+0x1b56ea9ec
+  -isCaseSensitive B16@0:8  imp=+0x1b56eace4
+  -machineStoreInfo @16@0:8  imp=+0x1b56eacfc
+  -name @16@0:8  imp=+0x1b56eac9c
+  -url @16@0:8  imp=+0x1b56eaca8
+  -volumeGroupUUID @16@0:8  imp=+0x1b56eaccc
+  -volumeRole @16@0:8  imp=+0x1b56eacd8
+  -volumeUUID @16@0:8  imp=+0x1b56eacb4
+@class TMSnapshot : NSObject <TMAPFSSnapshotProtocol> instanceSize=48
+  ivar +8 _flags i
+  ivar +16 _liveVolumeMountPoint @"NSURL"
+  ivar +24 _snapshotName @"NSString"
+  ivar +32 _xid Q
+  ivar +40 _fileID Q
+  property isLocalSnapshot (TB,R)
+  property liveVolumeMountPoint (T@"NSURL",R,C,V_liveVolumeMountPoint)
+  property xid (TQ,R,V_xid)
+  property fileID (TQ,R,V_fileID)
+  property snapshotName (T@"NSString",R,C,V_snapshotName)
+  property flags (Ti,R,V_flags)
+  +calculatePrivateSizeOfSnapshotsForLiveVolumeMountPoint:error: @32@0:8@16^@24  imp=+0x1b56c2540
+  +calculatePrivateSizeOfSnapshotsFromXID:toXID:forLiveVolumeMountPoint:error: @48@0:8Q16Q24@32^@40  imp=+0x1b56c255c
+  +calculatePrivateSizeOfSnapshotsWithNames:forLiveVolumeMountPoint:error: @40@0:8@16@24^@32  imp=+0x1b56c26a0
+  +datalessSnapshotNamesForLiveVolumeMountPoint:error: @32@0:8@16^@24  imp=+0x1b56c1f8c
+  +localSnapshotsForLiveVolumeMountPoint:error: @32@0:8@16^@24  imp=+0x1b56c1cdc
+  +snapshotNamesForLiveVolumeMountPoint:error: @32@0:8@16^@24  imp=+0x1b56c1e30
+  +snapshotWithName:forLiveVolumeMountPoint:error: @40@0:8@16@24^@32  imp=+0x1b56c1b1c
+  +snapshotWithXID:forLiveVolumeMountPoint:error: @40@0:8Q16@24^@32  imp=+0x1b56c1a48
+  +snapshotsByXIDForLiveVolumeMountPoint:error: @32@0:8@16^@24  imp=+0x1b56c2148
+  +snapshotsForLiveVolumeMountPoint:error: @32@0:8@16^@24  imp=+0x1b56ac530
+  -.cxx_destruct v16@0:8  imp=+0x1b56c34f4
+  -delete: B24@0:8^@16  imp=+0x1b56c2f6c
+  -fileID Q16@0:8  imp=+0x1b56c34ec
+  -flags i16@0:8  imp=+0x1b56ac71c
+  -initWithLiveVolumeMountPoint:name:xid:fileID:flags: @52@0:8@16@24Q32Q40i48  imp=+0x1b56c2c18
+  -isLocalSnapshot B16@0:8  imp=+0x1b56c3484
+  -liveVolumeMountPoint @16@0:8  imp=+0x1b56c34cc
+  -makeDataless: B24@0:8^@16  imp=+0x1b56c3334
+  -mountAtURL:error: B32@0:8@16^@24  imp=+0x1b56c2ce8
+  -snapshotName @16@0:8  imp=+0x1b56c34d8
+  -waitForDeletionUntil:error: B32@0:8@16^@24  imp=+0x1b56c31a8
+  -xid Q16@0:8  imp=+0x1b56c34e4
+@class TMSpotlightOracle : NSObject instanceSize=32
+  ivar +8 _spotlightFilter @"MDSPathFilter"
+  ivar +16 _mountPoint @"NSString"
+  ivar +24 _dev i
+  ivar +28 _indexTrustable B
+  property spotlightFilter (T@"MDSPathFilter",R,V_spotlightFilter)
+  property mountPoint (T@"NSString",R,V_mountPoint)
+  property device (Ti,R,V_dev)
+  property stickyExclusionPaths (T@"NSArray",R)
+  property currentIndexingState (TC,R)
+  property indexTrustable (TB,V_indexTrustable)
+  +oracleForMountPoint: @24@0:8@16  imp=+0x1b56e2940
+  +oracleForMountPoint:device: @28@0:8@16i24  imp=+0x1b56e2a74
+  +oracleForMountPoint:device:findStickyExclusionsUsingSpotlight: @32@0:8@16i24B28  imp=+0x1b56e29e0
+  +stickyExclusionPathsForMountPoint: @24@0:8@16  imp=+0x1b56e2cb8
+  -.cxx_destruct v16@0:8  imp=+0x1b56e3098
+  -currentIndexingState C16@0:8  imp=+0x1b56e2be4
+  -device i16@0:8  imp=+0x1b56e307c
+  -hash Q16@0:8  imp=+0x1b56e2b54
+  -indexTrustable B16@0:8  imp=+0x1b56e3084
+  -initWithSpotlightFilter:forMountPoint:device: @36@0:8@16@24i32  imp=+0x1b56e2a7c
+  -isEqual: B24@0:8@16  imp=+0x1b56e2b70
+  -mountPoint @16@0:8  imp=+0x1b56e3070
+  -pathIsExcludedFromIndexing: B24@0:8r*16  imp=+0x1b56e304c
+  -setIndexTrustable: v20@0:8B16  imp=+0x1b56e3090
+  -spotlightFilter @16@0:8  imp=+0x1b56e3064
+  -stickyExclusionPaths @16@0:8  imp=+0x1b56e2fb4
+@class TMStatFSDisk : NSObject instanceSize=96
+  ivar +8 _owner I
+  ivar +12 _blockSize I
+  ivar +16 _traits Q
+  ivar +24 _mountPoint @"NSURL"
+  ivar +32 _devicePath @"NSString"
+  ivar +40 _deviceName @"NSString"
+  ivar +48 _fsid {fsid="val"[2i]}
+  ivar +56 _filesystemTypeName @"NSString"
+  ivar +64 _capacity @"NSNumber"
+  ivar +72 _bytesFree @"NSNumber"
+  ivar +80 _snapshotName @"NSString"
+  ivar +88 _liveDiskDevicePath @"NSString"
+  property traits (TQ,R,V_traits)
+  property mountPoint (T@"NSURL",R,V_mountPoint)
+  property devicePath (T@"NSString",R,C,V_devicePath)
+  property deviceName (T@"NSString",R,C,V_deviceName)
+  property fsid (T{fsid=[2i]},R,V_fsid)
+  property owner (TI,R,V_owner)
+  property filesystemTypeName (T@"NSString",R,C,V_filesystemTypeName)
+  property blockSize (TI,R,V_blockSize)
+  property capacity (T@"NSNumber",R,C,V_capacity)
+  property bytesFree (T@"NSNumber",R,C,V_bytesFree)
+  property snapshotName (T@"NSString",R,C,V_snapshotName)
+  property liveDiskDevicePath (T@"NSString",R,C,V_liveDiskDevicePath)
+  +cached: @24@0:8^@16  imp=+0x1b56c3cc0
+  +enumerateCached:block: B32@0:8^@16@?24  imp=+0x1b56c3b70
+  +system @16@0:8  imp=+0x1b56c3538
+  -.cxx_destruct v16@0:8  imp=+0x1b56c3fc0
+  -blockSize I16@0:8  imp=+0x1b56c3f88
+  -bytesFree @16@0:8  imp=+0x1b56c3f9c
+  -capacity @16@0:8  imp=+0x1b56c3f90
+  -deviceName @16@0:8  imp=+0x1b56c3f2c
+  -devicePath @16@0:8  imp=+0x1b56c3f20
+  -filesystemTypeName @16@0:8  imp=+0x1b56c3f7c
+  -fsid {fsid=[2i]}16@0:8  imp=+0x1b56c3f38
+  -initWithMountPoint:error: @32@0:8@16^@24  imp=+0x1b56c35ac
+  -initWithStatfs: @2184@0:8{statfs=IiQQQQQ{fsid=[2i]}IIII[16c][1024c][1024c]I[7I]}16  imp=+0x1b56c36fc
+  -liveDiskDevicePath @16@0:8  imp=+0x1b56c3fb4
+  -mountPoint @16@0:8  imp=+0x1b56c3f14
+  -owner I16@0:8  imp=+0x1b56c3f74
+  -snapshotName @16@0:8  imp=+0x1b56c3fa8
+  -traits Q16@0:8  imp=+0x1b56c3f0c
+@class TMStructure : NSObject <TMStructureProtocol, AdoptingParentStructure> instanceSize=48
+  ivar +8 _needsRefreshFromDisk B
+  ivar +12 _childrenLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +16 _parent @"<TMStructureProtocol>"
+  ivar +24 _uuid @"NSString"
+  ivar +32 _url @"NSURL"
+  ivar +40 _mutableChildren @"NSMutableOrderedSet"
+  property url (T@"NSURL",&,V_url)
+  property mutableChildren (T@"NSMutableOrderedSet",R,V_mutableChildren)
+  property childrenLock (T{os_unfair_lock_s=I},R,V_childrenLock)
+  property structureType (T@"NSString",R)
+  property uuid (T@"NSString",R,&,V_uuid)
+  property parent (T@"<TMStructureProtocol>",W,V_parent)
+  property needsRefreshFromDisk (TB,V_needsRefreshFromDisk)
+  property children (T@"NSArray",R)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +URLForBuildUnderURL:error: @32@0:8@16^@24  imp=+0x1b56f62e0
+  +_coreStructureClasses @16@0:8  imp=+0x1b56f8bc4
+  +_preorderEnumerateStructureTree:depth:enumerator: v40@0:8@16Q24@?32  imp=+0x1b56f5160
+  +annotatedStateAtURL: @24@0:8@16  imp=+0x1b56f57b0
+  +backupStoreRootForVolumeURL:error: @32@0:8@16^@24  imp=+0x1b56f9098
+  +builtUnderURL:parent:error: @40@0:8@16@24^@32  imp=+0x1b56f636c
+  +closestAncestorStructureOfURL: @24@0:8@16  imp=+0x1b56f88ac
+  +closestAncestorStructureTypeToURL:isStructureRoot: @32@0:8@16o^B24  imp=+0x1b56f84c4
+  +enumerateUnderURL:parent:enumerator: v40@0:8@16@24@?32  imp=+0x1b56f7974
+  +foundStructureAtURL:error: @32@0:8@16^@24  imp=+0x1b56f8db0
+  +getMetadataAtURL:metadata:error: B40@0:8@16o^@24o^@32  imp=+0x1b56f54fc
+  +machineStoresForVolumeURL:error: @32@0:8@16^@24  imp=+0x1b56f94b8
+  +makeAvailableAtURL: @24@0:8@16  imp=+0x1b56f6a78
+  +pathComponentResemblesStructure: B24@0:8@16  imp=+0x1b56f7e90
+  +preorderEnumerateStructureTree:enumerator: v32@0:8@16@?24  imp=+0x1b56f5154
+  +readAtURL:parent:error: @40@0:8@16@24^@32  imp=+0x1b56f6648
+  +setMetadata:atURL:error: B40@0:8@16@24o^@32  imp=+0x1b56f52dc
+  +stateAtURL: q24@0:8@16  imp=+0x1b56f5774
+  +structurePathComponentPattern @16@0:8  imp=+0x1b56f50b8
+  +structureType @16@0:8  imp=+0x1b56f50c4
+  +structureTypeAtURL: @24@0:8@16  imp=+0x1b56f8454
+  +upgradeStructureAtURL:oldState:error: @40@0:8@16@24^@32  imp=+0x1b56f5f58
+  +version Q16@0:8  imp=+0x1b56f50b0
+  -.cxx_destruct v16@0:8  imp=+0x1b56f8358
+  -URLForAdoptionOfChild:error: @32@0:8@16^@24  imp=+0x1b56f6df4
+  -URLForChangedParentURL: @24@0:8@16  imp=+0x1b56f7384
+  -_parentChangedURL v16@0:8  imp=+0x1b56f71e4
+  -_updateURL: v24@0:8@16  imp=+0x1b56f70c8
+  -addChild: v24@0:8@16  imp=+0x1b56f81b0
+  -adoptChildStructure:error: B32@0:8@16^@24  imp=+0x1b56f6b78
+  -buildAtURL:parentURL:error: B40@0:8@16@24^@32  imp=+0x1b56f7584
+  -children @16@0:8  imp=+0x1b56f7fd8
+  -childrenLock {os_unfair_lock_s=I}16@0:8  imp=+0x1b56f8350
+  -childrenOfType: @24@0:8@16  imp=+0x1b56f803c
+  -deleteFromDiskWithCancelBlock:error: @32@0:8@?16^@24  imp=+0x1b56f74a0
+  -hash Q16@0:8  imp=+0x1b56f82d0
+  -initWithUUID:url: @32@0:8@16@24  imp=+0x1b56f6a80
+  -isEqual: B24@0:8@16  imp=+0x1b56f822c
+  -mutableChildren @16@0:8  imp=+0x1b56f8344
+  -needsRefreshFromDisk B16@0:8  imp=+0x1b56f8330
+  -parent @16@0:8  imp=+0x1b56f82d8
+  -prepareForReuse: B24@0:8^@16  imp=+0x1b56f5aa0
+  -refreshFromDisk q16@0:8  imp=+0x1b56f7728
+  -removeChild: v24@0:8@16  imp=+0x1b56f74e4
+  -removeChildren v16@0:8  imp=+0x1b56f7540
+  -rename:error: B32@0:8@16^@24  imp=+0x1b56f6df8
+  -reuseAtURL:error: B32@0:8@16^@24  imp=+0x1b56f768c
+  -setNeedsRefreshFromDisk: v20@0:8B16  imp=+0x1b56f833c
+  -setParent: v24@0:8@16  imp=+0x1b56f8304
+  -setUrl: v24@0:8@16  imp=+0x1b56f8328
+  -structureType @16@0:8  imp=+0x1b56f6b50
+  -treeDescription @16@0:8  imp=+0x1b56f7cd8
+  -url @16@0:8  imp=+0x1b56f831c
+  -uuid @16@0:8  imp=+0x1b56f8310
+@class TMStructureAnnotatedDiskState : NSObject instanceSize=24
+  ivar +8 _state q
+  ivar +16 _metadata @"TMStructureMetadata"
+  property state (Tq,R,V_state)
+  property metadata (T@"TMStructureMetadata",R,&,V_metadata)
+  +annotatedStateWithDiskState:metadata: @32@0:8q16@24  imp=+0x1b56fa284
+  -.cxx_destruct v16@0:8  imp=+0x1b56fa400
+  -annotatedStateByReplacingDiskState: @24@0:8q16  imp=+0x1b56fa374
+  -initWithDiskState:metadata: @32@0:8q16@24  imp=+0x1b56fa2f0
+  -metadata @16@0:8  imp=+0x1b56fa3f4
+  -state q16@0:8  imp=+0x1b56fa3ec
+@class TMStructureMetadata : NSObject instanceSize=32
+  ivar +8 _version @"NSNumber"
+  ivar +16 _type @"NSString"
+  ivar +24 _uuid @"NSString"
+  property version (T@"NSNumber",R,&,V_version)
+  property type (T@"NSString",R,&,V_type)
+  property uuid (T@"NSString",R,&,V_uuid)
+  property dataRepresentation (T@"NSData",R)
+  +metadataFromData:error: @32@0:8@16^@24  imp=+0x1b56f9a90
+  +metadataFromURL:error: @32@0:8@16^@24  imp=+0x1b56f9844
+  +metadataWithType: @24@0:8@16  imp=+0x1b56f9768
+  -.cxx_destruct v16@0:8  imp=+0x1b56fa234
+  -dataRepresentation @16@0:8  imp=+0x1b56fa1bc
+  -initWithString:error: @32@0:8@16^@24  imp=+0x1b56f9cd8
+  -initWithVersion:uuid:type: @40@0:8@16@24@32  imp=+0x1b56f9fd4
+  -stringValue @16@0:8  imp=+0x1b56fa0a8
+  -type @16@0:8  imp=+0x1b56fa21c
+  -uuid @16@0:8  imp=+0x1b56fa228
+  -version @16@0:8  imp=+0x1b56fa210
+@class TMSubdirectorySourceDisk : TMTestDisk instanceSize=128
+  ivar +120 _subdirectoryPath @"NSString"
+  property subdirectoryPath (T@"NSString",C,V_subdirectoryPath)
+  property baseDevice (T@"NSString",C,D)
+  -.cxx_destruct v16@0:8  imp=+0x1b5708ffc
+  -_mountFileSystem B16@0:8  imp=+0x1b5708d40
+  -attach B16@0:8  imp=+0x1b5708cd4
+  -constructFileSystem B16@0:8  imp=+0x1b5708cf8
+  -description @16@0:8  imp=+0x1b5708ee0
+  -detach B16@0:8  imp=+0x1b5708e24
+  -initWithPath:capacity:arbiter:error: @48@0:8@16Q24@32^@40  imp=+0x1b57089c8
+  -isAttached B16@0:8  imp=+0x1b5708e7c
+  -isMounted B16@0:8  imp=+0x1b5708e9c
+  -setSubdirectoryPath: v24@0:8@16  imp=+0x1b5708ff0
+  -subdirectoryPath @16@0:8  imp=+0x1b5708fe0
+  -unmount B16@0:8  imp=+0x1b5708e04
+@class TMSystemInformation : NSObject instanceSize=8
+  +buildVersion @16@0:8  imp=+0x1b56d9454
+  +computerName @16@0:8  imp=+0x1b56d91ec
+  +hardwareModelIdentifier @16@0:8  imp=+0x1b56d92cc
+  +hasInternalBattery B16@0:8  imp=+0x1b56d93b4
+  +hostUUID @16@0:8  imp=+0x1b56d8e20
+  +hostUUIDDerivedMachineAddress @16@0:8  imp=+0x1b56d8fc0
+  +isAppleInternal B16@0:8  imp=+0x1b56d8bcc
+  +isClockMoreOrLessCorrect B16@0:8  imp=+0x1b56d8cf4
+  +isNetBooted B16@0:8  imp=+0x1b56d8c2c
+  +macAddress @16@0:8  imp=+0x1b56d8edc
+@class TMSystemMigrationPathsProvider : NSObject <TMSystemPathsProvider> instanceSize=8
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -systemPathsForVolumeAtURL: @24@0:8@16  imp=+0x1b56e316c
+@class TMSystemPathsOracle : NSObject instanceSize=40
+  ivar +8 _mountPointURL @"NSURL"
+  ivar +16 _discoveryLock @"NSLock"
+  ivar +24 _systemPathsTreeRoot @"TMPathTreeNode"
+  ivar +32 _pathsProvider @"<TMSystemPathsProvider>"
+  property pathsProvider (T@"<TMSystemPathsProvider>",&,V_pathsProvider)
+  +_knownSystemInstalledBundleExtensions @16@0:8  imp=+0x1b56e3468
+  -.cxx_destruct v16@0:8  imp=+0x1b56e3c90
+  -discoverSystemPaths: B24@0:8@?16  imp=+0x1b56e3624
+  -discoverSystemPathsWithOptions:cancelBlock: B28@0:8I16@?20  imp=+0x1b56e3630
+  -enumeratePathsUsingBlock: v24@0:8@?16  imp=+0x1b56e3af4
+  -enumeratePathsWithOptions:usingBlock: v28@0:8I16@?20  imp=+0x1b56e3b00
+  -initForVolumeAtURL: @24@0:8@16  imp=+0x1b56e33b4
+  -pathsProvider @16@0:8  imp=+0x1b56e3c7c
+  -setPathsProvider: v24@0:8@16  imp=+0x1b56e3c88
+@class TMTarget : NSObject instanceSize=32
+  ivar +8 _volumeRelativePath @"NSString"
+  ivar +16 _volumeName @"NSString"
+  ivar +24 _volumeUUID @"NSString"
+  property volumeRelativePath (T@"NSString",C,V_volumeRelativePath)
+  property volumeName (T@"NSString",R,C,V_volumeName)
+  property volumeUUID (T@"NSString",R,C,V_volumeUUID)
+  +rootTarget @16@0:8  imp=+0x1b56ee9ac
+  -.cxx_destruct v16@0:8  imp=+0x1b56eecb4
+  -enumerateAncestorTargetsToRoot: v24@0:8@?16  imp=+0x1b56eeb18
+  -initWithVolumeRelativePath:volumeName:volumeUUID: @40@0:8@16@24@32  imp=+0x1b56eea44
+  -setVolumeRelativePath: v24@0:8@16  imp=+0x1b56eec94
+  -volumeName @16@0:8  imp=+0x1b56eec9c
+  -volumeRelativePath @16@0:8  imp=+0x1b56eec88
+  -volumeUUID @16@0:8  imp=+0x1b56eeca8
+@class TMTargetCache : NSObject instanceSize=72
+  ivar +8 _addBackupsOnPrime B
+  ivar +9 _isLiveSystemInfoPrimed B
+  ivar +12 _entriesLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +16 _liveSystemInfoLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +24 _currentlySelectedDate @"NSDate"
+  ivar +32 _spotlightQueryRootPaths @"NSMutableSet"
+  ivar +40 _backupEntries @"NSMutableDictionary"
+  ivar +48 _currentDataVolumeUUID @"NSString"
+  ivar +56 _currentDataVolumeMountPoint @"NSString"
+  ivar +64 _uuidsToMostRecentVolumeNames @"NSDictionary"
+  property currentlySelectedDate (T@"NSDate",C,V_currentlySelectedDate)
+  property spotlightQueryRootPaths (T@"NSMutableSet",R,V_spotlightQueryRootPaths)
+  property backupEntries (T@"NSMutableDictionary",R,V_backupEntries)
+  property entriesLock (T{os_unfair_lock_s=I},R,V_entriesLock)
+  property isLiveSystemInfoPrimed (TB,V_isLiveSystemInfoPrimed)
+  property liveSystemInfoLock (T{os_unfair_lock_s=I},R,V_liveSystemInfoLock)
+  property currentDataVolumeUUID (T@"NSString",C,V_currentDataVolumeUUID)
+  property currentDataVolumeMountPoint (T@"NSString",C,V_currentDataVolumeMountPoint)
+  property uuidsToMostRecentVolumeNames (T@"NSDictionary",C,V_uuidsToMostRecentVolumeNames)
+  property addBackupsOnPrime (TB,V_addBackupsOnPrime)
+  property currentlySelected (T@"<TMMountableBackupProtocol>",R)
+  +_escapingSpecialCharacters: @24@0:8@16  imp=+0x1b56f269c
+  +_extractFromBackupPath: {TMPathExtraction=@@@@}24@0:8@16  imp=+0x1b56f02c0
+  +_inheritanceHistoryForBackupURL:error: @32@0:8@16^@24  imp=+0x1b56f1178
+  +_machineStoreURLForBackupURL: @24@0:8@16  imp=+0x1b56f12a4
+  +_volumeUUIDForVolumeStoreAtURL: @24@0:8@16  imp=+0x1b56f1638
+  -.cxx_destruct v16@0:8  imp=+0x1b56f20ec
+  -_backupMappedLocationsForLocation:queryKind:backup:homeTarget: @48@0:8@16q24@32@40  imp=+0x1b56f2d0c
+  -_computerScopeLocationsForBackup:queryKind: @32@0:8@16q24  imp=+0x1b56f27ec
+  -_mostRecentVolumeUUIDForBackupRootURL:volumeStoreName:inheritanceHistory: @40@0:8@16@24@32  imp=+0x1b56f14f4
+  -_primedTargetCacheEntry: @24@0:8@16  imp=+0x1b56f016c
+  -_targetWithPathInBackup: {TMTargetExtraction=@@}24@0:8@16  imp=+0x1b56f0c8c
+  -_unprimedEntry: @24@0:8@16  imp=+0x1b56f0088
+  -addBackups:unprimedInfo: @32@0:8@16@24  imp=+0x1b56f18d8
+  -addBackupsOnPrime B16@0:8  imp=+0x1b56f204c
+  -backupEntries @16@0:8  imp=+0x1b56f2080
+  -clientInfoForDate: @24@0:8@16  imp=+0x1b56f1f5c
+  -createOldestNewestDatesQueryForScopePaths:currentQueryString:backup: ^{__MDQuery=}40@0:8@16@24@32  imp=+0x1b56f2160
+  -currentDataVolumeMountPoint @16@0:8  imp=+0x1b56f20c4
+  -currentDataVolumeUUID @16@0:8  imp=+0x1b56f20b0
+  -currentlySelected @16@0:8  imp=+0x1b56f1794
+  -currentlySelectedDate @16@0:8  imp=+0x1b56f2060
+  -doesBackupContainAnyHitsForTargets:backup: B32@0:8@16@24  imp=+0x1b56f3b48
+  -entriesLock {os_unfair_lock_s=I}16@0:8  imp=+0x1b56f208c
+  -init @16@0:8  imp=+0x1b56ef308
+  -initWithCurrentDataVolumeUUID:mountPoint:mostRecentVolumeNamesByUUID: @40@0:8@16@24@32  imp=+0x1b56ef424
+  -isLiveSystemInfoPrimed B16@0:8  imp=+0x1b56f2094
+  -livePathForTarget: @24@0:8@16  imp=+0x1b56ef51c
+  -liveSystemInfoLock {os_unfair_lock_s=I}16@0:8  imp=+0x1b56f20a8
+  -machineStoreURLForBackedUpItemURL:error: @32@0:8@16^@24  imp=+0x1b56f3150
+  -machineStoreURLForURLInMachineStore:error: @32@0:8@16^@24  imp=+0x1b56f317c
+  -mapScopeKind:locations:toBackup:homeTarget:isTagSearch: @52@0:8q16@24@32@40B48  imp=+0x1b56f2980
+  -objectForKeyedSubscript: @24@0:8@16  imp=+0x1b56f1e54
+  -pathForTarget:inBackup: @32@0:8@16@24  imp=+0x1b56f0a14
+  -primeCacheAndKickBackup: v24@0:8@16  imp=+0x1b56ef790
+  -primeCacheForBackup: v24@0:8@16  imp=+0x1b56ef840
+  -primeCacheForBackupURL: v24@0:8@16  imp=+0x1b56ef83c
+  -primeCacheForTestingWithBackupURL:bestVolumeUUIDToVolumeStorePath:backupVolumeUUID: v40@0:8@16@24@32  imp=+0x1b56f044c
+  -primeLiveSystemInfoCache v16@0:8  imp=+0x1b56f07ac
+  -queryTargetWithLiveTarget:deviceID:fileID:revisionDate: @44@0:8@16i24Q28@36  imp=+0x1b56f3a98
+  -queryTargetWithPathInBackup:deviceID:fileID:revisionDate: @44@0:8@16i24Q28@36  imp=+0x1b56f398c
+  -removeBackups: @24@0:8@16  imp=+0x1b56f1c3c
+  -resolvePathForQueryTarget:inBackup: @32@0:8@16@24  imp=+0x1b56f34a4
+  -selectDate: v24@0:8@16  imp=+0x1b56f1868
+  -setAddBackupsOnPrime: v20@0:8B16  imp=+0x1b56f2058
+  -setCurrentDataVolumeMountPoint: v24@0:8@16  imp=+0x1b56f20d0
+  -setCurrentDataVolumeUUID: v24@0:8@16  imp=+0x1b56f20bc
+  -setCurrentlySelectedDate: v24@0:8@16  imp=+0x1b56f206c
+  -setIsLiveSystemInfoPrimed: v20@0:8B16  imp=+0x1b56f20a0
+  -setUuidsToMostRecentVolumeNames: v24@0:8@16  imp=+0x1b56f20e4
+  -spotlightQueryRootPaths @16@0:8  imp=+0x1b56f2074
+  -targetWithPathInBackup: @24@0:8@16  imp=+0x1b56f0c18
+  -uuidsToMostRecentVolumeNames @16@0:8  imp=+0x1b56f20d8
+@class TMTargetCacheEntry : NSObject instanceSize=112
+  ivar +8 _alreadyFoundLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +16 _alreadyFoundTargets {unordered_set<TMQueryTargetKey, std::hash<TMQueryTargetKey>, std::equal_to<TMQueryTargetKey>, std::allocator<TMQueryTargetKey>>="__table_"{__hash_table<TMQueryTargetKey, std::hash<TMQueryTargetKey>, std::equal_to<TMQueryTargetKey>, std::allocator<TMQueryTargetKey>>="__bucket_list_"{unique_ptr<std::__hash_node_base<std::__hash_node<TMQueryTargetKey, void *> *> *[], std::__bucket_list_deallocator<std::allocator<std::__hash_node_base<std::__hash_node<TMQueryTargetKey, void *> *> *>>>=""{?="__ptr_"^^v"__deleter_"{__bucket_list_deallocator<std::allocator<std::__hash_node_base<std::__hash_node<TMQueryTargetKey, void *> *> *>>=""{?="__size_"Q}}}}""{?="__first_node_"{__hash_node_base<std::__hash_node<TMQueryTargetKey, void *> *>="__next_"^v}}""{?="__size_"Q}""{?="__max_load_factor_"f}}}
+  ivar +56 _isInternallyPrimed B
+  ivar +57 _isClientInfoPrimed B
+  ivar +60 _primingLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +64 _backup @"<TMMountableBackupProtocol>"
+  ivar +72 _clientInfo @"<TMTargetCachePrimable>"
+  ivar +80 _liveVolumeUUID @"NSString"
+  ivar +88 _uuidToDeviceID @"NSMutableDictionary"
+  ivar +96 _uuidToVolumeStorePath @"NSMutableDictionary"
+  ivar +104 _volumeStorePathToUUID @"NSMutableDictionary"
+  property isInternallyPrimed (TB,V_isInternallyPrimed)
+  property isClientInfoPrimed (TB,V_isClientInfoPrimed)
+  property primingLock (T{os_unfair_lock_s=I},R,V_primingLock)
+  property backup (T@"<TMMountableBackupProtocol>",R,V_backup)
+  property clientInfo (T@"<TMTargetCachePrimable>",R,V_clientInfo)
+  property liveVolumeUUID (T@"NSString",C,V_liveVolumeUUID)
+  property uuidToDeviceID (T@"NSMutableDictionary",&,V_uuidToDeviceID)
+  property uuidToVolumeStorePath (T@"NSMutableDictionary",&,V_uuidToVolumeStorePath)
+  property volumeStorePathToUUID (T@"NSMutableDictionary",&,V_volumeStorePathToUUID)
+  -.cxx_construct @16@0:8  imp=+0x1b56ef2f4
+  -.cxx_destruct v16@0:8  imp=+0x1b56ef278
+  -addVolumeStorePath:forVolumeUUID:deviceID: v36@0:8@16@24i32  imp=+0x1b56eef1c
+  -backup @16@0:8  imp=+0x1b56ef210
+  -clientInfo @16@0:8  imp=+0x1b56ef21c
+  -deviceIDForUUID: i24@0:8@16  imp=+0x1b56ef05c
+  -hasHitAlreadyBeenFound: B24@0:8@16  imp=+0x1b56ef0b0
+  -initForNow @16@0:8  imp=+0x1b56eed04
+  -initWithBackup:unprimedInfo: @32@0:8@16@24  imp=+0x1b56eed10
+  -isClientInfoPrimed B16@0:8  imp=+0x1b56ef1f4
+  -isInternallyPrimed B16@0:8  imp=+0x1b56ef1e0
+  -liveVolumeUUID @16@0:8  imp=+0x1b56ef228
+  -markHitAlreadyFound: v24@0:8@16  imp=+0x1b56ef14c
+  -primeEntry:clientPrimingBlock: v32@0:8@?16@?24  imp=+0x1b56eee40
+  -primingLock {os_unfair_lock_s=I}16@0:8  imp=+0x1b56ef208
+  -setIsClientInfoPrimed: v20@0:8B16  imp=+0x1b56ef200
+  -setIsInternallyPrimed: v20@0:8B16  imp=+0x1b56ef1ec
+  -setLiveVolumeUUID: v24@0:8@16  imp=+0x1b56ef234
+  -setUuidToDeviceID: v24@0:8@16  imp=+0x1b56ef248
+  -setUuidToVolumeStorePath: v24@0:8@16  imp=+0x1b56ef25c
+  -setVolumeStorePathToUUID: v24@0:8@16  imp=+0x1b56ef270
+  -uuidForVolumeStorePath: @24@0:8@16  imp=+0x1b56ef02c
+  -uuidToDeviceID @16@0:8  imp=+0x1b56ef23c
+  -uuidToVolumeStorePath @16@0:8  imp=+0x1b56ef250
+  -volumeStorePathForUUID: @24@0:8@16  imp=+0x1b56eeffc
+  -volumeStorePathToUUID @16@0:8  imp=+0x1b56ef264
+@class TMTestDisk : NSObject instanceSize=120
+  ivar +8 _diskArbiter @"TMDiskArbiter"
+  ivar +16 _volumeName @"NSString"
+  ivar +24 _fsType I
+  ivar +28 _diskType I
+  ivar +32 _capacity Q
+  ivar +40 _baseDevice @"NSString"
+  ivar +48 _apfsPhysicalDevice @"NSString"
+  ivar +56 _apfsContainerDevice @"NSString"
+  ivar +64 _apfsFirstVolumeDevice @"NSString"
+  ivar +72 _baseDiskRef ^{__DADisk=}
+  ivar +80 _mountDiskRef ^{__DADisk=}
+  ivar +88 _hasFileSystem B
+  ivar +96 _mountPointURL @"NSURL"
+  ivar +104 _stdout @"NSString"
+  ivar +112 _stderr @"NSString"
+  property baseDevice (T@"NSString",C,V_baseDevice)
+  property __stdoutp (T@"NSString",C,V_stdout)
+  property __stderrp (T@"NSString",C,V_stderr)
+  property arbiter (T@"TMDiskArbiter",R,V_diskArbiter)
+  property volumeName (T@"NSString",R,V_volumeName)
+  property fileSystemType (TI,R,V_fsType)
+  property diskType (TI,R,V_diskType)
+  property mountPointURL (T@"NSURL",&,V_mountPointURL)
+  property mountPoint (T@"NSString",R)
+  property apfsPhysicalDevice (T@"NSString",R,V_apfsPhysicalDevice)
+  property apfsContainerDevice (T@"NSString",R,V_apfsContainerDevice)
+  property apfsFirstVolumeDevice (T@"NSString",R,V_apfsFirstVolumeDevice)
+  property capacity (TQ,R,V_capacity)
+  property isAttached (TB,R)
+  property isMounted (TB,R)
+  +_apfsContainerForPhysicalStore:arbiter: ^{__DADisk=}32@0:8^{__DADisk=}16@24  imp=+0x1b57099f4
+  +_apfsPhysicalStoresForAPFSVolume:arbiter: @32@0:8^{__DADisk=}16@24  imp=+0x1b5709da4
+  +_apfsVolumeForContainer:arbiter: ^{__DADisk=}32@0:8^{__DADisk=}16@24  imp=+0x1b5709b18
+  +apfsPhysicalStoresWholeDiskBSDNamesForAPFSVolumeBSDName:arbiter: @32@0:8@16@24  imp=+0x1b5709eec
+  -.cxx_destruct v16@0:8  imp=+0x1b570b4d0
+  -__stderrp @16@0:8  imp=+0x1b570b4bc
+  -__stdoutp @16@0:8  imp=+0x1b570b4a8
+  -_attachNewDeviceWithCapacity: @24@0:8Q16  imp=+0x1b570937c
+  -_mountFileSystem B16@0:8  imp=+0x1b570aa24
+  -_setBaseDiskRef: v24@0:8^{__DADisk=}16  imp=+0x1b5709188
+  -_setMountDiskRef: v24@0:8^{__DADisk=}16  imp=+0x1b57091d4
+  -apfsContainerDevice @16@0:8  imp=+0x1b570b478
+  -apfsFirstVolumeDevice @16@0:8  imp=+0x1b570b484
+  -apfsPhysicalDevice @16@0:8  imp=+0x1b570b46c
+  -arbiter @16@0:8  imp=+0x1b570b42c
+  -attach B16@0:8  imp=+0x1b5709284
+  -baseDevice @16@0:8  imp=+0x1b570b458
+  -capacity Q16@0:8  imp=+0x1b570b4a0
+  -constructFileSystem B16@0:8  imp=+0x1b570a0b8
+  -dealloc v16@0:8  imp=+0x1b5709124
+  -description @16@0:8  imp=+0x1b570b398
+  -detach B16@0:8  imp=+0x1b570b1a8
+  -diskType I16@0:8  imp=+0x1b570b498
+  -fileSystemType I16@0:8  imp=+0x1b570b490
+  -forceUnmountAllVolumesAndSnapshots v16@0:8  imp=+0x1b570ae98
+  -initWithVolumeName:capacity:arbiter: @40@0:8@16Q24@32  imp=+0x1b5709010
+  -initWithVolumeName:fileSystemType:capacity:arbiter: @44@0:8@16I24Q28@36  imp=+0x1b5709020
+  -isAttached B16@0:8  imp=+0x1b5709220
+  -isMounted B16@0:8  imp=+0x1b5709240
+  -mount B16@0:8  imp=+0x1b570931c
+  -mountPoint @16@0:8  imp=+0x1b5709180
+  -mountPointURL @16@0:8  imp=+0x1b570b444
+  -runTask: i24@0:8@16  imp=+0x1b570952c
+  -setBaseDevice: v24@0:8@16  imp=+0x1b570b464
+  -setMountPointURL: v24@0:8@16  imp=+0x1b570b450
+  -set__stderrp: v24@0:8@16  imp=+0x1b570b4c8
+  -set__stdoutp: v24@0:8@16  imp=+0x1b570b4b4
+  -stderrCompleted: v24@0:8@16  imp=+0x1b5709464
+  -stdoutCompleted: v24@0:8@16  imp=+0x1b570939c
+  -unmount B16@0:8  imp=+0x1b570aca8
+  -volumeName @16@0:8  imp=+0x1b570b438
+@class TMThinningAlgorithm : NSObject instanceSize=40
+  ivar +8 _shouldKeepWeeklySnapshots B
+  ivar +16 _now @"NSDate"
+  ivar +24 _numberOfHourlySnapshotsToKeep Q
+  ivar +32 _numberOfDailySnapshotsToKeep Q
+  property numberOfHourlySnapshotsToKeep (TQ,V_numberOfHourlySnapshotsToKeep)
+  property numberOfDailySnapshotsToKeep (TQ,V_numberOfDailySnapshotsToKeep)
+  property shouldKeepWeeklySnapshots (TB,V_shouldKeepWeeklySnapshots)
+  property now (T@"NSDate",&,V_now)
+  +backupThinningAlgorithm @16@0:8  imp=+0x1b56d9500
+  +localSnapshotThinningAlgorithm @16@0:8  imp=+0x1b56ac724
+  -.cxx_destruct v16@0:8  imp=+0x1b56d95a4
+  -datesToRemoveFromSet: @24@0:8@16  imp=+0x1b56ac79c
+  -now @16@0:8  imp=+0x1b56ace8c
+  -numberOfDailySnapshotsToKeep Q16@0:8  imp=+0x1b56d9590
+  -numberOfHourlySnapshotsToKeep Q16@0:8  imp=+0x1b56d9588
+  -setNow: v24@0:8@16  imp=+0x1b56d9580
+  -setNumberOfDailySnapshotsToKeep: v24@0:8Q16  imp=+0x1b56ac78c
+  -setNumberOfHourlySnapshotsToKeep: v24@0:8Q16  imp=+0x1b56ac784
+  -setShouldKeepWeeklySnapshots: v20@0:8B16  imp=+0x1b56ac794
+  -shouldKeepWeeklySnapshots B16@0:8  imp=+0x1b56d9598
+@class TMURLDisk : NSObject instanceSize=32
+  ivar +8 _traits Q
+  ivar +16 _nsURLVolumeName @"NSString"
+  ivar +24 _bytesFree @"NSNumber"
+  property traits (TQ,R,V_traits)
+  property nsURLVolumeName (T@"NSString",R,C,V_nsURLVolumeName)
+  property bytesFree (T@"NSNumber",R,V_bytesFree)
+  -.cxx_destruct v16@0:8  imp=+0x1b56c41d4
+  -bytesFree @16@0:8  imp=+0x1b56c41c8
+  -initWithMountPoint:error: @32@0:8@16^@24  imp=+0x1b56c404c
+  -nsURLVolumeName @16@0:8  imp=+0x1b56c41bc
+  -traits Q16@0:8  imp=+0x1b56c41b4
+@class TMVFSEventObserver : NSObject instanceSize=96
+  ivar +8 _eventMonitorQueue @"NSObject<OS_dispatch_queue>"
+  ivar +16 _eventMonitor @"NSObject<OS_dispatch_source>"
+  ivar +24 _eventMonitorStoppedSemaphore @"NSObject<OS_dispatch_semaphore>"
+  ivar +32 _isMonitoring B
+  ivar +40 _daSession ^{__DASession=}
+  ivar +48 _lastMountedVolumesMap @"NSDictionary"
+  ivar +56 _diskWillAppearBlock @?
+  ivar +64 _diskAppearedBlock @?
+  ivar +72 _diskDisappearedBlock @?
+  ivar +80 _diskPeekBlock @?
+  ivar +88 _volumeTransactions @"NSMutableDictionary"
+  property lastMountedVolumesMap (T@"NSDictionary",C,N,V_lastMountedVolumesMap)
+  property volumeTransactions (T@"NSMutableDictionary",R,V_volumeTransactions)
+  property diskPeekBlock (T@?,C,V_diskPeekBlock)
+  property diskWillAppearBlock (T@?,C,V_diskWillAppearBlock)
+  property diskAppearedBlock (T@?,C,V_diskAppearedBlock)
+  property diskDisappearedBlock (T@?,C,V_diskDisappearedBlock)
+  -.cxx_destruct v16@0:8  imp=+0x1b56c4cd8
+  -_copyMountedVolumesMap @16@0:8  imp=+0x1b56c4b24
+  -_handleDiskEvents: v24@0:8Q16  imp=+0x1b56c4868
+  -diskAppearedBlock @?16@0:8  imp=+0x1b56c4c90
+  -diskDisappearedBlock @?16@0:8  imp=+0x1b56c4ca4
+  -diskPeekBlock @?16@0:8  imp=+0x1b56c4cb8
+  -diskWillAppearBlock @?16@0:8  imp=+0x1b56c4c7c
+  -init @16@0:8  imp=+0x1b56c4218
+  -lastMountedVolumesMap @16@0:8  imp=+0x1b56c4c6c
+  -setDiskAppearedBlock: v24@0:8@?16  imp=+0x1b56c4c9c
+  -setDiskDisappearedBlock: v24@0:8@?16  imp=+0x1b56c4cb0
+  -setDiskPeekBlock: v24@0:8@?16  imp=+0x1b56c4cc4
+  -setDiskWillAppearBlock: v24@0:8@?16  imp=+0x1b56c4c88
+  -setLastMountedVolumesMap: v24@0:8@16  imp=+0x1b56c4c74
+  -startObserving v16@0:8  imp=+0x1b56c4280
+  -startObservingOnQueue: v24@0:8@16  imp=+0x1b56c4288
+  -stopObserving v16@0:8  imp=+0x1b56c4774
+  -volumeTransactions @16@0:8  imp=+0x1b56c4ccc
+@class TMVolumeStore : TMStructure instanceSize=64
+  ivar +48 _name @"NSString"
+  ivar +56 _persistentUUID @"NSString"
+  property name (T@"NSString",C,V_name)
+  property persistentUUID (T@"NSString",C,V_persistentUUID)
+  property mountPoint (T@"NSString",R,C)
+  property volumeUUID (T@"NSString",R,C)
+  +annotatedStateAtURL: @24@0:8@16  imp=+0x1b57068b8
+  +readAtURL:parent:error: @40@0:8@16@24^@32  imp=+0x1b57069c4
+  +structureType @16@0:8  imp=+0x1b57068ac
+  -.cxx_destruct v16@0:8  imp=+0x1b57072a4
+  -description @16@0:8  imp=+0x1b5707098
+  -fstype @16@0:8  imp=+0x1b57071ac
+  -isCaseSensitive B16@0:8  imp=+0x1b5707204
+  -isEqual: B24@0:8@16  imp=+0x1b5707108
+  -mountPoint @16@0:8  imp=+0x1b5707048
+  -name @16@0:8  imp=+0x1b570726c
+  -persistentUUID @16@0:8  imp=+0x1b5707288
+  -setName: v24@0:8@16  imp=+0x1b570727c
+  -setPersistentUUID: v24@0:8@16  imp=+0x1b5707298
+  -setVolumeGroupUUID: B24@0:8@16  imp=+0x1b5706df8
+  -setVolumeRole: B24@0:8@16  imp=+0x1b5706ec4
+  -volumeGroupUUID @16@0:8  imp=+0x1b5706e68
+  -volumeRole @16@0:8  imp=+0x1b5706f78
+  -volumeUUID @16@0:8  imp=+0x1b5707268
+@class TMXPCConnectionInvalidator : NSObject instanceSize=24
+  ivar +8 _invalidationBlocksLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +16 _connectionInvalidationBlocks @"NSMutableSet"
+  property invalidationBlocksLock (T{os_unfair_lock_s=I},V_invalidationBlocksLock)
+  property connectionInvalidationBlocks (T@"NSMutableSet",R,V_connectionInvalidationBlocks)
+  -.cxx_destruct v16@0:8  imp=+0x1b56d12e4
+  -addInvalidationBlock: v24@0:8@?16  imp=+0x1b56d107c
+  -connectionInvalidationBlocks @16@0:8  imp=+0x1b56d12d8
+  -init @16@0:8  imp=+0x1b56d1010
+  -invalidate v16@0:8  imp=+0x1b56d119c
+  -invalidationBlocksLock {os_unfair_lock_s=I}16@0:8  imp=+0x1b56d12c8
+  -removeInvalidationBlock: v24@0:8@?16  imp=+0x1b56d110c
+  -setInvalidationBlocksLock: v20@0:8{os_unfair_lock_s=I}16  imp=+0x1b56d12d0
+@class TMXPCListener : NSObject instanceSize=56
+  ivar +8 _serviceName @"NSString"
+  ivar +16 _isLegacyConnection B
+  ivar +24 _connection @"NSObject<OS_xpc_object>"
+  ivar +32 _messageHandler @?
+  ivar +40 _errorHandler @?
+  ivar +48 _messageLoggingKey @"NSString"
+  property serviceName (T@"NSString",R,V_serviceName)
+  property isLegacyConnection (TB,R,V_isLegacyConnection)
+  property connection (T@"NSObject<OS_xpc_object>",R,V_connection)
+  property messageHandler (T@?,C,V_messageHandler)
+  property errorHandler (T@?,C,V_errorHandler)
+  property messageLoggingKey (T@"NSString",C,V_messageLoggingKey)
+  -.cxx_destruct v16@0:8  imp=+0x1b56d2b74
+  -_handleConnection: v24@0:8@16  imp=+0x1b56ac064
+  -_handleConnectionError: v24@0:8@16  imp=+0x1b56ad1bc
+  -_handleXPCMessage: v24@0:8@16  imp=+0x1b56ac228
+  -_initForServiceNamed:legacyConnection: @28@0:8@16B24  imp=+0x1b56abd3c
+  -_newConnectionListenerWithName:legacyConnection: @28@0:8@16B24  imp=+0x1b56abe2c
+  -connection @16@0:8  imp=+0x1b56d2b3c
+  -dealloc v16@0:8  imp=+0x1b56d2a8c
+  -errorHandler @?16@0:8  imp=+0x1b56d2b54
+  -initForLegacyServiceNamed: @24@0:8@16  imp=+0x1b56abd34
+  -initForServiceNamed: @24@0:8@16  imp=+0x1b56d2a84
+  -isLegacyConnection B16@0:8  imp=+0x1b56d2b30
+  -messageHandler @?16@0:8  imp=+0x1b56d2b48
+  -messageLoggingKey @16@0:8  imp=+0x1b56d2b68
+  -sendReply:forMessage: v32@0:8@16@24  imp=+0x1b56ad008
+  -serviceName @16@0:8  imp=+0x1b56d2b24
+  -setErrorHandler: v24@0:8@?16  imp=+0x1b56d2b60
+  -setMessageHandler: v24@0:8@?16  imp=+0x1b56abf6c
+  -setMessageLoggingKey: v24@0:8@16  imp=+0x1b56abf74
+  -startListening v16@0:8  imp=+0x1b56abf7c
+  -stopListening v16@0:8  imp=+0x1b56d2ad4
+@class TimeMachine.Bell2 : _TtCs12_SwiftObject instanceSize=32
+  ivar +16 _hasRung 
+@class TimeMachine.TMAttrListDiskInternal : NSObject <TMAttrListDisk> instanceSize=248
+  ivar +8 disk 
+  property mountPoint (T@"NSURL",N,R)
+  property name (T@"NSString",N,R)
+  property userVisibleName (T@"NSString",N,R)
+  property snapshotName (T@"NSString",N,R)
+  property devicePath (T@"NSString",N,R)
+  property liveDiskDevicePath (T@"NSString",N,R)
+  property deviceName (T@"NSString",N,R)
+  property fsid (T{fsid=[2i]},N,R)
+  property volumeUUID (T@"NSString",N,R)
+  property filesystemTypeName (T@"NSString",N,R)
+  property capacity (T@"NSNumber",N,R)
+  property bytesUsed (T@"NSNumber",N,R)
+  property bytesFree (T@"NSNumber",N,R)
+  property quota (T@"NSNumber",N,R)
+  property traits (TQ,N,R)
+  +bootedDataVolume @16@0:8  imp=+0x1b5717ff0
+  +mountedVolumesAndReturnError: @24@0:8^@16  imp=+0x1b57187c8
+  -.cxx_destruct v16@0:8  imp=+0x1b57188ec
+  -bytesFree @16@0:8  imp=+0x1b57178e4
+  -bytesUsed @16@0:8  imp=+0x1b571780c
+  -capacity @16@0:8  imp=+0x1b5717734
+  -deviceName @16@0:8  imp=+0x1b5717478
+  -devicePath @16@0:8  imp=+0x1b57172f0
+  -filesystemTypeName @16@0:8  imp=+0x1b5717678
+  -fsid {fsid=[2i]}16@0:8  imp=+0x1b5717534
+  -init @16@0:8  imp=+0x1b5766a2c
+  -initWithMountPoint:error: @32@0:8@16^@24  imp=+0x1b5717f1c
+  -liveDiskDevicePath @16@0:8  imp=+0x1b57173ac
+  -mountPoint @16@0:8  imp=+0x1b5716f18
+  -name @16@0:8  imp=+0x1b571708c
+  -quota @16@0:8  imp=+0x1b57179bc
+  -snapshotName @16@0:8  imp=+0x1b5717224
+  -traits Q16@0:8  imp=+0x1b5717a94
+  -userVisibleName @16@0:8  imp=+0x1b5717158
+  -volumeUUID @16@0:8  imp=+0x1b57175ac
+@class TimeMachine.TMUnfairLock : _TtCs12_SwiftObject instanceSize=24
+  ivar +16 innerLock 
+@class TimeMachine.XPCTaskGroup : NSObject instanceSize=48
+  ivar +8 lock 
+  ivar +16 taskCounter 
+  ivar +24 tasks 
+  ivar +32 cancellationDates 
+  ivar +40 connectionID 
+  -.cxx_destruct v16@0:8  imp=+0x1b575f334
+  -init @16@0:8  imp=+0x1b5766a8c
+@class _TtC11TimeMachineP33_CB59652EB581F6BEDA983A6861A55DA010LogLimiter : _TtCs12_SwiftObject instanceSize=40
+  ivar +16 countedOccurrences 
+  ivar +24 alreadyLimited 
+  ivar +32 lock 
+@protocol CWEventDelegate
+  optional -clientConnectionInterrupted v16@0:8
+  optional -ssidDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -powerStateDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -modeDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -linkDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -linkQualityDidChangeForWiFiInterfaceWithName:rssi:transmitRate: v40@0:8@16q24d32
+  optional -bssidDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -clientConnectionInvalidated v16@0:8
+  optional -countryCodeDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -scanCacheUpdatedForWiFiInterfaceWithName: v24@0:8@16
+@protocol CWFAssetMgmtProtocol
+  required -processQueryResults:withError: v32@0:8@16@24
+  required -invalidate v16@0:8
+  required -setEventHandler: v24@0:8@?16
+  required -eventHandler @?16@0:8
+  required -activate v16@0:8
+@protocol CWFAssetPowerTableElectorDelegate
+  required -powerTableReadiness:voter:vote: B36@0:8@16q24B32
+  required -performVersionFetch: B24@0:8@16
+  required -powerTableVote:voter:vote: B36@0:8@16q24B32
+@protocol CWFAssetRootMonitorDelegate
+  required -rootMonitorDetectedAdd:deleted:updated: v40@0:8@16@24@32
+@protocol CWFDeviceDiscoveryManagerDelegate
+  required -didDiscoverDevice: v24@0:8@16
+  required -didLoseDevice: v24@0:8@16
+  optional -didFetchWifiInfoForDevice: v24@0:8@16
+@protocol CWFJSONEncodable
+  required -JSONCompatibleKeyValueMap @16@0:8
+@protocol CWFXPCConnectionDelegate
+  required -XPCConnection:canceledXPCRequestsWithUUID: v32@0:8@16@24
+  required -XPCConnection:completedXPCRequest: v32@0:8@16@24
+  required -XPCConnection:receivedXPCRequest: v32@0:8@16@24
+  required -XPCConnection:updatedProcessState: v32@0:8@16@24
+  required -XPCConnection:updatedRegisteredEventIDs: v32@0:8@16@24
+@protocol CWFXPCEventProtocolPrivate
+  required -receivedAcknowledgedXPCEvent:reply: v32@0:8@16@?24
+@protocol CWFXPCEventProtocolPublic
+  required -receivedXPCEvent: v24@0:8@16
+@protocol CWFXPCEventProtocolWiFiNetworkSharingApp
+@protocol CWFXPCEventProtocolWiFiNetworkSharingExtension
+  required -receivedXPCEvent: v24@0:8@16
+  required -performWiFiNetworkSharingAccessoryScanWithReply: v24@0:8@?16
+@protocol CWFXPCEventProtocolWiFiNetworkSharingUIService
+  required -receivedXPCEvent: v24@0:8@16
+@protocol CWFXPCEventProtocolWiFiUserAgent
+  required -forgetCloudNetworkProfile:reply: v32@0:8@16@?24
+  required -queryCloudNetworksAndReply: v24@0:8@?16
+  required -dumpLogs:reply: v32@0:8@16@?24
+  required -rememberCloudNetworkProfile:reply: v32@0:8@16@?24
+  required -setCaptivePortalCredentials:knownNetworkProfile:reply: v40@0:8@16@24@?32
+  required -cancelWiFiNetworkSharingAskToShareUserNotificationForClientID: v24@0:8@16
+  required -allowBrokenBackhaulPersonalHotspotFallbackForNetwork:reply: v32@0:8@16@?24
+  required -presentWiFiNetworkSharingAskToShareUserNotificationForClientID:network:accessoryName:reply: v48@0:8@16@24@32@?40
+  required -cancelWiFiNetworkSharingAuthorizationProxCardForClientID: v24@0:8@16
+  required -queryNearbyRecommendedNetworksAndReply: v24@0:8@?16
+  required -queryCaptivePortalCredentialsForKnownNetworkProfile:reply: v32@0:8@16@?24
+  required -nearbyConfirmBrokenBackhaulUsingTimeout:count:network:minimumCacheTimestamp:reply: v56@0:8Q16Q24@32Q40@?48
+  required -presentWiFiNetworkSharingAuthorizationProxCardForClientID:accessoryName:reply: v40@0:8@16@24@?32
+  required -cancelWiFiNetworkSharingAskToShareProxCardForClientID: v24@0:8@16
+  required -presentWiFiNetworkSharingAskToShareProxCardForClientID:accessoryName:reply: v40@0:8@16@24@?32
+@protocol CWFXPCListenerDelegate
+  required -XPCListener:XPCConnection:completedXPCRequest: v40@0:8@16@24@32
+  required -XPCListener:XPCConnection:updatedRegisteredEventIDs: v40@0:8@16@24@32
+  required -XPCListener:XPCConnection:canceledXPCRequestsWithUUID: v40@0:8@16@24@32
+  required -XPCListener:invalidatedXPCConnection: v32@0:8@16@24
+  required -XPCListener:XPCConnection:updatedProcessState: v40@0:8@16@24@32
+  required -XPCListener:addedXPCConnection: v32@0:8@16@24
+  required -XPCListener:XPCConnection:receivedXPCRequest: v40@0:8@16@24@32
+@protocol CWFXPCRequestProtocolCoreWLAN
+  required -queryMCSIndexWithRequestParams:reply: v32@0:8@16@?24
+  required -queryRSSIWithRequestParams:reply: v32@0:8@16@?24
+  required -setPower:requestParams:reply: v36@0:8B16@20@?28
+  required -queryWoWEnabledWithRequestParams:reply: v32@0:8@16@?24
+  required -querySupportedChannelsWithCountryCode:requestParams:reply: v40@0:8@16@24@?32
+  required -queryCountryCodeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryCurrentScanResultWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPHYModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryHardwareMACAddressWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowersaveWithRequestParams:reply: v32@0:8@16@?24
+  required -querySupportedPHYModesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLOpModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLSidecarDiagnosticsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInterfaceCapabilitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryHardwareSupportedChannelsWithRequestParams:reply: v32@0:8@16@?24
+  required -disassociateWithReason:requestParams:reply: v40@0:8q16@24@?32
+  required -cancelRequestsWithUUID:reply: v32@0:8@16@?24
+  required -queryTxRateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryMACAddressWithRequestParams:reply: v32@0:8@16@?24
+  required -queryParentInterfaceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -setCarPlayInternet:requestParams:reply: v36@0:8B16@20@?28
+  required -associateWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -queryInterfaceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -startMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -queryNumberOfSpatialStreamsWithRequestParams:reply: v32@0:8@16@?24
+  required -querySSIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryChannelWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIsNetworkServiceEnabledWithRequestParams:reply: v32@0:8@16@?24
+  required -queryVirtualInterfaceRoleWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAuthTypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryOpModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBSSIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowerStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIsQuickProbeRequiredForNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -querySecurityWithRequestParams:reply: v32@0:8@16@?24
+  required -queryTxNSSWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLPeerTrafficRegistrationWithRequestParams:reply: v32@0:8@16@?24
+  required -reportQuickProbeResult:networkProfile:requestParams:reply: v44@0:8B16@20@28@?36
+  required -updateKnownNetworkProfile:properties:OSSpecificKeys:requestParams:reply: v56@0:8@16@24@32@40@?48
+  required -queryPowerDebugInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -queryMaxLinkSpeedWithRequestParams:reply: v32@0:8@16@?24
+  required -updateSoftAPBand:requestParams:reply: v36@0:8I16@20@?28
+  required -queryNoiseWithRequestParams:reply: v32@0:8@16@?24
+  required -queryVirtualInterfaceNamesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowerTableInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -stopMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -queryTxPowerWithRequestParams:reply: v32@0:8@16@?24
+  required -performScanWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -setChannel:requestParams:reply: v40@0:8@16@24@?32
+  required -stopMonitoringAllEventsWithRequestParams:reply: v32@0:8@16@?24
+  required -removeKnownNetworkProfile:reason:requestParams:reply: v48@0:8@16q24@32@?40
+  required -queryPowerWithRequestParams:reply: v32@0:8@16@?24
+  required -queryMaxNSSForAPWithRequestParams:reply: v32@0:8@16@?24
+  required -addKnownNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryWEPSubtypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryWAPISubtypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInterfaceNamesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryKnownNetworkProfilesWithProperties:requestParams:reply: v40@0:8@16@24@?32
+  required -queryStateWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolInternal
+  required -resetWiFiNetworkSharingForBundleID:accessoryID:requestParams:reply: v48@0:8@16@24@32@?40
+  required -querySystemEventIDsWithRequestParams:reply: v32@0:8@16@?24
+  required -querySystemActivitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -dumpLogs:requestParams:reply: v40@0:8@16@24@?32
+  required -getCloudNetworksWithRequestParams:reply: v32@0:8@16@?24
+  required -confirmBrokenBackhaulUsingTimeout:count:requestParams:reply: v48@0:8Q16Q24@32@?40
+  required -queryDeviceUUIDWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolMobileWiFi
+  required -queryCurrentScanResultWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolPrivate
+  required -setRangingIdentifier:requestParams:reply: v40@0:8@16@24@?32
+  required -requestWiFiNetworkSharingAuthorizationWithRequestParams:reply: v32@0:8@16@?24
+  required -setUserAutoJoinState:requestParams:reply: v36@0:8B16@20@?28
+  required -performAutoJoinWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -performRangingWithPeerList:timeout:requestParams:reply: v48@0:8@16Q24@32@?40
+  required -setBlockedBands:requestParams:reply: v40@0:8@16@24@?32
+  required -setPower:requestParams:reply: v36@0:8B16@20@?28
+  required -performNearbyDeviceDiscovery:requestParams:reply: v40@0:8@16@24@?32
+  required -updateKnownBSS:knownNetworkProfile:properties:OSSpecificKeys:requestParams:reply: v64@0:8@16@24@32@40@48@?56
+  required -setSensingEnabled:requestParams:reply: v36@0:8B16@20@?28
+  required -resetInternetSharingStatsWithRequestParams:reply: v32@0:8@16@?24
+  required -setPrivateMACAddressUserJoinFailureUIState:networkProfile:requestParams:reply: v44@0:8B16@20@28@?36
+  required -setBackgroundScanConfiguration:requestParams:reply: v40@0:8@16@24@?32
+  required -setPrivateMACAddressModeSystemSetting:requestParams:reply: v40@0:8q16@24@?32
+  required -addKnownBSS:knownNetworkProfile:requestParams:reply: v48@0:8@16@24@32@?40
+  required -askToShareWiFiNetworkSharingNetworkFromAppWithRequestParams:reply: v32@0:8@16@?24
+  required -setLQMConfiguration:requestParams:reply: v40@0:8@16@24@?32
+  required -acknowledgeWiFiNetworkSharingConnectedAPUpdate:requestParams:reply: v40@0:8@16@24@?32
+  required -startAWDLPeerAssistedDiscoveryWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -setWiFiNetworkSharingAskToShareStatus:networkID:requestParams:reply: v48@0:8q16@24@32@?40
+  required -stopHostAPModeWithRequestParams:reply: v32@0:8@16@?24
+  required -setInternetSharingPassword:requestParams:reply: v40@0:8@16@24@?32
+  required -disassociateWithReason:requestParams:reply: v40@0:8q16@24@?32
+  required -resetAutoJoinStatisticsWithRequestParams:reply: v32@0:8@16@?24
+  required -setCompanionCountryCode:requestParams:reply: v40@0:8@16@24@?32
+  required -setThermalIndex:requestParams:reply: v40@0:8q16@24@?32
+  required -setCarPlayInternet:requestParams:reply: v36@0:8B16@20@?28
+  required -setUCMExtProfile:requestParams:error: v40@0:8@16@24@?32
+  required -associateWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -provideDTCStats:requestParams:reply: v40@0:8@16@24@?32
+  required -setRangeable:peerList:requestParams:reply: v44@0:8B16@20@28@?36
+  required -setInternetSharingDiscoveryState:immediateDisable:requestParams:reply: v40@0:8B16B20@24@?32
+  required -endAllActivitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -startHostAPModeWithConfiguration:requestParams:reply: v40@0:8@16@24@?32
+  required -askToShareWiFiNetworkSharingNetworkFromAppexWithRequestParams:reply: v32@0:8@16@?24
+  required -performANQPWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -setFamilyHotspotPreferences:requestParams:reply: v40@0:8@16@24@?32
+  required -acknowledgeWiFiNetworkSharingNetworkListUpdate:requestParams:reply: v40@0:8@16@24@?32
+  required -setShareMyPersonalHotspotMode:requestParams:reply: v40@0:8q16@24@?32
+  required -startUIScanWithRequestParams:reply: v32@0:8@16@?24
+  required -setAutoHotspotMode:requestParams:reply: v40@0:8q16@24@?32
+  required -setBTCoexActiveProfileName:requestParams:error: v40@0:8@16@24@?32
+  required -performUIBeaconCacheQuery:reply: v32@0:8@16@?24
+  required -stopAWDLPeerAssistedDiscoveryWithRequestParams:reply: v32@0:8@16@?24
+  required -setInternetSharingDiscoveryStateExt:request:requestParams:reply: v44@0:8B16@20@28@?36
+  required -setPrivateMACAddressMode:networkProfile:requestParams:reply: v48@0:8q16@24@32@?40
+  required -reportQuickProbeResult:networkProfile:requestParams:reply: v44@0:8B16@20@28@?36
+  required -updateKnownNetworkProfile:properties:OSSpecificKeys:requestParams:reply: v56@0:8@16@24@32@40@?48
+  required -setUserSettings:properties:requestParams:reply: v48@0:8@16@24@32@?40
+  required -setInternetSharingNetworkName:requestParams:reply: v40@0:8@16@24@?32
+  required -clearAutoJoinDenyListForNetwork:reason:requestParams:reply: v48@0:8@16Q24@32@?40
+  required -updateSoftAPBand:requestParams:reply: v36@0:8I16@20@?28
+  required -setPassword:knownNetworkProfile:requestParams:reply: v48@0:8@16@24@32@?40
+  required -performScanWithParameters:requestParams:reply: v40@0:8@16@24@?32
+  required -stopUIScanWithRequestParams:reply: v32@0:8@16@?24
+  required -setChannel:requestParams:reply: v40@0:8@16@24@?32
+  required -removeKnownNetworkProfile:reason:requestParams:reply: v48@0:8@16q24@32@?40
+  required -setAutoJoinDenyListForNetwork:reason:requestParams:reply: v48@0:8@16Q24@32@?40
+  required -beginActivity:requestParams:reply: v40@0:8@16@24@?32
+  required -setCaptivePortalCredentials:knownNetworkProfile:requestParams:reply: v48@0:8@16@24@32@?40
+  required -addKnownNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -configureSensing:requestParams:reply: v40@0:8@16@24@?32
+  required -removeKnownBSS:knownNetworkProfile:requestParams:reply: v48@0:8@16@24@32@?40
+  required -endActivityWithUUID:requestParams:reply: v40@0:8@16@24@?32
+  required -setInternetSharingState:requestParams:reply: v36@0:8B16@20@?28
+  required -setMISDiscoveryState:immediateDisable:requestParams:reply: v40@0:8B16B20@24@?32
+  required -setMISDiscoveryStateExt:request:requestParams:reply: v44@0:8B16@20@28@?36
+  required -setMISPassword:requestParams:reply: v40@0:8@16@24@?32
+  required -setMISState:requestParams:reply: v36@0:8B16@20@?28
+@protocol CWFXPCRequestProtocolPrivateReadonly
+  required -queryMCSIndexWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAutoJoinStatisticsWithRequestParams:reply: v32@0:8@16@?24
+  required -wifiNetworkSharingAskToShareStatusForNetworkID:requestParams:reply: v40@0:8@16@24@?32
+  required -queryNANRadioScheduleWithRequestParams:reply: v32@0:8@16@?24
+  required -queryRSSIWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkServiceIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLElectionMetricWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAutoJoinDenyListWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalDNSServerAddressesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryCountryBandSupport:reply: v32@0:8@16@?24
+  required -queryInternetSharingDiscoveryStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryLQMConfigurationWithRequestParams:reply: v32@0:8@16@?24
+  required -queryWoWEnabledWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLStatisticsWithRequestParams:reply: v32@0:8@16@?24
+  required -querySupportedChannelsWithCountryCode:requestParams:reply: v40@0:8@16@24@?32
+  required -queryCountryCodeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAutoJoinStatusWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv4RouterWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLGuardTimeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryChannelsInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAutoJoinUserActionMetricWithRequestParams:reply: v32@0:8@16@?24
+  required -queryFamilyHotspotPreferencesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkManagedByMDM:requestParams:reply: v40@0:8@16@24@?32
+  required -queryAWDLStrategyWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLAvailabilityWindowAPAlignmentWithRequestParams:reply: v32@0:8@16@?24
+  required -queryCurrentScanResultWithRequestParams:reply: v32@0:8@16@?24
+  required -queryUserSettingsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPHYModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBluetoothCoexConfigWithRequestParams:reply: v32@0:8@16@?24
+  required -queryHardwareMACAddressWithRequestParams:reply: v32@0:8@16@?24
+  required -queryTxChainPowerWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowersaveWithRequestParams:reply: v32@0:8@16@?24
+  required -querySupportedPHYModesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDHCPLeaseExpirationTimeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBrokenBackhaulStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLOpModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLSidecarDiagnosticsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInterfaceCapabilitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLSecondaryMasterChannelWithRequestParams:reply: v32@0:8@16@?24
+  required -querySSIDForVendorWithRequestParams:reply: v32@0:8@16@?24
+  required -queryLeakyAPStatsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLElectionRSSIThresholdsWithRequestParams:reply: v32@0:8@16@?24
+  required -wifiNetworkSharingAuthorizationLevelWithRequestParams:reply: v32@0:8@16@?24
+  required -queryCCAWithRequestParams:reply: v32@0:8@16@?24
+  required -queryHardwareSupportedChannelsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv6RouterWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLAFTxModeWithRequestParams:reply: v32@0:8@16@?24
+  required -cancelRequestsWithUUID:reply: v32@0:8@16@?24
+  required -queryDeviceSupervisedWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv6AddressesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryTxRateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv4AddressesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLPresenceModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryMACAddressWithRequestParams:reply: v32@0:8@16@?24
+  required -queryHotspotClientDataUsageWithRequestParams:reply: v32@0:8@16@?24
+  required -queryLinkDownStatusWithRequestParams:reply: v32@0:8@16@?24
+  required -queryParentInterfaceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryRangingCapabilitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInterfaceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv4InterfaceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLElectionParametersWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkReachabilityWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBluetoothCoexProfiles2GHzWithRequestParams:reply: v32@0:8@16@?24
+  required -startMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -queryAWDLSyncStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv4ARPResolvedIPAddressWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNumberOfSpatialStreamsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv4AddressesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryWiFiUIStateFlagsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv6NetworkServiceIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryWiFiAssistOverrideReasonsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIO80211InterfaceInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -querySSIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBluetoothCoexModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryHostAPStationListWithRequestParams:reply: v32@0:8@16@?24
+  required -queryChannelWithRequestParams:reply: v32@0:8@16@?24
+  required -queryJoinStatusWithRequestParams:reply: v32@0:8@16@?24
+  required -queryLinkQualityMetricWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIsNetworkServiceEnabledWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPrivateMACAddressModeForNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryIPv4NetworkSignatureWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLEncryptionTypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryVirtualInterfaceRoleWithRequestParams:reply: v32@0:8@16@?24
+  required -getNearbyRecommendedNetworksWithRequestParams:reply: v32@0:8@16@?24
+  required -queryKnownNetworkInfoForLocalNetworkPromptWithOptions:requestParams:reply: v40@0:8@16@24@?32
+  required -queryNetworkOfInterestWorkStateForKnownNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryAutoHotspotModeWithRequestParams:reply: v32@0:8@16@?24
+  required -wifiNetworkSharingConnectedAPListWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPasswordForKnownNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryAuthTypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv6RouterWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLExtensionStateMachineParamsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryOpModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryEAP8021XControlModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBSSIDWithRequestParams:reply: v32@0:8@16@?24
+  required -getRecommendedKnownNetworksWithRequestParams:reply: v32@0:8@16@?24
+  required -queryChainAckWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowerStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIsQuickProbeRequiredForNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryInternetSharingNetworkNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv6InterfaceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkServiceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -querySecurityWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDNSServerAddressesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDHCPServerIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryTxNSSWithRequestParams:reply: v32@0:8@16@?24
+  required -queryRoamStatusWithRequestParams:reply: v32@0:8@16@?24
+  required -queryEAP8021XSupplicantStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryShareMyPersonalHotspotModeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLPeerTrafficRegistrationWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkOfInterestHomeStateForKnownNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryIPv6NetworkSignatureWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowerDebugInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBluetoothCoexProfiles5GHzWithRequestParams:reply: v32@0:8@16@?24
+  required -queryMaxLinkSpeedWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv4NetworkServiceIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryKnownNetworksWithNetworkSignature:requestParams:reply: v40@0:8@16@24@?32
+  required -queryAWDLSocialTimeSlotsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkWarningFlagsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNoiseWithRequestParams:reply: v32@0:8@16@?24
+  required -queryEAP8021XClientStatusWithRequestParams:reply: v32@0:8@16@?24
+  required -queryVirtualInterfaceNamesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowerTableInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -queryTetheringSupportedWithRequestParams:reply: v32@0:8@16@?24
+  required -queryKnownNetworksInSameLanAs:requestParams:reply: v40@0:8@16@24@?32
+  required -stopMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -queryPrivateMACAddressModeSystemSettingWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLElectionIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryRxRateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIO80211ControllerInfoWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv4NetworkServiceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBlockedBandsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPersonalHotspotModificationDisabledWithRequestParams:reply: v32@0:8@16@?24
+  required -queryTxPowerWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLPreferredChannelsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDHCPv6ServerIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLSyncEnabledWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLSyncParametersWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv4SubnetMasksWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBeaconCacheWithRequestParams:reply: v32@0:8@16@?24
+  required -stopMonitoringAllEventsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryCaptivePortalCredentialsForKnownNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryDesenseLevelWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLSyncChannelSequenceWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPowerWithRequestParams:reply: v32@0:8@16@?24
+  required -queryCurrentKnownNetworkProfileWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBrokenBackhaulStateTimestampWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInternetSharingPasswordWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDHCPLeaseStartTimeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInternetSharingStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryMaxNSSForAPWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLBTLEStateParamsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDTIMIntervalWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAutoJoinMetricWithType:requestParams:reply: v40@0:8Q16@24@?32
+  required -queryKnownNetworkProfileMatchingScanResult:requestParams:reply: v40@0:8@16@24@?32
+  required -queryKnownNetworkProfileMatchingNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryWEPSubtypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLPeerDatabaseWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLContinuousElectionAlgorithmEnabledWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBackgroundScanConfigurationWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv4RouterWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGlobalIPv6NetworkServiceNameWithRequestParams:reply: v32@0:8@16@?24
+  required -queryEAP8021XControlStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv4ARPResolvedHardwareAddressWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBackgroundScanCacheWithRequestParams:reply: v32@0:8@16@?24
+  required -queryLQMSummaryWithRequestParams:reply: v32@0:8@16@?24
+  required -queryWAPISubtypeWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInterfaceNamesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryGuardIntervalWithRequestParams:reply: v32@0:8@16@?24
+  required -queryInternetSharingStatsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryNetworkSignatureForNetwork:isBSSID:requestParams:reply: v44@0:8@16B24@28@?36
+  required -queryKnownNetworkProfilesWithProperties:requestParams:reply: v40@0:8@16@24@?32
+  required -wifiNetworkSharingAskToShareNetworkListWithRequestParams:reply: v32@0:8@16@?24
+  required -queryIPv6AddressesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryActivitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryLinkQualityAssessmentWithRequestParams:reply: v32@0:8@16@?24
+  required -queryUserAutoJoinStateWithRequestParams:reply: v32@0:8@16@?24
+  required -queryDesenseWithRequestParams:reply: v32@0:8@16@?24
+  required -queryEventIDsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryAWDLMasterChannelWithRequestParams:reply: v32@0:8@16@?24
+  required -queryThermalIndexWithRequestParams:reply: v32@0:8@16@?24
+  required -queryStateWithRequestParams:reply: v32@0:8@16@?24
+  required -wifiNetworkSharingNetworkListWithRequestParams:reply: v32@0:8@16@?24
+  required -queryPrivateMACAddressForNetworkProfile:requestParams:reply: v40@0:8@16@24@?32
+  required -queryBSSIDForVendorWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolPublicWiFi
+  required -querySSIDForVendorWithRequestParams:reply: v32@0:8@16@?24
+  required -startMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -querySSIDWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBSSIDWithRequestParams:reply: v32@0:8@16@?24
+  required -stopMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -stopMonitoringAllEventsWithRequestParams:reply: v32@0:8@16@?24
+  required -queryBSSIDForVendorWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolUnrestricted
+  required -queryInterfaceCapabilitiesWithRequestParams:reply: v32@0:8@16@?24
+  required -queryOpModeWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolWiFiNetworkSharingApp
+  required -requestWiFiNetworkSharingAuthorizationWithRequestParams:reply: v32@0:8@16@?24
+  required -askToShareWiFiNetworkSharingNetworkFromAppWithRequestParams:reply: v32@0:8@16@?24
+  required -checkinWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolWiFiNetworkSharingExtension
+  required -acknowledgeWiFiNetworkSharingConnectedAPUpdate:requestParams:reply: v40@0:8@16@24@?32
+  required -startMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -askToShareWiFiNetworkSharingNetworkFromAppexWithRequestParams:reply: v32@0:8@16@?24
+  required -acknowledgeWiFiNetworkSharingNetworkListUpdate:requestParams:reply: v40@0:8@16@24@?32
+  required -checkinWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolWiFiNetworkSharingUI
+  required -setWiFiNetworkSharingAskToShareStatus:networkID:requestParams:reply: v48@0:8q16@24@32@?40
+  required -startMonitoringEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -wifiNetworkSharingAskToShareNetworkListWithRequestParams:reply: v32@0:8@16@?24
+  required -checkinWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProtocolWiFiUserAgent
+  required -sendXPCEvent:requestParams:reply: v40@0:8@16@24@?32
+  required -checkinWithRequestParams:reply: v32@0:8@16@?24
+@protocol CWFXPCRequestProxyDelegate
+  required -XPCRequestProxy:XPCConnection:canceledXPCRequestsWithUUID: v40@0:8@16@24@32
+  required -XPCRequestProxy:getAdaptiveInterfaceRankDurationAndReply: v32@0:8@16@?24
+  required -XPCRequestProxy:sendXPCEvent:reply: v40@0:8@16@24@?32
+  required -XPCRequestProxy:XPCConnection:receivedXPCRequest: v40@0:8@16@24@32
+  required -XPCRequestProxy:invalidatedXPCConnection: v32@0:8@16@24
+@protocol CWInternalEventDelegate
+  optional -joinDidStartForWiFiInterfaceWithName:ssid: v32@0:8@16@24
+  optional -internal_queryCloudKVSAndReply: v24@0:8@?16
+  optional -internal_startUserMode8021XWithProfile:interfaceWithName:reply: v40@0:8@16@24@?32
+  optional -internal_showAvailableWiFiNetworks:interfaceName:recommendOnly: v36@0:8@16@24B32
+  optional -autoJoinDidCompleteForWiFiInterfaceWithName: v24@0:8@16
+  optional -autoJoinDidStartForWiFiInterfaceWithName: v24@0:8@16
+  optional -autoJoinDidUpdate: v24@0:8@16
+  optional -btCoexModeStats: v24@0:8@16
+  optional -deviceAvailabilityChangedForWiFiInterfaceWithName:isAvailable: v28@0:8@16B24
+  optional -dextCrashDetected v16@0:8
+  optional -interfaceAddedWithName: v24@0:8@16
+  optional -interfaceRemovedWithName: v24@0:8@16
+  optional -internal_addCloudProfile: v24@0:8@16
+  optional -internal_confirmAPIAccessWithRequestType:info:processName:reply: v48@0:8q16@24@32@?40
+  optional -internal_enableTetherDevice:reply: v32@0:8@16@?24
+  optional -internal_foundTetherDevices: v24@0:8@16
+  optional -internal_getWiFiPasswordForUserKeychainWithSSID:reply: v32@0:8@16@?24
+  optional -internal_joinWiFiNetworkWithUserAgent:interfaceName:timestamp:reply: v48@0:8@16@24d32@?40
+  optional -internal_queryLegacyCloudKVSAndReply: v24@0:8@?16
+  optional -internal_removeCloudProfile: v24@0:8@16
+  optional -internal_setWiFiPasswordForUserKeychain:ssid:reply: v40@0:8@16@24@?32
+  optional -internal_showAutoHotspotNotificationForTetherDevice:retry:interfaceName: v36@0:8@16B24@28
+  optional -internal_showDHCPMessage:networkName: v32@0:8@16@24
+  optional -internal_showLowBatteryNotificationForTetherDevice:interfaceName: v32@0:8@16@24
+  optional -internal_showMICErrorWithNetworkName: v24@0:8@16
+  optional -internal_showPHNetworkExpensiveAlertWithNetworkName: v24@0:8@16
+  optional -internal_startBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  optional -internal_startUserMode8021XWithAuthenticationInfo:interfaceWithName:reply: v40@0:8@16@24@?32
+  optional -internal_startUserMode8021XWithPasspointDomainName:interfaceWithName:reply: v40@0:8@16@24@?32
+  optional -internal_startUserMode8021XWithSSID:username:password:identity:disableUserInteraction:remember:interfaceWithName:reply: v72@0:8@16@24@32@40B48B52@56@?64
+  optional -internal_stopBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  optional -internal_updateCloudProfile: v24@0:8@16
+  optional -joinDidCompleteForWiFiInterfaceWithName:isAutoJoin:error: v36@0:8@16B24@28
+  optional -preferencesDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -rangingEndedForWiFiInterfaceWithName: v24@0:8@16
+  optional -rangingReportEventForWiFiInterfaceWithName:data:error: v40@0:8@16@24@32
+  optional -rangingStartedForWiFiInterfaceWithName: v24@0:8@16
+  optional -realTimeModeDidEndForWiFiInterfaceWithName: v24@0:8@16
+  optional -realTimeModeDidStartForWiFiInterfaceWithName: v24@0:8@16
+  optional -rsnHandshakeDidCompleteForWiFiInterfaceWithName: v24@0:8@16
+  optional -virtualInterfaceStateChangedForWiFiInterfaceWithName: v24@0:8@16
+  optional -willShowJoinUIForWiFiNetwork:interfaceName: v32@0:8@16@24
+  optional -wowStateDidChangeForWiFiInterfaceWithName: v24@0:8@16
+@protocol CWWiFiShareKitXPCRequestProtocol
+  required -cancelPendingRequestWithToken:reply: v32@0:8q16@?24
+  required -corewifiEndpointWithReply: v24@0:8@?16
+  required -disassociateForInterfaceName:token:priority:authorization:reply: v56@0:8@16q24q32@40@?48
+  required -setWiFiPowerState:interfaceName:authorization:reply: v44@0:8B16@20@28@?36
+@protocol CWWiFiUIProxyEvent
+  required -showErrorUIWithScanResult:uuid: v32@0:8@16@24
+  required -didCompleteDiagnostics: v24@0:8@16
+  required -didFindScanResults: v24@0:8@16
+  required -didReceiveSharedPassword:uuid: v32@0:8@16@24
+  required -didUpdateUIState:previous: v32@0:8Q16Q24
+  required -dismissUIWithUUID: v24@0:8@16
+  required -showInfoUIWithTitle:description:uuid: v40@0:8@16@24@32
+  required -showJoinUIWithScanResult:previousError:previousPassword:supportsWiFiPasswordSharing:remember:uuid: v56@0:8@16@24@32B40B44@48
+  required -showLimitedNetworkOptionUIForScanResult:candidates:uuid: v40@0:8@16@24@32
+  required -showLockdownModeUIWithScanResult:uuid: v32@0:8@16@24
+  required -showSecurityMismatchUIWithScanResult:uuid: v32@0:8@16@24
+  required -showWPSUIWithScanResult:pin:uuid: v40@0:8@16@24@32
+  required -updatedWiFiConfiguration: v24@0:8@16
+@protocol CWWiFiUIProxyRequest
+  required -queryCachedScanResultsAndReply: v24@0:8@?16
+  required -addCloudWiFiProfile:authorization:reply: v40@0:8@16@24@?32
+  required -createDiagnosticsReportWithAuthorization:reply: v32@0:8@16@?24
+  required -createIBSSNetworkWithConfiguration:authorization:reply: v40@0:8@16@24@?32
+  required -deleteUserWiFiKeychainPasswordWithSSID:reply: v32@0:8@16@?24
+  required -displayWiFiRecommendationItem:reply: v32@0:8@16@?24
+  required -displayWiFiRecommendationUIAndReply: v24@0:8@?16
+  required -joinScanResult:configuration:authorization:reply: v48@0:8@16@24@32@?40
+  required -queryDiagnosticsAndReply: v24@0:8@?16
+  required -queryIsWiFiCloudSyncEngineRunningWithReply: v24@0:8@?16
+  required -queryUserWiFiKeychainPasswordWithSSID:reply: v32@0:8@16@?24
+  required -queryWiFiDebugLoggingEnabledAndReply: v24@0:8@?16
+  required -queryWiFiUIStateAndReply: v24@0:8@?16
+  required -removeCloudWiFiProfileWithSSID:authorization:reply: v40@0:8@16@24@?32
+  required -setUserWiFiKeychainPasswordWithSSID:password:reply: v40@0:8@16@24@?32
+  required -setWiFiDebugLoggingEnabled:authorization:reply: v36@0:8B16@20@?28
+  required -startMonitoringEventsAndReply: v24@0:8@?16
+  required -startScanningAndReply: v24@0:8@?16
+  required -stopMonitoringEventsAndReply: v24@0:8@?16
+  required -stopScanningAndReply: v24@0:8@?16
+  required -synchronizeCloudWiFiProfilesAndReply: v24@0:8@?16
+  required -updateCloudWiFiProfile:authorization:reply: v40@0:8@16@24@?32
+  required -userDidConfirmJoin:uuid:reply: v36@0:8B16@20@?28
+  required -userDidDismissJoinUIWithUUID:reply: v32@0:8@16@?24
+  required -userDidJoinWithConfiguration:uuid:reply: v40@0:8@16@24@?32
+@protocol CWWiFiUserAgentXPCEventProtocol
+  required -internal_queryCloudKVSAndReply: v24@0:8@?16
+  required -internal_startUserMode8021XWithProfile:interfaceWithName:reply: v40@0:8@16@24@?32
+  required -internal_showAvailableWiFiNetworks:interfaceName:recommendOnly: v36@0:8@16@24B32
+  required -internal_addCloudProfile: v24@0:8@16
+  required -internal_confirmAPIAccessWithRequestType:info:processName:reply: v48@0:8q16@24@32@?40
+  required -internal_enableTetherDevice:reply: v32@0:8@16@?24
+  required -internal_getWiFiPasswordForUserKeychainWithSSID:reply: v32@0:8@16@?24
+  required -internal_joinWiFiNetworkWithUserAgent:interfaceName:timestamp:reply: v48@0:8@16@24d32@?40
+  required -internal_queryLegacyCloudKVSAndReply: v24@0:8@?16
+  required -internal_removeCloudProfile: v24@0:8@16
+  required -internal_setWiFiPasswordForUserKeychain:ssid:reply: v40@0:8@16@24@?32
+  required -internal_showAutoHotspotNotificationForTetherDevice:retry:interfaceName: v36@0:8@16B24@28
+  required -internal_showDHCPMessage:networkName: v32@0:8@16@24
+  required -internal_showLowBatteryNotificationForTetherDevice:interfaceName: v32@0:8@16@24
+  required -internal_showMICErrorWithNetworkName: v24@0:8@16
+  required -internal_showPHNetworkExpensiveAlertWithNetworkName: v24@0:8@16
+  required -internal_startBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  required -internal_startUserMode8021XWithAuthenticationInfo:interfaceWithName:reply: v40@0:8@16@24@?32
+  required -internal_startUserMode8021XWithPasspointDomainName:interfaceWithName:reply: v40@0:8@16@24@?32
+  required -internal_startUserMode8021XWithSSID:username:password:identity:disableUserInteraction:remember:interfaceWithName:reply: v72@0:8@16@24@32@40B48B52@56@?64
+  required -internal_stopBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  required -internal_updateCloudProfile: v24@0:8@16
+@protocol CWWiFiUserAgentXPCRequestProtocol
+  required -internal_foundTetherDevices: v24@0:8@16
+  required -internal_receivedAutoHotspotNotificationResponse:updateMode:tetherDevice:authorization:interfaceName:reply: v60@0:8B16q20@28@36@44@?52
+  required -internal_userAgentWillShowJoinUIForWiFiNetwork:interfaceName:timestamp:reply: v48@0:8@16@24d32@?40
+@protocol CWWiFiXPCEventProtocol
+  required -ssidDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -joinDidStartForWiFiInterfaceWithName:ssid: v32@0:8@16@24
+  required -powerStateDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -modeDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -linkDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -linkQualityDidChangeForWiFiInterfaceWithName:rssi:transmitRate: v40@0:8@16q24d32
+  required -asymmetricInterferenceDetected:channelGroup: v24@0:8C16c20
+  required -autoJoinDidCompleteForWiFiInterfaceWithName: v24@0:8@16
+  required -autoJoinDidStartForWiFiInterfaceWithName: v24@0:8@16
+  required -autoJoinDidUpdate: v24@0:8@16
+  required -bssidDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -btCoexModeStats: v24@0:8@16
+  required -countryCodeDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -deviceAvailabilityChangedForWiFiInterfaceWithName:isAvailable: v28@0:8@16B24
+  required -dextCrashDetected v16@0:8
+  required -foundTetherDevices: v24@0:8@16
+  required -interfaceAddedWithName: v24@0:8@16
+  required -interfaceRemovedWithName: v24@0:8@16
+  required -joinDidCompleteForWiFiInterfaceWithName:isAutoJoin:error: v36@0:8@16B24@28
+  required -preferencesDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  required -rangingEndedForWiFiInterfaceWithName: v24@0:8@16
+  required -rangingReportEventForWiFiInterfaceWithName:data:error: v40@0:8@16@24@32
+  required -rangingStartedForWiFiInterfaceWithName: v24@0:8@16
+  required -realTimeModeDidEndForWiFiInterfaceWithName: v24@0:8@16
+  required -realTimeModeDidStartForWiFiInterfaceWithName: v24@0:8@16
+  required -rsnHandshakeDidCompleteForWiFiInterfaceWithName: v24@0:8@16
+  required -scanCacheUpdatedForWiFiInterfaceWithName: v24@0:8@16
+  required -sdbOpModeDidChange:channelGroup: v24@0:8C16c20
+  required -softErrorWiFiTCPKATimeoutMitigationDetected:enabled: v28@0:8@16B24
+  required -virtualInterfaceStateChangedForWiFiInterfaceWithName: v24@0:8@16
+  required -weightedWiFiAvgLQM: v24@0:8@16
+  required -willShowJoinUIForWiFiNetwork:interfaceName:reply: v40@0:8@16@24@?32
+  required -wowStateDidChangeForWiFiInterfaceWithName: v24@0:8@16
+@protocol CWWiFiXPCRequestProtocol
+  required -clearANQPCacheForNetwork:reply: v32@0:8@16@?24
+  required -submitAWDMetric:metricID:reply: v40@0:8@16@24@?32
+  required -acquireBluetoothPagingLockAndReply: v24@0:8@?16
+  required -acquireBluetoothPagingLockWithInterfaceName:reply: v32@0:8@16@?24
+  required -acquirePriorityLockWithType:priority:maximumAge:token:reply: v56@0:8q16q24d32q40@?48
+  required -acquireRequestLockWithType:interfaceName:priority:maximumAge:reply: v56@0:8q16@24q32d40@?48
+  required -addWiFiProfile:event:addToBottom:authorization:reply: v52@0:8@16Q24B32@36@?44
+  required -associateTo8021XWiFiNetwork:remember:interfaceName:token:priority:authorization:reply: v68@0:8@16B24@28q36q44@52@?60
+  required -associateToLoginWindowMode8021XWiFiNetwork:interfaceName:token:priority:authorization:reply: v64@0:8@16@24q32q40@48@?56
+  required -associateToPasspointWiFiNetwork:domainName:interfaceName:token:priority:authorization:reply: v72@0:8@16@24@32q40q48@56@?64
+  required -associateToSystemMode8021XWiFiNetwork:interfaceName:token:priority:authorization:reply: v64@0:8@16@24q32q40@48@?56
+  required -associateToUserMode8021XWiFiNetwork:username:password:identity:disableUserInteraction:remember:possiblyHidden:interfaceName:token:priority:authorization:reply: v100@0:8@16@24@32@40B48B52B56@60q68q76@84@?92
+  required -associateToWPSNetwork:pin:remember:interfaceName:token:priority:authorization:reply: v76@0:8@16@24B32@36q44q52@60@?68
+  required -associateToWiFiNetwork:password:remember:possiblyHidden:interfaceName:token:priority:authorization:reply: v80@0:8@16@24B32B36@40q48q56@64@?72
+  required -associateToWiFiNetworkUsingSystemKeychain:interfaceName:token:priority:authorization:reply: v64@0:8@16@24q32q40@48@?56
+  required -cancelPendingRequestWithToken:reply: v32@0:8q16@?24
+  required -clearScanCacheWithInterfaceName:reply: v32@0:8@16@?24
+  required -commitConfiguration:interfaceName:authorization:reply: v48@0:8@16@24@32@?40
+  required -confirmAPIAccessWithRequestType:info:reply: v40@0:8q16@24@?32
+  required -connectToTetherDevice:remember:interfaceName:token:authorization:reply: v60@0:8@16B24@28q36@44@?52
+  required -corewifiEndpointWithReply: v24@0:8@?16
+  required -currentTetherDeviceWithInterfaceName:reply: v32@0:8@16@?24
+  required -disassociateForInterfaceName:token:priority:authorization:reply: v56@0:8@16q24q32@40@?48
+  required -dumpWiFiTemporaryLogAndReply: v24@0:8@?16
+  required -forgetWiFiProfileWithID:event:reply: v40@0:8@16Q24@?32
+  required -get2GChainDisableForInterfaceName:reply: v32@0:8@16@?24
+  required -joinWiFiNetwork:interfaceName:reply: v40@0:8@16@24@?32
+  required -performScanWithChannels:ssidList:legacyScanSSID:includeHiddenNetworks:mergeScanResults:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:interfaceName:waitForWiFi:waitForBluetooth:token:priority:reply: v120@0:8@16@24@32B40B44d48q56q64q72@80B88B92q96q104@?112
+  required -performScanWithChannels:ssidList:legacyScanSSID:includeHiddenNetworks:mergeScanResults:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:interfaceName:waitForWiFi:waitForBluetooth:trimmedScanResultProperties:token:priority:lowPriority:lowLatency:scanType:reply: v144@0:8@16@24@32B40B44d48q56q64q72@80B88B92@96q104q112B120B124q128@?136
+  required -performScanWithChannels:ssidList:legacyScanSSID:includeHiddenNetworks:mergeScanResults:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:interfaceName:waitForWiFi:waitForBluetooth:trimmedScanResultProperties:token:priority:reply: v128@0:8@16@24@32B40B44d48q56q64q72@80B88B92@96q104q112@?120
+  required -queryANQPCacheWithElements:network:maxAge:reply: v48@0:8Q16@24d32@?40
+  required -queryANQPElements:network:maxAge:interfaceName:waitForWiFi:waitForBluetooth:token:priority:reply: v80@0:8Q16@24d32@40B48B52q56q64@?72
+  required -queryAllWiFiProfilesAndReply: v24@0:8@?16
+  required -queryAutoHotspotModeAndReply: v24@0:8@?16
+  required -queryAutoJoinHistoryWithInterfaceName:reply: v32@0:8@16@?24
+  required -queryAutoJoinTemporarilyDisabledAndReply: v24@0:8@?16
+  required -queryBSSIDForInterfaceWithName:reply: v32@0:8@16@?24
+  required -queryConfigurationWithInterfaceName:reply: v32@0:8@16@?24
+  required -queryCountryCodeForInterfaceWithName:reply: v32@0:8@16@?24
+  required -queryHostAPModeConfigurationWithInterfaceName:reply: v32@0:8@16@?24
+  required -queryJoinHistoryWithInterfaceName:reply: v32@0:8@16@?24
+  required -queryRoamHistoryWithInterfaceName:reply: v32@0:8@16@?24
+  required -queryScanCacheWithChannels:ssidList:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:interfaceName:reply: v80@0:8@16@24d32q40q48q56@64@?72
+  required -queryScanCacheWithChannels:ssidList:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:trimmedScanResultProperties:interfaceName:reply: v88@0:8@16@24d32q40q48q56@64@72@?80
+  required -queryThermalIndexAndReply: v24@0:8@?16
+  required -relinquishBluetoothPagingLockAndReply: v24@0:8@?16
+  required -relinquishBluetoothPagingLockWithInterfaceName:reply: v32@0:8@16@?24
+  required -relinquishPriorityLockWithToken:reply: v32@0:8q16@?24
+  required -relinquishRequestLockWithType:interfaceName:reply: v40@0:8q16@24@?32
+  required -rememberWiFiProfile:event:reply: v40@0:8@16Q24@?32
+  required -removeWiFiProfileWithID:event:authorization:reply: v48@0:8@16Q24@32@?40
+  required -restoreJoinConfigurationWithInterfaceName:uuid:reply: v40@0:8@16@24@?32
+  required -saveJoinConfigurationWithInterfaceName:reply: v32@0:8@16@?24
+  required -set2GChainDisable:reassocRequired:forIntefaceName:reply: v40@0:8B16B20@24@?32
+  required -setAutoHotspotMode:reply: v32@0:8q16@?24
+  required -setAutoJoinEnabled:reply: v28@0:8B16@?20
+  required -setAutoJoinTemporarilyDisabled:untilDate:reply: v36@0:8B16@20@?28
+  required -setBluetoothCoexProperty:forKey:interfaceName:reply: v48@0:8@16@24@32@?40
+  required -setBluetoothConnectionReport:forIntefaceName:reply: v40@0:8@16@24@?32
+  required -setCachedLocaleTimeout:timeout:reply: v40@0:8@16d24@?32
+  required -setHostAPModeConfiguration:password:interfaceName:authorization:reply: v56@0:8@16@24@32@40@?48
+  required -setPairwiseMasterKey:interfaceName:token:priority:reply: v56@0:8@16@24q32q40@?48
+  required -setPeerTrafficRegistrationWithConfiguration:interfaceName:reply: v40@0:8@16@24@?32
+  required -setRangeableWithInterfaceName:rangeable:peers:token:priority:reply: v60@0:8@16B24@28q36q44@?52
+  required -setThermalIndex:reply: v32@0:8q16@?24
+  required -setUCMActiveProfileIndices:forIntefaceName:reply: v40@0:8@16@24@?32
+  required -setUCMProfile:atIndex:forInterfaceName:reply: v48@0:8@16@24@32@?40
+  required -setULOFDMAStateForBluetoothCoexistence:forIntefaceName:reply: v36@0:8B16@20@?28
+  required -setWEPKey:flags:index:interfaceName:token:priority:reply: v72@0:8@16Q24q32@40q48q56@?64
+  required -setWiFiChannel:interfaceName:reply: v40@0:8@16@24@?32
+  required -setWiFiEAPKeychainItemforSSID:identity:reply: v40@0:8@16@24@?32
+  required -setWiFiEAPKeychainItemforSSID:username:password:reply: v48@0:8@16@24@32@?40
+  required -setWiFiHostAPModeKeychainItemforInterfaceName:password:reply: v40@0:8@16@24@?32
+  required -setWiFiKeychainItemforSSID:password:reply: v40@0:8@16@24@?32
+  required -setWiFiPowerState:interfaceName:authorization:reply: v44@0:8B16@20@28@?36
+  required -setWoWEnabled:reply: v28@0:8B16@?20
+  required -startAWDLWithInterfaceName:request:token:priority:reply: v56@0:8@16@24q32q40@?48
+  required -startAutoJoinForInterfaceName:reply: v32@0:8@16@?24
+  required -startBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  required -startHostAPModeUsingConfigurationWithInterfaceName:token:priority:reply: v48@0:8@16q24q32@?40
+  required -startHostAPModeWithNetworkName:securityType:channel:password:interfaceName:token:priority:reply: v80@0:8@16Q24@32@40@48q56q64@?72
+  required -startIBSSModeWithSSID:securityType:channel:password:interfaceName:token:priority:authorization:reply: v88@0:8@16Q24@32@40@48q56q64@72@?80
+  required -startMonitoringEventWithType:reply: v32@0:8q16@?24
+  required -startRangingWithInterfaceName:peers:timeout:token:priority:reply: v64@0:8@16@24d32q40q48@?56
+  required -stateInfoWithInterfaceName:reply: v32@0:8@16@?24
+  required -stopAWDLWithInterfaceName:token:priority:reply: v48@0:8@16q24q32@?40
+  required -stopBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  required -stopHostAPModeWithInterfaceName:token:priority:reply: v48@0:8@16q24q32@?40
+  required -stopIBSSModeForInterfaceName:token:priority:authorization:reply: v56@0:8@16q24q32@40@?48
+  required -stopMonitoringAllEventsAndReply: v24@0:8@?16
+  required -stopMonitoringEventWithType:reply: v32@0:8q16@?24
+  required -ucmActiveProfileIndicesForIntefaceName:reply: v32@0:8@16@?24
+  required -ucmProfileAtIndex:forInterfaceName:reply: v40@0:8@16@24@?32
+  required -updateWiFiProfile:authorization:reply: v40@0:8@16@24@?32

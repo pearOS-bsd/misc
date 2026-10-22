@@ -1,0 +1,4 @@
+CALayerHost
+NSPopoverFrame
+NSSpaceTouchBarItem
+NSTouchBarItemOverlay

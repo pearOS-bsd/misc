@@ -1,0 +1,2376 @@
+@class ICAccessManager : NSObject instanceSize=8
+  +addBundleIdentifier: v24@0:8@16  imp=+0x1c88f602c
+  +bundleIdentifier:stateForAccessType: Q32@0:8@16Q24  imp=+0x1c88f6090
+  +bundleIdentifiersAccessingExternalMediaDevices @16@0:8  imp=+0x1c88f5f08
+  +bundleIdentifiersAccessingExternalMediaDevicesWithStatus @16@0:8  imp=+0x1c88f5fd4
+  +captureUserIntentForBundleIdentifier:withNotification: B32@0:8@16@24  imp=+0x1c88f638c
+  +captureUserIntentForConnection:accessType: B32@0:8@16Q24  imp=+0x1c88f61f0
+  +connection:stateForAccessType: @32@0:8@16@24  imp=+0x1c88f6128
+  +internalAccessType: @24@0:8Q16  imp=+0x1c88f5ea8
+  +revokeBundleIdentifier: v24@0:8@16  imp=+0x1c88f6328
+  +updateBundleIdentifier:accessType:withState: v40@0:8@16Q24Q32  imp=+0x1c88f628c
+  +updateBundleIdentifierAccessingExternalMediaDevices:withStatus: v28@0:8@16B24  imp=+0x1c88f5f60
+@class ICCallbackInfo : NSObject instanceSize=56
+  ivar +8 _delegate @
+  ivar +16 _sessionID Q
+  ivar +24 _selector :
+  ivar +32 _cmdObj @
+  ivar +40 _info ^v
+  ivar +48 _failureBlock @?
+  property delegate (T@,&,V_delegate)
+  property cmdObj (T@,&,V_cmdObj)
+  property sessionID (TQ,V_sessionID)
+  property selector (T:,V_selector)
+  property info (T^v,V_info)
+  property failureBlock (T@?,C,V_failureBlock)
+  -.cxx_destruct v16@0:8  imp=+0x1c88e4810
+  -cmdObj @16@0:8  imp=+0x1c88e4768
+  -delegate @16@0:8  imp=+0x1c88e4754
+  -failureBlock @?16@0:8  imp=+0x1c88e47ec
+  -info ^v16@0:8  imp=+0x1c88e4800
+  -init @16@0:8  imp=+0x1c88e46f8
+  -selector :16@0:8  imp=+0x1c88e477c
+  -sessionID Q16@0:8  imp=+0x1c88e47dc
+  -setCmdObj: v24@0:8@16  imp=+0x1c88e4774
+  -setDelegate: v24@0:8@16  imp=+0x1c88e4760
+  -setFailureBlock: v24@0:8@?16  imp=+0x1c88e47f8
+  -setInfo: v24@0:8^v16  imp=+0x1c88e4808
+  -setSelector: v24@0:8:16  imp=+0x1c88e47b4
+  -setSessionID: v24@0:8Q16  imp=+0x1c88e47e4
+@class ICCameraDevice : ICDevice instanceSize=544
+  ivar +280 _iCloudPhotosEnabled B
+  ivar +288 _iCloudPhotosOptimizeStorageState Q
+  ivar +296 _isEnumeratingContent B
+  ivar +304 _appleRelatedUUIDSupport Q
+  ivar +312 _ejectable B
+  ivar +313 _locked B
+  ivar +314 _accessRestrictedAppleDevice B
+  ivar +315 _batteryLevelAvailable B
+  ivar +316 _tetheredCaptureEnabled B
+  ivar +317 _contentReceived B
+  ivar +318 _notifyDelegateRestrictionChanged B
+  ivar +319 _basicMediaModel B
+  ivar +320 _allowsSyncingClock B
+  ivar +321 _beingEjected B
+  ivar +324 _mediaLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +328 _mountPoint @"NSString"
+  ivar +336 _timeOffset d
+  ivar +344 _batteryLevel Q
+  ivar +352 _ptpEventHandler @?
+  ivar +360 _preflightCountOfObjects q
+  ivar +368 _indexedMediaSet @"ICOrderedMediaSet"
+  ivar +376 _devContents @"NSMutableArray"
+  ivar +384 _devMediaFiles @"NSMutableArray"
+  ivar +392 _devMediaPresentation Q
+  ivar +400 _devFailureCount Q
+  ivar +408 _devCapabilities @"NSMutableSet"
+  ivar +416 _devAccessRestriction Q
+  ivar +424 _devContentCatalogPercentCompleted Q
+  ivar +432 _mediaObjectCount Q
+  ivar +440 _devProductType @"NSString"
+  ivar +448 _devNotificationQueue @"NSObject<OS_dispatch_queue>"
+  ivar +456 _devCommandQueue @"NSObject<OS_dispatch_queue>"
+  ivar +464 _devWriteQueue @"NSObject<OS_dispatch_queue>"
+  ivar +472 _devConnection @"NSXPCConnection"
+  ivar +480 _devEndpoint @"NSXPCListenerEndpoint"
+  ivar +488 _deviceAccessRestriction Q
+  ivar +496 _cameraDeviceIcon ^{CGImage=}
+  ivar +504 _mobdevProperties @"NSMutableDictionary"
+  ivar +512 _previouslyIndexed Q
+  ivar +520 _enumerationOrder q
+  ivar +528 _deleteProgress @"NSProgress"
+  ivar +536 _downloadProgress @"NSProgress"
+  property contentReceived (TB,N,V_contentReceived)
+  property preflightCountOfObjects (Tq,V_preflightCountOfObjects)
+  property indexedMediaSet (T@"ICOrderedMediaSet",&,N,V_indexedMediaSet)
+  property appleRelatedUUIDSupport (TQ,N)
+  property devContents (T@"NSMutableArray",&,N,V_devContents)
+  property devMediaFiles (T@"NSMutableArray",&,N,V_devMediaFiles)
+  property devMediaPresentation (TQ,V_devMediaPresentation)
+  property devFailureCount (TQ,V_devFailureCount)
+  property devCapabilities (T@"NSMutableSet",&,N,V_devCapabilities)
+  property devAccessRestriction (TQ,V_devAccessRestriction)
+  property devContentCatalogPercentCompleted (TQ,N,V_devContentCatalogPercentCompleted)
+  property notifyDelegateRestrictionChanged (TB,N,V_notifyDelegateRestrictionChanged)
+  property mediaObjectCount (TQ,N,V_mediaObjectCount)
+  property mediaLock (T{os_unfair_lock_s=I},V_mediaLock)
+  property basicMediaModel (TB,N,V_basicMediaModel)
+  property devProductType (T@"NSString",C,N,V_devProductType)
+  property devNotificationQueue (T@"NSObject<OS_dispatch_queue>",&,V_devNotificationQueue)
+  property devCommandQueue (T@"NSObject<OS_dispatch_queue>",&,V_devCommandQueue)
+  property devWriteQueue (T@"NSObject<OS_dispatch_queue>",&,V_devWriteQueue)
+  property locked (TB,N,GisLocked,V_locked)
+  property accessRestrictedAppleDevice (TB,N,GisAccessRestrictedAppleDevice,V_accessRestrictedAppleDevice)
+  property devConnection (T@"NSXPCConnection",&,N,V_devConnection)
+  property devEndpoint (T@"NSXPCListenerEndpoint",&,N,V_devEndpoint)
+  property deviceAccessRestriction (TQ,N,V_deviceAccessRestriction)
+  property mountPoint (T@"NSString",C,N,V_mountPoint)
+  property timeOffset (Td,N,V_timeOffset)
+  property cameraDeviceIcon (T^{CGImage=},&,N,V_cameraDeviceIcon)
+  property mobdevProperties (T@"NSMutableDictionary",&,V_mobdevProperties)
+  property previouslyIndexed (TQ,N,V_previouslyIndexed)
+  property batteryLevelAvailable (TB,N,V_batteryLevelAvailable)
+  property batteryLevel (TQ,N,V_batteryLevel)
+  property numberOfDownloadableItems (TQ,R,N)
+  property deviceNotificationQueue (T@"NSObject<OS_dispatch_queue>",R,D,N)
+  property deviceCommandQueue (T@"NSObject<OS_dispatch_queue>",R,D,N)
+  property deviceWriteQueue (T@"NSObject<OS_dispatch_queue>",R,D,N)
+  property estimatedNumberOfDownloadableItems (TQ,R,N)
+  property ejectable (TB,N,GisEjectable,V_ejectable)
+  property allowsSyncingClock (TB,N,V_allowsSyncingClock)
+  property buildVersion (T@"NSString",R)
+  property deviceClass (T@"NSString",R)
+  property deviceColor (T@"NSString",R)
+  property deviceEnclosureColor (T@"NSString",R)
+  property devicePairedState (T@"NSNumber",R)
+  property productType (T@"NSString",R)
+  property productVersion (T@"NSString",R)
+  property appleSerialNumber (T@"NSString",R)
+  property iCloudPhotosOptimizeStorageState (TQ,R,N)
+  property isEnumeratingContent (TB,R)
+  property beingEjected (TB,N,V_beingEjected)
+  property enumerationOrder (Tq,N,V_enumerationOrder)
+  property deleteProgress (T@"NSProgress",&,N,V_deleteProgress)
+  property downloadProgress (T@"NSProgress",&,V_downloadProgress)
+  property contentCatalogPercentCompleted (TQ,R,N)
+  property contents (T@"NSArray",R,D,N)
+  property mediaFiles (T@"NSArray",R,D,N)
+  property iCloudPhotosEnabled (TB,R,N)
+  property mediaPresentation (TQ,N)
+  property tetheredCaptureEnabled (TB,R,N,V_tetheredCaptureEnabled)
+  property ptpEventHandler (T@?,C,N,V_ptpEventHandler)
+  +automaticallyNotifiesObserversForKey: B24@0:8@16  imp=+0x1c890369c
+  +uuidStringFromFileProviderIdentifier: @24@0:8@16  imp=+0x1c8903718
+  -.cxx_destruct v16@0:8  imp=+0x1c890dbec
+  -addCameraFileToIndex: v24@0:8@16  imp=+0x1c890722c
+  -addCameraFolderToIndex: v24@0:8@16  imp=+0x1c890716c
+  -addCapability: v24@0:8@16  imp=+0x1c8905be4
+  -addFolder: v24@0:8@16  imp=+0x1c890aacc
+  -addItems: v24@0:8@16  imp=+0x1c8907618
+  -addMediaFiles: B24@0:8@16  imp=+0x1c8907b94
+  -addNumberOfDownloadableItems: v24@0:8q16  imp=+0x1c890799c
+  -allowsSyncingClock B16@0:8  imp=+0x1c890db30
+  -appleRelatedUUIDSupport Q16@0:8  imp=+0x1c89075a0
+  -appleSerialNumber @16@0:8  imp=+0x1c890cca4
+  -basicMediaModel B16@0:8  imp=+0x1c890d9b8
+  -batteryLevel Q16@0:8  imp=+0x1c890d760
+  -batteryLevelAvailable B16@0:8  imp=+0x1c890d738
+  -beingEjected B16@0:8  imp=+0x1c890db58
+  -blendMedia:ofLength:withMedia:ofLength: v40@0:8[10@]16i24[10@]28i36  imp=+0x1c89042b0
+  -buildVersion @16@0:8  imp=+0x1c89057e0
+  -cameraDeviceIcon ^{CGImage=}16@0:8  imp=+0x1c890dacc
+  -cameraFileWithObjectID: @24@0:8Q16  imp=+0x1c89066c0
+  -cameraFilesContentSizeInBytes q16@0:8  imp=+0x1c890ad94
+  -cameraFolderWithObjectID: @24@0:8Q16  imp=+0x1c890665c
+  -cancelDelete v16@0:8  imp=+0x1c890a6d4
+  -cancelDownload v16@0:8  imp=+0x1c890ad2c
+  -containsRestrictedStorage B16@0:8  imp=+0x1c89079e8
+  -contentCatalogPercentCompleted Q16@0:8  imp=+0x1c8905c9c
+  -contentReceived B16@0:8  imp=+0x1c890d7b0
+  -contents @16@0:8  imp=+0x1c8907734
+  -countOfObjects Q16@0:8  imp=+0x1c8905c60
+  -dealloc v16@0:8  imp=+0x1c890b37c
+  -deleteProgress @16@0:8  imp=+0x1c890dba8
+  -description @16@0:8  imp=+0x1c8905998
+  -devAccessRestriction Q16@0:8  imp=+0x1c890d8f0
+  -devCapabilities @16@0:8  imp=+0x1c890d8c8
+  -devCommandQueue @16@0:8  imp=+0x1c890da1c
+  -devConnection @16@0:8  imp=+0x1c890da54
+  -devContentCatalogPercentCompleted Q16@0:8  imp=+0x1c890d918
+  -devContents @16@0:8  imp=+0x1c890d828
+  -devEndpoint @16@0:8  imp=+0x1c890da7c
+  -devFailureCount Q16@0:8  imp=+0x1c890d8a0
+  -devMediaFiles @16@0:8  imp=+0x1c890d850
+  -devMediaPresentation Q16@0:8  imp=+0x1c890d878
+  -devNotificationQueue @16@0:8  imp=+0x1c890da00
+  -devProductType @16@0:8  imp=+0x1c890d9e0
+  -devWriteQueue @16@0:8  imp=+0x1c890da38
+  -deviceAccessRestriction Q16@0:8  imp=+0x1c890daa4
+  -deviceClass @16@0:8  imp=+0x1c8905838
+  -deviceColor @16@0:8  imp=+0x1c8905890
+  -deviceCommandQueue @16@0:8  imp=+0x1c8905ab4
+  -deviceEnclosureColor @16@0:8  imp=+0x1c89058e8
+  -deviceNotificationQueue @16@0:8  imp=+0x1c8905aa0
+  -devicePairedState @16@0:8  imp=+0x1c8905940
+  -deviceWriteQueue @16@0:8  imp=+0x1c8905ac8
+  -dispatchAsyncForOperationType:block: v32@0:8q16@?24  imp=+0x1c8909408
+  -downloadProgress @16@0:8  imp=+0x1c890dbd0
+  -dumpPTPPassthruCommand:andData: v32@0:8@16@24  imp=+0x1c890b8b4
+  -enumerationOrder q16@0:8  imp=+0x1c890db80
+  -estimatedNumberOfDownloadableItems Q16@0:8  imp=+0x1c89079cc
+  -filesOfType: @24@0:8@16  imp=+0x1c8907834
+  -grindMedia:index:file: v40@0:8[10@]16^i24@32  imp=+0x1c8904414
+  -handlePtpEvent: v24@0:8@16  imp=+0x1c890907c
+  -handleStatusNotification: v24@0:8@16  imp=+0x1c8907d18
+  -iCloudPhotosEnabled B16@0:8  imp=+0x1c8905adc
+  -iCloudPhotosOptimizeStorageState Q16@0:8  imp=+0x1c8905b6c
+  -icon ^{CGImage=}16@0:8  imp=+0x1c890aed8
+  -indexedMediaSet @16@0:8  imp=+0x1c890d800
+  -initWithDictionary: @24@0:8@16  imp=+0x1c890b140
+  -isAccessRestrictedAppleDevice B16@0:8  imp=+0x1c8904aa0
+  -isEjectable B16@0:8  imp=+0x1c890d68c
+  -isEnumeratingContent B16@0:8  imp=+0x1c89057ac
+  -isLocked B16@0:8  imp=+0x1c890d6b4
+  -legacyDevice B16@0:8  imp=+0x1c89075b4
+  -lockMedia v16@0:8  imp=+0x1c890905c
+  -mediaFiles @16@0:8  imp=+0x1c89077ac
+  -mediaLock {os_unfair_lock_s=I}16@0:8  imp=+0x1c890d990
+  -mediaObjectCount Q16@0:8  imp=+0x1c890d968
+  -mediaPresentation Q16@0:8  imp=+0x1c89055fc
+  -mobdevProperties @16@0:8  imp=+0x1c890daec
+  -mountPoint @16@0:8  imp=+0x1c890d6f0
+  -notifyDelegateRestrictionChanged B16@0:8  imp=+0x1c890d940
+  -numberOfDownloadableItems Q16@0:8  imp=+0x1c89079b8
+  -ownerMedia:withMedia: @32@0:8@16@24  imp=+0x1c8903f14
+  -preflightCountOfObjects q16@0:8  imp=+0x1c890d7d8
+  -previouslyIndexed Q16@0:8  imp=+0x1c890db08
+  -productType @16@0:8  imp=+0x1c89079e0
+  -productVersion @16@0:8  imp=+0x1c890cc4c
+  -ptpEventHandler @?16@0:8  imp=+0x1c890d79c
+  -relateGroupedMedia: @24@0:8@16  imp=+0x1c8903cb0
+  -relateLegacyMedia: @24@0:8@16  imp=+0x1c8903910
+  -relateMedia: @24@0:8@16  imp=+0x1c8904574
+  -remoteCamera @16@0:8  imp=+0x1c890522c
+  -remoteCameraWithFailureBlock: @24@0:8@?16  imp=+0x1c89053e4
+  -removeCameraFileFromIndex: v24@0:8@16  imp=+0x1c890728c
+  -removeCameraFolderFromIndex: v24@0:8@16  imp=+0x1c89071cc
+  -removeFolder: v24@0:8@16  imp=+0x1c890ac98
+  -removeItems: v24@0:8@16  imp=+0x1c890876c
+  -requestCloseSession v16@0:8  imp=+0x1c8908b04
+  -requestCloseSessionWithOptions:completion: v32@0:8@16@?24  imp=+0x1c8908c88
+  -requestDeleteFiles: v24@0:8@16  imp=+0x1c890948c
+  -requestDeleteFiles:deleteFailed:completion: @40@0:8@16@?24@?32  imp=+0x1c8909618
+  -requestDisableTethering v16@0:8  imp=+0x1c890d688
+  -requestDownloadFile:options:downloadDelegate:didDownloadSelector:contextInfo: v56@0:8@16@24@32:40^v48  imp=+0x1c890a73c
+  -requestEject v16@0:8  imp=+0x1c890a31c
+  -requestEnableTethering v16@0:8  imp=+0x1c890d684
+  -requestEnumerateContentWithOptions:completion: v32@0:8@16@?24  imp=+0x1c8906ec0
+  -requestOpenSession v16@0:8  imp=+0x1c8906724
+  -requestOpenSessionWithOptions:completion: v32@0:8@16@?24  imp=+0x1c8906a40
+  -requestReadDataFromFile:atOffset:length:readDelegate:didReadDataSelector:contextInfo: v64@0:8@16q24q32@40:48^v56  imp=+0x1c890b51c
+  -requestSendPTPCommand:outData:completion: v40@0:8@16@24@?32  imp=+0x1c890a3d8
+  -requestSendPTPCommand:outData:sendCommandDelegate:didSendCommandSelector:contextInfo: v56@0:8@16@24@32:40^v48  imp=+0x1c890c984
+  -requestSyncClock v16@0:8  imp=+0x1c890925c
+  -requestTakePicture v16@0:8  imp=+0x1c890d3a4
+  -requestUploadFile:options:uploadDelegate:didUploadSelector:contextInfo: v56@0:8@16@24@32:40^v48  imp=+0x1c890d26c
+  -resetAccessRestriction v16@0:8  imp=+0x1c890574c
+  -setAccessRestrictedAppleDevice: v20@0:8B16  imp=+0x1c890d6dc
+  -setAccessRestriction: v24@0:8Q16  imp=+0x1c89051b0
+  -setAllowsSyncingClock: v20@0:8B16  imp=+0x1c890db44
+  -setAppleRelatedUUIDSupport: v24@0:8Q16  imp=+0x1c8907544
+  -setBasicMediaModel: v20@0:8B16  imp=+0x1c890d9cc
+  -setBatteryLevel: v24@0:8Q16  imp=+0x1c890d774
+  -setBatteryLevelAvailable: v20@0:8B16  imp=+0x1c890d74c
+  -setBeingEjected: v20@0:8B16  imp=+0x1c890db6c
+  -setCameraDeviceIcon: v24@0:8^{CGImage=}16  imp=+0x1c890dae0
+  -setContentCatalogPercentCompleted: v24@0:8Q16  imp=+0x1c8906028
+  -setContentReceived: v20@0:8B16  imp=+0x1c890d7c4
+  -setDefaultMediaPresentation: B24@0:8Q16  imp=+0x1c890b0f0
+  -setDelegate: v24@0:8@16  imp=+0x1c89091c8
+  -setDeleteProgress: v24@0:8@16  imp=+0x1c890dbbc
+  -setDevAccessRestriction: v24@0:8Q16  imp=+0x1c890d904
+  -setDevCapabilities: v24@0:8@16  imp=+0x1c890d8dc
+  -setDevCommandQueue: v24@0:8@16  imp=+0x1c890da2c
+  -setDevConnection: v24@0:8@16  imp=+0x1c890da68
+  -setDevContentCatalogPercentCompleted: v24@0:8Q16  imp=+0x1c890d92c
+  -setDevContents: v24@0:8@16  imp=+0x1c890d83c
+  -setDevEndpoint: v24@0:8@16  imp=+0x1c890da90
+  -setDevFailureCount: v24@0:8Q16  imp=+0x1c890d8b4
+  -setDevMediaFiles: v24@0:8@16  imp=+0x1c890d864
+  -setDevMediaPresentation: v24@0:8Q16  imp=+0x1c890d88c
+  -setDevNotificationQueue: v24@0:8@16  imp=+0x1c890da10
+  -setDevProductType: v24@0:8@16  imp=+0x1c890d9f4
+  -setDevWriteQueue: v24@0:8@16  imp=+0x1c890da48
+  -setDeviceAccessRestriction: v24@0:8Q16  imp=+0x1c890dab8
+  -setDownloadProgress: v24@0:8@16  imp=+0x1c890dbe0
+  -setEjectable: v20@0:8B16  imp=+0x1c890d6a0
+  -setEnumerationOrder: v24@0:8q16  imp=+0x1c890db94
+  -setICloudPhotosEnabled: v20@0:8B16  imp=+0x1c8905af0
+  -setICloudPhotosOptimizeStorageState: v24@0:8Q16  imp=+0x1c8905b80
+  -setIndexedMediaSet: v24@0:8@16  imp=+0x1c890d814
+  -setIsAccessRestrictedAppleDevice: v20@0:8B16  imp=+0x1c8904a48
+  -setLocked: v20@0:8B16  imp=+0x1c890d6c8
+  -setMediaLock: v20@0:8{os_unfair_lock_s=I}16  imp=+0x1c890d9a4
+  -setMediaObjectCount: v24@0:8Q16  imp=+0x1c890d97c
+  -setMediaPresentation: v24@0:8Q16  imp=+0x1c8905610
+  -setMobdevProperties: v24@0:8@16  imp=+0x1c890dafc
+  -setMountPoint: v24@0:8@16  imp=+0x1c890d704
+  -setNotifyDelegateRestrictionChanged: v20@0:8B16  imp=+0x1c890d954
+  -setPreflightCountOfObjects: v24@0:8q16  imp=+0x1c890d7ec
+  -setPreviouslyIndexed: v24@0:8Q16  imp=+0x1c890db1c
+  -setProductType: v24@0:8@16  imp=+0x1c89079e4
+  -setPtpEventForwarding: v20@0:8B16  imp=+0x1c890a5e8
+  -setPtpEventHandler: v24@0:8@?16  imp=+0x1c8909154
+  -setTimeOffset: v24@0:8d16  imp=+0x1c890d724
+  -stitchMedia:withMedia: q32@0:8@16@24  imp=+0x1c8903fe0
+  -storageAvailable v16@0:8  imp=+0x1c8907b48
+  -supportsMediaFormatCatalog B16@0:8  imp=+0x1c89074e0
+  -tetheredCaptureEnabled B16@0:8  imp=+0x1c890d788
+  -timeOffset d16@0:8  imp=+0x1c890d710
+  -unlockMedia v16@0:8  imp=+0x1c890906c
+  -updateAccessRestriction v16@0:8  imp=+0x1c8904b28
+  -updateAppleProperties: B24@0:8@16  imp=+0x1c890ccfc
+  -updateContentCatalogPercentCompleted v16@0:8  imp=+0x1c8905ee4
+  -updateEnumeratingErrorStatus v16@0:8  imp=+0x1c89085e0
+  -updateLockedErrorStatus v16@0:8  imp=+0x1c89083cc
+  -updateMediaFilesCount: v24@0:8@16  imp=+0x1c8905cb0
+  -updateMediaPresentation B16@0:8  imp=+0x1c8905744
+@class ICCameraDeviceBrowser : NSObject instanceSize=72
+  ivar +8 _devices @"NSMutableArray"
+  ivar +16 _browsers @"NSMutableArray"
+  ivar +24 _suspendedBrowsers @"NSMutableArray"
+  ivar +32 _numberOfBrowsingBrowsers q
+  ivar +40 _ptpDevManager @"PTPCameraDeviceManager"
+  ivar +48 _msDevManager @"MSCameraDeviceManager"
+  ivar +56 _suspensionTimer @"NSObject<OS_dispatch_source>"
+  ivar +64 _suspensionTimerQueue @"NSObject<OS_dispatch_queue>"
+  property devices (T@"NSMutableArray",R,V_devices)
+  property browsers (T@"NSMutableArray",R,V_browsers)
+  property ptpDevManager (T@"PTPCameraDeviceManager",&,N,V_ptpDevManager)
+  property msDevManager (T@"MSCameraDeviceManager",&,N,V_msDevManager)
+  property suspensionTimer (T@"NSObject<OS_dispatch_source>",&,N,V_suspensionTimer)
+  property suspensionTimerQueue (T@"NSObject<OS_dispatch_queue>",&,N,V_suspensionTimerQueue)
+  +defaultBrowser @16@0:8  imp=+0x1c88e5ed0
+  +exists B16@0:8  imp=+0x1c88e5f28
+  -.cxx_destruct v16@0:8  imp=+0x1c88e6f4c
+  -addBrowser: v24@0:8@16  imp=+0x1c88e6314
+  -browsers @16@0:8  imp=+0x1c88e6ef0
+  -dealloc v16@0:8  imp=+0x1c88e62ac
+  -deviceWithDelegate: @24@0:8@16  imp=+0x1c88e6d8c
+  -devices @16@0:8  imp=+0x1c88e6924
+  -handleCommandCompletionNotification: v24@0:8@16  imp=+0x1c88e692c
+  -handleImageCaptureEventNotification: v24@0:8@16  imp=+0x1c88e69b8
+  -init @16@0:8  imp=+0x1c88e5f3c
+  -msDevManager @16@0:8  imp=+0x1c88e6f10
+  -ptpDevManager @16@0:8  imp=+0x1c88e6efc
+  -removeBrowser: v24@0:8@16  imp=+0x1c88e631c
+  -setMsDevManager: v24@0:8@16  imp=+0x1c88e6f18
+  -setPtpDevManager: v24@0:8@16  imp=+0x1c88e6f04
+  -setSuspensionTimer: v24@0:8@16  imp=+0x1c88e6f2c
+  -setSuspensionTimerQueue: v24@0:8@16  imp=+0x1c88e6f40
+  -start: v24@0:8@16  imp=+0x1c88e63ec
+  -startMSCameraBrowser B16@0:8  imp=+0x1c88e6388
+  -startPTPCameraBrowser B16@0:8  imp=+0x1c88e6324
+  -stop: v24@0:8@16  imp=+0x1c88e6664
+  -suspensionTimer @16@0:8  imp=+0x1c88e6f24
+  -suspensionTimerQueue @16@0:8  imp=+0x1c88e6f38
+@class ICCameraFile : ICCameraItem <ICMediaItemProtocol> instanceSize=432
+  ivar +144 _metadata @"NSMutableDictionary"
+  ivar +152 _debugType @"NSString"
+  ivar +160 _debugBadge @"NSString"
+  ivar +168 _fileIsJPEG @"NSNumber"
+  ivar +176 _fileIsHEIC @"NSNumber"
+  ivar +184 _highFramerate B
+  ivar +185 _timeLapse B
+  ivar +186 _firstPicked B
+  ivar +187 _burstFavorite B
+  ivar +188 _burstPicked B
+  ivar +189 _privHasThumbnail B
+  ivar +190 _privHasMetadata B
+  ivar +191 _useExtensionIcon B
+  ivar +192 _orientationOverridden B
+  ivar +196 _objectHandle I
+  ivar +200 _width q
+  ivar +208 _height q
+  ivar +216 _originalFilename @"NSString"
+  ivar +224 _createdFilename @"NSString"
+  ivar +232 _fileSize q
+  ivar +240 _duration d
+  ivar +248 _originatingAssetID @"NSString"
+  ivar +256 _groupUUID @"NSString"
+  ivar +264 _gpsString @"NSString"
+  ivar +272 _relatedUUID @"NSString"
+  ivar +280 _burstUUID @"NSString"
+  ivar +288 _sidecarFiles @"NSMutableArray"
+  ivar +296 _pairedRawImage @"ICCameraFile"
+  ivar +304 _fileCreationDate @"NSDate"
+  ivar +312 _fileModificationDate @"NSDate"
+  ivar +320 _exifCreationDate @"NSDate"
+  ivar +328 _exifModificationDate @"NSDate"
+  ivar +336 _privOrientation Q
+  ivar +344 _privSpatialOverCaptureGroupID @"NSString"
+  ivar +352 _privFingerprint @"NSString"
+  ivar +360 _privMediaBase @"NSString"
+  ivar +368 _mediaMetadata Q
+  ivar +376 _mediaData @"NSDictionary"
+  ivar +384 _subImages @"NSMutableDictionary"
+  ivar +392 _thumbnailData @"NSData"
+  ivar +400 _progress @"NSProgress"
+  ivar +408 _lastImportSpeed d
+  ivar +416 _oUUID Q
+  ivar +424 _uTime Q
+  property privHasThumbnail (TB,N,V_privHasThumbnail)
+  property privHasMetadata (TB,N,V_privHasMetadata)
+  property privOrientation (TQ,N,V_privOrientation)
+  property privSpatialOverCaptureGroupID (T@"NSString",C,N,V_privSpatialOverCaptureGroupID)
+  property privFingerprint (T@"NSString",C,N,V_privFingerprint)
+  property privMediaBase (T@"NSString",C,N,V_privMediaBase)
+  property sidecarFiles (T@"NSMutableArray",&,N,V_sidecarFiles)
+  property mediaMetadata (TQ,N,V_mediaMetadata)
+  property mediaData (T@"NSDictionary",&,N,V_mediaData)
+  property subImages (T@"NSMutableDictionary",&,N,V_subImages)
+  property useExtensionIcon (TB,N,V_useExtensionIcon)
+  property spatialOverCaptureGroupID (T@"NSString",R,N)
+  property retrievedMetadata (TB,R,N)
+  property retrievedThumbnail (TB,R,N)
+  property objectHandle (TI,R,N,V_objectHandle)
+  property thumbnailData (T@"NSData",C,N,V_thumbnailData)
+  property progress (T@"NSProgress",&,N,V_progress)
+  property mediaBase (T@"NSString",R)
+  property lastImportSpeed (Td,V_lastImportSpeed)
+  property converted (TB,R,N,GisConverted)
+  property original (TB,R,N,GisOriginal)
+  property universal (TB,R,N,GisUniversal)
+  property editedOriginal (TB,R,N,GisEditedOriginal)
+  property editedConverted (TB,R,N,GisEditedConverted)
+  property editedUniversal (TB,R,N,GisEditedUniversal)
+  property dataUniversal (TB,R,N,GisDataUniversal)
+  property movie (TB,R,N,GisMovie)
+  property image (TB,R,N,GisImage)
+  property data (TB,R,N,GisData)
+  property JPEG (TB,R,N,GisJPEG)
+  property HEIC (TB,R,N,GisHEIC)
+  property audio (TB,R,N,GisAudio)
+  property nonRawImage (TB,R,N,GisNonRawImage)
+  property convertedFamily (TB,R,N)
+  property originalFamily (TB,R,N)
+  property universalFamily (TB,R,N)
+  property sidecar (TB,R,N,GisSidecar)
+  property originalFilename (T@"NSString",C,N,V_originalFilename)
+  property createdFilename (T@"NSString",C,N,V_createdFilename)
+  property pairedRawImage (T@"ICCameraFile",&,N,V_pairedRawImage)
+  property fileCreationDate (T@"NSDate",C,N,V_fileCreationDate)
+  property fileModificationDate (T@"NSDate",C,N,V_fileModificationDate)
+  property exifCreationDate (T@"NSDate",C,N,V_exifCreationDate)
+  property exifModificationDate (T@"NSDate",C,N,V_exifModificationDate)
+  property fileSize (Tq,N,V_fileSize)
+  property width (Tq,N,V_width)
+  property height (Tq,N,V_height)
+  property duration (Td,N,V_duration)
+  property orientationOverridden (TB,N,V_orientationOverridden)
+  property burstFavorite (TB,N,V_burstFavorite)
+  property burstPicked (TB,N,V_burstPicked)
+  property firstPicked (TB,N,V_firstPicked)
+  property highFramerate (TB,N,V_highFramerate)
+  property timeLapse (TB,N,V_timeLapse)
+  property gpsString (T@"NSString",C,N,V_gpsString)
+  property burstUUID (T@"NSString",C,N,V_burstUUID)
+  property groupUUID (T@"NSString",C,N,V_groupUUID)
+  property relatedUUID (T@"NSString",C,N,V_relatedUUID)
+  property originatingAssetID (T@"NSString",C,N,V_originatingAssetID)
+  property oUUID (TQ,V_oUUID)
+  property uTime (TQ,V_uTime)
+  property orientation (TQ,N)
+  property fingerprint (T@"NSString",R,N)
+  property unsignedIntegerValue (TQ,R,N)
+  property mediaItemType (T@"NSString",R,C,N)
+  property mediaItemIdentifier (T@"NSString",?,R,C,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +fingerprintForFileAtURL: @24@0:8@16  imp=+0x1c89003b8
+  -.cxx_destruct v16@0:8  imp=+0x1c8900bf4
+  -addSidecarFile: v24@0:8@16  imp=+0x1c88f6ce8
+  -base @16@0:8  imp=+0x1c88f753c
+  -burstFavorite B16@0:8  imp=+0x1c8900874
+  -burstPicked B16@0:8  imp=+0x1c890089c
+  -burstUUID @16@0:8  imp=+0x1c8900854
+  -cacheThumbnailData: v24@0:8@16  imp=+0x1c88f7d10
+  -compareDate: q24@0:8@16  imp=+0x1c88f6a88
+  -compareUUID: q24@0:8@16  imp=+0x1c88f6a30
+  -convertedFamily B16@0:8  imp=+0x1c88f7488
+  -createdFilename @16@0:8  imp=+0x1c89006ec
+  -debugBadge @16@0:8  imp=+0x1c88f6da4
+  -debugIdentity @16@0:8  imp=+0x1c88f6f0c
+  -debugType @16@0:8  imp=+0x1c88f6e4c
+  -description @16@0:8  imp=+0x1c88f7074
+  -duration d16@0:8  imp=+0x1c8900734
+  -exifCreationDate @16@0:8  imp=+0x1c8900940
+  -exifModificationDate @16@0:8  imp=+0x1c8900960
+  -fileCreationDate @16@0:8  imp=+0x1c8900900
+  -fileModificationDate @16@0:8  imp=+0x1c8900920
+  -fileSize q16@0:8  imp=+0x1c890070c
+  -fingerprint @16@0:8  imp=+0x1c88f6c08
+  -firstPicked B16@0:8  imp=+0x1c89007ac
+  -flagAsSidecar v16@0:8  imp=+0x1c88f74c8
+  -flagMediaMetadata: v24@0:8Q16  imp=+0x1c88f8cd8
+  -flushMetadataCache v16@0:8  imp=+0x1c88f6ae0
+  -flushThumbnailCache v16@0:8  imp=+0x1c88f6ae4
+  -gpsString @16@0:8  imp=+0x1c8900814
+  -groupUUID @16@0:8  imp=+0x1c89007f4
+  -handleObjectInfoUpdate: v24@0:8@16  imp=+0x1c88ff590
+  -hasMetadata B16@0:8  imp=+0x1c88f6bf4
+  -hasThumbnail B16@0:8  imp=+0x1c88f6bf8
+  -height q16@0:8  imp=+0x1c89006a4
+  -highFramerate B16@0:8  imp=+0x1c890075c
+  -initWithName:parentFolder:device: @40@0:8@16@24@32  imp=+0x1c88f85f0
+  -initWithProxy:parentFolder:device: @40@0:8@16@24@32  imp=+0x1c88f8740
+  -isAudio B16@0:8  imp=+0x1c88f7744
+  -isConverted B16@0:8  imp=+0x1c88f73ec
+  -isData B16@0:8  imp=+0x1c88f77b0
+  -isDataUniversal B16@0:8  imp=+0x1c88f74a0
+  -isEdited: B24@0:8Q16  imp=+0x1c88f73fc
+  -isEditedConverted B16@0:8  imp=+0x1c88f744c
+  -isEditedOriginal B16@0:8  imp=+0x1c88f7444
+  -isEditedUniversal B16@0:8  imp=+0x1c88f7454
+  -isHEIC B16@0:8  imp=+0x1c88f7958
+  -isImage B16@0:8  imp=+0x1c88f7654
+  -isJPEG B16@0:8  imp=+0x1c88f781c
+  -isLegacy B16@0:8  imp=+0x1c88f7520
+  -isMovie B16@0:8  imp=+0x1c88f758c
+  -isNonRawImage B16@0:8  imp=+0x1c88f76c0
+  -isOriginal B16@0:8  imp=+0x1c88f73e4
+  -isSidecar B16@0:8  imp=+0x1c88f7504
+  -isUniversal B16@0:8  imp=+0x1c88f73f4
+  -isUntouched: B24@0:8Q16  imp=+0x1c88f73b0
+  -largeThumbnailIfAvailable ^{CGImage=}16@0:8  imp=+0x1c89003b4
+  -lastImportSpeed d16@0:8  imp=+0x1c8900b54
+  -mediaBase @16@0:8  imp=+0x1c88f71dc
+  -mediaData @16@0:8  imp=+0x1c8900a80
+  -mediaItemType @16@0:8  imp=+0x1c88f6a24
+  -mediaMetadata Q16@0:8  imp=+0x1c8900a58
+  -metadata @16@0:8  imp=+0x1c88f9f28
+  -metadataIfAvailable @16@0:8  imp=+0x1c88ff9b4
+  -oUUID Q16@0:8  imp=+0x1c8900ba4
+  -objectHandle I16@0:8  imp=+0x1c8900af8
+  -orientation Q16@0:8  imp=+0x1c88f6c0c
+  -orientationOverridden B16@0:8  imp=+0x1c8900b7c
+  -originalFamily B16@0:8  imp=+0x1c88f7490
+  -originalFilename @16@0:8  imp=+0x1c89006cc
+  -originatingAssetID @16@0:8  imp=+0x1c89007d4
+  -pairedRawImage @16@0:8  imp=+0x1c89008d8
+  -partOfFamily: B24@0:8Q16  imp=+0x1c88f745c
+  -privFingerprint @16@0:8  imp=+0x1c8900a18
+  -privHasMetadata B16@0:8  imp=+0x1c89009a8
+  -privHasThumbnail B16@0:8  imp=+0x1c8900980
+  -privMediaBase @16@0:8  imp=+0x1c8900a38
+  -privOrientation Q16@0:8  imp=+0x1c89009d0
+  -privSpatialOverCaptureGroupID @16@0:8  imp=+0x1c89009f8
+  -progress @16@0:8  imp=+0x1c8900b2c
+  -relatedUUID @16@0:8  imp=+0x1c8900834
+  -requestCloseStreamData v16@0:8  imp=+0x1c88fe880
+  -requestDownloadWithOptions:completion: @32@0:8@16@?24  imp=+0x1c88fada8
+  -requestFingerprintWithCompletion: v24@0:8@?16  imp=+0x1c8900440
+  -requestMetadata v16@0:8  imp=+0x1c88f9f3c
+  -requestMetadataDictionaryWithOptions:completion: v32@0:8@16@?24  imp=+0x1c88fa254
+  -requestMetadataWithOptions:completion: v32@0:8@16@?24  imp=+0x1c88face8
+  -requestOpenStreamDataAtOffset: v24@0:8q16  imp=+0x1c88feb28
+  -requestReadDataAtOffset:length:completion: v40@0:8q16q24@?32  imp=+0x1c88fd8e8
+  -requestRefreshObjectHandleInfo: v24@0:8@?16  imp=+0x1c88ff3e0
+  -requestSecurityScopedURLWithCompletion: v24@0:8@?16  imp=+0x1c88ff200
+  -requestStreamDataAtOffset:length:completion: v40@0:8q16q24@?32  imp=+0x1c88fee30
+  -requestThumbnail v16@0:8  imp=+0x1c88f8f0c
+  -requestThumbnailDataWithOptions:completion: v32@0:8@16@?24  imp=+0x1c88f92c8
+  -requestThumbnailWithOptions:completion: v32@0:8@16@?24  imp=+0x1c88f9e68
+  -retrievedMetadata B16@0:8  imp=+0x1c88ffe2c
+  -retrievedThumbnail B16@0:8  imp=+0x1c88f92a8
+  -setBurstFavorite: v20@0:8B16  imp=+0x1c8900888
+  -setBurstPicked: v20@0:8B16  imp=+0x1c89008b0
+  -setBurstUUID: v24@0:8@16  imp=+0x1c8900868
+  -setCreatedFilename: v24@0:8@16  imp=+0x1c8900700
+  -setDuration: v24@0:8d16  imp=+0x1c8900748
+  -setExifCreationDate: v24@0:8@16  imp=+0x1c8900954
+  -setExifModificationDate: v24@0:8@16  imp=+0x1c8900974
+  -setFileCreationDate: v24@0:8@16  imp=+0x1c8900914
+  -setFileModificationDate: v24@0:8@16  imp=+0x1c8900934
+  -setFileSize: v24@0:8q16  imp=+0x1c8900720
+  -setFingerprint: v24@0:8@16  imp=+0x1c88f6c04
+  -setFirstPicked: v20@0:8B16  imp=+0x1c89007c0
+  -setGpsString: v24@0:8@16  imp=+0x1c8900828
+  -setGroupUUID: v24@0:8@16  imp=+0x1c8900808
+  -setHasMetadata: v20@0:8B16  imp=+0x1c88f6bec
+  -setHasThumbnail: v20@0:8B16  imp=+0x1c88f6bf0
+  -setHeight: v24@0:8q16  imp=+0x1c89006b8
+  -setHighFramerate: v20@0:8B16  imp=+0x1c8900770
+  -setKeywordPropertiesFromDict: v24@0:8@16  imp=+0x1c88f7db4
+  -setLastImportSpeed: v24@0:8d16  imp=+0x1c8900b68
+  -setMediaData: v24@0:8@16  imp=+0x1c8900a94
+  -setMediaMetadata: v24@0:8Q16  imp=+0x1c8900a6c
+  -setMetadata: B24@0:8@16  imp=+0x1c88f8d8c
+  -setOUUID: v24@0:8Q16  imp=+0x1c8900bb8
+  -setOrientation: v24@0:8Q16  imp=+0x1c88f6c10
+  -setOrientationOverridden: v20@0:8B16  imp=+0x1c8900b90
+  -setOriginalFilename: v24@0:8@16  imp=+0x1c89006e0
+  -setOriginatingAssetID: v24@0:8@16  imp=+0x1c89007e8
+  -setPairedRawImage: v24@0:8@16  imp=+0x1c89008ec
+  -setPrivFingerprint: v24@0:8@16  imp=+0x1c8900a2c
+  -setPrivHasMetadata: v20@0:8B16  imp=+0x1c89009bc
+  -setPrivHasThumbnail: v20@0:8B16  imp=+0x1c8900994
+  -setPrivMediaBase: v24@0:8@16  imp=+0x1c8900a4c
+  -setPrivOrientation: v24@0:8Q16  imp=+0x1c89009e4
+  -setPrivSpatialOverCaptureGroupID: v24@0:8@16  imp=+0x1c8900a0c
+  -setProgress: v24@0:8@16  imp=+0x1c8900b40
+  -setRelatedUUID: v24@0:8@16  imp=+0x1c8900848
+  -setSidecarFiles: v24@0:8@16  imp=+0x1c89008c4
+  -setSpatialOverCaptureGroupID: v24@0:8@16  imp=+0x1c88f6bfc
+  -setSubImages: v24@0:8@16  imp=+0x1c8900abc
+  -setThumbnailData: v24@0:8@16  imp=+0x1c8900b20
+  -setTimeLapse: v20@0:8B16  imp=+0x1c8900798
+  -setUTI: v24@0:8@16  imp=+0x1c88ff07c
+  -setUTime: v24@0:8Q16  imp=+0x1c8900be0
+  -setUseExtensionIcon: v20@0:8B16  imp=+0x1c8900ae4
+  -setWidth: v24@0:8q16  imp=+0x1c8900690
+  -sidecarFiles @16@0:8  imp=+0x1c88f6d84
+  -spatialOverCaptureGroupID @16@0:8  imp=+0x1c88f6c00
+  -subImages @16@0:8  imp=+0x1c8900aa8
+  -thumbnail ^{CGImage=}16@0:8  imp=+0x1c88f7d14
+  -thumbnailData @16@0:8  imp=+0x1c8900b0c
+  -thumbnailDataUsingOrientation:andSourceThumbnailData: @32@0:8@16@24  imp=+0x1c88f7a94
+  -thumbnailIfAvailable ^{CGImage=}16@0:8  imp=+0x1c88ffe4c
+  -timeLapse B16@0:8  imp=+0x1c8900784
+  -uTime Q16@0:8  imp=+0x1c8900bcc
+  -universalFamily B16@0:8  imp=+0x1c88f7498
+  -useExtensionIcon B16@0:8  imp=+0x1c8900ad0
+  -valueForUndefinedKey: @24@0:8@16  imp=+0x1c88f8cf4
+  -width q16@0:8  imp=+0x1c890067c
+@class ICCameraFolder : ICCameraItem <ICMediaItemProtocol> instanceSize=168
+  ivar +144 _folderMediaLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +152 _files @"NSMutableArray"
+  ivar +160 _folders @"NSMutableArray"
+  property files (T@"NSMutableArray",&,V_files)
+  property folders (T@"NSMutableArray",&,V_folders)
+  property folderMediaLock (T{os_unfair_lock_s=I},V_folderMediaLock)
+  property contents (T@"NSArray",R,N)
+  property unsignedIntegerValue (TQ,R,N)
+  property mediaItemType (T@"NSString",R,C,N)
+  property mediaItemIdentifier (T@"NSString",?,R,C,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1c88e89c8
+  -addFile: v24@0:8@16  imp=+0x1c88e7d80
+  -addFolder: v24@0:8@16  imp=+0x1c88e7df8
+  -contents @16@0:8  imp=+0x1c88e803c
+  -dealloc v16@0:8  imp=+0x1c88e7b30
+  -deleteFile: v24@0:8@16  imp=+0x1c88e7f4c
+  -deleteFileWithID: v24@0:8Q16  imp=+0x1c88e84b4
+  -deleteFolder: v24@0:8@16  imp=+0x1c88e7fc4
+  -deleteFolderWithID: v24@0:8Q16  imp=+0x1c88e8338
+  -deleteItem: v24@0:8@16  imp=+0x1c88e7e70
+  -description @16@0:8  imp=+0x1c88e7bbc
+  -files @16@0:8  imp=+0x1c88e8160
+  -folderMediaLock {os_unfair_lock_s=I}16@0:8  imp=+0x1c88e89a0
+  -folders @16@0:8  imp=+0x1c88e8248
+  -getFileWithID: @24@0:8Q16  imp=+0x1c88e8788
+  -getFolderWithID: @24@0:8Q16  imp=+0x1c88e8630
+  -hasThumbnail B16@0:8  imp=+0x1c88e8330
+  -initWithName:parentFolder:device: @40@0:8@16@24@32  imp=+0x1c88e7818
+  -initWithProxy:parentFolder:device: @40@0:8@16@24@32  imp=+0x1c88e7920
+  -largeThumbnailIfAvailable ^{CGImage=}16@0:8  imp=+0x1c88e8990
+  -mediaItemType @16@0:8  imp=+0x1c88e780c
+  -metadataIfAvailable @16@0:8  imp=+0x1c88e8994
+  -setFiles: v24@0:8@16  imp=+0x1c88e81d8
+  -setFolderMediaLock: v20@0:8{os_unfair_lock_s=I}16  imp=+0x1c88e89b4
+  -setFolders: v24@0:8@16  imp=+0x1c88e82c0
+  -thumbnailIfAvailable ^{CGImage=}16@0:8  imp=+0x1c88e8988
+  -valueForUndefinedKey: @24@0:8@16  imp=+0x1c88e80c8
+@class ICCameraItem : NSObject <ICMediaItemProtocol> instanceSize=144
+  ivar +8 _locked B
+  ivar +9 _raw B
+  ivar +10 _inTemporaryStore B
+  ivar +11 _addedAfterContentCatalogCompleted B
+  ivar +12 _ptpObjectHandle I
+  ivar +16 _objectHandle I
+  ivar +24 _device @"ICCameraDevice"
+  ivar +32 _parentFolder @"ICCameraFolder"
+  ivar +40 _name @"NSString"
+  ivar +48 _UTI @"NSString"
+  ivar +56 _creationDate @"NSDate"
+  ivar +64 _modificationDate @"NSDate"
+  ivar +72 _userData @"NSMutableDictionary"
+  ivar +80 _privMetadataState Q
+  ivar +88 _privThumbnailState Q
+  ivar +96 _parentID Q
+  ivar +104 _ownerID Q
+  ivar +112 _twinID Q
+  ivar +120 _objectID Q
+  ivar +128 _userObject @
+  ivar +136 _relativeFileSystemPath @"NSString"
+  property privMetadataState (TQ,N,V_privMetadataState)
+  property privThumbnailState (TQ,N,V_privThumbnailState)
+  property device (T@"ICCameraDevice",&,N,V_device)
+  property name (T@"NSString",C,N,V_name)
+  property UTI (T@"NSString",N,V_UTI)
+  property userData (T@"NSMutableDictionary",&,N,V_userData)
+  property objectHandle (TI,N,V_objectHandle)
+  property ptpObjectHandle (TI,N,V_ptpObjectHandle)
+  property inTemporaryStore (TB,N,GisInTemporaryStore,V_inTemporaryStore)
+  property addedAfterContentCatalogCompleted (TB,N,GwasAddedAfterContentCatalogCompleted,V_addedAfterContentCatalogCompleted)
+  property creationDate (T@"NSDate",C,N,V_creationDate)
+  property modificationDate (T@"NSDate",C,N,V_modificationDate)
+  property raw (TB,N,GisRaw,V_raw)
+  property locked (TB,N,GisLocked,V_locked)
+  property parentID (TQ,R,V_parentID)
+  property ownerID (TQ,R,V_ownerID)
+  property twinID (TQ,R,V_twinID)
+  property objectID (TQ,R,V_objectID)
+  property hasThumbnail (TB,R)
+  property hasMetadata (TB,R)
+  property userObject (T@,&,V_userObject)
+  property parentFolder (T@"ICCameraFolder",&,N,V_parentFolder)
+  property relativeFileSystemPath (T@"NSString",R,V_relativeFileSystemPath)
+  property metadataState (TQ,R)
+  property thumbnailState (TQ,R)
+  property fileSystemPath (T@"NSString",R,D,N)
+  property thumbnail (T^{CGImage=},R,N)
+  property metadata (T@"NSDictionary",R,N)
+  property thumbnailIfAvailable (T^{CGImage=},R)
+  property largeThumbnailIfAvailable (T^{CGImage=},R)
+  property metadataIfAvailable (T@"NSDictionary",R)
+  property unsignedIntegerValue (TQ,R,N)
+  property mediaItemType (T@"NSString",R,C,N)
+  property mediaItemIdentifier (T@"NSString",?,R,C,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1c892cd78
+  -UTI @16@0:8  imp=+0x1c892cc7c
+  -appendToPath: v24@0:8@16  imp=+0x1c892c850
+  -creationDate @16@0:8  imp=+0x1c892ccb4
+  -description @16@0:8  imp=+0x1c892c318
+  -device @16@0:8  imp=+0x1c892cc44
+  -fileSystemPath @16@0:8  imp=+0x1c892c7bc
+  -flushMetadataCache v16@0:8  imp=+0x1c892c72c
+  -flushThumbnailCache v16@0:8  imp=+0x1c892c6bc
+  -hasMetadata B16@0:8  imp=+0x1c892c7b4
+  -hasThumbnail B16@0:8  imp=+0x1c892c7ac
+  -initWithDictionary:parentFolder:device: @40@0:8@16@24@32  imp=+0x1c892c944
+  -initWithName:parentFolder:device: @40@0:8@16@24@32  imp=+0x1c892c040
+  -isInTemporaryStore B16@0:8  imp=+0x1c892cca4
+  -isLocked B16@0:8  imp=+0x1c892cc84
+  -isRaw B16@0:8  imp=+0x1c892cc94
+  -largeThumbnailIfAvailable ^{CGImage=}16@0:8  imp=+0x1c892cc34
+  -mediaItemType @16@0:8  imp=+0x1c892c30c
+  -metadata @16@0:8  imp=+0x1c892c7a4
+  -metadataIfAvailable @16@0:8  imp=+0x1c892cc3c
+  -metadataState Q16@0:8  imp=+0x1c892c574
+  -modificationDate @16@0:8  imp=+0x1c892ccc4
+  -name @16@0:8  imp=+0x1c892cc6c
+  -objectHandle I16@0:8  imp=+0x1c892cd28
+  -objectID Q16@0:8  imp=+0x1c892cd50
+  -ownerID Q16@0:8  imp=+0x1c892cd40
+  -parentFolder @16@0:8  imp=+0x1c892cc58
+  -parentID Q16@0:8  imp=+0x1c892cd38
+  -privMetadataState Q16@0:8  imp=+0x1c892cd08
+  -privThumbnailState Q16@0:8  imp=+0x1c892cd18
+  -ptpObjectHandle I16@0:8  imp=+0x1c892cce8
+  -relativeFileSystemPath @16@0:8  imp=+0x1c892cd6c
+  -requestMetadata v16@0:8  imp=+0x1c892c64c
+  -requestThumbnail v16@0:8  imp=+0x1c892c5dc
+  -setAddedAfterContentCatalogCompleted: v20@0:8B16  imp=+0x1c892cd00
+  -setCreationDate: v24@0:8@16  imp=+0x1c892ccbc
+  -setDevice: v24@0:8@16  imp=+0x1c892cc4c
+  -setInTemporaryStore: v20@0:8B16  imp=+0x1c892ccac
+  -setLocked: v20@0:8B16  imp=+0x1c892cc8c
+  -setMetadataState: v24@0:8Q16  imp=+0x1c892c520
+  -setModificationDate: v24@0:8@16  imp=+0x1c892cccc
+  -setName: v24@0:8@16  imp=+0x1c892cc74
+  -setObjectHandle: v20@0:8I16  imp=+0x1c892cd30
+  -setObjectID: v24@0:8Q16  imp=+0x1c892c300
+  -setOwnerID: v24@0:8Q16  imp=+0x1c892c2f0
+  -setParentFolder: v24@0:8@16  imp=+0x1c892cc60
+  -setParentID: v24@0:8Q16  imp=+0x1c892c2e8
+  -setPrivMetadataState: v24@0:8Q16  imp=+0x1c892cd10
+  -setPrivThumbnailState: v24@0:8Q16  imp=+0x1c892cd20
+  -setPtpObjectHandle: v20@0:8I16  imp=+0x1c892ccf0
+  -setRaw: v20@0:8B16  imp=+0x1c892cc9c
+  -setThumbnailState: v24@0:8Q16  imp=+0x1c892c578
+  -setTwinID: v24@0:8Q16  imp=+0x1c892c2f8
+  -setUTI: v24@0:8@16  imp=+0x1c892c190
+  -setUserData: v24@0:8@16  imp=+0x1c892ccdc
+  -setUserObject: v24@0:8@16  imp=+0x1c892cd64
+  -thumbnail ^{CGImage=}16@0:8  imp=+0x1c892c79c
+  -thumbnailIfAvailable ^{CGImage=}16@0:8  imp=+0x1c892cc2c
+  -thumbnailState Q16@0:8  imp=+0x1c892c57c
+  -twinID Q16@0:8  imp=+0x1c892cd48
+  -unsignedIntegerValue Q16@0:8  imp=+0x1c892c308
+  -userData @16@0:8  imp=+0x1c892ccd4
+  -userObject @16@0:8  imp=+0x1c892cd58
+  -valueForUndefinedKey: @24@0:8@16  imp=+0x1c892c580
+  -wasAddedAfterContentCatalogCompleted B16@0:8  imp=+0x1c892ccf8
+@class ICCommand : NSObject instanceSize=56
+  ivar +8 _transactionID @"NSNumber"
+  ivar +16 _type @"NSString"
+  ivar +24 _dict @"NSMutableDictionary"
+  ivar +32 _delegate @
+  ivar +40 _timeSent d
+  ivar +48 _timeCompleted d
+  property transactionID (T@"NSNumber",C,N,V_transactionID)
+  property type (T@"NSString",C,N,V_type)
+  property dict (T@"NSMutableDictionary",&,N,V_dict)
+  property delegate (T@,&,N,V_delegate)
+  property timeSent (Td,N,V_timeSent)
+  property timeCompleted (Td,N,V_timeCompleted)
+  -.cxx_destruct v16@0:8  imp=+0x1c88e4878
+  -delegate @16@0:8  imp=+0x1c88e0d7c
+  -dict @16@0:8  imp=+0x1c88e0d74
+  -setDelegate: v24@0:8@16  imp=+0x1c88e0c58
+  -setDict: v24@0:8@16  imp=+0x1c88e0c4c
+  -setTimeCompleted: v24@0:8d16  imp=+0x1c88e0c6c
+  -setTimeSent: v24@0:8d16  imp=+0x1c88e0c64
+  -setTransactionID: v24@0:8@16  imp=+0x1c88e0c44
+  -setType: v24@0:8@16  imp=+0x1c88e0c3c
+  -timeCompleted d16@0:8  imp=+0x1c88e4870
+  -timeSent d16@0:8  imp=+0x1c88e1f04
+  -transactionID @16@0:8  imp=+0x1c88e4860
+  -type @16@0:8  imp=+0x1c88e4868
+@class ICCommandCenter : NSObject instanceSize=72
+  ivar +8 _openSession B
+  ivar +12 _selfPID i
+  ivar +16 _connectionAttempts I
+  ivar +24 _pendingCommands @"NSMutableDictionary"
+  ivar +32 _connection @"NSXPCConnection"
+  ivar +40 _connectionLock @"NSLock"
+  ivar +48 _serialCommandQueue @"NSObject<OS_dispatch_queue>"
+  ivar +56 _replyDict @"NSMutableDictionary"
+  ivar +64 _msgSem @"NSObject<OS_dispatch_semaphore>"
+  property selfPID (Ti,N,V_selfPID)
+  property pendingCommands (T@"NSMutableDictionary",&,N,V_pendingCommands)
+  property openSession (TB,N,V_openSession)
+  property connection (T@"NSXPCConnection",&,N,V_connection)
+  property connectionAttempts (TI,N,V_connectionAttempts)
+  property connectionLock (T@"NSLock",&,N,V_connectionLock)
+  property serialCommandQueue (T@"NSObject<OS_dispatch_queue>",&,N,V_serialCommandQueue)
+  property replyDict (T@"NSMutableDictionary",&,N,V_replyDict)
+  property msgSem (T@"NSObject<OS_dispatch_semaphore>",&,N,V_msgSem)
+  +defaultCenter @16@0:8  imp=+0x1c88dfe30
+  -.cxx_destruct v16@0:8  imp=+0x1c88e5a84
+  -addSelectorToInterface:selectorString:origin: v36@0:8@16@24B32  imp=+0x1c88e0408
+  -connection @16@0:8  imp=+0x1c88e5a1c
+  -connectionAttempts I16@0:8  imp=+0x1c88e5a24
+  -connectionLock @16@0:8  imp=+0x1c88e5a34
+  -dealloc v16@0:8  imp=+0x1c88e5850
+  -getConnection @16@0:8  imp=+0x1c88e58c0
+  -handleImageCaptureEventNotification:completion: v32@0:8@16@?24  imp=+0x1c88e4960
+  -icddConnectionSetup: v24@0:8@16  imp=+0x1c88e00b0
+  -init @16@0:8  imp=+0x1c88dff20
+  -loadDeviceModuleForDeviceRef:completion: v32@0:8@16@?24  imp=+0x1c88e50ec
+  -lockConnection v16@0:8  imp=+0x1c88e065c
+  -makeCommand: @24@0:8@16  imp=+0x1c88e4e6c
+  -messageFromClient:withReply: v32@0:8@16@?24  imp=+0x1c88e4e30
+  -messageFromDevice:withReply: v32@0:8@16@?24  imp=+0x1c88e4c60
+  -messageFromICDD:withReply: v32@0:8@16@?24  imp=+0x1c88e0c74
+  -msgSem @16@0:8  imp=+0x1c88e5a70
+  -openSession B16@0:8  imp=+0x1c88e5a0c
+  -pendingCommands @16@0:8  imp=+0x1c88e59f8
+  -releaseConnection v16@0:8  imp=+0x1c88e5980
+  -replyDict @16@0:8  imp=+0x1c88e5a5c
+  -requestOpenSessionWithOptions:completion: v32@0:8@16@?24  imp=+0x1c88e4e44
+  -requestScannerOpenSessionWithOptions:completion: v32@0:8@16@?24  imp=+0x1c88e4e58
+  -resetConnection v16@0:8  imp=+0x1c88e5910
+  -runBlock: v24@0:8@?16  imp=+0x1c88e5840
+  -selfPID i16@0:8  imp=+0x1c88e59e8
+  -sendCommand:from:completion: v40@0:8@16@24@?32  imp=+0x1c88e0898
+  -serialCommandQueue @16@0:8  imp=+0x1c88e5a48
+  -setConnection: v24@0:8@16  imp=+0x1c88e0608
+  -setConnectionAttempts: v20@0:8I16  imp=+0x1c88e5a2c
+  -setConnectionLock: v24@0:8@16  imp=+0x1c88e5a3c
+  -setDeviceModuleEndpointForDeviceRef:endpoint:deviceID: v40@0:8@16@24@32  imp=+0x1c88e5394
+  -setMsgSem: v24@0:8@16  imp=+0x1c88e5a78
+  -setOpenSession: v20@0:8B16  imp=+0x1c88e5a14
+  -setPendingCommands: v24@0:8@16  imp=+0x1c88e5a00
+  -setReplyDict: v24@0:8@16  imp=+0x1c88e5a64
+  -setSelfPID: v20@0:8i16  imp=+0x1c88e59f0
+  -setSerialCommandQueue: v24@0:8@16  imp=+0x1c88e5a50
+  -unlockConnection v16@0:8  imp=+0x1c88e0664
+@class ICDevice : NSObject instanceSize=280
+  ivar +8 _hasOpenSession B
+  ivar +9 _ready B
+  ivar +10 _autolaunchDevice B
+  ivar +11 _systemReportsEjectable B
+  ivar +12 _autoOpenSession B
+  ivar +13 _openSessionPending B
+  ivar +14 _closeSessionPending B
+  ivar +15 _preferred B
+  ivar +16 _canCancelSoftwareInstallation B
+  ivar +20 _usbLocationID i
+  ivar +24 _usbProductID i
+  ivar +28 _usbVendorID i
+  ivar +32 _moduleExecutableArchitecture i
+  ivar +36 _sessionID i
+  ivar +40 _usbIntefaceClass i
+  ivar +44 _usbInterfaceSubClass i
+  ivar +48 _usbInterfaceProtocol i
+  ivar +56 _autolaunchApplicationPath @"NSString"
+  ivar +64 _type Q
+  ivar +72 _name @"NSString"
+  ivar +80 _productKind @"NSString"
+  ivar +88 _icon ^{CGImage=}
+  ivar +96 _systemSymbolName @"NSString"
+  ivar +104 _transportType @"NSString"
+  ivar +112 _UUIDString @"NSString"
+  ivar +120 _locationDescription @"NSString"
+  ivar +128 _userData @"NSMutableDictionary"
+  ivar +136 _modulePath @"NSString"
+  ivar +144 _moduleVersion @"NSString"
+  ivar +152 _serialNumberString @"NSString"
+  ivar +160 _persistentIDString @"NSString"
+  ivar +168 _deviceCapabilities @"NSMutableSet"
+  ivar +176 _sessionState q
+  ivar +184 _deviceManager @"ICDeviceManager"
+  ivar +192 _deviceDelegate @
+  ivar +200 _internalUUID @"NSString"
+  ivar +208 _deviceHandle @"NSNumber"
+  ivar +216 _fwGUID q
+  ivar +224 _procID @"NSNumber"
+  ivar +232 _volumePath @"NSString"
+  ivar +240 _connectionID @"NSNumber"
+  ivar +248 _deviceRef @"NSNumber"
+  ivar +256 _deviceID @"NSNumber"
+  ivar +264 _iconPath @"NSString"
+  ivar +272 _softwareInstallPercentDone d
+  property deviceCapabilities (T@"NSMutableSet",&,N,V_deviceCapabilities)
+  property sessionID (Ti,N,V_sessionID)
+  property sessionState (Tq,N,V_sessionState)
+  property deviceManager (T@"ICDeviceManager",&,N,V_deviceManager)
+  property deviceDelegate (T@,W,N,V_deviceDelegate)
+  property name (T@"NSString",C,N,V_name)
+  property ready (TB,N,V_ready)
+  property productKind (T@"NSString",C,N,V_productKind)
+  property transportType (T@"NSString",C,N,V_transportType)
+  property UUIDString (T@"NSString",C,N,V_UUIDString)
+  property persistentIDString (T@"NSString",C,N,V_persistentIDString)
+  property usbLocationID (Ti,N,V_usbLocationID)
+  property usbProductID (Ti,N,V_usbProductID)
+  property usbVendorID (Ti,N,V_usbVendorID)
+  property internalUUID (T@"NSString",C,N,V_internalUUID)
+  property deviceHandle (T@"NSNumber",C,N,V_deviceHandle)
+  property systemSymbolName (T@"NSString",C,N,V_systemSymbolName)
+  property icon (T^{CGImage=},&,N,V_icon)
+  property type (TQ,N,V_type)
+  property usbIntefaceClass (Ti,N,V_usbIntefaceClass)
+  property usbInterfaceSubClass (Ti,N,V_usbInterfaceSubClass)
+  property usbInterfaceProtocol (Ti,N,V_usbInterfaceProtocol)
+  property locationDescription (T@"NSString",C,N,V_locationDescription)
+  property fwGUID (Tq,N,V_fwGUID)
+  property modulePath (T@"NSString",C,N,V_modulePath)
+  property moduleVersion (T@"NSString",C,N,V_moduleVersion)
+  property userData (T@"NSMutableDictionary",&,N,V_userData)
+  property serialNumberString (T@"NSString",C,N,V_serialNumberString)
+  property autolaunchDevice (TB,N,V_autolaunchDevice)
+  property systemReportsEjectable (TB,N,V_systemReportsEjectable)
+  property procID (T@"NSNumber",C,N,V_procID)
+  property volumePath (T@"NSString",C,N,V_volumePath)
+  property hasOpenSession (TB,N,V_hasOpenSession)
+  property autoOpenSession (TB,V_autoOpenSession)
+  property openSessionPending (TB,V_openSessionPending)
+  property closeSessionPending (TB,V_closeSessionPending)
+  property isAppleDevice (TB,R,N)
+  property connectionID (T@"NSNumber",C,N,V_connectionID)
+  property deviceRef (T@"NSNumber",C,N,V_deviceRef)
+  property deviceID (T@"NSNumber",C,N,V_deviceID)
+  property iconPath (T@"NSString",C,N,V_iconPath)
+  property preferred (TB,R,V_preferred)
+  property softwareInstallPercentDone (Td,R,V_softwareInstallPercentDone)
+  property canCancelSoftwareInstallation (TB,R,V_canCancelSoftwareInstallation)
+  property delegate (T@"<ICDeviceDelegate>",N)
+  property capabilities (T@"NSArray",R,N)
+  property autolaunchApplicationPath (T@"NSString",C,N,V_autolaunchApplicationPath)
+  property remote (TB,R,GisRemote)
+  property moduleExecutableArchitecture (Ti,R,V_moduleExecutableArchitecture)
+  +automaticallyNotifiesObserversForKey: B24@0:8@16  imp=+0x1c891b30c
+  -.cxx_destruct v16@0:8  imp=+0x1c891d3b0
+  -UUIDString @16@0:8  imp=+0x1c88e29d0
+  -addCapability: v24@0:8@16  imp=+0x1c891c294
+  -autoOpenSession B16@0:8  imp=+0x1c88e3244
+  -autolaunchApplicationPath @16@0:8  imp=+0x1c891ca60
+  -autolaunchDevice B16@0:8  imp=+0x1c891d31c
+  -canCancelSoftwareInstallation B16@0:8  imp=+0x1c891d3a4
+  -capabilities @16@0:8  imp=+0x1c88e2bfc
+  -cleanupDeviceWithErrorCode:completionBlock: v32@0:8@16@?24  imp=+0x1c891cb08
+  -closeSessionPending B16@0:8  imp=+0x1c891d364
+  -connectionID @16@0:8  imp=+0x1c88e2564
+  -delegate @16@0:8  imp=+0x1c88e1f0c
+  -description @16@0:8  imp=+0x1c891b5f0
+  -deviceCapabilities @16@0:8  imp=+0x1c891d23c
+  -deviceDelegate @16@0:8  imp=+0x1c891d274
+  -deviceHandle @16@0:8  imp=+0x1c891d2cc
+  -deviceID @16@0:8  imp=+0x1c88e256c
+  -deviceManager @16@0:8  imp=+0x1c891d260
+  -deviceRef @16@0:8  imp=+0x1c88e1ef4
+  -fetchAutolaunchApplicationPath v16@0:8  imp=+0x1c891cb64
+  -fwGUID q16@0:8  imp=+0x1c891d30c
+  -handleCommandCompletion: B24@0:8@16  imp=+0x1c88e323c
+  -handleCommandCompletionNotification: v24@0:8@16  imp=+0x1c891cb5c
+  -handleImageCaptureEventNotification: v24@0:8@16  imp=+0x1c891cb60
+  -handleImageCaptureEventNotification:completion: v32@0:8@16@?24  imp=+0x1c891ca5c
+  -hasOpenSession B16@0:8  imp=+0x1c88e29b0
+  -icon ^{CGImage=}16@0:8  imp=+0x1c88e29d8
+  -iconPath @16@0:8  imp=+0x1c891d390
+  -imageCaptureEventNotification:completion: v32@0:8@16@?24  imp=+0x1c891c8d4
+  -init @16@0:8  imp=+0x1c891b304
+  -initWithDictionary: @24@0:8@16  imp=+0x1c88e150c
+  -internalUUID @16@0:8  imp=+0x1c891d2bc
+  -isAppleDevice B16@0:8  imp=+0x1c891b5d0
+  -isRemote B16@0:8  imp=+0x1c88e194c
+  -locationDescription @16@0:8  imp=+0x1c88e2bec
+  -moduleExecutableArchitecture i16@0:8  imp=+0x1c891d234
+  -modulePath @16@0:8  imp=+0x1c88e2bf4
+  -moduleVersion @16@0:8  imp=+0x1c891d1d4
+  -name @16@0:8  imp=+0x1c88e1efc
+  -notifyObservers: v24@0:8@16  imp=+0x1c891b314
+  -openSessionPending B16@0:8  imp=+0x1c88e2ef8
+  -persistentIDString @16@0:8  imp=+0x1c891d224
+  -preferred B16@0:8  imp=+0x1c891d398
+  -procID @16@0:8  imp=+0x1c891d33c
+  -productKind @16@0:8  imp=+0x1c891d170
+  -ready B16@0:8  imp=+0x1c891d2ac
+  -removeCapabilities v16@0:8  imp=+0x1c891cb1c
+  -removeCapability: v24@0:8@16  imp=+0x1c891c634
+  -requestCloseSession v16@0:8  imp=+0x1c891b5c4
+  -requestCloseSessionWithOptions:completion: v32@0:8@16@?24  imp=+0x1c891b5cc
+  -requestEject v16@0:8  imp=+0x1c891bdec
+  -requestEjectOrDisconnect v16@0:8  imp=+0x1c891bde8
+  -requestEjectWithCompletion: v24@0:8@?16  imp=+0x1c891bf5c
+  -requestOpenSession v16@0:8  imp=+0x1c891b5c0
+  -requestOpenSessionWithOptions:completion: v32@0:8@16@?24  imp=+0x1c891b5c8
+  -requestSendMessage:outData:maxReturnedDataSize:sendMessageDelegate:didSendMessageSelector:contextInfo: v56@0:8I16@20I28@32:40^v48  imp=+0x1c891cb18
+  -requestYield v16@0:8  imp=+0x1c891bde4
+  -serialNumberString @16@0:8  imp=+0x1c891d1e4
+  -sessionID i16@0:8  imp=+0x1c88e2ef0
+  -sessionState q16@0:8  imp=+0x1c891d258
+  -setAutoOpenSession: v20@0:8B16  imp=+0x1c88e2f04
+  -setAutolaunchApplicationPath: v24@0:8@16  imp=+0x1c891ce4c
+  -setAutolaunchDevice: v20@0:8B16  imp=+0x1c891d324
+  -setCloseSessionPending: v20@0:8B16  imp=+0x1c891d370
+  -setConnectionID: v24@0:8@16  imp=+0x1c891d378
+  -setDelegate: v24@0:8@16  imp=+0x1c88e2cf8
+  -setDeviceCapabilities: v24@0:8@16  imp=+0x1c891d244
+  -setDeviceDelegate: v24@0:8@16  imp=+0x1c891d2a0
+  -setDeviceHandle: v24@0:8@16  imp=+0x1c891d2d4
+  -setDeviceID: v24@0:8@16  imp=+0x1c891d388
+  -setDeviceManager: v24@0:8@16  imp=+0x1c891d268
+  -setDeviceRef: v24@0:8@16  imp=+0x1c891d380
+  -setFwGUID: v24@0:8q16  imp=+0x1c891d314
+  -setHasOpenSession: v20@0:8B16  imp=+0x1c891d1b0
+  -setIcon: v24@0:8^{CGImage=}16  imp=+0x1c891d180
+  -setIconPath: v24@0:8@16  imp=+0x1c891b53c
+  -setInternalUUID: v24@0:8@16  imp=+0x1c891d2c4
+  -setLocationDescription: v24@0:8@16  imp=+0x1c891d1a8
+  -setModulePath: v24@0:8@16  imp=+0x1c891d1cc
+  -setModuleVersion: v24@0:8@16  imp=+0x1c891d1dc
+  -setName: v24@0:8@16  imp=+0x1c891d168
+  -setOpenSessionPending: v20@0:8B16  imp=+0x1c891d35c
+  -setPersistentIDString: v24@0:8@16  imp=+0x1c891d22c
+  -setPreferred: v20@0:8B16  imp=+0x1c891b528
+  -setProcID: v24@0:8@16  imp=+0x1c891d344
+  -setProductKind: v24@0:8@16  imp=+0x1c891d178
+  -setReady: v20@0:8B16  imp=+0x1c891d2b4
+  -setSerialNumberString: v24@0:8@16  imp=+0x1c891d1ec
+  -setSessionID: v20@0:8i16  imp=+0x1c891d250
+  -setSessionState: v24@0:8q16  imp=+0x1c891b4bc
+  -setSystemReportsEjectable: v20@0:8B16  imp=+0x1c891d334
+  -setSystemSymbolName: v24@0:8@16  imp=+0x1c891d190
+  -setTransportType: v24@0:8@16  imp=+0x1c891d198
+  -setType: v24@0:8Q16  imp=+0x1c891d160
+  -setUUIDString: v24@0:8@16  imp=+0x1c891d1a0
+  -setUsbIntefaceClass: v20@0:8i16  imp=+0x1c891d2e4
+  -setUsbInterfaceProtocol: v20@0:8i16  imp=+0x1c891d304
+  -setUsbInterfaceSubClass: v20@0:8i16  imp=+0x1c891d2f4
+  -setUsbLocationID: v20@0:8i16  imp=+0x1c891d1fc
+  -setUsbProductID: v20@0:8i16  imp=+0x1c891d20c
+  -setUsbVendorID: v20@0:8i16  imp=+0x1c891d21c
+  -setUserData: v24@0:8@16  imp=+0x1c891d1c0
+  -setVolumePath: v24@0:8@16  imp=+0x1c891d354
+  -softwareInstallPercentDone d16@0:8  imp=+0x1c88e3250
+  -systemReportsEjectable B16@0:8  imp=+0x1c891d32c
+  -systemSymbolName @16@0:8  imp=+0x1c891d188
+  -transportType @16@0:8  imp=+0x1c88e2580
+  -type Q16@0:8  imp=+0x1c88e1944
+  -updateCapabilities: v24@0:8@16  imp=+0x1c88e1990
+  -updateProperties: B24@0:8@16  imp=+0x1c88e21dc
+  -usbIntefaceClass i16@0:8  imp=+0x1c891d2dc
+  -usbInterfaceProtocol i16@0:8  imp=+0x1c891d2fc
+  -usbInterfaceSubClass i16@0:8  imp=+0x1c891d2ec
+  -usbLocationID i16@0:8  imp=+0x1c891d1f4
+  -usbProductID i16@0:8  imp=+0x1c891d204
+  -usbVendorID i16@0:8  imp=+0x1c891d214
+  -userData @16@0:8  imp=+0x1c891d1b8
+  -valueForUndefinedKey: @24@0:8@16  imp=+0x1c891caac
+  -volumePath @16@0:8  imp=+0x1c891d34c
+@class ICDeviceBrowser : NSObject instanceSize=56
+  ivar +8 _browsing B
+  ivar +9 _suspended B
+  ivar +12 _devicesLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +16 _delegate @"<ICDeviceBrowserDelegate>"
+  ivar +24 _contentsAuthorizationStatus @"NSString"
+  ivar +32 _controlAuthorizationStatus @"NSString"
+  ivar +40 _internalDevices @"NSMutableArray"
+  ivar +48 _internalBrowsedDeviceTypeMask Q
+  property browsing (TB,GisBrowsing,V_browsing)
+  property internalDevices (T@"NSMutableArray",&,V_internalDevices)
+  property internalBrowsedDeviceTypeMask (TQ,V_internalBrowsedDeviceTypeMask)
+  property devicesLock (T{os_unfair_lock_s=I},V_devicesLock)
+  property suspended (TB,N,GisSuspended,V_suspended)
+  property delegate (T@"<ICDeviceBrowserDelegate>",V_delegate)
+  property browsedDeviceTypeMask (TQ)
+  property devices (T@"NSArray",R)
+  property preferredDevice (T@"ICDevice",R,N)
+  property contentsAuthorizationStatus (T@"NSString",R,C,N,V_contentsAuthorizationStatus)
+  property controlAuthorizationStatus (T@"NSString",R,C,N,V_controlAuthorizationStatus)
+  -.cxx_destruct v16@0:8  imp=+0x1c88f0ec4
+  -addDevice:moreComing: v28@0:8@16B24  imp=+0x1c88f0718
+  -browsedDeviceTypeMask Q16@0:8  imp=+0x1c88e0bf8
+  -containsDevice: B24@0:8@16  imp=+0x1c88f0c74
+  -contentsAuthorizationStatus @16@0:8  imp=+0x1c88f0e80
+  -controlAuthorizationStatus @16@0:8  imp=+0x1c88f0e88
+  -delegate @16@0:8  imp=+0x1c88e0c00
+  -deviceWithRef: @24@0:8@16  imp=+0x1c88f0ce8
+  -devices @16@0:8  imp=+0x1c88e2930
+  -devicesLock {os_unfair_lock_s=I}16@0:8  imp=+0x1c88f0eb4
+  -init @16@0:8  imp=+0x1c88df738
+  -internalBrowsedDeviceTypeMask Q16@0:8  imp=+0x1c88f0ea4
+  -internalDevices @16@0:8  imp=+0x1c88f0e90
+  -isBrowsing B16@0:8  imp=+0x1c88e0c08
+  -isSuspended B16@0:8  imp=+0x1c88f0e70
+  -preferredDevice @16@0:8  imp=+0x1c88f05fc
+  -removeDevice:moreGoing: v28@0:8@16B24  imp=+0x1c88f09a4
+  -setBrowsedDeviceTypeMask: v24@0:8Q16  imp=+0x1c88df7d8
+  -setBrowsing: v20@0:8B16  imp=+0x1c88f0e68
+  -setDelegate: v24@0:8@16  imp=+0x1c88df7d0
+  -setDevicesLock: v20@0:8{os_unfair_lock_s=I}16  imp=+0x1c88f0ebc
+  -setInternalBrowsedDeviceTypeMask: v24@0:8Q16  imp=+0x1c88f0eac
+  -setInternalDevices: v24@0:8@16  imp=+0x1c88f0e9c
+  -setSuspended: v20@0:8B16  imp=+0x1c88f0e78
+  -start v16@0:8  imp=+0x1c88df930
+  -stop v16@0:8  imp=+0x1c88e2588
+@class ICDeviceHardwareHandler : NSObject instanceSize=32
+  ivar +8 _deviceContexts @"NSMutableArray"
+  ivar +16 _disabledContexts @"NSMutableArray"
+  ivar +24 _deviceContextsLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  -.cxx_destruct v16@0:8  imp=+0x1c88efa4c
+  -addDeviceContext: v24@0:8@16  imp=+0x1c88eec10
+  -init @16@0:8  imp=+0x1c88eeb8c
+  -removeDeviceContext: v24@0:8@16  imp=+0x1c88ef210
+@class ICDeviceManager : NSObject <ICDeviceManagerProtocol> instanceSize=72
+  ivar +8 _deviceOperationQueueSuspended B
+  ivar +9 _managerIsRunning B
+  ivar +10 _controlAuthorizedOnce B
+  ivar +12 _deviceOperationQueueLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +16 _deviceHandlesLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +20 _managerInvalidationCount I
+  ivar +24 _deviceMatchingInfo @"NSDictionary"
+  ivar +32 _deviceListQueue @"NSObject<OS_dispatch_queue>"
+  ivar +40 _deviceOperationQueue @"NSOperationQueue"
+  ivar +48 _managerConnection @"NSXPCConnection"
+  ivar +56 _devices @"NSMutableDictionary"
+  ivar +64 _deviceHandles @"NSMutableArray"
+  property deviceMatchingInfo (T@"NSDictionary",&,N,V_deviceMatchingInfo)
+  property deviceListQueue (T@"NSObject<OS_dispatch_queue>",&,N,V_deviceListQueue)
+  property deviceOperationQueue (T@"NSOperationQueue",&,N,V_deviceOperationQueue)
+  property deviceOperationQueueLock (T{os_unfair_lock_s=I},N,V_deviceOperationQueueLock)
+  property deviceOperationQueueSuspended (TB,N,V_deviceOperationQueueSuspended)
+  property managerConnection (T@"NSXPCConnection",&,N,V_managerConnection)
+  property devices (T@"NSMutableDictionary",&,N,V_devices)
+  property deviceHandles (T@"NSMutableArray",&,N,V_deviceHandles)
+  property deviceHandlesLock (T{os_unfair_lock_s=I},N,V_deviceHandlesLock)
+  property managerIsRunning (TB,N,V_managerIsRunning)
+  property managerInvalidationCount (TI,N,V_managerInvalidationCount)
+  property controlAuthorizedOnce (TB,N,V_controlAuthorizedOnce)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1c8932308
+  -addInitiatedOperation: v24@0:8@16  imp=+0x1c8931ea8
+  -addInteractiveOperation: v24@0:8@16  imp=+0x1c8931f08
+  -addSelectorToInterface:selectorString:origin: v36@0:8@16@24B32  imp=+0x1c892d1c4
+  -closeDevice:contextInfo: q32@0:8@16^v24  imp=+0x1c892fff4
+  -closeDeviceHandle: v24@0:8@16  imp=+0x1c892ea04
+  -closeDeviceImp: v24@0:8@16  imp=+0x1c892ec20
+  -closeSession:withOptions:completion: q40@0:8@16@24@?32  imp=+0x1c89309e0
+  -closeSessionImp: v24@0:8@16  imp=+0x1c892f1cc
+  -controlAuthorizedOnce B16@0:8  imp=+0x1c89322f8
+  -dealloc v16@0:8  imp=+0x1c892fb14
+  -deleteFile:fromDevice:completion: q40@0:8@16@24@?32  imp=+0x1c8930cb0
+  -deleteFileImp: v24@0:8@16  imp=+0x1c8931b0c
+  -deviceForConnection: @24@0:8@16  imp=+0x1c892fb6c
+  -deviceForUUID: @24@0:8@16  imp=+0x1c892fcf4
+  -deviceHandles @16@0:8  imp=+0x1c89322b4
+  -deviceHandlesLock {os_unfair_lock_s=I}16@0:8  imp=+0x1c89322c8
+  -deviceListQueue @16@0:8  imp=+0x1c8932244
+  -deviceManagerConnection @16@0:8  imp=+0x1c892f320
+  -deviceMatchingInfo @16@0:8  imp=+0x1c8932230
+  -deviceOperationQueue @16@0:8  imp=+0x1c8932258
+  -deviceOperationQueueLock {os_unfair_lock_s=I}16@0:8  imp=+0x1c893226c
+  -deviceOperationQueueSuspended B16@0:8  imp=+0x1c893227c
+  -devices @16@0:8  imp=+0x1c89322a0
+  -downloadFile:fromDevice:withOptions:completion: q48@0:8@16@24@32@?40  imp=+0x1c8930e44
+  -downloadFileImp: v24@0:8@16  imp=+0x1c8931b10
+  -ejectDevice:completion: q32@0:8@16@?24  imp=+0x1c89314c8
+  -ejectImp: v24@0:8@16  imp=+0x1c8931b14
+  -enumerateContent v16@0:8  imp=+0x1c8931b24
+  -enumerateContent:withOptions:completion: q40@0:8@16@24@?32  imp=+0x1c8930828
+  -enumerateContentImp: v24@0:8@16  imp=+0x1c892ef68
+  -getDeviceList v16@0:8  imp=+0x1c892e1b4
+  -getFileData:fromDevice:withOptions:completion: q48@0:8@16@24@32@?40  imp=+0x1c89304b8
+  -getFileDataImp: v24@0:8@16  imp=+0x1c8931afc
+  -getFileMetadata:fromDevice:withOptions:completion: q48@0:8@16@24@32@?40  imp=+0x1c8930324
+  -getFileMetadataImp: v24@0:8@16  imp=+0x1c8931af8
+  -getFileThumbnail:fromDevice:withOptions:completion: q48@0:8@16@24@32@?40  imp=+0x1c893016c
+  -getFileThumbnailImp: v24@0:8@16  imp=+0x1c8931af4
+  -getFingerprint:fromDevice:completion: q40@0:8@16@24@?32  imp=+0x1c8931958
+  -getFingerprintImp: v24@0:8@16  imp=+0x1c8931b04
+  -getSecurityScopedURL:fromDevice:completion: q40@0:8@16@24@?32  imp=+0x1c8931630
+  -getSecurityScopedURLImp: v24@0:8@16  imp=+0x1c8931b00
+  -init @16@0:8  imp=+0x1c892ce04
+  -managerConnection @16@0:8  imp=+0x1c893228c
+  -managerInvalidationCount I16@0:8  imp=+0x1c89322e8
+  -managerIsRunning B16@0:8  imp=+0x1c89322d8
+  -notifyAddedDevice: v24@0:8@16  imp=+0x1c892e554
+  -notifyRemovedDevice: v24@0:8@16  imp=+0x1c892e838
+  -openDevice:contextInfo: q32@0:8@16^v24  imp=+0x1c892fe7c
+  -openDeviceHandle: v24@0:8@16  imp=+0x1c892d3d8
+  -openDeviceImp: v24@0:8@16  imp=+0x1c8931aec
+  -openRemoteDeviceManager B16@0:8  imp=+0x1c892f594
+  -openSession:withOptions:completion: q40@0:8@16@24@?32  imp=+0x1c8930670
+  -openSessionImp: v24@0:8@16  imp=+0x1c892eca0
+  -postCommandCompletionNotification: v24@0:8@16  imp=+0x1c8931b28
+  -postNotification: v24@0:8@16  imp=+0x1c8931c18
+  -refreshObjectHandleInfo:fromDevice:completion: q40@0:8@16@24@?32  imp=+0x1c89317c4
+  -refreshObjectHandleInfoImp: v24@0:8@16  imp=+0x1c8931b08
+  -registerDevice:forImageCaptureEventNotifications: q32@0:8@16@24  imp=+0x1c89312b0
+  -registerDevice:forImageCaptureEventNotificationsImp: v32@0:8@16@24  imp=+0x1c8931b1c
+  -remoteManager @16@0:8  imp=+0x1c892f32c
+  -restartRunning v16@0:8  imp=+0x1c892d18c
+  -resumeOperations v16@0:8  imp=+0x1c89320c4
+  -sendDevice:ptpCommand:andPayload:completion: q48@0:8@16@24@32@?40  imp=+0x1c8930ffc
+  -sendDevicePTPCommandImp: v24@0:8@16  imp=+0x1c8931b18
+  -setControlAuthorizedOnce: v20@0:8B16  imp=+0x1c8932300
+  -setDeviceHandles: v24@0:8@16  imp=+0x1c89322bc
+  -setDeviceHandlesLock: v20@0:8{os_unfair_lock_s=I}16  imp=+0x1c89322d0
+  -setDeviceListQueue: v24@0:8@16  imp=+0x1c893224c
+  -setDeviceMatchingInfo: v24@0:8@16  imp=+0x1c8932238
+  -setDeviceOperationQueue: v24@0:8@16  imp=+0x1c8932260
+  -setDeviceOperationQueueLock: v20@0:8{os_unfair_lock_s=I}16  imp=+0x1c8932274
+  -setDeviceOperationQueueMaxConcurrentOperationCount: v24@0:8Q16  imp=+0x1c8932228
+  -setDeviceOperationQueueName: v24@0:8@16  imp=+0x1c8932220
+  -setDeviceOperationQueueSuspended: v20@0:8B16  imp=+0x1c8932284
+  -setDevices: v24@0:8@16  imp=+0x1c89322a8
+  -setManagerConnection: v24@0:8@16  imp=+0x1c8932294
+  -setManagerInvalidationCount: v20@0:8I16  imp=+0x1c89322f0
+  -setManagerIsRunning: v20@0:8B16  imp=+0x1c89322e0
+  -startDeviceWithHandle: v24@0:8@16  imp=+0x1c892f328
+  -startRunning v16@0:8  imp=+0x1c892cfd8
+  -stopRunning v16@0:8  imp=+0x1c892d030
+  -suspendOperations v16@0:8  imp=+0x1c8931f68
+  -syncClock:completion: q32@0:8@16@?24  imp=+0x1c8930b48
+  -syncClockImp: v24@0:8@16  imp=+0x1c8931af0
+  -unregisterDevice:forImageCaptureEventNotifications: q32@0:8@16@24  imp=+0x1c89313bc
+  -unregisterDevice:forImageCaptureEventNotificationsImp: v32@0:8@16@24  imp=+0x1c8931b20
+@class ICScannerBandData : NSObject instanceSize=112
+  ivar +8 _bigEndian B
+  ivar +16 _fullImageHeight Q
+  ivar +24 _fullImageWidth Q
+  ivar +32 _bitsPerPixel Q
+  ivar +40 _bitsPerComponent Q
+  ivar +48 _numComponents Q
+  ivar +56 _pixelDataType Q
+  ivar +64 _colorSyncProfilePath @"NSString"
+  ivar +72 _bytesPerRow Q
+  ivar +80 _dataStartRow Q
+  ivar +88 _dataNumRows Q
+  ivar +96 _dataSize Q
+  ivar +104 _dataBuffer @"NSData"
+  property fullImageWidth (TQ,V_fullImageWidth)
+  property fullImageHeight (TQ,V_fullImageHeight)
+  property bitsPerPixel (TQ,V_bitsPerPixel)
+  property bitsPerComponent (TQ,V_bitsPerComponent)
+  property numComponents (TQ,V_numComponents)
+  property bigEndian (TB,GisBigEndian,V_bigEndian)
+  property pixelDataType (TQ,V_pixelDataType)
+  property colorSyncProfilePath (T@"NSString",&,V_colorSyncProfilePath)
+  property bytesPerRow (TQ,V_bytesPerRow)
+  property dataStartRow (TQ,V_dataStartRow)
+  property dataNumRows (TQ,V_dataNumRows)
+  property dataSize (TQ,V_dataSize)
+  property dataBuffer (T@"NSData",&,V_dataBuffer)
+  -.cxx_destruct v16@0:8  imp=+0x1c88e4654
+  -bitsPerComponent Q16@0:8  imp=+0x1c88e45a8
+  -bitsPerPixel Q16@0:8  imp=+0x1c88e4598
+  -bytesPerRow Q16@0:8  imp=+0x1c88e4600
+  -colorSyncProfilePath @16@0:8  imp=+0x1c88e45ec
+  -dataBuffer @16@0:8  imp=+0x1c88e4640
+  -dataNumRows Q16@0:8  imp=+0x1c88e4620
+  -dataSize Q16@0:8  imp=+0x1c88e4630
+  -dataStartRow Q16@0:8  imp=+0x1c88e4610
+  -description @16@0:8  imp=+0x1c88e4368
+  -fullImageHeight Q16@0:8  imp=+0x1c88e4578
+  -fullImageWidth Q16@0:8  imp=+0x1c88e4588
+  -initWithDictionary: @24@0:8@16  imp=+0x1c88e4050
+  -isBigEndian B16@0:8  imp=+0x1c88e45c8
+  -numComponents Q16@0:8  imp=+0x1c88e45b8
+  -pixelDataType Q16@0:8  imp=+0x1c88e45dc
+  -setBigEndian: v20@0:8B16  imp=+0x1c88e45d4
+  -setBitsPerComponent: v24@0:8Q16  imp=+0x1c88e45b0
+  -setBitsPerPixel: v24@0:8Q16  imp=+0x1c88e45a0
+  -setBytesPerRow: v24@0:8Q16  imp=+0x1c88e4608
+  -setColorSyncProfilePath: v24@0:8@16  imp=+0x1c88e45f8
+  -setDataBuffer: v24@0:8@16  imp=+0x1c88e464c
+  -setDataNumRows: v24@0:8Q16  imp=+0x1c88e4628
+  -setDataSize: v24@0:8Q16  imp=+0x1c88e4638
+  -setDataStartRow: v24@0:8Q16  imp=+0x1c88e4618
+  -setFullImageHeight: v24@0:8Q16  imp=+0x1c88e4580
+  -setFullImageWidth: v24@0:8Q16  imp=+0x1c88e4590
+  -setNumComponents: v24@0:8Q16  imp=+0x1c88e45c0
+  -setPixelDataType: v24@0:8Q16  imp=+0x1c88e45e4
+@class ICScannerDevice : ICDevice instanceSize=384
+  ivar +280 _ipPort i
+  ivar +284 _endpointLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +288 _assertionID I
+  ivar +296 _ipAddress @"NSString"
+  ivar +304 _endpointSemaphore @"NSObject<OS_dispatch_semaphore>"
+  ivar +312 _buttonPressed @"NSString"
+  ivar +320 _connection @"NSXPCConnection"
+  ivar +328 _endpoint @"NSXPCListenerEndpoint"
+  ivar +336 _connectionLock @"NSLock"
+  ivar +344 _scannerDeviceIcon ^{CGImage=}
+  ivar +352 _scannerProperties @"ICScannerProperties"
+  ivar +360 _bonjourServiceType @"NSString"
+  ivar +368 _bonjourServiceName @"NSString"
+  ivar +376 _bonjourTXTRecord @"NSDictionary"
+  property endpointSemaphore (T@"NSObject<OS_dispatch_semaphore>",&,N,V_endpointSemaphore)
+  property endpointLock (T{os_unfair_lock_s=I},N,V_endpointLock)
+  property buttonPressed (T@"NSString",C,N,V_buttonPressed)
+  property assertionID (TI,N,V_assertionID)
+  property connection (T@"NSXPCConnection",&,N,V_connection)
+  property endpoint (T@"NSXPCListenerEndpoint",&,N,V_endpoint)
+  property connectionLock (T@"NSLock",&,N,V_connectionLock)
+  property scannerDeviceIcon (T^{CGImage=},&,N,V_scannerDeviceIcon)
+  property scannerProperties (T@"ICScannerProperties",&,N,V_scannerProperties)
+  property supportsICARawFileFormat (TB,R)
+  property scanContext (T@"NSMutableDictionary",R)
+  property scanParamsRetained (TB)
+  property bonjourServiceType (T@"NSString",C,N,V_bonjourServiceType)
+  property bonjourServiceName (T@"NSString",C,N,V_bonjourServiceName)
+  property bonjourTXTRecord (T@"NSDictionary",&,N,V_bonjourTXTRecord)
+  property ipAddress (T@"NSString",C,N,V_ipAddress)
+  property ipPort (Ti,N,V_ipPort)
+  property availableFunctionalUnitTypes (T@"NSArray",R)
+  property selectedFunctionalUnit (T@"ICScannerFunctionalUnit",R)
+  property transferMode (TQ)
+  property maxMemoryBandSize (TI)
+  property downloadsDirectory (T@"NSURL",&)
+  property documentName (T@"NSString",C)
+  property documentUTI (T@"NSString",C)
+  property defaultUsername (T@"NSString",C)
+  -.cxx_destruct v16@0:8  imp=+0x1c892befc
+  -addCommonConnectionInfo: v24@0:8@16  imp=+0x1c89299b4
+  -assertionID I16@0:8  imp=+0x1c892bdc0
+  -availableFunctionalUnitTypes @16@0:8  imp=+0x1c891e93c
+  -bonjourServiceName @16@0:8  imp=+0x1c892beb4
+  -bonjourServiceType @16@0:8  imp=+0x1c892be94
+  -bonjourTXTRecord @16@0:8  imp=+0x1c892bed4
+  -bringupDeviceConnection B16@0:8  imp=+0x1c8929e58
+  -buttonPressed @16@0:8  imp=+0x1c892bda0
+  -cancelScan v16@0:8  imp=+0x1c8924114
+  -cleanupDeviceWithErrorCode:completionBlock: v32@0:8@16@?24  imp=+0x1c891daa8
+  -connectWithParameters: v24@0:8@16  imp=+0x1c892ae54
+  -connection @16@0:8  imp=+0x1c892bde8
+  -connectionLock @16@0:8  imp=+0x1c892be24
+  -createBonjourLocationNameWithTxtRecord:andServiceName: @32@0:8@16@24  imp=+0x1c891d758
+  -dealloc v16@0:8  imp=+0x1c891e64c
+  -defaultUsername @16@0:8  imp=+0x1c891eab8
+  -description @16@0:8  imp=+0x1c891e34c
+  -disconnect v16@0:8  imp=+0x1c892b008
+  -documentName @16@0:8  imp=+0x1c891ea18
+  -documentUTI @16@0:8  imp=+0x1c891ea68
+  -downloadsDirectory @16@0:8  imp=+0x1c891e9c8
+  -endpoint @16@0:8  imp=+0x1c892bdfc
+  -endpointLock {os_unfair_lock_s=I}16@0:8  imp=+0x1c892bd78
+  -endpointSemaphore @16@0:8  imp=+0x1c892bd50
+  -getConnection @16@0:8  imp=+0x1c8929d5c
+  -getScanParameters: v24@0:8@16  imp=+0x1c891f018
+  -getScannerDictionary v16@0:8  imp=+0x1c891ed84
+  -handleCommandCompletion: B24@0:8@16  imp=+0x1c88e2f70
+  -handleImageCaptureEventNotification:completion: v32@0:8@16@?24  imp=+0x1c8925270
+  -handleObjectAdded: v24@0:8@16  imp=+0x1c8926674
+  -handleOverviewScanEnded: v24@0:8@16  imp=+0x1c8927620
+  -handlePageDone: v24@0:8@16  imp=+0x1c8927100
+  -handleScanEnded: v24@0:8@16  imp=+0x1c89278b8
+  -handleScanParameters: v24@0:8@16  imp=+0x1c891f6f0
+  -handleScannerDictionary: v24@0:8@16  imp=+0x1c891f49c
+  -handleTransfer: v24@0:8@16  imp=+0x1c8927268
+  -hasEndpoint B16@0:8  imp=+0x1c8929cf4
+  -icon ^{CGImage=}16@0:8  imp=+0x1c892b850
+  -init @16@0:8  imp=+0x1c891e644
+  -initPowerAssertion v16@0:8  imp=+0x1c8929b5c
+  -initWithDictionary: @24@0:8@16  imp=+0x1c88e0d84
+  -initializeScannerProperties: v24@0:8@16  imp=+0x1c88e1c80
+  -ipAddress @16@0:8  imp=+0x1c892bd08
+  -ipPort i16@0:8  imp=+0x1c892bd28
+  -isConnected B16@0:8  imp=+0x1c8929d28
+  -legacySupportMemoryTransferWithURL: v24@0:8@16  imp=+0x1c8928b38
+  -loadDeviceModuleWithOptions: B24@0:8@16  imp=+0x1c892a81c
+  -lockConnection v16@0:8  imp=+0x1c892afe0
+  -maxMemoryBandSize I16@0:8  imp=+0x1c891ebd0
+  -numOpenSessionRetries I16@0:8  imp=+0x1c891ec0c
+  -observeValueForKeyPath:ofObject:change:context: v48@0:8@16@24@32^v40  imp=+0x1c891e898
+  -registerForImageCaptureEventNotifications: v24@0:8@16  imp=+0x1c8924df8
+  -releaseConnection v16@0:8  imp=+0x1c892af6c
+  -releasePowerAssertion v16@0:8  imp=+0x1c8929ba4
+  -remoteDevice: @24@0:8^@16  imp=+0x1c8929bb8
+  -requestChangeVendorFeature: v24@0:8@16  imp=+0x1c8924a5c
+  -requestCloseSession v16@0:8  imp=+0x1c8920f2c
+  -requestCloseSessionWithOptions:completion: v32@0:8@16@?24  imp=+0x1c8921030
+  -requestEject v16@0:8  imp=+0x1c892b108
+  -requestEjectOrDisconnect v16@0:8  imp=+0x1c892b104
+  -requestEjectWithCompletion: v24@0:8@?16  imp=+0x1c892b278
+  -requestOpenSession v16@0:8  imp=+0x1c88e2e7c
+  -requestOpenSessionWithCredentials:password: v32@0:8@16@24  imp=+0x1c8920038
+  -requestOpenSessionWithOptions:completion: v32@0:8@16@?24  imp=+0x1c892020c
+  -requestOverviewScan v16@0:8  imp=+0x1c8921fc4
+  -requestOverviewScanWithOptions:completion: v32@0:8@16@?24  imp=+0x1c89220dc
+  -requestScan v16@0:8  imp=+0x1c8922c3c
+  -requestScanWithOptions:completion: v32@0:8@16@?24  imp=+0x1c8922d54
+  -requestSelectFunctionalUnit: v24@0:8Q16  imp=+0x1c89216ec
+  -requestSendMessage:outData:maxReturnedDataSize:sendMessageDelegate:didSendMessageSelector:contextInfo: v56@0:8I16@20I28@32:40^v48  imp=+0x1c8929584
+  -requestYield v16@0:8  imp=+0x1c892b100
+  -resetConnection v16@0:8  imp=+0x1c8929e0c
+  -saveAsVirtualScanner v16@0:8  imp=+0x1c8927b3c
+  -scanContext @16@0:8  imp=+0x1c891eb44
+  -scanParamsRetained B16@0:8  imp=+0x1c891eb94
+  -scannerDeviceIcon ^{CGImage=}16@0:8  imp=+0x1c892be4c
+  -scannerProperties @16@0:8  imp=+0x1c892be6c
+  -selectedFunctionalUnit @16@0:8  imp=+0x1c88e2f0c
+  -sendMessageCmd: B24@0:8@16  imp=+0x1c891e334
+  -sendMessageCmd:from:completion: B40@0:8@16@24@?32  imp=+0x1c891deec
+  -setAssertionID: v20@0:8I16  imp=+0x1c892bdd4
+  -setBonjourServiceName: v24@0:8@16  imp=+0x1c892bec8
+  -setBonjourServiceType: v24@0:8@16  imp=+0x1c892bea8
+  -setBonjourTXTRecord: v24@0:8@16  imp=+0x1c892bee8
+  -setButtonPressed: v24@0:8@16  imp=+0x1c892bdb4
+  -setConnection: v24@0:8@16  imp=+0x1c8929dac
+  -setConnectionLock: v24@0:8@16  imp=+0x1c892be38
+  -setDefaultUsername: v24@0:8@16  imp=+0x1c891ec48
+  -setDocumentName: v24@0:8@16  imp=+0x1c88e1dac
+  -setDocumentUTI: v24@0:8@16  imp=+0x1c88e1e7c
+  -setDownloadsDirectory: v24@0:8@16  imp=+0x1c88e1e14
+  -setEndpoint: v24@0:8@16  imp=+0x1c892be10
+  -setEndpoint:deviceID: v32@0:8@16@24  imp=+0x1c892ada4
+  -setEndpointLock: v20@0:8{os_unfair_lock_s=I}16  imp=+0x1c892bd8c
+  -setEndpointSemaphore: v24@0:8@16  imp=+0x1c892bd64
+  -setIpAddress: v24@0:8@16  imp=+0x1c892bd1c
+  -setIpPort: v20@0:8i16  imp=+0x1c892bd3c
+  -setMaxMemoryBandSize: v20@0:8I16  imp=+0x1c891ecf0
+  -setNumOpenSessionRetries: v20@0:8I16  imp=+0x1c891ed38
+  -setScanParamsRetained: v20@0:8B16  imp=+0x1c891eca8
+  -setScannerDeviceIcon: v24@0:8^{CGImage=}16  imp=+0x1c892be60
+  -setScannerProperties: v24@0:8@16  imp=+0x1c892be80
+  -setTransferMode: v24@0:8Q16  imp=+0x1c88e1d5c
+  -supportsICARawFileFormat B16@0:8  imp=+0x1c891eb08
+  -takePowerAssertion: v24@0:8@16  imp=+0x1c8929b70
+  -transferMode Q16@0:8  imp=+0x1c891e98c
+  -unlockConnection v16@0:8  imp=+0x1c892aff4
+  -unregisterForImageCaptureEventNotifications: v24@0:8@16  imp=+0x1c8925034
+  -updateIcon: B24@0:8@16  imp=+0x1c892b638
+  -updateName: B24@0:8@16  imp=+0x1c892b9e8
+  -updateProperties: B24@0:8@16  imp=+0x1c88e1f38
+  -validIconPath: @24@0:8@16  imp=+0x1c892b480
+  -virtualScanStateMachine:functionalUnit:andError: v28@0:8i16I20I24  imp=+0x1c8927c98
+@class ICScannerDeviceBrowser : NSObject instanceSize=88
+  ivar +8 _commandCenter @"ICCommandCenter"
+  ivar +16 _devices @"NSMutableDictionary"
+  ivar +24 _browsers @"NSMutableArray"
+  ivar +32 _numberOfBrowsingBrowsers q
+  ivar +40 _numberOfBrowsersOfSharedDevice q
+  ivar +48 _numberOfBrowsersOfBonjourDevice q
+  ivar +56 _processDevicesInvokedOnce B
+  ivar +60 _devicesLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +64 _internalDevices @"NSMutableArray"
+  ivar +72 _TWAINDevices @"NSMutableArray"
+  ivar +80 _procID @"NSNumber"
+  property devices (T@"NSMutableDictionary",&,N,V_devices)
+  property browsers (T@"NSMutableArray",&,N,V_browsers)
+  property internalDevices (T@"NSMutableArray",&,N,V_internalDevices)
+  property TWAINDevices (T@"NSMutableArray",&,N,V_TWAINDevices)
+  property devicesLock (T{os_unfair_lock_s=I},N,V_devicesLock)
+  property procID (T@"NSNumber",C,N,V_procID)
+  +defaultBrowser @16@0:8  imp=+0x1c89147ec
+  -.cxx_destruct v16@0:8  imp=+0x1c8918cc4
+  -TWAINDevices @16@0:8  imp=+0x1c8918c90
+  -addBrowser: v24@0:8@16  imp=+0x1c8914ae0
+  -addDevice: v24@0:8@16  imp=+0x1c8916bcc
+  -addTWAINDevice: v24@0:8@16  imp=+0x1c8918514
+  -browsers @16@0:8  imp=+0x1c8918c68
+  -copyOfTWAINDevices @16@0:8  imp=+0x1c89185ac
+  -dealloc v16@0:8  imp=+0x1c8914a78
+  -deviceWithDelegate: @24@0:8@16  imp=+0x1c891815c
+  -deviceWithDeviceID: @24@0:8@16  imp=+0x1c8917e70
+  -deviceWithDeviceRef: @24@0:8@16  imp=+0x1c8917cf8
+  -devices @16@0:8  imp=+0x1c8915360
+  -devicesLock {os_unfair_lock_s=I}16@0:8  imp=+0x1c8918ca4
+  -devicesMatchingDeviceTypeMask: @24@0:8Q16  imp=+0x1c8917fe8
+  -getConnection @16@0:8  imp=+0x1c8918504
+  -handleCommandCompletion: v24@0:8@16  imp=+0x1c8915368
+  -handleImageCaptureEventNotification: v24@0:8@16  imp=+0x1c89160d8
+  -handleNetworkDeviceRemoved: v24@0:8@16  imp=+0x1c8916784
+  -helloICDD v16@0:8  imp=+0x1c8914cf0
+  -icddConnectionResume: v24@0:8@16  imp=+0x1c8915f5c
+  -icddConnectionSuspend: v24@0:8@16  imp=+0x1c8915c44
+  -informBrowserDelegateUsingSelector:withObject: v32@0:8:16@24  imp=+0x1c89182c4
+  -init @16@0:8  imp=+0x1c8914870
+  -internalDevices @16@0:8  imp=+0x1c8918c7c
+  -procID @16@0:8  imp=+0x1c8918cb4
+  -processDevices: v24@0:8@16  imp=+0x1c89179ec
+  -registerForImageCaptureEventNotifications:reason: v32@0:8@16@24  imp=+0x1c8916904
+  -removeAllTWAINDevices v16@0:8  imp=+0x1c8918608
+  -removeBrowser: v24@0:8@16  imp=+0x1c8914ae8
+  -removeDevice: v24@0:8@16  imp=+0x1c891708c
+  -resetAllTWAINDevices v16@0:8  imp=+0x1c8918660
+  -scanForTWAINDevices v16@0:8  imp=+0x1c89189bc
+  -sendMessageCmd: B24@0:8@16  imp=+0x1c891850c
+  -setBrowsers: v24@0:8@16  imp=+0x1c8918c70
+  -setDevices: v24@0:8@16  imp=+0x1c8918c5c
+  -setDevicesLock: v20@0:8{os_unfair_lock_s=I}16  imp=+0x1c8918cac
+  -setInternalDevices: v24@0:8@16  imp=+0x1c8918c84
+  -setProcID: v24@0:8@16  imp=+0x1c8918cbc
+  -setTWAINDevices: v24@0:8@16  imp=+0x1c8918c98
+  -start: v24@0:8@16  imp=+0x1c8914dd0
+  -startBrowsingForBonjourDevices v16@0:8  imp=+0x1c8914af8
+  -startBrowsingForSharedDevices v16@0:8  imp=+0x1c8914af0
+  -stop: v24@0:8@16  imp=+0x1c8915134
+  -stopBrowsingForBonjourDevices v16@0:8  imp=+0x1c8914bf8
+  -stopBrowsingForSharedDevices v16@0:8  imp=+0x1c8914af4
+  -unregisterForImageCaptureEventNotifications:reason: v32@0:8@16@24  imp=+0x1c8916a68
+  -updateDevice: v24@0:8@16  imp=+0x1c8916ff8
+  -updateDevices:type: v32@0:8@16Q24  imp=+0x1c89171d4
+@class ICScannerFeature : NSObject instanceSize=16
+  ivar +8 _sfProps @
+  property type (TQ,R)
+  property internalName (T@"NSString",R)
+  property humanReadableName (T@"NSString",R)
+  property tooltip (T@"NSString",R)
+  -.cxx_destruct v16@0:8  imp=+0x1c89127e0
+  -humanReadableName @16@0:8  imp=+0x1c8912298
+  -initWithDictionary: @24@0:8@16  imp=+0x1c8912464
+  -internalName @16@0:8  imp=+0x1c8912290
+  -oldAndNewSettings: @24@0:8@16  imp=+0x1c8912740
+  -setHumanReadableName: v24@0:8@16  imp=+0x1c891237c
+  -setInternalName: v24@0:8@16  imp=+0x1c8912308
+  -setTooltip: v24@0:8@16  imp=+0x1c89123f0
+  -setType: v24@0:8Q16  imp=+0x1c89122a8
+  -tooltip @16@0:8  imp=+0x1c89122a0
+  -type Q16@0:8  imp=+0x1c8912288
+@class ICScannerFeatureBoolean : ICScannerFeature instanceSize=24
+  ivar +16 _bvProps @
+  property value (TB)
+  -.cxx_destruct v16@0:8  imp=+0x1c88f6a10
+  -description @16@0:8  imp=+0x1c88f68e0
+  -initWithDictionary: @24@0:8@16  imp=+0x1c88f6490
+  -oldAndNewSettings: @24@0:8@16  imp=+0x1c88f65a4
+  -setValue: v20@0:8B16  imp=+0x1c88f6424
+  -value B16@0:8  imp=+0x1c88f6410
+@class ICScannerFeatureBooleanProps : NSObject instanceSize=16
+  ivar +8 _value B
+  property value (TB,V_value)
+  -setValue: v20@0:8B16  imp=+0x1c88e4048
+  -value B16@0:8  imp=+0x1c88e403c
+@class ICScannerFeatureEnumeration : ICScannerFeature instanceSize=24
+  ivar +16 _evProps @
+  property currentValue (T@)
+  property defaultValue (T@,R)
+  property values (T@"NSArray",R)
+  property menuItemLabels (T@"NSArray",R)
+  property menuItemLabelsTooltips (T@"NSArray",R)
+  -.cxx_destruct v16@0:8  imp=+0x1c88e4028
+  -currentValue @16@0:8  imp=+0x1c88e32e8
+  -defaultValue @16@0:8  imp=+0x1c88e32fc
+  -description @16@0:8  imp=+0x1c88e3b90
+  -initWithDictionary: @24@0:8@16  imp=+0x1c88e354c
+  -menuItemLabels @16@0:8  imp=+0x1c88e3324
+  -menuItemLabelsTooltips @16@0:8  imp=+0x1c88e3338
+  -oldAndNewSettings: @24@0:8@16  imp=+0x1c88e3760
+  -setCurrentValue: v24@0:8@16  imp=+0x1c88e334c
+  -setDefaultValue: v24@0:8@16  imp=+0x1c88e33cc
+  -setMenuItemLabels: v24@0:8@16  imp=+0x1c88e344c
+  -setMenuItemLabelsTooltips: v24@0:8@16  imp=+0x1c88e34cc
+  -values @16@0:8  imp=+0x1c88e3310
+@class ICScannerFeatureEnumerationProps : NSObject instanceSize=48
+  ivar +8 _indexOfCurrentValue Q
+  ivar +16 _indexOfDefaultValue Q
+  ivar +24 _values @"NSArray"
+  ivar +32 _menuItemLabels @"NSArray"
+  ivar +40 _menuItemLabelsTooltips @"NSArray"
+  property indexOfCurrentValue (TQ,N,V_indexOfCurrentValue)
+  property indexOfDefaultValue (TQ,N,V_indexOfDefaultValue)
+  property currentValue (T@,W,N)
+  property defaultValue (T@,W,N)
+  property values (T@"NSArray",&,N,V_values)
+  property menuItemLabels (T@"NSArray",&,N,V_menuItemLabels)
+  property menuItemLabelsTooltips (T@"NSArray",&,N,V_menuItemLabelsTooltips)
+  -.cxx_destruct v16@0:8  imp=+0x1c88e77bc
+  -currentValue @16@0:8  imp=+0x1c88e6fcc
+  -defaultValue @16@0:8  imp=+0x1c88e74e8
+  -getValidatedValue: @24@0:8@16  imp=+0x1c88e6fdc
+  -indexOfCurrentValue Q16@0:8  imp=+0x1c88e7760
+  -indexOfDefaultValue Q16@0:8  imp=+0x1c88e7770
+  -menuItemLabels @16@0:8  imp=+0x1c88e7794
+  -menuItemLabelsTooltips @16@0:8  imp=+0x1c88e77a8
+  -setCurrentValue: v24@0:8@16  imp=+0x1c88e727c
+  -setDefaultValue: v24@0:8@16  imp=+0x1c88e74f4
+  -setIndexOfCurrentValue: v24@0:8Q16  imp=+0x1c88e7768
+  -setIndexOfDefaultValue: v24@0:8Q16  imp=+0x1c88e7778
+  -setMenuItemLabels: v24@0:8@16  imp=+0x1c88e779c
+  -setMenuItemLabelsTooltips: v24@0:8@16  imp=+0x1c88e77b0
+  -setValues: v24@0:8@16  imp=+0x1c88e7788
+  -values @16@0:8  imp=+0x1c88e7780
+@class ICScannerFeatureProps : NSObject instanceSize=40
+  ivar +8 _type Q
+  ivar +16 _internalName @"NSString"
+  ivar +24 _humanReadableName @"NSString"
+  ivar +32 _tooltip @"NSString"
+  property type (TQ,N,V_type)
+  property internalName (T@"NSString",C,N,V_internalName)
+  property humanReadableName (T@"NSString",C,N,V_humanReadableName)
+  property tooltip (T@"NSString",C,N,V_tooltip)
+  -.cxx_destruct v16@0:8  imp=+0x1c88e3298
+  -humanReadableName @16@0:8  imp=+0x1c88e3278
+  -internalName @16@0:8  imp=+0x1c88e3268
+  -setHumanReadableName: v24@0:8@16  imp=+0x1c88e3280
+  -setInternalName: v24@0:8@16  imp=+0x1c88e3270
+  -setTooltip: v24@0:8@16  imp=+0x1c88e3290
+  -setType: v24@0:8Q16  imp=+0x1c88e3260
+  -tooltip @16@0:8  imp=+0x1c88e3288
+  -type Q16@0:8  imp=+0x1c88e3258
+@class ICScannerFeatureRange : ICScannerFeature instanceSize=24
+  ivar +16 _rvProps @
+  property currentValue (Td)
+  property defaultValue (Td,R)
+  property minValue (Td,R)
+  property maxValue (Td,R)
+  property stepSize (Td,R)
+  -.cxx_destruct v16@0:8  imp=+0x1c88f02ec
+  -currentValue d16@0:8  imp=+0x1c88efbc0
+  -defaultValue d16@0:8  imp=+0x1c88efbd4
+  -description @16@0:8  imp=+0x1c88f0164
+  -getValidatedValue: d24@0:8d16  imp=+0x1c88efc90
+  -initWithDictionary: @24@0:8@16  imp=+0x1c88efca4
+  -maxValue d16@0:8  imp=+0x1c88efbfc
+  -minValue d16@0:8  imp=+0x1c88efbe8
+  -oldAndNewSettings: @24@0:8@16  imp=+0x1c88efe2c
+  -setCurrentValue: v24@0:8d16  imp=+0x1c88efc24
+  -stepSize d16@0:8  imp=+0x1c88efc10
+@class ICScannerFeatureRangeProps : NSObject instanceSize=48
+  ivar +8 _currentValue d
+  ivar +16 _defaultValue d
+  ivar +24 _minValue d
+  ivar +32 _maxValue d
+  ivar +40 _stepSize d
+  property currentValue (Td,V_currentValue)
+  property defaultValue (Td,V_defaultValue)
+  property minValue (Td,V_minValue)
+  property maxValue (Td,V_maxValue)
+  property stepSize (Td,V_stepSize)
+  -currentValue d16@0:8  imp=+0x1c890ddd4
+  -defaultValue d16@0:8  imp=+0x1c890de28
+  -getValidatedValue: d24@0:8d16  imp=+0x1c890dd84
+  -maxValue d16@0:8  imp=+0x1c890dee0
+  -minValue d16@0:8  imp=+0x1c890de9c
+  -setCurrentValue: v24@0:8d16  imp=+0x1c890dddc
+  -setDefaultValue: v24@0:8d16  imp=+0x1c890de30
+  -setMaxValue: v24@0:8d16  imp=+0x1c890dee8
+  -setMinValue: v24@0:8d16  imp=+0x1c890dea4
+  -setStepSize: v24@0:8d16  imp=+0x1c890de84
+  -stepSize d16@0:8  imp=+0x1c890de7c
+@class ICScannerFeatureTemplate : ICScannerFeature instanceSize=24
+  ivar +16 _tvProps @
+  property targets (T@"NSArray",R)
+  -.cxx_destruct v16@0:8  imp=+0x1c8913010
+  -description @16@0:8  imp=+0x1c8912ee8
+  -initWithDictionary:andFunctionalUnit: @32@0:8@16@24  imp=+0x1c89127ec
+  -targets @16@0:8  imp=+0x1c8912cd4
+@class ICScannerFeatureTemplateProps : NSObject instanceSize=32
+  ivar +8 _numberOfTargets i
+  ivar +16 _targets @"NSArray"
+  ivar +24 _fu @"ICScannerFunctionalUnit"
+  property numberOfTargets (Ti,N,V_numberOfTargets)
+  property targets (T@"NSArray",&,N,V_targets)
+  property fu (T@"ICScannerFunctionalUnit",W,N,V_fu)
+  -.cxx_destruct v16@0:8  imp=+0x1c88ee1ec
+  -fu @16@0:8  imp=+0x1c88ee1b4
+  -numberOfTargets i16@0:8  imp=+0x1c88ee190
+  -setFu: v24@0:8@16  imp=+0x1c88ee1e0
+  -setNumberOfTargets: v20@0:8i16  imp=+0x1c88ee198
+  -setTargets: v24@0:8@16  imp=+0x1c88ee1a8
+  -targets @16@0:8  imp=+0x1c88ee1a0
+@class ICScannerFunctionalUnit : NSObject instanceSize=16
+  ivar +8 _fuProps @
+  property supportsProgressNotificationsWithScanData (TB,R)
+  property scanParams (T@"NSDictionary",R)
+  property useOverviewImageAsFinalImage (TB)
+  property overviewImageBufferRep (T@"ICScannerImageRep",R,N)
+  property grayOverviewImage (T^{CGImage=},R,N)
+  property type (TQ,R)
+  property pixelDataType (TQ)
+  property supportedBitDepths (T@"NSIndexSet",R)
+  property bitDepth (TQ)
+  property supportedMeasurementUnits (T@"NSIndexSet",R)
+  property measurementUnit (TQ)
+  property supportedResolutions (T@"NSIndexSet",R)
+  property preferredResolutions (T@"NSIndexSet",R)
+  property resolution (TQ)
+  property nativeXResolution (TQ,R)
+  property nativeYResolution (TQ,R)
+  property supportedScaleFactors (T@"NSIndexSet",R)
+  property preferredScaleFactors (T@"NSIndexSet",R)
+  property scaleFactor (TQ)
+  property templates (T@"NSArray",R)
+  property vendorFeatures (T@"NSArray",R)
+  property physicalSize (T{CGSize=dd},R)
+  property scanArea (T{CGRect={CGPoint=dd}{CGSize=dd}})
+  property scanAreaOrientation (TQ)
+  property acceptsThresholdForBlackAndWhiteScanning (TB,R)
+  property usesThresholdForBlackAndWhiteScanning (TB)
+  property defaultThresholdForBlackAndWhiteScanning (TC,R)
+  property thresholdForBlackAndWhiteScanning (TC)
+  property state (TQ,R)
+  property scanInProgress (TB,R)
+  property scanProgressPercentDone (Td,R)
+  property canPerformOverviewScan (TB,R)
+  property overviewScanInProgress (TB,R)
+  property overviewImage (T^{CGImage=},R)
+  property overviewResolution (TQ)
+  +automaticallyNotifiesObserversOfScanProgressPercentDone B16@0:8  imp=+0x1c8901a68
+  -.cxx_destruct v16@0:8  imp=+0x1c8903348
+  -acceptsThresholdForBlackAndWhiteScanning B16@0:8  imp=+0x1c8900fbc
+  -addScanAreaToDictionary: v24@0:8@16  imp=+0x1c8901b88
+  -backgroundGrayValue C16@0:8  imp=+0x1c8902ac8
+  -bitDepth Q16@0:8  imp=+0x1c8900ed4
+  -canPerformOverviewScan B16@0:8  imp=+0x1c89010b4
+  -clearOverviewImageBuffer v16@0:8  imp=+0x1c8902a84
+  -colorSyncModeForGrayOverview @16@0:8  imp=+0x1c8902fc8
+  -colorSyncModeForRGBOverview @16@0:8  imp=+0x1c8902fc0
+  -colorSyncProfilePath @16@0:8  imp=+0x1c8903340
+  -currentSettings @16@0:8  imp=+0x1c89010ac
+  -dealloc v16@0:8  imp=+0x1c8902538
+  -defaultThresholdForBlackAndWhiteScanning C16@0:8  imp=+0x1c890102c
+  -grayOverviewImage ^{CGImage=}16@0:8  imp=+0x1c89011a4
+  -initWithDictionary:andScanner: @32@0:8@16@24  imp=+0x1c8902588
+  -measurementUnit Q16@0:8  imp=+0x1c8900ee4
+  -measurementUnitPrivate Q16@0:8  imp=+0x1c8900eec
+  -minimumScanSizeInInches {CGSize=dd}16@0:8  imp=+0x1c8900f3c
+  -nativeXResolution Q16@0:8  imp=+0x1c8900ef4
+  -nativeYResolution Q16@0:8  imp=+0x1c8900efc
+  -overviewImage ^{CGImage=}16@0:8  imp=+0x1c890111c
+  -overviewImageBufferRep @16@0:8  imp=+0x1c89012b0
+  -overviewResolution Q16@0:8  imp=+0x1c89012b8
+  -overviewScanInProgress B16@0:8  imp=+0x1c89010fc
+  -physicalSize {CGSize=dd}16@0:8  imp=+0x1c8901de4
+  -physicalSizeInInches {CGSize=dd}16@0:8  imp=+0x1c8900f34
+  -pixelDataType Q16@0:8  imp=+0x1c8900ec4
+  -preferredResolutions @16@0:8  imp=+0x1c8900f0c
+  -preferredScaleFactors @16@0:8  imp=+0x1c8900f24
+  -resolution Q16@0:8  imp=+0x1c8900f14
+  -scaleFactor Q16@0:8  imp=+0x1c8900f2c
+  -scanArea {CGRect={CGPoint=dd}{CGSize=dd}}16@0:8  imp=+0x1c8901e90
+  -scanAreaOrientation Q16@0:8  imp=+0x1c89024c8
+  -scanInProgress B16@0:8  imp=+0x1c89010dc
+  -scanParams @16@0:8  imp=+0x1c8902530
+  -scanProgressPercentDone d16@0:8  imp=+0x1c89012c0
+  -scanner @16@0:8  imp=+0x1c8902fd0
+  -scanningInProgress B16@0:8  imp=+0x1c89019bc
+  -setBackgroundGrayValue: v20@0:8C16  imp=+0x1c8902ad0
+  -setBitDepth: v24@0:8Q16  imp=+0x1c8901328
+  -setMeasurementUnit: v24@0:8Q16  imp=+0x1c89013a8
+  -setOverviewResolution: v24@0:8Q16  imp=+0x1c8901a08
+  -setOverviewScanInProgress: v20@0:8B16  imp=+0x1c890186c
+  -setPixelDataType: v24@0:8Q16  imp=+0x1c89012c8
+  -setResolution: v24@0:8Q16  imp=+0x1c8901464
+  -setScaleFactor: v24@0:8Q16  imp=+0x1c8901538
+  -setScanArea: v48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16  imp=+0x1c8901f3c
+  -setScanAreaOrientation: v24@0:8Q16  imp=+0x1c89024d0
+  -setScanInProgress: v20@0:8B16  imp=+0x1c8901914
+  -setScanProgressPercentDone: v24@0:8d16  imp=+0x1c8901a70
+  -setState: v24@0:8Q16  imp=+0x1c8901790
+  -setThresholdForBlackAndWhiteScanning: v20@0:8C16  imp=+0x1c8901034
+  -setUseOverviewImageAsFinalImage: v20@0:8B16  imp=+0x1c8900f5c
+  -setUsesThresholdForBlackAndWhiteScanning: v20@0:8B16  imp=+0x1c8900fcc
+  -setVendorFeatures: v24@0:8@16  imp=+0x1c89015f0
+  -state Q16@0:8  imp=+0x1c89010d4
+  -supportedBitDepths @16@0:8  imp=+0x1c8900ecc
+  -supportedMeasurementUnits @16@0:8  imp=+0x1c8900edc
+  -supportedResolutions @16@0:8  imp=+0x1c8900f04
+  -supportedScaleFactors @16@0:8  imp=+0x1c8900f1c
+  -supportsProgressNotificationsWithScanData B16@0:8  imp=+0x1c8900f4c
+  -templateMeasurementUnit Q16@0:8  imp=+0x1c8900f44
+  -templates @16@0:8  imp=+0x1c890109c
+  -thresholdForBlackAndWhiteScanning C16@0:8  imp=+0x1c8901094
+  -type Q16@0:8  imp=+0x1c8900e14
+  -updateOverviewOvelayBuffer: v24@0:8@16  imp=+0x1c8902e48
+  -updateOverviewSelectionRect: v48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16  imp=+0x1c8902004
+  -updateScanProgressWithImageInfo: v24@0:8@16  imp=+0x1c8902ad8
+  -updateVendorFeature: v24@0:8@16  imp=+0x1c8902fd8
+  -useOverviewImageAsFinalImage B16@0:8  imp=+0x1c8900f54
+  -usesThresholdForBlackAndWhiteScanning B16@0:8  imp=+0x1c8900fc4
+  -vendorFeatures @16@0:8  imp=+0x1c89010a4
+@class ICScannerFunctionalUnitDocumentFeeder : ICScannerFunctionalUnit instanceSize=24
+  ivar +16 _dfProps @
+  property canDetectDocument (TB,R)
+  property documentLoaded (TB)
+  property justification (TQ,R)
+  property supportedDocumentTypes (T@"NSIndexSet",R)
+  property documentType (TQ)
+  property documentSize (T{CGSize=dd},R)
+  property supportsDuplexScanning (TB,R)
+  property duplexScanningEnabled (TB)
+  property oddPageOrientation (TQ)
+  property evenPageOrientation (TQ)
+  property reverseFeederPageOrder (TB,R)
+  -.cxx_destruct v16@0:8  imp=+0x1c89147d8
+  -canDetectDocument B16@0:8  imp=+0x1c89130a4
+  -colorSyncProfilePath @16@0:8  imp=+0x1c891473c
+  -currentSettings @16@0:8  imp=+0x1c8913dc0
+  -description @16@0:8  imp=+0x1c891449c
+  -documentLoaded B16@0:8  imp=+0x1c89130b8
+  -documentSize {CGSize=dd}16@0:8  imp=+0x1c8913228
+  -documentType Q16@0:8  imp=+0x1c8913040
+  -duplexScanningEnabled B16@0:8  imp=+0x1c89130cc
+  -evenPageOrientation Q16@0:8  imp=+0x1c8913198
+  -initWithDictionary:andScanner: @32@0:8@16@24  imp=+0x1c89134fc
+  -justification Q16@0:8  imp=+0x1c8913108
+  -oddPageOrientation Q16@0:8  imp=+0x1c89130e0
+  -reverseFeederPageOrder B16@0:8  imp=+0x1c89130f4
+  -setDocumentLoaded: v20@0:8B16  imp=+0x1c8913490
+  -setDocumentType: v24@0:8Q16  imp=+0x1c89132f0
+  -setDuplexScanningEnabled: v20@0:8B16  imp=+0x1c8913424
+  -setDuplexSupportLevel: v24@0:8@16  imp=+0x1c89133a4
+  -setEvenPageOrientation: v24@0:8Q16  imp=+0x1c89131ac
+  -setOddPageOrientation: v24@0:8Q16  imp=+0x1c891311c
+  -supportedDocumentTypes @16@0:8  imp=+0x1c891302c
+  -supportsDuplexScanning B16@0:8  imp=+0x1c8913054
+  -valueForUndefinedKey: @24@0:8@16  imp=+0x1c8913024
+@class ICScannerFunctionalUnitDocumentFeederProps : NSObject instanceSize=64
+  ivar +8 _duplexScanningEnabled B
+  ivar +9 _canDetectDocument B
+  ivar +10 _documentLoaded B
+  ivar +11 _reverseFeederPageOrder B
+  ivar +16 _supportedDocumentTypes @"NSMutableIndexSet"
+  ivar +24 _documentType Q
+  ivar +32 _duplexSupportLevel @"NSNumber"
+  ivar +40 _oddPageOrientation Q
+  ivar +48 _evenPageOrientation Q
+  ivar +56 _justification Q
+  property supportedDocumentTypes (T@"NSMutableIndexSet",&,N,V_supportedDocumentTypes)
+  property documentType (TQ,N,V_documentType)
+  property duplexSupportLevel (T@"NSNumber",C,N,V_duplexSupportLevel)
+  property duplexScanningEnabled (TB,N,V_duplexScanningEnabled)
+  property canDetectDocument (TB,N,V_canDetectDocument)
+  property documentLoaded (TB,N,V_documentLoaded)
+  property oddPageOrientation (TQ,N,V_oddPageOrientation)
+  property evenPageOrientation (TQ,N,V_evenPageOrientation)
+  property reverseFeederPageOrder (TB,N,V_reverseFeederPageOrder)
+  property justification (TQ,N,V_justification)
+  -.cxx_destruct v16@0:8  imp=+0x1c88efb7c
+  -canDetectDocument B16@0:8  imp=+0x1c88efb1c
+  -documentLoaded B16@0:8  imp=+0x1c88efb2c
+  -documentType Q16@0:8  imp=+0x1c88efaec
+  -duplexScanningEnabled B16@0:8  imp=+0x1c88efb0c
+  -duplexSupportLevel @16@0:8  imp=+0x1c88efafc
+  -evenPageOrientation Q16@0:8  imp=+0x1c88efb4c
+  -initWithDictionary: @24@0:8@16  imp=+0x1c88efa90
+  -justification Q16@0:8  imp=+0x1c88efb6c
+  -oddPageOrientation Q16@0:8  imp=+0x1c88efb3c
+  -reverseFeederPageOrder B16@0:8  imp=+0x1c88efb5c
+  -setCanDetectDocument: v20@0:8B16  imp=+0x1c88efb24
+  -setDocumentLoaded: v20@0:8B16  imp=+0x1c88efb34
+  -setDocumentType: v24@0:8Q16  imp=+0x1c88efaf4
+  -setDuplexScanningEnabled: v20@0:8B16  imp=+0x1c88efb14
+  -setDuplexSupportLevel: v24@0:8@16  imp=+0x1c88efb04
+  -setEvenPageOrientation: v24@0:8Q16  imp=+0x1c88efb54
+  -setJustification: v24@0:8Q16  imp=+0x1c88efb74
+  -setOddPageOrientation: v24@0:8Q16  imp=+0x1c88efb44
+  -setReverseFeederPageOrder: v20@0:8B16  imp=+0x1c88efb64
+  -setSupportedDocumentTypes: v24@0:8@16  imp=+0x1c88efae0
+  -supportedDocumentTypes @16@0:8  imp=+0x1c88efad8
+@class ICScannerFunctionalUnitFlatbed : ICScannerFunctionalUnit instanceSize=24
+  ivar +16 _fbProps @
+  property supportedDocumentTypes (T@"NSIndexSet",R)
+  property documentType (TQ)
+  property documentSize (T{CGSize=dd},R)
+  -.cxx_destruct v16@0:8  imp=+0x1c890f074
+  -colorSyncModeForGrayOverview @16@0:8  imp=+0x1c890e708
+  -colorSyncModeForRGBOverview @16@0:8  imp=+0x1c890e6fc
+  -colorSyncProfilePath @16@0:8  imp=+0x1c890efdc
+  -currentSettings @16@0:8  imp=+0x1c890e714
+  -description @16@0:8  imp=+0x1c890ec2c
+  -documentSize {CGSize=dd}16@0:8  imp=+0x1c890dfac
+  -documentType Q16@0:8  imp=+0x1c890df98
+  -handleCommandCompletion: B24@0:8@16  imp=+0x1c890e128
+  -initWithDictionary:andScanner: @32@0:8@16@24  imp=+0x1c890e130
+  -setDocumentType: v24@0:8Q16  imp=+0x1c890e074
+  -supportedDocumentTypes @16@0:8  imp=+0x1c890df84
+  -valueForUndefinedKey: @24@0:8@16  imp=+0x1c890df28
+@class ICScannerFunctionalUnitFlatbedProps : NSObject instanceSize=24
+  ivar +8 _supportedDocumentTypes @"NSMutableIndexSet"
+  ivar +16 _documentType Q
+  property supportedDocumentTypes (T@"NSMutableIndexSet",&,N,V_supportedDocumentTypes)
+  property documentType (TQ,N,V_documentType)
+  -.cxx_destruct v16@0:8  imp=+0x1c88e46ec
+  -documentType Q16@0:8  imp=+0x1c88e46dc
+  -setDocumentType: v24@0:8Q16  imp=+0x1c88e46e4
+  -setSupportedDocumentTypes: v24@0:8@16  imp=+0x1c88e46d0
+  -supportedDocumentTypes @16@0:8  imp=+0x1c88e46c8
+@class ICScannerFunctionalUnitNegativeTransparency : ICScannerFunctionalUnit instanceSize=24
+  ivar +16 _ntrProps @
+  property supportedDocumentTypes (T@"NSIndexSet",R)
+  property documentType (TQ)
+  property documentSize (T{CGSize=dd},R)
+  -.cxx_destruct v16@0:8  imp=+0x1c8912274
+  -colorSyncModeForGrayOverview @16@0:8  imp=+0x1c8911904
+  -colorSyncModeForRGBOverview @16@0:8  imp=+0x1c89118f8
+  -colorSyncProfilePath @16@0:8  imp=+0x1c89121dc
+  -currentSettings @16@0:8  imp=+0x1c8911910
+  -description @16@0:8  imp=+0x1c8911e58
+  -documentSize {CGSize=dd}16@0:8  imp=+0x1c89114e4
+  -documentType Q16@0:8  imp=+0x1c89114d0
+  -initWithDictionary:andScanner: @32@0:8@16@24  imp=+0x1c8911660
+  -setDocumentType: v24@0:8Q16  imp=+0x1c89115ac
+  -supportedDocumentTypes @16@0:8  imp=+0x1c89114bc
+  -valueForUndefinedKey: @24@0:8@16  imp=+0x1c8911460
+@class ICScannerFunctionalUnitPositiveTransparency : ICScannerFunctionalUnit instanceSize=24
+  ivar +16 _ptrProps @
+  property supportedDocumentTypes (T@"NSIndexSet",R)
+  property documentType (TQ)
+  property documentSize (T{CGSize=dd},R)
+  -.cxx_destruct v16@0:8  imp=+0x1c891144c
+  -colorSyncModeForGrayOverview @16@0:8  imp=+0x1c8910b74
+  -colorSyncModeForRGBOverview @16@0:8  imp=+0x1c8910b68
+  -currentSettings @16@0:8  imp=+0x1c8910b80
+  -description @16@0:8  imp=+0x1c89110c8
+  -documentSize {CGSize=dd}16@0:8  imp=+0x1c8910708
+  -documentType Q16@0:8  imp=+0x1c89106f4
+  -initWithDictionary:andScanner: @32@0:8@16@24  imp=+0x1c8910884
+  -setDocumentType: v24@0:8Q16  imp=+0x1c89107d0
+  -supportedDocumentTypes @16@0:8  imp=+0x1c89106e0
+  -valueForUndefinedKey: @24@0:8@16  imp=+0x1c8910684
+@class ICScannerFunctionalUnitProps : NSObject instanceSize=296
+  ivar +8 _acceptsThresholdForBlackAndWhiteScanning B
+  ivar +9 _usesThresholdForBlackAndWhiteScanning B
+  ivar +10 _defaultThresholdForBlackAndWhiteScanning C
+  ivar +11 _thresholdForBlackAndWhiteScanning C
+  ivar +12 _backgroundGrayValue C
+  ivar +13 _supportsProgressNotificationsWithScanData B
+  ivar +14 _useOverviewImageAsFinalImage B
+  ivar +16 _overviewImageBufferRep @"ICScannerImageRep"
+  ivar +24 _overviewImage ^{CGImage=}
+  ivar +32 _grayOverviewImage ^{CGImage=}
+  ivar +40 _overviewResolution Q
+  ivar +48 _grayColorSpace ^{CGColorSpace=}
+  ivar +56 _pixelDataType Q
+  ivar +64 _supportedBitDepths @"NSMutableIndexSet"
+  ivar +72 _bitDepth Q
+  ivar +80 _supportedMeasurementUnits @"NSMutableIndexSet"
+  ivar +88 _measurementUnit Q
+  ivar +96 _measurementUnitPrivate Q
+  ivar +104 _nativeXResolution Q
+  ivar +112 _nativeYResolution Q
+  ivar +120 _supportedResolutions @"NSMutableIndexSet"
+  ivar +128 _preferredResolutions @"NSMutableIndexSet"
+  ivar +136 _resolution Q
+  ivar +144 _supportedScaleFactors @"NSMutableIndexSet"
+  ivar +152 _preferredScaleFactors @"NSMutableIndexSet"
+  ivar +160 _scaleFactor Q
+  ivar +168 _templates @"NSArray"
+  ivar +176 _vendorFeatures @"NSArray"
+  ivar +184 _state Q
+  ivar +192 _scanAreaOrientation Q
+  ivar +200 _scanProgressPercentDone d
+  ivar +208 _scanner @"ICScannerDevice"
+  ivar +216 _scanParams @"NSMutableDictionary"
+  ivar +224 _templateMeasurementUnit Q
+  ivar +232 _physicalSizeInInches {CGSize="width"d"height"d}
+  ivar +248 _minimumScanSizeInInches {CGSize="width"d"height"d}
+  ivar +264 _scanArea {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}}
+  property pixelDataType (TQ,N,V_pixelDataType)
+  property supportedBitDepths (T@"NSMutableIndexSet",&,N,V_supportedBitDepths)
+  property bitDepth (TQ,N,V_bitDepth)
+  property supportedMeasurementUnits (T@"NSMutableIndexSet",&,N,V_supportedMeasurementUnits)
+  property measurementUnit (TQ,N,V_measurementUnit)
+  property measurementUnitPrivate (TQ,N,V_measurementUnitPrivate)
+  property nativeXResolution (TQ,N,V_nativeXResolution)
+  property nativeYResolution (TQ,N,V_nativeYResolution)
+  property supportedResolutions (T@"NSMutableIndexSet",&,N,V_supportedResolutions)
+  property preferredResolutions (T@"NSMutableIndexSet",&,N,V_preferredResolutions)
+  property resolution (TQ,N,V_resolution)
+  property supportedScaleFactors (T@"NSMutableIndexSet",&,N,V_supportedScaleFactors)
+  property preferredScaleFactors (T@"NSMutableIndexSet",&,N,V_preferredScaleFactors)
+  property scaleFactor (TQ,N,V_scaleFactor)
+  property templates (T@"NSArray",&,N,V_templates)
+  property vendorFeatures (T@"NSArray",&,N,V_vendorFeatures)
+  property acceptsThresholdForBlackAndWhiteScanning (TB,N,V_acceptsThresholdForBlackAndWhiteScanning)
+  property usesThresholdForBlackAndWhiteScanning (TB,N,V_usesThresholdForBlackAndWhiteScanning)
+  property defaultThresholdForBlackAndWhiteScanning (TC,N,V_defaultThresholdForBlackAndWhiteScanning)
+  property thresholdForBlackAndWhiteScanning (TC,N,V_thresholdForBlackAndWhiteScanning)
+  property state (TQ,N,V_state)
+  property overviewImageBufferRep (T@"ICScannerImageRep",&,N,V_overviewImageBufferRep)
+  property overviewImage (T^{CGImage=},&,N,V_overviewImage)
+  property grayOverviewImage (T^{CGImage=},&,N,V_grayOverviewImage)
+  property overviewResolution (TQ,N,V_overviewResolution)
+  property grayColorSpace (T^{CGColorSpace=},&,N,V_grayColorSpace)
+  property physicalSizeInInches (T{CGSize=dd},N,V_physicalSizeInInches)
+  property minimumScanSizeInInches (T{CGSize=dd},N,V_minimumScanSizeInInches)
+  property scanArea (T{CGRect={CGPoint=dd}{CGSize=dd}},N,V_scanArea)
+  property scanAreaOrientation (TQ,N,V_scanAreaOrientation)
+  property scanProgressPercentDone (Td,N,V_scanProgressPercentDone)
+  property scanner (T@"ICScannerDevice",W,N,V_scanner)
+  property backgroundGrayValue (TC,N,V_backgroundGrayValue)
+  property scanParams (T@"NSMutableDictionary",&,N,V_scanParams)
+  property templateMeasurementUnit (TQ,N,V_templateMeasurementUnit)
+  property supportsProgressNotificationsWithScanData (TB,N,V_supportsProgressNotificationsWithScanData)
+  property useOverviewImageAsFinalImage (TB,N,V_useOverviewImageAsFinalImage)
+  -.cxx_destruct v16@0:8  imp=+0x1c891b258
+  -acceptsThresholdForBlackAndWhiteScanning B16@0:8  imp=+0x1c891b124
+  -backgroundGrayValue C16@0:8  imp=+0x1c891b204
+  -bitDepth Q16@0:8  imp=+0x1c891b028
+  -currentSettings @16@0:8  imp=+0x1c891a738
+  -defaultThresholdForBlackAndWhiteScanning C16@0:8  imp=+0x1c891b144
+  -grayColorSpace ^{CGColorSpace=}16@0:8  imp=+0x1c891af44
+  -grayOverviewImage ^{CGImage=}16@0:8  imp=+0x1c891aee8
+  -initWithDictionary:andScanner: @32@0:8@16@24  imp=+0x1c8918d38
+  -measurementUnit Q16@0:8  imp=+0x1c891b04c
+  -measurementUnitPrivate Q16@0:8  imp=+0x1c891b05c
+  -minimumScanSizeInInches {CGSize=dd}16@0:8  imp=+0x1c891b184
+  -nativeXResolution Q16@0:8  imp=+0x1c891b06c
+  -nativeYResolution Q16@0:8  imp=+0x1c891b07c
+  -overviewImage ^{CGImage=}16@0:8  imp=+0x1c891ae8c
+  -overviewImageBufferRep @16@0:8  imp=+0x1c891aff0
+  -overviewResolution Q16@0:8  imp=+0x1c891afa0
+  -physicalSizeInInches {CGSize=dd}16@0:8  imp=+0x1c891b174
+  -pixelDataType Q16@0:8  imp=+0x1c891b004
+  -preferredResolutions @16@0:8  imp=+0x1c891b0a0
+  -preferredScaleFactors @16@0:8  imp=+0x1c891b0d8
+  -resolution Q16@0:8  imp=+0x1c891b0b4
+  -scaleFactor Q16@0:8  imp=+0x1c891b0ec
+  -scanArea {CGRect={CGPoint=dd}{CGSize=dd}}16@0:8  imp=+0x1c891b194
+  -scanAreaOrientation Q16@0:8  imp=+0x1c891b1ac
+  -scanParams @16@0:8  imp=+0x1c891b214
+  -scanProgressPercentDone d16@0:8  imp=+0x1c891b1bc
+  -scanner @16@0:8  imp=+0x1c891b1cc
+  -setAcceptsThresholdForBlackAndWhiteScanning: v20@0:8B16  imp=+0x1c891b12c
+  -setBackgroundGrayValue: v20@0:8C16  imp=+0x1c891b20c
+  -setBitDepth: v24@0:8Q16  imp=+0x1c891b030
+  -setDefaultThresholdForBlackAndWhiteScanning: v20@0:8C16  imp=+0x1c891b14c
+  -setGrayColorSpace: v24@0:8^{CGColorSpace=}16  imp=+0x1c891af4c
+  -setGrayOverviewImage: v24@0:8^{CGImage=}16  imp=+0x1c891aef0
+  -setMeasurementUnit: v24@0:8Q16  imp=+0x1c891b054
+  -setMeasurementUnitPrivate: v24@0:8Q16  imp=+0x1c891b064
+  -setMinimumScanSizeInInches: v32@0:8{CGSize=dd}16  imp=+0x1c891b18c
+  -setNativeXResolution: v24@0:8Q16  imp=+0x1c891b074
+  -setNativeYResolution: v24@0:8Q16  imp=+0x1c891b084
+  -setOverviewImage: v24@0:8^{CGImage=}16  imp=+0x1c891ae94
+  -setOverviewImageBufferRep: v24@0:8@16  imp=+0x1c891aff8
+  -setOverviewResolution: v24@0:8Q16  imp=+0x1c891afa8
+  -setPhysicalSizeInInches: v32@0:8{CGSize=dd}16  imp=+0x1c891b17c
+  -setPixelDataType: v24@0:8Q16  imp=+0x1c891b00c
+  -setPreferredResolutions: v24@0:8@16  imp=+0x1c891b0a8
+  -setPreferredScaleFactors: v24@0:8@16  imp=+0x1c891b0e0
+  -setResolution: v24@0:8Q16  imp=+0x1c891b0bc
+  -setScaleFactor: v24@0:8Q16  imp=+0x1c891b0f4
+  -setScanArea: v48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16  imp=+0x1c891b1a0
+  -setScanAreaOrientation: v24@0:8Q16  imp=+0x1c891b1b4
+  -setScanParams: v24@0:8@16  imp=+0x1c891b21c
+  -setScanProgressPercentDone: v24@0:8d16  imp=+0x1c891b1c4
+  -setScanner: v24@0:8@16  imp=+0x1c891b1f8
+  -setState: v24@0:8Q16  imp=+0x1c891b16c
+  -setSupportedBitDepths: v24@0:8@16  imp=+0x1c891b01c
+  -setSupportedMeasurementUnits: v24@0:8@16  imp=+0x1c891b040
+  -setSupportedResolutions: v24@0:8@16  imp=+0x1c891b094
+  -setSupportedScaleFactors: v24@0:8@16  imp=+0x1c891b0cc
+  -setSupportsProgressNotificationsWithScanData: v20@0:8B16  imp=+0x1c891b240
+  -setTemplateMeasurementUnit: v24@0:8Q16  imp=+0x1c891b230
+  -setTemplates: v24@0:8@16  imp=+0x1c891b104
+  -setThresholdForBlackAndWhiteScanning: v20@0:8C16  imp=+0x1c891b15c
+  -setUseOverviewImageAsFinalImage: v20@0:8B16  imp=+0x1c891b250
+  -setUsesThresholdForBlackAndWhiteScanning: v20@0:8B16  imp=+0x1c891b13c
+  -setVendorFeatures: v24@0:8@16  imp=+0x1c891b118
+  -state Q16@0:8  imp=+0x1c891b164
+  -supportedBitDepths @16@0:8  imp=+0x1c891b014
+  -supportedMeasurementUnits @16@0:8  imp=+0x1c891b038
+  -supportedResolutions @16@0:8  imp=+0x1c891b08c
+  -supportedScaleFactors @16@0:8  imp=+0x1c891b0c4
+  -supportsProgressNotificationsWithScanData B16@0:8  imp=+0x1c891b238
+  -templateMeasurementUnit Q16@0:8  imp=+0x1c891b228
+  -templates @16@0:8  imp=+0x1c891b0fc
+  -thresholdForBlackAndWhiteScanning C16@0:8  imp=+0x1c891b154
+  -useOverviewImageAsFinalImage B16@0:8  imp=+0x1c891b248
+  -usesThresholdForBlackAndWhiteScanning B16@0:8  imp=+0x1c891b134
+  -vendorFeatures @16@0:8  imp=+0x1c891b110
+@class ICScannerFunctionalUnitTransparencyProps : NSObject instanceSize=24
+  ivar +8 _supportedDocumentTypes @"NSMutableIndexSet"
+  ivar +16 _documentType Q
+  property supportedDocumentTypes (T@"NSMutableIndexSet",&,N,V_supportedDocumentTypes)
+  property documentType (TQ,N,V_documentType)
+  -.cxx_destruct v16@0:8  imp=+0x1c88e46bc
+  -documentType Q16@0:8  imp=+0x1c88e46ac
+  -setDocumentType: v24@0:8Q16  imp=+0x1c88e46b4
+  -setSupportedDocumentTypes: v24@0:8@16  imp=+0x1c88e46a0
+  -supportedDocumentTypes @16@0:8  imp=+0x1c88e4698
+@class ICScannerImageRep : NSObject instanceSize=144
+  ivar +8 _backgroundGrayValue C
+  ivar +9 _bufferUpdated B
+  ivar +10 _useOverlay B
+  ivar +12 _bitmapInfo I
+  ivar +16 _width Q
+  ivar +24 _height Q
+  ivar +32 _bitsPerComponent Q
+  ivar +40 _bitsPerPixel Q
+  ivar +48 _bytesPerRow Q
+  ivar +56 _colorspace ^{CGColorSpace=}
+  ivar +64 _buffer *
+  ivar +72 _bufferSize q
+  ivar +80 _bufferSizeUsed q
+  ivar +88 _bufferLock @"NSLock"
+  ivar +96 _overlayBuffer *
+  ivar +104 _overlayBufferSize q
+  ivar +112 _overlayRect {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}}
+  property bufferLock (T@"NSLock",&,N,V_bufferLock)
+  property bufferUpdated (TB,N,V_bufferUpdated)
+  property useOverlay (TB,N,V_useOverlay)
+  property overlayRectInternal (T{CGRect={CGPoint=dd}{CGSize=dd}},N,V_overlayRect)
+  property overlayBuffer (T*,N,V_overlayBuffer)
+  property overlayBufferSize (Tq,N,V_overlayBufferSize)
+  property width (TQ,R,V_width)
+  property height (TQ,R,V_height)
+  property bitsPerComponent (TQ,R,V_bitsPerComponent)
+  property bitsPerPixel (TQ,R,V_bitsPerPixel)
+  property bytesPerRow (TQ,R,V_bytesPerRow)
+  property colorspace (T^{CGColorSpace=},R,V_colorspace)
+  property bitmapInfo (TI,R,V_bitmapInfo)
+  property buffer (T*,R,V_buffer)
+  property bufferSize (Tq,R,V_bufferSize)
+  property bufferSizeUsed (Tq,R,V_bufferSizeUsed)
+  property backgroundGrayValue (TC,V_backgroundGrayValue)
+  -.cxx_destruct v16@0:8  imp=+0x1c88eea88
+  -backgroundGrayValue C16@0:8  imp=+0x1c88eea24
+  -bitmapInfo I16@0:8  imp=+0x1c88eea04
+  -bitsPerComponent Q16@0:8  imp=+0x1c88ee9e4
+  -bitsPerPixel Q16@0:8  imp=+0x1c88ee9ec
+  -buffer *16@0:8  imp=+0x1c88eea0c
+  -bufferLock @16@0:8  imp=+0x1c88eea34
+  -bufferSize q16@0:8  imp=+0x1c88eea14
+  -bufferSizeUsed q16@0:8  imp=+0x1c88eea1c
+  -bufferUpdated B16@0:8  imp=+0x1c88eea48
+  -bytesPerRow Q16@0:8  imp=+0x1c88ee9f4
+  -clearOverlay v16@0:8  imp=+0x1c88ee978
+  -clearOverviewImageBuffer v16@0:8  imp=+0x1c88ee364
+  -colorspace ^{CGColorSpace=}16@0:8  imp=+0x1c88ee9fc
+  -copyCGImage: ^{CGImage=}24@0:8^B16  imp=+0x1c88ee8b0
+  -copyFromOffset:length:toBuffer: Q40@0:8q16Q24*32  imp=+0x1c88ee458
+  -copyOverlayBuffer:toRect: B56@0:8@16{CGRect={CGPoint=dd}{CGSize=dd}}24  imp=+0x1c88ee760
+  -copyToRow:numRows:fromRGBBuffer:withBytesPerRow: v48@0:8q16Q24r*32Q40  imp=+0x1c88ee668
+  -dealloc v16@0:8  imp=+0x1c88ee2c8
+  -height Q16@0:8  imp=+0x1c88ee9dc
+  -initWithBufferSize:andBytesPerRow: @32@0:8Q16Q24  imp=+0x1c88ee22c
+  -lock v16@0:8  imp=+0x1c88ee338
+  -overlayBuffer *16@0:8  imp=+0x1c88eea68
+  -overlayBufferSize q16@0:8  imp=+0x1c88eea78
+  -overlayRect {CGRect={CGPoint=dd}{CGSize=dd}}16@0:8  imp=+0x1c88ee348
+  -overlayRectInternal {CGRect={CGPoint=dd}{CGSize=dd}}16@0:8  imp=+0x1c88ee9bc
+  -setBackgroundGrayValue: v20@0:8C16  imp=+0x1c88eea2c
+  -setBitmapInfo: v20@0:8I16  imp=+0x1c88ee448
+  -setBitsPerComponent: v24@0:8Q16  imp=+0x1c88ee430
+  -setBitsPerPixel: v24@0:8Q16  imp=+0x1c88ee438
+  -setBufferLock: v24@0:8@16  imp=+0x1c88eea3c
+  -setBufferSizeUsed: v24@0:8q16  imp=+0x1c88ee450
+  -setBufferUpdated: v20@0:8B16  imp=+0x1c88eea50
+  -setBytesPerRow: v24@0:8Q16  imp=+0x1c88ee440
+  -setColorspace: v24@0:8^{CGColorSpace=}16  imp=+0x1c88ee3bc
+  -setHeight: v24@0:8Q16  imp=+0x1c88ee428
+  -setOverlayBuffer: v24@0:8*16  imp=+0x1c88eea70
+  -setOverlayBufferSize: v24@0:8q16  imp=+0x1c88eea80
+  -setOverlayRect: v48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16  imp=+0x1c88ee354
+  -setOverlayRectInternal: v48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16  imp=+0x1c88ee9c8
+  -setUseOverlay: v20@0:8B16  imp=+0x1c88eea60
+  -setWidth: v24@0:8Q16  imp=+0x1c88ee420
+  -unlock v16@0:8  imp=+0x1c88ee340
+  -useOverlay B16@0:8  imp=+0x1c88eea58
+  -width Q16@0:8  imp=+0x1c88ee9d4
+@class ICScannerProperties : NSObject instanceSize=120
+  ivar +8 _devicePreferredResolutions @"NSArray"
+  ivar +16 _availableFunctionalUnitTypes @"NSArray"
+  ivar +24 _selectedFunctionalUnit @
+  ivar +32 _lastSelectedFunctionalUnit @
+  ivar +40 _transferMode Q
+  ivar +48 _downloadsDirectory @"NSURL"
+  ivar +56 _documentName @"NSString"
+  ivar +64 _documentUTI @"NSString"
+  ivar +72 _defaultUsername @"NSString"
+  ivar +80 _scanCanceled B
+  ivar +81 _supportsICARawFileFormat B
+  ivar +88 _scanContext @"NSMutableDictionary"
+  ivar +96 _requestedToCancelScan B
+  ivar +97 _scanParamsRetained B
+  ivar +100 _maxMemoryBandSize I
+  ivar +104 _numOpenSessionRetries B
+  ivar +105 _available B
+  ivar +112 _operationQueue @"NSObject<OS_dispatch_queue>"
+  property devicePreferredResolutions (T@"NSArray",&,V_devicePreferredResolutions)
+  property availableFunctionalUnitTypes (T@"NSArray",&,V_availableFunctionalUnitTypes)
+  property selectedFunctionalUnit (T@,&,V_selectedFunctionalUnit)
+  property lastSelectedFunctionalUnit (T@,&,V_lastSelectedFunctionalUnit)
+  property transferMode (TQ,V_transferMode)
+  property downloadsDirectory (T@"NSURL",&,V_downloadsDirectory)
+  property documentName (T@"NSString",C,V_documentName)
+  property documentUTI (T@"NSString",C,V_documentUTI)
+  property defaultUsername (T@"NSString",C,V_defaultUsername)
+  property scanCanceled (TB,V_scanCanceled)
+  property supportsICARawFileFormat (TB,V_supportsICARawFileFormat)
+  property scanContext (T@"NSMutableDictionary",&,V_scanContext)
+  property requestedToCancelScan (TB,V_requestedToCancelScan)
+  property scanParamsRetained (TB,V_scanParamsRetained)
+  property maxMemoryBandSize (TI,V_maxMemoryBandSize)
+  property numOpenSessionRetries (TB,V_numOpenSessionRetries)
+  property available (TB,V_available)
+  property operationQueue (T@"NSObject<OS_dispatch_queue>",&,N,V_operationQueue)
+  -.cxx_destruct v16@0:8  imp=+0x1c891d6b4
+  -available B16@0:8  imp=+0x1c88e2574
+  -availableFunctionalUnitTypes @16@0:8  imp=+0x1c891d5b8
+  -dealloc v16@0:8  imp=+0x1c891d4ec
+  -defaultUsername @16@0:8  imp=+0x1c891d614
+  -devicePreferredResolutions @16@0:8  imp=+0x1c891d5a4
+  -documentName @16@0:8  imp=+0x1c891d5fc
+  -documentUTI @16@0:8  imp=+0x1c891d608
+  -downloadsDirectory @16@0:8  imp=+0x1c891d5f0
+  -lastSelectedFunctionalUnit @16@0:8  imp=+0x1c891d5d4
+  -maxMemoryBandSize I16@0:8  imp=+0x1c891d684
+  -numOpenSessionRetries B16@0:8  imp=+0x1c891d68c
+  -operationQueue @16@0:8  imp=+0x1c891d6a0
+  -requestedToCancelScan B16@0:8  imp=+0x1c891d65c
+  -scanCanceled B16@0:8  imp=+0x1c891d628
+  -scanContext @16@0:8  imp=+0x1c891d650
+  -scanParamsRetained B16@0:8  imp=+0x1c891d670
+  -selectedFunctionalUnit @16@0:8  imp=+0x1c88e2f5c
+  -setAvailable: v20@0:8B16  imp=+0x1c88e1d54
+  -setAvailableFunctionalUnitTypes: v24@0:8@16  imp=+0x1c891d5c4
+  -setDefaultUsername: v24@0:8@16  imp=+0x1c891d620
+  -setDevicePreferredResolutions: v24@0:8@16  imp=+0x1c891d5b0
+  -setDocumentName: v24@0:8@16  imp=+0x1c88e1e0c
+  -setDocumentUTI: v24@0:8@16  imp=+0x1c88e1edc
+  -setDownloadsDirectory: v24@0:8@16  imp=+0x1c88e1e74
+  -setLastSelectedFunctionalUnit: v24@0:8@16  imp=+0x1c891d5e0
+  -setMaxMemoryBandSize: v20@0:8I16  imp=+0x1c88e1eec
+  -setNumOpenSessionRetries: v20@0:8B16  imp=+0x1c891d698
+  -setOperationQueue: v24@0:8@16  imp=+0x1c891d6a8
+  -setRequestedToCancelScan: v20@0:8B16  imp=+0x1c891d668
+  -setScanCanceled: v20@0:8B16  imp=+0x1c891d634
+  -setScanContext: v24@0:8@16  imp=+0x1c88e1ee4
+  -setScanParamsRetained: v20@0:8B16  imp=+0x1c891d67c
+  -setSelectedFunctionalUnit: v24@0:8@16  imp=+0x1c891d5cc
+  -setSupportsICARawFileFormat: v20@0:8B16  imp=+0x1c891d648
+  -setTransferMode: v24@0:8Q16  imp=+0x1c88e1da4
+  -supportsICARawFileFormat B16@0:8  imp=+0x1c891d63c
+  -transferMode Q16@0:8  imp=+0x1c891d5e8
+@class MSCameraDeviceManager : ICDeviceManager instanceSize=72
+  -checkFile:andDevice: q32@0:8@16@24  imp=+0x1c88ecfe8
+  -cropThumbSize:fullSize:finalSize: {CGSize=dd}64@0:8{CGSize=dd}16{CGSize=dd}32{CGSize=dd}48  imp=+0x1c88ee074
+  -deleteFileImp: v24@0:8@16  imp=+0x1c88eaf7c
+  -deviceManagerConnection @16@0:8  imp=+0x1c88e8e14
+  -downloadFileImp: v24@0:8@16  imp=+0x1c88eba9c
+  -ejectImp: v24@0:8@16  imp=+0x1c88e94d4
+  -executeCompletionBlockWithErrorCode:info:file:completionDict:completionBlk: v56@0:8q16@24@32@40@?48  imp=+0x1c88ed024
+  -getFileDataImp: v24@0:8@16  imp=+0x1c88ea82c
+  -getFileMetadataImp: v24@0:8@16  imp=+0x1c88ea214
+  -getFileThumbnailImp: v24@0:8@16  imp=+0x1c88e9750
+  -getFingerprintImp: v24@0:8@16  imp=+0x1c88ecb04
+  -getSecurityScopedURLImp: v24@0:8@16  imp=+0x1c88ec058
+  -notifyAddedItems: v24@0:8@16  imp=+0x1c88ed124
+  -notifyPtpEvent: v24@0:8@16  imp=+0x1c88eddd4
+  -notifyRemovedItems: v24@0:8@16  imp=+0x1c88ed708
+  -notifyStatus: v24@0:8@16  imp=+0x1c88eddd8
+  -notifyUpdatedItems: v24@0:8@16  imp=+0x1c88ed9ec
+  -refreshObjectHandleInfoImp: v24@0:8@16  imp=+0x1c88ec590
+  -startDeviceWithHandle: v24@0:8@16  imp=+0x1c88e8e8c
+  -syncClockImp: v24@0:8@16  imp=+0x1c88e9610
+@class PTPCameraDeviceManager : ICDeviceManager <NSNetServiceBrowserDelegate, NSNetServiceDelegate> instanceSize=88
+  ivar +72 _netServiceBrowser @"NSNetServiceBrowser"
+  ivar +80 _netServices @"NSMutableArray"
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1c88f5e40
+  -addSelectorToInterface:selectorString:origin: v36@0:8@16@24B32  imp=+0x1c88f20d8
+  -checkFile:andDevice: q32@0:8@16@24  imp=+0x1c88f5d04
+  -deleteFileImp: v24@0:8@16  imp=+0x1c88f4754
+  -deviceManagerConnection @16@0:8  imp=+0x1c88f22d8
+  -downloadFileImp: v24@0:8@16  imp=+0x1c88f4198
+  -ejectImp: v24@0:8@16  imp=+0x1c88f5274
+  -executeCompletionBlockWithErrorCode:info:file:completionDict:completionBlk: v56@0:8q16@24@32@40@?48  imp=+0x1c88f5d40
+  -getFileDataImp: v24@0:8@16  imp=+0x1c88f3b08
+  -getFileMetadataImp: v24@0:8@16  imp=+0x1c88f3624
+  -getFileThumbnailImp: v24@0:8@16  imp=+0x1c88f2e28
+  -getFingerprintImp: v24@0:8@16  imp=+0x1c88f55e0
+  -getSecurityScopedURLImp: v24@0:8@16  imp=+0x1c88f53a0
+  -handleEventImp: v24@0:8@16  imp=+0x1c88f5b94
+  -handleImageCaptureEventNotification: v24@0:8@16  imp=+0x1c88f0f4c
+  -init @16@0:8  imp=+0x1c88f0f14
+  -notifyAddedItems: v24@0:8@16  imp=+0x1c88f0f50
+  -notifyPtpEvent: v24@0:8@16  imp=+0x1c88f1b80
+  -notifyRemovedItems: v24@0:8@16  imp=+0x1c88f14b4
+  -notifyStatus: v24@0:8@16  imp=+0x1c88f1e3c
+  -notifyUpdatedItems: v24@0:8@16  imp=+0x1c88f1798
+  -refreshObjectHandleInfoImp: v24@0:8@16  imp=+0x1c88f54c0
+  -registerDevice:forImageCaptureEventNotificationsImp: v32@0:8@16@24  imp=+0x1c88f5ac4
+  -sendDevicePTPCommandImp: v24@0:8@16  imp=+0x1c88f4df4
+  -startDeviceWithHandle: v24@0:8@16  imp=+0x1c88f2354
+  -syncClockImp: v24@0:8@16  imp=+0x1c88f2ce8
+  -unregisterDevice:forImageCaptureEventNotificationsImp: v32@0:8@16@24  imp=+0x1c88f5b2c
+@protocol CWEventDelegate
+  optional -clientConnectionInterrupted v16@0:8
+  optional -ssidDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -powerStateDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -modeDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -linkDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -linkQualityDidChangeForWiFiInterfaceWithName:rssi:transmitRate: v40@0:8@16q24d32
+  optional -bssidDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -clientConnectionInvalidated v16@0:8
+  optional -countryCodeDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -scanCacheUpdatedForWiFiInterfaceWithName: v24@0:8@16
+@protocol CWInternalEventDelegate
+  optional -joinDidStartForWiFiInterfaceWithName:ssid: v32@0:8@16@24
+  optional -internal_queryCloudKVSAndReply: v24@0:8@?16
+  optional -internal_startUserMode8021XWithProfile:interfaceWithName:reply: v40@0:8@16@24@?32
+  optional -internal_showAvailableWiFiNetworks:interfaceName:recommendOnly: v36@0:8@16@24B32
+  optional -autoJoinDidCompleteForWiFiInterfaceWithName: v24@0:8@16
+  optional -autoJoinDidStartForWiFiInterfaceWithName: v24@0:8@16
+  optional -autoJoinDidUpdate: v24@0:8@16
+  optional -btCoexModeStats: v24@0:8@16
+  optional -deviceAvailabilityChangedForWiFiInterfaceWithName:isAvailable: v28@0:8@16B24
+  optional -dextCrashDetected v16@0:8
+  optional -interfaceAddedWithName: v24@0:8@16
+  optional -interfaceRemovedWithName: v24@0:8@16
+  optional -internal_addCloudProfile: v24@0:8@16
+  optional -internal_confirmAPIAccessWithRequestType:info:processName:reply: v48@0:8q16@24@32@?40
+  optional -internal_enableTetherDevice:reply: v32@0:8@16@?24
+  optional -internal_foundTetherDevices: v24@0:8@16
+  optional -internal_getWiFiPasswordForUserKeychainWithSSID:reply: v32@0:8@16@?24
+  optional -internal_joinWiFiNetworkWithUserAgent:interfaceName:timestamp:reply: v48@0:8@16@24d32@?40
+  optional -internal_queryLegacyCloudKVSAndReply: v24@0:8@?16
+  optional -internal_removeCloudProfile: v24@0:8@16
+  optional -internal_setWiFiPasswordForUserKeychain:ssid:reply: v40@0:8@16@24@?32
+  optional -internal_showAutoHotspotNotificationForTetherDevice:retry:interfaceName: v36@0:8@16B24@28
+  optional -internal_showDHCPMessage:networkName: v32@0:8@16@24
+  optional -internal_showLowBatteryNotificationForTetherDevice:interfaceName: v32@0:8@16@24
+  optional -internal_showMICErrorWithNetworkName: v24@0:8@16
+  optional -internal_showPHNetworkExpensiveAlertWithNetworkName: v24@0:8@16
+  optional -internal_startBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  optional -internal_startUserMode8021XWithAuthenticationInfo:interfaceWithName:reply: v40@0:8@16@24@?32
+  optional -internal_startUserMode8021XWithPasspointDomainName:interfaceWithName:reply: v40@0:8@16@24@?32
+  optional -internal_startUserMode8021XWithSSID:username:password:identity:disableUserInteraction:remember:interfaceWithName:reply: v72@0:8@16@24@32@40B48B52@56@?64
+  optional -internal_stopBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  optional -internal_updateCloudProfile: v24@0:8@16
+  optional -joinDidCompleteForWiFiInterfaceWithName:isAutoJoin:error: v36@0:8@16B24@28
+  optional -preferencesDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -rangingEndedForWiFiInterfaceWithName: v24@0:8@16
+  optional -rangingReportEventForWiFiInterfaceWithName:data:error: v40@0:8@16@24@32
+  optional -rangingStartedForWiFiInterfaceWithName: v24@0:8@16
+  optional -realTimeModeDidEndForWiFiInterfaceWithName: v24@0:8@16
+  optional -realTimeModeDidStartForWiFiInterfaceWithName: v24@0:8@16
+  optional -rsnHandshakeDidCompleteForWiFiInterfaceWithName: v24@0:8@16
+  optional -virtualInterfaceStateChangedForWiFiInterfaceWithName: v24@0:8@16
+  optional -willShowJoinUIForWiFiNetwork:interfaceName: v32@0:8@16@24
+  optional -wowStateDidChangeForWiFiInterfaceWithName: v24@0:8@16
