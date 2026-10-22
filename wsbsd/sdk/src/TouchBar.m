@@ -62,16 +62,55 @@ PROP(NSTouchBar, escapeKeyReplacementItemIdentifier, setEscapeKeyReplacementItem
 - (NSString *)customizationLabel { return St(self)[@"label"]; } - (void)setCustomizationLabel:(NSString *)l { St(self)[@"label"] = [l copy]; }
 @end
 
+/* ---- the template images AppKit names for the Touch Bar (NSImageNameTouchBar*Template), drawn white ---- */
+typedef void (^GlyphDraw)(void);
+static NSBezierPath *Line(CGFloat x1, CGFloat y1, CGFloat x2, CGFloat y2) { NSBezierPath *p = [NSBezierPath bezierPath]; [p moveToPoint: NSMakePoint(x1, y1)]; [p lineToPoint: NSMakePoint(x2, y2)]; [p setLineWidth: 1.8]; [p setLineCapStyle: NSRoundLineCapStyle]; [p setLineJoinStyle: NSRoundLineJoinStyle]; return p; }
+static void Chevron(CGFloat dx, CGFloat dy) { NSBezierPath *p = [NSBezierPath bezierPath]; [p moveToPoint: NSMakePoint(10 - dx * 3 + dy * 5, 10 - dy * 3 + dx * 5)]; [p lineToPoint: NSMakePoint(10 + dx * 4, 10 + dy * 4)]; [p lineToPoint: NSMakePoint(10 - dx * 3 - dy * 5, 10 - dy * 3 - dx * 5)]; [p setLineWidth: 2]; [p setLineCapStyle: NSRoundLineCapStyle]; [p setLineJoinStyle: NSRoundLineJoinStyle]; [p stroke]; }
+static void Tri(CGFloat x, CGFloat w, BOOL right) { NSBezierPath *p = [NSBezierPath bezierPath]; if (right) { [p moveToPoint: NSMakePoint(x, 4)]; [p lineToPoint: NSMakePoint(x + w, 10)]; [p lineToPoint: NSMakePoint(x, 16)]; } else { [p moveToPoint: NSMakePoint(x + w, 4)]; [p lineToPoint: NSMakePoint(x, 10)]; [p lineToPoint: NSMakePoint(x + w, 16)]; } [p closePath]; [p fill]; }
+static NSDictionary *GlyphTable(void)
+{
+	return @{
+		@"GoBack": ^{ Chevron(-1, 0); }, @"GoForward": ^{ Chevron(1, 0); }, @"GoUp": ^{ Chevron(0, 1); }, @"GoDown": ^{ Chevron(0, -1); },
+		@"Search": ^{ NSBezierPath *c = [NSBezierPath bezierPathWithOvalInRect: NSMakeRect(3.5, 7.5, 9, 9)]; [c setLineWidth: 1.8]; [c stroke]; [Line(11.5, 8.5, 16.5, 3.5) stroke]; },
+		@"Bookmarks": ^{ NSBezierPath *b = [NSBezierPath bezierPathWithRect: NSMakeRect(3.5, 3.5, 13, 13)]; [b setLineWidth: 1.8]; [b stroke]; [Line(10, 3.5, 10, 16.5) stroke]; },
+		@"Add": ^{ [Line(10, 4, 10, 16) stroke]; [Line(4, 10, 16, 10) stroke]; }, @"Remove": ^{ [Line(4, 10, 16, 10) stroke]; },
+		@"Refresh": ^{ NSBezierPath *a = [NSBezierPath bezierPath]; [a appendBezierPathWithArcWithCenter: NSMakePoint(10, 10) radius: 6 startAngle: 30 endAngle: 330]; [a setLineWidth: 1.8]; [a stroke]; NSBezierPath *h = [NSBezierPath bezierPath]; [h moveToPoint: NSMakePoint(15.2, 13)]; [h lineToPoint: NSMakePoint(16.5, 7.8)]; [h lineToPoint: NSMakePoint(11.3, 9.6)]; [h closePath]; [h fill]; },
+		@"Sidebar": ^{ NSBezierPath *b = [NSBezierPath bezierPathWithRoundedRect: NSMakeRect(3.5, 4.5, 13, 11) xRadius: 1.5 yRadius: 1.5]; [b setLineWidth: 1.8]; [b stroke]; [Line(8, 4.5, 8, 15.5) stroke]; },
+		@"Share": ^{ NSBezierPath *b = [NSBezierPath bezierPath]; [b moveToPoint: NSMakePoint(6, 8)]; [b lineToPoint: NSMakePoint(4, 8)]; [b lineToPoint: NSMakePoint(4, 3.5)]; [b lineToPoint: NSMakePoint(16, 3.5)]; [b lineToPoint: NSMakePoint(16, 8)]; [b lineToPoint: NSMakePoint(14, 8)]; [b setLineWidth: 1.8]; [b stroke]; [Line(10, 4.5, 10, 16) stroke]; [Line(6.5, 12.5, 10, 16) stroke]; [Line(13.5, 12.5, 10, 16) stroke]; },
+		@"Delete": ^{ [Line(4.5, 15, 15.5, 15) stroke]; NSBezierPath *b = [NSBezierPath bezierPath]; [b moveToPoint: NSMakePoint(6, 15)]; [b lineToPoint: NSMakePoint(6.8, 4)]; [b lineToPoint: NSMakePoint(13.2, 4)]; [b lineToPoint: NSMakePoint(14, 15)]; [b setLineWidth: 1.8]; [b stroke]; [Line(8.5, 17, 11.5, 17) stroke]; },
+		@"Play": ^{ Tri(6, 10, YES); }, @"Pause": ^{ [[NSBezierPath bezierPathWithRect: NSMakeRect(5, 4, 3.5, 12)] fill]; [[NSBezierPath bezierPathWithRect: NSMakeRect(11.5, 4, 3.5, 12)] fill]; },
+		@"Rewind": ^{ Tri(2, 8, NO); Tri(10, 8, NO); }, @"FastForward": ^{ Tri(2, 8, YES); Tri(10, 8, YES); },
+		@"NewFolder": ^{ NSBezierPath *b = [NSBezierPath bezierPathWithRoundedRect: NSMakeRect(3, 4.5, 14, 10) xRadius: 1.5 yRadius: 1.5]; [b setLineWidth: 1.8]; [b stroke]; [Line(3, 14.5, 8, 14.5) stroke]; [Line(10, 7, 10, 12) stroke]; [Line(7.5, 9.5, 12.5, 9.5) stroke]; },
+		@"Download": ^{ [Line(10, 16, 10, 5) stroke]; [Line(6.5, 8.5, 10, 5) stroke]; [Line(13.5, 8.5, 10, 5) stroke]; [Line(4, 3.5, 16, 3.5) stroke]; },
+	};
+}
+static void RegisterGlyphs(void)
+{
+	NSDictionary *t = GlyphTable();
+	for (NSString *k in t) {
+		NSString *name = [NSString stringWithFormat: @"NSTouchBar%@Template", k]; if ([NSImage imageNamed: name]) continue;
+		NSImage *img = [[NSImage alloc] initWithSize: NSMakeSize(20, 20)]; [img lockFocus]; [[NSColor whiteColor] setStroke]; [[NSColor whiteColor] setFill]; ((GlyphDraw)t[k])(); [img unlockFocus]; [img setTemplate: YES]; [img setName: name];
+	}
+}
+/* an image in the colour of the strip: template images (black glyphs) are drawn white */
+static NSImage *Tinted(NSImage *img, NSColor *c)
+{
+	if (!img) return nil; NSSize sz = [img size]; if (sz.width < 1 || sz.height < 1) return img;
+	NSImage *out = [[NSImage alloc] initWithSize: sz]; [out lockFocus]; [img drawInRect: NSMakeRect(0, 0, sz.width, sz.height) fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; [c set]; NSRectFillUsingOperation(NSMakeRect(0, 0, sz.width, sz.height), NSCompositeSourceIn); [out unlockFocus]; return out;
+}
+
 /* the dark rounded button of the Touch Bar */
 @interface WsbsdTBButton : NSButton @end
+@interface WsbsdTBSwatchButton : WsbsdTBButton { @public NSColor *swatchColor; } @end
 @implementation WsbsdTBButton
 - (BOOL)isFlipped { return YES; }
 - (void)drawRect:(NSRect)r
 {
 	NSRect b = NSInsetRect([self bounds], 0.5, 1.5); NSColor *fill = [(NSCell *)[self cell] isHighlighted] ? [NSColor colorWithCalibratedWhite: 0.45 alpha: 1] : [NSColor colorWithCalibratedWhite: 0.22 alpha: 1];
 	NSColor *tint = [self respondsToSelector: @selector(bezelColor)] ? [self performSelector: @selector(bezelColor)] : nil; if (tint && ![(NSCell *)[self cell] isHighlighted]) fill = tint;
-	[fill setFill]; [[NSBezierPath bezierPathWithRoundedRect: b xRadius: 6 yRadius: 6] fill];
-	NSImage *img = [self image]; NSString *t = [self title]; NSDictionary *at = @{ NSForegroundColorAttributeName: [self isEnabled] ? [NSColor whiteColor] : [NSColor grayColor], NSFontAttributeName: [NSFont systemFontOfSize: 15] };
+	NSColor *sw = [self isKindOfClass: [WsbsdTBSwatchButton class]] ? ((WsbsdTBSwatchButton *)self)->swatchColor : nil; if (sw) fill = sw;
+	[fill setFill]; [[NSBezierPath bezierPathWithRoundedRect: b xRadius: 6 yRadius: 6] fill]; if (sw) return;
+	NSImage *img = Tinted([self image], [self isEnabled] ? [NSColor whiteColor] : [NSColor grayColor]); NSString *t = [self title]; NSDictionary *at = @{ NSForegroundColorAttributeName: [self isEnabled] ? [NSColor whiteColor] : [NSColor grayColor], NSFontAttributeName: [NSFont systemFontOfSize: 15] };
 	NSSize ts = [t sizeWithAttributes: at], is = img ? [img size] : NSZeroSize; CGFloat total = ts.width + (img && [t length] ? 6 : 0) + (img ? MIN(is.width, 20) : 0), x = floor((b.size.width - total) / 2);
 	if (img) { NSRect ir = NSMakeRect(x, floor((b.size.height - 20) / 2) + 1, MIN(is.width, 20), 20); [img drawInRect: ir fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; x += ir.size.width + 6; }
 	if ([t length]) [t drawAtPoint: NSMakePoint(x, floor((b.size.height - ts.height) / 2)) withAttributes: at];
@@ -93,39 +132,103 @@ static void Fit(NSButtonTouchBarItem *i) { WsbsdTBButton *b = Btn(i); NSString *
 - (BOOL)isEnabled { return [Btn(self) isEnabled]; } - (void)setEnabled:(BOOL)e { [Btn(self) setEnabled: e]; [Btn(self) setNeedsDisplay: YES]; }
 - (NSString *)customizationLabel { return St(self)[@"label"]; } - (void)setCustomizationLabel:(NSString *)l { St(self)[@"label"] = [l copy]; }
 @end
+@implementation WsbsdTBSwatchButton @end
+/* a button that shows a colour (the swatches of the colour picker); the class is chosen at creation, a class swap would lose associated objects */
+NSButton *WsbsdTBMakeSwatchButton(NSColor *color, NSString *title, id target, SEL action) { WsbsdTBSwatchButton *b = [[WsbsdTBSwatchButton alloc] initWithFrame: NSMakeRect(0, 0, 64, 30)]; [b setBordered: NO]; [b setTitle: title ?: @""]; [b setTarget: target]; [b setAction: action]; b->swatchColor = color; return b; }
+void WsbsdTBSetSwatch(NSView *v, NSColor *c) { if ([v isKindOfClass: [WsbsdTBSwatchButton class]]) { ((WsbsdTBSwatchButton *)v)->swatchColor = c; [v setNeedsDisplay: YES]; } }
 @implementation WsbsdTBButton (Bezel) - (NSColor *)bezelColor { return objc_getAssociatedObject(self, "bezelColor"); } @end
 
+/* a segmented control in the strip: separated dark segments */
+@interface WsbsdTBSegmented : NSSegmentedControl @end
+@implementation WsbsdTBSegmented
+- (BOOL)isFlipped { return YES; }
+- (void)drawRect:(NSRect)r
+{
+	NSInteger n = [self segmentCount]; if (n < 1) return; CGFloat w = floor(([self bounds].size.width - 4 * (n - 1)) / n), x = 0;
+	for (NSInteger i = 0; i < n; i++) {
+		NSRect b = NSMakeRect(x, 1.5, w, [self bounds].size.height - 3); BOOL en = [self isEnabled] && [self isEnabledForSegment: i], sel = [self selectedSegment] == i && [self trackingMode] != NSSegmentSwitchTrackingMomentary;
+		[(sel ? [NSColor colorWithCalibratedWhite: 0.45 alpha: 1] : [NSColor colorWithCalibratedWhite: 0.22 alpha: 1]) setFill]; [[NSBezierPath bezierPathWithRoundedRect: b xRadius: 6 yRadius: 6] fill];
+		NSColor *fg = en ? [NSColor whiteColor] : [NSColor grayColor]; NSImage *img = Tinted([self imageForSegment: i], fg); NSString *t = [self labelForSegment: i];
+		if (img) { NSSize is = [img size]; NSRect ir = NSMakeRect(b.origin.x + floor((b.size.width - MIN(is.width, 20)) / 2), b.origin.y + floor((b.size.height - 20) / 2), MIN(is.width, 20), 20); [img drawInRect: ir fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; }
+		else if ([t length]) { NSDictionary *at = @{ NSForegroundColorAttributeName: fg, NSFontAttributeName: [NSFont systemFontOfSize: 15] }; NSSize ts = [t sizeWithAttributes: at]; [t drawAtPoint: NSMakePoint(b.origin.x + floor((b.size.width - ts.width) / 2), b.origin.y + floor((b.size.height - ts.height) / 2)) withAttributes: at]; }
+		x += w + 4;
+	}
+}
+@end
+/* the views of AppKit that applications put in the strip get the look of the strip */
+static void Restyle(NSView *v)
+{
+	if (object_getClass(v) == [NSButton class]) { if ([(NSButton *)v image] && [[(NSButton *)v title] isEqual: @"Button"]) [(NSButton *)v setTitle: @""]; [(NSButton *)v setBordered: NO]; object_setClass(v, [WsbsdTBButton class]); NSSize sz = [v frame].size; NSButton *b = (NSButton *)v; CGFloat want = [[b title] length] ? MAX(sz.width, [[b title] sizeWithAttributes: @{ NSFontAttributeName: [NSFont systemFontOfSize: 15] }].width + 28) : 64; [v setFrameSize: NSMakeSize(MAX(want, 64), 30)]; }
+	else if (object_getClass(v) == [NSSegmentedControl class]) { NSSegmentedControl *sc = (NSSegmentedControl *)v; object_setClass(v, [WsbsdTBSegmented class]); for (NSInteger i = 0; i < [sc segmentCount]; i++) [sc setWidth: 60 forSegment: i]; [v setFrameSize: NSMakeSize(60 * [sc segmentCount] + 4 * ([sc segmentCount] - 1), 30)]; }
+	for (NSView *s in [v subviews]) Restyle(s);
+}
+
+
 /* the strip of views of a bar */
-@interface WsbsdTBStrip : NSView { @public NSArray *entries; } @end   /* entries: NSView, or NSNumber (fixed width) or NSNull (flexible) */
+@interface WsbsdTBStrip : NSView { @public NSArray *entries; NSView *principal; } @end   /* entries: NSView, or NSNumber (fixed width) or NSNull (flexible) */
 @implementation WsbsdTBStrip
 - (BOOL)isFlipped { return YES; }
+- (CGFloat)_width:(id)e { return [e isKindOfClass: [NSView class]] ? [e frame].size.width : [e isKindOfClass: [NSNumber class]] ? [e doubleValue] : 0; }
+- (void)_place:(NSView *)v at:(CGFloat)x { CGFloat H = [self bounds].size.height, h = MIN([v frame].size.height, H); [v setFrame: NSMakeRect(x, floor((H - h) / 2), [v frame].size.width, h)]; if ([v superview] != self) [self addSubview: v]; }
+/* a run of entries between x0 and x1: flexible spaces share what the fixed ones leave; the run is laid out from x0 */
+- (void)_run:(NSArray *)run from:(CGFloat)x0 to:(CGFloat)x1
+{
+	CGFloat fixed = 0; NSUInteger flex = 0, n = [run count], i = 0; for (id e in run) { if ([e isKindOfClass: [NSNull class]]) flex++; else fixed += [self _width: e]; } fixed += 8 * (n ? n - 1 : 0);
+	CGFloat free = MAX(0, (x1 - x0) - fixed), x = x0;
+	for (id e in run) { CGFloat w = [e isKindOfClass: [NSNull class]] ? (flex ? free / flex : 0) : [self _width: e]; if ([e isKindOfClass: [NSView class]]) [self _place: e at: x]; x += w + (++i < n ? 8 : 0); }
+}
 - (void)layoutEntries
 {
-	CGFloat fixed = 0; NSUInteger flex = 0, n = [entries count], i = 0;
-	for (id e in entries) { if ([e isKindOfClass: [NSView class]]) fixed += [e frame].size.width; else if ([e isKindOfClass: [NSNumber class]]) fixed += [e doubleValue]; else flex++; }
-	fixed += 8 * (n ? n - 1 : 0); CGFloat free = MAX(0, [self bounds].size.width - fixed), x = 0, H = [self bounds].size.height;
-	for (id e in entries) { CGFloat w = 0; if ([e isKindOfClass: [NSView class]]) { NSView *v = e; w = [v frame].size.width; [v setFrame: NSMakeRect(x, floor((H - MIN([v frame].size.height, H)) / 2), w, MIN([v frame].size.height, H))]; if ([v superview] != self) [self addSubview: v]; }
-		else if ([e isKindOfClass: [NSNumber class]]) w = [e doubleValue]; else w = flex ? free / flex : 0; x += w + (++i < n ? 8 : 0); }
+	CGFloat W = [self bounds].size.width; NSUInteger pi = principal ? [entries indexOfObjectIdenticalTo: principal] : NSNotFound;
+	if (pi == NSNotFound) { [self _run: entries from: 0 to: W]; return; }
+	CGFloat pw = [principal frame].size.width, px = MAX(0, floor((W - pw) / 2)); NSArray *left = [entries subarrayWithRange: NSMakeRange(0, pi)], *right = [entries subarrayWithRange: NSMakeRange(pi + 1, [entries count] - pi - 1)];
+	[self _place: principal at: px]; [self _run: left from: 0 to: MAX(0, px - 8)];
+	CGFloat rw = 8 * ([right count] ? [right count] - 1 : 0); for (id e in right) if (![e isKindOfClass: [NSNull class]]) rw += [self _width: e];
+	[self _run: right from: MAX(px + pw + 8, W - rw) to: W];
 }
 - (void)resizeSubviewsWithOldSize:(NSSize)o { [self layoutEntries]; }
 - (void)setFrame:(NSRect)f { [super setFrame: f]; [self layoutEntries]; }
 @end
-static NSArray *EntriesForBar(NSTouchBar *bar, NSSet *skip, CGFloat *natural)
+static void AddEntries(NSMutableArray *a, NSMutableSet *shown, NSArray *bars, NSUInteger level, NSSet *skip, CGFloat *w, NSView **principal)
 {
-	NSMutableArray *a = [NSMutableArray array]; CGFloat w = 0;
+	NSTouchBar *bar = bars[level];
 	for (NSString *ident in [bar itemIdentifiers]) {
-		if ([skip containsObject: ident] || [ident isEqual: NSTouchBarItemIdentifierOtherItemsProxy]) continue;
+		if ([skip containsObject: ident]) continue;
+		if ([ident isEqual: NSTouchBarItemIdentifierOtherItemsProxy]) { if (level + 1 < [bars count]) AddEntries(a, shown, bars, level + 1, skip, w, principal); continue; }
 		if ([ident isEqual: NSTouchBarItemIdentifierFlexibleSpace]) { [a addObject: [NSNull null]]; continue; }
-		if ([ident isEqual: NSTouchBarItemIdentifierFixedSpaceSmall]) { [a addObject: @8]; w += 8; continue; }
-		if ([ident isEqual: NSTouchBarItemIdentifierFixedSpaceLarge]) { [a addObject: @24]; w += 24; continue; }
-		NSView *v = [[bar itemForIdentifier: ident] view]; if (!v) continue; [a addObject: v]; w += [v frame].size.width;
+		if ([ident isEqual: NSTouchBarItemIdentifierFixedSpaceSmall]) { [a addObject: @8]; *w += 8; continue; }
+		if ([ident isEqual: NSTouchBarItemIdentifierFixedSpaceLarge]) { [a addObject: @24]; *w += 24; continue; }
+		if ([shown containsObject: ident]) continue;
+		NSTouchBarItem *it = [bar itemForIdentifier: ident]; NSView *v = [it view];
+		if (getenv("WSBSD_TBDUMP")) fprintf(stderr, "touchbar item %s -> %s %s\n", [ident UTF8String], v ? object_getClassName(v) : "nil", v ? [NSStringFromRect([v frame]) UTF8String] : "");
+		if (!v) continue; Restyle(v);  [shown addObject: ident]; objc_setAssociatedObject(v, "prio", @([it visibilityPriority]), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+		if (level == 0 && [ident isEqual: [bar principalItemIdentifier]]) *principal = v;
+		[a addObject: v]; *w += [v frame].size.width;
 	}
+}
+static NSArray *EntriesForBars(NSArray *bars, NSSet *skip, CGFloat *natural, NSView **principal)
+{
+	NSMutableArray *a = [NSMutableArray array]; CGFloat w = 0; AddEntries(a, [NSMutableSet set], bars, 0, skip, &w, principal);
 	if (natural) *natural = w + 8 * ([a count] ? [a count] - 1 : 0); return a;
 }
-static NSView *StripForBar(NSTouchBar *bar, CGFloat width, NSSet *skip)
+static NSArray *EntriesForBar(NSTouchBar *bar, NSSet *skip, CGFloat *natural) { NSView *p = nil; return EntriesForBars(@[ bar ], skip, natural, &p); }
+/* what does not fit leaves, the lowest visibility priority first */
+static NSArray *FitEntries(NSArray *entries, CGFloat width, NSView *principal)
 {
-	CGFloat nat; NSArray *e = EntriesForBar(bar, skip, &nat); WsbsdTBStrip *s = [[WsbsdTBStrip alloc] initWithFrame: NSMakeRect(0, 0, width > 0 ? width : nat, 30)]; s->entries = e; [s layoutEntries]; return s;
+	NSMutableArray *a = [entries mutableCopy];
+	for (;;) {
+		CGFloat w = 8 * ([a count] ? [a count] - 1 : 0); for (id e in a) w += [e isKindOfClass: [NSView class]] ? [e frame].size.width : [e isKindOfClass: [NSNumber class]] ? [e doubleValue] : 0;
+		if (w <= width) break; NSInteger drop = -1; float low = 1e9; for (NSInteger i = (NSInteger)[a count] - 1; i >= 0; i--) { id e = a[i]; if (![e isKindOfClass: [NSView class]] || e == principal) continue; float p = [objc_getAssociatedObject(e, "prio") floatValue]; if (p < low) { low = p; drop = i; } }
+		if (drop < 0) break; [(NSView *)a[drop] removeFromSuperview]; [a removeObjectAtIndex: drop];
+	}
+	return a;
 }
+static NSView *StripForBars(NSArray *bars, CGFloat width, NSSet *skip)
+{
+	CGFloat nat; NSView *principal = nil; NSArray *e = EntriesForBars(bars, skip, &nat, &principal); if (width > 0) e = FitEntries(e, width, principal);
+	WsbsdTBStrip *s = [[WsbsdTBStrip alloc] initWithFrame: NSMakeRect(0, 0, width > 0 ? width : nat, 30)]; s->entries = e; s->principal = principal; [s layoutEntries]; return s;
+}
+static NSView *StripForBar(NSTouchBar *bar, CGFloat width, NSSet *skip) { return StripForBars(@[ bar ], width, skip); }
 
 @implementation NSGroupTouchBarItem (WsbsdTouchBar)
 + (instancetype)groupItemWithIdentifier:(NSTouchBarItemIdentifier)i items:(NSArray *)items
@@ -161,44 +264,65 @@ static NSView *StripForBar(NSTouchBar *bar, CGFloat width, NSSet *skip)
 - (BOOL)isFlipped { return YES; }
 - (void)drawRect:(NSRect)r { [[NSColor clearColor] set]; NSRectFill([self bounds]); [[NSColor colorWithCalibratedWhite: 0.02 alpha: 1] setFill]; [[NSBezierPath bezierPathWithRoundedRect: NSInsetRect([self bounds], 1, 1) xRadius: 9 yRadius: 9] fill]; [[NSColor colorWithCalibratedWhite: 0.28 alpha: 1] setStroke]; [[NSBezierPath bezierPathWithRoundedRect: NSInsetRect([self bounds], 1.5, 1.5) xRadius: 9 yRadius: 9] stroke]; }
 @end
+/* the system controls behind the control strip: volume and mute through mixer(8), brightness through backlight(8); the values are kept when the commands do not exist (no sound card, no panel) */
+@interface WsbsdSysControls : NSObject
++ (double)volume; + (void)setVolume:(double)v; + (BOOL)muted; + (void)setMuted:(BOOL)m; + (double)brightness; + (void)setBrightness:(double)b;
+@end
+static NSString *RunTool(NSString *path, NSArray *args)
+{
+	if (![[NSFileManager defaultManager] isExecutableFileAtPath: path]) return nil;
+	NSTask *t = [[NSTask alloc] init]; [t setLaunchPath: path]; [t setArguments: args]; NSPipe *p = [NSPipe pipe]; [t setStandardOutput: p]; [t setStandardError: [NSPipe pipe]];
+	@try { [t launch]; } @catch (id e) { return nil; } NSData *d = [[p fileHandleForReading] readDataToEndOfFile]; [t waitUntilExit]; return [[NSString alloc] initWithData: d encoding: NSUTF8StringEncoding];
+}
+static double gVol = 0.5, gBri = 0.7; static BOOL gMute;
+@implementation WsbsdSysControls
++ (double)volume { NSString *o = RunTool(@"/usr/sbin/mixer", @[ @"-s", @"vol" ]); if (!o) o = RunTool(@"/usr/sbin/mixer", @[ @"vol" ]); NSRange r = [o rangeOfString: @"="]; if (r.location != NSNotFound) { double v = [[o substringFromIndex: NSMaxRange(r)] doubleValue]; if (v > 1) v /= 100; gVol = v; } return gVol; }
++ (void)setVolume:(double)v { gVol = MAX(0, MIN(1, v)); RunTool(@"/usr/sbin/mixer", @[ [NSString stringWithFormat: @"vol=%.2f", gVol] ]); }
++ (BOOL)muted { return gMute; }
++ (void)setMuted:(BOOL)m { gMute = m; RunTool(@"/usr/sbin/mixer", @[ m ? @"vol.mute=1" : @"vol.mute=0" ]); }
++ (double)brightness { NSString *o = RunTool(@"/usr/bin/backlight", @[]); if ([o length]) { double v = [o doubleValue]; if (v > 0) gBri = v / 100; } return gBri; }
++ (void)setBrightness:(double)b { gBri = MAX(0.05, MIN(1, b)); RunTool(@"/usr/bin/backlight", @[ [NSString stringWithFormat: @"%d", (int)(gBri * 100)] ]); }
+@end
+
 @interface WsbsdTBControlStrip : NSView @end
 @implementation WsbsdTBControlStrip
 - (BOOL)isFlipped { return YES; }
+- (BOOL)acceptsFirstMouse:(NSEvent *)e { return YES; }
+static void Speaker(CGFloat x, CGFloat cy) { NSBezierPath *sp = [NSBezierPath bezierPath]; [sp moveToPoint: NSMakePoint(x - 9, cy - 3)]; [sp lineToPoint: NSMakePoint(x - 5, cy - 3)]; [sp lineToPoint: NSMakePoint(x + 1, cy - 8)]; [sp lineToPoint: NSMakePoint(x + 1, cy + 8)]; [sp lineToPoint: NSMakePoint(x - 5, cy + 3)]; [sp lineToPoint: NSMakePoint(x - 9, cy + 3)]; [sp closePath]; [sp fill]; }
 - (void)drawRect:(NSRect)r
 {
-	NSColor *w = [NSColor colorWithCalibratedWhite: 0.9 alpha: 1]; [w setStroke]; [w setFill]; CGFloat cy = [self bounds].size.height / 2, x = 20;
-	/* brightness: a disc with rays */
+	NSColor *w = [NSColor colorWithCalibratedWhite: 0.9 alpha: 1]; [w setStroke]; [w setFill]; CGFloat cy = [self bounds].size.height / 2, x = 24;
 	NSBezierPath *p = [NSBezierPath bezierPathWithOvalInRect: NSMakeRect(x - 4, cy - 4, 8, 8)]; [p setLineWidth: 1.5]; [p stroke];
 	for (int i = 0; i < 8; i++) { double a = i * M_PI / 4; NSBezierPath *l = [NSBezierPath bezierPath]; [l moveToPoint: NSMakePoint(x + cos(a) * 7, cy + sin(a) * 7)]; [l lineToPoint: NSMakePoint(x + cos(a) * 10, cy + sin(a) * 10)]; [l setLineWidth: 1.5]; [l stroke]; }
-	/* volume: a speaker with waves */
-	x = 85; NSBezierPath *sp = [NSBezierPath bezierPath]; [sp moveToPoint: NSMakePoint(x - 9, cy - 3)]; [sp lineToPoint: NSMakePoint(x - 5, cy - 3)]; [sp lineToPoint: NSMakePoint(x + 1, cy - 8)]; [sp lineToPoint: NSMakePoint(x + 1, cy + 8)]; [sp lineToPoint: NSMakePoint(x - 5, cy + 3)]; [sp lineToPoint: NSMakePoint(x - 9, cy + 3)]; [sp closePath]; [sp fill];
-	for (int i = 1; i <= 2; i++) { NSBezierPath *a = [NSBezierPath bezierPath]; [a appendBezierPathWithArcWithCenter: NSMakePoint(x + 2, cy) radius: 4 + i * 4 startAngle: -40 endAngle: 40]; [a setLineWidth: 1.5]; [a stroke]; }
-	/* mute: a speaker crossed out */
-	x = 150; NSBezierPath *m = [NSBezierPath bezierPath]; [m moveToPoint: NSMakePoint(x - 9, cy - 3)]; [m lineToPoint: NSMakePoint(x - 5, cy - 3)]; [m lineToPoint: NSMakePoint(x + 1, cy - 8)]; [m lineToPoint: NSMakePoint(x + 1, cy + 8)]; [m lineToPoint: NSMakePoint(x - 5, cy + 3)]; [m lineToPoint: NSMakePoint(x - 9, cy + 3)]; [m closePath]; [m fill];
-	NSBezierPath *c = [NSBezierPath bezierPath]; [c moveToPoint: NSMakePoint(x + 5, cy - 5)]; [c lineToPoint: NSMakePoint(x + 14, cy + 5)]; [c setLineWidth: 1.5]; [c stroke];
-	/* Siri: a ring with a gradient-less dot */
-	x = 215; NSBezierPath *o = [NSBezierPath bezierPathWithOvalInRect: NSMakeRect(x - 9, cy - 9, 18, 18)]; [o setLineWidth: 2]; [[NSColor colorWithCalibratedRed: 0.55 green: 0.45 blue: 1 alpha: 1] setStroke]; [o stroke];
+	x = 78; Speaker(x, cy); for (int i = 1; i <= 2; i++) { NSBezierPath *a = [NSBezierPath bezierPath]; [a appendBezierPathWithArcWithCenter: NSMakePoint(x + 2, cy) radius: 4 + i * 4 startAngle: -40 endAngle: 40]; [a setLineWidth: 1.5]; [a stroke]; }
+	x = 132; Speaker(x, cy); if ([WsbsdSysControls muted]) { NSBezierPath *c = [NSBezierPath bezierPath]; [c moveToPoint: NSMakePoint(x + 5, cy - 5)]; [c lineToPoint: NSMakePoint(x + 14, cy + 5)]; [c setLineWidth: 1.5]; [c stroke]; }
+	x = 172; NSBezierPath *o = [NSBezierPath bezierPathWithOvalInRect: NSMakeRect(x - 9, cy - 9, 18, 18)]; [o setLineWidth: 2]; [[NSColor colorWithCalibratedRed: 0.55 green: 0.45 blue: 1 alpha: 1] setStroke]; [o stroke];
 }
 - (void)mouseDown:(NSEvent *)e
 {
-	CGFloat x = [self convertPoint: [e locationInWindow] fromView: nil].x; const char *cmd = x < 55 ? NULL : x < 118 ? "volume" : x < 182 ? "mute" : NULL; (void)cmd;
+	CGFloat x = [self convertPoint: [e locationInWindow] fromView: nil].x; WsbsdTouchBarHost *h = [WsbsdTouchBarHost sharedHost];
+	if (x < 50) [h showSystemSlider: 0]; else if (x < 105) [h showSystemSlider: 1]; else if (x < 152) { [WsbsdSysControls setMuted: ![WsbsdSysControls muted]]; [self setNeedsDisplay: YES]; } else { if (getenv("WSBSD_TBDUMP")) fprintf(stderr, "control strip: Siri\n"); }
 }
 @end
 /* ---- the host: the bar of the key window in a panel at the bottom of the screen ---- */
-@implementation WsbsdTouchBarHost { NSTouchBar *_bar; NSPanel *_panel; NSView *_content; NSString *_signature; }
+@implementation WsbsdTouchBarHost { NSTouchBar *_bar; NSPanel *_panel; NSView *_content; NSString *_signature; NSMutableArray *_overrides; NSMutableDictionary *_closeFlags; }
 @synthesize currentTouchBar = _bar, panel = _panel;
-+ (instancetype)sharedHost { static WsbsdTouchBarHost *h; static dispatch_once_t once; dispatch_once(&once, ^{ h = [WsbsdTouchBarHost new]; }); return h; }
-static NSTouchBar *BarOfResponder(NSResponder *r)
++ (instancetype)sharedHost { static WsbsdTouchBarHost *h; static dispatch_once_t once; dispatch_once(&once, ^{ RegisterGlyphs(); h = [WsbsdTouchBarHost new]; h->_overrides = [NSMutableArray array]; h->_closeFlags = [NSMutableDictionary dictionary]; }); return h; }
++ (void)_presentBar:(NSTouchBar *)bar closeButton:(BOOL)close { WsbsdTouchBarHost *h = [self sharedHost]; if (!bar) return; [h->_overrides removeObjectIdenticalTo: bar]; [h->_overrides addObject: bar]; h->_closeFlags[[NSValue valueWithNonretainedObject: bar]] = @(close); [h update]; }
++ (void)_dismissBar:(NSTouchBar *)bar { WsbsdTouchBarHost *h = [self sharedHost]; if (bar) [h->_overrides removeObjectIdenticalTo: bar]; [h update]; }
+/* the bars of the responder chain from the first responder up: the first is shown, the others fill the "other items" proxy */
+static NSArray *BarChain(NSResponder *r)
 {
-	for (; r; r = [r nextResponder]) {
-		NSTouchBar *b = [r touchBar]; if (!b) { b = [r makeTouchBar]; if (b) [r setTouchBar: b]; } if (b) return b;
-	}
-	return nil;
+	NSMutableArray *a = [NSMutableArray array];
+	for (; r; r = [r nextResponder]) { NSTouchBar *b = [r touchBar]; if (!b) { b = [r makeTouchBar]; if (b) [r setTouchBar: b]; } if (b && ![a containsObject: b]) [a addObject: b]; }
+	return a;
 }
-- (NSTouchBar *)_resolve
+- (NSArray *)_chain
 {
-	if (![NSApp isActive]) return nil; NSWindow *w = [NSApp keyWindow]; if (w == _panel) w = [NSApp mainWindow]; if (!w) return nil;
-	NSTouchBar *b = BarOfResponder([w firstResponder] ?: w); if (!b) b = [w touchBar]; if (!b) b = [NSApp touchBar]; return b;
+	if ([_overrides count]) return @[ [_overrides lastObject] ];
+	if (![NSApp isActive]) return @[]; NSWindow *w = [NSApp keyWindow]; if (w == _panel) w = [NSApp mainWindow]; if (!w) return @[];
+	NSMutableArray *a = [BarChain([w firstResponder] ?: w) mutableCopy]; NSTouchBar *wb = [w touchBar]; if (wb && ![a containsObject: wb]) [a addObject: wb]; NSTouchBar *ab = [NSApp touchBar]; if (ab && ![a containsObject: ab]) [a addObject: ab];
+	return a;
 }
 - (void)_ensurePanel
 {
@@ -206,19 +330,30 @@ static NSTouchBar *BarOfResponder(NSResponder *r)
 	_panel = [[NSPanel alloc] initWithContentRect: NSMakeRect(NSMidX(sf) - 560, 40, 1120, 46) styleMask: NSWindowStyleMaskBorderless | NSWindowStyleMaskNonactivatingPanel backing: NSBackingStoreBuffered defer: NO];
 	[_panel setLevel: NSStatusWindowLevel]; [_panel setBecomesKeyOnlyIfNeeded: YES]; [_panel setHidesOnDeactivate: NO]; [_panel setBackgroundColor: [NSColor clearColor]]; [_panel setOpaque: NO]; [_panel setHasShadow: NO]; [_panel setTitle: @"Touch Bar"]; [_panel setReleasedWhenClosed: NO];
 }
+- (void)_sysSlide:(NSSlider *)sl { double v = [sl doubleValue]; if ([sl tag] == 0) [WsbsdSysControls setBrightness: v]; else { [WsbsdSysControls setVolume: v]; if (gMute && v > 0) [WsbsdSysControls setMuted: NO]; } }
+/* tapping brightness or volume in the control strip opens a bar with a slider (the expanded control strip) */
+- (void)showSystemSlider:(int)which
+{
+	NSTouchBar *bar = [NSTouchBar new]; NSSliderTouchBarItem *it = [[NSSliderTouchBarItem alloc] initWithIdentifier: which ? @"com.apple.system.volume" : @"com.apple.system.brightness"]; NSSlider *sl = [it slider]; [sl setMinValue: 0]; [sl setMaxValue: 1]; [sl setTag: which]; [sl setFrameSize: NSMakeSize(420, 30)]; [it setDoubleValue: which ? [WsbsdSysControls volume] : [WsbsdSysControls brightness]]; [sl setTarget: self]; [sl setAction: @selector(_sysSlide:)]; [sl setContinuous: YES];
+	[bar setTemplateItems: [NSSet setWithObject: it]]; [bar setDefaultItemIdentifiers: @[ NSTouchBarItemIdentifierFlexibleSpace, [it identifier], NSTouchBarItemIdentifierFlexibleSpace ]]; [WsbsdTouchBarHost _presentBar: bar closeButton: YES];
+}
 - (void)_escape:(id)sender { [NSApp sendAction: @selector(cancelOperation:) to: nil from: sender]; }
+- (void)_close:(id)sender { [_overrides removeLastObject]; [self update]; }
 - (void)update
 {
-	NSTouchBar *b = [self _resolve];
+	NSArray *chain = [self _chain]; NSTouchBar *b = [chain firstObject];
 	if (!b) { if (_panel && [_panel isVisible]) [_panel orderOut: nil]; [_bar _wsSetVisible: NO]; _bar = nil; _signature = nil; return; }
-	NSString *esc = [b escapeKeyReplacementItemIdentifier]; NSString *sig = [NSString stringWithFormat: @"%p|%@|%@", b, [[b itemIdentifiers] componentsJoinedByString: @","], esc ?: @""];
+	BOOL isOverride = [_overrides count] > 0, closeBtn = isOverride && [_closeFlags[[NSValue valueWithNonretainedObject: b]] boolValue];
+	NSString *esc = isOverride ? nil : [b escapeKeyReplacementItemIdentifier]; NSMutableString *sig = [NSMutableString stringWithFormat: @"%d|%d", isOverride, closeBtn];
+	for (NSTouchBar *c in chain) [sig appendFormat: @"|%p:%@:%@", c, [[c itemIdentifiers] componentsJoinedByString: @","], [c escapeKeyReplacementItemIdentifier] ?: @""];
 	[self _ensurePanel];
 	if (b != _bar || ![sig isEqual: _signature]) {
 		[_bar _wsSetVisible: NO]; _bar = b; _signature = sig; [_content removeFromSuperview];
-		NSView *root = [[WsbsdTBBackground alloc] initWithFrame: NSMakeRect(0, 0, 1120, 46)]; NSTouchBarItem *e = esc ? [b itemForIdentifier: esc] : nil; CGFloat x = 17, csw = 245;
-		NSView *ev = [e view]; if (!ev) { NSButtonTouchBarItem *eb = [NSButtonTouchBarItem buttonTouchBarItemWithIdentifier: @"esc" title: @"esc" target: self action: @selector(_escape:)]; ev = [eb view]; [ev setFrameSize: NSMakeSize(64, 30)]; objc_setAssociatedObject(root, "escItem", eb, OBJC_ASSOCIATION_RETAIN_NONATOMIC); }
+		NSView *root = [[WsbsdTBBackground alloc] initWithFrame: NSMakeRect(0, 0, 1120, 46)]; NSTouchBarItem *e = esc ? [b itemForIdentifier: esc] : nil; CGFloat x = 17, csw = 190;
+		NSView *ev = [e view]; if (ev) Restyle(ev);
+		if (!ev) { NSButtonTouchBarItem *eb = closeBtn ? [NSButtonTouchBarItem buttonTouchBarItemWithIdentifier: @"close" title: @"x" target: self action: @selector(_close:)] : [NSButtonTouchBarItem buttonTouchBarItemWithIdentifier: @"esc" title: @"esc" target: self action: @selector(_escape:)]; ev = [eb view]; [ev setFrameSize: NSMakeSize(64, 30)]; objc_setAssociatedObject(root, "escItem", eb, OBJC_ASSOCIATION_RETAIN_NONATOMIC); }
 		[ev setFrameOrigin: NSMakePoint(x, 8)]; [root addSubview: ev]; x += [ev frame].size.width + 17;
-		NSView *strip = StripForBar(b, 1120 - 17 - csw - 17 - x, esc ? [NSSet setWithObject: esc] : nil); [strip setFrameOrigin: NSMakePoint(x, 8)]; [root addSubview: strip];
+		NSView *strip = StripForBars(chain, 1120 - 17 - csw - 17 - x, esc ? [NSSet setWithObject: esc] : nil); [strip setFrameOrigin: NSMakePoint(x, 8)]; [root addSubview: strip];
 		WsbsdTBControlStrip *cs = [[WsbsdTBControlStrip alloc] initWithFrame: NSMakeRect(1120 - 17 - csw, 8, csw, 30)]; [root addSubview: cs];
 		_content = root; [_panel setContentView: root];
 	}
