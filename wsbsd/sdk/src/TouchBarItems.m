@@ -203,9 +203,9 @@ static void SegFit(NSSegmentedControl *s) { NSInteger n = [s segmentCount]; for 
 - (void)_step:(NSButton *)b { [self setValue: [self value] + ([b tag] ? -[self increment] : [self increment])]; SEL a = [self action]; id t = [self target]; if (a) [NSApp sendAction: a to: t from: self]; }
 - (NSView *)view
 {
-	NSView *v = St(self)[@"view"]; if (v) return v; v = [[NSView alloc] initWithFrame: NSMakeRect(0, 0, 150, 30)];
-	NSTextField *t = [NSTextField labelWithString: @""]; [t setTextColor: [NSColor whiteColor]]; [t setAlignment: NSTextAlignmentCenter]; [t setFrame: NSMakeRect(0, 5, 70, 20)]; [v addSubview: t]; St(self)[@"text"] = t;
-	NSButton *minus = [NSButton buttonWithTitle: @"-" target: self action: @selector(_step:)]; [minus setTag: 1]; [minus setFrame: NSMakeRect(74, 0, 36, 30)]; NSButton *plus = [NSButton buttonWithTitle: @"+" target: self action: @selector(_step:)]; [plus setFrame: NSMakeRect(114, 0, 36, 30)];
+	NSView *v = St(self)[@"view"]; if (v) return v; v = [[NSView alloc] initWithFrame: NSMakeRect(0, 0, 200, 30)];
+	NSTextField *t = [NSTextField labelWithString: @""]; [t setTextColor: [NSColor whiteColor]]; [t setAlignment: NSTextAlignmentCenter]; [t setFrame: NSMakeRect(0, 5, 60, 20)]; [v addSubview: t]; St(self)[@"text"] = t;
+	NSButton *minus = [NSButton buttonWithTitle: @"-" target: self action: @selector(_step:)]; [minus setTag: 1]; [minus setFrame: NSMakeRect(64, 0, 64, 30)]; NSButton *plus = [NSButton buttonWithTitle: @"+" target: self action: @selector(_step:)]; [plus setFrame: NSMakeRect(132, 0, 64, 30)];
 	[v addSubview: minus]; [v addSubview: plus]; St(self)[@"view"] = v; [self _refresh]; return v;
 }
 @end
