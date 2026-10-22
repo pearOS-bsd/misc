@@ -7,6 +7,7 @@
 #import "TDesktopWindow.h"
 @interface TDesktopWindowController : NSWindowController @end
 @interface TIconView : NSView @end
+@interface TListView : NSOutlineView @end
 @interface TSidebarView : NSOutlineView @end
 @interface TCompressWithOptionsController : NSWindowController @end
 @interface TNotificationCenterDelegate : NSObject @end
@@ -573,7 +574,6 @@
 @interface TColumnViewController : TBrowserViewController @end
 @interface FITagEditorView : NSControl @end
 @interface TBrowserViewContainerController : TViewController @end
-@interface TListView : NSOutlineView @end
 @interface TDesktopSelectionController : NSObject @end
 @interface TArrangeByMenuItem : NSMenuItem @end
 @interface TListViewController : TBrowserViewController @end
@@ -9430,77 +9430,6 @@
 - (id)ephemeralPathBarIsInHideAnimation { /* 0x100545D90 */ return nil; }
 - (id)setEphemeralPathBarIsInHideAnimation:(id)a0 { /* 0x100545DA4 */ return nil; }
 + (id)keyPathsForValuesAffectingIsPathBarVisible { /* 0x100544414 */ return nil; }
-@end
-@implementation TListView
-- (id)initCommon { /* 0x100546B98 */ return nil; }
-- (id)_canUseUpdatedIdentation { /* 0x100547250 */ return nil; }
-- (id)isLTRLocalization { /* 0x100547258 */ return nil; }
-- (id)_supportsTrackingAreasForCells { /* 0x1005472B0 */ return nil; }
-- (id)tvcDelegate { /* 0x10054736C */ return nil; }
-- (id)commonMouseDownAndEarlyReturn:(id)a0 { /* 0x100547370 */ return nil; }
-- (id)_typeSelectInterpretKeyEvent:(id)a0 { /* 0x100547578 */ return nil; }
-- (id)handleUnicodeTextInput:(id)a0 atTime:(id)a1 { /* 0x100547644 */ return nil; }
-- (id)rowIndexForNode:(id)a0 { /* 0x1005476DC */ return nil; }
-- (id)rowsForNodes:(id)a0 { /* 0x10054773C */ return nil; }
-- (id)setSelectedNodes:(id)a0 byExtendingSelection:(id)a1 { /* 0x10054784C */ return nil; }
-- (id)setAnchorNode:(id)a0 { /* 0x100547A64 */ return nil; }
-- (id)clickToSelectRow:(id)a0 modifiers:(id)a1 { /* 0x100547AC8 */ return nil; }
-- (id)hitTestForEvent:(id)a0 row:(id)a1 { /* 0x1000932DC */ return nil; }
-- (id)_hitRowForDropTargetRow:(id)a0 point:(id)a1 { /* 0x100547CC8 */ return nil; }
-- (id)nodeHitTestAtPoint:(id)a0 { /* 0x100547DB4 */ return nil; }
-- (id)hitTestForGesture:(id)a0 { /* 0x100548054 */ return nil; }
-- (id)quickLookWithEvent:(id)a0 { /* 0x100548108 */ return nil; }
-- (id)lastVisibleColumnIndex { /* 0x10009EC94 */ return nil; }
-- (id)_autoresizeToFit { /* 0x100079384 */ return nil; }
-- (id)insertNodes:(id)a0 atIndexes:(id)a1 inParent:(id)a2 withAnimation:(id)a3 { /* 0x100548ABC */ return nil; }
-- (id)removeNodes:(id)a0 atIndexes:(id)a1 inParent:(id)a2 withAnimation:(id)a3 { /* 0x100548C94 */ return nil; }
-- (id)moveNode:(id)a0 fromIndex:(id)a1 inParent:(id)a2 toIndex:(id)a3 inParent:(id)a4 { /* 0x100548E4C */ return nil; }
-- (id)nodeAtChildIndex:(id)a0 inParent:(id)a1 { /* 0x100549228 */ return nil; }
-- (id)childIndexForNode:(id)a0 { /* 0x100549284 */ return nil; }
-- (id)parentToChildrenInTableMapNeedsRebuild:(id)a0 expectedChildren:(id)a1 { /* 0x1005492D8 */ return nil; }
-- (id)rebuildParentToChildrenInTableMap:(id)a0 { /* 0x10054937C */ return nil; }
-- (id)listTableColumnWithColumnProperty:(id)a0 { /* 0x100549428 */ return nil; }
-- (id)columnIndexWithColumnProperty:(id)a0 { /* 0x1005494D0 */ return nil; }
-- (id)listRowViewAtRow:(id)a0 makeIfNecessary:(id)a1 { /* 0x100549538 */ return nil; }
-- (id)baseCellViewForColumnProperty:(id)a0 row:(id)a1 { /* 0x10054959C */ return nil; }
-- (id)cellViewForColumnProperty:(id)a0 row:(id)a1 { /* 0x10054962C */ return nil; }
-- (id)nameCellViewAtRow:(id)a0 { /* 0x100549690 */ return nil; }
-- (id)enumerateAvailableBaseCellViewsUsingBlock:(id)a0 { /* 0x100549700 */ return nil; }
-- (id)_wantsLiveResizeToUseCachedImage { /* 0x100549894 */ return nil; }
-- (id)_canUseWhiteDisclosureTriangles { /* 0x10054989C */ return nil; }
-- (id)_outlineControlClicked:(id)a0 { /* 0x1000A1BB0 */ return nil; }
-- (id)renameSelectedItem { /* 0x100549958 */ return nil; }
-- (id)startEditingWithNode:(id)a0 runNewFolderAnimation:(id)a1 renameOp:(id)a2 { /* 0x100549A48 */ return nil; }
-- (id)startEditingWithNode:(id)a0 renameOp:(id)a1 { /* 0x1000AADD0 */ return nil; }
-- (id)stopEditing:(id)a0 { /* 0x10007AB2C */ return nil; }
-- (id)isEditing { /* 0x100549A50 */ return nil; }
-- (id)scrollSTFEditorIntoView { /* 0x100549A6C */ return nil; }
-- (id)adjustForRowChangesDuringEditing { /* 0x100549B64 */ return nil; }
-- (id)updateSTFEditorLocation { /* 0x100549CA4 */ return nil; }
-- (id)editingSelectionType { /* 0x100549DB4 */ return nil; }
-- (id)shrinkToFitTextViewAboutToOpen { /* 0x1000AC29C */ return nil; }
-- (id)shrinkToFitTextViewEditingComplete:(id)a0 { /* 0x1000AE1D8 */ return nil; }
-- (id)shrinkToFitTextViewAboutToClose { /* 0x1000B0CDC */ return nil; }
-- (id)stfEditorController { /* 0x1000B0E7C */ return nil; }
-- (id)_drawDropHighlightOutlineForRow:(id)a0 { /* 0x100549DD0 */ return nil; }
-- (id)setCurrentDropNode:(id)a0 { /* 0x1000F10D8 */ return nil; }
-- (id)updateDraggingItemsForDrag:(id)a0 { /* 0x1000F1FF8 */ return nil; }
-- (id)draggingEnded:(id)a0 { /* 0x1000F2F10 */ return nil; }
-- (id)wantsPeriodicDraggingUpdates { /* 0x1000F1514 */ return nil; }
-- (id)_shouldContinueExpandAtLevel:(id)a0 beganAtLevel:(id)a1 { /* 0x10007DBCC */ return nil; }
-- (id)isDroppingOnTagNode { /* 0x1000F1164 */ return nil; }
-- (id)_onlyAcceptRowDropOnContent { /* 0x1000F05E4 */ return nil; }
-- (id)addDropFeedbackViews { /* 0x1000F10EC */ return nil; }
-- (id)prepareDraggingDestinationView:(id)a0 forRowIndexes:(id)a1 draggingStyle:(id)a2 { /* 0x1000F11E8 */ return nil; }
-- (id)_setUpImmediateActionGestureRecognizers { /* 0x100549EF4 */ return nil; }
-- (id)currentDropNode { /* 0x10054A7F0 */ return nil; }
-- (id)isAutoSizingColumns { /* 0x10054A804 */ return nil; }
-- (id)setIsAutoSizingColumns:(id)a0 { /* 0x10054A818 */ return nil; }
-- (id)isBandSelecting { /* 0x10054A82C */ return nil; }
-- (id)commandDoubleClickedRow { /* 0x10054A840 */ return nil; }
-- (id)setCommandDoubleClickedRow:(id)a0 { /* 0x10054A854 */ return nil; }
-- (id)clickState { /* 0x10054A86C */ return nil; }
-- (id)setClickState:(id)a0 { /* 0x10054A898 */ return nil; }
 @end
 @implementation TDesktopSelectionController
 - (id)initWithTargetNode:(id)a0 delegate:(id)a1 { /* 0x10055067C */ return nil; }

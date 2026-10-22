@@ -11,6 +11,13 @@
 }
 @end
 
+@interface NSCalendar (WsbsdRelativeDays) @end
+@implementation NSCalendar (WsbsdRelativeDays)
+- (BOOL)_isDate:(NSDate *)d dayOffset:(int)off { NSDateComponents *c = [[NSDateComponents alloc] init]; [c setDay: off]; NSDate *t = [self dateByAddingComponents: c toDate: [NSDate date] options: 0]; NSUInteger u = NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit; NSDateComponents *a = [self components: u fromDate: d], *b = [self components: u fromDate: t]; return [a year] == [b year] && [a month] == [b month] && [a day] == [b day]; }
+- (BOOL)isDateInToday:(NSDate *)d { return [self _isDate: d dayOffset: 0]; }
+- (BOOL)isDateInYesterday:(NSDate *)d { return [self _isDate: d dayOffset: -1]; }
+- (BOOL)isDateInTomorrow:(NSDate *)d { return [self _isDate: d dayOffset: 1]; }
+@end
 /* the order of the Finder: numbers by value, case and accents ignored */
 @interface NSString (WsbsdLocalizedStandard) @end
 @implementation NSString (WsbsdLocalizedStandard)
