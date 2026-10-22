@@ -1,0 +1,271 @@
+## Finder
+  About Finder
+  -- (disabled)
+  Settings…  [0:,]
+  -- (disabled)
+  Empty Trash…  [1:] (disabled)
+  Empty Trash  [3:] (disabled)
+  -- (disabled)
+  Services
+    No Services Apply (disabled)
+    Services Settings…
+  -- (disabled)
+  Hide Finder  [0:H]
+  Hide Others  [2:H]
+  Show All (disabled)
+## File
+  New Finder Window  [0:N]
+  New Folder  [1:N] (disabled)
+  New Folder with Selection  [4:N] (disabled)
+  New Smart Folder
+  New Tab  [0:T]
+  Open  [0:O] (disabled)
+  Open in New Tab  [4:O] (disabled)
+  Open and Close Window  [2:O] (disabled)
+  Open With (disabled)
+    Preview (default) (disabled)
+    -- (disabled)
+    Adobe Acrobat (disabled)
+    ColorSync Utility (disabled)
+    Google Chrome (disabled)
+    Google Chrome for Testing (disabled)
+    Image Playground (disabled)
+    MAMP PRO (disabled)
+    nwjs (disabled)
+    QuickTime Player (disabled)
+    Safari (disabled)
+    Shottr (disabled)
+    WhatsApp (disabled)
+    -- (disabled)
+    App Store… (disabled)
+    Other… (disabled)
+  Always Open With (disabled)
+    Preview (default) (disabled)
+    -- (disabled)
+    Adobe Acrobat (disabled)
+    ColorSync Utility (disabled)
+    Google Chrome (disabled)
+    Google Chrome for Testing (disabled)
+    Image Playground (disabled)
+    MAMP PRO (disabled)
+    nwjs (disabled)
+    QuickTime Player (disabled)
+    Safari (disabled)
+    Shottr (disabled)
+    WhatsApp (disabled)
+    -- (disabled)
+    App Store… (disabled)
+    Other… (disabled)
+  Close Window  [0:W] (disabled)
+  Close All  [2:W]
+  -- (disabled)
+  Get Info  [0:I] (disabled)
+  Show Inspector  [2:I] (disabled)
+  Get Summary Info  [4:I] (disabled)
+  Rename (disabled)
+  Compress (disabled)
+  Compress (disabled)
+  Duplicate  [0:D] (disabled)
+  Duplicate Exactly  [3:D] (disabled)
+  Make Alias  [4:A] (disabled)
+  Quick Look “fbsd-vm”  [0:Y] (disabled)
+  Slideshow “fbsd-vm”  [2:Y] (disabled)
+  -- (disabled)
+  Share… (disabled)
+  Manage Shared File… (disabled)
+  -- (disabled)
+  Show Original  [0:R] (disabled)
+  Add to Sidebar  [4:T] (disabled)
+  Add to Dock  [5:T] (disabled)
+  -- (disabled)
+  Move to Trash  [0:] (disabled)
+  Delete Immediately…  [2:] (disabled)
+  Eject  [0:E] (disabled)
+  Eject  [0:E] (disabled)
+  Eject  [0:E] (disabled)
+  -- (disabled)
+  --
+  -- (disabled)
+  Print  [0:P] (disabled)
+## Edit
+  Undo  [0:Z] (disabled)
+  Redo  [1:Z] (disabled)
+  -- (disabled)
+  Cut  [0:X] (disabled)
+  Copy  [0:C] (disabled)
+  Copy “fbsd-vm” as Pathname  [2:C] (disabled)
+  Copy as Link  [6:C] (disabled)
+  Paste  [0:V] (disabled)
+  Move Item Here  [2:V] (disabled)
+  Paste Item Exactly  [3:V] (disabled)
+  Select All  [0:A] (disabled)
+  Deselect All  [2:A] (disabled)
+  -- (disabled)
+  Show Clipboard
+  -- (disabled)
+  Search  [0:F]
+  Search by Name…  [5:F]
+  -- (disabled)
+  Writing Tools
+    Show Writing Tools (disabled)
+    -- (disabled)
+    Proofread (disabled)
+    Rewrite (disabled)
+    -- (disabled)
+    Make Friendly (disabled)
+    Make Professional (disabled)
+    Make Concise (disabled)
+    -- (disabled)
+    Summarize (disabled)
+    Create Key Points (disabled)
+    Make List (disabled)
+    Make Table (disabled)
+    -- (disabled)
+    Compose… (disabled)
+  -- (disabled)
+  AutoFill
+    Contact… (disabled)
+    Passwords… (disabled)
+    Credit Card… (disabled)
+  Start Dictation  [8:🎤] (disabled)
+  Emoji & Symbols  [8:🌐]
+## View
+  as Icons  [0:1] (disabled)
+  as List  [0:2] (disabled)
+  as Columns  [0:3] (disabled)
+  as Gallery  [0:4] (disabled)
+  -- (disabled)
+  Use Groups  [4:0]
+  Sort By (disabled)
+    None  [6:0] (disabled)
+    -- (disabled)
+    Snap to Grid (disabled)
+    -- (disabled)
+    Name  [6:1] (disabled)
+    Kind  [6:2] (disabled)
+    Date Last Opened  [6:3] (disabled)
+    Date Added  [6:4] (disabled)
+    Date Modified  [6:5] (disabled)
+    Date Created (disabled)
+    Size  [6:6] (disabled)
+    Tags  [6:7] (disabled)
+  Clean Up (disabled)
+  Clean Up Selection (disabled)
+  Clean Up By (disabled)
+    Name  [2:1] (disabled)
+    Kind  [2:2] (disabled)
+    Date Modified  [2:5] (disabled)
+    Date Created (disabled)
+    Size  [2:6] (disabled)
+    Tags  [2:7] (disabled)
+  -- (disabled)
+  Show Tab Bar  [1:T] (disabled)
+  Show All Tabs  [1:\] (disabled)
+  -- (disabled)
+  Hide Sidebar  [4:S] (disabled)
+  Show Preview  [1:P] (disabled)
+  -- (disabled)
+  Hide Toolbar  [2:T] (disabled)
+  Hide Path Bar  [2:P] (disabled)
+  Show Status Bar  [0:/] (disabled)
+  -- (disabled)
+  Customize Toolbar… (disabled)
+  -- (disabled)
+  Show View Options  [0:J]
+  Show Preview Options
+  -- (disabled)
+  Enter Full Screen  [24:F] (disabled)
+## Go
+  Back  [0:[] (disabled)
+  Forward  [0:]] (disabled)
+  Enclosing Folder  [0:] (disabled)
+  Enclosing Folder  [0:] (disabled)
+  Enclosing Folder in New Window  [4:] (disabled)
+  Select Startup Disk  [1:]
+  -- (disabled)
+  Recents  [1:F]
+  Documents  [1:O]
+  Desktop  [1:D]
+  Downloads  [2:L]
+  Home  [1:H]
+  Library
+  Computer  [1:C]
+  AirDrop  [1:R]
+  Network  [1:K]
+  iCloud Drive  [1:I]
+  Shared  [1:S]
+  Applications  [1:A]
+  Utilities  [1:U]
+  -- (disabled)
+  Recent Folders
+    alxb421
+    Desktop
+    Downloads
+    fbsd-vm
+    iso
+    iso-amd64
+    iso-test
+    misc
+    usb
+    wsbsd
+    -- (disabled)
+    Clear Menu
+  -- (disabled)
+  Go to Folder…  [1:G]
+  Connect to Server…  [0:K]
+## Window
+  Minimize  [0:M] (disabled)
+  Minimize All  [2:M]
+  Zoom (disabled)
+  Zoom All
+  Fill  [28:F] (disabled)
+  Center  [28:C] (disabled)
+  -- (disabled)
+  Move & Resize
+    Halves (disabled)
+    Left (disabled)
+    Right (disabled)
+    Top (disabled)
+    Bottom (disabled)
+    -- (disabled)
+    Quarters (disabled)
+    Top Left (disabled)
+    Top Right (disabled)
+    Bottom Left (disabled)
+    Bottom Right (disabled)
+    -- (disabled)
+    Arrange (disabled)
+    Left & Right (disabled)
+    Left & Quarters (disabled)
+    Right & Left (disabled)
+    Right & Quarters (disabled)
+    Top & Bottom (disabled)
+    Top & Quarters (disabled)
+    Bottom & Top (disabled)
+    Bottom & Quarters (disabled)
+    Quarters (disabled)
+    -- (disabled)
+    Return to Previous Size  [28:R] (disabled)
+  Full Screen Tile (disabled)
+    Left of Screen (disabled)
+    Right of Screen (disabled)
+  -- (disabled)
+  Show Previous Tab  [13:	] (disabled)
+  Show Next Tab  [12:	] (disabled)
+  Move Tab to New Window (disabled)
+  Merge All Windows (disabled)
+  -- (disabled)
+  -- (disabled)
+  Bring All to Front
+  Arrange in Front
+  Cycle Through Windows  [0:`] (disabled)
+  Remove Window from Set (disabled)
+  -- (disabled)
+  Show Progress Window (disabled)
+  -- (disabled)
+  Downloads
+## Help
+  Send Finder Feedback
+  -- (disabled)
+  Mac User Guide
+  Tips for Your Mac

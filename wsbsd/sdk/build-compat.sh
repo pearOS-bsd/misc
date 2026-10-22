@@ -24,6 +24,7 @@ clang $F -fobjc-arc -c "$D/src/TouchBar.m" -o "$OUT/TouchBar.o" 2>&1 | grep -E "
 clang $F -fobjc-arc -c "$D/src/TouchBarItems.m" -o "$OUT/TouchBarItems.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/PDFImage.m" -o "$OUT/PDFImage.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/UTI.m" -o "$OUT/UTI.o" 2>&1 | grep -E "error" | head
+clang $F -fobjc-arc -c "$D/src/NibSupport.m" -o "$OUT/NibSupport.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/AppleEventObjects.m" -o "$OUT/AppleEventObjects.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/CFURLProperties.m" -o "$OUT/CFURLProperties.o" 2>&1 | grep -E "error" | head -3
 clang $F -fno-objc-arc -c "$D/src/CFURLConstants.m" -o "$OUT/CFURLConstants.o" 2>&1 | grep -E "error" | head
