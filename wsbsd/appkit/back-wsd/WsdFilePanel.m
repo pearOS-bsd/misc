@@ -1094,6 +1094,12 @@ static NSArray *wsdOpenFilenames(id self, SEL _cmd)
 }
 
 static void wsdSetName(id self, SEL _cmd, NSString *v) { objc_setAssociatedObject(self, "wsdname", v, OBJC_ASSOCIATION_COPY); ((void (*)(id, SEL, id))origSetName)(self, _cmd, v); }
+/* the pieces of the panel the Finder window reuses (the Finder is a separate program: it finds this class by name) */
+@interface WsdFinderSupport : NSObject @end
+@implementation WsdFinderSupport
++ (void)roundWindow:(NSWindow *)w radius:(int)r { RoundWindow(w, r); }
++ (BOOL)drawSymbol:(NSString *)name inRect:(NSRect)cell size:(CGFloat)pt weight:(int)weight color:(NSColor *)c { return WsdSymbolDraw(name, cell, pt, weight, c); }
+@end
 void WsdInstallFilePanel(void)
 {
 	if (origRunModal) return;

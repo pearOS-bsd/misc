@@ -420,7 +420,10 @@ static int wsdShapeForStyle(int style)
 		case WS_EV_MOUSE_UP: {
 			BOOL down = e.type == WS_EV_MOUSE_DOWN;
 			t = (e.buttons & 2) ? (down ? NSRightMouseDown : NSRightMouseUp) : (down ? NSLeftMouseDown : NSLeftMouseUp);
-			ev = [NSEvent mouseEventWithType: t location: p modifierFlags: fl timestamp: ts windowNumber: w->number context: GSCurrentContext() eventNumber: 0 clickCount: 1 pressure: down ? 1.0 : 0.0];
+			/* the click count: presses of the same button within the double click interval (0.5 s) and 5 points of each other count up */
+			static NSTimeInterval lastDown; static NSPoint lastPos; static int lastButtons, clicks;
+			if (down) { if (ts - lastDown < 0.5 && lastButtons == e.buttons && fabs(p.x - lastPos.x) <= 5 && fabs(p.y - lastPos.y) <= 5) clicks++; else clicks = 1; lastDown = ts; lastPos = p; lastButtons = e.buttons; }
+			ev = [NSEvent mouseEventWithType: t location: p modifierFlags: fl timestamp: ts windowNumber: w->number context: GSCurrentContext() eventNumber: 0 clickCount: MAX(1, clicks) pressure: down ? 1.0 : 0.0];
 			break; }
 		case WS_EV_KEY_DOWN:
 		case WS_EV_KEY_UP:

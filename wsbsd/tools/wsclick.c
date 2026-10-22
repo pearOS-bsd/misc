@@ -13,6 +13,7 @@ int main(int argc, char **argv)
 	ws_inject_mouse(c, x, y, b); usleep(100000);
 	if (argc > 4) { ws_disconnect(c); return 0; }                              /* a 4th argument: leave the button pressed */
 	ws_inject_mouse(c, x, y, 0); usleep(100000);
+	if (getenv("WSCLICK_DOUBLE")) { ws_inject_mouse(c, x, y, b); usleep(40000); ws_inject_mouse(c, x, y, 0); usleep(100000); }       /* a second click soon after the first: a double click */
 	ws_disconnect(c);
 	return 0;
 }

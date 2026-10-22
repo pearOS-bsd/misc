@@ -131,6 +131,13 @@ typedef NSString *NSAccessibilityRole, *NSAccessibilitySubrole, *NSAccessibility
 @end
 
 #import <wsbsd/TouchBar.h>
+@interface NSString (WsbsdLocalizedStandard)
+- (NSComparisonResult)localizedStandardCompare:(NSString *)other;
+- (BOOL)localizedStandardContainsString:(NSString *)s;
+@end
+@interface NSCalendar (WsbsdRelativeDays)
+- (BOOL)isDateInToday:(NSDate *)d; - (BOOL)isDateInYesterday:(NSDate *)d; - (BOOL)isDateInTomorrow:(NSDate *)d;
+@end
 extern NSString *const NSImageNameTouchBarGoBackTemplate, *const NSImageNameTouchBarGoForwardTemplate;
 extern NSString *const NSImageNameTouchBarSearchTemplate, *const NSImageNameTouchBarBookmarksTemplate, *const NSImageNameTouchBarAddTemplate, *const NSImageNameTouchBarRefreshTemplate, *const NSImageNameTouchBarSidebarTemplate;
 @interface NSView (WsbsdInput)

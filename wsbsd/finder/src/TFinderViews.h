@@ -1,0 +1,67 @@
+/* The views of the Finder window, drawn after the real one (measured on a macOS 26 Finder window by the accessibility tree and a pixel capture, see docs/desktop/finder-window-ax-measurements.txt):
+ * a window of 1022 x 552 with a toolbar 52 high, a floating sidebar 238 wide, an icon grid of 112 x 126 cells and a path bar 30 high. The controller (TBrowserWindowController) owns them. */
+#import <Cocoa/Cocoa.h>
+
+#define TF_ATTR __attribute__((unused))
+TF_ATTR static NSColor *TFRGB(int r, int g, int b) { return [NSColor colorWithCalibratedRed: r / 255.0 green: g / 255.0 blue: b / 255.0 alpha: 1]; }
+TF_ATTR static NSColor *TFRGBA(int r, int g, int b, double a) { return [NSColor colorWithCalibratedRed: r / 255.0 green: g / 255.0 blue: b / 255.0 alpha: a]; }
+TF_ATTR static BOOL TFDark(void) { const char *e = getenv("WSD_APPEARANCE"); return !(e && !strcmp(e, "light")); }
+#define TF_CONTENT  (TFDark() ? TFRGB(30, 30, 30) : TFRGB(255, 255, 255))
+#define TF_SIDEBAR  (TFDark() ? TFRGB(37, 37, 37) : TFRGB(236, 236, 238))
+#define TF_PILL     (TFDark() ? TFRGB(58, 58, 58) : TFRGB(240, 240, 242))
+#define TF_PATHBAR  (TFDark() ? TFRGB(41, 41, 41) : TFRGB(246, 246, 246))
+#define TF_LINE     (TFDark() ? TFRGBA(255, 255, 255, 0.10) : TFRGBA(0, 0, 0, 0.10))
+#define TF_TEXT     (TFDark() ? TFRGBA(255, 255, 255, 0.85) : TFRGBA(0, 0, 0, 0.85))
+#define TF_DIM      (TFDark() ? TFRGBA(255, 255, 255, 0.42) : TFRGBA(0, 0, 0, 0.45))
+#define TF_ACCENT   TFRGB(0, 98, 225)
+#define TF_BLUE     (TFDark() ? TFRGB(64, 156, 255) : TFRGB(0, 122, 255))
+
+NSString *TFSizeString(unsigned long long bytes);
+NSString *TFDateString(NSDate *d);
+NSString *TFKindString(NSString *path, BOOL dir);
+BOOL TFSymbol(NSString *name, NSRect cell, CGFloat pt, NSColor *tint);
+NSImage *TFIcon(NSString *path);
+
+@protocol TIconViewDelegate <NSObject>
+- (void)iconViewOpenItem:(NSString *)path;
+- (void)iconViewSelectionChanged:(NSArray *)paths;
+@end
+@protocol TSidebarDelegate <NSObject> - (void)sidebarGoTo:(NSString *)path; @end
+@protocol TPathBarDelegate <NSObject> - (void)pathBarGoTo:(NSString *)path; @end
+
+/* a view that scrolls its own content and draws the overlay scroller of the Finder (a thumb 10 wide at the right edge, no track) */
+@interface TScrollBase : NSView { @public CGFloat off, topInset; BOOL dragging; CGFloat dragGrab; }
+- (CGFloat)contentHeight;
+- (void)drawContent:(NSRect)dirty;
+- (void)contentMouseDown:(NSPoint)p event:(NSEvent *)e;
+- (void)scrollTo:(CGFloat)y;
+- (void)reveal:(NSRect)r;
+@end
+
+@interface TIconView : TScrollBase { @public __weak id<TIconViewDelegate> delegate; NSString *filter; NSMutableArray *_items; NSMutableIndexSet *_sel; NSInteger _anchor; }
+- (void)setFolder:(NSString *)folder;
+- (NSArray *)selectedPaths;
+- (void)reloadKeepingSelection;
+@end
+
+@interface TListView : TScrollBase { @public __weak id<TIconViewDelegate> delegate; NSString *filter; NSMutableArray *_items; NSMutableIndexSet *_sel; NSString *_sortKey; BOOL _asc; NSInteger _anchor; }
+- (void)setFolder:(NSString *)folder;
+- (NSArray *)selectedPaths;
+@end
+
+@interface TSidebarView : TScrollBase { @public NSString *current; __weak id<TSidebarDelegate> delegate; NSArray *_rows; }
+@end
+
+@interface TPathBarView : NSView { @public NSString *path; __weak id<TPathBarDelegate> delegate; NSArray *_paths; NSMutableArray *_rects; }
+- (void)setPath:(NSString *)p;
+@end
+
+@interface TToolbarView : NSView { @public NSString *title; BOOL canBack, canForward; id target; NSInteger mode; NSTextField *search; BOOL searching; NSInteger hot; }
+- (void)setSearching:(BOOL)on;
+@end
+
+/* the three window buttons, the 1 px rim and the rounded corners, on top of everything */
+@interface TWindowTrim : NSView @end
+
+/* a borderless window the Finder moves and resizes itself */
+@interface TFinderWindow : NSWindow @end

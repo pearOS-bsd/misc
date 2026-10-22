@@ -1,5 +1,5 @@
 /* TApplicationController: the delegate of the Finder (decompiled: -[TApplicationController applicationWillFinishLaunching:] at 0x100011330, -loadMenuBar at 0x1000115a8: it loads the nib "MenuBar" with itself as owner). */
-#import <AppKit/AppKit.h>
+#import <Cocoa/Cocoa.h>
 
 @interface TBrowserWindowController : NSWindowController
 + (instancetype)newBrowserWithPath:(NSString *)path;
