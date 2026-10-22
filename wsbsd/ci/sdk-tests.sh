@@ -22,9 +22,15 @@ done
 # CoreWLAN: the framework builds as on the Mac (System/Library/...) and CWNetwork / CWChannel answer like the real ones (golden file from a Mac, tools/cwprobe)
 CW="$O/cwout"; rm -rf "$CW"; sh "$WS/sdk/build-corewlan.sh" "$CW" > "$O/cwlan-build.out" 2>&1
 CWL="$CW/System/Library/Frameworks/CoreWLAN.framework/Versions/A"; CWF="$CW/System/Library/PrivateFrameworks/CoreWiFi.framework/Versions/A"
-clang -x objective-c -fblocks -w -fobjc-arc -I"$WS/sdk/include" $(gnustep-config --objc-flags) "$WS/sdk/tests/cwlan_golden_test.m" -o "$O/cwlan_golden_test" $(gnustep-config --base-libs) -L"$CWL" -L"$CWF" -l:CoreWLAN -l:CoreWiFi -Wl,-rpath,"$CWL" -Wl,-rpath,"$CWF" 2>&1 | grep error | head -3
+clang -x objective-c -fblocks -w -fobjc-arc -I"$WS/sdk/include" $(gnustep-config --objc-flags) "$WS/sdk/tests/cwlan_golden_test.m" -o "$O/cwlan_golden_test" $(gnustep-config --base-libs) -L"$CWL" -L"$CWF" -l:CoreWLAN -l:CoreWiFi -Wl,-rpath,"$CWL" -Wl,-rpath,"$CWF" -L/usr/local/lib -lffi -ldispatch 2>&1 | grep error | head -3
 [ -x "$O/cwlan_golden_test" ] || { echo "SDK TEST cwlan_golden_test: did not build"; FAIL=1; }
 [ -x "$O/cwlan_golden_test" ] && { LD_LIBRARY_PATH=/usr/local/GNUstep/System/Library/Libraries:/usr/local/lib timeout 120 "$O/cwlan_golden_test" "$WS/sdk/tests/golden/cwlan_golden.json" > "$O/cwlan_golden_test.out" 2>&1 && echo "SDK TEST cwlan_golden_test: ok" || { echo "SDK TEST cwlan_golden_test: FAILED"; FAIL=1; }; grep -v '^20' "$O/cwlan_golden_test.out" | tail -6; }
+# CWNetworkProfile / CWConfiguration against what the real framework printed (properties, description, equality, external form, archives)
+for pr in "profile_probe cwprofile_probe" "profile_probe2 cwprofile_probe2" "cfg_probe cwconfig_probe"; do
+	set -- $pr; src=$1; gold=$2
+	clang -x objective-c -fblocks -fobjc-arc -w -I"$WS/sdk/include" -I/usr/local/include $(gnustep-config --objc-flags) "$WS/tools/cwprobe/$src.m" -o "$O/$src" $(gnustep-config --base-libs) -L"$CWL" -L"$CWF" -l:CoreWLAN -l:CoreWiFi -Wl,-rpath,"$CWL" -Wl,-rpath,"$CWF" -L/usr/local/lib -lffi -ldispatch 2>&1 | grep error | head -3
+	if [ -x "$O/$src" ]; then LD_LIBRARY_PATH=/usr/local/GNUstep/System/Library/Libraries:/usr/local/lib "$O/$src" 2>&1 | sed 's/0x[0-9a-f]*/PTR/g' > "$O/$gold.out"; if cmp -s "$O/$gold.out" "$WS/sdk/tests/golden/$gold.txt"; then echo "SDK TEST $gold: ok"; else echo "SDK TEST $gold: FAILED"; diff "$WS/sdk/tests/golden/$gold.txt" "$O/$gold.out" | head -6; FAIL=1; fi; else echo "SDK TEST $gold: did not build"; FAIL=1; fi
+done
 # wpa_supplicant backend of airportd against a fake control socket and the IE parser
 clang -x objective-c -fblocks -fobjc-arc -w -I"$WS/sdk/include" -I"$WS/airportd" -I/usr/local/include $(gnustep-config --objc-flags) "$WS/sdk/tests/wpa_backend_tests.m" "$WS/airportd/WSWiFiWpaBackend.m" "$WS/airportd/WSIEParser.m" "$WS/airportd/WSWiFiSimBackend.m" -o "$O/wpa_backend_tests" $(gnustep-config --base-libs) -L/usr/local/lib -ldispatch 2>&1 | grep error | head -5
 [ -x "$O/wpa_backend_tests" ] || { echo "SDK TEST wpa_backend_tests: did not build"; FAIL=1; }

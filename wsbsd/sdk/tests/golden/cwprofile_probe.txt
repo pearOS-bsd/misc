@@ -1,0 +1,1213 @@
+BASE ef {AddedBy=n0;CaptiveBypass=n0;ChannelHistory=arr[];CollocatedGroup=arr[];Disabled=n0;HiddenNetwork=n0;LowDataMode=n0;MovingAttribute=n0;NetworkWasCaptive=n0;Passpoint=n0;PersonalHotspot=n0;PossiblyHiddenNetwork=n0;PrivacyProxyEnabled=n1;PublicAttribute=n0;RoamingProfileType=None;SPRoaming=n1;SSID=data4:486f6d65;SSIDString=Home;ShareMode=n1;Standalone6G=n0;SystemMode=n0;TemporarilyDisabled=n0;TransitionDisabledFlags=n0;UserRole=n1;}
+BASE
+  addedAt = nil
+  addedBy = n0
+  autoLogin = n1
+  bssidList = nil
+  captiveBypass = n0
+  captiveNetwork = n0
+  captiveNetworkStatus = n0
+  captiveSheetTimestamp = nil
+  channelHistory = set[]
+  collocatedGroup = set[]
+  disabled = n0
+  discoveredAt = nil
+  displayName = nil
+  domainName = nil
+  hiddenNetwork = n0
+  identifier = wifi.ssid.486f6d65
+  isPasspoint = n0
+  isPersonalHotspot = n0
+  isServiceProviderRoamingEnabled = n1
+  lastAutoJoinAt = nil
+  lastConnected = nil
+  lastManualJoinAt = nil
+  lowDataMode = n0
+  movingAttribute = n0
+  naiRealmList = nil
+  networkGroupID = nil
+  networkGroupPriority = n0
+  payloadUUID = nil
+  possiblyHiddenNetwork = n0
+  privacyProxyEnabled = n1
+  publicAttribute = n0
+  roamingConsortiumList = nil
+  roamingProfileType = n0
+  security = n9223372036854775807
+  securityType = n0
+  shareMode = n1
+  ssid = Home
+  ssidData = data4:486f6d65
+  standalone6G = n0
+  systemMode = n0
+  temporarilyDisabled = n0
+  transitionDisabledFlags = n0
+  updatedAt = nil
+  userPreferredNetworkNames = nil
+  userPreferredOrderTimestamp = nil
+  userPreferredPasspointDomains = nil
+  userRole = n1
+  wasCaptiveNetwork = n0
+  wasHiddenBefore = nil
+  | SSID: Home ({length = 4, bytes = PTR})
+  | Captive: No
+  | Was Captive: No
+  | Domain Name: (null)
+  | Passpoint: No
+  | Display Name: (null)
+  | Roaming Consortium List: (null)
+  | NAI Realm List: (null)
+  | SP Roaming Enabled: Yes
+  | Security: (null)
+  | Hidden: No
+  | Possibly Hidden: No
+  | Was Hidden Before: No
+  | System Mode: No
+  | Roaming Profile Type: None
+  | Personal Hotspot: No
+  | BSSID List: (null)
+  | Share Mode: NotSupported
+  | User Role: Owner
+  | PayloadUUID: (null)
+  | 
+SET lastAutoJoinAt=date(600000000)
+  lastAutoJoinAt: date(600000000)
+  lastConnected: date(600000000)
+  ef+ LastAutoJoinAt=date(600000000)
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET lastAutoJoinAt=date(700000000)
+  lastAutoJoinAt: date(700000000)
+  lastConnected: date(700000000)
+  ef+ LastAutoJoinAt=date(700000000)
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET lastManualJoinAt=date(600000000)
+  lastManualJoinAt: date(600000000)
+  lastConnected: date(600000000)
+  ef+ LastManualJoinAt=date(600000000)
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET lastManualJoinAt=date(700000000)
+  lastManualJoinAt: date(700000000)
+  lastConnected: date(700000000)
+  ef+ LastManualJoinAt=date(700000000)
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET captiveNetworkStatus=n1
+  captiveNetworkStatus: n1
+  ef+ Captive=n0
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET captiveNetworkStatus=n0
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET captiveNetworkStatus=n2
+  captiveNetworkStatus: n2
+  ef+ Captive=n0
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET captiveNetworkStatus=n3
+  captiveNetworkStatus: n3
+  ef+ Captive=n0
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET captiveNetworkStatus=n5
+  captiveNetworkStatus: n5
+  ef+ Captive=n0
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET captiveNetwork=n1
+  captiveNetworkStatus: n2
+  ef+ Captive=n0
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET captiveNetwork=n0
+  captiveNetworkStatus: n1
+  ef+ Captive=n0
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET wasCaptiveNetwork=n1
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET wasCaptiveNetwork=n0
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET temporarilyDisabled=n1
+  temporarilyDisabled: n1
+  ef+ TemporarilyDisabled=n1
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET temporarilyDisabled=n0
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET systemMode=n1
+  systemMode: n1
+  ef+ SystemMode=n1
+  ef-roundtrip 1
+  | System Mode: Yes
+  eq=1 hash=1 copyeq=1
+SET systemMode=n0
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET hiddenNetwork=n1
+  hiddenNetwork: n1
+  ef+ HiddenNetwork=n1
+  ef-roundtrip 1
+  | Hidden: Yes
+  eq=1 hash=1 copyeq=1
+SET hiddenNetwork=n0
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n0
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n1
+  securityType: n1
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n2
+  securityType: n2
+  security: n0
+  ef+ SecurityType=Open
+  ef-roundtrip 1
+  | Security: Open
+  eq=1 hash=1 copyeq=1
+SET securityType=n3
+  securityType: n3
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n4
+  securityType: n4
+  security: n1
+  ef+ SecurityType=WEP40 OpenSystem
+  ef-roundtrip 1
+  | Security: WEP40 OpenSystem
+  eq=1 hash=1 copyeq=1
+SET securityType=n5
+  securityType: n5
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n6
+  securityType: n6
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n7
+  securityType: n7
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n8
+  securityType: n8
+  security: n1
+  ef+ SecurityType=WEP104 OpenSystem
+  ef-roundtrip 1
+  | Security: WEP104 OpenSystem
+  eq=1 hash=1 copyeq=1
+SET securityType=n9
+  securityType: n9
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n10
+  securityType: n10
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n11
+  securityType: n11
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n12
+  securityType: n12
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n13
+  securityType: n13
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n14
+  securityType: n14
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n15
+  securityType: n15
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n16
+  securityType: n16
+  security: n1
+  ef+ SecurityType=WEP40 SharedKey
+  ef-roundtrip 1
+  | Security: WEP40 SharedKey
+  eq=1 hash=1 copyeq=1
+SET securityType=n17
+  securityType: n17
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n18
+  securityType: n18
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n19
+  securityType: n19
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n20
+  securityType: n20
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n21
+  securityType: n21
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n22
+  securityType: n22
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n23
+  securityType: n23
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n24
+  securityType: n24
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n25
+  securityType: n25
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n26
+  securityType: n26
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n27
+  securityType: n27
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n28
+  securityType: n28
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n29
+  securityType: n29
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n30
+  securityType: n30
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n31
+  securityType: n31
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n32
+  securityType: n32
+  security: n1
+  ef+ SecurityType=WEP104 SharedKey
+  ef-roundtrip 1
+  | Security: WEP104 SharedKey
+  eq=1 hash=1 copyeq=1
+SET securityType=n33
+  securityType: n33
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n34
+  securityType: n34
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n35
+  securityType: n35
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n36
+  securityType: n36
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n37
+  securityType: n37
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n38
+  securityType: n38
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n39
+  securityType: n39
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n40
+  securityType: n40
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n41
+  securityType: n41
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n42
+  securityType: n42
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n43
+  securityType: n43
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n44
+  securityType: n44
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n45
+  securityType: n45
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n46
+  securityType: n46
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n47
+  securityType: n47
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n48
+  securityType: n48
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n49
+  securityType: n49
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n50
+  securityType: n50
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n51
+  securityType: n51
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n52
+  securityType: n52
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n53
+  securityType: n53
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n54
+  securityType: n54
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n55
+  securityType: n55
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n56
+  securityType: n56
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n57
+  securityType: n57
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n58
+  securityType: n58
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n59
+  securityType: n59
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n60
+  securityType: n60
+  security: n1
+  ef+ SecurityType=WEP
+  ef-roundtrip 1
+  | Security: WEP
+  eq=1 hash=1 copyeq=1
+SET securityType=n61
+  securityType: n61
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n62
+  securityType: n62
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n63
+  securityType: n63
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n64
+  securityType: n192
+  shareMode: n3
+  security: n3
+  ef+ SecurityType=WPA/WPA2 Personal
+  ef+ ShareMode=n3
+  ef-roundtrip 1
+  | Security: WPA/WPA2 Personal
+  | Share Mode: Enabled
+  eq=1 hash=1 copyeq=1
+SET securityType=n65
+  securityType: n65
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n66
+  securityType: n66
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n67
+  securityType: n67
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n68
+  securityType: n68
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n69
+  securityType: n69
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n70
+  securityType: n70
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n120
+  securityType: n120
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n121
+  securityType: n121
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n122
+  securityType: n122
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n123
+  securityType: n123
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n124
+  securityType: n124
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n125
+  securityType: n125
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n126
+  securityType: n126
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n127
+  securityType: n127
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n128
+  securityType: n4224
+  shareMode: n3
+  security: n13
+  ef+ SecurityType=WPA2/WPA3 Personal
+  ef+ ShareMode=n3
+  ef-roundtrip 1
+  | Security: WPA2/WPA3 Personal
+  | Share Mode: Enabled
+  eq=1 hash=1 copyeq=1
+SET securityType=n129
+  securityType: n129
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n130
+  securityType: n130
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n131
+  securityType: n131
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n132
+  securityType: n132
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n133
+  securityType: n133
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n134
+  securityType: n134
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET securityType=n135
+  securityType: n135
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET autoLogin=n1
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET autoLogin=n0
+  autoLogin: n0
+  captiveBypass: n1
+  ef+ CaptiveBypass=n1
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET captiveBypass=n1
+  autoLogin: n0
+  captiveBypass: n1
+  ef+ CaptiveBypass=n1
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET captiveBypass=n0
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET disabled=n1
+  disabled: n1
+  ef+ Disabled=n1
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET disabled=n0
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET isPasspoint=n1
+  isPasspoint: n1
+  identifier: wifi.passpoint.(null)
+  ef+ Passpoint=n1
+  ef-roundtrip 1
+  | Passpoint: Yes
+  eq=0 hash=0 copyeq=1
+SET isPasspoint=n0
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET domainName=x.example
+  domainName: x.example
+  ef+ DomainName=x.example
+  ef-roundtrip 1
+  | Domain Name: x.example
+  eq=1 hash=1 copyeq=1
+SET domainName=
+  domainName: 
+  ef+ DomainName=
+  ef-roundtrip 1
+  | Domain Name: 
+  eq=1 hash=1 copyeq=1
+SET displayName=x.example
+  displayName: x.example
+  ef+ DisplayName=x.example
+  ef-roundtrip 1
+  | Display Name: x.example
+  eq=1 hash=1 copyeq=1
+SET displayName=
+  displayName: 
+  ef+ DisplayName=
+  ef-roundtrip 1
+  | Display Name: 
+  eq=1 hash=1 copyeq=1
+SET roamingConsortiumList=arr[a,b]
+  roamingConsortiumList: arr[a,b]
+  ef+ RoamingConsortiumList=arr[a,b]
+  ef-roundtrip 1
+  | Roaming Consortium List: (
+  |     a,
+  |     b
+  | )
+  | NAI Realm List: (null)
+  | SP Roaming Enabled: Yes
+  | Security: (null)
+  | Hidden: No
+  | Possibly Hidden: No
+  | Was Hidden Before: No
+  | System Mode: No
+  | Roaming Profile Type: None
+  | Personal Hotspot: No
+  | BSSID List: (null)
+  | Share Mode: NotSupported
+  lines 24
+  eq=1 hash=1 copyeq=1
+SET roamingConsortiumList=arr[]
+  roamingConsortiumList: arr[]
+  ef+ RoamingConsortiumList=arr[]
+  ef-roundtrip 1
+  | Roaming Consortium List: (
+  | )
+  | NAI Realm List: (null)
+  | SP Roaming Enabled: Yes
+  | Security: (null)
+  | Hidden: No
+  | Possibly Hidden: No
+  | Was Hidden Before: No
+  | System Mode: No
+  | Roaming Profile Type: None
+  | Personal Hotspot: No
+  | BSSID List: (null)
+  | Share Mode: NotSupported
+  | User Role: Owner
+  | PayloadUUID: (null)
+  lines 22
+  eq=1 hash=1 copyeq=1
+SET naiRealmList=arr[a,b]
+  naiRealmList: arr[a,b]
+  ef+ NAIRealmList=arr[a,b]
+  ef-roundtrip 1
+  | NAI Realm List: (
+  |     a,
+  |     b
+  | )
+  | SP Roaming Enabled: Yes
+  | Security: (null)
+  | Hidden: No
+  | Possibly Hidden: No
+  | Was Hidden Before: No
+  | System Mode: No
+  | Roaming Profile Type: None
+  | Personal Hotspot: No
+  | BSSID List: (null)
+  | Share Mode: NotSupported
+  lines 24
+  eq=1 hash=1 copyeq=1
+SET naiRealmList=arr[]
+  naiRealmList: arr[]
+  ef+ NAIRealmList=arr[]
+  ef-roundtrip 1
+  | NAI Realm List: (
+  | )
+  | SP Roaming Enabled: Yes
+  | Security: (null)
+  | Hidden: No
+  | Possibly Hidden: No
+  | Was Hidden Before: No
+  | System Mode: No
+  | Roaming Profile Type: None
+  | Personal Hotspot: No
+  | BSSID List: (null)
+  | Share Mode: NotSupported
+  | User Role: Owner
+  | PayloadUUID: (null)
+  lines 22
+  eq=1 hash=1 copyeq=1
+SET isServiceProviderRoamingEnabled=n1
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET isServiceProviderRoamingEnabled=n0
+  isServiceProviderRoamingEnabled: n0
+  ef+ SPRoaming=n0
+  ef-roundtrip 1
+  | SP Roaming Enabled: No
+  eq=1 hash=1 copyeq=1
+SET possiblyHiddenNetwork=n1
+  possiblyHiddenNetwork: n1
+  ef+ PossiblyHiddenNetwork=n1
+  ef-roundtrip 1
+  | Possibly Hidden: Yes
+  eq=1 hash=1 copyeq=1
+SET possiblyHiddenNetwork=n0
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET collocatedGroup=set[c]
+  collocatedGroup: set[c]
+  ef+ CollocatedGroup=arr[c]
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET channelHistory=set[]
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET roamingProfileType=n1
+  roamingProfileType: n1
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET roamingProfileType=n0
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET roamingProfileType=n2
+  roamingProfileType: n2
+  ef+ RoamingProfileType=Single
+  ef-roundtrip 1
+  | Roaming Profile Type: Single
+  eq=1 hash=1 copyeq=1
+SET roamingProfileType=n3
+  roamingProfileType: n3
+  ef+ RoamingProfileType=Dual
+  ef-roundtrip 1
+  | Roaming Profile Type: Dual
+  eq=1 hash=1 copyeq=1
+SET roamingProfileType=n5
+  roamingProfileType: n5
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET transitionDisabledFlags=n1
+  transitionDisabledFlags: n1
+  ef+ TransitionDisabledFlags=n1
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET transitionDisabledFlags=n0
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET transitionDisabledFlags=n2
+  transitionDisabledFlags: n2
+  ef+ TransitionDisabledFlags=n2
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET transitionDisabledFlags=n3
+  transitionDisabledFlags: n3
+  ef+ TransitionDisabledFlags=n3
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET transitionDisabledFlags=n5
+  transitionDisabledFlags: n5
+  ef+ TransitionDisabledFlags=n5
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET standalone6G=n1
+  standalone6G: n1
+  ef+ Standalone6G=n1
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET standalone6G=n0
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET isPersonalHotspot=n1
+  isPersonalHotspot: n1
+  ef+ PersonalHotspot=n1
+  ef-roundtrip 1
+  | Personal Hotspot: Yes
+  eq=1 hash=1 copyeq=1
+SET isPersonalHotspot=n0
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET bssidList=arr[a,b]
+  bssidList: arr[a,b]
+  ef+ BSSIDList=arr[a,b]
+  ef-roundtrip 1
+  | BSSID List: (
+  |     a,
+  |     b
+  | )
+  | Share Mode: NotSupported
+  lines 24
+  eq=1 hash=1 copyeq=1
+SET bssidList=arr[]
+  bssidList: arr[]
+  ef+ BSSIDList=arr[]
+  ef-roundtrip 1
+  | BSSID List: (
+  | )
+  | Share Mode: NotSupported
+  | User Role: Owner
+  | PayloadUUID: (null)
+  lines 22
+  eq=1 hash=1 copyeq=1
+SET shareMode=n1
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET shareMode=n0
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET shareMode=n2
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET shareMode=n3
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET shareMode=n5
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET userRole=n1
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET userRole=n0
+  userRole: n0
+  ef+ UserRole=n0
+  ef-roundtrip 1
+  | User Role: None
+  eq=1 hash=1 copyeq=1
+SET userRole=n2
+  userRole: n2
+  ef+ UserRole=n2
+  ef-roundtrip 1
+  | User Role: Guest
+  eq=1 hash=1 copyeq=1
+SET userRole=n3
+  userRole: n3
+  ef+ UserRole=n3
+  ef-roundtrip 1
+  | User Role: None
+  eq=1 hash=1 copyeq=1
+SET userRole=n5
+  userRole: n5
+  ef+ UserRole=n5
+  ef-roundtrip 1
+  | User Role: None
+  eq=1 hash=1 copyeq=1
+SET payloadUUID=x.example
+  payloadUUID: x.example
+  ef+ PayloadUUID=x.example
+  ef-roundtrip 1
+  | PayloadUUID: x.example
+  eq=1 hash=1 copyeq=1
+SET payloadUUID=
+  payloadUUID: 
+  ef+ PayloadUUID=
+  ef-roundtrip 1
+  | PayloadUUID: 
+  eq=1 hash=1 copyeq=1
+SET addedBy=n1
+  addedBy: n1
+  ef+ AddedBy=n1
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET addedBy=n0
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET addedBy=n2
+  addedBy: n2
+  ef+ AddedBy=n2
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET addedBy=n3
+  addedBy: n3
+  ef+ AddedBy=n3
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET addedBy=n5
+  addedBy: n5
+  ef+ AddedBy=n5
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET addedAt=date(600000000)
+  addedAt: date(600000000)
+  ef+ AddedAt=date(600000000)
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET addedAt=date(700000000)
+  addedAt: date(700000000)
+  ef+ AddedAt=date(700000000)
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET wasHiddenBefore=date(600000000)
+  wasHiddenBefore: date(600000000)
+  ef+ WasHiddenBefore=date(600000000)
+  ef-roundtrip 1
+  | Was Hidden Before: Yes
+  eq=1 hash=1 copyeq=1
+SET wasHiddenBefore=date(700000000)
+  wasHiddenBefore: date(700000000)
+  ef+ WasHiddenBefore=date(700000000)
+  ef-roundtrip 1
+  | Was Hidden Before: Yes
+  eq=1 hash=1 copyeq=1
+SET captiveSheetTimestamp=date(600000000)
+  captiveSheetTimestamp: date(600000000)
+  ef+ CaptiveWebSheetLoginDate=date(600000000)
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET captiveSheetTimestamp=date(700000000)
+  captiveSheetTimestamp: date(700000000)
+  ef+ CaptiveWebSheetLoginDate=date(700000000)
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET userPreferredOrderTimestamp=date(600000000)
+  userPreferredOrderTimestamp: date(600000000)
+  ef+ UserPreferredOrderTimestamp=date(600000000)
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET userPreferredOrderTimestamp=date(700000000)
+  userPreferredOrderTimestamp: date(700000000)
+  ef+ UserPreferredOrderTimestamp=date(700000000)
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET updatedAt=date(600000000)
+  updatedAt: date(600000000)
+  ef+ UpdatedAt=date(600000000)
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET updatedAt=date(700000000)
+  updatedAt: date(700000000)
+  ef+ UpdatedAt=date(700000000)
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET discoveredAt=date(600000000)
+  discoveredAt: date(600000000)
+  ef+ DiscoveredAt=date(600000000)
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET discoveredAt=date(700000000)
+  discoveredAt: date(700000000)
+  ef+ DiscoveredAt=date(700000000)
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET networkGroupID=x.example
+  networkGroupID: x.example
+  ef+ NetworkGroupID=x.example
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET networkGroupID=
+  networkGroupID: 
+  ef+ NetworkGroupID=
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET networkGroupPriority=n1
+  networkGroupPriority: n1
+  ef+ NetworkGroupPriority=n1
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET networkGroupPriority=n0
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET networkGroupPriority=n2
+  networkGroupPriority: n2
+  ef+ NetworkGroupPriority=n2
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET networkGroupPriority=n3
+  networkGroupPriority: n3
+  ef+ NetworkGroupPriority=n3
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET networkGroupPriority=n5
+  networkGroupPriority: n5
+  ef+ NetworkGroupPriority=n5
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET userPreferredNetworkNames={k=v;}
+  userPreferredNetworkNames: {k=v;}
+  ef+ UserPreferredNetworkNames={k=v;}
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET userPreferredPasspointDomains={k=v;}
+  userPreferredPasspointDomains: {k=v;}
+  ef+ UserPreferredPasspointDomains={k=v;}
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET privacyProxyEnabled=n1
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET privacyProxyEnabled=n0
+  privacyProxyEnabled: n0
+  ef+ PrivacyProxyEnabled=n0
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET movingAttribute=n1
+  movingAttribute: n1
+  ef+ MovingAttribute=n1
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET movingAttribute=n0
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET movingAttribute=n2
+  movingAttribute: n2
+  ef+ MovingAttribute=n2
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET movingAttribute=n3
+  movingAttribute: n3
+  ef+ MovingAttribute=n3
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET movingAttribute=n5
+  movingAttribute: n5
+  ef+ MovingAttribute=n5
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET publicAttribute=n1
+  publicAttribute: n1
+  ef+ PublicAttribute=n1
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET publicAttribute=n0
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET publicAttribute=n2
+  publicAttribute: n2
+  ef+ PublicAttribute=n2
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET publicAttribute=n3
+  publicAttribute: n3
+  ef+ PublicAttribute=n3
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET publicAttribute=n5
+  publicAttribute: n5
+  ef+ PublicAttribute=n5
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET lowDataMode=n1
+  lowDataMode: n1
+  ef+ LowDataMode=n1
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET lowDataMode=n0
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET lowDataMode=n2
+  lowDataMode: n2
+  ef+ LowDataMode=n2
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET lowDataMode=n3
+  lowDataMode: n3
+  ef+ LowDataMode=n3
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET lowDataMode=n5
+  lowDataMode: n5
+  ef+ LowDataMode=n5
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET ssidData=data5:4f74686572
+  ssidData: data5:4f74686572
+  ssid: Other
+  identifier: wifi.ssid.4f74686572
+  ef+ SSID=data5:4f74686572
+  ef+ SSIDString=Other
+  ef-roundtrip 1
+  | SSID: Other ({length = 5, bytes = PTR})
+  eq=0 hash=0 copyeq=1
+SET ssidData=data0:
+  ssidData: data0:
+  ssid: nil
+  identifier: wifi.ssid.
+  ef+ SSID=data0:
+  ef- SSIDString
+  ef-roundtrip 1
+  | SSID: (null) ({length = 0, bytes = PTR})
+  eq=0 hash=0 copyeq=1
+SET ssidData=data3:fffe01
+  ssidData: data3:fffe01
+  ssid: ÿþ
+  identifier: wifi.ssid.fffe01
+  ef+ SSID=data3:fffe01
+  ef+ SSIDString=ÿþ
+  ef-roundtrip 1
+  | SSID: ÿþ ({length = 3, bytes = PTR})
+  eq=0 hash=0 copyeq=1
+SET security=n-1
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1
+SET security=n0
+  securityType: n2
+  security: n0
+  ef+ SecurityType=Open
+  ef-roundtrip 1
+  | Security: Open
+  eq=1 hash=1 copyeq=1
+SET security=n1
+  securityType: n828
+  security: n1
+  ef+ SecurityType=WEP
+  ef-roundtrip 1
+  | Security: WEP
+  eq=1 hash=1 copyeq=1
+SET security=n2
+  securityType: n192
+  shareMode: n3
+  security: n3
+  ef+ SecurityType=WPA/WPA2 Personal
+  ef+ ShareMode=n3
+  ef-roundtrip 1
+  | Security: WPA/WPA2 Personal
+  | Share Mode: Enabled
+  eq=1 hash=1 copyeq=1
+SET security=n3
+  securityType: n192
+  shareMode: n3
+  security: n3
+  ef+ SecurityType=WPA/WPA2 Personal
+  ef+ ShareMode=n3
+  ef-roundtrip 1
+  | Security: WPA/WPA2 Personal
+  | Share Mode: Enabled
+  eq=1 hash=1 copyeq=1
+SET security=n4
+  securityType: n4224
+  shareMode: n3
+  security: n13
+  ef+ SecurityType=WPA2/WPA3 Personal
+  ef+ ShareMode=n3
+  ef-roundtrip 1
+  | Security: WPA2/WPA3 Personal
+  | Share Mode: Enabled
+  eq=1 hash=1 copyeq=1
+SET security=n5
+  securityType: n192
+  shareMode: n3
+  security: n3
+  ef+ SecurityType=WPA/WPA2 Personal
+  ef+ ShareMode=n3
+  ef-roundtrip 1
+  | Security: WPA/WPA2 Personal
+  | Share Mode: Enabled
+  eq=1 hash=1 copyeq=1
+SET security=n6
+  securityType: n768
+  security: n6
+  ef+ SecurityType=WEP Enterprise
+  ef-roundtrip 1
+  | Security: WEP Enterprise
+  eq=1 hash=1 copyeq=1
+SET security=n7
+  securityType: n3072
+  security: n8
+  ef+ SecurityType=WPA/WPA2 Enterprise
+  ef-roundtrip 1
+  | Security: WPA/WPA2 Enterprise
+  eq=1 hash=1 copyeq=1
+SET security=n8
+  securityType: n3072
+  security: n8
+  ef+ SecurityType=WPA/WPA2 Enterprise
+  ef-roundtrip 1
+  | Security: WPA/WPA2 Enterprise
+  eq=1 hash=1 copyeq=1
+SET security=n9
+  securityType: n2048
+  security: n9
+  ef+ SecurityType=WPA2 Enterprise
+  ef-roundtrip 1
+  | Security: WPA2 Enterprise
+  eq=1 hash=1 copyeq=1
+SET security=n10
+  securityType: n3072
+  security: n8
+  ef+ SecurityType=WPA/WPA2 Enterprise
+  ef-roundtrip 1
+  | Security: WPA/WPA2 Enterprise
+  eq=1 hash=1 copyeq=1
+SET security=n11
+  securityType: n4096
+  shareMode: n3
+  security: n11
+  ef+ SecurityType=WPA3 Personal
+  ef+ ShareMode=n3
+  ef-roundtrip 1
+  | Security: WPA3 Personal
+  | Share Mode: Enabled
+  eq=1 hash=1 copyeq=1
+SET security=n12
+  securityType: n8192
+  security: n12
+  ef+ SecurityType=WPA3 Enterprise
+  ef-roundtrip 1
+  | Security: WPA3 Enterprise
+  eq=1 hash=1 copyeq=1
+SET security=n13
+  securityType: n4224
+  shareMode: n3
+  security: n13
+  ef+ SecurityType=WPA2/WPA3 Personal
+  ef+ ShareMode=n3
+  ef-roundtrip 1
+  | Security: WPA2/WPA3 Personal
+  | Share Mode: Enabled
+  eq=1 hash=1 copyeq=1
+SET security=n14
+  securityType: n16384
+  security: n14
+  ef+ SecurityType=OWE
+  ef-roundtrip 1
+  | Security: OWE
+  eq=1 hash=1 copyeq=1
+SET security=n15
+  securityType: n16386
+  security: n15
+  ef+ SecurityType=OPEN/OWE
+  ef-roundtrip 1
+  | Security: OPEN/OWE
+  eq=1 hash=1 copyeq=1
+SET security=n16
+  ef-roundtrip 1
+  eq=1 hash=1 copyeq=1

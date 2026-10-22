@@ -197,7 +197,7 @@ Rough estimates, not measurements:
 | QuickLook / CFPlugIn | ~55 % | |
 | Foundation networking (`NSURLSession` over libcurl) | ~45 % | |
 | TextMate port | ~55 % | text drawing in the editor is the open problem |
-| CoreWLAN / airportd | ~45 % | data classes verified against the Mac; CWWiFiClient/CWInterface over XPC; airportd with sim and wpa backends; missing: differential tests for profiles/configuration, tether/IBSS/host AP, keychain, the other mach services of the real plist, ISO install, real hardware |
+| CoreWLAN / airportd | ~55 % | data classes (CWNetwork, CWChannel, CWNetworkProfile, CWConfiguration incl. the external form and archives) verified against the Mac; CWWiFiClient/CWInterface over XPC; airportd with sim and wpa backends; missing: differential tests for profiles/configuration, tether/IBSS/host AP, keychain, the other mach services of the real plist, ISO install, real hardware |
 | AirDrop | 0 % | after CoreWLAN, by decompilation |
 
 **Required next (decided by the project owner)**
