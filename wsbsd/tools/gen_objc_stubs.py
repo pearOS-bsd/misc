@@ -6,7 +6,8 @@ A method listed in the skip file (one "+Class sel" or "-Class sel" per line, col
 The hand-written code then replaces the stubs one method at a time, the interface stays the one of the real framework."""
 import re, sys, os
 dump, name, outdir = sys.argv[1], sys.argv[2], sys.argv[3]
-skip = set()
+skip = set(); skipclass = set()
+if "--skip-class" in sys.argv: skipclass = set(sys.argv[sys.argv.index("--skip-class") + 1].split(","))
 if "--skip" in sys.argv:
     for l in open(sys.argv[sys.argv.index("--skip") + 1]):
         l = l.strip()
@@ -176,6 +177,7 @@ for c in order:
         else: M.append("@dynamic %s;" % nm)
         accessors.add(g)
         if "R" not in parts[1:]: accessors.add(s)
+    if c["name"] in skipclass: M.append("/* the methods of %s are hand-written (sdk/src/CoreWLAN/%s_impl.m) */" % (c["name"], c["name"])); M.append("@end"); M.append(""); continue
     cprotos = c["protos"]; nvals = any(True for nm, attrs in c["props"] if any(i == prop_decl(nm, attrs)[1] for i, _ in c["ivars"]))
     auto = set()
     if nvals and ("NSCoding" in cprotos or "NSSecureCoding" in cprotos): auto |= {"encodeWithCoder:", "initWithCoder:"}

@@ -326,23 +326,7 @@
 @dynamic channelNumber;
 @dynamic channelWidth;
 @dynamic channelBand;
-- (long long)channelBand { return 0; }
-- (long long)channelNumber { return 0; }
-- (unsigned long long)channelProperties { return 0; }
-- (long long)channelWidth { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
-- (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
-- (unsigned long long)flags { return 0; }
-- (unsigned long long)hash { return 0; }
-- (id)info { return nil; }
-- (id)initWithChannel:(id)a0 { return self; }
-- (id)initWithCoder:(id)a0 { return self; }
-- (id)initWithInfo:(id)a0 { return self; }
-- (BOOL)isEqual:(id)a0 { return 0; }
-- (BOOL)isEqualToChannel:(id)a0 { return 0; }
-- (void)setInfo:(id)a0 {  }
-+ (BOOL)supportsSecureCoding { return YES; }
+/* the methods of CWChannel are hand-written (sdk/src/CoreWLAN/CWChannel_impl.m) */
 @end
 
 @implementation CWChannelHistoryItem
@@ -980,78 +964,7 @@
 @dynamic countryCode;
 @dynamic beaconInterval;
 @dynamic ibss;
-- (long long)accessNetworkType { return 0; }
-- (id)accessoryFriendlyName { return nil; }
-- (long long)aggregateRSSI { return 0; }
-- (long long)anqpDomainID { return 0; }
-- (long long)beaconInterval { return 0; }
-- (id)bssid { return nil; }
-- (id)bssidData { return nil; }
-- (id)channel { return nil; }
-- (long long)comparePHYMode:(id)a0 { return 0; }
-- (long long)compareSecurity:(id)a0 { return 0; }
-- (id)copyWithZone:(void *)a0 { return nil; }
-- (id)coreWiFiScanResult { return nil; }
-- (id)countryCode { return nil; }
-- (id)description { return nil; }
-- (void)encodeWithCoder:(id)a0 {  }
-- (long long)fastestSupportedPHYMode { return 0; }
-- (BOOL)hasInternet { return 0; }
-- (BOOL)hasInterworkingIE { return 0; }
-- (BOOL)hasNon6GHzRNRChannel { return 0; }
-- (unsigned long long)hash { return 0; }
-- (id)hessid { return nil; }
-- (BOOL)ibss { return 0; }
-- (id)ieData { return nil; }
-- (id)informationElementData { return nil; }
-- (id)initWithCoder:(id)a0 { return self; }
-- (id)initWithCoreWiFiScanResult:(id)a0 { return self; }
-- (id)initWithScanRecord:(id)a0 { return self; }
-- (BOOL)isAdditionalStepRequiredForAccess { return 0; }
-- (BOOL)isAppleSWAP { return 0; }
-- (BOOL)isCarPlayNetwork { return 0; }
-- (BOOL)isEmergencyServicesReachable { return 0; }
-- (BOOL)isEqual:(id)a0 { return 0; }
-- (BOOL)isEqualToNetwork:(id)a0 { return 0; }
-- (BOOL)isIBSS { return 0; }
-- (BOOL)isOpen { return 0; }
-- (BOOL)isP2P { return 0; }
-- (BOOL)isPasspoint { return 0; }
-- (BOOL)isPersonalHotspot { return 0; }
-- (BOOL)isSecureWACDevice { return 0; }
-- (BOOL)isUnauthenticatedEmergencyServiceAccessible { return 0; }
-- (BOOL)isUnconfiguredAccessory { return 0; }
-- (BOOL)isUnconfiguredAirPlayAccessory { return 0; }
-- (BOOL)isUnconfiguredAirPrintAccessory { return 0; }
-- (BOOL)isUnconfiguredBaseStation:(id *)a0 { return 0; }
-- (BOOL)isWiFiNetworkChargeablePublicNetwork { return 0; }
-- (BOOL)isWiFiNetworkMetered { return 0; }
-- (BOOL)matchesKnownNetworkSecurity:(long long)a0 { return 0; }
-- (id)noise { return nil; }
-- (long long)noiseMeasurement { return 0; }
-- (id)phyMode { return nil; }
-- (unsigned long long)physicalLayerMode { return 0; }
-- (id)rssi { return nil; }
-- (long long)rssiValue { return 0; }
-- (id)scanRecord { return nil; }
-- (id)securityMode { return nil; }
-- (unsigned long long)securityType { return 0; }
-- (void)setScanRecord:(id)a0 {  }
-- (id)ssid { return nil; }
-- (id)ssidData { return nil; }
-- (long long)strongestSupportedSecurity { return 0; }
-- (BOOL)supportsEAP { return 0; }
-- (BOOL)supportsEasyConnect { return 0; }
-- (BOOL)supportsPHYMode:(long long)a0 { return 0; }
-- (BOOL)supportsPSK { return 0; }
-- (BOOL)supportsSecurity:(long long)a0 { return 0; }
-- (BOOL)supportsWPS { return 0; }
-- (id)unconfiguredBaseStationName:(unsigned char)a0 { return nil; }
-- (long long)venueGroup { return 0; }
-- (long long)venueType { return 0; }
-- (id)wirelessProfile { return nil; }
-- (id)wlanChannel { return nil; }
-+ (BOOL)supportsSecureCoding { return YES; }
+/* the methods of CWNetwork are hand-written (sdk/src/CoreWLAN/CWNetwork_impl.m) */
 @end
 
 @implementation CWPasswordSharingSimulator
