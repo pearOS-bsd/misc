@@ -1,0 +1,76 @@
+CWInterface.__setupLegacyEventMonitoring -> startMonitoringEvent:requestParams:reply:, startMonitoringEvent:requestParams:reply:, startMonitoringEvent:requestParams:reply:, startMonitoringEvent:requestParams:reply:, startMonitoringEvent:requestParams:reply:, startMonitoringEvent:requestParams:reply:, startMonitoringEvent:requestParams:reply:, startMonitoringEvent:requestParams:reply:, startMonitoringEvent:requestParams:reply:, startMonitoringEvent:requestParams:reply:, startMonitoringEvent:requestParams:reply:, startMonitoringEvent:requestParams:reply:, startMonitoringEvent:requestParams:reply:
+CWInterface.activePHYMode -> queryPHYModeWithRequestParams:reply:
+CWInterface.aggregateNoise -> queryNoiseWithRequestParams:reply:
+CWInterface.aggregateRSSI -> queryRSSIWithRequestParams:reply:
+CWInterface.autoJoinHistory -> queryAutoJoinHistoryWithInterfaceName:reply:
+CWInterface.availableWLANChannels -> queryHardwareSupportedChannelsWithRequestParams:reply:
+CWInterface.awdlOperatingMode -> queryAWDLOpModeWithRequestParams:reply:
+CWInterface.bssid -> queryBSSIDWithRequestParams:reply:
+CWInterface.bssidData -> queryBSSIDWithRequestParams:reply:
+CWInterface.cachedScanResults -> querySupportedChannelsWithCountryCode:requestParams:reply:, queryScanCacheWithChannels:ssidList:maxAge:maxMissCount:maxWakeCount:maxAutoJoinCount:interfaceName:reply:
+CWInterface.channel -> queryChannelWithRequestParams:reply:
+CWInterface.configuration -> queryConfigurationWithInterfaceName:reply:
+CWInterface.countryCode -> queryCountryCodeWithRequestParams:reply:
+CWInterface.countryCodeInternal -> queryCountryCodeWithRequestParams:reply:
+CWInterface.hardwareAddress -> queryHardwareMACAddressWithRequestParams:reply:
+CWInterface.hwSupportedWLANChannels -> queryHardwareSupportedChannelsWithRequestParams:reply:
+CWInterface.interfaceControlState -> queryStateWithRequestParams:reply:
+CWInterface.interfaceMode -> queryOpModeWithRequestParams:reply:
+CWInterface.interfaceState -> queryStateWithRequestParams:reply:
+CWInterface.isAWDLRealTimeModeInProgress -> queryAWDLPeerTrafficRegistrationWithRequestParams:reply:
+CWInterface.joinHistory -> queryJoinHistoryWithInterfaceName:reply:
+CWInterface.lastNetworkJoined -> queryCurrentScanResultWithRequestParams:reply:
+CWInterface.lastPreferredNetworkJoined -> queryAllWiFiProfilesAndReply:
+CWInterface.lastTetherDeviceJoined -> currentTetherDeviceWithInterfaceName:reply:
+CWInterface.macAddress -> queryMACAddressWithRequestParams:reply:
+CWInterface.maxNSSSupportedForAP -> queryMaxNSSForAPWithRequestParams:reply:
+CWInterface.maximumLinkSpeed -> queryMaxLinkSpeedWithRequestParams:reply:
+CWInterface.mcsIndex -> queryMCSIndexWithRequestParams:reply:
+CWInterface.monitorMode -> queryOpModeWithRequestParams:reply:
+CWInterface.networkInterfaceAvailable -> queryIsNetworkServiceEnabledWithRequestParams:reply:
+CWInterface.noise -> queryNoiseWithRequestParams:reply:
+CWInterface.noiseMeasurement -> queryNoiseWithRequestParams:reply:
+CWInterface.numTXStreams -> queryTxNSSWithRequestParams:reply:
+CWInterface.numberOfSpatialStreams -> queryNumberOfSpatialStreamsWithRequestParams:reply:
+CWInterface.opMode -> queryOpModeWithRequestParams:reply:, queryOpModeWithRequestParams:reply:
+CWInterface.parentInterfaceName -> queryParentInterfaceNameWithRequestParams:reply:
+CWInterface.phyMode -> queryPHYModeWithRequestParams:reply:
+CWInterface.physicalLayerMode -> queryPHYModeWithRequestParams:reply:
+CWInterface.power -> queryPowerWithRequestParams:reply:
+CWInterface.powerDebugInfo -> queryPowerDebugInfoWithRequestParams:reply:
+CWInterface.powerOn -> queryPowerWithRequestParams:reply:
+CWInterface.powerRX -> queryPowerStateWithRequestParams:reply:
+CWInterface.powerSaveModeEnabled -> queryPowersaveWithRequestParams:reply:
+CWInterface.powerTX -> queryPowerStateWithRequestParams:reply:
+CWInterface.roamHistory -> queryRoamHistoryWithInterfaceName:reply:
+CWInterface.rssi -> queryRSSIWithRequestParams:reply:
+CWInterface.rssiValue -> queryRSSIWithRequestParams:reply:
+CWInterface.security -> queryCurrentScanResultWithRequestParams:reply:, querySecurityWithRequestParams:reply:, queryAuthTypeWithRequestParams:reply:
+CWInterface.securityMode -> queryCurrentScanResultWithRequestParams:reply:, querySecurityWithRequestParams:reply:, queryAuthTypeWithRequestParams:reply:
+CWInterface.securityType -> queryCurrentScanResultWithRequestParams:reply:, querySecurityWithRequestParams:reply:, queryAuthTypeWithRequestParams:reply:
+CWInterface.serviceActive -> queryIsNetworkServiceEnabledWithRequestParams:reply:
+CWInterface.sidecarDiagnostics -> queryAWDLSidecarDiagnosticsWithRequestParams:reply:
+CWInterface.ssid -> querySSIDWithRequestParams:reply:
+CWInterface.ssidData -> querySSIDWithRequestParams:reply:
+CWInterface.stateInfo -> queryVirtualInterfaceRoleWithRequestParams:reply:
+CWInterface.stopAWDL -> confirmAPIAccessWithRequestType:info:reply:, stopAWDLWithInterfaceName:token:priority:reply:
+CWInterface.stopHostAPMode -> confirmAPIAccessWithRequestType:info:reply:, stopHostAPModeWithInterfaceName:token:priority:reply:
+CWInterface.stopIBSSMode -> confirmAPIAccessWithRequestType:info:reply:, queryConfigurationWithInterfaceName:reply:, stopIBSSModeForInterfaceName:token:priority:authorization:reply:
+CWInterface.supportedISMChannels -> querySupportedChannelsWithCountryCode:requestParams:reply:
+CWInterface.supportedPhysicalLayerModes -> querySupportedPHYModesWithRequestParams:reply:
+CWInterface.supportedWLANChannels -> querySupportedChannelsWithCountryCode:requestParams:reply:
+CWInterface.transmitPower -> queryTxPowerWithRequestParams:reply:
+CWInterface.transmitRate -> queryTxRateWithRequestParams:reply:
+CWInterface.txRate -> queryTxRateWithRequestParams:reply:
+CWInterface.virtualInterfaceRole -> queryVirtualInterfaceRoleWithRequestParams:reply:
+CWInterface.wakeOnWirelessEnabled -> queryWoWEnabledWithRequestParams:reply:
+CWInterface.wlanChannel -> queryChannelWithRequestParams:reply:
+CWWiFiClient.autoHotspotMode -> queryAutoHotspotModeAndReply:
+CWWiFiClient.autoJoinTemporarilyDisabled -> queryAutoJoinTemporarilyDisabledAndReply:
+CWWiFiClient.autoJoinTemporarilyDisabledUntilDate -> queryAutoJoinTemporarilyDisabledAndReply:
+CWWiFiClient.interface -> queryInterfaceCapabilitiesWithRequestParams:reply:
+CWWiFiClient.interfaceNames -> queryInterfaceNamesWithRequestParams:reply:
+CWWiFiClient.interfaces -> queryInterfaceNamesWithRequestParams:reply:
+CWWiFiClient.platformCapabilities -> queryInterfaceCapabilitiesWithRequestParams:reply:
+CWWiFiClient.thermalIndex -> queryThermalIndexAndReply:
+CWWiFiClient.virtualInterfaceNames -> queryVirtualInterfaceNamesWithRequestParams:reply:
