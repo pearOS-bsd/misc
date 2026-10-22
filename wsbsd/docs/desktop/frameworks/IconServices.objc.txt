@@ -1,0 +1,3631 @@
+@class ISAliasIcon : ISConcreteIcon instanceSize=80
+  ivar +40 _icon @"ISConcreteIcon"
+  ivar +48 _decorations @"NSArray"
+  ivar +56 _alias @
+  ivar +64 _resolvedIcon @"ISConcreteIcon"
+  ivar +72 _additionalURLProperties @"NSDictionary"
+  property alias (T@,R,V_alias)
+  property resolvedIcon (T@"ISConcreteIcon",R,V_resolvedIcon)
+  property additionalURLProperties (T@"NSDictionary",&,V_additionalURLProperties)
+  property icon (T@"ISConcreteIcon",R,V_icon)
+  +_iconForBookmarkData: @24@0:8@16  imp=+0x1a943c86c
+  +_iconForValues: @24@0:8@16  imp=+0x1a943c92c
+  +aliasUUID @16@0:8  imp=+0x1a943b988
+  +supportsSecureCoding B16@0:8  imp=+0x1a943b980
+  -.cxx_destruct v16@0:8  imp=+0x1a943c7dc
+  -additionalURLProperties @16@0:8  imp=+0x1a943c7c0
+  -alias @16@0:8  imp=+0x1a943c7a0
+  -decorations @16@0:8  imp=+0x1a943c78c
+  -description @16@0:8  imp=+0x1a943c2ac
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a943c1e4
+  -icon @16@0:8  imp=+0x1a943c6d0
+  -initWithAliasURL: @24@0:8@16  imp=+0x1a943ba1c
+  -initWithBookmarkData: @24@0:8@16  imp=+0x1a943bcd4
+  -initWithBookmarkData:decorations: @32@0:8@16@24  imp=+0x1a943bce0
+  -initWithCoder: @24@0:8@16  imp=+0x1a943bf98
+  -makeResourceProvider @16@0:8  imp=+0x1a943c730
+  -resolve v16@0:8  imp=+0x1a943c338
+  -resolvedIcon @16@0:8  imp=+0x1a943c7b0
+  -setAdditionalURLProperties: v24@0:8@16  imp=+0x1a943c7d0
+@class ISAliasedTypeIcon : ISTypeIcon instanceSize=64
+  ivar +56 _moniker @"ISIcon"
+  property moniker (T@"ISIcon",R,V_moniker)
+  +supportsSecureCoding B16@0:8  imp=+0x1a942aaf4
+  -.cxx_destruct v16@0:8  imp=+0x1a942ac44
+  -description @16@0:8  imp=+0x1a942ab88
+  -initWithType:moniker: @32@0:8@16@24  imp=+0x1a942aafc
+  -moniker @16@0:8  imp=+0x1a942ac34
+@class ISAppNotificationBadgeRecipe : NSObject <ISCompositorRecipe> instanceSize=8
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -hintedBadgeRect @16@0:8  imp=+0x1a94267b4
+  -hintedMaskRect @16@0:8  imp=+0x1a9426874
+  -layerTreeForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a9426930
+@class ISAppearanceEffect : NSObject <ISEffect> instanceSize=16
+  ivar +8 _appearance q
+  property appearance (Tq,V_appearance)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -appearance q16@0:8  imp=+0x1a9431184
+  -filterWithBackgroundImage:inputImage: @32@0:8@16@24  imp=+0x1a94310a4
+  -initWithAppearance: @24@0:8q16  imp=+0x1a9431058
+  -setAppearance: v24@0:8q16  imp=+0x1a943118c
+@class ISApplicationIdentityIcon : ISConcreteIcon instanceSize=48
+  ivar +40 _identityString @"NSString"
+  property identityString (T@"NSString",R,C,V_identityString)
+  +supportsSecureCoding B16@0:8  imp=+0x1a941edb4
+  -.cxx_destruct v16@0:8  imp=+0x1a941f744
+  -_makeResourceProviderAllowIconResourceFallback: @20@0:8B16  imp=+0x1a941f408
+  -_personaType Q16@0:8  imp=+0x1a941f398
+  -_resourceForPersona: @24@0:8Q16  imp=+0x1a941f23c
+  -description @16@0:8  imp=+0x1a941f67c
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a941f1b4
+  -identityString @16@0:8  imp=+0x1a941f734
+  -initWithApplicationIdentity: @24@0:8@16  imp=+0x1a941edbc
+  -initWithCoder: @24@0:8@16  imp=+0x1a941f10c
+  -makeResourceProvider @16@0:8  imp=+0x1a941f66c
+  -makeSymbolResourceProvider @16@0:8  imp=+0x1a941f674
+@class ISAssetCatalogResource : NSObject <ISScalableCompositorResource> instanceSize=80
+  ivar +8 _disableSubtype B
+  ivar +16 _imageBag @"IFImageBag"
+  ivar +24 _catalog @"CUICatalog"
+  ivar +32 _imageName @"NSString"
+  ivar +40 _layoutDirection q
+  ivar +48 _platform Q
+  ivar +56 _appearance q
+  ivar +64 _appearanceVariant q
+  ivar +72 _suggestedRecipe @"<ISCompositorRecipe>"
+  property catalog (T@"CUICatalog",R,V_catalog)
+  property imageBag (T@"IFImageBag",R,V_imageBag)
+  property imageName (T@"NSString",R,V_imageName)
+  property assetAppearance (Tq,R)
+  property layoutDirection (Tq,V_layoutDirection)
+  property disableSubtype (TB,V_disableSubtype)
+  property platform (TQ,V_platform)
+  property appearance (Tq,V_appearance)
+  property appearanceVariant (Tq,V_appearanceVariant)
+  property suggestedRecipe (T@"<ISCompositorRecipe>",&,V_suggestedRecipe)
+  property precomposed (TB,R,GisPrecomposed)
+  property usesExternalCompositor (TB,?)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +assetCatalogResourceWithURL:error: @32@0:8@16^@24  imp=+0x1a93d50d4
+  +assetCatalogResourceWithURL:imageName:error: @40@0:8@16@24^@32  imp=+0x1a93d50c0
+  +assetCatalogResourceWithURL:imageName:platform:error: @48@0:8@16@24Q32^@40  imp=+0x1a93d517c
+  +assetCatalogResourceWithURL:imageName:platform:isAppLike:error: @52@0:8@16@24Q32B40^@44  imp=+0x1a93d5190
+  -.cxx_destruct v16@0:8  imp=+0x1a93d5fd8
+  -_layoutDirectionFromDevice q16@0:8  imp=+0x1a93d5738
+  -_tagForLongLife: v24@0:8^{CGImage=}16  imp=+0x1a93d59f0
+  -appearance q16@0:8  imp=+0x1a93d5fa4
+  -appearanceVariant q16@0:8  imp=+0x1a93d5fb4
+  -assetAppearance q16@0:8  imp=+0x1a93d5c94
+  -catalog @16@0:8  imp=+0x1a93d5f58
+  -disableSubtype B16@0:8  imp=+0x1a93d5f80
+  -hasDarkResource B16@0:8  imp=+0x1a93d5f48
+  -hasResourceWithAppearance: B24@0:8q16  imp=+0x1a93d5edc
+  -hasResourceWithAppearance:appearanceString: B32@0:8q16@24  imp=+0x1a93d5de4
+  -hasTintableResource B16@0:8  imp=+0x1a93d5f50
+  -imageBag @16@0:8  imp=+0x1a93d579c
+  -imageForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a93d5a0c
+  -imageName @16@0:8  imp=+0x1a93d5f64
+  -imageWithName:scale: @32@0:8@16d24  imp=+0x1a93d5690
+  -initWithCatalog:imageName:platform: @40@0:8@16@24Q32  imp=+0x1a93d55d0
+  -isPrecomposed B16@0:8  imp=+0x1a93d5ba8
+  -layoutDirection q16@0:8  imp=+0x1a93d5f70
+  -platform Q16@0:8  imp=+0x1a93d5f94
+  -setAppearance: v24@0:8q16  imp=+0x1a93d5fac
+  -setAppearanceVariant: v24@0:8q16  imp=+0x1a93d5fbc
+  -setDisableSubtype: v20@0:8B16  imp=+0x1a93d5f8c
+  -setLayoutDirection: v24@0:8q16  imp=+0x1a93d5f78
+  -setPlatform: v24@0:8Q16  imp=+0x1a93d5f9c
+  -setSuggestedRecipe: v24@0:8@16  imp=+0x1a93d5fd0
+  -suggestedRecipe @16@0:8  imp=+0x1a93d5fc4
+@class ISAssetInspector : NSObject instanceSize=32
+  ivar +8 _bundle @"IFBundle"
+  ivar +16 _catalogAssetName @"NSString"
+  ivar +24 _assetCatalogResource @"ISAssetCatalogResource"
+  property bundle (T@"IFBundle",R,V_bundle)
+  property catalogAssetName (T@"NSString",&,N,V_catalogAssetName)
+  property assetCatalogResource (T@"ISAssetCatalogResource",&,N,V_assetCatalogResource)
+  -.cxx_destruct v16@0:8  imp=+0x1a93ee7a4
+  -assetCatalogResource @16@0:8  imp=+0x1a93ee5d0
+  -assetExistsForSize:scale: B40@0:8{CGSize=dd}16d32  imp=+0x1a93ee924
+  -bundle @16@0:8  imp=+0x1a93ee780
+  -catalogAssetAppearances Q16@0:8  imp=+0x1a93ee7f4
+  -catalogAssetName @16@0:8  imp=+0x1a93ee51c
+  -initWithBundleURL: @24@0:8@16  imp=+0x1a93ee494
+  -setAssetCatalogResource: v24@0:8@16  imp=+0x1a93ee798
+  -setCatalogAssetName: v24@0:8@16  imp=+0x1a93ee78c
+@class ISBiasedGrayscaleConversion : ISGrayscaleConversion instanceSize=16
+  ivar +8 _saturation f
+  ivar +12 _energyRatio f
+  property saturation (Tf,N,V_saturation)
+  property energyRatio (Tf,N,V_energyRatio)
+  -computeGrayscaleConversionColorWithNumberOfRepresentativeSamples:representativeSamples: 28@0:8i16r^20  imp=+0x1a9434e38
+  -computeGrayscaleConversionColorWithWidth:height:samples: 48@0:8i16i20{?=iiiI^}24  imp=+0x1a9434d4c
+  -energyRatio f16@0:8  imp=+0x1a94350f8
+  -init @16@0:8  imp=+0x1a9434d04
+  -saturation f16@0:8  imp=+0x1a94350e8
+  -setEnergyRatio: v20@0:8f16  imp=+0x1a9435100
+  -setSaturation: v20@0:8f16  imp=+0x1a94350f0
+@class ISBindableIcon : ISConcreteIcon instanceSize=40
+  +supportsSecureCoding B16@0:8  imp=+0x1a94296fc
+  -resourceProviderWithClaim:typeRecord:fileExtension: @40@0:8@16@24@32  imp=+0x1a9429704
+@class ISBlendledTintEffect : NSObject <ISEffect> instanceSize=16
+  ivar +8 _color @"IFColor"
+  property color (T@"IFColor",&,V_color)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a943104c
+  -color @16@0:8  imp=+0x1a9431038
+  -filterWithBackgroundImage:inputImage: @32@0:8@16@24  imp=+0x1a9430ee8
+  -initWithColor: @24@0:8@16  imp=+0x1a9430e6c
+  -setColor: v24@0:8@16  imp=+0x1a9431044
+@class ISBlurEffect : NSObject <ISEffect> instanceSize=16
+  ivar +8 _radius d
+  property radius (Td,V_radius)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -filterWithBackgroundImage:inputImage: @32@0:8@16@24  imp=+0x1a94311e0
+  -initWithRadius: @24@0:8d16  imp=+0x1a9431194
+  -radius d16@0:8  imp=+0x1a943134c
+  -setRadius: v24@0:8d16  imp=+0x1a9431354
+@class ISBorderEffect : NSObject <ISEffect> instanceSize=24
+  ivar +8 _color @"IFColor"
+  ivar +16 _lineWidth d
+  property color (T@"IFColor",&,V_color)
+  property lineWidth (Td,V_lineWidth)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a9430318
+  -color @16@0:8  imp=+0x1a94302f4
+  -filterWithBackgroundImage:inputImage: @32@0:8@16@24  imp=+0x1a942ffc0
+  -initWithLineWidth:color: @32@0:8d16@24  imp=+0x1a942ff34
+  -lineWidth d16@0:8  imp=+0x1a9430308
+  -setColor: v24@0:8@16  imp=+0x1a9430300
+  -setLineWidth: v24@0:8d16  imp=+0x1a9430310
+@class ISBundleIcon : ISConcreteIcon instanceSize=72
+  ivar +40 _url @"NSURL"
+  ivar +48 _type @"NSString"
+  ivar +56 _tag @"NSString"
+  ivar +64 _tagClass @"NSString"
+  property url (T@"NSURL",R,V_url)
+  property type (T@"NSString",R,V_type)
+  property tag (T@"NSString",R,V_tag)
+  property tagClass (T@"NSString",R,V_tagClass)
+  +supportsSecureCoding B16@0:8  imp=+0x1a93ffad8
+  -.cxx_destruct v16@0:8  imp=+0x1a9400dac
+  -_aspectRatio d16@0:8  imp=+0x1a9400d64
+  -_makeAppResourceProvider @16@0:8  imp=+0x1a940043c
+  -_makeDocumentResourceProvider @16@0:8  imp=+0x1a9400014
+  -_makeFrameworkResourceProvider @16@0:8  imp=+0x1a9400900
+  -_makeUnregisteredPersonalityResourceProvider @16@0:8  imp=+0x1a9400a44
+  -description @16@0:8  imp=+0x1a9400c74
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a93fff2c
+  -initWithBundleURL: @24@0:8@16  imp=+0x1a93ffd80
+  -initWithBundleURL:fileExtension: @32@0:8@16@24  imp=+0x1a93ffd9c
+  -initWithBundleURL:type: @32@0:8@16@24  imp=+0x1a93ffd90
+  -initWithBundleURL:type:tag:tagClass: @48@0:8@16@24@32@40  imp=+0x1a93ffae0
+  -initWithCoder: @24@0:8@16  imp=+0x1a93ffdb4
+  -makeResourceProvider @16@0:8  imp=+0x1a9400b68
+  -tag @16@0:8  imp=+0x1a9400d8c
+  -tagClass @16@0:8  imp=+0x1a9400d9c
+  -type @16@0:8  imp=+0x1a9400d7c
+  -url @16@0:8  imp=+0x1a9400d6c
+@class ISBundleIdentifierIcon : ISConcreteIcon instanceSize=56
+  ivar +40 _bundleIdentifier @"NSString"
+  ivar +48 _bundleVersion @"NSString"
+  property bundleIdentifier (T@"NSString",R,V_bundleIdentifier)
+  property bundleVersion (T@"NSString",R,V_bundleVersion)
+  +supportsSecureCoding B16@0:8  imp=+0x1a93df120
+  -.cxx_destruct v16@0:8  imp=+0x1a93df7a0
+  -_aspectRatio d16@0:8  imp=+0x1a93df6c8
+  -_makeResourceProviderAllowIconResourceFallback: @20@0:8B16  imp=+0x1a93df3b8
+  -bundleIdentifier @16@0:8  imp=+0x1a93df780
+  -bundleVersion @16@0:8  imp=+0x1a93df790
+  -description @16@0:8  imp=+0x1a93df6d0
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a93df310
+  -initWithBundleIdentifier: @24@0:8@16  imp=+0x1a93df128
+  -initWithCoder: @24@0:8@16  imp=+0x1a93df224
+  -makeResourceProvider @16@0:8  imp=+0x1a93df6b8
+  -makeSymbolResourceProvider @16@0:8  imp=+0x1a93df6c0
+@class ISBundleResourceProvider : ISResourceProvider instanceSize=144
+  ivar +120 _templateType @"NSString"
+  ivar +128 _bundleURL @"NSURL"
+  ivar +136 _iconDictionary @"NSDictionary"
+  property bundleURL (T@"NSURL",&,V_bundleURL)
+  property iconDictionary (T@"NSDictionary",&,V_iconDictionary)
+  property options (TQ)
+  property templateType (T@"NSString",&,V_templateType)
+  -.cxx_destruct v16@0:8  imp=+0x1a941e670
+  -_isAppleResource B16@0:8  imp=+0x1a941e488
+  -_shouldTreatLikeApp B16@0:8  imp=+0x1a941e5c0
+  -bundleURL @16@0:8  imp=+0x1a941e648
+  -description @16@0:8  imp=+0x1a941e4f8
+  -iconDictionary @16@0:8  imp=+0x1a941e65c
+  -iconResource @16@0:8  imp=+0x1a941e05c
+  -initWithBundle:options: @32@0:8@16Q24  imp=+0x1a941de20
+  -initWithBundleURL:iconDictionary:options: @40@0:8@16@24Q32  imp=+0x1a941dc94
+  -resolveResources v16@0:8  imp=+0x1a941ded4
+  -resourceNamed: @24@0:8@16  imp=+0x1a941e220
+  -setBundleURL: v24@0:8@16  imp=+0x1a941e654
+  -setIconDictionary: v24@0:8@16  imp=+0x1a941e668
+  -setTemplateType: v24@0:8@16  imp=+0x1a941e640
+  -symbol @16@0:8  imp=+0x1a941e2d8
+  -templateIconResource @16@0:8  imp=+0x1a941e0e4
+  -templateType @16@0:8  imp=+0x1a941e634
+@class ISCachedItemTracker : NSObject instanceSize=24
+  ivar +8 _entriesByIcon @"NSMutableDictionary"
+  ivar +16 _lock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  +classifyMinimumExpectation:outcome: {?=CCB}24@0:8C16C20  imp=+0x1a94275d4
+  +formatEmissionLineForSource:icon:descriptor:minimumExpectation:result:observation: @84@0:8C16@20@28C36C40{?=CCd@@@}44  imp=+0x1a94275e0
+  -.cxx_destruct v16@0:8  imp=+0x1a942794c
+  -_applyOutcome:toIconDigest:descriptorDigest:sizeHeight:promoting: {?=CCB}48@0:8C16@20@28d36B44  imp=+0x1a94273e4
+  -_lock_expectationForIconDigest:innerKey: C32@0:8@16@24  imp=+0x1a9427270
+  -_lock_setExpectation:forIconDigest:innerKey: v36@0:8C16@20@28  imp=+0x1a9427300
+  -classifyImageReadForIconDigest:descriptorDigest:observation:source: v76@0:8@16@24{?=CCd@@@}32C72  imp=+0x1a9427a7c
+  -classifyImageReadForIconDigest:descriptorDigest:sizeHeight:outcome: {?=CCB}44@0:8@16@24d32C40  imp=+0x1a94275bc
+  -init @16@0:8  imp=+0x1a9427200
+  -recordPrepareReturnForIconDigest:descriptorDigest:observation:source: v76@0:8@16@24{?=CCd@@@}32C72  imp=+0x1a9427958
+  -recordPrepareReturnForIconDigest:descriptorDigest:sizeHeight:outcome: {?=CCB}44@0:8@16@24d32C40  imp=+0x1a94275a4
+@class ISCenterBadgeRecipe : NSObject <ISCompositorRecipe> instanceSize=8
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -hintedBadgeRect @16@0:8  imp=+0x1a9426608
+  -layerTreeForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a94266d0
+@class ISCenterEmbossRecipe : NSObject <ISCompositorRecipe> instanceSize=16
+  ivar +8 _variant Q
+  property variant (TQ,V_variant)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -hintedBadgeRect @16@0:8  imp=+0x1a942616c
+  -hintedFontSize @16@0:8  imp=+0x1a94260a8
+  -hintedImageBadgeRect @16@0:8  imp=+0x1a9426278
+  -layerTreeForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a9426384
+  -setVariant: v24@0:8Q16  imp=+0x1a9426600
+  -variant Q16@0:8  imp=+0x1a94265f8
+@class ISCircle : ISShapeCompositorResource instanceSize=32
+  -imageForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a9424b40
+  -init @16@0:8  imp=+0x1a9424b08
+@class ISClippingRecipe : NSObject <ISCompositorRecipe> instanceSize=16
+  ivar +8 _badgeTintColor @"IFColor"
+  property badgeTintColor (T@"IFColor",&,V_badgeTintColor)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a9443740
+  -badgeTintColor @16@0:8  imp=+0x1a944372c
+  -hintedBadgeRect @16@0:8  imp=+0x1a9442564
+  -hintedCornerSize @16@0:8  imp=+0x1a9442790
+  -hintedFontSize @16@0:8  imp=+0x1a9442990
+  -hintedPageCurlSize @16@0:8  imp=+0x1a9442668
+  -hintedPaperRect @16@0:8  imp=+0x1a9442414
+  -hintedShadowBlur @16@0:8  imp=+0x1a9442a8c
+  -hintedShadowOffset @16@0:8  imp=+0x1a9442b94
+  -hintedTextRect @16@0:8  imp=+0x1a94428ac
+  -layerTreeForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a9442cb0
+  -setBadgeTintColor: v24@0:8@16  imp=+0x1a9443738
+@class ISCodableIcon : ISIcon <NSSecureCoding> instanceSize=24
+  +supportsSecureCoding B16@0:8  imp=+0x1a93ddd34
+  -_init @16@0:8  imp=+0x1a93ddd3c
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a93ddd74
+  -initWithCoder: @24@0:8@16  imp=+0x1a93ddd78
+@class ISCompositVariantResource : NSObject <ISVariantResourceProviderProtocol, ISVariantResourceProtocol> instanceSize=80
+  ivar +8 _variantName @"NSString"
+  ivar +16 _flags Q
+  ivar +24 _assetCatalogReference @"NSDictionary"
+  ivar +32 _compositionInfo @"NSDictionary"
+  ivar +40 _baseURL @"NSURL"
+  ivar +48 _vectorResources @"NSMutableDictionary"
+  ivar +56 _imageSetResources @"NSMutableDictionary"
+  ivar +64 _recipes @"NSDictionary"
+  ivar +72 _layers @"NSMutableArray"
+  property compositionInfo (T@"NSDictionary",&,V_compositionInfo)
+  property baseURL (T@"NSURL",&,V_baseURL)
+  property vectorResources (T@"NSMutableDictionary",&,V_vectorResources)
+  property imageSetResources (T@"NSMutableDictionary",&,V_imageSetResources)
+  property recipes (T@"NSDictionary",&,V_recipes)
+  property layers (T@"NSMutableArray",&,V_layers)
+  property assetCatalogReference (T@"NSDictionary",R,V_assetCatalogReference)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  property variantName (T@"NSString",R,V_variantName)
+  property flags (TQ,R,V_flags)
+  +resourceWithURL:resourceInfo:error: @40@0:8@16@24^@32  imp=+0x1a93eac70
+  -.cxx_destruct v16@0:8  imp=+0x1a93ec330
+  -addResourceWithResourceURL:namePrefix:error: B40@0:8@16@24^@32  imp=+0x1a93eafa8
+  -addResourceWithURL:error: B32@0:8@16^@24  imp=+0x1a93eb4d4
+  -assetCatalogReference @16@0:8  imp=+0x1a93eb4e0
+  -baseURL @16@0:8  imp=+0x1a93ec2cc
+  -compositionInfo @16@0:8  imp=+0x1a93ec2b8
+  -drawInContext:withScale:error: B40@0:8^{CGContext=}16Q24^@32  imp=+0x1a93ebf80
+  -flags Q16@0:8  imp=+0x1a93ec2b0
+  -imageForSize:scale:error: ^{CGImage=}40@0:8Q16Q24^@32  imp=+0x1a93ec13c
+  -imageResourceNamed: @24@0:8@16  imp=+0x1a93ebd50
+  -imageSetResources @16@0:8  imp=+0x1a93ec2f4
+  -initWithCompositionInfo:baseURL:variantName:flags: @48@0:8@16@24@32Q40  imp=+0x1a93eae60
+  -layers @16@0:8  imp=+0x1a93ec31c
+  -loadLayers v16@0:8  imp=+0x1a93ebaf0
+  -loadResources v16@0:8  imp=+0x1a93eb4f0
+  -numberResourceNamed: @24@0:8@16  imp=+0x1a93ebcd8
+  -recipeNamed: @24@0:8@16  imp=+0x1a93eb958
+  -recipes @16@0:8  imp=+0x1a93ec308
+  -resolvedResourceNamed: @24@0:8@16  imp=+0x1a93ebe08
+  -resolvedResourceNamed:ofClass: @32@0:8@16#24  imp=+0x1a93ebe80
+  -setBaseURL: v24@0:8@16  imp=+0x1a93ec2d8
+  -setCompositionInfo: v24@0:8@16  imp=+0x1a93ec2c4
+  -setImageSetResources: v24@0:8@16  imp=+0x1a93ec300
+  -setLayers: v24@0:8@16  imp=+0x1a93ec328
+  -setRecipes: v24@0:8@16  imp=+0x1a93ec314
+  -setVectorResources: v24@0:8@16  imp=+0x1a93ec2ec
+  -textResourceNamed: @24@0:8@16  imp=+0x1a93ebcd4
+  -variantName @16@0:8  imp=+0x1a93ec2a4
+  -vectorResourceNamed: @24@0:8@16  imp=+0x1a93ebdac
+  -vectorResources @16@0:8  imp=+0x1a93ec2e0
+@class ISCompositVariantResourceLayer : NSObject <ISCompositVariantResourceLayerProtocol> instanceSize=24
+  ivar +8 _layerInfo @"NSDictionary"
+  ivar +16 _resourceProvider @"<ISVariantResourceProviderProtocol>"
+  property layerInfo (T@"NSDictionary",&,V_layerInfo)
+  property resourceProvider (T@"<ISVariantResourceProviderProtocol>",W,V_resourceProvider)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a93eac30
+  -applyToContext:size:scale: B40@0:8^{CGContext=}16Q24Q32  imp=+0x1a93ea828
+  -description @16@0:8  imp=+0x1a93eaa18
+  -drawResource:context:size:scale: B48@0:8@16^{CGContext=}24Q32Q40  imp=+0x1a93ea3f4
+  -drawText:context:size:scale: v48@0:8@16^{CGContext=}24Q32Q40  imp=+0x1a93e9ff4
+  -drawingRectForSize: {CGRect={CGPoint=dd}{CGSize=dd}}32@0:8{CGSize=dd}16  imp=+0x1a93e9ee0
+  -initWithLayerInfo:resourceProvider: @32@0:8@16@24  imp=+0x1a93e9e38
+  -isActiveAtSize: B24@0:8q16  imp=+0x1a93ea5b0
+  -layerInfo @16@0:8  imp=+0x1a93eabe4
+  -maskWithResource:context:size:scale: B48@0:8@16^{CGContext=}24Q32Q40  imp=+0x1a93ea4e0
+  -resourceProvider @16@0:8  imp=+0x1a93eabf8
+  -setLayerInfo: v24@0:8@16  imp=+0x1a93eabf0
+  -setResourceProvider: v24@0:8@16  imp=+0x1a93eac24
+@class ISCompositingDescriptor : NSObject <NSCopying> instanceSize=128
+  ivar +8 _shouldApplyMask B
+  ivar +16 _scale d
+  ivar +24 _platformStyle Q
+  ivar +32 _tintColor @"IFColor"
+  ivar +40 _appearance q
+  ivar +48 _appearanceVariant q
+  ivar +56 _background Q
+  ivar +64 _platform Q
+  ivar +72 _languageDirection Q
+  ivar +80 _shape Q
+  ivar +88 _relativeInset d
+  ivar +96 _assetPlatformHint Q
+  ivar +104 _designGeneration q
+  ivar +112 _size {CGSize="width"d"height"d}
+  property size (T{CGSize=dd},V_size)
+  property scale (Td,V_scale)
+  property platformStyle (TQ,V_platformStyle)
+  property tintColor (T@"IFColor",C,V_tintColor)
+  property appearance (Tq,V_appearance)
+  property appearanceVariant (Tq,V_appearanceVariant)
+  property background (TQ,V_background)
+  property platform (TQ,V_platform)
+  property shouldApplyMask (TB,V_shouldApplyMask)
+  property languageDirection (TQ,V_languageDirection)
+  property shape (TQ,N,V_shape)
+  property relativeInset (Td,N,V_relativeInset)
+  property assetAppearance (Tq,R)
+  property assetPlatformHint (TQ,V_assetPlatformHint)
+  property assetPlatform (TQ,R)
+  property designGeneration (Tq,V_designGeneration)
+  property digest (T@"NSUUID",R)
+  +assetAppearanceForAppearance:appearanceVariant: q32@0:8q16q24  imp=+0x1a9423304
+  -.cxx_destruct v16@0:8  imp=+0x1a9424440
+  -CUINamedImageDeviceClass q16@0:8  imp=+0x1a9423690
+  -ICRAppearance Q16@0:8  imp=+0x1a94237d4
+  -ICRRenderingMode @16@0:8  imp=+0x1a9423868
+  -appearance q16@0:8  imp=+0x1a942439c
+  -appearanceVariant q16@0:8  imp=+0x1a94243ac
+  -assetAppearance q16@0:8  imp=+0x1a9423c00
+  -assetPlatform Q16@0:8  imp=+0x1a9423c5c
+  -assetPlatformHint Q16@0:8  imp=+0x1a9424420
+  -background Q16@0:8  imp=+0x1a94243bc
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a94234a0
+  -description @16@0:8  imp=+0x1a9423da8
+  -designGeneration q16@0:8  imp=+0x1a9424430
+  -digest @16@0:8  imp=+0x1a9424268
+  -digest:size: B32@0:8^v16Q24  imp=+0x1a9423fe4
+  -encapsulationShape @16@0:8  imp=+0x1a9423a88
+  -init @16@0:8  imp=+0x1a94233d0
+  -initWithImageDescriptor: @24@0:8@16  imp=+0x1a942344c
+  -languageDirection Q16@0:8  imp=+0x1a94243f0
+  -platform Q16@0:8  imp=+0x1a94243cc
+  -platformStyle Q16@0:8  imp=+0x1a9424378
+  -relativeInset d16@0:8  imp=+0x1a9424410
+  -resolvedRelativeInsetForSize:scale: d40@0:8{CGSize=dd}16d32  imp=+0x1a9423d10
+  -scale d16@0:8  imp=+0x1a9424368
+  -setAppearance: v24@0:8q16  imp=+0x1a94243a4
+  -setAppearanceVariant: v24@0:8q16  imp=+0x1a94243b4
+  -setAssetPlatformHint: v24@0:8Q16  imp=+0x1a9424428
+  -setBackground: v24@0:8Q16  imp=+0x1a94243c4
+  -setDesignGeneration: v24@0:8q16  imp=+0x1a9424438
+  -setLanguageDirection: v24@0:8Q16  imp=+0x1a94243f8
+  -setPlatform: v24@0:8Q16  imp=+0x1a94243d4
+  -setPlatformStyle: v24@0:8Q16  imp=+0x1a9424380
+  -setRelativeInset: v24@0:8d16  imp=+0x1a9424418
+  -setScale: v24@0:8d16  imp=+0x1a9424370
+  -setShape: v24@0:8Q16  imp=+0x1a9424408
+  -setShouldApplyMask: v20@0:8B16  imp=+0x1a94243e8
+  -setSize: v32@0:8{CGSize=dd}16  imp=+0x1a9424330
+  -setTintColor: v24@0:8@16  imp=+0x1a9424394
+  -shape Q16@0:8  imp=+0x1a9424400
+  -shouldApplyMask B16@0:8  imp=+0x1a94243dc
+  -size {CGSize=dd}16@0:8  imp=+0x1a94242f4
+  -tintColor @16@0:8  imp=+0x1a9424388
+  -updateWithImageDescriptor: v24@0:8@16  imp=+0x1a9423550
+@class ISCompositor : NSObject instanceSize=48
+  ivar +8 _analyticsSegmented B
+  ivar +16 _sharedCIContext @"CIContext"
+  ivar +24 _renderingMode Q
+  ivar +32 _elements @"NSMutableArray"
+  ivar +40 _graphicsContextPreset Q
+  property recipe (T@"<ISCompositorRecipe>",&)
+  property elements (T@"NSMutableArray",&,V_elements)
+  property canUseCoreImage (TB,R,D)
+  property sharedCIContext (T@"CIContext",R,V_sharedCIContext)
+  property graphicsContextPreset (TQ,V_graphicsContextPreset)
+  property renderingMode (TQ,V_renderingMode)
+  property analyticsSegmented (TB,N,V_analyticsSegmented)
+  -.cxx_destruct v16@0:8  imp=+0x1a93fccf8
+  -addElement: v24@0:8@16  imp=+0x1a93fcb4c
+  -addElementWithRecipe:resources: v32@0:8@16@24  imp=+0x1a93fcab8
+  -addResourcesFromDictionary: v24@0:8@16  imp=+0x1a93fd078
+  -analyticsSegmented B16@0:8  imp=+0x1a93fccc4
+  -canUseCoreImage B16@0:8  imp=+0x1a93fe1d4
+  -canUseCoreImageForEffects B16@0:8  imp=+0x1a93fe218
+  -clearResources v16@0:8  imp=+0x1a93fd13c
+  -dealloc v16@0:8  imp=+0x1a93fca0c
+  -drawElement:inContext: v32@0:8@16@24  imp=+0x1a93fe26c
+  -drawInContext: v24@0:8@16  imp=+0x1a93fd1d4
+  -drawLayer:resourceProvider:inContext: v40@0:8@16@24@32  imp=+0x1a93fea34
+  -elements @16@0:8  imp=+0x1a93fccd4
+  -filterForLayer:scale:resourceProvider: @40@0:8@16d24@32  imp=+0x1a93fd698
+  -graphicsContextPreset Q16@0:8  imp=+0x1a93fcce8
+  -imageForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a93fcb54
+  -init @16@0:8  imp=+0x1a93fc990
+  -initWithRecipe: @24@0:8@16  imp=+0x1a93fcd3c
+  -maskImageForLayer:size:scale:resourceProvider: @56@0:8@16{CGSize=dd}24d40@48  imp=+0x1a93fe950
+  -recipe @16@0:8  imp=+0x1a93fced8
+  -renderingMode Q16@0:8  imp=+0x1a93fccb4
+  -reset v16@0:8  imp=+0x1a93fcc68
+  -scaledImageFromContent:size:scale:needsScaled: @56@0:8@16{CGSize=dd}24d40^B48  imp=+0x1a93fe5b0
+  -setAnalyticsSegmented: v20@0:8B16  imp=+0x1a93fcccc
+  -setElements: v24@0:8@16  imp=+0x1a93fcce0
+  -setGraphicsContextPreset: v24@0:8Q16  imp=+0x1a93fccf0
+  -setRecipe: v24@0:8@16  imp=+0x1a93fcdd4
+  -setRenderingMode: v24@0:8Q16  imp=+0x1a93fccbc
+  -setResource:named: v32@0:8@16@24  imp=+0x1a93fcf44
+  -sharedCIContext @16@0:8  imp=+0x1a93fca5c
+@class ISCompositorElement : NSObject <ISCompositorResourceProvider, ISCompositorElement> instanceSize=32
+  ivar +8 _recipe @"<ISCompositorRecipe>"
+  ivar +16 _resourceProvider @"<ISCompositorResourceProvider>"
+  ivar +24 _additionalResources @"NSDictionary"
+  property additionalResources (T@"NSDictionary",R,V_additionalResources)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  property recipe (T@"<ISCompositorRecipe>",R,V_recipe)
+  property resourceProvider (T@"<ISCompositorResourceProvider>",R,V_resourceProvider)
+  -.cxx_destruct v16@0:8  imp=+0x1a93fc5f4
+  -additionalResources @16@0:8  imp=+0x1a93fc5e8
+  -initWithRecipe:resourceProvider: @32@0:8@16@24  imp=+0x1a93fc314
+  -initWithRecipe:resourceProvider:additionalResources: @40@0:8@16@24@32  imp=+0x1a93fc3bc
+  -recipe @16@0:8  imp=+0x1a93fc5dc
+  -resourceForKey: @24@0:8@16  imp=+0x1a93fc4a8
+  -resourceNamed: @24@0:8@16  imp=+0x1a93fc560
+  -resourceProvider @16@0:8  imp=+0x1a93fc494
+@class ISCompositorResourceAdapter : NSObject <ISScalableCompositorResource> instanceSize=16
+  ivar +8 _variantResource @"<ISVariantResourceProtocol>"
+  property variantResource (T@"<ISVariantResourceProtocol>",R,V_variantResource)
+  property usesExternalCompositor (TB,?)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a93e9734
+  -imageForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a93e96b4
+  -initWithVariantResource: @24@0:8@16  imp=+0x1a93e9638
+  -variantResource @16@0:8  imp=+0x1a93e9728
+@class ISCompositorResourceProviderKey : NSObject <ISCompositorResource> instanceSize=24
+  ivar +8 _name @"NSString"
+  ivar +16 _flags Q
+  property name (T@"NSString",&,V_name)
+  property flags (TQ,V_flags)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +resourceKeyWithName:flags: @32@0:8@16Q24  imp=+0x1a93e2efc
+  -.cxx_destruct v16@0:8  imp=+0x1a93e2fa0
+  -flags Q16@0:8  imp=+0x1a93e2f90
+  -name @16@0:8  imp=+0x1a93e2f7c
+  -setFlags: v24@0:8Q16  imp=+0x1a93e2f98
+  -setName: v24@0:8@16  imp=+0x1a93e2f88
+@class ISConcreteIcon : ISCodableIcon <NSSecureCoding> instanceSize=40
+  ivar +24 _digest @"NSUUID"
+  ivar +32 _imageCache @"ISImageCache"
+  property imageCache (T@"ISImageCache",R,V_imageCache)
+  property digest (T@"NSUUID",R,V_digest)
+  +supportsSecureCoding B16@0:8  imp=+0x1a93f6910
+  -.cxx_destruct v16@0:8  imp=+0x1a93fafa0
+  -_aspectRatio d16@0:8  imp=+0x1a93faf78
+  -_cachedImageForDescriptor: @24@0:8@16  imp=+0x1a93f77c4
+  -_fallbackKey @16@0:8  imp=+0x1a93f6c68
+  -_imageForSymbolImageDescriptor: @24@0:8@16  imp=+0x1a93f9770
+  -_imageFromStoreForDescriptor: @24@0:8@16  imp=+0x1a93f6cb4
+  -_placeholderImageForError:descriptor: @32@0:8@16@24  imp=+0x1a93f85b0
+  -_prepareImagesForImageDescriptors: v24@0:8@16  imp=+0x1a93f8ea4
+  -assessValidationToken: Q24@0:8@16  imp=+0x1a93f80f0
+  -digest @16@0:8  imp=+0x1a93faf80
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a93f69c4
+  -generateImageWithDescriptor: @24@0:8@16  imp=+0x1a93f8640
+  -generateImageWithDescriptor:completion: v32@0:8@16@?24  imp=+0x1a93fa6f8
+  -getImageForImageDescriptor:completion: v32@0:8@16@?24  imp=+0x1a93fad48
+  -hash Q16@0:8  imp=+0x1a93f6bfc
+  -imageCache @16@0:8  imp=+0x1a93faf90
+  -imageForDescriptor: @24@0:8@16  imp=+0x1a93f9f6c
+  -imageForImageDescriptor: @24@0:8@16  imp=+0x1a93f98b8
+  -initWithCoder: @24@0:8@16  imp=+0x1a93f6a30
+  -initWithDigest: @24@0:8@16  imp=+0x1a93f6918
+  -isEqual: B24@0:8@16  imp=+0x1a93f6b80
+  -isEqualToIcon: B24@0:8@16  imp=+0x1a93f6b00
+  -makeResourceProvider @16@0:8  imp=+0x1a93f6c78
+  -makeSymbolResourceProvider @16@0:8  imp=+0x1a93f6cac
+  -resolve v16@0:8  imp=+0x1a93f6cb0
+  -symbol @16@0:8  imp=+0x1a93f97fc
+@class ISContentLayer : ISLayer instanceSize=128
+  ivar +104 _acceptSymbol B
+  ivar +112 _backgroundColor @"IFColor"
+  ivar +120 _content @"<ISCompositorResource>"
+  property backgroundColor (T@"IFColor",&,N,V_backgroundColor)
+  property content (T@"<ISCompositorResource>",&,N,V_content)
+  property acceptSymbol (TB,N,V_acceptSymbol)
+  -.cxx_destruct v16@0:8  imp=+0x1a9408c78
+  -acceptSymbol B16@0:8  imp=+0x1a9408c68
+  -backgroundColor @16@0:8  imp=+0x1a9408c40
+  -content @16@0:8  imp=+0x1a9408c54
+  -init @16@0:8  imp=+0x1a9408bc4
+  -setAcceptSymbol: v20@0:8B16  imp=+0x1a9408c70
+  -setBackgroundColor: v24@0:8@16  imp=+0x1a9408c48
+  -setContent: v24@0:8@16  imp=+0x1a9408c5c
+@class ISContinuousRoundedRect : ISShapeCompositorResource instanceSize=32
+  -_cornerRadiusForSize: d32@0:8{CGSize=dd}16  imp=+0x1a9424494
+  -imageForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a94244ac
+  -init @16@0:8  imp=+0x1a942445c
+@class ISCubicInterpolationLinearGradientResource : NSObject <ISScalableCompositorResource> instanceSize=24
+  ivar +8 _startingColor @"IFColor"
+  ivar +16 _endingColor @"IFColor"
+  property startingColor (T@"IFColor",C,V_startingColor)
+  property endingColor (T@"IFColor",C,V_endingColor)
+  property usesExternalCompositor (TB,?)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a940d0a8
+  -endingColor @16@0:8  imp=+0x1a940d094
+  -imageForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a940cdfc
+  -initWithStartingColor:endingColor: @32@0:8@16@24  imp=+0x1a940cd54
+  -setEndingColor: v24@0:8@16  imp=+0x1a940d0a0
+  -setStartingColor: v24@0:8@16  imp=+0x1a940d08c
+  -startingColor @16@0:8  imp=+0x1a940d080
+@class ISCurrentDeviceIcon : ISTypeIcon instanceSize=56
+  +sharedInstance @16@0:8  imp=+0x1a93e8f78
+  -init @16@0:8  imp=+0x1a93e8ffc
+@class ISCustomIcon : ISConcreteIcon <NSSecureCoding> instanceSize=48
+  ivar +40 _bookmark @"NSData"
+  property bookmark (T@"NSData",R,V_bookmark)
+  property url (T@"NSURL",R)
+  +supportsSecureCoding B16@0:8  imp=+0x1a940fb44
+  -.cxx_destruct v16@0:8  imp=+0x1a9410528
+  -_fallbackKey @16@0:8  imp=+0x1a940ff50
+  -bookmark @16@0:8  imp=+0x1a9410518
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a940fd5c
+  -initWithCoder: @24@0:8@16  imp=+0x1a940fde4
+  -initWithURL: @24@0:8@16  imp=+0x1a940fb4c
+  -makeResourceProvider @16@0:8  imp=+0x1a9410040
+  -symbol @16@0:8  imp=+0x1a941042c
+  -url @16@0:8  imp=+0x1a940fe8c
+@class ISCustomIconManager : NSObject instanceSize=8
+  +defaultSpecialFolderTypeMapping @16@0:8  imp=+0x1a942af84
+  +overrideTypeMapping @16@0:8  imp=+0x1a942b80c
+  +sharedInstance @16@0:8  imp=+0x1a942b868
+  -_init @16@0:8  imp=+0x1a942b8f0
+  -overrideIconForURL: @24@0:8@16  imp=+0x1a942b928
+  -overrideResourceForBundleIdentifier: @24@0:8@16  imp=+0x1a942ba2c
+  -specialFolderTypeForURL: @24@0:8@16  imp=+0x1a942bcd8
+@class ISCustomRecipe : NSObject <ISCompositorResourceProvider> instanceSize=40
+  ivar +8 _recipe @"<ISCompositorRecipe>"
+  ivar +16 _bundle @"IFBundle"
+  ivar +24 _bitmapResources @"NSDictionary"
+  ivar +32 _symbolResources @"NSDictionary"
+  property bundle (T@"IFBundle",R,V_bundle)
+  property bitmapResources (T@"NSDictionary",R,V_bitmapResources)
+  property symbolResources (T@"NSDictionary",R,V_symbolResources)
+  property recipe (T@"<ISCompositorRecipe>",R,V_recipe)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +customRecipeWithInfo:bundle: @32@0:8@16@24  imp=+0x1a94187ac
+  -.cxx_destruct v16@0:8  imp=+0x1a9418c84
+  -bitmapResources @16@0:8  imp=+0x1a9418c6c
+  -bundle @16@0:8  imp=+0x1a9418c60
+  -initWithRecipe:bitmapResources:symbolResources:bundle: @48@0:8@16@24@32@40  imp=+0x1a941896c
+  -recipe @16@0:8  imp=+0x1a9418c54
+  -resourceNamed: @24@0:8@16  imp=+0x1a9418a7c
+  -symbolResources @16@0:8  imp=+0x1a9418c78
+@class ISDarkBackgroundResource : ISCubicInterpolationLinearGradientResource instanceSize=24
+  -init @16@0:8  imp=+0x1a944bd0c
+@class ISDecoratedIcon : ISConcreteIcon instanceSize=64
+  ivar +40 _decorations @"NSArray"
+  ivar +48 _icon @"ISIcon"
+  ivar +56 _styleDescriptor @"ISImageStyleDescriptor"
+  property icon (T@"ISIcon",R,V_icon)
+  property decorations (T@"NSArray",R)
+  property styleDescriptor (T@"ISImageStyleDescriptor",R,V_styleDescriptor)
+  +supportsSecureCoding B16@0:8  imp=+0x1a9412664
+  -.cxx_destruct v16@0:8  imp=+0x1a9413144
+  -decorations @16@0:8  imp=+0x1a9412d58
+  -description @16@0:8  imp=+0x1a9412ca0
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a9412b0c
+  -icon @16@0:8  imp=+0x1a9413124
+  -iconWithDecorations: @24@0:8@16  imp=+0x1a9412bf0
+  -initWithCoder: @24@0:8@16  imp=+0x1a9412914
+  -initWithIcon:decorations: @32@0:8@16@24  imp=+0x1a941266c
+  -initWithIcon:decorations:styleDescriptor: @40@0:8@16@24@32  imp=+0x1a9412674
+  -makeResourceProvider @16@0:8  imp=+0x1a9412df8
+  -styleDescriptor @16@0:8  imp=+0x1a9413134
+  -symbol @16@0:8  imp=+0x1a9413110
+@class ISDefaults : NSObject instanceSize=56
+  ivar +8 __enableAppIconOverrides B
+  ivar +9 __enable1016Icons B
+  ivar +10 __ignoreDocumentClaimIcons B
+  ivar +12 _lock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +16 _metalCacheURL @"NSURL"
+  ivar +24 _cacheSaltString @"NSString"
+  ivar +32 _serviceName @"NSString"
+  ivar +40 __usePerstentCache @"NSNumber"
+  ivar +48 __cacheURL @"NSURL"
+  property _usePerstentCache (T@"NSNumber",&,V__usePerstentCache)
+  property lock (T{os_unfair_lock_s=I},R,V_lock)
+  property _enableAppIconOverrides (TB,R,V__enableAppIconOverrides)
+  property _enable1016Icons (TB,R,V__enable1016Icons)
+  property _ignoreDocumentClaimIcons (TB,R,V__ignoreDocumentClaimIcons)
+  property _cacheURL (T@"NSURL",&,V__cacheURL)
+  property usePerstentCache (TB,R,D)
+  property cacheURL (T@"NSURL",R,D)
+  property metalCacheURL (T@"NSURL",R,V_metalCacheURL)
+  property cacheSaltString (T@"NSString",R,V_cacheSaltString)
+  property serviceName (T@"NSString",R,V_serviceName)
+  property defaultToTemplatizedAppIcons (TB,R)
+  property allowDocumentClaimIcons (TB,R)
+  property preferSymbolAsTemplateVariant (TB,R)
+  property enableAppIconOverides (TB,R)
+  property prepareImageDelay (Td,R)
+  property logMissingURLCacheProperties (TB,R)
+  property enableInstanceIDBasedTwoAppModel (TB,R)
+  property enableBadgeOverhang (TB,R)
+  property isDarkIconSegmentationEnabled (TB,R)
+  property isDarkIconColorEnhancementEnabled (TB,R)
+  property isDarkIconDimmingEnabled (TB,R)
+  property isDarkIconDimmingForDedicatedAssetsEnabled (TB,R)
+  property isFlagDimmedDedicatedAssetsEnabled (TB,R)
+  property isIconSegmentationAnalyticsForAllIconsEnabled (TB,R)
+  property isSolariumEnabled (TB,R)
+  property isUniversalGladeEnabled (TB,R)
+  property isEnhancedGlassEnabled (TB,R)
+  property isSolariumCornerRadiusEnabled (TB,R)
+  property iconStackAppIconsAllowed (TB,R)
+  property isDebugPlaceholderIconsEnabled (TB,R)
+  property isVerboseLoggingEnabled (TB,R)
+  property safeBoot (TB,R)
+  +sharedInstance @16@0:8  imp=+0x1a942216c
+  -.cxx_destruct v16@0:8  imp=+0x1a9422dd0
+  -_cacheURL @16@0:8  imp=+0x1a9422dbc
+  -_enable1016Icons B16@0:8  imp=+0x1a9422da4
+  -_enableAppIconOverrides B16@0:8  imp=+0x1a9422d98
+  -_ignoreDocumentClaimIcons B16@0:8  imp=+0x1a9422db0
+  -_usePerstentCache @16@0:8  imp=+0x1a9422d7c
+  -allowDocumentClaimIcons B16@0:8  imp=+0x1a94224c0
+  -cacheSaltString @16@0:8  imp=+0x1a9422d64
+  -cacheURL @16@0:8  imp=+0x1a9422268
+  -defaultToTemplatizedAppIcons B16@0:8  imp=+0x1a94224ac
+  -disableLegacyIconSegmentation B16@0:8  imp=+0x1a9422ac8
+  -enableAppIconOverides B16@0:8  imp=+0x1a9422520
+  -enableBadgeOverhang B16@0:8  imp=+0x1a9422620
+  -enableInstanceIDBasedTwoAppModel B16@0:8  imp=+0x1a942260c
+  -featureOverride B16@0:8  imp=+0x1a9422be0
+  -forceApperance q16@0:8  imp=+0x1a94227c4
+  -forceApperanceVariant q16@0:8  imp=+0x1a94228bc
+  -iconStackAppIconsAllowed B16@0:8  imp=+0x1a9422c38
+  -init @16@0:8  imp=+0x1a94221f0
+  -isDarkIconColorEnhancementEnabled B16@0:8  imp=+0x1a9422af0
+  -isDarkIconDimmingEnabled B16@0:8  imp=+0x1a9422b04
+  -isDarkIconDimmingForDedicatedAssetsEnabled B16@0:8  imp=+0x1a9422b18
+  -isDarkIconSegmentationEnabled B16@0:8  imp=+0x1a9422adc
+  -isDebugPlaceholderIconsEnabled B16@0:8  imp=+0x1a9422ca8
+  -isEnhancedGlassEnabled B16@0:8  imp=+0x1a9422c84
+  -isFlagDimmedDedicatedAssetsEnabled B16@0:8  imp=+0x1a9422b2c
+  -isIconSegmentationAnalyticsForAllIconsEnabled B16@0:8  imp=+0x1a9422c24
+  -isInternalBuild B16@0:8  imp=+0x1a9422a60
+  -isSolariumCornerRadiusEnabled B16@0:8  imp=+0x1a9422c8c
+  -isSolariumEnabled B16@0:8  imp=+0x1a9422be8
+  -isUniversalGladeEnabled B16@0:8  imp=+0x1a9422bf0
+  -isUnsupportedDecorationDisabled B16@0:8  imp=+0x1a9422b40
+  -isVerboseLoggingEnabled B16@0:8  imp=+0x1a9422cec
+  -lock {os_unfair_lock_s=I}16@0:8  imp=+0x1a9422d90
+  -logMissingURLCacheProperties B16@0:8  imp=+0x1a9422604
+  -metalCacheURL @16@0:8  imp=+0x1a94223a0
+  -preferSymbolAsTemplateVariant B16@0:8  imp=+0x1a942250c
+  -prepareImageBagIconsOutOfProcess B16@0:8  imp=+0x1a9422c94
+  -prepareImageDelay d16@0:8  imp=+0x1a9422568
+  -safeBoot B16@0:8  imp=+0x1a94229d0
+  -serviceName @16@0:8  imp=+0x1a9422d70
+  -set_cacheURL: v24@0:8@16  imp=+0x1a9422dc8
+  -set_usePerstentCache: v24@0:8@16  imp=+0x1a9422d88
+  -simulateTintableAppearance B16@0:8  imp=+0x1a9422634
+  -tintColor @16@0:8  imp=+0x1a9422648
+  -usePerstentCache B16@0:8  imp=+0x1a9422414
+@class ISDeviceInfo : NSObject instanceSize=40
+  ivar +8 _deviceClass i
+  ivar +12 _screenClass i
+  ivar +16 _screenScale d
+  ivar +24 _rawDeviceIdiom q
+  ivar +32 _deviceSubtype Q
+  property screenClass (Ti,R,V_screenClass)
+  property screenScale (Td,R,V_screenScale)
+  property homeScreenIconSize (T{CGSize=dd},R)
+  property largeHomeScreenIconSize (T{CGSize=dd},R)
+  property messagesLauncherIconSize (T{CGSize=dd},R)
+  property ideom (TQ,R)
+  property rawDeviceIdiom (Tq,R,V_rawDeviceIdiom)
+  property deviceSubtype (TQ,R,V_deviceSubtype)
+  property deviceClass (Ti,R,V_deviceClass)
+  +sharedInstance @16@0:8  imp=+0x1a9434498
+  -deviceClass i16@0:8  imp=+0x1a9434914
+  -deviceSubtype Q16@0:8  imp=+0x1a943490c
+  -homeScreenIconSize {CGSize=dd}16@0:8  imp=+0x1a9434650
+  -ideom Q16@0:8  imp=+0x1a943459c
+  -init @16@0:8  imp=+0x1a943451c
+  -largeHomeScreenIconSize {CGSize=dd}16@0:8  imp=+0x1a9434804
+  -messagesLauncherIconSize {CGSize=dd}16@0:8  imp=+0x1a9434880
+  -rawDeviceIdiom q16@0:8  imp=+0x1a9434904
+  -screenClass i16@0:8  imp=+0x1a943491c
+  -screenScale d16@0:8  imp=+0x1a94348fc
+@class ISDimmedDarkEffect : NSObject <ISEffect> instanceSize=8
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -filterWithBackgroundImage:inputImage: @32@0:8@16@24  imp=+0x1a942fd70
+@class ISDimmedEffect : NSObject <ISEffect> instanceSize=8
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -filterWithBackgroundImage:inputImage: @32@0:8@16@24  imp=+0x1a942fbb0
+@class ISDimmingConversion : NSObject instanceSize=104
+  ivar +8 _cgImage ^{CGImage=}
+  ivar +16 _targetHighlightBrightnessLevel f
+  ivar +20 _targetMeanBrightnessLevel f
+  ivar +24 _minMeanBrightnessAdjustmentFactor f
+  ivar +32 _data ^{__CFData=}
+  ivar +40 _samples {?="width"i"height"i"padding"i"alphaInfo"I"ucharSamples"^}
+  ivar +64 _width i
+  ivar +68 _height i
+  ivar +72 _numberOfSamples i
+  ivar +76 _hasDimmingParameters B
+  ivar +77 _isDimmable B
+  ivar +80 _highlightBrightnessAdjustmentFactor f
+  ivar +84 _shouldAdjustHighlightBrightness B
+  ivar +88 _meanBrightnessAfterHighlightAdjustment f
+  ivar +92 _shouldAdjustMeanBrightness B
+  ivar +96 _ucharDimmed ^
+  property targetHighlightBrightnessLevel (Tf,N,V_targetHighlightBrightnessLevel)
+  property targetMeanBrightnessLevel (Tf,N,V_targetMeanBrightnessLevel)
+  property minMeanBrightnessAdjustmentFactor (Tf,N,V_minMeanBrightnessAdjustmentFactor)
+  property isDimmable (TB,R,N)
+  -_computeDimmedImage B16@0:8  imp=+0x1a93ee1b0
+  -_computeDimmingParameters v16@0:8  imp=+0x1a93ede34
+  -_prepareSamplesIfNeeded B16@0:8  imp=+0x1a93edcf8
+  -createDimmedImage ^{CGImage=}16@0:8  imp=+0x1a93ee3e4
+  -dealloc v16@0:8  imp=+0x1a93edc98
+  -initWithCGImage: @24@0:8^{CGImage=}16  imp=+0x1a93edc24
+  -isDimmable B16@0:8  imp=+0x1a93ee17c
+  -minMeanBrightnessAdjustmentFactor f16@0:8  imp=+0x1a93ee454
+  -setMinMeanBrightnessAdjustmentFactor: v20@0:8f16  imp=+0x1a93ee45c
+  -setTargetHighlightBrightnessLevel: v20@0:8f16  imp=+0x1a93ee43c
+  -setTargetMeanBrightnessLevel: v20@0:8f16  imp=+0x1a93ee44c
+  -targetHighlightBrightnessLevel f16@0:8  imp=+0x1a93ee434
+  -targetMeanBrightnessLevel f16@0:8  imp=+0x1a93ee444
+@class ISDocumentRecipe : NSObject <ISCompositorRecipe> instanceSize=24
+  ivar +8 _maskBadgeResource B
+  ivar +9 _badgeWithSymbol B
+  ivar +10 _hasText B
+  ivar +11 _hasBespokeBackground B
+  ivar +12 _treatLikeSymbol B
+  ivar +16 _platform Q
+  property maskBadgeResource (TB,V_maskBadgeResource)
+  property badgeWithSymbol (TB,V_badgeWithSymbol)
+  property platform (TQ,V_platform)
+  property hasText (TB,V_hasText)
+  property hasBespokeBackground (TB,V_hasBespokeBackground)
+  property treatLikeSymbol (TB,V_treatLikeSymbol)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -badgeWithSymbol B16@0:8  imp=+0x1a943f554
+  -curlResource @16@0:8  imp=+0x1a943ef10
+  -hasBespokeBackground B16@0:8  imp=+0x1a943f58c
+  -hasText B16@0:8  imp=+0x1a943f578
+  -hintedBadgeRect @16@0:8  imp=+0x1a943dd14
+  -hintedPaperRect @16@0:8  imp=+0x1a943da14
+  -hintedShadowBlur @16@0:8  imp=+0x1a943eb3c
+  -hintedShadowOffset @16@0:8  imp=+0x1a943ec44
+  -hintedShadowSpread @16@0:8  imp=+0x1a943ed60
+  -hintedSymbolFontSize @16@0:8  imp=+0x1a943e704
+  -hintedTextFontSize @16@0:8  imp=+0x1a943e514
+  -hintedTextRect @16@0:8  imp=+0x1a943e26c
+  -iconSpecification @16@0:8  imp=+0x1a943f4f0
+  -layerTreeForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a943efb8
+  -maskBadgeResource B16@0:8  imp=+0x1a943f540
+  -pageResource @16@0:8  imp=+0x1a943ee68
+  -platform Q16@0:8  imp=+0x1a943f568
+  -setBadgeWithSymbol: v20@0:8B16  imp=+0x1a943f560
+  -setHasBespokeBackground: v20@0:8B16  imp=+0x1a943f598
+  -setHasText: v20@0:8B16  imp=+0x1a943f584
+  -setMaskBadgeResource: v20@0:8B16  imp=+0x1a943f54c
+  -setPlatform: v24@0:8Q16  imp=+0x1a943f570
+  -setTreatLikeSymbol: v20@0:8B16  imp=+0x1a943f5ac
+  -treatLikeSymbol B16@0:8  imp=+0x1a943f5a0
+@class ISDropShaddowEffect : NSObject <ISEffect> instanceSize=56
+  ivar +8 _scale d
+  ivar +16 _blur d
+  ivar +24 _spread d
+  ivar +32 _color @"IFColor"
+  ivar +40 _offset {CGSize="width"d"height"d}
+  property scale (Td,V_scale)
+  property offset (T{CGSize=dd},V_offset)
+  property blur (Td,V_blur)
+  property spread (Td,V_spread)
+  property color (T@"IFColor",&,V_color)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a942f304
+  -blur d16@0:8  imp=+0x1a942f2d0
+  -color @16@0:8  imp=+0x1a942f2f0
+  -filterWithBackgroundImage:inputImage: @32@0:8@16@24  imp=+0x1a942eff0
+  -init @16@0:8  imp=+0x1a942ef60
+  -offset {CGSize=dd}16@0:8  imp=+0x1a942f25c
+  -scale d16@0:8  imp=+0x1a942f24c
+  -setBlur: v24@0:8d16  imp=+0x1a942f2d8
+  -setColor: v24@0:8@16  imp=+0x1a942f2fc
+  -setOffset: v32@0:8{CGSize=dd}16  imp=+0x1a942f298
+  -setScale: v24@0:8d16  imp=+0x1a942f254
+  -setSpread: v24@0:8d16  imp=+0x1a942f2e8
+  -spread d16@0:8  imp=+0x1a942f2e0
+@class ISDynamicIconStackResource : NSObject <ISScalableCompositorResource, ISIconStackResource, ISCompositesWithCompositingDescriptor> instanceSize=56
+  ivar +8 compositingDescriptor @"ISCompositingDescriptor"
+  ivar +16 generationReport @"ISGenerationReport"
+  ivar +24 platform Q
+  ivar +32 _typeIdentifier @"NSString"
+  ivar +40 _layerGroups @"NSArray"
+  ivar +48 _icrCompositor @"ISICRCompositor"
+  property icrCompositor (T@"ISICRCompositor",C,V_icrCompositor)
+  property typeIdentifier (T@"NSString",R,V_typeIdentifier)
+  property layerGroups (T@"NSArray",R,V_layerGroups)
+  property usesExternalCompositor (TB,?)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  property platform (TQ,R,Vplatform)
+  property generationReport (T@"ISGenerationReport",&,VgenerationReport)
+  property compositingDescriptor (T@"ISCompositingDescriptor",C,VcompositingDescriptor)
+  -.cxx_destruct v16@0:8  imp=+0x1a93e02ec
+  -_compositingDescriptorWithSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a93e0138
+  -baseIconStackForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a93df9ec
+  -compositingDescriptor @16@0:8  imp=+0x1a93e0290
+  -generationReport @16@0:8  imp=+0x1a93e02a4
+  -iconStackForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a93dfdd8
+  -icrCompositor @16@0:8  imp=+0x1a93e02d8
+  -imageForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a93e0218
+  -initWithTypeIdentifier:layerGroups: @32@0:8@16@24  imp=+0x1a93df7f4
+  -layerGroups @16@0:8  imp=+0x1a93e02cc
+  -platform Q16@0:8  imp=+0x1a93e02b8
+  -setCompositingDescriptor: v24@0:8@16  imp=+0x1a93e029c
+  -setGenerationReport: v24@0:8@16  imp=+0x1a93e02b0
+  -setIcrCompositor: v24@0:8@16  imp=+0x1a93e02e4
+  -typeIdentifier @16@0:8  imp=+0x1a93e02c0
+@class ISEmbossedEffect : NSObject <ISEffect> instanceSize=40
+  ivar +8 _range d
+  ivar +16 _variant Q
+  ivar +24 _offset {CGSize="width"d"height"d}
+  property offset (T{CGSize=dd},V_offset)
+  property range (Td,V_range)
+  property variant (TQ,V_variant)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -filterWithBackgroundImage:inputImage: @32@0:8@16@24  imp=+0x1a942f350
+  -init @16@0:8  imp=+0x1a942f310
+  -offset {CGSize=dd}16@0:8  imp=+0x1a942fb1c
+  -range d16@0:8  imp=+0x1a942fb90
+  -setOffset: v32@0:8{CGSize=dd}16  imp=+0x1a942fb58
+  -setRange: v24@0:8d16  imp=+0x1a942fb98
+  -setVariant: v24@0:8Q16  imp=+0x1a942fba8
+  -variant Q16@0:8  imp=+0x1a942fba0
+@class ISEmbossedFolder : NSObject <ISCompositorRecipe> instanceSize=16
+  ivar +8 _backgroundStyle Q
+  property backgroundStyle (TQ,V_backgroundStyle)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -backgroundStyle Q16@0:8  imp=+0x1a940a598
+  -embossVariant Q16@0:8  imp=+0x1a9409ed0
+  -folderResourceName @16@0:8  imp=+0x1a9409ea0
+  -hintedBadgeRect @16@0:8  imp=+0x1a940a380
+  -hintedFontSize @16@0:8  imp=+0x1a940a2bc
+  -hintedImageBadgeRect @16@0:8  imp=+0x1a940a48c
+  -layerTreeForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a9409ef0
+  -setBackgroundStyle: v24@0:8Q16  imp=+0x1a940a5a0
+@class ISEmbossedSmartFolder : ISEmbossedFolder <ISCompositorRecipe> instanceSize=16
+  property backgroundStyle (TQ)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -embossVariant Q16@0:8  imp=+0x1a940a5d8
+  -folderResourceName @16@0:8  imp=+0x1a940a5a8
+@class ISFallbackIconDarkSegmented : NSObject <ISDarkFallbackIcon> instanceSize=32
+  ivar +8 _drawsLightingEffects B
+  ivar +16 _darkImage ^{CGImage=}
+  ivar +24 _feedback @"ISIconSegmentationFeedback"
+  property darkImage (T^{CGImage=},R,N,V_darkImage)
+  property drawsLightingEffects (TB,R,N,V_drawsLightingEffects)
+  property feedback (T@"ISIconSegmentationFeedback",R,N,V_feedback)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a94062e8
+  -darkImage ^{CGImage=}16@0:8  imp=+0x1a94062d0
+  -dealloc v16@0:8  imp=+0x1a9406284
+  -drawsLightingEffects B16@0:8  imp=+0x1a94062d8
+  -feedback @16@0:8  imp=+0x1a94062e0
+  -initWithDarkImage:drawsLightingEffects:feedback: @36@0:8^{CGImage=}16B24@28  imp=+0x1a94061e8
+@class ISFallbackIconFactory : NSObject instanceSize=24
+  ivar +8 _cgImage ^{CGImage=}
+  ivar +16 _idiom Q
+  -_createDarkFallbackIcon_iOS @16@0:8  imp=+0x1a9406d8c
+  -_createDarkFallbackIcon_macOS @16@0:8  imp=+0x1a9406f9c
+  -_createLightFallbackIcon_iOS @16@0:8  imp=+0x1a94064b4
+  -_createLightFallbackIcon_macOS @16@0:8  imp=+0x1a9406618
+  -_createTintedFallbackIcon_iOS @16@0:8  imp=+0x1a9407290
+  -_createTintedFallbackIcon_macOS @16@0:8  imp=+0x1a94073f0
+  -createDarkFallbackIcon @16@0:8  imp=+0x1a9407234
+  -createLightFallbackIcon @16@0:8  imp=+0x1a9406d30
+  -createTintedFallbackIcon @16@0:8  imp=+0x1a9407688
+  -dealloc v16@0:8  imp=+0x1a9406468
+  -initWithCGImage:idiom: @32@0:8^{CGImage=}16Q24  imp=+0x1a9406400
+@class ISFallbackIconFill : NSObject <ISLightFallbackIcon, ISDarkFallbackIcon, ISTintedFallbackIcon> instanceSize=32
+  ivar +8 _image ^{CGImage=}
+  ivar +16 _foregroundAndLightingEffectsImage ^{CGImage=}
+  ivar +24 _feedback @"ISIconSegmentationFeedback"
+  property image (T^{CGImage=},R,N,V_image)
+  property foregroundAndLightingEffectsImage (T^{CGImage=},R,N,V_foregroundAndLightingEffectsImage)
+  property feedback (T@"ISIconSegmentationFeedback",R,N,V_feedback)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a94060e8
+  -dealloc v16@0:8  imp=+0x1a940607c
+  -feedback @16@0:8  imp=+0x1a94060e0
+  -foregroundAndLightingEffectsImage ^{CGImage=}16@0:8  imp=+0x1a94060d8
+  -image ^{CGImage=}16@0:8  imp=+0x1a94060d0
+  -initWithImage:foregroundAndLightingEffectsImage:feedback: @40@0:8^{CGImage=}16^{CGImage=}24@32  imp=+0x1a9405fd8
+@class ISFallbackIconScaleDown : NSObject <ISLightFallbackIcon, ISDarkFallbackIcon, ISTintedFallbackIcon> instanceSize=24
+  ivar +8 _image ^{CGImage=}
+  ivar +16 _cornerRadius @"NSNumber"
+  property image (T^{CGImage=},R,N,V_image)
+  property cornerRadius (T@"NSNumber",R,N,V_cornerRadius)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a94061dc
+  -cornerRadius @16@0:8  imp=+0x1a94061d4
+  -dealloc v16@0:8  imp=+0x1a9406180
+  -image ^{CGImage=}16@0:8  imp=+0x1a94061cc
+  -initWithImage:cornerRadius: @32@0:8^{CGImage=}16@24  imp=+0x1a94060f4
+@class ISFallbackIconTintedSegmented : NSObject <ISTintedFallbackIcon> instanceSize=32
+  ivar +8 _drawsLightingEffects B
+  ivar +16 _tintableImage ^{CGImage=}
+  ivar +24 _feedback @"ISIconSegmentationFeedback"
+  property tintableImage (T^{CGImage=},R,N,V_tintableImage)
+  property drawsLightingEffects (TB,R,N,V_drawsLightingEffects)
+  property feedback (T@"ISIconSegmentationFeedback",R,N,V_feedback)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a94063f4
+  -dealloc v16@0:8  imp=+0x1a9406390
+  -drawsLightingEffects B16@0:8  imp=+0x1a94063e4
+  -feedback @16@0:8  imp=+0x1a94063ec
+  -initWithTintableImage:drawsLightingEffects:feedback: @36@0:8^{CGImage=}16B24@28  imp=+0x1a94062f4
+  -tintableImage ^{CGImage=}16@0:8  imp=+0x1a94063dc
+@class ISFlattenLayerStackAssetCatalogResource : ISAssetCatalogResource instanceSize=80
+  -imageForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a9433300
+@class ISFloydGrayscaleConversion : ISGrayscaleConversion instanceSize=8
+  -computeGrayscaleConversionColorWithNumberOfRepresentativeSamples:representativeSamples: 28@0:8i16r^20  imp=+0x1a9434cf8
+  -computeGrayscaleConversionColorWithWidth:height:samples: 48@0:8i16i20{?=iiiI^}24  imp=+0x1a9434cec
+@class ISFolderIconConfiguration : NSObject <ISIconConfiguration, NSCopying> instanceSize=56
+  ivar +8 _folderEmpty B
+  ivar +16 _symbolName @"NSString"
+  ivar +24 _emoji @"NSString"
+  ivar +32 _systemTintColor q
+  ivar +40 _tintColor @"IFColor"
+  ivar +48 _assetCatalogImageName @"NSString"
+  property tintColor (T@"IFColor",&,V_tintColor)
+  property assetCatalogImageName (T@"NSString",&,V_assetCatalogImageName)
+  property hasAdornment (TB,R)
+  property symbolName (T@"NSString",C,V_symbolName)
+  property emoji (T@"NSString",C,V_emoji)
+  property systemTintColor (Tq,V_systemTintColor)
+  property folderEmpty (TB,V_folderEmpty)
+  property hasTint (TB,R)
+  property plistExcerpt (T@"NSDictionary",R)
+  property digest (T@"NSUUID",R)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +supportsSecureCoding B16@0:8  imp=+0x1a9404c98
+  -.cxx_destruct v16@0:8  imp=+0x1a9405a2c
+  -assetCatalogImageName @16@0:8  imp=+0x1a9405a18
+  -colorString @16@0:8  imp=+0x1a9405540
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a94057a0
+  -description @16@0:8  imp=+0x1a9405894
+  -digest @16@0:8  imp=+0x1a94053dc
+  -emoji @16@0:8  imp=+0x1a94059cc
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a94051dc
+  -folderEmpty B16@0:8  imp=+0x1a94059f0
+  -hasAdornment B16@0:8  imp=+0x1a940560c
+  -hasTint B16@0:8  imp=+0x1a94055d8
+  -init @16@0:8  imp=+0x1a9404ca0
+  -initWithCoder: @24@0:8@16  imp=+0x1a940529c
+  -initWithIconDictionary: @24@0:8@16  imp=+0x1a9404cec
+  -initWithSymbolName:systemTintColor: @32@0:8@16q24  imp=+0x1a9404e50
+  -initWithSymbolName:tintColor: @32@0:8@16@24  imp=+0x1a9404eb8
+  -initWithURL: @24@0:8@16  imp=+0x1a9404f44
+  -initWithURLProperties: @24@0:8@16  imp=+0x1a9405060
+  -plistExcerpt @16@0:8  imp=+0x1a9405664
+  -resolvedTintColorForAppearance: @24@0:8q16  imp=+0x1a94054bc
+  -setAssetCatalogImageName: v24@0:8@16  imp=+0x1a9405a24
+  -setEmoji: v24@0:8@16  imp=+0x1a94059d8
+  -setFolderEmpty: v20@0:8B16  imp=+0x1a94059fc
+  -setSymbolName: v24@0:8@16  imp=+0x1a94059c4
+  -setSystemTintColor: v24@0:8q16  imp=+0x1a94059e8
+  -setTintColor: v24@0:8@16  imp=+0x1a9405a10
+  -symbolName @16@0:8  imp=+0x1a94059b8
+  -systemTintColor q16@0:8  imp=+0x1a94059e0
+  -tintColor @16@0:8  imp=+0x1a9405a04
+@class ISFolderIconConfigurationParser : ISIconConfigurationMarkupParser instanceSize=16
+  property tintColor (T@,R)
+  property assetCatalogImageName (T@"NSString",R)
+  -assetCatalogImageName @16@0:8  imp=+0x1a9422f90
+  -initWithIconDictionary: @24@0:8@16  imp=+0x1a9422ec4
+  -initWithInfoDictionary: @24@0:8@16  imp=+0x1a9422e38
+  -tintColor @16@0:8  imp=+0x1a9422f38
+@class ISFolderRecipe : NSObject <ISCompositorRecipe> instanceSize=24
+  ivar +8 _disableShadow B
+  ivar +16 _tintColor @"IFColor"
+  property tintColor (T@"IFColor",&,V_tintColor)
+  property disableShadow (TB,V_disableShadow)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a940b134
+  -disableShadow B16@0:8  imp=+0x1a940b120
+  -hintedBadgeRect @16@0:8  imp=+0x1a940ae14
+  -hintedFontSize @16@0:8  imp=+0x1a940ad50
+  -hintedImageBadgeRect @16@0:8  imp=+0x1a940af7c
+  -layerTreeForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a940a864
+  -setDisableShadow: v20@0:8B16  imp=+0x1a940b12c
+  -setTintColor: v24@0:8@16  imp=+0x1a940b118
+  -tintColor @16@0:8  imp=+0x1a940b10c
+  -updateRecipeWithImageDescriptor: v24@0:8@16  imp=+0x1a940b088
+@class ISForegroundSegmentation : NSObject instanceSize=40
+  ivar +8 _strict B
+  ivar +12 _numberOfClusters i
+  ivar +16 _borderSamplingWidth i
+  ivar +20 _maxNumberOfClusteringSamples i
+  ivar +24 _numberOfClusteringSteps i
+  ivar +28 _clusterGroupingDistanceThreshold f
+  ivar +32 _borderNoiseScale f
+  ivar +36 _booleanThreshold i
+  -computeMaskWithWidth:height:samples:foregroundMask: B72@0:8i16i20{?=iiiI^}24{?=iiiB(?=^*)}48  imp=+0x1a940b1cc
+  -initWithStrict: @20@0:8B16  imp=+0x1a940b140
+@class ISGenerationReport : NSObject instanceSize=24
+  ivar +8 _hasLightingEffects B
+  ivar +16 _iconTreatment Q
+  property iconTreatment (TQ,R,V_iconTreatment)
+  property hasLightingEffects (TB,R,V_hasLightingEffects)
+  property customRenderedTag (TS,R)
+  +generationReportWithCustomRenderedTag: @20@0:8S16  imp=+0x1a93debc8
+  -customRenderedTag S16@0:8  imp=+0x1a93deb80
+  -hasLightingEffects B16@0:8  imp=+0x1a93dec38
+  -iconTreatment Q16@0:8  imp=+0x1a93dec30
+  -initWithIconTreatment:hasLightingEffects: @28@0:8Q16B24  imp=+0x1a93deb2c
+@class ISGenerationRequest : NSObject <NSSecureCoding> instanceSize=40
+  ivar +8 _icon @"ISConcreteIcon"
+  ivar +16 _imageDescriptor @"ISImageDescriptor"
+  ivar +24 _lsDatabaseUUID @"NSUUID"
+  ivar +32 _lsDatabaseSequenceNumber Q
+  property icon (T@"ISConcreteIcon",&,V_icon)
+  property imageDescriptor (T@"ISImageDescriptor",&,V_imageDescriptor)
+  property lsDatabaseUUID (T@"NSUUID",&,V_lsDatabaseUUID)
+  property lsDatabaseSequenceNumber (TQ,V_lsDatabaseSequenceNumber)
+  +supportsSecureCoding B16@0:8  imp=+0x1a9400e40
+  -.cxx_destruct v16@0:8  imp=+0x1a93cf958
+  -compositorElementsForDecorations:primaryIconResourceProvider:imageDescriptor: @40@0:8@16@24@32  imp=+0x1a94021a8
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a93cf550
+  -generateImage @16@0:8  imp=+0x1a9401840
+  -generateImageReturningRecordIdentifiers: @24@0:8^@16  imp=+0x1a9401848
+  -icon @16@0:8  imp=+0x1a940108c
+  -iconSpecificationFromRecipe: @24@0:8@16  imp=+0x1a9402130
+  -imageDescriptor @16@0:8  imp=+0x1a94010a0
+  -init @16@0:8  imp=+0x1a9400e48
+  -initWithCoder: @24@0:8@16  imp=+0x1a9400f10
+  -lsDatabaseSequenceNumber Q16@0:8  imp=+0x1a94010c8
+  -lsDatabaseUUID @16@0:8  imp=+0x1a94010b4
+  -sendAnalytics:compositor:imageDescriptor: v40@0:8@16@24@32  imp=+0x1a9401320
+  -setIcon: v24@0:8@16  imp=+0x1a9401098
+  -setImageDescriptor: v24@0:8@16  imp=+0x1a94010ac
+  -setLsDatabaseSequenceNumber: v24@0:8Q16  imp=+0x1a94010d0
+  -setLsDatabaseUUID: v24@0:8@16  imp=+0x1a94010c0
+@class ISGenerationResponse : NSObject <NSSecureCoding> instanceSize=40
+  ivar +8 _uuid @"NSUUID"
+  ivar +16 _validationToken @"NSData"
+  ivar +24 _error @"NSError"
+  ivar +32 _sharedMemory @"NSObject<OS_xpc_object>"
+  property sharedMemory (T@"NSObject<OS_xpc_object>",&,V_sharedMemory)
+  property data (T@"NSData",R,D)
+  property uuid (T@"NSUUID",R,V_uuid)
+  property validationToken (T@"NSData",R,V_validationToken)
+  property error (T@"NSError",R,V_error)
+  +supportsSecureCoding B16@0:8  imp=+0x1a93cf5e8
+  -.cxx_destruct v16@0:8  imp=+0x1a93cf8fc
+  -data @16@0:8  imp=+0x1a93cf724
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a940124c
+  -error @16@0:8  imp=+0x1a9401300
+  -initWithCoder: @24@0:8@16  imp=+0x1a93cf5f0
+  -initWithData:uuid:validationToken: @40@0:8@16@24@32  imp=+0x1a94010d8
+  -initWithError: @24@0:8@16  imp=+0x1a94011d0
+  -setSharedMemory: v24@0:8@16  imp=+0x1a9401318
+  -sharedMemory @16@0:8  imp=+0x1a940130c
+  -uuid @16@0:8  imp=+0x1a93cf7a0
+  -validationToken @16@0:8  imp=+0x1a93cf7f8
+@class ISGenericApplicationIcon : ISTypeIcon instanceSize=56
+  +sharedInstance @16@0:8  imp=+0x1a93e8c60
+  -init @16@0:8  imp=+0x1a93e8ce4
+@class ISGenericDocumentIcon : ISTagIcon instanceSize=64
+  +sharedInstance @16@0:8  imp=+0x1a93e8ba0
+  -init @16@0:8  imp=+0x1a93e8c24
+@class ISGenericFolderIcon : ISTypeIcon instanceSize=56
+  +sharedInstance @16@0:8  imp=+0x1a93e8ad8
+  -init @16@0:8  imp=+0x1a93e8b5c
+@class ISGenericRecipe : NSObject <ISCompositorRecipe> instanceSize=32
+  ivar +8 _templateVariant B
+  ivar +9 _selectedVariant B
+  ivar +10 _debugModeEnabled B
+  ivar +16 _backgroundStyle Q
+  ivar +24 _borderWidth Q
+  property debugModeEnabled (TB,N,GisDebugModeEnabled,V_debugModeEnabled)
+  property backgroundStyle (TQ,N,V_backgroundStyle)
+  property templateVariant (TB,N,V_templateVariant)
+  property selectedVariant (TB,N,V_selectedVariant)
+  property borderWidth (TQ,N,V_borderWidth)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -backgroundStyle Q16@0:8  imp=+0x1a93d874c
+  -borderWidth Q16@0:8  imp=+0x1a93d877c
+  -isDebugModeEnabled B16@0:8  imp=+0x1a93d878c
+  -layerTreeForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a93d849c
+  -selectedVariant B16@0:8  imp=+0x1a93d876c
+  -setBackgroundStyle: v24@0:8Q16  imp=+0x1a93d8754
+  -setBorderWidth: v24@0:8Q16  imp=+0x1a93d8784
+  -setDebugModeEnabled: v20@0:8B16  imp=+0x1a93d8794
+  -setSelectedVariant: v20@0:8B16  imp=+0x1a93d8774
+  -setTemplateVariant: v20@0:8B16  imp=+0x1a93d8764
+  -templateVariant B16@0:8  imp=+0x1a93d875c
+@class ISGraphicIconConfiguration : NSObject <NSCopying> instanceSize=32
+  ivar +8 _symbolColors @"NSArray"
+  ivar +16 _enclosureColors @"NSArray"
+  ivar +24 _renderingMode q
+  property symbolColors (T@"NSArray",C,N,V_symbolColors)
+  property enclosureColors (T@"NSArray",C,N,V_enclosureColors)
+  property renderingMode (Tq,N,V_renderingMode)
+  -.cxx_destruct v16@0:8  imp=+0x1a942ecac
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a942eb3c
+  -description @16@0:8  imp=+0x1a942eba4
+  -enclosureColors @16@0:8  imp=+0x1a942ec8c
+  -renderingMode q16@0:8  imp=+0x1a942ec9c
+  -setEnclosureColors: v24@0:8@16  imp=+0x1a942ec94
+  -setRenderingMode: v24@0:8q16  imp=+0x1a942eca4
+  -setSymbolColors: v24@0:8@16  imp=+0x1a942ec84
+  -symbolColors @16@0:8  imp=+0x1a942ec7c
+@class ISGraphicIconConfigurationParser : ISIconConfigurationMarkupParser instanceSize=16
+  property symbolColors (T@"NSArray",R)
+  property enclosureColors (T@"NSArray",R)
+  property renderingMode (Tq,R)
+  property aliasedConfigurationDictionary (T@"NSDictionary",R)
+  -aliasedConfigurationDictionary @16@0:8  imp=+0x1a94141dc
+  -enclosureColors @16@0:8  imp=+0x1a9414090
+  -renderingMode q16@0:8  imp=+0x1a941409c
+  -symbolColors @16@0:8  imp=+0x1a9414084
+  -symbolName @16@0:8  imp=+0x1a9413ef8
+@class ISGraphicSymbolDescriptor : IFGraphicSymbolDescriptor instanceSize=312
+  ivar +304 __url @"NSURL"
+  property _url (T@"NSURL",&,V__url)
+  property placeholder (TB,R)
+  +descriptorFromGraphicIconConfiguration: @24@0:8@16  imp=+0x1a9417f78
+  +descriptorFromGraphicSymbolRecipe: @24@0:8@16  imp=+0x1a9417d50
+  -.cxx_destruct v16@0:8  imp=+0x1a941827c
+  -_url @16@0:8  imp=+0x1a9418260
+  -description @16@0:8  imp=+0x1a941819c
+  -placeholder B16@0:8  imp=+0x1a9418064
+  -set_url: v24@0:8@16  imp=+0x1a9418270
+@class ISGraphicSymbolResource : NSObject <ISScalableCompositorResource> instanceSize=32
+  ivar +8 _descriptor @"IFGraphicSymbolDescriptor"
+  ivar +16 _url @"NSURL"
+  ivar +24 _symbolName @"NSString"
+  property descriptor (T@"IFGraphicSymbolDescriptor",&,V_descriptor)
+  property url (T@"NSURL",R,V_url)
+  property symbolName (T@"NSString",&,V_symbolName)
+  property usesExternalCompositor (TB,?)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +defaultResource @16@0:8  imp=+0x1a9421710
+  +graphicSymbolResourceWithConfiguration:symbolName:url: @40@0:8@16@24@32  imp=+0x1a94214b4
+  +graphicSymbolResourceWithRecipe:url: @32@0:8@16@24  imp=+0x1a94212bc
+  -.cxx_destruct v16@0:8  imp=+0x1a9421d24
+  -descriptor @16@0:8  imp=+0x1a9421cf0
+  -imageForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a94218a8
+  -initWithGraphicSymbolDescriptor:symbolName:url: @40@0:8@16@24@32  imp=+0x1a94217c4
+  -setDescriptor: v24@0:8@16  imp=+0x1a9421cfc
+  -setSymbolName: v24@0:8@16  imp=+0x1a9421d1c
+  -symbolName @16@0:8  imp=+0x1a9421d10
+  -updateDescriptorWithImageDescriptor: v24@0:8@16  imp=+0x1a9421ae8
+  -url @16@0:8  imp=+0x1a9421d04
+@class ISGrayscaleConversion : NSObject instanceSize=8
+  -computeGrayscaleConversionColorWithCGImage:grayscaleConversion: B32@0:8^{CGImage=}16^24  imp=+0x1a9434b74
+  -computeGrayscaleConversionColorWithNumberOfRepresentativeSamples:representativeSamples: 28@0:8i16r^20  imp=+0x1a9434b68
+  -computeGrayscaleConversionColorWithWidth:height:samples: 48@0:8i16i20{?=iiiI^}24  imp=+0x1a9434b5c
+@class ISGreyscaleEffect : NSObject <ISEffect> instanceSize=8
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -filterWithBackgroundImage:inputImage: @32@0:8@16@24  imp=+0x1a94319e4
+@class ISHintedFloat : ISHintedValue instanceSize=32
+  -addHintedFloat:forSize: v40@0:8d16{CGSize=dd}24  imp=+0x1a9449ab4
+  -hintedFloatForSize: d32@0:8{CGSize=dd}16  imp=+0x1a9449b30
+  -hintedFloatForSize:options: d40@0:8{CGSize=dd}16Q32  imp=+0x1a9449b84
+@class ISHintedRect : ISHintedValue instanceSize=32
+  -addHintedRect:forSize: v64@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16{CGSize=dd}48  imp=+0x1a944965c
+  -hintedRectForSize: {CGRect={CGPoint=dd}{CGSize=dd}}32@0:8{CGSize=dd}16  imp=+0x1a94496d8
+  -hintedRectForSize:options: {CGRect={CGPoint=dd}{CGSize=dd}}40@0:8{CGSize=dd}16Q32  imp=+0x1a944972c
+@class ISHintedSize : ISHintedValue instanceSize=32
+  -addHintedSize:forSize: v48@0:8{CGSize=dd}16{CGSize=dd}32  imp=+0x1a9449904
+  -hintedSizeForSize: {CGSize=dd}32@0:8{CGSize=dd}16  imp=+0x1a9449980
+  -hintedSizeForSize:options: {CGSize=dd}40@0:8{CGSize=dd}16Q32  imp=+0x1a94499d4
+@class ISHintedValue : NSObject instanceSize=32
+  ivar +8 _options Q
+  ivar +16 _dimensions @"NSMutableArray"
+  ivar +24 _values @"NSMutableArray"
+  property dimensions (T@"NSMutableArray",R,V_dimensions)
+  property values (T@"NSMutableArray",R,V_values)
+  property options (TQ,V_options)
+  -.cxx_destruct v16@0:8  imp=+0x1a9449618
+  -addHintedValue:forSize: v40@0:8@16{CGSize=dd}24  imp=+0x1a94491a0
+  -dimensions @16@0:8  imp=+0x1a9449600
+  -hintedValueForIndex: @24@0:8q16  imp=+0x1a9449324
+  -hintedValueForSize: @32@0:8{CGSize=dd}16  imp=+0x1a94492e8
+  -indexForSize: q32@0:8{CGSize=dd}16  imp=+0x1a944906c
+  -init @16@0:8  imp=+0x1a9448fcc
+  -initWithOptions: @24@0:8Q16  imp=+0x1a9448fd4
+  -interpolationFactorForSize: d32@0:8{CGSize=dd}16  imp=+0x1a94494e0
+  -options Q16@0:8  imp=+0x1a94495f0
+  -scaleFactorForSize: d32@0:8{CGSize=dd}16  imp=+0x1a9449410
+  -setOptions: v24@0:8Q16  imp=+0x1a94495f8
+  -sizeOutsideHintedRange: B32@0:8{CGSize=dd}16  imp=+0x1a9449388
+  -values @16@0:8  imp=+0x1a944960c
+@class ISICRCompositor : NSObject instanceSize=32
+  ivar +8 _iconStack @?
+  ivar +16 _assetDescription @"NSString"
+  ivar +24 _finalizedIcons @"NSMutableDictionary"
+  property iconStack (T@?,C,N,V_iconStack)
+  property assetDescription (T@"NSString",R,V_assetDescription)
+  property finalizedIcons (T@"NSMutableDictionary",R,V_finalizedIcons)
+  -.cxx_destruct v16@0:8  imp=+0x1a9428e84
+  -_fallbackImageForSize:scale:debugResourceVariant: @48@0:8{CGSize=dd}16d32Q40  imp=+0x1a9428d90
+  -_finalizedIconForCompositingDescriptor:producedStack: @32@0:8@16^@24  imp=+0x1a94289e8
+  -_keyForCompositingDescriptor: @24@0:8@16  imp=+0x1a942891c
+  -assetDescription @16@0:8  imp=+0x1a9428e6c
+  -finalizedIcons @16@0:8  imp=+0x1a9428e78
+  -iconStack @?16@0:8  imp=+0x1a9428e5c
+  -imageForCompositingDescriptor: @24@0:8@16  imp=+0x1a9428bbc
+  -initWithIconStackBlock:assetDescription: @32@0:8@?16@24  imp=+0x1a9428858
+  -setIconStack: v24@0:8@?16  imp=+0x1a9428e64
+@class ISIcns : NSObject <ISScalableCompositorResource, NSCopying, NSMutableCopying> instanceSize=48
+  ivar +8 _type I
+  ivar +16 _data @"NSData"
+  ivar +24 _elements @
+  ivar +32 _dirty B
+  ivar +40 _url @"NSURL"
+  property usesExternalCompositor (TB,?)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  property type (TI,V_type)
+  property name (T@"NSString",&,D)
+  property dirty (TB,V_dirty)
+  property elements (T@"NSMutableDictionary",R,V_elements)
+  property selectedVariant (T@"ISIcns",&,D)
+  property templateVariant (T@"ISIcns",&,D)
+  property userInfo (T@"NSDictionary",&,D)
+  property url (T@"NSURL",&,V_url)
+  property containsTemplateVariant (TB,R)
+  property data (T@"NSData",R,V_data)
+  property variants (T@"NSArray",R,D)
+  +createEmptyIconsetFolderWithURL:error: B32@0:8@16^@24  imp=+0x1a93d32a0
+  +genericAppIconResource @16@0:8  imp=+0x1a944bc7c
+  +genericDocumentIconResource @16@0:8  imp=+0x1a944bbe4
+  +genericFolderIconResource @16@0:8  imp=+0x1a944bc74
+  +icnsWithContentsOfURL: @24@0:8@16  imp=+0x1a941f984
+  +icnsWithIcon:imageDescriptors: @32@0:8@16@24  imp=+0x1a9446d10
+  +icnsWithIcon:imageDescriptors:error: @40@0:8@16@24^@32  imp=+0x1a9446d50
+  +icnsWithIconFamilyHandle: @24@0:8^^{IconFamilyResource}16  imp=+0x1a940ee90
+  +icnsWithResourceFile: @24@0:8@16  imp=+0x1a941f758
+  +icnsWithType:images: @28@0:8I16@20  imp=+0x1a9446a10
+  +notLoadedIconResource @16@0:8  imp=+0x1a944bac4
+  +placeholderIconResource @16@0:8  imp=+0x1a944bb54
+  +removeCustomIconFromURL:error: B32@0:8@16^@24  imp=+0x1a941ff6c
+  +systemIconNamed: @24@0:8@16  imp=+0x1a944b9f0
+  +writeCustomIcon:toURL:error: B40@0:8@16@24^@32  imp=+0x1a94202cc
+  +writeCustomVolumeIcon:toURL:error: B40@0:8@16@24^@32  imp=+0x1a941fdac
+  -.cxx_destruct v16@0:8  imp=+0x1a941246c
+  -CGImageWithData:iconIndexInfo: ^{CGImage=}32@0:8@16r^{?=iIdIQIIBIiii}24  imp=+0x1a944726c
+  -assetCatalogFilePath @16@0:8  imp=+0x1a9426ec8
+  -assetCatalogIconName @16@0:8  imp=+0x1a9426f84
+  -assetCatalogResource @16@0:8  imp=+0x1a9427040
+  -colorDepthAtIndex: I20@0:8i16  imp=+0x1a94110f0
+  -containsTemplateVariant B16@0:8  imp=+0x1a9410d48
+  -copyCGImageForSize:scale: ^{CGImage=}36@0:8{CGSize=dd}16I32  imp=+0x1a9447f94
+  -copyCGImageWithIndex: ^{CGImage=}20@0:8i16  imp=+0x1a9447d44
+  -copyTypeData:toHandle: s28@0:8I16^*20  imp=+0x1a940ef3c
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a9410a6c
+  -data @16@0:8  imp=+0x1a9411d14
+  -dataAtIndex: @20@0:8i16  imp=+0x1a9410f20
+  -debugDescription @16@0:8  imp=+0x1a9411940
+  -description @16@0:8  imp=+0x1a9411620
+  -dirty B16@0:8  imp=+0x1a9412444
+  -elementTypeAtIndex: I20@0:8i16  imp=+0x1a941114c
+  -elements @16@0:8  imp=+0x1a9412438
+  -enumerateElementsUsingBlock: v24@0:8@?16  imp=+0x1a9411344
+  -findMaskIndex: i20@0:8i16  imp=+0x1a94470dc
+  -iconIndexForSize:scale: i36@0:8{CGSize=dd}16I32  imp=+0x1a9447e30
+  -imageForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a93e3128
+  -init @16@0:8  imp=+0x1a94105b0
+  -initWithData: @24@0:8@16  imp=+0x1a9410694
+  -initWithIcns: @24@0:8@16  imp=+0x1a94106fc
+  -initWithType: @20@0:8I16  imp=+0x1a9410620
+  -initWithType:data:elements:dirty: @40@0:8I16@20@28B36  imp=+0x1a9410794
+  -isMaskAtIndex: B20@0:8i16  imp=+0x1a9411110
+  -isVariantElementType: B20@0:8I16  imp=+0x1a941141c
+  -load v16@0:8  imp=+0x1a9410858
+  -mutableCopyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a9410a70
+  -name @16@0:8  imp=+0x1a9410ab0
+  -removeValueAtIndex: v20@0:8i16  imp=+0x1a94121a0
+  -scaleAtIndex: I20@0:8i16  imp=+0x1a94110d0
+  -selectedVariant @16@0:8  imp=+0x1a9410e1c
+  -setData:atIndex: v28@0:8@16i24  imp=+0x1a94120f0
+  -setDirty: v20@0:8B16  imp=+0x1a9412450
+  -setName: v24@0:8@16  imp=+0x1a9410bb0
+  -setSelectedVariant: v24@0:8@16  imp=+0x1a9412224
+  -setTemplateVariant: v24@0:8@16  imp=+0x1a9412230
+  -setType: v20@0:8I16  imp=+0x1a9412430
+  -setUrl: v24@0:8@16  imp=+0x1a9412464
+  -setUserInfo: v24@0:8@16  imp=+0x1a941223c
+  -setVariant:named: v32@0:8@16@24  imp=+0x1a9412330
+  -sizeAtIndex: {CGSize=dd}20@0:8i16  imp=+0x1a94110ac
+  -templateVariant @16@0:8  imp=+0x1a9410d3c
+  -type I16@0:8  imp=+0x1a9412428
+  -typeForVariantName: I24@0:8@16  imp=+0x1a9410cc0
+  -url @16@0:8  imp=+0x1a9412458
+  -userInfo @16@0:8  imp=+0x1a941116c
+  -variantNamed: @24@0:8@16  imp=+0x1a9410e28
+  -variants @16@0:8  imp=+0x1a9411444
+  -writeAsIconsetToURL: B24@0:8@16  imp=+0x1a93d37c0
+  -writeIconsetImagesToURL:variantName:selected: B36@0:8@16@24B32  imp=+0x1a93d33b0
+@class ISIcnsIcon : ISConcreteIcon <NSSecureCoding> instanceSize=56
+  ivar +40 _icnsData @"NSData"
+  ivar +48 _internalICNS @"ISIcns"
+  property icnsData (T@"NSData",R,V_icnsData)
+  property internalICNS (T@"ISIcns",&,V_internalICNS)
+  property icns (T@"ISIcns",R,D)
+  +supportsSecureCoding B16@0:8  imp=+0x1a9443b14
+  -.cxx_destruct v16@0:8  imp=+0x1a9443ff4
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a9443e30
+  -icns @16@0:8  imp=+0x1a9443eb8
+  -icnsData @16@0:8  imp=+0x1a9443fc8
+  -initWithCoder: @24@0:8@16  imp=+0x1a9443d88
+  -initWithContentOfURL: @24@0:8@16  imp=+0x1a9443b1c
+  -initWithIcns: @24@0:8@16  imp=+0x1a9443bfc
+  -initWithIcnsData: @24@0:8@16  imp=+0x1a9443cd4
+  -internalICNS @16@0:8  imp=+0x1a9443fd8
+  -makeResourceProvider @16@0:8  imp=+0x1a9443f4c
+  -setInternalICNS: v24@0:8@16  imp=+0x1a9443fe8
+@class ISIcon : NSObject <ISScalableCompositorResource> instanceSize=24
+  ivar +8 _lock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +16 prepareISIconDigestToSignpostIDs @"NSMutableDictionary"
+  property _identity (T@"<ISIconIdentity>",R)
+  property usesExternalCompositor (TB,?)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  property manager (T@"ISIconManager",R)
+  property prepareISIconDigestToSignpostIDs (T@"NSMutableDictionary",&,VprepareISIconDigestToSignpostIDs)
+  property decorations (T@"NSArray",R,N)
+  property symbol (T@"IFSymbol",R,D,N)
+  +_AttachedResourceInfoKey r*16@0:8  imp=+0x1a93ddd28
+  +allocWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a93cddd0
+  +applicationIcon @16@0:8  imp=+0x1a93dc1b8
+  +behaviourRevision Q16@0:8  imp=+0x1a93dc1b0
+  +findVariantFromSet:deviceIdiom:size:scale: i56@0:8Q16Q24{CGSize=dd}32d48  imp=+0x1a943218c
+  +genericApplicationIcon @16@0:8  imp=+0x1a93dc274
+  +genericDocumentIcon @16@0:8  imp=+0x1a93dc280
+  +placeholderIcon @16@0:8  imp=+0x1a93dc298
+  +sizesFromSet: @24@0:8Q16  imp=+0x1a94322d4
+  +templateTypeForTag:tagClass: @32@0:8@16@24  imp=+0x1a9433bc0
+  +templateTypeForType: @24@0:8@16  imp=+0x1a9433744
+  +transparentIcon @16@0:8  imp=+0x1a93dc28c
+  +variant:isMemberOfSet: B28@0:8i16Q20  imp=+0x1a94323c4
+  +variantInfoForSet:count: ^{_LIIconVariantInfo=i{CGSize=dd}dQ*}32@0:8Q16^Q24  imp=+0x1a9432100
+  +writeCustomIcon:toURL:error: B40@0:8@16@24^@32  imp=+0x1a93dda50
+  -.cxx_destruct v16@0:8  imp=+0x1a93dd94c
+  -CGImageForDescriptor: ^{CGImage=}24@0:8@16  imp=+0x1a93dc49c
+  -CGImageForImageDescriptor: ^{CGImage=}24@0:8@16  imp=+0x1a93dc36c
+  -_activeSignpostsForDescriptor: @24@0:8@16  imp=+0x1a93dce40
+  -_aspectRatio d16@0:8  imp=+0x1a93dc6c0
+  -_beginPrepareISIconSignpost:funcName: @32@0:8@16r*24  imp=+0x1a93dc6c8
+  -_endPrepareISIconSignpost: v24@0:8@16  imp=+0x1a93dcb18
+  -_identity @16@0:8  imp=+0x1a93dd958
+  -_imageForSymbolImageDescriptor: @24@0:8@16  imp=+0x1a93dd880
+  -_init @16@0:8  imp=+0x1a93cdf88
+  -_prepareImageForImageDescriptor: @24@0:8@16  imp=+0x1a93ddc74
+  -_prepareImagesForImageDescriptors: v24@0:8@16  imp=+0x1a93dcf28
+  -_tweakCopiedImageDescriptorsIfNecessary: v24@0:8@16  imp=+0x1a93dcf78
+  -badgeOptions Q16@0:8  imp=+0x1a93dc2ac
+  -decorations @16@0:8  imp=+0x1a93dc2b4
+  -getCGImageForImageDescriptor:completion: v32@0:8@16@?24  imp=+0x1a93dc5cc
+  -iconWithDecorations: @24@0:8@16  imp=+0x1a93dc2c8
+  -imageForDescriptor: @24@0:8@16  imp=+0x1a93dd888
+  -imageForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a93e2fac
+  -manager @16@0:8  imp=+0x1a93cee38
+  -prepareISIconDigestToSignpostIDs @16@0:8  imp=+0x1a93dd938
+  -prepareImageForDescriptor: @24@0:8@16  imp=+0x1a93dd2c0
+  -prepareImagesForDescriptors: v24@0:8@16  imp=+0x1a93dd11c
+  -prepareImagesForImageDescriptors: v24@0:8@16  imp=+0x1a93dcf7c
+  -setPrepareISIconDigestToSignpostIDs: v24@0:8@16  imp=+0x1a93dd944
+  -symbol @16@0:8  imp=+0x1a93dc2c0
+  -variantOptions Q16@0:8  imp=+0x1a93dc2a4
+@class ISIconCache : NSObject instanceSize=40
+  ivar +8 _storeIndex @"ISStoreIndex"
+  ivar +16 _store @"ISStore"
+  ivar +24 _cacheURL @"NSURL"
+  ivar +32 _sandboxToken Q
+  property sandboxToken (TQ,R,V_sandboxToken)
+  property storeIndex (T@"ISStoreIndex",R,V_storeIndex)
+  property store (T@"ISStore",R,V_store)
+  property cachePath (T@"NSString",R,D)
+  property cacheURL (T@"NSURL",R,V_cacheURL)
+  +defaultIconCache @16@0:8  imp=+0x1a93ce3d8
+  -.cxx_destruct v16@0:8  imp=+0x1a943a8e8
+  -cachePath @16@0:8  imp=+0x1a943a7e8
+  -cacheURL @16@0:8  imp=+0x1a943a8d4
+  -clear v16@0:8  imp=+0x1a943a7f0
+  -dealloc v16@0:8  imp=+0x1a943a758
+  -description @16@0:8  imp=+0x1a943a7f4
+  -findStoreUnitForIcon:descriptor:UUID:validationToken: q48@0:8@16@24^@32^@40  imp=+0x1a943a938
+  -findStoreUnitForIcon:descriptor:UUID:validationToken:allowPlaceholderMatch: q52@0:8@16@24^@32^@40B48  imp=+0x1a943a940
+  -initWithConfiguration: @24@0:8@16  imp=+0x1a943a4fc
+  -initWithURL:storeIndex:sandboxExtensionToken: @40@0:8@16@24Q32  imp=+0x1a943a658
+  -sandboxToken Q16@0:8  imp=+0x1a943a8e0
+  -store @16@0:8  imp=+0x1a93cf9a8
+  -storeIndex @16@0:8  imp=+0x1a93cee50
+  -storeUnitForUUID: @24@0:8@16  imp=+0x1a943b8e4
+@class ISIconCacheConfiguration : NSObject <NSSecureCoding> instanceSize=32
+  ivar +8 _url @"NSURL"
+  ivar +16 _sandboxExtension @"NSString"
+  ivar +24 _salt @"NSString"
+  property url (T@"NSURL",&,V_url)
+  property sandboxExtension (T@"NSString",&,V_sandboxExtension)
+  property salt (T@"NSString",&,V_salt)
+  +supportsSecureCoding B16@0:8  imp=+0x1a943a308
+  -.cxx_destruct v16@0:8  imp=+0x1a943a4ac
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a943a310
+  -initWithCoder: @24@0:8@16  imp=+0x1a943a388
+  -salt @16@0:8  imp=+0x1a943a498
+  -sandboxExtension @16@0:8  imp=+0x1a943a484
+  -setSalt: v24@0:8@16  imp=+0x1a943a4a4
+  -setSandboxExtension: v24@0:8@16  imp=+0x1a943a490
+  -setUrl: v24@0:8@16  imp=+0x1a943a47c
+  -url @16@0:8  imp=+0x1a943a470
+@class ISIconConfigurationMarkupParser : NSObject instanceSize=16
+  ivar +8 _configDict @"NSDictionary"
+  property configDict (T@"NSDictionary",R,V_configDict)
+  property symbolName (T@"NSString",R)
+  -.cxx_destruct v16@0:8  imp=+0x1a942dc10
+  -colorsForKey: @24@0:8@16  imp=+0x1a942d928
+  -configDict @16@0:8  imp=+0x1a942dc04
+  -initWithConfigurationDictionary: @24@0:8@16  imp=+0x1a942d8ac
+  -symbolName @16@0:8  imp=+0x1a942dbac
+@class ISIconDecoration : NSObject <ISIconDecorationInternal, ISIconDecoration, NSCopying> instanceSize=56
+  ivar +8 _position q
+  ivar +16 _mode q
+  ivar +24 _resourceURL @"NSURL"
+  ivar +32 _identifier @"NSString"
+  ivar +40 _identifierKind Q
+  ivar +48 _resourceToken @"NSUUID"
+  property resourceURL (T@"NSURL",R,V_resourceURL)
+  property uuid (T@"NSUUID",R)
+  property identifier (T@"NSString",R,V_identifier)
+  property identifierKind (TQ,R,V_identifierKind)
+  property compositorResource (T@"<ISScalableCompositorResource>",R)
+  property resourceToken (T@"NSUUID",R,V_resourceToken)
+  property position (Tq,V_position)
+  property mode (Tq,V_mode)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +decorationsFromDescriptor: @24@0:8@16  imp=+0x1a9444050
+  +supportsSecureCoding B16@0:8  imp=+0x1a9444048
+  -.cxx_destruct v16@0:8  imp=+0x1a9444b58
+  -compositorResource @16@0:8  imp=+0x1a9444a28
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a9444448
+  -description @16@0:8  imp=+0x1a94447f0
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a94444ac
+  -identifier @16@0:8  imp=+0x1a9444b38
+  -identifierKind Q16@0:8  imp=+0x1a9444b44
+  -imageForDescriptor: @24@0:8@16  imp=+0x1a9444bac
+  -init @16@0:8  imp=+0x1a94441ac
+  -initWithBundleIdentifier: @24@0:8@16  imp=+0x1a9444328
+  -initWithCoder: @24@0:8@16  imp=+0x1a9444570
+  -initWithKind:identifier: @32@0:8Q16@24  imp=+0x1a9444298
+  -initWithResourceURL: @24@0:8@16  imp=+0x1a94443b0
+  -initWithType: @24@0:8@16  imp=+0x1a9444210
+  -mode q16@0:8  imp=+0x1a9444b1c
+  -position q16@0:8  imp=+0x1a9444b0c
+  -prepareImagesForDescriptors: v24@0:8@16  imp=+0x1a9444ba8
+  -resourceFingerprint @16@0:8  imp=+0x1a9444878
+  -resourceToken @16@0:8  imp=+0x1a9444b4c
+  -resourceURL @16@0:8  imp=+0x1a9444b2c
+  -setMode: v24@0:8q16  imp=+0x1a9444b24
+  -setPosition: v24@0:8q16  imp=+0x1a9444b14
+  -uuid @16@0:8  imp=+0x1a944469c
+@class ISIconDecorationResource : NSObject <ISScalableCompositorResource> instanceSize=24
+  ivar +8 _decoration @"ISIconDecoration"
+  ivar +16 _internalResource @"<ISScalableCompositorResource>"
+  property internalResource (T@"<ISScalableCompositorResource>",R,V_internalResource)
+  property decoration (T@"ISIconDecoration",R,V_decoration)
+  property usesExternalCompositor (TB,?)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a94135d4
+  -configureWithType: v24@0:8@16  imp=+0x1a94132ac
+  -decoration @16@0:8  imp=+0x1a94135bc
+  -imageForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a9413588
+  -initWithDecoration: @24@0:8@16  imp=+0x1a94131ac
+  -internalResource @16@0:8  imp=+0x1a94135c8
+@class ISIconFactory : ISIcon instanceSize=24
+  +_iconForURL: @24@0:8@16  imp=+0x1a93d8f48
+  +_iconForURL:iconConfiguration: @32@0:8@16@24  imp=+0x1a93d8f68
+  +_iconForURL:options: @32@0:8@16Q24  imp=+0x1a93d8f58
+  +_iconForURL:options:iconConfiguration: @40@0:8@16Q24@32  imp=+0x1a93d8f7c
+  +_iconWithBinding: @24@0:8^{_LSBinding=}16  imp=+0x1a93da3f4
+  -_init @16@0:8  imp=+0x1a93dabf8
+  -initWithApplicationBundleIdentifier: @24@0:8@16  imp=+0x1a93db38c
+  -initWithApplicationExtensionBundleIdentifier: @24@0:8@16  imp=+0x1a93db42c
+  -initWithApplicationIdentity: @24@0:8@16  imp=+0x1a93db1ec
+  -initWithBinding: @24@0:8^{_LSBinding=}16  imp=+0x1a93cdf0c
+  -initWithBookmarkData: @24@0:8@16  imp=+0x1a93dc080
+  -initWithBundleIdentifier: @24@0:8@16  imp=+0x1a93db284
+  -initWithBundleURL:fileExtension: @32@0:8@16@24  imp=+0x1a93db578
+  -initWithBundleURL:type: @32@0:8@16@24  imp=+0x1a93db4c4
+  -initWithContentOfURL: @24@0:8@16  imp=+0x1a93dc118
+  -initWithFileExtension: @24@0:8@16  imp=+0x1a93dba78
+  -initWithIcns: @24@0:8@16  imp=+0x1a93dbfe8
+  -initWithIcnsData: @24@0:8@16  imp=+0x1a93dbf28
+  -initWithImages: @24@0:8@16  imp=+0x1a93dba14
+  -initWithMIMEType: @24@0:8@16  imp=+0x1a93dbbe4
+  -initWithModelCode: @24@0:8@16  imp=+0x1a93dbb10
+  -initWithResourceProxy: @24@0:8@16  imp=+0x1a93db6e8
+  -initWithSymbolName: @24@0:8@16  imp=+0x1a93dbc7c
+  -initWithSymbolName:configuration: @32@0:8@16@24  imp=+0x1a93dbd14
+  -initWithType: @24@0:8@16  imp=+0x1a93db62c
+  -initWithType:iconConfiguration: @32@0:8@16@24  imp=+0x1a93db634
+  -initWithTypeCode: @20@0:8I16  imp=+0x1a93dbe7c
+  -initWithTypeIdentifier:layerGroups: @32@0:8@16@24  imp=+0x1a93dbdc8
+  -initWithURL: @24@0:8@16  imp=+0x1a93db024
+  -initWithURL:iconConfiguration: @32@0:8@16@24  imp=+0x1a93dac6c
+  -initWithURL:options: @32@0:8@16Q24  imp=+0x1a93dae58
+@class ISIconLayer : NSObject instanceSize=32
+  ivar +8 _hasLightEffects B
+  ivar +16 _images @"NSArray"
+  ivar +24 _imageBag @"IFImageBag"
+  property imageBag (T@"IFImageBag",R,V_imageBag)
+  property images (T@"NSArray",R,V_images)
+  property hasLightEffects (TB,V_hasLightEffects)
+  -.cxx_destruct v16@0:8  imp=+0x1a93e6d48
+  -hasLightEffects B16@0:8  imp=+0x1a93e6d28
+  -imageBag @16@0:8  imp=+0x1a93e6d3c
+  -images @16@0:8  imp=+0x1a93e6d1c
+  -initWithImages: @24@0:8@16  imp=+0x1a93e6c7c
+  -setHasLightEffects: v20@0:8B16  imp=+0x1a93e6d34
+@class ISIconLayerElement : NSObject <NSSecureCoding> instanceSize=48
+  ivar +8 _images @"NSArray"
+  ivar +16 _opacities @"NSMutableDictionary"
+  ivar +24 _effects @"NSMutableDictionary"
+  ivar +32 _fillColors @"NSMutableDictionary"
+  ivar +40 _imageBag @"IFImageBag"
+  property opacities (T@"NSMutableDictionary",&,V_opacities)
+  property effects (T@"NSMutableDictionary",&,V_effects)
+  property fillColors (T@"NSMutableDictionary",&,V_fillColors)
+  property imageBag (T@"IFImageBag",R,V_imageBag)
+  property digest (T@"NSUUID",R)
+  property images (T@"NSArray",R,V_images)
+  property opacity (Td)
+  property hasEffects (TB)
+  property fillColor (T@"IFColor",C)
+  +supportsSecureCoding B16@0:8  imp=+0x1a9436de0
+  -.cxx_destruct v16@0:8  imp=+0x1a9437d48
+  -cuiLayerImageForAppearance:size:scale:frame: @80@0:8q16{CGSize=dd}24d40{CGRect={CGPoint=dd}{CGSize=dd}}48  imp=+0x1a9437b9c
+  -description @16@0:8  imp=+0x1a9437468
+  -digest @16@0:8  imp=+0x1a9437754
+  -effects @16@0:8  imp=+0x1a9437d14
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a9436e88
+  -fillColor @16@0:8  imp=+0x1a9437368
+  -fillColorForAppearance: @24@0:8q16  imp=+0x1a9437414
+  -fillColors @16@0:8  imp=+0x1a9437d28
+  -hasEffects B16@0:8  imp=+0x1a9437258
+  -hasEffectsForAppearance: B24@0:8q16  imp=+0x1a9437310
+  -hash Q16@0:8  imp=+0x1a9437b60
+  -imageBag @16@0:8  imp=+0x1a9437d3c
+  -images @16@0:8  imp=+0x1a9437cf4
+  -initWithCoder: @24@0:8@16  imp=+0x1a9436f20
+  -initWithImages: @24@0:8@16  imp=+0x1a9436de8
+  -isEqual: B24@0:8@16  imp=+0x1a94376a4
+  -opacities @16@0:8  imp=+0x1a9437d00
+  -opacity d16@0:8  imp=+0x1a9437138
+  -opacityForAppearance: d24@0:8q16  imp=+0x1a94371f8
+  -setEffects: v24@0:8@16  imp=+0x1a9437d20
+  -setFillColor: v24@0:8@16  imp=+0x1a9437360
+  -setFillColor:forAppearance: v32@0:8@16q24  imp=+0x1a9437370
+  -setFillColors: v24@0:8@16  imp=+0x1a9437d34
+  -setHasEffects: v20@0:8B16  imp=+0x1a9437250
+  -setHasEffects:forAppearance: v28@0:8B16q20  imp=+0x1a9437260
+  -setOpacities: v24@0:8@16  imp=+0x1a9437d0c
+  -setOpacity: v24@0:8d16  imp=+0x1a9437130
+  -setOpacity:forAppearance: v32@0:8d16q24  imp=+0x1a9437140
+@class ISIconLayerGroup : NSObject <NSSecureCoding> instanceSize=80
+  ivar +8 _layers @"NSArray"
+  ivar +16 _opacities @"NSMutableDictionary"
+  ivar +24 _speculars @"NSMutableDictionary"
+  ivar +32 _combineSpeculars @"NSMutableDictionary"
+  ivar +40 _specularPlacements @"NSMutableDictionary"
+  ivar +48 _blurs @"NSMutableDictionary"
+  ivar +56 _translucencies @"NSMutableDictionary"
+  ivar +64 _shadowStyles @"NSMutableDictionary"
+  ivar +72 _shadows @"NSMutableDictionary"
+  property opacities (T@"NSMutableDictionary",&,V_opacities)
+  property speculars (T@"NSMutableDictionary",&,V_speculars)
+  property combineSpeculars (T@"NSMutableDictionary",&,V_combineSpeculars)
+  property specularPlacements (T@"NSMutableDictionary",&,V_specularPlacements)
+  property blurs (T@"NSMutableDictionary",&,V_blurs)
+  property translucencies (T@"NSMutableDictionary",&,V_translucencies)
+  property shadowStyles (T@"NSMutableDictionary",&,V_shadowStyles)
+  property shadows (T@"NSMutableDictionary",&,V_shadows)
+  property layers (T@"NSArray",C,V_layers)
+  property opacity (Td)
+  property hasSpecular (TB)
+  property hasOverlappingChildSpecularsCombined (TB)
+  property specularPlacement (Tq)
+  property blur (Td)
+  property translucency (Td)
+  property shadowStyle (Tq)
+  property shadow (Td)
+  +supportsSecureCoding B16@0:8  imp=+0x1a940d694
+  -.cxx_destruct v16@0:8  imp=+0x1a940edf8
+  -_IS_cuiShadowStyleFromStyle: q24@0:8q16  imp=+0x1a940eb68
+  -_IS_cuiSpecularPlacement: q24@0:8q16  imp=+0x1a940ebd0
+  -blur d16@0:8  imp=+0x1a940e1a4
+  -blurForAppearance: d24@0:8q16  imp=+0x1a940e264
+  -blurs @16@0:8  imp=+0x1a940eda8
+  -combineSpeculars @16@0:8  imp=+0x1a940ed80
+  -cuiGroupForAppearance: @24@0:8q16  imp=+0x1a940ec2c
+  -description @16@0:8  imp=+0x1a940e60c
+  -digest @16@0:8  imp=+0x1a940e858
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a940d718
+  -hasOverlappingChildSpecularsCombined B16@0:8  imp=+0x1a940df84
+  -hasOverlappingChildSpecularsCombinedForAppearance: B24@0:8q16  imp=+0x1a940e03c
+  -hasSpecular B16@0:8  imp=+0x1a940de74
+  -hasSpecularForAppearance: B24@0:8q16  imp=+0x1a940df2c
+  -hash Q16@0:8  imp=+0x1a940eb2c
+  -initWithCoder: @24@0:8@16  imp=+0x1a940d814
+  -initWithLayers: @24@0:8@16  imp=+0x1a940d69c
+  -isEqual: B24@0:8@16  imp=+0x1a940e7a8
+  -layers @16@0:8  imp=+0x1a940ed44
+  -opacities @16@0:8  imp=+0x1a940ed58
+  -opacity d16@0:8  imp=+0x1a940dd54
+  -opacityForAppearance: d24@0:8q16  imp=+0x1a940de14
+  -setBlur: v24@0:8d16  imp=+0x1a940e19c
+  -setBlur:forAppearance: v32@0:8d16q24  imp=+0x1a940e1ac
+  -setBlurs: v24@0:8@16  imp=+0x1a940edb4
+  -setCombineSpeculars: v24@0:8@16  imp=+0x1a940ed8c
+  -setHasOverlappingChildSpecularsCombined: v20@0:8B16  imp=+0x1a940df7c
+  -setHasOverlappingChildSpecularsCombined:forAppearance: v28@0:8B16q20  imp=+0x1a940df8c
+  -setHasSpecular: v20@0:8B16  imp=+0x1a940de6c
+  -setHasSpecular:forAppearance: v28@0:8B16q20  imp=+0x1a940de7c
+  -setLayers: v24@0:8@16  imp=+0x1a940ed50
+  -setOpacities: v24@0:8@16  imp=+0x1a940ed64
+  -setOpacity: v24@0:8d16  imp=+0x1a940dd4c
+  -setOpacity:forAppearance: v32@0:8d16q24  imp=+0x1a940dd5c
+  -setShadow: v24@0:8d16  imp=+0x1a940e4ec
+  -setShadow:forAppearance: v32@0:8d16q24  imp=+0x1a940e4fc
+  -setShadowStyle: v24@0:8q16  imp=+0x1a940e3dc
+  -setShadowStyle:forAppearance: v32@0:8q16q24  imp=+0x1a940e3ec
+  -setShadowStyles: v24@0:8@16  imp=+0x1a940eddc
+  -setShadows: v24@0:8@16  imp=+0x1a940edf0
+  -setSpecularPlacement: v24@0:8q16  imp=+0x1a940e0e4
+  -setSpecularPlacement:forAppearance: v32@0:8q16q24  imp=+0x1a940e0ec
+  -setSpecularPlacements: v24@0:8@16  imp=+0x1a940eda0
+  -setSpeculars: v24@0:8@16  imp=+0x1a940ed78
+  -setTranslucencies: v24@0:8@16  imp=+0x1a940edc8
+  -setTranslucency: v24@0:8d16  imp=+0x1a940e2bc
+  -setTranslucency:forAppearance: v32@0:8d16q24  imp=+0x1a940e2cc
+  -shadow d16@0:8  imp=+0x1a940e4f4
+  -shadowForAppearance: d24@0:8q16  imp=+0x1a940e5b4
+  -shadowStyle q16@0:8  imp=+0x1a940e3e4
+  -shadowStyleForAppearance: q24@0:8q16  imp=+0x1a940e49c
+  -shadowStyles @16@0:8  imp=+0x1a940edd0
+  -shadows @16@0:8  imp=+0x1a940ede4
+  -specularPlacement q16@0:8  imp=+0x1a940e08c
+  -specularPlacementForAppearance: q24@0:8q16  imp=+0x1a940e094
+  -specularPlacements @16@0:8  imp=+0x1a940ed94
+  -speculars @16@0:8  imp=+0x1a940ed6c
+  -translucencies @16@0:8  imp=+0x1a940edbc
+  -translucency d16@0:8  imp=+0x1a940e2c4
+  -translucencyForAppearance: d24@0:8q16  imp=+0x1a940e384
+@class ISIconManager : NSObject instanceSize=64
+  ivar +8 _lock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +16 _iconCache @"ISIconCache"
+  ivar +24 _cachedItemTracker @"ISCachedItemTracker"
+  ivar +32 _iconRegistry @"NSHashTable"
+  ivar +40 _observers @"NSHashTable"
+  ivar +48 _internalQueue @"NSObject<OS_dispatch_queue>"
+  ivar +56 _connection @"NSXPCConnection"
+  property iconCache (T@"ISIconCache",&,V_iconCache)
+  property cachedItemTracker (T@"ISCachedItemTracker",&,V_cachedItemTracker)
+  property iconRegistry (T@"NSHashTable",&,V_iconRegistry)
+  property observers (T@"NSHashTable",&,V_observers)
+  property internalQueue (T@"NSObject<OS_dispatch_queue>",&,V_internalQueue)
+  property connection (T@"NSXPCConnection",&,V_connection)
+  +serviceName @16@0:8  imp=+0x1a942e2e4
+  +sharedInstance @16@0:8  imp=+0x1a93ce034
+  -.cxx_destruct v16@0:8  imp=+0x1a942e564
+  -_init @16@0:8  imp=+0x1a93ce0bc
+  -addObserver: v24@0:8@16  imp=+0x1a942e440
+  -cachedItemTracker @16@0:8  imp=+0x1a942e500
+  -connection @16@0:8  imp=+0x1a942e550
+  -dealloc v16@0:8  imp=+0x1a942e408
+  -findOrRegisterIcon: @24@0:8@16  imp=+0x1a93ce548
+  -iconCache @16@0:8  imp=+0x1a93cee44
+  -iconRegistry @16@0:8  imp=+0x1a942e514
+  -internalQueue @16@0:8  imp=+0x1a942e53c
+  -observers @16@0:8  imp=+0x1a942e528
+  -removeObserver: v24@0:8@16  imp=+0x1a942e49c
+  -setCachedItemTracker: v24@0:8@16  imp=+0x1a942e50c
+  -setConnection: v24@0:8@16  imp=+0x1a942e55c
+  -setIconCache: v24@0:8@16  imp=+0x1a942e4f8
+  -setIconRegistry: v24@0:8@16  imp=+0x1a942e520
+  -setInternalQueue: v24@0:8@16  imp=+0x1a942e548
+  -setObservers: v24@0:8@16  imp=+0x1a942e534
+@class ISIconObserver : NSObject <ISIconManagerObserver> instanceSize=16
+  ivar +8 _delegate @
+  property delegate (T@"<ISIconObserverDelegate>",R,W,V_delegate)
+  -.cxx_destruct v16@0:8  imp=+0x1a9444dec
+  -dealloc v16@0:8  imp=+0x1a9444cf0
+  -delegate @16@0:8  imp=+0x1a9444dc0
+  -iconManager:didInvalidateIcons: v32@0:8@16@24  imp=+0x1a9444d58
+  -initWithDelegate: @24@0:8@16  imp=+0x1a9444c54
+@class ISIconPackage : NSObject instanceSize=16
+  ivar +8 _icons @"NSArray"
+  property icons (T@"NSArray",C,V_icons)
+  -.cxx_destruct v16@0:8  imp=+0x1a93df114
+  -icons @16@0:8  imp=+0x1a93df100
+  -initWithTypeIdentifier: @24@0:8@16  imp=+0x1a93decf0
+  -initWithTypeIdentifier:configuration: @32@0:8@16@24  imp=+0x1a93decf8
+  -setIcons: v24@0:8@16  imp=+0x1a93df10c
+@class ISIconResourceLocator : NSObject <NSSecureCoding> instanceSize=40
+  ivar +8 _resourceDirectoryURL @"NSURL"
+  ivar +16 _bundleIdentifier @"NSString"
+  ivar +24 _iconsDictionary @"NSDictionary"
+  ivar +32 _preferedResourceName @"NSString"
+  property resourceDirectoryURL (T@"NSURL",&,V_resourceDirectoryURL)
+  property bundleIdentifier (T@"NSString",C,V_bundleIdentifier)
+  property iconsDictionary (T@"NSDictionary",C,V_iconsDictionary)
+  property preferedResourceName (T@"NSString",C,V_preferedResourceName)
+  property allowLocalizedIcon (TB,R,D)
+  +genericIconrResourceLocator @16@0:8  imp=+0x1a9428f6c
+  +resourceLocatorWithLSIconResourceLocator: @24@0:8@16  imp=+0x1a9428edc
+  +resourceLocatorWithType: @24@0:8@16  imp=+0x1a9428f0c
+  +supportsSecureCoding B16@0:8  imp=+0x1a9428ed4
+  -.cxx_destruct v16@0:8  imp=+0x1a9429400
+  -allowLocalizedIcon B16@0:8  imp=+0x1a942936c
+  -bundleIdentifier @16@0:8  imp=+0x1a94293c4
+  -description @16@0:8  imp=+0x1a9429318
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a9429020
+  -iconsDictionary @16@0:8  imp=+0x1a94293d8
+  -initWithCoder: @24@0:8@16  imp=+0x1a94290b8
+  -preferedResourceName @16@0:8  imp=+0x1a94293ec
+  -resourceDirectoryURL @16@0:8  imp=+0x1a94293b0
+  -setBundleIdentifier: v24@0:8@16  imp=+0x1a94293d0
+  -setIconsDictionary: v24@0:8@16  imp=+0x1a94293e4
+  -setPreferedResourceName: v24@0:8@16  imp=+0x1a94293f8
+  -setResourceDirectoryURL: v24@0:8@16  imp=+0x1a94293bc
+@class ISIconSegmentation : NSObject instanceSize=48
+  ivar +8 _strictForegroundSegmentation @"ISForegroundSegmentation"
+  ivar +16 _looseForegroundSegmentation @"ISForegroundSegmentation"
+  ivar +24 _grayscaleConversion @"ISBiasedGrayscaleConversion"
+  ivar +32 _idiom Q
+  ivar +40 _maxNumberOfClusteringSamples i
+  ivar +44 _enableColorEnhancementInDarkImage B
+  ivar +45 _enableRecoloringSingleForegroundColorWithGradientBackgroundInDarkImage B
+  property grayscaleConversion (T@"ISBiasedGrayscaleConversion",R,N,V_grayscaleConversion)
+  property enableColorEnhancementInDarkImage (TB,N,V_enableColorEnhancementInDarkImage)
+  property enableRecoloringSingleForegroundColorWithGradientBackgroundInDarkImage (TB,N,V_enableRecoloringSingleForegroundColorWithGradientBackgroundInDarkImage)
+  -.cxx_destruct v16@0:8  imp=+0x1a93f5f80
+  -_computeImageWithCGImage:ucharTintable:ucharTintableOpacity:ucharSolariumTintable:ucharForeground:ucharForegroundOpacity:ucharDark:feedback: B80@0:8^{CGImage=}16*24*32^40^48*56^64^@72  imp=+0x1a93f57f4
+  -_computeImageWithWidth:height:colorSpace:samples:foregroundMask:ucharTintable:ucharTintableOpacity:ucharSolariumTintable:ucharForeground:ucharForegroundOpacity:ucharDark:feedback: B136@0:8i16i20^{CGColorSpace=}24{?=iiiI^}32{?=iiiB(?=^*)}56*80*88^96^104*112^120^@128  imp=+0x1a93f56ec
+  -_computeImageWithWidth:height:strict:colorSpace:samples:foregroundMask:ucharTintable:ucharTintableOpacity:ucharSolariumTintable:ucharForeground:ucharForegroundOpacity:ucharDark:feedback: B140@0:8i16i20B24^{CGColorSpace=}28{?=iiiI^}36{?=iiiB(?=^*)}60*84*92^100^108*116^124^@132  imp=+0x1a93ef424
+  -createDarkImageWithCGImage: ^{CGImage=}24@0:8^{CGImage=}16  imp=+0x1a93f5e88
+  -createDarkImageWithCGImage:feedback: ^{CGImage=}32@0:8^{CGImage=}16^@24  imp=+0x1a93f5e90
+  -createForegroundImageWithCGImage:feedback: ^{CGImage=}32@0:8^{CGImage=}16^@24  imp=+0x1a93f5dc0
+  -createSolariumTintableImageWithCGImage:feedback: ^{CGImage=}32@0:8^{CGImage=}16^@24  imp=+0x1a93f5cf8
+  -createTintableImageMaskWithCGImage:tintableOpacityImageMask: ^{CGImage=}32@0:8^{CGImage=}16^^{CGImage}24  imp=+0x1a93f5bd0
+  -enableColorEnhancementInDarkImage B16@0:8  imp=+0x1a93f5f60
+  -enableRecoloringSingleForegroundColorWithGradientBackgroundInDarkImage B16@0:8  imp=+0x1a93f5f70
+  -grayscaleConversion @16@0:8  imp=+0x1a93f5f58
+  -initWithIdiom: @24@0:8Q16  imp=+0x1a93ef35c
+  -setEnableColorEnhancementInDarkImage: v20@0:8B16  imp=+0x1a93f5f68
+  -setEnableRecoloringSingleForegroundColorWithGradientBackgroundInDarkImage: v20@0:8B16  imp=+0x1a93f5f78
+@class ISIconSegmentationFeedback : NSObject instanceSize=32
+  ivar +8 _foreground @"<ISIconSegmentationFeedbackForeground>"
+  ivar +16 _background @"<ISIconSegmentationFeedbackBackground>"
+  ivar +24 _recolorForeground @"<ISIconSegmentationFeedbackRecolor>"
+  property foreground (T@"<ISIconSegmentationFeedbackForeground>",R,N,V_foreground)
+  property background (T@"<ISIconSegmentationFeedbackBackground>",R,N,V_background)
+  property recolorForeground (T@"<ISIconSegmentationFeedbackRecolor>",R,N,V_recolorForeground)
+  -.cxx_destruct v16@0:8  imp=+0x1a941ed64
+  -background @16@0:8  imp=+0x1a941ed54
+  -foreground @16@0:8  imp=+0x1a941ed4c
+  -initWithForeground:background:recolorForeground: @40@0:8@16@24@32  imp=+0x1a941ec78
+  -recolorForeground @16@0:8  imp=+0x1a941ed5c
+@class ISIconSegmentationFeedbackBilinearGradient : NSObject <ISIconSegmentationFeedbackBackground, ISIconSegmentationFeedbackRecolor> instanceSize=56
+  ivar +8 _topLeftColor ^{CGColor=}
+  ivar +16 _topRightColor ^{CGColor=}
+  ivar +24 _bottomRightColor ^{CGColor=}
+  ivar +32 _bottomLeftColor ^{CGColor=}
+  ivar +40 _meanColor ^{CGColor=}
+  ivar +48 _edgeMeanColor ^{CGColor=}
+  property meanColor (T^{CGColor=},R,N,V_meanColor)
+  property edgeMeanColor (T^{CGColor=},R,N,V_edgeMeanColor)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -dealloc v16@0:8  imp=+0x1a941e90c
+  -edgeMeanColor ^{CGColor=}16@0:8  imp=+0x1a941eb98
+  -gradientWithSize: @32@0:8{CGSize=dd}16  imp=+0x1a941e980
+  -initWithTopLeftColor:topRightColor:bottomRightColor:bottomLeftColor:meanColor:edgeMeanColor: @64@0:8^{CGColor=}16^{CGColor=}24^{CGColor=}32^{CGColor=}40^{CGColor=}48^{CGColor=}56  imp=+0x1a941e848
+  -meanColor ^{CGColor=}16@0:8  imp=+0x1a941eb90
+@class ISIconSegmentationFeedbackComplex : NSObject <ISIconSegmentationFeedbackForeground, ISIconSegmentationFeedbackBackground> instanceSize=24
+  ivar +8 _meanColor ^{CGColor=}
+  ivar +16 _edgeMeanColor ^{CGColor=}
+  property edgeMeanColor (T^{CGColor=},R,N,V_edgeMeanColor)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  property meanColor (T^{CGColor=},R,N,V_meanColor)
+  -dealloc v16@0:8  imp=+0x1a941ec14
+  -edgeMeanColor ^{CGColor=}16@0:8  imp=+0x1a941ec70
+  -initWithMeanColor:edgeMeanColor: @32@0:8^{CGColor=}16^{CGColor=}24  imp=+0x1a941eba0
+  -meanColor ^{CGColor=}16@0:8  imp=+0x1a941ec68
+@class ISIconSegmentationFeedbackMultipleColors : NSObject <ISIconSegmentationFeedbackForeground> instanceSize=24
+  ivar +8 _edgeMeanColor ^{CGColor=}
+  ivar +16 _numberOfColors i
+  property numberOfColors (Ti,R,N,V_numberOfColors)
+  property edgeMeanColor (T^{CGColor=},R,N,V_edgeMeanColor)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -dealloc v16@0:8  imp=+0x1a941e7ec
+  -edgeMeanColor ^{CGColor=}16@0:8  imp=+0x1a941e838
+  -initWithNumberOfColors:edgeMeanColor: @28@0:8i16^{CGColor=}20  imp=+0x1a941e780
+  -numberOfColors i16@0:8  imp=+0x1a941e840
+@class ISIconSegmentationFeedbackSingleColor : NSObject <ISIconSegmentationFeedbackForeground, ISIconSegmentationFeedbackBackground, ISIconSegmentationFeedbackRecolor> instanceSize=16
+  ivar +8 _color ^{CGColor=}
+  property color (T^{CGColor=},R,N,V_color)
+  property edgeMeanColor (T^{CGColor=},R,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  property meanColor (T^{CGColor=},R,N)
+  -color ^{CGColor=}16@0:8  imp=+0x1a941e778
+  -dealloc v16@0:8  imp=+0x1a941e72c
+  -edgeMeanColor ^{CGColor=}16@0:8  imp=+0x1a941e724
+  -initWithColor: @24@0:8^{CGColor=}16  imp=+0x1a941e6c0
+  -meanColor ^{CGColor=}16@0:8  imp=+0x1a941e71c
+@class ISIconSpecification : IFIconSpecification instanceSize=80
+@class ISIconStackAssetCatalogResource : ISAssetCatalogResource <ISIconStackResource, ISCompositesWithCompositingDescriptor> instanceSize=120
+  ivar +80 _usesExternalCompositor B
+  ivar +88 compositingDescriptor @"ISCompositingDescriptor"
+  ivar +96 generationReport @"ISGenerationReport"
+  ivar +104 _languageDirection Q
+  ivar +112 _icrCompositor @"ISICRCompositor"
+  property icrCompositor (T@"ISICRCompositor",&,N,V_icrCompositor)
+  property usesExternalCompositor (TB,R,N,V_usesExternalCompositor)
+  property languageDirection (TQ,N,V_languageDirection)
+  property platform (TQ,R)
+  property generationReport (T@"ISGenerationReport",&,VgenerationReport)
+  property compositingDescriptor (T@"ISCompositingDescriptor",C,VcompositingDescriptor)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a942ead4
+  -_assetDescription @16@0:8  imp=+0x1a942e6b8
+  -_compositingDescriptorWithSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a942e8bc
+  -compositingDescriptor @16@0:8  imp=+0x1a942ea4c
+  -generationReport @16@0:8  imp=+0x1a942ea68
+  -iconStackForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a942e5d8
+  -icrCompositor @16@0:8  imp=+0x1a942eaac
+  -imageForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a942e99c
+  -initWithCatalog:imageName:platform: @40@0:8@16@24Q32  imp=+0x1a942e6c4
+  -languageDirection Q16@0:8  imp=+0x1a942ea84
+  -setCompositingDescriptor: v24@0:8@16  imp=+0x1a942ea5c
+  -setGenerationReport: v24@0:8@16  imp=+0x1a942ea78
+  -setIcrCompositor: v24@0:8@16  imp=+0x1a942eac0
+  -setLanguageDirection: v24@0:8Q16  imp=+0x1a942ea98
+  -usesExternalCompositor B16@0:8  imp=+0x1a942ea44
+@class ISIconStackComposer : NSObject instanceSize=32
+  ivar +8 _asset ^{CGImage=}
+  ivar +16 _assetAppearance q
+  ivar +24 _platform Q
+  property asset (T^{CGImage=},R,V_asset)
+  property assetAppearance (Tq,R,V_assetAppearance)
+  property platform (TQ,R,V_platform)
+  -asset ^{CGImage=}16@0:8  imp=+0x1a94366bc
+  -assetAppearance q16@0:8  imp=+0x1a94366c4
+  -dealloc v16@0:8  imp=+0x1a9435368
+  -iconStackForSize:scale:desiredAssetAppearance:designGeneration:returningGenerationReport: @64@0:8{CGSize=dd}16d32q40q48^@56  imp=+0x1a9435454
+  -initWithLegacyAsset:assetAppearance:platform: @40@0:8^{CGImage=}16q24Q32  imp=+0x1a94352c8
+  -platform Q16@0:8  imp=+0x1a94366cc
+  -segmentationIdiom Q16@0:8  imp=+0x1a94353b8
+@class ISIconStackCompositeResource : NSObject <ISScalableCompositorResource, ISIconStackResource, ISCompositesWithCompositingDescriptor> instanceSize=48
+  ivar +8 compositingDescriptor @"ISCompositingDescriptor"
+  ivar +16 generationReport @"ISGenerationReport"
+  ivar +24 _wrappedResource @"<ISScalableCompositorResource>"
+  ivar +32 _platform Q
+  ivar +40 _icrCompositor @"ISICRCompositor"
+  property icrCompositor (T@"ISICRCompositor",&,N,V_icrCompositor)
+  property wrappedResource (T@"<ISScalableCompositorResource>",R,V_wrappedResource)
+  property platform (TQ,R,V_platform)
+  property usesExternalCompositor (TB,?)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  property generationReport (T@"ISGenerationReport",&,VgenerationReport)
+  property compositingDescriptor (T@"ISCompositingDescriptor",C,VcompositingDescriptor)
+  -.cxx_destruct v16@0:8  imp=+0x1a9421080
+  -assetAppearance q16@0:8  imp=+0x1a9420e14
+  -compositingDescriptor @16@0:8  imp=+0x1a9421030
+  -generationReport @16@0:8  imp=+0x1a9421044
+  -iconStackForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a9420e1c
+  -icrCompositor @16@0:8  imp=+0x1a942106c
+  -imageForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a9420f70
+  -initWithResource: @24@0:8@16  imp=+0x1a9420ba8
+  -initWithResource:platform: @32@0:8@16Q24  imp=+0x1a9420c20
+  -platform Q16@0:8  imp=+0x1a9421064
+  -setCompositingDescriptor: v24@0:8@16  imp=+0x1a942103c
+  -setGenerationReport: v24@0:8@16  imp=+0x1a9421050
+  -setIcrCompositor: v24@0:8@16  imp=+0x1a9421074
+  -wrappedResource @16@0:8  imp=+0x1a9421058
+@class ISIconTypeResourceLocator : ISIconResourceLocator <NSSecureCoding> instanceSize=48
+  ivar +40 _type @"NSString"
+  property type (T@"NSString",R,V_type)
+  +supportsSecureCoding B16@0:8  imp=+0x1a942945c
+  -.cxx_destruct v16@0:8  imp=+0x1a94296f0
+  -allowLocalizedIcon B16@0:8  imp=+0x1a94296dc
+  -bundleIdentifier @16@0:8  imp=+0x1a9429634
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a94294e0
+  -initWithCoder: @24@0:8@16  imp=+0x1a94294f8
+  -initWithType: @24@0:8@16  imp=+0x1a9429464
+  -preferedResourceName @16@0:8  imp=+0x1a94296b0
+  -resourceDirectoryURL @16@0:8  imp=+0x1a9429608
+  -type @16@0:8  imp=+0x1a94296e4
+@class ISIconset : NSObject instanceSize=32
+  ivar +8 _URL @"NSURL"
+  ivar +16 _primaryVariant @"ISVariant"
+  ivar +24 _additionalVariants @"NSMutableDictionary"
+  property _primaryVariant (T@"ISVariant",R,V_primaryVariant)
+  property additionalVariants (T@"NSMutableDictionary",R,V_additionalVariants)
+  property URL (T@"NSURL",R,V_URL)
+  +iconsetWithURL:error: @32@0:8@16^@24  imp=+0x1a9415d44
+  -.cxx_destruct v16@0:8  imp=+0x1a94167a0
+  -URL @16@0:8  imp=+0x1a9416794
+  -_primaryVariant @16@0:8  imp=+0x1a94162f8
+  -addResouceWithURL:error: B32@0:8@16^@24  imp=+0x1a9415e90
+  -additionalVariants @16@0:8  imp=+0x1a9416330
+  -icnsWithFlags: @24@0:8q16  imp=+0x1a9416368
+  -initWithURL: @24@0:8@16  imp=+0x1a9415e14
+  -loadResources v16@0:8  imp=+0x1a9416108
+  -primaryVariantSelected: @20@0:8B16  imp=+0x1a94167f0
+  -templateVariantSelected: @20@0:8B16  imp=+0x1a9416850
+  -writeAsICNSToURL:flags: B32@0:8@16q24  imp=+0x1a9416644
+  -writeAsICNSToURL:flags:error: B40@0:8@16q24^@32  imp=+0x1a94166f8
+@class ISImageBag : IFImageBag instanceSize=24
+@class ISImageBagIcon : ISIcon instanceSize=48
+  ivar +24 _images @"NSArray"
+  ivar +32 _decorations @"NSArray"
+  ivar +40 _imageCache @"ISImageCache"
+  property imageCache (T@"ISImageCache",&,V_imageCache)
+  property images (T@"NSArray",R,V_images)
+  -.cxx_destruct v16@0:8  imp=+0x1a9409da0
+  -_generateImageWithDescriptor: @24@0:8@16  imp=+0x1a940949c
+  -_prepareImagesForImageDescriptors: v24@0:8@16  imp=+0x1a9409930
+  -_remoteGenerateImageWithDescriptor: @24@0:8@16  imp=+0x1a9409820
+  -decorations @16@0:8  imp=+0x1a9409d70
+  -getImageForImageDescriptor:completion: v32@0:8@16@?24  imp=+0x1a9409c70
+  -imageCache @16@0:8  imp=+0x1a9409d84
+  -imageForImageDescriptor: @24@0:8@16  imp=+0x1a9409b40
+  -images @16@0:8  imp=+0x1a9409d60
+  -initWithImageBag: @24@0:8@16  imp=+0x1a94093c8
+  -initWithImages: @24@0:8@16  imp=+0x1a94092d4
+  -initWithImages:decorations: @32@0:8@16@24  imp=+0x1a94092e0
+  -makeResourceProvider @16@0:8  imp=+0x1a9409aec
+  -setImageCache: v24@0:8@16  imp=+0x1a9409d94
+@class ISImageCache : NSObject instanceSize=32
+  ivar +8 _lock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +16 _latestValidationToken @"NSData"
+  ivar +24 _imageBagsByDescriptor @"NSMutableDictionary"
+  property lock (T{os_unfair_lock_s=I},V_lock)
+  property imageBagsByDescriptor (T@"NSMutableDictionary",&,V_imageBagsByDescriptor)
+  property latestValidationToken (T@"NSData",R,V_latestValidationToken)
+  -.cxx_destruct v16@0:8  imp=+0x1a93cfd40
+  -allImages @16@0:8  imp=+0x1a93e3410
+  -debugDescription @16@0:8  imp=+0x1a93e3250
+  -imageBagsByDescriptor @16@0:8  imp=+0x1a93e3588
+  -imageForDescriptor: @24@0:8@16  imp=+0x1a93cecb4
+  -init @16@0:8  imp=+0x1a93cdfc8
+  -latestValidationToken @16@0:8  imp=+0x1a93e3200
+  -lock {os_unfair_lock_s=I}16@0:8  imp=+0x1a93e3578
+  -setImage:forDescriptor: v32@0:8@16@24  imp=+0x1a93cf804
+  -setImageBagsByDescriptor: v24@0:8@16  imp=+0x1a93e3594
+  -setLock: v20@0:8{os_unfair_lock_s=I}16  imp=+0x1a93e3580
+@class ISImageDescriptor : NSObject <NSSecureCoding, ISImageDescriptor, NSCopying> instanceSize=160
+  ivar +8 _size {CGSize="width"d"height"d}
+  ivar +24 _scale d
+  ivar +32 _variantOptions Q
+  ivar +40 _badgeOptions Q
+  ivar +48 _backgroundStyle Q
+  ivar +56 _graphicVariant B
+  ivar +57 _ignoreCache B
+  ivar +64 _specialIconOptions Q
+  ivar +72 _platformStyle Q
+  ivar +80 _tintColor @"IFColor"
+  ivar +88 _appearance q
+  ivar +96 _appearanceVariant q
+  ivar +104 _contrast q
+  ivar +112 _vibrancy q
+  ivar +120 _languageDirection Q
+  ivar +128 _background Q
+  ivar +136 _layoutDirection q
+  ivar +144 _assetPlatformHint Q
+  ivar +152 _designGeneration q
+  property sanitizedSize (T{CGSize=dd},R)
+  property sanitizedScale (Td,R)
+  property digest (T@"NSUUID",R,D)
+  property minimalMatchDigest (T@"NSUUID",R)
+  property isMinimalMatchCandidate (TB,R)
+  property ignoreCache (TB,V_ignoreCache)
+  property layoutDirection (Tq,N,V_layoutDirection)
+  property platform (TQ,R)
+  property specialIconOptions (TQ,N,V_specialIconOptions)
+  property assetPlatformHint (TQ,N,V_assetPlatformHint)
+  property designGeneration (Tq,N,V_designGeneration)
+  property size (T{CGSize=dd},N,V_size)
+  property scale (Td,N,V_scale)
+  property variantOptions (TQ,N,V_variantOptions)
+  property badgeOptions (TQ,N,V_badgeOptions)
+  property backgroundStyle (TQ,N,V_backgroundStyle)
+  property shape (TQ,N)
+  property platformStyle (TQ,N,V_platformStyle)
+  property continuousCornerRadius (Td,R,N)
+  property shouldApplyMask (TB,N)
+  property drawBorder (TB,N)
+  property drawBadge (TB,N)
+  property templateVariant (TB,N)
+  property selectedVariant (TB,N)
+  property tintColor (T@"IFColor",&,N,V_tintColor)
+  property graphicVariant (TB,N,V_graphicVariant)
+  property appearance (Tq,N,V_appearance)
+  property appearanceVariant (Tq,N,V_appearanceVariant)
+  property contrast (Tq,N,V_contrast)
+  property vibrancy (Tq,N,V_vibrancy)
+  property languageDirection (TQ,V_languageDirection)
+  property background (TQ,N,V_background)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +icnsImageDescriptors @16@0:8  imp=+0x1a9439b08
+  +imageDescriptorNamed: @24@0:8@16  imp=+0x1a943969c
+  +imageDescriptorWithIconVariant:options: @24@0:8i16i20  imp=+0x1a943807c
+  +supportsSecureCoding B16@0:8  imp=+0x1a9438074
+  -.cxx_destruct v16@0:8  imp=+0x1a9439690
+  -_recipe @16@0:8  imp=+0x1a94335b4
+  -_recipePreferRichRecipe: @20@0:8B16  imp=+0x1a94335bc
+  -appearance q16@0:8  imp=+0x1a94389dc
+  -appearanceVariant q16@0:8  imp=+0x1a9438a48
+  -assetPlatformHint Q16@0:8  imp=+0x1a9439670
+  -background Q16@0:8  imp=+0x1a9439644
+  -backgroundStyle Q16@0:8  imp=+0x1a93cee30
+  -badgeOptions Q16@0:8  imp=+0x1a93cf434
+  -continuousCornerRadius d16@0:8  imp=+0x1a94387d8
+  -contrast q16@0:8  imp=+0x1a9439614
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a9438508
+  -description @16@0:8  imp=+0x1a9439224
+  -designGeneration q16@0:8  imp=+0x1a9439680
+  -digest @16@0:8  imp=+0x1a9438e84
+  -digest:size: B32@0:8^v16Q24  imp=+0x1a9438c10
+  -drawBadge B16@0:8  imp=+0x1a9438904
+  -drawBorder B16@0:8  imp=+0x1a94388d8
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a9438344
+  -finalizeSHA:intoBytes:size: B40@0:8^{CC_SHA256state_st=[2I][8I][16I]}16^v24Q32  imp=+0x1a9438b2c
+  -graphicVariant B16@0:8  imp=+0x1a94395f4
+  -hash Q16@0:8  imp=+0x1a9439578
+  -ignoreCache B16@0:8  imp=+0x1a9439654
+  -init @16@0:8  imp=+0x1a9438140
+  -initWithCoder: @24@0:8@16  imp=+0x1a9438154
+  -initWithSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a93cec0c
+  -isEqual: B24@0:8@16  imp=+0x1a94394c8
+  -isMinimalMatchCandidate B16@0:8  imp=+0x1a94391bc
+  -languageDirection Q16@0:8  imp=+0x1a9439634
+  -layoutDirection q16@0:8  imp=+0x1a9438934
+  -minimalMatchDigest @16@0:8  imp=+0x1a9439130
+  -minimalMatchDigest:size: B32@0:8^v16Q24  imp=+0x1a9438f10
+  -platform Q16@0:8  imp=+0x1a9438ab4
+  -platformStyle Q16@0:8  imp=+0x1a94395d8
+  -sanitizedScale d16@0:8  imp=+0x1a93cf464
+  -sanitizedSize {CGSize=dd}16@0:8  imp=+0x1a93cf444
+  -scale d16@0:8  imp=+0x1a93ced94
+  -selectedVariant B16@0:8  imp=+0x1a9438648
+  -setAppearance: v24@0:8q16  imp=+0x1a9439604
+  -setAppearanceVariant: v24@0:8q16  imp=+0x1a943960c
+  -setAssetPlatformHint: v24@0:8Q16  imp=+0x1a9439678
+  -setBackground: v24@0:8Q16  imp=+0x1a943964c
+  -setBackgroundStyle: v24@0:8Q16  imp=+0x1a93cecac
+  -setBadgeOptions: v24@0:8Q16  imp=+0x1a94395c0
+  -setContrast: v24@0:8q16  imp=+0x1a943961c
+  -setDesignGeneration: v24@0:8q16  imp=+0x1a9439688
+  -setDrawBadge: v20@0:8B16  imp=+0x1a9438914
+  -setDrawBorder: v20@0:8B16  imp=+0x1a94388e4
+  -setGraphicVariant: v20@0:8B16  imp=+0x1a94395fc
+  -setIgnoreCache: v20@0:8B16  imp=+0x1a9439660
+  -setLanguageDirection: v24@0:8Q16  imp=+0x1a943963c
+  -setLayoutDirection: v24@0:8q16  imp=+0x1a9439668
+  -setPlatformStyle: v24@0:8Q16  imp=+0x1a94395e0
+  -setScale: v24@0:8d16  imp=+0x1a94395b0
+  -setSelectedVariant: v20@0:8B16  imp=+0x1a9438654
+  -setShape: v24@0:8Q16  imp=+0x1a94386e8
+  -setShouldApplyMask: v20@0:8B16  imp=+0x1a94388b8
+  -setSize: v32@0:8{CGSize=dd}16  imp=+0x1a94395a8
+  -setSpecialIconOptions: v24@0:8Q16  imp=+0x1a94395d0
+  -setTemplateVariant: v20@0:8B16  imp=+0x1a9438628
+  -setTintColor: v24@0:8@16  imp=+0x1a94395e8
+  -setVariantOptions: v24@0:8Q16  imp=+0x1a94395b8
+  -setVibrancy: v24@0:8q16  imp=+0x1a943962c
+  -shape Q16@0:8  imp=+0x1a9438674
+  -shouldApplyMask B16@0:8  imp=+0x1a94388a8
+  -size {CGSize=dd}16@0:8  imp=+0x1a93ced8c
+  -specialIconOptions Q16@0:8  imp=+0x1a94395c8
+  -templateVariant B16@0:8  imp=+0x1a943861c
+  -tintColor @16@0:8  imp=+0x1a9438964
+  -variantOptions Q16@0:8  imp=+0x1a93cf43c
+  -vibrancy q16@0:8  imp=+0x1a9439624
+@class ISImageSetVariantResource : NSObject <ISVariantResourceProtocol> instanceSize=40
+  ivar +8 _variantName @"NSString"
+  ivar +16 _flags Q
+  ivar +24 _resourceImages @"NSMutableDictionary"
+  ivar +32 _imageBag @"IFImageBag"
+  property resourceImages (T@"NSMutableDictionary",R,V_resourceImages)
+  property imageBag (T@"IFImageBag",R,V_imageBag)
+  property variantName (T@"NSString",R,V_variantName)
+  property flags (TQ,R,V_flags)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +resourceWithURL:resourceInfo: @32@0:8@16@24  imp=+0x1a94179a8
+  -.cxx_destruct v16@0:8  imp=+0x1a9417d00
+  -addImage:size:scale: v40@0:8^{CGImage=}16Q24Q32  imp=+0x1a9417c28
+  -description @16@0:8  imp=+0x1a9417c94
+  -flags Q16@0:8  imp=+0x1a9417ce0
+  -imageBag @16@0:8  imp=+0x1a9417cf4
+  -imageForSize:scale:error: ^{CGImage=}40@0:8Q16Q24^@32  imp=+0x1a9417b18
+  -initWithVariantName:flags: @32@0:8@16Q24  imp=+0x1a9417a70
+  -resourceImages @16@0:8  imp=+0x1a9417ce8
+  -variantName @16@0:8  imp=+0x1a9417cd4
+@class ISImageSetVariantResourceImage : NSObject instanceSize=32
+  ivar +8 _image ^{CGImage=}
+  ivar +16 _size Q
+  ivar +24 _scale Q
+  property size (TQ,V_size)
+  property scale (TQ,V_scale)
+  property image (T^{CGImage=},R,V_image)
+  +keyForSize:scale: @32@0:8Q16Q24  imp=+0x1a94177fc
+  -dealloc v16@0:8  imp=+0x1a94178c0
+  -description @16@0:8  imp=+0x1a9417948
+  -image ^{CGImage=}16@0:8  imp=+0x1a9417910
+  -initWithImage:scale: @32@0:8^{CGImage=}16Q24  imp=+0x1a9417830
+  -scale Q16@0:8  imp=+0x1a9417998
+  -setScale: v24@0:8Q16  imp=+0x1a94179a0
+  -setSize: v24@0:8Q16  imp=+0x1a9417990
+  -size Q16@0:8  imp=+0x1a9417988
+@class ISImageSpecification : IFImageSpecification instanceSize=80
+@class ISImageStyleDescriptor : NSObject <NSSecureCoding, NSCopying> instanceSize=24
+  ivar +8 _templateVariant B
+  ivar +9 _selectedVariant B
+  ivar +16 _tintColor @"IFColor"
+  property templateVariant (TB,N,V_templateVariant)
+  property selectedVariant (TB,N,V_selectedVariant)
+  property tintColor (T@"IFColor",&,N,V_tintColor)
+  property digest (T@"NSUUID",R,D)
+  +defaultStyleDescriptor @16@0:8  imp=+0x1a93d3958
+  +supportsSecureCoding B16@0:8  imp=+0x1a93d39dc
+  -.cxx_destruct v16@0:8  imp=+0x1a93d3ca0
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a93d3b2c
+  -digest @16@0:8  imp=+0x1a93d3b70
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a93d3aa8
+  -initWithCoder: @24@0:8@16  imp=+0x1a93d39e4
+  -selectedVariant B16@0:8  imp=+0x1a93d3c7c
+  -setSelectedVariant: v20@0:8B16  imp=+0x1a93d3c84
+  -setTemplateVariant: v20@0:8B16  imp=+0x1a93d3c74
+  -setTintColor: v24@0:8@16  imp=+0x1a93d3c94
+  -templateVariant B16@0:8  imp=+0x1a93d3c6c
+  -tintColor @16@0:8  imp=+0x1a93d3c8c
+@class ISIntelligentDimEffect : NSObject <ISEffect> instanceSize=16
+  ivar +8 _flagDimming B
+  property flagDimming (TB,V_flagDimming)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -filterWithBackgroundImage:inputImage: @32@0:8@16@24  imp=+0x1a9430a9c
+  -flagDimming B16@0:8  imp=+0x1a9430c98
+  -init @16@0:8  imp=+0x1a9430a2c
+  -setFlagDimming: v20@0:8B16  imp=+0x1a9430ca4
+@class ISLayer : NSObject instanceSize=104
+  ivar +8 _blendMode i
+  ivar +16 _name @"NSString"
+  ivar +24 _mask @"ISLayer"
+  ivar +32 _effect @"<ISEffect>"
+  ivar +40 _internalSuperlayer @"ISLayer"
+  ivar +48 _internalSublayers @"NSMutableArray"
+  ivar +56 _coordinateSystem Q
+  ivar +64 _flipped Q
+  ivar +72 _frame {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}}
+  property internalSuperlayer (T@"ISLayer",W,N,V_internalSuperlayer)
+  property internalSublayers (T@"NSMutableArray",R,N,V_internalSublayers)
+  property coordinateSystem (TQ,N,V_coordinateSystem)
+  property flipped (TQ,N,V_flipped)
+  property frame (T{CGRect={CGPoint=dd}{CGSize=dd}},N,V_frame)
+  property bounds (T{CGRect={CGPoint=dd}{CGSize=dd}},N)
+  property size (T{CGSize=dd},N)
+  property position (T{CGPoint=dd},N)
+  property name (T@"NSString",&,N,V_name)
+  property superlayer (T@"ISLayer",R,D,N)
+  property sublayers (T@"NSArray",R,C,N)
+  property mask (T@"ISLayer",&,N,V_mask)
+  property effect (T@"<ISEffect>",&,N,V_effect)
+  property blendMode (Ti,N,V_blendMode)
+  -.cxx_destruct v16@0:8  imp=+0x1a9408b60
+  -addSublayer: v24@0:8@16  imp=+0x1a94088f0
+  -blendMode i16@0:8  imp=+0x1a9408af0
+  -bounds {CGRect={CGPoint=dd}{CGSize=dd}}16@0:8  imp=+0x1a9408834
+  -coordinateSystem Q16@0:8  imp=+0x1a9408b40
+  -debugDescription @16@0:8  imp=+0x1a9408a1c
+  -effect @16@0:8  imp=+0x1a9408adc
+  -flipped Q16@0:8  imp=+0x1a9408b50
+  -frame {CGRect={CGPoint=dd}{CGSize=dd}}16@0:8  imp=+0x1a94086c0
+  -init @16@0:8  imp=+0x1a94084a0
+  -insertSublayer:atIndex: v28@0:8@16I24  imp=+0x1a9408958
+  -internalSublayers @16@0:8  imp=+0x1a9408b38
+  -internalSuperlayer @16@0:8  imp=+0x1a9408b00
+  -mask @16@0:8  imp=+0x1a9408ac8
+  -name @16@0:8  imp=+0x1a9408ab4
+  -position {CGPoint=dd}16@0:8  imp=+0x1a9408828
+  -removeFromSuperlayer v16@0:8  imp=+0x1a9408880
+  -setBlendMode: v20@0:8i16  imp=+0x1a9408af8
+  -setBounds: v48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16  imp=+0x1a9408870
+  -setCoordinateSystem: v24@0:8Q16  imp=+0x1a9408b48
+  -setEffect: v24@0:8@16  imp=+0x1a9408ae4
+  -setFlipped: v24@0:8Q16  imp=+0x1a9408b58
+  -setFrame: v48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16  imp=+0x1a9408528
+  -setInternalSuperlayer: v24@0:8@16  imp=+0x1a9408b2c
+  -setMask: v24@0:8@16  imp=+0x1a9408ad0
+  -setName: v24@0:8@16  imp=+0x1a9408abc
+  -setPosition: v32@0:8{CGPoint=dd}16  imp=+0x1a940882c
+  -setSize: v32@0:8{CGSize=dd}16  imp=+0x1a9408818
+  -size {CGSize=dd}16@0:8  imp=+0x1a94087f8
+  -sublayers @16@0:8  imp=+0x1a94089d0
+  -superlayer @16@0:8  imp=+0x1a940887c
+@class ISLayeredIcon : ISConcreteIcon instanceSize=64
+  ivar +40 _typeIdentifier @"NSString"
+  ivar +48 _layerGroups @"NSArray"
+  ivar +56 _imageCache @"ISImageCache"
+  property layerGroups (T@"NSArray",&,V_layerGroups)
+  property imageCache (T@"ISImageCache",&,V_imageCache)
+  property typeIdentifier (T@"NSString",R,V_typeIdentifier)
+  +supportsSecureCoding B16@0:8  imp=+0x1a942ca10
+  -.cxx_destruct v16@0:8  imp=+0x1a942d844
+  -_generateImageWithDescriptor: @24@0:8@16  imp=+0x1a942d0e4
+  -_prepareImagesForImageDescriptors: v24@0:8@16  imp=+0x1a942d450
+  -_tweakCopiedImageDescriptorsIfNecessary: v24@0:8@16  imp=+0x1a942d2d8
+  -description @16@0:8  imp=+0x1a942cf30
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a942cdd4
+  -getImageForImageDescriptor:completion: v32@0:8@16@?24  imp=+0x1a942d70c
+  -hash Q16@0:8  imp=+0x1a942d0a8
+  -imageCache @16@0:8  imp=+0x1a942d828
+  -imageForDescriptor: @24@0:8@16  imp=+0x1a942d708
+  -imageForImageDescriptor: @24@0:8@16  imp=+0x1a942d5d8
+  -initWithCoder: @24@0:8@16  imp=+0x1a942cc5c
+  -initWithTypeIdentifier:layerGroups: @32@0:8@16@24  imp=+0x1a942ca18
+  -isEqual: B24@0:8@16  imp=+0x1a942cff8
+  -layerGroups @16@0:8  imp=+0x1a942d80c
+  -makeResourceProvider @16@0:8  imp=+0x1a942ce7c
+  -setImageCache: v24@0:8@16  imp=+0x1a942d838
+  -setLayerGroups: v24@0:8@16  imp=+0x1a942d81c
+  -typeIdentifier @16@0:8  imp=+0x1a942d7fc
+@class ISLeadingStatusBadgeRecipe : NSObject <ISCompositorRecipe> instanceSize=16
+  ivar +8 _primaryIconType q
+  property primaryIconType (Tq,V_primaryIconType)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -badgedDocumentIconRect @16@0:8  imp=+0x1a9425c0c
+  -badgedFolderIconRect @16@0:8  imp=+0x1a9425d60
+  -defaultBadgeRect @16@0:8  imp=+0x1a9425abc
+  -init @16@0:8  imp=+0x1a9425a7c
+  -layerTreeForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a9425f20
+  -leadingBottomBadgeRect @16@0:8  imp=+0x1a9425eb0
+  -primaryIconType q16@0:8  imp=+0x1a9426098
+  -setPrimaryIconType: v24@0:8q16  imp=+0x1a94260a0
+@class ISLegibilityEffect : NSObject <ISEffect> instanceSize=8
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -filterWithBackgroundImage:inputImage: @32@0:8@16@24  imp=+0x1a9431394
+  -init @16@0:8  imp=+0x1a943135c
+@class ISLuminanceGrayscaleConversion : ISGrayscaleConversion instanceSize=8
+  -computeGrayscaleConversionColorWithNumberOfRepresentativeSamples:representativeSamples: 28@0:8i16r^20  imp=+0x1a9434ce0
+  -computeGrayscaleConversionColorWithWidth:height:samples: 48@0:8i16i20{?=iiiI^}24  imp=+0x1a9434cd4
+@class ISMaskEffect : NSObject <ISEffect> instanceSize=8
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -filterWithBackgroundImage:inputImage: @32@0:8@16@24  imp=+0x1a9431dd8
+@class ISMessagesAppRecipe : NSObject <ISCompositorRecipe, ISRecipeOptionalMask, ISRecipeOptionalBorder, ISSuppliesIconSpecification> instanceSize=16
+  ivar +8 shouldApplyMask B
+  ivar +9 shouldDrawBorder B
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  property shouldApplyMask (TB,VshouldApplyMask)
+  property shouldDrawBorder (TB,VshouldDrawBorder)
+  property iconSpecification (T@"IFIconSpecification",R)
+  -iconSpecification @16@0:8  imp=+0x1a93d78dc
+  -init @16@0:8  imp=+0x1a93d75f8
+  -layerTreeForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a93d765c
+  -setShouldApplyMask: v20@0:8B16  imp=+0x1a93d78f4
+  -setShouldDrawBorder: v20@0:8B16  imp=+0x1a93d7908
+  -shouldApplyMask B16@0:8  imp=+0x1a93d78e8
+  -shouldDrawBorder B16@0:8  imp=+0x1a93d78fc
+@class ISMonochromeTintEffect : NSObject <ISEffect> instanceSize=16
+  ivar +8 _color @"IFColor"
+  property color (T@"IFColor",&,V_color)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a9431dcc
+  -color @16@0:8  imp=+0x1a9431db8
+  -filterWithBackgroundImage:inputImage: @32@0:8@16@24  imp=+0x1a9431cc4
+  -initWithColor: @24@0:8@16  imp=+0x1a9431c48
+  -setColor: v24@0:8@16  imp=+0x1a9431dc4
+@class ISMultipleFilesRecipe : NSObject <ISCompositorRecipe> instanceSize=8
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -documentLayerWithRect:withPageFold:iconSize:scale: @76@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16B48{CGSize=dd}52d68  imp=+0x1a944195c
+  -hintedCornerSize @16@0:8  imp=+0x1a944161c
+  -hintedPageCurlSize @16@0:8  imp=+0x1a94414f4
+  -hintedPaperRect @16@0:8  imp=+0x1a94412e0
+  -hintedShadowBlur @16@0:8  imp=+0x1a9441738
+  -hintedShadowOffset @16@0:8  imp=+0x1a9441840
+  -hintedUnderPaperRect @16@0:8  imp=+0x1a94413ec
+  -layerTreeForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a9442290
+@class ISMultisizedAppAssetCatalogResource : ISIconStackAssetCatalogResource instanceSize=120
+  -_assetDescription @16@0:8  imp=+0x1a944374c
+  -_lookupForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a9443758
+  -iconStackForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a9443830
+  -imageForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a9443a08
+@class ISMultisizedAssetCatalogResource : ISAssetCatalogResource instanceSize=80
+  -_lookupForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a93e359c
+  -imageForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a93e3674
+@class ISMutableIcns : ISIcns instanceSize=48
+  property type (TI,D)
+  property name (T@"NSString",C,D)
+  property selectedVariant (T@"ISIcns",&,D)
+  property templateVariant (T@"ISIcns",&,D)
+  property userInfo (T@"NSDictionary",&,D)
+  +_iconIndexSmallerThanSize:scale:template: i40@0:8{CGSize=dd}16I32B36  imp=+0x1a9447fe8
+  +_scaledCGImage:forICSNSizeAtScale:template:scaleToFit: ^{CGImage=}36@0:8^{CGImage=}16I24B28B32  imp=+0x1a9448264
+  -_initWithType:scaleToFit:imageProviderBlock: @32@0:8I16B20@?24  imp=+0x1a9448458
+  -addCGImage:scale:error: B36@0:8^{CGImage=}16I24^@28  imp=+0x1a9448ae8
+  -addImageData:iconIndex: B28@0:8@16i24  imp=+0x1a9448670
+  -addImageWithBinding:iconIndex: v28@0:8^{_LSBinding=}16i24  imp=+0x1a93eeac0
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a94124bc
+  -initWithData: @24@0:8@16  imp=+0x1a941254c
+  -initWithType: @20@0:8I16  imp=+0x1a9412584
+  -initWithType:imageProviderBlock: @28@0:8I16@?20  imp=+0x1a9448664
+  -removeValueAtIndex: v20@0:8i16  imp=+0x1a94125bc
+  -setCGImage:atIndex: v28@0:8^{CGImage=}16i24  imp=+0x1a940f108
+  -setData:atIndex: v28@0:8@16i24  imp=+0x1a94125f4
+  -setData:withElementType: v28@0:8@16I24  imp=+0x1a940f0a4
+  -setHandle:withType: s28@0:8^*16I24  imp=+0x1a940f21c
+  -setVariant:named: v32@0:8@16@24  imp=+0x1a941262c
+@class ISMutableStoreIndex : ISStoreIndex instanceSize=56
+  ivar +40 _initialCapacity Q
+  ivar +48 _serialQueue @"NSObject<OS_dispatch_queue>"
+  property initialCapacity (TQ,R,V_initialCapacity)
+  property serialQueue (T@"NSObject<OS_dispatch_queue>",R,V_serialQueue)
+  -.cxx_destruct v16@0:8  imp=+0x1a93e8acc
+  -_extend v16@0:8  imp=+0x1a93e8588
+  -_extendData v16@0:8  imp=+0x1a93e884c
+  -addValue: B24@0:8r^{?=[16C]{?=dd}dI[16C][16C]{?=[16C]Q[16C]}B[16C]}16  imp=+0x1a93e7eb4
+  -data @16@0:8  imp=+0x1a93e7dac
+  -initWithStoreFileURL:capacity: @32@0:8@16Q24  imp=+0x1a93e7cfc
+  -initialCapacity Q16@0:8  imp=+0x1a93e8ab8
+  -performBlock: v24@0:8@?16  imp=+0x1a93e7ea8
+  -removeAll v16@0:8  imp=+0x1a93e83e0
+  -removeValueForUUID:passingTest: B32@0:8[16C]16@?24  imp=+0x1a93e826c
+  -removeValuePassingTest: B24@0:8@?16  imp=+0x1a93e8100
+  -serialQueue @16@0:8  imp=+0x1a93e8ac0
+@class ISOverlayEmbossRecipe : NSObject <ISCompositorRecipe> instanceSize=16
+  ivar +8 _variant Q
+  property variant (TQ,V_variant)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -layerTreeForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a9426c44
+  -setVariant: v24@0:8Q16  imp=+0x1a9426d40
+  -variant Q16@0:8  imp=+0x1a9426d38
+@class ISOverlayEmbossedFolder : NSObject <ISCompositorRecipe> instanceSize=16
+  ivar +8 _backgroundStyle Q
+  property backgroundStyle (TQ,V_backgroundStyle)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -backgroundStyle Q16@0:8  imp=+0x1a940a854
+  -embossVariant Q16@0:8  imp=+0x1a940a62c
+  -folderResourceName @16@0:8  imp=+0x1a940a5fc
+  -layerTreeForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a940a64c
+  -setBackgroundStyle: v24@0:8Q16  imp=+0x1a940a85c
+@class ISPersona : NSObject instanceSize=24
+  ivar +8 _record @"LSBundleRecord"
+  ivar +16 _personaType q
+  property record (T@"LSBundleRecord",R,N,V_record)
+  property personaType (Tq,R,N,V_personaType)
+  -.cxx_destruct v16@0:8  imp=+0x1a942ca04
+  -initWithRecord: @24@0:8@16  imp=+0x1a942c690
+  -isEnterprisePersona B16@0:8  imp=+0x1a942c868
+  -personaType q16@0:8  imp=+0x1a942c9fc
+  -record @16@0:8  imp=+0x1a942c9f4
+  -resourceBadge @16@0:8  imp=+0x1a942c888
+@class ISPlaceholderIcon : ISConcreteIcon instanceSize=48
+  ivar +40 _resourceProvider @"ISResourceProvider"
+  property resourceProvider (T@"ISResourceProvider",R,V_resourceProvider)
+  +sharedInstance @16@0:8  imp=+0x1a93e9070
+  +supportsSecureCoding B16@0:8  imp=+0x1a93e9068
+  -.cxx_destruct v16@0:8  imp=+0x1a93e9490
+  -imageForDescriptor: @24@0:8@16  imp=+0x1a93e9398
+  -init @16@0:8  imp=+0x1a93e90f4
+  -initWithCoder: @24@0:8@16  imp=+0x1a93e9274
+  -makeResourceProvider @16@0:8  imp=+0x1a93e92b4
+  -resourceProvider @16@0:8  imp=+0x1a93e9480
+@class ISPlatformInfo : IFPlatformInfo instanceSize=8
+  +sharedInstance @16@0:8  imp=+0x1a9432440
+  -_platform:withinAllowedPlatforms:allowNative: B36@0:8Q16@24B32  imp=+0x1a94324c4
+  -supportsRequestingIconStacksForPlatform: B24@0:8Q16  imp=+0x1a94326bc
+  -supportsRequestingLayerStacksForPlatform: B24@0:8Q16  imp=+0x1a943259c
+  -supportsRequestingMultisizedImagesForPlatform: B24@0:8Q16  imp=+0x1a943261c
+@class ISPrefsCache : NSObject instanceSize=32
+  ivar +8 _focusRingTint @"NSNumber"
+  ivar +16 _shouldDrawObviousPlaceholders @"NSNumber"
+  ivar +24 _lock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  property focusRingTint (Ti,R,D)
+  property shouldDrawObviousPlaceholders (TB,R)
+  +sharedInstance @16@0:8  imp=+0x1a9421d74
+  -.cxx_destruct v16@0:8  imp=+0x1a94220cc
+  -_handleDefaultChangeNotification: v24@0:8@16  imp=+0x1a9421f40
+  -_objectForKey: @24@0:8@16  imp=+0x1a9421ef4
+  -dealloc v16@0:8  imp=+0x1a9421e80
+  -focusRingTint i16@0:8  imp=+0x1a9421fd4
+  -init @16@0:8  imp=+0x1a9421df8
+  -shouldDrawObviousPlaceholders B16@0:8  imp=+0x1a942205c
+@class ISRecipeFactory : NSObject instanceSize=24
+  ivar +8 _resourceProvider @"ISResourceProvider"
+  ivar +16 _descriptor @"ISImageDescriptor"
+  property resourceProvider (T@"ISResourceProvider",C,V_resourceProvider)
+  property descriptor (T@"ISImageDescriptor",C,V_descriptor)
+  property preferRichRecipe (TB,R)
+  +factoryWithDescriptor: @24@0:8@16  imp=+0x1a944a288
+  +factoryWithDescriptor:resourceProvider: @32@0:8@16@24  imp=+0x1a944a2ec
+  -.cxx_destruct v16@0:8  imp=+0x1a944b578
+  -_recipe @16@0:8  imp=+0x1a944a468
+  -_recipeFromDescriptor @16@0:8  imp=+0x1a944a418
+  -descriptor @16@0:8  imp=+0x1a944b564
+  -enableSegmentationForRecipe: v24@0:8@16  imp=+0x1a944ae90
+  -genericTaggedRecipe @16@0:8  imp=+0x1a944abfc
+  -initWithDescriptor:resourceProvider: @32@0:8@16@24  imp=+0x1a944a370
+  -preferRichRecipe B16@0:8  imp=+0x1a944af5c
+  -pushDescriptorContentsToRecipe: v24@0:8@16  imp=+0x1a944aee8
+  -recipe @16@0:8  imp=+0x1a944ab74
+  -recipeForDecoration: @24@0:8@16  imp=+0x1a944afbc
+  -resourceProvider @16@0:8  imp=+0x1a944b550
+  -setDescriptor: v24@0:8@16  imp=+0x1a944b570
+  -setResourceProvider: v24@0:8@16  imp=+0x1a944b55c
+  -shouldSegment B16@0:8  imp=+0x1a944ac9c
+@class ISRecipeInfo : NSObject instanceSize=8
+  +appRecipeForPlatform:descriptor:preferRichRecipe: @36@0:8Q16@24B32  imp=+0x1a93e6d8c
+  +appRecipeForPlatformStyle:descriptor:resourcePlatform:preferRichRecipe: @44@0:8Q16@24Q32B40  imp=+0x1a93e6f88
+  +documentRecipeForPlatform:descriptor: @32@0:8Q16@24  imp=+0x1a93e6f3c
+  +genericRecipeWithAppliedDescriptorRecipeAttributes: @24@0:8@16  imp=+0x1a93e70ac
+@class ISRecordResourceProvider : ISResourceProvider instanceSize=144
+  ivar +120 _templateType @"NSString"
+  ivar +128 _record @"LSRecord"
+  ivar +136 _fileExtension @"NSString"
+  property fileExtension (T@"NSString",R,V_fileExtension)
+  property templateType (T@"NSString",&,V_templateType)
+  property record (T@"LSRecord",R,V_record)
+  property iconStackResourcesAllowed (TB,R)
+  -.cxx_destruct v16@0:8  imp=+0x1a941dc44
+  -_IS_shouldTreatLikeApp B16@0:8  imp=+0x1a944a1e4
+  -_determineRecipe v16@0:8  imp=+0x1a941d894
+  -_findTextResourceWithIconDictionary: B24@0:8@16  imp=+0x1a941d538
+  -_isApp B16@0:8  imp=+0x1a941c828
+  -_isAppClip B16@0:8  imp=+0x1a941c904
+  -_isAppLike B16@0:8  imp=+0x1a941c878
+  -_isAppleResource B16@0:8  imp=+0x1a941d3c4
+  -_isFolder B16@0:8  imp=+0x1a941c9fc
+  -_shouldTreatLikeApp B16@0:8  imp=+0x1a941c90c
+  -_shouldTreatLikeFolder B16@0:8  imp=+0x1a941cb3c
+  -assignLayerResources v16@0:8  imp=+0x1a941c49c
+  -configureProviderFromDescriptor: v24@0:8@16  imp=+0x1a941cc1c
+  -description @16@0:8  imp=+0x1a941d454
+  -fileExtension @16@0:8  imp=+0x1a941dc38
+  -iconResource @16@0:8  imp=+0x1a941cd64
+  -iconStackResourcesAllowed B16@0:8  imp=+0x1a941dae4
+  -initWithRecord:fileExtension:options: @40@0:8@16@24Q32  imp=+0x1a941b914
+  -initWithRecord:options: @32@0:8@16Q24  imp=+0x1a941b908
+  -record @16@0:8  imp=+0x1a941dc2c
+  -resolveResources v16@0:8  imp=+0x1a941bcc4
+  -resourceNamed: @24@0:8@16  imp=+0x1a941cdec
+  -setPlatformWithBundle: v24@0:8@16  imp=+0x1a941d41c
+  -setTemplateType: v24@0:8@16  imp=+0x1a941dc24
+  -shouldUseFolderRecipe B16@0:8  imp=+0x1a941c958
+  -symbol @16@0:8  imp=+0x1a941d180
+  -templateIconResource @16@0:8  imp=+0x1a941cea4
+  -templateType @16@0:8  imp=+0x1a941dc18
+  -treatLikeSymbol B16@0:8  imp=+0x1a941dbbc
+@class ISResourceFile : NSObject instanceSize=32
+  ivar +8 _resourceFileData @"NSData"
+  ivar +16 _resourceFileRef ^{OpaqueMappedResourceFileRef=}
+  ivar +24 _url @"NSURL"
+  property resourceFileData (T@"NSData",&,V_resourceFileData)
+  property resourceFileRef (T^{OpaqueMappedResourceFileRef=},V_resourceFileRef)
+  property url (T@"NSURL",R,V_url)
+  -.cxx_destruct v16@0:8  imp=+0x1a943a2c4
+  -dealloc v16@0:8  imp=+0x1a9439e6c
+  -initWithURL: @24@0:8@16  imp=+0x1a9439dec
+  -openFork: B24@0:8Q16  imp=+0x1a9439ebc
+  -resourceFileData @16@0:8  imp=+0x1a943a294
+  -resourceFileRef ^{OpaqueMappedResourceFileRef=}16@0:8  imp=+0x1a943a2a8
+  -resourceForType:resID: @24@0:8I16s20  imp=+0x1a943a000
+  -resourcesForType: @20@0:8I16  imp=+0x1a943a074
+  -saveWithError: B24@0:8^@16  imp=+0x1a943a23c
+  -setResourceData:forType:resID: B32@0:8@16I24s28  imp=+0x1a943a180
+  -setResourceFileData: v24@0:8@16  imp=+0x1a943a2a0
+  -setResourceFileRef: v24@0:8^{OpaqueMappedResourceFileRef=}16  imp=+0x1a943a2b0
+  -url @16@0:8  imp=+0x1a943a2b8
+@class ISResourceMetaData : NSObject <ISResourceMetadata> instanceSize=40
+  ivar +8 _selectedVariant B
+  ivar +16 _name @"NSString"
+  ivar +24 _dimension @"NSNumber"
+  ivar +32 _scale @"NSNumber"
+  property name (T@"NSString",&,V_name)
+  property dimension (T@"NSNumber",&,V_dimension)
+  property scale (T@"NSNumber",&,V_scale)
+  property selectedVariant (TB,V_selectedVariant)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a942be60
+  -dimension @16@0:8  imp=+0x1a942be24
+  -name @16@0:8  imp=+0x1a942be10
+  -scale @16@0:8  imp=+0x1a942be38
+  -selectedVariant B16@0:8  imp=+0x1a942be4c
+  -setDimension: v24@0:8@16  imp=+0x1a942be30
+  -setName: v24@0:8@16  imp=+0x1a942be1c
+  -setScale: v24@0:8@16  imp=+0x1a942be44
+  -setSelectedVariant: v20@0:8B16  imp=+0x1a942be58
+@class ISResourceProvider : NSObject <ISCompositorResourceProvider> instanceSize=120
+  ivar +8 _placeholder B
+  ivar +9 _allowNonDefaultAppearances B
+  ivar +10 _allowAlterationsToResourceArt B
+  ivar +11 _treatLikeSymbol B
+  ivar +12 __shouldTreatLikeApp B
+  ivar +13 __shouldTreatLikeFolder B
+  ivar +14 _resolved B
+  ivar +16 _lsDatabaseSequenceNumber Q
+  ivar +24 _lsDatabaseUUID @"NSUUID"
+  ivar +32 _resourceToken @"NSData"
+  ivar +40 _sourceRecordIdentifiers @"NSArray"
+  ivar +48 _templateIconResource @"<ISCompositorResource>"
+  ivar +56 _decorationResources @"NSDictionary"
+  ivar +64 _options Q
+  ivar +72 _suggestedRecipe @"<ISCompositorRecipe>"
+  ivar +80 _platform Q
+  ivar +88 _resourceType Q
+  ivar +96 _iconConfig @"<ISIconConfiguration>"
+  ivar +104 _resourcesByResourceKey @"NSMutableDictionary"
+  ivar +112 _customRecipe @"ISCustomRecipe"
+  property isCompositedDocument (TB,R)
+  property isBadgedWithSymbol (TB,R)
+  property isPrecomposed (TB,R)
+  property customRecipe (T@"ISCustomRecipe",R)
+  property sourceRecordIdentifiers (T@"NSArray",&,V_sourceRecordIdentifiers)
+  property resourcesByResourceKey (T@"NSMutableDictionary",R,V_resourcesByResourceKey)
+  property customRecipe (T@"ISCustomRecipe",&,V_customRecipe)
+  property platform (TQ,V_platform)
+  property options (TQ,V_options)
+  property resolved (TB,V_resolved)
+  property lsDatabaseSequenceNumber (TQ,V_lsDatabaseSequenceNumber)
+  property lsDatabaseUUID (T@"NSUUID",&,V_lsDatabaseUUID)
+  property resourceToken (T@"NSData",&,V_resourceToken)
+  property validationToken (T@"NSData",R,D)
+  property iconResource (T@"<ISCompositorResource>",&,D)
+  property templateIconResource (T@"<ISCompositorResource>",R,V_templateIconResource)
+  property decorationResources (T@"NSDictionary",&,V_decorationResources)
+  property badgeResource (T@"<ISCompositorResource>",&)
+  property textResource (T@"<ISCompositorResource>",&)
+  property backgroundResource (T@"<ISCompositorResource>",&)
+  property placeholder (TB,V_placeholder)
+  property symbol (T@"IFSymbol",R,D)
+  property suggestedRecipe (T@"<ISCompositorRecipe>",&,V_suggestedRecipe)
+  property resourceType (TQ,V_resourceType)
+  property allowNonDefaultAppearances (TB,V_allowNonDefaultAppearances)
+  property allowAlterationsToResourceArt (TB,V_allowAlterationsToResourceArt)
+  property iconConfig (T@"<ISIconConfiguration>",&,V_iconConfig)
+  property treatLikeSymbol (TB,R,V_treatLikeSymbol)
+  property _shouldTreatLikeApp (TB,R,V__shouldTreatLikeApp)
+  property _shouldTreatLikeFolder (TB,R,V__shouldTreatLikeFolder)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +defaultAppIconResourceProvider @16@0:8  imp=+0x1a941b7a0
+  +resourceProviderWithRecord:options: @32@0:8@16Q24  imp=+0x1a9418ce0
+  +resourceProviderWithTypeIdentifier:options: @32@0:8@16Q24  imp=+0x1a9418d50
+  +resourceWithBundleURL:iconDictionary:options: @40@0:8@16@24Q32  imp=+0x1a941aad0
+  +resourceWithRecord:options: @32@0:8@16Q24  imp=+0x1a941a978
+  +resourceWithTypeCode:options: @28@0:8I16Q20  imp=+0x1a941b598
+  +resourceWithTypeIdentifier:options: @32@0:8@16Q24  imp=+0x1a941b500
+  -.cxx_destruct v16@0:8  imp=+0x1a941a8e0
+  -_IS_shouldTreatLikeApp B16@0:8  imp=+0x1a944a1e0
+  -_findBackgroundResourceWithIconDictionary:bundle: B32@0:8@16@24  imp=+0x1a9419eb4
+  -_findBadgeResourceWithIconDictionary:bundle:record: B40@0:8@16@24@32  imp=+0x1a94196e4
+  -_findCustomRecipeWithIconDictionary:bundle: B32@0:8@16@24  imp=+0x1a941a188
+  -_findTextResourceWithIconDictionary: B24@0:8@16  imp=+0x1a941a2bc
+  -_isAppleResource B16@0:8  imp=+0x1a94196dc
+  -_shouldTreatLikeApp B16@0:8  imp=+0x1a941a894
+  -_shouldTreatLikeFolder B16@0:8  imp=+0x1a941a8a0
+  -allowAlterationsToResourceArt B16@0:8  imp=+0x1a941a860
+  -allowNonDefaultAppearances B16@0:8  imp=+0x1a941a84c
+  -backgroundResource @16@0:8  imp=+0x1a94192f8
+  -badgeResource @16@0:8  imp=+0x1a94192a8
+  -configureProviderFromDescriptor: v24@0:8@16  imp=+0x1a941a46c
+  -customRecipe @16@0:8  imp=+0x1a941a8b8
+  -decorationResources @16@0:8  imp=+0x1a941a7e0
+  -iconConfig @16@0:8  imp=+0x1a941a874
+  -iconResource @16@0:8  imp=+0x1a9419280
+  -init @16@0:8  imp=+0x1a94190e8
+  -initWithResource:templateResource: @32@0:8@16@24  imp=+0x1a9419180
+  -initWithResources: @24@0:8@16  imp=+0x1a941920c
+  -isBadgedWithSymbol B16@0:8  imp=+0x1a941b8e4
+  -isCompositedDocument B16@0:8  imp=+0x1a941b8c4
+  -isPrecomposed B16@0:8  imp=+0x1a941b824
+  -lsDatabaseSequenceNumber Q16@0:8  imp=+0x1a941a788
+  -lsDatabaseUUID @16@0:8  imp=+0x1a941a798
+  -options Q16@0:8  imp=+0x1a941a808
+  -placeholder B16@0:8  imp=+0x1a941a7f4
+  -platform Q16@0:8  imp=+0x1a941a82c
+  -resolveIconResource v16@0:8  imp=+0x1a941a6f8
+  -resolved B16@0:8  imp=+0x1a941a8cc
+  -resourceForKey: @24@0:8@16  imp=+0x1a941930c
+  -resourceNamed: @24@0:8@16  imp=+0x1a94195d4
+  -resourceToken @16@0:8  imp=+0x1a941a7ac
+  -resourceType Q16@0:8  imp=+0x1a941a83c
+  -resourcesByResourceKey @16@0:8  imp=+0x1a941a8ac
+  -setAllowAlterationsToResourceArt: v20@0:8B16  imp=+0x1a941a86c
+  -setAllowNonDefaultAppearances: v20@0:8B16  imp=+0x1a941a858
+  -setBackgroundResource: v24@0:8@16  imp=+0x1a94192e4
+  -setBadgeResource: v24@0:8@16  imp=+0x1a9419294
+  -setCustomRecipe: v24@0:8@16  imp=+0x1a941a8c4
+  -setDecorationResources: v24@0:8@16  imp=+0x1a941a7ec
+  -setIconConfig: v24@0:8@16  imp=+0x1a941a880
+  -setIconResource: v24@0:8@16  imp=+0x1a941926c
+  -setLsDatabaseSequenceNumber: v24@0:8Q16  imp=+0x1a941a790
+  -setLsDatabaseUUID: v24@0:8@16  imp=+0x1a941a7a4
+  -setOptions: v24@0:8Q16  imp=+0x1a941a810
+  -setPlaceholder: v20@0:8B16  imp=+0x1a941a800
+  -setPlatform: v24@0:8Q16  imp=+0x1a941a834
+  -setPlatformWithBundle: v24@0:8@16  imp=+0x1a941a3d8
+  -setResolved: v20@0:8B16  imp=+0x1a941a8d8
+  -setResourceToken: v24@0:8@16  imp=+0x1a941a7b8
+  -setResourceType: v24@0:8Q16  imp=+0x1a941a844
+  -setSourceRecordIdentifiers: v24@0:8@16  imp=+0x1a941a7cc
+  -setSuggestedRecipe: v24@0:8@16  imp=+0x1a941a824
+  -setTextResource: v24@0:8@16  imp=+0x1a94192bc
+  -sourceRecordIdentifiers @16@0:8  imp=+0x1a941a7c0
+  -suggestedRecipe @16@0:8  imp=+0x1a941a818
+  -symbol @16@0:8  imp=+0x1a94196d4
+  -templateIconResource @16@0:8  imp=+0x1a941a7d4
+  -textResource @16@0:8  imp=+0x1a94192d0
+  -treatLikeSymbol B16@0:8  imp=+0x1a941a888
+  -treatLikeSymbol B16@0:8  imp=+0x1a941b900
+  -validationToken @16@0:8  imp=+0x1a94195dc
+@class ISRuntimeCompositorResourceLayer : NSObject <ISCompositVariantResourceLayerProtocol> instanceSize=24
+  ivar +8 _recipeName @"NSString"
+  ivar +16 _resourceProvider @"<ISVariantResourceProviderProtocol>"
+  property recipeName (T@"NSString",&,V_recipeName)
+  property resourceProvider (T@"<ISVariantResourceProviderProtocol>",W,V_resourceProvider)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a93e9df8
+  -applyToContext:size:scale: B40@0:8^{CGContext=}16Q24Q32  imp=+0x1a93e97e8
+  -initWithRecipeName:resourceProvider: @32@0:8@16@24  imp=+0x1a93e9740
+  -recipeName @16@0:8  imp=+0x1a93e9dac
+  -resourceProvider @16@0:8  imp=+0x1a93e9dc0
+  -setRecipeName: v24@0:8@16  imp=+0x1a93e9db8
+  -setResourceProvider: v24@0:8@16  imp=+0x1a93e9dec
+@class ISSegmentDarkEffect : NSObject <ISEffect> instanceSize=24
+  ivar +8 _hasSegmentedImage B
+  ivar +16 _segmentedImage @"CIImage"
+  property segmentedImage (T@"CIImage",C,V_segmentedImage)
+  property hasSegmentedImage (TB,V_hasSegmentedImage)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a9430a20
+  -filterWithBackgroundImage:inputImage: @32@0:8@16@24  imp=+0x1a94308ec
+  -hasSegmentedImage B16@0:8  imp=+0x1a94309f8
+  -init @16@0:8  imp=+0x1a9430778
+  -prepareSegmentedImageFromImage: v24@0:8@16  imp=+0x1a94307b0
+  -segmentedImage @16@0:8  imp=+0x1a9430a0c
+  -setHasSegmentedImage: v20@0:8B16  imp=+0x1a9430a04
+  -setSegmentedImage: v24@0:8@16  imp=+0x1a9430a18
+@class ISSegmentTintEffect : NSObject <ISEffect> instanceSize=32
+  ivar +8 _hasSegmentedImage B
+  ivar +16 _color @"IFColor"
+  ivar +24 _segmentedImage @"CIImage"
+  property segmentedImage (T@"CIImage",C,V_segmentedImage)
+  property color (T@"IFColor",&,V_color)
+  property hasSegmentedImage (TB,V_hasSegmentedImage)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a9430734
+  -color @16@0:8  imp=+0x1a94306f8
+  -filterWithBackgroundImage:inputImage: @32@0:8@16@24  imp=+0x1a94304b4
+  -hasSegmentedImage B16@0:8  imp=+0x1a943070c
+  -initWithColor: @24@0:8@16  imp=+0x1a9430324
+  -prepareSegmentedImageFromImage: v24@0:8@16  imp=+0x1a94303a0
+  -segmentedImage @16@0:8  imp=+0x1a9430720
+  -setColor: v24@0:8@16  imp=+0x1a9430704
+  -setHasSegmentedImage: v20@0:8B16  imp=+0x1a9430718
+  -setSegmentedImage: v24@0:8@16  imp=+0x1a943072c
+@class ISShapeCompositorResource : NSObject <ISScalableCompositorResource> instanceSize=32
+  ivar +8 _fillColor @"IFColor"
+  ivar +16 _lineColor @"IFColor"
+  ivar +24 _lineWidth d
+  property fillColor (T@"IFColor",&,V_fillColor)
+  property lineColor (T@"IFColor",&,V_lineColor)
+  property lineWidth (Td,V_lineWidth)
+  property usesExternalCompositor (TB,?)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +circleShape @16@0:8  imp=+0x1a9424dbc
+  +continuousCornerRadiusForSize: d32@0:8{CGSize=dd}16  imp=+0x1a9424ec8
+  +continuousRoundedRectShape @16@0:8  imp=+0x1a9424d34
+  +tvOSRoundedRectShape @16@0:8  imp=+0x1a9424e44
+  -.cxx_destruct v16@0:8  imp=+0x1a9425018
+  -_init @16@0:8  imp=+0x1a9424f34
+  -fillColor @16@0:8  imp=+0x1a9424fe0
+  -imageForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a9424fac
+  -lineColor @16@0:8  imp=+0x1a9424ff4
+  -lineWidth d16@0:8  imp=+0x1a9425008
+  -setFillColor: v24@0:8@16  imp=+0x1a9424fec
+  -setLineColor: v24@0:8@16  imp=+0x1a9425000
+  -setLineWidth: v24@0:8d16  imp=+0x1a9425010
+@class ISShapeDetection : NSObject instanceSize=8
+  +categorizeShapeWithWidth:height:cornerRadius: Q28@0:8i16i20i24  imp=+0x1a93e56e8
+  +standardCornerRadiusForSize: d24@0:8d16  imp=+0x1a93e5680
+  -detectShapeInCGImage:bounds:cornerRadius: B40@0:8^{CGImage=}16^24^i32  imp=+0x1a93e49c8
+  -detectShapeInImageWithWidth:height:samples:bounds:cornerRadius: B64@0:8i16i20{?=iiiI^}24^48^i56  imp=+0x1a93e4b40
+@class ISSpecularClassification : NSObject instanceSize=64
+  ivar +8 _cgImage ^{CGImage=}
+  ivar +16 _useAlphaOnly B
+  ivar +24 _data ^{__CFData=}
+  ivar +32 _ucharMask *
+  ivar +40 _mask {?="width"i"height"i"padding"i"usesUchar4LastComponent"B""(?="uchar4Array"^"ucharArray"*)}
+  -_prepareMaskIfNeeded B16@0:8  imp=+0x1a93ec6d0
+  -classifySpecular B16@0:8  imp=+0x1a93ecc44
+  -classifySpecularWithDebug: B24@0:8^16  imp=+0x1a93ecc4c
+  -createSpecularImage ^{CGImage=}16@0:8  imp=+0x1a93ed37c
+  -dealloc v16@0:8  imp=+0x1a93ec66c
+  -initWithSpecularImage:useAlphaOnly: @28@0:8^{CGImage=}16B24  imp=+0x1a93ec600
+@class ISStackedEffects : NSObject <ISEffect> instanceSize=16
+  ivar +8 _effects @"NSArray<ISEffect>"
+  property effects (T@"NSArray<ISEffect>",C,V_effects)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a942ef54
+  -effects @16@0:8  imp=+0x1a942ef40
+  -filterWithBackgroundImage:inputImage: @32@0:8@16@24  imp=+0x1a942ed6c
+  -initWithEffects: @24@0:8@16  imp=+0x1a942ecf0
+  -setEffects: v24@0:8@16  imp=+0x1a942ef4c
+@class ISStaticResources : NSObject <NSCacheDelegate> instanceSize=24
+  ivar +8 _cache @"NSCache"
+  ivar +16 __fileResourcesAssetNameMaps @"NSDictionary"
+  property cache (T@"NSCache",&,V_cache)
+  property _fileResourcesAssetNameMaps (T@"NSDictionary",&,V__fileResourcesAssetNameMaps)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +sharedInstance @16@0:8  imp=+0x1a93d3cac
+  -.cxx_destruct v16@0:8  imp=+0x1a93d5020
+  -_addStaticImage:withKey: v32@0:8@16@24  imp=+0x1a93d426c
+  -_assetCatalogResourceWithName:fromURL:cacheKey: @40@0:8@16@24@32  imp=+0x1a93d4120
+  -_fileExtensionAndUTIToAssetNameMap @16@0:8  imp=+0x1a93d4db4
+  -_fileResourcesAssetNameMaps @16@0:8  imp=+0x1a93d500c
+  -_findStaticImageWithKey: @24@0:8@16  imp=+0x1a93d42f0
+  -cache @16@0:8  imp=+0x1a93d4ff8
+  -cache:willEvictObject: v32@0:8@16@24  imp=+0x1a93d3da4
+  -cacheMissDebugIconResourceForPlatform:variant: @32@0:8Q16Q24  imp=+0x1a93d4ab0
+  -cacheMissIconResourceForPlatform:variant: @32@0:8Q16Q24  imp=+0x1a93d490c
+  -cacheMissIconResourceForVariant: @24@0:8Q16  imp=+0x1a93d4894
+  -debugGenericAppIconResource @16@0:8  imp=+0x1a93d4808
+  -defaultMacDarkFolderResource @16@0:8  imp=+0x1a93d4c88
+  -defaultMacDataResource @16@0:8  imp=+0x1a93d4d18
+  -defaultMacFolderResource @16@0:8  imp=+0x1a93d4bf8
+  -defaultMacUnknownFSObjectResource @16@0:8  imp=+0x1a93d4da8
+  -fallbackResourceForHint:descriptor:referenceObj:variant: @48@0:8@16@24@32Q40  imp=+0x1a93d3e60
+  -genericAppClipIconResource @16@0:8  imp=+0x1a93d4608
+  -genericAppDebugIconResourceForPlatform:variant: @32@0:8Q16Q24  imp=+0x1a93d46ac
+  -genericAppIconResource @16@0:8  imp=+0x1a93d4368
+  -genericAppIconResourceForPlatform:variant: @32@0:8Q16Q24  imp=+0x1a93d43d4
+  -init @16@0:8  imp=+0x1a93d3d30
+  -resourceForKnownFileTypesFromHint: @24@0:8@16  imp=+0x1a93d4ea0
+  -setCache: v24@0:8@16  imp=+0x1a93d5004
+  -set_fileResourcesAssetNameMaps: v24@0:8@16  imp=+0x1a93d5018
+@class ISStore : NSObject instanceSize=48
+  ivar +8 _connection @"NSXPCConnection"
+  ivar +16 _storeURL @"NSURL"
+  ivar +24 _registryLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +32 _registry @"NSMutableDictionary"
+  ivar +40 _domain @"NSString"
+  property connection (T@"NSXPCConnection",R,V_connection)
+  property storeURL (T@"NSURL",R,V_storeURL)
+  property registry (T@"NSMutableDictionary",R,V_registry)
+  property registryLock (T{os_unfair_lock_s=I},V_registryLock)
+  property domain (T@"NSString",R,V_domain)
+  -.cxx_destruct v16@0:8  imp=+0x1a9405f3c
+  -addUnitWithData: @24@0:8@16  imp=+0x1a9405a88
+  -connection @16@0:8  imp=+0x1a9405f14
+  -domain @16@0:8  imp=+0x1a93ce838
+  -init @16@0:8  imp=+0x1a93ce718
+  -registry @16@0:8  imp=+0x1a9405f20
+  -registryLock {os_unfair_lock_s=I}16@0:8  imp=+0x1a9405f2c
+  -removeUnitForUUID: B24@0:8@16  imp=+0x1a9405d2c
+  -setRegistryLock: v20@0:8{os_unfair_lock_s=I}16  imp=+0x1a9405f34
+  -storeURL @16@0:8  imp=+0x1a93cfa90
+  -unitForUUID: @24@0:8@16  imp=+0x1a93cf9b0
+@class ISStoreIndex : NSObject instanceSize=40
+  ivar +8 _indexFileURL @"NSURL"
+  ivar +16 _data @"NSData"
+  ivar +24 _dataLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +32 _entryData @"NSData"
+  property indexFileURL (T@"NSURL",R,V_indexFileURL)
+  property data (T@"NSData",R,D)
+  property dataLock (T^{os_unfair_lock_s=I},R)
+  -.cxx_destruct v16@0:8  imp=+0x1a93e7cac
+  -_internalData @16@0:8  imp=+0x1a93e727c
+  -_internalSetData: v24@0:8@16  imp=+0x1a93e7284
+  -data @16@0:8  imp=+0x1a93cee5c
+  -dataLock ^{os_unfair_lock_s=I}16@0:8  imp=+0x1a93cf074
+  -description @16@0:8  imp=+0x1a93e7784
+  -descriptionForItem:index:filenames: @36@0:8r^{?=[16C]{?=dd}dI[16C][16C]{?=[16C]Q[16C]}B[16C]}16I24@28  imp=+0x1a93e7570
+  -enumerateValuesForUUID:bock: v32@0:8[16C]16@?24  imp=+0x1a93e73c0
+  -enumerateValuesWithBock: v24@0:8@?16  imp=+0x1a93e7290
+  -indexFileURL @16@0:8  imp=+0x1a93cf07c
+  -initWithStoreFileURL: @24@0:8@16  imp=+0x1a93ceb0c
+  -invalidate v16@0:8  imp=+0x1a93cf7ac
+  -validate B16@0:8  imp=+0x1a93e79c8
+@class ISStoreMapTable : NSObject instanceSize=40
+  ivar +8 _dataLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +16 _data @"NSData"
+  ivar +24 _url @"NSURL"
+  ivar +32 _initialCapacity Q
+  property url (T@"NSURL",&,V_url)
+  property data (T@"NSData",R,V_data)
+  property dataLock (T{os_unfair_lock_s=I},V_dataLock)
+  property initialCapacity (TQ,R,V_initialCapacity)
+  -.cxx_destruct v16@0:8  imp=+0x1a93e4984
+  -_extend v16@0:8  imp=+0x1a93e4430
+  -_extendData v16@0:8  imp=+0x1a93e46f0
+  -_extendWithMultiplyer: v20@0:8f16  imp=+0x1a93e4438
+  -addData:forUUID: v32@0:8@16@24  imp=+0x1a93e3904
+  -compact v16@0:8  imp=+0x1a93e40d0
+  -data @16@0:8  imp=+0x1a93e4348
+  -dataForUUID: @24@0:8@16  imp=+0x1a93e39c8
+  -dataLock {os_unfair_lock_s=I}16@0:8  imp=+0x1a93e496c
+  -enumerateWithBlock: v24@0:8@?16  imp=+0x1a93e3dd0
+  -enumerateWithUUID:block: v32@0:8[16C]16@?24  imp=+0x1a93e40d8
+  -initWithURL:capacity: @32@0:8@16Q24  imp=+0x1a93e387c
+  -initialCapacity Q16@0:8  imp=+0x1a93e497c
+  -removeAll v16@0:8  imp=+0x1a93e3f40
+  -removeDataForUUID: v24@0:8@16  imp=+0x1a93e3b80
+  -removeDataForUUID:passingTest: v32@0:8@16@?24  imp=+0x1a93e3c2c
+  -setBytes:size:forUUID: v40@0:8r^v16Q24[16C]32  imp=+0x1a93e4204
+  -setDataLock: v20@0:8{os_unfair_lock_s=I}16  imp=+0x1a93e4974
+  -setUrl: v24@0:8@16  imp=+0x1a93e4964
+  -url @16@0:8  imp=+0x1a93e4958
+@class ISStoreUnit : NSObject instanceSize=24
+  ivar +8 _UUID @"NSUUID"
+  ivar +16 _data @"NSData"
+  property data (T@"NSData",R,V_data)
+  property UUID (T@"NSUUID",R,V_UUID)
+  +storeUnitWithData: @24@0:8@16  imp=+0x1a944b5bc
+  +storeUnitWithStoreURL:UUID: @32@0:8@16@24  imp=+0x1a93cfa9c
+  -.cxx_destruct v16@0:8  imp=+0x1a944b968
+  -UUID @16@0:8  imp=+0x1a93cfd34
+  -data @16@0:8  imp=+0x1a93cfd28
+  -initWithData:UUID: @32@0:8@16@24  imp=+0x1a93cfc80
+  -isValid B16@0:8  imp=+0x1a944b788
+  -remapWithStoreURL: v24@0:8@16  imp=+0x1a944b7c0
+@class ISSymbol : IFSymbol instanceSize=40
+  +_generateVariantKeyFromOptions: @24@0:8Q16  imp=+0x1a9417168
+  +symbolForType: @24@0:8@16  imp=+0x1a9416d04
+  +symbolForTypeIdentifier:error: @32@0:8@16^@24  imp=+0x1a9416e04
+  +symbolForTypeIdentifier:withResolutionStrategy:variantOptions:error: @48@0:8@16q24Q32^@40  imp=+0x1a9416e14
+  +symbolForURL: @24@0:8@16  imp=+0x1a9416ac0
+@class ISSymbolEffect : NSObject <ISEffect> instanceSize=8
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -filterWithBackgroundImage:inputImage: @32@0:8@16@24  imp=+0x1a9431e88
+@class ISSymbolIcon : ISCodableIcon <NSSecureCoding> instanceSize=56
+  ivar +24 _symbolName @"NSString"
+  ivar +32 _config @"ISGraphicIconConfiguration"
+  ivar +40 _graphicSymbolDescriptor @"ISGraphicSymbolDescriptor"
+  ivar +48 _imageCache @"ISImageCache"
+  property imageCache (T@"ISImageCache",R,V_imageCache)
+  property symbolName (T@"NSString",R,V_symbolName)
+  property config (T@"ISGraphicIconConfiguration",R,C,N,V_config)
+  property graphicSymbolDescriptor (T@"ISGraphicSymbolDescriptor",R,V_graphicSymbolDescriptor)
+  +supportsSecureCoding B16@0:8  imp=+0x1a93dddc8
+  -.cxx_destruct v16@0:8  imp=+0x1a93dea90
+  -_generateImageWithDescriptor: @24@0:8@16  imp=+0x1a93de29c
+  -_prepareImagesForImageDescriptors: v24@0:8@16  imp=+0x1a93de56c
+  -_specUpdatedDescriptorForDescriptor: @24@0:8@16  imp=+0x1a93de4ac
+  -config @16@0:8  imp=+0x1a93dea5c
+  -description @16@0:8  imp=+0x1a93de95c
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a93de12c
+  -getImageForImageDescriptor:completion: v32@0:8@16@?24  imp=+0x1a93de86c
+  -graphicSymbolDescriptor @16@0:8  imp=+0x1a93dea70
+  -imageCache @16@0:8  imp=+0x1a93dea80
+  -imageForImageDescriptor: @24@0:8@16  imp=+0x1a93de720
+  -initWithCoder: @24@0:8@16  imp=+0x1a93dded8
+  -initWithSymbolName: @24@0:8@16  imp=+0x1a93dddd0
+  -initWithSymbolName:configuration: @32@0:8@16@24  imp=+0x1a93dddd8
+  -symbol @16@0:8  imp=+0x1a93de22c
+  -symbolName @16@0:8  imp=+0x1a93dea4c
+@class ISSymbolImageDescriptor : IFSymbolImageDescriptor <ISImageDescriptor> instanceSize=72
+  ivar +56 _size Q
+  ivar +64 _weight q
+  property size (TQ,N,V_size)
+  property weight (Tq,N,V_weight)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -setSize: v24@0:8Q16  imp=+0x1a9439db0
+  -setWeight: v24@0:8q16  imp=+0x1a9439dd8
+  -size Q16@0:8  imp=+0x1a9439d9c
+  -weight q16@0:8  imp=+0x1a9439dc4
+@class ISSymbolLayer : ISLayer instanceSize=144
+  ivar +104 _color @"IFColor"
+  ivar +112 _symbol @"<ISCompositorResource>"
+  ivar +120 _fontSize d
+  ivar +128 _symbolSize Q
+  ivar +136 _symbolWeight q
+  property color (T@"IFColor",&,N,V_color)
+  property symbol (T@"<ISCompositorResource>",&,N,V_symbol)
+  property fontSize (Td,N,V_fontSize)
+  property symbolSize (TQ,N,V_symbolSize)
+  property symbolWeight (Tq,N,V_symbolWeight)
+  -.cxx_destruct v16@0:8  imp=+0x1a9408fd4
+  -color @16@0:8  imp=+0x1a9408f7c
+  -fontSize d16@0:8  imp=+0x1a9408fa4
+  -init @16@0:8  imp=+0x1a9408e64
+  -setColor: v24@0:8@16  imp=+0x1a9408f84
+  -setFontSize: v24@0:8d16  imp=+0x1a9408fac
+  -setSymbol: v24@0:8@16  imp=+0x1a9408f98
+  -setSymbolSize: v24@0:8Q16  imp=+0x1a9408fbc
+  -setSymbolWeight: v24@0:8q16  imp=+0x1a9408fcc
+  -symbol @16@0:8  imp=+0x1a9408f90
+  -symbolSize Q16@0:8  imp=+0x1a9408fb4
+  -symbolWeight q16@0:8  imp=+0x1a9408fc4
+@class ISTagIcon : ISBindableIcon instanceSize=64
+  ivar +40 _tag @"NSString"
+  ivar +48 _tagClass @"NSString"
+  ivar +56 _baseType @"NSString"
+  property tag (T@"NSString",R,V_tag)
+  property tagClass (T@"NSString",R,V_tagClass)
+  property baseType (T@"NSString",R,V_baseType)
+  +supportsSecureCoding B16@0:8  imp=+0x1a9429a54
+  -.cxx_destruct v16@0:8  imp=+0x1a942a290
+  -_fallbackKey @16@0:8  imp=+0x1a942a1e4
+  -baseType @16@0:8  imp=+0x1a942a280
+  -description @16@0:8  imp=+0x1a942a144
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a9429dd8
+  -initWithCoder: @24@0:8@16  imp=+0x1a9429cb0
+  -initWithFileExtension: @24@0:8@16  imp=+0x1a9429bf8
+  -initWithFileExtension:baseType: @32@0:8@16@24  imp=+0x1a9429c14
+  -initWithMIMEType: @24@0:8@16  imp=+0x1a9429c88
+  -initWithModelCode: @24@0:8@16  imp=+0x1a9429c9c
+  -initWithTag:tagClass:baseType: @40@0:8@16@24@32  imp=+0x1a9429a5c
+  -initWithTypeCode: @20@0:8I16  imp=+0x1a9429c28
+  -makeResourceProvider @16@0:8  imp=+0x1a9429ea0
+  -tag @16@0:8  imp=+0x1a942a260
+  -tagClass @16@0:8  imp=+0x1a942a270
+@class ISTemplateEffect : NSObject <ISEffect> instanceSize=8
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -filterWithBackgroundImage:inputImage: @32@0:8@16@24  imp=+0x1a94317a4
+  -init @16@0:8  imp=+0x1a943176c
+@class ISTemplateTintEffect : NSObject <ISEffect> instanceSize=16
+  ivar +8 _color @"IFColor"
+  property color (T@"IFColor",&,V_color)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a9430e60
+  -color @16@0:8  imp=+0x1a9430e4c
+  -filterWithBackgroundImage:inputImage: @32@0:8@16@24  imp=+0x1a9430d28
+  -initWithColor: @24@0:8@16  imp=+0x1a9430cac
+  -setColor: v24@0:8@16  imp=+0x1a9430e58
+@class ISTextLayer : ISLayer instanceSize=136
+  ivar +104 _color @"IFColor"
+  ivar +112 _text @"NSString"
+  ivar +120 _fontName @"NSString"
+  ivar +128 _fontSize d
+  property color (T@"IFColor",&,N,V_color)
+  property text (T@"NSString",&,N,V_text)
+  property fontName (T@"NSString",&,N,V_fontName)
+  property fontSize (Td,N,V_fontSize)
+  -.cxx_destruct v16@0:8  imp=+0x1a9408e14
+  -color @16@0:8  imp=+0x1a9408dc8
+  -fontName @16@0:8  imp=+0x1a9408df0
+  -fontSize d16@0:8  imp=+0x1a9408e04
+  -init @16@0:8  imp=+0x1a9408cbc
+  -setColor: v24@0:8@16  imp=+0x1a9408dd0
+  -setFontName: v24@0:8@16  imp=+0x1a9408df8
+  -setFontSize: v24@0:8d16  imp=+0x1a9408e0c
+  -setText: v24@0:8@16  imp=+0x1a9408de4
+  -text @16@0:8  imp=+0x1a9408ddc
+@class ISTrailingStatusBadgeRecipe : NSObject <ISCompositorRecipe> instanceSize=16
+  ivar +8 _primaryIconType q
+  property primaryIconType (Tq,V_primaryIconType)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -badgedDocumentIconRect @16@0:8  imp=+0x1a94255cc
+  -badgedFolderIconRect @16@0:8  imp=+0x1a9425728
+  -defaultBadgeRect @16@0:8  imp=+0x1a9425470
+  -init @16@0:8  imp=+0x1a9425430
+  -layerTreeForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a94258f4
+  -primaryIconType q16@0:8  imp=+0x1a9425a6c
+  -setPrimaryIconType: v24@0:8q16  imp=+0x1a9425a74
+  -trailingBottomBadgeRect @16@0:8  imp=+0x1a9425884
+@class ISTransparentIcon : ISConcreteIcon instanceSize=48
+  ivar +40 _resourceProvider @"ISResourceProvider"
+  +sharedInstance @16@0:8  imp=+0x1a93e8df4
+  +supportsSecureCoding B16@0:8  imp=+0x1a93e8dec
+  -.cxx_destruct v16@0:8  imp=+0x1a93e8f64
+  -init @16@0:8  imp=+0x1a93e8e78
+  -initWithCoder: @24@0:8@16  imp=+0x1a93e8f10
+  -makeResourceProvider @16@0:8  imp=+0x1a93e8f50
+@class ISTypeIcon : ISBindableIcon instanceSize=56
+  ivar +40 _type @"NSString"
+  ivar +48 _iconConfig @"<ISIconConfiguration>"
+  property type (T@"NSString",R,V_type)
+  property iconConfig (T@"<ISIconConfiguration>",R,V_iconConfig)
+  +supportsSecureCoding B16@0:8  imp=+0x1a942a2f8
+  -.cxx_destruct v16@0:8  imp=+0x1a942aaa0
+  -_fallbackKey @16@0:8  imp=+0x1a942aa04
+  -description @16@0:8  imp=+0x1a942a930
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a942a568
+  -iconConfig @16@0:8  imp=+0x1a942aa90
+  -initWithCoder: @24@0:8@16  imp=+0x1a942a450
+  -initWithType: @24@0:8@16  imp=+0x1a942a300
+  -initWithType:iconConfiguration: @32@0:8@16@24  imp=+0x1a942a308
+  -makeResourceProvider @16@0:8  imp=+0x1a942a610
+  -symbol @16@0:8  imp=+0x1a942a81c
+  -type @16@0:8  imp=+0x1a942aa80
+@class ISURLResourcePropertySpecification : NSObject instanceSize=64
+  ivar +8 _generalProperties @"NSArray"
+  ivar +16 _applicationProperties @"NSArray"
+  ivar +24 _volumeProperties @"NSArray"
+  ivar +32 _allowedMissingProperties @"NSSet"
+  ivar +40 _folderConfigurationProperties @"NSArray"
+  ivar +48 _otherProperties @"NSArray"
+  ivar +56 _folderAdornmentProperties @"NSArray"
+  property otherProperties (T@"NSArray",R,V_otherProperties)
+  property iconInitWithURLProperties (T@"NSArray",R,D)
+  property allowedMissingProperties (T@"NSSet",R,V_allowedMissingProperties)
+  property folderAdornmentProperties (T@"NSArray",R,V_folderAdornmentProperties)
+  property generalProperties (T@"NSArray",R,V_generalProperties)
+  property applicationProperties (T@"NSArray",R,V_applicationProperties)
+  property volumeProperties (T@"NSArray",R,V_volumeProperties)
+  property folderConfigurationProperties (T@"NSArray",R,V_folderConfigurationProperties)
+  +sharedInstance @16@0:8  imp=+0x1a940d0ec
+  -.cxx_destruct v16@0:8  imp=+0x1a940d58c
+  -_init @16@0:8  imp=+0x1a940d174
+  -allowedMissingProperties @16@0:8  imp=+0x1a940d53c
+  -applicationProperties @16@0:8  imp=+0x1a940d550
+  -folderAdornmentProperties @16@0:8  imp=+0x1a940d580
+  -folderConfigurationProperties @16@0:8  imp=+0x1a940d568
+  -generalProperties @16@0:8  imp=+0x1a940d544
+  -iconInitWithURLProperties @16@0:8  imp=+0x1a940d534
+  -otherProperties @16@0:8  imp=+0x1a940d574
+  -volumeProperties @16@0:8  imp=+0x1a940d55c
+@class ISUnknownIcon : ISTagIcon instanceSize=64
+  +sharedInstance @16@0:8  imp=+0x1a93e8d28
+  -init @16@0:8  imp=+0x1a93e8dac
+@class ISVariant : NSObject <ISIconsetVariant> instanceSize=56
+  ivar +8 _type I
+  ivar +12 _sizeSet i
+  ivar +16 _assetCatalogReference @"NSDictionary"
+  ivar +24 _iconset @"ISIconset"
+  ivar +32 _name @"NSString"
+  ivar +40 _resources @"NSMutableDictionary"
+  ivar +48 _selectedVariant @"ISVariant"
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  property assetCatalogReference (T@"NSDictionary",&,V_assetCatalogReference)
+  property type (TI,V_type)
+  property iconset (T@"ISIconset",R,W,V_iconset)
+  property name (T@"NSString",R,V_name)
+  property resources (T@"NSMutableDictionary",R,V_resources)
+  property selectedVariant (T@"ISVariant",&,V_selectedVariant)
+  property sizeSet (Ti,V_sizeSet)
+  +resourceTypes @16@0:8  imp=+0x1a93fb05c
+  -.cxx_destruct v16@0:8  imp=+0x1a93fbec8
+  -addResourceWithURL:resourceInfo: B32@0:8@16@24  imp=+0x1a93fb3cc
+  -assetCatalogReference @16@0:8  imp=+0x1a93fbe3c
+  -description @16@0:8  imp=+0x1a93fbd8c
+  -icnsWithFlags: @24@0:8q16  imp=+0x1a93fb8d0
+  -iconset @16@0:8  imp=+0x1a93fbe60
+  -imageForSize:scale:errors: ^{CGImage=}40@0:8Q16Q24^@32  imp=+0x1a93fb6e4
+  -imageWithSize:scale: @36@0:8{CGSize=dd}16I32  imp=+0x1a93fbffc
+  -initWithName:iconset: @32@0:8@16@24  imp=+0x1a93fb190
+  -initWithType:sizeSet: @24@0:8I16i20  imp=+0x1a93fb2f0
+  -name @16@0:8  imp=+0x1a93fbe8c
+  -resources @16@0:8  imp=+0x1a93fbe98
+  -selectedVariant @16@0:8  imp=+0x1a93fbea4
+  -setAssetCatalogReference: v24@0:8@16  imp=+0x1a93fbe48
+  -setSelectedVariant: v24@0:8@16  imp=+0x1a93fbeb0
+  -setSizeSet: v20@0:8i16  imp=+0x1a93fbec0
+  -setType: v20@0:8I16  imp=+0x1a93fbe58
+  -sizeSet i16@0:8  imp=+0x1a93fbeb8
+  -type I16@0:8  imp=+0x1a93fbe50
+@class ISVectorVariantResource : NSObject <ISVariantResourceProtocol> instanceSize=40
+  ivar +8 _variantName @"NSString"
+  ivar +16 _flags Q
+  ivar +24 _pdfDocument ^{CGPDFDocument=}
+  ivar +32 _URL @"NSURL"
+  property URL (T@"NSURL",&,V_URL)
+  property pdfDocument (T^{CGPDFDocument=},R,V_pdfDocument)
+  property variantName (T@"NSString",R,V_variantName)
+  property flags (TQ,R,V_flags)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +resourceWithURL:resourceInfo: @32@0:8@16@24  imp=+0x1a93d2cb4
+  -.cxx_destruct v16@0:8  imp=+0x1a93d325c
+  -URL @16@0:8  imp=+0x1a93d3248
+  -dealloc v16@0:8  imp=+0x1a93d2e58
+  -flags Q16@0:8  imp=+0x1a93d3238
+  -hash Q16@0:8  imp=+0x1a93d2ea8
+  -imageForSize:scale:error: ^{CGImage=}40@0:8Q16Q24^@32  imp=+0x1a93d2f68
+  -initWithURL:variantName:flags: @40@0:8@16@24Q32  imp=+0x1a93d2d9c
+  -isEqual: B24@0:8@16  imp=+0x1a93d2ee4
+  -pdfDocument ^{CGPDFDocument=}16@0:8  imp=+0x1a93d3240
+  -setURL: v24@0:8@16  imp=+0x1a93d3254
+  -variantName @16@0:8  imp=+0x1a93d322c
+@class ISVolumeIcon : ISConcreteIcon instanceSize=64
+  ivar +44 _typeCode I
+  ivar +48 _kextBundleIdentifier @"NSString"
+  ivar +56 _kextIconName @"NSString"
+  property kextBundleIdentifier (T@"NSString",R,V_kextBundleIdentifier)
+  property kextIconName (T@"NSString",R,V_kextIconName)
+  property typeCode (TI,R,V_typeCode)
+  +IOKitPort I16@0:8  imp=+0x1a9427db8
+  +concreteIconForDeviceIdentifier: @24@0:8@16  imp=+0x1a9427e00
+  +concreteIconForVolumeURL: @24@0:8@16  imp=+0x1a9427ba8
+  +supportsSecureCoding B16@0:8  imp=+0x1a9427ba0
+  -.cxx_destruct v16@0:8  imp=+0x1a9428804
+  -description @16@0:8  imp=+0x1a94285e0
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a9428234
+  -initWithCoder: @24@0:8@16  imp=+0x1a9428128
+  -initWithKextBundleIdentifier:kextIconName:typeCode: @36@0:8@16@24I32  imp=+0x1a9427fac
+  -kextBundleIdentifier @16@0:8  imp=+0x1a94287d0
+  -kextIconName @16@0:8  imp=+0x1a94287e0
+  -makeResourceProvider @16@0:8  imp=+0x1a9428388
+  -resourceFileName @16@0:8  imp=+0x1a9428350
+  -resourceURL @16@0:8  imp=+0x1a94282fc
+  -symbol @16@0:8  imp=+0x1a94286c4
+  -typeCode I16@0:8  imp=+0x1a94287f0
+@class ISiOSAppClipRecipe : NSObject <ISCompositorRecipe> instanceSize=16
+  ivar +8 _shouldOnlyDrawBorder B
+  ivar +9 _generic B
+  property shouldOnlyDrawBorder (TB,V_shouldOnlyDrawBorder)
+  property generic (TB,N,V_generic)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -appRect @16@0:8  imp=+0x1a93d6db8
+  -blurRadius @16@0:8  imp=+0x1a93d6fcc
+  -generic B16@0:8  imp=+0x1a93d73b8
+  -layerTreeForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a93d7090
+  -setGeneric: v20@0:8B16  imp=+0x1a93d73c0
+  -setShouldOnlyDrawBorder: v20@0:8B16  imp=+0x1a93d73b0
+  -shouldOnlyDrawBorder B16@0:8  imp=+0x1a93d73a4
+@class ISiOSAppOverhangingBadgeRecipe : NSObject <ISCompositorRecipe> instanceSize=8
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -hintedBadgeRect @16@0:8  imp=+0x1a93d8060
+  -hintedMainIconBadgeRect @16@0:8  imp=+0x1a93d7e2c
+  -layerTreeForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a93d828c
+@class ISiOSAppRecipe : NSObject <ISCompositorRecipe, ISRecipeOptionalMask, ISRecipeOptionalBorder, ISRecipeOptionalTintColor, ISRecipeOptionalAppearance, ISSuppliesIconSpecification, ISRecipeBackground> instanceSize=40
+  ivar +8 shouldApplyMask B
+  ivar +9 shouldDrawBorder B
+  ivar +10 _templateVariant B
+  ivar +11 _allowDarkAndTintable B
+  ivar +12 _segment B
+  ivar +13 _generic B
+  ivar +16 tintColor @"IFColor"
+  ivar +24 appearance q
+  ivar +32 background Q
+  property allowDarkAndTintable (TB,N,V_allowDarkAndTintable)
+  property segment (TB,N,V_segment)
+  property generic (TB,N,V_generic)
+  property templateVariant (TB,N,V_templateVariant)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  property shouldApplyMask (TB,VshouldApplyMask)
+  property shouldDrawBorder (TB,VshouldDrawBorder)
+  property tintColor (T@"IFColor",&,VtintColor)
+  property appearance (Tq,Vappearance)
+  property iconSpecification (T@"IFIconSpecification",R)
+  property background (TQ,Vbackground)
+  -.cxx_destruct v16@0:8  imp=+0x1a93d6dac
+  -allowDarkAndTintable B16@0:8  imp=+0x1a93d6d7c
+  -appearance q16@0:8  imp=+0x1a93d6d4c
+  -background Q16@0:8  imp=+0x1a93d6d5c
+  -generic B16@0:8  imp=+0x1a93d6d9c
+  -iconSpecification @16@0:8  imp=+0x1a93d6d04
+  -init @16@0:8  imp=+0x1a93d669c
+  -layerTreeForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a93d6a50
+  -primaryResourceEffectReturningBackgroundContentOverride: @24@0:8^@16  imp=+0x1a93d681c
+  -segment B16@0:8  imp=+0x1a93d6d8c
+  -setAllowDarkAndTintable: v20@0:8B16  imp=+0x1a93d6d84
+  -setAppearance: v24@0:8q16  imp=+0x1a93d6d54
+  -setBackground: v24@0:8Q16  imp=+0x1a93d6d64
+  -setGeneric: v20@0:8B16  imp=+0x1a93d6da4
+  -setSegment: v20@0:8B16  imp=+0x1a93d6d94
+  -setShouldApplyMask: v20@0:8B16  imp=+0x1a93d6d1c
+  -setShouldDrawBorder: v20@0:8B16  imp=+0x1a93d6d30
+  -setTemplateVariant: v20@0:8B16  imp=+0x1a93d6d74
+  -setTintColor: v24@0:8@16  imp=+0x1a93d6d44
+  -shouldApplyMask B16@0:8  imp=+0x1a93d6d10
+  -shouldDrawBorder B16@0:8  imp=+0x1a93d6d24
+  -templateVariant B16@0:8  imp=+0x1a93d6d6c
+  -tintColor @16@0:8  imp=+0x1a93d6d38
+  -updateRecipeWithImageDescriptor: v24@0:8@16  imp=+0x1a93d6724
+@class ISiOSMacAppRecipe : NSObject <ISCompositorRecipe> instanceSize=8
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -badgeRect @16@0:8  imp=+0x1a93d6258
+  -hintedShadowBlur @16@0:8  imp=+0x1a93d6034
+  -hintedShadowOffset @16@0:8  imp=+0x1a93d613c
+  -layerTreeForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a93d63ac
+@class ISiosDocumentRecipe : NSObject <ISCompositorRecipe, ISSuppliesIconSpecification> instanceSize=16
+  ivar +8 _options Q
+  property options (TQ,N,V_options)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  property iconSpecification (T@"IFIconSpecification",R)
+  -backgroundSizeForSize:scale: {CGSize=dd}40@0:8{CGSize=dd}16d32  imp=+0x1a9440cb4
+  -badgeSizeForSize:scale: {CGSize=dd}40@0:8{CGSize=dd}16d32  imp=+0x1a9440b28
+  -iconSpecification @16@0:8  imp=+0x1a94412c4
+  -init @16@0:8  imp=+0x1a9440ae8
+  -layerTreeForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a9440e48
+  -options Q16@0:8  imp=+0x1a94412d0
+  -setOptions: v24@0:8Q16  imp=+0x1a94412d8
+@class ISiosmacDocumentRecipe : NSObject <ISCompositorRecipe> instanceSize=8
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -hintedBadgeRect @16@0:8  imp=+0x1a943ce00
+  -layerTreeForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a943cec0
+@class ISmacosDocumentRecipe : NSObject <ISCompositorRecipe> instanceSize=8
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -hintedBadgeRect @16@0:8  imp=+0x1a943d298
+  -hintedFontSize @16@0:8  imp=+0x1a943d444
+  -hintedTextRect @16@0:8  imp=+0x1a943d358
+  -layerTreeForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a943d540
+@class ISmacosDocumentRecipe1016 : NSObject <ISCompositorRecipe> instanceSize=16
+  ivar +8 _maskBadgeResource B
+  property maskBadgeResource (TB,V_maskBadgeResource)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -hintedBadgeRect @16@0:8  imp=+0x1a943f95c
+  -hintedCornerSize @16@0:8  imp=+0x1a943f840
+  -hintedFontSize @16@0:8  imp=+0x1a943fb4c
+  -hintedPageCurlSize @16@0:8  imp=+0x1a943f718
+  -hintedPaperRect @16@0:8  imp=+0x1a943f5b4
+  -hintedShadowBlur @16@0:8  imp=+0x1a943fc48
+  -hintedShadowOffset @16@0:8  imp=+0x1a943fd50
+  -hintedShadowSpread @16@0:8  imp=+0x1a943fe6c
+  -hintedTextRect @16@0:8  imp=+0x1a943fa64
+  -layerTreeForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a943ff74
+  -maskBadgeResource B16@0:8  imp=+0x1a9440ad4
+  -setMaskBadgeResource: v20@0:8B16  imp=+0x1a9440ae0
+@class ISrOSAppRecipe : NSObject <ISCompositorRecipe, ISRecipeOptionalMask, ISSuppliesIconSpecification> instanceSize=16
+  ivar +8 shouldApplyMask B
+  ivar +9 _templateVariant B
+  property templateVariant (TB,N,V_templateVariant)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  property shouldApplyMask (TB,VshouldApplyMask)
+  property iconSpecification (T@"IFIconSpecification",R)
+  -iconSpecification @16@0:8  imp=+0x1a93d7b68
+  -init @16@0:8  imp=+0x1a93d7910
+  -layerTreeForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a93d7968
+  -setShouldApplyMask: v20@0:8B16  imp=+0x1a93d7b80
+  -setTemplateVariant: v20@0:8B16  imp=+0x1a93d7b90
+  -shouldApplyMask B16@0:8  imp=+0x1a93d7b74
+  -templateVariant B16@0:8  imp=+0x1a93d7b88
+@class IStvOSAppRecipe : NSObject <ISCompositorRecipe, ISRecipeOptionalMask, ISSuppliesIconSpecification> instanceSize=16
+  ivar +8 shouldApplyMask B
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  property shouldApplyMask (TB,VshouldApplyMask)
+  property iconSpecification (T@"IFIconSpecification",R)
+  -iconSpecification @16@0:8  imp=+0x1a93d7e0c
+  -init @16@0:8  imp=+0x1a93d7b98
+  -layerTreeForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a93d7bf0
+  -setShouldApplyMask: v20@0:8B16  imp=+0x1a93d7e24
+  -shouldApplyMask B16@0:8  imp=+0x1a93d7e18
+@class IStvOSRoundedRect : ISContinuousRoundedRect instanceSize=32
+  -_cornerRadiusForSize: d32@0:8{CGSize=dd}16  imp=+0x1a9424d1c
+  -init @16@0:8  imp=+0x1a9424ce4
+@class ISwatchOSAppRecipe : NSObject <ISCompositorRecipe, ISRecipeOptionalMask, ISSuppliesIconSpecification> instanceSize=16
+  ivar +8 shouldApplyMask B
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  property shouldApplyMask (TB,VshouldApplyMask)
+  property iconSpecification (T@"IFIconSpecification",R)
+  -iconSpecification @16@0:8  imp=+0x1a93d75d8
+  -init @16@0:8  imp=+0x1a93d73c8
+  -layerTreeForSize:scale: @40@0:8{CGSize=dd}16d32  imp=+0x1a93d7420
+  -setShouldApplyMask: v20@0:8B16  imp=+0x1a93d75f0
+  -shouldApplyMask B16@0:8  imp=+0x1a93d75e4
+@class _IFColor : NSObject instanceSize=16
+  ivar +8 _color ^{CGColor=}
+  property color (T^{CGColor=},V_color)
+  +colorWithWhite:alpha: @32@0:8d16d24  imp=+0x1a93e94a4
+  +whiteColor @16@0:8  imp=+0x1a93e94f0
+  -CGColor ^{CGColor=}16@0:8  imp=+0x1a93e95f4
+  -color ^{CGColor=}16@0:8  imp=+0x1a93e9628
+  -dealloc v16@0:8  imp=+0x1a93e95a4
+  -initWithCGColor: @24@0:8^{CGColor=}16  imp=+0x1a93e9548
+  -setColor: v24@0:8^{CGColor=}16  imp=+0x1a93e9630
+@class _ISCompositorElement : NSObject <ISCompositorElement, ISCompositorResourceProvider> instanceSize=24
+  ivar +8 _recipe @"<ISCompositorRecipe>"
+  ivar +16 _resourceByName @"NSMutableDictionary"
+  property recipe (T@"<ISCompositorRecipe>",&,V_recipe)
+  property resourceByName (T@"NSMutableDictionary",R,V_resourceByName)
+  property resourceProvider (T@"<ISCompositorResourceProvider>",R)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a93fc94c
+  -addResourcesFromDictionary: v24@0:8@16  imp=+0x1a93fc808
+  -clearResources v16@0:8  imp=+0x1a93fc868
+  -init @16@0:8  imp=+0x1a93fc644
+  -initWithRecipe:resources: @32@0:8@16@24  imp=+0x1a93fc6b8
+  -recipe @16@0:8  imp=+0x1a93fc92c
+  -resourceByName @16@0:8  imp=+0x1a93fc940
+  -resourceNamed: @24@0:8@16  imp=+0x1a93fc8b4
+  -resourceProvider @16@0:8  imp=+0x1a93fc770
+  -setRecipe: v24@0:8@16  imp=+0x1a93fc938
+  -setResource:forName: v32@0:8@16@24  imp=+0x1a93fc774
+@class _ISImage : NSObject <ISImage> instanceSize=32
+  ivar +8 _scale I
+  ivar +16 _CGImage ^{CGImage=}
+  ivar +24 _minimumSize d
+  property minimumSize (Td,V_minimumSize)
+  property scale (TI,V_scale)
+  property CGImage (T^{CGImage=},N,V_CGImage)
+  -CGImage ^{CGImage=}16@0:8  imp=+0x1a93fbfd4
+  -dealloc v16@0:8  imp=+0x1a93fbf2c
+  -minimumSize d16@0:8  imp=+0x1a93fbfdc
+  -scale I16@0:8  imp=+0x1a93fbfec
+  -setCGImage: v24@0:8^{CGImage=}16  imp=+0x1a93fbf7c
+  -setMinimumSize: v24@0:8d16  imp=+0x1a93fbfe4
+  -setScale: v20@0:8I16  imp=+0x1a93fbff4
+@class _ISImageIcon : ISConcreteIcon <NSSecureCoding> instanceSize=48
+  ivar +40 _imageData @"NSData"
+  property imageData (T@"NSData",&,V_imageData)
+  +supportsSecureCoding B16@0:8  imp=+0x1a9409018
+  -.cxx_destruct v16@0:8  imp=+0x1a94092c0
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a9409170
+  -imageData @16@0:8  imp=+0x1a94092a4
+  -initImage: @24@0:8@16  imp=+0x1a9409020
+  -initWithCoder: @24@0:8@16  imp=+0x1a94090c8
+  -makeResourceProvider @16@0:8  imp=+0x1a94091f8
+  -setImageData: v24@0:8@16  imp=+0x1a94092b4

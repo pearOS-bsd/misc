@@ -1,0 +1,2934 @@
+@class CalledByClient : NSObject <ClientCallsAuxiliary> instanceSize=8
+  -_addFreeWindow:identifier:listenerEndpoint:reply: v48@0:8r^{?={?=[8I]}{?=QC{CGRect={CGPoint=dd}{CGSize=dd}}IQ}}16@24@32@?40  imp=+0x1a1ab13a4
+  -_requestUserInteractionWithPatience:options:sender:reply: v48@0:8d16Q24{ProcessSerialNumber=II}32@?40  imp=+0x1a1ab1d2c
+  -addFreeWindow:identifier:listenerEndpoint:reply: v136@0:8{?={?=[8I]}{?=QC{CGRect={CGPoint=dd}{CGSize=dd}}IQ}}16@112@120@?128  imp=+0x1a1ab1c88
+  -endpointForHostApp: @24@0:8@16  imp=+0x1a1ab0d94
+  -forApp:retrievePreviewEndpoint: v56@0:8{?=[8I]}16@?48  imp=+0x1a1ab07a8
+  -hostApp:description: v56@0:8{?=[8I]}16@?48  imp=+0x1a1ab071c
+  -hostAppConnectionForListenerEndpoint: @24@0:8@16  imp=+0x1a1ab0ef0
+  -hostAppDescription: @48@0:8{?=[8I]}16  imp=+0x1a1aafe3c
+  -hostAppStartingWith:endpoint: B32@0:8@16@24  imp=+0x1a1a3ac2c
+  -hostAppStartingWith:endpoint:reply: v40@0:8@16@24@?32  imp=+0x1a1a3abb4
+  -requestUserInteractionWithPatience:options:sender:reply: v48@0:8d16Q24{ProcessSerialNumber=II}32@?40  imp=+0x1a1ab21cc
+  -trustedToAddFreeWindowToArbitraryHostApp B16@0:8  imp=+0x1a1ab0ce8
+  -viewService:hasHostApp: B24@0:8i16i20  imp=+0x1a1ab11ec
+  -windowForContextID:fromViewService:reply: v32@0:8I16i20@?24  imp=+0x1a1ab0b1c
+@class ControlListenerDelegate : ListenerDelegate instanceSize=16
+  -listener:shouldAcceptNewConnection: B32@0:8@16@24  imp=+0x1a1a3a928
+@class FenceGroup : NSObject instanceSize=24
+  ivar +8 _fenceGroupID @"NSNumber"
+  ivar +16 _activeMember @"FenceGroupMember"
+  property activeMember (T@"FenceGroupMember",W,V_activeMember)
+  +withFenceGroupsPerform: v24@0:8@?16  imp=+0x1a1aaead8
+  -.cxx_destruct v16@0:8  imp=+0x1a1aaebdc
+  -activeMember @16@0:8  imp=+0x1a1aaebc8
+  -dealloc v16@0:8  imp=+0x1a1aae84c
+  -fenceGroupID I16@0:8  imp=+0x1a1aae9d8
+  -init @16@0:8  imp=+0x1a1aaea54
+  -setActiveMember: v24@0:8@16  imp=+0x1a1aaebd0
+@class FenceGroupListenerDelegate : ListenerDelegate instanceSize=16
+  +describeGroups @16@0:8  imp=+0x1a1aaf97c
+  -listener:shouldAcceptNewConnection: B32@0:8@16@24  imp=+0x1a1aafa98
+@class FenceGroupMember : NSObject <FenceGroupMemberProtocol> instanceSize=32
+  ivar +8 _fenceGroupAcquisition I
+  ivar +16 _senderDisplayName @"NSString"
+  ivar +24 _fenceGroup @"FenceGroup"
+  property fenceGroup (T@"FenceGroup",&,V_fenceGroup)
+  -acquireActiveRole:completion: v28@0:8I16@?20  imp=+0x1a1aaf340
+  -create: v24@0:8@?16  imp=+0x1a1aaec38
+  -dealloc v16@0:8  imp=+0x1a1aaebe4
+  -description @16@0:8  imp=+0x1a1ae559c
+  -fenceGroup @16@0:8  imp=+0x1a1aaf968
+  -join:completion: v28@0:8I16@?20  imp=+0x1a1aaeda8
+  -relinquishActiveRole: v20@0:8I16  imp=+0x1a1aaf668
+  -setFenceGroup: v24@0:8@16  imp=+0x1a1aaf974
+@class HostAndService : NSObject instanceSize=32
+  ivar +8 _viewHost @"ViewHost"
+  ivar +16 _viewService @"ViewService"
+  ivar +24 _remoteViewIdentifier @"NSString"
+  property viewHost (T@"ViewHost",V_viewHost)
+  property viewService (T@"ViewService",V_viewService)
+  property remoteViewIdentifier (T@"NSString",&,V_remoteViewIdentifier)
+  -dealloc v16@0:8  imp=+0x1a1aaa140
+  -description @16@0:8  imp=+0x1a1aaa1f8
+  -event:inCache: ^{__CGEvent=}32@0:8@16^{Events=I@*}24  imp=+0x1a1aaa538
+  -event:isCloseEnoughTo: B32@0:8^{__CGEvent=}16^{__CGEvent=}24  imp=+0x1a1aaa250
+  -remoteViewIdentifier @16@0:8  imp=+0x1a1aaa8e8
+  -setRemoteViewIdentifier: v24@0:8@16  imp=+0x1a1aaa8f4
+  -setViewHost: v24@0:8@16  imp=+0x1a1aaa8d0
+  -setViewService: v24@0:8@16  imp=+0x1a1aaa8e0
+  -viewHost @16@0:8  imp=+0x1a1aaa8c8
+  -viewService @16@0:8  imp=+0x1a1aaa8d8
+@class HostListenerDelegate : ListenerDelegate instanceSize=16
+  -listener:shouldAcceptNewConnection: B32@0:8@16@24  imp=+0x1a1ab2260
+@class HostOrService : NSObject instanceSize=56
+  ivar +8 _window I
+  ivar +16 _hostAndService @"HostAndService"
+  ivar +24 _connection @"NSXPCConnection"
+  ivar +32 _secBundleInfo @"NSDictionary"
+  ivar +40 _secBundleInfoLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +44 _applicationDisplayNameLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +48 _applicationDisplayName @"NSString"
+  property hostAndService (T@"HostAndService",V_hostAndService)
+  property connection (T@"NSXPCConnection",R,V_connection)
+  property secBundleInfo (T@"NSDictionary",R)
+  property applicationSerialNumber (T^{__LSASN=},R)
+  property applicationDisplayName (T@"NSString",R)
+  property window (TI,R,V_window)
+  -applicationDisplayName @16@0:8  imp=+0x1a1aab0b8
+  -applicationSerialNumber ^{__LSASN=}16@0:8  imp=+0x1a1aab050
+  -colorHasMeaningfulAlpha: B24@0:8@16  imp=+0x1a1aab550
+  -connection @16@0:8  imp=+0x1a1aab644
+  -dealloc v16@0:8  imp=+0x1a1aab578
+  -description @16@0:8  imp=+0x1a1aaa8fc
+  -forEvent:invokeWithFlatEvent: v32@0:8^{__CGEvent=}16@?24  imp=+0x1a1aaabb8
+  -hostAndService @16@0:8  imp=+0x1a1aab634
+  -initWithConnection: @24@0:8@16  imp=+0x1a1aaa980
+  -invalidate: v24@0:8@16  imp=+0x1a1aab3b8
+  -joinPair:reply:configure: @40@0:8@16@?24@?32  imp=+0x1a1aaac6c
+  -owningProcess:forWindow: i28@0:8^i16I24  imp=+0x1a1aab498
+  -quickDescription @16@0:8  imp=+0x1a1aaa948
+  -secBundleIdentifier @16@0:8  imp=+0x1a1aab37c
+  -secBundleInfo @16@0:8  imp=+0x1a1aab288
+  -setHostAndService: v24@0:8@16  imp=+0x1a1aab63c
+  -window I16@0:8  imp=+0x1a1aab64c
+@class ListenerDelegate : NSObject <NSXPCListenerDelegate> instanceSize=16
+  ivar +8 _listener @"NSXPCListener"
+  property listener (T@"NSXPCListener",V_listener)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -listener @16@0:8  imp=+0x1a1a3abac
+  -listener:shouldAcceptNewConnection: B32@0:8@16@24  imp=+0x1a1a3aa18
+  -setListener: v24@0:8@16  imp=+0x1a1a373b8
+@class NSAccessoryViewWindow : NSWindow instanceSize=608
+  ivar +528 _eventMonitor @
+  ivar +536 _orderingMode r^q
+  ivar +544 _remoteView @"NSRemoteView"
+  ivar +552 _windowObserved @"NSWindow"
+  ivar +560 _serviceAccessoryViewWindowRelativeFrame {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}}
+  ivar +592 _notifyingDelegateAccessoryWindowDidUpdateConstraintsIfNeeded b1
+  ivar +592 _reactingToServiceAccessoryViewBecomingFirstResponder b1
+  ivar +592 _serviceAccessoryViewWindowRelativeFrameIsValid b1
+  ivar +592 _willAdjustFrameToServiceAccessoryView b1
+  ivar +592 _willUpdateAccessibilityChildren b1
+  ivar +600 _serviceAccessibilityParent @"NSAccessibilityRemoteUIElement"
+  property serviceAccessibilityParent (T@"NSAccessibilityRemoteUIElement",&,V_serviceAccessibilityParent)
+  +windowWithContentRect:atopRemoteView:withColorization: @60@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16@48B56  imp=+0x1a1a740c8
+  -.cxx_destruct v16@0:8  imp=+0x1a1a754c0
+  -_doOrderWindow: v24@0:8@16  imp=+0x1a1a74720
+  -_hierarchyDidChangeInView: v24@0:8@16  imp=+0x1a1a7458c
+  -_keyViewLoopsMayCrossWindows B16@0:8  imp=+0x1a1a749ac
+  -_orderedDrawerAndWindowKeyLoopGroupingViews @16@0:8  imp=+0x1a1a74824
+  -_runningDocModal B16@0:8  imp=+0x1a1a74c0c
+  -accessibilityIsIgnored B16@0:8  imp=+0x1a1a74310
+  -accessibilityParentAttribute @16@0:8  imp=+0x1a1a7430c
+  -addChildWindow:ordered: v32@0:8@16q24  imp=+0x1a1a75054
+  -canBecomeKeyWindow B16@0:8  imp=+0x1a1a746d0
+  -dealloc v16@0:8  imp=+0x1a1a7402c
+  -forwardingTargetForSelector: @24@0:8:16  imp=+0x1a1a746d8
+  -makeFirstResponder: B24@0:8@16  imp=+0x1a1a747c0
+  -observeValueForKeyPath:ofObject:change:context: v48@0:8@16@24@32^v40  imp=+0x1a1a74c34
+  -performKeyEquivalent: B24@0:8@16  imp=+0x1a1a75438
+  -removeChildWindow: v24@0:8@16  imp=+0x1a1a751e0
+  -sendEvent: v24@0:8@16  imp=+0x1a1ad72f8
+  -serviceAccessibilityParent @16@0:8  imp=+0x1a1a754a4
+  -setServiceAccessibilityParent: v24@0:8@16  imp=+0x1a1a754b4
+  -updateAccessoryViewAccessibility v16@0:8  imp=+0x1a1a74318
+  -updateConstraintsIfNeeded v16@0:8  imp=+0x1a1a74a84
+@class NSAutolayoutJailWindow : NSWindow instanceSize=528
+  +frameViewClassForStyleMask: #24@0:8Q16  imp=+0x1a1ac8200
+  -_refreshWindowResizeConstraintsWithSize: v32@0:8{CGSize=dd}16  imp=+0x1a1ac8418
+  -windowSizeConstraintsShouldAlwaysWin B16@0:8  imp=+0x1a1ac81f8
+@class NSCFRunLoopObserver : NSObject instanceSize=40
+  ivar +8 _activities Q
+  ivar +16 _modes @"NSMutableArray"
+  ivar +24 _observers @"NSMutableArray"
+  ivar +32 _loop ^{__CFRunLoop=}
+  +describeActivity: @24@0:8Q16  imp=+0x1a1ac47f4
+  +observerWithActivities: @24@0:8Q16  imp=+0x1a1ac4c78
+  -dealloc v16@0:8  imp=+0x1a1ac4880
+  -initWithActivities: @24@0:8Q16  imp=+0x1a1ac4998
+  -observeMode:withBlock: v32@0:8^{__CFString=}16@?24  imp=+0x1a1ac49e0
+@class NSCFRunLoopSemaphore : NSObject instanceSize=32
+  ivar +8 _retainReleaseLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +16 _underlyingSemaphore @"HIRunLoopSemaphore"
+  ivar +24 _loggingDomain @"NSString"
+  property legend (T@"NSString",C)
+  property loggingDomain (T@"NSString",C,V_loggingDomain)
+  property mode (T^{__CFString=},R)
+  +mode ^{__CFString=}16@0:8  imp=+0x1a1aa9388
+  -__vbSuperRelease v16@0:8  imp=+0x1a1a396c4
+  -__vbWithLockPerform: v24@0:8@?16  imp=+0x1a1a36428
+  -dealloc v16@0:8  imp=+0x1a1a393d8
+  -init @16@0:8  imp=+0x1a1aa9394
+  -initWithMode: @24@0:8^{__CFString=}16  imp=+0x1a1a35ec8
+  -legend @16@0:8  imp=+0x1a1ae4978
+  -loggingDomain @16@0:8  imp=+0x1a1aa93d4
+  -mode ^{__CFString=}16@0:8  imp=+0x1a1ae48f0
+  -release Vv16@0:8  imp=+0x1a1a37454
+  -retain @16@0:8  imp=+0x1a1a36308
+  -retainReleaseLock ^{os_unfair_lock_s=I}16@0:8  imp=+0x1a1a364a0
+  -setLegend: v24@0:8@16  imp=+0x1a1ae4930
+  -setLoggingDomain: v24@0:8@16  imp=+0x1a1aa93e0
+  -signal v16@0:8  imp=+0x1a1a37788
+  -wait v16@0:8  imp=+0x1a1a3655c
+  -wait: B24@0:8d16  imp=+0x1a1a3661c
+@class NSChildWindowQueueElement : NSObject instanceSize=112
+  ivar +8 _identifier @"NSString"
+  ivar +16 _reply @?
+  ivar +24 _listenerEndpoint @"NSXPCListenerEndpoint"
+  ivar +32 _parameters {?="ordered"q"popoverHasFullSizeContent"B"sharesParentKeyState"B"window"{?="responderIdentifier"Q"base"C"contentRect"{CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}}"id"I"styleMask"Q}}
+  -dealloc v16@0:8  imp=+0x1a1a892d8
+  -initWithIdentifier:parameters:listenerEndpoint:reply: @48@0:8@16r^{?=qBB{?=QC{CGRect={CGPoint=dd}{CGSize=dd}}IQ}}24@32@?40  imp=+0x1a1a89334
+@class NSCustomTouchBarItemForRemoteView : NSCustomTouchBarItem instanceSize=88
+  -customizationLabel @16@0:8  imp=+0x1a1abb03c
+  -dealloc v16@0:8  imp=+0x1a1abafb4
+  -itemPosition Q16@0:8  imp=+0x1a1abb040
+@class NSDeferredSheet : NSObject instanceSize=72
+  ivar +8 _isCritical B
+  ivar +9 _windowBase C
+  ivar +16 _listenerEndpoint @"NSXPCListenerEndpoint"
+  ivar +24 _childIdentifier @"NSString"
+  ivar +32 _parentIdentifier @"NSString"
+  ivar +40 _reply @?
+  ivar +48 _styleMask Q
+  ivar +56 _size {CGSize="width"d"height"d}
+  property listenerEndpoint (T@"NSXPCListenerEndpoint",&,V_listenerEndpoint)
+  property childIdentifier (T@"NSString",&,V_childIdentifier)
+  property parentIdentifier (T@"NSString",&,V_parentIdentifier)
+  property reply (T@?,C,V_reply)
+  property size (T{CGSize=dd},R,V_size)
+  property isCritical (TB,R,V_isCritical)
+  property windowBase (TC,R,V_windowBase)
+  property styleMask (TQ,R,V_styleMask)
+  -childIdentifier @16@0:8  imp=+0x1a1a3fb00
+  -dealloc v16@0:8  imp=+0x1a1a3fc20
+  -init:childIdentifier:parentIdentifier:listenerEndpoint:withReply: @120@0:8{?=B{?=QC{CGRect={CGPoint=dd}{CGSize=dd}}IQ}}16@88@96@104@?112  imp=+0x1a1a85f60
+  -isCritical B16@0:8  imp=+0x1a1a3fb54
+  -listenerEndpoint @16@0:8  imp=+0x1a1a86124
+  -parentIdentifier @16@0:8  imp=+0x1a1a3fb0c
+  -reply @?16@0:8  imp=+0x1a1a3fae4
+  -setChildIdentifier: v24@0:8@16  imp=+0x1a1a3faf0
+  -setListenerEndpoint: v24@0:8@16  imp=+0x1a1a86130
+  -setParentIdentifier: v24@0:8@16  imp=+0x1a1a3faf8
+  -setReply: v24@0:8@?16  imp=+0x1a1a3fadc
+  -size {CGSize=dd}16@0:8  imp=+0x1a1a3fb18
+  -styleMask Q16@0:8  imp=+0x1a1a86140
+  -windowBase C16@0:8  imp=+0x1a1a86138
+@class NSEventLoopSemaphore : NSCFRunLoopSemaphore instanceSize=40
+  ivar +32 _eventMask Q
+  property eventMask (TQ,R,V_eventMask)
+  -eventMask Q16@0:8  imp=+0x1a1aa960c
+  -initWithMode:andEventMask: @32@0:8^{__CFString=}16Q24  imp=+0x1a1aa95c0
+  -invokeLoopInModeForDuration:withBlock: v32@0:8d16@?24  imp=+0x1a1aa9440
+  -signal v16@0:8  imp=+0x1a1aa93e8
+@class NSEventQueue : NSObject instanceSize=32
+  ivar +8 _events @"NSMutableArray"
+  ivar +16 _capacity Q
+  ivar +24 _retainReleaseLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  +event:isEqualTo: B32@0:8@16@24  imp=+0x1a1ac5bdc
+  -__vbSuperRelease v16@0:8  imp=+0x1a1ac51f8
+  -__vbWithLockPerform: v24@0:8@?16  imp=+0x1a1ac4ff0
+  -dealloc v16@0:8  imp=+0x1a1ac562c
+  -dequeueTimestamp: @24@0:8d16  imp=+0x1a1ac5984
+  -enqueue: v24@0:8@16  imp=+0x1a1a3fbb4
+  -init @16@0:8  imp=+0x1a1a3e4a4
+  -initWithCapacity: @24@0:8Q16  imp=+0x1a1a3e4ec
+  -logEventCount v16@0:8  imp=+0x1a1ac5678
+  -nextEventEqualToEvent:dequeue: @28@0:8@16B24  imp=+0x1a1a3e5f4
+  -release Vv16@0:8  imp=+0x1a1ac5230
+  -retain @16@0:8  imp=+0x1a1ac5068
+  -retainReleaseLock ^{os_unfair_lock_s=I}16@0:8  imp=+0x1a1ac4fe8
+@class NSFakeServiceResponder : NSObject <NSServiceViewControllerActionResponder> instanceSize=56
+  ivar +8 _action :
+  ivar +16 _rtsInProgress I
+  ivar +24 _remoteView @"NSRemoteView"
+  ivar +32 _validateMenuItem {?="responds"B"response"B}
+  ivar +34 _validateUserInterfaceItem {?="responds"B"response"B}
+  ivar +40 _targetIdentifier @"NSString"
+  ivar +48 _retainReleaseLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  -__vbSuperRelease v16@0:8  imp=+0x1a1a86358
+  -__vbWithLockPerform: v24@0:8@?16  imp=+0x1a1a86150
+  -dealloc v16@0:8  imp=+0x1a1a8678c
+  -forwardInvocation: v24@0:8@16  imp=+0x1a1a86c0c
+  -initWithView:action:validateMenuItem:validateUserInterfaceItem:targetIdentifier: @44@0:8@16:24{?=BB}32{?=BB}34@36  imp=+0x1a1a867d8
+  -methodSignatureForSelector: @24@0:8:16  imp=+0x1a1a86ed0
+  -release Vv16@0:8  imp=+0x1a1a86390
+  -respondsToAction:fromTask: B56@0:8:16{?=[8I]}24  imp=+0x1a1a86b18
+  -respondsToSelector: B24@0:8:16  imp=+0x1a1a86890
+  -retain @16@0:8  imp=+0x1a1a861c8
+  -retainReleaseLock ^{os_unfair_lock_s=I}16@0:8  imp=+0x1a1a86148
+  -validateMenuItem: B24@0:8@16  imp=+0x1a1a87020
+  -validateUserInterfaceItem: B24@0:8@16  imp=+0x1a1a871f8
+@class NSGroupTouchBarItemForRemoteView : NSGroupTouchBarItem instanceSize=80
+  -customizationLabel @16@0:8  imp=+0x1a1abb044
+  -itemPosition Q16@0:8  imp=+0x1a1abb048
+@class NSHostAppProxyAppModalSessionWindow : NSWindow instanceSize=528
+@class NSLayerCentricRemoteView : NSRemoteView instanceSize=704
+@class NSObtainingEndpointState : NSObject instanceSize=48
+  ivar +8 lock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +16 errors @"NSMutableArray"
+  ivar +24 connection @"NSObject<OS_xpc_object>"
+  ivar +32 listenerName @"NSObject<OS_xpc_object>"
+  ivar +40 message @"NSObject<OS_xpc_object>"
+  -addError:description:forListenerNamed:fromServiceNamed: v48@0:8q16r*24@32@40  imp=+0x1a1a82eac
+  -dealloc v16@0:8  imp=+0x1a1a3693c
+  -whileHoldingLock: v24@0:8@?16  imp=+0x1a1a82e2c
+@class NSPanelForServiceViewControllerForTouchBarItem : NSPanel instanceSize=528
+  -_isFunctionRowWindow B16@0:8  imp=+0x1a1ab65d8
+  -allowsFontSmoothing B16@0:8  imp=+0x1a1ab6600
+  -backingScaleFactor d16@0:8  imp=+0x1a1ab65e8
+  -hasKeyAppearance B16@0:8  imp=+0x1a1ab65f8
+  -initWithContentRect:styleMask:backing:defer: @68@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16Q48Q56B64  imp=+0x1a1ab654c
+  -isVisible B16@0:8  imp=+0x1a1ab65e0
+  -worksWhenModal B16@0:8  imp=+0x1a1ab65f0
+@class NSPreviewHostView : NSView instanceSize=544
+  ivar +536 _retainReleaseLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  property previewHostViewController (T@"NSPreviewHostViewController",R)
+  +allocWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a1a403d4
+  -__vbSuperRelease v16@0:8  imp=+0x1a1a40710
+  -__vbWithLockPerform: v24@0:8@?16  imp=+0x1a1a40460
+  -previewHostViewController @16@0:8  imp=+0x1a1a40b44
+  -release Vv16@0:8  imp=+0x1a1a40748
+  -renewGState v16@0:8  imp=+0x1a1a40ba0
+  -retain @16@0:8  imp=+0x1a1a404ec
+  -retainReleaseLock ^{os_unfair_lock_s=I}16@0:8  imp=+0x1a1a40450
+  -viewDidEndLiveResize v16@0:8  imp=+0x1a1a40d38
+  -viewDidMoveToWindow v16@0:8  imp=+0x1a1a40bf4
+  -viewWillMoveToWindow: v24@0:8@16  imp=+0x1a1a40c5c
+  -viewWillStartLiveResize v16@0:8  imp=+0x1a1a40cb8
+@class NSPreviewHostViewController : NSViewController <NSVBXPCConnectionClient, NSPreviewHostViewControllerProtocol> instanceSize=288
+  ivar +120 _observingActiveness b1
+  ivar +120 _targetDidBootstrap b1
+  ivar +124 _targetSizeRequestsInProgress I
+  ivar +128 _mostRecentKeyboardFocusTheftID I
+  ivar +132 _windowObserving I
+  ivar +136 _targetWindowStateRequestIdentifier q
+  ivar +144 _retainReleaseLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +152 _localEventMonitor @
+  ivar +160 _mostRecentlySentViewFrameInScreenCoords {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}}
+  ivar +192 _invalidationProgress C
+  ivar +193 _invalidationKind C
+  ivar +200 _trackingArea @"NSTrackingArea"
+  ivar +208 _periodicWellnessCheckTimer @"NSTimer"
+  ivar +216 _mostRecentTargetAuditToken {?="val"[8I]}
+  ivar +248 _mostRecentTargetAuditTokenLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +252 _wantsKeyboardFocus B
+  ivar +256 _delegate @"<NSPreviewHostViewControllerDelegate>"
+  ivar +264 _targetControllerProxy @
+  ivar +272 _connection @"VBXPCConnectionFenced"
+  ivar +280 _exportedObject @
+  property targetControllerProxy (T@,&,V_targetControllerProxy)
+  property connection (T@"VBXPCConnectionFenced",W,V_connection)
+  property exportedObject (T@,&,V_exportedObject)
+  property delegate (T@"<NSPreviewHostViewControllerDelegate>",W,V_delegate)
+  property wantsKeyboardFocus (TB,N,V_wantsKeyboardFocus)
+  property fenceContext (T@"CAContext",R)
+  property isValid (TB,R)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +forgetKeyboardFocusTheft: v20@0:8I16  imp=+0x1a1a44b00
+  +initialize v16@0:8  imp=+0x1a1a45064
+  +launchTargetApp:options:error: ^{__LSASN=}40@0:8@16@24^@32  imp=+0x1a1a45560
+  +logKeyboardFocusThefts v16@0:8  imp=+0x1a1a44a5c
+  +nsxpcInterface @16@0:8  imp=+0x1a1a4155c
+  +releaseKeyboardFocusThefts v16@0:8  imp=+0x1a1a44d14
+  +rememberKeyboardFocusTheft:perpetratedByApp: v52@0:8I16{?=[8I]}20  imp=+0x1a1a44b70
+  +targetAppEnvironmentVariables @16@0:8  imp=+0x1a1a45324
+  +targetAppLaunchOptions @16@0:8  imp=+0x1a1a4545c
+  -.cxx_destruct v16@0:8  imp=+0x1a1a457fc
+  -__vbSuperRelease v16@0:8  imp=+0x1a1a41128
+  -__vbWithLockPerform: v24@0:8@?16  imp=+0x1a1a40f3c
+  -_invalidateDueToExceptionDuringIncomingIPC: @24@0:8@16  imp=+0x1a1acc5ec
+  -_startLocalEventMonitor v16@0:8  imp=+0x1a1a45160
+  -connection @16@0:8  imp=+0x1a1a457bc
+  -connection:handleInvocation:isReply: v36@0:8@16@24B32  imp=+0x1a1a416f4
+  -dealloc v16@0:8  imp=+0x1a1a40e68
+  -decrementLiveResizeOfView: v24@0:8@16  imp=+0x1a1a422d4
+  -delegate @16@0:8  imp=+0x1a1a45768
+  -exportedObject @16@0:8  imp=+0x1a1a457e0
+  -fenceContext @16@0:8  imp=+0x1a1a417f4
+  -handleKeyEquivalent:eventOwner:reply: v36@0:8@16I24@?28  imp=+0x1a1a42574
+  -incrementLiveResizeOfView: v24@0:8@16  imp=+0x1a1a422a0
+  -initWithCoder: @24@0:8@16  imp=+0x1a1a40e18
+  -initWithNibName:bundle: @32@0:8@16@24  imp=+0x1a1a40dc8
+  -invalidate v16@0:8  imp=+0x1a1acc634
+  -isValid B16@0:8  imp=+0x1a1a416ac
+  -keyboardFocusTheftChanged: v20@0:8I16  imp=+0x1a1a42e30
+  -loadView v16@0:8  imp=+0x1a1a418bc
+  -observeValueForKeyPath:ofObject:change:context: v48@0:8@16@24@32^v40  imp=+0x1a1a41a18
+  -release Vv16@0:8  imp=+0x1a1a41160
+  -rememberKeyboardFocusTheft:perpetratedByApp: v52@0:8I16{?=[8I]}20  imp=+0x1a1a44cb0
+  -requestConnectionToTargetApp:completionHandler: v32@0:8@16@?24  imp=+0x1a1a43d24
+  -requestFrame:reply: v56@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16@?48  imp=+0x1a1a42334
+  -requestTargetWindowState: q18@0:8{?=CC}16  imp=+0x1a1a430e4
+  -retain @16@0:8  imp=+0x1a1a40fb4
+  -retainReleaseLock ^{os_unfair_lock_s=I}16@0:8  imp=+0x1a1a40db8
+  -setConnection: v24@0:8@16  imp=+0x1a1a457cc
+  -setCursor: v24@0:8@16  imp=+0x1a1a42ab4
+  -setDelegate: v24@0:8@16  imp=+0x1a1a45778
+  -setEventMask: v20@0:8I16  imp=+0x1a1a4276c
+  -setExportedObject: v24@0:8@16  imp=+0x1a1a457f0
+  -setMinMaxFrameSizes: v48@0:8{?={CGSize=dd}{CGSize=dd}}16  imp=+0x1a1a42924
+  -setTargetControllerProxy: v24@0:8@16  imp=+0x1a1a457b0
+  -setView: v24@0:8@16  imp=+0x1a1a41848
+  -setWantsKeyboardFocus: v20@0:8B16  imp=+0x1a1a452ac
+  -targetControllerProxy @16@0:8  imp=+0x1a1a457a0
+  -targetControllerProxyWithErrorHandler: @24@0:8@?16  imp=+0x1a1a432a8
+  -targetInvalidating: v24@0:8@?16  imp=+0x1a1acc688
+  -targetRequestedWindowStyleMask:reply: v32@0:8Q16@?24  imp=+0x1a1acd210
+  -targetWindowStateChanged: v24@0:8@16  imp=+0x1a1a428b0
+  -view:didMoveToWindow: v32@0:8@16@24  imp=+0x1a1a42098
+  -view:willMoveToWindow: v32@0:8@16@24  imp=+0x1a1a41efc
+  -viewDidRenewGState: v24@0:8@16  imp=+0x1a1a41eb0
+  -wantsKeyboardFocus B16@0:8  imp=+0x1a1a4578c
+  -windowDidMove: v24@0:8@16  imp=+0x1a1accd54
+@class NSPreviewHostViewControllerParameters : NSObject instanceSize=72
+  ivar +8 _allowTargetFrameRequests B
+  ivar +9 _windowState {?="keyness"C"mainness"C}
+  ivar +16 _windowNumber q
+  ivar +24 _targetControllerClassName @"NSString"
+  ivar +32 _hostAppClientParameters @"NSObject<NSSecureCoding>"
+  ivar +40 _targetAuditToken {?="val"[8I]}
+  property targetAuditToken (T{?=[8I]},V_targetAuditToken)
+  property windowNumber (Tq,V_windowNumber)
+  property windowState (T{?=CC},V_windowState)
+  property targetControllerClassName (T@"NSString",C,V_targetControllerClassName)
+  property hostAppClientParameters (T@"NSObject<NSSecureCoding>",C,V_hostAppClientParameters)
+  property allowTargetFrameRequests (TB,V_allowTargetFrameRequests)
+  -allowTargetFrameRequests B16@0:8  imp=+0x1a1a403c0
+  -hostAppClientParameters @16@0:8  imp=+0x1a1a403ac
+  -init @16@0:8  imp=+0x1a1a40274
+  -setAllowTargetFrameRequests: v20@0:8B16  imp=+0x1a1a403cc
+  -setHostAppClientParameters: v24@0:8@16  imp=+0x1a1a403b8
+  -setTargetAuditToken: v48@0:8{?=[8I]}16  imp=+0x1a1a402fc
+  -setTargetControllerClassName: v24@0:8@16  imp=+0x1a1a403a4
+  -setWindowNumber: v24@0:8q16  imp=+0x1a1a4031c
+  -setWindowState: v18@0:8{?=CC}16  imp=+0x1a1a40360
+  -targetAuditToken {?=[8I]}16@0:8  imp=+0x1a1a402e4
+  -targetControllerClassName @16@0:8  imp=+0x1a1a40398
+  -windowNumber q16@0:8  imp=+0x1a1a40314
+  -windowState {?=CC}16@0:8  imp=+0x1a1a40324
+@class NSPreviewStarter : NSObject instanceSize=8
+  +applicationDidFinishLaunching: v24@0:8@16  imp=+0x1a1a7dd84
+  +load v16@0:8  imp=+0x1a1a7de6c
+@class NSPreviewTargetController : NSResponder <NSVBXPCConnectionClient, NSPreviewInterfaces> instanceSize=216
+  ivar +32 _observerOfWindowWillStartLiveResizeNotification @"<NSObject>"
+  ivar +40 _observerOfWindowDidEndLiveResizeNotification @"<NSObject>"
+  ivar +48 _allowFrameRequests b1
+  ivar +48 _didOrderWindowIn b1
+  ivar +48 _hostWantsKeyboardFocus b1
+  ivar +48 _invalid b1
+  ivar +48 _targetFinishedBootstrap b1
+  ivar +48 _willReportMinMaxFrameSizes b1
+  ivar +48 _windowIgnoredMouseEventsAtBootstrap b1
+  ivar +52 _retainReleaseLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +56 _mostRecentlyReportedMinMaxFrameSizes {?="min"{CGSize="width"d"height"d}"max"{CGSize="width"d"height"d}}
+  ivar +88 _didCompleteBootstrap B
+  ivar +89 _desiredWindowState {?="keyness"C"mainness"C}
+  ivar +92 _settingHostAppActiveness I
+  ivar +96 _hostViewFrameInScreenCoordsDidChangeInProgress I
+  ivar +100 _resizeRequestReplyInProgress I
+  ivar +104 _keyboardFocusTheft I
+  ivar +112 _window @"NSPreviewTargetWindow"
+  ivar +120 _hostAppClientParameters @"NSObject<NSSecureCoding>"
+  ivar +128 _hostControllerProxy @
+  ivar +136 _hostAppConnection @"VBXPCConnectionFenced"
+  ivar +144 _desiredWindowLevel q
+  ivar +152 _hostViewFrame {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}}
+  ivar +184 _hostAppAuditToken {?="val"[8I]}
+  property settingHostAppActiveness (TI,R,V_settingHostAppActiveness)
+  property targetFinishedBootstrap (TB,R)
+  property didCompleteBootstrap (TB,R,V_didCompleteBootstrap)
+  property window (T@"NSPreviewTargetWindow",&,V_window)
+  property hostAppClientParameters (T@"NSObject<NSSecureCoding>",&,V_hostAppClientParameters)
+  property allowFrameRequests (TB,R)
+  property hostViewFrameInScreenCoordsDidChangeInProgress (TI,V_hostViewFrameInScreenCoordsDidChangeInProgress)
+  property resizeRequestReplyInProgress (TI,V_resizeRequestReplyInProgress)
+  property hostControllerProxy (T@,&,V_hostControllerProxy)
+  property hostAppConnection (T@"VBXPCConnectionFenced",W,V_hostAppConnection)
+  property desiredWindowLevel (Tq,V_desiredWindowLevel)
+  property desiredWindowState (T{?=CC},V_desiredWindowState)
+  property keyboardFocusTheft (TI,R,V_keyboardFocusTheft)
+  property hostViewFrame (T{CGRect={CGPoint=dd}{CGSize=dd}},V_hostViewFrame)
+  property hostAppAuditToken (T{?=[8I]},R,V_hostAppAuditToken)
+  property fenceContext (T@"CAContext",R)
+  property isValid (TB,R)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +_nsxpcListenerEndpoint @16@0:8  imp=+0x1a1a7d788
+  +_windowMayOrder: B24@0:8@16  imp=+0x1a1a7d8ac
+  +allowInstantiationOnBehalfOf: B48@0:8{?=[8I]}16  imp=+0x1a1a7d380
+  +bootstrap:hostControllerProxy:reply: v112@0:8{?=q{?=CC}q@@{CGRect={CGPoint=dd}{CGSize=dd}}BBB}16@96@?104  imp=+0x1a1a7b800
+  +commandEquivalentsToWithholdFromHost @16@0:8  imp=+0x1a1a7d23c
+  +initialize v16@0:8  imp=+0x1a1a79444
+  +listener:shouldAcceptNewConnection: B32@0:8@16@24  imp=+0x1a1a7cfdc
+  +nsxpcInterface @16@0:8  imp=+0x1a1a7cf0c
+  +preflight:reply: v32@0:8@16@?24  imp=+0x1a1a7be64
+  +setCommandEquivalentsToWithholdFromHost: v24@0:8@16  imp=+0x1a1a7d168
+  +targetControllerClassForName: #24@0:8@16  imp=+0x1a1a7d3e0
+  +windowClass #16@0:8  imp=+0x1a1a7a384
+  +windowWithFrame:styleMask: @56@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16Q48  imp=+0x1a1ad99a4
+  -.cxx_destruct v16@0:8  imp=+0x1a1a7dd28
+  -__vbSuperRelease v16@0:8  imp=+0x1a1a79750
+  -__vbWithLockPerform: v24@0:8@?16  imp=+0x1a1a79564
+  -_connectionInvalidated v16@0:8  imp=+0x1a1a7ae20
+  -_invalidateDueToExceptionDuringIncomingIPC: @24@0:8@16  imp=+0x1a1a7cee0
+  -_maintainLevelOfWindow: v24@0:8@16  imp=+0x1a1a7c410
+  -_realizeRequestedStateOfWindow: v24@0:8@16  imp=+0x1a1a7a3d0
+  -_realizeRequestedWindow:stateWithIdentifier: v32@0:8@16q24  imp=+0x1a1a7ac48
+  -_removeFromResponderChain v16@0:8  imp=+0x1a1a7adc0
+  -accessibilityPresenterProcessIdentifier i16@0:8  imp=+0x1a1a79f30
+  -allowFrameRequests B16@0:8  imp=+0x1a1a79f68
+  -connection:handleInvocation:isReply: v36@0:8@16@24B32  imp=+0x1a1a7cefc
+  -dealloc v16@0:8  imp=+0x1a1a79b84
+  -desiredWindowLevel q16@0:8  imp=+0x1a1a7dc68
+  -desiredWindowState {?=CC}16@0:8  imp=+0x1a1a7dc90
+  -didCompleteBootstrap B16@0:8  imp=+0x1a1a7dbc0
+  -exportedObject @16@0:8  imp=+0x1a1a7b7fc
+  -fenceContext @16@0:8  imp=+0x1a1a7ca5c
+  -guaranteeSignal:after: v32@0:8@16@?24  imp=+0x1a1a7a07c
+  -hostAppAuditToken {?=[8I]}16@0:8  imp=+0x1a1a7db70
+  -hostAppClientParameters @16@0:8  imp=+0x1a1a7db90
+  -hostAppConnection @16@0:8  imp=+0x1a1a7dc44
+  -hostAppIsActive: v20@0:8B16  imp=+0x1a1a7ad48
+  -hostControllerProxy @16@0:8  imp=+0x1a1a7dc28
+  -hostControllerProxyWithErrorHandler: @24@0:8@?16  imp=+0x1a1a7ca70
+  -hostDidCompleteBootstrap v16@0:8  imp=+0x1a1ad9c7c
+  -hostReleasedKeyboardFocusThefts: v24@0:8@16  imp=+0x1a1ad9d24
+  -hostViewFrame {CGRect={CGPoint=dd}{CGSize=dd}}16@0:8  imp=+0x1a1a7dae4
+  -hostViewFrameInScreenCoordsDidChange: v48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16  imp=+0x1a1a7c5c8
+  -hostViewFrameInScreenCoordsDidChangeInProgress I16@0:8  imp=+0x1a1a7dbd8
+  -hostWantsKeyboardFocus: v20@0:8B16  imp=+0x1a1a7ad08
+  -hostWindowEvent: v24@0:8Q16  imp=+0x1a1a7c5a0
+  -hostWindowEventMouse: v24@0:8Q16  imp=+0x1a1a7c49c
+  -hostWindowLevelDidChange: v24@0:8q16  imp=+0x1a1a7c468
+  -init @16@0:8  imp=+0x1a1a79d68
+  -invalidate v16@0:8  imp=+0x1a1a7ccd4
+  -isValid B16@0:8  imp=+0x1a1a7cc8c
+  -keyboardFocusTheft I16@0:8  imp=+0x1a1a7dd14
+  -release Vv16@0:8  imp=+0x1a1a79788
+  -requestWindowState:identifier: v26@0:8{?=CC}16q18  imp=+0x1a1a7c1d0
+  -resizeRequestReplyInProgress I16@0:8  imp=+0x1a1a7dc00
+  -retain @16@0:8  imp=+0x1a1a795dc
+  -retainReleaseLock ^{os_unfair_lock_s=I}16@0:8  imp=+0x1a1a79554
+  -setDesiredWindowLevel: v24@0:8q16  imp=+0x1a1a7dc7c
+  -setDesiredWindowState: v18@0:8{?=CC}16  imp=+0x1a1a7dcd4
+  -setHostAppClientParameters: v24@0:8@16  imp=+0x1a1a7dba0
+  -setHostAppConnection: v24@0:8@16  imp=+0x1a1a7dc54
+  -setHostControllerProxy: v24@0:8@16  imp=+0x1a1a7dc38
+  -setHostViewFrame: v48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16  imp=+0x1a1a7db2c
+  -setHostViewFrameInScreenCoordsDidChangeInProgress: v20@0:8I16  imp=+0x1a1a7dbec
+  -setResizeRequestReplyInProgress: v20@0:8I16  imp=+0x1a1a7dc14
+  -setWindow: v24@0:8@16  imp=+0x1a1a7dad8
+  -settingHostAppActiveness I16@0:8  imp=+0x1a1a7dbac
+  -targetDidCompleteBootstrap v16@0:8  imp=+0x1a1a7c1cc
+  -targetFinishedBootstrap B16@0:8  imp=+0x1a1a7c1b4
+  -wellnessCheck:reply: v28@0:8I16@?20  imp=+0x1a1a7c1a4
+  -window @16@0:8  imp=+0x1a1a7dac8
+@class NSPreviewTargetWindow : NSAutolayoutJailWindow instanceSize=528
+  +_validateStyleMask: Q24@0:8Q16  imp=+0x1a1a77fb0
+  -__vbSuperRelease v16@0:8  imp=+0x1a1a77b78
+  -__vbWithLockPerform: v24@0:8@?16  imp=+0x1a1a7798c
+  -_beginWindowBlockingModalSessionForShownService: v24@0:8@16  imp=+0x1a1a789c4
+  -_setEventMask: v24@0:8Q16  imp=+0x1a1ad95bc
+  -_setFrameCommon:display:stashSize: v56@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16B48B52  imp=+0x1a1ad8c88
+  -_setMouseMovedEventsEnabled: v20@0:8B16  imp=+0x1a1ad9578
+  -acquireKeyAppearance v16@0:8  imp=+0x1a1ad8b48
+  -addChildWindow:ordered: v32@0:8@16q24  imp=+0x1a1a78b94
+  -allowUninhibitedChildren B16@0:8  imp=+0x1a1a78ac0
+  -becomeKeyWindow v16@0:8  imp=+0x1a1ad8918
+  -beginCriticalSheet:completionHandler: v32@0:8@16@?24  imp=+0x1a1a78a6c
+  -beginSheet:completionHandler: v32@0:8@16@?24  imp=+0x1a1a78a18
+  -canBecomeKeyWindow B16@0:8  imp=+0x1a1ad8888
+  -constrainFrameRect:toScreen: {CGRect={CGPoint=dd}{CGSize=dd}}56@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16@48  imp=+0x1a1a77fac
+  -dealloc v16@0:8  imp=+0x1a1ad8000
+  -orderWindow:relativeTo: v32@0:8q16q24  imp=+0x1a1a7896c
+  -release Vv16@0:8  imp=+0x1a1a77bb0
+  -removeChildWindow: v24@0:8@16  imp=+0x1a1a78ac8
+  -resignKeyAppearance v16@0:8  imp=+0x1a1ad8bc8
+  -resignKeyWindow v16@0:8  imp=+0x1a1ad8ab8
+  -retain @16@0:8  imp=+0x1a1a77a04
+  -retainReleaseLock ^{os_unfair_lock_s=I}16@0:8  imp=+0x1a1ad7fe4
+  -sendEvent: v24@0:8@16  imp=+0x1a1a78120
+  -setLevel: v24@0:8q16  imp=+0x1a1ad9408
+  -setStyleMask: v24@0:8Q16  imp=+0x1a1ad8240
+  -updateConstraintsIfNeeded v16@0:8  imp=+0x1a1ad9600
+@class NSPreviewTargetWindowAux : NSObject instanceSize=72
+  ivar +8 _lock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +12 _downgradingKey B
+  ivar +16 _superSetFrameCommonInProgress I
+  ivar +24 _previewTargetController @"NSPreviewTargetController"
+  ivar +32 _mostRecentStateNotificationUserInfo @"NSDictionary"
+  ivar +40 _localEventMonitor @
+  ivar +48 _mostRecentlyRequestedStyleMask Q
+  ivar +56 _eventInProgress @"NSEvent"
+  ivar +64 _stateRequestIdentifier q
+  property previewTargetController (T@"NSPreviewTargetController",W,V_previewTargetController)
+  property superSetFrameCommonInProgress (TI,V_superSetFrameCommonInProgress)
+  property mostRecentStateNotificationUserInfo (T@"NSDictionary",&,V_mostRecentStateNotificationUserInfo)
+  property localEventMonitor (T@,V_localEventMonitor)
+  property mostRecentlyRequestedStyleMask (TQ,V_mostRecentlyRequestedStyleMask)
+  property eventInProgress (T@"NSEvent",&,V_eventInProgress)
+  property downgradingKey (TB,V_downgradingKey)
+  property stateRequestIdentifier (Tq,V_stateRequestIdentifier)
+  -.cxx_destruct v16@0:8  imp=+0x1a1a76a6c
+  -downgradingKey B16@0:8  imp=+0x1a1a76a48
+  -eventInProgress @16@0:8  imp=+0x1a1a76a34
+  -localEventMonitor @16@0:8  imp=+0x1a1a76a14
+  -mostRecentStateNotificationUserInfo @16@0:8  imp=+0x1a1a76a00
+  -mostRecentlyRequestedStyleMask Q16@0:8  imp=+0x1a1a76a24
+  -previewTargetController @16@0:8  imp=+0x1a1a769dc
+  -setDowngradingKey: v20@0:8B16  imp=+0x1a1a76a54
+  -setEventInProgress: v24@0:8@16  imp=+0x1a1a76a40
+  -setLocalEventMonitor: v24@0:8@16  imp=+0x1a1a76a1c
+  -setMostRecentStateNotificationUserInfo: v24@0:8@16  imp=+0x1a1a76a0c
+  -setMostRecentlyRequestedStyleMask: v24@0:8Q16  imp=+0x1a1a76a2c
+  -setPreviewTargetController: v24@0:8@16  imp=+0x1a1a769e4
+  -setStateRequestIdentifier: v24@0:8q16  imp=+0x1a1a76a64
+  -setSuperSetFrameCommonInProgress: v20@0:8I16  imp=+0x1a1a769f8
+  -stateRequestIdentifier q16@0:8  imp=+0x1a1a76a5c
+  -superSetFrameCommonInProgress I16@0:8  imp=+0x1a1a769f0
+@class NSRemoteView : NSView <NSXPCListenerDelegate, NSVBXPCConnectionClient, HasAuxiliaryConnection, AuxiliaryCallsHost, _NSAlertSensitiveView> instanceSize=704
+  ivar +536 _rvm @"NSRemoteViewMarshal"
+  ivar +544 _trackingLoopDepth I
+  ivar +552 _mostRecentlySentSafeAreaInsets {NSEdgeInsets="top"d"left"d"bottom"d"right"d}
+  ivar +584 _observingChangesToSafeAreaInsets I
+  ivar +588 _fence I
+  ivar +592 _sheetCanceled b1
+  ivar +592 _didRetreatToConfigPhase b1
+  ivar +596 _mostRecentViewServiceAuditToken {?="val"[8I]}
+  ivar +628 _mostRecentViewServiceAuditTokenLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +632 _deferralFromContainingWindowToRemoteView @"<BSInvalidatable>"
+  ivar +640 _deferralFromKeyTestWindowToRemoteView @"<BSInvalidatable>"
+  ivar +648 _deferralFromRemoteViewToService @"<BSInvalidatable>"
+  ivar +656 _deferralToParticularWindow @"<BSInvalidatable>"
+  ivar +664 _restrictedEventDescriptors @"NSMutableSet"
+  ivar +672 _touchScrollWheelEmulator @"_NSTouchScrollWheelEmulator"
+  ivar +680 _touchScrollWheelEmulatorSequenceIdentifier Q
+  ivar +688 auxiliaryServiceConnection @"NSXPCConnection"
+  ivar +696 _serviceInstanceIdentifier @"NSUUID"
+  property spawnedBy (T@"NSRemoteView",R,N)
+  property requestedOrigin (T{CGPoint=dd},R)
+  property delegate (T@"NSObject<NSRemoteViewDelegate>")
+  property accessoryView (T@"NSView",&,D)
+  property isValid (TB,R)
+  property remoteViewController (T@"NSRemoteViewController",R)
+  property serviceName (T@"NSString",C,N)
+  property serviceInstanceIdentifier (T@"NSUUID",&,N,V_serviceInstanceIdentifier)
+  property serviceSubclassName (T@"NSString",C,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  property fenceContext (T@"CAContext",R)
+  property auxiliaryInterfaceOutgoing (T@"NSXPCInterface",R,N)
+  property auxiliaryInterfaceIncoming (T@"NSXPCInterface",R,N)
+  property auxiliaryServiceConnection (T@"NSXPCConnection",W,VauxiliaryServiceConnection)
+  property wantsAlertStylePadding (TB,R)
+  +_appModalSessionWouldBeSafe: B20@0:8B16  imp=+0x1a1a919a4
+  +_findFirstKeyViewInDirection:forKeyLoopGroupingView: @32@0:8Q16@24  imp=+0x1a1a8b2bc
+  +_menuDidBeginTracking: v24@0:8@16  imp=+0x1a1a8dc88
+  +_menuDidEndTracking: v24@0:8@16  imp=+0x1a1a8ddb8
+  +_remoteViewForIdentifier: @24@0:8@16  imp=+0x1a1a8afac
+  +allowSetObjectForKey:bridge:bridgePhase:withReply: B44@0:8@16@24C32@?36  imp=+0x1a1a96b2c
+  +anyRemoteViewAttachedToWindow: B24@0:8@16  imp=+0x1a1a8ae5c
+  +automaticallyNotifiesObserversOfTouchBar B16@0:8  imp=+0x1a1abea78
+  +classIsRendezvousWindow: B24@0:8#16  imp=+0x1a1a9008c
+  +deferBlockOntoMainThread: v24@0:8@?16  imp=+0x1a1a8b2c8
+  +deferKeyboardEventsFrom:to:inProcess:forReason: @44@0:8@16@24i32@36  imp=+0x1a1a8d9c0
+  +deferKeyboardEventsFrom:to:restrictedToEventDescriptors:inProcess:forReason: @52@0:8@16@24@32i40@44  imp=+0x1a1a8d4e4
+  +endAppModalSession: @24@0:8@16  imp=+0x1a1a9bdf4
+  +ensureAuxServiceAwareOfHostApp: v24@0:8#16  imp=+0x1a1a8a308
+  +initAll v16@0:8  imp=+0x1a1a35b74
+  +initialize v16@0:8  imp=+0x1a1a3574c
+  +initializeOnAppKitThread v16@0:8  imp=+0x1a1a8a958
+  +invalidateAndReleaseDeferral:forReason: v32@0:8^@16@24  imp=+0x1a1a8d9d0
+  +isFakeEvent: B24@0:8@16  imp=+0x1a1aa411c
+  +keyWindowDeferralToken @16@0:8  imp=+0x1a1a8db1c
+  +observeMenuTracking v16@0:8  imp=+0x1a1a8a848
+  +observeValueForKeyPath:ofObject:change:context: v48@0:8@16@24@32^v40  imp=+0x1a1a8a36c
+  +privateRunLoopMode ^{__CFString=}16@0:8  imp=+0x1a1a8b2c4
+  +reconsiderRootDeferral: v24@0:8@16  imp=+0x1a1a8dba4
+  +remoteViewsAttachedToWindow: @24@0:8@16  imp=+0x1a1a8acfc
+  +rendezvousWindow:completion: v32@0:8r^{?=B{CGRect={CGPoint=dd}{CGSize=dd}}@C@CQ@}16@?24  imp=+0x1a1a99598
+  +rendezvousWindowClass: #24@0:8#16  imp=+0x1a1a90098
+  +shouldEnsureAuxServiceAwareOfHostAppDueToInitialize B16@0:8  imp=+0x1a1a8a438
+  +withDeliveryManagerTransactionReason:performActions: v32@0:8@16@?24  imp=+0x1a1a8d3ac
+  -.cxx_destruct v16@0:8  imp=+0x1a1aa42c0
+  -NS_touchBars @16@0:8  imp=+0x1a1abe908
+  -__vbSuperRelease v16@0:8  imp=+0x1a1a8b004
+  -__vbWithLockPerform: v24@0:8@?16  imp=+0x1a1a38418
+  -_abortServiceTrackingLoop: v24@0:8@16  imp=+0x1a1aa3b64
+  -_accessibilityChildren: @24@0:8@16  imp=+0x1a1a91e8c
+  -_accessibilityParentToken @16@0:8  imp=+0x1a1aa2528
+  -_accessibilityParentToken: @24@0:8@16  imp=+0x1a1aa2438
+  -_addChildWindow:parameters:listenerEndpoint:reply: v48@0:8@16r^{?=qBB{?=QC{CGRect={CGPoint=dd}{CGSize=dd}}IQ}}24@32@?40  imp=+0x1a1aa1498
+  -_addPotentialKeyFocusThief: v20@0:8i16  imp=+0x1a1a9fb78
+  -_adjustLoc:forWindow:withAncestor: @40@0:8^{CGPoint=dd}16@24@?32  imp=+0x1a1aa3730
+  -_adjustToServiceWindowBecomingKey v16@0:8  imp=+0x1a1a9b950
+  -_adjustToServiceWindowKeyness v16@0:8  imp=+0x1a1a9bda4
+  -_adjustToServiceWindowMinMaxSizes v16@0:8  imp=+0x1a1a940f8
+  -_adjustToServiceWindowResigningKey v16@0:8  imp=+0x1a1a9bd00
+  -_adjustToServiceWindowStyleMask v16@0:8  imp=+0x1a1a9b49c
+  -_adjustWindowBackgroundColor v16@0:8  imp=+0x1a1aa092c
+  -_adjustWindowBackgroundColor: v24@0:8@16  imp=+0x1a1aa08a4
+  -_advanceToConfigPhase: v24@0:8@?16  imp=+0x1a1aa283c
+  -_advanceToConfigPhaseLegacy v16@0:8  imp=+0x1a1a95188
+  -_advanceToRunPhase: v24@0:8@?16  imp=+0x1a1a90738
+  -_advanceToRunPhaseLegacy B16@0:8  imp=+0x1a1a916b4
+  -_allowAuxiliaryAppNap: v24@0:8@16  imp=+0x1a1a39600
+  -_announceSubviewMutationDisallowed v16@0:8  imp=+0x1a1a90004
+  -_assertObjectsOf:areKindOfClass: v32@0:8@16#24  imp=+0x1a1abc0cc
+  -_associate v16@0:8  imp=+0x1a1aa25f0
+  -_associateMouseAndMouseCursorPosition: @20@0:8B16  imp=+0x1a1a9f6c0
+  -_associateWithHostWindow:withKeyness:isFirstResponder:atLevel:isFunctionRow:withBlock: B50@0:8@16{?=BB}24B26q30B38@?42  imp=+0x1a1a921e0
+  -_auxiliaryProxyWithSemaphore:attemptingTo:withCompletion: v40@0:8@16r*24@?32  imp=+0x1a1a8e4fc
+  -_awaitInvalidation v16@0:8  imp=+0x1a1a90e54
+  -_becameInvalidWhileFinishingAdvanceToConfigPhase: B24@0:8r*16  imp=+0x1a1a94988
+  -_beginAppModalSession:parameters:listenerEndpoint:completion: v48@0:8@16r^{?={?=QC{CGRect={CGPoint=dd}{CGSize=dd}}IQ}}24@32@?40  imp=+0x1a1a9bec8
+  -_beginDeferredSheets v16@0:8  imp=+0x1a1a9ad88
+  -_beginDeferredSheetsWithoutCatch v16@0:8  imp=+0x1a1a9a958
+  -_beginSheet:childIdentifier:modalForWindow:listenerEndpoint:withReply: v120@0:8{?=B{?=QC{CGRect={CGPoint=dd}{CGSize=dd}}IQ}}16@88@96@104@?112  imp=+0x1a1a9aea4
+  -_beginSheet:completion: v32@0:8@16@?24  imp=+0x1a1a99eb4
+  -_beginTrackingLoop:reply: v32@0:8@16@?24  imp=+0x1a1aa3c24
+  -_bridge @16@0:8  imp=+0x1a1a8ac40
+  -_completeAdvanceToRunPhase:withError: v32@0:8@?16@24  imp=+0x1a1aa31c8
+  -_completeFrameRequestWithError:transaction:andCompletion: v40@0:8@16@24@?32  imp=+0x1a1a98d68
+  -_concretizedAppAccentColor @16@0:8  imp=+0x1a1a8f7e8
+  -_configureAndRetainServiceMarshalConnection: v24@0:8@16  imp=+0x1a1a937b0
+  -_configureTouchBar:perDescription: v32@0:8@16@24  imp=+0x1a1abd104
+  -_containingWindowOcclusionStateMayHaveChanged v16@0:8  imp=+0x1a1aa20b4
+  -_copyViewServiceMarshalReply:withClientExportedObjectWithClientInterface:withClientExportedObjectWithAnimationSyncInterface: v40@0:8r^{?=BBIIQqQ{CGSize=dd}{CGSize=dd}{CGSize=dd}{CGSize=dd}{CGRect={CGPoint=dd}{CGSize=dd}}I@}16@24@32  imp=+0x1a1a94bbc
+  -_decodeBoolean:inDescription: B32@0:8@16@24  imp=+0x1a1abd088
+  -_disableGlassViewEmbedding v16@0:8  imp=+0x1a1a929c4
+  -_disassociate v16@0:8  imp=+0x1a1ade650
+  -_disengageFromAllWindows v16@0:8  imp=+0x1a1a97924
+  -_dragWindowRelativeToMouseDown: v32@0:8{CGPoint=dd}16  imp=+0x1a1aa3860
+  -_effectiveAppearanceAsData @16@0:8  imp=+0x1a1a95124
+  -_elementsForTokens: @24@0:8@16  imp=+0x1a1a91f2c
+  -_endAllSheets B16@0:8  imp=+0x1a1a9af68
+  -_endFence v16@0:8  imp=+0x1a1a90f70
+  -_endSheet B16@0:8  imp=+0x1a1a9b19c
+  -_endTrackingLoop:reply: v32@0:8@16@?24  imp=+0x1a1aa3f7c
+  -_ensureBridgeObserversForRendezvousWindow v16@0:8  imp=+0x1a1a993dc
+  -_ensureViewServiceIsResponsive v16@0:8  imp=+0x1a1a913cc
+  -_evaluateKeyness B16@0:8  imp=+0x1a1a8d168
+  -_evaluateKeynessForWindow: B24@0:8@16  imp=+0x1a1a8c878
+  -_expectWindowOrderingState:andAdvanceTo:caller: v32@0:8i16i20r*24  imp=+0x1a1a93174
+  -_filterStyleMask:forWindowBase: Q28@0:8Q16C24  imp=+0x1a1a9f620
+  -_forwardActionUpResponderChain: v24@0:8@16  imp=+0x1a1aa05d8
+  -_frameOfServiceWindowDidChange:windowBackgroundColor:reply: v64@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16@48@?56  imp=+0x1a1aa09a0
+  -_hasFriendlyKeyFocusThief: B20@0:8i16  imp=+0x1a1a8bffc
+  -_hasValidKeyViewInDirection: B24@0:8Q16  imp=+0x1a1a9d838
+  -_hideTouchBarPopover: v24@0:8@16  imp=+0x1a1abe4c0
+  -_ifNecessaryReplaceTouchBar:escapeKeyReplacementItem: v32@0:8@16@24  imp=+0x1a1abc1f4
+  -_ifNecessaryReplaceTouchBars v16@0:8  imp=+0x1a1abd870
+  -_informAuxServiceOfSelf: v24@0:8@?16  imp=+0x1a1a94638
+  -_inhibitFirstResponder B16@0:8  imp=+0x1a1a97ae4
+  -_intelligenceCollectRemote B16@0:8  imp=+0x1a1aa41d0
+  -_intelligenceCollectRemoteContentInVisibleRect:remoteContextWrapper: v56@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16@48  imp=+0x1a1aa41d4
+  -_invalidate v16@0:8  imp=+0x1a1adcd90
+  -_invalidateChildWindows v16@0:8  imp=+0x1a1aa221c
+  -_invalidateDueToExceptionDuringIncomingIPC: @24@0:8@16  imp=+0x1a1a8bec4
+  -_invalidateEffectiveVibrantBlendingStyle v16@0:8  imp=+0x1a1a9fc74
+  -_invalidateTrackingLoop v16@0:8  imp=+0x1a1aa4098
+  -_invalidateWindowBridgeKeys v16@0:8  imp=+0x1a1a8b8fc
+  -_invalidateWithException: v24@0:8@16  imp=+0x1a1a8beb0
+  -_isContentView B16@0:8  imp=+0x1a1a9b854
+  -_isOrBecomingContentView B16@0:8  imp=+0x1a1a925e8
+  -_lastCallImpliedByAdvancingToPhase: v20@0:8C16  imp=+0x1a1a9f768
+  -_maintainFirstResponder:inDirection: i40@0:8{?=QBBB}16Q32  imp=+0x1a1a97b0c
+  -_maintainWindowNotifications: v20@0:8B16  imp=+0x1a1a8ffc4
+  -_mapPerProcessIdentifiers:of: @32@0:8@16@24  imp=+0x1a1abce1c
+  -_oldFirstResponderBeforeBecomingTextSelectionDirection Q16@0:8  imp=+0x1a1a8e440
+  -_oldestAncestorWindow:adjustingLoc: @32@0:8@16^{CGPoint=dd}24  imp=+0x1a1aa37f4
+  -_postSuperInit v16@0:8  imp=+0x1a1a3781c
+  -_preSuperInit v16@0:8  imp=+0x1a1a358a8
+  -_preventAuxiliaryAppNap: v24@0:8@16  imp=+0x1a1a3952c
+  -_realizeChildQueueElement: v24@0:8@16  imp=+0x1a1aa0cd8
+  -_realizeChildQueueElements v16@0:8  imp=+0x1a1aa13f4
+  -_reconsiderAccessibilityParent v16@0:8  imp=+0x1a1a9f508
+  -_reenableGlassViewEmbedding v16@0:8  imp=+0x1a1a9295c
+  -_regionForOpaqueDescendants:forMove:forUnderTitlebar: ^{CGSRegionObject=}56@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16B48B52  imp=+0x1a1a9f8fc
+  -_remoteViewBecameFirstResponder v16@0:8  imp=+0x1a1a8e584
+  -_remoteViewBecameFirstResponder:withIPC: v32@0:8Q16@?24  imp=+0x1a1a8e6b0
+  -_remoteViewController @16@0:8  imp=+0x1a1a90b80
+  -_sendWindowFakeClick:why: v32@0:8q16r*24  imp=+0x1a1a9c7e4
+  -_serviceHasDebuggerAttached B16@0:8  imp=+0x1a1a90a7c
+  -_serviceHasTouchBars: v24@0:8@16  imp=+0x1a1abdc2c
+  -_serviceRequestsFrame:serviceWindowBackgroundColor:animate:async:transaction:completion: v80@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16@48B56B60@64@?72  imp=+0x1a1a98ecc
+  -_serviceRequestsResize:animate:async:completion: v48@0:8{CGSize=dd}16B32B36@?40  imp=+0x1a1a989c0
+  -_serviceRequestsResizeInProgress: v32@0:8{CGSize=dd}16  imp=+0x1a1a982c4
+  -_serviceValidatesAction:menuItem:userInterfaceItem:targetIdentifier:sender: B56@0:8@16^{?=BB}24^{?=BB}32^@40@48  imp=+0x1a1a96c38
+  -_serviceViewReceivedLeftMouseDown: v24@0:8q16  imp=+0x1a1a9d730
+  -_serviceWindowHasDragRegion: v24@0:8@16  imp=+0x1a1a9fac4
+  -_serviceWindowKeynessChangeInProgress: v24@0:8@?16  imp=+0x1a1a9b884
+  -_serviceWindowReceivedScrollWheel:eventOwner: v28@0:8@16I24  imp=+0x1a1a9d218
+  -_serviceWindowWouldActivate v16@0:8  imp=+0x1a1a9cf10
+  -_setCursor: v24@0:8@16  imp=+0x1a1aa3a9c
+  -_setDelegate: v24@0:8@16  imp=+0x1a1a38230
+  -_setServiceContextID: v20@0:8I16  imp=+0x1a1a9b694
+  -_setServiceWindowEventMask: v24@0:8Q16  imp=+0x1a1aa1d30
+  -_setServiceWindowKeyness: v20@0:8B16  imp=+0x1a1a9bdc4
+  -_setServiceWindowStyleMask: v24@0:8Q16  imp=+0x1a1a9b664
+  -_setSuperview: v24@0:8@16  imp=+0x1a1a8c5b8
+  -_setTouchBar:description: v32@0:8@16@24  imp=+0x1a1abe298
+  -_setTouchBar:escapeKeyReplacementItem: v32@0:8@16@24  imp=+0x1a1abe174
+  -_setTouchBar:principalItemIdentifier: v32@0:8@16@24  imp=+0x1a1abdfb8
+  -_setTouchBarItem:itemPosition: v32@0:8@16@24  imp=+0x1a1abde30
+  -_setTouchBars: v24@0:8@16  imp=+0x1a1abd79c
+  -_shakeContainingWindow v16@0:8  imp=+0x1a1aa3a38
+  -_shouldAdjustToServiceStyleMask B16@0:8  imp=+0x1a1a9b43c
+  -_shouldBecomeFirstResponder B16@0:8  imp=+0x1a1a8efa8
+  -_shouldImposeVibrancySupport: B24@0:8@16  imp=+0x1a1a92b30
+  -_shouldSpelunkTouchBarsProactively B16@0:8  imp=+0x1a1abddd8
+  -_showTouchBarPopover:fromItem:withOverlayIdentifier:withCloseButton:withControlStrip:withOptions: v56@0:8@16@24@32B40B44@48  imp=+0x1a1abe5ac
+  -_signalAndClearLegacyAdvanceSemaphores v16@0:8  imp=+0x1a1a94fc0
+  -_snapshot: ^{CGImage=}24@0:8^d16  imp=+0x1a1a9ff34
+  -_snapshotWithScale: v24@0:8@?16  imp=+0x1a1aa3390
+  -_startSpelunkingTouchBars v16@0:8  imp=+0x1a1abd714
+  -_stopMonitoringEvents v16@0:8  imp=+0x1a1a8b8bc
+  -_synchronizeImplicitAnimationsInActions: v24@0:8@?16  imp=+0x1a1a8c440
+  -_terminateViewService v16@0:8  imp=+0x1a1a90c2c
+  -_touchBars: @20@0:8B16  imp=+0x1a1abd748
+  -_touchBarsDescription @16@0:8  imp=+0x1a1abbf8c
+  -_updateAccessibilityConnection:force:legend: v36@0:8@16B24r*28  imp=+0x1a1a9f244
+  -_updateAccessibilityConnection:legend:withReply: v40@0:8@16r*24@?32  imp=+0x1a1a9f140
+  -_viewDidEndLiveResize v16@0:8  imp=+0x1a1a96854
+  -_viewServiceMarshalProxy: @24@0:8r*16  imp=+0x1a1a95a78
+  -_viewServiceMarshalProxy:withErrorHandler: @32@0:8r*16@?24  imp=+0x1a1a95c40
+  -_viewServiceMaySetHostWindowLevel B16@0:8  imp=+0x1a1aa4128
+  -_visibleToAccessibility B16@0:8  imp=+0x1a1aa23dc
+  -_waitOnSemaphore: B24@0:8@16  imp=+0x1a1a9138c
+  -_waitOnSemaphore:withPatience: B32@0:8@16d24  imp=+0x1a1a911c4
+  -_wantsKeyDownForEvent: B24@0:8@16  imp=+0x1a1a95f84
+  -_windowSupportsVibrancy: B24@0:8@16  imp=+0x1a1a92c04
+  -_withoutCatchSupplementalTargetForAction:sender: @32@0:8:16@24  imp=+0x1a1a97258
+  -acceptsFirstResponder B16@0:8  imp=+0x1a1a8e0b0
+  -accessibilityChildren @16@0:8  imp=+0x1a1a91f0c
+  -accessibilityChildrenAttribute @16@0:8  imp=+0x1a1a91f04
+  -accessibilityChildrenInNavigationOrder @16@0:8  imp=+0x1a1a91f1c
+  -accessibilityChildrenInNavigationOrderAttribute @16@0:8  imp=+0x1a1a91f08
+  -accessibilityFocusedUIElement @16@0:8  imp=+0x1a1a91a08
+  -accessibilityHitTest: @32@0:8{CGPoint=dd}16  imp=+0x1a1a75b2c
+  -accessibilityParentAttribute @16@0:8  imp=+0x1a1aa2564
+  -accessoryView @16@0:8  imp=+0x1a1a7550c
+  -addChildWindow:identifier:listenerEndpoint:reply: v120@0:8{?=qBB{?=QC{CGRect={CGPoint=dd}{CGSize=dd}}IQ}}16@96@104@?112  imp=+0x1a1aa15b4
+  -addSubview: v24@0:8@16  imp=+0x1a1a9007c
+  -addSubview:positioned:relativeTo: v40@0:8@16q24@32  imp=+0x1a1a90080
+  -advanceToConfigPhaseIfNeeded: B24@0:8@?16  imp=+0x1a1a38858
+  -advanceToRunPhaseIfNeeded B16@0:8  imp=+0x1a1a9186c
+  -advanceToRunPhaseIfNeeded: B24@0:8@?16  imp=+0x1a1a38724
+  -auxiliaryClientListenerEndpoint @16@0:8  imp=+0x1a1a94fb4
+  -auxiliaryInterfaceIncoming @16@0:8  imp=+0x1a1a8e4d4
+  -auxiliaryInterfaceOutgoing @16@0:8  imp=+0x1a1a8e4e8
+  -auxiliaryListenerEndpointForProtocol: @24@0:8@16  imp=+0x1a1a94e8c
+  -auxiliaryServiceConnection @16@0:8  imp=+0x1a1aa4290
+  -auxiliaryServiceListenerEndpoint @16@0:8  imp=+0x1a1a94fa8
+  -becomeFirstResponder B16@0:8  imp=+0x1a1a8f088
+  -beginAppModalSessionForWindow v16@0:8  imp=+0x1a1a9a78c
+  -bridge @16@0:8  imp=+0x1a1a8ac08
+  -bridgePhase C16@0:8  imp=+0x1a1a38810
+  -caContextID I16@0:8  imp=+0x1a1a9b67c
+  -cacheDisplayInRect:toBitmapImageRep: v56@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16@48  imp=+0x1a1aa03ec
+  -cancel: v24@0:8@16  imp=+0x1a1a96030
+  -connection:handleInvocation:isReply: v36@0:8@16@24B32  imp=+0x1a1a9e39c
+  -containingWindowDidChangeOcclusionState: v24@0:8@16  imp=+0x1a1aa216c
+  -containingWindowDidMove: v24@0:8@16  imp=+0x1a1aa2104
+  -containingWindowDidOrderOffScreen: v24@0:8@16  imp=+0x1a1a936c4
+  -containingWindowDidOrderOnScreen: v24@0:8@16  imp=+0x1a1a93470
+  -containingWindowWillOrderOffScreen: v24@0:8@16  imp=+0x1a1a935b8
+  -containingWindowWillOrderOnScreen: v24@0:8@16  imp=+0x1a1a93358
+  -cursorUpdate: v24@0:8@16  imp=+0x1a1aa1f60
+  -dealloc v16@0:8  imp=+0x1a1a8b104
+  -delegate @16@0:8  imp=+0x1a1a37f88
+  -description @16@0:8  imp=+0x1a1a8aa58
+  -enqueueChildWindow:parameters:listenerEndpoint:reply: v48@0:8@16r^{?=qBB{?=QC{CGRect={CGPoint=dd}{CGSize=dd}}IQ}}24@32@?40  imp=+0x1a1aa0794
+  -ensureDeferredSheets v16@0:8  imp=+0x1a1a9ae10
+  -extensionIdentifier @16@0:8  imp=+0x1a1a8b6c4
+  -fauxSynchronousPatience d16@0:8  imp=+0x1a1a90bb4
+  -fenceContext @16@0:8  imp=+0x1a1a90f48
+  -frameOfServiceWindowDidChange:windowBackgroundColor:reply: v64@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16@48@?56  imp=+0x1a1aa0b74
+  -hasAccessoryViewWhichCanBecomeKeyView B16@0:8  imp=+0x1a1a758b4
+  -hasBridge B16@0:8  imp=+0x1a1a8abd4
+  -hostWindowDidBecomeKey: v24@0:8@16  imp=+0x1a1a8d2a4
+  -hostWindowDidResignKey: v24@0:8@16  imp=+0x1a1a8d1a4
+  -initWithCoder: @24@0:8@16  imp=+0x1a1a8bee0
+  -initWithFrame: @48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16  imp=+0x1a1a3581c
+  -intrinsicContentSize {CGSize=dd}16@0:8  imp=+0x1a1a982ac
+  -invalid B16@0:8  imp=+0x1a1a8aa3c
+  -invalidate v16@0:8  imp=+0x1a1a8ba3c
+  -invalidateTrackingArea v16@0:8  imp=+0x1a1aa1c48
+  -isValid B16@0:8  imp=+0x1a1a395d8
+  -keyTestWindow @16@0:8  imp=+0x1a1a8bf9c
+  -maintainAppWideNotifications: v20@0:8B16  imp=+0x1a1a37990
+  -maintainAssociation B16@0:8  imp=+0x1a1a9f618
+  -maintainAssociationForcingDisassociation: B20@0:8B16  imp=+0x1a1aa201c
+  -maintainContainingWindowNotifications: v20@0:8B16  imp=+0x1a1a8fc10
+  -maintainFirstResponderInProgress: v24@0:8@?16  imp=+0x1a1ade204
+  -maintainKeyTestWindowNotifications: v20@0:8B16  imp=+0x1a1a8fa88
+  -maintainProcessNotificationEventMonitor: v20@0:8B16  imp=+0x1a1a8c6a4
+  -maintainScrollViewSeparatorTrackingAdapterForWindow: v20@0:8B16  imp=+0x1a1a927cc
+  -maintainWindowEventMonitor: v20@0:8I16  imp=+0x1a1a9cd8c
+  -mouseDown: v24@0:8@16  imp=+0x1a1a9d460
+  -mouseMoved: v24@0:8@16  imp=+0x1a1aa1ea4
+  -mouseUp: v24@0:8@16  imp=+0x1a1a9d5c8
+  -observeValueForKeyPath:ofObject:change:context: v48@0:8@16@24@32^v40  imp=+0x1a1a8f844
+  -performKeyEquivalent: B24@0:8@16  imp=+0x1a1a965f8
+  -potentialCommandEquivalentHitServiceApp:fullDispatch:reply: v36@0:8@16B24@?28  imp=+0x1a1aa1be0
+  -release Vv16@0:8  imp=+0x1a1a38d70
+  -remoteViewController @16@0:8  imp=+0x1a1a90b3c
+  -remoteViewControllerParametersForService @16@0:8  imp=+0x1a1a8b604
+  -remoteViewControllerProxy: v24@0:8@?16  imp=+0x1a1ade4a0
+  -remoteViewIdentifier @16@0:8  imp=+0x1a1a94df8
+  -renewGState v16@0:8  imp=+0x1a1aa21d4
+  -replaceSubview:with: v32@0:8@16@24  imp=+0x1a1a90088
+  -requestedOrigin {CGPoint=dd}16@0:8  imp=+0x1a1a98c14
+  -resignFirstResponder B16@0:8  imp=+0x1a1a8e1c8
+  -retain @16@0:8  imp=+0x1a1a382f8
+  -retainReleaseLock ^{os_unfair_lock_s=I}16@0:8  imp=+0x1a1a38490
+  -retreatToConfigPhase v16@0:8  imp=+0x1a1a9d914
+  -serviceAccessoryViewFrameChanged: v48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16  imp=+0x1a1a757d0
+  -serviceAccessoryViewIsFirstResponder:inDirection: v28@0:8B16Q20  imp=+0x1a1a759f4
+  -serviceInstanceIdentifier @16@0:8  imp=+0x1a1a381e0
+  -serviceListenerEndpoint @16@0:8  imp=+0x1a1a8b4b0
+  -serviceMarshalConnection @16@0:8  imp=+0x1a1a93f88
+  -serviceMarshalForRemoteViewWindow: @24@0:8@16  imp=+0x1a1a9d3e8
+  -serviceName @16@0:8  imp=+0x1a1a380c8
+  -serviceRequestsFrame:serviceWindowBackgroundColor:animate:async:transaction:completion: v80@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16@48B56B60@64@?72  imp=+0x1a1a99298
+  -serviceSubclassName @16@0:8  imp=+0x1a1a37fd0
+  -serviceViewControllerIdentifier @16@0:8  imp=+0x1a1a8b478
+  -serviceViewControllerProxy @16@0:8  imp=+0x1a1a9e4bc
+  -serviceViewControllerProxy: @24@0:8r*16  imp=+0x1a1a9e5e0
+  -serviceViewControllerProxyWithErrorHandler: @24@0:8@?16  imp=+0x1a1a9e744
+  -serviceViewSize {CGSize=dd}16@0:8  imp=+0x1a1a8bf44
+  -setAccessoryView: v24@0:8@16  imp=+0x1a1a75548
+  -setAuxiliaryServiceConnection: v24@0:8@16  imp=+0x1a1aa42a0
+  -setDelegate: v24@0:8@16  imp=+0x1a1a8b780
+  -setExtensionIdentifier: v24@0:8@16  imp=+0x1a1a8b6fc
+  -setFrame: v48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16  imp=+0x1a1a9ef90
+  -setFrameOrigin: v32@0:8{CGPoint=dd}16  imp=+0x1a1a9ed18
+  -setFrameSize: v32@0:8{CGSize=dd}16  imp=+0x1a1a9ee54
+  -setHidden: v20@0:8B16  imp=+0x1a1a8c4c4
+  -setRemoteAccessibilityChildrenTokens: v24@0:8@16  imp=+0x1a1a920d0
+  -setRemoteViewControllerParametersForService: v24@0:8@16  imp=+0x1a1a8b578
+  -setRendezvousWindowIdentifier: v24@0:8@16  imp=+0x1a1a8b2d0
+  -setServiceInstanceIdentifier: v24@0:8@16  imp=+0x1a1aa42b4
+  -setServiceListenerEndpoint: v24@0:8@16  imp=+0x1a1a8b4ec
+  -setServiceName: v24@0:8@16  imp=+0x1a1a38140
+  -setServiceObject:forKey: v32@0:8@16@24  imp=+0x1a1a969f0
+  -setServiceSubclassName: v24@0:8@16  imp=+0x1a1a38044
+  -setServiceViewControllerIdentifier: v24@0:8@16  imp=+0x1a1a37b50
+  -setShouldMaskToBounds: v20@0:8B16  imp=+0x1a1a944d4
+  -setSubviews: v24@0:8@16  imp=+0x1a1a90084
+  -setSynchronizesImplicitAnimations: v20@0:8B16  imp=+0x1a1a9da00
+  -setTouchBar: v24@0:8@16  imp=+0x1a1abe9cc
+  -setTrustsServiceKeyEvents: v20@0:8B16  imp=+0x1a1a8b81c
+  -setWindow:styleMask: v32@0:8@16Q24  imp=+0x1a1a9b330
+  -sheetCompleted: v24@0:8@16  imp=+0x1a1a9937c
+  -shouldInformServiceOfKeynessChange: B24@0:8@16  imp=+0x1a1a8c830
+  -shouldMaskToBounds B16@0:8  imp=+0x1a1a94528
+  -snapshot ^{CGImage=}16@0:8  imp=+0x1a1aa03e4
+  -snapshot: v24@0:8@?16  imp=+0x1a1aa36b4
+  -spawnedBy @16@0:8  imp=+0x1a1a98bfc
+  -stolenKeyFocusEventFilter: @24@0:8@16  imp=+0x1a1a8c104
+  -supplementalTargetForAction:sender: @32@0:8:16@24  imp=+0x1a1a97800
+  -synchronizeAnimationsInActions: v24@0:8@?16  imp=+0x1a1a9da30
+  -synchronizesImplicitAnimations B16@0:8  imp=+0x1a1a9d9e4
+  -touchBar @16@0:8  imp=+0x1a1abe968
+  -trustsServiceKeyEvents B16@0:8  imp=+0x1a1a8b800
+  -updateAccessibilityChildren: v24@0:8@16  imp=+0x1a1a9c5f0
+  -updateContentMinSize:contentMaxSize:frameMinSize:frameMaxSize: v80@0:8{CGSize=dd}16{CGSize=dd}32{CGSize=dd}48{CGSize=dd}64  imp=+0x1a1a9c6a4
+  -valid B16@0:8  imp=+0x1a1a8aa1c
+  -viewDidChangeBackingProperties v16@0:8  imp=+0x1a1a93040
+  -viewDidChangeEffectiveAppearance v16@0:8  imp=+0x1a1a9fd40
+  -viewDidEndLiveResize v16@0:8  imp=+0x1a1a96994
+  -viewDidHide v16@0:8  imp=+0x1a1aa2358
+  -viewDidMoveToSuperview v16@0:8  imp=+0x1a1a92648
+  -viewDidMoveToWindow v16@0:8  imp=+0x1a1a92c28
+  -viewDidUnhide v16@0:8  imp=+0x1a1a930f8
+  -viewServiceAuditToken {?=[8I]}16@0:8  imp=+0x1a1a9e248
+  -viewServiceProcessIdentifier i16@0:8  imp=+0x1a1a9e344
+  -viewWillMoveToWindow: v24@0:8@16  imp=+0x1a1a92a2c
+  -viewWillStartLiveResize v16@0:8  imp=+0x1a1a96780
+  -visualizeConstraints v16@0:8  imp=+0x1a1a90b84
+  -wantsAlertStylePadding B16@0:8  imp=+0x1a1aa40c8
+  -wouldAssociate B16@0:8  imp=+0x1a1a9f574
+  -wrapProxyForAnimationFencing:withAnimationAttributesFor: @32@0:8@16@24  imp=+0x1a1a95a80
+@class NSRemoteViewController : NSViewController instanceSize=136
+  ivar +120 _aux @"NSRemoteViewControllerAuxiliary"
+  ivar +128 _retainReleaseLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  property remoteViewIdentifier (T@"NSString",R)
+  property serviceBundleIdentifier (T@"NSString",R)
+  property serviceInstanceIdentifier (T@"NSUUID",R)
+  property serviceViewControllerClassName (T@"NSString",R)
+  property serviceListenerEndpoint (T@"NSXPCListenerEndpoint",R)
+  property serviceProcessIdentifier (Ti,R)
+  property serviceAuditToken (T{?=[8I]},R)
+  +_onAppKitThreadRequestViewController:withBlock: v32@0:8@?16@?24  imp=+0x1a1ab37b4
+  +_requestViewController:withBlock: v32@0:8@?16@?24  imp=+0x1a1ab3b04
+  +deferBlockOntoMainThread: v24@0:8@?16  imp=+0x1a1ab46f8
+  +exportedInterface @16@0:8  imp=+0x1a1ab4328
+  +inhibitFirstResponder B16@0:8  imp=+0x1a1a37c78
+  +remoteViewShouldHaveAccessibilityChildren: B24@0:8@16  imp=+0x1a1ab49ac
+  +requestViewController:connectionHandler: v32@0:8@16@?24  imp=+0x1a1ab3c74
+  +requestViewController:fromServiceListenerEndpoint:connectionHandler: v40@0:8@16@24@?32  imp=+0x1a1ab41dc
+  +requestViewController:fromServiceWithBundleIdentifier:connectionHandler: v40@0:8@16@24@?32  imp=+0x1a1a356a0
+  +requestViewController:withServiceViewControllerIdentifier:forRemoteView:connectionHandler: v48@0:8@16@24@32@?40  imp=+0x1a1ab3e04
+  +requestViewControllerForExtensionWithIdentifier:fromServiceWithBundleIdentifier:connectionHandler: v40@0:8@16@24@?32  imp=+0x1a1ab41d0
+  +requestViewControllerForExtensionWithIdentifier:fromServiceWithBundleIdentifier:serviceInstanceIdentifier:connectionHandler: v48@0:8@16@24@32@?40  imp=+0x1a1ab4024
+  +serviceViewControllerInterface @16@0:8  imp=+0x1a1ab42f8
+  +shouldLayerBackRemoteView: B24@0:8@16  imp=+0x1a1ab496c
+  +unflattenEvent:owner:window: @36@0:8@16I24@28  imp=+0x1a1ab4ad0
+  +viewShouldDragOldestAncestorWindow B16@0:8  imp=+0x1a1ab49b4
+  -__vbSuperRelease v16@0:8  imp=+0x1a1ab3278
+  -__vbWithLockPerform: v24@0:8@?16  imp=+0x1a1a38c94
+  -_initAux v16@0:8  imp=+0x1a1a37bdc
+  -_postServiceViewReceivedLeftMouseDownNotification: v24@0:8q16  imp=+0x1a1ab4800
+  -_viewDidMoveToSuperview v16@0:8  imp=+0x1a1ab48e8
+  -_viewWithoutLoad @16@0:8  imp=+0x1a1ab47ec
+  -aboutToAdvanceView:toRunPhaseWithParameters: v32@0:8@16@24  imp=+0x1a1ab3be4
+  -dealloc v16@0:8  imp=+0x1a1ab3378
+  -disconnect v16@0:8  imp=+0x1a1ab44a0
+  -exportedInterface @16@0:8  imp=+0x1a1ab4300
+  -exportedObject @16@0:8  imp=+0x1a1ab4330
+  -fauxSynchronousIPCPatience d16@0:8  imp=+0x1a1ab343c
+  -inhibitFirstResponder B16@0:8  imp=+0x1a1ab4910
+  -initWithCoder: @24@0:8@16  imp=+0x1a1ab33e8
+  -initWithNibName:bundle: @32@0:8@16@24  imp=+0x1a1a37b88
+  -release Vv16@0:8  imp=+0x1a1a390a4
+  -remoteViewIdentifier @16@0:8  imp=+0x1a1ab3518
+  -remoteViewShouldHaveAccessibilityChildren: B24@0:8@16  imp=+0x1a1ab4974
+  -retain @16@0:8  imp=+0x1a1a38b74
+  -retainReleaseLock ^{os_unfair_lock_s=I}16@0:8  imp=+0x1a1a38d0c
+  -serviceAuditToken {?=[8I]}16@0:8  imp=+0x1a1ab35ac
+  -serviceBuiltForPlatform:againstMinimumSDK:reply: v32@0:8I16I20@?24  imp=+0x1a1ab4518
+  -serviceBundleIdentifier @16@0:8  imp=+0x1a1a38104
+  -serviceHasRequestedResizeTo: v32@0:8{CGSize=dd}16  imp=+0x1a1ab4a88
+  -serviceInstanceIdentifier @16@0:8  imp=+0x1a1a381f4
+  -serviceListenerEndpoint @16@0:8  imp=+0x1a1ab34e0
+  -serviceProcessIdentifier i16@0:8  imp=+0x1a1ab3550
+  -serviceViewControllerClassName @16@0:8  imp=+0x1a1a38008
+  -serviceViewControllerInterface @16@0:8  imp=+0x1a1ab42d0
+  -serviceViewControllerProxy @16@0:8  imp=+0x1a1ab3614
+  -serviceViewControllerProxyWithErrorHandler: @24@0:8@?16  imp=+0x1a1ab3748
+  -setInhibitFirstResponder: v20@0:8B16  imp=+0x1a1ab48ec
+  -setServiceBundleIdentifier: v24@0:8@16  imp=+0x1a1a38544
+  -setServiceListenerEndpoint: v24@0:8@16  imp=+0x1a1ab3444
+  -setServiceViewControllerClassName: v24@0:8@16  imp=+0x1a1a38644
+  -setView: v24@0:8@16  imp=+0x1a1a37c80
+  -shouldContributeToKeyboardEventGraph B16@0:8  imp=+0x1a1ab492c
+  -shouldLayerBackRemoteView: B24@0:8@16  imp=+0x1a1ab4934
+  -synchronizeAnimationsInActions: v24@0:8@?16  imp=+0x1a1ab4700
+  -view:shouldResize: B40@0:8@16{CGSize=dd}24  imp=+0x1a1ab49e4
+  -viewServiceDidTerminateWithError: v24@0:8@16  imp=+0x1a1ab4358
+  -viewShouldDragOldestAncestorWindow B16@0:8  imp=+0x1a1ab49bc
+@class NSRemoteViewControllerAuxiliary : NSObject <NSRemoteViewDelegate> instanceSize=64
+  ivar +8 _inhibitFirstResponder b1
+  ivar +16 _remoteViewController @"NSRemoteViewController"
+  ivar +24 _serviceBundleIdentifier @"NSString"
+  ivar +32 _serviceInstanceIdentifier @"NSUUID"
+  ivar +40 _serviceViewControllerClassName @"NSString"
+  ivar +48 _terminationError @"NSError"
+  ivar +56 _connectionHandler @?
+  property connectionHandler (T@?,C,V_connectionHandler)
+  property shouldRetainExportedObject (TB,?,R)
+  -_invalid B16@0:8  imp=+0x1a1ab3240
+  -_invalidate v16@0:8  imp=+0x1a1ab3218
+  -_viewWithoutLoad @16@0:8  imp=+0x1a1a37f30
+  -connectionHandler @?16@0:8  imp=+0x1a1ab3248
+  -dealloc v16@0:8  imp=+0x1a1ab2cc4
+  -exportedInterface @16@0:8  imp=+0x1a1ab2de8
+  -exportedObject @16@0:8  imp=+0x1a1ab2df0
+  -serviceViewControllerInterface @16@0:8  imp=+0x1a1ab2de0
+  -setConnectionHandler: v24@0:8@?16  imp=+0x1a1ab3254
+  -shouldRetainExportedObject B16@0:8  imp=+0x1a1ab2df8
+  -view:encounteredError: v32@0:8@16@24  imp=+0x1a1ab2f9c
+  -view:shouldResize: B40@0:8@16{CGSize=dd}24  imp=+0x1a1ab312c
+  -viewDidAdvanceToRunPhase: v24@0:8@16  imp=+0x1a1ab2db8
+  -viewDidInvalidate: v24@0:8@16  imp=+0x1a1ab2e00
+  -viewShouldDragOldestAncestorWindow: B24@0:8@16  imp=+0x1a1ab31cc
+@class NSRemoteViewControllerForTouchBarItem : NSRemoteViewController <_NSAlertSensitiveView, _NSTouchBarItemLayoutWrapper, NSViewBridgeKVOBuddy> instanceSize=152
+  ivar +136 _observing b1
+  ivar +144 _observingTouchBarItem @"NSTouchBarItem"
+  property wantsAlertStylePadding (TB,R)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  property minSize (T{CGSize=dd},R)
+  property maxSize (T{CGSize=dd},R)
+  property isSpace (TB,R)
+  property preferredSize (T{CGSize=dd},?,R)
+  property contentClippingSize (T{CGSize=dd},?,R)
+  property compressedMinSize (T{CGSize=dd},?,R)
+  property priorityIndex (Tq,?,R)
+  property itemPosition (TQ,?,R)
+  property preferredZOrder (Td,?,R)
+  property preferredTrailingPosition (Td,?,R)
+  property participatesInOverflow (TB,?,R)
+  property isTitle (TB,?,R)
+  +copyConstraintIdentifier: @24@0:8@16  imp=+0x1a1abb518
+  -_viewDidMoveToSuperview v16@0:8  imp=+0x1a1abbad8
+  -boolForBridgeKey: B24@0:8@16  imp=+0x1a1abb7a8
+  -contentClippingSize {CGSize=dd}16@0:8  imp=+0x1a1abb778
+  -dealloc v16@0:8  imp=+0x1a1abb4cc
+  -isSpace B16@0:8  imp=+0x1a1abb9b4
+  -kvoKeys @16@0:8  imp=+0x1a1abb9bc
+  -maintainObservers: v20@0:8B16  imp=+0x1a1abb31c
+  -maintainObserversForTouchBarItem: v24@0:8@16  imp=+0x1a1abb418
+  -maxSize {CGSize=dd}16@0:8  imp=+0x1a1abb784
+  -minSize {CGSize=dd}16@0:8  imp=+0x1a1abb79c
+  -observeValueForKeyPath:ofObject:change:context: v48@0:8@16@24@32^v40  imp=+0x1a1abb1b4
+  -observeValueForVisible: v20@0:8B16  imp=+0x1a1abb04c
+  -preferredSize {CGSize=dd}16@0:8  imp=+0x1a1abb790
+  -shouldContributeToKeyboardEventGraph B16@0:8  imp=+0x1a1abb314
+  -sizeForBridgeKey: {CGSize=dd}24@0:8@16  imp=+0x1a1abb590
+  -wantsAlertStylePadding B16@0:8  imp=+0x1a1abb9a8
+@class NSRemoteViewControllerParameters : NSRemoteViewControllerParametersForService instanceSize=136
+  ivar +112 _serviceBundleIdentifier @"NSString"
+  ivar +120 _serviceListenerEndpoint @"NSXPCListenerEndpoint"
+  ivar +128 _serviceInstanceIdentifier @"NSUUID"
+  property serviceBundleIdentifier (T@"NSString",C,V_serviceBundleIdentifier)
+  property serviceListenerEndpoint (T@"NSXPCListenerEndpoint",&,V_serviceListenerEndpoint)
+  property serviceInstanceIdentifier (T@"NSUUID",&,V_serviceInstanceIdentifier)
+  -dealloc v16@0:8  imp=+0x1a1ab5430
+  -serviceBundleIdentifier @16@0:8  imp=+0x1a1ab5504
+  -serviceInstanceIdentifier @16@0:8  imp=+0x1a1ab552c
+  -serviceListenerEndpoint @16@0:8  imp=+0x1a1ab5518
+  -setServiceBundleIdentifier: v24@0:8@16  imp=+0x1a1ab5510
+  -setServiceInstanceIdentifier: v24@0:8@16  imp=+0x1a1ab5538
+  -setServiceListenerEndpoint: v24@0:8@16  imp=+0x1a1ab5524
+@class NSRemoteViewControllerParametersForService : NSRemoteViewControllerParametersForServiceBase <NSSecureCoding, NSCopying> instanceSize=112
+  ivar +80 _serviceViewControllerClassName @"NSString"
+  ivar +88 _extensionIdentifier @"NSUUID"
+  ivar +96 _hostAppClientParameters @"NSObject<NSSecureCoding>"
+  ivar +104 _serviceViewControllerInstanceIdentifier @"NSString"
+  property serviceViewControllerClassName (T@"NSString",C,V_serviceViewControllerClassName)
+  property extensionIdentifier (T@"NSUUID",&,V_extensionIdentifier)
+  property hostAppClientParameters (T@"NSObject<NSSecureCoding>",C,V_hostAppClientParameters)
+  property serviceViewControllerInstanceIdentifier (T@"NSString",C,V_serviceViewControllerInstanceIdentifier)
+  +supportsSecureCoding B16@0:8  imp=+0x1a1ab4db4
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a1ab52a8
+  -dealloc v16@0:8  imp=+0x1a1ab4dbc
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a1ab4e90
+  -extensionIdentifier @16@0:8  imp=+0x1a1ab53f4
+  -hostAppClientParameters @16@0:8  imp=+0x1a1ab5408
+  -initWithCoder: @24@0:8@16  imp=+0x1a1ab4fc0
+  -serviceViewControllerClassName @16@0:8  imp=+0x1a1ab53e0
+  -serviceViewControllerInstanceIdentifier @16@0:8  imp=+0x1a1ab541c
+  -setExtensionIdentifier: v24@0:8@16  imp=+0x1a1ab5400
+  -setHostAppClientParameters: v24@0:8@16  imp=+0x1a1ab5414
+  -setServiceViewControllerClassName: v24@0:8@16  imp=+0x1a1ab53ec
+  -setServiceViewControllerInstanceIdentifier: v24@0:8@16  imp=+0x1a1ab5428
+@class NSRemoteViewControllerParametersForServiceBase : NSObject instanceSize=80
+  ivar +8 _declineNonKeyboardEvents B
+  ivar +16 _viewFrameInScreenCoords {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}}
+  ivar +48 _safeAreaInsets {NSEdgeInsets="top"d"left"d"bottom"d"right"d}
+  property viewFrameInScreenCoords (T{CGRect={CGPoint=dd}{CGSize=dd}},V_viewFrameInScreenCoords)
+  property safeAreaInsets (T{NSEdgeInsets=dddd},V_safeAreaInsets)
+  property declineNonKeyboardEvents (TB,V_declineNonKeyboardEvents)
+  -declineNonKeyboardEvents B16@0:8  imp=+0x1a1ab4da0
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a1ab4ae0
+  -initWithCoder: @24@0:8@16  imp=+0x1a1ab4b58
+  -safeAreaInsets {NSEdgeInsets=dddd}16@0:8  imp=+0x1a1ab4d24
+  -setDeclineNonKeyboardEvents: v20@0:8B16  imp=+0x1a1ab4dac
+  -setSafeAreaInsets: v48@0:8{NSEdgeInsets=dddd}16  imp=+0x1a1ab4d64
+  -setViewFrameInScreenCoords: v48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16  imp=+0x1a1ab4ce8
+  -viewFrameInScreenCoords {CGRect={CGPoint=dd}{CGSize=dd}}16@0:8  imp=+0x1a1ab4ca8
+@class NSRemoteViewControllerWithDelegate : NSRemoteViewController instanceSize=144
+  ivar +136 _delegate @"<NSRemoteViewControllerDelegate>"
+  property delegate (T@"<NSRemoteViewControllerDelegate>",W,V_delegate)
+  +requestViewController:connectionHandler: v32@0:8@16@?24  imp=+0x1a1ab5918
+  -.cxx_destruct v16@0:8  imp=+0x1a1ab5b04
+  -aboutToAdvanceView:toRunPhaseWithParameters: v32@0:8@16@24  imp=+0x1a1ab55bc
+  -delegate @16@0:8  imp=+0x1a1ab5ae0
+  -exportedInterface @16@0:8  imp=+0x1a1ab57ec
+  -exportedObject @16@0:8  imp=+0x1a1ab584c
+  -serviceViewControllerInterface @16@0:8  imp=+0x1a1ab578c
+  -setDelegate: v24@0:8@16  imp=+0x1a1ab5af0
+  -view:shouldResize: B40@0:8@16{CGSize=dd}24  imp=+0x1a1ab5540
+  -viewServiceDidTerminateWithError: v24@0:8@16  imp=+0x1a1ab566c
+@class NSRemoteViewControllerWithDelegateParameters : NSRemoteViewControllerParameters instanceSize=144
+  ivar +136 _delegate @"<NSRemoteViewControllerDelegate>"
+  property delegate (T@"<NSRemoteViewControllerDelegate>",&,V_delegate)
+  -dealloc v16@0:8  imp=+0x1a1ab5b14
+  -delegate @16@0:8  imp=+0x1a1ab5be8
+  -setDelegate: v24@0:8@16  imp=+0x1a1ab5bf4
+@class NSRemoteViewHostAppExportedObject : NSObject <AuxiliaryCallsClient> instanceSize=8
+  -_requestUserInteractionWithPatience:options:sender:reply: i48@0:8d16Q24{ProcessSerialNumber=II}32@?40  imp=+0x1a1a895d8
+  -addFreeWindow:identifier:listenerEndpoint:reply: v136@0:8{?={?=[8I]}{?=QC{CGRect={CGPoint=dd}{CGSize=dd}}IQ}}16@112@120@?128  imp=+0x1a1a89534
+  -requestUserInteractionWithPatience:options:sender:reply: v48@0:8d16Q24{ProcessSerialNumber=II}32@?40  imp=+0x1a1a8a01c
+  -retrievePreviewEndpoint: v24@0:8@?16  imp=+0x1a1a8945c
+@class NSRemoteViewHostAppListenerDelegate : ListenerDelegate <NSXPCConnectionDelegate, NSVBXPCConnectionClient> instanceSize=16
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  property fenceContext (T@"CAContext",R)
+  property isValid (TB,R)
+  -_invalidateDueToExceptionDuringIncomingIPC: @24@0:8@16  imp=+0x1a1a8a134
+  -connection:handleInvocation:isReply: v36@0:8@16@24B32  imp=+0x1a1a8a13c
+  -fenceContext @16@0:8  imp=+0x1a1a8a124
+  -isValid B16@0:8  imp=+0x1a1a8a12c
+  -listener:shouldAcceptNewConnection: B32@0:8@16@24  imp=+0x1a1a8a14c
+@class NSRemoteViewMarshal : NSObject <NSRemoteViewMarshal, NSVBRedactedProtocol, NSScrollViewSeparatorTrackingAdapter> instanceSize=664
+  ivar +8 _layerHost @"CALayerHost"
+  ivar +16 _invalidationSemaphore @"NSCFRunLoopSemaphore"
+  ivar +24 _spawnedBy @"NSRemoteView"
+  ivar +32 _view @"NSRemoteView"
+  ivar +40 _delegate @"NSObject<NSRemoteViewDelegate>"
+  ivar +48 _frameRequestTransactionInProgress @"NSString"
+  ivar +56 _observedContainingWindow @"NSWindow"
+  ivar +64 _sheetParent @"NSWindow"
+  ivar +72 _mostRecentlyReportedScaleFactor d
+  ivar +80 _serviceWindowDragRegion ^{CGSRegionObject=}
+  ivar +88 _serviceConnectionID I
+  ivar +92 _lastKnownKeyTestWindowID I
+  ivar +96 _hostWindowLocalEventMonitor @
+  ivar +104 _processNotificationEventMonitor @
+  ivar +112 _mostRecentlySentAppearance @"NSData"
+  ivar +120 _serviceWindowBackgroundColor @"NSColor"
+  ivar +128 _mostRecentlyReportedAccessibilityParentToken @"NSData"
+  ivar +136 _remoteAccessibilityChildren @"NSDictionary"
+  ivar +144 _fakeServiceResponder @"NSFakeServiceResponder"
+  ivar +152 _appModalSession ^{_NSModalSession=}
+  ivar +160 _deferredSheets @"NSMutableArray"
+  ivar +168 _legacyAdvanceToConfigPhaseSemaphores @"NSMutableArray"
+  ivar +176 _childWindowQueue @"NSMutableArray"
+  ivar +184 _friendlyKeyFocusThieves @"NSMutableSet"
+  ivar +192 _clientExportedObject @"NSObject"
+  ivar +200 _requestedOrigin {CGPoint="x"d"y"d}
+  ivar +216 _serviceViewControllerProxyWithAnimationSyncInterface @"NSProxy<NSXPCProxyCreating>"
+  ivar +224 _serviceViewControllerProxyWithClientInterface @"NSProxy<NSXPCProxyCreating>"
+  ivar +232 _serviceFirstResponderQueue @"NSMutableArray"
+  ivar +240 _mostRecentGeometry {?="ignoreCornerConfig"B"cornerViewFrameInScreenCoords"{CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}}"cornerRadii"{?="topLeft"d"topRight"d"bottomLeft"d"bottomRight"d}"frameInScreenCoords"{CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}}}
+  ivar +344 _serviceWindowFrameAtBootstrap {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}}
+  ivar +376 _appNapState i
+  ivar +380 _containingWindowOrdering i
+  ivar +384 _remoteViewControllerParametersForService @"NSRemoteViewControllerParametersForService"
+  ivar +392 _rendezvousWindowKind C
+  ivar +400 _rendezvousWindowBridgeKeys @"NSSet"
+  ivar +408 _intrinsicContentSize {CGSize="width"d"height"d}
+  ivar +424 _serviceWindowID I
+  ivar +432 _serviceViewSizeAtBootstrap {CGSize="width"d"height"d}
+  ivar +448 _windowContentMaxSize {CGSize="width"d"height"d}
+  ivar +464 _windowContentMinSize {CGSize="width"d"height"d}
+  ivar +480 _windowFrameMaxSize {CGSize="width"d"height"d}
+  ivar +496 _windowFrameMinSize {CGSize="width"d"height"d}
+  ivar +512 _identifier @"NSString"
+  ivar +520 _serviceName @"NSString"
+  ivar +528 _trackingArea @"NSTrackingArea"
+  ivar +536 _wrappedModifySubviewsInProgress Q
+  ivar +544 _bridgePhase C
+  ivar +552 _bridge @"NSViewRemoteBridge"
+  ivar +560 _windowBase C
+  ivar +568 _serviceWindowLevelAtBootstrap q
+  ivar +576 _lastKnownHostWindowKeyness {?="immediate"B"ultimate"B}
+  ivar +584 _serviceWindowStyleMask Q
+  ivar +592 _serviceMarshalConnection @"NSXPCConnection"
+  ivar +600 _clientExportedInterface @"NSXPCInterface"
+  ivar +608 _serviceListenerEndpoint @"NSXPCListenerEndpoint"
+  ivar +616 _retainReleaseLockMarshal {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +620 _retainReleaseLockView {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +624 _shouldMaskToBounds C
+  ivar +628 _mouseDisassociatedFromMouseCursor I
+  ivar +632 _touchBarsDescription @"NSArray"
+  ivar +640 _touchBarCount Q
+  ivar +648 _singleTouchBar b1
+  ivar +648 _associated b1
+  ivar +648 _avoidReleasingClientExportedObject b1
+  ivar +648 _connectionConfiguredWithServiceViewControllerClientInterface b1
+  ivar +648 _deferResizeRequestsUntilAfterRunPhase b1
+  ivar +648 _disabledSuddenTermination b1
+  ivar +648 _frameOfServiceWindowChanging b1
+  ivar +648 _hasSheetsBeginning b1
+  ivar +649 _invalid b1
+  ivar +649 _isSettingViewFrame b1
+  ivar +649 _isSettingWindowStyleMask b1
+  ivar +649 _isSheetBeginning b1
+  ivar +649 _knownToBeContentView b1
+  ivar +649 _notifyingDelegateAccessoryWindowDidUpdateConstraintsIfNeeded b1
+  ivar +649 _refuseFirstResponder b1
+  ivar +649 _registeredForAppWideNotifications b1
+  ivar +650 _registeredScrollViewSeparatorTrackingAdapter b1
+  ivar +650 _remoteViewDidEncounterError b1
+  ivar +650 _serviceViewControllerAllowsSnapshot b1
+  ivar +650 _serviceViewControllerIsMarzipan b1
+  ivar +650 _serviceWindowIsKey b1
+  ivar +650 _serviceWindowKeynessChangeInProgress b1
+  ivar +650 _synchronizesImplicitAnimations b1
+  ivar +650 _trustsServiceKeyEvents b1
+  ivar +651 _warnedAboutAbsentBridge b1
+  ivar +652 hasScrolledContentsUnderTitlebar B
+  ivar +653 _shouldColorize B
+  ivar +656 _accessoryViewWindow @"NSAccessoryViewWindow"
+  property touchBarsDescription (T@"NSArray",&,V_touchBarsDescription)
+  property shouldColorize (TB,V_shouldColorize)
+  property accessoryViewWindow (T@"NSAccessoryViewWindow",W,V_accessoryViewWindow)
+  property remoteAccessibilityChildren (T@"NSDictionary",C,V_remoteAccessibilityChildren)
+  property bridge (T@"NSViewBridge",R,V_bridge)
+  property view (T@"NSRemoteView",R,V_view)
+  property remoteViewControllerParametersForService (T@"NSRemoteViewControllerParametersForService",&,V_remoteViewControllerParametersForService)
+  property hasScrolledContentsUnderTitlebar (TB,VhasScrolledContentsUnderTitlebar)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  property scrollViewFrame (T{CGRect={CGPoint=dd}{CGSize=dd}},R)
+  property separatorOffset (Td,?,R)
+  property relaxRegistrationRequirements (TB,?,R)
+  property hasHeader (TB,?,R)
+  property headerFrameInWindow (T{CGRect={CGPoint=dd}{CGSize=dd}},?,R)
+  property titlebarBackgroundStyle (Tq,?)
+  property fullScreenTitlebarOverlayHeight (Td,?)
+  +_addFreeWindow:parameters:listenerEndpoint:reply: v48@0:8@16r^{?={?=[8I]}{?=QC{CGRect={CGPoint=dd}{CGSize=dd}}IQ}}24@32@?40  imp=+0x1a1aa4c24
+  +eventForEvent:andWindow: @32@0:8^{__CGEvent=}16@24  imp=+0x1a1aa70f8
+  +handleEvent:withRemoteViewToken:fullDispatch:reply: v44@0:8^{__CGEvent=}16@24B32@?36  imp=+0x1a1aa7188
+  +handleEvent:withWindowToken:fullDispatch:reply: v44@0:8^{__CGEvent=}16@24B32@?36  imp=+0x1a1aa73d0
+  +handleEventAsHost:fullDispatch:reply: v36@0:8^{__CGEvent=}16B24@?28  imp=+0x1a1aa75b4
+  +initialize v16@0:8  imp=+0x1a1aa7bf4
+  +nsxpcInterface: @24@0:8@16  imp=+0x1a1aa6ed8
+  -.cxx_destruct v16@0:8  imp=+0x1a1aa7d28
+  -__vbSuperRelease v16@0:8  imp=+0x1a1aa44c4
+  -__vbWithLockPerform: v24@0:8@?16  imp=+0x1a1aa42d8
+  -_topmostAppModalSessionHasRendezvousWindowIdentifier: B24@0:8@16  imp=+0x1a1aa5e74
+  -accessoryViewWindow @16@0:8  imp=+0x1a1aa7d00
+  -associateMouseAndMouseCursorPosition:completion: v28@0:8B16@?20  imp=+0x1a1aa6714
+  -beginAppModalSession:parameters:listenerEndpoint:withReply: v104@0:8@16{?={?=QC{CGRect={CGPoint=dd}{CGSize=dd}}IQ}}24@88@?96  imp=+0x1a1aa5f2c
+  -beginSheet:childIdentifier:modalForWindow:listenerEndpoint:withReply: v120@0:8{?=B{?=QC{CGRect={CGPoint=dd}{CGSize=dd}}IQ}}16@88@96@104@?112  imp=+0x1a1aa5d9c
+  -beginTrackingLoop:reply: v32@0:8@16@?24  imp=+0x1a1aa6b18
+  -bridge @16@0:8  imp=+0x1a1a3f030
+  -builtForPlatform:againstMinimumSDK:reply: v32@0:8I16I20@?24  imp=+0x1a1aa6988
+  -dealloc v16@0:8  imp=+0x1a1a3ff18
+  -declineKeyboardEventsOtherThan:completion: v32@0:8@16@?24  imp=+0x1a1adecac
+  -dragWindowRelativeToMouseDown: v32@0:8{CGPoint=dd}16  imp=+0x1a1aa669c
+  -endAppModalSession: v24@0:8@16  imp=+0x1a1aa634c
+  -endSheet: v24@0:8@?16  imp=+0x1a1aa5d50
+  -endTrackingLoop:reply: v32@0:8@16@?24  imp=+0x1a1aa6bc8
+  -forwardActionUpResponderChain: v24@0:8@16  imp=+0x1a1aa6928
+  -handleScrollWheelEmulatorMessage:completion: v32@0:8@16@?24  imp=+0x1a1adecf0
+  -hasAccessoryViewWhichCanBecomeKeyView: v24@0:8@?16  imp=+0x1a1aa6cb0
+  -hasScrolledContentsUnderTitlebar B16@0:8  imp=+0x1a1aa7cc4
+  -hasValidKeyViewInDirection:withReply: v32@0:8Q16@?24  imp=+0x1a1aa52f8
+  -hideTouchBarPopover: v24@0:8@16  imp=+0x1a1aa6ea0
+  -hostWindowModalSessionStatus: v24@0:8@?16  imp=+0x1a1aa652c
+  -initWithView: @24@0:8@16  imp=+0x1a1a35b18
+  -lastCallImpliedByAdvancingToPhase: v20@0:8C16  imp=+0x1a1a3eb74
+  -matchBootstrapFrameOfWindow: v24@0:8@16  imp=+0x1a1aa49e0
+  -registerBridgeKey:defaultObject:owner: v36@0:8@16@24C32  imp=+0x1a1aa57c8
+  -registerBridgeKeys: v24@0:8@16  imp=+0x1a1aa5638
+  -relaxRegistrationRequirements B16@0:8  imp=+0x1a1aa69d0
+  -release Vv16@0:8  imp=+0x1a1aa44fc
+  -remoteAccessibilityChildren @16@0:8  imp=+0x1a1a37984
+  -remoteViewControllerParametersForService @16@0:8  imp=+0x1a1aa7d14
+  -remoteViewControllerProxy: v24@0:8@?16  imp=+0x1a1aa6664
+  -retain @16@0:8  imp=+0x1a1aa4350
+  -retainReleaseLock ^{os_unfair_lock_s=I}16@0:8  imp=+0x1a1aa42d0
+  -retreatToConfigPhase v16@0:8  imp=+0x1a1a3ffb8
+  -scrollViewFrame {CGRect={CGPoint=dd}{CGSize=dd}}16@0:8  imp=+0x1a1aa69d8
+  -serviceAccessoryViewFrameChanged: v48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16  imp=+0x1a1aa6c58
+  -serviceHasFirstResponder:inDirection:withReply: v48@0:8{?=QBBB}16Q32@?40  imp=+0x1a1a3f858
+  -serviceHasService: v20@0:8i16  imp=+0x1a1aa67e4
+  -serviceHasTouchBars: v24@0:8@16  imp=+0x1a1aa6df8
+  -serviceViewReceivedLeftMouseDown: v24@0:8q16  imp=+0x1a1aa5438
+  -serviceWindowDidBecomeKey v16@0:8  imp=+0x1a1a3f988
+  -serviceWindowDidResignKey v16@0:8  imp=+0x1a1a3fab0
+  -serviceWindowHasDragRegion: v24@0:8@16  imp=+0x1a1aa52c0
+  -serviceWindowHasScrolledContentsUnderTitlebar: v20@0:8B16  imp=+0x1a1aa6a4c
+  -serviceWindowReceivedScrollWheel:eventOwner: v28@0:8@16I24  imp=+0x1a1aa53f8
+  -serviceWindowWouldActivate v16@0:8  imp=+0x1a1aa53d0
+  -setAccessoryViewWindow: v24@0:8@16  imp=+0x1a1aa7d08
+  -setCursor: v24@0:8@16  imp=+0x1a1aa6998
+  -setHasScrolledContentsUnderTitlebar: v20@0:8B16  imp=+0x1a1aa7cd0
+  -setHostObject:forKey: v32@0:8@16@24  imp=+0x1a1aa5470
+  -setRemoteAccessibilityChildren: v24@0:8@16  imp=+0x1a1a3797c
+  -setRemoteViewControllerParametersForService: v24@0:8@16  imp=+0x1a1aa7d20
+  -setServiceContextID: v20@0:8I16  imp=+0x1a1aa5cf4
+  -setServiceWindowEventMask: v24@0:8Q16  imp=+0x1a1aa66dc
+  -setServiceWindowStyleMask: v24@0:8Q16  imp=+0x1a1a4020c
+  -setShouldColorize: v20@0:8B16  imp=+0x1a1aa7cf8
+  -setTouchBar:description: v32@0:8@16@24  imp=+0x1a1aa6d38
+  -setTouchBar:escapeKeyReplacementItem: v32@0:8@16@24  imp=+0x1a1aa6d78
+  -setTouchBar:principalItemIdentifier: v32@0:8@16@24  imp=+0x1a1aa6db8
+  -setTouchBarItem:itemPosition: v32@0:8@16@24  imp=+0x1a1aa6cf8
+  -setTouchBarsDescription: v24@0:8@16  imp=+0x1a1aa7ce4
+  -shakeWindow v16@0:8  imp=+0x1a1aa6960
+  -shouldColorize B16@0:8  imp=+0x1a1aa7cec
+  -showTouchBarPopover:fromItem:withOverlayIdentifier:withCloseButton:withControlStrip:withOptions: v56@0:8@16@24@32B40B44@48  imp=+0x1a1aa6e30
+  -touchBarsDescription @16@0:8  imp=+0x1a1aa7cd8
+  -updateAccessibilityChildren: v24@0:8@16  imp=+0x1a1a3f820
+  -updateContentMinSize:contentMaxSize:frameMinSize:frameMaxSize: v80@0:8{CGSize=dd}16{CGSize=dd}32{CGSize=dd}48{CGSize=dd}64  imp=+0x1a1aa5348
+  -view @16@0:8  imp=+0x1a1a3e760
+  -waitForHostKeysToRegister: v24@0:8@?16  imp=+0x1a1aa681c
+  -window:isUltimatelySpawnedFrom: B32@0:8@16@24  imp=+0x1a1aa6478
+@class NSRemoteViewPopoverFrame : NSPopoverFrame instanceSize=632
+  -setHasFullSizeContent: v20@0:8B16  imp=+0x1a1a88dbc
+@class NSRemoteViewSemaphore : NSCFRunLoopSemaphore instanceSize=40
+  ivar +32 _activity @"NSObject<OS_os_activity>"
+  +semaphoreWithActivity: @24@0:8@16  imp=+0x1a1a890f4
+  -dealloc v16@0:8  imp=+0x1a1a88f78
+  -init @16@0:8  imp=+0x1a1a890ec
+  -initWithActivity: @24@0:8@16  imp=+0x1a1a89058
+  -wait: B24@0:8d16  imp=+0x1a1a891c4
+@class NSRendezvousAppModalSessionController : NSSemiAutonomousRendezvousWindowController instanceSize=152
+  ivar +144 _ending I
+  -invalidate v16@0:8  imp=+0x1a1ac3c80
+  -invalidateWhileEnding: v20@0:8B16  imp=+0x1a1ac3f58
+@class NSRendezvousAppModalSessionPanelController : NSRendezvousAppModalSessionController instanceSize=152
+  +addBridgeKeys: v24@0:8@16  imp=+0x1a1ac3fd8
+@class NSRendezvousAppModalWindowDelegate : NSSemiAutonomousRendezvousWindowDelegate instanceSize=24
+@class NSRendezvousChildPanelController : NSRendezvousChildWindowController instanceSize=152
+  +acceptableStyleMask Q16@0:8  imp=+0x1a1ac4410
+  +addBridgeKeys: v24@0:8@16  imp=+0x1a1ac4450
+@class NSRendezvousChildWindowController : NSSemiAutonomousRendezvousWindowController instanceSize=152
+  ivar +144 _childControllerInvalid b1
+  -invalidate v16@0:8  imp=+0x1a1ac429c
+  -invalidateWithError: v24@0:8@16  imp=+0x1a1ac42a4
+@class NSRendezvousChildWindowDelegate : NSSemiAutonomousRendezvousWindowDelegate instanceSize=40
+  ivar +24 _mostRecentlyKnownOrigin {CGPoint="x"d"y"d}
+  -_window:shouldCloseForClosingParentPopoverWindowWithTransientContext: B28@0:8@16B24  imp=+0x1a1a88db4
+  -initWithWindow:andParent: @32@0:8@16@24  imp=+0x1a1a88d34
+  -originRelevantToParent: {CGPoint=dd}24@0:8@16  imp=+0x1a1a88c80
+  -windowDidMove: v24@0:8@16  imp=+0x1a1a88cec
+@class NSRendezvousFreePanelController : NSRendezvousFreeWindowController instanceSize=144
+  +acceptableStyleMask Q16@0:8  imp=+0x1a1ac3bec
+  +addBridgeKeys: v24@0:8@16  imp=+0x1a1ac3c2c
+@class NSRendezvousFreePopoverController : NSRendezvousFreeWindowController instanceSize=144
+  +acceptableStyleMask Q16@0:8  imp=+0x1a1ac3bdc
+  -_serviceWindowFrameForRemoteViewFrame: {CGRect={CGPoint=dd}{CGSize=dd}}48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16  imp=+0x1a1ac3b84
+@class NSRendezvousFreeWindowController : NSSemiAutonomousRendezvousWindowController instanceSize=144
+  -shouldInvalidateWhenOrderingOut B16@0:8  imp=+0x1a1ac3b7c
+@class NSRendezvousFreeWindowDelegate : NSSemiAutonomousRendezvousWindowDelegate instanceSize=24
+@class NSRendezvousPopoverController : NSRendezvousChildPanelController instanceSize=152
+  +acceptableStyleMask Q16@0:8  imp=+0x1a1ac44a4
+  +addBridgeKeys: v24@0:8@16  imp=+0x1a1ac44b4
+  -_serviceWindowFrameForRemoteViewFrame: {CGRect={CGPoint=dd}{CGSize=dd}}48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16  imp=+0x1a1ac4760
+  -objectToObserveForKey:withWindow: @32@0:8@16@24  imp=+0x1a1ac4548
+  -popoverAccessibilityParent @16@0:8  imp=+0x1a1ac4624
+@class NSRendezvousPopoverDelegate : NSRendezvousChildWindowDelegate instanceSize=40
+  -_setValue:forKey:context: v40@0:8@16@24@32  imp=+0x1a1a88e08
+@class NSRendezvousSheetController : NSRendezvousWindowController instanceSize=144
+  property parentIdentifier (T@"NSString",R)
+  +acceptableStyleMask Q16@0:8  imp=+0x1a1ac402c
+  -invalidate v16@0:8  imp=+0x1a1ac40c4
+  -parentIdentifier @16@0:8  imp=+0x1a1ac4070
+@class NSRendezvousSheetDelegate : NSRendezvousWindowRemoteViewDelegate instanceSize=24
+@class NSRendezvousWindowController : NSServiceViewController instanceSize=144
+  ivar +136 _bridgeKeysObserved @"NSSet"
+  +addBridgeKeys: v24@0:8@16  imp=+0x1a1ac2c20
+  +bridgeKeys @16@0:8  imp=+0x1a1ac2cac
+  +bridgeKeysForSemiAutonomousWindowBase: @20@0:8C16  imp=+0x1a1ac2d00
+  +controllerForWindow: @24@0:8@16  imp=+0x1a1a3d744
+  -_isSecondary B16@0:8  imp=+0x1a1ac3664
+  -accessibilityCancelButton @16@0:8  imp=+0x1a1ac346c
+  -accessibilityDefaultButton @16@0:8  imp=+0x1a1ac342c
+  -awakeFromRemoteView Q16@0:8  imp=+0x1a1ac34ac
+  -dealloc v16@0:8  imp=+0x1a1ac2f10
+  -initWithWindow: @24@0:8@16  imp=+0x1a1ac2e70
+  -invalidate v16@0:8  imp=+0x1a1ac2f74
+  -loadView v16@0:8  imp=+0x1a1ac32ac
+  -objectToObserveForKey:withWindow: @32@0:8@16@24  imp=+0x1a1ac32ec
+  -setRemoteViewSafeAreaInsets: v48@0:8{NSEdgeInsets=dddd}16  imp=+0x1a1ac366c
+  -tokenForElement: @24@0:8@16  imp=+0x1a1ac3364
+  -windowWillOrder:relativeTo: v32@0:8q16q24  imp=+0x1a1ac31e4
+@class NSRendezvousWindowRemoteViewDelegate : NSSelfDestructingRemoteViewDelegate <NSRendezvousWindowDelegate> instanceSize=24
+  ivar +8 _isSettingValue b1
+  ivar +16 _window @"NSWindow"
+  property isSettingValue (TB,R)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -_setAccessibilityElement:forKey:context: v40@0:8@16@24@32  imp=+0x1a1a882b4
+  -_setValue:forKey:context: v40@0:8@16@24@32  imp=+0x1a1a8836c
+  -_setWindowLevel:forKey:ofView: v40@0:8@16@24@32  imp=+0x1a1a881cc
+  -dealloc v16@0:8  imp=+0x1a1a88b24
+  -disengageFromWindow v16@0:8  imp=+0x1a1a88a80
+  -initWithWindow: @24@0:8@16  imp=+0x1a1a88b6c
+  -isSettingValue B16@0:8  imp=+0x1a1a881c0
+  -observeValueForKeyPath:ofObject:change:context: v48@0:8@16@24@32@40  imp=+0x1a1a887dc
+  -view:shouldResize: B40@0:8@16{CGSize=dd}24  imp=+0x1a1a889bc
+  -viewDidInvalidate: v24@0:8@16  imp=+0x1a1a88ad8
+@class NSSelfDestructingRemoteViewDelegate : NSObject <NSRemoteViewDelegate> instanceSize=8
+  property shouldRetainExportedObject (TB,?,R)
+  -dealloc v16@0:8  imp=+0x1a1a87e68
+  -viewDidInvalidate: v24@0:8@16  imp=+0x1a1a87f28
+@class NSSemiAutonomousRendezvousWindowController : NSRendezvousWindowController instanceSize=144
+  +acceptableStyleMask Q16@0:8  imp=+0x1a1ac3670
+  +addBridgeKeys: v24@0:8@16  imp=+0x1a1ac3924
+  +addPanelBridgeKeys: v24@0:8@16  imp=+0x1a1ac3a58
+  -_serviceWindowFrameForRemoteViewFrame: {CGRect={CGPoint=dd}{CGSize=dd}}48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16  imp=+0x1a1ac371c
+  -_shouldNormalizeAppearance B16@0:8  imp=+0x1a1ac38bc
+  -_viewDidChangeEffectiveAppearance: v24@0:8@16  imp=+0x1a1ac38c4
+  -accessibilityRoot @16@0:8  imp=+0x1a1ac3b54
+  -allowsWindowFrameOriginChanges B16@0:8  imp=+0x1a1ac3720
+  -appearance @16@0:8  imp=+0x1a1ac3b2c
+  -awakeFromRemoteView Q16@0:8  imp=+0x1a1ac3818
+  -objectToObserveForKey:withWindow: @32@0:8@16@24  imp=+0x1a1ac3ab4
+  -remoteViewSizeChanged:transaction: B40@0:8{CGSize=dd}16@32  imp=+0x1a1ac3728
+  -shouldInvalidateWhenOrderingOut B16@0:8  imp=+0x1a1ac36b4
+  -windowWillOrder:relativeTo: v32@0:8q16q24  imp=+0x1a1ac36bc
+@class NSSemiAutonomousRendezvousWindowDelegate : NSRendezvousWindowRemoteViewDelegate instanceSize=24
+  -view:shouldResize: B40@0:8@16{CGSize=dd}24  imp=+0x1a1a88bdc
+@class NSServiceFirstResponderQueueElement : NSObject instanceSize=40
+  ivar +8 _firstResponder {?="identifier"Q"isSuspended"B"isAccessoryView"B"isInServiceWindow"B}
+  ivar +24 _direction Q
+  ivar +32 _reply @?
+  -dealloc v16@0:8  imp=+0x1a1aa7d6c
+  -initWithFirstResponder:direction:reply: @48@0:8{?=QBBB}16Q32@?40  imp=+0x1a1aa7db8
+@class NSServiceViewController : NSViewController instanceSize=136
+  ivar +120 _aux @"NSServiceViewControllerAuxiliary"
+  ivar +128 _superLoadViewInProgress b1
+  ivar +128 _setViewIgnoredGeometry b1
+  ivar +132 _retainReleaseLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  property marshal (T@"NSViewServiceMarshal")
+  property makesExplicitResizeRequests (TB,R)
+  property allowsImplicitResizeRequests (TB,R)
+  property allowsWindowFrameOriginChanges (TB,R)
+  property windowSizeConstraintsShouldTrackRemoteView (TB,R)
+  property serviceWindow (T@"NSWindow",R)
+  property mostRecentCallToSetViewWasNonNil (TB,R)
+  property callsToSetViewCount (TI,R)
+  property controllerIsMarzipan (TB,R)
+  property hostSDKVersion (TI,R)
+  property remoteViewIdentifier (T@"NSString",R)
+  property isValid (TB,R)
+  property remoteViewSize (T{CGSize=dd},R)
+  property hostAppAuditToken (T{?=[8I]},R)
+  property serviceViewControllerIdentifier (T@"NSString",R)
+  property hostAppClientParameters (T@"NSObject<NSSecureCoding>",R)
+  +_windowForContextID:fromViewService:error: I32@0:8I16i20^@24  imp=+0x1a1a4d494
+  +acceptableStyleMask Q16@0:8  imp=+0x1a1a48f50
+  +addCompatibilityDylib: B24@0:8^{mach_header=IiiIIII}16  imp=+0x1a1ab291c
+  +allocWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a1a48790
+  +canBecomeKey B16@0:8  imp=+0x1a1a4dad4
+  +canBecomeMain B16@0:8  imp=+0x1a1a4db04
+  +controllerForIdentifier: @24@0:8@16  imp=+0x1a1a4b0c0
+  +currentAppIsViewService B16@0:8  imp=+0x1a1a372a8
+  +declinedEventMask I16@0:8  imp=+0x1a1a4da90
+  +deferBlockOntoMainThread: v24@0:8@?16  imp=+0x1a1a48e64
+  +dylibsBuiltAgainstAtLeast: B24@0:8{?=II}16  imp=+0x1a1ab2bd0
+  +exportedInterface @16@0:8  imp=+0x1a1a4a4cc
+  +filterStyleMask: Q24@0:8Q16  imp=+0x1a1a48f60
+  +flattenEvent: @24@0:8@16  imp=+0x1a1a4d48c
+  +hostAppDescription: @48@0:8{?=[8I]}16  imp=+0x1a1a3c350
+  +hostAppProcessIdentifierNotFound: v20@0:8i16  imp=+0x1a1a48b00
+  +listenerEndpoint @16@0:8  imp=+0x1a1a488b4
+  +overrideHostApp {?=[8I]}16@0:8  imp=+0x1a1a48948
+  +overrideHostAppMinimal B16@0:8  imp=+0x1a1a48988
+  +privateRunLoopMode ^{__CFString=}16@0:8  imp=+0x1a1a3e754
+  +remoteViewControllerInterface @16@0:8  imp=+0x1a1a4a47c
+  +serviceBundle @16@0:8  imp=+0x1a1a48e6c
+  +serviceViewControllerForWindow: @24@0:8@16  imp=+0x1a1a488f0
+  +setAccessibilityParent:forWindow: B32@0:8q16@24  imp=+0x1a1a487ec
+  +windowIsOrWillBeViewServiceWindow: B24@0:8@16  imp=+0x1a1a4dbf4
+  +withHostAppAuditToken:invoke: v56@0:8{?=[8I]}16@?48  imp=+0x1a1a489b0
+  +withHostProcessIdentifier:invoke: v28@0:8i16@?20  imp=+0x1a1a48ba0
+  -__vbSuperRelease v16@0:8  imp=+0x1a1a4b484
+  -__vbWithLockPerform: v24@0:8@?16  imp=+0x1a1a4b298
+  -_animateLayout:forWindow:withNewFittingSize:completion: v56@0:8@?16@24{CGSize=dd}32@?48  imp=+0x1a1a49388
+  -_assumeGeometryMeaningfulDuringSetView B16@0:8  imp=+0x1a1a4c2ac
+  -_deepTargetForTarget:forSelector: @32@0:8@16:24  imp=+0x1a1a4ad34
+  -_didAssociateWithHostWindow v16@0:8  imp=+0x1a1a4ceb0
+  -_didDisassociateFromHostWindow v16@0:8  imp=+0x1a1a4cf18
+  -_explicitSizeRequestInhibitsImplicitSizeRequests B16@0:8  imp=+0x1a1a491f8
+  -_installViewIntoWindow: B24@0:8@16  imp=+0x1a1a4c430
+  -_invalidateRendezvousWindowControllers v16@0:8  imp=+0x1a1a4bf40
+  -_requestFrame:async:hostShouldAnimate:animation:completion: @72@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16B48B52@?56@?64  imp=+0x1a1a49b2c
+  -_requestResize:async:hostShouldAnimate:animation:completion: @56@0:8{CGSize=dd}16B32B36@?40@?48  imp=+0x1a1a49f14
+  -_respondsToAction:forTarget: B32@0:8:16@24  imp=+0x1a1a4ad78
+  -_retainMarshal v16@0:8  imp=+0x1a1a4b1f0
+  -_serviceWindowFrameForRemoteViewFrame: {CGRect={CGPoint=dd}{CGSize=dd}}48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16  imp=+0x1a1a4cd7c
+  -_setHostSDKVersion: v20@0:8I16  imp=+0x1a1a4cd14
+  -_shouldBridgeAppearanceTransitions B16@0:8  imp=+0x1a1a4ce8c
+  -_shouldNormalizeAppearance B16@0:8  imp=+0x1a1a4cdd4
+  -_shouldRestoreTranslatesAutoresizingMaskIntoConstraints B16@0:8  imp=+0x1a1a4c410
+  -_validateTarget:forAction: B32@0:8@16:24  imp=+0x1a1a4ad3c
+  -_viewDidChangeEffectiveAppearance: v24@0:8@16  imp=+0x1a1a4cddc
+  -accessibilityRoot @16@0:8  imp=+0x1a1a4b1ec
+  -adjustLayout:animation:completion: v40@0:8@?16@?24@?32  imp=+0x1a1a49698
+  -advanceToRunPhase v16@0:8  imp=+0x1a1a4bbf8
+  -allowsImplicitResizeRequests B16@0:8  imp=+0x1a1a4921c
+  -allowsSnapshot B16@0:8  imp=+0x1a1a4d200
+  -allowsWindowFrameOriginChanges B16@0:8  imp=+0x1a1a491f0
+  -awakeFromRemoteView Q16@0:8  imp=+0x1a1a4b9e8
+  -beginAppearanceTransition: v20@0:8B16  imp=+0x1a1a4d160
+  -bridge @16@0:8  imp=+0x1a1a4b980
+  -callsToSetViewCount I16@0:8  imp=+0x1a1a4ca2c
+  -canBecomeKey B16@0:8  imp=+0x1a1a4dadc
+  -canBecomeMain B16@0:8  imp=+0x1a1a4db0c
+  -childWindowDidInvalidate:dueToError: v32@0:8@16@24  imp=+0x1a1a4bd4c
+  -controllerIsMarzipan B16@0:8  imp=+0x1a1a4d434
+  -dealloc v16@0:8  imp=+0x1a1a4b8b8
+  -declineKeyboardEventsOtherThan: v24@0:8@16  imp=+0x1a1a4db34
+  -declinedEventMask I16@0:8  imp=+0x1a1a4da98
+  -defaultResizeBehavior v16@0:8  imp=+0x1a1a49360
+  -deferBlockOntoMainThread: v24@0:8@?16  imp=+0x1a1a48e2c
+  -description @16@0:8  imp=+0x1a1a4cb7c
+  -endAppearanceTransition v16@0:8  imp=+0x1a1a4d1b4
+  -errorOccurred: v24@0:8@16  imp=+0x1a1a48ecc
+  -exportedInterface @16@0:8  imp=+0x1a1a4a4a4
+  -exportedObject @16@0:8  imp=+0x1a1a4a4f4
+  -freeWindowShouldRendezvous: B24@0:8@16  imp=+0x1a1a4dbec
+  -hostAppAuditToken {?=[8I]}16@0:8  imp=+0x1a1a49310
+  -hostAppClientParameters @16@0:8  imp=+0x1a1a4b098
+  -hostBuiltForPlatform:againstMinimumSDK:reply: v32@0:8I16I20@?24  imp=+0x1a1a4d43c
+  -hostSDKVersion I16@0:8  imp=+0x1a1a4ccc0
+  -hostWindowReceivedEventType: v24@0:8Q16  imp=+0x1a1a4ca44
+  -initWithNibName:bundle: @32@0:8@16@24  imp=+0x1a1a4afdc
+  -initWithWindow: @24@0:8@16  imp=+0x1a1a4cac0
+  -invalid B16@0:8  imp=+0x1a1a4c1cc
+  -invalidate v16@0:8  imp=+0x1a1a4c034
+  -isLayerCentric B16@0:8  imp=+0x1a1a4a44c
+  -isValid B16@0:8  imp=+0x1a1a4c214
+  -leastRecentError @16@0:8  imp=+0x1a1a48f14
+  -loadView v16@0:8  imp=+0x1a1a4c314
+  -makesExplicitResizeRequests B16@0:8  imp=+0x1a1a492cc
+  -marshal @16@0:8  imp=+0x1a1a4cc04
+  -mostRecentCallToSetViewWasNonNil B16@0:8  imp=+0x1a1a4ca10
+  -nibBundle @16@0:8  imp=+0x1a1a4bcf8
+  -nibName @16@0:8  imp=+0x1a1a4bca4
+  -release Vv16@0:8  imp=+0x1a1a4b4bc
+  -remoteViewControllerInterface @16@0:8  imp=+0x1a1a4a454
+  -remoteViewControllerProxy @16@0:8  imp=+0x1a1a4a53c
+  -remoteViewControllerProxy: v24@0:8@?16  imp=+0x1a1a4a660
+  -remoteViewControllerProxy:withProxyErrorHandler: v32@0:8@?16@?24  imp=+0x1a1a4a778
+  -remoteViewControllerProxyWithErrorHandler: @24@0:8@?16  imp=+0x1a1a4a9e8
+  -remoteViewIdentifier @16@0:8  imp=+0x1a1a4a3bc
+  -remoteViewSize {CGSize=dd}16@0:8  imp=+0x1a1a492e8
+  -remoteViewSizeChanged:transaction: B40@0:8{CGSize=dd}16@32  imp=+0x1a1a49898
+  -requestFrame:animation:completion: @64@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16@?48@?56  imp=+0x1a1a49da4
+  -requestResize:animation:completion: @48@0:8{CGSize=dd}16@?32@?40  imp=+0x1a1a49fa8
+  -retain @16@0:8  imp=+0x1a1a4b310
+  -retainReleaseLock ^{os_unfair_lock_s=I}16@0:8  imp=+0x1a1a4b288
+  -retreatToConfigPhase v16@0:8  imp=+0x1a1a4ba4c
+  -scrollWheel: v24@0:8@16  imp=+0x1a1a4d0bc
+  -sendScrollWheelEmulatorMessage:completion: v32@0:8@16@?24  imp=+0x1a1a4dc7c
+  -serviceViewControllerIdentifier @16@0:8  imp=+0x1a1a4b1e4
+  -serviceViewControllerIdentifierCreating: @20@0:8B16  imp=+0x1a1a4b114
+  -serviceWindow @16@0:8  imp=+0x1a1a4cb28
+  -setMarshal: v24@0:8@16  imp=+0x1a1a4cc58
+  -setRemoteViewSafeAreaInsets: v48@0:8{NSEdgeInsets=dddd}16  imp=+0x1a1a4d208
+  -setView: v24@0:8@16  imp=+0x1a1a4c798
+  -sizeHint {CGSize=dd}16@0:8  imp=+0x1a1a4a404
+  -valid B16@0:8  imp=+0x1a1a4c260
+  -vbuAssociateMouseAndMouseCursorPosition:completion: v28@0:8B16@?20  imp=+0x1a1a4a110
+  -wantsForwardedScrollEventsForAxis: B24@0:8q16  imp=+0x1a1a4cfa4
+  -whileMouseIsDisassociatedFromMouseCursorPosition: v24@0:8@?16  imp=+0x1a1a4a2b0
+  -windowSizeConstraintsShouldTrackRemoteView B16@0:8  imp=+0x1a1a4925c
+  -withHostContextInvoke: v24@0:8@?16  imp=+0x1a1a48a94
+@class NSServiceViewControllerAuxiliary : NSObject instanceSize=56
+  ivar +8 serviceWindow @"NSWindow"
+  ivar +16 marshal @"NSViewServiceMarshal"
+  ivar +24 invalid b1
+  ivar +24 didSetWindowContentView b1
+  ivar +24 makesExplicitResizeRequests b1
+  ivar +24 retainedMarshal b1
+  ivar +24 mostRecentCallToSetViewWasNonNil b1
+  ivar +24 willHaveOwnWindow b1
+  ivar +28 callsToSetViewCount I
+  ivar +32 leastRecentError @"NSError"
+  ivar +40 hostSDKVersion I
+  ivar +48 _remoteViewControllerProxy @"NSProxy<NSXPCProxyCreating>"
+  -hasOrWillHaveOwnWindow B16@0:8  imp=+0x1a1a486f0
+@class NSServiceViewControllerForTouchBarItem : NSServiceViewController instanceSize=152
+  ivar +136 _touchBarItemIdentifier @"NSString"
+  ivar +144 _observingBridge b1
+  +controllerWithTouchBarItem:andAppearance: @32@0:8@16@24  imp=+0x1a1abac10
+  +describeTouchBars: @24@0:8@16  imp=+0x1a1ab8f20
+  +hideOverlayTouchBar: B24@0:8@16  imp=+0x1a1ab9fbc
+  +initialize v16@0:8  imp=+0x1a1ab84b4
+  +observeValueForKeyPath:ofObject:change:context: v48@0:8@16@24@32^v40  imp=+0x1a1ab90c4
+  +showOverlayTouchBar:withOptions: v32@0:8@16@24  imp=+0x1a1ab9c58
+  +touchBarItemViewAbsentFromViewHierarchy: v24@0:8@16  imp=+0x1a1aba438
+  +touchBarProviders:inWindow:includingWindowItself: v36@0:8@16@24B32  imp=+0x1a1ab895c
+  +touchBarProvidersForWindow:includingWindowItself: @28@0:8@16B24  imp=+0x1a1ab8d68
+  +touchBarsForProviders: @24@0:8@16  imp=+0x1a1ab8dd4
+  +viewServiceTouchBarControllerIdentifier: @24@0:8@16  imp=+0x1a1ab9054
+  -_didAssociateWithHostWindow v16@0:8  imp=+0x1a1ab859c
+  -_isSecondary B16@0:8  imp=+0x1a1aba0f8
+  -awakeFromRemoteView Q16@0:8  imp=+0x1a1aba7c4
+  -dealloc v16@0:8  imp=+0x1a1ab96b8
+  -informRemoteViewOfNewSizes v16@0:8  imp=+0x1a1abaa7c
+  -initWithAppearance: @24@0:8@16  imp=+0x1a1aba100
+  -invalidate v16@0:8  imp=+0x1a1ab9700
+  -loadView v16@0:8  imp=+0x1a1aba4d8
+  -observeChangeToCompressionItemContainingItem: v24@0:8@16  imp=+0x1a1ab97b4
+  -observeValueForKeyPath:ofObject:change:context: v48@0:8@16@24@32^v40  imp=+0x1a1ab9a9c
+  -prepareItemsOfBar: v24@0:8@16  imp=+0x1a1aba1cc
+  -remoteViewSizeChanged:transaction: B40@0:8{CGSize=dd}16@32  imp=+0x1a1ab87a8
+@class NSServiceViewControllerScrollWheelEmulatorMessage : NSObject <NSSecureCoding> instanceSize=56
+  ivar +8 _phase q
+  ivar +16 _modifiers Q
+  ivar +24 _timestamp d
+  ivar +32 _sequenceIdentifier Q
+  ivar +40 _delta {CGPoint="x"d"y"d}
+  property sequenceIdentifier (TQ,R,V_sequenceIdentifier)
+  property phase (Tq,V_phase)
+  property delta (T{CGPoint=dd},V_delta)
+  property modifiers (TQ,V_modifiers)
+  property timestamp (Td,V_timestamp)
+  +supportsSecureCoding B16@0:8  imp=+0x1a1a4e278
+  -delta {CGPoint=dd}16@0:8  imp=+0x1a1a4e290
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a1a4df7c
+  -init @16@0:8  imp=+0x1a1a4e228
+  -initWithCoder: @24@0:8@16  imp=+0x1a1a4e03c
+  -modifiers Q16@0:8  imp=+0x1a1a4e304
+  -phase q16@0:8  imp=+0x1a1a4e280
+  -sequenceIdentifier Q16@0:8  imp=+0x1a1a4e324
+  -setDelta: v32@0:8{CGPoint=dd}16  imp=+0x1a1a4e2cc
+  -setModifiers: v24@0:8Q16  imp=+0x1a1a4e30c
+  -setPhase: v24@0:8q16  imp=+0x1a1a4e288
+  -setTimestamp: v24@0:8d16  imp=+0x1a1a4e31c
+  -timestamp d16@0:8  imp=+0x1a1a4e314
+@class NSServiceViewControllerUnifyingProxy : NSProxy instanceSize=32
+  ivar +8 _clientProxy @"NSProxy<NSXPCProxyCreating>"
+  ivar +16 _animationSyncProxy @"NSProxy<NSXPCProxyCreating>"
+  ivar +24 _retainReleaseLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  -__vbSuperRelease v16@0:8  imp=+0x1a1a87770
+  -__vbWithLockPerform: v24@0:8@?16  imp=+0x1a1a87584
+  -dealloc v16@0:8  imp=+0x1a1a87ba4
+  -forwardInvocation: v24@0:8@16  imp=+0x1a1a87d38
+  -initWithClientProxy:andAnimationSyncProxy:withErrorHandler: @40@0:8@16@24@?32  imp=+0x1a1a87c10
+  -methodSignatureForSelector: @24@0:8:16  imp=+0x1a1a87ccc
+  -release Vv16@0:8  imp=+0x1a1a877a8
+  -retain @16@0:8  imp=+0x1a1a875fc
+  -retainReleaseLock ^{os_unfair_lock_s=I}16@0:8  imp=+0x1a1a87574
+@class NSServiceViewControllerWindow : NSAutolayoutJailWindow instanceSize=544
+  ivar +528 _viewController @"NSServiceViewController"
+  ivar +536 _adjustWindowContextInProgress I
+  -.cxx_destruct v16@0:8  imp=+0x1a1a486e0
+  -_isFunctionRowWindow B16@0:8  imp=+0x1a1a48598
+  -allowsFontSmoothing B16@0:8  imp=+0x1a1a48534
+  -initWithContentRect:withViewController: @56@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16@48  imp=+0x1a1a48464
+  -windowSizeConstraintsShouldAlwaysWin B16@0:8  imp=+0x1a1a48500
+@class NSSpaceTouchBarItemForRemoteView : NSSpaceTouchBarItem instanceSize=56
+  -customizationLabel @16@0:8  imp=+0x1a1abaecc
+  -initWithIdentifier:andDescription: @32@0:8@16@24  imp=+0x1a1abaed4
+  -itemPosition Q16@0:8  imp=+0x1a1abaed0
+@class NSTouchBarForRemoteView : NSTouchBar instanceSize=80
+  ivar +72 _serviceListenerEndpoint @"NSXPCListenerEndpoint"
+  property serviceListenerEndpoint (T@"NSXPCListenerEndpoint",R,V_serviceListenerEndpoint)
+  -dealloc v16@0:8  imp=+0x1a1abea80
+  -initWithServiceBarIdentifier:remoteView: @32@0:8@16@24  imp=+0x1a1abead8
+  -serviceListenerEndpoint @16@0:8  imp=+0x1a1abeb78
+@class NSTouchBarItemOverlayForRemoteView : NSTouchBarItemOverlay instanceSize=128
+  ivar +100 _shown I
+  ivar +104 _remoteViewIdentifier @"NSString"
+  ivar +112 _item @"NSTouchBarItem"
+  ivar +120 _keepAliveHack @"NSTouchBarItemOverlayForRemoteView"
+  property remoteViewIdentifier (T@"NSString",&,V_remoteViewIdentifier)
+  property keepAliveHack (T@"NSTouchBarItemOverlayForRemoteView",&,V_keepAliveHack)
+  -dealloc v16@0:8  imp=+0x1a1abbc14
+  -didChangePopoverBarState: v20@0:8C16  imp=+0x1a1abbce8
+  -hide v16@0:8  imp=+0x1a1abbed8
+  -initWithItem: @24@0:8@16  imp=+0x1a1abbc80
+  -keepAliveHack @16@0:8  imp=+0x1a1abbf70
+  -remoteViewIdentifier @16@0:8  imp=+0x1a1abbf54
+  -setKeepAliveHack: v24@0:8@16  imp=+0x1a1abbf80
+  -setRemoteViewIdentifier: v24@0:8@16  imp=+0x1a1abbf64
+  -showWithOptions: v24@0:8@16  imp=+0x1a1abbe5c
+  -shown B16@0:8  imp=+0x1a1abbe40
+@class NSTouchBarItemSurprise : NSTouchBarItem instanceSize=40
+  -isVisible B16@0:8  imp=+0x1a1abbc0c
+@class NSVBAuditToken : NSObject <NSCopying> instanceSize=40
+  ivar +8 _auditToken {?="val"[8I]}
+  property auditToken (T{?=[8I]},R,V_auditToken)
+  +auditTokenWithAuditToken: @48@0:8{?=[8I]}16  imp=+0x1a1ac5dc0
+  +token:isEqualToToken: B80@0:8{?=[8I]}16{?=[8I]}48  imp=+0x1a1ac5e80
+  +tokenIsKernel: B48@0:8{?=[8I]}16  imp=+0x1a1ac5ee4
+  +tokenIsValid: B48@0:8{?=[8I]}16  imp=+0x1a1ac5ea8
+  -auditToken {?=[8I]}16@0:8  imp=+0x1a1ac5f1c
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a1ac5d74
+  -description @16@0:8  imp=+0x1a1ac5c0c
+  -hash Q16@0:8  imp=+0x1a1ac5c90
+  -initWithAuditToken: @48@0:8{?=[8I]}16  imp=+0x1a1ac5e00
+  -isEqual: B24@0:8@16  imp=+0x1a1ac5cec
+  -tokenAsData @16@0:8  imp=+0x1a1ac5e34
+@class NSVBCALayerHost : CALayerHost instanceSize=64
+  -_appkitViewBackingLayerUniqueMethod v16@0:8  imp=+0x1a1ac7b54
+@class NSVBHasClientAuxiliaryConnection : NSObject <HasAuxiliaryConnection> instanceSize=24
+  ivar +8 _auxiliaryListenerEndpoint @"NSXPCListenerEndpoint"
+  ivar +16 auxiliaryServiceConnection @"NSXPCConnection"
+  property auxiliaryInterfaceOutgoing (T@"NSXPCInterface",R,N)
+  property auxiliaryInterfaceIncoming (T@"NSXPCInterface",R,N)
+  property auxiliaryServiceConnection (T@"NSXPCConnection",W,VauxiliaryServiceConnection)
+  property fenceContext (T@"CAContext",R)
+  property isValid (TB,R)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1a1aaa138
+  -_invalidateDueToExceptionDuringIncomingIPC: @24@0:8@16  imp=+0x1a1aaa118
+  -auxiliaryInterfaceIncoming @16@0:8  imp=+0x1a1a369e4
+  -auxiliaryInterfaceOutgoing @16@0:8  imp=+0x1a1a35fa8
+  -auxiliaryServiceConnection @16@0:8  imp=+0x1a1a35fa0
+  -fenceContext @16@0:8  imp=+0x1a1aaa110
+  -isValid B16@0:8  imp=+0x1a1a35f98
+  -setAuxiliaryServiceConnection: v24@0:8@16  imp=+0x1a1a369ec
+@class NSVBHostAppAuxiliaryConnection : NSVBHasClientAuxiliaryConnection instanceSize=32
+  ivar +24 _accepted c
+  ivar +28 _auxServicePID i
+  -dealloc v16@0:8  imp=+0x1a1a8a248
+  -init @16@0:8  imp=+0x1a1a35e78
+@class NSVBKeyboardEventSpecification : NSObject <NSSecureCoding> instanceSize=40
+  ivar +8 _modifierFlagsCriterion i
+  ivar +16 _charactersIgnoringModifiers @"NSString"
+  ivar +24 _modifierFlags Q
+  ivar +32 _keyCode q
+  property charactersIgnoringModifiers (T@"NSString",R,V_charactersIgnoringModifiers)
+  property modifierFlags (TQ,R,V_modifierFlags)
+  property modifierFlagsCriterion (Ti,R,V_modifierFlagsCriterion)
+  property keyCode (Tq,R,V_keyCode)
+  +event:matchesAnySpecification: B32@0:8^{__CGEvent=}16@24  imp=+0x1a1ac7708
+  +supportsSecureCoding B16@0:8  imp=+0x1a1ac72d0
+  -charactersIgnoringModifiers @16@0:8  imp=+0x1a1ac78e0
+  -dealloc v16@0:8  imp=+0x1a1ac72d8
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a1ac7324
+  -init @16@0:8  imp=+0x1a1ac73ec
+  -initWithCharactersIgnoringModifiers: @24@0:8@16  imp=+0x1a1ac7618
+  -initWithCharactersIgnoringModifiers:modifierFlags: @32@0:8@16Q24  imp=+0x1a1ac7610
+  -initWithCharactersIgnoringModifiers:modifierFlags:modifierFlagsCriterion: @36@0:8@16Q24i32  imp=+0x1a1ac7560
+  -initWithCoder: @24@0:8@16  imp=+0x1a1ac7400
+  -initWithKeyCode: @20@0:8S16  imp=+0x1a1ac76fc
+  -initWithKeyCode:modifierFlags: @28@0:8S16Q20  imp=+0x1a1ac76f4
+  -initWithKeyCode:modifierFlags:modifierFlagsCriterion: @32@0:8S16Q20i28  imp=+0x1a1ac7624
+  -keyCode q16@0:8  imp=+0x1a1ac78f8
+  -modifierFlags Q16@0:8  imp=+0x1a1ac78e8
+  -modifierFlagsCriterion i16@0:8  imp=+0x1a1ac78f0
+@class NSVBNamedFault : NSObject instanceSize=8
+  +_invokeIfShouldFault:format:arguments:block: v48@0:8@16@24*32@?40  imp=+0x1a1a3cc4c
+  +crashIfShouldFault: v24@0:8@16  imp=+0x1a1a3d30c
+  +crashIfShouldFault:format: v32@0:8@16@24  imp=+0x1a1a3d314
+  +crashIfShouldFault:format:arguments: v40@0:8@16@24*32  imp=+0x1a1a46aac
+  +exitIfShouldFault: v24@0:8@16  imp=+0x1a1a3d370
+  +exitIfShouldFault:format: v32@0:8@16@24  imp=+0x1a1a3d378
+  +exitIfShouldFault:format:arguments: v40@0:8@16@24*32  imp=+0x1a1a46ab8
+  +fault:withProbability:wasTaken: B36@0:8@16d24B32  imp=+0x1a1a3cfd4
+  +idle:ifShouldFault: B32@0:8d16@24  imp=+0x1a1a469a8
+  +idleUpTo:ifShouldFault: B32@0:8d16@24  imp=+0x1a1a46a50
+  +logTestedFaults: v24@0:8@16  imp=+0x1a1a3dc48
+  +raiseIfShouldFault: v24@0:8@16  imp=+0x1a1a3cbe8
+  +raiseIfShouldFault:format: v32@0:8@16@24  imp=+0x1a1a3cbf0
+  +raiseIfShouldFault:format:arguments: v40@0:8@16@24*32  imp=+0x1a1a46aa0
+  +randomProportion d16@0:8  imp=+0x1a1a467fc
+  +shouldFault: B24@0:8@16  imp=+0x1a1a3cd5c
+  +sleep:ifShouldFault: B32@0:8d16@24  imp=+0x1a1a46898
+  +sleepUpTo:ifShouldFault: B32@0:8d16@24  imp=+0x1a1a46958
+@class NSVBObjectDeallocationCanary : NSObject instanceSize=16
+  ivar +8 _object @"NSObject"
+  +_logDeallocation:withCallStackSymbols: v28@0:8@16B24  imp=+0x1a1ac13e8
+  +actions C16@0:8  imp=+0x1a1ac1654
+  +attachCanaryToObject: v24@0:8@16  imp=+0x1a1ac1924
+  -_dealloc: v24@0:8@16  imp=+0x1a1ac165c
+  -_initForObject: @24@0:8@16  imp=+0x1a1ac180c
+  -_logDeallocation:withCallStackSymbols: v28@0:8@16B24  imp=+0x1a1ac15f8
+  -dealloc v16@0:8  imp=+0x1a1ac16c8
+  -init @16@0:8  imp=+0x1a1ac191c
+  -retain @16@0:8  imp=+0x1a1ac1754
+@class NSVBTestedFault : NSObject instanceSize=24
+  ivar +8 _probability d
+  ivar +16 _tested I
+  ivar +20 _taken I
+  +testedFaultWithProbability: @24@0:8d16  imp=+0x1a1a3d19c
+  -description @16@0:8  imp=+0x1a1a46690
+  -initWithProbability: @24@0:8d16  imp=+0x1a1a3d1e0
+@class NSVB_AnimationFencingSupport : NSObject instanceSize=8
+  +_animateWithAttributes:animations: v32@0:8@16@?24  imp=+0x1a1a82548
+  +_currentAnimationAttributes: @20@0:8B16  imp=+0x1a1a82450
+  +_fenceContext @16@0:8  imp=+0x1a1a81d68
+  +_synchronizeDrawingAcrossProcessesOverPort:andPreCommitHandler: I28@0:8I16@?20  imp=+0x1a1a81e94
+  +_synchronizeInLiveResize:withPreCommitHandler: I28@0:8B16@?20  imp=+0x1a1a823bc
+  +_synchronizeOverPort: v20@0:8I16  imp=+0x1a1a823b4
+@class NSVB_ProxyObject : NSObject <NSCoding> instanceSize=16
+  ivar +8 proxiedObjectIdentifier @"NSString"
+  +addMappingFromIdentifier:toObject:forCoder: v40@0:8@16@24@32  imp=+0x1a1a73c08
+  +addMappings:forCoder: v32@0:8@16@24  imp=+0x1a1a73cac
+  +mappedObjectForCoder:withIdentifier: @32@0:8@16@24  imp=+0x1a1a73dd0
+  +proxyDecodingMap ^{__CFDictionary=}16@0:8  imp=+0x1a1a73bac
+  +removeMappingsForCoder: v24@0:8@16  imp=+0x1a1a73e28
+  -dealloc v16@0:8  imp=+0x1a1a73f98
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a1a73f80
+  -initWithCoder: @24@0:8@16  imp=+0x1a1a73e60
+  -proxiedObjectIdentifier @16@0:8  imp=+0x1a1a74024
+  -setProxiedObjectIdentifier: v24@0:8@16  imp=+0x1a1a73fe4
+@class NSVB_QueueingProxy : NSVB_TargetedProxy instanceSize=64
+  ivar +16 _wantsResume b1
+  ivar +20 _lock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +24 _suspensionCount Q
+  ivar +32 _queuedInvocations @"NSMutableArray"
+  ivar +40 _shouldSuspendInvocationBlock @?
+  ivar +48 _connectionClient @"NSViewServiceMarshal"
+  ivar +56 _queuedInvocationsAreSpecial AI
+  +proxyWithTarget: @24@0:8@16  imp=+0x1a1a72888
+  +proxyWithTarget:connectionClient:shouldSuspendInvocationBlock: @40@0:8@16@24@?32  imp=+0x1a1a727cc
+  -.cxx_destruct v16@0:8  imp=+0x1a1a73508
+  -_dispatchSuspendedMessages v16@0:8  imp=+0x1a1a72e10
+  -dealloc v16@0:8  imp=+0x1a1a728f0
+  -description @16@0:8  imp=+0x1a1a73494
+  -forwardInvocation: v24@0:8@16  imp=+0x1a1a7295c
+  -ifWantsResume: v24@0:8@?16  imp=+0x1a1a72ba8
+  -isValid B16@0:8  imp=+0x1a1a72db8
+  -queuedInvocationsAreSpecial: v24@0:8@?16  imp=+0x1a1a733e8
+  -removeAllEnqueuedInvocations v16@0:8  imp=+0x1a1a73358
+  -respondsToSelector: B24@0:8:16  imp=+0x1a1a73464
+  -resume v16@0:8  imp=+0x1a1a731b8
+  -setWantsResume: v20@0:8B16  imp=+0x1a1a72c7c
+  -suspend v16@0:8  imp=+0x1a1a72d20
+@class NSVB_TargetedProxy : NSProxy instanceSize=16
+  ivar +8 _target @
+  +proxyWithTarget: @24@0:8@16  imp=+0x1a1a3ecd0
+  -_setTarget: v24@0:8@16  imp=+0x1a1a3ed40
+  -_target @16@0:8  imp=+0x1a1ac72bc
+  -dealloc v16@0:8  imp=+0x1a1a3f194
+  -description @16@0:8  imp=+0x1a1ac725c
+  -forwardInvocation: v24@0:8@16  imp=+0x1a1a3f00c
+  -methodSignatureForSelector: @24@0:8:16  imp=+0x1a1a3ed94
+@class NSVB_ViewAnimationAttributes : NSObject <NSSecureCoding> instanceSize=40
+  ivar +8 _windowFrameAnimationInProgress b1
+  ivar +8 _allowsImplicitAnimation b1
+  ivar +8 _hasTimingFunctionControlPoints b1
+  ivar +12 _c1 {?="p"[2f]}
+  ivar +20 _c2 {?="p"[2f]}
+  ivar +32 _duration d
+  property hasTimingFunctionControlPoints (TB,R)
+  property c1 (T{?=[2f]},N,V_c1)
+  property c2 (T{?=[2f]},N,V_c2)
+  property duration (Td,V_duration)
+  property allowsImplicitAnimation (TB)
+  property windowFrameAnimationInProgress (TB)
+  +supportsSecureCoding B16@0:8  imp=+0x1a1a82704
+  -allowsImplicitAnimation B16@0:8  imp=+0x1a1a82760
+  -c1 {?=[2f]}16@0:8  imp=+0x1a1a8295c
+  -c2 {?=[2f]}16@0:8  imp=+0x1a1a82964
+  -duration d16@0:8  imp=+0x1a1a8296c
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a1a3ef54
+  -hasTimingFunctionControlPoints B16@0:8  imp=+0x1a1a8272c
+  -initWithCoder: @24@0:8@16  imp=+0x1a1a8276c
+  -isEqual: B24@0:8@16  imp=+0x1a1a828c4
+  -setAllowsImplicitAnimation: v20@0:8B16  imp=+0x1a1a3ef2c
+  -setC1: v24@0:8{?=[2f]}16  imp=+0x1a1a82738
+  -setC2: v24@0:8{?=[2f]}16  imp=+0x1a1a8274c
+  -setDuration: v24@0:8d16  imp=+0x1a1a3ef4c
+  -setWindowFrameAnimationInProgress: v20@0:8B16  imp=+0x1a1a82718
+  -windowFrameAnimationInProgress B16@0:8  imp=+0x1a1a8270c
+@class NSVB_ViewServiceBehaviorProxy : NSVB_TargetedProxy <NSVB_ViewServiceUIBehaviorInterface> instanceSize=40
+  ivar +16 _scope I
+  ivar +24 _fencingControlProxy @"NSVB_ViewServiceFencingControlProxy"
+  ivar +32 _retainReleaseLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  property scope (TI,R,V_scope)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +activeFencePort @16@0:8  imp=+0x1a1a81a70
+  +proxyWrappingExportedObject:forCommunicationAtScope:withServiceMarshal:exportedProtocol: @44@0:8@16I24@28@36  imp=+0x1a1a81154
+  -__vbSuperRelease v16@0:8  imp=+0x1a1a81574
+  -__vbWithLockPerform: v24@0:8@?16  imp=+0x1a1a81388
+  -dealloc v16@0:8  imp=+0x1a1a819a8
+  -description @16@0:8  imp=+0x1a1a81308
+  -release Vv16@0:8  imp=+0x1a1a815ac
+  -retain @16@0:8  imp=+0x1a1a81400
+  -retainReleaseLock ^{os_unfair_lock_s=I}16@0:8  imp=+0x1a1a81378
+  -scope I16@0:8  imp=+0x1a1a81a7c
+@class NSVB_ViewServiceFencingControlProxy : NSVB_QueueingProxy instanceSize=72
+  ivar +64 _fencingController @"NSVB_ViewServiceFencingController"
+  +proxyWithTarget:connectionClient:fencingController:exportedProtocol: @48@0:8@16@24@32@40  imp=+0x1a1a7f308
+  -__beginFencingMessagesWithSendRight:withReply: v32@0:8@16@?24  imp=+0x1a1a7f534
+  -__endFencingMessagesForSendRight:nsWindowDeferralSendRight: v32@0:8@16@24  imp=+0x1a1a7f694
+  -__forgetFencingMessages v16@0:8  imp=+0x1a1a7fa14
+  -dealloc v16@0:8  imp=+0x1a1a7f424
+  -methodSignatureForSelector: @24@0:8:16  imp=+0x1a1a7f47c
+@class NSVB_ViewServiceFencingController : NSObject instanceSize=56
+  ivar +8 _lock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +16 _pendingFenceSendRights @"NSMutableArray"
+  ivar +24 _proxies @"NSMutableArray"
+  ivar +32 _resumeActions @"NSMutableArray"
+  ivar +40 _resumedFencingProxyCount Q
+  ivar +48 _fencingControlTimeoutTimer @"NSTimer"
+  +activeFencePort @16@0:8  imp=+0x1a1a7fa2c
+  -_fencingControlTimedOut v16@0:8  imp=+0x1a1a80d94
+  -dealloc v16@0:8  imp=+0x1a1a7fbbc
+  -fencingControlProxy:didBeginFencingWithSendRight: B32@0:8@16@24  imp=+0x1a1a7fe14
+  -fencingControlProxy:didEndFencingWithSendRight: B32@0:8@16@24  imp=+0x1a1a802f0
+  -forgetFencingMessagesForFencingControlProxy: v24@0:8@16  imp=+0x1a1a80b48
+  -init @16@0:8  imp=+0x1a1a7fb48
+@class NSVB_ViewServiceImplicitAnimationDecodingProxy : NSVB_TargetedProxy <NSVB_ViewServiceImplicitAnimationDecodingProxy_EncodingProxyInterface> instanceSize=40
+  ivar +16 _animationAttributes @"NSVB_ViewAnimationAttributes"
+  ivar +24 _serviceMarshal @"NSViewServiceMarshal"
+  ivar +32 animatedSelectors ^{__CFSet=}
+  property serviceMarshal (T@"NSViewServiceMarshal",&,V_serviceMarshal)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +proxyDecodingAnimationsForTarget:withServiceMarshal: @32@0:8@16@24  imp=+0x1a1aa8798
+  -__animateFollowingInvocationsWithAnimationAttributes: v24@0:8@16  imp=+0x1a1aa9228
+  -dealloc v16@0:8  imp=+0x1a1aa8f84
+  -forwardInvocation: v24@0:8@16  imp=+0x1a1aa9088
+  -serviceMarshal @16@0:8  imp=+0x1a1aa9268
+  -setServiceMarshal: v24@0:8@16  imp=+0x1a1aa9278
+  -shouldApplyAnimationAttributes: B24@0:8@16  imp=+0x1a1aa8ff0
+@class NSVB_ViewServiceImplicitAnimationEncodingProxy : NSVB_TargetedProxy instanceSize=48
+  ivar +16 _controlMessageTarget @
+  ivar +24 _animationAttributes @"NSVB_ViewAnimationAttributes"
+  ivar +32 _lock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +40 _sentAnimationAttributes @?
+  +proxyEncodingAnimationsForTarget:controlMessageTarget:animationAttributes:sentAnimationAttributes: @48@0:8@16@24@32@?40  imp=+0x1a1aa85b8
+  -dealloc v16@0:8  imp=+0x1a1a3f114
+  -forwardInvocation: v24@0:8@16  imp=+0x1a1a3ee84
+@class NSVB_ViewServiceReplyAwaitingTrampoline : NSVB_ViewServiceReplyControlTrampoline instanceSize=16
+  -forwardInvocation: v24@0:8@16  imp=+0x1a1a7f2c0
+@class NSVB_ViewServiceReplyControlProxy : NSObject <NSVB_ViewServiceProxy_ReplyControl> instanceSize=40
+  ivar +8 _target @
+  ivar +16 _controlTrampoline @"NSVB_ViewServiceReplyControlTrampoline"
+  ivar +24 _awaitingTrampoline @"NSVB_ViewServiceReplyAwaitingTrampoline"
+  ivar +32 _lock @"NSLock"
+  +proxyWithTarget: @24@0:8@16  imp=+0x1a1a3ec68
+  -_awaitingReply @16@0:8  imp=+0x1a1a7f004
+  -_deliveringRepliesAsynchronously @16@0:8  imp=+0x1a1a7f06c
+  -dealloc v16@0:8  imp=+0x1a1a3f1ec
+  -forwardingTargetForSelector: @24@0:8:16  imp=+0x1a1a3f028
+  -methodSignatureForSelector: @24@0:8:16  imp=+0x1a1a3ee7c
+  -respondsToSelector: B24@0:8:16  imp=+0x1a1a7efe0
+@class NSVB_ViewServiceReplyControlTrampoline : NSVB_TargetedProxy instanceSize=16
+  -_forwardInvocation:withIncomingReplyDispatchBlock: v32@0:8@16@?24  imp=+0x1a1a7f0d4
+  -forwardInvocation: v24@0:8@16  imp=+0x1a1a7f2ac
+@class NSVB_ViewServiceXPCMachSendRight : NSObject <NSSecureCoding> instanceSize=16
+  ivar +8 _sendRight I
+  +supportsSecureCoding B16@0:8  imp=+0x1a1a73904
+  +wrapSendRight: @20@0:8I16  imp=+0x1a1a73518
+  -dealloc v16@0:8  imp=+0x1a1a737cc
+  -description @16@0:8  imp=+0x1a1a7381c
+  -encodeWithCoder: v24@0:8@16  imp=+0x1a1a7390c
+  -forgetSendRight v16@0:8  imp=+0x1a1a736c0
+  -hash Q16@0:8  imp=+0x1a1a73880
+  -initWithCoder: @24@0:8@16  imp=+0x1a1a73a5c
+  -isEqual: B24@0:8@16  imp=+0x1a1a7389c
+  -sendRight I16@0:8  imp=+0x1a1a73814
+@class NSViewBridge : NSObject instanceSize=48
+  ivar +8 _dict @"NSMutableDictionary"
+  ivar +16 _kvoBuddy @"NSObject<NSViewBridgeKVOBuddy>"
+  ivar +24 _nonLocalChangesInProgress @"NSMutableSet"
+  ivar +32 _validClasses @"NSMutableSet"
+  ivar +40 _retainReleaseLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  property processIdentifier (Ti,R)
+  property auditToken (T{?=[8I]},R)
+  property kvoBuddy (T@"NSObject<NSViewBridgeKVOBuddy>",V_kvoBuddy)
+  +accessInstanceVariablesDirectly B16@0:8  imp=+0x1a1a48400
+  +automaticallyNotifiesObserversForKey: B24@0:8@16  imp=+0x1a1a3eaf8
+  +objectIsSuitable: B24@0:8@16  imp=+0x1a1a3ea5c
+  +validClasses @16@0:8  imp=+0x1a1a47410
+  -__vbSuperRelease v16@0:8  imp=+0x1a1a46e98
+  -__vbWithLockPerform: v24@0:8@?16  imp=+0x1a1a46c90
+  -_copyValueForEntitlement: @24@0:8@16  imp=+0x1a1a47df4
+  -_hasTrueValueForEntitlement: B24@0:8@16  imp=+0x1a1a47e40
+  -allKeys @16@0:8  imp=+0x1a1a400ec
+  -auditToken {?=[8I]}16@0:8  imp=+0x1a1a47318
+  -changeOriginatesLocally B16@0:8  imp=+0x1a1a3f0dc
+  -changeOriginatesLocally: B24@0:8@16  imp=+0x1a1a3f5b4
+  -dealloc v16@0:8  imp=+0x1a1a4012c
+  -description @16@0:8  imp=+0x1a1a47374
+  -hasKey: B24@0:8@16  imp=+0x1a1a477d4
+  -hasObject:forKey: B32@0:8@16@24  imp=+0x1a1a3f9b4
+  -hasObjectForKey: B24@0:8@16  imp=+0x1a1a3eb00
+  -isKeyPath: B24@0:8@16  imp=+0x1a1a3e974
+  -keyCount q16@0:8  imp=+0x1a1a4781c
+  -keyIsRelevantToBuddy: B24@0:8@16  imp=+0x1a1a3f250
+  -kvoBuddy @16@0:8  imp=+0x1a1a48408
+  -nonLocalChangeInProgress B16@0:8  imp=+0x1a1a477b0
+  -objectForKey: @24@0:8@16  imp=+0x1a1a3f78c
+  -ownerForKey: C24@0:8@16  imp=+0x1a1a3f6f0
+  -processIdentifier i16@0:8  imp=+0x1a1a472cc
+  -registerKey:defaultObject:owner: v36@0:8@16@24C32  imp=+0x1a1a3e820
+  -release Vv16@0:8  imp=+0x1a1a46ed0
+  -retain @16@0:8  imp=+0x1a1a46d08
+  -retainReleaseLock ^{os_unfair_lock_s=I}16@0:8  imp=+0x1a1a46c88
+  -setKvoBuddy: v24@0:8@16  imp=+0x1a1a3f100
+  -setObject:forKey: v32@0:8@16@24  imp=+0x1a1a3f108
+  -setObject:forKey:withKVO:local: v40@0:8@16@24B32B36  imp=+0x1a1a478dc
+  -setSnapshot: v24@0:8@16  imp=+0x1a1a47e8c
+  -setValue:forKey: v32@0:8@16@24  imp=+0x1a1a47830
+  -snapshot @16@0:8  imp=+0x1a1a48054
+  -validClasses @16@0:8  imp=+0x1a1a47630
+  -valueForKey: @24@0:8@16  imp=+0x1a1a3f038
+@class NSViewBridgeObject : NSViewBridgeObjectBase instanceSize=24
+  ivar +16 _owner C
+  property owner (TC,V_owner)
+  -description @16@0:8  imp=+0x1a1a46bd0
+  -initWithObject:owner: @28@0:8@16C24  imp=+0x1a1a3e984
+  -owner C16@0:8  imp=+0x1a1a3f784
+  -setObject: v24@0:8@16  imp=+0x1a1a3e9f8
+  -setOwner: v20@0:8C16  imp=+0x1a1a3eaf0
+@class NSViewBridgeObjectBase : NSObject instanceSize=16
+  ivar +8 _object @"NSObject<NSSecureCoding>"
+  property object (T@"NSObject<NSSecureCoding>",&,V_object)
+  -dealloc v16@0:8  imp=+0x1a1a46b84
+  -object @16@0:8  imp=+0x1a1a3f0d0
+  -setObject: v24@0:8@16  imp=+0x1a1a3eae8
+@class NSViewRemoteBridge : NSViewBridge instanceSize=56
+  ivar +48 _remoteView @"NSRemoteView"
+  property remoteView (T@"NSRemoteView",R,V_remoteView)
+  -auditToken {?=[8I]}16@0:8  imp=+0x1a1a8744c
+  -dealloc v16@0:8  imp=+0x1a1a3ffe0
+  -initWithRemoteView: @24@0:8@16  imp=+0x1a1a3e768
+  -observeValueForKeyPath:ofObject:change:context: v48@0:8@16@24@32^v40  imp=+0x1a1a3f2c8
+  -processIdentifier i16@0:8  imp=+0x1a1a873d0
+  -registerKey:defaultObject:owner: v36@0:8@16@24C32  imp=+0x1a1a3e7c0
+  -remoteView @16@0:8  imp=+0x1a1a3f5d4
+@class NSViewService : NSServiceViewController instanceSize=136
+@class NSViewServiceAccessoryView : NSView instanceSize=592
+  ivar +536 _serviceMarshal @"NSViewServiceMarshal"
+  ivar +544 _screenRelativeFrameMostRecentlyReported {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}}
+  ivar +576 _informingHostOfChangeToGeometry b1
+  ivar +576 _disclosedEnoughToBecomeKeyView b1
+  ivar +584 _hostAccessibilityChildren @"NSDictionary"
+  property hostAccessibilityChildren (T@"NSDictionary",&,V_hostAccessibilityChildren)
+  -.cxx_destruct v16@0:8  imp=+0x1a1a76990
+  -_updateAccessoryViewAccessibility: @24@0:8@16  imp=+0x1a1a765d4
+  -accessibilityChildren @16@0:8  imp=+0x1a1a765b4
+  -accessibilityChildren: @24@0:8@16  imp=+0x1a1a7653c
+  -accessibilityChildrenInNavigationOrder @16@0:8  imp=+0x1a1a765c4
+  -canBecomeKeyView B16@0:8  imp=+0x1a1a75e18
+  -connectContext:withServiceMarshal: v28@0:8I16@20  imp=+0x1a1a764a4
+  -dealloc v16@0:8  imp=+0x1a1a75c18
+  -disclose:withAnimation: v24@0:8B16C20  imp=+0x1a1a768fc
+  -frameRelativeToWindow {CGRect={CGPoint=dd}{CGSize=dd}}16@0:8  imp=+0x1a1a76068
+  -hostAccessibilityChildren @16@0:8  imp=+0x1a1a76974
+  -informHostOfChangeToGeometry v16@0:8  imp=+0x1a1a760b8
+  -initWithFrame: @48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16  imp=+0x1a1a75d68
+  -renewGState v16@0:8  imp=+0x1a1a76458
+  -setHostAccessibilityChildren: v24@0:8@16  imp=+0x1a1a76984
+  -updateAccessoryViewAccessibility: @24@0:8@16  imp=+0x1a1a76774
+@class NSViewServiceApplication : NSApplication <NSServiceViewControllerActionResponder> instanceSize=368
+  ivar +344 _exceptionQueue @"NSMutableArray"
+  ivar +352 _eventWhichHasHitAppButNotWindow @"NSEvent"
+  ivar +360 _sendingEvent @"NSEvent"
+  +addHostPID: v20@0:8i16  imp=+0x1a1a3bda8
+  +allocWithZone: @24@0:8^{_NSZone=}16  imp=+0x1a1a4e684
+  +appModalSessionInProgressForAnyHostOtherThan: B48@0:8{?=[8I]}16  imp=+0x1a1a51354
+  +appModalSessionsOutlawed B16@0:8  imp=+0x1a1a509d8
+  +beginServiceAppModalSessionForWindow: ^{_NSModalSession=}24@0:8@16  imp=+0x1a1a509c4
+  +bootstrapForExtensionKitWithDelegate:error: B32@0:8@16^@24  imp=+0x1a1a5205c
+  +bootstrapKind i16@0:8  imp=+0x1a1a51454
+  +bootstrapSharedServiceListener @16@0:8  imp=+0x1a1a3d3d4
+  +bundleForClass @16@0:8  imp=+0x1a1a3d540
+  +cacheFakeEvent: v24@0:8@16  imp=+0x1a1a3fb60
+  +cacheMainBundleAsServiceBundle v16@0:8  imp=+0x1a1a3b98c
+  +commonBootstrap @16@0:8  imp=+0x1a1a3b384
+  +commonBootstrapForExtensionWithError: B24@0:8^@16  imp=+0x1a1a520c0
+  +commonNamedFaults B16@0:8  imp=+0x1a1a3cb84
+  +doctorServiceBundleInfoDictionary: v24@0:8@16  imp=+0x1a1a3c834
+  +ensureNSApp v16@0:8  imp=+0x1a1a3c6dc
+  +eventSending @16@0:8  imp=+0x1a1a4f2a4
+  +firstHostPID i16@0:8  imp=+0x1a1a5138c
+  +fixedHostApp {?=[8I]}16@0:8  imp=+0x1a1a513cc
+  +hasBootstrapKind: B20@0:8i16  imp=+0x1a1a51490
+  +isFakeEvent: B24@0:8@16  imp=+0x1a1a3fa5c
+  +learnHostPID v16@0:8  imp=+0x1a1a3b9e4
+  +mungeStandardUserDefaults @16@0:8  imp=+0x1a1a3be4c
+  +obviateWindowAnimations v16@0:8  imp=+0x1a1a3c72c
+  +requiresFixedHost B16@0:8  imp=+0x1a1a3bba8
+  +serviceConfiguration @16@0:8  imp=+0x1a1a3bc24
+  +setNewestFriendlyThief: v20@0:8i16  imp=+0x1a1a4f2b4
+  +validateXpcBundleInfoDictionary: v24@0:8@16  imp=+0x1a1a3c73c
+  +whileWindow:beginsAppModalSessionPerform: v32@0:8@16@?24  imp=+0x1a1a50800
+  +windowIsBeginningAppModalSession: B24@0:8@16  imp=+0x1a1a507ec
+  -_addWindow: v24@0:8@16  imp=+0x1a1a3d5bc
+  -_discardToxicEvents v16@0:8  imp=+0x1a1a4f400
+  -_eventIsToxic: B24@0:8@16  imp=+0x1a1a3de14
+  -_globalCanQuietAndSafeQuit B16@0:8  imp=+0x1a1a4ea28
+  -_handleHotKeyPressed: B24@0:8@16  imp=+0x1a1a4ed14
+  -_handleHotKeyRelease: B24@0:8@16  imp=+0x1a1a4ede4
+  -_handleKeyEquivalent: B24@0:8@16  imp=+0x1a1a4ef5c
+  -_handleSymbolicHotKey: B24@0:8@16  imp=+0x1a1a4ee74
+  -_lookupHotKey: v24@0:8@16  imp=+0x1a1a4ed80
+  -_modalSession:sendEvent: v32@0:8^{_NSModalSession=}16@24  imp=+0x1a1a4f6e8
+  -_modalSession:wouldBeepGivenFakeEvent: B32@0:8^{_NSModalSession=}16@24  imp=+0x1a1a4f680
+  -_registerRequiredAEHandlers v16@0:8  imp=+0x1a1a3daac
+  -_releaseKeyFocus i16@0:8  imp=+0x1a1a4ec44
+  -_shouldFakeMainWindow B16@0:8  imp=+0x1a1a4e760
+  -_shouldLoadMainNibNamed: B24@0:8@16  imp=+0x1a1a3d534
+  -_stealKeyFocusWithOptions: i20@0:8I16  imp=+0x1a1a4ebb0
+  -_withToxicEventMonitorPerform: @24@0:8@?16  imp=+0x1a1a4f2c0
+  -accessibilityAttributeValue: @24@0:8@16  imp=+0x1a1a4e6f0
+  -appModalSessionInProgressForAnyHostOtherThan: B48@0:8{?=[8I]}16  imp=+0x1a1a51288
+  -beginHostAppModalSession:forWindow:withSize:withReply: B56@0:8@16@24{CGSize=dd}32@?48  imp=+0x1a1a4fec8
+  -beginHostAppModalSessionForWindow:withLocalSession: B32@0:8@16^{_NSModalSession=}24  imp=+0x1a1a5014c
+  -beginHostAppModalSessionForWindow:withLocalSession:relativeToWindow: B40@0:8@16^{_NSModalSession=}24@32  imp=+0x1a1a50634
+  -beginModalSessionForWindow: ^{_NSModalSession=}24@0:8@16  imp=+0x1a1a50af8
+  -beginModalSessionForWindow:relativeToWindow: ^{_NSModalSession=}32@0:8@16@24  imp=+0x1a1a509f4
+  -beginServiceAppModalSessionForWindow:relativeToWindow: ^{_NSModalSession=}32@0:8@16@24  imp=+0x1a1a50860
+  -beginSheet:modalForWindow:modalDelegate:didEndSelector:contextInfo: v56@0:8@16@24@32:40^v48  imp=+0x1a1a4f9b8
+  -dealloc v16@0:8  imp=+0x1a1a4f164
+  -endHostAppModalSession:withWindow: v32@0:8^{_NSModalSession=}16@24  imp=+0x1a1a50b00
+  -endModalSession: v24@0:8^{_NSModalSession=}16  imp=+0x1a1a50e3c
+  -endServiceAppModalSession:withWindow: v32@0:8^{_NSModalSession=}16@24  imp=+0x1a1a50de4
+  -endSheet: v24@0:8@16  imp=+0x1a1a4fdf4
+  -endSheet:returnCode: v32@0:8@16q24  imp=+0x1a1a4fd14
+  -enqueueException: v24@0:8@16  imp=+0x1a1a4f1bc
+  -event:wouldActivateWindow: v32@0:8@16@24  imp=+0x1a1a4f810
+  -eventHasHitWindow: v24@0:8@16  imp=+0x1a1a4ecd8
+  -eventHasNotHitWindow:actions: v32@0:8@16@?24  imp=+0x1a1a3e2ec
+  -eventSending @16@0:8  imp=+0x1a1a4f26c
+  -finishLaunching v16@0:8  imp=+0x1a1a3d988
+  -hotKeyIsToxic: B24@0:8q16  imp=+0x1a1a4ecfc
+  -mainWindow @16@0:8  imp=+0x1a1a4e8c8
+  -nextEventMatchingMask:untilDate:inMode:dequeue: @44@0:8Q16@24@32B40  imp=+0x1a1a3dab0
+  -onFirstEvent v16@0:8  imp=+0x1a1a3dd7c
+  -raiseIfDeferredException: v24@0:8@16  imp=+0x1a1a3e214
+  -respondsToAction:fromTask: B56@0:8:16{?=[8I]}24  imp=+0x1a1a4eb20
+  -sendEvent: v24@0:8@16  imp=+0x1a1a3defc
+  -sendEvent:withForwarding: v28@0:8@16B24  imp=+0x1a1a3dfdc
+  -sendEventWithoutCatch:withForwarding: v28@0:8@16B24  imp=+0x1a1a3e0a4
+  -setActivationPolicy: B24@0:8q16  imp=+0x1a1a4ea4c
+  -vbNextEventMatchingMask:untilDate:inMode:dequeue: @44@0:8Q16@24@32B40  imp=+0x1a1a4f490
+@class NSViewServiceBridge : NSViewBridge instanceSize=56
+  ivar +48 _viewServiceMarshal @"NSViewServiceMarshal"
+  property viewServiceMarshal (T@"NSViewServiceMarshal",R,W,V_viewServiceMarshal)
+  -.cxx_destruct v16@0:8  imp=+0x1a1a52ddc
+  -auditToken {?=[8I]}16@0:8  imp=+0x1a1a52714
+  -dealloc v16@0:8  imp=+0x1a1a5284c
+  -initWithServiceMarshal: @24@0:8@16  imp=+0x1a1a526b0
+  -observeValueForKeyPath:ofObject:change:context: v48@0:8@16@24@32^v40  imp=+0x1a1a5296c
+  -processIdentifier i16@0:8  imp=+0x1a1a52770
+  -registerKey:defaultObject:owner: v36@0:8@16@24C32  imp=+0x1a1a527c0
+  -viewServiceMarshal @16@0:8  imp=+0x1a1a52dcc
+@class NSViewServiceListenerDelegate : NSObject <NSXPCListenerDelegate, NSXPCSharedListenerDelegate> instanceSize=16
+  ivar +8 _listener @"NSXPCListener"
+  property listener (T@"NSXPCListener",&,V_listener)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -dealloc v16@0:8  imp=+0x1a1a4e34c
+  -listener @16@0:8  imp=+0x1a1a4e678
+  -listener:shouldAcceptNewConnection: B32@0:8@16@24  imp=+0x1a1a4e398
+  -setListener: v24@0:8@16  imp=+0x1a1a3d4b8
+@class NSViewServiceMarshal : NSView <NSXPCListenerDelegate, AuxiliaryCallsService, BKSHIDEventDeliveryPolicyObserving, NSViewServiceMarshal, NSVBXPCConnectionClient> instanceSize=1072
+  ivar +536 _hostAppClientParameters @"NSObject<NSSecureCoding>"
+  ivar +544 _extensionIdentifier @"NSString"
+  ivar +552 _mostRecentlyReportedContentMinSize {CGSize="width"d"height"d}
+  ivar +568 _mostRecentlyReportedContentMaxSize {CGSize="width"d"height"d}
+  ivar +584 _serviceFlags Q
+  ivar +592 _hostAccessibilityParent @"NSAccessibilityRemoteUIElement"
+  ivar +600 _suspendedFirstResponder @"NSResponder"
+  ivar +608 _clientRequestedStyleMask Q
+  ivar +616 _windowIsOrdering Q
+  ivar +624 _windowResizingRegion ^{CGSRegionObject=}
+  ivar +632 _visibleRegion ^{CGSRegionObject=}
+  ivar +640 _clientExportedInterface @"NSXPCInterface"
+  ivar +648 _mostRecentlyReportedWindowContextID I
+  ivar +656 _clientExportedObject @"NSVB_ViewServiceBehaviorProxy"
+  ivar +664 _uiBehaviorProxy @"NSVB_ViewServiceBehaviorProxy"
+  ivar +672 _remoteViewBackingScaleFactor d
+  ivar +680 _layoutConstraintWidth @"NSLayoutConstraint"
+  ivar +688 _layoutConstraintHeight @"NSLayoutConstraint"
+  ivar +696 _remoteViewIdentifier @"NSString"
+  ivar +704 _activity @"<NSObject>"
+  ivar +712 _sizeHint {CGSize="width"d"height"d}
+  ivar +728 _remoteViewFrameInScreenCoords {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}}
+  ivar +760 _bridge @"NSViewBridge"
+  ivar +768 _viewController @"NSServiceViewController"
+  ivar +776 _auxiliaryServiceConnection @"NSXPCConnection"
+  ivar +784 _remoteViewMarshalConnection @"NSXPCConnection"
+  ivar +792 _advanceBeyondRunPhaseCount Q
+  ivar +800 _reportControllerWindow Q
+  ivar +808 _shortCircuitedWindowFrameAnimationsInProgress Q
+  ivar +816 _vbOrderingWindow Q
+  ivar +824 _setStyleMaskInProgress Q
+  ivar +832 _setWindowFrameInProgress Q
+  ivar +840 _hostWindowKeynessReactionPending @?
+  ivar +848 _remoteViewFirstResponderReactionPending @?
+  ivar +856 _resizeTransactionsInProgress @"NSMutableArray"
+  ivar +864 _windowFrameAnimationsInProgress I
+  ivar +868 _windowKeyness C
+  ivar +872 _windowOrderingMode q
+  ivar +880 _retainReleaseLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +888 _remoteViewGeometryChangeInProgress r^{CGRect={CGPoint=dd}{CGSize=dd}}
+  ivar +896 _eventMaskMostRecentlySentToHost I
+  ivar +900 _advancedBeyondConfigPhase b1
+  ivar +900 _deferResizeRequestsUntilAfterRunPhase b1
+  ivar +900 _didAwakeFromRemoteView b1
+  ivar +900 _didConfigForRemoteViewControllerInterface b1
+  ivar +900 _didSetView b1
+  ivar +900 _hasFauxSyncFrameRequestInProgress b1
+  ivar +900 _hadAccessibilityParent b1
+  ivar +900 _hasActivatedTSM b1
+  ivar +901 _hostInputMethodKitUsesXPC b1
+  ivar +901 _hostWindowFrameAnimationInProgress b1
+  ivar +901 _ultimateHostWindowIsKey b1
+  ivar +901 _hostWindowKeynessChangeInProgress b1
+  ivar +901 _invalid b1
+  ivar +901 _notificationsRegistered b1
+  ivar +901 _remoteFirstResponderChangeInProgress b1
+  ivar +901 _remoteViewIsContentView b1
+  ivar +902 _reportedLackOfAccessibilityParent b1
+  ivar +902 _resizeRequestCompletionInProgress b1
+  ivar +902 _settingFirstResponder b1
+  ivar +902 _shouldOrderWindowOut b1
+  ivar +902 _shouldReportConstraintsOfWindowMinMaxSize b1
+  ivar +902 _willReportConstraintsOfWindowMinMaxSize b1
+  ivar +902 _willUpdateAccessibilityChildren b1
+  ivar +902 _hostWindowIsFunctionRow b1
+  ivar +904 _mostRecentlySentTouchBarsDescription @"NSArray"
+  ivar +912 _touchBarsObserver @"NSCFRunLoopObserver"
+  ivar +920 _scrollViewSeparatorTrackingAdapterIncumbent Q
+  ivar +928 _sheetOrderingFront @"NSWindow"
+  ivar +936 _phasedKeyCount I
+  ivar +940 _ignoreMouseEventsUntilRunPhase b1
+  ivar +944 _eventDeliveryPolicy i
+  ivar +952 _responderToPreserve @"NSResponder"
+  ivar +960 _mostRecentHostAppAuditToken {?="val"[8I]}
+  ivar +992 _mostRecentHostAppAuditTokenLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +996 _bridgePhase C
+  ivar +997 _remoteViewDidMoveInProgress B
+  ivar +1000 _hostWindowID I
+  ivar +1004 _declinedEventMask I
+  ivar +1008 _cornerConfiguration @"NSViewCornerConfiguration"
+  ivar +1016 _keepAliveTransaction @"NSObject<OS_os_transaction>"
+  ivar +1024 _remoteViewSizeChangeTransaction @"NSString"
+  ivar +1032 _scrollViewSeparatorTrackingAdapters @"NSMutableArray"
+  ivar +1040 _alignmentRectInsets {NSEdgeInsets="top"d"left"d"bottom"d"right"d}
+  property cornerConfiguration (T@"NSViewCornerConfiguration",&,V_cornerConfiguration)
+  property viewControllerWindow (T@"NSWindow",R)
+  property isAssociatedWithHostWindow (TB,R)
+  property bridgePhase (TC,N,V_bridgePhase)
+  property hostAccessibilityParent (T@"NSAccessibilityRemoteUIElement",&,V_hostAccessibilityParent)
+  property hostWindowKeynessChangeInProgress (TB,R)
+  property settingFirstResponder (TB)
+  property keepAliveTransaction (T@"NSObject<OS_os_transaction>",&,V_keepAliveTransaction)
+  property remoteViewSizeChangeTransaction (T@"NSString",V_remoteViewSizeChangeTransaction)
+  property scrollViewSeparatorTrackingAdapters (T@"NSMutableArray",&,V_scrollViewSeparatorTrackingAdapters)
+  property mostRecentlySentTouchBarsDescription (T@"NSArray",&,V_mostRecentlySentTouchBarsDescription)
+  property extensionIdentifier (T@"NSString",R)
+  property reportedLackOfAccessibilityParent (TB)
+  property hadAccessibilityParent (TB)
+  property ultimateHostWindowIsKey (TB)
+  property remoteViewIsContentView (TB,R)
+  property serviceFlags (TQ,R,V_serviceFlags)
+  property viewController (T@"NSServiceViewController",R,V_viewController)
+  property sizeHint (T{CGSize=dd},R)
+  property invalid (TB,R)
+  property isValid (TB,R)
+  property bridge (T@"NSViewBridge",R)
+  property remoteViewSize (T{CGSize=dd},R)
+  property remoteViewFrameInScreenCoords (T{CGRect={CGPoint=dd}{CGSize=dd}},V_remoteViewFrameInScreenCoords)
+  property remoteViewIdentifier (T@"NSString",R,V_remoteViewIdentifier)
+  property hostWindowID (TI,R,V_hostWindowID)
+  property uiBehaviorProxy (T@"NSVB_ViewServiceBehaviorProxy",&,V_uiBehaviorProxy)
+  property alignmentRectInsets (T{NSEdgeInsets=dddd},R,V_alignmentRectInsets)
+  property hostWindowFrameAnimationInProgress (TB,R)
+  property remoteViewDidMoveInProgress (TB,R,V_remoteViewDidMoveInProgress)
+  property hostAppAuditToken (T{?=[8I]},R)
+  property hostAppClientParameters (T@"NSObject<NSSecureCoding>",R,V_hostAppClientParameters)
+  property declinedEventMask (TI,R,V_declinedEventMask)
+  property hostWindowIsFunctionRow (TB,R)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  property fenceContext (T@"CAContext",R)
+  +_findFirstKeyViewInDirection:forKeyLoopGroupingView: @32@0:8Q16@24  imp=+0x1a1a5bca0
+  +allowSetObjectForKey:bridge:bridgePhase:withReply: B44@0:8@16@24C32@?36  imp=+0x1a1a3f5e8
+  +anyInstanceResumingSuspendedMessages B16@0:8  imp=+0x1a1a6bcf8
+  +beginFreeWindowRendezvous: B24@0:8@16  imp=+0x1a1a64f74
+  +choseNotToRendezvous:because: v32@0:8@16r*24  imp=+0x1a1a63cbc
+  +considerWindowForRendezvous: B24@0:8@16  imp=+0x1a1a656a4
+  +dequeuingEventInMode:untilDate:whileSendingEvent: v40@0:8@16@24@32  imp=+0x1a1a607cc
+  +doneSendingEvent: v24@0:8@16  imp=+0x1a1a60788
+  +hostApp @16@0:8  imp=+0x1a1a64344
+  +informHostsOfConnectionToService: v20@0:8i16  imp=+0x1a1a3ebac
+  +logIfFirstRepsonderOf:isNot: v32@0:8@16@24  imp=+0x1a1a62b80
+  +minMaxContentSizeFromConstraintsOfWindow: {?={CGSize=dd}{CGSize=dd}}24@0:8@16  imp=+0x1a1a662a8
+  +patchNSCursor v16@0:8  imp=+0x1a1a65a54
+  +patchNSMenu v16@0:8  imp=+0x1a1a65ab0
+  +patchNSView v16@0:8  imp=+0x1a1a3b42c
+  +patchNSWindow v16@0:8  imp=+0x1a1a3b4a0
+  +requestUserInteractionWithPatience:options:sender: s40@0:8d16Q24{ProcessSerialNumber=II}32  imp=+0x1a1a64994
+  +responder:isFieldEditorFor: B32@0:8@16@24  imp=+0x1a1a5cc78
+  +serviceMarshalForAppModalSession: @20@0:8i16  imp=+0x1a1a5890c
+  +serviceMarshalForHostWindow: @20@0:8I16  imp=+0x1a1a58e60
+  +serviceMarshalForRemoteViewIdentifier: @24@0:8@16  imp=+0x1a1a58fc4
+  +serviceMarshalForServiceWindow: @24@0:8@16  imp=+0x1a1a3d79c
+  +serviceMarshalForTouchBarChanges @16@0:8  imp=+0x1a1a58cac
+  +serviceMarshals @16@0:8  imp=+0x1a1a58b54
+  +serviceWindowWouldActivate: B24@0:8@16  imp=+0x1a1a5c198
+  +setEnhancedUserInterfaceAttribute: v24@0:8@16  imp=+0x1a1a6b91c
+  +vbuAuxiliaryProxyFor:async: @28@0:8r*16B24  imp=+0x1a1a63d74
+  +viewBridgeAuxiliaryProxyForConnection:withErrorHandler: @32@0:8@16@?24  imp=+0x1a1a65b20
+  +whenWindow:isAssociatedWithRemoteViewPerform: B32@0:8@16@?24  imp=+0x1a1a5882c
+  +windowDidOrderOnScreenAndFinishAnimating: v24@0:8@16  imp=+0x1a1a65920
+  +windowKeyness: {?=BB}24@0:8@16  imp=+0x1a1a60734
+  +windowWillOrderOnScreen: v24@0:8@16  imp=+0x1a1a65988
+  -__vbSuperRelease v16@0:8  imp=+0x1a1a56b44
+  -__vbWithLockPerform: v24@0:8@?16  imp=+0x1a1a56958
+  -_addChildWindow:ordered: v32@0:8@16q24  imp=+0x1a1a5b1cc
+  -_bootstrap:replyData:completion: v40@0:8r^{?=@@@@@d{?=B{CGRect={CGPoint=dd}{CGSize=dd}}{?=dddd}{CGRect={CGPoint=dd}{CGSize=dd}}}QIBBBB@B}16@24@?32  imp=+0x1a1a66350
+  -_ignoreBadFirstResponders B16@0:8  imp=+0x1a1a57540
+  -_invalidateDueToExceptionDuringIncomingIPC: @24@0:8@16  imp=+0x1a1a581e0
+  -_orderWindow:mode:relativeTo: v40@0:8@16q24q32  imp=+0x1a1a68d90
+  -_remoteViewDidChangeState:ofPopoverBar:forItem: v36@0:8C16@20@28  imp=+0x1a1abeb8c
+  -_remoteViewGeometryDidChange:oldRemoteViewFrameSize: {CGSize=dd}40@0:8@16{CGSize=dd}24  imp=+0x1a1a612e8
+  -_runCommandEquivalentEventLoop v16@0:8  imp=+0x1a1a70124
+  -_serviceWindowDidBecomeKey: v24@0:8@16  imp=+0x1a1a5e024
+  -_serviceWindowDidResignKey: v24@0:8@16  imp=+0x1a1a5e248
+  -_serviceWindowDidResize: v24@0:8@16  imp=+0x1a1a5dee8
+  -_willBecomeAssociatedWithHostWindow:atLevel:isFunctionRow: v32@0:8I16q20B28  imp=+0x1a1a5fadc
+  -abortTrackingLoop: v24@0:8@16  imp=+0x1a1a6041c
+  -accessibilityTokenForFocusedUIElement @16@0:8  imp=+0x1a1a6c9e8
+  -accessibilityTokenForFocusedUIElement: v24@0:8@?16  imp=+0x1a1a6cca4
+  -acquireKeyAppearanceBecause: v24@0:8r*16  imp=+0x1a1a5eea8
+  -acquireKeyboardFocus: v24@0:8r*16  imp=+0x1a1a5e9e0
+  -activateTSM: B24@0:8r*16  imp=+0x1a1a5e3b4
+  -actualFrame:differsFromSpecifiedFrame:oldFrame:ofWindow: v120@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16{CGRect={CGPoint=dd}{CGSize=dd}}48{CGRect={CGPoint=dd}{CGSize=dd}}80@112  imp=+0x1a1a59aa8
+  -actualOrigin:differsFromSpecifiedOrigin:oldOrigin:ofWindow: v72@0:8{CGPoint=dd}16{CGPoint=dd}32{CGPoint=dd}48@64  imp=+0x1a1a59d30
+  -actualSize:differsFromSpecifiedSize:oldSize:ofWindow: v72@0:8{CGSize=dd}16{CGSize=dd}32{CGSize=dd}48@64  imp=+0x1a1a59bfc
+  -addChildWindow:ordered: v32@0:8@16q24  imp=+0x1a1a5b5ec
+  -adjustWindowContext v16@0:8  imp=+0x1a1a5cae4
+  -advanceToRunPhase B16@0:8  imp=+0x1a1a69d34
+  -advanceToRunPhase: v24@0:8@?16  imp=+0x1a1a6a124
+  -afterResignKey v16@0:8  imp=+0x1a1a61840
+  -alignmentRectInsets {NSEdgeInsets=dddd}16@0:8  imp=+0x1a1a71e94
+  -allowAppNap: v20@0:8B16  imp=+0x1a1a6e6e0
+  -animateWindow:frame: B56@0:8@16{CGRect={CGPoint=dd}{CGSize=dd}}24  imp=+0x1a1a5a3b0
+  -associateMouseAndMouseCursorPosition:completion: v28@0:8B16@?20  imp=+0x1a1a5fcfc
+  -backingScaleFactor: d24@0:8@16  imp=+0x1a1a5b98c
+  -becomeKeyBecause: v24@0:8r*16  imp=+0x1a1a5f0d8
+  -becomeKeyWindow: v24@0:8@16  imp=+0x1a1a6c514
+  -beginHostAppModalSession:parameters:title:style:size:withReply: v72@0:8@16r^{?={?=QC{CGRect={CGPoint=dd}{CGSize=dd}}IQ}}24@32Q40{CGSize=dd}48@?64  imp=+0x1a1a6bbe0
+  -beginHostSheet:isCritical:completion: v36@0:8@16B24@?28  imp=+0x1a1a69330
+  -beginTrackingLoop: v24@0:8@16  imp=+0x1a1a5fec8
+  -bootstrap:withReply: v208@0:8{?=@@@@@d{?=B{CGRect={CGPoint=dd}{CGSize=dd}}{?=dddd}{CGRect={CGPoint=dd}{CGSize=dd}}}QIBBBB@B}16@?200  imp=+0x1a1a67be4
+  -bridge @16@0:8  imp=+0x1a1a69bd0
+  -bridgePhase C16@0:8  imp=+0x1a1a71db0
+  -builtForPlatform:againstMinimumSDK:reply: v32@0:8I16I20@?24  imp=+0x1a1a71210
+  -cacheHostAccessibilityParentUsingToken: v24@0:8@16  imp=+0x1a1a6b6e0
+  -canBecomeKeyView B16@0:8  imp=+0x1a1a59524
+  -cancelActionHitRemoteView B16@0:8  imp=+0x1a1a68390
+  -cancelActionHitRemoteView: v24@0:8@?16  imp=+0x1a1a68790
+  -changeWindowFrameFromConstraintsIfNecessary B16@0:8  imp=+0x1a1a5a394
+  -checkResponsiveness:reply: v28@0:8I16@?20  imp=+0x1a1a6b014
+  -completeWithError:andRequestedFrameSize:withRemoteViewSize:andWindow: v64@0:8@16{CGSize=dd}24{CGSize=dd}40@56  imp=+0x1a1a59f40
+  -concretizedWindowBackgroundColor @16@0:8  imp=+0x1a1a67b38
+  -connectToAuxiliaryServiceWithWindow: @20@0:8I16  imp=+0x1a1a65d34
+  -connection:handleInvocation:isReply: v36@0:8@16@24B32  imp=+0x1a1a6d2f8
+  -considerChildWindowsOfWindow: v24@0:8@16  imp=+0x1a1a5f3e0
+  -constrainContentViewSize:ofWindow: v40@0:8{CGSize=dd}16@32  imp=+0x1a1a59608
+  -cornerConfiguration @16@0:8  imp=+0x1a1a71f1c
+  -deactivateTSM: B24@0:8r*16  imp=+0x1a1a5e6ac
+  -dealloc v16@0:8  imp=+0x1a1a56f78
+  -declineKeyboardEventsOtherThan: v24@0:8@16  imp=+0x1a1a5c028
+  -declinedEventMask I16@0:8  imp=+0x1a1a71f08
+  -defaultResizeBehavior v16@0:8  imp=+0x1a1a60a08
+  -deliveryPolicyObserver:policyDidChange: v32@0:8@16@24  imp=+0x1a1a5ed00
+  -description @16@0:8  imp=+0x1a1a5688c
+  -didBecomeAssociated:hostWindowBackgroundColor: v32@0:8{?=I{?=BB}BB}16@24  imp=+0x1a1a5f758
+  -didSetView v16@0:8  imp=+0x1a1a63b44
+  -disengageFromAllWindows v16@0:8  imp=+0x1a1a57548
+  -dragWindow:relativeToMouseDown: B40@0:8@16{CGPoint=dd}24  imp=+0x1a1a5b884
+  -electScrollViewSeparatorTrackingAdapterForWindow: v24@0:8@16  imp=+0x1a1a6f668
+  -endHostAppModalSession: v24@0:8@16  imp=+0x1a1a6bcb8
+  -endHostSheet v16@0:8  imp=+0x1a1a68fe4
+  -endTrackingLoop: v24@0:8@16  imp=+0x1a1a60130
+  -ensureClientExportedInterface B16@0:8  imp=+0x1a1a6cdf0
+  -ensureClientExportedObject B16@0:8  imp=+0x1a1a6cf98
+  -ensureWindow:hasCorrectOrigin: B40@0:8@16{CGPoint=dd}24  imp=+0x1a1a608bc
+  -ensureWindowHasCorrectOrigin: B24@0:8@16  imp=+0x1a1a608a8
+  -evaluateKeynessOfRemoteViews v16@0:8  imp=+0x1a1a61c84
+  -eventResizingRegionContainsPoint: B32@0:8{CGPoint=dd}16  imp=+0x1a1a6c968
+  -exchangeAccessibilityTokens:enhancedUserInterface: @32@0:8@16@24  imp=+0x1a1a6b9c4
+  -exchangeAccessibilityTokens:enhancedUserInterface:withReply: v40@0:8@16@24@?32  imp=+0x1a1a6bab0
+  -extensionIdentifier @16@0:8  imp=+0x1a1a71124
+  -failedImplicitResize:ofWindow:withError: v48@0:8{CGSize=dd}16@32@40  imp=+0x1a1a598e4
+  -fakeMenuItemForTargetWithAction: @24@0:8:16  imp=+0x1a1a6a320
+  -fenceContext @16@0:8  imp=+0x1a1a56904
+  -findTargetAndAction:usingFakeMenuItem: {?=@@:@}32@0:8@16@24  imp=+0x1a1a6a4d0
+  -forgetConstraints v16@0:8  imp=+0x1a1a5952c
+  -forgetViewController: v24@0:8@16  imp=+0x1a1a57708
+  -forwardActionUpHostResponderChain: v24@0:8:16  imp=+0x1a1a6eb2c
+  -forwardPotentialCommandEquivalent:eventDeliveredByAppKit:fullDispatch:reply: v40@0:8@16B24B28@?32  imp=+0x1a1a7031c
+  -frameOfServiceWindowDidChange:reply: v56@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16@?48  imp=+0x1a1a70b30
+  -giveWindowOpportunityToEstablishMeaningfulFirstResponder @16@0:8  imp=+0x1a1a62420
+  -hadAccessibilityParent B16@0:8  imp=+0x1a1a57400
+  -handlePotentialCommandEquivalent:reply: v32@0:8@16@?24  imp=+0x1a1a68c18
+  -hasTouchBars: v24@0:8@16  imp=+0x1a1a71be8
+  -hideTouchBarPopover: v24@0:8@16  imp=+0x1a1a71708
+  -hierarchyDidChangeInView: v24@0:8@16  imp=+0x1a1a6bd80
+  -hostAccessibilityParent @16@0:8  imp=+0x1a1a71f38
+  -hostAppAccentColorDidChange: v24@0:8@16  imp=+0x1a1a6e368
+  -hostAppAuditToken {?=[8I]}16@0:8  imp=+0x1a1a69ad4
+  -hostAppClientParameters @16@0:8  imp=+0x1a1a71ef4
+  -hostAppProcessIdentifier i16@0:8  imp=+0x1a1a69a98
+  -hostBuiltForPlatform:againstMinimumSDK:reply: v32@0:8I16I20@?24  imp=+0x1a1a5fda4
+  -hostWindowBackgroundColorDidChange: v24@0:8@16  imp=+0x1a1a6e36c
+  -hostWindowBecameKey:inActiveApp:firstResponderState:isContentView: v30@0:8{?=BB}16B18C22B26  imp=+0x1a1a61d8c
+  -hostWindowChangedKeyness: v24@0:8@?16  imp=+0x1a1a61acc
+  -hostWindowFrameAnimationInProgress B16@0:8  imp=+0x1a1a70ebc
+  -hostWindowID I16@0:8  imp=+0x1a1a71e64
+  -hostWindowIsFunctionRow B16@0:8  imp=+0x1a1a57374
+  -hostWindowIsKey: B24@0:8@16  imp=+0x1a1a6c5d4
+  -hostWindowKeynessChangeInProgress B16@0:8  imp=+0x1a1a573d0
+  -hostWindowLevelDidChange: v24@0:8q16  imp=+0x1a1a6e3c8
+  -hostWindowModalSessionStatus: i24@0:8@16  imp=+0x1a1a5c2c8
+  -hostWindowReceivedEventType: v24@0:8Q16  imp=+0x1a1a6bfac
+  -hostWindowReceivedMouseEventType: v24@0:8Q16  imp=+0x1a1a6bfe4
+  -hostWindowResignedKey: v20@0:8B16  imp=+0x1a1a618ac
+  -hostWindowResignedKey:focusOnly:inActiveApp:isContentView: v30@0:8{?=BB}16B18B22B26  imp=+0x1a1a61f10
+  -implicitResize:ofWindow: v40@0:8{CGSize=dd}16@32  imp=+0x1a1a599cc
+  -informHostOfConnectionToService: v20@0:8i16  imp=+0x1a1a5878c
+  -informHostOfContentMinSize:contentMaxSize: v48@0:8{CGSize=dd}16{CGSize=dd}32  imp=+0x1a1a5d51c
+  -informHostOfFirstResponder:forWindow:inDirection: v40@0:8@16@24Q32  imp=+0x1a1a5c530
+  -informRemoteViewOfScrollViewSeparatorTrackingAdapterWithScrolledContentsUnderTitlebar: v24@0:8@16  imp=+0x1a1a6f2c4
+  -initWithConnection: @24@0:8@16  imp=+0x1a1a5849c
+  -intelligenceCollectRemoteContext:visibleRect: v56@0:8@16{CGRect={CGPoint=dd}{CGSize=dd}}24  imp=+0x1a1a71d00
+  -invalid B16@0:8  imp=+0x1a1a5735c
+  -invalidate v16@0:8  imp=+0x1a1a577bc
+  -invalidateOnMainThread: v24@0:8@16  imp=+0x1a1a581fc
+  -invokeBlock: v24@0:8@?16  imp=+0x1a1a6d418
+  -invokeBlockViaFenceProxyIfAny: v24@0:8@?16  imp=+0x1a1a6d428
+  -isAssociatedWithHostWindow B16@0:8  imp=+0x1a1a58770
+  -isRunningADocModalAttachedSheet: B24@0:8@16  imp=+0x1a1a5c440
+  -isValid B16@0:8  imp=+0x1a1a5692c
+  -keepAliveTransaction @16@0:8  imp=+0x1a1a71f54
+  -maintainNotificationsForWindow: v20@0:8B16  imp=+0x1a1a5dc5c
+  -makeFirstResponder:ofWindow: B32@0:8@16@24  imp=+0x1a1a5ba7c
+  -mostRecentlySentTouchBarsDescription @16@0:8  imp=+0x1a1a71d6c
+  -observeValueForContentMaxSize: v24@0:8@16  imp=+0x1a1a5d838
+  -observeValueForContentMinSize: v24@0:8@16  imp=+0x1a1a5d680
+  -observeValueForContentView: v24@0:8@16  imp=+0x1a1a5d29c
+  -observeValueForFirstResponder: v24@0:8@16  imp=+0x1a1a5cd04
+  -observeValueForHasScrolledContentsUnderTitlebar:ofScrollViewSeparatorTrackingAdapter: v32@0:8@16@24  imp=+0x1a1a6ecac
+  -observeValueForKeyPath:ofObject:change:context: v48@0:8@16@24@32^v40  imp=+0x1a1a5dad0
+  -observeValueForScrollViewFrame:ofScrollViewSeparatorTrackingAdapter: v32@0:8@16@24  imp=+0x1a1a6ee24
+  -observeValueForScrollViewSeparatorTrackingAdapter:ofAdapter:change:context: v48@0:8@16@24@32^v40  imp=+0x1a1a6f168
+  -observeValueForWindow:ofObject:change:context: v48@0:8@16@24@32^v40  imp=+0x1a1a5d8dc
+  -obtainFirstResponderState: v24@0:8@?16  imp=+0x1a1a624c0
+  -orderWindow:options: v32@0:8@16@24  imp=+0x1a1a68eac
+  -orderWindowOutIfNeeded: v24@0:8@16  imp=+0x1a1a57758
+  -orderedDrawerAndWindowKeyLoopGroupingViews: @24@0:8@16  imp=+0x1a1a5bca8
+  -performAction:forTarget: v32@0:8@16@24  imp=+0x1a1a6aa48
+  -prepareServiceAccessoryView: v20@0:8I16  imp=+0x1a1ad2a9c
+  -prepareWindow: v24@0:8@16  imp=+0x1a1a63a1c
+  -refreshAccessibilityParentOfNestedViewService v16@0:8  imp=+0x1a1a6b93c
+  -registerBridgeKey:defaultObject:owner: v36@0:8@16@24C32  imp=+0x1a1a69c4c
+  -registerScrollViewSeparatorTrackingAdapter:forWindow: v32@0:8@16@24  imp=+0x1a1a6f920
+  -release Vv16@0:8  imp=+0x1a1a56b7c
+  -relinquishKeyboardFocus: v24@0:8r*16  imp=+0x1a1a5eb70
+  -remoteViewBackingScaleFactorDidChange: v24@0:8d16  imp=+0x1a1a70f78
+  -remoteViewBecameFirstResponder:forWindowsWithKeyness:inActiveApp:inVisibleWindow:reply: v42@0:8Q16{?=BB}24B26B30@?34  imp=+0x1a1a62700
+  -remoteViewBecameFirstResponder:forWindowsWithKeyness:inVisibleWindow:because: C38@0:8Q16{?=BB}24B26@30  imp=+0x1a1a6289c
+  -remoteViewCaresAboutTouchBars: v20@0:8B16  imp=+0x1a1a71308
+  -remoteViewChangedFirstResponder: v24@0:8@?16  imp=+0x1a1a63448
+  -remoteViewContainingWindowOcclusionStateDidChange: v24@0:8Q16  imp=+0x1a1a6e544
+  -remoteViewControllerProxy: v24@0:8@?16  imp=+0x1a1a6d0ac
+  -remoteViewDidChangeState:ofPopoverBar:forItem: v36@0:8C16@20@28  imp=+0x1a1a71304
+  -remoteViewDidEndLiveResize: v24@0:8@?16  imp=+0x1a1a61740
+  -remoteViewDidMoveInProgress B16@0:8  imp=+0x1a1a71edc
+  -remoteViewFrameInScreenCoords {CGRect={CGPoint=dd}{CGSize=dd}}16@0:8  imp=+0x1a1a71dc4
+  -remoteViewGeometryDidChange:transaction:withReply: v136@0:8{?=B{CGRect={CGPoint=dd}{CGSize=dd}}{?=dddd}{CGRect={CGPoint=dd}{CGSize=dd}}}16@120@?128  imp=+0x1a1a6143c
+  -remoteViewGeometryDidChangeDueToTransaction:oldRemoteViewFrameSize: {CGSize=dd}40@0:8@16{CGSize=dd}24  imp=+0x1a1a61010
+  -remoteViewHasHostAppAccentColor: v24@0:8@16  imp=+0x1a1a6e03c
+  -remoteViewIdentifier @16@0:8  imp=+0x1a1a71e50
+  -remoteViewIsContentView B16@0:8  imp=+0x1a1a573e8
+  -remoteViewIsContentView: v20@0:8B16  imp=+0x1a1a6eb04
+  -remoteViewMarshal: @24@0:8r*16  imp=+0x1a1a59180
+  -remoteViewMarshal:withErrorHandler: @32@0:8r*16@?24  imp=+0x1a1a59188
+  -remoteViewReceivedLeftMouseDown: v24@0:8q16  imp=+0x1a1a6c1d0
+  -remoteViewResignedFirstResponder v16@0:8  imp=+0x1a1a62d74
+  -remoteViewResignedFirstResponderInActiveApp: v20@0:8B16  imp=+0x1a1a63618
+  -remoteViewSafeAreaInsetsDidChange: v48@0:8{NSEdgeInsets=dddd}16  imp=+0x1a1a636c4
+  -remoteViewSize {CGSize=dd}16@0:8  imp=+0x1a1a70dec
+  -remoteViewSizeChangeTransaction @16@0:8  imp=+0x1a1a71f70
+  -remoteViewWillStartLiveResize v16@0:8  imp=+0x1a1a61698
+  -removeChildWindow: v24@0:8@16  imp=+0x1a1a5b854
+  -reportedLackOfAccessibilityParent B16@0:8  imp=+0x1a1a57444
+  -reportingControllerWindow: v24@0:8@?16  imp=+0x1a1a5c4b0
+  -requestFrame:transaction:animate:async:completion: v72@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16@48B56B60@?64  imp=+0x1a1a6d548
+  -resignFirstResponderIfNecessary v16@0:8  imp=+0x1a1a5747c
+  -resignKeyWindow: v24@0:8@16  imp=+0x1a1a6c458
+  -retain @16@0:8  imp=+0x1a1a569d0
+  -retainReleaseLock ^{os_unfair_lock_s=I}16@0:8  imp=+0x1a1a56948
+  -retreatToConfigPhase v16@0:8  imp=+0x1a1a6c868
+  -runCommandEquivalentEventLoop v16@0:8  imp=+0x1a1a701f4
+  -scrollViewSeparatorTrackingAdapter:qualifiesForWindow: B32@0:8@16@24  imp=+0x1a1a6f45c
+  -scrollViewSeparatorTrackingAdapters @16@0:8  imp=+0x1a1a71f98
+  -secondGuessingRequestedOrigin:whichDeviatesFromCorrectOrigin:ofWindow: v56@0:8{CGPoint=dd}16{CGPoint=dd}32@48  imp=+0x1a1a597dc
+  -semaphoreForViewBridgePrivateMode @16@0:8  imp=+0x1a1a5717c
+  -sendEvent:to: B32@0:8@16@24  imp=+0x1a1a689cc
+  -sendMinMaxWindowSizesToHostIfNeeded: v24@0:8@16  imp=+0x1a1a6c64c
+  -sendMinMaxWindowSizesToHostIfNeeded:now: v28@0:8@16B24  imp=+0x1a1a6c728
+  -serviceFlags Q16@0:8  imp=+0x1a1a71d88
+  -serviceWindowDidBecomeKey v16@0:8  imp=+0x1a1a5df6c
+  -serviceWindowDidResignKey v16@0:8  imp=+0x1a1a5e190
+  -serviceWindowFrameForRemoteViewFrame {CGRect={CGPoint=dd}{CGSize=dd}}16@0:8  imp=+0x1a1a70e78
+  -serviceWindowFrameForRemoteViewFrameWithOrigin: {CGRect={CGPoint=dd}{CGSize=dd}}32@0:8{CGPoint=dd}16  imp=+0x1a1a70e0c
+  -serviceWindowWouldActivate v16@0:8  imp=+0x1a1a5c168
+  -setAppearanceOfWindow: B24@0:8@16  imp=+0x1a1a63770
+  -setBridgePhase: v20@0:8C16  imp=+0x1a1a66330
+  -setCornerConfiguration: v24@0:8@16  imp=+0x1a1a71f2c
+  -setCursor: v24@0:8@16  imp=+0x1a1a71220
+  -setEventMaskBasedOnWindow: v24@0:8@16  imp=+0x1a1a5bad0
+  -setFirstResponderForRemoteView: C24@0:8Q16  imp=+0x1a1a620fc
+  -setHadAccessibilityParent: v20@0:8B16  imp=+0x1a1a57418
+  -setHostAccessibilityParent: v24@0:8@16  imp=+0x1a1a71f48
+  -setHostObject:forKey: v32@0:8@16@24  imp=+0x1a1a699b4
+  -setHostTouchBar:description: v32@0:8@16@24  imp=+0x1a1a71984
+  -setHostTouchBar:escapeKeyReplacementItem: v32@0:8@16@24  imp=+0x1a1a71b1c
+  -setHostTouchBar:principalItemIdentifier: v32@0:8@16@24  imp=+0x1a1a71a50
+  -setHostTouchBarItem:itemPosition: v32@0:8@16@24  imp=+0x1a1a718b8
+  -setKeepAliveTransaction: v24@0:8@16  imp=+0x1a1a71f64
+  -setMostRecentlySentTouchBarsDescription: v24@0:8@16  imp=+0x1a1a71d7c
+  -setRemoteViewEffectiveAppearance: v24@0:8@16  imp=+0x1a1a6e670
+  -setRemoteViewFrameInScreenCoords: v48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16  imp=+0x1a1a71e0c
+  -setRemoteViewSizeChangeTransaction: v24@0:8@16  imp=+0x1a1a71f84
+  -setReportedLackOfAccessibilityParent: v20@0:8B16  imp=+0x1a1a5745c
+  -setScrollViewSeparatorTrackingAdapters: v24@0:8@16  imp=+0x1a1a71fa8
+  -setServiceObject:forKey: v32@0:8@16@24  imp=+0x1a1a6a1b8
+  -setSettingFirstResponder: v20@0:8B16  imp=+0x1a1a5738c
+  -setUiBehaviorProxy: v24@0:8@16  imp=+0x1a1a71e88
+  -setUltimateHostWindowIsKey: v20@0:8B16  imp=+0x1a1a5f64c
+  -setValidatesSecurityOfSuperlayers:onWindow: v28@0:8B16@20  imp=+0x1a1a6c5d0
+  -setViewVibrantBlendingStyle: v24@0:8Q16  imp=+0x1a1a6e634
+  -setWindow:frame:display:stashSize: B64@0:8@16{CGRect={CGPoint=dd}{CGSize=dd}}24B56B60  imp=+0x1a1a5a8b0
+  -setWindow:styleMask: v32@0:8@16Q24  imp=+0x1a1a5bee4
+  -settingFirstResponder B16@0:8  imp=+0x1a1a573b8
+  -shakeWindow: v24@0:8@16  imp=+0x1a1a5b95c
+  -sharesFirstResponderWithAnyChild B16@0:8  imp=+0x1a1a62c80
+  -shouldAllowAnimationForDefaultResizeBehavior B16@0:8  imp=+0x1a1a60bc4
+  -shouldDrawSubviewsIntoLayer B16@0:8  imp=+0x1a1a63b20
+  -showTouchBarPopover:fromItem:withOverlayIdentifier:withCloseButton:withControlStrip:withOptions: v56@0:8@16@24@32B40B44@48  imp=+0x1a1a717c4
+  -sizeHint {CGSize=dd}16@0:8  imp=+0x1a1a65b0c
+  -snapshot: v24@0:8@?16  imp=+0x1a1a6e99c
+  -stopCommandEquivalentEventLoop B16@0:8  imp=+0x1a1a6ffe4
+  -subvertedWindowMovedEvent:forWindow: v32@0:8@16@24  imp=+0x1a1a68904
+  -uiBehaviorProxy @16@0:8  imp=+0x1a1a71e78
+  -ultimateHostWindowIsKey B16@0:8  imp=+0x1a1a5f740
+  -unregisterScrollViewSeparatorTrackingAdapter:forWindow: v32@0:8@16@24  imp=+0x1a1a6fba4
+  -updateAccessoryViewAccessibility:enhancedUserInterface:withReply: v40@0:8@16@24@?32  imp=+0x1a1ad2b7c
+  -updateWindow:frameAnimationStatusAfterActions: v32@0:8@16@?24  imp=+0x1a1a60c34
+  -validateAction:withReply: v32@0:8@16@?24  imp=+0x1a1a6b0c8
+  -validateTargetAndAction:validateMenuItem:validateUserInterfaceItem:fakeMenuItem: B48@0:8^{?=@@:@}16^{?=BB}24^{?=BB}32@40  imp=+0x1a1a6a37c
+  -viewBridgeAuxiliaryProxyWithErrorHandler: @24@0:8@?16  imp=+0x1a1a65ce8
+  -viewController @16@0:8  imp=+0x1a1a71d9c
+  -viewControllerWindow @16@0:8  imp=+0x1a1a5c234
+  -viewDidChangeEffectiveAppearance: v24@0:8@16  imp=+0x1a1a639c4
+  -visualizeConstraints v16@0:8  imp=+0x1a1a6af84
+  -whileContainedRemoteViewSetsCursorPerform: v24@0:8@?16  imp=+0x1a1a70258
+  -whileFilteringResponderChain: v24@0:8@?16  imp=+0x1a1a6ec18
+  -whileOrderingSheetFront:withParent:performActions: v40@0:8@16@24@?32  imp=+0x1a1a7115c
+  -whileOrderingWindow:perform: v32@0:8@16@?24  imp=+0x1a1a5f308
+  -willBecomeAssociatedWithHostWindow:atLevel:isFunctionRow: v32@0:8I16q20B28  imp=+0x1a1a5fc14
+  -willNotRequestResize:ofWindow:because: v48@0:8{CGSize=dd}16@32r*40  imp=+0x1a1a59e64
+  -window @16@0:8  imp=+0x1a1a5c25c
+  -window:hasRegionForOpaqueViews:blockingDraggableFrame: v64@0:8@16^{CGSRegionObject=}24{CGRect={CGPoint=dd}{CGSize=dd}}32  imp=+0x1a1a68cf0
+  -windowForContextID:reply: v28@0:8I16@?20  imp=+0x1a1a68aa0
+  -windowIsOrderingIn B16@0:8  imp=+0x1a1a68fac
+  -windowReceivedLeftMouseDown: v24@0:8@16  imp=+0x1a1a6c238
+  -windowReceivedScrollWheel: v24@0:8@16  imp=+0x1a1a6c0e8
+  -withHostWindowFrameAnimationInProgress:perform: v28@0:8B16@?20  imp=+0x1a1a70ed4
+  -withResumingSuspendedMessagesInProgress: v24@0:8@?16  imp=+0x1a1a6bd0c
+  -wrap:sendEvent: v32@0:8@16@24  imp=+0x1a1a6888c
+  -wrap:swizzledSetFrameCommon:display:stashSize: v64@0:8@16{CGRect={CGPoint=dd}{CGSize=dd}}24B56B60  imp=+0x1a1a5a034
+@class NSViewServiceMarshalBootstrapReplyDataObject : NSObject instanceSize=160
+  ivar +8 replyData {?="controllerAllowsSnapshot"B"controllerIsMarzipan"B"caContextID"I"serviceConnectionID"I"flags"Q"windowLevel"q"windowStyleMask"Q"windowContentMinSize"{CGSize="width"d"height"d}"windowContentMaxSize"{CGSize="width"d"height"d}"windowFrameMinSize"{CGSize="width"d"height"d}"windowFrameMaxSize"{CGSize="width"d"height"d}"serviceViewFrame"{CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}}"serviceWindowID"I"touchBarsDescription"@"NSArray"}
+@class NSViewServiceMarshalSemaphore : NSCFRunLoopSemaphore instanceSize=40
+  ivar +32 _processIdentifier i
+  -initWithProcessIdentifier: @20@0:8i16  imp=+0x1a1a566c0
+  -wait: B24@0:8d16  imp=+0x1a1a56724
+@class NSViewService_PKSubsystem : NSObject <PKModularService> instanceSize=8
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +_initForPlugInKit @16@0:8  imp=+0x1a1a51f7c
+  +initForPlugInKit @16@0:8  imp=+0x1a1a51fd4
+  -_beginUsing:withBundle: v32@0:8@16@24  imp=+0x1a1a51ec8
+  -beginUsing:withBundle: v32@0:8@16@24  imp=+0x1a1a51f20
+@class NSXPCSharedListener : NSObject instanceSize=40
+  ivar +8 _listeners @"NSMutableDictionary"
+  ivar +16 _delegates @"NSHashTable"
+  ivar +24 reserved ^v
+  ivar +32 lock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  property listeners (T@"NSMutableDictionary",&,V_listeners)
+  +_endpointForListenerNamed:fromServiceNamed:instanceIdentifier:queue:async:completion: v60@0:8@16@24@32@40B48@?52  imp=+0x1a1a83c98
+  +_failedToWarmUpClassNamed:inServiceNamed:dueTo: v40@0:8@16@24@32  imp=+0x1a1a85298
+  +cacheFutureEndpointsForServiceNamed: v24@0:8@16  imp=+0x1a1a83680
+  +connectToService:instanceIdentifier:listener:error: @48@0:8@16@24@32^@40  imp=+0x1a1a84e08
+  +connectToService:instanceIdentifier:listener:queue:completion: v56@0:8@16@24@32@40@?48  imp=+0x1a1a35fd0
+  +connectToService:listener:error: @40@0:8@16@24^@32  imp=+0x1a1a84df8
+  +connectToService:listener:queue:completion: v48@0:8@16@24@32@?40  imp=+0x1a1a35fbc
+  +connectionForListenerNamed:fromServiceNamed: @32@0:8@16@24  imp=+0x1a1a3e758
+  +connectionForListenerNamed:fromServiceNamed:instanceIdentifier: @40@0:8@16@24@32  imp=+0x1a1a8486c
+  +endpointCache @16@0:8  imp=+0x1a1a83804
+  +endpointForListenerNamed:fromServiceNamed:instanceIdentifier:queue:async:completion: v60@0:8@16@24@32@40B48@?52  imp=+0x1a1a84868
+  +endpointForListenerNamed:fromServiceNamed:instanceIdentifier:queue:completion: v56@0:8@16@24@32@40@?48  imp=+0x1a1a36664
+  +endpointForReply:withListenerName:replyErrorCode: @40@0:8@16@24^q32  imp=+0x1a1a83514
+  +getSDKVersionOfServiceNamed:reply: v32@0:8@16@?24  imp=+0x1a1a85464
+  +listenerEndpointForService:instanceIdentifier:listener:queue:completion: v56@0:8@16@24@32@40@?48  imp=+0x1a1a36098
+  +listenerEndpointForService:listener:error: @40@0:8@16@24^@32  imp=+0x1a1a85058
+  +listenerEndpointForService:listener:queue:completion: v48@0:8@16@24@32@?40  imp=+0x1a1a3b36c
+  +purgeEndpointCache v16@0:8  imp=+0x1a1a83760
+  +service:builtForPlatform:againstMinimumSDK:reply: v40@0:8@16I24I28@?32  imp=+0x1a1a85720
+  +setEndpointCache: v24@0:8@16  imp=+0x1a1a83988
+  +sharedServiceListener @16@0:8  imp=+0x1a1a3a088
+  +warmUpClassNamed:inServiceNamed: v32@0:8@16@24  imp=+0x1a1a40188
+  -addDelegate: v24@0:8@16  imp=+0x1a1a3d4c0
+  -addListener:withName: v32@0:8@16@24  imp=+0x1a1a3a248
+  -dealloc v16@0:8  imp=+0x1a1a83080
+  -didAcceptNewConnection: v24@0:8@16  imp=+0x1a1a3a804
+  -listenerEndpointWithName: @24@0:8@16  imp=+0x1a1a832ac
+  -listeners @16@0:8  imp=+0x1a1a3a234
+  -resume v16@0:8  imp=+0x1a1a3a30c
+  -resumeAdditionalService: v24@0:8@16  imp=+0x1a1a83420
+  -resumeSubService: v24@0:8@16  imp=+0x1a1a8349c
+  -setListeners: v24@0:8@16  imp=+0x1a1a3a22c
+  -shouldAcceptNewConnection:forListenerNamed: B32@0:8@16@24  imp=+0x1a1a3a6b8
+  -whileHoldingLock: v24@0:8@?16  imp=+0x1a1a83414
+@class NSXPCSharedListenerManager : NSObject <NSXPCSharedListenerManager> instanceSize=8
+  -builtForPlatform:againstMinimumSDK:reply: v32@0:8I16I20@?24  imp=+0x1a1a82988
+  -getProgramSDKVersion: v24@0:8@?16  imp=+0x1a1a82af4
+  -warmUpClassNamed:withReply: v32@0:8@16@?24  imp=+0x1a1a82b38
+@class NSXPCSharedListenerManagerDelegate : NSObject <NSXPCListenerDelegate> instanceSize=16
+  ivar +8 _listener @"NSXPCListener"
+  property listener (T@"NSXPCListener",&,V_listener)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -dealloc v16@0:8  imp=+0x1a1a82d00
+  -listener @16@0:8  imp=+0x1a1a82e20
+  -listener:shouldAcceptNewConnection: B32@0:8@16@24  imp=+0x1a1a82d4c
+  -setListener: v24@0:8@16  imp=+0x1a1a3a240
+@class ServiceListenerDelegate : ListenerDelegate instanceSize=16
+  -listener:shouldAcceptNewConnection: B32@0:8@16@24  imp=+0x1a1ab2358
+@class UINSServiceViewController : NSServiceViewController instanceSize=152
+  ivar +136 _windowController @"UINSSceneWindowController"
+  ivar +144 _rootUIViewController @"UIViewController"
+  property windowController (T@"UINSSceneWindowController",&,N,V_windowController)
+  property rootUIViewController (T@"UIViewController",&,N,V_rootUIViewController)
+  +initialize v16@0:8  imp=+0x1a1ac2ab4
+  -_deepTargetForTarget:forSelector: @32@0:8@16:24  imp=+0x1a1ac25a4
+  -_respondsToAction:forTarget: B32@0:8:16@24  imp=+0x1a1ac29b0
+  -_validateTarget:forAction: B32@0:8@16:24  imp=+0x1a1ac2700
+  -controllerIsMarzipan B16@0:8  imp=+0x1a1ac2aac
+  -dealloc v16@0:8  imp=+0x1a1ac20ac
+  -declinedEventMask I16@0:8  imp=+0x1a1ac2544
+  -loadView v16@0:8  imp=+0x1a1ac2104
+  -rootUIViewController @16@0:8  imp=+0x1a1ac2b8c
+  -setRootUIViewController: v24@0:8@16  imp=+0x1a1ac2ba0
+  -setWindowController: v24@0:8@16  imp=+0x1a1ac2b80
+  -windowController @16@0:8  imp=+0x1a1ac2b6c
+@class VBUnretainedMap : NSObject <NSFastEnumeration> instanceSize=48
+  ivar +8 _mutations Q
+  ivar +16 _fastEnumeration {vector<id<NSObject>, std::allocator<id<NSObject>>>="__begin_"^@"__end_"^@""{?="__cap_"^@}}
+  ivar +40 _dictionary ^{__CFDictionary=}
+  -.cxx_construct @16@0:8  imp=+0x1a1ab6404
+  -.cxx_destruct v16@0:8  imp=+0x1a1ab63ec
+  -count Q16@0:8  imp=+0x1a1ab5f94
+  -countByEnumeratingWithState:objects:count: Q40@0:8^{?=Q^@^Q[5Q]}16^@24Q32  imp=+0x1a1ab60ac
+  -dealloc v16@0:8  imp=+0x1a1ab605c
+  -description @16@0:8  imp=+0x1a1ab6264
+  -objectForKey: @24@0:8@16  imp=+0x1a1ab5ffc
+  -removeObjectForKey: v24@0:8@16  imp=+0x1a1ab5fa4
+  -setObject:forKey: v32@0:8@16@24  imp=+0x1a1ae87dc
+@class VBXPCConnection : NSXPCConnection instanceSize=176
+  ivar +160 _transport @"VBXPCConnectionTransport"
+  ivar +168 _replyPatience d
+  property replyPatience (Td,R,V_replyPatience)
+  -.cxx_destruct v16@0:8  imp=+0x1a1aaa0b0
+  -initWithListenerEndpoint:andReplyPatience: @32@0:8@16d24  imp=+0x1a1aaa034
+  -initWithUnderlyingConnection:andReplyPatience: @32@0:8@16d24  imp=+0x1a1aa9ebc
+  -mutateIncomingMessage: @24@0:8@16  imp=+0x1a1aa9eb4
+  -mutateOutgoingMessage:withReplyIdentifier: @28@0:8@16I24  imp=+0x1a1aa9ea4
+  -mutateReply:withReplyIdentifier: @28@0:8@16I24  imp=+0x1a1aa9eac
+  -replyPatience d16@0:8  imp=+0x1a1aaa09c
+@class VBXPCConnectionFenced : VBXPCConnection <HasAuxiliaryConnection> instanceSize=224
+  ivar +176 _invalid b1
+  ivar +177 _memberOfFenceGroup C
+  ivar +180 _fenceGroupAcquisition I
+  ivar +184 _durableFenceGroupAcquisition I
+  ivar +188 _fenceGroupAcquisitionDurability I
+  ivar +192 _activeFencingEnabled B
+  ivar +200 auxiliaryServiceConnection @"NSXPCConnection"
+  ivar +208 _client @"<NSVBXPCConnectionClient>"
+  ivar +216 _mostRecentIncomingFenceHandle @"CAFenceHandle"
+  property activeFencingEnabled (TB,V_activeFencingEnabled)
+  property client (T@"<NSVBXPCConnectionClient>",W,V_client)
+  property mostRecentIncomingFenceHandle (T@"CAFenceHandle",&,V_mostRecentIncomingFenceHandle)
+  property auxiliaryInterfaceOutgoing (T@"NSXPCInterface",R,N)
+  property auxiliaryInterfaceIncoming (T@"NSXPCInterface",R,N)
+  property auxiliaryServiceConnection (T@"NSXPCConnection",W,VauxiliaryServiceConnection)
+  property fenceContext (T@"CAContext",R)
+  property isValid (TB,R)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +fencedConnection @16@0:8  imp=+0x1a1ac0808
+  -.cxx_destruct v16@0:8  imp=+0x1a1ac0ff0
+  -_invalidateDueToExceptionDuringIncomingIPC: @24@0:8@16  imp=+0x1a1ac06f4
+  -activeFencingEnabled B16@0:8  imp=+0x1a1ac0f84
+  -addIncomingFence: v24@0:8@16  imp=+0x1a1ac0848
+  -auxiliaryInterfaceIncoming @16@0:8  imp=+0x1a1ac0724
+  -auxiliaryInterfaceOutgoing @16@0:8  imp=+0x1a1ac0710
+  -auxiliaryServiceConnection @16@0:8  imp=+0x1a1ac0f60
+  -client @16@0:8  imp=+0x1a1ac0fb0
+  -dealloc v16@0:8  imp=+0x1a1abf56c
+  -decrementActiveRoleDurability B16@0:8  imp=+0x1a1ac0cd4
+  -description @16@0:8  imp=+0x1a1ac0ed8
+  -fenceContext @16@0:8  imp=+0x1a1ac0654
+  -incrementActiveRoleDurability B16@0:8  imp=+0x1a1ac0c3c
+  -invalidate v16@0:8  imp=+0x1a1ac065c
+  -isValid B16@0:8  imp=+0x1a1ac06d8
+  -mostRecentIncomingFenceHandle @16@0:8  imp=+0x1a1ac0fd4
+  -mutateIncomingMessage: @24@0:8@16  imp=+0x1a1ac03f4
+  -mutateOutgoingMessage:withReplyIdentifier: @28@0:8@16I24  imp=+0x1a1abff7c
+  -setActiveFencingEnabled: v20@0:8B16  imp=+0x1a1ac0f9c
+  -setAuxiliaryServiceConnection: v24@0:8@16  imp=+0x1a1ac0f70
+  -setClient: v24@0:8@16  imp=+0x1a1ac0fc0
+  -setMostRecentIncomingFenceHandle: v24@0:8@16  imp=+0x1a1ac0fe4
+@class VBXPCConnectionTransport : NSObject <_NSXPCTransport> instanceSize=80
+  ivar +8 _connection @"VBXPCConnection"
+  ivar +16 _cachedProcessIdentifier i
+  ivar +24 _repliesPending {set<unsigned int, std::less<unsigned int>, std::allocator<unsigned int>>="__tree_"{__tree<unsigned int, std::less<unsigned int>, std::allocator<unsigned int>>="__begin_node_"^v""{?="__end_node_"{__tree_end_node<std::__tree_node_base<void *> *>="__left_"^v}}""{?="__size_"Q}}}
+  ivar +48 _repliesPendingLock {os_unfair_lock_s="_os_unfair_lock_opaque"I}
+  ivar +56 _underlyingConnection @"NSObject<OS_xpc_object>"
+  ivar +64 _messageHandlerBlock @?
+  ivar +72 _errorHandlerBlock @?
+  property underlyingConnection (T@"NSObject<OS_xpc_object>",&,V_underlyingConnection)
+  property messageHandlerBlock (T@?,C,V_messageHandlerBlock)
+  property errorHandlerBlock (T@?,C,V_errorHandlerBlock)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_construct @16@0:8  imp=+0x1a1aa9e90
+  -.cxx_destruct v16@0:8  imp=+0x1a1aa9e50
+  -activate v16@0:8  imp=+0x1a1aa9dd0
+  -auditSessionIdentifier i16@0:8  imp=+0x1a1aa9df4
+  -auditToken {?=[8I]}16@0:8  imp=+0x1a1aa9de8
+  -cancel v16@0:8  imp=+0x1a1aa9780
+  -dealloc v16@0:8  imp=+0x1a1aa9628
+  -effectiveGroupIdentifier I16@0:8  imp=+0x1a1aa9e0c
+  -effectiveUserIdentifier I16@0:8  imp=+0x1a1aa9e04
+  -errorHandlerBlock @?16@0:8  imp=+0x1a1aa9e3c
+  -initWithConnection: @24@0:8@16  imp=+0x1a1aa9684
+  -messageHandlerBlock @?16@0:8  imp=+0x1a1aa9e28
+  -processIdentifier i16@0:8  imp=+0x1a1aa9dfc
+  -resume v16@0:8  imp=+0x1a1aa9de0
+  -sendBarrierBlock: v24@0:8@?16  imp=+0x1a1aa9db8
+  -sendMessage: v24@0:8@16  imp=+0x1a1ae4e44
+  -sendMessageWithReply:onQueue:replyHandler: v40@0:8@16@24@?32  imp=+0x1a1ae5048
+  -sendMessageWithReplySync: @24@0:8@16  imp=+0x1a1ae4f40
+  -sendNotification: v24@0:8@16  imp=+0x1a1aa9dac
+  -setErrorHandler: v24@0:8@?16  imp=+0x1a1aa9738
+  -setErrorHandlerBlock: v24@0:8@?16  imp=+0x1a1aa9e48
+  -setMessageHandler: v24@0:8@?16  imp=+0x1a1aa96f0
+  -setMessageHandlerBlock: v24@0:8@?16  imp=+0x1a1aa9e34
+  -setTargetQueue: v24@0:8@16  imp=+0x1a1aa9dc4
+  -setUnderlyingConnection: v24@0:8@16  imp=+0x1a1aa9e20
+  -suspend v16@0:8  imp=+0x1a1aa9dd8
+  -underlyingConnection @16@0:8  imp=+0x1a1aa9e14
+@class ViewHost : HostOrService <HostCallsAuxiliary> instanceSize=96
+  ivar +56 _frameInScreenCoords {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}}
+  ivar +88 _mayAttemptCommandEquivalentAtWill b2
+  property frameInScreenCoords (T{CGRect={CGPoint=dd}{CGSize=dd}},V_frameInScreenCoords)
+  +ultimateAncestor:forApp: @56@0:8@16{?=[8I]}24  imp=+0x1a1aac830
+  +ultimateAncestorOfWindow:inDictionaryOfHostsAndServices: @28@0:8I16@20  imp=+0x1a1aac828
+  +ultimateAncestorOfWindow:inDictionaryOfHostsAndServices:consideringEachViewHost: @36@0:8I16@20@?28  imp=+0x1a1aac414
+  -dealloc v16@0:8  imp=+0x1a1aacfd8
+  -frameInScreenCoords {CGRect={CGPoint=dd}{CGSize=dd}}16@0:8  imp=+0x1a1aad010
+  -invalidate: v24@0:8@16  imp=+0x1a1aac390
+  -joinPair:frameInScreenCoords:reply: v64@0:8@16{CGRect={CGPoint=dd}{CGSize=dd}}24@?56  imp=+0x1a1aac00c
+  -keyboardEventHitRemoteView:reply: v32@0:8@16@?24  imp=+0x1a1aac19c
+  -killViewService: v24@0:8@?16  imp=+0x1a1aab654
+  -mayAttemptCommandEquivalentAtWill B16@0:8  imp=+0x1a1aabf70
+  -remoteViewBecameAssociatedWithWindow:reply: v28@0:8I16@?20  imp=+0x1a1aabbc8
+  -setFrameInScreenCoords: v48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16  imp=+0x1a1aad050
+  -ultimateHostAppSerialNumber ^{__LSASN=}16@0:8  imp=+0x1a1aacbb8
+  -updateFrameInScreenCoords: v48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16  imp=+0x1a1aabd60
+@class ViewService : HostOrService <ServiceCallsAuxiliary> instanceSize=96
+  ivar +56 _spawnedRendezvousChildWindows @"NSMutableSet"
+  ivar +64 _frameInScreenCoords {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}}
+  property frameInScreenCoords (T{CGRect={CGPoint=dd}{CGSize=dd}},V_frameInScreenCoords)
+  -_addChildWindow:identifier:listenerEndpoint:reply: v48@0:8r^{?=qBB{?=QC{CGRect={CGPoint=dd}{CGSize=dd}}IQ}}16@24@32@?40  imp=+0x1a1aadb38
+  -_frameOfServiceWindowDidChange:windowBackgroundColor:reply: v64@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16@48@?56  imp=+0x1a1aad6c4
+  -_requestFrame:serviceWindowBackgroundColor:animate:async:transaction:completion: v80@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16@48B56B60@64@?72  imp=+0x1a1aad890
+  -_requestFrame:windowBackgroundColor:duringFunc:withProxyOrErrorBlock: @72@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16@48r*56@?64  imp=+0x1a1aad35c
+  -addChildWindow:identifier:listenerEndpoint:reply: v120@0:8{?=qBB{?=QC{CGRect={CGPoint=dd}{CGSize=dd}}IQ}}16@96@104@?112  imp=+0x1a1aae050
+  -dealloc v16@0:8  imp=+0x1a1aae784
+  -eventResemblesCommandEquivalent: B24@0:8^{__CGEvent=}16  imp=+0x1a1aae0e4
+  -frameInScreenCoords {CGRect={CGPoint=dd}{CGSize=dd}}16@0:8  imp=+0x1a1aae7d0
+  -frameOfServiceWindowDidChange:windowBackgroundColor:reply: v64@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16@48@?56  imp=+0x1a1aad7fc
+  -invalidate: v24@0:8@16  imp=+0x1a1aae700
+  -joinPair:window:reply: v36@0:8@16I24@?28  imp=+0x1a1aad08c
+  -keyboardEventHitRemoteView:from:reply: v40@0:8^{__CGEvent=}16@24@?32  imp=+0x1a1aae16c
+  -requestFrame:serviceWindowBackgroundColor:animate:async:transaction:completion: v80@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16@48B56B60@64@?72  imp=+0x1a1aada10
+  -setFrameInScreenCoords: v48@0:8{CGRect={CGPoint=dd}{CGSize=dd}}16  imp=+0x1a1aae810
+  -viewServiceWhichSpawnedRendezvousChildWindowWithIdentifier:amongHostsAndServices: @32@0:8@16@24  imp=+0x1a1aad248
+  -windowForContextID:reply: v28@0:8I16@?20  imp=+0x1a1aae58c
+@protocol CWEventDelegate
+  optional -clientConnectionInterrupted v16@0:8
+  optional -ssidDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -powerStateDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -modeDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -linkDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -linkQualityDidChangeForWiFiInterfaceWithName:rssi:transmitRate: v40@0:8@16q24d32
+  optional -bssidDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -clientConnectionInvalidated v16@0:8
+  optional -countryCodeDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -scanCacheUpdatedForWiFiInterfaceWithName: v24@0:8@16
+@protocol CWInternalEventDelegate
+  optional -joinDidStartForWiFiInterfaceWithName:ssid: v32@0:8@16@24
+  optional -internal_queryCloudKVSAndReply: v24@0:8@?16
+  optional -internal_startUserMode8021XWithProfile:interfaceWithName:reply: v40@0:8@16@24@?32
+  optional -internal_showAvailableWiFiNetworks:interfaceName:recommendOnly: v36@0:8@16@24B32
+  optional -autoJoinDidCompleteForWiFiInterfaceWithName: v24@0:8@16
+  optional -autoJoinDidStartForWiFiInterfaceWithName: v24@0:8@16
+  optional -autoJoinDidUpdate: v24@0:8@16
+  optional -btCoexModeStats: v24@0:8@16
+  optional -deviceAvailabilityChangedForWiFiInterfaceWithName:isAvailable: v28@0:8@16B24
+  optional -dextCrashDetected v16@0:8
+  optional -interfaceAddedWithName: v24@0:8@16
+  optional -interfaceRemovedWithName: v24@0:8@16
+  optional -internal_addCloudProfile: v24@0:8@16
+  optional -internal_confirmAPIAccessWithRequestType:info:processName:reply: v48@0:8q16@24@32@?40
+  optional -internal_enableTetherDevice:reply: v32@0:8@16@?24
+  optional -internal_foundTetherDevices: v24@0:8@16
+  optional -internal_getWiFiPasswordForUserKeychainWithSSID:reply: v32@0:8@16@?24
+  optional -internal_joinWiFiNetworkWithUserAgent:interfaceName:timestamp:reply: v48@0:8@16@24d32@?40
+  optional -internal_queryLegacyCloudKVSAndReply: v24@0:8@?16
+  optional -internal_removeCloudProfile: v24@0:8@16
+  optional -internal_setWiFiPasswordForUserKeychain:ssid:reply: v40@0:8@16@24@?32
+  optional -internal_showAutoHotspotNotificationForTetherDevice:retry:interfaceName: v36@0:8@16B24@28
+  optional -internal_showDHCPMessage:networkName: v32@0:8@16@24
+  optional -internal_showLowBatteryNotificationForTetherDevice:interfaceName: v32@0:8@16@24
+  optional -internal_showMICErrorWithNetworkName: v24@0:8@16
+  optional -internal_showPHNetworkExpensiveAlertWithNetworkName: v24@0:8@16
+  optional -internal_startBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  optional -internal_startUserMode8021XWithAuthenticationInfo:interfaceWithName:reply: v40@0:8@16@24@?32
+  optional -internal_startUserMode8021XWithPasspointDomainName:interfaceWithName:reply: v40@0:8@16@24@?32
+  optional -internal_startUserMode8021XWithSSID:username:password:identity:disableUserInteraction:remember:interfaceWithName:reply: v72@0:8@16@24@32@40B48B52@56@?64
+  optional -internal_stopBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  optional -internal_updateCloudProfile: v24@0:8@16
+  optional -joinDidCompleteForWiFiInterfaceWithName:isAutoJoin:error: v36@0:8@16B24@28
+  optional -preferencesDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -rangingEndedForWiFiInterfaceWithName: v24@0:8@16
+  optional -rangingReportEventForWiFiInterfaceWithName:data:error: v40@0:8@16@24@32
+  optional -rangingStartedForWiFiInterfaceWithName: v24@0:8@16
+  optional -realTimeModeDidEndForWiFiInterfaceWithName: v24@0:8@16
+  optional -realTimeModeDidStartForWiFiInterfaceWithName: v24@0:8@16
+  optional -rsnHandshakeDidCompleteForWiFiInterfaceWithName: v24@0:8@16
+  optional -virtualInterfaceStateChangedForWiFiInterfaceWithName: v24@0:8@16
+  optional -willShowJoinUIForWiFiNetwork:interfaceName: v32@0:8@16@24
+  optional -wowStateDidChangeForWiFiInterfaceWithName: v24@0:8@16

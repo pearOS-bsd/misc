@@ -1,0 +1,2172 @@
+@class SKAPFSContainerDisk : SKDisk instanceSize=264
+  ivar +248 _isFusion B
+  ivar +256 _designatedPSUUID @"NSString"
+  property designatedPSUUID (T@"NSString",&,V_designatedPSUUID)
+  property isFusion (TB,V_isFusion)
+  property apfsUUID (T@"NSString",R)
+  -.cxx_destruct v16@0:8  imp=+0x1d6377b8c
+  -addDataVolumeWithName:systemVolume:caseSensitive:minSize:maxSize:password:passwordHint:progressBlock:completetionBlock: v84@0:8@16@24B32Q36Q44@52@60@?68@?76  imp=+0x1d6377864
+  -addSystemVolumeWithName:dataVolume:caseSensitive:minSize:maxSize:password:passwordHint:progressBlock:completetionBlock: v84@0:8@16@24B32Q36Q44@52@60@?68@?76  imp=+0x1d6377604
+  -addUnencryptedSystemVolumeWithName:dataVolume:caseSensitive:minSize:maxSize:password:passwordHint:progressBlock:completetionBlock: v84@0:8@16@24B32Q36Q44@52@60@?68@?76  imp=+0x1d6377734
+  -addVolumeWithName:caseSensitive:minSize:maxSize:password:passwordHint:apfsRole:progressBlock:completetionBlock: v84@0:8@16B24Q28Q36@44@52@60@?68@?76  imp=+0x1d63774d4
+  -addVolumeWithName:caseSensitive:minSize:maxSize:password:passwordHint:progressBlock:completetionBlock: v76@0:8@16B24Q28Q36@44@52@?60@?68  imp=+0x1d6377350
+  -addVolumeWithName:caseSensitive:minSize:maxSize:password:progressBlock:completetionBlock: v68@0:8@16B24Q28Q36@44@?52@?60  imp=+0x1d6377324
+  -apfsUUID @16@0:8  imp=+0x1d6376b40
+  -copyVolumesWithIncludeSnapshots: @20@0:8B16  imp=+0x1d6376fa4
+  -createAPFSVolumeGroupWithDisks:completetionBlock: v32@0:8@16@?24  imp=+0x1d6377a24
+  -designatedPSUUID @16@0:8  imp=+0x1d6377b70
+  -designatedPhysicalStore @16@0:8  imp=+0x1d637717c
+  -dictionaryRepresentation @16@0:8  imp=+0x1d6376ce0
+  -innerDescriptionWithPrivateData: @20@0:8B16  imp=+0x1d6376d6c
+  -isFusion B16@0:8  imp=+0x1d6377b44
+  -isVirtualDiskType B16@0:8  imp=+0x1d637731c
+  -minimalDictionaryRepresentation @16@0:8  imp=+0x1d6376c08
+  -physicalStores @16@0:8  imp=+0x1d6376e10
+  -removeAPFSVolumeGroup:completetionBlock: v32@0:8@16@?24  imp=+0x1d6377ab4
+  -removeContainerWithProgressBlock:completetionBlock: v32@0:8@?16@?24  imp=+0x1d6377994
+  -setDesignatedPSUUID: v24@0:8@16  imp=+0x1d6377b80
+  -setIsFusion: v20@0:8B16  imp=+0x1d6377b5c
+  -updateWithDictionary: v24@0:8@16  imp=+0x1d6376b44
+  -volumes @16@0:8  imp=+0x1d6377124
+  -volumesExcludingSnapshots @16@0:8  imp=+0x1d6377150
+@class SKAPFSDisk : SKDisk <SKEncryptedDiskProtocol> instanceSize=296
+  ivar +248 _isEncrypted B
+  ivar +249 _defaultEffaceable B
+  ivar +250 _isConvertingToEncrypted B
+  ivar +251 _isConvertingToDecrypted B
+  ivar +252 _canBeMountedReadWrite B
+  ivar +256 _usedSpace Q
+  ivar +264 _reserveSpace Q
+  ivar +272 _quotaSpace Q
+  ivar +280 _apfsVolumeGroupUUID @"NSString"
+  ivar +288 _apfsRole @"NSString"
+  property reserveSpace (TQ,V_reserveSpace)
+  property quotaSpace (TQ,V_quotaSpace)
+  property usedSpace (TQ,V_usedSpace)
+  property isEncrypted (TB,V_isEncrypted)
+  property defaultEffaceable (TB,V_defaultEffaceable)
+  property apfsRole (T@"NSString",&,V_apfsRole)
+  property apfsVolumeGroupUUID (T@"NSString",&,V_apfsVolumeGroupUUID)
+  property hasVolumeSiblings (TB,R)
+  property isConvertingToEncrypted (TB,V_isConvertingToEncrypted)
+  property isConvertingToDecrypted (TB,V_isConvertingToDecrypted)
+  property canBeMountedReadWrite (TB,V_canBeMountedReadWrite)
+  property apfsUUID (T@"NSString",R)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1d637578c
+  -_iCloudRecoveryManageFDEUsers:withPCSIdentitySet:addingUsers:removingUsers:handlingProgress:withCompletionBlock: B64@0:8^{_PCSIdentityData=}16^{_PCSIdentitySetData=}24@32@40@?48@?56  imp=+0x1d63733d0
+  -_iCloudRecoveryManageFDEUsers:withPCSIdentitySet:addingUsers:removingUsers:resettingUserPasswords:handlingProgress:withCompletionBlock: B72@0:8^{_PCSIdentityData=}16^{_PCSIdentitySetData=}24@32@40@48@?56@?64  imp=+0x1d637347c
+  -_unlockWithiCloudRecovery:withPCSIdentitySet: B32@0:8^{_PCSIdentityData=}16^{_PCSIdentitySetData=}24  imp=+0x1d6373c78
+  -allSnapshotNames @16@0:8  imp=+0x1d637250c
+  -allSnapshotUUIDs @16@0:8  imp=+0x1d6372760
+  -apfsRole @16@0:8  imp=+0x1d6375770
+  -apfsUUID @16@0:8  imp=+0x1d637192c
+  -apfsVolumeGroupUUID @16@0:8  imp=+0x1d63756d0
+  -canBeMountedReadWrite B16@0:8  imp=+0x1d6375744
+  -changeDiskOldPassword:toNewPassword:withHint: B40@0:8@16@24@32  imp=+0x1d6373ddc
+  -container @16@0:8  imp=+0x1d6371f6c
+  -createSnapshot:error: B32@0:8@16^@24  imp=+0x1d6374274
+  -decryptWithPassword: @24@0:8@16  imp=+0x1d6373f74
+  -decryptWithPassword:forUser: @32@0:8@16@24  imp=+0x1d6373f7c
+  -defaultEffaceable B16@0:8  imp=+0x1d63756a4
+  -deleteSnapshot:error: B32@0:8@16^@24  imp=+0x1d6374e14
+  -deleteSnapshots:error: B32@0:8@16^@24  imp=+0x1d6374ecc
+  -dictionaryRepresentation @16@0:8  imp=+0x1d6371ba0
+  -establishReserveKEK: B24@0:8@16  imp=+0x1d63738e0
+  -getAPFSVolumeRole @16@0:8  imp=+0x1d6371f68
+  -getFDEUserDictionaries @16@0:8  imp=+0x1d6372ca4
+  -getFDEUsers @16@0:8  imp=+0x1d637299c
+  -hasVolumeSiblings B16@0:8  imp=+0x1d63723b8
+  -iCloudRecoveryManageFDEUsers:addingUsers:removingUsers:handlingProgress:withCompletionBlock: B56@0:8^{_PCSIdentityData=}16@24@32@?40@?48  imp=+0x1d637335c
+  -iCloudRecoveryManageFDEUsers:addingUsers:removingUsers:resettingUserPasswords:handlingProgress:withCompletionBlock: B64@0:8^{_PCSIdentityData=}16@24@32@40@?48@?56  imp=+0x1d6373400
+  -iCloudRecoveryManageFDEUsersWithPCSIdentitySet:addingUsers:removingUsers:handlingProgress:withCompletionBlock: B56@0:8^{_PCSIdentitySetData=}16@24@32@?40@?48  imp=+0x1d6373394
+  -iCloudRecoveryManageFDEUsersWithPCSIdentitySet:addingUsers:removingUsers:resettingUserPasswords:handlingProgress:withCompletionBlock: B64@0:8^{_PCSIdentitySetData=}16@24@32@40@?48@?56  imp=+0x1d637343c
+  -innerDescriptionWithPrivateData: @20@0:8B16  imp=+0x1d6371ea0
+  -isConvertingToDecrypted B16@0:8  imp=+0x1d6375718
+  -isConvertingToEncrypted B16@0:8  imp=+0x1d63756ec
+  -isEncrypted B16@0:8  imp=+0x1d6375678
+  -isEqual: B24@0:8@16  imp=+0x1d63722c0
+  -manageFDEUsersWithPassword:addingUsers:removingUsers:handlingProgress:withCompletionBlock: B56@0:8@16@24@32@?40@?48  imp=+0x1d6372ef4
+  -manageFDEUsersWithPassword:addingUsers:removingUsers:resettingUserPasswords:handlingProgress:withCompletionBlock: B64@0:8@16@24@32@40@?48@?56  imp=+0x1d6372f08
+  -matchesDictionary: B24@0:8@16  imp=+0x1d63720d4
+  -minimalDictionaryRepresentation @16@0:8  imp=+0x1d63721f4
+  -mountSnapshot:mountPoint:resultMountPoint:error: B48@0:8@16@24^@32^@40  imp=+0x1d6374700
+  -quotaSpace Q16@0:8  imp=+0x1d6375650
+  -removeVolumeWithProgress:completionBlock: v32@0:8@?16@?24  imp=+0x1d637247c
+  -renameSnapshot:newName:error: B40@0:8@16@24^@32  imp=+0x1d63744ac
+  -reserveSpace Q16@0:8  imp=+0x1d6375628
+  -revertToSnapshot:error: B32@0:8@16^@24  imp=+0x1d6374bdc
+  -rootFromSnapshot:error: B32@0:8@16^@24  imp=+0x1d6375104
+  -setAPFSVolumeRole: v24@0:8@16  imp=+0x1d637417c
+  -setApfsRole: v24@0:8@16  imp=+0x1d6375780
+  -setApfsVolumeGroupUUID: v24@0:8@16  imp=+0x1d63756e0
+  -setCanBeMountedReadWrite: v20@0:8B16  imp=+0x1d637575c
+  -setDefaultEffaceable: v20@0:8B16  imp=+0x1d63756bc
+  -setIsConvertingToDecrypted: v20@0:8B16  imp=+0x1d6375730
+  -setIsConvertingToEncrypted: v20@0:8B16  imp=+0x1d6375704
+  -setIsEncrypted: v20@0:8B16  imp=+0x1d6375690
+  -setQuotaSpace: v24@0:8Q16  imp=+0x1d6375664
+  -setReserveSpace: v24@0:8Q16  imp=+0x1d637563c
+  -setUsedSpace: v24@0:8Q16  imp=+0x1d6375614
+  -unlockWithPassword:forUser: @32@0:8@16@24  imp=+0x1d6373b20
+  -unlockWithiCloudRecovery: B24@0:8^{_PCSIdentityData=}16  imp=+0x1d6373c64
+  -unlockWithiCloudRecoveryPCSSet: B24@0:8^{_PCSIdentitySetData=}16  imp=+0x1d6373c6c
+  -unwrappediCloudRecoveryKeyForPCSIdentity:orPCSIdentitySet: @32@0:8^{_PCSIdentityData=}16^{_PCSIdentitySetData=}24  imp=+0x1d637533c
+  -updatePrebootWithProgress:withCompletionBlock: B32@0:8@?16@?24  imp=+0x1d6372e6c
+  -updateWithDictionary: v24@0:8@16  imp=+0x1d6371930
+  -usedSpace Q16@0:8  imp=+0x1d6375600
+  -validateEncryptionPassword: B24@0:8@16  imp=+0x1d63738e8
+  -validateEncryptionPassword:forUser: @32@0:8@16@24  imp=+0x1d6373920
+  -wholeDiskIdentifier @16@0:8  imp=+0x1d6371fe4
+@class SKAPFSSnapshotDisk : SKAPFSDisk instanceSize=320
+  ivar +296 _apfsUUID @"NSString"
+  ivar +304 _snapshotName @"NSString"
+  ivar +312 _sealStatus q
+  property snapshotName (T@"NSString",&,V_snapshotName)
+  property sealStatus (Tq,V_sealStatus)
+  property apfsUUID (T@"NSString",&)
+  property snapshotUUID (T@"NSString",R)
+  -.cxx_destruct v16@0:8  imp=+0x1d637003c
+  -apfsUUID @16@0:8  imp=+0x1d636fae4
+  -dictionaryRepresentation @16@0:8  imp=+0x1d636fc30
+  -innerDescriptionWithPrivateData: @20@0:8B16  imp=+0x1d636ff00
+  -minimalDictionaryRepresentation @16@0:8  imp=+0x1d636fd98
+  -sealStatus q16@0:8  imp=+0x1d6370014
+  -setApfsUUID: v24@0:8@16  imp=+0x1d636faf8
+  -setSealStatus: v24@0:8q16  imp=+0x1d6370028
+  -setSnapshotName: v24@0:8@16  imp=+0x1d6370008
+  -snapshotName @16@0:8  imp=+0x1d636fff8
+  -snapshotUUID @16@0:8  imp=+0x1d636fb0c
+  -updateWithDictionary: v24@0:8@16  imp=+0x1d636fb10
+@class SKAPFSStoreDisk : SKDisk instanceSize=264
+  ivar +248 _apfsContainerUUID @"NSString"
+  ivar +256 _apfsContainerIdentifier @"NSString"
+  property apfsContainerUUID (T@"NSString",&,V_apfsContainerUUID)
+  property apfsContainerIdentifier (T@"NSString",&,V_apfsContainerIdentifier)
+  property apfsUUID (T@"NSString",R)
+  -.cxx_destruct v16@0:8  imp=+0x1d6378b70
+  -apfsContainerIdentifier @16@0:8  imp=+0x1d6378b54
+  -apfsContainerUUID @16@0:8  imp=+0x1d6378b38
+  -apfsUUID @16@0:8  imp=+0x1d63784c8
+  -canResize B16@0:8  imp=+0x1d63788b4
+  -container @16@0:8  imp=+0x1d63789ec
+  -innerDescriptionWithPrivateData: @20@0:8B16  imp=+0x1d63787ac
+  -isEqual: B24@0:8@16  imp=+0x1d63786a8
+  -isOurContainerWithDisk: B24@0:8@16  imp=+0x1d63788bc
+  -minimalDictionaryRepresentation @16@0:8  imp=+0x1d63785bc
+  -setApfsContainerIdentifier: v24@0:8@16  imp=+0x1d6378b64
+  -setApfsContainerUUID: v24@0:8@16  imp=+0x1d6378b48
+  -updateWithDictionary: v24@0:8@16  imp=+0x1d63784cc
+@class SKBaseManager : NSObject instanceSize=16
+  ivar +8 _supportsCocoa B
+  property supportsCocoa (TB,R,N,V_supportsCocoa)
+  +defaultVisibleRoles @16@0:8  imp=+0x1d634dc20
+  +sharedManager @16@0:8  imp=+0x1d634da50
+  -allDisks @16@0:8  imp=+0x1d634dbcc
+  -formatableFileSystems @16@0:8  imp=+0x1d634dd1c
+  -init @16@0:8  imp=+0x1d634da98
+  -knownDiskForDictionary: @24@0:8@16  imp=+0x1d634dc74
+  -logEvent:eventPayloadBuilder: v32@0:8@16@?24  imp=+0x1d634dd70
+  -raidForContentDisk: @24@0:8@16  imp=+0x1d634dd7c
+  -supportsCocoa B16@0:8  imp=+0x1d634df40
+  -wholeDiskForDisk: @24@0:8@16  imp=+0x1d634dcc8
+@class SKBindableDisk : NSObject instanceSize=160
+  ivar +8 _isValid B
+  ivar +9 _canBeDeleted B
+  ivar +10 _isDiskImage B
+  ivar +11 _isInternal B
+  ivar +12 _isSolidState B
+  ivar +13 _isWholeDisk B
+  ivar +14 _isWritable B
+  ivar +15 _supportsJournaling B
+  ivar +16 _isEjectable B
+  ivar +17 _isNetwork B
+  ivar +18 _isLocked B
+  ivar +19 _canSupportRecoveryPartition B
+  ivar +20 _isOSInternal B
+  ivar +21 _isObserving B
+  ivar +24 _representedDisk @"SKDisk"
+  ivar +32 _role @"NSString"
+  ivar +40 _type @"NSString"
+  ivar +48 _diskIcon @"NSImage"
+  ivar +56 _volumeName @"NSString"
+  ivar +64 _volumeUUID @"NSString"
+  ivar +72 _mountPoint @"NSString"
+  ivar +80 _freeSpace Q
+  ivar +88 _purgeableSpace Q
+  ivar +96 _availableSpace Q
+  ivar +104 _totalSpace Q
+  ivar +112 _minimumDiskSize Q
+  ivar +120 _maximumDiskSize Q
+  ivar +128 _diskIdentifier @"NSString"
+  ivar +136 _contentDiskIdentifier @"NSString"
+  ivar +144 _protocol @"NSString"
+  ivar +152 _observingLock @"NSLock"
+  property observingLock (T@"NSLock",&,V_observingLock)
+  property isObserving (TB,V_isObserving)
+  property role (T@"NSString",&,V_role)
+  property type (T@"NSString",&,V_type)
+  property isValid (TB,V_isValid)
+  property diskIcon (T@"NSImage",&,V_diskIcon)
+  property volumeName (T@"NSString",&,V_volumeName)
+  property volumeUUID (T@"NSString",&,V_volumeUUID)
+  property mountPoint (T@"NSString",&,V_mountPoint)
+  property freeSpace (TQ,V_freeSpace)
+  property purgeableSpace (TQ,V_purgeableSpace)
+  property availableSpace (TQ,V_availableSpace)
+  property totalSpace (TQ,V_totalSpace)
+  property minimumDiskSize (TQ,V_minimumDiskSize)
+  property maximumDiskSize (TQ,V_maximumDiskSize)
+  property canBeDeleted (TB,V_canBeDeleted)
+  property diskIdentifier (T@"NSString",&,V_diskIdentifier)
+  property protocol (T@"NSString",&,V_protocol)
+  property isDiskImage (TB,V_isDiskImage)
+  property isInternal (TB,V_isInternal)
+  property isSolidState (TB,V_isSolidState)
+  property isWholeDisk (TB,V_isWholeDisk)
+  property isWritable (TB,V_isWritable)
+  property isLocked (TB,V_isLocked)
+  property canSupportRecoveryPartition (TB,V_canSupportRecoveryPartition)
+  property isOSInternal (TB,V_isOSInternal)
+  property representedDisk (T@"SKDisk",&,V_representedDisk)
+  property contentDiskIdentifier (T@"NSString",R,V_contentDiskIdentifier)
+  property supportsJournaling (TB,V_supportsJournaling)
+  property isEjectable (TB,V_isEjectable)
+  property isNetwork (TB,V_isNetwork)
+  +keysToObserve @16@0:8  imp=+0x1d637bc14
+  -.cxx_destruct v16@0:8  imp=+0x1d637c718
+  -availableSpace Q16@0:8  imp=+0x1d637c58c
+  -canBeDeleted B16@0:8  imp=+0x1d637c5cc
+  -canSupportRecoveryPartition B16@0:8  imp=+0x1d637c6c8
+  -contentDiskIdentifier @16@0:8  imp=+0x1d637c5f4
+  -dealloc v16@0:8  imp=+0x1d637c1b8
+  -diskIcon @16@0:8  imp=+0x1d637c51c
+  -diskIdentifier @16@0:8  imp=+0x1d637c5e0
+  -freeSpace Q16@0:8  imp=+0x1d637c56c
+  -initWithRepresentedDisk: @24@0:8@16  imp=+0x1d637bc20
+  -isDiskImage B16@0:8  imp=+0x1d637c614
+  -isEjectable B16@0:8  imp=+0x1d637c68c
+  -isInternal B16@0:8  imp=+0x1d637c628
+  -isLocked B16@0:8  imp=+0x1d637c6b4
+  -isNetwork B16@0:8  imp=+0x1d637c6a0
+  -isOSInternal B16@0:8  imp=+0x1d637c6dc
+  -isObserving B16@0:8  imp=+0x1d637c704
+  -isSolidState B16@0:8  imp=+0x1d637c63c
+  -isValid B16@0:8  imp=+0x1d637c508
+  -isWholeDisk B16@0:8  imp=+0x1d637c650
+  -isWritable B16@0:8  imp=+0x1d637c664
+  -maximumDiskSize Q16@0:8  imp=+0x1d637c5bc
+  -minimumDiskSize Q16@0:8  imp=+0x1d637c5ac
+  -mountPoint @16@0:8  imp=+0x1d637c558
+  -observeValueForKeyPath:ofObject:change:context: v48@0:8@16@24@32^v40  imp=+0x1d637c38c
+  -observingLock @16@0:8  imp=+0x1d637c6f0
+  -protocol @16@0:8  imp=+0x1d637c600
+  -purgeableSpace Q16@0:8  imp=+0x1d637c57c
+  -representedDisk @16@0:8  imp=+0x1d637c4cc
+  -role @16@0:8  imp=+0x1d637c4e0
+  -setAvailableSpace: v24@0:8Q16  imp=+0x1d637c594
+  -setCanBeDeleted: v20@0:8B16  imp=+0x1d637c5d8
+  -setCanSupportRecoveryPartition: v20@0:8B16  imp=+0x1d637c6d4
+  -setDiskIcon: v24@0:8@16  imp=+0x1d637c528
+  -setDiskIdentifier: v24@0:8@16  imp=+0x1d637c5ec
+  -setFreeSpace: v24@0:8Q16  imp=+0x1d637c574
+  -setIsDiskImage: v20@0:8B16  imp=+0x1d637c620
+  -setIsEjectable: v20@0:8B16  imp=+0x1d637c698
+  -setIsInternal: v20@0:8B16  imp=+0x1d637c634
+  -setIsLocked: v20@0:8B16  imp=+0x1d637c6c0
+  -setIsNetwork: v20@0:8B16  imp=+0x1d637c6ac
+  -setIsOSInternal: v20@0:8B16  imp=+0x1d637c6e8
+  -setIsObserving: v20@0:8B16  imp=+0x1d637c710
+  -setIsSolidState: v20@0:8B16  imp=+0x1d637c648
+  -setIsValid: v20@0:8B16  imp=+0x1d637c514
+  -setIsWholeDisk: v20@0:8B16  imp=+0x1d637c65c
+  -setIsWritable: v20@0:8B16  imp=+0x1d637c670
+  -setMaximumDiskSize: v24@0:8Q16  imp=+0x1d637c5c4
+  -setMinimumDiskSize: v24@0:8Q16  imp=+0x1d637c5b4
+  -setMountPoint: v24@0:8@16  imp=+0x1d637c564
+  -setObservingLock: v24@0:8@16  imp=+0x1d637c6fc
+  -setProtocol: v24@0:8@16  imp=+0x1d637c60c
+  -setPurgeableSpace: v24@0:8Q16  imp=+0x1d637c584
+  -setRepresentedDisk: v24@0:8@16  imp=+0x1d637c4d8
+  -setRole: v24@0:8@16  imp=+0x1d637c4ec
+  -setSupportsJournaling: v20@0:8B16  imp=+0x1d637c684
+  -setTotalSpace: v24@0:8Q16  imp=+0x1d637c5a4
+  -setType: v24@0:8@16  imp=+0x1d637c500
+  -setVolumeName: v24@0:8@16  imp=+0x1d637c53c
+  -setVolumeUUID: v24@0:8@16  imp=+0x1d637c550
+  -stopObserving v16@0:8  imp=+0x1d637c200
+  -supportsJournaling B16@0:8  imp=+0x1d637c678
+  -totalSpace Q16@0:8  imp=+0x1d637c59c
+  -type @16@0:8  imp=+0x1d637c4f4
+  -volumeName @16@0:8  imp=+0x1d637c530
+  -volumeUUID @16@0:8  imp=+0x1d637c544
+@class SKBlockDevice : SKIOObject instanceSize=16
+  -copyIOMedia @16@0:8  imp=+0x1d63761ec
+@class SKCSDisk : SKDisk <SKEncryptedDiskProtocol> instanceSize=280
+  ivar +248 _isEncrypted B
+  ivar +249 _isConverting B
+  ivar +250 _isDisallowedForCSOperations B
+  ivar +256 _csDiskUUID @"NSString"
+  ivar +264 _csLVGUUID @"NSString"
+  ivar +272 _csFamilyUUID @"NSString"
+  property csDiskUUID (T@"NSString",&,V_csDiskUUID)
+  property csLVGUUID (T@"NSString",&,V_csLVGUUID)
+  property csFamilyUUID (T@"NSString",&,V_csFamilyUUID)
+  property isEncrypted (TB,V_isEncrypted)
+  property isConverting (TB,V_isConverting)
+  property isDisallowedForCSOperations (TB,V_isDisallowedForCSOperations)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1d636fa7c
+  -_iCloudRecoveryManageFDEUsers:withPCSIdentitySet:addingUsers:removingUsers:handlingProgress:withCompletionBlock: B64@0:8^{_PCSIdentityData=}16^{_PCSIdentitySetData=}24@32@40@?48@?56  imp=+0x1d636dfd8
+  -_iCloudRecoveryManageFDEUsers:withPCSIdentitySet:addingUsers:removingUsers:resettingUserPasswords:handlingProgress:withCompletionBlock: B72@0:8^{_PCSIdentityData=}16^{_PCSIdentitySetData=}24@32@40@48@?56@?64  imp=+0x1d636e508
+  -_unlockWithiCloudRecovery:withPCSIdentitySet: B32@0:8^{_PCSIdentityData=}16^{_PCSIdentitySetData=}24  imp=+0x1d636f14c
+  -canResize B16@0:8  imp=+0x1d636cf28
+  -changeDiskOldPassword:toNewPassword:withHint: B40@0:8@16@24@32  imp=+0x1d636f77c
+  -copyRootEncyrptionContext @16@0:8  imp=+0x1d636f914
+  -csDiskUUID @16@0:8  imp=+0x1d636f9a4
+  -csFamilyUUID @16@0:8  imp=+0x1d636fa60
+  -csLVGUUID @16@0:8  imp=+0x1d636f9c0
+  -decryptWithPassword: @24@0:8@16  imp=+0x1d636f414
+  -decryptWithPassword:forUser: @32@0:8@16@24  imp=+0x1d636f41c
+  -establishReserveKEK: B24@0:8@16  imp=+0x1d636f61c
+  -getFDEUserDictionaries @16@0:8  imp=+0x1d636d488
+  -getFDEUsers @16@0:8  imp=+0x1d636d060
+  -hash Q16@0:8  imp=+0x1d636cccc
+  -iCloudRecoveryManageFDEUsers:addingUsers:removingUsers:handlingProgress:withCompletionBlock: B56@0:8^{_PCSIdentityData=}16@24@32@?40@?48  imp=+0x1d636dfa4
+  -iCloudRecoveryManageFDEUsers:addingUsers:removingUsers:resettingUserPasswords:handlingProgress:withCompletionBlock: B64@0:8^{_PCSIdentityData=}16@24@32@40@?48@?56  imp=+0x1d636e48c
+  -iCloudRecoveryManageFDEUsersWithPCSIdentitySet:addingUsers:removingUsers:handlingProgress:withCompletionBlock: B56@0:8^{_PCSIdentitySetData=}16@24@32@?40@?48  imp=+0x1d636dfbc
+  -iCloudRecoveryManageFDEUsersWithPCSIdentitySet:addingUsers:removingUsers:resettingUserPasswords:handlingProgress:withCompletionBlock: B64@0:8^{_PCSIdentitySetData=}16@24@32@40@?48@?56  imp=+0x1d636e4c8
+  -innerDescriptionWithPrivateData: @20@0:8B16  imp=+0x1d636cf30
+  -isConverting B16@0:8  imp=+0x1d636fa08
+  -isDisallowedForCSOperations B16@0:8  imp=+0x1d636fa34
+  -isEncrypted B16@0:8  imp=+0x1d636f9dc
+  -isEqual: B24@0:8@16  imp=+0x1d636cc2c
+  -isVirtualDiskType B16@0:8  imp=+0x1d636cd08
+  -manageFDEUsersWithPassword:addingUsers:removingUsers:handlingProgress:withCompletionBlock: B56@0:8@16@24@32@?40@?48  imp=+0x1d636d650
+  -manageFDEUsersWithPassword:addingUsers:removingUsers:resettingUserPasswords:handlingProgress:withCompletionBlock: B64@0:8@16@24@32@40@?48@?56  imp=+0x1d636d920
+  -matchesDictionary: B24@0:8@16  imp=+0x1d636c9b4
+  -minimalDictionaryRepresentation @16@0:8  imp=+0x1d636c7f8
+  -setCsDiskUUID: v24@0:8@16  imp=+0x1d636f9b4
+  -setCsFamilyUUID: v24@0:8@16  imp=+0x1d636fa70
+  -setCsLVGUUID: v24@0:8@16  imp=+0x1d636f9d0
+  -setIsConverting: v20@0:8B16  imp=+0x1d636fa20
+  -setIsDisallowedForCSOperations: v20@0:8B16  imp=+0x1d636fa4c
+  -setIsEncrypted: v20@0:8B16  imp=+0x1d636f9f4
+  -supportedFilesystems @16@0:8  imp=+0x1d636cd10
+  -unlockWithPassword:forUser: @32@0:8@16@24  imp=+0x1d636ef38
+  -unlockWithiCloudRecovery: B24@0:8^{_PCSIdentityData=}16  imp=+0x1d636f138
+  -unlockWithiCloudRecoveryPCSSet: B24@0:8^{_PCSIdentitySetData=}16  imp=+0x1d636f140
+  -updateWithDictionary: v24@0:8@16  imp=+0x1d636cad8
+  -validateEncryptionPassword: B24@0:8@16  imp=+0x1d636ed00
+  -validateEncryptionPassword:forUser: @32@0:8@16@24  imp=+0x1d636ed38
+@class SKCSLVGDisk : SKDisk instanceSize=264
+  ivar +248 _csLVGUUID @"NSString"
+  ivar +256 _csPVChildrenUUIDs @"NSArray"
+  property csLVGUUID (T@"NSString",&,V_csLVGUUID)
+  property csPVChildrenUUIDs (T@"NSArray",&,V_csPVChildrenUUIDs)
+  -.cxx_destruct v16@0:8  imp=+0x1d6370b0c
+  -addChildVolumeToEmptyLVGWithProgress:completetionBlock: v32@0:8@?16@?24  imp=+0x1d6370a44
+  -canResize B16@0:8  imp=+0x1d6370598
+  -children @16@0:8  imp=+0x1d6370684
+  -csLVGUUID @16@0:8  imp=+0x1d6370ad4
+  -csPVChildrenUUIDs @16@0:8  imp=+0x1d6370af0
+  -hash Q16@0:8  imp=+0x1d637055c
+  -innerDescriptionWithPrivateData: @20@0:8B16  imp=+0x1d63705a0
+  -isEqual: B24@0:8@16  imp=+0x1d63704bc
+  -matchesDictionary: B24@0:8@16  imp=+0x1d63702d8
+  -minimalDictionaryRepresentation @16@0:8  imp=+0x1d63701bc
+  -physicalVolumes @16@0:8  imp=+0x1d6370868
+  -setCsLVGUUID: v24@0:8@16  imp=+0x1d6370ae4
+  -setCsPVChildrenUUIDs: v24@0:8@16  imp=+0x1d6370b00
+  -updateWithDictionary: v24@0:8@16  imp=+0x1d63703fc
+@class SKCSPVDisk : SKDisk instanceSize=264
+  ivar +248 _csLVGUUID @"NSString"
+  ivar +256 _csDiskUUID @"NSString"
+  property csDiskUUID (T@"NSString",&,V_csDiskUUID)
+  property csLVGUUID (T@"NSString",&,V_csLVGUUID)
+  -.cxx_destruct v16@0:8  imp=+0x1d6376aec
+  -canResize B16@0:8  imp=+0x1d63767f4
+  -csDiskUUID @16@0:8  imp=+0x1d6376ad0
+  -csLVGUUID @16@0:8  imp=+0x1d6376ab4
+  -hash Q16@0:8  imp=+0x1d63767b8
+  -innerDescriptionWithPrivateData: @20@0:8B16  imp=+0x1d63767fc
+  -isEqual: B24@0:8@16  imp=+0x1d6376718
+  -logicalVolumeGroup @16@0:8  imp=+0x1d63768e0
+  -matchesDictionary: B24@0:8@16  imp=+0x1d6376534
+  -minimalDictionaryRepresentation @16@0:8  imp=+0x1d6376460
+  -setCsDiskUUID: v24@0:8@16  imp=+0x1d6376ae0
+  -setCsLVGUUID: v24@0:8@16  imp=+0x1d6376ac4
+  -updateWithDictionary: v24@0:8@16  imp=+0x1d6376658
+@class SKCompletionHandler : NSObject instanceSize=48
+  ivar +8 _completionBlock @?
+  ivar +16 _errorBlock @?
+  ivar +24 _progressBlock @?
+  ivar +32 _semaphore @"NSObject<OS_dispatch_semaphore>"
+  ivar +40 _functionName r*
+  property completionBlock (T@?,R,N,V_completionBlock)
+  property errorBlock (T@?,C,N,V_errorBlock)
+  property progressBlock (T@?,C,N,V_progressBlock)
+  property semaphore (T@"NSObject<OS_dispatch_semaphore>",&,N,V_semaphore)
+  property functionName (Tr*,R,N,V_functionName)
+  -.cxx_destruct v16@0:8  imp=+0x1d6384828
+  -completionBlock @?16@0:8  imp=+0x1d63847e4
+  -errorBlock @?16@0:8  imp=+0x1d63847ec
+  -functionName r*16@0:8  imp=+0x1d6384820
+  -initWithCompletionBlock:progressBlock:function: @40@0:8@?16@?24r*32  imp=+0x1d6384728
+  -progressBlock @?16@0:8  imp=+0x1d63847fc
+  -semaphore @16@0:8  imp=+0x1d638480c
+  -setErrorBlock: v24@0:8@?16  imp=+0x1d63847f4
+  -setProgressBlock: v24@0:8@?16  imp=+0x1d6384804
+  -setSemaphore: v24@0:8@16  imp=+0x1d6384814
+@class SKDIEncryptionDescriptorAES128 : NSObject <SKDiskImageEncryptionDescriptorProtocol> instanceSize=8
+  property encryption (Tq,R,N)
+  property name (T@"NSString",R,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -encryption q16@0:8  imp=+0x1d635d3d8
+  -name @16@0:8  imp=+0x1d635d3cc
+@class SKDIEncryptionDescriptorAES256 : NSObject <SKDiskImageEncryptionDescriptorProtocol> instanceSize=8
+  property encryption (Tq,R,N)
+  property name (T@"NSString",R,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -encryption q16@0:8  imp=+0x1d635d3ec
+  -name @16@0:8  imp=+0x1d635d3e0
+@class SKDIEncryptionDescriptorNONE : NSObject <SKDiskImageEncryptionDescriptorProtocol> instanceSize=8
+  property encryption (Tq,R,N)
+  property name (T@"NSString",R,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -encryption q16@0:8  imp=+0x1d635d3c4
+  -name @16@0:8  imp=+0x1d635d3b8
+@class SKDIFormatDescriptorASIF : NSObject <SKDiskImageFormatDescriptorProtocol> instanceSize=8
+  property format (Tq,R,N)
+  property name (T@"NSString",R,N)
+  property defaultExtension (T@"NSString",R,N)
+  property isSupportedForBlankInitialization (TB,R,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -defaultExtension @16@0:8  imp=+0x1d635d3a4
+  -format q16@0:8  imp=+0x1d635d39c
+  -isSupportedForBlankInitialization B16@0:8  imp=+0x1d635d3b0
+  -name @16@0:8  imp=+0x1d635d390
+@class SKDIFormatDescriptorRAW : NSObject <SKDiskImageFormatDescriptorProtocol> instanceSize=8
+  property format (Tq,R,N)
+  property name (T@"NSString",R,N)
+  property defaultExtension (T@"NSString",R,N)
+  property isSupportedForBlankInitialization (TB,R,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -defaultExtension @16@0:8  imp=+0x1d635d2b4
+  -format q16@0:8  imp=+0x1d635d2ac
+  -isSupportedForBlankInitialization B16@0:8  imp=+0x1d635d2c0
+  -name @16@0:8  imp=+0x1d635d2a0
+@class SKDIFormatDescriptorUDRO : NSObject <SKDiskImageFormatDescriptorProtocol> instanceSize=8
+  property format (Tq,R,N)
+  property name (T@"NSString",R,N)
+  property defaultExtension (T@"NSString",R,N)
+  property isSupportedForBlankInitialization (TB,R,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -defaultExtension @16@0:8  imp=+0x1d635d2dc
+  -format q16@0:8  imp=+0x1d635d2d4
+  -isSupportedForBlankInitialization B16@0:8  imp=+0x1d635d2e8
+  -name @16@0:8  imp=+0x1d635d2c8
+@class SKDIFormatDescriptorUDSB : NSObject <SKDiskImageFormatDescriptorProtocol> instanceSize=8
+  property format (Tq,R,N)
+  property name (T@"NSString",R,N)
+  property defaultExtension (T@"NSString",R,N)
+  property isSupportedForBlankInitialization (TB,R,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -defaultExtension @16@0:8  imp=+0x1d635d37c
+  -format q16@0:8  imp=+0x1d635d374
+  -isSupportedForBlankInitialization B16@0:8  imp=+0x1d635d388
+  -name @16@0:8  imp=+0x1d635d368
+@class SKDIFormatDescriptorUDZO : NSObject <SKDiskImageFormatDescriptorProtocol> instanceSize=8
+  property format (Tq,R,N)
+  property name (T@"NSString",R,N)
+  property defaultExtension (T@"NSString",R,N)
+  property isSupportedForBlankInitialization (TB,R,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -defaultExtension @16@0:8  imp=+0x1d635d304
+  -format q16@0:8  imp=+0x1d635d2fc
+  -isSupportedForBlankInitialization B16@0:8  imp=+0x1d635d310
+  -name @16@0:8  imp=+0x1d635d2f0
+@class SKDIFormatDescriptorULFO : NSObject <SKDiskImageFormatDescriptorProtocol> instanceSize=8
+  property format (Tq,R,N)
+  property name (T@"NSString",R,N)
+  property defaultExtension (T@"NSString",R,N)
+  property isSupportedForBlankInitialization (TB,R,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -defaultExtension @16@0:8  imp=+0x1d635d32c
+  -format q16@0:8  imp=+0x1d635d324
+  -isSupportedForBlankInitialization B16@0:8  imp=+0x1d635d338
+  -name @16@0:8  imp=+0x1d635d318
+@class SKDIFormatDescriptorULMO : NSObject <SKDiskImageFormatDescriptorProtocol> instanceSize=8
+  property format (Tq,R,N)
+  property name (T@"NSString",R,N)
+  property defaultExtension (T@"NSString",R,N)
+  property isSupportedForBlankInitialization (TB,R,N)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -defaultExtension @16@0:8  imp=+0x1d635d354
+  -format q16@0:8  imp=+0x1d635d34c
+  -isSupportedForBlankInitialization B16@0:8  imp=+0x1d635d360
+  -name @16@0:8  imp=+0x1d635d340
+@class SKDisk : NSObject instanceSize=248
+  ivar +8 _isValid B
+  ivar +9 _isDiskImage B
+  ivar +10 _isInternal B
+  ivar +11 _isRemovable B
+  ivar +12 _isWholeDisk B
+  ivar +13 _isPhysicalDisk B
+  ivar +14 _canPartitionDisk B
+  ivar +15 _supportsJournaling B
+  ivar +16 _isJournaled B
+  ivar +17 _isLocked B
+  ivar +18 _repairRunning B
+  ivar +19 _supportsRepair B
+  ivar +20 _supportsVerify B
+  ivar +21 _isCaseSensitive B
+  ivar +22 _isOSInternal B
+  ivar +23 _isPartitionDisk B
+  ivar +24 _isWritable B
+  ivar +25 _isMediaWritable B
+  ivar +26 _canBeDeleted B
+  ivar +27 _isSystemRAMDisk B
+  ivar +28 _isAESHardwareDisk B
+  ivar +29 _isSolidState B
+  ivar +30 _isEjectable B
+  ivar +31 _isNetwork B
+  ivar +32 _isOpticalDisc B
+  ivar +33 _canSupportRecoveryPartition B
+  ivar +34 _ownersEnabled B
+  ivar +35 _isRAIDSet B
+  ivar +36 _smartStatus i
+  ivar +40 _ownerUID I
+  ivar +48 _diskIcon @"NSImage"
+  ivar +56 _type @"NSString"
+  ivar +64 _filesystemType @"NSString"
+  ivar +72 _volumeName @"NSString"
+  ivar +80 _volumeUUID @"NSString"
+  ivar +88 _mediaUUID @"NSString"
+  ivar +96 _mountPoint @"NSString"
+  ivar +104 _freeSpace Q
+  ivar +112 _purgeableSpace Q
+  ivar +120 _availableSpace Q
+  ivar +128 _totalSpace Q
+  ivar +136 _diskIdentifier @"NSString"
+  ivar +144 _ioContent @"NSString"
+  ivar +152 _unformattedSize Q
+  ivar +160 _childCount Q
+  ivar +168 _startLocation Q
+  ivar +176 _filesystem @"SKFilesystem"
+  ivar +184 _role @"NSString"
+  ivar +192 _minimumDiskSize Q
+  ivar +200 _maximumDiskSize Q
+  ivar +208 _protocol @"NSString"
+  ivar +216 _mediaName @"NSString"
+  ivar +224 _diskObjectID @"NSNumber"
+  ivar +232 _daDisk @"NSObject"
+  ivar +240 _privateCache @"SKDiskPrivateCache"
+  property diskObjectID (T@"NSNumber",&,N,V_diskObjectID)
+  property daDisk (T@"NSObject",&,V_daDisk)
+  property isIOMediaDisk (TB,R)
+  property isLiveFSAPFSDisk (TB,R)
+  property isIOSRootSnapshot (TB,R)
+  property isVirtualDiskType (TB,R)
+  property role (T@"NSString",&,V_role)
+  property type (T@"NSString",&,V_type)
+  property filesystemType (T@"NSString",&,V_filesystemType)
+  property isValid (TB,V_isValid)
+  property volumeName (T@"NSString",&,V_volumeName)
+  property volumeUUID (T@"NSString",&,V_volumeUUID)
+  property mediaUUID (T@"NSString",&,V_mediaUUID)
+  property mountPoint (T@"NSString",&,V_mountPoint)
+  property freeSpace (TQ,V_freeSpace)
+  property purgeableSpace (TQ,V_purgeableSpace)
+  property availableSpace (TQ,V_availableSpace)
+  property totalSpace (TQ,V_totalSpace)
+  property diskIdentifier (T@"NSString",&,V_diskIdentifier)
+  property isDiskImage (TB,V_isDiskImage)
+  property isInternal (TB,V_isInternal)
+  property isRemovable (TB,V_isRemovable)
+  property isWholeDisk (TB,V_isWholeDisk)
+  property isPhysicalDisk (TB,V_isPhysicalDisk)
+  property canPartitionDisk (TB,V_canPartitionDisk)
+  property isLocked (TB,V_isLocked)
+  property repairRunning (TB,V_repairRunning)
+  property supportsRepair (TB,V_supportsRepair)
+  property supportsVerify (TB,V_supportsVerify)
+  property isCaseSensitive (TB,V_isCaseSensitive)
+  property supportsJournaling (TB,V_supportsJournaling)
+  property isJournaled (TB,V_isJournaled)
+  property ioContent (T@"NSString",&,V_ioContent)
+  property unformattedSize (TQ,V_unformattedSize)
+  property childCount (TQ,V_childCount)
+  property startLocation (TQ,V_startLocation)
+  property filesystem (T@"SKFilesystem",&,V_filesystem)
+  property isOSInternal (TB,V_isOSInternal)
+  property isPartitionDisk (TB,V_isPartitionDisk)
+  property isWritable (TB,V_isWritable)
+  property isMediaWritable (TB,V_isMediaWritable)
+  property ownerUID (TI,V_ownerUID)
+  property isExternal (TB,R)
+  property isTrusted (TB,R)
+  property diskIcon (T@"NSImage",&,V_diskIcon)
+  property minimumDiskSize (TQ,V_minimumDiskSize)
+  property maximumDiskSize (TQ,V_maximumDiskSize)
+  property canBeDeleted (TB,V_canBeDeleted)
+  property protocol (T@"NSString",&,V_protocol)
+  property isSystemRAMDisk (TB,V_isSystemRAMDisk)
+  property isAESHardwareDisk (TB,V_isAESHardwareDisk)
+  property isSolidState (TB,V_isSolidState)
+  property isOpticalDisc (TB,V_isOpticalDisc)
+  property canSupportRecoveryPartition (TB,V_canSupportRecoveryPartition)
+  property ownersEnabled (TB,V_ownersEnabled)
+  property mediaName (T@"NSString",&,V_mediaName)
+  property isEjectable (TB,V_isEjectable)
+  property isNetwork (TB,V_isNetwork)
+  property smartStatus (Ti,V_smartStatus)
+  property isRAIDSet (TB,V_isRAIDSet)
+  property privateCache (T@"SKDiskPrivateCache",&,N,V_privateCache)
+  property contentDiskIdentifier (T@"NSString",R)
+  +sortWithDisks: v24@0:8@16  imp=+0x1d6364620
+  -.cxx_destruct v16@0:8  imp=+0x1d6369204
+  -availableSpace Q16@0:8  imp=+0x1d6368ea4
+  -blessAndPersonalizeWithCompletionBlock: B24@0:8@?16  imp=+0x1d6366714
+  -blessWithCompletionBlock: B24@0:8@?16  imp=+0x1d636643c
+  -blessWithOptions:completionBlock: B32@0:8@16@?24  imp=+0x1d636680c
+  -blockRestoreFromDisk:handlingProgress:withCompletionBlock: B40@0:8@16@?24@?32  imp=+0x1d6368640
+  -blockRestoreFromDisk:volumeUUID:creatingNewVolume:handlingProgress:withCompletionBlock: B52@0:8@16@24B32@?36@?44  imp=+0x1d63686ec
+  -blockRestoreFromDiskImageFileURL:handlingProgress:withCompletionBlock: B40@0:8@16@?24@?32  imp=+0x1d63687c4
+  -blockRestoreFromDiskImageFileURL:volumeUUID:creatingNewVolume:handlingProgress:withCompletionBlock: B52@0:8@16@24B32@?36@?44  imp=+0x1d6368870
+  -cachedWholeDiskByIdentifier @16@0:8  imp=+0x1d63655e8
+  -canBeDeleted B16@0:8  imp=+0x1d63690b8
+  -canBoot B16@0:8  imp=+0x1d63651a8
+  -canPartitionDisk B16@0:8  imp=+0x1d6368f3c
+  -canResize B16@0:8  imp=+0x1d6364f04
+  -canSupportRecoveryPartition B16@0:8  imp=+0x1d6369158
+  -childCount Q16@0:8  imp=+0x1d6369000
+  -children @16@0:8  imp=+0x1d6364af8
+  -cleanupWithError: B24@0:8^@16  imp=+0x1d6378fac
+  -contentDiskIdentifier @16@0:8  imp=+0x1d63651a4
+  -convertDiskToFDEWithUsers:recoveryKey:handlingProgress:withCompletionBlock: B48@0:8@16@24@?32@?40  imp=+0x1d6367a60
+  -convertToAPFSWithPreboot:andProgress:andCompletionHandler: B40@0:8@16@?24@?32  imp=+0x1d6368c08
+  -convertToAPFSWithProgress:andCompletionHandler: B32@0:8@?16@?24  imp=+0x1d6368bf8
+  -convertToCoreStorage:handlingProgress:withCompletionBlock: B36@0:8B16@?20@?28  imp=+0x1d6367930
+  -daDisk @16@0:8  imp=+0x1d63691cc
+  -description @16@0:8  imp=+0x1d63653c0
+  -dictionaryRepresentation @16@0:8  imp=+0x1d63625c8
+  -diskAndDescendants @16@0:8  imp=+0x1d63648c8
+  -diskIcon @16@0:8  imp=+0x1d6366134
+  -diskIdentifier @16@0:8  imp=+0x1d6368ec4
+  -diskObjectID @16@0:8  imp=+0x1d63691b8
+  -dryRunConvertToAPFSWithProgress:andCompletionHandler: B32@0:8@?16@?24  imp=+0x1d6368a20
+  -ejectWithCompletionBlock: B24@0:8@?16  imp=+0x1d6365e8c
+  -ejectWithError: B24@0:8^@16  imp=+0x1d6365ef8
+  -enableJournalingWithCompletionBlock: B24@0:8@?16  imp=+0x1d6366bac
+  -enablePermissionsWithCompletionBlock: B24@0:8@?16  imp=+0x1d6366b40
+  -ensureRecovery:chunkkList:diagnostics:handlingProgress:withCompletionBlock: B56@0:8@16@24@32@?40@?48  imp=+0x1d6368434
+  -ensureRecovery:chunkkList:handlingProgress:withCompletionBlock: B48@0:8@16@24@?32@?40  imp=+0x1d6368424
+  -eraseHandlingProgress:withCompletionHandler: B32@0:8@?16@?24  imp=+0x1d6366c18
+  -eraseToFileSystemType:name:caseSensitive:password:handlingProgress:withCompletionBlock: B60@0:8@16@24B32@36@?44@?52  imp=+0x1d6367074
+  -eraseToFileSystemType:name:caseSensitive:password:passwordHint:handlingProgress:withCompletionBlock: B68@0:8@16@24B32@36@44@?52@?60  imp=+0x1d63670a4
+  -eraseToFileSystemType:partitionMap:name:caseSensitive:password:handlingProgress:withCompletionBlock: B68@0:8@16@24@32B40@44@?52@?60  imp=+0x1d63670e4
+  -eraseToFileSystemType:partitionMap:name:caseSensitive:password:passwordHint:handlingProgress:withCompletionBlock: B76@0:8@16@24@32B40@44@52@?60@?68  imp=+0x1d6367110
+  -eraseToFilesystem:name:partitionMap:password:handlingProgress:withCompletionBlock: B64@0:8@16@24@32@40@?48@?56  imp=+0x1d6366f14
+  -eraseToFilesystem:name:partitionMap:password:passwordHint:handlingProgress:withCompletionBlock: B72@0:8@16@24@32@40@48@?56@?64  imp=+0x1d6366f44
+  -eraseToFilesystem:name:password:handlingProgress:withCompletionBlock: B56@0:8@16@24@32@?40@?48  imp=+0x1d6366ecc
+  -eraseToFilesystem:name:password:passwordHint:handlingProgress:withCompletionBlock: B64@0:8@16@24@32@40@?48@?56  imp=+0x1d6366edc
+  -expireCache v16@0:8  imp=+0x1d63650e4
+  -expireCacheWithCompletionBlock: v24@0:8@?16  imp=+0x1d636506c
+  -expireCacheWithOptions:completionBlock: v32@0:8Q16@?24  imp=+0x1d6364ff0
+  -extendedInfoForDiskWithCallback: B24@0:8@?16  imp=+0x1d6368948
+  -filesystem @16@0:8  imp=+0x1d6369020
+  -filesystemType @16@0:8  imp=+0x1d6368e0c
+  -fixIncorrectlySizedPartitionMapWithCompletionHandler: B24@0:8@?16  imp=+0x1d63689b4
+  -formattableFilesystemWithFilesystem: @24@0:8@16  imp=+0x1d6378e64
+  -formattableFilesystems @16@0:8  imp=+0x1d6378bc4
+  -freeSpace Q16@0:8  imp=+0x1d6368e84
+  -getRecoverySystemInfo: v24@0:8@?16  imp=+0x1d63685cc
+  -getSectorSize I16@0:8  imp=+0x1d63790b8
+  -hash Q16@0:8  imp=+0x1d6364e2c
+  -initWithDictionary: @24@0:8@16  imp=+0x1d6363254
+  -innerDescriptionWithPrivateData: @20@0:8B16  imp=+0x1d6365228
+  -ioContent @16@0:8  imp=+0x1d6368fa0
+  -isAESHardwareDisk B16@0:8  imp=+0x1d63690f4
+  -isCaseSensitive B16@0:8  imp=+0x1d6368fec
+  -isDiskImage B16@0:8  imp=+0x1d6368ed8
+  -isEjectable B16@0:8  imp=+0x1d636911c
+  -isEqual: B24@0:8@16  imp=+0x1d6364d24
+  -isExternal B16@0:8  imp=+0x1d6364f80
+  -isIOMediaDisk B16@0:8  imp=+0x1d6365788
+  -isIOSRootSnapshot B16@0:8  imp=+0x1d6365808
+  -isInternal B16@0:8  imp=+0x1d6368eec
+  -isJournaled B16@0:8  imp=+0x1d6368f64
+  -isLiveFSAPFSDisk B16@0:8  imp=+0x1d63657c4
+  -isLocked B16@0:8  imp=+0x1d6368f78
+  -isMediaWritable B16@0:8  imp=+0x1d6369084
+  -isNetwork B16@0:8  imp=+0x1d6369130
+  -isOSInternal B16@0:8  imp=+0x1d6369048
+  -isOpticalDisc B16@0:8  imp=+0x1d6369144
+  -isPartitionDisk B16@0:8  imp=+0x1d636905c
+  -isPhysicalDisk B16@0:8  imp=+0x1d6368f28
+  -isRAIDSet B16@0:8  imp=+0x1d63691a4
+  -isRemovable B16@0:8  imp=+0x1d6368f00
+  -isSolidState B16@0:8  imp=+0x1d6369108
+  -isSystemRAMDisk B16@0:8  imp=+0x1d63690e0
+  -isTrusted B16@0:8  imp=+0x1d6364fbc
+  -isValid B16@0:8  imp=+0x1d6368e20
+  -isVirtualDiskType B16@0:8  imp=+0x1d6365780
+  -isWholeDisk B16@0:8  imp=+0x1d6368f14
+  -isWritable B16@0:8  imp=+0x1d6369070
+  -matchesDictionary: B24@0:8@16  imp=+0x1d63630f4
+  -maximumDiskSize Q16@0:8  imp=+0x1d63690a8
+  -mediaName @16@0:8  imp=+0x1d6369180
+  -mediaUUID @16@0:8  imp=+0x1d6368e5c
+  -minimalDictionaryRepresentation @16@0:8  imp=+0x1d63623a8
+  -minimumDiskSize Q16@0:8  imp=+0x1d6369098
+  -mountPoint @16@0:8  imp=+0x1d6368e70
+  -mountWithCompletionBlock: B24@0:8@?16  imp=+0x1d6365aa8
+  -mountWithOptions:withCompletionBlock: B32@0:8@16@?24  imp=+0x1d6365ab4
+  -mountWithOptionsDictionary:error: B32@0:8@16^@24  imp=+0x1d6365be0
+  -mountWithOptionsDictionary:withCompletionBlock: B32@0:8@16@?24  imp=+0x1d6365b58
+  -mountWithParams:error: B32@0:8@16^@24  imp=+0x1d6365e30
+  -ownerUID I16@0:8  imp=+0x1d63691e0
+  -ownersEnabled B16@0:8  imp=+0x1d636916c
+  -privateCache @16@0:8  imp=+0x1d63691f0
+  -protocol @16@0:8  imp=+0x1d63690cc
+  -purgeableSpace Q16@0:8  imp=+0x1d6368e94
+  -recacheWithOptions: v24@0:8Q16  imp=+0x1d636513c
+  -redactedDescription @16@0:8  imp=+0x1d63652a8
+  -removeDiskHandlingProgress:withCompletionHandler: B32@0:8@?16@?24  imp=+0x1d63678a8
+  -rename:withCompletionBlock: B32@0:8@16@?24  imp=+0x1d6365810
+  -repairESPAndRecreateIfNecessary:progressHandler:completionBlock: B36@0:8B16@?20@?28  imp=+0x1d63675d0
+  -repairRunning B16@0:8  imp=+0x1d6368f8c
+  -repairUserHomeForUser:withProgressHandler:withCompletionBlock: B40@0:8q16@?24@?32  imp=+0x1d6367708
+  -repairWithOptions:progressHandler:withCompletionBlock: B40@0:8@16@?24@?32  imp=+0x1d6367524
+  -repairWithProgressHandler:withCompletionBlock: B32@0:8@?16@?24  imp=+0x1d63674f8
+  -resize:completion: v32@0:8Q16@?24  imp=+0x1d63660b4
+  -resizeToSize:completionBlock: @32@0:8Q16@?24  imp=+0x1d6365ff0
+  -resizeToSize:handlingProgress:withCompletionHandler: B40@0:8Q16@?24@?32  imp=+0x1d63679c8
+  -role @16@0:8  imp=+0x1d6369034
+  -secureEraseWithLevel:handlingProgress:withCompletionBlock: B36@0:8i16@?20@?28  imp=+0x1d63673d8
+  -setAvailableSpace: v24@0:8Q16  imp=+0x1d6368eac
+  -setBootAndPersonalizeWithCompletionBlock: B24@0:8@?16  imp=+0x1d6366624
+  -setBootOnceAndPersonalizeWithCompletionBlock: B24@0:8@?16  imp=+0x1d6366524
+  -setBootOnceWithCompletionBlock: B24@0:8@?16  imp=+0x1d6366264
+  -setBootWithCompletionBlock: B24@0:8@?16  imp=+0x1d6366354
+  -setCanBeDeleted: v20@0:8B16  imp=+0x1d63690c4
+  -setCanPartitionDisk: v20@0:8B16  imp=+0x1d6368f48
+  -setCanSupportRecoveryPartition: v20@0:8B16  imp=+0x1d6369164
+  -setChildCount: v24@0:8Q16  imp=+0x1d6369008
+  -setDaDisk: v24@0:8@16  imp=+0x1d63691d8
+  -setDiskIcon: v24@0:8@16  imp=+0x1d6366258
+  -setDiskIcon:withCompletionBlock: B32@0:8@16@?24  imp=+0x1d6366894
+  -setDiskIdentifier: v24@0:8@16  imp=+0x1d6368ed0
+  -setDiskObjectID: v24@0:8@16  imp=+0x1d63691c0
+  -setFilesystem: v24@0:8@16  imp=+0x1d636902c
+  -setFilesystemType: v24@0:8@16  imp=+0x1d6368e18
+  -setFreeSpace: v24@0:8Q16  imp=+0x1d6368e8c
+  -setIoContent: v24@0:8@16  imp=+0x1d6368fac
+  -setIsAESHardwareDisk: v20@0:8B16  imp=+0x1d6369100
+  -setIsCaseSensitive: v20@0:8B16  imp=+0x1d6368ff8
+  -setIsDiskImage: v20@0:8B16  imp=+0x1d6368ee4
+  -setIsEjectable: v20@0:8B16  imp=+0x1d6369128
+  -setIsInternal: v20@0:8B16  imp=+0x1d6368ef8
+  -setIsJournaled: v20@0:8B16  imp=+0x1d6368f70
+  -setIsLocked: v20@0:8B16  imp=+0x1d6368f84
+  -setIsMediaWritable: v20@0:8B16  imp=+0x1d6369090
+  -setIsNetwork: v20@0:8B16  imp=+0x1d636913c
+  -setIsOSInternal: v20@0:8B16  imp=+0x1d6369054
+  -setIsOpticalDisc: v20@0:8B16  imp=+0x1d6369150
+  -setIsPartitionDisk: v20@0:8B16  imp=+0x1d6369068
+  -setIsPhysicalDisk: v20@0:8B16  imp=+0x1d6368f34
+  -setIsRAIDSet: v20@0:8B16  imp=+0x1d63691b0
+  -setIsRemovable: v20@0:8B16  imp=+0x1d6368f0c
+  -setIsSolidState: v20@0:8B16  imp=+0x1d6369114
+  -setIsSystemRAMDisk: v20@0:8B16  imp=+0x1d63690ec
+  -setIsValid: v20@0:8B16  imp=+0x1d6368e2c
+  -setIsWholeDisk: v20@0:8B16  imp=+0x1d6368f20
+  -setIsWritable: v20@0:8B16  imp=+0x1d636907c
+  -setMaximumDiskSize: v24@0:8Q16  imp=+0x1d63690b0
+  -setMediaName: v24@0:8@16  imp=+0x1d636918c
+  -setMediaUUID: v24@0:8@16  imp=+0x1d6368e68
+  -setMinimumDiskSize: v24@0:8Q16  imp=+0x1d63690a0
+  -setMountPoint: v24@0:8@16  imp=+0x1d6368e7c
+  -setOwnerUID: v20@0:8I16  imp=+0x1d63691e8
+  -setOwnersEnabled: v20@0:8B16  imp=+0x1d6369178
+  -setPrivateCache: v24@0:8@16  imp=+0x1d63691f8
+  -setProtocol: v24@0:8@16  imp=+0x1d63690d8
+  -setPurgeableSpace: v24@0:8Q16  imp=+0x1d6368e9c
+  -setRepairRunning: v20@0:8B16  imp=+0x1d6368f98
+  -setRole: v24@0:8@16  imp=+0x1d6369040
+  -setSmartStatus: v20@0:8i16  imp=+0x1d636919c
+  -setStartLocation: v24@0:8Q16  imp=+0x1d6369018
+  -setSupportsJournaling: v20@0:8B16  imp=+0x1d6368f5c
+  -setSupportsRepair: v20@0:8B16  imp=+0x1d6368fc0
+  -setSupportsVerify: v20@0:8B16  imp=+0x1d6368fd4
+  -setTotalSpace: v24@0:8Q16  imp=+0x1d6368ebc
+  -setType: v24@0:8@16  imp=+0x1d6368e04
+  -setUnformattedSize: v24@0:8Q16  imp=+0x1d6368fe4
+  -setVolumeName: v24@0:8@16  imp=+0x1d6368e40
+  -setVolumeUUID: v24@0:8@16  imp=+0x1d6368e54
+  -smartStatus i16@0:8  imp=+0x1d6369194
+  -splitToSize:newDiskType:name:caseSensitive:password:handlingProgress:withCompletionBlock: B68@0:8Q16@24@32B40@44@?52@?60  imp=+0x1d63677a0
+  -startLocation Q16@0:8  imp=+0x1d6369010
+  -supportedFilesystems @16@0:8  imp=+0x1d6364eac
+  -supportsJournaling B16@0:8  imp=+0x1d6368f50
+  -supportsRepair B16@0:8  imp=+0x1d6368fb4
+  -supportsVerify B16@0:8  imp=+0x1d6368fc8
+  -totalSpace Q16@0:8  imp=+0x1d6368eb4
+  -type @16@0:8  imp=+0x1d6368df8
+  -unEnsureRecoveryWithProgressHandler:withCompletionBlock: B32@0:8@?16@?24  imp=+0x1d6368544
+  -unformattedSize Q16@0:8  imp=+0x1d6368fdc
+  -unmountWithCompletionBlock: B24@0:8@?16  imp=+0x1d6365898
+  -unmountWithOptions:completionBlock: B32@0:8@16@?24  imp=+0x1d6365904
+  -unmountWithOptions:error: B32@0:8@16^@24  imp=+0x1d636598c
+  -updateWithDictionary: v24@0:8@16  imp=+0x1d63632e4
+  -verifyWithProgressHandler:withCompletionBlock: B32@0:8@?16@?24  imp=+0x1d6367470
+  -volumeName @16@0:8  imp=+0x1d6368e34
+  -volumeUUID @16@0:8  imp=+0x1d6368e48
+  -wholeDiskIdentifier @16@0:8  imp=+0x1d63654e4
+  -wipeDiskWithError: B24@0:8^@16  imp=+0x1d63792e8
+@class SKDiskImage : NSObject instanceSize=40
+  ivar +8 _imageURL @"NSURL"
+  ivar +16 _shadowURLs @"NSArray"
+  ivar +24 _deviceHandle @"DIDeviceHandle"
+  ivar +32 _diParams @"DIBaseParams"
+  property deviceHandle (T@"DIDeviceHandle",&,N,V_deviceHandle)
+  property diParams (T@"DIBaseParams",&,N,V_diParams)
+  property imageURL (T@"NSURL",R,N,V_imageURL)
+  property shadowURLs (T@"NSArray",R,N,V_shadowURLs)
+  +diskImageWithURL:params:error: @40@0:8@16@24^@32  imp=+0x1d63692f0
+  -.cxx_destruct v16@0:8  imp=+0x1d636c4a4
+  -attachBeforeResizeWithStdinPass:error: B28@0:8B16^@20  imp=+0x1d637e548
+  -attachNoMountWithError: @24@0:8^@16  imp=+0x1d636ae84
+  -attachWithError: @24@0:8^@16  imp=+0x1d636ae14
+  -attachWithParams:error: @32@0:8@16^@24  imp=+0x1d636aefc
+  -chpassWithParams:error: B32@0:8@16^@24  imp=+0x1d636b6d8
+  -createBlankWithParams:progress:error: B40@0:8@16@24^@32  imp=+0x1d6369900
+  -createFromDiskWithParams:progress:completionBlock: v40@0:8@16@24@?32  imp=+0x1d636a590
+  -createFromFolderWithParams:progress:completionBlock: v40@0:8@16@24@?32  imp=+0x1d636a8dc
+  -createWithParams:completionBlock: @32@0:8@16@?24  imp=+0x1d6369594
+  -createWithParams:progressReadyHandler:completionBlock: v40@0:8@16@?24@?32  imp=+0x1d6369878
+  -deduceDiskWithError: @24@0:8^@16  imp=+0x1d636bd94
+  -description @16@0:8  imp=+0x1d636c3a4
+  -deviceHandle @16@0:8  imp=+0x1d636c47c
+  -diAttachWithParams:error: @32@0:8@16^@24  imp=+0x1d636b820
+  -diParams @16@0:8  imp=+0x1d636c490
+  -diResize:error: Q32@0:8@16^@24  imp=+0x1d636c190
+  -ejectWithError: B24@0:8^@16  imp=+0x1d636bf2c
+  -imageURL @16@0:8  imp=+0x1d636c46c
+  -initWithURL:diParams:error: @40@0:8@16@24^@32  imp=+0x1d636ad24
+  -initWithURL:diParams:shadowURLs:error: @48@0:8@16@24@32^@40  imp=+0x1d636ad40
+  -initWithURL:error: @32@0:8@16^@24  imp=+0x1d636ad14
+  -initWithURL:shadowURLs:error: @40@0:8@16@24^@32  imp=+0x1d636ad30
+  -isAttached B16@0:8  imp=+0x1d636ab84
+  -mount:params:wasAttached:outError: B44@0:8@16@24B32^@36  imp=+0x1d636bf80
+  -newResizerWithParams:error: @32@0:8@16^@24  imp=+0x1d637df9c
+  -newShallowResizerWithParams:error: @32@0:8@16^@24  imp=+0x1d637de5c
+  -redactedDescription @16@0:8  imp=+0x1d636c2e8
+  -resize:completionBlock: v32@0:8@16@?24  imp=+0x1d637e820
+  -resizeLimitsInternalWithLimitsParams:error: @32@0:8@16^@24  imp=+0x1d637ef98
+  -resizeLimitsShallowInternalWithLimitsParams:error: @32@0:8@16^@24  imp=+0x1d637e840
+  -resizeLimitsWithError: @24@0:8^@16  imp=+0x1d637f434
+  -resizeLimitsWithLimitsParams:error: @32@0:8@16^@24  imp=+0x1d637f2dc
+  -resizeWithParams:completionBlock: @32@0:8@16@?24  imp=+0x1d637e5dc
+  -resizeWithParams:progress:error: B40@0:8@16@24^@32  imp=+0x1d637e348
+  -retrieveDIInfoWithParams:error: B32@0:8@16^@24  imp=+0x1d636b33c
+  -retrieveInfoWithParams:error: @32@0:8@16^@24  imp=+0x1d636b4fc
+  -setDeviceHandle: v24@0:8@16  imp=+0x1d636c484
+  -setDiParams: v24@0:8@16  imp=+0x1d636c498
+  -shadowURLs @16@0:8  imp=+0x1d636c474
+@class SKDiskImageAttachParams : NSObject instanceSize=32
+  ivar +8 _readOnly B
+  ivar +9 _stdinPassPhrase B
+  ivar +10 _isManagedAttach B
+  ivar +11 _is4KBlockSize B
+  ivar +12 _emulateExternalDisk B
+  ivar +16 _policy q
+  ivar +24 _mountParams @"SKMountParams"
+  property is4KBlockSize (TB,N,V_is4KBlockSize)
+  property emulateExternalDisk (TB,N,V_emulateExternalDisk)
+  property policy (Tq,N,V_policy)
+  property mountParams (T@"SKMountParams",C,N,V_mountParams)
+  property readOnly (TB,N,V_readOnly)
+  property stdinPassPhrase (TB,N,V_stdinPassPhrase)
+  property isManagedAttach (TB,N,V_isManagedAttach)
+  -.cxx_destruct v16@0:8  imp=+0x1d6371920
+  -description @16@0:8  imp=+0x1d6371610
+  -diAttachParamsWithExistingParams:error: @32@0:8@16^@24  imp=+0x1d6371754
+  -diAttachParamsWithURL:shadowURLs:error: @40@0:8@16@24^@32  imp=+0x1d637169c
+  -emulateExternalDisk B16@0:8  imp=+0x1d6371910
+  -init @16@0:8  imp=+0x1d63715c4
+  -initWithParams: @24@0:8@16  imp=+0x1d6371340
+  -is4KBlockSize B16@0:8  imp=+0x1d6371900
+  -isManagedAttach B16@0:8  imp=+0x1d63718f0
+  -mountParams @16@0:8  imp=+0x1d63718d0
+  -observeValueForKeyPath:ofObject:change:context: v48@0:8@16@24@32^v40  imp=+0x1d6371544
+  -policy q16@0:8  imp=+0x1d63718c8
+  -readOnly B16@0:8  imp=+0x1d63718d8
+  -setEmulateExternalDisk: v20@0:8B16  imp=+0x1d6371918
+  -setIs4KBlockSize: v20@0:8B16  imp=+0x1d6371908
+  -setIsManagedAttach: v20@0:8B16  imp=+0x1d63718f8
+  -setMountParams: v24@0:8@16  imp=+0x1d6371454
+  -setPolicy: v24@0:8q16  imp=+0x1d637150c
+  -setReadOnly: v20@0:8B16  imp=+0x1d6371408
+  -setStdinPassPhrase: v20@0:8B16  imp=+0x1d63718e8
+  -setupDIAttachParams: v24@0:8@16  imp=+0x1d63717e8
+  -stdinPassPhrase B16@0:8  imp=+0x1d63718e0
+@class SKDiskImageChpassParams : NSObject instanceSize=16
+  ivar +8 _stdinPassPhrase B
+  property stdinPassPhrase (TB,N,V_stdinPassPhrase)
+  -diChpassParamsWithURL:error: @32@0:8@16^@24  imp=+0x1d6370ba0
+  -init @16@0:8  imp=+0x1d6370b60
+  -setStdinPassPhrase: v20@0:8B16  imp=+0x1d6370c94
+  -setupDIChpassParams: v24@0:8@16  imp=+0x1d6370c24
+  -stdinPassPhrase B16@0:8  imp=+0x1d6370c8c
+@class SKDiskImageCreateParams : NSObject instanceSize=88
+  ivar +8 _stdinPassPhrase B
+  ivar +16 _encryption q
+  ivar +24 _format q
+  ivar +32 _numBlocks Q
+  ivar +40 _volumeName @"NSString"
+  ivar +48 _sourceImage @"NSURL"
+  ivar +56 _sourceFolder @"NSURL"
+  ivar +64 _fsFormat @"SKFilesystem"
+  ivar +72 _shadowURLs @"NSArray"
+  ivar +80 _temporaryPassphrase @"SKTemporaryPassphrase"
+  property diReadPassphraseExtraFlags (TQ,R)
+  property format (Tq,N,V_format)
+  property numBlocks (TQ,V_numBlocks)
+  property volumeName (T@"NSString",C,N,V_volumeName)
+  property sourceImage (T@"NSURL",&,N,V_sourceImage)
+  property sourceFolder (T@"NSURL",&,N,V_sourceFolder)
+  property fsFormat (T@"SKFilesystem",&,N,V_fsFormat)
+  property shadowURLs (T@"NSArray",&,N,V_shadowURLs)
+  property temporaryPassphrase (T@"SKTemporaryPassphrase",&,N,V_temporaryPassphrase)
+  property encryption (Tq,N,V_encryption)
+  property stdinPassPhrase (TB,N,V_stdinPassPhrase)
+  +getDescriptorWithEncryption: @24@0:8q16  imp=+0x1d635c418
+  +getDescriptorWithFormat: @24@0:8q16  imp=+0x1d635c334
+  +getDiskImageEncryptionDescriptors @16@0:8  imp=+0x1d635c46c
+  +getDiskImageFormatDescriptors @16@0:8  imp=+0x1d635c38c
+  -.cxx_destruct v16@0:8  imp=+0x1d635d22c
+  -description @16@0:8  imp=+0x1d635c9bc
+  -diConvertParamsWithOutputURL:error: @32@0:8@16^@24  imp=+0x1d635cc10
+  -diCreateParamsWithURL:error: @32@0:8@16^@24  imp=+0x1d635ca58
+  -diCreatorFromFolderWithURL:error: @32@0:8@16^@24  imp=+0x1d635cf74
+  -diReadPassphraseExtraFlags Q16@0:8  imp=+0x1d635c4f8
+  -encryption q16@0:8  imp=+0x1d635d178
+  -format q16@0:8  imp=+0x1d635d198
+  -fsFormat @16@0:8  imp=+0x1d635d1f0
+  -initWithDisk: @24@0:8@16  imp=+0x1d635c758
+  -initWithDisk:format: @32@0:8@16q24  imp=+0x1d635c760
+  -initWithDiskImage: @24@0:8@16  imp=+0x1d635c828
+  -initWithDiskImage:format: @32@0:8@16q24  imp=+0x1d635c830
+  -initWithDiskImage:format:shadowURLs: @40@0:8@16q24@32  imp=+0x1d635c838
+  -initWithFolder: @24@0:8@16  imp=+0x1d635c8c8
+  -initWithFolder:volumeName:format: @40@0:8@16@24q32  imp=+0x1d635c8d4
+  -initWithFormat:sourceImage:sourceFolder:volumeName:numBlocks: @56@0:8q16@24@32@40Q48  imp=+0x1d635c51c
+  -initWithFormat:sourceImage:sourceFolder:volumeName:numBlocks:fsFormat:shadowURLs: @72@0:8q16@24@32@40Q48@56@64  imp=+0x1d635c544
+  -initWithNumBlocks:volumeName: @32@0:8Q16@24  imp=+0x1d635c680
+  -initWithNumBlocks:volumeName:format: @40@0:8Q16@24q32  imp=+0x1d635c688
+  -initWithNumBlocks:volumeName:format:fsFormat: @48@0:8Q16@24q32@40  imp=+0x1d635c71c
+  -numBlocks Q16@0:8  imp=+0x1d635d1a8
+  -redactedDescription @16@0:8  imp=+0x1d635c8f0
+  -setEncryption: v24@0:8q16  imp=+0x1d635d180
+  -setFormat: v24@0:8q16  imp=+0x1d635d1a0
+  -setFsFormat: v24@0:8@16  imp=+0x1d635d1f8
+  -setNumBlocks: v24@0:8Q16  imp=+0x1d635d1b0
+  -setPassphrase:encryptionMethod: v32@0:8r*16q24  imp=+0x1d635d104
+  -setShadowURLs: v24@0:8@16  imp=+0x1d635d20c
+  -setSourceFolder: v24@0:8@16  imp=+0x1d635d1e4
+  -setSourceImage: v24@0:8@16  imp=+0x1d635d1d0
+  -setStdinPassPhrase: v20@0:8B16  imp=+0x1d635d190
+  -setTemporaryPassphrase: v24@0:8@16  imp=+0x1d635d220
+  -setVolumeName: v24@0:8@16  imp=+0x1d635d1c0
+  -shadowURLs @16@0:8  imp=+0x1d635d204
+  -sourceFolder @16@0:8  imp=+0x1d635d1dc
+  -sourceImage @16@0:8  imp=+0x1d635d1c8
+  -stdinPassPhrase B16@0:8  imp=+0x1d635d188
+  -temporaryPassphrase @16@0:8  imp=+0x1d635d218
+  -volumeName @16@0:8  imp=+0x1d635d1b8
+@class SKDiskImageInfoParams : NSObject instanceSize=24
+  ivar +8 _stdinPassPhrase B
+  ivar +9 _extraInfo B
+  ivar +10 _encryptionInfoOnly B
+  ivar +11 _partitionsInfo B
+  ivar +16 _imageInfo @"NSDictionary"
+  property stdinPassPhrase (TB,N,V_stdinPassPhrase)
+  property extraInfo (TB,N,V_extraInfo)
+  property encryptionInfoOnly (TB,N,V_encryptionInfoOnly)
+  property partitionsInfo (TB,N,V_partitionsInfo)
+  property imageInfo (T@"NSDictionary",C,N,V_imageInfo)
+  +asif_info_key @16@0:8  imp=+0x1d6378014
+  +checksum_info_key @16@0:8  imp=+0x1d6378008
+  +compression_info_key @16@0:8  imp=+0x1d6377ff0
+  +encryption_info_key @16@0:8  imp=+0x1d6377ffc
+  +format_desc_info_key @16@0:8  imp=+0x1d6377fcc
+  +format_info_key @16@0:8  imp=+0x1d6377fc0
+  +getDictDescriptionWithDisk: @24@0:8@16  imp=+0x1d637807c
+  +identity_info_key @16@0:8  imp=+0x1d6377fd8
+  +partitions_info_key @16@0:8  imp=+0x1d637802c
+  +runs_info_key @16@0:8  imp=+0x1d6378020
+  +size_info_key @16@0:8  imp=+0x1d6377fe4
+  -.cxx_destruct v16@0:8  imp=+0x1d63784bc
+  -encryptionInfoOnly B16@0:8  imp=+0x1d637848c
+  -extraInfo B16@0:8  imp=+0x1d637847c
+  -getInfoDictWithDisk: @24@0:8@16  imp=+0x1d637825c
+  -imageInfo @16@0:8  imp=+0x1d63784ac
+  -init @16@0:8  imp=+0x1d6378038
+  -partitionsInfo B16@0:8  imp=+0x1d637849c
+  -setEncryptionInfoOnly: v20@0:8B16  imp=+0x1d6378494
+  -setExtraInfo: v20@0:8B16  imp=+0x1d6378484
+  -setImageInfo: v24@0:8@16  imp=+0x1d63784b4
+  -setPartitionsInfo: v20@0:8B16  imp=+0x1d63784a4
+  -setStdinPassPhrase: v20@0:8B16  imp=+0x1d6378474
+  -stdinPassPhrase B16@0:8  imp=+0x1d637846c
+@class SKDiskImagePartitionLessResizer : SKDiskImageResizerBase instanceSize=96
+  -resizeStateMachine: @24@0:8^@16  imp=+0x1d63818b8
+@class SKDiskImagePartitionedResizer : SKDiskImageResizerBase instanceSize=96
+  -resizeStateMachine: @24@0:8^@16  imp=+0x1d6381508
+@class SKDiskImageResizeLimitsParams : NSObject instanceSize=16
+  ivar +8 _stdinPassPhrase B
+  ivar +9 _shallow B
+  property stdinPassPhrase (TB,N,V_stdinPassPhrase)
+  property shallow (TB,N,V_shallow)
+  -init @16@0:8  imp=+0x1d637bbb4
+  -setShallow: v20@0:8B16  imp=+0x1d637bc0c
+  -setStdinPassPhrase: v20@0:8B16  imp=+0x1d637bbfc
+  -shallow B16@0:8  imp=+0x1d637bc04
+  -stdinPassPhrase B16@0:8  imp=+0x1d637bbf4
+@class SKDiskImageResizeParams : NSObject instanceSize=24
+  ivar +8 _stdinPassPhrase B
+  ivar +9 _shallow B
+  ivar +16 _size Q
+  property size (TQ,N,V_size)
+  property stdinPassPhrase (TB,N,V_stdinPassPhrase)
+  property shallow (TB,N,V_shallow)
+  -initWithSize: @24@0:8Q16  imp=+0x1d637bb2c
+  -setShallow: v20@0:8B16  imp=+0x1d637bbac
+  -setSize: v24@0:8Q16  imp=+0x1d637bb8c
+  -setStdinPassPhrase: v20@0:8B16  imp=+0x1d637bb9c
+  -shallow B16@0:8  imp=+0x1d637bba4
+  -size Q16@0:8  imp=+0x1d637bb84
+  -stdinPassPhrase B16@0:8  imp=+0x1d637bb94
+@class SKDiskImageResizer : SKDiskImageResizerBase instanceSize=96
+  -resizeStateMachine: @24@0:8^@16  imp=+0x1d63811b4
+@class SKDiskImageResizerBase : SKDiskResizerBase instanceSize=96
+  ivar +56 _limits @"SKDiskImageSizeLimits"
+  ivar +64 _requiredSizeForRecoveryMove Q
+  ivar +72 _image @"SKDiskImage"
+  ivar +80 _resizeParams @"SKDiskImageResizeParams"
+  ivar +88 _recoveryMoverInfo @"SKRecoveryMoverInfo"
+  property image (T@"SKDiskImage",&,N,V_image)
+  property resizeParams (T@"SKDiskImageResizeParams",&,N,V_resizeParams)
+  property recoveryMoverInfo (T@"SKRecoveryMoverInfo",&,N,V_recoveryMoverInfo)
+  property limits (T@"SKDiskImageSizeLimits",&,N,V_limits)
+  property requiredSizeForRecoveryMove (TQ,N,V_requiredSizeForRecoveryMove)
+  -.cxx_destruct v16@0:8  imp=+0x1d6381138
+  -attachForResizeParams @16@0:8  imp=+0x1d637fdcc
+  -checkLimitsWithError: B24@0:8^@16  imp=+0x1d637fe20
+  -fitToSize: @24@0:8^@16  imp=+0x1d6380e38
+  -image @16@0:8  imp=+0x1d63810c0
+  -imageResize: @24@0:8^@16  imp=+0x1d638029c
+  -initWithDiskImage:limits:resizeParams:error: @48@0:8@16@24@32^@40  imp=+0x1d637f7b0
+  -limits @16@0:8  imp=+0x1d6381070
+  -moveRecovery: @24@0:8^@16  imp=+0x1d6380588
+  -prepareRecoveryMoverWithError: B24@0:8^@16  imp=+0x1d637f938
+  -recoveryMoverInfo @16@0:8  imp=+0x1d6381110
+  -requiredSizeForRecoveryMove Q16@0:8  imp=+0x1d6381098
+  -resizeParams @16@0:8  imp=+0x1d63810e8
+  -setImage: v24@0:8@16  imp=+0x1d63810d4
+  -setLimits: v24@0:8@16  imp=+0x1d6381084
+  -setRecoveryMoverInfo: v24@0:8@16  imp=+0x1d6381124
+  -setRequestedSize: v24@0:8Q16  imp=+0x1d637fd5c
+  -setRequiredSizeForRecoveryMove: v24@0:8Q16  imp=+0x1d63810ac
+  -setResizeParams: v24@0:8@16  imp=+0x1d63810fc
+  -volumeResize: @24@0:8^@16  imp=+0x1d637ff2c
+@class SKDiskImageSizeLimits : NSObject instanceSize=32
+  ivar +8 _currentBytes Q
+  ivar +16 _maxBytes Q
+  ivar +24 _minBytes Q
+  property currentBytes (TQ,V_currentBytes)
+  property minBytes (TQ,V_minBytes)
+  property maxBytes (TQ,V_maxBytes)
+  +isSupportedWholeDisk: B24@0:8@16  imp=+0x1d637f4a4
+  -currentBytes Q16@0:8  imp=+0x1d637f698
+  -maxBytes Q16@0:8  imp=+0x1d637f6a8
+  -minBytes Q16@0:8  imp=+0x1d637f6b8
+  -physicalStoreMinimumSizeFromStore: Q24@0:8@16  imp=+0x1d637f580
+  -setCurrentBytes: v24@0:8Q16  imp=+0x1d637f6a0
+  -setMaxBytes: v24@0:8Q16  imp=+0x1d637f6b0
+  -setMinBytes: v24@0:8Q16  imp=+0x1d637f6c0
+@class SKDiskResizerBase : NSObject instanceSize=56
+  ivar +8 _disk @"SKDisk"
+  ivar +16 _requestedSize Q
+  ivar +24 _progress @"SKProgress"
+  ivar +32 _activeFSM @"SKStateMachine"
+  ivar +40 _resizeError @"NSError"
+  ivar +48 _originalSize Q
+  property originalSize (TQ,N,V_originalSize)
+  property disk (T@"SKDisk",&,N,V_disk)
+  property requestedSize (TQ,N,V_requestedSize)
+  property currentSize (TQ,R,N)
+  property progress (T@"SKProgress",&,N,V_progress)
+  property completedUnitCount (Tq,N)
+  property activeFSM (T@"SKStateMachine",&,N,V_activeFSM)
+  property resizeError (T@"NSError",&,N,V_resizeError)
+  -.cxx_destruct v16@0:8  imp=+0x1d634e68c
+  -activeFSM @16@0:8  imp=+0x1d634e654
+  -cancelWithError: @24@0:8^@16  imp=+0x1d634e34c
+  -completedUnitCount q16@0:8  imp=+0x1d634e000
+  -currentSize Q16@0:8  imp=+0x1d634e0c4
+  -disk @16@0:8  imp=+0x1d634e61c
+  -eventFromSize @16@0:8  imp=+0x1d634e2f0
+  -initWithDisk:requestedSize: @32@0:8@16Q24  imp=+0x1d634df48
+  -originalSize Q16@0:8  imp=+0x1d634e67c
+  -progress @16@0:8  imp=+0x1d634e640
+  -requestedSize Q16@0:8  imp=+0x1d634e630
+  -resizeError @16@0:8  imp=+0x1d634e668
+  -resizeStateMachine: @24@0:8^@16  imp=+0x1d634e29c
+  -resizeWithError: B24@0:8^@16  imp=+0x1d634e100
+  -rollbackResize: @24@0:8^@16  imp=+0x1d634e3a4
+  -setActiveFSM: v24@0:8@16  imp=+0x1d634e65c
+  -setCompletedUnitCount: v24@0:8q16  imp=+0x1d634e03c
+  -setDisk: v24@0:8@16  imp=+0x1d634e624
+  -setOriginalSize: v24@0:8Q16  imp=+0x1d634e684
+  -setProgress: v24@0:8@16  imp=+0x1d634e648
+  -setRequestedSize: v24@0:8Q16  imp=+0x1d634e638
+  -setResizeError: v24@0:8@16  imp=+0x1d634e670
+@class SKEraseDisk : NSObject <SKValidateProtocol, SKEraseSubmitProtocol, NSSecureCoding> instanceSize=48
+  ivar +8 _forceUnmount B
+  ivar +16 _disk @"SKDisk"
+  ivar +24 _descriptors @"NSArray"
+  ivar +32 _progress @"SKProgress"
+  ivar +40 _diskRepresentation @"NSDictionary"
+  property progress (T@"SKProgress",&,N,V_progress)
+  property disk (T@"SKDisk",&,N,V_disk)
+  property diskRepresentation (T@"NSDictionary",&,N,V_diskRepresentation)
+  property descriptors (T@"NSArray",&,N,V_descriptors)
+  property forceUnmount (TB,N,V_forceUnmount)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +eraseDiskWithRootDisk:descriptors:error: @40@0:8@16@24^@32  imp=+0x1d637ce5c
+  +eraseDiskWithRootDisk:error: @32@0:8@16^@24  imp=+0x1d637cee8
+  +supportsSecureCoding B16@0:8  imp=+0x1d637d200
+  -.cxx_destruct v16@0:8  imp=+0x1d637de00
+  -description @16@0:8  imp=+0x1d637d208
+  -descriptors @16@0:8  imp=+0x1d637ddb4
+  -disk @16@0:8  imp=+0x1d637dda0
+  -diskRepresentation @16@0:8  imp=+0x1d637ddec
+  -encodeWithCoder: v24@0:8@16  imp=+0x1d637d30c
+  -eraseProgressReportingWithCompletionBlock: @24@0:8@?16  imp=+0x1d637cf88
+  -eraseWithCompletionBlock: v24@0:8@?16  imp=+0x1d637cf5c
+  -forceUnmount B16@0:8  imp=+0x1d637ddc8
+  -formattableFilesystems @16@0:8  imp=+0x1d637d2bc
+  -initWithCoder: @24@0:8@16  imp=+0x1d637d3ac
+  -initWithRootDisk:descriptors:error: @40@0:8@16@24^@32  imp=+0x1d637cc4c
+  -progress @16@0:8  imp=+0x1d637ddd8
+  -setDescriptors: v24@0:8@16  imp=+0x1d637ddbc
+  -setDisk: v24@0:8@16  imp=+0x1d637dda8
+  -setDiskRepresentation: v24@0:8@16  imp=+0x1d637ddf4
+  -setForceUnmount: v20@0:8B16  imp=+0x1d637ddd0
+  -setProgress: v24@0:8@16  imp=+0x1d637dde0
+  -validateWithError: @24@0:8^@16  imp=+0x1d637d5e8
+@class SKEraseVolume : NSObject <SKValidateProtocol, SKEraseSubmitProtocol, NSSecureCoding> instanceSize=48
+  ivar +8 _forceUnmount B
+  ivar +16 _disk @"SKDisk"
+  ivar +24 _descriptor @"SKVolumeDescriptor"
+  ivar +32 _progress @"SKProgress"
+  ivar +40 _diskRepresentation @"NSDictionary"
+  property progress (T@"SKProgress",&,N,V_progress)
+  property disk (T@"SKDisk",&,N,V_disk)
+  property diskRepresentation (T@"NSDictionary",&,N,V_diskRepresentation)
+  property descriptor (T@"SKVolumeDescriptor",&,N,V_descriptor)
+  property forceUnmount (TB,N,V_forceUnmount)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +eraseVolumeWithAPFSContainerDisk:descriptor:error: @40@0:8@16@24^@32  imp=+0x1d637a454
+  +eraseVolumeWithAPFSStoreDisk:descriptor:error: @40@0:8@16@24^@32  imp=+0x1d637a3c8
+  +eraseVolumeWithChildDisk:descriptor:error: @40@0:8@16@24^@32  imp=+0x1d637a164
+  +eraseVolumeWithChildDisk:error: @32@0:8@16^@24  imp=+0x1d637a354
+  +supportsSecureCoding B16@0:8  imp=+0x1d637acdc
+  -.cxx_destruct v16@0:8  imp=+0x1d637bad0
+  -description @16@0:8  imp=+0x1d637ac28
+  -descriptor @16@0:8  imp=+0x1d637ba84
+  -disk @16@0:8  imp=+0x1d637ba7c
+  -diskRepresentation @16@0:8  imp=+0x1d637babc
+  -encodeWithCoder: v24@0:8@16  imp=+0x1d637ace4
+  -eraseProgressReportingWithCompletionBlock: @24@0:8@?16  imp=+0x1d637a5ec
+  -eraseWithCompletionBlock: v24@0:8@?16  imp=+0x1d637a5c0
+  -forceUnmount B16@0:8  imp=+0x1d637ba98
+  -formattableFilesystems @16@0:8  imp=+0x1d637ad84
+  -initWithChildDisk:descriptor:error: @40@0:8@16@24^@32  imp=+0x1d6379dec
+  -initWithCoder: @24@0:8@16  imp=+0x1d637aef8
+  -progress @16@0:8  imp=+0x1d637baa8
+  -setDescriptor: v24@0:8@16  imp=+0x1d637ba8c
+  -setDisk: v24@0:8@16  imp=+0x1d637a558
+  -setDiskRepresentation: v24@0:8@16  imp=+0x1d637bac4
+  -setForceUnmount: v20@0:8B16  imp=+0x1d637baa0
+  -setProgress: v24@0:8@16  imp=+0x1d637bab0
+  -validateWithError: @24@0:8^@16  imp=+0x1d637b120
+@class SKError : NSObject instanceSize=8
+  +errorWithCode:debugDescription: @32@0:8q16@24  imp=+0x1d638383c
+  +errorWithCode:debugDescription:error: @40@0:8q16@24^@32  imp=+0x1d6383920
+  +errorWithCode:disks:userInfo: @40@0:8q16@24@32  imp=+0x1d6383bfc
+  +errorWithCode:underlyingError: @32@0:8q16@24  imp=+0x1d6383a20
+  +errorWithCode:underlyingError:error: @40@0:8q16@24^@32  imp=+0x1d6383b00
+  +errorWithCode:userInfo: @32@0:8q16@24  imp=+0x1d6383828
+  +errorWithOSStatus:debugDescription:error: @36@0:8i16@20^@28  imp=+0x1d6384258
+  +errorWithOSStatus:error: @28@0:8i16^@20  imp=+0x1d638438c
+  +errorWithPOSIXCode:debugDescription:error: @36@0:8i16@20^@28  imp=+0x1d6384064
+  +errorWithPOSIXCode:error: @28@0:8i16^@20  imp=+0x1d6384214
+  +failWithError:error: B32@0:8@16^@24  imp=+0x1d6383fb8
+  +failWithOSStatus:debugDescription:error: B36@0:8i16@20^@28  imp=+0x1d63845e8
+  +failWithOSStatus:error: B28@0:8i16^@20  imp=+0x1d6384614
+  +failWithPOSIXCode:debugDescription:error: B36@0:8i16@20^@28  imp=+0x1d6384590
+  +failWithPOSIXCode:error: B28@0:8i16^@20  imp=+0x1d63845bc
+  +failWithSKErrorCode:debugDescription:error: B40@0:8q16@24^@32  imp=+0x1d6384640
+  +failWithSKErrorCode:error: B32@0:8q16^@24  imp=+0x1d63846c4
+  +frameworkBundle @16@0:8  imp=+0x1d6383558
+  +localizedDescriptionForCode: @24@0:8q16  imp=+0x1d6383758
+  +nilWithError:error: @32@0:8@16^@24  imp=+0x1d6383f0c
+  +nilWithOSStatus:debugDescription:error: @36@0:8i16@20^@28  imp=+0x1d6384428
+  +nilWithOSStatus:error: @28@0:8i16^@20  imp=+0x1d6384454
+  +nilWithPOSIXCode:debugDescription:error: @36@0:8i16@20^@28  imp=+0x1d63843fc
+  +nilWithPOSIXCode:error: @28@0:8i16^@20  imp=+0x1d63843d0
+  +nilWithSKErrorCode:debugDescription:error: @40@0:8q16@24^@32  imp=+0x1d6384480
+  +nilWithSKErrorCode:error: @32@0:8q16^@24  imp=+0x1d6384518
+@class SKFilesystem : NSObject instanceSize=168
+  ivar +8 _isEncrypted B
+  ivar +9 _defaultEffaceable B
+  ivar +10 _isCaseSensitive B
+  ivar +11 _isJournaled B
+  ivar +12 _shouldShow B
+  ivar +16 _sortPriority i
+  ivar +24 _localizedName @"NSString"
+  ivar +32 _type @"NSString"
+  ivar +40 _majorType @"NSString"
+  ivar +48 _dmPersonality @"NSString"
+  ivar +56 _minimumSize Q
+  ivar +64 _contentMask @"NSString"
+  ivar +72 _localizedKey @"NSString"
+  ivar +80 _unlocalizedName @"NSString"
+  ivar +88 _unlocalizedEncryptedName @"NSString"
+  ivar +96 _formatArgs @"NSString"
+  ivar +104 _formatExecutable @"NSURL"
+  ivar +112 _repairArgs @"NSString"
+  ivar +120 _repairExecutable @"NSURL"
+  ivar +128 _verificationArgs @"NSString"
+  ivar +136 _liveVerificationArgs @"NSString"
+  ivar +144 _verificationExecutable @"NSURL"
+  ivar +152 _xmlOutputArg @"NSString"
+  ivar +160 _bundle @"NSBundle"
+  property localizedName (T@"NSString",&,V_localizedName)
+  property localizedKey (T@"NSString",&,V_localizedKey)
+  property type (T@"NSString",&,V_type)
+  property majorType (T@"NSString",&,V_majorType)
+  property dmPersonality (T@"NSString",&,V_dmPersonality)
+  property isEncrypted (TB,V_isEncrypted)
+  property defaultEffaceable (TB,V_defaultEffaceable)
+  property isCaseSensitive (TB,V_isCaseSensitive)
+  property isJournaled (TB,V_isJournaled)
+  property shouldShow (TB,V_shouldShow)
+  property minimumSize (TQ,V_minimumSize)
+  property contentMask (T@"NSString",&,V_contentMask)
+  property sortPriority (Ti,V_sortPriority)
+  property unlocalizedName (T@"NSString",&,V_unlocalizedName)
+  property unlocalizedEncryptedName (T@"NSString",&,V_unlocalizedEncryptedName)
+  property formatArgs (T@"NSString",R,V_formatArgs)
+  property formatExecutable (T@"NSURL",R,V_formatExecutable)
+  property repairArgs (T@"NSString",R,V_repairArgs)
+  property repairExecutable (T@"NSURL",R,V_repairExecutable)
+  property verificationArgs (T@"NSString",R,V_verificationArgs)
+  property liveVerificationArgs (T@"NSString",R,V_liveVerificationArgs)
+  property verificationExecutable (T@"NSURL",R,V_verificationExecutable)
+  property xmlOutputArg (T@"NSString",R,V_xmlOutputArg)
+  property bundle (T@"NSBundle",R,V_bundle)
+  property isExtension (TB,R)
+  +_shouldShowFilesystemWithType:key:personality: B40@0:8@16@24@32  imp=+0x1d6361c50
+  +_skfilesystemTypeWithPersonality: @24@0:8@16  imp=+0x1d6361bd0
+  +allFilesystems @16@0:8  imp=+0x1d635dbac
+  +buildSpecialFilesystems @16@0:8  imp=+0x1d6361758
+  +cachedFilesystems @16@0:8  imp=+0x1d635eacc
+  +collectFilesystemsWithPersonalityMapping: @24@0:8@16  imp=+0x1d635e3a4
+  +extensionFilesystems @16@0:8  imp=+0x1d635de50
+  +extensionFilesystemsMapping @16@0:8  imp=+0x1d635dd8c
+  +fileSystems3rdPartyWithPersonalityKey:bundle:userVisibleName: @40@0:8@16@24@32  imp=+0x1d636125c
+  +fileSystemsAPFSWithPersonalityKey:bundle: @32@0:8@16@24  imp=+0x1d6360f78
+  +fileSystemsHFSWithPersonalityKey:bundle:userVisibleName: @40@0:8@16@24@32  imp=+0x1d6360860
+  +filesystemFor: @24@0:8@16  imp=+0x1d6360850
+  +filesystemFor:caseSensitive: @28@0:8@16B24  imp=+0x1d6360840
+  +filesystemFor:caseSensitive:encrypted: @32@0:8@16B24B28  imp=+0x1d63607a0
+  +filesystemFor:caseSensitive:encrypted:isExtension: @36@0:8@16B24B28B32  imp=+0x1d6360220
+  +filesystemsFromBundle: @24@0:8@16  imp=+0x1d6361950
+  +filesystemsWithBundle:filesystemPersonality:userVisibleName: @40@0:8@16@24@32  imp=+0x1d6361448
+  +getExtensionFilesystems @16@0:8  imp=+0x1d635e5ac
+  +installedFilesystems @16@0:8  imp=+0x1d635e298
+  +installedFilesystemsMapping @16@0:8  imp=+0x1d635df40
+  +setCachedFilesystems: v24@0:8@16  imp=+0x1d635eb24
+  -.cxx_destruct v16@0:8  imp=+0x1d63622b0
+  -bundle @16@0:8  imp=+0x1d63622a4
+  -contentMask @16@0:8  imp=+0x1d63621e4
+  -defaultEffaceable B16@0:8  imp=+0x1d6362184
+  -description @16@0:8  imp=+0x1d635ff8c
+  -dictionaryRepresentation @16@0:8  imp=+0x1d635fa0c
+  -dmPersonality @16@0:8  imp=+0x1d636215c
+  -formatArgs @16@0:8  imp=+0x1d6362244
+  -formatExecutable @16@0:8  imp=+0x1d6362250
+  -initEncryptedFSWithUnencryptedFS:localizedName:sortPriority: @36@0:8@16@24i32  imp=+0x1d635f8ec
+  -initWithDictionaryRepresentation: @24@0:8@16  imp=+0x1d635eb34
+  -initWithSKFilesystem:bundle:localizedName:localizedKey:caseSensitive:encrypted:personalityKey:sortPriority: @68@0:8@16@24@32@40B48B52@56i64  imp=+0x1d635f31c
+  -initWithSKFilesystem:bundle:localizedName:localizedKey:encrypted:personalityKey:sortPriority: @64@0:8@16@24@32@40B48@52i60  imp=+0x1d635f0a8
+  -initWithSpecialFilesystem:majorType:localizedName: @40@0:8@16@24@32  imp=+0x1d63615b8
+  -isCaseSensitive B16@0:8  imp=+0x1d6362198
+  -isEncrypted B16@0:8  imp=+0x1d6362170
+  -isEqual: B24@0:8@16  imp=+0x1d63601b4
+  -isExtension B16@0:8  imp=+0x1d6361de0
+  -isExtensionInsensitiveEqual: B24@0:8@16  imp=+0x1d6360028
+  -isJournaled B16@0:8  imp=+0x1d63621ac
+  -isValidName:error: B32@0:8@16^@24  imp=+0x1d6361e4c
+  -liveVerificationArgs @16@0:8  imp=+0x1d6362280
+  -localizedKey @16@0:8  imp=+0x1d63621f8
+  -localizedName @16@0:8  imp=+0x1d6362120
+  -majorType @16@0:8  imp=+0x1d6362148
+  -minimumSize Q16@0:8  imp=+0x1d63621d4
+  -repairArgs @16@0:8  imp=+0x1d636225c
+  -repairExecutable @16@0:8  imp=+0x1d6362268
+  -setContentMask: v24@0:8@16  imp=+0x1d63621f0
+  -setDefaultEffaceable: v20@0:8B16  imp=+0x1d6362190
+  -setDmPersonality: v24@0:8@16  imp=+0x1d6362168
+  -setIsCaseSensitive: v20@0:8B16  imp=+0x1d63621a4
+  -setIsEncrypted: v20@0:8B16  imp=+0x1d636217c
+  -setIsJournaled: v20@0:8B16  imp=+0x1d63621b8
+  -setLocalizedKey: v24@0:8@16  imp=+0x1d6362204
+  -setLocalizedName: v24@0:8@16  imp=+0x1d636212c
+  -setMajorType: v24@0:8@16  imp=+0x1d6362154
+  -setMinimumSize: v24@0:8Q16  imp=+0x1d63621dc
+  -setShouldShow: v20@0:8B16  imp=+0x1d63621cc
+  -setSortPriority: v20@0:8i16  imp=+0x1d6362214
+  -setType: v24@0:8@16  imp=+0x1d6362140
+  -setUnlocalizedEncryptedName: v24@0:8@16  imp=+0x1d636223c
+  -setUnlocalizedName: v24@0:8@16  imp=+0x1d6362228
+  -shouldShow B16@0:8  imp=+0x1d63621c0
+  -sortPriority i16@0:8  imp=+0x1d636220c
+  -type @16@0:8  imp=+0x1d6362134
+  -unlocalizedEncryptedName @16@0:8  imp=+0x1d6362230
+  -unlocalizedName @16@0:8  imp=+0x1d636221c
+  -verificationArgs @16@0:8  imp=+0x1d6362274
+  -verificationExecutable @16@0:8  imp=+0x1d636228c
+  -xmlOutputArg @16@0:8  imp=+0x1d6362298
+@class SKHelperClient : NSObject <SKHelperClientProtocol, SKDaemonProtocol> instanceSize=64
+  ivar +8 _hasDaemonAccess B
+  ivar +9 _connectionDone B
+  ivar +16 _completionHandlers @"NSMutableDictionary"
+  ivar +24 _xpcConnection @"NSXPCConnection"
+  ivar +32 _xpcQueue @"NSObject<OS_dispatch_queue>"
+  ivar +40 _callbackQueue @"NSObject<OS_dispatch_queue>"
+  ivar +48 _recacheAbuseLimiterInfo @"NSMutableDictionary"
+  ivar +56 _authRef ^{AuthorizationOpaqueRef=}
+  property recacheAbuseLimiterInfo (T@"NSMutableDictionary",&,V_recacheAbuseLimiterInfo)
+  property connectionDone (TB,V_connectionDone)
+  property authRef (T^{AuthorizationOpaqueRef=},V_authRef)
+  property completionHandlers (T@"NSMutableDictionary",R,N,V_completionHandlers)
+  property xpcConnection (T@"NSXPCConnection",R,N,V_xpcConnection)
+  property xpcQueue (T@"NSObject<OS_dispatch_queue>",R,N,V_xpcQueue)
+  property callbackQueue (T@"NSObject<OS_dispatch_queue>",&,V_callbackQueue)
+  property hasDaemonAccess (TB,V_hasDaemonAccess)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +sharedClient @16@0:8  imp=+0x1d6384cfc
+  -.cxx_destruct v16@0:8  imp=+0x1d6399c70
+  -_abortAllCalls v16@0:8  imp=+0x1d63891c8
+  -_addChildVolumeToAPFSContainer:dataVolume:systemVolume:name:caseSensitive:minSize:maxSize:password:passwordHint:apfsRole:unencryptedSystemVolume:uid:gid:progressBlock:completetionBlock: v120@0:8@16@24@32@40B48Q52Q60@68@76@84B92I96I100@?104@?112  imp=+0x1d6395be4
+  -_isRecachingDiskAbuse: B24@0:8@16  imp=+0x1d63899a8
+  -_parameters:valueAtIndex: @32@0:8@16Q24  imp=+0x1d63898fc
+  -_scheduleCompletionUUID:forFunction:blocking:withBlock: @44@0:8@16r*24B32@?36  imp=+0x1d63898ac
+  -_scheduleCompletionUUID:forFunction:withBlock: v40@0:8@16r*24@?32  imp=+0x1d638967c
+  -_scheduleCompletionUUID:progress:forFunction:withBlock: v48@0:8@16@?24r*32@?40  imp=+0x1d638940c
+  -_scheduleSyncCompletionUUID:forFunction:withBlock: @40@0:8@16r*24@?32  imp=+0x1d638968c
+  -addChildVolumeToAPFSContainer:name:caseSensitive:minSize:maxSize:password:passwordHint:apfsRole:uid:gid:progressBlock:completetionBlock: v100@0:8@16@24B32Q36Q44@52@60@68I76I80@?84@?92  imp=+0x1d6395a60
+  -addChildVolumeToAPFSContainer:name:caseSensitive:minSize:maxSize:password:uid:gid:progressBlock:completetionBlock: v84@0:8@16@24B32Q36Q44@52I60I64@?68@?76  imp=+0x1d63958f0
+  -addChildVolumeToEmptyLVG:withProgress:completetionBlock: v40@0:8@16@?24@?32  imp=+0x1d63943f8
+  -addDataVolumeToAPFSContainer:systemVolume:name:caseSensitive:minSize:maxSize:password:passwordHint:uid:gid:progressBlock:completetionBlock: v100@0:8@16@24@32B40Q44Q52@60@68I76I80@?84@?92  imp=+0x1d6395b80
+  -addDisks:toRAID:memberType:progressBlock:completionBlock: v56@0:8@16@24@32@?40@?48  imp=+0x1d639483c
+  -addSystemVolumeToAPFSContainer:dataVolume:name:caseSensitive:minSize:maxSize:password:passwordHint:uid:gid:progressBlock:completetionBlock: v100@0:8@16@24@32B40Q44Q52@60@68I76I80@?84@?92  imp=+0x1d6395abc
+  -addUnencryptedSystemVolumeToAPFSContainer:dataVolume:name:caseSensitive:minSize:maxSize:password:passwordHint:uid:gid:progressBlock:completetionBlock: v100@0:8@16@24@32B40Q44Q52@60@68I76I80@?84@?92  imp=+0x1d6395b1c
+  -allSnapshotsForDisk:completionBlock: v32@0:8@16@?24  imp=+0x1d6397970
+  -authRef ^{AuthorizationOpaqueRef=}16@0:8  imp=+0x1d6399c60
+  -blessDisk:options:withCallbackBlock: v40@0:8@16@24@?32  imp=+0x1d638dea4
+  -blockRestoreDisk:fromDisk:handlingProgress:withCompletionBlock: v48@0:8@16@24@?32@?40  imp=+0x1d6393058
+  -blockRestoreDisk:fromDisk:volumeUUID:creatingNewVolume:handlingProgress:withCompletionBlock: v60@0:8@16@24@32B40@?44@?52  imp=+0x1d6393438
+  -blockRestoreDisk:fromDiskImageFileURL:handlingProgress:withCompletionBlock: v48@0:8@16@24@?32@?40  imp=+0x1d6393844
+  -blockRestoreDisk:fromDiskImageFileURL:volumeUUID:creatingNewVolume:handlingProgress:withCompletionBlock: v60@0:8@16@24@32B40@?44@?52  imp=+0x1d6393c24
+  -callbackQueue @16@0:8  imp=+0x1d6399c10
+  -changePasswordForDisk:oldPassword:newPassword:passwordHint:withCompletionBlock: v56@0:8@16@24@32@40@?48  imp=+0x1d6391a48
+  -childDisksForWholeDisk:blocking:withCallbackBlock: v36@0:8@16B24@?28  imp=+0x1d63863d0
+  -childDisksForWholeDisk:withCallbackBlock: v32@0:8@16@?24  imp=+0x1d6386814
+  -completionHandlers @16@0:8  imp=+0x1d6399bf8
+  -compositeDisks:volumeName:handlingProgress:callbackBlock: v48@0:8@16@24@?32@?40  imp=+0x1d638daa8
+  -connectionDone B16@0:8  imp=+0x1d6399c4c
+  -convertDisk:toCoreStorage:handlingProgress:withCompletionBlock: v44@0:8@16B24@?28@?36  imp=+0x1d638f804
+  -convertDiskToFDE:withRecipe:handlingProgress:withCompletionBlock: v48@0:8@16@24@?32@?40  imp=+0x1d639173c
+  -convertToAPFS:isDryRun:prebootFolderPath:withProgress:andCompletionHandler: v52@0:8@16B24@28@?36@?44  imp=+0x1d63971fc
+  -convertToAPFS:isDryRun:withProgress:andCompletionHandler: v44@0:8@16B24@?28@?36  imp=+0x1d63971ec
+  -createAPFSContainerWithDisks:progress:callbackBlock: v40@0:8@16@?24@?32  imp=+0x1d63950b4
+  -createAPFSVolumeGroupWithDisks:container:completetionBlock: v40@0:8@16@24@?32  imp=+0x1d63993ac
+  -createAndSerializeAuthToExtForm: ^{AuthorizationOpaqueRef=}24@0:8^{?=[32c]}16  imp=+0x1d6384eb4
+  -createRAIDSetType:name:disks:format:options:progressBlock:completionBlock: v72@0:8@16@24@32@40@48@?56@?64  imp=+0x1d639272c
+  -createSnapshot:disk:completionBlock: v40@0:8@16@24@?32  imp=+0x1d6397d50
+  -createXPCConnection v16@0:8  imp=+0x1d6388e10
+  -dataRecordForUser:forVolume:completionBlock: v40@0:8@16@24@?32  imp=+0x1d639009c
+  -dealloc v16@0:8  imp=+0x1d6384e60
+  -decryptVolume:withPassword:forUser:withCompletionBlock: v48@0:8@16@24@32@?40  imp=+0x1d6391150
+  -deleteAPFSContainer:progress:callbackBlock: v40@0:8@16@?24@?32  imp=+0x1d639554c
+  -deleteAPFSVolume:progress:completionBlock: v40@0:8@16@?24@?32  imp=+0x1d638af0c
+  -deleteRAID:progress:completionBlock: v40@0:8@16@?24@?32  imp=+0x1d6396e48
+  -deleteSnapshots:disk:completionBlock: v40@0:8@16@24@?32  imp=+0x1d6398c6c
+  -diskForPath:blocking:withCallbackBlock: v36@0:8@16B24@?28  imp=+0x1d63859cc
+  -diskForPath:withCallbackBlock: v32@0:8@16@?24  imp=+0x1d6385eb4
+  -disksAppeared: v24@0:8@16  imp=+0x1d6388628
+  -disksChanged: v24@0:8@16  imp=+0x1d638868c
+  -disksDisappeared: v24@0:8@16  imp=+0x1d63886f0
+  -ejectDisk:blocking:withCompletionBlock: v36@0:8@16B24@?28  imp=+0x1d638a3b8
+  -ejectDisk:withCompletionBlock: v32@0:8@16@?24  imp=+0x1d638a730
+  -enableJournalingOnDisk:withCompletionBlock: v32@0:8@16@?24  imp=+0x1d638f0f8
+  -enablePermissionsOnDisk:withCompletionBlock: v32@0:8@16@?24  imp=+0x1d638ed30
+  -enclosingDiskAtLevel:blocking:withCallbackBlock: v36@0:8Q16B24@?28  imp=+0x1d63922d4
+  -enclosingDiskAtLevel:withCallbackBlock: v32@0:8Q16@?24  imp=+0x1d6392720
+  -enclosingVolumeCount: v24@0:8@?16  imp=+0x1d63922c8
+  -enclosingVolumeCountWithBlocking:completionBlock: v28@0:8B16@?20  imp=+0x1d639201c
+  -ensureRecoveryForDisk:withRecoverySystemPath:chunkkList:diagnostics:ignoreBlacklist:handlingProgress:callbackBlock: v68@0:8@16@24@32@40B48@?52@?60  imp=+0x1d638e4c4
+  -eraseDisk:toFilesystem:partitionMap:name:password:handlingProgress:withCompletionBlock: v72@0:8@16@24@32@40@48@?56@?64  imp=+0x1d638bfe4
+  -eraseDisk:toFilesystem:partitionMap:name:password:passwordHint:handlingProgress:withCompletionBlock: v80@0:8@16@24@32@40@48@56@?64@?72  imp=+0x1d638c010
+  -eraseWithEraser:completionBlock: @32@0:8@16@?24  imp=+0x1d638a73c
+  -establishReserveKEKForDisk:diskUnlockPassword:withCompletionBlock: v40@0:8@16@24@?32  imp=+0x1d6391458
+  -extendedInfoForDisk:withCompletionBlock: v32@0:8@16@?24  imp=+0x1d6394030
+  -filesystemsWithCallbackBlock: v24@0:8@?16  imp=+0x1d6386d08
+  -fixIncorrectlySizedPartitionMapOnDisk:completionBlock: v32@0:8@16@?24  imp=+0x1d6394d30
+  -getFDEUsersFromDisk:retrieveImageData:withCompletionBlock: v36@0:8@16B24@?28  imp=+0x1d6391ce4
+  -getRecoverySystemInfoForDisk:withCompletionBlock: v32@0:8@16@?24  imp=+0x1d638f4d4
+  -hasDaemonAccess B16@0:8  imp=+0x1d6399c24
+  -iCloudRecoverManageFDEUsersForDisk:icloudUser:icloudPassData:usersToRemoveArray:resettingUserPasswords:fdeRecipe:handlingProgress:withCompletionBlock: v80@0:8@16@24@32@40@48@56@?64@?72  imp=+0x1d63903fc
+  -init @16@0:8  imp=+0x1d6384d80
+  -initialPopulateComplete v16@0:8  imp=+0x1d63885e0
+  -isBusy: v24@0:8@?16  imp=+0x1d6386acc
+  -isBusyWithBlocking:completionBlock: v28@0:8B16@?20  imp=+0x1d6386820
+  -manageFDEUsersForDisk:diskUnlockPassword:removingUsers:resettingUserPasswords:fdeRecipe:handlingProgress:withCompletionBlock: v72@0:8@16@24@32@40@48@?56@?64  imp=+0x1d638fc14
+  -managerResumed v16@0:8  imp=+0x1d638879c
+  -managerStalled v16@0:8  imp=+0x1d6388754
+  -mountDisk:options:blocking:completionBlock: v44@0:8@16@24B32@?36  imp=+0x1d638a010
+  -mountDisk:options:completionBlock: v40@0:8@16@24@?32  imp=+0x1d638a3ac
+  -mountSnapshot:mountPoint:disk:completionBlock: v48@0:8@16@24@32@?40  imp=+0x1d63984b4
+  -physicalStoresForAPFSVolume:blocking:completionBlock: v36@0:8@16B24@?28  imp=+0x1d6386d7c
+  -physicalStoresForAPFSVolume:completionBlock: v32@0:8@16@?24  imp=+0x1d638771c
+  -queueWithBlocking: @20@0:8B16  imp=+0x1d6385050
+  -recacheAbuseLimiterInfo @16@0:8  imp=+0x1d6399c38
+  -recacheDisk:options:blocking:callbackBlock: v44@0:8@16Q24B32@?36  imp=+0x1d63855e0
+  -recacheDisk:options:callbackBlock: v40@0:8@16Q24@?32  imp=+0x1d63859c0
+  -remoteObjectProxyWithSync:errorHandler: @28@0:8B16@?20  imp=+0x1d63887e4
+  -remoteObjectWithUUID:errorHandler: @32@0:8@16@?24  imp=+0x1d6388c10
+  -removeAPFSVolumeGroup:container:completetionBlock: v40@0:8@16@24@?32  imp=+0x1d63998b0
+  -removeDisk:fromRAID:progress:completionBlock: v48@0:8@16@24@?32@?40  imp=+0x1d6396a68
+  -removeDisk:handlingProgress:withCompletionHandler: v40@0:8@16@?24@?32  imp=+0x1d638d4c8
+  -renameDisk:to:withCompletionBlock: v40@0:8@16@24@?32  imp=+0x1d63852fc
+  -renameSnapshot:toName:disk:completionBlock: v48@0:8@16@24@32@?40  imp=+0x1d63980f0
+  -repairDisk:options:handlingProgress:withCompletionBlock: v48@0:8@16@24@?32@?40  imp=+0x1d638b9e0
+  -repairRAID:spareDisk:progress:completionBlock: v48@0:8@16@24@?32@?40  imp=+0x1d63966ac
+  -repairUserHomeDirectoryForDisk:forUser:handlingProgress:withCompletionBlock: v48@0:8@16q24@?32@?40  imp=+0x1d638bcec
+  -requestWithUUID:didCompleteWithResult: v32@0:8@16@24  imp=+0x1d6388230
+  -resize:toSize:completionBlock: @40@0:8@16Q24@?32  imp=+0x1d638abb8
+  -resize:toSize:handlingProgress:withCompletionHandler: v48@0:8@16Q24@?32@?40  imp=+0x1d638d7b0
+  -resizeLimitsForDisk:completionBlock: v32@0:8@16@?24  imp=+0x1d6397698
+  -retrieveFilesystems @16@0:8  imp=+0x1d6386ad8
+  -revertToSnapshot:disk:completionBlock: v40@0:8@16@24@?32  imp=+0x1d63988cc
+  -rootFromSnapshot:disk:completionBlock: v40@0:8@16@24@?32  imp=+0x1d639900c
+  -secureEraseDisk:withEraseLevel:handlingProgress:withCompletionBlock: v44@0:8@16i24@?28@?36  imp=+0x1d638c4c0
+  -setAPFSRole:forDisk:completionBlock: v40@0:8@16@24@?32  imp=+0x1d639630c
+  -setAuthRef: v24@0:8^{AuthorizationOpaqueRef=}16  imp=+0x1d6399c68
+  -setCallbackQueue: v24@0:8@16  imp=+0x1d6399c1c
+  -setConnectionDone: v20@0:8B16  imp=+0x1d6399c58
+  -setDaemonOptionsWithLanguage:authRef:withCompletionBlock: v64@0:8@16{?=[32c]}24@?56  imp=+0x1d638b2b4
+  -setDiskIconWithImageData:forDisk:WithReply: v40@0:8@16@24@?32  imp=+0x1d638b440
+  -setHasDaemonAccess: v20@0:8B16  imp=+0x1d6399c30
+  -setRecacheAbuseLimiterInfo: v24@0:8@16  imp=+0x1d6399c44
+  -splitDisk:toSize:newDiskType:name:caseSensitive:password:handlingProgress:withCompletionBlock: v76@0:8@16Q24@32@40B48@52@?60@?68  imp=+0x1d638c94c
+  -syncAllDisks v16@0:8  imp=+0x1d638508c
+  -syncAllDisksWithCompletionBlock: v24@0:8@?16  imp=+0x1d6385164
+  -unEnsureRecoveryForDisk:withProgressHandler:withCompletionBlock: v40@0:8@16@?24@?32  imp=+0x1d638e930
+  -unlockEncryptedDisk:diskUnlockPassword:forUser:blocking:withCompletionBlock: v52@0:8@16@24@32B40@?44  imp=+0x1d6390a90
+  -unlockEncryptedDisk:diskUnlockPassword:forUser:withCompletionBlock: v48@0:8@16@24@32@?40  imp=+0x1d6390a84
+  -unlockEncryptedDisk:withiCloudUser:iCloudHandle:withCompletionBlock: v48@0:8@16@24@32@?40  imp=+0x1d6390e48
+  -unmountDisk:options:blocking:withCompletionBlock: v44@0:8@16@24B32@?36  imp=+0x1d6389c68
+  -unmountDisk:options:withCompletionBlock: v40@0:8@16@24@?32  imp=+0x1d638a004
+  -unmountDisk:withCompletionBlock: v32@0:8@16@?24  imp=+0x1d6389c58
+  -updatePrebootForDisk:handlingProgress:callbackBlock: v40@0:8@16@?24@?32  imp=+0x1d638e1dc
+  -updateUUID:progress:message: v36@0:8@16f24@28  imp=+0x1d63880ac
+  -validateEncryptedDiskPassword:diskUnlockPassword:forUser:withCompletionBlock: v48@0:8@16@24@32@?40  imp=+0x1d639077c
+  -verifyDisk:handlingProgress:withCompletionBlock: v40@0:8@16@?24@?32  imp=+0x1d638b6a4
+  -volumesForAPFSPS:blocking:completionBlock: v36@0:8@16B24@?28  imp=+0x1d6387728
+  -volumesForAPFSPS:completionBlock: v32@0:8@16@?24  imp=+0x1d63880a0
+  -volumesForDiskImageFileURL:handlingProgress:withCompletionBlock: v40@0:8@16@?24@?32  imp=+0x1d6392cbc
+  -wholeDiskForDisk:blocking:withCallbackBlock: v36@0:8@16B24@?28  imp=+0x1d6385ec0
+  -wholeDiskForDisk:withCallbackBlock: v32@0:8@16@?24  imp=+0x1d63863c4
+  -xpcConnection @16@0:8  imp=+0x1d6399c00
+  -xpcQueue @16@0:8  imp=+0x1d6399c08
+@class SKIOIterator : SKIOObject instanceSize=24
+  ivar +16 _attempt Q
+  property attempt (TQ,N,V_attempt)
+  property invalidated (TB,R,N)
+  -attempt Q16@0:8  imp=+0x1d6376450
+  -copyNextObject I16@0:8  imp=+0x1d6376344
+  -initWithClassName: @24@0:8@16  imp=+0x1d6376244
+  -invalidated B16@0:8  imp=+0x1d6376430
+  -setAttempt: v24@0:8Q16  imp=+0x1d6376458
+@class SKIOMedia : SKIOObject instanceSize=16
+  property BSDName (T@"NSString",R,C)
+  -BSDName @16@0:8  imp=+0x1d6376144
+  -copyBlockDevice @16@0:8  imp=+0x1d6376194
+  -initWithDADisk: @24@0:8@16  imp=+0x1d6376058
+  -initWithDevName: @24@0:8@16  imp=+0x1d6375f30
+@class SKIOObject : NSObject instanceSize=16
+  ivar +8 _ioObj I
+  property ioObj (TI,R,N,V_ioObj)
+  property ioClassName (T@"NSString",R,C,N)
+  -copyParent @16@0:8  imp=+0x1d6375e44
+  -copyParentPropertyWithClass:key: @32@0:8#16@24  imp=+0x1d6375d64
+  -copyProperties @16@0:8  imp=+0x1d6375e04
+  -copyPropertyWithClass:key: @32@0:8#16@24  imp=+0x1d6375ccc
+  -dealloc v16@0:8  imp=+0x1d6375b4c
+  -description @16@0:8  imp=+0x1d6375b48
+  -initWithClassName: @24@0:8@16  imp=+0x1d637592c
+  -initWithIOObject: @20@0:8I16  imp=+0x1d63758e0
+  -initWithIOObject:retain: @24@0:8I16B20  imp=+0x1d637584c
+  -initWithIteratorNext: @24@0:8@16  imp=+0x1d6375a1c
+  -initWithSKIOObject: @24@0:8@16  imp=+0x1d63758e8
+  -ioClassName @16@0:8  imp=+0x1d6375b1c
+  -ioObj I16@0:8  imp=+0x1d6375f28
+  -ioObjectWithClassName:iterateParents: @28@0:8@16B24  imp=+0x1d6375b9c
+  -newIteratorWithOptions: @20@0:8I16  imp=+0x1d6375a5c
+  -waitIOKitQuiet v16@0:8  imp=+0x1d6375ef8
+@class SKLastPartitions : NSObject instanceSize=32
+  ivar +8 _resizablePart @"SKDisk"
+  ivar +16 _recoveryPart @"SKDisk"
+  ivar +24 _nonResizableSize Q
+  property resizablePart (T@"SKDisk",R,N,V_resizablePart)
+  property recoveryPart (T@"SKDisk",R,N,V_recoveryPart)
+  property nonResizableSize (TQ,R,N,V_nonResizableSize)
+  +hfsMinimalSizeForDisk:currentSize: Q32@0:8@16^Q24  imp=+0x1d6359a88
+  +secondaryPartitionTableSizeWithDiskType: Q24@0:8@16  imp=+0x1d6359a54
+  -.cxx_destruct v16@0:8  imp=+0x1d6359c98
+  -initWithDisk: @24@0:8@16  imp=+0x1d63597e4
+  -nonResizableSize Q16@0:8  imp=+0x1d6359c90
+  -recoveryPart @16@0:8  imp=+0x1d6359c88
+  -resizablePart @16@0:8  imp=+0x1d6359c80
+@class SKLogAnalyticsSink : NSObject <StorageKit.SKAnalyticsSink> instanceSize=8
+  -sendEventWithName:eventPayloadBuilder: v32@0:8@16@?24  imp=+0x1d634d978
+@class SKManager : SKBaseManager <SKManagerListener> instanceSize=104
+  ivar +16 diskQueueStuck B
+  ivar +17 _shouldBeBindingsSafe B
+  ivar +24 allDisks @"NSMutableSet"
+  ivar +32 _connection @"NSXPCConnection"
+  ivar +40 _listeners @"NSHashTable"
+  ivar +48 _listenersAppearedDisks @"NSMutableDictionary"
+  ivar +56 _waitingForDiskQueue @"NSObject<OS_dispatch_queue>"
+  ivar +64 _waitingForDiskSet @"NSMutableSet"
+  ivar +72 _filesystems @"NSArray"
+  ivar +80 imageSrcArray @"NSArray"
+  ivar +88 _visibleRoles @"NSSet"
+  ivar +96 _frameworkAsyncOperationsQueue @"NSObject<OS_dispatch_queue>"
+  property frameworkAsyncOperationsQueue (T@"NSObject<OS_dispatch_queue>",&,N,V_frameworkAsyncOperationsQueue)
+  property callbackQueue (T@"NSObject<OS_dispatch_queue>",&)
+  property visibleRoles (T@"NSSet",C,N,V_visibleRoles)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +BSDNameFromString: @24@0:8@16  imp=+0x1d6352f48
+  +allocWithZone: @24@0:8^{_NSZone=}16  imp=+0x1d6351fc8
+  +defaultVisibleRoles @16@0:8  imp=+0x1d6352800
+  +initializedManager @16@0:8  imp=+0x1d63521c4
+  +isMountPointWithPath: B24@0:8@16  imp=+0x1d6352ec8
+  +sharedManager @16@0:8  imp=+0x1d6351d84
+  +sharedManagerWithBindingsSafety: @20@0:8B16  imp=+0x1d6351d58
+  +syncSharedManager @16@0:8  imp=+0x1d6352184
+  -.cxx_destruct v16@0:8  imp=+0x1d63593e8
+  -_diskForPath:isNetworkMount: @32@0:8@16^B24  imp=+0x1d6353314
+  -_diskForString:isNetworkMount: @32@0:8@16^B24  imp=+0x1d63530a0
+  -_disksAppeared:toListener: v32@0:8@16@24  imp=+0x1d63567c8
+  -_initialPopulateCompleteForListener: v24@0:8@16  imp=+0x1d6355f54
+  -addListener: v24@0:8@16  imp=+0x1d6355a44
+  -allDisks @16@0:8  imp=+0x1d6352344
+  -allDisksSet @16@0:8  imp=+0x1d63523c4
+  -callbackQueue @16@0:8  imp=+0x1d6352288
+  -childDisksForWholeDisk: @24@0:8@16  imp=+0x1d6353c44
+  -compositeDisks:volumeName:progressBlock:callbackBlock: B48@0:8@16@24@?32@?40  imp=+0x1d6358ef0
+  -contentDiskWithDisk: @24@0:8@16  imp=+0x1d6352a48
+  -createAPFSContainerWithDisks:progressBlock:callbackBlock: v40@0:8@16@?24@?32  imp=+0x1d6359280
+  -createRAIDSetType:name:disks:format:options:progressBlock:completionBlock: v72@0:8@16@24@32@40@48@?56@?64  imp=+0x1d6358894
+  -diskForBSDname: @24@0:8@16  imp=+0x1d635288c
+  -diskForPath: @24@0:8@16  imp=+0x1d6353778
+  -diskForString: @24@0:8@16  imp=+0x1d6353240
+  -diskForUUID: @24@0:8@16  imp=+0x1d6352ad8
+  -diskForVolumeName: @24@0:8@16  imp=+0x1d6352d0c
+  -disksAppeared: v24@0:8@16  imp=+0x1d635609c
+  -disksChanged: v24@0:8@16  imp=+0x1d6357180
+  -disksDisappeared: v24@0:8@16  imp=+0x1d6356b08
+  -enclosingDiskAtLevel: @24@0:8Q16  imp=+0x1d635909c
+  -enclosingVolumeCount Q16@0:8  imp=+0x1d6358fb0
+  -filesystemWithSKType:isCaseSensitive:isEncrypted: @32@0:8@16B24B28  imp=+0x1d63541d0
+  -filesystems @16@0:8  imp=+0x1d6353e04
+  -formatableFileSystems @16@0:8  imp=+0x1d6354084
+  -frameworkAsyncOperationsQueue @16@0:8  imp=+0x1d63593c0
+  -init @16@0:8  imp=+0x1d6351fe8
+  -initWithBindingSafety: @20@0:8B16  imp=+0x1d6351fec
+  -initialPopulateComplete v16@0:8  imp=+0x1d6355e04
+  -isBusy B16@0:8  imp=+0x1d6352440
+  -knownDiskForDictionary: @24@0:8@16  imp=+0x1d6354eec
+  -knownDiskForDictionary:notify:onQueue: v40@0:8@16@?24@32  imp=+0x1d6354b10
+  -knownDiskForDictionary:waitingForDaemon: @28@0:8@16B24  imp=+0x1d6354f70
+  -knownDiskForDictionary:waitingForDaemon:fromSet: @36@0:8@16B24@28  imp=+0x1d6354ff8
+  -knownDisksForDictionaries: @24@0:8@16  imp=+0x1d6354658
+  -knownDisksForDictionaries:waitingForDaemon: @28@0:8@16B24  imp=+0x1d63546dc
+  -knownDisksForDictionaries:waitingForDaemon:fromSet: @36@0:8@16B24@28  imp=+0x1d6354764
+  -logicalVoumeGroupForCSLV: @24@0:8@16  imp=+0x1d6358264
+  -logicalVoumeGroupForCSPV: @24@0:8@16  imp=+0x1d6358688
+  -managerResumed v16@0:8  imp=+0x1d6358050
+  -managerStalled v16@0:8  imp=+0x1d6357e68
+  -membersForRAIDSet: @24@0:8@16  imp=+0x1d6358cf0
+  -newDiskWithDictionary: @24@0:8@16  imp=+0x1d63557ec
+  -physicalStoresForAPFSVolume: @24@0:8@16  imp=+0x1d6354378
+  -physicalVolumesForCSLVG: @24@0:8@16  imp=+0x1d6358460
+  -raidForContentDisk: @24@0:8@16  imp=+0x1d6358ea4
+  -removeListener: v24@0:8@16  imp=+0x1d6355d28
+  -resizeLimitsForDisk:completionBlock: v32@0:8@16@?24  imp=+0x1d6359324
+  -setCallbackQueue: v24@0:8@16  imp=+0x1d63522e0
+  -setForRAIDMember: @24@0:8@16  imp=+0x1d63589c0
+  -setFrameworkAsyncOperationsQueue: v24@0:8@16  imp=+0x1d63593d4
+  -setVisibleRoles: v24@0:8@16  imp=+0x1d6352594
+  -syncAllDisks v16@0:8  imp=+0x1d635254c
+  -visibleDisks @16@0:8  imp=+0x1d6352640
+  -visibleRoles @16@0:8  imp=+0x1d63593ac
+  -volumesForAPFSPS: @24@0:8@16  imp=+0x1d63544e8
+  -volumesForDiskImageFileURL:progressBlock:completionBlock: v40@0:8@16@?24@?32  imp=+0x1d63591dc
+  -wholeDiskForDisk: @24@0:8@16  imp=+0x1d6353a30
+@class SKMediaKit : NSObject instanceSize=8
+  +getFilesystem: @24@0:8@16  imp=+0x1d6371020
+  +getMediaKitFilesystemInfo: @24@0:8@16  imp=+0x1d6370e74
+  +getMediaKitFilesystemType: @24@0:8@16  imp=+0x1d6370de0
+  +newMediaRefForDisk:options:error: @40@0:8@16@24^@32  imp=+0x1d6370f34
+@class SKMediaKitFSInfo : NSObject instanceSize=16
+  ivar +8 _fsInfo @"NSDictionary"
+  property fsInfo (T@"NSDictionary",R,V_fsInfo)
+  property volumeName (T@"NSString",R,N)
+  property fsType (T@"NSString",R,N)
+  -.cxx_destruct v16@0:8  imp=+0x1d6370dd4
+  -fsInfo @16@0:8  imp=+0x1d6370dc8
+  -fsType @16@0:8  imp=+0x1d6370d70
+  -initWithFSInfo: @24@0:8@16  imp=+0x1d6370c9c
+  -volumeName @16@0:8  imp=+0x1d6370d18
+@class SKMountParams : NSObject <NSCopying> instanceSize=32
+  ivar +8 _readOnly B
+  ivar +9 _noBrowse B
+  ivar +10 _recursive B
+  ivar +11 _force B
+  ivar +12 _raidTraverse B
+  ivar +16 _mountPoint @"NSURL"
+  ivar +24 _allParams @"NSSet"
+  property recursive (TB,N,V_recursive)
+  property force (TB,N,V_force)
+  property raidTraverse (TB,N,V_raidTraverse)
+  property readOnly (TB,N,V_readOnly)
+  property noBrowse (TB,N,V_noBrowse)
+  property mountPoint (T@"NSURL",C,N,V_mountPoint)
+  property allParams (T@"NSSet",&,N,V_allParams)
+  -.cxx_destruct v16@0:8  imp=+0x1d635db68
+  -allParams @16@0:8  imp=+0x1d635db24
+  -copyWithZone: @24@0:8^{_NSZone=}16  imp=+0x1d635d8e8
+  -description @16@0:8  imp=+0x1d635da60
+  -dictionaryRepresentation @16@0:8  imp=+0x1d635d670
+  -force B16@0:8  imp=+0x1d635db48
+  -init @16@0:8  imp=+0x1d635d53c
+  -initWithParams: @24@0:8@16  imp=+0x1d635d58c
+  -mountPoint @16@0:8  imp=+0x1d635db14
+  -noBrowse B16@0:8  imp=+0x1d635db04
+  -raidTraverse B16@0:8  imp=+0x1d635db58
+  -readOnly B16@0:8  imp=+0x1d635daf4
+  -recursive B16@0:8  imp=+0x1d635db38
+  -redactedDescription @16@0:8  imp=+0x1d635d9ac
+  -setAllParams: v24@0:8@16  imp=+0x1d635db2c
+  -setForce: v20@0:8B16  imp=+0x1d635db50
+  -setMountPoint: v24@0:8@16  imp=+0x1d635db1c
+  -setNoBrowse: v20@0:8B16  imp=+0x1d635db0c
+  -setRaidTraverse: v20@0:8B16  imp=+0x1d635db60
+  -setReadOnly: v20@0:8B16  imp=+0x1d635dafc
+  -setRecursive: v20@0:8B16  imp=+0x1d635db40
+@class SKPartition : NSObject instanceSize=32
+  ivar +8 _name @"NSString"
+  ivar +16 _size Q
+  ivar +24 _fs @"SKFilesystem"
+  property name (T@"NSString",&,N,V_name)
+  property size (TQ,N,V_size)
+  property fs (T@"SKFilesystem",&,N,V_fs)
+  -.cxx_destruct v16@0:8  imp=+0x1d6359fbc
+  -buildWithScheme: @20@0:8i16  imp=+0x1d6359d84
+  -fs @16@0:8  imp=+0x1d6359fa8
+  -name @16@0:8  imp=+0x1d6359f84
+  -setFs: v24@0:8@16  imp=+0x1d6359fb0
+  -setName: v24@0:8@16  imp=+0x1d6359f8c
+  -setSize: v24@0:8Q16  imp=+0x1d6359fa0
+  -size Q16@0:8  imp=+0x1d6359f98
+@class SKPartitionDescriptor : NSObject <NSSecureCoding> instanceSize=24
+  ivar +8 _size Q
+  ivar +16 _innerDescriptor @"SKVolumeDescriptor"
+  property innerDescriptor (T@"SKVolumeDescriptor",&,N,V_innerDescriptor)
+  property name (T@"NSString",R,C,N)
+  property filesystem (T@"SKFilesystem",R,&,N)
+  property size (TQ,R,N,V_size)
+  +descriptorWithVolume: @24@0:8@16  imp=+0x1d637c84c
+  +descriptorWithVolume:size: @32@0:8@16Q24  imp=+0x1d637c8b0
+  +supportsSecureCoding B16@0:8  imp=+0x1d637c920
+  -.cxx_destruct v16@0:8  imp=+0x1d637cc40
+  -description @16@0:8  imp=+0x1d637cb7c
+  -encodeWithCoder: v24@0:8@16  imp=+0x1d637c9c8
+  -filesystem @16@0:8  imp=+0x1d637c978
+  -initWithCoder: @24@0:8@16  imp=+0x1d637ca7c
+  -initWithVolume:size: @32@0:8@16Q24  imp=+0x1d637c7c8
+  -innerDescriptor @16@0:8  imp=+0x1d637cc2c
+  -name @16@0:8  imp=+0x1d637c928
+  -setInnerDescriptor: v24@0:8@16  imp=+0x1d637cc34
+  -size Q16@0:8  imp=+0x1d637cc24
+@class SKPartitionTable : NSObject instanceSize=40
+  ivar +8 _sectorSize I
+  ivar +16 _partitions @"NSMutableArray"
+  ivar +24 _disk @"SKDisk"
+  ivar +32 _mediaRef ^{__MKMedia=}
+  property disk (T@"SKDisk",&,V_disk)
+  property sectorSize (TI,V_sectorSize)
+  property mediaRef (T^{__MKMedia=},V_mediaRef)
+  property partitions (T@"NSMutableArray",&,N,V_partitions)
+  +createMediaRefWithDisk:error: ^{__MKMedia=}32@0:8@16^@24  imp=+0x1d635a000
+  +partitionIDFromDisk: @24@0:8@16  imp=+0x1d635b2a0
+  +updatePartitionTypeWithPartitions:partID:newType:error: B48@0:8@16@24@32^@40  imp=+0x1d635b354
+  -.cxx_destruct v16@0:8  imp=+0x1d635c2f0
+  -allocateMediaRef: B24@0:8^@16  imp=+0x1d635af00
+  -dealloc v16@0:8  imp=+0x1d635a528
+  -disk @16@0:8  imp=+0x1d635c2bc
+  -fitToContainerSize:error: B32@0:8Q16^@24  imp=+0x1d635b8ec
+  -flushMediaRef v16@0:8  imp=+0x1d635aea8
+  -initWithDisk:error: @32@0:8@16^@24  imp=+0x1d635a1dc
+  -mediaRef ^{__MKMedia=}16@0:8  imp=+0x1d635c2e0
+  -overwriteExistingMediaLayout:opts:partitionScheme: B36@0:8@16^{__CFDictionary=}24i32  imp=+0x1d635a9cc
+  -overwriteExistingMediaLayout:opts:partitionScheme:size: B44@0:8@16^{__CFDictionary=}24i32Q36  imp=+0x1d635a9d4
+  -overwritePartitionAt:filesystem:error: B40@0:8@16@24^@32  imp=+0x1d635b538
+  -partitions @16@0:8  imp=+0x1d635c2a8
+  -resizePartitionID:size:offset:error: B48@0:8@16Q24Q32^@40  imp=+0x1d635bcbc
+  -sectorSize I16@0:8  imp=+0x1d635c2d0
+  -setDisk: v24@0:8@16  imp=+0x1d635c2c8
+  -setMediaRef: v24@0:8^{__MKMedia=}16  imp=+0x1d635c2e8
+  -setPartitions: v24@0:8@16  imp=+0x1d635c2b0
+  -setSectorSize: v20@0:8I16  imp=+0x1d635c2d8
+  -writeNewMediaLayout:partitionScheme: B32@0:8@16Q24  imp=+0x1d635a578
+  -writePartitionScheme:error: B32@0:8Q16^@24  imp=+0x1d635af84
+@class SKProgress : NSProgress instanceSize=136
+  ivar +128 _children @"NSMutableArray"
+  property children (T@"NSMutableArray",R,N,V_children)
+  +progressWithTotalUnitCount: @24@0:8q16  imp=+0x1d63507ac
+  -.cxx_destruct v16@0:8  imp=+0x1d6350afc
+  -chainChildProgress:withPendingUnitCount: v32@0:8@16q24  imp=+0x1d6350888
+  -children @16@0:8  imp=+0x1d6350ae8
+  -dealloc v16@0:8  imp=+0x1d63509d8
+  -init @16@0:8  imp=+0x1d63507f8
+  -observeValueForKeyPath:ofObject:change:context: v48@0:8@16@24@32^v40  imp=+0x1d635093c
+  -setLocalizedAdditionalDescription: v24@0:8@16  imp=+0x1d63506f4
+@class SKProgressObserver : NSObject instanceSize=24
+  ivar +8 _messages @"NSMutableArray"
+  ivar +16 _progress @"NSProgress"
+  property progress (T@"NSProgress",&,N,V_progress)
+  property messages (T@"NSMutableArray",&,N,V_messages)
+  -.cxx_destruct v16@0:8  imp=+0x1d6350e58
+  -dealloc v16@0:8  imp=+0x1d6350da4
+  -initWithProgress: @24@0:8@16  imp=+0x1d6350b10
+  -messages @16@0:8  imp=+0x1d6350e30
+  -observeValueForKeyPath:ofObject:change:context: v48@0:8@16@24@32^v40  imp=+0x1d6350bdc
+  -progress @16@0:8  imp=+0x1d6350e44
+  -setMessages: v24@0:8@16  imp=+0x1d6350e38
+  -setProgress: v24@0:8@16  imp=+0x1d6350e4c
+@class SKRAIDDisk : SKDisk instanceSize=288
+  ivar +248 _raidUUID @"NSString"
+  ivar +256 _setMemberUUIDs @"NSArray"
+  ivar +264 _setSpareUUIDs @"NSArray"
+  ivar +272 _status @"NSString"
+  ivar +280 _contentDiskDictionary @"NSDictionary"
+  property raidUUID (T@"NSString",&,V_raidUUID)
+  property setMemberUUIDs (T@"NSArray",&,V_setMemberUUIDs)
+  property setSpareUUIDs (T@"NSArray",&,V_setSpareUUIDs)
+  property status (T@"NSString",&,V_status)
+  property contentDiskDictionary (T@"NSDictionary",&,V_contentDiskDictionary)
+  property contentDisk (T@"SKDisk",R,&)
+  -.cxx_destruct v16@0:8  imp=+0x1d6382d74
+  -addDisksToRAID:withType:progress:completionBlock: v48@0:8@16@24@?32@?40  imp=+0x1d63827bc
+  -canResize B16@0:8  imp=+0x1d6382664
+  -contentDisk @16@0:8  imp=+0x1d638266c
+  -contentDiskDictionary @16@0:8  imp=+0x1d6382d58
+  -contentDiskIdentifier @16@0:8  imp=+0x1d6382734
+  -deleteRAIDWithProgress:completionBlock: v32@0:8@?16@?24  imp=+0x1d63829f4
+  -dictionaryRepresentation @16@0:8  imp=+0x1d6382074
+  -hash Q16@0:8  imp=+0x1d63821fc
+  -innerDescriptionWithPrivateData: @20@0:8B16  imp=+0x1d6382528
+  -isEqual: B24@0:8@16  imp=+0x1d6382148
+  -isVirtualDiskType B16@0:8  imp=+0x1d6382660
+  -matchesDictionary: B24@0:8@16  imp=+0x1d6382238
+  -minimalDictionaryRepresentation @16@0:8  imp=+0x1d6381e8c
+  -raidUUID @16@0:8  imp=+0x1d6382ce8
+  -removeDiskFromRAID:progress:completionBlock: v40@0:8@16@?24@?32  imp=+0x1d6382940
+  -repairRAIDWithDisk:progress:completionBlock: v40@0:8@16@?24@?32  imp=+0x1d638288c
+  -representedDisk @16@0:8  imp=+0x1d6382a84
+  -setContentDiskDictionary: v24@0:8@16  imp=+0x1d6382d68
+  -setMemberUUIDs @16@0:8  imp=+0x1d6382d04
+  -setRaidUUID: v24@0:8@16  imp=+0x1d6382cf8
+  -setSetMemberUUIDs: v24@0:8@16  imp=+0x1d6382d14
+  -setSetSpareUUIDs: v24@0:8@16  imp=+0x1d6382d30
+  -setSpareUUIDs @16@0:8  imp=+0x1d6382d20
+  -setStatus: v24@0:8@16  imp=+0x1d6382d4c
+  -status @16@0:8  imp=+0x1d6382d3c
+  -supportedFilesystems @16@0:8  imp=+0x1d638235c
+  -updateWithDictionary: v24@0:8@16  imp=+0x1d6381c28
+@class SKRecoveryMoverInfo : NSObject instanceSize=40
+  ivar +8 _srcOffset Q
+  ivar +16 _dstOffset Q
+  ivar +24 _length Q
+  ivar +32 _partitionID @"NSNumber"
+  property srcOffset (TQ,N,V_srcOffset)
+  property dstOffset (TQ,N,V_dstOffset)
+  property length (TQ,N,V_length)
+  property partitionID (T@"NSNumber",&,N,V_partitionID)
+  -.cxx_destruct v16@0:8  imp=+0x1d637f7a4
+  -dstOffset Q16@0:8  imp=+0x1d637f770
+  -initWithSrcOffset:dstOffset:length:partitionID: @48@0:8Q16Q24Q32@40  imp=+0x1d637f6c8
+  -length Q16@0:8  imp=+0x1d637f780
+  -partitionID @16@0:8  imp=+0x1d637f790
+  -setDstOffset: v24@0:8Q16  imp=+0x1d637f778
+  -setLength: v24@0:8Q16  imp=+0x1d637f788
+  -setPartitionID: v24@0:8@16  imp=+0x1d637f798
+  -setSrcOffset: v24@0:8Q16  imp=+0x1d637f768
+  -srcOffset Q16@0:8  imp=+0x1d637f760
+@class SKStateMachine : NSObject instanceSize=32
+  ivar +8 _state @"NSString"
+  ivar +16 _table @"SKStateTransitionTable"
+  ivar +24 _event @"NSString"
+  property table (T@"SKStateTransitionTable",&,N,V_table)
+  property event (T@"NSString",&,N,V_event)
+  property state (T@"NSString",&,N,V_state)
+  +machineWithStateTransitionTable:startState:startEvent: @40@0:8@16@24@32  imp=+0x1d6351810
+  -.cxx_destruct v16@0:8  imp=+0x1d6351ca4
+  -event @16@0:8  imp=+0x1d6351c90
+  -finished B16@0:8  imp=+0x1d6351be4
+  -nextWithError: B24@0:8^@16  imp=+0x1d63518c0
+  -runWithError: B24@0:8^@16  imp=+0x1d6351c18
+  -setEvent: v24@0:8@16  imp=+0x1d6351c98
+  -setState: v24@0:8@16  imp=+0x1d6351c70
+  -setTable: v24@0:8@16  imp=+0x1d6351c84
+  -state @16@0:8  imp=+0x1d6351c68
+  -table @16@0:8  imp=+0x1d6351c7c
+@class SKStateTransitionEntry : NSObject instanceSize=48
+  ivar +8 _state @"NSString"
+  ivar +16 _event @"NSString"
+  ivar +24 _action @?
+  ivar +32 _selector :
+  ivar +40 _nextState @"NSString"
+  property state (T@"NSString",&,N,V_state)
+  property event (T@"NSString",&,N,V_event)
+  property action (T@?,C,N,V_action)
+  property selector (T:,N,V_selector)
+  property nextState (T@"NSString",&,N,V_nextState)
+  +entryWithState:event: @32@0:8@16@24  imp=+0x1d635118c
+  +entryWithState:event:action: @40@0:8@16@24@?32  imp=+0x1d6350f84
+  +entryWithState:event:action:nextState: @48@0:8@16@24@?32@40  imp=+0x1d6350e9c
+  +entryWithState:event:selector: @40@0:8@16@24:32  imp=+0x1d63510fc
+  +entryWithState:event:selector:nextState: @48@0:8@16@24:32@40  imp=+0x1d6351028
+  -.cxx_destruct v16@0:8  imp=+0x1d63512c0
+  -action @?16@0:8  imp=+0x1d635123c
+  -event @16@0:8  imp=+0x1d6351228
+  -nextState @16@0:8  imp=+0x1d63512ac
+  -selector :16@0:8  imp=+0x1d635124c
+  -setAction: v24@0:8@?16  imp=+0x1d6351244
+  -setEvent: v24@0:8@16  imp=+0x1d6351230
+  -setNextState: v24@0:8@16  imp=+0x1d63512b4
+  -setSelector: v24@0:8:16  imp=+0x1d6351284
+  -setState: v24@0:8@16  imp=+0x1d635121c
+  -state @16@0:8  imp=+0x1d6351214
+@class SKStateTransitionTable : NSObject instanceSize=24
+  ivar +8 _entriesMap @"NSMutableDictionary"
+  ivar +16 _selectorTarget @
+  property entriesMap (T@"NSMutableDictionary",&,N,V_entriesMap)
+  property selectorTarget (T@,&,N,V_selectorTarget)
+  +tableWithTransitionEntries: @24@0:8@16  imp=+0x1d63516e4
+  +tableWithTransitionEntries:selectorTarget: @32@0:8@16@24  imp=+0x1d635131c
+  -.cxx_destruct v16@0:8  imp=+0x1d63517cc
+  -entriesMap @16@0:8  imp=+0x1d63517a4
+  -entryForState:event: @32@0:8@16@24  imp=+0x1d63516ec
+  -selectorTarget @16@0:8  imp=+0x1d63517b8
+  -setEntriesMap: v24@0:8@16  imp=+0x1d63517ac
+  -setSelectorTarget: v24@0:8@16  imp=+0x1d63517c0
+@class SKSyncCommand : NSObject instanceSize=16
+  ivar +8 _error @"NSError"
+  property error (T@"NSError",&,N,V_error)
+  -.cxx_destruct v16@0:8  imp=+0x1d635d530
+  -error @16@0:8  imp=+0x1d635d51c
+  -onCallbackWithError: v24@0:8@16  imp=+0x1d635d3f4
+  -returnWithError: B24@0:8^@16  imp=+0x1d635d4a8
+  -setError: v24@0:8@16  imp=+0x1d635d524
+@class SKSyncXPCCaller : NSObject instanceSize=24
+  ivar +8 _group @"NSObject<OS_dispatch_group>"
+  ivar +16 _helperClient @"SKHelperClient"
+  property group (T@"NSObject<OS_dispatch_group>",&,N,V_group)
+  property helperClient (T@"SKHelperClient",&,N,V_helperClient)
+  -.cxx_destruct v16@0:8  imp=+0x1d6384cb8
+  -group @16@0:8  imp=+0x1d6384c90
+  -helperClient @16@0:8  imp=+0x1d6384ca4
+  -initWithHelperClient: @24@0:8@16  imp=+0x1d6384884
+  -queueWithCompletionBlock: v24@0:8@?16  imp=+0x1d6384b5c
+  -setGroup: v24@0:8@16  imp=+0x1d6384c98
+  -setHelperClient: v24@0:8@16  imp=+0x1d6384cac
+  -syncRemoteObject @16@0:8  imp=+0x1d6384914
+  -wait v16@0:8  imp=+0x1d6384b18
+@class SKTask : NSObject <SKWaitable, NSProgressReporting> instanceSize=56
+  ivar +8 _stdoutParser @"<SKTaskDataParser>"
+  ivar +16 _stderrParser @"<SKTaskDataParser>"
+  ivar +24 _stdoutHandle @"NSFileHandle"
+  ivar +32 _stderrHandle @"NSFileHandle"
+  ivar +40 _task @"NSTask"
+  ivar +48 _progress @"NSProgress"
+  property task (T@"NSTask",R,V_task)
+  property progress (T@"NSProgress",&,V_progress)
+  property stdoutParser (T@"<SKTaskDataParser>",&,N,V_stdoutParser)
+  property stderrParser (T@"<SKTaskDataParser>",&,N,V_stderrParser)
+  property stdoutHandle (T@"NSFileHandle",R,V_stdoutHandle)
+  property stderrHandle (T@"NSFileHandle",R,V_stderrHandle)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1d634f528
+  -endedSuccessfully B16@0:8  imp=+0x1d634f368
+  -initWithExecutable: @24@0:8@16  imp=+0x1d634f35c
+  -initWithExecutable:arguments: @32@0:8@16@24  imp=+0x1d634f180
+  -progress @16@0:8  imp=+0x1d634f514
+  -setProgress: v24@0:8@16  imp=+0x1d634f520
+  -setStderrParser: v24@0:8@16  imp=+0x1d634f4e4
+  -setStdoutParser: v24@0:8@16  imp=+0x1d634f4d0
+  -stderrHandle @16@0:8  imp=+0x1d634f4fc
+  -stderrParser @16@0:8  imp=+0x1d634f4dc
+  -stdoutHandle @16@0:8  imp=+0x1d634f4f0
+  -stdoutParser @16@0:8  imp=+0x1d634f4c8
+  -task @16@0:8  imp=+0x1d634f508
+  -waitWithError: B24@0:8^@16  imp=+0x1d634f3dc
+@class SKTaskExecuter : NSObject <SKWaitable> instanceSize=16
+  ivar +8 _tasks @"NSArray"
+  property tasks (T@"NSArray",R,V_tasks)
+  -.cxx_destruct v16@0:8  imp=+0x1d634fc60
+  -initWithTasks: @24@0:8@16  imp=+0x1d634f59c
+  -tasks @16@0:8  imp=+0x1d634fc54
+  -waitWithError: B24@0:8^@16  imp=+0x1d634f618
+@class SKTaskLineParser : NSObject <SKTaskDataParser> instanceSize=24
+  ivar +8 _buffer @"NSMutableData"
+  ivar +16 _callback @?
+  property buffer (T@"NSMutableData",&,V_buffer)
+  property callback (T@?,C,V_callback)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +lineData @16@0:8  imp=+0x1d634e6ec
+  -.cxx_destruct v16@0:8  imp=+0x1d634ea8c
+  -buffer @16@0:8  imp=+0x1d634ea64
+  -callback @?16@0:8  imp=+0x1d634ea78
+  -initWithCallback: @24@0:8@?16  imp=+0x1d634e778
+  -parseData: v24@0:8@16  imp=+0x1d634e818
+  -setBuffer: v24@0:8@16  imp=+0x1d634ea70
+  -setCallback: v24@0:8@?16  imp=+0x1d634ea84
+@class SKTaskNOOPParser : NSObject <SKTaskDataParser> instanceSize=8
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -parseData: v24@0:8@16  imp=+0x1d634e6e8
+@class SKTaskPlistParser : NSObject <SKTaskDataParser> instanceSize=40
+  ivar +8 _buffer @"NSMutableData"
+  ivar +16 _callback @?
+  ivar +24 _startRange {_NSRange="location"Q"length"Q}
+  property buffer (T@"NSMutableData",&,V_buffer)
+  property startRange (T{_NSRange=QQ},V_startRange)
+  property callback (T@?,C,V_callback)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  +plistEndTag @16@0:8  imp=+0x1d634eb5c
+  +plistStartTag @16@0:8  imp=+0x1d634ead0
+  -.cxx_destruct v16@0:8  imp=+0x1d634f044
+  -buffer @16@0:8  imp=+0x1d634efa8
+  -callback @?16@0:8  imp=+0x1d634f030
+  -initWithCallback: @24@0:8@?16  imp=+0x1d634ebe8
+  -parseData: v24@0:8@16  imp=+0x1d634ec98
+  -setBuffer: v24@0:8@16  imp=+0x1d634efb4
+  -setCallback: v24@0:8@?16  imp=+0x1d634f03c
+  -setStartRange: v32@0:8{_NSRange=QQ}16  imp=+0x1d634eff8
+  -startRange {_NSRange=QQ}16@0:8  imp=+0x1d634efbc
+@class SKTaskRawParser : NSObject <SKTaskDataParser> instanceSize=16
+  ivar +8 _callback @?
+  property callback (T@?,C,V_callback)
+  property hash (TQ,R)
+  property superclass (T#,R)
+  property description (T@"NSString",R,C)
+  property debugDescription (T@"NSString",?,R,C)
+  -.cxx_destruct v16@0:8  imp=+0x1d634f174
+  -callback @?16@0:8  imp=+0x1d634f160
+  -initWithCallback: @24@0:8@?16  imp=+0x1d634f088
+  -parseData: v24@0:8@16  imp=+0x1d634f0f8
+  -setCallback: v24@0:8@?16  imp=+0x1d634f16c
+@class SKTemporaryPassphrase : NSObject instanceSize=16
+  ivar +8 _buf *
+  property buf (T*,N,V_buf)
+  -buf *16@0:8  imp=+0x1d63701ac
+  -dealloc v16@0:8  imp=+0x1d6370140
+  -initWithPassphrase: @24@0:8r*16  imp=+0x1d6370090
+  -setBuf: v24@0:8*16  imp=+0x1d63701b4
+@class SKVolumeDescriptor : NSObject <NSSecureCoding> instanceSize=32
+  ivar +8 _name @"NSString"
+  ivar +16 _filesystem @"SKFilesystem"
+  ivar +24 _password @"NSString"
+  property filesystem (T@"SKFilesystem",&,N,V_filesystem)
+  property name (T@"NSString",C,N,V_name)
+  property password (T@"NSString",C,N,V_password)
+  +descriptorWithName:filesystem: @32@0:8@16@24  imp=+0x1d63795a4
+  +descriptorWithName:password:filesystem: @40@0:8@16@24@32  imp=+0x1d637962c
+  +supportsSecureCoding B16@0:8  imp=+0x1d637993c
+  -.cxx_destruct v16@0:8  imp=+0x1d6379d9c
+  -description @16@0:8  imp=+0x1d6379cb4
+  -encodeWithCoder: v24@0:8@16  imp=+0x1d6379944
+  -filesystem @16@0:8  imp=+0x1d6379d78
+  -initWithCoder: @24@0:8@16  imp=+0x1d6379a24
+  -initWithName:password:filesystem: @40@0:8@16@24@32  imp=+0x1d6379478
+  -name @16@0:8  imp=+0x1d6379d68
+  -password @16@0:8  imp=+0x1d6379d8c
+  -redactedDescription @16@0:8  imp=+0x1d6379c1c
+  -setFilesystem: v24@0:8@16  imp=+0x1d6379d80
+  -setName: v24@0:8@16  imp=+0x1d6379d70
+  -setPassword: v24@0:8@16  imp=+0x1d6379d94
+  -validateForErase B16@0:8  imp=+0x1d63796cc
+@class SKWaitingForDiskElement : NSObject instanceSize=24
+  ivar +8 _diskDictionary @"NSDictionary"
+  ivar +16 _block @?
+  property diskDictionary (T@"NSDictionary",&,V_diskDictionary)
+  property block (T@?,C,V_block)
+  -.cxx_destruct v16@0:8  imp=+0x1d6375808
+  -block @?16@0:8  imp=+0x1d63757f4
+  -diskDictionary @16@0:8  imp=+0x1d63757e0
+  -setBlock: v24@0:8@?16  imp=+0x1d6375800
+  -setDiskDictionary: v24@0:8@16  imp=+0x1d63757ec
+@class StorageKit.SKAnalyticsHub : NSObject instanceSize=8
+  +addSink: v24@0:8@16  imp=+0x1d639a11c
+  +sendEventWithName:eventPayloadBuilder: v32@0:8@16@?24  imp=+0x1d639a1f8
+  -.cxx_destruct v16@0:8  imp=+0x1d639a3c0
+  -init @16@0:8  imp=+0x1d639a314
+@class StorageKit.SKCoreAnalyticsSink : NSObject <StorageKit.SKAnalyticsSink> instanceSize=8
+  -init @16@0:8  imp=+0x1d639a010
+  -sendEventWithName:eventPayloadBuilder: v32@0:8@16@?24  imp=+0x1d6399e40
+@protocol CWEventDelegate
+  optional -clientConnectionInterrupted v16@0:8
+  optional -ssidDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -powerStateDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -modeDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -linkDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -linkQualityDidChangeForWiFiInterfaceWithName:rssi:transmitRate: v40@0:8@16q24d32
+  optional -bssidDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -clientConnectionInvalidated v16@0:8
+  optional -countryCodeDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -scanCacheUpdatedForWiFiInterfaceWithName: v24@0:8@16
+@protocol CWInternalEventDelegate
+  optional -joinDidStartForWiFiInterfaceWithName:ssid: v32@0:8@16@24
+  optional -internal_queryCloudKVSAndReply: v24@0:8@?16
+  optional -internal_startUserMode8021XWithProfile:interfaceWithName:reply: v40@0:8@16@24@?32
+  optional -internal_showAvailableWiFiNetworks:interfaceName:recommendOnly: v36@0:8@16@24B32
+  optional -autoJoinDidCompleteForWiFiInterfaceWithName: v24@0:8@16
+  optional -autoJoinDidStartForWiFiInterfaceWithName: v24@0:8@16
+  optional -autoJoinDidUpdate: v24@0:8@16
+  optional -btCoexModeStats: v24@0:8@16
+  optional -deviceAvailabilityChangedForWiFiInterfaceWithName:isAvailable: v28@0:8@16B24
+  optional -dextCrashDetected v16@0:8
+  optional -interfaceAddedWithName: v24@0:8@16
+  optional -interfaceRemovedWithName: v24@0:8@16
+  optional -internal_addCloudProfile: v24@0:8@16
+  optional -internal_confirmAPIAccessWithRequestType:info:processName:reply: v48@0:8q16@24@32@?40
+  optional -internal_enableTetherDevice:reply: v32@0:8@16@?24
+  optional -internal_foundTetherDevices: v24@0:8@16
+  optional -internal_getWiFiPasswordForUserKeychainWithSSID:reply: v32@0:8@16@?24
+  optional -internal_joinWiFiNetworkWithUserAgent:interfaceName:timestamp:reply: v48@0:8@16@24d32@?40
+  optional -internal_queryLegacyCloudKVSAndReply: v24@0:8@?16
+  optional -internal_removeCloudProfile: v24@0:8@16
+  optional -internal_setWiFiPasswordForUserKeychain:ssid:reply: v40@0:8@16@24@?32
+  optional -internal_showAutoHotspotNotificationForTetherDevice:retry:interfaceName: v36@0:8@16B24@28
+  optional -internal_showDHCPMessage:networkName: v32@0:8@16@24
+  optional -internal_showLowBatteryNotificationForTetherDevice:interfaceName: v32@0:8@16@24
+  optional -internal_showMICErrorWithNetworkName: v24@0:8@16
+  optional -internal_showPHNetworkExpensiveAlertWithNetworkName: v24@0:8@16
+  optional -internal_startBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  optional -internal_startUserMode8021XWithAuthenticationInfo:interfaceWithName:reply: v40@0:8@16@24@?32
+  optional -internal_startUserMode8021XWithPasspointDomainName:interfaceWithName:reply: v40@0:8@16@24@?32
+  optional -internal_startUserMode8021XWithSSID:username:password:identity:disableUserInteraction:remember:interfaceWithName:reply: v72@0:8@16@24@32@40B48B52@56@?64
+  optional -internal_stopBrowsingForTetherDevicesAndReply: v24@0:8@?16
+  optional -internal_updateCloudProfile: v24@0:8@16
+  optional -joinDidCompleteForWiFiInterfaceWithName:isAutoJoin:error: v36@0:8@16B24@28
+  optional -preferencesDidChangeForWiFiInterfaceWithName: v24@0:8@16
+  optional -rangingEndedForWiFiInterfaceWithName: v24@0:8@16
+  optional -rangingReportEventForWiFiInterfaceWithName:data:error: v40@0:8@16@24@32
+  optional -rangingStartedForWiFiInterfaceWithName: v24@0:8@16
+  optional -realTimeModeDidEndForWiFiInterfaceWithName: v24@0:8@16
+  optional -realTimeModeDidStartForWiFiInterfaceWithName: v24@0:8@16
+  optional -rsnHandshakeDidCompleteForWiFiInterfaceWithName: v24@0:8@16
+  optional -virtualInterfaceStateChangedForWiFiInterfaceWithName: v24@0:8@16
+  optional -willShowJoinUIForWiFiNetwork:interfaceName: v32@0:8@16@24
+  optional -wowStateDidChangeForWiFiInterfaceWithName: v24@0:8@16
