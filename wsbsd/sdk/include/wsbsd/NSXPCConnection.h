@@ -13,3 +13,11 @@
 - (NSString *)wsbsdPath;
 - (void)setWsbsdPath:(NSString *)path;
 @end
+#ifdef __cplusplus
+extern "C" {
+#endif
+/* adds to cls a method for every instance method of the protocol (and the protocols it adopts) that cls lacks: it calls the reply block, if the method has one, with zeroed arguments */
+void WsbsdXPCInstallDefaultReplies(Class cls, Protocol *proto);
+#ifdef __cplusplus
+}
+#endif

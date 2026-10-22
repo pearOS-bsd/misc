@@ -3,5 +3,6 @@
 #ifndef WSBSD_COREWLAN_H
 #define WSBSD_COREWLAN_H
 #import <Foundation/Foundation.h>
+#import <CoreWLAN/CoreWLANTypes.h>
 #import <CoreWLAN/CoreWLAN_Generated.h>
 #endif
