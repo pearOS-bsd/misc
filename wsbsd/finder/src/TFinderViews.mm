@@ -67,21 +67,37 @@ static NSImage *Thumb(NSString *path)                                           
 	if (!src || [src size].width < 1) { cache[path] = [NSNull null]; return nil; } NSSize z = [src size]; CGFloat k = 128.0 / MAX(z.width, z.height); NSSize t = NSMakeSize(MAX(1, round(z.width * k)), MAX(1, round(z.height * k)));
 	NSImage *out = [[NSImage alloc] initWithSize: t]; [out lockFocus]; [src drawInRect: NSMakeRect(0, 0, t.width, t.height) fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; [out unlockFocus]; cache[path] = out; return out;
 }
-static NSString *Truncated(NSString *s, NSDictionary *at, CGFloat w)             /* the middle replaced by an ellipsis until it fits */
+/* Names that do not fit, the way the Mac cuts them (measured on the Mac with CoreText, kCTLineTruncationMiddle: tools/ellipsis_probe, 523 of 529 cases identical, the other six differ by one letter):
+ * the room left by the ellipsis is shared in two halves, the head keeps the most characters whose width is within the first half, the tail the most within the second; a space at either cut is dropped. */
+static double TextW(NSString *s, NSDictionary *at) { return [s length] ? [s sizeWithAttributes: at].width : 0; }
+static NSUInteger FitPrefix(NSString *s, NSDictionary *at, double w)                          /* the most characters from the start whose width is within w */
 {
-	if ([s sizeWithAttributes: at].width <= w) return s; NSUInteger n = [s length], keep = n;
-	while (keep > 2) { keep--; NSUInteger a = (keep + 1) / 2, b = keep / 2; NSString *t = [NSString stringWithFormat: @"%@…%@", [s substringToIndex: a], [s substringFromIndex: n - b]]; if ([t sizeWithAttributes: at].width <= w) return t; }
-	return @"…";
+	NSUInteger lo = 0, hi = [s length]; while (lo < hi) { NSUInteger mid = (lo + hi + 1) / 2; if (TextW([s substringToIndex: mid], at) <= w) lo = mid; else hi = mid - 1; } return lo;
 }
-static NSArray *WrapLabel(NSString *s, NSDictionary *at, CGFloat w, int maxLines)   /* the name on at most two lines, the last one cut in the middle */
+static NSUInteger FitSuffix(NSString *s, NSDictionary *at, double w)
+{
+	NSUInteger n = [s length], lo = 0, hi = n; while (lo < hi) { NSUInteger mid = (lo + hi + 1) / 2; if (TextW([s substringFromIndex: n - mid], at) <= w) lo = mid; else hi = mid - 1; } return lo;
+}
+static NSString *Truncated(NSString *s, NSDictionary *at, CGFloat w)
+{
+	if (TextW(s, at) <= w) return s; double half = (w - TextW(@"…", at)) / 2; if (half <= 0) return @"…"; NSUInteger n = [s length], h = FitPrefix(s, at, half), t = FitSuffix(s, at, half);
+	if (h < n) { NSRange r = [s rangeOfComposedCharacterSequenceAtIndex: h]; if (r.location < h) h = r.location; }
+	if (t > 0 && t < n) { NSUInteger st = n - t; NSRange r = [s rangeOfComposedCharacterSequenceAtIndex: st]; if (r.location < st) t = n - (r.location + r.length); }
+	while (h > 0 && [s characterAtIndex: h - 1] == ' ') h--; while (t > 0 && [s characterAtIndex: n - t] == ' ') t--;
+	return [NSString stringWithFormat: @"%@…%@", [s substringToIndex: h], [s substringFromIndex: n - t]];
+}
+/* a name on at most `maxLines` lines: lines break after a space, after a hyphen (not before a digit) and after a slash; a word wider than the line breaks where it fills it; the last line is cut in the middle */
+static NSArray *WrapLabel(NSString *s, NSDictionary *at, CGFloat w, int maxLines)
 {
 	NSMutableArray *lines = [NSMutableArray array]; NSString *rest = s;
 	while ([rest length] && (int)[lines count] < maxLines - 1) {
-		if ([rest sizeWithAttributes: at].width <= w) break; NSUInteger n = [rest length], cut = n;
-		while (cut > 1 && [[rest substringToIndex: cut] sizeWithAttributes: at].width > w) cut--;
-		NSRange sp = [[rest substringToIndex: cut] rangeOfCharacterFromSet: [NSCharacterSet characterSetWithCharactersInString: @" -_.,"] options: NSBackwardsSearch];
-		if (sp.location != NSNotFound && sp.location > 3 && cut < n) cut = sp.location + 1;
-		[lines addObject: [rest substringToIndex: cut]]; rest = [rest substringFromIndex: cut];
+		if (TextW(rest, at) <= w) break; NSUInteger n = [rest length], best = 0;
+		for (NSUInteger p = 1; p < n; p++) {                                                                  /* p characters on this line */
+			unichar c = [rest characterAtIndex: p - 1], nx = [rest characterAtIndex: p]; BOOL opp = c == ' ' || c == '/' || (c == '-' && p >= 2 && [[NSCharacterSet alphanumericCharacterSet] characterIsMember: [rest characterAtIndex: p - 2]] && ![[NSCharacterSet decimalDigitCharacterSet] characterIsMember: nx] && nx != ' ');
+			if (!opp) continue; NSString *line = [[rest substringToIndex: p] stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]]; if (TextW(line, at) <= w) best = p; else break;
+		}
+		if (!best) { best = FitPrefix(rest, at, w); if (best < 1) best = 1; if (best < n) { NSRange r = [rest rangeOfComposedCharacterSequenceAtIndex: best]; if (r.location < best) best = r.location ?: 1; } }
+		[lines addObject: [[rest substringToIndex: best] stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]]]; rest = [[rest substringFromIndex: best] stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceCharacterSet]];
 	}
 	if ([rest length]) [lines addObject: Truncated(rest, at, w)]; return lines;
 }
@@ -195,7 +211,7 @@ static NSString *SettingsFile(void) { return [NSHomeDirectory() stringByAppendin
 		if ([k isEqual: @"kind"]) { r = [(a[@"dir"] ? TFKindString(a[@"path"], [a[@"dir"] boolValue]) : @"") localizedStandardCompare: (b[@"dir"] ? TFKindString(b[@"path"], [b[@"dir"] boolValue]) : @"")]; }
 		else if ([k isEqual: @"modified"]) r = [b[@"mod"] compare: a[@"mod"]]; else if ([k isEqual: @"created"]) r = [b[@"cre"] compare: a[@"cre"]];
 		else if ([k isEqual: @"size"]) r = [b[@"size"] compare: a[@"size"]]; else if ([k isEqual: @"tags"]) r = (NSComparisonResult)((int)[b[@"tags"] count] - (int)[a[@"tags"] count]);
-		else r = [a[@"name"] localizedStandardCompare: b[@"name"]];
+		else { if (TFPrefBool(@"_FXSortFoldersFirst", YES) && [a[@"dir"] boolValue] != [b[@"dir"] boolValue]) return [a[@"dir"] boolValue] ? NSOrderedAscending : NSOrderedDescending; r = [a[@"name"] localizedStandardCompare: b[@"name"]]; }
 		return r == NSOrderedSame ? [a[@"name"] localizedStandardCompare: b[@"name"]] : r;
 	}];
 	[_sel removeAllIndexes];
@@ -231,7 +247,7 @@ static NSString *SettingsFile(void) { return [NSHomeDirectory() stringByAppendin
 		NSImage *thumb = Thumb(it[@"path"]);
 		if (thumb) { NSSize z = [thumb size]; CGFloat k = MIN(_isz / z.width, _isz / z.height); NSRect tr = NSMakeRect(NSMidX(ir) - z.width * k / 2, NSMidY(ir) - z.height * k / 2, z.width * k, z.height * k); [TFRGBA(0, 0, 0, 0.35) setFill]; NSRectFill(NSOffsetRect(tr, 0, 1)); [thumb drawInRect: tr fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; }
 		else TFDrawIcon(it[@"path"], ir);
-		NSArray *lines = it[@"lines"]; if (!lines) { lines = WrapLabel(it[@"name"], lab, [self cw] - 12, 2); it[@"lines"] = lines; }
+		NSArray *lines = it[@"lines"]; if (!lines) { lines = WrapLabel(it[@"name"], lab, [self cw] - 6.5, 2); it[@"lines"] = lines; }
 		CGFloat y = c.origin.y + 17 + _isz; CGFloat lh = 16;
 		for (NSString *ln in lines) {
 			NSSize z = [ln sizeWithAttributes: lab]; if (ln == [lines firstObject] && [it[@"tags"] count]) [NSClassFromString(@"WsdFinderSupport") drawTagDots: it[@"tags"] rightEdge: NSMidX(c) - z.width / 2 - 9 centerY: y];
@@ -330,7 +346,7 @@ static const CGFloat kRow = 24, kHead = 28;
 	} @catch (NSException *x) { NSLog(@"TListView %@: %@", p, x); }
 	[self _sort]; off = 0; [self setNeedsDisplay: YES]; [self _notify];
 }
-- (void)_sort { NSString *k = _sortKey; BOOL asc = _asc; NSArray *sorted = [_items sortedArrayUsingComparator: ^NSComparisonResult(NSDictionary *a, NSDictionary *b) { NSComparisonResult r = [k isEqual: @"name"] || [k isEqual: @"kind"] ? [a[k] localizedStandardCompare: b[k]] : [a[k] compare: b[k]]; return asc ? r : (NSComparisonResult)(-r); }]; if (getenv("FINDER_DEBUG")) NSLog(@"Finder: list sort %lu -> %lu", (unsigned long)[_items count], (unsigned long)[sorted count]); [_items setArray: sorted]; }
+- (void)_sort { NSString *k = _sortKey; BOOL asc = _asc; NSArray *sorted = [_items sortedArrayUsingComparator: ^NSComparisonResult(NSDictionary *a, NSDictionary *b) { if ([k isEqual: @"name"] && TFPrefBool(@"_FXSortFoldersFirst", YES) && [a[@"dir"] boolValue] != [b[@"dir"] boolValue]) return (asc == ([a[@"dir"] boolValue])) ? NSOrderedAscending : NSOrderedDescending; NSComparisonResult r = [k isEqual: @"name"] || [k isEqual: @"kind"] ? [a[k] localizedStandardCompare: b[k]] : [a[k] compare: b[k]]; return asc ? r : (NSComparisonResult)(-r); }]; if (getenv("FINDER_DEBUG")) NSLog(@"Finder: list sort %lu -> %lu", (unsigned long)[_items count], (unsigned long)[sorted count]); [_items setArray: sorted]; }
 - (CGFloat)contentHeight { return [_items count] * kRow + 8; }
 - (NSArray *)_cols { CGFloat w = [self bounds].size.width; CGFloat kind = 150, size = 90, date = 170; return @[ @[ @"name", @"Name", @0, @(w - kind - size - date - 14) ], @[ @"date", @"Date Modified", @(w - kind - size - date - 14), @(date) ], @[ @"size", @"Size", @(w - kind - size - 14), @(size) ], @[ @"kind", @"Kind", @(w - kind - 14), @(kind) ] ]; }
 - (void)drawContent:(NSRect)v
@@ -514,19 +530,20 @@ static const CGFloat kColW = 240, kColRow = 24;
 
 /* ---------- the sidebar ---------- */
 @implementation TSidebarView
-- (instancetype)initWithFrame:(NSRect)f
+- (instancetype)initWithFrame:(NSRect)f { if ((self = [super initWithFrame: f])) { [self _build]; [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(_prefs:) name: @"TFPrefsChanged" object: nil]; } return self; }
+- (void)_prefs:(NSNotification *)n { [self _build]; [self setNeedsDisplay: YES]; }
+- (void)_build
 {
-	if ((self = [super initWithFrame: f])) {
+	{
 		NSString *home = NSHomeDirectory(); NSMutableArray *r = [NSMutableArray array];
-		void (^item)(NSString *, NSString *, NSString *) = ^(NSString *t, NSString *sym, NSString *p) { [r addObject: @{ @"k": @"item", @"t": t, @"s": sym, @"p": p ?: @"" }]; };
+		void (^item)(NSString *, NSString *, NSString *) = ^(NSString *t, NSString *sym, NSString *p) { NSDictionary *keys = @{ @"Recents": @"SidebarShowRecents", @"Shared": @"SidebarShowShared", @"Applications": @"SidebarShowApplications", @"Desktop": @"SidebarShowDesktop", @"Documents": @"SidebarShowDocuments", @"Downloads": @"SidebarShowDownloads", @"iCloud Drive": @"SidebarShowICloud", @"Macintosh HD": @"SidebarShowHardDisks", @"AirDrop": @"SidebarShowAirDrop", @"Trash": @"SidebarShowTrash" }; NSString *k = keys[t]; if (!k && [p isEqual: NSHomeDirectory()]) k = @"SidebarShowHome"; if (k && !TFPrefBool(k, YES)) return; [r addObject: @{ @"k": @"item", @"t": t, @"s": sym, @"p": p ?: @"" }]; };
 		void (^head)(NSString *) = ^(NSString *t) { [r addObject: @{ @"k": @"head", @"t": t }]; };
 		item(@"Recents", @"clock", @"recents://"); item(@"Shared", @"person.2", @"shared://");
 		head(@"Favorites"); item(@"Applications", @"a.square", @"/Applications"); item(@"Desktop", @"menubar.dock.rectangle", [home stringByAppendingPathComponent: @"Desktop"]); item(@"Documents", @"doc", [home stringByAppendingPathComponent: @"Documents"]); item(@"Downloads", @"arrow.down.circle", [home stringByAppendingPathComponent: @"Downloads"]);
 		head(@"Locations"); item(@"iCloud Drive", @"icloud", [home stringByAppendingPathComponent: @"Library/Mobile Documents/com~apple~CloudDocs"]); item(NSUserName(), @"house", home); item(@"Macintosh HD", @"internaldrive", @"/"); item(@"AirDrop", @"airdrop", @"airdrop://"); item(@"Trash", @"trash", [home stringByAppendingPathComponent: @".Trash"]);
-		head(@"Tags"); for (NSString *t in @[ @"Red", @"Orange", @"Yellow", @"Green", @"Blue", @"Purple", @"Gray" ]) [r addObject: @{ @"k": @"tag", @"t": t, @"p": [@"tag://" stringByAppendingString: t] }];
+		head(@"Tags"); for (NSString *t in @[ @"Red", @"Orange", @"Yellow", @"Green", @"Blue", @"Purple", @"Gray" ]) if (TFPrefBool([@"SidebarTag" stringByAppendingString: t], YES)) [r addObject: @{ @"k": @"tag", @"t": t, @"p": [@"tag://" stringByAppendingString: t] }];
 		item(@"All Tags…", @"", @"tags://"); _rows = r;
 	}
-	return self;
 }
 - (void)drawBackground { [TF_SIDEBAR setFill]; NSRectFill([self bounds]); }
 - (NSRect)_rect:(NSInteger)i                                          /* rows 32 apart from y 52, a section header 19 high with 13 above it */

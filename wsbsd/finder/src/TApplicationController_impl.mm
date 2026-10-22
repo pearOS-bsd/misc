@@ -1,5 +1,6 @@
 /* TApplicationController: the delegate of the Finder (decompiled: -[TApplicationController applicationWillFinishLaunching:] at 0x100011330, -loadMenuBar at 0x1000115a8: it loads the nib "MenuBar" with itself as owner). */
 #import <Cocoa/Cocoa.h>
+#import "TFinderViews.h"
 
 @interface TBrowserWindowController : NSWindowController
 + (instancetype)newBrowserWithPath:(NSString *)path;
@@ -32,7 +33,8 @@
 }
 - (void)configureMenuBar { }
 /* actions of the menu bar: with no Finder window open they open one (the Finder's behaviour); the window controller handles them otherwise */
-- (void)cmdNewFinderWindow:(id)s { [TBrowserWindowController newBrowserWithPath: NSHomeDirectory()]; }
+- (void)cmdNewFinderWindow:(id)s { NSString *t = TFPref(@"NewWindowTarget", @"PfHm"); NSString *h = NSHomeDirectory(); NSString *p = [t isEqual: @"PfDe"] ? [h stringByAppendingPathComponent: @"Desktop"] : [t isEqual: @"PfDo"] ? [h stringByAppendingPathComponent: @"Documents"] : [t isEqual: @"PfCm"] ? @"/" : h; [TBrowserWindowController newBrowserWithPath: p]; }
+- (void)cmdPreferences:(id)s { TFOpenSettings(); }
 - (void)cmdNewFinderWindowWithOption:(id)s { [self cmdNewFinderWindow: s]; }
 - (void)_goTo:(NSString *)path { id c = [[NSApp keyWindow] windowController]; if ([c isKindOfClass: [TBrowserWindowController class]]) [c goToPath: path]; else [TBrowserWindowController newBrowserWithPath: path]; }
 - (void)cmdGoHome:(id)s { [self _goTo: NSHomeDirectory()]; }

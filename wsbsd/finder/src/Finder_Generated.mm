@@ -8,6 +8,7 @@
 #import "TDesktopWindow.h"
 @interface TDesktopWindowController : NSWindowController @end
 @interface TIconView : NSView @end
+@interface TInfoWindow : NSWindow @end
 @interface TListView : NSOutlineView @end
 @interface TSidebarView : NSOutlineView @end
 @interface TCompressWithOptionsController : NSWindowController @end
@@ -504,7 +505,6 @@
 @interface TInfoWindowController : TInfoWindowControllerBase @end
 @interface TInspectorWindowController : TInfoWindowControllerBase @end
 @interface TInfoWindowUndoManager : NSUndoManager @end
-@interface TInfoWindow : NSWindow @end
 @interface TInfoPanel : NSPanel @end
 @interface TViewOptionsSettingsController : NSObject @end
 @interface TIconSizeLabelTransformer : NSValueTransformer @end
@@ -6433,7 +6433,6 @@
 - (id)menuNeedsUpdate:(id)a0 { /* 0x100077108 */ return nil; }
 - (id)menuHasKeyEquivalent:(id)a0 forEvent:(id)a1 target:(id)a2 action:(id)a3 { /* 0x10003F8F4 */ return nil; }
 - (id)cmdAbout:(id)a0 { /* 0x1000F9B9C */ return nil; }
-- (id)cmdPreferences:(id)a0 { /* 0x1000EAE88 */ return nil; }
 - (id)validatePreferences:(id)a0 { /* 0x100407528 */ return nil; }
 - (id)validateEmptyTrash:(id)a0 { /* 0x10008C870 */ return nil; }
 - (id)cmdEmptyTrash:(id)a0 { /* 0x1000E9B90 */ return nil; }
@@ -8034,9 +8033,6 @@
 @end
 @implementation TInfoWindowUndoManager
 + (id)infoWindowUndoManager { /* 0x1000C6AE4 */ return nil; }
-@end
-@implementation TInfoWindow
-- (id)_restorableStateRepresentedURL { /* 0x1004A00B0 */ return nil; }
 @end
 @implementation TInfoPanel
 - (id)_restorableStateRepresentedURL { /* 0x1004A0140 */ return nil; }

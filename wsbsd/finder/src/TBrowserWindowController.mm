@@ -115,7 +115,7 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 	NSFileManager *fm = [NSFileManager defaultManager]; for (NSString *n in [fm contentsOfDirectoryAtPath: TrashPath() error: NULL]) [fm removeItemAtPath: [TrashPath() stringByAppendingPathComponent: n] error: NULL];
 	[self _changed: nil]; [_sidebar setNeedsDisplay: YES];
 }
-- (void)cmdEmptyTrash:(id)s { if ([self _confirm: @"Are you sure you want to permanently erase the items in the Trash?" info: @"You can’t undo this action." button: @"Empty Trash"]) [self cmdEmptyTrashSilently: s]; }
+- (void)cmdEmptyTrash:(id)s { if (!TFPrefBool(@"WarnOnEmptyTrash", YES)) { [self cmdEmptyTrashSilently: s]; return; } if ([self _confirm: @"Are you sure you want to permanently erase the items in the Trash?" info: @"You can’t undo this action." button: @"Empty Trash"]) [self cmdEmptyTrashSilently: s]; }
 - (void)cmdDeleteImmediately:(id)s
 {
 	if (![[self _targets] count] || ![self _confirm: @"Are you sure you want to permanently erase the selected items?" info: @"You can’t undo this action." button: @"Delete"]) return;
@@ -180,7 +180,7 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 - (void)_renamePath:(NSString *)path
 {
 	NSAlert *a = [[NSAlert alloc] init]; [a setMessageText: @"Rename"]; NSTextField *f = [[NSTextField alloc] initWithFrame: NSMakeRect(0, 0, 260, 24)]; [f setStringValue: [path lastPathComponent]]; [a setAccessoryView: f]; [a addButtonWithTitle: @"OK"]; [a addButtonWithTitle: @"Cancel"];
-	if ([a runModal] == NSAlertFirstButtonReturn && [[f stringValue] length] && ![[f stringValue] containsString: @"/"]) { NSString *dest = [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent: [f stringValue]]; if ([[NSFileManager defaultManager] moveItemAtPath: path toPath: dest error: NULL]) { [self _record: @"Rename" ops: @[ @{ @"t": @"move", @"a": path, @"b": dest } ]]; [self _changed: dest]; } }
+	if ([a runModal] == NSAlertFirstButtonReturn && [[f stringValue] length] && ![[f stringValue] containsString: @"/"]) { NSString *dest = [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent: [f stringValue]]; NSString *oe = [path pathExtension], *ne = [dest pathExtension]; if ([oe length] && ![oe isEqual: ne] && TFPrefBool(@"FXEnableExtensionChangeWarning", YES)) { NSAlert *w = [[NSAlert alloc] init]; [w setMessageText: [NSString stringWithFormat: @"Are you sure you want to change the extension from “.%@” to “%@”?", oe, [ne length] ? [@"." stringByAppendingString: ne] : @"nothing"]]; [w setInformativeText: @"If you make this change, your document may open in a different application."]; [w addButtonWithTitle: [NSString stringWithFormat: @"Keep .%@", oe]]; [w addButtonWithTitle: [ne length] ? [@"Use ." stringByAppendingString: ne] : @"Use no extension"]; if ([w runModal] == NSAlertFirstButtonReturn) dest = [[dest stringByDeletingPathExtension] stringByAppendingPathExtension: oe]; } if ([[NSFileManager defaultManager] moveItemAtPath: path toPath: dest error: NULL]) { [self _record: @"Rename" ops: @[ @{ @"t": @"move", @"a": path, @"b": dest } ]]; [self _changed: dest]; } }
 }
 - (void)cmdGoTo:(id)s
 {
