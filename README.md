@@ -45,7 +45,7 @@ Rule of the project: upstream sources are never edited. What the platform lacks 
 
 ## Applications
 
-State on 2026-10-17, FreeBSD 14.5 aarch64 (QEMU, HVF; a real screen in the QEMU window and VNC) and the CI virtual machine (x86_64). "Unmodified" means no line of the application's own sources was changed.
+State on 2026-10-22, FreeBSD 14.5 aarch64 (QEMU, HVF; a real screen in the QEMU window and VNC) and the CI virtual machine (x86_64). "Unmodified" means no line of the application's own sources was changed.
 
 | Application | Build | Runs | Notes |
 |---|---|---|---|
@@ -53,8 +53,8 @@ State on 2026-10-17, FreeBSD 14.5 aarch64 (QEMU, HVF; a real screen in the QEMU 
 | [GrandPerspective](https://github.com/mfcarroll/grandperspective) (2026) | 138 of 138, unmodified | **starts**: menu bar, welcome window (its right edge is clipped), its own alerts, drive access flow, folder picker | starting a scan raises an exception inside `scanFolder:filterSet:` (under investigation); no result window yet |
 | [GrandPerspective 1.5](https://github.com/bezigon/GrandPerspective) (2015) | 115 of 115, unmodified | scans a folder through the Carbon File Manager shim, then **crashes**: the 2015 sources pass `float *` where AppKit takes `CGFloat *` (broken on any 64-bit platform, also on a Mac) | the 2026 sources are the target |
 | [Pashua](https://github.com/BlueM/Pashua) | 41 of 41, unmodified | **yes**: reads a config file, shows the dialog (text, field, pop-up, checkbox, buttons) and prints the values on OK | the static text is drawn selected (GNUstep selects it when it gets focus) |
-| Chess.app ([apple-oss-distributions/Chess](https://github.com/apple-oss-distributions/Chess)) | not started | | Swift (SharePlay), OpenGL/Metal 3D board: needs overlay for Swift and a GL path |
-| [TextMate](https://github.com/textmate/textmate) | not started | | Objective-C++, its own build system (ninja + rave), many C++ dependencies |
+| Chess.app ([apple-oss-distributions/Chess](https://github.com/apple-oss-distributions/Chess)) | not started (next after TextMate) | | Swift (SharePlay), OpenGL/Metal 3D board: needs overlay for Swift and a GL path |
+| [TextMate](https://github.com/textmate/textmate) | builds and links, unmodified (ninja + rave through a shim `xcrun`, `ports/textmate/`) | **starts**: real menus and dialogs, document window with gutter, text area and status bar laid out by Auto Layout, keys reach the editor and its buffer | the text of the editor is not drawn yet (the layout is not told about buffer changes); no default bundles shipped; WebKit is a stub |
 | GNUstep Sudoku, Gorm, `terminal/`, `ksa/`, `uitest/` | yes | yes | stock GNUstep apps and the in-repo apps (CI) |
 
 CI (`.github/workflows/wsbsd.yml`): unit and golden tests, ASan/UBSan, fuzzing, FreeBSD build of the backend with screenshots, the Hex Fiend framework build and smoke test, benchmark.
@@ -147,7 +147,7 @@ A FreeBSD-based ISO that starts straight into this window server. The rules, set
    `/usr/sbin/spctl` and the Launch Services check ("downloaded from the Internet. Are you sure you want to open it?", then the attribute is cleared) are part of the system; downloads written by our
    applications get the quarantine attribute. A test installs an app with and without the attribute and checks what the launcher does.
 
-Status (2026-10-17): `wsbsd/iso/` has the manifest of the reference Mac (`manifest/`, paths only, 41,000 lines), the layout tool (`tools/macfs.py`: skeleton, install, desymlink, verify; the image has 20,365 of
+Status (2026-10-22, the image of the last CI run is published as the `iso-latest` release, untested): `wsbsd/iso/` has the manifest of the reference Mac (`manifest/`, paths only, 41,000 lines), the layout tool (`tools/macfs.py`: skeleton, install, desymlink, verify; the image has 20,365 of
 the Mac's directories and no symlink), the component map (`components.json`), the silent-boot overlay, the EFI partition with Ploader, `build.sh` and `.github/workflows/iso.yml` (builds Ploader on Linux, the image
 on FreeBSD amd64 and publishes the release `iso-latest`). A local arm64 build of the same script boots in QEMU straight into the window server with the Terminal, nothing of FreeBSD's boot visible:
 
@@ -172,12 +172,41 @@ yet; the amd64 image is built by CI (first result pending), the arm64 image has 
 | **Core Foundation** | Yes | GNUstep CoreBase, plus our additions in `sdk/` (CoreServices, Security, UTType, FileManager...). |
 | **Core Graphics** | Partial | Opal (over cairo) bridged into AppKit drawing; CoreText covered only as far as the tested apps need. |
 | **dyld** | Yes (ISO) | A `/usr/lib/dyld` that resolves the macOS-style layout on the image. |
-| **Core Animation (QuartzCore)** | Stubs only | Classes such as `CABasicAnimation` and `CATransaction` accept calls and do nothing. No `CALayer` rendering, animation or transitions. This is the most realistic next major component. |
+| **Core Animation (QuartzCore)** | Partial (about half) | Own implementation (`wsbsd/quartzcore/`): layers, animations, timing and spring curves, presentation tree, layer-backed AppKit views; checked against the real QuartzCore on a Mac (0 differences in 1,500 random animations). Filters, tiled and GPU rendering are missing. |
+| **Security / Keychain / Authorization** | Partial | Sealed AES-GCM keychain, SecItem, keys and certificates, SecTransform verify, Authorization (`wsbsd/sdk/src/Keychain.m`); no Secure Enclave (a Raspberry Pi Pico 2 token is planned) |
+| **QuickLook / CFPlugIn** | Partial | Generators, thumbnails, the preview panel on Space |
+| **XPC (`NSXPCConnection`)** | Yes (own) | Listeners, connections, interfaces and reply blocks over unix sockets (`wsbsd/sdk/src/XPC.m`); gnustep-base only has stubs that raise |
+| **CoreWLAN / airportd** | Started | The inventory of the real frameworks is in `wsbsd/docs/corewlan`; `CWNetwork` and `CWChannel` match the real ones on 2,484 generated cases; the daemon (scan, join, auto-join, hotspot detection) is being written. Required, see below |
 | **UIKit** | No | Out of scope; the target is AppKit apps. |
 | **SwiftUI** | No | Swift on FreeBSD has no Objective-C interoperability, so it cannot subclass `NSObject` or use AppKit. SwiftUI also relies on RenderBox, which is absent. A later target, not started. |
 | **RenderBox / Metal** | No | Not provided. |
 | **WebKit** | No | Not provided. |
 | **Extended attributes / Gatekeeper** | Yes | `com.apple.quarantine` on FreeBSD `extattr(2)`, a quarantine prompt, `xattr` and `spctl` tools. |
+
+## Status, coverage and what is required next (2026-10-22)
+
+Rough estimates, not measurements:
+
+| Part | Estimate | Notes |
+|---|---|---|
+| SkyLight server routines (744) | ~74 % have a handler of their own | the share that is decompiled and verified is smaller (probably under half) |
+| Quartz Compositor | ~35 to 40 % | colour management / HDR, Core Image filters, Spaces / Mission Control, multi-display and real-GPU verification are missing |
+| AppKit (GNUstep + `wsd` back end + macOS theme) | ~35 to 45 % for real applications | 72 % of the SDK selectors answered with a real implementation |
+| Core Animation | ~50 % | differential tests against the real QuartzCore |
+| Security / Keychain | ~40 % | |
+| QuickLook / CFPlugIn | ~55 % | |
+| Foundation networking (`NSURLSession` over libcurl) | ~45 % | |
+| TextMate port | ~55 % | text drawing in the editor is the open problem |
+| CoreWLAN / airportd | ~10 % | data classes done and verified; framework API and daemon in progress |
+| AirDrop | 0 % | after CoreWLAN, by decompilation |
+
+**Required next (decided by the project owner)**
+- **CoreWLAN.framework** (`CWWiFiClient`, `CWInterface`, `CWNetwork`, ...) and **airportd**: scanning, seamless joining of known networks, hotspot detection, decompiled with REA from the reference Mac and reimplemented as on the Mac, over `wpa_supplicant` / net80211 on FreeBSD.
+- **AirDrop** (sharingd), also by decompilation; reference to study: github.com/BenItBuhner/AirDrop-for-Everything.
+- **File layout mirror:** whatever exists under `/System`, `/Library`, `/usr/libexec`, `/Applications` on the Mac is found at the same path on the BSD system (`/System/Library/Frameworks/CoreWLAN.framework`, `/usr/libexec/airportd`, `/System/Library/LaunchDaemons/com.apple.airportd.plist` ...).
+- Backlog, not a priority: research how an iOS session is started with the Xcode command line tools and whether QEMU could boot iOS (github.com/dipa-studio/ios-sweet).
+
+**Other open work:** Chess, the SkyLight routines that need a compositor, KMS/GPU hardware, the Dock, real WebKit, the designers' assets (ordered, 21,000 EUR) and the Pico 2 secure-element token.
 
 ## Known limits
 - DRM/KMS, evdev and the GL compositor have not been run on real hardware (CI has no GPU).
