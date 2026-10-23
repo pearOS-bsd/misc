@@ -149,3 +149,6 @@ Cod: `finder/src/TFinderViews.{h,mm}` (view-uri: sidebar, toolbar, icoane/listă
 
 ## Toolbar Group menu
 The Group pill of the toolbar opens `groupMenu` (None, line, Name, Kind, Application, Date Last Opened, Date Added, Date Modified, Date Created, Size, Tags; tick on the current key) as measured on the Mac; `GroupTitle` got the "application" key and "dateAdded". Open: the panel pop-up is wider than the measured 156 pt.
+
+## Go to Folder as a sheet
+`TFAsk("Go to…")` is now a 460 wide AppKit sheet of the browser window (beginSheet via WsdSheets), centred on it. Verified in the VM through the Go menu. Not done: the suggestions list under the field (AX shows one), Connect to Server as a titled window, ⇧⌘G did not open it through wskey (+55 +56 5) — check the key path.

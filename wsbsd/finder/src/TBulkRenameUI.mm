@@ -76,7 +76,7 @@ void TFBulkRename(NSArray *paths, void (^done)(NSArray *))
 void TFAsk(NSString *title, NSString *message, NSArray *fields, NSString *okTitle, void (^done)(NSArray *values))
 {
 	if (getenv("FINDER_DEBUG")) NSLog(@"ask: %@", title);
-	CGFloat W = 400, pad = 20, rowH = 30, nf = [fields count], msgH = [message length] ? 34 : 0, H = 40 + msgH + nf * rowH + 64; NSMutableArray *tf = [NSMutableArray array];
+	BOOL asSheet = [title hasPrefix: @"Go to"]; CGFloat W = asSheet ? 460 : 400, pad = 20, rowH = 30, nf = [fields count], msgH = [message length] ? 34 : 0, H = 40 + msgH + nf * rowH + 64; NSMutableArray *tf = [NSMutableArray array];
 	NSWindow *w = [[TFinderWindow alloc] initWithContentRect: NSMakeRect(0, 0, W, H) styleMask: NSWindowStyleMaskBorderless backing: NSBackingStoreBuffered defer: NO]; [w setReleasedWhenClosed: NO]; [w setLevel: NSModalPanelWindowLevel]; [w setOpaque: NO]; [w setBackgroundColor: [NSColor clearColor]];
 	TBulkCard *card = [[TAskCard alloc] initWithFrame: NSMakeRect(0, 0, W, H)]; [w setContentView: card];
 	NSTextField *(^Label)(NSRect, NSString *, NSFont *, NSColor *) = ^NSTextField *(NSRect r, NSString *s, NSFont *f, NSColor *c) { NSTextField *t = [[NSTextField alloc] initWithFrame: r]; [t setEditable: NO]; [t setSelectable: NO]; [t setBezeled: NO]; [t setBordered: NO]; [t setDrawsBackground: NO]; [t setTextColor: c]; [t setFont: f]; [t setStringValue: s]; return t; };
@@ -89,6 +89,8 @@ void TFAsk(NSString *title, NSString *message, NSArray *fields, NSString *okTitl
 	TBulkButtons *bt = [[TBulkButtons alloc] init]; NSButton *ok = [[NSButton alloc] initWithFrame: NSMakeRect(W - pad - 110, 14, 110, 28)], *cn = [[NSButton alloc] initWithFrame: NSMakeRect(W - pad - 230, 14, 110, 28)];
 	[ok setTitle: okTitle ?: @"OK"]; [cn setTitle: @"Cancel"]; for (NSButton *b in @[ ok, cn ]) { [b setBezelStyle: NSRoundedBezelStyle]; [b setTarget: bt]; } [ok setAction: @selector(ok:)]; [cn setAction: @selector(cancel:)]; [ok setKeyEquivalent: @"\r"]; [card addSubview: cn]; [card addSubview: ok];
 	__weak NSWindow *ww = w; __block TBulkButtons *keep = bt;
-	bt->done = ^(BOOL yes) { NSMutableArray *vals = nil; if (yes) { vals = [NSMutableArray array]; for (NSTextField *t in tf) [vals addObject: [t stringValue] ?: @""]; } [ww orderOut: nil]; keep->done = nil; keep = nil; done(vals); };
-	objc_setAssociatedObject(w, "ask", @[ bt, tf ], OBJC_ASSOCIATION_RETAIN); [w center]; [w makeKeyAndOrderFront: nil]; static NSWindow *open; open = w; if ([tf count]) [w makeFirstResponder: tf[0]];
+	bt->done = ^(BOOL yes) { NSMutableArray *vals = nil; if (yes) { vals = [NSMutableArray array]; for (NSTextField *t in tf) [vals addObject: [t stringValue] ?: @""]; } NSWindow *pw = [(id)ww sheetParent]; if (pw) [(id)pw endSheet: ww]; else [ww orderOut: nil]; keep->done = nil; keep = nil; done(vals); };
+	objc_setAssociatedObject(w, "ask", @[ bt, tf ], OBJC_ASSOCIATION_RETAIN); static NSWindow *open; open = w;
+	NSWindow *parent = asSheet ? [NSApp keyWindow] : nil; if (asSheet && (!parent || [(id)parent sheetParent])) for (NSWindow *x in [NSApp windows]) if ([x isVisible] && [[x windowController] isKindOfClass: NSClassFromString(@"TBrowserWindowController")]) { parent = x; break; }
+	if (parent) [(id)parent beginSheet: w completionHandler: nil]; else { [w center]; [w makeKeyAndOrderFront: nil]; }       /* Go to Folder is a sheet of the window, as on the Mac (AX: GoToWindow, 460 wide) */ if ([tf count]) [w makeFirstResponder: tf[0]];
 }
