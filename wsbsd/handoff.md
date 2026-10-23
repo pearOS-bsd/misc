@@ -155,3 +155,6 @@ The Group pill of the toolbar opens `groupMenu` (None, line, Name, Kind, Applica
 
 ## Connect to Server window
 `TFConnectToServer` (TBulkRenameUI.mm): titled 486×234 window with the AX layout of the Mac (address combo box, Favorite Servers list kept in `FavoriteServers`, +/−, Browse → /Volumes, Connect). The Name/Password fields are gone (the Mac asks for credentials after connecting — not implemented: `_connectServer` gets empty user/password). ⌘K did not open it through wskey in the VM, the Go menu item does — check. Combo box drop-down history, help button and the real Browse (network browser) missing.
+
+## Toolbar pills (glitch fix)
+The toolbar is still custom drawn (`TToolbarView`, not NSToolbar/NSItem): to move to the real classes is open work. Fixed: the glass hairline stuck out past the rounded ends (now only on the straight part), the pressed segment was a box running into the rim (now a capsule; its shape is not measured on the Mac). Also: `test/test_sheets.m` (sheet centring, alert sheets, NSPopover) runs in `ci/gnustep-wsd.sh`.
