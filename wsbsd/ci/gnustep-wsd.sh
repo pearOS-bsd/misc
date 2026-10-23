@@ -178,6 +178,7 @@ import sys
 d=open('finder.ppm','rb').read(); body=d[-1280*800*3:]; n=len(set(body[::97])); print('finder screenshot: %d distinct bytes' % n); sys.exit(0 if n>40 else 1)
 PY
 	grep -q ' 1022x552' finder-wins.txt || { echo 'no Finder window of 1022x552'; FINDER_BAD=1; }
+	grep -v 'time zone\|zone\|two versions\|NSRegister' /tmp/finder-run.log | tail -15 | cut -c1-240; tail -3 /tmp/finder-build.log
 	kill $FP 2>/dev/null; pkill -x Finder 2>/dev/null
 else echo 'Finder did not build'; tail -20 /tmp/finder-build.log; FINDER_BAD=1; fi
 kill $WP 2>/dev/null
