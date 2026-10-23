@@ -2,16 +2,26 @@
  * their background (WsdAppearance.m, "Tint window background with wallpaper color"). The picture is the preference DesktopPicture (a path), or FINDER_WALLPAPER. */
 #import "TFinderViews.h"
 
+/* the picture: the one chosen (preference DesktopPicture or FINDER_WALLPAPER), else the default one of the system for the appearance, in the folder where the Mac keeps its desktop pictures */
 NSString *TFWallpaperPath(void)
 {
-	const char *e = getenv("FINDER_WALLPAPER"); NSString *p = e ? [NSString stringWithUTF8String: e] : TFPref(@"DesktopPicture", nil);
-	return [p length] && [[NSFileManager defaultManager] fileExistsAtPath: p] ? p : nil;
+	NSFileManager *fm = [NSFileManager defaultManager]; const char *e = getenv("FINDER_WALLPAPER"); NSString *p = e ? [NSString stringWithUTF8String: e] : TFPref(@"DesktopPicture", nil);
+	if ([p length] && [fm fileExistsAtPath: p]) return p;
+	NSString *d = [TFDark() ? @"dark-mode" : @"light-mode" stringByAppendingPathExtension: @"jpg"]; for (NSString *dir in @[ @"/System/Library/Desktop Pictures", [NSHomeDirectory() stringByAppendingPathComponent: @"Library/Desktop Pictures"] ]) { NSString *f = [dir stringByAppendingPathComponent: d]; if ([fm fileExistsAtPath: f]) return f; }
+	return nil;
 }
-static NSImage *gPicture; static NSString *gPicturePath;
+static NSImage *gPicture, *gSource; static NSString *gPicturePath;
+static NSRect FillRect(NSSize img, NSSize dst);
+/* the picture as loaded (the grid of colours is read from it) and the picture ready to draw: a large one is scaled once to the screen (a 4480 x 3088 jpeg drawn at every refresh would be slow) */
+NSImage *TFWallpaperSource(void) { TFWallpaperImage(); return gSource; }
 NSImage *TFWallpaperImage(void)
 {
-	NSString *p = TFWallpaperPath(); if (!p) { gPicture = nil; gPicturePath = nil; return nil; }
-	if (![p isEqual: gPicturePath]) { gPicture = [[NSImage alloc] initWithContentsOfFile: p]; gPicturePath = p; if (!gPicture || [gPicture size].width < 1) gPicture = nil; }
+	NSString *p = TFWallpaperPath(); if (!p) { gPicture = gSource = nil; gPicturePath = nil; return nil; }
+	if (![p isEqual: gPicturePath]) {
+		gSource = [[NSImage alloc] initWithContentsOfFile: p]; gPicturePath = p; gPicture = nil; if (!gSource || [gSource size].width < 1) { gSource = nil; return nil; }
+		NSSize sc = [[NSScreen mainScreen] frame].size; CGFloat k = [[NSScreen mainScreen] respondsToSelector: @selector(backingScaleFactor)] ? [[NSScreen mainScreen] backingScaleFactor] : 1; NSSize want = NSMakeSize(sc.width * k, sc.height * k), src = [gSource size];
+		if (src.width > want.width * 1.3 && want.width > 1) { NSImage *o = [[NSImage alloc] initWithSize: want]; [o lockFocus]; [gSource drawInRect: NSMakeRect(0, 0, want.width, want.height) fromRect: FillRect(src, want) operation: NSCompositeCopy fraction: 1]; [o unlockFocus]; gPicture = o; } else gPicture = gSource;
+	}
 	return gPicture;
 }
 /* the part of the picture that fills a screen of this size (the Mac's "Fill Screen") */
@@ -23,7 +33,7 @@ static NSRect FillRect(NSSize img, NSSize dst)
 void TFWriteWallpaperGrid(NSSize screen)
 {
 	NSString *dir = [NSHomeDirectory() stringByAppendingPathComponent: @"Library/Caches/com.wsbsd.wallpaper"], *f = [dir stringByAppendingPathComponent: @"grid.plist"]; NSFileManager *fm = [NSFileManager defaultManager];
-	NSImage *img = TFWallpaperImage(); NSBitmapImageRep *rep = nil; for (NSImageRep *r in [img representations]) if ([r isKindOfClass: [NSBitmapImageRep class]]) { rep = (NSBitmapImageRep *)r; break; }
+	NSImage *img = TFWallpaperSource(); NSBitmapImageRep *rep = nil; for (NSImageRep *r in [img representations]) if ([r isKindOfClass: [NSBitmapImageRep class]]) { rep = (NSBitmapImageRep *)r; break; }
 	if (!rep || screen.width < 1) { [fm removeItemAtPath: f error: NULL]; return; }
 	int gw = 64, gh = MAX(1, (int)lround(64.0 * screen.height / screen.width)); NSRect src = FillRect(NSMakeSize([rep pixelsWide], [rep pixelsHigh]), screen); NSMutableData *out = [NSMutableData dataWithLength: (NSUInteger)gw * gh * 3]; unsigned char *o = (unsigned char *)[out mutableBytes];
 	for (int gy = 0; gy < gh; gy++) for (int gx = 0; gx < gw; gx++) {

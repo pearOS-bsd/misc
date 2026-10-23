@@ -160,6 +160,7 @@ NSImage *TFIcon(NSString *path);
 /* the desktop picture */
 NSString *TFWallpaperPath(void);
 NSImage *TFWallpaperImage(void);
+NSImage *TFWallpaperSource(void);
 void TFWriteWallpaperGrid(NSSize screen);
 @interface TWallpaperView : NSView @end
 
