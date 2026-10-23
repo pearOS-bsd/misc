@@ -86,7 +86,8 @@ for d in etc private/etc; do
 	install -m 755 "$HERE/overlay/etc-rc.d-macdesktop" "$ROOT/$d/rc.d/macdesktop"
 done
 mkdir -p "$ROOT/System/Library/LaunchDaemons"
-(cd "$WORK/cw" && tar -cf - System usr 2>/dev/null) | tar -C "$ROOT" -xpf -
+(cd "$WORK/cw" && find System usr -type l -name Current 2>/dev/null | while read -r l; do rm -rf "$ROOT/$l"; done)       # the desymlinked copies give way to the links
+(cd "$WORK/cw" && tar -cf - System usr 2>/dev/null) | tar -C "$ROOT" -xpf - || true
 install -d "$ROOT/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources" && install -m 644 "$WS/launchservices/uti_table.json" "$ROOT/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/uti_table.json"
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-airportd" "$ROOT/$d/rc.d/airportd"; done
 # no text login on the screen: the window server owns it (the serial console keeps its login)
