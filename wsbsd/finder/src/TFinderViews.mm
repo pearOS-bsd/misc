@@ -940,6 +940,9 @@ static void RedrawTree(NSView *v) { [v setNeedsDisplay: YES]; for (NSView *k in 
 - (void)sendEvent:(NSEvent *)e
 {
 	if (getenv("FINDER_KEYS") && [e type] == NSKeyDown) NSLog(@"Finder key: chars %@ ign %@ flags %lx code %d", [e characters], [e charactersIgnoringModifiers], (unsigned long)[e modifierFlags], (int)[e keyCode]);
+	if ([e type] == NSKeyDown && ([e modifierFlags] & NSCommandKeyMask)) {                                                       /* Command-Delete: Move to Trash, with Shift: Empty Trash */
+		NSString *k = [e charactersIgnoringModifiers]; unichar c = [k length] ? [k characterAtIndex: 0] : 0;
+		if (c == 0x7f || c == 8 || c == NSDeleteFunctionKey || c == NSBackspaceCharacter) { [NSApp sendAction: ([e modifierFlags] & NSShiftKeyMask) ? @selector(cmdEmptyTrash:) : @selector(cmdMoveToTrash:) to: nil from: self]; return; } }
 	if ([e type] == NSLeftMouseDown) {
 		NSPoint p = [e locationInWindow]; NSRect b = [[self contentView] bounds]; int m = 0; const CGFloat ed = 5, co = 14;
 		if (p.x < ed) m |= 1; if (p.x > b.size.width - ed) m |= 2; if (p.y < ed) m |= 4; if (p.y > b.size.height - ed) m |= 8;
