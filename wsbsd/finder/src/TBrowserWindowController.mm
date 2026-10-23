@@ -272,11 +272,15 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 - (void)paste:(id)s { [self _pasteMoving: NO]; }
 - (void)cmdMoveItemsHere:(id)s { [self _pasteMoving: YES]; }
 - (void)cmdPasteExactly:(id)s { [self _pasteMoving: NO]; }
-- (void)_renamePath:(NSString *)path
+- (void)_commitRename:(NSString *)path to:(NSString *)nn
 {
-	NSAlert *a = [[NSAlert alloc] init]; [a setMessageText: @"Rename"]; NSTextField *f = [[NSTextField alloc] initWithFrame: NSMakeRect(0, 0, 260, 24)]; [f setStringValue: [path lastPathComponent]]; [a setAccessoryView: f]; [a addButtonWithTitle: @"OK"]; [a addButtonWithTitle: @"Cancel"];
-	if ([a runModal] == NSAlertFirstButtonReturn && [[f stringValue] length] && ![[f stringValue] containsString: @"/"]) { NSString *dest = [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent: [f stringValue]]; NSString *oe = [path pathExtension], *ne = [dest pathExtension]; if ([oe length] && ![oe isEqual: ne] && TFPrefBool(@"FXEnableExtensionChangeWarning", YES)) { NSAlert *w = [[NSAlert alloc] init]; [w setMessageText: [NSString stringWithFormat: @"Are you sure you want to change the extension from “.%@” to “%@”?", oe, [ne length] ? [@"." stringByAppendingString: ne] : @"nothing"]]; [w setInformativeText: @"If you make this change, your document may open in a different application."]; [w addButtonWithTitle: [NSString stringWithFormat: @"Keep .%@", oe]]; [w addButtonWithTitle: [ne length] ? [@"Use ." stringByAppendingString: ne] : @"Use no extension"]; if ([w runModal] == NSAlertFirstButtonReturn) dest = [[dest stringByDeletingPathExtension] stringByAppendingPathExtension: oe]; } if ([[NSFileManager defaultManager] moveItemAtPath: path toPath: dest error: NULL]) { [self _record: @"Rename" ops: @[ @{ @"t": @"move", @"a": path, @"b": dest } ]]; [self _changed: dest]; } }
+	if (![nn length] || [nn containsString: @"/"] || [nn isEqual: [path lastPathComponent]]) return; NSString *dest = [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent: nn]; NSString *oe = [path pathExtension], *ne = [dest pathExtension];
+	if ([oe length] && ![oe isEqual: ne] && TFPrefBool(@"FXEnableExtensionChangeWarning", YES)) { NSAlert *w = [[NSAlert alloc] init]; [w setMessageText: [NSString stringWithFormat: @"Are you sure you want to change the extension from “.%@” to “%@”?", oe, [ne length] ? [@"." stringByAppendingString: ne] : @"nothing"]]; [w setInformativeText: @"If you make this change, your document may open in a different application."]; [w addButtonWithTitle: [NSString stringWithFormat: @"Keep .%@", oe]]; [w addButtonWithTitle: [ne length] ? [@"Use ." stringByAppendingString: ne] : @"Use no extension"]; if ([w runModal] == NSAlertFirstButtonReturn) dest = [[dest stringByDeletingPathExtension] stringByAppendingPathExtension: oe]; }
+	if ([[NSFileManager defaultManager] fileExistsAtPath: dest]) { NSAlert *w = [[NSAlert alloc] init]; [w setMessageText: [NSString stringWithFormat: @"The name “%@” is already taken. Please choose a different name.", [dest lastPathComponent]]]; [w runModal]; return; }
+	if ([[NSFileManager defaultManager] moveItemAtPath: path toPath: dest error: NULL]) { [self _record: @"Rename" ops: @[ @{ @"t": @"move", @"a": path, @"b": dest } ]]; [self _changed: dest]; }
 }
+- (void)iconViewRename:(NSString *)path to:(NSString *)name { [self _commitRename: path to: name]; }
+- (void)_renamePath:(NSString *)path { id v = [self _view]; if ([v respondsToSelector: @selector(beginRename:)] && [v beginRename: path]) return; NSAlert *a = [[NSAlert alloc] init]; [a setMessageText: @"Rename"]; NSTextField *f = [[NSTextField alloc] initWithFrame: NSMakeRect(0, 0, 260, 24)]; [f setStringValue: [path lastPathComponent]]; [a setAccessoryView: f]; [a addButtonWithTitle: @"OK"]; [a addButtonWithTitle: @"Cancel"]; if ([a runModal] == NSAlertFirstButtonReturn) [self _commitRename: path to: [f stringValue]]; }
 - (void)cmdGoTo:(id)s
 {
 	NSAlert *a = [[NSAlert alloc] init]; [a setMessageText: @"Go to the folder:"]; NSTextField *f = [[NSTextField alloc] initWithFrame: NSMakeRect(0, 0, 320, 24)]; [f setStringValue: @"/"]; [a setAccessoryView: f]; [a addButtonWithTitle: @"Go"]; [a addButtonWithTitle: @"Cancel"];
@@ -284,8 +288,6 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 }
 - (void)cmdSetFocusToSearchField:(id)s { if (!_toolbar->searching) [_toolbar setSearching: YES]; }
 - (void)cmdSearchFromToolbar:(id)s { [self cmdToggleSearch: s]; }
-- (void)selectAll:(id)s { [(id)[self _view] selectAll: s]; }
-- (void)cmdDeselectAll:(id)s { _selection = @[]; [self reload]; }
 - (void)cmdRename:(id)s { if ([_selection count] == 1) [self _renamePath: _selection[0]]; }
 - (void)cmdShowStaticInfo:(id)s { for (NSString *p in [self _targets]) TFOpenInfoWindow(p); }
 - (void)cmdShowInfo:(id)s { [self cmdShowStaticInfo: s]; }
