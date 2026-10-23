@@ -16,7 +16,7 @@ static void wsdTFRect(id self, SEL _cmd, NSRect r);
 
 /* WSD_APPEARANCE=light switches the palette; the measurements are of the dark appearance (the light one is typical macOS, not measured) */
 static void wsdMenuSizeToFit(id self, SEL _cmd); static NSColor *wsdMenuTextColor(id self, SEL _cmd); static void wsdMenuDrawKeyEq(id self, SEL _cmd, NSRect f, NSView *v); static void wsdMenuDrawState(id self, SEL _cmd, NSRect f, NSView *v);
-extern void WsdInstallFilePanel(void); extern void WsdInstallDragDrop(void); extern void WsdInstallMenuBar(void); extern void WsdInstallPopover(void);
+extern void WsdInstallFilePanel(void); extern void WsdInstallDragDrop(void); extern void WsdInstallMenuBar(void); extern void WsdInstallPopover(void); extern void WsdInstallSheets(void);
 extern NSColor *WsdTintedWindowBackground(NSWindow *w); extern void WsdMenuBarPrepare(NSMenu *m); extern NSRect WsdBarItemRect(NSMenuView *mv, NSInteger i, NSRect r); extern void WsdDrawBarItem(NSMenuItemCell *cell, NSRect f, BOOL highlighted); extern NSColor *WsdBarTextColor(BOOL enabled); extern BOOL WsdIsPearItem(NSMenuItem *i); extern BOOL WsdAppearanceIsDark(void); extern void WsdInstallAppearanceWatch(void);
 static BOOL isDark(void) { return WsdAppearanceIsDark(); }
 
@@ -185,6 +185,7 @@ static NSImage *genericAppIcon(void)
 	NSImage *img = [[[NSImage alloc] initWithSize: NSMakeSize(N, N)] autorelease]; [img addRepresentation: rep]; [rep release];
 	return img;
 }
+NSImage *WsdGenericAppIcon(void) { return genericAppIcon(); }
 static void fillRound(NSRect r, CGFloat radius, NSColor *c);
 /* ---- NSAlert as macOS draws it: no title bar, a rounded panel (radius 26), the icon, a bold title, the informative text and capsule buttons side by side (the first button, on the right, is the default one) ---- */
 @interface WsdAlertBack : NSView @end
@@ -385,6 +386,7 @@ static void swizzleTableDefaults(void)
 	Method ma = class_getInstanceMethod([NSAlert class], @selector(runModal));
 	if (ma && !origAlertRun && !getenv("WSD_NO_MACALERT")) origAlertRun = method_setImplementation(ma, (IMP)wsdAlertRun);
 	if (mb && !origButtonInterior) origButtonInterior = method_setImplementation(mb, (IMP)wsdButtonInterior);
+	if (!getenv("WSD_NO_MACALERT")) WsdInstallSheets();                          /* after the alert above: sheets and alerts as the Mac has them replace it */
 }
 
 void WsdApplyMacPalette(void)
