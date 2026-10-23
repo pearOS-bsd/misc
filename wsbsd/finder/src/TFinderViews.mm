@@ -247,14 +247,14 @@ static NSString *GroupTitle(NSDictionary *it, NSString *key, int *order)
 }
 - (void)setPaths:(NSArray *)paths
 {
-	NSDate *t0 = [NSDate date]; [_items removeAllObjects]; [_sel removeAllIndexes]; NSFileManager *fm = [NSFileManager defaultManager]; TDSStore *ds = _folder ? [TDSStore storeForFolder: _folder] : nil; NSDictionary *vp = [ds plistForName: @"." sid: @"icvp"]; if (vp) { _isz = [vp[@"iconSize"] doubleValue] >= 16 ? [vp[@"iconSize"] doubleValue] : 64; NSString *ab = vp[@"arrangeBy"]; NSDictionary *m = @{ @"name": @"name", @"kind": @"kind", @"dateModified": @"modified", @"dateCreated": @"created", @"size": @"size", @"label": @"tags" }; _arrange = m[ab]; } else { _isz = _isz ?: 64; }
+	NSDate *t0 = [NSDate date]; [_items removeAllObjects]; [_sel removeAllIndexes]; NSFileManager *fm = [NSFileManager defaultManager]; TDSStore *ds = _folder ? [TDSStore storeForFolder: _folder] : nil; NSDictionary *vp = [ds plistForName: @"." sid: @"icvp"]; if (vp) { _isz = [vp[@"iconSize"] doubleValue] >= 16 ? [vp[@"iconSize"] doubleValue] : 64; NSString *ab = vp[@"arrangeBy"]; _snap = [vp[@"arrangeBy"] isEqual: @"grid"]; NSDictionary *m = @{ @"name": @"name", @"kind": @"kind", @"dateModified": @"modified", @"dateCreated": @"created", @"size": @"size", @"label": @"tags" }; _arrange = m[ab]; } else { _isz = _isz ?: 64; }
 	if (vp) { _grid = [vp[@"gridSpacing"] doubleValue] >= 20 ? [vp[@"gridSpacing"] doubleValue] : 54; _textSize = [vp[@"textSize"] doubleValue] >= 8 ? [vp[@"textSize"] doubleValue] : 12; _showInfo = [vp[@"showItemInfo"] boolValue]; _showPreview = vp[@"showIconPreview"] ? [vp[@"showIconPreview"] boolValue] : YES; }
 	for (NSString *p in paths) {
 		NSString *n = TFDisplayName(p); if ([[p lastPathComponent] hasPrefix: @"."] || ([filter length] && [n rangeOfString: filter options: NSCaseInsensitiveSearch].location == NSNotFound)) continue; BOOL isVol = [_prefix containsObject: p];
 		NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory] && !TFIsPackage(p); NSString *info = @"";
 		if (isVol) info = @""; else if (dir) { NSUInteger c = 0; for (NSString *s in [fm contentsOfDirectoryAtPath: p error: NULL]) if (![s hasPrefix: @"."]) c++; info = [NSString stringWithFormat: @"%lu item%s", (unsigned long)c, c == 1 ? "" : "s"]; }
 		else if (!TFIsPackage(p)) info = TFSizeString([at[NSFileSize] unsignedLongLongValue]);
-		NSMutableDictionary *it = [@{ @"name": TFShownName(n), @"path": p, @"info": info, @"tags": TFTagsOf(p), @"dir": @(dir), @"mod": at[NSFileModificationDate] ?: [NSDate distantPast], @"cre": at[NSFileCreationDate] ?: [NSDate distantPast], @"size": at[NSFileSize] ?: @0 } mutableCopy];
+		NSMutableDictionary *it = [@{ @"name": TFShownName(n), @"path": p, @"info": info, @"tags": TFTagsOf(p), @"dir": @(dir), @"mod": at[NSFileModificationDate] ?: [NSDate distantPast], @"acc": at[@"NSFileAccessDate"] ?: at[NSFileModificationDate] ?: [NSDate distantPast], @"cre": at[NSFileCreationDate] ?: [NSDate distantPast], @"size": at[NSFileSize] ?: @0 } mutableCopy];
 		int ix, iy; if ([ds iconLocationOfName: [p lastPathComponent] x: &ix y: &iy]) it[@"pos"] = [NSValue valueWithPoint: NSMakePoint(ix - [self cw] / 2, iy - 4 - _isz / 2)];
 		[_items addObject: it];
 	}
@@ -265,7 +265,7 @@ static NSString *GroupTitle(NSDictionary *it, NSString *key, int *order)
 	if (!_folder) return; TDSStore *ds = [TDSStore storeForFolder: _folder]; if (_isz < 16) _isz = 64;
 	for (NSDictionary *it in _items) { NSString *n = [it[@"path"] lastPathComponent]; if (it[@"pos"]) { NSPoint q = [it[@"pos"] pointValue]; [ds setIconLocation: NSMakePoint(q.x + [self cw] / 2, q.y + 4 + _isz / 2) ofName: n]; } else [ds removeName: n sid: @"Iloc"]; }
 	NSMutableDictionary *vp = [ds plistForName: @"." sid: @"icvp"] ?: [@{ @"backgroundType": @0, @"backgroundColorRed": @1.0, @"backgroundColorGreen": @1.0, @"backgroundColorBlue": @1.0, @"gridOffsetX": @0.0, @"gridOffsetY": @0.0, @"gridSpacing": @54.0, @"labelOnBottom": @YES, @"scrollPositionX": @0.0, @"scrollPositionY": @0.0, @"showIconPreview": @YES, @"showItemInfo": @NO, @"textSize": @12.0, @"viewOptionsVersion": @1 } mutableCopy];
-	NSDictionary *m = @{ @"name": @"name", @"kind": @"kind", @"modified": @"dateModified", @"created": @"dateCreated", @"size": @"size", @"tags": @"label" }; vp[@"iconSize"] = @(_isz); vp[@"gridSpacing"] = @(_grid); vp[@"textSize"] = @(_textSize); vp[@"showItemInfo"] = @(_showInfo); vp[@"showIconPreview"] = @(_showPreview); vp[@"arrangeBy"] = m[_arrange ?: @""] ?: @"none";
+	NSDictionary *m = @{ @"name": @"name", @"kind": @"kind", @"modified": @"dateModified", @"created": @"dateCreated", @"size": @"size", @"tags": @"label" }; vp[@"iconSize"] = @(_isz); vp[@"gridSpacing"] = @(_grid); vp[@"textSize"] = @(_textSize); vp[@"showItemInfo"] = @(_showInfo); vp[@"showIconPreview"] = @(_showPreview); vp[@"arrangeBy"] = m[_arrange ?: @""] ?: (_snap ? @"grid" : @"none");
 	[ds setPlist: vp forName: @"." sid: @"icvp"]; if (![ds valueForName: @"." sid: @"vSrn"]) [ds setValue: @1 type: @"long" forName: @"." sid: @"vSrn"]; [ds write];
 }
 - (void)reloadKeepingSelection { NSArray *keep = [self selectedPaths]; if (![_items count]) return; NSMutableArray *ps = [NSMutableArray array]; for (NSDictionary *d in _items) [ps addObject: d[@"path"]]; CGFloat o = off; [self setPaths: ps]; for (NSUInteger i = 0; i < [_items count]; i++) if ([keep containsObject: _items[i][@"path"]]) [_sel addIndex: i]; off = o; [self setNeedsDisplay: YES]; }
@@ -305,13 +305,15 @@ static NSString *GroupTitle(NSDictionary *it, NSString *key, int *order)
 	[_items sortUsingComparator: ^NSComparisonResult(NSDictionary *a, NSDictionary *b) {
 		NSComparisonResult r;
 		if ([k isEqual: @"kind"]) { r = [(a[@"dir"] ? TFKindString(a[@"path"], [a[@"dir"] boolValue]) : @"") tfNameCompare: (b[@"dir"] ? TFKindString(b[@"path"], [b[@"dir"] boolValue]) : @"")]; }
-		else if ([k isEqual: @"modified"]) r = [b[@"mod"] compare: a[@"mod"]]; else if ([k isEqual: @"created"]) r = [b[@"cre"] compare: a[@"cre"]];
+		else if ([k isEqual: @"modified"]) r = [b[@"mod"] compare: a[@"mod"]]; else if ([k isEqual: @"opened"]) r = [b[@"acc"] ?: b[@"mod"] compare: a[@"acc"] ?: a[@"mod"]]; else if ([k isEqual: @"created"]) r = [b[@"cre"] compare: a[@"cre"]];
 		else if ([k isEqual: @"size"]) r = [b[@"size"] compare: a[@"size"]]; else if ([k isEqual: @"tags"]) r = (NSComparisonResult)((int)[b[@"tags"] count] - (int)[a[@"tags"] count]);
 		else { if (TFPrefBool(@"_FXSortFoldersFirst", YES) && [a[@"dir"] boolValue] != [b[@"dir"] boolValue]) return [a[@"dir"] boolValue] ? NSOrderedAscending : NSOrderedDescending; r = [a[@"name"] tfNameCompare: b[@"name"]]; }
 		return r == NSOrderedSame ? [a[@"name"] tfNameCompare: b[@"name"]] : r;
 	}];
 	[_sel removeAllIndexes];
 }
+/* Sort By > Snap to Grid: the icons keep their order of placing but sit on the cells of the grid (the key of the view settings is arrangeBy = grid) */
+- (void)setSnapToGrid:(BOOL)on { _snap = on; if (on) { _arrange = nil; for (NSMutableDictionary *it in _items) { NSValue *v = it[@"pos"]; if (!v) continue; NSPoint np = [v pointValue]; np.x = MAX(0, kPad + round((np.x - kPad) / [self cw]) * [self cw]); np.y = MAX(0, kPad + round((np.y - kPad) / [self ch]) * [self ch]); it[@"pos"] = [NSValue valueWithPoint: np]; } } [self _save]; [self setNeedsDisplay: YES]; }
 - (void)arrangeBy:(NSString *)key                                                          /* Sort By: nil is None (the icons stay where they are put) */
 {
 	NSArray *old = [self _origins]; NSArray *names = nil; NSMutableArray *sel = [NSMutableArray array]; [_sel enumerateIndexesUsingBlock: ^(NSUInteger i, BOOL *s) { [sel addObject: self->_items[i][@"path"]]; }]; (void)names;
@@ -398,7 +400,7 @@ static NSString *GroupTitle(NSDictionary *it, NSString *key, int *order)
 	for (NSUInteger k = 0; k < [idx count]; k++) _items[[idx[k] integerValue]][@"pos"] = orig[k];                                                                                       /* back to where they were, then: */
 	if (into || !inside) { if ([delegate respondsToSelector: @selector(iconViewDropPaths:intoFolder:atWindowPoint:copy:)] && [(id)delegate iconViewDropPaths: paths intoFolder: into atWindowPoint: wp copy: copy]) { [self setNeedsDisplay: YES]; return; } }
 	else {                                                                                                                                                                                        /* put down on the background: the icons take the new places */
-		_arrange = nil; for (NSUInteger k = 0; k < [idx count]; k++) { NSPoint o = [orig[k] pointValue]; NSPoint q = [self convertPoint: [ev locationInWindow] fromView: nil]; q.y = q.y - topInset + off; NSPoint np = NSMakePoint(o.x + q.x - start.x, o.y + q.y - start.y); np.x = MAX(0, np.x); np.y = MAX(0, np.y); _items[[idx[k] integerValue]][@"pos"] = [NSValue valueWithPoint: np]; }
+		_arrange = nil; for (NSUInteger k = 0; k < [idx count]; k++) { NSPoint o = [orig[k] pointValue]; NSPoint q = [self convertPoint: [ev locationInWindow] fromView: nil]; q.y = q.y - topInset + off; NSPoint np = NSMakePoint(o.x + q.x - start.x, o.y + q.y - start.y); np.x = MAX(0, np.x); np.y = MAX(0, np.y); if (_snap) { np.x = kPad + round((np.x - kPad) / [self cw]) * [self cw]; np.y = kPad + round((np.y - kPad) / [self ch]) * [self ch]; } _items[[idx[k] integerValue]][@"pos"] = [NSValue valueWithPoint: np]; }
 		[self _save];
 	}
 	[self setNeedsDisplay: YES];
@@ -407,6 +409,7 @@ static NSString *GroupTitle(NSDictionary *it, NSString *key, int *order)
 {
 	NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; NSInteger i = [self _index: NSMakePoint(p.x, p.y - topInset + off)];
 	if (i >= 0 && ![_sel containsIndex: i]) { [_sel removeAllIndexes]; [_sel addIndex: i]; [self setNeedsDisplay: YES]; [self _notify]; } else if (i < 0) { [_sel removeAllIndexes]; [self setNeedsDisplay: YES]; [self _notify]; }
+	if (i < 0 && !desktop && [delegate respondsToSelector: @selector(backgroundContextMenu)]) { NSMenu *bg = [(id)delegate backgroundContextMenu]; if (bg) { TFPopupMenu(self, p, bg); return nil; } }
 	if ([delegate respondsToSelector: @selector(prepareContextMenu:)]) [(id)delegate prepareContextMenu: [self menu]]; TFPopupMenu(self, p, [self menu]); return nil;
 }
 - (BOOL)beginRename:(NSString *)path
