@@ -39,6 +39,20 @@ void TFPopupMenu(NSView *view, NSPoint p, NSMenu *menu);
 BOOL TFSymbol(NSString *name, NSRect cell, CGFloat pt, NSColor *tint);
 NSImage *TFIcon(NSString *path);
 
+/* .DS_Store of a folder */
+@interface TDSStore : NSObject { @public NSString *_path; NSMutableArray *_records; }
++ (instancetype)storeForFolder:(NSString *)folder;
+- (instancetype)initWithPath:(NSString *)path;
+- (id)valueForName:(NSString *)name sid:(NSString *)sid;
+- (void)setValue:(id)v type:(NSString *)t forName:(NSString *)name sid:(NSString *)sid;
+- (void)removeName:(NSString *)name sid:(NSString *)sid;
+- (BOOL)iconLocationOfName:(NSString *)name x:(int *)x y:(int *)y;
+- (void)setIconLocation:(NSPoint)center ofName:(NSString *)name;
+- (NSMutableDictionary *)plistForName:(NSString *)name sid:(NSString *)sid;
+- (void)setPlist:(NSDictionary *)pl forName:(NSString *)name sid:(NSString *)sid;
+- (BOOL)write;
+@end
+
 @protocol TIconViewDelegate <NSObject>
 - (void)iconViewOpenItem:(NSString *)path;
 - (void)iconViewSelectionChanged:(NSArray *)paths;
