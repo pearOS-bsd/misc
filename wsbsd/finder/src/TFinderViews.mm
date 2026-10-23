@@ -707,20 +707,21 @@ static const CGFloat kColW = 247, kColRow = 22;
 	}
 }
 - (void)drawBackground { [TF_SIDEBAR setFill]; NSRectFill([self bounds]); }
-- (NSRect)_rect:(NSInteger)i                                          /* rows 32 apart from y 52, a section header 19 high with 13 above it */
+- (BOOL)_collapsedRow:(NSInteger)i { NSArray *c = TFPref(@"SidebarCollapsed", @[]); for (NSInteger k = i; k >= 0; k--) if ([_rows[k][@"k"] isEqual: @"head"]) return [c containsObject: _rows[k][@"t"]] && k != i; return NO; }
+- (NSRect)_rect:(NSInteger)i                                          /* rows 32 apart from y 52, a section header 19 high with 13 above it; the rows of a folded section take no room */
 {
-	CGFloat y = 52; for (NSInteger k = 0; k <= i; k++) { BOOL head = [_rows[k][@"k"] isEqual: @"head"]; if (head) { y += 13; if (k == i) return NSMakeRect(15, y, [self bounds].size.width - 30, 19); y += 19; } else { if (k == i) return NSMakeRect(10, y, [self bounds].size.width - 37, 32); y += 32; } }
+	CGFloat y = 52; for (NSInteger k = 0; k <= i; k++) { BOOL head = [_rows[k][@"k"] isEqual: @"head"]; if (head) { y += 13; if (k == i) return NSMakeRect(15, y, [self bounds].size.width - 30, 19); y += 19; } else { if ([self _collapsedRow: k]) { if (k == i) return NSZeroRect; continue; } if (k == i) return NSMakeRect(10, y, [self bounds].size.width - 37, 32); y += 32; } }
 	return NSZeroRect;
 }
-- (CGFloat)contentHeight { return NSMaxY([self _rect: (NSInteger)[_rows count] - 1]) + 12; }
+- (CGFloat)contentHeight { for (NSInteger i = (NSInteger)[_rows count] - 1; i >= 0; i--) { NSRect r = [self _rect: i]; if (!NSIsEmptyRect(r)) return NSMaxY(r) + 12; } return 120; }
 - (BOOL)isDragPoint:(NSPoint)p { return p.y < 52; }
 static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(255, 69, 58), @"Orange": TFRGB(255, 159, 10), @"Yellow": TFRGB(255, 214, 10), @"Green": TFRGB(48, 209, 88), @"Blue": TFRGB(10, 132, 255), @"Purple": TFRGB(191, 90, 242), @"Gray": TFRGB(152, 152, 157) }; return c[n]; }
 - (void)drawContent:(NSRect)v
 {
 	BOOL key = KeyWin(self); NSColor *tint = key ? TF_BLUE : TFRGB(150, 150, 150);
 	for (NSInteger i = 0; i < (NSInteger)[_rows count]; i++) {
-		NSDictionary *it = _rows[i]; NSRect r = [self _rect: i]; if (NSMaxY(r) < v.origin.y || r.origin.y > NSMaxY(v)) continue; NSString *k = it[@"k"];
-		if ([k isEqual: @"head"]) { TextAt(it[@"t"], r.origin.x, NSMidY(r), Font(11, YES, TFDark() ? TFRGBA(255, 255, 255, 0.40) : TFRGBA(0, 0, 0, 0.45))); continue; }
+		NSDictionary *it = _rows[i]; NSRect r = [self _rect: i]; if (NSIsEmptyRect(r) || NSMaxY(r) < v.origin.y || r.origin.y > NSMaxY(v)) continue; NSString *k = it[@"k"];
+		if ([k isEqual: @"head"]) { TextAt(it[@"t"], r.origin.x, NSMidY(r), Font(11, YES, TFDark() ? TFRGBA(255, 255, 255, 0.40) : TFRGBA(0, 0, 0, 0.45))); if (_hoverHead == i) { NSString *lab = [TFPref(@"SidebarCollapsed", @[]) containsObject: it[@"t"]] ? @"Show" : @"Hide"; NSSize z = [lab sizeWithAttributes: Font(11, NO, TF_DIM)]; TextAt(lab, NSMaxX(r) - z.width - 8, NSMidY(r), Font(11, NO, TF_DIM)); } continue; }
 		BOOL cur = [it[@"p"] length] && [current isEqual: it[@"p"]]; if (cur) FillRound(r, 11, TFDark() ? (key ? TFRGBA(255, 255, 255, 0.13) : TFRGB(51, 51, 51)) : TFRGBA(0, 0, 0, key ? 0.10 : 0.07));
 		NSRect ic = NSMakeRect(18, NSMidY(r) - 11, 22, 22);
 		if ([k isEqual: @"tag"]) { [TagColorFor(it[@"t"]) setFill]; [[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(22, NSMidY(r) - 6, 13, 13)] fill]; }
@@ -745,8 +746,13 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 	return nil;
 }
 - (void)_removeFav:(NSMenuItem *)it { NSMutableArray *f = [TFPref(@"SidebarFavorites", @[]) mutableCopy]; [f removeObject: [it representedObject]]; TFSetPref(@"SidebarFavorites", f); }
+- (void)mouseMoved:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; p.y = p.y - topInset + off; NSInteger h = -1; for (NSInteger i = 0; i < (NSInteger)[_rows count]; i++) if ([_rows[i][@"k"] isEqual: @"head"] && NSPointInRect(NSMakePoint(p.x, p.y), NSInsetRect([self _rect: i], -10, 4))) h = i; if (h != _hoverHead) { _hoverHead = h; [self setNeedsDisplay: YES]; } }
+- (void)mouseExited:(NSEvent *)e { if (_hoverHead != -1) { _hoverHead = -1; [self setNeedsDisplay: YES]; } }
+- (void)updateTrackingAreas { [super updateTrackingAreas]; for (NSTrackingArea *t in [self trackingAreas]) [self removeTrackingArea: t]; [self addTrackingArea: [[NSTrackingArea alloc] initWithRect: [self bounds] options: NSTrackingMouseMoved | NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow | NSTrackingInVisibleRect owner: self userInfo: nil]]; }
+- (void)viewDidMoveToWindow { [super viewDidMoveToWindow]; [[self window] setAcceptsMouseMovedEvents: YES]; [self updateTrackingAreas]; }
 - (void)contentMouseDown:(NSPoint)p event:(NSEvent *)e
 {
+	for (NSInteger i = 0; i < (NSInteger)[_rows count]; i++) if ([_rows[i][@"k"] isEqual: @"head"] && NSPointInRect(p, NSInsetRect([self _rect: i], -10, 4)) && p.x > NSMaxX([self _rect: i]) - 60) { NSMutableArray *c = [TFPref(@"SidebarCollapsed", @[]) mutableCopy]; NSString *t = _rows[i][@"t"]; if ([c containsObject: t]) [c removeObject: t]; else [c addObject: t]; TFSetPref(@"SidebarCollapsed", c); [self setNeedsDisplay: YES]; return; }
 	for (NSInteger i = 0; i < (NSInteger)[_rows count]; i++) if (![_rows[i][@"k"] isEqual: @"head"] && NSPointInRect(p, [self _rect: i])) { NSString *path = _rows[i][@"p"]; if ([_rows[i][@"eject"] boolValue] && p.x > NSMaxX([self _rect: i]) - 40) { if (TFEject(path)) { _sig = nil; [self _poll: nil]; } else NSBeep(); return; } if ([path hasPrefix: @"/"] || [path hasPrefix: @"tag://"] || [path isEqual: @"recents://"] || [path isEqual: @"airdrop://"]) [delegate sidebarGoTo: path]; return; }
 }
 @end

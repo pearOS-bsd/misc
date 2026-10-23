@@ -118,7 +118,7 @@ NSImage *TFIcon(NSString *path);
 - (NSArray *)selectedPaths;
 @end
 
-@interface TSidebarView : TScrollBase { @public NSString *current; __weak id<TSidebarDelegate> delegate; NSArray *_rows; NSString *_sig; }
+@interface TSidebarView : TScrollBase { @public NSString *current; __weak id<TSidebarDelegate> delegate; NSArray *_rows; NSString *_sig; NSInteger _hoverHead; }
 - (NSString *)dropPathAtWindowPoint:(NSPoint)p;
 @end
 
