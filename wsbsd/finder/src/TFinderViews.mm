@@ -443,7 +443,7 @@ static const CGFloat kRow = 24, kHead = 28;
 - (NSMutableDictionary *)_makeItem:(NSString *)p fm:(NSFileManager *)fm depth:(int)depth
 {
 	NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory] && !TFIsPackage(p);
-	return [@{ @"name": [p lastPathComponent], @"path": p, @"dir": @(dir), @"date": at[NSFileModificationDate] ?: [NSDate distantPast], @"size": dir ? @(-1) : at[NSFileSize] ?: @0, @"kind": TFKindString(p, dir), @"tags": TFTagsOf(p), @"depth": @(depth), @"cre": at[NSFileCreationDate] ?: [NSDate distantPast], @"acc": at[@"NSFileAccessDate"] ?: at[NSFileModificationDate] ?: [NSDate distantPast], @"tagsort": [TFTagsOf(p) componentsJoinedByString: @","] } mutableCopy];
+	return [@{ @"name": [p lastPathComponent], @"path": p, @"dir": @(dir), @"date": at[NSFileModificationDate] ?: [NSDate distantPast], @"mod": at[NSFileModificationDate] ?: [NSDate distantPast], @"size": dir ? @(-1) : at[NSFileSize] ?: @0, @"kind": TFKindString(p, dir), @"tags": TFTagsOf(p), @"depth": @(depth), @"cre": at[NSFileCreationDate] ?: [NSDate distantPast], @"acc": at[@"NSFileAccessDate"] ?: at[NSFileModificationDate] ?: [NSDate distantPast], @"tagsort": [TFTagsOf(p) componentsJoinedByString: @","] } mutableCopy];
 }
 - (void)setPaths:(NSArray *)paths
 {
@@ -459,7 +459,14 @@ static const CGFloat kRow = 24, kHead = 28;
 }
 - (void)_rebuild
 {
-	NSArray *keep = [self selectedPaths]; [_items removeAllObjects]; __block __weak void (^addLevel)(NSArray *) = nil; void (^add)(NSArray *) = ^(NSArray *level) { for (NSMutableDictionary *it in level) { [_items addObject: it]; if ([_exp containsObject: it[@"path"]] && _kids[it[@"path"]]) addLevel(_kids[it[@"path"]]); } }; addLevel = add; add(_roots);
+	NSArray *keep = [self selectedPaths]; [_items removeAllObjects]; __block __weak void (^addLevel)(NSArray *) = nil; void (^add)(NSArray *) = ^(NSArray *level) { for (NSMutableDictionary *it in level) { [_items addObject: it]; if ([_exp containsObject: it[@"path"]] && _kids[it[@"path"]]) addLevel(_kids[it[@"path"]]); } }; addLevel = add;
+	if (!_group) add(_roots);
+	else {                                                                                                                    /* Use Groups: a header row, then the items of the group in the sort order */
+		NSMutableDictionary *byTitle = [NSMutableDictionary dictionary], *order = [NSMutableDictionary dictionary]; NSMutableArray *titles = [NSMutableArray array];
+		for (NSMutableDictionary *it in _roots) { int o; NSString *t = GroupTitle(it, _group, &o); if (!byTitle[t]) { byTitle[t] = [NSMutableArray array]; order[t] = @(o); [titles addObject: t]; } [byTitle[t] addObject: it]; }
+		[titles sortUsingComparator: ^NSComparisonResult(NSString *a, NSString *b) { NSComparisonResult r = [order[a] compare: order[b]]; return r != NSOrderedSame ? r : [a tfNameCompare: b]; }];
+		for (NSString *t in titles) { [_items addObject: [@{ @"header": @YES, @"name": t, @"path": @"", @"dir": @NO, @"depth": @0, @"count": @([byTitle[t] count]) } mutableCopy]]; add(byTitle[t]); }
+	}
 	[_sel removeAllIndexes]; for (NSUInteger i = 0; i < [_items count]; i++) if ([keep containsObject: _items[i][@"path"]]) [_sel addIndex: i]; [self setNeedsDisplay: YES];
 }
 - (void)_toggleRow:(NSInteger)row
@@ -498,6 +505,7 @@ static NSString *SortFieldFor(NSString *col) { NSDictionary *m = @{ @"name": @"n
 	BOOL key = KeyWin(self); NSArray *cols = [self _cols]; CGFloat w = [self bounds].size.width;
 	for (NSInteger i = 0; i < (NSInteger)[_items count]; i++) {
 		CGFloat y = 4 + i * kRow; if (y + kRow < v.origin.y || y > NSMaxY(v)) continue; NSDictionary *it = _items[i]; BOOL sel = [_sel containsIndex: i]; CGFloat cy = y + kRow / 2;
+		if ([it[@"header"] boolValue]) { NSDictionary *hf = Font(13, YES, TF_TEXT); TextAt(it[@"name"], 16, cy, hf); NSString *cn = [NSString stringWithFormat: @"%@", it[@"count"]]; TextAt(cn, 16 + [it[@"name"] sizeWithAttributes: hf].width + 8, cy, Font(12, NO, TF_DIM)); [TF_LINE setFill]; NSRectFill(NSMakeRect(16, y + kRow - 1, w - 32 - 10, 1)); continue; }
 		if (i == _dropRow) { FillRound(NSMakeRect(8, y, w - 16 - 10, kRow), 6, TFRGBA(0, 98, 225, 0.45)); }
 		if (sel) FillRound(NSMakeRect(8, y, w - 16 - 10, kRow), 6, key ? TF_ACCENT : (TFDark() ? TFRGB(70, 70, 70) : TFRGB(200, 200, 204))); else if (i % 2) FillRound(NSMakeRect(8, y, w - 16 - 10, kRow), 6, TFDark() ? TFRGBA(255, 255, 255, 0.04) : TFRGBA(0, 0, 0, 0.04));
 		NSColor *tc = sel ? TFRGB(255, 255, 255) : TF_TEXT, *dc = sel ? TFRGBA(255, 255, 255, 0.8) : TF_DIM; CGFloat ind = [it[@"depth"] intValue] * 18; if ([it[@"dir"] boolValue]) TFSymbolW([_exp containsObject: it[@"path"]] ? @"chevron.down" : @"chevron.right", NSMakeRect(8 + ind, y, 14, kRow), 9, 6, sel ? TFRGB(255, 255, 255) : TF_DIM); { NSImage *tm = Thumb(it[@"path"]); if (tm) { NSSize z = [tm size]; CGFloat k = MIN(16 / z.width, 16 / z.height); [tm drawInRect: NSMakeRect(32 + ind - z.width * k / 2, cy - z.height * k / 2, z.width * k, z.height * k) fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; } else TFDrawIcon(it[@"path"], NSMakeRect(24 + ind, cy - 8, 16, 16)); }
@@ -521,7 +529,8 @@ static NSString *SortFieldFor(NSString *col) { NSDictionary *m = @{ @"name": @"n
 }
 - (NSInteger)_row:(NSPoint)p { NSInteger i = (NSInteger)floor((p.y - 4) / kRow); return i >= 0 && i < (NSInteger)[_items count] ? i : -1; }
 - (void)_notify { if ([delegate respondsToSelector: @selector(iconViewSelectionChanged:)]) [delegate iconViewSelectionChanged: [self selectedPaths]]; }
-- (NSArray *)selectedPaths { NSMutableArray *a = [NSMutableArray array]; [_sel enumerateIndexesUsingBlock: ^(NSUInteger i, BOOL *s) { [a addObject: self->_items[i][@"path"]]; }]; return a; }
+- (NSArray *)selectedPaths { NSMutableArray *a = [NSMutableArray array]; [_sel enumerateIndexesUsingBlock: ^(NSUInteger i, BOOL *s) { if (![self->_items[i][@"header"] boolValue]) [a addObject: self->_items[i][@"path"]]; }]; return a; }
+- (void)setGroup:(NSString *)g { _group = [g length] ? [g copy] : nil; [self _rebuild]; off = 0; [self setNeedsDisplay: YES]; [self _notify]; }
 - (void)mouseDown:(NSEvent *)e
 {
 	NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil];
@@ -538,6 +547,7 @@ static NSString *SortFieldFor(NSString *col) { NSDictionary *m = @{ @"name": @"n
 - (void)contentMouseDown:(NSPoint)p event:(NSEvent *)e
 {
 	NSInteger i = [self _row: p]; NSUInteger fl = [e modifierFlags]; if (i < 0) { [_sel removeAllIndexes]; [self setNeedsDisplay: YES]; [self _notify]; return; }
+	if ([_items[i][@"header"] boolValue]) { [_sel removeAllIndexes]; for (NSInteger k = i + 1; k < (NSInteger)[_items count] && ![_items[k][@"header"] boolValue]; k++) [_sel addIndex: k]; _anchor = i + 1; [self setNeedsDisplay: YES]; [self _notify]; return; }
 	if ([_items[i][@"dir"] boolValue] && p.x >= 6 + [_items[i][@"depth"] intValue] * 18 && p.x < 24 + [_items[i][@"depth"] intValue] * 18) { [self _toggleRow: i]; return; }
 	if (fl & NSShiftKeyMask && _anchor >= 0) { [_sel removeAllIndexes]; [_sel addIndexesInRange: NSMakeRange(MIN(_anchor, i), labs(i - _anchor) + 1)]; }
 	else if (fl & NSCommandKeyMask) { if ([_sel containsIndex: i]) [_sel removeIndex: i]; else [_sel addIndex: i]; _anchor = i; }
@@ -564,7 +574,7 @@ static NSString *SortFieldFor(NSString *col) { NSDictionary *m = @{ @"name": @"n
 {
 	NSString *k = [e charactersIgnoringModifiers]; if (![k length]) return; unichar c = [k characterAtIndex: 0]; NSInteger cur = [_sel count] ? (NSInteger)[_sel lastIndex] : -1, n = (NSInteger)[_items count], t = cur;
 	if (c == ' ') { [NSApp sendAction: @selector(cmdQuickLook:) to: nil from: self]; return; } else if (c == NSUpArrowFunctionKey) t = cur < 0 ? 0 : MAX(0, cur - 1); else if (c == NSDownArrowFunctionKey) t = cur < 0 ? 0 : MIN(n - 1, cur + 1); else if (c == NSRightArrowFunctionKey && cur >= 0 && [_items[cur][@"dir"] boolValue] && ![_exp containsObject: _items[cur][@"path"]]) { [self _toggleRow: cur]; return; } else if (c == NSLeftArrowFunctionKey && cur >= 0 && [_exp containsObject: _items[cur][@"path"]]) { [self _toggleRow: cur]; return; } else if (c == '\r' && cur >= 0) { [NSApp sendAction: @selector(cmdRename:) to: nil from: self]; return; } else { [super keyDown: e]; return; }
-	if (n) { [_sel removeAllIndexes]; [_sel addIndex: t]; _anchor = t; [self reveal: NSMakeRect(0, 4 + t * kRow, 10, kRow)]; [self setNeedsDisplay: YES]; [self _notify]; }
+	if (n) { NSInteger dirn = (c == NSUpArrowFunctionKey) ? -1 : 1; while (t >= 0 && t < n && [_items[t][@"header"] boolValue]) t += dirn; if (t < 0 || t >= n) { t = cur >= 0 && cur < n ? cur : 0; while (t < n && [_items[t][@"header"] boolValue]) t++; if (t >= n) return; } [_sel removeAllIndexes]; [_sel addIndex: t]; _anchor = t; [self reveal: NSMakeRect(0, 4 + t * kRow, 10, kRow)]; [self setNeedsDisplay: YES]; [self _notify]; }
 }
 @end
 
