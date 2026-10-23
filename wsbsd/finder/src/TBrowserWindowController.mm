@@ -16,7 +16,7 @@ static BOOL _searchBar_skipLib(NSString *root);
 @interface NSObject (TFSupport) + (void)roundWindow:(NSWindow *)w radius:(int)r; @end
 
 /* ---------- the window controller ---------- */
-@interface TBrowserWindowController : NSWindowController <TIconViewDelegate, TSidebarDelegate, TPathBarDelegate, NSWindowDelegate> { NSURL *_url; NSMutableArray<NSString *> *_history; NSInteger _hi; TToolbarView *_toolbar; TSidebarView *_sidebar; TIconView *_icons; TListView *_list; TColumnView *_cols; TGalleryView *_gallery; TPathBarView *_pathBar; TWindowTrim *_trim; TStatusBarView *_status; BOOL _showStatus; TSearchBar *_searchBar; TTabBar *_tabBar; NSMutableArray *_tabs; NSInteger _tabIx; BOOL _forceTabBar; NSString *_lastGroup; NSArray *_found; NSInteger _searchGen; BOOL _searchStarted; NSMenu *_ctxMenu; NSString *_filter, *_tag; NSMutableArray *_undo, *_redo; long long _watchedMod; NSTimer *_watcher; NSArray *_cutPaths; NSArray *_selection; NSInteger _mode; }
+@interface TBrowserWindowController : NSWindowController <TIconViewDelegate, TSidebarDelegate, TPathBarDelegate, NSWindowDelegate> { NSURL *_url; TPreviewPane *_preview; BOOL _showPane; NSMutableArray<NSString *> *_history; NSInteger _hi; TToolbarView *_toolbar; TSidebarView *_sidebar; TIconView *_icons; TListView *_list; TColumnView *_cols; TGalleryView *_gallery; TPathBarView *_pathBar; TWindowTrim *_trim; TStatusBarView *_status; BOOL _showStatus; TSearchBar *_searchBar; TTabBar *_tabBar; NSMutableArray *_tabs; NSInteger _tabIx; BOOL _forceTabBar; NSString *_lastGroup; NSArray *_found; NSInteger _searchGen; BOOL _searchStarted; NSMenu *_ctxMenu; NSString *_filter, *_tag; NSMutableArray *_undo, *_redo; long long _watchedMod; NSTimer *_watcher; NSArray *_cutPaths; NSArray *_selection; NSInteger _mode; }
 + (instancetype)newBrowserWithPath:(NSString *)path;
 - (void)goToPath:(NSString *)path;
 @end
@@ -191,7 +191,7 @@ static BOOL _searchBar_skipLib(NSString *root) { return [root isEqual: NSHomeDir
 {
 	NSRect b = [[[self window] contentView] bounds]; CGFloat W = b.size.width, H = b.size.height, sw = [_sidebar isHidden] ? 0 : 238, pb = [_pathBar isHidden] ? 0 : 30, sb = _showStatus ? 28 : 0;
 	NSRect (^R)(CGFloat, CGFloat, CGFloat, CGFloat) = ^NSRect(CGFloat x, CGFloat top, CGFloat w, CGFloat h) { return NSMakeRect(x, H - top - h, w, h); };
-	[_sidebar setFrame: R(0, 0, sw, H)]; [_toolbar setFrame: R(sw, 0, W - sw, 52)]; BOOL showTabs = [_tabs count] > 1 || _forceTabBar; CGFloat tbh = showTabs ? 28 : 0; [_tabBar setHidden: !showTabs]; [_tabBar setFrame: R(sw, 52, W - sw, tbh)]; BOOL srch = _filter != nil; CGFloat sbh = srch ? 34 : 0; [_searchBar setHidden: !srch]; [_searchBar setFrame: R(sw, 52 + tbh, W - sw, sbh)]; NSRect c = R(sw, 52 + tbh + sbh, W - sw, H - 52 - tbh - sbh - pb - sb); [_status setHidden: !_showStatus]; [_status setFrame: R(sw, H - pb - sb, W - sw, sb)]; [_icons setFrame: c]; [_list setFrame: c]; [_cols setFrame: c]; [_gallery setFrame: c]; [_pathBar setFrame: R(sw, H - pb, W - sw, pb)]; [_trim setFrame: b];
+	[_sidebar setFrame: R(0, 0, sw, H)]; [_toolbar setFrame: R(sw, 0, W - sw, 52)]; BOOL showTabs = [_tabs count] > 1 || _forceTabBar; CGFloat tbh = showTabs ? 28 : 0; [_tabBar setHidden: !showTabs]; [_tabBar setFrame: R(sw, 52, W - sw, tbh)]; BOOL srch = _filter != nil; CGFloat sbh = srch ? 34 : 0; [_searchBar setHidden: !srch]; [_searchBar setFrame: R(sw, 52 + tbh, W - sw, sbh)]; NSRect c = R(sw, 52 + tbh + sbh, W - sw, H - 52 - tbh - sbh - pb - sb); [_status setHidden: !_showStatus]; [_status setFrame: R(sw, H - pb - sb, W - sw, sb)]; BOOL pane = _showPane && _mode != 2 && _mode != 3; if (!_preview) { _preview = [[TPreviewPane alloc] initWithFrame: NSZeroRect]; [[[self window] contentView] addSubview: _preview positioned: NSWindowBelow relativeTo: _trim]; } [_preview setHidden: !pane]; if (pane) { CGFloat pw = 260; [_preview setFrame: NSMakeRect(NSMaxX(c) - pw, c.origin.y, pw, c.size.height)]; c.size.width -= pw; } [_icons setFrame: c]; [_list setFrame: c]; [_cols setFrame: c]; [_gallery setFrame: c]; [_pathBar setFrame: R(sw, H - pb, W - sw, pb)]; [_trim setFrame: b];
 	for (NSView *v in @[ _sidebar, _toolbar, _icons, _list, _cols, _gallery, _pathBar, _status, _searchBar, _tabBar, _trim ]) [v setNeedsDisplay: YES];
 }
 /* what the file operations act on */
@@ -321,6 +321,7 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 	if (sel_isEqual(a, @selector(cmdDeleteImmediately:)) || sel_isEqual(a, @selector(cmdCompress:)) || sel_isEqual(a, @selector(cmdQuickLook:)) || sel_isEqual(a, @selector(cmdOpenInNewTab:)) || sel_isEqual(a, @selector(cmdDuplicateExactly:)) || sel_isEqual(a, @selector(cmdShowOriginal:))) return has;
 	if (sel_isEqual(a, @selector(cmdEmptyTrash:)) || sel_isEqual(a, @selector(cmdEmptyTrashSilently:))) return [[[NSFileManager defaultManager] contentsOfDirectoryAtPath: TrashPath() error: NULL] count] > 0;
 	if (sel_isEqual(a, @selector(cmdAddToSidebar:))) { BOOL ok = NO; for (NSString *p in _selection) { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: p isDirectory: &d]; if (d) ok = YES; } return ok; }
+	if (sel_isEqual(a, @selector(cmdTogglePreviewPane:))) { [i setTitle: _showPane ? @"Hide Preview" : @"Show Preview"]; return _mode != 2 && _mode != 3; }
 	if (sel_isEqual(a, @selector(cmdToggleStatusBar:))) { [i setTitle: _showStatus ? @"Hide Status Bar" : @"Show Status Bar"]; return YES; }
 	if (sel_isEqual(a, @selector(cmdArrangeByNone:)) || sel_isEqual(a, @selector(cmdArrangeByName:)) || sel_isEqual(a, @selector(cmdArrangeByKind:)) || sel_isEqual(a, @selector(cmdArrangeByDateModified:)) || sel_isEqual(a, @selector(cmdArrangeByDateCreated:)) || sel_isEqual(a, @selector(cmdArrangeBySize:)) || sel_isEqual(a, @selector(cmdArrangeByFinderTags:))) { NSString *k = _icons->_arrange; NSDictionary *m = @{ @"cmdArrangeByName:": @"name", @"cmdArrangeByKind:": @"kind", @"cmdArrangeByDateModified:": @"modified", @"cmdArrangeByDateCreated:": @"created", @"cmdArrangeBySize:": @"size", @"cmdArrangeByFinderTags:": @"tags" }; NSString *mine = m[NSStringFromSelector(a)]; [i setState: (mine ? [mine isEqual: k] : ![k length]) ? NSOnState : NSOffState]; return _mode != 1; }
 	if (sel_isEqual(a, @selector(cmdTogglePathBar:))) { [i setTitle: [_pathBar isHidden] ? @"Show Path Bar" : @"Hide Path Bar"]; return YES; } if (sel_isEqual(a, @selector(cmdToggleSidebar:))) { [i setTitle: [_sidebar isHidden] ? @"Show Sidebar" : @"Hide Sidebar"]; return YES; }
@@ -329,7 +330,7 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 }
 /* delegates */
 - (void)iconViewOpenItem:(NSString *)path { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &d]; if (d && !TFIsPackage(path)) [self goToPath: path]; else TFOpenPath(path); }
-- (void)iconViewSelectionChanged:(NSArray *)paths { _selection = paths; if ([paths count] == 1) [_pathBar setPath: paths[0]]; else [_pathBar setPath: [_url path]]; [self _updateStatus]; }
+- (void)iconViewSelectionChanged:(NSArray *)paths { _selection = paths; if ([paths count] == 1) [_pathBar setPath: paths[0]]; else [_pathBar setPath: [_url path]]; [self _updateStatus]; [self _refreshPane]; }
 - (void)_updateStatus
 {
 	if (!_showStatus) return; NSFileManager *fm = [NSFileManager defaultManager]; NSUInteger n = 0; if (_tag) n = [([_tag isEqual: @"\1recents"] ? TFRecentPaths() : TFPathsTagged(_tag)) count]; else for (NSString *s in [fm contentsOfDirectoryAtPath: [_url path] error: NULL]) if (![s hasPrefix: @"."]) n++;
@@ -407,7 +408,8 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 - (void)cmdUseGroupsOrStacks:(id)s { if (_mode != 0) return; [_icons setGroup: _icons->_group ? nil : (_lastGroup ?: @"kind")]; if (_icons->_group) _lastGroup = _icons->_group; }
 - (void)cmdGroupByKey:(NSMenuItem *)it { NSString *k = [it representedObject]; if (_mode != 0) return; _lastGroup = [k length] ? k : _lastGroup; [_icons setGroup: k]; }
 - (void)cmdSortByKey:(NSMenuItem *)it { NSString *k = [it representedObject]; [self _arrange: [k length] ? k : nil]; }
-- (void)cmdTogglePreviewPane:(id)s {}
+- (void)cmdTogglePreviewPane:(id)s { _showPane = !_showPane; [self _layout]; [self _refreshPane]; }
+- (void)_refreshPane { if (!_preview) return; _preview->paths = _selection; _preview->folder = [_url path]; [_preview setNeedsDisplay: YES]; }
 - (void)cmdTogglePreviewOptions:(id)s {}
 - (void)cmdCleanUpByLastOpenDate:(id)s { [self cmdCleanUpByModDate: s]; }
 - (void)cmdCleanUpByDateAdded:(id)s { [self cmdCleanUpByCreationDate: s]; }
