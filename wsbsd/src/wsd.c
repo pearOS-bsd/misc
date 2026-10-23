@@ -1120,7 +1120,9 @@ static int do_private(conn *c, const uint8_t *buf, size_t len)
 		r.retcode = ws_write_ppm(screen, q.s) ? CGS_ERROR_FAILURE : 0;
 		break;
 	case WSX_INJECT_MOUSE: ws_server_mouse(srv, a[0], a[1], a[2]); if (a[3] == 1) ws_server_scroll(srv, a[0], a[1], a[4], a[5], 0); break;        /* a[3] = 1: a scroll of (a[4], a[5]) points at the pointer */
-	case WSX_INJECT_KEY: ws_server_key(srv, a[0], a[1]); break;
+	case WSX_INJECT_KEY:
+		if (a[0] & 0x40000000) { uint32_t m = (uint32_t)a[0] & 0x3fffffff, cur = ws_server_modifier_flags(srv); ws_server_flags(srv, a[1] ? (cur | m) : (cur & ~m)); break; }          /* test injection of the modifier state */
+		ws_server_key(srv, a[0], a[1]); break;
 	case WSX_NEXT_EVENT: {
 		ws_event e = { 0 };
 		ws_next_event(srv, (ws_wid)a[0], &e);

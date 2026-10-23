@@ -9,9 +9,9 @@ TF_ATTR static NSColor *TFRGB(int r, int g, int b) { return [NSColor colorWithCa
 TF_ATTR static NSColor *TFRGBA(int r, int g, int b, double a) { return [NSColor colorWithCalibratedRed: r / 255.0 green: g / 255.0 blue: b / 255.0 alpha: a]; }
 TF_ATTR static BOOL TFDark(void) { Class k = NSClassFromString(@"WsdFinderSupport"); if (k && [k respondsToSelector: @selector(isDark)]) return [(id)k isDark]; const char *e = getenv("WSD_APPEARANCE"); return !(e && !strcmp(e, "light")); }
 #define TF_CONTENT  (TFDark() ? TFRGB(30, 30, 30) : TFRGB(255, 255, 255))
-#define TF_SIDEBAR  (TFDark() ? TFRGB(37, 37, 37) : TFRGB(236, 236, 238))
-#define TF_PILL     (TFDark() ? TFRGB(58, 58, 58) : TFRGB(240, 240, 242))
-#define TF_PATHBAR  (TFDark() ? TFRGB(41, 41, 41) : TFRGB(246, 246, 246))
+#define TF_SIDEBAR  (TFDark() ? TFRGB(38, 38, 38) : TFRGB(236, 236, 238))
+#define TF_PILL     (TFDark() ? TFRGB(60, 60, 60) : TFRGB(240, 240, 242))
+#define TF_PATHBAR  (TFDark() ? TFRGB(38, 38, 38) : TFRGB(246, 246, 246))
 #define TF_LINE     (TFDark() ? TFRGBA(255, 255, 255, 0.10) : TFRGBA(0, 0, 0, 0.10))
 #define TF_TEXT     (TFDark() ? TFRGBA(255, 255, 255, 0.85) : TFRGBA(0, 0, 0, 0.85))
 #define TF_DIM      (TFDark() ? TFRGBA(255, 255, 255, 0.42) : TFRGBA(0, 0, 0, 0.45))
@@ -37,6 +37,7 @@ NSString *TFDisplayName(NSString *path);
 BOOL TFEject(NSString *mount);
 void TFPopupMenu(NSView *view, NSPoint p, NSMenu *menu);
 BOOL TFSymbol(NSString *name, NSRect cell, CGFloat pt, NSColor *tint);
+BOOL TFSymbolW(NSString *name, NSRect cell, CGFloat pt, int weight, NSColor *tint);
 NSImage *TFIcon(NSString *path);
 
 /* .DS_Store of a folder */
@@ -114,7 +115,7 @@ NSImage *TFIcon(NSString *path);
 - (void)setPath:(NSString *)p;
 @end
 
-@interface TToolbarView : NSView { @public NSString *title; BOOL canBack, canForward; id target; NSInteger mode; NSTextField *search; BOOL searching; NSInteger hot; }
+@interface TToolbarView : NSView { @public NSString *title; BOOL canBack, canForward; id target; NSInteger mode; NSTextField *search; BOOL searching; NSInteger hot; NSRect _pressed; }
 - (void)setSearching:(BOOL)on;
 @end
 

@@ -567,7 +567,7 @@ static BOOL DrawSymbol(NSString *name, NSRect cell, CGFloat pointSize, NSColor *
 	if (!g || g == [NSNull null]) return NO;
 	WsdGlyph *w = g; double k = pointSize / 13.0; NSAffineTransform *t = [NSAffineTransform transform];
 	[t translateXBy: NSMidX(cell) - w->size.width * k / 2 yBy: NSMidY(cell) - w->size.height * k / 2]; [t scaleBy: (CGFloat)k];
-	for (NSUInteger i = 0; i < [w->paths count]; i++) { NSBezierPath *p = [t transformBezierPath: w->paths[i]]; [[tint colorWithAlphaComponent: [tint alphaComponent] * [w->alphas[i] doubleValue]] setFill]; [p fill]; }
+	for (NSUInteger i = 0; i < [w->paths count]; i++) { NSBezierPath *p = [t transformBezierPath: w->paths[i]]; [p setWindingRule: NSEvenOddWindingRule]; [[tint colorWithAlphaComponent: [tint alphaComponent] * [w->alphas[i] doubleValue]] setFill]; [p fill]; }
 	return YES;
 }
 /* for NSImage's system symbols (WsdSymbolImage.m): the symbol's size in points at `pointSize`, and its drawing in the colour `tint` centred in `cell` */
@@ -581,7 +581,7 @@ BOOL WsdSymbolDraw(NSString *name, NSRect cell, CGFloat pointSize, int weight, N
 	id g = GlyphTableW(@[ name ], weight)[name]; if (!g || g == [NSNull null]) return NO;
 	WsdGlyph *w = g; double k = pointSize / 13.0; NSAffineTransform *t = [NSAffineTransform transform];
 	[t translateXBy: NSMidX(cell) - w->size.width * k / 2 yBy: NSMidY(cell) - w->size.height * k / 2]; [t scaleBy: (CGFloat)k];
-	for (NSUInteger i = 0; i < [w->paths count]; i++) { NSBezierPath *p = [t transformBezierPath: w->paths[i]]; [[tint colorWithAlphaComponent: [tint alphaComponent] * [w->alphas[i] doubleValue]] setFill]; [p fill]; }
+	for (NSUInteger i = 0; i < [w->paths count]; i++) { NSBezierPath *p = [t transformBezierPath: w->paths[i]]; [p setWindingRule: NSEvenOddWindingRule]; [[tint colorWithAlphaComponent: [tint alphaComponent] * [w->alphas[i] doubleValue]] setFill]; [p fill]; }
 	return YES;
 }
 static void DrawSideIcon(NSString *name, NSRect r, NSColor *tint)                                              /* the SF Symbols of the sidebar, in the accent colour (grey when the window is not key) */
