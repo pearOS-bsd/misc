@@ -952,27 +952,31 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 /* ---------- the preview pane ---------- */
 @implementation TPreviewPane
 - (BOOL)isFlipped { return YES; }
+/* Layout read from the accessibility tree of the real Finder's preview pane (310 wide; from the top of the pane): the preview 273 x 255 at (10, 10), the name 14 pt bold at (10, 291), the kind and the
+ * size 13 pt dimmed at (9, 313), "Information" 14 pt bold at (9, 337), the rows "Created" and "Modified" 13 pt (the label dimmed at x 9, the value bold, right-aligned to x 284) on a pitch of 23 from y 361,
+ * "Tags" 14 pt bold at (9, 415), its field 273 x 33 at (10, 438). Missing: "Show More" (its rows depend on the kind of file and were measured for a PDF only), the preview of documents (only pictures here),
+ * the quick actions under the pane. The dates are written as the Mac does ("Monday, 3 August 2026 at 18:31"). */
+static NSString *LongDate(NSDate *d) { if (!d) return @""; static NSDateFormatter *f; if (!f) { f = [[NSDateFormatter alloc] init]; [f setLocale: [[NSLocale alloc] initWithLocaleIdentifier: @"en_GB"]]; [f setDateFormat: @"EEEE, d MMMM yyyy 'at' HH:mm"]; } return [f stringFromDate: d]; }
 - (void)drawRect:(NSRect)dirty
 {
-	NSRect b = [self bounds]; [TF_CONTENT setFill]; NSRectFill(b); [TF_LINE setFill]; NSRectFill(NSMakeRect(0, 0, 1, b.size.height)); CGFloat x = 16, w = b.size.width - 32; NSFileManager *fm = [NSFileManager defaultManager];
-	NSMutableParagraphStyle *ps = [[NSMutableParagraphStyle alloc] init]; [ps setAlignment: NSTextAlignmentCenter]; [ps setLineBreakMode: NSLineBreakByTruncatingMiddle];
-	NSDictionary *tl = @{ NSFontAttributeName: [NSFont boldSystemFontOfSize: 14], NSForegroundColorAttributeName: TF_TEXT, NSParagraphStyleAttributeName: ps }, *sub = @{ NSFontAttributeName: [NSFont systemFontOfSize: 12], NSForegroundColorAttributeName: TF_DIM, NSParagraphStyleAttributeName: ps };
+	NSRect b = [self bounds]; [TF_CONTENT setFill]; NSRectFill(b); [TF_LINE setFill]; NSRectFill(NSMakeRect(0, 0, 1, b.size.height)); NSFileManager *fm = [NSFileManager defaultManager];
+	NSMutableParagraphStyle *ps = [[NSMutableParagraphStyle alloc] init]; [ps setLineBreakMode: NSLineBreakByTruncatingMiddle];
+	NSDictionary *tl = @{ NSFontAttributeName: [NSFont boldSystemFontOfSize: 14], NSForegroundColorAttributeName: TF_TEXT, NSParagraphStyleAttributeName: ps }, *sub = @{ NSFontAttributeName: [NSFont systemFontOfSize: 13], NSForegroundColorAttributeName: TF_DIM, NSParagraphStyleAttributeName: ps }, *head = @{ NSFontAttributeName: [NSFont boldSystemFontOfSize: 14], NSForegroundColorAttributeName: TF_TEXT };
 	if ([paths count] != 1) {
 		NSString *dir = [paths count] ? nil : folder; unsigned long long total = 0; for (NSString *p in paths) total += [[fm attributesOfItemAtPath: p error: NULL][NSFileSize] unsignedLongLongValue];
 		NSString *title = [paths count] ? [NSString stringWithFormat: @"%lu items", (unsigned long)[paths count]] : [dir length] ? (TFDisplayName(dir) ?: [dir lastPathComponent]) : @"";
-		if ([paths count]) TFDrawIcon(@"/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/GenericDocumentIcon.icns", NSMakeRect(NSMidX(b) - 48, 40, 96, 96));
-		else if (dir) TFDrawIcon(dir, NSMakeRect(NSMidX(b) - 48, 40, 96, 96));
-		[title drawInRect: NSMakeRect(x, 150, w, 18) withAttributes: tl]; if ([paths count]) [TFSizeString(total) drawInRect: NSMakeRect(x, 170, w, 16) withAttributes: sub];
+		NSRect ir = NSMakeRect(NSMidX(b) - 64, 10 + (255 - 128) / 2, 128, 128); if ([paths count]) TFDrawIcon(@"/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/GenericDocumentIcon.icns", ir); else if (dir) TFDrawIcon(dir, ir);
+		[title drawInRect: NSMakeRect(10, 291 + 1, 273, 20) withAttributes: tl]; if ([paths count]) [TFSizeString(total) drawInRect: NSMakeRect(9, 313, 275, 18) withAttributes: sub];
 		return;
 	}
-	NSString *p = paths[0]; NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory]; NSImage *th = dir ? nil : Thumb(p); NSRect pr = NSMakeRect(x, 24, w, 160);
+	NSString *p = paths[0]; NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory]; NSImage *th = dir ? nil : Thumb(p); NSRect pr = NSMakeRect(10, 10, 273, 255);
 	if (th) { NSSize z = [th size]; CGFloat k = MIN(MIN(pr.size.width / z.width, pr.size.height / z.height), 2); [th drawInRect: NSMakeRect(NSMidX(pr) - z.width * k / 2, NSMidY(pr) - z.height * k / 2, z.width * k, z.height * k) fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; }
 	else TFDrawIcon(p, NSMakeRect(NSMidX(pr) - 64, NSMidY(pr) - 64, 128, 128));
-	[[p lastPathComponent] drawInRect: NSMakeRect(x, 198, w, 18) withAttributes: tl];
-	[[NSString stringWithFormat: @"%@ - %@", TFKindString(p, dir), dir ? @"" : TFSizeString([at[NSFileSize] unsignedLongLongValue])] drawInRect: NSMakeRect(x, 218, w, 16) withAttributes: sub];
-	CGFloat y = 254; [@"Information" drawAtPoint: NSMakePoint(x, y) withAttributes: Font(13, YES, TF_TEXT)]; y += 26;
-	for (NSArray *row in @[ @[ @"Created", ShortDate(at[NSFileCreationDate]) ], @[ @"Modified", ShortDate(at[NSFileModificationDate]) ], @[ @"Last opened", ShortDate(at[@"NSFileAccessDate"] ?: at[NSFileModificationDate]) ] ]) { [row[0] drawAtPoint: NSMakePoint(x, y) withAttributes: Font(12, NO, TF_DIM)]; NSSize vs = [row[1] sizeWithAttributes: Font(12, NO, TF_TEXT)]; [row[1] drawAtPoint: NSMakePoint(x + w - vs.width, y) withAttributes: Font(12, NO, TF_TEXT)]; y += 22; }
-	y += 12; [@"Tags" drawAtPoint: NSMakePoint(x, y) withAttributes: Font(13, YES, TF_TEXT)]; y += 24; NSArray *tg = TFTagsOf(p); FillRound(NSMakeRect(x, y, w, 34), 4, TFDark() ? TFRGBA(255, 255, 255, 0.05) : TFRGBA(0, 0, 0, 0.04)); [[tg count] ? [tg componentsJoinedByString: @", "] : @"Add Tags…" drawAtPoint: NSMakePoint(x + 8, y + 9) withAttributes: Font(12, NO, TF_DIM)];
+	[[p lastPathComponent] drawInRect: NSMakeRect(10, 292, 273, 20) withAttributes: tl];
+	[[NSString stringWithFormat: @"%@%@", TFKindString(p, dir), dir ? @"" : [@" - " stringByAppendingString: TFSizeString([at[NSFileSize] unsignedLongLongValue])]] drawInRect: NSMakeRect(9, 314, 275, 18) withAttributes: sub];
+	[@"Information" drawAtPoint: NSMakePoint(9, 337 + 1) withAttributes: head];
+	double y = 361; for (NSArray *row in @[ @[ @"Created", LongDate(at[NSFileCreationDate]) ], @[ @"Modified", LongDate(at[NSFileModificationDate]) ] ]) { NSDictionary *la = @{ NSFontAttributeName: [NSFont systemFontOfSize: 13], NSForegroundColorAttributeName: TF_DIM }, *va = @{ NSFontAttributeName: [NSFont boldSystemFontOfSize: 13], NSForegroundColorAttributeName: TF_TEXT }; [row[0] drawAtPoint: NSMakePoint(9, y) withAttributes: la]; NSSize vs = [row[1] sizeWithAttributes: va]; [row[1] drawAtPoint: NSMakePoint(284 - vs.width, y) withAttributes: va]; y += 23; }
+	[@"Tags" drawAtPoint: NSMakePoint(9, 415 + 1) withAttributes: head]; NSArray *tg = TFTagsOf(p); FillRound(NSMakeRect(10, 438, 273, 33), 6, TFDark() ? TFRGBA(255, 255, 255, 0.05) : TFRGBA(0, 0, 0, 0.04)); [[tg count] ? [tg componentsJoinedByString: @", "] : @"Add Tags…" drawAtPoint: NSMakePoint(18, 438 + 9) withAttributes: Font(13, NO, TF_DIM)];
 }
 @end
 
