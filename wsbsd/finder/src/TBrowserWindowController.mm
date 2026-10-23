@@ -347,7 +347,21 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 - (void)cmdDecreaseIconSize:(id)s { [_icons setIconSize: [_icons iconSize] - 16]; [self _updateStatus]; }
 - (void)cmdArchive:(id)s { [self cmdCompress: s]; }
 - (void)cmdSlideshow:(id)s { [self cmdQuickLook: s]; }
-- (void)cmdShare:(id)s { NSArray *t = [self _targets]; if ([t count]) [self cmdCopyAsPathname: s]; }
+/* the Share menu: the services of the Mac; each one opens the file in the application of that name when it is installed, AirDrop goes to the AirDrop window */
+- (void)cmdShare:(id)s { NSMenu *m = [self shareMenu]; if (!m) return; NSView *v = [self _view]; NSPoint p = [v convertPoint: [[NSApp currentEvent] locationInWindow] fromView: nil]; TFPopupMenu(v, p, m); }
+- (NSMenu *)shareMenu
+{
+	if (![[self _targets] count]) return nil; NSMenu *m = [[NSMenu alloc] initWithTitle: @"Share"];
+	for (NSArray *e in @[ @[ @"AirDrop", @"airdrop" ], @[ @"Mail", @"envelope" ], @[ @"Messages", @"message" ], @[ @"Notes", @"note.text" ], @[ @"Reminders", @"checklist" ] ]) { NSMenuItem *it = [m addItemWithTitle: e[0] action: @selector(_shareVia:) keyEquivalent: @""]; [it setTarget: self]; [it setToolTip: [@"sym:" stringByAppendingString: e[1]]]; }
+	[m addItem: [NSMenuItem separatorItem]]; NSMenuItem *x = [m addItemWithTitle: @"Edit Extensions…" action: @selector(cmdOpenQuickActionsPrefPane:) keyEquivalent: @""]; [x setTarget: self]; [x setToolTip: @"sym:ellipsis.circle"];
+	return m;
+}
+- (void)_shareVia:(NSMenuItem *)it
+{
+	NSString *n = [it title]; if ([n isEqual: @"AirDrop"]) { [self cmdGoToAirDrop: nil]; return; }
+	for (NSString *d in @[ @"/Applications", @"/System/Applications" ]) { NSString *a = [[d stringByAppendingPathComponent: n] stringByAppendingPathExtension: @"app"]; if ([[NSFileManager defaultManager] fileExistsAtPath: a]) { for (NSString *f in [self _targets]) [[NSWorkspace sharedWorkspace] openFile: f withApplication: a]; return; } }
+	NSBeep();
+}
 - (void)cmdAddToSidebar:(id)s { NSMutableArray *f = [TFPref(@"SidebarFavorites", @[]) mutableCopy]; for (NSString *p in [self _targets]) { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: p isDirectory: &d]; if (d && ![f containsObject: p]) [f addObject: p]; } TFSetPref(@"SidebarFavorites", f); }
 - (void)cmdToggleViewOptions:(id)s { if (_mode != 0) return; __weak TBrowserWindowController *me = self; TFOpenViewOptions(_icons, [[_url path] isEqual: @"/"] ? @"Macintosh HD" : [[_url path] lastPathComponent], ^{ [me _updateStatus]; }); }
 - (void)toggleFullScreen:(id)s { [[self window] performZoom: s]; }
