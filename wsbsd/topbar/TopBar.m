@@ -78,7 +78,7 @@ void ToggleControlCenter(void); void ToggleSpotlight(void); void ShowBatteryMenu
 	for (NSUInteger i = 0; pressed < 0 && i + 1 < [c count]; i += 2) if (fabs(p.x - (W - [c[i + 1] doubleValue])) < 18) pressed = (NSInteger)i;
 	[self setNeedsDisplay: YES];
 }
-- (void)mouseUp:(NSEvent *)e { NSArray *c = [self centres]; if (pressed == 99) ToggleNotificationCenter(); else if (pressed >= 0 && pressed < 99 && [c[pressed] isEqual: @"cc"]) ToggleControlCenter(); else if (pressed >= 0 && pressed < 99 && [c[pressed] isEqual: @"search"]) ToggleSpotlight(); else if (pressed >= 0 && pressed < 99 && [c[pressed] isEqual: @"battery"]) ShowBatteryMenu(self, [self bounds].size.width - [c[pressed + 1] doubleValue] + 30); pressed = -1; [self setNeedsDisplay: YES]; }
+- (void)mouseUp:(NSEvent *)e { NSArray *c = [self centres]; if (pressed == 99) ToggleNotificationCenter(); else if (pressed >= 0 && pressed < 99 && [c[pressed] isEqual: @"cc"]) ToggleControlCenter(); else if (pressed >= 0 && pressed < 99 && [c[pressed] isEqual: @"search"]) ToggleSpotlight(); else if (pressed >= 0 && pressed < 99 && [c[pressed] isEqual: @"battery"]) ShowBatteryMenu(self, [[self window] frame].origin.x + [self bounds].size.width - [c[pressed + 1] doubleValue] + 24); pressed = -1; [self setNeedsDisplay: YES]; }
 @end
 
 int main(int argc, char *argv[])
