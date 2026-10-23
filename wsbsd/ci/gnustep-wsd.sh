@@ -171,7 +171,7 @@ echo '=== SDK TESTS (compat layer) ==='; sh "$WS/ci/sdk-tests.sh" 2>&1 | tee sdk
 # Finder (finder/): built against the compat layer, started on wsd with a folder of files; the window must be on the screen and drawn
 echo '=== FINDER ==='; FO=/tmp/finder-ci; rm -rf $FO /tmp/fintest; mkdir -p /tmp/fintest/Folder; for n in a.txt b.png c.pdf; do echo x > /tmp/fintest/$n; done
 if COMPAT=/tmp/sdk-compat sh "$WS/finder/build.sh" $FO > /tmp/finder-build.log 2>&1 && [ -x $FO/System/Library/CoreServices/Finder.app/Contents/MacOS/Finder ]; then
-	(cd $FO/System/Library/CoreServices/Finder.app/Contents/MacOS && HOME=/tmp/finhome FINDER_PATH=/tmp/fintest FINDER_WINDOW=1 UI_EXIT_AFTER=30 timeout 30 ./Finder >/tmp/finder-run.log 2>&1) &
+	(cd $FO/System/Library/CoreServices/Finder.app/Contents/MacOS && HOME=/tmp/finhome FINDER_PATH=/tmp/fintest FINDER_WINDOW=1 UI_EXIT_AFTER=30 timeout 30 ./Finder >/tmp/finder-run.log 2>&1; echo "Finder exit status $?" >> /tmp/finder-run.log) &
 	FP=$!; sleep 8; ./wsshot finder.ppm && python3 tools/ppm2png.py finder.ppm finder.png; ./wswins > finder-wins.txt 2>&1; cat finder-wins.txt | head -12
 	python3 - <<'PY' || FINDER_BAD=1
 import sys
