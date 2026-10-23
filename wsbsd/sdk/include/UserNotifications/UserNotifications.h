@@ -1,4 +1,4 @@
-/* UserNotifications: requests are accepted, handed to the delegate (willPresentNotification), and shown by the notification banner of the desktop shell once that exists; until then they are written to the log
+/* UserNotifications: requests go to usernoted (XPC, com.apple.usernoted), which shows them through the banner of the desktop shell; without the daemon they are handled in the process (see the .m). Was: requests are accepted, handed to the delegate (willPresentNotification), and shown by the notification banner of the desktop shell once that exists; until then they are written to the log
  * of the process and kept as delivered. Authorization is always granted. Implemented in sdk/src/UserNotifications.m */
 #ifndef WSBSD_USERNOTIFICATIONS_H
 #define WSBSD_USERNOTIFICATIONS_H
@@ -18,10 +18,22 @@ typedef NS_ENUM(NSInteger, UNAuthorizationStatus) { UNAuthorizationStatusNotDete
 @end
 @interface UNMutableNotificationContent : UNNotificationContent
 @end
+typedef NS_OPTIONS(NSUInteger, UNNotificationActionOptions) { UNNotificationActionOptionAuthenticationRequired = 1, UNNotificationActionOptionDestructive = 2, UNNotificationActionOptionForeground = 4 };
+@interface UNNotificationAction : NSObject
+@property (nonatomic, readonly, copy) NSString *identifier, *title;
+@property (nonatomic, readonly) UNNotificationActionOptions options;
++ (instancetype)actionWithIdentifier:(NSString *)identifier title:(NSString *)title options:(UNNotificationActionOptions)options;
+@end
+@interface UNNotificationCategory : NSObject
+@property (nonatomic, readonly, copy) NSString *identifier;
+@property (nonatomic, readonly, copy) NSArray *actions;
++ (instancetype)categoryWithIdentifier:(NSString *)identifier actions:(NSArray *)actions intentIdentifiers:(NSArray *)intentIdentifiers options:(NSUInteger)options;
+@end
 @interface UNNotificationTrigger : NSObject
 @property (nonatomic, readonly) BOOL repeats;
 @end
 @interface UNTimeIntervalNotificationTrigger : UNNotificationTrigger
+@property (nonatomic, readonly) NSTimeInterval timeInterval;
 + (instancetype)triggerWithTimeInterval:(NSTimeInterval)interval repeats:(BOOL)repeats;
 @end
 @interface UNNotificationRequest : NSObject
@@ -58,5 +70,8 @@ typedef NS_ENUM(NSInteger, UNAuthorizationStatus) { UNAuthorizationStatusNotDete
 - (void)removeAllDeliveredNotifications;
 - (void)removePendingNotificationRequestsWithIdentifiers:(NSArray *)identifiers;
 - (void)removeAllPendingNotificationRequests;
+- (void)getPendingNotificationRequestsWithCompletionHandler:(void (^)(NSArray *requests))completionHandler;
+- (void)setNotificationCategories:(NSSet *)categories;
+- (void)getNotificationCategoriesWithCompletionHandler:(void (^)(NSSet *categories))completionHandler;
 @end
 #endif
