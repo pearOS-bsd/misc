@@ -1000,7 +1000,7 @@ static NSString *LongDate(NSDate *d) { if (!d) return @""; static NSDateFormatte
 - (void)scrollWheel:(NSEvent *)e { CGFloat room = MAX(0, _content - ([self bounds].size.height - 70)); _scroll = MAX(0, MIN(room, _scroll - [e deltaY] * 10)); [self setNeedsDisplay: YES]; }
 - (void)mouseDown:(NSEvent *)e
 {
-	if ([paths count] != 1) return; NSPoint pt = [self convertPoint: [e locationInWindow] fromView: nil]; CGFloat top = NSMaxY([self bounds]) - 70; if (pt.y < top) return; NSString *p = paths[0]; BOOL dir = [[[[NSFileManager defaultManager] attributesOfItemAtPath: p error: NULL] fileType] isEqual: NSFileTypeDirectory];
+	if ([paths count] != 1) return; NSPoint pt = [self convertPoint: [e locationInWindow] fromView: nil]; CGFloat top = NSMaxY([self bounds]) - 70; if (pt.y < top) { if (NSPointInRect(NSMakePoint(pt.x, pt.y + _scroll), NSMakeRect(215, 335, 72, 22))) { _more = !_more; [self setNeedsDisplay: YES]; } return; } NSString *p = paths[0]; BOOL dir = [[[[NSFileManager defaultManager] attributesOfItemAtPath: p error: NULL] fileType] isEqual: NSFileTypeDirectory];
 	for (NSDictionary *q in [self _quickActions: dir path: p]) { CGFloat x = [q[@"x"] doubleValue], w = [q[@"w"] doubleValue]; if (pt.x >= x && pt.x <= x + w) { if ([q[@"sel"] length]) [NSApp sendAction: NSSelectorFromString(q[@"sel"]) to: nil from: self]; else NSBeep(); return; } }
 }
 - (void)drawRect:(NSRect)dirty
@@ -1025,9 +1025,10 @@ static NSString *LongDate(NSDate *d) { if (!d) return @""; static NSDateFormatte
 			NSString *rest = used < [words count] ? [[words subarrayWithRange: NSMakeRange(used, [words count] - used)] componentsJoinedByString: @" "] : @""; if (![rest length]) { NSUInteger n = [l1 length]; while (n > 1 && [[l1 substringToIndex: n] sizeWithAttributes: plain].width > 273) n--; rest = [l1 substringFromIndex: n]; [l1 setString: [l1 substringToIndex: n]]; }
 			[l1 drawInRect: NSMakeRect(10, 270, 273, 20) withAttributes: tl]; [rest drawInRect: NSMakeRect(10, 292, 273, 20) withAttributes: tl]; } }
 	[[NSString stringWithFormat: @"%@%@", TFKindString(p, dir), dir ? @"" : [@" - " stringByAppendingString: TFSizeString([at[NSFileSize] unsignedLongLongValue])]] drawInRect: NSMakeRect(9, 314, 275, 18) withAttributes: sub];
-	[@"Information" drawAtPoint: NSMakePoint(9, 337 + 1) withAttributes: head]; [@"Show More" drawAtPoint: NSMakePoint(284 - [@"Show More" sizeWithAttributes: Font(13, NO, TF_ACCENT)].width, 339) withAttributes: Font(13, NO, TF_ACCENT)];
+	[@"Information" drawAtPoint: NSMakePoint(9, 337 + 1) withAttributes: head]; { NSString *sm = _more ? @"Show Less" : @"Show More"; [sm drawAtPoint: NSMakePoint(284 - [sm sizeWithAttributes: Font(13, NO, TF_ACCENT)].width, 339) withAttributes: Font(13, NO, TF_ACCENT)]; }
 	struct stat sb; NSDate *opened = at[NSFileModificationDate]; if (!stat([p fileSystemRepresentation], &sb)) opened = [NSDate dateWithTimeIntervalSince1970: sb.st_atime];
-	NSArray *rows = @[ @[ @"Created", LongDate(at[NSFileCreationDate]) ], @[ @"Modified", LongDate(at[NSFileModificationDate]) ], @[ @"Last opened", LongDate(opened) ] ]; double y = 361;
+	NSArray *rows = @[ @[ @"Created", LongDate(at[NSFileCreationDate]) ], @[ @"Modified", LongDate(at[NSFileModificationDate]) ], @[ @"Last opened", LongDate(opened) ] ]; if (_more && !dir) rows = [rows arrayByAddingObject: @[ @"Content created", LongDate(at[NSFileCreationDate]) ]];       /* Show More of a picture: "Content created" (the other rows depend on the kind and are not measured) */
+	double y = 361;
 	for (NSUInteger i = 0; i < [rows count]; i++) { NSArray *row = rows[i]; NSDictionary *la = @{ NSFontAttributeName: [NSFont systemFontOfSize: 13], NSForegroundColorAttributeName: TF_DIM }, *va = @{ NSFontAttributeName: [NSFont boldSystemFontOfSize: 13], NSForegroundColorAttributeName: TF_TEXT }; [row[0] drawAtPoint: NSMakePoint(9, y) withAttributes: la]; NSSize vs = [row[1] sizeWithAttributes: va]; [row[1] drawAtPoint: NSMakePoint(284 - vs.width, y) withAttributes: va];
 		if (i + 1 < [rows count]) { [TFRGB(65, 67, 70) setFill]; NSRectFill(NSMakeRect(10, y + 19, 273, 1)); } y += 23; }
 	double ty = y + 8;       /* "Tags" follows the rows by 8 (361 + 3 x 23 + 8 = 438 with the third row, 415 with two) */
