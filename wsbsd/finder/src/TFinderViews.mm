@@ -49,6 +49,15 @@ NSString *TFKindString(NSString *path, BOOL dir)
 }
 NSArray *TFTagsOf(NSString *path) { Class k = NSClassFromString(@"WsdFinderSupport"); return k ? [k tagsOfPath: path] : @[]; }
 void TFSetTags(NSArray *names, NSString *path) { Class k = NSClassFromString(@"WsdFinderSupport"); if (k) [k setTags: names ofPath: path]; }
+NSArray *TFRecentPaths(void)                                                                  /* the files of the home folder changed in the last 14 days, newest first (the Mac lists what was opened; the modification time stands in) */
+{
+	NSMutableArray *res = [NSMutableArray array]; NSFileManager *fm = [NSFileManager defaultManager]; NSMutableArray *stack = [NSMutableArray arrayWithObject: NSHomeDirectory()]; NSDate *since = [NSDate dateWithTimeIntervalSinceNow: -14 * 86400], *end = [NSDate dateWithTimeIntervalSinceNow: 2.5];
+	while ([stack count] && [res count] < 600) { NSString *dir = [stack lastObject]; [stack removeLastObject];
+		for (NSString *nm in [fm contentsOfDirectoryAtPath: dir error: NULL]) { if ([nm hasPrefix: @"."]) continue; NSString *full = [dir stringByAppendingPathComponent: nm]; NSDictionary *at = [fm attributesOfItemAtPath: full error: NULL]; BOOL d = [at[NSFileType] isEqual: NSFileTypeDirectory];
+			if (d) { if (![[full pathExtension] isEqual: @"app"] && !([dir isEqual: NSHomeDirectory()] && [nm isEqual: @"Library"])) [stack addObject: full]; } else if ([at[NSFileModificationDate] compare: since] == NSOrderedDescending) [res addObject: @{ @"p": full, @"d": at[NSFileModificationDate] }]; }
+		if ([end timeIntervalSinceNow] < 0) break; }
+	[res sortUsingComparator: ^NSComparisonResult(NSDictionary *a, NSDictionary *b) { return [b[@"d"] compare: a[@"d"]]; }]; NSMutableArray *out = [NSMutableArray array]; for (NSDictionary *d in res) [out addObject: d[@"p"]]; return out;
+}
 NSArray *TFPathsTagged(NSString *tag) { Class k = NSClassFromString(@"WsdFinderSupport"); return k ? [k pathsTagged: tag] : @[]; }
 BOOL TFSymbolW(NSString *name, NSRect cell, CGFloat pt, int weight, NSColor *tint)
 {
@@ -579,7 +588,7 @@ static const CGFloat kColW = 240, kColRow = 24;
 		void (^item)(NSString *, NSString *, NSString *) = ^(NSString *t, NSString *sym, NSString *p) { NSDictionary *keys = @{ @"Recents": @"SidebarShowRecents", @"Shared": @"SidebarShowShared", @"Applications": @"SidebarShowApplications", @"Desktop": @"SidebarShowDesktop", @"Documents": @"SidebarShowDocuments", @"Downloads": @"SidebarShowDownloads", @"iCloud Drive": @"SidebarShowICloud", @"Macintosh HD": @"SidebarShowHardDisks", @"AirDrop": @"SidebarShowAirDrop", @"Trash": @"SidebarShowTrash" }; NSString *k = keys[t]; if (!k && [p isEqual: NSHomeDirectory()]) k = @"SidebarShowHome"; if (k && !TFPrefBool(k, YES)) return; [r addObject: @{ @"k": @"item", @"t": t, @"s": sym, @"p": p ?: @"" }]; };
 		void (^head)(NSString *) = ^(NSString *t) { [r addObject: @{ @"k": @"head", @"t": t }]; };
 		item(@"Recents", @"clock", @"recents://"); item(@"Shared", @"person.2", @"shared://");
-		head(@"Favorites"); item(@"Applications", @"a.square", @"/Applications"); item(@"Desktop", @"menubar.dock.rectangle", [home stringByAppendingPathComponent: @"Desktop"]); item(@"Documents", @"doc", [home stringByAppendingPathComponent: @"Documents"]); item(@"Downloads", @"arrow.down.circle", [home stringByAppendingPathComponent: @"Downloads"]);
+		head(@"Favorites"); item(@"Applications", @"a.square", @"/Applications"); item(@"Desktop", @"menubar.dock.rectangle", [home stringByAppendingPathComponent: @"Desktop"]); item(@"Documents", @"doc", [home stringByAppendingPathComponent: @"Documents"]); item(@"Downloads", @"arrow.down.circle", [home stringByAppendingPathComponent: @"Downloads"]); for (NSString *fp in TFPref(@"SidebarFavorites", @[])) if ([[NSFileManager defaultManager] fileExistsAtPath: fp]) [r addObject: @{ @"k": @"item", @"t": TFDisplayName(fp), @"s": @"folder", @"p": fp, @"custom": @YES }];
 		head(@"Locations"); item(@"iCloud Drive", @"icloud", [home stringByAppendingPathComponent: @"Library/Mobile Documents/com~apple~CloudDocs"]); item(NSUserName(), @"house", home); item(@"Macintosh HD", @"internaldrive", @"/"); for (NSDictionary *v in TFVolumes()) if (![v[@"path"] isEqual: @"/"]) [r addObject: @{ @"k": @"item", @"t": v[@"name"], @"s": [v[@"kind"] isEqual: @"optical"] ? @"opticaldisc" : [v[@"kind"] isEqual: @"server"] ? @"server.rack" : @"externaldrive", @"p": v[@"path"], @"eject": @YES }]; item(@"AirDrop", @"airdrop", @"airdrop://"); item(@"Trash", @"trash", [home stringByAppendingPathComponent: @".Trash"]);
 		head(@"Tags"); for (NSString *t in @[ @"Red", @"Orange", @"Yellow", @"Green", @"Blue", @"Purple", @"Gray" ]) if (TFPrefBool([@"SidebarTag" stringByAppendingString: t], YES)) [r addObject: @{ @"k": @"tag", @"t": t, @"p": [@"tag://" stringByAppendingString: t] }];
 		item(@"All Tags…", @"", @"tags://"); _rows = r;
@@ -615,9 +624,17 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 	for (NSInteger i = 0; i < (NSInteger)[_rows count]; i++) if (![_rows[i][@"k"] isEqual: @"head"] && NSPointInRect(p, [self _rect: i])) { NSString *path = _rows[i][@"p"]; return [path hasPrefix: @"/"] ? path : nil; }
 	return nil;
 }
+- (NSMenu *)menuForEvent:(NSEvent *)e
+{
+	NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; p.y = p.y - topInset + off;
+	for (NSInteger i = 0; i < (NSInteger)[_rows count]; i++) if (![_rows[i][@"k"] isEqual: @"head"] && NSPointInRect(p, [self _rect: i]) && [_rows[i][@"custom"] boolValue]) {
+		NSMenu *m = [[NSMenu alloc] initWithTitle: @""]; NSMenuItem *it = [m addItemWithTitle: @"Remove from Sidebar" action: @selector(_removeFav:) keyEquivalent: @""]; [it setTarget: self]; [it setRepresentedObject: _rows[i][@"p"]]; TFPopupMenu(self, NSMakePoint(p.x, p.y - off + topInset), m); return nil; }
+	return nil;
+}
+- (void)_removeFav:(NSMenuItem *)it { NSMutableArray *f = [TFPref(@"SidebarFavorites", @[]) mutableCopy]; [f removeObject: [it representedObject]]; TFSetPref(@"SidebarFavorites", f); }
 - (void)contentMouseDown:(NSPoint)p event:(NSEvent *)e
 {
-	for (NSInteger i = 0; i < (NSInteger)[_rows count]; i++) if (![_rows[i][@"k"] isEqual: @"head"] && NSPointInRect(p, [self _rect: i])) { NSString *path = _rows[i][@"p"]; if ([_rows[i][@"eject"] boolValue] && p.x > NSMaxX([self _rect: i]) - 40) { if (TFEject(path)) { _sig = nil; [self _poll: nil]; } else NSBeep(); return; } if ([path hasPrefix: @"/"] || [path hasPrefix: @"tag://"]) [delegate sidebarGoTo: path]; return; }
+	for (NSInteger i = 0; i < (NSInteger)[_rows count]; i++) if (![_rows[i][@"k"] isEqual: @"head"] && NSPointInRect(p, [self _rect: i])) { NSString *path = _rows[i][@"p"]; if ([_rows[i][@"eject"] boolValue] && p.x > NSMaxX([self _rect: i]) - 40) { if (TFEject(path)) { _sig = nil; [self _poll: nil]; } else NSBeep(); return; } if ([path hasPrefix: @"/"] || [path hasPrefix: @"tag://"] || [path isEqual: @"recents://"]) [delegate sidebarGoTo: path]; return; }
 }
 @end
 
