@@ -978,6 +978,8 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 @end
 
 /* ---------- the preview pane ---------- */
+@interface NSDictionary (TFAdd) - (NSDictionary *)dictionaryWithAddedEntries:(NSDictionary *)e; @end
+@implementation NSDictionary (TFAdd) - (NSDictionary *)dictionaryWithAddedEntries:(NSDictionary *)e { NSMutableDictionary *m = [self mutableCopy]; [m addEntriesFromDictionary: e]; return m; } @end
 @implementation TPreviewPane
 - (BOOL)isFlipped { return YES; }
 /* Layout read from the accessibility tree of the real Finder's preview pane (310 wide; from the top of the pane): the preview 273 x 255 at (10, 10), the name 14 pt bold at (10, 291), the kind and the
@@ -986,22 +988,27 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
  * the quick actions under the pane. The dates are written as the Mac does ("Monday, 3 August 2026 at 18:31"). */
 static NSString *LongDate(NSDate *d) { if (!d) return @""; static NSDateFormatter *f; if (!f) { f = [[NSDateFormatter alloc] init]; [f setLocale: [[NSLocale alloc] initWithLocaleIdentifier: @"en_GB"]]; [f setDateFormat: @"EEEE, d MMMM yyyy 'at' HH:mm"]; } return [f stringFromDate: d]; }
 /* the quick actions under the pane (AX and pixels of the real one): a bar 70 high at the bottom, darker (29,30,33) with a line (65,67,70) on top; buttons 64 / 46 / 42 wide at x 47 / 132 / 210 and 14 from the bar's top, a 14 pt symbol over an 11 pt label, grey (142,142,144) */
-- (NSArray *)_quickActions:(BOOL)dir path:(NSString *)p
+- (NSArray *)_quickActions:(BOOL)dir path:(NSString *)p       /* centres from the AX frames: three buttons 79 / 155 / 231, a single one (a ZIP) 193; the kinds measured: picture, PDF, archive */
 {
-	BOOL img = !dir && [@[ @"png", @"jpg", @"jpeg", @"tif", @"tiff", @"gif", @"bmp", @"heic" ] containsObject: [[p pathExtension] lowercaseString]]; NSMutableArray *a = [NSMutableArray array];
-	if (img) { [a addObject: @{ @"t": @"Rotate Left", @"s": @"rotate.left", @"sel": @"cmdRotateLeft:", @"x": @47, @"w": @64 }]; [a addObject: @{ @"t": @"Markup", @"s": @"pencil.tip.crop.circle", @"sel": @"", @"x": @132, @"w": @46 }]; }
-	[a addObject: @{ @"t": @"More…", @"s": @"ellipsis.circle", @"sel": @"cmdOpenQuickActionsPrefPane:", @"x": @210, @"w": @42 }]; return a;
+	NSString *ext = [[p pathExtension] lowercaseString]; BOOL img = !dir && [@[ @"png", @"jpg", @"jpeg", @"tif", @"tiff", @"gif", @"bmp", @"heic" ] containsObject: ext], pdf = !dir && [ext isEqual: @"pdf"]; NSMutableArray *a = [NSMutableArray array];
+	NSDictionary *more = @{ @"t": @"More…", @"s": @"ellipsis.circle", @"sel": @"cmdOpenQuickActionsPrefPane:" }, *markup = @{ @"t": @"Markup", @"s": @"pencil.tip.crop.circle", @"sel": @"" };
+	if (img) { [a addObject: @{ @"t": @"Rotate Left", @"s": @"rotate.left", @"sel": @"cmdRotateLeft:", @"c": @79 }]; [a addObject: [markup dictionaryWithAddedEntries: @{ @"c": @155 }]]; [a addObject: [more dictionaryWithAddedEntries: @{ @"c": @231 }]]; }
+	else if (pdf) { NSArray *apps = TFAppsForFile(p); [a addObject: [markup dictionaryWithAddedEntries: @{ @"c": @79 }]]; if ([apps count]) [a addObject: @{ @"t": [@"Open with " stringByAppendingString: apps[0][@"name"]], @"s": @"ellipsis.circle", @"sel": @"", @"c": @155 }]; [a addObject: [more dictionaryWithAddedEntries: @{ @"c": @231 }]]; }       /* without a default application only two buttons: their places are not measured (the slots 79 and 231 are assumed) */
+	else [a addObject: [more dictionaryWithAddedEntries: @{ @"c": @193 }]];
+	return a;
 }
 - (void)_drawQuickBar:(BOOL)dir path:(NSString *)p
 {
 	NSRect b = [self bounds]; CGFloat top = NSMaxY(b) - 70; [TFRGB(29, 30, 33) setFill]; NSRectFill(NSMakeRect(1, top, b.size.width - 1, 70)); [TFRGB(65, 67, 70) setFill]; NSRectFill(NSMakeRect(0, top - 1, b.size.width, 1));
-	for (NSDictionary *q in [self _quickActions: dir path: p]) { CGFloat x = [q[@"x"] doubleValue], w = [q[@"w"] doubleValue]; NSColor *c = TFRGB(142, 142, 144); TFSymbol(q[@"s"], NSMakeRect(x + w / 2 - 7, top + 17, 14, 14), 14, c); NSDictionary *la = Font(11, NO, c); NSSize ls = [q[@"t"] sizeWithAttributes: la]; [q[@"t"] drawAtPoint: NSMakePoint(x + w / 2 - ls.width / 2, top + 40) withAttributes: la]; }
+	for (NSDictionary *q in [self _quickActions: dir path: p]) { CGFloat cx = [q[@"c"] doubleValue]; NSColor *c = TFRGB(142, 142, 144); TFSymbol(q[@"s"], NSMakeRect(cx - 7, top + 17, 14, 14), 14, c); NSDictionary *la = Font(11, NO, c); NSString *t = q[@"t"]; NSArray *lines = @[ t ];
+		if ([t sizeWithAttributes: la].width > 70) { NSRange r = [t rangeOfString: @" " options: NSBackwardsSearch]; if (r.location != NSNotFound) lines = @[ [t substringToIndex: r.location], [t substringFromIndex: r.location + 1] ]; }
+		for (NSUInteger i = 0; i < [lines count]; i++) { NSSize ls = [lines[i] sizeWithAttributes: la]; [lines[i] drawAtPoint: NSMakePoint(cx - ls.width / 2, top + 40 + i * 14) withAttributes: la]; } }
 }
 - (void)scrollWheel:(NSEvent *)e { CGFloat room = MAX(0, _content - ([self bounds].size.height - 70)); _scroll = MAX(0, MIN(room, _scroll - [e deltaY] * 10)); [self setNeedsDisplay: YES]; }
 - (void)mouseDown:(NSEvent *)e
 {
 	if ([paths count] != 1) return; NSPoint pt = [self convertPoint: [e locationInWindow] fromView: nil]; CGFloat top = NSMaxY([self bounds]) - 70; if (pt.y < top) { if (NSPointInRect(NSMakePoint(pt.x, pt.y + _scroll), NSMakeRect(215, 335, 72, 22))) { _more = !_more; [self setNeedsDisplay: YES]; } return; } NSString *p = paths[0]; BOOL dir = [[[[NSFileManager defaultManager] attributesOfItemAtPath: p error: NULL] fileType] isEqual: NSFileTypeDirectory];
-	for (NSDictionary *q in [self _quickActions: dir path: p]) { CGFloat x = [q[@"x"] doubleValue], w = [q[@"w"] doubleValue]; if (pt.x >= x && pt.x <= x + w) { if ([q[@"sel"] length]) [NSApp sendAction: NSSelectorFromString(q[@"sel"]) to: nil from: self]; else NSBeep(); return; } }
+	for (NSDictionary *q in [self _quickActions: dir path: p]) { CGFloat cx = [q[@"c"] doubleValue]; if (fabs(pt.x - cx) <= 32) { if ([q[@"sel"] length]) [NSApp sendAction: NSSelectorFromString(q[@"sel"]) to: nil from: self]; else NSBeep(); return; } }
 }
 - (void)drawRect:(NSRect)dirty
 {
@@ -1015,7 +1022,7 @@ static NSString *LongDate(NSDate *d) { if (!d) return @""; static NSDateFormatte
 		[title drawInRect: NSMakeRect(10, 291 + 1, 273, 20) withAttributes: tl]; if ([paths count]) [TFSizeString(total) drawInRect: NSMakeRect(9, 313, 275, 18) withAttributes: sub];
 		return;
 	}
-	NSString *p = paths[0]; NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory]; NSImage *th = dir ? nil : Thumb(p); NSRect pr = NSMakeRect(10, 10, 273, 255);
+	NSString *p = paths[0]; NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory]; NSImage *th = dir ? nil : Thumb(p); NSRect pr = NSMakeRect(10, 10, 273, 255); BOOL img = !dir && [@[ @"png", @"jpg", @"jpeg", @"tif", @"tiff", @"gif", @"bmp", @"heic" ] containsObject: [[p pathExtension] lowercaseString]];
 	[NSGraphicsContext saveGraphicsState]; NSRectClip(NSMakeRect(0, 0, b.size.width, b.size.height - 70)); NSAffineTransform *tr0 = [NSAffineTransform transform]; [tr0 translateXBy: 0 yBy: -_scroll]; [tr0 concat];       /* the pane scrolls above the bar */
 	if (th) { NSSize z = [th size]; CGFloat k = MIN(MIN(pr.size.width / z.width, pr.size.height / z.height), 2); NSRect tr = NSMakeRect(NSMidX(pr) - z.width * k / 2, NSMidY(pr) - z.height * k / 2, z.width * k, z.height * k); [NSGraphicsContext saveGraphicsState]; [[NSBezierPath bezierPathWithRoundedRect: tr xRadius: 10 yRadius: 10] addClip]; [th drawInRect: tr fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; [NSGraphicsContext restoreGraphicsState]; }
 	else TFDrawIcon(p, NSMakeRect(NSMidX(pr) - 64, NSMidY(pr) - 64, 128, 128));
@@ -1025,9 +1032,9 @@ static NSString *LongDate(NSDate *d) { if (!d) return @""; static NSDateFormatte
 			NSString *rest = used < [words count] ? [[words subarrayWithRange: NSMakeRange(used, [words count] - used)] componentsJoinedByString: @" "] : @""; if (![rest length]) { NSUInteger n = [l1 length]; while (n > 1 && [[l1 substringToIndex: n] sizeWithAttributes: plain].width > 273) n--; rest = [l1 substringFromIndex: n]; [l1 setString: [l1 substringToIndex: n]]; }
 			[l1 drawInRect: NSMakeRect(10, 270, 273, 20) withAttributes: tl]; [rest drawInRect: NSMakeRect(10, 292, 273, 20) withAttributes: tl]; } }
 	[[NSString stringWithFormat: @"%@%@", TFKindString(p, dir), dir ? @"" : [@" - " stringByAppendingString: TFSizeString([at[NSFileSize] unsignedLongLongValue])]] drawInRect: NSMakeRect(9, 314, 275, 18) withAttributes: sub];
-	[@"Information" drawAtPoint: NSMakePoint(9, 337 + 1) withAttributes: head]; { NSString *sm = _more ? @"Show Less" : @"Show More"; [sm drawAtPoint: NSMakePoint(284 - [sm sizeWithAttributes: Font(13, NO, TF_ACCENT)].width, 339) withAttributes: Font(13, NO, TF_ACCENT)]; }
+	[@"Information" drawAtPoint: NSMakePoint(9, 337 + 1) withAttributes: head]; if (img) { NSString *sm = _more ? @"Show Less" : @"Show More"; [sm drawAtPoint: NSMakePoint(284 - [sm sizeWithAttributes: Font(13, NO, TF_ACCENT)].width, 339) withAttributes: Font(13, NO, TF_ACCENT)]; }
 	struct stat sb; NSDate *opened = at[NSFileModificationDate]; if (!stat([p fileSystemRepresentation], &sb)) opened = [NSDate dateWithTimeIntervalSince1970: sb.st_atime];
-	NSArray *rows = @[ @[ @"Created", LongDate(at[NSFileCreationDate]) ], @[ @"Modified", LongDate(at[NSFileModificationDate]) ], @[ @"Last opened", LongDate(opened) ] ]; if (_more && !dir) rows = [rows arrayByAddingObject: @[ @"Content created", LongDate(at[NSFileCreationDate]) ]];       /* Show More of a picture: "Content created" (the other rows depend on the kind and are not measured) */
+	NSArray *rows = @[ @[ @"Created", LongDate(at[NSFileCreationDate]) ], @[ @"Modified", LongDate(at[NSFileModificationDate]) ], @[ @"Last opened", LongDate(opened) ] ]; if (_more && img) { BOOL jpg = [@[ @"jpg", @"jpeg" ] containsObject: [[p pathExtension] lowercaseString]]; if (jpg) rows = [rows arrayByAddingObject: @[ @"Content created", LongDate(at[NSFileCreationDate]) ]]; else { NSBitmapImageRep *br = [[NSBitmapImageRep imageRepsWithContentsOfFile: p] firstObject]; if (br) rows = [rows arrayByAddingObject: @[ @"Dimensions", [NSString stringWithFormat: @"%ld × %ld", (long)[br pixelsWide], (long)[br pixelsHigh]] ]]; } }       /* Show More of a picture: "Content created" (the other rows depend on the kind and are not measured) */
 	double y = 361;
 	for (NSUInteger i = 0; i < [rows count]; i++) { NSArray *row = rows[i]; NSDictionary *la = @{ NSFontAttributeName: [NSFont systemFontOfSize: 13], NSForegroundColorAttributeName: TF_DIM }, *va = @{ NSFontAttributeName: [NSFont boldSystemFontOfSize: 13], NSForegroundColorAttributeName: TF_TEXT }; [row[0] drawAtPoint: NSMakePoint(9, y) withAttributes: la]; NSSize vs = [row[1] sizeWithAttributes: va]; [row[1] drawAtPoint: NSMakePoint(284 - vs.width, y) withAttributes: va];
 		if (i + 1 < [rows count]) { [TFRGB(65, 67, 70) setFill]; NSRectFill(NSMakeRect(10, y + 19, 273, 1)); } y += 23; }
