@@ -76,10 +76,9 @@ jobs:
             PLOADER_DIR="$PWD/ploader-out" OUT="$PWD/wsbsd/iso-out" sh wsbsd/iso/build.sh
             # the disk image for a USB stick (a plain `dd` of the ISO is not bootable on a PC: no partition table with an EFI system partition, and the loader reads /boot from the FAT partition it starts from):
             # GPT { EFI system partition with Ploader and the whole /boot, the ISO itself }; written with xz so that it fits the 2 GB of a release asset
-            rm -rf /tmp/isowork/root /tmp/isowork/esp /tmp/isowork/gnustep* 2>/dev/null || true
-            # the USB image must never stop the ISO from being published: every step below is allowed to fail (the disk is shown when it does)
+            # the USB disk image comes from build.sh (step 8: GPT with an ESP and a UFS root, written as a disk, not as an ISO in a partition); it must never stop the ISO from being published
             set +e
-            sh wsbsd/iso/tools/mkusb.sh "$PWD/wsbsd/iso-out/macbsd-amd64.iso" "$PWD/wsbsd/iso-out/macbsd-amd64-usb.img" || df -h
+            rm -rf /tmp/isowork/root /tmp/isowork/rootfs.img /tmp/isowork/esp /tmp/isowork/gnustep* 2>/dev/null
             if [ -f wsbsd/iso-out/macbsd-amd64-usb.img ]; then
               xz -T0 -3 "$PWD/wsbsd/iso-out/macbsd-amd64-usb.img" || { echo "xz failed"; df -h; rm -f wsbsd/iso-out/macbsd-amd64-usb.img wsbsd/iso-out/macbsd-amd64-usb.img.xz; }
               [ -f wsbsd/iso-out/macbsd-amd64-usb.img.xz ] && (cd wsbsd/iso-out && sha256 macbsd-amd64-usb.img.xz > macbsd-amd64-usb.img.xz.sha256)
