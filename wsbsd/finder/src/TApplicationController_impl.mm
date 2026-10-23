@@ -19,7 +19,7 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)n
 {
 	id c = [NSClassFromString(@"TDesktopWindowController") performSelector: NSSelectorFromString(@"sharedController")]; [c performSelector: NSSelectorFromString(@"showDesktop")];
-	[NSApp activateIgnoringOtherApps: YES]; if (getenv("FINDER_WINDOW")) [self cmdNewFinderWindow: nil];
+	[NSApp activateIgnoringOtherApps: YES]; [self _hookRecentFolders]; if (getenv("FINDER_DUMPMENU")) [self cmdDumpMenu]; if (getenv("FINDER_WINDOW")) [self cmdNewFinderWindow: nil];
 }
 /* the menu bar comes from the nib "MenuBar" of the bundle (the Mac's compiled nib, converted by tools/nib2plist.py when the resources are imported) */
 - (void)loadMenuBar
@@ -33,6 +33,24 @@
 }
 - (void)configureMenuBar { }
 /* actions of the menu bar: with no Finder window open they open one (the Finder's behaviour); the window controller handles them otherwise */
+static void DumpMenu(NSMenu *m, int d, NSMutableString *out) { for (NSMenuItem *i in [m itemArray]) { [out appendFormat: @"%*s%@\t%@\t%@\n", d * 2, "", [i title], [i isSeparatorItem] ? @"--" : NSStringFromSelector([i action]), [i keyEquivalent]]; if ([i submenu]) DumpMenu([i submenu], d + 1, out); } }
+- (void)cmdDumpMenu { NSMutableString *o = [NSMutableString string]; DumpMenu([NSApp mainMenu], 0, o); [o writeToFile: @"/tmp/finder_menu_actions.txt" atomically: YES encoding: NSUTF8StringEncoding error: NULL]; }
+/* Go > Recent Folders: the menu lists the folders last shown (kept in the preferences) */
+- (void)menuNeedsUpdate:(NSMenu *)menu
+{
+	while ([menu numberOfItems]) [menu removeItemAtIndex: 0]; NSArray *rf = TFPref(@"FXRecentFolders", @[]);
+	for (NSString *p in rf) { NSMenuItem *it = [menu addItemWithTitle: TFDisplayName(p) action: NSSelectorFromString(@"cmdGoToRecent:") keyEquivalent: @""]; [it setRepresentedObject: p]; }
+	if ([rf count]) [menu addItem: [NSMenuItem separatorItem]]; [menu addItemWithTitle: @"Clear Menu" action: NSSelectorFromString(@"cmdClearRecentFolders:") keyEquivalent: @""];
+}
+- (void)cmdClearRecentFolders:(id)s { TFSetPref(@"FXRecentFolders", @[]); }
+/* the alternate items of the Finder's menus (shown when Option is held) and the cloud entries that appear only with providers installed are hidden */
+- (void)_hideAlternates:(NSMenu *)m
+{
+	NSSet *alts = [NSSet setWithObjects: @"cmdNewFinderWindowWithOption:", @"cmdOpenAltBrowse:", @"cmdOpenOptionBrowse:", @"cmdOpenParentAltBrowse:", @"cmdSelectStartupDisk:", @"cmdOpenWithOptionDownArrow:", @"cmdDuplicateExactly:", @"cmdEjectOne:", @"cmdEjectAll:", @"cmdArchiveWithPassword:", @"cmdShowStaticInfoSummary:", @"cmdShowInspector:", @"cmdCopyAsPathname:", @"cmdCopyAsLink:", @"cmdMoveItemsHere:", @"cmdPasteExactly:", @"cmdAlternateFindFile:", @"cmdEmptyTrashSilently:", @"cmdGoToICloudProviders:", @"cmdGoToDataSeparatedICloud:", @"cmdAlwaysOpenWith:", @"cmdDeselectAll:", nil]; NSMutableSet *seen = [NSMutableSet set];
+	for (NSMenuItem *i in [m itemArray]) { NSString *t = [i title], *act = NSStringFromSelector([i action]); if ([alts containsObject: act]) [i setHidden: YES]; else if ([t length] && ![i isSeparatorItem] && [seen containsObject: t]) [i setHidden: YES]; [seen addObject: t ?: @""]; if ([i submenu]) [self _hideAlternates: [i submenu]]; }
+}
+- (void)_hookRecentFolders { [self _hideAlternates: [NSApp mainMenu]]; for (NSMenuItem *top in [[NSApp mainMenu] itemArray]) for (NSMenuItem *i in [[top submenu] itemArray]) if ([NSStringFromSelector([i action]) isEqual: @"cmdRecentFolders:"] && [i submenu]) { [[i submenu] setDelegate: (id)self]; [self menuNeedsUpdate: [i submenu]]; } }
+- (void)cmdAbout:(id)s { NSAlert *al = [[NSAlert alloc] init]; [al setMessageText: @"Finder"]; [al setInformativeText: @"Finder for wsbsd\nThe desktop of the system, drawn and behaving like the Mac's."]; [al runModal]; }
 - (void)cmdNewFinderWindow:(id)s { NSString *t = TFPref(@"NewWindowTarget", @"PfHm"); NSString *h = NSHomeDirectory(); NSString *p = [t isEqual: @"PfDe"] ? [h stringByAppendingPathComponent: @"Desktop"] : [t isEqual: @"PfDo"] ? [h stringByAppendingPathComponent: @"Documents"] : [t isEqual: @"PfCm"] ? @"/" : h; [TBrowserWindowController newBrowserWithPath: p]; }
 - (void)cmdPreferences:(id)s { TFOpenSettings(); }
 - (void)cmdNewFinderWindowWithOption:(id)s { [self cmdNewFinderWindow: s]; }

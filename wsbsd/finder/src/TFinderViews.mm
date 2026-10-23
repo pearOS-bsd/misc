@@ -9,6 +9,7 @@
 + (void)drawIconOfName:(NSString *)name directory:(BOOL)dir inRect:(NSRect)r;
 + (NSArray *)pathsTagged:(NSString *)tag;
 + (void)popupInView:(NSView *)root titles:(NSArray *)t dots:(NSArray *)d checks:(NSIndexSet *)c at:(NSPoint)p pick:(void (^)(NSInteger))b;
++ (void)popupInView:(NSView *)root rows:(NSArray *)rows at:(NSPoint)p pick:(void (^)(NSInteger))b;
 @end
 
 /* the order of names in the Finder: case and accents ignored, runs of digits compared by value */
@@ -82,17 +83,20 @@ void TFDrawIcon(NSString *path, NSRect r)                                       
 	if (k && ![path isEqual: @"/"] && ![[path pathExtension] isEqual: @"app"]) { [k drawIconOfName: [path lastPathComponent] directory: d inRect: r]; return; }
 	NSImage *i = TFIcon(path); if (i) [i drawInRect: r fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1];
 }
-void TFPopupMenu(NSView *view, NSPoint p, NSMenu *menu)                                       /* an NSMenu shown as the panel's own pop-up (GNUstep's pop-up windows come out far too big under this window server) */
+void TFPopupMenu(NSView *view, NSPoint p, NSMenu *menu)                                       /* an NSMenu shown as the panel's own pop-up (GNUstep's pop-up windows come out far too big under this window server): separators, symbols (tool tip "sym:name"), a row of tag colours (tag 2), sub menus, disabled rows in grey */
 {
-	NSMutableArray *items = [NSMutableArray array], *titles = [NSMutableArray array], *dots = [NSMutableArray array]; NSMutableIndexSet *checks = [NSMutableIndexSet indexSet]; Class sp = NSClassFromString(@"WsdFinderSupport");
+	Class sp = NSClassFromString(@"WsdFinderSupport"); NSMutableArray *items = [NSMutableArray array], *rows = [NSMutableArray array];
 	for (NSMenuItem *it in [menu itemArray]) {
-		if ([it isSeparatorItem]) { if ([items count] && ![[titles lastObject] isEqual: @"-"]) { [items addObject: [NSNull null]]; [titles addObject: @"-"]; [dots addObject: [NSNull null]]; } continue; } id t = [it target]; if ([t respondsToSelector: @selector(validateMenuItem:)] && [it action] && ![t validateMenuItem: it]) continue;
-		[items addObject: it]; [titles addObject: [it submenu] ? [[it title] stringByAppendingString: @"  ▸"] : [it title]]; [dots addObject: [it tag] == 1 && [[it representedObject] isKindOfClass: [NSString class]] ? (id)[sp colorOfTag: [it representedObject]] : (id)[NSNull null]];
-		if ([it state] == NSOnState) [checks addIndex: [items count] - 1];
+		if ([it isSeparatorItem]) { if ([rows count] && ![[rows lastObject][@"sep"] boolValue]) { [items addObject: [NSNull null]]; [rows addObject: @{ @"sep": @YES }]; } continue; }
+		id t = [it target]; BOOL ok = YES; if ([t respondsToSelector: @selector(validateMenuItem:)] && [it action]) ok = [t validateMenuItem: it]; if (!ok && ([[it title] isEqual: @"Put Back"] || [[it title] isEqual: @"Open With"])) continue; if ([it isHidden]) continue;
+		if ([it tag] == 2) { NSMutableArray *cols = [NSMutableArray array]; for (NSString *n in [it representedObject]) [cols addObject: [sp colorOfTag: n]]; [items addObject: it]; [rows addObject: @{ @"dots": cols }]; continue; }
+		NSMutableDictionary *r = [@{ @"t": [it title] } mutableCopy]; NSString *tip = [it toolTip]; if ([tip hasPrefix: @"sym:"]) r[@"sym"] = [tip substringFromIndex: 4]; if ([it submenu]) r[@"sub"] = @YES; if ([it state] == NSOnState) r[@"check"] = @YES; if (!ok) r[@"dim"] = @YES; [items addObject: it]; [rows addObject: r];
 	}
-	while ([titles count] && [[titles lastObject] isEqual: @"-"]) { [titles removeLastObject]; [items removeLastObject]; [dots removeLastObject]; }
-	if (![items count] || !sp) return; NSView *root = [[view window] contentView]; NSPoint q = [root convertPoint: p fromView: view];
-	[sp popupInView: root titles: titles dots: dots checks: checks at: q pick: ^(NSInteger k) { if (items[k] == [NSNull null]) return; NSMenuItem *it = items[k]; if ([it submenu]) TFPopupMenu(view, NSMakePoint(p.x + 40, p.y), [it submenu]); else [NSApp sendAction: [it action] to: [it target] from: it]; }];
+	while ([rows count] && [[rows lastObject][@"sep"] boolValue]) { [rows removeLastObject]; [items removeLastObject]; }
+	if (![rows count] || !sp) return; NSView *root = [[view window] contentView]; NSPoint q = [root convertPoint: p fromView: view];
+	[sp popupInView: root rows: rows at: q pick: ^(NSInteger k) {
+		if (k >= 1000) { NSMenuItem *di = nil; for (id x in items) if (x != [NSNull null] && [x tag] == 2) di = x; if (!di) return; NSMenuItem *tmp = [[NSMenuItem alloc] initWithTitle: @"" action: [di action] keyEquivalent: @""]; [tmp setRepresentedObject: [di representedObject][k - 1000]]; [tmp setTarget: [di target]]; [NSApp sendAction: [di action] to: [di target] from: tmp]; return; }
+		if (k < 0 || k >= (NSInteger)[items count] || items[k] == [NSNull null]) return; NSMenuItem *it = items[k]; if ([it submenu]) TFPopupMenu(view, NSMakePoint(p.x + 40, p.y), [it submenu]); else if ([it action]) [NSApp sendAction: [it action] to: [it target] from: it]; }];
 }
 static NSImage *Thumb(NSString *path)                                                       /* the picture itself for image files, scaled once */
 {

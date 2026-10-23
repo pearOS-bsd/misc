@@ -6418,9 +6418,7 @@
 - (id)resetEditMenuItemTitles { /* 0x1000A7BC0 */ return nil; }
 - (id)cmdMacUserGuide:(id)a0 { /* 0x10040744C */ return nil; }
 - (id)cmdTipsForYourMac:(id)a0 { /* 0x1004074B8 */ return nil; }
-- (id)menuNeedsUpdate:(id)a0 { /* 0x100077108 */ return nil; }
 - (id)menuHasKeyEquivalent:(id)a0 forEvent:(id)a1 target:(id)a2 action:(id)a3 { /* 0x10003F8F4 */ return nil; }
-- (id)cmdAbout:(id)a0 { /* 0x1000F9B9C */ return nil; }
 - (id)validatePreferences:(id)a0 { /* 0x100407528 */ return nil; }
 - (id)validateEmptyTrash:(id)a0 { /* 0x10008C870 */ return nil; }
 - (id)cmdEmptyTrash:(id)a0 { /* 0x1000E9B90 */ return nil; }
@@ -6446,7 +6444,6 @@
 - (id)cmdRecentFolders:(id)a0 { /* 0x100407C4C */ return nil; }
 - (id)cmdRecentFoldersItem:(id)a0 { /* 0x1000A134C */ return nil; }
 - (id)validateClearRecentFolders:(id)a0 { /* 0x1000A1330 */ return nil; }
-- (id)cmdClearRecentFolders:(id)a0 { /* 0x100407C50 */ return nil; }
 - (id)validateConnectTo:(id)a0 { /* 0x100078000 */ return nil; }
 - (id)cmdConnectTo:(id)a0 { /* 0x10010EF80 */ return nil; }
 - (id)validateCycleWindows:(id)a0 { /* 0x1000A86D8 */ return nil; }

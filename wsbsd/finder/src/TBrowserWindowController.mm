@@ -7,6 +7,7 @@ extern "C" NSImage *WsbsdCoreTypesIcon(NSString *file, CGFloat pt);
 
 #import "TFinderViews.h"
 #include <sys/stat.h>
+#import <objc/runtime.h>
 static BOOL _searchBar_skipLib(NSString *root);
 #define SizeString TFSizeString
 #define DateString TFDateString
@@ -47,9 +48,11 @@ static NSString *UniquePath(NSString *dir, NSString *base, NSString *ext)
 	_tabBar = [[TTabBar alloc] initWithFrame: NSZeroRect]; _tabBar->target = self; [_tabBar setHidden: YES]; [cv addSubview: _tabBar]; _tabs = [NSMutableArray array];
 	_searchBar = [[TSearchBar alloc] initWithFrame: NSZeroRect]; _searchBar->target = self; [_searchBar setHidden: YES]; [cv addSubview: _searchBar];
 	_trim = [[TWindowTrim alloc] initWithFrame: NSZeroRect]; [cv addSubview: _trim];
-	NSMenu *m = [[NSMenu alloc] initWithTitle: @""]; for (NSArray *e in @[ @[ @"Open", @"cmdOpen:" ], @[ @"Open With", @"" ], @[ @"-", @"" ], @[ @"Move to Trash", @"cmdMoveToTrash:" ], @[ @"Put Back", @"cmdPutBack:" ], @[ @"-", @"" ], @[ @"Get Info", @"cmdShowStaticInfo:" ], @[ @"Rename", @"cmdRename:" ], @[ @"Compress", @"cmdCompress:" ], @[ @"Duplicate", @"cmdDuplicate:" ], @[ @"Make Alias", @"cmdMakeAlias:" ], @[ @"Quick Look", @"cmdQuickLook:" ], @[ @"-", @"" ], @[ @"Copy", @"copy:" ], @[ @"Copy as Pathname", @"cmdCopyAsPathname:" ] ]) { if ([e[0] isEqual: @"-"]) { [m addItem: [NSMenuItem separatorItem]]; continue; } NSMenuItem *it = [m addItemWithTitle: e[0] action: [e[1] length] ? NSSelectorFromString(e[1]) : NULL keyEquivalent: @""]; [it setTarget: self]; if (![e[1] length]) [it setSubmenu: [[NSMenu alloc] initWithTitle: @"Open With"]]; }
-	{ [m addItem: [NSMenuItem separatorItem]]; NSMenuItem *ti = [m addItemWithTitle: @"Tags" action: NULL keyEquivalent: @""]; NSMenu *sub = [[NSMenu alloc] initWithTitle: @"Tags"]; [self _fillTagMenu: sub]; [ti setSubmenu: sub]; }
-	_watcher = [NSTimer scheduledTimerWithTimeInterval: 1 target: self selector: @selector(_watch:) userInfo: nil repeats: YES]; _ctxMenu = m; [_icons setMenu: m]; [_list setMenu: m]; [self _layout];
+	NSMenu *m = [[NSMenu alloc] initWithTitle: @""];
+	for (NSArray *e in @[ @[ @"Open", @"cmdOpen:", @"" ], @[ @"Open With", @"", @"" ], @[ @"-", @"", @"" ], @[ @"Move to Trash", @"cmdMoveToTrash:", @"trash" ], @[ @"Put Back", @"cmdPutBack:", @"" ], @[ @"-", @"", @"" ], @[ @"Get Info", @"cmdShowStaticInfo:", @"" ], @[ @"Rename", @"cmdRename:", @"" ], @[ @"Compress", @"cmdCompress:", @"" ], @[ @"Duplicate", @"cmdDuplicate:", @"" ], @[ @"Make Alias", @"cmdMakeAlias:", @"" ], @[ @"Quick Look", @"cmdQuickLook:", @"" ], @[ @"Copy", @"copy:", @"" ], @[ @"-", @"", @"" ], @[ @"Share…", @"cmdShare:", @"square.and.arrow.up" ], @[ @"-", @"", @"" ] ]) {
+		if ([e[0] isEqual: @"-"]) { [m addItem: [NSMenuItem separatorItem]]; continue; } NSMenuItem *it = [m addItemWithTitle: e[0] action: [e[1] length] ? NSSelectorFromString(e[1]) : NULL keyEquivalent: @""]; [it setTarget: self]; if ([e[2] length]) [it setToolTip: [@"sym:" stringByAppendingString: e[2]]]; if (![e[1] length]) [it setSubmenu: [[NSMenu alloc] initWithTitle: @"Open With"]]; }
+	{ NSMenuItem *dots = [m addItemWithTitle: @"Tag colours" action: @selector(cmdToggleTag:) keyEquivalent: @""]; [dots setTarget: self]; [dots setTag: 2]; [dots setRepresentedObject: [NSClassFromString(@"WsdFinderSupport") tagNames]]; NSMenuItem *tg = [m addItemWithTitle: @"Tags…" action: @selector(cmdTagsPopup:) keyEquivalent: @""]; [tg setTarget: self]; [tg setToolTip: @"sym:tag"]; [m addItem: [NSMenuItem separatorItem]]; NSMenuItem *qa = [m addItemWithTitle: @"Quick Actions" action: NULL keyEquivalent: @""]; [qa setToolTip: @"sym:gearshape"]; NSMenu *qs = [[NSMenu alloc] initWithTitle: @"Quick Actions"]; NSMenuItem *cz = [qs addItemWithTitle: @"Customize…" action: @selector(cmdOpenQuickActionsPrefPane:) keyEquivalent: @""]; [cz setTarget: self]; [qa setSubmenu: qs]; }
+	_watcher = [NSTimer scheduledTimerWithTimeInterval: 1 target: self selector: @selector(_watch:) userInfo: nil repeats: YES]; _ctxMenu = m; [_icons setMenu: m]; [_list setMenu: m]; [_gallery setMenu: m]; [_cols setMenu: m]; [self _layout];
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter]; [nc addObserver: self selector: @selector(_keyChanged:) name: NSWindowDidBecomeKeyNotification object: w]; [nc addObserver: self selector: @selector(_keyChanged:) name: NSWindowDidResignKeyNotification object: w];
 }
 /* the folder shown follows what happens to it (the Mac uses FSEvents): its modification time is looked at every second and the view refreshed, selection and scroll position kept */
@@ -77,8 +80,13 @@ static NSString *StyleName(NSInteger m) { return @[ @"icnv", @"Nlsv", @"clmv", @
 	NSDictionary *bw = [ds plistForName: @"." sid: @"bwsp"]; if (!bw) return; if (bw[@"ShowStatusBar"] && [bw[@"ShowStatusBar"] boolValue] != _showStatus) [self cmdToggleStatusBar: nil];
 	if (window && [bw[@"WindowBounds"] length]) { NSRect r = NSRectFromString([bw[@"WindowBounds"] stringByReplacingOccurrencesOfString: @"{{" withString: @"{"]); (void)r; int x, y, w, h; if (sscanf([bw[@"WindowBounds"] UTF8String], "{{%d, %d}, {%d, %d}}", &x, &y, &w, &h) == 4 && w >= 560 && h >= 320) { CGFloat sh = [[NSScreen mainScreen] frame].size.height; [[self window] setFrame: NSMakeRect(x, sh - y - h, w, h) display: YES]; [self _layout]; } }
 }
+- (void)cmdTagsPopup:(id)s { NSView *v = [self _view]; NSPoint p = [v convertPoint: [[NSApp currentEvent] locationInWindow] fromView: nil]; NSMenu *tm = [self tagMenu]; [self _markTagMenu: tm]; TFPopupMenu(v, p, tm); }
+- (void)cmdOpenQuickActionsPrefPane:(id)s {}
 - (void)prepareContextMenu:(NSMenu *)m
 {
+	NSString *one = [_selection count] == 1 ? [_selection[0] lastPathComponent] : nil; NSString *ext = [[_selection firstObject] pathExtension].lowercaseString; BOOL arch = [@[ @"zip", @"gz", @"tgz", @"bz2", @"xz", @"7z", @"rar", @"dmg", @"tar" ] containsObject: ext];
+	for (NSMenuItem *it in [m itemArray]) { if ([NSStringFromSelector([it action]) isEqual: @"cmdQuickLook:"]) [it setTitle: one ? [NSString stringWithFormat: @"Quick Look “%@”", one] : [NSString stringWithFormat: @"Quick Look %lu Items", (unsigned long)[_selection count]]]; if ([NSStringFromSelector([it action]) isEqual: @"cmdCompress:"]) { [it setTitle: one ? [NSString stringWithFormat: @"Compress “%@”", one] : [NSString stringWithFormat: @"Compress %lu Items", (unsigned long)[_selection count]]]; [it setHidden: arch && [_selection count] == 1]; } }
+	if (getenv("FINDER_DEBUG")) for (NSMenuItem *it in [m itemArray]) NSLog(@"ctx item %@ action %@ sel %lu", [it title], NSStringFromSelector([it action]), (unsigned long)[_selection count]);
 	for (NSMenuItem *it in [m itemArray]) if ([[it title] isEqual: @"Open With"]) { NSMenu *sub = [it submenu]; while ([sub numberOfItems]) [sub removeItemAtIndex: 0]; NSString *p = [_selection firstObject]; if (!p) return;
 		for (NSDictionary *a in TFAppsForFile(p)) { NSMenuItem *x = [sub addItemWithTitle: a[@"name"] action: @selector(cmdOpenWithApp:) keyEquivalent: @""]; [x setTarget: self]; [x setRepresentedObject: a[@"path"]]; }
 		NSMenuItem *o = [sub addItemWithTitle: @"Other…" action: @selector(cmdOpenWithOther:) keyEquivalent: @""]; [o setTarget: self]; }
@@ -131,7 +139,7 @@ static BOOL _searchBar_skipLib(NSString *root) { return [root isEqual: NSHomeDir
 - (void)_show:(NSString *)path
 {
 	if (_filter) { [_toolbar setSearching: NO]; _filter = nil; _found = nil; _searchStarted = NO; _searchGen++; [self _layout]; } BOOL airdrop = [path isEqual: @"airdrop://"]; BOOL recents = [path isEqual: @"recents://"]; BOOL tagged = [path hasPrefix: @"tag://"] || recents || airdrop; _tag = airdrop ? @"\1airdrop" : recents ? @"\1recents" : tagged ? [path substringFromIndex: 6] : nil; _url = [NSURL fileURLWithPath: tagged ? NSHomeDirectory() : path]; NSString *name = airdrop ? @"AirDrop" : recents ? @"Recents" : tagged ? _tag : TFDisplayName(path); [[self window] setTitle: name]; _toolbar->title = name;
-	_toolbar->canBack = _hi > 0; _toolbar->canForward = _hi + 1 < (NSInteger)[_history count]; _sidebar->current = path; _watchedMod = 0; if ([_tabs count]) [self _syncTabBar]; [_pathBar setPath: [_url path]]; [self reload]; [self _restoreStyleAndWindow: NO]; [self _updateStatus]; [_toolbar setNeedsDisplay: YES]; [_sidebar setNeedsDisplay: YES];
+	_toolbar->canBack = _hi > 0; _toolbar->canForward = _hi + 1 < (NSInteger)[_history count]; _sidebar->current = path; _watchedMod = 0; if (!tagged) { NSMutableArray *rf = [TFPref(@"FXRecentFolders", @[]) mutableCopy]; [rf removeObject: path]; [rf insertObject: path atIndex: 0]; while ([rf count] > 10) [rf removeLastObject]; TFSetPref(@"FXRecentFolders", rf); } if ([_tabs count]) [self _syncTabBar]; [_pathBar setPath: [_url path]]; [self reload]; [self _restoreStyleAndWindow: NO]; [self _updateStatus]; [_toolbar setNeedsDisplay: YES]; [_sidebar setNeedsDisplay: YES];
 }
 - (void)reload { if (_filter && _found) { [self _showFound]; return; } NSString *p = [_url path]; _icons->emptyMessage = [_tag isEqual: @"\1airdrop"] ? @"AirDrop lets you share instantly with people nearby." : nil; if (_tag) { NSArray *ps = [_tag isEqual: @"\1airdrop"] ? @[] : [_tag isEqual: @"\1recents"] ? TFRecentPaths() : TFPathsTagged(_tag); if (_mode == 1) [_list setPaths: ps]; else if (_mode == 3) [_gallery setPaths: ps]; else [_icons setPaths: ps]; _selection = @[]; [[self window] makeFirstResponder: [self _view]]; return; } if (_mode == 1) [_list setFolder: p]; else if (_mode == 2) [_cols setFolder: p]; else if (_mode == 3) [_gallery setFolder: p]; else [_icons setFolder: p]; _selection = @[]; [[self window] makeFirstResponder: [self _view]]; }
 - (void)goToPath:(NSString *)path { BOOL d = NO; if (![path hasPrefix: @"tag://"] && ![path isEqual: @"recents://"] && ![path isEqual: @"airdrop://"] && (![[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &d] || !d)) return; if (_hi >= 0 && [_history[_hi] isEqual: path]) return; [_history removeObjectsInRange: NSMakeRange(_hi + 1, [_history count] - _hi - 1)]; [_history addObject: path]; _hi = [_history count] - 1; [self _show: path]; }
@@ -284,26 +292,27 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 - (BOOL)validateMenuItem:(NSMenuItem *)i
 {
 	if ([[i title] isEqual: @"Open With"] && [i submenu]) return [_selection count] > 0;
+	{ SEL q = [i action]; if (sel_isEqual(q, @selector(cmdGroupAsFolder:)) || sel_isEqual(q, @selector(cmdOpenAltBrowse:)) || sel_isEqual(q, @selector(cmdOpenOptionBrowse:)) || sel_isEqual(q, @selector(cmdShowInspector:)) || sel_isEqual(q, @selector(cmdShowStaticInfoSummary:)) || sel_isEqual(q, @selector(cmdEditTags:)) || sel_isEqual(q, @selector(cmdCopyAsLink:)) || sel_isEqual(q, @selector(cmdEject:))) return [_selection count] > 0; if (sel_isEqual(q, @selector(cmdOpenParentAltBrowse:)) || sel_isEqual(q, @selector(cmdGoToRecent:)) || sel_isEqual(q, @selector(cmdConnectTo:)) || sel_isEqual(q, @selector(cmdSelectStartupDisk:)) || sel_isEqual(q, @selector(cmdFindFile:)) || sel_isEqual(q, @selector(cmdAlternateFindFile:)) || sel_isEqual(q, @selector(cmdNewSmartFolder:)) || sel_isEqual(q, @selector(cmdNewBurnableFolder:)) || sel_isEqual(q, @selector(cmdEjectAll:)) || sel_isEqual(q, @selector(cmdShowClipboard:))) return YES; }
 	if ([i action] == @selector(cmdOpenWithApp:) || [i action] == @selector(cmdOpenWithOther:)) return [_selection count] > 0;
 	SEL a = [i action]; BOOL has = [_selection count] > 0;
-	if (a == @selector(cmdToggleTag:)) { BOOL all = has; for (NSString *p in _selection) if (![TFTagsOf(p) containsObject: [i representedObject]]) all = NO; [i setState: all ? NSOnState : NSOffState]; return has; }
-	if (a == @selector(cmdBack:)) return _hi > 0; if (a == @selector(cmdForward:)) return _hi + 1 < (NSInteger)[_history count];
-	if (a == @selector(cmdOpen:) || a == @selector(cmdOpenWithDownArrow:) || a == @selector(cmdMoveToTrash:) || a == @selector(cmdDuplicate:) || a == @selector(cmdMakeAlias:) || a == @selector(copy:) || a == @selector(cmdShowStaticInfo:) || a == @selector(cmdCopyAsPathname:)) return has;
-	if (a == @selector(cmdRename:)) return [_selection count] == 1; if (a == @selector(paste:)) return [[NSPasteboard generalPasteboard] propertyListForType: NSFilenamesPboardType] != nil;
-	if (a == @selector(undo:)) { NSDictionary *e = [_undo lastObject]; [i setTitle: e ? [@"Undo " stringByAppendingString: e[@"name"]] : @"Undo"]; return e != nil; }
-	if (a == @selector(redo:)) { NSDictionary *e = [_redo lastObject]; [i setTitle: e ? [@"Redo " stringByAppendingString: e[@"name"]] : @"Redo"]; return e != nil; }
-	if (a == @selector(cut:) || a == @selector(cmdNewFolderWithSelection:) || a == @selector(cmdArchive:) || a == @selector(cmdSlideshow:) || a == @selector(cmdShare:) || a == @selector(cmdShowPackageContents:)) return has;
-	if (a == @selector(cmdNewFolder:) && [i isKindOfClass: [NSMenuItem class]] && [[i title] hasPrefix: @"New Folder with"]) return has;
-	if (a == @selector(cmdIncreaseIconSize:) || a == @selector(cmdDecreaseIconSize:)) return _mode == 0;
-	if (a == @selector(cmdMoveItemsHere:) || a == @selector(cmdPasteExactly:)) return [[NSPasteboard generalPasteboard] propertyListForType: NSFilenamesPboardType] != nil;
-	if (a == @selector(cmdPutBack:)) return has && [[[_url path] stringByStandardizingPath] hasPrefix: TrashPath()];
-	if (a == @selector(cmdDeleteImmediately:) || a == @selector(cmdCompress:) || a == @selector(cmdQuickLook:) || a == @selector(cmdOpenInNewTab:) || a == @selector(cmdDuplicateExactly:) || a == @selector(cmdShowOriginal:)) return has;
-	if (a == @selector(cmdEmptyTrash:) || a == @selector(cmdEmptyTrashSilently:)) return [[[NSFileManager defaultManager] contentsOfDirectoryAtPath: TrashPath() error: NULL] count] > 0;
-	if (a == @selector(cmdAddToSidebar:)) { BOOL ok = NO; for (NSString *p in _selection) { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: p isDirectory: &d]; if (d) ok = YES; } return ok; }
-	if (a == @selector(cmdToggleStatusBar:)) { [i setTitle: _showStatus ? @"Hide Status Bar" : @"Show Status Bar"]; return YES; }
-	if (a == @selector(cmdArrangeByNone:) || a == @selector(cmdArrangeByName:) || a == @selector(cmdArrangeByKind:) || a == @selector(cmdArrangeByDateModified:) || a == @selector(cmdArrangeByDateCreated:) || a == @selector(cmdArrangeBySize:) || a == @selector(cmdArrangeByFinderTags:)) { NSString *k = _icons->_arrange; NSDictionary *m = @{ @"cmdArrangeByName:": @"name", @"cmdArrangeByKind:": @"kind", @"cmdArrangeByDateModified:": @"modified", @"cmdArrangeByDateCreated:": @"created", @"cmdArrangeBySize:": @"size", @"cmdArrangeByFinderTags:": @"tags" }; NSString *mine = m[NSStringFromSelector(a)]; [i setState: (mine ? [mine isEqual: k] : ![k length]) ? NSOnState : NSOffState]; return _mode != 1; }
-	if (a == @selector(cmdTogglePathBar:)) { [i setTitle: [_pathBar isHidden] ? @"Show Path Bar" : @"Hide Path Bar"]; return YES; } if (a == @selector(cmdToggleSidebar:)) { [i setTitle: [_sidebar isHidden] ? @"Show Sidebar" : @"Hide Sidebar"]; return YES; }
-	if (a == @selector(cmdViewAsIcons:)) { [i setState: _mode == 0]; return YES; } if (a == @selector(cmdViewAsList:)) { [i setState: _mode == 1]; return YES; }
+	if (sel_isEqual(a, @selector(cmdToggleTag:))) { BOOL all = has; for (NSString *p in _selection) if (![TFTagsOf(p) containsObject: [i representedObject]]) all = NO; [i setState: all ? NSOnState : NSOffState]; return has; }
+	if (sel_isEqual(a, @selector(cmdBack:))) return _hi > 0; if (sel_isEqual(a, @selector(cmdForward:))) return _hi + 1 < (NSInteger)[_history count];
+	if (sel_isEqual(a, @selector(cmdOpen:)) || sel_isEqual(a, @selector(cmdOpenWithDownArrow:)) || sel_isEqual(a, @selector(cmdMoveToTrash:)) || sel_isEqual(a, @selector(cmdDuplicate:)) || sel_isEqual(a, @selector(cmdMakeAlias:)) || sel_isEqual(a, @selector(copy:)) || sel_isEqual(a, @selector(cmdShowStaticInfo:)) || sel_isEqual(a, @selector(cmdCopyAsPathname:))) return has;
+	if (sel_isEqual(a, @selector(cmdRename:))) return [_selection count] == 1; if (sel_isEqual(a, @selector(paste:))) return [[NSPasteboard generalPasteboard] propertyListForType: NSFilenamesPboardType] != nil;
+	if (sel_isEqual(a, @selector(undo:))) { NSDictionary *e = [_undo lastObject]; [i setTitle: e ? [@"Undo " stringByAppendingString: e[@"name"]] : @"Undo"]; return e != nil; }
+	if (sel_isEqual(a, @selector(redo:))) { NSDictionary *e = [_redo lastObject]; [i setTitle: e ? [@"Redo " stringByAppendingString: e[@"name"]] : @"Redo"]; return e != nil; }
+	if (sel_isEqual(a, @selector(cut:)) || sel_isEqual(a, @selector(cmdNewFolderWithSelection:)) || sel_isEqual(a, @selector(cmdArchive:)) || sel_isEqual(a, @selector(cmdSlideshow:)) || sel_isEqual(a, @selector(cmdShare:)) || sel_isEqual(a, @selector(cmdShowPackageContents:))) return has;
+	if (sel_isEqual(a, @selector(cmdNewFolder:)) && [i isKindOfClass: [NSMenuItem class]] && [[i title] hasPrefix: @"New Folder with"]) return has;
+	if (sel_isEqual(a, @selector(cmdIncreaseIconSize:)) || sel_isEqual(a, @selector(cmdDecreaseIconSize:))) return _mode == 0;
+	if (sel_isEqual(a, @selector(cmdMoveItemsHere:)) || sel_isEqual(a, @selector(cmdPasteExactly:))) return [[NSPasteboard generalPasteboard] propertyListForType: NSFilenamesPboardType] != nil;
+	if (sel_isEqual(a, @selector(cmdPutBack:))) return has && [[[_url path] stringByStandardizingPath] hasPrefix: TrashPath()];
+	if (sel_isEqual(a, @selector(cmdDeleteImmediately:)) || sel_isEqual(a, @selector(cmdCompress:)) || sel_isEqual(a, @selector(cmdQuickLook:)) || sel_isEqual(a, @selector(cmdOpenInNewTab:)) || sel_isEqual(a, @selector(cmdDuplicateExactly:)) || sel_isEqual(a, @selector(cmdShowOriginal:))) return has;
+	if (sel_isEqual(a, @selector(cmdEmptyTrash:)) || sel_isEqual(a, @selector(cmdEmptyTrashSilently:))) return [[[NSFileManager defaultManager] contentsOfDirectoryAtPath: TrashPath() error: NULL] count] > 0;
+	if (sel_isEqual(a, @selector(cmdAddToSidebar:))) { BOOL ok = NO; for (NSString *p in _selection) { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: p isDirectory: &d]; if (d) ok = YES; } return ok; }
+	if (sel_isEqual(a, @selector(cmdToggleStatusBar:))) { [i setTitle: _showStatus ? @"Hide Status Bar" : @"Show Status Bar"]; return YES; }
+	if (sel_isEqual(a, @selector(cmdArrangeByNone:)) || sel_isEqual(a, @selector(cmdArrangeByName:)) || sel_isEqual(a, @selector(cmdArrangeByKind:)) || sel_isEqual(a, @selector(cmdArrangeByDateModified:)) || sel_isEqual(a, @selector(cmdArrangeByDateCreated:)) || sel_isEqual(a, @selector(cmdArrangeBySize:)) || sel_isEqual(a, @selector(cmdArrangeByFinderTags:))) { NSString *k = _icons->_arrange; NSDictionary *m = @{ @"cmdArrangeByName:": @"name", @"cmdArrangeByKind:": @"kind", @"cmdArrangeByDateModified:": @"modified", @"cmdArrangeByDateCreated:": @"created", @"cmdArrangeBySize:": @"size", @"cmdArrangeByFinderTags:": @"tags" }; NSString *mine = m[NSStringFromSelector(a)]; [i setState: (mine ? [mine isEqual: k] : ![k length]) ? NSOnState : NSOffState]; return _mode != 1; }
+	if (sel_isEqual(a, @selector(cmdTogglePathBar:))) { [i setTitle: [_pathBar isHidden] ? @"Show Path Bar" : @"Hide Path Bar"]; return YES; } if (sel_isEqual(a, @selector(cmdToggleSidebar:))) { [i setTitle: [_sidebar isHidden] ? @"Show Sidebar" : @"Hide Sidebar"]; return YES; }
+	if (sel_isEqual(a, @selector(cmdViewAsIcons:))) { [i setState: _mode == 0]; return YES; } if (sel_isEqual(a, @selector(cmdViewAsList:))) { [i setState: _mode == 1]; return YES; }
 	return [self respondsToSelector: a];
 }
 /* delegates */
@@ -336,6 +345,49 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 - (void)toggleTabBar:(id)s { _forceTabBar = !_forceTabBar; [_tabBar setHidden: !_forceTabBar && [_tabs count] < 2]; if (![_tabs count]) { [_tabs addObject: [self _tabState]]; _tabIx = 0; } [self _syncTabBar]; }
 - (void)cmdShowPackageContents:(id)s { for (NSString *p in [self _targets]) if ([[p pathExtension] isEqual: @"app"]) [self goToPath: p]; }
 - (void)cmdToggleToolbar:(id)s { [_toolbar setHidden: ![_toolbar isHidden]]; }
+/* the rest of the menu bar's actions (docs/desktop/Finder.menu-actions.txt) */
+- (void)cmdGroupAsFolder:(id)s { [self cmdNewFolderWithSelection: s]; }
+- (void)cmdNewSmartFolder:(id)s { [self cmdToggleSearch: s]; }
+- (void)cmdNewBurnableFolder:(id)s { NSString *p = UniquePath([_url path], @"Untitled Burn Folder", nil); if ([[NSFileManager defaultManager] createDirectoryAtPath: p withIntermediateDirectories: NO attributes: nil error: NULL]) { [self _record: @"New Folder" ops: @[ @{ @"t": @"mkdir", @"a": p } ]]; [self reload]; } }
+- (void)cmdOpenAltBrowse:(id)s { for (NSString *p in [self _targets]) { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: p isDirectory: &d]; if (d && ![[p pathExtension] isEqual: @"app"]) [TBrowserWindowController newBrowserWithPath: p]; else [[NSWorkspace sharedWorkspace] openFile: p]; } }
+- (void)cmdOpenOptionBrowse:(id)s { [self cmdOpenAltBrowse: s]; [[self window] performClose: nil]; }
+- (void)cmdOpenParentAltBrowse:(id)s { [TBrowserWindowController newBrowserWithPath: [[_url path] stringByDeletingLastPathComponent]]; }
+- (void)cmdOpenWith:(id)s {}
+- (void)cmdAlwaysOpenWith:(id)s {}
+- (void)cmdShowInspector:(id)s { [self cmdShowStaticInfo: s]; }
+- (void)cmdShowStaticInfoSummary:(id)s { [self cmdShowStaticInfo: s]; }
+- (void)cmdEditTags:(id)s { NSView *v = [self _view]; NSMenu *tm = [self tagMenu]; [self _markTagMenu: tm]; TFPopupMenu(v, NSMakePoint([v bounds].size.width / 2, 60), tm); }
+- (void)cmdEject:(id)s { for (NSString *p in [self _targets]) for (NSDictionary *v in TFVolumes()) if ([v[@"path"] isEqual: p] && [v[@"eject"] boolValue]) TFEject(p); }
+- (void)cmdEjectOne:(id)s { [self cmdEject: s]; }
+- (void)cmdEjectAll:(id)s { for (NSDictionary *v in TFVolumes()) if ([v[@"eject"] boolValue]) TFEject(v[@"path"]); }
+- (void)cmdCopyAsLink:(id)s { NSPasteboard *pb = [NSPasteboard generalPasteboard]; NSMutableArray *u = [NSMutableArray array]; for (NSString *p in [self _targets]) [u addObject: [[NSURL fileURLWithPath: p] absoluteString]]; [pb declareTypes: @[ NSStringPboardType ] owner: nil]; [pb setString: [u componentsJoinedByString: @"\n"] forType: NSStringPboardType]; }
+- (void)cmdShowClipboard:(id)s { NSString *t = [[NSPasteboard generalPasteboard] stringForType: NSStringPboardType] ?: @"(empty)"; NSAlert *a = [[NSAlert alloc] init]; [a setMessageText: @"Clipboard"]; [a setInformativeText: t]; [a runModal]; }
+- (void)cmdFindFile:(id)s { [self cmdSetFocusToSearchField: s]; }
+- (void)cmdAlternateFindFile:(id)s { [self cmdSetFocusToSearchField: s]; }
+- (void)cmdSortBy:(id)s {}
+- (void)cmdUseGroupsOrStacks:(id)s {}
+- (void)cmdTogglePreviewPane:(id)s {}
+- (void)cmdTogglePreviewOptions:(id)s {}
+- (void)cmdCleanUpByLastOpenDate:(id)s { [self cmdCleanUpByModDate: s]; }
+- (void)cmdCleanUpByDateAdded:(id)s { [self cmdCleanUpByCreationDate: s]; }
+- (void)toggleTabOverview:(id)s { _forceTabBar = YES; [self _syncTabBar]; }
+- (void)cmdSelectStartupDisk:(id)s { [self goToPath: @"/"]; }
+- (void)cmdGoToDataSeparatedICloud:(id)s { [self cmdGoToICloud: s]; }
+- (void)cmdGoToSharedDocuments:(id)s { [self goToPath: @"/Users/Shared"]; }
+- (void)cmdConnectTo:(id)s { [self cmdConnectToServer: s]; }
+- (void)cmdGoToRecent:(NSMenuItem *)it { [self goToPath: [it representedObject]]; }
+- (void)cmdToggleCopyProgressWindow:(id)s {}
+- (void)cmdMacUserGuide:(id)s {}
+- (void)cmdTipsForYourMac:(id)s {}
+- (void)cmdArchiveWithPassword:(id)s {}
+- (void)cmdCreateOrCopyiCloudLink:(id)s {}
+- (void)cmdManageSharedItem:(id)s {}
+- (void)cmdBurn:(id)s {}
+- (void)cmdAddToDock:(id)s {}
+- (void)cmdPrintItems:(id)s {}
+- (void)cmdCustomizeFolderPopover:(id)s {}
+- (void)cmdRotateClockwise:(id)s {}
+- (void)cmdRotateCounterclockwise:(id)s {}
 - (void)cmdArrange:(id)s {} - (void)cmdCleanUpBy:(id)s {} - (void)cmdUseGroups:(id)s {} - (void)cmdGroupBy:(id)s {}
 - (void)cmdCleanUp:(id)s { [_icons cleanUp: NO]; }
 - (void)cmdCleanUpSelection:(id)s { [_icons cleanUp: YES]; }
