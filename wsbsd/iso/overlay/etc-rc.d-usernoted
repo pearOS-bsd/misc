@@ -1,0 +1,23 @@
+#!/bin/sh
+# PROVIDE: usernoted
+# REQUIRE: LOGIN
+# BEFORE: macdesktop
+# KEYWORD: shutdown
+# /usr/libexec/usernoted: the notification daemon behind UserNotifications (XPC service com.apple.usernoted); the banners and the list are drawn by the desktop shell (SystemUIServer).
+. /etc/rc.subr
+name="usernoted"
+rcvar="usernoted_enable"
+command="/usr/libexec/usernoted"
+pidfile="/var/run/usernoted.pid"
+start_cmd="usernoted_start"
+stop_cmd="usernoted_stop"
+usernoted_start()
+{
+	[ -x $command ] || return 0
+	mkdir -p /var/run/xpc /var/db/usernoted
+	export WSBSD_XPC_DIR=/var/run/xpc WSBSD_UN_DIR=/var/db/usernoted HOME=/root
+	daemon -f -o /var/log/usernoted.log -p $pidfile $command
+}
+usernoted_stop() { [ -f $pidfile ] && kill "$(cat $pidfile)" 2>/dev/null; }
+load_rc_config $name
+run_rc_command "$1"

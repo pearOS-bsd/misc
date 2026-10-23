@@ -231,6 +231,9 @@ Finder status (2026-10-23, an honest estimate from the code and the VM, not a me
 
 **Other open work:** Chess, the SkyLight routines that need a compositor, KMS/GPU hardware, the Dock, real WebKit, the designers' assets (ordered, 21,000 EUR) and the Pico 2 secure-element token.
 
+## Notifications
+`usernoted` (XPC service `com.apple.usernoted`) receives requests from `UNUserNotificationCenter` (the framework in an application), decides (authorisation, schedule, Focus, the application in the foreground) and tells the desktop shell (SystemUIServer, `topbar/NotificationCenter.m`) to draw the banner and the list in the panel of the clock; applications never draw banners. Measured on the reference Mac. `wsnotify -title T -message M` posts one from a shell. Not yet: push (apsd), content extensions, action buttons, alert style, badges, sounds, per-app settings, the legacy `NSUserNotification`.
+
 ## Future work (not a priority)
 - **X11 / Wayland applications (Firefox and other GTK/Qt programs).** They look for an X server (`DISPLAY`) or a Wayland compositor (`WAYLAND_DISPLAY`); wsd speaks its own protocol, so they do not start today. Possible routes: an X server nested in a wsd window (Xephyr/Xwayland) as a quick bridge, or a Wayland compositor inside wsd (`wl_compositor`, `xdg_shell`, shared-memory buffers, `wl_seat`, using libwayland-server) so that their windows appear on the desktop like any other. Not planned for now.
 
