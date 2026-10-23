@@ -138,7 +138,7 @@ NSImage *TFIcon(NSString *path);
 - (void)setPath:(NSString *)p;
 @end
 
-@interface TToolbarView : NSView { @public NSString *title; BOOL canBack, canForward; id target; NSInteger mode; NSTextField *search; BOOL searching; NSInteger hot; NSRect _pressed; }
+@interface TToolbarView : NSView { @public NSString *title; BOOL canBack, canForward; id target; NSInteger mode; NSTextField *search; BOOL searching; NSInteger hot; NSRect _pressed; BOOL trashMode; }
 - (void)setSearching:(BOOL)on;
 @end
 

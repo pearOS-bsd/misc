@@ -730,7 +730,8 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 		if ([k isEqual: @"tag"]) { [TagColorFor(it[@"t"]) setFill]; [[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(22, NSMidY(r) - 6, 13, 13)] fill]; }
 		else if ([it[@"t"] isEqual: @"All Tags…"]) { [[NSColor colorWithCalibratedWhite: 0.6 alpha: 1] setFill]; [[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(21, NSMidY(r) - 5, 10, 10)] fill]; [[NSColor colorWithCalibratedWhite: 0.45 alpha: 1] setFill]; [[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(27, NSMidY(r) - 5, 10, 10)] fill]; }
 		else if ([it[@"s"] isEqual: @"airdrop"]) { NSPoint c = NSMakePoint(29, NSMidY(r) + 2); [tint setStroke]; [tint setFill]; [[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(c.x - 1.6, c.y - 1.6, 3.2, 3.2)] fill]; for (int k = 1; k <= 3; k++) { NSBezierPath *a = [NSBezierPath bezierPath]; [a appendBezierPathWithArcWithCenter: c radius: 2.7 * k + 0.6 startAngle: -45 endAngle: 225 clockwise: NO]; [a setLineWidth: 1.5]; [a setLineCapStyle: NSRoundLineCapStyle]; [a stroke]; } }
-		else if (![it[@"s"] length] || !TFSymbol(it[@"s"], ic, 15, tint)) { }
+		else if (![it[@"s"] length]) { }
+		else { NSString *sy = it[@"s"]; if ([sy isEqual: @"trash"]) { static time_t at; static BOOL full; time_t now = time(NULL); if (now != at) { at = now; full = NO; for (NSString *n in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: [NSHomeDirectory() stringByAppendingPathComponent: @".Trash"] error: NULL]) if (![n hasPrefix: @"."]) { full = YES; break; } } if (full) sy = @"trash.fill"; } TFSymbol(sy, ic, 15, tint); }
 		BOOL ej = [it[@"eject"] boolValue]; TextAt(Truncated(it[@"t"], Font(13, NO, TF_TEXT), r.size.width - (ej ? 70 : 52)), 45, NSMidY(r), Font(13, NO, TF_TEXT));
 		if (ej) TFSymbol(@"eject.fill", NSMakeRect(NSMaxX(r) - 30, NSMidY(r) - 8, 16, 16), 10, TF_DIM);
 	}
@@ -840,6 +841,7 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 - (NSRect)_pill:(int)k                    /* 0 nav, 1 modes, 2 group, 3 actions, 4 search: 36 high 8 from the top; widths, gaps (7) and the right margin (8) as measured in the 1022 wide window */
 {
 	CGFloat w = [self bounds].size.width, sw = searching ? 200 : 37, x = w - 8 - sw; if (k == 4) return NSMakeRect(x, 8, sw, 36);
+	if (trashMode) { x -= 7 + 66; if (k == 5) return NSMakeRect(x, 8, 66, 36); }
 	x -= 7 + 112; if (k == 3) return NSMakeRect(x, 8, 112, 36); x -= 7 + 48; if (k == 2) return NSMakeRect(x, 8, 48, 36); x -= 7 + 161; if (k == 1) return NSMakeRect(x, 8, 161, 36);
 	return NSMakeRect(7, 8, 74, 36);
 }
@@ -872,17 +874,18 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 		NSBezierPath *u = [NSBezierPath bezierPath]; [u setLineWidth: 1.7]; [u setLineCapStyle: NSRoundLineCapStyle]; [u setLineJoinStyle: NSRoundLineJoinStyle]; [u moveToPoint: NSMakePoint(cx - 3.5, cy - 3.8)]; [u lineToPoint: NSMakePoint(cx - 4.8, cy - 3.8)]; [u curveToPoint: NSMakePoint(cx - 7.6, cy - 1) controlPoint1: NSMakePoint(cx - 6.4, cy - 3.8) controlPoint2: NSMakePoint(cx - 7.6, cy - 2.6)]; [u lineToPoint: NSMakePoint(cx - 7.6, cy + 6)]; [u curveToPoint: NSMakePoint(cx - 4.8, cy + 8.8) controlPoint1: NSMakePoint(cx - 7.6, cy + 7.6) controlPoint2: NSMakePoint(cx - 6.4, cy + 8.8)]; [u lineToPoint: NSMakePoint(cx + 4.8, cy + 8.8)]; [u curveToPoint: NSMakePoint(cx + 7.6, cy + 6) controlPoint1: NSMakePoint(cx + 6.4, cy + 8.8) controlPoint2: NSMakePoint(cx + 7.6, cy + 7.6)]; [u lineToPoint: NSMakePoint(cx + 7.6, cy - 1)]; [u curveToPoint: NSMakePoint(cx + 4.8, cy - 3.8) controlPoint1: NSMakePoint(cx + 7.6, cy - 2.6) controlPoint2: NSMakePoint(cx + 6.4, cy - 3.8)]; [u lineToPoint: NSMakePoint(cx + 3.5, cy - 3.8)]; [u stroke]; [q stroke]; (void)bx; }
 	TFSymbol(@"tag", NSMakeRect(ac.origin.x + aw, 8, aw, 36), 20, t);
 	NSRect e = NSMakeRect(ac.origin.x + 2 * aw, 8, aw, 36); for (int k = 0; k < 3; k++) { [t setFill]; [[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(NSMidX(e) - 8 + k * 6.5, 24, 3.5, 3.5)] fill]; }
+	if (trashMode) { NSRect er = [self _pill: 5]; GlassPill(er, pr); NSSize ez = [@"Empty" sizeWithAttributes: Font(13, NO, t)]; [@"Empty" drawAtPoint: NSMakePoint(NSMidX(er) - ez.width / 2, 26 - ez.height / 2) withAttributes: Font(13, NO, t)]; }
 	NSRect sr = [self _pill: 4]; GlassPill(sr, pr); TFSymbol(@"magnifyingglass", NSMakeRect(sr.origin.x, 8, searching ? 34 : sr.size.width, 36), 20, searching ? TF_DIM : t);
 	if (searching && ![[search stringValue] length] && [[self window] firstResponder] != [search currentEditor]) TextAt(@"Search", sr.origin.x + 34, 26, Font(13, NO, TF_DIM));
 }
-- (BOOL)isDragPoint:(NSPoint)p { for (int k = 0; k < 5; k++) if (NSPointInRect(p, [self _pill: k])) return NO; return YES; }
+- (BOOL)isDragPoint:(NSPoint)p { for (int k = 0; k < (trashMode ? 6 : 5); k++) if (NSPointInRect(p, [self _pill: k])) return NO; return YES; }
 - (NSRect)_hitRect:(NSPoint)p                                                                  /* the control under p, for the pressed look */
 {
 	NSRect nav = [self _pill: 0], md = [self _pill: 1], ac = [self _pill: 3];
 	if (NSPointInRect(p, nav)) return p.x < NSMidX(nav) ? NSMakeRect(nav.origin.x, 7, nav.size.width / 2, 38) : NSMakeRect(NSMidX(nav), 7, nav.size.width / 2, 38);
 	if (NSPointInRect(p, md)) { CGFloat sw = md.size.width / 4; int k = (int)((p.x - md.origin.x) / sw) & 3; return NSMakeRect(md.origin.x + k * sw, 7, sw, 38); }
 	if (NSPointInRect(p, ac)) { CGFloat aw = ac.size.width / 3; int k = (int)((p.x - ac.origin.x) / aw); return NSMakeRect(ac.origin.x + k * aw, 7, aw, 38); }
-	if (NSPointInRect(p, [self _pill: 2])) return [self _pill: 2]; if (NSPointInRect(p, [self _pill: 4])) return [self _pill: 4];
+	if (NSPointInRect(p, [self _pill: 2])) return [self _pill: 2]; if (NSPointInRect(p, [self _pill: 4])) return [self _pill: 4]; if (trashMode && NSPointInRect(p, [self _pill: 5])) return [self _pill: 5];
 	return NSZeroRect;
 }
 - (void)mouseDown:(NSEvent *)e
@@ -897,6 +900,7 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 	if (NSPointInRect(p, nav)) { if (p.x < NSMidX(nav)) { if (canBack) [NSApp sendAction: @selector(cmdBack:) to: target from: self]; } else if (canForward) [NSApp sendAction: @selector(cmdForward:) to: target from: self]; return; }
 	if (NSPointInRect(p, md)) { SEL a[4] = { @selector(cmdViewAsIcons:), @selector(cmdViewAsList:), @selector(cmdViewAsColumns:), @selector(cmdViewAsGallery:) }; [NSApp sendAction: a[(int)((p.x - md.origin.x) / (md.size.width / 4)) & 3] to: target from: self]; return; }
 	NSRect ac = [self _pill: 3]; if (NSPointInRect(p, ac)) { CGFloat aw = ac.size.width / 3; if (p.x > ac.origin.x + 2 * aw) TFPopupMenu(self, NSMakePoint(ac.origin.x + 2 * aw, 46), [target performSelector: @selector(actionMenu)]); else if (p.x > ac.origin.x + aw) { NSMenu *tm = [target performSelector: @selector(tagMenu)]; [target performSelector: @selector(_markTagMenu:) withObject: tm]; TFPopupMenu(self, NSMakePoint(ac.origin.x + aw, 46), tm); } return; }
+	if (trashMode && NSPointInRect(p, [self _pill: 5])) { [NSApp sendAction: @selector(cmdEmptyTrash:) to: target from: self]; return; }
 	if (NSPointInRect(p, [self _pill: 4]) && !searching) [NSApp sendAction: @selector(cmdToggleSearch:) to: target from: self];
 }
 @end
