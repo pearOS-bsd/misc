@@ -27,6 +27,7 @@ NSArray *TFTagsOf(NSString *path);
 void TFSetTags(NSArray *names, NSString *path);
 NSArray *TFPathsTagged(NSString *tag);
 NSWindow *TFOpenInfoWindow(NSString *path);
+void TFCopyItems(NSArray *srcs, NSString *destDir, BOOL move, void (^completion)(NSArray *ops));
 NSWindow *TFOpenQuickLook(NSString *path);
 void TFOpenSettings(void);
 id TFPref(NSString *key, id def);

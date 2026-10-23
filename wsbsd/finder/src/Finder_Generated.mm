@@ -10,6 +10,7 @@
 @interface TIconView : NSView @end
 @interface TInfoWindow : NSWindow @end
 @interface TListView : NSOutlineView @end
+@interface TProgressView : NSView @end
 @interface TSidebarView : NSOutlineView @end
 @interface TCompressWithOptionsController : NSWindowController @end
 @interface TNotificationCenterDelegate : NSObject @end
@@ -236,7 +237,6 @@
 @interface TDesktopPileItem : TDesktopItem @end
 @interface TProgressWindowController : TScriptableWindowController @end
 @interface TInfoWindowCommentsViewController : TInfoWindowViewController @end
-@interface TProgressView : TUpdateLayerView @end
 @interface TProgressStatusViewController : TViewController @end
 @interface TTargetAction : NSObject @end
 @interface TOneShotTargetAction : NSObject @end
@@ -4554,18 +4554,6 @@
 - (id)loadValueControllers { /* 0x1000BB3BC */ return nil; }
 - (id)scriptingID { /* 0x1002CA2A4 */ return nil; }
 + (id)controller { /* 0x1000BB0E4 */ return nil; }
-@end
-@implementation TProgressView
-- (id)initCommon { /* 0x1002CA38C */ return nil; }
-- (id)isSeparatorHidden { /* 0x1002CA610 */ return nil; }
-- (id)setSeparatorHidden:(id)a0 { /* 0x1002CA624 */ return nil; }
-- (id)isShowingStatus { /* 0x1002CA690 */ return nil; }
-- (id)showStatusView:(id)a0 { /* 0x1002CAACC */ return nil; }
-- (id)showErrorView:(id)a0 withInitialKeyView:(id)a1 { /* 0x1002CABBC */ return nil; }
-- (id)hideErrorView { /* 0x1002CADEC */ return nil; }
-- (id)setProhibitWindowClosingFunctor:(id)a0 { /* 0x1002CAEC8 */ return nil; }
-- (id)timeAddedToWindow { /* 0x1002CAF50 */ return nil; }
-- (id)setTimeAddedToWindow:(id)a0 { /* 0x1002CAF64 */ return nil; }
 @end
 @implementation TProgressStatusViewController
 - (id)initCommon { /* 0x1002CB2BC */ return nil; }
