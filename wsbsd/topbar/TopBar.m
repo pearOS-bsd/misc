@@ -15,7 +15,7 @@ static int BatteryPercent(void) { int v = -1; size_t n = sizeof v; if (sysctlbyn
 static BOOL BatteryCharging(void) { int v = 0; size_t n = sizeof v; if (sysctlbyname("hw.acpi.battery.state", &v, &n, NULL, 0) != 0) return NO; return (v & 2) != 0; }     /* ACPI battery state: 1 discharging, 2 charging */
 static BOOL LightText(void) { static BOOL (*fn)(void); static BOOL looked; if (!looked) { looked = YES; fn = (BOOL (*)(void))dlsym(RTLD_DEFAULT, "WsdBarWantsLightText"); } return fn ? fn() : YES; }
 
-void ToggleControlCenter(void); void ToggleSpotlight(void); void ShowBatteryMenu(NSView *v, double rightEdge); void ToggleNotificationCenter(void);
+void ToggleControlCenter(void); void ToggleSpotlight(void); void ShowBatteryMenu(NSView *v, double rightEdge); void ToggleNotificationCenter(void); void NCStart(void);
 @interface BarView : NSView { NSTimer *timer; int battery; BOOL charging; NSInteger pressed; }
 @end
 @implementation BarView
@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
 		NSWindow *win = [[NSWindow alloc] initWithContentRect: NSMakeRect(scr.size.width - width, scr.size.height - BAR_H, width, BAR_H) styleMask: NSBorderlessWindowMask backing: NSBackingStoreBuffered defer: NO];
 		[win setOpaque: NO]; [win setBackgroundColor: [NSColor clearColor]]; [win setHasShadow: NO]; [win setLevel: 21]; [win setHidesOnDeactivate: NO]; [win setCanHide: NO];
 		BarView *v = [[BarView alloc] initWithFrame: NSMakeRect(0, 0, width, BAR_H)]; [win setContentView: v];
-		[win orderFrontRegardless]; [app run];
+		[win orderFrontRegardless]; NCStart(); [app run];
 	}
 	return 0;
 }

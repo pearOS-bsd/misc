@@ -29,6 +29,8 @@ done
 sh "$WS/sdk/build-compat.sh" "$WORK/compat" > "$WORK/compat.log" 2>&1; install -m 755 "$WORK/compat/libwsbsdcompat.so" /usr/local/lib/libwsbsdcompat.so; install -m 755 "$WORK/compat/libQuartzCore.so" /usr/local/lib/libQuartzCore.so
 # Wi-Fi: CoreWLAN, CoreWiFi and airportd, laid out as on the Mac (installed below under /System and /usr/libexec)
 sh "$WS/sdk/build-corewlan.sh" "$WORK/cw" > "$WORK/corewlan.log" 2>&1; sh "$WS/sdk/build-airportd.sh" "$WORK/cw" >> "$WORK/corewlan.log" 2>&1; [ -x "$WORK/cw/usr/libexec/airportd" ] || { echo "airportd did not build"; tail -20 "$WORK/corewlan.log"; exit 1; }
+# notifications: usernoted (the daemon) and wsnotify (a command line client), laid out like airportd; this build must not stop the image
+sh "$WS/sdk/build-usernoted.sh" "$WORK/cw" "$WORK/compat" > "$WORK/usernoted.log" 2>&1 || tail -5 "$WORK/usernoted.log"
 install -d /usr/local/bin /usr/local/libexec
 install -d /usr/local/share/wsbsd/icons && install -m 644 "$HERE"/icons/*.icns /usr/local/share/wsbsd/icons/
 # the asset catalogues of the Mac that the file panels read (coreui): the small ones are in the repository, the big ones (SF Symbols 117 MB, CoreTypes 20 MB) are copied into coreui/assets before the build or are already in place
@@ -90,7 +92,7 @@ mkdir -p "$ROOT/System/Library/LaunchDaemons"
 (cd "$WORK/cw" && tar -cf - System usr 2>/dev/null) | tar -C "$ROOT" -xpf - || true
 install -d "$ROOT/System/Library/Desktop Pictures" && install -m 644 "$WS/desktop-pictures/dark-mode.jpg" "$WS/desktop-pictures/light-mode.jpg" "$ROOT/System/Library/Desktop Pictures/"; cp "$WS/desktop-pictures/README.md" "$ROOT/System/Library/Desktop Pictures/README.md"
 install -d "$ROOT/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources" && install -m 644 "$WS/launchservices/uti_table.json" "$ROOT/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/uti_table.json"
-for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-airportd" "$ROOT/$d/rc.d/airportd"; done
+for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-airportd" "$ROOT/$d/rc.d/airportd"; install -m 755 "$HERE/overlay/etc-rc.d-usernoted" "$ROOT/$d/rc.d/usernoted"; done
 # no text login on the screen: the window server owns it (the serial console keeps its login)
 for d in etc private/etc; do sed -i '' -E 's/^(ttyv[0-9a-f]+[[:space:]].*[[:space:]])(onifexists|on)([[:space:]]|$)/\1off\3/' "$ROOT/$d/ttys"; done
 # the shell of root and of the Terminal: zsh, the default shell of macOS (/bin/zsh), with /etc/zprofile and /etc/zshrc taken from the author's Mac configuration, minus what is Mac-only
