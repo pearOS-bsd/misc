@@ -44,6 +44,8 @@ NSString *TFKindCategory(NSString *path, BOOL dir);
 BOOL TFIsPackage(NSString *path);
 NSArray *TFAppsForFile(NSString *path);
 void TFOpenPath(NSString *path);
+NSArray *TFBulkRenamedNames(NSArray *paths, NSDictionary *params);
+void TFBulkRename(NSArray *paths, void (^done)(NSArray *changes));
 void TFSetOpenWith(NSString *path, NSString *app, BOOL all);
 NSString *TFDisplayName(NSString *path);
 BOOL TFEject(NSString *mount);

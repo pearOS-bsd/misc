@@ -298,7 +298,16 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 }
 - (void)cmdSetFocusToSearchField:(id)s { if (!_toolbar->searching) [_toolbar setSearching: YES]; }
 - (void)cmdSearchFromToolbar:(id)s { [self cmdToggleSearch: s]; }
-- (void)cmdRename:(id)s { if ([_selection count] == 1) [self _renamePath: _selection[0]]; }
+- (void)cmdRename:(id)s
+{
+	if ([_selection count] == 1) { [self _renamePath: _selection[0]]; return; } if ([_selection count] < 2) return; [self performSelector: @selector(_bulkRename) withObject: nil afterDelay: 0.1];      /* after the pop-up menu is gone, which would take the clicks of the dialog */
+}
+- (void)_bulkRename
+{
+	__weak TBrowserWindowController *me = self;
+	TFBulkRename([_selection copy], ^(NSArray *changes) { NSFileManager *fm = [NSFileManager defaultManager]; if (getenv("FINDER_DEBUG")) NSLog(@"bulk rename: %@", changes); NSMutableArray *ops = [NSMutableArray array]; @try { for (NSUInteger ci = 0; ci < [changes count]; ci++) { NSArray *pr = changes[ci]; NSError *er = nil; if (![fm fileExistsAtPath: pr[1]] && [fm moveItemAtPath: pr[0] toPath: pr[1] error: &er]) { [ops addObject: @{ @"t": @"move", @"a": pr[0], @"b": pr[1] }]; if (getenv("FINDER_DEBUG")) NSLog(@"bulk rename moved %@", pr); } else if (getenv("FINDER_DEBUG")) NSLog(@"bulk rename failed %@: %@", pr, er); } } @catch (NSException *x) { NSLog(@"bulk rename exception %@ %@", x, [x reason]); }
+		TBrowserWindowController *s = me; if (s && [ops count]) { [s _record: @"Rename" ops: ops]; [s _changed: nil]; } });
+}
 - (void)cmdShowStaticInfo:(id)s { for (NSString *p in [self _targets]) TFOpenInfoWindow(p); }
 - (void)cmdShowInfo:(id)s { [self cmdShowStaticInfo: s]; }
 - (BOOL)validateMenuItem:(NSMenuItem *)i
@@ -310,7 +319,7 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 	if (sel_isEqual(a, @selector(cmdToggleTag:))) { BOOL all = has; for (NSString *p in _selection) if (![TFTagsOf(p) containsObject: [i representedObject]]) all = NO; [i setState: all ? NSOnState : NSOffState]; return has; }
 	if (sel_isEqual(a, @selector(cmdBack:))) return _hi > 0; if (sel_isEqual(a, @selector(cmdForward:))) return _hi + 1 < (NSInteger)[_history count];
 	if (sel_isEqual(a, @selector(cmdOpen:)) || sel_isEqual(a, @selector(cmdOpenWithDownArrow:)) || sel_isEqual(a, @selector(cmdMoveToTrash:)) || sel_isEqual(a, @selector(cmdDuplicate:)) || sel_isEqual(a, @selector(cmdMakeAlias:)) || sel_isEqual(a, @selector(copy:)) || sel_isEqual(a, @selector(cmdShowStaticInfo:)) || sel_isEqual(a, @selector(cmdCopyAsPathname:))) return has;
-	if (sel_isEqual(a, @selector(cmdRename:))) return [_selection count] == 1; if (sel_isEqual(a, @selector(paste:))) return [[NSPasteboard generalPasteboard] propertyListForType: NSFilenamesPboardType] != nil;
+	if (sel_isEqual(a, @selector(cmdRename:))) { [i setTitle: [_selection count] > 1 ? [NSString stringWithFormat: @"Rename %lu Items…", (unsigned long)[_selection count]] : @"Rename"]; return [_selection count] >= 1; } if (sel_isEqual(a, @selector(paste:))) return [[NSPasteboard generalPasteboard] propertyListForType: NSFilenamesPboardType] != nil;
 	if (sel_isEqual(a, @selector(undo:))) { NSDictionary *e = [_undo lastObject]; [i setTitle: e ? [@"Undo " stringByAppendingString: e[@"name"]] : @"Undo"]; return e != nil; }
 	if (sel_isEqual(a, @selector(redo:))) { NSDictionary *e = [_redo lastObject]; [i setTitle: e ? [@"Redo " stringByAppendingString: e[@"name"]] : @"Redo"]; return e != nil; }
 	if (sel_isEqual(a, @selector(cut:)) || sel_isEqual(a, @selector(cmdNewFolderWithSelection:)) || sel_isEqual(a, @selector(cmdArchive:)) || sel_isEqual(a, @selector(cmdSlideshow:)) || sel_isEqual(a, @selector(cmdShare:)) || sel_isEqual(a, @selector(cmdShowPackageContents:))) return has;
