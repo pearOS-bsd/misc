@@ -3,14 +3,14 @@
 #import <objc/runtime.h>
 #include <dlfcn.h>
 
-/* the card of the dialogs: the window colour (tinted by the wallpaper like any window of the Mac) with a 1 pt lighter rim, corners of 16 */
+/* the card of the dialogs: the window colour (tinted by the wallpaper like any window of the Mac) with a 1 pt lighter rim, corners of 12 (a sheet of AppKit, measured with a test program) */
 @interface TBulkCard : NSView @end
 @implementation TBulkCard
 - (BOOL)isFlipped { return YES; }
 - (void)drawRect:(NSRect)r
 {
 	NSColor *bg = nil; typedef NSColor *(*TintFn)(NSWindow *); static TintFn fn; static BOOL looked; if (!looked) { looked = YES; fn = (TintFn)dlsym(RTLD_DEFAULT, "WsdTintedWindowBackground"); } if (fn) bg = fn([self window]); if (!bg) bg = [NSColor windowBackgroundColor];
-	NSBezierPath *bp = [NSBezierPath bezierPathWithRoundedRect: NSInsetRect([self bounds], 0.5, 0.5) xRadius: 16 yRadius: 16]; [bg setFill]; [bp fill]; [TFDark() ? TFRGBA(255, 255, 255, 0.10) : TFRGBA(0, 0, 0, 0.12) setStroke]; [bp stroke];
+	NSBezierPath *bp = [NSBezierPath bezierPathWithRoundedRect: NSInsetRect([self bounds], 0.5, 0.5) xRadius: 12 yRadius: 12]; [bg setFill]; [bp fill]; [TFDark() ? TFRGBA(255, 255, 255, 0.10) : TFRGBA(0, 0, 0, 0.12) setStroke]; [bp stroke];
 }
 @end
 /* the same card with the origin at the bottom (the layout of TFAsk) */
@@ -65,8 +65,10 @@ void TFBulkRename(NSArray *paths, void (^done)(NSArray *))
 	__weak NSWindow *ww = w; __block TBulkButtons *keep = bt;
 	bt->done = ^(BOOL yes) { NSArray *res = nil; if (yes) { NSArray *nn = TFBulkRenamedNames(paths, [f params]); NSMutableArray *r = [NSMutableArray array];
 			for (NSUInteger i = 0; i < [paths count]; i++) { NSString *old = paths[i], *nw = nn[i]; if ([nw length] && ![nw containsString: @"/"] && ![nw isEqual: [old lastPathComponent]]) [r addObject: @[ old, [[old stringByDeletingLastPathComponent] stringByAppendingPathComponent: nw] ]]; } res = r; }
-		[ww orderOut: nil]; keep->done = nil; keep = nil; done(res); };
-	objc_setAssociatedObject(w, "bulk", @[ bt, f ], OBJC_ASSOCIATION_RETAIN); [w makeKeyAndOrderFront: nil]; static NSWindow *open; open = w;
+		NSWindow *pw = [(id)ww sheetParent]; if (pw) [(id)pw endSheet: ww]; else [ww orderOut: nil]; keep->done = nil; keep = nil; done(res); };
+	objc_setAssociatedObject(w, "bulk", @[ bt, f ], OBJC_ASSOCIATION_RETAIN); static NSWindow *open; open = w;
+	NSWindow *parent = [NSApp keyWindow]; if (!parent || [(id)parent sheetParent]) for (NSWindow *x in [NSApp windows]) if ([x isVisible] && [[x windowController] isKindOfClass: NSClassFromString(@"TBrowserWindowController")]) { parent = x; break; }
+	if (parent) [(id)parent beginSheet: w completionHandler: nil]; else [w makeKeyAndOrderFront: nil];       /* a sheet of the window it was asked on (AppKit's, WsdSheets.m), centred on it */
 }
 
 /* A question with text fields in a window of its own (NSAlert here draws no accessory view, and a modal session fights with the Finder windows for the key): the values go to done, nil when cancelled.
