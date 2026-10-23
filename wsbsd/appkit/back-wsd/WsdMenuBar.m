@@ -92,8 +92,8 @@ static BOOL Confirm(NSString *msg, NSString *info, NSString *button)
 {
 	NSMenu *m = [[NSMenu alloc] initWithTitle: @"pear"]; if ([m respondsToSelector: @selector(setMinimumWidth:)]) ((void (*)(id, SEL, double))objc_msgSend)(m, @selector(setMinimumWidth:), 312.0);
 	NSMenuItem *(^Add)(NSString *, SEL, NSString *, NSUInteger) = ^NSMenuItem *(NSString *t, SEL a, NSString *k, NSUInteger mask) { NSMenuItem *i = [m addItemWithTitle: t action: a keyEquivalent: k ?: @""]; [i setTarget: self]; if (k) [i setKeyEquivalentModifierMask: mask]; return i; };
-	Add(@"About This Mac", @selector(aboutThisMac:), nil, 0); [m addItem: [NSMenuItem separatorItem]];
-	Add(@"System Settings…", @selector(openSettings:), nil, 0); Add(@"App Store…", @selector(openAppStore:), nil, 0); [m addItem: [NSMenuItem separatorItem]];
+	[Add(@"About This Mac", @selector(aboutThisMac:), nil, 0) setToolTip: @"sym:laptopcomputer"]; [m addItem: [NSMenuItem separatorItem]];
+	[Add(@"System Settings…", @selector(openSettings:), nil, 0) setToolTip: @"sym:gearshape"]; [Add(@"App Store…", @selector(openAppStore:), nil, 0) setToolTip: @"sym:a.square"]; [m addItem: [NSMenuItem separatorItem]];
 	NSMenuItem *ri = [m addItemWithTitle: @"Recent Items" action: NULL keyEquivalent: @""]; NSMenu *rs = [[NSMenu alloc] initWithTitle: @"Recent Items"]; for (NSString *t in @[ @"Applications", @"Documents", @"Servers" ]) { NSMenuItem *x = [rs addItemWithTitle: t action: NULL keyEquivalent: @""]; NSMenu *e = [[NSMenu alloc] initWithTitle: t]; NSMenuItem *none = [e addItemWithTitle: @"Clear Menu" action: @selector(clearRecents:) keyEquivalent: @""]; [none setTarget: self]; [x setSubmenu: e]; } [ri setSubmenu: rs];
 	[m addItem: [NSMenuItem separatorItem]];
 	Add(@"Force Quit…", @selector(forceQuit:), @"\x1b", NSCommandKeyMask | NSAlternateKeyMask); [m addItem: [NSMenuItem separatorItem]];
@@ -137,6 +137,7 @@ static NSRect wsdTitleRect(id self, SEL _cmd, NSRect b)
 {
 	NSRect r = ((NSRect (*)(id, SEL, NSRect))origTitleRect)(self, _cmd, b);
 	NSMenuView *mv = [(NSMenuItemCell *)self menuView]; if (mv && [mv isHorizontal] && [mv menu] == [NSApp mainMenu]) r.origin.y += [mv isFlipped] ? -1 : 1;
+	else if (mv && ![mv isHorizontal] && [[[(NSMenuItemCell *)self menuItem] toolTip] hasPrefix: @"sym:"]) { r.origin.x += 25; r.size.width -= 25; }      /* a row with an icon: the title starts 25 pt further in */
 	return r;
 }
 void WsdInstallMenuBar(void)

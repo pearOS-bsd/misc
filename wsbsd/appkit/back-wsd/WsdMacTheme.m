@@ -493,12 +493,12 @@ static void wsdMenuSizeToFit(id self, SEL _cmd)
 	}
 	((void (*)(id, SEL))origMenuSize)(self, _cmd);
 	Ivar ic = class_getInstanceVariable([NSMenuView class], "_itemCells"); NSArray *cells = ic ? *(NSArray **)((char *)self + ivar_getOffset(ic)) : nil; if (![cells count]) return;
-	BOOL hasCheck = NO, hasSub = NO; double maxTitle = 0, maxKey = 0;
+	BOOL hasCheck = NO, hasSub = NO, hasIcon = NO; double maxTitle = 0, maxKey = 0;
 	for (NSMenuItemCell *c in cells) {
 		NSMenuItem *it = [c menuItem]; if ([it isSeparatorItem] || [it isHidden]) continue;
-		if ([it state] != NSOffState) hasCheck = YES;
+		if ([it state] != NSOffState) hasCheck = YES; 
 		if ([it hasSubmenu]) hasSub = YES; else maxKey = fmax(maxKey, [c keyEquivalentWidth]);
-		maxTitle = fmax(maxTitle, [c titleWidth]);
+		maxTitle = fmax(maxTitle, [c titleWidth] + ([[it toolTip] hasPrefix: @"sym:"] ? 25 : 0));              /* a row with an icon has its title 25 pt further in */
 	}
 	double W = maxTitle + 32 + (hasCheck ? 14 : 0) + (hasSub ? 31 : 0);
 	if (maxKey > 0) W = fmax(W, 16 + (hasCheck ? 14 : 0) + maxTitle + 24.5 + maxKey + 16);
@@ -755,8 +755,12 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 - (void) drawBorderAndBackgroundForMenuItemCell: (NSMenuItemCell *)cell withFrame: (NSRect)cellFrame inView: (NSView *)controlView state: (GSThemeControlState)state isHorizontal: (BOOL)horizontal
 {
 	if (horizontal) { WsdDrawBarItem(cell, cellFrame, state == GSThemeHighlightedState || [cell isHighlighted]); return; }
-	if ([[cell menuItem] isSeparatorItem] || !(state == GSThemeHighlightedState || [cell isHighlighted])) return;
-	fillRound(NSInsetRect(cellFrame, 5, 0), 8.0, rgb(0, 122, 255, 1));
+	BOOL hot = state == GSThemeHighlightedState || [cell isHighlighted]; if ([[cell menuItem] isSeparatorItem]) return;
+	if (hot) fillRound(NSInsetRect(cellFrame, 5, 0), 8.0, rgb(0, 122, 255, 1));
+	NSString *tip = [[cell menuItem] toolTip]; if ([tip hasPrefix: @"sym:"]) {                                       /* the icon of the row: a symbol named in the tool tip, 16 pt, 17 pt in from the edge of the row */
+		extern BOOL WsdSymbolDraw(NSString *name, NSRect cell, CGFloat pt, int weight, NSColor *tint); BOOL en = [[cell menuItem] isEnabled];
+		WsdSymbolDraw([tip substringFromIndex: 4], NSMakeRect(cellFrame.origin.x + 16, NSMidY(cellFrame) - 9, 18, 18), 13, 4, hot ? [NSColor whiteColor] : (isDark() ? [NSColor colorWithCalibratedWhite: 1 alpha: en ? 0.85 : 0.25] : [NSColor colorWithCalibratedWhite: 0 alpha: en ? 0.85 : 0.25]));
+	}
 }
 - (void) drawSeparatorItemForMenuItemCell: (NSMenuItemCell *)cell withFrame: (NSRect)cellFrame inView: (NSView *)controlView isHorizontal: (BOOL)horizontal
 {
