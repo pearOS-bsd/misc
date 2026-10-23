@@ -36,7 +36,7 @@ static NSString *UniquePath(NSString *dir, NSString *base, NSString *ext)
 - (void)_build
 {
 	NSWindow *w = [[TFinderWindow alloc] initWithContentRect: NSMakeRect(160 + 24 * [gBrowsers count], 160, 1022, 552) styleMask: NSWindowStyleMaskBorderless backing: NSBackingStoreBuffered defer: NO];
-	[w setReleasedWhenClosed: NO]; [w setOpaque: NO]; [w setBackgroundColor: [NSColor clearColor]]; [w setMinSize: NSMakeSize(560, 320)]; [self setWindow: w]; [w setDelegate: self]; [w setWindowController: self]; NSView *cv = [w contentView];
+	[w setReleasedWhenClosed: NO]; [w setOpaque: NO]; [w setBackgroundColor: [NSColor clearColor]]; [w setMinSize: NSMakeSize(560, 320)]; [w setContentView: [[TFinderRoot alloc] initWithFrame: NSMakeRect(0, 0, 1022, 552)]]; [self setWindow: w]; [w setDelegate: self]; [w setWindowController: self]; NSView *cv = [w contentView];
 	_icons = [[TIconView alloc] initWithFrame: NSZeroRect]; _icons->delegate = self; [cv addSubview: _icons];
 	_list = [[TListView alloc] initWithFrame: NSZeroRect]; _list->delegate = self; [_list setHidden: YES]; [cv addSubview: _list];
 	_cols = [[TColumnView alloc] initWithFrame: NSZeroRect]; _cols->delegate = self; [_cols setHidden: YES]; [cv addSubview: _cols];
@@ -411,8 +411,15 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 - (void)cmdCleanUpByPhysicalSize:(id)s { _icons->_arrange = @"size"; [_icons cleanUp: NO]; }
 - (void)cmdCleanUpByLabel:(id)s { _icons->_arrange = @"tags"; [_icons cleanUp: NO]; }
 /* drag and drop of icons: into a folder, onto the sidebar, into another Finder window */
+/* files dragged in from another program are copied: into the folder of the sidebar row or of the Finder window they were dropped on */
+- (void)finderExternalDropPaths:(NSArray *)paths atWindowPoint:(NSPoint)wp
+{
+	NSString *dest = [_sidebar dropPathAtWindowPoint: wp]; if (![dest length]) dest = _tag ? nil : [_url path]; if (![dest length]) return; __weak TBrowserWindowController *me = self;
+	TFCopyItems(paths, dest, NO, ^(NSArray *ops) { TBrowserWindowController *s = me; if (!s) return; if ([ops count]) [s _record: @"Copy" ops: ops]; [s _changed: nil]; });
+}
 - (BOOL)iconViewDropPaths:(NSArray *)paths intoFolder:(NSString *)folder atWindowPoint:(NSPoint)wp copy:(BOOL)copy
 {
+	if (!folder && ![_sidebar dropPathAtWindowPoint: wp]) { BOOL onFinder = NO; NSPoint m = [NSEvent mouseLocation]; for (TBrowserWindowController *o in gBrowsers) if (o != self && NSPointInRect(m, [[o window] frame])) onFinder = YES; if (!onFinder && !NSPointInRect(wp, [[[self window] contentView] bounds]) && [NSClassFromString(@"WsdFinderSupport") dropFiles: paths atScreenPoint: [[self window] convertBaseToScreen: wp]]) return YES; }
 	NSString *dest = folder; if (!dest) dest = [_sidebar dropPathAtWindowPoint: wp];
 	if (!dest) { NSPoint m = [NSEvent mouseLocation]; for (TBrowserWindowController *o in gBrowsers) if (o != self && NSPointInRect(m, [[o window] frame]) && !o->_tag) { dest = [o->_url path]; break; } }
 	if (![dest length]) return NO; NSMutableArray *todo = [NSMutableArray array]; for (NSString *p in paths) { if ([[p stringByDeletingLastPathComponent] isEqual: dest] && !copy) continue; if ([dest hasPrefix: [p stringByAppendingString: @"/"]] || [dest isEqual: p]) continue; [todo addObject: p]; } if (![todo count]) return NO;

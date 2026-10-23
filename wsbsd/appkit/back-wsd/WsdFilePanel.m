@@ -16,6 +16,7 @@ static IMP origSetName, origRunModal, origRunModalRel, origBeginCompletion, orig
 static const char kResult = 0, kTags = 0;
 @class WsdTagField;
 
+@interface GSDisplayServer (WsdDropFiles) - (BOOL) wsdDropFiles: (NSArray *)paths atScreenPoint: (NSPoint)p; @end
 @interface GSDisplayServer (WsdCorners) - (void) wsdWindowCorners: (int)radius : (int)win; - (void) wsdWindowScale: (float)scale : (int)win; @end
 static void ScaleWindow(NSWindow *w, float scale) { id srv = GSCurrentServer(); if ([srv respondsToSelector: @selector(wsdWindowScale::)]) [srv wsdWindowScale: scale : (int)[w windowNumber]]; }
 /* the panel's open animation, measured on the Mac: scale 0.98 -> 1.0023 (at about 0.1 s) -> 1 within 0.2 s while it fades in; closing fades out in 0.1 s */
@@ -1124,6 +1125,7 @@ static void wsdSetName(id self, SEL _cmd, NSString *v) { objc_setAssociatedObjec
 + (void)roundWindow:(NSWindow *)w radius:(int)r { RoundWindow(w, r); }
 + (BOOL)drawSymbol:(NSString *)name inRect:(NSRect)cell size:(CGFloat)pt weight:(int)weight color:(NSColor *)c { return WsdSymbolDraw(name, cell, pt, weight, c); }
 + (BOOL)isDark { return WsdAppearanceIsDark(); }
++ (BOOL)dropFiles:(NSArray *)paths atScreenPoint:(NSPoint)p { id srv = GSCurrentServer(); if ([srv respondsToSelector: @selector(wsdDropFiles:atScreenPoint:)]) return [srv wsdDropFiles: paths atScreenPoint: p]; return NO; }
 + (void)popupInView:(NSView *)root rows:(NSArray *)rows at:(NSPoint)p pick:(void (^)(NSInteger))b { [WsdPopup showIn: root rows: rows at: p pick: b]; }
 + (void)popupInView:(NSView *)root titles:(NSArray *)t dots:(NSArray *)d checks:(NSIndexSet *)c at:(NSPoint)p pick:(void (^)(NSInteger))b { [WsdPopup showIn: root titles: t dots: d checks: c at: p pick: b]; }
 + (NSArray *)tagsOfPath:(NSString *)path { return TagsOf(path); }

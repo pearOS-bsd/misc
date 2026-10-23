@@ -22,6 +22,7 @@ TF_ATTR static BOOL TFDark(void) { Class k = NSClassFromString(@"WsdFinderSuppor
 NSString *TFSizeString(unsigned long long bytes);
 NSString *TFDateString(NSDate *d);
 NSString *TFKindString(NSString *path, BOOL dir);
+@interface NSObject (TFDropFiles) + (BOOL)dropFiles:(NSArray *)paths atScreenPoint:(NSPoint)p; @end
 @interface NSObject (TFTags) + (NSArray *)tagsOfPath:(NSString *)p; + (void)setTags:(NSArray *)n ofPath:(NSString *)p; + (NSArray *)tagNames; + (NSColor *)colorOfTag:(NSString *)n; + (void)drawTagDots:(NSArray *)n rightEdge:(double)x centerY:(double)y; + (double)tagDotsWidth:(NSArray *)n; @end
 NSArray *TFTagsOf(NSString *path);
 void TFSetTags(NSArray *names, NSString *path);
@@ -68,6 +69,7 @@ NSImage *TFIcon(NSString *path);
 - (void)iconViewSelectionChanged:(NSArray *)paths;
 @optional
 - (void)prepareContextMenu:(NSMenu *)menu;
+- (void)finderExternalDropPaths:(NSArray *)paths atWindowPoint:(NSPoint)p;
 - (void)iconViewRename:(NSString *)path to:(NSString *)name;
 - (BOOL)iconViewDropPaths:(NSArray *)paths intoFolder:(NSString *)folder atWindowPoint:(NSPoint)p copy:(BOOL)copy;
 @end
@@ -144,6 +146,9 @@ NSImage *TFIcon(NSString *path);
 
 /* the three window buttons, the 1 px rim and the rounded corners, on top of everything */
 @interface TWindowTrim : NSView @end
+
+/* the root view of a Finder window: files dragged in from other programs */
+@interface TFinderRoot : NSView @end
 
 /* a borderless window the Finder moves and resizes itself */
 @interface TFinderWindow : NSWindow { BOOL _zoomed, _mini; NSRect _savedFrame; } @end

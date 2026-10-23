@@ -128,6 +128,14 @@ int ws_notification_post(ws_conn *c, uint32_t to_cid, uint32_t type, const uint8
 	return simple_call(c, buf, 0x2c + P);
 }
 
+int ws_notify_interests(ws_conn *c, const uint32_t *types, uint32_t n)           /* SetConnectionNotifyInterests: the notification types this connection wants broadcasts of */
+{
+	uint8_t buf[0x24 + 4 * 32]; if (n > 32) return -1; memset(buf, 0, 0x24 + 4 * n);
+	fill_header((mach_msg_header_t *)buf, 0x24 + 4 * n, SLS_MSG_SetConnectionNotifyInterests, 0);
+	memcpy(buf + 0x18, &WS_NDR, sizeof WS_NDR); memcpy(buf + 0x20, &n, 4); if (n) memcpy(buf + 0x24, types, 4 * n);
+	return simple_call(c, buf, 0x24 + 4 * n);
+}
+
 int ws_notification_broadcast(ws_conn *c, uint32_t type, const uint8_t *data, uint32_t n)
 {
 	uint8_t buf[0x28 + 0x4000]; uint32_t P = (n + 3) & ~3u;

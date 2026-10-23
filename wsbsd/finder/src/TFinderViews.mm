@@ -9,6 +9,7 @@
 + (void)drawIconOfName:(NSString *)name directory:(BOOL)dir inRect:(NSRect)r;
 + (NSArray *)pathsTagged:(NSString *)tag;
 + (void)popupInView:(NSView *)root titles:(NSArray *)t dots:(NSArray *)d checks:(NSIndexSet *)c at:(NSPoint)p pick:(void (^)(NSInteger))b;
++ (BOOL)dropFiles:(NSArray *)paths atScreenPoint:(NSPoint)p;
 + (void)popupInView:(NSView *)root rows:(NSArray *)rows at:(NSPoint)p pick:(void (^)(NSInteger))b;
 @end
 
@@ -932,6 +933,19 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 		NSEvent *ev = e; while ([ev type] != NSLeftMouseUp) ev = [[self window] nextEventMatchingMask: NSLeftMouseDraggedMask | NSLeftMouseUpMask untilDate: [NSDate distantFuture] inMode: NSEventTrackingRunLoopMode dequeue: YES];
 		if (NSPointInRect([self convertPoint: [ev locationInWindow] fromView: nil], NSInsetRect([self _light: k], -4, -4))) { if (k == 0) [[self window] performClose: self]; else if (k == 1) [[self window] performMiniaturize: self]; else [[self window] performZoom: self]; } return;
 	}
+}
+@end
+
+/* ---------- the root view: drops from other programs ---------- */
+@implementation TFinderRoot
+- (instancetype)initWithFrame:(NSRect)f { if ((self = [super initWithFrame: f])) [self registerForDraggedTypes: @[ NSFilenamesPboardType ]]; return self; }
+- (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender { return NSDragOperationCopy; }
+- (NSDragOperation)draggingUpdated:(id <NSDraggingInfo>)sender { return NSDragOperationCopy; }
+- (BOOL)prepareForDragOperation:(id <NSDraggingInfo>)sender { return YES; }
+- (BOOL)performDragOperation:(id <NSDraggingInfo>)sender
+{
+	NSArray *paths = [[sender draggingPasteboard] propertyListForType: NSFilenamesPboardType]; if (![paths count]) return NO; id d = [[self window] delegate]; if (![d respondsToSelector: @selector(finderExternalDropPaths:atWindowPoint:)]) return NO;
+	[d finderExternalDropPaths: paths atWindowPoint: [sender draggingLocation]]; return YES;
 }
 @end
 
