@@ -172,10 +172,19 @@ echo '=== SDK TESTS (compat layer) ==='; sh "$WS/ci/sdk-tests.sh" 2>&1 | tee sdk
 echo '=== FINDER ==='; FO=/tmp/finder-ci; rm -rf $FO /tmp/fintest; mkdir -p /tmp/fintest/Folder; for n in a.txt b.png c.pdf; do echo x > /tmp/fintest/$n; done
 if COMPAT=/tmp/sdk-compat sh "$WS/finder/build.sh" $FO > /tmp/finder-build.log 2>&1 && [ -x $FO/System/Library/CoreServices/Finder.app/Contents/MacOS/Finder ]; then
 	(cd $FO/System/Library/CoreServices/Finder.app/Contents/MacOS && FINDER_CRASHLOG=1 HOME=/tmp/finhome FINDER_PATH=/tmp/fintest FINDER_WINDOW=1 UI_EXIT_AFTER=60 timeout 60 ./Finder >/tmp/finder-run.log 2>&1; echo "Finder exit status $?" >> /tmp/finder-run.log) &
-	FP=$!; i=0; while [ $i -lt 40 ]; do ./wswins 2>/dev/null | grep -q ' 1022x552' && break; sleep 1; i=$((i+1)); done; echo "Finder window after ${i}s"; sleep 2; ./wsshot finder.ppm && python3 tools/ppm2png.py finder.ppm finder.png; ./wswins > finder-wins.txt 2>&1; cat finder-wins.txt | head -12
+	FP=$!; i=0; while [ $i -lt 40 ]; do ./wswins 2>/dev/null | grep -q ' 1022x552' && break; sleep 1; i=$((i+1)); done; echo "Finder window after ${i}s"; sleep 6; ./wsshot finder.ppm && python3 tools/ppm2png.py finder.ppm finder.png; ./wswins > finder-wins.txt 2>&1; cat finder-wins.txt | head -12
 	python3 - <<'PY' || FINDER_BAD=1
 import sys
 d=open('finder.ppm','rb').read(); body=d[-1280*800*3:]; n=len(set(body[::97])); print('finder screenshot: %d distinct bytes' % n); sys.exit(0 if n>40 else 1)
+PY
+	python3 - <<'PY' || echo 'MENU BAR: no menu text on the top 30 rows of the screenshot'
+import sys
+d=open('finder.ppm','rb').read(); W,H=1280,800; body=d[-W*H*3:]; lit=set()
+for y in range(4,26):
+    for x in range(0,420):
+        o=(y*W+x)*3
+        if body[o]>200 and body[o+1]>200 and body[o+2]>200: lit.add(x)
+print('menu bar: %d lit columns in the left 420 px' % len(lit)); sys.exit(0 if len(lit)>40 else 1)
 PY
 	grep -q ' 1022x552' finder-wins.txt || { echo 'no Finder window of 1022x552'; FINDER_BAD=1; }
 	echo "finder alive: $(pgrep -x Finder | head -1)"; tail -25 /tmp/finder-run.log | cut -c1-240; tail -3 /tmp/finder-build.log
