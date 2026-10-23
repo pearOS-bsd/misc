@@ -51,7 +51,7 @@ static void DumpMenu(NSMenu *m, int d, NSMutableString *out) { for (NSMenuItem *
 }
 - (void)_hookRecentFolders { [self _hideAlternates: [NSApp mainMenu]]; for (NSMenuItem *top in [[NSApp mainMenu] itemArray]) for (NSMenuItem *i in [[top submenu] itemArray]) if ([NSStringFromSelector([i action]) isEqual: @"cmdRecentFolders:"] && [i submenu]) { [[i submenu] setDelegate: (id)self]; [self menuNeedsUpdate: [i submenu]]; } }
 - (void)cmdAbout:(id)s { NSAlert *al = [[NSAlert alloc] init]; [al setMessageText: @"Finder"]; [al setInformativeText: @"Finder for wsbsd\nThe desktop of the system, drawn and behaving like the Mac's."]; [al runModal]; }
-- (void)cmdNewFinderWindow:(id)s { NSString *t = TFPref(@"NewWindowTarget", @"PfHm"); NSString *h = NSHomeDirectory(); NSString *p = [t isEqual: @"PfDe"] ? [h stringByAppendingPathComponent: @"Desktop"] : [t isEqual: @"PfDo"] ? [h stringByAppendingPathComponent: @"Documents"] : [t isEqual: @"PfCm"] ? @"/" : h; [TBrowserWindowController newBrowserWithPath: p]; }
+- (void)cmdNewFinderWindow:(id)s { NSString *t = TFPref(@"NewWindowTarget", @"PfHm"); NSString *h = NSHomeDirectory(); NSString *p = [t isEqual: @"PfDe"] ? [h stringByAppendingPathComponent: @"Desktop"] : [t isEqual: @"PfDo"] ? [h stringByAppendingPathComponent: @"Documents"] : [t isEqual: @"PfCm"] ? @"/" : h; [TBrowserWindowController newBrowserWithPath: getenv("FINDER_PATH") ? @(getenv("FINDER_PATH")) : p]; }
 - (void)cmdPreferences:(id)s { TFOpenSettings(); }
 - (void)cmdNewFinderWindowWithOption:(id)s { [self cmdNewFinderWindow: s]; }
 - (void)_goTo:(NSString *)path { id c = [[NSApp keyWindow] windowController]; if ([c isKindOfClass: [TBrowserWindowController class]]) [c goToPath: path]; else [TBrowserWindowController newBrowserWithPath: path]; }

@@ -230,10 +230,10 @@ static const CGFloat kCW = 112, kCH = 126, kPad = 10, kIcon = 64;
 }
 - (void)setPaths:(NSArray *)paths
 {
-	[_items removeAllObjects]; [_sel removeAllIndexes]; NSFileManager *fm = [NSFileManager defaultManager]; TDSStore *ds = _folder ? [TDSStore storeForFolder: _folder] : nil; NSDictionary *vp = [ds plistForName: @"." sid: @"icvp"]; if (vp) { _isz = [vp[@"iconSize"] doubleValue] >= 16 ? [vp[@"iconSize"] doubleValue] : 64; NSString *ab = vp[@"arrangeBy"]; NSDictionary *m = @{ @"name": @"name", @"kind": @"kind", @"dateModified": @"modified", @"dateCreated": @"created", @"size": @"size", @"label": @"tags" }; _arrange = m[ab]; } else { _isz = _isz ?: 64; }
+	NSDate *t0 = [NSDate date]; [_items removeAllObjects]; [_sel removeAllIndexes]; NSFileManager *fm = [NSFileManager defaultManager]; TDSStore *ds = _folder ? [TDSStore storeForFolder: _folder] : nil; NSDictionary *vp = [ds plistForName: @"." sid: @"icvp"]; if (vp) { _isz = [vp[@"iconSize"] doubleValue] >= 16 ? [vp[@"iconSize"] doubleValue] : 64; NSString *ab = vp[@"arrangeBy"]; NSDictionary *m = @{ @"name": @"name", @"kind": @"kind", @"dateModified": @"modified", @"dateCreated": @"created", @"size": @"size", @"label": @"tags" }; _arrange = m[ab]; } else { _isz = _isz ?: 64; }
 	if (vp) { _grid = [vp[@"gridSpacing"] doubleValue] >= 20 ? [vp[@"gridSpacing"] doubleValue] : 54; _textSize = [vp[@"textSize"] doubleValue] >= 8 ? [vp[@"textSize"] doubleValue] : 12; _showInfo = [vp[@"showItemInfo"] boolValue]; _showPreview = vp[@"showIconPreview"] ? [vp[@"showIconPreview"] boolValue] : YES; }
 	for (NSString *p in paths) {
-		NSString *n = TFDisplayName(p); if ([n hasPrefix: @"."] || ([filter length] && [n rangeOfString: filter options: NSCaseInsensitiveSearch].location == NSNotFound)) continue; BOOL isVol = [_prefix containsObject: p];
+		NSString *n = TFDisplayName(p); if ([[p lastPathComponent] hasPrefix: @"."] || ([filter length] && [n rangeOfString: filter options: NSCaseInsensitiveSearch].location == NSNotFound)) continue; BOOL isVol = [_prefix containsObject: p];
 		NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory] && !TFIsPackage(p); NSString *info = @"";
 		if (isVol) info = @""; else if (dir) { NSUInteger c = 0; for (NSString *s in [fm contentsOfDirectoryAtPath: p error: NULL]) if (![s hasPrefix: @"."]) c++; info = [NSString stringWithFormat: @"%lu item%s", (unsigned long)c, c == 1 ? "" : "s"]; }
 		else if (!TFIsPackage(p)) info = TFSizeString([at[NSFileSize] unsignedLongLongValue]);
@@ -241,7 +241,7 @@ static const CGFloat kCW = 112, kCH = 126, kPad = 10, kIcon = 64;
 		int ix, iy; if ([ds iconLocationOfName: [p lastPathComponent] x: &ix y: &iy]) it[@"pos"] = [NSValue valueWithPoint: NSMakePoint(ix - [self cw] / 2, iy - 4 - _isz / 2)];
 		[_items addObject: it];
 	}
-	if ([_arrange length]) [self _sortItems]; off = 0; [self setNeedsDisplay: YES]; [self _notify];
+	if ([_arrange length]) [self _sortItems]; off = 0; [self setNeedsDisplay: YES]; [self _notify]; if (getenv("FINDER_DEBUG")) NSLog(@"Finder: icon view loaded %lu items in %.0f ms", (unsigned long)[_items count], -[t0 timeIntervalSinceNow] * 1000);
 }
 - (void)_save                                                                                  /* the places of the icons and the view options go to .DS_Store, where the Finder keeps them */
 {
@@ -894,7 +894,9 @@ static void RedrawTree(NSView *v) { [v setNeedsDisplay: YES]; for (NSView *k in 
 - (void)resignKeyWindow { [super resignKeyWindow]; [self _redrawTree]; [self performSelector: @selector(_redrawTree) withObject: nil afterDelay: 0.05]; }
 - (void)performClose:(id)s { if ([[self delegate] respondsToSelector: @selector(windowShouldClose:)] && ![(id)[self delegate] windowShouldClose: self]) return; [self close]; }
 - (void)performMiniaturize:(id)s { [self miniaturize: s]; }
+- (void)zoom:(id)s { NSRect vf = [[NSScreen mainScreen] frame]; vf.size.height -= 30; if (_zoomed) { [self setFrame: _savedFrame display: YES]; _zoomed = NO; } else { _savedFrame = [self frame]; [self setFrame: vf display: YES]; _zoomed = YES; } }
 - (void)performZoom:(id)s { [self zoom: s]; }
+- (BOOL)isZoomed { return _zoomed; }
 - (void)_track:(int)m event:(NSEvent *)event                  /* m: 0 moves, else the edges (1 left, 2 right, 4 bottom, 8 top) */
 {
 	NSRect frame = [self frame]; NSPoint start = [NSEvent mouseLocation]; NSSize mn = [self minSize]; NSEvent *e = event;
