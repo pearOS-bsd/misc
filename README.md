@@ -225,6 +225,8 @@ Finder status (2026-10-23, an honest estimate from the code and the VM, not a me
 | ![Finder, icons](wsbsd/docs/screenshots/finder-icons.png) | ![Finder, list with the preview pane](wsbsd/docs/screenshots/finder-list.png) |
 | ![Share menu](wsbsd/docs/screenshots/finder-share.png) | ![Context menu](wsbsd/docs/screenshots/finder-ctx.png) |
 | ![Desktop context menu](wsbsd/docs/screenshots/finder-desk.png) | ![Wallpaper and window tint](wsbsd/docs/screenshots/finder-wallpaper-tint.png) |
+| ![Group menu](wsbsd/docs/screenshots/finder-group.png) | ![Go to Folder sheet](wsbsd/docs/screenshots/finder-goto.png) |
+| ![Connect to Server](wsbsd/docs/screenshots/finder-conn.png) | |
 | ![Default dark wallpaper](wsbsd/docs/screenshots/desktop-wallpaper-dark.png) | ![Default light wallpaper](wsbsd/docs/screenshots/desktop-wallpaper-light.png) |
 
 **Other open work:** Chess, the SkyLight routines that need a compositor, KMS/GPU hardware, the Dock, real WebKit, the designers' assets (ordered, 21,000 EUR) and the Pico 2 secure-element token.
