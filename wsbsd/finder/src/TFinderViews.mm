@@ -304,6 +304,7 @@ static const CGFloat kCW = 112, kCH = 126, kPad = 10, kIcon = 64;
 		}
 		if (!desktop && _showInfo && [it[@"info"] length]) { NSSize z = [it[@"info"] sizeWithAttributes: inf]; [it[@"info"] drawAtPoint: NSMakePoint(NSMidX(c) - z.width / 2, y - z.height / 2 - 1) withAttributes: inf]; }
 	}
+	if (![_items count] && [emptyMessage length]) { NSDictionary *a = Font(13, NO, TF_DIM); NSSize z = [emptyMessage sizeWithAttributes: a]; [emptyMessage drawAtPoint: NSMakePoint([self bounds].size.width / 2 - z.width / 2, [self bounds].size.height / 2 - z.height / 2 - 20) withAttributes: a]; }
 	if (!NSIsEmptyRect(_band)) { [TFRGBA(120, 160, 255, 0.18) setFill]; NSRectFill(_band); [TFRGBA(120, 160, 255, 0.6) setStroke]; NSFrameRect(_band); }
 }
 - (void)_notify { if ([delegate respondsToSelector: @selector(iconViewSelectionChanged:)]) [delegate iconViewSelectionChanged: [self selectedPaths]]; }
@@ -633,6 +634,7 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 		NSRect ic = NSMakeRect(18, NSMidY(r) - 11, 22, 22);
 		if ([k isEqual: @"tag"]) { [TagColorFor(it[@"t"]) setFill]; [[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(22, NSMidY(r) - 6, 13, 13)] fill]; }
 		else if ([it[@"t"] isEqual: @"All Tags…"]) { [[NSColor colorWithCalibratedWhite: 0.6 alpha: 1] setFill]; [[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(21, NSMidY(r) - 5, 10, 10)] fill]; [[NSColor colorWithCalibratedWhite: 0.45 alpha: 1] setFill]; [[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(27, NSMidY(r) - 5, 10, 10)] fill]; }
+		else if ([it[@"s"] isEqual: @"airdrop"]) { NSPoint c = NSMakePoint(29, NSMidY(r) + 2); [tint setStroke]; [tint setFill]; [[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(c.x - 1.6, c.y - 1.6, 3.2, 3.2)] fill]; for (int k = 1; k <= 3; k++) { NSBezierPath *a = [NSBezierPath bezierPath]; [a appendBezierPathWithArcWithCenter: c radius: 2.7 * k + 0.6 startAngle: -45 endAngle: 225 clockwise: NO]; [a setLineWidth: 1.5]; [a setLineCapStyle: NSRoundLineCapStyle]; [a stroke]; } }
 		else if (![it[@"s"] length] || !TFSymbol(it[@"s"], ic, 15, tint)) { }
 		BOOL ej = [it[@"eject"] boolValue]; TextAt(Truncated(it[@"t"], Font(13, NO, TF_TEXT), r.size.width - (ej ? 70 : 52)), 45, NSMidY(r), Font(13, NO, TF_TEXT));
 		if (ej) TFSymbol(@"eject.fill", NSMakeRect(NSMaxX(r) - 30, NSMidY(r) - 8, 16, 16), 10, TF_DIM);
@@ -654,7 +656,7 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 - (void)_removeFav:(NSMenuItem *)it { NSMutableArray *f = [TFPref(@"SidebarFavorites", @[]) mutableCopy]; [f removeObject: [it representedObject]]; TFSetPref(@"SidebarFavorites", f); }
 - (void)contentMouseDown:(NSPoint)p event:(NSEvent *)e
 {
-	for (NSInteger i = 0; i < (NSInteger)[_rows count]; i++) if (![_rows[i][@"k"] isEqual: @"head"] && NSPointInRect(p, [self _rect: i])) { NSString *path = _rows[i][@"p"]; if ([_rows[i][@"eject"] boolValue] && p.x > NSMaxX([self _rect: i]) - 40) { if (TFEject(path)) { _sig = nil; [self _poll: nil]; } else NSBeep(); return; } if ([path hasPrefix: @"/"] || [path hasPrefix: @"tag://"] || [path isEqual: @"recents://"]) [delegate sidebarGoTo: path]; return; }
+	for (NSInteger i = 0; i < (NSInteger)[_rows count]; i++) if (![_rows[i][@"k"] isEqual: @"head"] && NSPointInRect(p, [self _rect: i])) { NSString *path = _rows[i][@"p"]; if ([_rows[i][@"eject"] boolValue] && p.x > NSMaxX([self _rect: i]) - 40) { if (TFEject(path)) { _sig = nil; [self _poll: nil]; } else NSBeep(); return; } if ([path hasPrefix: @"/"] || [path hasPrefix: @"tag://"] || [path isEqual: @"recents://"] || [path isEqual: @"airdrop://"]) [delegate sidebarGoTo: path]; return; }
 }
 @end
 
@@ -717,7 +719,7 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 {
 	NSRect b = [self bounds]; [TF_PATHBAR setFill]; NSRectFill(b); [TFDark() ? TFRGB(46, 46, 46) : TF_LINE setFill]; NSRectFill(NSMakeRect(0, 0, b.size.width, 1)); _rects = [NSMutableArray array]; CGFloat x = 5; NSDictionary *at = Font(11, NO, TF_TEXT);
 	for (NSString *p in _paths) {
-		NSString *name = [p isEqual: @"/"] ? @"Macintosh HD" : [p lastPathComponent]; CGFloat tw = [name sizeWithAttributes: at].width, w = tw + 34; TFDrawIcon(p, NSMakeRect(x + 6, 8, 14, 14)); TextAt(name, x + 24, 15, at);
+		NSString *name = TFDisplayName(p); CGFloat tw = [name sizeWithAttributes: at].width, w = tw + 34; TFDrawIcon(p, NSMakeRect(x + 6, 8, 14, 14)); TextAt(name, x + 24, 15, at);
 		if (p != [_paths lastObject]) TFSymbol(@"chevron.right", NSMakeRect(x + w - 12, 0, 8, 30), 8, TF_DIM);
 		[_rects addObject: [NSValue valueWithRect: NSMakeRect(x, 0, w, 30)]]; x += w;
 	}

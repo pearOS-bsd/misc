@@ -15,7 +15,7 @@ NSArray *TFVolumes(void)
 	}
 	return out;
 }
-NSString *TFDisplayName(NSString *path) { if ([path isEqual: @"/"]) return @"Macintosh HD"; return [path lastPathComponent]; }
+NSString *TFDisplayName(NSString *path) { if ([path isEqual: @"/"]) return @"Macintosh HD"; if ([path isEqual: [NSHomeDirectory() stringByAppendingPathComponent: @".Trash"]]) return @"Trash"; return [path lastPathComponent]; }
 BOOL TFEject(NSString *mount)                                                              /* the volume is unmounted (and an optical disc ejected) */
 {
 	NSTask *t = [[NSTask alloc] init]; [t setLaunchPath: @"/sbin/umount"]; [t setArguments: @[ mount ]]; @try { [t launch]; [t waitUntilExit]; } @catch (NSException *e) { return NO; } return [t terminationStatus] == 0;
