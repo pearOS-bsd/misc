@@ -29,14 +29,14 @@ macdesktop_start()
 	rm -f $WS_SOCKET
 	daemon -f -o /var/log/WindowServer.log -p /var/run/WindowServer.pid $WS -b kms -c /dev/ttyv0 -t -F
 	sleep 2
-	for app in /System/Library/CoreServices/Dock.app/Contents/MacOS/Dock /System/Library/CoreServices/SystemUIServer.app/Contents/MacOS/SystemUIServer /System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal; do
+	for app in /System/Library/CoreServices/Dock.app/Contents/MacOS/Dock /System/Library/CoreServices/SystemUIServer.app/Contents/MacOS/SystemUIServer /System/Library/CoreServices/Finder.app/Contents/MacOS/Finder /System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal; do
 		daemon -f -o /var/log/Terminal.log /usr/lib/dyld $app
 	done
 }
 macdesktop_stop()
 {
 	# the applications first, then the window server (it clears the screen and gives the console back), then the console messages are shown again
-	for p in Terminal Dock SystemUIServer; do pkill -x "$p" 2>/dev/null; done
+	for p in Terminal Finder Dock SystemUIServer; do pkill -x "$p" 2>/dev/null; done
 	[ -f /var/run/WindowServer.pid ] && kill "$(cat /var/run/WindowServer.pid)" 2>/dev/null
 	i=0; while [ $i -lt 30 ] && pgrep -f "WindowServer -b" >/dev/null 2>&1; do sleep 0.1; i=$((i+1)); done
 	conscontrol mute off >/dev/null 2>&1

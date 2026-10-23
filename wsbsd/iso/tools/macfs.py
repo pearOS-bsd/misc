@@ -95,6 +95,12 @@ def install(root, manifest, comp_file):
         s = os.path.join(root, src.lstrip("/"))
         if os.path.exists(s): copy_real(s, dest(root, dst)); placed += 1
         else: print("missing component source %s" % src)
+    for dst, src in comp.get("trees", {}).items():            # whole directories (an application bundle): every file below src is placed below dst
+        s = os.path.join(root, src.lstrip("/"))
+        if not os.path.isdir(s): print("missing component tree %s" % src); continue
+        for dp, dn, fn in os.walk(s):
+            for f in fn:
+                rel = os.path.relpath(os.path.join(dp, f), s); copy_real(os.path.join(dp, f), dest(root, dst.rstrip("/") + "/" + rel)); placed += 1
     # symlink entries of the manifest become real copies; a link whose target is itself a link (AppKit -> Versions/Current/AppKit, Current -> C) waits until that one exists
     links = [e for e in entries if e[0] == "l"]
     for _ in range(6):
