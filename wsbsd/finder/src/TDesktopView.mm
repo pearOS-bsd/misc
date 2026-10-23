@@ -28,7 +28,7 @@ static NSString *DesktopPath(void) { return [NSHomeDirectory() stringByAppending
 	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(_prefs:) name: @"TFPrefsChanged" object: nil]; [_window orderBack: nil];
 }
 - (void)_prefs:(NSNotification *)n { _volumeSig = nil; [self _poll: nil]; }
-- (void)iconViewOpenItem:(NSString *)path { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &d]; if (d && !TFIsPackage(path)) [TBrowserWindowController newBrowserWithPath: path]; else [[NSWorkspace sharedWorkspace] openFile: path]; }
+- (void)iconViewOpenItem:(NSString *)path { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &d]; if (d && !TFIsPackage(path)) [TBrowserWindowController newBrowserWithPath: path]; else TFOpenPath(path); }
 - (void)iconViewSelectionChanged:(NSArray *)paths { _selection = paths; }
 - (BOOL)iconViewDropPaths:(NSArray *)paths intoFolder:(NSString *)folder atWindowPoint:(NSPoint)p copy:(BOOL)copy
 {
