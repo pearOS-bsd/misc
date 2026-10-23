@@ -196,6 +196,17 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c);
 @interface WsdAlertTarget : NSObject { @public NSInteger code; } - (void) pressed: (id)b; @end
 @implementation WsdAlertTarget - (void) pressed: (id)b { [NSApp stopModalWithCode: [b tag]]; } @end
 
+/* a pop-up button: the title is left aligned 11 pt in, the chevrons are on the right (GNUstep centres the title of a menu item cell, which runs into the chevrons of a narrow button); measured on the Mac
+ * with the pop-ups of the Finder's rename sheet (109 wide, the title starting 11 pt in) */
+static IMP origPopupInterior;
+static void wsdPopupInterior(NSPopUpButtonCell *self, SEL _cmd, NSRect f, NSView *v)
+{
+	NSString *t = [self titleOfSelectedItem]; if (![t length] && [self pullsDown]) t = [self title]; if (![t length]) { ((void (*)(id, SEL, NSRect, NSView *))origPopupInterior)(self, _cmd, f, v); return; }
+	[[GSTheme theme] drawPopUpButtonCellInteriorWithFrame: f withCell: self inView: v];
+	NSMutableParagraphStyle *ps = [[[NSMutableParagraphStyle alloc] init] autorelease]; [ps setLineBreakMode: NSLineBreakByTruncatingTail];
+	NSDictionary *a = @{ NSFontAttributeName: [self font] ?: [NSFont systemFontOfSize: 13], NSForegroundColorAttributeName: [self isEnabled] ? [NSColor controlTextColor] : [NSColor disabledControlTextColor], NSParagraphStyleAttributeName: ps };
+	NSSize z = [t sizeWithAttributes: a]; [t drawInRect: NSMakeRect(f.origin.x + 11, NSMidY(f) - z.height / 2, MAX(8, f.size.width - 11 - 18), z.height) withAttributes: a];
+}
 static IMP origAlertRun;
 static NSInteger wsdAlertRun(id self, SEL _cmd)
 {
@@ -386,6 +397,7 @@ static void swizzleTableDefaults(void)
 	Method ma = class_getInstanceMethod([NSAlert class], @selector(runModal));
 	if (ma && !origAlertRun && !getenv("WSD_NO_MACALERT")) origAlertRun = method_setImplementation(ma, (IMP)wsdAlertRun);
 	if (mb && !origButtonInterior) origButtonInterior = method_setImplementation(mb, (IMP)wsdButtonInterior);
+	{ Method mp = class_getInstanceMethod([NSPopUpButtonCell class], @selector(drawInteriorWithFrame:inView:)); if (mp && !origPopupInterior) origPopupInterior = method_setImplementation(mp, (IMP)wsdPopupInterior); }
 	if (!getenv("WSD_NO_MACALERT")) WsdInstallSheets();                          /* after the alert above: sheets and alerts as the Mac has them replace it */
 }
 
