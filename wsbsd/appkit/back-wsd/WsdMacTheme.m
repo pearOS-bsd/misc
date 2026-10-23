@@ -16,8 +16,8 @@ static void wsdTFRect(id self, SEL _cmd, NSRect r);
 
 /* WSD_APPEARANCE=light switches the palette; the measurements are of the dark appearance (the light one is typical macOS, not measured) */
 static void wsdMenuSizeToFit(id self, SEL _cmd); static NSColor *wsdMenuTextColor(id self, SEL _cmd); static void wsdMenuDrawKeyEq(id self, SEL _cmd, NSRect f, NSView *v); static void wsdMenuDrawState(id self, SEL _cmd, NSRect f, NSView *v);
-extern void WsdInstallFilePanel(void); extern void WsdInstallDragDrop(void);
-extern NSColor *WsdTintedWindowBackground(NSWindow *w); extern BOOL WsdAppearanceIsDark(void); extern void WsdInstallAppearanceWatch(void);
+extern void WsdInstallFilePanel(void); extern void WsdInstallDragDrop(void); extern void WsdInstallMenuBar(void);
+extern NSColor *WsdTintedWindowBackground(NSWindow *w); extern void WsdMenuBarPrepare(NSMenu *m); extern NSRect WsdBarItemRect(NSMenuView *mv, NSInteger i, NSRect r); extern void WsdDrawBarItem(NSMenuItemCell *cell, NSRect f, BOOL highlighted); extern NSColor *WsdBarTextColor(BOOL enabled); extern BOOL WsdIsPearItem(NSMenuItem *i); extern BOOL WsdAppearanceIsDark(void); extern void WsdInstallAppearanceWatch(void);
 static BOOL isDark(void) { return WsdAppearanceIsDark(); }
 
 static NSColor *rgb(int r, int g, int b, CGFloat a) { return [NSColor colorWithCalibratedRed: r / 255.0 green: g / 255.0 blue: b / 255.0 alpha: a]; }
@@ -371,7 +371,7 @@ static void swizzleTableDefaults(void)
 	Method mtc = class_getInstanceMethod([NSButtonCell class], @selector(textColor));
 	if (mtc && !origButtonTextColor) origButtonTextColor = method_setImplementation(mtc, (IMP)wsdButtonTextColor);
 	{ Method mk = class_getInstanceMethod([NSMenuItemCell class], @selector(_keyEquivalentString)); if (mk && !origKeyEqStr) origKeyEqStr = method_setImplementation(mk, (IMP)wsdKeyEqString); }
-	WsdInstallFilePanel(); WsdInstallAppearanceWatch(); WsdInstallDragDrop();
+	WsdInstallFilePanel(); WsdInstallAppearanceWatch(); WsdInstallDragDrop(); WsdInstallMenuBar();
 	{ Method m1 = class_getInstanceMethod([NSMenuView class], @selector(sizeToFit)); if (m1 && !origMenuSize) origMenuSize = method_setImplementation(m1, (IMP)wsdMenuSizeToFit); }
 	{ Method m2 = class_getInstanceMethod([NSMenuItemCell class], @selector(textColor)); if (m2 && !origMenuTextColor) origMenuTextColor = method_setImplementation(m2, (IMP)wsdMenuTextColor); }
 	{ Method m3 = class_getInstanceMethod([NSMenuItemCell class], @selector(drawKeyEquivalentWithFrame:inView:)); if (m3 && !origMenuKeyEq) origMenuKeyEq = method_setImplementation(m3, (IMP)wsdMenuDrawKeyEq); }
@@ -465,6 +465,7 @@ static NSString *wsdKeyEqString(id self, SEL _cmd)
 	NSString *r = ((NSString *(*)(id, SEL))origKeyEqStr)(self, _cmd);
 	if ([r length] < 2) return r;
 	NSString *last = [r substringFromIndex: [r length] - 1];                       /* the menus of the Mac show the key in capitals: command-Q, not command-q */
+	if ([last isEqual: @"\x1b"]) last = @"⎋"; else if ([last isEqual: @"\x7f"]) last = @"⌫";
 	return [[r substringToIndex: [r length] - 1] stringByAppendingString: [last uppercaseString]];
 }
 static void wsdTFRect(id self, SEL _cmd, NSRect r)
@@ -486,8 +487,11 @@ static void wsdTFDraw(id self, SEL _cmd, NSRect f, NSView *v)
 static float *wsdMenuIvar(id mv, const char *name) { Ivar iv = class_getInstanceVariable([NSMenuView class], name); return iv ? (float *)((char *)mv + ivar_getOffset(iv)) : NULL; }
 static void wsdMenuSizeToFit(id self, SEL _cmd)
 {
+	if ([(NSMenuView *)self isHorizontal]) {                                                                                  /* the menu bar */
+		if ([self menu] == [NSApp mainMenu]) WsdMenuBarPrepare([self menu]); [(NSMenuView *)self setHorizontalEdgePadding: 11];
+		((void (*)(id, SEL))origMenuSize)(self, _cmd); if ([self menu] == [NSApp mainMenu]) [(NSView *)self setFrameSize: NSMakeSize([(NSView *)self frame].size.width + 14 + 2, [(NSView *)self frame].size.height)]; return;
+	}
 	((void (*)(id, SEL))origMenuSize)(self, _cmd);
-	if ([(NSMenuView *)self isHorizontal]) return;
 	Ivar ic = class_getInstanceVariable([NSMenuView class], "_itemCells"); NSArray *cells = ic ? *(NSArray **)((char *)self + ivar_getOffset(ic)) : nil; if (![cells count]) return;
 	BOOL hasCheck = NO, hasSub = NO; double maxTitle = 0, maxKey = 0;
 	for (NSMenuItemCell *c in cells) {
@@ -511,7 +515,8 @@ static void wsdMenuSizeToFit(id self, SEL _cmd)
 static NSColor *wsdMenuTextColor(id self, SEL _cmd)
 {
 	NSMenuView *mv = [(NSMenuItemCell *)self menuView];
-	if (!mv || [mv isHorizontal]) return ((NSColor *(*)(id, SEL))origMenuTextColor)(self, _cmd);
+	if (mv && [mv isHorizontal]) return WsdBarTextColor([[(NSMenuItemCell *)self menuItem] isEnabled]);
+	if (!mv) return ((NSColor *(*)(id, SEL))origMenuTextColor)(self, _cmd);
 	if ([(NSMenuItemCell *)self isHighlighted]) return [NSColor whiteColor];
 	BOOL en = [[(NSMenuItemCell *)self menuItem] isEnabled];
 	return isDark() ? [NSColor colorWithCalibratedWhite: 1 alpha: en ? 0.85 : 0.25] : [NSColor colorWithCalibratedWhite: 0 alpha: en ? 0.85 : 0.25];
@@ -737,7 +742,7 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 - (CGFloat) menuSeparatorInset { return 16.0; }
 - (void) drawBackgroundForMenuView: (NSMenuView *)menuView withFrame: (NSRect)bounds dirtyRect: (NSRect)dirtyRect horizontal: (BOOL)horizontal
 {
-	if (horizontal) { [isDark() ? rgb(2, 2, 14, 1) : rgb(232, 232, 234, 1) set]; NSRectFill(bounds); return; }
+	if (horizontal) { NSWindow *bw = [menuView window]; if (bw) { [bw setOpaque: NO]; [bw setBackgroundColor: [NSColor clearColor]]; } [[NSColor clearColor] set]; NSRectFillUsingOperation(bounds, NSCompositeCopy); return; }
 	NSWindow *w = [menuView window];                                  /* a pop-up menu: the compositor draws the material (glass mode 5: the context menu as measured on the Mac) under the transparent window */
 	if (w) {
 		[w setOpaque: NO]; [w setBackgroundColor: [NSColor clearColor]];
@@ -749,7 +754,7 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 /* the highlighted row: the accent blue, 5 pt in from the sides, corner radius 8 */
 - (void) drawBorderAndBackgroundForMenuItemCell: (NSMenuItemCell *)cell withFrame: (NSRect)cellFrame inView: (NSView *)controlView state: (GSThemeControlState)state isHorizontal: (BOOL)horizontal
 {
-	if (horizontal) { [super drawBorderAndBackgroundForMenuItemCell: cell withFrame: cellFrame inView: controlView state: state isHorizontal: horizontal]; return; }
+	if (horizontal) { WsdDrawBarItem(cell, cellFrame, state == GSThemeHighlightedState || [cell isHighlighted]); return; }
 	if ([[cell menuItem] isSeparatorItem] || !(state == GSThemeHighlightedState || [cell isHighlighted])) return;
 	fillRound(NSInsetRect(cellFrame, 5, 0), 8.0, rgb(0, 122, 255, 1));
 }

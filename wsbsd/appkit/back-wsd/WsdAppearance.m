@@ -63,6 +63,16 @@ BOOL WsdWindowTint(NSRect frame, double screenWidth, double screenHeight, int *r
 	for (int y = y0; y < y1; y++) for (int x = x0; x < x1; x++) { const unsigned char *q = px + (y * gw + x) * 3; sum[0] += q[0]; sum[1] += q[1]; sum[2] += q[2]; n++; }
 	if (!n) return NO; *r = (int)(27 + 0.0975 * sum[0] / n + 0.5); *g = (int)(27 + 0.0975 * sum[1] / n + 0.5); *b = (int)(27 + 0.0975 * sum[2] / n + 0.5); return YES;
 }
+
+/* the text of the menu bar is light over a dark wallpaper and dark over a light one (the Mac decides from the picture under the bar, not from the appearance); without a picture the appearance decides */
+BOOL WsdBarWantsLightText(void)
+{
+	NSDictionary *gr = WallpaperGrid(); if (!gr) return WsdAppearanceIsDark();
+	int gw = [gr[@"w"] intValue], gh = [gr[@"h"] intValue]; const unsigned char *px = [gr[@"rgb"] bytes]; NSScreen *sc = [NSScreen mainScreen]; double sh = sc ? [sc frame].size.height : 800; int rows = MAX(1, (int)ceil(30.0 / sh * gh)); double sum = 0; int n = 0;
+	for (int y = 0; y < rows && y < gh; y++) for (int x = 0; x < gw; x++) { const unsigned char *q = px + (y * gw + x) * 3; sum += 0.2126 * q[0] + 0.7152 * q[1] + 0.0722 * q[2]; n++; }
+	return n ? (sum / n) < 140 : WsdAppearanceIsDark();
+}
+
 /* the tinted background of a window that keeps the default one (the system window colour), nil when it has its own colour or there is no tint */
 NSColor *WsdTintedWindowBackground(NSWindow *w)
 {
