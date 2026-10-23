@@ -124,6 +124,7 @@ void ws_glass_regions(ws_surface *img, const ws_glass *g, int n, int ox, int oy)
 	}
 	if (!any) return;
 	float Lbase = getenv("WS_GLASS_L") ? (float)atof(getenv("WS_GLASS_L")) : 18.0f, amp = getenv("WS_GLASS_AMP") ? (float)atof(getenv("WS_GLASS_AMP")) : 26.0f;
+	float LM = getenv("WS_MENU_L") ? (float)atof(getenv("WS_MENU_L")) : 7.0f, AM = getenv("WS_MENU_AMP") ? (float)atof(getenv("WS_MENU_AMP")) : 6.0f;
 	int M = (int)ceilf(amp) + 6;
 	int cx0 = bx0 - M < 0 ? 0 : bx0 - M, cy0 = by0 - M < 0 ? 0 : by0 - M, cx1 = bx1 + M > img->w ? img->w : bx1 + M, cy1 = by1 + M > img->h ? img->h : by1 + M;
 	if (cx1 <= cx0 || cy1 <= cy0) return;
@@ -140,11 +141,12 @@ void ws_glass_regions(ws_surface *img, const ws_glass *g, int n, int ox, int oy)
 		float cover = clampf(0.5f - sdf, 0, 1); if (cover <= 0) continue;
 		if (mode == 5 && bl5) {                                                              /* the context menu of the real Mac: out = f(L) + k (c - L) of the blurred backdrop (fitted to 23 measured backdrops, rms 3.8 / 255), f(L) = 0.1213 + 0.4825 (2L - L^2), L = .1886 r + .7455 g + .0659 b, k = 1.091; a 1 px highlight at the edge, strong on horizontal edges */
 			int bxp = x - cx0, byp = y - cy0; if (bxp < 0 || byp < 0 || bxp >= bl5->w || byp >= bl5->h) continue;
-			const uint8_t *bp = bl5->px + (size_t)byp * bl5->stride + (size_t)bxp * 4;
-			float c[3] = { bp[2] / 255.0f, bp[1] / 255.0f, bp[0] / 255.0f }, L = 0.1886f * c[0] + 0.7455f * c[1] + 0.0659f * c[2], f = 0.1213f + 0.4825f * (2 * L - L * L);
 			float dd = -sdf; if (dd < 0) dd = 0;
 			int dm; float gx = glass_field(g, n, ox, oy, fx + 1, fy, &dm) - glass_field(g, n, ox, oy, fx - 1, fy, &dm), gy = glass_field(g, n, ox, oy, fx, fy + 1, &dm) - glass_field(g, n, ox, oy, fx, fy - 1, &dm);
-			float gl = sqrtf(gx * gx + gy * gy), ny = gl > 1e-4f ? fabsf(gy / gl) : 1.0f;
+			float gl = sqrtf(gx * gx + gy * gy), ny = gl > 1e-4f ? fabsf(gy / gl) : 1.0f, nxo = gl > 1e-4f ? gx / gl : 0, nyo = gl > 1e-4f ? gy / gl : -1;
+			/* the lens of the liquid glass: at the edge the backdrop is taken from beyond it (a band of LM px, up to AM px out), so that a dark window outside dims the top edge of the menu and a light one lights its bottom edge, as in the pixels of the real menu */
+			float shift = dd < LM ? AM * sinf(3.14159265f * dd / LM) : 0; float s3[3]; sample_bilinear(bl5, (fx + nxo * shift) - cx0, (fy + nyo * shift) - cy0, s3);
+			float c[3] = { s3[2], s3[1], s3[0] }, L = 0.1886f * c[0] + 0.7455f * c[1] + 0.0659f * c[2], f = 0.1213f + 0.4825f * (2 * L - L * L); (void)bxp; (void)byp;
 			float rim = dd < 1.0f ? 0.10f + 0.177f * ny : 0.042f * ny * expf(-(dd - 1.5f) / 3.8f);
 			uint8_t *dp = img->px + (size_t)y * img->stride + (size_t)x * 4;
 			for (int k = 0; k < 3; k++) { float o = f + 1.091f * (c[k] - L); o = clampf(o, 0, 1); o = o * (1 - rim) + rim; dp[2 - k] = (uint8_t)(dp[2 - k] * (1 - cover) + o * 255.0f * cover + 0.5f); }
