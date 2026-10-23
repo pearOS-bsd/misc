@@ -42,7 +42,7 @@ COMPAT="$WORK/compat" sh "$WS/topbar/build.sh" "$WORK/topbar" > "$WORK/topbar.lo
 echo "== the Finder"; COMPAT="$WORK/compat" sh "$WS/finder/build.sh" "$WORK/finder" > "$WORK/finder.log" 2>&1 || true; tail -5 "$WORK/finder.log"; FA="$WORK/finder/System/Library/CoreServices/Finder.app"; [ -x "$FA/Contents/MacOS/Finder" ] || { cat "$WORK/finder.log"; exit 1; }
 if [ -n "$FINDER_APP" ] && [ -d "$FINDER_APP" ]; then sh "$WS/finder/import-resources.sh" "$FINDER_APP" "$FA" >> "$WORK/finder.log" 2>&1 || true; fi
 rm -rf /usr/local/share/wsbsd/Finder.app; install -d /usr/local/share/wsbsd/Finder.app; (cd "$FA" && tar cf - .) | (cd /usr/local/share/wsbsd/Finder.app && tar xf -); install -m 755 "$FA/Contents/MacOS/Finder" /usr/local/bin/Finder-gnustep; echo "== the Finder installed"
-for a in terminal:Terminal-gnustep uitest:UITest-gnustep ksa:KeyboardSetupAssistant-gnustep; do d="${a%%:*}"; b="${a##*:}"; (cd "$WS/../$d" && make gnustep > "$WORK/$d.log" 2>&1 && install -m 755 "$b" /usr/local/bin/"$b") || { echo "== $d did not build"; tail -25 "$WORK/$d.log"; exit 1; }; done
+for a in terminal:Terminal-gnustep uitest:UITest-gnustep ksa:KeyboardSetupAssistant-gnustep; do d="${a%%:*}"; b="${a##*:}"; (cd "$WS/../$d" && make gnustep COMPAT="$WORK/compat" WS="$WS" > "$WORK/$d.log" 2>&1 && install -m 755 "$b" /usr/local/bin/"$b") || { echo "== $d did not build"; tail -25 "$WORK/$d.log"; exit 1; }; done
 cc -O2 -o /usr/local/libexec/dyld "$HERE/src/dyld.c"
 cc -O2 -I"$WS/sdk/include" -o /usr/local/bin/xattr "$HERE/src/xattr.c" "$WS/sdk/src/xattr.c"
 install -d /usr/local/sbin; cc -O2 -I"$WS/sdk/include" -o /usr/local/sbin/spctl "$HERE/src/spctl.c" "$WS/sdk/src/xattr.c"
