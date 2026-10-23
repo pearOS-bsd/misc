@@ -41,11 +41,12 @@ static WsdDragInfo *gInfo;
 /* the sender: the topmost window at the point (a point of the screen, origin bottom left) belongs to another program: tell that program */
 - (BOOL) wsdDropFiles: (NSArray *)paths atScreenPoint: (NSPoint)p
 {
+	if (getenv("WSD_DND_DEBUG")) NSLog(@"WDND send %@ at %@", paths, NSStringFromPoint(p));
 	if (![paths count]) return NO; int sh = [self boundsForScreen: 0].size.height; int px = (int)p.x, py = sh - (int)p.y; uint32_t list[256]; int total = 0;
 	if (ws_win_list(conn, 0, 1, list, 256, &total) != 0) return NO;
 	for (int i = 0; i < total && i < 256; i++) {
 		ws_win w = { list[i], NULL }; ws_rect r; if (ws_win_get_bounds(conn, &w, &r) != 0) continue; if (r.w < 40 || r.h < 40) continue; if (px < r.x || px >= r.x + r.w || py < r.y || py >= r.y + r.h) continue;
-		int owner = 0, rights = 0; if (ws_win_get_owner(conn, &w, &owner, &rights) != 0) continue; if (owner == ws_conn_id(conn)) return NO;                                          /* a window of this program: the program handles it itself */
+		int owner = 0, rights = 0; if (ws_win_get_owner(conn, &w, &owner, &rights) != 0) continue; if (getenv("WSD_DND_DEBUG")) NSLog(@"WDND hit window %u owner %d (me %d)", list[i], owner, (int)ws_conn_id(conn)); if (owner == ws_conn_id(conn)) return NO;                                          /* a window of this program: the program handles it itself */
 		int level = 0; ws_win_get_level(conn, &w, &level); if (level > 20) continue;                                                                                                                    /* the menu bar and pop-ups do not take drops */
 		/* the paths in chunks of about 600 bytes */
 		NSMutableArray *chunks = [NSMutableArray array], *cur = [NSMutableArray array]; NSUInteger sz = 0; for (NSString *s in paths) { NSUInteger l = [s lengthOfBytesUsingEncoding: NSUTF8StringEncoding] + 1; if (sz + l > 600 && [cur count]) { [chunks addObject: cur]; cur = [NSMutableArray array]; sz = 0; } [cur addObject: s]; sz += l; } if ([cur count]) [chunks addObject: cur];
@@ -71,8 +72,9 @@ static WsdDragInfo *gInfo;
 {
 	uint32_t type; uint8_t data[1024]; uint32_t len;
 	while (ws_conn_next_notification(conn, 0, &type, data, &len)) {
+		if (getenv("WSD_DND_DEBUG")) NSLog(@"WDND notification type %u len %u", type, len);
 		if (type != WDND) continue; NSString *msg = [[[NSString alloc] initWithBytes: data length: len encoding: NSUTF8StringEncoding] autorelease]; NSRange nl = [msg rangeOfString: @"\n"]; if (nl.location == NSNotFound) continue;
-		NSArray *h = [[msg substringToIndex: nl.location] componentsSeparatedByString: @" "]; if ([h count] < 8 || ![h[0] isEqual: @"WDND1"]) continue; NSArray *ps = [[msg substringFromIndex: nl.location + 1] componentsSeparatedByString: @"\n"];
+		NSArray *h = [[msg substringToIndex: nl.location] componentsSeparatedByString: @" "]; if ([h count] < 7 || ![h[0] isEqual: @"WDND1"]) continue; NSArray *ps = [[msg substringFromIndex: nl.location + 1] componentsSeparatedByString: @"\n"];
 		if (!gChunks) gChunks = [[NSMutableDictionary alloc] init]; NSString *key = h[1]; NSMutableDictionary *st = gChunks[key]; if (!st) { st = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSMutableArray array], @"paths", [NSNumber numberWithInt: 0], @"got", nil]; gChunks[key] = st; }
 		[st[@"paths"] addObjectsFromArray: ps]; st[@"got"] = [NSNumber numberWithInt: [st[@"got"] intValue] + 1];
 		if ([st[@"got"] intValue] >= [h[3] intValue]) { NSArray *all = [[st[@"paths"] copy] autorelease]; [gChunks removeObjectForKey: key]; [self wsdDeliverDrop: all toWindowNumber: (uint32_t)[h[4] longLongValue] at: NSMakePoint([h[5] intValue], [h[6] intValue])]; }
