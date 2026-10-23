@@ -26,7 +26,7 @@ id WifiInterface(void)
 BOOL WifiPower(BOOL *known) { id i = WifiInterface(); if (!i) { *known = NO; return NO; } *known = YES; return ((BOOL (*)(id, SEL))objc_msgSend)(i, @selector(powerOn)); }
 void SetWifiPower(BOOL on) { id i = WifiInterface(); if (i) { NSError *e = nil; ((BOOL (*)(id, SEL, BOOL, NSError **))objc_msgSend)(i, @selector(setPower:error:), on, &e); } }
 #define PANEL_W 292.0
-void ToggleWifiPanel(void); void ToggleBluetoothPanel(void); void NCSetFocus(BOOL on);
+void ToggleWifiPanel(void); void ToggleBluetoothPanel(void); void ToggleSoundPanel(void); void ToggleDisplayPanel(void); void NCSetFocus(BOOL on);
 static double ColX(int c) { return c * 76.0; }
 static double RowY(double k) { return 12 + k * 76.0; }
 
@@ -37,15 +37,15 @@ static NSString *Run(NSString *path, NSArray *args)
 }
 /* the first number of a line like "vol:0.50:0.50" or "vol = 0.50:0.50" (FreeBSD mixer(8)); -1 when there is no mixer */
 static double FirstFloat(NSString *o) { if (!o) return -1; NSScanner *sc = [NSScanner scannerWithString: o]; [sc setCharactersToBeSkipped: [NSCharacterSet characterSetWithCharactersInString: @"abcdefghijklmnopqrstuvwxyz :=\n"]]; double v; return [sc scanDouble: &v] ? v : -1; }
-static double MixerVolume(void) { return FirstFloat(Run(@"/usr/sbin/mixer", @[ @"-s", @"vol" ])); }
-static void SetMixerVolume(double v) { Run(@"/usr/sbin/mixer", @[ [NSString stringWithFormat: @"vol=%.2f", v] ]); }
-static double Brightness(void) { NSString *o = Run(@"/usr/bin/backlight", @[]); if (!o) return -1; for (NSString *x in [o componentsSeparatedByCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]]) if ([x doubleValue] > 0) return [x doubleValue] / 100.0; return -1; }
-static void SetBrightness(double v) { Run(@"/usr/bin/backlight", @[ [NSString stringWithFormat: @"%d", (int)lround(v * 100)] ]); }
+double MixerVolume(void) { return FirstFloat(Run(@"/usr/sbin/mixer", @[ @"-s", @"vol" ])); }
+void SetMixerVolume(double v) { Run(@"/usr/sbin/mixer", @[ [NSString stringWithFormat: @"vol=%.2f", v] ]); }
+double Brightness(void) { NSString *o = Run(@"/usr/bin/backlight", @[]); if (!o) return -1; for (NSString *x in [o componentsSeparatedByCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]]) if ([x doubleValue] > 0) return [x doubleValue] / 100.0; return -1; }
+void SetBrightness(double v) { Run(@"/usr/bin/backlight", @[ [NSString stringWithFormat: @"%d", (int)lround(v * 100)] ]); }
 static int BatteryPct(void) { int v = -1; size_t n = sizeof v; if (sysctlbyname("hw.acpi.battery.life", &v, &n, NULL, 0)) return -1; return v; }
 static BOOL Charging(void) { int v = 0; size_t n = sizeof v; if (sysctlbyname("hw.acpi.battery.state", &v, &n, NULL, 0)) return NO; return (v & 2) != 0; }
 static NSString *GlobalPrefsPath(void) { return [NSHomeDirectory() stringByAppendingPathComponent: @"Library/Preferences/.GlobalPreferences.plist"]; }
-static BOOL DarkNow(void) { NSDictionary *d = [NSDictionary dictionaryWithContentsOfFile: GlobalPrefsPath()]; id v = d[@"AppleInterfaceStyle"]; return !v || [v caseInsensitiveCompare: @"Dark"] == NSOrderedSame; }
-static void SetDark(BOOL dark)
+BOOL DarkNow(void) { NSDictionary *d = [NSDictionary dictionaryWithContentsOfFile: GlobalPrefsPath()]; id v = d[@"AppleInterfaceStyle"]; return !v || [v caseInsensitiveCompare: @"Dark"] == NSOrderedSame; }
+void SetDark(BOOL dark)
 {
 	NSString *f = GlobalPrefsPath(); NSMutableDictionary *d = [[NSDictionary dictionaryWithContentsOfFile: f] mutableCopy] ?: [NSMutableDictionary dictionary]; if (dark) d[@"AppleInterfaceStyle"] = @"Dark"; else [d removeObjectForKey: @"AppleInterfaceStyle"];
 	[[NSFileManager defaultManager] createDirectoryAtPath: [f stringByDeletingLastPathComponent] withIntermediateDirectories: YES attributes: nil error: NULL]; [d writeToFile: f atomically: YES];
@@ -127,7 +127,8 @@ static void Bluetooth(NSPoint c, NSColor *col) { NSBezierPath *p = [NSBezierPath
 {
 	NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; drag = nil;
 	for (NSArray *t in tiles) { NSRect r = [self rectOf: t]; if (!NSPointInRect(p, r)) continue; NSString *id_ = t[1];
-		if ([t[0] isEqual: @"slider"]) { drag = id_; [self set: id_ at: p inRect: r]; return; }
+		if ([t[0] isEqual: @"slider"]) { if (p.y < r.origin.y + 28 && p.x < r.origin.x + 70 && ([id_ isEqual: @"sound"] || [id_ isEqual: @"bright"])) { [[self window] orderOut: nil]; if ([id_ isEqual: @"sound"]) ToggleSoundPanel(); else ToggleDisplayPanel(); return; }       /* the titles are buttons that open the details */
+			drag = id_; [self set: id_ at: p inRect: r]; return; }
 		if ([t[0] isEqual: @"circle"] || [t[0] isEqual: @"wide"]) { BOOL v = ![on[id_] boolValue]; on[id_] = @(v); if ([id_ isEqual: @"dark"]) SetDark(v); if ([id_ isEqual: @"wifi"]) SetWifiPower(v); if ([id_ isEqual: @"focus"]) NCSetFocus(v); [self applyGlass]; [self setNeedsDisplay: YES]; }
 		return; }
 }
