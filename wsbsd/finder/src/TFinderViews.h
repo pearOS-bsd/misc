@@ -48,6 +48,7 @@ void TFShowSharePopover(NSArray *paths, NSRect rect, NSView *view, id owner);
 void TFShowTagsPopover(NSArray *paths, NSRect rect, NSView *view, id owner);
 NSArray *TFBulkRenamedNames(NSArray *paths, NSDictionary *params);
 void TFBulkRename(NSArray *paths, void (^done)(NSArray *changes));
+void TFConnectToServer(NSString *last, void (^done)(NSString *address));
 void TFAsk(NSString *title, NSString *message, NSArray *fields, NSString *okTitle, void (^done)(NSArray *values));
 void TFSetOpenWith(NSString *path, NSString *app, BOOL all);
 NSString *TFDisplayName(NSString *path);

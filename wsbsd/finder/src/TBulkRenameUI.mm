@@ -94,3 +94,30 @@ void TFAsk(NSString *title, NSString *message, NSArray *fields, NSString *okTitl
 	NSWindow *parent = asSheet ? [NSApp keyWindow] : nil; if (asSheet && (!parent || [(id)parent sheetParent])) for (NSWindow *x in [NSApp windows]) if ([x isVisible] && [[x windowController] isKindOfClass: NSClassFromString(@"TBrowserWindowController")]) { parent = x; break; }
 	if (parent) [(id)parent beginSheet: w completionHandler: nil]; else { [w center]; [w makeKeyAndOrderFront: nil]; }       /* Go to Folder is a sheet of the window, as on the Mac (AX: GoToWindow, 460 wide) */ if ([tf count]) [w makeFirstResponder: tf[0]];
 }
+
+/* Connect to Server: a titled window of 486 x 234 with the layout read from the Mac (AX): the address combo box at (19,51) 448 x 26, "Favorite Servers:" at (19,87), the list at (20,110) 446 x 72, add/remove at (19,189), Browse (308,189) 71 x 26 and Connect (389,189) 78 x 26 */
+@interface TConnectCtl : NSObject <NSTableViewDataSource, NSTableViewDelegate> { @public NSComboBox *addr; NSTableView *tv; NSMutableArray *fav; NSWindow *win; void (^done)(NSString *); }
+@end
+@implementation TConnectCtl
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)t { return [fav count]; }
+- (id)tableView:(NSTableView *)t objectValueForTableColumn:(NSTableColumn *)c row:(NSInteger)r { return fav[r]; }
+- (void)tableViewSelectionDidChange:(NSNotification *)n { NSInteger r = [tv selectedRow]; if (r >= 0) [addr setStringValue: fav[r]]; }
+- (void)add:(id)s { NSString *a = [addr stringValue]; if ([a length] && ![fav containsObject: a]) { [fav addObject: a]; [[NSUserDefaults standardUserDefaults] setObject: fav forKey: @"FavoriteServers"]; [tv reloadData]; } }
+- (void)remove:(id)s { NSInteger r = [tv selectedRow]; if (r >= 0) { [fav removeObjectAtIndex: r]; [[NSUserDefaults standardUserDefaults] setObject: fav forKey: @"FavoriteServers"]; [tv reloadData]; } }
+- (void)connect:(id)s { NSString *a = [addr stringValue]; [win orderOut: nil]; void (^d)(NSString *) = done; done = nil; if (d) d(a); }
+- (void)browse:(id)s { [win orderOut: nil]; void (^d)(NSString *) = done; done = nil; if (d) d(@"/Volumes"); }
+@end
+void TFConnectToServer(NSString *last, void (^done)(NSString *address))
+{
+	static NSWindow *open; if (open && [open isVisible]) { [open makeKeyAndOrderFront: nil]; return; }
+	NSWindow *w = [[NSWindow alloc] initWithContentRect: NSMakeRect(0, 0, 486, 206) styleMask: NSWindowStyleMaskTitled | NSWindowStyleMaskClosable backing: NSBackingStoreBuffered defer: NO]; [w setReleasedWhenClosed: NO]; [w setTitle: @"Connect to Server"];
+	TConnectCtl *c = [[TConnectCtl alloc] init]; c->win = w; c->done = done; c->fav = [[[NSUserDefaults standardUserDefaults] arrayForKey: @"FavoriteServers"] mutableCopy] ?: [NSMutableArray array];
+	NSView *v = [w contentView]; CGFloat H = [v frame].size.height;                                        /* AX positions are from the window's top: the content view is 486 x 206 under the 28 pt title bar */
+	NSRect (^R)(CGFloat, CGFloat, CGFloat, CGFloat) = ^NSRect(CGFloat x, CGFloat y, CGFloat ww, CGFloat hh) { return NSMakeRect(x, H - (y - 28) - hh, ww, hh); };
+	c->addr = [[NSComboBox alloc] initWithFrame: R(19, 51, 448, 26)]; [c->addr setStringValue: last ?: @"smb://"]; [v addSubview: c->addr];
+	NSTextField *l = [[NSTextField alloc] initWithFrame: R(19, 87, 130, 16)]; [l setEditable: NO]; [l setBordered: NO]; [l setDrawsBackground: NO]; [l setStringValue: @"Favorite Servers:"]; [l setFont: [NSFont systemFontOfSize: 13]]; [v addSubview: l];
+	NSScrollView *sc = [[NSScrollView alloc] initWithFrame: R(20, 110, 446, 72)]; [sc setHasVerticalScroller: YES]; [sc setBorderType: NSBezelBorder]; c->tv = [[NSTableView alloc] initWithFrame: NSZeroRect]; NSTableColumn *col = [[NSTableColumn alloc] initWithIdentifier: @"url"]; [col setWidth: 430]; [c->tv addTableColumn: col]; [c->tv setHeaderView: nil]; [c->tv setDataSource: c]; [c->tv setDelegate: c]; [sc setDocumentView: c->tv]; [v addSubview: sc];
+	NSButton *(^B)(NSRect, NSString *, SEL) = ^NSButton *(NSRect r, NSString *t, SEL a) { NSButton *b = [[NSButton alloc] initWithFrame: r]; [b setTitle: t]; [b setBezelStyle: NSRoundedBezelStyle]; [b setTarget: c]; [b setAction: a]; [v addSubview: b]; return b; };
+	B(R(19, 189, 25, 26), @"+", @selector(add:)); B(R(44, 189, 25, 26), @"−", @selector(remove:)); B(R(308, 189, 71, 26), @"Browse", @selector(browse:)); NSButton *cn = B(R(389, 189, 78, 26), @"Connect", @selector(connect:)); [cn setKeyEquivalent: @"\r"];
+	objc_setAssociatedObject(w, "connect", c, OBJC_ASSOCIATION_RETAIN); open = w; [w center]; [w makeKeyAndOrderFront: nil]; [w makeFirstResponder: c->addr];
+}
