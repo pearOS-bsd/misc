@@ -38,9 +38,17 @@ static void DumpMenu(NSMenu *m, int d, NSMutableString *out) { for (NSMenuItem *
 /* Go > Recent Folders: the menu lists the folders last shown (kept in the preferences) */
 - (void)menuNeedsUpdate:(NSMenu *)menu
 {
+	if ([[menu title] isEqual: @"Group By"] || [[menu title] isEqual: @"Sort By"]) { [self _fillArrangeMenu: menu group: [[menu title] isEqual: @"Group By"]]; return; }
 	while ([menu numberOfItems]) [menu removeItemAtIndex: 0]; NSArray *rf = TFPref(@"FXRecentFolders", @[]);
 	for (NSString *p in rf) { NSMenuItem *it = [menu addItemWithTitle: TFDisplayName(p) action: NSSelectorFromString(@"cmdGoToRecent:") keyEquivalent: @""]; [it setRepresentedObject: p]; }
 	if ([rf count]) [menu addItem: [NSMenuItem separatorItem]]; [menu addItemWithTitle: @"Clear Menu" action: NSSelectorFromString(@"cmdClearRecentFolders:") keyEquivalent: @""];
+}
+/* View > Group By and Sort By: the sub menus are filled when the menu opens, with the mark of what is on */
+- (void)_fillArrangeMenu:(NSMenu *)menu group:(BOOL)group
+{
+	while ([menu numberOfItems]) [menu removeItemAtIndex: 0]; id win = [[NSApp keyWindow] windowController]; id ic = [win respondsToSelector: @selector(_icons)] ? nil : nil; (void)ic; NSString *cur = nil; Class bc = NSClassFromString(@"TBrowserWindowController"); if ([win isKindOfClass: bc]) cur = [win valueForKey: group ? @"currentGroup" : @"currentSort"];
+	NSArray *opts = group ? @[ @[ @"None", @"" ], @[ @"Name", @"name" ], @[ @"Kind", @"kind" ], @[ @"Date Last Opened", @"dateLastOpened" ], @[ @"Date Modified", @"dateModified" ], @[ @"Date Created", @"dateCreated" ], @[ @"Size", @"size" ], @[ @"Tags", @"tags" ] ] : @[ @[ @"None", @"" ], @[ @"-", @"" ], @[ @"Name", @"name" ], @[ @"Kind", @"kind" ], @[ @"Date Modified", @"modified" ], @[ @"Date Created", @"created" ], @[ @"Size", @"size" ], @[ @"Tags", @"tags" ] ];
+	for (NSArray *o in opts) { if ([o[0] isEqual: @"-"]) { [menu addItem: [NSMenuItem separatorItem]]; continue; } NSMenuItem *it = [menu addItemWithTitle: o[0] action: NSSelectorFromString(group ? @"cmdGroupByKey:" : @"cmdSortByKey:") keyEquivalent: @""]; [it setRepresentedObject: o[1]]; [it setState: [o[1] isEqual: cur ?: @""] ? NSOnState : NSOffState]; }
 }
 - (void)cmdClearRecentFolders:(id)s { TFSetPref(@"FXRecentFolders", @[]); }
 /* the alternate items of the Finder's menus (shown when Option is held) and the cloud entries that appear only with providers installed are hidden */
@@ -49,7 +57,8 @@ static void DumpMenu(NSMenu *m, int d, NSMutableString *out) { for (NSMenuItem *
 	NSSet *alts = [NSSet setWithObjects: @"cmdNewFinderWindowWithOption:", @"cmdOpenAltBrowse:", @"cmdOpenOptionBrowse:", @"cmdOpenParentAltBrowse:", @"cmdSelectStartupDisk:", @"cmdOpenWithOptionDownArrow:", @"cmdDuplicateExactly:", @"cmdEjectOne:", @"cmdEjectAll:", @"cmdArchiveWithPassword:", @"cmdShowStaticInfoSummary:", @"cmdShowInspector:", @"cmdCopyAsPathname:", @"cmdCopyAsLink:", @"cmdMoveItemsHere:", @"cmdPasteExactly:", @"cmdAlternateFindFile:", @"cmdEmptyTrashSilently:", @"cmdGoToICloudProviders:", @"cmdGoToDataSeparatedICloud:", @"cmdAlwaysOpenWith:", @"cmdDeselectAll:", nil]; NSMutableSet *seen = [NSMutableSet set];
 	for (NSMenuItem *i in [m itemArray]) { NSString *t = [i title], *act = NSStringFromSelector([i action]); if ([alts containsObject: act]) [i setHidden: YES]; else if ([t length] && ![i isSeparatorItem] && [seen containsObject: t]) [i setHidden: YES]; [seen addObject: t ?: @""]; if ([i submenu]) [self _hideAlternates: [i submenu]]; }
 }
-- (void)_hookRecentFolders { [self _hideAlternates: [NSApp mainMenu]]; for (NSMenuItem *top in [[NSApp mainMenu] itemArray]) for (NSMenuItem *i in [[top submenu] itemArray]) if ([NSStringFromSelector([i action]) isEqual: @"cmdRecentFolders:"] && [i submenu]) { [[i submenu] setDelegate: (id)self]; [self menuNeedsUpdate: [i submenu]]; } }
+- (void)_hookRecentFolders { [self _hideAlternates: [NSApp mainMenu]]; for (NSMenuItem *top in [[NSApp mainMenu] itemArray]) for (NSMenuItem *i in [[top submenu] itemArray]) if ([NSStringFromSelector([i action]) isEqual: @"cmdRecentFolders:"] && [i submenu]) { [[i submenu] setDelegate: (id)self]; [self menuNeedsUpdate: [i submenu]]; }
+	for (NSMenuItem *top in [[NSApp mainMenu] itemArray]) for (NSMenuItem *i in [[top submenu] itemArray]) { NSString *act = NSStringFromSelector([i action]); if (([act isEqual: @"cmdArrange:"] || [act isEqual: @"cmdSortBy:"]) && [i submenu]) { [[i submenu] setTitle: [act isEqual: @"cmdArrange:"] ? @"Group By" : @"Sort By"]; [[i submenu] setDelegate: (id)self]; [self menuNeedsUpdate: [i submenu]]; } } }
 - (void)cmdAbout:(id)s { NSAlert *al = [[NSAlert alloc] init]; [al setMessageText: @"Finder"]; [al setInformativeText: @"Finder for wsbsd\nThe desktop of the system, drawn and behaving like the Mac's."]; [al runModal]; }
 - (void)cmdNewFinderWindow:(id)s { NSString *t = TFPref(@"NewWindowTarget", @"PfHm"); NSString *h = NSHomeDirectory(); NSString *p = [t isEqual: @"PfDe"] ? [h stringByAppendingPathComponent: @"Desktop"] : [t isEqual: @"PfDo"] ? [h stringByAppendingPathComponent: @"Documents"] : [t isEqual: @"PfCm"] ? @"/" : h; [TBrowserWindowController newBrowserWithPath: getenv("FINDER_PATH") ? @(getenv("FINDER_PATH")) : p]; }
 - (void)cmdPreferences:(id)s { TFOpenSettings(); }

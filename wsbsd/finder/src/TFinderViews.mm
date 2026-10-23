@@ -213,6 +213,19 @@ void TFBeginRename(NSView *host, NSRect frame, NSString *name, BOOL centered, NS
 
 /* ---------- the icon view ---------- */
 static const CGFloat kCW = 112, kCH = 126, kPad = 10, kIcon = 64;
+/* grouping (View > Group By): the title and the order of the group an item falls in */
+static NSString *GroupTitle(NSDictionary *it, NSString *key, int *order)
+{
+	NSString *t = nil; *order = 0;
+	if ([key isEqual: @"name"]) { NSString *n = it[@"name"]; unichar c = [n length] ? [[n uppercaseString] characterAtIndex: 0] : '#'; t = [[NSCharacterSet letterCharacterSet] characterIsMember: c] ? [NSString stringWithCharacters: &c length: 1] : @"#"; *order = [t isEqual: @"#"] ? 1 : 0; }
+	else if ([key isEqual: @"kind"]) t = TFKindString(it[@"path"], [it[@"dir"] boolValue]);
+	else if ([key hasPrefix: @"date"]) { NSDate *d = [key isEqual: @"dateModified"] ? it[@"mod"] : [key isEqual: @"dateLastOpened"] ? (it[@"acc"] ?: it[@"mod"]) : it[@"cre"]; NSTimeInterval age = -[d timeIntervalSinceNow]; NSCalendar *cal = [NSCalendar currentCalendar];
+		if ([cal isDateInToday: d]) { t = @"Today"; *order = 0; } else if ([cal isDateInYesterday: d]) { t = @"Yesterday"; *order = 1; } else if (age < 7 * 86400) { t = @"Previous 7 Days"; *order = 2; } else if (age < 30 * 86400) { t = @"Previous 30 Days"; *order = 3; }
+		else { NSDateFormatter *f = [[NSDateFormatter alloc] init]; [f setDateFormat: age < 365 * 86400 ? @"MMMM" : @"yyyy"]; t = [f stringFromDate: d]; *order = 4 + (int)(age / 86400 / 30); } }
+	else if ([key isEqual: @"size"]) { unsigned long long z = [it[@"size"] unsignedLongLongValue]; BOOL dir = [it[@"dir"] boolValue]; NSArray *b = @[ @"Zero bytes", @"Less than 10 KB", @"10 KB – 100 KB", @"100 KB – 1 MB", @"1 MB – 10 MB", @"10 MB – 100 MB", @"100 MB – 1 GB", @"More than 1 GB" ]; int k = dir ? 0 : z == 0 ? 0 : z < 10000 ? 1 : z < 100000 ? 2 : z < 1000000 ? 3 : z < 10000000 ? 4 : z < 100000000 ? 5 : z < 1000000000ULL ? 6 : 7; t = dir ? @"Folders" : b[k]; *order = 8 - k; }
+	else if ([key isEqual: @"tags"]) { NSArray *tg = it[@"tags"]; t = [tg count] ? tg[0] : @"No Tags"; *order = [tg count] ? 0 : 1; }
+	return t ?: @"";
+}
 @implementation TIconView
 - (void)reloadKeepingSelectionOrFolder:(NSString *)folder { NSArray *keep = [self selectedPaths]; CGFloat o = off; [self setFolder: folder]; for (NSUInteger i = 0; i < [_items count]; i++) if ([keep containsObject: _items[i][@"path"]]) [_sel addIndex: i]; off = o; [self setNeedsDisplay: YES]; }
 - (CGFloat)cw { return desktop ? _isz + 36 : MAX(_isz + 40, _isz + _grid - 6); }
@@ -241,7 +254,7 @@ static const CGFloat kCW = 112, kCH = 126, kPad = 10, kIcon = 64;
 		int ix, iy; if ([ds iconLocationOfName: [p lastPathComponent] x: &ix y: &iy]) it[@"pos"] = [NSValue valueWithPoint: NSMakePoint(ix - [self cw] / 2, iy - 4 - _isz / 2)];
 		[_items addObject: it];
 	}
-	if ([_arrange length]) [self _sortItems]; off = 0; [self setNeedsDisplay: YES]; [self _notify]; if (getenv("FINDER_DEBUG")) NSLog(@"Finder: icon view loaded %lu items in %.0f ms", (unsigned long)[_items count], -[t0 timeIntervalSinceNow] * 1000);
+	if ([_arrange length]) [self _sortItems]; [self _regroup]; off = 0; [self setNeedsDisplay: YES]; [self _notify]; if (getenv("FINDER_DEBUG")) NSLog(@"Finder: icon view loaded %lu items in %.0f ms", (unsigned long)[_items count], -[t0 timeIntervalSinceNow] * 1000);
 }
 - (void)_save                                                                                  /* the places of the icons and the view options go to .DS_Store, where the Finder keeps them */
 {
@@ -253,9 +266,21 @@ static const CGFloat kCW = 112, kCH = 126, kPad = 10, kIcon = 64;
 }
 - (void)reloadKeepingSelection { NSArray *keep = [self selectedPaths]; if (![_items count]) return; NSMutableArray *ps = [NSMutableArray array]; for (NSDictionary *d in _items) [ps addObject: d[@"path"]]; CGFloat o = off; [self setPaths: ps]; for (NSUInteger i = 0; i < [_items count]; i++) if ([keep containsObject: _items[i][@"path"]]) [_sel addIndex: i]; off = o; [self setNeedsDisplay: YES]; }
 - (NSInteger)_cols { return MAX(1, (NSInteger)floor(([self bounds].size.width - 2 * kPad) / [self cw])); }
-- (NSPoint)_slot:(NSInteger)i { if (desktop) { CGFloat H = [self bounds].size.height, W = [self bounds].size.width; NSInteger per = MAX(1, (NSInteger)floor((H - 30 - 2 * 10) / [self ch])); return NSMakePoint(W - 10 - (i / per + 1) * [self cw], 30 + 10 + (i % per) * [self ch]); } NSInteger c = [self _cols]; return NSMakePoint(kPad + (i % c) * [self cw], kPad + (i / c) * [self ch]); }
-- (NSPoint)_target:(NSInteger)i { NSValue *v = _items[i][@"pos"]; return v ? [v pointValue] : [self _slot: i]; }
-- (CGFloat)contentHeight { NSInteger c = [self _cols]; CGFloat h = 2 * kPad + ceil((double)[_items count] / c) * [self ch]; for (NSInteger i = 0; i < (NSInteger)[_items count]; i++) h = MAX(h, [self _target: i].y + [self ch] + kPad); return h; }
+- (NSPoint)_slot:(NSInteger)i { if (_group && i < (NSInteger)[_gpos count]) return [_gpos[i] pointValue]; if (desktop) { CGFloat H = [self bounds].size.height, W = [self bounds].size.width; NSInteger per = MAX(1, (NSInteger)floor((H - 30 - 2 * 10) / [self ch])); return NSMakePoint(W - 10 - (i / per + 1) * [self cw], 30 + 10 + (i % per) * [self ch]); } NSInteger c = [self _cols]; return NSMakePoint(kPad + (i % c) * [self cw], kPad + (i / c) * [self ch]); }
+- (NSPoint)_target:(NSInteger)i { NSValue *v = _group ? nil : _items[i][@"pos"]; return v ? [v pointValue] : [self _slot: i]; }
+- (void)_regroup
+{
+	if (!_group) { _gpos = nil; _heads = nil; return; } NSMutableDictionary *ord = [NSMutableDictionary dictionary]; NSMutableArray *keys = [NSMutableArray array];
+	for (NSMutableDictionary *it in _items) { int o; NSString *t = GroupTitle(it, _group, &o); it[@"gt"] = t; it[@"go"] = @(o); if (!ord[t]) { ord[t] = @(o); [keys addObject: t]; } }
+	[keys sortUsingComparator: ^NSComparisonResult(NSString *a, NSString *b) { NSComparisonResult r = [ord[a] compare: ord[b]]; return r != NSOrderedSame ? r : [a tfNameCompare: b]; }];
+	NSMutableArray *sorted = [NSMutableArray array]; for (NSString *k in keys) for (NSMutableDictionary *it in _items) if ([it[@"gt"] isEqual: k]) [sorted addObject: it]; [_items setArray: sorted];
+	NSInteger cols = [self _cols]; CGFloat y = kPad; NSMutableArray *pos = [NSMutableArray array], *heads = [NSMutableArray array]; NSUInteger idx = 0;
+	for (NSString *k in keys) { NSUInteger n = 0; for (NSDictionary *it in _items) if ([it[@"gt"] isEqual: k]) n++; [heads addObject: @{ @"t": k, @"y": @(y), @"n": @(n) }]; y += 34; for (NSUInteger j = 0; j < n; j++, idx++) [pos addObject: [NSValue valueWithPoint: NSMakePoint(kPad + (j % cols) * [self cw], y + (j / cols) * [self ch])]]; y += ceil((double)n / cols) * [self ch] + 10; }
+	_gpos = pos; _heads = heads; _groupBottom = y;
+}
+- (void)setGroup:(NSString *)g { _group = [g length] ? [g copy] : nil; [self _regroup]; [self setNeedsDisplay: YES]; }
+- (void)setFrameSize:(NSSize)s { [super setFrameSize: s]; if (_group) [self _regroup]; }
+- (CGFloat)contentHeight { if (_group && _gpos) return _groupBottom + kPad; NSInteger c = [self _cols]; CGFloat h = 2 * kPad + ceil((double)[_items count] / c) * [self ch]; for (NSInteger i = 0; i < (NSInteger)[_items count]; i++) h = MAX(h, [self _target: i].y + [self ch] + kPad); return h; }
 - (NSRect)_cell:(NSInteger)i
 {
 	NSPoint t = [self _target: i]; NSValue *from = _items[i][@"from"];
@@ -290,7 +315,7 @@ static const CGFloat kCW = 112, kCH = 126, kPad = 10, kIcon = 64;
 	_arrange = [key copy]; if (key) { for (NSMutableDictionary *it in _items) [it removeObjectForKey: @"pos"]; [self _sortItems]; }
 	NSMutableArray *remap = [NSMutableArray array]; for (NSDictionary *d in _items) { NSUInteger k = [oldPaths indexOfObject: d[@"path"]]; [remap addObject: k < [old count] ? old[k] : (id)[NSNull null]]; }
 	for (NSUInteger i = 0; i < [_items count]; i++) if ([sel containsObject: _items[i][@"path"]]) [_sel addIndex: i];
-	[self _save]; [self _animateFrom: remap]; [self _notify];
+	[self _regroup]; [self _save]; [self _animateFrom: remap]; [self _notify];
 }
 - (void)cleanUp:(BOOL)selectionOnly
 {
@@ -305,6 +330,7 @@ static const CGFloat kCW = 112, kCH = 126, kPad = 10, kIcon = 64;
 - (void)drawContent:(NSRect)v
 {
 	NSDictionary *lab = Font(_textSize, NO, desktop ? TFRGB(255, 255, 255) : TF_TEXT); NSDictionary *labSel = Font(_textSize, NO, TFRGB(255, 255, 255)); NSDictionary *inf = Font(MAX(9, _textSize - 1.5), NO, TFDark() ? TFRGB(66, 140, 235) : TFRGB(0, 100, 220)); BOOL key = KeyWin(self);
+	for (NSDictionary *hd in _heads) { CGFloat hy = [hd[@"y"] doubleValue]; if (hy + 34 < v.origin.y || hy > NSMaxY(v)) continue; [hd[@"t"] drawAtPoint: NSMakePoint(kPad + 4, hy + 2) withAttributes: Font(15, YES, desktop ? TFRGB(255, 255, 255) : TF_TEXT)]; [TF_LINE setFill]; NSRectFill(NSMakeRect(kPad, hy + 28, [self bounds].size.width - 2 * kPad - 14, 1)); }
 	for (NSInteger pass = 0; pass < 2; pass++) for (NSInteger i = 0; i < (NSInteger)[_items count]; i++) {                                                                    /* the dragged icons last, on top */
 		BOOL moving = _dragging && [_sel containsIndex: i]; if ((pass == 1) != moving) continue;
 		NSRect c = [self _cell: i]; if (NSMaxY(c) < v.origin.y || c.origin.y > NSMaxY(v)) continue; NSMutableDictionary *it = _items[i]; BOOL sel = [_sel containsIndex: i];
