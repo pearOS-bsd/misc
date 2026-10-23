@@ -1,11 +1,11 @@
-/* The Spotlight window (the search item of the status area), measured on the Mac (3440 x 1440): 640 wide, centred, its top at 30 % of the screen height, the search row is 56 high (the magnifier
- * 22 pt at 36 pt in, the text 20 pt), results under it in rows of 56 (a 36 pt icon 19 pt in, the name 15 pt, the folder 13 pt dimmed), the chosen row is a light rounded rectangle (inset 10, radius 14),
- * the corners of the window are 28 pt; up to 7 rows are visible. The results here are the applications and the files whose name holds the text (the system has no Spotlight index). */
+/* The Spotlight window (the search item of the status area), measured on the Mac (3440 x 1440): 640 wide, centred, its top at 30 % of the screen height, the search row is 56 high (the magnifier 25 x 22 centred at (35, 27), the text from x 62 with its centre at y 28), a 1 pt line at y 56 (600 wide from x 20), results from y 67 in cells 619 wide at x 2 on a pitch of 57: an application's icon 47 at (13, 5) from the cell,
+ * another icon 38 at (17, 10), the title at x 70 (23 high; at y 17 alone, at y 7 with a subtitle at y 29), the chosen row a light rounded rectangle (x 10, 603 wide); 7 rows are visible, the window is 467 high with them.
+ * Read from the accessibility tree of the real window (it belongs to the process "Siri AI"). Not measured: the corner radius and the blur; the rest of the look is from a capture. The results here are the applications and the files whose name holds the text (the system has no Spotlight index). */
 #import <AppKit/AppKit.h>
 @interface NSObject (SPSymbols) + (void)drawIconOfName:(NSString *)n directory:(BOOL)d inRect:(NSRect)r; + (BOOL)drawSymbol:(NSString *)name inRect:(NSRect)cell size:(CGFloat)pt weight:(int)weight color:(NSColor *)c; @end
 
 #define SW 640.0
-#define SROW 56.0
+#define SROW 57.0
 #define STOP 67.0
 @interface SPView : NSView { @public NSMutableString *query; NSMutableArray *hits; NSInteger sel; NSInteger first; NSWindow *win; }
 @end
@@ -35,7 +35,7 @@ static void Collect(NSString *dir, NSString *q, int depth, NSMutableArray *out, 
 		[r sortUsingComparator: ^NSComparisonResult(NSString *a, NSString *b) { BOOL aa = [[a pathExtension] isEqual: @"app"], bb = [[b pathExtension] isEqual: @"app"]; if (aa != bb) return aa ? NSOrderedAscending : NSOrderedDescending; BOOL ap = [[[a lastPathComponent] lowercaseString] hasPrefix: [q lowercaseString]], bp = [[[b lastPathComponent] lowercaseString] hasPrefix: [q lowercaseString]]; if (ap != bp) return ap ? NSOrderedAscending : NSOrderedDescending; return [[a lastPathComponent] caseInsensitiveCompare: [b lastPathComponent]]; }];
 		[hits addObjectsFromArray: r];
 	}
-	NSInteger rows = MIN(7, (NSInteger)[hits count]); double h = [hits count] ? STOP + rows * SROW + 10 : 56; NSRect f = [win frame]; double top = NSMaxY(f); f.size.height = h; f.origin.y = top - h; [win setFrame: f display: YES]; [self setFrameSize: NSMakeSize(SW, h)]; [self setNeedsDisplay: YES];
+	NSInteger rows = MIN(7, (NSInteger)[hits count]); double h = [hits count] ? STOP + rows * SROW + 1 : 56; NSRect f = [win frame]; double top = NSMaxY(f); f.size.height = h; f.origin.y = top - h; [win setFrame: f display: YES]; [self setFrameSize: NSMakeSize(SW, h)]; [self setNeedsDisplay: YES];
 }
 - (BOOL)acceptsFirstResponder { return YES; }
 - (BOOL)acceptsFirstMouse:(NSEvent *)e { return YES; }
@@ -53,14 +53,14 @@ static void Collect(NSString *dir, NSString *q, int depth, NSMutableArray *out, 
 {
 	NSRect b = [self bounds]; NSBezierPath *p = [NSBezierPath bezierPathWithRoundedRect: b xRadius: 28 yRadius: 28]; [[NSColor colorWithCalibratedRed: 0.13 green: 0.13 blue: 0.14 alpha: 0.96] setFill]; [p fill];
 	NSBezierPath *rim = [NSBezierPath bezierPathWithRoundedRect: NSInsetRect(b, 0.5, 0.5) xRadius: 28 yRadius: 28]; [[NSColor colorWithCalibratedWhite: 1 alpha: 0.16] setStroke]; [rim stroke];
-	{ NSString *shown = [query length] ? query : @"Spotlight Search"; NSColor *tc = [query length] ? [NSColor whiteColor] : [NSColor colorWithCalibratedWhite: 1 alpha: 0.45]; NSDictionary *qa = @{ NSFontAttributeName: [NSFont systemFontOfSize: 20], NSForegroundColorAttributeName: tc }; NSSize qs = [shown sizeWithAttributes: qa]; [shown drawAtPoint: NSMakePoint(72, 28 - qs.height / 2) withAttributes: qa]; if ([query length]) { [[NSColor colorWithCalibratedWhite: 1 alpha: 0.85] setFill]; NSRectFill(NSMakeRect(72 + qs.width + 1, 15, 1.5, 26)); } }
-	[NSClassFromString(@"WsdFinderSupport") drawSymbol: @"magnifyingglass" inRect: NSMakeRect(34, 17, 26, 24) size: 22 weight: 5 color: [NSColor colorWithCalibratedWhite: 1 alpha: 0.7]];
+	{ NSString *shown = [query length] ? query : @"Spotlight Search"; NSColor *tc = [query length] ? [NSColor whiteColor] : [NSColor colorWithCalibratedWhite: 1 alpha: 0.45]; NSDictionary *qa = @{ NSFontAttributeName: [NSFont systemFontOfSize: 20], NSForegroundColorAttributeName: tc }; NSSize qs = [shown sizeWithAttributes: qa]; [shown drawAtPoint: NSMakePoint(62, 28 - qs.height / 2) withAttributes: qa]; if ([query length]) { [[NSColor colorWithCalibratedWhite: 1 alpha: 0.85] setFill]; NSRectFill(NSMakeRect(62 + qs.width + 1, 15, 1.5, 26)); } }
+	[NSClassFromString(@"WsdFinderSupport") drawSymbol: @"magnifyingglass" inRect: NSMakeRect(23, 16, 25, 22) size: 22 weight: 5 color: [NSColor colorWithCalibratedWhite: 1 alpha: 0.7]];
 	NSDictionary *tf = @{ NSFontAttributeName: [NSFont systemFontOfSize: 15], NSForegroundColorAttributeName: [NSColor whiteColor] }, *sf = @{ NSFontAttributeName: [NSFont systemFontOfSize: 13], NSForegroundColorAttributeName: [NSColor colorWithCalibratedWhite: 1 alpha: 0.5] };
 	for (NSInteger i = first; i < (NSInteger)[hits count] && i < first + 7; i++) {
-		double y = STOP + (i - first) * SROW; NSString *path = hits[i]; BOOL app = [[path pathExtension] isEqual: @"app"];
-		if (i == sel) { [[NSColor colorWithCalibratedWhite: 1 alpha: 0.16] setFill]; [[NSBezierPath bezierPathWithRoundedRect: NSMakeRect(10, y, SW - 20, SROW - 4) xRadius: 14 yRadius: 14] fill]; }
-		BOOL isDir = NO; [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDir]; Class fs = NSClassFromString(@"WsdFinderSupport"); if (app) { NSImage *ic = [[NSWorkspace sharedWorkspace] iconForFile: path]; [ic drawInRect: NSMakeRect(19, y + 8, 36, 36) fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; } else [fs drawIconOfName: [path lastPathComponent] directory: isDir inRect: NSMakeRect(19, y + 8, 36, 36)];
-		NSString *name = app ? [[path lastPathComponent] stringByDeletingPathExtension] : [path lastPathComponent]; if (app) [name drawAtPoint: NSMakePoint(71, y + 17) withAttributes: tf]; else { [name drawAtPoint: NSMakePoint(71, y + 7) withAttributes: tf]; [[[path stringByDeletingLastPathComponent] lastPathComponent] drawAtPoint: NSMakePoint(71, y + 28) withAttributes: sf]; }
+		double y = STOP - 10 + (i - first) * SROW + 10; NSString *path = hits[i]; BOOL app = [[path pathExtension] isEqual: @"app"];
+		if (i == sel) { [[NSColor colorWithCalibratedWhite: 1 alpha: 0.16] setFill]; [[NSBezierPath bezierPathWithRoundedRect: NSMakeRect(10, y, 603, SROW - 1) xRadius: 14 yRadius: 14] fill]; }
+		BOOL isDir = NO; [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDir]; Class fs = NSClassFromString(@"WsdFinderSupport"); if (app) { NSImage *ic = [[NSWorkspace sharedWorkspace] iconForFile: path]; [ic drawInRect: NSMakeRect(13, y + 5, 47, 47) fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; } else [fs drawIconOfName: [path lastPathComponent] directory: isDir inRect: NSMakeRect(17, y + 10, 38, 38)];
+		NSString *name = app ? [[path lastPathComponent] stringByDeletingPathExtension] : [path lastPathComponent]; if (app) [name drawAtPoint: NSMakePoint(70, y + 17 + (23 - [name sizeWithAttributes: tf].height) / 2) withAttributes: tf]; else { [name drawAtPoint: NSMakePoint(70, y + 7 + (23 - [name sizeWithAttributes: tf].height) / 2) withAttributes: tf]; [[[path stringByDeletingLastPathComponent] lastPathComponent] drawAtPoint: NSMakePoint(70, y + 29 + (21 - [@"X" sizeWithAttributes: sf].height) / 2) withAttributes: sf]; }
 	}
 }
 @end
