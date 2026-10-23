@@ -231,6 +231,9 @@ Finder status (2026-10-23, an honest estimate from the code and the VM, not a me
 
 **Other open work:** Chess, the SkyLight routines that need a compositor, KMS/GPU hardware, the Dock, real WebKit, the designers' assets (ordered, 21,000 EUR) and the Pico 2 secure-element token.
 
+## Future work (not a priority)
+- **X11 / Wayland applications (Firefox and other GTK/Qt programs).** They look for an X server (`DISPLAY`) or a Wayland compositor (`WAYLAND_DISPLAY`); wsd speaks its own protocol, so they do not start today. Possible routes: an X server nested in a wsd window (Xephyr/Xwayland) as a quick bridge, or a Wayland compositor inside wsd (`wl_compositor`, `xdg_shell`, shared-memory buffers, `wl_seat`, using libwayland-server) so that their windows appear on the desktop like any other. Not planned for now.
+
 ## Known limits
 - DRM/KMS, evdev and the GL compositor have not been run on real hardware (CI has no GPU).
 - The font is Inter; window layout of some apps (Pashua's dialog) and several AppKit behaviours differ from macOS.
