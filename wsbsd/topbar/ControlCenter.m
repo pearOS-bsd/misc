@@ -26,7 +26,7 @@ id WifiInterface(void)
 BOOL WifiPower(BOOL *known) { id i = WifiInterface(); if (!i) { *known = NO; return NO; } *known = YES; return ((BOOL (*)(id, SEL))objc_msgSend)(i, @selector(powerOn)); }
 void SetWifiPower(BOOL on) { id i = WifiInterface(); if (i) { NSError *e = nil; ((BOOL (*)(id, SEL, BOOL, NSError **))objc_msgSend)(i, @selector(setPower:error:), on, &e); } }
 #define PANEL_W 292.0
-void ToggleWifiPanel(void); void NCSetFocus(BOOL on);
+void ToggleWifiPanel(void); void ToggleBluetoothPanel(void); void NCSetFocus(BOOL on);
 static double ColX(int c) { return c * 76.0; }
 static double RowY(double k) { return 12 + k * 76.0; }
 
@@ -131,7 +131,7 @@ static void Bluetooth(NSPoint c, NSColor *col) { NSBezierPath *p = [NSBezierPath
 		if ([t[0] isEqual: @"circle"] || [t[0] isEqual: @"wide"]) { BOOL v = ![on[id_] boolValue]; on[id_] = @(v); if ([id_ isEqual: @"dark"]) SetDark(v); if ([id_ isEqual: @"wifi"]) SetWifiPower(v); if ([id_ isEqual: @"focus"]) NCSetFocus(v); [self applyGlass]; [self setNeedsDisplay: YES]; }
 		return; }
 }
-- (void)rightMouseDown:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; for (NSArray *t in tiles) if ([t[1] isEqual: @"wifi"] && NSPointInRect(p, [self rectOf: t])) { [[self window] orderOut: nil]; ToggleWifiPanel(); } }       /* the details of the Wi-Fi tile (AX: the custom action "show details") */
+- (void)rightMouseDown:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; for (NSArray *t in tiles) if (([t[1] isEqual: @"wifi"] || [t[1] isEqual: @"bluetooth"]) && NSPointInRect(p, [self rectOf: t])) { [[self window] orderOut: nil]; if ([t[1] isEqual: @"wifi"]) ToggleWifiPanel(); else ToggleBluetoothPanel(); } }       /* the details of the Wi-Fi tile (AX: the custom action "show details") */
 - (void)mouseDragged:(NSEvent *)e { if (!drag) return; NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; for (NSArray *t in tiles) if ([t[1] isEqual: drag]) [self set: drag at: p inRect: [self rectOf: t]]; }
 - (void)mouseUp:(NSEvent *)e { drag = nil; }
 @end

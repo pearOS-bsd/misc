@@ -15,13 +15,14 @@ id WifiInterface(void); BOOL WifiPower(BOOL *known); void SetWifiPower(BOOL on);
 
 @class WPWindow;
 @interface WPWindow : NSWindow { @public BOOL relaying; } @end
-@interface WPView : NSView { @public NSArray *nets; BOOL expanded, power, known; NSString *current; } @end
+@interface WPView : NSView { @public NSArray *nets; BOOL expanded, power, known; NSString *current; int mode; } @end
 @implementation WPView
 - (BOOL)isFlipped { return YES; }
 - (BOOL)acceptsFirstMouse:(NSEvent *)e { return YES; }
 /* the vertical layout: (y from the top of the panel) the section from 69, a current network row 32 + 5 to the line, the disclosure 6 under the line, the rows of the scan from 22 under it, "Other…" 22, the line of the footer 5 under the list, the footer 35 */
 - (NSDictionary *)wpLayout
 {
+	if (mode == 1) { double foot = 48 + [nets count] * 32 + 5; return @{ @"foot": @(foot), @"h": @(foot + 35), @"list": @48.0 }; }       /* Bluetooth: the devices from y 48 on a pitch of 32, the footer 5 under them (152 high with two devices) */
 	BOOL cur = NO; NSUInteger others = 0; for (NSDictionary *n in nets) if ([n[@"current"] boolValue]) cur = YES; else others++;
 	double y = 69, rowY = y; if (cur) y += 32 + 5; double line = y, disc = line + 6, listStart = disc + 22, end = disc + 22;
 	if (expanded) end = listStart + others * 32 + 22; double foot = end + 5;
@@ -37,9 +38,10 @@ static NSColor *G(CGFloat w, CGFloat a) { return [NSColor colorWithCalibratedWhi
 - (void)drawRect:(NSRect)dirty
 {
 	NSDictionary *head = @{ NSFontAttributeName: [NSFont boldSystemFontOfSize: 13], NSForegroundColorAttributeName: G(238, 1) }, *name = @{ NSFontAttributeName: [NSFont systemFontOfSize: 13], NSForegroundColorAttributeName: G(237, 1) }, *sec = @{ NSFontAttributeName: [NSFont boldSystemFontOfSize: 11], NSForegroundColorAttributeName: G(161, 1) }, *dim = @{ NSFontAttributeName: [NSFont systemFontOfSize: 13], NSForegroundColorAttributeName: G(133, 1) };
-	[@"Wi‑Fi" drawAtPoint: NSMakePoint(14, 13) withAttributes: head];
+	[mode == 1 ? @"Bluetooth" : @"Wi‑Fi" drawAtPoint: NSMakePoint(14, 13) withAttributes: head];
 	NSRect sw = [self switchRect]; [(power ? [NSColor colorWithCalibratedRed: 0 green: 0.478 blue: 1 alpha: 1] : G(255, 0.18)) setFill]; [[NSBezierPath bezierPathWithRoundedRect: sw xRadius: 12 yRadius: 12] fill];
 	[[NSColor whiteColor] setFill]; [[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(power ? NSMaxX(sw) - 22 : sw.origin.x + 2, sw.origin.y + 2, 20, 20)] fill];
+	if (mode == 1) { if (power) { NSUInteger k = 0; [G(255, 0.1) setFill]; NSRectFill(NSMakeRect(14, 42, 280, 1)); for (NSDictionary *d in nets) { NSRect r = [self rowRect: k++]; NSRect ic = NSMakeRect(r.origin.x + 5, r.origin.y + 5, 22, 22); [([d[@"on"] boolValue] ? [NSColor colorWithCalibratedRed: 0 green: 0.478 blue: 1 alpha: 1] : G(255, 0.25)) setFill]; [[NSBezierPath bezierPathWithOvalInRect: ic] fill]; [d[@"name"] drawAtPoint: NSMakePoint(r.origin.x + 38, NSMidY(r) - 8) withAttributes: name]; if (d[@"battery"]) { NSString *b = [NSString stringWithFormat: @"%@%%", d[@"battery"]]; NSSize z = [b sizeWithAttributes: dim]; [b drawAtPoint: NSMakePoint(NSMaxX(r) - z.width - 28, NSMidY(r) - 8) withAttributes: dim]; Sym(@"battery.50", NSMakeRect(NSMaxX(r) - 24, NSMidY(r) - 6, 24, 12), 12, G(133, 1)); } } CGFloat by = [[self wpLayout][@"foot"] doubleValue]; [G(255, 0.1) setFill]; NSRectFill(NSMakeRect(14, by, 280, 1)); [@"Bluetooth Settings…" drawAtPoint: NSMakePoint(14, by + 11) withAttributes: name]; } return; }
 	if (!power) { [@"Wi‑Fi Settings…" drawAtPoint: NSMakePoint(14, 69) withAttributes: name]; return; }       /* off: the list is gone (the height with the switch off is not measured) */
 	NSDictionary *L = [self wpLayout]; NSRect disc = [self discRect]; NSMutableArray *rows = [NSMutableArray array]; for (NSDictionary *n in nets) if ([n[@"current"] boolValue]) [rows addObject: n];
 	if ([rows count]) [self drawNet: rows[0] in: NSMakeRect(14, [L[@"rowY"] doubleValue], 280, 32) name: name current: YES];       /* the heading "Personal Hotspot" (11 pt, 161) belongs to a hotspot: not drawn, hotspots are not told apart here */
@@ -58,7 +60,8 @@ static NSColor *G(CGFloat w, CGFloat a) { return [NSColor colorWithCalibratedWhi
 - (void)mouseDown:(NSEvent *)e
 {
 	NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil];
-	if (NSPointInRect(p, [self switchRect])) { power = !power; SetWifiPower(power); [self relayout]; return; }
+	if (NSPointInRect(p, [self switchRect])) { power = !power; if (mode == 0) SetWifiPower(power); [self relayout]; return; }
+	if (mode == 1) { if (NSPointInRect(p, [self settingsRect])) { [[self window] orderOut: nil]; [[NSWorkspace sharedWorkspace] launchApplication: @"System Settings"]; } return; }
 	if (power && NSPointInRect(p, [self discRect])) { expanded = !expanded; [self relayout]; return; }
 	if (NSPointInRect(p, [self settingsRect])) { [[self window] orderOut: nil]; [[NSWorkspace sharedWorkspace] launchApplication: @"System Settings"]; }
 }
@@ -67,6 +70,7 @@ static NSColor *G(CGFloat w, CGFloat a) { return [NSColor colorWithCalibratedWhi
 - (void)applyGlass { id srv = GSCurrentServer(); if ([srv respondsToSelector: @selector(wsdGlassSlot:::::)]) [srv wsdGlassSlot: 1 : (int)[[self window] windowNumber] : NSMakeRect(0, 0, WW, [self panelHeight]) : 16 : 5]; }
 - (void)reload
 {
+	if (mode == 1) { power = YES; nets = getenv("TOPBAR_FAKE_BT") ? @[ @{ @"name": @"Keyboard", @"on": @YES, @"battery": @80 }, @{ @"name": @"Speaker", @"on": @NO } ] : @[]; return; }       /* no Bluetooth stack here: the devices of the Mac (hcsecd, hccontrol) are not read; the switch only changes the picture */
 	known = NO; power = WifiPower(&known); NSMutableArray *a = [NSMutableArray array]; current = nil;
 	if (getenv("TOPBAR_FAKE_WIFI")) { power = YES; known = YES; [a addObject: @{ @"ssid": @"Home", @"bars": @3, @"secure": @YES, @"current": @YES }]; [a addObject: @{ @"ssid": @"Neighbour 2.4G", @"bars": @2, @"secure": @YES }]; [a addObject: @{ @"ssid": @"Guest", @"bars": @1, @"secure": @NO }]; }
 	else if (known) {
@@ -85,11 +89,13 @@ static NSColor *G(CGFloat w, CGFloat a) { return [NSColor colorWithCalibratedWhi
 - (void)keyDown:(NSEvent *)e { if ([[e characters] isEqual: @"\x1b"]) [self orderOut: nil]; else [super keyDown: e]; }
 @end
 
-void ToggleWifiPanel(void)
+static void TogglePanel(int mode)
 {
-	static WPWindow *w; NSRect scr = [[NSScreen mainScreen] frame];
-	if (w && [w isVisible]) { [w orderOut: nil]; return; }
-	if (!w) { w = [[WPWindow alloc] initWithContentRect: NSMakeRect(scr.size.width - 8 - WW, scr.size.height - 36 - 193, WW, 193) styleMask: NSBorderlessWindowMask backing: NSBackingStoreBuffered defer: NO];
-		[w setOpaque: NO]; [w setBackgroundColor: [NSColor clearColor]]; [w setHasShadow: NO]; [w setLevel: 22]; [w setHidesOnDeactivate: NO]; [w setContentView: [[WPView alloc] initWithFrame: NSMakeRect(0, 0, WW, 193)]]; }
-	WPView *v = (WPView *)[w contentView]; [v reload]; [NSApp activateIgnoringOtherApps: YES]; [w makeKeyAndOrderFront: nil]; [v relayout];
+	static WPWindow *w[2]; NSRect scr = [[NSScreen mainScreen] frame];
+	if (w[mode] && [w[mode] isVisible]) { [w[mode] orderOut: nil]; return; }
+	if (!w[mode]) { w[mode] = [[WPWindow alloc] initWithContentRect: NSMakeRect(scr.size.width - 8 - WW, scr.size.height - 36 - 193, WW, 193) styleMask: NSBorderlessWindowMask backing: NSBackingStoreBuffered defer: NO];
+		[w[mode] setOpaque: NO]; [w[mode] setBackgroundColor: [NSColor clearColor]]; [w[mode] setHasShadow: NO]; [w[mode] setLevel: 22]; [w[mode] setHidesOnDeactivate: NO]; WPView *nv = [[WPView alloc] initWithFrame: NSMakeRect(0, 0, WW, 193)]; nv->mode = mode; [w[mode] setContentView: nv]; }
+	WPView *v = (WPView *)[w[mode] contentView]; [v reload]; [NSApp activateIgnoringOtherApps: YES]; [w[mode] makeKeyAndOrderFront: nil]; [v relayout];
 }
+void ToggleWifiPanel(void) { TogglePanel(0); }
+void ToggleBluetoothPanel(void) { TogglePanel(1); }
