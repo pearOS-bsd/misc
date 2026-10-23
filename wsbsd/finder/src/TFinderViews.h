@@ -45,6 +45,7 @@ BOOL TFIsPackage(NSString *path);
 NSArray *TFAppsForFile(NSString *path);
 void TFOpenPath(NSString *path);
 void TFShowSharePopover(NSArray *paths, NSPoint anchor, id owner);
+void TFShowTagsPopover(NSArray *paths, NSPoint anchor, id owner);
 NSArray *TFBulkRenamedNames(NSArray *paths, NSDictionary *params);
 void TFBulkRename(NSArray *paths, void (^done)(NSArray *changes));
 void TFAsk(NSString *title, NSString *message, NSArray *fields, NSString *okTitle, void (^done)(NSArray *values));
