@@ -26,6 +26,7 @@ NSString *TFKindString(NSString *path, BOOL dir);
 NSArray *TFTagsOf(NSString *path);
 void TFSetTags(NSArray *names, NSString *path);
 NSArray *TFPathsTagged(NSString *tag);
+NSArray *TFRecentPaths(void);
 NSWindow *TFOpenInfoWindow(NSString *path);
 void TFCopyItems(NSArray *srcs, NSString *destDir, BOOL move, void (^completion)(NSArray *ops));
 NSWindow *TFOpenQuickLook(NSString *path);
