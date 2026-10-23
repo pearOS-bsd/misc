@@ -179,6 +179,7 @@ d=open('finder.ppm','rb').read(); body=d[-1280*800*3:]; n=len(set(body[::97])); 
 PY
 	grep -q ' 1022x552' finder-wins.txt || { echo 'no Finder window of 1022x552'; FINDER_BAD=1; }
 	echo "finder alive: $(pgrep -x Finder | head -1)"; tail -25 /tmp/finder-run.log | cut -c1-240; tail -3 /tmp/finder-build.log
+	grep -q 'caller ' /tmp/finder-run.log && { CL=$(grep 'caller ' /tmp/finder-run.log | head -1); LIB=$(echo "$CL" | awk '{print $4}'); OFF=$(echo "$CL" | awk '{print $8}'); echo "the caller is at $OFF of $LIB:"; python3 "$WS/ci/symlookup.py" "$LIB" "$OFF"; }
 	grep -q 'exit status 139' /tmp/finder-run.log && (cd $FO/System/Library/CoreServices/Finder.app/Contents/MacOS && HOME=/tmp/finhome FINDER_PATH=/tmp/fintest FINDER_WINDOW=1 timeout 60 lldb --batch -o 'settings set interpreter.stop-command-source-on-error false' -o run -o 'register read rdi rsi r10 rsp' -o 'expr (const char *)sel_getName((void *)$rsi)' -o 'expr (const char *)class_getName((void *)object_getClass((void *)$rdi))' -o 'image lookup -a `*(unsigned long *)$rsp`' -o 'image lookup -a `*(unsigned long *)($rsp+8)`' -o 'image lookup -a `*(unsigned long *)($rsp+16)`' -o 'image lookup -a `*(unsigned long *)($rsp+24)`' -o 'x/12gx $rsp' -o 'bt 12' -- ./Finder 2>&1 | grep -v 'time zone\|Loading two' | tail -40 | cut -c1-230)
 	kill $FP 2>/dev/null; pkill -x Finder 2>/dev/null
 else echo 'Finder did not build'; tail -20 /tmp/finder-build.log; FINDER_BAD=1; fi
