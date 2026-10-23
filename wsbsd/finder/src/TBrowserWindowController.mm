@@ -189,14 +189,13 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 	for (NSString *p in [self _targets]) { NSString *o = d[[p lastPathComponent]]; if (!o) continue; [fm createDirectoryAtPath: [o stringByDeletingLastPathComponent] withIntermediateDirectories: YES attributes: nil error: NULL]; NSString *to = [fm fileExistsAtPath: o] ? UniquePath([o stringByDeletingLastPathComponent], [[o lastPathComponent] stringByDeletingPathExtension], [o pathExtension]) : o; if ([fm moveItemAtPath: p toPath: to error: NULL]) { [d removeObjectForKey: [p lastPathComponent]]; [ops addObject: @{ @"t": @"move", @"a": p, @"b": to }]; } }
 	[d writeToFile: PutBackFile() atomically: YES]; if ([ops count]) [self _record: @"Put Back" ops: ops]; [self _changed: nil]; [_sidebar setNeedsDisplay: YES];
 }
-- (void)cmdDuplicate:(id)s { NSFileManager *fm = [NSFileManager defaultManager]; NSMutableArray *ops = [NSMutableArray array]; for (NSString *p in [self _targets]) { NSString *dest = UniquePath([p stringByDeletingLastPathComponent], [[[p lastPathComponent] stringByDeletingPathExtension] stringByAppendingString: @" copy"], [p pathExtension]); if ([fm copyItemAtPath: p toPath: dest error: NULL]) [ops addObject: @{ @"t": @"copy", @"a": p, @"b": dest }]; } if ([ops count]) [self _record: @"Duplicate" ops: ops]; [self _changed: nil]; }
+- (void)cmdDuplicate:(id)s { NSArray *t = [self _targets]; if (![t count]) return; __weak TBrowserWindowController *me = self; TFCopyItems(t, [_url path], NO, ^(NSArray *ops) { TBrowserWindowController *x = me; if (!x) return; if ([ops count]) [x _record: @"Duplicate" ops: ops]; [x _changed: nil]; }); }
 - (void)cut:(id)s { [self copy: s]; _cutPaths = [[self _targets] copy]; }
 - (void)_pasteMoving:(BOOL)move
 {
-	NSArray *files = [[NSPasteboard generalPasteboard] propertyListForType: NSFilenamesPboardType]; NSFileManager *fm = [NSFileManager defaultManager]; NSMutableArray *ops = [NSMutableArray array]; BOOL cut = move || (_cutPaths && [_cutPaths isEqual: files]);
-	for (NSString *p in files) { NSString *dest = [[_url path] stringByAppendingPathComponent: [p lastPathComponent]]; if ([fm fileExistsAtPath: dest]) { if (cut && [[p stringByDeletingLastPathComponent] isEqual: [_url path]]) continue; dest = UniquePath([_url path], [[p lastPathComponent] stringByDeletingPathExtension], [p pathExtension]); }
-		if (cut ? [fm moveItemAtPath: p toPath: dest error: NULL] : [fm copyItemAtPath: p toPath: dest error: NULL]) [ops addObject: @{ @"t": cut ? @"move" : @"copy", @"a": p, @"b": dest }]; }
-	if (cut) _cutPaths = nil; if ([ops count]) [self _record: cut ? @"Move" : @"Paste" ops: ops]; [self _changed: nil];
+	NSArray *files = [[NSPasteboard generalPasteboard] propertyListForType: NSFilenamesPboardType]; if (![files count]) return; BOOL cut = move || (_cutPaths && [_cutPaths isEqual: files]); _cutPaths = nil; __weak TBrowserWindowController *me = self;
+	NSMutableArray *todo = [NSMutableArray array]; for (NSString *p in files) { if (cut && [[p stringByDeletingLastPathComponent] isEqual: [_url path]]) continue; [todo addObject: p]; } if (![todo count]) return;
+	TFCopyItems(todo, [_url path], cut, ^(NSArray *ops) { TBrowserWindowController *s = me; if (!s) return; if ([ops count]) [s _record: cut ? @"Move" : @"Paste" ops: ops]; [s _changed: nil]; });
 }
 - (void)paste:(id)s { [self _pasteMoving: NO]; }
 - (void)cmdMoveItemsHere:(id)s { [self _pasteMoving: YES]; }
@@ -282,13 +281,8 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 {
 	NSString *dest = folder; if (!dest) dest = [_sidebar dropPathAtWindowPoint: wp];
 	if (!dest) { NSPoint m = [NSEvent mouseLocation]; for (TBrowserWindowController *o in gBrowsers) if (o != self && NSPointInRect(m, [[o window] frame]) && !o->_tag) { dest = [o->_url path]; break; } }
-	if (![dest length]) return NO; NSFileManager *fm = [NSFileManager defaultManager]; BOOL any = NO; NSMutableArray *dops = [NSMutableArray array];
-	for (NSString *p in paths) {
-		if ([[p stringByDeletingLastPathComponent] isEqual: dest] && !copy) continue; if ([dest hasPrefix: [p stringByAppendingString: @"/"]] || [dest isEqual: p]) continue;
-		NSString *to = [dest stringByAppendingPathComponent: [p lastPathComponent]]; if ([fm fileExistsAtPath: to]) to = UniquePath(dest, [[p lastPathComponent] stringByDeletingPathExtension], [p pathExtension]);
-		if (copy ? [fm copyItemAtPath: p toPath: to error: NULL] : [fm moveItemAtPath: p toPath: to error: NULL]) { any = YES; [dops addObject: @{ @"t": copy ? @"copy" : @"move", @"a": p, @"b": to }]; }
-	}
-	if (any) { [self _record: copy ? @"Copy" : @"Move" ops: dops]; [self _changed: nil]; } return any;
+	if (![dest length]) return NO; NSMutableArray *todo = [NSMutableArray array]; for (NSString *p in paths) { if ([[p stringByDeletingLastPathComponent] isEqual: dest] && !copy) continue; if ([dest hasPrefix: [p stringByAppendingString: @"/"]] || [dest isEqual: p]) continue; [todo addObject: p]; } if (![todo count]) return NO;
+	__weak TBrowserWindowController *me = self; TFCopyItems(todo, dest, !copy, ^(NSArray *ops) { TBrowserWindowController *s = me; if (!s) return; if ([ops count]) [s _record: copy ? @"Copy" : @"Move" ops: ops]; [s _changed: nil]; }); return YES;
 }
 - (void)sidebarGoTo:(NSString *)path { [self goToPath: path]; }
 - (void)pathBarGoTo:(NSString *)path { [self goToPath: path]; }
