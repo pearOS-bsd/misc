@@ -16,5 +16,5 @@ cp -R "$W/iso/boot" "$W/esp/boot"
 KB=$(du -sk "$W/esp" | cut -f1); MB=$(( KB / 1024 * 12 / 10 + 32 ))
 echo "ESP: ${KB} KiB of files, ${MB} MiB image"
 makefs -t msdos -o fat_type=16 -o volume_label=EFISYS -s "${MB}m" "$W/esp.img" "$W/esp"
-mkimg -s gpt -p "efi/EFISYS:=$W/esp.img" -p "freebsd-ufs/PEAROS:=$ISO" -o "$OUT"
+mkimg -s gpt -P 4096 -p "efi/EFISYS:=$W/esp.img" -p "freebsd-ufs/PEAROS:=$ISO" -o "$OUT"
 ls -l "$OUT"
