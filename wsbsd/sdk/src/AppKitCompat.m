@@ -500,7 +500,7 @@ static void wsbsdViewSetFrame(id self, SEL _cmd, NSRect f)
 {
 	SEL sfs = sel_registerName("setFrameSize:");
 	if (!setFrameSizeIsApplications(self)) { ((void (*)(id, SEL, NSRect))origViewSetFrame)(self, _cmd, f); return; }
-	NSRect old = ((NSRect (*)(id, SEL))objc_msgSend)(self, sel_registerName("frame"));
+	NSRect old = [(NSView *)self frame];                 /* a typed message: on x86_64 a struct of four doubles comes back in memory (objc_msgSend_stret), a cast of objc_msgSend would crash */
 	if (old.origin.x != f.origin.x || old.origin.y != f.origin.y) ((void (*)(id, SEL, NSPoint))objc_msgSend)(self, sel_registerName("setFrameOrigin:"), f.origin);
 	if (old.size.width != f.size.width || old.size.height != f.size.height) ((void (*)(id, SEL, NSSize))objc_msgSend)(self, sfs, f.size);
 }
