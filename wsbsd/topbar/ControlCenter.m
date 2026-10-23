@@ -17,15 +17,16 @@
 @interface NSObject (CCGlass) - (void)wsdGlassSlot:(int)slot :(int)win :(NSRect)r :(int)radius :(int)mode; @end
 
 /* Wi-Fi through CoreWLAN (the framework of this repository, which talks to airportd): loaded when it is on the system, the tile then shows and sets the power of the first interface */
-static id WifiInterface(void)
+id WifiInterface(void)
 {
 	static id iface; static BOOL tried; if (tried) return iface; tried = YES;
 	dlopen("/System/Library/Frameworks/CoreWLAN.framework/Versions/A/CoreWLAN", RTLD_LAZY | RTLD_GLOBAL); Class c = NSClassFromString(@"CWWiFiClient"); if (!c) return nil;
 	id client = ((id (*)(id, SEL))objc_msgSend)(c, @selector(sharedWiFiClient)); if (client) iface = ((id (*)(id, SEL))objc_msgSend)(client, @selector(interface)); return iface;
 }
-static BOOL WifiPower(BOOL *known) { id i = WifiInterface(); if (!i) { *known = NO; return NO; } *known = YES; return ((BOOL (*)(id, SEL))objc_msgSend)(i, @selector(powerOn)); }
-static void SetWifiPower(BOOL on) { id i = WifiInterface(); if (i) { NSError *e = nil; ((BOOL (*)(id, SEL, BOOL, NSError **))objc_msgSend)(i, @selector(setPower:error:), on, &e); } }
+BOOL WifiPower(BOOL *known) { id i = WifiInterface(); if (!i) { *known = NO; return NO; } *known = YES; return ((BOOL (*)(id, SEL))objc_msgSend)(i, @selector(powerOn)); }
+void SetWifiPower(BOOL on) { id i = WifiInterface(); if (i) { NSError *e = nil; ((BOOL (*)(id, SEL, BOOL, NSError **))objc_msgSend)(i, @selector(setPower:error:), on, &e); } }
 #define PANEL_W 292.0
+void ToggleWifiPanel(void);
 static double ColX(int c) { return c * 76.0; }
 static double RowY(double k) { return 12 + k * 76.0; }
 
@@ -130,6 +131,7 @@ static void Bluetooth(NSPoint c, NSColor *col) { NSBezierPath *p = [NSBezierPath
 		if ([t[0] isEqual: @"circle"] || [t[0] isEqual: @"wide"]) { BOOL v = ![on[id_] boolValue]; on[id_] = @(v); if ([id_ isEqual: @"dark"]) SetDark(v); if ([id_ isEqual: @"wifi"]) SetWifiPower(v); [self applyGlass]; [self setNeedsDisplay: YES]; }
 		return; }
 }
+- (void)rightMouseDown:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; for (NSArray *t in tiles) if ([t[1] isEqual: @"wifi"] && NSPointInRect(p, [self rectOf: t])) { [[self window] orderOut: nil]; ToggleWifiPanel(); } }       /* the details of the Wi-Fi tile (AX: the custom action "show details") */
 - (void)mouseDragged:(NSEvent *)e { if (!drag) return; NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; for (NSArray *t in tiles) if ([t[1] isEqual: drag]) [self set: drag at: p inRect: [self rectOf: t]]; }
 - (void)mouseUp:(NSEvent *)e { drag = nil; }
 @end
