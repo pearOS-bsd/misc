@@ -109,10 +109,13 @@ static NSString *StyleName(NSInteger m) { return @[ @"icnv", @"Nlsv", @"clmv", @
 		if (imgs) { NSMenuItem *r = [sub addItemWithTitle: @"Rotate Left" action: @selector(cmdRotateLeft:) keyEquivalent: @""]; [r setTarget: self]; [r setToolTip: @"sym:rotate.left"]; [sub addItem: [NSMenuItem separatorItem]]; }
 		NSMenuItem *cz = [sub addItemWithTitle: @"Customize…" action: @selector(cmdOpenQuickActionsPrefPane:) keyEquivalent: @""]; [cz setTarget: self]; }
 	for (NSMenuItem *it in [m itemArray]) if ([[it title] isEqual: @"Open With"]) { NSMenu *sub = [it submenu]; while ([sub numberOfItems]) [sub removeItemAtIndex: 0]; NSString *p = [_selection firstObject]; if (!p) return;
-		for (NSDictionary *a in TFAppsForFile(p)) { NSMenuItem *x = [sub addItemWithTitle: a[@"name"] action: @selector(cmdOpenWithApp:) keyEquivalent: @""]; [x setTarget: self]; [x setRepresentedObject: a[@"path"]]; }
+		/* as the real menu is (read from its accessibility tree): the default application with "(default)", a separator, the others by name, a separator, "App Store…" and "Other…" */
+		NSArray *apps = TFAppsForFile(p); NSUInteger ai = 0; for (NSDictionary *a in apps) { NSString *t = ai == 0 ? [a[@"name"] stringByAppendingString: @" (default)"] : a[@"name"]; NSMenuItem *x = [sub addItemWithTitle: t action: @selector(cmdOpenWithApp:) keyEquivalent: @""]; [x setTarget: self]; [x setRepresentedObject: a[@"path"]]; if (ai++ == 0 && [apps count] > 1) [sub addItem: [NSMenuItem separatorItem]]; }
+		if ([apps count]) [sub addItem: [NSMenuItem separatorItem]]; NSMenuItem *st = [sub addItemWithTitle: @"App Store…" action: @selector(cmdOpenWithAppStore:) keyEquivalent: @""]; [st setTarget: self];
 		NSMenuItem *o = [sub addItemWithTitle: @"Other…" action: @selector(cmdOpenWithOther:) keyEquivalent: @""]; [o setTarget: self]; }
 }
 - (void)cmdOpenWithApp:(NSMenuItem *)it { NSString *app = [it representedObject]; for (NSString *p in _selection) [[NSWorkspace sharedWorkspace] openFile: p withApplication: app]; }
+- (void)cmdOpenWithAppStore:(id)s { for (NSString *a in @[ @"/System/Applications/App Store.app", @"/Applications/App Store.app" ]) if ([[NSFileManager defaultManager] fileExistsAtPath: a]) { [[NSWorkspace sharedWorkspace] launchApplication: a]; return; } NSBeep(); }
 - (void)cmdOpenWithOther:(id)s { NSOpenPanel *op = [NSOpenPanel openPanel]; [op setDirectoryURL: [NSURL fileURLWithPath: @"/Applications"]]; [op setAllowedFileTypes: @[ @"app" ]]; if ([op runModal] == NSOKButton) for (NSString *p in _selection) [[NSWorkspace sharedWorkspace] openFile: p withApplication: [[[op URLs] firstObject] path]]; }
 - (NSMenu *)actionMenu { return _ctxMenu; }
 - (NSMenu *)tagMenu { NSMenu *m = [[NSMenu alloc] initWithTitle: @"Tags"]; [self _fillTagMenu: m]; return m; }
