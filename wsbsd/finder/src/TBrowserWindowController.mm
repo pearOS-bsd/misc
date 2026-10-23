@@ -47,8 +47,8 @@ static NSString *UniquePath(NSString *dir, NSString *base, NSString *ext)
 	_tabBar = [[TTabBar alloc] initWithFrame: NSZeroRect]; _tabBar->target = self; [_tabBar setHidden: YES]; [cv addSubview: _tabBar]; _tabs = [NSMutableArray array];
 	_searchBar = [[TSearchBar alloc] initWithFrame: NSZeroRect]; _searchBar->target = self; [_searchBar setHidden: YES]; [cv addSubview: _searchBar];
 	_trim = [[TWindowTrim alloc] initWithFrame: NSZeroRect]; [cv addSubview: _trim];
-	NSMenu *m = [[NSMenu alloc] initWithTitle: @""]; for (NSArray *e in @[ @[ @"Open", @"cmdOpen:" ], @[ @"Get Info", @"cmdShowStaticInfo:" ], @[ @"Rename", @"cmdRename:" ], @[ @"Move to Trash", @"cmdMoveToTrash:" ], @[ @"Put Back", @"cmdPutBack:" ], @[ @"Duplicate", @"cmdDuplicate:" ], @[ @"Compress", @"cmdCompress:" ], @[ @"Quick Look", @"cmdQuickLook:" ], @[ @"Make Alias", @"cmdMakeAlias:" ], @[ @"Copy", @"copy:" ], @[ @"Copy as Pathname", @"cmdCopyAsPathname:" ] ]) { NSMenuItem *it = [m addItemWithTitle: e[0] action: NSSelectorFromString(e[1]) keyEquivalent: @""]; [it setTarget: self]; }
-	{ NSMenuItem *ti = [m addItemWithTitle: @"Tags" action: NULL keyEquivalent: @""]; NSMenu *sub = [[NSMenu alloc] initWithTitle: @"Tags"]; [self _fillTagMenu: sub]; [ti setSubmenu: sub]; }
+	NSMenu *m = [[NSMenu alloc] initWithTitle: @""]; for (NSArray *e in @[ @[ @"Open", @"cmdOpen:" ], @[ @"Open With", @"" ], @[ @"-", @"" ], @[ @"Move to Trash", @"cmdMoveToTrash:" ], @[ @"Put Back", @"cmdPutBack:" ], @[ @"-", @"" ], @[ @"Get Info", @"cmdShowStaticInfo:" ], @[ @"Rename", @"cmdRename:" ], @[ @"Compress", @"cmdCompress:" ], @[ @"Duplicate", @"cmdDuplicate:" ], @[ @"Make Alias", @"cmdMakeAlias:" ], @[ @"Quick Look", @"cmdQuickLook:" ], @[ @"-", @"" ], @[ @"Copy", @"copy:" ], @[ @"Copy as Pathname", @"cmdCopyAsPathname:" ] ]) { if ([e[0] isEqual: @"-"]) { [m addItem: [NSMenuItem separatorItem]]; continue; } NSMenuItem *it = [m addItemWithTitle: e[0] action: [e[1] length] ? NSSelectorFromString(e[1]) : NULL keyEquivalent: @""]; [it setTarget: self]; if (![e[1] length]) [it setSubmenu: [[NSMenu alloc] initWithTitle: @"Open With"]]; }
+	{ [m addItem: [NSMenuItem separatorItem]]; NSMenuItem *ti = [m addItemWithTitle: @"Tags" action: NULL keyEquivalent: @""]; NSMenu *sub = [[NSMenu alloc] initWithTitle: @"Tags"]; [self _fillTagMenu: sub]; [ti setSubmenu: sub]; }
 	_watcher = [NSTimer scheduledTimerWithTimeInterval: 1 target: self selector: @selector(_watch:) userInfo: nil repeats: YES]; _ctxMenu = m; [_icons setMenu: m]; [_list setMenu: m]; [self _layout];
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter]; [nc addObserver: self selector: @selector(_keyChanged:) name: NSWindowDidBecomeKeyNotification object: w]; [nc addObserver: self selector: @selector(_keyChanged:) name: NSWindowDidResignKeyNotification object: w];
 }
@@ -77,6 +77,14 @@ static NSString *StyleName(NSInteger m) { return @[ @"icnv", @"Nlsv", @"clmv", @
 	NSDictionary *bw = [ds plistForName: @"." sid: @"bwsp"]; if (!bw) return; if (bw[@"ShowStatusBar"] && [bw[@"ShowStatusBar"] boolValue] != _showStatus) [self cmdToggleStatusBar: nil];
 	if (window && [bw[@"WindowBounds"] length]) { NSRect r = NSRectFromString([bw[@"WindowBounds"] stringByReplacingOccurrencesOfString: @"{{" withString: @"{"]); (void)r; int x, y, w, h; if (sscanf([bw[@"WindowBounds"] UTF8String], "{{%d, %d}, {%d, %d}}", &x, &y, &w, &h) == 4 && w >= 560 && h >= 320) { CGFloat sh = [[NSScreen mainScreen] frame].size.height; [[self window] setFrame: NSMakeRect(x, sh - y - h, w, h) display: YES]; [self _layout]; } }
 }
+- (void)prepareContextMenu:(NSMenu *)m
+{
+	for (NSMenuItem *it in [m itemArray]) if ([[it title] isEqual: @"Open With"]) { NSMenu *sub = [it submenu]; while ([sub numberOfItems]) [sub removeItemAtIndex: 0]; NSString *p = [_selection firstObject]; if (!p) return;
+		for (NSDictionary *a in TFAppsForFile(p)) { NSMenuItem *x = [sub addItemWithTitle: a[@"name"] action: @selector(cmdOpenWithApp:) keyEquivalent: @""]; [x setTarget: self]; [x setRepresentedObject: a[@"path"]]; }
+		NSMenuItem *o = [sub addItemWithTitle: @"Other…" action: @selector(cmdOpenWithOther:) keyEquivalent: @""]; [o setTarget: self]; }
+}
+- (void)cmdOpenWithApp:(NSMenuItem *)it { NSString *app = [it representedObject]; for (NSString *p in _selection) [[NSWorkspace sharedWorkspace] openFile: p withApplication: app]; }
+- (void)cmdOpenWithOther:(id)s { NSOpenPanel *op = [NSOpenPanel openPanel]; [op setDirectoryURL: [NSURL fileURLWithPath: @"/Applications"]]; [op setAllowedFileTypes: @[ @"app" ]]; if ([op runModal] == NSOKButton) for (NSString *p in _selection) [[NSWorkspace sharedWorkspace] openFile: p withApplication: [[[op URLs] firstObject] path]]; }
 - (NSMenu *)actionMenu { return _ctxMenu; }
 - (NSMenu *)tagMenu { NSMenu *m = [[NSMenu alloc] initWithTitle: @"Tags"]; [self _fillTagMenu: m]; return m; }
 - (void)_markTagMenu:(NSMenu *)m { for (NSMenuItem *i in [m itemArray]) { BOOL all = [_selection count] > 0; for (NSString *p in _selection) if (![TFTagsOf(p) containsObject: [i representedObject]]) all = NO; [i setState: all ? NSOnState : NSOffState]; } }
@@ -275,6 +283,8 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 - (void)cmdShowInfo:(id)s { [self cmdShowStaticInfo: s]; }
 - (BOOL)validateMenuItem:(NSMenuItem *)i
 {
+	if ([[i title] isEqual: @"Open With"] && [i submenu]) return [_selection count] > 0;
+	if ([i action] == @selector(cmdOpenWithApp:) || [i action] == @selector(cmdOpenWithOther:)) return [_selection count] > 0;
 	SEL a = [i action]; BOOL has = [_selection count] > 0;
 	if (a == @selector(cmdToggleTag:)) { BOOL all = has; for (NSString *p in _selection) if (![TFTagsOf(p) containsObject: [i representedObject]]) all = NO; [i setState: all ? NSOnState : NSOffState]; return has; }
 	if (a == @selector(cmdBack:)) return _hi > 0; if (a == @selector(cmdForward:)) return _hi + 1 < (NSInteger)[_history count];

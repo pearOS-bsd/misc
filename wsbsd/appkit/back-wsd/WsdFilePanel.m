@@ -720,7 +720,7 @@ static NSIndexSet *gPendingChecks;
 + (void)showIn:(NSView *)root titles:(NSArray *)t dots:(NSArray *)d checks:(NSIndexSet *)c at:(NSPoint)p pick:(void (^)(NSInteger))block { gPendingChecks = c; [self showIn: root titles: t dots: d checked: -1 at: p pick: block]; }
 + (void)showIn:(NSView *)root titles:(NSArray *)t dots:(NSArray *)d checked:(NSInteger)c at:(NSPoint)p pick:(void (^)(NSInteger))block
 {
-	double w = 60; for (NSString *s in t) w = fmax(w, [s sizeWithAttributes: Attr(13, NO, P_TEXT)].width + 44); double h = 10 + 24 * (double)[t count];
+	double w = 60; double h = 10; for (NSString *s in t) { if ([s isEqual: @"-"]) { h += 9; continue; } w = fmax(w, [s sizeWithAttributes: Attr(13, NO, P_TEXT)].width + 44); h += 24; }
 	NSPoint scr = [[root window] convertBaseToScreen: [root convertPoint: p toView: nil]];
 	WsdPopup *v = [[WsdPopup alloc] initWithFrame: NSMakeRect(0, 0, w, h)]; v->titles = t; v->dots = d; v->checked = c; v->checks = gPendingChecks; gPendingChecks = nil; v->hover = -1; v->pick = block; v->parent = [root window];
 	WsdPopupWindow *win = [[WsdPopupWindow alloc] initWithContentRect: NSMakeRect(scr.x, scr.y - h, w, h) styleMask: NSBorderlessWindowMask backing: NSBackingStoreBuffered defer: NO];
@@ -732,19 +732,19 @@ static NSIndexSet *gPendingChecks;
 - (BOOL)isFlipped { return YES; }
 - (BOOL)acceptsFirstResponder { return YES; }
 - (BOOL)acceptsFirstMouse:(NSEvent *)e { return YES; }
-- (NSRect)rowRect:(NSInteger)i { return NSMakeRect(5, 5 + 24 * i, [self bounds].size.width - 10, 24); }
+- (NSRect)rowRect:(NSInteger)i { double y = 5; for (NSInteger k = 0; k < i; k++) y += [titles[k] isEqual: @"-"] ? 9 : 24; return NSMakeRect(5, y, [self bounds].size.width - 10, [titles[i] isEqual: @"-"] ? 9 : 24); }
 - (void)drawRect:(NSRect)dirty
 {
 	NSRect box = [self bounds]; FillRound(box, 10, PDark() ? RGBA(54, 60, 68, 0.98) : RGBA(246, 246, 248, 0.98));
 	[(PDark() ? RGBA(255, 255, 255, 0.14) : RGBA(0, 0, 0, 0.12)) setStroke]; NSBezierPath *o = [NSBezierPath bezierPathWithRoundedRect: NSInsetRect(box, 0.5, 0.5) xRadius: 10 yRadius: 10]; [o setLineWidth: 1]; [o stroke];
 	for (NSInteger i = 0; i < (NSInteger)[titles count]; i++) {
-		NSRect r = [self rowRect: i]; if (i == hover) FillRound(r, 5, RGB(10, 132, 255));
+		NSRect r = [self rowRect: i]; if ([titles[i] isEqual: @"-"]) { [(PDark() ? RGBA(255, 255, 255, 0.14) : RGBA(0, 0, 0, 0.12)) setFill]; NSRectFill(NSMakeRect(r.origin.x + 6, NSMidY(r), r.size.width - 12, 1)); continue; } if (i == hover) FillRound(r, 5, RGB(10, 132, 255));
 		NSColor *tc = i == hover ? RGB(255, 255, 255) : P_TEXT; if (i == checked || [checks containsIndex: (NSUInteger)i]) Text(@"✓", NSMakePoint(r.origin.x + 8, NSMidY(r)), 12, YES, tc, YES);
 		if (dots && dots[i] != [NSNull null]) { [dots[i] setFill]; [[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(r.origin.x + 8, NSMidY(r) - 5, 10, 10)] fill]; }
 		Text(titles[i], NSMakePoint(r.origin.x + 26, NSMidY(r)), 13, NO, tc, YES);
 	}
 }
-- (NSInteger)rowAt:(NSPoint)p { for (NSInteger i = 0; i < (NSInteger)[titles count]; i++) if (NSPointInRect(p, [self rowRect: i])) return i; return -1; }
+- (NSInteger)rowAt:(NSPoint)p { for (NSInteger i = 0; i < (NSInteger)[titles count]; i++) if (![titles[i] isEqual: @"-"] && NSPointInRect(p, [self rowRect: i])) return i; return -1; }
 - (void)mouseMoved:(NSEvent *)e { NSInteger h = [self rowAt: [self convertPoint: [e locationInWindow] fromView: nil]]; if (h != hover) { hover = h; [self setNeedsDisplay: YES]; } }
 - (void)mouseDragged:(NSEvent *)e { [self mouseMoved: e]; }
 - (void)mouseDown:(NSEvent *)e { [self mouseMoved: e]; NSInteger i = [self rowAt: [self convertPoint: [e locationInWindow] fromView: nil]]; if (i >= 0) [self finish: i]; }      /* picks on the press: a release does not reach a window of a modal session here */

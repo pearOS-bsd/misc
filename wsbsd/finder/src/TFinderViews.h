@@ -39,6 +39,7 @@ void TFSetPref(NSString *key, id value);
 void TFDrawIcon(NSString *path, NSRect r);
 @interface NSObject (TFRound) + (void)roundWindow:(NSWindow *)w radius:(int)r; @end
 NSArray *TFVolumes(void);
+NSArray *TFAppsForFile(NSString *path);
 NSString *TFDisplayName(NSString *path);
 BOOL TFEject(NSString *mount);
 void TFPopupMenu(NSView *view, NSPoint p, NSMenu *menu);
@@ -64,6 +65,7 @@ NSImage *TFIcon(NSString *path);
 - (void)iconViewOpenItem:(NSString *)path;
 - (void)iconViewSelectionChanged:(NSArray *)paths;
 @optional
+- (void)prepareContextMenu:(NSMenu *)menu;
 - (BOOL)iconViewDropPaths:(NSArray *)paths intoFolder:(NSString *)folder atWindowPoint:(NSPoint)p copy:(BOOL)copy;
 @end
 @protocol TSidebarDelegate <NSObject> - (void)sidebarGoTo:(NSString *)path; @end
