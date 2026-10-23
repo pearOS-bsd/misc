@@ -22,7 +22,9 @@ timeout 60 ./test_menuitem 2>&1 | grep -v 'time zone' | tail -5 | tee /tmp/menui
 cc -fobjc-arc -o test_workspace test/test_workspace.m $(gnustep-config --objc-flags) $(gnustep-config --gui-libs) 2>&1 | grep error
 timeout 60 ./test_workspace 2>&1 | grep -v 'time zone' | tail -5 | tee /tmp/workspace.log; grep -q 'workspace ok' /tmp/workspace.log || { echo 'WORKSPACE TEST FAILED'; exit 1; }
 cc -fobjc-arc -o test_symbols test/test_symbols.m $(gnustep-config --objc-flags) $(gnustep-config --gui-libs) 2>&1 | grep error
-timeout 60 ./test_symbols 2>&1 | grep -v 'time zone' | tail -5 | tee /tmp/symbols.log; grep -q 'symbols ok' /tmp/symbols.log || { echo 'SYMBOLS TEST FAILED'; exit 1; }
+if [ -f /usr/local/share/wsbsd/coreui/CoreGlyphs.car ]; then   # the glyphs are an Apple asset that is not in the repository: without it the test has nothing to draw
+	timeout 60 ./test_symbols 2>&1 | grep -v 'time zone' | tail -30 | tee /tmp/symbols.log; grep -q 'symbols ok' /tmp/symbols.log || { echo 'SYMBOLS TEST FAILED'; exit 1; }
+else echo 'symbols test skipped: no CoreGlyphs.car on this runner'; fi
 cc -fobjc-arc -o test_textview test/test_textview.m $(gnustep-config --objc-flags) $(gnustep-config --gui-libs) 2>&1 | grep error
 timeout 60 ./test_textview 2>&1 | grep -v 'time zone' | tail -5 | tee /tmp/textview.log; grep -q 'textview ok' /tmp/textview.log || { echo 'TEXTVIEW TEST FAILED'; exit 1; }
 cc -fobjc-arc -o test_document test/test_document.m $(gnustep-config --objc-flags) $(gnustep-config --gui-libs) 2>&1 | grep error
