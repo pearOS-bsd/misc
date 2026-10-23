@@ -154,6 +154,20 @@ static BOOL KeyWin(NSView *v) { return [[v window] isKeyWindow]; }
 static NSDictionary *Font(CGFloat sz, BOOL bold, NSColor *c) { return @{ NSFontAttributeName: bold ? [NSFont boldSystemFontOfSize: sz] : [NSFont systemFontOfSize: sz], NSForegroundColorAttributeName: c }; }
 static void TextAt(NSString *s, CGFloat x, CGFloat cy, NSDictionary *at) { NSSize z = [s sizeWithAttributes: at]; [s drawAtPoint: NSMakePoint(x, cy - z.height / 2) withAttributes: at]; }
 
+/* in-place renaming: a field over the name, the name selected without its extension; Return or a click elsewhere keeps the new name, Escape leaves the old one */
+@interface TRenameField : NSTextField { @public void (^commit)(NSString *); BOOL done; }
+@end
+@implementation TRenameField
+- (void)finish:(BOOL)keep { if (done) return; done = YES; NSString *v = [self stringValue]; void (^c)(NSString *) = commit; commit = nil; [self removeFromSuperview]; if (keep && c) c(v); }
+- (void)cancelOperation:(id)s { [self finish: NO]; }
+- (BOOL)textView:(NSTextView *)tv doCommandBySelector:(SEL)sel { if (sel == @selector(insertNewline:)) { [self finish: YES]; return YES; } if (sel == @selector(cancelOperation:)) { [self finish: NO]; return YES; } return NO; }
+- (void)textDidEndEditing:(NSNotification *)n { [self finish: YES]; }
+@end
+void TFBeginRename(NSView *host, NSRect frame, NSString *name, BOOL centered, NSColor *bg, void (^commit)(NSString *))
+{
+	TRenameField *f = [[TRenameField alloc] initWithFrame: frame]; [f setBordered: NO]; [f setBezeled: NO]; [f setDrawsBackground: YES]; [f setBackgroundColor: bg ?: TFRGB(255, 255, 255)]; [f setTextColor: TFRGB(0, 0, 0)]; [f setFont: [NSFont systemFontOfSize: 12]]; [f setStringValue: name]; [f setFocusRingType: NSFocusRingTypeNone]; if (centered) [[f cell] setAlignment: NSTextAlignmentCenter]; f->commit = commit; [f setDelegate: (id)f];
+	[host addSubview: f]; [[host window] makeFirstResponder: f]; NSTextView *fe = (NSTextView *)[f currentEditor]; NSString *ext = [name pathExtension]; NSRange r = NSMakeRange(0, [ext length] && [name length] > [ext length] + 1 ? [name length] - [ext length] - 1 : [name length]); [fe setSelectedRange: r]; [fe setInsertionPointColor: TFRGB(0, 0, 0)];
+}
 /* ---------- the scrolling base ---------- */
 @implementation TScrollBase
 - (BOOL)isFlipped { return YES; } - (BOOL)acceptsFirstResponder { return YES; } - (BOOL)acceptsFirstMouse:(NSEvent *)e { return YES; }
@@ -365,12 +379,19 @@ static const CGFloat kCW = 112, kCH = 126, kPad = 10, kIcon = 64;
 	if (i >= 0 && ![_sel containsIndex: i]) { [_sel removeAllIndexes]; [_sel addIndex: i]; [self setNeedsDisplay: YES]; [self _notify]; } else if (i < 0) { [_sel removeAllIndexes]; [self setNeedsDisplay: YES]; [self _notify]; }
 	if ([delegate respondsToSelector: @selector(prepareContextMenu:)]) [(id)delegate prepareContextMenu: [self menu]]; TFPopupMenu(self, p, [self menu]); return nil;
 }
+- (BOOL)beginRename:(NSString *)path
+{
+	for (NSInteger i = 0; i < (NSInteger)[_items count]; i++) if ([_items[i][@"path"] isEqual: path]) { NSRect c = [self _cell: i]; [self reveal: c]; c = [self _cell: i]; NSRect lr = NSMakeRect(c.origin.x + 4, c.origin.y + 4 + _isz + 4, [self cw] - 8, 18); lr.origin.y = lr.origin.y - off + topInset; __weak TIconView *me = self; NSString *old = path;
+		TFBeginRename(self, lr, [path lastPathComponent], YES, nil, ^(NSString *nn) { TIconView *s = me; if (s && [s->delegate respondsToSelector: @selector(iconViewRename:to:)]) [(id)s->delegate iconViewRename: old to: nn]; }); return YES; }
+	return NO;
+}
 - (void)selectAll:(id)s { [_sel addIndexesInRange: NSMakeRange(0, [_items count])]; [self setNeedsDisplay: YES]; [self _notify]; }
 - (void)keyDown:(NSEvent *)e
 {
 	NSString *k = [e charactersIgnoringModifiers]; if (![k length]) return; unichar c = [k characterAtIndex: 0]; NSInteger cur = [_sel count] ? (NSInteger)[_sel lastIndex] : -1, n = (NSInteger)[_items count], cols = [self _cols], t = cur; NSUInteger fl = [e modifierFlags];
 	if (c == NSLeftArrowFunctionKey) t = MAX(0, cur - 1); else if (c == NSRightArrowFunctionKey) t = cur < 0 ? 0 : MIN(n - 1, cur + 1);
 	else if (c == NSUpArrowFunctionKey && !(fl & NSCommandKeyMask)) t = cur < 0 ? 0 : MAX(0, cur - cols); else if (c == NSDownArrowFunctionKey && !(fl & NSCommandKeyMask)) t = cur < 0 ? 0 : MIN(n - 1, cur + cols);
+	else if (c == '\r' && cur >= 0 && !desktop) { [NSApp sendAction: @selector(cmdRename:) to: nil from: self]; return; }
 	else if ((c == '\r' || (c == NSDownArrowFunctionKey && (fl & NSCommandKeyMask))) && cur >= 0) { [delegate iconViewOpenItem: _items[cur][@"path"]]; return; }
 	else if (c == NSUpArrowFunctionKey && (fl & NSCommandKeyMask)) { [NSApp sendAction: @selector(cmdOpenParent:) to: nil from: self]; return; }
 	else if (c == ' ') { [NSApp sendAction: @selector(cmdQuickLook:) to: nil from: self]; return; }
@@ -497,11 +518,16 @@ static NSString *SortFieldFor(NSString *col) { NSDictionary *m = @{ @"name": @"n
 }
 - (void)_toggleCol:(NSMenuItem *)it { for (NSMutableDictionary *d in _colDefs) if ([d[@"id"] isEqual: [it representedObject]]) d[@"vis"] = @(![d[@"vis"] boolValue]); [self setNeedsDisplay: YES]; [self _saveColumns]; }
 - (NSMenu *)menuForEvent:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; if (p.y < kHead) { NSMenu *m = [[NSMenu alloc] initWithTitle: @""]; for (NSDictionary *d in _colDefs) { if ([d[@"id"] isEqual: @"name"]) continue; NSMenuItem *it = [m addItemWithTitle: d[@"title"] action: @selector(_toggleCol:) keyEquivalent: @""]; [it setTarget: self]; [it setRepresentedObject: d[@"id"]]; [it setState: [d[@"vis"] boolValue] ? NSOnState : NSOffState]; } TFPopupMenu(self, p, m); return nil; } NSInteger i = [self _row: NSMakePoint(p.x, p.y - topInset + off)]; if (i >= 0 && ![_sel containsIndex: i]) { [_sel removeAllIndexes]; [_sel addIndex: i]; [self setNeedsDisplay: YES]; [self _notify]; } if ([delegate respondsToSelector: @selector(prepareContextMenu:)]) [(id)delegate prepareContextMenu: [self menu]]; TFPopupMenu(self, p, [self menu]); return nil; }
+- (BOOL)beginRename:(NSString *)path
+{
+	for (NSInteger i = 0; i < (NSInteger)[_items count]; i++) if ([_items[i][@"path"] isEqual: path]) { [self reveal: NSMakeRect(0, 4 + i * kRow, 10, kRow)]; CGFloat ind = [_items[i][@"depth"] intValue] * 18; NSRect lr = NSMakeRect(46 + ind, 4 + i * kRow - off + topInset + 2, 280, kRow - 4); __weak TListView *me = self; NSString *old = path; TFBeginRename(self, lr, [path lastPathComponent], NO, nil, ^(NSString *nn) { TListView *s = me; if (s && [s->delegate respondsToSelector: @selector(iconViewRename:to:)]) [(id)s->delegate iconViewRename: old to: nn]; }); return YES; }
+	return NO;
+}
 - (void)selectAll:(id)s { [_sel addIndexesInRange: NSMakeRange(0, [_items count])]; [self setNeedsDisplay: YES]; [self _notify]; }
 - (void)keyDown:(NSEvent *)e
 {
 	NSString *k = [e charactersIgnoringModifiers]; if (![k length]) return; unichar c = [k characterAtIndex: 0]; NSInteger cur = [_sel count] ? (NSInteger)[_sel lastIndex] : -1, n = (NSInteger)[_items count], t = cur;
-	if (c == ' ') { [NSApp sendAction: @selector(cmdQuickLook:) to: nil from: self]; return; } else if (c == NSUpArrowFunctionKey) t = cur < 0 ? 0 : MAX(0, cur - 1); else if (c == NSDownArrowFunctionKey) t = cur < 0 ? 0 : MIN(n - 1, cur + 1); else if (c == NSRightArrowFunctionKey && cur >= 0 && [_items[cur][@"dir"] boolValue] && ![_exp containsObject: _items[cur][@"path"]]) { [self _toggleRow: cur]; return; } else if (c == NSLeftArrowFunctionKey && cur >= 0 && [_exp containsObject: _items[cur][@"path"]]) { [self _toggleRow: cur]; return; } else if (c == '\r' && cur >= 0) { [delegate iconViewOpenItem: _items[cur][@"path"]]; return; } else { [super keyDown: e]; return; }
+	if (c == ' ') { [NSApp sendAction: @selector(cmdQuickLook:) to: nil from: self]; return; } else if (c == NSUpArrowFunctionKey) t = cur < 0 ? 0 : MAX(0, cur - 1); else if (c == NSDownArrowFunctionKey) t = cur < 0 ? 0 : MIN(n - 1, cur + 1); else if (c == NSRightArrowFunctionKey && cur >= 0 && [_items[cur][@"dir"] boolValue] && ![_exp containsObject: _items[cur][@"path"]]) { [self _toggleRow: cur]; return; } else if (c == NSLeftArrowFunctionKey && cur >= 0 && [_exp containsObject: _items[cur][@"path"]]) { [self _toggleRow: cur]; return; } else if (c == '\r' && cur >= 0) { [NSApp sendAction: @selector(cmdRename:) to: nil from: self]; return; } else { [super keyDown: e]; return; }
 	if (n) { [_sel removeAllIndexes]; [_sel addIndex: t]; _anchor = t; [self reveal: NSMakeRect(0, 4 + t * kRow, 10, kRow)]; [self setNeedsDisplay: YES]; [self _notify]; }
 }
 @end
@@ -560,7 +586,7 @@ static const CGFloat kStripH = 118, kGThumb = 72, kGCell = 88, kPane = 250;
 @end
 
 /* ---------- the column view ---------- */
-static const CGFloat kColW = 240, kColRow = 24;
+static const CGFloat kColW = 247, kColRow = 22;
 @implementation TColumnView
 - (BOOL)isFlipped { return YES; } - (BOOL)acceptsFirstResponder { return YES; } - (BOOL)acceptsFirstMouse:(NSEvent *)e { return YES; }
 - (NSMutableDictionary *)_load:(NSString *)dir
@@ -587,10 +613,10 @@ static const CGFloat kColW = 240, kColRow = 24;
 		NSGraphicsContext *g = [NSGraphicsContext currentContext]; [g saveGraphicsState]; NSRectClip(NSMakeRect(x, 0, kColW, b.size.height));
 		for (NSInteger i = 0; i < (NSInteger)[items count]; i++) {
 			CGFloat y = 6 + i * kColRow - off; if (y + kColRow < 0 || y > b.size.height) continue; NSDictionary *it = items[i]; BOOL isSel = i == sel, active = ci == [_cols count] - 1 || ![it[@"dir"] boolValue];
-			if (isSel) FillRound(NSMakeRect(x + 6, y, kColW - 12, kColRow), 6, key && ci + 1 >= [_cols count] ? TF_ACCENT : (TFDark() ? TFRGB(70, 70, 70) : TFRGB(200, 200, 204))); (void)active;
-			TFDrawIcon(it[@"path"], NSMakeRect(x + 14, y + 4, 16, 16));
-			NSDictionary *at = isSel ? Font(13, NO, TFRGB(255, 255, 255)) : tx; TextAt(Truncated(it[@"name"], at, kColW - 70), x + 38, y + kColRow / 2, at);
-			if ([it[@"dir"] boolValue]) TFSymbol(@"chevron.right", NSMakeRect(x + kColW - 26, y, 12, kColRow), 9, isSel ? TFRGB(255, 255, 255) : TF_DIM);
+			if (isSel) FillRound(NSMakeRect(x + 10, y, kColW - 33, kColRow), 7, key && ci + 1 >= [_cols count] ? TF_ACCENT : (TFDark() ? TFRGB(70, 70, 70) : TFRGB(200, 200, 204))); (void)active;
+			TFDrawIcon(it[@"path"], NSMakeRect(x + 18, y + 3, 16, 16));
+			NSDictionary *at = isSel ? Font(13, NO, TFRGB(255, 255, 255)) : tx; TextAt(Truncated(it[@"name"], at, kColW - 92), x + 42, y + kColRow / 2, at);
+			if ([it[@"dir"] boolValue]) TFSymbol(@"chevron.right", NSMakeRect(x + kColW - 34, y, 12, kColRow), 9, isSel ? TFRGB(255, 255, 255) : TF_DIM);
 		}
 		[g restoreGraphicsState]; [TF_LINE setFill]; NSRectFill(NSMakeRect(x + kColW - 1, 0, 1, b.size.height));
 	}
