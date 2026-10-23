@@ -13,10 +13,10 @@ NSArray *TFBulkRenamedNames(NSArray *paths, NSDictionary *p)
 			NSString *mid = nil;
 			if (mode == 1) { mid = p[@"text"] ?: @""; res = after ? [base stringByAppendingString: mid] : [mid stringByAppendingString: base]; }
 			else {
-				NSInteger kind = [p[@"format"] integerValue]; NSString *label = [p[@"custom"] length] ? p[@"custom"] : base;
-				if (kind == 0) mid = [NSString stringWithFormat: @"%lld", n]; else if (kind == 1) mid = [NSString stringWithFormat: @"%04lld", n];
-				else { NSDateFormatter *df = [[NSDateFormatter alloc] init]; [df setDateFormat: @"yyyy-MM-dd 'at' HH.mm.ss"]; mid = [df stringFromDate: [[NSFileManager defaultManager] attributesOfItemAtPath: path error: NULL][NSFileModificationDate] ?: [NSDate date]]; }
-				res = after ? [NSString stringWithFormat: @"%@ %@", label, mid] : [NSString stringWithFormat: @"%@ %@", mid, label];
+				NSInteger kind = [p[@"format"] integerValue]; NSString *label = [p[@"custom"] length] ? p[@"custom"] : base;                           /* the Mac: "File " + 1 gives "File 1.sql", the counter has five digits, the date is the time of the rename ("File 2026-10-23 at 1.13.30 PM.sql") */
+				if (kind == 0) mid = [NSString stringWithFormat: @"%lld", n]; else if (kind == 1) mid = [NSString stringWithFormat: @"%05lld", n];
+				else { NSDateFormatter *df = [[NSDateFormatter alloc] init]; [df setLocale: [[NSLocale alloc] initWithLocaleIdentifier: @"en_US_POSIX"]]; [df setDateFormat: @"yyyy-MM-dd 'at' h.mm.ss a"]; mid = [df stringFromDate: [NSDate date]]; }
+				res = after ? [label stringByAppendingString: mid] : [mid stringByAppendingString: label];
 			}
 			if ([ext length]) res = [res stringByAppendingPathExtension: ext];
 		}

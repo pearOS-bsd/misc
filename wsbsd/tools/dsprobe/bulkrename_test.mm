@@ -9,8 +9,8 @@ int main(void)
 		Check(TFBulkRenamedNames(p, @{ @"mode": @0, @"find": @"txt", @"replace": @"md" }), (@[ @"a.md", @"b.md", @"c" ]), "replace");
 		Check(TFBulkRenamedNames(p, @{ @"mode": @1, @"text": @"_x", @"after": @YES }), (@[ @"a_x.txt", @"b_x.txt", @"c_x" ]), "add after");
 		Check(TFBulkRenamedNames(p, @{ @"mode": @1, @"text": @"x_", @"after": @NO }), (@[ @"x_a.txt", @"x_b.txt", @"x_c" ]), "add before");
-		Check(TFBulkRenamedNames(p, @{ @"mode": @2, @"format": @0, @"custom": @"Photo", @"after": @YES, @"start": @5 }), (@[ @"Photo 5.txt", @"Photo 6.txt", @"Photo 7" ]), "index after");
-		Check(TFBulkRenamedNames(p, @{ @"mode": @2, @"format": @1, @"custom": @"Photo", @"after": @NO, @"start": @1 }), (@[ @"0001 Photo.txt", @"0002 Photo.txt", @"0003 Photo" ]), "counter before");
+		Check(TFBulkRenamedNames(p, @{ @"mode": @2, @"format": @0, @"custom": @"Photo ", @"after": @YES, @"start": @5 }), (@[ @"Photo 5.txt", @"Photo 6.txt", @"Photo 7" ]), "index after");
+		Check(TFBulkRenamedNames(p, @{ @"mode": @2, @"format": @1, @"custom": @" Photo", @"after": @NO, @"start": @1 }), (@[ @"00001 Photo.txt", @"00002 Photo.txt", @"00003 Photo" ]), "counter before");
 	}
 	printf(fails ? "bulk rename: %d failed\n" : "bulk rename: 5 cases ok\n", fails); return fails != 0;
 }
