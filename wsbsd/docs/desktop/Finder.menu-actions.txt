@@ -1,0 +1,171 @@
+Finder	submenuAction:	
+  About Finder	cmdAbout:	
+  	(null)	
+  Preferences…	cmdPreferences:	,
+  	(null)	
+  Empty Trash	cmdEmptyTrash:	
+  Empty Trash	cmdEmptyTrashSilently:	
+  	(null)	
+  Services	submenuAction:	
+  	(null)	
+  Hide Finder	hide:	h
+  Hide Others	hideOtherApplications:	h
+  Show All	unhideAllApplications:	
+  	(null)	
+  Quit Finder	terminate:	q
+File	submenuAction:	
+  New Finder Window	cmdNewFinderWindow:	n
+  New Finder Window	cmdNewFinderWindowWithOption:	n
+  New Folder	cmdNewFolder:	N
+  New Folder with Selection	cmdGroupAsFolder:	n
+  New Burn Folder	cmdNewBurnableFolder:	
+  New Smart Folder	cmdNewSmartFolder:	
+  New Tab	cmdNewTab:	t
+  New Window as Tab	cmdNewTab:	n
+  Open	cmdOpen:	o
+  Open in New Window	cmdOpenAltBrowse:	o
+  Open in New Window and Close	cmdOpenOptionBrowse:	o
+  Open With	cmdOpenWith:	
+    Item	(null)	
+  Always Open With	cmdAlwaysOpenWith:	
+    Item	(null)	
+  Close Window	performClose:	w
+  	(null)	
+  Get Info	cmdShowStaticInfo:	i
+  Show Inspector	cmdShowInspector:	i
+  Get Summary Info	cmdShowStaticInfoSummary:	i
+  Rename	cmdRename:	
+  Compress	cmdArchive:	
+  Compress with password	cmdArchiveWithPassword:	
+  Duplicate	cmdDuplicate:	d
+  Duplicate Exactly	cmdDuplicateExactly:	D
+  Make Alias	cmdMakeAlias:	a
+  QuickLook	cmdQuickLook:	y
+  Slideshow	cmdSlideshow:	y
+  	(null)	
+  Share…	cmdShare:	
+  Create/Copy iCloud Link	cmdCreateOrCopyiCloudLink:	
+  Manage Shared File…	cmdManageSharedItem:	
+  Burn Disc	cmdBurn:	
+  	(null)	
+  Show Original	cmdShowOriginal:	r
+  Add to Sidebar	cmdAddToSidebar:	t
+  Add to Dock	cmdAddToDock:	T
+  Show Package Contents	cmdShowPackageContents:	
+  	(null)	
+  Move to Trash	cmdMoveToTrash:	
+  Delete Immediately…	cmdDeleteImmediately:	
+  Eject	cmdEject:	e
+  Eject One	cmdEjectOne:	e
+  Eject All	cmdEjectAll:	e
+  	(null)	
+  Tags…	cmdEditTags:	
+  Customize Folder…	cmdCustomizeFolderPopover:	
+  	(null)	
+  Print	cmdPrintItems:	p
+Edit	submenuAction:	
+  Undo	undo:	z
+  Redo	redo:	Z
+  	(null)	
+  Cut	cut:	x
+  Copy	copy:	c
+  Copy as Pathname	cmdCopyAsPathname:	c
+  Copy as Link	cmdCopyAsLink:	c
+  Paste	paste:	v
+  Move Items Here	cmdMoveItemsHere:	v
+  Paste Exactly	cmdPasteExactly:	V
+  Select All	selectAll:	a
+  Deselect All	cmdDeselectAll:	a
+  Rotate Right	cmdRotateClockwise:	
+  Rotate Left	cmdRotateCounterclockwise:	r
+  Rotate Left	cmdRotateCounterclockwise:	l
+  	(null)	
+  Show Clipboard	cmdShowClipboard:	
+  	(null)	
+  Search	cmdFindFile:	f
+  Search by Name…	cmdAlternateFindFile:	F
+  Set Focus To Search Field	cmdSetFocusToSearchField:	f
+View	submenuAction:	
+  as Icons	cmdViewAsIcons:	1
+  as List	cmdViewAsList:	2
+  as Columns	cmdViewAsColumns:	3
+  as Gallery	cmdViewAsGallery:	4
+  	(null)	
+  Use Groups	cmdUseGroupsOrStacks:	0
+  Group By	cmdArrange:	
+  Sort By	cmdSortBy:	
+  Clean Up	cmdCleanUp:	
+  Clean Up Selection	cmdCleanUpSelection:	
+  Clean Up By	cmdCleanUpBy:	
+    Name	cmdCleanUpByName:	1
+    Kind	cmdCleanUpByKind:	2
+    Last Opened	cmdCleanUpByLastOpenDate:	3
+    Date Added	cmdCleanUpByDateAdded:	4
+    Date Modified	cmdCleanUpByModDate:	5
+    Date Created	cmdCleanUpByCreationDate:	
+    Size	cmdCleanUpByPhysicalSize:	6
+    Tags	cmdCleanUpByLabel:	7
+  	(null)	
+  Hide Tab Bar	toggleTabBar:	T
+  Show All Tabs	toggleTabOverview:	\
+  	(null)	
+  Hide Sidebar	cmdToggleSidebar:	s
+  Hide Sidebar	cmdToggleSidebar:	s
+  Hide Preview	cmdTogglePreviewPane:	P
+  	(null)	
+  Hide Toolbar	cmdToggleToolbar:	t
+  Hide Path Bar	cmdTogglePathBar:	p
+  Hide Status Bar	cmdToggleStatusBar:	/
+  	(null)	
+  Customize Toolbar…	runToolbarCustomizationPalette:	
+  Customize Touch Bar…	toggleTouchBarCustomizationPalette:	
+  	(null)	
+  Show View Options	cmdToggleViewOptions:	j
+  Show Preview Options	cmdTogglePreviewOptions:	
+  Increase Icon Size	cmdIncreaseIconSize:	+
+  Decrease Icon Size	cmdDecreaseIconSize:	-
+  	(null)	
+  Enter Full Screen	toggleFullScreen:	f
+Go	submenuAction:	
+  Back	cmdBack:	[
+  Forward	cmdForward:	]
+  Enclosing Folder	cmdOpenParent:	
+  Enclosing Folder	cmdOpenParent:	
+  Open Enclosing Folder in New Window	cmdOpenParentAltBrowse:	
+  Select Startup Disk on Desktop	cmdSelectStartupDisk:	
+  Open Selection	cmdOpenWithDownArrow:	
+  Open Selection	cmdOpenWithOptionDownArrow:	
+  	(null)	
+  Recents	cmdGoToAllMyFiles:	F
+  Documents	cmdGoToDocuments:	O
+  Desktop	cmdGoToDesktop:	D
+  Downloads	cmdGoToDownloads:	l
+  Home	cmdGoHome:	H
+  Library	cmdGoToUserLibrary:	
+  Computer	cmdGoToComputer:	C
+  AirDrop	cmdGoToAirDrop:	R
+  Network	cmdGoToNetwork:	K
+  iCloud Drive	cmdGoToICloud:	I
+  Cloud Storage	cmdGoToICloudProviders:	I
+  iCloud Drive - Enterprise	cmdGoToDataSeparatedICloud:	I
+  Shared	cmdGoToSharedDocuments:	S
+  Applications	cmdGoToApplications:	A
+  Utilities	cmdGoToUtilities:	U
+  	(null)	
+  Recent Folders	cmdRecentFolders:	
+    Clear Menu	cmdClearRecentFolders:	
+  	(null)	
+  Go to Folder…	cmdGoTo:	G
+  Connect to Server…	cmdConnectTo:	k
+Window	submenuAction:	
+  Minimize	performMiniaturize:	m
+  Zoom	performZoom:	
+  	(null)	
+  Bring All to Front	arrangeInFront:	
+  Cycle Through Windows	_cycleWindows:	`
+  	(null)	
+  Show Progress Window	cmdToggleCopyProgressWindow:	
+  Desktop	makeKeyAndOrderFront:	
+Help	submenuAction:	
+  Mac User Guide	cmdMacUserGuide:	?
+  Tips for Your Mac	cmdTipsForYourMac:	
