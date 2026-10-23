@@ -356,6 +356,7 @@ static const CGFloat kCW = 112, kCH = 126, kPad = 10, kIcon = 64;
 	else if (c == NSUpArrowFunctionKey && !(fl & NSCommandKeyMask)) t = cur < 0 ? 0 : MAX(0, cur - cols); else if (c == NSDownArrowFunctionKey && !(fl & NSCommandKeyMask)) t = cur < 0 ? 0 : MIN(n - 1, cur + cols);
 	else if ((c == '\r' || (c == NSDownArrowFunctionKey && (fl & NSCommandKeyMask))) && cur >= 0) { [delegate iconViewOpenItem: _items[cur][@"path"]]; return; }
 	else if (c == NSUpArrowFunctionKey && (fl & NSCommandKeyMask)) { [NSApp sendAction: @selector(cmdOpenParent:) to: nil from: self]; return; }
+	else if (c == ' ') { [NSApp sendAction: @selector(cmdQuickLook:) to: nil from: self]; return; }
 	else if (isalnum(c) && !(fl & (NSCommandKeyMask | NSControlKeyMask))) {                                                                           /* type to select */
 		static NSString *buf; static NSDate *last; if (!last || [[NSDate date] timeIntervalSinceDate: last] > 1) buf = @""; buf = [buf stringByAppendingString: [k lowercaseString]]; last = [NSDate date];
 		for (NSInteger i = 0; i < n; i++) if ([[_items[i][@"name"] lowercaseString] hasPrefix: buf]) { t = i; break; }
@@ -433,7 +434,7 @@ static const CGFloat kRow = 24, kHead = 28;
 - (void)keyDown:(NSEvent *)e
 {
 	NSString *k = [e charactersIgnoringModifiers]; if (![k length]) return; unichar c = [k characterAtIndex: 0]; NSInteger cur = [_sel count] ? (NSInteger)[_sel lastIndex] : -1, n = (NSInteger)[_items count], t = cur;
-	if (c == NSUpArrowFunctionKey) t = cur < 0 ? 0 : MAX(0, cur - 1); else if (c == NSDownArrowFunctionKey) t = cur < 0 ? 0 : MIN(n - 1, cur + 1); else if (c == '\r' && cur >= 0) { [delegate iconViewOpenItem: _items[cur][@"path"]]; return; } else { [super keyDown: e]; return; }
+	if (c == ' ') { [NSApp sendAction: @selector(cmdQuickLook:) to: nil from: self]; return; } else if (c == NSUpArrowFunctionKey) t = cur < 0 ? 0 : MAX(0, cur - 1); else if (c == NSDownArrowFunctionKey) t = cur < 0 ? 0 : MIN(n - 1, cur + 1); else if (c == '\r' && cur >= 0) { [delegate iconViewOpenItem: _items[cur][@"path"]]; return; } else { [super keyDown: e]; return; }
 	if (n) { [_sel removeAllIndexes]; [_sel addIndex: t]; _anchor = t; [self reveal: NSMakeRect(0, 4 + t * kRow, 10, kRow)]; [self setNeedsDisplay: YES]; [self _notify]; }
 }
 @end
@@ -485,7 +486,7 @@ static const CGFloat kStripH = 118, kGThumb = 72, kGCell = 88, kPane = 250;
 - (void)keyDown:(NSEvent *)e
 {
 	NSString *k = [e charactersIgnoringModifiers]; if (![k length]) return; unichar c = [k characterAtIndex: 0]; NSInteger n = (NSInteger)[_paths count];
-	if (c == NSLeftArrowFunctionKey || c == NSUpArrowFunctionKey) _sel = MAX(0, _sel - 1); else if (c == NSRightArrowFunctionKey || c == NSDownArrowFunctionKey) _sel = MIN(n - 1, _sel + 1); else if (c == '\r' && _sel >= 0) { [delegate iconViewOpenItem: _paths[_sel]]; return; } else { [super keyDown: e]; return; }
+	if (c == ' ') { [NSApp sendAction: @selector(cmdQuickLook:) to: nil from: self]; return; } if (c == NSLeftArrowFunctionKey || c == NSUpArrowFunctionKey) _sel = MAX(0, _sel - 1); else if (c == NSRightArrowFunctionKey || c == NSDownArrowFunctionKey) _sel = MIN(n - 1, _sel + 1); else if (c == '\r' && _sel >= 0) { [delegate iconViewOpenItem: _paths[_sel]]; return; } else { [super keyDown: e]; return; }
 	[self _reveal]; [self setNeedsDisplay: YES]; [self _notify];
 }
 - (void)selectAll:(id)s {}
@@ -557,7 +558,7 @@ static const CGFloat kColW = 240, kColRow = 24;
 {
 	NSString *k = [e charactersIgnoringModifiers]; if (![k length]) return; unichar c = [k characterAtIndex: 0];
 	NSUInteger ci = [_cols count] - 1; NSMutableDictionary *col = _cols[ci]; if ([col[@"sel"] integerValue] < 0 && ci > 0) { ci--; col = _cols[ci]; } NSInteger sel = [col[@"sel"] integerValue], n = (NSInteger)[col[@"items"] count];
-	if (c == NSDownArrowFunctionKey) [self _select: MIN(n - 1, sel + 1) inColumn: ci]; else if (c == NSUpArrowFunctionKey) [self _select: MAX(0, sel < 0 ? 0 : sel - 1) inColumn: ci];
+	if (c == ' ') { [NSApp sendAction: @selector(cmdQuickLook:) to: nil from: self]; return; } if (c == NSDownArrowFunctionKey) [self _select: MIN(n - 1, sel + 1) inColumn: ci]; else if (c == NSUpArrowFunctionKey) [self _select: MAX(0, sel < 0 ? 0 : sel - 1) inColumn: ci];
 	else if (c == NSLeftArrowFunctionKey && ci > 0) { [self _select: -1 inColumn: ci]; [_cols removeObjectAtIndex: ci]; [self _fit]; [self setNeedsDisplay: YES]; [self _notify]; }
 	else if (c == NSRightArrowFunctionKey && sel >= 0 && [col[@"items"][sel][@"dir"] boolValue] && [_cols count] > ci + 1) { NSMutableDictionary *nx = _cols[ci + 1]; if ([nx[@"items"] count]) [self _select: 0 inColumn: ci + 1]; }
 	else if (c == '\r' && sel >= 0) [delegate iconViewOpenItem: col[@"items"][sel][@"path"]]; else { [super keyDown: e]; return; }
@@ -744,6 +745,10 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 /* ---------- the window ---------- */
 @implementation TFinderWindow
 - (BOOL)canBecomeKeyWindow { return YES; } - (BOOL)canBecomeMainWindow { return YES; }
+static void RedrawTree(NSView *v) { [v setNeedsDisplay: YES]; for (NSView *k in [v subviews]) RedrawTree(k); }
+- (void)_redrawTree { RedrawTree([[self contentView] superview] ?: [self contentView]); }
+- (void)becomeKeyWindow { [super becomeKeyWindow]; [self _redrawTree]; [self performSelector: @selector(_redrawTree) withObject: nil afterDelay: 0.05]; }
+- (void)resignKeyWindow { [super resignKeyWindow]; [self _redrawTree]; [self performSelector: @selector(_redrawTree) withObject: nil afterDelay: 0.05]; }
 - (void)performClose:(id)s { if ([[self delegate] respondsToSelector: @selector(windowShouldClose:)] && ![(id)[self delegate] windowShouldClose: self]) return; [self close]; }
 - (void)performMiniaturize:(id)s { [self miniaturize: s]; }
 - (void)performZoom:(id)s { [self zoom: s]; }
