@@ -89,6 +89,10 @@ void TFDrawIcon(NSString *path, NSRect r)                                       
 }
 void TFPopupMenu(NSView *view, NSPoint p, NSMenu *menu)                                       /* an NSMenu shown as the panel's own pop-up (GNUstep's pop-up windows come out far too big under this window server): separators, symbols (tool tip "sym:name"), a row of tag colours (tag 2), sub menus, disabled rows in grey */
 {
+	if (getenv("FINDER_NATIVE_MENU")) {                                                         /* the real NSMenu pop-up: the theme draws it as measured on the Mac (rows 24, separators 11, glass) */
+		NSWindow *w = [view window]; if (!w) return; NSPoint q = [view convertPoint: p toView: nil];
+		NSEvent *ev = [NSEvent mouseEventWithType: NSRightMouseDown location: q modifierFlags: 0 timestamp: [[NSProcessInfo processInfo] systemUptime] windowNumber: [w windowNumber] context: nil eventNumber: 0 clickCount: 1 pressure: 1];
+		[NSMenu popUpContextMenu: menu withEvent: ev forView: view]; return; }
 	Class sp = NSClassFromString(@"WsdFinderSupport"); NSMutableArray *items = [NSMutableArray array], *rows = [NSMutableArray array];
 	for (NSMenuItem *it in [menu itemArray]) {
 		if ([it isSeparatorItem]) { if ([rows count] && ![[rows lastObject][@"sep"] boolValue]) { [items addObject: [NSNull null]]; [rows addObject: @{ @"sep": @YES }]; } continue; }
