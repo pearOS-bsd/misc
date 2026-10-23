@@ -498,7 +498,7 @@ static NSString *SortFieldFor(NSString *col) { NSDictionary *m = @{ @"name": @"n
 	for (NSInteger i = 0; i < (NSInteger)[_items count]; i++) {
 		CGFloat y = 4 + i * kRow; if (y + kRow < v.origin.y || y > NSMaxY(v)) continue; NSDictionary *it = _items[i]; BOOL sel = [_sel containsIndex: i]; CGFloat cy = y + kRow / 2;
 		if (sel) FillRound(NSMakeRect(8, y, w - 16 - 10, kRow), 6, key ? TF_ACCENT : (TFDark() ? TFRGB(70, 70, 70) : TFRGB(200, 200, 204))); else if (i % 2) FillRound(NSMakeRect(8, y, w - 16 - 10, kRow), 6, TFDark() ? TFRGBA(255, 255, 255, 0.04) : TFRGBA(0, 0, 0, 0.04));
-		NSColor *tc = sel ? TFRGB(255, 255, 255) : TF_TEXT, *dc = sel ? TFRGBA(255, 255, 255, 0.8) : TF_DIM; CGFloat ind = [it[@"depth"] intValue] * 18; if ([it[@"dir"] boolValue]) TFSymbolW([_exp containsObject: it[@"path"]] ? @"chevron.down" : @"chevron.right", NSMakeRect(8 + ind, y, 14, kRow), 9, 6, sel ? TFRGB(255, 255, 255) : TF_DIM); TFDrawIcon(it[@"path"], NSMakeRect(24 + ind, cy - 8, 16, 16));
+		NSColor *tc = sel ? TFRGB(255, 255, 255) : TF_TEXT, *dc = sel ? TFRGBA(255, 255, 255, 0.8) : TF_DIM; CGFloat ind = [it[@"depth"] intValue] * 18; if ([it[@"dir"] boolValue]) TFSymbolW([_exp containsObject: it[@"path"]] ? @"chevron.down" : @"chevron.right", NSMakeRect(8 + ind, y, 14, kRow), 9, 6, sel ? TFRGB(255, 255, 255) : TF_DIM); { NSImage *tm = Thumb(it[@"path"]); if (tm) { NSSize z = [tm size]; CGFloat k = MIN(16 / z.width, 16 / z.height); [tm drawInRect: NSMakeRect(32 + ind - z.width * k / 2, cy - z.height * k / 2, z.width * k, z.height * k) fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; } else TFDrawIcon(it[@"path"], NSMakeRect(24 + ind, cy - 8, 16, 16)); }
 		for (NSArray *c in cols) {
 			NSString *k = c[0], *s; CGFloat x = [c[2] doubleValue] + ([k isEqual: @"name"] ? 48 + ind : 8), cw = [c[3] doubleValue] - ([k isEqual: @"name"] ? 56 + ind : 16); NSDictionary *at = Font(13, NO, [k isEqual: @"name"] ? tc : dc);
 			if ([k isEqual: @"name"]) s = it[@"name"]; else if ([k isEqual: @"dateModified"]) s = TFDateString(it[@"date"]); else if ([k isEqual: @"dateCreated"] || [k isEqual: @"dateAdded"]) s = TFDateString(it[@"cre"]); else if ([k isEqual: @"dateLastOpened"]) s = TFDateString(it[@"acc"]); else if ([k isEqual: @"size"]) s = [it[@"size"] longLongValue] < 0 ? @"--" : TFSizeString([it[@"size"] unsignedLongLongValue]); else if ([k isEqual: @"label"]) s = [it[@"tags"] componentsJoinedByString: @", "]; else s = it[@"kind"];
@@ -558,9 +558,9 @@ static NSString *SortFieldFor(NSString *col) { NSDictionary *m = @{ @"name": @"n
 }
 @end
 
+static NSString *ShortDate(NSDate *d) { if (!d) return @""; NSCalendar *cal = [NSCalendar currentCalendar]; NSDateFormatter *tf = [[NSDateFormatter alloc] init]; [tf setDateFormat: @"HH:mm"]; if ([cal isDateInToday: d]) return [@"Today, " stringByAppendingString: [tf stringFromDate: d]]; if ([cal isDateInYesterday: d]) return [@"Yesterday, " stringByAppendingString: [tf stringFromDate: d]]; NSDateFormatter *df = [[NSDateFormatter alloc] init]; [df setDateFormat: @"d MMM yyyy, HH:mm"]; return [df stringFromDate: d]; }
 /* ---------- the gallery view ---------- */
 static const CGFloat kStripH = 80, kGThumb = 52, kGCell = 59, kPane = 260;
-static NSString *ShortDate(NSDate *d) { if (!d) return @""; NSCalendar *cal = [NSCalendar currentCalendar]; NSDateFormatter *tf = [[NSDateFormatter alloc] init]; [tf setDateFormat: @"HH:mm"]; if ([cal isDateInToday: d]) return [@"Today, " stringByAppendingString: [tf stringFromDate: d]]; if ([cal isDateInYesterday: d]) return [@"Yesterday, " stringByAppendingString: [tf stringFromDate: d]]; NSDateFormatter *df = [[NSDateFormatter alloc] init]; [df setDateFormat: @"d MMM yyyy, HH:mm"]; return [df stringFromDate: d]; }
 @implementation TGalleryView
 - (BOOL)isFlipped { return YES; } - (BOOL)acceptsFirstResponder { return YES; } - (BOOL)acceptsFirstMouse:(NSEvent *)e { return YES; }
 - (void)setFolder:(NSString *)folder { NSMutableArray *ps = [NSMutableArray array]; for (NSString *n in [[[NSFileManager defaultManager] contentsOfDirectoryAtPath: folder error: NULL] sortedArrayUsingSelector: @selector(tfNameCompare:)]) [ps addObject: [folder stringByAppendingPathComponent: n]]; [self setPaths: ps]; }
@@ -642,19 +642,22 @@ static const CGFloat kColW = 247, kColRow = 22;
 		for (NSInteger i = 0; i < (NSInteger)[items count]; i++) {
 			CGFloat y = 6 + i * kColRow - off; if (y + kColRow < 0 || y > b.size.height) continue; NSDictionary *it = items[i]; BOOL isSel = i == sel, active = ci == [_cols count] - 1 || ![it[@"dir"] boolValue];
 			if (isSel) FillRound(NSMakeRect(x + 10, y, kColW - 33, kColRow), 7, key && ci + 1 >= [_cols count] ? TF_ACCENT : (TFDark() ? TFRGB(70, 70, 70) : TFRGB(200, 200, 204))); (void)active;
-			TFDrawIcon(it[@"path"], NSMakeRect(x + 18, y + 3, 16, 16));
+			{ NSImage *tm = Thumb(it[@"path"]); if (tm) { NSSize z = [tm size]; CGFloat k = MIN(16 / z.width, 16 / z.height); [tm drawInRect: NSMakeRect(x + 26 - z.width * k / 2, y + 11 - z.height * k / 2, z.width * k, z.height * k) fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; } else TFDrawIcon(it[@"path"], NSMakeRect(x + 18, y + 3, 16, 16)); }
 			NSDictionary *at = isSel ? Font(13, NO, TFRGB(255, 255, 255)) : tx; TextAt(Truncated(it[@"name"], at, kColW - 92), x + 42, y + kColRow / 2, at);
 			if ([it[@"dir"] boolValue]) TFSymbol(@"chevron.right", NSMakeRect(x + kColW - 34, y, 12, kColRow), 9, isSel ? TFRGB(255, 255, 255) : TF_DIM);
 		}
 		[g restoreGraphicsState]; [TF_LINE setFill]; NSRectFill(NSMakeRect(x + kColW - 1, 0, 1, b.size.height));
 	}
 	NSMutableDictionary *last = [_cols lastObject]; NSInteger ls = [last[@"sel"] integerValue];
-	if (ls >= 0 && ![last[@"items"][ls][@"dir"] boolValue]) {                                                                                                    /* the preview of a file */
-		NSString *p = last[@"items"][ls][@"path"]; CGFloat x = [_cols count] * kColW - _hoff; NSDictionary *at = [[NSFileManager defaultManager] attributesOfItemAtPath: p error: NULL]; TFDrawIcon(p, NSMakeRect(x + kColW / 2 - 48, 30, 96, 96));
+	if (ls >= 0 && ![last[@"items"][ls][@"dir"] boolValue]) {                                                                                                    /* the preview of a file: its picture or icon, name, kind, size, dates and tags */
+		NSString *p = last[@"items"][ls][@"path"]; CGFloat x = [_cols count] * kColW - _hoff + 16, w = kColW + 40; NSFileManager *fm = [NSFileManager defaultManager]; NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; NSImage *th = Thumb(p);
+		NSRect pr = NSMakeRect(x, 20, w - 32, 150); if (th) { NSSize z = [th size]; CGFloat k = MIN(MIN(pr.size.width / z.width, pr.size.height / z.height), 2); NSRect tr = NSMakeRect(NSMidX(pr) - z.width * k / 2, NSMidY(pr) - z.height * k / 2, z.width * k, z.height * k); [th drawInRect: tr fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; } else TFDrawIcon(p, NSMakeRect(NSMidX(pr) - 64, 28, 128, 128));
 		NSMutableParagraphStyle *ps = [[NSMutableParagraphStyle alloc] init]; [ps setAlignment: NSTextAlignmentCenter]; [ps setLineBreakMode: NSLineBreakByTruncatingMiddle];
-		[[p lastPathComponent] drawInRect: NSMakeRect(x + 10, 134, kColW - 20, 18) withAttributes: @{ NSFontAttributeName: [NSFont boldSystemFontOfSize: 13], NSForegroundColorAttributeName: TF_TEXT, NSParagraphStyleAttributeName: ps }];
-		[[NSString stringWithFormat: @"%@ - %@", TFKindString(p, NO), TFSizeString([at[NSFileSize] unsignedLongLongValue])] drawInRect: NSMakeRect(x + 10, 154, kColW - 20, 16) withAttributes: @{ NSFontAttributeName: [NSFont systemFontOfSize: 11], NSForegroundColorAttributeName: TF_DIM, NSParagraphStyleAttributeName: ps }];
-		[[NSString stringWithFormat: @"Modified  %@", TFDateString(at[NSFileModificationDate])] drawInRect: NSMakeRect(x + 10, 180, kColW - 20, 16) withAttributes: @{ NSFontAttributeName: [NSFont systemFontOfSize: 11], NSForegroundColorAttributeName: TF_DIM, NSParagraphStyleAttributeName: ps }];
+		[[p lastPathComponent] drawInRect: NSMakeRect(x, 180, w - 32, 18) withAttributes: @{ NSFontAttributeName: [NSFont boldSystemFontOfSize: 14], NSForegroundColorAttributeName: TF_TEXT, NSParagraphStyleAttributeName: ps }];
+		[[NSString stringWithFormat: @"%@ - %@", TFKindString(p, NO), TFSizeString([at[NSFileSize] unsignedLongLongValue])] drawInRect: NSMakeRect(x, 200, w - 32, 16) withAttributes: @{ NSFontAttributeName: [NSFont systemFontOfSize: 12], NSForegroundColorAttributeName: TF_DIM, NSParagraphStyleAttributeName: ps }];
+		CGFloat y = 236; [@"Information" drawAtPoint: NSMakePoint(x, y) withAttributes: Font(13, YES, TF_TEXT)]; y += 26;
+		for (NSArray *row in @[ @[ @"Created", ShortDate(at[NSFileCreationDate]) ], @[ @"Modified", ShortDate(at[NSFileModificationDate]) ], @[ @"Last opened", ShortDate(at[@"NSFileAccessDate"] ?: at[NSFileModificationDate]) ] ]) { [row[0] drawAtPoint: NSMakePoint(x, y) withAttributes: Font(12, NO, TF_DIM)]; NSSize vs = [row[1] sizeWithAttributes: Font(12, YES, TF_TEXT)]; [row[1] drawAtPoint: NSMakePoint(x + w - 32 - vs.width, y) withAttributes: Font(12, YES, TF_TEXT)]; [TF_LINE setFill]; NSRectFill(NSMakeRect(x, y + 19, w - 32, 1)); y += 24; }
+		y += 12; [@"Tags" drawAtPoint: NSMakePoint(x, y) withAttributes: Font(13, YES, TF_TEXT)]; y += 24; NSArray *tg = TFTagsOf(p); FillRound(NSMakeRect(x, y, w - 32, 34), 4, TFDark() ? TFRGBA(255, 255, 255, 0.05) : TFRGBA(0, 0, 0, 0.04)); [[tg count] ? [tg componentsJoinedByString: @", "] : @"Add Tags…" drawAtPoint: NSMakePoint(x + 4, y + 3) withAttributes: Font(12, NO, [tg count] ? TF_TEXT : TF_DIM)];
 	}
 }
 - (void)_select:(NSInteger)row inColumn:(NSUInteger)ci

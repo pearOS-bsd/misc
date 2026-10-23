@@ -205,7 +205,7 @@ static void DrawDirIcon(NSRect r, NSString *name) { if ([[[name pathExtension] l
 static void DrawFileIcon(NSRect ic, NSString *name)
 {
 	NSString *ext = [[name pathExtension] lowercaseString]; int px = PxOf(ic); NSDictionary *spec = [ext length] ? IconSpecForExt(ext) : nil;
-	DrawDocPage(ic); if (px < 24) return;
+	DrawDocPage(ic); if (px < 12) return;
 	NSString *bg = spec[@"UTTypeIconBackgroundName"], *sym = spec[@"ISDocumentIconConfiguration"][@"ISSymbolName"];
 	if (getenv("WSD_PANEL_DEBUG")) NSLog(@"panel icon %@ px %d spec %@ bg %@ sym %@", name, px, spec ? @"yes" : @"no", bg, sym);
 	if ([bg length]) { NSImage *im = Picture([NSString stringWithFormat: @"set:CoreTypes:%@", [bg hasSuffix: @"_16"] ? [bg substringToIndex: [bg length] - 3] : bg], px, nil); if (im) DrawPic(im, ic); }
