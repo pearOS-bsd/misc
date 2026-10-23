@@ -23,7 +23,7 @@ static NSString *DesktopPath(void) { return [NSHomeDirectory() stringByAppending
 {
 	if (_window) return; NSScreen *screen = [NSScreen mainScreen]; NSLog(@"Finder: showDesktop screen %@ frame %@", screen, NSStringFromRect([screen frame])); _window = [[TDesktopWindow alloc] initWithScreen: screen];
 	_view = [[TIconView alloc] initWithFrame: [[_window contentView] bounds]]; _view->desktop = YES; _view->delegate = self; [_view setAutoresizingMask: NSViewWidthSizable | NSViewHeightSizable]; [[_window contentView] addSubview: _view];
-	NSMenu *m = [[NSMenu alloc] initWithTitle: @""]; for (NSArray *e in @[ @[ @"New Folder", @"cmdNewFolder:" ], @[ @"Get Info", @"cmdShowStaticInfo:" ], @[ @"Move to Trash", @"cmdMoveToTrash:" ], @[ @"Clean Up", @"cmdCleanUp:" ] ]) { NSMenuItem *it = [m addItemWithTitle: e[0] action: NSSelectorFromString(e[1]) keyEquivalent: @""]; [it setTarget: self]; } [_view setMenu: m];
+	[_view setMenu: [self _desktopMenu]];
 	[_view setFolder: DesktopPath()]; _volumeSig = [self _signature]; [NSTimer scheduledTimerWithTimeInterval: 2 target: self selector: @selector(_poll:) userInfo: nil repeats: YES];
 	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(_prefs:) name: @"TFPrefsChanged" object: nil]; [_window orderBack: nil];
 }
@@ -40,4 +40,24 @@ static NSString *DesktopPath(void) { return [NSHomeDirectory() stringByAppending
 - (void)cmdShowStaticInfo:(id)s { for (NSString *p in _selection) TFOpenInfoWindow(p); }
 - (void)cmdMoveToTrash:(id)s { NSFileManager *fm = [NSFileManager defaultManager]; NSString *tr = [NSHomeDirectory() stringByAppendingPathComponent: @".Trash"]; [fm createDirectoryAtPath: tr withIntermediateDirectories: YES attributes: nil error: NULL]; for (NSString *p in _selection) { if ([p hasPrefix: DesktopPath()]) [fm moveItemAtPath: p toPath: [tr stringByAppendingPathComponent: [p lastPathComponent]] error: NULL]; } [_view reloadKeepingSelectionOrFolder: DesktopPath()]; }
 - (void)cmdCleanUp:(id)s { [_view cleanUp: NO]; }
+/* the menu of the desktop, as the Finder shows it: New Folder, Get Info, the background, Sort By, Clean Up, View Options */
+- (NSMenu *)_desktopMenu
+{
+	NSMenu *m = [[NSMenu alloc] initWithTitle: @""]; NSMenuItem *it;
+#define ITEM(menu, title, sel) ({ NSMenuItem *x = [menu addItemWithTitle: title action: sel keyEquivalent: @""]; [x setTarget: self]; x; })
+	ITEM(m, @"New Folder", @selector(cmdNewFolder:)); [m addItem: [NSMenuItem separatorItem]];
+	ITEM(m, @"Get Info", @selector(cmdShowStaticInfo:)); ITEM(m, @"Change Desktop Background…", @selector(cmdChangeBackground:)); [m addItem: [NSMenuItem separatorItem]];
+	NSArray *keys = @[ @[ @"Name", @"name" ], @[ @"Kind", @"kind" ], @[ @"Date Modified", @"modified" ], @[ @"Date Created", @"created" ], @[ @"Size", @"size" ], @[ @"Tags", @"tags" ] ];
+	it = ITEM(m, @"Sort By", NULL); NSMenu *sb = [[NSMenu alloc] initWithTitle: @"Sort By"]; NSMenuItem *none = ITEM(sb, @"None", @selector(cmdDesktopSort:)); [none setRepresentedObject: @""]; [sb addItem: [NSMenuItem separatorItem]];
+	for (NSArray *k in keys) { NSMenuItem *x = ITEM(sb, k[0], @selector(cmdDesktopSort:)); [x setRepresentedObject: k[1]]; } [it setSubmenu: sb];
+	ITEM(m, @"Clean Up", @selector(cmdCleanUp:));
+	it = ITEM(m, @"Clean Up By", NULL); NSMenu *cb = [[NSMenu alloc] initWithTitle: @"Clean Up By"]; for (NSArray *k in keys) { NSMenuItem *x = ITEM(cb, k[0], @selector(cmdDesktopSort:)); [x setRepresentedObject: k[1]]; [x setTag: 1]; } [it setSubmenu: cb];
+	[m addItem: [NSMenuItem separatorItem]]; ITEM(m, @"Show View Options", @selector(cmdDesktopViewOptions:));
+#undef ITEM
+	return m;
+}
+/* Sort By keeps the order; Clean Up By puts the icons on the grid in that order once */
+- (void)cmdDesktopSort:(NSMenuItem *)it { NSString *k = [it representedObject]; [_view arrangeBy: [k length] ? k : nil]; if ([it tag] == 1) { [_view cleanUp: NO]; [_view arrangeBy: nil]; } }
+- (void)cmdDesktopViewOptions:(id)s { TFOpenViewOptions(_view, @"Desktop", ^{}); }
+- (void)cmdChangeBackground:(id)s { for (NSString *a in @[ @"/System/Applications/System Settings.app", @"/System/Applications/System Preferences.app" ]) if ([[NSFileManager defaultManager] fileExistsAtPath: a]) { [[NSWorkspace sharedWorkspace] launchApplication: a]; return; } NSBeep(); }
 @end
