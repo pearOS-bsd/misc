@@ -351,6 +351,16 @@ static BOOL wsdMenuKeyEquivalent(NSMenu *self, SEL _cmd, NSEvent *e)
 	if ([it isEnabled]) [owner performActionForItemAtIndex: idx];
 	return YES;
 }
+/* NSSwitch (the switch of macOS 10.15 on): GNUstep draws it through GSTheme drawSwitchInRect:forState:enabled:; here a pill in the accent colour with a white knob when it is on, a grey pill with the knob at the left when it is off
+ * (proportions of the switches of the Control Center, measured: 54 x 24, the knob 20 in the pill with 2 around it; the standard NSSwitch of the Mac is 38 x 22) */
+static IMP origDrawSwitch;
+static void wsdDrawSwitch(id self, SEL _cmd, NSRect r, NSControlStateValue st, BOOL enabled)
+{
+	BOOL on = st == NSControlStateValueOn; CGFloat h = r.size.height, kd = h - 4, a = enabled ? 1.0 : 0.5; NSBezierPath *pill = [NSBezierPath bezierPathWithRoundedRect: r xRadius: h / 2 yRadius: h / 2];
+	double ar, ag, ab; WsdAccentRGB(isDark(), &ar, &ag, &ab); NSColor *accent = [NSColor colorWithCalibratedRed: ar green: ag blue: ab alpha: a], *off = isDark() ? [NSColor colorWithCalibratedWhite: 1 alpha: 0.18 * a] : [NSColor colorWithCalibratedWhite: 0 alpha: 0.12 * a];
+	[(on ? accent : off) setFill]; [pill fill];
+	NSRect k = NSMakeRect(on ? NSMaxX(r) - kd - 2 : r.origin.x + 2, r.origin.y + 2, kd, kd); [[NSColor colorWithCalibratedWhite: 1 alpha: a] setFill]; [[NSBezierPath bezierPathWithOvalInRect: k] fill];
+}
 static IMP origConstrain;
 static NSRect wsdConstrain(id self, SEL _cmd, NSRect f, NSScreen *scr)
 {
@@ -399,6 +409,7 @@ static void swizzleTableDefaults(void)
 		Method md = class_getInstanceMethod(vc, @selector(drawRect:)); if (md && !origVEVDraw) { origVEVDraw = method_getImplementation(md); class_replaceMethod(vc, @selector(drawRect:), (IMP)wsdVEVDraw, method_getTypeEncoding(md)); }
 		Method mm = class_getInstanceMethod(vc, @selector(viewDidMoveToWindow)); if (mm && !origVEVMove) { origVEVMove = method_getImplementation(mm); class_replaceMethod(vc, @selector(viewDidMoveToWindow), (IMP)wsdVEVMove, method_getTypeEncoding(mm)); }
 	}
+	{ Method ms = class_getInstanceMethod([GSTheme class], @selector(drawSwitchInRect:forState:enabled:)); if (ms && !origDrawSwitch) origDrawSwitch = method_setImplementation(ms, (IMP)wsdDrawSwitch); }
 	{ Method mk = class_getInstanceMethod([NSMenu class], @selector(performKeyEquivalent:)); if (mk && !origMenuKeyEq) origMenuKeyEq = method_setImplementation(mk, (IMP)wsdMenuKeyEquivalent); }
 	{ Method mc = class_getInstanceMethod([NSWindow class], @selector(constrainFrameRect:toScreen:)); if (mc && !origConstrain) origConstrain = method_setImplementation(mc, (IMP)wsdConstrain); }
 	Method mth = class_getInstanceMethod([NSTableHeaderView class], @selector(initWithFrame:));
