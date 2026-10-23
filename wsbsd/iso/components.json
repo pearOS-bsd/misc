@@ -16,6 +16,9 @@
   "privateframeworks": {
     "SkyLight":        { "binary": ["/usr/local/lib/libwsclient.so"] }
   },
+  "trees": {
+    "/System/Library/CoreServices/Finder.app": "/usr/local/share/wsbsd/Finder.app"
+  },
   "files": {
     "/System/Library/PrivateFrameworks/SkyLight.framework/Versions/A/Resources/WindowServer": "/usr/local/sbin/wsd",
     "/System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal": "/usr/local/bin/Terminal-gnustep",
