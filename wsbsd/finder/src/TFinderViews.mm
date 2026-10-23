@@ -66,6 +66,8 @@ BOOL TFSymbolW(NSString *name, NSRect cell, CGFloat pt, int weight, NSColor *tin
 	Class k = NSClassFromString(@"WsdFinderSupport"); if (!k) return NO; return [k drawSymbol: name inRect: cell size: pt weight: weight color: tint];
 }
 BOOL TFSymbol(NSString *name, NSRect cell, CGFloat pt, NSColor *tint) { return TFSymbolW(name, cell, pt, 4, tint); }
+/* the name as shown: a smart folder (.savedSearch) has no extension on the Mac's screen */
+NSString *TFShownName(NSString *n) { return [[n pathExtension] caseInsensitiveCompare: @"savedSearch"] == NSOrderedSame ? [n stringByDeletingPathExtension] : n; }
 NSImage *TFIcon(NSString *path)
 {
 	static NSMutableDictionary *cache; if (!cache) cache = [NSMutableDictionary dictionary]; NSString *ext = [[path pathExtension] lowercaseString]; BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &d];
@@ -80,6 +82,7 @@ void TFDrawIcon(NSString *path, NSRect r)                                       
 {
 	NSFileManager *fm = [NSFileManager defaultManager]; BOOL d = NO; [fm fileExistsAtPath: path isDirectory: &d]; Class k = NSClassFromString(@"WsdFinderSupport");
 	NSString *vk = d ? VolumeKind(path) : nil;
+	if (!d && [[[path pathExtension] lowercaseString] isEqual: @"savedsearch"]) { NSImage *sf = WsbsdCoreTypesIcon(@"/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/SmartFolderIcon.icns", r.size.width); if (sf) { [sf drawInRect: r fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; return; } }
 	if (vk) { const char *e = getenv("WSBSD_IOSTORAGE"); NSString *dir = e ? @(e) : @"/System/Library/Extensions/IOStorageFamily.kext/Contents/Resources"; NSImage *vi = WsbsdCoreTypesIcon([dir stringByAppendingPathComponent: [vk isEqual: @"internal"] ? @"Internal.icns" : [vk isEqual: @"optical"] ? @"Removable.icns" : @"External.icns"], MAX(r.size.width, r.size.height)); if (vi) { [vi drawInRect: r fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; return; } }
 	if (k && ![path isEqual: @"/"] && !TFIsPackage(path)) { [k drawIconOfName: [path lastPathComponent] directory: d inRect: r]; return; }
 	NSImage *i = TFIcon(path); if (i) [i drawInRect: r fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1];
@@ -251,7 +254,7 @@ static NSString *GroupTitle(NSDictionary *it, NSString *key, int *order)
 		NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory] && !TFIsPackage(p); NSString *info = @"";
 		if (isVol) info = @""; else if (dir) { NSUInteger c = 0; for (NSString *s in [fm contentsOfDirectoryAtPath: p error: NULL]) if (![s hasPrefix: @"."]) c++; info = [NSString stringWithFormat: @"%lu item%s", (unsigned long)c, c == 1 ? "" : "s"]; }
 		else if (!TFIsPackage(p)) info = TFSizeString([at[NSFileSize] unsignedLongLongValue]);
-		NSMutableDictionary *it = [@{ @"name": n, @"path": p, @"info": info, @"tags": TFTagsOf(p), @"dir": @(dir), @"mod": at[NSFileModificationDate] ?: [NSDate distantPast], @"cre": at[NSFileCreationDate] ?: [NSDate distantPast], @"size": at[NSFileSize] ?: @0 } mutableCopy];
+		NSMutableDictionary *it = [@{ @"name": TFShownName(n), @"path": p, @"info": info, @"tags": TFTagsOf(p), @"dir": @(dir), @"mod": at[NSFileModificationDate] ?: [NSDate distantPast], @"cre": at[NSFileCreationDate] ?: [NSDate distantPast], @"size": at[NSFileSize] ?: @0 } mutableCopy];
 		int ix, iy; if ([ds iconLocationOfName: [p lastPathComponent] x: &ix y: &iy]) it[@"pos"] = [NSValue valueWithPoint: NSMakePoint(ix - [self cw] / 2, iy - 4 - _isz / 2)];
 		[_items addObject: it];
 	}
@@ -443,7 +446,7 @@ static const CGFloat kRow = 24, kHead = 28;
 - (NSMutableDictionary *)_makeItem:(NSString *)p fm:(NSFileManager *)fm depth:(int)depth
 {
 	NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory] && !TFIsPackage(p);
-	return [@{ @"name": [p lastPathComponent], @"path": p, @"dir": @(dir), @"date": at[NSFileModificationDate] ?: [NSDate distantPast], @"mod": at[NSFileModificationDate] ?: [NSDate distantPast], @"size": dir ? @(-1) : at[NSFileSize] ?: @0, @"kind": TFKindString(p, dir), @"tags": TFTagsOf(p), @"depth": @(depth), @"cre": at[NSFileCreationDate] ?: [NSDate distantPast], @"acc": at[@"NSFileAccessDate"] ?: at[NSFileModificationDate] ?: [NSDate distantPast], @"tagsort": [TFTagsOf(p) componentsJoinedByString: @","] } mutableCopy];
+	return [@{ @"name": TFShownName([p lastPathComponent]), @"path": p, @"dir": @(dir), @"date": at[NSFileModificationDate] ?: [NSDate distantPast], @"mod": at[NSFileModificationDate] ?: [NSDate distantPast], @"size": dir ? @(-1) : at[NSFileSize] ?: @0, @"kind": TFKindString(p, dir), @"tags": TFTagsOf(p), @"depth": @(depth), @"cre": at[NSFileCreationDate] ?: [NSDate distantPast], @"acc": at[@"NSFileAccessDate"] ?: at[NSFileModificationDate] ?: [NSDate distantPast], @"tagsort": [TFTagsOf(p) componentsJoinedByString: @","] } mutableCopy];
 }
 - (void)setPaths:(NSArray *)paths
 {

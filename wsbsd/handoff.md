@@ -120,6 +120,8 @@ Cod: `finder/src/TFinderViews.{h,mm}` (view-uri: sidebar, toolbar, icoane/listă
 
 **Grupare în listă** (Use Groups / Group By în vederea listă): rânduri-antet în `_items` (cheia `header`), `setGroup:` în TListView; click pe antet selectează grupul, săgețile sar peste antete. Mac-ul nu a fost măsurat pentru aspectul antetului.
 
+**Smart folders:** un `.savedSearch` (formatul Mac: RawQuery + SearchCriteria FXScope/FXKind) se deschide ca o căutare (`openSavedSearch:`), apare fără extensie și cu SmartFolderIcon din CoreTypes. Lipsește editorul de criterii (+/−: Kind, Last opened, Name, Contents…) și căutarea pe metadate (nu avem index Spotlight).
+
 **Desktop:** meniul click-dreapta (New Folder, Get Info, Change Desktop Background…, Sort By, Clean Up, Clean Up By, Show View Options) e după aspectul macOS din memorie, NEVERIFICAT pe oracol (Mac-ul utilizatorului era acoperit de alte aplicații; nu face click-uri pe desktopul lui).
 
 **De făcut:** Share real (meniul există: AirDrop/Mail/Messages/Notes/Reminders deschid aplicația cu acel nume dacă e instalată), drag către alte aplicații cu pasteboard real (între două Finder merge deja: notificări WDND în WsdDragDrop.m, test cu `WSD_DND_DEBUG=1`; lipsește sursa de drag pentru aplicații non-Finder și destinația în alte vederi decât rădăcina ferestrei), coloane/galerie: opțiuni și previzualizare detaliată, căutare: filtre pe tip + salvare (smart folders), Spotlight real, iCloud/AirDrop reale, Quick Actions, fullscreen, portarea logicii din metodele decompilate (~/finder-decomp/out), teste CI mai bogate pentru Finder (acum: build + fereastră 1022x552 desenată pe wsd, în ci/gnustep-wsd.sh; ISO: ruleaza complet, release inclus, din 2026-10-23).
