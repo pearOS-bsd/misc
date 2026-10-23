@@ -118,6 +118,13 @@ static NSString *StyleName(NSInteger m) { return @[ @"icnv", @"Nlsv", @"clmv", @
 - (void)cmdOpenWithAppStore:(id)s { for (NSString *a in @[ @"/System/Applications/App Store.app", @"/Applications/App Store.app" ]) if ([[NSFileManager defaultManager] fileExistsAtPath: a]) { [[NSWorkspace sharedWorkspace] launchApplication: a]; return; } NSBeep(); }
 - (void)cmdOpenWithOther:(id)s { NSOpenPanel *op = [NSOpenPanel openPanel]; [op setDirectoryURL: [NSURL fileURLWithPath: @"/Applications"]]; [op setAllowedFileTypes: @[ @"app" ]]; if ([op runModal] == NSOKButton) for (NSString *p in _selection) [[NSWorkspace sharedWorkspace] openFile: p withApplication: [[[op URLs] firstObject] path]]; }
 - (NSMenu *)actionMenu { return _ctxMenu; }
+- (NSMenu *)groupMenu                                                                         /* the toolbar's Group button, as measured on the Mac: None, line, then the keys (156 wide) */
+{
+	NSString *cur = _mode == 1 ? _list->_group : _mode == 0 ? _icons->_group : nil; NSMenu *m = [[NSMenu alloc] initWithTitle: @""];
+	NSArray *o = @[ @[ @"None", @"" ], @[ @"-", @"" ], @[ @"Name", @"name" ], @[ @"Kind", @"kind" ], @[ @"Application", @"application" ], @[ @"Date Last Opened", @"dateLastOpened" ], @[ @"Date Added", @"dateAdded" ], @[ @"Date Modified", @"dateModified" ], @[ @"Date Created", @"dateCreated" ], @[ @"Size", @"size" ], @[ @"Tags", @"tags" ] ];
+	for (NSArray *a in o) { if ([a[0] isEqual: @"-"]) { [m addItem: [NSMenuItem separatorItem]]; continue; } NSMenuItem *it = [m addItemWithTitle: a[0] action: @selector(cmdGroupByKey:) keyEquivalent: @""]; [it setTarget: self]; [it setRepresentedObject: a[1]]; [it setState: [a[1] isEqual: cur ?: @""] ? NSOnState : NSOffState]; }
+	return m;
+}
 - (NSMenu *)tagMenu { NSMenu *m = [[NSMenu alloc] initWithTitle: @"Tags"]; [self _fillTagMenu: m]; return m; }
 - (void)_markTagMenu:(NSMenu *)m { for (NSMenuItem *i in [m itemArray]) { BOOL all = [_selection count] > 0; for (NSString *p in _selection) if (![TFTagsOf(p) containsObject: [i representedObject]]) all = NO; [i setState: all ? NSOnState : NSOffState]; } }
 - (void)_fillTagMenu:(NSMenu *)m
