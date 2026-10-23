@@ -55,7 +55,8 @@ static NSString *UniquePath(NSString *dir, NSString *base, NSString *ext)
 	if (_tag || !_url || ![[self window] isVisible]) return; struct stat sb; if (stat([[_url path] fileSystemRepresentation], &sb)) return; long long m = (long long)sb.st_mtime * 1000000000LL + sb.st_mtim.tv_nsec;
 	if (_watchedMod && m != _watchedMod) { _watchedMod = m; if (_mode == 0) [_icons reloadKeepingSelection]; else { NSArray *keep = _selection; [self reload]; (void)keep; } [self _updateStatus]; } else _watchedMod = m;
 }
-- (void)_keyChanged:(NSNotification *)n { for (NSView *v in [[[self window] contentView] subviews]) [v setNeedsDisplay: YES]; }
+- (void)_redrawAll { for (NSView *v in [[[self window] contentView] subviews]) [v setNeedsDisplay: YES]; }
+- (void)_keyChanged:(NSNotification *)n { [self _redrawAll]; [self performSelector: @selector(_redrawAll) withObject: nil afterDelay: 0.06]; }
 - (void)windowDidResize:(NSNotification *)n { [self _layout]; [self _scheduleBoundsSave]; }
 - (void)windowDidMove:(NSNotification *)n { [self _scheduleBoundsSave]; }
 /* what the Finder keeps per folder in .DS_Store: the view style (vstl) and the window (bwsp) */
@@ -145,7 +146,7 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 	for (NSString *p in [self _targets]) [[NSFileManager defaultManager] removeItemAtPath: p error: NULL]; [self _changed: nil];
 }
 - (void)cmdDuplicateExactly:(id)s { [self cmdDuplicate: s]; }
-- (void)cmdQuickLook:(id)s { for (NSString *p in [self _targets]) TFOpenInfoWindow(p); }
+- (void)cmdQuickLook:(id)s { NSArray *t = [self _targets]; if ([t count]) TFOpenQuickLook(t[0]); }
 - (void)cmdNewTab:(id)s { [TBrowserWindowController newBrowserWithPath: [_url path]]; }
 - (void)cmdOpenInNewTab:(id)s { for (NSString *p in [self _targets]) { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: p isDirectory: &d]; if (d) [TBrowserWindowController newBrowserWithPath: p]; } }
 - (void)cmdCompress:(id)s { NSArray *t = [self _targets]; if (![t count]) return; NSString *base = [t count] == 1 ? [t[0] lastPathComponent] : @"Archive"; NSString *zip = UniquePath([_url path], base, @"zip"); NSMutableArray *args = [NSMutableArray arrayWithObjects: @"-a", @"-cf", zip, nil]; for (NSString *p in t) { [args addObject: @"-C"]; [args addObject: [p stringByDeletingLastPathComponent]]; [args addObject: [p lastPathComponent]]; } NSTask *tk = [[NSTask alloc] init]; [tk setLaunchPath: @"/usr/bin/tar"]; [tk setArguments: args]; @try { [tk launch]; [tk waitUntilExit]; } @catch (NSException *x) {} [self _changed: nil]; }
