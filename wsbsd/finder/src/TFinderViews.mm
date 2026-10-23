@@ -165,7 +165,6 @@ static const CGFloat kCW = 112, kCH = 126, kPad = 10, kIcon = 64;
 - (void)setIconSize:(CGFloat)z { z = MAX(16, MIN(256, z)); if (z == _isz) return; _isz = z; for (NSMutableDictionary *it in _items) [it removeObjectForKey: @"lines"]; [self scrollTo: off]; [self _save]; [self setNeedsDisplay: YES]; }
 - (CGFloat)iconSize { return _isz; }
 - (instancetype)initWithFrame:(NSRect)f { if ((self = [super initWithFrame: f])) { _isz = 64; _items = [NSMutableArray array]; _sel = [NSMutableIndexSet indexSet]; _anchor = -1; _dropTarget = -1; } return self; }/* the settings of a folder (the arrangement and the places of the icons), kept in ~/Library/Application Support/Finder/ViewSettings.plist until .DS_Store is read and written the way the Finder does */
-static NSString *SettingsFile(void) { return [NSHomeDirectory() stringByAppendingPathComponent: @"Library/Application Support/Finder/ViewSettings.plist"]; }
 - (void)drawBackground { if (desktop) { [[NSColor clearColor] set]; NSRectFillUsingOperation([self bounds], NSCompositeCopy); } else [super drawBackground]; }
 - (BOOL)isOpaque { return !desktop; }
 - (void)setFolder:(NSString *)folder
@@ -175,24 +174,25 @@ static NSString *SettingsFile(void) { return [NSHomeDirectory() stringByAppendin
 }
 - (void)setPaths:(NSArray *)paths
 {
-	[_items removeAllObjects]; [_sel removeAllIndexes]; NSFileManager *fm = [NSFileManager defaultManager]; NSDictionary *st = _folder ? [NSDictionary dictionaryWithContentsOfFile: SettingsFile()][_folder] : nil; NSDictionary *pos = st[@"icons"]; _arrange = st[@"arrange"]; _isz = st[@"isz"] ? [st[@"isz"] doubleValue] : 64;
+	[_items removeAllObjects]; [_sel removeAllIndexes]; NSFileManager *fm = [NSFileManager defaultManager]; TDSStore *ds = _folder ? [TDSStore storeForFolder: _folder] : nil; NSDictionary *vp = [ds plistForName: @"." sid: @"icvp"]; if (vp) { _isz = [vp[@"iconSize"] doubleValue] >= 16 ? [vp[@"iconSize"] doubleValue] : 64; NSString *ab = vp[@"arrangeBy"]; NSDictionary *m = @{ @"name": @"name", @"kind": @"kind", @"dateModified": @"modified", @"dateCreated": @"created", @"size": @"size", @"label": @"tags" }; _arrange = m[ab]; } else { _isz = _isz ?: 64; }
 	for (NSString *p in paths) {
 		NSString *n = TFDisplayName(p); if ([n hasPrefix: @"."] || ([filter length] && [n rangeOfString: filter options: NSCaseInsensitiveSearch].location == NSNotFound)) continue; BOOL isVol = [_prefix containsObject: p];
 		NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory] && ![[p pathExtension] isEqual: @"app"]; NSString *info = @"";
 		if (isVol) info = @""; else if (dir) { NSUInteger c = 0; for (NSString *s in [fm contentsOfDirectoryAtPath: p error: NULL]) if (![s hasPrefix: @"."]) c++; info = [NSString stringWithFormat: @"%lu item%s", (unsigned long)c, c == 1 ? "" : "s"]; }
 		else if (![[p pathExtension] isEqual: @"app"]) info = TFSizeString([at[NSFileSize] unsignedLongLongValue]);
 		NSMutableDictionary *it = [@{ @"name": n, @"path": p, @"info": info, @"tags": TFTagsOf(p), @"dir": @(dir), @"mod": at[NSFileModificationDate] ?: [NSDate distantPast], @"cre": at[NSFileCreationDate] ?: [NSDate distantPast], @"size": at[NSFileSize] ?: @0 } mutableCopy];
-		NSArray *xy = pos[n]; if ([xy count] == 2) it[@"pos"] = [NSValue valueWithPoint: NSMakePoint([xy[0] doubleValue], [xy[1] doubleValue])];
+		int ix, iy; if ([ds iconLocationOfName: [p lastPathComponent] x: &ix y: &iy]) it[@"pos"] = [NSValue valueWithPoint: NSMakePoint(ix - [self cw] / 2, iy - 4 - _isz / 2)];
 		[_items addObject: it];
 	}
 	if ([_arrange length]) [self _sortItems]; off = 0; [self setNeedsDisplay: YES]; [self _notify];
 }
-- (void)_save
+- (void)_save                                                                                  /* the places of the icons and the view options go to .DS_Store, where the Finder keeps them */
 {
-	if (!_folder) return; NSMutableDictionary *all = [[NSDictionary dictionaryWithContentsOfFile: SettingsFile()] mutableCopy] ?: [NSMutableDictionary dictionary]; NSMutableDictionary *icons = [NSMutableDictionary dictionary];
-	for (NSDictionary *it in _items) if (it[@"pos"]) { NSPoint q = [it[@"pos"] pointValue]; icons[it[@"name"]] = @[ @(q.x), @(q.y) ]; }
-	NSMutableDictionary *st = [all[_folder] mutableCopy] ?: [NSMutableDictionary dictionary]; st[@"icons"] = icons; st[@"isz"] = @(_isz); if (_arrange) st[@"arrange"] = _arrange; else [st removeObjectForKey: @"arrange"]; all[_folder] = st;
-	[[NSFileManager defaultManager] createDirectoryAtPath: [SettingsFile() stringByDeletingLastPathComponent] withIntermediateDirectories: YES attributes: nil error: NULL]; [all writeToFile: SettingsFile() atomically: YES];
+	if (!_folder) return; TDSStore *ds = [TDSStore storeForFolder: _folder]; if (_isz < 16) _isz = 64;
+	for (NSDictionary *it in _items) { NSString *n = [it[@"path"] lastPathComponent]; if (it[@"pos"]) { NSPoint q = [it[@"pos"] pointValue]; [ds setIconLocation: NSMakePoint(q.x + [self cw] / 2, q.y + 4 + _isz / 2) ofName: n]; } else [ds removeName: n sid: @"Iloc"]; }
+	NSMutableDictionary *vp = [ds plistForName: @"." sid: @"icvp"] ?: [@{ @"backgroundType": @0, @"backgroundColorRed": @1.0, @"backgroundColorGreen": @1.0, @"backgroundColorBlue": @1.0, @"gridOffsetX": @0.0, @"gridOffsetY": @0.0, @"gridSpacing": @54.0, @"labelOnBottom": @YES, @"scrollPositionX": @0.0, @"scrollPositionY": @0.0, @"showIconPreview": @YES, @"showItemInfo": @NO, @"textSize": @12.0, @"viewOptionsVersion": @1 } mutableCopy];
+	NSDictionary *m = @{ @"name": @"name", @"kind": @"kind", @"modified": @"dateModified", @"created": @"dateCreated", @"size": @"size", @"tags": @"label" }; vp[@"iconSize"] = @(_isz); vp[@"arrangeBy"] = m[_arrange ?: @""] ?: @"none";
+	[ds setPlist: vp forName: @"." sid: @"icvp"]; if (![ds valueForName: @"." sid: @"vSrn"]) [ds setValue: @1 type: @"long" forName: @"." sid: @"vSrn"]; [ds write];
 }
 - (void)reloadKeepingSelection { NSArray *keep = [self selectedPaths]; if (![_items count]) return; NSMutableArray *ps = [NSMutableArray array]; for (NSDictionary *d in _items) [ps addObject: d[@"path"]]; CGFloat o = off; [self setPaths: ps]; for (NSUInteger i = 0; i < [_items count]; i++) if ([keep containsObject: _items[i][@"path"]]) [_sel addIndex: i]; off = o; [self setNeedsDisplay: YES]; }
 - (NSInteger)_cols { return MAX(1, (NSInteger)floor(([self bounds].size.width - 2 * kPad) / [self cw])); }
