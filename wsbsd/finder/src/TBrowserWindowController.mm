@@ -87,6 +87,10 @@ static NSString *StyleName(NSInteger m) { return @[ @"icnv", @"Nlsv", @"clmv", @
 	NSString *one = [_selection count] == 1 ? [_selection[0] lastPathComponent] : nil; NSString *ext = [[_selection firstObject] pathExtension].lowercaseString; BOOL arch = [@[ @"zip", @"gz", @"tgz", @"bz2", @"xz", @"7z", @"rar", @"dmg", @"tar" ] containsObject: ext];
 	for (NSMenuItem *it in [m itemArray]) { if ([NSStringFromSelector([it action]) isEqual: @"cmdQuickLook:"]) [it setTitle: one ? [NSString stringWithFormat: @"Quick Look “%@”", one] : [NSString stringWithFormat: @"Quick Look %lu Items", (unsigned long)[_selection count]]]; if ([NSStringFromSelector([it action]) isEqual: @"cmdCompress:"]) { [it setTitle: one ? [NSString stringWithFormat: @"Compress “%@”", one] : [NSString stringWithFormat: @"Compress %lu Items", (unsigned long)[_selection count]]]; [it setHidden: arch && [_selection count] == 1]; } }
 	if (getenv("FINDER_DEBUG")) for (NSMenuItem *it in [m itemArray]) NSLog(@"ctx item %@ action %@ sel %lu", [it title], NSStringFromSelector([it action]), (unsigned long)[_selection count]);
+	/* Quick Actions: what applies to the selection (images can be turned), then Customize… */
+	for (NSMenuItem *it in [m itemArray]) if ([[it title] isEqual: @"Quick Actions"] && [it submenu]) { NSMenu *sub = [it submenu]; while ([sub numberOfItems]) [sub removeItemAtIndex: 0]; BOOL imgs = [_selection count] > 0; for (NSString *p in _selection) if (![@[ @"png", @"jpg", @"jpeg", @"tif", @"tiff", @"gif", @"bmp" ] containsObject: [[p pathExtension] lowercaseString]]) imgs = NO;
+		if (imgs) { NSMenuItem *r = [sub addItemWithTitle: @"Rotate Left" action: @selector(cmdRotateLeft:) keyEquivalent: @""]; [r setTarget: self]; [r setToolTip: @"sym:rotate.left"]; [sub addItem: [NSMenuItem separatorItem]]; }
+		NSMenuItem *cz = [sub addItemWithTitle: @"Customize…" action: @selector(cmdOpenQuickActionsPrefPane:) keyEquivalent: @""]; [cz setTarget: self]; }
 	for (NSMenuItem *it in [m itemArray]) if ([[it title] isEqual: @"Open With"]) { NSMenu *sub = [it submenu]; while ([sub numberOfItems]) [sub removeItemAtIndex: 0]; NSString *p = [_selection firstObject]; if (!p) return;
 		for (NSDictionary *a in TFAppsForFile(p)) { NSMenuItem *x = [sub addItemWithTitle: a[@"name"] action: @selector(cmdOpenWithApp:) keyEquivalent: @""]; [x setTarget: self]; [x setRepresentedObject: a[@"path"]]; }
 		NSMenuItem *o = [sub addItemWithTitle: @"Other…" action: @selector(cmdOpenWithOther:) keyEquivalent: @""]; [o setTarget: self]; }
@@ -348,6 +352,16 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 - (void)cmdArchive:(id)s { [self cmdCompress: s]; }
 - (void)cmdSlideshow:(id)s { [self cmdQuickLook: s]; }
 /* the Share menu: the services of the Mac; each one opens the file in the application of that name when it is installed, AirDrop goes to the AirDrop window */
+/* Quick Action Rotate Left: the picture turned a quarter to the left, written back in its own format */
+- (void)cmdRotateLeft:(id)s
+{
+	for (NSString *p in [_selection copy]) { NSImage *src = [[NSImage alloc] initWithContentsOfFile: p]; if (!src) continue; NSBitmapImageRep *rep = nil; for (NSImageRep *r in [src representations]) if ([r isKindOfClass: [NSBitmapImageRep class]]) { rep = (NSBitmapImageRep *)r; break; } if (!rep) continue;
+		NSInteger w = [rep pixelsWide], h = [rep pixelsHigh]; NSBitmapImageRep *out = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes: NULL pixelsWide: h pixelsHigh: w bitsPerSample: 8 samplesPerPixel: 4 hasAlpha: YES isPlanar: NO colorSpaceName: NSDeviceRGBColorSpace bytesPerRow: h * 4 bitsPerPixel: 32]; if (!out) continue;
+		for (NSInteger y = 0; y < h; y++) for (NSInteger x = 0; x < w; x++) { NSUInteger px[4] = { 0, 0, 0, 255 }; [rep getPixel: px atX: x y: y]; NSInteger nx = y, ny = w - 1 - x; NSUInteger o[4]; for (int k = 0; k < 4; k++) o[k] = px[k]; if ([rep samplesPerPixel] < 4) { o[3] = 255; if ([rep samplesPerPixel] < 3) { o[1] = o[2] = o[0]; } } [out setPixel: o atX: nx y: ny]; }
+		NSString *e = [[p pathExtension] lowercaseString]; NSBitmapImageFileType t = [e hasPrefix: @"jp"] ? NSJPEGFileType : [e hasPrefix: @"ti"] ? NSTIFFFileType : [e isEqual: @"gif"] ? NSGIFFileType : [e isEqual: @"bmp"] ? NSBMPFileType : NSPNGFileType;
+		NSData *d = [out representationUsingType: t properties: @{}]; if (d) [d writeToFile: p atomically: YES]; }
+	[self _changed: nil];
+}
 - (void)cmdShare:(id)s { NSMenu *m = [self shareMenu]; if (!m) return; NSView *v = [self _view]; NSPoint p = [v convertPoint: [[NSApp currentEvent] locationInWindow] fromView: nil]; TFPopupMenu(v, p, m); }
 - (NSMenu *)shareMenu
 {
