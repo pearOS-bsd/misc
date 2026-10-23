@@ -17,7 +17,7 @@ static void wsdTFRect(id self, SEL _cmd, NSRect r);
 /* WSD_APPEARANCE=light switches the palette; the measurements are of the dark appearance (the light one is typical macOS, not measured) */
 static void wsdMenuSizeToFit(id self, SEL _cmd); static NSColor *wsdMenuTextColor(id self, SEL _cmd); static void wsdMenuDrawKeyEq(id self, SEL _cmd, NSRect f, NSView *v); static void wsdMenuDrawState(id self, SEL _cmd, NSRect f, NSView *v);
 extern void WsdInstallFilePanel(void); extern void WsdInstallDragDrop(void);
-extern BOOL WsdAppearanceIsDark(void); extern void WsdInstallAppearanceWatch(void);
+extern NSColor *WsdTintedWindowBackground(NSWindow *w); extern BOOL WsdAppearanceIsDark(void); extern void WsdInstallAppearanceWatch(void);
 static BOOL isDark(void) { return WsdAppearanceIsDark(); }
 
 static NSColor *rgb(int r, int g, int b, CGFloat a) { return [NSColor colorWithCalibratedRed: r / 255.0 green: g / 255.0 blue: b / 255.0 alpha: a]; }
@@ -993,7 +993,7 @@ static NSGradient *grad(int r0, int g0, int b0, int r1, int g1, int b1, int r2, 
 {
 	NSRect b = [self bounds];
 	BOOL dark = isDark(), key = (inputState == 0);
-	{ NSWindow *wn = [self window]; NSColor *wbg = (wn && ![wn isOpaque]) ? [wn backgroundColor] : [NSColor windowBackgroundColor];          /* non-opaque windows (behind-window materials) keep their own, usually clear, background */
+	{ NSWindow *wn = [self window]; NSColor *wbg = (wn && ![wn isOpaque]) ? [wn backgroundColor] : [NSColor windowBackgroundColor]; if ([wn isOpaque] || !wn) { NSColor *tinted = WsdTintedWindowBackground(wn); if (tinted) wbg = tinted; }          /* non-opaque windows (behind-window materials) keep their own, usually clear, background */
 	  [wbg set]; NSRectFillUsingOperation(b, ([wn isOpaque] || !wn) ? NSCompositeSourceOver : NSCompositeCopy); }               /* the window background (the backing store starts transparent) */
 	if (hasTitleBar) {
 		int wr, wg, wb; windowBG(&wr, &wg, &wb);

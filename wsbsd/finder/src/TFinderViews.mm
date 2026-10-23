@@ -235,7 +235,7 @@ static NSString *GroupTitle(NSDictionary *it, NSString *key, int *order)
 - (void)setIconSize:(CGFloat)z { z = MAX(16, MIN(256, z)); if (z == _isz) return; _isz = z; for (NSMutableDictionary *it in _items) [it removeObjectForKey: @"lines"]; [self scrollTo: off]; [self _save]; [self setNeedsDisplay: YES]; }
 - (CGFloat)iconSize { return _isz; }
 - (instancetype)initWithFrame:(NSRect)f { if ((self = [super initWithFrame: f])) { _isz = 64; _grid = 54; _textSize = 12; _showInfo = NO; _showPreview = YES; _items = [NSMutableArray array]; _sel = [NSMutableIndexSet indexSet]; _anchor = -1; _dropTarget = -1; } return self; }/* the settings of a folder (the arrangement and the places of the icons), kept in ~/Library/Application Support/Finder/ViewSettings.plist until .DS_Store is read and written the way the Finder does */
-- (void)drawBackground { if (desktop) { [[NSColor clearColor] set]; NSRectFillUsingOperation([self bounds], NSCompositeCopy); } else [super drawBackground]; }
+- (void)drawBackground { if (desktop) { if (!TFWallpaperImage()) { [[NSColor clearColor] set]; NSRectFillUsingOperation([self bounds], NSCompositeCopy); } } else [super drawBackground]; }      /* on the desktop the picture under the view stays */
 - (BOOL)isOpaque { return !desktop; }
 - (void)setFolder:(NSString *)folder
 {

@@ -22,12 +22,13 @@ static NSString *DesktopPath(void) { return [NSHomeDirectory() stringByAppending
 - (void)_showDesktop
 {
 	if (_window) return; NSScreen *screen = [NSScreen mainScreen]; NSLog(@"Finder: showDesktop screen %@ frame %@", screen, NSStringFromRect([screen frame])); _window = [[TDesktopWindow alloc] initWithScreen: screen];
+	{ TWallpaperView *wp = [[TWallpaperView alloc] initWithFrame: [[_window contentView] bounds]]; [wp setAutoresizingMask: NSViewWidthSizable | NSViewHeightSizable]; [_window setContentView: wp]; [_window setOpaque: TFWallpaperImage() != nil]; TFWriteWallpaperGrid([screen frame].size); }
 	_view = [[TIconView alloc] initWithFrame: [[_window contentView] bounds]]; _view->desktop = YES; _view->delegate = self; [_view setAutoresizingMask: NSViewWidthSizable | NSViewHeightSizable]; [[_window contentView] addSubview: _view];
 	[_view setMenu: [self _desktopMenu]];
 	[_view setFolder: DesktopPath()]; _volumeSig = [self _signature]; [NSTimer scheduledTimerWithTimeInterval: 2 target: self selector: @selector(_poll:) userInfo: nil repeats: YES];
 	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(_prefs:) name: @"TFPrefsChanged" object: nil]; [_window orderBack: nil];
 }
-- (void)_prefs:(NSNotification *)n { _volumeSig = nil; [self _poll: nil]; }
+- (void)_prefs:(NSNotification *)n { _volumeSig = nil; [self _poll: nil]; [_window setOpaque: TFWallpaperImage() != nil]; TFWriteWallpaperGrid([[NSScreen mainScreen] frame].size); [[_window contentView] setNeedsDisplay: YES]; }
 - (void)iconViewOpenItem:(NSString *)path { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &d]; if (d && !TFIsPackage(path)) [TBrowserWindowController newBrowserWithPath: path]; else TFOpenPath(path); }
 - (void)iconViewSelectionChanged:(NSArray *)paths { _selection = paths; }
 - (BOOL)iconViewDropPaths:(NSArray *)paths intoFolder:(NSString *)folder atWindowPoint:(NSPoint)p copy:(BOOL)copy
@@ -59,5 +60,8 @@ static NSString *DesktopPath(void) { return [NSHomeDirectory() stringByAppending
 /* Sort By keeps the order; Clean Up By puts the icons on the grid in that order once */
 - (void)cmdDesktopSort:(NSMenuItem *)it { NSString *k = [it representedObject]; [_view arrangeBy: [k length] ? k : nil]; if ([it tag] == 1) { [_view cleanUp: NO]; [_view arrangeBy: nil]; } }
 - (void)cmdDesktopViewOptions:(id)s { TFOpenViewOptions(_view, @"Desktop", ^{}); }
-- (void)cmdChangeBackground:(id)s { for (NSString *a in @[ @"/System/Applications/System Settings.app", @"/System/Applications/System Preferences.app" ]) if ([[NSFileManager defaultManager] fileExistsAtPath: a]) { [[NSWorkspace sharedWorkspace] launchApplication: a]; return; } NSBeep(); }
+- (void)cmdChangeBackground:(id)s { [self performSelector: @selector(_chooseBackground) withObject: nil afterDelay: 0.1]; }
+/* a picture for the desktop: kept in the preference DesktopPicture; every window tints its background with it */
+- (void)_chooseBackground { NSOpenPanel *op = [NSOpenPanel openPanel]; [op setAllowedFileTypes: @[ @"png", @"jpg", @"jpeg", @"tif", @"tiff", @"bmp", @"gif" ]]; [op setPrompt: @"Choose"]; if ([op runModal] == NSOKButton && [[op URL] path]) { TFSetPref(@"DesktopPicture", [[op URL] path]); [[NSNotificationCenter defaultCenter] postNotificationName: @"TFPrefsChanged" object: nil]; } }
+- (void)_cmdChangeBackgroundOld:(id)s { for (NSString *a in @[ @"/System/Applications/System Settings.app", @"/System/Applications/System Preferences.app" ]) if ([[NSFileManager defaultManager] fileExistsAtPath: a]) { [[NSWorkspace sharedWorkspace] launchApplication: a]; return; } NSBeep(); }
 @end
