@@ -80,8 +80,7 @@ static NSString *StyleName(NSInteger m) { return @[ @"icnv", @"Nlsv", @"clmv", @
 	NSDictionary *bw = [ds plistForName: @"." sid: @"bwsp"]; if (!bw) return; if (bw[@"ShowStatusBar"] && [bw[@"ShowStatusBar"] boolValue] != _showStatus) [self cmdToggleStatusBar: nil];
 	if (window && [bw[@"WindowBounds"] length]) { NSRect r = NSRectFromString([bw[@"WindowBounds"] stringByReplacingOccurrencesOfString: @"{{" withString: @"{"]); (void)r; int x, y, w, h; if (sscanf([bw[@"WindowBounds"] UTF8String], "{{%d, %d}, {%d, %d}}", &x, &y, &w, &h) == 4 && w >= 560 && h >= 320) { CGFloat sh = [[NSScreen mainScreen] frame].size.height; [[self window] setFrame: NSMakeRect(x, sh - y - h, w, h) display: YES]; [self _layout]; } }
 }
-- (void)cmdTagsPopup:(id)s { if (![[self _targets] count]) return; NSRect wf = [[self window] frame]; NSPoint m = [NSEvent mouseLocation]; TFShowTagsPopover([self _targets], NSMakePoint(m.x, MIN(NSMaxY(wf) - 52, m.y)), self); }
-- (void)tagsAtWindowPoint:(NSValue *)v { if (![[self _targets] count]) return; NSRect wf = [[self window] frame]; NSPoint p = [v pointValue]; TFShowTagsPopover([self _targets], NSMakePoint(NSMinX(wf) + p.x, NSMaxY(wf) - 52), self); }
+- (void)cmdTagsPopup:(id)s { if (![[self _targets] count]) return; TFShowTagsPopover([self _targets], [_toolbar buttonRect: 1], _toolbar, self); }
 - (void)cmdOpenQuickActionsPrefPane:(id)s {}
 /* the menu of the empty space of an icon view, as the real Finder's Action menu shows it without a selection (read from its accessibility tree: 233 wide; New Folder, Open in New Tab, Get Info, Quick Look "folder", Use Groups, Sort By, Clean Up, Clean Up By, Show View Options; "Import from iPhone" only appears with a phone connected and is left out) */
 - (NSMenu *)backgroundContextMenu
@@ -411,13 +410,7 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 		NSData *d = [out representationUsingType: t properties: @{}]; if (d) [d writeToFile: p atomically: YES]; }
 	[self _changed: nil];
 }
-- (void)cmdShare:(id)s { [self shareAtWindowPoint: [NSValue valueWithPoint: NSMakePoint([[[self window] contentView] bounds].size.width - 214, 26)]]; }
-/* the popover opens above the button, centred on it (below it when the screen has no room above, as the Mac flips it); the point is in the window, y from the top */
-- (void)shareAtWindowPoint:(NSValue *)v
-{
-	if (![[self _targets] count]) return; NSRect wf = [[self window] frame]; NSPoint p = [v pointValue]; double ax = NSMinX(wf) + p.x, top = NSMaxY(wf), screenTop = [[NSScreen mainScreen] frame].size.height - 30, H = 160;
-	double oy = top - 4; if (oy + H > screenTop) oy = top - 52 + 4 - H; TFShowSharePopover([self _targets], NSMakePoint(ax, oy - 6), self);
-}
+- (void)cmdShare:(id)s { if (![[self _targets] count]) return; NSRect r = [_toolbar buttonRect: 0]; TFShowSharePopover([self _targets], r, _toolbar, self); }
 - (void)_shareVia:(NSMenuItem *)it
 {
 	NSString *n = [it title]; if ([n isEqual: @"AirDrop"]) { [self cmdGoToAirDrop: nil]; return; }
