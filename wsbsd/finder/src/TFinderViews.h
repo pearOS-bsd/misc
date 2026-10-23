@@ -112,7 +112,7 @@ NSImage *TFIcon(NSString *path);
 @end
 
 /* the gallery: the selected item large above a strip of thumbnails, its information to the right */
-@interface TGalleryView : NSView { @public __weak id<TIconViewDelegate> delegate; NSString *filter; NSMutableArray *_paths; NSInteger _sel; CGFloat _hoff; }
+@interface TGalleryView : NSView { @public __weak id<TIconViewDelegate> delegate; NSString *filter; NSMutableArray *_paths; NSInteger _sel; CGFloat _hoff; BOOL _more; NSRect _moreRect; NSImage *_big; NSString *_bigPath; }
 - (void)setFolder:(NSString *)folder;
 - (void)setPaths:(NSArray *)paths;
 - (NSArray *)selectedPaths;

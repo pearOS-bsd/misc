@@ -559,45 +559,47 @@ static NSString *SortFieldFor(NSString *col) { NSDictionary *m = @{ @"name": @"n
 @end
 
 /* ---------- the gallery view ---------- */
-static const CGFloat kStripH = 118, kGThumb = 72, kGCell = 88, kPane = 250;
+static const CGFloat kStripH = 80, kGThumb = 52, kGCell = 59, kPane = 260;
+static NSString *ShortDate(NSDate *d) { if (!d) return @""; NSCalendar *cal = [NSCalendar currentCalendar]; NSDateFormatter *tf = [[NSDateFormatter alloc] init]; [tf setDateFormat: @"HH:mm"]; if ([cal isDateInToday: d]) return [@"Today, " stringByAppendingString: [tf stringFromDate: d]]; if ([cal isDateInYesterday: d]) return [@"Yesterday, " stringByAppendingString: [tf stringFromDate: d]]; NSDateFormatter *df = [[NSDateFormatter alloc] init]; [df setDateFormat: @"d MMM yyyy, HH:mm"]; return [df stringFromDate: d]; }
 @implementation TGalleryView
 - (BOOL)isFlipped { return YES; } - (BOOL)acceptsFirstResponder { return YES; } - (BOOL)acceptsFirstMouse:(NSEvent *)e { return YES; }
 - (void)setFolder:(NSString *)folder { NSMutableArray *ps = [NSMutableArray array]; for (NSString *n in [[[NSFileManager defaultManager] contentsOfDirectoryAtPath: folder error: NULL] sortedArrayUsingSelector: @selector(tfNameCompare:)]) [ps addObject: [folder stringByAppendingPathComponent: n]]; [self setPaths: ps]; }
 - (void)setPaths:(NSArray *)paths { _paths = [NSMutableArray array]; for (NSString *p in paths) { NSString *n = [p lastPathComponent]; if (![n hasPrefix: @"."] && (![filter length] || [n rangeOfString: filter options: NSCaseInsensitiveSearch].location != NSNotFound)) [_paths addObject: p]; } _sel = [_paths count] ? 0 : -1; _hoff = 0; [self setNeedsDisplay: YES]; [self _notify]; }
 - (NSArray *)selectedPaths { return _sel >= 0 && _sel < (NSInteger)[_paths count] ? @[ _paths[_sel] ] : @[]; }
 - (void)_notify { if ([delegate respondsToSelector: @selector(iconViewSelectionChanged:)]) [delegate iconViewSelectionChanged: [self selectedPaths]]; }
-- (NSRect)_cell:(NSInteger)i { return NSMakeRect(12 + i * kGCell - _hoff, [self bounds].size.height - kStripH + 8, kGCell, kStripH - 12); }
-- (void)_reveal { CGFloat w = [self bounds].size.width - kPane, x = 12 + _sel * kGCell; if (x < _hoff) _hoff = x - 12; else if (x + kGCell > _hoff + w) _hoff = x + kGCell - w + 12; _hoff = MAX(0, _hoff); }
+- (NSRect)_cell:(NSInteger)i { return NSMakeRect(14 + i * kGCell - _hoff, [self bounds].size.height - kStripH + 12, kGThumb + 4, kStripH - 24); }
+- (void)_reveal { CGFloat w = [self bounds].size.width - kPane, x = 14 + _sel * kGCell; if (x < _hoff) _hoff = x - 14; else if (x + kGCell > _hoff + w) _hoff = x + kGCell - w + 14; _hoff = MAX(0, _hoff); }
 - (void)drawRect:(NSRect)r
 {
 	NSRect b = [self bounds]; [TF_CONTENT setFill]; NSRectFill(b); BOOL key = KeyWin(self); CGFloat W = b.size.width - kPane, top = b.size.height - kStripH;
 	if (_sel >= 0) {
-		NSString *p = _paths[_sel]; NSImage *th = Thumb(p); NSRect pr = NSMakeRect(20, 16, W - 40, top - 32);
-		if (th) { NSSize z = [th size]; CGFloat k = MIN(pr.size.width / z.width, pr.size.height / z.height); NSRect tr = NSMakeRect(NSMidX(pr) - z.width * k / 2, NSMidY(pr) - z.height * k / 2, z.width * k, z.height * k); [th drawInRect: tr fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; }
+		NSString *p = _paths[_sel]; NSImage *th = Thumb(p); if (th) { if (![_bigPath isEqual: p]) { _bigPath = p; _big = [[NSImage alloc] initWithContentsOfFile: p]; } if (_big && [_big size].width > 0) th = _big; } NSRect pr = NSMakeRect(24, 22, W - 48, top - 40); NSFileManager *fm = [NSFileManager defaultManager]; NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory] && !TFIsPackage(p);
+		if (th) { NSSize z = [th size]; CGFloat k = MIN(pr.size.width / z.width, pr.size.height / z.height); NSRect tr = NSMakeRect(NSMidX(pr) - z.width * k / 2, NSMidY(pr) - z.height * k / 2, z.width * k, z.height * k); NSGraphicsContext *g = [NSGraphicsContext currentContext]; [g saveGraphicsState]; [[NSBezierPath bezierPathWithRoundedRect: tr xRadius: 8 yRadius: 8] addClip]; [th drawInRect: tr fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; [g restoreGraphicsState]; }
 		else { CGFloat s = MIN(MIN(pr.size.width, pr.size.height), 256); TFDrawIcon(p, NSMakeRect(NSMidX(pr) - s / 2, NSMidY(pr) - s / 2, s, s)); }
-		/* the information pane */
-		NSFileManager *fm = [NSFileManager defaultManager]; NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory] && !TFIsPackage(p);
-		[TF_SIDEBAR setFill]; NSRectFill(NSMakeRect(W, 0, kPane, top)); [TF_LINE setFill]; NSRectFill(NSMakeRect(W, 0, 1, top));
-		NSMutableParagraphStyle *ps = [[NSMutableParagraphStyle alloc] init]; [ps setLineBreakMode: NSLineBreakByTruncatingMiddle]; [ps setAlignment: NSTextAlignmentCenter];
-		[[p lastPathComponent] drawInRect: NSMakeRect(W + 14, 140, kPane - 28, 18) withAttributes: @{ NSFontAttributeName: [NSFont boldSystemFontOfSize: 14], NSForegroundColorAttributeName: TF_TEXT, NSParagraphStyleAttributeName: ps }];
-		[[NSString stringWithFormat: @"%@ - %@", TFKindString(p, dir), dir ? @"--" : TFSizeString([at[NSFileSize] unsignedLongLongValue])] drawInRect: NSMakeRect(W + 14, 160, kPane - 28, 16) withAttributes: @{ NSFontAttributeName: [NSFont systemFontOfSize: 12], NSForegroundColorAttributeName: TF_DIM, NSParagraphStyleAttributeName: ps }];
-		TFDrawIcon(p, NSMakeRect(W + kPane / 2 - 40, 40, 80, 80));
-		[@"Information" drawAtPoint: NSMakePoint(W + 16, 196) withAttributes: Font(12, YES, TF_TEXT)]; CGFloat y = 220;
-		for (NSArray *row in @[ @[ @"Created", TFDateString(at[NSFileCreationDate]) ], @[ @"Modified", TFDateString(at[NSFileModificationDate]) ], @[ @"Where", [p stringByDeletingLastPathComponent] ] ]) { [row[0] drawAtPoint: NSMakePoint(W + 16, y) withAttributes: Font(11, NO, TF_DIM)]; [row[1] drawInRect: NSMakeRect(W + 90, y, kPane - 104, 15) withAttributes: @{ NSFontAttributeName: [NSFont systemFontOfSize: 11], NSForegroundColorAttributeName: TF_TEXT, NSParagraphStyleAttributeName: ({ NSMutableParagraphStyle *q = [[NSMutableParagraphStyle alloc] init]; [q setLineBreakMode: NSLineBreakByTruncatingMiddle]; q; }) }]; y += 22; }
+		/* the inspector */
+		[TF_SIDEBAR setFill]; NSRectFill(NSMakeRect(W, 0, kPane, top)); CGFloat x = W + 14, y = 24; { NSImage *ti = Thumb(p); if (ti) { NSSize z = [ti size]; CGFloat k = MIN(42 / z.width, 42 / z.height); [ti drawInRect: NSMakeRect(x + 21 - z.width * k / 2, y + 21 - z.height * k / 2, z.width * k, z.height * k) fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; } else TFDrawIcon(p, NSMakeRect(x, y, 42, 42)); } NSMutableParagraphStyle *ps = [[NSMutableParagraphStyle alloc] init]; [ps setLineBreakMode: NSLineBreakByTruncatingMiddle];
+		[[p lastPathComponent] drawInRect: NSMakeRect(x + 54, y + 2, kPane - 80, 20) withAttributes: @{ NSFontAttributeName: [NSFont boldSystemFontOfSize: 15], NSForegroundColorAttributeName: TF_TEXT, NSParagraphStyleAttributeName: ps }];
+		[[NSString stringWithFormat: @"%@ - %@", TFKindString(p, dir), dir ? @"--" : TFSizeString([at[NSFileSize] unsignedLongLongValue])] drawAtPoint: NSMakePoint(x + 54, y + 24) withAttributes: Font(13, NO, TF_DIM)]; y += 72;
+		[@"Information" drawAtPoint: NSMakePoint(x, y) withAttributes: Font(14, YES, TF_TEXT)]; NSString *sm = _more ? @"Show Less" : @"Show More"; NSSize ss = [sm sizeWithAttributes: Font(13, NO, TF_ACCENT)]; [sm drawAtPoint: NSMakePoint(W + kPane - 14 - ss.width, y + 1) withAttributes: Font(13, NO, TF_ACCENT)]; _moreRect = NSMakeRect(W + kPane - 24 - ss.width, y - 2, ss.width + 20, 22); y += 28;
+		NSMutableArray *rows = [NSMutableArray arrayWithObjects: @[ @"Created", ShortDate(at[NSFileCreationDate]) ], @[ @"Modified", ShortDate(at[NSFileModificationDate]) ], @[ @"Last opened", ShortDate(at[@"NSFileAccessDate"] ?: at[NSFileModificationDate]) ], nil];
+		if (_more) { NSImage *im = [[NSImage alloc] initWithContentsOfFile: p]; if (im && [im size].width > 0) [rows insertObject: @[ @"Dimensions", [NSString stringWithFormat: @"%d × %d", (int)[im size].width, (int)[im size].height] ] atIndex: 0]; [rows addObject: @[ @"Where", [p stringByDeletingLastPathComponent] ]]; }
+		for (NSArray *row in rows) { [row[0] drawAtPoint: NSMakePoint(x, y) withAttributes: Font(12, NO, TF_DIM)]; NSSize vs = [row[1] sizeWithAttributes: Font(12, YES, TF_TEXT)]; [row[1] drawInRect: NSMakeRect(MAX(x + 80, W + kPane - 14 - vs.width), y, MIN(vs.width, kPane - 100), 16) withAttributes: @{ NSFontAttributeName: [NSFont boldSystemFontOfSize: 12], NSForegroundColorAttributeName: TF_TEXT, NSParagraphStyleAttributeName: ps }]; [TF_LINE setFill]; NSRectFill(NSMakeRect(x, y + 19, kPane - 28, 1)); y += 24; }
+		y += 14; [@"Tags" drawAtPoint: NSMakePoint(x, y) withAttributes: Font(14, YES, TF_TEXT)]; y += 26; NSArray *tags = TFTagsOf(p); NSRect tb = NSMakeRect(x, y, kPane - 28, 40); FillRound(tb, 4, TFDark() ? TFRGBA(255, 255, 255, 0.05) : TFRGBA(0, 0, 0, 0.04)); if ([tags count]) [[tags componentsJoinedByString: @", "] drawAtPoint: NSMakePoint(x + 4, y + 4) withAttributes: Font(12, NO, TF_TEXT)]; else [@"Add Tags…" drawAtPoint: NSMakePoint(x + 4, y + 4) withAttributes: Font(12, NO, TF_DIM)];
+		/* the quick actions at the bottom of the inspector */
+		NSArray *qa = @[ @[ @"Rotate Left", @"rotate.left" ], @[ @"Markup", @"pencil.tip.crop.circle" ], @[ @"More…", @"ellipsis.circle" ] ]; CGFloat qw = (kPane - 28) / 3; for (NSUInteger k = 0; k < 3; k++) { CGFloat qx = x + k * qw; TFSymbol(qa[k][1], NSMakeRect(qx, top - 56, qw, 28), 18, TF_DIM); NSSize z = [qa[k][0] sizeWithAttributes: Font(11, NO, TF_DIM)]; [qa[k][0] drawAtPoint: NSMakePoint(qx + qw / 2 - z.width / 2, top - 24) withAttributes: Font(11, NO, TF_DIM)]; }
 	}
-	[TF_SIDEBAR setFill]; NSRectFill(NSMakeRect(0, top, b.size.width, kStripH)); [TF_LINE setFill]; NSRectFill(NSMakeRect(0, top, b.size.width, 1));
-	NSGraphicsContext *g = [NSGraphicsContext currentContext]; [g saveGraphicsState]; NSRectClip(NSMakeRect(0, top, W, kStripH));
+	[TF_CONTENT setFill]; NSRectFill(NSMakeRect(0, top, W, kStripH)); NSGraphicsContext *g = [NSGraphicsContext currentContext]; [g saveGraphicsState]; NSRectClip(NSMakeRect(0, top, W, kStripH));
 	for (NSInteger i = 0; i < (NSInteger)[_paths count]; i++) {
-		NSRect c = [self _cell: i]; if (NSMaxX(c) < 0 || c.origin.x > W) continue; BOOL sel = i == _sel; NSRect ir = NSMakeRect(c.origin.x + 8, c.origin.y + 4, kGThumb, kGThumb);
-		if (sel) { FillRound(NSInsetRect(ir, -4, -4), 8, key ? TFRGBA(255, 255, 255, 0.14) : TFRGB(60, 60, 60)); [(key ? TF_ACCENT : TFRGB(110, 110, 110)) setStroke]; NSBezierPath *o = [NSBezierPath bezierPathWithRoundedRect: NSInsetRect(ir, -4, -4) xRadius: 8 yRadius: 8]; [o setLineWidth: 2]; [o stroke]; }
-		NSImage *th = Thumb(_paths[i]); if (th) { NSSize z = [th size]; CGFloat k = MIN(kGThumb / z.width, kGThumb / z.height); [th drawInRect: NSMakeRect(NSMidX(ir) - z.width * k / 2, NSMidY(ir) - z.height * k / 2, z.width * k, z.height * k) fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; } else TFDrawIcon(_paths[i], ir);
-		NSDictionary *at = Font(11, NO, TF_TEXT); NSString *nm = Truncated([_paths[i] lastPathComponent], at, kGCell - 8); NSSize z = [nm sizeWithAttributes: at]; [nm drawAtPoint: NSMakePoint(NSMidX(c) - z.width / 2, NSMaxY(ir) + 8) withAttributes: at];
+		NSRect c = [self _cell: i]; if (NSMaxX(c) < 0 || c.origin.x > W) continue; BOOL sel = i == _sel; NSRect ir = NSInsetRect(c, 2, 2);
+		if (sel) FillRound(NSInsetRect(c, -1, -2), 7, key ? TFRGBA(255, 255, 255, 0.16) : TFRGB(60, 60, 60));
+		NSImage *th = Thumb(_paths[i]); if (th) { NSSize z = [th size]; CGFloat k = MIN(kGThumb / z.width, kGThumb / z.height); [th drawInRect: NSMakeRect(NSMidX(ir) - z.width * k / 2, NSMidY(ir) - z.height * k / 2, z.width * k, z.height * k) fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; } else TFDrawIcon(_paths[i], NSMakeRect(NSMidX(ir) - 24, NSMidY(ir) - 24, 48, 48));
 	}
 	[g restoreGraphicsState];
 }
 - (void)mouseDown:(NSEvent *)e
 {
 	[[self window] makeFirstResponder: self]; NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil];
+	if (NSPointInRect(p, _moreRect)) { _more = !_more; [self setNeedsDisplay: YES]; return; }
 	for (NSInteger i = 0; i < (NSInteger)[_paths count]; i++) if (NSPointInRect(p, [self _cell: i])) { _sel = i; [self setNeedsDisplay: YES]; [self _notify]; if ([e clickCount] == 2) [delegate iconViewOpenItem: _paths[i]]; return; }
 }
 - (void)scrollWheel:(NSEvent *)e { CGFloat d = fabs([e deltaX]) > fabs([e deltaY]) ? [e deltaX] : [e deltaY]; _hoff = MAX(0, MIN(_hoff - d * 24, MAX(0, 24 + [_paths count] * kGCell - ([self bounds].size.width - kPane)))); [self setNeedsDisplay: YES]; }
