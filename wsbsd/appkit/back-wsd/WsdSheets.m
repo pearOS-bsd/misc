@@ -24,7 +24,7 @@ static void wsdBeginSheet(NSWindow *parent, NSWindow *sheet, WsdSheetHandler han
 	if (handler) objc_setAssociatedObject(sheet, &kHandlerOf, [[handler copy] autorelease], OBJC_ASSOCIATION_RETAIN);
 	[[NSNotificationCenter defaultCenter] postNotificationName: NSWindowWillBeginSheetNotification object: parent];
 	NSRect pf = [parent frame], sf = [sheet frame]; sf.origin = NSMakePoint(NSMidX(pf) - sf.size.width / 2, NSMidY(pf) - sf.size.height / 2); [sheet setFrame: sf display: YES];
-	[sheet setLevel: [parent level] + 1]; [sheet makeKeyAndOrderFront: nil];                 /* one level above the window it is on, so that it stays above it */
+	[sheet setLevel: [parent level] + 1]; [sheet makeKeyAndOrderFront: nil]; if (!NSEqualPoints([sheet frame].origin, sf.origin)) [sheet setFrameOrigin: sf.origin];     /* a titled window is placed by the server when it is ordered in */                 /* one level above the window it is on, so that it stays above it */
 	id srv = GSCurrentServer(); if ([srv respondsToSelector: @selector(wsdWindowCorners::)]) [srv wsdWindowCorners: 12 : (int)[sheet windowNumber]];
 	if (getenv("WSD_DEBUG")) NSLog(@"sheet %@ visible %d key %d frame %@ parent %@", sheet, (int)[sheet isVisible], (int)[sheet isKeyWindow], NSStringFromRect([sheet frame]), parent);
 }
@@ -75,7 +75,7 @@ static CGFloat TextHeight(NSString *s, NSDictionary *a, CGFloat w)
 /* the borderless panel that holds the alert; sheet = no icon, the message at the top */
 static NSPanel *BuildAlert(NSAlert *al, BOOL sheet, WsdAlertButtons *tg)
 {
-	NSView *acc = [al accessoryView]; NSSize as = acc ? [acc frame].size : NSZeroSize; CGFloat W = MAX(260, acc ? as.width + 30 : 0), TW = W - 42; NSString *title = [al messageText] ?: @"", *info = [al informativeText] ?: @"";
+	NSView *acc = [al respondsToSelector: @selector(accessoryView)] ? [al accessoryView] : nil; NSSize as = acc ? [acc frame].size : NSZeroSize; CGFloat W = MAX(260, acc ? as.width + 30 : 0), TW = W - 42; NSString *title = [al messageText] ?: @"", *info = [al informativeText] ?: @"";
 	NSMutableParagraphStyle *ps = [[[NSMutableParagraphStyle alloc] init] autorelease]; [ps setAlignment: NSCenterTextAlignment];
 	NSDictionary *ta = @{ NSFontAttributeName: [NSFont boldSystemFontOfSize: 13], NSForegroundColorAttributeName: [NSColor controlTextColor], NSParagraphStyleAttributeName: ps }, *ba = @{ NSFontAttributeName: [NSFont systemFontOfSize: 13], NSForegroundColorAttributeName: [NSColor controlTextColor], NSParagraphStyleAttributeName: ps };
 	CGFloat th = MAX(18, TextHeight(title, ta, TW)), ih = [info length] ? MAX(18, TextHeight(info, ba, TW)) : 0, y = sheet ? 19 : 99, titleY = y; y += th; CGFloat infoY = y + 8; if (ih) y = infoY + ih;
