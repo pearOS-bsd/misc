@@ -410,13 +410,12 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 		NSData *d = [out representationUsingType: t properties: @{}]; if (d) [d writeToFile: p atomically: YES]; }
 	[self _changed: nil];
 }
-- (void)cmdShare:(id)s { NSMenu *m = [self shareMenu]; if (!m) return; NSView *v = [self _view]; NSPoint p = [v convertPoint: [[NSApp currentEvent] locationInWindow] fromView: nil]; TFPopupMenu(v, p, m); }
-- (NSMenu *)shareMenu
+- (void)cmdShare:(id)s { [self shareAtWindowPoint: [NSValue valueWithPoint: NSMakePoint([[[self window] contentView] bounds].size.width - 214, 26)]]; }
+/* the popover opens above the button, centred on it (below it when the screen has no room above, as the Mac flips it); the point is in the window, y from the top */
+- (void)shareAtWindowPoint:(NSValue *)v
 {
-	if (![[self _targets] count]) return nil; NSMenu *m = [[NSMenu alloc] initWithTitle: @"Share"];
-	for (NSArray *e in @[ @[ @"AirDrop", @"airdrop" ], @[ @"Mail", @"envelope" ], @[ @"Messages", @"message" ], @[ @"Notes", @"note.text" ], @[ @"Reminders", @"checklist" ] ]) { NSMenuItem *it = [m addItemWithTitle: e[0] action: @selector(_shareVia:) keyEquivalent: @""]; [it setTarget: self]; [it setToolTip: [@"sym:" stringByAppendingString: e[1]]]; }
-	[m addItem: [NSMenuItem separatorItem]]; NSMenuItem *x = [m addItemWithTitle: @"Edit Extensions…" action: @selector(cmdOpenQuickActionsPrefPane:) keyEquivalent: @""]; [x setTarget: self]; [x setToolTip: @"sym:ellipsis.circle"];
-	return m;
+	if (![[self _targets] count]) return; NSRect wf = [[self window] frame]; NSPoint p = [v pointValue]; double ax = NSMinX(wf) + p.x, top = NSMaxY(wf), screenTop = [[NSScreen mainScreen] frame].size.height - 30, H = 160;
+	double oy = top - 4; if (oy + H > screenTop) oy = top - 52 + 4 - H; TFShowSharePopover([self _targets], NSMakePoint(ax, oy - 6), self);
 }
 - (void)_shareVia:(NSMenuItem *)it
 {
