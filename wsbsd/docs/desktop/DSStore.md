@@ -8,4 +8,4 @@ Checked against the Mac (macOS 27):
 - a real 372-record file from the Mac, read and written again by TDSStore, gives the same records (`tools/dsprobe/dsstore_roundtrip.mm`, `tools/dsprobe/dsstore_check.py`);
 - a file written by the Finder on BSD (an icon dragged to (402, 376)) was opened by the real Finder of the Mac: the icon sat at exactly that place (left 370 = 402 - 32, top 344 = 376 - 32 from the view origin).
 
-Not written yet: `bwsp` (window), `lsvp` (list view), `pBBk` (background), tags in `cmmt`/xattr stay in extended attributes.
+Written by the Finder: `Iloc`, `icvp`, `bwsp` (window), `vstl`, `lsvp` (list view columns, widths, sort), `vSrn`. Not written yet: `pBBk` (background); tags stay in extended attributes.
