@@ -200,6 +200,8 @@ jobs:
             wsbsd/ksa-pane1.png
             wsbsd/ksa-pane2.png
             wsbsd/ksa-pane3.png
+            wsbsd/finder.png
+            wsbsd/finder-wins.txt
             wsbsd/uitest.png
             wsbsd/terminal-parity.png
             wsbsd/uitest-light.png

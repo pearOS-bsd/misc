@@ -8,6 +8,7 @@ cc -O1 -std=c99 -D_DEFAULT_SOURCE -Iinclude -o wsshot tools/wsshot.c /tmp/wsc/li
 cc -O1 -std=c99 -D_DEFAULT_SOURCE -Iinclude -o wsclick tools/wsclick.c /tmp/wsc/libwsclient.a -lm
 cc -O1 -std=c99 -D_DEFAULT_SOURCE -Iinclude -o wsdrag tools/wsdrag.c /tmp/wsc/libwsclient.a -lm
 cc -O1 -std=c99 -D_DEFAULT_SOURCE -Iinclude -o wskey tools/wskey.c /tmp/wsc/libwsclient.a -lm
+cc -O1 -std=c99 -D_DEFAULT_SOURCE -Iinclude -o wswins tools/wswins.c /tmp/wsc/libwsclient.a -lm
 gmake wsd 2>&1 | tail -2
 export WS_SOCKET=/tmp/wsd-appkit.sock
 export XDG_CURRENT_DESKTOP=Aqua XDG_SESSION_DESKTOP=Aqua XDG_SESSION_TYPE=wsd      # what wsstart exports: neofetch shows DE: Aqua
@@ -165,6 +166,18 @@ PY
 	fi
 fi
 echo '=== SDK TESTS (compat layer) ==='; sh "$WS/ci/sdk-tests.sh" 2>&1 | tee sdk-tests.log | tail -30
+# Finder (finder/): built against the compat layer, started on wsd with a folder of files; the window must be on the screen and drawn
+echo '=== FINDER ==='; FO=/tmp/finder-ci; rm -rf $FO /tmp/fintest; mkdir -p /tmp/fintest/Folder; for n in a.txt b.png c.pdf; do echo x > /tmp/fintest/$n; done
+if COMPAT=/tmp/sdk-compat sh "$WS/finder/build.sh" $FO > /tmp/finder-build.log 2>&1 && [ -x $FO/System/Library/CoreServices/Finder.app/Contents/MacOS/Finder ]; then
+	(cd $FO/System/Library/CoreServices/Finder.app/Contents/MacOS && HOME=/tmp/finhome FINDER_PATH=/tmp/fintest FINDER_WINDOW=1 UI_EXIT_AFTER=30 timeout 30 ./Finder >/tmp/finder-run.log 2>&1) &
+	FP=$!; sleep 8; ./wsshot finder.ppm && python3 tools/ppm2png.py finder.ppm finder.png; ./wswins > finder-wins.txt 2>&1; cat finder-wins.txt | head -12
+	python3 - <<'PY' || FINDER_BAD=1
+import sys
+d=open('finder.ppm','rb').read(); body=d[-1280*800*3:]; n=len(set(body[::97])); print('finder screenshot: %d distinct bytes' % n); sys.exit(0 if n>40 else 1)
+PY
+	grep -q ' 1022x552' finder-wins.txt || { echo 'no Finder window of 1022x552'; FINDER_BAD=1; }
+	kill $FP 2>/dev/null; pkill -x Finder 2>/dev/null
+else echo 'Finder did not build'; tail -20 /tmp/finder-build.log; FINDER_BAD=1; fi
 kill $WP 2>/dev/null
 echo '=== OSS APP PROBE ==='; sh "$WS/ci/oss-probe.sh" 2>&1 | tee oss-probe.log | tail -80
 grep -v '^(lldb)\|warning\|wsd-back: \(titlewindow\|setinput\|flush\|commit\|order\|ws_win\)' /tmp/hello.log | tail -40; tail -5 /tmp/wsd.log
@@ -173,3 +186,4 @@ echo '=== TERMINAL (terminal/) ==='; cat /tmp/terminal-ci.txt 2>/dev/null
 grep -q 'SDK TEST .*FAILED\|did not build' sdk-tests.log 2>/dev/null && { echo '=== sdk-tests.log ==='; tail -60 sdk-tests.log | cut -c1-240; echo 'SDK TESTS FAILED'; exit 1; }
 [ "${UITEST_BLANK:-0}" = 0 ] || { echo 'UITEST CHECK FAILED: the gallery screenshot is blank (the app or the backend did not build)'; exit 1; }
 [ "${TERMINAL_OK:-1}" = 1 ] || { echo 'TERMINAL CHECK FAILED: neofetch output is not on the terminal screen'; exit 1; }
+[ "${FINDER_BAD:-0}" = 0 ] || { echo 'FINDER CHECK FAILED: no drawn 1022x552 window or no build'; exit 1; }
