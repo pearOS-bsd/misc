@@ -132,21 +132,7 @@ jobs:
           for i in $(seq 1 80); do
             sleep 15
             echo "screendump /tmp/s.ppm" | socat - UNIX-CONNECT:/tmp/mon >/dev/null 2>&1 || true; sleep 2
-            if python3 - <<'PY'
-import sys
-from PIL import Image
-try:
-    im = Image.open('/tmp/s.ppm').convert('RGB')
-except Exception as e:
-    print('no screen yet', e); sys.exit(1)
-w, h = im.size
-px = im.resize((160, 90)).getdata()
-colors = len(set(px)); lum = sum(sum(p) for p in px) / (3 * len(px))
-bar = im.crop((0, 0, w, 30)).resize((64, 4)).getdata(); barlum = sum(sum(p) for p in bar) / (3 * len(bar))
-print('size', im.size, 'colours', colors, 'mean', round(lum, 1), 'bar', round(barlum, 1))
-im.save('/tmp/last.png')
-sys.exit(0 if (colors > 400 and lum > 12) else 1)
-PY
+            if python3 wsbsd/iso/tools/screen_check.py /tmp/s.ppm /tmp/last.png
             then ok=1; cp /tmp/last.png shots/desktop.png; break; fi
             [ $((i % 4)) -eq 0 ] && cp /tmp/last.png shots/progress-$i.png 2>/dev/null || true
           done
