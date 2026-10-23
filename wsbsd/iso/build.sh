@@ -131,3 +131,15 @@ echo "== 7. the ISO"
 ISO="$OUT/macbsd-$ARCH.iso"
 makefs -t cd9660 -o rockridge -o label=PEAROS -o publisher="wsbsd" -o bootimage="i386;$WORK/efiboot.img" -o no-emul-boot -o platformid=efi "$ISO" "$ROOT"
 ls -l "$ISO"; sha256 "$ISO" > "$ISO.sha256"; cat "$ISO.sha256"
+
+echo "== 8. the USB disk image: GPT { EFI system partition (Ploader, FreeBSD's loader), the root file system as UFS }"
+# A plain dd of the ISO is not bootable on a PC; the image of a disk is what a stick needs: the loader on the ESP reads /boot from the UFS partition behind it (the way FreeBSD's own memstick images boot).
+# (the first version put the ISO into a partition: in QEMU the loader found "Failed to find bootable partition")
+if [ -z "$NO_USB" ]; then
+	(
+		set +e
+		sed -i '' 's|^vfs.root.mountfrom=.*|vfs.root.mountfrom="ufs:/dev/gpt/rootfs"|' "$ROOT/boot/loader.conf"
+		for d in etc private/etc; do printf '# Device\t\tMountpoint\tFStype\tOptions\tDump\tPass#\n/dev/gpt/rootfs\t/\t\tufs\trw\t1\t1\n' > "$ROOT/$d/fstab"; done
+		makefs -t ffs -o version=2 -b 8% -f 8% "$WORK/rootfs.img" "$ROOT" && mkimg -s gpt -P 4096 -p efi/EFISYS:="$WORK/efiboot.img" -p freebsd-ufs/rootfs:="$WORK/rootfs.img" -o "$OUT/macbsd-$ARCH-usb.img" && ls -l "$OUT/macbsd-$ARCH-usb.img"
+	) || echo "the USB image could not be built"
+fi
