@@ -1,5 +1,6 @@
 /* The volumes of the machine as the Finder lists them: the startup disk (Macintosh HD) and what is mounted under /media, /mnt, /Volumes (external disks, discs, servers), found through getmntinfo(3). */
 #import "TFinderViews.h"
+#import <CoreServices/CoreServices.h>
 #include <sys/param.h>
 #include <sys/mount.h>
 #include <sys/ucred.h>
@@ -19,4 +20,11 @@ NSString *TFDisplayName(NSString *path) { if ([path isEqual: @"/"]) return @"Mac
 BOOL TFEject(NSString *mount)                                                              /* the volume is unmounted (and an optical disc ejected) */
 {
 	NSTask *t = [[NSTask alloc] init]; [t setLaunchPath: @"/sbin/umount"]; [t setArguments: @[ mount ]]; @try { [t launch]; [t waitUntilExit]; } @catch (NSException *e) { return NO; } return [t terminationStatus] == 0;
+}
+
+BOOL TFIsPackage(NSString *p)                                                         /* a folder the Finder shows as one item: an application, a bundle, a document package */
+{
+	static NSSet *known; if (!known) known = [NSSet setWithObjects: @"app", @"bundle", @"framework", @"plugin", @"kext", @"rtfd", @"pages", @"numbers", @"key", @"xcodeproj", @"xcworkspace", @"playground", @"photoslibrary", @"pkg", @"mpkg", @"prefpane", @"saver", @"qlgenerator", @"mdimporter", @"xpc", @"appex", @"wdgt", @"dSYM", @"workflow", @"sparsebundle", @"theater", @"fcpbundle", @"band", nil];
+	NSString *e = [[p pathExtension] lowercaseString]; if (![e length]) return NO; if ([known containsObject: e] || [known containsObject: [p pathExtension]]) return YES;
+	NSString *uti = (__bridge_transfer NSString *)UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (__bridge CFStringRef)e, NULL); return uti && ![uti hasPrefix: @"dyn."] && UTTypeConformsTo((__bridge CFStringRef)uti, CFSTR("com.apple.package"));
 }

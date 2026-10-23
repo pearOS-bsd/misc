@@ -43,7 +43,7 @@ NSString *TFDateString(NSDate *d)
 }
 NSString *TFKindString(NSString *path, BOOL dir)
 {
-	if (dir) return [[path pathExtension] isEqual: @"app"] ? @"Application" : @"Folder";
+	if (dir) return TFIsPackage(path) ? @"Application" : @"Folder";
 	NSString *ext = [path pathExtension]; NSString *u = [ext length] ? (__bridge_transfer NSString *)UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (__bridge CFStringRef)ext, NULL) : nil;
 	NSString *d = u && ![u hasPrefix: @"dyn."] ? (__bridge_transfer NSString *)UTTypeCopyDescription((__bridge CFStringRef)u) : nil; if ([d isKindOfClass: [NSString class]] && [d length]) return [[[d substringToIndex: 1] uppercaseString] stringByAppendingString: [d substringFromIndex: 1]];
 	return [ext length] ? [NSString stringWithFormat: @"%@ document", [ext uppercaseString]] : @"Document";
@@ -55,7 +55,7 @@ NSArray *TFRecentPaths(void)                                                    
 	NSMutableArray *res = [NSMutableArray array]; NSFileManager *fm = [NSFileManager defaultManager]; NSMutableArray *stack = [NSMutableArray arrayWithObject: NSHomeDirectory()]; NSDate *since = [NSDate dateWithTimeIntervalSinceNow: -14 * 86400], *end = [NSDate dateWithTimeIntervalSinceNow: 2.5];
 	while ([stack count] && [res count] < 600) { NSString *dir = [stack lastObject]; [stack removeLastObject];
 		for (NSString *nm in [fm contentsOfDirectoryAtPath: dir error: NULL]) { if ([nm hasPrefix: @"."]) continue; NSString *full = [dir stringByAppendingPathComponent: nm]; NSDictionary *at = [fm attributesOfItemAtPath: full error: NULL]; BOOL d = [at[NSFileType] isEqual: NSFileTypeDirectory];
-			if (d) { if (![[full pathExtension] isEqual: @"app"] && !([dir isEqual: NSHomeDirectory()] && [nm isEqual: @"Library"])) [stack addObject: full]; } else if ([at[NSFileModificationDate] compare: since] == NSOrderedDescending) [res addObject: @{ @"p": full, @"d": at[NSFileModificationDate] }]; }
+			if (d) { if (!TFIsPackage(full) && !([dir isEqual: NSHomeDirectory()] && [nm isEqual: @"Library"])) [stack addObject: full]; } else if ([at[NSFileModificationDate] compare: since] == NSOrderedDescending) [res addObject: @{ @"p": full, @"d": at[NSFileModificationDate] }]; }
 		if ([end timeIntervalSinceNow] < 0) break; }
 	[res sortUsingComparator: ^NSComparisonResult(NSDictionary *a, NSDictionary *b) { return [b[@"d"] compare: a[@"d"]]; }]; NSMutableArray *out = [NSMutableArray array]; for (NSDictionary *d in res) [out addObject: d[@"p"]]; return out;
 }
@@ -80,7 +80,7 @@ void TFDrawIcon(NSString *path, NSRect r)                                       
 	NSFileManager *fm = [NSFileManager defaultManager]; BOOL d = NO; [fm fileExistsAtPath: path isDirectory: &d]; Class k = NSClassFromString(@"WsdFinderSupport");
 	NSString *vk = d ? VolumeKind(path) : nil;
 	if (vk) { const char *e = getenv("WSBSD_IOSTORAGE"); NSString *dir = e ? @(e) : @"/System/Library/Extensions/IOStorageFamily.kext/Contents/Resources"; NSImage *vi = WsbsdCoreTypesIcon([dir stringByAppendingPathComponent: [vk isEqual: @"internal"] ? @"Internal.icns" : [vk isEqual: @"optical"] ? @"Removable.icns" : @"External.icns"], MAX(r.size.width, r.size.height)); if (vi) { [vi drawInRect: r fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; return; } }
-	if (k && ![path isEqual: @"/"] && ![[path pathExtension] isEqual: @"app"]) { [k drawIconOfName: [path lastPathComponent] directory: d inRect: r]; return; }
+	if (k && ![path isEqual: @"/"] && !TFIsPackage(path)) { [k drawIconOfName: [path lastPathComponent] directory: d inRect: r]; return; }
 	NSImage *i = TFIcon(path); if (i) [i drawInRect: r fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1];
 }
 void TFPopupMenu(NSView *view, NSPoint p, NSMenu *menu)                                       /* an NSMenu shown as the panel's own pop-up (GNUstep's pop-up windows come out far too big under this window server): separators, symbols (tool tip "sym:name"), a row of tag colours (tag 2), sub menus, disabled rows in grey */
@@ -234,9 +234,9 @@ static const CGFloat kCW = 112, kCH = 126, kPad = 10, kIcon = 64;
 	if (vp) { _grid = [vp[@"gridSpacing"] doubleValue] >= 20 ? [vp[@"gridSpacing"] doubleValue] : 54; _textSize = [vp[@"textSize"] doubleValue] >= 8 ? [vp[@"textSize"] doubleValue] : 12; _showInfo = [vp[@"showItemInfo"] boolValue]; _showPreview = vp[@"showIconPreview"] ? [vp[@"showIconPreview"] boolValue] : YES; }
 	for (NSString *p in paths) {
 		NSString *n = TFDisplayName(p); if ([n hasPrefix: @"."] || ([filter length] && [n rangeOfString: filter options: NSCaseInsensitiveSearch].location == NSNotFound)) continue; BOOL isVol = [_prefix containsObject: p];
-		NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory] && ![[p pathExtension] isEqual: @"app"]; NSString *info = @"";
+		NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory] && !TFIsPackage(p); NSString *info = @"";
 		if (isVol) info = @""; else if (dir) { NSUInteger c = 0; for (NSString *s in [fm contentsOfDirectoryAtPath: p error: NULL]) if (![s hasPrefix: @"."]) c++; info = [NSString stringWithFormat: @"%lu item%s", (unsigned long)c, c == 1 ? "" : "s"]; }
-		else if (![[p pathExtension] isEqual: @"app"]) info = TFSizeString([at[NSFileSize] unsignedLongLongValue]);
+		else if (!TFIsPackage(p)) info = TFSizeString([at[NSFileSize] unsignedLongLongValue]);
 		NSMutableDictionary *it = [@{ @"name": n, @"path": p, @"info": info, @"tags": TFTagsOf(p), @"dir": @(dir), @"mod": at[NSFileModificationDate] ?: [NSDate distantPast], @"cre": at[NSFileCreationDate] ?: [NSDate distantPast], @"size": at[NSFileSize] ?: @0 } mutableCopy];
 		int ix, iy; if ([ds iconLocationOfName: [p lastPathComponent] x: &ix y: &iy]) it[@"pos"] = [NSValue valueWithPoint: NSMakePoint(ix - [self cw] / 2, iy - 4 - _isz / 2)];
 		[_items addObject: it];
@@ -415,7 +415,7 @@ static const CGFloat kRow = 24, kHead = 28;
 }
 - (NSMutableDictionary *)_makeItem:(NSString *)p fm:(NSFileManager *)fm depth:(int)depth
 {
-	NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory] && ![[p pathExtension] isEqual: @"app"];
+	NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory] && !TFIsPackage(p);
 	return [@{ @"name": [p lastPathComponent], @"path": p, @"dir": @(dir), @"date": at[NSFileModificationDate] ?: [NSDate distantPast], @"size": dir ? @(-1) : at[NSFileSize] ?: @0, @"kind": TFKindString(p, dir), @"tags": TFTagsOf(p), @"depth": @(depth), @"cre": at[NSFileCreationDate] ?: [NSDate distantPast], @"acc": at[@"NSFileAccessDate"] ?: at[NSFileModificationDate] ?: [NSDate distantPast], @"tagsort": [TFTagsOf(p) componentsJoinedByString: @","] } mutableCopy];
 }
 - (void)setPaths:(NSArray *)paths
@@ -550,7 +550,7 @@ static const CGFloat kStripH = 118, kGThumb = 72, kGCell = 88, kPane = 250;
 		if (th) { NSSize z = [th size]; CGFloat k = MIN(pr.size.width / z.width, pr.size.height / z.height); NSRect tr = NSMakeRect(NSMidX(pr) - z.width * k / 2, NSMidY(pr) - z.height * k / 2, z.width * k, z.height * k); [th drawInRect: tr fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; }
 		else { CGFloat s = MIN(MIN(pr.size.width, pr.size.height), 256); TFDrawIcon(p, NSMakeRect(NSMidX(pr) - s / 2, NSMidY(pr) - s / 2, s, s)); }
 		/* the information pane */
-		NSFileManager *fm = [NSFileManager defaultManager]; NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory] && ![[p pathExtension] isEqual: @"app"];
+		NSFileManager *fm = [NSFileManager defaultManager]; NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory] && !TFIsPackage(p);
 		[TF_SIDEBAR setFill]; NSRectFill(NSMakeRect(W, 0, kPane, top)); [TF_LINE setFill]; NSRectFill(NSMakeRect(W, 0, 1, top));
 		NSMutableParagraphStyle *ps = [[NSMutableParagraphStyle alloc] init]; [ps setLineBreakMode: NSLineBreakByTruncatingMiddle]; [ps setAlignment: NSTextAlignmentCenter];
 		[[p lastPathComponent] drawInRect: NSMakeRect(W + 14, 140, kPane - 28, 18) withAttributes: @{ NSFontAttributeName: [NSFont boldSystemFontOfSize: 14], NSForegroundColorAttributeName: TF_TEXT, NSParagraphStyleAttributeName: ps }];
@@ -593,7 +593,7 @@ static const CGFloat kColW = 247, kColRow = 22;
 {
 	NSFileManager *fm = [NSFileManager defaultManager]; NSMutableArray *items = [NSMutableArray array];
 	for (NSString *n in [[fm contentsOfDirectoryAtPath: dir error: NULL] sortedArrayUsingSelector: @selector(tfNameCompare:)]) {
-		if ([n hasPrefix: @"."]) continue; NSString *p = [dir stringByAppendingPathComponent: n]; BOOL d = NO; [fm fileExistsAtPath: p isDirectory: &d]; if (d && [[p pathExtension] isEqual: @"app"]) d = NO;
+		if ([n hasPrefix: @"."]) continue; NSString *p = [dir stringByAppendingPathComponent: n]; BOOL d = NO; [fm fileExistsAtPath: p isDirectory: &d]; if (d && TFIsPackage(p)) d = NO;
 		[items addObject: @{ @"name": n, @"path": p, @"dir": @(d) }];
 	}
 	return [@{ @"dir": dir, @"items": items, @"sel": @(-1), @"off": @0.0 } mutableCopy];

@@ -39,6 +39,7 @@ void TFSetPref(NSString *key, id value);
 void TFDrawIcon(NSString *path, NSRect r);
 @interface NSObject (TFRound) + (void)roundWindow:(NSWindow *)w radius:(int)r; @end
 NSArray *TFVolumes(void);
+BOOL TFIsPackage(NSString *path);
 NSArray *TFAppsForFile(NSString *path);
 NSString *TFDisplayName(NSString *path);
 BOOL TFEject(NSString *mount);
