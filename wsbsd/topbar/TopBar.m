@@ -15,6 +15,7 @@ static int BatteryPercent(void) { int v = -1; size_t n = sizeof v; if (sysctlbyn
 static BOOL BatteryCharging(void) { int v = 0; size_t n = sizeof v; if (sysctlbyname("hw.acpi.battery.state", &v, &n, NULL, 0) != 0) return NO; return (v & 2) != 0; }     /* ACPI battery state: 1 discharging, 2 charging */
 static BOOL LightText(void) { static BOOL (*fn)(void); static BOOL looked; if (!looked) { looked = YES; fn = (BOOL (*)(void))dlsym(RTLD_DEFAULT, "WsdBarWantsLightText"); } return fn ? fn() : YES; }
 
+void ToggleControlCenter(void);
 @interface BarView : NSView { NSTimer *timer; int battery; BOOL charging; NSInteger pressed; }
 @end
 @implementation BarView
@@ -68,14 +69,16 @@ static BOOL LightText(void) { static BOOL (*fn)(void); static BOOL looked; if (!
 	NSSize ts = [pc sizeWithAttributes: a]; double tx = NSMinX(body) + (charging ? 3 : (body.size.width - ts.width) / 2); [pc drawAtPoint: NSMakePoint(tx, c.y - ts.height / 2) withAttributes: a];
 	if (charging) [NSClassFromString(@"WsdFinderSupport") drawSymbol: @"bolt.fill" inRect: NSMakeRect(NSMaxX(body) - 9, c.y - 5, 8, 10) size: 8 weight: 6 color: a[NSForegroundColorAttributeName]];
 }
+- (BOOL)acceptsFirstMouse:(NSEvent *)e { return YES; }
 - (void)mouseDown:(NSEvent *)e
 {
+	if (getenv("TOPBAR_DEBUG")) NSLog(@"topbar mouseDown %@", NSStringFromPoint([self convertPoint: [e locationInWindow] fromView: nil]));
 	NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; double W = [self bounds].size.width; NSArray *c = [self centres]; pressed = -1;
 	NSSize cs = [[self clockString] sizeWithAttributes: @{ NSFontAttributeName: [NSFont systemFontOfSize: 13] }]; if (p.x > W - 25 - cs.width - 8) pressed = 99;
 	for (NSUInteger i = 0; pressed < 0 && i + 1 < [c count]; i += 2) if (fabs(p.x - (W - [c[i + 1] doubleValue])) < 18) pressed = (NSInteger)i;
 	[self setNeedsDisplay: YES];
 }
-- (void)mouseUp:(NSEvent *)e { pressed = -1; [self setNeedsDisplay: YES]; }
+- (void)mouseUp:(NSEvent *)e { NSArray *c = [self centres]; if (pressed >= 0 && pressed < 99 && [c[pressed] isEqual: @"cc"]) ToggleControlCenter(); pressed = -1; [self setNeedsDisplay: YES]; }
 @end
 
 int main(int argc, char *argv[])
