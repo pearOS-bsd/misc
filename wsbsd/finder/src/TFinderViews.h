@@ -31,6 +31,8 @@ NSWindow *TFOpenInfoWindow(NSString *path);
 void TFCopyItems(NSArray *srcs, NSString *destDir, BOOL move, void (^completion)(NSArray *ops));
 NSWindow *TFOpenQuickLook(NSString *path);
 void TFOpenSettings(void);
+@class TIconView;
+void TFOpenViewOptions(TIconView *view, NSString *folderName, void (^changed)(void));
 id TFPref(NSString *key, id def);
 BOOL TFPrefBool(NSString *key, BOOL def);
 void TFSetPref(NSString *key, id value);
@@ -76,7 +78,8 @@ NSImage *TFIcon(NSString *path);
 - (void)reveal:(NSRect)r;
 @end
 
-@interface TIconView : TScrollBase { @public __weak id<TIconViewDelegate> delegate; NSString *filter; NSMutableArray *_items; NSMutableIndexSet *_sel; NSInteger _anchor; NSString *_folder, *_arrange; NSRect _band; BOOL _dragging; NSInteger _dropTarget; double _animStart; NSTimer *_animTimer; CGFloat _isz; BOOL desktop; NSArray *_prefix; }
+@interface TIconView : TScrollBase { @public __weak id<TIconViewDelegate> delegate; NSString *filter; NSMutableArray *_items; NSMutableIndexSet *_sel; NSInteger _anchor; NSString *_folder, *_arrange; NSRect _band; BOOL _dragging; NSInteger _dropTarget; double _animStart; NSTimer *_animTimer; CGFloat _isz, _grid, _textSize; BOOL _showInfo, _showPreview; BOOL desktop; NSArray *_prefix; }
+- (void)applyOptions;
 - (void)reloadKeepingSelectionOrFolder:(NSString *)folder;
 - (void)setIconSize:(CGFloat)z;
 - (CGFloat)iconSize;

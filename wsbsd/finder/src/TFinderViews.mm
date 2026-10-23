@@ -196,11 +196,12 @@ static void TextAt(NSString *s, CGFloat x, CGFloat cy, NSDictionary *at) { NSSiz
 static const CGFloat kCW = 112, kCH = 126, kPad = 10, kIcon = 64;
 @implementation TIconView
 - (void)reloadKeepingSelectionOrFolder:(NSString *)folder { NSArray *keep = [self selectedPaths]; CGFloat o = off; [self setFolder: folder]; for (NSUInteger i = 0; i < [_items count]; i++) if ([keep containsObject: _items[i][@"path"]]) [_sel addIndex: i]; off = o; [self setNeedsDisplay: YES]; }
-- (CGFloat)cw { return desktop ? _isz + 36 : MAX(112, _isz + 48); }
-- (CGFloat)ch { return _isz + 62; }
+- (CGFloat)cw { return desktop ? _isz + 36 : MAX(_isz + 40, _isz + _grid - 6); }
+- (CGFloat)ch { return desktop ? _isz + 62 : [self cw] + (_showInfo ? 14 : 0); }
+- (void)applyOptions { for (NSMutableDictionary *it in _items) [it removeObjectForKey: @"lines"]; [self scrollTo: off]; [self _save]; [self setNeedsDisplay: YES]; }
 - (void)setIconSize:(CGFloat)z { z = MAX(16, MIN(256, z)); if (z == _isz) return; _isz = z; for (NSMutableDictionary *it in _items) [it removeObjectForKey: @"lines"]; [self scrollTo: off]; [self _save]; [self setNeedsDisplay: YES]; }
 - (CGFloat)iconSize { return _isz; }
-- (instancetype)initWithFrame:(NSRect)f { if ((self = [super initWithFrame: f])) { _isz = 64; _items = [NSMutableArray array]; _sel = [NSMutableIndexSet indexSet]; _anchor = -1; _dropTarget = -1; } return self; }/* the settings of a folder (the arrangement and the places of the icons), kept in ~/Library/Application Support/Finder/ViewSettings.plist until .DS_Store is read and written the way the Finder does */
+- (instancetype)initWithFrame:(NSRect)f { if ((self = [super initWithFrame: f])) { _isz = 64; _grid = 54; _textSize = 12; _showInfo = NO; _showPreview = YES; _items = [NSMutableArray array]; _sel = [NSMutableIndexSet indexSet]; _anchor = -1; _dropTarget = -1; } return self; }/* the settings of a folder (the arrangement and the places of the icons), kept in ~/Library/Application Support/Finder/ViewSettings.plist until .DS_Store is read and written the way the Finder does */
 - (void)drawBackground { if (desktop) { [[NSColor clearColor] set]; NSRectFillUsingOperation([self bounds], NSCompositeCopy); } else [super drawBackground]; }
 - (BOOL)isOpaque { return !desktop; }
 - (void)setFolder:(NSString *)folder
@@ -211,6 +212,7 @@ static const CGFloat kCW = 112, kCH = 126, kPad = 10, kIcon = 64;
 - (void)setPaths:(NSArray *)paths
 {
 	[_items removeAllObjects]; [_sel removeAllIndexes]; NSFileManager *fm = [NSFileManager defaultManager]; TDSStore *ds = _folder ? [TDSStore storeForFolder: _folder] : nil; NSDictionary *vp = [ds plistForName: @"." sid: @"icvp"]; if (vp) { _isz = [vp[@"iconSize"] doubleValue] >= 16 ? [vp[@"iconSize"] doubleValue] : 64; NSString *ab = vp[@"arrangeBy"]; NSDictionary *m = @{ @"name": @"name", @"kind": @"kind", @"dateModified": @"modified", @"dateCreated": @"created", @"size": @"size", @"label": @"tags" }; _arrange = m[ab]; } else { _isz = _isz ?: 64; }
+	if (vp) { _grid = [vp[@"gridSpacing"] doubleValue] >= 20 ? [vp[@"gridSpacing"] doubleValue] : 54; _textSize = [vp[@"textSize"] doubleValue] >= 8 ? [vp[@"textSize"] doubleValue] : 12; _showInfo = [vp[@"showItemInfo"] boolValue]; _showPreview = vp[@"showIconPreview"] ? [vp[@"showIconPreview"] boolValue] : YES; }
 	for (NSString *p in paths) {
 		NSString *n = TFDisplayName(p); if ([n hasPrefix: @"."] || ([filter length] && [n rangeOfString: filter options: NSCaseInsensitiveSearch].location == NSNotFound)) continue; BOOL isVol = [_prefix containsObject: p];
 		NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory] && ![[p pathExtension] isEqual: @"app"]; NSString *info = @"";
@@ -227,7 +229,7 @@ static const CGFloat kCW = 112, kCH = 126, kPad = 10, kIcon = 64;
 	if (!_folder) return; TDSStore *ds = [TDSStore storeForFolder: _folder]; if (_isz < 16) _isz = 64;
 	for (NSDictionary *it in _items) { NSString *n = [it[@"path"] lastPathComponent]; if (it[@"pos"]) { NSPoint q = [it[@"pos"] pointValue]; [ds setIconLocation: NSMakePoint(q.x + [self cw] / 2, q.y + 4 + _isz / 2) ofName: n]; } else [ds removeName: n sid: @"Iloc"]; }
 	NSMutableDictionary *vp = [ds plistForName: @"." sid: @"icvp"] ?: [@{ @"backgroundType": @0, @"backgroundColorRed": @1.0, @"backgroundColorGreen": @1.0, @"backgroundColorBlue": @1.0, @"gridOffsetX": @0.0, @"gridOffsetY": @0.0, @"gridSpacing": @54.0, @"labelOnBottom": @YES, @"scrollPositionX": @0.0, @"scrollPositionY": @0.0, @"showIconPreview": @YES, @"showItemInfo": @NO, @"textSize": @12.0, @"viewOptionsVersion": @1 } mutableCopy];
-	NSDictionary *m = @{ @"name": @"name", @"kind": @"kind", @"modified": @"dateModified", @"created": @"dateCreated", @"size": @"size", @"tags": @"label" }; vp[@"iconSize"] = @(_isz); vp[@"arrangeBy"] = m[_arrange ?: @""] ?: @"none";
+	NSDictionary *m = @{ @"name": @"name", @"kind": @"kind", @"modified": @"dateModified", @"created": @"dateCreated", @"size": @"size", @"tags": @"label" }; vp[@"iconSize"] = @(_isz); vp[@"gridSpacing"] = @(_grid); vp[@"textSize"] = @(_textSize); vp[@"showItemInfo"] = @(_showInfo); vp[@"showIconPreview"] = @(_showPreview); vp[@"arrangeBy"] = m[_arrange ?: @""] ?: @"none";
 	[ds setPlist: vp forName: @"." sid: @"icvp"]; if (![ds valueForName: @"." sid: @"vSrn"]) [ds setValue: @1 type: @"long" forName: @"." sid: @"vSrn"]; [ds write];
 }
 - (void)reloadKeepingSelection { NSArray *keep = [self selectedPaths]; if (![_items count]) return; NSMutableArray *ps = [NSMutableArray array]; for (NSDictionary *d in _items) [ps addObject: d[@"path"]]; CGFloat o = off; [self setPaths: ps]; for (NSUInteger i = 0; i < [_items count]; i++) if ([keep containsObject: _items[i][@"path"]]) [_sel addIndex: i]; off = o; [self setNeedsDisplay: YES]; }
@@ -283,14 +285,14 @@ static const CGFloat kCW = 112, kCH = 126, kPad = 10, kIcon = 64;
 }
 - (void)drawContent:(NSRect)v
 {
-	NSDictionary *lab = Font(12, NO, desktop ? TFRGB(255, 255, 255) : TF_TEXT); NSDictionary *labSel = Font(12, NO, TFRGB(255, 255, 255)); NSDictionary *inf = Font(10.5, NO, TFDark() ? TFRGB(66, 140, 235) : TFRGB(0, 100, 220)); BOOL key = KeyWin(self);
+	NSDictionary *lab = Font(_textSize, NO, desktop ? TFRGB(255, 255, 255) : TF_TEXT); NSDictionary *labSel = Font(_textSize, NO, TFRGB(255, 255, 255)); NSDictionary *inf = Font(MAX(9, _textSize - 1.5), NO, TFDark() ? TFRGB(66, 140, 235) : TFRGB(0, 100, 220)); BOOL key = KeyWin(self);
 	for (NSInteger pass = 0; pass < 2; pass++) for (NSInteger i = 0; i < (NSInteger)[_items count]; i++) {                                                                    /* the dragged icons last, on top */
 		BOOL moving = _dragging && [_sel containsIndex: i]; if ((pass == 1) != moving) continue;
 		NSRect c = [self _cell: i]; if (NSMaxY(c) < v.origin.y || c.origin.y > NSMaxY(v)) continue; NSMutableDictionary *it = _items[i]; BOOL sel = [_sel containsIndex: i];
 		NSRect ir = NSMakeRect(c.origin.x + ([self cw] - _isz) / 2, c.origin.y + 4, _isz, _isz);
 		if (_dropTarget == i) FillRound(NSInsetRect(ir, -6, -6), 8, key ? TFRGBA(0, 98, 225, 0.55) : TFRGBA(120, 120, 120, 0.4));
 		if (sel) FillRound(NSInsetRect(ir, -4, -4), 6, TFDark() ? (key ? TFRGBA(255, 255, 255, 0.14) : TFRGB(52, 52, 52)) : TFRGBA(0, 0, 0, 0.09));
-		NSImage *thumb = Thumb(it[@"path"]);
+		NSImage *thumb = _showPreview ? Thumb(it[@"path"]) : nil;
 		if (thumb) { NSSize z = [thumb size]; CGFloat k = MIN(_isz / z.width, _isz / z.height); NSRect tr = NSMakeRect(NSMidX(ir) - z.width * k / 2, NSMidY(ir) - z.height * k / 2, z.width * k, z.height * k); [TFRGBA(0, 0, 0, 0.35) setFill]; NSRectFill(NSOffsetRect(tr, 0, 1)); [thumb drawInRect: tr fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; }
 		else TFDrawIcon(it[@"path"], ir);
 		NSArray *lines = it[@"lines"]; if (!lines) { lines = WrapLabel(it[@"name"], lab, [self cw] - 6.5, 2); it[@"lines"] = lines; }
@@ -300,7 +302,7 @@ static const CGFloat kCW = 112, kCH = 126, kPad = 10, kIcon = 64;
 			if (sel) FillRound(NSMakeRect(NSMidX(c) - z.width / 2 - 5, y - 9, z.width + 10, 18), 5, key ? TF_ACCENT : TFDark() ? TFRGB(90, 90, 90) : TFRGB(190, 190, 194));
 			[ln drawAtPoint: NSMakePoint(NSMidX(c) - z.width / 2, y - z.height / 2) withAttributes: sel ? labSel : lab]; y += lh;
 		}
-		if (!desktop && [it[@"info"] length]) { NSSize z = [it[@"info"] sizeWithAttributes: inf]; [it[@"info"] drawAtPoint: NSMakePoint(NSMidX(c) - z.width / 2, y - z.height / 2 - 1) withAttributes: inf]; }
+		if (!desktop && _showInfo && [it[@"info"] length]) { NSSize z = [it[@"info"] sizeWithAttributes: inf]; [it[@"info"] drawAtPoint: NSMakePoint(NSMidX(c) - z.width / 2, y - z.height / 2 - 1) withAttributes: inf]; }
 	}
 	if (!NSIsEmptyRect(_band)) { [TFRGBA(120, 160, 255, 0.18) setFill]; NSRectFill(_band); [TFRGBA(120, 160, 255, 0.6) setStroke]; NSFrameRect(_band); }
 }
