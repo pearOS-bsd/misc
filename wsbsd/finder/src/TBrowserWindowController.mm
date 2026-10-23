@@ -82,6 +82,23 @@ static NSString *StyleName(NSInteger m) { return @[ @"icnv", @"Nlsv", @"clmv", @
 }
 - (void)cmdTagsPopup:(id)s { NSView *v = [self _view]; NSPoint p = [v convertPoint: [[NSApp currentEvent] locationInWindow] fromView: nil]; NSMenu *tm = [self tagMenu]; [self _markTagMenu: tm]; TFPopupMenu(v, p, tm); }
 - (void)cmdOpenQuickActionsPrefPane:(id)s {}
+/* the menu of the empty space of an icon view, as the real Finder's Action menu shows it without a selection (read from its accessibility tree: 233 wide; New Folder, Open in New Tab, Get Info, Quick Look "folder", Use Groups, Sort By, Clean Up, Clean Up By, Show View Options; "Import from iPhone" only appears with a phone connected and is left out) */
+- (NSMenu *)backgroundContextMenu
+{
+	if (_mode != 0 || _tag || _filter) return nil; NSMenu *m = [[NSMenu alloc] initWithTitle: @""]; NSString *fn = [[_url path] isEqual: @"/"] ? @"Macintosh HD" : [[_url path] lastPathComponent];
+	NSMenuItem *(^Add)(NSMenu *, NSString *, SEL, id) = ^NSMenuItem *(NSMenu *menu, NSString *t, SEL a, id rep) { NSMenuItem *i = [menu addItemWithTitle: t action: a keyEquivalent: @""]; [i setTarget: self]; if (rep) [i setRepresentedObject: rep]; return i; };
+	Add(m, @"New Folder", @selector(cmdNewFolder:), nil); Add(m, @"Open in New Tab", @selector(cmdNewTab:), nil); [m addItem: [NSMenuItem separatorItem]];
+	Add(m, @"Get Info", @selector(cmdShowStaticInfo:), nil); Add(m, [NSString stringWithFormat: @"Quick Look “%@”", fn], @selector(cmdQuickLook:), nil); [m addItem: [NSMenuItem separatorItem]];
+	NSMenuItem *ug = Add(m, @"Use Groups", @selector(cmdUseGroupsOrStacks:), nil); [ug setState: _icons->_group ? NSOnState : NSOffState];
+	NSMenuItem *sb = Add(m, @"Sort By", NULL, nil); NSMenu *ss = [[NSMenu alloc] initWithTitle: @"Sort By"]; NSString *cur = _icons->_arrange;
+	NSMenuItem *none = Add(ss, @"None", @selector(cmdSortByKey:), @""); [none setState: ([cur length] || _icons->_snap) ? NSOffState : NSOnState]; [ss addItem: [NSMenuItem separatorItem]]; [Add(ss, @"Snap to Grid", @selector(cmdSnapToGrid:), nil) setState: _icons->_snap ? NSOnState : NSOffState]; [ss addItem: [NSMenuItem separatorItem]];
+	for (NSArray *k in @[ @[ @"Name", @"name" ], @[ @"Kind", @"kind" ], @[ @"Date Last Opened", @"opened" ], @[ @"Date Added", @"created" ], @[ @"Date Modified", @"modified" ], @[ @"Date Created", @"created" ], @[ @"Size", @"size" ], @[ @"Tags", @"tags" ] ]) { NSMenuItem *x = Add(ss, k[0], @selector(cmdSortByKey:), k[1]); if ([cur isEqual: k[1]] && ![k[0] isEqual: @"Date Added"]) [x setState: NSOnState]; }
+	[sb setSubmenu: ss]; Add(m, @"Clean Up", @selector(cmdCleanUp:), nil);
+	NSMenuItem *cb = Add(m, @"Clean Up By", NULL, nil); NSMenu *cs = [[NSMenu alloc] initWithTitle: @"Clean Up By"]; for (NSArray *k in @[ @[ @"Name", @"cmdCleanUpByName:" ], @[ @"Kind", @"cmdCleanUpByKind:" ], @[ @"Date Modified", @"cmdCleanUpByModDate:" ], @[ @"Date Created", @"cmdCleanUpByCreationDate:" ], @[ @"Size", @"cmdCleanUpByPhysicalSize:" ], @[ @"Tags", @"cmdCleanUpByLabel:" ] ]) Add(cs, k[0], NSSelectorFromString(k[1]), nil); [cb setSubmenu: cs];
+	Add(m, @"Show View Options", @selector(cmdToggleViewOptions:), nil);
+	return m;
+}
+- (void)cmdSnapToGrid:(id)s { [_icons setSnapToGrid: !_icons->_snap]; }
 - (void)prepareContextMenu:(NSMenu *)m
 {
 	NSString *one = [_selection count] == 1 ? [_selection[0] lastPathComponent] : nil; NSString *ext = [[_selection firstObject] pathExtension].lowercaseString; BOOL arch = [@[ @"zip", @"gz", @"tgz", @"bz2", @"xz", @"7z", @"rar", @"dmg", @"tar" ] containsObject: ext];
@@ -221,7 +238,7 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 	for (NSString *p in [self _targets]) [[NSFileManager defaultManager] removeItemAtPath: p error: NULL]; [self _changed: nil];
 }
 - (void)cmdDuplicateExactly:(id)s { [self cmdDuplicate: s]; }
-- (void)cmdQuickLook:(id)s { NSArray *t = [self _targets]; if ([t count]) TFOpenQuickLook(t[0]); }
+- (void)cmdQuickLook:(id)s { NSArray *t = [self _targets]; if ([t count]) TFOpenQuickLook(t[0]); else if (_url) TFOpenQuickLook([_url path]); }
 /* tabs: each keeps its folder, history and view; the views of the window show the one selected */
 - (NSMutableDictionary *)_tabState { return [@{ @"url": _url ?: [NSURL fileURLWithPath: NSHomeDirectory()], @"history": [_history mutableCopy] ?: [NSMutableArray array], @"hi": @(_hi), @"mode": @(_mode) } mutableCopy]; }
 - (void)_syncTabBar { NSMutableArray *t = [NSMutableArray array]; for (NSUInteger i = 0; i < [_tabs count]; i++) { NSURL *u = (NSInteger)i == _tabIx ? _url : _tabs[i][@"url"]; NSString *p = [u path]; [t addObject: [p isEqual: @"/"] ? @"Macintosh HD" : [p lastPathComponent]]; } _tabBar->titles = t; _tabBar->selected = _tabIx; [_tabBar setNeedsDisplay: YES]; [self _layout]; }
@@ -318,11 +335,12 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 	TFBulkRename([_selection copy], ^(NSArray *changes) { NSFileManager *fm = [NSFileManager defaultManager]; if (getenv("FINDER_DEBUG")) NSLog(@"bulk rename: %@", changes); NSMutableArray *ops = [NSMutableArray array]; @try { for (NSUInteger ci = 0; ci < [changes count]; ci++) { NSArray *pr = changes[ci]; NSError *er = nil; if (![fm fileExistsAtPath: pr[1]] && [fm moveItemAtPath: pr[0] toPath: pr[1] error: &er]) { [ops addObject: @{ @"t": @"move", @"a": pr[0], @"b": pr[1] }]; if (getenv("FINDER_DEBUG")) NSLog(@"bulk rename moved %@", pr); } else if (getenv("FINDER_DEBUG")) NSLog(@"bulk rename failed %@: %@", pr, er); } } @catch (NSException *x) { NSLog(@"bulk rename exception %@ %@", x, [x reason]); }
 		TBrowserWindowController *s = me; if (s && [ops count]) { [s _record: @"Rename" ops: ops]; [s _changed: nil]; } });
 }
-- (void)cmdShowStaticInfo:(id)s { for (NSString *p in [self _targets]) TFOpenInfoWindow(p); }
+- (void)cmdShowStaticInfo:(id)s { NSArray *t = [self _targets]; if (![t count] && _url && !_tag) t = @[ [_url path] ]; for (NSString *p in t) TFOpenInfoWindow(p); }
 - (void)cmdShowInfo:(id)s { [self cmdShowStaticInfo: s]; }
 - (BOOL)validateMenuItem:(NSMenuItem *)i
 {
 	if ([[i title] isEqual: @"Open With"] && [i submenu]) return [_selection count] > 0;
+	{ SEL q0 = [i action]; if ((sel_isEqual(q0, @selector(cmdShowStaticInfo:)) || sel_isEqual(q0, @selector(cmdQuickLook:))) && ![_selection count] && _url && !_tag) return YES; }      /* without a selection they are about the folder */
 	{ SEL q = [i action]; if (sel_isEqual(q, @selector(cmdGroupAsFolder:)) || sel_isEqual(q, @selector(cmdOpenAltBrowse:)) || sel_isEqual(q, @selector(cmdOpenOptionBrowse:)) || sel_isEqual(q, @selector(cmdShowInspector:)) || sel_isEqual(q, @selector(cmdShowStaticInfoSummary:)) || sel_isEqual(q, @selector(cmdEditTags:)) || sel_isEqual(q, @selector(cmdCopyAsLink:)) || sel_isEqual(q, @selector(cmdEject:))) return [_selection count] > 0; if (sel_isEqual(q, @selector(cmdOpenParentAltBrowse:)) || sel_isEqual(q, @selector(cmdGoToRecent:)) || sel_isEqual(q, @selector(cmdConnectTo:)) || sel_isEqual(q, @selector(cmdSelectStartupDisk:)) || sel_isEqual(q, @selector(cmdFindFile:)) || sel_isEqual(q, @selector(cmdAlternateFindFile:)) || sel_isEqual(q, @selector(cmdNewSmartFolder:)) || sel_isEqual(q, @selector(cmdNewBurnableFolder:)) || sel_isEqual(q, @selector(cmdEjectAll:)) || sel_isEqual(q, @selector(cmdShowClipboard:))) return YES; }
 	if ([i action] == @selector(cmdOpenWithApp:) || [i action] == @selector(cmdOpenWithOther:)) return [_selection count] > 0;
 	SEL a = [i action]; BOOL has = [_selection count] > 0;
