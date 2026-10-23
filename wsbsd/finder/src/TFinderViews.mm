@@ -86,12 +86,13 @@ void TFPopupMenu(NSView *view, NSPoint p, NSMenu *menu)                         
 {
 	NSMutableArray *items = [NSMutableArray array], *titles = [NSMutableArray array], *dots = [NSMutableArray array]; NSMutableIndexSet *checks = [NSMutableIndexSet indexSet]; Class sp = NSClassFromString(@"WsdFinderSupport");
 	for (NSMenuItem *it in [menu itemArray]) {
-		if ([it isSeparatorItem]) continue; id t = [it target]; if ([t respondsToSelector: @selector(validateMenuItem:)] && [it action] && ![t validateMenuItem: it]) continue;
+		if ([it isSeparatorItem]) { if ([items count] && ![[titles lastObject] isEqual: @"-"]) { [items addObject: [NSNull null]]; [titles addObject: @"-"]; [dots addObject: [NSNull null]]; } continue; } id t = [it target]; if ([t respondsToSelector: @selector(validateMenuItem:)] && [it action] && ![t validateMenuItem: it]) continue;
 		[items addObject: it]; [titles addObject: [it submenu] ? [[it title] stringByAppendingString: @"  ▸"] : [it title]]; [dots addObject: [it tag] == 1 && [[it representedObject] isKindOfClass: [NSString class]] ? (id)[sp colorOfTag: [it representedObject]] : (id)[NSNull null]];
 		if ([it state] == NSOnState) [checks addIndex: [items count] - 1];
 	}
+	while ([titles count] && [[titles lastObject] isEqual: @"-"]) { [titles removeLastObject]; [items removeLastObject]; [dots removeLastObject]; }
 	if (![items count] || !sp) return; NSView *root = [[view window] contentView]; NSPoint q = [root convertPoint: p fromView: view];
-	[sp popupInView: root titles: titles dots: dots checks: checks at: q pick: ^(NSInteger k) { NSMenuItem *it = items[k]; if ([it submenu]) TFPopupMenu(view, NSMakePoint(p.x + 40, p.y), [it submenu]); else [NSApp sendAction: [it action] to: [it target] from: it]; }];
+	[sp popupInView: root titles: titles dots: dots checks: checks at: q pick: ^(NSInteger k) { if (items[k] == [NSNull null]) return; NSMenuItem *it = items[k]; if ([it submenu]) TFPopupMenu(view, NSMakePoint(p.x + 40, p.y), [it submenu]); else [NSApp sendAction: [it action] to: [it target] from: it]; }];
 }
 static NSImage *Thumb(NSString *path)                                                       /* the picture itself for image files, scaled once */
 {
@@ -358,7 +359,7 @@ static const CGFloat kCW = 112, kCH = 126, kPad = 10, kIcon = 64;
 {
 	NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; NSInteger i = [self _index: NSMakePoint(p.x, p.y - topInset + off)];
 	if (i >= 0 && ![_sel containsIndex: i]) { [_sel removeAllIndexes]; [_sel addIndex: i]; [self setNeedsDisplay: YES]; [self _notify]; } else if (i < 0) { [_sel removeAllIndexes]; [self setNeedsDisplay: YES]; [self _notify]; }
-	TFPopupMenu(self, p, [self menu]); return nil;
+	if ([delegate respondsToSelector: @selector(prepareContextMenu:)]) [(id)delegate prepareContextMenu: [self menu]]; TFPopupMenu(self, p, [self menu]); return nil;
 }
 - (void)selectAll:(id)s { [_sel addIndexesInRange: NSMakeRange(0, [_items count])]; [self setNeedsDisplay: YES]; [self _notify]; }
 - (void)keyDown:(NSEvent *)e
@@ -459,7 +460,7 @@ static const CGFloat kRow = 24, kHead = 28;
 	else { if (![_sel containsIndex: i]) { [_sel removeAllIndexes]; [_sel addIndex: i]; } _anchor = i; }
 	[self setNeedsDisplay: YES]; [self _notify]; if ([e clickCount] == 2) [delegate iconViewOpenItem: _items[i][@"path"]];
 }
-- (NSMenu *)menuForEvent:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; NSInteger i = [self _row: NSMakePoint(p.x, p.y - topInset + off)]; if (i >= 0 && ![_sel containsIndex: i]) { [_sel removeAllIndexes]; [_sel addIndex: i]; [self setNeedsDisplay: YES]; [self _notify]; } TFPopupMenu(self, p, [self menu]); return nil; }
+- (NSMenu *)menuForEvent:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; NSInteger i = [self _row: NSMakePoint(p.x, p.y - topInset + off)]; if (i >= 0 && ![_sel containsIndex: i]) { [_sel removeAllIndexes]; [_sel addIndex: i]; [self setNeedsDisplay: YES]; [self _notify]; } if ([delegate respondsToSelector: @selector(prepareContextMenu:)]) [(id)delegate prepareContextMenu: [self menu]]; TFPopupMenu(self, p, [self menu]); return nil; }
 - (void)selectAll:(id)s { [_sel addIndexesInRange: NSMakeRange(0, [_items count])]; [self setNeedsDisplay: YES]; [self _notify]; }
 - (void)keyDown:(NSEvent *)e
 {
@@ -512,7 +513,7 @@ static const CGFloat kStripH = 118, kGThumb = 72, kGCell = 88, kPane = 250;
 	for (NSInteger i = 0; i < (NSInteger)[_paths count]; i++) if (NSPointInRect(p, [self _cell: i])) { _sel = i; [self setNeedsDisplay: YES]; [self _notify]; if ([e clickCount] == 2) [delegate iconViewOpenItem: _paths[i]]; return; }
 }
 - (void)scrollWheel:(NSEvent *)e { CGFloat d = fabs([e deltaX]) > fabs([e deltaY]) ? [e deltaX] : [e deltaY]; _hoff = MAX(0, MIN(_hoff - d * 24, MAX(0, 24 + [_paths count] * kGCell - ([self bounds].size.width - kPane)))); [self setNeedsDisplay: YES]; }
-- (NSMenu *)menuForEvent:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; for (NSInteger i = 0; i < (NSInteger)[_paths count]; i++) if (NSPointInRect(p, [self _cell: i])) { _sel = i; [self setNeedsDisplay: YES]; [self _notify]; } TFPopupMenu(self, p, [self menu]); return nil; }
+- (NSMenu *)menuForEvent:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; for (NSInteger i = 0; i < (NSInteger)[_paths count]; i++) if (NSPointInRect(p, [self _cell: i])) { _sel = i; [self setNeedsDisplay: YES]; [self _notify]; } if ([delegate respondsToSelector: @selector(prepareContextMenu:)]) [(id)delegate prepareContextMenu: [self menu]]; TFPopupMenu(self, p, [self menu]); return nil; }
 - (void)keyDown:(NSEvent *)e
 {
 	NSString *k = [e charactersIgnoringModifiers]; if (![k length]) return; unichar c = [k characterAtIndex: 0]; NSInteger n = (NSInteger)[_paths count];
