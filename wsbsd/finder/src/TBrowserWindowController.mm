@@ -80,7 +80,8 @@ static NSString *StyleName(NSInteger m) { return @[ @"icnv", @"Nlsv", @"clmv", @
 	NSDictionary *bw = [ds plistForName: @"." sid: @"bwsp"]; if (!bw) return; if (bw[@"ShowStatusBar"] && [bw[@"ShowStatusBar"] boolValue] != _showStatus) [self cmdToggleStatusBar: nil];
 	if (window && [bw[@"WindowBounds"] length]) { NSRect r = NSRectFromString([bw[@"WindowBounds"] stringByReplacingOccurrencesOfString: @"{{" withString: @"{"]); (void)r; int x, y, w, h; if (sscanf([bw[@"WindowBounds"] UTF8String], "{{%d, %d}, {%d, %d}}", &x, &y, &w, &h) == 4 && w >= 560 && h >= 320) { CGFloat sh = [[NSScreen mainScreen] frame].size.height; [[self window] setFrame: NSMakeRect(x, sh - y - h, w, h) display: YES]; [self _layout]; } }
 }
-- (void)cmdTagsPopup:(id)s { NSView *v = [self _view]; NSPoint p = [v convertPoint: [[NSApp currentEvent] locationInWindow] fromView: nil]; NSMenu *tm = [self tagMenu]; [self _markTagMenu: tm]; TFPopupMenu(v, p, tm); }
+- (void)cmdTagsPopup:(id)s { if (![[self _targets] count]) return; NSRect wf = [[self window] frame]; NSPoint m = [NSEvent mouseLocation]; TFShowTagsPopover([self _targets], NSMakePoint(m.x, MIN(NSMaxY(wf) - 52, m.y)), self); }
+- (void)tagsAtWindowPoint:(NSValue *)v { if (![[self _targets] count]) return; NSRect wf = [[self window] frame]; NSPoint p = [v pointValue]; TFShowTagsPopover([self _targets], NSMakePoint(NSMinX(wf) + p.x, NSMaxY(wf) - 52), self); }
 - (void)cmdOpenQuickActionsPrefPane:(id)s {}
 /* the menu of the empty space of an icon view, as the real Finder's Action menu shows it without a selection (read from its accessibility tree: 233 wide; New Folder, Open in New Tab, Get Info, Quick Look "folder", Use Groups, Sort By, Clean Up, Clean Up By, Show View Options; "Import from iPhone" only appears with a phone connected and is left out) */
 - (NSMenu *)backgroundContextMenu
