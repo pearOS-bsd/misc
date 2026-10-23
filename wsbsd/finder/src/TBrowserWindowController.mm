@@ -6,6 +6,7 @@
 extern "C" NSImage *WsbsdCoreTypesIcon(NSString *file, CGFloat pt);
 
 #import "TFinderViews.h"
+#include <sys/stat.h>
 #define SizeString TFSizeString
 #define DateString TFDateString
 #define KindString TFKindString
@@ -13,7 +14,7 @@ extern "C" NSImage *WsbsdCoreTypesIcon(NSString *file, CGFloat pt);
 @interface NSObject (TFSupport) + (void)roundWindow:(NSWindow *)w radius:(int)r; @end
 
 /* ---------- the window controller ---------- */
-@interface TBrowserWindowController : NSWindowController <TIconViewDelegate, TSidebarDelegate, TPathBarDelegate, NSWindowDelegate> { NSURL *_url; NSMutableArray<NSString *> *_history; NSInteger _hi; TToolbarView *_toolbar; TSidebarView *_sidebar; TIconView *_icons; TListView *_list; TColumnView *_cols; TGalleryView *_gallery; TPathBarView *_pathBar; TWindowTrim *_trim; TStatusBarView *_status; BOOL _showStatus; NSMenu *_ctxMenu; NSString *_filter, *_tag; NSMutableArray *_undo, *_redo; NSArray *_cutPaths; NSArray *_selection; NSInteger _mode; }
+@interface TBrowserWindowController : NSWindowController <TIconViewDelegate, TSidebarDelegate, TPathBarDelegate, NSWindowDelegate> { NSURL *_url; NSMutableArray<NSString *> *_history; NSInteger _hi; TToolbarView *_toolbar; TSidebarView *_sidebar; TIconView *_icons; TListView *_list; TColumnView *_cols; TGalleryView *_gallery; TPathBarView *_pathBar; TWindowTrim *_trim; TStatusBarView *_status; BOOL _showStatus; NSMenu *_ctxMenu; NSString *_filter, *_tag; NSMutableArray *_undo, *_redo; long long _watchedMod; NSTimer *_watcher; NSArray *_cutPaths; NSArray *_selection; NSInteger _mode; }
 + (instancetype)newBrowserWithPath:(NSString *)path;
 - (void)goToPath:(NSString *)path;
 @end
@@ -45,8 +46,14 @@ static NSString *UniquePath(NSString *dir, NSString *base, NSString *ext)
 	_trim = [[TWindowTrim alloc] initWithFrame: NSZeroRect]; [cv addSubview: _trim];
 	NSMenu *m = [[NSMenu alloc] initWithTitle: @""]; for (NSArray *e in @[ @[ @"Open", @"cmdOpen:" ], @[ @"Get Info", @"cmdShowStaticInfo:" ], @[ @"Rename", @"cmdRename:" ], @[ @"Move to Trash", @"cmdMoveToTrash:" ], @[ @"Put Back", @"cmdPutBack:" ], @[ @"Duplicate", @"cmdDuplicate:" ], @[ @"Compress", @"cmdCompress:" ], @[ @"Quick Look", @"cmdQuickLook:" ], @[ @"Make Alias", @"cmdMakeAlias:" ], @[ @"Copy", @"copy:" ], @[ @"Copy as Pathname", @"cmdCopyAsPathname:" ] ]) { NSMenuItem *it = [m addItemWithTitle: e[0] action: NSSelectorFromString(e[1]) keyEquivalent: @""]; [it setTarget: self]; }
 	{ NSMenuItem *ti = [m addItemWithTitle: @"Tags" action: NULL keyEquivalent: @""]; NSMenu *sub = [[NSMenu alloc] initWithTitle: @"Tags"]; [self _fillTagMenu: sub]; [ti setSubmenu: sub]; }
-	_ctxMenu = m; [_icons setMenu: m]; [_list setMenu: m]; [self _layout];
+	_watcher = [NSTimer scheduledTimerWithTimeInterval: 1 target: self selector: @selector(_watch:) userInfo: nil repeats: YES]; _ctxMenu = m; [_icons setMenu: m]; [_list setMenu: m]; [self _layout];
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter]; [nc addObserver: self selector: @selector(_keyChanged:) name: NSWindowDidBecomeKeyNotification object: w]; [nc addObserver: self selector: @selector(_keyChanged:) name: NSWindowDidResignKeyNotification object: w];
+}
+/* the folder shown follows what happens to it (the Mac uses FSEvents): its modification time is looked at every second and the view refreshed, selection and scroll position kept */
+- (void)_watch:(NSTimer *)t
+{
+	if (_tag || !_url || ![[self window] isVisible]) return; struct stat sb; if (stat([[_url path] fileSystemRepresentation], &sb)) return; long long m = (long long)sb.st_mtime * 1000000000LL + sb.st_mtim.tv_nsec;
+	if (_watchedMod && m != _watchedMod) { _watchedMod = m; if (_mode == 0) [_icons reloadKeepingSelection]; else { NSArray *keep = _selection; [self reload]; (void)keep; } [self _updateStatus]; } else _watchedMod = m;
 }
 - (void)_keyChanged:(NSNotification *)n { for (NSView *v in [[[self window] contentView] subviews]) [v setNeedsDisplay: YES]; }
 - (void)windowDidResize:(NSNotification *)n { [self _layout]; [self _scheduleBoundsSave]; }
@@ -87,7 +94,7 @@ static NSString *StyleName(NSInteger m) { return @[ @"icnv", @"Nlsv", @"clmv", @
 - (void)_show:(NSString *)path
 {
 	BOOL tagged = [path hasPrefix: @"tag://"]; _tag = tagged ? [path substringFromIndex: 6] : nil; _url = [NSURL fileURLWithPath: tagged ? NSHomeDirectory() : path]; NSString *name = tagged ? _tag : [path isEqual: @"/"] ? @"Macintosh HD" : [path lastPathComponent]; [[self window] setTitle: name]; _toolbar->title = name;
-	_toolbar->canBack = _hi > 0; _toolbar->canForward = _hi + 1 < (NSInteger)[_history count]; _sidebar->current = path; [_pathBar setPath: [_url path]]; [self reload]; [self _restoreStyleAndWindow: NO]; [self _updateStatus]; [_toolbar setNeedsDisplay: YES]; [_sidebar setNeedsDisplay: YES];
+	_toolbar->canBack = _hi > 0; _toolbar->canForward = _hi + 1 < (NSInteger)[_history count]; _sidebar->current = path; _watchedMod = 0; [_pathBar setPath: [_url path]]; [self reload]; [self _restoreStyleAndWindow: NO]; [self _updateStatus]; [_toolbar setNeedsDisplay: YES]; [_sidebar setNeedsDisplay: YES];
 }
 - (void)reload { NSString *p = [_url path]; if (_tag) { NSArray *ps = TFPathsTagged(_tag); if (_mode == 1) [_list setPaths: ps]; else if (_mode == 3) [_gallery setPaths: ps]; else [_icons setPaths: ps]; _selection = @[]; [[self window] makeFirstResponder: [self _view]]; return; } if (_mode == 1) [_list setFolder: p]; else if (_mode == 2) [_cols setFolder: p]; else if (_mode == 3) [_gallery setFolder: p]; else [_icons setFolder: p]; _selection = @[]; [[self window] makeFirstResponder: [self _view]]; }
 - (void)goToPath:(NSString *)path { BOOL d = NO; if (![path hasPrefix: @"tag://"] && (![[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &d] || !d)) return; if (_hi >= 0 && [_history[_hi] isEqual: path]) return; [_history removeObjectsInRange: NSMakeRange(_hi + 1, [_history count] - _hi - 1)]; [_history addObject: path]; _hi = [_history count] - 1; [self _show: path]; }
@@ -284,5 +291,5 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 }
 - (void)sidebarGoTo:(NSString *)path { [self goToPath: path]; }
 - (void)pathBarGoTo:(NSString *)path { [self goToPath: path]; }
-- (void)windowWillClose:(NSNotification *)n { [gBrowsers removeObject: self]; }
+- (void)windowWillClose:(NSNotification *)n { [_watcher invalidate]; _watcher = nil; [gBrowsers removeObject: self]; }
 @end

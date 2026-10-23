@@ -11,6 +11,22 @@
 + (void)popupInView:(NSView *)root titles:(NSArray *)t dots:(NSArray *)d checks:(NSIndexSet *)c at:(NSPoint)p pick:(void (^)(NSInteger))b;
 @end
 
+/* the order of names in the Finder: case and accents ignored, runs of digits compared by value */
+@implementation NSString (TFNameOrder)
+- (NSComparisonResult)tfNameCompare:(NSString *)other
+{
+	NSString *a = [[self decomposedStringWithCanonicalMapping] lowercaseString], *b = [[other decomposedStringWithCanonicalMapping] lowercaseString]; NSUInteger i = 0, j = 0, na = [a length], nb = [b length];
+	while (i < na && j < nb) {
+		unichar x = [a characterAtIndex: i], y = [b characterAtIndex: j]; BOOL dx = x >= '0' && x <= '9', dy = y >= '0' && y <= '9';
+		if (dx && dy) { NSUInteger si = i, sj = j; while (i < na && [a characterAtIndex: i] >= '0' && [a characterAtIndex: i] <= '9') i++; while (j < nb && [b characterAtIndex: j] >= '0' && [b characterAtIndex: j] <= '9') j++;
+			NSString *da = [a substringWithRange: NSMakeRange(si, i - si)], *db = [b substringWithRange: NSMakeRange(sj, j - sj)]; while ([da length] > 1 && [da hasPrefix: @"0"]) da = [da substringFromIndex: 1]; while ([db length] > 1 && [db hasPrefix: @"0"]) db = [db substringFromIndex: 1];
+			if ([da length] != [db length]) return [da length] < [db length] ? NSOrderedAscending : NSOrderedDescending; NSComparisonResult c = [da compare: db options: NSLiteralSearch]; if (c != NSOrderedSame) return c; continue; }
+		if (x != y) { if ([[NSCharacterSet letterCharacterSet] characterIsMember: x] != [[NSCharacterSet letterCharacterSet] characterIsMember: y]) { BOOL lx = [[NSCharacterSet letterCharacterSet] characterIsMember: x]; BOOL ly = [[NSCharacterSet letterCharacterSet] characterIsMember: y]; if (!lx && ly) return NSOrderedAscending; if (lx && !ly) return NSOrderedDescending; } return x < y ? NSOrderedAscending : NSOrderedDescending; }
+		i++; j++;
+	}
+	if (na - i != nb - j) return (na - i) < (nb - j) ? NSOrderedAscending : NSOrderedDescending; return [self compare: other options: NSLiteralSearch];
+}
+@end
 NSString *TFSizeString(unsigned long long b)                                              /* as the Finder writes it: bytes below 1000, then KB / MB / GB with decimal units */
 {
 	if (b == 0) return @"Zero bytes"; if (b < 1000) return [NSString stringWithFormat: @"%llu byte%s", b, b == 1 ? "" : "s"];
@@ -180,7 +196,7 @@ static const CGFloat kCW = 112, kCH = 126, kPad = 10, kIcon = 64;
 - (BOOL)isOpaque { return !desktop; }
 - (void)setFolder:(NSString *)folder
 {
-	NSMutableArray *paths = [NSMutableArray array]; for (NSString *n in [[[NSFileManager defaultManager] contentsOfDirectoryAtPath: folder error: NULL] sortedArrayUsingSelector: @selector(localizedStandardCompare:)]) [paths addObject: [folder stringByAppendingPathComponent: n]];
+	NSMutableArray *paths = [NSMutableArray array]; for (NSString *n in [[[NSFileManager defaultManager] contentsOfDirectoryAtPath: folder error: NULL] sortedArrayUsingSelector: @selector(tfNameCompare:)]) [paths addObject: [folder stringByAppendingPathComponent: n]];
 	_folder = [folder copy]; if (desktop) { NSMutableArray *vp = [NSMutableArray array]; for (NSDictionary *v in TFVolumes()) { BOOL root = [v[@"path"] isEqual: @"/"]; if (root ? TFPrefBool(@"ShowHardDrivesOnDesktop", NO) : [v[@"kind"] isEqual: @"external"] ? TFPrefBool(@"ShowExternalHardDrivesOnDesktop", YES) : [v[@"kind"] isEqual: @"optical"] ? TFPrefBool(@"ShowRemovableMediaOnDesktop", YES) : TFPrefBool(@"ShowMountedServersOnDesktop", NO)) [vp addObject: v[@"path"]]; } _prefix = vp; [paths insertObjects: vp atIndexes: [NSIndexSet indexSetWithIndexesInRange: NSMakeRange(0, [vp count])]]; } [self setPaths: paths];
 }
 - (void)setPaths:(NSArray *)paths
@@ -229,11 +245,11 @@ static const CGFloat kCW = 112, kCH = 126, kPad = 10, kIcon = 64;
 	NSString *k = _arrange; if (![k length]) return;
 	[_items sortUsingComparator: ^NSComparisonResult(NSDictionary *a, NSDictionary *b) {
 		NSComparisonResult r;
-		if ([k isEqual: @"kind"]) { r = [(a[@"dir"] ? TFKindString(a[@"path"], [a[@"dir"] boolValue]) : @"") localizedStandardCompare: (b[@"dir"] ? TFKindString(b[@"path"], [b[@"dir"] boolValue]) : @"")]; }
+		if ([k isEqual: @"kind"]) { r = [(a[@"dir"] ? TFKindString(a[@"path"], [a[@"dir"] boolValue]) : @"") tfNameCompare: (b[@"dir"] ? TFKindString(b[@"path"], [b[@"dir"] boolValue]) : @"")]; }
 		else if ([k isEqual: @"modified"]) r = [b[@"mod"] compare: a[@"mod"]]; else if ([k isEqual: @"created"]) r = [b[@"cre"] compare: a[@"cre"]];
 		else if ([k isEqual: @"size"]) r = [b[@"size"] compare: a[@"size"]]; else if ([k isEqual: @"tags"]) r = (NSComparisonResult)((int)[b[@"tags"] count] - (int)[a[@"tags"] count]);
-		else { if (TFPrefBool(@"_FXSortFoldersFirst", YES) && [a[@"dir"] boolValue] != [b[@"dir"] boolValue]) return [a[@"dir"] boolValue] ? NSOrderedAscending : NSOrderedDescending; r = [a[@"name"] localizedStandardCompare: b[@"name"]]; }
-		return r == NSOrderedSame ? [a[@"name"] localizedStandardCompare: b[@"name"]] : r;
+		else { if (TFPrefBool(@"_FXSortFoldersFirst", YES) && [a[@"dir"] boolValue] != [b[@"dir"] boolValue]) return [a[@"dir"] boolValue] ? NSOrderedAscending : NSOrderedDescending; r = [a[@"name"] tfNameCompare: b[@"name"]]; }
+		return r == NSOrderedSame ? [a[@"name"] tfNameCompare: b[@"name"]] : r;
 	}];
 	[_sel removeAllIndexes];
 }
@@ -251,7 +267,7 @@ static const CGFloat kCW = 112, kCH = 126, kPad = 10, kIcon = 64;
 	NSArray *old = [self _origins]; NSMutableArray *oldPaths = [NSMutableArray array]; for (NSDictionary *d in _items) [oldPaths addObject: d[@"path"]];
 	NSMutableArray *sel = [NSMutableArray array]; [_sel enumerateIndexesUsingBlock: ^(NSUInteger i, BOOL *s) { [sel addObject: self->_items[i][@"path"]]; }];
 	for (NSMutableDictionary *it in _items) if (!selectionOnly || [sel containsObject: it[@"path"]]) [it removeObjectForKey: @"pos"];
-	if (!selectionOnly && [_arrange length]) [self _sortItems]; else if (!selectionOnly) { [_items sortUsingComparator: ^NSComparisonResult(NSDictionary *a, NSDictionary *b) { return [a[@"name"] localizedStandardCompare: b[@"name"]]; }]; }
+	if (!selectionOnly && [_arrange length]) [self _sortItems]; else if (!selectionOnly) { [_items sortUsingComparator: ^NSComparisonResult(NSDictionary *a, NSDictionary *b) { return [a[@"name"] tfNameCompare: b[@"name"]]; }]; }
 	NSMutableArray *remap = [NSMutableArray array]; for (NSDictionary *d in _items) { NSUInteger k = [oldPaths indexOfObject: d[@"path"]]; [remap addObject: k < [old count] ? old[k] : (id)[NSNull null]]; }
 	[_sel removeAllIndexes]; for (NSUInteger i = 0; i < [_items count]; i++) if ([sel containsObject: _items[i][@"path"]]) [_sel addIndex: i];
 	[self _save]; [self _animateFrom: remap];
@@ -367,7 +383,7 @@ static const CGFloat kRow = 24, kHead = 28;
 	} @catch (NSException *x) { NSLog(@"TListView %@: %@", p, x); }
 	[self _sort]; off = 0; [self setNeedsDisplay: YES]; [self _notify];
 }
-- (void)_sort { NSString *k = _sortKey; BOOL asc = _asc; NSArray *sorted = [_items sortedArrayUsingComparator: ^NSComparisonResult(NSDictionary *a, NSDictionary *b) { if ([k isEqual: @"name"] && TFPrefBool(@"_FXSortFoldersFirst", YES) && [a[@"dir"] boolValue] != [b[@"dir"] boolValue]) return (asc == ([a[@"dir"] boolValue])) ? NSOrderedAscending : NSOrderedDescending; NSComparisonResult r = [k isEqual: @"name"] || [k isEqual: @"kind"] ? [a[k] localizedStandardCompare: b[k]] : [a[k] compare: b[k]]; return asc ? r : (NSComparisonResult)(-r); }]; if (getenv("FINDER_DEBUG")) NSLog(@"Finder: list sort %lu -> %lu", (unsigned long)[_items count], (unsigned long)[sorted count]); [_items setArray: sorted]; }
+- (void)_sort { NSString *k = _sortKey; BOOL asc = _asc; NSArray *sorted = [_items sortedArrayUsingComparator: ^NSComparisonResult(NSDictionary *a, NSDictionary *b) { if ([k isEqual: @"name"] && TFPrefBool(@"_FXSortFoldersFirst", YES) && [a[@"dir"] boolValue] != [b[@"dir"] boolValue]) return (asc == ([a[@"dir"] boolValue])) ? NSOrderedAscending : NSOrderedDescending; NSComparisonResult r = [k isEqual: @"name"] || [k isEqual: @"kind"] ? [a[k] tfNameCompare: b[k]] : [a[k] compare: b[k]]; return asc ? r : (NSComparisonResult)(-r); }]; if (getenv("FINDER_DEBUG")) NSLog(@"Finder: list sort %lu -> %lu", (unsigned long)[_items count], (unsigned long)[sorted count]); [_items setArray: sorted]; }
 - (CGFloat)contentHeight { return [_items count] * kRow + 8; }
 - (NSArray *)_cols { CGFloat w = [self bounds].size.width; CGFloat kind = 150, size = 90, date = 170; return @[ @[ @"name", @"Name", @0, @(w - kind - size - date - 14) ], @[ @"date", @"Date Modified", @(w - kind - size - date - 14), @(date) ], @[ @"size", @"Size", @(w - kind - size - 14), @(size) ], @[ @"kind", @"Kind", @(w - kind - 14), @(kind) ] ]; }
 - (void)drawContent:(NSRect)v
@@ -426,7 +442,7 @@ static const CGFloat kRow = 24, kHead = 28;
 static const CGFloat kStripH = 118, kGThumb = 72, kGCell = 88, kPane = 250;
 @implementation TGalleryView
 - (BOOL)isFlipped { return YES; } - (BOOL)acceptsFirstResponder { return YES; } - (BOOL)acceptsFirstMouse:(NSEvent *)e { return YES; }
-- (void)setFolder:(NSString *)folder { NSMutableArray *ps = [NSMutableArray array]; for (NSString *n in [[[NSFileManager defaultManager] contentsOfDirectoryAtPath: folder error: NULL] sortedArrayUsingSelector: @selector(localizedStandardCompare:)]) [ps addObject: [folder stringByAppendingPathComponent: n]]; [self setPaths: ps]; }
+- (void)setFolder:(NSString *)folder { NSMutableArray *ps = [NSMutableArray array]; for (NSString *n in [[[NSFileManager defaultManager] contentsOfDirectoryAtPath: folder error: NULL] sortedArrayUsingSelector: @selector(tfNameCompare:)]) [ps addObject: [folder stringByAppendingPathComponent: n]]; [self setPaths: ps]; }
 - (void)setPaths:(NSArray *)paths { _paths = [NSMutableArray array]; for (NSString *p in paths) { NSString *n = [p lastPathComponent]; if (![n hasPrefix: @"."] && (![filter length] || [n rangeOfString: filter options: NSCaseInsensitiveSearch].location != NSNotFound)) [_paths addObject: p]; } _sel = [_paths count] ? 0 : -1; _hoff = 0; [self setNeedsDisplay: YES]; [self _notify]; }
 - (NSArray *)selectedPaths { return _sel >= 0 && _sel < (NSInteger)[_paths count] ? @[ _paths[_sel] ] : @[]; }
 - (void)_notify { if ([delegate respondsToSelector: @selector(iconViewSelectionChanged:)]) [delegate iconViewSelectionChanged: [self selectedPaths]]; }
@@ -482,7 +498,7 @@ static const CGFloat kColW = 240, kColRow = 24;
 - (NSMutableDictionary *)_load:(NSString *)dir
 {
 	NSFileManager *fm = [NSFileManager defaultManager]; NSMutableArray *items = [NSMutableArray array];
-	for (NSString *n in [[fm contentsOfDirectoryAtPath: dir error: NULL] sortedArrayUsingSelector: @selector(localizedStandardCompare:)]) {
+	for (NSString *n in [[fm contentsOfDirectoryAtPath: dir error: NULL] sortedArrayUsingSelector: @selector(tfNameCompare:)]) {
 		if ([n hasPrefix: @"."]) continue; NSString *p = [dir stringByAppendingPathComponent: n]; BOOL d = NO; [fm fileExistsAtPath: p isDirectory: &d]; if (d && [[p pathExtension] isEqual: @"app"]) d = NO;
 		[items addObject: @{ @"name": n, @"path": p, @"dir": @(d) }];
 	}

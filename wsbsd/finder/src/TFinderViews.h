@@ -18,6 +18,7 @@ TF_ATTR static BOOL TFDark(void) { Class k = NSClassFromString(@"WsdFinderSuppor
 #define TF_ACCENT   ([NSColor controlAccentColor])
 #define TF_BLUE     ([NSColor controlAccentColor])
 
+@interface NSString (TFNameOrder) - (NSComparisonResult)tfNameCompare:(NSString *)other; @end
 NSString *TFSizeString(unsigned long long bytes);
 NSString *TFDateString(NSDate *d);
 NSString *TFKindString(NSString *path, BOOL dir);
