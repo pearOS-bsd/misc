@@ -179,6 +179,7 @@ d=open('finder.ppm','rb').read(); body=d[-1280*800*3:]; n=len(set(body[::97])); 
 PY
 	grep -q ' 1022x552' finder-wins.txt || { echo 'no Finder window of 1022x552'; FINDER_BAD=1; }
 	echo "finder alive: $(pgrep -x Finder | head -1)"; tail -25 /tmp/finder-run.log | cut -c1-240; tail -3 /tmp/finder-build.log
+	grep -q 'exit status 139' /tmp/finder-run.log && (cd $FO/System/Library/CoreServices/Finder.app/Contents/MacOS && HOME=/tmp/finhome FINDER_PATH=/tmp/fintest FINDER_WINDOW=1 timeout 60 lldb --batch -o run -o 'bt 14' -- ./Finder 2>&1 | grep -v 'time zone' | tail -24 | cut -c1-220)
 	kill $FP 2>/dev/null; pkill -x Finder 2>/dev/null
 else echo 'Finder did not build'; tail -20 /tmp/finder-build.log; FINDER_BAD=1; fi
 kill $WP 2>/dev/null
