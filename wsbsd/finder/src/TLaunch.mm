@@ -18,5 +18,20 @@ NSArray *TFAppsForFile(NSString *path)
 {
 	NSString *ext = [[path pathExtension] lowercaseString]; NSString *uti = [ext length] ? (__bridge_transfer NSString *)UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (__bridge CFStringRef)ext, NULL) : nil; NSMutableArray *res = [NSMutableArray array];
 	for (NSDictionary *a in AppIndex()) { BOOL ok = [a[@"exts"] containsObject: ext] || [a[@"exts"] containsObject: @"*"]; if (!ok && uti) for (NSString *u in a[@"utis"]) if (UTTypeConformsTo((__bridge CFStringRef)uti, (__bridge CFStringRef)u)) { ok = YES; break; } if (ok) [res addObject: a]; }
-	[res sortUsingComparator: ^NSComparisonResult(NSDictionary *x, NSDictionary *y) { return [x[@"name"] tfNameCompare: y[@"name"]]; }]; return res;
+	[res sortUsingComparator: ^NSComparisonResult(NSDictionary *x, NSDictionary *y) { return [x[@"name"] tfNameCompare: y[@"name"]]; }];
+	/* the application chosen for this file, else for all files of its extension, is the default and comes first */
+	NSString *want = TFPref(@"OpenWithFile", @{})[path] ?: TFPref(@"OpenWith", @{})[ext]; for (NSUInteger i = 0; want && i < [res count]; i++) if ([res[i][@"path"] isEqual: want]) { NSDictionary *a = res[i]; [res removeObjectAtIndex: i]; [res insertObject: a atIndex: 0]; break; }
+	return res;
+}
+/* Open with of Get Info: the application for this file only, or for every file of the extension (Change All…) */
+void TFSetOpenWith(NSString *path, NSString *app, BOOL all)
+{
+	NSString *key = all ? @"OpenWith" : @"OpenWithFile", *k = all ? [[path pathExtension] lowercaseString] : path; if (![k length]) return;
+	NSMutableDictionary *d = [TFPref(key, @{}) mutableCopy]; d[k] = app; TFSetPref(key, d);
+}
+/* a double click: the application chosen in Get Info when there is one, else what the system opens it with */
+void TFOpenPath(NSString *path)
+{
+	NSString *ext = [[path pathExtension] lowercaseString]; NSString *app = TFPref(@"OpenWithFile", @{})[path] ?: ([ext length] ? TFPref(@"OpenWith", @{})[ext] : nil);
+	if (app && [[NSFileManager defaultManager] fileExistsAtPath: app]) [[NSWorkspace sharedWorkspace] openFile: path withApplication: app]; else [[NSWorkspace sharedWorkspace] openFile: path];
 }

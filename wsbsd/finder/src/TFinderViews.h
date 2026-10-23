@@ -43,6 +43,8 @@ NSArray *TFVolumes(void);
 NSString *TFKindCategory(NSString *path, BOOL dir);
 BOOL TFIsPackage(NSString *path);
 NSArray *TFAppsForFile(NSString *path);
+void TFOpenPath(NSString *path);
+void TFSetOpenWith(NSString *path, NSString *app, BOOL all);
 NSString *TFDisplayName(NSString *path);
 BOOL TFEject(NSString *mount);
 void TFPopupMenu(NSView *view, NSPoint p, NSMenu *menu);

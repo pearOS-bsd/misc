@@ -324,7 +324,7 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 	return [self respondsToSelector: a];
 }
 /* delegates */
-- (void)iconViewOpenItem:(NSString *)path { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &d]; if (d && !TFIsPackage(path)) [self goToPath: path]; else [[NSWorkspace sharedWorkspace] openFile: path]; }
+- (void)iconViewOpenItem:(NSString *)path { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &d]; if (d && !TFIsPackage(path)) [self goToPath: path]; else TFOpenPath(path); }
 - (void)iconViewSelectionChanged:(NSArray *)paths { _selection = paths; if ([paths count] == 1) [_pathBar setPath: paths[0]]; else [_pathBar setPath: [_url path]]; [self _updateStatus]; }
 - (void)_updateStatus
 {
