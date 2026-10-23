@@ -40,8 +40,8 @@ COMPAT="$WORK/compat" WSCLIENT="$WORK/libwsclient.a" sh "$WS/dock/build.sh" "$WO
 COMPAT="$WORK/compat" sh "$WS/topbar/build.sh" "$WORK/topbar" > "$WORK/topbar.log" 2>&1; install -m 755 "$WORK/topbar/TopBar" /usr/local/bin/TopBar-gnustep || { cat "$WORK/topbar.log"; exit 1; }
 # the Finder: built from finder/, with the resources of the reference Mac's Finder imported when they are at hand (FINDER_APP=path of Finder.app, or finder/Resources copied in before the build); it lands as /System/Library/CoreServices/Finder.app
 echo "== the Finder"; COMPAT="$WORK/compat" sh "$WS/finder/build.sh" "$WORK/finder" > "$WORK/finder.log" 2>&1 || true; tail -5 "$WORK/finder.log"; FA="$WORK/finder/System/Library/CoreServices/Finder.app"; [ -x "$FA/Contents/MacOS/Finder" ] || { cat "$WORK/finder.log"; exit 1; }
-[ -n "$FINDER_APP" ] && [ -d "$FINDER_APP" ] && sh "$WS/finder/import-resources.sh" "$FINDER_APP" "$FA" >> "$WORK/finder.log" 2>&1
-install -d /usr/local/share/wsbsd/Finder.app && cp -R "$FA/." /usr/local/share/wsbsd/Finder.app/ && install -m 755 "$FA/Contents/MacOS/Finder" /usr/local/bin/Finder-gnustep
+if [ -n "$FINDER_APP" ] && [ -d "$FINDER_APP" ]; then sh "$WS/finder/import-resources.sh" "$FINDER_APP" "$FA" >> "$WORK/finder.log" 2>&1 || true; fi
+rm -rf /usr/local/share/wsbsd/Finder.app; install -d /usr/local/share/wsbsd/Finder.app; (cd "$FA" && tar cf - .) | (cd /usr/local/share/wsbsd/Finder.app && tar xf -); install -m 755 "$FA/Contents/MacOS/Finder" /usr/local/bin/Finder-gnustep; echo "== the Finder installed"
 for a in terminal:Terminal-gnustep uitest:UITest-gnustep ksa:KeyboardSetupAssistant-gnustep; do d="${a%%:*}"; b="${a##*:}"; (cd "$WS/../$d" && make gnustep >/dev/null 2>&1 && install -m 755 "$b" /usr/local/bin/"$b"); done
 cc -O2 -o /usr/local/libexec/dyld "$HERE/src/dyld.c"
 cc -O2 -I"$WS/sdk/include" -o /usr/local/bin/xattr "$HERE/src/xattr.c" "$WS/sdk/src/xattr.c"
