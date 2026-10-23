@@ -28,7 +28,7 @@ static NSString *UniquePath(NSString *dir, NSString *base, NSString *ext)
 @implementation TBrowserWindowController
 + (instancetype)newBrowserWithPath:(NSString *)path
 {
-	TBrowserWindowController *c = [[self alloc] init]; [c _build]; [c goToPath: path ?: NSHomeDirectory()]; if (!gBrowsers) gBrowsers = [NSMutableArray array]; [gBrowsers addObject: c]; [[c window] makeKeyAndOrderFront: nil]; [NSClassFromString(@"WsdFinderSupport") roundWindow: [c window] radius: 16]; return c;
+	TBrowserWindowController *c = [[self alloc] init]; [c _build]; [c goToPath: path ?: NSHomeDirectory()]; [c _restoreStyleAndWindow: YES]; if (!gBrowsers) gBrowsers = [NSMutableArray array]; [gBrowsers addObject: c]; [[c window] makeKeyAndOrderFront: nil]; [NSClassFromString(@"WsdFinderSupport") roundWindow: [c window] radius: 16]; return c;
 }
 - (void)_build
 {
@@ -49,7 +49,23 @@ static NSString *UniquePath(NSString *dir, NSString *base, NSString *ext)
 	NSNotificationCenter *nc = [NSNotificationCenter defaultCenter]; [nc addObserver: self selector: @selector(_keyChanged:) name: NSWindowDidBecomeKeyNotification object: w]; [nc addObserver: self selector: @selector(_keyChanged:) name: NSWindowDidResignKeyNotification object: w];
 }
 - (void)_keyChanged:(NSNotification *)n { for (NSView *v in [[[self window] contentView] subviews]) [v setNeedsDisplay: YES]; }
-- (void)windowDidResize:(NSNotification *)n { [self _layout]; }
+- (void)windowDidResize:(NSNotification *)n { [self _layout]; [self _scheduleBoundsSave]; }
+- (void)windowDidMove:(NSNotification *)n { [self _scheduleBoundsSave]; }
+/* what the Finder keeps per folder in .DS_Store: the view style (vstl) and the window (bwsp) */
+static NSString *StyleName(NSInteger m) { return @[ @"icnv", @"Nlsv", @"clmv", @"glyv" ][MAX(0, MIN(3, m))]; }
+- (void)_scheduleBoundsSave { [NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector(_saveWindow) object: nil]; [self performSelector: @selector(_saveWindow) withObject: nil afterDelay: 0.8]; }
+- (void)_saveWindow
+{
+	if (_tag || ![_url path] || ![[self window] isVisible]) return; TDSStore *ds = [TDSStore storeForFolder: [_url path]]; NSMutableDictionary *bw = [ds plistForName: @"." sid: @"bwsp"] ?: [NSMutableDictionary dictionary]; NSRect f = [[self window] frame]; CGFloat sh = [[NSScreen mainScreen] frame].size.height;
+	bw[@"WindowBounds"] = [NSString stringWithFormat: @"{{%d, %d}, {%d, %d}}", (int)f.origin.x, (int)(sh - f.origin.y - f.size.height), (int)f.size.width, (int)f.size.height]; bw[@"ShowSidebar"] = @(![_sidebar isHidden]); bw[@"ContainerShowSidebar"] = @(![_sidebar isHidden]); bw[@"ShowToolbar"] = @(![_toolbar isHidden]); bw[@"ShowStatusBar"] = @(_showStatus); bw[@"ShowPathbar"] = @(![_pathBar isHidden]); bw[@"ShowTabView"] = @NO;
+	[ds setPlist: bw forName: @"." sid: @"bwsp"]; [ds setValue: StyleName(_mode) type: @"type" forName: @"." sid: @"vstl"]; if (![ds valueForName: @"." sid: @"vSrn"]) [ds setValue: @1 type: @"long" forName: @"." sid: @"vSrn"]; [ds write];
+}
+- (void)_restoreStyleAndWindow:(BOOL)window
+{
+	if (_tag) return; TDSStore *ds = [TDSStore storeForFolder: [_url path]]; NSString *st = [ds valueForName: @"." sid: @"vstl"]; NSInteger m = [@[ @"icnv", @"Nlsv", @"clmv", @"glyv" ] indexOfObject: st ?: @""]; if (m != NSNotFound && m != _mode) [self _setMode: m];
+	NSDictionary *bw = [ds plistForName: @"." sid: @"bwsp"]; if (!bw) return; if (bw[@"ShowStatusBar"] && [bw[@"ShowStatusBar"] boolValue] != _showStatus) [self cmdToggleStatusBar: nil];
+	if (window && [bw[@"WindowBounds"] length]) { NSRect r = NSRectFromString([bw[@"WindowBounds"] stringByReplacingOccurrencesOfString: @"{{" withString: @"{"]); (void)r; int x, y, w, h; if (sscanf([bw[@"WindowBounds"] UTF8String], "{{%d, %d}, {%d, %d}}", &x, &y, &w, &h) == 4 && w >= 560 && h >= 320) { CGFloat sh = [[NSScreen mainScreen] frame].size.height; [[self window] setFrame: NSMakeRect(x, sh - y - h, w, h) display: YES]; [self _layout]; } }
+}
 - (NSMenu *)actionMenu { return _ctxMenu; }
 - (NSMenu *)tagMenu { NSMenu *m = [[NSMenu alloc] initWithTitle: @"Tags"]; [self _fillTagMenu: m]; return m; }
 - (void)_markTagMenu:(NSMenu *)m { for (NSMenuItem *i in [m itemArray]) { BOOL all = [_selection count] > 0; for (NSString *p in _selection) if (![TFTagsOf(p) containsObject: [i representedObject]]) all = NO; [i setState: all ? NSOnState : NSOffState]; } }
@@ -71,11 +87,11 @@ static NSString *UniquePath(NSString *dir, NSString *base, NSString *ext)
 - (void)_show:(NSString *)path
 {
 	BOOL tagged = [path hasPrefix: @"tag://"]; _tag = tagged ? [path substringFromIndex: 6] : nil; _url = [NSURL fileURLWithPath: tagged ? NSHomeDirectory() : path]; NSString *name = tagged ? _tag : [path isEqual: @"/"] ? @"Macintosh HD" : [path lastPathComponent]; [[self window] setTitle: name]; _toolbar->title = name;
-	_toolbar->canBack = _hi > 0; _toolbar->canForward = _hi + 1 < (NSInteger)[_history count]; _sidebar->current = path; [_pathBar setPath: [_url path]]; [self reload]; [self _updateStatus]; [_toolbar setNeedsDisplay: YES]; [_sidebar setNeedsDisplay: YES];
+	_toolbar->canBack = _hi > 0; _toolbar->canForward = _hi + 1 < (NSInteger)[_history count]; _sidebar->current = path; [_pathBar setPath: [_url path]]; [self reload]; [self _restoreStyleAndWindow: NO]; [self _updateStatus]; [_toolbar setNeedsDisplay: YES]; [_sidebar setNeedsDisplay: YES];
 }
 - (void)reload { NSString *p = [_url path]; if (_tag) { NSArray *ps = TFPathsTagged(_tag); if (_mode == 1) [_list setPaths: ps]; else if (_mode == 3) [_gallery setPaths: ps]; else [_icons setPaths: ps]; _selection = @[]; [[self window] makeFirstResponder: [self _view]]; return; } if (_mode == 1) [_list setFolder: p]; else if (_mode == 2) [_cols setFolder: p]; else if (_mode == 3) [_gallery setFolder: p]; else [_icons setFolder: p]; _selection = @[]; [[self window] makeFirstResponder: [self _view]]; }
 - (void)goToPath:(NSString *)path { BOOL d = NO; if (![path hasPrefix: @"tag://"] && (![[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &d] || !d)) return; if (_hi >= 0 && [_history[_hi] isEqual: path]) return; [_history removeObjectsInRange: NSMakeRange(_hi + 1, [_history count] - _hi - 1)]; [_history addObject: path]; _hi = [_history count] - 1; [self _show: path]; }
-- (void)_setMode:(NSInteger)m { _mode = m; [self _updateStatus]; _toolbar->mode = m; [_icons setHidden: m != 0]; [_list setHidden: m != 1]; [_cols setHidden: m != 2]; [_gallery setHidden: m != 3]; [self reload]; [_toolbar setNeedsDisplay: YES]; }  /* the column and gallery views come later: the icon view stands in */
+- (void)_setMode:(NSInteger)m { BOOL changed = m != _mode; _mode = m; [self _updateStatus]; if (changed) [self _scheduleBoundsSave]; _toolbar->mode = m; [_icons setHidden: m != 0]; [_list setHidden: m != 1]; [_cols setHidden: m != 2]; [_gallery setHidden: m != 3]; [self reload]; [_toolbar setNeedsDisplay: YES]; }  /* the column and gallery views come later: the icon view stands in */
 /* navigation */
 - (void)cmdBack:(id)s { if (_hi > 0) { _hi--; [self _show: _history[_hi]]; } }
 - (void)cmdForward:(id)s { if (_hi + 1 < (NSInteger)[_history count]) { _hi++; [self _show: _history[_hi]]; } }
