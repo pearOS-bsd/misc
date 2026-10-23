@@ -309,6 +309,7 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 - (void)cmdSlideshow:(id)s { [self cmdQuickLook: s]; }
 - (void)cmdShare:(id)s { NSArray *t = [self _targets]; if ([t count]) [self cmdCopyAsPathname: s]; }
 - (void)cmdAddToSidebar:(id)s { NSMutableArray *f = [TFPref(@"SidebarFavorites", @[]) mutableCopy]; for (NSString *p in [self _targets]) { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: p isDirectory: &d]; if (d && ![f containsObject: p]) [f addObject: p]; } TFSetPref(@"SidebarFavorites", f); }
+- (void)cmdToggleViewOptions:(id)s { if (_mode != 0) return; __weak TBrowserWindowController *me = self; TFOpenViewOptions(_icons, [[_url path] isEqual: @"/"] ? @"Macintosh HD" : [[_url path] lastPathComponent], ^{ [me _updateStatus]; }); }
 - (void)toggleTabBar:(id)s { _forceTabBar = !_forceTabBar; [_tabBar setHidden: !_forceTabBar && [_tabs count] < 2]; if (![_tabs count]) { [_tabs addObject: [self _tabState]]; _tabIx = 0; } [self _syncTabBar]; }
 - (void)cmdShowPackageContents:(id)s { for (NSString *p in [self _targets]) if ([[p pathExtension] isEqual: @"app"]) [self goToPath: p]; }
 - (void)cmdToggleToolbar:(id)s { [_toolbar setHidden: ![_toolbar isHidden]]; }
