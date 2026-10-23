@@ -45,3 +45,25 @@ void TFBulkRename(NSArray *paths, void (^done)(NSArray *))
 		[ww orderOut: nil]; keep->done = nil; keep = nil; done(res); };
 	objc_setAssociatedObject(w, "bulk", @[ bt, f ], OBJC_ASSOCIATION_RETAIN); [w makeKeyAndOrderFront: nil]; static NSWindow *open; open = w;
 }
+
+/* A question with text fields in a window of its own (NSAlert here draws no accessory view, and a modal session fights with the Finder windows for the key): the values go to done, nil when cancelled.
+ * fields: dictionaries with label (the placeholder), value and secure (a password). */
+void TFAsk(NSString *title, NSString *message, NSArray *fields, NSString *okTitle, void (^done)(NSArray *values))
+{
+	if (getenv("FINDER_DEBUG")) NSLog(@"ask: %@", title);
+	CGFloat W = 400, pad = 20, rowH = 30, nf = [fields count], msgH = [message length] ? 34 : 0, H = 40 + msgH + nf * rowH + 64; NSMutableArray *tf = [NSMutableArray array];
+	NSWindow *w = [[TFinderWindow alloc] initWithContentRect: NSMakeRect(0, 0, W, H) styleMask: NSWindowStyleMaskBorderless backing: NSBackingStoreBuffered defer: NO]; [w setReleasedWhenClosed: NO]; [w setLevel: NSModalPanelWindowLevel]; [w setOpaque: NO]; [w setBackgroundColor: [NSColor clearColor]];
+	TBulkCard *card = [[TBulkCard alloc] initWithFrame: NSMakeRect(0, 0, W, H)]; [w setContentView: card];
+	NSTextField *(^Label)(NSRect, NSString *, NSFont *, NSColor *) = ^NSTextField *(NSRect r, NSString *s, NSFont *f, NSColor *c) { NSTextField *t = [[NSTextField alloc] initWithFrame: r]; [t setEditable: NO]; [t setSelectable: NO]; [t setBezeled: NO]; [t setBordered: NO]; [t setDrawsBackground: NO]; [t setTextColor: c]; [t setFont: f]; [t setStringValue: s]; return t; };
+	[card addSubview: Label(NSMakeRect(pad, H - 38, W - 2 * pad, 20), title, [NSFont boldSystemFontOfSize: 13], TF_TEXT)];
+	if (msgH) { NSTextField *m = Label(NSMakeRect(pad, H - 38 - msgH, W - 2 * pad, msgH - 4), message, [NSFont systemFontOfSize: 11], TF_DIM); [card addSubview: m]; }
+	for (NSUInteger i = 0; i < [fields count]; i++) {
+		NSDictionary *d = fields[i]; NSRect r = NSMakeRect(pad, H - 40 - msgH - (i + 1) * rowH, W - 2 * pad, 24); NSTextField *t = [d[@"secure"] boolValue] ? [[NSSecureTextField alloc] initWithFrame: r] : [[NSTextField alloc] initWithFrame: r];
+		[t setPlaceholderString: d[@"label"]]; [t setStringValue: d[@"value"] ?: @""]; [card addSubview: t]; [tf addObject: t];
+	}
+	TBulkButtons *bt = [[TBulkButtons alloc] init]; NSButton *ok = [[NSButton alloc] initWithFrame: NSMakeRect(W - pad - 110, 14, 110, 28)], *cn = [[NSButton alloc] initWithFrame: NSMakeRect(W - pad - 230, 14, 110, 28)];
+	[ok setTitle: okTitle ?: @"OK"]; [cn setTitle: @"Cancel"]; for (NSButton *b in @[ ok, cn ]) { [b setBezelStyle: NSRoundedBezelStyle]; [b setTarget: bt]; } [ok setAction: @selector(ok:)]; [cn setAction: @selector(cancel:)]; [ok setKeyEquivalent: @"\r"]; [card addSubview: cn]; [card addSubview: ok];
+	__weak NSWindow *ww = w; __block TBulkButtons *keep = bt;
+	bt->done = ^(BOOL yes) { NSMutableArray *vals = nil; if (yes) { vals = [NSMutableArray array]; for (NSTextField *t in tf) [vals addObject: [t stringValue] ?: @""]; } [ww orderOut: nil]; keep->done = nil; keep = nil; done(vals); };
+	objc_setAssociatedObject(w, "ask", @[ bt, tf ], OBJC_ASSOCIATION_RETAIN); [w center]; [w makeKeyAndOrderFront: nil]; static NSWindow *open; open = w; if ([tf count]) [w makeFirstResponder: tf[0]];
+}

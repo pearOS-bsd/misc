@@ -170,11 +170,19 @@ static BOOL _searchBar_skipLib(NSString *root) { return [root isEqual: NSHomeDir
 - (void)cmdGoToAllMyFiles:(id)s { [self goToPath: @"recents://"]; }
 - (void)cmdConnectToServer:(id)s
 {
-	NSAlert *a = [[NSAlert alloc] init]; [a setMessageText: @"Connect to Server"]; [a setInformativeText: @"Server Address (smb://host/share, nfs://host/path):"]; NSTextField *f = [[NSTextField alloc] initWithFrame: NSMakeRect(0, 0, 320, 24)]; [f setStringValue: @"smb://"]; [a setAccessoryView: f]; [a addButtonWithTitle: @"Connect"]; [a addButtonWithTitle: @"Cancel"]; if ([a runModal] != NSAlertFirstButtonReturn) return;
-	NSURL *u = [NSURL URLWithString: [f stringValue]]; NSString *scheme = [[u scheme] lowercaseString], *host = [u host], *path = [[u path] length] ? [u path] : @"/"; if (![host length]) { NSBeep(); return; }
+	__weak TBrowserWindowController *me = self;
+	TFAsk(@"Connect to Server", @"smb://host/share or nfs://host/path. A name and a password are only needed for a server that asks for a login.",
+		@[ @{ @"label": @"Server Address", @"value": TFPref(@"LastServer", @"smb://") }, @{ @"label": @"Name (optional)", @"value": @"" }, @{ @"label": @"Password (optional)", @"value": @"", @"secure": @YES } ], @"Connect", ^(NSArray *v) { TBrowserWindowController *w = me; if (w && v) [w _connectServer: v[0] user: v[1] password: v[2]]; });
+}
+- (void)_connectServer:(NSString *)address user:(NSString *)user password:(NSString *)pw
+{
+	TFSetPref(@"LastServer", address); NSURL *u = [NSURL URLWithString: address]; NSString *scheme = [[u scheme] lowercaseString], *host = [u host], *path = [[u path] length] ? [u path] : @"/"; if (![host length]) { NSBeep(); return; }
 	NSString *name = [[[path lastPathComponent] length] ? [path lastPathComponent] : host stringByReplacingOccurrencesOfString: @"/" withString: @""]; NSString *mnt = [@"/Volumes" stringByAppendingPathComponent: name]; [[NSFileManager defaultManager] createDirectoryAtPath: mnt withIntermediateDirectories: YES attributes: nil error: NULL];
-	NSTask *t = [[NSTask alloc] init]; if ([scheme isEqual: @"nfs"]) { [t setLaunchPath: @"/sbin/mount"]; [t setArguments: @[ @"-t", @"nfs", [NSString stringWithFormat: @"%@:%@", host, path], mnt ]]; } else if ([scheme isEqual: @"smb"] || [scheme isEqual: @"cifs"]) { [t setLaunchPath: @"/usr/sbin/mount_smbfs"]; [t setArguments: @[ @"-N", [NSString stringWithFormat: @"//%@%@@%@%@", [u user] ?: NSUserName(), @"", host, path] , mnt ]]; } else { NSBeep(); return; }
-	@try { [t launch]; [t waitUntilExit]; } @catch (NSException *x) {} if ([t terminationStatus] == 0) [self goToPath: mnt]; else { NSAlert *e = [[NSAlert alloc] init]; [e setMessageText: @"The server could not be connected."]; [e setInformativeText: @"Check the address and try again."]; [e runModal]; }
+	NSString *login = [user length] ? user : ([u user] ?: NSUserName()); NSString *secret = [pw length] ? [@":" stringByAppendingString: pw] : ([u password] ? [@":" stringByAppendingString: [u password]] : @"");
+	NSTask *t = [[NSTask alloc] init]; if ([scheme isEqual: @"nfs"]) { [t setLaunchPath: @"/sbin/mount"]; [t setArguments: @[ @"-t", @"nfs", [NSString stringWithFormat: @"%@:%@", host, path], mnt ]]; }
+	else if ([scheme isEqual: @"smb"] || [scheme isEqual: @"cifs"]) { [t setLaunchPath: @"/usr/sbin/mount_smbfs"]; [t setArguments: @[ @"-N", [NSString stringWithFormat: @"//%@%@@%@%@", login, secret, host, path], mnt ]]; } else { NSBeep(); return; }
+	@try { [t launch]; [t waitUntilExit]; } @catch (NSException *x) {}
+	if ([t terminationStatus] == 0) [self goToPath: mnt]; else { rmdir([mnt fileSystemRepresentation]); NSAlert *e = [[NSAlert alloc] init]; [e setMessageText: @"The server could not be connected."]; [e setInformativeText: @"Check the address, the name and the password and try again."]; [e runModal]; }
 }
 - (void)cmdGoToUtilities:(id)s { [self goToPath: @"/Applications/Utilities"]; }
 - (void)cmdGoToComputer:(id)s { [self goToPath: @"/"]; }
@@ -293,8 +301,10 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 - (void)_renamePath:(NSString *)path { id v = [self _view]; if ([v respondsToSelector: @selector(beginRename:)] && [v beginRename: path]) return; NSAlert *a = [[NSAlert alloc] init]; [a setMessageText: @"Rename"]; NSTextField *f = [[NSTextField alloc] initWithFrame: NSMakeRect(0, 0, 260, 24)]; [f setStringValue: [path lastPathComponent]]; [a setAccessoryView: f]; [a addButtonWithTitle: @"OK"]; [a addButtonWithTitle: @"Cancel"]; if ([a runModal] == NSAlertFirstButtonReturn) [self _commitRename: path to: [f stringValue]]; }
 - (void)cmdGoTo:(id)s
 {
-	NSAlert *a = [[NSAlert alloc] init]; [a setMessageText: @"Go to the folder:"]; NSTextField *f = [[NSTextField alloc] initWithFrame: NSMakeRect(0, 0, 320, 24)]; [f setStringValue: @"/"]; [a setAccessoryView: f]; [a addButtonWithTitle: @"Go"]; [a addButtonWithTitle: @"Cancel"];
-	if ([a runModal] == NSAlertFirstButtonReturn) { NSString *p = [[f stringValue] stringByExpandingTildeInPath]; BOOL d = NO; if ([[NSFileManager defaultManager] fileExistsAtPath: p isDirectory: &d]) [self goToPath: d ? p : [p stringByDeletingLastPathComponent]]; else { NSAlert *e = [[NSAlert alloc] init]; [e setMessageText: @"The folder can’t be found."]; [e runModal]; } }
+	if (getenv("FINDER_DEBUG")) NSLog(@"cmdGoTo");
+	__weak TBrowserWindowController *me = self;
+	TFAsk(@"Go to the folder:", @"", @[ @{ @"label": @"Path", @"value": @"/" } ], @"Go", ^(NSArray *v) { TBrowserWindowController *w = me; if (!w || !v) return; NSString *p = [[v[0] stringByExpandingTildeInPath] copy]; BOOL d = NO;
+		if ([[NSFileManager defaultManager] fileExistsAtPath: p isDirectory: &d]) [w goToPath: d ? p : [p stringByDeletingLastPathComponent]]; else { NSAlert *e = [[NSAlert alloc] init]; [e setMessageText: @"The folder can’t be found."]; [e runModal]; } });
 }
 - (void)cmdSetFocusToSearchField:(id)s { if (!_toolbar->searching) [_toolbar setSearching: YES]; }
 - (void)cmdSearchFromToolbar:(id)s { [self cmdToggleSearch: s]; }
