@@ -20,6 +20,11 @@ for t in rep_draw anim_test layer_demo sys_tests ql_tests sec_tests net_tests cf
 	LD_LIBRARY_PATH=$O:/usr/local/GNUstep/System/Library/Libraries:/usr/local/GNUstep/Local/Library/Libraries:/usr/local/lib timeout 60 $O/$t > $O/$t.out 2>&1 && echo "SDK TEST $t: ok" || { echo "SDK TEST $t: FAILED"; FAIL=1; }
 	grep -v '^20' $O/$t.out | tail -6
 done
+# usernoted + UserNotifications: the daemon and the client of the framework in one process (XPC over a unix socket)
+clang -x objective-c -fblocks -w -fobjc-arc -I"$WS/quartzcore/include" -I"$WS/sdk/include" -I"$WS/usernoted" -include "$WS/sdk/include/wsbsd/prelude.h" $(gnustep-config --objc-flags) "$WS/sdk/tests/un_tests.m" "$WS/usernoted/WSUserNotificationService.m" -o $O/un_tests \
+	-L$O -lwsbsdcompat -lQuartzCore -Wl,-rpath,$O $GSL -lopal -lgnustep-corebase -ldispatch -lcrypto -lcurl -lffi 2>&1 | grep error | head -3
+[ -x $O/un_tests ] || { echo "SDK TEST un_tests: did not build"; FAIL=1; }
+[ -x $O/un_tests ] && { LD_LIBRARY_PATH=$O:/usr/local/GNUstep/System/Library/Libraries:/usr/local/GNUstep/Local/Library/Libraries:/usr/local/lib timeout 90 $O/un_tests > $O/un_tests.out 2>&1 && echo "SDK TEST un_tests: ok" || { echo "SDK TEST un_tests: FAILED"; FAIL=1; }; grep -v '^20' $O/un_tests.out | tail -6; }
 # CoreWLAN: the framework builds as on the Mac (System/Library/...) and CWNetwork / CWChannel answer like the real ones (golden file from a Mac, tools/cwprobe)
 CW="$O/cwout"; rm -rf "$CW"; sh "$WS/sdk/build-corewlan.sh" "$CW" > "$O/cwlan-build.out" 2>&1
 CWL="$CW/System/Library/Frameworks/CoreWLAN.framework/Versions/A"; CWF="$CW/System/Library/PrivateFrameworks/CoreWiFi.framework/Versions/A"
