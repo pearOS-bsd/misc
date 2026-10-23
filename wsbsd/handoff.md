@@ -146,3 +146,6 @@ Cod: `finder/src/TFinderViews.{h,mm}` (view-uri: sidebar, toolbar, icoane/listă
 
 ## Native NSMenu pop-up in the Finder (prototype, opt-in)
 `TFPopupMenu` can show the real `NSMenu` via `popUpContextMenu:withEvent:forView:` (`FINDER_NATIVE_MENU=1`); the theme draws it as measured (rows, separators, glass). Gaps before it can become the default: (1) GNUstep's `NSMenuView trackWithEvent:` ends tracking on the first mouse-up, so a quick right-click release closes the menu (the Mac keeps it open until the next click) — needs a swizzle/sticky rule, measure on the Mac first; (2) "sym:" tool-tip icons draw as a glitch box in native rows; (3) disabled "Put Back"/"Open With" rows are not hidden; (4) the tag-colour row (tag 2) needs a view item. Default stays the panel pop-up.
+
+## Toolbar Group menu
+The Group pill of the toolbar opens `groupMenu` (None, line, Name, Kind, Application, Date Last Opened, Date Added, Date Modified, Date Created, Size, Tags; tick on the current key) as measured on the Mac; `GroupTitle` got the "application" key and "dateAdded". Open: the panel pop-up is wider than the measured 156 pt.
