@@ -11,11 +11,11 @@
 #define BAR_H 30
 @interface NSObject (TBSymbols) + (BOOL)drawSymbol:(NSString *)name inRect:(NSRect)cell size:(CGFloat)pt weight:(int)weight color:(NSColor *)c; @end
 
-static int BatteryPercent(void) { int v = -1; size_t n = sizeof v; if (sysctlbyname("hw.acpi.battery.life", &v, &n, NULL, 0) != 0) return -1; return v; }
+static int BatteryPercent(void) { int v = -1; size_t n = sizeof v; if (sysctlbyname("hw.acpi.battery.life", &v, &n, NULL, 0) != 0) return getenv("TOPBAR_FAKE_BATTERY") ? 100 : -1; return v; }
 static BOOL BatteryCharging(void) { int v = 0; size_t n = sizeof v; if (sysctlbyname("hw.acpi.battery.state", &v, &n, NULL, 0) != 0) return NO; return (v & 2) != 0; }     /* ACPI battery state: 1 discharging, 2 charging */
 static BOOL LightText(void) { static BOOL (*fn)(void); static BOOL looked; if (!looked) { looked = YES; fn = (BOOL (*)(void))dlsym(RTLD_DEFAULT, "WsdBarWantsLightText"); } return fn ? fn() : YES; }
 
-void ToggleControlCenter(void); void ToggleSpotlight(void);
+void ToggleControlCenter(void); void ToggleSpotlight(void); void ShowBatteryMenu(NSView *v, double rightEdge);
 @interface BarView : NSView { NSTimer *timer; int battery; BOOL charging; NSInteger pressed; }
 @end
 @implementation BarView
@@ -29,7 +29,7 @@ void ToggleControlCenter(void); void ToggleSpotlight(void);
 }
 - (void)tick:(NSTimer *)t { battery = BatteryPercent(); charging = BatteryCharging(); [self setNeedsDisplay: YES]; }
 /* the centres of the items counted from the right edge, the same on every screen */
-- (NSArray *)centres { NSMutableArray *a = [NSMutableArray arrayWithObjects: @"siri", @149, @"cc", @186, @"search", @223, nil]; if (battery >= 0) { [a addObject: @"battery"]; [a addObject: @260]; } return a; }
+- (NSArray *)centres { NSMutableArray *a = [NSMutableArray arrayWithObjects: @"siri", @149, @"cc", @186, @"search", @223, nil]; if (battery >= 0 || getenv("TOPBAR_FAKE_BATTERY")) { [a addObject: @"battery"]; [a addObject: @260]; } return a; }
 - (NSString *)clockString
 {
 	time_t now = time(NULL); struct tm tmv; localtime_r(&now, &tmv); char d[48], tp[16]; strftime(d, sizeof d, "%a %e %b", &tmv); strftime(tp, sizeof tp, "%H:%M", &tmv);
@@ -78,7 +78,7 @@ void ToggleControlCenter(void); void ToggleSpotlight(void);
 	for (NSUInteger i = 0; pressed < 0 && i + 1 < [c count]; i += 2) if (fabs(p.x - (W - [c[i + 1] doubleValue])) < 18) pressed = (NSInteger)i;
 	[self setNeedsDisplay: YES];
 }
-- (void)mouseUp:(NSEvent *)e { NSArray *c = [self centres]; if (pressed >= 0 && pressed < 99 && [c[pressed] isEqual: @"cc"]) ToggleControlCenter(); else if (pressed >= 0 && pressed < 99 && [c[pressed] isEqual: @"search"]) ToggleSpotlight(); pressed = -1; [self setNeedsDisplay: YES]; }
+- (void)mouseUp:(NSEvent *)e { NSArray *c = [self centres]; if (pressed >= 0 && pressed < 99 && [c[pressed] isEqual: @"cc"]) ToggleControlCenter(); else if (pressed >= 0 && pressed < 99 && [c[pressed] isEqual: @"search"]) ToggleSpotlight(); else if (pressed >= 0 && pressed < 99 && [c[pressed] isEqual: @"battery"]) ShowBatteryMenu(self, [self bounds].size.width - [c[pressed + 1] doubleValue] + 30); pressed = -1; [self setNeedsDisplay: YES]; }
 @end
 
 int main(int argc, char *argv[])
