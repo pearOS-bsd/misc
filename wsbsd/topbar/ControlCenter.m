@@ -51,7 +51,18 @@ void SetDark(BOOL dark)
 	[[NSFileManager defaultManager] createDirectoryAtPath: [f stringByDeletingLastPathComponent] withIntermediateDirectories: YES attributes: nil error: NULL]; [d writeToFile: f atomically: YES];
 }
 
-@interface CCView : NSView { NSMutableDictionary *on; NSString *drag; double volume, brightness, kbd; NSArray *tiles; }
+/* the slider of the tiles of the Control Center: an NSSlider whose cell draws a 4 pt track (white 8.5 %) with a white fill and no knob (measured on the Mac) */
+@interface CCSliderCell : NSSliderCell @end
+@implementation CCSliderCell
+- (void)drawBarInside:(NSRect)r flipped:(BOOL)f
+{
+	NSRect tr = NSMakeRect(r.origin.x, NSMidY(r) - 2, r.size.width, 4); [[NSColor colorWithCalibratedWhite: 1 alpha: 0.085] setFill]; [[NSBezierPath bezierPathWithRoundedRect: tr xRadius: 2 yRadius: 2] fill];
+	double v = ([self doubleValue] - [self minValue]) / MAX(1e-9, [self maxValue] - [self minValue]); NSRect fr = tr; fr.size.width *= v; [[NSColor whiteColor] setFill]; [[NSBezierPath bezierPathWithRoundedRect: fr xRadius: 2 yRadius: 2] fill];
+}
+- (void)drawKnob:(NSRect)r {}
+- (void)drawKnob {}
+@end
+@interface CCView : NSView { NSMutableDictionary *on; NSString *drag; double volume, brightness, kbd; NSArray *tiles; NSSlider *sSound, *sBright, *sKbd; }
 - (void)applyGlass;
 @end
 @implementation CCView
@@ -70,6 +81,9 @@ void SetDark(BOOL dark)
 		@[ @"circle", @"truetone", @0, @3, @1, @1, @"sun.max", @"" ], @[ @"circle", @"display", @1, @3, @1, @1, @"display", @"" ], @[ @"wide", @"focus", @2, @3, @2, @1, @"moon.fill", @"Focus" ],
 		@[ @"slider", @"sound", @0, @4, @4, @1, @"speaker.fill", @"Sound" ], @[ @"slider", @"bright", @1, @5, @2, @1, @"sun.max.fill", @"Display" ],
 		@[ @"tall", @"saver", @0, @6, @2, @2, @"display", @"Start Screen Saver" ], @[ @"slider", @"kbdlight", @2, @6, @2, @1, @"light.max", @"Keyboard" ], @[ @"battery", @"battery", @2, @7, @2, @1, @"battery.100percent", @"" ] ];
+	NSSlider *(^Mk)(NSString *, double, double) = ^NSSlider *(NSString *tid, double w, double v) { NSSlider *sl = [[NSSlider alloc] initWithFrame: NSZeroRect]; [sl setCell: [[CCSliderCell alloc] init]]; [sl setMinValue: 0]; [sl setMaxValue: 1]; [sl setDoubleValue: v]; [sl setContinuous: YES]; [sl setTarget: self]; [sl setAction: @selector(sliderMoved:)]; [sl setIdentifier: tid]; [self addSubview: sl]; return sl; };
+	sSound = Mk(@"sound", 181, volume); sBright = Mk(@"bright", 82, brightness); sKbd = Mk(@"kbdlight", 80, kbd);
+	for (NSArray *t in tiles) { NSRect r = [self rectOf: t]; if ([t[1] isEqual: @"sound"]) [sSound setFrame: NSMakeRect(r.origin.x + 34, r.origin.y + 35, 181, 14)]; else if ([t[1] isEqual: @"bright"]) [sBright setFrame: NSMakeRect(r.origin.x + 40, r.origin.y + 35, 82, 14)]; else if ([t[1] isEqual: @"kbdlight"]) [sKbd setFrame: NSMakeRect(r.origin.x + 42, r.origin.y + 35, 80, 14)]; }
 	return self;
 }
 - (NSRect)rectOf:(NSArray *)t { int c = [t[4] intValue], r = [t[5] intValue]; return NSMakeRect(ColX([t[2] intValue]), RowY([t[3] doubleValue]), c * 64.0 + (c - 1) * 12, r * 64.0 + (r - 1) * 12); }
@@ -104,8 +118,6 @@ static void Bluetooth(NSPoint c, NSColor *col) { NSBezierPath *p = [NSBezierPath
 		} else if ([k isEqual: @"slider"]) {
 			double v = [id_ isEqual: @"sound"] ? volume : [id_ isEqual: @"bright"] ? brightness : kbd; BOOL snd = [id_ isEqual: @"sound"], br = [id_ isEqual: @"bright"];
 			[t[7] drawAtPoint: NSMakePoint(r.origin.x + (snd ? 16 : 18), r.origin.y + 11) withAttributes: tf];
-			NSRect tr = NSMakeRect(r.origin.x + (snd ? 34 : br ? 40 : 42), r.origin.y + 37, snd ? 181 : br ? 82 : 80, 4); [[NSColor colorWithCalibratedWhite: 1 alpha: 0.085] setFill]; [[NSBezierPath bezierPathWithRoundedRect: tr xRadius: 2 yRadius: 2] fill];
-			NSRect fr = tr; fr.size.width *= v; [[NSColor whiteColor] setFill]; [[NSBezierPath bezierPathWithRoundedRect: fr xRadius: 2 yRadius: 2] fill];
 			if (snd) { Sym(@"speaker.fill", NSMakeRect(r.origin.x + 16, r.origin.y + 35, 14, 14), 11, white); Sym(@"speaker.wave.3.fill", NSMakeRect(r.origin.x + 221, r.origin.y + 34, 21, 16), 12, white); NSRect ap = NSMakeRect(r.origin.x + 252, r.origin.y + 29, 26, 26); [[NSColor colorWithCalibratedWhite: 1 alpha: 0.24] setFill]; [[NSBezierPath bezierPathWithOvalInRect: ap] fill]; Sym(@"airplay.audio", NSInsetRect(ap, 5, 5), 12, white); }
 			else if (br) Sym(@"sun.max.fill", NSMakeRect(r.origin.x + 17, r.origin.y + 35, 14, 14), 11, white);
 			else Sym(@"light.max", NSMakeRect(r.origin.x + 17, r.origin.y + 38, 16, 9), 9, white);
@@ -128,11 +140,12 @@ static void Bluetooth(NSPoint c, NSColor *col) { NSBezierPath *p = [NSBezierPath
 	NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; drag = nil;
 	for (NSArray *t in tiles) { NSRect r = [self rectOf: t]; if (!NSPointInRect(p, r)) continue; NSString *id_ = t[1];
 		if ([t[0] isEqual: @"slider"]) { if (p.y < r.origin.y + 28 && p.x < r.origin.x + 70 && ([id_ isEqual: @"sound"] || [id_ isEqual: @"bright"])) { [[self window] orderOut: nil]; if ([id_ isEqual: @"sound"]) ToggleSoundPanel(); else ToggleDisplayPanel(); return; }       /* the titles are buttons that open the details */
-			drag = id_; [self set: id_ at: p inRect: r]; return; }
+			return; }
 		if ([t[0] isEqual: @"circle"] || [t[0] isEqual: @"wide"]) { BOOL v = ![on[id_] boolValue]; on[id_] = @(v); if ([id_ isEqual: @"dark"]) SetDark(v); if ([id_ isEqual: @"wifi"]) SetWifiPower(v); if ([id_ isEqual: @"focus"]) NCSetFocus(v); [self applyGlass]; [self setNeedsDisplay: YES]; }
 		return; }
 }
 - (void)rightMouseDown:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; for (NSArray *t in tiles) if (([t[1] isEqual: @"wifi"] || [t[1] isEqual: @"bluetooth"]) && NSPointInRect(p, [self rectOf: t])) { [[self window] orderOut: nil]; if ([t[1] isEqual: @"wifi"]) ToggleWifiPanel(); else ToggleBluetoothPanel(); } }       /* the details of the Wi-Fi tile (AX: the custom action "show details") */
+- (void)sliderMoved:(NSSlider *)o { double v = [o doubleValue]; NSString *i = [o identifier]; if ([i isEqual: @"sound"]) { volume = v; SetMixerVolume(v); } else if ([i isEqual: @"bright"]) { brightness = v; SetBrightness(v); } else kbd = v; [self setNeedsDisplay: YES]; }
 - (void)mouseDragged:(NSEvent *)e { if (!drag) return; NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; for (NSArray *t in tiles) if ([t[1] isEqual: drag]) [self set: drag at: p inRect: [self rectOf: t]]; }
 - (void)mouseUp:(NSEvent *)e { drag = nil; }
 @end
