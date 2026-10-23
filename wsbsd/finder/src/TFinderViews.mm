@@ -87,12 +87,30 @@ void TFDrawIcon(NSString *path, NSRect r)                                       
 	if (k && ![path isEqual: @"/"] && !TFIsPackage(path)) { [k drawIconOfName: [path lastPathComponent] directory: d inRect: r]; return; }
 	NSImage *i = TFIcon(path); if (i) [i drawInRect: r fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1];
 }
+@interface TMenuFit : NSObject { NSMenu *menu; int n; } - (id)initFor:(NSMenu *)m; @end
+@implementation TMenuFit
+- (id)initFor:(NSMenu *)m { if ((self = [super init])) { menu = m; [self performSelector: @selector(fit) withObject: nil afterDelay: 0.03 inModes: @[ NSEventTrackingRunLoopMode, NSDefaultRunLoopMode, NSModalPanelRunLoopMode ]]; } return self; }
+- (void)fit { NSWindow *mw = [[menu menuRepresentation] window]; if (!mw || ![mw isVisible]) { if (++n < 10) [self performSelector: @selector(fit) withObject: nil afterDelay: 0.03 inModes: @[ NSEventTrackingRunLoopMode, NSDefaultRunLoopMode ]]; return; } NSRect f = [mw frame]; if (getenv("FINDER_DEBUG")) NSLog(@"menu fit window %@", NSStringFromRect(f)); if (f.origin.y < 8) { f.origin.y = 8; [mw setFrameOrigin: f.origin]; } }
+@end
+@interface TTagDots : NSView { @public NSArray *names; NSArray *cols; id target; SEL action; __weak NSMenu *menu; } @end
+@implementation TTagDots
+- (void)drawRect:(NSRect)r { CGFloat x = 14; for (NSUInteger i = 0; i < [cols count]; i++) { NSRect d = NSMakeRect(x, (NSHeight([self bounds]) - 14) / 2, 14, 14); [cols[i] setFill]; [[NSBezierPath bezierPathWithOvalInRect: d] fill]; x += 20; } }
+- (void)mouseDown:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; NSInteger i = (NSInteger)((p.x - 10) / 20); if (i < 0 || i >= (NSInteger)[names count]) return; NSMenuItem *tmp = [[NSMenuItem alloc] initWithTitle: @"" action: action keyEquivalent: @""]; [tmp setRepresentedObject: names[i]]; [tmp setTarget: target]; [menu cancelTracking]; [NSApp sendAction: action to: target from: tmp]; }
+@end
 void TFPopupMenu(NSView *view, NSPoint p, NSMenu *menu)                                       /* an NSMenu shown as the panel's own pop-up (GNUstep's pop-up windows come out far too big under this window server): separators, symbols (tool tip "sym:name"), a row of tag colours (tag 2), sub menus, disabled rows in grey */
 {
-	if (getenv("FINDER_NATIVE_MENU")) {                                                         /* the real NSMenu pop-up: the theme draws it as measured on the Mac (rows 24, separators 11, glass) */
-		NSWindow *w = [view window]; if (!w) return; NSPoint q = [view convertPoint: p toView: nil];
+	if (!getenv("FINDER_PANEL_MENU")) {                                                         /* the real NSMenu pop-up: the theme draws it as measured on the Mac (rows 24, separators 11, glass) */
+		NSWindow *w = [view window]; if (!w) return; NSPoint q = [view convertPoint: p toView: nil]; Class fs = NSClassFromString(@"WsdFinderSupport");
+		for (NSMenuItem *it in [menu itemArray]) {
+			id t = [it target]; BOOL ok = YES; if ([t respondsToSelector: @selector(validateMenuItem:)] && [it action]) ok = [t validateMenuItem: it]; if ([[it title] isEqual: @"Put Back"] || [[it title] isEqual: @"Open With"]) [it setHidden: !ok];     /* the Mac leaves these out when they do not apply */
+			if ([it tag] == 2 && ![it view]) { TTagDots *dv = [[TTagDots alloc] initWithFrame: NSMakeRect(0, 0, 160, 24)]; NSMutableArray *cs = [NSMutableArray array]; for (NSString *n in [it representedObject]) [cs addObject: [fs colorOfTag: n]]; dv->names = [it representedObject]; dv->cols = cs; dv->target = [it target]; dv->action = [it action]; dv->menu = menu; [it setTitle: @""]; [it setView: dv]; }
+		}
 		NSEvent *ev = [NSEvent mouseEventWithType: NSRightMouseDown location: q modifierFlags: 0 timestamp: [[NSProcessInfo processInfo] systemUptime] windowNumber: [w windowNumber] context: nil eventNumber: 0 clickCount: 1 pressure: 1];
-		[NSMenu popUpContextMenu: menu withEvent: ev forView: view]; return; }
+		__block BOOL chose = NO; id ob = [[NSNotificationCenter defaultCenter] addObserverForName: NSMenuDidSendActionNotification object: nil queue: nil usingBlock: ^(NSNotification *n) { chose = YES; }];
+		[[TMenuFit alloc] initFor: menu];       /* a menu that does not fit below the pointer is moved up, as on the Mac: the server places it at the pointer, so it is moved once it is on screen */
+		NSDate *t0 = [NSDate date]; [NSMenu popUpContextMenu: menu withEvent: ev forView: view];
+		if (!chose && -[t0 timeIntervalSinceNow] < 0.5) { [[TMenuFit alloc] initFor: menu]; [NSMenu popUpContextMenu: menu withEvent: ev forView: view]; }       /* a quick click: the Mac keeps the menu open until the next click (GNUstep ends the tracking at the first release) */
+		[[NSNotificationCenter defaultCenter] removeObserver: ob]; return; }
 	Class sp = NSClassFromString(@"WsdFinderSupport"); NSMutableArray *items = [NSMutableArray array], *rows = [NSMutableArray array];
 	for (NSMenuItem *it in [menu itemArray]) {
 		if ([it isSeparatorItem]) { if ([rows count] && ![[rows lastObject][@"sep"] boolValue]) { [items addObject: [NSNull null]]; [rows addObject: @{ @"sep": @YES }]; } continue; }
@@ -574,7 +592,7 @@ static NSString *SortFieldFor(NSString *col) { NSDictionary *m = @{ @"name": @"n
 	NSInteger target = _dropRow; _dropRow = -1; [self setNeedsDisplay: YES]; if (!moved) return; NSPoint wp = [ev locationInWindow]; BOOL copy = ([ev modifierFlags] & NSAlternateKeyMask) != 0; BOOL inside = NSPointInRect([self convertPoint: wp fromView: nil], [self bounds]);
 	if ((target >= 0 || !inside) && [delegate respondsToSelector: @selector(iconViewDropPaths:intoFolder:atWindowPoint:copy:)]) [(id)delegate iconViewDropPaths: paths intoFolder: target >= 0 ? _items[target][@"path"] : nil atWindowPoint: wp copy: copy];
 }
-- (NSMenu *)menuForEvent:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; if (p.y < kHead) { NSMenu *m = [[NSMenu alloc] initWithTitle: @""]; for (NSDictionary *d in _colDefs) { if ([d[@"id"] isEqual: @"name"]) continue; NSMenuItem *it = [m addItemWithTitle: d[@"title"] action: @selector(_toggleCol:) keyEquivalent: @""]; [it setTarget: self]; [it setRepresentedObject: d[@"id"]]; [it setState: [d[@"vis"] boolValue] ? NSOnState : NSOffState]; } TFPopupMenu(self, p, m); return nil; } NSInteger i = [self _row: NSMakePoint(p.x, p.y - topInset + off)]; if (i >= 0 && ![_sel containsIndex: i]) { [_sel removeAllIndexes]; [_sel addIndex: i]; [self setNeedsDisplay: YES]; [self _notify]; } if ([delegate respondsToSelector: @selector(prepareContextMenu:)]) [(id)delegate prepareContextMenu: [self menu]]; TFPopupMenu(self, p, [self menu]); return nil; }
+- (NSMenu *)menuForEvent:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; if (p.y < kHead) { NSMenu *m = [[NSMenu alloc] initWithTitle: @""]; for (NSDictionary *d in _colDefs) { if ([d[@"id"] isEqual: @"name"]) continue; NSMenuItem *it = [m addItemWithTitle: d[@"title"] action: @selector(_toggleCol:) keyEquivalent: @""]; [it setTarget: self]; [it setRepresentedObject: d[@"id"]]; [it setState: [d[@"vis"] boolValue] ? NSOnState : NSOffState]; } TFPopupMenu(self, p, m); return nil; } NSInteger i = [self _row: NSMakePoint(p.x, p.y - topInset + off)]; if (i >= 0 && ![_sel containsIndex: i]) { [_sel removeAllIndexes]; [_sel addIndex: i]; [self setNeedsDisplay: YES]; [self _notify]; } if (i < 0 && [delegate respondsToSelector: @selector(backgroundContextMenu)]) { NSMenu *bg = [(id)delegate backgroundContextMenu]; if (bg) { TFPopupMenu(self, p, bg); return nil; } } if ([delegate respondsToSelector: @selector(prepareContextMenu:)]) [(id)delegate prepareContextMenu: [self menu]]; TFPopupMenu(self, p, [self menu]); return nil; }
 - (BOOL)beginRename:(NSString *)path
 {
 	for (NSInteger i = 0; i < (NSInteger)[_items count]; i++) if ([_items[i][@"path"] isEqual: path]) { [self reveal: NSMakeRect(0, 4 + i * kRow, 10, kRow)]; CGFloat ind = [_items[i][@"depth"] intValue] * 18; NSRect lr = NSMakeRect(46 + ind, 4 + i * kRow - off + topInset + 2, 280, kRow - 4); __weak TListView *me = self; NSString *old = path; TFBeginRename(self, lr, [path lastPathComponent], NO, nil, ^(NSString *nn) { TListView *s = me; if (s && [s->delegate respondsToSelector: @selector(iconViewRename:to:)]) [(id)s->delegate iconViewRename: old to: nn]; }); return YES; }

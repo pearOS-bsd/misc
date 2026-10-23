@@ -161,3 +161,6 @@ The toolbar is still custom drawn (`TToolbarView`, not NSToolbar/NSItem): to mov
 
 ## Key equivalents with Shift (⌘K)
 GNUstep's `NSMenu performKeyEquivalent:` ignored Shift for letters: ⌘K hit the first "k" item (Network, ⇧⌘K) instead of Connect to Server. `wsdMenuKeyEquivalent` (WsdMacTheme.m) matches Shift for letters (an upper-case key equivalent means Shift); test in `test_menuitem.m`. Esc now cancels the Go to Folder / Rename sheets. Seen at startup: "1000 timers scheduled" warnings (not yet traced).
+
+## Native NSMenu pop-up is now the default in the Finder
+`TFPopupMenu` shows the real NSMenu (FINDER_PANEL_MENU=1 brings back the old panel). A quick click keeps the menu open (the popUp is repeated once when no action came back within 0.5 s), "Put Back"/"Open With" are hidden when they do not apply, the tag colours are a view item (`TTagDots`, title cleared), and a menu that does not fit below the pointer is moved up (`TMenuFit`, because the server places it at the pointer). Open: icons of the "sym:" rows look rough (trash), list view uses the item menu on empty space (its background menu is not measured), the panel menu's measured widths (Group menu 156) no longer apply — native rows size to content.
