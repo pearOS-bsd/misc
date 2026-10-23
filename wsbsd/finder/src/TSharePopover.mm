@@ -6,6 +6,7 @@
 #import <GNUstepGUI/GSDisplayServer.h>
 @interface NSObject (SPGlass) - (void)wsdMenuGlass:(int)win :(int)w :(int)h; @end
 
+static NSPopover *gShare, *gTags;
 @interface TShareView : NSView { @public NSArray *paths; NSInteger hot; id owner; }
 @end
 @implementation TShareView
@@ -27,10 +28,10 @@
 - (void)updateTrackingAreas { [super updateTrackingAreas]; [self addTrackingRect: [self bounds] owner: self userData: NULL assumeInside: NO]; }
 - (void)mouseDown:(NSEvent *)e
 {
-	NSInteger r = [self rowAt: [self convertPoint: [e locationInWindow] fromView: nil]]; if (r < 0) return; NSWindow *w = [self window];
+	NSInteger r = [self rowAt: [self convertPoint: [e locationInWindow] fromView: nil]]; if (r < 0) return;
 	if (r == 0) [owner performSelector: @selector(cmdGoToAirDrop:) withObject: nil];
 	else { NSPasteboard *pb = [NSPasteboard generalPasteboard]; [pb declareTypes: @[ NSFilenamesPboardType ] owner: nil]; [pb setPropertyList: paths forType: NSFilenamesPboardType]; }
-	[w orderOut: nil];
+	[gShare close];
 }
 @end
 @interface TShareWindow : NSWindow @end
@@ -40,14 +41,13 @@
 - (void)keyDown:(NSEvent *)e { if ([[e characters] isEqual: @"\x1b"]) [self orderOut: nil]; else [super keyDown: e]; }
 @end
 
-/* the popover for paths, centred on the point (screen coordinates) above it */
-void TFShowSharePopover(NSArray *paths, NSPoint anchor, id owner)
+/* the popover for paths: an NSPopover (WsdPopover.m gives it the Mac's behaviour) against the rectangle of the button in the view, above it when there is room */
+void TFShowSharePopover(NSArray *paths, NSRect rect, NSView *view, id owner)
 {
-	static TShareWindow *w; double W = 266, H = 160; NSRect f = NSMakeRect(anchor.x - W / 2, anchor.y + 6, W, H);
-	if (!w) { w = [[TShareWindow alloc] initWithContentRect: f styleMask: NSWindowStyleMaskBorderless backing: NSBackingStoreBuffered defer: NO]; [w setOpaque: NO]; [w setBackgroundColor: [NSColor clearColor]]; [w setHasShadow: NO]; [w setLevel: 101]; [w setAcceptsMouseMovedEvents: YES]; [w setContentView: [[TShareView alloc] initWithFrame: NSMakeRect(0, 0, W, H)]]; }
-	else [w setFrame: f display: YES];
-	TShareView *v = (TShareView *)[w contentView]; v->paths = paths; v->owner = owner; v->hot = -1; [v setNeedsDisplay: YES]; [NSApp activateIgnoringOtherApps: YES]; [w makeKeyAndOrderFront: nil];
-	id srv = GSCurrentServer(); if ([srv respondsToSelector: @selector(wsdMenuGlass:::)]) [srv wsdMenuGlass: (int)[w windowNumber] : (int)W : (int)H];
+	if ([gShare isShown]) { [gShare close]; return; }
+	TShareView *v = [[TShareView alloc] initWithFrame: NSMakeRect(0, 0, 240, 135)]; [v setBoundsOrigin: NSMakePoint(13, 13)]; v->paths = paths; v->owner = owner; v->hot = -1;      /* the layout is in the coordinates of the popover, whose content is inset by 13 */
+	NSViewController *vc = [[NSViewController alloc] init]; [vc setView: v]; gShare = [[NSPopover alloc] init]; [gShare setContentViewController: vc]; [gShare setContentSize: NSMakeSize(240, 135)]; [gShare setBehavior: NSPopoverBehaviorTransient];
+	[gShare showRelativeToRect: rect ofView: view preferredEdge: [view isFlipped] ? NSMinYEdge : NSMaxYEdge];
 }
 
 /* The Add Tags popover (the tag button of the toolbar and "Tags…"), from the accessibility tree of the real one: 252 x 251, "Assign tags to “name”" 13 pt at (26, 17), the tag field 218 x 27 at (17, 37),
@@ -80,11 +80,10 @@ void TFShowSharePopover(NSArray *paths, NSPoint anchor, id owner)
 	[owner performSelector: @selector(reload)]; [self setNeedsDisplay: YES];
 }
 @end
-void TFShowTagsPopover(NSArray *paths, NSPoint anchor, id owner)
+void TFShowTagsPopover(NSArray *paths, NSRect rect, NSView *view, id owner)
 {
-	static TShareWindow *w; double W = 252, H = 251; NSRect f = NSMakeRect(anchor.x - W / 2, anchor.y - H, W, H);
-	if (!w) { w = [[TShareWindow alloc] initWithContentRect: f styleMask: NSWindowStyleMaskBorderless backing: NSBackingStoreBuffered defer: NO]; [w setOpaque: NO]; [w setBackgroundColor: [NSColor clearColor]]; [w setHasShadow: NO]; [w setLevel: 101]; [w setAcceptsMouseMovedEvents: YES]; [w setContentView: [[TTagsView alloc] initWithFrame: NSMakeRect(0, 0, W, H)]]; }
-	else [w setFrame: f display: YES];
-	TTagsView *v = (TTagsView *)[w contentView]; v->paths = paths; v->owner = owner; v->names = [NSClassFromString(@"WsdFinderSupport") tagNames]; v->hot = -1; [v setNeedsDisplay: YES]; [NSApp activateIgnoringOtherApps: YES]; [w makeKeyAndOrderFront: nil];
-	id srv = GSCurrentServer(); if ([srv respondsToSelector: @selector(wsdMenuGlass:::)]) [srv wsdMenuGlass: (int)[w windowNumber] : (int)W : (int)H];
+	if ([gTags isShown]) { [gTags close]; return; }
+	TTagsView *v = [[TTagsView alloc] initWithFrame: NSMakeRect(0, 0, 226, 225)]; [v setBoundsOrigin: NSMakePoint(13, 13)]; v->paths = paths; v->owner = owner; v->names = [NSClassFromString(@"WsdFinderSupport") tagNames]; v->hot = -1;
+	NSViewController *vc = [[NSViewController alloc] init]; [vc setView: v]; gTags = [[NSPopover alloc] init]; [gTags setContentViewController: vc]; [gTags setContentSize: NSMakeSize(226, 225)]; [gTags setBehavior: NSPopoverBehaviorTransient];
+	[gTags showRelativeToRect: rect ofView: view preferredEdge: [view isFlipped] ? NSMaxYEdge : NSMinYEdge];
 }

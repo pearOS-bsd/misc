@@ -871,6 +871,7 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 	x -= 7 + 112; if (k == 3) return NSMakeRect(x, 8, 112, 36); x -= 7 + 48; if (k == 2) return NSMakeRect(x, 8, 48, 36); x -= 7 + 161; if (k == 1) return NSMakeRect(x, 8, 161, 36);
 	return NSMakeRect(7, 8, 74, 36);
 }
+- (NSRect)buttonRect:(int)i { NSRect ac = [self _pill: 3]; CGFloat aw = ac.size.width / 3; return NSMakeRect(ac.origin.x + i * aw, 0, aw, 52); }
 - (void)setSearching:(BOOL)on
 {
 	searching = on; if (!search) { search = [[NSTextField alloc] initWithFrame: NSZeroRect]; [search setBordered: NO]; [search setBezeled: NO]; [search setDrawsBackground: NO]; [[search cell] setBackgroundColor: [NSColor clearColor]]; [search setFont: [NSFont systemFontOfSize: 13]]; [search setTextColor: TF_TEXT]; [search setFocusRingType: NSFocusRingTypeNone]; [search setDelegate: (id)self]; [self addSubview: search]; }
@@ -925,7 +926,7 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 	NSRect nav = [self _pill: 0], md = [self _pill: 1];
 	if (NSPointInRect(p, nav)) { if (p.x < NSMidX(nav)) { if (canBack) [NSApp sendAction: @selector(cmdBack:) to: target from: self]; } else if (canForward) [NSApp sendAction: @selector(cmdForward:) to: target from: self]; return; }
 	if (NSPointInRect(p, md)) { SEL a[4] = { @selector(cmdViewAsIcons:), @selector(cmdViewAsList:), @selector(cmdViewAsColumns:), @selector(cmdViewAsGallery:) }; [NSApp sendAction: a[(int)((p.x - md.origin.x) / (md.size.width / 4)) & 3] to: target from: self]; return; }
-	NSRect ac = [self _pill: 3]; if (NSPointInRect(p, ac)) { CGFloat aw = ac.size.width / 3; if (p.x > ac.origin.x + 2 * aw) TFPopupMenu(self, NSMakePoint(ac.origin.x + 2 * aw, 46), [target performSelector: @selector(actionMenu)]); else if (p.x > ac.origin.x + aw) { [target performSelector: @selector(tagsAtWindowPoint:) withObject: [NSValue valueWithPoint: NSMakePoint([self frame].origin.x + ac.origin.x + aw * 1.5, 26)]]; } else { [target performSelector: @selector(shareAtWindowPoint:) withObject: [NSValue valueWithPoint: NSMakePoint([self frame].origin.x + ac.origin.x + aw / 2, 26)]]; } return; }
+	NSRect ac = [self _pill: 3]; if (NSPointInRect(p, ac)) { CGFloat aw = ac.size.width / 3; if (p.x > ac.origin.x + 2 * aw) TFPopupMenu(self, NSMakePoint(ac.origin.x + 2 * aw, 46), [target performSelector: @selector(actionMenu)]); else if (p.x > ac.origin.x + aw) { [target performSelector: @selector(cmdTagsPopup:) withObject: nil]; } else { [target performSelector: @selector(cmdShare:) withObject: nil]; } return; }
 	if (trashMode && NSPointInRect(p, [self _pill: 5])) { [NSApp sendAction: @selector(cmdEmptyTrash:) to: target from: self]; return; }
 	if (NSPointInRect(p, [self _pill: 4]) && !searching) [NSApp sendAction: @selector(cmdToggleSearch:) to: target from: self];
 }

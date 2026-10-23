@@ -44,8 +44,8 @@ NSString *TFKindCategory(NSString *path, BOOL dir);
 BOOL TFIsPackage(NSString *path);
 NSArray *TFAppsForFile(NSString *path);
 void TFOpenPath(NSString *path);
-void TFShowSharePopover(NSArray *paths, NSPoint anchor, id owner);
-void TFShowTagsPopover(NSArray *paths, NSPoint anchor, id owner);
+void TFShowSharePopover(NSArray *paths, NSRect rect, NSView *view, id owner);
+void TFShowTagsPopover(NSArray *paths, NSRect rect, NSView *view, id owner);
 NSArray *TFBulkRenamedNames(NSArray *paths, NSDictionary *params);
 void TFBulkRename(NSArray *paths, void (^done)(NSArray *changes));
 void TFAsk(NSString *title, NSString *message, NSArray *fields, NSString *okTitle, void (^done)(NSArray *values));
@@ -153,6 +153,7 @@ NSImage *TFIcon(NSString *path);
 
 @interface TToolbarView : NSView { @public NSString *title; BOOL canBack, canForward; id target; NSInteger mode; NSTextField *search; BOOL searching; NSInteger hot; NSRect _pressed; BOOL trashMode; }
 - (void)setSearching:(BOOL)on;
+- (NSRect)buttonRect:(int)i;
 @end
 
 /* the three window buttons, the 1 px rim and the rounded corners, on top of everything */
