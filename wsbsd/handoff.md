@@ -158,3 +158,6 @@ The Group pill of the toolbar opens `groupMenu` (None, line, Name, Kind, Applica
 
 ## Toolbar pills (glitch fix)
 The toolbar is still custom drawn (`TToolbarView`, not NSToolbar/NSItem): to move to the real classes is open work. Fixed: the glass hairline stuck out past the rounded ends (now only on the straight part), the pressed segment was a box running into the rim (now a capsule; its shape is not measured on the Mac). Also: `test/test_sheets.m` (sheet centring, alert sheets, NSPopover) runs in `ci/gnustep-wsd.sh`.
+
+## Key equivalents with Shift (⌘K)
+GNUstep's `NSMenu performKeyEquivalent:` ignored Shift for letters: ⌘K hit the first "k" item (Network, ⇧⌘K) instead of Connect to Server. `wsdMenuKeyEquivalent` (WsdMacTheme.m) matches Shift for letters (an upper-case key equivalent means Shift); test in `test_menuitem.m`. Esc now cancels the Go to Folder / Rename sheets. Seen at startup: "1000 timers scheduled" warnings (not yet traced).

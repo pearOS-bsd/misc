@@ -327,6 +327,30 @@ static void wsdVEVMove(id self, SEL _cmd)
 	if (origVEVMove) ((void (*)(id, SEL))origVEVMove)(self, _cmd);
 }
 /* macOS keeps a window's title bar below the menu bar but lets the bottom run off the screen; GNUstep shrinks the window to fit */
+/* NSMenu key equivalents as the Mac matches them: Shift counts for every key (GNUstep ignores it for letters, so Command-K and Shift-Command-K both took the first "k" item: "Network" in the Finder's Go menu); an upper-case letter in the key equivalent means Shift */
+static IMP origMenuKeyEq;
+static NSMenuItem *wsdFindKeyItem(NSMenu *m, NSString *k, NSUInteger mods, NSMenu **owner, NSInteger *idx)
+{
+	NSUInteger rel = NSCommandKeyMask | NSAlternateKeyMask | NSControlKeyMask | NSShiftKeyMask; NSArray *items = [m itemArray];
+	for (NSUInteger i = 0; i < [items count]; i++) {
+		NSMenuItem *it = items[i];
+		if ([it hasSubmenu]) { if ([it submenu] == [NSApp servicesMenu]) continue; NSMenuItem *r = wsdFindKeyItem([it submenu], k, mods, owner, idx); if (r) return r; continue; }
+		NSString *ke = [it keyEquivalent]; if (![ke length]) continue; NSUInteger mask = [it keyEquivalentModifierMask];
+		if ([ke length] == 1 && [[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember: [ke characterAtIndex: 0]]) { mask |= NSShiftKeyMask; ke = [ke lowercaseString]; }
+		if ([ke isEqualToString: k] && (mods & rel) == (mask & rel)) { *owner = m; *idx = (NSInteger)i; return it; }
+	}
+	return nil;
+}
+static BOOL wsdMenuKeyEquivalent(NSMenu *self, SEL _cmd, NSEvent *e)
+{
+	if (([e type] != NSKeyDown && [e type] != NSKeyUp) || ![[e charactersIgnoringModifiers] length]) return NO;
+	unichar c = [[e charactersIgnoringModifiers] characterAtIndex: 0]; if (c < 'A' || c > 'z' || (c > 'Z' && c < 'a')) return ((BOOL (*)(id, SEL, id))origMenuKeyEq)(self, _cmd, e);   /* only letters differ */
+	NSString *k = [[e charactersIgnoringModifiers] lowercaseString]; NSMenu *owner = nil; NSInteger idx = -1;
+	NSMenuItem *it = wsdFindKeyItem(self, k, [e modifierFlags], &owner, &idx); if (!it) return NO;
+	if ([owner respondsToSelector: @selector(_autoenableItem:)]) [owner performSelector: @selector(_autoenableItem:) withObject: it];
+	if ([it isEnabled]) [owner performActionForItemAtIndex: idx];
+	return YES;
+}
 static IMP origConstrain;
 static NSRect wsdConstrain(id self, SEL _cmd, NSRect f, NSScreen *scr)
 {
@@ -375,6 +399,7 @@ static void swizzleTableDefaults(void)
 		Method md = class_getInstanceMethod(vc, @selector(drawRect:)); if (md && !origVEVDraw) { origVEVDraw = method_getImplementation(md); class_replaceMethod(vc, @selector(drawRect:), (IMP)wsdVEVDraw, method_getTypeEncoding(md)); }
 		Method mm = class_getInstanceMethod(vc, @selector(viewDidMoveToWindow)); if (mm && !origVEVMove) { origVEVMove = method_getImplementation(mm); class_replaceMethod(vc, @selector(viewDidMoveToWindow), (IMP)wsdVEVMove, method_getTypeEncoding(mm)); }
 	}
+	{ Method mk = class_getInstanceMethod([NSMenu class], @selector(performKeyEquivalent:)); if (mk && !origMenuKeyEq) origMenuKeyEq = method_setImplementation(mk, (IMP)wsdMenuKeyEquivalent); }
 	{ Method mc = class_getInstanceMethod([NSWindow class], @selector(constrainFrameRect:toScreen:)); if (mc && !origConstrain) origConstrain = method_setImplementation(mc, (IMP)wsdConstrain); }
 	Method mth = class_getInstanceMethod([NSTableHeaderView class], @selector(initWithFrame:));
 	if (mth && !origHeaderInit) origHeaderInit = method_setImplementation(mth, (IMP)wsdHeaderInit);

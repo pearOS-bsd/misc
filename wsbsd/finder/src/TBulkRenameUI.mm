@@ -60,7 +60,7 @@ void TFBulkRename(NSArray *paths, void (^done)(NSArray *))
 	f->lFind = Label(@"Find:", NO); f->find = Field(); f->lRepl = Label(@"Replace with:", NO); f->repl = Field(); f->text = Field(); f->where = Pop(@[ @"after name", @"before name" ]);
 	f->lFormat = Label(@"Name Format:", NO); f->format = Pop(@[ @"Name and Index", @"Name and Counter", @"Name and Date" ]); f->lWhere = Label(@"Where:", NO); f->lCustom = Label(@"Custom Format:", NO); f->custom = Field(); [f->custom setStringValue: @"File "]; f->lStart = Label(@"Start numbers at:", NO); f->start = Field(); [f->start setStringValue: @"1"];
 	f->example = Label(@"", NO); TBulkButtons *bt = [[TBulkButtons alloc] init]; f->ok = [[NSButton alloc] initWithFrame: NSZeroRect]; f->cancel = [[NSButton alloc] initWithFrame: NSZeroRect];
-	[f->ok setTitle: @"Rename"]; [f->cancel setTitle: @"Cancel"]; for (NSButton *b in @[ f->ok, f->cancel ]) { [b setBezelStyle: NSRoundedBezelStyle]; [b setTarget: bt]; [card addSubview: b]; } [f->ok setAction: @selector(ok:)]; [f->cancel setAction: @selector(cancel:)]; [f->ok setKeyEquivalent: @"\r"];
+	[f->ok setTitle: @"Rename"]; [f->cancel setTitle: @"Cancel"]; for (NSButton *b in @[ f->ok, f->cancel ]) { [b setBezelStyle: NSRoundedBezelStyle]; [b setTarget: bt]; [card addSubview: b]; } [f->ok setAction: @selector(ok:)]; [f->cancel setAction: @selector(cancel:)]; [f->ok setKeyEquivalent: @"\r"]; [f->cancel setKeyEquivalent: @"\033"];
 	[f update: nil];
 	__weak NSWindow *ww = w; __block TBulkButtons *keep = bt;
 	bt->done = ^(BOOL yes) { NSArray *res = nil; if (yes) { NSArray *nn = TFBulkRenamedNames(paths, [f params]); NSMutableArray *r = [NSMutableArray array];
@@ -87,7 +87,7 @@ void TFAsk(NSString *title, NSString *message, NSArray *fields, NSString *okTitl
 		[t setPlaceholderString: d[@"label"]]; [t setStringValue: d[@"value"] ?: @""]; [card addSubview: t]; [tf addObject: t];
 	}
 	TBulkButtons *bt = [[TBulkButtons alloc] init]; NSButton *ok = [[NSButton alloc] initWithFrame: NSMakeRect(W - pad - 110, 14, 110, 28)], *cn = [[NSButton alloc] initWithFrame: NSMakeRect(W - pad - 230, 14, 110, 28)];
-	[ok setTitle: okTitle ?: @"OK"]; [cn setTitle: @"Cancel"]; for (NSButton *b in @[ ok, cn ]) { [b setBezelStyle: NSRoundedBezelStyle]; [b setTarget: bt]; } [ok setAction: @selector(ok:)]; [cn setAction: @selector(cancel:)]; [ok setKeyEquivalent: @"\r"]; [card addSubview: cn]; [card addSubview: ok];
+	[ok setTitle: okTitle ?: @"OK"]; [cn setTitle: @"Cancel"]; for (NSButton *b in @[ ok, cn ]) { [b setBezelStyle: NSRoundedBezelStyle]; [b setTarget: bt]; } [ok setAction: @selector(ok:)]; [cn setAction: @selector(cancel:)]; [ok setKeyEquivalent: @"\r"]; [cn setKeyEquivalent: @"\033"]; [card addSubview: cn]; [card addSubview: ok];
 	__weak NSWindow *ww = w; __block TBulkButtons *keep = bt;
 	bt->done = ^(BOOL yes) { NSMutableArray *vals = nil; if (yes) { vals = [NSMutableArray array]; for (NSTextField *t in tf) [vals addObject: [t stringValue] ?: @""]; } NSWindow *pw = [(id)ww sheetParent]; if (pw) [(id)pw endSheet: ww]; else [ww orderOut: nil]; keep->done = nil; keep = nil; done(vals); };
 	objc_setAssociatedObject(w, "ask", @[ bt, tf ], OBJC_ASSOCIATION_RETAIN); static NSWindow *open; open = w;
