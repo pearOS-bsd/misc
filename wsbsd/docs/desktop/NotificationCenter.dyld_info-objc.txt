@@ -1,0 +1,1193 @@
+/System/Library/CoreServices/NotificationCenter.app/Contents/MacOS/NotificationCenter [arm64e]:
+    -objc:
+        @interface NCCARemoteSession : NSObject 
+          0x100003448  -[NCCARemoteSession initWithUUID:serviceIdentifier:representingApp:endPoint:]
+          0x100003700  -[NCCARemoteSession dealloc]
+          0x100003754  -[NCCARemoteSession setIgnoresDND:]
+          0x10000375C  -[NCCARemoteSession view]
+          0x100003764  -[NCCARemoteSession invalidate]
+          0x1000037F4  -[NCCARemoteSession dismissed]
+          0x1000037F8  -[NCCARemoteSession uuid]
+          0x100003804  -[NCCARemoteSession appIdentifier]
+          0x100003810  -[NCCARemoteSession serviceIdentifier]
+          0x10000381C  -[NCCARemoteSession preferredDisplay]
+          0x100003824  -[NCCARemoteSession setPreferredDisplay:]
+          0x10000382C  -[NCCARemoteSession dark]
+          0x100003838  -[NCCARemoteSession setDark:]
+          0x100003840  -[NCCARemoteSession dontAnimate]
+          0x10000384C  -[NCCARemoteSession setDontAnimate:]
+          0x100003854  -[NCCARemoteSession ignoresDND]
+          0x10000385C  -[NCCARemoteSession ignoresDowntime]
+          0x100003864  -[NCCARemoteSession setIgnoresDowntime:]
+          0x10000386C  -[NCCARemoteSession ignoresTopMargin]
+          0x100003874  -[NCCARemoteSession setIgnoresTopMargin:]
+          0x10000387C  -[NCCARemoteSession ignoresMenuBar]
+          0x100003884  -[NCCARemoteSession setIgnoresMenuBar:]
+          0x10000388C  -[NCCARemoteSession hidesNotificationCenter]
+          0x100003894  -[NCCARemoteSession setHidesNotificationCenter:]
+          0x10000389C  -[NCCARemoteSession displaysOnLockscreen]
+          0x1000038A4  -[NCCARemoteSession setDisplaysOnLockscreen:]
+          0x1000038AC  -[NCCARemoteSession shouldMuteByLockscreenSetting]
+          0x1000038B4  -[NCCARemoteSession setShouldMuteByLockscreenSetting:]
+          0x1000038BC  -[NCCARemoteSession closable]
+          0x1000038C8  -[NCCARemoteSession setClosable:]
+          0x1000038D0  -[NCCARemoteSession allowsSwipeDismiss]
+          0x1000038DC  -[NCCARemoteSession setAllowsSwipeDismiss:]
+          0x1000038E4  -[NCCARemoteSession order]
+          0x1000038EC  -[NCCARemoteSession setOrder:]
+          0x1000038F4  -[NCCARemoteSession invalidated]
+          0x100003900  -[NCCARemoteSession setInvalidated:]
+          0x100003908  -[NCCARemoteSession completion]
+          0x100003914  -[NCCARemoteSession setCompletion:]
+          0x10000391C  -[NCCARemoteSession keyBlock]
+          0x100003928  -[NCCARemoteSession setKeyBlock:]
+          0x100003930  -[NCCARemoteSession context]
+          0x10000395C  -[NCCARemoteSession setContext:]
+          0x100003968  -[NCCARemoteSession connection]
+          0x100003974  -[NCCARemoteSession setConnection:]
+          0x10000397C  -[NCCARemoteSession presentWithoutTransition]
+          0x100003984  -[NCCARemoteSession setPresentWithoutTransition:]
+          0x10000398C  -[NCCARemoteSession handlesSwipeToDismissGesture]
+          0x100003994  -[NCCARemoteSession setHandlesSwipeToDismissGesture:]
+          0x10000399C  -[NCCARemoteSession height]
+          0x1000039A4  -[NCCARemoteSession setHeight:]
+          0x1000039AC  -[NCCARemoteSession resizeBlock]
+          0x1000039B8  -[NCCARemoteSession setResizeBlock:]
+          0x1000039C0  -[NCCARemoteSession accessibilitySubRole]
+          0x1000039CC  -[NCCARemoteSession setAccessibilitySubRole:]
+          0x1000039D4  -[NCCARemoteSession accessibilityRoleDescription]
+          0x1000039E0  -[NCCARemoteSession setAccessibilityRoleDescription:]
+          0x1000039E8  -[NCCARemoteSession accessibilityIdentifier]
+          0x1000039F4  -[NCCARemoteSession setAccessibilityIdentifier:]
+          0x1000039FC  -[NCCARemoteSession accessibilityLabel]
+          0x100003A08  -[NCCARemoteSession setAccessibilityLabel:]
+          0x100003A10  -[NCCARemoteSession .cxx_destruct]
+        @end
+        @interface NCRelativeDateTransformer : NSValueTransformer 
+          0x100003AE0  -[NCRelativeDateTransformer initWithLocalizerBundle:]
+          0x100003B64  -[NCRelativeDateTransformer stringForDate:duration:isRelative:]
+          0x100003B68  -[NCRelativeDateTransformer stringForDate:]
+          0x100003B74  -[NCRelativeDateTransformer transformedValue:]
+          0x100003BFC  -[NCRelativeDateTransformer _transformedValue:duration:isRelative:]
+          0x10000411C  -[NCRelativeDateTransformer bundleForLocalization]
+          0x100004130  -[NCRelativeDateTransformer .cxx_destruct]
+          0x100003AD4  +[NCRelativeDateTransformer transformedValueClass]
+        @end
+        @interface PeriodicAnalyticsTask : NSObject 
+          0x100004144  -[PeriodicAnalyticsTask initWithDomain:preference:]
+          0x10000473C  -[PeriodicAnalyticsTask addBlock:]
+          0x100004798  -[PeriodicAnalyticsTask .cxx_destruct]
+        @end
+        @interface NCDockCommunication : NSObject 
+          0x100004980  -[NCDockCommunication init]
+          0x1000049D8  -[NCDockCommunication tellDockAboutAlertWindow:]
+          0x100004A30  -[NCDockCommunication tellDockStateChanged:]
+          0x100004A7C  -[NCDockCommunication ncCloseNotificationCenterImmediately:]
+          0x100004AC4  -[NCDockCommunication ncToggleNotificationCenterOnDisplay:]
+          0x100004B0C  -[NCDockCommunication ncPing:]
+          0x100004B1C  -[NCDockCommunication _dockBackAlive]
+          0x100004B7C  -[NCDockCommunication _disconnected]
+          0x100004BC4  -[NCDockCommunication _setupDockConnection]
+          0x100004D6C  -[NCDockCommunication delegate]
+          0x100004D98  -[NCDockCommunication setDelegate:]
+          0x100004DA4  -[NCDockCommunication .cxx_destruct]
+          0x100004854  +[NCDockCommunication dock]
+          0x1000048AC  +[NCDockCommunication dockAlive]
+        @end
+        @interface NCCARemoteViewController : NSViewController <NCServiceViewHostProtocol>
+          0x100004F98  -[NCCARemoteViewController initForServiceIdentifier:sessionUUID:endpoint:forHost:]
+          0x1000050BC  -[NCCARemoteViewController dealloc]
+          0x10000513C  -[NCCARemoteViewController loadView]
+          0x100005380  -[NCCARemoteViewController _remotePreferredSizeChanged:fence:]
+          0x1000054D0  -[NCCARemoteViewController _setupRemoteViewController]
+          0x100005650  -[NCCARemoteViewController _setupRemoteViewController2]
+          0x100005860  -[NCCARemoteViewController hostRequestSizeChange:fence:]
+          0x1000059B0  -[NCCARemoteViewController dismissAlert]
+          0x100005A0C  -[NCCARemoteViewController resizeBlock]
+          0x100005A1C  -[NCCARemoteViewController setResizeBlock:]
+          0x100005A28  -[NCCARemoteViewController maxSize]
+          0x100005A6C  -[NCCARemoteViewController setMaxSize:]
+          0x100005AAC  -[NCCARemoteViewController .cxx_destruct]
+        @end
+        @interface NCHotKey : NSObject 
+          0x100005BFC  -[NCHotKey init]
+          0x100005E1C  -[NCHotKey dealloc]
+          0x100005E78  -[NCHotKey _registerBackgroundEventMaskWithIgnoredRects:count:]
+          0x1000060D4  -[NCHotKey updateEventMaskWithIgnoredRects:count:tracking:]
+          0x100006148  -[NCHotKey setFocusChangeWithIgnoredRects:count:changeBlock:]
+          0x100006204  -[NCHotKey _handleEvents]
+          0x10000660C  -[NCHotKey delegate]
+          0x100006638  -[NCHotKey setDelegate:]
+          0x100006644  -[NCHotKey .cxx_destruct]
+          0x100005B78  +[NCHotKey sharedManager]
+        @end
+        @interface NCPeriodicAnalyticsTask : PeriodicAnalyticsTask 
+          0x10000669C  +[NCPeriodicAnalyticsTask defaultTask]
+        @end
+        @interface NCCAController : NSObject <NSXPCListenerDelegate>
+          0x1000067B8  -[NCCAController init]
+          0x1000068CC  -[NCCAController dismissAlert:]
+          0x1000069A0  -[NCCAController setSwipeGestureOffset:offset:didComplete:]
+          0x100006AA4  -[NCCAController _bundleIdentifierForConnection:]
+          0x100006C0C  -[NCCAController listener:shouldAcceptNewConnection:]
+          0x100007044  -[NCCAController _incomingConnectionInterrupted:]
+          0x1000071A4  -[NCCAController ncRequestPresentationOfRemoteAlert:options:withVBEndpoint:]
+          0x10000775C  -[NCCAController ncActuallyPresentRemoteAlert:]
+          0x1000079D4  -[NCCAController ncDismissAlert:withAnimation:completion:]
+          0x100007AB4  -[NCCAController ncMakeKeyAlert:completion:]
+          0x100007B64  -[NCCAController ncReleaseKeyAlert:]
+          0x100007BD4  -[NCCAController ncReserveSpace:forHostIdentifier:]
+          0x100007C4C  -[NCCAController delegate]
+          0x100007C78  -[NCCAController setDelegate:]
+          0x100007C84  -[NCCAController .cxx_destruct]
+          0x100006734  +[NCCAController sharedInstance]
+        @end
+        @interface _NCCAHostViewBridgeControllerProxy : NSObject <NCServiceViewHostProtocol>
+          0x100007D98  -[_NCCAHostViewBridgeControllerProxy hostRequestSizeChange:fence:]
+          0x100007E0C  -[_NCCAHostViewBridgeControllerProxy dismissAlert]
+          0x100007E4C  -[_NCCAHostViewBridgeControllerProxy delegate]
+          0x100007E78  -[_NCCAHostViewBridgeControllerProxy setDelegate:]
+          0x100007E84  -[_NCCAHostViewBridgeControllerProxy .cxx_destruct]
+        @end
+        @interface NCCAHostViewBridgeController : NSRemoteViewController 
+          0x100007E8C  -[NCCAHostViewBridgeController serviceViewControllerInterface]
+          0x100007EA0  -[NCCAHostViewBridgeController exportedInterface]
+          0x100007EB4  -[NCCAHostViewBridgeController exportedObject]
+          0x100007EB8  -[NCCAHostViewBridgeController _proxyCreateIfNecessary]
+          0x100007F1C  -[NCCAHostViewBridgeController setDelegate:]
+          0x100007F98  -[NCCAHostViewBridgeController viewServiceDidTerminateWithError:]
+          0x100008058  -[NCCAHostViewBridgeController delegate]
+          0x10000808C  -[NCCAHostViewBridgeController .cxx_destruct]
+        @end
+        @interface NCCAFenceWrapper : NSObject <NSSecureCoding>
+          0x100008124  -[NCCAFenceWrapper initWithHandle:]
+          0x1000081A0  -[NCCAFenceWrapper dealloc]
+          0x1000081EC  -[NCCAFenceWrapper addToContext:]
+          0x100008254  -[NCCAFenceWrapper encodeWithCoder:]
+          0x10000826C  -[NCCAFenceWrapper initWithCoder:]
+          0x100008330  -[NCCAFenceWrapper .cxx_destruct]
+          0x10000824C  +[NCCAFenceWrapper supportsSecureCoding]
+        @end
+        @interface NCMenuConnection : NSObject <NSXPCListenerDelegate, NCNotificationCenterMenu>
+          0x10000833C  -[NCMenuConnection init]
+          0x1000083C4  -[NCMenuConnection listener:shouldAcceptNewConnection:]
+          0x1000084F4  -[NCMenuConnection ncMenugetInitialState:]
+          0x100008590  -[NCMenuConnection ncMenuMouseDown]
+          0x1000085D0  -[NCMenuConnection ncMenuMouseUp]
+          0x100008610  -[NCMenuConnection ncMenuDNDToggle]
+          0x100008650  -[NCMenuConnection navigateInDirection:]
+          0x1000086B4  -[NCMenuConnection delegate]
+          0x1000086E0  -[NCMenuConnection setDelegate:]
+          0x1000086EC  -[NCMenuConnection .cxx_destruct]
+        @end
+        @interface _TtC21NotificationCenterApp25WidgetConfigurationWindow : NSPanel 
+          0x10000FAD4  -[_TtC21NotificationCenterApp25WidgetConfigurationWindow canBecomeKeyWindow]
+          0x10000FADC  -[_TtC21NotificationCenterApp25WidgetConfigurationWindow initWithContentRect:styleMask:backing:defer:]
+          0x10000FB28  -[_TtC21NotificationCenterApp25WidgetConfigurationWindow .cxx_destruct]
+        @end
+        @interface _TtCV21NotificationCenterApp16WidgetResizeView4Info : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp33WidgetConfigurationViewController : NSViewController <WFWidgetConfigurationViewControllerDelegate>
+          0x100016758  -[_TtC21NotificationCenterApp33WidgetConfigurationViewController loadView]
+          0x1000167FC  -[_TtC21NotificationCenterApp33WidgetConfigurationViewController initWithCoder:]
+          0x10001688C  -[_TtC21NotificationCenterApp33WidgetConfigurationViewController dealloc]
+          0x100016BD8  -[_TtC21NotificationCenterApp33WidgetConfigurationViewController widgetConfigurationViewController:preferredContentSizeDidChange:]
+          0x100016DF4  -[_TtC21NotificationCenterApp33WidgetConfigurationViewController widgetConfigurationViewController:didFinishWithIntent:]
+          0x100016E74  -[_TtC21NotificationCenterApp33WidgetConfigurationViewController initWithNibName:bundle:]
+          0x1000168B4  -[_TtC21NotificationCenterApp33WidgetConfigurationViewController .cxx_destruct]
+        @end
+        @interface _TtC21NotificationCenterApp33WidgetDisplayPropertiesController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCV21NotificationCenterApp11WidgetsView9ViewModel : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp15SoundController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp14MuteController : _TtCs12_SwiftObject 
+        @end
+        @interface Application : NSApplication 
+          0x100037C54  -[Application run]
+          0x100037CC0  -[Application dockDidRestart:]
+          0x100037DB0  -[Application isActive]
+          0x100037EA4  -[Application sendEvent:]
+          0x100037F68  -[Application isAccessibilityExpanded]
+          0x100037FD8  -[Application init]
+          0x100038070  -[Application initWithCoder:]
+          0x10003809C  -[Application .cxx_destruct]
+        @end
+        @interface _TtC21NotificationCenterApp14SiriConnection : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp24NotificationsInlineReply : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp32DesktopWidgetPlacementController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp31DesktopWidgetPlaceholderManager : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp21WidgetApplicationInfo : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp17NotificationGroup : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp14ToolConnection : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp5Sound : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp14WidgetsOverlay : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCC21NotificationCenterApp14WidgetsOverlay4Item : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp7AppInfo : NSObject 
+          0x100071910  -[_TtC21NotificationCenterApp7AppInfo name]
+          0x100071958  -[_TtC21NotificationCenterApp7AppInfo setName:]
+          0x1000719D8  -[_TtC21NotificationCenterApp7AppInfo image]
+          0x100071BA4  -[_TtC21NotificationCenterApp7AppInfo identifier]
+          0x100071C38  -[_TtC21NotificationCenterApp7AppInfo found]
+          0x100071C6C  -[_TtC21NotificationCenterApp7AppInfo setFound:]
+          0x100071CA0  -[_TtC21NotificationCenterApp7AppInfo lastKnownPath]
+          0x100071D20  -[_TtC21NotificationCenterApp7AppInfo setLastKnownPath:]
+          0x100071F78  -[_TtC21NotificationCenterApp7AppInfo description]
+          0x100072110  -[_TtC21NotificationCenterApp7AppInfo type]
+          0x100072144  -[_TtC21NotificationCenterApp7AppInfo notificationsAllowed]
+          0x100072178  -[_TtC21NotificationCenterApp7AppInfo setNotificationsAllowed:]
+          0x1000721AC  -[_TtC21NotificationCenterApp7AppInfo criticalNotificationsAllowed]
+          0x1000721E0  -[_TtC21NotificationCenterApp7AppInfo setCriticalNotificationsAllowed:]
+          0x100072214  -[_TtC21NotificationCenterApp7AppInfo timeSensitiveNotificationsAllowed]
+          0x100072248  -[_TtC21NotificationCenterApp7AppInfo setTimeSensitiveNotificationsAllowed:]
+          0x10007227C  -[_TtC21NotificationCenterApp7AppInfo timeSensitiveAcknowledged]
+          0x1000722B0  -[_TtC21NotificationCenterApp7AppInfo setTimeSensitiveAcknowledged:]
+          0x1000722E4  -[_TtC21NotificationCenterApp7AppInfo provisionallyApproved]
+          0x100072318  -[_TtC21NotificationCenterApp7AppInfo setProvisionallyApproved:]
+          0x10007234C  -[_TtC21NotificationCenterApp7AppInfo supportsProvisionalAlerts]
+          0x100072380  -[_TtC21NotificationCenterApp7AppInfo setSupportsProvisionalAlerts:]
+          0x1000723B4  -[_TtC21NotificationCenterApp7AppInfo shownInNotificationCenter]
+          0x1000723E8  -[_TtC21NotificationCenterApp7AppInfo setShownInNotificationCenter:]
+          0x10007241C  -[_TtC21NotificationCenterApp7AppInfo notificationsToShow]
+          0x100072450  -[_TtC21NotificationCenterApp7AppInfo setNotificationsToShow:]
+          0x100072488  -[_TtC21NotificationCenterApp7AppInfo rawAlertStyle]
+          0x100072598  -[_TtC21NotificationCenterApp7AppInfo summarizePreviews]
+          0x1000725CC  -[_TtC21NotificationCenterApp7AppInfo setSummarizePreviews:]
+          0x100072600  -[_TtC21NotificationCenterApp7AppInfo badgeIcons]
+          0x100072634  -[_TtC21NotificationCenterApp7AppInfo setBadgeIcons:]
+          0x100072668  -[_TtC21NotificationCenterApp7AppInfo playSounds]
+          0x1000726A8  -[_TtC21NotificationCenterApp7AppInfo setPlaySounds:]
+          0x1000726E8  -[_TtC21NotificationCenterApp7AppInfo hiddenFromLockscreen]
+          0x10007271C  -[_TtC21NotificationCenterApp7AppInfo setHiddenFromLockscreen:]
+          0x100072750  -[_TtC21NotificationCenterApp7AppInfo contentHiddenLEGACY]
+          0x100072784  -[_TtC21NotificationCenterApp7AppInfo setContentHiddenLEGACY:]
+          0x1000727B8  -[_TtC21NotificationCenterApp7AppInfo contentHiddenFromLockscreen]
+          0x1000727EC  -[_TtC21NotificationCenterApp7AppInfo setContentHiddenFromLockscreen:]
+          0x100072820  -[_TtC21NotificationCenterApp7AppInfo isAskPermissionsApp]
+          0x100072894  -[_TtC21NotificationCenterApp7AppInfo usesModernAPI]
+          0x1000728C8  -[_TtC21NotificationCenterApp7AppInfo setUsesModernAPI:]
+          0x1000728FC  -[_TtC21NotificationCenterApp7AppInfo screenTimeRestricted]
+          0x100072930  -[_TtC21NotificationCenterApp7AppInfo setScreenTimeRestricted:]
+          0x100072A40  -[_TtC21NotificationCenterApp7AppInfo isSystemApp]
+          0x100072A80  -[_TtC21NotificationCenterApp7AppInfo unprefixedIdentifier]
+          0x1000735B8  -[_TtC21NotificationCenterApp7AppInfo initWith:lastKnownPath:type:queue:]
+          0x1000739A0  -[_TtC21NotificationCenterApp7AppInfo initWithBlocking:lastKnownPath:type:]
+          0x100073E0C  -[_TtC21NotificationCenterApp7AppInfo initWithStatically:lastKnownPath:type:name:imageData:]
+          0x1000741B8  -[_TtC21NotificationCenterApp7AppInfo initWithSystem:]
+          0x1000777A0  -[_TtC21NotificationCenterApp7AppInfo getSettings]
+          0x1000788E0  -[_TtC21NotificationCenterApp7AppInfo updateSettingsWithNsDictionary:]
+          0x1000789E8  -[_TtC21NotificationCenterApp7AppInfo init]
+          0x1000789F8  -[_TtC21NotificationCenterApp7AppInfo .cxx_destruct]
+        @end
+        @interface _TtC21NotificationCenterApp24WidgetAddSheetController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp16ServerConnection : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp37NotificationContentHostViewController : NSRemoteViewController 
+          0x1000A0B80  -[_TtC21NotificationCenterApp37NotificationContentHostViewController initWithNibName:bundle:]
+          0x1000A0C54  -[_TtC21NotificationCenterApp37NotificationContentHostViewController initWithCoder:]
+        @end
+        @interface _TtC21NotificationCenterApp47DesktopWidgetDragDistantSnappingEnabledObserver : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp26GesturePreferencesObserver : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp16WidgetViewModels : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCVV21NotificationCenterApp11WidgetsViewP33_86A4234AD6F59062CF5A1BC8CCFDAB6015WidgetsGridView9DragState : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp20WidgetAddSheetWindow : NSPanel <NSWindowDelegate>
+          0x1000B063C  -[_TtC21NotificationCenterApp20WidgetAddSheetWindow canBecomeKeyWindow]
+          0x1000B0644  -[_TtC21NotificationCenterApp20WidgetAddSheetWindow shadowOptions]
+          0x1000B064C  -[_TtC21NotificationCenterApp20WidgetAddSheetWindow _hasActiveAppearance]
+          0x1000B0654  -[_TtC21NotificationCenterApp20WidgetAddSheetWindow _hasActiveControls]
+          0x1000B065C  -[_TtC21NotificationCenterApp20WidgetAddSheetWindow _permittedResizeEdges]
+          0x1000B06A0  -[_TtC21NotificationCenterApp20WidgetAddSheetWindow windowDidMove:]
+          0x1000B07F0  -[_TtC21NotificationCenterApp20WidgetAddSheetWindow windowDidResize:]
+          0x1000B1188  -[_TtC21NotificationCenterApp20WidgetAddSheetWindow initWithContentRect:styleMask:backing:defer:]
+          0x1000B119C  -[_TtC21NotificationCenterApp20WidgetAddSheetWindow .cxx_destruct]
+        @end
+        @interface _TtC21NotificationCenterApp18ChronoWidgetServer : NSObject <CHSWidgetExtensionProviderObserver>
+          0x1000D0F5C  -[_TtC21NotificationCenterApp18ChronoWidgetServer extensionsDidChangeForExtensionProvider:]
+          0x1000C2D24  -[_TtC21NotificationCenterApp18ChronoWidgetServer dealloc]
+          0x1000C38BC  -[_TtC21NotificationCenterApp18ChronoWidgetServer init]
+          0x1000C2D4C  -[_TtC21NotificationCenterApp18ChronoWidgetServer .cxx_destruct]
+        @end
+        @interface _TtC21NotificationCenterApp15EventConnection : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCO21NotificationCenterApp28NotificationContentExtension7Manager : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCCO21NotificationCenterApp28NotificationContentExtension7Manager13AppExtensions : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp34_NSIntelligenceUIPlatterSpringView : _NSIntelligenceUIPlatterView 
+          0x1000E3BC0  -[_TtC21NotificationCenterApp34_NSIntelligenceUIPlatterSpringView initWithFrame:]
+          0x1000E3C58  -[_TtC21NotificationCenterApp34_NSIntelligenceUIPlatterSpringView initWithCoder:]
+          0x1000E39F4  +[_TtC21NotificationCenterApp34_NSIntelligenceUIPlatterSpringView defaultAnimationForKey:]
+        @end
+        @interface _TtC21NotificationCenterApp17WidgetsController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCC21NotificationCenterApp17WidgetsController14AnimationState : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp23WidgetContainerSnapshot : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp13DNDController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp27WidgetPreferencesController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp23NotificationsController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCC21NotificationCenterApp23NotificationsController19RemoteAlertDelegate : NSObject <NCCAControllerDelegate>
+          0x10012DCCC  -[_TtCC21NotificationCenterApp23NotificationsController19RemoteAlertDelegate NCCAController:presentRemoteSession:]
+          0x10012DDB8  -[_TtCC21NotificationCenterApp23NotificationsController19RemoteAlertDelegate NCCAController:dismissRemoteSession:withAnimation:]
+          0x10012DE44  -[_TtCC21NotificationCenterApp23NotificationsController19RemoteAlertDelegate NCCAController:makeSessionKey:]
+          0x10012DF40  -[_TtCC21NotificationCenterApp23NotificationsController19RemoteAlertDelegate NCCAController:releaseKeySession:]
+          0x10012E054  -[_TtCC21NotificationCenterApp23NotificationsController19RemoteAlertDelegate NCCAController:heightChangedTo:fence:forSession:]
+          0x10012E188  -[_TtCC21NotificationCenterApp23NotificationsController19RemoteAlertDelegate NCCAController:reserveHeight:forHostIdentifier:]
+          0x10012E26C  -[_TtCC21NotificationCenterApp23NotificationsController19RemoteAlertDelegate init]
+          0x10012E290  -[_TtCC21NotificationCenterApp23NotificationsController19RemoteAlertDelegate .cxx_destruct]
+        @end
+        @interface _TtC21NotificationCenterApp18WidgetEditingState : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCV21NotificationCenterApp15GrowingTextView14CustomTextView : NSTextView 
+          0x1001356F0  -[_TtCV21NotificationCenterApp15GrowingTextView14CustomTextView intrinsicContentSize]
+          0x100135AD8  -[_TtCV21NotificationCenterApp15GrowingTextView14CustomTextView didChangeText]
+          0x100135B98  -[_TtCV21NotificationCenterApp15GrowingTextView14CustomTextView viewDidMoveToWindow]
+          0x100135C34  -[_TtCV21NotificationCenterApp15GrowingTextView14CustomTextView initWithFrame:textContainer:]
+          0x100135C98  -[_TtCV21NotificationCenterApp15GrowingTextView14CustomTextView initWithCoder:]
+          0x100135D04  -[_TtCV21NotificationCenterApp15GrowingTextView14CustomTextView initWithFrame:]
+        @end
+        @interface _TtCV21NotificationCenterApp15GrowingTextView11Coordinator : NSObject <NSTextViewDelegate>
+          0x100135F74  -[_TtCV21NotificationCenterApp15GrowingTextView11Coordinator textDidChange:]
+          0x10013610C  -[_TtCV21NotificationCenterApp15GrowingTextView11Coordinator textView:doCommandBySelector:]
+          0x100136174  -[_TtCV21NotificationCenterApp15GrowingTextView11Coordinator init]
+          0x100136184  -[_TtCV21NotificationCenterApp15GrowingTextView11Coordinator .cxx_destruct]
+        @end
+        @interface _TtC21NotificationCenterApp25NotificationBackdropLayer : CABackdropLayer 
+          0x100138E94  -[_TtC21NotificationCenterApp25NotificationBackdropLayer initWithCoder:]
+          0x100138F1C  -[_TtC21NotificationCenterApp25NotificationBackdropLayer init]
+          0x100138FE4  -[_TtC21NotificationCenterApp25NotificationBackdropLayer initWithLayer:]
+          0x100139474  -[_TtC21NotificationCenterApp25NotificationBackdropLayer layoutSublayers]
+          0x1001394B0  -[_TtC21NotificationCenterApp25NotificationBackdropLayer .cxx_destruct]
+        @end
+        @interface _TtC21NotificationCenterApp14DisplayMonitor : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp49NotificationContentExtensionHostingViewController : NSViewController <_UNNotificationContentExtensionHostContextDelegate>
+          0x10014B238  -[_TtC21NotificationCenterApp49NotificationContentExtensionHostingViewController notificationExtension:extensionDidCompleteResponse:withOption:]
+          0x10014B2C0  -[_TtC21NotificationCenterApp49NotificationContentExtensionHostingViewController notificationExtensionDidUpdatePlayPauseMediaButton:]
+          0x10014B30C  -[_TtC21NotificationCenterApp49NotificationContentExtensionHostingViewController notificationExtension:didUpdateTitle:]
+          0x10014C0EC  -[_TtC21NotificationCenterApp49NotificationContentExtensionHostingViewController notificationExtension:didUpdateNotificationActions:]
+          0x10014C1E4  -[_TtC21NotificationCenterApp49NotificationContentExtensionHostingViewController notificationExtensionMediaPlayingDidStart:]
+          0x10014C298  -[_TtC21NotificationCenterApp49NotificationContentExtensionHostingViewController notificationExtensionMediaPlayingDidPause:]
+          0x10014C2F0  -[_TtC21NotificationCenterApp49NotificationContentExtensionHostingViewController notificationExtensionRequestsDefaultAction:]
+          0x10014C3B0  -[_TtC21NotificationCenterApp49NotificationContentExtensionHostingViewController notificationExtensionRequestsDismiss:]
+          0x10014C5D0  -[_TtC21NotificationCenterApp49NotificationContentExtensionHostingViewController notificationExtensionUpdatedPreferredContentSize:]
+          0x10014C818  -[_TtC21NotificationCenterApp49NotificationContentExtensionHostingViewController notificationExtensionUpdatedContentSize:sendRight:]
+          0x100147638  -[_TtC21NotificationCenterApp49NotificationContentExtensionHostingViewController initWithCoder:]
+          0x1001476B8  -[_TtC21NotificationCenterApp49NotificationContentExtensionHostingViewController dealloc]
+          0x10014929C  -[_TtC21NotificationCenterApp49NotificationContentExtensionHostingViewController loadView]
+          0x10014B0FC  -[_TtC21NotificationCenterApp49NotificationContentExtensionHostingViewController initWithNibName:bundle:]
+          0x1001476E0  -[_TtC21NotificationCenterApp49NotificationContentExtensionHostingViewController .cxx_destruct]
+        @end
+        @interface _TtCC21NotificationCenterApp49NotificationContentExtensionHostingViewController6MyView : NSView 
+          0x10014B078  -[_TtCC21NotificationCenterApp49NotificationContentExtensionHostingViewController6MyView hitTest:]
+          0x10014B0AC  -[_TtCC21NotificationCenterApp49NotificationContentExtensionHostingViewController6MyView initWithFrame:]
+          0x10014B0D0  -[_TtCC21NotificationCenterApp49NotificationContentExtensionHostingViewController6MyView initWithCoder:]
+        @end
+        @interface _TtC21NotificationCenterApp14WidgetTimeline : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCC21NotificationCenterApp14WidgetTimelineP33_89FE92A5F80F52FF6C520287CB95B54125ChronoWidgetInstanceCache : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp20ScreenTimeController : NSObject 
+          0x100162F18  -[_TtC21NotificationCenterApp20ScreenTimeController init]
+          0x100165250  -[_TtC21NotificationCenterApp20ScreenTimeController .cxx_destruct]
+        @end
+        @interface _TtC21NotificationCenterApp14MainController : NSObject <BKSTouchDeliveryBackgroundObserving, NCDockCommunicationDelegate, NCHotKeyDelegate, NCNotificationCenterMenu, NSApplicationTestingDelegate, NSApplicationDelegate>
+          0x100176A4C  -[_TtC21NotificationCenterApp14MainController touchDownOccurred]
+          0x1001758E4  -[_TtC21NotificationCenterApp14MainController menuTrackingNotification:]
+          0x1001731EC  -[_TtC21NotificationCenterApp14MainController dockRequestCenterClose:]
+          0x1001732BC  -[_TtC21NotificationCenterApp14MainController dockRequestCenterToggleOnDisplay:]
+          0x100172F14  -[_TtC21NotificationCenterApp14MainController hotKeyRequestCenterClose]
+          0x100172FAC  -[_TtC21NotificationCenterApp14MainController hotKeyRequestCenterOpenOnDisplay:]
+          0x100172FE8  -[_TtC21NotificationCenterApp14MainController hotKeyCenterOpened]
+          0x100173054  -[_TtC21NotificationCenterApp14MainController hotKeyDNDEnabled]
+          0x1001730D8  -[_TtC21NotificationCenterApp14MainController hotKeySwitchDNDOn]
+          0x100173138  -[_TtC21NotificationCenterApp14MainController hotKeySwitchDNDOff]
+          0x100172970  -[_TtC21NotificationCenterApp14MainController ncMenugetInitialState:]
+          0x100172D7C  -[_TtC21NotificationCenterApp14MainController ncMenuMouseDown]
+          0x100172E24  -[_TtC21NotificationCenterApp14MainController ncMenuMouseUp]
+          0x100172E84  -[_TtC21NotificationCenterApp14MainController ncMenuDNDToggle]
+          0x100170F60  -[_TtC21NotificationCenterApp14MainController applicationDidFinishLaunching:]
+          0x1000398C0  -[_TtC21NotificationCenterApp14MainController application:runTest:options:]
+          0x10016E168  -[_TtC21NotificationCenterApp14MainController init]
+          0x10016E1F8  -[_TtC21NotificationCenterApp14MainController dealloc]
+          0x10016E220  -[_TtC21NotificationCenterApp14MainController .cxx_destruct]
+        @end
+        @interface _TtC21NotificationCenterApp30DesktopWidgetPlaceholderWindow : NSWindow 
+          0x10017921C  -[_TtC21NotificationCenterApp30DesktopWidgetPlaceholderWindow initWithContentRect:styleMask:backing:defer:]
+          0x100179230  -[_TtC21NotificationCenterApp30DesktopWidgetPlaceholderWindow .cxx_destruct]
+        @end
+        @interface _TtC21NotificationCenterApp24NotificationCenterWindow : NSPanel 
+          0x10017AF84  -[_TtC21NotificationCenterApp24NotificationCenterWindow ncWindowDelegate]
+          0x10017AFD0  -[_TtC21NotificationCenterApp24NotificationCenterWindow setNcWindowDelegate:]
+          0x10017B284  -[_TtC21NotificationCenterApp24NotificationCenterWindow canBecomeKeyWindow]
+          0x10017B28C  -[_TtC21NotificationCenterApp24NotificationCenterWindow isOnActiveSpace]
+          0x10017B294  -[_TtC21NotificationCenterApp24NotificationCenterWindow inLiveResize]
+          0x10017B29C  -[_TtC21NotificationCenterApp24NotificationCenterWindow _hasActiveAppearance]
+          0x10017B2A4  -[_TtC21NotificationCenterApp24NotificationCenterWindow _hasActiveControls]
+          0x10017B3E0  -[_TtC21NotificationCenterApp24NotificationCenterWindow keyDown:]
+          0x10017B444  -[_TtC21NotificationCenterApp24NotificationCenterWindow moveLeft:]
+          0x10017B494  -[_TtC21NotificationCenterApp24NotificationCenterWindow moveRight:]
+          0x10017B524  -[_TtC21NotificationCenterApp24NotificationCenterWindow allowsInteriorShadow]
+          0x10017B52C  -[_TtC21NotificationCenterApp24NotificationCenterWindow _shouldAutoFlattenLayerTree]
+          0x10017B534  -[_TtC21NotificationCenterApp24NotificationCenterWindow shadowOptions]
+          0x10017B53C  -[_TtC21NotificationCenterApp24NotificationCenterWindow _adjustWindowToScreen]
+          0x10017B540  -[_TtC21NotificationCenterApp24NotificationCenterWindow view:acceptsFirstMouseEvent:initialKeyWindow:]
+          0x10017B5F0  -[_TtC21NotificationCenterApp24NotificationCenterWindow makeFirstResponder:]
+          0x10017B654  -[_TtC21NotificationCenterApp24NotificationCenterWindow constrainFrameRect:toScreen:]
+          0x10017B718  -[_TtC21NotificationCenterApp24NotificationCenterWindow _bestScreenByGeometryOfFrame:respectingSpaceAssignment:]
+          0x10017B790  -[_TtC21NotificationCenterApp24NotificationCenterWindow initWithContentRect:styleMask:backing:defer:]
+          0x10017B7A4  -[_TtC21NotificationCenterApp24NotificationCenterWindow .cxx_destruct]
+        @end
+        @interface _TtC21NotificationCenterApp22NotificationsAssertion : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCV21NotificationCenterApp26NotificationListHostedView11FencesLayer : CALayer 
+          0x100186858  -[_TtCV21NotificationCenterApp26NotificationListHostedView11FencesLayer initWithCoder:]
+          0x1001868B4  -[_TtCV21NotificationCenterApp26NotificationListHostedView11FencesLayer init]
+          0x100186968  -[_TtCV21NotificationCenterApp26NotificationListHostedView11FencesLayer initWithLayer:]
+          0x1001869B8  -[_TtCV21NotificationCenterApp26NotificationListHostedView11FencesLayer bounds]
+          0x100186A50  -[_TtCV21NotificationCenterApp26NotificationListHostedView11FencesLayer setBounds:]
+          0x100186BC4  -[_TtCV21NotificationCenterApp26NotificationListHostedView11FencesLayer .cxx_destruct]
+        @end
+        @interface _TtCC21NotificationCenterApp17WidgetsController24ConfigurationOverlayItem : _TtCC21NotificationCenterApp14WidgetsOverlay4Item 
+        @end
+        @interface _TtCC21NotificationCenterApp17WidgetsController19InstanceOverlayItem : _TtCC21NotificationCenterApp14WidgetsOverlay4Item 
+        @end
+        @interface _TtC21NotificationCenterApp18DNDStateController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCC21NotificationCenterApp18DNDStateControllerP33_51A38E8145B45FD8CD984A322AF0E21113StateListener : NSObject <DNDStateUpdateListener>
+          0x1001973C0  -[_TtCC21NotificationCenterApp18DNDStateControllerP33_51A38E8145B45FD8CD984A322AF0E21113StateListener stateService:didReceiveDoNotDisturbStateUpdate:]
+          0x100197498  -[_TtCC21NotificationCenterApp18DNDStateControllerP33_51A38E8145B45FD8CD984A322AF0E21113StateListener init]
+          0x1001974BC  -[_TtCC21NotificationCenterApp18DNDStateControllerP33_51A38E8145B45FD8CD984A322AF0E21113StateListener .cxx_destruct]
+        @end
+        @interface _TtC21NotificationCenterApp21DebugStatusController : NSObject <NSMenuDelegate>
+          0x100199808  -[_TtC21NotificationCenterApp21DebugStatusController toggleDND]
+          0x100199858  -[_TtC21NotificationCenterApp21DebugStatusController hideMenu]
+          0x100199960  -[_TtC21NotificationCenterApp21DebugStatusController toggleBlurDebug]
+          0x100199A68  -[_TtC21NotificationCenterApp21DebugStatusController toggleNCClosePrevention]
+          0x100199B70  -[_TtC21NotificationCenterApp21DebugStatusController toggleSlowMo]
+          0x100199C18  -[_TtC21NotificationCenterApp21DebugStatusController toggleHoverDebug]
+          0x10019A7D0  -[_TtC21NotificationCenterApp21DebugStatusController debugDump]
+          0x10019AB3C  -[_TtC21NotificationCenterApp21DebugStatusController dumpNotificationTree]
+          0x10019AE54  -[_TtC21NotificationCenterApp21DebugStatusController dumpWidgetViewModels]
+          0x10019B168  -[_TtC21NotificationCenterApp21DebugStatusController dumpWidgets]
+          0x10019B498  -[_TtC21NotificationCenterApp21DebugStatusController dumpWidgetInstances]
+          0x10019B790  -[_TtC21NotificationCenterApp21DebugStatusController dumpWidgetDesktopPlacements]
+          0x10019BBE8  -[_TtC21NotificationCenterApp21DebugStatusController dumpLayers]
+          0x10019BF5C  -[_TtC21NotificationCenterApp21DebugStatusController dumpGraph]
+          0x10019C044  -[_TtC21NotificationCenterApp21DebugStatusController dumpLayersDelayed]
+          0x10019C190  -[_TtC21NotificationCenterApp21DebugStatusController setLockscreenStateWithItem:]
+          0x10019C450  -[_TtC21NotificationCenterApp21DebugStatusController setDNDOnWithModeWithItem:]
+          0x10019C594  -[_TtC21NotificationCenterApp21DebugStatusController reloadDNDStateWithItem:]
+          0x10019C610  -[_TtC21NotificationCenterApp21DebugStatusController restart]
+          0x10019E210  -[_TtC21NotificationCenterApp21DebugStatusController menuNeedsUpdate:]
+          0x1001996E0  -[_TtC21NotificationCenterApp21DebugStatusController init]
+          0x100199704  -[_TtC21NotificationCenterApp21DebugStatusController .cxx_destruct]
+        @end
+        @interface _TtC21NotificationCenterApp27DisplaySharingStateObserver : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp14WidgetSnapshot : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp17MinuteTimeUpdater : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp17NotificationModel : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCC21NotificationCenterApp17WidgetsController8DragItem : _TtCC21NotificationCenterApp14WidgetsOverlay4Item 
+        @end
+        @interface _TtCC21NotificationCenterApp17WidgetsController12InstanceItem : _TtCC21NotificationCenterApp17WidgetsController8DragItem 
+        @end
+        @interface _TtCC21NotificationCenterApp17WidgetsController12SnapshotItem : _TtCC21NotificationCenterApp17WidgetsController8DragItem 
+        @end
+        @interface _TtCC21NotificationCenterApp17WidgetsController8DragInfo : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCC21NotificationCenterApp17WidgetsController16InstanceDragInfo : _TtCC21NotificationCenterApp17WidgetsController8DragInfo 
+        @end
+        @interface _TtCC21NotificationCenterApp17WidgetsController16SnapshotDragInfo : _TtCC21NotificationCenterApp17WidgetsController8DragInfo 
+        @end
+        @interface _TtC21NotificationCenterApp13GlobalMargins : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp34DesktopWidgetPlaceholderController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp25CenterAnimationController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp23HostedNotificationModel : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp23HostedNotificationState : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp12WidgetWindow : NSWindow 
+          0x1001CABF8  -[_TtC21NotificationCenterApp12WidgetWindow _isWidgetWindow]
+          0x1001CAC00  -[_TtC21NotificationCenterApp12WidgetWindow _hasActiveAppearance]
+          0x1001CAC08  -[_TtC21NotificationCenterApp12WidgetWindow _hasActiveControls]
+          0x1001CBB94  -[_TtC21NotificationCenterApp12WidgetWindow sendEvent:]
+          0x1001CBBF8  -[_TtC21NotificationCenterApp12WidgetWindow initWithContentRect:styleMask:backing:defer:]
+          0x1001CBC0C  -[_TtC21NotificationCenterApp12WidgetWindow .cxx_destruct]
+        @end
+        @interface _TtCV21NotificationCenterApp21WidgetWindowFrameViewP33_4E83936CBEA699127A00BDADAF88A4629DragState : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp14ModalAssertion : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp34SystemGestureDiagnosticsController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp28NotificationsLongLookContext : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp21_UNNotificationThread : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp28NotificationRecordContext_NC : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp21NotificationListState : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp27NotificationsListController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp17NotificationState : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp13PIPConnection : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp19FluidSpringAnimator : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp26LockScreenStatusController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp18ToolConnectionToNC : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp11AppDelegate : NSObject <NSApplicationDelegate>
+          0x1002132B0  -[_TtC21NotificationCenterApp11AppDelegate window]
+          0x1002132FC  -[_TtC21NotificationCenterApp11AppDelegate setWindow:]
+          0x100213508  -[_TtC21NotificationCenterApp11AppDelegate applicationDidFinishLaunching:]
+          0x10021350C  -[_TtC21NotificationCenterApp11AppDelegate applicationWillTerminate:]
+          0x1002134AC  -[_TtC21NotificationCenterApp11AppDelegate init]
+          0x1002134D0  -[_TtC21NotificationCenterApp11AppDelegate .cxx_destruct]
+        @end
+        @interface _TtC21NotificationCenterApp40DesktopWidgetDragSnappingEnabledObserver : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp29RemoteNotificationsController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp30NotificationsContextRepository : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterApp17AsyncFormatString : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC21NotificationCenterAppP33_394C278362338C40A828C44D4227D8AB19ResourceBundleClass : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC25NotificationCenterRecords23NotificationPushTrigger : _TtC25NotificationCenterRecords19NotificationTrigger 
+        @end
+        @interface _TtC25NotificationCenterRecords27NotificationLocationTrigger : _TtC25NotificationCenterRecords19NotificationTrigger 
+        @end
+        @interface _TtC25NotificationCenterRecords25NotificationLegacyTrigger : _TtC25NotificationCenterRecords19NotificationTrigger 
+        @end
+        @interface _TtC25NotificationCenterRecords19NotificationTrigger : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC25NotificationCenterRecords31NotificationTimeIntervalTrigger : _TtC25NotificationCenterRecords19NotificationTrigger 
+        @end
+        @interface _TtC25NotificationCenterRecords27NotificationCalendarTrigger : _TtC25NotificationCenterRecords19NotificationTrigger 
+        @end
+        @interface _TtC12EyeCandyCore18DarwinNotification : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC12EyeCandyCore10LimitQueue : _TtCs12_SwiftObject 
+        @end
+        @interface NSCalendar(NCDateExtensions)
+          0x100004E20  -[NSCalendar daysWithinEraFromDate:toDate:]
+          0x100004F24  -[NSCalendar yearsWithinEraFromDate:toDate:]
+        @end
+        @interface NSXPCConnection(NCCAController)
+          0x100007CD0  -[NSXPCConnection setVerifiedIdentity:]
+          0x100007D28  -[NSXPCConnection verifiedIdentity]
+          0x100007D34  -[NSXPCConnection setVerifiedRepresentedApplications:]
+          0x100007D8C  -[NSXPCConnection verifiedRepresentedApplications]
+        @end
+        @interface NSUserDefaults(NotificationCenterApp)
+          0x10011D1B0  -[NSUserDefaults AddSheetHeight]
+          0x10011D274  -[NSUserDefaults setAddSheetHeight:]
+          0x10011D3F0  -[NSUserDefaults AddSheetUntuckDelay]
+          0x10011D4AC  -[NSUserDefaults setAddSheetUntuckDelay:]
+          0x10011D620  -[NSUserDefaults AnimateWidgetReveal]
+          0x10011D6DC  -[NSUserDefaults setAnimateWidgetReveal:]
+          0x10011D850  -[NSUserDefaults NotificationCenterSpringLoadDelay]
+          0x10011D90C  -[NSUserDefaults setNotificationCenterSpringLoadDelay:]
+          0x10011DA80  -[NSUserDefaults NotificationCenterSpringLoadRegionWidth]
+          0x10011DB3C  -[NSUserDefaults setNotificationCenterSpringLoadRegionWidth:]
+          0x10011DCB0  -[NSUserDefaults RevealAssertionRemovalDelay]
+          0x10011DD6C  -[NSUserDefaults setRevealAssertionRemovalDelay:]
+          0x10011DEE0  -[NSUserDefaults ShowAddSheetOnboardingBanner]
+          0x10011DF9C  -[NSUserDefaults setShowAddSheetOnboardingBanner:]
+          0x10011E110  -[NSUserDefaults widgetAppearance]
+          0x10011E1CC  -[NSUserDefaults setWidgetAppearance:]
+          0x10011E340  -[NSUserDefaults debugAddSheetExclusions]
+          0x10011E534  -[NSUserDefaults setDebugAddSheetExclusions:]
+          0x1000A3F74  -[NSUserDefaults notificationCenter]
+          0x1000A4030  -[NSUserDefaults setNotificationCenter:]
+          0x1000A41B4  -[NSUserDefaults TrackpadTwoFingerFromRightEdgeSwipeGesture]
+          0x1000A43B0  -[NSUserDefaults setTrackpadTwoFingerFromRightEdgeSwipeGesture:]
+        @end
+        @protocol NSObject : 
+          -[NSObject isEqual:]
+          -[NSObject class]
+          -[NSObject self]
+          -[NSObject performSelector:]
+          -[NSObject performSelector:withObject:]
+          -[NSObject performSelector:withObject:withObject:]
+          -[NSObject isProxy]
+          -[NSObject isKindOfClass:]
+          -[NSObject isMemberOfClass:]
+          -[NSObject conformsToProtocol:]
+          -[NSObject respondsToSelector:]
+          -[NSObject retain]
+          -[NSObject release]
+          -[NSObject autorelease]
+          -[NSObject retainCount]
+          -[NSObject zone]
+          -[NSObject hash]
+          -[NSObject superclass]
+          -[NSObject description]
+          -[NSObject debugDescription]
+        @end
+        @protocol DockToNCProtocol : <NSObject>
+          -[DockToNCProtocol ncCloseNotificationCenterImmediately:]
+          -[DockToNCProtocol ncToggleNotificationCenterOnDisplay:]
+          -[DockToNCProtocol ncPing:]
+        @end
+        @protocol NCToDockProtocol : <NSObject>
+          -[NCToDockProtocol dockRegisterAlertWindow:]
+          -[NCToDockProtocol dockNCOpened:]
+        @end
+        @protocol NCServiceViewHostProtocol : <NSObject>
+          -[NCServiceViewHostProtocol hostRequestSizeChange:fence:]
+          -[NCServiceViewHostProtocol dismissAlert]
+        @end
+        @protocol NCNotificationCenterProtocol : <NSObject>
+          -[NCNotificationCenterProtocol ncRequestPresentationOfRemoteAlert:options:withVBEndpoint:]
+          -[NCNotificationCenterProtocol ncActuallyPresentRemoteAlert:]
+          -[NCNotificationCenterProtocol ncDismissAlert:withAnimation:completion:]
+          -[NCNotificationCenterProtocol ncMakeKeyAlert:completion:]
+          -[NCNotificationCenterProtocol ncReleaseKeyAlert:]
+          -[NCNotificationCenterProtocol ncReserveSpace:forHostIdentifier:]
+        @end
+        @protocol NCNotificationCenterServiceProtocol : <NSObject>
+          -[NCNotificationCenterServiceProtocol serviceDismissAlertUUID:]
+          -[NCNotificationCenterServiceProtocol serviceSetDismissalOffsetForAlertUUID:offset:didComplete:]
+        @end
+        @protocol NSXPCListenerDelegate : <NSObject>
+          -[NSXPCListenerDelegate listener:shouldAcceptNewConnection:]
+        @end
+        @protocol NCServiceViewServiceProtocol : <NSObject>
+          -[NCServiceViewServiceProtocol serviceRegisterSessionUUID:forHost:]
+        @end
+        @protocol NSCoding : 
+          -[NSCoding encodeWithCoder:]
+          -[NSCoding initWithCoder:]
+        @end
+        @protocol NSSecureCoding : <NSCoding>
+          +[NSSecureCoding supportsSecureCoding]
+        @end
+        @protocol NCNotificationCenterMenu : <NSObject>
+          -[NCNotificationCenterMenu ncMenugetInitialState:]
+          -[NCNotificationCenterMenu ncMenuMouseDown]
+          -[NCNotificationCenterMenu ncMenuMouseUp]
+          -[NCNotificationCenterMenu ncMenuDNDToggle]
+        @end
+        @protocol NCNotificationCenterMenuClient : <NSObject>
+          -[NCNotificationCenterMenuClient ncMenuNavigateInDirection:]
+        @end
+        @protocol OS_dispatch_source_data_or : <OS_dispatch_source>
+        @end
+        @protocol OS_dispatch_source_timer : <OS_dispatch_source>
+        @end
+        @protocol OS_dispatch_source_mach_recv : <OS_dispatch_source>
+        @end
+        @protocol NSCopying : 
+          -[NSCopying copyWithZone:]
+        @end
+        @protocol _DKKnowledgeSaving : 
+          -[_DKKnowledgeSaving saveObjects:error:]
+          -[_DKKnowledgeSaving saveObjects:responseQueue:withCompletion:]
+        @end
+        @protocol NSObject : 
+          -[NSObject isEqual:]
+          -[NSObject class]
+          -[NSObject self]
+          -[NSObject performSelector:]
+          -[NSObject performSelector:withObject:]
+          -[NSObject performSelector:withObject:withObject:]
+          -[NSObject isProxy]
+          -[NSObject isKindOfClass:]
+          -[NSObject isMemberOfClass:]
+          -[NSObject conformsToProtocol:]
+          -[NSObject respondsToSelector:]
+          -[NSObject retain]
+          -[NSObject release]
+          -[NSObject autorelease]
+          -[NSObject retainCount]
+          -[NSObject zone]
+          -[NSObject hash]
+          -[NSObject superclass]
+          -[NSObject description]
+          -[NSObject debugDescription]
+        @end
+        @protocol BSInvalidatable : <NSObject>
+          -[BSInvalidatable invalidate]
+        @end
+        @protocol _TtP21NotificationCenterApp26NotificationWindowDelegate_ : 
+          -[_TtP21NotificationCenterApp26NotificationWindowDelegate_ firstResponderChangedForWindowWithWindow:old:new:]
+        @end
+        @protocol OS_dispatch_source_data_replace : <OS_dispatch_source>
+        @end
+        @protocol OS_dispatch_source_data_add : <OS_dispatch_source>
+        @end
+        @protocol OS_xpc_object : <NSObject>
+        @end
+        @protocol OS_dispatch_source_data_or : <OS_dispatch_source>
+        @end
+        @protocol OS_dispatch_source : <NSObject>
+        @end
+        @protocol OS_dispatch_source_timer : <OS_dispatch_source>
+        @end
+        @protocol OS_dispatch_source_mach_recv : <OS_dispatch_source>
+        @end
+        @protocol NSCopying : 
+          -[NSCopying copyWithZone:]
+        @end
+        @protocol _DKKnowledgeSaving : 
+          -[_DKKnowledgeSaving saveObjects:error:]
+          -[_DKKnowledgeSaving saveObjects:responseQueue:withCompletion:]
+        @end
+        @protocol BSInvalidatable : <NSObject>
+          -[BSInvalidatable invalidate]
+        @end
+        @protocol OS_dispatch_source_data_replace : <OS_dispatch_source>
+        @end
+        @protocol OS_dispatch_source_data_add : <OS_dispatch_source>
+        @end
+        @protocol OS_xpc_object : <NSObject>
+        @end
+        @protocol OS_dispatch_source : <NSObject>
+        @end
+        @protocol WFWidgetConfigurationViewControllerDelegate : <NSObject>
+          -[WFWidgetConfigurationViewControllerDelegate widgetConfigurationViewController:didFinishWithIntent:]
+          -[WFWidgetConfigurationViewControllerDelegate widgetConfigurationViewController:preferredContentSizeDidChange:]
+          -[WFWidgetConfigurationViewControllerDelegate widgetConfigurationViewControllerDidCancel:]
+        @end
+        @protocol WFWidgetConfigurationViewControllerDelegate : <NSObject>
+          -[WFWidgetConfigurationViewControllerDelegate widgetConfigurationViewController:didFinishWithIntent:]
+          -[WFWidgetConfigurationViewControllerDelegate widgetConfigurationViewController:preferredContentSizeDidChange:]
+          -[WFWidgetConfigurationViewControllerDelegate widgetConfigurationViewControllerDidCancel:]
+        @end
+        @protocol NSApplicationTestingDelegate : <NSApplicationDelegate>
+          -[NSApplicationTestingDelegate application:runTest:options:]
+        @end
+        @protocol NSApplicationTestingDelegate : <NSApplicationDelegate>
+          -[NSApplicationTestingDelegate application:runTest:options:]
+        @end
+        @protocol NSApplicationDelegate : <NSObject>
+          -[NSApplicationDelegate applicationShouldTerminate:]
+          -[NSApplicationDelegate application:openURLs:]
+          -[NSApplicationDelegate application:openFile:]
+          -[NSApplicationDelegate application:openFiles:]
+          -[NSApplicationDelegate application:openTempFile:]
+          -[NSApplicationDelegate applicationShouldOpenUntitledFile:]
+          -[NSApplicationDelegate applicationOpenUntitledFile:]
+          -[NSApplicationDelegate application:openFileWithoutUI:]
+          -[NSApplicationDelegate application:printFile:]
+          -[NSApplicationDelegate application:printFiles:withSettings:showPrintPanels:]
+          -[NSApplicationDelegate applicationShouldTerminateAfterLastWindowClosed:]
+          -[NSApplicationDelegate applicationShouldHandleReopen:hasVisibleWindows:]
+          -[NSApplicationDelegate applicationDockMenu:]
+          -[NSApplicationDelegate application:willPresentError:]
+          -[NSApplicationDelegate application:didRegisterForRemoteNotificationsWithDeviceToken:]
+          -[NSApplicationDelegate application:didFailToRegisterForRemoteNotificationsWithError:]
+          -[NSApplicationDelegate application:didReceiveRemoteNotification:]
+          -[NSApplicationDelegate applicationSupportsSecureRestorableState:]
+          -[NSApplicationDelegate application:handlerForIntent:]
+          -[NSApplicationDelegate application:willEncodeRestorableState:]
+          -[NSApplicationDelegate application:didDecodeRestorableState:]
+          -[NSApplicationDelegate application:willContinueUserActivityWithType:]
+          -[NSApplicationDelegate application:continueUserActivity:restorationHandler:]
+          -[NSApplicationDelegate application:didFailToContinueUserActivityWithType:error:]
+          -[NSApplicationDelegate application:didUpdateUserActivity:]
+          -[NSApplicationDelegate application:userDidAcceptCloudKitShareWithMetadata:]
+          -[NSApplicationDelegate application:delegateHandlesKey:]
+          -[NSApplicationDelegate applicationShouldAutomaticallyLocalizeKeyEquivalents:]
+          -[NSApplicationDelegate applicationWillFinishLaunching:]
+          -[NSApplicationDelegate applicationDidFinishLaunching:]
+          -[NSApplicationDelegate applicationWillHide:]
+          -[NSApplicationDelegate applicationDidHide:]
+          -[NSApplicationDelegate applicationWillUnhide:]
+          -[NSApplicationDelegate applicationDidUnhide:]
+          -[NSApplicationDelegate applicationWillBecomeActive:]
+          -[NSApplicationDelegate applicationDidBecomeActive:]
+          -[NSApplicationDelegate applicationWillResignActive:]
+          -[NSApplicationDelegate applicationDidResignActive:]
+          -[NSApplicationDelegate applicationWillUpdate:]
+          -[NSApplicationDelegate applicationDidUpdate:]
+          -[NSApplicationDelegate applicationWillTerminate:]
+          -[NSApplicationDelegate applicationDidChangeScreenParameters:]
+          -[NSApplicationDelegate applicationDidChangeOcclusionState:]
+          -[NSApplicationDelegate applicationProtectedDataWillBecomeUnavailable:]
+          -[NSApplicationDelegate applicationProtectedDataDidBecomeAvailable:]
+        @end
+        @protocol NSApplicationDelegate : <NSObject>
+          -[NSApplicationDelegate applicationShouldTerminate:]
+          -[NSApplicationDelegate application:openURLs:]
+          -[NSApplicationDelegate application:openFile:]
+          -[NSApplicationDelegate application:openFiles:]
+          -[NSApplicationDelegate application:openTempFile:]
+          -[NSApplicationDelegate applicationShouldOpenUntitledFile:]
+          -[NSApplicationDelegate applicationOpenUntitledFile:]
+          -[NSApplicationDelegate application:openFileWithoutUI:]
+          -[NSApplicationDelegate application:printFile:]
+          -[NSApplicationDelegate application:printFiles:withSettings:showPrintPanels:]
+          -[NSApplicationDelegate applicationShouldTerminateAfterLastWindowClosed:]
+          -[NSApplicationDelegate applicationShouldHandleReopen:hasVisibleWindows:]
+          -[NSApplicationDelegate applicationDockMenu:]
+          -[NSApplicationDelegate application:willPresentError:]
+          -[NSApplicationDelegate application:didRegisterForRemoteNotificationsWithDeviceToken:]
+          -[NSApplicationDelegate application:didFailToRegisterForRemoteNotificationsWithError:]
+          -[NSApplicationDelegate application:didReceiveRemoteNotification:]
+          -[NSApplicationDelegate applicationSupportsSecureRestorableState:]
+          -[NSApplicationDelegate application:handlerForIntent:]
+          -[NSApplicationDelegate application:willEncodeRestorableState:]
+          -[NSApplicationDelegate application:didDecodeRestorableState:]
+          -[NSApplicationDelegate application:willContinueUserActivityWithType:]
+          -[NSApplicationDelegate application:continueUserActivity:restorationHandler:]
+          -[NSApplicationDelegate application:didFailToContinueUserActivityWithType:error:]
+          -[NSApplicationDelegate application:didUpdateUserActivity:]
+          -[NSApplicationDelegate application:userDidAcceptCloudKitShareWithMetadata:]
+          -[NSApplicationDelegate application:delegateHandlesKey:]
+          -[NSApplicationDelegate applicationShouldAutomaticallyLocalizeKeyEquivalents:]
+          -[NSApplicationDelegate applicationWillFinishLaunching:]
+          -[NSApplicationDelegate applicationDidFinishLaunching:]
+          -[NSApplicationDelegate applicationWillHide:]
+          -[NSApplicationDelegate applicationDidHide:]
+          -[NSApplicationDelegate applicationWillUnhide:]
+          -[NSApplicationDelegate applicationDidUnhide:]
+          -[NSApplicationDelegate applicationWillBecomeActive:]
+          -[NSApplicationDelegate applicationDidBecomeActive:]
+          -[NSApplicationDelegate applicationWillResignActive:]
+          -[NSApplicationDelegate applicationDidResignActive:]
+          -[NSApplicationDelegate applicationWillUpdate:]
+          -[NSApplicationDelegate applicationDidUpdate:]
+          -[NSApplicationDelegate applicationWillTerminate:]
+          -[NSApplicationDelegate applicationDidChangeScreenParameters:]
+          -[NSApplicationDelegate applicationDidChangeOcclusionState:]
+          -[NSApplicationDelegate applicationProtectedDataWillBecomeUnavailable:]
+          -[NSApplicationDelegate applicationProtectedDataDidBecomeAvailable:]
+        @end
+        @protocol NSWindowDelegate : <NSObject>
+          -[NSWindowDelegate windowShouldClose:]
+          -[NSWindowDelegate windowWillReturnFieldEditor:toObject:]
+          -[NSWindowDelegate windowWillResize:toSize:]
+          -[NSWindowDelegate windowWillUseStandardFrame:defaultFrame:]
+          -[NSWindowDelegate windowShouldZoom:toFrame:]
+          -[NSWindowDelegate windowWillReturnUndoManager:]
+          -[NSWindowDelegate window:willPositionSheet:usingRect:]
+          -[NSWindowDelegate window:shouldPopUpDocumentPathMenu:]
+          -[NSWindowDelegate window:shouldDragDocumentWithEvent:from:withPasteboard:]
+          -[NSWindowDelegate window:willUseFullScreenContentSize:]
+          -[NSWindowDelegate window:willUseFullScreenPresentationOptions:]
+          -[NSWindowDelegate customWindowsToEnterFullScreenForWindow:]
+          -[NSWindowDelegate window:startCustomAnimationToEnterFullScreenWithDuration:]
+          -[NSWindowDelegate windowDidFailToEnterFullScreen:]
+          -[NSWindowDelegate customWindowsToExitFullScreenForWindow:]
+          -[NSWindowDelegate window:startCustomAnimationToExitFullScreenWithDuration:]
+          -[NSWindowDelegate customWindowsToEnterFullScreenForWindow:onScreen:]
+          -[NSWindowDelegate window:startCustomAnimationToEnterFullScreenOnScreen:withDuration:]
+          -[NSWindowDelegate windowDidFailToExitFullScreen:]
+          -[NSWindowDelegate window:willResizeForVersionBrowserWithMaxPreferredSize:maxAllowedSize:]
+          -[NSWindowDelegate window:willEncodeRestorableState:]
+          -[NSWindowDelegate window:didDecodeRestorableState:]
+          -[NSWindowDelegate previewRepresentableActivityItemsForWindow:]
+          -[NSWindowDelegate windowForSharingRequestFromWindow:]
+          -[NSWindowDelegate windowDidResize:]
+          -[NSWindowDelegate windowDidExpose:]
+          -[NSWindowDelegate windowWillMove:]
+          -[NSWindowDelegate windowDidMove:]
+          -[NSWindowDelegate windowDidBecomeKey:]
+          -[NSWindowDelegate windowDidResignKey:]
+          -[NSWindowDelegate windowDidBecomeMain:]
+          -[NSWindowDelegate windowDidResignMain:]
+          -[NSWindowDelegate windowWillClose:]
+          -[NSWindowDelegate windowWillMiniaturize:]
+          -[NSWindowDelegate windowDidMiniaturize:]
+          -[NSWindowDelegate windowDidDeminiaturize:]
+          -[NSWindowDelegate windowDidUpdate:]
+          -[NSWindowDelegate windowDidChangeScreen:]
+          -[NSWindowDelegate windowDidChangeScreenProfile:]
+          -[NSWindowDelegate windowDidChangeBackingProperties:]
+          -[NSWindowDelegate windowWillBeginSheet:]
+          -[NSWindowDelegate windowDidEndSheet:]
+          -[NSWindowDelegate windowWillStartLiveResize:]
+          -[NSWindowDelegate windowDidEndLiveResize:]
+          -[NSWindowDelegate windowWillEnterFullScreen:]
+          -[NSWindowDelegate windowDidEnterFullScreen:]
+          -[NSWindowDelegate windowWillExitFullScreen:]
+          -[NSWindowDelegate windowDidExitFullScreen:]
+          -[NSWindowDelegate windowWillEnterVersionBrowser:]
+          -[NSWindowDelegate windowDidEnterVersionBrowser:]
+          -[NSWindowDelegate windowWillExitVersionBrowser:]
+          -[NSWindowDelegate windowDidExitVersionBrowser:]
+          -[NSWindowDelegate windowDidChangeOcclusionState:]
+        @end
+        @protocol NSWindowDelegate : <NSObject>
+          -[NSWindowDelegate windowShouldClose:]
+          -[NSWindowDelegate windowWillReturnFieldEditor:toObject:]
+          -[NSWindowDelegate windowWillResize:toSize:]
+          -[NSWindowDelegate windowWillUseStandardFrame:defaultFrame:]
+          -[NSWindowDelegate windowShouldZoom:toFrame:]
+          -[NSWindowDelegate windowWillReturnUndoManager:]
+          -[NSWindowDelegate window:willPositionSheet:usingRect:]
+          -[NSWindowDelegate window:shouldPopUpDocumentPathMenu:]
+          -[NSWindowDelegate window:shouldDragDocumentWithEvent:from:withPasteboard:]
+          -[NSWindowDelegate window:willUseFullScreenContentSize:]
+          -[NSWindowDelegate window:willUseFullScreenPresentationOptions:]
+          -[NSWindowDelegate customWindowsToEnterFullScreenForWindow:]
+          -[NSWindowDelegate window:startCustomAnimationToEnterFullScreenWithDuration:]
+          -[NSWindowDelegate windowDidFailToEnterFullScreen:]
+          -[NSWindowDelegate customWindowsToExitFullScreenForWindow:]
+          -[NSWindowDelegate window:startCustomAnimationToExitFullScreenWithDuration:]
+          -[NSWindowDelegate customWindowsToEnterFullScreenForWindow:onScreen:]
+          -[NSWindowDelegate window:startCustomAnimationToEnterFullScreenOnScreen:withDuration:]
+          -[NSWindowDelegate windowDidFailToExitFullScreen:]
+          -[NSWindowDelegate window:willResizeForVersionBrowserWithMaxPreferredSize:maxAllowedSize:]
+          -[NSWindowDelegate window:willEncodeRestorableState:]
+          -[NSWindowDelegate window:didDecodeRestorableState:]
+          -[NSWindowDelegate previewRepresentableActivityItemsForWindow:]
+          -[NSWindowDelegate windowForSharingRequestFromWindow:]
+          -[NSWindowDelegate windowDidResize:]
+          -[NSWindowDelegate windowDidExpose:]
+          -[NSWindowDelegate windowWillMove:]
+          -[NSWindowDelegate windowDidMove:]
+          -[NSWindowDelegate windowDidBecomeKey:]
+          -[NSWindowDelegate windowDidResignKey:]
+          -[NSWindowDelegate windowDidBecomeMain:]
+          -[NSWindowDelegate windowDidResignMain:]
+          -[NSWindowDelegate windowWillClose:]
+          -[NSWindowDelegate windowWillMiniaturize:]
+          -[NSWindowDelegate windowDidMiniaturize:]
+          -[NSWindowDelegate windowDidDeminiaturize:]
+          -[NSWindowDelegate windowDidUpdate:]
+          -[NSWindowDelegate windowDidChangeScreen:]
+          -[NSWindowDelegate windowDidChangeScreenProfile:]
+          -[NSWindowDelegate windowDidChangeBackingProperties:]
+          -[NSWindowDelegate windowWillBeginSheet:]
+          -[NSWindowDelegate windowDidEndSheet:]
+          -[NSWindowDelegate windowWillStartLiveResize:]
+          -[NSWindowDelegate windowDidEndLiveResize:]
+          -[NSWindowDelegate windowWillEnterFullScreen:]
+          -[NSWindowDelegate windowDidEnterFullScreen:]
+          -[NSWindowDelegate windowWillExitFullScreen:]
+          -[NSWindowDelegate windowDidExitFullScreen:]
+          -[NSWindowDelegate windowWillEnterVersionBrowser:]
+          -[NSWindowDelegate windowDidEnterVersionBrowser:]
+          -[NSWindowDelegate windowWillExitVersionBrowser:]
+          -[NSWindowDelegate windowDidExitVersionBrowser:]
+          -[NSWindowDelegate windowDidChangeOcclusionState:]
+        @end
+        @protocol CHSWidgetExtensionProviderObserver : <NSObject>
+          -[CHSWidgetExtensionProviderObserver extensionsDidChangeForExtensionProvider:]
+        @end
+        @protocol CHSWidgetExtensionProviderObserver : <NSObject>
+          -[CHSWidgetExtensionProviderObserver extensionsDidChangeForExtensionProvider:]
+        @end
+        @protocol NCCAControllerDelegate : 
+          -[NCCAControllerDelegate NCCAController:presentRemoteSession:]
+          -[NCCAControllerDelegate NCCAController:dismissRemoteSession:withAnimation:]
+          -[NCCAControllerDelegate NCCAController:makeSessionKey:]
+          -[NCCAControllerDelegate NCCAController:releaseKeySession:]
+          -[NCCAControllerDelegate NCCAController:heightChangedTo:fence:forSession:]
+          -[NCCAControllerDelegate NCCAController:reserveHeight:forHostIdentifier:]
+        @end
+        @protocol NCCAControllerDelegate : 
+          -[NCCAControllerDelegate NCCAController:presentRemoteSession:]
+          -[NCCAControllerDelegate NCCAController:dismissRemoteSession:withAnimation:]
+          -[NCCAControllerDelegate NCCAController:makeSessionKey:]
+          -[NCCAControllerDelegate NCCAController:releaseKeySession:]
+          -[NCCAControllerDelegate NCCAController:heightChangedTo:fence:forSession:]
+          -[NCCAControllerDelegate NCCAController:reserveHeight:forHostIdentifier:]
+        @end
+        @protocol NSTextViewDelegate : <NSTextDelegate>
+          -[NSTextViewDelegate textView:clickedOnLink:atIndex:]
+          -[NSTextViewDelegate textView:clickedOnCell:inRect:atIndex:]
+          -[NSTextViewDelegate textView:doubleClickedOnCell:inRect:atIndex:]
+          -[NSTextViewDelegate textView:draggedCell:inRect:event:atIndex:]
+          -[NSTextViewDelegate textView:writablePasteboardTypesForCell:atIndex:]
+          -[NSTextViewDelegate textView:writeCell:atIndex:toPasteboard:type:]
+          -[NSTextViewDelegate textView:willChangeSelectionFromCharacterRange:toCharacterRange:]
+          -[NSTextViewDelegate textView:willChangeSelectionFromCharacterRanges:toCharacterRanges:]
+          -[NSTextViewDelegate textView:shouldChangeTextInRanges:replacementStrings:]
+          -[NSTextViewDelegate textView:shouldChangeTypingAttributes:toAttributes:]
+          -[NSTextViewDelegate textViewDidChangeSelection:]
+          -[NSTextViewDelegate textViewDidChangeTypingAttributes:]
+          -[NSTextViewDelegate textView:willDisplayToolTip:forCharacterAtIndex:]
+          -[NSTextViewDelegate textView:completions:forPartialWordRange:indexOfSelectedItem:]
+          -[NSTextViewDelegate textView:shouldChangeTextInRange:replacementString:]
+          -[NSTextViewDelegate textView:doCommandBySelector:]
+          -[NSTextViewDelegate textView:shouldSetSpellingState:range:]
+          -[NSTextViewDelegate textView:menu:forEvent:atIndex:]
+          -[NSTextViewDelegate textView:willCheckTextInRange:options:types:]
+          -[NSTextViewDelegate textView:didCheckTextInRange:types:options:results:orthography:wordCount:]
+          -[NSTextViewDelegate textView:URLForContentsOfTextAttachment:atIndex:]
+          -[NSTextViewDelegate textView:willShowSharingServicePicker:forItems:]
+          -[NSTextViewDelegate undoManagerForTextView:]
+          -[NSTextViewDelegate textView:shouldUpdateTouchBarItemIdentifiers:]
+          -[NSTextViewDelegate textView:candidatesForSelectedRange:]
+          -[NSTextViewDelegate textView:candidates:forSelectedRange:]
+          -[NSTextViewDelegate textView:shouldSelectCandidateAtIndex:]
+          -[NSTextViewDelegate textViewWritingToolsWillBegin:]
+          -[NSTextViewDelegate textViewWritingToolsDidEnd:]
+          -[NSTextViewDelegate textView:writingToolsIgnoredRangesInEnclosingRange:]
+          -[NSTextViewDelegate textView:clickedOnLink:]
+          -[NSTextViewDelegate textView:clickedOnCell:inRect:]
+          -[NSTextViewDelegate textView:doubleClickedOnCell:inRect:]
+          -[NSTextViewDelegate textView:draggedCell:inRect:event:]
+        @end
+        @protocol NSTextViewDelegate : <NSTextDelegate>
+          -[NSTextViewDelegate textView:clickedOnLink:atIndex:]
+          -[NSTextViewDelegate textView:clickedOnCell:inRect:atIndex:]
+          -[NSTextViewDelegate textView:doubleClickedOnCell:inRect:atIndex:]
+          -[NSTextViewDelegate textView:draggedCell:inRect:event:atIndex:]
+          -[NSTextViewDelegate textView:writablePasteboardTypesForCell:atIndex:]
+          -[NSTextViewDelegate textView:writeCell:atIndex:toPasteboard:type:]
+          -[NSTextViewDelegate textView:willChangeSelectionFromCharacterRange:toCharacterRange:]
+          -[NSTextViewDelegate textView:willChangeSelectionFromCharacterRanges:toCharacterRanges:]
+          -[NSTextViewDelegate textView:shouldChangeTextInRanges:replacementStrings:]
+          -[NSTextViewDelegate textView:shouldChangeTypingAttributes:toAttributes:]
+          -[NSTextViewDelegate textViewDidChangeSelection:]
+          -[NSTextViewDelegate textViewDidChangeTypingAttributes:]
+          -[NSTextViewDelegate textView:willDisplayToolTip:forCharacterAtIndex:]
+          -[NSTextViewDelegate textView:completions:forPartialWordRange:indexOfSelectedItem:]
+          -[NSTextViewDelegate textView:shouldChangeTextInRange:replacementString:]
+          -[NSTextViewDelegate textView:doCommandBySelector:]
+          -[NSTextViewDelegate textView:shouldSetSpellingState:range:]
+          -[NSTextViewDelegate textView:menu:forEvent:atIndex:]
+          -[NSTextViewDelegate textView:willCheckTextInRange:options:types:]
+          -[NSTextViewDelegate textView:didCheckTextInRange:types:options:results:orthography:wordCount:]
+          -[NSTextViewDelegate textView:URLForContentsOfTextAttachment:atIndex:]
+          -[NSTextViewDelegate textView:willShowSharingServicePicker:forItems:]
+          -[NSTextViewDelegate undoManagerForTextView:]
+          -[NSTextViewDelegate textView:shouldUpdateTouchBarItemIdentifiers:]
+          -[NSTextViewDelegate textView:candidatesForSelectedRange:]
+          -[NSTextViewDelegate textView:candidates:forSelectedRange:]
+          -[NSTextViewDelegate textView:shouldSelectCandidateAtIndex:]
+          -[NSTextViewDelegate textViewWritingToolsWillBegin:]
+          -[NSTextViewDelegate textViewWritingToolsDidEnd:]
+          -[NSTextViewDelegate textView:writingToolsIgnoredRangesInEnclosingRange:]
+          -[NSTextViewDelegate textView:clickedOnLink:]
+          -[NSTextViewDelegate textView:clickedOnCell:inRect:]
+          -[NSTextViewDelegate textView:doubleClickedOnCell:inRect:]
+          -[NSTextViewDelegate textView:draggedCell:inRect:event:]
+        @end
+        @protocol NSTextDelegate : <NSObject>
+          -[NSTextDelegate textShouldBeginEditing:]
+          -[NSTextDelegate textShouldEndEditing:]
+          -[NSTextDelegate textDidBeginEditing:]
+          -[NSTextDelegate textDidEndEditing:]
+          -[NSTextDelegate textDidChange:]
+        @end
+        @protocol NSTextDelegate : <NSObject>
+          -[NSTextDelegate textShouldBeginEditing:]
+          -[NSTextDelegate textShouldEndEditing:]
+          -[NSTextDelegate textDidBeginEditing:]
+          -[NSTextDelegate textDidEndEditing:]
+          -[NSTextDelegate textDidChange:]
+        @end
+        @protocol _UNNotificationContentExtensionHostContextDelegate : <NSObject>
+          -[_UNNotificationContentExtensionHostContextDelegate notificationExtensionDidUpdatePlayPauseMediaButton:]
+          -[_UNNotificationContentExtensionHostContextDelegate notificationExtension:didUpdateTitle:]
+          -[_UNNotificationContentExtensionHostContextDelegate notificationExtension:didUpdateNotificationActions:]
+          -[_UNNotificationContentExtensionHostContextDelegate notificationExtensionMediaPlayingDidStart:]
+          -[_UNNotificationContentExtensionHostContextDelegate notificationExtensionMediaPlayingDidPause:]
+          -[_UNNotificationContentExtensionHostContextDelegate notificationExtensionRequestsDefaultAction:]
+          -[_UNNotificationContentExtensionHostContextDelegate notificationExtensionRequestsDismiss:]
+          -[_UNNotificationContentExtensionHostContextDelegate notificationExtensionUpdatedPreferredContentSize:]
+          -[_UNNotificationContentExtensionHostContextDelegate notificationExtensionUpdatedContentSize:sendRight:]
+          -[_UNNotificationContentExtensionHostContextDelegate notificationExtension:extensionDidCompleteResponse:withOption:]
+        @end
+        @protocol _UNNotificationContentExtensionHostContextDelegate : <NSObject>
+          -[_UNNotificationContentExtensionHostContextDelegate notificationExtensionDidUpdatePlayPauseMediaButton:]
+          -[_UNNotificationContentExtensionHostContextDelegate notificationExtension:didUpdateTitle:]
+          -[_UNNotificationContentExtensionHostContextDelegate notificationExtension:didUpdateNotificationActions:]
+          -[_UNNotificationContentExtensionHostContextDelegate notificationExtensionMediaPlayingDidStart:]
+          -[_UNNotificationContentExtensionHostContextDelegate notificationExtensionMediaPlayingDidPause:]
+          -[_UNNotificationContentExtensionHostContextDelegate notificationExtensionRequestsDefaultAction:]
+          -[_UNNotificationContentExtensionHostContextDelegate notificationExtensionRequestsDismiss:]
+          -[_UNNotificationContentExtensionHostContextDelegate notificationExtensionUpdatedPreferredContentSize:]
+          -[_UNNotificationContentExtensionHostContextDelegate notificationExtensionUpdatedContentSize:sendRight:]
+          -[_UNNotificationContentExtensionHostContextDelegate notificationExtension:extensionDidCompleteResponse:withOption:]
+        @end
+        @protocol NCNotificationCenterMenu : <NSObject>
+          -[NCNotificationCenterMenu ncMenugetInitialState:]
+          -[NCNotificationCenterMenu ncMenuMouseDown]
+          -[NCNotificationCenterMenu ncMenuMouseUp]
+          -[NCNotificationCenterMenu ncMenuDNDToggle]
+        @end
+        @protocol NCHotKeyDelegate : <NSObject>
+          -[NCHotKeyDelegate hotKeyRequestCenterClose]
+          -[NCHotKeyDelegate hotKeyRequestCenterOpenOnDisplay:]
+          -[NCHotKeyDelegate hotKeySwitchDNDOn]
+          -[NCHotKeyDelegate hotKeySwitchDNDOff]
+          -[NCHotKeyDelegate hotKeyCenterOpened]
+          -[NCHotKeyDelegate hotKeyDNDEnabled]
+        @end
+        @protocol NCDockCommunicationDelegate : <NSObject>
+          -[NCDockCommunicationDelegate dockRequestCenterClose:]
+          -[NCDockCommunicationDelegate dockRequestCenterToggleOnDisplay:]
+        @end
+        @protocol BKSTouchDeliveryBackgroundObserving : <NSObject>
+          -[BKSTouchDeliveryBackgroundObserving touchDownOccurred]
+        @end
+        @protocol NCHotKeyDelegate : <NSObject>
+          -[NCHotKeyDelegate hotKeyRequestCenterClose]
+          -[NCHotKeyDelegate hotKeyRequestCenterOpenOnDisplay:]
+          -[NCHotKeyDelegate hotKeySwitchDNDOn]
+          -[NCHotKeyDelegate hotKeySwitchDNDOff]
+          -[NCHotKeyDelegate hotKeyCenterOpened]
+          -[NCHotKeyDelegate hotKeyDNDEnabled]
+        @end
+        @protocol NCDockCommunicationDelegate : <NSObject>
+          -[NCDockCommunicationDelegate dockRequestCenterClose:]
+          -[NCDockCommunicationDelegate dockRequestCenterToggleOnDisplay:]
+        @end
+        @protocol BKSTouchDeliveryBackgroundObserving : <NSObject>
+          -[BKSTouchDeliveryBackgroundObserving touchDownOccurred]
+        @end
+        @protocol DNDStateUpdateListener : <NSObject>
+          -[DNDStateUpdateListener stateService:didReceiveDoNotDisturbStateUpdate:]
+        @end
+        @protocol DNDStateUpdateListener : <NSObject>
+          -[DNDStateUpdateListener stateService:didReceiveDoNotDisturbStateUpdate:]
+        @end
+        @protocol NSMenuDelegate : <NSObject>
+          -[NSMenuDelegate menuNeedsUpdate:]
+          -[NSMenuDelegate numberOfItemsInMenu:]
+          -[NSMenuDelegate menu:updateItem:atIndex:shouldCancel:]
+          -[NSMenuDelegate menuHasKeyEquivalent:forEvent:target:action:]
+          -[NSMenuDelegate menuWillOpen:]
+          -[NSMenuDelegate menuDidClose:]
+          -[NSMenuDelegate menu:willHighlightItem:]
+          -[NSMenuDelegate confinementRectForMenu:onScreen:]
+        @end
+        @protocol NSMenuDelegate : <NSObject>
+          -[NSMenuDelegate menuNeedsUpdate:]
+          -[NSMenuDelegate numberOfItemsInMenu:]
+          -[NSMenuDelegate menu:updateItem:atIndex:shouldCancel:]
+          -[NSMenuDelegate menuHasKeyEquivalent:forEvent:target:action:]
+          -[NSMenuDelegate menuWillOpen:]
+          -[NSMenuDelegate menuDidClose:]
+          -[NSMenuDelegate menu:willHighlightItem:]
+          -[NSMenuDelegate confinementRectForMenu:onScreen:]
+        @end

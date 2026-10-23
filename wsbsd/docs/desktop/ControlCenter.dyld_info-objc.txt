@@ -1,0 +1,2237 @@
+/System/Library/CoreServices/ControlCenter.app/Contents/MacOS/ControlCenter [arm64e]:
+    -objc:
+        @interface _TtC16ControlCenterApp24ShowTogglesXPCController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp16EnergyModeModule : _TtC16ControlCenterApp6Module 
+        @end
+        @interface _TtC16ControlCenterApp35SharedContentPickingDesktopBlurView : NSView 
+          0x10001B03C  -[_TtC16ControlCenterApp35SharedContentPickingDesktopBlurView initWithFrame:]
+          0x10001B0BC  -[_TtC16ControlCenterApp35SharedContentPickingDesktopBlurView initWithCoder:]
+          0x10001B230  -[_TtC16ControlCenterApp35SharedContentPickingDesktopBlurView .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp28FaceTimeConversationObserver : NSObject <TUAudioDeviceControllerDelegate, TUConversationManagerDelegate>
+          0x10001CB50  -[_TtC16ControlCenterApp28FaceTimeConversationObserver audioDeviceControllerDeviceListChanged:]
+          0x10001B398  -[_TtC16ControlCenterApp28FaceTimeConversationObserver conversationManager:stateChangedForConversation:]
+          0x10001B884  -[_TtC16ControlCenterApp28FaceTimeConversationObserver conversationManager:removedActiveConversation:]
+          0x10001BA08  -[_TtC16ControlCenterApp28FaceTimeConversationObserver conversationManager:activeRemoteParticipantsChangedForConversation:]
+          0x10001BBA8  -[_TtC16ControlCenterApp28FaceTimeConversationObserver conversationManager:activitySessionsChangedForConversation:]
+          0x10001BD48  -[_TtC16ControlCenterApp28FaceTimeConversationObserver conversationManager:collaborationChanged:forConversation:collaborationState:]
+          0x10001BEEC  -[_TtC16ControlCenterApp28FaceTimeConversationObserver conversationManager:conversationUpdatedMessagesGroupName:]
+          0x10001C0CC  -[_TtC16ControlCenterApp28FaceTimeConversationObserver conversationManager:conversation:updatedMessagesGroupPhoto:]
+          0x10001C2A0  -[_TtC16ControlCenterApp28FaceTimeConversationObserver conversationManager:changedActivityAuthorizationForBundleIdentifier:]
+          0x10001C5C4  -[_TtC16ControlCenterApp28FaceTimeConversationObserver conversationManager:sharePlayAvailableChanged:]
+          0x10001C740  -[_TtC16ControlCenterApp28FaceTimeConversationObserver conversationManager:avModeChangedForConversation:]
+          0x10001C8D8  -[_TtC16ControlCenterApp28FaceTimeConversationObserver conversationManager:handoffEligibilityChangedForConversation:]
+          0x10001C998  -[_TtC16ControlCenterApp28FaceTimeConversationObserver init]
+          0x10001C9F0  -[_TtC16ControlCenterApp28FaceTimeConversationObserver .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp25RingLightHelperConnection : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp33ModuleMenuExtraPopoversController : NSObject <NSPopoverDelegate>
+          0x100021344  -[_TtC16ControlCenterApp33ModuleMenuExtraPopoversController init]
+          0x1000227A8  -[_TtC16ControlCenterApp33ModuleMenuExtraPopoversController popoverWillClose:]
+          0x100022894  -[_TtC16ControlCenterApp33ModuleMenuExtraPopoversController .cxx_destruct]
+        @end
+        @interface _TtCC16ControlCenterApp33ModuleMenuExtraPopoversControllerP33_00B42C5934395FBD56E56D003B463D4B14PauseAssertion : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterAppP33_3AB146B3760FDB29B34BE003C3151BF020ObservableWindowPath : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp23DimmingWindowController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp19ModeFlagsController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp28CAPackageAnimationController : NSObject <CAStateControllerDelegate>
+          0x100027CBC  -[_TtC16ControlCenterApp28CAPackageAnimationController stateController:transitionDidStop:completed:]
+          0x100027D3C  -[_TtC16ControlCenterApp28CAPackageAnimationController init]
+          0x100027D80  -[_TtC16ControlCenterApp28CAPackageAnimationController .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp19EnergyModeViewModel : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCV16ControlCenterAppP33_FA31232FB7EAC78D3F5A6F8910EE0D3B25CameraAppEffectsListGroup28RingLightColorTemperatureSet : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp43SharedContentPickingDisplayControlsBlurView : NSView 
+          0x10003BFF4  -[_TtC16ControlCenterApp43SharedContentPickingDisplayControlsBlurView initWithFrame:]
+          0x10003C074  -[_TtC16ControlCenterApp43SharedContentPickingDisplayControlsBlurView initWithCoder:]
+          0x10003C084  -[_TtC16ControlCenterApp43SharedContentPickingDisplayControlsBlurView .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp37ScreenMirroringExpandedViewNavigation : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp21VoiceControlViewModel : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp16HelperConnection : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCV16ControlCenterAppP33_DE29FBEAF568E22170CFE18DA966D78822AnyListeningModeDevice11StorageBase : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp23ListeningModeController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp11AppDelegate : NSResponder <NSApplicationDelegate, NSApplicationDelegateScenesPrivate, NSApplicationTestingDelegate>
+          0x10006482C  -[_TtC16ControlCenterApp11AppDelegate applicationDidFinishLaunching:]
+          0x100064918  -[_TtC16ControlCenterApp11AppDelegate applicationWillTerminate:]
+          0x1000649E0  -[_TtC16ControlCenterApp11AppDelegate applicationShouldTerminate:]
+          0x100064CBC  -[_TtC16ControlCenterApp11AppDelegate application:runTest:options:]
+          0x100064DC4  -[_TtC16ControlCenterApp11AppDelegate toggleControlCenter]
+          0x10006501C  -[_TtC16ControlCenterApp11AppDelegate init]
+          0x100065288  -[_TtC16ControlCenterApp11AppDelegate initWithCoder:]
+          0x1000652E8  -[_TtC16ControlCenterApp11AppDelegate .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterAppP33_0622EA651DD056502AA582D20837C2A240SharedContentFloatingVideoWindowDelegate : NSObject <NSWindowDelegate>
+          0x10007C3D4  -[_TtC16ControlCenterAppP33_0622EA651DD056502AA582D20837C2A240SharedContentFloatingVideoWindowDelegate windowDidMove:]
+          0x10007C51C  -[_TtC16ControlCenterAppP33_0622EA651DD056502AA582D20837C2A240SharedContentFloatingVideoWindowDelegate init]
+          0x10007C540  -[_TtC16ControlCenterAppP33_0622EA651DD056502AA582D20837C2A240SharedContentFloatingVideoWindowDelegate .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterAppP33_0622EA651DD056502AA582D20837C2A228ControlCenterManagerObserver : NSObject <SCControlCenterManagerObserver>
+          0x10007C5D0  -[_TtC16ControlCenterAppP33_0622EA651DD056502AA582D20837C2A228ControlCenterManagerObserver controlCenterManager:streamDidStart:]
+          0x10007C6CC  -[_TtC16ControlCenterAppP33_0622EA651DD056502AA582D20837C2A228ControlCenterManagerObserver controlCenterManager:streamDidChange:]
+          0x10007C7C8  -[_TtC16ControlCenterAppP33_0622EA651DD056502AA582D20837C2A228ControlCenterManagerObserver controlCenterManager:streamDidEnd:]
+          0x10007C8C4  -[_TtC16ControlCenterAppP33_0622EA651DD056502AA582D20837C2A228ControlCenterManagerObserver controlCenterManager:didAddPicker:]
+          0x10007C9C0  -[_TtC16ControlCenterAppP33_0622EA651DD056502AA582D20837C2A228ControlCenterManagerObserver controlCenterManager:pickerDidChange:]
+          0x10007CABC  -[_TtC16ControlCenterAppP33_0622EA651DD056502AA582D20837C2A228ControlCenterManagerObserver controlCenterManager:didRemovePicker:]
+          0x10007CBB8  -[_TtC16ControlCenterAppP33_0622EA651DD056502AA582D20837C2A228ControlCenterManagerObserver controlCenterManagerLegacyStreamBundleIdentifiersDidChange:]
+          0x10007CCC4  -[_TtC16ControlCenterAppP33_0622EA651DD056502AA582D20837C2A228ControlCenterManagerObserver controlCenterManager:startPickingForPicker:forStream:withContentStyle:]
+          0x10007CE10  -[_TtC16ControlCenterAppP33_0622EA651DD056502AA582D20837C2A228ControlCenterManagerObserver controlCenterManager:startPickingForPicker:forStream:withFilter:]
+          0x10007D2C8  -[_TtC16ControlCenterAppP33_0622EA651DD056502AA582D20837C2A228ControlCenterManagerObserver controlCenterManager:screenCapturePrivacyHintRequiredForBundleID:userInfo:]
+          0x10007D470  -[_TtC16ControlCenterAppP33_0622EA651DD056502AA582D20837C2A228ControlCenterManagerObserver controlCenterManager:serverDiedWithError:]
+          0x10007D618  -[_TtC16ControlCenterAppP33_0622EA651DD056502AA582D20837C2A228ControlCenterManagerObserver init]
+          0x10007D63C  -[_TtC16ControlCenterAppP33_0622EA651DD056502AA582D20837C2A228ControlCenterManagerObserver .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp28SharedContentPreviewObserver : NSObject <SCPreviewDelegate>
+          0x10007DBA8  -[_TtC16ControlCenterApp28SharedContentPreviewObserver previewDidReceiveFirstFrame:]
+          0x10007DCB4  -[_TtC16ControlCenterApp28SharedContentPreviewObserver preview:didPause:]
+          0x10007DD8C  -[_TtC16ControlCenterApp28SharedContentPreviewObserver previewAttributesDidChange:]
+          0x10007DE5C  -[_TtC16ControlCenterApp28SharedContentPreviewObserver previewDidStop:]
+          0x10007DF2C  -[_TtC16ControlCenterApp28SharedContentPreviewObserver previewServerDied:]
+          0x10007DFEC  -[_TtC16ControlCenterApp28SharedContentPreviewObserver init]
+          0x10007E014  -[_TtC16ControlCenterApp28SharedContentPreviewObserver .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp33VideoReactionTipController_Legacy : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCC16ControlCenterApp33VideoReactionTipController_LegacyP33_73DF4C01AA0C0CDF5C5309B9AD543F6130VideoReactionTipPopoverRequest : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp30SharedContentPickingController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp15BentoBoxManager : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCC16ControlCenterApp15BentoBoxManagerP33_FD9BD0E7851D8B92D343B65E225C64D615WrappedBentoBox : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp19RemoteDisplayDevice : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp30AirPlayWindowDisplayController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp17BatteryController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp31BentoGallerySuggestionsProvider : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp12ModalSession : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp8BentoBox : _TtC16ControlCenterApp6Module 
+        @end
+        @interface _TtC16ControlCenterAppP33_E8B9F6895DB41B8133F5B2111EBCFEDD27BentoBoxVisibilityAssertion : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp28BluetoothSystemConfiguration : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp7Hearing : _TtC16ControlCenterApp6Module 
+        @end
+        @interface _TtC16ControlCenterApp15ScreenMirroring : _TtC16ControlCenterApp6Module 
+        @end
+        @interface _TtC16ControlCenterApp32MusicRecognitionAnalyticsHandler : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp21AirplayWindowControls : NSVisualEffectView <NSMenuDelegate>
+          0x1000DCA20  -[_TtC16ControlCenterApp21AirplayWindowControls menuDidClose:]
+          0x1000DBB10  -[_TtC16ControlCenterApp21AirplayWindowControls initWithCoder:]
+          0x1000DBB28  -[_TtC16ControlCenterApp21AirplayWindowControls acceptsFirstMouse:]
+          0x1000DBF60  -[_TtC16ControlCenterApp21AirplayWindowControls didClickCloseButton]
+          0x1000DC4D4  -[_TtC16ControlCenterApp21AirplayWindowControls didClickPickDisplayButton]
+          0x1000DC834  -[_TtC16ControlCenterApp21AirplayWindowControls didSelectDisplayMenuItem:]
+          0x1000DC898  -[_TtC16ControlCenterApp21AirplayWindowControls initWithFrame:]
+          0x1000DC8A8  -[_TtC16ControlCenterApp21AirplayWindowControls .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterAppP33_548A1F1D1EECECF0346A3C290BC172F527AirplayWindowControlsButton : NSButton 
+          0x1000DCC50  -[_TtC16ControlCenterAppP33_548A1F1D1EECECF0346A3C290BC172F527AirplayWindowControlsButton acceptsFirstMouse:]
+          0x1000DCCF8  -[_TtC16ControlCenterAppP33_548A1F1D1EECECF0346A3C290BC172F527AirplayWindowControlsButton hitTest:]
+          0x1000DCDE4  -[_TtC16ControlCenterAppP33_548A1F1D1EECECF0346A3C290BC172F527AirplayWindowControlsButton initWithFrame:]
+          0x1000DCEA0  -[_TtC16ControlCenterAppP33_548A1F1D1EECECF0346A3C290BC172F527AirplayWindowControlsButton initWithCoder:]
+          0x1000DCECC  -[_TtC16ControlCenterAppP33_548A1F1D1EECECF0346A3C290BC172F527AirplayWindowControlsButton .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp6Module : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp11SoundDevice : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp16SoundInputDevice : _TtC16ControlCenterApp11SoundDevice 
+        @end
+        @interface _TtC16ControlCenterApp17SoundOutputDevice : _TtC16ControlCenterApp11SoundDevice 
+        @end
+        @interface _TtC16ControlCenterApp23MenuPositionCoordinator : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp29SensorIndicatorPopoverRequest : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp22UserSwitcherController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCV16ControlCenterAppP33_857EC49FF22B625BC473E47AFFF4EC0218StreamPreviewsView16HeightCalculator : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp18RingLightAppHelper : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp16AirPlayPINWindow : NSPanel 
+          0x1001331E4  -[_TtC16ControlCenterApp16AirPlayPINWindow dealloc]
+          0x1001332CC  -[_TtC16ControlCenterApp16AirPlayPINWindow makeKeyAndOrderFront:]
+          0x100133394  -[_TtC16ControlCenterApp16AirPlayPINWindow close]
+          0x100133B54  -[_TtC16ControlCenterApp16AirPlayPINWindow initWithContentRect:styleMask:backing:defer:]
+          0x10013320C  -[_TtC16ControlCenterApp16AirPlayPINWindow .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp42SharedContentPickingDisplayHintsController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp26LiveActivityBackgroundView : NSView 
+          0x10013AB40  -[_TtC16ControlCenterApp26LiveActivityBackgroundView initWithFrame:]
+          0x10013ABC0  -[_TtC16ControlCenterApp26LiveActivityBackgroundView initWithCoder:]
+          0x10013AC68  -[_TtC16ControlCenterApp26LiveActivityBackgroundView layout]
+        @end
+        @interface Application : NSApplication 
+          0x10013BD94  -[Application sendEvent:]
+          0x10013BF54  -[Application accessibilityMainWindow]
+          0x10013C070  -[Application accessibilityFocusedWindow]
+          0x10013C2C0  -[Application accessibilityChildren]
+          0x10013C334  -[Application accessibilityMenuBarAttribute]
+          0x10013C54C  -[Application init]
+          0x10013C684  -[Application initWithCoder:]
+          0x10013C6B0  -[Application .cxx_destruct]
+          0x10013B40C  +[Application sharedApplication]
+        @end
+        @interface _TtC16ControlCenterApp20FocusModesController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterAppP33_EA259C182BEF75D200F6A6A11FED80BB39FocusModesControllerVisibilityAssertion : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterAppP33_EA259C182BEF75D200F6A6A11FED80BB14SystemObserver : NSObject <FCActivityManagerObserving>
+          0x100143BEC  -[_TtC16ControlCenterAppP33_EA259C182BEF75D200F6A6A11FED80BB14SystemObserver activeActivityDidChangeForManager:]
+          0x100143BE8  -[_TtC16ControlCenterAppP33_EA259C182BEF75D200F6A6A11FED80BB14SystemObserver activeActivityLifetimeDidChangeForManager:]
+          0x100143BF0  -[_TtC16ControlCenterAppP33_EA259C182BEF75D200F6A6A11FED80BB14SystemObserver availableActivitiesDidChangeForManager:]
+          0x10014256C  -[_TtC16ControlCenterAppP33_EA259C182BEF75D200F6A6A11FED80BB14SystemObserver activityManager:lifetimeDescriptionsDidChangeForActivity:]
+          0x100142618  -[_TtC16ControlCenterAppP33_EA259C182BEF75D200F6A6A11FED80BB14SystemObserver init]
+          0x10014263C  -[_TtC16ControlCenterAppP33_EA259C182BEF75D200F6A6A11FED80BB14SystemObserver .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp23KeyboardModifierMonitor : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp41ControlCenterDisplayableAppStatusItemType : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp7Display : _TtC16ControlCenterApp6Module 
+        @end
+        @interface _TtCVV16ControlCenterApp31BentoGalleryNavigatorSearchViewP33_B0F15A4402EE3544C4FBC6EF238F2A4615SearchFieldView12_SearchField : NSSearchField 
+          0x10014F91C  -[_TtCVV16ControlCenterApp31BentoGalleryNavigatorSearchViewP33_B0F15A4402EE3544C4FBC6EF238F2A4615SearchFieldView12_SearchField initWithFrame:]
+          0x10014F9B4  -[_TtCVV16ControlCenterApp31BentoGalleryNavigatorSearchViewP33_B0F15A4402EE3544C4FBC6EF238F2A4615SearchFieldView12_SearchField initWithCoder:]
+        @end
+        @interface _TtCVV16ControlCenterApp31BentoGalleryNavigatorSearchViewP33_B0F15A4402EE3544C4FBC6EF238F2A4615SearchFieldView11Coordinator : NSObject <NSSearchFieldDelegate>
+          0x10014FB48  -[_TtCVV16ControlCenterApp31BentoGalleryNavigatorSearchViewP33_B0F15A4402EE3544C4FBC6EF238F2A4615SearchFieldView11Coordinator controlTextDidChange:]
+          0x10014FC38  -[_TtCVV16ControlCenterApp31BentoGalleryNavigatorSearchViewP33_B0F15A4402EE3544C4FBC6EF238F2A4615SearchFieldView11Coordinator insertNewline:]
+          0x10014FC60  -[_TtCVV16ControlCenterApp31BentoGalleryNavigatorSearchViewP33_B0F15A4402EE3544C4FBC6EF238F2A4615SearchFieldView11Coordinator cancelOperation:]
+          0x10014FCB8  -[_TtCVV16ControlCenterApp31BentoGalleryNavigatorSearchViewP33_B0F15A4402EE3544C4FBC6EF238F2A4615SearchFieldView11Coordinator init]
+          0x10014FCDC  -[_TtCVV16ControlCenterApp31BentoGalleryNavigatorSearchViewP33_B0F15A4402EE3544C4FBC6EF238F2A4615SearchFieldView11Coordinator .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp44ControlCenterDisplayableAppStatusItemsSource : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp25MusicRecognitionViewModel : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp31ChronoIntentConfigurationWindow : NSPanel 
+          0x100161370  -[_TtC16ControlCenterApp31ChronoIntentConfigurationWindow dealloc]
+          0x100161410  -[_TtC16ControlCenterApp31ChronoIntentConfigurationWindow canBecomeKeyWindow]
+          0x100161418  -[_TtC16ControlCenterApp31ChronoIntentConfigurationWindow shadowOptions]
+          0x1001615F8  -[_TtC16ControlCenterApp31ChronoIntentConfigurationWindow cancel:]
+          0x100161650  -[_TtC16ControlCenterApp31ChronoIntentConfigurationWindow initWithContentRect:styleMask:backing:defer:]
+          0x100161398  -[_TtC16ControlCenterApp31ChronoIntentConfigurationWindow .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp24SuggestionsLayoutContext : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp20NightShiftController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterAppP33_5D5BD54480E468CC0ABEE6E4DF5CEC3613BentoBackdrop : CABackdropLayer 
+          0x100171968  -[_TtC16ControlCenterAppP33_5D5BD54480E468CC0ABEE6E4DF5CEC3613BentoBackdrop initWithCoder:]
+          0x1001719FC  -[_TtC16ControlCenterAppP33_5D5BD54480E468CC0ABEE6E4DF5CEC3613BentoBackdrop init]
+          0x100171AC4  -[_TtC16ControlCenterAppP33_5D5BD54480E468CC0ABEE6E4DF5CEC3613BentoBackdrop initWithLayer:]
+          0x100171EBC  -[_TtC16ControlCenterAppP33_5D5BD54480E468CC0ABEE6E4DF5CEC3613BentoBackdrop layoutSublayers]
+          0x100172094  -[_TtC16ControlCenterAppP33_5D5BD54480E468CC0ABEE6E4DF5CEC3613BentoBackdrop .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp19SystemBannerService : NSObject <OSDUIHelperProtocol, SystemBannerServiceProtocol>
+          0x100521ED0  -[_TtC16ControlCenterApp19SystemBannerService showImage:onDisplayID:priority:msecUntilFade:]
+          0x100521F40  -[_TtC16ControlCenterApp19SystemBannerService showImage:onDisplayID:priority:msecUntilFade:withText:]
+          0x100522238  -[_TtC16ControlCenterApp19SystemBannerService showImage:onDisplayID:priority:msecUntilFade:filledChiclets:totalChiclets:locked:]
+          0x100522558  -[_TtC16ControlCenterApp19SystemBannerService showImageAtPath:onDisplayID:priority:msecUntilFade:withText:]
+          0x1005225FC  -[_TtC16ControlCenterApp19SystemBannerService fadeClassicImageOnDisplay:]
+          0x100522600  -[_TtC16ControlCenterApp19SystemBannerService showFullScreenImage:onDisplayID:priority:msecToAnimate:]
+          0x100419010  -[_TtC16ControlCenterApp19SystemBannerService showDisplayBrightness:value:max:isEnabled:]
+          0x100419208  -[_TtC16ControlCenterApp19SystemBannerService showKeyboardBrightness:max:isEnabled:]
+          0x1004192C8  -[_TtC16ControlCenterApp19SystemBannerService showVolume:max:isEnabled:]
+          0x100419454  -[_TtC16ControlCenterApp19SystemBannerService showMute:max:isEnabled:]
+          0x10041AC5C  -[_TtC16ControlCenterApp19SystemBannerService showSmartRoutingConnectedWithUserInfo:]
+          0x10041BA90  -[_TtC16ControlCenterApp19SystemBannerService showSmartRoutingReverseRouteWithUserInfo:text:completion:]
+          0x10041CCD0  -[_TtC16ControlCenterApp19SystemBannerService showSmartRoutingLowBattery:productID:forCase:imageBundleIdentifier:imageName:batteryLevel:]
+          0x10041DFB4  -[_TtC16ControlCenterApp19SystemBannerService removeSmartRoutingForEvent:]
+          0x10041E2A4  -[_TtC16ControlCenterApp19SystemBannerService showListeningModeChangeWithUserInfo:]
+          0x10041F5E8  -[_TtC16ControlCenterApp19SystemBannerService showAccessoryWithUserInfo:]
+          0x10041F6EC  -[_TtC16ControlCenterApp19SystemBannerService showAccessory:text:]
+          0x100420C04  -[_TtC16ControlCenterApp19SystemBannerService showAccessory:text:batteryLevel:]
+          0x10042214C  -[_TtC16ControlCenterApp19SystemBannerService showFocusMode:isOn:]
+          0x1004222CC  -[_TtC16ControlCenterApp19SystemBannerService showLowBattery:]
+          0x100422A94  -[_TtC16ControlCenterApp19SystemBannerService showPowerState:flags:]
+          0x10017C3CC  -[_TtC16ControlCenterApp19SystemBannerService init]
+          0x10017C414  -[_TtC16ControlCenterApp19SystemBannerService .cxx_destruct]
+        @end
+        @interface _TtCC16ControlCenterApp19SystemBannerService15ObservableState : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp33AirplayWindowVisibilityController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCV16ControlCenterApp13CAPackageView16_CAPackageNSView : NSView 
+          0x10017E654  -[_TtCV16ControlCenterApp13CAPackageView16_CAPackageNSView intrinsicContentSize]
+          0x10017E750  -[_TtCV16ControlCenterApp13CAPackageView16_CAPackageNSView initWithCoder:]
+          0x10017E8FC  -[_TtCV16ControlCenterApp13CAPackageView16_CAPackageNSView initWithFrame:]
+          0x10017E940  -[_TtCV16ControlCenterApp13CAPackageView16_CAPackageNSView .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp21FaceTimeActivityState : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp32SharedContentFloatingVideoWindow : NSPanel 
+          0x100187DE8  -[_TtC16ControlCenterApp32SharedContentFloatingVideoWindow orderOut:]
+          0x100187E74  -[_TtC16ControlCenterApp32SharedContentFloatingVideoWindow _cgsPositionManagedByExternalAgent]
+          0x100187E7C  -[_TtC16ControlCenterApp32SharedContentFloatingVideoWindow initWithContentRect:styleMask:backing:defer:]
+          0x100187E90  -[_TtC16ControlCenterApp32SharedContentFloatingVideoWindow .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterAppP33_169DC4390F1B59C31EBC66533B969DAF30SharedContentFloatingVideoView : NSView 
+          0x100188E98  -[_TtC16ControlCenterAppP33_169DC4390F1B59C31EBC66533B969DAF30SharedContentFloatingVideoView viewDidMoveToWindow]
+          0x100188F74  -[_TtC16ControlCenterAppP33_169DC4390F1B59C31EBC66533B969DAF30SharedContentFloatingVideoView initWithCoder:]
+          0x1001891F0  -[_TtC16ControlCenterAppP33_169DC4390F1B59C31EBC66533B969DAF30SharedContentFloatingVideoView dealloc]
+          0x100189308  -[_TtC16ControlCenterAppP33_169DC4390F1B59C31EBC66533B969DAF30SharedContentFloatingVideoView initWithFrame:]
+          0x100189218  -[_TtC16ControlCenterAppP33_169DC4390F1B59C31EBC66533B969DAF30SharedContentFloatingVideoView .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp15MenuCoordinator : _TtCs12_SwiftObject 
+          0x10018E6A4  -[_TtC16ControlCenterApp15MenuCoordinator menuTrackingNotification:]
+          0x10018E710  -[_TtC16ControlCenterApp15MenuCoordinator liveActivityControllerDidPresentLiveActivity:]
+          0x10018F1BC  -[_TtC16ControlCenterApp15MenuCoordinator displayDidReconfigure:]
+          0x10018F6A8  -[_TtC16ControlCenterApp15MenuCoordinator didResignKeyFocusNotification:]
+        @end
+        @interface _TtCC16ControlCenterApp15MenuCoordinatorP33_14829FC414978D9FE025F821AABD1BBD23NullPositionCoordinator : _TtC16ControlCenterApp23MenuPositionCoordinator 
+        @end
+        @interface _TtC16ControlCenterApp19FocusModesViewModel : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp22FocusActivityViewModel : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp13ControlCenter : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp42ControlCenterDisplayableLiveActivitySource : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp40ControlCenterDisplayableLiveActivityType : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp36ControlCenterDisplayableLiveActivity : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp24LiveActivitiesController : _TtCs12_SwiftObject 
+          0x1001CACE0  -[_TtC16ControlCenterApp24LiveActivitiesController menuTrackingNotification:]
+          0x1001CAF30  -[_TtC16ControlCenterApp24LiveActivitiesController menuCoordinatorDidPresentMenu:]
+          0x1001CB7BC  -[_TtC16ControlCenterApp24LiveActivitiesController didResignKeyFocusNotification:]
+        @end
+        @interface _TtC16ControlCenterAppP33_4954997FEC45C79C24C9203950EEAEA432ActivityAlertClientDelegateProxy : NSObject <_TtP18ActivityUIServices27ActivityAlertClientDelegate_>
+          0x1001C4528  -[_TtC16ControlCenterAppP33_4954997FEC45C79C24C9203950EEAEA432ActivityAlertClientDelegateProxy init]
+          0x1001C4A24  -[_TtC16ControlCenterAppP33_4954997FEC45C79C24C9203950EEAEA432ActivityAlertClientDelegateProxy activityWithAlertClient:presentAlertProvider:completion:]
+          0x1001C4B38  -[_TtC16ControlCenterAppP33_4954997FEC45C79C24C9203950EEAEA432ActivityAlertClientDelegateProxy activityWithAlertClient:dismissAlertProvider:]
+          0x1001C4BB4  -[_TtC16ControlCenterAppP33_4954997FEC45C79C24C9203950EEAEA432ActivityAlertClientDelegateProxy .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp22LiveActivitiesSettings : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp35LiveActivitiesStatusItemsController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp12LiveActivity : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp18LiveActivityModule : _TtC16ControlCenterApp6Module 
+        @end
+        @interface _TtCC16ControlCenterApp18LiveActivityModuleP33_4507A90A99DA3C79B83AE7D7AD97F7ED31LiveActivityVisibilityAssertion : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp22LiveActivityStatusItem : _TtC16ControlCenterApp10StatusItem 
+          0x1001E0B20  -[_TtC16ControlCenterApp22LiveActivityStatusItem init]
+          0x1001E0BB4  -[_TtC16ControlCenterApp22LiveActivityStatusItem .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp26BentoDragTooltipController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp18LiveActivityWindow : NSPanel 
+          0x1001E4EFC  -[_TtC16ControlCenterApp18LiveActivityWindow _hasActiveAppearance]
+          0x1001E4F04  -[_TtC16ControlCenterApp18LiveActivityWindow _hasActiveControls]
+          0x1001E4F0C  -[_TtC16ControlCenterApp18LiveActivityWindow canBecomeKeyWindow]
+          0x1001E4FC0  -[_TtC16ControlCenterApp18LiveActivityWindow initWithContentRect:styleMask:backing:defer:]
+        @end
+        @interface _TtC16ControlCenterApp29ControlCenterAnalyticsHandler : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCC16ControlCenterApp29ControlCenterAnalyticsHandlerP33_77D48530CEC759F4E9EECBF2C6BB46187Session : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp17MicModeController : NSObject 
+          0x1001FF948  -[_TtC16ControlCenterApp17MicModeController init]
+          0x1001FF96C  -[_TtC16ControlCenterApp17MicModeController .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp16AirDropViewModel : NSObject <SFAirDropDiscoveryControllerDelegate>
+          0x10020A90C  -[_TtC16ControlCenterApp16AirDropViewModel discoveryControllerSettingsDidChange:]
+          0x10020A974  -[_TtC16ControlCenterApp16AirDropViewModel discoveryControllerVisibilityDidChange:]
+          0x10020A978  -[_TtC16ControlCenterApp16AirDropViewModel discoveryControllerLegacyModePropertiesDidChange:]
+          0x100209730  -[_TtC16ControlCenterApp16AirDropViewModel init]
+          0x10020A5D8  -[_TtC16ControlCenterApp16AirDropViewModel .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp15ClockController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp5Clock : _TtC16ControlCenterApp6Module 
+        @end
+        @interface _TtC16ControlCenterApp46SharedPickingControllerDisplayDecorationWindow : NSPanel 
+          0x100215484  -[_TtC16ControlCenterApp46SharedPickingControllerDisplayDecorationWindow accessibilityLabel]
+          0x100215500  -[_TtC16ControlCenterApp46SharedPickingControllerDisplayDecorationWindow constrainFrameRect:toScreen:]
+          0x100215518  -[_TtC16ControlCenterApp46SharedPickingControllerDisplayDecorationWindow canBecomeKeyWindow]
+          0x1002158A8  -[_TtC16ControlCenterApp46SharedPickingControllerDisplayDecorationWindow accessibilityChildren]
+          0x100215ACC  -[_TtC16ControlCenterApp46SharedPickingControllerDisplayDecorationWindow accessibilityParent]
+          0x100215C0C  -[_TtC16ControlCenterApp46SharedPickingControllerDisplayDecorationWindow initWithContentRect:styleMask:backing:defer:]
+        @end
+        @interface _TtC16ControlCenterApp15BluetoothDevice : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp16SensorIndicators : _TtC16ControlCenterApp6Module 
+        @end
+        @interface _TtC16ControlCenterAppP33_B9321771522EA554A68C44F9D6E81D8127ScreenMirroringPreviewLayer : CALayer 
+          0x100220B80  -[_TtC16ControlCenterAppP33_B9321771522EA554A68C44F9D6E81D8127ScreenMirroringPreviewLayer init]
+          0x100220EA8  -[_TtC16ControlCenterAppP33_B9321771522EA554A68C44F9D6E81D8127ScreenMirroringPreviewLayer initWithCoder:]
+          0x100221B18  -[_TtC16ControlCenterAppP33_B9321771522EA554A68C44F9D6E81D8127ScreenMirroringPreviewLayer dealloc]
+          0x100221BE8  -[_TtC16ControlCenterAppP33_B9321771522EA554A68C44F9D6E81D8127ScreenMirroringPreviewLayer initWithLayer:]
+          0x100221B40  -[_TtC16ControlCenterAppP33_B9321771522EA554A68C44F9D6E81D8127ScreenMirroringPreviewLayer .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp8FaceTime : _TtC16ControlCenterApp6Module 
+        @end
+        @interface _TtC16ControlCenterAppP33_2087C18E31118748E2090C4A0A8DB6A644MenuBarPreferencesSystemStatusItemDefinition : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterAppP33_2087C18E31118748E2090C4A0A8DB6A639CoreMenuExtraSystemStatusItemDefinition : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterAppP33_2087C18E31118748E2090C4A0A8DB6A614SiriDefinition : _TtC16ControlCenterAppP33_2087C18E31118748E2090C4A0A8DB6A644MenuBarPreferencesSystemStatusItemDefinition 
+        @end
+        @interface _TtC16ControlCenterAppP33_2087C18E31118748E2090C4A0A8DB6A619SpotlightDefinition : _TtC16ControlCenterAppP33_2087C18E31118748E2090C4A0A8DB6A644MenuBarPreferencesSystemStatusItemDefinition 
+        @end
+        @interface _TtC16ControlCenterAppP33_2087C18E31118748E2090C4A0A8DB6A617WeatherDefinition : _TtC16ControlCenterAppP33_2087C18E31118748E2090C4A0A8DB6A644MenuBarPreferencesSystemStatusItemDefinition 
+        @end
+        @interface _TtC16ControlCenterAppP33_2087C18E31118748E2090C4A0A8DB6A621TimeMachineDefinition : _TtC16ControlCenterAppP33_2087C18E31118748E2090C4A0A8DB6A639CoreMenuExtraSystemStatusItemDefinition 
+        @end
+        @interface _TtC16ControlCenterAppP33_2087C18E31118748E2090C4A0A8DB6A613VPNDefinition : _TtC16ControlCenterAppP33_2087C18E31118748E2090C4A0A8DB6A639CoreMenuExtraSystemStatusItemDefinition 
+        @end
+        @interface _TtC16ControlCenterApp36AudioVideoSharedWindowListController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp12StreamOutput : NSObject <SCStreamOutput>
+          0x100239B78  -[_TtC16ControlCenterApp12StreamOutput stream:didOutputSampleBuffer:ofType:]
+          0x100239E34  -[_TtC16ControlCenterApp12StreamOutput init]
+          0x100239E58  -[_TtC16ControlCenterApp12StreamOutput .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp9Bluetooth : _TtC16ControlCenterApp6Module 
+        @end
+        @interface _TtC16ControlCenterAppP33_7A679538CE7E59B099C15E6B66D4631818FaceTimeMemberItem : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp14StatusItemHost : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp21BentoGalleryPresenter : _TtCs12_SwiftObject 
+          0x10024C378  -[_TtC16ControlCenterApp21BentoGalleryPresenter didChangeScreen]
+          0x10024C8EC  -[_TtC16ControlCenterApp21BentoGalleryPresenter didResignKeyFocusNotification:]
+        @end
+        @interface _TtC16ControlCenterApp20FaceTimeSessionState : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp37ControlCenterDisplayableAppStatusItem : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp10UserRecord : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCC16ControlCenterApp10UserRecordP33_6151A68C5944F4444510B8436FC0A60617UserImageCacheKey : NSObject 
+          0x100270090  -[_TtCC16ControlCenterApp10UserRecordP33_6151A68C5944F4444510B8436FC0A60617UserImageCacheKey hash]
+          0x1002701AC  -[_TtCC16ControlCenterApp10UserRecordP33_6151A68C5944F4444510B8436FC0A60617UserImageCacheKey isEqual:]
+          0x100270270  -[_TtCC16ControlCenterApp10UserRecordP33_6151A68C5944F4444510B8436FC0A60617UserImageCacheKey init]
+        @end
+        @interface _TtC16ControlCenterApp12MenuTracking : _TtCs12_SwiftObject 
+        @end
+        @interface $s16ControlCenterApp12MenuTrackingC04takeE9Assertion10completionypyyScMYcc_tF0eG0L_C : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCV16ControlCenterAppP33_B2CF4138D3016FFDC27C11F7759BA2B720MovieAssetPlayerView11Coordinator : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCV16ControlCenterAppP33_B2CF4138D3016FFDC27C11F7759BA2B720MovieAssetPlayerView22MovieAssetAVPlayerView : AVPlayerView 
+          0x100276210  -[_TtCV16ControlCenterAppP33_B2CF4138D3016FFDC27C11F7759BA2B720MovieAssetPlayerView22MovieAssetAVPlayerView viewDidMoveToSuperview]
+          0x10027630C  -[_TtCV16ControlCenterAppP33_B2CF4138D3016FFDC27C11F7759BA2B720MovieAssetPlayerView22MovieAssetAVPlayerView initWithFrame:]
+          0x1002763F4  -[_TtCV16ControlCenterAppP33_B2CF4138D3016FFDC27C11F7759BA2B720MovieAssetPlayerView22MovieAssetAVPlayerView initWithCoder:]
+          0x100276458  -[_TtCV16ControlCenterAppP33_B2CF4138D3016FFDC27C11F7759BA2B720MovieAssetPlayerView22MovieAssetAVPlayerView .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp28NotificationCenterController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterAppP33_7C6D44175CB5C0CD962CAFAC5CEE5D5F28NotificationCenterMenuClient : NSObject <NCNotificationCenterMenuClient>
+          0x10027CCC8  -[_TtC16ControlCenterAppP33_7C6D44175CB5C0CD962CAFAC5CEE5D5F28NotificationCenterMenuClient ncMenuNavigateInDirection:]
+          0x10027CD44  -[_TtC16ControlCenterAppP33_7C6D44175CB5C0CD962CAFAC5CEE5D5F28NotificationCenterMenuClient init]
+          0x10027CD68  -[_TtC16ControlCenterAppP33_7C6D44175CB5C0CD962CAFAC5CEE5D5F28NotificationCenterMenuClient .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp10NowPlaying : _TtC16ControlCenterApp6Module 
+        @end
+        @interface _TtC16ControlCenterApp33ControlCenterDisplayablesProvider : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp19MenuFadeCoordinator : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp29SystemBannerServiceController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp27BentoBoxPositionCoordinator : _TtC16ControlCenterApp23MenuPositionCoordinator 
+        @end
+        @interface _TtC16ControlCenterApp20AudioVideoIconLoader : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp12VoiceControl : _TtC16ControlCenterApp6Module 
+        @end
+        @interface _TtC16ControlCenterApp10FocusModes : _TtC16ControlCenterApp6Module 
+        @end
+        @interface _TtC16ControlCenterApp20NowPlayingController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp23CrossfadeEffectProgress : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp27_BentoTransitionCoordinator : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp29RemoteDisplayDeviceAggregator : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp4WiFi : _TtC16ControlCenterApp6Module 
+        @end
+        @interface _TtC16ControlCenterApp16AudioInputDevice : _TtC16ControlCenterApp16SoundInputDevice 
+        @end
+        @interface _TtC16ControlCenterApp17AudioOutputDevice : _TtC16ControlCenterApp17SoundOutputDevice 
+        @end
+        @interface _TtC16ControlCenterApp19AVAudioOutputDevice : _TtC16ControlCenterApp17SoundOutputDevice 
+        @end
+        @interface _TtC16ControlCenterApp18SystemBannerWindow : NSPanel 
+          0x10033A24C  -[_TtC16ControlCenterApp18SystemBannerWindow init]
+          0x10033A270  -[_TtC16ControlCenterApp18SystemBannerWindow _hasActiveAppearance]
+          0x10033A278  -[_TtC16ControlCenterApp18SystemBannerWindow _hasActiveControls]
+          0x10033A280  -[_TtC16ControlCenterApp18SystemBannerWindow hasKeyAppearance]
+          0x10033ABB4  -[_TtC16ControlCenterApp18SystemBannerWindow canBecomeKeyWindow]
+          0x10033B188  -[_TtC16ControlCenterApp18SystemBannerWindow menuTrackingNotification:]
+          0x10033B278  -[_TtC16ControlCenterApp18SystemBannerWindow initWithContentRect:styleMask:backing:defer:]
+          0x10033B2C0  -[_TtC16ControlCenterApp18SystemBannerWindow .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp16RingLightAVState : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp29RingLightTipController_Legacy : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCC16ControlCenterApp29RingLightTipController_LegacyP33_64ABD06200EBDFD63A9A9AE6D63BA4C526RingLightTipPopoverRequest : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCCC16ControlCenterApp29RingLightTipController_LegacyP33_64ABD06200EBDFD63A9A9AE6D63BA4C526RingLightTipPopoverRequest31RingLightNSPopoverDelegateProxy : NSObject <NSPopoverDelegate>
+          0x10034646C  -[_TtCCC16ControlCenterApp29RingLightTipController_LegacyP33_64ABD06200EBDFD63A9A9AE6D63BA4C526RingLightTipPopoverRequest31RingLightNSPopoverDelegateProxy popoverShouldClose:]
+          0x100346550  -[_TtCCC16ControlCenterApp29RingLightTipController_LegacyP33_64ABD06200EBDFD63A9A9AE6D63BA4C526RingLightTipPopoverRequest31RingLightNSPopoverDelegateProxy popoverShouldDetach:]
+          0x10034662C  -[_TtCCC16ControlCenterApp29RingLightTipController_LegacyP33_64ABD06200EBDFD63A9A9AE6D63BA4C526RingLightTipPopoverRequest31RingLightNSPopoverDelegateProxy popoverDidDetach:]
+          0x10034671C  -[_TtCCC16ControlCenterApp29RingLightTipController_LegacyP33_64ABD06200EBDFD63A9A9AE6D63BA4C526RingLightTipPopoverRequest31RingLightNSPopoverDelegateProxy detachableWindowForPopover:]
+          0x10034684C  -[_TtCCC16ControlCenterApp29RingLightTipController_LegacyP33_64ABD06200EBDFD63A9A9AE6D63BA4C526RingLightTipPopoverRequest31RingLightNSPopoverDelegateProxy popoverWillShow:]
+          0x100346924  -[_TtCCC16ControlCenterApp29RingLightTipController_LegacyP33_64ABD06200EBDFD63A9A9AE6D63BA4C526RingLightTipPopoverRequest31RingLightNSPopoverDelegateProxy popoverDidShow:]
+          0x1003469FC  -[_TtCCC16ControlCenterApp29RingLightTipController_LegacyP33_64ABD06200EBDFD63A9A9AE6D63BA4C526RingLightTipPopoverRequest31RingLightNSPopoverDelegateProxy popoverWillClose:]
+          0x100346AD4  -[_TtCCC16ControlCenterApp29RingLightTipController_LegacyP33_64ABD06200EBDFD63A9A9AE6D63BA4C526RingLightTipPopoverRequest31RingLightNSPopoverDelegateProxy popoverDidClose:]
+          0x100346C50  -[_TtCCC16ControlCenterApp29RingLightTipController_LegacyP33_64ABD06200EBDFD63A9A9AE6D63BA4C526RingLightTipPopoverRequest31RingLightNSPopoverDelegateProxy init]
+          0x100346C74  -[_TtCCC16ControlCenterApp29RingLightTipController_LegacyP33_64ABD06200EBDFD63A9A9AE6D63BA4C526RingLightTipPopoverRequest31RingLightNSPopoverDelegateProxy .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp39ChronoIntentConfigurationModalPresenter : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp32AccessibilityShortcutsController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp21AccessibilityShortcut : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp29AccessibilityShortcutCategory : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp19BentoGeometryHelper : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp16AudioVideoModule : _TtC16ControlCenterApp6Module 
+        @end
+        @interface _TtC16ControlCenterApp22StatusItemHostListener : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterAppP33_4D6F110B110B81C84312426715EC7B7828StatusItemHostsDelegateProxy : NSObject <NSStatusItemHostListenerDelegate, NSStatusItemHostDelegate>
+          0x10036A2D0  -[_TtC16ControlCenterAppP33_4D6F110B110B81C84312426715EC7B7828StatusItemHostsDelegateProxy statusItemListener:addedStatusItemHost:]
+          0x10036A3B0  -[_TtC16ControlCenterAppP33_4D6F110B110B81C84312426715EC7B7828StatusItemHostsDelegateProxy didCompleteDecodingClientState:]
+          0x10036A57C  -[_TtC16ControlCenterAppP33_4D6F110B110B81C84312426715EC7B7828StatusItemHostsDelegateProxy didInvalidateStatusItemHost:]
+          0x10036A760  -[_TtC16ControlCenterAppP33_4D6F110B110B81C84312426715EC7B7828StatusItemHostsDelegateProxy clearPersistentStateForHost:]
+          0x10036A820  -[_TtC16ControlCenterAppP33_4D6F110B110B81C84312426715EC7B7828StatusItemHostsDelegateProxy init]
+          0x10036A844  -[_TtC16ControlCenterAppP33_4D6F110B110B81C84312426715EC7B7828StatusItemHostsDelegateProxy .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp44ControlCenterDisplayableChronoControlsSource : NSObject <CHSWidgetExtensionProviderObserver>
+          0x100373630  -[_TtC16ControlCenterApp44ControlCenterDisplayableChronoControlsSource extensionsDidChangeForExtensionProvider:]
+          0x100373C84  -[_TtC16ControlCenterApp44ControlCenterDisplayableChronoControlsSource init]
+          0x100373C94  -[_TtC16ControlCenterApp44ControlCenterDisplayableChronoControlsSource .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp33ContentSharingPreferencesObserver : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp16AirPlayVideoView : NSView 
+          0x10037C32C  -[_TtC16ControlCenterApp16AirPlayVideoView initWithCoder:]
+          0x10037C34C  -[_TtC16ControlCenterApp16AirPlayVideoView acceptsFirstResponder]
+          0x10037C3A4  -[_TtC16ControlCenterApp16AirPlayVideoView becomeFirstResponder]
+          0x10037C3D8  -[_TtC16ControlCenterApp16AirPlayVideoView initWithFrame:]
+          0x10037C3E8  -[_TtC16ControlCenterApp16AirPlayVideoView .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp7Battery : _TtC16ControlCenterApp6Module 
+        @end
+        @interface _TtC16ControlCenterApp25OfflineDisplaysController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterAppP33_C08823F71974BBEDEAD5F81398EBC82F30WindowMirroringManagerObserver : NSObject <SLWindowMirroringManagerDelegate>
+          0x10039D908  -[_TtC16ControlCenterAppP33_C08823F71974BBEDEAD5F81398EBC82F30WindowMirroringManagerObserver windowMirroringManager:tvConnected:needsAlert:]
+          0x10039DF88  -[_TtC16ControlCenterAppP33_C08823F71974BBEDEAD5F81398EBC82F30WindowMirroringManagerObserver windowMirroringManager:tvDisconnected:]
+          0x10039EE8C  -[_TtC16ControlCenterAppP33_C08823F71974BBEDEAD5F81398EBC82F30WindowMirroringManagerObserver windowMirroringManager:contentLost:]
+          0x10039F430  -[_TtC16ControlCenterAppP33_C08823F71974BBEDEAD5F81398EBC82F30WindowMirroringManagerObserver windowMirroringManager:contentChanged:]
+          0x10039FB00  -[_TtC16ControlCenterAppP33_C08823F71974BBEDEAD5F81398EBC82F30WindowMirroringManagerObserver windowMirroringManager:shieldWindowRemoved:]
+          0x10039FBB0  -[_TtC16ControlCenterAppP33_C08823F71974BBEDEAD5F81398EBC82F30WindowMirroringManagerObserver init]
+          0x10039FBD4  -[_TtC16ControlCenterAppP33_C08823F71974BBEDEAD5F81398EBC82F30WindowMirroringManagerObserver .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp21ModuleControlProvider : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp22SystemBannerController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp11ICUCollator : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp19ClassroomController : NSObject <CRKScreenObservationMonitorDelegate>
+          0x1003B1FCC  -[_TtC16ControlCenterApp19ClassroomController init]
+          0x1003B1FF4  -[_TtC16ControlCenterApp19ClassroomController screenObservationMonitor:observationStatusDidChange:]
+          0x1003B2438  -[_TtC16ControlCenterApp19ClassroomController .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp10StatusItem : NSLocalStatusItem 
+          0x1003B3F38  -[_TtC16ControlCenterApp10StatusItem allowsVibrancy]
+          0x1003B3F40  -[_TtC16ControlCenterApp10StatusItem setAllowsVibrancy:]
+          0x1003B4250  -[_TtC16ControlCenterApp10StatusItem _startStatusItemDrag:]
+          0x1003B4294  -[_TtC16ControlCenterApp10StatusItem autosaveName]
+          0x1003B43A4  -[_TtC16ControlCenterApp10StatusItem setAutosaveName:]
+          0x1003B4B2C  -[_TtC16ControlCenterApp10StatusItem _participatesInNavigationLoop]
+          0x1003B4B34  -[_TtC16ControlCenterApp10StatusItem windowDidResize:]
+          0x1003B4D54  -[_TtC16ControlCenterApp10StatusItem init]
+          0x1003B4DB0  -[_TtC16ControlCenterApp10StatusItem .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp19BentoDragController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterAppP33_0930AE43E7915C5E479B3D7D77BBBB8E19DragObjectsObserver : NSObject <NSWindowDelegate, NSStatusItemDelegate, NSLocalStatusItemDelegate>
+          0x1003D29A8  -[_TtC16ControlCenterAppP33_0930AE43E7915C5E479B3D7D77BBBB8E19DragObjectsObserver windowDidMove:]
+          0x1003D383C  -[_TtC16ControlCenterAppP33_0930AE43E7915C5E479B3D7D77BBBB8E19DragObjectsObserver creationDragFailed:]
+          0x1003D3838  -[_TtC16ControlCenterAppP33_0930AE43E7915C5E479B3D7D77BBBB8E19DragObjectsObserver userRemovedStatusItem:]
+          0x1003D3840  -[_TtC16ControlCenterAppP33_0930AE43E7915C5E479B3D7D77BBBB8E19DragObjectsObserver userReturnedStatusItemToBar:]
+          0x1003D2B98  -[_TtC16ControlCenterAppP33_0930AE43E7915C5E479B3D7D77BBBB8E19DragObjectsObserver dragReservesSpaceInStatusBarForStatusItem:atLocation:]
+          0x1003D2C10  -[_TtC16ControlCenterAppP33_0930AE43E7915C5E479B3D7D77BBBB8E19DragObjectsObserver dragCompletedForStatusItem:atLocation:]
+          0x1003D2D24  -[_TtC16ControlCenterAppP33_0930AE43E7915C5E479B3D7D77BBBB8E19DragObjectsObserver init]
+          0x1003D2D48  -[_TtC16ControlCenterAppP33_0930AE43E7915C5E479B3D7D77BBBB8E19DragObjectsObserver .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp23AnyBentoDragControlling : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp19BentoDragHysteresis : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp19BentoGridController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCC16ControlCenterApp19BentoGridControllerP33_E38777E60A9D2BD757EBBD50580054BF28SingleElementResizeGridCache : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCC16ControlCenterApp19BentoGridController13DragAssertion : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp26MenuBarBentoDragController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp15LiveActivitySet : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp26UniversalControlController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp22UniversalControlDevice : _TtC16ControlCenterApp19RemoteDisplayDevice 
+        @end
+        @interface _TtC16ControlCenterApp16MusicRecognition : _TtC16ControlCenterApp6Module 
+        @end
+        @interface _TtCFC16ControlCenterApp16MusicRecognition23takeVisibilityAssertionFT_GSqP__L_19VisibilityAssertion : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp37ControlCenterDisplayableModulesSource : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp5Timer : _TtC16ControlCenterApp6Module 
+        @end
+        @interface _TtC16ControlCenterApp22BentoGalleryController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp27SystemBannerServiceDelegate : NSObject <NSXPCListenerDelegate>
+          0x100422D80  -[_TtC16ControlCenterApp27SystemBannerServiceDelegate listener:shouldAcceptNewConnection:]
+          0x100422E2C  -[_TtC16ControlCenterApp27SystemBannerServiceDelegate init]
+        @end
+        @interface _TtC16ControlCenterApp31ModuleMenuExtrasPopupController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCC16ControlCenterApp19AVRoutingController22RoutingSessionDelegate : NSObject <IRSessionDelegate>
+          0x10043939C  -[_TtCC16ControlCenterApp19AVRoutingController22RoutingSessionDelegate session:didFailWithError:]
+          0x100439FB4  -[_TtCC16ControlCenterApp19AVRoutingController22RoutingSessionDelegate session:didUpdateContext:]
+          0x10043A060  -[_TtCC16ControlCenterApp19AVRoutingController22RoutingSessionDelegate init]
+          0x10043A0A8  -[_TtCC16ControlCenterApp19AVRoutingController22RoutingSessionDelegate .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp26MusicRecognitionController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp27ShortcutsMigratorController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp17ShortcutsMigrator : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp44ScreenMirroringMirroredContentListController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp20AirPlayMirroringView : NSView 
+          0x100463FBC  -[_TtC16ControlCenterApp20AirPlayMirroringView initWithCoder:]
+          0x100463FDC  -[_TtC16ControlCenterApp20AirPlayMirroringView initWithFrame:]
+          0x100463FEC  -[_TtC16ControlCenterApp20AirPlayMirroringView .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterAppP33_7875802339F72FC8AA7F4EE2410EBFD819DynamicFontProvider : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp22AccessibilityShortcuts : _TtC16ControlCenterApp6Module 
+        @end
+        @interface _TtC16ControlCenterApp41ControlCenterDisplayableChronoControlType : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp13AirPlayWindow : NSPanel <NSWindowDelegate>
+          0x100468C68  -[_TtC16ControlCenterApp13AirPlayWindow dealloc]
+          0x100468D8C  -[_TtC16ControlCenterApp13AirPlayWindow windowWillEnterFullScreen:]
+          0x100468DDC  -[_TtC16ControlCenterApp13AirPlayWindow windowWillExitFullScreen:]
+          0x100468E34  -[_TtC16ControlCenterApp13AirPlayWindow windowShouldClose:]
+          0x100468F08  -[_TtC16ControlCenterApp13AirPlayWindow windowWillClose:]
+          0x1004692C0  -[_TtC16ControlCenterApp13AirPlayWindow canBecomeKeyWindow]
+          0x1004692C8  -[_TtC16ControlCenterApp13AirPlayWindow canBecomeMainWindow]
+          0x1004692D0  -[_TtC16ControlCenterApp13AirPlayWindow _hasActiveAppearance]
+          0x1004692D8  -[_TtC16ControlCenterApp13AirPlayWindow _hasActiveControls]
+          0x1004692E0  -[_TtC16ControlCenterApp13AirPlayWindow hasKeyAppearance]
+          0x10046978C  -[_TtC16ControlCenterApp13AirPlayWindow makeKeyAndOrderFront:]
+          0x100469868  -[_TtC16ControlCenterApp13AirPlayWindow orderOut:]
+          0x10046A484  -[_TtC16ControlCenterApp13AirPlayWindow initWithContentRect:styleMask:backing:defer:]
+          0x100468C90  -[_TtC16ControlCenterApp13AirPlayWindow .cxx_destruct]
+        @end
+        @interface _TtCC16ControlCenterApp12AVControllerP33_BE5801755C4B29B61D02E526C97414B018DiscoveryAssertion : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp10UserAccess : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp30AudioVideoVisibilityController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp11MediaPlayer : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp24MediaRemotePlaybackTimer : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCZFC16ControlCenterApp24MediaRemotePlaybackTimer6enableFT_P_L_19EnablementAssertion : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCZFC16ControlCenterApp24MediaRemotePlaybackTimer5startFT_P_L_17PlaybackAssertion : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp33EphemeralAppStatusItemsController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterAppP33_490C1B51F7237E5198021197DAA6045C18WiFiClientDelegate : NSObject <CWEventDelegate>
+          0x1004A8ECC  -[_TtC16ControlCenterAppP33_490C1B51F7237E5198021197DAA6045C18WiFiClientDelegate clientConnectionInterrupted]
+          0x1004A8F2C  -[_TtC16ControlCenterAppP33_490C1B51F7237E5198021197DAA6045C18WiFiClientDelegate clientConnectionInvalidated]
+          0x1004A8F70  -[_TtC16ControlCenterAppP33_490C1B51F7237E5198021197DAA6045C18WiFiClientDelegate powerStateDidChangeForWiFiInterfaceWithName:]
+          0x1004A9178  -[_TtC16ControlCenterAppP33_490C1B51F7237E5198021197DAA6045C18WiFiClientDelegate linkDidChangeForWiFiInterfaceWithName:]
+          0x1004A9434  -[_TtC16ControlCenterAppP33_490C1B51F7237E5198021197DAA6045C18WiFiClientDelegate linkQualityDidChangeForWiFiInterfaceWithName:rssi:transmitRate:]
+          0x1004A94B8  -[_TtC16ControlCenterAppP33_490C1B51F7237E5198021197DAA6045C18WiFiClientDelegate modeDidChangeForWiFiInterfaceWithName:]
+          0x1004A94DC  -[_TtC16ControlCenterAppP33_490C1B51F7237E5198021197DAA6045C18WiFiClientDelegate bssidDidChangeForWiFiInterfaceWithName:]
+          0x1004A9500  -[_TtC16ControlCenterAppP33_490C1B51F7237E5198021197DAA6045C18WiFiClientDelegate ssidDidChangeForWiFiInterfaceWithName:]
+          0x1004A8DAC  -[_TtC16ControlCenterAppP33_490C1B51F7237E5198021197DAA6045C18WiFiClientDelegate init]
+        @end
+        @interface _TtC16ControlCenterAppP33_490C1B51F7237E5198021197DAA6045C25WiFiUIProxyClientDelegate : NSObject <CWWiFiUIProxyClientDelegate>
+          0x1004A971C  -[_TtC16ControlCenterAppP33_490C1B51F7237E5198021197DAA6045C25WiFiUIProxyClientDelegate clientConnectionInterrupted]
+          0x1004A9898  -[_TtC16ControlCenterAppP33_490C1B51F7237E5198021197DAA6045C25WiFiUIProxyClientDelegate clientConnectionInvalidated]
+          0x1004A994C  -[_TtC16ControlCenterAppP33_490C1B51F7237E5198021197DAA6045C25WiFiUIProxyClientDelegate didUpdateUIState:previous:]
+          0x1004A9BC8  -[_TtC16ControlCenterAppP33_490C1B51F7237E5198021197DAA6045C25WiFiUIProxyClientDelegate didFindScanResults:]
+          0x1004A9E84  -[_TtC16ControlCenterAppP33_490C1B51F7237E5198021197DAA6045C25WiFiUIProxyClientDelegate updatedWiFiConfiguration:]
+          0x1004A8E3C  -[_TtC16ControlCenterAppP33_490C1B51F7237E5198021197DAA6045C25WiFiUIProxyClientDelegate init]
+        @end
+        @interface _TtC16ControlCenterApp37SharedContentPickingWindowHighlighter : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterAppP33_AEB33D420B80547B5AE3D219C7B10ACB28WindowHighlightOverlayWindow : NSPanel 
+          0x1004BAF98  -[_TtC16ControlCenterAppP33_AEB33D420B80547B5AE3D219C7B10ACB28WindowHighlightOverlayWindow _cgsPositionManagedByExternalAgent]
+          0x1004BAFC0  -[_TtC16ControlCenterAppP33_AEB33D420B80547B5AE3D219C7B10ACB28WindowHighlightOverlayWindow canBecomeKeyWindow]
+          0x1004BB1AC  -[_TtC16ControlCenterAppP33_AEB33D420B80547B5AE3D219C7B10ACB28WindowHighlightOverlayWindow accessibilityParent]
+          0x1004BB31C  -[_TtC16ControlCenterAppP33_AEB33D420B80547B5AE3D219C7B10ACB28WindowHighlightOverlayWindow initWithContentRect:styleMask:backing:defer:]
+          0x1004BB34C  -[_TtC16ControlCenterAppP33_AEB33D420B80547B5AE3D219C7B10ACB28WindowHighlightOverlayWindow .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp28ScreenMirroringDisplayDevice : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp25ScreenMirroringController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterAppP33_271EFE71B79CFCE35FA09F6B1A4A695322DisplayMirroringDevice : _TtC16ControlCenterApp19RemoteDisplayDevice 
+        @end
+        @interface _TtC16ControlCenterAppP33_271EFE71B79CFCE35FA09F6B1A4A695314TVAvailability : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp27BentoBoxesEditingController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterAppP33_549113F44F717058D08A5FDE84B3E94E15RevealAssertion : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterAppP33_549113F44F717058D08A5FDE84B3E94E16MenuBarAssertion : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterAppP33_549113F44F717058D08A5FDE84B3E94E26AddBentoBoxStatusItemProxy : NSObject 
+          0x1004CEE64  -[_TtC16ControlCenterAppP33_549113F44F717058D08A5FDE84B3E94E26AddBentoBoxStatusItemProxy init]
+          0x1004CEE88  -[_TtC16ControlCenterAppP33_549113F44F717058D08A5FDE84B3E94E26AddBentoBoxStatusItemProxy .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp34AudioVideoSharedContentStreamLayer : CALayer 
+          0x1004D0B48  -[_TtC16ControlCenterApp34AudioVideoSharedContentStreamLayer dealloc]
+          0x1004D13B4  -[_TtC16ControlCenterApp34AudioVideoSharedContentStreamLayer init]
+          0x1004D14A0  -[_TtC16ControlCenterApp34AudioVideoSharedContentStreamLayer initWithLayer:]
+          0x1004D1598  -[_TtC16ControlCenterApp34AudioVideoSharedContentStreamLayer initWithCoder:]
+          0x1004D0B70  -[_TtC16ControlCenterApp34AudioVideoSharedContentStreamLayer .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterAppP33_22BD3AB4BF637327070AE8CF8393F00F44AudioVideoSharedContentStreamLayerController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp26OfflineDisplayShieldWindow : NSPanel 
+          0x1004D3550  -[_TtC16ControlCenterApp26OfflineDisplayShieldWindow initWithContentRect:styleMask:backing:defer:]
+          0x1004D3564  -[_TtC16ControlCenterApp26OfflineDisplayShieldWindow .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp20PowerStateController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp10BatteryApp : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp20BatteryAppController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCFC16ControlCenterApp20BatteryAppController23takeVisibilityAssertionFT_P_L_19VisibilityAssertion : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp7AirDrop : _TtC16ControlCenterApp6Module 
+        @end
+        @interface _TtC16ControlCenterApp27VirtualHearingAidController : NSObject 
+          0x1004E56AC  -[_TtC16ControlCenterApp27VirtualHearingAidController init]
+          0x1004E5840  -[_TtC16ControlCenterApp27VirtualHearingAidController .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp33SignificantTimeChangeNotification : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterAppP33_5A13464C89216627F7EF58B9742A7CDA22CameraPreviewViewLayer : AVSampleBufferDisplayLayer 
+          0x1004FAE1C  -[_TtC16ControlCenterAppP33_5A13464C89216627F7EF58B9742A7CDA22CameraPreviewViewLayer init]
+          0x1004FAF10  -[_TtC16ControlCenterAppP33_5A13464C89216627F7EF58B9742A7CDA22CameraPreviewViewLayer initWithCoder:]
+          0x1004FAFB0  -[_TtC16ControlCenterAppP33_5A13464C89216627F7EF58B9742A7CDA22CameraPreviewViewLayer dealloc]
+          0x1004FB048  -[_TtC16ControlCenterAppP33_5A13464C89216627F7EF58B9742A7CDA22CameraPreviewViewLayer bounds]
+          0x1004FB0E0  -[_TtC16ControlCenterAppP33_5A13464C89216627F7EF58B9742A7CDA22CameraPreviewViewLayer setBounds:]
+          0x1004FB3A4  -[_TtC16ControlCenterAppP33_5A13464C89216627F7EF58B9742A7CDA22CameraPreviewViewLayer transform]
+          0x1004FB45C  -[_TtC16ControlCenterAppP33_5A13464C89216627F7EF58B9742A7CDA22CameraPreviewViewLayer setTransform:]
+          0x1004FBAB0  -[_TtC16ControlCenterAppP33_5A13464C89216627F7EF58B9742A7CDA22CameraPreviewViewLayer initWithLayer:]
+          0x1004FAFD8  -[_TtC16ControlCenterAppP33_5A13464C89216627F7EF58B9742A7CDA22CameraPreviewViewLayer .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp26LowBatteryUserNotification : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp14TimerViewModel : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp18DarwinNotification : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp30SystemBannerOSDServiceDelegate : NSObject <NSXPCListenerDelegate>
+          0x100523AC8  -[_TtC16ControlCenterApp30SystemBannerOSDServiceDelegate listener:shouldAcceptNewConnection:]
+          0x100523B70  -[_TtC16ControlCenterApp30SystemBannerOSDServiceDelegate init]
+        @end
+        @interface _TtC16ControlCenterApp17AirPlayController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp13AirPlayDevice : _TtC16ControlCenterApp19RemoteDisplayDevice 
+        @end
+        @interface _TtC16ControlCenterApp18KeyboardBrightness : _TtC16ControlCenterApp6Module 
+        @end
+        @interface _TtC16ControlCenterApp44ScreenMirroringMenuExtraAppearanceController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterAppP33_24C7AA543793B3B88279785661EDB8E915ListCoordinator : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp11WiFiNetwork : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp5Sound : _TtC16ControlCenterApp6Module 
+        @end
+        @interface _TtC16ControlCenterApp27ThrottledVideoEffectUpdater : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp15AirPlayReceiver : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCC16ControlCenterApp15AirPlayReceiverP33_3DF0AB73924C2A8F0574E4DD8824DE9F12Notification : NSObject <UNUserNotificationCenterDelegate>
+          0x1005670A4  -[_TtCC16ControlCenterApp15AirPlayReceiverP33_3DF0AB73924C2A8F0574E4DD8824DE9F12Notification userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:]
+          0x10056716C  -[_TtCC16ControlCenterApp15AirPlayReceiverP33_3DF0AB73924C2A8F0574E4DD8824DE9F12Notification init]
+          0x100567190  -[_TtCC16ControlCenterApp15AirPlayReceiverP33_3DF0AB73924C2A8F0574E4DD8824DE9F12Notification .cxx_destruct]
+        @end
+        @interface _TtCC16ControlCenterApp15AirPlayReceiverP33_3DF0AB73924C2A8F0574E4DD8824DE9F14StreamDelegate : NSObject <APRKStreamRendererDelegate>
+          0x10056745C  -[_TtCC16ControlCenterApp15AirPlayReceiverP33_3DF0AB73924C2A8F0574E4DD8824DE9F14StreamDelegate shouldShowPasscodePromptWithString:forRenderer:]
+          0x1005676A4  -[_TtCC16ControlCenterApp15AirPlayReceiverP33_3DF0AB73924C2A8F0574E4DD8824DE9F14StreamDelegate shouldHidePasscodePromptForRenderer:]
+          0x100567944  -[_TtCC16ControlCenterApp15AirPlayReceiverP33_3DF0AB73924C2A8F0574E4DD8824DE9F14StreamDelegate videoLayerSizeDidChangeTo:forRenderer:]
+          0x100567C1C  -[_TtCC16ControlCenterApp15AirPlayReceiverP33_3DF0AB73924C2A8F0574E4DD8824DE9F14StreamDelegate didChangeStreamRendererModeTo:forRenderer:]
+          0x100567C88  -[_TtCC16ControlCenterApp15AirPlayReceiverP33_3DF0AB73924C2A8F0574E4DD8824DE9F14StreamDelegate init]
+        @end
+        @interface _TtCC16ControlCenterApp15AirPlayReceiverP33_3DF0AB73924C2A8F0574E4DD8824DE9F15ManagerDelegate : NSObject <APRKStreamRenderingManagerDelegate>
+          0x100567F10  -[_TtCC16ControlCenterApp15AirPlayReceiverP33_3DF0AB73924C2A8F0574E4DD8824DE9F15ManagerDelegate didStartStreamingWithRenderer:]
+          0x1005681B0  -[_TtCC16ControlCenterApp15AirPlayReceiverP33_3DF0AB73924C2A8F0574E4DD8824DE9F15ManagerDelegate didStopStreamingWithRenderer:]
+          0x1005684D4  -[_TtCC16ControlCenterApp15AirPlayReceiverP33_3DF0AB73924C2A8F0574E4DD8824DE9F15ManagerDelegate shouldShowGlobalPasscodeWithString:withClientName:]
+          0x100568754  -[_TtCC16ControlCenterApp15AirPlayReceiverP33_3DF0AB73924C2A8F0574E4DD8824DE9F15ManagerDelegate shouldHideGlobalPasscode]
+          0x100568B9C  -[_TtCC16ControlCenterApp15AirPlayReceiverP33_3DF0AB73924C2A8F0574E4DD8824DE9F15ManagerDelegate shouldAskPermissionWithRequestID:forClientWithName:withCompletionBlock:]
+          0x100569060  -[_TtCC16ControlCenterApp15AirPlayReceiverP33_3DF0AB73924C2A8F0574E4DD8824DE9F15ManagerDelegate shouldCancelPermissionRequestWithRequestID:]
+          0x1005691F0  -[_TtCC16ControlCenterApp15AirPlayReceiverP33_3DF0AB73924C2A8F0574E4DD8824DE9F15ManagerDelegate init]
+          0x100569214  -[_TtCC16ControlCenterApp15AirPlayReceiverP33_3DF0AB73924C2A8F0574E4DD8824DE9F15ManagerDelegate .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp12UserSwitcher : _TtC16ControlCenterApp6Module 
+        @end
+        @interface _TtC16ControlCenterApp17DirectoryServices : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp21DisplayableMenuExtras : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCC16ControlCenterApp21DisplayableMenuExtrasP33_F8BD4F8C959F4FCF0A006B17F6582F3C18WrappedDisplayable : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterAppP33_F8BD4F8C959F4FCF0A006B17F6582F3C23StatusItemDelegateProxy : NSObject <NSStatusItemDelegate, NSLocalStatusItemDelegate>
+          0x100597100  -[_TtC16ControlCenterAppP33_F8BD4F8C959F4FCF0A006B17F6582F3C23StatusItemDelegateProxy userRemovedStatusItem:]
+          0x1005971CC  -[_TtC16ControlCenterAppP33_F8BD4F8C959F4FCF0A006B17F6582F3C23StatusItemDelegateProxy dragReservesSpaceInStatusBarForStatusItem:atLocation:]
+          0x10059729C  -[_TtC16ControlCenterAppP33_F8BD4F8C959F4FCF0A006B17F6582F3C23StatusItemDelegateProxy dragCompletedForStatusItem:atLocation:]
+          0x100597368  -[_TtC16ControlCenterAppP33_F8BD4F8C959F4FCF0A006B17F6582F3C23StatusItemDelegateProxy createReplicantViewOfStatusItem:]
+          0x100597434  -[_TtC16ControlCenterAppP33_F8BD4F8C959F4FCF0A006B17F6582F3C23StatusItemDelegateProxy init]
+          0x100597458  -[_TtC16ControlCenterAppP33_F8BD4F8C959F4FCF0A006B17F6582F3C23StatusItemDelegateProxy .cxx_destruct]
+        @end
+        @interface _TtC16ControlCenterApp32DisplayableMenuExtrasXPCListener : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp17MenuBarCustomItem : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp19MenuBarDisplayables : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterAppP33_1678311B67E59E9C78D257AB12E8967720MenuAnchorController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterAppP33_1678311B67E59E9C78D257AB12E8967716SimpleMenuAnchor : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp25MenuBarWrappedDisplayable : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterAppP33_71C83B259F52B2ECAD765F6B58C2674419ToggleStateObserver : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp13OBCController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp17SidecarController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterAppP33_34E5A9916955CB7341AD5F2ECEB18ECF13SidecarDevice : _TtC16ControlCenterApp19RemoteDisplayDevice 
+        @end
+        @interface _TtC16ControlCenterAppP33_34E5A9916955CB7341AD5F2ECEB18ECF31SidecarStatusDarwinNotification : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp37ControlCenterDisplayableChronoControl : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterApp16ServicesProvider : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC16ControlCenterAppP33_3BD2663FB56585400AC34B898BAF451419ResourceBundleClass : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCE17ControlCenterCoreV7SwiftUI5ColorP33_8872D54F3C3ADD412D15842DCF4BF10517SystemAccentColor : NSDynamicNamedColor 
+          0x1005C8034  -[_TtCE17ControlCenterCoreV7SwiftUI5ColorP33_8872D54F3C3ADD412D15842DCF4BF10517SystemAccentColor resolvedColor]
+          0x1005C81A4  -[_TtCE17ControlCenterCoreV7SwiftUI5ColorP33_8872D54F3C3ADD412D15842DCF4BF10517SystemAccentColor isEqual:]
+          0x1005C8228  -[_TtCE17ControlCenterCoreV7SwiftUI5ColorP33_8872D54F3C3ADD412D15842DCF4BF10517SystemAccentColor hash]
+          0x1005C835C  -[_TtCE17ControlCenterCoreV7SwiftUI5ColorP33_8872D54F3C3ADD412D15842DCF4BF10517SystemAccentColor initWithCatalogName:colorName:genericColor:]
+          0x1005C83D8  -[_TtCE17ControlCenterCoreV7SwiftUI5ColorP33_8872D54F3C3ADD412D15842DCF4BF10517SystemAccentColor init]
+          0x1005C83FC  -[_TtCE17ControlCenterCoreV7SwiftUI5ColorP33_8872D54F3C3ADD412D15842DCF4BF10517SystemAccentColor initWithCoder:]
+          0x1005C84DC  -[_TtCE17ControlCenterCoreV7SwiftUI5ColorP33_8872D54F3C3ADD412D15842DCF4BF10517SystemAccentColor initWithPasteboardPropertyList:ofType:]
+        @end
+        @interface _TtC17ControlCenterCoreP33_8872D54F3C3ADD412D15842DCF4BF10522SystemAccentController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC17ControlCenterCore24MenuSelectionCoordinator : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC17ControlCenterCore22VideoPreviewController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC17ControlCenterCoreP33_05528DDA50FE2858EF67F40CA99DB9B228CaptureFrameReceiverObserver : NSObject 
+          0x1005CE93C  -[_TtC17ControlCenterCoreP33_05528DDA50FE2858EF67F40CA99DB9B228CaptureFrameReceiverObserver init]
+          0x1005CE9B0  -[_TtC17ControlCenterCoreP33_05528DDA50FE2858EF67F40CA99DB9B228CaptureFrameReceiverObserver observeValueForKeyPath:ofObject:change:context:]
+          0x1005CEB1C  -[_TtC17ControlCenterCoreP33_05528DDA50FE2858EF67F40CA99DB9B228CaptureFrameReceiverObserver .cxx_destruct]
+        @end
+        @interface _TtC17ControlCenterCore17CCUtilXPCListener : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC17ControlCenterCore17SliderScrollState : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC17ControlCenterCoreP33_CCF3461277FB84346344DA6D9BA0FC5B16HoverCoordinator : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC17ControlCenterCore20NavigationController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC17ControlCenterCore16DebugPreferences : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC17ControlCenterCore15CCUtilXPCClient : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC12EyeCandyCore18DarwinNotification : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC15ControlCenterUIP33_1D7917FD9FEAEA89D705B58DC4DE7DD216HeightCalculator : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC15ControlCenterUI18ToggleStateMachine : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC20ChronoHostController29ChronoWidgetExtensionProvider : NSObject <CHSWidgetExtensionProviderObserver>
+          0x1006426EC  -[_TtC20ChronoHostController29ChronoWidgetExtensionProvider init]
+          0x100642990  -[_TtC20ChronoHostController29ChronoWidgetExtensionProvider dealloc]
+          0x100642B90  -[_TtC20ChronoHostController29ChronoWidgetExtensionProvider extensionsDidChangeForExtensionProvider:]
+          0x1006429B8  -[_TtC20ChronoHostController29ChronoWidgetExtensionProvider .cxx_destruct]
+        @end
+        @interface _TtC20ChronoHostController17ChronoControlHost : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC20ChronoHostController24ChronoControlHostFactory : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC20ChronoHostController32ChronoControlTelemetryController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC20ChronoHostController32ChronoControlVisibilityAssertion : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC20ChronoHostController30WeakControlVisibilityAssertion : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC20ChronoHostController18ChronoControlCache : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCC20ChronoHostController18ChronoControlCacheP33_7FD000958E41B156D07C0058AF659D1E3Key : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC20ChronoHostController20ChronoHostController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC20ChronoHostController36LSApplicationExtensionRecordProvider : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC20ChronoHostController22ChronoControlViewModel : _TtCs12_SwiftObject 
+        @end
+        @interface _TtCC20ChronoHostController22ChronoControlViewModel19ToggleStateObserver : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC20ChronoHostController39ChronoIntentConfigurationViewController : NSViewController <WFWidgetConfigurationViewControllerDelegate>
+          0x10066D14C  -[_TtC20ChronoHostController39ChronoIntentConfigurationViewController widgetConfigurationViewController:didFinishWithIntent:]
+          0x10066D1C8  -[_TtC20ChronoHostController39ChronoIntentConfigurationViewController widgetConfigurationViewController:preferredContentSizeDidChange:]
+          0x10066C81C  -[_TtC20ChronoHostController39ChronoIntentConfigurationViewController initWithCoder:]
+          0x10066CB0C  -[_TtC20ChronoHostController39ChronoIntentConfigurationViewController dealloc]
+          0x10066CBF8  -[_TtC20ChronoHostController39ChronoIntentConfigurationViewController initWithNibName:bundle:]
+          0x10066CB34  -[_TtC20ChronoHostController39ChronoIntentConfigurationViewController .cxx_destruct]
+        @end
+        @interface _TtC20ChronoHostController26ChronoContainerIconManager : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC13HearingModule13HearingModule : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC13HearingModule32HeadphoneAccomodationsController : _TtCs12_SwiftObject 
+          0x100684BA4  -[_TtC13HearingModule32HeadphoneAccomodationsController updateHeadphoneAccommodationsRouteInfo:]
+        @end
+        @interface _TtC13HearingModule26BackgroundSoundsController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC13HearingModule15BackgroundSound : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC13HearingModule21HearingAidsController : NSObject <AXHeardServerDelegate, AXHAServerDelegate>
+          0x100693B58  -[_TtC13HearingModule21HearingAidsController hearingServerIsReady]
+          0x10068EB30  -[_TtC13HearingModule21HearingAidsController init]
+          0x100693380  -[_TtC13HearingModule21HearingAidsController .cxx_destruct]
+        @end
+        @interface _TtC17EyeCandyAnalytics19AnalyticsController : _TtCs12_SwiftObject 
+        @end
+        @interface _TtC17EyeCandyAnalytics18AnalyticsHeartbeat : _TtCs12_SwiftObject 
+        @end
+        @interface NSUserDefaults(ControlCenterApp)
+          0x1001CF85C  -[NSUserDefaults RemoteLiveActivitiesEnabled]
+          0x1001CFA40  -[NSUserDefaults setRemoteLiveActivitiesEnabled:]
+        @end
+        @protocol BSInvalidatable : <NSObject>
+          -[BSInvalidatable invalidate]
+        @end
+        @protocol OS_dispatch_source_timer : <OS_dispatch_source>
+        @end
+        @protocol _TtP18ActivityUIServices22ActivityAlertProviding_ : 
+          -[_TtP18ActivityUIServices22ActivityAlertProviding_ identifier]
+          -[_TtP18ActivityUIServices22ActivityAlertProviding_ bundleIdentifier]
+          -[_TtP18ActivityUIServices22ActivityAlertProviding_ payloadIdentifier]
+          -[_TtP18ActivityUIServices22ActivityAlertProviding_ configuration]
+          -[_TtP18ActivityUIServices22ActivityAlertProviding_ action]
+          -[_TtP18ActivityUIServices22ActivityAlertProviding_ presentationOptions]
+          -[_TtP18ActivityUIServices22ActivityAlertProviding_ title]
+          -[_TtP18ActivityUIServices22ActivityAlertProviding_ body]
+          -[_TtP18ActivityUIServices22ActivityAlertProviding_ deviceIdentifier]
+        @end
+        @protocol NSPopoverDelegate : <NSObject>
+          -[NSPopoverDelegate popoverShouldClose:]
+          -[NSPopoverDelegate popoverShouldDetach:]
+          -[NSPopoverDelegate popoverDidDetach:]
+          -[NSPopoverDelegate detachableWindowForPopover:]
+          -[NSPopoverDelegate popoverWillShow:]
+          -[NSPopoverDelegate popoverDidShow:]
+          -[NSPopoverDelegate popoverWillClose:]
+          -[NSPopoverDelegate popoverDidClose:]
+        @end
+        @protocol ISIconDecoration : <NSObject, NSSecureCoding>
+        @end
+        @protocol CNKeyDescriptor : <NSObject, NSSecureCoding, NSCopying>
+        @end
+        @protocol NCNotificationCenterMenu : <NSObject>
+          -[NCNotificationCenterMenu ncMenugetInitialState:]
+          -[NCNotificationCenterMenu ncMenuMouseDown]
+          -[NCNotificationCenterMenu ncMenuMouseUp]
+          -[NCNotificationCenterMenu ncMenuDNDToggle]
+        @end
+        @protocol AVOutputDeviceDescription : <NSObject>
+          -[AVOutputDeviceDescription deviceName]
+          -[AVOutputDeviceDescription deviceID]
+          -[AVOutputDeviceDescription protocolName]
+          -[AVOutputDeviceDescription protocolID]
+          -[AVOutputDeviceDescription protocolTypeIdentifier]
+          -[AVOutputDeviceDescription isPreferredProtocol]
+          -[AVOutputDeviceDescription deviceType]
+          -[AVOutputDeviceDescription deviceSubType]
+          -[AVOutputDeviceDescription isClusterLeader]
+          -[AVOutputDeviceDescription modelID]
+          -[AVOutputDeviceDescription transportTypeForMetrics]
+          -[AVOutputDeviceDescription isLocalAirPlayDevice]
+          -[AVOutputDeviceDescription isDeviceDisabled]
+          -[AVOutputDeviceDescription routeSymbolName]
+          -[AVOutputDeviceDescription routeDisplayName]
+          -[AVOutputDeviceDescription onlySupportsRealtimeAudio]
+        @end
+        @protocol FCActivityLifetimeDescribing : <NSObject, NSCopying>
+          -[FCActivityLifetimeDescribing lifetimeIdentifier]
+          -[FCActivityLifetimeDescribing lifetimeName]
+          -[FCActivityLifetimeDescribing lifetimeMetadata]
+        @end
+        @protocol FCActivityDescribing : <NSObject, NSCopying>
+          -[FCActivityDescribing activityIdentifier]
+          -[FCActivityDescribing activityUniqueIdentifier]
+          -[FCActivityDescribing activitySemanticType]
+          -[FCActivityDescribing activityDisplayName]
+          -[FCActivityDescribing activitySymbolImageName]
+          -[FCActivityDescribing activityColorName]
+          -[FCActivityDescribing activityCreationDate]
+          -[FCActivityDescribing activityDetailText]
+          -[FCActivityDescribing activityLifetimeDescriptions]
+          -[FCActivityDescribing activityLifetimesAlternativeDescription]
+          -[FCActivityDescribing activitySettingsURL]
+          -[FCActivityDescribing activitySetupURL]
+          -[FCActivityDescribing isPlaceholder]
+        @end
+        @protocol _TtP16ControlCenterApp43ControlCenterUniversalControlHelperProtocol_ : 
+          -[_TtP16ControlCenterApp43ControlCenterUniversalControlHelperProtocol_ presentUniversalControlError:]
+        @end
+        @protocol _TtP16ControlCenterApp42ControlCenterScreenMirroringHelperProtocol_ : 
+          -[_TtP16ControlCenterApp42ControlCenterScreenMirroringHelperProtocol_ presentScreenMirroringAlertWithDisplayID:displayName:displayIsSpatial:options:response:]
+          -[_TtP16ControlCenterApp42ControlCenterScreenMirroringHelperProtocol_ dismissAlertWithDisplayID:]
+        @end
+        @protocol _TtP16ControlCenterApp43ControlCenterMusicRecognitionHelperProtocol_ : 
+          -[_TtP16ControlCenterApp43ControlCenterMusicRecognitionHelperProtocol_ confirmItemDeletionWithResponse:]
+        @end
+        @protocol _TtP16ControlCenterApp36ControlCenterBluetoothHelperProtocol_ : 
+          -[_TtP16ControlCenterApp36ControlCenterBluetoothHelperProtocol_ confirmTurnOffBluetoothWithRequest:response:]
+        @end
+        @protocol _TtP16ControlCenterApp48ControlCenterBackgroundReplacementHelperProtocol_ : 
+          -[_TtP16ControlCenterApp48ControlCenterBackgroundReplacementHelperProtocol_ presentBackgroundReplacementPickerWithBundleID:appName:cameraID:onDisplay:useVerboseTitle:]
+          -[_TtP16ControlCenterApp48ControlCenterBackgroundReplacementHelperProtocol_ closeBackgroundReplacementPickerWithBundleID:]
+          -[_TtP16ControlCenterApp48ControlCenterBackgroundReplacementHelperProtocol_ useVerboseTitle:]
+          -[_TtP16ControlCenterApp48ControlCenterBackgroundReplacementHelperProtocol_ isShowingBackgroundReplacementPickerWithResponse:]
+        @end
+        @protocol _TtP16ControlCenterApp31ControlCenterWiFiHelperProtocol_ : 
+          -[_TtP16ControlCenterApp31ControlCenterWiFiHelperProtocol_ createDiagnosticsReport]
+          -[_TtP16ControlCenterApp31ControlCenterWiFiHelperProtocol_ joinNetworkError:]
+          -[_TtP16ControlCenterApp31ControlCenterWiFiHelperProtocol_ joinOtherNetwork]
+        @end
+        @protocol _TtP17ControlCenterCore23RingLightHelperProtocol_ : 
+          -[_TtP17ControlCenterCore23RingLightHelperProtocol_ setRingLightStateWithIsEnabled:width:tint:display:bundleIDs:]
+          -[_TtP17ControlCenterCore23RingLightHelperProtocol_ isRingLightEnabledWithResponse:]
+        @end
+        @protocol BSInvalidatable : <NSObject>
+          -[BSInvalidatable invalidate]
+        @end
+        @protocol NSObject : 
+          -[NSObject isEqual:]
+          -[NSObject class]
+          -[NSObject self]
+          -[NSObject performSelector:]
+          -[NSObject performSelector:withObject:]
+          -[NSObject performSelector:withObject:withObject:]
+          -[NSObject isProxy]
+          -[NSObject isKindOfClass:]
+          -[NSObject isMemberOfClass:]
+          -[NSObject conformsToProtocol:]
+          -[NSObject respondsToSelector:]
+          -[NSObject retain]
+          -[NSObject release]
+          -[NSObject autorelease]
+          -[NSObject retainCount]
+          -[NSObject zone]
+          -[NSObject hash]
+          -[NSObject superclass]
+          -[NSObject description]
+          -[NSObject debugDescription]
+        @end
+        @protocol OS_dispatch_source_timer : <OS_dispatch_source>
+        @end
+        @protocol OS_dispatch_source : <NSObject>
+        @end
+        @protocol NSPopoverDelegate : <NSObject>
+          -[NSPopoverDelegate popoverShouldClose:]
+          -[NSPopoverDelegate popoverShouldDetach:]
+          -[NSPopoverDelegate popoverDidDetach:]
+          -[NSPopoverDelegate detachableWindowForPopover:]
+          -[NSPopoverDelegate popoverWillShow:]
+          -[NSPopoverDelegate popoverDidShow:]
+          -[NSPopoverDelegate popoverWillClose:]
+          -[NSPopoverDelegate popoverDidClose:]
+        @end
+        @protocol ISIconDecoration : <NSObject, NSSecureCoding>
+        @end
+        @protocol NSSecureCoding : <NSCoding>
+          +[NSSecureCoding supportsSecureCoding]
+        @end
+        @protocol CNKeyDescriptor : <NSObject, NSSecureCoding, NSCopying>
+        @end
+        @protocol NSCopying : 
+          -[NSCopying copyWithZone:]
+        @end
+        @protocol NCNotificationCenterMenu : <NSObject>
+          -[NCNotificationCenterMenu ncMenugetInitialState:]
+          -[NCNotificationCenterMenu ncMenuMouseDown]
+          -[NCNotificationCenterMenu ncMenuMouseUp]
+          -[NCNotificationCenterMenu ncMenuDNDToggle]
+        @end
+        @protocol AVOutputDeviceDescription : <NSObject>
+          -[AVOutputDeviceDescription deviceName]
+          -[AVOutputDeviceDescription deviceID]
+          -[AVOutputDeviceDescription protocolName]
+          -[AVOutputDeviceDescription protocolID]
+          -[AVOutputDeviceDescription protocolTypeIdentifier]
+          -[AVOutputDeviceDescription isPreferredProtocol]
+          -[AVOutputDeviceDescription deviceType]
+          -[AVOutputDeviceDescription deviceSubType]
+          -[AVOutputDeviceDescription isClusterLeader]
+          -[AVOutputDeviceDescription modelID]
+          -[AVOutputDeviceDescription transportTypeForMetrics]
+          -[AVOutputDeviceDescription isLocalAirPlayDevice]
+          -[AVOutputDeviceDescription isDeviceDisabled]
+          -[AVOutputDeviceDescription routeSymbolName]
+          -[AVOutputDeviceDescription routeDisplayName]
+          -[AVOutputDeviceDescription onlySupportsRealtimeAudio]
+        @end
+        @protocol FCActivityLifetimeDescribing : <NSObject, NSCopying>
+          -[FCActivityLifetimeDescribing lifetimeIdentifier]
+          -[FCActivityLifetimeDescribing lifetimeName]
+          -[FCActivityLifetimeDescribing lifetimeMetadata]
+        @end
+        @protocol FCActivityDescribing : <NSObject, NSCopying>
+          -[FCActivityDescribing activityIdentifier]
+          -[FCActivityDescribing activityUniqueIdentifier]
+          -[FCActivityDescribing activitySemanticType]
+          -[FCActivityDescribing activityDisplayName]
+          -[FCActivityDescribing activitySymbolImageName]
+          -[FCActivityDescribing activityColorName]
+          -[FCActivityDescribing activityCreationDate]
+          -[FCActivityDescribing activityDetailText]
+          -[FCActivityDescribing activityLifetimeDescriptions]
+          -[FCActivityDescribing activityLifetimesAlternativeDescription]
+          -[FCActivityDescribing activitySettingsURL]
+          -[FCActivityDescribing activitySetupURL]
+          -[FCActivityDescribing isPlaceholder]
+        @end
+        @protocol NSObject : 
+          -[NSObject isEqual:]
+          -[NSObject class]
+          -[NSObject self]
+          -[NSObject performSelector:]
+          -[NSObject performSelector:withObject:]
+          -[NSObject performSelector:withObject:withObject:]
+          -[NSObject isProxy]
+          -[NSObject isKindOfClass:]
+          -[NSObject isMemberOfClass:]
+          -[NSObject conformsToProtocol:]
+          -[NSObject respondsToSelector:]
+          -[NSObject retain]
+          -[NSObject release]
+          -[NSObject autorelease]
+          -[NSObject retainCount]
+          -[NSObject zone]
+          -[NSObject hash]
+          -[NSObject superclass]
+          -[NSObject description]
+          -[NSObject debugDescription]
+        @end
+        @protocol OS_dispatch_source : <NSObject>
+        @end
+        @protocol NSSecureCoding : <NSCoding>
+          +[NSSecureCoding supportsSecureCoding]
+        @end
+        @protocol NSCoding : 
+          -[NSCoding encodeWithCoder:]
+          -[NSCoding initWithCoder:]
+        @end
+        @protocol NSCopying : 
+          -[NSCopying copyWithZone:]
+        @end
+        @protocol NSCoding : 
+          -[NSCoding encodeWithCoder:]
+          -[NSCoding initWithCoder:]
+        @end
+        @protocol TUConversationManagerDelegate : <NSObject>
+          -[TUConversationManagerDelegate conversationsChangedForConversationManager:]
+          -[TUConversationManagerDelegate conversationManager:stateChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:stateChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:letMeInRequestStateChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:letMeInRequestStateChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:localVideoToggledForConversation:]
+          -[TUConversationManagerDelegate conversationManager:localVideoToggledForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:remoteMembersChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:remoteMembersChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:pendingMembersChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:pendingMembersChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:kickedMembersChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:kickedMembersChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:rejectedMembersChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:rejectedMembersChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:otherInvitedHandlesChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:otherInvitedHandlesChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:activeRemoteParticipantsChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:activeRemoteParticipantsChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:activitySessionsChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:activitySessionsChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:oneToOneModeChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:oneToOneModeChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:avModeChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:avModeChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:presentationContextChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:presentationContextChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:resolvedAudioVideoModeChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:resolvedAudioVideoModeChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:removedActiveConversation:]
+          -[TUConversationManagerDelegate conversationManager:addedActiveConversation:]
+          -[TUConversationManagerDelegate conversationManager:didChangeActivatedLinks:]
+          -[TUConversationManagerDelegate conversationManager:linkChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:linkChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:linkInvitedMemberHandlesChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:linkInvitedMemberHandlesChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:conversation:requestedScreenShareForParticipant:]
+          -[TUConversationManagerDelegate serverDisconnectedForConversationManager:]
+          -[TUConversationManagerDelegate conversationManager:migratingFromConversation:toConversation:]
+          -[TUConversationManagerDelegate conversationManager:conversation:receivedActivitySessionEvent:]
+          -[TUConversationManagerDelegate conversationManager:changedActivityAuthorizationForBundleIdentifier:]
+          -[TUConversationManagerDelegate conversationManager:conversation:participant:addedNotice:]
+          -[TUConversationManagerDelegate conversationManager:conversation:addedMembersLocally:]
+          -[TUConversationManagerDelegate conversationManager:conversation:buzzedMember:]
+          -[TUConversationManagerDelegate conversationManager:conversationUpdatedMessagesGroupName:]
+          -[TUConversationManagerDelegate conversationManager:conversationUpdatedMessagesGroupName:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:conversation:updatedMessagesGroupPhoto:]
+          -[TUConversationManagerDelegate conversationManager:conversationUpdatedMessagesGroupUUID:]
+          -[TUConversationManagerDelegate conversationManager:updatedIncomingPendingConversations:]
+          -[TUConversationManagerDelegate conversationManager:trackedPendingMember:forConversationLink:]
+          -[TUConversationManagerDelegate conversationManager:conversation:screenSharingChangedForParticipant:]
+          -[TUConversationManagerDelegate conversationManager:conversation:launchStateChanged:forActivitySession:]
+          -[TUConversationManagerDelegate conversationManager:remoteScreenShareAttributesChanged:isLocallySharing:]
+          -[TUConversationManagerDelegate conversationManager:remoteScreenShareEndedWithReason:]
+          -[TUConversationManagerDelegate conversationManager:ignoreLMIRequestsChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:conversation:didChangeStateForActivitySession:]
+          -[TUConversationManagerDelegate conversationManager:conversation:didChangeSceneAssociationForActivitySession:]
+          -[TUConversationManagerDelegate conversationManager:sharePlayAvailableChanged:]
+          -[TUConversationManagerDelegate conversationManager:screenSharingAvailableChanged:]
+          -[TUConversationManagerDelegate conversationManager:handoffEligibilityChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:handoffEligibilityChangedToConversation:fromPreviousConversation:]
+          -[TUConversationManagerDelegate conversationManager:collaborationChanged:forConversation:collaborationState:]
+          -[TUConversationManagerDelegate conversationManager:conversation:participant:addedCollaborationNotice:]
+          -[TUConversationManagerDelegate conversationManager:systemActivitySessionsChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:systemActivitySessionsChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:nearbySharePlayToggledForConversation:]
+          -[TUConversationManagerDelegate conversationManager:nearbySharePlayToggledForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:cameraMixedWithScreenDidChangeForConversation:]
+          -[TUConversationManagerDelegate conversationManager:cameraMixedWithScreenDidChangeForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:screeningChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:screenSharingRequestsChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:localParticipantClusterDidChangeForConversation:]
+          -[TUConversationManagerDelegate conversationManager:localParticipantClusterDidChangeForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:didChangeConversationAdvertisement:]
+          -[TUConversationManagerDelegate conversationManager:conversation:participant:didUpdateNickname:]
+        @end
+        @protocol TUAudioDeviceControllerDelegate : <NSObject>
+          -[TUAudioDeviceControllerDelegate audioDeviceControllerDeviceListChanged:]
+          -[TUAudioDeviceControllerDelegate audioDeviceControllerMutedTalkerDidStart:]
+          -[TUAudioDeviceControllerDelegate audioDeviceControllerMutedTalkerDidEnd:]
+        @end
+        @protocol TUConversationManagerDelegate : <NSObject>
+          -[TUConversationManagerDelegate conversationsChangedForConversationManager:]
+          -[TUConversationManagerDelegate conversationManager:stateChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:stateChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:letMeInRequestStateChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:letMeInRequestStateChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:localVideoToggledForConversation:]
+          -[TUConversationManagerDelegate conversationManager:localVideoToggledForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:remoteMembersChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:remoteMembersChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:pendingMembersChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:pendingMembersChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:kickedMembersChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:kickedMembersChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:rejectedMembersChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:rejectedMembersChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:otherInvitedHandlesChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:otherInvitedHandlesChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:activeRemoteParticipantsChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:activeRemoteParticipantsChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:activitySessionsChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:activitySessionsChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:oneToOneModeChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:oneToOneModeChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:avModeChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:avModeChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:presentationContextChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:presentationContextChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:resolvedAudioVideoModeChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:resolvedAudioVideoModeChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:removedActiveConversation:]
+          -[TUConversationManagerDelegate conversationManager:addedActiveConversation:]
+          -[TUConversationManagerDelegate conversationManager:didChangeActivatedLinks:]
+          -[TUConversationManagerDelegate conversationManager:linkChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:linkChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:linkInvitedMemberHandlesChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:linkInvitedMemberHandlesChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:conversation:requestedScreenShareForParticipant:]
+          -[TUConversationManagerDelegate serverDisconnectedForConversationManager:]
+          -[TUConversationManagerDelegate conversationManager:migratingFromConversation:toConversation:]
+          -[TUConversationManagerDelegate conversationManager:conversation:receivedActivitySessionEvent:]
+          -[TUConversationManagerDelegate conversationManager:changedActivityAuthorizationForBundleIdentifier:]
+          -[TUConversationManagerDelegate conversationManager:conversation:participant:addedNotice:]
+          -[TUConversationManagerDelegate conversationManager:conversation:addedMembersLocally:]
+          -[TUConversationManagerDelegate conversationManager:conversation:buzzedMember:]
+          -[TUConversationManagerDelegate conversationManager:conversationUpdatedMessagesGroupName:]
+          -[TUConversationManagerDelegate conversationManager:conversationUpdatedMessagesGroupName:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:conversation:updatedMessagesGroupPhoto:]
+          -[TUConversationManagerDelegate conversationManager:conversationUpdatedMessagesGroupUUID:]
+          -[TUConversationManagerDelegate conversationManager:updatedIncomingPendingConversations:]
+          -[TUConversationManagerDelegate conversationManager:trackedPendingMember:forConversationLink:]
+          -[TUConversationManagerDelegate conversationManager:conversation:screenSharingChangedForParticipant:]
+          -[TUConversationManagerDelegate conversationManager:conversation:launchStateChanged:forActivitySession:]
+          -[TUConversationManagerDelegate conversationManager:remoteScreenShareAttributesChanged:isLocallySharing:]
+          -[TUConversationManagerDelegate conversationManager:remoteScreenShareEndedWithReason:]
+          -[TUConversationManagerDelegate conversationManager:ignoreLMIRequestsChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:conversation:didChangeStateForActivitySession:]
+          -[TUConversationManagerDelegate conversationManager:conversation:didChangeSceneAssociationForActivitySession:]
+          -[TUConversationManagerDelegate conversationManager:sharePlayAvailableChanged:]
+          -[TUConversationManagerDelegate conversationManager:screenSharingAvailableChanged:]
+          -[TUConversationManagerDelegate conversationManager:handoffEligibilityChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:handoffEligibilityChangedToConversation:fromPreviousConversation:]
+          -[TUConversationManagerDelegate conversationManager:collaborationChanged:forConversation:collaborationState:]
+          -[TUConversationManagerDelegate conversationManager:conversation:participant:addedCollaborationNotice:]
+          -[TUConversationManagerDelegate conversationManager:systemActivitySessionsChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:systemActivitySessionsChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:nearbySharePlayToggledForConversation:]
+          -[TUConversationManagerDelegate conversationManager:nearbySharePlayToggledForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:cameraMixedWithScreenDidChangeForConversation:]
+          -[TUConversationManagerDelegate conversationManager:cameraMixedWithScreenDidChangeForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:screeningChangedForConversation:]
+          -[TUConversationManagerDelegate conversationManager:screenSharingRequestsChangedForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:localParticipantClusterDidChangeForConversation:]
+          -[TUConversationManagerDelegate conversationManager:localParticipantClusterDidChangeForConversation:fromOldConversation:]
+          -[TUConversationManagerDelegate conversationManager:didChangeConversationAdvertisement:]
+          -[TUConversationManagerDelegate conversationManager:conversation:participant:didUpdateNickname:]
+        @end
+        @protocol TUAudioDeviceControllerDelegate : <NSObject>
+          -[TUAudioDeviceControllerDelegate audioDeviceControllerDeviceListChanged:]
+          -[TUAudioDeviceControllerDelegate audioDeviceControllerMutedTalkerDidStart:]
+          -[TUAudioDeviceControllerDelegate audioDeviceControllerMutedTalkerDidEnd:]
+        @end
+        @protocol CAStateControllerDelegate : 
+          -[CAStateControllerDelegate stateController:didSetStateOfLayer:]
+          -[CAStateControllerDelegate stateController:transitionDidStart:speed:]
+          -[CAStateControllerDelegate stateController:transitionDidStop:completed:]
+        @end
+        @protocol CAStateControllerDelegate : 
+          -[CAStateControllerDelegate stateController:didSetStateOfLayer:]
+          -[CAStateControllerDelegate stateController:transitionDidStart:speed:]
+          -[CAStateControllerDelegate stateController:transitionDidStop:completed:]
+        @end
+        @protocol _TtP16ControlCenterApp27ControlCenterHelperProtocol_ : <_TtP16ControlCenterApp36ControlCenterBluetoothHelperProtocol_, _TtP16ControlCenterApp43ControlCenterUniversalControlHelperProtocol_, _TtP16ControlCenterApp43ControlCenterMusicRecognitionHelperProtocol_, _TtP16ControlCenterApp48ControlCenterBackgroundReplacementHelperProtocol_, _TtP16ControlCenterApp42ControlCenterScreenMirroringHelperProtocol_, _TtP16ControlCenterApp31ControlCenterWiFiHelperProtocol_>
+        @end
+        @protocol NSApplicationDelegate : <NSObject>
+          -[NSApplicationDelegate applicationShouldTerminate:]
+          -[NSApplicationDelegate application:openURLs:]
+          -[NSApplicationDelegate application:openFile:]
+          -[NSApplicationDelegate application:openFiles:]
+          -[NSApplicationDelegate application:openTempFile:]
+          -[NSApplicationDelegate applicationShouldOpenUntitledFile:]
+          -[NSApplicationDelegate applicationOpenUntitledFile:]
+          -[NSApplicationDelegate application:openFileWithoutUI:]
+          -[NSApplicationDelegate application:printFile:]
+          -[NSApplicationDelegate application:printFiles:withSettings:showPrintPanels:]
+          -[NSApplicationDelegate applicationShouldTerminateAfterLastWindowClosed:]
+          -[NSApplicationDelegate applicationShouldHandleReopen:hasVisibleWindows:]
+          -[NSApplicationDelegate applicationDockMenu:]
+          -[NSApplicationDelegate application:willPresentError:]
+          -[NSApplicationDelegate application:didRegisterForRemoteNotificationsWithDeviceToken:]
+          -[NSApplicationDelegate application:didFailToRegisterForRemoteNotificationsWithError:]
+          -[NSApplicationDelegate application:didReceiveRemoteNotification:]
+          -[NSApplicationDelegate applicationSupportsSecureRestorableState:]
+          -[NSApplicationDelegate application:handlerForIntent:]
+          -[NSApplicationDelegate application:willEncodeRestorableState:]
+          -[NSApplicationDelegate application:didDecodeRestorableState:]
+          -[NSApplicationDelegate application:willContinueUserActivityWithType:]
+          -[NSApplicationDelegate application:continueUserActivity:restorationHandler:]
+          -[NSApplicationDelegate application:didFailToContinueUserActivityWithType:error:]
+          -[NSApplicationDelegate application:didUpdateUserActivity:]
+          -[NSApplicationDelegate application:userDidAcceptCloudKitShareWithMetadata:]
+          -[NSApplicationDelegate application:delegateHandlesKey:]
+          -[NSApplicationDelegate applicationShouldAutomaticallyLocalizeKeyEquivalents:]
+          -[NSApplicationDelegate applicationWillFinishLaunching:]
+          -[NSApplicationDelegate applicationDidFinishLaunching:]
+          -[NSApplicationDelegate applicationWillHide:]
+          -[NSApplicationDelegate applicationDidHide:]
+          -[NSApplicationDelegate applicationWillUnhide:]
+          -[NSApplicationDelegate applicationDidUnhide:]
+          -[NSApplicationDelegate applicationWillBecomeActive:]
+          -[NSApplicationDelegate applicationDidBecomeActive:]
+          -[NSApplicationDelegate applicationWillResignActive:]
+          -[NSApplicationDelegate applicationDidResignActive:]
+          -[NSApplicationDelegate applicationWillUpdate:]
+          -[NSApplicationDelegate applicationDidUpdate:]
+          -[NSApplicationDelegate applicationWillTerminate:]
+          -[NSApplicationDelegate applicationDidChangeScreenParameters:]
+          -[NSApplicationDelegate applicationDidChangeOcclusionState:]
+          -[NSApplicationDelegate applicationProtectedDataWillBecomeUnavailable:]
+          -[NSApplicationDelegate applicationProtectedDataDidBecomeAvailable:]
+        @end
+        @protocol NSApplicationDelegateScenesPrivate : <NSApplicationDelegate>
+          -[NSApplicationDelegateScenesPrivate application:configurationForConnectingSceneSession:options:]
+          -[NSApplicationDelegateScenesPrivate application:didDiscardSceneSessions:]
+        @end
+        @protocol NSApplicationTestingDelegate : <NSApplicationDelegate>
+          -[NSApplicationTestingDelegate application:runTest:options:]
+        @end
+        @protocol NSApplicationDelegate : <NSObject>
+          -[NSApplicationDelegate applicationShouldTerminate:]
+          -[NSApplicationDelegate application:openURLs:]
+          -[NSApplicationDelegate application:openFile:]
+          -[NSApplicationDelegate application:openFiles:]
+          -[NSApplicationDelegate application:openTempFile:]
+          -[NSApplicationDelegate applicationShouldOpenUntitledFile:]
+          -[NSApplicationDelegate applicationOpenUntitledFile:]
+          -[NSApplicationDelegate application:openFileWithoutUI:]
+          -[NSApplicationDelegate application:printFile:]
+          -[NSApplicationDelegate application:printFiles:withSettings:showPrintPanels:]
+          -[NSApplicationDelegate applicationShouldTerminateAfterLastWindowClosed:]
+          -[NSApplicationDelegate applicationShouldHandleReopen:hasVisibleWindows:]
+          -[NSApplicationDelegate applicationDockMenu:]
+          -[NSApplicationDelegate application:willPresentError:]
+          -[NSApplicationDelegate application:didRegisterForRemoteNotificationsWithDeviceToken:]
+          -[NSApplicationDelegate application:didFailToRegisterForRemoteNotificationsWithError:]
+          -[NSApplicationDelegate application:didReceiveRemoteNotification:]
+          -[NSApplicationDelegate applicationSupportsSecureRestorableState:]
+          -[NSApplicationDelegate application:handlerForIntent:]
+          -[NSApplicationDelegate application:willEncodeRestorableState:]
+          -[NSApplicationDelegate application:didDecodeRestorableState:]
+          -[NSApplicationDelegate application:willContinueUserActivityWithType:]
+          -[NSApplicationDelegate application:continueUserActivity:restorationHandler:]
+          -[NSApplicationDelegate application:didFailToContinueUserActivityWithType:error:]
+          -[NSApplicationDelegate application:didUpdateUserActivity:]
+          -[NSApplicationDelegate application:userDidAcceptCloudKitShareWithMetadata:]
+          -[NSApplicationDelegate application:delegateHandlesKey:]
+          -[NSApplicationDelegate applicationShouldAutomaticallyLocalizeKeyEquivalents:]
+          -[NSApplicationDelegate applicationWillFinishLaunching:]
+          -[NSApplicationDelegate applicationDidFinishLaunching:]
+          -[NSApplicationDelegate applicationWillHide:]
+          -[NSApplicationDelegate applicationDidHide:]
+          -[NSApplicationDelegate applicationWillUnhide:]
+          -[NSApplicationDelegate applicationDidUnhide:]
+          -[NSApplicationDelegate applicationWillBecomeActive:]
+          -[NSApplicationDelegate applicationDidBecomeActive:]
+          -[NSApplicationDelegate applicationWillResignActive:]
+          -[NSApplicationDelegate applicationDidResignActive:]
+          -[NSApplicationDelegate applicationWillUpdate:]
+          -[NSApplicationDelegate applicationDidUpdate:]
+          -[NSApplicationDelegate applicationWillTerminate:]
+          -[NSApplicationDelegate applicationDidChangeScreenParameters:]
+          -[NSApplicationDelegate applicationDidChangeOcclusionState:]
+          -[NSApplicationDelegate applicationProtectedDataWillBecomeUnavailable:]
+          -[NSApplicationDelegate applicationProtectedDataDidBecomeAvailable:]
+        @end
+        @protocol NSApplicationDelegateScenesPrivate : <NSApplicationDelegate>
+          -[NSApplicationDelegateScenesPrivate application:configurationForConnectingSceneSession:options:]
+          -[NSApplicationDelegateScenesPrivate application:didDiscardSceneSessions:]
+        @end
+        @protocol NSApplicationTestingDelegate : <NSApplicationDelegate>
+          -[NSApplicationTestingDelegate application:runTest:options:]
+        @end
+        @protocol NSWindowDelegate : <NSObject>
+          -[NSWindowDelegate windowShouldClose:]
+          -[NSWindowDelegate windowWillReturnFieldEditor:toObject:]
+          -[NSWindowDelegate windowWillResize:toSize:]
+          -[NSWindowDelegate windowWillUseStandardFrame:defaultFrame:]
+          -[NSWindowDelegate windowShouldZoom:toFrame:]
+          -[NSWindowDelegate windowWillReturnUndoManager:]
+          -[NSWindowDelegate window:willPositionSheet:usingRect:]
+          -[NSWindowDelegate window:shouldPopUpDocumentPathMenu:]
+          -[NSWindowDelegate window:shouldDragDocumentWithEvent:from:withPasteboard:]
+          -[NSWindowDelegate window:willUseFullScreenContentSize:]
+          -[NSWindowDelegate window:willUseFullScreenPresentationOptions:]
+          -[NSWindowDelegate customWindowsToEnterFullScreenForWindow:]
+          -[NSWindowDelegate window:startCustomAnimationToEnterFullScreenWithDuration:]
+          -[NSWindowDelegate windowDidFailToEnterFullScreen:]
+          -[NSWindowDelegate customWindowsToExitFullScreenForWindow:]
+          -[NSWindowDelegate window:startCustomAnimationToExitFullScreenWithDuration:]
+          -[NSWindowDelegate customWindowsToEnterFullScreenForWindow:onScreen:]
+          -[NSWindowDelegate window:startCustomAnimationToEnterFullScreenOnScreen:withDuration:]
+          -[NSWindowDelegate windowDidFailToExitFullScreen:]
+          -[NSWindowDelegate window:willResizeForVersionBrowserWithMaxPreferredSize:maxAllowedSize:]
+          -[NSWindowDelegate window:willEncodeRestorableState:]
+          -[NSWindowDelegate window:didDecodeRestorableState:]
+          -[NSWindowDelegate previewRepresentableActivityItemsForWindow:]
+          -[NSWindowDelegate windowForSharingRequestFromWindow:]
+          -[NSWindowDelegate windowDidResize:]
+          -[NSWindowDelegate windowDidExpose:]
+          -[NSWindowDelegate windowWillMove:]
+          -[NSWindowDelegate windowDidMove:]
+          -[NSWindowDelegate windowDidBecomeKey:]
+          -[NSWindowDelegate windowDidResignKey:]
+          -[NSWindowDelegate windowDidBecomeMain:]
+          -[NSWindowDelegate windowDidResignMain:]
+          -[NSWindowDelegate windowWillClose:]
+          -[NSWindowDelegate windowWillMiniaturize:]
+          -[NSWindowDelegate windowDidMiniaturize:]
+          -[NSWindowDelegate windowDidDeminiaturize:]
+          -[NSWindowDelegate windowDidUpdate:]
+          -[NSWindowDelegate windowDidChangeScreen:]
+          -[NSWindowDelegate windowDidChangeScreenProfile:]
+          -[NSWindowDelegate windowDidChangeBackingProperties:]
+          -[NSWindowDelegate windowWillBeginSheet:]
+          -[NSWindowDelegate windowDidEndSheet:]
+          -[NSWindowDelegate windowWillStartLiveResize:]
+          -[NSWindowDelegate windowDidEndLiveResize:]
+          -[NSWindowDelegate windowWillEnterFullScreen:]
+          -[NSWindowDelegate windowDidEnterFullScreen:]
+          -[NSWindowDelegate windowWillExitFullScreen:]
+          -[NSWindowDelegate windowDidExitFullScreen:]
+          -[NSWindowDelegate windowWillEnterVersionBrowser:]
+          -[NSWindowDelegate windowDidEnterVersionBrowser:]
+          -[NSWindowDelegate windowWillExitVersionBrowser:]
+          -[NSWindowDelegate windowDidExitVersionBrowser:]
+          -[NSWindowDelegate windowDidChangeOcclusionState:]
+        @end
+        @protocol SCControlCenterManagerObserver : <NSObject>
+          -[SCControlCenterManagerObserver controlCenterManager:streamDidStart:]
+          -[SCControlCenterManagerObserver controlCenterManager:streamDidChange:]
+          -[SCControlCenterManagerObserver controlCenterManager:streamDidEnd:]
+          -[SCControlCenterManagerObserver controlCenterManager:didAddPicker:]
+          -[SCControlCenterManagerObserver controlCenterManager:startPickingForPicker:forStream:withFilter:]
+          -[SCControlCenterManagerObserver controlCenterManager:startPickingForPicker:forStream:withContentStyle:]
+          -[SCControlCenterManagerObserver controlCenterManager:pickerDidChange:]
+          -[SCControlCenterManagerObserver controlCenterManager:didRemovePicker:]
+          -[SCControlCenterManagerObserver controlCenterManager:serverDiedWithError:]
+          -[SCControlCenterManagerObserver controlCenterManagerLegacyStreamBundleIdentifiersDidChange:]
+          -[SCControlCenterManagerObserver controlCenterManager:screenCapturePrivacyHintRequiredForBundleID:userInfo:]
+        @end
+        @protocol SCPreviewDelegate : <NSObject>
+          -[SCPreviewDelegate previewDidReceiveFirstFrame:]
+          -[SCPreviewDelegate preview:didPause:]
+          -[SCPreviewDelegate previewDidStop:]
+          -[SCPreviewDelegate previewAttributesDidChange:]
+          -[SCPreviewDelegate previewServerDied:]
+        @end
+        @protocol NSWindowDelegate : <NSObject>
+          -[NSWindowDelegate windowShouldClose:]
+          -[NSWindowDelegate windowWillReturnFieldEditor:toObject:]
+          -[NSWindowDelegate windowWillResize:toSize:]
+          -[NSWindowDelegate windowWillUseStandardFrame:defaultFrame:]
+          -[NSWindowDelegate windowShouldZoom:toFrame:]
+          -[NSWindowDelegate windowWillReturnUndoManager:]
+          -[NSWindowDelegate window:willPositionSheet:usingRect:]
+          -[NSWindowDelegate window:shouldPopUpDocumentPathMenu:]
+          -[NSWindowDelegate window:shouldDragDocumentWithEvent:from:withPasteboard:]
+          -[NSWindowDelegate window:willUseFullScreenContentSize:]
+          -[NSWindowDelegate window:willUseFullScreenPresentationOptions:]
+          -[NSWindowDelegate customWindowsToEnterFullScreenForWindow:]
+          -[NSWindowDelegate window:startCustomAnimationToEnterFullScreenWithDuration:]
+          -[NSWindowDelegate windowDidFailToEnterFullScreen:]
+          -[NSWindowDelegate customWindowsToExitFullScreenForWindow:]
+          -[NSWindowDelegate window:startCustomAnimationToExitFullScreenWithDuration:]
+          -[NSWindowDelegate customWindowsToEnterFullScreenForWindow:onScreen:]
+          -[NSWindowDelegate window:startCustomAnimationToEnterFullScreenOnScreen:withDuration:]
+          -[NSWindowDelegate windowDidFailToExitFullScreen:]
+          -[NSWindowDelegate window:willResizeForVersionBrowserWithMaxPreferredSize:maxAllowedSize:]
+          -[NSWindowDelegate window:willEncodeRestorableState:]
+          -[NSWindowDelegate window:didDecodeRestorableState:]
+          -[NSWindowDelegate previewRepresentableActivityItemsForWindow:]
+          -[NSWindowDelegate windowForSharingRequestFromWindow:]
+          -[NSWindowDelegate windowDidResize:]
+          -[NSWindowDelegate windowDidExpose:]
+          -[NSWindowDelegate windowWillMove:]
+          -[NSWindowDelegate windowDidMove:]
+          -[NSWindowDelegate windowDidBecomeKey:]
+          -[NSWindowDelegate windowDidResignKey:]
+          -[NSWindowDelegate windowDidBecomeMain:]
+          -[NSWindowDelegate windowDidResignMain:]
+          -[NSWindowDelegate windowWillClose:]
+          -[NSWindowDelegate windowWillMiniaturize:]
+          -[NSWindowDelegate windowDidMiniaturize:]
+          -[NSWindowDelegate windowDidDeminiaturize:]
+          -[NSWindowDelegate windowDidUpdate:]
+          -[NSWindowDelegate windowDidChangeScreen:]
+          -[NSWindowDelegate windowDidChangeScreenProfile:]
+          -[NSWindowDelegate windowDidChangeBackingProperties:]
+          -[NSWindowDelegate windowWillBeginSheet:]
+          -[NSWindowDelegate windowDidEndSheet:]
+          -[NSWindowDelegate windowWillStartLiveResize:]
+          -[NSWindowDelegate windowDidEndLiveResize:]
+          -[NSWindowDelegate windowWillEnterFullScreen:]
+          -[NSWindowDelegate windowDidEnterFullScreen:]
+          -[NSWindowDelegate windowWillExitFullScreen:]
+          -[NSWindowDelegate windowDidExitFullScreen:]
+          -[NSWindowDelegate windowWillEnterVersionBrowser:]
+          -[NSWindowDelegate windowDidEnterVersionBrowser:]
+          -[NSWindowDelegate windowWillExitVersionBrowser:]
+          -[NSWindowDelegate windowDidExitVersionBrowser:]
+          -[NSWindowDelegate windowDidChangeOcclusionState:]
+        @end
+        @protocol SCControlCenterManagerObserver : <NSObject>
+          -[SCControlCenterManagerObserver controlCenterManager:streamDidStart:]
+          -[SCControlCenterManagerObserver controlCenterManager:streamDidChange:]
+          -[SCControlCenterManagerObserver controlCenterManager:streamDidEnd:]
+          -[SCControlCenterManagerObserver controlCenterManager:didAddPicker:]
+          -[SCControlCenterManagerObserver controlCenterManager:startPickingForPicker:forStream:withFilter:]
+          -[SCControlCenterManagerObserver controlCenterManager:startPickingForPicker:forStream:withContentStyle:]
+          -[SCControlCenterManagerObserver controlCenterManager:pickerDidChange:]
+          -[SCControlCenterManagerObserver controlCenterManager:didRemovePicker:]
+          -[SCControlCenterManagerObserver controlCenterManager:serverDiedWithError:]
+          -[SCControlCenterManagerObserver controlCenterManagerLegacyStreamBundleIdentifiersDidChange:]
+          -[SCControlCenterManagerObserver controlCenterManager:screenCapturePrivacyHintRequiredForBundleID:userInfo:]
+        @end
+        @protocol SCPreviewDelegate : <NSObject>
+          -[SCPreviewDelegate previewDidReceiveFirstFrame:]
+          -[SCPreviewDelegate preview:didPause:]
+          -[SCPreviewDelegate previewDidStop:]
+          -[SCPreviewDelegate previewAttributesDidChange:]
+          -[SCPreviewDelegate previewServerDied:]
+        @end
+        @protocol NSMenuDelegate : <NSObject>
+          -[NSMenuDelegate menuNeedsUpdate:]
+          -[NSMenuDelegate numberOfItemsInMenu:]
+          -[NSMenuDelegate menu:updateItem:atIndex:shouldCancel:]
+          -[NSMenuDelegate menuHasKeyEquivalent:forEvent:target:action:]
+          -[NSMenuDelegate menuWillOpen:]
+          -[NSMenuDelegate menuDidClose:]
+          -[NSMenuDelegate menu:willHighlightItem:]
+          -[NSMenuDelegate confinementRectForMenu:onScreen:]
+        @end
+        @protocol NSMenuDelegate : <NSObject>
+          -[NSMenuDelegate menuNeedsUpdate:]
+          -[NSMenuDelegate numberOfItemsInMenu:]
+          -[NSMenuDelegate menu:updateItem:atIndex:shouldCancel:]
+          -[NSMenuDelegate menuHasKeyEquivalent:forEvent:target:action:]
+          -[NSMenuDelegate menuWillOpen:]
+          -[NSMenuDelegate menuDidClose:]
+          -[NSMenuDelegate menu:willHighlightItem:]
+          -[NSMenuDelegate confinementRectForMenu:onScreen:]
+        @end
+        @protocol FCActivityManagerObserving : <NSObject>
+          -[FCActivityManagerObserving availableActivitiesDidChangeForManager:]
+          -[FCActivityManagerObserving activityManager:lifetimeDescriptionsDidChangeForActivity:]
+          -[FCActivityManagerObserving activeActivityDidChangeForManager:]
+          -[FCActivityManagerObserving activeActivityLifetimeDidChangeForManager:]
+          -[FCActivityManagerObserving activeModeDidChangeForManager:]
+        @end
+        @protocol FCActivityManagerObserving : <NSObject>
+          -[FCActivityManagerObserving availableActivitiesDidChangeForManager:]
+          -[FCActivityManagerObserving activityManager:lifetimeDescriptionsDidChangeForActivity:]
+          -[FCActivityManagerObserving activeActivityDidChangeForManager:]
+          -[FCActivityManagerObserving activeActivityLifetimeDidChangeForManager:]
+          -[FCActivityManagerObserving activeModeDidChangeForManager:]
+        @end
+        @protocol NSSearchFieldDelegate : <NSTextFieldDelegate>
+          -[NSSearchFieldDelegate searchFieldDidStartSearching:]
+          -[NSSearchFieldDelegate searchFieldDidEndSearching:]
+        @end
+        @protocol NSSearchFieldDelegate : <NSTextFieldDelegate>
+          -[NSSearchFieldDelegate searchFieldDidStartSearching:]
+          -[NSSearchFieldDelegate searchFieldDidEndSearching:]
+        @end
+        @protocol NSTextFieldDelegate : <NSControlTextEditingDelegate>
+          -[NSTextFieldDelegate textField:textView:candidatesForSelectedRange:]
+          -[NSTextFieldDelegate textField:textView:candidates:forSelectedRange:]
+          -[NSTextFieldDelegate textField:textView:shouldSelectCandidateAtIndex:]
+        @end
+        @protocol NSTextFieldDelegate : <NSControlTextEditingDelegate>
+          -[NSTextFieldDelegate textField:textView:candidatesForSelectedRange:]
+          -[NSTextFieldDelegate textField:textView:candidates:forSelectedRange:]
+          -[NSTextFieldDelegate textField:textView:shouldSelectCandidateAtIndex:]
+        @end
+        @protocol NSControlTextEditingDelegate : <NSObject>
+          -[NSControlTextEditingDelegate controlTextDidBeginEditing:]
+          -[NSControlTextEditingDelegate controlTextDidEndEditing:]
+          -[NSControlTextEditingDelegate controlTextDidChange:]
+          -[NSControlTextEditingDelegate control:textShouldBeginEditing:]
+          -[NSControlTextEditingDelegate control:textShouldEndEditing:]
+          -[NSControlTextEditingDelegate control:didFailToFormatString:errorDescription:]
+          -[NSControlTextEditingDelegate control:didFailToValidatePartialString:errorDescription:]
+          -[NSControlTextEditingDelegate control:isValidObject:]
+          -[NSControlTextEditingDelegate control:textView:doCommandBySelector:]
+          -[NSControlTextEditingDelegate control:textView:completions:forPartialWordRange:indexOfSelectedItem:]
+        @end
+        @protocol NSControlTextEditingDelegate : <NSObject>
+          -[NSControlTextEditingDelegate controlTextDidBeginEditing:]
+          -[NSControlTextEditingDelegate controlTextDidEndEditing:]
+          -[NSControlTextEditingDelegate controlTextDidChange:]
+          -[NSControlTextEditingDelegate control:textShouldBeginEditing:]
+          -[NSControlTextEditingDelegate control:textShouldEndEditing:]
+          -[NSControlTextEditingDelegate control:didFailToFormatString:errorDescription:]
+          -[NSControlTextEditingDelegate control:didFailToValidatePartialString:errorDescription:]
+          -[NSControlTextEditingDelegate control:isValidObject:]
+          -[NSControlTextEditingDelegate control:textView:doCommandBySelector:]
+          -[NSControlTextEditingDelegate control:textView:completions:forPartialWordRange:indexOfSelectedItem:]
+        @end
+        @protocol _TtP18ActivityUIServices27ActivityAlertClientDelegate_ : <NSObject>
+          -[_TtP18ActivityUIServices27ActivityAlertClientDelegate_ activityWithAlertClient:presentAlertProvider:completion:]
+          -[_TtP18ActivityUIServices27ActivityAlertClientDelegate_ activityWithAlertClient:dismissAlertProvider:]
+          -[_TtP18ActivityUIServices27ActivityAlertClientDelegate_ activityWithAlertClient:didPresentAlertProvider:]
+        @end
+        @protocol SFAirDropDiscoveryControllerDelegate : <NSObject>
+          -[SFAirDropDiscoveryControllerDelegate discoveryControllerSettingsDidChange:]
+          -[SFAirDropDiscoveryControllerDelegate discoveryControllerVisibilityDidChange:]
+          -[SFAirDropDiscoveryControllerDelegate discoveryControllerLegacyModePropertiesDidChange:]
+        @end
+        @protocol SFAirDropDiscoveryControllerDelegate : <NSObject>
+          -[SFAirDropDiscoveryControllerDelegate discoveryControllerSettingsDidChange:]
+          -[SFAirDropDiscoveryControllerDelegate discoveryControllerVisibilityDidChange:]
+          -[SFAirDropDiscoveryControllerDelegate discoveryControllerLegacyModePropertiesDidChange:]
+        @end
+        @protocol SCStreamOutput : <NSObject>
+          -[SCStreamOutput stream:didOutputSampleBuffer:ofType:]
+        @end
+        @protocol SCStreamOutput : <NSObject>
+          -[SCStreamOutput stream:didOutputSampleBuffer:ofType:]
+        @end
+        @protocol NCNotificationCenterMenuClient : <NSObject>
+          -[NCNotificationCenterMenuClient ncMenuNavigateInDirection:]
+        @end
+        @protocol NCNotificationCenterMenuClient : <NSObject>
+          -[NCNotificationCenterMenuClient ncMenuNavigateInDirection:]
+        @end
+        @protocol NSStatusItemHostListenerDelegate : <NSObject>
+          -[NSStatusItemHostListenerDelegate statusItemListener:addedStatusItemHost:]
+        @end
+        @protocol NSStatusItemHostDelegate : <NSObject>
+          -[NSStatusItemHostDelegate didInvalidateStatusItemHost:]
+          -[NSStatusItemHostDelegate clearPersistentStateForHost:]
+          -[NSStatusItemHostDelegate didNavigateLeftForHost:]
+          -[NSStatusItemHostDelegate didNavigateRightForHost:]
+          -[NSStatusItemHostDelegate didCancelNavigationForHost:timestamp:]
+          -[NSStatusItemHostDelegate didRequestNavigationForHost:]
+          -[NSStatusItemHostDelegate willBeginDecodingClientState:]
+          -[NSStatusItemHostDelegate didCompleteDecodingClientState:]
+        @end
+        @protocol NSStatusItemHostListenerDelegate : <NSObject>
+          -[NSStatusItemHostListenerDelegate statusItemListener:addedStatusItemHost:]
+        @end
+        @protocol NSStatusItemHostDelegate : <NSObject>
+          -[NSStatusItemHostDelegate didInvalidateStatusItemHost:]
+          -[NSStatusItemHostDelegate clearPersistentStateForHost:]
+          -[NSStatusItemHostDelegate didNavigateLeftForHost:]
+          -[NSStatusItemHostDelegate didNavigateRightForHost:]
+          -[NSStatusItemHostDelegate didCancelNavigationForHost:timestamp:]
+          -[NSStatusItemHostDelegate didRequestNavigationForHost:]
+          -[NSStatusItemHostDelegate willBeginDecodingClientState:]
+          -[NSStatusItemHostDelegate didCompleteDecodingClientState:]
+        @end
+        @protocol CHSWidgetExtensionProviderObserver : <NSObject>
+          -[CHSWidgetExtensionProviderObserver extensionsDidChangeForExtensionProvider:]
+        @end
+        @protocol CHSWidgetExtensionProviderObserver : <NSObject>
+          -[CHSWidgetExtensionProviderObserver extensionsDidChangeForExtensionProvider:]
+        @end
+        @protocol SLWindowMirroringManagerDelegate : <NSObject>
+          -[SLWindowMirroringManagerDelegate windowMirroringManager:tvConnected:needsAlert:]
+          -[SLWindowMirroringManagerDelegate windowMirroringManager:tvDisconnected:]
+          -[SLWindowMirroringManagerDelegate windowMirroringManager:shieldWindowRemoved:]
+          -[SLWindowMirroringManagerDelegate windowMirroringManager:contentLost:]
+          -[SLWindowMirroringManagerDelegate windowMirroringManager:contentChanged:]
+        @end
+        @protocol SLWindowMirroringManagerDelegate : <NSObject>
+          -[SLWindowMirroringManagerDelegate windowMirroringManager:tvConnected:needsAlert:]
+          -[SLWindowMirroringManagerDelegate windowMirroringManager:tvDisconnected:]
+          -[SLWindowMirroringManagerDelegate windowMirroringManager:shieldWindowRemoved:]
+          -[SLWindowMirroringManagerDelegate windowMirroringManager:contentLost:]
+          -[SLWindowMirroringManagerDelegate windowMirroringManager:contentChanged:]
+        @end
+        @protocol CRKScreenObservationMonitorDelegate : <NSObject>
+          -[CRKScreenObservationMonitorDelegate screenObservationMonitor:observationStatusDidChange:]
+        @end
+        @protocol CRKScreenObservationMonitorDelegate : <NSObject>
+          -[CRKScreenObservationMonitorDelegate screenObservationMonitor:observationStatusDidChange:]
+        @end
+        @protocol NSStatusItemDelegate : <NSObject>
+          -[NSStatusItemDelegate userRemovedStatusItem:]
+          -[NSStatusItemDelegate userReturnedStatusItemToBar:]
+          -[NSStatusItemDelegate creationDragFailed:]
+          -[NSStatusItemDelegate statusItemContentViewsDidChange:]
+          -[NSStatusItemDelegate createReplicantViewOfStatusItem:]
+        @end
+        @protocol NSLocalStatusItemDelegate : <NSStatusItemDelegate>
+          -[NSLocalStatusItemDelegate dragReservesSpaceInStatusBarForStatusItem:atLocation:]
+          -[NSLocalStatusItemDelegate dragCompletedForStatusItem:atLocation:]
+          -[NSLocalStatusItemDelegate updateDragOperationForStatusItem:atLocation:]
+          -[NSLocalStatusItemDelegate dragCompletedForStatusItem:atLocation:withOperation:]
+        @end
+        @protocol NSStatusItemDelegate : <NSObject>
+          -[NSStatusItemDelegate userRemovedStatusItem:]
+          -[NSStatusItemDelegate userReturnedStatusItemToBar:]
+          -[NSStatusItemDelegate creationDragFailed:]
+          -[NSStatusItemDelegate statusItemContentViewsDidChange:]
+          -[NSStatusItemDelegate createReplicantViewOfStatusItem:]
+        @end
+        @protocol NSLocalStatusItemDelegate : <NSStatusItemDelegate>
+          -[NSLocalStatusItemDelegate dragReservesSpaceInStatusBarForStatusItem:atLocation:]
+          -[NSLocalStatusItemDelegate dragCompletedForStatusItem:atLocation:]
+          -[NSLocalStatusItemDelegate updateDragOperationForStatusItem:atLocation:]
+          -[NSLocalStatusItemDelegate dragCompletedForStatusItem:atLocation:withOperation:]
+        @end
+        @protocol SystemBannerServiceProtocol : 
+          -[SystemBannerServiceProtocol showDisplayBrightness:value:max:isEnabled:]
+          -[SystemBannerServiceProtocol showKeyboardBrightness:max:isEnabled:]
+          -[SystemBannerServiceProtocol showVolume:max:isEnabled:]
+          -[SystemBannerServiceProtocol showMute:max:isEnabled:]
+          -[SystemBannerServiceProtocol showSmartRoutingConnectedWithUserInfo:]
+          -[SystemBannerServiceProtocol showSmartRoutingReverseRouteWithUserInfo:text:completion:]
+          -[SystemBannerServiceProtocol showSmartRoutingLowBattery:productID:forCase:imageBundleIdentifier:imageName:batteryLevel:]
+          -[SystemBannerServiceProtocol showListeningModeChangeWithUserInfo:]
+          -[SystemBannerServiceProtocol showAccessoryWithUserInfo:]
+          -[SystemBannerServiceProtocol showAccessory:text:]
+          -[SystemBannerServiceProtocol showAccessory:text:batteryLevel:]
+          -[SystemBannerServiceProtocol showFocusMode:isOn:]
+          -[SystemBannerServiceProtocol showLowBattery:]
+          -[SystemBannerServiceProtocol removeSmartRoutingForEvent:]
+          -[SystemBannerServiceProtocol showPowerState:flags:]
+        @end
+        @protocol NSXPCListenerDelegate : <NSObject>
+          -[NSXPCListenerDelegate listener:shouldAcceptNewConnection:]
+        @end
+        @protocol SystemBannerServiceProtocol : 
+          -[SystemBannerServiceProtocol showDisplayBrightness:value:max:isEnabled:]
+          -[SystemBannerServiceProtocol showKeyboardBrightness:max:isEnabled:]
+          -[SystemBannerServiceProtocol showVolume:max:isEnabled:]
+          -[SystemBannerServiceProtocol showMute:max:isEnabled:]
+          -[SystemBannerServiceProtocol showSmartRoutingConnectedWithUserInfo:]
+          -[SystemBannerServiceProtocol showSmartRoutingReverseRouteWithUserInfo:text:completion:]
+          -[SystemBannerServiceProtocol showSmartRoutingLowBattery:productID:forCase:imageBundleIdentifier:imageName:batteryLevel:]
+          -[SystemBannerServiceProtocol showListeningModeChangeWithUserInfo:]
+          -[SystemBannerServiceProtocol showAccessoryWithUserInfo:]
+          -[SystemBannerServiceProtocol showAccessory:text:]
+          -[SystemBannerServiceProtocol showAccessory:text:batteryLevel:]
+          -[SystemBannerServiceProtocol showFocusMode:isOn:]
+          -[SystemBannerServiceProtocol showLowBattery:]
+          -[SystemBannerServiceProtocol removeSmartRoutingForEvent:]
+          -[SystemBannerServiceProtocol showPowerState:flags:]
+        @end
+        @protocol NSXPCListenerDelegate : <NSObject>
+          -[NSXPCListenerDelegate listener:shouldAcceptNewConnection:]
+        @end
+        @protocol IRSessionDelegate : <NSObject>
+          -[IRSessionDelegate session:didFailWithError:]
+          -[IRSessionDelegate session:suspendedWithReason:]
+          -[IRSessionDelegate session:suspensionReasonEnded:isNoLongerSuspended:]
+          -[IRSessionDelegate session:didUpdateContext:]
+          -[IRSessionDelegate session:didUpdateBundlesWithSignificantInteractionPattern:]
+        @end
+        @protocol IRSessionDelegate : <NSObject>
+          -[IRSessionDelegate session:didFailWithError:]
+          -[IRSessionDelegate session:suspendedWithReason:]
+          -[IRSessionDelegate session:suspensionReasonEnded:isNoLongerSuspended:]
+          -[IRSessionDelegate session:didUpdateContext:]
+          -[IRSessionDelegate session:didUpdateBundlesWithSignificantInteractionPattern:]
+        @end
+        @protocol CWEventDelegate : 
+          -[CWEventDelegate clientConnectionInterrupted]
+          -[CWEventDelegate clientConnectionInvalidated]
+          -[CWEventDelegate powerStateDidChangeForWiFiInterfaceWithName:]
+          -[CWEventDelegate ssidDidChangeForWiFiInterfaceWithName:]
+          -[CWEventDelegate bssidDidChangeForWiFiInterfaceWithName:]
+          -[CWEventDelegate countryCodeDidChangeForWiFiInterfaceWithName:]
+          -[CWEventDelegate linkDidChangeForWiFiInterfaceWithName:]
+          -[CWEventDelegate linkQualityDidChangeForWiFiInterfaceWithName:rssi:transmitRate:]
+          -[CWEventDelegate modeDidChangeForWiFiInterfaceWithName:]
+          -[CWEventDelegate scanCacheUpdatedForWiFiInterfaceWithName:]
+        @end
+        @protocol CWWiFiUIProxyClientDelegate : <NSObject>
+          -[CWWiFiUIProxyClientDelegate clientConnectionInterrupted]
+          -[CWWiFiUIProxyClientDelegate clientConnectionInvalidated]
+          -[CWWiFiUIProxyClientDelegate didCompleteDiagnostics:]
+          -[CWWiFiUIProxyClientDelegate didFindScanResults:]
+          -[CWWiFiUIProxyClientDelegate didUpdateUIState:previous:]
+          -[CWWiFiUIProxyClientDelegate showJoinUIWithScanResult:previousError:previousPassword:supportsWiFiPasswordSharing:remember:uuid:]
+          -[CWWiFiUIProxyClientDelegate didReceiveSharedPassword:uuid:]
+          -[CWWiFiUIProxyClientDelegate showSecurityMismatchUIWithScanResult:uuid:]
+          -[CWWiFiUIProxyClientDelegate showLimitedNetworkOptionUIForScanResult:candidates:uuid:]
+          -[CWWiFiUIProxyClientDelegate showWPSUIWithScanResult:pin:uuid:]
+          -[CWWiFiUIProxyClientDelegate showInfoUIWithTitle:description:uuid:]
+          -[CWWiFiUIProxyClientDelegate showErrorUIWithScanResult:uuid:]
+          -[CWWiFiUIProxyClientDelegate showLockdownModeUIWithScanResult:uuid:]
+          -[CWWiFiUIProxyClientDelegate dismissUIWithUUID:]
+          -[CWWiFiUIProxyClientDelegate updatedWiFiConfiguration:]
+        @end
+        @protocol CWEventDelegate : 
+          -[CWEventDelegate clientConnectionInterrupted]
+          -[CWEventDelegate clientConnectionInvalidated]
+          -[CWEventDelegate powerStateDidChangeForWiFiInterfaceWithName:]
+          -[CWEventDelegate ssidDidChangeForWiFiInterfaceWithName:]
+          -[CWEventDelegate bssidDidChangeForWiFiInterfaceWithName:]
+          -[CWEventDelegate countryCodeDidChangeForWiFiInterfaceWithName:]
+          -[CWEventDelegate linkDidChangeForWiFiInterfaceWithName:]
+          -[CWEventDelegate linkQualityDidChangeForWiFiInterfaceWithName:rssi:transmitRate:]
+          -[CWEventDelegate modeDidChangeForWiFiInterfaceWithName:]
+          -[CWEventDelegate scanCacheUpdatedForWiFiInterfaceWithName:]
+        @end
+        @protocol CWWiFiUIProxyClientDelegate : <NSObject>
+          -[CWWiFiUIProxyClientDelegate clientConnectionInterrupted]
+          -[CWWiFiUIProxyClientDelegate clientConnectionInvalidated]
+          -[CWWiFiUIProxyClientDelegate didCompleteDiagnostics:]
+          -[CWWiFiUIProxyClientDelegate didFindScanResults:]
+          -[CWWiFiUIProxyClientDelegate didUpdateUIState:previous:]
+          -[CWWiFiUIProxyClientDelegate showJoinUIWithScanResult:previousError:previousPassword:supportsWiFiPasswordSharing:remember:uuid:]
+          -[CWWiFiUIProxyClientDelegate didReceiveSharedPassword:uuid:]
+          -[CWWiFiUIProxyClientDelegate showSecurityMismatchUIWithScanResult:uuid:]
+          -[CWWiFiUIProxyClientDelegate showLimitedNetworkOptionUIForScanResult:candidates:uuid:]
+          -[CWWiFiUIProxyClientDelegate showWPSUIWithScanResult:pin:uuid:]
+          -[CWWiFiUIProxyClientDelegate showInfoUIWithTitle:description:uuid:]
+          -[CWWiFiUIProxyClientDelegate showErrorUIWithScanResult:uuid:]
+          -[CWWiFiUIProxyClientDelegate showLockdownModeUIWithScanResult:uuid:]
+          -[CWWiFiUIProxyClientDelegate dismissUIWithUUID:]
+          -[CWWiFiUIProxyClientDelegate updatedWiFiConfiguration:]
+        @end
+        @protocol OSDUIHelperProtocol : 
+          -[OSDUIHelperProtocol showImage:onDisplayID:priority:msecUntilFade:]
+          -[OSDUIHelperProtocol showImage:onDisplayID:priority:msecUntilFade:withText:]
+          -[OSDUIHelperProtocol showImage:onDisplayID:priority:msecUntilFade:filledChiclets:totalChiclets:locked:]
+          -[OSDUIHelperProtocol showImageAtPath:onDisplayID:priority:msecUntilFade:withText:]
+          -[OSDUIHelperProtocol fadeClassicImageOnDisplay:]
+          -[OSDUIHelperProtocol showFullScreenImage:onDisplayID:priority:msecToAnimate:]
+        @end
+        @protocol OSDUIHelperProtocol : 
+          -[OSDUIHelperProtocol showImage:onDisplayID:priority:msecUntilFade:]
+          -[OSDUIHelperProtocol showImage:onDisplayID:priority:msecUntilFade:withText:]
+          -[OSDUIHelperProtocol showImage:onDisplayID:priority:msecUntilFade:filledChiclets:totalChiclets:locked:]
+          -[OSDUIHelperProtocol showImageAtPath:onDisplayID:priority:msecUntilFade:withText:]
+          -[OSDUIHelperProtocol fadeClassicImageOnDisplay:]
+          -[OSDUIHelperProtocol showFullScreenImage:onDisplayID:priority:msecToAnimate:]
+        @end
+        @protocol UNUserNotificationCenterDelegate : <NSObject>
+          -[UNUserNotificationCenterDelegate userNotificationCenter:willPresentNotification:withCompletionHandler:]
+          -[UNUserNotificationCenterDelegate userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:]
+          -[UNUserNotificationCenterDelegate userNotificationCenter:openSettingsForNotification:]
+        @end
+        @protocol APRKStreamRendererDelegate : <NSObject>
+          -[APRKStreamRendererDelegate shouldShowPasscodePromptWithString:forRenderer:]
+          -[APRKStreamRendererDelegate shouldHidePasscodePromptForRenderer:]
+          -[APRKStreamRendererDelegate videoLayerSizeDidChangeTo:forRenderer:]
+          -[APRKStreamRendererDelegate videoLayerOrientationDidChangeTo:forRenderer:]
+          -[APRKStreamRendererDelegate didChangeStreamRendererModeTo:forRenderer:]
+          -[APRKStreamRendererDelegate recordingSessionDidFailForRenderer:]
+          -[APRKStreamRendererDelegate didUpdateMetadata:forRenderer:]
+          -[APRKStreamRendererDelegate handleSenderUIEvent:forRenderer:]
+          -[APRKStreamRendererDelegate videoStreamIsCleared:forRenderer:]
+        @end
+        @protocol APRKStreamRenderingManagerDelegate : <NSObject>
+          -[APRKStreamRenderingManagerDelegate didStartStreamingWithRenderer:]
+          -[APRKStreamRenderingManagerDelegate didStopStreamingWithRenderer:]
+          -[APRKStreamRenderingManagerDelegate shouldShowGlobalPasscodeWithString:withClientName:]
+          -[APRKStreamRenderingManagerDelegate shouldHideGlobalPasscode]
+          -[APRKStreamRenderingManagerDelegate shouldAskPermissionWithRequestID:forClientWithName:withCompletionBlock:]
+          -[APRKStreamRenderingManagerDelegate shouldCancelPermissionRequestWithRequestID:]
+        @end
+        @protocol UNUserNotificationCenterDelegate : <NSObject>
+          -[UNUserNotificationCenterDelegate userNotificationCenter:willPresentNotification:withCompletionHandler:]
+          -[UNUserNotificationCenterDelegate userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:]
+          -[UNUserNotificationCenterDelegate userNotificationCenter:openSettingsForNotification:]
+        @end
+        @protocol APRKStreamRendererDelegate : <NSObject>
+          -[APRKStreamRendererDelegate shouldShowPasscodePromptWithString:forRenderer:]
+          -[APRKStreamRendererDelegate shouldHidePasscodePromptForRenderer:]
+          -[APRKStreamRendererDelegate videoLayerSizeDidChangeTo:forRenderer:]
+          -[APRKStreamRendererDelegate videoLayerOrientationDidChangeTo:forRenderer:]
+          -[APRKStreamRendererDelegate didChangeStreamRendererModeTo:forRenderer:]
+          -[APRKStreamRendererDelegate recordingSessionDidFailForRenderer:]
+          -[APRKStreamRendererDelegate didUpdateMetadata:forRenderer:]
+          -[APRKStreamRendererDelegate handleSenderUIEvent:forRenderer:]
+          -[APRKStreamRendererDelegate videoStreamIsCleared:forRenderer:]
+        @end
+        @protocol APRKStreamRenderingManagerDelegate : <NSObject>
+          -[APRKStreamRenderingManagerDelegate didStartStreamingWithRenderer:]
+          -[APRKStreamRenderingManagerDelegate didStopStreamingWithRenderer:]
+          -[APRKStreamRenderingManagerDelegate shouldShowGlobalPasscodeWithString:withClientName:]
+          -[APRKStreamRenderingManagerDelegate shouldHideGlobalPasscode]
+          -[APRKStreamRenderingManagerDelegate shouldAskPermissionWithRequestID:forClientWithName:withCompletionBlock:]
+          -[APRKStreamRenderingManagerDelegate shouldCancelPermissionRequestWithRequestID:]
+        @end
+        @protocol _TtP13MenuBarClient36ControlCenterItemSceneClientSettings_ : 
+          -[_TtP13MenuBarClient36ControlCenterItemSceneClientSettings_ cci_isHighlighted]
+          -[_TtP13MenuBarClient36ControlCenterItemSceneClientSettings_ setCci_isHighlighted:]
+        @end
+        @protocol OS_xpc_object : <NSObject>
+        @end
+        @protocol OS_xpc_object : <NSObject>
+        @end
+        @protocol OS_dispatch_source_mach_recv : <OS_dispatch_source>
+        @end
+        @protocol OS_dispatch_source_mach_recv : <OS_dispatch_source>
+        @end
+        @protocol WFWidgetConfigurationViewControllerDelegate : <NSObject>
+          -[WFWidgetConfigurationViewControllerDelegate widgetConfigurationViewController:didFinishWithIntent:]
+          -[WFWidgetConfigurationViewControllerDelegate widgetConfigurationViewController:preferredContentSizeDidChange:]
+          -[WFWidgetConfigurationViewControllerDelegate widgetConfigurationViewControllerDidCancel:]
+        @end
+        @protocol WFWidgetConfigurationViewControllerDelegate : <NSObject>
+          -[WFWidgetConfigurationViewControllerDelegate widgetConfigurationViewController:didFinishWithIntent:]
+          -[WFWidgetConfigurationViewControllerDelegate widgetConfigurationViewController:preferredContentSizeDidChange:]
+          -[WFWidgetConfigurationViewControllerDelegate widgetConfigurationViewControllerDidCancel:]
+        @end
+        @protocol AXHADeviceProtocol : <NSObject>
+          -[AXHADeviceProtocol initWithPersistentRepresentation:]
+          -[AXHADeviceProtocol connect]
+          -[AXHADeviceProtocol disconnectAndUnpair:]
+          -[AXHADeviceProtocol leftAvailable]
+          -[AXHADeviceProtocol rightAvailable]
+          -[AXHADeviceProtocol isLeftConnected]
+          -[AXHADeviceProtocol isRightConnected]
+          -[AXHADeviceProtocol isConnected]
+          -[AXHADeviceProtocol hasConnection]
+          -[AXHADeviceProtocol containsPeripheralWithUUID:]
+          -[AXHADeviceProtocol didLoadBasicProperties]
+          -[AXHADeviceProtocol didLoadRequiredProperties]
+          -[AXHADeviceProtocol loadRequiredProperties]
+          -[AXHADeviceProtocol programs]
+          -[AXHADeviceProtocol selectProgram:forEar:]
+          -[AXHADeviceProtocol selectedPrograms]
+          -[AXHADeviceProtocol selectedProgramIndexes]
+          -[AXHADeviceProtocol setValue:forProperty:]
+          -[AXHADeviceProtocol valueForProperty:]
+          -[AXHADeviceProtocol deviceProtocol]
+          -[AXHADeviceProtocol isMFiDeviceProtocol]
+          -[AXHADeviceProtocol shortDescription]
+          -[AXHADeviceProtocol isPaired]
+          -[AXHADeviceProtocol isConnecting]
+          -[AXHADeviceProtocol advertisingEars]
+          -[AXHADeviceProtocol keepInSync]
+          -[AXHADeviceProtocol setKeepInSync:]
+          -[AXHADeviceProtocol name]
+          -[AXHADeviceProtocol manufacturer]
+          -[AXHADeviceProtocol model]
+          -[AXHADeviceProtocol leftFirmwareVersion]
+          -[AXHADeviceProtocol rightFirmwareVersion]
+          -[AXHADeviceProtocol leftHardwareVersion]
+          -[AXHADeviceProtocol rightHardwareVersion]
+          -[AXHADeviceProtocol availableEars]
+          -[AXHADeviceProtocol setAvailableEars:]
+          -[AXHADeviceProtocol rightUUID]
+          -[AXHADeviceProtocol leftUUID]
+          -[AXHADeviceProtocol leftPeripheralUUID]
+          -[AXHADeviceProtocol rightPeripheralUUID]
+          -[AXHADeviceProtocol leftLeaVersion]
+          -[AXHADeviceProtocol rightLeaVersion]
+          -[AXHADeviceProtocol rightMicrophoneVolume]
+          -[AXHADeviceProtocol setRightMicrophoneVolume:]
+          -[AXHADeviceProtocol leftMicrophoneVolume]
+          -[AXHADeviceProtocol setLeftMicrophoneVolume:]
+          -[AXHADeviceProtocol isMicrophoneMuted]
+          -[AXHADeviceProtocol setIsMicrophoneMuted:]
+          -[AXHADeviceProtocol rightStreamVolume]
+          -[AXHADeviceProtocol setRightStreamVolume:]
+          -[AXHADeviceProtocol leftStreamVolume]
+          -[AXHADeviceProtocol setLeftStreamVolume:]
+          -[AXHADeviceProtocol rightSensitivity]
+          -[AXHADeviceProtocol setRightSensitivity:]
+          -[AXHADeviceProtocol leftSensitivity]
+          -[AXHADeviceProtocol setLeftSensitivity:]
+          -[AXHADeviceProtocol rightMixedVolume]
+          -[AXHADeviceProtocol setRightMixedVolume:]
+          -[AXHADeviceProtocol leftMixedVolume]
+          -[AXHADeviceProtocol setLeftMixedVolume:]
+          -[AXHADeviceProtocol rightTreble]
+          -[AXHADeviceProtocol setRightTreble:]
+          -[AXHADeviceProtocol leftTreble]
+          -[AXHADeviceProtocol setLeftTreble:]
+          -[AXHADeviceProtocol rightBass]
+          -[AXHADeviceProtocol setRightBass:]
+          -[AXHADeviceProtocol leftBass]
+          -[AXHADeviceProtocol setLeftBass:]
+          -[AXHADeviceProtocol rightBatteryLevel]
+          -[AXHADeviceProtocol leftBatteryLevel]
+          -[AXHADeviceProtocol leftBatteryLowDate]
+          -[AXHADeviceProtocol rightBatteryLowDate]
+          -[AXHADeviceProtocol leftMicrophoneVolumeSteps]
+          -[AXHADeviceProtocol rightMicrophoneVolumeSteps]
+          -[AXHADeviceProtocol leftStreamVolumeSteps]
+          -[AXHADeviceProtocol rightStreamVolumeSteps]
+          -[AXHADeviceProtocol leftSensitivitySteps]
+          -[AXHADeviceProtocol rightSensitivitySteps]
+          -[AXHADeviceProtocol leftMixedVolumeSteps]
+          -[AXHADeviceProtocol rightMixedVolumeSteps]
+          -[AXHADeviceProtocol supportsBinauralStreaming]
+          -[AXHADeviceProtocol supportsCombinedPresets]
+          -[AXHADeviceProtocol supportsCombinedVolumes]
+          -[AXHADeviceProtocol requiresBinauralStreaming]
+          -[AXHADeviceProtocol requiresCombinedPresets]
+          -[AXHADeviceProtocol requiresCombinedVolumes]
+          -[AXHADeviceProtocol rightPrograms]
+          -[AXHADeviceProtocol leftPrograms]
+          -[AXHADeviceProtocol leftSelectedProgram]
+          -[AXHADeviceProtocol rightSelectedProgram]
+          -[AXHADeviceProtocol leftSelectedStreamingProgram]
+          -[AXHADeviceProtocol rightSelectedStreamingProgram]
+          -[AXHADeviceProtocol availableInputEars]
+          -[AXHADeviceProtocol earsSupportingWatch]
+          -[AXHADeviceProtocol leftVolumeInputGain]
+          -[AXHADeviceProtocol setLeftVolumeInputGain:]
+          -[AXHADeviceProtocol rightVolumeInputGain]
+          -[AXHADeviceProtocol setRightVolumeInputGain:]
+          -[AXHADeviceProtocol leftMicrophoneInputGain]
+          -[AXHADeviceProtocol setLeftMicrophoneInputGain:]
+          -[AXHADeviceProtocol rightMicrophoneInputGain]
+          -[AXHADeviceProtocol setRightMicrophoneInputGain:]
+          -[AXHADeviceProtocol RSSI]
+          -[AXHADeviceProtocol deviceUUID]
+        @end
+        @protocol AXHADeviceProtocol : <NSObject>
+          -[AXHADeviceProtocol initWithPersistentRepresentation:]
+          -[AXHADeviceProtocol connect]
+          -[AXHADeviceProtocol disconnectAndUnpair:]
+          -[AXHADeviceProtocol leftAvailable]
+          -[AXHADeviceProtocol rightAvailable]
+          -[AXHADeviceProtocol isLeftConnected]
+          -[AXHADeviceProtocol isRightConnected]
+          -[AXHADeviceProtocol isConnected]
+          -[AXHADeviceProtocol hasConnection]
+          -[AXHADeviceProtocol containsPeripheralWithUUID:]
+          -[AXHADeviceProtocol didLoadBasicProperties]
+          -[AXHADeviceProtocol didLoadRequiredProperties]
+          -[AXHADeviceProtocol loadRequiredProperties]
+          -[AXHADeviceProtocol programs]
+          -[AXHADeviceProtocol selectProgram:forEar:]
+          -[AXHADeviceProtocol selectedPrograms]
+          -[AXHADeviceProtocol selectedProgramIndexes]
+          -[AXHADeviceProtocol setValue:forProperty:]
+          -[AXHADeviceProtocol valueForProperty:]
+          -[AXHADeviceProtocol deviceProtocol]
+          -[AXHADeviceProtocol isMFiDeviceProtocol]
+          -[AXHADeviceProtocol shortDescription]
+          -[AXHADeviceProtocol isPaired]
+          -[AXHADeviceProtocol isConnecting]
+          -[AXHADeviceProtocol advertisingEars]
+          -[AXHADeviceProtocol keepInSync]
+          -[AXHADeviceProtocol setKeepInSync:]
+          -[AXHADeviceProtocol name]
+          -[AXHADeviceProtocol manufacturer]
+          -[AXHADeviceProtocol model]
+          -[AXHADeviceProtocol leftFirmwareVersion]
+          -[AXHADeviceProtocol rightFirmwareVersion]
+          -[AXHADeviceProtocol leftHardwareVersion]
+          -[AXHADeviceProtocol rightHardwareVersion]
+          -[AXHADeviceProtocol availableEars]
+          -[AXHADeviceProtocol setAvailableEars:]
+          -[AXHADeviceProtocol rightUUID]
+          -[AXHADeviceProtocol leftUUID]
+          -[AXHADeviceProtocol leftPeripheralUUID]
+          -[AXHADeviceProtocol rightPeripheralUUID]
+          -[AXHADeviceProtocol leftLeaVersion]
+          -[AXHADeviceProtocol rightLeaVersion]
+          -[AXHADeviceProtocol rightMicrophoneVolume]
+          -[AXHADeviceProtocol setRightMicrophoneVolume:]
+          -[AXHADeviceProtocol leftMicrophoneVolume]
+          -[AXHADeviceProtocol setLeftMicrophoneVolume:]
+          -[AXHADeviceProtocol isMicrophoneMuted]
+          -[AXHADeviceProtocol setIsMicrophoneMuted:]
+          -[AXHADeviceProtocol rightStreamVolume]
+          -[AXHADeviceProtocol setRightStreamVolume:]
+          -[AXHADeviceProtocol leftStreamVolume]
+          -[AXHADeviceProtocol setLeftStreamVolume:]
+          -[AXHADeviceProtocol rightSensitivity]
+          -[AXHADeviceProtocol setRightSensitivity:]
+          -[AXHADeviceProtocol leftSensitivity]
+          -[AXHADeviceProtocol setLeftSensitivity:]
+          -[AXHADeviceProtocol rightMixedVolume]
+          -[AXHADeviceProtocol setRightMixedVolume:]
+          -[AXHADeviceProtocol leftMixedVolume]
+          -[AXHADeviceProtocol setLeftMixedVolume:]
+          -[AXHADeviceProtocol rightTreble]
+          -[AXHADeviceProtocol setRightTreble:]
+          -[AXHADeviceProtocol leftTreble]
+          -[AXHADeviceProtocol setLeftTreble:]
+          -[AXHADeviceProtocol rightBass]
+          -[AXHADeviceProtocol setRightBass:]
+          -[AXHADeviceProtocol leftBass]
+          -[AXHADeviceProtocol setLeftBass:]
+          -[AXHADeviceProtocol rightBatteryLevel]
+          -[AXHADeviceProtocol leftBatteryLevel]
+          -[AXHADeviceProtocol leftBatteryLowDate]
+          -[AXHADeviceProtocol rightBatteryLowDate]
+          -[AXHADeviceProtocol leftMicrophoneVolumeSteps]
+          -[AXHADeviceProtocol rightMicrophoneVolumeSteps]
+          -[AXHADeviceProtocol leftStreamVolumeSteps]
+          -[AXHADeviceProtocol rightStreamVolumeSteps]
+          -[AXHADeviceProtocol leftSensitivitySteps]
+          -[AXHADeviceProtocol rightSensitivitySteps]
+          -[AXHADeviceProtocol leftMixedVolumeSteps]
+          -[AXHADeviceProtocol rightMixedVolumeSteps]
+          -[AXHADeviceProtocol supportsBinauralStreaming]
+          -[AXHADeviceProtocol supportsCombinedPresets]
+          -[AXHADeviceProtocol supportsCombinedVolumes]
+          -[AXHADeviceProtocol requiresBinauralStreaming]
+          -[AXHADeviceProtocol requiresCombinedPresets]
+          -[AXHADeviceProtocol requiresCombinedVolumes]
+          -[AXHADeviceProtocol rightPrograms]
+          -[AXHADeviceProtocol leftPrograms]
+          -[AXHADeviceProtocol leftSelectedProgram]
+          -[AXHADeviceProtocol rightSelectedProgram]
+          -[AXHADeviceProtocol leftSelectedStreamingProgram]
+          -[AXHADeviceProtocol rightSelectedStreamingProgram]
+          -[AXHADeviceProtocol availableInputEars]
+          -[AXHADeviceProtocol earsSupportingWatch]
+          -[AXHADeviceProtocol leftVolumeInputGain]
+          -[AXHADeviceProtocol setLeftVolumeInputGain:]
+          -[AXHADeviceProtocol rightVolumeInputGain]
+          -[AXHADeviceProtocol setRightVolumeInputGain:]
+          -[AXHADeviceProtocol leftMicrophoneInputGain]
+          -[AXHADeviceProtocol setLeftMicrophoneInputGain:]
+          -[AXHADeviceProtocol rightMicrophoneInputGain]
+          -[AXHADeviceProtocol setRightMicrophoneInputGain:]
+          -[AXHADeviceProtocol RSSI]
+          -[AXHADeviceProtocol deviceUUID]
+        @end
+        @protocol AXHAServerDelegate : <AXHeardServerDelegate>
+          -[AXHAServerDelegate hearingAidConnectionDidChange:]
+        @end
+        @protocol AXHeardServerDelegate : <NSObject>
+          -[AXHeardServerDelegate hearingServerDidDie:]
+          -[AXHeardServerDelegate hearingServerIsReady]
+        @end
+        @protocol AXHAServerDelegate : <AXHeardServerDelegate>
+          -[AXHAServerDelegate hearingAidConnectionDidChange:]
+        @end
+        @protocol AXHeardServerDelegate : <NSObject>
+          -[AXHeardServerDelegate hearingServerDidDie:]
+          -[AXHeardServerDelegate hearingServerIsReady]
+        @end
