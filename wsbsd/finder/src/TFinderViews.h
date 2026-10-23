@@ -146,4 +146,4 @@ NSImage *TFIcon(NSString *path);
 @interface TWindowTrim : NSView @end
 
 /* a borderless window the Finder moves and resizes itself */
-@interface TFinderWindow : NSWindow { BOOL _zoomed; NSRect _savedFrame; } @end
+@interface TFinderWindow : NSWindow { BOOL _zoomed, _mini; NSRect _savedFrame; } @end
