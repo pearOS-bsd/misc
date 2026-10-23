@@ -154,6 +154,12 @@ NSImage *TFIcon(NSString *path);
 /* the preview pane (View > Show Preview): the picture, name, kind, size and information of the selected file, or a count for several */
 @interface TPreviewPane : NSView { @public NSArray *paths; NSString *folder; } @end
 
+/* the desktop picture */
+NSString *TFWallpaperPath(void);
+NSImage *TFWallpaperImage(void);
+void TFWriteWallpaperGrid(NSSize screen);
+@interface TWallpaperView : NSView @end
+
 /* the root view of a Finder window: files dragged in from other programs */
 @interface TFinderRoot : NSView @end
 

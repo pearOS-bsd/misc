@@ -3,6 +3,7 @@
  * look this system was measured in. The programs re-read the keys every second and, when one changed, post AppleInterfaceThemeChangedNotification and NSSystemColorsDidChangeNotification (the Mac
  * sends the first one through the distributed centre) and redraw their windows. */
 #import <AppKit/AppKit.h>
+#import <objc/runtime.h>
 #include <sys/stat.h>
 #include <time.h>
 
@@ -38,13 +39,47 @@ void WsdAccentRGB(BOOL dark, double *r, double *g, double *b)                   
 	*r = row[dark ? 4 : 1]; *g = row[dark ? 5 : 2]; *b = row[dark ? 6 : 3];
 }
 
+
+/* "Tint window background with wallpaper color" (System Settings > Appearance; the key is AppleReduceDesktopTinting, 1 = off). Measured on the Mac with plain titled windows put over a
+ * wallpaper (a dark blue picture) at 16 places: in the dark appearance the window colour is (27,27,27) + 0.0975 * the colour of the wallpaper behind the window (16 samples, every channel within one
+ * level), in the light appearance it stays white. The wallpaper behind a window is known from a coarse grid of colours the Finder writes when it draws the picture
+ * (~/Library/Caches/com.wsbsd.wallpaper/grid.plist: w, h, rgb bytes, the picture scaled to fill the screen); without it nothing is tinted. */
+static NSDictionary *WallpaperGrid(void)
+{
+	static NSDictionary *grid; static time_t checked; static long long stamp; time_t now = time(NULL); if (now == checked) return grid; checked = now;
+	NSString *f = [NSHomeDirectory() stringByAppendingPathComponent: @"Library/Caches/com.wsbsd.wallpaper/grid.plist"]; struct stat sb; if (stat([f fileSystemRepresentation], &sb)) { [grid release]; grid = nil; stamp = 0; return nil; }
+	long long m = (long long)sb.st_mtime * 1000000000LL + sb.st_mtim.tv_nsec; if (m == stamp && grid) return grid; stamp = m; NSDictionary *d = [NSDictionary dictionaryWithContentsOfFile: f];
+	[grid release]; grid = ([d[@"w"] intValue] > 0 && [d[@"h"] intValue] > 0 && [d[@"rgb"] length] >= (NSUInteger)([d[@"w"] intValue] * [d[@"h"] intValue] * 3)) ? [d retain] : nil; return grid;      /* the library is not ARC: the cache is retained */
+}
+long long WsdWallpaperStamp(void) { NSDictionary *g = WallpaperGrid(); return g ? (long long)[g[@"rgb"] length] * 31 + [g[@"rgb"] hash] : 0; }
+BOOL WsdWindowTintingOn(void) { id v = GlobalValue(@"AppleReduceDesktopTinting"); return WsdAppearanceIsDark() && !(v && [v boolValue]) && WallpaperGrid() != nil; }
+/* the tinted colour of a window at frame (screen coordinates, origin bottom left, screenHeight of the screen); NO when there is no tint */
+BOOL WsdWindowTint(NSRect frame, double screenWidth, double screenHeight, int *r, int *g, int *b)
+{
+	if (!WsdWindowTintingOn() || getenv("WSD_WINDOW_BG") || screenWidth < 1 || screenHeight < 1) return NO; NSDictionary *gr = WallpaperGrid(); int gw = [gr[@"w"] intValue], gh = [gr[@"h"] intValue]; const unsigned char *px = [gr[@"rgb"] bytes];
+	int x0 = MAX(0, (int)floor(frame.origin.x / screenWidth * gw)), x1 = MIN(gw, MAX(x0 + 1, (int)ceil(NSMaxX(frame) / screenWidth * gw)));
+	double top = screenHeight - NSMaxY(frame), bot = screenHeight - frame.origin.y; int y0 = MAX(0, (int)floor(top / screenHeight * gh)), y1 = MIN(gh, MAX(y0 + 1, (int)ceil(bot / screenHeight * gh)));
+	if (x0 >= gw) x0 = gw - 1; if (y0 >= gh) y0 = gh - 1; if (x1 <= x0) x1 = x0 + 1; if (y1 <= y0) y1 = y0 + 1; double sum[3] = { 0, 0, 0 }; int n = 0;
+	for (int y = y0; y < y1; y++) for (int x = x0; x < x1; x++) { const unsigned char *q = px + (y * gw + x) * 3; sum[0] += q[0]; sum[1] += q[1]; sum[2] += q[2]; n++; }
+	if (!n) return NO; *r = (int)(27 + 0.0975 * sum[0] / n + 0.5); *g = (int)(27 + 0.0975 * sum[1] / n + 0.5); *b = (int)(27 + 0.0975 * sum[2] / n + 0.5); return YES;
+}
+/* the tinted background of a window that keeps the default one (the system window colour), nil when it has its own colour or there is no tint */
+NSColor *WsdTintedWindowBackground(NSWindow *w)
+{
+	if (!w || !WsdWindowTintingOn()) return nil; NSColor *own = [w backgroundColor], *sys = [NSColor windowBackgroundColor];
+	NSColor *a = [own colorUsingColorSpaceName: NSCalibratedRGBColorSpace], *b = [sys colorUsingColorSpaceName: NSCalibratedRGBColorSpace]; if (!a || !b) return nil;
+	if (fabs([a redComponent] - [b redComponent]) > 0.003 || fabs([a greenComponent] - [b greenComponent]) > 0.003 || fabs([a blueComponent] - [b blueComponent]) > 0.003 || [a alphaComponent] < 0.99) return nil;      /* an app's own colour stays */
+	NSScreen *sc = [NSScreen mainScreen]; if (!sc) return nil; int r, g, bl; if (!WsdWindowTint([w frame], [sc frame].size.width, [sc frame].size.height, &r, &g, &bl)) return nil;
+	return [NSColor colorWithCalibratedRed: r / 255.0 green: g / 255.0 blue: bl / 255.0 alpha: 1];
+}
+
 static void Redraw(NSView *v) { [v setNeedsDisplay: YES]; for (NSView *s in [v subviews]) Redraw(s); }
-@interface WsdAppearanceWatch : NSObject { BOOL dark; int accent; } @end
+@interface WsdAppearanceWatch : NSObject { BOOL dark; int accent; long long wall; BOOL reduce; } @end
 @implementation WsdAppearanceWatch
-- (instancetype)init { if ((self = [super init])) { dark = WsdAppearanceIsDark(); accent = WsdAccentIndex(); } return self; }
+- (instancetype)init { if ((self = [super init])) { dark = WsdAppearanceIsDark(); accent = WsdAccentIndex(); wall = WsdWallpaperStamp(); reduce = [GlobalValue(@"AppleReduceDesktopTinting") boolValue]; } return self; }
 - (void)tick:(NSTimer *)t
 {
-	BOOL d = WsdAppearanceIsDark(); int a = WsdAccentIndex(); if (getenv("WSD_DEBUG")) NSLog(@"wsd-back: appearance tick dark %d accent %d (was %d %d)", d, a, dark, accent); if (d == dark && a == accent) return; dark = d; accent = a;
+	BOOL d = WsdAppearanceIsDark(); int a = WsdAccentIndex(); if (getenv("WSD_DEBUG")) NSLog(@"wsd-back: appearance tick dark %d accent %d (was %d %d)", d, a, dark, accent); long long wl = WsdWallpaperStamp(); BOOL rd = [GlobalValue(@"AppleReduceDesktopTinting") boolValue]; BOOL tint = (wl != wall || rd != reduce); wall = wl; reduce = rd; if (d == dark && a == accent && !tint) return; dark = d; accent = a;
 	[[NSNotificationCenter defaultCenter] postNotificationName: @"AppleInterfaceThemeChangedNotification" object: nil];
 	[[NSNotificationCenter defaultCenter] postNotificationName: NSSystemColorsDidChangeNotification object: nil];
 	for (NSWindow *w in [NSApp windows]) { Redraw([[w contentView] superview] ?: [w contentView]); [w display]; }
