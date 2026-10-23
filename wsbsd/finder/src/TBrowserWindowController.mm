@@ -198,8 +198,7 @@ static BOOL _searchBar_skipLib(NSString *root) { return [root isEqual: NSHomeDir
 - (void)cmdConnectToServer:(id)s
 {
 	__weak TBrowserWindowController *me = self;
-	TFAsk(@"Connect to Server", @"smb://host/share or nfs://host/path. A name and a password are only needed for a server that asks for a login.",
-		@[ @{ @"label": @"Server Address", @"value": TFPref(@"LastServer", @"smb://") }, @{ @"label": @"Name (optional)", @"value": @"" }, @{ @"label": @"Password (optional)", @"value": @"", @"secure": @YES } ], @"Connect", ^(NSArray *v) { TBrowserWindowController *w = me; if (w && v) [w _connectServer: v[0] user: v[1] password: v[2]]; });
+	TFConnectToServer(TFPref(@"LastServer", @"smb://"), ^(NSString *a) { TBrowserWindowController *w = me; if (!w || ![a length]) return; if ([a hasPrefix: @"/"]) [w goToPath: a]; else [w _connectServer: a user: @"" password: @""]; });
 }
 - (void)_connectServer:(NSString *)address user:(NSString *)user password:(NSString *)pw
 {

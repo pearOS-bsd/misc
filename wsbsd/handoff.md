@@ -151,4 +151,7 @@ Cod: `finder/src/TFinderViews.{h,mm}` (view-uri: sidebar, toolbar, icoane/listă
 The Group pill of the toolbar opens `groupMenu` (None, line, Name, Kind, Application, Date Last Opened, Date Added, Date Modified, Date Created, Size, Tags; tick on the current key) as measured on the Mac; `GroupTitle` got the "application" key and "dateAdded". Open: the panel pop-up is wider than the measured 156 pt.
 
 ## Go to Folder as a sheet
-`TFAsk("Go to…")` is now a 460 wide AppKit sheet of the browser window (beginSheet via WsdSheets), centred on it. Verified in the VM through the Go menu. Not done: the suggestions list under the field (AX shows one), Connect to Server as a titled window, ⇧⌘G did not open it through wskey (+55 +56 5) — check the key path.
+`TFAsk("Go to…")` is now a 460 wide AppKit sheet of the browser window (beginSheet via WsdSheets), centred on it. Verified in the VM through the Go menu. Not done: the suggestions list under the field (AX shows one), Connect to Server as a titled window, ⇧⌘G works (wskey needs the named modifiers: +cmd +shift 5 -shift -cmd).
+
+## Connect to Server window
+`TFConnectToServer` (TBulkRenameUI.mm): titled 486×234 window with the AX layout of the Mac (address combo box, Favorite Servers list kept in `FavoriteServers`, +/−, Browse → /Volumes, Connect). The Name/Password fields are gone (the Mac asks for credentials after connecting — not implemented: `_connectServer` gets empty user/password). ⌘K did not open it through wskey in the VM, the Go menu item does — check. Combo box drop-down history, help button and the real Browse (network browser) missing.
