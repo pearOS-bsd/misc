@@ -28,3 +28,11 @@ BOOL TFIsPackage(NSString *p)                                                   
 	NSString *e = [[p pathExtension] lowercaseString]; if (![e length]) return NO; if ([known containsObject: e] || [known containsObject: [p pathExtension]]) return YES;
 	NSString *uti = (__bridge_transfer NSString *)UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (__bridge CFStringRef)e, NULL); return uti && ![uti hasPrefix: @"dyn."] && UTTypeConformsTo((__bridge CFStringRef)uti, CFSTR("com.apple.package"));
 }
+
+NSString *TFKindCategory(NSString *path, BOOL dir)                                    /* the kinds of the search bar's Kind filter */
+{
+	if (TFIsPackage(path) && [[[path pathExtension] lowercaseString] isEqual: @"app"]) return @"Applications"; if (dir) return @"Folders"; NSString *e = [[path pathExtension] lowercaseString];
+	if ([@[ @"png", @"jpg", @"jpeg", @"gif", @"tiff", @"tif", @"bmp", @"heic", @"webp", @"svg", @"icns", @"psd" ] containsObject: e]) return @"Images"; if ([@[ @"mp3", @"m4a", @"wav", @"aac", @"flac", @"ogg", @"aiff", @"opus" ] containsObject: e]) return @"Audio";
+	if ([@[ @"mov", @"mp4", @"m4v", @"avi", @"mkv", @"webm", @"mpg", @"mpeg" ] containsObject: e]) return @"Movies"; if ([e isEqual: @"pdf"]) return @"PDF"; if ([@[ @"key", @"ppt", @"pptx", @"odp" ] containsObject: e]) return @"Presentations";
+	if ([@[ @"txt", @"md", @"rtf", @"doc", @"docx", @"pages", @"odt", @"html", @"xml", @"json", @"csv", @"log" ] containsObject: e]) return @"Documents"; return @"Other";
+}
