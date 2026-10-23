@@ -621,6 +621,39 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 }
 @end
 
+/* ---------- the tab bar ---------- */
+@implementation TTabBar
+- (BOOL)isFlipped { return YES; } - (BOOL)acceptsFirstMouse:(NSEvent *)e { return YES; }
+- (CGFloat)_tabW { return MIN(220, ([self bounds].size.width - 40) / MAX(1, [titles count])); }
+- (void)drawRect:(NSRect)r
+{
+	NSRect b = [self bounds]; [(KeyWin(self) ? TF_CONTENT : TF_SIDEBAR) setFill]; NSRectFill(b); [TF_LINE setFill]; NSRectFill(NSMakeRect(0, b.size.height - 1, b.size.width, 1)); CGFloat w = [self _tabW];
+	for (NSUInteger i = 0; i < [titles count]; i++) { NSRect t = NSMakeRect(8 + i * w, 3, w - 4, b.size.height - 7); BOOL sel = (NSInteger)i == selected; if (sel) FillRound(t, 7, TFDark() ? TFRGBA(255, 255, 255, 0.13) : TFRGBA(0, 0, 0, 0.09));
+		NSDictionary *at = Font(12, NO, sel ? TF_TEXT : TF_DIM); NSString *s = Truncated(titles[i], at, t.size.width - 40); NSSize z = [s sizeWithAttributes: at]; [s drawAtPoint: NSMakePoint(NSMidX(t) - z.width / 2, NSMidY(t) - z.height / 2) withAttributes: at];
+		if ([titles count] > 1) TFSymbolW(@"xmark", NSMakeRect(t.origin.x + 4, t.origin.y, 20, t.size.height), 8, 6, sel ? TF_DIM : TFRGBA(255, 255, 255, 0.0)); }
+	TFSymbolW(@"plus", NSMakeRect(b.size.width - 30, 0, 22, b.size.height), 11, 5, TF_DIM);
+}
+- (void)mouseDown:(NSEvent *)e
+{
+	NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; if (p.x > [self bounds].size.width - 34) { [target performSelector: @selector(cmdNewTab:) withObject: nil]; return; }
+	CGFloat w = [self _tabW]; NSInteger i = (NSInteger)floor((p.x - 8) / w); if (i < 0 || i >= (NSInteger)[titles count]) return; CGFloat x0 = 8 + i * w;
+	if ([titles count] > 1 && p.x < x0 + 24) [target performSelector: @selector(closeTabAt:) withObject: @(i)]; else [target performSelector: @selector(selectTabAt:) withObject: @(i)];
+}
+@end
+
+/* ---------- the search bar ---------- */
+@implementation TSearchBar
+- (BOOL)isFlipped { return YES; } - (BOOL)acceptsFirstMouse:(NSEvent *)e { return YES; }
+- (NSRect)_tok:(int)k { NSDictionary *a = Font(12, NO, TF_TEXT); CGFloat x = 74; NSString *t0 = @"This Mac", *t1 = folderName ?: @"Folder"; CGFloat w0 = [t0 sizeWithAttributes: a].width + 22, w1 = [t1 sizeWithAttributes: a].width + 22; return k == 0 ? NSMakeRect(x, 6, w0, 22) : NSMakeRect(x + w0 + 6, 6, w1, 22); }
+- (void)drawRect:(NSRect)r
+{
+	NSRect b = [self bounds]; [TF_CONTENT setFill]; NSRectFill(b); [TF_LINE setFill]; NSRectFill(NSMakeRect(0, b.size.height - 1, b.size.width, 1)); TextAt(@"Search:", 16, 17, Font(12, NO, TF_DIM));
+	for (int k = 0; k < 2; k++) { NSRect t = [self _tok: k]; if (k == scope) FillRound(t, 6, TFDark() ? TFRGBA(255, 255, 255, 0.14) : TFRGBA(0, 0, 0, 0.10)); NSString *s = k == 0 ? @"This Mac" : (folderName ?: @"Folder"); TextAt(s, t.origin.x + 11, 17, Font(12, NO, k == scope ? TF_TEXT : TF_DIM)); }
+	if ([info length]) { NSDictionary *a = Font(11, NO, TF_DIM); NSSize z = [info sizeWithAttributes: a]; [info drawAtPoint: NSMakePoint(b.size.width - z.width - 16, 17 - z.height / 2) withAttributes: a]; }
+}
+- (void)mouseDown:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; for (int k = 0; k < 2; k++) if (NSPointInRect(p, [self _tok: k]) && scope != k) { scope = k; [self setNeedsDisplay: YES]; [target performSelector: @selector(searchScopeChanged:) withObject: @(k)]; } }
+@end
+
 /* ---------- the status bar ---------- */
 @implementation TStatusBarView
 - (BOOL)isFlipped { return YES; } - (BOOL)acceptsFirstMouse:(NSEvent *)e { return YES; }
@@ -666,9 +699,10 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 }
 - (void)setSearching:(BOOL)on
 {
-	searching = on; if (!search) { search = [[NSTextField alloc] initWithFrame: NSZeroRect]; [search setBordered: NO]; [search setBezeled: NO]; [search setDrawsBackground: NO]; [search setFont: [NSFont systemFontOfSize: 13]]; [search setTextColor: TF_TEXT]; [search setFocusRingType: NSFocusRingTypeNone]; [search setDelegate: (id)self]; [self addSubview: search]; }
-	NSRect p = [self _pill: 4]; [search setFrame: NSMakeRect(p.origin.x + 32, 14, p.size.width - 44, 22)]; [search setHidden: !on]; if (on) [[self window] makeFirstResponder: search]; else [search setStringValue: @""]; [self setNeedsDisplay: YES];
+	searching = on; if (!search) { search = [[NSTextField alloc] initWithFrame: NSZeroRect]; [search setBordered: NO]; [search setBezeled: NO]; [search setDrawsBackground: NO]; [[search cell] setBackgroundColor: [NSColor clearColor]]; [search setFont: [NSFont systemFontOfSize: 13]]; [search setTextColor: TF_TEXT]; [search setFocusRingType: NSFocusRingTypeNone]; [search setDelegate: (id)self]; [self addSubview: search]; }
+	NSRect p = [self _pill: 4]; [search setFrame: NSMakeRect(p.origin.x + 32, 14, p.size.width - 44, 22)]; [search setHidden: !on]; if (on) { [[self window] makeFirstResponder: search]; NSTextView *fe = (NSTextView *)[search currentEditor]; [fe setDrawsBackground: NO]; [fe setBackgroundColor: [NSColor clearColor]]; [fe setTextColor: TF_TEXT]; [fe setInsertionPointColor: TF_TEXT]; } else [search setStringValue: @""]; [self setNeedsDisplay: YES];
 }
+- (void)controlTextDidBeginEditing:(NSNotification *)n { NSTextView *fe = (NSTextView *)[[search window] fieldEditor: YES forObject: search]; [fe setDrawsBackground: NO]; [fe setTextColor: TF_TEXT]; [fe setInsertionPointColor: TF_TEXT]; }
 - (void)controlTextDidChange:(NSNotification *)n { [target performSelector: @selector(searchChanged:) withObject: [search stringValue]]; }
 - (void)setFrameSize:(NSSize)s { [super setFrameSize: s]; if (searching) { NSRect p = [self _pill: 4]; [search setFrame: NSMakeRect(p.origin.x + 32, 14, p.size.width - 44, 22)]; } }
 - (void)drawRect:(NSRect)r

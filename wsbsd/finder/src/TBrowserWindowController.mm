@@ -7,6 +7,7 @@ extern "C" NSImage *WsbsdCoreTypesIcon(NSString *file, CGFloat pt);
 
 #import "TFinderViews.h"
 #include <sys/stat.h>
+static BOOL _searchBar_skipLib(NSString *root);
 #define SizeString TFSizeString
 #define DateString TFDateString
 #define KindString TFKindString
@@ -14,7 +15,7 @@ extern "C" NSImage *WsbsdCoreTypesIcon(NSString *file, CGFloat pt);
 @interface NSObject (TFSupport) + (void)roundWindow:(NSWindow *)w radius:(int)r; @end
 
 /* ---------- the window controller ---------- */
-@interface TBrowserWindowController : NSWindowController <TIconViewDelegate, TSidebarDelegate, TPathBarDelegate, NSWindowDelegate> { NSURL *_url; NSMutableArray<NSString *> *_history; NSInteger _hi; TToolbarView *_toolbar; TSidebarView *_sidebar; TIconView *_icons; TListView *_list; TColumnView *_cols; TGalleryView *_gallery; TPathBarView *_pathBar; TWindowTrim *_trim; TStatusBarView *_status; BOOL _showStatus; NSMenu *_ctxMenu; NSString *_filter, *_tag; NSMutableArray *_undo, *_redo; long long _watchedMod; NSTimer *_watcher; NSArray *_cutPaths; NSArray *_selection; NSInteger _mode; }
+@interface TBrowserWindowController : NSWindowController <TIconViewDelegate, TSidebarDelegate, TPathBarDelegate, NSWindowDelegate> { NSURL *_url; NSMutableArray<NSString *> *_history; NSInteger _hi; TToolbarView *_toolbar; TSidebarView *_sidebar; TIconView *_icons; TListView *_list; TColumnView *_cols; TGalleryView *_gallery; TPathBarView *_pathBar; TWindowTrim *_trim; TStatusBarView *_status; BOOL _showStatus; TSearchBar *_searchBar; TTabBar *_tabBar; NSMutableArray *_tabs; NSInteger _tabIx; BOOL _forceTabBar; NSArray *_found; NSInteger _searchGen; BOOL _searchStarted; NSMenu *_ctxMenu; NSString *_filter, *_tag; NSMutableArray *_undo, *_redo; long long _watchedMod; NSTimer *_watcher; NSArray *_cutPaths; NSArray *_selection; NSInteger _mode; }
 + (instancetype)newBrowserWithPath:(NSString *)path;
 - (void)goToPath:(NSString *)path;
 @end
@@ -43,6 +44,8 @@ static NSString *UniquePath(NSString *dir, NSString *base, NSString *ext)
 	_toolbar = [[TToolbarView alloc] initWithFrame: NSZeroRect]; _toolbar->target = self; [cv addSubview: _toolbar];
 	_pathBar = [[TPathBarView alloc] initWithFrame: NSZeroRect]; _pathBar->delegate = self; [cv addSubview: _pathBar]; _history = [NSMutableArray array]; _hi = -1;
 	_status = [[TStatusBarView alloc] initWithFrame: NSZeroRect]; _status->target = self; [_status setHidden: YES]; [cv addSubview: _status];
+	_tabBar = [[TTabBar alloc] initWithFrame: NSZeroRect]; _tabBar->target = self; [_tabBar setHidden: YES]; [cv addSubview: _tabBar]; _tabs = [NSMutableArray array];
+	_searchBar = [[TSearchBar alloc] initWithFrame: NSZeroRect]; _searchBar->target = self; [_searchBar setHidden: YES]; [cv addSubview: _searchBar];
 	_trim = [[TWindowTrim alloc] initWithFrame: NSZeroRect]; [cv addSubview: _trim];
 	NSMenu *m = [[NSMenu alloc] initWithTitle: @""]; for (NSArray *e in @[ @[ @"Open", @"cmdOpen:" ], @[ @"Get Info", @"cmdShowStaticInfo:" ], @[ @"Rename", @"cmdRename:" ], @[ @"Move to Trash", @"cmdMoveToTrash:" ], @[ @"Put Back", @"cmdPutBack:" ], @[ @"Duplicate", @"cmdDuplicate:" ], @[ @"Compress", @"cmdCompress:" ], @[ @"Quick Look", @"cmdQuickLook:" ], @[ @"Make Alias", @"cmdMakeAlias:" ], @[ @"Copy", @"copy:" ], @[ @"Copy as Pathname", @"cmdCopyAsPathname:" ] ]) { NSMenuItem *it = [m addItemWithTitle: e[0] action: NSSelectorFromString(e[1]) keyEquivalent: @""]; [it setTarget: self]; }
 	{ NSMenuItem *ti = [m addItemWithTitle: @"Tags" action: NULL keyEquivalent: @""]; NSMenu *sub = [[NSMenu alloc] initWithTitle: @"Tags"]; [self _fillTagMenu: sub]; [ti setSubmenu: sub]; }
@@ -89,15 +92,40 @@ static NSString *StyleName(NSInteger m) { return @[ @"icnv", @"Nlsv", @"clmv", @
 	for (NSString *p in t) { NSMutableArray *cur = [TFTagsOf(p) mutableCopy]; if (all) [cur removeObject: n]; else if (![cur containsObject: n]) [cur addObject: n]; TFSetTags(cur, p); }
 	if (_mode == 0 && !_tag) [_icons reloadKeepingSelection]; else [self reload];
 }
-- (void)cmdToggleSearch:(id)s { [_toolbar setSearching: !_toolbar->searching]; if (!_toolbar->searching) [self searchChanged: @""]; }
-- (void)searchChanged:(NSString *)text { _filter = [text length] ? text : nil; _icons->filter = _filter; _list->filter = _filter; _gallery->filter = _filter; [self reload]; }
+- (void)cmdToggleSearch:(id)s { [_toolbar setSearching: !_toolbar->searching]; if (!_toolbar->searching) { _searchStarted = NO; [self searchChanged: @""]; } }
+- (void)searchChanged:(NSString *)text
+{
+	_filter = [text length] ? text : nil; _icons->filter = nil; _list->filter = nil; _gallery->filter = nil; _searchGen++; _searchBar->folderName = [[_url path] isEqual: @"/"] ? @"Macintosh HD" : [[_url path] lastPathComponent];
+	if (!_filter) { _found = nil; [self _layout]; [self reload]; return; }
+	if (_searchBar->scope == 0 && !_searchStarted) { _searchStarted = YES; _searchBar->scope = [TFPref(@"FXDefaultSearchScope", @"SCev") isEqual: @"SCcf"] ? 1 : 0; }
+	[self _layout]; [NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector(_startSearch) object: nil]; [self performSelector: @selector(_startSearch) withObject: nil afterDelay: 0.25];
+}
+- (void)searchScopeChanged:(NSNumber *)n { [self _startSearch]; }
+- (void)_startSearch
+{
+	NSString *q = _filter; if (!q) return; NSInteger gen = _searchGen; NSString *root = _searchBar->scope == 0 ? NSHomeDirectory() : [_url path]; _searchBar->info = @"Searching…"; [_searchBar setNeedsDisplay: YES]; __weak TBrowserWindowController *me = self;
+	NSThread *th = [[NSThread alloc] initWithBlock: ^{ @autoreleasepool {
+		NSMutableArray *toks = [NSMutableArray array]; for (NSString *w in [q componentsSeparatedByString: @" "]) if ([w length]) [toks addObject: w]; NSMutableArray *res = [NSMutableArray array]; NSFileManager *fm = [NSFileManager defaultManager]; NSMutableArray *stack = [NSMutableArray arrayWithObject: root]; NSDate *end = [NSDate dateWithTimeIntervalSinceNow: 6]; NSUInteger n = 0;
+		while ([stack count] && [res count] < 3000) {
+			NSString *dir = [stack lastObject]; [stack removeLastObject]; TBrowserWindowController *s = me; if (!s || s->_searchGen != gen) return;
+			for (NSString *nm in [fm contentsOfDirectoryAtPath: dir error: NULL]) {
+				if ([nm hasPrefix: @"."]) continue; NSString *full = [dir stringByAppendingPathComponent: nm]; n++;
+				BOOL all = YES; for (NSString *tk in toks) if ([nm rangeOfString: tk options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch].location == NSNotFound) { all = NO; break; } if (all) [res addObject: full];
+				NSDictionary *at = [fm attributesOfItemAtPath: full error: NULL]; if ([at[NSFileType] isEqual: NSFileTypeDirectory] && !([dir isEqual: root] && [nm isEqual: @"Library"] && _searchBar_skipLib(root))) [stack addObject: full]; }
+			if ([end timeIntervalSinceNow] < 0) break; }
+		if (getenv("FINDER_DEBUG")) NSLog(@"Finder: search %@ in %@: %lu enumerated, %lu found, gen %ld", q, root, (unsigned long)n, (unsigned long)[res count], (long)gen);
+		dispatch_async(dispatch_get_main_queue(), ^{ TBrowserWindowController *s = me; if (!s || s->_searchGen != gen) return; s->_found = res; s->_searchBar->info = [NSString stringWithFormat: @"%lu result%s", (unsigned long)[res count], [res count] == 1 ? "" : "s"]; [s->_searchBar setNeedsDisplay: YES]; [s _showFound]; }); } }]; [th start];
+}
+static BOOL _searchBar_skipLib(NSString *root) { return [root isEqual: NSHomeDirectory()]; }
+- (void)_showFound { if (_mode == 1) [_list setPaths: _found]; else if (_mode == 3) [_gallery setPaths: _found]; else [_icons setPaths: _found]; _selection = @[]; }
+
 - (id)_view { return _mode == 1 ? (id)_list : _mode == 2 ? (id)_cols : _mode == 3 ? (id)_gallery : (id)_icons; }
 - (void)_show:(NSString *)path
 {
-	BOOL tagged = [path hasPrefix: @"tag://"]; _tag = tagged ? [path substringFromIndex: 6] : nil; _url = [NSURL fileURLWithPath: tagged ? NSHomeDirectory() : path]; NSString *name = tagged ? _tag : [path isEqual: @"/"] ? @"Macintosh HD" : [path lastPathComponent]; [[self window] setTitle: name]; _toolbar->title = name;
-	_toolbar->canBack = _hi > 0; _toolbar->canForward = _hi + 1 < (NSInteger)[_history count]; _sidebar->current = path; _watchedMod = 0; [_pathBar setPath: [_url path]]; [self reload]; [self _restoreStyleAndWindow: NO]; [self _updateStatus]; [_toolbar setNeedsDisplay: YES]; [_sidebar setNeedsDisplay: YES];
+	if (_filter) { [_toolbar setSearching: NO]; _filter = nil; _found = nil; _searchStarted = NO; _searchGen++; [self _layout]; } BOOL tagged = [path hasPrefix: @"tag://"]; _tag = tagged ? [path substringFromIndex: 6] : nil; _url = [NSURL fileURLWithPath: tagged ? NSHomeDirectory() : path]; NSString *name = tagged ? _tag : [path isEqual: @"/"] ? @"Macintosh HD" : [path lastPathComponent]; [[self window] setTitle: name]; _toolbar->title = name;
+	_toolbar->canBack = _hi > 0; _toolbar->canForward = _hi + 1 < (NSInteger)[_history count]; _sidebar->current = path; _watchedMod = 0; if ([_tabs count]) [self _syncTabBar]; [_pathBar setPath: [_url path]]; [self reload]; [self _restoreStyleAndWindow: NO]; [self _updateStatus]; [_toolbar setNeedsDisplay: YES]; [_sidebar setNeedsDisplay: YES];
 }
-- (void)reload { NSString *p = [_url path]; if (_tag) { NSArray *ps = TFPathsTagged(_tag); if (_mode == 1) [_list setPaths: ps]; else if (_mode == 3) [_gallery setPaths: ps]; else [_icons setPaths: ps]; _selection = @[]; [[self window] makeFirstResponder: [self _view]]; return; } if (_mode == 1) [_list setFolder: p]; else if (_mode == 2) [_cols setFolder: p]; else if (_mode == 3) [_gallery setFolder: p]; else [_icons setFolder: p]; _selection = @[]; [[self window] makeFirstResponder: [self _view]]; }
+- (void)reload { if (_filter && _found) { [self _showFound]; return; } NSString *p = [_url path]; if (_tag) { NSArray *ps = TFPathsTagged(_tag); if (_mode == 1) [_list setPaths: ps]; else if (_mode == 3) [_gallery setPaths: ps]; else [_icons setPaths: ps]; _selection = @[]; [[self window] makeFirstResponder: [self _view]]; return; } if (_mode == 1) [_list setFolder: p]; else if (_mode == 2) [_cols setFolder: p]; else if (_mode == 3) [_gallery setFolder: p]; else [_icons setFolder: p]; _selection = @[]; [[self window] makeFirstResponder: [self _view]]; }
 - (void)goToPath:(NSString *)path { BOOL d = NO; if (![path hasPrefix: @"tag://"] && (![[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &d] || !d)) return; if (_hi >= 0 && [_history[_hi] isEqual: path]) return; [_history removeObjectsInRange: NSMakeRange(_hi + 1, [_history count] - _hi - 1)]; [_history addObject: path]; _hi = [_history count] - 1; [self _show: path]; }
 - (void)_setMode:(NSInteger)m { BOOL changed = m != _mode; _mode = m; [self _updateStatus]; if (changed) [self _scheduleBoundsSave]; _toolbar->mode = m; [_icons setHidden: m != 0]; [_list setHidden: m != 1]; [_cols setHidden: m != 2]; [_gallery setHidden: m != 3]; [self reload]; [_toolbar setNeedsDisplay: YES]; }  /* the column and gallery views come later: the icon view stands in */
 /* navigation */
@@ -124,8 +152,8 @@ static NSString *StyleName(NSInteger m) { return @[ @"icnv", @"Nlsv", @"clmv", @
 {
 	NSRect b = [[[self window] contentView] bounds]; CGFloat W = b.size.width, H = b.size.height, sw = [_sidebar isHidden] ? 0 : 238, pb = [_pathBar isHidden] ? 0 : 30, sb = _showStatus ? 28 : 0;
 	NSRect (^R)(CGFloat, CGFloat, CGFloat, CGFloat) = ^NSRect(CGFloat x, CGFloat top, CGFloat w, CGFloat h) { return NSMakeRect(x, H - top - h, w, h); };
-	[_sidebar setFrame: R(0, 0, sw, H)]; [_toolbar setFrame: R(sw, 0, W - sw, 52)]; NSRect c = R(sw, 52, W - sw, H - 52 - pb - sb); [_status setHidden: !_showStatus]; [_status setFrame: R(sw, H - pb - sb, W - sw, sb)]; [_icons setFrame: c]; [_list setFrame: c]; [_cols setFrame: c]; [_gallery setFrame: c]; [_pathBar setFrame: R(sw, H - pb, W - sw, pb)]; [_trim setFrame: b];
-	for (NSView *v in @[ _sidebar, _toolbar, _icons, _list, _cols, _gallery, _pathBar, _status, _trim ]) [v setNeedsDisplay: YES];
+	[_sidebar setFrame: R(0, 0, sw, H)]; [_toolbar setFrame: R(sw, 0, W - sw, 52)]; BOOL showTabs = [_tabs count] > 1 || _forceTabBar; CGFloat tbh = showTabs ? 28 : 0; [_tabBar setHidden: !showTabs]; [_tabBar setFrame: R(sw, 52, W - sw, tbh)]; BOOL srch = _filter != nil; CGFloat sbh = srch ? 34 : 0; [_searchBar setHidden: !srch]; [_searchBar setFrame: R(sw, 52 + tbh, W - sw, sbh)]; NSRect c = R(sw, 52 + tbh + sbh, W - sw, H - 52 - tbh - sbh - pb - sb); [_status setHidden: !_showStatus]; [_status setFrame: R(sw, H - pb - sb, W - sw, sb)]; [_icons setFrame: c]; [_list setFrame: c]; [_cols setFrame: c]; [_gallery setFrame: c]; [_pathBar setFrame: R(sw, H - pb, W - sw, pb)]; [_trim setFrame: b];
+	for (NSView *v in @[ _sidebar, _toolbar, _icons, _list, _cols, _gallery, _pathBar, _status, _searchBar, _tabBar, _trim ]) [v setNeedsDisplay: YES];
 }
 /* what the file operations act on */
 - (NSArray *)_targets { return [_selection count] ? _selection : @[]; }
@@ -147,8 +175,23 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 }
 - (void)cmdDuplicateExactly:(id)s { [self cmdDuplicate: s]; }
 - (void)cmdQuickLook:(id)s { NSArray *t = [self _targets]; if ([t count]) TFOpenQuickLook(t[0]); }
-- (void)cmdNewTab:(id)s { [TBrowserWindowController newBrowserWithPath: [_url path]]; }
-- (void)cmdOpenInNewTab:(id)s { for (NSString *p in [self _targets]) { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: p isDirectory: &d]; if (d) [TBrowserWindowController newBrowserWithPath: p]; } }
+/* tabs: each keeps its folder, history and view; the views of the window show the one selected */
+- (NSMutableDictionary *)_tabState { return [@{ @"url": _url ?: [NSURL fileURLWithPath: NSHomeDirectory()], @"history": [_history mutableCopy] ?: [NSMutableArray array], @"hi": @(_hi), @"mode": @(_mode) } mutableCopy]; }
+- (void)_syncTabBar { NSMutableArray *t = [NSMutableArray array]; for (NSUInteger i = 0; i < [_tabs count]; i++) { NSURL *u = (NSInteger)i == _tabIx ? _url : _tabs[i][@"url"]; NSString *p = [u path]; [t addObject: [p isEqual: @"/"] ? @"Macintosh HD" : [p lastPathComponent]]; } _tabBar->titles = t; _tabBar->selected = _tabIx; [_tabBar setNeedsDisplay: YES]; [self _layout]; }
+- (void)_loadTab:(NSInteger)i
+{
+	NSDictionary *st = _tabs[i]; _tabIx = i; _history = [st[@"history"] mutableCopy]; _hi = [st[@"hi"] integerValue]; NSInteger m = [st[@"mode"] integerValue]; _mode = m; _toolbar->mode = m; [_icons setHidden: m != 0]; [_list setHidden: m != 1]; [_cols setHidden: m != 2]; [_gallery setHidden: m != 3];
+	NSString *p = [st[@"url"] path]; [self _show: _hi >= 0 && _hi < (NSInteger)[_history count] ? _history[_hi] : p]; [self _syncTabBar];
+}
+- (void)cmdNewTab:(id)s
+{
+	if (![_tabs count]) [_tabs addObject: [self _tabState]]; else _tabs[_tabIx] = [self _tabState];
+	NSMutableDictionary *n = [self _tabState]; [_tabs insertObject: n atIndex: _tabIx + 1]; [self _loadTab: _tabIx + 1];
+}
+- (void)selectTabAt:(NSNumber *)n { NSInteger i = [n integerValue]; if (i == _tabIx || i < 0 || i >= (NSInteger)[_tabs count]) return; _tabs[_tabIx] = [self _tabState]; [self _loadTab: i]; }
+- (void)closeTabAt:(NSNumber *)n { NSInteger i = [n integerValue]; if ([_tabs count] < 2 || i < 0 || i >= (NSInteger)[_tabs count]) return; if (i == _tabIx) { [_tabs removeObjectAtIndex: i]; [self _loadTab: MIN(i, (NSInteger)[_tabs count] - 1)]; } else { _tabs[_tabIx] = [self _tabState]; [_tabs removeObjectAtIndex: i]; _tabIx = i < _tabIx ? _tabIx - 1 : _tabIx; [self _syncTabBar]; } }
+- (BOOL)windowShouldClose:(id)w { if ([_tabs count] > 1) { [self closeTabAt: @(_tabIx)]; return NO; } return YES; }
+- (void)cmdOpenInNewTab:(id)s { for (NSString *p in [self _targets]) { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: p isDirectory: &d]; if (d) { [self cmdNewTab: nil]; [self goToPath: p]; } } }
 - (void)cmdCompress:(id)s { NSArray *t = [self _targets]; if (![t count]) return; NSString *base = [t count] == 1 ? [t[0] lastPathComponent] : @"Archive"; NSString *zip = UniquePath([_url path], base, @"zip"); NSMutableArray *args = [NSMutableArray arrayWithObjects: @"-a", @"-cf", zip, nil]; for (NSString *p in t) { [args addObject: @"-C"]; [args addObject: [p stringByDeletingLastPathComponent]]; [args addObject: [p lastPathComponent]]; } NSTask *tk = [[NSTask alloc] init]; [tk setLaunchPath: @"/usr/bin/tar"]; [tk setArguments: args]; @try { [tk launch]; [tk waitUntilExit]; } @catch (NSException *x) {} [self _changed: nil]; }
 - (void)cmdShowOriginal:(id)s { for (NSString *p in [self _targets]) { NSString *o = [[NSFileManager defaultManager] destinationOfSymbolicLinkAtPath: p error: NULL]; if (o) { if (![o hasPrefix: @"/"]) o = [[p stringByDeletingLastPathComponent] stringByAppendingPathComponent: o]; [self goToPath: [o stringByDeletingLastPathComponent]]; } } }
 - (void)cmdMakeAlias:(id)s { NSFileManager *fm = [NSFileManager defaultManager]; for (NSString *p in [self _targets]) { NSString *dest = UniquePath([p stringByDeletingLastPathComponent], [[p lastPathComponent] stringByAppendingString: @" alias"], nil); [fm createSymbolicLinkAtPath: dest withDestinationPath: p error: NULL]; } [self _changed: nil]; }
@@ -241,7 +284,7 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 }
 /* delegates */
 - (void)iconViewOpenItem:(NSString *)path { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &d]; if (d && ![[path pathExtension] isEqual: @"app"]) [self goToPath: path]; else [[NSWorkspace sharedWorkspace] openFile: path]; }
-- (void)iconViewSelectionChanged:(NSArray *)paths { _selection = paths; [self _updateStatus]; }
+- (void)iconViewSelectionChanged:(NSArray *)paths { _selection = paths; if ([paths count] == 1) [_pathBar setPath: paths[0]]; else [_pathBar setPath: [_url path]]; [self _updateStatus]; }
 - (void)_updateStatus
 {
 	if (!_showStatus) return; NSFileManager *fm = [NSFileManager defaultManager]; NSUInteger n = 0; if (_tag) n = [TFPathsTagged(_tag) count]; else for (NSString *s in [fm contentsOfDirectoryAtPath: [_url path] error: NULL]) if (![s hasPrefix: @"."]) n++;
@@ -264,7 +307,7 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 - (void)cmdArchive:(id)s { [self cmdCompress: s]; }
 - (void)cmdSlideshow:(id)s { [self cmdQuickLook: s]; }
 - (void)cmdShare:(id)s { NSArray *t = [self _targets]; if ([t count]) [self cmdCopyAsPathname: s]; }
-- (void)toggleTabBar:(id)s {}
+- (void)toggleTabBar:(id)s { _forceTabBar = !_forceTabBar; [_tabBar setHidden: !_forceTabBar && [_tabs count] < 2]; if (![_tabs count]) { [_tabs addObject: [self _tabState]]; _tabIx = 0; } [self _syncTabBar]; }
 - (void)cmdShowPackageContents:(id)s { for (NSString *p in [self _targets]) if ([[p pathExtension] isEqual: @"app"]) [self goToPath: p]; }
 - (void)cmdToggleToolbar:(id)s { [_toolbar setHidden: ![_toolbar isHidden]]; }
 - (void)cmdArrange:(id)s {} - (void)cmdCleanUpBy:(id)s {} - (void)cmdUseGroups:(id)s {} - (void)cmdGroupBy:(id)s {}
