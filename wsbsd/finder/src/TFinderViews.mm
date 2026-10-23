@@ -985,6 +985,24 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
  * "Tags" 14 pt bold at (9, 415), its field 273 x 33 at (10, 438). Missing: "Show More" (its rows depend on the kind of file and were measured for a PDF only), the preview of documents (only pictures here),
  * the quick actions under the pane. The dates are written as the Mac does ("Monday, 3 August 2026 at 18:31"). */
 static NSString *LongDate(NSDate *d) { if (!d) return @""; static NSDateFormatter *f; if (!f) { f = [[NSDateFormatter alloc] init]; [f setLocale: [[NSLocale alloc] initWithLocaleIdentifier: @"en_GB"]]; [f setDateFormat: @"EEEE, d MMMM yyyy 'at' HH:mm"]; } return [f stringFromDate: d]; }
+/* the quick actions under the pane (AX and pixels of the real one): a bar 70 high at the bottom, darker (29,30,33) with a line (65,67,70) on top; buttons 64 / 46 / 42 wide at x 47 / 132 / 210 and 14 from the bar's top, a 14 pt symbol over an 11 pt label, grey (142,142,144) */
+- (NSArray *)_quickActions:(BOOL)dir path:(NSString *)p
+{
+	BOOL img = !dir && [@[ @"png", @"jpg", @"jpeg", @"tif", @"tiff", @"gif", @"bmp", @"heic" ] containsObject: [[p pathExtension] lowercaseString]]; NSMutableArray *a = [NSMutableArray array];
+	if (img) { [a addObject: @{ @"t": @"Rotate Left", @"s": @"rotate.left", @"sel": @"cmdRotateLeft:", @"x": @47, @"w": @64 }]; [a addObject: @{ @"t": @"Markup", @"s": @"pencil.tip.crop.circle", @"sel": @"", @"x": @132, @"w": @46 }]; }
+	[a addObject: @{ @"t": @"More…", @"s": @"ellipsis.circle", @"sel": @"cmdOpenQuickActionsPrefPane:", @"x": @210, @"w": @42 }]; return a;
+}
+- (void)_drawQuickBar:(BOOL)dir path:(NSString *)p
+{
+	NSRect b = [self bounds]; CGFloat top = NSMaxY(b) - 70; [TFRGB(29, 30, 33) setFill]; NSRectFill(NSMakeRect(1, top, b.size.width - 1, 70)); [TFRGB(65, 67, 70) setFill]; NSRectFill(NSMakeRect(0, top - 1, b.size.width, 1));
+	for (NSDictionary *q in [self _quickActions: dir path: p]) { CGFloat x = [q[@"x"] doubleValue], w = [q[@"w"] doubleValue]; NSColor *c = TFRGB(142, 142, 144); TFSymbol(q[@"s"], NSMakeRect(x + w / 2 - 7, top + 17, 14, 14), 14, c); NSDictionary *la = Font(11, NO, c); NSSize ls = [q[@"t"] sizeWithAttributes: la]; [q[@"t"] drawAtPoint: NSMakePoint(x + w / 2 - ls.width / 2, top + 40) withAttributes: la]; }
+}
+- (void)scrollWheel:(NSEvent *)e { CGFloat room = MAX(0, _content - ([self bounds].size.height - 70)); _scroll = MAX(0, MIN(room, _scroll - [e deltaY] * 10)); [self setNeedsDisplay: YES]; }
+- (void)mouseDown:(NSEvent *)e
+{
+	if ([paths count] != 1) return; NSPoint pt = [self convertPoint: [e locationInWindow] fromView: nil]; CGFloat top = NSMaxY([self bounds]) - 70; if (pt.y < top) return; NSString *p = paths[0]; BOOL dir = [[[[NSFileManager defaultManager] attributesOfItemAtPath: p error: NULL] fileType] isEqual: NSFileTypeDirectory];
+	for (NSDictionary *q in [self _quickActions: dir path: p]) { CGFloat x = [q[@"x"] doubleValue], w = [q[@"w"] doubleValue]; if (pt.x >= x && pt.x <= x + w) { if ([q[@"sel"] length]) [NSApp sendAction: NSSelectorFromString(q[@"sel"]) to: nil from: self]; else NSBeep(); return; } }
+}
 - (void)drawRect:(NSRect)dirty
 {
 	NSRect b = [self bounds]; [TF_CONTENT setFill]; NSRectFill(b); [TF_LINE setFill]; NSRectFill(NSMakeRect(0, 0, 1, b.size.height)); NSFileManager *fm = [NSFileManager defaultManager];
@@ -998,13 +1016,24 @@ static NSString *LongDate(NSDate *d) { if (!d) return @""; static NSDateFormatte
 		return;
 	}
 	NSString *p = paths[0]; NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory]; NSImage *th = dir ? nil : Thumb(p); NSRect pr = NSMakeRect(10, 10, 273, 255);
-	if (th) { NSSize z = [th size]; CGFloat k = MIN(MIN(pr.size.width / z.width, pr.size.height / z.height), 2); [th drawInRect: NSMakeRect(NSMidX(pr) - z.width * k / 2, NSMidY(pr) - z.height * k / 2, z.width * k, z.height * k) fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; }
+	[NSGraphicsContext saveGraphicsState]; NSRectClip(NSMakeRect(0, 0, b.size.width, b.size.height - 70)); NSAffineTransform *tr0 = [NSAffineTransform transform]; [tr0 translateXBy: 0 yBy: -_scroll]; [tr0 concat];       /* the pane scrolls above the bar */
+	if (th) { NSSize z = [th size]; CGFloat k = MIN(MIN(pr.size.width / z.width, pr.size.height / z.height), 2); NSRect tr = NSMakeRect(NSMidX(pr) - z.width * k / 2, NSMidY(pr) - z.height * k / 2, z.width * k, z.height * k); [NSGraphicsContext saveGraphicsState]; [[NSBezierPath bezierPathWithRoundedRect: tr xRadius: 10 yRadius: 10] addClip]; [th drawInRect: tr fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; [NSGraphicsContext restoreGraphicsState]; }
 	else TFDrawIcon(p, NSMakeRect(NSMidX(pr) - 64, NSMidY(pr) - 64, 128, 128));
-	[[p lastPathComponent] drawInRect: NSMakeRect(10, 292, 273, 20) withAttributes: tl];
+	/* the name: up to two lines, the block ends at y 311 (AX: 273 x 44 at 267 for a long name, one line ends at the same place); the second line is shortened in the middle */
+	{ NSString *nm = [p lastPathComponent]; NSDictionary *plain = @{ NSFontAttributeName: [NSFont boldSystemFontOfSize: 14] }; if ([nm sizeWithAttributes: plain].width <= 273) [nm drawInRect: NSMakeRect(10, 292, 273, 20) withAttributes: tl];
+		else { NSMutableString *l1 = [NSMutableString string]; NSArray *words = [nm componentsSeparatedByString: @" "]; NSUInteger used = 0; for (NSString *w in words) { NSString *t = [l1 length] ? [NSString stringWithFormat: @"%@ %@", l1, w] : w; if ([t sizeWithAttributes: plain].width > 273 && [l1 length]) break; [l1 setString: t]; used++; if ([l1 sizeWithAttributes: plain].width > 273) break; }
+			NSString *rest = used < [words count] ? [[words subarrayWithRange: NSMakeRange(used, [words count] - used)] componentsJoinedByString: @" "] : @""; if (![rest length]) { NSUInteger n = [l1 length]; while (n > 1 && [[l1 substringToIndex: n] sizeWithAttributes: plain].width > 273) n--; rest = [l1 substringFromIndex: n]; [l1 setString: [l1 substringToIndex: n]]; }
+			[l1 drawInRect: NSMakeRect(10, 270, 273, 20) withAttributes: tl]; [rest drawInRect: NSMakeRect(10, 292, 273, 20) withAttributes: tl]; } }
 	[[NSString stringWithFormat: @"%@%@", TFKindString(p, dir), dir ? @"" : [@" - " stringByAppendingString: TFSizeString([at[NSFileSize] unsignedLongLongValue])]] drawInRect: NSMakeRect(9, 314, 275, 18) withAttributes: sub];
-	[@"Information" drawAtPoint: NSMakePoint(9, 337 + 1) withAttributes: head];
-	double y = 361; for (NSArray *row in @[ @[ @"Created", LongDate(at[NSFileCreationDate]) ], @[ @"Modified", LongDate(at[NSFileModificationDate]) ] ]) { NSDictionary *la = @{ NSFontAttributeName: [NSFont systemFontOfSize: 13], NSForegroundColorAttributeName: TF_DIM }, *va = @{ NSFontAttributeName: [NSFont boldSystemFontOfSize: 13], NSForegroundColorAttributeName: TF_TEXT }; [row[0] drawAtPoint: NSMakePoint(9, y) withAttributes: la]; NSSize vs = [row[1] sizeWithAttributes: va]; [row[1] drawAtPoint: NSMakePoint(284 - vs.width, y) withAttributes: va]; y += 23; }
-	[@"Tags" drawAtPoint: NSMakePoint(9, 415 + 1) withAttributes: head]; NSArray *tg = TFTagsOf(p); FillRound(NSMakeRect(10, 438, 273, 33), 6, TFDark() ? TFRGBA(255, 255, 255, 0.05) : TFRGBA(0, 0, 0, 0.04)); [[tg count] ? [tg componentsJoinedByString: @", "] : @"Add Tags…" drawAtPoint: NSMakePoint(18, 438 + 9) withAttributes: Font(13, NO, TF_DIM)];
+	[@"Information" drawAtPoint: NSMakePoint(9, 337 + 1) withAttributes: head]; [@"Show More" drawAtPoint: NSMakePoint(284 - [@"Show More" sizeWithAttributes: Font(13, NO, TF_ACCENT)].width, 339) withAttributes: Font(13, NO, TF_ACCENT)];
+	struct stat sb; NSDate *opened = at[NSFileModificationDate]; if (!stat([p fileSystemRepresentation], &sb)) opened = [NSDate dateWithTimeIntervalSince1970: sb.st_atime];
+	NSArray *rows = @[ @[ @"Created", LongDate(at[NSFileCreationDate]) ], @[ @"Modified", LongDate(at[NSFileModificationDate]) ], @[ @"Last opened", LongDate(opened) ] ]; double y = 361;
+	for (NSUInteger i = 0; i < [rows count]; i++) { NSArray *row = rows[i]; NSDictionary *la = @{ NSFontAttributeName: [NSFont systemFontOfSize: 13], NSForegroundColorAttributeName: TF_DIM }, *va = @{ NSFontAttributeName: [NSFont boldSystemFontOfSize: 13], NSForegroundColorAttributeName: TF_TEXT }; [row[0] drawAtPoint: NSMakePoint(9, y) withAttributes: la]; NSSize vs = [row[1] sizeWithAttributes: va]; [row[1] drawAtPoint: NSMakePoint(284 - vs.width, y) withAttributes: va];
+		if (i + 1 < [rows count]) { [TFRGB(65, 67, 70) setFill]; NSRectFill(NSMakeRect(10, y + 19, 273, 1)); } y += 23; }
+	double ty = y + 8;       /* "Tags" follows the rows by 8 (361 + 3 x 23 + 8 = 438 with the third row, 415 with two) */
+	[@"Tags" drawAtPoint: NSMakePoint(9, ty + 1) withAttributes: head]; NSArray *tg = TFTagsOf(p); FillRound(NSMakeRect(10, ty + 23, 273, 33), 6, TFDark() ? TFRGBA(255, 255, 255, 0.05) : TFRGBA(0, 0, 0, 0.04)); [[tg count] ? [tg componentsJoinedByString: @", "] : @"Add Tags…" drawAtPoint: NSMakePoint(18, ty + 23 + 9) withAttributes: Font(13, NO, TF_DIM)];
+	_content = ty + 23 + 33 + 12; [NSGraphicsContext restoreGraphicsState];
+	[self _drawQuickBar: dir path: p];
 }
 @end
 
