@@ -48,6 +48,7 @@ NSArray *TFBulkRenamedNames(NSArray *paths, NSDictionary *params);
 void TFBulkRename(NSArray *paths, void (^done)(NSArray *changes));
 void TFSetOpenWith(NSString *path, NSString *app, BOOL all);
 NSString *TFDisplayName(NSString *path);
+NSString *TFShownName(NSString *name);
 BOOL TFEject(NSString *mount);
 void TFPopupMenu(NSView *view, NSPoint p, NSMenu *menu);
 BOOL TFSymbol(NSString *name, NSRect cell, CGFloat pt, NSColor *tint);

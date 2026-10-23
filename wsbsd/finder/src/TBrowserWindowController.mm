@@ -338,7 +338,14 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 	return [self respondsToSelector: a];
 }
 /* delegates */
-- (void)iconViewOpenItem:(NSString *)path { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &d]; if (d && !TFIsPackage(path)) [self goToPath: path]; else TFOpenPath(path); }
+/* a smart folder (.savedSearch, the Mac's format: RawQuery and SearchCriteria with FXScope and FXKind) opens as the search it holds */
+- (void)openSavedSearch:(NSString *)path
+{
+	NSDictionary *pl = [NSDictionary dictionaryWithContentsOfFile: path]; NSString *q = pl[@"RawQuery"]; if (![q length]) { NSBeep(); return; } NSDictionary *cr = pl[@"SearchCriteria"]; NSString *scope = cr[@"FXScope"], *kind = cr[@"FXKind"];
+	if ([scope length] && ![scope isEqual: @"This Mac"] && [scope hasPrefix: @"/"]) [self goToPath: scope];
+	[_toolbar setSearching: YES]; [_toolbar->search setStringValue: q]; _searchStarted = YES; _searchBar->scope = ([scope length] && ![scope isEqual: @"This Mac"]) ? 1 : 0; _searchBar->kind = ([kind length] && ![kind isEqual: @"Any"]) ? kind : nil; [self searchChanged: q];
+}
+- (void)iconViewOpenItem:(NSString *)path { if ([[[path pathExtension] lowercaseString] isEqual: @"savedsearch"]) { [self openSavedSearch: path]; return; } BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &d]; if (d && !TFIsPackage(path)) [self goToPath: path]; else TFOpenPath(path); }
 - (void)iconViewSelectionChanged:(NSArray *)paths { _selection = paths; if ([paths count] == 1) [_pathBar setPath: paths[0]]; else [_pathBar setPath: [_url path]]; [self _updateStatus]; [self _refreshPane]; }
 - (void)_updateStatus
 {
