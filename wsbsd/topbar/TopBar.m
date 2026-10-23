@@ -15,7 +15,7 @@ static int BatteryPercent(void) { int v = -1; size_t n = sizeof v; if (sysctlbyn
 static BOOL BatteryCharging(void) { int v = 0; size_t n = sizeof v; if (sysctlbyname("hw.acpi.battery.state", &v, &n, NULL, 0) != 0) return NO; return (v & 2) != 0; }     /* ACPI battery state: 1 discharging, 2 charging */
 static BOOL LightText(void) { static BOOL (*fn)(void); static BOOL looked; if (!looked) { looked = YES; fn = (BOOL (*)(void))dlsym(RTLD_DEFAULT, "WsdBarWantsLightText"); } return fn ? fn() : YES; }
 
-void ToggleControlCenter(void);
+void ToggleControlCenter(void); void ToggleSpotlight(void);
 @interface BarView : NSView { NSTimer *timer; int battery; BOOL charging; NSInteger pressed; }
 @end
 @implementation BarView
@@ -78,7 +78,7 @@ void ToggleControlCenter(void);
 	for (NSUInteger i = 0; pressed < 0 && i + 1 < [c count]; i += 2) if (fabs(p.x - (W - [c[i + 1] doubleValue])) < 18) pressed = (NSInteger)i;
 	[self setNeedsDisplay: YES];
 }
-- (void)mouseUp:(NSEvent *)e { NSArray *c = [self centres]; if (pressed >= 0 && pressed < 99 && [c[pressed] isEqual: @"cc"]) ToggleControlCenter(); pressed = -1; [self setNeedsDisplay: YES]; }
+- (void)mouseUp:(NSEvent *)e { NSArray *c = [self centres]; if (pressed >= 0 && pressed < 99 && [c[pressed] isEqual: @"cc"]) ToggleControlCenter(); else if (pressed >= 0 && pressed < 99 && [c[pressed] isEqual: @"search"]) ToggleSpotlight(); pressed = -1; [self setNeedsDisplay: YES]; }
 @end
 
 int main(int argc, char *argv[])
