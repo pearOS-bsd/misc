@@ -6445,7 +6445,6 @@
 - (id)cmdRecentFoldersItem:(id)a0 { /* 0x1000A134C */ return nil; }
 - (id)validateClearRecentFolders:(id)a0 { /* 0x1000A1330 */ return nil; }
 - (id)validateConnectTo:(id)a0 { /* 0x100078000 */ return nil; }
-- (id)cmdConnectTo:(id)a0 { /* 0x10010EF80 */ return nil; }
 - (id)validateCycleWindows:(id)a0 { /* 0x1000A86D8 */ return nil; }
 - (id)validateToggleCopyProgressWindow:(id)a0 { /* 0x100407CB0 */ return nil; }
 - (id)cmdToggleCopyProgressWindow:(id)a0 { /* 0x100407D14 */ return nil; }
@@ -6456,7 +6455,6 @@
 - (id)applicationDidResignActive:(id)a0 { /* 0x100408210 */ return nil; }
 - (id)applicationShouldTerminate:(id)a0 { /* 0x100114DF8 */ return nil; }
 - (id)applicationWillTerminate:(id)a0 { /* 0x1001167DC */ return nil; }
-- (id)applicationDockMenu:(id)a0 { /* 0x100067D50 */ return nil; }
 - (id)applicationSupportsSecureRestorableState:(id)a0 { /* 0x100408274 */ return nil; }
 - (id)registerHandoffActivityForSelection:(id)a0 target:(id)a1 { /* 0x10040827C */ return nil; }
 - (id)application:(id)a0 continueUserActivity:(id)a1 restorationHandler:(id)a2 { /* 0x1004085A8 */ return nil; }

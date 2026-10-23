@@ -46,6 +46,7 @@ NSArray *TFAppsForFile(NSString *path);
 void TFOpenPath(NSString *path);
 NSArray *TFBulkRenamedNames(NSArray *paths, NSDictionary *params);
 void TFBulkRename(NSArray *paths, void (^done)(NSArray *changes));
+void TFAsk(NSString *title, NSString *message, NSArray *fields, NSString *okTitle, void (^done)(NSArray *values));
 void TFSetOpenWith(NSString *path, NSString *app, BOOL all);
 NSString *TFDisplayName(NSString *path);
 NSString *TFShownName(NSString *name);
