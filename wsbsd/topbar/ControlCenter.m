@@ -6,15 +6,25 @@
  * at (252, 29); Display's slider from x 40, 82 wide; Keyboard's from x 42, 80 wide; Now Playing: the artwork 40 at (14, 14), the title at (14, 64), the three 30 pt buttons at y 96. Tile corners: 32
  * (Sound 22); the fill is the window server's glass slot of each tile; a circle that is on is white with the icon in its colour; the circle holding an icon in AirDrop and Focus is 36 wide at (15, 14)
  * in white 24 %. Not measured: the radius of the glass blur, the battery tile's inside, the icons that have no equivalent in the symbol set (Stage Manager, True Tone, Night Shift, AirDrop) and
- * the state of Wi-Fi/Bluetooth/AirDrop/Focus here (drawn, not connected). Working: Dark Mode (the appearance key of the global preferences), Sound (mixer), Display brightness (backlight). */
+ * the state of Wi-Fi/Bluetooth/AirDrop/Focus here (drawn, not connected). Working: Dark Mode (the appearance key of the global preferences), Sound (mixer), Display brightness (backlight), the Wi-Fi tile (power of the first CoreWLAN interface when CoreWLAN and airportd are there). */
 #import <AppKit/AppKit.h>
 #import <objc/message.h>
 #import <GNUstepGUI/GSDisplayServer.h>
 #include <math.h>
 #include <sys/sysctl.h>
+#include <dlfcn.h>
 @interface NSObject (CCSymbols) + (BOOL)drawSymbol:(NSString *)name inRect:(NSRect)cell size:(CGFloat)pt weight:(int)weight color:(NSColor *)c; @end
 @interface NSObject (CCGlass) - (void)wsdGlassSlot:(int)slot :(int)win :(NSRect)r :(int)radius :(int)mode; @end
 
+/* Wi-Fi through CoreWLAN (the framework of this repository, which talks to airportd): loaded when it is on the system, the tile then shows and sets the power of the first interface */
+static id WifiInterface(void)
+{
+	static id iface; static BOOL tried; if (tried) return iface; tried = YES;
+	dlopen("/System/Library/Frameworks/CoreWLAN.framework/Versions/A/CoreWLAN", RTLD_LAZY | RTLD_GLOBAL); Class c = NSClassFromString(@"CWWiFiClient"); if (!c) return nil;
+	id client = ((id (*)(id, SEL))objc_msgSend)(c, @selector(sharedWiFiClient)); if (client) iface = ((id (*)(id, SEL))objc_msgSend)(client, @selector(interface)); return iface;
+}
+static BOOL WifiPower(BOOL *known) { id i = WifiInterface(); if (!i) { *known = NO; return NO; } *known = YES; return ((BOOL (*)(id, SEL))objc_msgSend)(i, @selector(powerOn)); }
+static void SetWifiPower(BOOL on) { id i = WifiInterface(); if (i) { NSError *e = nil; ((BOOL (*)(id, SEL, BOOL, NSError **))objc_msgSend)(i, @selector(setPower:error:), on, &e); } }
 #define PANEL_W 292.0
 static double ColX(int c) { return c * 76.0; }
 static double RowY(double k) { return 12 + k * 76.0; }
@@ -50,6 +60,7 @@ static void SetDark(BOOL dark)
 {
 	if (!(self = [super initWithFrame: f])) return nil;
 	on = [NSMutableDictionary dictionaryWithDictionary: @{ @"wifi": @YES, @"bluetooth": @YES, @"dark": @(DarkNow()), @"nightshift": @NO, @"airdrop": @NO, @"stage": @NO, @"mirror": @NO, @"truetone": @NO, @"focus": @NO }];
+	{ BOOL known; BOOL w = WifiPower(&known); if (known) on[@"wifi"] = @(w); }       /* without CoreWLAN/airportd the tile keeps its drawn state */
 	volume = MixerVolume(); brightness = Brightness(); kbd = 1; if (volume < 0) volume = 0.5625; if (brightness < 0) brightness = 1;
 	/* kind, id, column, row, columns, rows, symbol, title */
 	tiles = @[ @[ @"circle", @"wifi", @0, @0, @1, @1, @"wifi", @"" ], @[ @"circle", @"bluetooth", @1, @0, @1, @1, @"", @"" ], @[ @"nowplaying", @"np", @2, @0, @2, @2, @"", @"" ],
@@ -116,7 +127,7 @@ static void Bluetooth(NSPoint c, NSColor *col) { NSBezierPath *p = [NSBezierPath
 	NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; drag = nil;
 	for (NSArray *t in tiles) { NSRect r = [self rectOf: t]; if (!NSPointInRect(p, r)) continue; NSString *id_ = t[1];
 		if ([t[0] isEqual: @"slider"]) { drag = id_; [self set: id_ at: p inRect: r]; return; }
-		if ([t[0] isEqual: @"circle"] || [t[0] isEqual: @"wide"]) { BOOL v = ![on[id_] boolValue]; on[id_] = @(v); if ([id_ isEqual: @"dark"]) SetDark(v); [self applyGlass]; [self setNeedsDisplay: YES]; }
+		if ([t[0] isEqual: @"circle"] || [t[0] isEqual: @"wide"]) { BOOL v = ![on[id_] boolValue]; on[id_] = @(v); if ([id_ isEqual: @"dark"]) SetDark(v); if ([id_ isEqual: @"wifi"]) SetWifiPower(v); [self applyGlass]; [self setNeedsDisplay: YES]; }
 		return; }
 }
 - (void)mouseDragged:(NSEvent *)e { if (!drag) return; NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; for (NSArray *t in tiles) if ([t[1] isEqual: drag]) [self set: drag at: p inRect: [self rectOf: t]]; }
