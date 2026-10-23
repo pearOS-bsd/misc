@@ -161,7 +161,7 @@ NSImage *TFIcon(NSString *path);
 @interface TWindowTrim : NSView @end
 
 /* the preview pane (View > Show Preview): the picture, name, kind, size and information of the selected file, or a count for several */
-@interface TPreviewPane : NSView { @public NSArray *paths; NSString *folder; } @end
+@interface TPreviewPane : NSView { @public NSArray *paths; NSString *folder; CGFloat _scroll, _content; } - (void)_drawQuickBar:(BOOL)dir path:(NSString *)p; @end
 
 /* the desktop picture */
 NSString *TFWallpaperPath(void);

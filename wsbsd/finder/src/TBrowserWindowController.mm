@@ -455,7 +455,7 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 - (void)cmdGroupByKey:(NSMenuItem *)it { NSString *k = [it representedObject]; if (_mode == 1) { _lastGroup = [k length] ? k : _lastGroup; [_list setGroup: k]; return; } if (_mode != 0) return; _lastGroup = [k length] ? k : _lastGroup; [_icons setGroup: k]; }
 - (void)cmdSortByKey:(NSMenuItem *)it { NSString *k = [it representedObject]; [self _arrange: [k length] ? k : nil]; }
 - (void)cmdTogglePreviewPane:(id)s { _showPane = !_showPane; [self _layout]; [self _refreshPane]; }
-- (void)_refreshPane { if (!_preview) return; _preview->paths = _selection; _preview->folder = [_url path]; [_preview setNeedsDisplay: YES]; }
+- (void)_refreshPane { if (!_preview) return; if (![_preview->paths isEqual: _selection]) _preview->_scroll = 0; _preview->paths = _selection; _preview->folder = [_url path]; [_preview setNeedsDisplay: YES]; }
 - (void)cmdTogglePreviewOptions:(id)s {}
 - (void)cmdCleanUpByLastOpenDate:(id)s { [self cmdCleanUpByModDate: s]; }
 - (void)cmdCleanUpByDateAdded:(id)s { [self cmdCleanUpByCreationDate: s]; }
