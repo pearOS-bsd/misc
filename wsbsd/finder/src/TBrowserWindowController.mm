@@ -16,7 +16,7 @@ static BOOL _searchBar_skipLib(NSString *root);
 @interface NSObject (TFSupport) + (void)roundWindow:(NSWindow *)w radius:(int)r; @end
 
 /* ---------- the window controller ---------- */
-@interface TBrowserWindowController : NSWindowController <TIconViewDelegate, TSidebarDelegate, TPathBarDelegate, NSWindowDelegate> { NSURL *_url; NSMutableArray<NSString *> *_history; NSInteger _hi; TToolbarView *_toolbar; TSidebarView *_sidebar; TIconView *_icons; TListView *_list; TColumnView *_cols; TGalleryView *_gallery; TPathBarView *_pathBar; TWindowTrim *_trim; TStatusBarView *_status; BOOL _showStatus; TSearchBar *_searchBar; TTabBar *_tabBar; NSMutableArray *_tabs; NSInteger _tabIx; BOOL _forceTabBar; NSArray *_found; NSInteger _searchGen; BOOL _searchStarted; NSMenu *_ctxMenu; NSString *_filter, *_tag; NSMutableArray *_undo, *_redo; long long _watchedMod; NSTimer *_watcher; NSArray *_cutPaths; NSArray *_selection; NSInteger _mode; }
+@interface TBrowserWindowController : NSWindowController <TIconViewDelegate, TSidebarDelegate, TPathBarDelegate, NSWindowDelegate> { NSURL *_url; NSMutableArray<NSString *> *_history; NSInteger _hi; TToolbarView *_toolbar; TSidebarView *_sidebar; TIconView *_icons; TListView *_list; TColumnView *_cols; TGalleryView *_gallery; TPathBarView *_pathBar; TWindowTrim *_trim; TStatusBarView *_status; BOOL _showStatus; TSearchBar *_searchBar; TTabBar *_tabBar; NSMutableArray *_tabs; NSInteger _tabIx; BOOL _forceTabBar; NSString *_lastGroup; NSArray *_found; NSInteger _searchGen; BOOL _searchStarted; NSMenu *_ctxMenu; NSString *_filter, *_tag; NSMutableArray *_undo, *_redo; long long _watchedMod; NSTimer *_watcher; NSArray *_cutPaths; NSArray *_selection; NSInteger _mode; }
 + (instancetype)newBrowserWithPath:(NSString *)path;
 - (void)goToPath:(NSString *)path;
 @end
@@ -374,7 +374,11 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 - (void)cmdFindFile:(id)s { [self cmdSetFocusToSearchField: s]; }
 - (void)cmdAlternateFindFile:(id)s { [self cmdSetFocusToSearchField: s]; }
 - (void)cmdSortBy:(id)s {}
-- (void)cmdUseGroupsOrStacks:(id)s {}
+- (NSString *)currentGroup { return _icons->_group; }
+- (NSString *)currentSort { return _icons->_arrange; }
+- (void)cmdUseGroupsOrStacks:(id)s { if (_mode != 0) return; [_icons setGroup: _icons->_group ? nil : (_lastGroup ?: @"kind")]; if (_icons->_group) _lastGroup = _icons->_group; }
+- (void)cmdGroupByKey:(NSMenuItem *)it { NSString *k = [it representedObject]; if (_mode != 0) return; _lastGroup = [k length] ? k : _lastGroup; [_icons setGroup: k]; }
+- (void)cmdSortByKey:(NSMenuItem *)it { NSString *k = [it representedObject]; [self _arrange: [k length] ? k : nil]; }
 - (void)cmdTogglePreviewPane:(id)s {}
 - (void)cmdTogglePreviewOptions:(id)s {}
 - (void)cmdCleanUpByLastOpenDate:(id)s { [self cmdCleanUpByModDate: s]; }
