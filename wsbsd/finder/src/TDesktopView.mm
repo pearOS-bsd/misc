@@ -6,7 +6,7 @@
 @interface TBrowserWindowController : NSWindowController
 + (instancetype)newBrowserWithPath:(NSString *)path;
 @end
-@interface TDesktopWindowController : NSObject <TIconViewDelegate> { TDesktopWindow *_window; TIconView *_view; NSArray *_selection; NSString *_volumeSig; }
+@interface TDesktopWindowController : NSObject <TIconViewDelegate> { NSString *_pictureSeen; TDesktopWindow *_window; TIconView *_view; NSArray *_selection; NSString *_volumeSig; }
 + (instancetype)sharedController;
 - (void)showDesktop;
 @end
@@ -18,7 +18,8 @@ static NSString *DesktopPath(void) { return [NSHomeDirectory() stringByAppending
 	@try { [self _showDesktop]; } @catch (NSException *e) { NSLog(@"Finder: showDesktop failed: %@ %@ %@", [e name], [e reason], [e callStackSymbols]); }
 }
 - (NSString *)_signature { NSMutableString *s = [NSMutableString string]; for (NSDictionary *v in TFVolumes()) [s appendFormat: @"%@;", v[@"path"]]; for (NSString *k in @[ @"ShowHardDrivesOnDesktop", @"ShowExternalHardDrivesOnDesktop", @"ShowRemovableMediaOnDesktop", @"ShowMountedServersOnDesktop" ]) [s appendFormat: @"%d", TFPrefBool(k, [k hasPrefix: @"ShowExt"] || [k hasPrefix: @"ShowRem"])]; [s appendFormat: @"%lu", (unsigned long)[[[NSFileManager defaultManager] contentsOfDirectoryAtPath: DesktopPath() error: NULL] count]]; return s; }
-- (void)_poll:(NSTimer *)t { NSString *sig = [self _signature]; if (![sig isEqual: _volumeSig]) { _volumeSig = sig; [_view reloadKeepingSelectionOrFolder: DesktopPath()]; } }
+- (void)_poll:(NSTimer *)t { NSString *pic = TFWallpaperPath(); if (pic && ![pic isEqual: _pictureSeen] && _pictureSeen) [self _prefs: nil]; _pictureSeen = pic;      /* the default picture follows the appearance */
+	NSString *sig = [self _signature]; if (![sig isEqual: _volumeSig]) { _volumeSig = sig; [_view reloadKeepingSelectionOrFolder: DesktopPath()]; } }
 - (void)_showDesktop
 {
 	if (_window) return; NSScreen *screen = [NSScreen mainScreen]; NSLog(@"Finder: showDesktop screen %@ frame %@", screen, NSStringFromRect([screen frame])); _window = [[TDesktopWindow alloc] initWithScreen: screen];
