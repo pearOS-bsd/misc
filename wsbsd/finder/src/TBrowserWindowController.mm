@@ -318,7 +318,7 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 	return [self respondsToSelector: a];
 }
 /* delegates */
-- (void)iconViewOpenItem:(NSString *)path { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &d]; if (d && ![[path pathExtension] isEqual: @"app"]) [self goToPath: path]; else [[NSWorkspace sharedWorkspace] openFile: path]; }
+- (void)iconViewOpenItem:(NSString *)path { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &d]; if (d && !TFIsPackage(path)) [self goToPath: path]; else [[NSWorkspace sharedWorkspace] openFile: path]; }
 - (void)iconViewSelectionChanged:(NSArray *)paths { _selection = paths; if ([paths count] == 1) [_pathBar setPath: paths[0]]; else [_pathBar setPath: [_url path]]; [self _updateStatus]; }
 - (void)_updateStatus
 {
@@ -345,13 +345,13 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 - (void)cmdAddToSidebar:(id)s { NSMutableArray *f = [TFPref(@"SidebarFavorites", @[]) mutableCopy]; for (NSString *p in [self _targets]) { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: p isDirectory: &d]; if (d && ![f containsObject: p]) [f addObject: p]; } TFSetPref(@"SidebarFavorites", f); }
 - (void)cmdToggleViewOptions:(id)s { if (_mode != 0) return; __weak TBrowserWindowController *me = self; TFOpenViewOptions(_icons, [[_url path] isEqual: @"/"] ? @"Macintosh HD" : [[_url path] lastPathComponent], ^{ [me _updateStatus]; }); }
 - (void)toggleTabBar:(id)s { _forceTabBar = !_forceTabBar; [_tabBar setHidden: !_forceTabBar && [_tabs count] < 2]; if (![_tabs count]) { [_tabs addObject: [self _tabState]]; _tabIx = 0; } [self _syncTabBar]; }
-- (void)cmdShowPackageContents:(id)s { for (NSString *p in [self _targets]) if ([[p pathExtension] isEqual: @"app"]) [self goToPath: p]; }
+- (void)cmdShowPackageContents:(id)s { for (NSString *p in [self _targets]) if (TFIsPackage(p)) [self goToPath: p]; }
 - (void)cmdToggleToolbar:(id)s { [_toolbar setHidden: ![_toolbar isHidden]]; }
 /* the rest of the menu bar's actions (docs/desktop/Finder.menu-actions.txt) */
 - (void)cmdGroupAsFolder:(id)s { [self cmdNewFolderWithSelection: s]; }
 - (void)cmdNewSmartFolder:(id)s { [self cmdToggleSearch: s]; }
 - (void)cmdNewBurnableFolder:(id)s { NSString *p = UniquePath([_url path], @"Untitled Burn Folder", nil); if ([[NSFileManager defaultManager] createDirectoryAtPath: p withIntermediateDirectories: NO attributes: nil error: NULL]) { [self _record: @"New Folder" ops: @[ @{ @"t": @"mkdir", @"a": p } ]]; [self reload]; } }
-- (void)cmdOpenAltBrowse:(id)s { for (NSString *p in [self _targets]) { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: p isDirectory: &d]; if (d && ![[p pathExtension] isEqual: @"app"]) [TBrowserWindowController newBrowserWithPath: p]; else [[NSWorkspace sharedWorkspace] openFile: p]; } }
+- (void)cmdOpenAltBrowse:(id)s { for (NSString *p in [self _targets]) { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: p isDirectory: &d]; if (d && !TFIsPackage(p)) [TBrowserWindowController newBrowserWithPath: p]; else [[NSWorkspace sharedWorkspace] openFile: p]; } }
 - (void)cmdOpenOptionBrowse:(id)s { [self cmdOpenAltBrowse: s]; [[self window] performClose: nil]; }
 - (void)cmdOpenParentAltBrowse:(id)s { [TBrowserWindowController newBrowserWithPath: [[_url path] stringByDeletingLastPathComponent]]; }
 - (void)cmdOpenWith:(id)s {}

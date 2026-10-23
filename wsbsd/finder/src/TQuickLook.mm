@@ -17,7 +17,7 @@
 	if (image) { NSSize z = [image size]; CGFloat k = MIN(MIN(area.size.width / z.width, area.size.height / z.height), 1.0 * 4); NSRect d = NSMakeRect(NSMidX(area) - z.width * k / 2, NSMidY(area) - z.height * k / 2, z.width * k, z.height * k); [image drawInRect: d fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; }
 	else if (text) { NSMutableParagraphStyle *ps = [[NSMutableParagraphStyle alloc] init]; [ps setLineBreakMode: NSLineBreakByWordWrapping]; [TFRGB(250, 250, 250) setFill]; NSRectFill(area); [text drawInRect: NSInsetRect(area, 14, 12) withAttributes: @{ NSFontAttributeName: [NSFont userFixedPitchFontOfSize: 12], NSForegroundColorAttributeName: TFRGB(30, 30, 30), NSParagraphStyleAttributeName: ps }]; }
 	else {
-		NSFileManager *fm = [NSFileManager defaultManager]; NSDictionary *at = [fm attributesOfItemAtPath: path error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory] && ![[path pathExtension] isEqual: @"app"]; CGFloat s = MIN(MIN(area.size.width, area.size.height - 80), 256);
+		NSFileManager *fm = [NSFileManager defaultManager]; NSDictionary *at = [fm attributesOfItemAtPath: path error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory] && !TFIsPackage(path); CGFloat s = MIN(MIN(area.size.width, area.size.height - 80), 256);
 		TFDrawIcon(path, NSMakeRect(NSMidX(area) - s / 2, area.origin.y + 10, s, s)); NSString *line = [NSString stringWithFormat: @"%@ - %@", TFKindString(path, dir), dir ? @"--" : TFSizeString([at[NSFileSize] unsignedLongLongValue])]; NSSize ls = [line sizeWithAttributes: dim]; [line drawAtPoint: NSMakePoint(NSMidX(area) - ls.width / 2, area.origin.y + s + 28) withAttributes: dim];
 	}
 }

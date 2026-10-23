@@ -32,7 +32,7 @@ static NSString *Prompt(NSString *title, NSString *initial, BOOL multi)
 - (void)_draw:(NSRect)r
 {
 	NSRect b = [self bounds]; CGFloat W = b.size.width; [C(27) setFill]; NSRectFill(b); _hits = [NSMutableArray array]; if (!folded) folded = [NSMutableSet setWithObjects: @"Comments", @"Open with", @"Preview", nil];
-	NSFileManager *fm = [NSFileManager defaultManager]; NSDictionary *at = [fm attributesOfItemAtPath: path error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory] && ![[path pathExtension] isEqual: @"app"]; unsigned long long size = [at[NSFileSize] unsignedLongLongValue];
+	NSFileManager *fm = [NSFileManager defaultManager]; NSDictionary *at = [fm attributesOfItemAtPath: path error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory] && !TFIsPackage(path); unsigned long long size = [at[NSFileSize] unsignedLongLongValue];
 	struct stat sb; stat([path fileSystemRepresentation], &sb); NSColor *t = C(235), *dim = TFDark() ? TFRGBA(255, 255, 255, 0.55) : TFRGBA(0, 0, 0, 0.55), *line = C(49);
 	/* the title bar */
 	NSString *title = [[path lastPathComponent] stringByAppendingString: @" Info"]; NSDictionary *th = Fo(13, YES, t); NSString *tt = title; while ([tt sizeWithAttributes: th].width > W - 190 && [tt length] > 8) tt = [[tt substringToIndex: [tt length] - 4] stringByAppendingString: @"…"]; NSSize ts = [tt sizeWithAttributes: th]; TFDrawIcon(path, NSMakeRect(W / 2 - ts.width / 2 - 20, 12, 14, 14)); [tt drawAtPoint: NSMakePoint(W / 2 - ts.width / 2, 12) withAttributes: th];
