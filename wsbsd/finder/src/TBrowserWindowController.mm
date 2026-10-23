@@ -116,17 +116,23 @@ static NSString *StyleName(NSInteger m) { return @[ @"icnv", @"Nlsv", @"clmv", @
 	if (_searchBar->scope == 0 && !_searchStarted) { _searchStarted = YES; _searchBar->scope = [TFPref(@"FXDefaultSearchScope", @"SCev") isEqual: @"SCcf"] ? 1 : 0; }
 	[self _layout]; [NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector(_startSearch) object: nil]; [self performSelector: @selector(_startSearch) withObject: nil afterDelay: 0.25];
 }
+- (void)saveSearch
+{
+	if (!_filter) return; NSString *dir = [NSHomeDirectory() stringByAppendingPathComponent: @"Library/Saved Searches"]; [[NSFileManager defaultManager] createDirectoryAtPath: dir withIntermediateDirectories: YES attributes: nil error: NULL];
+	NSString *file = [dir stringByAppendingPathComponent: [[_filter stringByReplacingOccurrencesOfString: @"/" withString: @"-"] stringByAppendingPathExtension: @"savedSearch"]]; NSDictionary *pl = @{ @"RawQuery": _filter, @"SearchCriteria": @{ @"FXScope": _searchBar->scope == 0 ? @"This Mac" : [_url path], @"FXKind": _searchBar->kind ?: @"Any" } };
+	[pl writeToFile: file atomically: YES]; _searchBar->info = [NSString stringWithFormat: @"Saved as %@", [file lastPathComponent]]; [_searchBar setNeedsDisplay: YES];
+}
 - (void)searchScopeChanged:(NSNumber *)n { [self _startSearch]; }
 - (void)_startSearch
 {
-	NSString *q = _filter; if (!q) return; NSInteger gen = _searchGen; NSString *root = _searchBar->scope == 0 ? NSHomeDirectory() : [_url path]; _searchBar->info = @"Searching…"; [_searchBar setNeedsDisplay: YES]; __weak TBrowserWindowController *me = self;
+	NSString *q = _filter; if (!q) return; NSString *kindF = _searchBar->kind; NSInteger gen = _searchGen; NSString *root = _searchBar->scope == 0 ? NSHomeDirectory() : [_url path]; _searchBar->info = @"Searching…"; [_searchBar setNeedsDisplay: YES]; __weak TBrowserWindowController *me = self;
 	NSThread *th = [[NSThread alloc] initWithBlock: ^{ @autoreleasepool {
 		NSMutableArray *toks = [NSMutableArray array]; for (NSString *w in [q componentsSeparatedByString: @" "]) if ([w length]) [toks addObject: w]; NSMutableArray *res = [NSMutableArray array]; NSFileManager *fm = [NSFileManager defaultManager]; NSMutableArray *stack = [NSMutableArray arrayWithObject: root]; NSDate *end = [NSDate dateWithTimeIntervalSinceNow: 6]; NSUInteger n = 0;
 		while ([stack count] && [res count] < 3000) {
 			NSString *dir = [stack lastObject]; [stack removeLastObject]; TBrowserWindowController *s = me; if (!s || s->_searchGen != gen) return;
 			for (NSString *nm in [fm contentsOfDirectoryAtPath: dir error: NULL]) {
 				if ([nm hasPrefix: @"."]) continue; NSString *full = [dir stringByAppendingPathComponent: nm]; n++;
-				BOOL all = YES; for (NSString *tk in toks) if ([nm rangeOfString: tk options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch].location == NSNotFound) { all = NO; break; } if (all) [res addObject: full];
+				BOOL all = YES; for (NSString *tk in toks) if ([nm rangeOfString: tk options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch].location == NSNotFound) { all = NO; break; } if (all && kindF) { BOOL d = NO; [fm fileExistsAtPath: full isDirectory: &d]; all = [TFKindCategory(full, d && !TFIsPackage(full)) isEqual: kindF]; } if (all) [res addObject: full];
 				NSDictionary *at = [fm attributesOfItemAtPath: full error: NULL]; if ([at[NSFileType] isEqual: NSFileTypeDirectory] && !([dir isEqual: root] && [nm isEqual: @"Library"] && _searchBar_skipLib(root))) [stack addObject: full]; }
 			if ([end timeIntervalSinceNow] < 0) break; }
 		if (getenv("FINDER_DEBUG")) NSLog(@"Finder: search %@ in %@: %lu enumerated, %lu found, gen %ld", q, root, (unsigned long)n, (unsigned long)[res count], (long)gen);

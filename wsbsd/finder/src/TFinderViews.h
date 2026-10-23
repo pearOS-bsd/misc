@@ -39,6 +39,7 @@ void TFSetPref(NSString *key, id value);
 void TFDrawIcon(NSString *path, NSRect r);
 @interface NSObject (TFRound) + (void)roundWindow:(NSWindow *)w radius:(int)r; @end
 NSArray *TFVolumes(void);
+NSString *TFKindCategory(NSString *path, BOOL dir);
 BOOL TFIsPackage(NSString *path);
 NSArray *TFAppsForFile(NSString *path);
 NSString *TFDisplayName(NSString *path);
@@ -125,7 +126,7 @@ NSImage *TFIcon(NSString *path);
 @end
 
 /* the bar under the toolbar while searching: where to look (This Mac or the folder) */
-@interface TSearchBar : NSView { @public NSString *folderName; NSInteger scope; id target; NSString *info; }
+@interface TSearchBar : NSView { @public NSString *folderName; NSInteger scope; id target; NSString *info; NSString *kind; }
 @end
 
 /* the line under the items: how many, how many selected, how much room is left */

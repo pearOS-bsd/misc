@@ -751,9 +751,16 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 {
 	NSRect b = [self bounds]; [TF_CONTENT setFill]; NSRectFill(b); [TF_LINE setFill]; NSRectFill(NSMakeRect(0, b.size.height - 1, b.size.width, 1)); TextAt(@"Search:", 16, 17, Font(12, NO, TF_DIM));
 	for (int k = 0; k < 2; k++) { NSRect t = [self _tok: k]; if (k == scope) FillRound(t, 6, TFDark() ? TFRGBA(255, 255, 255, 0.14) : TFRGBA(0, 0, 0, 0.10)); NSString *s = k == 0 ? @"This Mac" : (folderName ?: @"Folder"); TextAt(s, t.origin.x + 11, 17, Font(12, NO, k == scope ? TF_TEXT : TF_DIM)); }
-	if ([info length]) { NSDictionary *a = Font(11, NO, TF_DIM); NSSize z = [info sizeWithAttributes: a]; [info drawAtPoint: NSMakePoint(b.size.width - z.width - 16, 17 - z.height / 2) withAttributes: a]; }
+	NSRect kr = [self _kindRect]; FillRound(kr, 6, kind ? (TFDark() ? TFRGBA(255, 255, 255, 0.14) : TFRGBA(0, 0, 0, 0.10)) : TFRGBA(0, 0, 0, 0)); [[NSString stringWithFormat: @"Kind: %@ ▾", kind ?: @"Any"] drawAtPoint: NSMakePoint(kr.origin.x + 8, 9) withAttributes: Font(12, NO, kind ? TF_TEXT : TF_DIM)];
+	NSRect sr = [self _saveRect]; FillRound(sr, 6, TF_PILL); TextAt(@"Save", sr.origin.x + 11, 17, Font(12, NO, TF_TEXT));
+	if ([info length]) { NSDictionary *a = Font(11, NO, TF_DIM); NSSize z = [info sizeWithAttributes: a]; [info drawAtPoint: NSMakePoint(kr.origin.x - z.width - 14, 17 - z.height / 2) withAttributes: a]; }
 }
-- (void)mouseDown:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; for (int k = 0; k < 2; k++) if (NSPointInRect(p, [self _tok: k]) && scope != k) { scope = k; [self setNeedsDisplay: YES]; [target performSelector: @selector(searchScopeChanged:) withObject: @(k)]; } }
+- (void)_pickKind:(NSMenuItem *)it { kind = [[it title] isEqual: @"Any"] ? nil : [it title]; [self setNeedsDisplay: YES]; [target performSelector: @selector(searchScopeChanged:) withObject: @(scope)]; }
+- (NSRect)_saveRect { return NSMakeRect([self bounds].size.width - 66, 6, 52, 22); }
+- (NSRect)_kindRect { return NSMakeRect([self bounds].size.width - 66 - 6 - 118, 6, 118, 22); }
+- (void)mouseDown:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil];
+	if (NSPointInRect(p, [self _saveRect])) { [target performSelector: @selector(saveSearch)]; return; }
+	if (NSPointInRect(p, [self _kindRect])) { NSMenu *m = [[NSMenu alloc] initWithTitle: @""]; for (NSString *k in @[ @"Any", @"Folders", @"Documents", @"Images", @"Audio", @"Movies", @"PDF", @"Presentations", @"Applications" ]) { NSMenuItem *it = [m addItemWithTitle: k action: @selector(_pickKind:) keyEquivalent: @""]; [it setTarget: self]; [it setState: [k isEqual: kind ?: @"Any"] ? NSOnState : NSOffState]; } NSRect kr = [self _kindRect]; TFPopupMenu(self, NSMakePoint(kr.origin.x, NSMaxY(kr) + 2), m); return; } for (int k = 0; k < 2; k++) if (NSPointInRect(p, [self _tok: k]) && scope != k) { scope = k; [self setNeedsDisplay: YES]; [target performSelector: @selector(searchScopeChanged:) withObject: @(k)]; } }
 @end
 
 /* ---------- the status bar ---------- */
