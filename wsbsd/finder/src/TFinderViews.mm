@@ -497,6 +497,7 @@ static NSString *SortFieldFor(NSString *col) { NSDictionary *m = @{ @"name": @"n
 	BOOL key = KeyWin(self); NSArray *cols = [self _cols]; CGFloat w = [self bounds].size.width;
 	for (NSInteger i = 0; i < (NSInteger)[_items count]; i++) {
 		CGFloat y = 4 + i * kRow; if (y + kRow < v.origin.y || y > NSMaxY(v)) continue; NSDictionary *it = _items[i]; BOOL sel = [_sel containsIndex: i]; CGFloat cy = y + kRow / 2;
+		if (i == _dropRow) { FillRound(NSMakeRect(8, y, w - 16 - 10, kRow), 6, TFRGBA(0, 98, 225, 0.45)); }
 		if (sel) FillRound(NSMakeRect(8, y, w - 16 - 10, kRow), 6, key ? TF_ACCENT : (TFDark() ? TFRGB(70, 70, 70) : TFRGB(200, 200, 204))); else if (i % 2) FillRound(NSMakeRect(8, y, w - 16 - 10, kRow), 6, TFDark() ? TFRGBA(255, 255, 255, 0.04) : TFRGBA(0, 0, 0, 0.04));
 		NSColor *tc = sel ? TFRGB(255, 255, 255) : TF_TEXT, *dc = sel ? TFRGBA(255, 255, 255, 0.8) : TF_DIM; CGFloat ind = [it[@"depth"] intValue] * 18; if ([it[@"dir"] boolValue]) TFSymbolW([_exp containsObject: it[@"path"]] ? @"chevron.down" : @"chevron.right", NSMakeRect(8 + ind, y, 14, kRow), 9, 6, sel ? TFRGB(255, 255, 255) : TF_DIM); { NSImage *tm = Thumb(it[@"path"]); if (tm) { NSSize z = [tm size]; CGFloat k = MIN(16 / z.width, 16 / z.height); [tm drawInRect: NSMakeRect(32 + ind - z.width * k / 2, cy - z.height * k / 2, z.width * k, z.height * k) fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; } else TFDrawIcon(it[@"path"], NSMakeRect(24 + ind, cy - 8, 16, 16)); }
 		for (NSArray *c in cols) {
@@ -540,9 +541,17 @@ static NSString *SortFieldFor(NSString *col) { NSDictionary *m = @{ @"name": @"n
 	if (fl & NSShiftKeyMask && _anchor >= 0) { [_sel removeAllIndexes]; [_sel addIndexesInRange: NSMakeRange(MIN(_anchor, i), labs(i - _anchor) + 1)]; }
 	else if (fl & NSCommandKeyMask) { if ([_sel containsIndex: i]) [_sel removeIndex: i]; else [_sel addIndex: i]; _anchor = i; }
 	else { if (![_sel containsIndex: i]) { [_sel removeAllIndexes]; [_sel addIndex: i]; } _anchor = i; }
-	[self setNeedsDisplay: YES]; [self _notify]; if ([e clickCount] == 2) [delegate iconViewOpenItem: _items[i][@"path"]];
+	[self setNeedsDisplay: YES]; [self _notify]; if ([e clickCount] == 2) { [delegate iconViewOpenItem: _items[i][@"path"]]; return; } [self _dragFrom: p event: e];
 }
 - (void)_toggleCol:(NSMenuItem *)it { for (NSMutableDictionary *d in _colDefs) if ([d[@"id"] isEqual: [it representedObject]]) d[@"vis"] = @(![d[@"vis"] boolValue]); [self setNeedsDisplay: YES]; [self _saveColumns]; }
+- (void)_dragFrom:(NSPoint)start event:(NSEvent *)e                                          /* rows dragged onto a folder row, the sidebar or another window */
+{
+	NSEvent *ev = e; BOOL moved = NO; NSArray *paths = [self selectedPaths]; if (![paths count]) return; _dropRow = -1;
+	while ([ev type] != NSLeftMouseUp) { ev = [[self window] nextEventMatchingMask: NSLeftMouseDraggedMask | NSLeftMouseUpMask untilDate: [NSDate distantFuture] inMode: NSEventTrackingRunLoopMode dequeue: YES]; NSPoint q = [self convertPoint: [ev locationInWindow] fromView: nil]; q.y = q.y - topInset + off; if (!moved && hypot(q.x - start.x, q.y - start.y) < 4) continue; moved = YES;
+		NSInteger r = [self _row: q]; NSInteger nr = (r >= 0 && [_items[r][@"dir"] boolValue] && ![_sel containsIndex: r]) ? r : -1; if (nr != _dropRow) { _dropRow = nr; [self setNeedsDisplay: YES]; } }
+	NSInteger target = _dropRow; _dropRow = -1; [self setNeedsDisplay: YES]; if (!moved) return; NSPoint wp = [ev locationInWindow]; BOOL copy = ([ev modifierFlags] & NSAlternateKeyMask) != 0; BOOL inside = NSPointInRect([self convertPoint: wp fromView: nil], [self bounds]);
+	if ((target >= 0 || !inside) && [delegate respondsToSelector: @selector(iconViewDropPaths:intoFolder:atWindowPoint:copy:)]) [(id)delegate iconViewDropPaths: paths intoFolder: target >= 0 ? _items[target][@"path"] : nil atWindowPoint: wp copy: copy];
+}
 - (NSMenu *)menuForEvent:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; if (p.y < kHead) { NSMenu *m = [[NSMenu alloc] initWithTitle: @""]; for (NSDictionary *d in _colDefs) { if ([d[@"id"] isEqual: @"name"]) continue; NSMenuItem *it = [m addItemWithTitle: d[@"title"] action: @selector(_toggleCol:) keyEquivalent: @""]; [it setTarget: self]; [it setRepresentedObject: d[@"id"]]; [it setState: [d[@"vis"] boolValue] ? NSOnState : NSOffState]; } TFPopupMenu(self, p, m); return nil; } NSInteger i = [self _row: NSMakePoint(p.x, p.y - topInset + off)]; if (i >= 0 && ![_sel containsIndex: i]) { [_sel removeAllIndexes]; [_sel addIndex: i]; [self setNeedsDisplay: YES]; [self _notify]; } if ([delegate respondsToSelector: @selector(prepareContextMenu:)]) [(id)delegate prepareContextMenu: [self menu]]; TFPopupMenu(self, p, [self menu]); return nil; }
 - (BOOL)beginRename:(NSString *)path
 {

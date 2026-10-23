@@ -98,7 +98,7 @@ NSImage *TFIcon(NSString *path);
 - (void)reloadKeepingSelection;
 @end
 
-@interface TListView : TScrollBase { @public __weak id<TIconViewDelegate> delegate; NSString *filter; NSMutableArray *_items; NSMutableIndexSet *_sel; NSString *_sortKey; BOOL _asc; NSInteger _anchor; NSMutableSet *_exp; NSMutableDictionary *_kids; NSMutableArray *_roots; NSMutableArray *_colDefs; NSString *_colKey, *_folder; }
+@interface TListView : TScrollBase { @public __weak id<TIconViewDelegate> delegate; NSString *filter; NSMutableArray *_items; NSMutableIndexSet *_sel; NSString *_sortKey; BOOL _asc; NSInteger _anchor; NSMutableSet *_exp; NSMutableDictionary *_kids; NSMutableArray *_roots; NSMutableArray *_colDefs; NSString *_colKey, *_folder; NSInteger _dropRow; }
 - (void)setFolder:(NSString *)folder;
 - (void)setPaths:(NSArray *)paths;
 - (NSArray *)selectedPaths;
