@@ -110,6 +110,14 @@ NSImage *TFIcon(NSString *path);
 - (NSString *)dropPathAtWindowPoint:(NSPoint)p;
 @end
 
+/* the tab bar of a window with several tabs */
+@interface TTabBar : NSView { @public NSArray *titles; NSInteger selected; id target; }
+@end
+
+/* the bar under the toolbar while searching: where to look (This Mac or the folder) */
+@interface TSearchBar : NSView { @public NSString *folderName; NSInteger scope; id target; NSString *info; }
+@end
+
 /* the line under the items: how many, how many selected, how much room is left */
 @interface TStatusBarView : NSView { @public NSString *text; BOOL showSlider; double value; id target; }
 @end
