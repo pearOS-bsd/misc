@@ -38,8 +38,8 @@ The stack: `wsd` (this repo: window server and compositor speaking the SkyLight 
 | TextMate port (unmodified source) | ~55 % | builds, starts, real menus, gutter and layout, key input reaches the editor; the text of the editor is not drawn yet, no bundles shipped, WebKit is a stub |
 | **CoreWLAN / airportd** | **~55 % (required, in progress)** | see "Required next" below |
 | Finder (desktop and windows) | ~75 % | window, views (icon, list, columns, gallery), preview pane, menus, Get Info, Share, search, tags; missing: smart folder editor, drag to other applications, full move to NS* classes, ported logic from the decompiled methods |
-| Dock | ~65 % | tiles, magnification, menus (NSMenu), Fan / Grid / List stacks measured on the Mac; missing: hot corners, Spaces / Mission Control, magnification curve from data, list scrolling |
-| Menu glass / materials | ~85 % | menu liquid glass fitted (blur, tone, per-edge lens, shadow); NSVisualEffectView materials being measured; missing: corners, adaptive brightness, GL shader run |
+| Dock | ~65 % | tiles, magnification, menus (NSMenu), Fan / Grid / List stacks measured on the Mac, hot corners, autohide; missing: Spaces / Mission Control, magnification curve from data, list scrolling |
+| Menu glass / materials | ~85 % | menu liquid glass fitted (blur, tone, per-edge lens, shadow, corner radius about 10 px as on the Mac); NSVisualEffectView materials measured (tint per material, blur sigma about 17); missing: specular at the corners compared like for like, adaptive brightness, GL shader run |
 | Top bar, Control Center, Notification Center | ~55 % | Wi-Fi / Bluetooth / Sound / Display panels, notifications service end to end; missing: decompiled logic, Focus / Keyboard panels, real Bluetooth, notification actions |
 | Bootable images (amd64, arm64) | ~70 % | amd64 CD and USB boot to the desktop in QEMU; arm64 build added to CI, unverified; real USB stick and PC untested |
 | **Whole project, release target (Dock + glass + two images)** | **~70 %** | the rest (Spaces, decompiled Control Center, smart folders) is after the first release |
