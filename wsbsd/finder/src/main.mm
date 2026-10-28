@@ -16,8 +16,13 @@ static void CrashHandler(int sig, siginfo_t *si, void *ctx)
 	_exit(139);
 }
 #endif
+#import <objc/runtime.h>
+/* FINDER_TIMERS=1: counts the timers added to run loops and prints the call stack of the 300th (the "1000 timers scheduled" warnings of GNUstep at start-up) */
+static IMP origAddTimer; static int gTimers;
+static void CountedAddTimer(id self, SEL _cmd, NSTimer *t, NSString *mode) { if (++gTimers == 300) NSLog(@"timer #300 added in %@: %@ interval %f repeats %d\n%@", mode, [t userInfo], [t timeInterval], (int)[t isValid], [NSThread callStackSymbols]); ((void (*)(id, SEL, id, id))origAddTimer)(self, _cmd, t, mode); }
 int main(int argc, char **argv)
 {
+	if (getenv("FINDER_TIMERS")) { Method m = class_getInstanceMethod([NSRunLoop class], @selector(addTimer:forMode:)); origAddTimer = method_setImplementation(m, (IMP)CountedAddTimer); }
 #if defined(__FreeBSD__) && defined(__x86_64__)
 	if (getenv("FINDER_CRASHLOG")) { struct sigaction sa; sa.sa_sigaction = CrashHandler; sigemptyset(&sa.sa_mask); sa.sa_flags = SA_SIGINFO; sigaction(SIGSEGV, &sa, NULL); sigaction(SIGBUS, &sa, NULL); }
 #endif
