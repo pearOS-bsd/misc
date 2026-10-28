@@ -559,9 +559,17 @@ static NSString *const kListColumns[][2] = { { @"Date Modified", @"dateModified"
 	NSString *dest = [_sidebar dropPathAtWindowPoint: wp]; if (![dest length]) dest = _tag ? nil : [_url path]; if (![dest length]) return; __weak TBrowserWindowController *me = self;
 	TFCopyItems(paths, dest, NO, ^(NSArray *ops) { TBrowserWindowController *s = me; if (!s) return; if ([ops count]) [s _record: @"Copy" ops: ops]; [s _changed: nil]; });
 }
+/* a drop on a Finder window from the desktop (the same application): into the folder the window shows */
++ (BOOL)acceptDropPaths:(NSArray *)paths copy:(BOOL)copy atScreenPoint:(NSPoint)p
+{
+	for (TBrowserWindowController *o in gBrowsers) { if (![[o window] isVisible] || !NSPointInRect(p, [[o window] frame]) || o->_tag) continue; NSString *dest = [o->_url path]; NSMutableArray *todo = [NSMutableArray array];
+		for (NSString *s in paths) { if ([[s stringByDeletingLastPathComponent] isEqual: dest] && !copy) continue; if ([dest hasPrefix: [s stringByAppendingString: @"/"]] || [dest isEqual: s]) continue; [todo addObject: s]; } if (![todo count]) return YES;
+		__weak TBrowserWindowController *me = o; TFCopyItems(todo, dest, !copy, ^(NSArray *ops) { TBrowserWindowController *w = me; if (!w) return; if ([ops count]) [w _record: copy ? @"Copy" : @"Move" ops: ops]; [w _changed: nil]; }); return YES; }
+	return NO;
+}
 - (BOOL)iconViewDropPaths:(NSArray *)paths intoFolder:(NSString *)folder atWindowPoint:(NSPoint)wp copy:(BOOL)copy
 {
-	if (!folder && ![_sidebar dropPathAtWindowPoint: wp]) { BOOL onFinder = NO; NSPoint m = [NSEvent mouseLocation]; for (TBrowserWindowController *o in gBrowsers) if (o != self && NSPointInRect(m, [[o window] frame])) onFinder = YES; if (!onFinder && !NSPointInRect(wp, [[[self window] contentView] bounds]) && [NSClassFromString(@"WsdFinderSupport") dropFiles: paths atScreenPoint: [[self window] convertBaseToScreen: wp]]) return YES; }
+	if (!folder && ![_sidebar dropPathAtWindowPoint: wp]) { BOOL onFinder = NO; NSPoint m = [NSEvent mouseLocation]; for (TBrowserWindowController *o in gBrowsers) if (o != self && NSPointInRect(m, [[o window] frame])) onFinder = YES; if (!onFinder && !NSPointInRect(wp, [[[self window] contentView] bounds]) && [[NSClassFromString(@"TDesktopWindowController") performSelector: @selector(sharedController)] acceptDropPaths: paths copy: copy atScreenPoint: [[self window] convertBaseToScreen: wp]]) return YES; if (!onFinder && !NSPointInRect(wp, [[[self window] contentView] bounds]) && [NSClassFromString(@"WsdFinderSupport") dropFiles: paths atScreenPoint: [[self window] convertBaseToScreen: wp]]) return YES; }
 	NSString *dest = folder; if (!dest) dest = [_sidebar dropPathAtWindowPoint: wp];
 	if (!dest) { NSPoint m = [NSEvent mouseLocation]; for (TBrowserWindowController *o in gBrowsers) if (o != self && NSPointInRect(m, [[o window] frame]) && !o->_tag) { dest = [o->_url path]; break; } }
 	if (![dest length]) return NO; NSMutableArray *todo = [NSMutableArray array]; for (NSString *p in paths) { if ([[p stringByDeletingLastPathComponent] isEqual: dest] && !copy) continue; if ([dest hasPrefix: [p stringByAppendingString: @"/"]] || [dest isEqual: p]) continue; [todo addObject: p]; } if (![todo count]) return NO;
