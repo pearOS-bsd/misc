@@ -188,7 +188,7 @@ yet; the amd64 image is built by CI (first result pending), the arm64 image has 
 - **AppKit layer (`appkit/back-wsd`):** non-blocking sheets, `NSAlert`, `NSPopover`, `NSPopUpButton`, `NSSwitch` and menus as on the Mac (glass with the edge lens, Shift in key equivalents), with tests in CI. Rule: applications use the NS classes; common elements are implemented here, not per application.
 - **Top bar and Control Center:** Wi-Fi (CoreWLAN), Bluetooth, Sound and Display panels measured on the Mac; the rest of the tiles is drawn but not connected. **Notifications:** `usernoted` + `UserNotifications` + banners and list in the shell, tested end to end.
 - **Decompilation of the Control Center:** not done: the Mac's one is Swift/SwiftUI and REA/Ghidra could not analyse it yet (class map in `docs/desktop/`).
-- **Images (release `iso-latest`):** the ISO boots in QEMU with UEFI; the USB disk image is being reworked (it now loads the kernel and mounts its UFS root in QEMU, the last boot stopped after fsck; a fix is in CI).
+- **Images (release `iso-latest`):** the ISO boots in QEMU with UEFI; the USB disk image (GPT + ESP + read-only UFS root) boots to the full desktop in QEMU when attached as a disk (CI boot test); a real USB stick is not verified yet.
 - Details and next steps: `wsbsd/handoff.md`, section "STARE ACTUALĂ".
 
 ## Status, coverage and what is required next (2026-10-22)
