@@ -33,7 +33,7 @@ echo "xkb: $(pkg info -e libxkbcommon && echo installed || echo MISSING) $(pkg-c
 pkg install -y giflib >/dev/null 2>&1 || true
 # PDF template images (libpoppler-glib is loaded at run time by sdk/src/PDFImage.m)
 pkg install -y poppler-glib >/dev/null 2>&1 || true
-git clone --depth 1 https://github.com/gnustep/libs-gui gui 2>&1 | tail -1
+git clone https://github.com/gnustep/libs-gui gui 2>&1 | tail -1; git -C gui checkout -q fdc5cfe833f23ae1fd50e9ba6ce389c50f97c30f      # pinned: the commit the stack is developed and tested with (upstream moved: libs-back's newer sources need a newer libs-gui)
 # Auto Layout from xibs: libs-gui parses <constraint> but never builds it, and solves the vertical attributes upwards (ci/patch-*.py)
 python3 "$WS"/ci/patch-gsxib-constraints.py gui/Source/GSXib5KeyedUnarchiver.m; python3 "$WS"/ci/patch-autolayout-vertical.py gui/Source/GSAutoLayoutEngine.m
 python3 "$WS"/ci/patch-pending-constraints.py gui/Source/NSView.m   # constraints added before the view has a window are kept
@@ -48,7 +48,7 @@ python3 "$WS"/ci/patch-menu-popup.py gui   # popUpMenuPositioningItem:... answer
 sh "$WS"/ci/patch-nsimage-template.sh gui   # a bit field named "template" keeps Objective-C++ files from including AppKit
 (cd gui && ./configure CPPFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib" 2>&1 | tail -3 && gmake -j2 GNUSTEP_INSTALLATION_DOMAIN=SYSTEM 2>&1 | grep -E "error|Error" | head -10; gmake install GNUSTEP_INSTALLATION_DOMAIN=SYSTEM 2>&1 | tail -2)
 python3 "$WS"/ci/patch-gui-types.py /usr/local/GNUstep/System/Library/Headers/AppKit   # the typed returns Apple declares (contentView, cell, itemArray ...) and Foundation's block types, on the installed headers
-git clone --depth 1 https://github.com/gnustep/libs-back back 2>&1 | tail -1
+git clone https://github.com/gnustep/libs-back back 2>&1 | tail -1; git -C back checkout -q 36ac709b892caf697bf4d27624854dbbfdd19da4
 cd back
 mkdir -p Headers/wsd
 cp "$WS"/include/ws_xkb.h "$WS"/include/ws_input.h Headers/wsd/ 2>/dev/null; cp "$WS"/appkit/back-wsd/*.h "$WS"/include/ws.h "$WS"/include/ws_client.h "$WS"/include/ws_buffer.h Headers/wsd/

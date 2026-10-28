@@ -11,7 +11,7 @@ Cflags:
 EOP
 . /usr/local/GNUstep/System/Library/Makefiles/GNUstep.sh
 mkdir -p /tmp/gs && cd /tmp/gs
-git clone --depth 1 https://github.com/gnustep/libs-back back 2>&1 | tail -1
+git clone https://github.com/gnustep/libs-back back 2>&1 | tail -1; git -C back checkout -q 36ac709b892caf697bf4d27624854dbbfdd19da4
 cd back
 ./configure --enable-server=headless --enable-graphics=headless 2>&1 | tail -4
 gmake -j2 2>&1 | tail -6
