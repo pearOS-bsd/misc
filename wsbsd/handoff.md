@@ -262,3 +262,6 @@ Measured on the Mac with a window holding an NSVisualEffectView (behind-window, 
 
 ## Dock magnification re-checked (2026-10-28)
 Pointer swept over the real Dock (tilesize 58, largesize 99), AX widths read per tile (AX width = tile + 4: 62 rest, 103 peak) against the distance pointer-to-actual-centre: 103 at 0-15, 99.6 at 30, 97.6 at 60, 91.6 at 120, 81.6 at 180, 67 at 240, 62 from 270. The model in dock_layout.c (Gaussian sigma 3 tiles, cut at 5.2 tiles) gives 102.5 / 93.9 / 82.5 / 71.5 / 66 at 60 / 120 / 180 / 240 / 270: within 4 pt everywhere, the tail is a little too fat. Not changed.
+
+## arm64 image built in CI (2026-10-28)
+Run 40705315699: iso (x86_64) and iso (aarch64) both succeeded (aarch64 under emulation took about 70 min); release iso-latest holds macbsd-amd64.iso, macbsd-amd64-usb.img.xz, macbsd-arm64.iso (1.5 GB), macbsd-arm64-usb.img.xz (260 MB) and the sha256 files. The arm64 images are not boot-tested (no aarch64 boot test in CI yet: qemu-system-aarch64 + edk2 aarch64 firmware, TCG would be slow). The usb boot-test of that run failed only because my `$(uname -p)` rename also hit the Ubuntu boot-test step (fixed). No Ploader on arm64.
