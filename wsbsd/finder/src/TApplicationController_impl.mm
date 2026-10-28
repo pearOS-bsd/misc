@@ -10,6 +10,7 @@
 @interface TApplicationController (Impl)
 + (id)sharedApplicationController;
 - (void)loadMenuBar;
+- (void)buildFallbackMenuBar;
 - (void)configureMenuBar;
 @end
 
@@ -27,10 +28,34 @@
 {
 	NSBundle *b = [NSBundle mainBundle]; NSString *path = [b pathForResource: @"MenuBar" ofType: @"nib"];
 	if (!path) for (NSString *lp in @[ @"Base.lproj", @"en.lproj", @"English.lproj" ]) { NSString *p = [[b resourcePath] stringByAppendingPathComponent: [lp stringByAppendingPathComponent: @"MenuBar.nib"]]; if ([[NSFileManager defaultManager] fileExistsAtPath: p]) { path = p; break; } }
-	NSMutableArray *top = [NSMutableArray array]; BOOL ok = path && [NSBundle loadNibFile: path externalNameTable: @{ NSNibOwner: self, NSNibTopLevelObjects: top } withZone: NSDefaultMallocZone()];
+	NSMutableArray *top = [NSMutableArray array]; BOOL ok = path && !getenv("FINDER_NO_NIB") && [NSBundle loadNibFile: path externalNameTable: @{ NSNibOwner: self, NSNibTopLevelObjects: top } withZone: NSDefaultMallocZone()];
 	NSLog(@"Finder: MenuBar nib %@ loaded %d, top objects %lu", path, ok, (unsigned long)[top count]);
 	if (![NSApp mainMenu]) for (id o in top) if ([o isKindOfClass: [NSMenu class]]) { [NSApp setMainMenu: o]; break; }
+	if (![[NSApp mainMenu] numberOfItems]) [self buildFallbackMenuBar];
 	[self configureMenuBar];
+}
+/* without the nib (the Mac's resource is not part of the image) the menu bar is built from a table: the Finder's menus with their actions (the nib's own, FINDER_DUMPMENU) and keys (the accessibility tree of the real Finder), tools/gen_finder_menu.py */
+static const struct { int depth; const char *title, *action, *key; unsigned mask; int hidden; } kFinderMenu[] = {
+#include "TMenuFallback.inc"
+};
+- (void)buildFallbackMenuBar
+{
+	NSMenu *bar = [[NSMenu alloc] initWithTitle: @"MainMenu"]; NSMenu *cur = nil; NSMenu *stack[4] = { nil, nil, nil, nil }; NSUInteger count = sizeof kFinderMenu / sizeof kFinderMenu[0];
+	NSSet *dynamic = [NSSet setWithObjects: @"Group By", @"Sort By", @"Recent Folders", @"Open With", @"Always Open With", @"Services", nil];
+	for (NSUInteger i = 0; i < count; i++) {
+		int d = kFinderMenu[i].depth; NSString *title = @(kFinderMenu[i].title), *key = @(kFinderMenu[i].key); NSString *act = @(kFinderMenu[i].action);
+		if ([title isEqual: @"Preferences…"]) title = @"Settings…"; else if ([title isEqual: @"QuickLook"]) title = @"Quick Look"; else if ([title isEqual: @"Move Items Here"]) title = @"Move Item Here";
+		if (d == 0) { NSMenuItem *top = [bar addItemWithTitle: title action: NULL keyEquivalent: @""]; cur = [[NSMenu alloc] initWithTitle: title]; [cur setAutoenablesItems: YES]; [top setSubmenu: cur]; stack[0] = cur; if ([title isEqual: @"Window"]) [NSApp setWindowsMenu: cur]; continue; }
+		if (d > 3 || !stack[d - 1]) continue; NSMenu *m = stack[d - 1];
+		if (![title length]) { [m addItem: [NSMenuItem separatorItem]]; continue; }
+		NSMenuItem *it = [m addItemWithTitle: title action: [act length] ? NSSelectorFromString(act) : NULL keyEquivalent: key]; [it setKeyEquivalentModifierMask: kFinderMenu[i].mask];
+		if (kFinderMenu[i].hidden) [it setHidden: YES];                    /* not in the Finder's menu as the accessibility tree shows it: a hidden alternate or a conditional item */
+		BOOL dup = NO; for (NSMenuItem *o in [m itemArray]) if (o != it && [[o title] isEqual: title]) dup = YES;
+		if (dup) { [it setHidden: YES]; if ([key length]) for (NSMenuItem *o in [m itemArray]) if (o != it && [[o keyEquivalent] isEqual: key] && [o keyEquivalentModifierMask] == [it keyEquivalentModifierMask]) { [it setKeyEquivalentModifierMask: [it keyEquivalentModifierMask] | NSAlternateKeyMask]; break; } }       /* a hidden alternate of the item before it */
+		BOOL sub = (i + 1 < count && kFinderMenu[i + 1].depth > d) || [dynamic containsObject: title];
+		if (sub) { NSMenu *sm = [[NSMenu alloc] initWithTitle: title]; [it setSubmenu: sm]; stack[d] = sm; if ([title isEqual: @"Services"]) [NSApp setServicesMenu: sm]; if ([title isEqual: @"Group By"] || [title isEqual: @"Sort By"] || [title isEqual: @"Recent Folders"]) [sm setDelegate: (id)self]; }
+	}
+	(void)cur; [NSApp setMainMenu: bar];
 }
 - (void)configureMenuBar { }
 /* actions of the menu bar: with no Finder window open they open one (the Finder's behaviour); the window controller handles them otherwise */

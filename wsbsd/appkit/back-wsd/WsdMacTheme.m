@@ -565,7 +565,7 @@ static NSString *wsdKeyEqString(id self, SEL _cmd)
 	NSString *k;
 	if (u >= 0xF700) { switch (u) { case 0xF700: k = @"↑"; break; case 0xF701: k = @"↓"; break; case 0xF702: k = @"←"; break; case 0xF703: k = @"→"; break; case 0xF728: k = @"⌦"; break; case 0xF729: k = @"↖"; break; case 0xF72B: k = @"↘"; break; case 0xF72C: k = @"⇞"; break; case 0xF72D: k = @"⇟"; break;
 		default: if (u >= 0xF704 && u <= 0xF70F) k = [NSString stringWithFormat: @"F%d", (int)(u - 0xF704 + 1)]; else return ((NSString *(*)(id, SEL))origKeyEqStr)(self, _cmd); } }
-	else if ([key isEqual: @"\r"] || u == '\r') k = @"↩"; else if ([key isEqual: @"\e"] || u == 0x1b) k = @"⎋"; else if ([key isEqual: @"\d"] || u == 0x7f) k = @"⌫"; else if (u == '\t') k = @"⇥"; else if (u == ' ') k = @"Space"; else k = [key uppercaseString];
+	else if (u == 0x0d || u == 0x03) k = @"↩"; else if (u == 0x1b) k = @"⎋"; else if (u == 0x7f || u == 0x08) k = @"⌫"; else if (u == 0x09) k = @"⇥"; else if (u == 0x20) k = @"Space"; else k = [key uppercaseString];
 	BOOL shift = (m & NSShiftKeyMask) || (u >= 'A' && u <= 'Z');
 	return [NSString stringWithFormat: @"%@%@%@%@%@", (m & NSControlKeyMask) ? @"⌃" : @"", (m & NSAlternateKeyMask) ? @"⌥" : @"", shift ? @"⇧" : @"", (m & NSCommandKeyMask) ? @"⌘" : @"", k];
 }
