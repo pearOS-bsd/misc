@@ -238,6 +238,8 @@ void TFBeginRename(NSView *host, NSRect frame, NSString *name, BOOL centered, NS
 @end
 
 /* ---------- the icon view ---------- */
+/* the selected label on the desktop: (0, 89, 209) on the Mac with the blue accent (0, 122, 255): the accent times (.8, .73, .82) */
+static NSColor *DesktopPillColor(void) { NSColor *a = [TF_ACCENT colorUsingColorSpaceName: NSCalibratedRGBColorSpace]; if (!a) return TF_ACCENT; return [NSColor colorWithCalibratedRed: [a redComponent] * 0.8 green: [a greenComponent] * 0.73 blue: [a blueComponent] * 0.82 alpha: 1]; }
 static const CGFloat kCW = 112, kCH = 126, kPad = 10, kIcon = 64;
 /* grouping (View > Group By): the title and the order of the group an item falls in */
 static NSString *GroupTitle(NSDictionary *it, NSString *key, int *order)
@@ -366,15 +368,17 @@ static NSString *GroupTitle(NSDictionary *it, NSString *key, int *order)
 		NSRect c = [self _cell: i]; if (NSMaxY(c) < v.origin.y || c.origin.y > NSMaxY(v)) continue; NSMutableDictionary *it = _items[i]; BOOL sel = [_sel containsIndex: i];
 		NSRect ir = NSMakeRect(c.origin.x + ([self cw] - _isz) / 2, c.origin.y + 4, _isz, _isz);
 		if (_dropTarget == i) FillRound(NSInsetRect(ir, -6, -6), 8, key ? TFRGBA(0, 98, 225, 0.55) : TFRGBA(120, 120, 120, 0.4));
-		if (sel) FillRound(NSInsetRect(ir, -4, -4), 6, TFDark() ? (key ? TFRGBA(255, 255, 255, 0.14) : TFRGB(52, 52, 52)) : TFRGBA(0, 0, 0, 0.09));
+		if (sel && desktop) { NSBezierPath *ring = [NSBezierPath bezierPathWithRoundedRect: NSInsetRect(ir, -3, -3) xRadius: 8 yRadius: 8]; [ring setLineWidth: 2]; [TFRGB(77, 77, 84) setStroke]; [ring stroke]; }       /* the desktop: a 2 pt ring 72 x 72 round the 64 pt icon, no fill (Mac AX + pixels) */
+		else if (sel) FillRound(NSInsetRect(ir, -4, -4), 6, TFDark() ? (key ? TFRGBA(255, 255, 255, 0.14) : TFRGB(52, 52, 52)) : TFRGBA(0, 0, 0, 0.09));
 		NSImage *thumb = _showPreview ? Thumb(it[@"path"]) : nil;
 		if (thumb) { NSSize z = [thumb size]; CGFloat k = MIN(_isz / z.width, _isz / z.height); NSRect tr = NSMakeRect(NSMidX(ir) - z.width * k / 2, NSMidY(ir) - z.height * k / 2, z.width * k, z.height * k); [TFRGBA(0, 0, 0, 0.35) setFill]; NSRectFill(NSOffsetRect(tr, 0, 1)); [thumb drawInRect: tr fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; }
 		else TFDrawIcon(it[@"path"], ir);
 		NSArray *lines = it[@"lines"]; if (!lines) { lines = WrapLabel(it[@"name"], lab, [self cw] - 6.5, 2); it[@"lines"] = lines; }
-		CGFloat y = c.origin.y + 17 + _isz; CGFloat lh = 16;
+		CGFloat y = c.origin.y + (desktop ? 19 : 17) + _isz; CGFloat lh = 16;      /* the desktop's first line is 79 under the icon's top (Mac), 2 lower than in a window */
+		if (sel && desktop) { CGFloat mw = 0; for (NSString *ln in lines) mw = MAX(mw, [ln sizeWithAttributes: lab].width); FillRound(NSMakeRect(NSMidX(c) - mw / 2 - 4.5, y - 9, mw + 9, lh * ([lines count] - 1) + 17), 7, key ? DesktopPillColor() : TFDark() ? TFRGB(90, 90, 90) : TFRGB(190, 190, 194)); }       /* one pill for both lines: 93 x 33 for two lines of 84 pt text (Mac) */
 		for (NSString *ln in lines) {
 			NSSize z = [ln sizeWithAttributes: lab]; if (ln == [lines firstObject] && [it[@"tags"] count]) [NSClassFromString(@"WsdFinderSupport") drawTagDots: it[@"tags"] rightEdge: NSMidX(c) - z.width / 2 - 9 centerY: y];
-			if (sel) FillRound(NSMakeRect(NSMidX(c) - z.width / 2 - 5, y - 9, z.width + 10, 18), 5, key ? TF_ACCENT : TFDark() ? TFRGB(90, 90, 90) : TFRGB(190, 190, 194));
+			if (sel && !desktop) FillRound(NSMakeRect(NSMidX(c) - z.width / 2 - 5, y - 9, z.width + 10, 18), 5, key ? TF_ACCENT : TFDark() ? TFRGB(90, 90, 90) : TFRGB(190, 190, 194));
 			[ln drawAtPoint: NSMakePoint(NSMidX(c) - z.width / 2, y - z.height / 2) withAttributes: sel ? labSel : lab]; y += lh;
 		}
 		if (!desktop && _showInfo && [it[@"info"] length]) { NSSize z = [it[@"info"] sizeWithAttributes: inf]; [it[@"info"] drawAtPoint: NSMakePoint(NSMidX(c) - z.width / 2, y - z.height / 2 - 1) withAttributes: inf]; }
