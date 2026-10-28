@@ -365,7 +365,7 @@ static void wsdVEVMove(id self, SEL _cmd)
 	if (w && (NSInteger)[self performSelector: @selector(blendingMode)] == 0 /* behind window */) {
 		[w setOpaque: NO]; [w setBackgroundColor: [NSColor clearColor]];
 		id srv = GSCurrentServer();
-		if ([srv respondsToSelector: @selector(wsdBackgroundBlur::)]) [srv wsdBackgroundBlur: 34 : (int)[w windowNumber]];
+		if ([srv respondsToSelector: @selector(wsdBackgroundBlur::)]) [srv wsdBackgroundBlur: 31 : (int)[w windowNumber]];
 	}
 	if (origVEVMove) ((void (*)(id, SEL))origVEVMove)(self, _cmd);
 }
