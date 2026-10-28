@@ -483,9 +483,9 @@ static CGFloat TFDeskTab(const CGFloat *t, CGFloat text) { int i = (int)lround(t
 @end
 
 /* ---------- the list view ---------- */
-static const CGFloat kRow = 24, kHead = 28;
+static const CGFloat kHead = 28;       /* the list's rows: 20 pt with 16 pt icons and 13 pt text, 36 with 32 pt icons, 21 / 22 / 23 with 14 / 15 / 16 pt text (Mac AX) */
 @implementation TListView
-- (instancetype)initWithFrame:(NSRect)f { if ((self = [super initWithFrame: f])) { _items = [NSMutableArray array]; _sel = [NSMutableIndexSet indexSet]; _sortKey = @"name"; _asc = YES; topInset = kHead; _anchor = -1; _exp = [NSMutableSet set]; _kids = [NSMutableDictionary dictionary]; _roots = [NSMutableArray array]; [self _defaultColumns]; } return self; }
+- (instancetype)initWithFrame:(NSRect)f { if ((self = [super initWithFrame: f])) { _items = [NSMutableArray array]; _sel = [NSMutableIndexSet indexSet]; _sortKey = @"name"; _rowH = 20; _listText = 13; _asc = YES; topInset = kHead; _anchor = -1; _exp = [NSMutableSet set]; _kids = [NSMutableDictionary dictionary]; _roots = [NSMutableArray array]; [self _defaultColumns]; } return self; }
 - (void)setFolder:(NSString *)folder
 {
 	_folder = [folder copy]; [self _defaultColumns]; _colKey = nil; _sortKey = @"name"; _asc = YES; [self _loadColumns];
@@ -527,7 +527,7 @@ static const CGFloat kRow = 24, kHead = 28;
 	if ([_exp containsObject: p]) [_exp removeObject: p]; else { if (!_kids[p]) { NSFileManager *fm = [NSFileManager defaultManager]; NSMutableArray *k = [NSMutableArray array]; for (NSString *n in [fm contentsOfDirectoryAtPath: p error: NULL]) if (![n hasPrefix: @"."]) [k addObject: [self _makeItem: [p stringByAppendingPathComponent: n] fm: fm depth: [it[@"depth"] intValue] + 1]]; __weak TListView *me = self; [k sortUsingComparator: ^NSComparisonResult(id a, id b) { return [me _cmp: a with: b]; }]; _kids[p] = k; } [_exp addObject: p]; }
 	[self _rebuild];
 }
-- (CGFloat)contentHeight { return [_items count] * kRow + 8; }
+- (CGFloat)contentHeight { return [_items count] * _rowH + 8; }
 /* the columns: identifier, title, width, visible (the names of the Finder's lsvp: name, dateModified, dateCreated, dateLastOpened, dateAdded, size, kind, label) */
 - (void)_defaultColumns
 {
@@ -540,9 +540,14 @@ static const CGFloat kRow = 24, kHead = 28;
 	return out;
 }
 static NSString *SortFieldFor(NSString *col) { NSDictionary *m = @{ @"name": @"name", @"dateModified": @"date", @"dateCreated": @"cre", @"dateAdded": @"cre", @"dateLastOpened": @"acc", @"size": @"size", @"kind": @"kind", @"label": @"tagsort" }; return m[col] ?: @"name"; }
+- (void)loadOptions
+{
+	NSDictionary *ls = _folder ? [[TDSStore storeForFolder: _folder] plistForName: @"." sid: @"lsvp"] : nil; double t = [ls[@"textSize"] doubleValue]; _listText = t >= 8 ? t : 13; _bigIcons = [ls[@"iconSize"] doubleValue] > 16;
+	_rowH = _bigIcons ? 36 : _listText <= 13 ? 20 : _listText <= 14 ? 21 : _listText <= 15 ? 22 : 23;
+}
 - (void)_loadColumns
 {
-	if (!_folder) return; NSDictionary *ls = [[TDSStore storeForFolder: _folder] plistForName: @"." sid: @"lsvp"]; NSDictionary *cs = ls[@"columns"]; if (!cs) return; NSArray *order = [_colDefs sortedArrayUsingComparator: ^NSComparisonResult(NSDictionary *a, NSDictionary *b) { return [cs[a[@"id"]][@"index"] ?: @99 compare: cs[b[@"id"]][@"index"] ?: @99]; }];
+	[self loadOptions]; if (!_folder) return; NSDictionary *ls = [[TDSStore storeForFolder: _folder] plistForName: @"." sid: @"lsvp"]; NSDictionary *cs = ls[@"columns"]; if (!cs) return; NSArray *order = [_colDefs sortedArrayUsingComparator: ^NSComparisonResult(NSDictionary *a, NSDictionary *b) { return [cs[a[@"id"]][@"index"] ?: @99 compare: cs[b[@"id"]][@"index"] ?: @99]; }];
 	for (NSMutableDictionary *c in _colDefs) { NSDictionary *d = cs[c[@"id"]]; if (!d) continue; if (d[@"width"] && ![c[@"id"] isEqual: @"name"]) c[@"w"] = d[@"width"]; if (d[@"visible"]) c[@"vis"] = d[@"visible"]; } (void)order;
 	NSString *sc = ls[@"sortColumn"]; if ([sc length] && cs[sc]) { _colKey = sc; _sortKey = SortFieldFor(sc); _asc = [cs[sc][@"ascending"] boolValue] || !cs[sc][@"ascending"]; }
 }
@@ -556,13 +561,13 @@ static NSString *SortFieldFor(NSString *col) { NSDictionary *m = @{ @"name": @"n
 {
 	BOOL key = KeyWin(self); NSArray *cols = [self _cols]; CGFloat w = [self bounds].size.width;
 	for (NSInteger i = 0; i < (NSInteger)[_items count]; i++) {
-		CGFloat y = 4 + i * kRow; if (y + kRow < v.origin.y || y > NSMaxY(v)) continue; NSDictionary *it = _items[i]; BOOL sel = [_sel containsIndex: i]; CGFloat cy = y + kRow / 2;
-		if ([it[@"header"] boolValue]) { NSDictionary *hf = Font(13, YES, TF_TEXT); TextAt(it[@"name"], 16, cy, hf); NSString *cn = [NSString stringWithFormat: @"%@", it[@"count"]]; TextAt(cn, 16 + [it[@"name"] sizeWithAttributes: hf].width + 8, cy, Font(12, NO, TF_DIM)); [TF_LINE setFill]; NSRectFill(NSMakeRect(16, y + kRow - 1, w - 32 - 10, 1)); continue; }
-		if (i == _dropRow) { FillRound(NSMakeRect(8, y, w - 16 - 10, kRow), 6, TFRGBA(0, 98, 225, 0.45)); }
-		if (sel) FillRound(NSMakeRect(8, y, w - 16 - 10, kRow), 6, key ? TF_ACCENT : (TFDark() ? TFRGB(70, 70, 70) : TFRGB(200, 200, 204))); else if (i % 2) FillRound(NSMakeRect(8, y, w - 16 - 10, kRow), 6, TFDark() ? TFRGBA(255, 255, 255, 0.04) : TFRGBA(0, 0, 0, 0.04));
-		NSColor *tc = sel ? TFRGB(255, 255, 255) : TF_TEXT, *dc = sel ? TFRGBA(255, 255, 255, 0.8) : TF_DIM; CGFloat ind = [it[@"depth"] intValue] * 18; if ([it[@"dir"] boolValue]) TFSymbolW([_exp containsObject: it[@"path"]] ? @"chevron.down" : @"chevron.right", NSMakeRect(8 + ind, y, 14, kRow), 9, 6, sel ? TFRGB(255, 255, 255) : TF_DIM); { NSImage *tm = Thumb(it[@"path"]); if (tm) { NSSize z = [tm size]; CGFloat k = MIN(16 / z.width, 16 / z.height); [tm drawInRect: NSMakeRect(32 + ind - z.width * k / 2, cy - z.height * k / 2, z.width * k, z.height * k) fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; } else TFDrawIcon(it[@"path"], NSMakeRect(24 + ind, cy - 8, 16, 16)); }
+		CGFloat y = 5 + i * _rowH; if (y + _rowH < v.origin.y || y > NSMaxY(v)) continue; NSDictionary *it = _items[i]; BOOL sel = [_sel containsIndex: i]; CGFloat cy = y + _rowH / 2;
+		if ([it[@"header"] boolValue]) { NSDictionary *hf = Font(13, YES, TF_TEXT); TextAt(it[@"name"], 16, cy, hf); NSString *cn = [NSString stringWithFormat: @"%@", it[@"count"]]; TextAt(cn, 16 + [it[@"name"] sizeWithAttributes: hf].width + 8, cy, Font(12, NO, TF_DIM)); [TF_LINE setFill]; NSRectFill(NSMakeRect(16, y + _rowH - 1, w - 32 - 10, 1)); continue; }
+		if (i == _dropRow) { FillRound(NSMakeRect(11, y, w - 23, _rowH), 6, TFRGBA(0, 98, 225, 0.45)); }
+		if (sel) FillRound(NSMakeRect(11, y, w - 23, _rowH), 6, key ? DesktopPillColor() : (TFDark() ? TFRGB(70, 70, 70) : TFRGB(200, 200, 204))); else if (i % 2) FillRound(NSMakeRect(11, y, w - 23, _rowH), 6, TFDark() ? TFRGBA(255, 255, 255, 0.04) : TFRGBA(0, 0, 0, 0.04));
+		NSColor *tc = sel ? TFRGB(255, 255, 255) : TF_TEXT, *dc = sel ? TFRGBA(255, 255, 255, 0.8) : TF_DIM; CGFloat ind = [it[@"depth"] intValue] * 18; if ([it[@"dir"] boolValue]) TFSymbolW([_exp containsObject: it[@"path"]] ? @"chevron.down" : @"chevron.right", NSMakeRect(8 + ind, y, 14, _rowH), 9, 6, sel ? TFRGB(255, 255, 255) : TF_DIM); { NSImage *tm = Thumb(it[@"path"]); if (tm) { NSSize z = [tm size]; CGFloat ip = _bigIcons ? 32 : 16, k = MIN(ip / z.width, ip / z.height); [tm drawInRect: NSMakeRect(26 + ip / 2 + ind - z.width * k / 2, cy - z.height * k / 2, z.width * k, z.height * k) fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; } else TFDrawIcon(it[@"path"], NSMakeRect(26 + ind, cy - (_bigIcons ? 16 : 8), _bigIcons ? 32 : 16, _bigIcons ? 32 : 16)); }
 		for (NSArray *c in cols) {
-			NSString *k = c[0], *s; CGFloat x = [c[2] doubleValue] + ([k isEqual: @"name"] ? 48 + ind : 8), cw = [c[3] doubleValue] - ([k isEqual: @"name"] ? 56 + ind : 16); NSDictionary *at = Font(13, NO, [k isEqual: @"name"] ? tc : dc);
+			NSString *k = c[0], *s; CGFloat x = [c[2] doubleValue] + ([k isEqual: @"name"] ? (_bigIcons ? 62 : 46) + ind : 8), cw = [c[3] doubleValue] - ([k isEqual: @"name"] ? (_bigIcons ? 70 : 54) + ind : 16); NSDictionary *at = Font(_listText, NO, [k isEqual: @"name"] ? tc : dc);
 			if ([k isEqual: @"name"]) s = it[@"name"]; else if ([k isEqual: @"dateModified"]) s = TFDateString(it[@"date"]); else if ([k isEqual: @"dateCreated"] || [k isEqual: @"dateAdded"]) s = TFDateString(it[@"cre"]); else if ([k isEqual: @"dateLastOpened"]) s = TFDateString(it[@"acc"]); else if ([k isEqual: @"size"]) s = [it[@"size"] longLongValue] < 0 ? @"--" : TFSizeString([it[@"size"] unsignedLongLongValue]); else if ([k isEqual: @"label"]) s = [it[@"tags"] componentsJoinedByString: @", "]; else s = it[@"kind"];
 			s = Truncated(s, at, cw); if ([k isEqual: @"size"]) x += cw - [s sizeWithAttributes: at].width; TextAt(s, x, cy, at);
 			if ([k isEqual: @"name"] && [it[@"tags"] count]) { Class sp = NSClassFromString(@"WsdFinderSupport"); double w = [sp tagDotsWidth: it[@"tags"]]; [sp drawTagDots: it[@"tags"] rightEdge: x + [s sizeWithAttributes: at].width + 8 + w centerY: cy]; }
@@ -579,7 +584,7 @@ static NSString *SortFieldFor(NSString *col) { NSDictionary *m = @{ @"name": @"n
 	}
 	NSRect th = [self thumbRect]; if (!NSIsEmptyRect(th)) FillRound(th, 5, TFDark() ? TFRGB(159, 159, 159) : TFRGBA(0, 0, 0, 0.35));
 }
-- (NSInteger)_row:(NSPoint)p { NSInteger i = (NSInteger)floor((p.y - 4) / kRow); return i >= 0 && i < (NSInteger)[_items count] ? i : -1; }
+- (NSInteger)_row:(NSPoint)p { NSInteger i = (NSInteger)floor((p.y - 4) / _rowH); return i >= 0 && i < (NSInteger)[_items count] ? i : -1; }
 - (void)_notify { if ([delegate respondsToSelector: @selector(iconViewSelectionChanged:)]) [delegate iconViewSelectionChanged: [self selectedPaths]]; }
 - (NSArray *)selectedPaths { NSMutableArray *a = [NSMutableArray array]; [_sel enumerateIndexesUsingBlock: ^(NSUInteger i, BOOL *s) { if (![self->_items[i][@"header"] boolValue]) [a addObject: self->_items[i][@"path"]]; }]; return a; }
 - (void)setGroup:(NSString *)g { _group = [g length] ? [g copy] : nil; [self _rebuild]; off = 0; [self setNeedsDisplay: YES]; [self _notify]; }
@@ -618,7 +623,7 @@ static NSString *SortFieldFor(NSString *col) { NSDictionary *m = @{ @"name": @"n
 - (NSMenu *)menuForEvent:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; if (p.y < kHead) { NSMenu *m = [[NSMenu alloc] initWithTitle: @""]; for (NSDictionary *d in _colDefs) { if ([d[@"id"] isEqual: @"name"]) continue; NSMenuItem *it = [m addItemWithTitle: d[@"title"] action: @selector(_toggleCol:) keyEquivalent: @""]; [it setTarget: self]; [it setRepresentedObject: d[@"id"]]; [it setState: [d[@"vis"] boolValue] ? NSOnState : NSOffState]; } TFPopupMenu(self, p, m); return nil; } NSInteger i = [self _row: NSMakePoint(p.x, p.y - topInset + off)]; if (i >= 0 && ![_sel containsIndex: i]) { [_sel removeAllIndexes]; [_sel addIndex: i]; [self setNeedsDisplay: YES]; [self _notify]; } if (i < 0 && [delegate respondsToSelector: @selector(backgroundContextMenu)]) { NSMenu *bg = [(id)delegate backgroundContextMenu]; if (bg) { TFPopupMenu(self, p, bg); return nil; } } if ([delegate respondsToSelector: @selector(prepareContextMenu:)]) [(id)delegate prepareContextMenu: [self menu]]; TFPopupMenu(self, p, [self menu]); return nil; }
 - (BOOL)beginRename:(NSString *)path
 {
-	for (NSInteger i = 0; i < (NSInteger)[_items count]; i++) if ([_items[i][@"path"] isEqual: path]) { [self reveal: NSMakeRect(0, 4 + i * kRow, 10, kRow)]; CGFloat ind = [_items[i][@"depth"] intValue] * 18; NSRect lr = NSMakeRect(46 + ind, 4 + i * kRow - off + topInset + 2, 280, kRow - 4); __weak TListView *me = self; NSString *old = path; TFBeginRename(self, lr, [path lastPathComponent], NO, nil, ^(NSString *nn) { TListView *s = me; if (s && [s->delegate respondsToSelector: @selector(iconViewRename:to:)]) [(id)s->delegate iconViewRename: old to: nn]; }); return YES; }
+	for (NSInteger i = 0; i < (NSInteger)[_items count]; i++) if ([_items[i][@"path"] isEqual: path]) { [self reveal: NSMakeRect(0, 5 + i * _rowH, 10, _rowH)]; CGFloat ind = [_items[i][@"depth"] intValue] * 18; NSRect lr = NSMakeRect(46 + ind, 5 + i * _rowH - off + topInset + 2, 280, _rowH - 4); __weak TListView *me = self; NSString *old = path; TFBeginRename(self, lr, [path lastPathComponent], NO, nil, ^(NSString *nn) { TListView *s = me; if (s && [s->delegate respondsToSelector: @selector(iconViewRename:to:)]) [(id)s->delegate iconViewRename: old to: nn]; }); return YES; }
 	return NO;
 }
 - (void)selectAll:(id)s { [_sel addIndexesInRange: NSMakeRange(0, [_items count])]; [self setNeedsDisplay: YES]; [self _notify]; }
@@ -626,7 +631,7 @@ static NSString *SortFieldFor(NSString *col) { NSDictionary *m = @{ @"name": @"n
 {
 	NSString *k = [e charactersIgnoringModifiers]; if (![k length]) return; unichar c = [k characterAtIndex: 0]; NSInteger cur = [_sel count] ? (NSInteger)[_sel lastIndex] : -1, n = (NSInteger)[_items count], t = cur;
 	if (c == ' ') { [NSApp sendAction: @selector(cmdQuickLook:) to: nil from: self]; return; } else if (c == NSUpArrowFunctionKey) t = cur < 0 ? 0 : MAX(0, cur - 1); else if (c == NSDownArrowFunctionKey) t = cur < 0 ? 0 : MIN(n - 1, cur + 1); else if (c == NSRightArrowFunctionKey && cur >= 0 && [_items[cur][@"dir"] boolValue] && ![_exp containsObject: _items[cur][@"path"]]) { [self _toggleRow: cur]; return; } else if (c == NSLeftArrowFunctionKey && cur >= 0 && [_exp containsObject: _items[cur][@"path"]]) { [self _toggleRow: cur]; return; } else if (c == '\r' && cur >= 0) { [NSApp sendAction: @selector(cmdRename:) to: nil from: self]; return; } else { [super keyDown: e]; return; }
-	if (n) { NSInteger dirn = (c == NSUpArrowFunctionKey) ? -1 : 1; while (t >= 0 && t < n && [_items[t][@"header"] boolValue]) t += dirn; if (t < 0 || t >= n) { t = cur >= 0 && cur < n ? cur : 0; while (t < n && [_items[t][@"header"] boolValue]) t++; if (t >= n) return; } [_sel removeAllIndexes]; [_sel addIndex: t]; _anchor = t; [self reveal: NSMakeRect(0, 4 + t * kRow, 10, kRow)]; [self setNeedsDisplay: YES]; [self _notify]; }
+	if (n) { NSInteger dirn = (c == NSUpArrowFunctionKey) ? -1 : 1; while (t >= 0 && t < n && [_items[t][@"header"] boolValue]) t += dirn; if (t < 0 || t >= n) { t = cur >= 0 && cur < n ? cur : 0; while (t < n && [_items[t][@"header"] boolValue]) t++; if (t >= n) return; } [_sel removeAllIndexes]; [_sel addIndex: t]; _anchor = t; [self reveal: NSMakeRect(0, 4 + t * _rowH, 10, _rowH)]; [self setNeedsDisplay: YES]; [self _notify]; }
 }
 @end
 
