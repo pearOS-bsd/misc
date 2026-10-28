@@ -25,7 +25,7 @@ The stack: `wsd` (this repo: window server and compositor speaking the SkyLight 
 - **UI parity with macOS** (the same Objective-C gallery rendered on both, mean absolute pixel difference per control, 0 to 255): dark appearance, most controls 4 to 12, the
   date picker 23; light appearance 4 to 16, the date picker 24. Much of what is left is the font (Inter, not San Francisco, which is not redistributable).
 
-### Estimated coverage (a rough estimate, not a measurement; fidelity to the real thing is not measured per routine)
+### Estimated coverage (updated 2026-10-28; a rough estimate, not a measurement; fidelity to the real thing is not measured per routine)
 | Part | Estimate | Notes |
 |---|---|---|
 | SkyLight server routines (744) | ~74 % have a handler of their own, 192 only a generic acceptor | the handlers include replays of recorded replies; the share that is decompiled and verified is smaller (probably under half) |
@@ -37,6 +37,12 @@ The stack: `wsd` (this repo: window server and compositor speaking the SkyLight 
 | Foundation networking (NSURLSession over libcurl) | ~45 % | data / download / upload tasks, delegates; no background sessions, no HTTP/3 |
 | TextMate port (unmodified source) | ~55 % | builds, starts, real menus, gutter and layout, key input reaches the editor; the text of the editor is not drawn yet, no bundles shipped, WebKit is a stub |
 | **CoreWLAN / airportd** | **~55 % (required, in progress)** | see "Required next" below |
+| Finder (desktop and windows) | ~75 % | window, views (icon, list, columns, gallery), preview pane, menus, Get Info, Share, search, tags; missing: smart folder editor, drag to other applications, full move to NS* classes, ported logic from the decompiled methods |
+| Dock | ~65 % | tiles, magnification, menus (NSMenu), Fan / Grid / List stacks measured on the Mac; missing: hot corners, Spaces / Mission Control, magnification curve from data, list scrolling |
+| Menu glass / materials | ~85 % | menu liquid glass fitted (blur, tone, per-edge lens, shadow); NSVisualEffectView materials being measured; missing: corners, adaptive brightness, GL shader run |
+| Top bar, Control Center, Notification Center | ~55 % | Wi-Fi / Bluetooth / Sound / Display panels, notifications service end to end; missing: decompiled logic, Focus / Keyboard panels, real Bluetooth, notification actions |
+| Bootable images (amd64, arm64) | ~70 % | amd64 CD and USB boot to the desktop in QEMU; arm64 build added to CI, unverified; real USB stick and PC untested |
+| **Whole project, release target (Dock + glass + two images)** | **~70 %** | the rest (Spaces, decompiled Control Center, smart folders) is after the first release |
 
 ### Required next (decided by the project owner)
 - **CoreWLAN.framework** (`CWWiFiClient`, `CWInterface`, `CWNetwork`, `CWConfiguration`, `CWNetworkProfile`, events) and **airportd** (the daemon behind it): scanning, seamless joining of known
