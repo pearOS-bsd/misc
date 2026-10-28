@@ -50,6 +50,44 @@ static void box_pass_v(const uint8_t *src, uint8_t *dst, int w, int h, size_t st
 	}
 }
 
+
+/* Effect cache. A glass or blur region is a function of the pixels it covers (the backdrop) and its parameters; the backdrop of the Dock, the menu bar or a panel rarely changes from one frame to the next,
+ * while the effect costs far more than reading the pixels once. Each call site (parameters hashed into `key`) keeps its last result; when the backdrop hash is the same the result is copied back. */
+#include <stdint.h>
+typedef struct { uint64_t key, in_hash; int x0, y0, x1, y1; uint8_t *out; size_t cap; } fxslot;
+#define FXSLOTS 24
+static fxslot fxs[FXSLOTS]; static int fxnext, fx_off;
+static uint64_t fx_mix(uint64_t h, uint64_t v) { h ^= v + 0x9e3779b97f4a7c15ULL + (h << 6) + (h >> 2); return h * 0xff51afd7ed558ccdULL; }
+static uint64_t fx_hash_rect(const ws_surface *img, int x0, int y0, int x1, int y1)
+{
+	uint64_t h = 1469598103934665603ULL; size_t bytes = (size_t)(x1 - x0) * 4;
+	for (int y = y0; y < y1; y++) {
+		const uint8_t *p = img->px + (size_t)y * img->stride + (size_t)x0 * 4; size_t i = 0;
+		for (; i + 8 <= bytes; i += 8) { uint64_t v; memcpy(&v, p + i, 8); h = (h ^ v) * 1099511628211ULL; h ^= h >> 29; }
+		for (; i < bytes; i++) h = (h ^ p[i]) * 1099511628211ULL;
+	}
+	return h;
+}
+static fxslot *fx_find(uint64_t key) { for (int i = 0; i < FXSLOTS; i++) if (fxs[i].out && fxs[i].key == key) return &fxs[i]; return NULL; }
+/* 1 and the rectangle copied into img when the result for this key and backdrop is known */
+static int fx_restore(ws_surface *img, uint64_t key, uint64_t in_hash, int x0, int y0, int x1, int y1)
+{
+	if (fx_off) return 0;
+	fxslot *f = fx_find(key); if (!f || f->in_hash != in_hash || f->x0 != x0 || f->y0 != y0 || f->x1 != x1 || f->y1 != y1) return 0;
+	size_t rb = (size_t)(x1 - x0) * 4;
+	for (int y = y0; y < y1; y++) memcpy(img->px + (size_t)y * img->stride + (size_t)x0 * 4, f->out + (size_t)(y - y0) * rb, rb);
+	return 1;
+}
+static void fx_store(const ws_surface *img, uint64_t key, uint64_t in_hash, int x0, int y0, int x1, int y1)
+{
+	if (fx_off || x1 <= x0 || y1 <= y0) return;
+	fxslot *f = fx_find(key); if (!f) { f = &fxs[fxnext]; fxnext = (fxnext + 1) % FXSLOTS; }
+	size_t rb = (size_t)(x1 - x0) * 4, need = rb * (size_t)(y1 - y0);
+	if (f->cap < need) { free(f->out); f->out = malloc(need); f->cap = f->out ? need : 0; if (!f->out) return; }
+	for (int y = y0; y < y1; y++) memcpy(f->out + (size_t)(y - y0) * rb, img->px + (size_t)y * img->stride + (size_t)x0 * 4, rb);
+	f->key = key; f->in_hash = in_hash; f->x0 = x0; f->y0 = y0; f->x1 = x1; f->y1 = y1;
+}
+
 float ws_blur_sigma(int radius) { return (float)radius * 0.5f; }
 
 void ws_blur_region(ws_surface *img, ws_rect r, ws_rect wr, float sigma)
@@ -60,6 +98,10 @@ void ws_blur_region(ws_surface *img, ws_rect r, ws_rect wr, float sigma)
 	if (r.x + r.w > img->w) r.w = img->w - r.x;
 	if (r.y + r.h > img->h) r.h = img->h - r.y;
 	if (r.w <= 0 || r.h <= 0) return;
+	int cx0 = wr.x < r.x ? r.x : wr.x, cy0 = wr.y < r.y ? r.y : wr.y, cx1 = wr.x + wr.w > r.x + r.w ? r.x + r.w : wr.x + wr.w, cy1 = wr.y + wr.h > r.y + r.h ? r.y + r.h : wr.y + wr.h;
+	uint64_t ckey = 0, chash = 0; int cache = !fx_off && img->w >= 256 && cx1 > cx0 && cy1 > cy0;       /* (blurs of the glass's own working copies are small and not cached) */
+	if (cache) { ckey = fx_mix(fx_mix(fx_mix(fx_mix(fx_mix(1, (uint64_t)r.x), (uint64_t)r.y), (uint64_t)r.w << 20 | (uint64_t)r.h), (uint64_t)(wr.x + 100000) << 32 | (uint32_t)(wr.y + 100000)), (uint64_t)wr.w << 20 ^ (uint64_t)wr.h ^ (uint64_t)(sigma * 100) << 40);
+		chash = fx_hash_rect(img, r.x, r.y, r.x + r.w, r.y + r.h); if (fx_restore(img, ckey, chash, cx0, cy0, cx1, cy1)) return; }
 	size_t stride = (size_t)r.w * 4;
 	uint8_t *a = malloc(stride * (size_t)r.h), *b = malloc(stride * (size_t)r.h);
 	if (!a || !b) { free(a); free(b); return; }
@@ -76,6 +118,7 @@ void ws_blur_region(ws_surface *img, ws_rect r, ws_rect wr, float sigma)
 	int x0 = wr.x < r.x ? r.x : wr.x, y0 = wr.y < r.y ? r.y : wr.y, x1 = wr.x + wr.w > r.x + r.w ? r.x + r.w : wr.x + wr.w, y1 = wr.y + wr.h > r.y + r.h ? r.y + r.h : wr.y + wr.h;
 	for (int y = y0; y < y1; y++) memcpy(img->px + (size_t)y * img->stride + (size_t)x0 * 4, a + (size_t)(y - r.y) * stride + (size_t)(x0 - r.x) * 4, (size_t)(x1 - x0) * 4);
 	free(a); free(b);
+	if (cache) fx_store(img, ckey, chash, cx0, cy0, cx1, cy1);
 }
 
 /* ---- the glass material ("Liquid Glass"), as measured on the real Dock over a high-contrast pattern: there is NO blur inside (lines and stripes stay crisp), the interior is the backdrop darkened to
@@ -128,12 +171,19 @@ void ws_glass_regions(ws_surface *img, const ws_glass *g, int n, int ox, int oy)
 	int M = (int)ceilf(amp) + 6;
 	int cx0 = bx0 - M < 0 ? 0 : bx0 - M, cy0 = by0 - M < 0 ? 0 : by0 - M, cx1 = bx1 + M > img->w ? img->w : bx1 + M, cy1 = by1 + M > img->h ? img->h : by1 + M;
 	if (cx1 <= cx0 || cy1 <= cy0) return;
+	int ox0 = bx0 < 0 ? 0 : bx0, oy0 = by0 < 0 ? 0 : by0, ox1 = bx1 > img->w ? img->w : bx1, oy1 = by1 > img->h ? img->h : by1;
+	uint64_t gkey = fx_mix(fx_mix(fx_mix(2, (uint64_t)n), (uint64_t)(ox + 100000) << 32 | (uint32_t)(oy + 100000)), (uint64_t)img->w << 20 | (uint64_t)img->h);
+	for (int i = 0; i < n; i++) { gkey = fx_mix(gkey, (uint64_t)(g[i].rect.x + 100000) << 32 | (uint32_t)(g[i].rect.y + 100000)); gkey = fx_mix(gkey, (uint64_t)g[i].rect.w << 40 ^ (uint64_t)g[i].rect.h << 20 ^ (uint64_t)g[i].radius << 8 ^ (uint64_t)g[i].mode); }
+	uint64_t ghash = fx_hash_rect(img, cx0, cy0, cx1, cy1);
+	if (ox1 > ox0 && oy1 > oy0 && fx_restore(img, gkey, ghash, ox0, oy0, ox1, oy1)) return;
 	ws_surface *tmp = ws_surface_new(cx1 - cx0, cy1 - cy0); if (!tmp) return;                 /* the backdrop as it is now: the lens samples from it while the result is written to the image */
 	for (int y = cy0; y < cy1; y++) memcpy(tmp->px + (size_t)(y - cy0) * tmp->stride, img->px + (size_t)y * img->stride + (size_t)cx0 * 4, (size_t)(cx1 - cx0) * 4);
 	ws_surface *bl = NULL, *bl5 = NULL;                                                     /* the menu materials work on a blurred copy of the backdrop: modes 3, 4 (Menu.caar) sigma 30, mode 5 (the context menu as measured on the Mac) sigma 4.5 */
 	for (int i = 0; i < n; i++) { if (g[i].mode == 3 || g[i].mode == 4) { if (!bl) bl = ws_surface_new(tmp->w, tmp->h); } else if (g[i].mode == 5 && !bl5) bl5 = ws_surface_new(tmp->w, tmp->h); }
+	fx_off++;
 	if (bl) { memcpy(bl->px, tmp->px, (size_t)tmp->stride * tmp->h); ws_blur_region(bl, (ws_rect){ 0, 0, bl->w, bl->h }, (ws_rect){ 0, 0, bl->w, bl->h }, 30.0f); }
 	if (bl5) { memcpy(bl5->px, tmp->px, (size_t)tmp->stride * tmp->h); ws_blur_region(bl5, (ws_rect){ 0, 0, bl5->w, bl5->h }, (ws_rect){ 0, 0, bl5->w, bl5->h }, 7.0f); }
+	fx_off--;
 	int x0 = bx0 < 0 ? 0 : bx0, y0 = by0 < 0 ? 0 : by0, x1 = bx1 > img->w ? img->w : bx1, y1 = by1 > img->h ? img->h : by1;
 	for (int y = y0; y < y1; y++) for (int x = x0; x < x1; x++) {
 		float fx = x + 0.5f, fy = y + 0.5f; int mode;
@@ -180,6 +230,7 @@ void ws_glass_regions(ws_surface *img, const ws_glass *g, int n, int ox, int oy)
 		for (int c = 0; c < 3; c++) dp[c] = (uint8_t)(dp[c] * (1 - cover) + col[c] * 255.0f * cover + 0.5f);
 	}
 	ws_surface_free(tmp); if (bl) ws_surface_free(bl); if (bl5) ws_surface_free(bl5);
+	if (ox1 > ox0 && oy1 > oy0) fx_store(img, gkey, ghash, ox0, oy0, ox1, oy1);
 }
 
 void ws_glass_region(ws_surface *img, ws_rect rect, int radius, int mode)
