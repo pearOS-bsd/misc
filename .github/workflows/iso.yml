@@ -54,18 +54,23 @@ jobs:
   iso:
     needs: ploader
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 360
+    continue-on-error: ${{ matrix.arch == 'aarch64' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x86_64, aarch64]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           name: ploader
           path: ploader-out
-      - name: Build the image on FreeBSD x86_64
+      - name: Build the image on FreeBSD ${{ matrix.arch }}
         uses: vmactions/freebsd-vm@v1
         with:
           release: "14.2"
-          arch: x86_64
+          arch: ${{ matrix.arch }}
           usesh: true
           mem: 6144
           prepare: |
@@ -79,16 +84,19 @@ jobs:
             # the USB disk image comes from build.sh (step 8: GPT with an ESP and a UFS root, written as a disk, not as an ISO in a partition); it must never stop the ISO from being published
             set +e
             rm -rf /tmp/isowork/root /tmp/isowork/rootfs.img /tmp/isowork/esp /tmp/isowork/gnustep* 2>/dev/null
-            if [ -f wsbsd/iso-out/macbsd-amd64-usb.img ]; then
-              xz -T0 -3 "$PWD/wsbsd/iso-out/macbsd-amd64-usb.img" || { echo "xz failed"; df -h; rm -f wsbsd/iso-out/macbsd-amd64-usb.img wsbsd/iso-out/macbsd-amd64-usb.img.xz; }
-              [ -f wsbsd/iso-out/macbsd-amd64-usb.img.xz ] && (cd wsbsd/iso-out && sha256 macbsd-amd64-usb.img.xz > macbsd-amd64-usb.img.xz.sha256)
+            if [ -f wsbsd/iso-out/macbsd-$(uname -p)-usb.img ]; then
+              xz -T0 -3 "$PWD/wsbsd/iso-out/macbsd-$(uname -p)-usb.img" || { echo "xz failed"; df -h; rm -f wsbsd/iso-out/macbsd-$(uname -p)-usb.img wsbsd/iso-out/macbsd-$(uname -p)-usb.img.xz; }
+              [ -f wsbsd/iso-out/macbsd-$(uname -p)-usb.img.xz ] && (cd wsbsd/iso-out && sha256 macbsd-$(uname -p)-usb.img.xz > macbsd-$(uname -p)-usb.img.xz.sha256)
             fi
+            # the release names the two builds amd64 and arm64
+            for f in wsbsd/iso-out/macbsd-aarch64*; do [ -e "$f" ] && mv "$f" "$(echo "$f" | sed 's/macbsd-aarch64/macbsd-arm64/')"; done
+            for f in wsbsd/iso-out/macbsd-arm64*.sha256; do [ -e "$f" ] && sed -i '' 's/macbsd-aarch64/macbsd-arm64/' "$f"; done
             ls -l wsbsd/iso-out
             exit 0
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: macbsd-iso
+          name: macbsd-iso-${{ matrix.arch }}
           path: |
             wsbsd/iso-out/*.iso
             wsbsd/iso-out/*.img.xz
@@ -109,7 +117,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          name: macbsd-iso
+          name: macbsd-iso-x86_64
           path: out
       - name: Install QEMU and OVMF
         run: |
@@ -124,7 +132,7 @@ jobs:
           VARS=$(ls /usr/share/OVMF/OVMF_VARS_4M.fd /usr/share/OVMF/OVMF_VARS.fd 2>/dev/null | head -1)
           cp "$VARS" vars.fd
           if [ "${{ matrix.form }}" = usb ]; then
-            xz -dk out/macbsd-amd64-usb.img.xz; DRIVE="-drive if=none,id=u,file=out/macbsd-amd64-usb.img,format=raw,snapshot=on -device ich9-ahci,id=ahci -device ide-hd,drive=u,bus=ahci.0,bootindex=1 -device qemu-xhci"       # the disk image as a SATA disk: what is tested is the image (GPT, ESP, UFS root); the USB mass storage of QEMU under software emulation gave I/O errors on a large read (a real stick is not that emulation)
+            xz -dk out/macbsd-$(uname -p)-usb.img.xz; DRIVE="-drive if=none,id=u,file=out/macbsd-$(uname -p)-usb.img,format=raw,snapshot=on -device ich9-ahci,id=ahci -device ide-hd,drive=u,bus=ahci.0,bootindex=1 -device qemu-xhci"       # the disk image as a SATA disk: what is tested is the image (GPT, ESP, UFS root); the USB mass storage of QEMU under software emulation gave I/O errors on a large read (a real stick is not that emulation)
           else
             DRIVE="-drive if=none,id=c,file=out/macbsd-amd64.iso,format=raw,media=cdrom,readonly=on -device ide-cd,drive=c,bootindex=1 -device qemu-xhci"
           fi
@@ -161,7 +169,8 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: macbsd-iso
+          pattern: macbsd-iso-*
+          merge-multiple: true
           path: out
       - uses: actions/download-artifact@v4
         with:
@@ -177,4 +186,4 @@ jobs:
           tar -czf out/ploader-licenses.tar.gz -C ploader-out licenses
           gh release delete "$TAG" --repo "$GITHUB_REPOSITORY" --cleanup-tag --yes 2>/dev/null || true
           gh release create "$TAG" out/* --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "$TITLE" --prerelease \
-            --notes "Bootable UEFI image (amd64, x86-64 PC with UEFI; Secure Boot off): Ploader, FreeBSD without boot screens, the macOS file layout (real files, no symlinks), the wsbsd window server on the framebuffer with the Dock, the menu bar (Control Center, Spotlight, Notification Center), the desktop (Finder) and Terminal. FOR A REAL PC use macbsd-amd64-usb.img.xz: write it to a USB stick (balenaEtcher or Rufus open .xz directly; on Linux/macOS: xz -dc macbsd-amd64-usb.img.xz | sudo dd of=/dev/sdX bs=4M status=progress) and boot the stick in UEFI mode. A plain dd of the .iso to a stick is NOT bootable on a PC (the .iso is for virtual machines and optical media). Both forms were started in QEMU with UEFI firmware by the workflow before this release. Built from commit $GITHUB_SHA. Ploader is GPL (licence files in ploader-licenses.tar.gz, source: https://github.com/pearOS-archlinux/pearos-bootloader)."
+            --notes "Bootable UEFI images: amd64 (x86-64 PC with UEFI; Secure Boot off) and arm64 (aarch64 UEFI machines and VMs; built under emulation, not boot-tested by the workflow): Ploader, FreeBSD without boot screens, the macOS file layout (real files, no symlinks), the wsbsd window server on the framebuffer with the Dock, the menu bar (Control Center, Spotlight, Notification Center), the desktop (Finder) and Terminal. FOR A REAL PC use macbsd-$(uname -p)-usb.img.xz: write it to a USB stick (balenaEtcher or Rufus open .xz directly; on Linux/macOS: xz -dc macbsd-$(uname -p)-usb.img.xz | sudo dd of=/dev/sdX bs=4M status=progress) and boot the stick in UEFI mode. A plain dd of the .iso to a stick is NOT bootable on a PC (the .iso is for virtual machines and optical media). Both forms were started in QEMU with UEFI firmware by the workflow before this release. Built from commit $GITHUB_SHA. Ploader is GPL (licence files in ploader-licenses.tar.gz, source: https://github.com/pearOS-archlinux/pearos-bootloader)."
