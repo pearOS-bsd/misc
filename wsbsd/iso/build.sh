@@ -136,16 +136,7 @@ makefs -t msdos -o fat_type=16 -o volume_label=EFISYS -s 64m "$WORK/efiboot.img"
 echo "== 7. the ISO"
 ISO="$OUT/macbsd-$ARCH.iso"
 makefs -t cd9660 -o rockridge -o label=PEAROS -o publisher="wsbsd" -o bootimage="i386;$WORK/efiboot.img" -o no-emul-boot -o platformid=efi "$ISO" "$ROOT"
+# the ISO is also a disk image: a GPT over the EFI image inside it, so that a plain write to a USB stick (dd, Etcher) boots on a PC (iso/tools/hybrid.py)
+python3 "$HERE/tools/hybrid.py" "$ISO" "$(stat -f %z "$WORK/efiboot.img" 2>/dev/null || stat -c %s "$WORK/efiboot.img")"
 ls -l "$ISO"; sha256 "$ISO" > "$ISO.sha256"; cat "$ISO.sha256"
 
-echo "== 8. the USB disk image: GPT { EFI system partition (Ploader, FreeBSD's loader), the root file system as UFS }"
-# A plain dd of the ISO is not bootable on a PC; the image of a disk is what a stick needs: the loader on the ESP reads /boot from the UFS partition behind it (the way FreeBSD's own memstick images boot).
-# (the first version put the ISO into a partition: in QEMU the loader found "Failed to find bootable partition")
-if [ -z "$NO_USB" ]; then
-	(
-		set +e
-		sed -i '' 's|^vfs.root.mountfrom=.*|vfs.root.mountfrom="ufs:/dev/gpt/rootfs"|' "$ROOT/boot/loader.conf"
-		for d in etc private/etc; do printf '# Device\t\tMountpoint\tFStype\tOptions\tDump\tPass#\n/dev/gpt/rootfs\t/\t\tufs\tro\t0\t0\n' > "$ROOT/$d/fstab"; printf 'fsck_y_enable="YES"\nbackground_fsck="NO"\nroot_rw_mount="NO"\n' >> "$ROOT/$d/rc.conf"; done       # the root stays read-only like on the ISO (what is written goes to the memory file systems): a UFS made by makefs is marked "not clean" and the kernel refuses to mount it read-write (QEMU boot test); pass 0: no fsck of the freshly written image (it asked questions on the muted console and the boot stopped); -y if it runs anyway
-		makefs -t ffs -o version=2 -b 8% -f 8% "$WORK/rootfs.img" "$ROOT" && { md=$(mdconfig -a -t vnode -f "$WORK/rootfs.img") && { fsck_ffs -y "/dev/$md" >/dev/null 2>&1; fsck_ffs -y "/dev/$md" 2>&1 | tail -2; mdconfig -d -u "${md#md}"; }; } && mkimg -s gpt -P 4096 -p efi/EFISYS:="$WORK/efiboot.img" -p freebsd-ufs/rootfs:="$WORK/rootfs.img" -o "$OUT/macbsd-$ARCH-usb.img" && ls -l "$OUT/macbsd-$ARCH-usb.img"
-	) || echo "the USB image could not be built"
-fi

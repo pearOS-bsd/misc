@@ -1,0 +1,1 @@
+Vendored from https://github.com/pearOS-archlinux/pearos-bootloader at 225cecd5e5fe8a2c81edd563afec59cdc182b699 (GPL, see COPYING.txt / LICENSE.txt / CREDITS.txt). Changes made here for wsbsd are listed in WSBSD-CHANGES.txt.
