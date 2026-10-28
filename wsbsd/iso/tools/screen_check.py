@@ -12,4 +12,7 @@ colors = len(set(px)); lum = sum(sum(p) for p in px) / (3 * len(px))
 bar = list(im.crop((0, 0, w, 30)).resize((64, 4)).getdata()); barlum = sum(sum(p) for p in bar) / (3 * len(bar))
 print('size', im.size, 'colours', colors, 'mean', round(lum, 1), 'bar', round(barlum, 1))
 im.save(sys.argv[2])
-sys.exit(0 if (colors > 400 and lum > 12) else 1)
+# a desktop: either a wallpaper (many colours) or, on a flat background, the menu bar's text (bright pixels in its first 30 rows) and some content
+top = im.crop((0, 0, w, 30)).convert('L'); bright = sum(1 for p in top.getdata() if p > 200)
+print('bright pixels in the bar', bright)
+sys.exit(0 if ((colors > 400 and lum > 12) or (bright > 150 and lum > 12)) else 1)
