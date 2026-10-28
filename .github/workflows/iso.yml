@@ -163,6 +163,53 @@ jobs:
             serial.log
           if-no-files-found: warn
 
+  # the arm64 ISO under QEMU (TCG, slow: FreeBSD arm64 and the desktop on an emulated CPU); informational, never blocks the release
+  boot-test-arm64:
+    needs: iso
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: macbsd-iso-aarch64
+          path: out
+      - name: Install QEMU and AAVMF
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq qemu-system-arm qemu-efi-aarch64 python3-pil socat
+          ls /usr/share/AAVMF/ || true
+      - name: Boot it
+        run: |
+          set -x
+          cp /usr/share/AAVMF/AAVMF_VARS.fd vars.fd; truncate -s 64M vars.fd; cp /usr/share/AAVMF/AAVMF_CODE.fd code.fd; truncate -s 64M code.fd
+          qemu-system-aarch64 -M virt,gic-version=max -cpu max -accel tcg,thread=multi -m 4096 -smp 4 -display none -device ramfb \
+            -drive if=pflash,format=raw,readonly=on,file=code.fd -drive if=pflash,format=raw,file=vars.fd \
+            -device virtio-scsi-pci,id=scsi -drive if=none,id=c,file=out/macbsd-arm64.iso,format=raw,media=cdrom,readonly=on -device scsi-cd,drive=c,bootindex=1 \
+            -device qemu-xhci -device usb-kbd -device usb-tablet -monitor unix:/tmp/mon,server,nowait -serial file:serial.log -daemonize
+          mkdir -p shots
+          ok=0
+          for i in $(seq 1 200); do
+            sleep 20
+            echo "screendump /tmp/s.ppm" | socat - UNIX-CONNECT:/tmp/mon >/dev/null 2>&1 || true; sleep 2
+            if python3 wsbsd/iso/tools/screen_check.py /tmp/s.ppm /tmp/last.png
+            then ok=1; cp /tmp/last.png shots/desktop.png; break; fi
+            [ $((i % 6)) -eq 0 ] && cp /tmp/last.png shots/progress-$i.png 2>/dev/null || true
+          done
+          echo "screendump /tmp/s.ppm" | socat - UNIX-CONNECT:/tmp/mon >/dev/null 2>&1 || true
+          python3 -c "from PIL import Image; Image.open('/tmp/s.ppm').save('shots/final.png')" || true
+          tail -50 serial.log || true
+          [ $ok = 1 ] || { echo "the arm64 image did not reach a desktop"; exit 1; }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: boot-arm64
+          path: |
+            shots
+            serial.log
+          if-no-files-found: warn
+
   release:
     needs: iso
     runs-on: ubuntu-latest
