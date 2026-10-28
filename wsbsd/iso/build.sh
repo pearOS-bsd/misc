@@ -88,7 +88,7 @@ echo "== 5. configuration: silent boot, desktop on start"
 cp "$HERE/overlay/boot/loader.conf" "$ROOT/boot/loader.conf"
 for d in etc private/etc; do
 	mkdir -p "$ROOT/$d/rc.d"
-	cp "$HERE/overlay/etc-rc.conf" "$ROOT/$d/rc.conf"; cp "$HERE/overlay/etc-fstab" "$ROOT/$d/fstab"
+	cp "$HERE/overlay/etc-rc.conf" "$ROOT/$d/rc.conf"; cp "$HERE/overlay/etc-fstab" "$ROOT/$d/fstab"; cp "$HERE/overlay/etc-syslog.conf" "$ROOT/$d/syslog.conf"
 	install -m 755 "$HERE/overlay/etc-rc.d-macdesktop" "$ROOT/$d/rc.d/macdesktop"
 done
 mkdir -p "$ROOT/System/Library/LaunchDaemons"
