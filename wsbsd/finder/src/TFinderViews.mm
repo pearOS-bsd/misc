@@ -1046,22 +1046,28 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 /* ---------- the trim on top: the window buttons, the rim ---------- */
 @implementation TWindowTrim
 - (BOOL)isFlipped { return YES; } - (BOOL)isOpaque { return NO; }
-- (NSRect)_light:(int)k { return NSMakeRect(19 + 23 * k, 19, 14, 14); }
+- (NSRect)_light:(int)k { return NSMakeRect(18 + 23 * k, 18, 16, 16); }       /* measured on the Mac (AX): 16 x 16 at x 18, 41, 64, 18 from the top */
+- (instancetype)initWithFrame:(NSRect)f { if ((self = [super initWithFrame: f])) _pressed = -1; return self; }
+- (NSRect)_group { return NSInsetRect(NSUnionRect([self _light: 0], [self _light: 2]), -4, -4); }
+- (void)_pollHover:(NSTimer *)t { NSWindow *w = [self window]; BOOL in = NO; if (w && [w isVisible]) { NSPoint lp = [self convertPoint: [w convertScreenToBase: [NSEvent mouseLocation]] fromView: nil]; in = NSPointInRect(lp, [self _group]) && NSPointInRect(lp, [self bounds]); } if (in != _hover) { _hover = in; [self setNeedsDisplayInRect: [self _group]]; } }
+- (void)viewDidMoveToWindow { if ([self window] && !_poll) _poll = [NSTimer scheduledTimerWithTimeInterval: 0.05 target: self selector: @selector(_pollHover:) userInfo: nil repeats: YES]; }
 - (NSView *)hitTest:(NSPoint)p { NSPoint q = [self convertPoint: p fromView: [self superview]]; for (int k = 0; k < 3; k++) if (NSPointInRect(q, NSInsetRect([self _light: k], -4, -4))) return self; return nil; }
 - (BOOL)acceptsFirstMouse:(NSEvent *)e { return YES; }
 - (void)drawRect:(NSRect)r
 {
 	BOOL key = KeyWin(self); NSRect b = [self bounds]; NSBezierPath *rim = [NSBezierPath bezierPathWithRoundedRect: NSInsetRect(b, 0.5, 0.5) xRadius: 16 yRadius: 16]; [TFDark() ? TFRGBA(255, 255, 255, 0.20) : TFRGBA(0, 0, 0, 0.22) setStroke]; [rim setLineWidth: 1]; [rim stroke];
-	NSColor *cols[3] = { TFRGB(242, 96, 86), TFRGB(253, 193, 1), TFRGB(57, 193, 1) };
-	for (int k = 0; k < 3; k++) { NSRect c = [self _light: k]; [(key ? cols[k] : (TFDark() ? TFRGB(76, 76, 76) : TFRGB(205, 205, 205))) setFill]; [[NSBezierPath bezierPathWithOvalInRect: c] fill]; [TFRGBA(0, 0, 0, 0.12) setStroke]; [[NSBezierPath bezierPathWithOvalInRect: NSInsetRect(c, 0.5, 0.5)] stroke]; }
+	NSColor *cols[3] = { TFRGB(242, 96, 86), TFRGB(253, 193, 1), TFRGB(57, 193, 1) }; Class sup = NSClassFromString(@"WsdFinderSupport");
+	for (int k = 0; k < 3; k++) { NSRect c = [self _light: k]; BOOL pr = _pressed == k && _inside;
+		NSImage *pic = nil; if (key || _hover || pr) { SEL sl = NSSelectorFromString(@"windowButtonKind:state:"); if ([sup respondsToSelector: sl]) pic = ((NSImage *(*)(id, SEL, int, int))objc_msgSend)(sup, sl, k, pr ? 2 : (_hover ? 1 : 0)); }
+		if (pic) { [pic drawInRect: c fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1.0]; continue; }
+		[(key ? cols[k] : (TFDark() ? TFRGB(76, 76, 76) : TFRGB(205, 205, 205))) setFill]; [[NSBezierPath bezierPathWithOvalInRect: c] fill]; [TFRGBA(0, 0, 0, 0.12) setStroke]; [[NSBezierPath bezierPathWithOvalInRect: NSInsetRect(c, 0.5, 0.5)] stroke]; }
 }
 - (void)mouseDown:(NSEvent *)e
 {
-	NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; for (int k = 0; k < 3; k++) if (NSPointInRect(p, NSInsetRect([self _light: k], -4, -4))) {
-		NSEvent *ev = e; while ([ev type] != NSLeftMouseUp) ev = [[self window] nextEventMatchingMask: NSLeftMouseDraggedMask | NSLeftMouseUpMask untilDate: [NSDate distantFuture] inMode: NSEventTrackingRunLoopMode dequeue: YES];
-		if (NSPointInRect([self convertPoint: [ev locationInWindow] fromView: nil], NSInsetRect([self _light: k], -4, -4))) { if (k == 0) [[self window] performClose: self]; else if (k == 1) [[self window] performMiniaturize: self]; else [[self window] performZoom: self]; } return;
-	}
+	NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; for (int k = 0; k < 3; k++) if (NSPointInRect(p, NSInsetRect([self _light: k], -4, -4))) { _pressed = k; _inside = YES; _hover = YES; [self setNeedsDisplayInRect: [self _group]]; return; }       /* the action runs when it is released over the button */
 }
+- (void)mouseDragged:(NSEvent *)e { if (_pressed < 0) return; BOOL in = NSPointInRect([self convertPoint: [e locationInWindow] fromView: nil], NSInsetRect([self _light: _pressed], -4, -4)); if (in != _inside) { _inside = in; [self setNeedsDisplayInRect: [self _group]]; } }
+- (void)mouseUp:(NSEvent *)e { if (_pressed < 0) return; int k = _pressed; BOOL fire = _inside; _pressed = -1; _inside = NO; [self setNeedsDisplayInRect: [self _group]]; if (fire) { if (k == 0) [[self window] performClose: self]; else if (k == 1) [[self window] performMiniaturize: self]; else [[self window] performZoom: self]; } }
 @end
 
 /* ---------- the preview pane ---------- */

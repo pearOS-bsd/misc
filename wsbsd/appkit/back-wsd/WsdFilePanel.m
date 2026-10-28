@@ -1138,6 +1138,7 @@ static void wsdSetName(id self, SEL _cmd, NSString *v) { objc_setAssociatedObjec
 + (void)setKeyWindow:(NSWindow *)w { id srv = GSCurrentServer(); if ([srv respondsToSelector: @selector(wsdSetKeyWindow:)]) ((void (*)(id, SEL, int))objc_msgSend)(srv, @selector(wsdSetKeyWindow:), (int)[w windowNumber]); }
 + (BOOL)drawSymbol:(NSString *)name inRect:(NSRect)cell size:(CGFloat)pt weight:(int)weight color:(NSColor *)c { return WsdSymbolDraw(name, cell, pt, weight, c); }
 + (BOOL)isDark { return WsdAppearanceIsDark(); }
++ (NSImage *)windowButtonKind:(int)kind state:(int)state { return WsdWindowButtonImage(kind, state, WsdAppearanceIsDark()); }          /* the Finder draws its own title bar buttons with the Mac's pictures */
 + (BOOL)dropFiles:(NSArray *)paths atScreenPoint:(NSPoint)p { id srv = GSCurrentServer(); if ([srv respondsToSelector: @selector(wsdDropFiles:atScreenPoint:)]) return [srv wsdDropFiles: paths atScreenPoint: p]; return NO; }
 + (void)popupInView:(NSView *)root rows:(NSArray *)rows at:(NSPoint)p pick:(void (^)(NSInteger))b { [WsdPopup showIn: root rows: rows at: p pick: b]; }
 + (void)popupInView:(NSView *)root titles:(NSArray *)t dots:(NSArray *)d checks:(NSIndexSet *)c at:(NSPoint)p pick:(void (^)(NSInteger))b { [WsdPopup showIn: root titles: t dots: d checks: c at: p pick: b]; }
