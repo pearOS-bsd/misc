@@ -34,6 +34,7 @@ NSWindow *TFOpenQuickLook(NSString *path);
 void TFOpenSettings(void);
 @class TIconView;
 void TFOpenViewOptions(TIconView *view, NSString *folderName, void (^changed)(void));
+void TFOpenDesktopViewOptions(TIconView *view, void (^changed)(void));
 id TFPref(NSString *key, id def);
 BOOL TFPrefBool(NSString *key, BOOL def);
 void TFSetPref(NSString *key, id value);
