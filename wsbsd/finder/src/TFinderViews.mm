@@ -176,7 +176,7 @@ static void GlassPill(NSRect r, NSRect pressed)                                 
 	[g saveGraphicsState]; [[NSBezierPath bezierPathWithRect: NSMakeRect(r.origin.x + rad, r.origin.y, r.size.width - rad * 2, r.size.height)] addClip]; [ring setLineWidth: 1]; NSBezierPath *tb = [NSBezierPath bezierPath]; [tb moveToPoint: NSMakePoint(r.origin.x + rad, r.origin.y + 0.5)]; [tb lineToPoint: NSMakePoint(NSMaxX(r) - rad, r.origin.y + 0.5)]; [tb moveToPoint: NSMakePoint(r.origin.x + rad, NSMaxY(r) - 0.5)]; [tb lineToPoint: NSMakePoint(NSMaxX(r) - rad, NSMaxY(r) - 0.5)]; [tb setLineWidth: 1]; [(dk ? TFRGBA(255, 255, 255, 0.20) : TFRGBA(255, 255, 255, 0.9)) setStroke]; [tb stroke]; [g restoreGraphicsState];
 }
 static void FillRound(NSRect r, CGFloat rad, NSColor *c) { [c setFill]; [[NSBezierPath bezierPathWithRoundedRect: r xRadius: rad yRadius: rad] fill]; }
-static BOOL KeyWin(NSView *v) { return [[v window] isKeyWindow] && [NSApp isActive]; }
+static BOOL KeyWin(NSView *v) { BOOL k = [[v window] isKeyWindow], a = [NSApp isActive]; if (getenv("FINDER_DEBUG_KEY")) { static int last = -1; int now = k * 2 + a; if (now != last) { last = now; NSLog(@"KeyWin: key %d active %d", k, a); } } return k && a; }
 static NSDictionary *Font(CGFloat sz, BOOL bold, NSColor *c) { return @{ NSFontAttributeName: bold ? [NSFont boldSystemFontOfSize: sz] : [NSFont systemFontOfSize: sz], NSForegroundColorAttributeName: c }; }
 static void TextAt(NSString *s, CGFloat x, CGFloat cy, NSDictionary *at) { NSSize z = [s sizeWithAttributes: at]; [s drawAtPoint: NSMakePoint(x, cy - z.height / 2) withAttributes: at]; }
 
