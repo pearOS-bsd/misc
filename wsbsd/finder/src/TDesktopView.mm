@@ -48,16 +48,19 @@ static NSString *DesktopPath(void) { return [NSHomeDirectory() stringByAppending
 	NSMenu *m = [[NSMenu alloc] initWithTitle: @""]; NSMenuItem *it;
 #define ITEM(menu, title, sel) ({ NSMenuItem *x = [menu addItemWithTitle: title action: sel keyEquivalent: @""]; [x setTarget: self]; x; })
 	ITEM(m, @"New Folder", @selector(cmdNewFolder:)); [m addItem: [NSMenuItem separatorItem]];
-	ITEM(m, @"Get Info", @selector(cmdShowStaticInfo:)); ITEM(m, @"Change Desktop Background…", @selector(cmdChangeBackground:)); [m addItem: [NSMenuItem separatorItem]];
-	NSArray *keys = @[ @[ @"Name", @"name" ], @[ @"Kind", @"kind" ], @[ @"Date Modified", @"modified" ], @[ @"Date Created", @"created" ], @[ @"Size", @"size" ], @[ @"Tags", @"tags" ] ];
-	it = ITEM(m, @"Sort By", NULL); NSMenu *sb = [[NSMenu alloc] initWithTitle: @"Sort By"]; NSMenuItem *none = ITEM(sb, @"None", @selector(cmdDesktopSort:)); [none setRepresentedObject: @""]; [sb addItem: [NSMenuItem separatorItem]];
+	ITEM(m, @"Get Info", @selector(cmdShowStaticInfo:)); ITEM(m, @"Change Wallpaper…", @selector(cmdChangeBackground:)); [[m addItemWithTitle: @"Edit Widgets…" action: NULL keyEquivalent: @""] setEnabled: NO]; [m addItem: [NSMenuItem separatorItem]];       /* Edit Widgets: the Mac's widget editor does not exist here */
+	NSMenuItem *us = ITEM(m, @"Use Stacks", @selector(cmdDesktopStacks:)); [us setState: [_view->_group length] ? NSOnState : NSOffState];
+	NSArray *keys = @[ @[ @"Name", @"name" ], @[ @"Kind", @"kind" ], @[ @"Date Last Opened", @"opened" ], @[ @"Date Added", @"created" ], @[ @"Date Modified", @"modified" ], @[ @"Date Created", @"created" ], @[ @"Size", @"size" ], @[ @"Tags", @"tags" ] ];
+	it = ITEM(m, @"Sort By", NULL); NSMenu *sb = [[NSMenu alloc] initWithTitle: @"Sort By"]; NSMenuItem *none = ITEM(sb, @"None", @selector(cmdDesktopSort:)); [none setRepresentedObject: @""]; [sb addItem: [NSMenuItem separatorItem]]; ITEM(sb, @"Snap to Grid", @selector(cmdDesktopSnap:)); [sb addItem: [NSMenuItem separatorItem]];
 	for (NSArray *k in keys) { NSMenuItem *x = ITEM(sb, k[0], @selector(cmdDesktopSort:)); [x setRepresentedObject: k[1]]; } [it setSubmenu: sb];
 	ITEM(m, @"Clean Up", @selector(cmdCleanUp:));
-	it = ITEM(m, @"Clean Up By", NULL); NSMenu *cb = [[NSMenu alloc] initWithTitle: @"Clean Up By"]; for (NSArray *k in keys) { NSMenuItem *x = ITEM(cb, k[0], @selector(cmdDesktopSort:)); [x setRepresentedObject: k[1]]; [x setTag: 1]; } [it setSubmenu: cb];
+	it = ITEM(m, @"Clean Up By", NULL); NSMenu *cb = [[NSMenu alloc] initWithTitle: @"Clean Up By"]; for (NSArray *k in @[ @[ @"Name", @"name" ], @[ @"Kind", @"kind" ], @[ @"Date Modified", @"modified" ], @[ @"Date Created", @"created" ], @[ @"Size", @"size" ], @[ @"Tags", @"tags" ] ]) { NSMenuItem *x = ITEM(cb, k[0], @selector(cmdDesktopSort:)); [x setRepresentedObject: k[1]]; [x setTag: 1]; } [it setSubmenu: cb];
 	[m addItem: [NSMenuItem separatorItem]]; ITEM(m, @"Show View Options", @selector(cmdDesktopViewOptions:));
 #undef ITEM
 	return m;
 }
+- (void)cmdDesktopStacks:(id)s { [_view setGroup: [_view->_group length] ? nil : @"kind"]; }
+- (void)cmdDesktopSnap:(id)s { [_view setSnapToGrid: !_view->_snap]; }
 /* Sort By keeps the order; Clean Up By puts the icons on the grid in that order once */
 - (void)cmdDesktopSort:(NSMenuItem *)it { NSString *k = [it representedObject]; [_view arrangeBy: [k length] ? k : nil]; if ([it tag] == 1) { [_view cleanUp: NO]; [_view arrangeBy: nil]; } }
 - (void)cmdDesktopViewOptions:(id)s { TFOpenViewOptions(_view, @"Desktop", ^{}); }
