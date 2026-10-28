@@ -145,7 +145,11 @@ void ws_glass_regions(ws_surface *img, const ws_glass *g, int n, int ox, int oy)
 			int dm; float gx = glass_field(g, n, ox, oy, fx + 1, fy, &dm) - glass_field(g, n, ox, oy, fx - 1, fy, &dm), gy = glass_field(g, n, ox, oy, fx, fy + 1, &dm) - glass_field(g, n, ox, oy, fx, fy - 1, &dm);
 			float gl = sqrtf(gx * gx + gy * gy), ny = gl > 1e-4f ? fabsf(gy / gl) : 1.0f, nxo = gl > 1e-4f ? gx / gl : 0, nyo = gl > 1e-4f ? gy / gl : -1;
 			/* the lens of the liquid glass: at the edge the backdrop is taken from beyond it (a band of LM px, up to AM px out), so that a dark window outside dims the top edge of the menu and a light one lights its bottom edge, as in the pixels of the real menu */
-			float lw = dd < LM ? sinf(3.14159265f * dd / LM) : 0.0f; float s3[3]; sample_bilinear(bl5, (fx + AX * lw) - cx0, (fy + AY * lw) - cy0, s3); (void)nxo; (void)nyo;
+			/* the displacement per edge (fitted on the Mac): left, right and bottom 12 px over 8 px, the top 18 px over 14 px; x to the right, y down: inward at the top and left, outward at the bottom and right */
+			float sx = 0, sy = 0; for (int q = 0; q < n; q++) if (g[q].mode == 5) { float rx = ox + g[q].rect.x, ry = oy + g[q].rect.y; if (fx >= rx && fx < rx + g[q].rect.w && fy >= ry && fy < ry + g[q].rect.h) {
+				float dl = fx - rx, dr = rx + g[q].rect.w - fx, dt = fy - ry, db = ry + g[q].rect.h - fy, dx = dl < dr ? dl : dr;
+				if (dx < 8.0f) sx = AX * sinf(3.14159265f * dx / 8.0f); if (dt < 14.0f && dt <= db) sy = AY * sinf(3.14159265f * dt / 14.0f); else if (db < 8.0f) sy = 12.0f * sinf(3.14159265f * db / 8.0f); break; } }
+			float s3[3]; sample_bilinear(bl5, (fx + sx) - cx0, (fy + sy) - cy0, s3); (void)nxo; (void)nyo; (void)LM;
 			float c[3] = { s3[2], s3[1], s3[0] }, L = 0.1886f * c[0] + 0.7455f * c[1] + 0.0659f * c[2], f = 0.1213f + 0.4825f * (2 * L - L * L); (void)bxp; (void)byp;
 			float rim = dd < 1.0f ? 0.10f + 0.177f * ny : 0.042f * ny * expf(-(dd - 1.5f) / 3.8f);
 			uint8_t *dp = img->px + (size_t)y * img->stride + (size_t)x * 4;
