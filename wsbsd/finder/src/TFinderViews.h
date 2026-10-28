@@ -167,7 +167,7 @@ NSImage *TFIcon(NSString *path);
 @end
 
 /* the three window buttons, the 1 px rim and the rounded corners, on top of everything */
-@interface TWindowTrim : NSView @end
+@interface TWindowTrim : NSView { BOOL _hover, _inside; int _pressed; NSTimer *_poll; } @end
 
 /* the preview pane (View > Show Preview): the picture, name, kind, size and information of the selected file, or a count for several */
 @interface TPreviewPane : NSView { @public NSArray *paths; NSString *folder; CGFloat _scroll, _content; BOOL _more; } - (void)_drawQuickBar:(BOOL)dir path:(NSString *)p; @end
