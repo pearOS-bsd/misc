@@ -62,7 +62,7 @@ cp "$WS"/coreui/car.c Source/headless/cu_car.c; cp "$WS"/coreui/bvg.c Source/hea
 for f in lzfse_decode lzfse_decode_base lzfse_fse lzvn_decode_base; do cp "$WS/coreui/lzfse/$f.c" Source/headless/cu_$f.c; done
 printf 'headless_C_FILES += cu_car.c cu_bvg.c cu_bitmap.c cu_lzfse_decode.c cu_lzfse_decode_base.c cu_lzfse_fse.c cu_lzvn_decode_base.c\nADDITIONAL_LDFLAGS += -lm\n' >> Source/headless/GNUmakefile.preamble
 # headless server -> wsd server
-sed -i '' 's/^HeadlessServer.m \\/HeadlessServer.m WsdServer.m WsdCairoSurface.m WsdMacTheme.m WsdCGBridge.m WsdFilePanel.m WsdAppKitColors.m WsdAppKitView.m WsdTracking.m WsdMenuItem.m WsdGlass.m WsdSymbolImage.m WsdWorkspace.m WsdTextView.m WsdDocument.m WsdViewController.m WsdGesture.m WsdControls.m WsdTabbing.m WsdAppearance.m WsdDragDrop.m WsdMenuBar.m WsdPopover.m WsdSheets.m WsdMoreAppKit.m \\/' Source/headless/GNUmakefile
+sed -i '' 's/^HeadlessServer.m \\/HeadlessServer.m WsdServer.m WsdCairoSurface.m WsdMacTheme.m WsdCGBridge.m WsdFilePanel.m WsdAppKitColors.m WsdAppKitView.m WsdTracking.m WsdMenuItem.m WsdGlass.m WsdSymbolImage.m WsdWorkspace.m WsdTextView.m WsdDocument.m WsdViewController.m WsdGesture.m WsdControls.m WsdTabbing.m WsdAppearance.m WsdDragDrop.m WsdMenuBar.m WsdPopover.m WsdSheets.m WsdMoreAppKit.m WsdSymbolFallback.m \\/' Source/headless/GNUmakefile
 printf '\nWsdFilePanel.m_FILE_FLAGS = -fobjc-arc\n' >> Source/headless/GNUmakefile                  # the file panel is written for ARC
 sed -i '' 's/HeadlessServer/WsdServer/g; s#<headless/WsdServer.h>#<wsd/WsdServer.h>#' Source/GSBackend.m
 python3 - <<PY
