@@ -179,6 +179,7 @@ uint32_t ws_keyfocus_holder(ws_server *, int *is_default);        /* connection 
  * obscure/reveal (hidden until the mouse moves). The cursor is drawn when no count is set, it is not obscured and ws_cursor_show is on. */
 void ws_cursor_hide(ws_server *, uint32_t cid);
 void ws_cursor_unhide(ws_server *, uint32_t cid, int force);
+void ws_server_set_splash(ws_server *, int on);          /* the boot screen (a pear on black) while no desktop window is on the screen */
 void ws_cursor_obscure(ws_server *, uint32_t cid);
 void ws_cursor_reveal(ws_server *, uint32_t cid);
 

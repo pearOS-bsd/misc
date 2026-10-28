@@ -992,6 +992,17 @@ static ws_surface *grow_edge(const ws_surface *src, int w, int h)
 	return o;
 }
 
+#include "splash_pear.inc"
+static int g_splash;
+void ws_server_set_splash(ws_server *s, int on) { (void)s; g_splash = on; }
+/* the boot screen: black with the pear of pearOS in the middle, shown while no window of the desktop picture's level (the Finder's desktop) is on the screen yet */
+static void draw_splash(ws_surface *screen)
+{
+	for (int y = 0; y < screen->h; y++) memset(screen->px + (size_t)y * screen->stride, 0, (size_t)screen->w * 4);
+	for (int y = 0; y < screen->h; y++) { uint32_t *p = (uint32_t *)(screen->px + (size_t)y * screen->stride); for (int x = 0; x < screen->w; x++) p[x] = 0xff000000u; }
+	int ox = (screen->w - (int)pear_w) / 2, oy = (screen->h - (int)pear_h) / 2 - screen->h / 14;
+	for (unsigned y = 0; y < pear_h; y++) for (unsigned x = 0; x < pear_w; x++) { int dx = ox + (int)x, dy = oy + (int)y; if (dx < 0 || dy < 0 || dx >= screen->w || dy >= screen->h) continue; unsigned a = pear_a[y * pear_w + x]; *(uint32_t *)(screen->px + (size_t)dy * screen->stride + (size_t)dx * 4) = 0xff000000u | a << 16 | a << 8 | a; }
+}
 static void apply_zoom(ws_surface *screen);
 void ws_compose_scene(ws_server *s, ws_surface *screen)
 {
@@ -1001,6 +1012,7 @@ void ws_compose_scene(ws_server *s, ws_surface *screen)
 	ws_wid act = ws_active_window(s);
 	s->comp->fill(s->comp, screen, all, 37.0f / 255.0f, 37.0f / 255.0f, 37.0f / 255.0f, 1.0f);   /* desktop: #252525 */
 	size_t n = sorted(s, v);
+	if (g_splash) { int desk = 0; for (size_t i = 0; i < n; i++) if (v[i]->level == -2147483603) desk = 1; if (!desk) { if (s->comp->flush) s->comp->flush(s->comp); draw_splash(screen); } }
 	for (size_t i = 0; i < n; i++) {
 		if (v[i]->nglass > 0) {                                               /* the glass material (the Dock's bar, the menu bar, glass views): the window's shapes melt into one */
 			if (s->comp->flush) s->comp->flush(s->comp);

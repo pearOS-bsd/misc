@@ -1230,7 +1230,7 @@ int main(int argc, char **argv)
 #endif
 	wsd_screen_w = w; wsd_screen_h = h;
 	signal(SIGPIPE, SIG_IGN);
-	srv = ws_server_new(w, h);
+	srv = ws_server_new(w, h); if (getenv("WSD_SPLASH")) ws_server_set_splash(srv, 1);
 	screen = ws_surface_new(w, h);
 	if (!srv || !screen) { fprintf(stderr, "wsd: out of memory\n"); return 1; }
 	if (!strcmp(renderer, "gl")) {
