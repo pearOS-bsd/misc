@@ -20,6 +20,7 @@ typedef struct {
 	float brightness;       /* SetWindowListBrightness: the colour is multiplied by it (1 = unchanged); software compositor */
 	float sys_alpha;        /* SetWindowListSystemAlpha: multiplies the alpha (fades done by the system); 1 by default */
 	int syslevel;           /* SetWindowListSystemLevel class, kept */
+	int menu_hidden;        /* an application's menu bar (level 20) while another application is the active one: not drawn, not hit */
 	int on_screen;
 	uint64_t order;         /* higher = in front within its level */
 	ws_surface *backing;
@@ -52,6 +53,7 @@ typedef struct {
 	int nshape;
 	ws_rect *evshape; int nev;   /* SetWindowEventShape: where the window takes events, when different from where it is drawn */
 } window;
+#define EFFA(w) ((w)->menu_hidden ? 0.0f : (w)->alpha * (w)->sys_alpha)
 
 struct ws_server {
 	uint8_t gamma[3][256]; int gamma_on;   /* SetDisplayTransferByFormula / ByTable: a lookup table per channel (R, G, B) applied to the composed screen */
@@ -63,7 +65,7 @@ struct ws_server {
 	uint64_t clock;
 	ws_compositor *comp;
 	int cx, cy, buttons, cursor_visible;
-	ws_wid grab, key_win;
+	ws_wid grab, key_win; uint32_t active_owner;       /* the application that had key focus last: its menu bar is the one on the screen */
 	ws_event_sink sink; void *sink_ctx;
 	uint64_t gen;
 	ws_surface *cursor_img; int cursor_hx, cursor_hy; uint32_t cursor_serial; int cursor_shape; ws_wid cursor_win;       /* cursor_win: the window under the pointer when a non-arrow shape was set */
@@ -94,6 +96,7 @@ void ws_server_free(ws_server *s)
 void ws_server_set_compositor(ws_server *s, ws_compositor *c) { if (s && c) s->comp = c; }
 
 static void bump(ws_server *s) { s->gen++; }
+static void refresh_menubars(ws_server *s);
 static void kf_remove_at_fwd(ws_server *s, int i);
 uint64_t ws_server_generation(const ws_server *s) { return s->gen; }
 
@@ -387,7 +390,7 @@ static void place(ws_server *s, window *w, int mode, window *rel)
 
 static void set_key_window(ws_server *s, ws_wid id);
 /* a window that takes the keyboard when it appears: an ordinary application window (not the menu bar, the Dock, an icon or a tooltip) */
-static int takes_key(const window *w) { return w->level == 0 && w->frame.w >= 100 && w->frame.h >= 60 && w->alpha * w->sys_alpha > 0; }
+static int takes_key(const window *w) { return w->level == 0 && w->frame.w >= 100 && w->frame.h >= 60 && EFFA(w) > 0; }
 static int order_group(ws_server *s, ws_wid id, int mode, ws_wid rel, int depth)
 {
 	window *w = get(s, id);
@@ -554,7 +557,7 @@ int ws_set_window_level(ws_server *s, ws_wid id, int level)
 {
 	window *w = get(s, id);
 	if (!w) return -1;
-	if (w->level != level) { w->level = level; bump(s); if (w->on_screen) place(s, w, WS_ABOVE, NULL); }   /* the real server brings it to the front of the new level */
+	if (w->level != level) { w->level = level; bump(s); refresh_menubars(s); if (w->on_screen) place(s, w, WS_ABOVE, NULL); }   /* the real server brings it to the front of the new level */
 	return 0;
 }
 int ws_set_window_warp(ws_server *s, ws_wid id, int cols, int rows, const float *mesh)
@@ -617,7 +620,7 @@ ws_wid ws_find_window(ws_server *s, int x, int y)
 	ws_wid hit = 0;
 	for (size_t i = n; i-- > 0;) {
 		window *w = v[i];
-		if (w->alpha * w->sys_alpha <= 0) continue;
+		if (EFFA(w) <= 0) continue;
 		int in = 0;
 		if (w->nev) {                                     /* the event shape decides first */
 			for (int k = 0; k < w->nev && !in; k++) {
@@ -674,13 +677,21 @@ int ws_next_event(ws_server *s, ws_wid id, ws_event *out)
 	return 1;
 }
 
+/* the menu bars: every application draws its own at level 20; only the bar of the application that has key focus (the owner of the key window, or the last one that had it) is shown, as there is one menu bar on the Mac */
+static void refresh_menubars(ws_server *s)
+{
+	window *k = s->key_win ? get(s, s->key_win) : NULL; if (k) s->active_owner = k->owner;
+	int any_active = 0; for (size_t i = 0; i < s->n; i++) if (s->win[i].level == 20 && s->win[i].owner == s->active_owner) any_active = 1;
+	for (size_t i = 0; i < s->n; i++) { window *w = &s->win[i]; if (w->level != 20) { if (w->menu_hidden) { w->menu_hidden = 0; bump(s); } continue; }
+		int hide = s->active_owner && any_active && w->owner != s->active_owner; if (hide != w->menu_hidden) { w->menu_hidden = hide; bump(s); } }
+}
 static void set_key_window(ws_server *s, ws_wid id)
 {
 	if (s->key_win == id) return;
 	if (getenv("WSD_DEBUG")) fprintf(stderr, "wsd: key window %u -> %u\n", (unsigned)s->key_win, (unsigned)id);
 	window *o = get(s, s->key_win), *n = get(s, id);
 	if (o) post(o, WS_EV_FOCUS_OUT, 0, 0, 0, 0);
-	s->key_win = id;
+	s->key_win = id; refresh_menubars(s);
 	if (n) post(n, WS_EV_FOCUS_IN, 0, 0, 0, 0);
 }
 
@@ -887,7 +898,7 @@ static void draw_shadow(ws_server *s, window *w, ws_surface *screen, int active)
 	ensure_shadow(s, w, active);
 	if (!w->shadow) return;
 	ws_rect all = { 0, 0, screen->w, screen->h };
-	s->comp->over(s->comp, screen, w->frame.x - w->shadow_pad, w->frame.y - w->shadow_pad, w->shadow, w->alpha * w->sys_alpha, all);
+	s->comp->over(s->comp, screen, w->frame.x - w->shadow_pad, w->frame.y - w->shadow_pad, w->shadow, EFFA(w), all);
 }
 
 void ws_window_damage(ws_server *s, ws_wid id, const ws_rect *r)
@@ -921,7 +932,7 @@ void ws_server_walk(ws_server *s, ws_visit_fn fn, void *ctx)
 		if (w->shadow_on) ensure_shadow(s, w, w->id == act || w->appearance);
 		ws_visit vis;
 		memset(&vis, 0, sizeof vis);
-		vis.id = w->id; vis.frame = w->frame; vis.alpha = w->alpha * w->sys_alpha; vis.corner_radius = w->corner_radius ? w->corner_radius : (w->shadow_on ? w->shadow_cr : 0); vis.blur_radius = w->blur_radius; vis.active = w->id == act || w->appearance;
+		vis.id = w->id; vis.frame = w->frame; vis.alpha = EFFA(w); vis.corner_radius = w->corner_radius ? w->corner_radius : (w->shadow_on ? w->shadow_cr : 0); vis.blur_radius = w->blur_radius; vis.active = w->id == act || w->appearance;
 		vis.pixels = (w->content && w->committed) ? (w->front ? w->front : w->content) : w->backing;
 		vis.buffer_id = (w->content && w->committed) ? w->content_id : 0;
 		if (w->shadow_on && w->shadow && !w->mesh) {
@@ -1015,8 +1026,8 @@ void ws_compose_scene(ws_server *s, ws_surface *screen)
 			if (cr > 0 && px && (rnd = round_corners(px, cr))) px = rnd;
 			if (v[i]->mesh && px && px->px) { xs = warp_surface(s, v[i], px, &xo, &yo); xo -= (int)v[i]->frame.x; yo -= (int)v[i]->frame.y; }
 			else if (v[i]->has_xf && px && px->px) xs = xform_surface(v[i], px, &xo, &yo);
-			if (xs) { s->comp->over(s->comp, screen, v[i]->frame.x + xo, v[i]->frame.y + yo, xs, v[i]->alpha * v[i]->sys_alpha, all); if (s->comp->flush) s->comp->flush(s->comp); ws_surface_free(xs); }
-			else s->comp->over(s->comp, screen, v[i]->frame.x, v[i]->frame.y, px, v[i]->alpha * v[i]->sys_alpha, all);
+			if (xs) { s->comp->over(s->comp, screen, v[i]->frame.x + xo, v[i]->frame.y + yo, xs, EFFA(v[i]), all); if (s->comp->flush) s->comp->flush(s->comp); ws_surface_free(xs); }
+			else s->comp->over(s->comp, screen, v[i]->frame.x, v[i]->frame.y, px, EFFA(v[i]), all);
 			if (inv || rnd || brt || grown || gcl) { if (s->comp->flush) s->comp->flush(s->comp); ws_surface_free(inv); ws_surface_free(rnd); ws_surface_free(brt); ws_surface_free(grown); ws_surface_free(gcl); }
 		}
 		/* the shadow layer is rendered above its window (it is cut out of the window shape; the inner rim lies inside it) */
