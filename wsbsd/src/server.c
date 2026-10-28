@@ -678,11 +678,12 @@ int ws_next_event(ws_server *s, ws_wid id, ws_event *out)
 }
 
 /* the menu bars: every application draws its own at level 20; only the bar of the application that has key focus (the owner of the key window, or the last one that had it) is shown, as there is one menu bar on the Mac */
+static int is_menubar(const window *w, ws_server *s) { return w->level == 20 && w->frame.y <= 0 && w->frame.h <= 40 && w->frame.w * 2 >= s->w; }       /* an application's menu bar: level 20, at the top edge, a strip as wide as the screen (the Dock is at that level too) */
 static void refresh_menubars(ws_server *s)
 {
 	window *k = s->key_win ? get(s, s->key_win) : NULL; if (k) s->active_owner = k->owner;
-	int any_active = 0; for (size_t i = 0; i < s->n; i++) if (s->win[i].level == 20 && s->win[i].owner == s->active_owner) any_active = 1;
-	for (size_t i = 0; i < s->n; i++) { window *w = &s->win[i]; if (w->level != 20) { if (w->menu_hidden) { w->menu_hidden = 0; bump(s); } continue; }
+	int any_active = 0; for (size_t i = 0; i < s->n; i++) if (is_menubar(&s->win[i], s) && s->win[i].owner == s->active_owner) any_active = 1;
+	for (size_t i = 0; i < s->n; i++) { window *w = &s->win[i]; if (!is_menubar(w, s)) { if (w->menu_hidden) { w->menu_hidden = 0; bump(s); } continue; }
 		int hide = s->active_owner && any_active && w->owner != s->active_owner; if (hide != w->menu_hidden) { w->menu_hidden = hide; bump(s); } }
 }
 static void set_key_window(ws_server *s, ws_wid id)
