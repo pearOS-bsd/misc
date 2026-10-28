@@ -1057,9 +1057,9 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 {
 	BOOL key = KeyWin(self); NSRect b = [self bounds]; NSBezierPath *rim = [NSBezierPath bezierPathWithRoundedRect: NSInsetRect(b, 0.5, 0.5) xRadius: 16 yRadius: 16]; [TFDark() ? TFRGBA(255, 255, 255, 0.20) : TFRGBA(0, 0, 0, 0.22) setStroke]; [rim setLineWidth: 1]; [rim stroke];
 	NSColor *cols[3] = { TFRGB(242, 96, 86), TFRGB(253, 193, 1), TFRGB(57, 193, 1) }; Class sup = NSClassFromString(@"WsdFinderSupport");
-	for (int k = 0; k < 3; k++) { NSRect c = [self _light: k]; BOOL pr = _pressed == k && _inside;
+	for (int k = 0; k < 3; k++) { NSRect c = [self _light: k]; BOOL pr = _pressed == k;
 		NSImage *pic = nil; if (key || _hover || pr) { SEL sl = NSSelectorFromString(@"windowButtonKind:state:"); if ([sup respondsToSelector: sl]) pic = ((NSImage *(*)(id, SEL, int, int))objc_msgSend)(sup, sl, k, pr ? 2 : (_hover ? 1 : 0)); }
-		if (pic) { [pic drawInRect: c fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1.0]; continue; }
+		if (pic) { NSRect d = c; if (pr) { CGFloat z = 1.143; d = NSMakeRect(NSMidX(c) - c.size.width * z / 2, NSMidY(c) - c.size.height * z / 2, c.size.width * z, c.size.height * z); } [pic drawInRect: d fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1.0]; continue; }
 		[(key ? cols[k] : (TFDark() ? TFRGB(76, 76, 76) : TFRGB(205, 205, 205))) setFill]; [[NSBezierPath bezierPathWithOvalInRect: c] fill]; [TFRGBA(0, 0, 0, 0.12) setStroke]; [[NSBezierPath bezierPathWithOvalInRect: NSInsetRect(c, 0.5, 0.5)] stroke]; }
 }
 - (void)mouseDown:(NSEvent *)e
