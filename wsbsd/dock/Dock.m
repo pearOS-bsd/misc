@@ -32,6 +32,57 @@ static NSMenu *NativeMenu(NSArray *its, id target)
 	}
 	return m;
 }
+/* The Downloads-style stack as a grid (View content as > Grid). Measured on the Mac (AX of the Dock, a stack of 332 items): a panel 1306 x 1114 centred on the tile (1306 = 12 columns of 106 + 34), its bottom 10 under the top of the bar, the title ("Downloads", 13 pt bold, 73 x 19) 7 under its top, a scroll
+ * area of 1272 wide from 17 inside the left edge and 30 under the top, cells of 106 x 106 without gaps (the icon about 52 px, 10 under the cell's top; the name in one line below it, shortened in the middle), rows 106 apart; the panel is as high as 10 rows (54 more than the cells). The material is
+ * the menu glass (mode 5, corners about 22) with the menu's shadow. Not measured: the highlight of a hovered cell, the look of an empty folder, the scroller, the animation of opening. */
+@interface DockGridView : NSView { @public NSArray *names; NSString *dir; NSMutableDictionary *icons; int cols; void (^pick)(NSString *); } @end
+@implementation DockGridView
+- (BOOL)isFlipped { return YES; }
+- (BOOL)acceptsFirstMouse:(NSEvent *)e { return YES; }
+- (void)drawRect:(NSRect)dirty
+{
+	CGContextRef c = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort]; if (!icons) icons = [NSMutableDictionary dictionary];
+	NSMutableParagraphStyle *ps = [[NSMutableParagraphStyle alloc] init]; [ps setAlignment: NSCenterTextAlignment]; [ps setLineBreakMode: NSLineBreakByTruncatingMiddle];
+	NSDictionary *at = @{ NSFontAttributeName: [NSFont systemFontOfSize: 11], NSForegroundColorAttributeName: [NSColor colorWithCalibratedWhite: 1 alpha: 0.92], NSParagraphStyleAttributeName: ps };
+	for (NSUInteger i = 0; i < [names count]; i++) {
+		NSRect cell = NSMakeRect((i % cols) * 106, (i / cols) * 106, 106, 106); if (!NSIntersectsRect(cell, dirty)) continue;
+		NSString *nm = names[i], *p = [dir stringByAppendingPathComponent: nm]; NSValue *iv = icons[nm];
+		if (!iv) { CGImageRef im = LSIconCreateForPath(p, 128); iv = [NSValue valueWithPointer: im]; icons[nm] = iv; }
+		CGImageRef im = (CGImageRef)[iv pointerValue];
+		if (im) { CGRect ir = CGRectMake(cell.origin.x + 27, cell.origin.y + 10, 52, 52); CGContextSaveGState(c); CGContextTranslateCTM(c, ir.origin.x, ir.origin.y + ir.size.height); CGContextScaleCTM(c, 1, -1); CGContextDrawImage(c, CGRectMake(0, 0, ir.size.width, ir.size.height), im); CGContextRestoreGState(c); }
+		[nm drawInRect: NSMakeRect(cell.origin.x + 3, cell.origin.y + 72, 100, 16) withAttributes: at];
+	}
+}
+- (void)mouseDown:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; NSInteger col = (NSInteger)(p.x / 106), row = (NSInteger)(p.y / 106), i = row * cols + col; if (col >= 0 && col < cols && i >= 0 && i < (NSInteger)[names count] && pick) pick(names[i]); }
+@end
+@interface DockGridWindow : NSWindow @end
+@implementation DockGridWindow
+- (BOOL)canBecomeKeyWindow { return YES; }
+- (void)resignKeyWindow { [super resignKeyWindow]; [self orderOut: nil]; }
+- (void)keyDown:(NSEvent *)e { if ([[e characters] isEqual: @"\x1b"]) [self orderOut: nil]; else [super keyDown: e]; }
+@end
+@interface DockGridTitle : NSView { @public NSString *title; } @end
+@implementation DockGridTitle
+- (BOOL)isFlipped { return YES; }
+- (void)drawRect:(NSRect)r { NSMutableParagraphStyle *ps = [[NSMutableParagraphStyle alloc] init]; [ps setAlignment: NSCenterTextAlignment]; [title ?: @"" drawInRect: NSMakeRect(0, 7, [self bounds].size.width, 19) withAttributes: @{ NSFontAttributeName: [NSFont boldSystemFontOfSize: 13], NSForegroundColorAttributeName: [NSColor colorWithCalibratedWhite: 1 alpha: 0.85], NSParagraphStyleAttributeName: ps }]; }
+@end
+static DockGridWindow *gGrid;
+/* shows the grid of a folder: tileCx the centre of the tile (screen x), barTop the top of the bar (screen y, y up), the names already sorted */
+static void ShowDockGrid(NSString *title, NSString *dir, NSArray *names, double tileCx, double barTop, void (^pick)(NSString *))
+{
+	NSRect scr = [[NSScreen mainScreen] frame]; int cols = (int)MIN(12.0, floor((scr.size.width - 60) / 106)); if (cols < 3) cols = 3; int rowsAll = ((int)[names count] + cols - 1) / cols; if (rowsAll < 1) rowsAll = 1;
+	double bottom = barTop - 10, topMax = scr.size.height - 0.172 * scr.size.height, maxH = MAX(160.0, topMax - bottom); int rows = (int)MIN((double)rowsAll, floor((maxH - 54) / 106)); if (rows < 1) rows = 1;
+	double w = cols * 106 + 34, h = rows * 106 + 54; double x = MAX(8, MIN(scr.size.width - w - 8, tileCx - w / 2));
+	NSRect f = NSMakeRect(x, bottom, w, h);
+	if (!gGrid) { gGrid = [[DockGridWindow alloc] initWithContentRect: f styleMask: NSBorderlessWindowMask backing: NSBackingStoreBuffered defer: NO]; [gGrid setOpaque: NO]; [gGrid setBackgroundColor: [NSColor clearColor]]; [gGrid setHasShadow: NO]; [gGrid setLevel: 25]; [gGrid setHidesOnDeactivate: NO]; }
+	NSView *root = [[NSView alloc] initWithFrame: NSMakeRect(0, 0, w, h)]; [gGrid setContentView: root]; [gGrid setFrame: f display: YES];
+	DockGridTitle *tv = [[DockGridTitle alloc] initWithFrame: NSMakeRect(0, h - 30, w, 30)]; tv->title = title; [root addSubview: tv];
+	NSScrollView *sv = [[NSScrollView alloc] initWithFrame: NSMakeRect(17, 24, cols * 106, rows * 106)]; [sv setHasVerticalScroller: YES]; [sv setDrawsBackground: NO]; [sv setBorderType: NSNoBorder];
+	DockGridView *gv = [[DockGridView alloc] initWithFrame: NSMakeRect(0, 0, cols * 106, rowsAll * 106)]; gv->names = names; gv->dir = dir; gv->cols = cols; gv->pick = ^(NSString *nm) { [gGrid orderOut: nil]; if (pick) pick(nm); };
+	[sv setDocumentView: gv]; [root addSubview: sv];
+	ws_conn *wc = ws_connect(NULL); if (wc) { ws_win gw = { .id = (ws_wid)[gGrid windowNumber], .px = NULL }; ws_win_glass_slot(wc, &gw, 1, (ws_rect){ 0, 0, (int)w, (int)h }, 22, 5); ws_win_shadow(wc, &gw, 22, 2); ws_disconnect(wc); }
+	[NSApp activateIgnoringOtherApps: YES]; [gGrid makeKeyAndOrderFront: nil]; [gGrid makeFirstResponder: gv];
+}
 @interface DockView : NSView {
 @public
 	ws_rect glassRect; int glassOn;
@@ -100,7 +151,7 @@ static NSString *TileLabel(NSDictionary *t, NSString *path)
 		struct { const char *label, *path; } defs[] = { { "Terminal", "/System/Applications/Utilities/Terminal.app" },
 			{ "Keyboard Setup Assistant", "/System/Applications/Utilities/Keyboard Setup Assistant.app" }, { "UITest", "/Applications/UITest.app" } };
 		for (size_t i = 0; i < sizeof defs / sizeof defs[0]; i++) [apps addObject: [self tileForPath: @(defs[i].path) label: @(defs[i].label)]];
-		[others addObject: [@{ @"tile-type": @"directory-tile", @"tile-data": @{ @"file-data": @{ @"_CFURLString": [@"file://" stringByAppendingString: [[NSHomeDirectory() stringByAppendingPathComponent: @"Downloads"] stringByAddingPercentEncodingWithAllowedCharacters: [NSCharacterSet URLPathAllowedCharacterSet]]], @"_CFURLStringType": @0 }, @"file-label": @"Downloads", @"arrangement": @2, @"showas": @1, @"displayas": @0 } } mutableCopy]];
+		[others addObject: [@{ @"tile-type": @"directory-tile", @"tile-data": @{ @"file-data": @{ @"_CFURLString": [@"file://" stringByAppendingString: [[NSHomeDirectory() stringByAppendingPathComponent: @"Downloads"] stringByAddingPercentEncodingWithAllowedCharacters: [NSCharacterSet URLPathAllowedCharacterSet]]], @"_CFURLStringType": @0 }, @"file-label": @"Downloads", @"arrangement": @2, @"showas": @(getenv("DOCK_SHOWAS") ? atoi(getenv("DOCK_SHOWAS")) : 1), @"displayas": @0 } } mutableCopy]];
 	}
 }
 - (NSMutableDictionary *)tileForPath:(NSString *)path label:(NSString *)label
@@ -451,6 +502,15 @@ static NSMutableDictionary *badgeStore;
 	return -1;
 }
 - (double)screenX:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; return (orient ? [self bounds].size.height - p.y : p.x) + [self originX]; }
+- (NSArray *)sortedNamesOf:(int)i       /* the visible names of a folder tile in the order of its "Sort by" (as the fan) */
+{
+	NSString *dir = paths[i]; NSFileManager *fm = [NSFileManager defaultManager]; NSMutableArray *vis = [NSMutableArray array]; for (NSString *nm in [fm contentsOfDirectoryAtPath: dir error: NULL]) if (![nm hasPrefix: @"."]) [vis addObject: nm];
+	int arrange = 2; if (srcKind[i] == 2) arrange = [others[srcIdx[i]][@"tile-data"][@"arrangement"] intValue];
+	[vis sortUsingComparator: ^NSComparisonResult(NSString *a, NSString *b) { if (arrange == 1) return [a localizedCaseInsensitiveCompare: b]; if (arrange == 5) { NSComparisonResult r = [[a pathExtension] caseInsensitiveCompare: [b pathExtension]]; return r ?: [a localizedCaseInsensitiveCompare: b]; }
+		NSString *key = arrange == 4 ? NSFileCreationDate : NSFileModificationDate; NSDate *da = [fm attributesOfItemAtPath: [dir stringByAppendingPathComponent: a] error: NULL][key], *db = [fm attributesOfItemAtPath: [dir stringByAppendingPathComponent: b] error: NULL][key]; return [db compare: da ?: [NSDate distantPast]]; }];
+	return vis;
+}
+- (void)closeAllMenus { ctxOpen = 0; }
 - (void)openFan:(int)i
 {
 	NSString *dir = paths[i]; NSFileManager *fm = [NSFileManager defaultManager];
@@ -536,7 +596,7 @@ static NSMutableDictionary *badgeStore;
 	NSString *path = paths[i];
 	if (items[i].kind == DOCK_APP) { for (int k = nmini - 1; k >= 0; k--) if (mini[k].appItem == i && mini[k].phase == 2) { [self restoreMini: k]; return; } }
 	if (items[i].kind == DOCK_MINIMIZED) { for (int k = 0; k < nmini; k++) if (mini[k].item == i) [self restoreMini: k]; return; }
-	if (items[i].kind == DOCK_OTHER) { if ([self isDirTile: i]) [self openFan: i]; else [self openPath: path]; return; }
+	if (items[i].kind == DOCK_OTHER) { if ([self isDirTile: i]) { int showas = srcKind[i] == 2 ? [others[srcIdx[i]][@"tile-data"][@"showas"] intValue] : 1; NSArray *sorted = [self sortedNamesOf: i]; if (showas == 2 || (showas == 0 && [sorted count] > 16)) { NSString *dir = path, *tt = tiles[i].label ? @(tiles[i].label) : @""; double top = bar.bottom_margin + bar.bar_h; [self closeAllMenus]; ShowDockGrid(tt, dir, sorted, slots[i].cx, top, ^(NSString *nm) { [self openPath: [dir stringByAppendingPathComponent: nm]]; }); } else [self openFan: i]; } else [self openPath: path]; return; }
 	if (items[i].kind == DOCK_TRASH) { return; }
 	if (items[i].kind == DOCK_APP && [self pidOfApp: path] > 0 && [self activateApp: path]) return;        /* a running application comes to the front instead of starting again */
 	[self launchItem: i];
