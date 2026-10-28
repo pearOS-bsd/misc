@@ -83,8 +83,27 @@ static NSString *StyleName(NSInteger m) { return @[ @"icnv", @"Nlsv", @"clmv", @
 - (void)cmdTagsPopup:(id)s { if (![[self _targets] count]) return; TFShowTagsPopover([self _targets], [_toolbar buttonRect: 1], _toolbar, self); }
 - (void)cmdOpenQuickActionsPrefPane:(id)s {}
 /* the menu of the empty space of an icon view, as the real Finder's Action menu shows it without a selection (read from its accessibility tree: 233 wide; New Folder, Open in New Tab, Get Info, Quick Look "folder", Use Groups, Sort By, Clean Up, Clean Up By, Show View Options; "Import from iPhone" only appears with a phone connected and is left out) */
+/* the background menu of the list view, as the real Finder shows it (AX of the open menu on the Mac): New Folder, Get Info, View, Use Groups, Sort By (the columns), the two options toggles; the Mac adds Import from iPhone and the Services of the folder (Folder Actions Setup, New Terminal at Folder...), which are not here */
+- (NSMenu *)_listBackgroundMenu
+{
+	NSMenu *m = [[NSMenu alloc] initWithTitle: @""];
+	NSMenuItem *(^Add)(NSMenu *, NSString *, SEL, id) = ^NSMenuItem *(NSMenu *menu, NSString *t, SEL a, id rep) { NSMenuItem *i = [menu addItemWithTitle: t action: a keyEquivalent: @""]; [i setTarget: self]; if (rep) [i setRepresentedObject: rep]; return i; };
+	Add(m, @"New Folder", @selector(cmdNewFolder:), nil); [m addItem: [NSMenuItem separatorItem]];
+	Add(m, @"Get Info", @selector(cmdShowStaticInfo:), nil); [m addItem: [NSMenuItem separatorItem]];
+	NSMenuItem *vw = Add(m, @"View", NULL, nil); NSMenu *vs = [[NSMenu alloc] initWithTitle: @"View"]; int vi = 0;
+	for (NSArray *k in @[ @[ @"as Icons", @"cmdViewAsIcons:" ], @[ @"as List", @"cmdViewAsList:" ], @[ @"as Columns", @"cmdViewAsColumns:" ], @[ @"as Gallery", @"cmdViewAsGallery:" ] ]) { NSMenuItem *x = Add(vs, k[0], NSSelectorFromString(k[1]), nil); if (vi++ == _mode) [x setState: NSOnState]; }
+	[vw setSubmenu: vs];
+	NSMenuItem *ug = Add(m, @"Use Groups", @selector(cmdUseGroupsOrStacks:), nil); [ug setState: [_list->_group length] ? NSOnState : NSOffState];
+	NSMenuItem *sb = Add(m, @"Sort By", NULL, nil); NSMenu *ss = [[NSMenu alloc] initWithTitle: @"Sort By"]; NSString *cur = _list->_colKey ?: @"name";
+	for (NSArray *k in @[ @[ @"Name", @"name" ], @[ @"Kind", @"kind" ], @[ @"Date Last Opened", @"dateLastOpened" ], @[ @"Date Added", @"dateAdded" ], @[ @"Date Modified", @"dateModified" ], @[ @"Date Created", @"dateCreated" ], @[ @"Size", @"size" ], @[ @"Tags", @"label" ] ]) { NSMenuItem *x = Add(ss, k[0], @selector(cmdListSortBy:), k[1]); if ([cur isEqual: k[1]]) [x setState: NSOnState]; }
+	[sb setSubmenu: ss];
+	Add(m, @"Show View Options", @selector(cmdToggleViewOptions:), nil); Add(m, @"Show Preview Options", @selector(cmdTogglePreviewOptions:), nil);
+	return m;
+}
+- (void)cmdListSortBy:(NSMenuItem *)it { [_list sortByColumn: [it representedObject]]; }
 - (NSMenu *)backgroundContextMenu
 {
+	if (_mode == 1 && !_tag && !_filter) return [self _listBackgroundMenu];
 	if (_mode != 0 || _tag || _filter) return nil; NSMenu *m = [[NSMenu alloc] initWithTitle: @""]; NSString *fn = [[_url path] isEqual: @"/"] ? @"Macintosh HD" : [[_url path] lastPathComponent];
 	NSMenuItem *(^Add)(NSMenu *, NSString *, SEL, id) = ^NSMenuItem *(NSMenu *menu, NSString *t, SEL a, id rep) { NSMenuItem *i = [menu addItemWithTitle: t action: a keyEquivalent: @""]; [i setTarget: self]; if (rep) [i setRepresentedObject: rep]; return i; };
 	Add(m, @"New Folder", @selector(cmdNewFolder:), nil); Add(m, @"Open in New Tab", @selector(cmdNewTab:), nil); [m addItem: [NSMenuItem separatorItem]];
