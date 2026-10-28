@@ -126,7 +126,7 @@ static void ShowDockGrid(NSString *title, NSString *dir, NSArray *names, double 
 	NSArray *ctxItems; int ctxGlass, ctxGlassSet[2]; ws_rect ctxGlassRect[2]; int ctxOpen, ctxSub, ctxHoverMain, ctxHoverSub; NSRect ctxMainR, ctxSubR; NSArray *ctxSubItems; double ctxH;
 	double poofT0; NSPoint poofAt;
 	int ctxItem, dragCand, dragItem, dragging; double dragStartX; int trashFull;
-	NSTrackingRectTag trackTag; double pointer; int hover; double scale[MAXITEMS]; double bounceStart[MAXITEMS]; NSTimer *timer; double screenW, screenH, screenLen, alongBase; int orient; DockFan fan; int fanOpen; double fanStart, fanClose; NSMutableArray *fanStore;
+	NSTrackingRectTag trackTag; double pointer; int hover; double scale[MAXITEMS]; double bounceStart[MAXITEMS]; NSTimer *timer; uint64_t drawnHash; BOOL drawnOnce; double screenW, screenH, screenLen, alongBase; int orient; DockFan fan; int fanOpen; double fanStart, fanClose; NSMutableArray *fanStore;
 }
 - (void)reload;
 @end
@@ -514,7 +514,19 @@ static NSMutableDictionary *badgeStore;
 	else if (ctxOpen) f = [self stateFrame];
 	NSRect cur = [w frame];
 	if (fabs(f.origin.x - cur.origin.x) >= 1 || fabs(f.size.width - cur.size.width) >= 1 || fabs(f.size.height - cur.size.height) >= 1) { [w setFrame: f display: NO]; }
-	[self setNeedsDisplay: YES];
+	[self redrawIfChanged: f];
+}
+/* the view is redrawn only when something it shows has changed (the window server blends and blurs the whole window again for every frame it gets): the hash covers the tiles, the slots, the bar and the state of the menus, fans and grids; while an animation without a state of its own runs (fan, menu, poof, bounce, minimising) every tick draws */
+- (void)redrawIfChanged:(NSRect)f
+{
+	uint64_t h = 1469598103934665603ULL;
+#define MIX(v) do { double d_ = (double)(v); uint64_t u_; memcpy(&u_, &d_, 8); h = (h ^ u_) * 1099511628211ULL; } while (0)
+	BOOL busy = fanOpen || ctxOpen || [self poofing] || (gGrid && [gGrid isVisible]);
+	for (int i = 0; i < n; i++) { MIX(tiles[i].running); MIX(tiles[i].badge); MIX(tiles[i].bounce); MIX((uintptr_t)tiles[i].icon); MIX((uintptr_t)tiles[i].glyph); MIX(slots[i].x); MIX(slots[i].w); MIX(slots[i].cx); MIX(slots[i].scale); MIX(slots[i].art); if (tiles[i].bounce > 0) busy = YES; }
+	for (int k = 0; k < nmini; k++) if (mini[k].phase != 2) busy = YES;
+	MIX(n); MIX(hover); MIX(hideFrac); MIX(trashFull); MIX(bar.bar_x); MIX(bar.bar_w); MIX(bar.bar_h); MIX(bar.bottom_margin); MIX(bar.art_rest); MIX(f.size.width); MIX(f.size.height); MIX(orient);
+#undef MIX
+	if (busy || h != drawnHash || !drawnOnce) { drawnHash = h; drawnOnce = YES; [self setNeedsDisplay: YES]; }
 }
 - (void)drawRect:(NSRect)r
 {
