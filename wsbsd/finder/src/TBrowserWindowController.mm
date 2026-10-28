@@ -475,7 +475,7 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 - (void)cmdSortByKey:(NSMenuItem *)it { NSString *k = [it representedObject]; [self _arrange: [k length] ? k : nil]; }
 - (void)cmdTogglePreviewPane:(id)s { _showPane = !_showPane; [self _layout]; [self _refreshPane]; }
 - (void)_refreshPane { if (!_preview) return; if (![_preview->paths isEqual: _selection]) _preview->_scroll = 0; _preview->paths = _selection; _preview->folder = [_url path]; [_preview setNeedsDisplay: YES]; }
-- (void)cmdTogglePreviewOptions:(id)s {}
+- (void)cmdTogglePreviewOptions:(id)s { __weak TBrowserWindowController *me = self; TFTogglePreviewOptions(nil, ^{ TBrowserWindowController *w = me; [w->_preview setNeedsDisplay: YES]; }); }
 - (void)cmdCleanUpByLastOpenDate:(id)s { [self cmdCleanUpByModDate: s]; }
 - (void)cmdCleanUpByDateAdded:(id)s { [self cmdCleanUpByCreationDate: s]; }
 - (void)toggleTabOverview:(id)s { _forceTabBar = YES; [self _syncTabBar]; }
