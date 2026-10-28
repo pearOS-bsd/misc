@@ -124,7 +124,7 @@ void ws_glass_regions(ws_surface *img, const ws_glass *g, int n, int ox, int oy)
 	}
 	if (!any) return;
 	float Lbase = getenv("WS_GLASS_L") ? (float)atof(getenv("WS_GLASS_L")) : 18.0f, amp = getenv("WS_GLASS_AMP") ? (float)atof(getenv("WS_GLASS_AMP")) : 26.0f;
-	float LM = getenv("WS_MENU_L") ? (float)atof(getenv("WS_MENU_L")) : 7.0f, AM = getenv("WS_MENU_AMP") ? (float)atof(getenv("WS_MENU_AMP")) : 6.0f;
+	float LM = getenv("WS_MENU_L") ? (float)atof(getenv("WS_MENU_L")) : 4.5f, AM = getenv("WS_MENU_AMP") ? (float)atof(getenv("WS_MENU_AMP")) : 12.0f;
 	int M = (int)ceilf(amp) + 6;
 	int cx0 = bx0 - M < 0 ? 0 : bx0 - M, cy0 = by0 - M < 0 ? 0 : by0 - M, cx1 = bx1 + M > img->w ? img->w : bx1 + M, cy1 = by1 + M > img->h ? img->h : by1 + M;
 	if (cx1 <= cx0 || cy1 <= cy0) return;
