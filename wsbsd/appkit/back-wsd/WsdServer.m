@@ -363,6 +363,8 @@ static int wsdShapeForStyle(int style)
 	for (NSWindow *nw in [NSApp windows]) if ([nw windowNumber] == wid) { [nw deminiaturize: nil]; break; }
 }
 - (BOOL) appOwnsMiniwindow { return NO; }
+/* a window below the normal level (the Finder's desktop) is not given key focus by the server on a click: its application asks for it */
+- (void) wsdSetKeyWindow: (int)win { struct wsd_window *w = [self wsdWindow: win]; if (w) ws_win_set_key(conn, &w->win); }
 - (void) setinputfocus: (int)win
 {
 	WLOG(@"setinputfocus %d", win); keyWindow = win;
