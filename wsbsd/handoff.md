@@ -268,3 +268,6 @@ Run 40705315699: iso (x86_64) and iso (aarch64) both succeeded (aarch64 under em
 
 ## Dock grid: position and chevron (2026-10-28)
 The grid panel's visible bottom is 16 px above the glass bar's top (Mac screenshot: panel glass ends 16 px above the bar; the AX frame of the panel has about 14 px of transparent margin, which is why the AX bottom is 2 px above the bar top: the first version used -10 and covered the tiles). While a grid is open the stack's tile shows the dark button with the chevron, as in the fan (`DockScene.chevron1`, `DrawChevronButton`).
+
+## arm64 boot test (2026-10-28)
+Run 40715449736: boot-test-arm64 (qemu-system-aarch64 virt, AAVMF, ramfb, virtio-scsi CD, TCG) succeeded: the arm64 ISO reaches the desktop; boot-test usb and cd (amd64) succeeded too after the file-name fix. Not tested: the arm64 USB image, real hardware.
