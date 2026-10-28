@@ -147,7 +147,7 @@ static const char *GLASS_FS =
 	"            if (dt < 14.0 && dt <= db) sy = -18.0 * sin(3.14159265 * dt / 14.0); else if (db < 8.0) sy = -12.0 * sin(3.14159265 * db / 8.0);\n"
 	"            break; } }\n"
 	"        vec3 c = texture2D(u_blur, (p + vec2(sx, sy)) / u_screen).rgb;\n"
-	"        float L = dot(c, vec3(0.1886, 0.7455, 0.0659)), f = 0.1213 + 0.4825 * (2.0 * L - L * L);\n"
+	"        float L = dot(c, vec3(0.1886, 0.7455, 0.0659)), f = 0.12494 + L * (0.86553 - L * (0.24983 + 0.16865 * L));\n"
 	"        float rim = dd < 1.0 ? 0.10 + 0.177 * ny : 0.042 * ny * exp(-(dd - 1.5) / 3.8);\n"
 	"        col = clamp(vec3(f) + 1.091 * (c - vec3(L)), 0.0, 1.0);\n"
 	"        col = col * (1.0 - rim) + vec3(rim);\n"

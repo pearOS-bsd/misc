@@ -150,7 +150,7 @@ void ws_glass_regions(ws_surface *img, const ws_glass *g, int n, int ox, int oy)
 				float dl = fx - rx, dr = rx + g[q].rect.w - fx, dt = fy - ry, db = ry + g[q].rect.h - fy, dx = dl < dr ? dl : dr;
 				if (dx < 8.0f) sx = AX * sinf(3.14159265f * dx / 8.0f); if (dt < 14.0f && dt <= db) sy = AY * sinf(3.14159265f * dt / 14.0f); else if (db < 8.0f) sy = 12.0f * sinf(3.14159265f * db / 8.0f); break; } }
 			float s3[3]; sample_bilinear(bl5, (fx + sx) - cx0, (fy + sy) - cy0, s3); (void)nxo; (void)nyo; (void)LM;
-			float c[3] = { s3[2], s3[1], s3[0] }, L = 0.1886f * c[0] + 0.7455f * c[1] + 0.0659f * c[2], f = 0.1213f + 0.4825f * (2 * L - L * L); (void)bxp; (void)byp;
+			float c[3] = { s3[2], s3[1], s3[0] }, L = 0.1886f * c[0] + 0.7455f * c[1] + 0.0659f * c[2], f = 0.12494f + L * (0.86553f - L * (0.24983f + 0.16865f * L));       /* the tone of the glass over uniform greys 0, 64, 128, 192, 255 measured on the Mac (Dock context menu: 32, 82, 122, 143, 146 of 255): a cubic through them (the earlier fit on natural backdrops gave 31, 85, 123, 146, 154) */ (void)bxp; (void)byp;
 			float rim = dd < 1.0f ? 0.10f + 0.177f * ny : 0.042f * ny * expf(-(dd - 1.5f) / 3.8f);
 			uint8_t *dp = img->px + (size_t)y * img->stride + (size_t)x * 4;
 			for (int k = 0; k < 3; k++) { float o = f + 1.091f * (c[k] - L); o = clampf(o, 0, 1); o = o * (1 - rim) + rim; dp[2 - k] = (uint8_t)(dp[2 - k] * (1 - cover) + o * 255.0f * cover + 0.5f); }
