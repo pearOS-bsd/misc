@@ -169,6 +169,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 150
     continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        form: [cd, usb]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
@@ -178,15 +182,20 @@ jobs:
       - name: Install QEMU and AAVMF
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq qemu-system-arm qemu-efi-aarch64 python3-pil socat
+          sudo apt-get install -y -qq qemu-system-arm qemu-efi-aarch64 python3-pil socat xz-utils
           ls /usr/share/AAVMF/ || true
       - name: Boot it
         run: |
           set -x
           cp /usr/share/AAVMF/AAVMF_VARS.fd vars.fd; truncate -s 64M vars.fd; cp /usr/share/AAVMF/AAVMF_CODE.fd code.fd; truncate -s 64M code.fd
+          if [ "${{ matrix.form }}" = usb ]; then
+            xz -dk out/macbsd-arm64-usb.img.xz; DRIVE="-drive if=none,id=u,file=out/macbsd-arm64-usb.img,format=raw,snapshot=on -device scsi-hd,drive=u,bootindex=1"
+          else
+            DRIVE="-drive if=none,id=c,file=out/macbsd-arm64.iso,format=raw,media=cdrom,readonly=on -device scsi-cd,drive=c,bootindex=1"
+          fi
           qemu-system-aarch64 -M virt,gic-version=max -cpu max -accel tcg,thread=multi -m 4096 -smp 4 -display none -device ramfb \
             -drive if=pflash,format=raw,readonly=on,file=code.fd -drive if=pflash,format=raw,file=vars.fd \
-            -device virtio-scsi-pci,id=scsi -drive if=none,id=c,file=out/macbsd-arm64.iso,format=raw,media=cdrom,readonly=on -device scsi-cd,drive=c,bootindex=1 \
+            -device virtio-scsi-pci,id=scsi $DRIVE \
             -device qemu-xhci -device usb-kbd -device usb-tablet -monitor unix:/tmp/mon,server,nowait -serial file:serial.log -daemonize
           mkdir -p shots
           ok=0
@@ -204,7 +213,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: boot-arm64
+          name: boot-arm64-${{ matrix.form }}
           path: |
             shots
             serial.log
