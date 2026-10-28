@@ -443,7 +443,54 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 	NSBeep();
 }
 - (void)cmdAddToSidebar:(id)s { NSMutableArray *f = [TFPref(@"SidebarFavorites", @[]) mutableCopy]; for (NSString *p in [self _targets]) { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: p isDirectory: &d]; if (d && ![f containsObject: p]) [f addObject: p]; } TFSetPref(@"SidebarFavorites", f); }
-- (void)cmdToggleViewOptions:(id)s { if (_mode != 0) return; __weak TBrowserWindowController *me = self; TFOpenViewOptions(_icons, [[_url path] isEqual: @"/"] ? @"Macintosh HD" : [[_url path] lastPathComponent], ^{ [me _updateStatus]; }); }
+- (void)cmdToggleViewOptions:(id)s
+{
+	NSString *name = [[_url path] isEqual: @"/"] ? @"Macintosh HD" : [[_url path] lastPathComponent]; __weak TBrowserWindowController *me = self; NSInteger mode = _mode;
+	static NSMutableDictionary *inert; if (!inert) inert = [NSMutableDictionary dictionary];       /* the options of the column and gallery views that nothing reads yet are only remembered while the Finder runs */
+	TFOpenFolderViewOptions(mode, name, ^NSDictionary *{ return [me _viewOptionValues: inert]; }, ^(NSString *k, id v) { [me _setViewOption: k to: v inert: inert]; });
+}
+static NSString *const kGroupTitles[][2] = { { @"None", @"" }, { @"Name", @"name" }, { @"Kind", @"kind" }, { @"Application", @"application" }, { @"Date Last Opened", @"dateLastOpened" }, { @"Date Added", @"dateAdded" }, { @"Date Modified", @"dateModified" }, { @"Date Created", @"dateCreated" }, { @"Size", @"size" }, { @"Tags", @"tags" } };
+static NSString *const kIconSortTitles[][2] = { { @"None", @"" }, { @"Name", @"name" }, { @"Kind", @"kind" }, { @"Date Last Opened", @"opened" }, { @"Date Added", @"created" }, { @"Date Modified", @"modified" }, { @"Date Created", @"created" }, { @"Size", @"size" }, { @"Tags", @"tags" } };
+static NSString *const kListSortTitles[][2] = { { @"Name", @"name" }, { @"Kind", @"kind" }, { @"Date Last Opened", @"dateLastOpened" }, { @"Date Added", @"dateAdded" }, { @"Date Modified", @"dateModified" }, { @"Date Created", @"dateCreated" }, { @"Size", @"size" }, { @"Tags", @"label" } };
+static NSString *const kListColumns[][2] = { { @"Date Modified", @"dateModified" }, { @"Date Created", @"dateCreated" }, { @"Date Last Opened", @"dateLastOpened" }, { @"Date Added", @"dateAdded" }, { @"Size", @"size" }, { @"Kind", @"kind" }, { @"Tags", @"label" } };
+- (NSMutableDictionary *)_lsvp { TDSStore *ds = [TDSStore storeForFolder: _list->_folder]; return [ds plistForName: @"." sid: @"lsvp"] ? [[ds plistForName: @"." sid: @"lsvp"] mutableCopy] : [@{ @"calculateAllSizes": @NO, @"iconSize": @16.0, @"showIconPreview": @YES, @"textSize": @13.0, @"useRelativeDates": @YES } mutableCopy]; }
+- (void)_saveLsvp:(NSDictionary *)d { TDSStore *ds = [TDSStore storeForFolder: _list->_folder]; NSMutableDictionary *ls = [ds plistForName: @"." sid: @"lsvp"] ? [[ds plistForName: @"." sid: @"lsvp"] mutableCopy] : [NSMutableDictionary dictionary]; [ls addEntriesFromDictionary: d]; [ds setPlist: ls forName: @"." sid: @"lsvp"]; [ds write]; }
+- (NSDictionary *)_viewOptionValues:(NSMutableDictionary *)inert
+{
+	NSMutableDictionary *d = [NSMutableDictionary dictionaryWithDictionary: inert[@(_mode)] ?: @{}];
+	if (_mode == 0) {
+		NSString *g = _icons->_group ?: @""; for (int i = 0; i < 10; i++) if ([kGroupTitles[i][1] isEqual: g]) d[@"groupBy"] = kGroupTitles[i][0];
+		NSString *a = _icons->_snap ? @"snap" : (_icons->_arrange ?: @""); d[@"sortBy"] = _icons->_snap ? @"Snap to Grid" : @"None"; for (int i = 0; i < 9; i++) if ([kIconSortTitles[i][1] isEqual: a] && ![kIconSortTitles[i][0] isEqual: @"Date Added"]) d[@"sortBy"] = kIconSortTitles[i][0];
+		d[@"iconSize"] = @(_icons->_isz); d[@"gridSpacing"] = @(_icons->_grid); d[@"textSize"] = [NSString stringWithFormat: @"%d", (int)_icons->_textSize]; d[@"labelRight"] = @(_icons->_labelRight ? 1 : 0); d[@"showInfo"] = @(_icons->_showInfo); d[@"showPreview"] = @(_icons->_showPreview);
+	} else if (_mode == 1) {
+		NSDictionary *ls = [self _lsvp]; d[@"textSize"] = [NSString stringWithFormat: @"%d", (int)[ls[@"textSize"] doubleValue]]; d[@"iconLarge"] = @([ls[@"iconSize"] doubleValue] > 16 ? 1 : 0); d[@"relDates"] = ls[@"useRelativeDates"] ?: @YES; d[@"calcSizes"] = ls[@"calculateAllSizes"] ?: @NO; d[@"showPreview"] = ls[@"showIconPreview"] ?: @YES;
+		for (NSDictionary *c in _list->_colDefs) for (int i = 0; i < 7; i++) if ([c[@"id"] isEqual: kListColumns[i][1]]) d[[@"col." stringByAppendingString: kListColumns[i][0]]] = c[@"vis"];
+		d[@"sortBy"] = @"Name"; for (int i = 0; i < 8; i++) if ([kListSortTitles[i][1] isEqual: _list->_colKey ?: @"name"]) d[@"sortBy"] = kListSortTitles[i][0];
+		d[@"groupBy"] = @"None"; for (int i = 0; i < 10; i++) if ([kGroupTitles[i][1] isEqual: _list->_group ?: @""]) d[@"groupBy"] = kGroupTitles[i][0];
+	} else { if (!d[@"textSize"]) d[@"textSize"] = @"13"; if (_mode == 2) for (NSString *k in @[ @"showIcons", @"showPreview", @"showPreviewColumn" ]) if (!d[k]) d[k] = @YES; if (_mode == 3) { if (!d[@"thumb"]) d[@"thumb"] = @1; for (NSString *k in @[ @"showPreview", @"showPreviewColumn" ]) if (!d[k]) d[k] = @YES; d[@"sortBy"] = @"Name"; } }
+	return d;
+}
+- (void)_setViewOption:(NSString *)k to:(id)v inert:(NSMutableDictionary *)inert
+{
+	if (_mode == 0) {
+		if ([k isEqual: @"iconSize"]) _icons->_isz = [v doubleValue]; else if ([k isEqual: @"gridSpacing"]) _icons->_grid = [v doubleValue]; else if ([k isEqual: @"textSize"]) _icons->_textSize = [v doubleValue]; else if ([k isEqual: @"labelRight"]) _icons->_labelRight = [v intValue] == 1; else if ([k isEqual: @"showInfo"]) _icons->_showInfo = [v boolValue]; else if ([k isEqual: @"showPreview"]) _icons->_showPreview = [v boolValue];
+		else if ([k isEqual: @"groupBy"]) { for (int i = 0; i < 10; i++) if ([kGroupTitles[i][0] isEqual: v]) { [_icons setGroup: [kGroupTitles[i][1] length] ? kGroupTitles[i][1] : nil]; return; } }
+		else if ([k isEqual: @"sortBy"]) { if ([v isEqual: @"Snap to Grid"]) { [_icons setSnapToGrid: YES]; return; } [_icons setSnapToGrid: NO]; for (int i = 0; i < 9; i++) if ([kIconSortTitles[i][0] isEqual: v]) { [_icons arrangeBy: [kIconSortTitles[i][1] length] ? kIconSortTitles[i][1] : nil]; return; } }
+		else if ([k isEqual: @"useAsDefaults"]) { TFSetPref(@"IconViewDefaults", @{ @"iconSize": @(_icons->_isz), @"gridSpacing": @(_icons->_grid), @"textSize": @(_icons->_textSize), @"showItemInfo": @(_icons->_showInfo), @"showIconPreview": @(_icons->_showPreview) }); return; }
+		else { NSMutableDictionary *m = [inert[@(_mode)] mutableCopy] ?: [NSMutableDictionary dictionary]; m[k] = v; inert[@(_mode)] = m; return; }
+		[_icons applyOptions]; [self _updateStatus]; return;
+	}
+	if (_mode == 1) {
+		if ([k hasPrefix: @"col."]) { for (int i = 0; i < 7; i++) if ([kListColumns[i][0] isEqual: [k substringFromIndex: 4]]) { for (NSMutableDictionary *c in _list->_colDefs) if ([c[@"id"] isEqual: kListColumns[i][1]]) c[@"vis"] = v; [_list _saveColumns]; [_list setNeedsDisplay: YES]; return; } }
+		else if ([k isEqual: @"sortBy"]) { for (int i = 0; i < 8; i++) if ([kListSortTitles[i][0] isEqual: v]) { [_list sortByColumn: kListSortTitles[i][1]]; return; } }
+		else if ([k isEqual: @"groupBy"]) { for (int i = 0; i < 10; i++) if ([kGroupTitles[i][0] isEqual: v]) { [_list setGroup: [kGroupTitles[i][1] length] ? kGroupTitles[i][1] : nil]; return; } }
+		else if ([k isEqual: @"textSize"]) [self _saveLsvp: @{ @"textSize": @([v doubleValue]) }]; else if ([k isEqual: @"iconLarge"]) [self _saveLsvp: @{ @"iconSize": @([v intValue] ? 32.0 : 16.0) }];
+		else if ([k isEqual: @"relDates"]) [self _saveLsvp: @{ @"useRelativeDates": v }]; else if ([k isEqual: @"calcSizes"]) [self _saveLsvp: @{ @"calculateAllSizes": v }]; else if ([k isEqual: @"showPreview"]) [self _saveLsvp: @{ @"showIconPreview": v }];
+		else { NSMutableDictionary *m = [inert[@(_mode)] mutableCopy] ?: [NSMutableDictionary dictionary]; m[k] = v; inert[@(_mode)] = m; }
+		return;
+	}
+	NSMutableDictionary *m = [inert[@(_mode)] mutableCopy] ?: [NSMutableDictionary dictionary]; m[k] = v; inert[@(_mode)] = m;
+}
 - (void)toggleFullScreen:(id)s { [[self window] performZoom: s]; }
 - (void)toggleTabBar:(id)s { _forceTabBar = !_forceTabBar; [_tabBar setHidden: !_forceTabBar && [_tabs count] < 2]; if (![_tabs count]) { [_tabs addObject: [self _tabState]]; _tabIx = 0; } [self _syncTabBar]; }
 - (void)cmdShowPackageContents:(id)s { for (NSString *p in [self _targets]) if (TFIsPackage(p)) [self goToPath: p]; }
