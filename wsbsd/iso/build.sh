@@ -139,7 +139,7 @@ if [ -z "$NO_USB" ]; then
 	(
 		set +e
 		sed -i '' 's|^vfs.root.mountfrom=.*|vfs.root.mountfrom="ufs:/dev/gpt/rootfs"|' "$ROOT/boot/loader.conf"
-		for d in etc private/etc; do printf '# Device\t\tMountpoint\tFStype\tOptions\tDump\tPass#\n/dev/gpt/rootfs\t/\t\tufs\trw\t0\t0\n' > "$ROOT/$d/fstab"; printf 'fsck_y_enable="YES"\nbackground_fsck="NO"\n' >> "$ROOT/$d/rc.conf"; done       # pass 0: no fsck of the freshly written image (it asked questions on the muted console and the boot stopped); -y if it runs anyway
+		for d in etc private/etc; do printf '# Device\t\tMountpoint\tFStype\tOptions\tDump\tPass#\n/dev/gpt/rootfs\t/\t\tufs\tro\t0\t0\n' > "$ROOT/$d/fstab"; printf 'fsck_y_enable="YES"\nbackground_fsck="NO"\nroot_rw_mount="NO"\n' >> "$ROOT/$d/rc.conf"; done       # the root stays read-only like on the ISO (what is written goes to the memory file systems): a UFS made by makefs is marked "not clean" and the kernel refuses to mount it read-write (QEMU boot test); pass 0: no fsck of the freshly written image (it asked questions on the muted console and the boot stopped); -y if it runs anyway
 		makefs -t ffs -o version=2 -b 8% -f 8% "$WORK/rootfs.img" "$ROOT" && { md=$(mdconfig -a -t vnode -f "$WORK/rootfs.img") && { fsck_ffs -y "/dev/$md" >/dev/null 2>&1; fsck_ffs -y "/dev/$md" 2>&1 | tail -2; mdconfig -d -u "${md#md}"; }; } && mkimg -s gpt -P 4096 -p efi/EFISYS:="$WORK/efiboot.img" -p freebsd-ufs/rootfs:="$WORK/rootfs.img" -o "$OUT/macbsd-$ARCH-usb.img" && ls -l "$OUT/macbsd-$ARCH-usb.img"
 	) || echo "the USB image could not be built"
 fi
