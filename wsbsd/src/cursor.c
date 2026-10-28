@@ -48,9 +48,15 @@ static void build(shape *s, int k, int *hx, int *hy, int *dark)
 	}
 }
 
+#include "cursor_mac.inc"
 ws_surface *ws_cursor_shape_image(int k, int *hx, int *hy)
 {
 	if (k < 1 || k >= ws_cursor_shape_count()) return NULL;
+	for (unsigned i = 0; i < sizeof mac_cursors / sizeof mac_cursors[0]; i++) if (mac_cursors[i].k == k) {                 /* the Mac's own picture */
+		ws_surface *m = ws_surface_new(CS, CS); if (!m) return NULL;
+		for (int y = 0; y < mac_cursors[i].h && y < CS; y++) for (int x = 0; x < mac_cursors[i].w && x < CS; x++) *(uint32_t *)(m->px + (size_t)y * m->stride + (size_t)x * 4) = mac_cursors[i].px[y * mac_cursors[i].w + x];
+		*hx = mac_cursors[i].hx; *hy = mac_cursors[i].hy; return m;
+	}
 	shape s; int dark; build(&s, k, hx, hy, &dark);
 	ws_surface *img = ws_surface_new(CS, CS);
 	if (!img) return NULL;
