@@ -1023,7 +1023,8 @@ static NSFont *titleFont(void)
 @end
 
 extern NSImage *WsdWindowButtonImage(int kind, int state, BOOL dark);
-static NSMutableSet *gDecoViews;
+extern void WsdDrawWindowButton(NSImage *im, NSRect r, BOOL held, NSPoint pull);
+static NSMutableSet *gDecoViews; static double wsdRelF;
 @implementation WsdMacDecorationView
 
 + (void) offsets: (float *)l : (float *)r : (float *)t : (float *)b forStyleMask: (NSUInteger)style
@@ -1099,7 +1100,7 @@ static NSGradient *grad(int r0, int g0, int b0, int r1, int g1, int b1, int r2, 
 	if (en && (key || wsdBtnHover || pressed)) {
 		int kind = (i == 0 && [window isDocumentEdited]) ? 3 : i, state = pressed ? 2 : (wsdBtnHover ? 1 : 0);
 		NSImage *im = WsdWindowButtonImage(kind, state, dark);
-		if (im) { NSRect r = [self circleRect: i]; if (pressed) { CGFloat k = 1.143; r = NSMakeRect(NSMidX(r) - r.size.width * k / 2, NSMidY(r) - r.size.height * k / 2, r.size.width * k, r.size.height * k); } [im drawInRect: r fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1.0]; return; }
+		if (im) { NSRect r = [self circleRect: i]; BOOL rel = wsdRelBtn == i && wsdRelTimer; WsdDrawWindowButton(im, r, pressed || rel, pressed ? wsdPull : rel ? NSMakePoint(wsdRelPull.x * wsdRelF, wsdRelPull.y * wsdRelF) : NSZeroPoint); return; }
 	}
 	[self drawCircle: i key: key && en dark: dark];
 }
@@ -1234,16 +1235,20 @@ static NSGradient *grad(int r0, int g0, int b0, int r1, int g1, int b1, int r2, 
 	if (hasResizeBar) { int m = [self edgesAtPoint: p]; if (m) { [self resizeWindowWithEdges: m event: event]; return; } }
 	[super mouseDown: event];
 }
+- (void) wsdRelease: (NSTimer *)t { wsdRelT += 1.0 / 60; wsdRelF = exp(-wsdRelT * 11.0) * cos(wsdRelT * 26.0); if (wsdRelT > 0.4) { [wsdRelTimer invalidate]; wsdRelTimer = nil; wsdRelBtn = -1; wsdRelF = 0; } [self setNeedsDisplay: YES]; }
 - (void) mouseDragged: (NSEvent *)event
 {
 	if (wsdBtnPressed < 0) { [super mouseDragged: event]; return; }
-	NSPoint p = [self convertPoint: [event locationInWindow] fromView: nil]; BOOL in = NSPointInRect(p, NSInsetRect([self circleRect: wsdBtnPressed], -2, -2));
-	if (in != wsdBtnInside) { wsdBtnInside = in; [self setNeedsDisplayInRect: [self wsdGroupRect]]; }          /* it lets go of the disc when the pointer leaves it and takes it again when it comes back */
+	NSPoint p = [self convertPoint: [event locationInWindow] fromView: nil]; NSRect cr = [self circleRect: wsdBtnPressed]; BOOL in = NSPointInRect(p, NSInsetRect(cr, -2, -2));
+	wsdPull = NSMakePoint(p.x - NSMidX(cr), p.y - NSMidY(cr)); [self setNeedsDisplay: YES];
+	if (in != wsdBtnInside) wsdBtnInside = in;          /* it lets go of the disc when the pointer leaves it and takes it again when it comes back */
 }
 - (void) mouseUp: (NSEvent *)event
 {
 	if (wsdBtnPressed < 0) { [super mouseUp: event]; return; }
-	int i = wsdBtnPressed; BOOL fire = wsdBtnInside; wsdBtnPressed = -1; wsdBtnInside = NO; [self setNeedsDisplayInRect: [self wsdGroupRect]];
+	int i = wsdBtnPressed; BOOL fire = wsdBtnInside; wsdBtnPressed = -1; wsdBtnInside = NO;
+	if (hypot(wsdPull.x, wsdPull.y) > 3) { wsdRelBtn = i; wsdRelPull = wsdPull; wsdRelT = 0; wsdRelF = 1; [wsdRelTimer invalidate]; wsdRelTimer = [NSTimer scheduledTimerWithTimeInterval: 1.0 / 60 target: self selector: @selector(wsdRelease:) userInfo: nil repeats: YES]; }       /* the rubber springs back */
+	wsdPull = NSZeroPoint; [self setNeedsDisplay: YES];
 	if (fire) { if (i == 0) [window performClose: self]; else if (i == 1) [window performMiniaturize: self]; else [window performZoom: self]; }
 }
 @end

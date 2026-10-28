@@ -107,6 +107,17 @@ static NSBitmapImageRep *RepFromPixels(const uint8_t *p, int w, int h, int bpp) 
 }
 
 /* the window buttons of the title bar (close, minimize, zoom) from the Mac's own catalogue: Aqua.car / DarkAqua.car, "WindowFrame_WindowControlButtons_Regular": the key has Dimension1 = the button (0 close, 1 minimize, 2 zoom, 3 close of an edited document, 4 / 5 full screen) and State (0 rest: the plain disc, 1 the pointer is over the group: with its glyph, 2 pressed). 16 pt discs, one rendition per scale (the pixels lie in a packed atlas, coreui's car_bitmap_linked). NULL when the catalogue is not there. */
+/* a window button drawn as the Mac does while it is held and dragged: it swells to 1.14 and stretches like rubber toward the pointer (subtle: the long axis grows with the distance up to 1.3 times, the short one gives way so that the area stays), and drifts up to 3 px toward it. `pull` is the vector from the disc's centre to the pointer in the view's own coordinates. The measured part is the swelling (14 to 16 px); the stretch was described by the user ("rubber when you drag far") and drawn by eye. */
+void WsdDrawWindowButton(NSImage *im, NSRect r, BOOL held, NSPoint pull)
+{
+	if (!held) { [im drawInRect: r fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1.0]; return; }
+	double d = hypot(pull.x, pull.y), e = d / (d + 120.0), L = 1.143 * (1.0 + 0.30 * e), S = 1.143 / sqrt(1.0 + 0.30 * e), ang = d > 0.5 ? atan2(pull.y, pull.x) : 0, off = e * 3.0;      /* subtle: at most 1.3 times longer and 3 px of drift */
+	NSGraphicsContext *gc = [NSGraphicsContext currentContext]; [gc saveGraphicsState];
+	NSAffineTransform *t = [NSAffineTransform transform]; NSAffineTransformStruct m = { cos(ang) * L, sin(ang) * L, -sin(ang) * S, cos(ang) * S, NSMidX(r) + (d > 0.5 ? pull.x / d * off : 0), NSMidY(r) + (d > 0.5 ? pull.y / d * off : 0) };      /* translate * rotate * scale, written out */
+	[t setTransformStruct: m]; [t concat];
+	[im drawInRect: NSMakeRect(-r.size.width / 2, -r.size.height / 2, r.size.width, r.size.height) fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1.0];
+	[gc restoreGraphicsState];
+}
 NSImage *WsdWindowButtonImage(int kind, int state, BOOL dark)
 {
 	static NSMutableDictionary *cache; if (!cache) cache = [[NSMutableDictionary alloc] init];
@@ -1138,6 +1149,7 @@ static void wsdSetName(id self, SEL _cmd, NSString *v) { objc_setAssociatedObjec
 + (void)setKeyWindow:(NSWindow *)w { id srv = GSCurrentServer(); if ([srv respondsToSelector: @selector(wsdSetKeyWindow:)]) ((void (*)(id, SEL, int))objc_msgSend)(srv, @selector(wsdSetKeyWindow:), (int)[w windowNumber]); }
 + (BOOL)drawSymbol:(NSString *)name inRect:(NSRect)cell size:(CGFloat)pt weight:(int)weight color:(NSColor *)c { return WsdSymbolDraw(name, cell, pt, weight, c); }
 + (BOOL)isDark { return WsdAppearanceIsDark(); }
++ (void)drawWindowButton:(NSImage *)im rect:(NSRect)r held:(BOOL)held pull:(NSPoint)pull { WsdDrawWindowButton(im, r, held, pull); }
 + (NSImage *)windowButtonKind:(int)kind state:(int)state { return WsdWindowButtonImage(kind, state, WsdAppearanceIsDark()); }          /* the Finder draws its own title bar buttons with the Mac's pictures */
 + (BOOL)dropFiles:(NSArray *)paths atScreenPoint:(NSPoint)p { id srv = GSCurrentServer(); if ([srv respondsToSelector: @selector(wsdDropFiles:atScreenPoint:)]) return [srv wsdDropFiles: paths atScreenPoint: p]; return NO; }
 + (void)popupInView:(NSView *)root rows:(NSArray *)rows at:(NSPoint)p pick:(void (^)(NSInteger))b { [WsdPopup showIn: root rows: rows at: p pick: b]; }
