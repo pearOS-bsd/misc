@@ -104,11 +104,18 @@ static BOOL Confirm(NSString *msg, NSString *info, NSString *button)
 @end
 
 /* every main menu starts with the logo item, and the application's own menu title is bold */
-void WsdMenuBarPrepare(NSMenu *m)
+BOOL WsdMenuBarPrepare(NSMenu *m)
 {
-	if (!m || ![m numberOfItems]) return;
+	if (!m || ![m numberOfItems]) return NO; NSUInteger sig = [m numberOfItems]; id first = [m itemAtIndex: 0], second = [m numberOfItems] > 1 ? [m itemAtIndex: 1] : nil;
+	if (getenv("WSD_MENU_DEBUG")) { NSMutableString *d = [NSMutableString string]; for (NSMenuItem *i in [m itemArray]) [d appendFormat: @"[%@|%@|%d]", [i title], [i representedObject], (int)[i hasSubmenu]]; NSLog(@"main menu %p %@: %@", m, [m title], d); }
+	/* GNUstep puts the application's icon and process name ("Terminal-gnustep") into the menu bar as a first item: the Mac has none, and the logo item must exist once only */
+	{ NSString *pn = [[NSProcessInfo processInfo] processName]; BOOL seenPear = NO;
+	  for (NSInteger k = 0; k < [m numberOfItems]; k++) { NSMenuItem *it = [m itemAtIndex: k]; BOOL pear = WsdIsPearItem(it), icon = !pear && [[it title] isEqual: pn] && [it image];
+		if (icon || (pear && (seenPear || k > 1))) { [m removeItemAtIndex: k--]; continue; } if (pear) seenPear = YES; } }
+	if (![m numberOfItems]) return YES;
 	if (!WsdIsPearItem([m itemAtIndex: 0])) { NSMenuItem *i = [[NSMenuItem alloc] initWithTitle: @"" action: NULL keyEquivalent: @""]; [i setRepresentedObject: kPearItem]; [i setSubmenu: [[WsdSystemMenu shared] menu]]; [m insertItem: i atIndex: 0]; }
 	if ([m numberOfItems] > 1) { NSMenuItem *app = [m itemAtIndex: 1]; if (![app attributedTitle] && [[app title] length]) [app setAttributedTitle: [[NSAttributedString alloc] initWithString: [app title] attributes: @{ NSFontAttributeName: [NSFont boldSystemFontOfSize: 13] }]]; }
+	return sig != [m numberOfItems] || first != [m itemAtIndex: 0] || second != ([m numberOfItems] > 1 ? [m itemAtIndex: 1] : nil);
 }
 /* the places of the cells of the bar: the logo item is 34 wide at x = 10, the others have 11 pt on each side of the title */
 NSRect WsdBarItemRect(NSMenuView *mv, NSInteger i, NSRect r)
@@ -129,7 +136,11 @@ static IMP origCellForItem, origTitleRect;
 static id wsdCellForItem(id self, SEL _cmd, NSInteger i)
 {
 	NSMenuItemCell *c = ((id (*)(id, SEL, NSInteger))origCellForItem)(self, _cmd, i);
-	if (c && i == 1 && [(NSMenuView *)self isHorizontal] && [(NSMenuView *)self menu] == [NSApp mainMenu]) { NSFont *b = [NSFont boldSystemFontOfSize: 13]; if (![[c font] isEqual: b]) [c setFont: b]; }
+	if (c && [(NSMenuView *)self isHorizontal] && [(NSMenuView *)self menu] == [NSApp mainMenu]) {
+		static NSFont *regular; NSFont *b = [NSFont boldSystemFontOfSize: 13];
+		if (i == 1) { if (![[c font] isEqual: b]) { [c setFont: b]; [c setNeedsSizing: YES]; [(NSMenuView *)self setNeedsSizing: YES]; } }
+		else if (i > 1) { if (![[c font] isEqual: b]) regular = [c font]; else if (regular) [c setFont: regular]; }      /* a cell that was the application's title before the items moved keeps the bold font */
+	}
 	return c;
 }
 /* the text of the bar sits one point higher than the stock cell puts it */

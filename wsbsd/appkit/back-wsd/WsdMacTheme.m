@@ -17,7 +17,7 @@ static void wsdTFRect(id self, SEL _cmd, NSRect r);
 /* WSD_APPEARANCE=light switches the palette; the measurements are of the dark appearance (the light one is typical macOS, not measured) */
 static void wsdMenuSizeToFit(id self, SEL _cmd); static NSColor *wsdMenuTextColor(id self, SEL _cmd); static void wsdMenuDrawKeyEq(id self, SEL _cmd, NSRect f, NSView *v); static void wsdMenuDrawState(id self, SEL _cmd, NSRect f, NSView *v);
 extern void WsdInstallFilePanel(void); extern void WsdInstallDragDrop(void); extern void WsdInstallMenuBar(void); extern void WsdInstallPopover(void); extern void WsdInstallSheets(void);
-extern NSColor *WsdTintedWindowBackground(NSWindow *w); extern void WsdMenuBarPrepare(NSMenu *m); extern NSRect WsdBarItemRect(NSMenuView *mv, NSInteger i, NSRect r); extern void WsdDrawBarItem(NSMenuItemCell *cell, NSRect f, BOOL highlighted); extern NSColor *WsdBarTextColor(BOOL enabled); extern BOOL WsdIsPearItem(NSMenuItem *i); extern BOOL WsdAppearanceIsDark(void); extern void WsdInstallAppearanceWatch(void);
+extern NSColor *WsdTintedWindowBackground(NSWindow *w); extern BOOL WsdMenuBarPrepare(NSMenu *m); extern NSRect WsdBarItemRect(NSMenuView *mv, NSInteger i, NSRect r); extern void WsdDrawBarItem(NSMenuItemCell *cell, NSRect f, BOOL highlighted); extern NSColor *WsdBarTextColor(BOOL enabled); extern BOOL WsdIsPearItem(NSMenuItem *i); extern BOOL WsdAppearanceIsDark(void); extern void WsdInstallAppearanceWatch(void);
 static BOOL isDark(void) { return WsdAppearanceIsDark(); }
 
 static NSColor *rgb(int r, int g, int b, CGFloat a) { return [NSColor colorWithCalibratedRed: r / 255.0 green: g / 255.0 blue: b / 255.0 alpha: a]; }
@@ -340,8 +340,23 @@ static IMP origVEVDraw, origVEVMove;
 static void wsdVEVDraw(id self, SEL _cmd, NSRect r)
 {
 	BOOL dark = isDark(); NSInteger m = (NSInteger)[self performSelector: @selector(material)];                  /* by selector: older GNUstep releases have no NSVisualEffectView header */
-	double a = (m == 3 || m == 5 /* titlebar, menu */) ? 0.72 : 0.58;                         /* alpha of the tint: the material over the blurred backdrop */
-	NSColor *tint = dark ? rgb(30, 30, 30, a) : rgb(236, 236, 238, a);
+	/* what the real materials do to a flat backdrop, measured on the Mac (tools: a window with an NSVisualEffectView, behind-window, over uniform greys 0/64/128/192/255, both appearances): out = (1 - a) * backdrop + a * c, a and c per material; the fit's error is 5 levels at most. Raw values of NSVisualEffectMaterial. */
+	static const struct { int m; double a[2]; int c[2][3]; } T[] = {                                               /* [0] dark, [1] light */
+		{ 3,  { 0.811, 0.810 }, { { 57, 63, 68 },   { 237, 244, 249 } } },    /* titlebar */
+		{ 5,  { 0.726, 0.769 }, { { 40, 47, 52 },   { 222, 229, 234 } } },    /* menu */
+		{ 6,  { 0.634, 0.645 }, { { 40, 49, 55 },   { 220, 229, 234 } } },    /* popover */
+		{ 7,  { 0.823, 0.898 }, { { 40, 47, 51 },   { 222, 228, 233 } } },    /* sidebar */
+		{ 10, { 0.814, 0.801 }, { { 27, 38, 45 },   { 255, 255, 255 } } },    /* header view */
+		{ 11, { 1.0,   1.0 },   { { 28, 39, 46 },   { 255, 255, 255 } } },    /* sheet: opaque */
+		{ 12, { 1.0,   1.0 },   { { 27, 39, 46 },   { 255, 255, 255 } } },    /* window background: opaque */
+		{ 13, { 0.441, 0.525 }, { { 40, 52, 61 },   { 216, 227, 234 } } },    /* HUD window */
+		{ 14, { 0.88,  0.05 },  { { 20, 20, 20 },   { 0, 0, 0 } } },          /* full screen UI */
+		{ 15, { 0.541, 0.525 }, { { 40, 51, 57 },   { 216, 227, 234 } } },    /* tool tip */
+		{ 17, { 0.823, 0.898 }, { { 40, 47, 51 },   { 222, 228, 233 } } },    /* content background (the same as the sidebar's on the Mac) */
+		{ 21, { 0.823, 0.898 }, { { 40, 47, 51 },   { 222, 228, 233 } } },    /* under window background */
+	};
+	int k = -1; for (int i = 0; i < (int)(sizeof T / sizeof T[0]); i++) if (T[i].m == m) k = i; if (k < 0) k = 1;                      /* unknown: as the menu */
+	int d = dark ? 0 : 1; NSColor *tint = rgb(T[k].c[d][0], T[k].c[d][1], T[k].c[d][2], T[k].a[d]);
 	[tint set]; NSRectFillUsingOperation(r, NSCompositeSourceOver);
 }
 static void wsdVEVMove(id self, SEL _cmd)
@@ -350,7 +365,7 @@ static void wsdVEVMove(id self, SEL _cmd)
 	if (w && (NSInteger)[self performSelector: @selector(blendingMode)] == 0 /* behind window */) {
 		[w setOpaque: NO]; [w setBackgroundColor: [NSColor clearColor]];
 		id srv = GSCurrentServer();
-		if ([srv respondsToSelector: @selector(wsdBackgroundBlur::)]) [srv wsdBackgroundBlur: 30 : (int)[w windowNumber]];
+		if ([srv respondsToSelector: @selector(wsdBackgroundBlur::)]) [srv wsdBackgroundBlur: 34 : (int)[w windowNumber]];
 	}
 	if (origVEVMove) ((void (*)(id, SEL))origVEVMove)(self, _cmd);
 }
@@ -568,7 +583,7 @@ static float *wsdMenuIvar(id mv, const char *name) { Ivar iv = class_getInstance
 static void wsdMenuSizeToFit(id self, SEL _cmd)
 {
 	if ([(NSMenuView *)self isHorizontal]) {                                                                                  /* the menu bar */
-		if ([self menu] == [NSApp mainMenu]) WsdMenuBarPrepare([self menu]); [(NSMenuView *)self setHorizontalEdgePadding: 11];
+		if ([self menu] == [NSApp mainMenu] && WsdMenuBarPrepare([self menu]) && [self respondsToSelector: @selector(update)]) [(NSMenuView *)self update]; [(NSMenuView *)self setHorizontalEdgePadding: 11];
 		((void (*)(id, SEL))origMenuSize)(self, _cmd); if ([self menu] == [NSApp mainMenu]) [(NSView *)self setFrameSize: NSMakeSize([(NSView *)self frame].size.width + 14 + 2, [(NSView *)self frame].size.height)]; return;
 	}
 	((void (*)(id, SEL))origMenuSize)(self, _cmd);

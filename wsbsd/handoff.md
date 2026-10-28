@@ -253,3 +253,6 @@ View content as > List = plain glass NSMenu (DockListMenu in Dock.m): names in s
 
 ## arm64 ISO in CI (2026-10-28)
 iso.yml: `iso` job is a matrix {x86_64, aarch64} (vmactions/freebsd-vm, aarch64 is emulated: slow, continue-on-error, timeout 360 min); outputs renamed macbsd-aarch64* -> macbsd-arm64*; artifacts macbsd-iso-<arch>; boot-test only amd64 (x86_64 artifact); release merges both. No Ploader for aarch64 yet (ploader job builds x64): the image boots through FreeBSD's loader (build.sh fallback). Unverified until the first run finishes.
+
+## Top bar: duplicate logo / wrong title (2026-10-28, fixed)
+GNUstep adds the application icon + process name ("Terminal-gnustep") as a first item of the main menu; WsdMenuBarPrepare then added a second pear, and the bold font stuck to the cell of whichever item was at index 1 earlier ("Shell" bold) while the title width was measured before the bold font was set ("Termin"). Now: the icon item and duplicate pears are removed (`WsdMenuBarPrepare` returns whether the items changed -> `[NSMenuView update]`), only the cell at index 1 is bold (others get the regular font back), bold cell triggers `setNeedsSizing`. WSD_MENU_DEBUG=1 logs the main menu items.
