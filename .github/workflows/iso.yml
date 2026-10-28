@@ -16,43 +16,48 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Ploader (pearOS-archlinux/pearos-bootloader, a rEFInd fork, GPL): built on Linux with gnu-efi
+  # Ploader (a rEFInd fork, GPL; the source is in wsbsd/ploader, with the pear in place of the BSD logo): built on Linux with gnu-efi, for x86_64 and (cross-compiled) aarch64
   ploader:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
+    continue-on-error: ${{ matrix.arch == 'aarch64' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x86_64, aarch64]
     steps:
+      - uses: actions/checkout@v4
       - name: Build Ploader
         run: |
+          set -e
           sudo apt-get update -qq
           sudo apt-get install -y -qq build-essential git
+          X=x64; CROSS=""
+          if [ "${{ matrix.arch }}" = aarch64 ]; then sudo apt-get install -y -qq gcc-aarch64-linux-gnu; X=aa64; CROSS="CROSS_COMPILE=aarch64-linux-gnu-"; fi
           # Ploader's sources are written against gnu-efi 4 (AsciiStrLen); Ubuntu's package is 3.0
           git clone --depth 1 --branch 4.0.4 https://github.com/ncroxon/gnu-efi ge
-          make -C ge -j4 > ge.log 2>&1 || { tail -30 ge.log; exit 1; }
-          make -C ge install PREFIX=/usr INSTALLROOT="$PWD/geroot" > ge-install.log 2>&1 || { tail -30 ge-install.log; exit 1; }
-          find geroot -name efi.h -o -name 'crt0-efi-x86_64.o' -o -name 'elf_x86_64_efi.lds' -o -name 'libgnuefi.a' | head
-          git clone --depth 1 https://github.com/pearOS-archlinux/pearos-bootloader pb
-          cd pb
-          GE="$PWD/../geroot/usr"; EFIH=$(find "$GE" -name efi.h -path '*/efi/efi.h' | head -1)
+          make -C ge -j4 ARCH=${{ matrix.arch }} $CROSS > ge.log 2>&1 || { tail -30 ge.log; exit 1; }
+          make -C ge install ARCH=${{ matrix.arch }} $CROSS PREFIX=/usr INSTALLROOT="$PWD/geroot" > ge-install.log 2>&1 || { tail -30 ge-install.log; exit 1; }
+          cd wsbsd/ploader
+          GE="$GITHUB_WORKSPACE/geroot/usr"; EFIH=$(find "$GE" -name efi.h -path '*/efi/efi.h' | head -1)
           echo "efi.h: $EFIH"
-          LIBD="$GE/lib"; [ -f "$LIBD/crt0-efi-x86_64.o" ] || LIBD=$(dirname "$(find "$GE" -name 'crt0-efi-x86_64.o' | head -1)")
+          LIBD="$GE/lib"; [ -f "$LIBD/crt0-efi-${{ matrix.arch }}.o" ] || LIBD=$(dirname "$(find "$GE" -name 'crt0-efi-${{ matrix.arch }}.o' | head -1)")
           echo "libs: $LIBD"
           EFIINC=$(dirname "$EFIH")
-          make EFIINC="$EFIINC" GNUEFILIB="$LIBD" EFILIB="$LIBD" EFICRT0="$LIBD" 2>&1 | tail -15
+          make ARCH=${{ matrix.arch }} $CROSS EFIINC="$EFIINC" GNUEFILIB="$LIBD" EFILIB="$LIBD" EFICRT0="$LIBD" 2>&1 | tail -15
           ls -l ploader/*.efi
-          mkdir -p ../ploader-out/licenses
-          cp ploader/ploader_x64.efi ../ploader-out/
-          cp -R theme ../ploader-out/theme
-          cp COPYING.txt LICENSE.txt CREDITS.txt README.md ../ploader-out/licenses/
-          git rev-parse HEAD > ../ploader-out/licenses/SOURCE-COMMIT.txt
-          echo "Source: https://github.com/pearOS-archlinux/pearos-bootloader" >> ../ploader-out/licenses/SOURCE-COMMIT.txt
+          mkdir -p ../../ploader-out
+          cp ploader/ploader_$X.efi ../../ploader-out/
+          cp -R theme ../../ploader-out/theme
       - uses: actions/upload-artifact@v4
         with:
-          name: ploader
+          name: ploader-${{ matrix.arch }}
           path: ploader-out
           if-no-files-found: error
 
   iso:
     needs: ploader
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     timeout-minutes: 360
     continue-on-error: ${{ matrix.arch == 'aarch64' }}
@@ -63,8 +68,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
-          name: ploader
+          name: ploader-${{ matrix.arch }}
           path: ploader-out
       - name: Build the image on FreeBSD ${{ matrix.arch }}
         uses: vmactions/freebsd-vm@v1
@@ -79,15 +85,8 @@ jobs:
             set -e
             cd "$GITHUB_WORKSPACE" 2>/dev/null || true
             PLOADER_DIR="$PWD/ploader-out" OUT="$PWD/wsbsd/iso-out" sh wsbsd/iso/build.sh
-            # the disk image for a USB stick (a plain `dd` of the ISO is not bootable on a PC: no partition table with an EFI system partition, and the loader reads /boot from the FAT partition it starts from):
-            # GPT { EFI system partition with Ploader and the whole /boot, the ISO itself }; written with xz so that it fits the 2 GB of a release asset
-            # the USB disk image comes from build.sh (step 8: GPT with an ESP and a UFS root, written as a disk, not as an ISO in a partition); it must never stop the ISO from being published
-            set +e
+            # the ISO is also the disk image for a USB stick (hybrid GPT, iso/tools/hybrid.py): nothing else is built or published
             rm -rf /tmp/isowork/root /tmp/isowork/rootfs.img /tmp/isowork/esp /tmp/isowork/gnustep* 2>/dev/null
-            if [ -f wsbsd/iso-out/macbsd-$(uname -p)-usb.img ]; then
-              xz -T0 -3 "$PWD/wsbsd/iso-out/macbsd-$(uname -p)-usb.img" || { echo "xz failed"; df -h; rm -f wsbsd/iso-out/macbsd-$(uname -p)-usb.img wsbsd/iso-out/macbsd-$(uname -p)-usb.img.xz; }
-              [ -f wsbsd/iso-out/macbsd-$(uname -p)-usb.img.xz ] && (cd wsbsd/iso-out && sha256 macbsd-$(uname -p)-usb.img.xz > macbsd-$(uname -p)-usb.img.xz.sha256)
-            fi
             # the release names the two builds amd64 and arm64
             for f in wsbsd/iso-out/macbsd-aarch64*; do [ -e "$f" ] && mv "$f" "$(echo "$f" | sed 's/macbsd-aarch64/macbsd-arm64/')"; done
             for f in wsbsd/iso-out/macbsd-arm64*.sha256; do [ -e "$f" ] && sed -i '' 's/macbsd-aarch64/macbsd-arm64/' "$f"; done
@@ -99,8 +98,6 @@ jobs:
           name: macbsd-iso-${{ matrix.arch }}
           path: |
             wsbsd/iso-out/*.iso
-            wsbsd/iso-out/*.img.xz
-            wsbsd/iso-out/*.sha256
           if-no-files-found: warn
 
   # the image has to boot: both forms (the USB disk image and the ISO as a CD) are started in QEMU with UEFI firmware and the screen is looked at
@@ -132,7 +129,7 @@ jobs:
           VARS=$(ls /usr/share/OVMF/OVMF_VARS_4M.fd /usr/share/OVMF/OVMF_VARS.fd 2>/dev/null | head -1)
           cp "$VARS" vars.fd
           if [ "${{ matrix.form }}" = usb ]; then
-            xz -dk out/macbsd-amd64-usb.img.xz; DRIVE="-drive if=none,id=u,file=out/macbsd-amd64-usb.img,format=raw,snapshot=on -device ich9-ahci,id=ahci -device ide-hd,drive=u,bus=ahci.0,bootindex=1 -device qemu-xhci"       # the disk image as a SATA disk: what is tested is the image (GPT, ESP, UFS root); the USB mass storage of QEMU under software emulation gave I/O errors on a large read (a real stick is not that emulation)
+            DRIVE="-drive if=none,id=u,file=out/macbsd-amd64.iso,format=raw,snapshot=on -device ich9-ahci,id=ahci -device ide-hd,drive=u,bus=ahci.0,bootindex=1 -device qemu-xhci"       # the disk image as a SATA disk: what is tested is the image (GPT, ESP, UFS root); the USB mass storage of QEMU under software emulation gave I/O errors on a large read (a real stick is not that emulation)
           else
             DRIVE="-drive if=none,id=c,file=out/macbsd-amd64.iso,format=raw,media=cdrom,readonly=on -device ide-cd,drive=c,bootindex=1 -device qemu-xhci"
           fi
@@ -197,7 +194,7 @@ jobs:
           set -x
           cp /usr/share/AAVMF/AAVMF_VARS.fd vars.fd; truncate -s 64M vars.fd; cp /usr/share/AAVMF/AAVMF_CODE.fd code.fd; truncate -s 64M code.fd
           if [ "${{ matrix.form }}" = usb ]; then
-            xz -dk out/macbsd-arm64-usb.img.xz; DRIVE="-drive if=none,id=u,file=out/macbsd-arm64-usb.img,format=raw,snapshot=on -device scsi-hd,drive=u,bootindex=1"
+            DRIVE="-drive if=none,id=u,file=out/macbsd-arm64.iso,format=raw,snapshot=on -device scsi-hd,drive=u,bootindex=1"
           else
             DRIVE="-drive if=none,id=c,file=out/macbsd-arm64.iso,format=raw,media=cdrom,readonly=on -device scsi-cd,drive=c,bootindex=1"
           fi
@@ -244,10 +241,6 @@ jobs:
           pattern: macbsd-iso-*
           merge-multiple: true
           path: out
-      - uses: actions/download-artifact@v4
-        with:
-          name: ploader
-          path: ploader-out
       - name: Publish the release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -255,7 +248,6 @@ jobs:
           ls -l out
           TAG="iso-latest"; TITLE="macbsd image (latest build)"
           if [ "${GITHUB_REF_TYPE}" = tag ]; then TAG="${GITHUB_REF_NAME}"; TITLE="macbsd ${GITHUB_REF_NAME}"; fi
-          tar -czf out/ploader-licenses.tar.gz -C ploader-out licenses
           gh release delete "$TAG" --repo "$GITHUB_REPOSITORY" --cleanup-tag --yes 2>/dev/null || true
-          gh release create "$TAG" out/* --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "$TITLE" --prerelease \
-            --notes "Bootable UEFI images: amd64 (x86-64 PC with UEFI; Secure Boot off) and arm64 (aarch64 UEFI machines and VMs; built under emulation, not boot-tested by the workflow): Ploader, FreeBSD without boot screens, the macOS file layout (real files, no symlinks), the wsbsd window server on the framebuffer with the Dock, the menu bar (Control Center, Spotlight, Notification Center), the desktop (Finder) and Terminal. FOR A REAL PC use macbsd-$(uname -p)-usb.img.xz: write it to a USB stick (balenaEtcher or Rufus open .xz directly; on Linux/macOS: xz -dc macbsd-$(uname -p)-usb.img.xz | sudo dd of=/dev/sdX bs=4M status=progress) and boot the stick in UEFI mode. A plain dd of the .iso to a stick is NOT bootable on a PC (the .iso is for virtual machines and optical media). Both forms were started in QEMU with UEFI firmware by the workflow before this release. Built from commit $GITHUB_SHA. Ploader is GPL (licence files in ploader-licenses.tar.gz, source: https://github.com/pearOS-archlinux/pearos-bootloader)."
+          gh release create "$TAG" out/*.iso --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "$TITLE" --prerelease \
+            --notes "Bootable UEFI images, nothing else to unpack: write the .iso straight to a USB stick (dd, balenaEtcher, Rufus in DD mode) or attach it to a virtual machine as a CD. amd64 is for an x86-64 PC with UEFI, arm64 for aarch64 UEFI machines and VMs; Secure Boot off. The boot loader is Ploader (source: wsbsd/ploader); the desktop is the wsbsd window server with the Dock, the menu bar and the Finder."

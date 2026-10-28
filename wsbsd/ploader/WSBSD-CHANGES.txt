@@ -1,0 +1,2 @@
+theme/pearlogo.svg: the pear of pearos-settings (usr/share/extras/pearlogo.svg) as an SVG, built from the path in appkit/back-wsd/WsdMenuBar.m
+theme/icons/os_freebsd.png, os_bsd.png, os_ghostbsd.png: replaced by the pear (128x128) so that no BSD logo shows at boot
