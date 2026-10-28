@@ -1,4 +1,8 @@
 #import <Cocoa/Cocoa.h>
+#if defined(UI_TB_BUILD) && __has_include(<wsbsd/TouchBar.h>)
+#import <wsbsd/TouchBar.h>      /* the Touch Bar stack of wsbsd (GNUstep has none); on the Mac it is AppKit's */
+extern NSString *const NSImageNameTouchBarAddTemplate, *const NSImageNameTouchBarGoForwardTemplate, *const NSImageNameTouchBarGoBackTemplate;      /* (wsbsd/AppKitCompat3.h declares them too) */
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -30,7 +34,11 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 	return b;
 }
 
+#ifdef UI_TB_BUILD
 @interface Del : NSObject <NSTouchBarDelegate, NSScrubberDataSource, NSScrubberDelegate> { NSWindow *w; }
+#else
+@interface Del : NSObject { NSWindow *w; }
+#endif
 @end
 @interface Src : NSObject
 @end
@@ -54,6 +62,7 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 		NSString *an = !strcmp(getenv("UI_APPEARANCE"), "light") ? @"NSAppearanceNameAqua" : @"NSAppearanceNameDarkAqua";
 		id ap = [NSClassFromString(@"NSAppearance") performSelector: @selector(appearanceNamed:) withObject: an]; [NSApp performSelector: @selector(setAppearance:) withObject: ap];
 	}
+#ifdef UI_TB_BUILD
 	if (getenv("UI_MODE") && !strcmp(getenv("UI_MODE"), "touchbar")) {     /* only the window and its Touch Bar (the page is UI_TB=1..7) */
 		int page = getenv("UI_TB") ? atoi(getenv("UI_TB")) : 1; [w setTitle: @"UI Gallery: Touch Bar"]; caption([NSString stringWithFormat: @"Touch Bar page %d: the bar of this window is shown at the bottom of the screen", page], 20, 20);
 		if (page == 7) { NSTextView *tx = [[[NSTextView alloc] initWithFrame: NSMakeRect(20, 60, 400, 120)] autorelease]; [tx setRichText: YES]; [tx setEditable: YES]; [tx setString: @"Rich text view: its own Touch Bar has format, alignment and colour items."]; [content addSubview: tx]; [w makeFirstResponder: tx]; }
@@ -61,6 +70,7 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 		const char *ex2 = getenv("UI_EXIT_AFTER"); if (ex2) [NSTimer scheduledTimerWithTimeInterval: atof(ex2) target: NSApp selector: @selector(terminate:) userInfo: nil repeats: NO];
 		return;
 	}
+#endif
 	CGFloat cx[4] = { 20, 250, 480, 710 }, y = 20; int col = 0;
 #define CELL(label, name, view) do { caption(label, cx[col], y); place(view, name, cx[col], y + 16); col++; if (col == 4) { col = 0; y += 66; } } while (0)
 
@@ -115,6 +125,7 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 	const char *ex = getenv("UI_EXIT_AFTER"); if (ex) [NSTimer scheduledTimerWithTimeInterval: atof(ex) target: NSApp selector: @selector(terminate:) userInfo: nil repeats: NO];
 }
 
+#ifdef UI_TB_BUILD
 /* ---- Touch Bar: UI_MODE=touchbar UI_TB=1..7 (a page of items each); the bar is the one of the window ---- */
 - (NSTouchBar *) tbBarForPage: (int)page
 {
@@ -160,6 +171,7 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 	NSScrubberTextItemView *v = [s makeItemWithIdentifier: @"text" owner: nil]; [v setTitle: [NSString stringWithFormat: @"Item %d", (int)i + 1]]; return v;
 }
 - (void) scrubber: (NSScrubber *)s didSelectItemAtIndex: (NSInteger)i { printf("TOUCHBAR scrubber select %d\n", (int)i); fflush(stdout); }
+#endif
 - (void) showAlert: (id)unused
 {
 	NSAlert *a = [[[NSAlert alloc] init] autorelease];
