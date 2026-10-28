@@ -308,7 +308,7 @@ static int wsdShapeForStyle(int style)
 - (void) wsdMenuGlass: (int)win : (int)width : (int)height
 {
 	struct wsd_window *w = [self wsdWindow: win];
-	if (w) ws_win_glass(conn, &w->win, (ws_rect){ 0, 0, width, height }, 12, 5);
+	if (w) { ws_win_glass(conn, &w->win, (ws_rect){ 0, 0, width, height }, 12, 5); ws_win_shadow(conn, &w->win, 12, 2); }       /* shadow style 2: the menu's (src/server.c) */
 }
 
 /* rounded corners (and the window server's shadow) for a window the application shapes itself: the file panels */

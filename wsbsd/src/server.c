@@ -872,6 +872,8 @@ static void ensure_shadow(ws_server *s, window *w, int active)
 {
 	(void)s;
 	ws_shadow_params p = ws_shadow_defaults(active);
+	if (w->shadow_on == 2) p = (ws_shadow_params){ 8.0f, 0.285f, 2.0f, 0.87f, 1.0f, 0.0f, 1.0f, 0 };       /* the shadow of a menu, measured on the Mac over a white backdrop: 11 % of darkness 2 px outside the edge falling to 1 % at 16 px (sigma 8, fitted), weaker above than at the sides (offset 2), a 1 px dark ring (33 of 255) at the edge */
+	active = w->shadow_on == 2 ? 2 + (active ? 1 : 0) : active;       /* the cache key tells the menu style from the window's */
 	if (!w->shadow || w->shadow_for_active != active || w->shadow_w != w->frame.w || w->shadow_h != w->frame.h) {
 		ws_surface_free(w->shadow);
 		w->shadow = ws_shadow_make(w->frame.w, w->frame.h, w->shadow_cr, &p, &w->shadow_pad);
