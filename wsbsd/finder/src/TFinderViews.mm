@@ -480,6 +480,7 @@ static const CGFloat kRow = 24, kHead = 28;
 	for (NSString *p in paths) @try { NSString *n = [p lastPathComponent]; if ([n hasPrefix: @"."] || ([filter length] && [n rangeOfString: filter options: NSCaseInsensitiveSearch].location == NSNotFound)) continue; [_roots addObject: [self _makeItem: p fm: fm depth: 0]]; } @catch (NSException *x) { NSLog(@"TListView %@: %@", p, x); }
 	[self _sort]; off = 0; [self setNeedsDisplay: YES]; [self _notify];
 }
+- (void)sortByColumn:(NSString *)col { _colKey = col; _sortKey = SortFieldFor(col); _asc = YES; [self _sort]; [self setNeedsDisplay: YES]; [self _saveColumns]; }
 - (NSComparisonResult)_cmp:(NSDictionary *)a with:(NSDictionary *)b { NSString *k = _sortKey; BOOL asc = _asc; if ([k isEqual: @"name"] && TFPrefBool(@"_FXSortFoldersFirst", YES) && [a[@"dir"] boolValue] != [b[@"dir"] boolValue]) return (asc == ([a[@"dir"] boolValue])) ? NSOrderedAscending : NSOrderedDescending; NSComparisonResult r = [k isEqual: @"name"] || [k isEqual: @"kind"] ? [a[k] tfNameCompare: b[k]] : [a[k] compare: b[k]]; return asc ? r : (NSComparisonResult)(-r); }
 - (void)_sort
 {

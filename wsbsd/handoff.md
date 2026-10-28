@@ -271,3 +271,6 @@ The grid panel's visible bottom is 16 px above the glass bar's top (Mac screensh
 
 ## arm64 boot test (2026-10-28)
 Run 40715449736: boot-test-arm64 (qemu-system-aarch64 virt, AAVMF, ramfb, virtio-scsi CD, TCG) succeeded: the arm64 ISO reaches the desktop; boot-test usb and cd (amd64) succeeded too after the file-name fix. Not tested: the arm64 USB image, real hardware.
+
+## List view background menu (2026-10-28)
+Measured on the Mac (AX of the open menu in a list-view window with the preview pane): New Folder, separator, Get Info (Show Inspector is the hidden alternate), separator, View > (as Icons / as List / as Columns / as Gallery), Use Groups, Sort By > (Name, Kind, Date Last Opened, Date Added, Date Modified, Date Created, Size, Tags: no None / Snap to Grid), Show View Options, Show Preview Options, separator, Import from iPhone >, separator, Services (Folder Actions Setup…, New Terminal at Folder, New Terminal Tab at Folder). `_listBackgroundMenu` (TBrowserWindowController.mm) builds the first part (rows 24 pt, separators 11 pt as the Mac); Sort By drives the list's column sort (`TListView sortByColumn:`). Not there: Import from iPhone, the Services block, Show Preview Options does nothing yet (cmdTogglePreviewOptions: is empty); the ticks of the current sort column are set but the Mac's own ticks were not read.

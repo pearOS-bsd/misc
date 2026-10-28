@@ -117,6 +117,7 @@ NSImage *TFIcon(NSString *path);
 - (void)setPaths:(NSArray *)paths;
 - (NSArray *)selectedPaths;
 - (BOOL)beginRename:(NSString *)path;
+- (void)sortByColumn:(NSString *)col;
 @end
 
 /* the column view: one column per level, the last selected file shown as a preview */
