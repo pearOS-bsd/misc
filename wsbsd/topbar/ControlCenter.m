@@ -8,6 +8,8 @@
  * in white 24 %. Not measured: the radius of the glass blur, the battery tile's inside, the icons that have no equivalent in the symbol set (Stage Manager, True Tone, Night Shift, AirDrop) and
  * the state of Wi-Fi/Bluetooth/AirDrop/Focus here (drawn, not connected). Working: Dark Mode (the appearance key of the global preferences), Sound (mixer), Display brightness (backlight), the Wi-Fi tile (power of the first CoreWLAN interface when CoreWLAN and airportd are there). */
 #import <AppKit/AppKit.h>
+#include "ws_client.h"
+#include "sls_msgids.h"
 #import <objc/message.h>
 #import <GNUstepGUI/GSDisplayServer.h>
 #include <math.h>
@@ -38,9 +40,27 @@ static NSString *Run(NSString *path, NSArray *args)
 /* the first number of a line like "vol:0.50:0.50" or "vol = 0.50:0.50" (FreeBSD mixer(8)); -1 when there is no mixer */
 static double FirstFloat(NSString *o) { if (!o) return -1; NSScanner *sc = [NSScanner scannerWithString: o]; [sc setCharactersToBeSkipped: [NSCharacterSet characterSetWithCharactersInString: @"abcdefghijklmnopqrstuvwxyz :=\n"]]; double v; return [sc scanDouble: &v] ? v : -1; }
 double MixerVolume(void) { return FirstFloat(Run(@"/usr/sbin/mixer", @[ @"-s", @"vol" ])); }
-void SetMixerVolume(double v) { Run(@"/usr/sbin/mixer", @[ [NSString stringWithFormat: @"vol=%.2f", v] ]); }
-double Brightness(void) { NSString *o = Run(@"/usr/bin/backlight", @[]); if (!o) return -1; for (NSString *x in [o componentsSeparatedByCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]]) if ([x doubleValue] > 0) return [x doubleValue] / 100.0; return -1; }
-void SetBrightness(double v) { Run(@"/usr/bin/backlight", @[ [NSString stringWithFormat: @"%d", (int)lround(v * 100)] ]); }
+/* a slider reports every pixel of a drag: the program is started on a background queue, never more than one at a time, and only for the newest value (starting it from the drag blocked the panel) */
+static void ApplyLatest(NSString *key, double v, void (^apply)(double))
+{
+	static NSMutableDictionary *pending; static NSMutableSet *busy; static dispatch_queue_t q; static dispatch_once_t once; dispatch_once(&once, ^{ pending = [NSMutableDictionary dictionary]; busy = [NSMutableSet set]; q = dispatch_queue_create("topbar.apply", DISPATCH_QUEUE_SERIAL); });
+	@synchronized (pending) { pending[key] = @(v); if ([busy containsObject: key]) return; [busy addObject: key]; }
+	dispatch_async(q, ^{ for (;;) { double x; @synchronized (pending) { NSNumber *n = pending[key]; if (!n) { [busy removeObject: key]; return; } x = [n doubleValue]; [pending removeObjectForKey: key]; } apply(x); } });
+}
+void SetMixerVolume(double v) { ApplyLatest(@"mixer", v, ^(double x) { Run(@"/usr/sbin/mixer", @[ [NSString stringWithFormat: @"vol=%.2f", x] ]); }); }
+/* display brightness: the backlight(8) device (a KMS driver), else the ACPI video sysctl (hw.acpi.video.lcd0.brightness, percent), else the window server dims the picture (a transfer function, as on a display without brightness control) */
+static int hwKind;                                                     /* 1 backlight(8), 2 the ACPI sysctl */
+static double HwBrightness(void) { NSString *o = Run(@"/usr/bin/backlight", @[]); if (o) for (NSString *x in [o componentsSeparatedByCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]]) if ([x doubleValue] > 0) { hwKind = 1; return [x doubleValue] / 100.0; } int v = -1; size_t n = sizeof v; if (!sysctlbyname("hw.acpi.video.lcd0.brightness", &v, &n, NULL, 0) && v >= 0) { hwKind = 2; return v / 100.0; } return -1; }
+static BOOL HasHwBrightness(void) { static int st = -1; if (st < 0) st = HwBrightness() >= 0; return st; }
+static double softBrightness = 1;
+double Brightness(void) { return HasHwBrightness() ? HwBrightness() : softBrightness; }
+static void SoftDim(double v)
+{
+	static ws_conn *c; if (!c) c = ws_connect(NULL); if (!c) return; if (v < 0.15) v = 0.15; if (v > 1) v = 1;
+	uint8_t m[0x4c]; memset(m, 0, sizeof m); ws_raw_header(m, sizeof m, SLS_MSG_SetDisplayTransferByFormula); float f[9] = { 0, (float)v, 1, 0, (float)v, 1, 0, (float)v, 1 }; memcpy(m + 0x28, f, sizeof f); ws_raw_simple(c, m, sizeof m);
+}
+void SetBrightness(double v) { softBrightness = v; ApplyLatest(@"backlight", v, ^(double x) { if (HasHwBrightness()) { int pc = (int)lround(x * 100); if (hwKind == 1) Run(@"/usr/bin/backlight", @[ [NSString stringWithFormat: @"%d", pc] ]); else sysctlbyname("hw.acpi.video.lcd0.brightness", NULL, NULL, &pc, sizeof pc); } else SoftDim(x); }); }
+
 static int BatteryPct(void) { int v = -1; size_t n = sizeof v; if (sysctlbyname("hw.acpi.battery.life", &v, &n, NULL, 0)) return -1; return v; }
 static BOOL Charging(void) { int v = 0; size_t n = sizeof v; if (sysctlbyname("hw.acpi.battery.state", &v, &n, NULL, 0)) return NO; return (v & 2) != 0; }
 static NSString *GlobalPrefsPath(void) { return [NSHomeDirectory() stringByAppendingPathComponent: @"Library/Preferences/.GlobalPreferences.plist"]; }
