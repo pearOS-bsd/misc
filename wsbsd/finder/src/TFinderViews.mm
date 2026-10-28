@@ -255,8 +255,9 @@ static NSString *GroupTitle(NSDictionary *it, NSString *key, int *order)
 }
 @implementation TIconView
 - (void)reloadKeepingSelectionOrFolder:(NSString *)folder { NSArray *keep = [self selectedPaths]; CGFloat o = off; [self setFolder: folder]; for (NSUInteger i = 0; i < [_items count]; i++) if ([keep containsObject: _items[i][@"path"]]) [_sel addIndex: i]; off = o; [self setNeedsDisplay: YES]; }
-- (CGFloat)cw { return desktop ? _isz + 36 : MAX(_isz + 40, _isz + _grid - 6); }
-- (CGFloat)ch { return desktop ? _isz + 62 : [self cw] + (_showInfo ? 14 : 0); }
+/* the desktop's grid, measured on the Mac with new files placed by the Finder at gridSpacing 33 / 40 / 54 (icon size 64, label below): the columns are 94 / 104 / 124 apart (94 + (spacing - 33) * 10 / 7), the rows always 112 (icon + 48) */
+- (CGFloat)cw { return desktop ? _isz + 30 + (_grid - 33) * 10.0 / 7.0 : MAX(_isz + 40, _isz + _grid - 6); }
+- (CGFloat)ch { return desktop ? _isz + 48 : [self cw] + (_showInfo ? 14 : 0); }
 - (void)applyOptions { for (NSMutableDictionary *it in _items) [it removeObjectForKey: @"lines"]; [self scrollTo: off]; [self _save]; [self setNeedsDisplay: YES]; }
 - (void)setIconSize:(CGFloat)z { z = MAX(16, MIN(256, z)); if (z == _isz) return; _isz = z; for (NSMutableDictionary *it in _items) [it removeObjectForKey: @"lines"]; [self scrollTo: off]; [self _save]; [self setNeedsDisplay: YES]; }
 - (CGFloat)iconSize { return _isz; }
@@ -293,7 +294,7 @@ static NSString *GroupTitle(NSDictionary *it, NSString *key, int *order)
 }
 - (void)reloadKeepingSelection { NSArray *keep = [self selectedPaths]; if (![_items count]) return; NSMutableArray *ps = [NSMutableArray array]; for (NSDictionary *d in _items) [ps addObject: d[@"path"]]; CGFloat o = off; [self setPaths: ps]; for (NSUInteger i = 0; i < [_items count]; i++) if ([keep containsObject: _items[i][@"path"]]) [_sel addIndex: i]; off = o; [self setNeedsDisplay: YES]; }
 - (NSInteger)_cols { return MAX(1, (NSInteger)floor(([self bounds].size.width - 2 * kPad) / [self cw])); }
-- (NSPoint)_slot:(NSInteger)i { if (_group && i < (NSInteger)[_gpos count]) return [_gpos[i] pointValue]; if (desktop) { CGFloat H = [self bounds].size.height, W = [self bounds].size.width; NSInteger per = MAX(1, (NSInteger)floor((H - 30 - 2 * 10) / [self ch])); return NSMakePoint(W - 10 - (i / per + 1) * [self cw], 30 + 10 + (i % per) * [self ch]); } NSInteger c = [self _cols]; return NSMakePoint(kPad + (i % c) * [self cw], kPad + (i / c) * [self ch]); }
+- (NSPoint)_slot:(NSInteger)i { if (_group && i < (NSInteger)[_gpos count]) return [_gpos[i] pointValue]; if (desktop) { CGFloat H = [self bounds].size.height, W = [self bounds].size.width; NSInteger per = MAX(1, (NSInteger)floor((H - 34 - 4) / [self ch])); return NSMakePoint(W - 4 - (i / per + 1) * [self cw], 34 + (i % per) * [self ch]); }       /* the first icon's top is 8 under the menu bar (30), its cell's right edge 4 from the screen's edge; the cells are centred on their icons */ NSInteger c = [self _cols]; return NSMakePoint(kPad + (i % c) * [self cw], kPad + (i / c) * [self ch]); }
 - (NSPoint)_target:(NSInteger)i { NSValue *v = _group ? nil : _items[i][@"pos"]; return v ? [v pointValue] : [self _slot: i]; }
 - (void)_regroup
 {
