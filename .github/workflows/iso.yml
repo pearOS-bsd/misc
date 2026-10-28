@@ -124,7 +124,7 @@ jobs:
           VARS=$(ls /usr/share/OVMF/OVMF_VARS_4M.fd /usr/share/OVMF/OVMF_VARS.fd 2>/dev/null | head -1)
           cp "$VARS" vars.fd
           if [ "${{ matrix.form }}" = usb ]; then
-            xz -dk out/macbsd-amd64-usb.img.xz; DRIVE="-device qemu-xhci -drive if=none,id=u,file=out/macbsd-amd64-usb.img,format=raw,snapshot=on -device usb-storage,drive=u,bootindex=1"
+            xz -dk out/macbsd-amd64-usb.img.xz; DRIVE="-drive if=none,id=u,file=out/macbsd-amd64-usb.img,format=raw,snapshot=on -device ich9-ahci,id=ahci -device ide-hd,drive=u,bus=ahci.0,bootindex=1 -device qemu-xhci"       # the disk image as a SATA disk: what is tested is the image (GPT, ESP, UFS root); the USB mass storage of QEMU under software emulation gave I/O errors on a large read (a real stick is not that emulation)
           else
             DRIVE="-drive if=none,id=c,file=out/macbsd-amd64.iso,format=raw,media=cdrom,readonly=on -device ide-cd,drive=c,bootindex=1 -device qemu-xhci"
           fi
