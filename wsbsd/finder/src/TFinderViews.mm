@@ -886,6 +886,17 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 
 /* ---------- the toolbar ---------- */
 /* the "gallery" glyph of the view modes: a rectangle over four dashes (no SF Symbol of that look): an NSImage that draws itself in the colour of the theme */
+@interface TGroupGlyph : NSImage @end
+@implementation TGroupGlyph       /* the Group glyph: two rows of three small boxes over a line, and a chevron (as measured in the Finder's toolbar); drawn in flipped coordinates about the centre of the 48 wide pill */
+- (void)drawInRect:(NSRect)r fromRect:(NSRect)f operation:(NSCompositingOperation)op fraction:(CGFloat)a
+{
+	NSColor *t = TFDark() ? TFRGB(245, 245, 245) : TF_TEXT; CGFloat cx = NSMidX(r), cy = NSMidY(r), left = cx - 24; [NSGraphicsContext saveGraphicsState];
+	if (![[NSGraphicsContext currentContext] isFlipped]) { NSAffineTransform *x = [NSAffineTransform transform]; [x translateXBy: 0 yBy: 2 * cy]; [x scaleXBy: 1 yBy: -1]; [x concat]; }
+	[t setStroke]; for (int row = 0; row < 2; row++) for (int col = 0; col < 3; col++) { NSBezierPath *o = [NSBezierPath bezierPathWithRoundedRect: NSMakeRect(left + 9 + col * 6.5, cy - 3.5 + row * 6, 5, 4) xRadius: 1 yRadius: 1]; [o setLineWidth: 1.1]; [o stroke]; }
+	[t setFill]; NSRectFill(NSMakeRect(left + 9, cy - 7, 17, 1.2));
+	NSBezierPath *c = [NSBezierPath bezierPath]; [c setLineWidth: 1.5]; [c setLineCapStyle: NSRoundLineCapStyle]; [c setLineJoinStyle: NSRoundLineJoinStyle]; [c moveToPoint: NSMakePoint(left + 31, cy - 1.5)]; [c lineToPoint: NSMakePoint(left + 35, cy + 2.5)]; [c lineToPoint: NSMakePoint(left + 39, cy - 1.5)]; [c stroke]; [NSGraphicsContext restoreGraphicsState];
+}
+@end
 @interface TShareGlyph : NSImage @end
 @implementation TShareGlyph       /* the Share glyph (a box with an arrow), drawn in the colour of the theme; the shape is in flipped coordinates */
 - (void)drawInRect:(NSRect)r fromRect:(NSRect)f operation:(NSCompositingOperation)op fraction:(CGFloat)a
@@ -912,6 +923,12 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 	x -= 7 + 112; if (k == 3) return NSMakeRect(x, 8, 112, 36); x -= 7 + 48; if (k == 2) return NSMakeRect(x, 8, 48, 36); x -= 7 + 161; if (k == 1) return NSMakeRect(x, 8, 161, 36);
 	return NSMakeRect(7, 8, 74, 36);
 }
+- (void)_syncGroupSegment
+{
+	if (!grpSeg) { grpSeg = [[NSSegmentedControl alloc] initWithFrame: NSZeroRect]; [grpSeg setSegmentStyle: NSSegmentStyleCapsule]; [grpSeg setTrackingMode: NSSegmentSwitchTrackingMomentary]; [grpSeg setSegmentCount: 1]; [grpSeg setImage: [[TGroupGlyph alloc] initWithSize: NSMakeSize(34, 20)] forSegment: 0]; [grpSeg setWidth: 48 forSegment: 0]; [grpSeg setIdentifier: @"nosep"]; [grpSeg setTarget: self]; [grpSeg setAction: @selector(_groupPicked:)]; [self addSubview: grpSeg]; }
+	[grpSeg setFrame: [self _pill: 2]];
+}
+- (void)_groupPicked:(NSSegmentedControl *)s { NSRect gr = [self _pill: 2]; if ([target respondsToSelector: @selector(groupMenu)]) TFPopupMenu(self, NSMakePoint(gr.origin.x, 46), [target performSelector: @selector(groupMenu)]); }
 - (void)_syncNavSegment
 {
 	if (!navSeg) { navSeg = [[NSSegmentedControl alloc] initWithFrame: NSZeroRect]; [navSeg setSegmentStyle: NSSegmentStyleCapsule]; [navSeg setTrackingMode: NSSegmentSwitchTrackingMomentary]; [navSeg setSegmentCount: 2]; NSArray *n = @[ @"chevron.left", @"chevron.right" ];
@@ -953,8 +970,7 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 	[self _syncNavSegment];       /* back/forward: an NSSegmentedControl (capsule) */
 	TextAt(title ?: @"", 93, 26, Font(15, YES, KeyWin(self) ? t : TF_DIM));
 	[self _syncModeSegment];       /* the view modes are an NSSegmentedControl (capsule style, drawn by the theme) */
-	NSRect gr = [self _pill: 2]; GlassPill(gr, pr); [t setStroke]; for (int row = 0; row < 2; row++) for (int col = 0; col < 3; col++) { NSBezierPath *o = [NSBezierPath bezierPathWithRoundedRect: NSMakeRect(gr.origin.x + 9 + col * 6.5, 22.5 + row * 6, 5, 4) xRadius: 1 yRadius: 1]; [o setLineWidth: 1.1]; [o stroke]; } [t setFill]; NSRectFill(NSMakeRect(gr.origin.x + 9, 19, 17, 1.2));
-	TFSymbolW(@"chevron.down", NSMakeRect(NSMaxX(gr) - 19, 8, 12, 36), 10, 6, t);
+	[self _syncGroupSegment];       /* Group: a one segment capsule that opens the menu */
 	[self _syncActionSegment];       /* Share, Tags, Action: an NSSegmentedControl (capsule) */
 	if (trashMode) { NSRect er = [self _pill: 5]; GlassPill(er, pr); NSSize ez = [@"Empty" sizeWithAttributes: Font(13, NO, t)]; [@"Empty" drawAtPoint: NSMakePoint(NSMidX(er) - ez.width / 2, 26 - ez.height / 2) withAttributes: Font(13, NO, t)]; }
 	NSRect sr = [self _pill: 4]; GlassPill(sr, pr); TFSymbol(@"magnifyingglass", NSMakeRect(sr.origin.x, 8, searching ? 34 : sr.size.width, 36), 20, searching ? TF_DIM : t);
