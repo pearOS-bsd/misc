@@ -133,7 +133,7 @@ void ws_glass_regions(ws_surface *img, const ws_glass *g, int n, int ox, int oy)
 	ws_surface *bl = NULL, *bl5 = NULL;                                                     /* the menu materials work on a blurred copy of the backdrop: modes 3, 4 (Menu.caar) sigma 30, mode 5 (the context menu as measured on the Mac) sigma 4.5 */
 	for (int i = 0; i < n; i++) { if (g[i].mode == 3 || g[i].mode == 4) { if (!bl) bl = ws_surface_new(tmp->w, tmp->h); } else if (g[i].mode == 5 && !bl5) bl5 = ws_surface_new(tmp->w, tmp->h); }
 	if (bl) { memcpy(bl->px, tmp->px, (size_t)tmp->stride * tmp->h); ws_blur_region(bl, (ws_rect){ 0, 0, bl->w, bl->h }, (ws_rect){ 0, 0, bl->w, bl->h }, 30.0f); }
-	if (bl5) { memcpy(bl5->px, tmp->px, (size_t)tmp->stride * tmp->h); ws_blur_region(bl5, (ws_rect){ 0, 0, bl5->w, bl5->h }, (ws_rect){ 0, 0, bl5->w, bl5->h }, 4.5f); }
+	if (bl5) { memcpy(bl5->px, tmp->px, (size_t)tmp->stride * tmp->h); ws_blur_region(bl5, (ws_rect){ 0, 0, bl5->w, bl5->h }, (ws_rect){ 0, 0, bl5->w, bl5->h }, 7.0f); }
 	int x0 = bx0 < 0 ? 0 : bx0, y0 = by0 < 0 ? 0 : by0, x1 = bx1 > img->w ? img->w : bx1, y1 = by1 > img->h ? img->h : by1;
 	for (int y = y0; y < y1; y++) for (int x = x0; x < x1; x++) {
 		float fx = x + 0.5f, fy = y + 0.5f; int mode;

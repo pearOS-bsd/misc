@@ -604,10 +604,10 @@ static void glass_pass(gl_compositor *c, const ws_visit *v)
 	glBindTexture(GL_TEXTURE_2D, c->scene_tex);
 	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, (int)x0, (int)y0, (int)x0, (int)y0, (int)(x1 - x0), (int)(y1 - y0));
 	if (mat) {                                                                      /* sigma 30 with taps 2 px apart: 45 taps reach 90 px */
-		float reach = (mat & 1) ? 90.0f : 14.0f, ry0 = fmaxf(y0 - reach, 0), ry1 = fminf(y1 + reach, (float)c->h);
+		float reach = (mat & 1) ? 90.0f : 22.0f, ry0 = fmaxf(y0 - reach, 0), ry1 = fminf(y1 + reach, (float)c->h);
 		glUseProgram(c->blur_prog);
-		int fine = !(mat & 1);                                                         /* only the context-menu material (sigma 4.5): taps 1 px apart */
-		glUniform2f(c->bu_screen, (float)c->w, (float)c->h); glUniform1i(c->bu_src, 0); glUniform1f(c->bu_sigma, fine ? 4.5f : 15.0f); glUniform1f(c->bu_rad, fine ? 14.0f : 45.0f); glUniform1f(c->bu_step, fine ? 1.0f : 2.0f);
+		int fine = !(mat & 1);                                                         /* only the context-menu material (sigma 7, measured with stripes behind a menu): taps 1 px apart */
+		glUniform2f(c->bu_screen, (float)c->w, (float)c->h); glUniform1i(c->bu_src, 0); glUniform1f(c->bu_sigma, fine ? 7.0f : 15.0f); glUniform1f(c->bu_rad, fine ? 21.0f : 45.0f); glUniform1f(c->bu_step, fine ? 1.0f : 2.0f);
 		glActiveTexture(GL_TEXTURE0);
 		glBindFramebuffer(GL_FRAMEBUFFER, c->tmp_fbo); glBindTexture(GL_TEXTURE_2D, c->fbo_tex);
 		glUniform2f(c->bu_dir, 1.0f, 0.0f); glUniform4f(c->bu_rect, x0, ry0, x1 - x0, ry1 - ry0); glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
