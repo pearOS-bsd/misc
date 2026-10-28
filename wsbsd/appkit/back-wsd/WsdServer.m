@@ -57,7 +57,13 @@ static NSString *keychars(int code, unsigned flags, BOOL ignoringMods)
 #endif
 	if (code < 0 || code >= 128) return @"";
 	int shift = (flags & 0x20000) != 0;          /* kCGEventFlagMaskShift */
+	const char *b0 = keymap[code][0]; int letter = b0 && b0[0] >= 'a' && b0[0] <= 'z' && !b0[1];
+	if (letter && (flags & 0x10000)) shift = !shift;                         /* caps lock: letters in capitals (shift undoes it); the other keys are not affected */
 	const char *s = keymap[code][(shift && !ignoringMods) ? 1 : 0];
+	if ((flags & 0x40000) && !(flags & 0x100000) && !ignoringMods && s && !s[1]) {          /* control with a letter or one of [ \\ ] is the control character, as on the Mac (control-C is 0x03) */
+		char c = s[0]; int cc = (c >= 'a' && c <= 'z') ? c - 'a' + 1 : (c >= 'A' && c <= 'Z') ? c - 'A' + 1 : c == '[' ? 0x1b : c == '\\' ? 0x1c : c == ']' ? 0x1d : c == ' ' ? 0 : -1;
+		if (cc >= 0) return [NSString stringWithFormat: @"%C", (unichar)cc];
+	}
 	return s ? [NSString stringWithUTF8String: s] : @"";
 }
 
@@ -437,6 +443,7 @@ static void WsdDismissMenus(void)
 			break; }
 		case WS_EV_KEY_DOWN:
 		case WS_EV_KEY_UP:
+			if (getenv("WSD_KEY_DEBUG")) NSLog(@"key %s code %d flags %x -> %x", e.type == WS_EV_KEY_DOWN ? "down" : "up", (int)e.key, (unsigned)e.flags, fl);
 			ev = [NSEvent keyEventWithType: e.type == WS_EV_KEY_DOWN ? NSKeyDown : NSKeyUp location: p modifierFlags: fl timestamp: ts windowNumber: w->number context: GSCurrentContext()
 				characters: keychars(e.key, e.flags, NO) charactersIgnoringModifiers: keychars(e.key, e.flags, YES) isARepeat: NO keyCode: (unsigned short)e.key];
 			break;
