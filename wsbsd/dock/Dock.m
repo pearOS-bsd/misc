@@ -180,7 +180,7 @@ static NSString *TileLabel(NSDictionary *t, NSString *path)
 	BOOL noPrefs = ![apps count] && !prefs[@"persistent-apps"];
 	if (noPrefs) {                          /* no preferences: the default set of this system */
 		struct { const char *label, *path; } defs[] = { { "Terminal", "/System/Applications/Utilities/Terminal.app" },
-			{ "Keyboard Setup Assistant", "/System/Applications/Utilities/Keyboard Setup Assistant.app" }, { "UITest", "/Applications/UITest.app" } };
+			{ "UITest", "/Applications/UITest.app" }, { "Keyboard Setup Assistant", "/System/Applications/Utilities/Keyboard Setup Assistant.app" } };
 		for (size_t i = 0; i < sizeof defs / sizeof defs[0]; i++) [apps addObject: [self tileForPath: @(defs[i].path) label: @(defs[i].label)]];
 		[others addObject: [@{ @"tile-type": @"directory-tile", @"tile-data": @{ @"file-data": @{ @"_CFURLString": [@"file://" stringByAppendingString: [[NSHomeDirectory() stringByAppendingPathComponent: @"Downloads"] stringByAddingPercentEncodingWithAllowedCharacters: [NSCharacterSet URLPathAllowedCharacterSet]]], @"_CFURLStringType": @0 }, @"file-label": @"Downloads", @"arrangement": @2, @"showas": @(getenv("DOCK_SHOWAS") ? atoi(getenv("DOCK_SHOWAS")) : 1), @"displayas": @0 } } mutableCopy]];
 	}

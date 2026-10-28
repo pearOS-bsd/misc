@@ -20,6 +20,7 @@ macdesktop_start()
 	mount | grep -q ' /root ' || mount -t tmpfs -o mode=755 tmpfs /root
 	# the home of the session is where macOS keeps it: /Users/<name> (a memory file system over the empty directory of the image) with the folders of a new account
 	mount | grep -q ' /Users/root ' || mount -t tmpfs -o mode=755 tmpfs /Users/root
+	[ -d "/Library/User Template" ] && cp -R "/Library/User Template/." /Users/root/ 2>/dev/null       # the demo content (iso/tools/mkdemo.py)
 	mkdir -p /Users/root/Desktop /Users/root/Documents /Users/root/Downloads /Users/root/Library/Preferences /Users/root/Movies /Users/root/Music /Users/root/Pictures /Users/root/Public /Users/root/GNUstep
 	mkdir -p /Users/Shared/GNUstep /root/GNUstep /Users/Shared/Downloads /root/Downloads /tmp/GNUstepSecure
 	chmod 700 /tmp/GNUstepSecure

@@ -35,8 +35,9 @@ static NSString *UniquePath(NSString *dir, NSString *base, NSString *ext)
 }
 - (void)_build
 {
-	NSWindow *w = [[TFinderWindow alloc] initWithContentRect: NSMakeRect(160 + 24 * [gBrowsers count], 160, 1022, 552) styleMask: NSWindowStyleMaskBorderless backing: NSBackingStoreBuffered defer: NO];
-	[w setReleasedWhenClosed: NO]; [w setOpaque: NO]; [w setBackgroundColor: [NSColor clearColor]]; [w setMinSize: NSMakeSize(560, 320)]; [w setContentView: [[TFinderRoot alloc] initWithFrame: NSMakeRect(0, 0, 1022, 552)]]; [self setWindow: w]; [w setDelegate: self]; [w setWindowController: self]; NSView *cv = [w contentView];
+	NSRect scr = [[NSScreen mainScreen] frame]; CGFloat ww = MIN(1022, scr.size.width - 48), wh = MIN(552, scr.size.height - 30 - 110), cas = 24 * (CGFloat)([gBrowsers count] % 6);       /* the Mac's default 1022 x 552, kept inside the screen (menu bar above, the Dock below), cascaded and centred */
+	NSWindow *w = [[TFinderWindow alloc] initWithContentRect: NSMakeRect(floor((scr.size.width - ww) / 2) + cas, floor(scr.size.height - 30 - wh - MAX(24, (scr.size.height - 30 - 110 - wh) / 2)) - cas, ww, wh) styleMask: NSWindowStyleMaskBorderless backing: NSBackingStoreBuffered defer: NO];
+	[w setReleasedWhenClosed: NO]; [w setOpaque: NO]; [w setBackgroundColor: [NSColor clearColor]]; [w setMinSize: NSMakeSize(560, 320)]; [w setContentView: [[TFinderRoot alloc] initWithFrame: NSMakeRect(0, 0, ww, wh)]]; [self setWindow: w]; [w setDelegate: self]; [w setWindowController: self]; NSView *cv = [w contentView];
 	_icons = [[TIconView alloc] initWithFrame: NSZeroRect]; _icons->delegate = self; [cv addSubview: _icons];
 	_list = [[TListView alloc] initWithFrame: NSZeroRect]; _list->delegate = self; [_list setHidden: YES]; [cv addSubview: _list];
 	_cols = [[TColumnView alloc] initWithFrame: NSZeroRect]; _cols->delegate = self; [_cols setHidden: YES]; [cv addSubview: _cols];
@@ -78,7 +79,7 @@ static NSString *StyleName(NSInteger m) { return @[ @"icnv", @"Nlsv", @"clmv", @
 {
 	if (_tag) return; TDSStore *ds = [TDSStore storeForFolder: [_url path]]; NSString *st = [ds valueForName: @"." sid: @"vstl"]; NSInteger m = [@[ @"icnv", @"Nlsv", @"clmv", @"glyv" ] indexOfObject: st ?: @""]; if (m != NSNotFound && m != _mode) [self _setMode: m];
 	NSDictionary *bw = [ds plistForName: @"." sid: @"bwsp"]; if (!bw) return; if (bw[@"ShowStatusBar"] && [bw[@"ShowStatusBar"] boolValue] != _showStatus) [self cmdToggleStatusBar: nil];
-	if (window && [bw[@"WindowBounds"] length]) { NSRect r = NSRectFromString([bw[@"WindowBounds"] stringByReplacingOccurrencesOfString: @"{{" withString: @"{"]); (void)r; int x, y, w, h; if (sscanf([bw[@"WindowBounds"] UTF8String], "{{%d, %d}, {%d, %d}}", &x, &y, &w, &h) == 4 && w >= 560 && h >= 320) { CGFloat sh = [[NSScreen mainScreen] frame].size.height; [[self window] setFrame: NSMakeRect(x, sh - y - h, w, h) display: YES]; [self _layout]; } }
+	if (window && [bw[@"WindowBounds"] length]) { NSRect r = NSRectFromString([bw[@"WindowBounds"] stringByReplacingOccurrencesOfString: @"{{" withString: @"{"]); (void)r; int x, y, w, h; if (sscanf([bw[@"WindowBounds"] UTF8String], "{{%d, %d}, {%d, %d}}", &x, &y, &w, &h) == 4 && w >= 560 && h >= 320) { NSRect scr = [[NSScreen mainScreen] frame]; CGFloat sh = scr.size.height; w = MIN(w, (int)scr.size.width); h = MIN(h, (int)sh - 30); x = MAX(0, MIN(x, (int)scr.size.width - w)); y = MAX(30, MIN(y, (int)sh - h)); [[self window] setFrame: NSMakeRect(x, sh - y - h, w, h) display: YES]; [self _layout]; }       /* the bounds kept in the folder's .DS_Store are those of another screen perhaps: kept inside this one */ }
 }
 - (void)cmdTagsPopup:(id)s { if (![[self _targets] count]) return; TFShowTagsPopover([self _targets], [_toolbar buttonRect: 1], _toolbar, self); }
 - (void)cmdOpenQuickActionsPrefPane:(id)s {}
