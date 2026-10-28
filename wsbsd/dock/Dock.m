@@ -175,13 +175,16 @@ static NSString *TileLabel(NSDictionary *t, NSString *path)
 	hideTime = prefs[@"autohide-time-modifier"] ? [prefs[@"autohide-time-modifier"] doubleValue] : 0.5;
 	apps = [NSMutableArray array]; others = [NSMutableArray array];
 	for (NSDictionary *t in prefs[@"persistent-apps"]) [apps addObject: [t mutableCopy]];
+	{ NSMutableArray *kept = [NSMutableArray array]; for (NSDictionary *t in apps) if (![TilePath(t) hasSuffix: @"/Finder.app"] && ![TilePath(t) hasSuffix: @"/Finder.app/"]) [kept addObject: t]; [apps setArray: kept]; }       /* the Finder's tile is not in the plist: the Dock puts it first itself, and it cannot be removed */
 	for (NSDictionary *t in prefs[@"persistent-others"]) [others addObject: [t mutableCopy]];
-	if (![apps count] && !prefs[@"persistent-apps"]) {                          /* no preferences: the default set of this system */
+	BOOL noPrefs = ![apps count] && !prefs[@"persistent-apps"];
+	if (noPrefs) {                          /* no preferences: the default set of this system */
 		struct { const char *label, *path; } defs[] = { { "Terminal", "/System/Applications/Utilities/Terminal.app" },
 			{ "Keyboard Setup Assistant", "/System/Applications/Utilities/Keyboard Setup Assistant.app" }, { "UITest", "/Applications/UITest.app" } };
 		for (size_t i = 0; i < sizeof defs / sizeof defs[0]; i++) [apps addObject: [self tileForPath: @(defs[i].path) label: @(defs[i].label)]];
 		[others addObject: [@{ @"tile-type": @"directory-tile", @"tile-data": @{ @"file-data": @{ @"_CFURLString": [@"file://" stringByAppendingString: [[NSHomeDirectory() stringByAppendingPathComponent: @"Downloads"] stringByAddingPercentEncodingWithAllowedCharacters: [NSCharacterSet URLPathAllowedCharacterSet]]], @"_CFURLStringType": @0 }, @"file-label": @"Downloads", @"arrangement": @2, @"showas": @(getenv("DOCK_SHOWAS") ? atoi(getenv("DOCK_SHOWAS")) : 1), @"displayas": @0 } } mutableCopy]];
 	}
+	if ([[NSFileManager defaultManager] fileExistsAtPath: @"/System/Library/CoreServices/Finder.app"]) [apps insertObject: [self tileForPath: @"/System/Library/CoreServices/Finder.app" label: @"Finder"] atIndex: 0];
 }
 - (NSMutableDictionary *)tileForPath:(NSString *)path label:(NSString *)label
 {
@@ -190,7 +193,7 @@ static NSString *TileLabel(NSDictionary *t, NSString *path)
 }
 - (void)savePrefs
 {
-	prefs[@"persistent-apps"] = apps; prefs[@"persistent-others"] = others;
+	{ NSMutableArray *save = [NSMutableArray array]; for (NSDictionary *t in apps) if (![TilePath(t) hasSuffix: @"/Finder.app"]) [save addObject: t]; prefs[@"persistent-apps"] = save; } prefs[@"persistent-others"] = others;
 	NSString *dir = [[self prefsPath] stringByDeletingLastPathComponent]; [[NSFileManager defaultManager] createDirectoryAtPath: dir withIntermediateDirectories: YES attributes: nil error: NULL];
 	[prefs writeToFile: [self prefsPath] atomically: YES];
 }
