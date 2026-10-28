@@ -35,6 +35,7 @@ void TFOpenSettings(void);
 @class TIconView;
 void TFOpenViewOptions(TIconView *view, NSString *folderName, void (^changed)(void));
 void TFOpenDesktopViewOptions(TIconView *view, void (^changed)(void));
+void TFOpenFolderViewOptions(NSInteger mode, NSString *folderName, NSDictionary *(^get)(void), void (^set)(NSString *, id));
 id TFPref(NSString *key, id def);
 BOOL TFPrefBool(NSString *key, BOOL def);
 void TFSetPref(NSString *key, id value);
@@ -122,6 +123,7 @@ NSImage *TFIcon(NSString *path);
 - (NSArray *)selectedPaths;
 - (BOOL)beginRename:(NSString *)path;
 - (void)sortByColumn:(NSString *)col;
+- (void)_saveColumns;
 @end
 
 /* the column view: one column per level, the last selected file shown as a preview */
