@@ -44,6 +44,8 @@ The stack: `wsd` (this repo: window server and compositor speaking the SkyLight 
 | Bootable images (amd64, arm64) | ~78 % | amd64 CD and USB boot to the desktop in QEMU; arm64 ISO and USB image build in CI, are published in Releases and the ISO reaches the desktop in QEMU aarch64; real USB stick and PC untested |
 | **Whole project, release target (Dock + glass + two images)** | **~82 %** | the rest (Spaces, decompiled Control Center, smart folders) is after the first release |
 
+- **Designer assets:** `tools/accept_assets.py` checks a delivery of replacement asset catalogues (`assets-designer/mod`) against the originals rendition by rendition (names, attributes, formats and, since 2026-10-28, the content). The first delivery (67 catalogues) passes the structure check but its pictures are byte-identical to the originals, so nothing is installed yet.
+
 ### Required next (decided by the project owner)
 - **CoreWLAN.framework** (`CWWiFiClient`, `CWInterface`, `CWNetwork`, `CWConfiguration`, `CWNetworkProfile`, events) and **airportd** (the daemon behind it): scanning, seamless joining of known
   networks, hotspot (Instant Hotspot / Personal Hotspot) detection. Method: decompile the real framework and daemon on this Mac with REA, reimplement them 1:1 (same classes, selectors, XPC
