@@ -1123,6 +1123,7 @@ static void wsdSetName(id self, SEL _cmd, NSString *v) { objc_setAssociatedObjec
 @interface WsdFinderSupport : NSObject @end
 @implementation WsdFinderSupport
 + (void)roundWindow:(NSWindow *)w radius:(int)r { RoundWindow(w, r); }
++ (void)setKeyWindow:(NSWindow *)w { id srv = GSCurrentServer(); if ([srv respondsToSelector: @selector(wsdSetKeyWindow:)]) ((void (*)(id, SEL, int))objc_msgSend)(srv, @selector(wsdSetKeyWindow:), (int)[w windowNumber]); }
 + (BOOL)drawSymbol:(NSString *)name inRect:(NSRect)cell size:(CGFloat)pt weight:(int)weight color:(NSColor *)c { return WsdSymbolDraw(name, cell, pt, weight, c); }
 + (BOOL)isDark { return WsdAppearanceIsDark(); }
 + (BOOL)dropFiles:(NSArray *)paths atScreenPoint:(NSPoint)p { id srv = GSCurrentServer(); if ([srv respondsToSelector: @selector(wsdDropFiles:atScreenPoint:)]) return [srv wsdDropFiles: paths atScreenPoint: p]; return NO; }

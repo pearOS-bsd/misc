@@ -79,7 +79,7 @@ python3 "$HERE/tools/macfs.py" desymlink "$ROOT"
 python3 "$HERE/tools/macfs.py" skeleton "$ROOT" "$HERE/manifest"
 python3 "$HERE/tools/macfs.py" install "$ROOT" "$HERE/manifest" "$HERE/components.json"
 # /private/{etc,var,tmp} next to /etc /var /tmp (the Mac has the first as the real places and the others as links; here both are real)
-mkdir -p "$ROOT/private/etc" "$ROOT/private/var" "$ROOT/private/tmp" "$ROOT/Users/Shared"
+mkdir -p "$ROOT/private/etc" "$ROOT/private/var" "$ROOT/private/tmp" "$ROOT/Users/Shared" "$ROOT/Users/root"
 cp -R "$ROOT/etc/." "$ROOT/private/etc/"
 
 echo "== 5. configuration: silent boot, desktop on start"

@@ -12,12 +12,15 @@ WS=/System/Library/PrivateFrameworks/SkyLight.framework/Versions/A/Resources/Win
 macdesktop_start()
 {
 	conscontrol mute on >/dev/null 2>&1
-	export WS_SOCKET=/var/run/WindowServer.sock HOME=/root XDG_CURRENT_DESKTOP=Aqua XDG_SESSION_DESKTOP=Aqua XDG_SESSION_TYPE=wsd TERM=xterm-256color
+	export WS_SOCKET=/var/run/WindowServer.sock HOME=/Users/root XDG_CURRENT_DESKTOP=Aqua XDG_SESSION_DESKTOP=Aqua XDG_SESSION_TYPE=wsd TERM=xterm-256color
 	[ -x /bin/zsh ] && export SHELL=/bin/zsh
 	mkdir -p /var/run
 	# the image is read-only: the home of the session (preferences, GNUstep's caches and sockets) is memory
 	mount | grep -q ' /Users/Shared ' || mount -t tmpfs -o mode=1777 tmpfs /Users/Shared
 	mount | grep -q ' /root ' || mount -t tmpfs -o mode=755 tmpfs /root
+	# the home of the session is where macOS keeps it: /Users/<name> (a memory file system over the empty directory of the image) with the folders of a new account
+	mount | grep -q ' /Users/root ' || mount -t tmpfs -o mode=755 tmpfs /Users/root
+	mkdir -p /Users/root/Desktop /Users/root/Documents /Users/root/Downloads /Users/root/Library/Preferences /Users/root/Movies /Users/root/Music /Users/root/Pictures /Users/root/Public /Users/root/GNUstep
 	mkdir -p /Users/Shared/GNUstep /root/GNUstep /Users/Shared/Downloads /root/Downloads /tmp/GNUstepSecure
 	chmod 700 /tmp/GNUstepSecure
 	# GNUstep's name server and notification center must be up before the first application: started on demand they time out on slow machines and the application dies ("unable to contact GDNC server")

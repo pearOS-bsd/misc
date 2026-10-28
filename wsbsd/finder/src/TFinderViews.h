@@ -35,6 +35,7 @@ void TFOpenSettings(void);
 @class TIconView;
 void TFOpenViewOptions(TIconView *view, NSString *folderName, void (^changed)(void));
 void TFOpenDesktopViewOptions(TIconView *view, void (^changed)(void));
+@interface NSObject (TFItemMenu) - (NSMenu *)itemContextMenu; @end
 void TFOpenFolderViewOptions(NSInteger mode, NSString *folderName, NSDictionary *(^get)(void), void (^set)(NSString *, id));
 id TFPref(NSString *key, id def);
 BOOL TFPrefBool(NSString *key, BOOL def);

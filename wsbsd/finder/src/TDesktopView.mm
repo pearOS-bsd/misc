@@ -38,10 +38,28 @@ static NSString *DesktopPath(void) { return [NSHomeDirectory() stringByAppending
 	for (NSString *s in paths) { NSString *to = [folder stringByAppendingPathComponent: [s lastPathComponent]]; if ([to isEqual: s] || [fm fileExistsAtPath: to]) continue; if (copy ? [fm copyItemAtPath: s toPath: to error: NULL] : [fm moveItemAtPath: s toPath: to error: NULL]) any = YES; }
 	if (any) [_view reloadKeepingSelectionOrFolder: DesktopPath()]; return any;
 }
-- (void)cmdNewFolder:(id)s { NSFileManager *fm = [NSFileManager defaultManager]; NSString *p = [DesktopPath() stringByAppendingPathComponent: @"untitled folder"]; int i = 2; while ([fm fileExistsAtPath: p]) p = [DesktopPath() stringByAppendingPathComponent: [NSString stringWithFormat: @"untitled folder %d", i++]]; [fm createDirectoryAtPath: p withIntermediateDirectories: NO attributes: nil error: NULL]; [_view reloadKeepingSelectionOrFolder: DesktopPath()]; }
+- (void)cmdNewFolder:(id)s { NSFileManager *fm = [NSFileManager defaultManager]; NSString *p = [DesktopPath() stringByAppendingPathComponent: @"untitled folder"]; int i = 2; while ([fm fileExistsAtPath: p]) p = [DesktopPath() stringByAppendingPathComponent: [NSString stringWithFormat: @"untitled folder %d", i++]]; if (![fm createDirectoryAtPath: p withIntermediateDirectories: NO attributes: nil error: NULL]) { NSBeep(); return; } [_view reloadKeepingSelectionOrFolder: DesktopPath()]; _selection = @[ p ]; [_view beginRename: p]; }
 - (void)cmdShowStaticInfo:(id)s { for (NSString *p in _selection) TFOpenInfoWindow(p); }
 - (void)cmdMoveToTrash:(id)s { NSFileManager *fm = [NSFileManager defaultManager]; NSString *tr = [NSHomeDirectory() stringByAppendingPathComponent: @".Trash"]; [fm createDirectoryAtPath: tr withIntermediateDirectories: YES attributes: nil error: NULL]; for (NSString *p in _selection) { if ([p hasPrefix: DesktopPath()]) [fm moveItemAtPath: p toPath: [tr stringByAppendingPathComponent: [p lastPathComponent]] error: NULL]; } [_view reloadKeepingSelectionOrFolder: DesktopPath()]; }
 - (void)cmdCleanUp:(id)s { [_view cleanUp: NO]; }
+/* the menu of an item on the desktop (as the Finder's: Open, Move to Trash, Get Info, Rename, Duplicate, Quick Look, Copy, the tag colours): the background has the menu above */
+- (NSMenu *)itemContextMenu
+{
+	NSMenu *m = [[NSMenu alloc] initWithTitle: @""]; NSString *first = [_selection count] ? [_selection[0] lastPathComponent] : @"";
+#define ITEM(title, sel) ({ NSMenuItem *x = [m addItemWithTitle: title action: sel keyEquivalent: @""]; [x setTarget: self]; x; })
+	ITEM(@"Open", @selector(cmdOpen:)); [m addItem: [NSMenuItem separatorItem]]; ITEM(@"Move to Trash", @selector(cmdMoveToTrash:)); [m addItem: [NSMenuItem separatorItem]];
+	ITEM(@"Get Info", @selector(cmdShowStaticInfo:)); ITEM(@"Rename", @selector(cmdRename:)); ITEM(@"Duplicate", @selector(cmdDuplicate:)); ITEM(([NSString stringWithFormat: @"Quick Look “%@”", first]), @selector(cmdQuickLook:)); ITEM(@"Copy", @selector(cmdCopyItems:)); [m addItem: [NSMenuItem separatorItem]];
+	NSMenuItem *dots = ITEM(@"Tag colours", @selector(cmdToggleTag:)); [dots setTag: 2]; [dots setRepresentedObject: [NSClassFromString(@"WsdFinderSupport") tagNames]];
+#undef ITEM
+	return m;
+}
+- (void)cmdOpen:(id)s { for (NSString *p in _selection) [self iconViewOpenItem: p]; }
+- (void)cmdRename:(id)s { if ([_selection count]) [_view beginRename: _selection[0]]; }
+- (void)iconViewRename:(NSString *)path to:(NSString *)name { if (![name length] || [name isEqual: [path lastPathComponent]] || [name containsString: @"/"]) return; NSString *to = [[path stringByDeletingLastPathComponent] stringByAppendingPathComponent: name]; if (![[NSFileManager defaultManager] fileExistsAtPath: to] && [[NSFileManager defaultManager] moveItemAtPath: path toPath: to error: NULL]) { _selection = @[ to ]; [_view reloadKeepingSelectionOrFolder: DesktopPath()]; } }
+- (void)cmdDuplicate:(id)s { NSFileManager *fm = [NSFileManager defaultManager]; for (NSString *p in _selection) { NSString *base = [[p lastPathComponent] stringByDeletingPathExtension], *ext = [p pathExtension], *dir = [p stringByDeletingLastPathComponent]; NSString *to; int i = 1; do { NSString *n = [NSString stringWithFormat: @"%@ copy%@", base, i > 1 ? [NSString stringWithFormat: @" %d", i] : @""]; to = [dir stringByAppendingPathComponent: [ext length] ? [n stringByAppendingPathExtension: ext] : n]; i++; } while ([fm fileExistsAtPath: to]); [fm copyItemAtPath: p toPath: to error: NULL]; } [_view reloadKeepingSelectionOrFolder: DesktopPath()]; }
+- (void)cmdQuickLook:(id)s { if ([_selection count]) TFOpenQuickLook(_selection[0]); }
+- (void)cmdCopyItems:(id)s { NSPasteboard *pb = [NSPasteboard generalPasteboard]; [pb declareTypes: @[ NSFilenamesPboardType ] owner: nil]; [pb setPropertyList: _selection forType: NSFilenamesPboardType]; }
+- (void)cmdToggleTag:(NSMenuItem *)it { NSString *n = [it representedObject]; BOOL all = [_selection count] > 0; for (NSString *p in _selection) if (![TFTagsOf(p) containsObject: n]) all = NO; for (NSString *p in _selection) { NSMutableArray *cur = [TFTagsOf(p) mutableCopy]; if (all) [cur removeObject: n]; else if (![cur containsObject: n]) [cur addObject: n]; TFSetTags(cur, p); } [_view reloadKeepingSelectionOrFolder: DesktopPath()]; }
 /* the menu of the desktop, as the Finder shows it: New Folder, Get Info, the background, Sort By, Clean Up, View Options */
 - (NSMenu *)_desktopMenu
 {
