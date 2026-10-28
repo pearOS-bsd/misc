@@ -31,6 +31,8 @@ sh "$WS/sdk/build-compat.sh" "$WORK/compat" > "$WORK/compat.log" 2>&1; install -
 sh "$WS/sdk/build-corewlan.sh" "$WORK/cw" > "$WORK/corewlan.log" 2>&1; sh "$WS/sdk/build-airportd.sh" "$WORK/cw" >> "$WORK/corewlan.log" 2>&1; [ -x "$WORK/cw/usr/libexec/airportd" ] || { echo "airportd did not build"; tail -20 "$WORK/corewlan.log"; exit 1; }
 # notifications: usernoted (the daemon) and wsnotify (a command line client), laid out like airportd; this build must not stop the image
 sh "$WS/sdk/build-usernoted.sh" "$WORK/cw" "$WORK/compat" > "$WORK/usernoted.log" 2>&1 || tail -5 "$WORK/usernoted.log"
+# launchd and the launch agents of the desktop (Dock, SystemUIServer, Finder, Terminal): without them the rc script starts the programs by hand
+sh "$WS/launchd/build.sh" "$WORK/cw" > "$WORK/launchd.log" 2>&1 || tail -5 "$WORK/launchd.log"
 install -d /usr/local/bin /usr/local/libexec
 install -d /usr/local/share/wsbsd/icons && install -m 644 "$HERE"/icons/*.icns /usr/local/share/wsbsd/icons/
 # the asset catalogues of the Mac that the file panels read (coreui): the small ones are in the repository, the big ones (SF Symbols 117 MB, CoreTypes 20 MB) are copied into coreui/assets before the build or are already in place

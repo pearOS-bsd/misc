@@ -29,15 +29,21 @@ macdesktop_start()
 	rm -f $WS_SOCKET
 	daemon -f -o /var/log/WindowServer.log -p /var/run/WindowServer.pid $WS -b kms -c /dev/ttyv0 -t -F
 	sleep 2
-	for app in /System/Library/CoreServices/Dock.app/Contents/MacOS/Dock /System/Library/CoreServices/SystemUIServer.app/Contents/MacOS/SystemUIServer /System/Library/CoreServices/Finder.app/Contents/MacOS/Finder /System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal; do
-		daemon -f -o /var/log/$(basename $app).log /usr/lib/dyld $app
-	done
+	# the programs of the desktop are started by launchd from the launch agents (/System/Library/LaunchAgents: Dock, SystemUIServer, Finder, as on the Mac), which also starts them again if they stop; without launchd (an image built without it) they are started one by one
+	if [ -x /usr/libexec/launchd ] && ls /System/Library/LaunchAgents/*.plist >/dev/null 2>&1; then
+		daemon -f -o /var/log/launchd.log -p /var/run/launchd.pid /usr/libexec/launchd /System/Library/LaunchAgents
+	else
+		for app in /System/Library/CoreServices/Dock.app/Contents/MacOS/Dock /System/Library/CoreServices/SystemUIServer.app/Contents/MacOS/SystemUIServer /System/Library/CoreServices/Finder.app/Contents/MacOS/Finder /System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal; do
+			daemon -f -o /var/log/$(basename $app).log /usr/lib/dyld $app
+		done
+	fi
 	# a report on the serial port (if there is one), 25 s after the start: the programs of the desktop that run, and the end of the log of the Finder and of every program that does not (the screen is the window server's and the console is muted)
 	( sleep 25; { echo "== desktop report"; ps ax -o pid,stat,command | grep -E "WindowServer|Dock|SystemUIServer|Finder|Terminal|usernoted|gdnc|gdomap" | grep -v grep; for a in Finder WindowServer Dock SystemUIServer Terminal; do pgrep -f "$a" >/dev/null 2>&1 || echo "== $a is not running"; echo "== tail of $a.log"; tail -12 /var/log/$a.log 2>/dev/null; done; ls /System/Library/Desktop\ Pictures 2>&1; } > /dev/ttyu0 2>/dev/null ) &
 }
 macdesktop_stop()
 {
 	# the applications first, then the window server (it clears the screen and gives the console back), then the console messages are shown again
+	[ -f /var/run/launchd.pid ] && kill "$(cat /var/run/launchd.pid)" 2>/dev/null; sleep 1
 	for p in Terminal Finder Dock SystemUIServer; do pkill -x "$p" 2>/dev/null; done
 	[ -f /var/run/WindowServer.pid ] && kill "$(cat /var/run/WindowServer.pid)" 2>/dev/null
 	i=0; while [ $i -lt 30 ] && pgrep -f "WindowServer -b" >/dev/null 2>&1; do sleep 0.1; i=$((i+1)); done
