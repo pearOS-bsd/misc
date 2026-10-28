@@ -885,6 +885,14 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 @end
 
 /* ---------- the toolbar ---------- */
+/* the "gallery" glyph of the view modes: a rectangle over four dashes (no SF Symbol of that look): an NSImage that draws itself in the colour of the theme */
+@interface TGalleryGlyph : NSImage @end
+@implementation TGalleryGlyph
+- (void)drawInRect:(NSRect)r fromRect:(NSRect)f operation:(NSCompositingOperation)op fraction:(CGFloat)a
+{
+	NSColor *t = TFDark() ? TFRGB(245, 245, 245) : TF_TEXT; NSRect g = NSMakeRect(NSMidX(r) - 10, NSMidY(r) - 7, 20, 14); BOOL fl = [[NSGraphicsContext currentContext] isFlipped]; double ry = fl ? g.origin.y + 0.8 : g.origin.y + 5.8, dy = fl ? g.origin.y + 12 : g.origin.y; [t setStroke]; NSBezierPath *o = [NSBezierPath bezierPathWithRoundedRect: NSMakeRect(g.origin.x + 0.8, ry, 18.4, 7.4) xRadius: 2 yRadius: 2]; [o setLineWidth: 1.6]; [o stroke]; [t setFill]; for (int q = 0; q < 4; q++) NSRectFill(NSMakeRect(g.origin.x + 1 + q * 5, dy, 3, 2));
+}
+@end
 @implementation TToolbarView
 - (BOOL)isFlipped { return YES; } - (BOOL)acceptsFirstMouse:(NSEvent *)e { return YES; }
 - (NSRect)_pill:(int)k                    /* 0 nav, 1 modes, 2 group, 3 actions, 4 search: 36 high 8 from the top; widths, gaps (7) and the right margin (8) as measured in the 1022 wide window */
@@ -894,6 +902,14 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 	x -= 7 + 112; if (k == 3) return NSMakeRect(x, 8, 112, 36); x -= 7 + 48; if (k == 2) return NSMakeRect(x, 8, 48, 36); x -= 7 + 161; if (k == 1) return NSMakeRect(x, 8, 161, 36);
 	return NSMakeRect(7, 8, 74, 36);
 }
+- (void)_syncModeSegment
+{
+	if (!modeSeg) { modeSeg = [[NSSegmentedControl alloc] initWithFrame: NSZeroRect]; [modeSeg setSegmentStyle: NSSegmentStyleCapsule]; [modeSeg setSegmentCount: 4]; NSArray *syms = @[ @"square.grid.2x2", @"list.bullet", @"rectangle.split.3x1", @"" ];
+		for (int k = 0; k < 4; k++) { NSImage *im = k == 3 ? [[TGalleryGlyph alloc] initWithSize: NSMakeSize(20, 14)] : [NSImage imageWithSystemSymbolName: syms[k] accessibilityDescription: nil]; [modeSeg setImage: im forSegment: k]; [modeSeg setWidth: 161.0 / 4 forSegment: k]; }
+		[modeSeg setTarget: self]; [modeSeg setAction: @selector(_modePicked:)]; [self addSubview: modeSeg]; }
+	[modeSeg setFrame: [self _pill: 1]]; if ([modeSeg selectedSegment] != mode) [modeSeg setSelectedSegment: mode];
+}
+- (void)_modePicked:(NSSegmentedControl *)s { if (getenv("FINDER_DEBUG")) NSLog(@"mode picked %ld", (long)[s selectedSegment]); SEL a[4] = { @selector(cmdViewAsIcons:), @selector(cmdViewAsList:), @selector(cmdViewAsColumns:), @selector(cmdViewAsGallery:) }; NSInteger k = [s selectedSegment] & 3; [NSApp sendAction: a[k] to: target from: self]; }
 - (NSRect)buttonRect:(int)i { NSRect ac = [self _pill: 3]; CGFloat aw = ac.size.width / 3; return NSMakeRect(ac.origin.x + i * aw, 0, aw, 52); }
 - (void)setSearching:(BOOL)on
 {
@@ -909,11 +925,7 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 	NSRect nav = [self _pill: 0]; GlassPill(nav, pr); [TFDark() ? TFRGBA(255, 255, 255, 0.27) : TFRGBA(0, 0, 0, 0.2) setFill]; NSRectFill(NSMakeRect(floor(NSMidX(nav)), 16, 1, 20));
 	TFSymbolW(@"chevron.left", NSMakeRect(nav.origin.x, 8, 37, 36), 19, 6, canBack ? t : off); TFSymbolW(@"chevron.right", NSMakeRect(NSMidX(nav), 8, 37, 36), 19, 6, canForward ? t : off);
 	TextAt(title ?: @"", 93, 26, Font(15, YES, KeyWin(self) ? t : TF_DIM));
-	NSRect md = [self _pill: 1]; GlassPill(md, NSZeroRect); NSArray *syms = @[ @"square.grid.2x2", @"list.bullet", @"rectangle.split.3x1", @"rectangle.on.rectangle" ]; CGFloat sw = md.size.width / 4;
-	for (int k = 0; k < 4; k++) { NSRect c = NSMakeRect(md.origin.x + k * sw, 8, sw, 36); if (k == mode) FillRound(NSInsetRect(c, 4, 4), 14, TFDark() ? TFRGB(80, 80, 80) : TFRGBA(0, 0, 0, 0.12)); else if (!NSIsEmptyRect(pr) && NSIntersectsRect(pr, c)) FillRound(NSInsetRect(c, 4, 4), 14, TFDark() ? TFRGBA(255, 255, 255, 0.08) : TFRGBA(0, 0, 0, 0.06));
-		if (k == 3) { NSRect g = NSMakeRect(NSMidX(c) - 10, 19, 20, 14); [t setStroke]; NSBezierPath *o = [NSBezierPath bezierPathWithRoundedRect: NSMakeRect(g.origin.x, g.origin.y, 20, 9) xRadius: 2 yRadius: 2]; [o setLineWidth: 1.6]; [o stroke]; [t setFill]; for (int q = 0; q < 4; q++) NSRectFill(NSMakeRect(g.origin.x + 1 + q * 5, g.origin.y + 12, 3, 2)); }
-		else TFSymbol(syms[k], c, 20, t);
-		if (k > 0 && k != mode && k - 1 != mode) { [TFDark() ? TFRGBA(255, 255, 255, 0.27) : TFRGBA(0, 0, 0, 0.2) setFill]; NSRectFill(NSMakeRect(c.origin.x, 16, 1, 20)); } }
+	[self _syncModeSegment];       /* the view modes are an NSSegmentedControl (capsule style, drawn by the theme) */
 	NSRect gr = [self _pill: 2]; GlassPill(gr, pr); [t setStroke]; for (int row = 0; row < 2; row++) for (int col = 0; col < 3; col++) { NSBezierPath *o = [NSBezierPath bezierPathWithRoundedRect: NSMakeRect(gr.origin.x + 9 + col * 6.5, 22.5 + row * 6, 5, 4) xRadius: 1 yRadius: 1]; [o setLineWidth: 1.1]; [o stroke]; } [t setFill]; NSRectFill(NSMakeRect(gr.origin.x + 9, 19, 17, 1.2));
 	TFSymbolW(@"chevron.down", NSMakeRect(NSMaxX(gr) - 19, 8, 12, 36), 10, 6, t);
 	NSRect ac = [self _pill: 3]; GlassPill(ac, pr); CGFloat aw = ac.size.width / 3;
