@@ -265,3 +265,6 @@ Pointer swept over the real Dock (tilesize 58, largesize 99), AX widths read per
 
 ## arm64 image built in CI (2026-10-28)
 Run 40705315699: iso (x86_64) and iso (aarch64) both succeeded (aarch64 under emulation took about 70 min); release iso-latest holds macbsd-amd64.iso, macbsd-amd64-usb.img.xz, macbsd-arm64.iso (1.5 GB), macbsd-arm64-usb.img.xz (260 MB) and the sha256 files. The arm64 images are not boot-tested (no aarch64 boot test in CI yet: qemu-system-aarch64 + edk2 aarch64 firmware, TCG would be slow). The usb boot-test of that run failed only because my `$(uname -p)` rename also hit the Ubuntu boot-test step (fixed). No Ploader on arm64.
+
+## Dock grid: position and chevron (2026-10-28)
+The grid panel's visible bottom is 16 px above the glass bar's top (Mac screenshot: panel glass ends 16 px above the bar; the AX frame of the panel has about 14 px of transparent margin, which is why the AX bottom is 2 px above the bar top: the first version used -10 and covered the tiles). While a grid is open the stack's tile shows the dark button with the chevron, as in the fan (`DockScene.chevron1`, `DrawChevronButton`).

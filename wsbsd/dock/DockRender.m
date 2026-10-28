@@ -125,6 +125,16 @@ double DockFanItemProgress(int k, double t)                          /* ease-out
 	return 1 - (1 - u) * (1 - u) * (1 - u);
 }
 
+/* the stack's tile while its fan, grid or list is open: a dark rounded button with a chevron (u: opening progress) */
+static void DrawChevronButton(CGContextRef c, CGFloat art, CGFloat cx, CGFloat art_bottom, double u)
+{
+	CGFloat bx = cx - art / 2, by = art_bottom;
+	SetRGB(c, 0.13, 0.13, 0.135, 0.96 * fmin(1, u * 3)); CGPathRef btn = ContinuousRect(CGRectMake(bx, by, art, art), art * 0.2237); CGContextAddPath(c, btn); CGContextFillPath(c);
+	SetRGB(c, 1, 1, 1, 0.16); CGContextSetLineWidth(c, 1); CGContextAddPath(c, btn); CGContextStrokePath(c); CGPathRelease(btn);
+	SetRGB(c, 1, 1, 1, 0.92); CGContextSetLineWidth(c, 4); CGContextSetLineCap(c, kCGLineCapRound); CGContextSetLineJoin(c, kCGLineJoinRound);
+	CGContextMoveToPoint(c, cx - 10, by + art / 2 + 5); CGContextAddLineToPoint(c, cx, by + art / 2 - 5); CGContextAddLineToPoint(c, cx + 10, by + art / 2 + 5); CGContextStrokePath(c);
+}
+
 static void DrawFan(CGContextRef c, const DockScene *s, CGFloat art_bottom)
 {
 	const DockFan *f = s->fan; const DockSlot *sl = &s->slots[f->anchor];
@@ -147,11 +157,7 @@ static void DrawFan(CGContextRef c, const DockScene *s, CGFloat art_bottom)
 		CGContextRestoreGState(c);
 	}
 	/* while the fan is open the stack's tile is a dark rounded button with a chevron */
-	CGFloat art = sl->art, bx = cx - art / 2, by = art_bottom;
-	SetRGB(c, 0.13, 0.13, 0.135, 0.96 * fmin(1, f->u * 3)); CGPathRef btn = ContinuousRect(CGRectMake(bx, by, art, art), art * 0.2237); CGContextAddPath(c, btn); CGContextFillPath(c);
-	SetRGB(c, 1, 1, 1, 0.16); CGContextSetLineWidth(c, 1); CGContextAddPath(c, btn); CGContextStrokePath(c); CGPathRelease(btn);
-	SetRGB(c, 1, 1, 1, 0.92); CGContextSetLineWidth(c, 4); CGContextSetLineCap(c, kCGLineCapRound); CGContextSetLineJoin(c, kCGLineJoinRound);
-	CGContextMoveToPoint(c, cx - 10, by + art / 2 + 5); CGContextAddLineToPoint(c, cx, by + art / 2 - 5); CGContextAddLineToPoint(c, cx + 10, by + art / 2 + 5); CGContextStrokePath(c);
+	DrawChevronButton(c, sl->art, cx, art_bottom, f->u);
 }
 
 
@@ -206,6 +212,7 @@ void DockRender(CGContextRef c, const DockScene *s)
 		if (DOCK_IS_GAP(s->items[i].kind)) continue;
 		CGFloat art = sl->art, lift = t->bounce * s->m.tilesize;
 		if (s->fan && s->fan->anchor == i) continue;                      /* drawn by DrawFan */
+		if (s->chevron1 == i + 1) { CGContextSaveGState(c); Upright(c, s, cx, art_bottom + art / 2); DrawChevronButton(c, art, cx, art_bottom, 1); CGContextRestoreGState(c); continue; }
 		CGContextSaveGState(c); Upright(c, s, cx, art_bottom + lift + art / 2);
 		if (t->glyph && !strcmp(t->glyph, "none") && !t->icon) { /* a minimizing window's tile: empty until the window has arrived */ }
 		else if (t->icon) CGContextDrawImage(c, CGRectMake(cx - art / 2 - art * 0.0625, art_bottom + lift - art * 0.0625, art * 1.125, art * 1.125), t->icon);   /* the icon image has a margin (the art is 80 % of it) */
