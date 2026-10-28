@@ -1165,7 +1165,7 @@ static void RedrawTree(NSView *v) { [v setNeedsDisplay: YES]; for (NSView *k in 
 - (BOOL)isZoomed { return _zoomed; }
 - (void)_track:(int)m event:(NSEvent *)event                  /* m: 0 moves, else the edges (1 left, 2 right, 4 bottom, 8 top) */
 {
-	NSRect frame = [self frame]; NSPoint start = [NSEvent mouseLocation]; NSSize mn = [self minSize]; NSEvent *e = event;
+	NSRect frame = [self frame]; NSPoint start = [NSEvent mouseLocation]; NSSize mn = [self minSize]; NSEvent *e = event; if (getenv("FINDER_DEBUG_KEY")) NSLog(@"window track mode %d from %@ frame %@", m, NSStringFromPoint(start), NSStringFromRect(frame));
 	while ([e type] != NSLeftMouseUp) {
 		e = [self nextEventMatchingMask: NSLeftMouseDraggedMask | NSLeftMouseUpMask untilDate: [NSDate distantFuture] inMode: NSEventTrackingRunLoopMode dequeue: YES];
 		NSPoint now = [NSEvent mouseLocation]; CGFloat dx = now.x - start.x, dy = now.y - start.y; NSRect nf = frame;

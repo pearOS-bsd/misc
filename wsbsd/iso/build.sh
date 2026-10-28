@@ -78,6 +78,8 @@ echo "== 4. the macOS layout"
 python3 "$HERE/tools/macfs.py" desymlink "$ROOT"
 python3 "$HERE/tools/macfs.py" skeleton "$ROOT" "$HERE/manifest"
 python3 "$HERE/tools/macfs.py" install "$ROOT" "$HERE/manifest" "$HERE/components.json"
+# the demo account: a few folders and files on the Desktop and a folder with many mixed files (the rc script copies this into the home of the session)
+rm -rf "$ROOT/Library/User Template"; python3 "$HERE/tools/mkdemo.py" "$ROOT/Library/User Template" || echo "NOTE: the demo content was not made"
 # /private/{etc,var,tmp} next to /etc /var /tmp (the Mac has the first as the real places and the others as links; here both are real)
 mkdir -p "$ROOT/private/etc" "$ROOT/private/var" "$ROOT/private/tmp" "$ROOT/Users/Shared" "$ROOT/Users/root"
 cp -R "$ROOT/etc/." "$ROOT/private/etc/"
