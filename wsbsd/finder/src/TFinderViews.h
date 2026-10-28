@@ -98,7 +98,7 @@ NSImage *TFIcon(NSString *path);
 - (void)reveal:(NSRect)r;
 @end
 
-@interface TIconView : TScrollBase { @public BOOL _snap; __weak id<TIconViewDelegate> delegate; NSString *filter; NSMutableArray *_items; NSMutableIndexSet *_sel; NSInteger _anchor; NSString *_folder, *_arrange; NSRect _band; BOOL _dragging; NSInteger _dropTarget; double _animStart; NSTimer *_animTimer; CGFloat _isz, _grid, _textSize; BOOL _showInfo, _showPreview; NSString *emptyMessage; NSString *_group; NSArray *_gpos, *_heads; CGFloat _groupBottom; BOOL desktop; NSArray *_prefix; }
+@interface TIconView : TScrollBase { @public BOOL _snap; __weak id<TIconViewDelegate> delegate; NSString *filter; NSMutableArray *_items; NSMutableIndexSet *_sel; NSInteger _anchor; NSString *_folder, *_arrange; NSRect _band; BOOL _dragging; NSInteger _dropTarget; double _animStart; NSTimer *_animTimer; CGFloat _isz, _grid, _textSize; BOOL _showInfo, _showPreview, _labelRight; NSString *emptyMessage; NSString *_group; NSArray *_gpos, *_heads; CGFloat _groupBottom; BOOL desktop; NSArray *_prefix; }
 - (void)applyOptions;
 - (void)setSnapToGrid:(BOOL)on;
 - (void)setGroup:(NSString *)g;
