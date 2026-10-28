@@ -34,9 +34,10 @@ static NSMenu *NativeMenu(NSArray *its, id target)
 	return m;
 }
 /* View content as > List: the stack as a plain NSMenu (measured on the Mac: a glass menu above the tile, the names in their sort order from the top, a 16 pt icon before each, folders with a submenu arrow, then a separator, "Options" (submenu) and "Open in Finder"; a long folder fills the screen height and scrolls, here it is cut to the rows that fit). */
-@interface DockListMenu : NSObject <NSMenuDelegate> { @public NSString *dir; NSArray *names; int maxRows; void (^open)(NSString *); } - (NSMenu *)menu; @end
+@interface DockListMenu : NSObject <NSMenuDelegate> { @public NSString *dir; NSArray *names; int maxRows; void (^open)(NSString *); void (^command)(int); } - (NSMenu *)menu; @end
 @implementation DockListMenu
 - (void)pick:(NSMenuItem *)it { if (open) open([it representedObject]); }
+- (void)opt:(NSMenuItem *)it { if (command) command((int)[it tag]); }
 - (NSMenu *)menuForDir:(NSString *)d names:(NSArray *)nm rows:(int)rows
 {
 	NSMenu *m = [[NSMenu alloc] initWithTitle: @""]; [m setAutoenablesItems: NO]; NSFileManager *fm = [NSFileManager defaultManager]; int n = 0;
@@ -55,7 +56,7 @@ static NSMenu *NativeMenu(NSArray *its, id target)
 - (NSMenu *)menu
 {
 	NSMenu *m = [self menuForDir: dir names: names rows: maxRows]; [m addItem: [NSMenuItem separatorItem]];
-	NSMenuItem *o = [m addItemWithTitle: @"Options" action: NULL keyEquivalent: @""]; NSMenu *os = [[NSMenu alloc] initWithTitle: @""]; [os setAutoenablesItems: NO]; [os addItemWithTitle: @"Remove from Dock" action: NULL keyEquivalent: @""]; [os addItemWithTitle: @"Show in Finder" action: NULL keyEquivalent: @""]; [o setSubmenu: os];
+	NSMenuItem *o = [m addItemWithTitle: @"Options" action: NULL keyEquivalent: @""]; NSMenu *os = [[NSMenu alloc] initWithTitle: @""]; [os setAutoenablesItems: NO]; for (NSArray *e in @[ @[ @"Remove from Dock", @4 ], @[ @"Show in Finder", @7 ] ]) { NSMenuItem *oi = [os addItemWithTitle: e[0] action: @selector(opt:) keyEquivalent: @""]; [oi setTarget: self]; [oi setTag: [e[1] intValue]]; } [o setSubmenu: os];
 	NSMenuItem *f = [m addItemWithTitle: @"Open in Finder" action: @selector(pick:) keyEquivalent: @""]; [f setTarget: self]; [f setRepresentedObject: dir];
 	return m;
 }
@@ -624,7 +625,7 @@ static NSMutableDictionary *badgeStore;
 	NSString *path = paths[i];
 	if (items[i].kind == DOCK_APP) { for (int k = nmini - 1; k >= 0; k--) if (mini[k].appItem == i && mini[k].phase == 2) { [self restoreMini: k]; return; } }
 	if (items[i].kind == DOCK_MINIMIZED) { for (int k = 0; k < nmini; k++) if (mini[k].item == i) [self restoreMini: k]; return; }
-	if (items[i].kind == DOCK_OTHER) { if ([self isDirTile: i]) { int showas = srcKind[i] == 2 ? [others[srcIdx[i]][@"tile-data"][@"showas"] intValue] : 1; NSArray *sorted = [self sortedNamesOf: i]; if (showas == 3) { NSString *dir = path; double top = bar.bottom_margin + bar.bar_h + 8; DockListMenu *lm = [[DockListMenu alloc] init]; lm->dir = dir; lm->names = sorted; lm->maxRows = (int)floor(([[NSScreen mainScreen] frame].size.height - top - 110) / 24); lm->open = ^(NSString *p) { [self openPath: p]; }; NSMenu *nm = [lm menu]; objc_setAssociatedObject(self, "dlm", lm, OBJC_ASSOCIATION_RETAIN); NSPoint cp = NSMakePoint(slots[i].cx, top); [[DockMenuFit alloc] initFor: nm at: cp]; NSEvent *ev = [NSEvent mouseEventWithType: NSRightMouseDown location: [self convertPoint: cp toView: nil] modifierFlags: 0 timestamp: [[NSProcessInfo processInfo] systemUptime] windowNumber: [[self window] windowNumber] context: nil eventNumber: 0 clickCount: 1 pressure: 1]; [NSMenu popUpContextMenu: nm withEvent: ev forView: self]; return; } if (showas == 2 || (showas == 0 && [sorted count] > 16)) { NSString *dir = path, *tt = tiles[i].label ? @(tiles[i].label) : @""; double top = bar.bottom_margin + bar.bar_h; [self closeAllMenus]; gGridTile = i; ShowDockGrid(tt, dir, sorted, slots[i].cx, top, ^(NSString *nm) { [self openPath: [dir stringByAppendingPathComponent: nm]]; }); } else [self openFan: i]; } else [self openPath: path]; return; }
+	if (items[i].kind == DOCK_OTHER) { if ([self isDirTile: i]) { int showas = srcKind[i] == 2 ? [others[srcIdx[i]][@"tile-data"][@"showas"] intValue] : 1; NSArray *sorted = [self sortedNamesOf: i]; if (showas == 3) { NSString *dir = path; double top = bar.bottom_margin + bar.bar_h + 8; DockListMenu *lm = [[DockListMenu alloc] init]; lm->dir = dir; lm->names = sorted; lm->maxRows = (int)floor(([[NSScreen mainScreen] frame].size.height - top - 110) / 24); lm->open = ^(NSString *p) { [self openPath: p]; }; lm->command = ^(int code) { self->ctxItem = i; NSMenuItem *mi = [[NSMenuItem alloc] init]; [mi setTag: code]; [self ctx: mi]; }; NSMenu *nm = [lm menu]; objc_setAssociatedObject(self, "dlm", lm, OBJC_ASSOCIATION_RETAIN); NSPoint cp = NSMakePoint(slots[i].cx, top); [[DockMenuFit alloc] initFor: nm at: cp]; NSEvent *ev = [NSEvent mouseEventWithType: NSRightMouseDown location: [self convertPoint: cp toView: nil] modifierFlags: 0 timestamp: [[NSProcessInfo processInfo] systemUptime] windowNumber: [[self window] windowNumber] context: nil eventNumber: 0 clickCount: 1 pressure: 1]; [NSMenu popUpContextMenu: nm withEvent: ev forView: self]; return; } if (showas == 2 || (showas == 0 && [sorted count] > 16)) { NSString *dir = path, *tt = tiles[i].label ? @(tiles[i].label) : @""; double top = bar.bottom_margin + bar.bar_h; [self closeAllMenus]; gGridTile = i; ShowDockGrid(tt, dir, sorted, slots[i].cx, top, ^(NSString *nm) { [self openPath: [dir stringByAppendingPathComponent: nm]]; }); } else [self openFan: i]; } else [self openPath: path]; return; }
 	if (items[i].kind == DOCK_TRASH) { return; }
 	if (items[i].kind == DOCK_APP && [self pidOfApp: path] > 0 && [self activateApp: path]) return;        /* a running application comes to the front instead of starting again */
 	[self launchItem: i];
