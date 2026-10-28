@@ -247,3 +247,6 @@ Menu shadow (2026-10-28): measured over a white backdrop (Swift window grey 255,
 
 ## Dock grid stack (2026-10-28)
 Dock.m: DockGridView/Window/Title/ShowDockGrid. Mac measurements: AXGrid 1272x1060 at (1592,278) in 1306x1114 panel at (1575,248); cells 106, 12 cols; panel bottom 10 under bar top. VM-verified (DOCK_SHOWAS=2 test env, 45 files): grid opens, scrolls, labels truncate in middle. Click rule: showas==2 or (showas==0 && count>16) -> grid, else fan. Missing: list view, hover highlight, open animation, chevron icon while open.
+
+## Dock list stack (2026-10-28)
+View content as > List = plain glass NSMenu (DockListMenu in Dock.m): names in sort order from the top, 16 pt icon, folders have lazily filled submenus, separator, Options (Remove from Dock, Show in Finder), Open in Finder; Mac: 24 px pitch, menu fills screen height and scrolls (here cut to the rows that fit: no menu scrolling in GNUstep). Verified on VM (DOCK_SHOWAS=3). Mac Dock prefs were touched for the measurement and restored to showas=1 (Fan). Missing: scroll arrows, Options actions, pointer arrow at the tile.

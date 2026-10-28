@@ -1,5 +1,6 @@
 /* Dock.app for wsbsd: the Dock of the desktop. A borderless window at the bottom of the screen draws the bar with DockRender; the layout (with magnification) comes from dock_layout.c, the genie from genie.c.
  * The items are the persistent applications of ~/Library/Preferences/com.apple.dock.plist (or a default set), the running ones get a dot. */
+#import <objc/runtime.h>
 #import <AppKit/AppKit.h>
 #import <QuartzCore/QuartzCore.h>
 #include <unistd.h>
@@ -32,6 +33,33 @@ static NSMenu *NativeMenu(NSArray *its, id target)
 	}
 	return m;
 }
+/* View content as > List: the stack as a plain NSMenu (measured on the Mac: a glass menu above the tile, the names in their sort order from the top, a 16 pt icon before each, folders with a submenu arrow, then a separator, "Options" (submenu) and "Open in Finder"; a long folder fills the screen height and scrolls, here it is cut to the rows that fit). */
+@interface DockListMenu : NSObject <NSMenuDelegate> { @public NSString *dir; NSArray *names; int maxRows; void (^open)(NSString *); } - (NSMenu *)menu; @end
+@implementation DockListMenu
+- (void)pick:(NSMenuItem *)it { if (open) open([it representedObject]); }
+- (NSMenu *)menuForDir:(NSString *)d names:(NSArray *)nm rows:(int)rows
+{
+	NSMenu *m = [[NSMenu alloc] initWithTitle: @""]; [m setAutoenablesItems: NO]; NSFileManager *fm = [NSFileManager defaultManager]; int n = 0;
+	for (NSString *name in nm) {
+		if (n++ >= rows) break; NSString *p = [d stringByAppendingPathComponent: name]; BOOL isDir = NO; [fm fileExistsAtPath: p isDirectory: &isDir];
+		NSMenuItem *it = [m addItemWithTitle: name action: @selector(pick:) keyEquivalent: @""]; [it setTarget: self]; [it setRepresentedObject: p];
+		NSImage *ic = [[NSWorkspace sharedWorkspace] iconForFile: p]; [ic setSize: NSMakeSize(16, 16)]; [it setImage: ic];
+		BOOL pkg = isDir && [[NSWorkspace sharedWorkspace] isFilePackageAtPath: p];
+		if (isDir && !pkg) { NSMenu *sub = [[NSMenu alloc] initWithTitle: p]; [sub setDelegate: self]; [it setSubmenu: sub]; }
+	}
+	return m;
+}
+- (void)menuNeedsUpdate:(NSMenu *)sub { if ([sub numberOfItems]) return; NSString *p = [sub title]; NSMutableArray *v = [NSMutableArray array]; for (NSString *nm in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: p error: NULL]) if (![nm hasPrefix: @"."]) [v addObject: nm];
+	[v sortUsingSelector: @selector(localizedCaseInsensitiveCompare:)]; NSMenu *m = [self menuForDir: p names: v rows: maxRows]; for (NSMenuItem *it in [m itemArray]) { [m removeItem: it]; [sub addItem: it]; }
+	if (![sub numberOfItems]) { NSMenuItem *e = [sub addItemWithTitle: @"Empty" action: NULL keyEquivalent: @""]; [e setEnabled: NO]; } }
+- (NSMenu *)menu
+{
+	NSMenu *m = [self menuForDir: dir names: names rows: maxRows]; [m addItem: [NSMenuItem separatorItem]];
+	NSMenuItem *o = [m addItemWithTitle: @"Options" action: NULL keyEquivalent: @""]; NSMenu *os = [[NSMenu alloc] initWithTitle: @""]; [os setAutoenablesItems: NO]; [os addItemWithTitle: @"Remove from Dock" action: NULL keyEquivalent: @""]; [os addItemWithTitle: @"Show in Finder" action: NULL keyEquivalent: @""]; [o setSubmenu: os];
+	NSMenuItem *f = [m addItemWithTitle: @"Open in Finder" action: @selector(pick:) keyEquivalent: @""]; [f setTarget: self]; [f setRepresentedObject: dir];
+	return m;
+}
+@end
 /* The Downloads-style stack as a grid (View content as > Grid). Measured on the Mac (AX of the Dock, a stack of 332 items): a panel 1306 x 1114 centred on the tile (1306 = 12 columns of 106 + 34), its bottom 10 under the top of the bar, the title ("Downloads", 13 pt bold, 73 x 19) 7 under its top, a scroll
  * area of 1272 wide from 17 inside the left edge and 30 under the top, cells of 106 x 106 without gaps (the icon about 52 px, 10 under the cell's top; the name in one line below it, shortened in the middle), rows 106 apart; the panel is as high as 10 rows (54 more than the cells). The material is
  * the menu glass (mode 5, corners about 22) with the menu's shadow. Not measured: the highlight of a hovered cell, the look of an empty folder, the scroller, the animation of opening. */
@@ -596,7 +624,7 @@ static NSMutableDictionary *badgeStore;
 	NSString *path = paths[i];
 	if (items[i].kind == DOCK_APP) { for (int k = nmini - 1; k >= 0; k--) if (mini[k].appItem == i && mini[k].phase == 2) { [self restoreMini: k]; return; } }
 	if (items[i].kind == DOCK_MINIMIZED) { for (int k = 0; k < nmini; k++) if (mini[k].item == i) [self restoreMini: k]; return; }
-	if (items[i].kind == DOCK_OTHER) { if ([self isDirTile: i]) { int showas = srcKind[i] == 2 ? [others[srcIdx[i]][@"tile-data"][@"showas"] intValue] : 1; NSArray *sorted = [self sortedNamesOf: i]; if (showas == 2 || (showas == 0 && [sorted count] > 16)) { NSString *dir = path, *tt = tiles[i].label ? @(tiles[i].label) : @""; double top = bar.bottom_margin + bar.bar_h; [self closeAllMenus]; ShowDockGrid(tt, dir, sorted, slots[i].cx, top, ^(NSString *nm) { [self openPath: [dir stringByAppendingPathComponent: nm]]; }); } else [self openFan: i]; } else [self openPath: path]; return; }
+	if (items[i].kind == DOCK_OTHER) { if ([self isDirTile: i]) { int showas = srcKind[i] == 2 ? [others[srcIdx[i]][@"tile-data"][@"showas"] intValue] : 1; NSArray *sorted = [self sortedNamesOf: i]; if (showas == 3) { NSString *dir = path; double top = bar.bottom_margin + bar.bar_h + 8; DockListMenu *lm = [[DockListMenu alloc] init]; lm->dir = dir; lm->names = sorted; lm->maxRows = (int)floor(([[NSScreen mainScreen] frame].size.height - top - 110) / 24); lm->open = ^(NSString *p) { [self openPath: p]; }; NSMenu *nm = [lm menu]; objc_setAssociatedObject(self, "dlm", lm, OBJC_ASSOCIATION_RETAIN); NSPoint cp = NSMakePoint(slots[i].cx, top); [[DockMenuFit alloc] initFor: nm at: cp]; NSEvent *ev = [NSEvent mouseEventWithType: NSRightMouseDown location: [self convertPoint: cp toView: nil] modifierFlags: 0 timestamp: [[NSProcessInfo processInfo] systemUptime] windowNumber: [[self window] windowNumber] context: nil eventNumber: 0 clickCount: 1 pressure: 1]; [NSMenu popUpContextMenu: nm withEvent: ev forView: self]; return; } if (showas == 2 || (showas == 0 && [sorted count] > 16)) { NSString *dir = path, *tt = tiles[i].label ? @(tiles[i].label) : @""; double top = bar.bottom_margin + bar.bar_h; [self closeAllMenus]; ShowDockGrid(tt, dir, sorted, slots[i].cx, top, ^(NSString *nm) { [self openPath: [dir stringByAppendingPathComponent: nm]]; }); } else [self openFan: i]; } else [self openPath: path]; return; }
 	if (items[i].kind == DOCK_TRASH) { return; }
 	if (items[i].kind == DOCK_APP && [self pidOfApp: path] > 0 && [self activateApp: path]) return;        /* a running application comes to the front instead of starting again */
 	[self launchItem: i];
