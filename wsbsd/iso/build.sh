@@ -92,6 +92,8 @@ for d in etc private/etc; do
 	mkdir -p "$ROOT/$d/rc.d"
 	cp "$HERE/overlay/etc-rc.conf" "$ROOT/$d/rc.conf"; cp "$HERE/overlay/etc-fstab" "$ROOT/$d/fstab"; cp "$HERE/overlay/etc-syslog.conf" "$ROOT/$d/syslog.conf"
 	install -m 755 "$HERE/overlay/etc-rc.d-macdesktop" "$ROOT/$d/rc.d/macdesktop"
+	# the home of root is /Users/root (the session's home, with the Desktop): GNUstep's NSHomeDirectory() takes the home from the password database, not from $HOME, and looked in /root
+	if [ -f "$ROOT/$d/master.passwd" ]; then sed -i '' 's|:/root:|:/Users/root:|' "$ROOT/$d/master.passwd"; pwd_mkdb -p -d "$ROOT/$d" "$ROOT/$d/master.passwd" 2>/dev/null || echo "NOTE: pwd_mkdb failed in $d"; fi
 done
 mkdir -p "$ROOT/System/Library/LaunchDaemons"
 (cd "$WORK/cw" && find System usr -type l -name Current 2>/dev/null | while read -r l; do rm -rf "$ROOT/$l"; done)       # the desymlinked copies give way to the links
