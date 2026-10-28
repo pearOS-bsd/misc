@@ -782,31 +782,37 @@ static int in_poly(const float *px, const float *py, int n, float x, float y)
 }
 
 #define CURSOR_SIZE 24
-/* the default arrow: black with a white outline, 4x4 supersampled, premultiplied BGRA, hotspot at the tip */
+/* the arrow of the Mac (NSCursor arrow on a 1x screen), measured: the pointer was put over two flat backgrounds and the picture taken with the cursor (screencapture -C); the alpha and colour of every pixel are solved from the two. 13 x 20, hotspot (2, 2); premultiplied ARGB */
+static const unsigned arrow_w = 13, arrow_h = 20;
+static const uint32_t arrow_px[] = {
+	0x00000000, 0x5e59595b, 0x423d3d3e, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+	0x0c000002, 0xfcfbfbfb, 0xf8efefef, 0x52484849, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+	0x17000002, 0xffffffff, 0xff373737, 0xf8e8e8e7, 0x53474748, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+	0x1b000001, 0xffffffff, 0xff000000, 0xff373737, 0xf8e8e8e7, 0x53474748, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+	0x1c000001, 0xffffffff, 0xff000000, 0xff000000, 0xff383838, 0xf8e8e8e7, 0x53474749, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+	0x1c000001, 0xffffffff, 0xff000000, 0xff000000, 0xff000000, 0xff383838, 0xf8e8e8e7, 0x51474748, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+	0x1c000001, 0xffffffff, 0xff000000, 0xff000000, 0xff000000, 0xff000000, 0xff383838, 0xf7e8e8e8, 0x51474748, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+	0x1c000001, 0xffffffff, 0xff000000, 0xff000000, 0xff000000, 0xff000000, 0xff000000, 0xff393939, 0xf7e8e8e8, 0x51464648, 0x00000000, 0x00000000, 0x00000000,
+	0x1c000001, 0xffffffff, 0xff000000, 0xff000000, 0xff000000, 0xff000000, 0xff000000, 0xff000000, 0xff393939, 0xf7e8e8e8, 0x51464648, 0x00000000, 0x00000000,
+	0x1c000001, 0xffffffff, 0xff000000, 0xff000000, 0xff000000, 0xff000000, 0xff000000, 0xff000000, 0xff000000, 0xff393939, 0xf6e8e8e8, 0x30232325, 0x00000000,
+	0x1c000001, 0xffffffff, 0xff000000, 0xff000000, 0xff000000, 0xff000000, 0xff000000, 0xff000000, 0xff000000, 0xff020202, 0xffbfbfbf, 0x64545455, 0x08000002,
+	0x1c000001, 0xffffffff, 0xff000000, 0xff000000, 0xff070707, 0xff020202, 0xff000000, 0xffd1d1d1, 0xffffffff, 0xfffefefe, 0xcdbebebf, 0x290b0b0d, 0x09000002,
+	0x1c000001, 0xffffffff, 0xff000000, 0xff111111, 0xffc1c1c1, 0xff4e4e4e, 0xff000000, 0xff656565, 0xc7afafaf, 0x40000001, 0x2c000001, 0x16000002, 0x00000000,
+	0x1b000002, 0xe2dadadb, 0xff868686, 0xffd5d5d5, 0xd5bfbfc0, 0xffb9b9b9, 0xff000000, 0xff0a0a0a, 0xfdebebeb, 0x431d1d1f, 0x16000002, 0x0a000002, 0x00000000,
+	0x15000002, 0x4e272728, 0xaa8e8e8f, 0x82565657, 0x4a070708, 0xefe7e7e7, 0xff262626, 0xff000000, 0xff8e8e8e, 0x94858585, 0x0c000002, 0x00000000, 0x00000000,
+	0x0b000002, 0x1b000002, 0x26000002, 0x28000002, 0x2c000001, 0x9f838384, 0xff909090, 0xff000000, 0xff363636, 0xd7d0d0d0, 0x10000002, 0x00000000, 0x00000000,
+	0x00000000, 0x09000002, 0x0c000002, 0x0d000002, 0x16000002, 0x431b1b1c, 0xf8eaeaea, 0xff5b5b5b, 0xff9d9d9d, 0xb5a5a5a5, 0x13000002, 0x00000000, 0x00000000,
+	0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x0b000003, 0x1d000001, 0x68404042, 0xc4afafaf, 0xaf949495, 0x38111113, 0x10000002, 0x00000000, 0x00000000,
+	0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x0e000002, 0x20000002, 0x2c000001, 0x29000002, 0x19000002, 0x0a000002, 0x00000000, 0x00000000,
+	0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x0b000002, 0x10000002, 0x0e000002, 0x08000002, 0x00000000, 0x00000000, 0x00000000,
+};
 static ws_surface *make_default_cursor(void)
 {
-	static const float ax[] = { 0, 0, 4, 7, 9, 6.2f, 11 }, ay[] = { 0, 16, 12.5f, 18.5f, 17.5f, 11.5f, 11.5f };
-	float ox[7], oy[7];
-	for (int i = 0; i < 7; i++) { ox[i] = (ax[i] - 4.5f) * 1.18f + 4.5f; oy[i] = (ay[i] - 9.0f) * 1.18f + 9.0f; }
 	ws_surface *img = ws_surface_new(CURSOR_SIZE, CURSOR_SIZE);
 	if (!img) return NULL;
-	for (int y = 0; y < CURSOR_SIZE; y++)
-		for (int x = 0; x < CURSOR_SIZE; x++) {
-			int fill = 0, outline = 0;
-			for (int sy = 0; sy < 4; sy++)
-				for (int sx = 0; sx < 4; sx++) {
-					float fx = x - 2 + (sx + 0.5f) / 4, fy = y - 2 + (sy + 0.5f) / 4;     /* the polygon is offset by 2 so the outline fits */
-					if (in_poly(ax, ay, 7, fx, fy)) fill++;
-					else if (in_poly(ox, oy, 7, fx, fy)) outline++;
-				}
-			float fo = fill / 16.0f, ou = outline / 16.0f;
-			uint8_t *d = img->px + (size_t)y * img->stride + (size_t)x * 4;
-			uint8_t a = (uint8_t)((fo + ou) * 255.0f + 0.5f), white = (uint8_t)(ou * 255.0f + 0.5f);   /* premultiplied: black fill, white outline */
-			d[0] = d[1] = d[2] = white; d[3] = a;
-		}
+	for (unsigned y = 0; y < arrow_h; y++) for (unsigned x = 0; x < arrow_w; x++) *(uint32_t *)(img->px + (size_t)y * img->stride + (size_t)x * 4) = arrow_px[y * arrow_w + x];
 	return img;
 }
-
 static int default_hot_x(void) { return 2; }                       /* the arrow's tip is at (0,0) of the polygon, drawn 2 px into the image */
 
 const ws_surface *ws_cursor_image(ws_server *s, int *hx, int *hy)
