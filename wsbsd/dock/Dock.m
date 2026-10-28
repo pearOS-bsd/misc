@@ -253,7 +253,7 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 		if ([tt isEqualToString: @"small-spacer-tile"]) { PUSH(DOCK_SMALLSPACER, NULL, "", @"", 0, (int)k); continue; }
 		NSString *path = TilePath(t); if (![path length] || ![fm fileExistsAtPath: path]) continue;        /* an application that is not installed has no tile here */
 		[pinned addObject: path]; [labelStore addObject: TileLabel(t, path)];
-		PUSH(DOCK_APP, [[labelStore lastObject] UTF8String], "generic", path, 0, (int)k);
+		PUSH(DOCK_APP, [[labelStore lastObject] UTF8String], [path hasSuffix: @"/Finder.app"] ? "finder" : [path hasSuffix: @"/Terminal.app"] ? "terminal" : "generic", path, 0, (int)k);       /* the drawn glyphs stand in for the icon when the bundle has none (the Finder.app of an image has no resources) */
 	}
 	if ([prefs[@"static-only"] boolValue] == NO) {                              /* running applications that are not in the Dock: after a separator */
 		NSMutableArray *extra = [NSMutableArray array]; for (NSString *bp in [[runningPaths allObjects] sortedArrayUsingSelector: @selector(compare:)]) if (![pinned containsObject: bp] && ![self isSystemApp: bp]) [extra addObject: bp];
