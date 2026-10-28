@@ -20,28 +20,34 @@ ap.add_argument('--install', nargs='?', const='/usr/local/share/wsbsd/coreui')
 a = ap.parse_args()
 
 def renditions(path):
-    env = dict(os.environ, CAR_TSV='1')
+    env = dict(os.environ, CAR_TSV='1', CAR_HASH='1')
     p = subprocess.run([a.cardump, path], capture_output=True, text=True, env=env)
     if p.returncode != 0: return None
-    out = collections.Counter(); info = {}
+    out = collections.Counter(); info = {}; hashes = {}
     for line in p.stdout.splitlines():
         f = line.split('\t')
         if len(f) < 8: continue
         key = (f[0], f[6])
-        out[key] += 1; info.setdefault(key, []).append((f[1], f[2], f[4], f[5]))
-    return out, info
+        out[key] += 1; info.setdefault(key, []).append((f[1], f[2], f[4], f[5])); hashes.setdefault(key, []).append(f[8] if len(f) > 8 else '')
+    return out, info, hashes
 
 def compare(orig, mod):
-    (oc, oi), (mc, mi) = orig, mod
+    (oc, oi, oh), (mc, mi, mh) = orig, mod
     missing = [k for k in oc if mc[k] < oc[k]]; extra = [k for k in mc if oc[k] < mc[k]]
     changed = []
     for k in oc:
         if k in mi:
             for i, (o, m) in enumerate(zip(oi[k], mi[k])):
                 if o != m: changed.append((k, o, m)); break
-    return missing, extra, changed
+    same = diff = 0                                             # the content: the payload of every rendition the two catalogues share (a delivery that only repacks the originals changes nothing on the screen)
+    for k in oc:
+        if k in mh:
+            for o_, m_ in zip(oh[k], mh[k]):
+                if o_ == m_: same += 1
+                else: diff += 1
+    return missing, extra, changed, (same, diff)
 
-lines = []; failed = []; accepted = set()
+lines = []; failed = []; accepted = set(); tot_same = [0]; tot_diff = [0]
 def say(s): print(s); lines.append(s)
 mods = []
 for root, _, files in os.walk(os.path.join(a.assets, 'mod')):
@@ -54,14 +60,15 @@ for m in sorted(mods):
     ro, rm = renditions(o), renditions(m)
     if ro is None: say('FAIL %s: the original cannot be read' % rel); failed.append(rel); continue
     if rm is None: say('FAIL %s: the replacement is not a readable catalogue' % rel); failed.append(rel); continue
-    missing, extra, changed = compare(ro, rm)
+    missing, extra, changed, (same, diff) = compare(ro, rm); tot_same[0] += same; tot_diff[0] += diff
     bad = bool(missing or changed)
-    say('%s %s: %d renditions in the original, %d in the replacement; %d missing, %d changed, %d extra' % ('FAIL' if bad else 'ok  ', rel, sum(ro[0].values()), sum(rm[0].values()), len(missing), len(changed), len(extra)))
+    say('%s %s: %d renditions in the original, %d in the replacement; %d missing, %d changed, %d extra; content: %d renditions identical, %d different' % ('FAIL' if bad else 'ok  ', rel, sum(ro[0].values()), sum(rm[0].values()), len(missing), len(changed), len(extra), same, diff))
     for k in missing[:20]: say('    missing  %s [%s]' % k)
     for k, o_, m_ in changed[:20]: say('    changed  %s: %sx%s %s layout %s -> %sx%s %s layout %s' % (k[0], o_[0], o_[1], o_[2], o_[3], m_[0], m_[1], m_[2], m_[3]))
     for k in extra[:10]: say('    extra    %s [%s]' % k)
     if bad: failed.append(rel)
     else: accepted.add(rel)
+say('content of all the replacements: %d renditions identical to the originals, %d different%s' % (tot_same[0], tot_diff[0], ' (NOTHING CHANGED: the files only repack the originals)' if mods and not tot_diff[0] else ''))
 if a.report: open(a.report, 'w').write('\n'.join(lines) + '\n')
 if a.install:
     n_mod = n_orig = 0
