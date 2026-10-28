@@ -381,15 +381,16 @@ static NSMenuItem *wsdFindKeyItem(NSMenu *m, NSString *k, NSUInteger mods, NSMen
 		NSString *ke = [it keyEquivalent]; if (![ke length]) continue; NSUInteger mask = [it keyEquivalentModifierMask];
 		if ([ke length] == 1 && [[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember: [ke characterAtIndex: 0]]) { mask |= NSShiftKeyMask; ke = [ke lowercaseString]; }
 		if ([ke isEqualToString: k] && (mods & rel) == (mask & rel)) { *owner = m; *idx = (NSInteger)i; return it; }
+		if ([ke isEqualToString: @"+"] && [k isEqualToString: @"="] && ((mods & ~NSShiftKeyMask) & rel) == (mask & rel)) { *owner = m; *idx = (NSInteger)i; return it; }       /* command-plus is command-shift-equals on a PC keyboard (the Mac types + on the key of =) */
 	}
 	return nil;
 }
 static BOOL wsdMenuKeyEquivalent(NSMenu *self, SEL _cmd, NSEvent *e)
 {
 	if (([e type] != NSKeyDown && [e type] != NSKeyUp) || ![[e charactersIgnoringModifiers] length]) return NO;
-	unichar c = [[e charactersIgnoringModifiers] characterAtIndex: 0]; if (c < 'A' || c > 'z' || (c > 'Z' && c < 'a')) return ((BOOL (*)(id, SEL, id))origMenuKeyEq)(self, _cmd, e);   /* only letters differ */
+	unichar c = [[e charactersIgnoringModifiers] characterAtIndex: 0]; if (c != '=' && (c < 'A' || c > 'z' || (c > 'Z' && c < 'a'))) return ((BOOL (*)(id, SEL, id))origMenuKeyEq)(self, _cmd, e);   /* only letters differ */
 	NSString *k = [[e charactersIgnoringModifiers] lowercaseString]; NSMenu *owner = nil; NSInteger idx = -1;
-	NSMenuItem *it = wsdFindKeyItem(self, k, [e modifierFlags], &owner, &idx); if (!it) return NO;
+	NSMenuItem *it = wsdFindKeyItem(self, k, [e modifierFlags], &owner, &idx); if (getenv("WSD_KEY_DEBUG")) NSLog(@"menu key %@ mods %lx -> %@", k, (unsigned long)[e modifierFlags], it ? [it title] : @"none"); if (!it) return NO;
 	if ([owner respondsToSelector: @selector(_autoenableItem:)]) [owner performSelector: @selector(_autoenableItem:) withObject: it];
 	if ([it isEnabled]) [owner performActionForItemAtIndex: idx];
 	return YES;
@@ -557,11 +558,15 @@ static BOOL wsdMakeFirstResponder(id self, SEL _cmd, NSResponder *r)
 }
 static NSString *wsdKeyEqString(id self, SEL _cmd)
 {
-	NSString *r = ((NSString *(*)(id, SEL))origKeyEqStr)(self, _cmd);
-	if ([r length] < 2) return r;
-	NSString *last = [r substringFromIndex: [r length] - 1];                       /* the menus of the Mac show the key in capitals: command-Q, not command-q */
-	if ([last isEqual: @"\x1b"]) last = @"⎋"; else if ([last isEqual: @"\x7f"]) last = @"⌫";
-	return [[r substringToIndex: [r length] - 1] stringByAppendingString: [last uppercaseString]];
+	/* the key equivalent as the Mac shows it: the modifiers as symbols in the order control, option, shift, command (GNUstep prints ^ + / # for them) and the key in capitals */
+	NSMenuItem *it = [(NSMenuItemCell *)self menuItem]; NSString *key = [it keyEquivalent]; if (![key length]) return key;
+	unichar u = [key characterAtIndex: 0]; NSUInteger m = [it keyEquivalentModifierMask];
+	NSString *k;
+	if (u >= 0xF700) { switch (u) { case 0xF700: k = @"↑"; break; case 0xF701: k = @"↓"; break; case 0xF702: k = @"←"; break; case 0xF703: k = @"→"; break; case 0xF728: k = @"⌦"; break; case 0xF729: k = @"↖"; break; case 0xF72B: k = @"↘"; break; case 0xF72C: k = @"⇞"; break; case 0xF72D: k = @"⇟"; break;
+		default: if (u >= 0xF704 && u <= 0xF70F) k = [NSString stringWithFormat: @"F%d", (int)(u - 0xF704 + 1)]; else return ((NSString *(*)(id, SEL))origKeyEqStr)(self, _cmd); } }
+	else if ([key isEqual: @"\r"] || u == '\r') k = @"↩"; else if ([key isEqual: @"\e"] || u == 0x1b) k = @"⎋"; else if ([key isEqual: @"\d"] || u == 0x7f) k = @"⌫"; else if (u == '\t') k = @"⇥"; else if (u == ' ') k = @"Space"; else k = [key uppercaseString];
+	BOOL shift = (m & NSShiftKeyMask) || (u >= 'A' && u <= 'Z');
+	return [NSString stringWithFormat: @"%@%@%@%@%@", (m & NSControlKeyMask) ? @"⌃" : @"", (m & NSAlternateKeyMask) ? @"⌥" : @"", shift ? @"⇧" : @"", (m & NSCommandKeyMask) ? @"⌘" : @"", k];
 }
 static void wsdTFRect(id self, SEL _cmd, NSRect r)
 {
