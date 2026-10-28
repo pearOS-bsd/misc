@@ -105,6 +105,16 @@ int car_find(const CarFile *c, const char *name, int state, int value, int scale
 	return -1;
 }
 
+int car_find_attrs(const CarFile *c, const char *name, const int *attr, CarRendition *out)
+{
+	for (int i = 0; i < c->count; i++) {
+		CarRendition r; if (car_rendition(c, i, &r) || strcmp(r.name, name)) continue;
+		int ok = 1; for (int id = 1; id < 32 && ok; id++) if (attr[id] >= 0 && r.attr[id] != attr[id]) ok = 0;
+		if (ok) { *out = r; return 0; }
+	}
+	return -1;
+}
+
 const uint8_t *car_tlv(const CarRendition *r, uint32_t tag, size_t *len)
 {
 	size_t p = 0;

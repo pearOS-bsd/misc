@@ -105,6 +105,18 @@ static NSBitmapImageRep *RepFromPixels(const uint8_t *p, int w, int h, int bpp) 
 	}
 	return r;
 }
+
+/* the window buttons of the title bar (close, minimize, zoom) from the Mac's own catalogue: Aqua.car / DarkAqua.car, "WindowFrame_WindowControlButtons_Regular": the key has Dimension1 = the button (0 close, 1 minimize, 2 zoom, 3 close of an edited document, 4 / 5 full screen) and State (0 rest: the plain disc, 1 the pointer is over the group: with its glyph, 2 pressed). 16 pt discs, one rendition per scale (the pixels lie in a packed atlas, coreui's car_bitmap_linked). NULL when the catalogue is not there. */
+NSImage *WsdWindowButtonImage(int kind, int state, BOOL dark)
+{
+	static NSMutableDictionary *cache; if (!cache) cache = [[NSMutableDictionary alloc] init];
+	NSString *key = [NSString stringWithFormat: @"%d.%d.%d", kind, state, dark ? 1 : 0]; id hit = cache[key]; if (hit) return hit == [NSNull null] ? nil : hit;
+	NSImage *img = nil; CarFile *car = CarNamed(dark ? @"DarkAqua" : @"Aqua"); if (!car) car = CarNamed(dark ? @"Aqua" : @"DarkAqua");
+	if (car) { int at[32]; for (int i = 0; i < 32; i++) at[i] = -1; at[1] = 24; at[2] = 1; at[8] = kind; at[10] = state; at[12] = 1; at[14] = 0; CarRendition r; int w, h, bpp; uint8_t *px = NULL;
+		if (!car_find_attrs(car, "WindowFrame_WindowControlButtons_Regular.psd", at, &r)) px = car_bitmap_linked(car, &r, &w, &h, &bpp);
+		if (px && bpp == 4) { NSBitmapImageRep *rep = RepFromPixels(px, w, h, bpp); if (rep) { img = [[NSImage alloc] initWithSize: NSMakeSize(w, h)]; [img addRepresentation: rep]; } } free(px); }
+	cache[key] = img ?: (id)[NSNull null]; return img;
+}
 static NSBitmapImageRep *LoadRep(NSString *file, int px)
 {
 	static NSMutableDictionary *cache; if (!cache) cache = [NSMutableDictionary dictionary];

@@ -118,9 +118,36 @@ uint8_t *car_bitmap(const CarRendition *r, int *w, int *h, int *bpp)
 			if (!ob) { ob = r->pixel_format == 0x47413820 ? 2 : r->pixel_format == 0x47413136 ? 4 : 4; out = calloc((size_t)W * H, (size_t)ob); if (!out) return NULL; }
 			size_t need = (size_t)rows * W * ob; size_t got = lzfse_decode_buffer(out + (size_t)y0 * W * ob, need, blob, len, NULL);
 			if (got != need) { free(out); return NULL; }
+			if (got == need && rows > 0) {                                                  /* the rows of some images (the packed atlases) are padded: 218 pixels of 4 bytes in 896 bytes. The decoder stops at the size asked for, so ask for more and look at what came out */
+				static const int align[] = { 16, 32, 64, 128 };
+				size_t big = (size_t)rows * (W * (size_t)ob + 128); uint8_t *tmp = malloc(big);
+				if (tmp) { size_t g2 = lzfse_decode_buffer(tmp, big, blob, len, NULL); size_t row = (size_t)W * ob;
+					if (g2 < big && g2 > need && g2 % rows == 0) { size_t st = g2 / rows; int ok = 0; for (unsigned a = 0; a < 4 && !ok; a++) if (st == ((row + align[a] - 1) / align[a]) * align[a]) ok = 1;
+						if (ok || st > row) for (uint32_t yy = 0; yy < rows; yy++) memcpy(out + ((size_t)y0 + yy) * row, tmp + yy * st, row); }
+					free(tmp); } }
 		} else break;
 		y0 += (int)rows; pos += (chunked ? 20 : 0) + len; if (!chunked) break;
 	}
 	if (!out || y0 != H) { free(out); return NULL; }
 	*w = W; *h = H; *bpp = ob; return out;
+}
+
+uint8_t *car_bitmap_linked(const CarFile *c, const CarRendition *r, int *w, int *h, int *bpp)
+{
+	if (r->payload_len) return car_bitmap(r, w, h, bpp);
+	size_t l = 0; const uint8_t *k = car_tlv(r, 1010, &l);
+	if (!k || l < 32 || memcmp(k, "KLNI", 4)) return NULL;
+	uint32_t x = k[8] | k[9] << 8 | k[10] << 16 | (uint32_t)k[11] << 24, y = k[12] | k[13] << 8 | k[14] << 16 | (uint32_t)k[15] << 24, rw = k[16] | k[17] << 8 | k[18] << 16 | (uint32_t)k[19] << 24, rh = k[20] | k[21] << 8 | k[22] << 16 | (uint32_t)k[23] << 24;
+	int want[32]; for (int i = 1; i < 32; i++) want[i] = 0;                /* the key lists the attributes that are not 0 (a record of 20 bytes after a 6 byte header) */
+	for (size_t o = 30; o + 4 <= l; o += 4) { int id = k[o] | k[o + 1] << 8, v = k[o + 2] | k[o + 3] << 8; if (!id && !v) break; if (id > 0 && id < 32) want[id] = v; }
+	for (int i = 0; i < car_count(c); i++) {
+		CarRendition a; if (car_rendition(c, i, &a) || !a.payload_len || strncmp(a.name, "ZZZZPackedAsset", 15)) continue;
+		int ok = 1; for (int id = 1; id < 32 && ok; id++) if ((a.attr[id] < 0 ? 0 : a.attr[id]) != want[id]) ok = 0; if (!ok) continue;
+		int aw, ah, ab; uint8_t *px = car_bitmap(&a, &aw, &ah, &ab); if (!px || ab != 4 || x + rw > (uint32_t)aw || y + rh > (uint32_t)ah) { free(px); continue; }
+		y = (uint32_t)ah - y - rh;                                                       /* the rectangle's y is counted from the bottom of the atlas */
+		uint8_t *out = malloc((size_t)rw * rh * 4); if (!out) { free(px); return NULL; }
+		for (uint32_t row = 0; row < rh; row++) memcpy(out + (size_t)row * rw * 4, px + ((size_t)(y + row) * aw + x) * 4, (size_t)rw * 4);
+		free(px); *w = (int)rw; *h = (int)rh; *bpp = 4; return out;
+	}
+	return NULL;
 }

@@ -1022,6 +1022,8 @@ static NSFont *titleFont(void)
 - (void) set { [super set]; id srv = GSCurrentServer(); if ([srv respondsToSelector: @selector(wsdSetCursorShape:)]) [srv wsdSetCursorShape: shape]; }
 @end
 
+extern NSImage *WsdWindowButtonImage(int kind, int state, BOOL dark);
+static NSMutableSet *gDecoViews;
 @implementation WsdMacDecorationView
 
 + (void) offsets: (float *)l : (float *)r : (float *)t : (float *)b forStyleMask: (NSUInteger)style
@@ -1043,8 +1045,11 @@ static NSFont *titleFont(void)
 	[closeButton retain]; [closeButton removeFromSuperview];
 	[miniaturizeButton retain]; [miniaturizeButton removeFromSuperview];
 	[self updateRects];
+	if (!gDecoViews) { gDecoViews = [[NSMutableSet alloc] init]; [NSTimer scheduledTimerWithTimeInterval: 0.05 target: [WsdMacDecorationView class] selector: @selector(wsdPollHover:) userInfo: nil repeats: YES]; }
+	[gDecoViews addObject: [NSValue valueWithNonretainedObject: self]]; wsdBtnPressed = -1;
 	return self;
 }
+- (void) dealloc { [gDecoViews removeObject: [NSValue valueWithNonretainedObject: self]]; [super dealloc]; }
 
 - (void) updateRects
 {
@@ -1067,15 +1072,36 @@ static NSFont *titleFont(void)
 - (NSRect) circleRect: (int)i
 {
 	NSRect b = [self bounds];
-	return NSMakeRect(9.0 + 23.0 * i, b.size.height - TB + 9.0, 14.0, 14.0);
+	return NSMakeRect(8.0 + 23.0 * i, b.size.height - TB + 8.0, 16.0, 16.0);      /* measured on the Mac (AX): 16 x 16 at x 8, 31, 54, 8 from the top */
 }
 
+- (NSRect) wsdGroupRect { NSRect a = [self circleRect: 0], z = [self circleRect: 2]; return NSInsetRect(NSUnionRect(a, z), -4.0, -4.0); }
+- (void) wsdSetHover: (BOOL)h { if (h == wsdBtnHover) return; wsdBtnHover = h; [self setNeedsDisplayInRect: [self wsdGroupRect]]; }
+/* the glyphs of the three buttons show while the pointer is over the group (the window server sends no mouse-moved events to a window that does not ask for them: the pointer is looked at 20 times a second) */
++ (void) wsdPollHover: (NSTimer *)t
+{
+	NSPoint sp = [NSEvent mouseLocation];
+	for (NSValue *v in [gDecoViews allObjects]) { WsdMacDecorationView *d = [v nonretainedObjectValue]; NSWindow *w = [d window]; if (!w || ![w isVisible]) { [d wsdSetHover: NO]; continue; }
+		NSPoint lp = [d convertPoint: [w convertScreenToBase: sp] fromView: nil]; [d wsdSetHover: NSPointInRect(lp, [d wsdGroupRect]) && NSPointInRect(lp, [d bounds])]; }
+}
 static NSGradient *grad(int r0, int g0, int b0, int r1, int g1, int b1, int r2, int g2, int b2)
 {
 	NSColor *c[3] = { rgb(r0, g0, b0, 1), rgb(r1, g1, b1, 1), rgb(r2, g2, b2, 1) };
 	CGFloat loc[3] = { 0.0, 0.45, 1.0 };
 	return [[[NSGradient alloc] initWithColors: [NSArray arrayWithObjects: c[0], c[1], c[2], nil]
 		atLocations: loc colorSpace: [NSColorSpace genericRGBColorSpace]] autorelease];
+}
+
+/* a button as the Mac's catalogue has it (Aqua.car): colour disc with no glyph at rest, the glyph while the pointer is over the group, darker while pressed; a window that is not key shows grey discs until the pointer comes over them; a button the window lacks stays grey */
+- (void) drawButton: (int)i key: (BOOL)key enabled: (BOOL)en dark: (BOOL)dark
+{
+	BOOL pressed = wsdBtnPressed == i && wsdBtnInside;
+	if (en && (key || wsdBtnHover || pressed)) {
+		int kind = (i == 0 && [window isDocumentEdited]) ? 3 : i, state = pressed ? 2 : (wsdBtnHover ? 1 : 0);
+		NSImage *im = WsdWindowButtonImage(kind, state, dark);
+		if (im) { [im drawInRect: [self circleRect: i] fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1.0]; return; }
+	}
+	[self drawCircle: i key: key && en dark: dark];
 }
 
 - (void) drawCircle: (int)i key: (BOOL)key dark: (BOOL)dark
@@ -1121,9 +1147,9 @@ static NSGradient *grad(int r0, int g0, int b0, int r1, int g1, int b1, int r2, 
 		}
 		{ CGFloat th = WsdTabBarHeight(window); if (th > 0) { NSRect bar = NSMakeRect(0, b.size.height - TB - th, b.size.width, th); [bg set]; NSRectFill(bar); WsdDrawTabBar(window, bar, dark, key); } }       /* the tab bar of a tabbed window */
 		if (isTitled) {                                                                  /* a button the window lacks is drawn disabled (grey), as on macOS */
-			[self drawCircle: 0 key: key && hasCloseButton dark: dark];
-			[self drawCircle: 1 key: key && hasMiniaturizeButton dark: dark];
-			[self drawCircle: 2 key: key && hasResizeBar dark: dark];                    /* the zoom button */
+			[self drawButton: 0 key: key enabled: hasCloseButton dark: dark];
+			[self drawButton: 1 key: key enabled: hasMiniaturizeButton dark: dark];
+			[self drawButton: 2 key: key enabled: hasResizeBar dark: dark];                    /* the zoom button */
 		}
 	}
 }
@@ -1195,27 +1221,29 @@ static NSGradient *grad(int r0, int g0, int b0, int r1, int g1, int b1, int r2, 
 	[self addCursorRect: NSMakeRect(x0, y0 + H - e, c, e) cursor: nwse]; [self addCursorRect: NSMakeRect(x0, y0 + H - c, e, c) cursor: nwse];
 }
 
+- (BOOL) wsdButtonEnabled: (int)i { return (i == 0 && hasCloseButton) || (i == 1 && hasMiniaturizeButton) || (i == 2 && isTitled && hasResizeBar); }
+- (int) wsdButtonAt: (NSPoint)p { for (int i = 0; i < 3; i++) if ([self wsdButtonEnabled: i] && NSPointInRect(p, NSInsetRect([self circleRect: i], -2, -2))) return i; return -1; }
 - (void) mouseDown: (NSEvent *)event
 {
 	NSPoint p = [self convertPoint: [event locationInWindow] fromView: nil];
 	if (hasTitleBar && NSPointInRect(p, titleBarRect)) {
-		for (int i = 0; i < 3; i++) {
-			if (!((i == 0 && hasCloseButton) || (i == 1 && hasMiniaturizeButton) || (i == 2 && isTitled && hasResizeBar))) continue;
-			NSRect r = [self circleRect: i];
-			if (!NSPointInRect(p, NSInsetRect(r, -2, -2))) continue;
-			/* track: the action runs when the button is released over it */
-			NSEvent *e = event;
-			while ([e type] != NSLeftMouseUp)
-				e = [[self window] nextEventMatchingMask: NSLeftMouseDraggedMask | NSLeftMouseUpMask untilDate: [NSDate distantFuture] inMode: NSEventTrackingRunLoopMode dequeue: YES];
-			NSPoint q = [self convertPoint: [e locationInWindow] fromView: nil];
-			if (NSPointInRect(q, NSInsetRect(r, -2, -2))) {
-				if (i == 0) [window performClose: self]; else if (i == 1) [window performMiniaturize: self]; else [window performZoom: self];
-			}
-			return;
-		}
+		int i = [self wsdButtonAt: p];
+		if (i >= 0) { wsdBtnPressed = i; wsdBtnInside = YES; wsdBtnHover = YES; [self setNeedsDisplayInRect: [self wsdGroupRect]]; return; }      /* the action runs when the button is released over it (mouseDragged: / mouseUp:) */
 	}
 	{ CGFloat th = WsdTabBarHeight(window); if (th > 0 && WsdTabBarMouseDown(window, NSMakeRect(0, [self bounds].size.height - TB - th, [self bounds].size.width, th), p, event)) return; }
 	if (hasResizeBar) { int m = [self edgesAtPoint: p]; if (m) { [self resizeWindowWithEdges: m event: event]; return; } }
 	[super mouseDown: event];
+}
+- (void) mouseDragged: (NSEvent *)event
+{
+	if (wsdBtnPressed < 0) { [super mouseDragged: event]; return; }
+	NSPoint p = [self convertPoint: [event locationInWindow] fromView: nil]; BOOL in = NSPointInRect(p, NSInsetRect([self circleRect: wsdBtnPressed], -2, -2));
+	if (in != wsdBtnInside) { wsdBtnInside = in; [self setNeedsDisplayInRect: [self wsdGroupRect]]; }          /* it lets go of the disc when the pointer leaves it and takes it again when it comes back */
+}
+- (void) mouseUp: (NSEvent *)event
+{
+	if (wsdBtnPressed < 0) { [super mouseUp: event]; return; }
+	int i = wsdBtnPressed; BOOL fire = wsdBtnInside; wsdBtnPressed = -1; wsdBtnInside = NO; [self setNeedsDisplayInRect: [self wsdGroupRect]];
+	if (fire) { if (i == 0) [window performClose: self]; else if (i == 1) [window performMiniaturize: self]; else [window performZoom: self]; }
 }
 @end
