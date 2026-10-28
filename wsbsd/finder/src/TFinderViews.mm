@@ -176,7 +176,7 @@ static void GlassPill(NSRect r, NSRect pressed)                                 
 	[g saveGraphicsState]; [[NSBezierPath bezierPathWithRect: NSMakeRect(r.origin.x + rad, r.origin.y, r.size.width - rad * 2, r.size.height)] addClip]; [ring setLineWidth: 1]; NSBezierPath *tb = [NSBezierPath bezierPath]; [tb moveToPoint: NSMakePoint(r.origin.x + rad, r.origin.y + 0.5)]; [tb lineToPoint: NSMakePoint(NSMaxX(r) - rad, r.origin.y + 0.5)]; [tb moveToPoint: NSMakePoint(r.origin.x + rad, NSMaxY(r) - 0.5)]; [tb lineToPoint: NSMakePoint(NSMaxX(r) - rad, NSMaxY(r) - 0.5)]; [tb setLineWidth: 1]; [(dk ? TFRGBA(255, 255, 255, 0.20) : TFRGBA(255, 255, 255, 0.9)) setStroke]; [tb stroke]; [g restoreGraphicsState];
 }
 static void FillRound(NSRect r, CGFloat rad, NSColor *c) { [c setFill]; [[NSBezierPath bezierPathWithRoundedRect: r xRadius: rad yRadius: rad] fill]; }
-static BOOL KeyWin(NSView *v) { return [[v window] isKeyWindow]; }
+static BOOL KeyWin(NSView *v) { return [[v window] isKeyWindow] && [NSApp isActive]; }
 static NSDictionary *Font(CGFloat sz, BOOL bold, NSColor *c) { return @{ NSFontAttributeName: bold ? [NSFont boldSystemFontOfSize: sz] : [NSFont systemFontOfSize: sz], NSForegroundColorAttributeName: c }; }
 static void TextAt(NSString *s, CGFloat x, CGFloat cy, NSDictionary *at) { NSSize z = [s sizeWithAttributes: at]; [s drawAtPoint: NSMakePoint(x, cy - z.height / 2) withAttributes: at]; }
 
@@ -238,6 +238,10 @@ void TFBeginRename(NSView *host, NSRect frame, NSString *name, BOOL centered, NS
 @end
 
 /* ---------- the icon view ---------- */
+/* the desktop's view options live in the preferences (com.apple.finder DesktopViewSettings > IconViewSettings), not in a .DS_Store */
+static NSDictionary *TFDeskSettings(void) { const char *tv = getenv("FINDER_DESKTOP_VP"); if (tv) { int a = 64, b = 54, c = 12, e = 1; sscanf(tv, "%d,%d,%d,%d", &a, &b, &c, &e); return @{ @"iconSize": @(a), @"gridSpacing": @(b), @"textSize": @(c), @"labelOnBottom": @(e != 0) }; }       /* a test aid: size,spacing,text,labelBelow */
+	id d = TFPref(@"DesktopViewSettings", nil); return [d isKindOfClass: [NSDictionary class]] ? d[@"IconViewSettings"] : nil; }
+static void TFDeskSettingsSet(NSDictionary *vp) { id d = TFPref(@"DesktopViewSettings", nil); NSMutableDictionary *m = [d isKindOfClass: [NSDictionary class]] ? [d mutableCopy] : [NSMutableDictionary dictionaryWithObject: @"None" forKey: @"GroupBy"]; NSMutableDictionary *iv = [m[@"IconViewSettings"] mutableCopy] ?: [NSMutableDictionary dictionary]; [iv addEntriesFromDictionary: vp]; m[@"IconViewSettings"] = iv; TFSetPref(@"DesktopViewSettings", m); }
 /* the selected label on the desktop: (0, 89, 209) on the Mac with the blue accent (0, 122, 255): the accent times (.8, .73, .82) */
 static NSColor *DesktopPillColor(void) { NSColor *a = [TF_ACCENT colorUsingColorSpaceName: NSCalibratedRGBColorSpace]; if (!a) return TF_ACCENT; return [NSColor colorWithCalibratedRed: [a redComponent] * 0.8 green: [a greenComponent] * 0.73 blue: [a blueComponent] * 0.82 alpha: 1]; }
 static const CGFloat kCW = 112, kCH = 126, kPad = 10, kIcon = 64;
@@ -257,9 +261,20 @@ static NSString *GroupTitle(NSDictionary *it, NSString *key, int *order)
 }
 @implementation TIconView
 - (void)reloadKeepingSelectionOrFolder:(NSString *)folder { NSArray *keep = [self selectedPaths]; CGFloat o = off; [self setFolder: folder]; for (NSUInteger i = 0; i < [_items count]; i++) if ([keep containsObject: _items[i][@"path"]]) [_sel addIndex: i]; off = o; [self setNeedsDisplay: YES]; }
-/* the desktop's grid, measured on the Mac with new files placed by the Finder at gridSpacing 33 / 40 / 54 (icon size 64, label below): the columns are 94 / 104 / 124 apart (94 + (spacing - 33) * 10 / 7), the rows always 112 (icon + 48) */
-- (CGFloat)cw { return desktop ? _isz + 30 + (_grid - 33) * 10.0 / 7.0 : MAX(_isz + 40, _isz + _grid - 6); }
-- (CGFloat)ch { return desktop ? _isz + 48 : [self cw] + (_showInfo ? 14 : 0); }
+/* the desktop's grid as the Finder lays it out, measured on the Mac (new files placed by the Finder at every combination of icon size 16..128, gridSpacing 33..100, text size 10..16, label below / right; AX positions of the icons): with the label below the columns are max(b(text) + (spacing - 33) * 10 / 7, 1.125 * size + 10) apart (b: 82 84 94 94 102 112 112 for text 10..16) and the rows 40 + 1.125 * size + d(text) (d: -6 -4 0 2 4 6 6); with the label right the columns are 1.125 * size + 96 + e(text) + (spacing - 33) * 10 / 7 (e: -20 -10 0 0 8 18 18) and the rows 1.125 * size + 6 */
+static CGFloat TFDeskTab(const CGFloat *t, CGFloat text) { int i = (int)lround(text) - 10; return t[MAX(0, MIN(6, i))]; }
+- (CGFloat)cw
+{
+	if (!desktop) return MAX(_isz + 40, _isz + _grid - 6);
+	static const CGFloat b[7] = { 82, 84, 94, 94, 102, 112, 112 }, e[7] = { -20, -10, 0, 0, 8, 18, 18 };
+	CGFloat sp = (_grid - 33) * 10.0 / 7.0; return round(_labelRight ? 1.125 * _isz + 96 + TFDeskTab(e, _textSize) + sp : MAX(TFDeskTab(b, _textSize) + sp, 1.125 * _isz + 10));
+}
+- (CGFloat)ch
+{
+	if (!desktop) return [self cw] + (_showInfo ? 14 : 0);
+	static const CGFloat d[7] = { -6, -4, 0, 2, 4, 6, 6 };
+	return round(_labelRight ? 1.125 * _isz + 6 : 40 + 1.125 * _isz + TFDeskTab(d, _textSize));
+}
 - (void)applyOptions { for (NSMutableDictionary *it in _items) [it removeObjectForKey: @"lines"]; [self scrollTo: off]; [self _save]; [self setNeedsDisplay: YES]; }
 - (void)setIconSize:(CGFloat)z { z = MAX(16, MIN(256, z)); if (z == _isz) return; _isz = z; for (NSMutableDictionary *it in _items) [it removeObjectForKey: @"lines"]; [self scrollTo: off]; [self _save]; [self setNeedsDisplay: YES]; }
 - (CGFloat)iconSize { return _isz; }
@@ -273,8 +288,8 @@ static NSString *GroupTitle(NSDictionary *it, NSString *key, int *order)
 }
 - (void)setPaths:(NSArray *)paths
 {
-	NSDate *t0 = [NSDate date]; [_items removeAllObjects]; [_sel removeAllIndexes]; NSFileManager *fm = [NSFileManager defaultManager]; TDSStore *ds = _folder ? [TDSStore storeForFolder: _folder] : nil; NSDictionary *vp = [ds plistForName: @"." sid: @"icvp"]; if (vp) { _isz = [vp[@"iconSize"] doubleValue] >= 16 ? [vp[@"iconSize"] doubleValue] : 64; NSString *ab = vp[@"arrangeBy"]; _snap = [vp[@"arrangeBy"] isEqual: @"grid"]; NSDictionary *m = @{ @"name": @"name", @"kind": @"kind", @"dateModified": @"modified", @"dateCreated": @"created", @"size": @"size", @"label": @"tags" }; _arrange = m[ab]; } else { _isz = _isz ?: 64; }
-	if (vp) { _grid = [vp[@"gridSpacing"] doubleValue] >= 20 ? [vp[@"gridSpacing"] doubleValue] : 54; _textSize = [vp[@"textSize"] doubleValue] >= 8 ? [vp[@"textSize"] doubleValue] : 12; _showInfo = [vp[@"showItemInfo"] boolValue]; _showPreview = vp[@"showIconPreview"] ? [vp[@"showIconPreview"] boolValue] : YES; }
+	NSDate *t0 = [NSDate date]; [_items removeAllObjects]; [_sel removeAllIndexes]; NSFileManager *fm = [NSFileManager defaultManager]; TDSStore *ds = _folder ? [TDSStore storeForFolder: _folder] : nil; NSDictionary *vp = desktop ? TFDeskSettings() : [ds plistForName: @"." sid: @"icvp"]; if (vp) { _isz = [vp[@"iconSize"] doubleValue] >= 16 ? [vp[@"iconSize"] doubleValue] : 64; NSString *ab = vp[@"arrangeBy"]; _snap = [vp[@"arrangeBy"] isEqual: @"grid"]; NSDictionary *m = @{ @"name": @"name", @"kind": @"kind", @"dateModified": @"modified", @"dateCreated": @"created", @"size": @"size", @"label": @"tags" }; _arrange = m[ab]; } else { _isz = _isz ?: 64; }
+	if (vp) { _grid = [vp[@"gridSpacing"] doubleValue] >= 20 ? [vp[@"gridSpacing"] doubleValue] : 54; _textSize = [vp[@"textSize"] doubleValue] >= 8 ? [vp[@"textSize"] doubleValue] : 12; _showInfo = [vp[@"showItemInfo"] boolValue]; _showPreview = vp[@"showIconPreview"] ? [vp[@"showIconPreview"] boolValue] : YES; _labelRight = vp[@"labelOnBottom"] && ![vp[@"labelOnBottom"] boolValue]; }
 	for (NSString *p in paths) {
 		NSString *n = TFDisplayName(p); if ([[p lastPathComponent] hasPrefix: @"."] || ([filter length] && [n rangeOfString: filter options: NSCaseInsensitiveSearch].location == NSNotFound)) continue; BOOL isVol = [_prefix containsObject: p];
 		NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory] && !TFIsPackage(p); NSString *info = @"";
@@ -292,11 +307,12 @@ static NSString *GroupTitle(NSDictionary *it, NSString *key, int *order)
 	for (NSDictionary *it in _items) { NSString *n = [it[@"path"] lastPathComponent]; if (it[@"pos"]) { NSPoint q = [it[@"pos"] pointValue]; [ds setIconLocation: NSMakePoint(q.x + [self cw] / 2, q.y + 4 + _isz / 2) ofName: n]; } else [ds removeName: n sid: @"Iloc"]; }
 	NSMutableDictionary *vp = [ds plistForName: @"." sid: @"icvp"] ?: [@{ @"backgroundType": @0, @"backgroundColorRed": @1.0, @"backgroundColorGreen": @1.0, @"backgroundColorBlue": @1.0, @"gridOffsetX": @0.0, @"gridOffsetY": @0.0, @"gridSpacing": @54.0, @"labelOnBottom": @YES, @"scrollPositionX": @0.0, @"scrollPositionY": @0.0, @"showIconPreview": @YES, @"showItemInfo": @NO, @"textSize": @12.0, @"viewOptionsVersion": @1 } mutableCopy];
 	NSDictionary *m = @{ @"name": @"name", @"kind": @"kind", @"modified": @"dateModified", @"created": @"dateCreated", @"size": @"size", @"tags": @"label" }; vp[@"iconSize"] = @(_isz); vp[@"gridSpacing"] = @(_grid); vp[@"textSize"] = @(_textSize); vp[@"showItemInfo"] = @(_showInfo); vp[@"showIconPreview"] = @(_showPreview); vp[@"arrangeBy"] = m[_arrange ?: @""] ?: (_snap ? @"grid" : @"none");
+	if (desktop) { TFDeskSettingsSet(@{ @"iconSize": @((int)_isz), @"gridSpacing": @((int)_grid), @"textSize": @((int)_textSize), @"labelOnBottom": @(!_labelRight), @"showItemInfo": @(_showInfo), @"showIconPreview": @(_showPreview), @"arrangeBy": vp[@"arrangeBy"] ?: @"none" }); [ds write]; return; }       /* the Desktop: the options go to the preferences, only the places of the icons to ~/Desktop/.DS_Store */
 	[ds setPlist: vp forName: @"." sid: @"icvp"]; if (![ds valueForName: @"." sid: @"vSrn"]) [ds setValue: @1 type: @"long" forName: @"." sid: @"vSrn"]; [ds write];
 }
 - (void)reloadKeepingSelection { NSArray *keep = [self selectedPaths]; if (![_items count]) return; NSMutableArray *ps = [NSMutableArray array]; for (NSDictionary *d in _items) [ps addObject: d[@"path"]]; CGFloat o = off; [self setPaths: ps]; for (NSUInteger i = 0; i < [_items count]; i++) if ([keep containsObject: _items[i][@"path"]]) [_sel addIndex: i]; off = o; [self setNeedsDisplay: YES]; }
 - (NSInteger)_cols { return MAX(1, (NSInteger)floor(([self bounds].size.width - 2 * kPad) / [self cw])); }
-- (NSPoint)_slot:(NSInteger)i { if (_group && i < (NSInteger)[_gpos count]) return [_gpos[i] pointValue]; if (desktop) { CGFloat H = [self bounds].size.height, W = [self bounds].size.width; NSInteger per = MAX(1, (NSInteger)floor((H - 34 - 4) / [self ch])); return NSMakePoint(W - 4 - (i / per + 1) * [self cw], 34 + (i % per) * [self ch]); }       /* the first icon's top is 8 under the menu bar (30), its cell's right edge 4 from the screen's edge; the cells are centred on their icons */ NSInteger c = [self _cols]; return NSMakePoint(kPad + (i % c) * [self cw], kPad + (i / c) * [self ch]); }
+- (NSPoint)_slot:(NSInteger)i { if (_group && i < (NSInteger)[_gpos count]) return [_gpos[i] pointValue]; if (desktop) { CGFloat H = [self bounds].size.height, W = [self bounds].size.width; NSInteger per = MAX(1, (NSInteger)floor((H - 38) / [self ch])); return NSMakePoint(W - 4 - (i / per + 1) * [self cw], 30 + (_labelRight ? 3 : 0) + _isz / 16 + (i % per) * [self ch]); }       /* the first icon's top is 34 + size / 16 (37 + size / 16 with the label right) */       /* the first icon's top is 8 under the menu bar (30), its cell's right edge 4 from the screen's edge; the cells are centred on their icons */ NSInteger c = [self _cols]; return NSMakePoint(kPad + (i % c) * [self cw], kPad + (i / c) * [self ch]); }
 - (NSPoint)_target:(NSInteger)i { NSValue *v = _group ? nil : _items[i][@"pos"]; return v ? [v pointValue] : [self _slot: i]; }
 - (void)_regroup
 {
@@ -366,7 +382,7 @@ static NSString *GroupTitle(NSDictionary *it, NSString *key, int *order)
 	for (NSInteger pass = 0; pass < 2; pass++) for (NSInteger i = 0; i < (NSInteger)[_items count]; i++) {                                                                    /* the dragged icons last, on top */
 		BOOL moving = _dragging && [_sel containsIndex: i]; if ((pass == 1) != moving) continue;
 		NSRect c = [self _cell: i]; if (NSMaxY(c) < v.origin.y || c.origin.y > NSMaxY(v)) continue; NSMutableDictionary *it = _items[i]; BOOL sel = [_sel containsIndex: i];
-		NSRect ir = NSMakeRect(c.origin.x + ([self cw] - _isz) / 2, c.origin.y + 4, _isz, _isz);
+		NSRect ir = NSMakeRect(c.origin.x + (desktop && _labelRight ? _isz / 16.0 : ([self cw] - _isz) / 2), c.origin.y + 4, _isz, _isz);
 		if (_dropTarget == i) FillRound(NSInsetRect(ir, -6, -6), 8, key ? TFRGBA(0, 98, 225, 0.55) : TFRGBA(120, 120, 120, 0.4));
 		if (sel && desktop) { NSBezierPath *ring = [NSBezierPath bezierPathWithRoundedRect: NSInsetRect(ir, -3, -3) xRadius: 8 yRadius: 8]; [ring setLineWidth: 2]; [TFRGB(77, 77, 84) setStroke]; [ring stroke]; }       /* the desktop: a 2 pt ring 72 x 72 round the 64 pt icon, no fill (Mac AX + pixels) */
 		else if (sel) FillRound(NSInsetRect(ir, -4, -4), 6, TFDark() ? (key ? TFRGBA(255, 255, 255, 0.14) : TFRGB(52, 52, 52)) : TFRGBA(0, 0, 0, 0.09));
@@ -374,12 +390,13 @@ static NSString *GroupTitle(NSDictionary *it, NSString *key, int *order)
 		if (thumb) { NSSize z = [thumb size]; CGFloat k = MIN(_isz / z.width, _isz / z.height); NSRect tr = NSMakeRect(NSMidX(ir) - z.width * k / 2, NSMidY(ir) - z.height * k / 2, z.width * k, z.height * k); [TFRGBA(0, 0, 0, 0.35) setFill]; NSRectFill(NSOffsetRect(tr, 0, 1)); [thumb drawInRect: tr fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; }
 		else TFDrawIcon(it[@"path"], ir);
 		NSArray *lines = it[@"lines"]; if (!lines) { lines = WrapLabel(it[@"name"], lab, [self cw] - 6.5, 2); it[@"lines"] = lines; }
-		CGFloat y = c.origin.y + (desktop ? 19 : 17) + _isz; CGFloat lh = 16;      /* the desktop's first line is 79 under the icon's top (Mac), 2 lower than in a window */
-		if (sel && desktop) { CGFloat mw = 0; for (NSString *ln in lines) mw = MAX(mw, [ln sizeWithAttributes: lab].width); FillRound(NSMakeRect(NSMidX(c) - mw / 2 - 4.5, y - 9, mw + 9, lh * ([lines count] - 1) + 17), 7, key ? DesktopPillColor() : TFDark() ? TFRGB(90, 90, 90) : TFRGB(190, 190, 194)); }       /* one pill for both lines: 93 x 33 for two lines of 84 pt text (Mac) */
+		CGFloat y = c.origin.y + (desktop ? 4 + _isz + 6 + _isz / 16.0 + 0.375 * _textSize : 17 + _isz); CGFloat lh = 16;      /* the desktop's first line: its ascenders start 6 + size / 16 under the icon (Mac, size 16..128), centre 0.375 of the text size lower */
+		if (desktop && _labelRight) { NSString *ln = [WrapLabel(it[@"name"], lab, [self cw] - _isz - 22, 1) firstObject] ?: @""; NSSize z = [ln sizeWithAttributes: lab]; CGFloat tx = ir.origin.x + _isz + 7 + _isz / 16.0, ty = NSMidY(ir) - 1; if (sel) FillRound(NSMakeRect(tx - 4.5, ty - 8.5, z.width + 9, 17), 7, key ? DesktopPillColor() : TFRGB(208, 208, 208)); [ln drawAtPoint: NSMakePoint(tx, ty - z.height / 2) withAttributes: sel ? (key ? labSel : Font(_textSize, NO, TFRGB(102, 102, 102))) : lab]; continue; }       /* the label right of the icon: 7 + size / 16 from it, centred 1 above its middle */      /* the desktop's first line is 79 under the icon's top (Mac), 2 lower than in a window */
+		if (sel && desktop) { CGFloat mw = 0; for (NSString *ln in lines) mw = MAX(mw, [ln sizeWithAttributes: lab].width); FillRound(NSMakeRect(NSMidX(c) - mw / 2 - 4.5, y - 9, mw + 9, lh * ([lines count] - 1) + 17), 7, key ? DesktopPillColor() : TFRGB(208, 208, 208)); }       /* another application in front: a light grey pill (208) with grey text (102) */       /* one pill for both lines: 93 x 33 for two lines of 84 pt text (Mac) */
 		for (NSString *ln in lines) {
 			NSSize z = [ln sizeWithAttributes: lab]; if (ln == [lines firstObject] && [it[@"tags"] count]) [NSClassFromString(@"WsdFinderSupport") drawTagDots: it[@"tags"] rightEdge: NSMidX(c) - z.width / 2 - 9 centerY: y];
 			if (sel && !desktop) FillRound(NSMakeRect(NSMidX(c) - z.width / 2 - 5, y - 9, z.width + 10, 18), 5, key ? TF_ACCENT : TFDark() ? TFRGB(90, 90, 90) : TFRGB(190, 190, 194));
-			[ln drawAtPoint: NSMakePoint(NSMidX(c) - z.width / 2, y - z.height / 2) withAttributes: sel ? labSel : lab]; y += lh;
+			[ln drawAtPoint: NSMakePoint(NSMidX(c) - z.width / 2, y - z.height / 2) withAttributes: sel ? (desktop && !key ? Font(_textSize, NO, TFRGB(102, 102, 102)) : labSel) : lab]; y += lh;
 		}
 		if (!desktop && _showInfo && [it[@"info"] length]) { NSSize z = [it[@"info"] sizeWithAttributes: inf]; [it[@"info"] drawAtPoint: NSMakePoint(NSMidX(c) - z.width / 2, y - z.height / 2 - 1) withAttributes: inf]; }
 	}
