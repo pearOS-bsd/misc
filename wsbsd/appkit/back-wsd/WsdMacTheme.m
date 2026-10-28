@@ -391,7 +391,8 @@ static BOOL wsdMenuKeyEquivalent(NSMenu *self, SEL _cmd, NSEvent *e)
 	unichar c = [[e charactersIgnoringModifiers] characterAtIndex: 0]; if (c != '=' && (c < 'A' || c > 'z' || (c > 'Z' && c < 'a'))) return ((BOOL (*)(id, SEL, id))origMenuKeyEq)(self, _cmd, e);   /* only letters differ */
 	NSString *k = [[e charactersIgnoringModifiers] lowercaseString]; NSMenu *owner = nil; NSInteger idx = -1;
 	NSMenuItem *it = wsdFindKeyItem(self, k, [e modifierFlags], &owner, &idx); if (getenv("WSD_KEY_DEBUG")) NSLog(@"menu key %@ mods %lx -> %@", k, (unsigned long)[e modifierFlags], it ? [it title] : @"none"); if (!it) return NO;
-	if ([owner respondsToSelector: @selector(_autoenableItem:)]) [owner performSelector: @selector(_autoenableItem:) withObject: it];
+	[owner update];                                          /* the items are validated against the window that is key now, not the one that was key when the menu was last updated */
+	if (getenv("WSD_KEY_DEBUG")) NSLog(@"menu key: enabled %d target %@ action %@ key window %@ autoenable %d found %@ firstResp %@", (int)[it isEnabled], [it target], NSStringFromSelector([it action]), [NSApp keyWindow], (int)[owner autoenablesItems], [NSApp targetForAction: [it action]], [[NSApp keyWindow] firstResponder]);
 	if ([it isEnabled]) [owner performActionForItemAtIndex: idx];
 	return YES;
 }
