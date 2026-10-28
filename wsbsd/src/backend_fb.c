@@ -22,6 +22,7 @@ struct ws_kms {
 	uint8_t *map; size_t map_size; int stride;      /* the framebuffer and its row length in bytes */
 	int w, h;
 	ws_surface *back;
+	uint32_t *last;                                 /* what the framebuffer holds now: only the pixels that changed are written (writing the whole screen for every frame shows as flicker where the display reads the memory while it is written) */
 };
 
 ws_kms *ws_kms_open(const char *dev, int *w, int *h)
@@ -59,8 +60,11 @@ int ws_kms_present_ready(ws_kms *k) { (void)k; return 1; }
 
 int ws_kms_present(ws_kms *k)
 {
-	size_t row = (size_t)k->w * 4;
-	for (int y = 0; y < k->h; y++) memcpy(k->map + (size_t)y * (size_t)k->stride, k->back->px + (size_t)y * k->back->stride, row);
+	if (!k->last) { k->last = calloc((size_t)k->w * (size_t)k->h, 4); if (!k->last) { size_t row = (size_t)k->w * 4; for (int y = 0; y < k->h; y++) memcpy(k->map + (size_t)y * (size_t)k->stride, k->back->px + (size_t)y * k->back->stride, row); return 0; } memset(k->last, 0xA5, (size_t)k->w * (size_t)k->h * 4); }
+	for (int y = 0; y < k->h; y++) {
+		const uint32_t *src = (const uint32_t *)(k->back->px + (size_t)y * k->back->stride); uint32_t *old = k->last + (size_t)y * k->w; uint32_t *dst = (uint32_t *)(k->map + (size_t)y * (size_t)k->stride);
+		int x = 0; while (x < k->w) { while (x < k->w && src[x] == old[x]) x++; if (x >= k->w) break; int a = x; while (x < k->w && (src[x] != old[x] || (x + 1 < k->w && src[x + 1] != old[x + 1]))) x++; memcpy(dst + a, src + a, (size_t)(x - a) * 4); memcpy(old + a, src + a, (size_t)(x - a) * 4); }
+	}
 	return 0;
 }
 
