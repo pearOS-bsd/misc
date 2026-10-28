@@ -886,6 +886,16 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 
 /* ---------- the toolbar ---------- */
 /* the "gallery" glyph of the view modes: a rectangle over four dashes (no SF Symbol of that look): an NSImage that draws itself in the colour of the theme */
+@interface TShareGlyph : NSImage @end
+@implementation TShareGlyph       /* the Share glyph (a box with an arrow), drawn in the colour of the theme; the shape is in flipped coordinates */
+- (void)drawInRect:(NSRect)r fromRect:(NSRect)f operation:(NSCompositingOperation)op fraction:(CGFloat)a
+{
+	NSColor *t = TFDark() ? TFRGB(245, 245, 245) : TF_TEXT; CGFloat cx = NSMidX(r), cy = NSMidY(r); [NSGraphicsContext saveGraphicsState];
+	if (![[NSGraphicsContext currentContext] isFlipped]) { NSAffineTransform *x = [NSAffineTransform transform]; [x translateXBy: 0 yBy: 2 * cy]; [x scaleXBy: 1 yBy: -1]; [x concat]; }
+	cy += 0; [t setStroke]; NSBezierPath *q = [NSBezierPath bezierPath]; [q setLineWidth: 1.7]; [q setLineCapStyle: NSRoundLineCapStyle]; [q setLineJoinStyle: NSRoundLineJoinStyle]; [q moveToPoint: NSMakePoint(cx, cy + 3)]; [q lineToPoint: NSMakePoint(cx, cy - 10)]; [q moveToPoint: NSMakePoint(cx - 3.8, cy - 6.2)]; [q lineToPoint: NSMakePoint(cx, cy - 10.2)]; [q lineToPoint: NSMakePoint(cx + 3.8, cy - 6.2)];
+	NSBezierPath *u = [NSBezierPath bezierPath]; [u setLineWidth: 1.7]; [u setLineCapStyle: NSRoundLineCapStyle]; [u setLineJoinStyle: NSRoundLineJoinStyle]; [u moveToPoint: NSMakePoint(cx - 3.5, cy - 3.8)]; [u lineToPoint: NSMakePoint(cx - 4.8, cy - 3.8)]; [u curveToPoint: NSMakePoint(cx - 7.6, cy - 1) controlPoint1: NSMakePoint(cx - 6.4, cy - 3.8) controlPoint2: NSMakePoint(cx - 7.6, cy - 2.6)]; [u lineToPoint: NSMakePoint(cx - 7.6, cy + 6)]; [u curveToPoint: NSMakePoint(cx - 4.8, cy + 8.8) controlPoint1: NSMakePoint(cx - 7.6, cy + 7.6) controlPoint2: NSMakePoint(cx - 6.4, cy + 8.8)]; [u lineToPoint: NSMakePoint(cx + 4.8, cy + 8.8)]; [u curveToPoint: NSMakePoint(cx + 7.6, cy + 6) controlPoint1: NSMakePoint(cx + 6.4, cy + 8.8) controlPoint2: NSMakePoint(cx + 7.6, cy + 7.6)]; [u lineToPoint: NSMakePoint(cx + 7.6, cy - 1)]; [u curveToPoint: NSMakePoint(cx + 4.8, cy - 3.8) controlPoint1: NSMakePoint(cx + 7.6, cy - 2.6) controlPoint2: NSMakePoint(cx + 6.4, cy - 3.8)]; [u lineToPoint: NSMakePoint(cx + 3.5, cy - 3.8)]; [u stroke]; [q stroke]; [NSGraphicsContext restoreGraphicsState];
+}
+@end
 @interface TGalleryGlyph : NSImage @end
 @implementation TGalleryGlyph
 - (void)drawInRect:(NSRect)r fromRect:(NSRect)f operation:(NSCompositingOperation)op fraction:(CGFloat)a
@@ -901,6 +911,24 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 	if (trashMode) { x -= 7 + 66; if (k == 5) return NSMakeRect(x, 8, 66, 36); }
 	x -= 7 + 112; if (k == 3) return NSMakeRect(x, 8, 112, 36); x -= 7 + 48; if (k == 2) return NSMakeRect(x, 8, 48, 36); x -= 7 + 161; if (k == 1) return NSMakeRect(x, 8, 161, 36);
 	return NSMakeRect(7, 8, 74, 36);
+}
+- (void)_syncNavSegment
+{
+	if (!navSeg) { navSeg = [[NSSegmentedControl alloc] initWithFrame: NSZeroRect]; [navSeg setSegmentStyle: NSSegmentStyleCapsule]; [navSeg setTrackingMode: NSSegmentSwitchTrackingMomentary]; [navSeg setSegmentCount: 2]; NSArray *n = @[ @"chevron.left", @"chevron.right" ];
+		for (int k = 0; k < 2; k++) { [navSeg setImage: [NSImage imageWithSystemSymbolName: n[k] accessibilityDescription: nil] forSegment: k]; [navSeg setWidth: 37 forSegment: k]; } [navSeg setTarget: self]; [navSeg setAction: @selector(_navPicked:)]; [self addSubview: navSeg]; }
+	[navSeg setFrame: [self _pill: 0]]; [navSeg setEnabled: canBack forSegment: 0]; [navSeg setEnabled: canForward forSegment: 1];
+}
+- (void)_navPicked:(NSSegmentedControl *)s { NSInteger k = [s selectedSegment]; if (k == 0 && canBack) [NSApp sendAction: @selector(cmdBack:) to: target from: self]; else if (k == 1 && canForward) [NSApp sendAction: @selector(cmdForward:) to: target from: self]; }
+- (void)_syncActionSegment
+{
+	if (!actSeg) { actSeg = [[NSSegmentedControl alloc] initWithFrame: NSZeroRect]; [actSeg setSegmentStyle: NSSegmentStyleCapsule]; [actSeg setTrackingMode: NSSegmentSwitchTrackingMomentary]; [actSeg setSegmentCount: 3]; NSArray *n = @[ @"", @"tag", @"ellipsis" ]; [actSeg setIdentifier: @"nosep"];       /* no lines between the segments (theme) */
+		for (int k = 0; k < 3; k++) { [actSeg setImage: k == 0 ? [[TShareGlyph alloc] initWithSize: NSMakeSize(20, 20)] : [NSImage imageWithSystemSymbolName: n[k] accessibilityDescription: nil] forSegment: k]; [actSeg setWidth: 112.0 / 3 forSegment: k]; } [actSeg setTarget: self]; [actSeg setAction: @selector(_actPicked:)]; [self addSubview: actSeg]; }
+	[actSeg setFrame: [self _pill: 3]];
+}
+- (void)_actPicked:(NSSegmentedControl *)s
+{
+	NSInteger k = [s selectedSegment]; NSRect ac = [self _pill: 3]; CGFloat aw = ac.size.width / 3;
+	if (k == 2) TFPopupMenu(self, NSMakePoint(ac.origin.x + 2 * aw, 46), [target performSelector: @selector(actionMenu)]); else if (k == 1) [target performSelector: @selector(cmdTagsPopup:) withObject: nil]; else [target performSelector: @selector(cmdShare:) withObject: nil];
 }
 - (void)_syncModeSegment
 {
@@ -922,20 +950,12 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 - (void)drawRect:(NSRect)r
 {
 	[(KeyWin(self) ? TF_CONTENT : TF_SIDEBAR) setFill]; NSRectFill([self bounds]); NSColor *t = TFDark() ? TFRGB(245, 245, 245) : TF_TEXT; NSRect pr = _pressed; NSColor *off = TFDark() ? TFRGBA(255, 255, 255, 0.28) : TFRGBA(0, 0, 0, 0.25);
-	NSRect nav = [self _pill: 0]; GlassPill(nav, pr); [TFDark() ? TFRGBA(255, 255, 255, 0.27) : TFRGBA(0, 0, 0, 0.2) setFill]; NSRectFill(NSMakeRect(floor(NSMidX(nav)), 16, 1, 20));
-	TFSymbolW(@"chevron.left", NSMakeRect(nav.origin.x, 8, 37, 36), 19, 6, canBack ? t : off); TFSymbolW(@"chevron.right", NSMakeRect(NSMidX(nav), 8, 37, 36), 19, 6, canForward ? t : off);
+	[self _syncNavSegment];       /* back/forward: an NSSegmentedControl (capsule) */
 	TextAt(title ?: @"", 93, 26, Font(15, YES, KeyWin(self) ? t : TF_DIM));
 	[self _syncModeSegment];       /* the view modes are an NSSegmentedControl (capsule style, drawn by the theme) */
 	NSRect gr = [self _pill: 2]; GlassPill(gr, pr); [t setStroke]; for (int row = 0; row < 2; row++) for (int col = 0; col < 3; col++) { NSBezierPath *o = [NSBezierPath bezierPathWithRoundedRect: NSMakeRect(gr.origin.x + 9 + col * 6.5, 22.5 + row * 6, 5, 4) xRadius: 1 yRadius: 1]; [o setLineWidth: 1.1]; [o stroke]; } [t setFill]; NSRectFill(NSMakeRect(gr.origin.x + 9, 19, 17, 1.2));
 	TFSymbolW(@"chevron.down", NSMakeRect(NSMaxX(gr) - 19, 8, 12, 36), 10, 6, t);
-	NSRect ac = [self _pill: 3]; GlassPill(ac, pr); CGFloat aw = ac.size.width / 3;
-	{ CGFloat cx = ac.origin.x + aw / 2, cy = 26; [t setStroke]; NSBezierPath *p = [NSBezierPath bezierPath]; [p setLineWidth: 1.7]; [p setLineCapStyle: NSRoundLineCapStyle]; [p setLineJoinStyle: NSRoundLineJoinStyle];
-		[p moveToPoint: NSMakePoint(cx - 3.5, cy - 4.5)]; [p lineToPoint: NSMakePoint(cx - 6.5, cy - 4.5)]; [p appendBezierPathWithRoundedRect: NSMakeRect(cx - 7.5, cy - 4.5, 15, 14) xRadius: 3 yRadius: 3];
-		NSBezierPath *q = [NSBezierPath bezierPath]; [q setLineWidth: 1.7]; [q setLineCapStyle: NSRoundLineCapStyle]; [q setLineJoinStyle: NSRoundLineJoinStyle]; [q moveToPoint: NSMakePoint(cx, cy + 3)]; [q lineToPoint: NSMakePoint(cx, cy - 10)]; [q moveToPoint: NSMakePoint(cx - 3.8, cy - 6.2)]; [q lineToPoint: NSMakePoint(cx, cy - 10.2)]; [q lineToPoint: NSMakePoint(cx + 3.8, cy - 6.2)];
-		NSBezierPath *bx = [NSBezierPath bezierPath]; [bx setLineWidth: 1.7]; [bx setLineCapStyle: NSRoundLineCapStyle]; [bx setLineJoinStyle: NSRoundLineJoinStyle]; [bx moveToPoint: NSMakePoint(cx - 3.2, cy - 3.8)]; [bx lineToPoint: NSMakePoint(cx - 5.2, cy - 3.8)]; [bx appendBezierPathWithArcWithCenter: NSMakePoint(cx - 4.5, cy + 6) radius: 3 startAngle: 90 endAngle: 180]; (void)p;
-		NSBezierPath *u = [NSBezierPath bezierPath]; [u setLineWidth: 1.7]; [u setLineCapStyle: NSRoundLineCapStyle]; [u setLineJoinStyle: NSRoundLineJoinStyle]; [u moveToPoint: NSMakePoint(cx - 3.5, cy - 3.8)]; [u lineToPoint: NSMakePoint(cx - 4.8, cy - 3.8)]; [u curveToPoint: NSMakePoint(cx - 7.6, cy - 1) controlPoint1: NSMakePoint(cx - 6.4, cy - 3.8) controlPoint2: NSMakePoint(cx - 7.6, cy - 2.6)]; [u lineToPoint: NSMakePoint(cx - 7.6, cy + 6)]; [u curveToPoint: NSMakePoint(cx - 4.8, cy + 8.8) controlPoint1: NSMakePoint(cx - 7.6, cy + 7.6) controlPoint2: NSMakePoint(cx - 6.4, cy + 8.8)]; [u lineToPoint: NSMakePoint(cx + 4.8, cy + 8.8)]; [u curveToPoint: NSMakePoint(cx + 7.6, cy + 6) controlPoint1: NSMakePoint(cx + 6.4, cy + 8.8) controlPoint2: NSMakePoint(cx + 7.6, cy + 7.6)]; [u lineToPoint: NSMakePoint(cx + 7.6, cy - 1)]; [u curveToPoint: NSMakePoint(cx + 4.8, cy - 3.8) controlPoint1: NSMakePoint(cx + 7.6, cy - 2.6) controlPoint2: NSMakePoint(cx + 6.4, cy - 3.8)]; [u lineToPoint: NSMakePoint(cx + 3.5, cy - 3.8)]; [u stroke]; [q stroke]; (void)bx; }
-	TFSymbol(@"tag", NSMakeRect(ac.origin.x + aw, 8, aw, 36), 20, t);
-	NSRect e = NSMakeRect(ac.origin.x + 2 * aw, 8, aw, 36); for (int k = 0; k < 3; k++) { [t setFill]; [[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(NSMidX(e) - 8 + k * 6.5, 24, 3.5, 3.5)] fill]; }
+	[self _syncActionSegment];       /* Share, Tags, Action: an NSSegmentedControl (capsule) */
 	if (trashMode) { NSRect er = [self _pill: 5]; GlassPill(er, pr); NSSize ez = [@"Empty" sizeWithAttributes: Font(13, NO, t)]; [@"Empty" drawAtPoint: NSMakePoint(NSMidX(er) - ez.width / 2, 26 - ez.height / 2) withAttributes: Font(13, NO, t)]; }
 	NSRect sr = [self _pill: 4]; GlassPill(sr, pr); TFSymbol(@"magnifyingglass", NSMakeRect(sr.origin.x, 8, searching ? 34 : sr.size.width, 36), 20, searching ? TF_DIM : t);
 	if (searching && ![[search stringValue] length] && [[self window] firstResponder] != [search currentEditor]) TextAt(@"Search", sr.origin.x + 34, 26, Font(13, NO, TF_DIM));
