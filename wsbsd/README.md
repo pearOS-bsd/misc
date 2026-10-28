@@ -25,7 +25,7 @@ The stack: `wsd` (this repo: window server and compositor speaking the SkyLight 
 - **UI parity with macOS** (the same Objective-C gallery rendered on both, mean absolute pixel difference per control, 0 to 255): dark appearance, most controls 4 to 12, the
   date picker 23; light appearance 4 to 16, the date picker 24. Much of what is left is the font (Inter, not San Francisco, which is not redistributable).
 
-### Estimated coverage (updated 2026-10-28; a rough estimate, not a measurement; fidelity to the real thing is not measured per routine)
+### Estimated coverage (updated 2026-10-29; a rough estimate, not a measurement; fidelity to the real thing is not measured per routine)
 | Part | Estimate | Notes |
 |---|---|---|
 | SkyLight server routines (744) | ~74 % have a handler of their own, 192 only a generic acceptor | the handlers include replays of recorded replies; the share that is decompiled and verified is smaller (probably under half) |
@@ -37,13 +37,14 @@ The stack: `wsd` (this repo: window server and compositor speaking the SkyLight 
 | Foundation networking (NSURLSession over libcurl) | ~45 % | data / download / upload tasks, delegates; no background sessions, no HTTP/3 |
 | TextMate port (unmodified source) | ~55 % | builds, starts, real menus, gutter and layout, key input reaches the editor; the text of the editor is not drawn yet, no bundles shipped, WebKit is a stub |
 | **CoreWLAN / airportd** | **~55 % (required, in progress)** | see "Required next" below |
-| Finder (desktop and windows) | ~80 % | window, views (icon, list, columns, gallery), preview pane, menus, Get Info, Share, search, tags; missing: smart folder editor, drag to other applications, full move to NS* classes, ported logic from the decompiled methods |
+| Finder (desktop and windows) | ~82 % | window, views (icon, list, columns, gallery), preview pane, menus, Get Info, Share, search, tags; missing: smart folder editor, drag to other applications, full move to NS* classes, ported logic from the decompiled methods |
 | Dock | ~72 % | tiles, magnification, menus (NSMenu), Fan / Grid / List stacks measured on the Mac, hot corners, autohide; magnification curve re-checked (within 4 pt); missing: Spaces / Mission Control, list scrolling |
 | Menu glass / materials | ~88 % | menu liquid glass fitted (blur, tone, per-edge lens, shadow, corner radius about 10 px as on the Mac); NSVisualEffectView materials measured (tint per material, blur sigma about 17); missing: specular at the corners compared like for like, adaptive brightness, GL shader run |
-| Top bar, Control Center, Notification Center | ~55 % | Wi-Fi / Bluetooth / Sound / Display panels, notifications service end to end; missing: decompiled logic, Focus / Keyboard panels, real Bluetooth, notification actions |
-| Bootable images (amd64, arm64) | ~78 % | amd64 CD and USB boot to the desktop in QEMU; arm64 ISO and USB image build in CI, are published in Releases and the ISO reaches the desktop in QEMU aarch64; real USB stick and PC untested |
+| Top bar, Control Center, Notification Center | ~58 % | Wi-Fi / Bluetooth / Sound / Display panels, notifications service end to end; missing: decompiled logic, Focus / Keyboard panels, real Bluetooth, notification actions |
+| Bootable images (amd64, arm64) | ~82 % | one hybrid `.iso` per architecture (boots as a CD and, written with dd / Etcher, from a USB stick: tested as a USB disk in QEMU aarch64); Ploader vendored (`ploader/`) with the pear, boots without a menu; boot screen = the pear on black; desktop with demo content, launchd, guest tools (VMware, VirtualBox amd64); a real laptop boots it (the user's report of 2026-10-28: smooth), touchpad / Control Center effects / sound untested after the fixes |
 | **Whole project, release target (Dock + glass + two images)** | **~82 %** | the rest (Spaces, decompiled Control Center, smart folders) is after the first release |
 
+- **Pointer and window buttons (2026-10-29):** the arrow and the hand / cross / open / closed hand pointers are the Mac's pictures (measured), the traffic lights are the Mac's own renditions from `Aqua.car` (`WindowControlButtons`, with hover glyphs, a pressed state that swells and stretches slightly while dragged); keyboard shortcuts show the Mac's symbols and work (menu key equivalents validated against the key window, control-letter characters, caps lock).
 - **Designer assets:** `tools/accept_assets.py` checks a delivery of replacement asset catalogues (`assets-designer/mod`) against the originals rendition by rendition (names, attributes, formats and, since 2026-10-28, the content). The first delivery (67 catalogues) passes the structure check but its pictures are byte-identical to the originals, so nothing is installed yet.
 
 ### Required next (decided by the project owner)
