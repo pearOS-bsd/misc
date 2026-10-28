@@ -250,3 +250,6 @@ Dock.m: DockGridView/Window/Title/ShowDockGrid. Mac measurements: AXGrid 1272x10
 
 ## Dock list stack (2026-10-28)
 View content as > List = plain glass NSMenu (DockListMenu in Dock.m): names in sort order from the top, 16 pt icon, folders have lazily filled submenus, separator, Options (Remove from Dock, Show in Finder), Open in Finder; Mac: 24 px pitch, menu fills screen height and scrolls (here cut to the rows that fit: no menu scrolling in GNUstep). Verified on VM (DOCK_SHOWAS=3). Mac Dock prefs were touched for the measurement and restored to showas=1 (Fan). Missing: scroll arrows, Options actions, pointer arrow at the tile.
+
+## arm64 ISO in CI (2026-10-28)
+iso.yml: `iso` job is a matrix {x86_64, aarch64} (vmactions/freebsd-vm, aarch64 is emulated: slow, continue-on-error, timeout 360 min); outputs renamed macbsd-aarch64* -> macbsd-arm64*; artifacts macbsd-iso-<arch>; boot-test only amd64 (x86_64 artifact); release merges both. No Ploader for aarch64 yet (ploader job builds x64): the image boots through FreeBSD's loader (build.sh fallback). Unverified until the first run finishes.
