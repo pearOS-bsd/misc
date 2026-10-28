@@ -923,6 +923,12 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 	x -= 7 + 112; if (k == 3) return NSMakeRect(x, 8, 112, 36); x -= 7 + 48; if (k == 2) return NSMakeRect(x, 8, 48, 36); x -= 7 + 161; if (k == 1) return NSMakeRect(x, 8, 161, 36);
 	return NSMakeRect(7, 8, 74, 36);
 }
+- (void)_syncSearchSegment
+{
+	if (!srchSeg) { srchSeg = [[NSSegmentedControl alloc] initWithFrame: NSZeroRect]; [srchSeg setSegmentStyle: NSSegmentStyleCapsule]; [srchSeg setTrackingMode: NSSegmentSwitchTrackingMomentary]; [srchSeg setSegmentCount: 1]; [srchSeg setImage: [NSImage imageWithSystemSymbolName: @"magnifyingglass" accessibilityDescription: nil] forSegment: 0]; [srchSeg setWidth: 37 forSegment: 0]; [srchSeg setIdentifier: @"nosep"]; [srchSeg setTarget: self]; [srchSeg setAction: @selector(_searchPicked:)]; [self addSubview: srchSeg]; }
+	[srchSeg setFrame: [self _pill: 4]]; [srchSeg setHidden: searching];
+}
+- (void)_searchPicked:(id)s { [NSApp sendAction: @selector(cmdToggleSearch:) to: target from: self]; }
 - (void)_syncGroupSegment
 {
 	if (!grpSeg) { grpSeg = [[NSSegmentedControl alloc] initWithFrame: NSZeroRect]; [grpSeg setSegmentStyle: NSSegmentStyleCapsule]; [grpSeg setTrackingMode: NSSegmentSwitchTrackingMomentary]; [grpSeg setSegmentCount: 1]; [grpSeg setImage: [[TGroupGlyph alloc] initWithSize: NSMakeSize(34, 20)] forSegment: 0]; [grpSeg setWidth: 48 forSegment: 0]; [grpSeg setIdentifier: @"nosep"]; [grpSeg setTarget: self]; [grpSeg setAction: @selector(_groupPicked:)]; [self addSubview: grpSeg]; }
@@ -973,7 +979,7 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 	[self _syncGroupSegment];       /* Group: a one segment capsule that opens the menu */
 	[self _syncActionSegment];       /* Share, Tags, Action: an NSSegmentedControl (capsule) */
 	if (trashMode) { NSRect er = [self _pill: 5]; GlassPill(er, pr); NSSize ez = [@"Empty" sizeWithAttributes: Font(13, NO, t)]; [@"Empty" drawAtPoint: NSMakePoint(NSMidX(er) - ez.width / 2, 26 - ez.height / 2) withAttributes: Font(13, NO, t)]; }
-	NSRect sr = [self _pill: 4]; GlassPill(sr, pr); TFSymbol(@"magnifyingglass", NSMakeRect(sr.origin.x, 8, searching ? 34 : sr.size.width, 36), 20, searching ? TF_DIM : t);
+	NSRect sr = [self _pill: 4]; [self _syncSearchSegment]; if (searching) { GlassPill(sr, pr); TFSymbol(@"magnifyingglass", NSMakeRect(sr.origin.x, 8, 34, 36), 20, TF_DIM); }       /* collapsed: an NSSegmentedControl capsule; open: the pill with the text field */
 	if (searching && ![[search stringValue] length] && [[self window] firstResponder] != [search currentEditor]) TextAt(@"Search", sr.origin.x + 34, 26, Font(13, NO, TF_DIM));
 }
 - (BOOL)isDragPoint:(NSPoint)p { for (int k = 0; k < (trashMode ? 6 : 5); k++) if (NSPointInRect(p, [self _pill: k])) return NO; return YES; }
