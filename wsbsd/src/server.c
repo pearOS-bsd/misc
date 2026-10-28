@@ -159,6 +159,7 @@ int ws_release_window(ws_server *s, ws_wid id)
 	bump(s);
 	if (w->shm[0]) ws_shm_unlink(w->shm);
 	*w = s->win[--s->n];
+	refresh_menubars(s);                                      /* the application whose bar was shown may be gone */
 	return 0;
 }
 
@@ -683,6 +684,10 @@ static void refresh_menubars(ws_server *s)
 {
 	window *k = s->key_win ? get(s, s->key_win) : NULL; if (k) s->active_owner = k->owner;
 	int any_active = 0; for (size_t i = 0; i < s->n; i++) if (is_menubar(&s->win[i], s) && s->win[i].owner == s->active_owner) any_active = 1;
+	if (!any_active && s->active_owner) {        /* the active application has no menu bar (it quit): the desktop's application (the Finder) takes over, else the first bar there is */
+		uint32_t pick = 0; for (size_t i = 0; i < s->n && !pick; i++) if (s->win[i].level == -2147483603) for (size_t j = 0; j < s->n; j++) if (is_menubar(&s->win[j], s) && s->win[j].owner == s->win[i].owner) { pick = s->win[i].owner; break; }
+		for (size_t j = 0; j < s->n && !pick; j++) if (is_menubar(&s->win[j], s)) pick = s->win[j].owner;
+		if (pick) { s->active_owner = pick; any_active = 1; } }
 	for (size_t i = 0; i < s->n; i++) { window *w = &s->win[i]; if (!is_menubar(w, s)) { if (w->menu_hidden) { w->menu_hidden = 0; bump(s); } continue; }
 		int hide = s->active_owner && any_active && w->owner != s->active_owner; if (hide != w->menu_hidden) { w->menu_hidden = hide; bump(s); } }
 }
