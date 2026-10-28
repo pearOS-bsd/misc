@@ -1155,7 +1155,8 @@ static void RedrawTree(NSView *v) { [v setNeedsDisplay: YES]; for (NSView *k in 
 - (void)_redrawTree { RedrawTree([[self contentView] superview] ?: [self contentView]); }
 - (void)becomeKeyWindow { [super becomeKeyWindow]; [self _redrawTree]; [self performSelector: @selector(_redrawTree) withObject: nil afterDelay: 0.05]; }
 - (void)resignKeyWindow { [super resignKeyWindow]; [self _redrawTree]; [self performSelector: @selector(_redrawTree) withObject: nil afterDelay: 0.05]; }
-- (void)performClose:(id)s { if ([[self delegate] respondsToSelector: @selector(windowShouldClose:)] && ![(id)[self delegate] windowShouldClose: self]) return; [self close]; }
+- (BOOL)validateMenuItem:(NSMenuItem *)it { if ([it action] && [NSStringFromSelector([it action]) isEqual: @"performClose:"]) return YES; return [super validateMenuItem: it]; }       /* the window has no title bar (style mask 0): NSWindow would disable Close Window */
+- (void)performClose:(id)s { if (getenv("FINDER_DEBUG")) NSLog(@"Finder: performClose on %@ (key %d)", self, (int)[self isKeyWindow]); if ([[self delegate] respondsToSelector: @selector(windowShouldClose:)] && ![(id)[self delegate] windowShouldClose: self]) return; [self close]; }
 - (void)performMiniaturize:(id)s { _mini = YES; [self orderOut: nil]; [NSApp addWindowsItem: self title: [NSString stringWithFormat: @"%@ (minimised)", [self title] ?: @"Finder"] filename: NO]; }
 - (void)miniaturize:(id)s { [self performMiniaturize: s]; }
 - (void)deminiaturize:(id)s { _mini = NO; [self orderFront: nil]; [self makeKeyWindow]; }
