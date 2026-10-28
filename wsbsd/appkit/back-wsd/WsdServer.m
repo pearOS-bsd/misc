@@ -363,6 +363,13 @@ static int wsdShapeForStyle(int style)
 	for (NSWindow *nw in [NSApp windows]) if ([nw windowNumber] == wid) { [nw deminiaturize: nil]; break; }
 }
 - (BOOL) appOwnsMiniwindow { return NO; }
+/* a click outside the menus (in another window of the application, or the keyboard going to another application) closes the menus of the menu bar that are open: GNUstep's tracking ends at the click but leaves the menu on the screen */
+static void WsdDismissMenus(void)
+{
+	NSMenu *mm = [NSApp mainMenu]; if (!mm) return;
+	for (NSMenuItem *it in [mm itemArray]) { NSMenu *sub = [it submenu]; NSWindow *sw = sub ? [[sub menuRepresentation] window] : nil; if (sw && [sw isVisible]) [sub close]; }
+	NSMenuView *bar = (NSMenuView *)[mm menuRepresentation]; if ([bar respondsToSelector: @selector(setHighlightedItemIndex:)]) [bar setHighlightedItemIndex: -1]; [bar setNeedsDisplay: YES];
+}
 /* a window below the normal level (the Finder's desktop) is not given key focus by the server on a click: its application asks for it */
 - (void) wsdSetKeyWindow: (int)win { struct wsd_window *w = [self wsdWindow: win]; if (w) ws_win_set_key(conn, &w->win); }
 - (void) setinputfocus: (int)win
@@ -421,6 +428,7 @@ static int wsdShapeForStyle(int style)
 		case WS_EV_MOUSE_DOWN:
 		case WS_EV_MOUSE_UP: {
 			BOOL down = e.type == WS_EV_MOUSE_DOWN;
+			if (down) { NSWindow *ew = nil; for (NSWindow *x in [NSApp windows]) if ([x windowNumber] == w->number) { ew = x; break; } if (ew && ![ew isKindOfClass: NSClassFromString(@"NSMenuPanel")]) WsdDismissMenus(); }
 			t = (e.buttons & 2) ? (down ? NSRightMouseDown : NSRightMouseUp) : (down ? NSLeftMouseDown : NSLeftMouseUp);
 			/* the click count: presses of the same button within the double click interval (0.5 s) and 5 points of each other count up */
 			static NSTimeInterval lastDown; static NSPoint lastPos; static int lastButtons, clicks;
@@ -441,6 +449,7 @@ static int wsdShapeForStyle(int style)
 		case WS_EV_FOCUS_OUT: {                                                       /* gui ignores the focus-out event: the window gives up key itself, and the application deactivates when the keyboard went to another one */
 			NSWindow *nw = nil; for (NSWindow *x in [NSApp windows]) if ([x windowNumber] == w->number) { nw = x; break; }
 			if ([nw isKeyWindow]) [nw resignKeyWindow];
+			WsdDismissMenus();
 			[NSApp performSelector: @selector(wsdDeactivateIfIdle) withObject: nil afterDelay: 0.05];
 			break; }
 		default: break;
