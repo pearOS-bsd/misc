@@ -12,6 +12,10 @@ WS=/System/Library/PrivateFrameworks/SkyLight.framework/Versions/A/Resources/Win
 macdesktop_start()
 {
 	conscontrol mute on >/dev/null 2>&1
+	case "$(kenv -q smbios.system.product 2>/dev/null)" in                  # guest tools of the hypervisor this runs in (iso/tools/guesttools.sh put them in the image)
+	VMware*) { service vmware-kmod onestart; service vmware-guestd onestart; } >/dev/null 2>&1 || true ;;
+	VirtualBox*) { kldload vboxguest; service vboxservice onestart; } >/dev/null 2>&1 || true ;;
+	esac
 	export WS_SOCKET=/var/run/WindowServer.sock HOME=/Users/root XDG_CURRENT_DESKTOP=Aqua XDG_SESSION_DESKTOP=Aqua XDG_SESSION_TYPE=wsd TERM=xterm-256color
 	[ -x /bin/zsh ] && export SHELL=/bin/zsh
 	mkdir -p /var/run
