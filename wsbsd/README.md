@@ -20,7 +20,7 @@ The stack: `wsd` (this repo: window server and compositor speaking the SkyLight 
 - **Window server:** the wire protocol for about 270 of the 728 SkyLight routines known from the macOS 27 decompile has real handlers with state (windows, spaces,
   displays, event taps including active key taps, hotkeys, menu bar, ...); most of the rest answer with replies recorded on a real WindowServer. Byte-exact layouts are
   checked against golden vectors from a live system. A software compositor does shadows, blur / vibrancy, rounded and shaped windows, resize.
-- **Input:** evdev to macOS key codes and `CGEventFlags`, keyboard layouts through xkbcommon, pointer acceleration, wheel, tablets.
+- **Input:** evdev to macOS key codes and `CGEventFlags`, keyboard layouts through xkbcommon, pointer acceleration, wheel, tablets. **Touchpads** (an evdev device with absolute axes and `BTN_TOOL_FINGER`, `src/touchpad.c`): relative pointer motion, tap = left click, two-finger tap = right click, two-finger natural scroll, the pad's button as left (right with two fingers); a tablet or touch screen without `BTN_TOOL_FINGER` stays absolute. Unit-tested with synthetic events (`test/test_touchpad.c`); not yet tried on a real pad after the fix. Not done: tap-and-drag, three-finger gestures, palm rejection, pad speed setting.
 - **Written but not verified on real hardware:** DRM/KMS and evdev backends, GBM/dma-buf, the OpenGL ES compositor (CI has no GPU).
 - **UI parity with macOS** (the same Objective-C gallery rendered on both, mean absolute pixel difference per control, 0 to 255): dark appearance, most controls 4 to 12, the
   date picker 23; light appearance 4 to 16, the date picker 24. Much of what is left is the font (Inter, not San Francisco, which is not redistributable).
@@ -47,6 +47,7 @@ The stack: `wsd` (this repo: window server and compositor speaking the SkyLight 
 - **Designer assets:** `tools/accept_assets.py` checks a delivery of replacement asset catalogues (`assets-designer/mod`) against the originals rendition by rendition (names, attributes, formats and, since 2026-10-28, the content). The first delivery (67 catalogues) passes the structure check but its pictures are byte-identical to the originals, so nothing is installed yet.
 
 ### Required next (decided by the project owner)
+- **Touch Bar on real hardware** (backlog, not started): a MacBook Pro's bar is driven by the T1/T2 chip and appears to the OS as USB devices (display plus HID); Linux has drivers (t2linux), FreeBSD has none, and T2 Macs also control booting. Today `NSTouchBar` is drawn in an on-screen panel (emulation). The test laptops (Clevo, Yoga) have no Touch Bar.
 - **CoreWLAN.framework** (`CWWiFiClient`, `CWInterface`, `CWNetwork`, `CWConfiguration`, `CWNetworkProfile`, events) and **airportd** (the daemon behind it): scanning, seamless joining of known
   networks, hotspot (Instant Hotspot / Personal Hotspot) detection. Method: decompile the real framework and daemon on this Mac with REA, reimplement them 1:1 (same classes, selectors, XPC
   protocol, error codes, notification names), differential tests against the real Mac, on FreeBSD over wpa_supplicant / `ifconfig wlan` / net80211. Status: 0 %.
@@ -98,6 +99,8 @@ What the survey says is missing, most frequent first:
 5. **Dependencies:** CocoaPods / Carthage packages have to be fetched and built too.
 
 ### Performance
+**Glass and blur cache (2026-10-28):** wsd keeps the result of every glass / blur region together with a hash of the backdrop pixels under it; when the backdrop is unchanged the result is copied back instead of recomputed (`src/blur.c`, `test/test_fxcache.c`: glass 6.05 ms to 0.32 ms, blur 1.1 ms to 0.13 ms on an M-class Mac). Before, every frame recomputed the lens and blur of the whole panel (the 360 x 660 Control Center dropped the frame rate below 9 fps on a real laptop). The Dock now redraws only when its tiles, hover or bar change (it asked for 60 frames a second forever), and the top bar only when the battery or the clock text changes. On the dev VM wsd idles at 0.2 % CPU; a tester's old image showed wsd at 75 %. Still open: `ps` is forked every 1.5 s by the Dock, the first frame after a backdrop change is as slow as before, no measurement on the real laptops yet.
+
 Same benchmark (`test/run_bench.sh`: cheap request round trip, resident size, one composed 1080p frame with 8 windows, shadows and blur) on three systems.
 The FreeBSD numbers come from a GitHub Actions virtual machine, the Mac numbers from an Apple M1 that is not virtualised, so only the shape is comparable.
 
