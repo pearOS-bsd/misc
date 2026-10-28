@@ -257,6 +257,33 @@ static void wsdSegDraw(id self, SEL _cmd, NSInteger seg, NSRect f, NSView *v)
 	[(NSSegmentedCell *)self setAlignment: NSLeftTextAlignment];
 	((void (*)(id, SEL, NSInteger, NSRect, NSView *))origSegDraw)(self, _cmd, seg, f, v);
 }
+/* NSSegmentStyleCapsule: the segmented control of the toolbars of macOS 26 (a glass capsule, the selected segment a lit pill inside it). Measured on the Finder's toolbar (dark): 36 high, fill 60 lit to 68 at the top and
+ * bottom edges, a dark ring (11) at the sides, a bright hairline (98) along the straight top and bottom edges; the selected segment 80, a pressed one white 8 %, the images 20 pt. */
+static IMP origSegCellDraw;
+void WsdDrawGlassCapsule(NSRect r, NSRect pressed)
+{
+	BOOL dk = isDark(); CGFloat rad = r.size.height / 2; NSGraphicsContext *g = [NSGraphicsContext currentContext]; NSBezierPath *body = [NSBezierPath bezierPathWithRoundedRect: r xRadius: rad yRadius: rad];
+	[g saveGraphicsState]; [body addClip];
+	NSColor *hi = dk ? [NSColor colorWithCalibratedWhite: 68 / 255.0 alpha: 1] : [NSColor whiteColor], *mid = dk ? [NSColor colorWithCalibratedWhite: 60 / 255.0 alpha: 1] : [NSColor colorWithCalibratedWhite: 246 / 255.0 alpha: 1];
+	NSGradient *gr = [[[NSGradient alloc] initWithColorsAndLocations: hi, 0.0, mid, 0.2, mid, 0.8, hi, 1.0, nil] autorelease]; [gr drawInRect: r angle: 90];
+	[g restoreGraphicsState];
+	NSBezierPath *ring = [NSBezierPath bezierPathWithRoundedRect: NSInsetRect(r, 0.5, 0.5) xRadius: rad - 0.5 yRadius: rad - 0.5]; [ring setLineWidth: 1]; [(dk ? [NSColor colorWithCalibratedWhite: 0 alpha: 0.7] : [NSColor colorWithCalibratedWhite: 0 alpha: 0.14]) setStroke]; [ring stroke];
+	[g saveGraphicsState]; [[NSBezierPath bezierPathWithRect: NSMakeRect(r.origin.x + rad, r.origin.y, r.size.width - rad * 2, r.size.height)] addClip];
+	NSBezierPath *tb = [NSBezierPath bezierPath]; [tb moveToPoint: NSMakePoint(r.origin.x + rad, r.origin.y + 0.5)]; [tb lineToPoint: NSMakePoint(NSMaxX(r) - rad, r.origin.y + 0.5)]; [tb moveToPoint: NSMakePoint(r.origin.x + rad, NSMaxY(r) - 0.5)]; [tb lineToPoint: NSMakePoint(NSMaxX(r) - rad, NSMaxY(r) - 0.5)];
+	[tb setLineWidth: 1]; [(dk ? [NSColor colorWithCalibratedWhite: 1 alpha: 0.2] : [NSColor colorWithCalibratedWhite: 1 alpha: 0.9]) setStroke]; [tb stroke]; [g restoreGraphicsState];
+}
+static void wsdSegCellDraw(id self, SEL _cmd, NSRect frame, NSView *v)
+{
+	NSSegmentedCell *c = self; if ((NSInteger)[c segmentStyle] != 5) { ((void (*)(id, SEL, NSRect, NSView *))origSegCellDraw)(self, _cmd, frame, v); return; }
+	NSInteger n = [c segmentCount]; BOOL dk = isDark(); WsdDrawGlassCapsule(frame, NSZeroRect); CGFloat fixed = 0; NSInteger flex = 0; for (NSInteger i = 0; i < n; i++) { CGFloat w = [c widthForSegment: i]; if (w > 0) fixed += w; else flex++; }
+	CGFloat fw = flex ? (frame.size.width - fixed) / flex : 0, x = frame.origin.x;
+	for (NSInteger i = 0; i < n; i++) {
+		CGFloat w = [c widthForSegment: i]; if (w <= 0) w = fw; if (!flex && fixed > 0) w = w * frame.size.width / fixed; NSRect sr = NSMakeRect(x, frame.origin.y, w, frame.size.height); x += w;
+		BOOL sel = [c isSelectedForSegment: i] && [c trackingMode] != NSSegmentSwitchTrackingMomentary; if (sel) { NSRect in = NSInsetRect(sr, 4, 4); [(dk ? [NSColor colorWithCalibratedWhite: 80 / 255.0 alpha: 1] : [NSColor colorWithCalibratedWhite: 0 alpha: 0.12]) setFill]; [[NSBezierPath bezierPathWithRoundedRect: in xRadius: 14 yRadius: 14] fill]; }
+		NSImage *im = [c imageForSegment: i]; NSColor *tint = dk ? [NSColor colorWithCalibratedWhite: 1 alpha: 0.92] : [NSColor colorWithCalibratedWhite: 0.1 alpha: 0.9];
+		if (im) { NSSize z = [im size]; if (z.width < 1) z = NSMakeSize(20, 20); CGFloat k = MIN(20 / z.width, 20 / z.height); NSRect ir = NSMakeRect(NSMidX(sr) - z.width * k / 2, NSMidY(sr) - z.height * k / 2, z.width * k, z.height * k); [im drawInRect: ir fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; (void)tint; }
+	}
+}
 /* titles of push buttons: the text colour never changes while the button is pressed (GNUstep switches to the selection colour); the default button has white text */
 static IMP origButtonTextColor;
 static NSColor *wsdButtonTextColor(id self, SEL _cmd)
@@ -430,6 +457,7 @@ static void swizzleTableDefaults(void)
 	if (mtf && !origTFDraw) origTFDraw = method_setImplementation(mtf, (IMP)wsdTFDraw);
 	Method msg = class_getInstanceMethod([NSSegmentedCell class], @selector(drawSegment:inFrame:withView:));
 	if (msg && !origSegDraw) origSegDraw = method_setImplementation(msg, (IMP)wsdSegDraw);
+	{ Method mw = class_getInstanceMethod([NSSegmentedCell class], @selector(drawWithFrame:inView:)); if (mw && !origSegCellDraw) origSegCellDraw = method_setImplementation(mw, (IMP)wsdSegCellDraw); }
 	Method ma = class_getInstanceMethod([NSAlert class], @selector(runModal));
 	if (ma && !origAlertRun && !getenv("WSD_NO_MACALERT")) origAlertRun = method_setImplementation(ma, (IMP)wsdAlertRun);
 	if (mb && !origButtonInterior) origButtonInterior = method_setImplementation(mb, (IMP)wsdButtonInterior);
