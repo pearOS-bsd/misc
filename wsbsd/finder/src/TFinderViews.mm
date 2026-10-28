@@ -1172,6 +1172,7 @@ static void RedrawTree(NSView *v) { [v setNeedsDisplay: YES]; for (NSView *k in 
 		if (!m) nf.origin = NSMakePoint(frame.origin.x + dx, frame.origin.y + dy);
 		else { if (m & 2) nf.size.width = frame.size.width + dx; if (m & 1) { nf.size.width = frame.size.width - dx; nf.origin.x = frame.origin.x + dx; } if (m & 8) nf.size.height = frame.size.height + dy; if (m & 4) { nf.size.height = frame.size.height - dy; nf.origin.y = frame.origin.y + dy; }
 			if (nf.size.width < mn.width) { if (m & 1) nf.origin.x = NSMaxX(frame) - mn.width; nf.size.width = mn.width; } if (nf.size.height < mn.height) { if (m & 4) nf.origin.y = NSMaxY(frame) - mn.height; nf.size.height = mn.height; } }
+		if (getenv("FINDER_DEBUG_KEY")) NSLog(@"window track: event %ld now %@ new frame %@", (long)[e type], NSStringFromPoint(now), NSStringFromRect(nf));
 		if (!NSEqualRects(nf, [self frame])) [self setFrame: nf display: YES];
 	}
 }
