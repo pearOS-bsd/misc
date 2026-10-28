@@ -410,7 +410,7 @@ static CGFloat TFDeskTab(const CGFloat *t, CGFloat text) { int i = (int)lround(t
 - (NSArray *)selectedPaths { NSMutableArray *a = [NSMutableArray array]; [_sel enumerateIndexesUsingBlock: ^(NSUInteger i, BOOL *s) { [a addObject: self->_items[i][@"path"]]; }]; return a; }
 - (void)contentMouseDown:(NSPoint)p event:(NSEvent *)e
 {
-	NSInteger i = [self _index: p]; NSUInteger fl = [e modifierFlags]; BOOL multi = (fl & NSCommandKeyMask) != 0;
+	NSInteger i = [self _index: p]; NSUInteger fl = [e modifierFlags]; BOOL multi = (fl & NSCommandKeyMask) != 0; if (getenv("FINDER_DEBUG_KEY")) NSLog(@"content mouse down at %@: item %ld desktop %d", NSStringFromPoint(p), (long)i, (int)desktop);
 	if (i < 0) {                                                                                                                                  /* a rubber band over the background */
 		NSIndexSet *base = multi ? [_sel copy] : [NSIndexSet indexSet]; NSPoint a = p; NSEvent *ev = e; [_sel removeAllIndexes]; [_sel addIndexes: base];
 		while ([ev type] != NSLeftMouseUp) {
@@ -432,7 +432,7 @@ static CGFloat TFDeskTab(const CGFloat *t, CGFloat text) { int i = (int)lround(t
 - (void)_dragFrom:(NSPoint)start event:(NSEvent *)e                                              /* the selected icons follow the pointer; dropped on a folder they move into it, on the sidebar or another window the controller decides, elsewhere they stay where they are put */
 {
 	NSMutableArray *idx = [NSMutableArray array], *orig = [NSMutableArray array]; [_sel enumerateIndexesUsingBlock: ^(NSUInteger k, BOOL *s) { [idx addObject: @(k)]; [orig addObject: [NSValue valueWithPoint: [self _target: (NSInteger)k]]]; }];
-	NSEvent *ev = e; BOOL moved = NO; NSArray *paths = [self selectedPaths];
+	NSEvent *ev = e; BOOL moved = NO; NSArray *paths = [self selectedPaths]; if (getenv("FINDER_DEBUG_KEY")) NSLog(@"drag from: desktop %d, %lu icons", (int)desktop, (unsigned long)[idx count]);
 	while ([ev type] != NSLeftMouseUp) {
 		ev = [[self window] nextEventMatchingMask: NSLeftMouseDraggedMask | NSLeftMouseUpMask untilDate: [NSDate distantFuture] inMode: NSEventTrackingRunLoopMode dequeue: YES];
 		NSPoint q = [self convertPoint: [ev locationInWindow] fromView: nil]; q.y = q.y - topInset + off; if (!moved && hypot(q.x - start.x, q.y - start.y) < 4) continue;
@@ -442,8 +442,9 @@ static CGFloat TFDeskTab(const CGFloat *t, CGFloat text) { int i = (int)lround(t
 		[self setNeedsDisplay: YES]; [self reveal: NSMakeRect(q.x - 20, q.y - 20, 40, 40)];
 	}
 	_dragging = NO; if (!moved) return;
-	NSPoint wp = [ev locationInWindow]; BOOL copy = ([ev modifierFlags] & NSAlternateKeyMask) != 0; NSInteger target = _dropTarget; _dropTarget = -1;
+	NSPoint wp = [ev locationInWindow]; BOOL copy = ([ev modifierFlags] & NSAlternateKeyMask) != 0; NSInteger target = _dropTarget; _dropTarget = -1; if (getenv("FINDER_DEBUG_KEY")) NSLog(@"drag ended: desktop %d target %ld moved %d at %@", (int)desktop, (long)target, (int)moved, NSStringFromPoint(wp));
 	NSString *into = target >= 0 ? _items[target][@"path"] : nil;
+	if (desktop && !into && [delegate respondsToSelector: @selector(iconViewDropOtherWindow:atWindowPoint:copy:)] && [(id)delegate iconViewDropOtherWindow: paths atWindowPoint: wp copy: copy]) { for (NSUInteger k = 0; k < [idx count]; k++) _items[[idx[k] integerValue]][@"pos"] = orig[k]; [self setNeedsDisplay: YES]; return; }       /* put down on a Finder window above the desktop */
 	BOOL inside = NSPointInRect([self convertPoint: wp fromView: nil], [self bounds]);
 	for (NSUInteger k = 0; k < [idx count]; k++) _items[[idx[k] integerValue]][@"pos"] = orig[k];                                                                                       /* back to where they were, then: */
 	if (into || !inside) { if ([delegate respondsToSelector: @selector(iconViewDropPaths:intoFolder:atWindowPoint:copy:)] && [(id)delegate iconViewDropPaths: paths intoFolder: into atWindowPoint: wp copy: copy]) { [self setNeedsDisplay: YES]; return; } }

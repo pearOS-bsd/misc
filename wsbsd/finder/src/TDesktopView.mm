@@ -2,6 +2,7 @@
  * places that stay where they are put, Clean Up, drag into folders), on the window at the desktop icon level. A double click opens an item in a Finder window. */
 #import "TDesktopWindow.h"
 #import "TFinderViews.h"
+#import <objc/message.h>
 
 @interface TBrowserWindowController : NSWindowController
 + (instancetype)newBrowserWithPath:(NSString *)path;
@@ -42,6 +43,10 @@ static NSString *DesktopPath(void) { return [NSHomeDirectory() stringByAppending
 - (void)cmdShowStaticInfo:(id)s { for (NSString *p in _selection) TFOpenInfoWindow(p); }
 - (void)cmdMoveToTrash:(id)s { NSFileManager *fm = [NSFileManager defaultManager]; NSString *tr = [NSHomeDirectory() stringByAppendingPathComponent: @".Trash"]; [fm createDirectoryAtPath: tr withIntermediateDirectories: YES attributes: nil error: NULL]; for (NSString *p in _selection) { if ([p hasPrefix: DesktopPath()]) [fm moveItemAtPath: p toPath: [tr stringByAppendingPathComponent: [p lastPathComponent]] error: NULL]; } [_view reloadKeepingSelectionOrFolder: DesktopPath()]; }
 - (void)cmdCleanUp:(id)s { [_view cleanUp: NO]; }
+/* a drop on the desktop from a Finder window of this application: moved (copied with Option) into ~/Desktop */
+- (BOOL)acceptDropPaths:(NSArray *)paths copy:(BOOL)copy atScreenPoint:(NSPoint)p { (void)p; return [self iconViewDropPaths: paths intoFolder: DesktopPath() atWindowPoint: NSZeroPoint copy: copy]; }
+/* the icons of the desktop put down on a Finder window of this application (the desktop's view covers the screen: the point is "inside" it) */
+- (BOOL)iconViewDropOtherWindow:(NSArray *)paths atWindowPoint:(NSPoint)wp copy:(BOOL)copy { Class bc = NSClassFromString(@"TBrowserWindowController"); NSPoint sp = [_window convertBaseToScreen: wp]; if (getenv("FINDER_DEBUG_KEY")) NSLog(@"desktop drop other window: %@ at %@ (%lu paths)", bc, NSStringFromPoint(sp), (unsigned long)[paths count]); if (![bc respondsToSelector: @selector(acceptDropPaths:copy:atScreenPoint:)]) return NO; BOOL ok = ((BOOL (*)(id, SEL, NSArray *, BOOL, NSPoint))objc_msgSend)(bc, @selector(acceptDropPaths:copy:atScreenPoint:), paths, copy, sp); if (ok) [_view reloadKeepingSelectionOrFolder: DesktopPath()]; return ok; }
 /* the menu of an item on the desktop (as the Finder's: Open, Move to Trash, Get Info, Rename, Duplicate, Quick Look, Copy, the tag colours): the background has the menu above */
 - (NSMenu *)itemContextMenu
 {
