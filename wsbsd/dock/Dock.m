@@ -16,6 +16,22 @@ static double Now(void) { return CACurrentMediaTime(); }
 typedef struct { uint32_t wid; int pid; char label[64]; char bpath[512]; CGImageRef thumb; int phase; double t0; double wr[4]; int item; int appItem; } MiniWin;       /* phase: 1 minimizing, 2 settled, 3 restoring */
 #define MAXMINI 16
 
+/* the context menu of a tile is an NSMenu (the AppKit menu of the theme, glass and all): the items of the old hand-drawn menu are turned into NSMenuItems whose tag is the command; the server puts a menu at the pointer, so it is moved above the bar once it is on screen */
+@interface DockMenuFit : NSObject { NSMenu *menu; NSPoint origin; int n; } - (id)initFor:(NSMenu *)m at:(NSPoint)o; @end
+@implementation DockMenuFit
+- (id)initFor:(NSMenu *)m at:(NSPoint)o { if ((self = [super init])) { menu = m; origin = o; [self performSelector: @selector(fit) withObject: nil afterDelay: 0.03 inModes: @[ NSEventTrackingRunLoopMode, NSDefaultRunLoopMode ]]; } return self; }
+- (void)fit { NSWindow *mw = [[menu menuRepresentation] window]; if (!mw || ![mw isVisible]) { if (++n < 15) [self performSelector: @selector(fit) withObject: nil afterDelay: 0.03 inModes: @[ NSEventTrackingRunLoopMode, NSDefaultRunLoopMode ]]; return; } NSRect f = [mw frame]; f.origin = NSMakePoint(fmax(8, origin.x - f.size.width / 2), origin.y); [mw setFrameOrigin: f.origin]; }
+@end
+static NSMenu *NativeMenu(NSArray *its, id target)
+{
+	NSMenu *m = [[NSMenu alloc] initWithTitle: @""]; [m setAutoenablesItems: NO];
+	for (NSDictionary *d in its) {
+		if (d[@"sep"]) { [m addItem: [NSMenuItem separatorItem]]; continue; }
+		NSMenuItem *it = [m addItemWithTitle: d[@"t"] action: (d[@"c"] && [d[@"c"] intValue] > 0) ? @selector(ctx:) : NULL keyEquivalent: @""]; [it setTarget: target]; [it setTag: [d[@"c"] intValue]]; [it setState: [d[@"on"] boolValue] ? NSOnState : NSOffState]; [it setEnabled: ![d[@"dis"] boolValue] && (d[@"sub"] || [d[@"c"] intValue] > 0)];
+		if (d[@"sub"]) [it setSubmenu: NativeMenu(d[@"sub"], target)];
+	}
+	return m;
+}
 @interface DockView : NSView {
 @public
 	ws_rect glassRect; int glassOn;
@@ -612,6 +628,17 @@ static BOOL MenuHasCheck(NSArray *its) { for (NSDictionary *d in its) if ([d[@"o
 	} else if (k == DOCK_TRASH) { [its addObject: E(@"Empty Trash", 6, NO, !trashFull)]; }
 	else return;
 	if (getenv("DOCK_TESTMENU")) its = [@[ ESub(@"Options", @[ E(@"Keep in Dock", 4, YES, NO) ]), ESep(), E(@"Open", 1, NO, NO), E(@"Quit", 2, NO, NO) ] mutableCopy];       /* the menu of the comparison with the real Mac */
+	if (getenv("DOCK_DEBUG")) NSLog(@"dock menu for tile %d (%lu items)", i, (unsigned long)[its count]);
+	if (!getenv("DOCK_CUSTOM_MENU")) {
+		NSMenu *nm = NativeMenu(its, self); double top = bar.bottom_margin + bar.bar_h + 8; NSPoint at = NSMakePoint(orient ? NSMidX([self bounds]) : slots[i].cx, top); (void)at; if (getenv("DOCK_DEBUG")) NSLog(@"dock menu cp %@ win %@ top %f cx %f", NSStringFromPoint([[self window] convertBaseToScreen: [self convertPoint: NSMakePoint(slots[i].cx, top) toView: nil]]), NSStringFromRect([[self window] frame]), top, slots[i].cx);
+		NSPoint cp = NSMakePoint(slots[i].cx, top);       /* the tiles' x is in screen coordinates and the bar's window sits on the screen's bottom edge: view y = screen y */
+		[[DockMenuFit alloc] initFor: nm at: cp];
+		NSEvent *ev = [NSEvent mouseEventWithType: NSRightMouseDown location: [self convertPoint: NSMakePoint(slots[i].cx, top) toView: nil] modifierFlags: 0 timestamp: [[NSProcessInfo processInfo] systemUptime] windowNumber: [[self window] windowNumber] context: nil eventNumber: 0 clickCount: 1 pressure: 1];
+		__block BOOL chose = NO; id ob = [[NSNotificationCenter defaultCenter] addObserverForName: NSMenuDidSendActionNotification object: nil queue: nil usingBlock: ^(NSNotification *n) { chose = YES; }]; NSDate *t0 = [NSDate date];
+		[NSMenu popUpContextMenu: nm withEvent: ev forView: self];
+		if (!chose && -[t0 timeIntervalSinceNow] < 0.5) { [[DockMenuFit alloc] initFor: nm at: cp]; [NSMenu popUpContextMenu: nm withEvent: ev forView: self]; }       /* a quick click keeps the menu open until the next click, as on the Mac */
+		[[NSNotificationCenter defaultCenter] removeObserver: ob]; return;
+	}
 	ctxItems = its; ctxOpen = 1; ctxSub = -1; ctxHoverMain = -1; ctxHoverSub = -1; ctxSubItems = nil;
 	NSSize ms = MenuSize(its); double top = bar.bottom_margin + bar.bar_h + 8;
 	if (!orient) {                                                                       /* above the bar, centred on the tile */
