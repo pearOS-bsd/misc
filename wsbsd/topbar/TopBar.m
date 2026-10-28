@@ -16,7 +16,7 @@ static BOOL BatteryCharging(void) { int v = 0; size_t n = sizeof v; if (sysctlby
 static BOOL LightText(void) { static BOOL (*fn)(void); static BOOL looked; if (!looked) { looked = YES; fn = (BOOL (*)(void))dlsym(RTLD_DEFAULT, "WsdBarWantsLightText"); } return fn ? fn() : YES; }
 
 void ToggleControlCenter(void); void ToggleSpotlight(void); void ShowBatteryMenu(NSView *v, double rightEdge); void ToggleNotificationCenter(void); void NCStart(void);
-@interface BarView : NSView { NSTimer *timer; int battery; BOOL charging; NSInteger pressed; }
+@interface BarView : NSView { NSTimer *timer; NSString *shownClock; int battery; BOOL charging; NSInteger pressed; }
 @end
 @implementation BarView
 - (BOOL)isFlipped { return YES; }
@@ -27,7 +27,7 @@ void ToggleControlCenter(void); void ToggleSpotlight(void); void ShowBatteryMenu
 	timer = [NSTimer scheduledTimerWithTimeInterval: 1.0 target: self selector: @selector(tick:) userInfo: nil repeats: YES];
 	return self;
 }
-- (void)tick:(NSTimer *)t { battery = BatteryPercent(); charging = BatteryCharging(); [self setNeedsDisplay: YES]; }
+- (void)tick:(NSTimer *)t { int b = BatteryPercent(); BOOL c = BatteryCharging(); NSString *clk = [self clockString]; if (b == battery && c == charging && [clk isEqualToString: shownClock]) return; battery = b; charging = c; shownClock = clk; [self setNeedsDisplay: YES]; }       /* redrawn only when the battery or the clock text changed: the window server blends the whole bar again for every frame */
 /* the centres of the items counted from the right edge, the same on every screen */
 - (NSArray *)centres { NSMutableArray *a = [NSMutableArray arrayWithObjects: @"siri", @149, @"cc", @186, @"search", @223, nil]; if (battery >= 0 || getenv("TOPBAR_FAKE_BATTERY")) { [a addObject: @"battery"]; [a addObject: @260]; } return a; }
 - (NSString *)clockString
