@@ -149,6 +149,14 @@ jobs:
             then ok=1; cp /tmp/last.png shots/desktop.png; break; fi
             [ $((i % 4)) -eq 0 ] && cp /tmp/last.png shots/progress-$i.png 2>/dev/null || true
           done
+          # a scenario on the booted desktop: type `ps aux` and `ls /` in the Terminal and look at the screen (the keys go through the QEMU monitor), so that the behaviour of the image itself can be seen in the artifacts
+          if [ $ok = 1 ]; then
+            for cmd in "p s spc a u x ret" "l s spc slash ret"; do
+              for k in $cmd; do echo "sendkey $k" | socat - UNIX-CONNECT:/tmp/mon >/dev/null 2>&1; sleep 0.25; done; sleep 6
+            done
+            echo "screendump /tmp/s2.ppm" | socat - UNIX-CONNECT:/tmp/mon >/dev/null 2>&1; sleep 2
+            python3 -c "from PIL import Image; Image.open('/tmp/s2.ppm').save('shots/after-ps-aux.png')" || true
+          fi
           sleep 20
           echo "screendump /tmp/s.ppm" | socat - UNIX-CONNECT:/tmp/mon >/dev/null 2>&1 || true
           python3 -c "from PIL import Image; Image.open('/tmp/s.ppm').save('shots/final.png')" || true
@@ -206,6 +214,14 @@ jobs:
             then ok=1; cp /tmp/last.png shots/desktop.png; break; fi
             [ $((i % 6)) -eq 0 ] && cp /tmp/last.png shots/progress-$i.png 2>/dev/null || true
           done
+          # a scenario on the booted desktop: type `ps aux` and `ls /` in the Terminal and look at the screen (the keys go through the QEMU monitor), so that the behaviour of the image itself can be seen in the artifacts
+          if [ $ok = 1 ]; then
+            for cmd in "p s spc a u x ret" "l s spc slash ret"; do
+              for k in $cmd; do echo "sendkey $k" | socat - UNIX-CONNECT:/tmp/mon >/dev/null 2>&1; sleep 0.25; done; sleep 6
+            done
+            echo "screendump /tmp/s2.ppm" | socat - UNIX-CONNECT:/tmp/mon >/dev/null 2>&1; sleep 2
+            python3 -c "from PIL import Image; Image.open('/tmp/s2.ppm').save('shots/after-ps-aux.png')" || true
+          fi
           echo "screendump /tmp/s.ppm" | socat - UNIX-CONNECT:/tmp/mon >/dev/null 2>&1 || true
           python3 -c "from PIL import Image; Image.open('/tmp/s.ppm').save('shots/final.png')" || true
           tail -50 serial.log || true
