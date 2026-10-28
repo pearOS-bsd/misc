@@ -274,7 +274,7 @@ void WsdDrawGlassCapsule(NSRect r, NSRect pressed)
 }
 static void wsdSegCellDraw(id self, SEL _cmd, NSRect frame, NSView *v)
 {
-	NSSegmentedCell *c = self; if ((NSInteger)[c segmentStyle] != 5) { ((void (*)(id, SEL, NSRect, NSView *))origSegCellDraw)(self, _cmd, frame, v); return; }
+	NSSegmentedCell *c = self; if (![self isKindOfClass: [NSSegmentedCell class]] || (NSInteger)[c segmentStyle] != 5) { ((void (*)(id, SEL, NSRect, NSView *))origSegCellDraw)(self, _cmd, frame, v); return; }
 	NSInteger n = [c segmentCount]; BOOL dk = isDark(); WsdDrawGlassCapsule(frame, NSZeroRect); CGFloat fixed = 0; NSInteger flex = 0; for (NSInteger i = 0; i < n; i++) { CGFloat w = [c widthForSegment: i]; if (w > 0) fixed += w; else flex++; }
 	CGFloat fw = flex ? (frame.size.width - fixed) / flex : 0, x = frame.origin.x;
 	for (NSInteger i = 0; i < n; i++) {
@@ -458,7 +458,8 @@ static void swizzleTableDefaults(void)
 	if (mtf && !origTFDraw) origTFDraw = method_setImplementation(mtf, (IMP)wsdTFDraw);
 	Method msg = class_getInstanceMethod([NSSegmentedCell class], @selector(drawSegment:inFrame:withView:));
 	if (msg && !origSegDraw) origSegDraw = method_setImplementation(msg, (IMP)wsdSegDraw);
-	{ Method mw = class_getInstanceMethod([NSSegmentedCell class], @selector(drawWithFrame:inView:)); if (mw && !origSegCellDraw) origSegCellDraw = method_setImplementation(mw, (IMP)wsdSegCellDraw); }
+	{ Class sc = [NSSegmentedCell class]; SEL sel = @selector(drawWithFrame:inView:); Method mw = class_getInstanceMethod(sc, sel), up = class_getInstanceMethod(class_getSuperclass(sc), sel);       /* NSSegmentedCell may only inherit the method from NSCell: replacing that one would hit every cell, so the method is added to the subclass then */
+		if (mw && !origSegCellDraw) { if (mw == up) { origSegCellDraw = method_getImplementation(mw); class_addMethod(sc, sel, (IMP)wsdSegCellDraw, method_getTypeEncoding(mw)); } else origSegCellDraw = method_setImplementation(mw, (IMP)wsdSegCellDraw); } }
 	Method ma = class_getInstanceMethod([NSAlert class], @selector(runModal));
 	if (ma && !origAlertRun && !getenv("WSD_NO_MACALERT")) origAlertRun = method_setImplementation(ma, (IMP)wsdAlertRun);
 	if (mb && !origButtonInterior) origButtonInterior = method_setImplementation(mb, (IMP)wsdButtonInterior);
