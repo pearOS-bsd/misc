@@ -1095,11 +1095,11 @@ static NSGradient *grad(int r0, int g0, int b0, int r1, int g1, int b1, int r2, 
 /* a button as the Mac's catalogue has it (Aqua.car): colour disc with no glyph at rest, the glyph while the pointer is over the group, darker while pressed; a window that is not key shows grey discs until the pointer comes over them; a button the window lacks stays grey */
 - (void) drawButton: (int)i key: (BOOL)key enabled: (BOOL)en dark: (BOOL)dark
 {
-	BOOL pressed = wsdBtnPressed == i && wsdBtnInside;
+	BOOL pressed = wsdBtnPressed == i;                                       /* held: the disc swells to 1.14 times (on the Mac its coloured part grows from 14 to 16 px while the button is down, wherever the pointer is: measured from a capture of a press and drag) */
 	if (en && (key || wsdBtnHover || pressed)) {
 		int kind = (i == 0 && [window isDocumentEdited]) ? 3 : i, state = pressed ? 2 : (wsdBtnHover ? 1 : 0);
 		NSImage *im = WsdWindowButtonImage(kind, state, dark);
-		if (im) { [im drawInRect: [self circleRect: i] fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1.0]; return; }
+		if (im) { NSRect r = [self circleRect: i]; if (pressed) { CGFloat k = 1.143; r = NSMakeRect(NSMidX(r) - r.size.width * k / 2, NSMidY(r) - r.size.height * k / 2, r.size.width * k, r.size.height * k); } [im drawInRect: r fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1.0]; return; }
 	}
 	[self drawCircle: i key: key && en dark: dark];
 }
