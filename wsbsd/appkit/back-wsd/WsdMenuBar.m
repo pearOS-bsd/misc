@@ -109,8 +109,8 @@ BOOL WsdMenuBarPrepare(NSMenu *m)
 	if (!m || ![m numberOfItems]) return NO; NSUInteger sig = [m numberOfItems]; id first = [m itemAtIndex: 0], second = [m numberOfItems] > 1 ? [m itemAtIndex: 1] : nil;
 	if (getenv("WSD_MENU_DEBUG")) { NSMutableString *d = [NSMutableString string]; for (NSMenuItem *i in [m itemArray]) [d appendFormat: @"[%@|%@|%d]", [i title], [i representedObject], (int)[i hasSubmenu]]; NSLog(@"main menu %p %@: %@", m, [m title], d); }
 	/* GNUstep puts the application's icon and process name ("Terminal-gnustep") into the menu bar as a first item: the Mac has none, and the logo item must exist once only */
-	{ NSString *pn = [[NSProcessInfo processInfo] processName]; BOOL seenPear = NO;
-	  for (NSInteger k = 0; k < [m numberOfItems]; k++) { NSMenuItem *it = [m itemAtIndex: k]; BOOL pear = WsdIsPearItem(it), icon = !pear && [[it title] isEqual: pn] && [it image];
+	{ NSString *pn = [[NSProcessInfo processInfo] processName], *bn = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleName"]; BOOL seenPear = NO;
+	  for (NSInteger k = 0; k < [m numberOfItems]; k++) { NSMenuItem *it = [m itemAtIndex: k]; BOOL pear = WsdIsPearItem(it), named = !pear && [[it title] isEqual: pn] && [it image], icon = named && ![bn isEqual: pn]; if (named && !icon) [it setImage: nil];       /* GNUstep's own item (the icon and the process name) is dropped; when the process is named like the application ("Terminal") that item is the application's own menu: it only loses the icon */
 		if (icon || (pear && (seenPear || k > 1))) { [m removeItemAtIndex: k--]; continue; } if (pear) seenPear = YES; } }
 	if (![m numberOfItems]) return YES;
 	if (!WsdIsPearItem([m itemAtIndex: 0])) { NSMenuItem *i = [[NSMenuItem alloc] initWithTitle: @"" action: NULL keyEquivalent: @""]; [i setRepresentedObject: kPearItem]; [i setSubmenu: [[WsdSystemMenu shared] menu]]; [m insertItem: i atIndex: 0]; }
