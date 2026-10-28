@@ -104,6 +104,41 @@ jobs:
           if-no-files-found: warn
 
   # the image has to boot: both forms (the USB disk image and the ISO as a CD) are started in QEMU with UEFI firmware and the screen is looked at
+  release: "14.2"
+          arch: ${{ matrix.arch }}
+          usesh: true
+          mem: 6144
+          prepare: |
+            pkg install -y python3 gmake pkgconf git >/dev/null 2>&1
+          run: |
+            set -e
+            cd "$GITHUB_WORKSPACE" 2>/dev/null || true
+            PLOADER_DIR="$PWD/ploader-out" OUT="$PWD/wsbsd/iso-out" sh wsbsd/iso/build.sh
+            # the disk image for a USB stick (a plain `dd` of the ISO is not bootable on a PC: no partition table with an EFI system partition, and the loader reads /boot from the FAT partition it starts from):
+            # GPT { EFI system partition with Ploader and the whole /boot, the ISO itself }; written with xz so that it fits the 2 GB of a release asset
+            # the USB disk image comes from build.sh (step 8: GPT with an ESP and a UFS root, written as a disk, not as an ISO in a partition); it must never stop the ISO from being published
+            set +e
+            rm -rf /tmp/isowork/root /tmp/isowork/rootfs.img /tmp/isowork/esp /tmp/isowork/gnustep* 2>/dev/null
+            if [ -f wsbsd/iso-out/macbsd-$(uname -p)-usb.img ]; then
+              xz -T0 -3 "$PWD/wsbsd/iso-out/macbsd-$(uname -p)-usb.img" || { echo "xz failed"; df -h; rm -f wsbsd/iso-out/macbsd-$(uname -p)-usb.img wsbsd/iso-out/macbsd-$(uname -p)-usb.img.xz; }
+              [ -f wsbsd/iso-out/macbsd-$(uname -p)-usb.img.xz ] && (cd wsbsd/iso-out && sha256 macbsd-$(uname -p)-usb.img.xz > macbsd-$(uname -p)-usb.img.xz.sha256)
+            fi
+            # the release names the two builds amd64 and arm64
+            for f in wsbsd/iso-out/macbsd-aarch64*; do [ -e "$f" ] && mv "$f" "$(echo "$f" | sed 's/macbsd-aarch64/macbsd-arm64/')"; done
+            for f in wsbsd/iso-out/macbsd-arm64*.sha256; do [ -e "$f" ] && sed -i '' 's/macbsd-aarch64/macbsd-arm64/' "$f"; done
+            ls -l wsbsd/iso-out
+            exit 0
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: macbsd-iso-${{ matrix.arch }}
+          path: |
+            wsbsd/iso-out/*.iso
+            wsbsd/iso-out/*.img.xz
+            wsbsd/iso-out/*.sha256
+          if-no-files-found: warn
+
+  # the image has to boot: both forms (the USB disk image and the ISO as a CD) are started in QEMU with UEFI firmware and the screen is looked at
   boot-test:
     needs: iso
     runs-on: ubuntu-latest
