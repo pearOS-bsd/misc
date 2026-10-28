@@ -1059,15 +1059,16 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 	NSColor *cols[3] = { TFRGB(242, 96, 86), TFRGB(253, 193, 1), TFRGB(57, 193, 1) }; Class sup = NSClassFromString(@"WsdFinderSupport");
 	for (int k = 0; k < 3; k++) { NSRect c = [self _light: k]; BOOL pr = _pressed == k;
 		NSImage *pic = nil; if (key || _hover || pr) { SEL sl = NSSelectorFromString(@"windowButtonKind:state:"); if ([sup respondsToSelector: sl]) pic = ((NSImage *(*)(id, SEL, int, int))objc_msgSend)(sup, sl, k, pr ? 2 : (_hover ? 1 : 0)); }
-		if (pic) { NSRect d = c; if (pr) { CGFloat z = 1.143; d = NSMakeRect(NSMidX(c) - c.size.width * z / 2, NSMidY(c) - c.size.height * z / 2, c.size.width * z, c.size.height * z); } [pic drawInRect: d fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1.0]; continue; }
+		if (pic) { BOOL rel = _relBtn == k && _relTimer; SEL ds = NSSelectorFromString(@"drawWindowButton:rect:held:pull:"); NSPoint pl = pr ? _pull : rel ? NSMakePoint(_relPull.x * _relF, _relPull.y * _relF) : NSZeroPoint; if ([sup respondsToSelector: ds]) ((void (*)(id, SEL, NSImage *, NSRect, BOOL, NSPoint))objc_msgSend)(sup, ds, pic, c, pr || rel, pl); else [pic drawInRect: c fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1.0]; continue; }
 		[(key ? cols[k] : (TFDark() ? TFRGB(76, 76, 76) : TFRGB(205, 205, 205))) setFill]; [[NSBezierPath bezierPathWithOvalInRect: c] fill]; [TFRGBA(0, 0, 0, 0.12) setStroke]; [[NSBezierPath bezierPathWithOvalInRect: NSInsetRect(c, 0.5, 0.5)] stroke]; }
 }
 - (void)mouseDown:(NSEvent *)e
 {
 	NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; for (int k = 0; k < 3; k++) if (NSPointInRect(p, NSInsetRect([self _light: k], -4, -4))) { _pressed = k; _inside = YES; _hover = YES; [self setNeedsDisplayInRect: [self _group]]; return; }       /* the action runs when it is released over the button */
 }
-- (void)mouseDragged:(NSEvent *)e { if (_pressed < 0) return; BOOL in = NSPointInRect([self convertPoint: [e locationInWindow] fromView: nil], NSInsetRect([self _light: _pressed], -4, -4)); if (in != _inside) { _inside = in; [self setNeedsDisplayInRect: [self _group]]; } }
-- (void)mouseUp:(NSEvent *)e { if (_pressed < 0) return; int k = _pressed; BOOL fire = _inside; _pressed = -1; _inside = NO; [self setNeedsDisplayInRect: [self _group]]; if (fire) { if (k == 0) [[self window] performClose: self]; else if (k == 1) [[self window] performMiniaturize: self]; else [[self window] performZoom: self]; } }
+- (void)mouseDragged:(NSEvent *)e { if (_pressed < 0) return; NSPoint q = [self convertPoint: [e locationInWindow] fromView: nil]; NSRect cr = [self _light: _pressed]; _inside = NSPointInRect(q, NSInsetRect(cr, -4, -4)); _pull = NSMakePoint(q.x - NSMidX(cr), q.y - NSMidY(cr)); [self setNeedsDisplay: YES]; }       /* it stretches like rubber toward the pointer (WsdDrawWindowButton) */
+- (void)_release:(NSTimer *)t { _relT += 1.0 / 60; _relF = exp(-_relT * 11.0) * cos(_relT * 26.0); if (_relT > 0.4) { [_relTimer invalidate]; _relTimer = nil; _relBtn = -1; _relF = 0; } [self setNeedsDisplay: YES]; }
+- (void)mouseUp:(NSEvent *)e { if (_pressed < 0) return; int k = _pressed; BOOL fire = _inside; _pressed = -1; _inside = NO; if (hypot(_pull.x, _pull.y) > 3) { _relBtn = k; _relPull = _pull; _relT = 0; _relF = 1; [_relTimer invalidate]; _relTimer = [NSTimer scheduledTimerWithTimeInterval: 1.0 / 60 target: self selector: @selector(_release:) userInfo: nil repeats: YES]; } _pull = NSZeroPoint; [self setNeedsDisplay: YES]; if (fire) { if (k == 0) [[self window] performClose: self]; else if (k == 1) [[self window] performMiniaturize: self]; else [[self window] performZoom: self]; } }
 @end
 
 /* ---------- the preview pane ---------- */
