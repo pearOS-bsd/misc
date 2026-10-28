@@ -536,11 +536,11 @@ static const CGFloat kHead = 28;       /* the list's rows: 20 pt with 16 pt icon
 /* the columns: identifier, title, width, visible (the names of the Finder's lsvp: name, dateModified, dateCreated, dateLastOpened, dateAdded, size, kind, label) */
 - (void)_defaultColumns
 {
-	NSMutableArray *d = [NSMutableArray array]; for (NSArray *c in @[ @[ @"name", @"Name", @300, @YES ], @[ @"dateModified", @"Date Modified", @170, @YES ], @[ @"dateCreated", @"Date Created", @170, @NO ], @[ @"dateLastOpened", @"Date Last Opened", @170, @NO ], @[ @"dateAdded", @"Date Added", @170, @NO ], @[ @"size", @"Size", @90, @YES ], @[ @"kind", @"Kind", @150, @YES ], @[ @"label", @"Tags", @120, @NO ] ]) [d addObject: [@{ @"id": c[0], @"title": c[1], @"w": c[2], @"vis": c[3] } mutableCopy]]; _colDefs = d;
+	NSMutableArray *d = [NSMutableArray array]; for (NSArray *c in @[ @[ @"name", @"Name", @300, @YES ], @[ @"dateModified", @"Date Modified", @169, @YES ], @[ @"dateCreated", @"Date Created", @169, @NO ], @[ @"dateLastOpened", @"Date Last Opened", @169, @NO ], @[ @"dateAdded", @"Date Added", @169, @NO ], @[ @"size", @"Size", @97, @YES ], @[ @"kind", @"Kind", @121, @YES ], @[ @"label", @"Tags", @120, @NO ] ]) [d addObject: [@{ @"id": c[0], @"title": c[1], @"w": c[2], @"vis": c[3] } mutableCopy]]; _colDefs = d;
 }
 - (NSArray *)_cols
 {
-	CGFloat w = [self bounds].size.width - 14, fixed = 0; for (NSDictionary *c in _colDefs) if ([c[@"vis"] boolValue] && ![c[@"id"] isEqual: @"name"]) fixed += [c[@"w"] doubleValue]; CGFloat nameW = MAX(160, w - fixed), x = 0; NSMutableArray *out = [NSMutableArray array];
+	CGFloat w = [self bounds].size.width - 20, fixed = 0; for (NSDictionary *c in _colDefs) if ([c[@"vis"] boolValue] && ![c[@"id"] isEqual: @"name"]) fixed += [c[@"w"] doubleValue]; CGFloat nameW = MAX(208, w - fixed), x = 10;       /* Mac: 10 in on each side, the name column takes the rest (at least 208), Date Modified 169, Size 97, Kind 121 */ NSMutableArray *out = [NSMutableArray array];
 	for (NSDictionary *c in _colDefs) { if (![c[@"vis"] boolValue]) continue; CGFloat cw = [c[@"id"] isEqual: @"name"] ? nameW : [c[@"w"] doubleValue]; [out addObject: @[ c[@"id"], c[@"title"], @(x), @(cw) ]]; x += cw; }
 	return out;
 }
@@ -572,7 +572,7 @@ static NSString *SortFieldFor(NSString *col) { NSDictionary *m = @{ @"name": @"n
 		if (sel) FillRound(NSMakeRect(11, y, w - 23, _rowH), 6, key ? DesktopPillColor() : (TFDark() ? TFRGB(70, 70, 70) : TFRGB(200, 200, 204))); else if (i % 2) FillRound(NSMakeRect(11, y, w - 23, _rowH), 6, TFDark() ? TFRGBA(255, 255, 255, 0.04) : TFRGBA(0, 0, 0, 0.04));
 		NSColor *tc = sel ? TFRGB(255, 255, 255) : TF_TEXT, *dc = sel ? TFRGBA(255, 255, 255, 0.8) : TF_DIM; CGFloat ind = [it[@"depth"] intValue] * 18; if ([it[@"dir"] boolValue]) TFSymbolW([_exp containsObject: it[@"path"]] ? @"chevron.down" : @"chevron.right", NSMakeRect(8 + ind, y, 14, _rowH), 9, 6, sel ? TFRGB(255, 255, 255) : TF_DIM); { NSImage *tm = Thumb(it[@"path"]); if (tm) { NSSize z = [tm size]; CGFloat ip = _bigIcons ? 32 : 16, k = MIN(ip / z.width, ip / z.height); [tm drawInRect: NSMakeRect(26 + ip / 2 + ind - z.width * k / 2, cy - z.height * k / 2, z.width * k, z.height * k) fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; } else TFDrawIcon(it[@"path"], NSMakeRect(26 + ind, cy - (_bigIcons ? 16 : 8), _bigIcons ? 32 : 16, _bigIcons ? 32 : 16)); }
 		for (NSArray *c in cols) {
-			NSString *k = c[0], *s; CGFloat x = [c[2] doubleValue] + ([k isEqual: @"name"] ? (_bigIcons ? 62 : 46) + ind : 8), cw = [c[3] doubleValue] - ([k isEqual: @"name"] ? (_bigIcons ? 70 : 54) + ind : 16); NSDictionary *at = Font(_listText, NO, [k isEqual: @"name"] ? tc : dc);
+			NSString *k = c[0], *s; CGFloat x = [c[2] doubleValue] + ([k isEqual: @"name"] ? (_bigIcons ? 54 : 36) + ind : 6), cw = [c[3] doubleValue] - ([k isEqual: @"name"] ? (_bigIcons ? 62 : 44) + ind : 12); NSDictionary *at = Font(_listText, NO, [k isEqual: @"name"] ? tc : dc);
 			if ([k isEqual: @"name"]) s = it[@"name"]; else if ([k isEqual: @"dateModified"]) s = TFDateString(it[@"date"]); else if ([k isEqual: @"dateCreated"] || [k isEqual: @"dateAdded"]) s = TFDateString(it[@"cre"]); else if ([k isEqual: @"dateLastOpened"]) s = TFDateString(it[@"acc"]); else if ([k isEqual: @"size"]) s = [it[@"size"] longLongValue] < 0 ? @"--" : TFSizeString([it[@"size"] unsignedLongLongValue]); else if ([k isEqual: @"label"]) s = [it[@"tags"] componentsJoinedByString: @", "]; else s = it[@"kind"];
 			s = Truncated(s, at, cw); if ([k isEqual: @"size"]) x += cw - [s sizeWithAttributes: at].width; TextAt(s, x, cy, at);
 			if ([k isEqual: @"name"] && [it[@"tags"] count]) { Class sp = NSClassFromString(@"WsdFinderSupport"); double w = [sp tagDotsWidth: it[@"tags"]]; [sp drawTagDots: it[@"tags"] rightEdge: x + [s sizeWithAttributes: at].width + 8 + w centerY: cy]; }
@@ -583,7 +583,7 @@ static NSString *SortFieldFor(NSString *col) { NSDictionary *m = @{ @"name": @"n
 {
 	[super drawRect: r]; NSRect b = [self bounds]; [TF_CONTENT setFill]; NSRectFill(NSMakeRect(0, 0, b.size.width, kHead)); [TF_LINE setFill]; NSRectFill(NSMakeRect(0, kHead - 1, b.size.width, 1));
 	for (NSArray *c in [self _cols]) {
-		NSString *k = c[0]; NSDictionary *at = Font(12, YES, TF_DIM); CGFloat x = [c[2] doubleValue] + ([k isEqual: @"name"] ? 42 : 8); TextAt(c[1], x, kHead / 2, at);
+		NSString *k = c[0]; NSDictionary *at = Font(12, YES, TF_DIM); CGFloat x = [c[2] doubleValue] + ([k isEqual: @"name"] ? 32 : 8); TextAt(c[1], x, kHead / 2, at);
 		if ([k isEqual: _colKey ?: @"name"]) TFSymbol(_asc ? @"chevron.up" : @"chevron.down", NSMakeRect(x + [c[1] sizeWithAttributes: at].width + 6, 0, 10, kHead), 9, TF_DIM);
 		if (![k isEqual: [[[self _cols] firstObject] firstObject]]) { [TF_LINE setFill]; NSRectFill(NSMakeRect([c[2] doubleValue], 6, 1, kHead - 12)); }
 	}
