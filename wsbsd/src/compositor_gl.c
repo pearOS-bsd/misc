@@ -140,8 +140,13 @@ static const char *GLASS_FS =
 	"        float dd = max(-sdf, 0.0);\n"
 	"        float gx = field(p + vec2(1.0, 0.0), dm) - field(p - vec2(1.0, 0.0), dm), gy = field(p + vec2(0.0, 1.0), dm) - field(p - vec2(0.0, 1.0), dm);\n"
 	"        float gl = sqrt(gx * gx + gy * gy), ny = gl > 1e-4 ? abs(gy / gl) : 1.0; vec2 no = gl > 1e-4 ? vec2(gx, gy) / gl : vec2(0.0, -1.0);\n"
-	"        float lw = dd < 11.0 ? sin(3.14159265 * dd / 11.0) : 0.0;\n"        /* the lens of the menu glass: the backdrop comes from a point displaced by (12, 18) sin(pi d / 11) (x to the right, y down: the shader's y is up) as fitted on the Mac, same as blur.c */
-	"        vec3 c = texture2D(u_blur, (p + vec2(12.0, -18.0) * lw) / u_screen).rgb;\n"
+	"        float sx = 0.0, sy = 0.0;\n"
+	"        for (int q = 0; q < 16; q++) { if (q >= u_n) break; if (u_grm[q].y < 4.5) continue; vec4 r = u_grect[q]; if (p.x >= r.x && p.x < r.x + r.z && p.y >= r.y && p.y < r.y + r.w) {\n"        /* the displacement per edge, as in blur.c; the shader's y is up, so the top edge of the glass is its larger y */
+	"            float dl = p.x - r.x, dr = r.x + r.z - p.x, db = p.y - r.y, dt = r.y + r.w - p.y, dx = min(dl, dr);\n"
+	"            if (dx < 8.0) sx = 12.0 * sin(3.14159265 * dx / 8.0);\n"
+	"            if (dt < 14.0 && dt <= db) sy = -18.0 * sin(3.14159265 * dt / 14.0); else if (db < 8.0) sy = -12.0 * sin(3.14159265 * db / 8.0);\n"
+	"            break; } }\n"
+	"        vec3 c = texture2D(u_blur, (p + vec2(sx, sy)) / u_screen).rgb;\n"
 	"        float L = dot(c, vec3(0.1886, 0.7455, 0.0659)), f = 0.1213 + 0.4825 * (2.0 * L - L * L);\n"
 	"        float rim = dd < 1.0 ? 0.10 + 0.177 * ny : 0.042 * ny * exp(-(dd - 1.5) / 3.8);\n"
 	"        col = clamp(vec3(f) + 1.091 * (c - vec3(L)), 0.0, 1.0);\n"
