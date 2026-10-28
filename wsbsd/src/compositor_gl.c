@@ -140,8 +140,8 @@ static const char *GLASS_FS =
 	"        float dd = max(-sdf, 0.0);\n"
 	"        float gx = field(p + vec2(1.0, 0.0), dm) - field(p - vec2(1.0, 0.0), dm), gy = field(p + vec2(0.0, 1.0), dm) - field(p - vec2(0.0, 1.0), dm);\n"
 	"        float gl = sqrt(gx * gx + gy * gy), ny = gl > 1e-4 ? abs(gy / gl) : 1.0; vec2 no = gl > 1e-4 ? vec2(gx, gy) / gl : vec2(0.0, -1.0);\n"
-	"        float shift = dd < 4.5 ? 12.0 * sin(3.14159265 * dd / 4.5) : 0.0;\n"        /* the lens of the liquid glass: the backdrop is taken from beyond the edge (same as blur.c) */
-	"        vec3 c = texture2D(u_blur, (p + no * shift) / u_screen).rgb;\n"
+	"        float lw = dd < 11.0 ? sin(3.14159265 * dd / 11.0) : 0.0;\n"        /* the lens of the menu glass: the backdrop comes from a point displaced by (12, 18) sin(pi d / 11) (x to the right, y down: the shader's y is up) as fitted on the Mac, same as blur.c */
+	"        vec3 c = texture2D(u_blur, (p + vec2(12.0, -18.0) * lw) / u_screen).rgb;\n"
 	"        float L = dot(c, vec3(0.1886, 0.7455, 0.0659)), f = 0.1213 + 0.4825 * (2.0 * L - L * L);\n"
 	"        float rim = dd < 1.0 ? 0.10 + 0.177 * ny : 0.042 * ny * exp(-(dd - 1.5) / 3.8);\n"
 	"        col = clamp(vec3(f) + 1.091 * (c - vec3(L)), 0.0, 1.0);\n"
