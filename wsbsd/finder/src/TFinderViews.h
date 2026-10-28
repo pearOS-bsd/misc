@@ -37,6 +37,9 @@ void TFOpenViewOptions(TIconView *view, NSString *folderName, void (^changed)(vo
 id TFPref(NSString *key, id def);
 BOOL TFPrefBool(NSString *key, BOOL def);
 void TFSetPref(NSString *key, id value);
+BOOL TFPreviewOpt(NSString *key);
+BOOL TFPreviewOptionsVisible(void);
+void TFTogglePreviewOptions(NSString *kindTitle, void (^changed)(void));
 void TFDrawIcon(NSString *path, NSRect r);
 @interface NSObject (TFRound) + (void)roundWindow:(NSWindow *)w radius:(int)r; @end
 NSArray *TFVolumes(void);

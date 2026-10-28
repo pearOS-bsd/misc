@@ -1052,17 +1052,19 @@ static NSString *LongDate(NSDate *d) { if (!d) return @""; static NSDateFormatte
 	else [a addObject: [more dictionaryWithAddedEntries: @{ @"c": @193 }]];
 	return a;
 }
+- (CGFloat)_barH { return TFPreviewOpt(@"quickActions") ? 70 : 0; }
 - (void)_drawQuickBar:(BOOL)dir path:(NSString *)p
 {
+	if (![self _barH]) return;
 	NSRect b = [self bounds]; CGFloat top = NSMaxY(b) - 70; [TFRGB(29, 30, 33) setFill]; NSRectFill(NSMakeRect(1, top, b.size.width - 1, 70)); [TFRGB(65, 67, 70) setFill]; NSRectFill(NSMakeRect(0, top - 1, b.size.width, 1));
 	for (NSDictionary *q in [self _quickActions: dir path: p]) { CGFloat cx = [q[@"c"] doubleValue]; NSColor *c = TFRGB(142, 142, 144); TFSymbol(q[@"s"], NSMakeRect(cx - 7, top + 17, 14, 14), 14, c); NSDictionary *la = Font(11, NO, c); NSString *t = q[@"t"]; NSArray *lines = @[ t ];
 		if ([t sizeWithAttributes: la].width > 70) { NSRange r = [t rangeOfString: @" " options: NSBackwardsSearch]; if (r.location != NSNotFound) lines = @[ [t substringToIndex: r.location], [t substringFromIndex: r.location + 1] ]; }
 		for (NSUInteger i = 0; i < [lines count]; i++) { NSSize ls = [lines[i] sizeWithAttributes: la]; [lines[i] drawAtPoint: NSMakePoint(cx - ls.width / 2, top + 40 + i * 14) withAttributes: la]; } }
 }
-- (void)scrollWheel:(NSEvent *)e { CGFloat room = MAX(0, _content - ([self bounds].size.height - 70)); _scroll = MAX(0, MIN(room, _scroll - [e deltaY] * 10)); [self setNeedsDisplay: YES]; }
+- (void)scrollWheel:(NSEvent *)e { CGFloat room = MAX(0, _content - ([self bounds].size.height - [self _barH])); _scroll = MAX(0, MIN(room, _scroll - [e deltaY] * 10)); [self setNeedsDisplay: YES]; }
 - (void)mouseDown:(NSEvent *)e
 {
-	if ([paths count] != 1) return; NSPoint pt = [self convertPoint: [e locationInWindow] fromView: nil]; CGFloat top = NSMaxY([self bounds]) - 70; if (pt.y < top) { if (NSPointInRect(NSMakePoint(pt.x, pt.y + _scroll), NSMakeRect(215, 335, 72, 22))) { _more = !_more; [self setNeedsDisplay: YES]; } return; } NSString *p = paths[0]; BOOL dir = [[[[NSFileManager defaultManager] attributesOfItemAtPath: p error: NULL] fileType] isEqual: NSFileTypeDirectory];
+	if ([paths count] != 1) return; NSPoint pt = [self convertPoint: [e locationInWindow] fromView: nil]; if (![self _barH]) return; CGFloat top = NSMaxY([self bounds]) - 70; if (pt.y < top) { if (NSPointInRect(NSMakePoint(pt.x, pt.y + _scroll), NSMakeRect(215, 335, 72, 22))) { _more = !_more; [self setNeedsDisplay: YES]; } return; } NSString *p = paths[0]; BOOL dir = [[[[NSFileManager defaultManager] attributesOfItemAtPath: p error: NULL] fileType] isEqual: NSFileTypeDirectory];
 	for (NSDictionary *q in [self _quickActions: dir path: p]) { CGFloat cx = [q[@"c"] doubleValue]; if (fabs(pt.x - cx) <= 32) { if ([q[@"sel"] length]) [NSApp sendAction: NSSelectorFromString(q[@"sel"]) to: nil from: self]; else NSBeep(); return; } }
 }
 - (void)drawRect:(NSRect)dirty
@@ -1078,7 +1080,7 @@ static NSString *LongDate(NSDate *d) { if (!d) return @""; static NSDateFormatte
 		return;
 	}
 	NSString *p = paths[0]; NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory]; NSImage *th = dir ? nil : Thumb(p); NSRect pr = NSMakeRect(10, 10, 273, 255); BOOL img = !dir && [@[ @"png", @"jpg", @"jpeg", @"tif", @"tiff", @"gif", @"bmp", @"heic" ] containsObject: [[p pathExtension] lowercaseString]];
-	[NSGraphicsContext saveGraphicsState]; NSRectClip(NSMakeRect(0, 0, b.size.width, b.size.height - 70)); NSAffineTransform *tr0 = [NSAffineTransform transform]; [tr0 translateXBy: 0 yBy: -_scroll]; [tr0 concat];       /* the pane scrolls above the bar */
+	[NSGraphicsContext saveGraphicsState]; NSRectClip(NSMakeRect(0, 0, b.size.width, b.size.height - [self _barH])); NSAffineTransform *tr0 = [NSAffineTransform transform]; [tr0 translateXBy: 0 yBy: -_scroll]; [tr0 concat];       /* the pane scrolls above the bar */
 	if (th) { NSSize z = [th size]; CGFloat k = MIN(MIN(pr.size.width / z.width, pr.size.height / z.height), 2); NSRect tr = NSMakeRect(NSMidX(pr) - z.width * k / 2, NSMidY(pr) - z.height * k / 2, z.width * k, z.height * k); [NSGraphicsContext saveGraphicsState]; [[NSBezierPath bezierPathWithRoundedRect: tr xRadius: 10 yRadius: 10] addClip]; [th drawInRect: tr fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; [NSGraphicsContext restoreGraphicsState]; }
 	else TFDrawIcon(p, NSMakeRect(NSMidX(pr) - 64, NSMidY(pr) - 64, 128, 128));
 	/* the name: up to two lines, the block ends at y 311 (AX: 273 x 44 at 267 for a long name, one line ends at the same place); the second line is shortened in the middle */
@@ -1089,11 +1091,12 @@ static NSString *LongDate(NSDate *d) { if (!d) return @""; static NSDateFormatte
 	[[NSString stringWithFormat: @"%@%@", TFKindString(p, dir), dir ? @"" : [@" - " stringByAppendingString: TFSizeString([at[NSFileSize] unsignedLongLongValue])]] drawInRect: NSMakeRect(9, 314, 275, 18) withAttributes: sub];
 	[@"Information" drawAtPoint: NSMakePoint(9, 337 + 1) withAttributes: head]; if (img) { NSString *sm = _more ? @"Show Less" : @"Show More"; [sm drawAtPoint: NSMakePoint(284 - [sm sizeWithAttributes: Font(13, NO, TF_ACCENT)].width, 339) withAttributes: Font(13, NO, TF_ACCENT)]; }
 	struct stat sb; NSDate *opened = at[NSFileModificationDate]; if (!stat([p fileSystemRepresentation], &sb)) opened = [NSDate dateWithTimeIntervalSince1970: sb.st_atime];
-	NSArray *rows = @[ @[ @"Created", LongDate(at[NSFileCreationDate]) ], @[ @"Modified", LongDate(at[NSFileModificationDate]) ], @[ @"Last opened", LongDate(opened) ] ]; if (_more && img) { BOOL jpg = [@[ @"jpg", @"jpeg" ] containsObject: [[p pathExtension] lowercaseString]]; if (jpg) rows = [rows arrayByAddingObject: @[ @"Content created", LongDate(at[NSFileCreationDate]) ]]; else { NSBitmapImageRep *br = [[NSBitmapImageRep imageRepsWithContentsOfFile: p] firstObject]; if (br) rows = [rows arrayByAddingObject: @[ @"Dimensions", [NSString stringWithFormat: @"%ld × %ld", (long)[br pixelsWide], (long)[br pixelsHigh]] ]]; } }       /* Show More of a picture: "Content created" (the other rows depend on the kind and are not measured) */
+	NSMutableArray *rws = [NSMutableArray array]; if (TFPreviewOpt(@"created")) [rws addObject: @[ @"Created", LongDate(at[NSFileCreationDate]) ]]; if (TFPreviewOpt(@"modified")) [rws addObject: @[ @"Modified", LongDate(at[NSFileModificationDate]) ]]; if (TFPreviewOpt(@"lastOpened")) [rws addObject: @[ @"Last opened", LongDate(opened) ]]; NSArray *rows = rws; if (_more && img) { BOOL jpg = [@[ @"jpg", @"jpeg" ] containsObject: [[p pathExtension] lowercaseString]]; if (jpg) rows = [rows arrayByAddingObject: @[ @"Content created", LongDate(at[NSFileCreationDate]) ]]; else { NSBitmapImageRep *br = [[NSBitmapImageRep imageRepsWithContentsOfFile: p] firstObject]; if (br) rows = [rows arrayByAddingObject: @[ @"Dimensions", [NSString stringWithFormat: @"%ld × %ld", (long)[br pixelsWide], (long)[br pixelsHigh]] ]]; } }       /* Show More of a picture: "Content created" (the other rows depend on the kind and are not measured) */
 	double y = 361;
 	for (NSUInteger i = 0; i < [rows count]; i++) { NSArray *row = rows[i]; NSDictionary *la = @{ NSFontAttributeName: [NSFont systemFontOfSize: 13], NSForegroundColorAttributeName: TF_DIM }, *va = @{ NSFontAttributeName: [NSFont boldSystemFontOfSize: 13], NSForegroundColorAttributeName: TF_TEXT }; [row[0] drawAtPoint: NSMakePoint(9, y) withAttributes: la]; NSSize vs = [row[1] sizeWithAttributes: va]; [row[1] drawAtPoint: NSMakePoint(284 - vs.width, y) withAttributes: va];
 		if (i + 1 < [rows count]) { [TFRGB(65, 67, 70) setFill]; NSRectFill(NSMakeRect(10, y + 19, 273, 1)); } y += 23; }
 	double ty = y + 8;       /* "Tags" follows the rows by 8 (361 + 3 x 23 + 8 = 438 with the third row, 415 with two) */
+	if (!TFPreviewOpt(@"tags")) { _content = ty; [NSGraphicsContext restoreGraphicsState]; [self _drawQuickBar: dir path: p]; return; }
 	[@"Tags" drawAtPoint: NSMakePoint(9, ty + 1) withAttributes: head]; NSArray *tg = TFTagsOf(p); FillRound(NSMakeRect(10, ty + 23, 273, 33), 6, TFDark() ? TFRGBA(255, 255, 255, 0.05) : TFRGBA(0, 0, 0, 0.04)); [[tg count] ? [tg componentsJoinedByString: @", "] : @"Add Tags…" drawAtPoint: NSMakePoint(18, ty + 23 + 9) withAttributes: Font(13, NO, TF_DIM)];
 	_content = ty + 23 + 33 + 12; [NSGraphicsContext restoreGraphicsState];
 	[self _drawQuickBar: dir path: p];
