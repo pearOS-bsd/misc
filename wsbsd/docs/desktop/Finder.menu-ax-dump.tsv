@@ -1,0 +1,291 @@
+0	Apple				
+1	About This Mac		0		true
+1	System Information		10		true
+1			0		false
+1	System Settings…		0		true
+1	App Store…, 9 updates		0		true
+1			0		false
+1	Recent Items		0		true
+2	Applications		0		false
+2	balenaEtcher		8		true
+2	Show “balenaEtcher” in Finder		0		true
+2	Digital Color Meter		8		true
+2	Show “Digital Color Meter” in Finder		0		true
+2	Discord		8		true
+2	Show “Discord” in Finder		0		true
+2	Finder		8		true
+2	Show “Finder” in Finder		0		true
+2	Google Chrome		8		true
+2	Show “Google Chrome” in Finder		0		true
+2	Safari		8		true
+2	Show “Safari” in Finder		0		true
+2	Shottr		8		true
+2	Show “Shottr” in Finder		0		true
+2	Spotify		8		true
+2	Show “Spotify” in Finder		0		true
+2	Terminal		8		true
+2	Show “Terminal” in Finder		0		true
+2	WhatsApp		8		true
+2	Show “WhatsApp” in Finder		0		true
+2			0		false
+2	Documents		0		false
+2	AccessibilitySystemAppearance.car		8		true
+2	Show “AccessibilitySystemAppearance.car” in Finder		0		true
+2	Aqua.car		8		true
+2	Show “Aqua.car” in Finder		0		true
+2	AquaAX.car		8		true
+2	Show “AquaAX.car” in Finder		0		true
+2	Assets.car		8		true
+2	Show “Assets.car” in Finder		0		true
+2	dark.png		8		true
+2	Show “dark.png” in Finder		0		true
+2	gh_tk (1)		8		true
+2	Show “gh_tk (1)” in Finder		0		true
+2	index (1).php		8		true
+2	Show “index (1).php” in Finder		0		true
+2	light.png		8		true
+2	Show “light.png” in Finder		0		true
+2	menu.png		8		true
+2	Show “menu.png” in Finder		0		true
+2	test_compose		8		true
+2	Show “test_compose” in Finder		0		true
+2			0		false
+2	Servers		0		false
+2	Macintosh HD		0		true
+2			0		false
+2	Clear Menu		0		true
+1			0		false
+1	Force Quit…	⎋	2	27	true
+1	Force Quit Finder	⎋	3	27	true
+1			0		false
+1	Sleep		0		true
+1	Restart…		0		true
+1	Restart		10		true
+1	Shut Down…		0		true
+1	Shut Down		10		true
+1			0		false
+1	Lock Screen	Q	4		true
+1	Log Out Alexandru Balan…	Q	1		true
+1	Log Out Alexandru Balan	Q	3		true
+1			0		false
+0	Finder				
+1	About Finder		8		true
+1			8		false
+1	Settings…	,	0		true
+1			0		false
+1	Empty Trash…		1	23	false
+1	Empty Trash		3	23	false
+1			0		false
+1	Services		0		true
+2	No Services Apply		0		false
+2	Services Settings…		0		true
+1			0		false
+1	Hide Finder	H	0		true
+1	Hide Others	H	2		true
+1	Show All		0		false
+0	File				
+1	New Finder Window	N	0		true
+1	New Folder	N	1		false
+1	New Folder with Selection	N	4		false
+1	New Smart Folder		8		true
+1	New Tab	T	0		true
+1	Open	O	0		false
+1	Open in New Tab	O	4		false
+1	Open in New Window and Close	O	2		false
+1	Open With		8		false
+2	Item		0		false
+1	Always Open With		10		false
+2	Item		0		false
+1	Close Window	W	0		false
+1	Close All	W	2		true
+1			0		false
+1	Get Info	I	0		false
+1	Show Inspector	I	2		false
+1	Get Summary Info	I	4		false
+1	Rename		8		false
+1	Compress		8		false
+1	Compress		8		false
+1	Duplicate	D	0		false
+1	Duplicate Exactly	D	3		false
+1	Make Alias	A	4		false
+1	Quick Look “lgf2”	Y	0		false
+1	Slideshow “lgf2”	Y	2		false
+1			0		false
+1	Share…		8		false
+1	Manage Shared File…		8		false
+1			0		false
+1	Show Original	R	0		false
+1	Add to Sidebar	T	4		false
+1	Add to Dock	T	5		false
+1			0		false
+1	Move to Trash		0	23	false
+1	Delete Immediately…		2	23	false
+1	Eject	E	0		false
+1	Eject	E	0		false
+1	Eject	E	0		false
+1			0		false
+1	--				true
+1			0		false
+1	Print	P	0		false
+0	Edit				
+1	Undo	Z	0		false
+1	Redo	Z	1		false
+1			0		false
+1	Cut	X	0		false
+1	Copy	C	0		false
+1	Copy “lgf2” as Pathname	C	2		false
+1	Copy as Link	C	6		false
+1	Paste	V	0		false
+1	Move Item Here	V	2		false
+1	Paste Exactly	V	3		false
+1	Select All	A	0		false
+1	Deselect All	A	2		false
+1			0		false
+1	Show Clipboard		0		true
+1			0		false
+1	Search	F	0		true
+1	Search by Name…	F	5		true
+1			0		false
+1	AutoFill		0		true
+2	Contact…		0		false
+2	Passwords…		0		false
+2	Credit Card…		0		false
+1	Start Dictation	🎤	8	150	false
+1	Emoji & Symbols	🌐	8	149	true
+0	View				
+1	as Icons	1	0		false
+1	as List	2	0		false
+1	as Columns	3	0		false
+1	as Gallery	4	0		false
+1			0		false
+1	Use Stacks	0	4		true
+1	Sort By		8		false
+2	None	0	6		false
+2			8		false
+2	Snap to Grid		8		false
+2			8		false
+2	Name	1	6		false
+2	Kind	2	6		false
+2	Date Last Opened	3	6		false
+2	Date Added	4	6		false
+2	Date Modified	5	6		false
+2	Date Created		8		false
+2	Size	6	6		false
+2	Tags	7	6		false
+1	Clean Up		8		false
+1	Clean Up Selection		10		false
+1	Clean Up By		0		false
+2	Name	1	2		false
+2	Kind	2	2		false
+2	Date Modified	5	2		false
+2	Date Created		8		false
+2	Size	6	2		false
+2	Tags	7	2		false
+1			0		false
+1	Show Tab Bar	T	1		false
+1	Show All Tabs	\	1		false
+1			0		false
+1	Hide Sidebar	S	4		false
+1	Show Preview	P	1		false
+1			0		false
+1	Hide Toolbar	T	2		false
+1	Hide Path Bar	P	2		false
+1	Show Status Bar	/	0		false
+1			0		false
+1	Customize Toolbar…		0		false
+1			0		false
+1	Show View Options	J	0		true
+1	Show Preview Options		8		true
+1			0		false
+1	Enter Full Screen	F	24		false
+0	Go				
+1	Back	[	0		false
+1	Forward	]	0		false
+1	Enclosing Folder		0	104	false
+1	Enclosing Folder		0	104	false
+1	Enclosing Folder in New Window		4	104	false
+1	Select Startup Disk		1	104	true
+1			0		false
+1	Recents	F	1		true
+1	Documents	O	1		true
+1	Desktop	D	1		true
+1	Downloads	L	2		true
+1	Home	H	1		true
+1	Library		10		true
+1	Computer	C	1		true
+1	AirDrop	R	1		true
+1	Network	K	1		true
+1	iCloud Drive	I	1		true
+1	Shared	S	1		true
+1	Applications	A	1		true
+1	Utilities	U	1		true
+1			0		false
+1	Recent Folders		0		true
+2	app		0		true
+2	Downloads		0		true
+2	dstest2		0		true
+2	iso-test		0		true
+2	lgf2		0		true
+2	lgf3		0		true
+2	tmp		0		true
+2			0		false
+2	Clear Menu		0		true
+1			0		false
+1	Go to Folder…	G	1		true
+1	Connect to Server…	K	0		true
+0	Window				
+1	Minimize	M	0		false
+1	Minimize All	M	2		false
+1	Zoom		8		false
+1	Zoom All		10		false
+1	Fill	F	28		false
+1	Center	C	28		false
+1			0		false
+1	Move & Resize		0		true
+2	Halves		0		false
+2	Left		28		false
+2	Right		28		false
+2	Top		28		false
+2	Bottom		28		false
+2			0		false
+2	Quarters		0		false
+2	Top Left		0		false
+2	Top Right		0		false
+2	Bottom Left		0		false
+2	Bottom Right		0		false
+2			0		false
+2	Arrange		0		false
+2	Left & Right		29		false
+2	Left & Quarters		31		false
+2	Right & Left		29		false
+2	Right & Quarters		31		false
+2	Top & Bottom		29		false
+2	Top & Quarters		31		false
+2	Bottom & Top		29		false
+2	Bottom & Quarters		31		false
+2	Quarters		0		false
+2			0		false
+2	Return to Previous Size	R	28		false
+1	Full Screen Tile		0		false
+2	Left of Screen		0		false
+2	Right of Screen		0		false
+1			8		false
+1	Bring All to Front		8		true
+1	Arrange in Front		10		true
+1	Cycle Through Windows	`	0		false
+1	Remove Window from Set		0		false
+1			0		false
+1	Show Previous Tab			13	2	false
+1	Show Next Tab			12	2	false
+1	Move Tab to New Window		0		false
+1	Merge All Windows		0		false
+1			0		false
+1			0		false
+1	Show Progress Window		8		false
+1			0		false
+1	Downloads		0		true
+0	Help				
+1	Send Finder Feedback		0		true
+1			0		false
+1	Mac User Guide		0		true
+1	Tips for Your Mac		8		true
