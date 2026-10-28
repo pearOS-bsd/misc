@@ -32,8 +32,8 @@ macdesktop_start()
 	for app in /System/Library/CoreServices/Dock.app/Contents/MacOS/Dock /System/Library/CoreServices/SystemUIServer.app/Contents/MacOS/SystemUIServer /System/Library/CoreServices/Finder.app/Contents/MacOS/Finder /System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal; do
 		daemon -f -o /var/log/$(basename $app).log /usr/lib/dyld $app
 	done
-	# a report on the serial port (if there is one): which of the programs of the desktop are not running 25 s after the start, with the end of their logs (the screen is the window server's, the console is muted)
-	( sleep 25; for a in WindowServer Dock SystemUIServer Finder Terminal; do pgrep -x $a >/dev/null 2>&1 || pgrep -f "$a" >/dev/null 2>&1 || { echo "== $a is not running"; tail -15 /var/log/$a.log 2>/dev/null; }; done > /dev/ttyu0 2>/dev/null ) &
+	# a report on the serial port (if there is one), 25 s after the start: the programs of the desktop that run, and the end of the log of the Finder and of every program that does not (the screen is the window server's and the console is muted)
+	( sleep 25; { echo "== desktop report"; ps ax -o pid,stat,command | grep -E "WindowServer|Dock|SystemUIServer|Finder|Terminal|usernoted|gdnc|gdomap" | grep -v grep; for a in Finder WindowServer Dock SystemUIServer Terminal; do pgrep -f "$a" >/dev/null 2>&1 || echo "== $a is not running"; echo "== tail of $a.log"; tail -12 /var/log/$a.log 2>/dev/null; done; ls /System/Library/Desktop\ Pictures 2>&1; } > /dev/ttyu0 2>/dev/null ) &
 }
 macdesktop_stop()
 {
