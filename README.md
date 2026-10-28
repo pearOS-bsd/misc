@@ -183,6 +183,14 @@ yet; the amd64 image is built by CI (first result pending), the arm64 image has 
 | **WebKit** | No | Not provided. |
 | **Extended attributes / Gatekeeper** | Yes | `com.apple.quarantine` on FreeBSD `extattr(2)`, a quarantine prompt, `xattr` and `spctl` tools. |
 
+## Current status (2026-10-28)
+- **Finder:** about 70 % of the file manager and 55–60 % of the desktop (an estimate from the code and the VM). Native `NSMenu` pop-ups, toolbar Group menu, Go to Folder sheet, Connect to Server window, a preview pane measured per file kind with quick actions and Show More, tags, Open With, copy window.
+- **AppKit layer (`appkit/back-wsd`):** non-blocking sheets, `NSAlert`, `NSPopover`, `NSPopUpButton`, `NSSwitch` and menus as on the Mac (glass with the edge lens, Shift in key equivalents), with tests in CI. Rule: applications use the NS classes; common elements are implemented here, not per application.
+- **Top bar and Control Center:** Wi-Fi (CoreWLAN), Bluetooth, Sound and Display panels measured on the Mac; the rest of the tiles is drawn but not connected. **Notifications:** `usernoted` + `UserNotifications` + banners and list in the shell, tested end to end.
+- **Decompilation of the Control Center:** not done: the Mac's one is Swift/SwiftUI and REA/Ghidra could not analyse it yet (class map in `docs/desktop/`).
+- **Images (release `iso-latest`):** the ISO boots in QEMU with UEFI; the USB disk image is being reworked (it now loads the kernel and mounts its UFS root in QEMU, the last boot stopped after fsck; a fix is in CI).
+- Details and next steps: `wsbsd/handoff.md`, section "STARE ACTUALĂ".
+
 ## Status, coverage and what is required next (2026-10-22)
 
 Rough estimates, not measurements:
