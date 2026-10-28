@@ -29,6 +29,8 @@ int car_count(const CarFile *);
 int car_rendition(const CarFile *, int i, CarRendition *out);                                  /* 0 ok */
 /* the first rendition called `name` whose key matches the given attributes (-1 = do not care) */
 int car_find(const CarFile *, const char *name, int state, int value, int scale, CarRendition *out);
+/* the first rendition called `name` whose key has the given value for every attribute id that is >= 0 in attr[32] */
+int car_find_attrs(const CarFile *, const char *name, const int *attr, CarRendition *out);
 /* the TLV of the info list with this tag (1001 slices, 1003 metrics, 1010 internal link ...), or NULL */
 const uint8_t *car_tlv(const CarRendition *, uint32_t tag, size_t *len);
 /* the contents of a data rendition ("RAWD" blocks): malloc'ed, *len bytes; NULL when the rendition is no data rendition */
@@ -37,5 +39,7 @@ uint8_t *car_data(const CarRendition *, size_t *len);
 int car_symbols(const CarFile *, const char *const *names, int n, int weight, uint8_t **out, size_t *outlen);
 /* the pixels of a bitmap rendition (compression 4 LZFSE, 11 Deepmap 2): malloc'ed rows of *bpp bytes (4: BGRA, premultiplied; 2: gray + alpha), or NULL */
 uint8_t *car_bitmap(const CarRendition *, int *w, int *h, int *bpp);
+/* like car_bitmap, and a rendition that is a link into a packed atlas (layout 1003 with a link record, tag 1010 'INLK': a rectangle of the atlas called ZZZZPackedAsset-* whose key is given) is cut out of its atlas */
+uint8_t *car_bitmap_linked(const CarFile *, const CarRendition *, int *w, int *h, int *bpp);
 int car_image_set(const CarFile *, const char *name, int want, CarRendition *out);
 #endif
