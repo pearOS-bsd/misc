@@ -34,6 +34,7 @@ typedef struct {
 	const DockFan *fan;           /* NULL when no stack is open */
 	int orient;                   /* 0 bottom, 1 left, 2 right: the scene is drawn as for the bottom and turned onto the edge, the icons and the texts stay upright */
 	double width;                 /* width of the window (for the right edge) */
+	int chevron1;                 /* 1 + the index of a stack tile whose grid or list is open (it shows the chevron button as in the fan), 0 for none */
 } DockScene;
 
 /* geometry of the fan: x offset of item k from the first one, vertical pitch, per-item eased progress for the time t in seconds (0 .. 1) */

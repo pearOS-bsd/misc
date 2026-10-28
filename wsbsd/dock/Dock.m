@@ -94,12 +94,12 @@ static NSMenu *NativeMenu(NSArray *its, id target)
 - (BOOL)isFlipped { return YES; }
 - (void)drawRect:(NSRect)r { NSMutableParagraphStyle *ps = [[NSMutableParagraphStyle alloc] init]; [ps setAlignment: NSCenterTextAlignment]; [title ?: @"" drawInRect: NSMakeRect(0, 7, [self bounds].size.width, 19) withAttributes: @{ NSFontAttributeName: [NSFont boldSystemFontOfSize: 13], NSForegroundColorAttributeName: [NSColor colorWithCalibratedWhite: 1 alpha: 0.85], NSParagraphStyleAttributeName: ps }]; }
 @end
-static DockGridWindow *gGrid;
+static DockGridWindow *gGrid; static int gGridTile;
 /* shows the grid of a folder: tileCx the centre of the tile (screen x), barTop the top of the bar (screen y, y up), the names already sorted */
 static void ShowDockGrid(NSString *title, NSString *dir, NSArray *names, double tileCx, double barTop, void (^pick)(NSString *))
 {
 	NSRect scr = [[NSScreen mainScreen] frame]; int cols = (int)MIN(12.0, floor((scr.size.width - 60) / 106)); if (cols < 3) cols = 3; int rowsAll = ((int)[names count] + cols - 1) / cols; if (rowsAll < 1) rowsAll = 1;
-	double bottom = barTop - 10, topMax = scr.size.height - 0.172 * scr.size.height, maxH = MAX(160.0, topMax - bottom); int rows = (int)MIN((double)rowsAll, floor((maxH - 54) / 106)); if (rows < 1) rows = 1;
+	double bottom = barTop + 16, topMax = scr.size.height - 0.172 * scr.size.height, maxH = MAX(160.0, topMax - bottom); int rows = (int)MIN((double)rowsAll, floor((maxH - 54) / 106)); if (rows < 1) rows = 1;
 	double w = cols * 106 + 34, h = rows * 106 + 54; double x = MAX(8, MIN(scr.size.width - w - 8, tileCx - w / 2));
 	NSRect f = NSMakeRect(x, bottom, w, h);
 	if (!gGrid) { gGrid = [[DockGridWindow alloc] initWithContentRect: f styleMask: NSBorderlessWindowMask backing: NSBackingStoreBuffered defer: NO]; [gGrid setOpaque: NO]; [gGrid setBackgroundColor: [NSColor clearColor]]; [gGrid setHasShadow: NO]; [gGrid setLevel: 25]; [gGrid setHidesOnDeactivate: NO]; }
@@ -519,7 +519,7 @@ static NSMutableDictionary *badgeStore;
 	if (!c) return;
 	if (getenv("DOCK_TEST")) { CGContextSetRGBFillColor(c, 1, 0, 0, 1); CGContextFillRect(c, CGRectMake(10, 10, 200, 100)); NSRectFill(NSMakeRect(250, 10, 100, 100)); }
 	else { CGContextSaveGState(c); CGContextClearRect(c, NSRectToCGRect([self bounds])); CGContextRestoreGState(c); }
-	DockScene sc = { m, items, tiles, n, slots, bar, [self originX], [self bounds].size.height, hover, fanOpen ? &fan : NULL, orient, [self bounds].size.width };
+	DockScene sc = { m, items, tiles, n, slots, bar, [self originX], [self bounds].size.height, hover, fanOpen ? &fan : NULL, orient, [self bounds].size.width, (gGrid && [gGrid isVisible]) ? gGridTile + 1 : 0 };
 	DockRender(c, &sc);
 	if (ctxOpen) [self drawContext];
 	if ([self poofing]) [self drawPoof];
@@ -624,7 +624,7 @@ static NSMutableDictionary *badgeStore;
 	NSString *path = paths[i];
 	if (items[i].kind == DOCK_APP) { for (int k = nmini - 1; k >= 0; k--) if (mini[k].appItem == i && mini[k].phase == 2) { [self restoreMini: k]; return; } }
 	if (items[i].kind == DOCK_MINIMIZED) { for (int k = 0; k < nmini; k++) if (mini[k].item == i) [self restoreMini: k]; return; }
-	if (items[i].kind == DOCK_OTHER) { if ([self isDirTile: i]) { int showas = srcKind[i] == 2 ? [others[srcIdx[i]][@"tile-data"][@"showas"] intValue] : 1; NSArray *sorted = [self sortedNamesOf: i]; if (showas == 3) { NSString *dir = path; double top = bar.bottom_margin + bar.bar_h + 8; DockListMenu *lm = [[DockListMenu alloc] init]; lm->dir = dir; lm->names = sorted; lm->maxRows = (int)floor(([[NSScreen mainScreen] frame].size.height - top - 110) / 24); lm->open = ^(NSString *p) { [self openPath: p]; }; NSMenu *nm = [lm menu]; objc_setAssociatedObject(self, "dlm", lm, OBJC_ASSOCIATION_RETAIN); NSPoint cp = NSMakePoint(slots[i].cx, top); [[DockMenuFit alloc] initFor: nm at: cp]; NSEvent *ev = [NSEvent mouseEventWithType: NSRightMouseDown location: [self convertPoint: cp toView: nil] modifierFlags: 0 timestamp: [[NSProcessInfo processInfo] systemUptime] windowNumber: [[self window] windowNumber] context: nil eventNumber: 0 clickCount: 1 pressure: 1]; [NSMenu popUpContextMenu: nm withEvent: ev forView: self]; return; } if (showas == 2 || (showas == 0 && [sorted count] > 16)) { NSString *dir = path, *tt = tiles[i].label ? @(tiles[i].label) : @""; double top = bar.bottom_margin + bar.bar_h; [self closeAllMenus]; ShowDockGrid(tt, dir, sorted, slots[i].cx, top, ^(NSString *nm) { [self openPath: [dir stringByAppendingPathComponent: nm]]; }); } else [self openFan: i]; } else [self openPath: path]; return; }
+	if (items[i].kind == DOCK_OTHER) { if ([self isDirTile: i]) { int showas = srcKind[i] == 2 ? [others[srcIdx[i]][@"tile-data"][@"showas"] intValue] : 1; NSArray *sorted = [self sortedNamesOf: i]; if (showas == 3) { NSString *dir = path; double top = bar.bottom_margin + bar.bar_h + 8; DockListMenu *lm = [[DockListMenu alloc] init]; lm->dir = dir; lm->names = sorted; lm->maxRows = (int)floor(([[NSScreen mainScreen] frame].size.height - top - 110) / 24); lm->open = ^(NSString *p) { [self openPath: p]; }; NSMenu *nm = [lm menu]; objc_setAssociatedObject(self, "dlm", lm, OBJC_ASSOCIATION_RETAIN); NSPoint cp = NSMakePoint(slots[i].cx, top); [[DockMenuFit alloc] initFor: nm at: cp]; NSEvent *ev = [NSEvent mouseEventWithType: NSRightMouseDown location: [self convertPoint: cp toView: nil] modifierFlags: 0 timestamp: [[NSProcessInfo processInfo] systemUptime] windowNumber: [[self window] windowNumber] context: nil eventNumber: 0 clickCount: 1 pressure: 1]; [NSMenu popUpContextMenu: nm withEvent: ev forView: self]; return; } if (showas == 2 || (showas == 0 && [sorted count] > 16)) { NSString *dir = path, *tt = tiles[i].label ? @(tiles[i].label) : @""; double top = bar.bottom_margin + bar.bar_h; [self closeAllMenus]; gGridTile = i; ShowDockGrid(tt, dir, sorted, slots[i].cx, top, ^(NSString *nm) { [self openPath: [dir stringByAppendingPathComponent: nm]]; }); } else [self openFan: i]; } else [self openPath: path]; return; }
 	if (items[i].kind == DOCK_TRASH) { return; }
 	if (items[i].kind == DOCK_APP && [self pidOfApp: path] > 0 && [self activateApp: path]) return;        /* a running application comes to the front instead of starting again */
 	[self launchItem: i];
