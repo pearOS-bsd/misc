@@ -15,4 +15,5 @@ im.save(sys.argv[2])
 # a desktop: either a wallpaper (many colours) or, on a flat background, the menu bar's text (bright pixels in its first 30 rows) and some content
 top = im.crop((0, 0, w, 30)).convert('L'); bright = sum(1 for p in top.getdata() if p > 200)
 print('bright pixels in the bar', bright)
-sys.exit(0 if ((colors > 400 and lum > 12) or (bright > 150 and lum > 12)) else 1)
+# (the boot manager's own screen is light grey: a desktop is dark; the check used to take that screen for a desktop)
+sys.exit(0 if (12 < lum < 140 and (colors > 400 or bright > 150)) else 1)
