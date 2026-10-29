@@ -31,6 +31,7 @@
 		char *mark = strstr(line, ".app/Contents/MacOS/"); int pid = atoi(line); if (pid == getpid() || pid <= 1) continue;
 		if (!mark) { char *g = strstr(line, "-gnustep"); if (!g || strstr(line, "gnustep-")) continue; char *b = g; while (b > line && b[-1] != '/' && b[-1] != ' ') b--; NSString *nm = [[NSString alloc] initWithBytes: b length: (NSUInteger)(g - b) encoding: NSUTF8StringEncoding]; if ([seen containsObject: nm]) continue; [seen addObject: nm]; FQApp *a = [FQApp new]; a->path = [nm stringByAppendingString: @".app"]; a->pid = pid; a->name = nm; a->icon = nil; [r addObject: a]; continue; }
 		*mark = 0; char *start = line; while (*start == ' ') start++; while (*start >= '0' && *start <= '9') start++; while (*start == ' ') start++;
+		for (char *q = mark; q > start; q--) if (*q == ' ') { start = q + 1; break; }       /* "/usr/lib/dyld /System/.../Finder.app/...": the program is the last word before .app (dyld starts the applications of the image) */
 		NSString *bp = [[NSString stringWithUTF8String: start] stringByAppendingString: @".app"]; if ([seen containsObject: bp]) continue; [seen addObject: bp];
 		if ([bp hasPrefix: @"/System/Library/CoreServices/"] && ![bp hasSuffix: @"/Finder.app"]) continue;       /* the system's own helpers (Dock, SystemUIServer, ...) are not in the list */
 		FQApp *a = [FQApp new]; a->path = bp; a->pid = pid; a->name = [[bp lastPathComponent] stringByDeletingPathExtension]; a->icon = [[NSWorkspace sharedWorkspace] iconForFile: bp]; [r addObject: a];
@@ -72,7 +73,15 @@
 		if ([al runModal] != NSAlertFirstButtonReturn) return;
 	}
 	kill(a->pid, SIGKILL);       /* the Finder is started again by launchd (KeepAlive): that is the Relaunch */
+	if (fin) [self performSelector: @selector(ensureFinder) withObject: nil afterDelay: 12.0];       /* without launchd (a dev machine) it is started here */
 	[self performSelector: @selector(rescan) withObject: nil afterDelay: 0.5];
+}
+- (void)ensureFinder
+{
+	if (system("pgrep -f 'Finder.app/Contents/MacOS/Finder' >/dev/null 2>&1") == 0 || system("pgrep -x Finder >/dev/null 2>&1") == 0) return;
+	NSString *f = @"/System/Library/CoreServices/Finder.app/Contents/MacOS/Finder"; NSTask *t = [[NSTask alloc] init];
+	if ([[NSFileManager defaultManager] isExecutableFileAtPath: @"/usr/lib/dyld"]) { [t setLaunchPath: @"/usr/lib/dyld"]; [t setArguments: @[ f ]]; } else { [t setLaunchPath: f]; }
+	@try { [t launch]; } @catch (NSException *e) {}
 }
 - (void)rescan { [self scan]; [table reloadData]; [self refreshButton]; }
 @end
