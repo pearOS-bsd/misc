@@ -411,6 +411,44 @@ static LOADER_ENTRY * FirstLoaderEntry(VOID) {
     return NULL;
 } // LOADER_ENTRY *FirstLoaderEntry()
 
+// The entry the silent boot takes (the laptop's own system may be detected before the one on this medium): the first entry that matches an element of
+// default_selection (the label of its volume, or a part of its title), else the first entry on the volume Ploader itself runs from (the medium that was booted),
+// else the first one found.
+static LOADER_ENTRY * PreferredLoaderEntry(VOID) {
+    UINTN i, k;
+    CHAR16 *Element;
+    LOADER_ENTRY *E;
+
+    if (GlobalConfig.DefaultSelection != NULL) {
+        k = 0;
+        while ((Element = FindCommaDelimited(GlobalConfig.DefaultSelection, k++)) != NULL) {
+            if (StrLen(Element) > 0 && !MyStriCmp(Element, L"+")) {
+                for (i = 0; i < MainMenu.EntryCount; i++) {
+                    if (MainMenu.Entries[i]->Tag != TAG_LOADER)
+                        continue;
+                    E = (LOADER_ENTRY *) MainMenu.Entries[i];
+                    if ((E->Volume != NULL && E->Volume->VolName != NULL && MyStriCmp(E->Volume->VolName, Element)) ||
+                        (E->Title != NULL && StriSubCmp(Element, E->Title))) {
+                        MyFreePool(Element);
+                        return E;
+                    }
+                }
+            }
+            MyFreePool(Element);
+        }
+    }
+    if (SelfVolume != NULL) {
+        for (i = 0; i < MainMenu.EntryCount; i++) {
+            if (MainMenu.Entries[i]->Tag != TAG_LOADER)
+                continue;
+            E = (LOADER_ENTRY *) MainMenu.Entries[i];
+            if (E->Volume == SelfVolume)
+                return E;
+        }
+    }
+    return FirstLoaderEntry();
+} // LOADER_ENTRY *PreferredLoaderEntry()
+
 // Builds a LOADER_ENTRY that boots the default fallback loader (\EFI\BOOT\BOOTX64.EFI)
 // on the given volume, or NULL if that volume has no such file (or it isn't a valid
 // EFI loader). Built directly from the volume, independent of ScanForBootloaders()'s
@@ -854,7 +892,7 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
             StartLoader(SpecialEntry, SpecialEntry->Title);
             // only returns on failure; fall through to the normal menu below
         } else if (BootMode == PEAROS_BOOT_NORMAL) {
-            LOADER_ENTRY *SilentEntry = FirstLoaderEntry();
+            LOADER_ENTRY *SilentEntry = PreferredLoaderEntry();
             if (SilentEntry != NULL) {
                 LOG(1, LOG_LINE_SEPARATOR, L"No boot-mode key held; booting first detected OS silently");
                 StartLoader(SilentEntry, SilentEntry->Title);
