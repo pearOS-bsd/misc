@@ -7,7 +7,7 @@
 	<key>RunAtLoad</key><true/>
 	<key>KeepAlive</key><false/>
 	<key>ProcessType</key><string>Interactive</string>
-	<key>StandardOutPath</key><string>/var/log/Terminal.log</string>
-	<key>StandardErrorPath</key><string>/var/log/Terminal.log</string>
+	<key>StandardOutPath</key><string>/tmp/Terminal.log</string>
+	<key>StandardErrorPath</key><string>/tmp/Terminal.log</string>
 </dict>
 </plist>

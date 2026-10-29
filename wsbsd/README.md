@@ -113,8 +113,8 @@ Source: `buglist.txt`. `[ ]` = open, `[x]` = done and verified. Items marked *(p
 - [ ] Touch Bar sometimes starts with no way to turn it off.
 
 **Login and users**
-- [ ] Login window before first unlock and after first unlock (the difference between Log Out and Lock) with real users.
-- [ ] Default user `alex`, password `pear`, with `sudo` configured, for the next images.
+- [x] Login window with real accounts (`loginwindow/`: chooser of accounts, password checked with crypt(3), wrong password message, Restart / Shut Down) before the first unlock; Lock Screen (menu, ⌃⌘Q) puts it over the running session ("after the first unlock", the same account's password unlocks); Log Out ends the session and the login window returns; the rc script runs the desktop as the chosen account (CI runs sign alex in by themselves). *(the layout is not measured on a Mac: the real login window cannot be captured without signing out; dimming stands in for the blur; no fast user switching; unlocking is not enforced at the window server, the lock is a window at level 2000)*
+- [x] The image has the account `alex` (password `pear`, groups wheel / operator / video, zsh, home /Users/alex) with sudo (`%wheel ALL=(ALL:ALL) ALL`) and doas configured. *(not built into an image yet)*
 
 **Missing pieces**
 - [ ] System components that still have to be decompiled from this Mac (list to be kept in `docs/`).

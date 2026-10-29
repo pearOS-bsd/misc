@@ -7,7 +7,7 @@
 	<key>RunAtLoad</key><true/>
 	<key>KeepAlive</key><true/>
 	<key>ProcessType</key><string>Interactive</string>
-	<key>StandardOutPath</key><string>/var/log/Finder.log</string>
-	<key>StandardErrorPath</key><string>/var/log/Finder.log</string>
+	<key>StandardOutPath</key><string>/tmp/Finder.log</string>
+	<key>StandardErrorPath</key><string>/tmp/Finder.log</string>
 </dict>
 </plist>

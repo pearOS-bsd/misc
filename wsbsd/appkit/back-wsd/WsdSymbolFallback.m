@@ -35,6 +35,7 @@ static NSDictionary *Table(void)
 		@"battery.50": ^(NSBezierPath *p, BOOL *f) { RRect(p, .06, .3, .78, .4, .1); Line(p, .9, .44, .9, .56); RRect(p, .12, .36, .34, .28, .03); },
 		@"battery.100percent": ^(NSBezierPath *p, BOOL *f) { RRect(p, .06, .3, .78, .4, .1); Line(p, .9, .44, .9, .56); RRect(p, .12, .36, .66, .28, .03); },
 		@"battery.100percent.bolt": ^(NSBezierPath *p, BOOL *f) { RRect(p, .06, .3, .78, .4, .1); Line(p, .9, .44, .9, .56); RRect(p, .12, .36, .66, .28, .03); },
+		@"person.fill": ^(NSBezierPath *p, BOOL *f) { *f = YES; [p appendBezierPath: Circle(.5, .68, .2)]; [p moveToPoint: NSMakePoint(.12, .08)]; [p curveToPoint: NSMakePoint(.88, .08) controlPoint1: NSMakePoint(.12, .56) controlPoint2: NSMakePoint(.88, .56)]; [p closePath]; },
 		@"trash": ^(NSBezierPath *p, BOOL *f) { Line(p, .14, .78, .86, .78); Line(p, .38, .78, .38, .88); Line(p, .38, .88, .62, .88); Line(p, .62, .88, .62, .78); [p moveToPoint: NSMakePoint(.24, .78)]; [p lineToPoint: NSMakePoint(.3, .12)]; [p lineToPoint: NSMakePoint(.7, .12)]; [p lineToPoint: NSMakePoint(.76, .78)]; Line(p, .42, .6, .42, .3); Line(p, .58, .6, .58, .3); },
 		@"ellipsis": ^(NSBezierPath *p, BOOL *f) { *f = YES; [p appendBezierPath: Circle(.2, .5, .07)]; [p appendBezierPath: Circle(.5, .5, .07)]; [p appendBezierPath: Circle(.8, .5, .07)]; },
 		@"xmark": ^(NSBezierPath *p, BOOL *f) { Line(p, .24, .24, .76, .76); Line(p, .24, .76, .76, .24); },
