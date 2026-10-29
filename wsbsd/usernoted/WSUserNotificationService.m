@@ -6,7 +6,7 @@
 @implementation WSUNClient @end
 
 @implementation WSUserNotificationService
-{ NSString *_dir; NSMutableDictionary *_db; NSMutableArray *_clients; NSMutableArray *_pending; NSXPCListener *_listener; BOOL _focus; NSMutableDictionary *_responses; }
+{ NSString *_dir; NSMutableDictionary *_db; NSMutableArray *_clients; NSMutableArray *_pending; NSXPCListener *_listener; BOOL _focus; NSMutableDictionary *_responses; NSMutableDictionary *_badged; }
 - (instancetype)initWithDirectory:(NSString *)dir
 {
 	if (!(self = [super init])) return nil;
@@ -17,7 +17,7 @@
 	_focus = [_db[@"focus"] boolValue]; _clients = [NSMutableArray array]; _pending = [NSMutableArray array]; _responses = [NSMutableDictionary dictionary];
 	return self;
 }
-- (void)startListening { _listener = [[NSXPCListener alloc] initWithMachServiceName: WSUserNotificationServiceName]; [_listener setDelegate: self]; [_listener resume]; }
+- (void)startListening { [NSTimer scheduledTimerWithTimeInterval: 5 target: self selector: @selector(_badgeTimer:) userInfo: nil repeats: YES]; _listener = [[NSXPCListener alloc] initWithMachServiceName: WSUserNotificationServiceName]; [_listener setDelegate: self]; [_listener resume]; }
 - (void)_save { _db[@"focus"] = @(_focus); [_db writeToFile: [_dir stringByAppendingPathComponent: @"db.plist"] atomically: YES]; }
 - (BOOL)listener:(NSXPCListener *)l shouldAcceptNewConnection:(NSXPCConnection *)c
 {
@@ -73,7 +73,7 @@
 	WSUNClient *app = nil; NSMutableArray *shells = [NSMutableArray array]; @synchronized (self) { for (WSUNClient *c in _clients) { if ([c->role isEqual: @"shell"]) [shells addObject: c]; else if ([c->bundle isEqual: m[@"bundle"]] && c->foreground) app = c; } }
 	void (^finish)(NSUInteger) = ^(NSUInteger options) {          // 1 badge, 2 sound, 4 alert (banner), 8 list, 16 banner
 		BOOL banner = (options & (4 | 16)) != 0 && !self->_focus, list = (options & (4 | 8)) != 0 || self->_focus;
-		if (list) @synchronized (self) { NSMutableArray *d = self->_db[@"delivered"]; for (NSInteger i = (NSInteger)d.count - 1; i >= 0; i--) if ([d[i][@"uid"] isEqual: m[@"uid"]]) [d removeObjectAtIndex: i]; [d insertObject: m atIndex: 0]; [self _save]; }
+		if (list) @synchronized (self) { NSMutableArray *d = self->_db[@"delivered"]; for (NSInteger i = (NSInteger)d.count - 1; i >= 0; i--) if ([d[i][@"uid"] isEqual: m[@"uid"]]) [d removeObjectAtIndex: i]; [d insertObject: m atIndex: 0]; [self _save]; [self _syncBadges: NO]; }
 		for (WSUNClient *s in shells) { if (banner) [[s->conn remoteObjectProxy] presentBanner: m]; if (list) [[s->conn remoteObjectProxy] listChanged]; }
 	};
 	if (app) {
@@ -85,7 +85,23 @@
 - (NSArray *)_ofBundle:(NSString *)b in:(NSArray *)a { NSMutableArray *o = [NSMutableArray array]; for (NSDictionary *n in a) if ([n[@"bundle"] isEqual: b]) [o addObject: n]; return o; }
 - (void)deliveredWithReply:(void (^)(NSArray *))reply { WSUNClient *r = [self _me]; NSArray *a; @synchronized (self) { a = [self _ofBundle: r->bundle in: _db[@"delivered"]]; } if (reply) reply(a); }
 - (void)pendingWithReply:(void (^)(NSArray *))reply { WSUNClient *r = [self _me]; NSArray *a; @synchronized (self) { a = [self _ofBundle: r->bundle in: _pending]; } if (reply) reply(a); }
-- (void)_changed { @synchronized (self) { [self _save]; for (WSUNClient *c in _clients) if ([c->role isEqual: @"shell"]) [[c->conn remoteObjectProxy] listChanged]; } }
+/* the Dock badge of an application: the number of its notifications in the list (what the Mac shows when the application may badge its icon); the Dock listens for com.wsbsd.dock.badge (the application's path and the count). Sent when a count changes, and every 5 s for all of them again (the Dock may have started later) */
+- (void)_syncBadges:(BOOL)force
+{
+	@synchronized (self) {
+		if (!_badged) _badged = [NSMutableDictionary dictionary];
+		NSMutableDictionary *counts = [NSMutableDictionary dictionary];
+		for (NSDictionary *n in _db[@"delivered"]) { NSString *p = n[@"appPath"]; if (![p length]) continue; NSDictionary *a = _db[@"auth"][n[@"bundle"]]; if (a && !([a[@"options"] unsignedIntegerValue] & 1)) continue; counts[p] = @([counts[p] integerValue] + 1); }
+		NSMutableSet *paths = [NSMutableSet setWithArray: [counts allKeys]]; [paths addObjectsFromArray: [_badged allKeys]];
+		for (NSString *p in paths) {
+			NSNumber *c = counts[p] ?: @0, *o = _badged[p];
+			if (!force && o && [o isEqual: c]) continue; if (!o && [c integerValue] == 0 && !force) continue;
+			_badged[p] = c; [[NSDistributedNotificationCenter defaultCenter] postNotificationName: @"com.wsbsd.dock.badge" object: nil userInfo: @{ @"path": p, @"count": c } deliverImmediately: YES];
+		}
+	}
+}
+- (void)_badgeTimer:(NSTimer *)t { [self _syncBadges: YES]; }
+- (void)_changed { @synchronized (self) { [self _save]; [self _syncBadges: NO]; for (WSUNClient *c in _clients) if ([c->role isEqual: @"shell"]) [[c->conn remoteObjectProxy] listChanged]; } }
 - (void)removeDelivered:(NSArray *)ids { WSUNClient *r = [self _me]; @synchronized (self) { NSMutableArray *d = _db[@"delivered"]; for (NSInteger i = (NSInteger)d.count - 1; i >= 0; i--) if ([d[i][@"bundle"] isEqual: r->bundle] && [ids containsObject: d[i][@"id"]]) [d removeObjectAtIndex: i]; } [self _changed]; }
 - (void)removeAllDelivered { WSUNClient *r = [self _me]; @synchronized (self) { NSMutableArray *d = _db[@"delivered"]; for (NSInteger i = (NSInteger)d.count - 1; i >= 0; i--) if ([d[i][@"bundle"] isEqual: r->bundle]) [d removeObjectAtIndex: i]; } [self _changed]; }
 - (void)removePending:(NSArray *)ids { WSUNClient *r = [self _me]; @synchronized (self) { for (NSInteger i = (NSInteger)_pending.count - 1; i >= 0; i--) if ([_pending[i][@"bundle"] isEqual: r->bundle] && [ids containsObject: _pending[i][@"id"]]) [_pending removeObjectAtIndex: i]; } }

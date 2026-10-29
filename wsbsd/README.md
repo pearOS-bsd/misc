@@ -59,6 +59,7 @@ The stack: `wsd` (this repo: window server and compositor speaking the SkyLight 
 
 ### Bug checklist, round 2 (the owner's updated buglist.txt of 2026-10-29), easiest first
 `[x]` = fixed and seen working in the VM (or in QEMU); *(unverified)* = in the tree, not seen on screen yet; `[ ]` = open.
+- [x] Dock badge of an application = the number of its notifications in the list (usernoted posts `com.wsbsd.dock.badge` when a count changes and every 5 s; an application that did not ask for the badge option gets none). The UITest app has a notification sender (window "UI Test: Notifications": title, message, **Send in 2 s**, **Clear all**, and the counts sent / pending / delivered next to the number the Dock badge must show). *(VM: two sends -> badge 2 on the UITest tile, Clear all -> the badge goes; the banner needs TopBar's notification UI)*
 
 - [x] The Terminal asked "you have no zsh startup files": every new home gets an empty `.zshrc` (rc.d/macdesktop, the user template).
 - [x] The zsh prompt / history / key bindings are those of Pear-Project/dpkg `pearos-zshconfig/.zshrc` (compared line by line: `PROMPT='%n@%m %1~ %f%# '`, history, bindkeys, aliases).
