@@ -87,7 +87,7 @@ Source: `buglist.txt`. `[ ]` = open, `[x]` = done and verified. Items marked *(p
 - [x] A lost button release can no longer leave a window stuck in a resize or a move: the next pointer motion without the button ends it (`WsdResize.m`). *(confirm on hardware)*
 - [ ] Moving windows lacks vsync (a faint tearing effect, almost imperceptible). *(the images draw on the EFI / vt framebuffer, which has no vertical blank to wait for; vsync needs the KMS backend with a DRM driver (`gmake kms`: page flips are implemented, not verified on hardware))*
 - [ ] The Genie minimize animation is far too slow and leaves a blur spot where the window should appear (and during the animation). *(partial: the minimize now takes 0.5 s and the restore 0.4 s (0.75 / 0.5 before; the Mac's timing is not measured); a warped window no longer gets its blur / glass applied to the unwarped rectangle, which left the spot and cost a blur per frame; not seen on an image yet)*
-- [ ] Clicking Downloads in the Dock flickers.
+- [x] Clicking Downloads in the Dock no longer flickers: the Dock showed one frame with the new window size and the old picture (the bar's glass wider than its tiles); the new content is now drawn in the same turn as the new frame. *(seen in a capture sequence in the dev VM)*
 - [x] The Dock resizes by dragging its separator up or down (the "tilesize" preference, 16 to 128, saved when the button is released). *(the factor between pointer travel and size is 1:1, not measured on the Mac)*
 - [ ] Liquid Glass has an extra vertical offset: the lens samples the image too far away for the distortion.
 
