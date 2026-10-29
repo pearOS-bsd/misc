@@ -229,3 +229,32 @@ void WsdShowTilePopover(NSWindow *w, NSRect buttonInWindow)
 	}];
 }
 @end
+
+/* GNUstep's NSDiacriticInsensitiveSearch finds nothing at all (a search with it never matched, so Spotlight and the Finder search looked case sensitive): the strings are folded here instead (decomposed, the combining marks dropped) and searched without the flag.
+ * NSString and GSImmutableString (the class of the literals) both implement -rangeOfString:options:range: and both are wrapped. */
+static IMP gOrigRange[2], gOrigRangeL[2];
+static NSString *WsdFold(NSString *x) { NSString *d = [x decomposedStringWithCanonicalMapping]; NSMutableString *o = [NSMutableString stringWithCapacity: [d length]]; for (NSUInteger i = 0; i < [d length]; i++) { unichar c = [d characterAtIndex: i]; if (c >= 0x0300 && c <= 0x036F) continue; [o appendFormat: @"%C", c]; } return o; }
+static NSRange WsdRangeOf(id self, SEL _cmd, NSString *s, NSUInteger mask, NSRange r)
+{
+	if (mask & NSDiacriticInsensitiveSearch) {
+		NSString *hay = WsdFold([self substringWithRange: r]), *nd = WsdFold(s); NSRange f = [hay rangeOfString: nd options: (mask & ~NSDiacriticInsensitiveSearch) range: NSMakeRange(0, [hay length])];
+		if (f.location != NSNotFound) f.location += r.location; return f;
+	}
+	Class gs = NSClassFromString(@"GSImmutableString"); IMP o = (gs && [self isKindOfClass: gs] && gOrigRange[1]) ? gOrigRange[1] : gOrigRange[0];
+	return ((NSRange (*)(id, SEL, NSString *, NSUInteger, NSRange))o)(self, _cmd, s, mask, r);
+}
+static NSRange WsdRangeOfL(id self, SEL _cmd, NSString *s, NSUInteger mask, NSRange r, id loc)
+{
+	if (mask & NSDiacriticInsensitiveSearch) return WsdRangeOf(self, @selector(rangeOfString:options:range:), s, mask, r);
+	Class gs = NSClassFromString(@"GSImmutableString"); IMP o = (gs && [self isKindOfClass: gs] && gOrigRangeL[1]) ? gOrigRangeL[1] : gOrigRangeL[0];
+	return ((NSRange (*)(id, SEL, NSString *, NSUInteger, NSRange, id))o)(self, _cmd, s, mask, r, loc);
+}
+@interface WsdDiacriticFix : NSObject @end
+@implementation WsdDiacriticFix
++ (void)load
+{
+	SEL sel = @selector(rangeOfString:options:range:); const char *names[2] = { "NSString", "GSImmutableString" };
+	for (int i = 0; i < 2; i++) { Class c = objc_getClass(names[i]); if (!c) continue; Method m = class_getInstanceMethod(c, sel); if (!m) continue; gOrigRange[i] = method_setImplementation(m, (IMP)WsdRangeOf); if (i == 1 && gOrigRange[1] == gOrigRange[0]) gOrigRange[1] = NULL;
+		Method ml = class_getInstanceMethod(c, @selector(rangeOfString:options:range:locale:)); if (ml) { gOrigRangeL[i] = method_setImplementation(ml, (IMP)WsdRangeOfL); if (i == 1 && gOrigRangeL[1] == gOrigRangeL[0]) gOrigRangeL[1] = NULL; } }
+}
+@end
