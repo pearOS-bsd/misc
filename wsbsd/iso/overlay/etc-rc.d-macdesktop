@@ -63,7 +63,7 @@ macdesktop_start()
 		pkill -KILL -u $U 2>/dev/null; sleep 1
 	done ) >/var/log/session.log 2>&1 &
 	# a report on the serial port (if there is one), 25 s after the start: the programs of the desktop that run, and the end of the log of the Finder and of every program that does not (the screen is the window server's and the console is muted)
-	( sleep 25; { echo "== desktop report"; ps ax -o pid,stat,command | grep -E "WindowServer|Dock|SystemUIServer|Finder|Terminal|usernoted|gdnc|gdomap" | grep -v grep; for a in Finder WindowServer Dock SystemUIServer Terminal; do pgrep -f "$a" >/dev/null 2>&1 || echo "== $a is not running"; echo "== tail of $a.log"; tail -12 /var/log/$a.log 2>/dev/null; done; ls /System/Library/Desktop\ Pictures 2>&1; } > /dev/ttyu0 2>/dev/null ) &
+	( sleep 25; { echo "== desktop report"; echo "== session.log"; tail -15 /var/log/session.log 2>/dev/null; echo "== launchd.log"; tail -15 /var/log/launchd.log 2>/dev/null; ps ax -o pid,stat,command | grep -E "launchd|loginwindow" | grep -v grep; ps ax -o pid,stat,command | grep -E "WindowServer|Dock|SystemUIServer|Finder|Terminal|usernoted|gdnc|gdomap" | grep -v grep; for a in Finder WindowServer Dock SystemUIServer Terminal; do pgrep -f "$a" >/dev/null 2>&1 || echo "== $a is not running"; echo "== tail of $a.log"; tail -12 /var/log/$a.log 2>/dev/null; done; ls /System/Library/Desktop\ Pictures 2>&1; } > /dev/ttyu0 2>/dev/null ) &
 }
 macdesktop_stop()
 {
