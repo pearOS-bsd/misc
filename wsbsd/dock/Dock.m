@@ -18,6 +18,13 @@ typedef struct { uint32_t wid; int pid; char label[64]; char bpath[512]; CGImage
 #define MAXMINI 16
 
 /* the context menu of a tile is an NSMenu (the AppKit menu of the theme, glass and all): the items of the old hand-drawn menu are turned into NSMenuItems whose tag is the command; the server puts a menu at the pointer, so it is moved above the bar once it is on screen */
+/* the material of the menus follows the appearance (measured on the Mac: the Light context menu over greys 0..255 is 103..253, the Dark one 32..146): glass mode 5 (dark) or 8 (light) */
+static int DockMenuMode(void)
+{
+	static double at; static int mode = 5; double now = [NSDate timeIntervalSinceReferenceDate];
+	if (now - at > 1) { at = now; NSDictionary *d = [NSDictionary dictionaryWithContentsOfFile: [NSHomeDirectory() stringByAppendingPathComponent: @"Library/Preferences/.GlobalPreferences.plist"]]; mode = [[d objectForKey: @"AppleInterfaceStyle"] isEqual: @"Light"] ? 8 : 5; }
+	return mode;
+}
 @interface DockMenuFit : NSObject { NSMenu *menu; NSPoint origin; int n; } - (id)initFor:(NSMenu *)m at:(NSPoint)o; @end
 @implementation DockMenuFit
 - (id)initFor:(NSMenu *)m at:(NSPoint)o { if ((self = [super init])) { menu = m; origin = o; [self performSelector: @selector(fit) withObject: nil afterDelay: 0.03 inModes: @[ NSEventTrackingRunLoopMode, NSDefaultRunLoopMode ]]; } return self; }
@@ -109,7 +116,7 @@ static void ShowDockGrid(NSString *title, NSString *dir, NSArray *names, double 
 	NSScrollView *sv = [[NSScrollView alloc] initWithFrame: NSMakeRect(17, 24, cols * 106, rows * 106)]; [sv setHasVerticalScroller: YES]; [sv setDrawsBackground: NO]; [sv setBorderType: NSNoBorder];
 	DockGridView *gv = [[DockGridView alloc] initWithFrame: NSMakeRect(0, 0, cols * 106, rowsAll * 106)]; gv->names = names; gv->dir = dir; gv->cols = cols; gv->pick = ^(NSString *nm) { [gGrid orderOut: nil]; if (pick) pick(nm); };
 	[sv setDocumentView: gv]; [root addSubview: sv];
-	ws_conn *wc = ws_connect(NULL); if (wc) { ws_win gw = { .id = (ws_wid)[gGrid windowNumber], .px = NULL }; ws_win_glass_slot(wc, &gw, 1, (ws_rect){ 0, 0, (int)w, (int)h }, 22, 5); ws_win_shadow(wc, &gw, 22, 2); ws_disconnect(wc); }
+	ws_conn *wc = ws_connect(NULL); if (wc) { ws_win gw = { .id = (ws_wid)[gGrid windowNumber], .px = NULL }; ws_win_glass_slot(wc, &gw, 1, (ws_rect){ 0, 0, (int)w, (int)h }, 22, DockMenuMode()); ws_win_shadow(wc, &gw, 22, 2); ws_disconnect(wc); }
 	[NSApp activateIgnoringOtherApps: YES]; [gGrid makeKeyAndOrderFront: nil]; [gGrid makeFirstResponder: gv];
 }
 @interface DockView : NSView {
@@ -495,7 +502,7 @@ static NSMutableDictionary *badgeStore;
 			ws_rect gr = on ? (ws_rect){ (int)r.origin.x, (int)floor(wh - (r.origin.y + r.size.height)), (int)r.size.width, (int)r.size.height } : (ws_rect){ 0, 0, 0, 0 };
 			if (!on && !ctxGlassSet[k]) continue;
 			if (on && ctxGlassSet[k] && !memcmp(&gr, &ctxGlassRect[k], sizeof gr)) continue;
-			ws_win_glass_slot(wsc, &gw, k + 1, gr, 12, on ? 5 : 0); ctxGlassSet[k] = on; ctxGlassRect[k] = gr;
+			ws_win_glass_slot(wsc, &gw, k + 1, gr, 12, on ? DockMenuMode() : 0); ctxGlassSet[k] = on; ctxGlassRect[k] = gr;
 		}
 		ctxGlass = ctxGlassSet[0];
 	}
