@@ -89,7 +89,7 @@ static void WsdShowAbout(id target)
 	uint64_t mem = 0; size_t n = sizeof mem; sysctlbyname("hw.physmem", &mem, &n, NULL, 0); double gb = ceil((double)mem / (1024.0 * 1024 * 1024)); int gbi = (int)gb; if (gbi > 4 && (gbi & 1)) gbi++;
 	NSDictionary *sv = [NSDictionary dictionaryWithContentsOfFile: @"/System/Library/CoreServices/SystemVersion.plist"]; NSString *osName = sv[@"ProductName"] ?: @"pearOS", *osVer = sv[@"ProductVersion"] ?: SysctlString("kern.osrelease");
 	NSString *disk = @"Macintosh HD";
-	w = [[NSWindow alloc] initWithContentRect: NSMakeRect(0, 0, 280, 475) styleMask: NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask backing: NSBackingStoreBuffered defer: NO]; [w setReleasedWhenClosed: NO]; [w setTitle: @""];
+	w = [[NSWindow alloc] initWithContentRect: NSMakeRect(0, 0, 280, 475) styleMask: NSTitledWindowMask | NSClosableWindowMask backing: NSBackingStoreBuffered defer: NO]; [w setReleasedWhenClosed: NO]; [w setTitle: @""];
 	NSView *cv = [w contentView]; CGFloat H = 475;       /* the content: 503 less the title bar (28); y below is from the top of the window, as measured */
 	CGFloat (^Y)(CGFloat, CGFloat) = ^CGFloat(CGFloat top, CGFloat h) { return H - (top - 28) - h; };
 	WsdLaptopView *pic = [[WsdLaptopView alloc] initWithFrame: NSMakeRect(43, Y(29, 194), 194, 194)]; [cv addSubview: pic];
