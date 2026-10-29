@@ -121,6 +121,12 @@ static NSString *StyleName(NSInteger m) { return @[ @"icnv", @"Nlsv", @"clmv", @
 - (void)cmdSnapToGrid:(id)s { [_icons setSnapToGrid: !_icons->_snap]; }
 - (void)prepareContextMenu:(NSMenu *)m
 {
+	{       /* a folder: "Open in New Tab" and "Open in New Window" take the place of Open and Open With (read from the real menu) */
+		BOOL isDir = NO; NSString *sel0 = [_selection count] == 1 ? _selection[0] : nil; if (sel0) [[NSFileManager defaultManager] fileExistsAtPath: sel0 isDirectory: &isDir]; isDir = isDir && !TFIsPackage(sel0);
+		NSMenuItem *openIt = nil, *nw = nil, *ow = nil; for (NSMenuItem *x in [m itemArray]) { if ([x tag] == 77) nw = x; else if ([[x title] isEqual: @"Open With"]) ow = x; else if (!openIt && ([[x title] isEqual: @"Open"] || [[x title] isEqual: @"Open in New Tab"])) openIt = x; }
+		if (!nw && openIt) { nw = [[NSMenuItem alloc] initWithTitle: @"Open in New Window" action: @selector(cmdOpenInNewWindow:) keyEquivalent: @""]; [nw setTarget: self]; [nw setTag: 77]; [m insertItem: nw atIndex: [m indexOfItem: openIt] + 1]; }
+		[openIt setTitle: isDir ? @"Open in New Tab" : @"Open"]; [openIt setAction: isDir ? @selector(cmdOpenInNewTab:) : @selector(cmdOpen:)]; [nw setHidden: !isDir]; [ow setHidden: isDir];
+	}
 	NSString *one = [_selection count] == 1 ? [_selection[0] lastPathComponent] : nil; NSString *ext = [[_selection firstObject] pathExtension].lowercaseString; BOOL arch = [@[ @"zip", @"gz", @"tgz", @"bz2", @"xz", @"7z", @"rar", @"dmg", @"tar" ] containsObject: ext];
 	for (NSMenuItem *it in [m itemArray]) { if ([NSStringFromSelector([it action]) isEqual: @"cmdQuickLook:"]) [it setTitle: one ? @"Quick Look" : [NSString stringWithFormat: @"Quick Look %lu Items", (unsigned long)[_selection count]]]; if ([NSStringFromSelector([it action]) isEqual: @"cmdCompress:"]) { [it setTitle: one ? [NSString stringWithFormat: @"Compress “%@”", one] : [NSString stringWithFormat: @"Compress %lu Items", (unsigned long)[_selection count]]]; [it setHidden: arch && [_selection count] == 1]; } }
 	if (getenv("FINDER_DEBUG")) for (NSMenuItem *it in [m itemArray]) NSLog(@"ctx item %@ action %@ sel %lu", [it title], NSStringFromSelector([it action]), (unsigned long)[_selection count]);
@@ -284,6 +290,7 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 - (void)selectTabAt:(NSNumber *)n { NSInteger i = [n integerValue]; if (i == _tabIx || i < 0 || i >= (NSInteger)[_tabs count]) return; _tabs[_tabIx] = [self _tabState]; [self _loadTab: i]; }
 - (void)closeTabAt:(NSNumber *)n { NSInteger i = [n integerValue]; if ([_tabs count] < 2 || i < 0 || i >= (NSInteger)[_tabs count]) return; if (i == _tabIx) { [_tabs removeObjectAtIndex: i]; [self _loadTab: MIN(i, (NSInteger)[_tabs count] - 1)]; } else { _tabs[_tabIx] = [self _tabState]; [_tabs removeObjectAtIndex: i]; _tabIx = i < _tabIx ? _tabIx - 1 : _tabIx; [self _syncTabBar]; } }
 - (BOOL)windowShouldClose:(id)w { if ([_tabs count] > 1) { [self closeTabAt: @(_tabIx)]; return NO; } return YES; }
+- (void)cmdOpenInNewWindow:(id)s { for (NSString *p in [self _targets]) { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: p isDirectory: &d]; if (d) [TBrowserWindowController newBrowserWithPath: p]; } }
 - (void)cmdOpenInNewTab:(id)s { for (NSString *p in [self _targets]) { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: p isDirectory: &d]; if (d) { [self cmdNewTab: nil]; [self goToPath: p]; } } }
 - (void)cmdCompress:(id)s { NSArray *t = [self _targets]; if (![t count]) return; __weak TBrowserWindowController *me = self; TFCompressItems(t, [_url path], ^(NSString *zip) { [me _changed: nil]; }); }
 - (void)cmdShowOriginal:(id)s { for (NSString *p in [self _targets]) { NSString *o = [[NSFileManager defaultManager] destinationOfSymbolicLinkAtPath: p error: NULL]; if (o) { if (![o hasPrefix: @"/"]) o = [[p stringByDeletingLastPathComponent] stringByAppendingPathComponent: o]; [self goToPath: [o stringByDeletingLastPathComponent]]; } } }
@@ -368,7 +375,7 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 - (void)cmdShowInfo:(id)s { [self cmdShowStaticInfo: s]; }
 - (BOOL)validateMenuItem:(NSMenuItem *)i
 {
-	if ([[i title] isEqual: @"Open With"] && [i submenu]) return [_selection count] > 0;
+	if ([[i title] isEqual: @"Open With"] && [i submenu]) { BOOL d = NO; if ([_selection count] == 1) [[NSFileManager defaultManager] fileExistsAtPath: _selection[0] isDirectory: &d]; return [_selection count] > 0 && !(d && !TFIsPackage(_selection[0])); }       /* a folder has Open in New Tab / New Window instead */
 	{ SEL q0 = [i action]; if ((sel_isEqual(q0, @selector(cmdShowStaticInfo:)) || sel_isEqual(q0, @selector(cmdQuickLook:))) && ![_selection count] && _url && !_tag) return YES; }      /* without a selection they are about the folder */
 	{ SEL q = [i action]; if (sel_isEqual(q, @selector(cmdGroupAsFolder:)) || sel_isEqual(q, @selector(cmdOpenAltBrowse:)) || sel_isEqual(q, @selector(cmdOpenOptionBrowse:)) || sel_isEqual(q, @selector(cmdShowInspector:)) || sel_isEqual(q, @selector(cmdShowStaticInfoSummary:)) || sel_isEqual(q, @selector(cmdEditTags:)) || sel_isEqual(q, @selector(cmdCopyAsLink:)) || sel_isEqual(q, @selector(cmdEject:))) return [_selection count] > 0; if (sel_isEqual(q, @selector(cmdOpenParentAltBrowse:)) || sel_isEqual(q, @selector(cmdGoToRecent:)) || sel_isEqual(q, @selector(cmdConnectTo:)) || sel_isEqual(q, @selector(cmdSelectStartupDisk:)) || sel_isEqual(q, @selector(cmdFindFile:)) || sel_isEqual(q, @selector(cmdAlternateFindFile:)) || sel_isEqual(q, @selector(cmdNewSmartFolder:)) || sel_isEqual(q, @selector(cmdNewBurnableFolder:)) || sel_isEqual(q, @selector(cmdEjectAll:)) || sel_isEqual(q, @selector(cmdShowClipboard:))) return YES; }
 	if ([i action] == @selector(cmdOpenWithApp:) || [i action] == @selector(cmdOpenWithOther:)) return [_selection count] > 0;
