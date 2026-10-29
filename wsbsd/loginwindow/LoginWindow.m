@@ -24,21 +24,58 @@ static NSArray *Accounts(void)
 	while ((p = getpwent())) { if (p->pw_uid < 500 || p->pw_uid >= 60000) continue; if (!p->pw_shell || strstr(p->pw_shell, "nologin") || strstr(p->pw_shell, "false")) continue; NSString *full = p->pw_gecos && *p->pw_gecos ? @(p->pw_gecos) : @(p->pw_name); NSRange c = [full rangeOfString: @","]; if (c.location != NSNotFound) full = [full substringToIndex: c.location]; [r addObject: @{ @"user": @(p->pw_name), @"name": full }]; }
 	endpwent(); return r;
 }
-/* the default picture of an account: a grey disc with head and shoulders */
+/* ---- the design of pearOS (pearOS-archlinux/pkgbuilds, kscreenlocker/pearOS-dark: Main.qml, components/Clock.qml, screenshot.png), in 1080 p units scaled to the screen ----
+ * the wallpaper full screen; the clock: the date ("Friday, July 11", 27 px) over the time ("22:32", 133 px, bold), white at 40 %, the bottom of the time 300 px from the top; the account at the bottom centre: the avatar
+ * (80 px, a white ring round a blue disc with a white person), the name (bold 15 px) 24 px under it, a pill 250 x 32 (white 20 %, corner 16) with the password as dots, the hint "Enter Password" (11 px bold) under it;
+ * at the top right three small icons (display, restart, power; 22 px at x 1790, 1861, 1890 of 1920, y 25). */
 @interface LWFace : NSView @end
 @implementation LWFace
 - (void)drawRect:(NSRect)d
 {
-	NSRect r = [self bounds]; NSBezierPath *disc = [NSBezierPath bezierPathWithOvalInRect: r]; [[NSColor colorWithCalibratedWhite: 0.55 alpha: 1] setFill]; [disc fill];
-	[NSGraphicsContext saveGraphicsState]; [disc addClip]; [[NSColor colorWithCalibratedWhite: 0.88 alpha: 1] setFill];
-	[[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(33, 50, 30, 30)] fill]; [[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(16, -26, 64, 64)] fill]; [NSGraphicsContext restoreGraphicsState];
+	NSRect r = [self bounds]; [[NSColor whiteColor] setFill]; [[NSBezierPath bezierPathWithOvalInRect: r] fill];
+	NSRect in = NSInsetRect(r, r.size.width / 14, r.size.width / 14); NSBezierPath *disc = [NSBezierPath bezierPathWithOvalInRect: in]; [[NSColor colorWithCalibratedRed: 0.42 green: 0.65 blue: 0.90 alpha: 1] setFill]; [disc fill];
+	[NSGraphicsContext saveGraphicsState]; [disc addClip]; [[NSColor whiteColor] setFill]; CGFloat w = in.size.width;
+	[[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(NSMidX(in) - w * 0.17, NSMidY(in) + w * 0.02, w * 0.34, w * 0.34)] fill]; [[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(NSMidX(in) - w * 0.30, NSMinY(in) - w * 0.28, w * 0.60, w * 0.60)] fill]; [NSGraphicsContext restoreGraphicsState];
 }
 @end
-/* a transparent view over a face: a press on it chooses the account */
-@interface LWClick : NSView { @public id target; SEL action; NSInteger index; } @end
-@implementation LWClick - (BOOL)acceptsFirstMouse:(NSEvent *)e { return YES; } - (void)mouseDown:(NSEvent *)e { [target performSelector: action withObject: self]; } @end
+/* a text drawn directly in a colour with alpha (the label cells of the theme draw their text opaque) */
+@interface LWText : NSView { @public NSString *text; NSFont *font; NSColor *color; } @end
+@implementation LWText
+- (void)drawRect:(NSRect)d { NSMutableParagraphStyle *ps = [[NSMutableParagraphStyle alloc] init]; [ps setAlignment: NSCenterTextAlignment]; NSDictionary *at = @{ NSFontAttributeName: font, NSForegroundColorAttributeName: color, NSParagraphStyleAttributeName: ps }; NSSize z = [text sizeWithAttributes: at]; [text drawInRect: NSMakeRect(0, ([self bounds].size.height - z.height) / 2, [self bounds].size.width, z.height) withAttributes: at]; }
+@end
+/* the password field of the design: white dots in the pill, no field chrome. It takes the keys itself (the theme draws every text field with a bezel and a dark box) */
+@interface LWSecure : NSView { @public NSMutableString *value; id target; SEL action; } - (NSString *)stringValue; - (void)setStringValue:(NSString *)s; @end
+@implementation LWSecure
+- (BOOL)acceptsFirstResponder { return YES; } - (BOOL)acceptsFirstMouse:(NSEvent *)e { return YES; }
+- (NSString *)stringValue { return value ?: @""; } - (void)setStringValue:(NSString *)s { value = [s mutableCopy]; [self setNeedsDisplay: YES]; }
+- (void)keyDown:(NSEvent *)e
+{
+	NSString *c = [e characters]; if (![c length]) return; unichar k = [c characterAtIndex: 0]; if (!value) value = [NSMutableString string];
+	if (k == '\r' || k == '\n') { [target performSelector: action withObject: self]; return; }
+	if (k == 0x7f || k == 8) { if ([value length]) [value deleteCharactersInRange: NSMakeRange([value length] - 1, 1)]; }
+	else if (k >= 32 && !(k >= 0xF700 && k <= 0xF8FF)) [value appendString: c];
+	[self setNeedsDisplay: YES];
+}
+- (void)drawRect:(NSRect)d
+{
+	NSRect b = [self bounds]; CGFloat dot = b.size.height * 0.34, gap = dot * 0.55, n = (CGFloat)[value length], w = n * dot + (n > 0 ? (n - 1) * gap : 0), x = NSMidX(b) - w / 2; if (w > b.size.width) x = NSMaxX(b) - w;
+	[[NSColor whiteColor] setFill]; for (NSUInteger i = 0; i < [value length]; i++) { [[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(x + i * (dot + gap), NSMidY(b) - dot / 2, dot, dot)] fill]; }
+}
+@end
+/* the pill of the password field */
+@interface LWPill : NSView @end
+@implementation LWPill
+- (void)drawRect:(NSRect)d { NSRect b = [self bounds]; [[NSColor colorWithCalibratedWhite: 1 alpha: 0.20] setFill]; [[NSBezierPath bezierPathWithRoundedRect: b xRadius: b.size.height / 2 yRadius: b.size.height / 2] fill]; }
+@end
+/* a transparent view over a face / an icon: a press on it acts */
+@interface LWClick : NSView { @public id target; SEL action; NSInteger index; NSString *symbol; } @end
+@implementation LWClick
+- (BOOL)acceptsFirstMouse:(NSEvent *)e { return YES; }
+- (void)mouseDown:(NSEvent *)e { [target performSelector: action withObject: self]; }
+- (void)drawRect:(NSRect)d { if (symbol) [NSClassFromString(@"WsdFinderSupport") drawSymbol: symbol inRect: [self bounds] size: [self bounds].size.width * 0.78 weight: 5 color: [NSColor colorWithCalibratedWhite: 1 alpha: 0.92]]; }
+@end
 
-@interface LWController : NSObject <NSTextFieldDelegate> { NSWindow *win, *back; NSArray *accounts; NSInteger chosen; NSSecureTextField *pw; NSTextField *nameLabel, *msg; NSMutableArray *faces; BOOL lock; }
+@interface LWController : NSObject { NSWindow *win, *back, *clockWin; NSArray *accounts; NSInteger chosen; LWSecure *pw; LWPill *pill; LWText *dateL, *timeL; NSTextField *msg; NSMutableArray *faces, *names; BOOL lock; CGFloat sc; NSRect sf; }
 - (instancetype)initLock:(NSString *)user;
 - (void)show;
 @end
@@ -49,31 +86,48 @@ static NSArray *Accounts(void)
 	if (lock) { NSMutableArray *a = [NSMutableArray array]; for (NSDictionary *d in accounts) if ([d[@"user"] isEqual: user]) [a addObject: d]; if (![a count]) [a addObject: @{ @"user": user, @"name": user }]; accounts = a; }
 	return self;
 }
+/* a rectangle given in the design's units (1920 x 1080, y from the top, the centre of the item) */
+- (NSRect)rectCX:(CGFloat)cx cy:(CGFloat)cy w:(CGFloat)w h:(CGFloat)h { return NSMakeRect(cx * sc * 1.0 - w * sc / 2 + (sf.size.width - 1920 * sc) / 2, sf.size.height - cy * sc - h * sc / 2, w * sc, h * sc); }
 - (void)show
 {
-	NSRect sf = [[NSScreen mainScreen] frame]; win = [[NSWindow alloc] initWithContentRect: sf styleMask: NSBorderlessWindowMask backing: NSBackingStoreBuffered defer: NO]; [win setLevel: 2000]; [win setOpaque: YES]; [win setBackgroundColor: [NSColor blackColor]];
+	sf = [[NSScreen mainScreen] frame]; sc = MAX(0.5, sf.size.height / 1080.0);
+	win = [[NSWindow alloc] initWithContentRect: sf styleMask: NSBorderlessWindowMask backing: NSBackingStoreBuffered defer: NO]; [win setLevel: 2000]; [win setOpaque: NO]; [win setBackgroundColor: [NSColor clearColor]];
 	NSView *cv = [win contentView];
-	/* the wallpaper and its dimming are a window of their own under the one with the controls (a picture of the size of the screen as a sibling view hid the controls: it is drawn after them) */
+	/* the wallpaper is a window of its own under the one with the controls */
 	NSImage *wall = [[NSImage alloc] initWithContentsOfFile: @"/System/Library/Desktop Pictures/dark-mode.jpg"];
 	if (wall) { [wall setSize: sf.size]; back = [[NSWindow alloc] initWithContentRect: sf styleMask: NSBorderlessWindowMask backing: NSBackingStoreBuffered defer: NO]; [back setLevel: 1999]; [back setOpaque: YES]; NSImageView *iv = [[NSImageView alloc] initWithFrame: NSMakeRect(0, 0, sf.size.width, sf.size.height)]; [iv setImage: wall]; [iv setImageScaling: NSImageScaleAxesIndependently]; [back setContentView: iv]; [back orderFront: nil]; }
-	[win setOpaque: NO]; [win setBackgroundColor: [NSColor colorWithCalibratedWhite: 0 alpha: 0.35]];       /* the Mac blurs the wallpaper here: a dimming stands in */
-	CGFloat cx = sf.size.width / 2, cy = sf.size.height / 2; faces = [NSMutableArray array];
-	NSUInteger n = [accounts count]; CGFloat pitch = 140, x0 = cx - (n - 1) * pitch / 2;
+	else { [win setOpaque: YES]; [win setBackgroundColor: [NSColor blackColor]]; }
+	clockWin = [[NSWindow alloc] initWithContentRect: sf styleMask: NSBorderlessWindowMask backing: NSBackingStoreBuffered defer: NO]; [clockWin setLevel: 2000]; [clockWin setOpaque: NO]; [clockWin setBackgroundColor: [NSColor clearColor]]; [clockWin setIgnoresMouseEvents: YES]; NSView *clockCv = [clockWin contentView];       /* the clock is translucent as a whole: a window of its own with an alpha (the glyphs ignore the alpha of their colour) */
+	NSColor *clockColor = [NSColor whiteColor];
+	dateL = [[LWText alloc] initWithFrame: NSZeroRect]; dateL->font = [NSFont boldSystemFontOfSize: 27 * sc]; dateL->color = clockColor; [dateL setFrame: NSMakeRect(0, sf.size.height - 300 * sc + 166 * sc * 0.86, sf.size.width, 36 * sc)]; [clockCv addSubview: dateL];
+	timeL = [[LWText alloc] initWithFrame: NSZeroRect]; timeL->font = [NSFont boldSystemFontOfSize: 133 * sc]; timeL->color = clockColor; [timeL setFrame: NSMakeRect(0, sf.size.height - 300 * sc, sf.size.width, 166 * sc)]; [clockCv addSubview: timeL];
+	[clockWin setAlphaValue: 0.42]; [clockWin orderFront: nil]; [self tick: nil]; [NSTimer scheduledTimerWithTimeInterval: 1.0 target: self selector: @selector(tick:) userInfo: nil repeats: YES];
+	faces = [NSMutableArray array]; names = [NSMutableArray array]; NSUInteger n = [accounts count]; CGFloat pitch = 150;
 	for (NSUInteger i = 0; i < n; i++) {
-		LWFace *av = [[LWFace alloc] initWithFrame: NSMakeRect(x0 + i * pitch - 48, cy + 10, 96, 96)]; [cv addSubview: av];
-		LWClick *b = [[LWClick alloc] initWithFrame: [av frame]]; b->target = self; b->action = @selector(choose:); b->index = (NSInteger)i; [cv addSubview: b]; [faces addObject: av];
-		NSTextField *l = [NSTextField labelWithString: accounts[i][@"name"]]; [l setFont: [NSFont boldSystemFontOfSize: 15]]; [l setTextColor: [NSColor whiteColor]]; [l setAlignment: NSCenterTextAlignment]; [l setFrame: NSMakeRect(x0 + i * pitch - 65, cy - 16, 130, 22)]; [cv addSubview: l];
+		CGFloat cx = 960 + ((CGFloat)i - (n - 1) / 2.0) * pitch;
+		LWFace *av = [[LWFace alloc] initWithFrame: [self rectCX: cx cy: 889 w: 80 h: 80]]; [cv addSubview: av]; [faces addObject: av];
+		LWClick *b = [[LWClick alloc] initWithFrame: [av frame]]; b->target = self; b->action = @selector(choose:); b->index = (NSInteger)i; [cv addSubview: b];
+		NSTextField *l = [NSTextField labelWithString: accounts[i][@"name"]]; [l setFont: [NSFont boldSystemFontOfSize: 15 * sc]]; [l setTextColor: [NSColor whiteColor]]; [l setAlignment: NSCenterTextAlignment]; [l setFrame: [self rectCX: cx cy: 960 w: 140 h: 22]]; [cv addSubview: l]; [names addObject: l];
 	}
-	pw = [[NSSecureTextField alloc] initWithFrame: NSMakeRect(cx - 100, cy - 62, 200, 28)]; [[pw cell] setPlaceholderString: @"Enter Password"]; [pw setAlignment: NSCenterTextAlignment]; [pw setDelegate: self]; [pw setTarget: self]; [pw setAction: @selector(submit:)]; [cv addSubview: pw];
-	msg = [NSTextField labelWithString: lock ? @"Enter the password to unlock" : @""]; [msg setTextColor: [NSColor colorWithCalibratedWhite: 1 alpha: 0.7]]; [msg setAlignment: NSCenterTextAlignment]; [msg setFont: [NSFont systemFontOfSize: 12]]; [msg setFrame: NSMakeRect(cx - 160, cy - 92, 320, 18)]; [cv addSubview: msg];
-	if (!lock) {
-		NSButton *rb = [NSButton buttonWithTitle: @"Restart" target: self action: @selector(restart:)], *sb = [NSButton buttonWithTitle: @"Shut Down" target: self action: @selector(shutdown:)];
-		[sb setFrame: NSMakeRect(sf.size.width - 120, 20, 100, 28)]; [rb setFrame: NSMakeRect(sf.size.width - 230, 20, 100, 28)]; [cv addSubview: rb]; [cv addSubview: sb];
-	}
-	chosen = n == 1 ? 0 : -1; [self refresh]; [win makeKeyAndOrderFront: nil]; [win display]; [NSApp activateIgnoringOtherApps: YES]; if (chosen >= 0) [win makeFirstResponder: pw];
+	pill = [[LWPill alloc] initWithFrame: [self rectCX: 960 cy: 998 w: 250 h: 32]]; [cv addSubview: pill];
+	pw = [[LWSecure alloc] initWithFrame: NSMakeRect(14 * sc, 5 * sc, 222 * sc, 22 * sc)]; pw->target = self; pw->action = @selector(submit:); [pill addSubview: pw];
+	msg = [NSTextField labelWithString: @"Enter Password"]; [msg setTextColor: [NSColor colorWithCalibratedWhite: 1 alpha: 0.9]]; [msg setAlignment: NSCenterTextAlignment]; [msg setFont: [NSFont boldSystemFontOfSize: 11 * sc]]; [msg setFrame: [self rectCX: 960 cy: 1034 w: 320 h: 18]]; [cv addSubview: msg];
+	/* the icons at the top right: display (nothing to switch here), restart, power */
+	NSArray *icons = lock ? @[ @[ @"display", @1790 ], @[ @"power", @1888 ] ] : @[ @[ @"display", @1790 ], @[ @"arrow.clockwise", @1850 ], @[ @"power", @1890 ] ];
+	for (NSArray *ic in icons) { NSRect ir = [self rectCX: 960 cy: 28 w: 24 h: 24]; ir.origin.x = sf.size.width - (1920 - [ic[1] doubleValue]) * sc - 12 * sc;       /* anchored to the right edge: the design is 16:9 */
+		LWClick *b = [[LWClick alloc] initWithFrame: ir]; b->symbol = ic[0]; b->target = self; b->action = [ic[0] isEqual: @"power"] ? @selector(shutdown:) : [ic[0] isEqual: @"arrow.clockwise"] ? @selector(restart:) : @selector(noop:); [cv addSubview: b]; }
+	chosen = n == 1 ? 0 : -1; [self refresh]; [win makeKeyAndOrderFront: nil]; [win orderFrontRegardless]; [win display]; [NSApp activateIgnoringOtherApps: YES]; if (chosen >= 0) [win makeFirstResponder: pw];
 }
-- (void)refresh { BOOL one = chosen >= 0; [pw setHidden: !one]; for (NSUInteger k = 0; k < [faces count]; k++) [(LWFace *)faces[k] setAlphaValue: !one || (NSInteger)k == chosen ? 1.0 : 0.45]; if (!lock) [msg setStringValue: one ? @"" : @"Choose an account"]; }
-- (void)choose:(LWClick *)b { chosen = b->index; [pw setStringValue: @""]; [self refresh]; [win makeFirstResponder: pw]; }
+- (void)noop:(id)s {}
+
+- (void)tick:(NSTimer *)t { NSDateFormatter *f = [[NSDateFormatter alloc] init]; [f setLocale: [[NSLocale alloc] initWithLocaleIdentifier: @"en_US"]]; [f setDateFormat: @"EEEE, MMMM d"]; dateL->text = [f stringFromDate: [NSDate date]]; [dateL setNeedsDisplay: YES]; [f setDateFormat: @"HH:mm"]; timeL->text = [f stringFromDate: [NSDate date]]; [timeL setNeedsDisplay: YES]; }
+- (void)refresh
+{
+	BOOL one = chosen >= 0; [pill setHidden: !one]; [msg setHidden: !one];
+	for (NSUInteger k = 0; k < [faces count]; k++) { BOOL mine = (NSInteger)k == chosen; [(LWFace *)faces[k] setHidden: one && !mine]; [(NSTextField *)names[k] setHidden: one && !mine];
+		if (one && mine) { NSUInteger n = [accounts count]; (void)n; [(LWFace *)faces[k] setFrame: [self rectCX: 960 cy: 889 w: 80 h: 80]]; [(NSTextField *)names[k] setFrame: [self rectCX: 960 cy: 960 w: 140 h: 22]]; } }
+}
+- (void)choose:(LWClick *)b { chosen = b->index; [pw setStringValue: @""]; [msg setStringValue: @"Enter Password"]; [self refresh]; [win makeFirstResponder: pw]; }
 - (void)submit:(id)s
 {
 	if (chosen < 0) return; NSString *u = accounts[chosen][@"user"];
