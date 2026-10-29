@@ -153,3 +153,28 @@ static BOOL AppHandles(NSDictionary *app, NSString *ext, NSString *uti, NSString
 @implementation NSImage (WsdBlock)
 + (NSImage *)imageWithSize:(NSSize)s flipped:(BOOL)f drawingHandler:(BOOL (^)(NSRect))h { return [[[WsdBlockImage alloc] initWithSize: s flipped: f handler: h] autorelease]; }
 @end
+
+/* a folder is opened by the Finder, as on the Mac: the running Finder is asked (distributed notification), else it is started on the folder */
+static IMP origOpenFile, origOpenURL;
+static BOOL WsdOpensInFinder(NSString *path)
+{
+	BOOL dir = NO; if (![path length] || ![[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &dir] || !dir) return NO;
+	NSString *ext = [[path pathExtension] lowercaseString]; if ([ext isEqual: @"app"] || [ext isEqual: @"framework"] || [ext isEqual: @"bundle"]) return NO;
+	if ([[[NSProcessInfo processInfo] processName] isEqual: @"Finder"]) return NO;
+	NSString *fin = @"/System/Library/CoreServices/Finder.app/Contents/MacOS/Finder"; BOOL running = NO;
+	for (NSRunningApplication *a in [[NSWorkspace sharedWorkspace] runningApplications]) if ([[a bundleIdentifier] isEqual: @"com.apple.finder"]) running = YES;
+	if (running) [[NSDistributedNotificationCenter defaultCenter] postNotificationName: @"com.wsbsd.finder.open" object: nil userInfo: @{ @"path": path } deliverImmediately: YES];
+	else if ([[NSFileManager defaultManager] isExecutableFileAtPath: fin]) { NSTask *t = [[NSTask alloc] init]; [t setLaunchPath: fin]; NSMutableDictionary *env = [[[NSProcessInfo processInfo] environment] mutableCopy]; env[@"FINDER_PATH"] = path; env[@"FINDER_WINDOW"] = @"1"; [t setEnvironment: env]; @try { [t launch]; } @catch (NSException *e) { return NO; } }
+	else return NO;
+	return YES;
+}
+static BOOL wsdOpenFile(id self, SEL _cmd, NSString *f) { if (WsdOpensInFinder(f)) return YES; return ((BOOL (*)(id, SEL, id))origOpenFile)(self, _cmd, f); }
+static BOOL wsdOpenURL(id self, SEL _cmd, NSURL *u) { if ([u isFileURL] && WsdOpensInFinder([u path])) return YES; return ((BOOL (*)(id, SEL, id))origOpenURL)(self, _cmd, u); }
+@interface WsdOpenFolderInit : NSObject @end
+@implementation WsdOpenFolderInit
++ (void)load
+{
+	Method f = class_getInstanceMethod([NSWorkspace class], @selector(openFile:)); if (f && !origOpenFile) origOpenFile = method_setImplementation(f, (IMP)wsdOpenFile);
+	Method u = class_getInstanceMethod([NSWorkspace class], @selector(openURL:)); if (u && !origOpenURL) origOpenURL = method_setImplementation(u, (IMP)wsdOpenURL);
+}
+@end

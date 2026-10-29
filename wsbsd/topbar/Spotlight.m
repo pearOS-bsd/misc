@@ -39,11 +39,18 @@ static void Collect(NSString *dir, NSString *q, int depth, NSMutableArray *out, 
 }
 - (BOOL)acceptsFirstResponder { return YES; }
 - (BOOL)acceptsFirstMouse:(NSEvent *)e { return YES; }
+- (void)open:(NSInteger)i { if (i < 0 || i >= (NSInteger)[hits count]) return; NSString *p = hits[i]; [win orderOut: nil]; [[NSWorkspace sharedWorkspace] openFile: p]; }
+- (void)mouseDown:(NSEvent *)e       /* a click on a result opens it, as on the Mac */
+{
+	NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; double y0 = STOP - 10 + 10; if (p.y < y0) return;
+	NSInteger i = first + (NSInteger)((p.y - y0) / SROW); if (i < (NSInteger)[hits count] && i < first + 7) { sel = i; [self setNeedsDisplay: YES]; [self open: i]; }
+}
+- (void)scrollWheel:(NSEvent *)e { CGFloat d = [e deltaY]; if (d > 0 && first > 0) first--; else if (d < 0 && first + 7 < (NSInteger)[hits count]) first++; else return; if (sel < first) sel = first; if (sel >= first + 7) sel = first + 6; [self setNeedsDisplay: YES]; }
 - (void)keyDown:(NSEvent *)e
 {
 	NSString *c = [e characters]; if (![c length]) return; unichar k = [c characterAtIndex: 0];
 	if (k == 0x1b) { [win orderOut: nil]; return; }
-	if (k == '\r' || k == '\n') { if ([hits count]) { [[NSWorkspace sharedWorkspace] openFile: hits[sel]]; [win orderOut: nil]; } return; }
+	if (k == '\r' || k == '\n') { [self open: sel]; return; }
 	if (k == NSDownArrowFunctionKey) { if (sel + 1 < (NSInteger)[hits count]) { sel++; if (sel >= first + 7) first = sel - 6; [self setNeedsDisplay: YES]; } return; }
 	if (k == NSUpArrowFunctionKey) { if (sel > 0) { sel--; if (sel < first) first = sel; [self setNeedsDisplay: YES]; } return; }
 	if (k == 0x7f || k == 8) { if ([query length]) { [query deleteCharactersInRange: NSMakeRange([query length] - 1, 1)]; [self search: query]; } return; }
@@ -79,4 +86,13 @@ void ToggleSpotlight(void)
 		[w setOpaque: NO]; [w setBackgroundColor: [NSColor clearColor]]; [w setHasShadow: NO]; [w setLevel: 22]; [w setHidesOnDeactivate: NO]; v = [[SPView alloc] initWithFrame: NSMakeRect(0, 0, SW, 56)]; v->win = w; [w setContentView: v];
 	}
 	[v->query setString: @""]; [v search: @""]; [NSApp activateIgnoringOtherApps: YES]; [w makeKeyAndOrderFront: nil]; [w makeFirstResponder: v];
+}
+
+/* Command-Space in any application: its back-end posts this notification (WsdResize.m) and the Spotlight window of the top bar toggles */
+@interface SPKeyObserver : NSObject @end
+@implementation SPKeyObserver - (void)toggle:(NSNotification *)n { ToggleSpotlight(); } @end
+void SpotlightStart(void)
+{
+	static SPKeyObserver *o; if (o) return; o = [[SPKeyObserver alloc] init];
+	[[NSDistributedNotificationCenter defaultCenter] addObserver: o selector: @selector(toggle:) name: @"com.wsbsd.spotlight.toggle" object: nil suspensionBehavior: NSNotificationSuspensionBehaviorDeliverImmediately];
 }
