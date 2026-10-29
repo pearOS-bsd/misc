@@ -38,6 +38,7 @@ clang $F -fobjc-arc -c "$D/src/CFAttributedStringBridge.m" -o "$OUT/CFAttributed
 clang $F -fobjc-arc -c "$D/src/DispatchMain.m" -o "$OUT/DispatchMain.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/EventLog.m" -o "$OUT/EventLog.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/InputContext.m" -o "$OUT/InputContext.o" 2>&1 | grep -E "error" | head
+clang $F -fobjc-arc -c "$D/src/Bindings.m" -o "$OUT/Bindings.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -I/usr/local/include -c "$D/src/XPC.m" -o "$OUT/XPC.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/Keychain.m" -o "$OUT/Keychain.o" 2>&1 | grep -E "error" | head
 clang $F -fobjc-arc -c "$D/src/QuickLook.m" -o "$OUT/QuickLook.o" 2>&1 | grep -E "error" | head
