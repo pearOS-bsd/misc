@@ -1318,6 +1318,7 @@ int main(int argc, char **argv)
 		struct timespec scan_to = { 1, 0 };                                       /* USB keyboards and mice enumerate late (or are plugged in later): look for new input devices every second */
 		if (input && (!to || to->tv_sec > 0)) to = &scan_to;
 #endif
+		{ static struct timespec fr16 = { 0, 16 * 1000 * 1000 }; if (ws_server_cursor_animating()) to = &fr16; }
 		if (fus_active) { static struct timespec q = { 0, 250 * 1000 * 1000 }; if (!to || to->tv_sec > 0 || to->tv_nsec > q.tv_nsec) to = &q; }       /* the console may change at any time: look at it four times a second */
 		int n = kevent(kq, NULL, 0, out, 16, to);
 		{ static uid_t seen = (uid_t)-2; sess_refresh(); uid_t now_c = fus_active ? console_uid : (uid_t)-3; if (now_c != seen) { seen = now_c; ws_server_invalidate(srv); dirty = 1; } }
