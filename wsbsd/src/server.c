@@ -1049,6 +1049,8 @@ static ws_surface *grow_edge(const ws_surface *src, int w, int h)
 #include "splash_pear.inc"
 void ws_server_set_splash(ws_server *s, int on) { (void)s; g_splash = on; splash_t0 = mono_now(); }
 void ws_server_set_shutdown_splash(ws_server *s, int on) { g_shutdown_splash = on; if (on) { g_splash = 1; s->cursor_visible = 0; } bump(s); }       /* the machine is going down: the pear alone, over everything, until the power goes */
+static int g_night; static uint8_t night_g[256], night_b[256];
+void ws_server_set_night_shift(ws_server *s, int pct) { if (pct < 0) pct = 0; if (pct > 100) pct = 100; g_night = pct; for (int i = 0; i < 256; i++) { night_g[i] = (uint8_t)(i * (1.0 - 0.20 * pct / 100.0) + 0.5); night_b[i] = (uint8_t)(i * (1.0 - 0.50 * pct / 100.0) + 0.5); } bump(s); }
 int ws_server_shutdown_splash(void) { return g_shutdown_splash; }
 /* the boot screen: black with the pear of pearOS in the middle, shown while no window of the desktop picture's level (the Finder's desktop) is on the screen yet */
 static void draw_splash(ws_surface *screen)
@@ -1125,6 +1127,7 @@ void ws_compose_scene(ws_server *s, ws_surface *screen)
 	if (s->comp->flush) s->comp->flush(s->comp);
 	free(v);
 	apply_zoom(screen);
+	if (g_night > 0) for (int y = 0; y < screen->h; y++) { uint8_t *p = screen->px + (size_t)y * screen->stride; for (int x = 0; x < screen->w; x++, p += 4) { p[0] = night_b[p[0]]; p[1] = night_g[p[1]]; } }       /* Night Shift */
 	if (s->gamma_on) for (int y = 0; y < screen->h; y++) { uint8_t *p = screen->px + (size_t)y * screen->stride; for (int x = 0; x < screen->w; x++, p += 4) { p[0] = s->gamma[2][p[0]]; p[1] = s->gamma[1][p[1]]; p[2] = s->gamma[0][p[2]]; } }
 	if (s->fade.on) {                                                      /* DisplayFade: every pixel moves toward the fade colour by the current blend */
 		struct timespec ts; clock_gettime(CLOCK_MONOTONIC, &ts); double now = ts.tv_sec + ts.tv_nsec * 1e-9, e = s->fade.secs > 0 ? (now - s->fade.t0) / s->fade.secs : 1;

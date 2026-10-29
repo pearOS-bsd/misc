@@ -64,6 +64,14 @@ void SetBrightness(double v) { softBrightness = v; ApplyLatest(@"backlight", v, 
 static int BatteryPct(void) { int v = -1; size_t n = sizeof v; if (sysctlbyname("hw.acpi.battery.life", &v, &n, NULL, 0)) return -1; return v; }
 static BOOL Charging(void) { int v = 0; size_t n = sizeof v; if (sysctlbyname("hw.acpi.battery.state", &v, &n, NULL, 0)) return NO; return (v & 2) != 0; }
 static NSString *GlobalPrefsPath(void) { return [NSHomeDirectory() stringByAppendingPathComponent: @"Library/Preferences/.GlobalPreferences.plist"]; }
+/* Night Shift: the screen warmer, through the window server (the key NightShiftOn of the global preferences keeps it) */
+static void ApplyNight(BOOL on) { id srv = GSCurrentServer(); if ([srv respondsToSelector: @selector(wsdSetNightShift:)]) ((void (*)(id, SEL, int))objc_msgSend)(srv, @selector(wsdSetNightShift:), on ? 60 : 0); }
+BOOL NightNow(void) { NSDictionary *d = [NSDictionary dictionaryWithContentsOfFile: [[NSHomeDirectory() stringByAppendingPathComponent: @"Library/Preferences/"] stringByAppendingPathComponent: @".GlobalPreferences.plist"]]; return [d[@"NightShiftOn"] boolValue]; }
+void SetNight(BOOL on)
+{
+	NSString *f = [[NSHomeDirectory() stringByAppendingPathComponent: @"Library/Preferences/"] stringByAppendingPathComponent: @".GlobalPreferences.plist"]; NSMutableDictionary *d = [[NSDictionary dictionaryWithContentsOfFile: f] mutableCopy] ?: [NSMutableDictionary dictionary]; d[@"NightShiftOn"] = @(on);
+	[[NSFileManager defaultManager] createDirectoryAtPath: [f stringByDeletingLastPathComponent] withIntermediateDirectories: YES attributes: nil error: NULL]; [d writeToFile: f atomically: YES]; ApplyNight(on);
+}
 BOOL DarkNow(void) { NSDictionary *d = [NSDictionary dictionaryWithContentsOfFile: GlobalPrefsPath()]; id v = d[@"AppleInterfaceStyle"]; return !v || [v caseInsensitiveCompare: @"Dark"] == NSOrderedSame; }       /* a missing key: dark (the image's default) */
 void SetDark(BOOL dark)
 {
@@ -94,7 +102,8 @@ static void SetKbd(double x) { int v = (int)lround(x * 255); sysctlbyname("dev.c
 - (instancetype)initWithFrame:(NSRect)f
 {
 	if (!(self = [super initWithFrame: f])) return nil;
-	on = [NSMutableDictionary dictionaryWithDictionary: @{ @"wifi": @YES, @"bluetooth": @YES, @"dark": @(DarkNow()), @"nightshift": @NO, @"airdrop": @NO, @"stage": @NO, @"mirror": @NO, @"truetone": @NO, @"focus": @NO }];
+	on = [NSMutableDictionary dictionaryWithDictionary: @{ @"wifi": @YES, @"bluetooth": @YES, @"dark": @(DarkNow()), @"nightshift": @(NightNow()), @"airdrop": @NO, @"stage": @NO, @"mirror": @NO, @"truetone": @NO, @"focus": @NO }];
+	ApplyNight(NightNow());       /* the setting of the last session comes back with the Control Center (the top bar program starts at the login) */
 	{ BOOL known; BOOL w = WifiPower(&known); if (known) on[@"wifi"] = @(w); }       /* without CoreWLAN/airportd the tile keeps its drawn state */
 	volume = MixerVolume(); brightness = Brightness(); kbd = KbdLevel() >= 0 ? KbdLevel() : 1; if (volume < 0) volume = 0.5625; if (brightness < 0) brightness = 1;
 	/* kind, id, column, row, columns, rows, symbol, title */
@@ -164,7 +173,7 @@ static void Bluetooth(NSPoint c, NSColor *col) { NSBezierPath *p = [NSBezierPath
 	for (NSArray *t in tiles) { NSRect r = [self rectOf: t]; if (!NSPointInRect(p, r)) continue; NSString *id_ = t[1];
 		if ([t[0] isEqual: @"slider"]) { if (p.y < r.origin.y + 28 && p.x < r.origin.x + 70 && ([id_ isEqual: @"sound"] || [id_ isEqual: @"bright"])) { [[self window] orderOut: nil]; if ([id_ isEqual: @"sound"]) ToggleSoundPanel(); else ToggleDisplayPanel(); return; }       /* the titles are buttons that open the details */
 			return; }
-		if ([t[0] isEqual: @"circle"] || [t[0] isEqual: @"wide"]) { BOOL v = ![on[id_] boolValue]; on[id_] = @(v); if ([id_ isEqual: @"dark"]) SetDark(v); if ([id_ isEqual: @"wifi"]) SetWifiPower(v); if ([id_ isEqual: @"focus"]) NCSetFocus(v); [self applyGlass]; [self setNeedsDisplay: YES]; }
+		if ([t[0] isEqual: @"circle"] || [t[0] isEqual: @"wide"]) { BOOL v = ![on[id_] boolValue]; on[id_] = @(v); if ([id_ isEqual: @"dark"]) SetDark(v); if ([id_ isEqual: @"nightshift"]) SetNight(v); if ([id_ isEqual: @"wifi"]) SetWifiPower(v); if ([id_ isEqual: @"focus"]) NCSetFocus(v); [self applyGlass]; [self setNeedsDisplay: YES]; }
 		return; }
 }
 - (void)rightMouseDown:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; for (NSArray *t in tiles) if (([t[1] isEqual: @"wifi"] || [t[1] isEqual: @"bluetooth"]) && NSPointInRect(p, [self rectOf: t])) { [[self window] orderOut: nil]; if ([t[1] isEqual: @"wifi"]) ToggleWifiPanel(); else ToggleBluetoothPanel(); } }       /* the details of the Wi-Fi tile (AX: the custom action "show details") */
