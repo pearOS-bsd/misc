@@ -98,12 +98,13 @@ void ws_server_set_compositor(ws_server *s, ws_compositor *c) { if (s && c) s->c
 static void bump(ws_server *s) { s->gen++; }
 static void refresh_menubars(ws_server *s);
 static void kf_remove_at_fwd(ws_server *s, int i);
-static int g_splash, g_splash_visible = 1; static double splash_t0, splash_last;
+static int g_splash, g_splash_visible = 1; static double splash_t0, splash_last, splash_cost;
 static double mono_now(void) { struct timespec ts; clock_gettime(CLOCK_MONOTONIC, &ts); return ts.tv_sec + ts.tv_nsec * 1e-9; }
 uint64_t ws_server_generation(const ws_server *s)
 {
 	if (g_splash && g_splash_visible) {       /* the boot screen's progress bar moves: the scene changes ten times a second while it is shown */
-		double t = mono_now(); if (t - splash_last > 0.1) { splash_last = t; ((ws_server *)s)->gen++; }
+		double t = mono_now(); if (t - splash_last > (splash_cost * 20 > 0.1 ? splash_cost * 20 : 0.1)) {       /* never more often than twenty times the cost of a frame: on a slow machine the bar must not starve the clients (the Dock could not connect under emulation) */
+		 splash_last = t; ((ws_server *)s)->gen++; }
 	}
 	return s->gen;
 }
@@ -1028,7 +1029,7 @@ void ws_compose_scene(ws_server *s, ws_surface *screen)
 	ws_wid act = ws_active_window(s);
 	s->comp->fill(s->comp, screen, all, 37.0f / 255.0f, 37.0f / 255.0f, 37.0f / 255.0f, 1.0f);   /* desktop: #252525 */
 	size_t n = sorted(s, v);
-	if (g_splash) { int desk = 0; for (size_t i = 0; i < n; i++) if (v[i]->level == -2147483603) desk = 1; g_splash_visible = !desk; if (!desk) { if (s->comp->flush) s->comp->flush(s->comp); draw_splash(screen); } }
+	if (g_splash) { int desk = 0; for (size_t i = 0; i < n; i++) if (v[i]->level == -2147483603) desk = 1; g_splash_visible = !desk; if (!desk) { if (s->comp->flush) s->comp->flush(s->comp); { double c0 = mono_now(); draw_splash(screen); splash_cost = mono_now() - c0; } } }
 	for (size_t i = 0; i < n; i++) {
 		if (v[i]->mesh) {}       /* a window drawn through its mesh (the genie): its blur / glass stays out, else the backdrop of the unwarped rectangle stayed blurred (a blur spot) and every frame paid for it */
 		else if (v[i]->nglass > 0) {                                               /* the glass material (the Dock's bar, the menu bar, glass views): the window's shapes melt into one */
