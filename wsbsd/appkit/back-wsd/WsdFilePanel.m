@@ -109,19 +109,25 @@ static NSBitmapImageRep *RepFromPixels(const uint8_t *p, int w, int h, int bpp) 
 /* the window buttons of the title bar (close, minimize, zoom) from the Mac's own catalogue: Aqua.car / DarkAqua.car, "WindowFrame_WindowControlButtons_Regular": the key has Dimension1 = the button (0 close, 1 minimize, 2 zoom, 3 close of an edited document, 4 / 5 full screen) and State (0 rest: the plain disc, 1 the pointer is over the group: with its glyph, 2 pressed). 16 pt discs, one rendition per scale (the pixels lie in a packed atlas, coreui's car_bitmap_linked). NULL when the catalogue is not there. */
 /* a window button drawn as the Mac does while it is held and dragged (laws measured from a recording, below). `pull` is the vector from the disc's centre to the pointer in the view's own coordinates. */
 NSImage *WsdWindowButtonBare;
+static NSColor *ButtonPixel(NSImage *im, double fx, double fy)       /* a colour of the disc's picture (fx, fy in 0..1 from the top left) */
+{
+	NSBitmapImageRep *rep = nil; for (NSImageRep *r in [im representations]) if ([r isKindOfClass: [NSBitmapImageRep class]]) { rep = (NSBitmapImageRep *)r; break; }
+	NSColor *c = rep ? [rep colorAtX: (NSInteger)(fx * ([rep pixelsWide] - 1)) y: (NSInteger)(fy * ([rep pixelsHigh] - 1))] : nil; return c ?: [NSColor grayColor];
+}
 void WsdDrawWindowButton(NSImage *im, NSRect r, BOOL held, NSPoint pull)
 {
-	NSImage *bare = WsdWindowButtonBare; WsdWindowButtonBare = nil;
+	WsdWindowButtonBare = nil;
+	double d = hypot(pull.x, pull.y);
 	if (!held) { [im drawInRect: r fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1.0]; return; }
-	/* measured from a screen recording of the real buttons held and dragged (100 fps, 14 pt colour disc): pressed it is 16 x 16 pt (swell 1.143); dragged away it becomes an ellipse whose long axis follows the pointer up to 26 pt (1.63 x the pressed disc) while the short one gives way to 6 pt (the area stays about the same: short = 1/long^2); the far edge runs 16 pt past the rest position, the near edge slips 4 pt toward the pointer (centre drift 10 pt at the limit); the glyph is gone by the time the long axis is 1.25 x; a vertical drag of the recording gave 12 x 19 pt with 3 pt of drift, the same law at e = 0.3. e (0..1) = how far the pointer is: d / (d + 50 pt) */
-	double d = hypot(pull.x, pull.y), e = d / (d + 50.0), s = 1.0 + 0.63 * e, L = 1.143 * s, S = 1.143 / (s * s), ang = d > 0.5 ? atan2(pull.y, pull.x) : 0, off = e * 10.0;
+	if (d <= 1.5) { double k = 1.143; [im drawInRect: NSMakeRect(NSMidX(r) - r.size.width * k / 2, NSMidY(r) - r.size.height * k / 2, r.size.width * k, r.size.height * k) fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1.0]; return; }
+	/* measured from a screen recording of the real buttons held and dragged (100 fps, 14 pt colour disc): pressed it is 16 x 16 pt (swell 1.143); dragged away it becomes an ellipse whose long axis follows the pointer up to 26 pt (1.63 x the pressed disc) while the short one gives way to 6 pt (the area stays about the same: short = 1/long^2); the far edge runs 16 pt past the rest position, the near edge slips 4 pt toward the pointer (centre drift 10 pt at the limit); the glyph is gone by the time the long axis is 1.25 x; a vertical drag of the recording gave 12 x 19 pt with 3 pt of drift, the same law at e = 0.3. e (0..1) = how far the pointer is: d / (d + 50 pt). The ellipse is drawn as a path (an image drawn under a stretching transform raises inside GNUstep's drawing: "Can not determine type information for -[GSDictionaryKeyEnumerator count]"), its two colours are read from the disc's own picture. */
+	double e = d / (d + 50.0), s = 1.0 + 0.63 * e, L = 1.143 * s, S = 1.143 / (s * s), ang = atan2(pull.y, pull.x), off = e * 10.0;
+	NSColor *top = ButtonPixel(im, 0.5, 0.20), *bot = ButtonPixel(im, 0.5, 0.80);
 	NSGraphicsContext *gc = [NSGraphicsContext currentContext]; [gc saveGraphicsState];
-	NSAffineTransform *t = [NSAffineTransform transform]; NSAffineTransformStruct m = { cos(ang) * L, sin(ang) * L, -sin(ang) * S, cos(ang) * S, NSMidX(r) + (d > 0.5 ? pull.x / d * off : 0), NSMidY(r) + (d > 0.5 ? pull.y / d * off : 0) };      /* translate * rotate * scale, written out */
-	[t setTransformStruct: m]; [t concat];
-	NSRect dr = NSMakeRect(-r.size.width / 2, -r.size.height / 2, r.size.width, r.size.height);
-	double glyph = e > 0 && bare ? fmax(0.0, 1.0 - (s - 1.0) / 0.25) : 1.0;
-	if (bare && glyph < 1.0) { [bare drawInRect: dr fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1.0]; if (glyph > 0) [im drawInRect: dr fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: glyph]; }
-	else [im drawInRect: dr fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1.0];
+	NSAffineTransform *t = [NSAffineTransform transform]; [t translateXBy: NSMidX(r) + pull.x / d * off yBy: NSMidY(r) + pull.y / d * off]; [t rotateByRadians: ang]; [t scaleXBy: L yBy: S]; [t concat];
+	NSBezierPath *p = [NSBezierPath bezierPathWithOvalInRect: NSMakeRect(-7, -7, 14, 14)];
+	[[[NSGradient alloc] initWithStartingColor: top endingColor: bot] drawInBezierPath: p angle: 270.0];
+	[[NSColor colorWithCalibratedWhite: 0 alpha: 0.12] set]; [p setLineWidth: 1.0 / fmax(L, S)]; [p stroke];
 	[gc restoreGraphicsState];
 }
 NSImage *WsdWindowButtonImage(int kind, int state, BOOL dark)
