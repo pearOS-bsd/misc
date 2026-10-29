@@ -12,6 +12,29 @@ static NSDictionary *Table(void)
 {
 	static NSDictionary *t; if (t) return t;
 	NSDictionary *lit = @{
+		@"wifi.slash": ^(NSBezierPath *p, BOOL *f) { Arc(p, .5, .18, .62, 48, 132); Arc(p, .5, .18, .4, 48, 132); Arc(p, .5, .18, .18, 48, 132); Line(p, .14, .9, .86, .1); },
+		@"bluetooth": ^(NSBezierPath *p, BOOL *f) { Line(p, .5, .08, .5, .92); [p moveToPoint: NSMakePoint(.28, .7)]; [p lineToPoint: NSMakePoint(.72, .3)]; [p lineToPoint: NSMakePoint(.5, .08)]; [p moveToPoint: NSMakePoint(.28, .3)]; [p lineToPoint: NSMakePoint(.72, .7)]; [p lineToPoint: NSMakePoint(.5, .92)]; },
+		@"moon.fill": ^(NSBezierPath *p, BOOL *f) { *f = YES; [p moveToPoint: NSMakePoint(.66, .1)]; [p curveToPoint: NSMakePoint(.66, .9) controlPoint1: NSMakePoint(.2, .12) controlPoint2: NSMakePoint(.2, .88)]; [p curveToPoint: NSMakePoint(.9, .5) controlPoint1: NSMakePoint(.5, .78) controlPoint2: NSMakePoint(.42, .22)]; [p curveToPoint: NSMakePoint(.66, .1) controlPoint1: NSMakePoint(.9, .34) controlPoint2: NSMakePoint(.8, .16)]; [p closePath]; },
+		@"sun.max": ^(NSBezierPath *p, BOOL *f) { [p appendBezierPath: Circle(.5, .5, .17)]; for (int i = 0; i < 8; i++) { double a = i * M_PI / 4; Line(p, .5 + .28 * cos(a), .5 + .28 * sin(a), .5 + .42 * cos(a), .5 + .42 * sin(a)); } },
+		@"sun.max.fill": ^(NSBezierPath *p, BOOL *f) { *f = YES; [p appendBezierPath: Circle(.5, .5, .2)]; for (int i = 0; i < 8; i++) { double a = i * M_PI / 4; [p appendBezierPath: Circle(.5 + .36 * cos(a), .5 + .36 * sin(a), .045)]; } },
+		@"sun.min": ^(NSBezierPath *p, BOOL *f) { [p appendBezierPath: Circle(.5, .5, .11)]; for (int i = 0; i < 8; i++) { double a = i * M_PI / 4; Line(p, .5 + .24 * cos(a), .5 + .24 * sin(a), .5 + .34 * cos(a), .5 + .34 * sin(a)); } },
+		@"light.max": ^(NSBezierPath *p, BOOL *f) { [p appendBezierPath: Circle(.5, .5, .17)]; for (int i = 0; i < 8; i++) { double a = i * M_PI / 4; Line(p, .5 + .28 * cos(a), .5 + .28 * sin(a), .5 + .42 * cos(a), .5 + .42 * sin(a)); } },
+		@"display": ^(NSBezierPath *p, BOOL *f) { RRect(p, .08, .26, .84, .58, .07); Line(p, .5, .26, .5, .14); Line(p, .3, .12, .7, .12); },
+		@"circle.lefthalf.filled": ^(NSBezierPath *p, BOOL *f) { [p appendBezierPath: Circle(.5, .5, .4)]; [p moveToPoint: NSMakePoint(.5, .9)]; [p appendBezierPathWithArcWithCenter: NSMakePoint(.5, .5) radius: .4 startAngle: 90 endAngle: 270]; [p closePath]; *f = NO; },
+		@"lock.fill": ^(NSBezierPath *p, BOOL *f) { *f = YES; RRect(p, .2, .12, .6, .46, .08); [p appendBezierPath: [NSBezierPath bezierPathWithRoundedRect: NSMakeRect(.32, .5, .36, .36) xRadius: .18 yRadius: .18]]; [p setWindingRule: NSEvenOddWindingRule]; },
+		@"play.fill": ^(NSBezierPath *p, BOOL *f) { *f = YES; [p moveToPoint: NSMakePoint(.28, .14)]; [p lineToPoint: NSMakePoint(.28, .86)]; [p lineToPoint: NSMakePoint(.84, .5)]; [p closePath]; },
+		@"backward.fill": ^(NSBezierPath *p, BOOL *f) { *f = YES; [p moveToPoint: NSMakePoint(.5, .5)]; [p lineToPoint: NSMakePoint(.88, .8)]; [p lineToPoint: NSMakePoint(.88, .2)]; [p closePath]; [p moveToPoint: NSMakePoint(.12, .5)]; [p lineToPoint: NSMakePoint(.5, .8)]; [p lineToPoint: NSMakePoint(.5, .2)]; [p closePath]; },
+		@"forward.fill": ^(NSBezierPath *p, BOOL *f) { *f = YES; [p moveToPoint: NSMakePoint(.5, .5)]; [p lineToPoint: NSMakePoint(.12, .8)]; [p lineToPoint: NSMakePoint(.12, .2)]; [p closePath]; [p moveToPoint: NSMakePoint(.88, .5)]; [p lineToPoint: NSMakePoint(.5, .8)]; [p lineToPoint: NSMakePoint(.5, .2)]; [p closePath]; },
+		@"speaker.fill": ^(NSBezierPath *p, BOOL *f) { *f = YES; [p moveToPoint: NSMakePoint(.14, .38)]; [p lineToPoint: NSMakePoint(.3, .38)]; [p lineToPoint: NSMakePoint(.52, .18)]; [p lineToPoint: NSMakePoint(.52, .82)]; [p lineToPoint: NSMakePoint(.3, .62)]; [p lineToPoint: NSMakePoint(.14, .62)]; [p closePath]; },
+		@"speaker.wave.2.fill": ^(NSBezierPath *p, BOOL *f) { [p moveToPoint: NSMakePoint(.1, .38)]; [p lineToPoint: NSMakePoint(.24, .38)]; [p lineToPoint: NSMakePoint(.42, .2)]; [p lineToPoint: NSMakePoint(.42, .8)]; [p lineToPoint: NSMakePoint(.24, .62)]; [p lineToPoint: NSMakePoint(.1, .62)]; [p closePath]; Arc(p, .42, .5, .22, -40, 40); Arc(p, .42, .5, .38, -40, 40); },
+		@"speaker.wave.3.fill": ^(NSBezierPath *p, BOOL *f) { [p moveToPoint: NSMakePoint(.06, .38)]; [p lineToPoint: NSMakePoint(.2, .38)]; [p lineToPoint: NSMakePoint(.36, .22)]; [p lineToPoint: NSMakePoint(.36, .78)]; [p lineToPoint: NSMakePoint(.2, .62)]; [p lineToPoint: NSMakePoint(.06, .62)]; [p closePath]; Arc(p, .36, .5, .18, -40, 40); Arc(p, .36, .5, .32, -40, 40); Arc(p, .36, .5, .46, -40, 40); },
+		@"airplay.audio": ^(NSBezierPath *p, BOOL *f) { [p appendBezierPath: Circle(.5, .56, .08)]; Arc(p, .5, .56, .22, 40, 140); Arc(p, .5, .56, .22, 220, 320); Arc(p, .5, .56, .36, 40, 140); Arc(p, .5, .56, .36, 220, 320); [p moveToPoint: NSMakePoint(.5, .46)]; [p lineToPoint: NSMakePoint(.3, .1)]; [p lineToPoint: NSMakePoint(.7, .1)]; [p closePath]; },
+		@"rectangle.3.group": ^(NSBezierPath *p, BOOL *f) { RRect(p, .1, .12, .36, .76, .06); RRect(p, .54, .5, .36, .38, .06); RRect(p, .54, .12, .36, .3, .06); },
+		@"rectangle.on.rectangle": ^(NSBezierPath *p, BOOL *f) { RRect(p, .08, .4, .6, .46, .07); RRect(p, .32, .14, .6, .46, .07); },
+		@"battery": ^(NSBezierPath *p, BOOL *f) { RRect(p, .06, .3, .78, .4, .1); Line(p, .9, .44, .9, .56); },
+		@"battery.50": ^(NSBezierPath *p, BOOL *f) { RRect(p, .06, .3, .78, .4, .1); Line(p, .9, .44, .9, .56); RRect(p, .12, .36, .34, .28, .03); },
+		@"battery.100percent": ^(NSBezierPath *p, BOOL *f) { RRect(p, .06, .3, .78, .4, .1); Line(p, .9, .44, .9, .56); RRect(p, .12, .36, .66, .28, .03); },
+		@"battery.100percent.bolt": ^(NSBezierPath *p, BOOL *f) { RRect(p, .06, .3, .78, .4, .1); Line(p, .9, .44, .9, .56); RRect(p, .12, .36, .66, .28, .03); },
 		@"trash": ^(NSBezierPath *p, BOOL *f) { Line(p, .14, .78, .86, .78); Line(p, .38, .78, .38, .88); Line(p, .38, .88, .62, .88); Line(p, .62, .88, .62, .78); [p moveToPoint: NSMakePoint(.24, .78)]; [p lineToPoint: NSMakePoint(.3, .12)]; [p lineToPoint: NSMakePoint(.7, .12)]; [p lineToPoint: NSMakePoint(.76, .78)]; Line(p, .42, .6, .42, .3); Line(p, .58, .6, .58, .3); },
 		@"ellipsis": ^(NSBezierPath *p, BOOL *f) { *f = YES; [p appendBezierPath: Circle(.2, .5, .07)]; [p appendBezierPath: Circle(.5, .5, .07)]; [p appendBezierPath: Circle(.8, .5, .07)]; },
 		@"xmark": ^(NSBezierPath *p, BOOL *f) { Line(p, .24, .24, .76, .76); Line(p, .24, .76, .76, .24); },
@@ -71,7 +94,8 @@ NSSize WsdFallbackSymbolSize(NSString *name, CGFloat pt) { return Table()[name] 
 BOOL WsdFallbackSymbolDraw(NSString *name, NSRect cell, CGFloat pt, NSColor *tint)
 {
 	SymBuild b = Table()[name]; if (!b) return NO; CGFloat s = pt * 1.15; NSBezierPath *p = [NSBezierPath bezierPath]; BOOL fill = NO; b(p, &fill);
-	NSAffineTransform *t = [NSAffineTransform transform]; [t translateXBy: NSMidX(cell) - s / 2 yBy: NSMidY(cell) - s / 2]; [t scaleXBy: s yBy: s]; NSBezierPath *q = [t transformBezierPath: p];
+	BOOL flipped = [[NSGraphicsContext currentContext] isFlipped];       /* the paths are drawn with y up: in a flipped view (the Finder's, the top bar's) they are mirrored, else the symbols come out upside down */
+	NSAffineTransform *t = [NSAffineTransform transform]; [t translateXBy: NSMidX(cell) - s / 2 yBy: flipped ? NSMidY(cell) + s / 2 : NSMidY(cell) - s / 2]; [t scaleXBy: s yBy: flipped ? -s : s]; NSBezierPath *q = [t transformBezierPath: p];
 	[tint set]; if (fill) [q fill]; else { [q setLineWidth: MAX(1.0, s * 0.085)]; [q setLineCapStyle: NSRoundLineCapStyle]; [q setLineJoinStyle: NSRoundLineJoinStyle]; [q stroke]; }
 	return YES;
 }
