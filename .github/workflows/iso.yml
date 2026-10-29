@@ -7,6 +7,11 @@ on:
   push:
     tags: ['v*']
   workflow_dispatch:
+    inputs:
+      arm:
+        description: 'Also build the arm64 image (slow); false = amd64 only'
+        type: boolean
+        default: true
 
 permissions:
   contents: write
@@ -24,7 +29,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch: [x86_64, aarch64]
+        arch: ${{ fromJSON(github.event.inputs.arm == 'false' && '["x86_64"]' || '["x86_64","aarch64"]') }}
     steps:
       - uses: actions/checkout@v4
       - name: Build Ploader
@@ -64,7 +69,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch: [x86_64, aarch64]
+        arch: ${{ fromJSON(github.event.inputs.arm == 'false' && '["x86_64"]' || '["x86_64","aarch64"]') }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
@@ -170,6 +175,7 @@ jobs:
 
   # the arm64 ISO under QEMU (TCG, slow: FreeBSD arm64 and the desktop on an emulated CPU); informational, never blocks the release
   boot-test-arm64:
+    if: ${{ github.event.inputs.arm != 'false' }}
     needs: iso
     runs-on: ubuntu-latest
     timeout-minutes: 150
