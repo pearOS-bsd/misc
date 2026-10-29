@@ -57,6 +57,75 @@ The stack: `wsd` (this repo: window server and compositor speaking the SkyLight 
 - **AirDrop** (sharingd, `NSSharingService` AirDrop, `com.apple.sharing.*`, AWDL-less transport on FreeBSD): after CoreWLAN, also by decompilation with REA and reimplemented as on the Mac. Reference to study (not to copy blindly): github.com/BenItBuhner/AirDrop-for-Everything. Status: 0 %.
 - **Filesystem mirror rule:** the file layout of this Mac is the layout of the BSD system. Whatever exists under `/System`, `/Library`, `/usr/libexec`, `/Applications`... on the Mac (frameworks, daemons, launchd plists, resources) must be found at the same path on wsbsd, with the same names. New components are installed at the Mac paths (for example `/System/Library/Frameworks/CoreWLAN.framework`, `/usr/libexec/airportd`, `/System/Library/CoreServices/...`) and the ISO builder (`iso/build.sh`) places them there.
 
+### Bug and feature checklist (owner's report from the arm64 image in QEMU and on real laptops, 2026-10-29)
+Source: `buglist.txt`. `[ ]` = open, `[x]` = done and verified. Items marked *(partial)* have work in the tree that is not verified on an image yet.
+
+**Desktop, menus and the top bar**
+- [ ] Right-click on a Finder window's breadcrumb / path bar item does nothing (should show the Mac's path-item menu).
+- [ ] Context menu of a desktop item opens off-screen to the right instead of flipping to the left when it does not fit.
+- [ ] Context submenus are placed wrongly: they open at the top of the screen instead of next to their parent row (for example Clean Up By → Name / Kind / Date…, which is very hard to reach).
+- [ ] The top bar must never disappear. Today it vanishes when no window is focused and only comes back after a click on the desktop. *(partial: the bar follows the active application and falls back to the desktop's one; the "nothing focused" case is not covered)*
+- [ ] Spotlight: Command-Space does not open it; it must behave as on this Mac.
+- [ ] Spotlight: items cannot be clicked (keyboard up / down only), and pressing Return on a result (for example a directory) does not open it.
+- [ ] Launchpad is missing from the Dock; Command-Space should open Launchpad combined with Spotlight search, as on this Mac. *(plan: `handoff.md`, "Launchpad")*
+- [ ] About This Mac is invented; it must be rebuilt from the real one (decompile and measure).
+- [ ] Force Quit (window and menu item) is not implemented.
+- [ ] Most icons are upside down: search, Control Center, Siri, the Finder sidebar icons.
+- [ ] Control Center: almost all tiles/icons are missing (only Wi-Fi and Bluetooth exist, and they are upside down).
+- [ ] Control Center: no switch for light / dark appearance.
+- [ ] Control Center: Wi-Fi has no real function. The image must come configured to bring up any Wi-Fi card by default, and our menu must join networks, so nobody has to run `dhclient` and friends by hand. *(CoreWLAN / airportd work is in "Required next")*
+
+**Windows, Dock and animations**
+- [ ] Closing a window with the red button must only close the window; the process keeps running until Command-Q, as on macOS.
+- [ ] Finder windows must use the system window decorations (some of ours are invented).
+- [ ] The rubber-band (stretch) effect and the hover glyphs are missing on close / minimize / maximize. *(partial: hover glyphs and the pressed state from `Aqua.car` exist; the stretch needs a finer capture on the Mac)*
+- [ ] The green button must move the window to its own full-screen Space (workspace), as on the Mac; only snapping to the top edge maximizes the window.
+- [ ] Hovering the green button must show the popover with the tiling / snapping options.
+- [ ] Window snapping does not work.
+- [ ] Finder windows cannot be resized.
+- [ ] Resizing flickers and shows only an outline instead of resizing the application live.
+- [ ] After a resize, releasing the mouse sometimes leaves the window "stuck" as if the button were still down (one or two extra clicks are needed).
+- [ ] Moving windows lacks vsync (a faint tearing effect, almost imperceptible).
+- [ ] The Genie minimize animation is far too slow and leaves a blur spot where the window should appear (and during the animation).
+- [ ] Clicking Downloads in the Dock flickers.
+- [ ] Dock cannot be resized by dragging its separator, as on macOS.
+- [ ] Liquid Glass has an extra vertical offset: the lens samples the image too far away for the distortion.
+
+**Quick Look, files and archives**
+- [ ] Quick Look does not close with its X button; only Space closes it. No button works and the window looks defocused.
+- [ ] Space does not start Quick Look on a desktop item.
+- [ ] With Quick Look open on item 1, clicking item 2 must update the preview (as on the Mac).
+- [ ] Double-clicking a `.zip` in Finder or on the desktop must extract it exactly as the Mac does.
+- [ ] "Compress N items" works, but there is no progress bar.
+- [ ] Finder window is incomplete (missing features; see the Finder row of the coverage table).
+- [ ] `pkg` does nothing; it must be active and working so BSD utilities can be installed.
+
+**Terminal and shell**
+- [ ] After a resize the Terminal does not learn its new margins until Command-Plus is pressed.
+- [ ] The Terminal title and icon must update dynamically with the current directory.
+- [ ] zsh must be the default shell.
+- [ ] The zsh profile / prompt must match macOS; take it from <https://github.com/Pear-Project/dpkg/tree/main/pearos-zshconfig>.
+
+**Boot, installer and hardware**
+- [ ] Boot logo: a real boot logo with a progress bar, exactly as on this Mac (today it is only the compositor background painted grey, with a pear; no splash is wanted). *(partial: pear on black until the desktop picture exists)*
+- [ ] Ploader shows rEFInd's default UI with missing icons instead of our Ploader interface, and still does not boot directly without Alt-M. *(partial: `ploader.conf` now scans only external / optical disks and prefers `EFISYS`; not confirmed on hardware)*
+- [ ] Keyboard backlight driver for the NS50_70MU (Clevo) ported to BSD and working.
+- [ ] Touch Bar sometimes starts with no way to turn it off.
+
+**Login and users**
+- [ ] Login window before first unlock and after first unlock (the difference between Log Out and Lock) with real users.
+- [ ] Default user `alex`, password `pear`, with `sudo` configured, for the next images.
+
+**Missing pieces**
+- [ ] System components that still have to be decompiled from this Mac (list to be kept in `docs/`).
+- [ ] The Mac's text editor (TextEdit) is missing.
+- [ ] UITest: the combo box does not work / has no items.
+- [ ] UITest: add controls for a Liquid Glass intensity slider, Touch Bar support on / off, and a system dark / light mode switch.
+
+**Resolved**
+- [x] RAM use is stable at about 2 GB.
+- [x] No more lag when using Control Center.
+
 ### Ported application work (TextMate, Chess, Hex Fiend, GrandPerspective, Pashua)
 Goal: compile unmodified open source Cocoa applications on FreeBSD. What the TextMate port needed, all in `sdk/`, `ci/patch-*.py` and `ports/textmate/`:
 - **Build:** ninja + rave build with an `xcrun` shim, ninja/rave bash-ism fixers, GNUstep-layout bundle assembly (`ports/textmate/`), libc++ hardening off, C++ `main` through a `gnustep_base_user_main` trampoline.
