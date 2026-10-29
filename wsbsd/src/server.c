@@ -103,11 +103,11 @@ extern int (*ws_owner_visible_hook)(uint32_t owner);
 void ws_server_invalidate(ws_server *s) { bump(s); }
 static void refresh_menubars(ws_server *s);
 static void kf_remove_at_fwd(ws_server *s, int i);
-static int g_splash, g_splash_visible = 1; static double splash_t0, splash_last, splash_cost;
+static int g_splash, g_splash_visible = 1, g_shutdown_splash; static double splash_t0, splash_last, splash_cost;
 static double mono_now(void) { struct timespec ts; clock_gettime(CLOCK_MONOTONIC, &ts); return ts.tv_sec + ts.tv_nsec * 1e-9; }
 uint64_t ws_server_generation(const ws_server *s)
 {
-	if (g_splash && g_splash_visible) {       /* the boot screen's progress bar moves: the scene changes ten times a second while it is shown */
+	if (g_splash && g_splash_visible && !g_shutdown_splash) {       /* the boot screen's progress bar moves: the scene changes ten times a second while it is shown */
 		double t = mono_now(); if (t - splash_last > (splash_cost * 20 > 0.1 ? splash_cost * 20 : 0.1)) {       /* never more often than twenty times the cost of a frame: on a slow machine the bar must not starve the clients (the Dock could not connect under emulation) */
 		 splash_last = t; ((ws_server *)s)->gen++; }
 	}
@@ -1026,13 +1026,15 @@ static ws_surface *grow_edge(const ws_surface *src, int w, int h)
 
 #include "splash_pear.inc"
 void ws_server_set_splash(ws_server *s, int on) { (void)s; g_splash = on; splash_t0 = mono_now(); }
+void ws_server_set_shutdown_splash(ws_server *s, int on) { g_shutdown_splash = on; if (on) { g_splash = 1; s->cursor_visible = 0; } bump(s); }       /* the machine is going down: the pear alone, over everything, until the power goes */
+int ws_server_shutdown_splash(void) { return g_shutdown_splash; }
 /* the boot screen: black with the pear of pearOS in the middle, shown while no window of the desktop picture's level (the Finder's desktop) is on the screen yet */
 static void draw_splash(ws_surface *screen)
 {
 	for (int y = 0; y < screen->h; y++) memset(screen->px + (size_t)y * screen->stride, 0, (size_t)screen->w * 4);
 	for (int y = 0; y < screen->h; y++) { uint32_t *p = (uint32_t *)(screen->px + (size_t)y * screen->stride); for (int x = 0; x < screen->w; x++) p[x] = 0xff000000u; }
-	int ox = (screen->w - (int)pear_w) / 2, oy = (screen->h - (int)pear_h) / 2 - screen->h / 14;
-	{       /* the progress bar under the logo: a rounded track (white 18 %) with a white fill that runs with the time since the window server started (the real progress of the boot is not known to it): fast at first, never quite full */
+	int ox = (screen->w - (int)pear_w) / 2, oy = (screen->h - (int)pear_h) / 2;       /* exactly where the kernel's boot logo (the pear patched into vt(4), iso/tools/patch_vt_logo.py) is: the two screens are one picture */
+	if (!g_shutdown_splash) {       /* the progress bar under the logo (not on the way down): a rounded track (white 18 %) with a white fill that runs with the time since the window server started (the real progress of the boot is not known to it): fast at first, never quite full */
 		double t = mono_now() - splash_t0; double p = 1.0 - exp(-t / 7.0); if (p > 0.96) p = 0.96;
 		int bw = screen->w / 9, bh = screen->h / 160 > 4 ? screen->h / 160 : 4, bx = (screen->w - bw) / 2, by = oy + (int)pear_h + screen->h / 12, fill = (int)(bw * p);
 		for (int yy = 0; yy < bh; yy++) for (int xx = 0; xx < bw; xx++) {
@@ -1052,7 +1054,7 @@ void ws_compose_scene(ws_server *s, ws_surface *screen)
 	ws_wid act = ws_active_window(s);
 	s->comp->fill(s->comp, screen, all, 37.0f / 255.0f, 37.0f / 255.0f, 37.0f / 255.0f, 1.0f);   /* desktop: #252525 */
 	size_t n = sorted(s, v);
-	if (g_splash) { int desk = 0; for (size_t i = 0; i < n; i++) if (v[i]->level == -2147483603) desk = 1; g_splash_visible = !desk; if (!desk) { if (s->comp->flush) s->comp->flush(s->comp); { double c0 = mono_now(); draw_splash(screen); splash_cost = mono_now() - c0; } } }
+	if (g_splash) { int desk = 0; for (size_t i = 0; i < n; i++) if (v[i]->level == -2147483603) desk = 1; if (g_shutdown_splash) { desk = 0; n = 0; } g_splash_visible = !desk; if (!desk) { if (s->comp->flush) s->comp->flush(s->comp); { double c0 = mono_now(); draw_splash(screen); splash_cost = mono_now() - c0; } } }
 	for (size_t i = 0; i < n; i++) {
 		if (v[i]->mesh) {}       /* a window drawn through its mesh (the genie): its blur / glass stays out, else the backdrop of the unwarped rectangle stayed blurred (a blur spot) and every frame paid for it */
 		else if (v[i]->nglass > 0) {                                               /* the glass material (the Dock's bar, the menu bar, glass views): the window's shapes melt into one */
