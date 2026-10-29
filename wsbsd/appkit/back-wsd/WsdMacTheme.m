@@ -16,6 +16,7 @@ static void wsdTFRect(id self, SEL _cmd, NSRect r);
 
 /* WSD_APPEARANCE=light switches the palette; the measurements are of the dark appearance (the light one is typical macOS, not measured) */
 static void wsdMenuSizeToFit(id self, SEL _cmd); static NSColor *wsdMenuTextColor(id self, SEL _cmd); static void wsdMenuDrawKeyEq(id self, SEL _cmd, NSRect f, NSView *v); static void wsdMenuDrawState(id self, SEL _cmd, NSRect f, NSView *v);
+extern void WsdToggleFullscreen(NSWindow *w); extern void WsdShowTilePopover(NSWindow *w, NSRect r); extern BOOL WsdIsFullscreen(NSWindow *w);
 extern void WsdInstallFilePanel(void); extern void WsdInstallDragDrop(void); extern void WsdInstallMenuBar(void); extern void WsdInstallPopover(void); extern void WsdInstallSheets(void);
 extern NSColor *WsdTintedWindowBackground(NSWindow *w); extern BOOL WsdMenuBarPrepare(NSMenu *m); extern NSRect WsdBarItemRect(NSMenuView *mv, NSInteger i, NSRect r); extern void WsdDrawBarItem(NSMenuItemCell *cell, NSRect f, BOOL highlighted); extern NSColor *WsdBarTextColor(BOOL enabled); extern BOOL WsdIsPearItem(NSMenuItem *i); extern BOOL WsdAppearanceIsDark(void); extern void WsdInstallAppearanceWatch(void);
 static BOOL isDark(void) { return WsdAppearanceIsDark(); }
@@ -1083,7 +1084,10 @@ static NSMutableSet *gDecoViews; static double wsdRelF;
 {
 	NSPoint sp = [NSEvent mouseLocation];
 	for (NSValue *v in [gDecoViews allObjects]) { WsdMacDecorationView *d = [v nonretainedObjectValue]; NSWindow *w = [d window]; if (!w || ![w isVisible]) { [d wsdSetHover: NO]; continue; }
-		NSPoint lp = [d convertPoint: [w convertScreenToBase: sp] fromView: nil]; [d wsdSetHover: NSPointInRect(lp, [d wsdGroupRect]) && NSPointInRect(lp, [d bounds])]; }
+		NSPoint lp = [d convertPoint: [w convertScreenToBase: sp] fromView: nil]; [d wsdSetHover: NSPointInRect(lp, [d wsdGroupRect]) && NSPointInRect(lp, [d bounds])];
+		static NSWindow *dwellWin; static NSTimeInterval dwellT0; NSRect zr = NSInsetRect([d circleRect: 2], -3, -3);
+		if (NSPointInRect(lp, zr) && [w isKeyWindow] && ([w styleMask] & NSResizableWindowMask)) { if (dwellWin != w) { dwellWin = w; dwellT0 = [NSDate timeIntervalSinceReferenceDate]; } else if (dwellT0 > 0 && [NSDate timeIntervalSinceReferenceDate] - dwellT0 > 0.7) { dwellT0 = 0; WsdShowTilePopover(w, [d convertRect: zr toView: nil]); } }
+		else if (dwellWin == w) dwellWin = nil; }
 }
 static NSGradient *grad(int r0, int g0, int b0, int r1, int g1, int b1, int r2, int g2, int b2)
 {
@@ -1254,6 +1258,6 @@ static NSGradient *grad(int r0, int g0, int b0, int r1, int g1, int b1, int r2, 
 	int i = wsdBtnPressed; BOOL fire = wsdBtnInside; wsdBtnPressed = -1; wsdBtnInside = NO;
 	if (hypot(wsdPull.x, wsdPull.y) > 3) { wsdRelBtn = i; wsdRelPull = wsdPull; wsdRelT = 0; wsdRelF = 1; [wsdRelTimer invalidate]; wsdRelTimer = [NSTimer scheduledTimerWithTimeInterval: 1.0 / 60 target: self selector: @selector(wsdRelease:) userInfo: nil repeats: YES]; }       /* the rubber springs back */
 	wsdPull = NSZeroPoint; [self setNeedsDisplay: YES];
-	if (fire) { if (i == 0) [window performClose: self]; else if (i == 1) [window performMiniaturize: self]; else [window performZoom: self]; }
+	if (fire) { if (i == 0) [window performClose: self]; else if (i == 1) [window performMiniaturize: self]; else WsdToggleFullscreen(window); }
 }
 @end
