@@ -1,0 +1,31 @@
+#!/bin/sh
+# PROVIDE: wsbsd_ssh
+# REQUIRE: NETWORKING mountcritlocal wsbsd_overlay
+# BEFORE: LOGIN
+# KEYWORD: nojail
+# Remote access for testing the image on a machine that cannot be seen from outside (a laptop): sshd is NOT on by default. It starts only when the boot medium's EFI partition (label EFISYS) holds a file
+# `ssh.enable`; the lines of that file that look like public keys ("ssh-ed25519 ...", "ssh-rsa ...") are the keys allowed to log in (any account), the account alex / pear also works with its password.
+# The host key is made at boot in /var (the medium is read-only), the wired interfaces get an address by DHCP (rc.conf), Wi-Fi is joined from the Control Center first.
+. /etc/rc.subr
+name="wsbsd_ssh"
+rcvar="wsbsd_ssh_enable"
+start_cmd="wsbsd_ssh_start"
+stop_cmd=":"
+wsbsd_ssh_start()
+{
+	M=/var/run/wsbsd_esp; mkdir -p $M; found=0
+	for dev in /dev/msdosfs/EFISYS $(ls /dev/ada*p1 /dev/da*p1 /dev/nvd*p1 /dev/nda*p1 /dev/mmcsd*p1 /dev/cd* 2>/dev/null); do
+		[ -e "$dev" ] || continue
+		mount -t msdosfs -o ro "$dev" $M 2>/dev/null || continue
+		if [ -f $M/ssh.enable ]; then found=1; grep -E '^(ssh-|ecdsa-|sk-)' $M/ssh.enable > /var/run/wsbsd_authorized_keys 2>/dev/null; umount $M 2>/dev/null; break; fi
+		umount $M 2>/dev/null
+	done
+	[ $found = 1 ] || return 0
+	chmod 644 /var/run/wsbsd_authorized_keys 2>/dev/null
+	K=/var/run/wsbsd_ssh_host_ed25519_key; [ -f $K ] || ssh-keygen -q -t ed25519 -N '' -f $K
+	mkdir -p /var/empty
+	/usr/sbin/sshd -h $K -o AuthorizedKeysFile=/var/run/wsbsd_authorized_keys -o PasswordAuthentication=yes -o PermitRootLogin=no -o UsePAM=yes -o PidFile=/var/run/wsbsd_sshd.pid -o StrictModes=no
+	echo "wsbsd_ssh: sshd started (ssh.enable found on the EFI partition)" > /dev/console 2>/dev/null
+}
+load_rc_config $name
+run_rc_command "$1"

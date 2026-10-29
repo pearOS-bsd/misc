@@ -108,6 +108,7 @@ for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_kbdlig
 # the keyboard backlight driver (needs the kernel sources of the build machine; without them the image simply has no such module)
 if [ -d /usr/src/sys/dev/acpica ]; then (cd "$WS/kmod/clevo_wmi" && make clean >/dev/null 2>&1; make >"$WORK/clevo_wmi.log" 2>&1 && install -d "$ROOT/boot/modules" && install -m 555 clevo_wmi.ko "$ROOT/boot/modules/clevo_wmi.ko") || echo "NOTE: clevo_wmi did not build (see $WORK/clevo_wmi.log)"; else echo "NOTE: no /usr/src/sys: no keyboard backlight module in this image"; fi
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_wifi" "$ROOT/$d/rc.d/wsbsd_wifi"; done
+for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_ssh" "$ROOT/$d/rc.d/wsbsd_ssh"; done
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-airportd" "$ROOT/$d/rc.d/airportd"; install -m 755 "$HERE/overlay/etc-rc.d-usernoted" "$ROOT/$d/rc.d/usernoted"; done
 # no text login on the screen: the window server owns it (the serial console keeps its login)
 for d in etc private/etc; do sed -i '' -E 's/^(ttyv[0-9a-f]+[[:space:]].*[[:space:]])(onifexists|on)([[:space:]]|$)/\1off\3/' "$ROOT/$d/ttys"; done
