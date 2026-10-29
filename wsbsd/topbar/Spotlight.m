@@ -49,6 +49,7 @@ static void Collect(NSString *dir, NSString *q, int depth, NSMutableArray *out, 
 - (void)keyDown:(NSEvent *)e
 {
 	NSString *c = [e characters]; if (![c length]) return; unichar k = [c characterAtIndex: 0];
+	if (([e modifierFlags] & NSCommandKeyMask) && [[e charactersIgnoringModifiers] isEqual: @"1"]) { [win orderOut: nil]; [[NSDistributedNotificationCenter defaultCenter] postNotificationName: @"com.wsbsd.apps.toggle" object: nil userInfo: nil deliverImmediately: YES]; return; }       /* Command-1: Applications */
 	if (k == 0x1b) { [win orderOut: nil]; return; }
 	if (k == '\r' || k == '\n') { [self open: sel]; return; }
 	if (k == NSDownArrowFunctionKey) { if (sel + 1 < (NSInteger)[hits count]) { sel++; if (sel >= first + 7) first = sel - 6; [self setNeedsDisplay: YES]; } return; }

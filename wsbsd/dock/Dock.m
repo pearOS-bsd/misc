@@ -185,6 +185,8 @@ static NSString *TileLabel(NSDictionary *t, NSString *path)
 		[others addObject: [@{ @"tile-type": @"directory-tile", @"tile-data": @{ @"file-data": @{ @"_CFURLString": [@"file://" stringByAppendingString: [[NSHomeDirectory() stringByAppendingPathComponent: @"Downloads"] stringByAddingPercentEncodingWithAllowedCharacters: [NSCharacterSet URLPathAllowedCharacterSet]]], @"_CFURLStringType": @0 }, @"file-label": @"Downloads", @"arrangement": @2, @"showas": @(getenv("DOCK_SHOWAS") ? atoi(getenv("DOCK_SHOWAS")) : 1), @"displayas": @0 } } mutableCopy]];
 	}
 	if ([[NSFileManager defaultManager] fileExistsAtPath: @"/System/Library/CoreServices/Finder.app"]) [apps insertObject: [self tileForPath: @"/System/Library/CoreServices/Finder.app" label: @"Finder"] atIndex: 0];
+	{ NSMutableArray *kept = [NSMutableArray array]; for (NSDictionary *t in apps) if (![TilePath(t) hasSuffix: @"/Apps.app"]) [kept addObject: t]; [apps setArray: kept]; }       /* "Apps" (Applications: the Launchpad of macOS 27) is the second tile, always, and is not saved */
+	[apps insertObject: [self tileForPath: @"/System/Applications/Apps.app" label: @"Apps"] atIndex: MIN((NSUInteger)1, [apps count])];
 }
 - (NSMutableDictionary *)tileForPath:(NSString *)path label:(NSString *)label
 {
@@ -193,7 +195,7 @@ static NSString *TileLabel(NSDictionary *t, NSString *path)
 }
 - (void)savePrefs
 {
-	{ NSMutableArray *save = [NSMutableArray array]; for (NSDictionary *t in apps) if (![TilePath(t) hasSuffix: @"/Finder.app"]) [save addObject: t]; prefs[@"persistent-apps"] = save; } prefs[@"persistent-others"] = others;
+	{ NSMutableArray *save = [NSMutableArray array]; for (NSDictionary *t in apps) if (![TilePath(t) hasSuffix: @"/Finder.app"] && ![TilePath(t) hasSuffix: @"/Apps.app"]) [save addObject: t]; prefs[@"persistent-apps"] = save; } prefs[@"persistent-others"] = others;
 	NSString *dir = [[self prefsPath] stringByDeletingLastPathComponent]; [[NSFileManager defaultManager] createDirectoryAtPath: dir withIntermediateDirectories: YES attributes: nil error: NULL];
 	[prefs writeToFile: [self prefsPath] atomically: YES];
 }
@@ -251,9 +253,9 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 		NSDictionary *t = apps[k]; NSString *tt = t[@"tile-type"];
 		if ([tt isEqualToString: @"spacer-tile"]) { PUSH(DOCK_SPACER, NULL, "", @"", 0, (int)k); continue; }
 		if ([tt isEqualToString: @"small-spacer-tile"]) { PUSH(DOCK_SMALLSPACER, NULL, "", @"", 0, (int)k); continue; }
-		NSString *path = TilePath(t); if (![path length] || ![fm fileExistsAtPath: path]) continue;        /* an application that is not installed has no tile here */
+		NSString *path = TilePath(t); if (![path length] || (![fm fileExistsAtPath: path] && ![path hasSuffix: @"/Apps.app"])) continue;        /* an application that is not installed has no tile here */
 		[pinned addObject: path]; [labelStore addObject: TileLabel(t, path)];
-		PUSH(DOCK_APP, [[labelStore lastObject] UTF8String], [path hasSuffix: @"/Finder.app"] ? "finder" : [path hasSuffix: @"/Terminal.app"] ? "terminal" : "generic", path, 0, (int)k);       /* the drawn glyphs stand in for the icon when the bundle has none (the Finder.app of an image has no resources) */
+		PUSH(DOCK_APP, [[labelStore lastObject] UTF8String], [path hasSuffix: @"/Finder.app"] ? "finder" : [path hasSuffix: @"/Terminal.app"] ? "terminal" : [path hasSuffix: @"/Apps.app"] ? "launchpad" : "generic", path, 0, (int)k);       /* the drawn glyphs stand in for the icon when the bundle has none (the Finder.app of an image has no resources) */
 	}
 	if ([prefs[@"static-only"] boolValue] == NO) {                              /* running applications that are not in the Dock: after a separator */
 		NSMutableArray *extra = [NSMutableArray array]; for (NSString *bp in [[runningPaths allObjects] sortedArrayUsingSelector: @selector(compare:)]) if (![pinned containsObject: bp] && ![self isSystemApp: bp]) [extra addObject: bp];
@@ -638,6 +640,7 @@ static NSMutableDictionary *badgeStore;
 	}
 	if (fanOpen || i < 0 || i >= n || !tiles[i].label) return;
 	NSString *path = paths[i];
+	if ([path hasSuffix: @"/Apps.app"]) { [[NSDistributedNotificationCenter defaultCenter] postNotificationName: @"com.wsbsd.apps.toggle" object: nil userInfo: nil deliverImmediately: YES]; return; }
 	if (items[i].kind == DOCK_APP) { for (int k = nmini - 1; k >= 0; k--) if (mini[k].appItem == i && mini[k].phase == 2) { [self restoreMini: k]; return; } }
 	if (items[i].kind == DOCK_MINIMIZED) { for (int k = 0; k < nmini; k++) if (mini[k].item == i) [self restoreMini: k]; return; }
 	if (items[i].kind == DOCK_OTHER) { if ([self isDirTile: i]) { int showas = srcKind[i] == 2 ? [others[srcIdx[i]][@"tile-data"][@"showas"] intValue] : 1; NSArray *sorted = [self sortedNamesOf: i]; if (showas == 3) { NSString *dir = path; double top = bar.bottom_margin + bar.bar_h + 8; DockListMenu *lm = [[DockListMenu alloc] init]; lm->dir = dir; lm->names = sorted; lm->maxRows = (int)floor(([[NSScreen mainScreen] frame].size.height - top - 110) / 24); lm->open = ^(NSString *p) { [self openPath: p]; }; lm->command = ^(int code) { self->ctxItem = i; NSMenuItem *mi = [[NSMenuItem alloc] init]; [mi setTag: code]; [self ctx: mi]; }; NSMenu *nm = [lm menu]; objc_setAssociatedObject(self, "dlm", lm, OBJC_ASSOCIATION_RETAIN); NSPoint cp = NSMakePoint(slots[i].cx, top); [[DockMenuFit alloc] initFor: nm at: cp]; NSEvent *ev = [NSEvent mouseEventWithType: NSRightMouseDown location: [self convertPoint: cp toView: nil] modifierFlags: 0 timestamp: [[NSProcessInfo processInfo] systemUptime] windowNumber: [[self window] windowNumber] context: nil eventNumber: 0 clickCount: 1 pressure: 1]; [NSMenu popUpContextMenu: nm withEvent: ev forView: self]; return; } if (showas == 2 || (showas == 0 && [sorted count] > 16)) { NSString *dir = path, *tt = tiles[i].label ? @(tiles[i].label) : @""; double top = bar.bottom_margin + bar.bar_h; [self closeAllMenus]; gGridTile = i; ShowDockGrid(tt, dir, sorted, slots[i].cx, top, ^(NSString *nm) { [self openPath: [dir stringByAppendingPathComponent: nm]]; }); } else [self openFan: i]; } else [self openPath: path]; return; }
