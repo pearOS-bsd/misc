@@ -66,6 +66,9 @@ static inline dispatch_queue_t wsbsd_global_queue(long p, unsigned long f) { ret
 #define dispatch_get_main_queue() wsbsd_main_queue()
 #define dispatch_get_global_queue(p, f) wsbsd_global_queue(p, f)
 #endif
+#if __has_include(<uuid/uuid.h>)
+#include <uuid/uuid.h>             /* uuid_t, uuid_generate: Apple's Foundation pulls them in (Hex Fiend's template controller names uuid_t without asking) */
+#endif
 /* nullability keywords of Apple's SDK spelt with underscores */
 #ifndef __nullable
 #define __nullable _Nullable
