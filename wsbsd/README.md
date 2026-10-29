@@ -70,9 +70,9 @@ Source: `buglist.txt`. `[ ]` = open, `[x]` = done and verified. Items marked *(p
 - [ ] Launchpad is missing from the Dock; Command-Space should open Launchpad combined with Spotlight search, as on this Mac. *(plan: `handoff.md`, "Launchpad")*
 - [ ] About This Mac is invented; it must be rebuilt from the real one (decompile and measure).
 - [ ] Force Quit (window and menu item) is not implemented.
-- [ ] Most icons are upside down: search, Control Center, Siri, the Finder sidebar icons.
-- [ ] Control Center: almost all tiles/icons are missing (only Wi-Fi and Bluetooth exist, and they are upside down).
-- [ ] Control Center: no switch for light / dark appearance.
+- [x] Icons are no longer upside down (the symbol fallback of images without `CoreGlyphs.car` did not mirror its paths in flipped views).
+- [x] Control Center icons: the fallback has the symbols of every tile now (Wi-Fi, Bluetooth, Dark Mode, brightness, display, Focus, volume, media, battery, …). *(drawn from paths because the image has no SF Symbols catalogue; the shapes are approximations)*
+- [x] Control Center: the Dark Mode tile (circle.lefthalf.filled) was invisible on images without the symbol catalogue; it shows now. *(confirm on an image)*
 - [ ] Control Center: Wi-Fi has no real function. The image must come configured to bring up any Wi-Fi card by default, and our menu must join networks, so nobody has to run `dhclient` and friends by hand. *(CoreWLAN / airportd work is in "Required next")*
 
 **Windows, Dock and animations**
