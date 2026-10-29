@@ -534,7 +534,7 @@ static NSString *const kListColumns[][2] = { { @"Date Modified", @"dateModified"
 - (void)cmdGoToSharedDocuments:(id)s { [self goToPath: @"/Users/Shared"]; }
 - (void)cmdConnectTo:(id)s { [self cmdConnectToServer: s]; }
 - (void)cmdGoToRecent:(NSMenuItem *)it { [self goToPath: [it representedObject]]; }
-- (void)cmdToggleCopyProgressWindow:(id)s {}
+- (void)cmdToggleCopyProgressWindow:(id)s { TFShowProgressWindows(); }
 - (void)cmdMacUserGuide:(id)s {}
 - (void)cmdTipsForYourMac:(id)s {}
 - (void)cmdArchiveWithPassword:(id)s {}
