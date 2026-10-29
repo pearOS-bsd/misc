@@ -743,14 +743,16 @@ static void refresh_menubars(ws_server *s)
 	for (size_t i = 0; i < s->n; i++) { window *w = &s->win[i]; if (!is_menubar(w, s)) { if (w->menu_hidden) { w->menu_hidden = 0; bump(s); } continue; }
 		int hide = s->active_owner && any_active && w->owner != s->active_owner; if (hide != w->menu_hidden) { w->menu_hidden = hide; bump(s); } }
 }
+static uint32_t g_key_requester;
 static void set_key_window(ws_server *s, ws_wid id)
 {
 	if (s->key_win == id) return;
 	if (getenv("WSD_DEBUG")) fprintf(stderr, "wsd: key window %u -> %u\n", (unsigned)s->key_win, (unsigned)id);
 	window *o = get(s, s->key_win), *n = get(s, id);
-	if (o) post(o, WS_EV_FOCUS_OUT, 0, 0, 0, 0);
+	/* a key change that the owner asked for is not echoed to it (g_key_requester): it knows its windows, and the echoes arriving late made an application with two or three windows pass the key around forever (every echo made a window key, which asked again) */
+	if (o && !(g_key_requester && o->owner == g_key_requester)) post(o, WS_EV_FOCUS_OUT, 0, 0, 0, 0);
 	s->key_win = id; refresh_menubars(s);
-	if (n) post(n, WS_EV_FOCUS_IN, 0, 0, 0, 0);
+	if (n && !(g_key_requester && n->owner == g_key_requester)) post(n, WS_EV_FOCUS_IN, 0, 0, 0, 0);
 }
 
 static void track_update(ws_server *s, int x, int y);
@@ -824,6 +826,7 @@ int ws_window_event_mask(ws_server *s, ws_wid id, int *m) { window *w = get(s, i
 void ws_cursor_pos(ws_server *s, int *x, int *y) { *x = s->cx; *y = s->cy; }
 ws_wid ws_key_window(ws_server *s) { return s->key_win; }
 int ws_set_key_window(ws_server *s, ws_wid id) { window *w = get(s, id); if (!w || !w->on_screen) return -1; set_key_window(s, id); return 0; }
+int ws_set_key_window_by(ws_server *s, ws_wid id, uint32_t requester) { g_key_requester = requester; int r = ws_set_key_window(s, id); g_key_requester = 0; return r; }
 void ws_cursor_show(ws_server *s, int v) { if ((v != 0) != s->cursor_visible) s->cursor_serial++; s->cursor_visible = v != 0; }
 
 /* ---- cursor: an image with a hotspot, independent of every window buffer ---- */

@@ -427,7 +427,11 @@ static void WsdDismissMenus(void)
 {
 	ws_event e;
 	WLOG(@"receivedEvent called");
-	while (ws_conn_next_pushed_event(conn, 0, &e)) {
+	/* the events of this turn are read first: a FOCUS_OUT that is followed by a FOCUS_IN for another window of this application is a change of the key window, not the application losing the keyboard (see FOCUS_OUT below) */
+	ws_event batch[256]; int nb = 0, bi = 0;
+	while (nb < 256 && ws_conn_next_pushed_event(conn, 0, &batch[nb])) nb++;
+	while (bi < nb) {                                                             /* more than 256 queued: the rest comes with the next call (the socket is still readable) */
+		e = batch[bi++];
 		WLOG(@"event type %d wid %d at %d,%d buttons %d", e.type, (int)e.wid, e.x, e.y, e.buttons);
 		struct wsd_window *w = [self wsdWindow: (int)e.wid];
 		if (!w) continue;
@@ -465,6 +469,8 @@ static void WsdDismissMenus(void)
 			ev = [NSEvent otherEventWithType: NSAppKitDefined location: NSZeroPoint modifierFlags: 0 timestamp: ts windowNumber: w->number context: GSCurrentContext() subtype: GSAppKitWindowFocusIn data1: 0 data2: 0];
 			break;
 		case WS_EV_FOCUS_OUT: {                                                       /* gui ignores the focus-out event: the window gives up key itself, and the application deactivates when the keyboard went to another one */
+			BOOL moved = NO; for (int k = bi; k < nb; k++) if (batch[k].type == WS_EV_FOCUS_IN && batch[k].wid != e.wid && [self wsdWindow: (int)batch[k].wid]) moved = YES;
+			if (moved) break;       /* the key goes to another window of ours: its FOCUS_IN makes that window key and the old one resigns by itself. Resigning here as well made GNUstep pick a new key window, the server answered with new focus events, and two or three windows (two Finder windows, a Quick Look panel) passed the key around forever: 300 events and timers a second, no window that kept the focus */
 			NSWindow *nw = nil; for (NSWindow *x in [NSApp windows]) if ([x windowNumber] == w->number) { nw = x; break; }
 			if ([nw isKeyWindow]) [nw resignKeyWindow];
 			WsdDismissMenus();
