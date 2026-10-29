@@ -42,3 +42,8 @@ soak
 test_bplist
 test_xkb
 appkit/assets/
+
+# the Ploader theme is made of PNGs and must be in the repository (the image build copies it onto the ESP)
+!ploader/theme/
+!ploader/theme/**
+!ploader/theme/**/*.png

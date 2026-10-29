@@ -1,0 +1,48 @@
+== LUI2BigTimeViewController 0x1fde0dd30
+fontSize 201.600000
+LUI2View 0.0,0.0 494.0x241.0
+  LoginUIKit.LUI2GlassTextView 0.0,0.0 494.0x241.0
+    NSKVONotifying__TtGC7SwiftUI13NSHostingViewV10LoginUIKit24LUI2GlassTextSwiftUIView_ 0.0,0.0 494.0x241.0
+== LUI2DateViewController 0x1fde0ec80
+LUI2View 0.0,0.0 205.0x48.0
+  LUI2VibrancyEffectView 0.0,0.0 205.0x48.0
+    NSView 0.0,0.0 205.0x48.0
+      NSTextField -2.0,0.0 209.0x48.0 font=.AppleSystemUIFontMedium 40.3 str='Thu 29 Oct'
+        _TtC6AppKitP33_72EBFCF981BE77E1C6F26FD717D0893922NSTextFieldSimpleLabel 0.0,0.0 209.0x48.0
+== LUI2SecureTextFieldViewController 0x1fca663e0
+LUI2View 0.0,0.0 1.0x0.0
+  NSStackView 0.0,-8.0 0.0x16.0
+    LUI2SecureTextField -2.0,0.0 4.0x16.0 font=.AppleSystemUIFontMedium 13.0 str=''
+      _TtC6AppKitP33_72EBFCF981BE77E1C6F26FD717D0893922NSTextFieldSimpleLabel 0.0,0.0 4.0x16.0
+== LUI2BatteryViewController 0x1fde0eeb0
+LUI2BatteryView 0.0,0.0 4.0x16.0
+  NSTextField -2.0,0.0 4.0x16.0 font=.AppleSystemUIFont 13.0 str=''
+    _TtC6AppKitP33_72EBFCF981BE77E1C6F26FD717D0893922NSTextFieldSimpleLabel 0.0,0.0 4.0x16.0
+  NSImageView 4.0,8.0 0.0x0.0
+    _NSImageViewSimpleImageView 0.0,0.0 0.0x0.0
+== LUI2PowerViewController 0x1fde0d9e8
+LUI2View 0.0,0.0 39.0x22.0
+  NSPopUpButton 0.0,-4.0 39.0x24.0
+    _TtGC6AppKit18_NSCoreHostingViewVS_17AppKitPopUpButton_ 0.0,0.0 39.0x24.0
+== LUI2AuthHintViewController 0x1fde0ed20
+LUI2VisualEffectView 0.0,0.0 4.0x15.0
+  LUI2VibrancyEffectView 0.0,0.0 4.0x15.0
+    NSView 0.0,0.0 4.0x15.0
+      NSStackView 0.0,0.0 4.0x15.0
+        NSProgressIndicator 0.0,-1.0 16.0x16.0
+        LUI2TextField -2.0,0.0 8.0x15.0 font=.SFNS-Semibold 12.0 str=''
+          _TtC6AppKitP33_72EBFCF981BE77E1C6F26FD717D0893922NSTextFieldSimpleLabel 0.0,0.0 8.0x15.0
+      LUI2TextField -2.0,0.0 8.0x14.0 font=.SFNS-Regular 11.0 str=''
+        _TtC6AppKitP33_72EBFCF981BE77E1C6F26FD717D0893922NSTextFieldSimpleLabel 0.0,0.0 8.0x14.0
+== LUI2UserViewController 0x1fde0e6b8
+LUI2View 0.0,0.0 90.0x58.0
+  LUI2UserView 0.0,0.0 90.0x58.0
+    LUI2VisualEffectView 0.0,0.0 90.0x58.0
+    LUI2TrackedImageView 18.0,7.0 44.0x44.0
+      _NSImageViewSimpleImageView 0.0,0.0 0.0x0.0
+    LUI2TrackedAvatarBackgroundView 18.0,7.0 44.0x44.0
+      AVTView 0.0,0.0 44.0x44.0
+    NSImageView 48.0,7.0 14.0x14.0
+      _NSImageViewSimpleImageView 0.0,0.0 14.0x14.0
+    LUI2TextField 70.0,19.0 4.0x19.0 font=.AppleSystemUIFontDemi 15.0 str=''
+      _TtC6AppKitP33_72EBFCF981BE77E1C6F26FD717D0893922NSTextFieldSimpleLabel 0.0,0.0 4.0x19.0
