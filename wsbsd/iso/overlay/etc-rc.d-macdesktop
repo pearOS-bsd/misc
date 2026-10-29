@@ -67,7 +67,7 @@ macdesktop_start()
 	( while true; do
 		echo > $SD/console
 		if [ "$(kenv -q smbios.system.product 2>/dev/null)" = wsbsd-ci ] || [ ! -x $LW ]; then U=alex; id alex >/dev/null 2>&1 || U=root
-		else U=$(/usr/lib/dyld $LW 2>/dev/null | tail -1); fi
+		else mkdir -p /Users/root/GNUstep /Users/root/Library/Preferences; U=$(HOME=/Users/root /usr/lib/dyld $LW 2>>/var/log/loginwindow.log | tail -1); fi       # root has no home yet: GNUstep needs /Users/root/GNUstep (without it the login window exited at once and the screen stayed on the boot logo)
 		[ -n "$U" ] && id "$U" >/dev/null 2>&1 || { sleep 2; continue; }
 		N=$(id -u $U)
 		session_alive $U || session_start $U
@@ -76,13 +76,13 @@ macdesktop_start()
 		sleep 3
 		while session_alive $U; do
 			if [ -e $SD/login ] && [ "$(stat -f %u $SD/login)" = $N ]; then rm -f $SD/login; break; fi
-			if [ -e $SD/lock ] && [ "$(stat -f %u $SD/lock)" = $N ] && [ -x $LW ]; then rm -f $SD/lock; /usr/lib/dyld $LW --lock $U >/dev/null 2>&1; [ $? = 3 ] && break; fi
+			if [ -e $SD/lock ] && [ "$(stat -f %u $SD/lock)" = $N ] && [ -x $LW ]; then rm -f $SD/lock; HOME=/Users/root /usr/lib/dyld $LW --lock $U >/dev/null 2>>/var/log/loginwindow.log; [ $? = 3 ] && break; fi
 			sleep 1
 		done
 	done ) >/var/log/session.log 2>&1 &
 	echo $! > $SD/supervisor.pid
 	# a report on the serial port (if there is one), 25 s after the start: the programs of the desktop that run, and the end of the log of the Finder and of every program that does not (the screen is the window server's and the console is muted)
-	( sleep 25; { echo "== desktop report"; echo "== session.log"; tail -15 /var/log/session.log 2>/dev/null; echo "== Dock by hand"; U=$(cat /var/run/wsbsd.user 2>/dev/null); su -m "${U:-root}" -c "env HOME=/Users/${U:-root} timeout 6 /usr/lib/dyld /System/Library/CoreServices/Dock.app/Contents/MacOS/Dock" 2>&1 | tail -15; echo "== launchd.log"; tail -15 /var/log/launchd.*.log 2>/dev/null; ps ax -o pid,stat,command | grep -E "launchd|loginwindow" | grep -v grep; ps ax -o pid,stat,command | grep -E "WindowServer|Dock|SystemUIServer|Finder|Terminal|usernoted|gdnc|gdomap" | grep -v grep; for a in Finder WindowServer Dock SystemUIServer Terminal; do pgrep -f "$a" >/dev/null 2>&1 || echo "== $a is not running"; echo "== tail of $a.log"; tail -12 /var/log/$a.log 2>/dev/null; done; ls /System/Library/Desktop\ Pictures 2>&1; } > /dev/ttyu0 2>/dev/null ) &
+	( sleep 25; { echo "== desktop report"; echo "== session.log"; tail -15 /var/log/session.log 2>/dev/null; echo "== loginwindow.log"; tail -8 /var/log/loginwindow.log 2>/dev/null; echo "== Dock by hand"; U=$(cat /var/run/wsbsd.user 2>/dev/null); su -m "${U:-root}" -c "env HOME=/Users/${U:-root} timeout 6 /usr/lib/dyld /System/Library/CoreServices/Dock.app/Contents/MacOS/Dock" 2>&1 | tail -15; echo "== launchd.log"; tail -15 /var/log/launchd.*.log 2>/dev/null; ps ax -o pid,stat,command | grep -E "launchd|loginwindow" | grep -v grep; ps ax -o pid,stat,command | grep -E "WindowServer|Dock|SystemUIServer|Finder|Terminal|usernoted|gdnc|gdomap" | grep -v grep; for a in Finder WindowServer Dock SystemUIServer Terminal; do pgrep -f "$a" >/dev/null 2>&1 || echo "== $a is not running"; echo "== tail of $a.log"; tail -12 /var/log/$a.log 2>/dev/null; done; ls /System/Library/Desktop\ Pictures 2>&1; } > /dev/ttyu0 2>/dev/null ) &
 }
 macdesktop_stop()
 {
