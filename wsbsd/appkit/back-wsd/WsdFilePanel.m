@@ -17,7 +17,7 @@ static const char kResult = 0, kTags = 0;
 @class WsdTagField;
 
 @interface GSDisplayServer (WsdDropFiles) - (BOOL) wsdDropFiles: (NSArray *)paths atScreenPoint: (NSPoint)p; @end
-@interface GSDisplayServer (WsdCorners) - (void) wsdWindowCorners: (int)radius : (int)win; - (void) wsdWindowScale: (float)scale : (int)win; @end
+@interface GSDisplayServer (WsdCorners) - (void) wsdWindowCorners: (int)radius : (int)win; - (void) wsdWindowScale: (float)scale : (int)win; - (void) wsdWindowTransform: (float)scale : (float)tx : (float)ty : (int)win; @end
 static void ScaleWindow(NSWindow *w, float scale) { id srv = GSCurrentServer(); if ([srv respondsToSelector: @selector(wsdWindowScale::)]) [srv wsdWindowScale: scale : (int)[w windowNumber]]; }
 /* the panel's open animation, measured on the Mac: scale 0.98 -> 1.0023 (at about 0.1 s) -> 1 within 0.2 s while it fades in; closing fades out in 0.1 s */
 /* the tags chosen in the Save panel go onto the file once the application has written it (the Mac's panel does the same: the file is not there yet when the panel closes) */
@@ -1178,6 +1178,7 @@ static void wsdSetName(id self, SEL _cmd, NSString *v) { objc_setAssociatedObjec
 @interface WsdFinderSupport : NSObject @end
 @implementation WsdFinderSupport
 + (void)roundWindow:(NSWindow *)w radius:(int)r { RoundWindow(w, r); }
++ (void)transformWindow:(NSWindow *)w scale:(float)sc tx:(float)tx ty:(float)ty { id srv = GSCurrentServer(); if ([srv respondsToSelector: @selector(wsdWindowTransform::::)]) [srv wsdWindowTransform: sc : tx : ty : (int)[w windowNumber]]; }       /* scale about the centre, then a move in pixels (y down): Quick Look's zoom from the icon */
 + (void)setKeyWindow:(NSWindow *)w { id srv = GSCurrentServer(); if ([srv respondsToSelector: @selector(wsdSetKeyWindow:)]) ((void (*)(id, SEL, int))objc_msgSend)(srv, @selector(wsdSetKeyWindow:), (int)[w windowNumber]); }
 + (BOOL)drawSymbol:(NSString *)name inRect:(NSRect)cell size:(CGFloat)pt weight:(int)weight color:(NSColor *)c { return WsdSymbolDraw(name, cell, pt, weight, c); }
 + (BOOL)isDark { return WsdAppearanceIsDark(); }
