@@ -515,7 +515,7 @@ static NSMutableDictionary *badgeStore;
 	}
 	else if (ctxOpen) f = [self stateFrame];
 	NSRect cur = [w frame];
-	if (fabs(f.origin.x - cur.origin.x) >= 1 || fabs(f.size.width - cur.size.width) >= 1 || fabs(f.size.height - cur.size.height) >= 1) { [w setFrame: f display: NO]; }
+	if (fabs(f.origin.x - cur.origin.x) >= 1 || fabs(f.size.width - cur.size.width) >= 1 || fabs(f.size.height - cur.size.height) >= 1) { [w setFrame: f display: NO]; [self redrawIfChanged: f]; [self setNeedsDisplay: YES]; [self display]; }       /* resized and drawn in one go: a resize alone flushed an empty buffer (a Dock without tiles for a frame while a minimized window joined it) */
 	[self redrawIfChanged: f]; [w displayIfNeeded];       /* the new content goes out in the same turn as the new frame: between the two the server showed the old picture in the new window (a flicker when a stack opens) */
 }
 /* the view is redrawn only when something it shows has changed (the window server blends and blurs the whole window again for every frame it gets): the hash covers the tiles, the slots, the bar and the state of the menus, fans and grids; while an animation without a state of its own runs (fan, menu, poof, bounce, minimising) every tick draws */
