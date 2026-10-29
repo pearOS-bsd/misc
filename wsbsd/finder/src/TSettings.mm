@@ -81,7 +81,7 @@ static void TextAtView(NSString *s, CGFloat x, CGFloat cy) { NSDictionary *a = F
 void TFOpenSettings(void)
 {
 	static NSWindow *w; if (w && [w isVisible]) { [w makeKeyAndOrderFront: nil]; return; }
-	w = [[TFinderWindow alloc] initWithContentRect: NSMakeRect(380, 220, 560, 470) styleMask: NSWindowStyleMaskBorderless backing: NSBackingStoreBuffered defer: NO]; [w setReleasedWhenClosed: NO]; [w setOpaque: NO]; [w setBackgroundColor: [NSColor clearColor]]; [w setMinSize: NSMakeSize(560, 470)]; [w setMaxSize: NSMakeSize(560, 470)];
-	TSettingsView *v = [[TSettingsView alloc] initWithFrame: NSMakeRect(0, 0, 560, 470)]; [w setContentView: v]; TWindowTrim *trim = [[TWindowTrim alloc] initWithFrame: [v bounds]]; [trim setAutoresizingMask: NSViewWidthSizable | NSViewHeightSizable]; [v addSubview: trim];
-	[w makeKeyAndOrderFront: nil]; [NSClassFromString(@"WsdFinderSupport") roundWindow: w radius: 16];
+	w = [[TFinderWindow alloc] initWithContentRect: NSMakeRect(380, 220, 560, 470) styleMask: NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask | NSFullSizeContentViewWindowMask backing: NSBackingStoreBuffered defer: NO]; [w setReleasedWhenClosed: NO]; [w setOpaque: NO]; [w setBackgroundColor: [NSColor clearColor]]; [w setMinSize: NSMakeSize(560, 470)]; [w setMaxSize: NSMakeSize(560, 470)];
+	TSettingsView *v = [[TSettingsView alloc] initWithFrame: NSMakeRect(0, 0, 560, 470)]; [w setContentView: v];
+	[w makeKeyAndOrderFront: nil];
 }

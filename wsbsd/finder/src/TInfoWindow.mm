@@ -92,8 +92,7 @@ NSWindow *TFOpenInfoWindow(NSString *path)
 {
 	static NSMutableDictionary *open; if (!open) open = [NSMutableDictionary dictionary]; NSWindow *old = open[path]; if (old && [old isVisible]) { [old makeKeyAndOrderFront: nil]; return old; }
 	CGFloat sh = [[NSScreen mainScreen] frame].size.height; CGFloat H = MIN(928, sh - 90);
-	NSWindow *w = [[TFinderWindow alloc] initWithContentRect: NSMakeRect(420 + 22 * ([open count] % 5), sh - H - 50 - 22 * ([open count] % 5), 400, H) styleMask: NSWindowStyleMaskBorderless backing: NSBackingStoreBuffered defer: NO]; [w setReleasedWhenClosed: NO]; [w setOpaque: NO]; [w setBackgroundColor: [NSColor clearColor]]; [w setMinSize: NSMakeSize(400, 300)]; [w setMaxSize: NSMakeSize(400, 1400)];
+	NSWindow *w = [[TFinderWindow alloc] initWithContentRect: NSMakeRect(420 + 22 * ([open count] % 5), sh - H - 50 - 22 * ([open count] % 5), 400, H) styleMask: NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask | NSResizableWindowMask | NSFullSizeContentViewWindowMask backing: NSBackingStoreBuffered defer: NO]; [w setReleasedWhenClosed: NO]; [w setOpaque: NO]; [w setBackgroundColor: [NSColor clearColor]]; [w setMinSize: NSMakeSize(400, 300)]; [w setMaxSize: NSMakeSize(400, 1400)];
 	TInfoView *v = [[TInfoView alloc] initWithFrame: NSMakeRect(0, 0, 400, H)]; v->path = [path copy]; [w setContentView: v]; [v setAutoresizesSubviews: YES];
-	TWindowTrim *trim = [[TWindowTrim alloc] initWithFrame: [v bounds]]; [trim setAutoresizingMask: NSViewWidthSizable | NSViewHeightSizable]; [v addSubview: trim];
-	open[path] = w; [w makeKeyAndOrderFront: nil]; [NSClassFromString(@"WsdFinderSupport") roundWindow: w radius: 16]; return w;
+	open[path] = w; [w makeKeyAndOrderFront: nil]; return w;
 }
