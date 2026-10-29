@@ -110,7 +110,7 @@ Source: `buglist.txt`. `[ ]` = open, `[x]` = done and verified. Items marked *(p
 - [ ] Boot logo: a real boot logo with a progress bar, exactly as on this Mac (today it is only the compositor background painted grey, with a pear; no splash is wanted). *(partial: pear on black until the desktop picture exists)*
 - [ ] Ploader shows rEFInd's default UI with missing icons instead of our Ploader interface, and still does not boot directly without Alt-M. *(partial: `ploader.conf` now scans only external / optical disks and prefers `EFISYS`; not confirmed on hardware)*
 - [ ] Keyboard backlight driver for the NS50_70MU (Clevo) ported to BSD and working. *(partial: `kmod/clevo_wmi` is a FreeBSD ACPI-WMI driver after the Linux clevo-wmi / tuxedo-keyboard behaviour (`dev.clevo_wmi.0.kb_brightness`, Fn keys as events), loaded by `wsbsd_kbdlight` when the image has it; NOT run on the laptop: the command numbers need checking on the real machine with a DSDT dump; the build needs /usr/src/sys on the build machine; the Control Center Keyboard slider writes the sysctl)*
-- [ ] Touch Bar sometimes starts with no way to turn it off.
+- [x] The Touch Bar emulation can be turned off (`WsbsdTouchBarEnabled` = NO in the global preferences, UITest's checkbox; `WSBSD_TOUCHBAR=0` as before). *(a switch in System Settings / the Control Center does not exist yet)*
 
 **Login and users**
 - [x] Login window with real accounts (`loginwindow/`: chooser of accounts, password checked with crypt(3), wrong password message, Restart / Shut Down) before the first unlock; Lock Screen (menu, ⌃⌘Q) puts it over the running session ("after the first unlock", the same account's password unlocks); Log Out ends the session and the login window returns; the rc script runs the desktop as the chosen account (CI runs sign alex in by themselves). *(the layout is not measured on a Mac: the real login window cannot be captured without signing out; dimming stands in for the blur; no fast user switching; unlocking is not enforced at the window server, the lock is a window at level 2000)*
@@ -119,8 +119,8 @@ Source: `buglist.txt`. `[ ]` = open, `[x]` = done and verified. Items marked *(p
 **Missing pieces**
 - [ ] System components that still have to be decompiled from this Mac (list to be kept in `docs/`).
 - [ ] The Mac's text editor (TextEdit) is missing.
-- [ ] UITest: the combo box does not work / has no items.
-- [ ] UITest: add controls for a Liquid Glass intensity slider, Touch Bar support on / off, and a system dark / light mode switch.
+- [x] UITest: the combo box has items (First, Second, Third) and drops down. The image builds UITest without the Touch Bar stand-ins (the build with them crashed at start in a libobjc `objc_msgSend_stret` call from `-[NSView addSubview:positioned:relativeTo:]`: not investigated, the Touch Bar pages are for the dev build).
+- [x] UITest: a second window "UI Test: System" with a Liquid Glass intensity slider (`/var/tmp/wsd-glass-intensity`, read by wsd once a second: scales the lens displacement), a Touch Bar emulation checkbox (`WsbsdTouchBarEnabled` in the global preferences, read by the Touch Bar host) and a Light / Dark switch (`AppleInterfaceStyle`).
 
 **Resolved**
 - [x] RAM use is stable at about 2 GB.

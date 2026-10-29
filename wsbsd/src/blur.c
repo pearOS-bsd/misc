@@ -3,6 +3,8 @@
 #include "ws.h"
 #include <math.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <time.h>
 #include <string.h>
 
 static void box_sizes(float sigma, int n, int *sz)
@@ -157,6 +159,15 @@ static float glass_field(const ws_glass *g, int n, int ox, int oy, float x, floa
 	return f;
 }
 
+/* the strength of the glass lens (the displacement of the backdrop at the edges), 1 = as measured / fitted; the user's setting is a number in /var/tmp/wsd-glass-intensity (UITest's slider writes it), WS_GLASS_INTENSITY overrides; read once a second */
+static float glass_intensity(void)
+{
+	static float v = 1.0f; static time_t at;
+	time_t now = time(NULL); if (now == at) return v; at = now;
+	const char *e = getenv("WS_GLASS_INTENSITY"); if (e) { v = (float)atof(e); }
+	else { FILE *f = fopen("/var/tmp/wsd-glass-intensity", "r"); if (f) { float x; if (fscanf(f, "%f", &x) == 1) v = x; fclose(f); } else v = 1.0f; }
+	if (v < 0) v = 0; if (v > 3) v = 3; return v;
+}
 void ws_glass_regions(ws_surface *img, const ws_glass *g, int n, int ox, int oy)
 {
 	if (!img || !g || n <= 0) return;
@@ -168,11 +179,12 @@ void ws_glass_regions(ws_surface *img, const ws_glass *g, int n, int ox, int oy)
 	if (!any) return;
 	float Lbase = getenv("WS_GLASS_L") ? (float)atof(getenv("WS_GLASS_L")) : 18.0f, amp = getenv("WS_GLASS_AMP") ? (float)atof(getenv("WS_GLASS_AMP")) : 26.0f;
 	float LM = getenv("WS_MENU_L") ? (float)atof(getenv("WS_MENU_L")) : 11.0f, AX = getenv("WS_MENU_AX") ? (float)atof(getenv("WS_MENU_AX")) : 12.0f, AY = getenv("WS_MENU_AY") ? (float)atof(getenv("WS_MENU_AY")) : 18.0f;       /* the lens of the menu glass: the backdrop is taken from a point displaced by (AX, AY) sin(pi d / LM): fitted on the Mac with striped backdrops (+x 12 over 8 px on the vertical stripes, +y 16-20 over 14 px on the horizontal ones) */
+	float gi = glass_intensity(); amp *= gi; AX *= gi; AY *= gi;       /* the lens strength setting */
 	int M = (int)ceilf(amp) + 6;
 	int cx0 = bx0 - M < 0 ? 0 : bx0 - M, cy0 = by0 - M < 0 ? 0 : by0 - M, cx1 = bx1 + M > img->w ? img->w : bx1 + M, cy1 = by1 + M > img->h ? img->h : by1 + M;
 	if (cx1 <= cx0 || cy1 <= cy0) return;
 	int ox0 = bx0 < 0 ? 0 : bx0, oy0 = by0 < 0 ? 0 : by0, ox1 = bx1 > img->w ? img->w : bx1, oy1 = by1 > img->h ? img->h : by1;
-	uint64_t gkey = fx_mix(fx_mix(fx_mix(2, (uint64_t)n), (uint64_t)(ox + 100000) << 32 | (uint32_t)(oy + 100000)), (uint64_t)img->w << 20 | (uint64_t)img->h);
+	uint64_t gkey = fx_mix(fx_mix(fx_mix(2 + (uint64_t)(gi * 1000) * 7, (uint64_t)n), (uint64_t)(ox + 100000) << 32 | (uint32_t)(oy + 100000)), (uint64_t)img->w << 20 | (uint64_t)img->h);
 	for (int i = 0; i < n; i++) { gkey = fx_mix(gkey, (uint64_t)(g[i].rect.x + 100000) << 32 | (uint32_t)(g[i].rect.y + 100000)); gkey = fx_mix(gkey, (uint64_t)g[i].rect.w << 40 ^ (uint64_t)g[i].rect.h << 20 ^ (uint64_t)g[i].radius << 8 ^ (uint64_t)g[i].mode); }
 	uint64_t ghash = fx_hash_rect(img, cx0, cy0, cx1, cy1);
 	if (ox1 > ox0 && oy1 > oy0 && fx_restore(img, gkey, ghash, ox0, oy0, ox1, oy1)) return;
@@ -198,7 +210,7 @@ void ws_glass_regions(ws_surface *img, const ws_glass *g, int n, int ox, int oy)
 			/* the displacement per edge (fitted on the Mac): left, right and bottom 12 px over 8 px, the top 18 px over 14 px; x to the right, y down: inward at the top and left, outward at the bottom and right */
 			float sx = 0, sy = 0; for (int q = 0; q < n; q++) if (g[q].mode == 5) { float rx = ox + g[q].rect.x, ry = oy + g[q].rect.y; if (fx >= rx && fx < rx + g[q].rect.w && fy >= ry && fy < ry + g[q].rect.h) {
 				float dl = fx - rx, dr = rx + g[q].rect.w - fx, dt = fy - ry, db = ry + g[q].rect.h - fy, dx = dl < dr ? dl : dr;
-				if (dx < 8.0f) sx = AX * sinf(3.14159265f * dx / 8.0f); if (dt < 14.0f && dt <= db) sy = AY * sinf(3.14159265f * dt / 14.0f); else if (db < 8.0f) sy = 12.0f * sinf(3.14159265f * db / 8.0f); break; } }
+				if (dx < 8.0f) sx = AX * sinf(3.14159265f * dx / 8.0f); if (dt < 14.0f && dt <= db) sy = AY * sinf(3.14159265f * dt / 14.0f); else if (db < 8.0f) sy = 12.0f * gi * sinf(3.14159265f * db / 8.0f); break; } }
 			float s3[3]; sample_bilinear(bl5, (fx + sx) - cx0, (fy + sy) - cy0, s3); (void)nxo; (void)nyo; (void)LM;
 			float c[3] = { s3[2], s3[1], s3[0] }, L = 0.1886f * c[0] + 0.7455f * c[1] + 0.0659f * c[2], f = 0.12494f + L * (0.86553f - L * (0.24983f + 0.16865f * L));       /* the tone of the glass over uniform greys 0, 64, 128, 192, 255 measured on the Mac (Dock context menu: 32, 82, 122, 143, 146 of 255): a cubic through them (the earlier fit on natural backdrops gave 31, 85, 123, 146, 154) */ (void)bxp; (void)byp;
 			float rim = dd < 1.0f ? 0.10f + 0.177f * ny : 0.042f * ny * expf(-(dd - 1.5f) / 3.8f);
