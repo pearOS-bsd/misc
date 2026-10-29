@@ -31,7 +31,7 @@ static NSString *DesktopPath(void) { return [NSHomeDirectory() stringByAppending
 	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(_prefs:) name: @"TFPrefsChanged" object: nil]; [_window orderBack: nil];
 }
 - (void)_prefs:(NSNotification *)n { _volumeSig = nil; [self _poll: nil]; [_window setOpaque: TFWallpaperImage() != nil]; TFWriteWallpaperGrid([[NSScreen mainScreen] frame].size); [[_window contentView] setNeedsDisplay: YES]; }
-- (void)iconViewOpenItem:(NSString *)path { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &d]; if (d && !TFIsPackage(path)) [TBrowserWindowController newBrowserWithPath: path]; else TFOpenPath(path); }
+- (void)iconViewOpenItem:(NSString *)path { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &d]; if (d && !TFIsPackage(path)) [TBrowserWindowController newBrowserWithPath: path]; else if (TFIsArchive(path)) { TIconView *iv = _view; TFExtractArchive(path, ^(NSString *r) { [iv reloadKeepingSelectionOrFolder: DesktopPath()]; }); } else TFOpenPath(path); }
 - (void)iconViewSelectionChanged:(NSArray *)paths { _selection = paths; if ([paths count] == 1) TFQuickLookFollow(paths[0]); }
 - (BOOL)iconViewDropPaths:(NSArray *)paths intoFolder:(NSString *)folder atWindowPoint:(NSPoint)p copy:(BOOL)copy
 {
