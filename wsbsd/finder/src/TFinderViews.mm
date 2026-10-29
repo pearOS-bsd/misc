@@ -1,4 +1,5 @@
 #import "TFinderViews.h"
+#include <sys/stat.h>
 #import <CoreServices/CoreServices.h>
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
@@ -78,7 +79,32 @@ static NSString *VolumeKind(NSString *path)                                     
 {
 	static NSArray *vols; static time_t at; time_t now = time(NULL); if (!vols || now != at) { vols = TFVolumes(); at = now; } for (NSDictionary *v in vols) if ([v[@"path"] isEqual: path]) return v[@"kind"]; return nil;
 }
-void TFDrawIcon(NSString *path, NSRect r)                                                    /* the icon as the Mac draws it (the panel's recipes: folder bitmap, document page with symbol and label), the volume and the apps from the system icons */
+static void DrawUpright(NSImage *im, NSRect r)       /* an icon of CoreTypes drawn in the (flipped) icon view: turned over so that it stands upright */
+{
+	[NSGraphicsContext saveGraphicsState]; NSAffineTransform *t = [NSAffineTransform transform]; [t translateXBy: 0 yBy: NSMidY(r) * 2]; [t scaleXBy: 1 yBy: -1]; [t concat];
+	[im drawInRect: r fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; [NSGraphicsContext restoreGraphicsState];
+}
+static void DrawAliasBadge(NSRect r)       /* the alias badge of the Mac: a white disc with a curved black arrow at the bottom left of the icon */
+{
+	CGFloat d = MAX(12, r.size.width * 0.30); NSRect b = NSMakeRect(r.origin.x + r.size.width * 0.04, r.origin.y + r.size.height * 0.04, d, d);       /* the view is flipped or not: the corner is the lower left either way for icons drawn in an upright rectangle */
+	[NSGraphicsContext saveGraphicsState]; NSShadow *sh = [[NSShadow alloc] init]; [sh setShadowColor: [NSColor colorWithCalibratedWhite: 0 alpha: 0.35]]; [sh setShadowOffset: NSMakeSize(0, -1)]; [sh setShadowBlurRadius: 2]; [sh set];
+	[[NSColor whiteColor] setFill]; [[NSBezierPath bezierPathWithOvalInRect: b] fill]; [NSGraphicsContext restoreGraphicsState];
+	NSBezierPath *a = [NSBezierPath bezierPath]; [a setLineWidth: MAX(1.4, d * 0.12)]; [a setLineCapStyle: NSRoundLineCapStyle]; [a setLineJoinStyle: NSRoundLineJoinStyle];
+	NSPoint c = NSMakePoint(NSMidX(b), NSMidY(b)); CGFloat u = d / 2;
+	[a moveToPoint: NSMakePoint(c.x - u * 0.45, c.y - u * 0.35)]; [a curveToPoint: NSMakePoint(c.x + u * 0.45, c.y + u * 0.10) controlPoint1: NSMakePoint(c.x - u * 0.45, c.y + u * 0.35) controlPoint2: NSMakePoint(c.x + u * 0.05, c.y + u * 0.40)];
+	[[NSColor colorWithCalibratedWhite: 0.1 alpha: 1] setStroke]; [a stroke];
+	NSBezierPath *h = [NSBezierPath bezierPath]; [h setLineWidth: MAX(1.4, d * 0.12)]; [h setLineCapStyle: NSRoundLineCapStyle]; [h setLineJoinStyle: NSRoundLineJoinStyle];
+	[h moveToPoint: NSMakePoint(c.x + u * 0.12, c.y + u * 0.42)]; [h lineToPoint: NSMakePoint(c.x + u * 0.50, c.y + u * 0.10)]; [h lineToPoint: NSMakePoint(c.x + u * 0.12, c.y - u * 0.16)]; [h stroke];
+}
+void TFDrawIcon(NSString *path, NSRect r)
+{
+	struct stat lst; BOOL link = lstat([path fileSystemRepresentation], &lst) == 0 && S_ISLNK(lst.st_mode); NSString *ct = @"/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/";
+	NSString *tgt = link ? [[NSFileManager defaultManager] destinationOfSymbolicLinkAtPath: path error: NULL] : path;       /* the Applications folder has its own icon, a link to it too */
+	if ([tgt isEqual: @"/Applications"]) { NSImage *ai = WsbsdCoreTypesIcon([ct stringByAppendingString: @"ApplicationsFolderIcon.icns"], r.size.width); if (ai) DrawUpright(ai, r); else TFDrawIconBase(path, r); }
+	else TFDrawIconBase(path, r);
+	if (link) { NSImage *ab = WsbsdCoreTypesIcon([ct stringByAppendingString: @"AliasBadgeIcon.icns"], r.size.width); if (ab) DrawUpright(ab, r); else DrawAliasBadge(r); }
+}
+void TFDrawIconBase(NSString *path, NSRect r)                                                    /* the icon as the Mac draws it (the panel's recipes: folder bitmap, document page with symbol and label), the volume and the apps from the system icons */
 {
 	NSFileManager *fm = [NSFileManager defaultManager]; BOOL d = NO; [fm fileExistsAtPath: path isDirectory: &d]; Class k = NSClassFromString(@"WsdFinderSupport");
 	NSString *vk = d ? VolumeKind(path) : nil;

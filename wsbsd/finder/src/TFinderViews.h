@@ -66,6 +66,7 @@ void TFPopupMenu(NSView *view, NSPoint p, NSMenu *menu);
 BOOL TFSymbol(NSString *name, NSRect cell, CGFloat pt, NSColor *tint);
 BOOL TFSymbolW(NSString *name, NSRect cell, CGFloat pt, int weight, NSColor *tint);
 NSImage *TFIcon(NSString *path);
+void TFDrawIconBase(NSString *path, NSRect r);
 
 /* .DS_Store of a folder */
 @interface TDSStore : NSObject { @public NSString *_path; NSMutableArray *_records; }
