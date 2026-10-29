@@ -206,10 +206,10 @@ void DockRender(CGContextRef c, const DockScene *s)
 		else if (t->icon) CGContextDrawImage(c, CGRectMake(cx - art / 2 - art * 0.0625, art_bottom + lift - art * 0.0625, art * 1.125, art * 1.125), t->icon);   /* the icon image has a margin (the art is 80 % of it) */
 		else DockDrawIcon(c, t->glyph, CGRectMake(cx - art / 2, art_bottom + lift, art, art));
 		if (t->badge > 0) {                                               /* the badge, laid out as ECStatusLabelLayer does on the 128 point icon canvas (decompiled): a red pill 50 high and at least 50 wide, text 20 wider than the number, in the top right corner */
-			char num[16]; snprintf(num, sizeof num, "%d", t->badge); double canvas = art * 1.25, k = canvas / 128; CGFloat tw = 0; DrawText(c, num, (CGFloat)(30 * k), CGPointZero, &tw);
-			double w128 = fmax(54, tw / k + 20) - 4, bw = w128 * k, bh = 50 * k, bxx = cx + canvas / 2 - bw - 1 * k, byy = art_bottom + lift - art * 0.0625 + canvas - bh - 1 * k;
+			char num[16]; snprintf(num, sizeof num, "%d", t->badge); double canvas = art * 1.25, k = canvas / 128; CGFloat tw = 0; DrawText(c, num, (CGFloat)(24 * k), CGPointZero, &tw);
+			double w128 = fmax(54, tw / k + 20) - 4, bw = w128 * k, bh = 50 * k, bxx = cx + canvas / 2 - bw - 1 * k, byy = art_bottom + lift - art * 0.0625 + canvas - bh - 1 * k - 2;
 			SetRGB(c, 1.0, 0.2314, 0.1885, 0.92); CGPathRef pill = ContinuousRect(CGRectMake(bxx, byy, bw, bh), bh / 2); CGContextAddPath(c, pill); CGContextFillPath(c); CGPathRelease(pill);
-			SetRGB(c, 1, 1, 1, 1); DrawText(c, num, (CGFloat)(30 * k), CGPointMake(bxx + (bw - tw) / 2, byy + bh / 2 - 10.5 * k), NULL);
+			SetRGB(c, 1, 1, 1, 1); DrawText(c, num, (CGFloat)(24 * k), CGPointMake(bxx + (bw - tw) / 2, byy + bh / 2 - 8.5 * k), NULL);       /* measured on the real Dock: digits 8 px tall (font about 11 px) in a 22 px circle, also for two digits; the pill 2 px lower than the decompiled layout puts it */
 		}
 		CGContextRestoreGState(c);
 		if (t->running) { /* the dot: 4 px, 4 px above the inside of the bar's bottom edge (rows 1427-1430 of a bar ending at 1434 on the Mac), grey 137 */ SetRGB(c, 0.54, 0.54, 0.54, 1); CGContextFillEllipseInRect(c, CGRectMake(cx - 2, by + 4, 4, 4)); }
