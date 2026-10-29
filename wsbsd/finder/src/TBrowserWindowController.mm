@@ -135,6 +135,16 @@ static NSString *StyleName(NSInteger m) { return @[ @"icnv", @"Nlsv", @"clmv", @
 		if (!nfs) { nfs = [[NSMenuItem alloc] initWithTitle: @"New Folder with Selection" action: @selector(cmdNewFolderWithSelection:) keyEquivalent: @""]; [nfs setTarget: self]; [nfs setTag: 78]; [m insertItem: nfs atIndex: 0]; }
 		[nfs setTitle: [NSString stringWithFormat: @"New Folder with Selection (%lu Items)", (unsigned long)[_selection count]]]; [nfs setHidden: [_selection count] < 2];
 	}
+	{       /* Option held: the alternates of the real menu (Always Open With, Show Inspector, Duplicate Exactly, Slideshow, Copy as Pathname) */
+		BOOL alt = ([[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask) != 0; NSUInteger nsel = [_selection count]; NSString *nm1 = nsel == 1 ? [_selection[0] lastPathComponent] : nil;
+		for (NSMenuItem *x in [m itemArray]) { NSString *a = NSStringFromSelector([x action]), *t = [x title];
+			if ([a isEqual: @"cmdShowStaticInfo:"] || [a isEqual: @"cmdShowInspector:"]) { [x setTitle: alt ? @"Show Inspector" : @"Get Info"]; [x setAction: alt ? @selector(cmdShowInspector:) : @selector(cmdShowStaticInfo:)]; }
+			else if ([a isEqual: @"cmdDuplicate:"] || [a isEqual: @"cmdDuplicateExactly:"]) { [x setTitle: alt ? @"Duplicate Exactly" : @"Duplicate"]; [x setAction: alt ? @selector(cmdDuplicateExactly:) : @selector(cmdDuplicate:)]; }
+			else if ([a isEqual: @"cmdQuickLook:"] || [a isEqual: @"cmdSlideshow:"]) { [x setTitle: !alt ? @"Quick Look" : nsel > 1 ? [NSString stringWithFormat: @"Slideshow %lu Items", (unsigned long)nsel] : [NSString stringWithFormat: @"Slideshow “%@”", nm1 ?: @""]]; [x setAction: alt ? @selector(cmdSlideshow:) : @selector(cmdQuickLook:)]; }
+			else if ([a isEqual: @"copy:"] || [a isEqual: @"cmdCopyAsPathname:"]) { [x setTitle: !alt ? @"Copy" : nsel > 1 ? [NSString stringWithFormat: @"Copy %lu Items as Pathnames", (unsigned long)nsel] : [NSString stringWithFormat: @"Copy “%@” as Pathname", nm1 ?: @""]]; [x setAction: alt ? @selector(cmdCopyAsPathname:) : @selector(copy:)]; }
+			else if ([t isEqual: @"Open With"] || [t isEqual: @"Always Open With"]) { [x setTitle: alt ? @"Always Open With" : @"Open With"]; }
+			(void)t; }
+	}
 	NSString *one = [_selection count] == 1 ? [_selection[0] lastPathComponent] : nil; NSString *ext = [[_selection firstObject] pathExtension].lowercaseString; BOOL arch = [@[ @"zip", @"gz", @"tgz", @"bz2", @"xz", @"7z", @"rar", @"dmg", @"tar" ] containsObject: ext];
 	for (NSMenuItem *it in [m itemArray]) { if ([NSStringFromSelector([it action]) isEqual: @"cmdQuickLook:"]) [it setTitle: @"Quick Look"]; if ([NSStringFromSelector([it action]) isEqual: @"cmdCompress:"]) { [it setTitle: one ? [NSString stringWithFormat: @"Compress “%@”", one] : [NSString stringWithFormat: @"Compress %lu Items", (unsigned long)[_selection count]]]; [it setHidden: arch && [_selection count] == 1]; } }
 	if (getenv("FINDER_DEBUG")) for (NSMenuItem *it in [m itemArray]) NSLog(@"ctx item %@ action %@ sel %lu", [it title], NSStringFromSelector([it action]), (unsigned long)[_selection count]);
