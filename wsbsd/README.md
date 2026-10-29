@@ -57,7 +57,47 @@ The stack: `wsd` (this repo: window server and compositor speaking the SkyLight 
 - **AirDrop** (sharingd, `NSSharingService` AirDrop, `com.apple.sharing.*`, AWDL-less transport on FreeBSD): after CoreWLAN, also by decompilation with REA and reimplemented as on the Mac. Reference to study (not to copy blindly): github.com/BenItBuhner/AirDrop-for-Everything. Status: 0 %.
 - **Filesystem mirror rule:** the file layout of this Mac is the layout of the BSD system. Whatever exists under `/System`, `/Library`, `/usr/libexec`, `/Applications`... on the Mac (frameworks, daemons, launchd plists, resources) must be found at the same path on wsbsd, with the same names. New components are installed at the Mac paths (for example `/System/Library/Frameworks/CoreWLAN.framework`, `/usr/libexec/airportd`, `/System/Library/CoreServices/...`) and the ISO builder (`iso/build.sh`) places them there.
 
-### Bug and feature checklist (owner's report from the arm64 image in QEMU and on real laptops, 2026-10-29)
+### Bug checklist, round 2 (the owner's updated buglist.txt of 2026-10-29), easiest first
+`[x]` = fixed and seen working in the VM (or in QEMU); *(unverified)* = in the tree, not seen on screen yet; `[ ]` = open.
+
+- [x] The Terminal asked "you have no zsh startup files": every new home gets an empty `.zshrc` (rc.d/macdesktop, the user template).
+- [x] The zsh prompt / history / key bindings are those of Pear-Project/dpkg `pearos-zshconfig/.zshrc` (compared line by line: `PROMPT='%n@%m %1~ %f%# '`, history, bindkeys, aliases).
+- [x] Double-click / Open on a .txt (and other text files) opens TextEdit.
+- [x] Force Quit: the selected row is blue with white text *(unverified on screen: the top bar could not be shown in the VM)*.
+- [x] A window can be moved partly off the screen (80 pt and the title bar stay on it).
+- [x] Pressing a Finder traffic light moved the window instead of holding the button: fixed, the hover glyphs and the rubber band work in the Finder window too.
+- [x] Dock: a click on a running application that has no window opens one (reopen handler in every application; closing the last window leaves the process running).
+- [x] Desktop context menu: it is placed before it is shown (opens to the left at the right edge, moved up near the bottom), not redrawn afterwards.
+- [ ] AirDrop icon in the Finder sidebar is upside down.
+- [ ] Spotlight: Enter on a folder works but is too sensitive (case sensitive).
+- [ ] UITest: the combo box does not show the item under the pointer on hover.
+- [ ] UITest: the pop-up looks bad and is cut off.
+- [ ] Terminal title: no dynamic icons for Home / Downloads / Desktop...
+- [ ] Dock: clicking Downloads flickers.
+- [ ] Dock resize: no resize cursor, the icons are cut at the sides until the mouse is released.
+- [ ] Quick Look: the small open / close animations are missing.
+- [ ] Resizing a window: it sometimes stays "held" after the mouse is released (needs one or two clicks).
+- [ ] Resizing a window flickers.
+- [ ] Genie minimize lags (one sample per pixel for big windows is in; not re-measured).
+- [ ] Sometimes a Finder window opens as an empty frame (needs Force Quit > Restart).
+- [ ] Sometimes Force Quit shows no applications (Restart still works).
+- [ ] About This Mac does not look like the original.
+- [ ] Spotlight and Launchpad (Command-Space) do not look like the Mac's.
+- [ ] Shutdown: show the pear logo (no progress bar) instead of the verbose console.
+- [ ] Boot: the pear logo of the kernel splash (instead of the FreeBSD one) with the progress bar, ESC shows the verbose boot.
+- [ ] Shake to find the cursor.
+- [ ] Dark / light mode of the system (UITest and Control Center do nothing).
+- [ ] Night Light.
+- [ ] Wi-Fi in Control Center has a real function (joins networks with the image's own setup).
+- [ ] Keyboard backlight driver (NS50_70MU) loaded and working.
+- [ ] Liquid Glass lens offset: measure on the Mac.
+- [ ] Ploader boots our system directly without Alt+M (the silent boot now takes the entry named by `default_selection`, else the one on its own volume; not confirmed on the laptops).
+- [ ] Window buttons: hover and rubber band confirmed by the owner on an image with these fixes.
+- [ ] Finder window decorations "differ from the official Cocoa / AppKit ones": measured on the Mac with a real NSWindow (plain titled: buttons 14 pt frames at x 9 / 32 / 55, 9 from the top; with a toolbar: x 19 / 42 / 65, 19 from the top): the image's windows use the same centres (16 / 39 / 62 and 26 / 49 / 72); what looks different still has to be named by the owner.
+- [ ] Finder window is incomplete (missing features, see the Finder row of the coverage table).
+- [ ] System components to decompile (`docs/DECOMPILE-QUEUE.md`).
+
+## Bug and feature checklist (owner's report from the arm64 image in QEMU and on real laptops, 2026-10-29)
 Source: `buglist.txt`. `[ ]` = open, `[x]` = done and verified. Items marked *(partial)* have work in the tree that is not verified on an image yet.
 
 **Desktop, menus and the top bar**
