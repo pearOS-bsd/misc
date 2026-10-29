@@ -377,6 +377,9 @@ static void WsdDismissMenus(void)
 	NSMenuView *bar = (NSMenuView *)[mm menuRepresentation]; if ([bar respondsToSelector: @selector(setHighlightedItemIndex:)]) [bar setHighlightedItemIndex: -1]; [bar setNeedsDisplay: YES];
 }
 /* a window below the normal level (the Finder's desktop) is not given key focus by the server on a click: its application asks for it */
+- (unsigned) wsdServerWindowID: (int)win { struct wsd_window *w = [self wsdWindow: win]; return w ? (unsigned)w->win.id : 0; }
+- (void) wsdSetWindowSpace: (int)win : (unsigned)space { struct wsd_window *w = [self wsdWindow: win]; if (w) ws_win_set_space(conn, &w->win, space); }       /* full-screen spaces: 0 is the desktop */
+- (void) wsdSetActiveSpace: (unsigned)space { ws_set_active_space(conn, space); }
 - (void) wsdSetKeyWindow: (int)win { struct wsd_window *w = [self wsdWindow: win]; if (w) ws_win_set_key(conn, &w->win); }
 - (void) setinputfocus: (int)win
 {

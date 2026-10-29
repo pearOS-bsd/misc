@@ -126,6 +126,9 @@ int ws_window_warp(ws_server *, ws_wid, int *cols, int *rows);
 int ws_set_window_brightness(ws_server *, ws_wid, float brightness);
 int ws_window_brightness(ws_server *, ws_wid, float *brightness);
 ws_wid ws_find_window(ws_server *, int x, int y);            /* topmost on-screen at point */
+int ws_window_set_space(ws_server *, ws_wid id, uint32_t space);   /* 0: the desktop; else a full-screen space */
+void ws_server_set_space(ws_server *, uint32_t space);              /* the space on the screen */
+uint32_t ws_server_space(const ws_server *);
 void ws_server_invalidate(ws_server *);   /* the scene changed from outside (the console moved to another session): compose again */
 void ws_server_set_compositor(ws_server *, ws_compositor *);  /* default: sw */
 int ws_server_set_zoom(ws_server *, float scale, int cx, int cy);   /* magnify the composed frame about (cx, cy); 1 = off */

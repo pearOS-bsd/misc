@@ -16,6 +16,9 @@ int ws_win_move(ws_conn *, ws_win *, int x, int y);
 int ws_win_alpha(ws_conn *, ws_win *, float alpha);
 int ws_win_warp(ws_conn *, ws_win *, int cols, int rows, const float *mesh);   /* SetWindowWarp (30031): srcX srcY dstX dstY per point, y up; no points removes the warp */
 int ws_win_set_key(ws_conn *, ws_win *);   /* private: the window becomes the key window of the session (the keys go to it) */
+int ws_win_set_space(ws_conn *, ws_win *, uint32_t space);   /* private: the window lives in a full-screen space (0: the desktop) */
+int ws_set_active_space(ws_conn *, uint32_t space);           /* private: the space on the screen */
+int ws_get_active_space(ws_conn *, uint32_t *space);
 int ws_win_glass_slot(ws_conn *, ws_win *, int slot, ws_rect rect, int radius, int mode);   /* private: one of up to 16 glass shapes of the window (rounded rectangle, window-relative; style 1 regular / 2 clear; 0 removes it); shapes that touch melt together */
 int ws_win_glass(ws_conn *, ws_win *, ws_rect rect, int radius, int mode);   /* private: the glass material (blur, lens, specular rim) over a rounded rectangle of the window; mode 0 removes it */
 int ws_win_blur(ws_conn *, ws_win *, int radius);               /* SetWindowBackgroundBlurRadius (30260): blur what is behind the window */
