@@ -89,7 +89,7 @@ Source: `buglist.txt`. `[ ]` = open, `[x]` = done and verified. Items marked *(p
 - [x] The Genie minimize / restore takes 0.30 s, measured on the Mac (a 60 fps capture of TextEdit minimizing: the mesh moves between 1.52 s and 1.82 s of the capture); a warped window gets no blur / glass at its unwarped rectangle (the blur spot). *(the easing curve is not measured: ours is linear in the mesh progress; not seen on an image)*
 - [x] Clicking Downloads in the Dock no longer flickers: the Dock showed one frame with the new window size and the old picture (the bar's glass wider than its tiles); the new content is now drawn in the same turn as the new frame. *(seen in a capture sequence in the dev VM)*
 - [x] The Dock resizes by dragging its separator up or down (the "tilesize" preference, 16 to 128, saved when the button is released). *(the factor between pointer travel and size is 1:1, not measured on the Mac)*
-- [ ] Liquid Glass has an extra vertical offset: the lens samples the image too far away for the distortion.
+- [ ] Liquid Glass has an extra vertical offset: the lens samples the image too far away for the distortion. *(partial: the default displacement of the Dock / glass views is 15 px instead of 26 px (the measured menu glass uses 12 to 18 px); NOT measured on the Mac for the Dock: needs a pixel comparison of the real Dock over a known backdrop; adjustable with WS_GLASS_AMP and the UITest slider)*
 
 **Quick Look, files and archives**
 - [x] Quick Look closes with its X button (the title strip no longer swallows the press as a window drag). *(the panel is still drawn by the Finder; the window looks inactive behind it because the panel takes the key)*

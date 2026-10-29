@@ -177,7 +177,7 @@ void ws_glass_regions(ws_surface *img, const ws_glass *g, int n, int ox, int oy)
 		if (x0 < bx0) bx0 = x0; if (y0 < by0) by0 = y0; if (x0 + g[i].rect.w > bx1) bx1 = x0 + g[i].rect.w; if (y0 + g[i].rect.h > by1) by1 = y0 + g[i].rect.h;
 	}
 	if (!any) return;
-	float Lbase = getenv("WS_GLASS_L") ? (float)atof(getenv("WS_GLASS_L")) : 18.0f, amp = getenv("WS_GLASS_AMP") ? (float)atof(getenv("WS_GLASS_AMP")) : 26.0f;
+	float Lbase = getenv("WS_GLASS_L") ? (float)atof(getenv("WS_GLASS_L")) : 18.0f, amp = getenv("WS_GLASS_AMP") ? (float)atof(getenv("WS_GLASS_AMP")) : 15.0f;
 	float LM = getenv("WS_MENU_L") ? (float)atof(getenv("WS_MENU_L")) : 11.0f, AX = getenv("WS_MENU_AX") ? (float)atof(getenv("WS_MENU_AX")) : 12.0f, AY = getenv("WS_MENU_AY") ? (float)atof(getenv("WS_MENU_AY")) : 18.0f;       /* the lens of the menu glass: the backdrop is taken from a point displaced by (AX, AY) sin(pi d / LM): fitted on the Mac with striped backdrops (+x 12 over 8 px on the vertical stripes, +y 16-20 over 14 px on the horizontal ones) */
 	float gi = glass_intensity(); amp *= gi; AX *= gi; AY *= gi;       /* the lens strength setting */
 	int M = (int)ceilf(amp) + 6;
