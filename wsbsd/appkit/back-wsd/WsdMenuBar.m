@@ -154,14 +154,40 @@ static NSRect wsdTitleRect(id self, SEL _cmd, NSRect b)
 	else if (mv && ![mv isHorizontal] && [[[(NSMenuItemCell *)self menuItem] toolTip] hasPrefix: @"sym:"]) { r.origin.x += 25; r.size.width -= 25; }      /* a row with an icon: the title starts 25 pt further in */
 	return r;
 }
-/* the main menu window is never ordered out when the application deactivates (GNUstep hides panels that hide on deactivate): the Mac's menu bar is always there */
-static BOOL wsdBarNeverHides(id self, SEL _cmd) { return NO; }
-static BOOL wsdBarCanHide(id self, SEL _cmd) { return [(NSWindow *)self level] == NSMainMenuWindowLevel ? NO : YES; }
+/* a submenu of a vertical menu opens beside its parent row (its first row level with it), on the left of the parent when it does not fit on the right, and is kept on the screen; GNUstep put its top at the top of the parent menu */
+static IMP origLocForSub;
+static NSPoint wsdLocationForSubmenu(id self, SEL _cmd, NSMenu *sub)
+{
+	NSMenuView *mv = self; NSPoint o = ((NSPoint (*)(id, SEL, id))origLocForSub)(self, _cmd, sub);
+	if (!sub || [mv isHorizontal]) return o;
+	NSInteger i = [[mv menu] indexOfItemWithSubmenu: sub]; if (i < 0) return o;
+	NSWindow *pw = [mv window], *sw = [[sub menuRepresentation] window]; if (!pw || !sw) return o;
+	NSRect row = [mv convertRect: [mv rectOfItemAtIndex: i] toView: nil]; NSPoint rp = [pw convertBaseToScreen: row.origin];
+	NSRect pf = [pw frame], sf = [sw frame], sc = [[NSScreen mainScreen] frame];
+	CGFloat inset = 5.0, overlap = NSMaxX(pf) - o.x;       /* the theme's menu area inset (WsdMacTheme menuItemAreaInsets) */
+	NSPoint p = NSMakePoint(o.x, rp.y + NSHeight(row) + inset - NSHeight(sf));       /* first row level with the parent's row */
+	if (p.x + NSWidth(sf) > NSMaxX(sc)) p.x = NSMinX(pf) - NSWidth(sf) + overlap;
+	if (p.y < NSMinY(sc)) p.y = NSMinY(sc); if (p.y + NSHeight(sf) > NSMaxY(sc)) p.y = NSMaxY(sc) - NSHeight(sf);
+	return p;
+}
+/* closing the main menu closes its open submenu, never the bar itself (a chosen item of a pop-up menu ended with the bar ordered out) */
+static IMP origMenuClose;
+static void wsdMenuClose(id self, SEL _cmd)
+{
+	if (self != [NSApp mainMenu]) { ((void (*)(id, SEL))origMenuClose)(self, _cmd); return; }
+	NSMenu *sub = [(NSMenu *)self attachedMenu]; if (sub) [sub close];
+}
+/* the main menu window is never ordered out when the application deactivates (GNUstep hides windows that hide on deactivate): the Mac's menu bar is always there */
+static IMP origHidesOnDeact, origCanHide;
+static BOOL wsdHidesOnDeactivate(id self, SEL _cmd) { if (self == [[NSApp mainMenu] window]) return NO; return ((BOOL (*)(id, SEL))origHidesOnDeact)(self, _cmd); }
+static BOOL wsdCanHide(id self, SEL _cmd) { if (self == [[NSApp mainMenu] window]) return NO; return ((BOOL (*)(id, SEL))origCanHide)(self, _cmd); }
 void WsdInstallMenuBar(void)
 {
 	if (origRectOfItem) return; Method m = class_getInstanceMethod([NSMenuView class], @selector(rectOfItemAtIndex:)); if (m) origRectOfItem = method_setImplementation(m, (IMP)wsdRectOfItem);
 	Method c = class_getInstanceMethod([NSMenuView class], @selector(menuItemCellForItemAtIndex:)); if (c) origCellForItem = method_setImplementation(c, (IMP)wsdCellForItem);
 	Method t = class_getInstanceMethod([NSMenuItemCell class], @selector(titleRectForBounds:)); if (t) origTitleRect = method_setImplementation(t, (IMP)wsdTitleRect);
-	Class mp = NSClassFromString(@"NSMenuPanel");
-	if (mp) { class_replaceMethod(mp, @selector(hidesOnDeactivate), (IMP)wsdBarNeverHides, "c@:"); class_replaceMethod(mp, @selector(canHide), (IMP)wsdBarCanHide, "c@:"); }
+	Method ls = class_getInstanceMethod([NSMenuView class], @selector(locationForSubmenu:)); if (ls && !origLocForSub) origLocForSub = method_setImplementation(ls, (IMP)wsdLocationForSubmenu);
+	Method mc = class_getInstanceMethod([NSMenu class], @selector(close)); if (mc && !origMenuClose) origMenuClose = method_setImplementation(mc, (IMP)wsdMenuClose);
+	Method hd = class_getInstanceMethod([NSWindow class], @selector(hidesOnDeactivate)); if (hd && !origHidesOnDeact) origHidesOnDeact = method_setImplementation(hd, (IMP)wsdHidesOnDeactivate);
+	Method ch = class_getInstanceMethod([NSWindow class], @selector(canHide)); if (ch && !origCanHide) origCanHide = method_setImplementation(ch, (IMP)wsdCanHide);
 }

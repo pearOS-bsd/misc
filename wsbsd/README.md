@@ -62,9 +62,9 @@ Source: `buglist.txt`. `[ ]` = open, `[x]` = done and verified. Items marked *(p
 
 **Desktop, menus and the top bar**
 - [ ] Right-click on a Finder window's breadcrumb / path bar item does nothing (should show the Mac's path-item menu).
-- [ ] Context menu of a desktop item opens off-screen to the right instead of flipping to the left when it does not fit.
-- [ ] Context submenus are placed wrongly: they open at the top of the screen instead of next to their parent row (for example Clean Up By → Name / Kind / Date…, which is very hard to reach).
-- [x] The top bar never disappears: GNUstep ordered the main menu window out when the application deactivated (a click on the Dock left an empty bar); `NSMenuPanel` no longer hides on deactivate (`WsdMenuBar.m`). Verified in the dev VM; to confirm on the next image.
+- [x] Context menu of a desktop item flips to the left of the pointer at the right edge (verified in the dev VM).
+- [x] Context submenus open beside their parent row (first row level with it), flip left at the screen edge and stay on screen (`WsdMenuBar.m`; verified in the dev VM).
+- [x] The top bar never disappears: GNUstep ordered the main menu window out when the application deactivated (after choosing an item of a pop-up menu, or a click on the Dock, the bar was empty); the main menu window no longer hides on deactivate (`WsdMenuBar.m`). Verified in the dev VM; to confirm on the next image.
 - [ ] Spotlight: Command-Space does not open it; it must behave as on this Mac.
 - [ ] Spotlight: items cannot be clicked (keyboard up / down only), and pressing Return on a result (for example a directory) does not open it.
 - [ ] Launchpad is missing from the Dock; Command-Space should open Launchpad combined with Spotlight search, as on this Mac. *(plan: `handoff.md`, "Launchpad")*

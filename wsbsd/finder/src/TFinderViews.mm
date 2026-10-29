@@ -90,7 +90,7 @@ void TFDrawIcon(NSString *path, NSRect r)                                       
 @interface TMenuFit : NSObject { NSMenu *menu; int n; } - (id)initFor:(NSMenu *)m; @end
 @implementation TMenuFit
 - (id)initFor:(NSMenu *)m { if ((self = [super init])) { menu = m; [self performSelector: @selector(fit) withObject: nil afterDelay: 0.03 inModes: @[ NSEventTrackingRunLoopMode, NSDefaultRunLoopMode, NSModalPanelRunLoopMode ]]; } return self; }
-- (void)fit { NSWindow *mw = [[menu menuRepresentation] window]; if (!mw || ![mw isVisible]) { if (++n < 10) [self performSelector: @selector(fit) withObject: nil afterDelay: 0.03 inModes: @[ NSEventTrackingRunLoopMode, NSDefaultRunLoopMode ]]; return; } NSRect f = [mw frame]; if (getenv("FINDER_DEBUG")) NSLog(@"menu fit window %@", NSStringFromRect(f)); if (f.origin.y < 8) { f.origin.y = 8; [mw setFrameOrigin: f.origin]; } }
+- (void)fit { NSWindow *mw = [[menu menuRepresentation] window]; if (!mw || ![mw isVisible]) { if (++n < 10) [self performSelector: @selector(fit) withObject: nil afterDelay: 0.03 inModes: @[ NSEventTrackingRunLoopMode, NSDefaultRunLoopMode ]]; return; } NSRect f = [mw frame]; if (getenv("FINDER_DEBUG")) NSLog(@"menu fit window %@", NSStringFromRect(f)); NSRect sc = [[NSScreen mainScreen] frame]; BOOL mv = NO; if (f.origin.y < 8) { f.origin.y = 8; mv = YES; } if (NSMaxX(f) > NSMaxX(sc) - 2) { f.origin.x = [NSEvent mouseLocation].x - NSWidth(f) + 1; mv = YES; } if (mv) [mw setFrameOrigin: f.origin]; }       /* at the right edge the menu opens to the left of the pointer, as on the Mac */
 @end
 @interface TTagDots : NSView { @public NSArray *names; NSArray *cols; id target; SEL action; __weak NSMenu *menu; } @end
 @implementation TTagDots
