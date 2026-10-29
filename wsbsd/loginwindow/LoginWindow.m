@@ -33,11 +33,12 @@ static NSArray *Accounts(void)
  * the wallpaper full screen; the clock: the date ("Friday, July 11", 27 px) over the time ("22:32", 133 px, bold), white at 40 %, the bottom of the time 300 px from the top; the account at the bottom centre: the avatar
  * (80 px, a white ring round a blue disc with a white person), the name (bold 15 px) 24 px under it, a pill 250 x 32 (white 20 %, corner 16) with the password as dots, the hint "Enter Password" (11 px bold) under it;
  * at the top right three small icons (display, restart, power; 22 px at x 1790, 1861, 1890 of 1920, y 25). */
-@interface LWFace : NSView @end
+@interface LWFace : NSView { @public BOOL focused; } @end
 @implementation LWFace
 - (void)drawRect:(NSRect)d
 {
-	NSRect r = [self bounds]; [[NSColor whiteColor] setFill]; [[NSBezierPath bezierPathWithOvalInRect: r] fill];
+	NSRect r = [self bounds]; if (focused) { [[NSColor colorWithCalibratedWhite: 1 alpha: 0.30] setFill]; [[NSBezierPath bezierPathWithOvalInRect: r] fill]; r = NSInsetRect(r, r.size.width / 16, r.size.width / 16); }       /* the account the arrow keys are on */
+	[[NSColor whiteColor] setFill]; [[NSBezierPath bezierPathWithOvalInRect: r] fill];
 	NSRect in = NSInsetRect(r, r.size.width / 14, r.size.width / 14); NSBezierPath *disc = [NSBezierPath bezierPathWithOvalInRect: in]; [[NSColor colorWithCalibratedRed: 0.42 green: 0.65 blue: 0.90 alpha: 1] setFill]; [disc fill];
 	[NSGraphicsContext saveGraphicsState]; [disc addClip]; [[NSColor whiteColor] setFill]; CGFloat w = in.size.width;
 	[[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(NSMidX(in) - w * 0.17, NSMidY(in) + w * 0.02, w * 0.34, w * 0.34)] fill]; [[NSBezierPath bezierPathWithOvalInRect: NSMakeRect(NSMidX(in) - w * 0.30, NSMinY(in) - w * 0.28, w * 0.60, w * 0.60)] fill]; [NSGraphicsContext restoreGraphicsState];
@@ -56,6 +57,7 @@ static NSArray *Accounts(void)
 - (void)keyDown:(NSEvent *)e
 {
 	NSString *c = [e characters]; if (![c length]) return; unichar k = [c characterAtIndex: 0]; if (!value) value = [NSMutableString string];
+	if (k == 27) { id w = [self window]; if ([w respondsToSelector: @selector(keyDown:)]) { [w keyDown: e]; return; } }
 	if (k == '\r' || k == '\n') { [target performSelector: action withObject: self]; return; }
 	if (k == 0x7f || k == 8) { if ([value length]) [value deleteCharactersInRange: NSMakeRange([value length] - 1, 1)]; }
 	else if (k >= 32 && !(k >= 0xF700 && k <= 0xF8FF)) [value appendString: c];
@@ -80,11 +82,14 @@ static NSArray *Accounts(void)
 - (void)drawRect:(NSRect)d { if (symbol) [NSClassFromString(@"WsdFinderSupport") drawSymbol: symbol inRect: [self bounds] size: [self bounds].size.width * 0.78 weight: 5 color: [NSColor colorWithCalibratedWhite: 1 alpha: 0.92]]; }
 @end
 
+@interface NSObject (LWNav) - (BOOL)keyNav:(NSEvent *)e; @end
 /* a borderless window cannot become key by default: the password field would get no keys */
-@interface LWWindow : NSWindow @end
-@implementation LWWindow - (BOOL)canBecomeKeyWindow { return YES; } - (BOOL)canBecomeMainWindow { return YES; } @end
+@interface LWWindow : NSWindow { @public id nav; } @end
+@implementation LWWindow - (BOOL)canBecomeKeyWindow { return YES; } - (BOOL)canBecomeMainWindow { return YES; }
+- (void)keyDown:(NSEvent *)e { if (!(nav && [nav keyNav: e])) [super keyDown: e]; }       /* the arrow keys choose an account, Return takes it, Escape goes back to the accounts */
+@end
 
-@interface LWController : NSObject { NSWindow *win, *back, *clockWin; NSArray *accounts; NSInteger chosen; LWSecure *pw; LWPill *pill; LWText *dateL, *timeL; NSTextField *msg; NSMutableArray *faces, *names; BOOL lock; CGFloat sc; NSRect sf; }
+@interface LWController : NSObject { NSWindow *win, *back, *clockWin; NSArray *accounts; NSInteger chosen, focus; LWSecure *pw; LWPill *pill; LWText *dateL, *timeL; NSTextField *msg; NSMutableArray *faces, *names; BOOL lock; CGFloat sc; NSRect sf; }
 - (instancetype)initLock:(NSString *)user;
 - (void)show;
 @end
@@ -101,7 +106,7 @@ static NSArray *Accounts(void)
 {
 	sf = [[NSScreen mainScreen] frame]; sc = MAX(0.5, sf.size.height / 1080.0);
 	win = [[LWWindow alloc] initWithContentRect: sf styleMask: NSBorderlessWindowMask backing: NSBackingStoreBuffered defer: NO]; [win setLevel: 2000]; [win setOpaque: NO]; [win setBackgroundColor: [NSColor clearColor]];
-	NSView *cv = [win contentView];
+	((LWWindow *)win)->nav = self; NSView *cv = [win contentView];
 	/* the wallpaper is a window of its own under the one with the controls */
 	NSImage *wall = [[NSImage alloc] initWithContentsOfFile: @"/System/Library/Desktop Pictures/dark-mode.jpg"];
 	if (wall) { [wall setSize: sf.size]; back = [[NSWindow alloc] initWithContentRect: sf styleMask: NSBorderlessWindowMask backing: NSBackingStoreBuffered defer: NO]; [back setLevel: 1999]; [back setOpaque: YES]; NSImageView *iv = [[NSImageView alloc] initWithFrame: NSMakeRect(0, 0, sf.size.width, sf.size.height)]; [iv setImage: wall]; [iv setImageScaling: NSImageScaleAxesIndependently]; [back setContentView: iv]; [back orderFront: nil]; }
@@ -128,6 +133,16 @@ static NSArray *Accounts(void)
 		LWClick *b = [[LWClick alloc] initWithFrame: ir]; b->symbol = ic[0]; b->target = self; b->action = [ic[0] isEqual: @"power"] ? @selector(shutdown:) : [ic[0] isEqual: @"arrow.clockwise"] ? @selector(restart:) : [ic[0] isEqual: @"person.crop.circle"] ? @selector(switchUser:) : @selector(noop:); [cv addSubview: b]; }
 	chosen = n == 1 ? 0 : -1; [self refresh]; [win makeKeyAndOrderFront: nil]; [win orderFrontRegardless]; [win display]; [NSApp activateIgnoringOtherApps: YES]; if (chosen >= 0) [win makeFirstResponder: pw];
 }
+- (BOOL)keyNav:(NSEvent *)e
+{
+	NSString *c = [e characters]; if (![c length]) return NO; unichar k = [c characterAtIndex: 0]; NSInteger n = (NSInteger)[accounts count];
+	if (chosen < 0) {
+		if (k == 0xF702 && focus > 0) focus--; else if (k == 0xF703 && focus < n - 1) focus++; else if (k == '\r' || k == '\n') { chosen = focus; [pw setStringValue: @""]; [msg setStringValue: @"Enter Password"]; [self refresh]; [win makeFirstResponder: pw]; return YES; } else return NO;
+		[self refresh]; return YES;
+	}
+	if (k == 27 && n > 1) { focus = chosen; chosen = -1; [pw setStringValue: @""]; [self refresh]; [win makeFirstResponder: nil]; return YES; }       /* back to the accounts */
+	return NO;
+}
 - (void)noop:(id)s {}
 - (void)switchUser:(id)s { exit(3); }       /* Switch User: the session keeps running, the console goes to the login window (the session script sees the exit status 3) */
 
@@ -135,8 +150,10 @@ static NSArray *Accounts(void)
 - (void)refresh
 {
 	BOOL one = chosen >= 0; [pill setHidden: !one]; [msg setHidden: !one];
+	for (NSUInteger k = 0; k < [faces count]; k++) { ((LWFace *)faces[k])->focused = !one && (NSInteger)k == focus; [faces[k] setNeedsDisplay: YES]; }
 	for (NSUInteger k = 0; k < [faces count]; k++) { BOOL mine = (NSInteger)k == chosen; [(LWFace *)faces[k] setHidden: one && !mine]; [(NSTextField *)names[k] setHidden: one && !mine];
-		if (one && mine) { NSUInteger n = [accounts count]; (void)n; [(LWFace *)faces[k] setFrame: [self rectCX: 960 cy: 889 w: 80 h: 80]]; [(NSTextField *)names[k] setFrame: [self rectCX: 960 cy: 960 w: 140 h: 22]]; } }
+		NSUInteger n = [accounts count]; CGFloat cx = one && mine ? 960 : 960 + ((CGFloat)k - (n - 1) / 2.0) * 150;       /* the chosen account goes to the middle, the row comes back when Escape returns to the accounts */
+		if (!one || mine) { [(LWFace *)faces[k] setFrame: [self rectCX: cx cy: 889 w: 80 h: 80]]; [(NSTextField *)names[k] setFrame: [self rectCX: cx cy: 960 w: 140 h: 22]]; } }
 }
 - (void)choose:(LWClick *)b { chosen = b->index; [pw setStringValue: @""]; [msg setStringValue: @"Enter Password"]; [self refresh]; [win makeFirstResponder: pw]; }
 - (void)submit:(id)s
