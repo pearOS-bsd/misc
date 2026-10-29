@@ -42,7 +42,7 @@ macdesktop_start()
 	# Switching moves the console and leaves the other sessions running. Requests of the accounts (files made in $SD, honoured when the requester owns the console): "login" = the login window (Switch User, Login Window…),
 	# "lock" = Lock Screen (the login window over the session, run as root so that it can read the password hash). Log Out ends the account's launchd; its session goes away and the login window comes back.
 	# A test run (the hypervisor's product name is wsbsd-ci), or an image without the login window, signs the first account in by itself.
-	SD=/var/run/wsbsd; mkdir -p $SD; chmod 1777 $SD; : > $SD/sessions; : > $SD/console; rm -f $SD/login $SD/lock
+	SD=/var/run/wsbsd; mkdir -p $SD; chmod 1777 $SD; : > $SD/sessions; : > $SD/console; rm -f $SD/login.* $SD/lock.*
 	LW=/System/Library/CoreServices/loginwindow.app/Contents/MacOS/loginwindow
 	session_start()
 	{
@@ -72,11 +72,13 @@ macdesktop_start()
 		N=$(id -u $U)
 		session_alive $U || session_start $U
 		echo $N > $SD/console; echo $U > /var/run/wsbsd.user
-		# the console stays with this session until it ends or the account asks for the login window
+		# the console stays with this session until it ends or the account asks for the login window: a file login.<uid> / lock.<uid> made by that account in $SD (one name per account: a stale one of another account cannot block it; a file of somebody else's is removed)
+		rm -f $SD/login.* $SD/lock.* 2>/dev/null
 		sleep 3
 		while session_alive $U; do
-			if [ -e $SD/login ] && [ "$(stat -f %u $SD/login)" = $N ]; then rm -f $SD/login; break; fi
-			if [ -e $SD/lock ] && [ "$(stat -f %u $SD/lock)" = $N ] && [ -x $LW ]; then rm -f $SD/lock; HOME=/Users/root /usr/lib/dyld $LW --lock $U >/dev/null 2>>/var/log/loginwindow.log; [ $? = 3 ] && break; fi
+			for f in $SD/login.$N $SD/lock.$N; do [ -e $f ] && [ "$(stat -f %u $f)" != $N ] && rm -f $f; done
+			if [ -e $SD/login.$N ]; then rm -f $SD/login.$N; break; fi
+			if [ -e $SD/lock.$N ] && [ -x $LW ]; then rm -f $SD/lock.$N; HOME=/Users/root /usr/lib/dyld $LW --lock $U >/dev/null 2>>/var/log/loginwindow.log; [ $? = 3 ] && break; fi
 			sleep 1
 		done
 	done ) >/var/log/session.log 2>&1 &
