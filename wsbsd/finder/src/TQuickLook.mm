@@ -7,7 +7,7 @@
 @end
 @implementation TQuickLookView
 - (BOOL)isFlipped { return YES; } - (BOOL)acceptsFirstResponder { return YES; }
-- (BOOL)isDragPoint:(NSPoint)p { return p.y < 44; }
+- (BOOL)isDragPoint:(NSPoint)p { return p.y < 44 && !NSPointInRect(p, NSMakeRect(7, 8, 62, 26)) && p.x < [self bounds].size.width - 200; }       /* the title strip moves the window, its buttons do not */
 - (BOOL)acceptsFirstMouse:(NSEvent *)e { return YES; }
 - (void)mouseDown:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; if (NSPointInRect(p, NSMakeRect(7, 8, 22, 22))) [[self window] close]; }       /* the close button of the panel: the only one that acts (the grey one beside it is the Mac's disabled full-screen button) */
 - (void)keyDown:(NSEvent *)e { NSString *k = [e characters]; if ([k isEqual: @" "] || [k isEqual: @"\033"]) { [[self window] close]; return; } [super keyDown: e]; }
@@ -38,14 +38,20 @@
 }
 @end
 
-NSWindow *TFOpenQuickLook(NSString *path)
+static NSWindow *gQL;
+static NSWindow *TFBuildQuickLook(NSString *path, BOOL toggle);
+NSWindow *TFOpenQuickLook(NSString *path) { return TFBuildQuickLook(path, YES); }
+/* the selection of a window changed while Quick Look is open: the panel shows the new item (as on the Mac) */
+void TFQuickLookFollow(NSString *path) { if (gQL && [gQL isVisible] && path && ![[(TQuickLookView *)[gQL contentView] valueForKey: @"path"] isEqual: path]) TFBuildQuickLook(path, NO); }
+static NSWindow *TFBuildQuickLook(NSString *path, BOOL toggle)
 {
-	static NSWindow *w; if (w && [w isVisible]) { BOOL same = [[(TQuickLookView *)[w contentView] valueForKey: @"path"] isEqual: path]; [w close]; if (same) return nil; }
+	if (gQL && [gQL isVisible]) { BOOL same = [[(TQuickLookView *)[gQL contentView] valueForKey: @"path"] isEqual: path]; [gQL close]; if (same && toggle) return nil; }
+	NSWindow *w;
 	NSImage *img = nil; NSString *txt = nil; NSString *ext = [[path pathExtension] lowercaseString]; NSFileManager *fm = [NSFileManager defaultManager]; unsigned long long size = [[fm attributesOfItemAtPath: path error: NULL][NSFileSize] unsignedLongLongValue];
 	if ([@[ @"png", @"jpg", @"jpeg", @"gif", @"tiff", @"tif", @"bmp" ] containsObject: ext] && size < 40000000) img = [[NSImage alloc] initWithContentsOfFile: path];
 	else if (size < 4000000 && ![fm isExecutableFileAtPath: path]) { NSData *d = [NSData dataWithContentsOfFile: path]; if ([d length]) { NSData *head = [d subdataWithRange: NSMakeRange(0, MIN([d length], 6000))]; NSString *s = [[NSString alloc] initWithData: head encoding: NSUTF8StringEncoding]; if (s && ![s containsString: @"\0"]) txt = s; } }
 	NSSize cs = img ? NSMakeSize(MIN(MAX([img size].width + 10, 360), 1100), MIN(MAX([img size].height + 43, 300), 800)) : txt ? NSMakeSize(816, MIN(849, [[NSScreen mainScreen] frame].size.height - 80)) : NSMakeSize(575, 328); NSRect sf = [[NSScreen mainScreen] frame];
 	w = [[TFinderWindow alloc] initWithContentRect: NSMakeRect(NSMidX(sf) - cs.width / 2, NSMidY(sf) - cs.height / 2 + 30, cs.width, cs.height) styleMask: NSWindowStyleMaskBorderless backing: NSBackingStoreBuffered defer: NO]; [w setReleasedWhenClosed: NO]; [w setOpaque: NO]; [w setBackgroundColor: [NSColor clearColor]]; [w setMinSize: NSMakeSize(300, 240)];
 	TQuickLookView *v = [[TQuickLookView alloc] initWithFrame: NSMakeRect(0, 0, cs.width, cs.height)]; v->path = [path copy]; v->image = img; v->text = txt; [v setAutoresizingMask: NSViewWidthSizable | NSViewHeightSizable]; [w setContentView: v];
-	[w makeKeyAndOrderFront: nil]; [w makeFirstResponder: v]; [NSClassFromString(@"WsdFinderSupport") roundWindow: w radius: 22]; return w;
+	gQL = w; [w makeKeyAndOrderFront: nil]; [w makeFirstResponder: v]; [NSClassFromString(@"WsdFinderSupport") roundWindow: w radius: 22]; return w;
 }

@@ -388,7 +388,7 @@ static NSMenuItem *wsdFindKeyItem(NSMenu *m, NSString *k, NSUInteger mods, NSMen
 static BOOL wsdMenuKeyEquivalent(NSMenu *self, SEL _cmd, NSEvent *e)
 {
 	if (([e type] != NSKeyDown && [e type] != NSKeyUp) || ![[e charactersIgnoringModifiers] length]) return NO;
-	unichar c = [[e charactersIgnoringModifiers] characterAtIndex: 0]; if (c != '=' && (c < 'A' || c > 'z' || (c > 'Z' && c < 'a'))) return ((BOOL (*)(id, SEL, id))origMenuKeyEq)(self, _cmd, e);   /* only letters differ */
+	unichar c = [[e charactersIgnoringModifiers] characterAtIndex: 0]; if (c != '=' && (c < 'A' || c > 'z' || (c > 'Z' && c < 'a'))) { @try { return ((BOOL (*)(id, SEL, id))origMenuKeyEq)(self, _cmd, e); } @catch (NSException *x) { return NO; } }   /* only letters differ; GNUstep throws NSRangeException for a key such as the space bar on a menu whose items changed (the key was lost: now it goes on to the window) */
 	NSString *k = [[e charactersIgnoringModifiers] lowercaseString]; NSMenu *owner = nil; NSInteger idx = -1;
 	NSMenuItem *it = wsdFindKeyItem(self, k, [e modifierFlags], &owner, &idx); if (getenv("WSD_KEY_DEBUG")) NSLog(@"menu key %@ mods %lx -> %@", k, (unsigned long)[e modifierFlags], it ? [it title] : @"none"); if (!it) return NO;
 	[owner update];                                          /* the items are validated against the window that is key now, not the one that was key when the menu was last updated */

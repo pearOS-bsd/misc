@@ -163,6 +163,7 @@ static BOOL WsdOpensInFinder(NSString *path)
 	if ([[[NSProcessInfo processInfo] processName] isEqual: @"Finder"]) return NO;
 	NSString *fin = @"/System/Library/CoreServices/Finder.app/Contents/MacOS/Finder"; BOOL running = NO;
 	for (NSRunningApplication *a in [[NSWorkspace sharedWorkspace] runningApplications]) if ([[a bundleIdentifier] isEqual: @"com.apple.finder"]) running = YES;
+	if (!running) { NSTask *t = [[NSTask alloc] init]; [t setLaunchPath: @"/bin/pgrep"]; [t setArguments: @[ @"-x", @"Finder" ]]; [t setStandardOutput: [NSFileHandle fileHandleWithNullDevice]]; @try { [t launch]; [t waitUntilExit]; running = [t terminationStatus] == 0; } @catch (NSException *e) {} }       /* a Finder that is not in a bundle */
 	if (running) [[NSDistributedNotificationCenter defaultCenter] postNotificationName: @"com.wsbsd.finder.open" object: nil userInfo: @{ @"path": path } deliverImmediately: YES];
 	else if ([[NSFileManager defaultManager] isExecutableFileAtPath: fin]) { NSTask *t = [[NSTask alloc] init]; [t setLaunchPath: fin]; NSMutableDictionary *env = [[[NSProcessInfo processInfo] environment] mutableCopy]; env[@"FINDER_PATH"] = path; env[@"FINDER_WINDOW"] = @"1"; [t setEnvironment: env]; @try { [t launch]; } @catch (NSException *e) { return NO; } }
 	else return NO;

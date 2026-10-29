@@ -32,7 +32,7 @@ static NSString *DesktopPath(void) { return [NSHomeDirectory() stringByAppending
 }
 - (void)_prefs:(NSNotification *)n { _volumeSig = nil; [self _poll: nil]; [_window setOpaque: TFWallpaperImage() != nil]; TFWriteWallpaperGrid([[NSScreen mainScreen] frame].size); [[_window contentView] setNeedsDisplay: YES]; }
 - (void)iconViewOpenItem:(NSString *)path { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &d]; if (d && !TFIsPackage(path)) [TBrowserWindowController newBrowserWithPath: path]; else TFOpenPath(path); }
-- (void)iconViewSelectionChanged:(NSArray *)paths { _selection = paths; }
+- (void)iconViewSelectionChanged:(NSArray *)paths { _selection = paths; if ([paths count] == 1) TFQuickLookFollow(paths[0]); }
 - (BOOL)iconViewDropPaths:(NSArray *)paths intoFolder:(NSString *)folder atWindowPoint:(NSPoint)p copy:(BOOL)copy
 {
 	if (![folder length]) return NO; NSFileManager *fm = [NSFileManager defaultManager]; BOOL any = NO;

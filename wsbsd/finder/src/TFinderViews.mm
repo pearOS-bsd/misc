@@ -477,7 +477,7 @@ static CGFloat TFDeskTab(const CGFloat *t, CGFloat text) { int i = (int)lround(t
 	else if (c == '\r' && cur >= 0 && !desktop) { [NSApp sendAction: @selector(cmdRename:) to: nil from: self]; return; }
 	else if ((c == '\r' || (c == NSDownArrowFunctionKey && (fl & NSCommandKeyMask))) && cur >= 0) { [delegate iconViewOpenItem: _items[cur][@"path"]]; return; }
 	else if (c == NSUpArrowFunctionKey && (fl & NSCommandKeyMask)) { [NSApp sendAction: @selector(cmdOpenParent:) to: nil from: self]; return; }
-	else if (c == ' ') { [NSApp sendAction: @selector(cmdQuickLook:) to: nil from: self]; return; }
+	else if (c == ' ') { if ([(id)delegate respondsToSelector: @selector(cmdQuickLook:)]) [(id)delegate performSelector: @selector(cmdQuickLook:) withObject: self]; else [NSApp sendAction: @selector(cmdQuickLook:) to: nil from: self]; return; }       /* the desktop's view is not in the responder chain of its icons */
 	else if (isalnum(c) && !(fl & (NSCommandKeyMask | NSControlKeyMask))) {                                                                           /* type to select */
 		static NSString *buf; static NSDate *last; if (!last || [[NSDate date] timeIntervalSinceDate: last] > 1) buf = @""; buf = [buf stringByAppendingString: [k lowercaseString]]; last = [NSDate date];
 		for (NSInteger i = 0; i < n; i++) if ([[_items[i][@"name"] lowercaseString] hasPrefix: buf]) { t = i; break; }
@@ -1176,6 +1176,7 @@ static void RedrawTree(NSView *v) { [v setNeedsDisplay: YES]; for (NSView *k in 
 - (void)zoom:(id)s { NSRect vf = [[NSScreen mainScreen] frame]; vf.size.height -= 30; if (_zoomed) { [self setFrame: _savedFrame display: YES]; _zoomed = NO; } else { _savedFrame = [self frame]; [self setFrame: vf display: YES]; _zoomed = YES; } }
 - (void)performZoom:(id)s { [self zoom: s]; }
 - (BOOL)isZoomed { return _zoomed; }
+- (BOOL)performKeyEquivalent:(NSEvent *)e { if ([e type] == NSKeyDown && ![e modifierFlags] && [[e characters] isEqual: @" "]) return NO; return [super performKeyEquivalent: e]; }       /* a plain space is the views' (Quick Look), not a key equivalent of a control */
 - (BOOL)wsdIsResizable { return YES; }       /* the window's edges are resized by the application (WsdResize.m), live, with plain events */
 - (BOOL)wsdWantsMoveAt:(NSEvent *)e       /* a press on the toolbar's empty part moves the window (a double click zooms it: that one goes to sendEvent:) */
 {
