@@ -30,7 +30,7 @@ NSArray *TFPathsTagged(NSString *tag);
 NSArray *TFRecentPaths(void);
 NSWindow *TFOpenInfoWindow(NSString *path);
 void TFCopyItems(NSArray *srcs, NSString *destDir, BOOL move, void (^completion)(NSArray *ops));
-NSWindow *TFOpenQuickLook(NSString *path);
+NSWindow *TFOpenQuickLook(NSString *path); void TFQuickLookFollow(NSString *path);
 void TFOpenSettings(void);
 @class TIconView;
 void TFOpenViewOptions(TIconView *view, NSString *folderName, void (^changed)(void));

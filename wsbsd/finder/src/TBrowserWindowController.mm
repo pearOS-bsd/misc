@@ -403,7 +403,7 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 	[_toolbar setSearching: YES]; [_toolbar->search setStringValue: q]; _searchStarted = YES; _searchBar->scope = ([scope length] && ![scope isEqual: @"This Mac"]) ? 1 : 0; _searchBar->kind = ([kind length] && ![kind isEqual: @"Any"]) ? kind : nil; [self searchChanged: q];
 }
 - (void)iconViewOpenItem:(NSString *)path { if ([[[path pathExtension] lowercaseString] isEqual: @"savedsearch"]) { [self openSavedSearch: path]; return; } BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &d]; if (d && !TFIsPackage(path)) [self goToPath: path]; else TFOpenPath(path); }
-- (void)iconViewSelectionChanged:(NSArray *)paths { _selection = paths; if ([paths count] == 1) [_pathBar setPath: paths[0]]; else [_pathBar setPath: [_url path]]; [self _updateStatus]; [self _refreshPane]; }
+- (void)iconViewSelectionChanged:(NSArray *)paths { _selection = paths; if ([paths count] == 1) TFQuickLookFollow(paths[0]); if ([paths count] == 1) [_pathBar setPath: paths[0]]; else [_pathBar setPath: [_url path]]; [self _updateStatus]; [self _refreshPane]; }
 - (void)_updateStatus
 {
 	if (!_showStatus) return; NSFileManager *fm = [NSFileManager defaultManager]; NSUInteger n = 0; if (_tag) n = [([_tag isEqual: @"\1recents"] ? TFRecentPaths() : TFPathsTagged(_tag)) count]; else for (NSString *s in [fm contentsOfDirectoryAtPath: [_url path] error: NULL]) if (![s hasPrefix: @"."]) n++;

@@ -92,9 +92,9 @@ Source: `buglist.txt`. `[ ]` = open, `[x]` = done and verified. Items marked *(p
 - [ ] Liquid Glass has an extra vertical offset: the lens samples the image too far away for the distortion.
 
 **Quick Look, files and archives**
-- [ ] Quick Look does not close with its X button; only Space closes it. No button works and the window looks defocused.
-- [ ] Space does not start Quick Look on a desktop item.
-- [ ] With Quick Look open on item 1, clicking item 2 must update the preview (as on the Mac).
+- [x] Quick Look closes with its X button (the title strip no longer swallows the press as a window drag). *(the panel is still drawn by the Finder; the window looks inactive behind it because the panel takes the key)*
+- [x] Space starts Quick Look on a desktop item (the desktop's view is not in its icons' responder chain); a menu key equivalent that threw NSRangeException for the space bar swallowed the key in every application (`WsdMacTheme.m`).
+- [x] With Quick Look open, selecting another item updates the panel (Finder windows and the desktop).
 - [ ] Double-clicking a `.zip` in Finder or on the desktop must extract it exactly as the Mac does.
 - [ ] "Compress N items" works, but there is no progress bar.
 - [ ] Finder window is incomplete (missing features; see the Finder row of the coverage table).
