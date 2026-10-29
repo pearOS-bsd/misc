@@ -191,8 +191,8 @@ void DockRender(CGContextRef c, const DockScene *s)
 	for (int i = 0; i < s->n; i++) {
 		const DockSlot *sl = &s->slots[i]; const DockTile *t = &s->tiles[i];
 		CGFloat cx = sl->cx - s->origin_x;
-		if (s->items[i].kind == DOCK_SEPARATOR) {                         /* a 1 px line, 62 px tall, white at 25 % */
-			SetRGB(c, 1, 1, 1, 0.255); CGContextFillRect(c, CGRectMake(floor(cx), by + 11, 1, 62));
+		if (s->items[i].kind == DOCK_SEPARATOR) {                         /* a 1 px line, the tile size tall (58 of a 78 bar: 10 px from the top and the bottom), white at 26.7 % (77 over the bar's 12 on the Mac, the column of the item's centre rounded up) */
+			SetRGB(c, 1, 1, 1, 0.267); CGContextFillRect(c, CGRectMake(floor(cx + 0.5), by + 10, 1, bh - 20));
 			continue;
 		}
 		if (DOCK_IS_GAP(s->items[i].kind)) continue;
@@ -210,7 +210,7 @@ void DockRender(CGContextRef c, const DockScene *s)
 			SetRGB(c, 1, 1, 1, 1); DrawText(c, num, (CGFloat)(30 * k), CGPointMake(bxx + (bw - tw) / 2, byy + bh / 2 - 10.5 * k), NULL);
 		}
 		CGContextRestoreGState(c);
-		if (t->running) { SetRGB(c, 0.54, 0.54, 0.54, 1); CGContextFillEllipseInRect(c, CGRectMake(cx - 2, by + 11.5, 4, 4)); }
+		if (t->running) { /* the dot: 4 px, 4 px above the inside of the bar's bottom edge (rows 1427-1430 of a bar ending at 1434 on the Mac), grey 137 */ SetRGB(c, 0.54, 0.54, 0.54, 1); CGContextFillEllipseInRect(c, CGRectMake(cx - 2, by + 4, 4, 4)); }
 	}
 	if (s->fan) DrawFan(c, s, art_bottom);
 	if (s->orient) CGContextRestoreGState(c);
