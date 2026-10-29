@@ -164,6 +164,8 @@ wsdrag: tools/wsdrag.c libwsclient.a
 	$(CC) $(CFLAGS) -o $@ tools/wsdrag.c libwsclient.a $(LDLIBS)
 wswins: tools/wswins.c libwsclient.a
 	$(CC) $(CFLAGS) -o $@ tools/wswins.c libwsclient.a $(LDLIBS)
+wsgrey: tools/wsgrey.c libwsclient.a
+	$(CC) $(CFLAGS) -o $@ tools/wsgrey.c libwsclient.a $(LDLIBS)
 wsfps: tools/wsfps.c libwsclient.a
 	$(CC) $(CFLAGS) -o $@ tools/wsfps.c libwsclient.a $(LDLIBS)
 wsmove: tools/wsmove.c libwsclient.a
