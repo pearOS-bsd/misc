@@ -28,15 +28,16 @@
 	[super sendEvent: e];
 }
 @end
-@interface FQController : NSObject <NSTableViewDataSource, NSTableViewDelegate, NSWindowDelegate> { NSPanel *win; NSTableView *table; NSButton *button; NSMutableArray *apps; }
+@interface FQController : NSObject <NSTableViewDataSource, NSTableViewDelegate, NSWindowDelegate> { NSPanel *win; NSTableView *table; NSButton *button; NSMutableArray *apps; NSTimer *followTimer; }
 + (instancetype)shared; - (void)show;
 @end
 @implementation FQController
 + (instancetype)shared { static FQController *c; if (!c) c = [[FQController alloc] init]; return c; }
 - (void)scan
 {
-	NSMutableArray *r = [NSMutableArray array]; NSMutableSet *seen = [NSMutableSet set]; FILE *f = popen("ps -axww -o pid= -o command= 2>/dev/null", "r");
-	if (f) { char line[2048]; while (fgets(line, sizeof line, f)) {
+	NSMutableArray *r = [NSMutableArray array]; NSMutableSet *seen = [NSMutableSet set]; FILE *f = popen("ps -axww -o pid= -o command= 2>/dev/null", "r"); int nlines = 0;
+	if (!f) return;       /* the process list could not be read (fork failed): the list stays as it was, not empty */
+	if (f) { char line[2048]; while (fgets(line, sizeof line, f)) { nlines++;
 		char *mark = strstr(line, ".app/Contents/MacOS/"); int pid = atoi(line); if (pid == getpid() || pid <= 1) continue;
 		if (!mark) { char *g = strstr(line, "-gnustep"); if (!g || strstr(line, "gnustep-")) continue; char *b = g; while (b > line && b[-1] != '/' && b[-1] != ' ') b--; NSString *nm = [[NSString alloc] initWithBytes: b length: (NSUInteger)(g - b) encoding: NSUTF8StringEncoding]; if ([seen containsObject: nm]) continue; [seen addObject: nm]; FQApp *a = [FQApp new]; a->path = [nm stringByAppendingString: @".app"]; a->pid = pid; a->name = nm; a->icon = nil; [r addObject: a]; continue; }
 		*mark = 0; char *start = line; while (*start == ' ') start++; while (*start >= '0' && *start <= '9') start++; while (*start == ' ') start++;
@@ -45,6 +46,7 @@
 		if ([bp hasPrefix: @"/System/Library/CoreServices/"] && ![bp hasSuffix: @"/Finder.app"]) continue;       /* the system's own helpers (Dock, SystemUIServer, ...) are not in the list */
 		FQApp *a = [FQApp new]; a->path = bp; a->pid = pid; a->name = [[bp lastPathComponent] stringByDeletingPathExtension]; a->icon = [[NSWorkspace sharedWorkspace] iconForFile: bp]; [r addObject: a];
 	} pclose(f); }
+	if (nlines == 0 && [apps count]) return;       /* ps printed nothing: not a real empty system */
 	[r sortUsingComparator: ^NSComparisonResult(FQApp *x, FQApp *y) { return [x->name caseInsensitiveCompare: y->name]; }]; apps = r;
 }
 - (void)show
@@ -64,6 +66,7 @@
 		button = [[NSButton alloc] initWithFrame: NSMakeRect(269, 288 - 243 - 30, 86, 30)]; [button setBezelStyle: NSRoundedBezelStyle]; [button setTarget: self]; [button setAction: @selector(forceQuit:)]; [button setKeyEquivalent: @"\r"]; [cv addSubview: button];
 	}
 		[table reloadData]; [self refreshButton]; { NSRect sf = [[NSScreen mainScreen] frame], wf = [win frame]; [win setFrameOrigin: NSMakePoint(NSMidX(sf) - wf.size.width / 2, NSMaxY(sf) - 30 - 140 - wf.size.height)]; } [NSApp activateIgnoringOtherApps: YES]; [win makeKeyAndOrderFront: nil]; [win makeFirstResponder: table];
+	if (!followTimer) followTimer = [NSTimer scheduledTimerWithTimeInterval: 2 target: self selector: @selector(follow:) userInfo: nil repeats: YES];
 }
 - (void)refreshButton
 {
@@ -94,6 +97,16 @@
 	@try { [t launch]; } @catch (NSException *e) {}
 }
 - (void)rescan { [self scan]; [table reloadData]; [self refreshButton]; }
+/* while the window is open the list follows the applications that start and quit (as on the Mac), the selection stays on the same application */
+- (void)follow:(NSTimer *)t
+{
+	if (getenv("FQ_DEBUG")) NSLog(@"fq: follow visible %d apps %lu", (int)[win isVisible], (unsigned long)[apps count]);
+	if (![win isVisible]) { [t invalidate]; followTimer = nil; return; }
+	NSInteger r = [table selectedRow]; int pid = r >= 0 && r < (NSInteger)[apps count] ? ((FQApp *)apps[r])->pid : -1;
+	[self scan]; [table reloadData];
+	if (pid > 0) for (NSUInteger i = 0; i < [apps count]; i++) if (((FQApp *)apps[i])->pid == pid) [table selectRowIndexes: [NSIndexSet indexSetWithIndex: i] byExtendingSelection: NO];
+	[self refreshButton];
+}
 @end
 
 void ShowForceQuit(void) { [[FQController shared] show]; }
