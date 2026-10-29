@@ -128,13 +128,14 @@ static BOOL Confirm(NSString *msg, NSString *info, NSString *button)
 - (void)shutDown:(id)s { if (Confirm(@"Are you sure you want to shut down your computer now?", @"If you do nothing, your computer will shut down automatically in 1 minute.", @"Shut Down")) Launch(@"/sbin/shutdown", @[ @"-p", @"now" ]); }
 - (void)lockScreen:(id)s       /* the login window over the running session, "after the first unlock": the account's password unlocks */
 {
+	if ([[NSFileManager defaultManager] fileExistsAtPath: @"/var/run/wsbsd/console"]) { [[NSData data] writeToFile: @"/var/run/wsbsd/lock" atomically: NO]; return; }       /* the session script (root, as loginwindow is on the Mac) shows the login window over this session */
 	NSString *lw = @"/System/Library/CoreServices/loginwindow.app/Contents/MacOS/loginwindow", *dyld = @"/usr/lib/dyld";
 	if (![[NSFileManager defaultManager] isExecutableFileAtPath: lw]) lw = @"/usr/local/bin/loginwindow-gnustep"; if (![[NSFileManager defaultManager] isExecutableFileAtPath: lw]) { NSBeep(); return; }
 	if (system("pgrep -x loginwindow >/dev/null 2>&1") == 0) return;       /* already locked */
 	NSTask *t = [[NSTask alloc] init]; if ([[NSFileManager defaultManager] isExecutableFileAtPath: dyld] && [lw hasPrefix: @"/System"]) { [t setLaunchPath: dyld]; [t setArguments: @[ lw, @"--lock", NSUserName() ]]; } else { [t setLaunchPath: lw]; [t setArguments: @[ @"--lock", NSUserName() ]]; }
 	@try { [t launch]; } @catch (NSException *e) { NSBeep(); }
 }
-- (void)logOut:(id)s { if (Confirm([NSString stringWithFormat: @"Are you sure you want to quit all applications and log out %@ now?", WsdFullName()], @"If you do nothing, you will be logged out automatically in 1 minute.", @"Log Out")) Launch(@"/usr/bin/pkill", @[ @"-TERM", @"-f", @"libexec/launchd" ]); }       /* the session ends (launchd stops its jobs, the rc script then kills what the account still runs) and the login window comes back */
+- (void)logOut:(id)s { if (Confirm([NSString stringWithFormat: @"Are you sure you want to quit all applications and log out %@ now?", WsdFullName()], @"If you do nothing, you will be logged out automatically in 1 minute.", @"Log Out")) Launch(@"/usr/bin/pkill", @[ @"-TERM", @"-u", [NSString stringWithFormat: @"%u", (unsigned)getuid()], @"-f", @"libexec/launchd" ]); }       /* the session ends (launchd stops its jobs, the rc script then kills what the account still runs) and the login window comes back */
 - (NSMenu *)menu
 {
 	NSMenu *m = [[NSMenu alloc] initWithTitle: @"pear"]; if ([m respondsToSelector: @selector(setMinimumWidth:)]) ((void (*)(id, SEL, double))objc_msgSend)(m, @selector(setMinimumWidth:), 312.0);
