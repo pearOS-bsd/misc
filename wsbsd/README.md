@@ -65,8 +65,8 @@ Source: `buglist.txt`. `[ ]` = open, `[x]` = done and verified. Items marked *(p
 - [x] Context menu of a desktop item flips to the left of the pointer at the right edge (verified in the dev VM).
 - [x] Context submenus open beside their parent row (first row level with it), flip left at the screen edge and stay on screen (`WsdMenuBar.m`; verified in the dev VM).
 - [x] The top bar never disappears: GNUstep ordered the main menu window out when the application deactivated (after choosing an item of a pop-up menu, or a click on the Dock, the bar was empty); the main menu window no longer hides on deactivate (`WsdMenuBar.m`). Verified in the dev VM; to confirm on the next image.
-- [ ] Spotlight: Command-Space does not open it; it must behave as on this Mac.
-- [ ] Spotlight: items cannot be clicked (keyboard up / down only), and pressing Return on a result (for example a directory) does not open it.
+- [x] Command-Space opens Spotlight from any application (the back-end posts a notification, the top bar toggles the window). *(the window itself is the earlier measured one; the real Spotlight of this Mac (macOS 27: "Search or Ask" pill, inline completion, result panel) is not rebuilt yet)*
+- [x] Spotlight: a click opens a result, the wheel scrolls, Return opens a directory (NSWorkspace asks the running Finder, or starts it on the folder).
 - [ ] Launchpad is missing from the Dock; Command-Space should open Launchpad combined with Spotlight search, as on this Mac. *(plan: `handoff.md`, "Launchpad")*
 - [ ] About This Mac is invented; it must be rebuilt from the real one (decompile and measure).
 - [ ] Force Quit (window and menu item) is not implemented.

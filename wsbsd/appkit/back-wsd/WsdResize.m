@@ -1,4 +1,5 @@
-/* Resizing a window from its edges and corners, live, as on the Mac: the window follows the pointer while the button is down (the application redraws at every step) and
+/* Window events the application handles for the whole system: resizing from the edges and corners, and the Command-Space shortcut (Spotlight).
+ * Resizing a window from its edges and corners, live, as on the Mac: the window follows the pointer while the button is down (the application redraws at every step) and
  * is kept between its minimum and maximum size. GNUstep's own resize tracks the pointer in a nested loop from a small bar at the bottom of the title-bar decoration; the
  * window server here has no window manager, so the application does it, with plain events (no nested loop: a lost mouse-up cannot leave the window stuck, a button
  * release outside the application ends it too). A window that wants to be resizable although it has no resizable style mask (the Finder's) answers YES to -wsdIsResizable, and one that has its own draggable area (the Finder's toolbar) answers YES to -wsdWantsMoveAt: for the mouse-down event. */
@@ -45,6 +46,9 @@ static void Apply(NSPoint now)
 static void wsdResizeSend(NSApplication *self, SEL _cmd, NSEvent *e)
 {
 	NSEventType t = [e type];
+	if (t == NSKeyDown && ([e modifierFlags] & NSCommandKeyMask) && !([e modifierFlags] & (NSShiftKeyMask | NSAlternateKeyMask | NSControlKeyMask)) && [[e charactersIgnoringModifiers] isEqual: @" "]) {       /* Command-Space: Spotlight, wherever the keyboard is */
+		[[NSDistributedNotificationCenter defaultCenter] postNotificationName: @"com.wsbsd.spotlight.toggle" object: nil userInfo: nil deliverImmediately: YES]; return;
+	}
 	if (gWin) {
 		if (t == NSLeftMouseDragged) { Apply([NSEvent mouseLocation]); return; }
 		if (t == NSLeftMouseUp) { Apply([NSEvent mouseLocation]); gWin = nil; return; }
