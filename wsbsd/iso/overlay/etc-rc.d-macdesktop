@@ -49,6 +49,7 @@ macdesktop_start()
 		U=$1; H=/Users/$U; N=$(id -u $U)
 		mount | grep -q " $H " || mount -t tmpfs -o mode=755 tmpfs $H
 		if [ ! -d $H/Desktop ]; then [ -d "/Library/User Template" ] && cp -R "/Library/User Template/." $H/ 2>/dev/null; mkdir -p $H/Desktop $H/Documents $H/Downloads $H/Library/Preferences $H/Movies $H/Music $H/Pictures $H/Public $H/GNUstep; chown -R $U $H 2>/dev/null; fi
+		[ -e $H/.zshrc ] || { : > $H/.zshrc; chown $U $H/.zshrc; }       # zsh asks "you have no zsh startup files" (zsh-newuser-install) when the home has none: an empty one is enough
 		grep -qx $N $SD/sessions || echo $N >> $SD/sessions
 		chmod 666 $WS_SOCKET 2>/dev/null
 		if [ -x /usr/libexec/launchd ] && ls /System/Library/LaunchAgents/*.plist >/dev/null 2>&1; then
