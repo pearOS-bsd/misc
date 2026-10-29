@@ -8,6 +8,15 @@
 @implementation FQApp @end
 
 /* a click on a row selects it (GNUstep's table tracks the press in a loop that the pointer events of this window server do not feed), a double click acts */
+/* the selected row is blue with white text, as in the Mac's window (the theme's table highlight is grey here and the row could only be told by guessing) */
+@interface FQTable : NSTableView @end
+@implementation FQTable
+- (void)highlightSelectionInClipRect:(NSRect)clip
+{
+	NSIndexSet *sel = [self selectedRowIndexes]; [[NSColor colorWithCalibratedRed: 0.0 green: 0.38 blue: 0.88 alpha: 1] setFill];
+	for (NSInteger r = (NSInteger)[sel firstIndex]; r != NSNotFound; r = (NSInteger)[sel indexGreaterThanIndex: (NSUInteger)r]) { NSRect rr = NSInsetRect([self rectOfRow: r], 4, 0); if (NSIntersectsRect(rr, clip)) [[NSBezierPath bezierPathWithRoundedRect: rr xRadius: 5 yRadius: 5] fill]; }
+}
+@end
 @interface FQPanel : NSPanel { @public NSTableView *fqTable; } @end
 @implementation FQPanel
 - (void)sendEvent:(NSEvent *)e
@@ -47,7 +56,7 @@
 		NSView *cv = [win contentView];
 		NSTextField *hint = [NSTextField labelWithString: @"If an app doesn’t respond for a while, select its name and click Relaunch."]; [hint setFrame: NSMakeRect(19, 288 - 19 - 34, 332, 34)]; [hint setFont: [NSFont systemFontOfSize: 13]]; [hint setLineBreakMode: NSLineBreakByWordWrapping]; [[hint cell] setWraps: YES]; [cv addSubview: hint];
 		NSScrollView *sc = [[NSScrollView alloc] initWithFrame: NSMakeRect(20, 288 - 60 - 168, 330, 168)]; [sc setHasVerticalScroller: YES]; [sc setBorderType: NSBezelBorder];
-		table = [[NSTableView alloc] initWithFrame: NSMakeRect(0, 0, 328, 168)]; [table setRowHeight: 22]; [table setHeaderView: nil]; [table setIntercellSpacing: NSMakeSize(0, 0)]; [table setAllowsEmptySelection: YES]; [table setAllowsMultipleSelection: NO];
+		table = [[FQTable alloc] initWithFrame: NSMakeRect(0, 0, 328, 168)]; [table setRowHeight: 22]; [table setHeaderView: nil]; [table setIntercellSpacing: NSMakeSize(0, 0)]; [table setAllowsEmptySelection: YES]; [table setAllowsMultipleSelection: NO];
 		NSTableColumn *ic = [[NSTableColumn alloc] initWithIdentifier: @"icon"]; [ic setWidth: 24]; [ic setMinWidth: 24]; [ic setMaxWidth: 24]; [ic setDataCell: [[NSImageCell alloc] init]]; [table addTableColumn: ic];
 		NSTableColumn *nc = [[NSTableColumn alloc] initWithIdentifier: @"name"]; [nc setWidth: 300]; [[nc dataCell] setFont: [NSFont systemFontOfSize: 13]]; [table addTableColumn: nc];
 		((FQPanel *)win)->fqTable = table; [table setDataSource: self]; [table setDelegate: self]; [table setTarget: self]; [table setDoubleAction: @selector(forceQuit:)]; [sc setDocumentView: table]; [cv addSubview: sc];
@@ -63,6 +72,7 @@
 }
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)t { return (NSInteger)[apps count]; }
 - (id)tableView:(NSTableView *)t objectValueForTableColumn:(NSTableColumn *)c row:(NSInteger)r { if (r < 0 || r >= (NSInteger)[apps count]) return nil; FQApp *a = apps[r]; return [[c identifier] isEqual: @"icon"] ? a->icon : a->name; }
+- (void)tableView:(NSTableView *)t willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)c row:(NSInteger)r { if ([cell respondsToSelector: @selector(setTextColor:)]) [cell setTextColor: [t isRowSelected: r] ? [NSColor whiteColor] : [NSColor controlTextColor]]; }
 - (void)tableViewSelectionDidChange:(NSNotification *)n { if (getenv("FQ_DEBUG")) NSLog(@"fq: selection %ld", (long)[table selectedRow]); [self refreshButton]; }
 - (BOOL)tableView:(NSTableView *)t shouldSelectRow:(NSInteger)r { if (getenv("FQ_DEBUG")) NSLog(@"fq: shouldSelect %ld", (long)r); return YES; }
 - (void)forceQuit:(id)s
