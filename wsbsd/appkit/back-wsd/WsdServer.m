@@ -190,6 +190,7 @@ static int wsdShapeForStyle(int style)
 	w->cbuf = nb;
 	if (ws_surface_add(conn, &w->win, &w->sid) || ws_surface_bind_buffer(conn, &w->win, w->sid, &w->cbuf)) { ws_cbuf_release(conn, &w->cbuf); if (hadOld) ws_cbuf_release(conn, &old); return NO; }
 	w->has_buffer = 1;
+	if (hadOld) ws_surface_flush(conn, &w->win, w->sid, NULL);       /* the copy of the old picture goes out at once: until the window repaints, a bound buffer that was never flushed showed as an empty window (the black frame of a resize) */
 	if (hadOld) {
 		ws_cbuf_release(conn, &old);
 		NSWindow *nw = [NSApp windowWithWindowNumber: w->number];
