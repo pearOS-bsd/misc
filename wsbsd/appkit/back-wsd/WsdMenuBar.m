@@ -154,9 +154,14 @@ static NSRect wsdTitleRect(id self, SEL _cmd, NSRect b)
 	else if (mv && ![mv isHorizontal] && [[[(NSMenuItemCell *)self menuItem] toolTip] hasPrefix: @"sym:"]) { r.origin.x += 25; r.size.width -= 25; }      /* a row with an icon: the title starts 25 pt further in */
 	return r;
 }
+/* the main menu window is never ordered out when the application deactivates (GNUstep hides panels that hide on deactivate): the Mac's menu bar is always there */
+static BOOL wsdBarNeverHides(id self, SEL _cmd) { return NO; }
+static BOOL wsdBarCanHide(id self, SEL _cmd) { return [(NSWindow *)self level] == NSMainMenuWindowLevel ? NO : YES; }
 void WsdInstallMenuBar(void)
 {
 	if (origRectOfItem) return; Method m = class_getInstanceMethod([NSMenuView class], @selector(rectOfItemAtIndex:)); if (m) origRectOfItem = method_setImplementation(m, (IMP)wsdRectOfItem);
 	Method c = class_getInstanceMethod([NSMenuView class], @selector(menuItemCellForItemAtIndex:)); if (c) origCellForItem = method_setImplementation(c, (IMP)wsdCellForItem);
 	Method t = class_getInstanceMethod([NSMenuItemCell class], @selector(titleRectForBounds:)); if (t) origTitleRect = method_setImplementation(t, (IMP)wsdTitleRect);
+	Class mp = NSClassFromString(@"NSMenuPanel");
+	if (mp) { class_replaceMethod(mp, @selector(hidesOnDeactivate), (IMP)wsdBarNeverHides, "c@:"); class_replaceMethod(mp, @selector(canHide), (IMP)wsdBarCanHide, "c@:"); }
 }
