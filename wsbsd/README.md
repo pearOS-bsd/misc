@@ -81,7 +81,7 @@ Source: `buglist.txt`. `[ ]` = open, `[x]` = done and verified. Items marked *(p
 - [ ] The rubber-band (stretch) effect and the hover glyphs are missing on close / minimize / maximize. *(partial: hover glyphs and the pressed state from `Aqua.car` exist; the stretch needs a finer capture on the Mac)*
 - [ ] The green button must move the window to its own full-screen Space (workspace), as on the Mac; only snapping to the top edge maximizes the window.
 - [ ] Hovering the green button must show the popover with the tiling / snapping options.
-- [ ] Window snapping does not work.
+- [x] Window tiling by dragging a title bar to the screen edges (halves, quarters at the corners, top edge fills), with a translucent preview; a tiled window dragged away gets its old size back. Geometry measured on the Mac with Window > Move & Resize (below the 30 pt menu bar, above an 84 pt Dock, no margins). *(Option-drag, the Move & Resize menu and the hover popover of the green button are not done)*
 - [x] Windows resize from every edge and corner, live, with plain events (`WsdResize.m`: no nested tracking loop; Finder and Terminal verified in the dev VM).
 - [ ] Resizing flickers and shows only an outline instead of resizing the application live.
 - [ ] After a resize, releasing the mouse sometimes leaves the window "stuck" as if the button were still down (one or two extra clicks are needed).
