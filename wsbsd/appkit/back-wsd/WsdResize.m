@@ -114,3 +114,37 @@ static void wsdResizeSend(NSApplication *self, SEL _cmd, NSEvent *e)
 @implementation WsdResizeInit
 + (void)load { Method m = class_getInstanceMethod([NSApplication class], @selector(sendEvent:)); if (m) { origSendEvent = method_getImplementation(m); class_replaceMethod([NSApplication class], @selector(sendEvent:), (IMP)wsdResizeSend, method_getTypeEncoding(m)); } }
 @end
+
+
+/* ---- the green button: full screen and the tiling popover that shows when the pointer rests on it (macOS 26) ----
+ * Full screen here is the window over the whole area below the menu bar (30 pt) and its previous frame is kept in gSnapped's sibling; the same button (or Control-Command-F) leaves it. The popover lists what the Mac's does:
+ * Enter / Exit Full Screen, Tile Window to Left of Screen, Tile Window to Right of Screen, Fill, Center (the geometry measured with Window > Move & Resize). */
+static NSMutableDictionary *gFullSaved;
+BOOL WsdIsFullscreen(NSWindow *w) { return gFullSaved && gFullSaved[@([w windowNumber])] != nil; }
+void WsdToggleFullscreen(NSWindow *w)
+{
+	if (!gFullSaved) gFullSaved = [[NSMutableDictionary alloc] init];
+	NSNumber *k = @([w windowNumber]);
+	if (gFullSaved[k]) { [w setFrame: [gFullSaved[k] rectValue] display: YES]; [gFullSaved removeObjectForKey: k]; return; }
+	gFullSaved[k] = [NSValue valueWithRect: [w frame]]; NSRect sc = [[NSScreen mainScreen] frame]; [w setFrame: NSMakeRect(sc.origin.x, sc.origin.y, sc.size.width, sc.size.height - kBarH) display: YES];
+}
+void WsdTileWindow(NSWindow *w, int where)       /* 0 left half, 1 right half, 2 fill, 3 center (a third smaller than the area) */
+{
+	NSRect v = VisibleArea(), f = v; if (!gSnapped) gSnapped = [[NSMutableDictionary alloc] init]; if (!gSnapped[@([w windowNumber])]) gSnapped[@([w windowNumber])] = [NSValue valueWithRect: [w frame]];
+	if (where == 0) f.size.width /= 2; else if (where == 1) { f.size.width /= 2; f.origin.x += f.size.width; } else if (where == 3) { f = [w frame]; f.origin.x = NSMidX(v) - f.size.width / 2; f.origin.y = NSMidY(v) - f.size.height / 2; }
+	[w setFrame: f display: YES];
+}
+@interface WsdTilePopoverTarget : NSObject { @public NSWindow *w; NSPopover *pop; } @end
+@implementation WsdTilePopoverTarget
+- (void)pick:(NSButton *)b { NSInteger t = [b tag]; [pop close]; if (t == 10) WsdToggleFullscreen(w); else WsdTileWindow(w, (int)t); }
+@end
+void WsdShowTilePopover(NSWindow *w, NSRect buttonInWindow)
+{
+	static NSPopover *pop; static WsdTilePopoverTarget *tg; if (pop && [pop isShown]) return;
+	if (!tg) tg = [WsdTilePopoverTarget new]; tg->w = w;
+	NSArray *rows = @[ @[ WsdIsFullscreen(w) ? @"Exit Full Screen" : @"Enter Full Screen", @10 ], @[ @"Tile Window to Left of Screen", @0 ], @[ @"Tile Window to Right of Screen", @1 ], @[ @"Fill", @2 ], @[ @"Center", @3 ] ];
+	NSView *v = [[NSView alloc] initWithFrame: NSMakeRect(0, 0, 230, 8 + 24 * [rows count])];
+	for (NSUInteger i = 0; i < [rows count]; i++) { NSButton *b = [[NSButton alloc] initWithFrame: NSMakeRect(6, 4 + 24 * ([rows count] - 1 - i), 218, 24)]; [b setBordered: NO]; [b setAlignment: NSLeftTextAlignment]; [b setTitle: rows[i][0]]; [b setTag: [rows[i][1] integerValue]]; [b setTarget: tg]; [b setAction: @selector(pick:)]; [b setFont: [NSFont systemFontOfSize: 13]]; [v addSubview: b]; }
+	NSViewController *vc = [[NSViewController alloc] init]; [vc setView: v]; pop = [[NSPopover alloc] init]; [pop setContentViewController: vc]; [pop setBehavior: NSPopoverBehaviorTransient]; tg->pop = pop;
+	[pop showRelativeToRect: buttonInWindow ofView: [[w contentView] superview] preferredEdge: NSMinYEdge];
+}
