@@ -73,6 +73,19 @@ static NSString *customTitle_unused; static BOOL allowMouse = YES, optionAsMeta 
 - (BOOL)acceptsFirstResponder { return YES; }
 - (BOOL)isOpaque { return [profile->background alphaComponent] >= 0.999; }
 - (void)setCustomTitle:(NSString *)t { [customTitle release]; customTitle = [t length] ? [t copy] : nil; if ([delegate respondsToSelector:@selector(termViewChanged:)]) [delegate termViewChanged:self]; }
+- (NSString *)currentDirectory { const char *c = vt_cwd(term); if (c && *c) return [NSString stringWithUTF8String:c]; return fgCwd; }
+- (NSString *)foregroundProcessName { return fgName; }
+/* once a second: the foreground process and the shell's directory (the title shows both, as the Mac's Terminal does); true when one changed */
+- (BOOL)pollForeground
+{
+	NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate]; if (now - fgPolled < 1.0 || exited) return NO; fgPolled = now;
+	char nm[64], cw[1024]; pid_t fg = master >= 0 ? tcgetpgrp(master) : child; pty_foreground(master, child, nm, sizeof nm, cw, sizeof cw);
+	NSString *n = nm[0] ? [NSString stringWithUTF8String:nm] : nil, *c = cw[0] ? [NSString stringWithUTF8String:cw] : nil;
+	if (n && fg == child) n = [@"-" stringByAppendingString:n];       /* a login shell shows with the dash */
+	BOOL ch = ![n ?: @"" isEqualToString:fgName ?: @""] || ![c ?: @"" isEqualToString:fgCwd ?: @""];
+	if (ch) { [fgName release]; [fgCwd release]; fgName = [n copy]; fgCwd = [c copy]; }
+	return ch;
+}
 - (NSString *)titleString { if (customTitle) return customTitle; const char *t = vt_title(term); return (t && *t) ? [NSString stringWithUTF8String:t] : @"Terminal"; }
 - (BOOL)childExited { return exited; }
 - (pid_t)childPid { return child; }
@@ -92,6 +105,8 @@ static NSString *customTitle_unused; static BOOL allowMouse = YES, optionAsMeta 
 			if (r == child) { exited = YES; const char *m = "\r\n[Process completed]\r\n"; vt_feed(term, m, strlen(m)); if ([delegate respondsToSelector:@selector(termViewExited:)]) [delegate termViewExited:self]; }
 		}
 	}
+	BOOL fgChanged = [self pollForeground];
+	if (fgChanged && [delegate respondsToSelector:@selector(termViewChanged:)]) [delegate termViewChanged:self];
 	if (vt_dirty_gen(term) != drawnGen) { drawnGen = vt_dirty_gen(term); [self setNeedsDisplay:YES]; if ([delegate respondsToSelector:@selector(termViewChanged:)]) [delegate termViewChanged:self]; }
 }
 
@@ -174,9 +189,13 @@ static NSColor *rgbColor(uint32_t c) { return [NSColor colorWithCalibratedRed:((
 	return p >= a && p <= b;
 }
 
+- (void)setFrame:(NSRect)f { [super setFrame:f]; [self syncGridToSize:f.size]; }        /* GNUstep's setFrame: does not go through setFrameSize: (a resized window left the grid, and the shell's idea of it, stale until the font size changed) */
 - (void)setFrameSize:(NSSize)size
 {
-	[super setFrameSize:size];
+	[super setFrameSize:size]; [self syncGridToSize:size];
+}
+- (void)syncGridToSize:(NSSize)size
+{
 	int cols = (int)(size.width / cellW), rows = (int)(size.height / cellH);
 	if (cols < 2) cols = 2; if (rows < 1) rows = 1;
 	if (cols != vt_cols(term) || rows != vt_rows(term)) { vt_resize(term, cols, rows); if (master >= 0) pty_set_size(master, cols, rows); [self setNeedsDisplay:YES]; }

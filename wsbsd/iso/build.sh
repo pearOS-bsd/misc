@@ -15,6 +15,7 @@ mkdir -p "$WORK" "$OUT"; [ -d "$ROOT" ] && chflags -R noschg,nouchg "$ROOT" 2>/d
 
 echo "== 1. the software"
 pkg info -e zsh >/dev/null 2>&1 || pkg install -y zsh >/dev/null 2>&1 || true
+pkg info -e zsh-autosuggestions >/dev/null 2>&1 || pkg install -y zsh-autosuggestions >/dev/null 2>&1 || true
 if [ -z "$SKIP_SOFTWARE" ]; then
 	pkg install -y python3 gmake pkgconf git >/dev/null 2>&1 || true
 	sh "$WS/ci/gnustep-setup.sh" > "$WORK/gnustep.log" 2>&1 || { tail -30 "$WORK/gnustep.log"; exit 1; }
@@ -62,7 +63,7 @@ rm -f "$ROOT"/usr/lib/*.a "$ROOT"/usr/lib/*_p.a "$ROOT"/usr/bin/clang* "$ROOT"/u
 echo "== 3. what we built, with the libraries it needs"
 mkdir -p "$ROOT/usr/local"
 PDFLIBS="$(cd / && ls usr/local/lib/libpoppler-glib.so* 2>/dev/null)"   # dlopen'ed by PDFImage.m: the dependency scan below follows them
-tar -C / -cf - $PDFLIBS usr/local/GNUstep usr/local/sbin/wsd usr/local/sbin/spctl usr/local/bin usr/local/libexec/dyld usr/local/lib/libwsclient.so usr/local/lib/libwsbsdcompat.so usr/local/lib/libQuartzCore.so usr/local/share/fonts usr/local/etc/fonts usr/local/share/wsbsd usr/local/bin/zsh usr/local/share/zsh usr/local/lib/zsh usr/local/share/icu usr/local/lib/libicudata.so usr/local/lib/libicudata.so.76 usr/local/lib/libicudata.so.76.1 2>/dev/null | tar -C "$ROOT" -xpf -
+tar -C / -cf - $PDFLIBS usr/local/GNUstep usr/local/sbin/wsd usr/local/sbin/spctl usr/local/bin usr/local/libexec/dyld usr/local/lib/libwsclient.so usr/local/lib/libwsbsdcompat.so usr/local/lib/libQuartzCore.so usr/local/share/fonts usr/local/etc/fonts usr/local/share/wsbsd usr/local/bin/zsh usr/local/share/zsh usr/local/share/zsh-autosuggestions usr/local/lib/zsh usr/local/share/icu usr/local/lib/libicudata.so usr/local/lib/libicudata.so.76 usr/local/lib/libicudata.so.76.1 2>/dev/null | tar -C "$ROOT" -xpf -
 # guest tools of VMware and VirtualBox (before the library scan, which then follows their dependencies)
 sh "$HERE/tools/guesttools.sh" "$ROOT" || echo "NOTE: guest tools failed"
 # every shared library below /usr/local that these programs need (ldd closure)

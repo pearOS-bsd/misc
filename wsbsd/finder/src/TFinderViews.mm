@@ -1176,6 +1176,12 @@ static void RedrawTree(NSView *v) { [v setNeedsDisplay: YES]; for (NSView *k in 
 - (void)zoom:(id)s { NSRect vf = [[NSScreen mainScreen] frame]; vf.size.height -= 30; if (_zoomed) { [self setFrame: _savedFrame display: YES]; _zoomed = NO; } else { _savedFrame = [self frame]; [self setFrame: vf display: YES]; _zoomed = YES; } }
 - (void)performZoom:(id)s { [self zoom: s]; }
 - (BOOL)isZoomed { return _zoomed; }
+- (BOOL)wsdIsResizable { return YES; }       /* the window's edges are resized by the application (WsdResize.m), live, with plain events */
+- (BOOL)wsdWantsMoveAt:(NSEvent *)e       /* a press on the toolbar's empty part moves the window (a double click zooms it: that one goes to sendEvent:) */
+{
+	if ([e clickCount] >= 2) return NO; NSPoint p = [e locationInWindow]; NSView *cv = [self contentView]; NSView *hit = [cv hitTest: [[cv superview] convertPoint: p fromView: nil]];
+	return [hit respondsToSelector: @selector(isDragPoint:)] && [(id)hit isDragPoint: [hit convertPoint: p fromView: nil]];
+}
 - (void)_track:(int)m event:(NSEvent *)event                  /* m: 0 moves, else the edges (1 left, 2 right, 4 bottom, 8 top) */
 {
 	NSRect frame = [self frame]; NSPoint start = [NSEvent mouseLocation]; NSSize mn = [self minSize]; NSEvent *e = event; if (getenv("FINDER_DEBUG_KEY")) NSLog(@"window track mode %d from %@ frame %@", m, NSStringFromPoint(start), NSStringFromRect(frame));

@@ -123,7 +123,7 @@
 	if (quitAfter && atof(quitAfter) > 0) [NSTimer scheduledTimerWithTimeInterval:atof(quitAfter) target:self selector:@selector(finish:) userInfo:nil repeats:NO];
 	if (init && *init) [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(typeInitial:) userInfo:c repeats:NO];
 }
-- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)a { (void)a; return YES; }
+- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)a { (void)a; return NO; }       /* as on the Mac: closing the last window leaves the application running until Command-Q */
 @end
 
 /* ---- the menus (titles, order and key equivalents of Terminal.app's MainMenu) ---- */

@@ -25,6 +25,7 @@ const vt_cell *vt_scrollback_cell(const vt *t, int col, int line_from_newest);  
 int vt_scrollback_lines(const vt *t);
 void vt_cursor(const vt *t, int *col, int *row, int *visible);
 int vt_alt_screen(const vt *t);
+const char *vt_cwd(const vt *t);                                                           /* the shell's directory announced with OSC 7, "" when it has not */
 const char *vt_title(const vt *t);                                                         /* set by OSC 0 / 2 */
 uint32_t vt_dirty_gen(const vt *t);                                                        /* changes whenever the content changes */
 int vt_app_cursor_keys(const vt *t);                                                       /* DECCKM: arrows send ESC O A instead of ESC [ A */

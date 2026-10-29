@@ -150,11 +150,13 @@ static NSMutableArray *all;
 }
 - (void)windowDidResize:(NSNotification *)n { (void)n; [self layoutViews]; }
 
-- (void)updateTitle
+- (void)updateTitle        /* "folder — process — columns×rows", and the folder as the window's represented file (the Mac's Terminal does the same) */
 {
-	TermView *t = [self term]; const char *u = getenv("USER"); NSString *user = u ? [NSString stringWithUTF8String:u] : NSUserName();
-	NSString *ot = [t titleString];
-	[window setTitle:[ot isEqualToString:@"Terminal"] ? [NSString stringWithFormat:@"%@ — -%@ — %d×%d", user, [[[NSProcessInfo processInfo].environment objectForKey:@"SHELL"] lastPathComponent] ?: @"sh", [t cols], [t rows]] : [NSString stringWithFormat:@"%@ — %@", user, ot]];
+	TermView *t = [self term]; NSString *dir = [t currentDirectory], *ot = [t titleString]; BOOL set = ![ot isEqualToString:@"Terminal"];
+	NSString *folder = [dir length] ? ([dir isEqualToString:NSHomeDirectory()] ? NSUserName() : [dir lastPathComponent]) : NSUserName();
+	NSString *proc = set ? ot : ([t foregroundProcessName] ?: [@"-" stringByAppendingString:[[[[NSProcessInfo processInfo] environment] objectForKey:@"SHELL"] lastPathComponent] ?: @"sh"]);
+	[window setTitle:[NSString stringWithFormat:@"%@ — %@ — %d×%d", folder, proc, [t cols], [t rows]]];
+	if ([dir length] && ![[window representedFilename] isEqualToString:dir]) [window setRepresentedFilename:dir];
 }
 - (void)termViewChanged:(TermView *)t { if (t == [self term]) [self updateTitle]; [tabBar setNeedsDisplay:YES]; }
 - (void)termViewActivated:(TermView *)t { for (TermPanes *tab in tabs) if ([[tab panes] containsObject:t]) { [tab setActivePane:t]; [window makeFirstResponder:t]; [self updateTitle]; } }
