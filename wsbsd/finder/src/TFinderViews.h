@@ -31,7 +31,7 @@ NSArray *TFRecentPaths(void);
 NSWindow *TFOpenInfoWindow(NSString *path);
 void TFCopyItems(NSArray *srcs, NSString *destDir, BOOL move, void (^completion)(NSArray *ops));
 NSWindow *TFOpenQuickLook(NSString *path); void TFQuickLookFollow(NSString *path);
-BOOL TFIsArchive(NSString *path); void TFExtractArchive(NSString *path, void (^done)(NSString *result)); void TFCompressItems(NSArray *items, NSString *destDir, void (^done)(NSString *zip));
+void TFShowProgressWindows(void); BOOL TFIsArchive(NSString *path); void TFExtractArchive(NSString *path, void (^done)(NSString *result)); void TFCompressItems(NSArray *items, NSString *destDir, void (^done)(NSString *zip));
 void TFOpenSettings(void);
 @class TIconView;
 void TFOpenViewOptions(TIconView *view, NSString *folderName, void (^changed)(void));

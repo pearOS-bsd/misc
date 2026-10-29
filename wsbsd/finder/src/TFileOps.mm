@@ -21,7 +21,7 @@
 - (void)mouseDown:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; if (p.x > [self bounds].size.width - 50 && p.y > 48 && p.y < 82 && stop) { *stop = YES; } }
 @end
 
-@interface TCopyJob : NSObject { @public NSArray *srcs; NSString *dest; BOOL move; BOOL stop; unsigned long long total, done; NSString *current; NSMutableArray *ops; NSWindow *win; TProgressView *view; NSDate *t0; void (^completion)(NSArray *); BOOL finished; } @end
+@interface TCopyJob : NSObject { @public NSArray *srcs; NSString *dest; BOOL move; BOOL stop; unsigned long long total, done; NSString *current; NSMutableArray *ops; NSWindow *win; TProgressView *view; NSDate *t0; void (^completion)(NSArray *); BOOL finished, forceShow; } @end
 @implementation TCopyJob
 static unsigned long long SizeOf2(NSString *p);
 static unsigned long long SizeOf(NSString *p) { struct stat sb; if (lstat([p fileSystemRepresentation], &sb)) return 0; if (!S_ISDIR(sb.st_mode)) return (unsigned long long)sb.st_size; unsigned long long t = 0; for (NSString *n in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: p error: NULL]) t += SizeOf([p stringByAppendingPathComponent: n]); return t; }
@@ -51,15 +51,18 @@ static unsigned long long SizeOf(NSString *p) { struct stat sb; if (lstat([p fil
 - (void)_tick:(NSTimer *)t
 {
 	if (finished) { [t invalidate]; [win close]; win = nil; if (completion) completion(ops); return; }
-	if (!win && [[NSDate date] timeIntervalSinceDate: t0] > 0.8) { win = [[TFinderWindow alloc] initWithContentRect: NSMakeRect(460, 420, 460, 112) styleMask: NSWindowStyleMaskBorderless backing: NSBackingStoreBuffered defer: NO]; [win setReleasedWhenClosed: NO]; [win setOpaque: NO]; [win setBackgroundColor: [NSColor clearColor]]; view = [[TProgressView alloc] initWithFrame: NSMakeRect(0, 0, 460, 112)]; view->stop = &stop; [win setContentView: view]; TWindowTrim *tr = [[TWindowTrim alloc] initWithFrame: [view bounds]]; [view addSubview: tr]; [win makeKeyAndOrderFront: nil]; [NSClassFromString(@"WsdFinderSupport") roundWindow: win radius: 16]; }
+	if (!win && (forceShow || [[NSDate date] timeIntervalSinceDate: t0] > 0.8)) { win = [[TFinderWindow alloc] initWithContentRect: NSMakeRect(460, 420, 460, 112) styleMask: NSWindowStyleMaskBorderless backing: NSBackingStoreBuffered defer: NO]; [win setReleasedWhenClosed: NO]; [win setOpaque: NO]; [win setBackgroundColor: [NSColor clearColor]]; view = [[TProgressView alloc] initWithFrame: NSMakeRect(0, 0, 460, 112)]; view->stop = &stop; [win setContentView: view]; TWindowTrim *tr = [[TWindowTrim alloc] initWithFrame: [view bounds]]; [view addSubview: tr]; [win makeKeyAndOrderFront: nil]; [NSClassFromString(@"WsdFinderSupport") roundWindow: win radius: 16]; }
 	if (win) { view->title = [NSString stringWithFormat: @"%@ “%@”", move ? @"Moving" : @"Copying", current ?: @""]; view->fraction = total ? (double)done / total : 0; view->detail = [NSString stringWithFormat: @"%@ of %@", TFSizeString(done), TFSizeString(total)]; [view setNeedsDisplay: YES]; }
 }
 @end
 
+static NSMutableArray *gCopyJobs;
+/* Window > Show Progress Window: the windows of the copies that are running appear at once (they come after 0.8 s by themselves) */
+void TFShowProgressWindows(void) { for (TCopyJob *j in gCopyJobs) if (!j->finished) j->forceShow = YES; }
 void TFCopyItems(NSArray *srcs, NSString *destDir, BOOL move, void (^completion)(NSArray *ops))
 {
 	TCopyJob *j = [TCopyJob new]; j->srcs = srcs; j->dest = destDir; j->move = move; j->ops = [NSMutableArray array]; j->completion = completion; j->t0 = [NSDate date];
-	static NSMutableArray *jobs; if (!jobs) jobs = [NSMutableArray array]; [jobs addObject: j];
+	if (!gCopyJobs) gCopyJobs = [NSMutableArray array]; [gCopyJobs addObject: j];
 	NSThread *th = [[NSThread alloc] initWithBlock: ^{ for (NSString *p in srcs) j->total += SizeOf(p); [j _work]; }]; [th start];
 	[NSTimer scheduledTimerWithTimeInterval: 0.1 target: j selector: @selector(_tick:) userInfo: nil repeats: YES];
 }
