@@ -137,11 +137,21 @@ static NSArray *Accounts(void)
 {
 	NSString *c = [e characters]; if (![c length]) return NO; unichar k = [c characterAtIndex: 0]; NSInteger n = (NSInteger)[accounts count];
 	if (chosen < 0) {
-		if (k == 0xF702 && focus > 0) focus--; else if (k == 0xF703 && focus < n - 1) focus++; else if (k == '\r' || k == '\n') { chosen = focus; [pw setStringValue: @""]; [msg setStringValue: @"Enter Password"]; [self refresh]; [win makeFirstResponder: pw]; return YES; } else return NO;
+		if (k == 0xF702 && focus > 0) focus--; else if (k == 0xF703 && focus < n - 1) focus++; else if (k == '\r' || k == '\n') { chosen = focus; [pw setStringValue: @""]; [self setMessage: @"Enter Password"]; [self refresh]; [win makeFirstResponder: pw]; return YES; } else return NO;
 		[self refresh]; return YES;
 	}
 	if (k == 27 && n > 1) { focus = chosen; chosen = -1; [pw setStringValue: @""]; [self refresh]; [win makeFirstResponder: nil]; return YES; }       /* back to the accounts */
 	return NO;
+}
+- (void)setMessage:(NSString *)t       /* the label is made again: the window has no background, so a new text drew over the old one */
+{
+	NSView *sv = [msg superview]; NSRect f = [msg frame]; NSColor *c = [msg textColor]; NSFont *fn = [msg font]; BOOL h = [msg isHidden]; [msg removeFromSuperview];
+	msg = [NSTextField labelWithString: t]; [msg setTextColor: c]; [msg setAlignment: NSCenterTextAlignment]; [msg setFont: fn]; [msg setFrame: f]; [msg setHidden: h]; [sv addSubview: msg]; [sv setNeedsDisplayInRect: f];
+}
+- (void)shake       /* a wrong password: the field shakes sideways, three swings dying away in half a second, as the Mac's login window does */
+{
+	static NSTimer *t; if (t) return; NSRect home = [pill frame]; NSDate *t0 = [NSDate date]; __weak LWPill *p = pill;
+	t = [NSTimer scheduledTimerWithTimeInterval: 1.0 / 60 repeats: YES block: ^(NSTimer *tm) { double e = -[t0 timeIntervalSinceNow] / (getenv("LW_SLOW") ? 4.0 : 0.5); if (e >= 1) { [p setFrame: home]; [[p superview] setNeedsDisplay: YES]; [tm invalidate]; t = nil; return; } NSRect f = home; f.origin.x += 14.0 * sin(e * 2 * M_PI * 3) * (1 - e); if (getenv("LW_DEBUG")) NSLog(@"shake e=%.2f x=%.1f", e, f.origin.x); [p setFrame: f]; [[p superview] setNeedsDisplay: YES]; }];
 }
 - (void)noop:(id)s {}
 - (void)switchUser:(id)s { exit(3); }       /* Switch User: the session keeps running, the console goes to the login window (the session script sees the exit status 3) */
@@ -155,12 +165,12 @@ static NSArray *Accounts(void)
 		NSUInteger n = [accounts count]; CGFloat cx = one && mine ? 960 : 960 + ((CGFloat)k - (n - 1) / 2.0) * 150;       /* the chosen account goes to the middle, the row comes back when Escape returns to the accounts */
 		if (!one || mine) { [(LWFace *)faces[k] setFrame: [self rectCX: cx cy: 889 w: 80 h: 80]]; [(NSTextField *)names[k] setFrame: [self rectCX: cx cy: 960 w: 140 h: 22]]; } }
 }
-- (void)choose:(LWClick *)b { chosen = b->index; [pw setStringValue: @""]; [msg setStringValue: @"Enter Password"]; [self refresh]; [win makeFirstResponder: pw]; }
+- (void)choose:(LWClick *)b { chosen = b->index; [pw setStringValue: @""]; [self setMessage: @"Enter Password"]; [self refresh]; [win makeFirstResponder: pw]; }
 - (void)submit:(id)s
 {
 	if (chosen < 0) return; NSString *u = accounts[chosen][@"user"];
 	if (Authenticate(u, [pw stringValue])) { printf("%s\n", [u UTF8String]); fflush(stdout); exit(0); }
-	[msg setStringValue: @"Incorrect password"]; [pw setStringValue: @""]; [win makeFirstResponder: pw];
+	[self setMessage: @"Incorrect password"]; [pw setStringValue: @""]; [win makeFirstResponder: pw]; [self shake];
 }
 - (void)restart:(id)s { system("/sbin/shutdown -r now"); }
 - (void)shutdown:(id)s { system("/sbin/shutdown -p now"); }
