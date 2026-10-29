@@ -88,7 +88,7 @@ The stack: `wsd` (this repo: window server and compositor speaking the SkyLight 
 - [x] The login window shakes the password field on a wrong password.
 - [x] The shutdown screen is the pear alone (no bar, no cursor) instead of the verbose console *(seen in the VM; the real shutdown path is for the next image)*.
 - [x] The kernel's boot logo is the pear (`iso/tools/patch_vt_logo.py`, patched in at image build) *(tested on the 14.5 amd64 kernel file; the pear on screen is for the next image to show; ESC for the verbose boot is not done)*.
-- [ ] Dark / light mode of the system (UITest and Control Center do nothing).
+- [x] Dark / light mode of the system: choosing Light removed the key `AppleInterfaceStyle`, and no key means dark in this image, so nothing happened; Light is written out now (UITest and Control Center) and the programs switch within a second *(seen in UITest in the VM: the windows and controls turn light; the light look of many controls was never measured on the Mac and is rough)*.
 - [ ] Night Light.
 - [ ] Wi-Fi in Control Center has a real function (joins networks with the image's own setup).
 - [ ] Keyboard backlight driver (NS50_70MU) loaded and working.

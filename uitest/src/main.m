@@ -218,7 +218,7 @@ static void SetGlobal(NSString *key, id value)
 }
 - (void) glassMoved: (NSSlider *)s { [[NSString stringWithFormat: @"%.2f", [s doubleValue]] writeToFile: @"/var/tmp/wsd-glass-intensity" atomically: YES encoding: NSUTF8StringEncoding error: NULL]; [glassLabel setStringValue: [NSString stringWithFormat: @"%.0f %%", [s doubleValue] * 100]]; }
 - (void) touchBarToggled: (NSButton *)b { SetGlobal(@"WsbsdTouchBarEnabled", [NSNumber numberWithBool: [b state] == NSOnState]); }
-- (void) appearancePicked: (NSSegmentedControl *)sg { SetGlobal(@"AppleInterfaceStyle", [sg selectedSegment] == 1 ? @"Dark" : nil); }
+- (void) appearancePicked: (NSSegmentedControl *)sg { SetGlobal(@"AppleInterfaceStyle", [sg selectedSegment] == 1 ? @"Dark" : @"Light"); }
 - (void) showSystemWindow
 {
 	@try { [self showSystemWindow2]; } @catch (NSException *e) { printf("SYSTEM window failed: %s\n", [[e description] UTF8String]); }
