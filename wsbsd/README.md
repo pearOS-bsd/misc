@@ -77,7 +77,7 @@ The stack: `wsd` (this repo: window server and compositor speaking the SkyLight 
 - [x] Dock resize: the resize cursor over the separator and during the drag, the window follows the new size at once so nothing is cut *(VM: cursor and a mid-drag capture checked)*.
 - [ ] Quick Look: the small open / close animations are missing.
 - [ ] Resizing a window: it sometimes stays "held" after the mouse is released (needs one or two clicks).
-- [ ] Resizing a window flickers.
+- [x] Resizing a window flickers. *(a burst of captures during a drag showed a frame with the window empty (the new buffer was bound but not yet flushed): the copy of the old picture is now flushed at once; 30 captures of a drag: no empty frame; owner to confirm)*
 - [ ] Genie minimize lags (one sample per pixel for big windows is in; not re-measured).
 - [ ] Sometimes a Finder window opens as an empty frame (needs Force Quit > Restart).
 - [ ] Sometimes Force Quit shows no applications (Restart still works).
