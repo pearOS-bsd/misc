@@ -1144,6 +1144,11 @@ static NSGradient *grad(int r0, int g0, int b0, int r1, int g1, int b1, int r2, 
 			NSDictionary *at = [NSDictionary dictionaryWithObjectsAndKeys:
 				titleFont(), NSFontAttributeName, tc, NSForegroundColorAttributeName, ps, NSParagraphStyleAttributeName, nil];
 			CGFloat x = 82.0;
+			NSString *rep = [window representedFilename]; BOOL dirIcon = NO;
+			if ([rep length] && [[NSFileManager defaultManager] fileExistsAtPath: rep isDirectory: &dirIcon]) {       /* the proxy icon of the document or folder the window stands for, before the title */
+				Class fs = NSClassFromString(@"WsdFinderSupport"); NSRect ir = NSMakeRect(x, b.size.height - TB + 8.0, 16, 16);
+				if ([fs respondsToSelector: @selector(drawIconOfName:directory:inRect:)]) { [fs drawIconOfName: [rep lastPathComponent] directory: dirIcon inRect: ir]; x += 20.0; }
+			}
 			[[window title] drawInRect: NSMakeRect(x, b.size.height - TB + 8.0, b.size.width - x - 16.0, 16.0) withAttributes: at];
 		}
 		{ CGFloat th = WsdTabBarHeight(window); if (th > 0) { NSRect bar = NSMakeRect(0, b.size.height - TB - th, b.size.width, th); [bg set]; NSRectFill(bar); WsdDrawTabBar(window, bar, dark, key); } }       /* the tab bar of a tabbed window */
