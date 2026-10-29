@@ -26,7 +26,7 @@ fi
 for need in /usr/local/GNUstep/System/Library/Libraries/libgnustep-gui.so.0.32 /usr/local/GNUstep/System/Library/Libraries/libgnustep-base.so.1.31 /usr/local/GNUstep/Local/Library/Libraries/libgnustep-corebase.so.0 /usr/local/GNUstep/Local/Library/Libraries/libopal.so.0; do
 	[ -f "$need" ] || { echo "missing after the software build: $need"; ls /usr/local/GNUstep/System/Library/Libraries /usr/local/GNUstep/Local/Library/Libraries 2>&1 | head -20; tail -20 "$WORK/gnustep.log" "$WORK/opal.log" 2>/dev/null; exit 1; }
 done
-(cd "$WS" && gmake fb >/dev/null && install -d /usr/local/sbin && install -m 755 wsd /usr/local/sbin/wsd && gmake wsshot wsclick wskey wsdrag wswins wsfps wsmove wscursor >/dev/null && install -d /usr/local/bin && install -m 755 wsshot wsclick wskey wsdrag wswins wsfps wsmove wscursor /usr/local/bin/)
+(cd "$WS" && gmake fb >/dev/null && install -d /usr/local/sbin && install -m 755 wsd /usr/local/sbin/wsd && gmake wsspace wsshot wsclick wskey wsdrag wswins wsfps wsmove wscursor >/dev/null && install -d /usr/local/bin && install -m 755 wsspace wsshot wsclick wskey wsdrag wswins wsfps wsmove wscursor /usr/local/bin/)
 (install -d /usr/local/bin; cc -O2 -o /usr/local/bin/dmgtool "$WS/dmg/dmgtool.c" -lz -lbz2 2>"$WORK/dmgtool.log" || echo "NOTE: dmgtool did not build"; cd "$WS/src" && for f in client compositor_sw region ipc evrec buffer; do cc -O2 -fPIC -std=c99 -D_DEFAULT_SOURCE -I"$WS/include" -c $f.c -o "$WORK/ws_$f.o"; done; cc -shared -o /usr/local/lib/libwsclient.so "$WORK"/ws_*.o -lm)
 sh "$WS/sdk/build-compat.sh" "$WORK/compat" > "$WORK/compat.log" 2>&1; install -m 755 "$WORK/compat/libwsbsdcompat.so" /usr/local/lib/libwsbsdcompat.so; install -m 755 "$WORK/compat/libQuartzCore.so" /usr/local/lib/libQuartzCore.so
 # Wi-Fi: CoreWLAN, CoreWiFi and airportd, laid out as on the Mac (installed below under /System and /usr/libexec)
@@ -60,6 +60,7 @@ for s in base kernel; do
 	[ -f "$WORK/$s.txz" ] || fetch -q -o "$WORK/$s.txz" "https://download.freebsd.org/releases/$RELDIR/$REL/$s.txz" || fetch -q -o "$WORK/$s.txz" "https://ftp-archive.freebsd.org/pub/FreeBSD-Archive/old-releases/$RELDIR/$REL/$s.txz"
 	tar -xpf "$WORK/$s.txz" --no-fflags -C "$ROOT"
 done
+python3 "$HERE/tools/patch_vt_logo.py" "$ROOT/boot/kernel/kernel" || echo "NOTE: the boot logo of the kernel was not changed"
 rm -rf "$ROOT/usr/lib32" "$ROOT/usr/tests" "$ROOT/usr/share/doc" "$ROOT/usr/share/examples" "$ROOT/usr/share/games" "$ROOT/usr/share/man" "$ROOT/usr/share/info" "$ROOT/usr/include" "$ROOT/usr/lib/clang" "$ROOT/usr/share/dtrace" "$ROOT/usr/share/sendmail" "$ROOT/usr/share/openssl"
 rm -f "$ROOT"/usr/lib/*.a "$ROOT"/usr/lib/*_p.a "$ROOT"/usr/bin/clang* "$ROOT"/usr/bin/ld.lld "$ROOT"/usr/bin/lld* "$ROOT"/usr/bin/lldb* "$ROOT"/usr/bin/llvm-* "$ROOT"/usr/bin/c++ "$ROOT"/usr/bin/cc "$ROOT"/usr/bin/c89 "$ROOT"/usr/bin/c99 "$ROOT"/usr/bin/cpp "$ROOT"/usr/bin/CC "$ROOT"/usr/bin/ld "$ROOT"/usr/bin/ld.bfd "$ROOT"/usr/bin/ar "$ROOT"/usr/bin/ranlib
 

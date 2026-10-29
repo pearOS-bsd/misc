@@ -286,6 +286,7 @@ static int wsx_call(ws_conn *c, int id, const int32_t *a, int na, const char *s,
 
 int ws_win_set_key(ws_conn *c, ws_win *w) { int32_t a[8] = { (int32_t)w->id }; return wsx_call(c, WSX_SET_KEY, a, 8, NULL, NULL); }
 int ws_win_set_space(ws_conn *c, ws_win *w, uint32_t space) { int32_t a[2] = { (int32_t)w->id, (int32_t)space }; return wsx_call(c, WSX_SET_SPACE, a, 2, NULL, NULL); }
+int ws_set_shutdown_splash(ws_conn *c, int on) { int32_t a[1] = { on }; return wsx_call(c, WSX_SET_SHUTDOWN_SPLASH, a, 1, NULL, NULL); }
 int ws_set_active_space(ws_conn *c, uint32_t space) { int32_t a[1] = { (int32_t)space }; return wsx_call(c, WSX_SET_ACTIVE_SPACE, a, 1, NULL, NULL); }
 int ws_get_active_space(ws_conn *c, uint32_t *space) { wsx_rep r; if (wsx_call(c, WSX_GET_ACTIVE_SPACE, NULL, 0, NULL, &r)) return -1; *space = (uint32_t)r.a[0]; return 0; }
 int ws_win_glass_slot(ws_conn *c, ws_win *w, int slot, ws_rect r, int radius, int mode) { int32_t a[8] = { (int32_t)w->id, r.x, r.y, r.w, r.h, radius, mode, slot }; return wsx_call(c, WSX_SET_GLASS, a, 8, NULL, NULL); }

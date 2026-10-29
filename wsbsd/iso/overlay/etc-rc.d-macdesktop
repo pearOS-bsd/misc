@@ -90,13 +90,13 @@ macdesktop_start()
 macdesktop_stop()
 {
 	[ -f /var/run/wsbsd/supervisor.pid ] && kill "$(cat /var/run/wsbsd/supervisor.pid)" 2>/dev/null
-	# the applications first, then the window server (it clears the screen and gives the console back), then the console messages are shown again
+	# the sessions end first, then the window server shows the pear alone (no bar) and keeps it on the screen until the power goes: the console stays muted, so nothing is drawn over it
 	for f in /var/run/wsbsd/launchd.*.pid; do [ -f "$f" ] && kill "$(cat $f)" 2>/dev/null; done; sleep 1
 	for p in Terminal Finder Dock SystemUIServer; do pkill -x "$p" 2>/dev/null; done
-	[ -f /var/run/WindowServer.pid ] && kill "$(cat /var/run/WindowServer.pid)" 2>/dev/null
-	i=0; while [ $i -lt 30 ] && pgrep -f "WindowServer -b" >/dev/null 2>&1; do sleep 0.1; i=$((i+1)); done
-	conscontrol mute off >/dev/null 2>&1
-	echo "macdesktop: desktop stopped, the shutdown goes on" > /dev/console 2>/dev/null
+	WS_SOCKET=/var/run/WindowServer.sock /usr/local/bin/wsspace shutdown >/dev/null 2>&1 || {       # an image without the tool: the old way (the console comes back)
+		[ -f /var/run/WindowServer.pid ] && kill "$(cat /var/run/WindowServer.pid)" 2>/dev/null
+		i=0; while [ $i -lt 30 ] && pgrep -f "WindowServer -b" >/dev/null 2>&1; do sleep 0.1; i=$((i+1)); done
+		conscontrol mute off >/dev/null 2>&1; }
 }
 load_rc_config $name
 run_rc_command "$1"

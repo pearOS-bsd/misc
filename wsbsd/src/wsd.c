@@ -1174,6 +1174,7 @@ static int do_private(conn *c, const uint8_t *buf, size_t len)
 	case WSX_SET_KEY: r.retcode = holds_rights(c, (uint32_t)a[0]) && !ws_set_key_window(srv, (ws_wid)a[0]) ? 0 : CGS_ERROR_FAILURE; break;
 	case WSX_SET_SPACE: r.retcode = holds_rights(c, (uint32_t)a[0]) ? ws_window_set_space(srv, (ws_wid)a[0], (uint32_t)a[1]) : CGS_ERROR_FAILURE; wsd_dirty = 1; break;
 	case WSX_SET_ACTIVE_SPACE: ws_server_set_space(srv, (uint32_t)a[0]); wsd_dirty = 1; break;
+	case WSX_SET_SHUTDOWN_SPLASH: if (c->uid == 0) { ws_server_set_shutdown_splash(srv, a[0]); wsd_dirty = 1; } else r.retcode = CGS_ERROR_FAILURE; break;
 	case WSX_GET_ACTIVE_SPACE: r.a[0] = (int32_t)ws_server_space(srv); break;
 	case WSX_SET_GLASS: r.retcode = holds_rights(c, (uint32_t)a[0]) ? ws_set_window_glass_slot(srv, (ws_wid)a[0], a[7], (ws_rect){ a[1], a[2], a[3], a[4] }, a[5], a[6]) : CGS_ERROR_FAILURE; break;
 	case WSX_QUIT: running = 0; break;
@@ -1193,7 +1194,7 @@ static int dispatch(conn *c, uint8_t *buf, size_t len, int *fds, int nfds)
 	for (int i = 0; i < nfds; i++) close(fds[i]);                       /* every other request takes no descriptors */
 	if (h->msgh_size < sizeof *h || h->msgh_size > len) return reply_mig_error(c->fd, h, MIG_BAD_ARGUMENTS);
 	h->msgh_local_port = c->id;                                         /* the connection the request arrived on */
-	if (h->msgh_id >= WSX_FLUSH && h->msgh_id <= WSX_GET_ACTIVE_SPACE) { dirty = 1; return do_private(c, buf, len); }
+	if (h->msgh_id >= WSX_FLUSH && h->msgh_id <= WSX_SET_SHUTDOWN_SPLASH) { dirty = 1; return do_private(c, buf, len); }
 	if (h->msgh_id == SLS_MSG_CreateWindow) { dirty = 1; return do_create_window(c, buf, len); }
 	if (h->msgh_id == SLS_MSG_NewConnectionPort) return do_new_connection(c, buf, len);
 	if (h->msgh_id == SLS_MSG_FlushSurface) { dirty = 1; return do_flush_surface(c, buf, len); }
@@ -1339,6 +1340,7 @@ int main(int argc, char **argv)
 			if (out[i].filter == EVFILT_SIGNAL) {
 				if (fd == SIGUSR1) { vt_active = 0; if (kms) ws_kms_pause(kms); wsd_vt_release_ack(); }
 				else if (fd == SIGUSR2) { wsd_vt_acquire_ack(); if (kms && ws_kms_resume(kms) == 0) { vt_active = 1; last_gen = ~0ULL; last_cx = -1; last_cursor_serial = ~0u; hw_cursor = 0; dirty = 1; } }
+				else if (ws_server_shutdown_splash()) { }                /* going down: the pear stays on the screen until the power goes (nothing restores the console under it) */
 				else running = 0;                                         /* SIGTERM / SIGINT: leave the loop, restore the console */
 				continue;
 			}
