@@ -64,10 +64,10 @@ void SetBrightness(double v) { softBrightness = v; ApplyLatest(@"backlight", v, 
 static int BatteryPct(void) { int v = -1; size_t n = sizeof v; if (sysctlbyname("hw.acpi.battery.life", &v, &n, NULL, 0)) return -1; return v; }
 static BOOL Charging(void) { int v = 0; size_t n = sizeof v; if (sysctlbyname("hw.acpi.battery.state", &v, &n, NULL, 0)) return NO; return (v & 2) != 0; }
 static NSString *GlobalPrefsPath(void) { return [NSHomeDirectory() stringByAppendingPathComponent: @"Library/Preferences/.GlobalPreferences.plist"]; }
-BOOL DarkNow(void) { NSDictionary *d = [NSDictionary dictionaryWithContentsOfFile: GlobalPrefsPath()]; id v = d[@"AppleInterfaceStyle"]; return !v || [v caseInsensitiveCompare: @"Dark"] == NSOrderedSame; }
+BOOL DarkNow(void) { NSDictionary *d = [NSDictionary dictionaryWithContentsOfFile: GlobalPrefsPath()]; id v = d[@"AppleInterfaceStyle"]; return !v || [v caseInsensitiveCompare: @"Dark"] == NSOrderedSame; }       /* a missing key: dark (the image's default) */
 void SetDark(BOOL dark)
 {
-	NSString *f = GlobalPrefsPath(); NSMutableDictionary *d = [[NSDictionary dictionaryWithContentsOfFile: f] mutableCopy] ?: [NSMutableDictionary dictionary]; if (dark) d[@"AppleInterfaceStyle"] = @"Dark"; else [d removeObjectForKey: @"AppleInterfaceStyle"];
+	NSString *f = GlobalPrefsPath(); NSMutableDictionary *d = [[NSDictionary dictionaryWithContentsOfFile: f] mutableCopy] ?: [NSMutableDictionary dictionary]; d[@"AppleInterfaceStyle"] = dark ? @"Dark" : @"Light";       /* light is written out: no key at all means dark in this image (the look it was measured in), so that deleting the key could not switch to light */
 	[[NSFileManager defaultManager] createDirectoryAtPath: [f stringByDeletingLastPathComponent] withIntermediateDirectories: YES attributes: nil error: NULL]; [d writeToFile: f atomically: YES];
 }
 
