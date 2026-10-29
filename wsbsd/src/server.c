@@ -483,19 +483,20 @@ static ws_surface *warp_surface(const ws_server *srv, const window *w, const ws_
 	for (int i = 0; i < cols * rows; i++) { float x = m[4 * i], y = m[4 * i + 1]; if (x < minx) minx = x; if (x > maxx) maxx = x; if (y < miny) miny = y; if (y > maxy) maxy = y; }
 	int x0 = (int)floorf(minx) - 1, y0 = (int)floorf(miny) - 1, bw = (int)ceilf(maxx) + 1 - x0, bh = (int)ceilf(maxy) + 1 - y0;
 	if (bw <= 0 || bh <= 0 || bw > 8192 || bh > 8192) { free(q); return NULL; }
+	const int ssf = ((long)bw * bh > 450000) ? 1 : 2;       /* 2 x 2 samples per pixel for small boxes; a big window (the genie of a maximized one) gets one: four times fewer samples, the animation kept at the frame rate instead of two frames */
 	ws_surface *o = ws_surface_new(bw, bh); if (!o) { free(q); return NULL; }
 	/* 2 x 2 samples per pixel kept in a buffer of their own, so that the two triangles of a cell that share a pixel along the diagonal add up to full coverage */
-	size_t sw = (size_t)bw * 2, sh = (size_t)bh * 2; uint8_t *ss = calloc(sw * sh, 4); if (!ss) { ws_surface_free(o); free(q); return NULL; }
+	size_t sw = (size_t)bw * ssf, sh = (size_t)bh * ssf; uint8_t *ss = calloc(sw * sh, 4); if (!ss) { ws_surface_free(o); free(q); return NULL; }
 	for (int r = 0; r + 1 < rows; r++) for (int c = 0; c + 1 < cols; c++) {
 		const float *p00 = m + 4 * (r * cols + c), *p10 = p00 + 4, *p01 = p00 + 4 * cols, *p11 = p01 + 4;
 		float tx0 = fminf(fminf(p00[0], p10[0]), fminf(p01[0], p11[0])), tx1 = fmaxf(fmaxf(p00[0], p10[0]), fmaxf(p01[0], p11[0]));
 		float ty0 = fminf(fminf(p00[1], p10[1]), fminf(p01[1], p11[1])), ty1 = fmaxf(fmaxf(p00[1], p10[1]), fmaxf(p01[1], p11[1]));
-		int ix0 = (int)floorf((tx0 - x0) * 2) - 1, ix1 = (int)ceilf((tx1 - x0) * 2) + 1, iy0 = (int)floorf((ty0 - y0) * 2) - 1, iy1 = (int)ceilf((ty1 - y0) * 2) + 1;
+		int ix0 = (int)floorf((tx0 - x0) * ssf) - 1, ix1 = (int)ceilf((tx1 - x0) * ssf) + 1, iy0 = (int)floorf((ty0 - y0) * ssf) - 1, iy1 = (int)ceilf((ty1 - y0) * ssf) + 1;
 		if (ix0 < 0) ix0 = 0; if (iy0 < 0) iy0 = 0; if (ix1 > (int)sw) ix1 = (int)sw; if (iy1 > (int)sh) iy1 = (int)sh;
 		/* the quad is mapped bilinearly: p = p00 + s (p10 - p00) + t (p01 - p00) + s t (p00 - p10 - p01 + p11); the inverse is solved per sample (a quadratic in t) */
 		float e1x = p10[0] - p00[0], e1y = p10[1] - p00[1], e2x = p01[0] - p00[0], e2y = p01[1] - p00[1], e3x = p00[0] - p10[0] - p01[0] + p11[0], e3y = p00[1] - p10[1] - p01[1] + p11[1];
 		for (int y = iy0; y < iy1; y++) for (int x = ix0; x < ix1; x++) {
-			float px = x0 + (x + 0.5f) * 0.5f - p00[0], py = y0 + (y + 0.5f) * 0.5f - p00[1];
+			float px = x0 + (x + 0.5f) / ssf - p00[0], py = y0 + (y + 0.5f) / ssf - p00[1];
 			float hx = px, hy = py;
 			float k2 = e3x * e2y - e3y * e2x, k1 = (e1x * e2y - e1y * e2x) + (hx * e3y - hy * e3x), k0 = hx * e1y - hy * e1x;      /* cross2(g,f), cross2(e,f) + cross2(h,g), cross2(h,e) */
 			float t, sv;
@@ -515,7 +516,7 @@ static ws_surface *warp_surface(const ws_server *srv, const window *w, const ws_
 	}
 	for (int y = 0; y < bh; y++) for (int x = 0; x < bw; x++) {
 		uint8_t *d = o->px + (size_t)y * o->stride + (size_t)x * 4;
-		for (int k = 0; k < 4; k++) { int sum = 0; for (int sy = 0; sy < 2; sy++) for (int sx = 0; sx < 2; sx++) sum += ss[((size_t)(2 * y + sy) * sw + 2 * x + sx) * 4 + k]; d[k] = (uint8_t)((sum + 2) / 4); }
+		for (int k = 0; k < 4; k++) { int sum = 0; for (int sy = 0; sy < ssf; sy++) for (int sx = 0; sx < ssf; sx++) sum += ss[((size_t)(ssf * y + sy) * sw + ssf * x + sx) * 4 + k]; d[k] = (uint8_t)((sum + ssf * ssf / 2) / (ssf * ssf)); }
 	}
 	free(ss);
 	free(q);
