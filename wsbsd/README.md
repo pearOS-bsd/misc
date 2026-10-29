@@ -69,7 +69,7 @@ The stack: `wsd` (this repo: window server and compositor speaking the SkyLight 
 - [x] Dock: a click on a running application that has no window opens one (reopen handler in every application; closing the last window leaves the process running).
 - [x] Desktop context menu: it is placed before it is shown (opens to the left at the right edge, moved up near the bottom), not redrawn afterwards.
 - [ ] AirDrop icon in the Finder sidebar is upside down.
-- [ ] Spotlight: Enter on a folder works but is too sensitive (case sensitive).
+- [x] Spotlight: Enter on a folder works and the search is case and diacritic insensitive (the NSDiacriticInsensitiveSearch wrapper, verified in the VM).
 - [ ] UITest: the combo box does not show the item under the pointer on hover.
 - [ ] UITest: the pop-up looks bad and is cut off.
 - [ ] Terminal title: no dynamic icons for Home / Downloads / Desktop...
