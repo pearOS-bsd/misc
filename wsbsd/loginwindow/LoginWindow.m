@@ -1,7 +1,7 @@
 /* loginwindow: the login window, before the first unlock of a session (the accounts of the machine, choose one, enter its password) and after it (the screen is locked: the account that is signed in, its password
  * unlocks). It prints the name of the account on its standard output and exits 0 when the password is right. Layout: the wallpaper under a blur, the account's picture (96 pt) with its name below and the
- * password field under that; with several accounts the pictures of all of them stand in a row. Not measured on a Mac (the real login window cannot be captured without signing out): the sizes are those of
- * the Mac's login window as far as the author remembers them, to be replaced by measurements.  Usage: loginwindow [--lock account]. Standard AppKit controls only (NSImageView, NSTextField, NSSecureTextField, NSButton,
+ * password field under that; with several accounts the pictures of all of them stand in a row. Font sizes measured on the Mac from LoginUIKit (docs/loginwindow/LoginUIKit.view-metrics.txt): time 0.14 and date 0.028 of the screen height,
+ * name 15, hint 12.  Usage: loginwindow [--lock account]. Standard AppKit controls only (NSImageView, NSTextField, NSSecureTextField, NSButton,
  * NSVisualEffectView). */
 #import <AppKit/AppKit.h>
 #include <pwd.h>
@@ -99,8 +99,8 @@ static NSArray *Accounts(void)
 	else { [win setOpaque: YES]; [win setBackgroundColor: [NSColor blackColor]]; }
 	clockWin = [[NSWindow alloc] initWithContentRect: sf styleMask: NSBorderlessWindowMask backing: NSBackingStoreBuffered defer: NO]; [clockWin setLevel: 2000]; [clockWin setOpaque: NO]; [clockWin setBackgroundColor: [NSColor clearColor]]; [clockWin setIgnoresMouseEvents: YES]; NSView *clockCv = [clockWin contentView];       /* the clock is translucent as a whole: a window of its own with an alpha (the glyphs ignore the alpha of their colour) */
 	NSColor *clockColor = [NSColor whiteColor];
-	dateL = [[LWText alloc] initWithFrame: NSZeroRect]; dateL->font = [NSFont boldSystemFontOfSize: 27 * sc]; dateL->color = clockColor; [dateL setFrame: NSMakeRect(0, sf.size.height - 300 * sc + 166 * sc * 0.86, sf.size.width, 36 * sc)]; [clockCv addSubview: dateL];
-	timeL = [[LWText alloc] initWithFrame: NSZeroRect]; timeL->font = [NSFont boldSystemFontOfSize: 133 * sc]; timeL->color = clockColor; [timeL setFrame: NSMakeRect(0, sf.size.height - 300 * sc, sf.size.width, 166 * sc)]; [clockCv addSubview: timeL];
+	dateL = [[LWText alloc] initWithFrame: NSZeroRect]; dateL->font = [NSFont systemFontOfSize: sf.size.height * 0.028]; dateL->color = clockColor; [dateL setFrame: NSMakeRect(0, sf.size.height - 300 * sc + 166 * sc * 0.86, sf.size.width, 36 * sc)]; [clockCv addSubview: dateL];
+	timeL = [[LWText alloc] initWithFrame: NSZeroRect]; timeL->font = [NSFont boldSystemFontOfSize: sf.size.height * 0.14]; timeL->color = clockColor; [timeL setFrame: NSMakeRect(0, sf.size.height - 300 * sc, sf.size.width, 166 * sc)]; [clockCv addSubview: timeL];
 	[clockWin setAlphaValue: 0.42]; [clockWin orderFront: nil]; [self tick: nil]; [NSTimer scheduledTimerWithTimeInterval: 1.0 target: self selector: @selector(tick:) userInfo: nil repeats: YES];
 	faces = [NSMutableArray array]; names = [NSMutableArray array]; NSUInteger n = [accounts count]; CGFloat pitch = 150;
 	for (NSUInteger i = 0; i < n; i++) {
@@ -111,7 +111,7 @@ static NSArray *Accounts(void)
 	}
 	pill = [[LWPill alloc] initWithFrame: [self rectCX: 960 cy: 998 w: 250 h: 32]]; [cv addSubview: pill];
 	pw = [[LWSecure alloc] initWithFrame: NSMakeRect(14 * sc, 5 * sc, 222 * sc, 22 * sc)]; pw->target = self; pw->action = @selector(submit:); [pill addSubview: pw];
-	msg = [NSTextField labelWithString: @"Enter Password"]; [msg setTextColor: [NSColor colorWithCalibratedWhite: 1 alpha: 0.9]]; [msg setAlignment: NSCenterTextAlignment]; [msg setFont: [NSFont boldSystemFontOfSize: 11 * sc]]; [msg setFrame: [self rectCX: 960 cy: 1034 w: 320 h: 18]]; [cv addSubview: msg];
+	msg = [NSTextField labelWithString: @"Enter Password"]; [msg setTextColor: [NSColor colorWithCalibratedWhite: 1 alpha: 0.9]]; [msg setAlignment: NSCenterTextAlignment]; [msg setFont: [NSFont boldSystemFontOfSize: 12 * sc]]; [msg setFrame: [self rectCX: 960 cy: 1034 w: 320 h: 18]]; [cv addSubview: msg];
 	/* the icons at the top right: display (nothing to switch here), restart, power */
 	NSArray *icons = lock ? @[ @[ @"display", @1790 ], @[ @"power", @1888 ] ] : @[ @[ @"display", @1790 ], @[ @"arrow.clockwise", @1850 ], @[ @"power", @1890 ] ];
 	for (NSArray *ic in icons) { NSRect ir = [self rectCX: 960 cy: 28 w: 24 h: 24]; ir.origin.x = sf.size.width - (1920 - [ic[1] doubleValue]) * sc - 12 * sc;       /* anchored to the right edge: the design is 16:9 */
