@@ -297,7 +297,7 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 	for (NSString *p in [self _targets]) [[NSFileManager defaultManager] removeItemAtPath: p error: NULL]; [self _changed: nil];
 }
 - (void)cmdDuplicateExactly:(id)s { [self cmdDuplicate: s]; }
-- (void)cmdQuickLook:(id)s { NSArray *t = [self _targets]; if ([t count]) TFOpenQuickLook(t[0]); else if (_url) TFOpenQuickLook([_url path]); }
+- (void)cmdQuickLook:(id)s { NSArray *t = [self _targets]; if ([t count]) TFOpenQuickLookFrom(t[0], [_icons screenIconRectForPath: t[0]]); else if (_url) TFOpenQuickLook([_url path]); }
 /* tabs: each keeps its folder, history and view; the views of the window show the one selected */
 - (NSMutableDictionary *)_tabState { return [@{ @"url": _url ?: [NSURL fileURLWithPath: NSHomeDirectory()], @"history": [_history mutableCopy] ?: [NSMutableArray array], @"hi": @(_hi), @"mode": @(_mode) } mutableCopy]; }
 - (void)_syncTabBar { NSMutableArray *t = [NSMutableArray array]; for (NSUInteger i = 0; i < [_tabs count]; i++) { NSURL *u = (NSInteger)i == _tabIx ? _url : _tabs[i][@"url"]; NSString *p = [u path]; [t addObject: [p isEqual: @"/"] ? @"Macintosh HD" : [p lastPathComponent]]; } _tabBar->titles = t; _tabBar->selected = _tabIx; [_tabBar setNeedsDisplay: YES]; [self _layout]; }

@@ -30,7 +30,7 @@ NSArray *TFPathsTagged(NSString *tag);
 NSArray *TFRecentPaths(void);
 NSWindow *TFOpenInfoWindow(NSString *path);
 void TFCopyItems(NSArray *srcs, NSString *destDir, BOOL move, void (^completion)(NSArray *ops));
-NSWindow *TFOpenQuickLook(NSString *path); void TFQuickLookFollow(NSString *path);
+NSWindow *TFOpenQuickLook(NSString *path); NSWindow *TFOpenQuickLookFrom(NSString *path, NSRect iconOnScreen); void TFQuickLookFollow(NSString *path); void TFCloseQuickLook(NSWindow *w);
 void TFShowProgressWindows(void); BOOL TFIsArchive(NSString *path); void TFExtractArchive(NSString *path, void (^done)(NSString *result)); void TFCompressItems(NSArray *items, NSString *destDir, void (^done)(NSString *zip));
 void TFOpenSettings(void);
 @class TIconView;
@@ -106,6 +106,7 @@ void TFDrawIconBase(NSString *path, NSRect r);
 
 @interface TIconView : TScrollBase { @public BOOL _snap; __weak id<TIconViewDelegate> delegate; NSString *filter; NSMutableArray *_items; NSMutableIndexSet *_sel; NSInteger _anchor; NSString *_folder, *_arrange; NSRect _band; BOOL _dragging; NSInteger _dropTarget; double _animStart; NSTimer *_animTimer; CGFloat _isz, _grid, _textSize; BOOL _showInfo, _showPreview, _labelRight; NSString *emptyMessage; NSString *_group; NSArray *_gpos, *_heads; CGFloat _groupBottom; BOOL desktop; NSArray *_prefix; }
 - (void)applyOptions;
+- (NSRect)screenIconRectForPath:(NSString *)path;
 - (void)setSnapToGrid:(BOOL)on;
 - (void)setGroup:(NSString *)g;
 - (void)reloadKeepingSelectionOrFolder:(NSString *)folder;

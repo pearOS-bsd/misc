@@ -367,6 +367,16 @@ static CGFloat TFDeskTab(const CGFloat *t, CGFloat text) { int i = (int)lround(t
 	if (from && _animStart) { double k = ([NSDate timeIntervalSinceReferenceDate] - _animStart) / 0.28; if (k >= 1) k = 1; double e = 1 - pow(1 - k, 3); NSPoint f = [from pointValue]; t = NSMakePoint(f.x + (t.x - f.x) * e, f.y + (t.y - f.y) * e); }
 	return NSMakeRect(t.x, t.y, [self cw], [self ch]);
 }
+/* where the icon of an item is on the screen (y up), for the zoom of Quick Look; NSZeroRect when the item is not here */
+- (NSRect)screenIconRectForPath:(NSString *)path
+{
+	for (NSInteger i = 0; i < (NSInteger)[_items count]; i++) if ([_items[i][@"path"] isEqual: path]) {
+		NSRect c = [self _cell: i]; NSRect r = NSMakeRect(c.origin.x + (c.size.width - _isz) / 2, c.origin.y + 4, _isz, _isz);
+		if (![self isFlipped]) r.origin.y = [self bounds].size.height - r.origin.y - r.size.height;
+		return [[self window] convertRectToScreen: [self convertRect: r toView: nil]];
+	}
+	return NSZeroRect;
+}
 - (NSInteger)_indexBelowDragged:(NSPoint)p { for (NSInteger i = (NSInteger)[_items count] - 1; i >= 0; i--) { if ([_sel containsIndex: i]) continue; NSRect c = [self _cell: i]; if (NSPointInRect(p, NSMakeRect(c.origin.x + 12, c.origin.y, c.size.width - 24, _isz + 36))) return i; } return -1; }       /* the item under the pointer that is not one of the dragged ones (they follow the pointer and lie on top) */
 - (NSInteger)_index:(NSPoint)p { for (NSInteger i = (NSInteger)[_items count] - 1; i >= 0; i--) { NSRect c = [self _cell: i]; if (NSPointInRect(p, NSMakeRect(c.origin.x + 12, c.origin.y, c.size.width - 24, _isz + 36))) return i; } return -1; }
 - (void)_animateFrom:(NSArray *)old                                                       /* the icons glide from where they were to where they now belong */

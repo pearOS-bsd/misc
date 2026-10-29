@@ -1121,8 +1121,8 @@ void ws_compose_scene(ws_server *s, ws_surface *screen)
 			else s->comp->over(s->comp, screen, v[i]->frame.x, v[i]->frame.y, px, EFFA(v[i]), all);
 			if (inv || rnd || brt || grown || gcl) { if (s->comp->flush) s->comp->flush(s->comp); ws_surface_free(inv); ws_surface_free(rnd); ws_surface_free(brt); ws_surface_free(grown); ws_surface_free(gcl); }
 		}
-		/* the shadow layer is rendered above its window (it is cut out of the window shape; the inner rim lies inside it) */
-		if (v[i]->shadow_on && !v[i]->mesh) draw_shadow(s, v[i], screen, v[i]->id == act || v[i]->appearance);     /* a warped window (genie) has no shadow: it is not where the frame is */
+		/* the shadow layer is rendered above its window (it is cut out of the window shape; the inner rim lies inside it); a window zoomed or moved by its transform (Quick Look's zoom from the icon) has none: it would stay at the frame as a ghost of the panel */
+		if (v[i]->shadow_on && !v[i]->mesh && !(v[i]->has_xf && (fabsf(v[i]->xf[0] - 1) > 0.05f || v[i]->xf[4] != 0 || v[i]->xf[5] != 0))) draw_shadow(s, v[i], screen, v[i]->id == act || v[i]->appearance);     /* a warped window (genie) has no shadow: it is not where the frame is */
 	}
 	if (s->comp->flush) s->comp->flush(s->comp);
 	free(v);

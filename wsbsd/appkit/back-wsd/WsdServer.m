@@ -324,6 +324,11 @@ static int wsdShapeForStyle(int style)
 	struct wsd_window *w = [self wsdWindow: win];
 	if (w) { float m[6] = { scale, 0, 0, scale, 0, 0 }; ws_win_set_transform(conn, &w->win, m); }
 }
+- (void) wsdWindowTransform: (float)scale : (float)tx : (float)ty : (int)win              /* scale about the window's centre, then a move of (tx, ty) pixels (y down): the zoom of Quick Look from the icon */
+{
+	struct wsd_window *w = [self wsdWindow: win];
+	if (w) { float m[6] = { scale, 0, 0, scale, tx, ty }; ws_win_set_transform(conn, &w->win, m); }
+}
 - (void) wsdWindowCorners: (int)radius : (int)win
 {
 	struct wsd_window *w = [self wsdWindow: win];
