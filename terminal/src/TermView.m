@@ -28,6 +28,7 @@ static NSString *customTitle_unused; static BOOL allowMouse = YES, optionAsMeta 
 	vt_resize(term, profile->cols, profile->rows);
 	master = pty_spawn(command ? [command fileSystemRepresentation] : NULL, profile->cols, profile->rows, &child);
 	vt_set_writer(term, vt_reply, &master);
+	[self registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, NSStringPboardType, nil]];
 	if (master < 0) { const char *m = "cannot start a shell\r\n"; vt_feed(term, m, strlen(m)); exited = YES; }
 	pump = [[NSTimer scheduledTimerWithTimeInterval:1.0 / 60 target:self selector:@selector(pump:) userInfo:nil repeats:YES] retain];
 	blinkOn = YES; active = YES; marks = [[NSMutableArray alloc] init]; bookmarks = [[NSMutableArray alloc] init];
@@ -201,6 +202,15 @@ static NSColor *rgbColor(uint32_t c) { return [NSColor colorWithCalibratedRed:((
 	if (cols != vt_cols(term) || rows != vt_rows(term)) { vt_resize(term, cols, rows); if (master >= 0) pty_set_size(master, cols, rows); [self setNeedsDisplay:YES]; }
 }
 
+/* files dropped on the terminal: their paths, quoted for the shell and separated by spaces, are typed (as the Mac's Terminal does) */
+- (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)i { return NSDragOperationCopy; }
+- (BOOL)performDragOperation:(id <NSDraggingInfo>)i
+{
+	NSPasteboard *pb = [i draggingPasteboard]; NSArray *f = [pb propertyListForType:NSFilenamesPboardType]; NSMutableString *o = [NSMutableString string];
+	if ([f count]) { for (NSString *p in f) { [o appendString:[o length] ? @" '" : @"'"]; [o appendString:[p stringByReplacingOccurrencesOfString:@"'" withString:@"'\\''"]]; [o appendString:@"'"]; } }
+	else { NSString *t = [pb stringForType:NSStringPboardType]; if (t) [o appendString:t]; }
+	if (![o length]) return NO; [self writeString:o]; return YES;
+}
 - (void)writeString:(NSString *)s { if (master < 0 || exited) return; const char *u = [s UTF8String]; if (u) (void)write(master, u, strlen(u)); }
 
 - (void)keyDown:(NSEvent *)e
