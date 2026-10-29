@@ -23,6 +23,7 @@
 
 @interface TCopyJob : NSObject { @public NSArray *srcs; NSString *dest; BOOL move; BOOL stop; unsigned long long total, done; NSString *current; NSMutableArray *ops; NSWindow *win; TProgressView *view; NSDate *t0; void (^completion)(NSArray *); BOOL finished; } @end
 @implementation TCopyJob
+static unsigned long long SizeOf2(NSString *p);
 static unsigned long long SizeOf(NSString *p) { struct stat sb; if (lstat([p fileSystemRepresentation], &sb)) return 0; if (!S_ISDIR(sb.st_mode)) return (unsigned long long)sb.st_size; unsigned long long t = 0; for (NSString *n in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: p error: NULL]) t += SizeOf([p stringByAppendingPathComponent: n]); return t; }
 - (BOOL)_copy:(NSString *)from to:(NSString *)to
 {
@@ -61,4 +62,64 @@ void TFCopyItems(NSArray *srcs, NSString *destDir, BOOL move, void (^completion)
 	static NSMutableArray *jobs; if (!jobs) jobs = [NSMutableArray array]; [jobs addObject: j];
 	NSThread *th = [[NSThread alloc] initWithBlock: ^{ for (NSString *p in srcs) j->total += SizeOf(p); [j _work]; }]; [th start];
 	[NSTimer scheduledTimerWithTimeInterval: 0.1 target: j selector: @selector(_tick:) userInfo: nil repeats: YES];
+}
+
+static unsigned long long SizeOf2(NSString *p) { return SizeOf(p); }
+/* ---------- archives: Compress and opening an archive, with the progress window ---------- */
+@interface TJob : NSObject { @public NSString *title; double (^progress)(void); BOOL (^work)(BOOL *); void (^completion)(BOOL); BOOL stop, finished, ok; NSWindow *win; TProgressView *view; NSDate *t0; } @end
+@implementation TJob
+- (void)_tick:(NSTimer *)t
+{
+	if (finished) { [t invalidate]; [win close]; win = nil; if (completion) completion(ok); return; }
+	if (!win && [[NSDate date] timeIntervalSinceDate: t0] > 0.8) { win = [[TFinderWindow alloc] initWithContentRect: NSMakeRect(460, 420, 460, 112) styleMask: NSWindowStyleMaskBorderless backing: NSBackingStoreBuffered defer: NO]; [win setReleasedWhenClosed: NO]; [win setOpaque: NO]; [win setBackgroundColor: [NSColor clearColor]]; view = [[TProgressView alloc] initWithFrame: NSMakeRect(0, 0, 460, 112)]; view->stop = &stop; [win setContentView: view]; TWindowTrim *tr = [[TWindowTrim alloc] initWithFrame: [view bounds]]; [view addSubview: tr]; [win makeKeyAndOrderFront: nil]; [NSClassFromString(@"WsdFinderSupport") roundWindow: win radius: 16]; }
+	if (win) { view->title = title; view->fraction = progress ? progress() : 0; view->detail = [NSString stringWithFormat: @"%d%%", (int)(MIN(1, view->fraction) * 100)]; [view setNeedsDisplay: YES]; }
+}
+@end
+static void TFRunJob(NSString *title, double (^progress)(void), BOOL (^work)(BOOL *), void (^completion)(BOOL))
+{
+	TJob *j = [TJob new]; j->title = title; j->progress = [progress copy]; j->work = [work copy]; j->completion = [completion copy]; j->t0 = [NSDate date];
+	static NSMutableArray *jobs; if (!jobs) jobs = [NSMutableArray array]; [jobs addObject: j];
+	[[[NSThread alloc] initWithBlock: ^{ @autoreleasepool { j->ok = j->work(&j->stop); j->finished = YES; } }] start];
+	[NSTimer scheduledTimerWithTimeInterval: 0.1 target: j selector: @selector(_tick:) userInfo: nil repeats: YES];
+}
+static BOOL RunTar(NSArray *args, NSData **out)
+{
+	NSTask *tk = [[NSTask alloc] init]; [tk setLaunchPath: @"/usr/bin/tar"]; [tk setArguments: args]; NSPipe *pp = out ? [NSPipe pipe] : nil; if (pp) [tk setStandardOutput: pp]; else [tk setStandardOutput: [NSFileHandle fileHandleWithNullDevice]]; [tk setStandardError: [NSFileHandle fileHandleWithNullDevice]];
+	@try { [tk launch]; if (out) *out = [[pp fileHandleForReading] readDataToEndOfFile]; [tk waitUntilExit]; } @catch (NSException *x) { return NO; } return [tk terminationStatus] == 0;
+}
+static NSString *UniqueIn(NSString *dir, NSString *name)       /* "name", "name 2", "name 3"... as Archive Utility numbers a result that exists */
+{
+	NSFileManager *fm = [NSFileManager defaultManager]; NSString *stem = [name stringByDeletingPathExtension], *ext = [name pathExtension]; NSString *p = [dir stringByAppendingPathComponent: name]; int i = 2;
+	while ([fm fileExistsAtPath: p]) { NSString *n = [NSString stringWithFormat: @"%@ %d", stem, i++]; if ([ext length]) n = [n stringByAppendingPathExtension: ext]; p = [dir stringByAppendingPathComponent: n]; }
+	return p;
+}
+BOOL TFIsArchive(NSString *path)
+{
+	NSString *l = [[path lastPathComponent] lowercaseString]; BOOL d = NO; if (![[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &d] || d) return NO;
+	for (NSString *e in @[ @".zip", @".tar", @".tgz", @".tar.gz", @".tbz", @".tbz2", @".tar.bz2", @".txz", @".tar.xz" ]) if ([l hasSuffix: e]) return YES;
+	return NO;
+}
+/* Archive Utility: an archive with one top-level item expands to that item, any other to a folder named after the archive; a name that exists gets " 2"; the result is next to the archive */
+void TFExtractArchive(NSString *path, void (^done)(NSString *result))
+{
+	NSString *dir = [path stringByDeletingLastPathComponent]; NSString *stem = [path lastPathComponent]; for (NSString *e in @[ @".tar.gz", @".tar.bz2", @".tar.xz", @".zip", @".tar", @".tgz", @".tbz2", @".tbz", @".txz" ]) if ([[stem lowercaseString] hasSuffix: e]) { stem = [stem substringToIndex: [stem length] - [e length]]; break; }
+	__block unsigned long long total = 0; NSString *stage = [dir stringByAppendingPathComponent: [NSString stringWithFormat: @".TemporaryItems-%d-%u", (int)getpid(), arc4random() % 100000]]; __block NSString *result = nil;
+	TFRunJob([NSString stringWithFormat: @"Expanding “%@”", [path lastPathComponent]], ^double { if (!total) return 0; unsigned long long got = 0; NSDirectoryEnumerator *en = [[NSFileManager defaultManager] enumeratorAtPath: stage]; for (NSString *f in en) got += [[en fileAttributes][NSFileSize] unsignedLongLongValue]; return (double)got / total; },
+		^BOOL(BOOL *stop) {
+			NSData *lst = nil; if (!RunTar(@[ @"-tvf", path ], &lst)) return NO; NSString *ls = [[NSString alloc] initWithData: lst encoding: NSUTF8StringEncoding]; NSMutableSet *tops = [NSMutableSet set];
+			for (NSString *ln in [ls componentsSeparatedByString: @"\n"]) { if (![ln length]) continue; NSArray *f = [ln componentsSeparatedByCharactersInSet: [NSCharacterSet whitespaceCharacterSet]]; NSMutableArray *ff = [NSMutableArray array]; for (NSString *x in f) if ([x length]) [ff addObject: x]; if ([ff count] > 4) total += strtoull([ff[4] UTF8String], NULL, 10); }
+			NSData *names = nil; if (!RunTar(@[ @"-tf", path ], &names)) return NO; for (NSString *n in [[[NSString alloc] initWithData: names encoding: NSUTF8StringEncoding] componentsSeparatedByString: @"\n"]) { if (![n length] || [n hasPrefix: @"__MACOSX"]) continue; NSString *t = [[n pathComponents] firstObject]; if ([t length]) [tops addObject: t]; }
+			NSFileManager *fm = [NSFileManager defaultManager]; [fm createDirectoryAtPath: stage withIntermediateDirectories: YES attributes: nil error: NULL];
+			if ([tops count] > 1 || ![tops count]) { NSString *folder = [stage stringByAppendingPathComponent: stem]; [fm createDirectoryAtPath: folder withIntermediateDirectories: YES attributes: nil error: NULL]; if (!RunTar(@[ @"-xf", path, @"-C", folder ], NULL)) { [fm removeItemAtPath: stage error: NULL]; return NO; } NSString *to = UniqueIn(dir, stem); [fm moveItemAtPath: folder toPath: to error: NULL]; result = to; }
+			else { if (!RunTar(@[ @"-xf", path, @"-C", stage ], NULL)) { [fm removeItemAtPath: stage error: NULL]; return NO; } NSString *top = [tops anyObject]; NSString *to = UniqueIn(dir, top); [fm moveItemAtPath: [stage stringByAppendingPathComponent: top] toPath: to error: NULL]; result = to; }
+			[fm removeItemAtPath: stage error: NULL]; [fm removeItemAtPath: [dir stringByAppendingPathComponent: @"__MACOSX"] error: NULL]; return YES;
+		}, ^(BOOL ok) { if (done) done(ok ? result : nil); });
+}
+/* Compress: a zip next to the items ("Archive.zip" for several), the progress from the size of the file as it grows against the size of the items */
+void TFCompressItems(NSArray *items, NSString *destDir, void (^done)(NSString *zip))
+{
+	NSString *base = [items count] == 1 ? [items[0] lastPathComponent] : @"Archive"; NSString *zip = UniqueIn(destDir, [base stringByAppendingPathExtension: @"zip"]); __block unsigned long long total = 0;
+	TFRunJob([items count] == 1 ? [NSString stringWithFormat: @"Compressing “%@”", [items[0] lastPathComponent]] : [NSString stringWithFormat: @"Compressing %lu items", (unsigned long)[items count]], ^double { if (!total) return 0; struct stat sb; if (stat([zip fileSystemRepresentation], &sb)) return 0; return MIN(0.95, (double)sb.st_size / (total * 0.6)); },
+		^BOOL(BOOL *stop) { for (NSString *p in items) total += SizeOf2(p); NSMutableArray *args = [NSMutableArray arrayWithObjects: @"-a", @"-cf", zip, nil]; for (NSString *p in items) { [args addObject: @"-C"]; [args addObject: [p stringByDeletingLastPathComponent]]; [args addObject: [p lastPathComponent]]; } return RunTar(args, NULL); },
+		^(BOOL ok) { if (done) done(ok ? zip : nil); });
 }
