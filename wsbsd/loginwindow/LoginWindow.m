@@ -80,6 +80,10 @@ static NSArray *Accounts(void)
 - (void)drawRect:(NSRect)d { if (symbol) [NSClassFromString(@"WsdFinderSupport") drawSymbol: symbol inRect: [self bounds] size: [self bounds].size.width * 0.78 weight: 5 color: [NSColor colorWithCalibratedWhite: 1 alpha: 0.92]]; }
 @end
 
+/* a borderless window cannot become key by default: the password field would get no keys */
+@interface LWWindow : NSWindow @end
+@implementation LWWindow - (BOOL)canBecomeKeyWindow { return YES; } - (BOOL)canBecomeMainWindow { return YES; } @end
+
 @interface LWController : NSObject { NSWindow *win, *back, *clockWin; NSArray *accounts; NSInteger chosen; LWSecure *pw; LWPill *pill; LWText *dateL, *timeL; NSTextField *msg; NSMutableArray *faces, *names; BOOL lock; CGFloat sc; NSRect sf; }
 - (instancetype)initLock:(NSString *)user;
 - (void)show;
@@ -96,7 +100,7 @@ static NSArray *Accounts(void)
 - (void)show
 {
 	sf = [[NSScreen mainScreen] frame]; sc = MAX(0.5, sf.size.height / 1080.0);
-	win = [[NSWindow alloc] initWithContentRect: sf styleMask: NSBorderlessWindowMask backing: NSBackingStoreBuffered defer: NO]; [win setLevel: 2000]; [win setOpaque: NO]; [win setBackgroundColor: [NSColor clearColor]];
+	win = [[LWWindow alloc] initWithContentRect: sf styleMask: NSBorderlessWindowMask backing: NSBackingStoreBuffered defer: NO]; [win setLevel: 2000]; [win setOpaque: NO]; [win setBackgroundColor: [NSColor clearColor]];
 	NSView *cv = [win contentView];
 	/* the wallpaper is a window of its own under the one with the controls */
 	NSImage *wall = [[NSImage alloc] initWithContentsOfFile: @"/System/Library/Desktop Pictures/dark-mode.jpg"];
