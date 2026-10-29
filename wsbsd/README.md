@@ -83,9 +83,11 @@ The stack: `wsd` (this repo: window server and compositor speaking the SkyLight 
 - [ ] Sometimes Force Quit shows no applications (Restart still works).
 - [ ] About This Mac does not look like the original.
 - [ ] Spotlight and Launchpad (Command-Space) do not look like the Mac's.
-- [ ] Shutdown: show the pear logo (no progress bar) instead of the verbose console.
-- [ ] Boot: the pear logo of the kernel splash (instead of the FreeBSD one) with the progress bar, ESC shows the verbose boot.
-- [ ] Shake to find the cursor.
+- [ ] Boot: ESC shows the verbose boot (the pear logo and the progress bar are in).
+- [x] Shake to find the cursor (the pointer grows up to 4 x while the mouse is shaken and shrinks when it rests; `wsd`, src/server.c `shake_feed`; seen in the VM).
+- [x] The login window shakes the password field on a wrong password.
+- [x] The shutdown screen is the pear alone (no bar, no cursor) instead of the verbose console *(seen in the VM; the real shutdown path is for the next image)*.
+- [x] The kernel's boot logo is the pear (`iso/tools/patch_vt_logo.py`, patched in at image build) *(tested on the 14.5 amd64 kernel file; the pear on screen is for the next image to show; ESC for the verbose boot is not done)*.
 - [ ] Dark / light mode of the system (UITest and Control Center do nothing).
 - [ ] Night Light.
 - [ ] Wi-Fi in Control Center has a real function (joins networks with the image's own setup).

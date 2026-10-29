@@ -105,8 +105,29 @@ static void refresh_menubars(ws_server *s);
 static void kf_remove_at_fwd(ws_server *s, int i);
 static int g_splash, g_splash_visible = 1, g_shutdown_splash; static double splash_t0, splash_last, splash_cost;
 static double mono_now(void) { struct timespec ts; clock_gettime(CLOCK_MONOTONIC, &ts); return ts.tv_sec + ts.tv_nsec * 1e-9; }
+/* Shake to find the cursor, as on the Mac: shaking the mouse back and forth makes the pointer big (up to 4 x), and it shrinks again when the hand is still. A reversal of the pointer's direction after at least 30 px of travel counts as a swing; three swings within 0.8 s start it, every further one makes the pointer bigger. */
+static double sh_t, sh_flip[12], sh_scale_t; static int sh_dir, sh_nflip; static float sh_travel, sh_scale = 1.0f;
+static void shake_feed(int dx)
+{
+	double now = mono_now(); if (now - sh_t > 0.25) { sh_travel = 0; sh_dir = 0; } sh_t = now;
+	int d = dx > 0 ? 1 : dx < 0 ? -1 : 0; if (!d) return;
+	if (sh_dir && d != sh_dir) { if (sh_travel >= 30) { if (sh_nflip == 12) { memmove(sh_flip, sh_flip + 1, 11 * sizeof sh_flip[0]); sh_nflip--; } sh_flip[sh_nflip++] = now; if (getenv("WSD_SHAKE_DEBUG")) fprintf(stderr, "wsd: shake flip %d\n", sh_nflip); } sh_travel = 0; }
+	sh_dir = d; sh_travel += (float)abs(dx);
+}
+int ws_server_cursor_animating(void) { return sh_scale > 1.0f || sh_nflip > 0; }       /* the main loop wakes up every frame while the pointer is big or being shaken */
+static float shake_factor(void)       /* the factor now (also moves it towards its target): 1 when nobody shakes */
+{
+	double now = mono_now(); int n = 0; for (int i = 0; i < sh_nflip; i++) if (now - sh_flip[i] < 0.8) n++;
+	float target = n >= 3 ? 1.0f + 0.6f * (float)(n - 2) : 1.0f; if (target > 4.0f) target = 4.0f;
+	double dt = sh_scale_t ? now - sh_scale_t : 0.016; if (dt > 0.1) dt = 0.1; sh_scale_t = now;
+	if (target > sh_scale) { sh_scale += 9.0f * (float)dt; if (sh_scale > target) sh_scale = target; } else { sh_scale -= 2.2f * (float)dt; if (sh_scale < target) sh_scale = target; }
+	if (getenv("WSD_SHAKE_DEBUG")) { static int c; if (c++ % 10 == 0) fprintf(stderr, "wsd: shake n=%d target=%.2f scale=%.2f\n", n, target, sh_scale); }
+	if (sh_scale <= 1.0f) { sh_scale = 1.0f; sh_scale_t = 0; }
+	return sh_scale;
+}
 uint64_t ws_server_generation(const ws_server *s)
 {
+	if (sh_scale > 1.0f || sh_nflip) { float before = sh_scale; shake_factor(); if (sh_scale != before) { ((ws_server *)s)->cursor_serial++; ((ws_server *)s)->gen++; } if (sh_nflip && mono_now() - sh_flip[sh_nflip - 1] > 1.0 && sh_scale <= 1.0f) sh_nflip = 0; }
 	if (g_splash && g_splash_visible && !g_shutdown_splash) {       /* the boot screen's progress bar moves: the scene changes ten times a second while it is shown */
 		double t = mono_now(); if (t - splash_last > (splash_cost * 20 > 0.1 ? splash_cost * 20 : 0.1)) {       /* never more often than twenty times the cost of a frame: on a slow machine the bar must not starve the clients (the Dock could not connect under emulation) */
 		 splash_last = t; ((ws_server *)s)->gen++; }
@@ -754,6 +775,7 @@ void ws_server_mouse(ws_server *s, int x, int y, int buttons)
 	x = x < 0 ? 0 : x >= s->w ? s->w - 1 : x;
 	y = y < 0 ? 0 : y >= s->h ? s->h - 1 : y;
 	int moved = x != s->cx || y != s->cy, pressed = buttons & ~s->buttons, released = s->buttons & ~buttons;
+	if (moved && !buttons && !s->decoupled) shake_feed(x - s->cx);
 	s->cx = x; s->cy = y;
 	if (s->active_space) { int rt = y <= (s->reveal_top ? 32 : 1), rb = y >= s->h - (s->reveal_bottom ? 96 : 2); if (rt != s->reveal_top || rb != s->reveal_bottom) { s->reveal_top = rt; s->reveal_bottom = rb; bump(s); } }
 	if (moved) track_update(s, x, y);
@@ -914,7 +936,7 @@ static void draw_cursor(ws_server *s, ws_surface *scr)
 	int hx, hy;
 	const ws_surface *img = ws_cursor_image(s, &hx, &hy);
 	if (!img) return;
-	float k = s->cursor_scale > 0 ? s->cursor_scale : 1.0f;
+	float k = (s->cursor_scale > 0 ? s->cursor_scale : 1.0f) * sh_scale;
 	if (k != 1.0f) {
 		if (!s->cursor_scaled || s->cursor_scaled_src != img || s->cursor_scaled_for != k) { ws_surface_free(s->cursor_scaled); s->cursor_scaled = scale_surface(img, k); s->cursor_scaled_src = img; s->cursor_scaled_for = k; }
 		if (s->cursor_scaled) { img = s->cursor_scaled; hx = (int)(hx * k + 0.5f); hy = (int)(hy * k + 0.5f); }
