@@ -147,6 +147,7 @@ static const char *GLASS_FS =
 	"            if (dt < 14.0 && dt <= db) sy = -18.0 * sin(3.14159265 * dt / 14.0); else if (db < 8.0) sy = -12.0 * sin(3.14159265 * db / 8.0);\n"
 	"            break; } }\n"
 	"        vec3 c = texture2D(u_blur, (p + vec2(sx, sy)) / u_screen).rgb;\n"
+	"        if (mode > 5.5) { vec3 a = texture2D(u_scene, p / u_screen).rgb; float wt = 1.0; a += 0.0; for (int j = -1; j <= 1; j++) for (int i = -1; i <= 1; i++) { if (i == 0 && j == 0) continue; float w = (i != 0 && j != 0) ? 0.44 : 0.66; a += w * texture2D(u_scene, (p + vec2(float(i), float(j))) / u_screen).rgb; wt += w; } c = a / wt; }\n"
 	"        float L = dot(c, vec3(0.1886, 0.7455, 0.0659)), f = mode > 5.5 ? 0.047 + L * (0.856 - 0.213 * L) : 0.12494 + L * (0.86553 - L * (0.24983 + 0.16865 * L));\n"
 	"        float rim = mode > 5.5 ? ny * (floor(dd) < 1.0 ? 0.292 : floor(dd) < 9.0 ? 0.066 * exp(-0.55 * (floor(dd) - 1.0)) : 0.0) * (1.0 - 0.26 * L - 0.17 * L * L) : (dd < 1.0 ? 0.10 + 0.177 * ny : 0.042 * ny * exp(-(dd - 1.5) / 3.8));\n"
 	"        col = clamp(vec3(f) + 1.091 * (c - vec3(L)), 0.0, 1.0);\n"
