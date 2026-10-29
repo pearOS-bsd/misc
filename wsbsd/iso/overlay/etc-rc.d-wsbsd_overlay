@@ -1,0 +1,19 @@
+#!/bin/sh
+# PROVIDE: wsbsd_overlay
+# REQUIRE: mountcritlocal
+# BEFORE: NETWORKING SERVERS
+# KEYWORD: nojail
+# The live medium is read-only: /usr/local (the desktop, the frameworks, and what pkg installs) gets a writable layer in memory (unionfs: new and changed files go to /var/overlay, the medium shows through).
+. /etc/rc.subr
+name="wsbsd_overlay"
+rcvar="wsbsd_overlay_enable"
+start_cmd="wsbsd_overlay_start"
+stop_cmd=":"
+wsbsd_overlay_start()
+{
+	kldload -n unionfs >/dev/null 2>&1
+	mount | grep -q " on /usr/local (unionfs" && return 0
+	mkdir -p /var/overlay/usr_local && mount -t unionfs -o noatime /var/overlay/usr_local /usr/local
+}
+load_rc_config $name
+run_rc_command "$1"

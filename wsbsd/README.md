@@ -98,7 +98,7 @@ Source: `buglist.txt`. `[ ]` = open, `[x]` = done and verified. Items marked *(p
 - [x] Double-clicking an archive (zip, tar, tgz, tar.gz / bz2 / xz) in a Finder window or on the desktop expands it as Archive Utility does: one top-level item expands to itself, anything else to a folder named after the archive, an existing name gets " 2" (`TFileOps.mm`, `tar` underneath).
 - [x] Compress and expanding run on a background thread with the Finder's progress window (appears after 0.8 s, percentage, Stop). *(the window is the Finder's own drawing, not an NS progress indicator)*
 - [ ] Finder window is incomplete (missing features; see the Finder row of the coverage table).
-- [ ] `pkg` does nothing; it must be active and working so BSD utilities can be installed.
+- [ ] `pkg` does nothing; it must be active and working so BSD utilities can be installed. *(partial: the image carries the real pkg-static as /usr/local/sbin/pkg, /usr/local gets a writable unionfs layer at boot (`wsbsd_overlay`), the repository is FreeBSD's; needs a network and has not been run on an image yet)*
 
 **Terminal and shell**
 - [x] The Terminal grid follows a resize at once (the title shows the new size; the shell gets SIGWINCH).
