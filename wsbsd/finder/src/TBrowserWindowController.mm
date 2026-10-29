@@ -107,8 +107,11 @@ static NSString *StyleName(NSInteger m) { return @[ @"icnv", @"Nlsv", @"clmv", @
 	if (_mode == 1 && !_tag && !_filter) return [self _listBackgroundMenu];
 	if (_mode != 0 || _tag || _filter) return nil; NSMenu *m = [[NSMenu alloc] initWithTitle: @""]; NSString *fn = [[_url path] isEqual: @"/"] ? @"Macintosh HD" : [[_url path] lastPathComponent];
 	NSMenuItem *(^Add)(NSMenu *, NSString *, SEL, id) = ^NSMenuItem *(NSMenu *menu, NSString *t, SEL a, id rep) { NSMenuItem *i = [menu addItemWithTitle: t action: a keyEquivalent: @""]; [i setTarget: self]; if (rep) [i setRepresentedObject: rep]; return i; };
-	Add(m, @"New Folder", @selector(cmdNewFolder:), nil); Add(m, @"Open in New Tab", @selector(cmdNewTab:), nil); [m addItem: [NSMenuItem separatorItem]];
-	Add(m, @"Get Info", @selector(cmdShowStaticInfo:), nil); Add(m, [NSString stringWithFormat: @"Quick Look “%@”", fn], @selector(cmdQuickLook:), nil); [m addItem: [NSMenuItem separatorItem]];
+	Add(m, @"New Folder", @selector(cmdNewFolder:), nil); [m addItem: [NSMenuItem separatorItem]];
+	Add(m, @"Get Info", @selector(cmdShowStaticInfo:), nil); [m addItem: [NSMenuItem separatorItem]];       /* the rows of the real menu (read from its accessibility tree, 2026-10-29): no Open in New Tab, no Quick Look; a View submenu */
+	{ NSMenuItem *vw = Add(m, @"View", NULL, nil); NSMenu *vs = [[NSMenu alloc] initWithTitle: @"View"]; int vi = 0;
+	for (NSArray *k in @[ @[ @"as Icons", @"cmdViewAsIcons:" ], @[ @"as List", @"cmdViewAsList:" ], @[ @"as Columns", @"cmdViewAsColumns:" ], @[ @"as Gallery", @"cmdViewAsGallery:" ] ]) { NSMenuItem *x = Add(vs, k[0], NSSelectorFromString(k[1]), nil); if (vi++ == _mode) [x setState: NSOnState]; }
+	[vw setSubmenu: vs]; }
 	NSMenuItem *ug = Add(m, @"Use Groups", @selector(cmdUseGroupsOrStacks:), nil); [ug setState: _icons->_group ? NSOnState : NSOffState];
 	NSMenuItem *sb = Add(m, @"Sort By", NULL, nil); NSMenu *ss = [[NSMenu alloc] initWithTitle: @"Sort By"]; NSString *cur = _icons->_arrange;
 	NSMenuItem *none = Add(ss, @"None", @selector(cmdSortByKey:), @""); [none setState: ([cur length] || _icons->_snap) ? NSOffState : NSOnState]; [ss addItem: [NSMenuItem separatorItem]]; [Add(ss, @"Snap to Grid", @selector(cmdSnapToGrid:), nil) setState: _icons->_snap ? NSOnState : NSOffState]; [ss addItem: [NSMenuItem separatorItem]];
