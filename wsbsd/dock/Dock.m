@@ -482,12 +482,6 @@ static NSMutableDictionary *badgeStore;
 		}
 	}
 	[self relayout];
-	if (wsc && !fanOpen && !(autohide && hideFrac >= 1)) { double ox = ctxOpen ? 0 : winX; (void)ox;                      /* the glass of the bar: the window server blurs and bends what is behind the bar's rounded rectangle (the window is larger than the bar) */
-		ws_win gw = { .id = (ws_wid)[[self window] windowNumber], .px = NULL }; double wh = [[self window] frame].size.height;
-		ws_rect gr = { (int)floor(bar.bar_x - [self originX]), (int)floor(wh - (bar.bottom_margin + bar.bar_h)), (int)ceil(bar.bar_w), (int)ceil(bar.bar_h) };
-		if (orient) { double ww = [[self window] frame].size.width; gr = (ws_rect){ (int)floor(orient == 1 ? bar.bottom_margin : ww - (bar.bottom_margin + bar.bar_h)), (int)floor(bar.bar_x - [self originX]), (int)ceil(bar.bar_h), (int)ceil(bar.bar_w) }; }
-		if (gr.x != glassRect.x || gr.y != glassRect.y || gr.w != glassRect.w || gr.h != glassRect.h || !glassOn) { ws_win_glass(wsc, &gw, gr, 18, 1); glassRect = gr; glassOn = 1; }
-	} else if (wsc && glassOn) { ws_win_glass(wsc, &(ws_win){ .id = (ws_wid)[[self window] windowNumber], .px = NULL }, (ws_rect){ 0, 0, 0, 0 }, 0, 0); glassOn = 0; }
 	if (wsc) {                                                                  /* the menus' material: slots 1 (menu) and 2 (submenu) of the window's glass, mode 5 = the context menu as measured on the Mac */
 		ws_win gw = { .id = (ws_wid)[[self window] windowNumber], .px = NULL }; double wh = [[self window] frame].size.height;
 		for (int k = 0; k < 2; k++) {
@@ -517,6 +511,13 @@ static NSMutableDictionary *badgeStore;
 	NSRect cur = [w frame];
 	if (fabs(f.origin.x - cur.origin.x) >= 1 || fabs(f.size.width - cur.size.width) >= 1 || fabs(f.size.height - cur.size.height) >= 1) { [w setFrame: f display: NO]; [self redrawIfChanged: f]; [self setNeedsDisplay: YES]; [self display]; }       /* resized and drawn in one go: a resize alone flushed an empty buffer (a Dock without tiles for a frame while a minimized window joined it) */
 	[self redrawIfChanged: f]; [w displayIfNeeded];       /* the new content goes out in the same turn as the new frame: between the two the server showed the old picture in the new window (a flicker when a stack opens) */
+	/* the glass goes after the picture: the window server applies it at once, so sent before the buffer it showed the new bar shape around the old tiles for a frame */
+	if (wsc && !fanOpen && !(autohide && hideFrac >= 1)) { double ox = ctxOpen ? 0 : winX; (void)ox;                      /* the glass of the bar: the window server blurs and bends what is behind the bar's rounded rectangle (the window is larger than the bar) */
+		ws_win gw = { .id = (ws_wid)[[self window] windowNumber], .px = NULL }; double wh = [[self window] frame].size.height;
+		ws_rect gr = { (int)floor(bar.bar_x - [self originX]), (int)floor(wh - (bar.bottom_margin + bar.bar_h)), (int)ceil(bar.bar_w), (int)ceil(bar.bar_h) };
+		if (orient) { double ww = [[self window] frame].size.width; gr = (ws_rect){ (int)floor(orient == 1 ? bar.bottom_margin : ww - (bar.bottom_margin + bar.bar_h)), (int)floor(bar.bar_x - [self originX]), (int)ceil(bar.bar_h), (int)ceil(bar.bar_w) }; }
+		if (gr.x != glassRect.x || gr.y != glassRect.y || gr.w != glassRect.w || gr.h != glassRect.h || !glassOn) { ws_win_glass(wsc, &gw, gr, 18, 1); glassRect = gr; glassOn = 1; }
+	} else if (wsc && glassOn) { ws_win_glass(wsc, &(ws_win){ .id = (ws_wid)[[self window] windowNumber], .px = NULL }, (ws_rect){ 0, 0, 0, 0 }, 0, 0); glassOn = 0; }
 }
 /* the view is redrawn only when something it shows has changed (the window server blends and blurs the whole window again for every frame it gets): the hash covers the tiles, the slots, the bar and the state of the menus, fans and grids; while an animation without a state of its own runs (fan, menu, poof, bounce, minimising) every tick draws */
 - (void)redrawIfChanged:(NSRect)f

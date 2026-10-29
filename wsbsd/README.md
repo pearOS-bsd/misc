@@ -73,7 +73,7 @@ The stack: `wsd` (this repo: window server and compositor speaking the SkyLight 
 - [ ] UITest: the combo box does not show the item under the pointer on hover.
 - [ ] UITest: the pop-up looks bad and is cut off.
 - [ ] Terminal title: no dynamic icons for Home / Downloads / Desktop...
-- [ ] Dock: clicking Downloads flickers.
+- [x] Dock: clicking Downloads flickers. *(a burst of 12 captures showed the new, wider bar shape around the old tiles for one frame: the glass request is now sent after the picture; no mismatched frame in the following bursts, owner to confirm)*
 - [ ] Dock resize: no resize cursor, the icons are cut at the sides until the mouse is released.
 - [ ] Quick Look: the small open / close animations are missing.
 - [ ] Resizing a window: it sometimes stays "held" after the mouse is released (needs one or two clicks).
