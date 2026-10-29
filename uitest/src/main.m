@@ -207,7 +207,7 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 	[m addItemWithTitle: @"Item four" action: @selector(self) keyEquivalent: @"4"];
 	[NSMenu popUpContextMenu: m withEvent: [NSEvent mouseEventWithType: NSRightMouseDown location: NSMakePoint([w frame].origin.x + 150, [w frame].origin.y + 150) modifierFlags: 0 timestamp: 0 windowNumber: 0 context: nil eventNumber: 0 clickCount: 1 pressure: 1] forView: [w contentView]];
 }
-- (BOOL) applicationShouldTerminateAfterLastWindowClosed: (NSApplication *)a { return YES; }
+- (BOOL) applicationShouldTerminateAfterLastWindowClosed: (NSApplication *)a { return NO; }
 /* ---- the system switches of wsbsd (a second window, the gallery stays the fixed layout the Mac is compared with): glass strength, Touch Bar, light / dark ---- */
 static NSString *GlobalPrefs(void) { return [NSHomeDirectory() stringByAppendingPathComponent: @"Library/Preferences/.GlobalPreferences.plist"]; }
 static void SetGlobal(NSString *key, id value)
