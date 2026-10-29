@@ -136,7 +136,7 @@ jobs:
           ACCEL="-accel tcg"; [ -w /dev/kvm ] && ACCEL="-accel kvm -cpu host"
           qemu-system-x86_64 $ACCEL -m 4096 -smp 2 -machine q35 -vga std -display none \
             -drive if=pflash,format=raw,readonly=on,file="$CODE" -drive if=pflash,format=raw,file=vars.fd \
-            $DRIVE -device usb-kbd -device usb-tablet -monitor unix:/tmp/mon,server,nowait -serial file:serial.log -daemonize
+            $DRIVE -device usb-kbd -device usb-tablet -smbios type=1,product=wsbsd-ci -monitor unix:/tmp/mon,server,nowait -serial file:serial.log -daemonize
           mkdir -p shots
           ok=0
           for i in $(seq 1 80); do
@@ -201,7 +201,7 @@ jobs:
           qemu-system-aarch64 -M virt,gic-version=max -cpu max -accel tcg,thread=multi -m 4096 -smp 4 -display none -device ramfb \
             -drive if=pflash,format=raw,readonly=on,file=code.fd -drive if=pflash,format=raw,file=vars.fd \
             -device virtio-scsi-pci,id=scsi $DRIVE \
-            -device qemu-xhci -device usb-kbd -device usb-tablet -monitor unix:/tmp/mon,server,nowait -serial file:serial.log -daemonize
+            -device qemu-xhci -device usb-kbd -device usb-tablet -smbios type=1,product=wsbsd-ci -monitor unix:/tmp/mon,server,nowait -serial file:serial.log -daemonize
           mkdir -p shots
           ok=0
           for i in $(seq 1 200); do
