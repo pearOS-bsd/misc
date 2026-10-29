@@ -49,3 +49,8 @@ appkit/assets/
 !ploader/theme/**/*.png
 /test_*
 !/test_*.c
+/wscursor
+/wsfps
+/wsmove
+/wswins
+/wsspace
