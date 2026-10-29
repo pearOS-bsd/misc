@@ -437,7 +437,12 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 	if ([scope length] && ![scope isEqual: @"This Mac"] && [scope hasPrefix: @"/"]) [self goToPath: scope];
 	[_toolbar setSearching: YES]; [_toolbar->search setStringValue: q]; _searchStarted = YES; _searchBar->scope = ([scope length] && ![scope isEqual: @"This Mac"]) ? 1 : 0; _searchBar->kind = ([kind length] && ![kind isEqual: @"Any"]) ? kind : nil; [self searchChanged: q];
 }
-- (void)iconViewOpenItem:(NSString *)path { if ([[[path pathExtension] lowercaseString] isEqual: @"savedsearch"]) { [self openSavedSearch: path]; return; } BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &d]; if (d && !TFIsPackage(path)) [self goToPath: path]; else if (TFIsArchive(path)) { __weak TBrowserWindowController *me = self; TFExtractArchive(path, ^(NSString *r) { [me _changed: r]; }); } else TFOpenPath(path); }
+- (void)_openDiskImage:(NSString *)path       /* double-click on a .dmg: the volume appears under /Volumes (the sidebar, the desktop) and opens in a window of its own, as on the Mac */
+{
+	dispatch_async(dispatch_get_global_queue(0, 0), ^{ NSString *err = nil; NSString *v = TFMountDiskImage(path, &err);
+		dispatch_async(dispatch_get_main_queue(), ^{ if (v) [TBrowserWindowController newBrowserWithPath: v]; else { NSLog(@"Finder: the disk image %@ could not be opened: %@", path, err); NSBeep(); } }); });
+}
+- (void)iconViewOpenItem:(NSString *)path { if ([[[path pathExtension] lowercaseString] isEqual: @"dmg"]) { [self _openDiskImage: path]; return; } if ([[[path pathExtension] lowercaseString] isEqual: @"savedsearch"]) { [self openSavedSearch: path]; return; } BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &d]; if (d && !TFIsPackage(path)) [self goToPath: path]; else if (TFIsArchive(path)) { __weak TBrowserWindowController *me = self; TFExtractArchive(path, ^(NSString *r) { [me _changed: r]; }); } else TFOpenPath(path); }
 - (void)iconViewSelectionChanged:(NSArray *)paths { _selection = paths; if ([paths count] == 1) TFQuickLookFollow(paths[0]); if ([paths count] == 1) [_pathBar setPath: paths[0]]; else [_pathBar setPath: [_url path]]; [self _updateStatus]; [self _refreshPane]; }
 - (void)_updateStatus
 {
@@ -608,6 +613,7 @@ static NSString *const kListColumns[][2] = { { @"Date Modified", @"dateModified"
 - (BOOL)iconViewDropPaths:(NSArray *)paths intoFolder:(NSString *)folder atWindowPoint:(NSPoint)wp copy:(BOOL)copy
 {
 	if (!folder && ![_sidebar dropPathAtWindowPoint: wp]) { BOOL onFinder = NO; NSPoint m = [NSEvent mouseLocation]; for (TBrowserWindowController *o in gBrowsers) if (o != self && NSPointInRect(m, [[o window] frame])) onFinder = YES; if (!onFinder && !NSPointInRect(wp, [[[self window] contentView] bounds]) && [[NSClassFromString(@"TDesktopWindowController") performSelector: @selector(sharedController)] acceptDropPaths: paths copy: copy atScreenPoint: [[self window] convertBaseToScreen: wp]]) return YES; if (!onFinder && !NSPointInRect(wp, [[[self window] contentView] bounds]) && [NSClassFromString(@"WsdFinderSupport") dropFiles: paths atScreenPoint: [[self window] convertBaseToScreen: wp]]) return YES; }
+	if (!copy) for (NSString *p in paths) if ([p hasPrefix: @"/Volumes/"] && [[NSFileManager defaultManager] fileExistsAtPath: [[@"/Volumes" stringByAppendingPathComponent: [[p pathComponents] count] > 2 ? [p pathComponents][2] : @""] stringByAppendingPathComponent: @".wsbsd-diskimage"]]) { copy = YES; break; }       /* what is dragged out of a disk image is copied (an installer: drag the app to Applications), as on the Mac where the image is another volume */
 	NSString *dest = folder; if (!dest) dest = [_sidebar dropPathAtWindowPoint: wp];
 	if (!dest) { NSPoint m = [NSEvent mouseLocation]; for (TBrowserWindowController *o in gBrowsers) if (o != self && NSPointInRect(m, [[o window] frame]) && !o->_tag) { dest = [o->_url path]; break; } }
 	if (![dest length]) return NO; NSMutableArray *todo = [NSMutableArray array]; for (NSString *p in paths) { if ([[p stringByDeletingLastPathComponent] isEqual: dest] && !copy) continue; if ([dest hasPrefix: [p stringByAppendingString: @"/"]] || [dest isEqual: p]) continue; [todo addObject: p]; } if (![todo count]) return NO;

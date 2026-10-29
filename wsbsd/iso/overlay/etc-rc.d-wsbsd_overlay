@@ -14,6 +14,9 @@ wsbsd_overlay_start()
 	kldload -n unionfs >/dev/null 2>&1
 	mount | grep -q " on /usr/local (unionfs" && return 0
 	mkdir -p /var/overlay/usr_local && mount -t unionfs -o noatime /var/overlay/usr_local /usr/local
+	# /Applications takes what the user drags into it (a .app from a disk image) and /Volumes the mounted disk images: both are memory, the medium is read-only
+	mkdir -p /var/overlay/applications && chmod 775 /var/overlay/applications && chgrp wheel /var/overlay/applications && mount -t unionfs -o noatime /var/overlay/applications /Applications 2>/dev/null
+	mount | grep -q " on /Volumes " || mount -t tmpfs -o mode=1777 tmpfs /Volumes 2>/dev/null
 }
 load_rc_config $name
 run_rc_command "$1"
