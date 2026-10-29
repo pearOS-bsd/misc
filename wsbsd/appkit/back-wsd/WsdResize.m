@@ -258,3 +258,36 @@ static NSRange WsdRangeOfL(id self, SEL _cmd, NSString *s, NSUInteger mask, NSRa
 		Method ml = class_getInstanceMethod(c, @selector(rangeOfString:options:range:locale:)); if (ml) { gOrigRangeL[i] = method_setImplementation(ml, (IMP)WsdRangeOfL); if (i == 1 && gOrigRangeL[1] == gOrigRangeL[0]) gOrigRangeL[1] = NULL; } }
 }
 @end
+
+/* The pop-up list of a combo box (GSComboWindow with a GSComboBoxTableView): the row under the pointer is blue with white text, as on the Mac, without the pointer having to be pressed; the rows are drawn with an inset and the (empty) scroller is left out when everything fits. The row is found by a timer that looks at the pointer while such a window is on screen. */
+static NSInteger gComboHover = -1;
+static NSTimer *gComboTimer;
+@interface WsdComboFix : NSObject @end
+static void WsdComboDrawRow(id self, SEL _cmd, NSInteger row, NSRect clip)
+{
+	if (!gComboTimer) { gComboTimer = [NSTimer timerWithTimeInterval: 0.04 target: [WsdComboFix class] selector: @selector(poll:) userInfo: nil repeats: YES]; for (NSString *m in @[ NSDefaultRunLoopMode, NSModalPanelRunLoopMode, NSEventTrackingRunLoopMode ]) [[NSRunLoop currentRunLoop] addTimer: gComboTimer forMode: m]; }
+	NSRect r = [self rectOfRow: row]; BOOL hot = [self isRowSelected: row];
+	if (hot) { [[NSColor colorWithCalibratedRed: 0.04 green: 0.52 blue: 1.0 alpha: 1] setFill]; [[NSBezierPath bezierPathWithRoundedRect: NSInsetRect(r, 4, 1) xRadius: 5 yRadius: 5] fill]; }
+	id v = [[self dataSource] tableView: self objectValueForTableColumn: [[self tableColumns] firstObject] row: row]; NSString *t = [v description] ?: @"";
+	NSDictionary *at = @{ NSFontAttributeName: [NSFont systemFontOfSize: 13], NSForegroundColorAttributeName: hot ? [NSColor whiteColor] : [NSColor controlTextColor] }; NSSize sz = [t sizeWithAttributes: at];
+	[t drawAtPoint: NSMakePoint(r.origin.x + 12, r.origin.y + (r.size.height - sz.height) / 2) withAttributes: at];
+}
+static void WsdComboNoHighlight(id self, SEL _cmd, NSRect clip) {}
+@implementation WsdComboFix
++ (void)load
+{
+	Class tc = objc_getClass("GSComboBoxTableView"); if (!tc) return;
+	class_replaceMethod(tc, @selector(drawRow:clipRect:), (IMP)WsdComboDrawRow, "v@:{_NSRect={_NSPoint=ff}{_NSSize=ff}}"); class_replaceMethod(tc, @selector(highlightSelectionInClipRect:), (IMP)WsdComboNoHighlight, "v@:{_NSRect={_NSPoint=ff}{_NSSize=ff}}");
+}
++ (void)poll:(NSTimer *)t
+{
+	NSWindow *cw = nil; Class wc = objc_getClass("GSComboWindow"); if (!wc) return; for (NSWindow *w in [NSApp windows]) if ([w isKindOfClass: wc] && [w isVisible]) { cw = w; break; }
+	static int dbg; if (getenv("WSD_COMBO_DEBUG") && dbg++ < 5) NSLog(@"combo poll: window %@ windows %lu", cw, (unsigned long)[[NSApp windows] count]);
+	if (!cw) { gComboHover = -1; return; }
+	Ivar iv = class_getInstanceVariable(wc, "_tableView"); NSTableView *tv = iv ? object_getIvar(cw, iv) : nil; if (!tv) return;
+	NSScrollView *sv = [tv enclosingScrollView]; if (sv && [sv hasVerticalScroller] && [tv numberOfRows] <= 7) { [sv setHasVerticalScroller: NO]; [sv tile]; [tv sizeLastColumnToFit]; [cw display]; }
+	NSPoint p = [tv convertPoint: [cw convertScreenToBase: [NSEvent mouseLocation]] fromView: nil]; NSInteger row = NSPointInRect(p, [tv bounds]) ? [tv rowAtPoint: p] : -1;
+	static NSInteger lastLogged = -99; if (getenv("WSD_COMBO_DEBUG") && row != lastLogged && (lastLogged = row) != -99) NSLog(@"combo hover: p=%@ bounds=%@ row=%ld mouse=%@ tvwin=%@", NSStringFromPoint(p), NSStringFromRect([tv bounds]), (long)row, NSStringFromPoint([NSEvent mouseLocation]), NSStringFromRect([cw frame]));
+	if (row != gComboHover) { gComboHover = row; if (row >= 0) [tv selectRowIndexes: [NSIndexSet indexSetWithIndex: (NSUInteger)row] byExtendingSelection: NO]; else [tv deselectAll: nil]; [tv setNeedsDisplay: YES]; [tv displayIfNeeded]; while (![cw isFlushWindowDisabled] == NO) [cw enableFlushWindow]; [cw flushWindow]; }
+}
+@end
