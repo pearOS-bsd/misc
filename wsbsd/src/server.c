@@ -1014,7 +1014,8 @@ void ws_compose_scene(ws_server *s, ws_surface *screen)
 	size_t n = sorted(s, v);
 	if (g_splash) { int desk = 0; for (size_t i = 0; i < n; i++) if (v[i]->level == -2147483603) desk = 1; if (!desk) { if (s->comp->flush) s->comp->flush(s->comp); draw_splash(screen); } }
 	for (size_t i = 0; i < n; i++) {
-		if (v[i]->nglass > 0) {                                               /* the glass material (the Dock's bar, the menu bar, glass views): the window's shapes melt into one */
+		if (v[i]->mesh) {}       /* a window drawn through its mesh (the genie): its blur / glass stays out, else the backdrop of the unwarped rectangle stayed blurred (a blur spot) and every frame paid for it */
+		else if (v[i]->nglass > 0) {                                               /* the glass material (the Dock's bar, the menu bar, glass views): the window's shapes melt into one */
 			if (s->comp->flush) s->comp->flush(s->comp);
 			ws_glass_regions(screen, v[i]->glass, v[i]->nglass, v[i]->frame.x, v[i]->frame.y);
 		} else if (v[i]->blur_radius > 0) {                                          /* blur what is behind the window (sigma = radius / 2: an estimate) */

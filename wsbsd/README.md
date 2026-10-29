@@ -86,7 +86,7 @@ Source: `buglist.txt`. `[ ]` = open, `[x]` = done and verified. Items marked *(p
 - [ ] Resizing flickers and shows only an outline instead of resizing the application live.
 - [ ] After a resize, releasing the mouse sometimes leaves the window "stuck" as if the button were still down (one or two extra clicks are needed).
 - [ ] Moving windows lacks vsync (a faint tearing effect, almost imperceptible).
-- [ ] The Genie minimize animation is far too slow and leaves a blur spot where the window should appear (and during the animation).
+- [ ] The Genie minimize animation is far too slow and leaves a blur spot where the window should appear (and during the animation). *(partial: a warped window no longer gets its blur / glass applied to the unwarped rectangle, which left the spot and cost a blur per frame; not seen on an image yet)*
 - [ ] Clicking Downloads in the Dock flickers.
 - [ ] Dock cannot be resized by dragging its separator, as on macOS.
 - [ ] Liquid Glass has an extra vertical offset: the lens samples the image too far away for the distortion.
