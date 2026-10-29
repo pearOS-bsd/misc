@@ -77,8 +77,8 @@ Source: `buglist.txt`. `[ ]` = open, `[x]` = done and verified. Items marked *(p
 
 **Windows, Dock and animations**
 - [x] Closing the last window of the Terminal no longer quits it (Command-Q does). *(other applications: their own delegates; GNUstep apps that quit on the last window need the same check)*
-- [ ] Finder windows must use the system window decorations (some of ours are invented).
-- [ ] The rubber-band (stretch) effect and the hover glyphs are missing on close / minimize / maximize. *(partial: hover glyphs and the pressed state from `Aqua.car` exist; the stretch needs a finer capture on the Mac)*
+- [x] Finder browser windows use the system decorations: a titled, full-size-content window whose buttons are drawn by the theme (`WsdTrafficOverlay` in `WsdMacTheme.m`: Aqua.car renditions, hover glyphs, rubber band, green-button popover) instead of the Finder's own copy. *(Get Info, Settings, copy and other Finder panels still carry the Finder's own trim)*
+- [ ] The rubber-band (stretch) effect and the hover glyphs on close / minimize / maximize. *(partial: hover glyphs and the pressed state from `Aqua.car` exist; the stretch needs a finer capture on the Mac)*
 - [ ] The green button must move the window to its own full-screen Space (workspace), as on the Mac; only snapping to the top edge maximizes the window. *(partial: the green button now takes the window to full screen (the area below the menu bar) and back; there are no Spaces: the other windows stay where they are, the Dock stays)*
 - [x] Resting the pointer on the green button shows a popover with Enter / Exit Full Screen, Tile Window to Left / Right of Screen, Fill and Center. *(the Mac's popover has pictures of the layouts, not text rows; not measured)*
 - [x] Window tiling by dragging a title bar to the screen edges (halves, quarters at the corners, top edge fills), with a translucent preview; a tiled window dragged away gets its old size back. Geometry measured on the Mac with Window > Move & Resize (below the 30 pt menu bar, above an 84 pt Dock, no margins). *(Option-drag, the Move & Resize menu and the hover popover of the green button are not done)*

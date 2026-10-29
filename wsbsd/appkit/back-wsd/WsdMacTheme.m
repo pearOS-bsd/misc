@@ -130,7 +130,7 @@ static void installControlImages(void)
 			if (getenv("WSD_DEBUG")) NSLog(@"wsd control image %@ -> %@ replaced=%d named=%d", keys[i], real, old != nil, ok);
 		}
 		{ NSImage *old = [NSImage imageNamed: @"NSComboArrow"]; NSString *real = old && [old name] ? [[old name] copy] : @"NSComboArrow"; if (old) [old setName: nil]; [comboChevron() setName: real]; }
-		for (NSString *nm in @[@"common_Nibble", @"common_3DArrowDown", @"common_ret", @"common_retH"]) {              /* the stock pop-up arrows are blanked: the theme draws the chevrons */
+		for (NSString *nm in @[@"common_Nibble", @"common_3DArrowDown", @"common_ret", @"common_retH", @"NSMenuArrow", @"NSHighlightedMenuArrow", @"common_3DArrowRight", @"common_3DArrowRightH"]) {              /* the stock pop-up arrows are blanked: the theme draws the chevrons */
 			NSImage *old = [NSImage imageNamed: nm]; NSString *real = old && [old name] ? [[old name] copy] : nm; NSSize sz = old ? [old size] : NSMakeSize(8, 8);
 			if (old) [old setName: nil];
 			NSImage *blank = [[NSImage alloc] initWithSize: sz]; [blank setName: real];
@@ -853,12 +853,18 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 	}
 	[[NSColor clearColor] set]; NSRectFillUsingOperation(bounds, NSCompositeCopy);
 }
+- (NSImage *) branchImage { static NSImage *b; if (!b) b = [[NSImage alloc] initWithSize: NSMakeSize(8, 8)]; return b; }
+- (NSImage *) highlightedBranchImage { return [self branchImage]; }
 /* the highlighted row: the accent blue, 5 pt in from the sides, corner radius 8 */
 - (void) drawBorderAndBackgroundForMenuItemCell: (NSMenuItemCell *)cell withFrame: (NSRect)cellFrame inView: (NSView *)controlView state: (GSThemeControlState)state isHorizontal: (BOOL)horizontal
 {
 	if (horizontal) { WsdDrawBarItem(cell, cellFrame, state == GSThemeHighlightedState || [cell isHighlighted]); return; }
 	BOOL hot = state == GSThemeHighlightedState || [cell isHighlighted]; if ([[cell menuItem] isSeparatorItem]) return;
 	if (hot && ![[cell menuItem] view]) fillRound(NSInsetRect(cellFrame, 5, 0), 8.0, rgb(0, 122, 255, 1));       /* a row that holds a view (the Finder's tag colours) is not highlighted as a whole */
+	if ([[cell menuItem] hasSubmenu]) {       /* the submenu arrow of macOS: a chevron (GNUstep's branch image is a flag-shaped bitmap, blanked below) */
+		extern BOOL WsdSymbolDraw(NSString *name, NSRect cell, CGFloat pt, int weight, NSColor *tint); extern int WsdSymbolFlip; BOOL en = [[cell menuItem] isEnabled];
+		WsdSymbolFlip = 0; WsdSymbolDraw(@"chevron.right", NSMakeRect(NSMaxX(cellFrame) - 26, NSMidY(cellFrame) - 8, 16, 16), 9, 6, hot ? [NSColor whiteColor] : (isDark() ? [NSColor colorWithCalibratedWhite: 1 alpha: en ? 0.6 : 0.25] : [NSColor colorWithCalibratedWhite: 0 alpha: en ? 0.55 : 0.25])); WsdSymbolFlip = -1;
+	}
 	NSString *tip = [[cell menuItem] toolTip]; if ([tip hasPrefix: @"sym:"]) {                                       /* the icon of the row: a symbol named in the tool tip, 16 pt, 17 pt in from the edge of the row */
 		extern BOOL WsdSymbolDraw(NSString *name, NSRect cell, CGFloat pt, int weight, NSColor *tint); BOOL en = [[cell menuItem] isEnabled];
 		extern int WsdSymbolFlip; WsdSymbolFlip = 0;       /* the menu rows are drawn in unflipped coordinates */
@@ -1028,12 +1034,16 @@ static NSFont *titleFont(void)
 extern NSImage *WsdWindowButtonImage(int kind, int state, BOOL dark);
 extern void WsdDrawWindowButton(NSImage *im, NSRect r, BOOL held, NSPoint pull);
 static NSMutableSet *gDecoViews; static double wsdRelF;
+@interface WsdMacDecorationView (WsdOverlay) - (void) wsdDrawTrafficLights; - (NSRect) wsdGroupRect; - (BOOL) wsdPointInButtons: (NSPoint)p; @end
+@class WsdMacDecorationView;
+/* the title bar's buttons of a window whose content runs under it (full-size content view, the Finder): a transparent view over the content that draws them and takes the presses on them */
+@interface WsdTrafficOverlay : NSView { @public WsdMacDecorationView *deco; } @end
 @implementation WsdMacDecorationView
 
 + (void) offsets: (float *)l : (float *)r : (float *)t : (float *)b forStyleMask: (NSUInteger)style
 {
 	*l = *r = *t = *b = 0.0;
-	if (style & (NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask)) *t = TB;
+	if ((style & (NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask)) && !(style & NSFullSizeContentViewWindowMask)) *t = TB;       /* full-size content: the content runs under the title bar (the Finder's toolbar) */
 }
 
 + (CGFloat) minFrameWidthWithTitle: (NSString *)aTitle styleMask: (NSUInteger)aStyle { return 96.0; }
@@ -1051,9 +1061,18 @@ static NSMutableSet *gDecoViews; static double wsdRelF;
 	[self updateRects];
 	if (!gDecoViews) { gDecoViews = [[NSMutableSet alloc] init]; [NSTimer scheduledTimerWithTimeInterval: 0.05 target: [WsdMacDecorationView class] selector: @selector(wsdPollHover:) userInfo: nil repeats: YES]; }
 	[gDecoViews addObject: [NSValue valueWithNonretainedObject: self]]; wsdBtnPressed = -1;
+	if ([w styleMask] & NSFullSizeContentViewWindowMask) { WsdTrafficOverlay *ov = [[WsdTrafficOverlay alloc] initWithFrame: [self bounds]]; ov->deco = self; [ov setAutoresizingMask: NSViewWidthSizable | NSViewHeightSizable]; [self addSubview: ov positioned: NSWindowAbove relativeTo: nil]; [ov release]; }
 	return self;
 }
 - (void) dealloc { [gDecoViews removeObject: [NSValue valueWithNonretainedObject: self]]; [super dealloc]; }
+- (void) didAddSubview: (NSView *)v
+{
+	[super didAddSubview: v]; Class oc = NSClassFromString(@"WsdTrafficOverlay"); if ([v isKindOfClass: oc]) return;
+	for (NSView *o in [[self subviews] copy]) if ([o isKindOfClass: oc]) { [o retain]; [o removeFromSuperview]; [self addSubview: o]; [o release]; break; }       /* the content view is set after the frame view is made: the overlay stays on top */
+}
+/* the overlay of a full-size window draws the buttons: whatever redraws the frame view redraws it */
+- (void) setNeedsDisplay: (BOOL)f { [super setNeedsDisplay: f]; for (NSView *v in [self subviews]) if ([v isKindOfClass: NSClassFromString(@"WsdTrafficOverlay")]) [v setNeedsDisplay: f]; }
+- (void) setNeedsDisplayInRect: (NSRect)r { [super setNeedsDisplayInRect: r]; for (NSView *v in [self subviews]) if ([v isKindOfClass: NSClassFromString(@"WsdTrafficOverlay")]) [v setNeedsDisplayInRect: r]; }
 
 - (void) updateRects
 {
@@ -1076,6 +1095,7 @@ static NSMutableSet *gDecoViews; static double wsdRelF;
 - (NSRect) circleRect: (int)i
 {
 	NSRect b = [self bounds];
+	if ([window styleMask] & NSFullSizeContentViewWindowMask) return NSMakeRect(18.0 + 23.0 * i, b.size.height - 18.0 - 16.0, 16.0, 16.0);       /* the buttons of a window with a toolbar (measured on the Mac with AX: x 18, 41, 64, 18 from the top) */
 	return NSMakeRect(8.0 + 23.0 * i, b.size.height - TB + 8.0, 16.0, 16.0);      /* measured on the Mac (AX): 16 x 16 at x 8, 31, 54, 8 from the top */
 }
 
@@ -1138,7 +1158,7 @@ static NSGradient *grad(int r0, int g0, int b0, int r1, int g1, int b1, int r2, 
 	BOOL dark = isDark(), key = (inputState == 0);
 	{ NSWindow *wn = [self window]; NSColor *wbg = (wn && ![wn isOpaque]) ? [wn backgroundColor] : [NSColor windowBackgroundColor]; if ([wn isOpaque] || !wn) { NSColor *tinted = WsdTintedWindowBackground(wn); if (tinted) wbg = tinted; }          /* non-opaque windows (behind-window materials) keep their own, usually clear, background */
 	  [wbg set]; NSRectFillUsingOperation(b, ([wn isOpaque] || !wn) ? NSCompositeSourceOver : NSCompositeCopy); }               /* the window background (the backing store starts transparent) */
-	if (hasTitleBar) {
+	if (hasTitleBar && !([window styleMask] & NSFullSizeContentViewWindowMask)) {
 		int wr, wg, wb; windowBG(&wr, &wg, &wb);
 		NSColor *bg = dark ? (key ? rgb(mix(wr, 255, 0.035), mix(wg, 255, 0.035), mix(wb, 255, 0.035), 1) : rgb(wr + 4, wg + 4, wb + 4, 1)) : (key ? rgb(mix(wr, 255, 0.5), mix(wg, 255, 0.5), mix(wb, 255, 0.5), 1) : rgb(246, 246, 246, 1));
 		[bg set];
@@ -1238,7 +1258,7 @@ static NSGradient *grad(int r0, int g0, int b0, int r1, int g1, int b1, int r2, 
 - (void) mouseDown: (NSEvent *)event
 {
 	NSPoint p = [self convertPoint: [event locationInWindow] fromView: nil];
-	if (hasTitleBar && NSPointInRect(p, titleBarRect)) {
+	if (hasTitleBar && (NSPointInRect(p, titleBarRect) || ([window styleMask] & NSFullSizeContentViewWindowMask))) {
 		int i = [self wsdButtonAt: p];
 		if (i >= 0) { wsdBtnPressed = i; wsdBtnInside = YES; wsdBtnHover = YES; [self setNeedsDisplayInRect: [self wsdGroupRect]]; return; }      /* the action runs when the button is released over it (mouseDragged: / mouseUp:) */
 	}
@@ -1263,3 +1283,21 @@ static NSGradient *grad(int r0, int g0, int b0, int r1, int g1, int b1, int r2, 
 	if (fire) { if (i == 0) [window performClose: self]; else if (i == 1) [window performMiniaturize: self]; else WsdToggleFullscreen(window); }
 }
 @end
+
+@implementation WsdMacDecorationView (WsdOverlay)
+- (void) wsdDrawTrafficLights
+{
+	BOOL dark = isDark(), key = (inputState == 0);
+	[self drawButton: 0 key: key enabled: hasCloseButton dark: dark]; [self drawButton: 1 key: key enabled: hasMiniaturizeButton dark: dark]; [self drawButton: 2 key: key enabled: hasResizeBar dark: dark];
+}
+- (BOOL) wsdPointInButtons: (NSPoint)p { return NSPointInRect(p, [self wsdGroupRect]); }
+@end
+@implementation WsdTrafficOverlay
+- (BOOL) isFlipped { return NO; } - (BOOL) isOpaque { return NO; } - (BOOL) acceptsFirstMouse: (NSEvent *)e { return YES; }
+- (NSView *) hitTest: (NSPoint)p { NSPoint q = [self convertPoint: p fromView: [self superview]]; return [deco wsdPointInButtons: q] ? self : nil; }
+- (void) drawRect: (NSRect)r { [deco wsdDrawTrafficLights]; }
+- (void) mouseDown: (NSEvent *)e { [deco mouseDown: e]; }
+- (void) mouseDragged: (NSEvent *)e { [deco mouseDragged: e]; }
+- (void) mouseUp: (NSEvent *)e { [deco mouseUp: e]; }
+@end
+
