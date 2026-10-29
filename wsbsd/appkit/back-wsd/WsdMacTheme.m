@@ -413,6 +413,12 @@ static NSRect wsdConstrain(id self, SEL _cmd, NSRect f, NSScreen *scr)
 {
 	NSRect sf = scr ? [scr frame] : NSMakeRect(0, 0, 1280, 800);
 	CGFloat top = NSMaxY(sf) - 30.0;
+	if (![(NSWindow *)self isVisible]) {                                       /* a window that is about to appear is put entirely on the screen (below the menu bar) when it fits, shrunk to it when it does not, as the Mac does: GrandPerspective's result window came up 1168 wide at x 260 on a 1280 screen */
+		if (f.size.width > sf.size.width) f.size.width = sf.size.width; if (f.size.height > top - sf.origin.y) f.size.height = top - sf.origin.y;
+		if (NSMaxX(f) > NSMaxX(sf)) f.origin.x = NSMaxX(sf) - f.size.width; if (f.origin.x < sf.origin.x) f.origin.x = sf.origin.x;
+		if (NSMaxY(f) > top) f.origin.y = top - f.size.height; if (f.origin.y < sf.origin.y) f.origin.y = sf.origin.y;
+		return f;
+	}
 	if (NSMaxY(f) > top) f.origin.y -= NSMaxY(f) - top;
 	if (f.size.width > sf.size.width) f.size.width = sf.size.width;             /* wider than the screen: shrunk to it; otherwise moved back onto it */
 	/* as on the Mac a window may be moved partly off the screen: at least 80 pt of it (and its title bar) stay on it, so that it can be taken back */
