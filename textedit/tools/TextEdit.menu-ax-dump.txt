@@ -1,0 +1,326 @@
+## Apple
+About This Mac
+System Information
+-- (disabled)
+System Settings…
+App Store…, 9 updates
+-- (disabled)
+Recent Items
+  Applications (disabled)
+  balenaEtcher
+  Show “balenaEtcher” in Finder
+  Digital Color Meter
+  Show “Digital Color Meter” in Finder
+  Discord
+  Show “Discord” in Finder
+  Finder
+  Show “Finder” in Finder
+  Google Chrome
+  Show “Google Chrome” in Finder
+  Notes
+  Show “Notes” in Finder
+  Shottr
+  Show “Shottr” in Finder
+  Terminal
+  Show “Terminal” in Finder
+  TextEdit
+  Show “TextEdit” in Finder
+  WhatsApp
+  Show “WhatsApp” in Finder
+  -- (disabled)
+  Documents (disabled)
+  AccessibilitySystemAppearance.car
+  Show “AccessibilitySystemAppearance.car” in Finder
+  Aqua.car
+  Show “Aqua.car” in Finder
+  AquaAX.car
+  Show “AquaAX.car” in Finder
+  Assets.car
+  Show “Assets.car” in Finder
+  buglist.txt
+  Show “buglist.txt” in Finder
+  dark.png
+  Show “dark.png” in Finder
+  index (1).php
+  Show “index (1).php” in Finder
+  light.png
+  Show “light.png” in Finder
+  menu.png
+  Show “menu.png” in Finder
+  test_compose
+  Show “test_compose” in Finder
+  -- (disabled)
+  Servers (disabled)
+  Macintosh HD
+  -- (disabled)
+  Clear Menu
+-- (disabled)
+Force Quit… [⎋ m2]
+Force Quit TextEdit [⎋ m3]
+-- (disabled)
+Sleep
+Restart…
+Restart
+Shut Down…
+Shut Down
+-- (disabled)
+Lock Screen [Q m4]
+Log Out Alexandru Balan… [Q m1]
+Log Out Alexandru Balan [Q m3]
+-- (disabled)
+## TextEdit
+About TextEdit
+-- (disabled)
+Settings… [, m0]
+-- (disabled)
+Services
+  No Services Apply (disabled)
+  Services Settings…
+-- (disabled)
+Hide TextEdit [H m0]
+Hide Others [H m2]
+Show All (disabled)
+-- (disabled)
+Quit TextEdit [Q m0]
+Quit and Keep Windows [Q m2]
+## File
+New [N m0]
+Open… [O m0]
+Open Recent
+  buglist
+  index (1).php
+  gh_tk (1)
+  vault-upload 2.sh
+  vault-upload.sh
+  rootless.conf
+  package.json
+  site.webmanifest
+  _backup_admin_admin_smm1_mysql_2026-06-24_17-15-13.sql
+  db.php
+  -- (disabled)
+  Clear Menu
+-- (disabled)
+Close [W m0]
+Close All [W m2]
+Save… [S m0]
+Save As… [S m3]
+Duplicate [S m1]
+Rename…
+Move To…
+Revert To
+  Browse All Versions… (disabled)
+Export as PDF…
+-- (disabled)
+Show Properties [P m2]
+-- (disabled)
+<<Import From Device - unlocalized>>
+-- (disabled)
+Share
+  AirDrop
+  Mail
+  Messages
+  Notes
+  Freeform
+  -- (disabled)
+  More…
+-- (disabled)
+Page Setup… [P m1]
+Print… [P m0]
+## Edit
+Undo [Z m0] (disabled)
+Redo [Z m1] (disabled)
+-- (disabled)
+Cut [X m0] (disabled)
+Copy [C m0] (disabled)
+Paste [V m0] (disabled)
+Paste and Match Style [V m3] (disabled)
+Delete (disabled)
+Complete [ m10]
+Select All [A m0]
+-- (disabled)
+Insert
+  Line Break
+  Paragraph Break
+  Page Break
+Attach Files… [A m1]
+Add Link… [K m0]
+-- (disabled)
+Find
+  Find… [F m0]
+  Find and Replace… [F m2]
+  Find Next [G m0]
+  Find Previous [G m1]
+  Use Selection for Find [E m0] (disabled)
+  Jump to Selection [J m0]
+  Select Line... [L m0]
+-- (disabled)
+Spelling and Grammar
+  Show Spelling and Grammar [: m0]
+  Check Document Now [; m0]
+  -- (disabled)
+  Check Spelling While Typing
+  Check Grammar With Spelling
+  Correct Spelling Automatically
+Substitutions
+  Show Substitutions
+  -- (disabled)
+  Smart Copy/Paste
+  Smart Quotes
+  Smart Dashes
+  Smart Links
+  Data Detectors
+  Text Replacement
+Transformations
+  Make Upper Case
+  Make Lower Case
+  Capitalize
+Speech
+  Start Speaking (disabled)
+  Stop Speaking (disabled)
+-- (disabled)
+AutoFill
+  Contact…
+  Passwords…
+  Credit Card…
+Start Dictation [🎤 m8]
+Emoji & Symbols [🌐 m8]
+## Format
+Font
+  Show Fonts [T m0]
+  -- (disabled)
+  Bold [B m0]
+  Italic [I m0]
+  Underline [U m0]
+  Outline
+  Highlight
+    Accent
+    -- (disabled)
+    Purple
+    Pink
+    Orange
+    Mint
+    Blue
+  Styles...
+  -- (disabled)
+  Bigger [+ m0]
+  Smaller [- m0]
+  -- (disabled)
+  Kern
+    Use Default
+    Use None
+    Tighten [[ m2]
+    Loosen [] m2]
+  Ligatures
+    Use Default
+    Use None
+    Use All
+  Baseline
+    Use Default
+    Superscript
+    Subscript
+    Raise
+    Lower
+  Character Shape
+    Traditional Form
+  -- (disabled)
+  Show Colors [C m1]
+  -- (disabled)
+  Copy Style [C m2]
+  Paste Style [V m2]
+Text
+  Align Left [{ m0]
+  Center [| m0]
+  Justify
+  Align Right [} m0]
+  -- (disabled)
+  Writing Direction
+    Paragraph (disabled)
+    Default
+    Left to Right
+    Right to Left
+    -- (disabled)
+    Selection (disabled)
+    Default
+    Left to Right
+    Right to Left
+  -- (disabled)
+  Show Ruler [R m0]
+  Copy Ruler [C m4]
+  Paste Ruler [V m4]
+  -- (disabled)
+  Spacing...
+-- (disabled)
+Make Plain Text [T m1]
+Prevent Editing
+Wrap to Page [W m1]
+Allow Hyphenation
+Make Layout Vertical
+-- (disabled)
+List…
+Table…
+## View
+Show Tab Bar
+Show All Tabs
+-- (disabled)
+Use Dark Background for Windows
+-- (disabled)
+Actual Size [0 m0]
+Zoom In [. m1]
+Zoom Out [, m1]
+-- (disabled)
+Enter Full Screen [F m24]
+## Window
+Minimize [M m0]
+Minimize All [M m2]
+Zoom
+Zoom All
+Fill [F m28]
+Center [C m28]
+-- (disabled)
+Move & Resize
+  Halves (disabled)
+  Left
+  Right
+  Top
+  Bottom
+  -- (disabled)
+  Quarters (disabled)
+  Top Left
+  Top Right
+  Bottom Left
+  Bottom Right
+  -- (disabled)
+  Arrange (disabled)
+  Left & Right
+  Left & Quarters
+  Right & Left
+  Right & Quarters
+  Top & Bottom
+  Top & Quarters
+  Bottom & Top
+  Bottom & Quarters
+  Quarters
+  -- (disabled)
+  Return to Previous Size [R m28] (disabled)
+Full Screen Tile
+  Left of Screen
+  Right of Screen
+-- (disabled)
+Move to Built-in Retina Display
+Move All to Built-in Retina Display
+-- (disabled)
+Show Previous Tab [	 m13] (disabled)
+Show Next Tab [	 m12] (disabled)
+Move Tab to New Window (disabled)
+Merge All Windows (disabled)
+-- (disabled)
+-- (disabled)
+Bring All to Front
+Arrange in Front
+Remove Window from Set (disabled)
+-- (disabled)
+Untitled
+## Help
+Send TextEdit Feedback
+-- (disabled)
+TextEdit Help

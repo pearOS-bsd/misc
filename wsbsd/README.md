@@ -118,7 +118,7 @@ Source: `buglist.txt`. `[ ]` = open, `[x]` = done and verified. Items marked *(p
 
 **Missing pieces**
 - [ ] System components that still have to be decompiled from this Mac (list to be kept in `docs/`).
-- [ ] The Mac's text editor (TextEdit) is missing.
+- [x] TextEdit (`../textedit`): window and formatting bar laid out from the real one (603 x 505, bar 36 high), the menu bar generated from the Mac's accessibility dump (`tools/gen_menu.py`; items without an action yet are disabled), new / open / save / save as for .txt and .rtf, Edit and Format actions that AppKit provides, plain / rich text, quit semantics as on the Mac. *(the ruler, lists, tables, find panel, versions, tabs and the Share items are not done; installed as /System/Applications/TextEdit.app by the image build, not yet run on an image)*
 - [x] UITest: the combo box has items (First, Second, Third) and drops down. The image builds UITest without the Touch Bar stand-ins (the build with them crashed at start in a libobjc `objc_msgSend_stret` call from `-[NSView addSubview:positioned:relativeTo:]`: not investigated, the Touch Bar pages are for the dev build).
 - [x] UITest: a second window "UI Test: System" with a Liquid Glass intensity slider (`/var/tmp/wsd-glass-intensity`, read by wsd once a second: scales the lens displacement), a Touch Bar emulation checkbox (`WsbsdTouchBarEnabled` in the global preferences, read by the Touch Bar host) and a Light / Dark switch (`AppleInterfaceStyle`).
 
