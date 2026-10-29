@@ -181,8 +181,10 @@ static CGPoint WinOf(const DockScene *s, CGFloat x, CGFloat y)                  
 	return CGPointMake(x, y);
 }
 
+CGRect gDockLabelPill, gDockLabelTail;
 void DockRender(CGContextRef c, const DockScene *s)
 {
+	gDockLabelPill = gDockLabelTail = CGRectZero;
 	if (s->orient) { CGContextSaveGState(c); Orient(c, s); }
 	const DockBar *b = &s->bar;
 	CGFloat bx = b->bar_x - s->origin_x, by = b->bottom_margin, bw = b->bar_w, bh = b->bar_h;
@@ -217,12 +219,11 @@ void DockRender(CGContextRef c, const DockScene *s)
 	if (!s->fan && s->hover >= 0 && s->hover < s->n && s->tiles[s->hover].label) {                 /* the label: a dark pill beside the tile with a small arrow */
 		const DockSlot *sl = &s->slots[s->hover]; CGFloat cx = sl->cx - s->origin_x, tw = 0;
 		DrawText(c, s->tiles[s->hover].label, 15, CGPointZero, &tw);
-		CGFloat pw = tw + 28, ph = 30;
-		if (!s->orient) {
-			CGFloat py = art_bottom + sl->art + 14; CGRect pr = CGRectMake(cx - pw / 2, py, pw, ph);
-			SetRGB(c, 0.17, 0.17, 0.18, 0.92); CGPathRef pill = ContinuousRect(pr, 15); CGContextAddPath(c, pill); CGContextFillPath(c); CGPathRelease(pill);
-			CGContextMoveToPoint(c, cx - 7, py + 0.5); CGContextAddLineToPoint(c, cx, py - 7); CGContextAddLineToPoint(c, cx + 7, py + 0.5); CGContextClosePath(c); CGContextFillPath(c);
-			SetRGB(c, 1, 1, 1, 0.95); DrawText(c, s->tiles[s->hover].label, 15, CGPointMake(cx - tw / 2, py + 9), NULL);
+		CGFloat pw = tw + 30, ph = tw > 0 ? 26 : 26;
+		if (!s->orient) {                                                                          /* measured on the real Dock (Google Chrome): the pill 129 x 26 (text 99 + 15 each side), a capsule, its bottom 21 above the icon, the tail 7 px below it; the material is the compositor's (glass mode 7, set by the Dock from these rectangles): only the text is drawn here */
+			CGFloat py = art_bottom + sl->art + 21; CGRect pr = CGRectMake(cx - pw / 2, py, pw, ph);
+			gDockLabelPill = pr; gDockLabelTail = CGRectMake(cx - 1.5, py - 6, 3, 3);
+			SetRGB(c, 0.957, 0.957, 0.96, 1); DrawText(c, s->tiles[s->hover].label, 15, CGPointMake(cx - tw / 2, py + 9), NULL);
 		} else {                                                                                   /* on the left edge the pill is to the right of the tile, on the right edge to the left */
 			CGPoint e = WinOf(s, cx, art_bottom + sl->art + 14), cp = WinOf(s, cx, art_bottom + sl->art / 2); CGFloat dir = s->orient == 1 ? 1 : -1;
 			CGRect pr = CGRectMake(s->orient == 1 ? e.x : e.x - pw, cp.y - ph / 2, pw, ph);

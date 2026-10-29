@@ -148,10 +148,11 @@ static const char *GLASS_FS =
 	"            break; } }\n"
 	"        vec3 c = texture2D(u_blur, (p + vec2(sx, sy)) / u_screen).rgb;\n"
 	"        if (mode > 5.5) { vec3 a = texture2D(u_scene, p / u_screen).rgb; float wt = 1.0; a += 0.0; for (int j = -1; j <= 1; j++) for (int i = -1; i <= 1; i++) { if (i == 0 && j == 0) continue; float w = (i != 0 && j != 0) ? 0.44 : 0.66; a += w * texture2D(u_scene, (p + vec2(float(i), float(j))) / u_screen).rgb; wt += w; } c = a / wt; }\n"
-	"        float L = dot(c, vec3(0.1886, 0.7455, 0.0659)), f = mode > 5.5 ? 0.047 + L * (0.856 - 0.213 * L) : 0.12494 + L * (0.86553 - L * (0.24983 + 0.16865 * L));\n"
-	"        float rim = mode > 5.5 ? ny * (floor(dd) < 1.0 ? 0.292 : floor(dd) < 9.0 ? 0.066 * exp(-0.55 * (floor(dd) - 1.0)) : 0.0) * (1.0 - 0.26 * L - 0.17 * L * L) : (dd < 1.0 ? 0.10 + 0.177 * ny : 0.042 * ny * exp(-(dd - 1.5) / 3.8));\n"
+	"        float L = dot(c, vec3(0.1886, 0.7455, 0.0659)), f = mode > 6.5 ? 0.1216 + L * (0.987 - 0.395 * L) : mode > 5.5 ? 0.047 + L * (0.856 - 0.213 * L) : 0.12494 + L * (0.86553 - L * (0.24983 + 0.16865 * L));\n"
+	"        float rim = mode > 6.5 ? 0.0 : mode > 5.5 ? ny * (floor(dd) < 1.0 ? 0.292 : floor(dd) < 9.0 ? 0.066 * exp(-0.55 * (floor(dd) - 1.0)) : 0.0) * (1.0 - 0.26 * L - 0.17 * L * L) : (dd < 1.0 ? 0.10 + 0.177 * ny : 0.042 * ny * exp(-(dd - 1.5) / 3.8));\n"
 	"        col = clamp(vec3(f) + 1.091 * (c - vec3(L)), 0.0, 1.0);\n"
 	"        col = col * (1.0 - rim) + vec3(rim);\n"
+	"        if (mode > 6.5 && dd < 1.0) col *= 0.53;\n"
 	"    } else if (mode > 2.5) {\n"
 	"        bool dark = mode > 3.5;\n"
 	"        float sat = dark ? 2.2 : 2.1, fill = dark ? 0.157 : 0.965, fa = dark ? 0.70 : 0.72, tone = dark ? 0.125 : 0.93;\n"
@@ -592,7 +593,7 @@ static void glass_pass(gl_compositor *c, const ws_visit *v)
 		const ws_glass *g = &v->glass[i]; rect[4 * i] = (float)(v->frame.x + g->rect.x); rect[4 * i + 1] = (float)(v->frame.y + g->rect.y); rect[4 * i + 2] = (float)g->rect.w; rect[4 * i + 3] = (float)g->rect.h;
 		rm[2 * i] = (float)g->radius; rm[2 * i + 1] = g->rect.w > 3 && g->rect.h > 3 ? (float)g->mode : 0.0f; n = i + 1;
 		if (rm[2 * i + 1] <= 0) continue;
-		if (g->mode >= 3) mat |= g->mode == 5 || g->mode == 6 ? 2 : 1;
+		if (g->mode >= 3) mat |= g->mode >= 5 && g->mode <= 7 ? 2 : 1;
 		if (rect[4 * i] < bx0) bx0 = rect[4 * i]; if (rect[4 * i + 1] < by0) by0 = rect[4 * i + 1];
 		if (rect[4 * i] + rect[4 * i + 2] > bx1) bx1 = rect[4 * i] + rect[4 * i + 2]; if (rect[4 * i + 1] + rect[4 * i + 3] > by1) by1 = rect[4 * i + 1] + rect[4 * i + 3];
 	}

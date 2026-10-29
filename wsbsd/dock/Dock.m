@@ -524,6 +524,16 @@ static NSMutableDictionary *badgeStore;
 		if (orient) { double ww = [[self window] frame].size.width; gr = (ws_rect){ (int)floor(orient == 1 ? bar.bottom_margin : ww - (bar.bottom_margin + bar.bar_h)), (int)floor(bar.bar_x - [self originX]), (int)ceil(bar.bar_h), (int)ceil(bar.bar_w) }; }
 		if (gr.x != glassRect.x || gr.y != glassRect.y || gr.w != glassRect.w || gr.h != glassRect.h || !glassOn) { ws_win_glass(wsc, &gw, gr, 18, 6); glassRect = gr; glassOn = 1; }
 	} else if (wsc && glassOn) { ws_win_glass(wsc, &(ws_win){ .id = (ws_wid)[[self window] windowNumber], .px = NULL }, (ws_rect){ 0, 0, 0, 0 }, 0, 0); glassOn = 0; }
+	if (wsc) {                                                                  /* the label of a tile: the pill and its tail are glass of the compositor (mode 7: the material measured behind the real Dock's label), the Dock draws only the text */
+		static ws_rect lastPill, lastTail; static int labelOn;
+		ws_win gw = { .id = (ws_wid)[[self window] windowNumber], .px = NULL }; double wh = [[self window] frame].size.height;
+		int on = !orient && !fanOpen && !ctxOpen && gDockLabelPill.size.width > 0;
+		if (on) {
+			ws_rect p = { (int)floor(gDockLabelPill.origin.x), (int)floor(wh - (gDockLabelPill.origin.y + gDockLabelPill.size.height)), (int)ceil(gDockLabelPill.size.width), (int)ceil(gDockLabelPill.size.height) };
+			ws_rect t = { (int)floor(gDockLabelTail.origin.x), (int)floor(wh - (gDockLabelTail.origin.y + gDockLabelTail.size.height)), (int)ceil(gDockLabelTail.size.width), (int)ceil(gDockLabelTail.size.height) };
+			if (!labelOn || memcmp(&p, &lastPill, sizeof p) || memcmp(&t, &lastTail, sizeof t)) { ws_win_glass_slot(wsc, &gw, 3, p, p.h / 2, 7); ws_win_glass_slot(wsc, &gw, 4, t, t.h / 2, 7); lastPill = p; lastTail = t; labelOn = 1; }
+		} else if (labelOn) { ws_win_glass_slot(wsc, &gw, 3, (ws_rect){ 0, 0, 0, 0 }, 0, 0); ws_win_glass_slot(wsc, &gw, 4, (ws_rect){ 0, 0, 0, 0 }, 0, 0); labelOn = 0; }
+	}
 }
 /* the view is redrawn only when something it shows has changed (the window server blends and blurs the whole window again for every frame it gets): the hash covers the tiles, the slots, the bar and the state of the menus, fans and grids; while an animation without a state of its own runs (fan, menu, poof, bounce, minimising) every tick draws */
 - (void)redrawIfChanged:(NSRect)f

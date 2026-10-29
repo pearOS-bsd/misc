@@ -45,6 +45,7 @@ double DockFanItemProgress(int k, double t);
 
 /* draws the bar, the tiles, the dots, the separator and the tooltip into ctx (a context of the window size, y up) */
 void DockRender(CGContextRef ctx, const DockScene *s);
+extern CGRect gDockLabelPill, gDockLabelTail;     /* the label's glass shapes of the last picture (window space, y up); zero when there is no label */
 /* one icon of the built-in set into the square (x, y, size) */
 void DockDrawIcon(CGContextRef ctx, const char *glyph, CGRect r);
 #endif
