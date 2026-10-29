@@ -1,0 +1,18 @@
+#!/bin/sh
+# PROVIDE: wsbsd_kbdlight
+# REQUIRE: FILESYSTEMS
+# KEYWORD: nojail
+# Keyboard backlight: loads the driver of the laptop (clevo_wmi for Clevo / Tongfang machines such as the NS50_70MU) when the module is in the image, and sets the level the user left.
+. /etc/rc.subr
+name="wsbsd_kbdlight"
+rcvar="wsbsd_kbdlight_enable"
+start_cmd="wsbsd_kbdlight_start"
+stop_cmd=":"
+wsbsd_kbdlight_start()
+{
+	kldload -n acpi_wmi >/dev/null 2>&1
+	[ -f /boot/modules/clevo_wmi.ko ] && kldload -n clevo_wmi >/dev/null 2>&1
+	sysctl dev.clevo_wmi.0.kb_brightness=128 >/dev/null 2>&1
+}
+load_rc_config $name
+run_rc_command "$1"
