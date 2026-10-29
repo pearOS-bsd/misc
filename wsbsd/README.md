@@ -88,7 +88,7 @@ Source: `buglist.txt`. `[ ]` = open, `[x]` = done and verified. Items marked *(p
 - [ ] Moving windows lacks vsync (a faint tearing effect, almost imperceptible).
 - [ ] The Genie minimize animation is far too slow and leaves a blur spot where the window should appear (and during the animation). *(partial: a warped window no longer gets its blur / glass applied to the unwarped rectangle, which left the spot and cost a blur per frame; not seen on an image yet)*
 - [ ] Clicking Downloads in the Dock flickers.
-- [ ] Dock cannot be resized by dragging its separator, as on macOS.
+- [x] The Dock resizes by dragging its separator up or down (the "tilesize" preference, 16 to 128, saved when the button is released). *(the factor between pointer travel and size is 1:1, not measured on the Mac)*
 - [ ] Liquid Glass has an extra vertical offset: the lens samples the image too far away for the distortion.
 
 **Quick Look, files and archives**

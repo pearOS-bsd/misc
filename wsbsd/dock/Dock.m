@@ -125,7 +125,7 @@ static void ShowDockGrid(NSString *title, NSString *dir, NSArray *names, double 
 	int autohide; double hideDelay, hideTime, hideFrac, hideT0, reveal0, dwell0; int hidden;                  /* hideFrac: 0 shown ... 1 hidden */
 	NSArray *ctxItems; int ctxGlass, ctxGlassSet[2]; ws_rect ctxGlassRect[2]; int ctxOpen, ctxSub, ctxHoverMain, ctxHoverSub; NSRect ctxMainR, ctxSubR; NSArray *ctxSubItems; double ctxH;
 	double poofT0; NSPoint poofAt;
-	int ctxItem, dragCand, dragItem, dragging; double dragStartX; int trashFull;
+	int ctxItem, dragCand, dragItem, dragging; double dragStartX; int resizing, resizeSize; double resizeStart; int trashFull;
 	NSTrackingRectTag trackTag; double pointer; int hover; double scale[MAXITEMS]; double bounceStart[MAXITEMS]; NSTimer *timer; uint64_t drawnHash; BOOL drawnOnce; double screenW, screenH, screenLen, alongBase; int orient; DockFan fan; int fanOpen; double fanStart, fanClose; NSMutableArray *fanStore;
 }
 - (void)reload;
@@ -598,12 +598,24 @@ static NSMutableDictionary *badgeStore;
 	if (ctxOpen) { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; [self ctxClick: p]; return; }
 	int i = [self tileAt: [self screenX: e]];
 	if (fanOpen) { if (!fanClose) fanClose = Now(); return; }
-	if (i < 0 || !tiles[i].label) return;
+	if (i < 0) {                                                                    /* the separator: dragged up or down it makes the Dock bigger or smaller (the "size" preference), as on the Mac */
+		double x = [self screenX: e]; int px, py;
+		for (int k = 0; k < n; k++) if (items[k].kind == DOCK_SEPARATOR && x >= slots[k].x - 6 && x < slots[k].x + slots[k].w + 6 && wsc && ws_cursor_position(wsc, &px, &py) == 0) { resizing = 1; resizeStart = (orient ? px : py); resizeSize = m.tilesize; return; }
+		return;
+	}
+	if (!tiles[i].label) return;
 	if ([e modifierFlags] & NSControlKeyMask) { [self rightMouseDown: e]; return; }
 	dragCand = i; dragStartX = [self screenX: e]; dragging = 0; dragItem = -1;
 }
 - (void)mouseDragged:(NSEvent *)e
 {
+	if (resizing && wsc) {
+		int px, py; if (ws_cursor_position(wsc, &px, &py) == 0) {
+			double d = orient == 0 ? resizeStart - py : orient == 1 ? px - resizeStart : resizeStart - px; int sz = (int)lround(resizeSize + d); if (sz < 16) sz = 16; if (sz > 128) sz = 128;
+			if (sz != m.tilesize) { m.tilesize = sz; if (m.largesize < sz) m.largesize = sz; prefs[@"tilesize"] = @(sz); [self relayout]; [self setNeedsDisplay: YES]; }
+		}
+		return;
+	}
 	if (dragCand < 0 || fanOpen || ctxOpen) return;
 	double x = [self screenX: e];
 	if (!dragging && fabs(x - dragStartX) < 6 && !(wsc && [self pointerAbove] > 30)) return;
@@ -628,6 +640,7 @@ static NSMutableDictionary *badgeStore;
 }
 - (void)mouseUp:(NSEvent *)e
 {
+	if (resizing) { resizing = 0; [self savePrefs]; [self reload]; return; }
 	int i = dragCand; dragCand = -1; if (ctxOpen) return;
 	if (dragging) {
 		dragging = 0; int d = dragItem; dragItem = -1;
