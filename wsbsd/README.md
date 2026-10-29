@@ -201,6 +201,24 @@ Goal: compile unmodified open source Cocoa applications on FreeBSD. What the Tex
 
 The repository root `README.md` has the overview with screenshots; `ci/build-app.sh` builds any Xcode project this way.
 
+### Retest of the unmodified applications (2026-10-30, VM, current SDK and back-end; to be repeated after every change of `sdk/` or `appkit/`)
+Run with `/tmp/cfgp/app_run.sh` style scripts: build with `ci/build-app.sh`, start on the live desktop, 10 s, screenshot + log.
+| Application | Build | Run | What is missing |
+|---|---|---|---|
+| Hex Fiend | 47 / 47 (after `uuid_t` in the prelude: it had regressed to 46) | document window with hex + ASCII columns, menu bar | the window opens at the bottom right and runs off the screen; `decodeColorSpaceForElement: calibratedWhite` unknown to GXib |
+| GrandPerspective 2026 | 138 / 138 | Welcome window, folder panel (ours), scan, treemap, toolbar | the result window came up wider than the screen (fixed now: a window about to appear is fitted onto the screen); the app icon of the Welcome window is blank; the treemap cells are large for a small folder |
+| Pashua | 41 / 41 | the dialog has its right size, fields, checkbox, pop-up, OK | a static `text` item shows as a selected text field with a focus ring |
+| Sloth | 17 / 17 (overlay `ports/sloth/overlay.json`: `-Dproperties=wsbsd_properties`) | starts, no window | Cocoa bindings: `NSTreeController` (`sortDescriptors`), `NSMenuItem` / `NSPopUpButtonCell` `value` / `selectedValue` bindings ("No binding exposed on ...") |
+| TextMate | built earlier (384 / 384), not rebuilt today | starts, a 186 x 336 floating window, no document window in 10 s | bindings, Auto Layout, WebKit, `.tmplugin` loading ("Skip incompatible plug-in") |
+| Chess (apple-oss-distributions) | not tried | | Swift + GL |
+| MacDown, Transmission | survey only (see below) | | CoreFoundation / CocoaPods / WebKit |
+
+### To test (owner's request, 2026-10-30)
+- **HakiOS** ([oosexgang/hakios-xnu-kernel](https://github.com/oosexgang/hakios-xnu-kernel)): run it as a separate application of this system. Plan: (1) the Apple-free configuration first, `make qemu-open` (the open XNU kernel + the `hello` RAM disk, no iOS) with `qemu-system-aarch64` from `pkg` (qemu 11.1.2 is in the FreeBSD ports) and the repository's `prebuilt/` kernel and loader; measure the boot time under TCG; (2) a QEMU display back-end for wsd (the `ramfb` framebuffer drawn in a wsd window, the pointer as a finger) so that it is a window of its own; (3) only then the iOS user space, which the user fetches from Apple (7.4 GB IPSW, about 12 GB of disk; not shipped, not in the ISO). Open question for the owner: the kernel is Apple's APSL-licensed XNU (built from source), the rule so far is that original Apple code is not in the image.
+- Every application of the table above again after changes to the SDK / the back-end.
+
+
+
 ### Unmodified open source Mac apps (survey, `ci/oss-probe.sh`)
 Each repository is cloned as is and every Objective-C file is syntax-checked against the GNUstep headers with ARC (project headers are resolved by directory name, which is
 not the same as a real Xcode build). Last run: 2026-10-17.
