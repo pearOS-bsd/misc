@@ -107,15 +107,21 @@ static NSBitmapImageRep *RepFromPixels(const uint8_t *p, int w, int h, int bpp) 
 }
 
 /* the window buttons of the title bar (close, minimize, zoom) from the Mac's own catalogue: Aqua.car / DarkAqua.car, "WindowFrame_WindowControlButtons_Regular": the key has Dimension1 = the button (0 close, 1 minimize, 2 zoom, 3 close of an edited document, 4 / 5 full screen) and State (0 rest: the plain disc, 1 the pointer is over the group: with its glyph, 2 pressed). 16 pt discs, one rendition per scale (the pixels lie in a packed atlas, coreui's car_bitmap_linked). NULL when the catalogue is not there. */
-/* a window button drawn as the Mac does while it is held and dragged: it swells to 1.14 and stretches like rubber toward the pointer (subtle: the long axis grows with the distance up to 1.3 times, the short one gives way so that the area stays), and drifts up to 3 px toward it. `pull` is the vector from the disc's centre to the pointer in the view's own coordinates. The measured part is the swelling (14 to 16 px); the stretch was described by the user ("rubber when you drag far") and drawn by eye. */
+/* a window button drawn as the Mac does while it is held and dragged (laws measured from a recording, below). `pull` is the vector from the disc's centre to the pointer in the view's own coordinates. */
+NSImage *WsdWindowButtonBare;
 void WsdDrawWindowButton(NSImage *im, NSRect r, BOOL held, NSPoint pull)
 {
+	NSImage *bare = WsdWindowButtonBare; WsdWindowButtonBare = nil;
 	if (!held) { [im drawInRect: r fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1.0]; return; }
-	double d = hypot(pull.x, pull.y), e = d / (d + 120.0), L = 1.143 * (1.0 + 0.30 * e), S = 1.143 / sqrt(1.0 + 0.30 * e), ang = d > 0.5 ? atan2(pull.y, pull.x) : 0, off = e * 3.0;      /* subtle: at most 1.3 times longer and 3 px of drift */
+	/* measured from a screen recording of the real buttons held and dragged (100 fps, 14 pt colour disc): pressed it is 16 x 16 pt (swell 1.143); dragged away it becomes an ellipse whose long axis follows the pointer up to 26 pt (1.63 x the pressed disc) while the short one gives way to 6 pt (the area stays about the same: short = 1/long^2); the far edge runs 16 pt past the rest position, the near edge slips 4 pt toward the pointer (centre drift 10 pt at the limit); the glyph is gone by the time the long axis is 1.25 x; a vertical drag of the recording gave 12 x 19 pt with 3 pt of drift, the same law at e = 0.3. e (0..1) = how far the pointer is: d / (d + 50 pt) */
+	double d = hypot(pull.x, pull.y), e = d / (d + 50.0), s = 1.0 + 0.63 * e, L = 1.143 * s, S = 1.143 / (s * s), ang = d > 0.5 ? atan2(pull.y, pull.x) : 0, off = e * 10.0;
 	NSGraphicsContext *gc = [NSGraphicsContext currentContext]; [gc saveGraphicsState];
 	NSAffineTransform *t = [NSAffineTransform transform]; NSAffineTransformStruct m = { cos(ang) * L, sin(ang) * L, -sin(ang) * S, cos(ang) * S, NSMidX(r) + (d > 0.5 ? pull.x / d * off : 0), NSMidY(r) + (d > 0.5 ? pull.y / d * off : 0) };      /* translate * rotate * scale, written out */
 	[t setTransformStruct: m]; [t concat];
-	[im drawInRect: NSMakeRect(-r.size.width / 2, -r.size.height / 2, r.size.width, r.size.height) fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1.0];
+	NSRect dr = NSMakeRect(-r.size.width / 2, -r.size.height / 2, r.size.width, r.size.height);
+	double glyph = e > 0 && bare ? fmax(0.0, 1.0 - (s - 1.0) / 0.25) : 1.0;
+	if (bare && glyph < 1.0) { [bare drawInRect: dr fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1.0]; if (glyph > 0) [im drawInRect: dr fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: glyph]; }
+	else [im drawInRect: dr fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1.0];
 	[gc restoreGraphicsState];
 }
 NSImage *WsdWindowButtonImage(int kind, int state, BOOL dark)
