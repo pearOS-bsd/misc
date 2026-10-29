@@ -102,7 +102,7 @@ Source: `buglist.txt`. `[ ]` = open, `[x]` = done and verified. Items marked *(p
 
 **Terminal and shell**
 - [x] The Terminal grid follows a resize at once (the title shows the new size; the shell gets SIGWINCH).
-- [x] The Terminal title is "folder — process — columns×rows" and follows the shell's directory (OSC 7, else asked from the system); represented file set. *(the proxy icon in the title bar is not drawn yet)*
+- [x] The Terminal title is "folder — process — columns×rows" and follows the shell's directory (OSC 7, else asked from the system); represented file set. The title bar shows the proxy icon of the shell's folder.
 - [x] zsh is the login shell the Terminal starts (the user's passwd shell; root's is /bin/zsh in the image).
 - [x] The zsh profile is pearOS's (`iso/overlay/etc-zshrc`, from Pear-Project/dpkg pearos-zshconfig: prompt, history, bindings, aliases, autosuggestions), plus an OSC 7 hook for the Terminal.
 
