@@ -93,14 +93,14 @@ jobs:
             # the ISO is also the disk image for a USB stick (hybrid GPT, iso/tools/hybrid.py): nothing else is built or published
             rm -rf /tmp/isowork/root /tmp/isowork/rootfs.img /tmp/isowork/esp /tmp/isowork/gnustep* 2>/dev/null
             # the release names the two builds amd64 and arm64
-            for f in wsbsd/iso-out/macbsd-aarch64*; do [ -e "$f" ] && mv "$f" "$(echo "$f" | sed 's/macbsd-aarch64/macbsd-arm64/')"; done
-            for f in wsbsd/iso-out/macbsd-arm64*.sha256; do [ -e "$f" ] && sed -i '' 's/macbsd-aarch64/macbsd-arm64/' "$f"; done
+            for f in wsbsd/iso-out/pearOS-UltraC0re-aarch64-26.10*; do [ -e "$f" ] && mv "$f" "$(echo "$f" | sed 's/aarch64/arm64/')"; done
+            for f in wsbsd/iso-out/pearOS-UltraC0re-arm64-26.10*.sha256; do [ -e "$f" ] && sed -i '' 's/aarch64/arm64/' "$f"; done
             ls -l wsbsd/iso-out
             exit 0
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: macbsd-iso-${{ matrix.arch }}
+          name: pearos-iso-${{ matrix.arch }}
           path: |
             wsbsd/iso-out/*.iso
           if-no-files-found: warn
@@ -119,7 +119,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          name: macbsd-iso-x86_64
+          name: pearos-iso-x86_64
           path: out
       - name: Install QEMU and OVMF
         run: |
@@ -135,9 +135,9 @@ jobs:
           cp "$VARS" vars.fd
           PROD=wsbsd-ci; [ "${{ matrix.form }}" = login ] && PROD=wsbsd-login       # login: the real path (login window, the password typed), the others sign in by themselves
           if [ "${{ matrix.form }}" = usb ]; then
-            DRIVE="-drive if=none,id=u,file=out/macbsd-amd64.iso,format=raw,snapshot=on -device ich9-ahci,id=ahci -device ide-hd,drive=u,bus=ahci.0,bootindex=1 -device qemu-xhci"       # the disk image as a SATA disk: what is tested is the image (GPT, ESP, UFS root); the USB mass storage of QEMU under software emulation gave I/O errors on a large read (a real stick is not that emulation)
+            DRIVE="-drive if=none,id=u,file=out/pearOS-UltraC0re-amd64-26.10.iso,format=raw,snapshot=on -device ich9-ahci,id=ahci -device ide-hd,drive=u,bus=ahci.0,bootindex=1 -device qemu-xhci"       # the disk image as a SATA disk: what is tested is the image (GPT, ESP, UFS root); the USB mass storage of QEMU under software emulation gave I/O errors on a large read (a real stick is not that emulation)
           else
-            DRIVE="-drive if=none,id=c,file=out/macbsd-amd64.iso,format=raw,media=cdrom,readonly=on -device ide-cd,drive=c,bootindex=1 -device qemu-xhci"
+            DRIVE="-drive if=none,id=c,file=out/pearOS-UltraC0re-amd64-26.10.iso,format=raw,media=cdrom,readonly=on -device ide-cd,drive=c,bootindex=1 -device qemu-xhci"
           fi
           ACCEL="-accel tcg"; [ -w /dev/kvm ] && ACCEL="-accel kvm -cpu host"
           qemu-system-x86_64 $ACCEL -m 4096 -smp 2 -machine q35 -vga std -display none \
@@ -190,7 +190,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          name: macbsd-iso-aarch64
+          name: pearos-iso-aarch64
           path: out
       - name: Install QEMU and AAVMF
         run: |
@@ -202,9 +202,9 @@ jobs:
           set -x
           cp /usr/share/AAVMF/AAVMF_VARS.fd vars.fd; truncate -s 64M vars.fd; cp /usr/share/AAVMF/AAVMF_CODE.fd code.fd; truncate -s 64M code.fd
           if [ "${{ matrix.form }}" = usb ]; then
-            DRIVE="-drive if=none,id=u,file=out/macbsd-arm64.iso,format=raw,snapshot=on -device scsi-hd,drive=u,bootindex=1"
+            DRIVE="-drive if=none,id=u,file=out/pearOS-UltraC0re-arm64-26.10.iso,format=raw,snapshot=on -device scsi-hd,drive=u,bootindex=1"
           else
-            DRIVE="-drive if=none,id=c,file=out/macbsd-arm64.iso,format=raw,media=cdrom,readonly=on -device scsi-cd,drive=c,bootindex=1"
+            DRIVE="-drive if=none,id=c,file=out/pearOS-UltraC0re-arm64-26.10.iso,format=raw,media=cdrom,readonly=on -device scsi-cd,drive=c,bootindex=1"
           fi
           qemu-system-aarch64 -M virt,gic-version=max -cpu max -accel tcg,thread=multi -m 4096 -smp 4 -display none -device ramfb \
             -drive if=pflash,format=raw,readonly=on,file=code.fd -drive if=pflash,format=raw,file=vars.fd \
@@ -246,7 +246,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          pattern: macbsd-iso-*
+          pattern: pearos-iso-*
           merge-multiple: true
           path: out
       - name: Publish the release
@@ -254,8 +254,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           ls -l out
-          TAG="iso-latest"; TITLE="macbsd image (latest build)"
-          if [ "${GITHUB_REF_TYPE}" = tag ]; then TAG="${GITHUB_REF_NAME}"; TITLE="macbsd ${GITHUB_REF_NAME}"; fi
+          TAG="iso-latest"; TITLE="pearOS UltraC0re 26.10 (latest build)"
+          if [ "${GITHUB_REF_TYPE}" = tag ]; then TAG="${GITHUB_REF_NAME}"; TITLE="pearOS UltraC0re ${GITHUB_REF_NAME}"; fi
           gh release delete "$TAG" --repo "$GITHUB_REPOSITORY" --cleanup-tag --yes 2>/dev/null || true
           gh release create "$TAG" out/*.iso --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "$TITLE" --prerelease \
             --notes "Bootable UEFI images, nothing else to unpack: write the .iso straight to a USB stick (dd, balenaEtcher, Rufus in DD mode) or attach it to a virtual machine as a CD. amd64 is for an x86-64 PC with UEFI, arm64 for aarch64 UEFI machines and VMs; Secure Boot off. The boot loader is Ploader (source: wsbsd/ploader); the desktop is the wsbsd window server with the Dock, the menu bar and the Finder."

@@ -56,7 +56,7 @@ for f in ("Desktop", "Documents", "Downloads", "Movies", "Music", "Pictures", "P
     d(f)
 
 # the Desktop
-w("Desktop/Welcome.txt", "Welcome to macbsd.\n\nThis is a demo account: the Dock, the menu bar, the Finder, the Terminal and UITest are running.\nTry the Finder (Dock), double-click Sample Files, drag icons between the Desktop and a Finder window,\nright-click an item for its menu (tags, Get Info, Quick Look: Space), View > as List / Columns / Gallery.\n", 1)
+w("Desktop/Welcome.txt", "Welcome to pearOS UltraC0re.\n\nThis is a demo account: the Dock, the menu bar, the Finder, the Terminal and UITest are running.\nTry the Finder (Dock), double-click Sample Files, drag icons between the Desktop and a Finder window,\nright-click an item for its menu (tags, Get Info, Quick Look: Space), View > as List / Columns / Gallery.\n", 1)
 w("Desktop/Notes.txt", para(6) + "\n- buy milk\n- call the dentist\n- review the report\n", 2)
 w("Desktop/Report.pdf", pdf("Quarterly report - demo"), 3)
 w("Desktop/photo.png", png(320, 200, gradient((30, 90, 200), (240, 150, 60))), 4)
