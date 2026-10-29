@@ -6,7 +6,7 @@
 typedef NS_OPTIONS(NSUInteger, UNAuthorizationOptions) { UNAuthorizationOptionBadge = 1, UNAuthorizationOptionSound = 2, UNAuthorizationOptionAlert = 4, UNAuthorizationOptionProvisional = 64 };
 typedef NS_OPTIONS(NSUInteger, UNNotificationPresentationOptions) { UNNotificationPresentationOptionBadge = 1, UNNotificationPresentationOptionSound = 2, UNNotificationPresentationOptionAlert = 4, UNNotificationPresentationOptionList = 8, UNNotificationPresentationOptionBanner = 16 };
 typedef NS_ENUM(NSInteger, UNAuthorizationStatus) { UNAuthorizationStatusNotDetermined = 0, UNAuthorizationStatusDenied, UNAuthorizationStatusAuthorized, UNAuthorizationStatusProvisional };
-@interface UNNotificationSound : NSObject
+@interface UNNotificationSound : NSObject <NSCopying>
 + (instancetype)defaultSound;
 + (instancetype)soundNamed:(NSString *)name;
 @end

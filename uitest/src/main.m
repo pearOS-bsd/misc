@@ -5,6 +5,10 @@ extern NSString *const NSImageNameTouchBarAddTemplate, *const NSImageNameTouchBa
 #endif
 #include <stdio.h>
 #include <stdlib.h>
+#if __has_include(<UserNotifications/UserNotifications.h>)
+#import <UserNotifications/UserNotifications.h>
+#define UI_HAS_UN 1
+#endif
 
 static NSView *content;
 static CGFloat contentH;
@@ -47,6 +51,21 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 - (id) tableView: (NSTableView *)t objectValueForTableColumn: (NSTableColumn *)c row: (NSInteger)r { return [NSString stringWithFormat: @"Row %d", (int)r + 1]; }
 @end
 @interface Stripes : NSView @end
+#ifdef UI_HAS_UN
+/* ---- the notification sender (a third window, see showNotificationWindow): the application is in the foreground when its notification arrives, so it answers willPresent at once with banner + list + badge; the Dock badge of UITest must then show the number of delivered notifications ---- */
+@interface NTDelegate : NSObject <UNUserNotificationCenterDelegate> @end
+@implementation NTDelegate
+- (void) userNotificationCenter: (UNUserNotificationCenter *)c willPresentNotification: (UNNotification *)n withCompletionHandler: (void (^)(UNNotificationPresentationOptions))h { h(UNNotificationPresentationOptionBadge | 8 | 16); }
+- (void) userNotificationCenter: (UNUserNotificationCenter *)c didReceiveNotificationResponse: (UNNotificationResponse *)r withCompletionHandler: (void (^)(void))h { h(); }
+@end
+#ifdef GNUSTEP
+#define NT_BUNDLED() YES       /* UserNotifications names a bundle without an identifier org.wsbsd.<process> */
+#else
+#define NT_BUNDLED() ([[NSBundle mainBundle] bundleIdentifier] != nil)       /* on the Mac a bare binary has no notification centre */
+#endif
+static NSTextField *ntTitle, *ntBody, *ntStatus; static int ntSent; static BOOL ntBusy; static NSUInteger ntDelivered, ntPending; static NTDelegate *ntDelegate;
+#endif
+
 @implementation Stripes
 - (void) drawRect: (NSRect)r { for (int i = 0; i < 24; i++) { [[NSColor colorWithCalibratedHue: i / 24.0 saturation: 0.85 brightness: 0.9 alpha: 1] set]; NSRectFill(NSMakeRect(i * 18, 0, 18, 360)); } }
 @end
@@ -126,6 +145,9 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 	setenv("UI_SYSTEM", "1", 0);       /* on wsbsd the window with the system switches opens beside the gallery */
 #endif
 	if (getenv("UI_SYSTEM")) [self performSelector: @selector(showSystemWindow) withObject: nil afterDelay: 0.8];
+#ifdef UI_HAS_UN
+	if (getenv("UI_SYSTEM")) [self performSelector: @selector(showNotificationWindow) withObject: nil afterDelay: 1.2];       /* the notification sender: a window of its own, the gallery stays the layout the Mac is compared with */
+#endif
 	const char *ex = getenv("UI_EXIT_AFTER"); if (ex) [NSTimer scheduledTimerWithTimeInterval: atof(ex) target: NSApp selector: @selector(terminate:) userInfo: nil repeats: NO];
 }
 
@@ -234,6 +256,46 @@ static void SetGlobal(NSString *key, id value)
 	NSSegmentedControl *ap = [[[NSSegmentedControl alloc] initWithFrame: NSMakeRect(190, 62, 150, 24)] autorelease]; [ap setSegmentCount: 2]; [ap setLabel: @"Light" forSegment: 0]; [ap setLabel: @"Dark" forSegment: 1]; [ap setWidth: 74 forSegment: 0]; [ap setWidth: 74 forSegment: 1]; [ap setSelectedSegment: 1]; [ap setTarget: self]; [ap setAction: @selector(appearancePicked:)]; [cv addSubview: ap];
 	[sw center]; [sw makeKeyAndOrderFront: nil];
 }
+#ifdef UI_HAS_UN
+- (void) ntShow { [ntStatus setStringValue: [NSString stringWithFormat: @"Sent %d, pending %lu, delivered %lu.\nThe Dock badge of this application should read %lu.", ntSent, (unsigned long)ntPending, (unsigned long)ntDelivered, (unsigned long)ntDelivered]]; }
+- (void) ntRefresh: (id)unused
+{
+	if (!NT_BUNDLED()) { [ntStatus setStringValue: @"Needs an application bundle (notifications are per bundle)."]; return; }
+	if (ntBusy) return; ntBusy = YES;       /* a reply waits in a nested run loop: the timer must not start another request from inside it */
+	UNUserNotificationCenter *c = [UNUserNotificationCenter currentNotificationCenter];
+	[c getDeliveredNotificationsWithCompletionHandler: ^(NSArray *d) { ntDelivered = [d count]; [self performSelectorOnMainThread: @selector(ntShow) withObject: nil waitUntilDone: NO]; }];
+	[c getPendingNotificationRequestsWithCompletionHandler: ^(NSArray *p) { ntPending = [p count]; ntBusy = NO; [self performSelectorOnMainThread: @selector(ntShow) withObject: nil waitUntilDone: NO]; }];
+}
+- (void) ntSend: (id)sender { @try { [self ntSend2: sender]; } @catch (NSException *e) { printf("NOTIFY failed: %s\n", [[e description] UTF8String]); } }
+- (void) ntSend2: (id)sender
+{
+	if (!NT_BUNDLED()) return;
+	UNMutableNotificationContent *ct = [[[UNMutableNotificationContent alloc] init] autorelease];
+	ct.title = [[ntTitle stringValue] length] ? [ntTitle stringValue] : @"UITest"; ct.body = [ntBody stringValue]; ct.sound = [UNNotificationSound defaultSound];
+	int k = ++ntSent;
+	UNNotificationRequest *rq = [UNNotificationRequest requestWithIdentifier: [NSString stringWithFormat: @"uitest-%d", k] content: ct trigger: [UNTimeIntervalNotificationTrigger triggerWithTimeInterval: 2 repeats: NO]];
+	[[UNUserNotificationCenter currentNotificationCenter] addNotificationRequest: rq withCompletionHandler: ^(NSError *e) { if (e) printf("NOTIFY add failed: %s\n", [[e description] UTF8String]); }];
+	printf("NOTIFY sent %d (due in 2 s)\n", k); [self ntRefresh: nil];
+}
+- (void) ntClear: (id)sender { if (!NT_BUNDLED()) return; [[UNUserNotificationCenter currentNotificationCenter] removeAllDeliveredNotifications]; [[UNUserNotificationCenter currentNotificationCenter] removeAllPendingNotificationRequests]; [self performSelector: @selector(ntRefresh:) withObject: nil afterDelay: 0.3]; }
+- (void) showNotificationWindow
+{
+	NSWindow *nw = [[NSWindow alloc] initWithContentRect: NSMakeRect(0, 0, 420, 230) styleMask: NSTitledWindowMask | NSClosableWindowMask backing: NSBackingStoreBuffered defer: NO]; [nw setTitle: @"UI Test: Notifications"]; NSView *cv = [nw contentView];
+	NSTextField *l1 = [NSTextField labelWithString: @"Title"]; [l1 setFrame: NSMakeRect(20, 190, 60, 18)]; [cv addSubview: l1];
+	ntTitle = [[[NSTextField alloc] initWithFrame: NSMakeRect(90, 188, 310, 22)] autorelease]; [ntTitle setStringValue: @"UITest"]; [cv addSubview: ntTitle];
+	NSTextField *l2 = [NSTextField labelWithString: @"Message"]; [l2 setFrame: NSMakeRect(20, 156, 60, 18)]; [cv addSubview: l2];
+	ntBody = [[[NSTextField alloc] initWithFrame: NSMakeRect(90, 154, 310, 22)] autorelease]; [ntBody setStringValue: @"A notification sent by UITest"]; [cv addSubview: ntBody];
+	NSButton *send = button(@"Send in 2 s", NSMomentaryPushInButton, NSMakeRect(90, 114, 130, 28)); [send setTarget: self]; [send setAction: @selector(ntSend:)]; [cv addSubview: send];
+	NSButton *clr = button(@"Clear all", NSMomentaryPushInButton, NSMakeRect(230, 114, 110, 28)); [clr setTarget: self]; [clr setAction: @selector(ntClear:)]; [cv addSubview: clr];
+	ntStatus = [NSTextField labelWithString: @""]; [ntStatus setFrame: NSMakeRect(20, 20, 380, 70)]; [cv addSubview: ntStatus];
+	[nw center]; [nw makeKeyAndOrderFront: nil];
+	if (NT_BUNDLED()) {
+		ntDelegate = [[NTDelegate alloc] init]; UNUserNotificationCenter *c = [UNUserNotificationCenter currentNotificationCenter]; [c setDelegate: ntDelegate];
+		[c requestAuthorizationWithOptions: UNAuthorizationOptionBadge | UNAuthorizationOptionAlert | UNAuthorizationOptionSound completionHandler: ^(BOOL ok, NSError *e) { printf("NOTIFY authorization %s\n", ok ? "granted" : "denied"); }];
+	}
+	[NSTimer scheduledTimerWithTimeInterval: 1 target: self selector: @selector(ntRefresh:) userInfo: nil repeats: YES]; [self ntRefresh: nil];
+}
+#endif
 @end
 
 int main(void)

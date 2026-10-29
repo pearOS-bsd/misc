@@ -8,6 +8,7 @@
 #include <dlfcn.h>
 
 @implementation UNNotificationSound
+- (id)copyWithZone:(NSZone *)z { return self; }       // immutable: the content copies its sound (a property with copy)
 + (instancetype)defaultSound { return [self new]; }
 + (instancetype)soundNamed:(NSString *)name { (void)name; return [self new]; }
 @end
@@ -70,6 +71,15 @@
 { NSMutableArray *_delivered; NSXPCConnection *_conn; BOOL _registered; NSLock *_lock; NSDictionary *_categories; }
 @synthesize delegate;
 + (UNUserNotificationCenter *)currentNotificationCenter { static UNUserNotificationCenter *c; static dispatch_once_t o; dispatch_once(&o, ^{ c = [UNUserNotificationCenter new]; c->_delivered = [NSMutableArray array]; c->_lock = [NSLock new]; }); return c; }
+/* the .app the process lives in (what the Dock and the Finder call the application): GNUstep takes /Applications/X.app/Contents/MacOS/Resources/X for the bundle of a macOS-style layout without Info.plist, the Mac's mainBundle path is /Applications/X.app */
+static NSString *AppBundlePath(void)
+{
+	for (NSString *c in @[ [[NSBundle mainBundle] bundlePath] ?: @"", [[NSBundle mainBundle] executablePath] ?: @"", [[NSProcessInfo processInfo] arguments].firstObject ?: @"" ]) {
+		NSRange r = [c rangeOfString: @".app/" options: 0]; if (r.location != NSNotFound) return [c substringToIndex: r.location + 4];
+		if ([c hasSuffix: @".app"]) return c;
+	}
+	return [[NSBundle mainBundle] bundlePath] ?: @"";
+}
 static NSString *BundleID(void) { NSString *b = [[NSBundle mainBundle] bundleIdentifier]; return [b length] ? b : [@"org.wsbsd." stringByAppendingString: [[NSProcessInfo processInfo] processName]]; }
 static BOOL AppActive(void)       /* only when the process already has its NSApplication (asking for it would start the window server connection of a tool) */
 {
@@ -87,7 +97,7 @@ static BOOL AppActive(void)       /* only when the process already has its NSApp
 	}
 	NSXPCConnection *c = _conn; BOOL reg = _registered; _registered = YES; [_lock unlock];
 	__block BOOL failed = NO; id p = [c remoteObjectProxyWithErrorHandler: ^(NSError *e) { if (failed) return; failed = YES; [self->_lock lock]; self->_conn = nil; self->_registered = NO; [self->_lock unlock]; if (fallback) fallback(); }];
-	if (!reg) { NSString *name = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleName"] ?: [[NSProcessInfo processInfo] processName]; NSString *path = [[NSBundle mainBundle] bundlePath] ?: @"";
+	if (!reg) { NSString *name = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleName"] ?: [[NSProcessInfo processInfo] processName]; NSString *path = AppBundlePath();
 		[p registerClientWithInfo: @{ @"bundle": BundleID(), @"name": name, @"path": path, @"role": @"app", @"foreground": @(AppActive()) } reply: ^(BOOL ok) {}]; }
 	return p;
 }
