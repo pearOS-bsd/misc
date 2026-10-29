@@ -134,6 +134,10 @@ void TFPopupMenu(NSView *view, NSPoint p, NSMenu *menu)                         
 			id t = [it target]; BOOL ok = YES; if ([t respondsToSelector: @selector(validateMenuItem:)] && [it action]) ok = [t validateMenuItem: it]; if ([[it title] isEqual: @"Put Back"] || [[it title] isEqual: @"Open With"]) [it setHidden: !ok || [it isHidden]];     /* the Mac leaves these out when they do not apply */
 			if ([it tag] == 2 && ![it view]) { TTagDots *dv = [[TTagDots alloc] initWithFrame: NSMakeRect(0, 0, 160, 24)]; NSMutableArray *cs = [NSMutableArray array]; for (NSString *n in [it representedObject]) [cs addObject: [fs colorOfTag: n]]; dv->names = [it representedObject]; dv->cols = cs; dv->target = [it target]; dv->action = [it action]; dv->menu = menu; [it setTitle: @""]; [it setView: dv]; [it setTarget: dv]; [it setAction: @selector(rowChosen:)]; }
 		}
+		{       /* where the menu opens is decided before it is shown (the pop-up window is placed at the event's point): at the right edge it opens to the left of the pointer, near the bottom it is moved up, as on the Mac: it appears there at once, not after being redrawn */
+			NSMenuView *mr = [menu menuRepresentation]; [menu update]; [mr sizeToFit]; NSSize ms = [mr frame].size; NSRect scf = [[NSScreen mainScreen] frame]; NSPoint sp = [w convertBaseToScreen: q];
+			if (ms.width > 1 && ms.height > 1) { if (sp.x + ms.width > NSMaxX(scf) - 2) sp.x = sp.x - ms.width + 1; if (sp.y - ms.height < 8) sp.y = 8 + ms.height; q = [w convertScreenToBase: sp]; }
+		}
 		NSEvent *ev = [NSEvent mouseEventWithType: NSRightMouseDown location: q modifierFlags: 0 timestamp: [[NSProcessInfo processInfo] systemUptime] windowNumber: [w windowNumber] context: nil eventNumber: 0 clickCount: 1 pressure: 1];
 		__block BOOL chose = NO; id ob = [[NSNotificationCenter defaultCenter] addObserverForName: NSMenuDidSendActionNotification object: nil queue: nil usingBlock: ^(NSNotification *n) { chose = YES; }];
 		[[TMenuFit alloc] initFor: menu];       /* a menu that does not fit below the pointer is moved up, as on the Mac: the server places it at the pointer, so it is moved once it is on screen */
