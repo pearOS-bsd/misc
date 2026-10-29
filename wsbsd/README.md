@@ -72,7 +72,7 @@ The stack: `wsd` (this repo: window server and compositor speaking the SkyLight 
 - [x] Spotlight: Enter on a folder works and the search is case and diacritic insensitive (the NSDiacriticInsensitiveSearch wrapper, verified in the VM).
 - [ ] UITest: the combo box does not show the item under the pointer on hover.
 - [ ] UITest: the pop-up looks bad and is cut off.
-- [ ] Terminal title: no dynamic icons for Home / Downloads / Desktop...
+- [x] Terminal title: the proxy icon is the folder with the glyph of the Mac (Home, Downloads, Desktop, Documents, Applications, Movies, Music, Pictures, Library, Public: glyph centred at (64, 74) of 128, colour (65, 148, 188), measured on NSWorkspace icons) *(VM: the title of a Terminal in ~/Downloads shows the glyph; at 16 px it is faint as on the Mac; the glyph shapes come from the symbol set the image has)*
 - [x] Dock: clicking Downloads flickers. *(a burst of 12 captures showed the new, wider bar shape around the old tiles for one frame: the glass request is now sent after the picture; no mismatched frame in the following bursts, owner to confirm)*
 - [x] Dock resize: the resize cursor over the separator and during the drag, the window follows the new size at once so nothing is cut *(VM: cursor and a mid-drag capture checked)*.
 - [ ] Quick Look: the small open / close animations are missing.
