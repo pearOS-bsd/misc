@@ -61,7 +61,7 @@ The stack: `wsd` (this repo: window server and compositor speaking the SkyLight 
 Source: `buglist.txt`. `[ ]` = open, `[x]` = done and verified. Items marked *(partial)* have work in the tree that is not verified on an image yet.
 
 **Desktop, menus and the top bar**
-- [ ] Right-click on a Finder window's breadcrumb / path bar item does nothing (should show the Mac's path-item menu).
+- [x] Right-click on a path bar item shows the Mac's menu (Open in New Tab / New Window, Show in Enclosing Folder, Get Info, Copy “name” as Pathname; read from the real Finder with AX).
 - [x] Context menu of a desktop item flips to the left of the pointer at the right edge (verified in the dev VM).
 - [x] Context submenus open beside their parent row (first row level with it), flip left at the screen edge and stay on screen (`WsdMenuBar.m`; verified in the dev VM).
 - [x] The top bar never disappears: GNUstep ordered the main menu window out when the application deactivated (after choosing an item of a pop-up menu, or a click on the Dock, the bar was empty); the main menu window no longer hides on deactivate (`WsdMenuBar.m`). Verified in the dev VM; to confirm on the next image.

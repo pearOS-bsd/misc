@@ -915,6 +915,11 @@ static NSColor *TagColorFor(NSString *n) { NSDictionary *c = @{ @"Red": TFRGB(25
 	}
 }
 - (void)mouseDown:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; for (NSUInteger i = 0; i < [_rects count]; i++) if (NSPointInRect(p, [_rects[i] rectValue])) { [delegate pathBarGoTo: _paths[i]]; return; } }
+- (void)rightMouseDown:(NSEvent *)e       /* the menu of a path item, as the Mac's (AX of the open menu) */
+{
+	NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; if (![delegate respondsToSelector: @selector(pathBarMenuForPath:)]) return;
+	for (NSUInteger i = 0; i < [_rects count]; i++) if (NSPointInRect(p, [_rects[i] rectValue])) { NSMenu *m = [delegate pathBarMenuForPath: _paths[i]]; if (m) TFPopupMenu(self, p, m); return; }
+}
 @end
 
 /* ---------- the toolbar ---------- */

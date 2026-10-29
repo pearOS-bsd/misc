@@ -90,7 +90,7 @@ NSImage *TFIcon(NSString *path);
 - (BOOL)iconViewDropPaths:(NSArray *)paths intoFolder:(NSString *)folder atWindowPoint:(NSPoint)p copy:(BOOL)copy;
 @end
 @protocol TSidebarDelegate <NSObject> - (void)sidebarGoTo:(NSString *)path; @end
-@protocol TPathBarDelegate <NSObject> - (void)pathBarGoTo:(NSString *)path; @end
+@protocol TPathBarDelegate <NSObject> - (void)pathBarGoTo:(NSString *)path; @optional - (NSMenu *)pathBarMenuForPath:(NSString *)path; @end
 
 /* a view that scrolls its own content and draws the overlay scroller of the Finder (a thumb 10 wide at the right edge, no track) */
 @interface TScrollBase : NSView { @public CGFloat off, topInset; BOOL dragging; CGFloat dragGrab; }

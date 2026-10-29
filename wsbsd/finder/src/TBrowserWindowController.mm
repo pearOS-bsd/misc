@@ -578,5 +578,20 @@ static NSString *const kListColumns[][2] = { { @"Date Modified", @"dateModified"
 }
 - (void)sidebarGoTo:(NSString *)path { [self goToPath: path]; }
 - (void)pathBarGoTo:(NSString *)path { [self goToPath: path]; }
+/* the menu of a path bar item (AX of the Mac's menu): Open in New Tab, Open in New Window, Show in Enclosing Folder, Get Info, Copy "name" as Pathname */
+- (NSMenu *)pathBarMenuForPath:(NSString *)path
+{
+	NSMenu *m = [[NSMenu alloc] initWithTitle: @""]; NSString *nm = TFDisplayName(path);
+	void (^add)(NSString *, SEL) = ^(NSString *t, SEL a) { NSMenuItem *i = [m addItemWithTitle: t action: a keyEquivalent: @""]; [i setTarget: self]; [i setRepresentedObject: path]; };
+	add(@"Open in New Tab", @selector(_pbNewTab:)); add(@"Open in New Window", @selector(_pbNewWindow:)); add(@"Show in Enclosing Folder", @selector(_pbEnclosing:));
+	if ([path isEqual: @"/"]) [[m itemAtIndex: 2] setEnabled: NO];
+	[m addItem: [NSMenuItem separatorItem]]; add(@"Get Info", @selector(_pbInfo:)); add([NSString stringWithFormat: @"Copy “%@” as Pathname", nm], @selector(_pbCopyPath:));
+	return m;
+}
+- (void)_pbNewTab:(NSMenuItem *)it { [self cmdNewTab: nil]; [self goToPath: [it representedObject]]; }
+- (void)_pbNewWindow:(NSMenuItem *)it { [TBrowserWindowController newBrowserWithPath: [it representedObject]]; }
+- (void)_pbEnclosing:(NSMenuItem *)it { NSString *p = [it representedObject]; [self goToPath: [p stringByDeletingLastPathComponent]]; }
+- (void)_pbInfo:(NSMenuItem *)it { TFOpenInfoWindow([it representedObject]); }
+- (void)_pbCopyPath:(NSMenuItem *)it { NSPasteboard *pb = [NSPasteboard generalPasteboard]; [pb declareTypes: @[ NSStringPboardType ] owner: nil]; [pb setString: [it representedObject] forType: NSStringPboardType]; }
 - (void)windowWillClose:(NSNotification *)n { [_watcher invalidate]; _watcher = nil; [gBrowsers removeObject: self]; }
 @end
