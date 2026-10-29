@@ -186,21 +186,7 @@ void DockRender(CGContextRef c, const DockScene *s)
 	if (s->orient) { CGContextSaveGState(c); Orient(c, s); }
 	const DockBar *b = &s->bar;
 	CGFloat bx = b->bar_x - s->origin_x, by = b->bottom_margin, bw = b->bar_w, bh = b->bar_h;
-	/* the bar: white at 4.7 %, over what the compositor blurs behind the window */
-	CGPathRef bar = ContinuousRect(CGRectMake(bx, by, bw, bh), 18);
-	SetRGB(c, 1, 1, 1, 0.047); CGContextAddPath(c, bar); CGContextFillPath(c);
-	/* the rim: a bright line at the top and at the bottom that fades inward over 7 px (83/255 over a dark ground at the edge, 28, 21, 18, 16, 14, 13) */
-	CGContextSaveGState(c); CGContextAddPath(c, bar); CGContextClip(c);
-	{
-		const CGFloat edge[8] = { 0.28, 0.063, 0.035, 0.024, 0.016, 0.008, 0.004, 0.0 };
-		for (int i = 0; i < 8; i++) {
-			SetRGB(c, 1, 1, 1, edge[i]);
-			CGContextFillRect(c, CGRectMake(bx, by + bh - 1 - i, bw, 1)); CGContextFillRect(c, CGRectMake(bx, by + i, bw, 1));
-		}
-	}
-	CGContextRestoreGState(c);
-	SetRGB(c, 1, 1, 1, 0.07); CGContextSetLineWidth(c, 1); CGContextAddPath(c, bar); CGContextStrokePath(c);
-	CGPathRelease(bar);
+	/* the bar is the compositor's material alone (glass mode 6: the tone over the backdrop and the rim, fitted on the Mac with uniform greys 0, 64, 128, 192, 255 behind the Dock: 12, 64, 108, 145, 176 of 255): nothing is drawn here, a fill under the glass would be blurred into its backdrop */
 	CGFloat art_bottom = by + 15.0;                                      /* the icons stand 15 px above the inside of the bar's bottom edge */
 	for (int i = 0; i < s->n; i++) {
 		const DockSlot *sl = &s->slots[i]; const DockTile *t = &s->tiles[i];
