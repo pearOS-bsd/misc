@@ -414,8 +414,11 @@ static NSRect wsdConstrain(id self, SEL _cmd, NSRect f, NSScreen *scr)
 	CGFloat top = NSMaxY(sf) - 30.0;
 	if (NSMaxY(f) > top) f.origin.y -= NSMaxY(f) - top;
 	if (f.size.width > sf.size.width) f.size.width = sf.size.width;             /* wider than the screen: shrunk to it; otherwise moved back onto it */
-	if (NSMaxX(f) > NSMaxX(sf)) f.origin.x = NSMaxX(sf) - f.size.width;
-	if (f.origin.x < sf.origin.x) f.origin.x = sf.origin.x;
+	/* as on the Mac a window may be moved partly off the screen: at least 80 pt of it (and its title bar) stay on it, so that it can be taken back */
+	CGFloat keep = MIN(80.0, f.size.width);
+	if (f.origin.x > NSMaxX(sf) - keep) f.origin.x = NSMaxX(sf) - keep;
+	if (NSMaxX(f) < sf.origin.x + keep) f.origin.x = sf.origin.x + keep - f.size.width;
+	if (NSMaxY(f) < sf.origin.y + 40.0) f.origin.y = sf.origin.y + 40.0 - f.size.height;
 	return f;
 }
 /* a toolbar item's view sits at the origin of the item (a view loaded from a nib keeps the position it had in its old superview, which puts it outside the item here) */
