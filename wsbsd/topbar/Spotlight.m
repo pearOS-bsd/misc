@@ -4,9 +4,23 @@
 #import <AppKit/AppKit.h>
 @interface NSObject (SPSymbols) + (void)drawIconOfName:(NSString *)n directory:(BOOL)d inRect:(NSRect)r; + (BOOL)drawSymbol:(NSString *)name inRect:(NSRect)cell size:(CGFloat)pt weight:(int)weight color:(NSColor *)c; @end
 
-#define SW 640.0
-#define SROW 57.0
-#define STOP 67.0
+/* macOS 27 (the owner's Mac, 3440 x 1440, AX of "Siri AI" + pixels): a capsule 520 wide and about 84 high (radius 42) at 29 % of the screen height, and 12 below it a panel of glass 520 wide (a top hit 62 high highlighted, rows on a pitch of 62, 6 visible, 10 above the first row and 18 under the last); the empty field says "Search or Ask" with a microphone at the right, with a query the icon of the top hit stands at the right. Both are glass of the compositor (modes 5 / 8). */
+#define SW 520.0
+#define SROW 62.0
+#define SCAP 84.0
+#define SGAP 12.0
+#define SPAD 10.0
+#define SVIS 6
+static BOOL SPDark(void) { NSDictionary *d = [NSDictionary dictionaryWithContentsOfFile: [NSHomeDirectory() stringByAppendingPathComponent: @"Library/Preferences/.GlobalPreferences.plist"]]; return ![[d objectForKey: @"AppleInterfaceStyle"] isEqual: @"Light"]; }
+@interface NSObject (SPGlass) - (void)wsdGlassSlot:(int)slot :(int)win :(NSRect)r :(int)radius :(int)mode; @end
+extern id GSCurrentServer(void);
+/* the capsule and the panel are two glass shapes of the window (slots 1 and 2; the panel only when there are results) */
+static void SPGlass(NSWindow *w, NSInteger rows)
+{
+	id srv = GSCurrentServer(); if (!w || ![srv respondsToSelector: @selector(wsdGlassSlot:::::)]) return; int mode = SPDark() ? 5 : 8, win = (int)[w windowNumber];
+	[srv wsdGlassSlot: 1 : win : NSMakeRect(0, 0, SW, SCAP) : (int)(SCAP / 2) : mode];
+	if (rows > 0) [srv wsdGlassSlot: 2 : win : NSMakeRect(0, SCAP + SGAP, SW, SPAD + rows * SROW + 18) : 36 : mode]; else [srv wsdGlassSlot: 2 : win : NSZeroRect : 0 : 0];
+}
 @interface SPView : NSView { @public NSMutableString *query; NSMutableArray *hits; NSInteger sel; NSInteger first; NSWindow *win; }
 @end
 static NSArray *Roots(void) { return @[ @"/Applications", @"/System/Applications", @"/Applications/Utilities", [NSHomeDirectory() stringByAppendingPathComponent: @"Applications"], NSHomeDirectory() ]; }
@@ -35,40 +49,48 @@ static void Collect(NSString *dir, NSString *q, int depth, NSMutableArray *out, 
 		[r sortUsingComparator: ^NSComparisonResult(NSString *a, NSString *b) { BOOL aa = [[a pathExtension] isEqual: @"app"], bb = [[b pathExtension] isEqual: @"app"]; if (aa != bb) return aa ? NSOrderedAscending : NSOrderedDescending; BOOL ap = [[[a lastPathComponent] lowercaseString] hasPrefix: [q lowercaseString]], bp = [[[b lastPathComponent] lowercaseString] hasPrefix: [q lowercaseString]]; if (ap != bp) return ap ? NSOrderedAscending : NSOrderedDescending; return [[a lastPathComponent] caseInsensitiveCompare: [b lastPathComponent]]; }];
 		[hits addObjectsFromArray: r];
 	}
-	NSInteger rows = MIN(7, (NSInteger)[hits count]); double h = [hits count] ? STOP + rows * SROW + 1 : 56; NSRect f = [win frame]; double top = NSMaxY(f); f.size.height = h; f.origin.y = top - h; [win setFrame: f display: YES]; [self setFrameSize: NSMakeSize(SW, h)]; [self setNeedsDisplay: YES];
+	NSInteger rows = MIN(SVIS, (NSInteger)[hits count]); double h = [hits count] ? SCAP + SGAP + SPAD + rows * SROW + 18 : SCAP; NSRect f = [win frame]; double top = NSMaxY(f); f.size.height = h; f.origin.y = top - h; [win setFrame: f display: YES]; [self setFrameSize: NSMakeSize(SW, h)]; [self setNeedsDisplay: YES]; SPGlass(win, [hits count] ? rows : 0);
 }
 - (BOOL)acceptsFirstResponder { return YES; }
 - (BOOL)acceptsFirstMouse:(NSEvent *)e { return YES; }
 - (void)open:(NSInteger)i { if (i < 0 || i >= (NSInteger)[hits count]) return; NSString *p = hits[i]; [win orderOut: nil]; [[NSWorkspace sharedWorkspace] openFile: p]; }
 - (void)mouseDown:(NSEvent *)e       /* a click on a result opens it, as on the Mac */
 {
-	NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; double y0 = STOP - 10 + 10; if (p.y < y0) return;
-	NSInteger i = first + (NSInteger)((p.y - y0) / SROW); if (i < (NSInteger)[hits count] && i < first + 7) { sel = i; [self setNeedsDisplay: YES]; [self open: i]; }
+	NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; double y0 = SCAP + SGAP + SPAD; if (p.y < y0) return;
+	NSInteger i = first + (NSInteger)((p.y - y0) / SROW); if (i < (NSInteger)[hits count] && i < first + SVIS) { sel = i; [self setNeedsDisplay: YES]; [self open: i]; }
 }
-- (void)scrollWheel:(NSEvent *)e { CGFloat d = [e deltaY]; if (d > 0 && first > 0) first--; else if (d < 0 && first + 7 < (NSInteger)[hits count]) first++; else return; if (sel < first) sel = first; if (sel >= first + 7) sel = first + 6; [self setNeedsDisplay: YES]; }
+- (void)scrollWheel:(NSEvent *)e { CGFloat d = [e deltaY]; if (d > 0 && first > 0) first--; else if (d < 0 && first + SVIS < (NSInteger)[hits count]) first++; else return; if (sel < first) sel = first; if (sel >= first + SVIS) sel = first + SVIS - 1; [self setNeedsDisplay: YES]; }
 - (void)keyDown:(NSEvent *)e
 {
 	NSString *c = [e characters]; if (![c length]) return; unichar k = [c characterAtIndex: 0];
 	if (([e modifierFlags] & NSCommandKeyMask) && [[e charactersIgnoringModifiers] isEqual: @"1"]) { [win orderOut: nil]; [[NSDistributedNotificationCenter defaultCenter] postNotificationName: @"com.wsbsd.apps.toggle" object: nil userInfo: nil deliverImmediately: YES]; return; }       /* Command-1: Applications */
 	if (k == 0x1b) { [win orderOut: nil]; return; }
 	if (k == '\r' || k == '\n') { [self open: sel]; return; }
-	if (k == NSDownArrowFunctionKey) { if (sel + 1 < (NSInteger)[hits count]) { sel++; if (sel >= first + 7) first = sel - 6; [self setNeedsDisplay: YES]; } return; }
+	if (k == NSDownArrowFunctionKey) { if (sel + 1 < (NSInteger)[hits count]) { sel++; if (sel >= first + SVIS) first = sel - SVIS + 1; [self setNeedsDisplay: YES]; } return; }
 	if (k == NSUpArrowFunctionKey) { if (sel > 0) { sel--; if (sel < first) first = sel; [self setNeedsDisplay: YES]; } return; }
 	if (k == 0x7f || k == 8) { if ([query length]) { [query deleteCharactersInRange: NSMakeRange([query length] - 1, 1)]; [self search: query]; } return; }
 	if (k >= 32 && k != 0x7f && !(k >= 0xF700 && k <= 0xF8FF)) { [query appendString: c]; [self search: query]; }
 }
 - (void)drawRect:(NSRect)dirty
 {
-	NSRect b = [self bounds]; NSBezierPath *p = [NSBezierPath bezierPathWithRoundedRect: b xRadius: 28 yRadius: 28]; [[NSColor colorWithCalibratedRed: 0.13 green: 0.13 blue: 0.14 alpha: 0.96] setFill]; [p fill];
-	NSBezierPath *rim = [NSBezierPath bezierPathWithRoundedRect: NSInsetRect(b, 0.5, 0.5) xRadius: 28 yRadius: 28]; [[NSColor colorWithCalibratedWhite: 1 alpha: 0.16] setStroke]; [rim stroke];
-	{ NSString *shown = [query length] ? query : @"Spotlight Search"; NSColor *tc = [query length] ? [NSColor whiteColor] : [NSColor colorWithCalibratedWhite: 1 alpha: 0.45]; NSDictionary *qa = @{ NSFontAttributeName: [NSFont systemFontOfSize: 20], NSForegroundColorAttributeName: tc }; NSSize qs = [shown sizeWithAttributes: qa]; [shown drawAtPoint: NSMakePoint(62, 28 - qs.height / 2) withAttributes: qa]; if ([query length]) { [[NSColor colorWithCalibratedWhite: 1 alpha: 0.85] setFill]; NSRectFill(NSMakeRect(62 + qs.width + 1, 15, 1.5, 26)); } }
-	[NSClassFromString(@"WsdFinderSupport") drawSymbol: @"magnifyingglass" inRect: NSMakeRect(23, 16, 25, 22) size: 22 weight: 5 color: [NSColor colorWithCalibratedWhite: 1 alpha: 0.7]];
-	NSDictionary *tf = @{ NSFontAttributeName: [NSFont systemFontOfSize: 15], NSForegroundColorAttributeName: [NSColor whiteColor] }, *sf = @{ NSFontAttributeName: [NSFont systemFontOfSize: 13], NSForegroundColorAttributeName: [NSColor colorWithCalibratedWhite: 1 alpha: 0.5] };
-	for (NSInteger i = first; i < (NSInteger)[hits count] && i < first + 7; i++) {
-		double y = STOP - 10 + (i - first) * SROW + 10; NSString *path = hits[i]; BOOL app = [[path pathExtension] isEqual: @"app"];
-		if (i == sel) { [[NSColor colorWithCalibratedWhite: 1 alpha: 0.16] setFill]; [[NSBezierPath bezierPathWithRoundedRect: NSMakeRect(10, y, 603, SROW - 1) xRadius: 14 yRadius: 14] fill]; }
-		BOOL isDir = NO; [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDir]; Class fs = NSClassFromString(@"WsdFinderSupport"); if (app) { NSImage *ic = [[NSWorkspace sharedWorkspace] iconForFile: path]; [ic drawInRect: NSMakeRect(13, y + 5, 47, 47) fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; } else [fs drawIconOfName: [path lastPathComponent] directory: isDir inRect: NSMakeRect(17, y + 10, 38, 38)];
-		NSString *name = app ? [[path lastPathComponent] stringByDeletingPathExtension] : [path lastPathComponent]; if (app) [name drawAtPoint: NSMakePoint(70, y + 17 + (23 - [name sizeWithAttributes: tf].height) / 2) withAttributes: tf]; else { [name drawAtPoint: NSMakePoint(70, y + 7 + (23 - [name sizeWithAttributes: tf].height) / 2) withAttributes: tf]; [[[path stringByDeletingLastPathComponent] lastPathComponent] drawAtPoint: NSMakePoint(70, y + 29 + (21 - [@"X" sizeWithAttributes: sf].height) / 2) withAttributes: sf]; }
+	BOOL dark = SPDark(); NSColor *fg = dark ? [NSColor colorWithCalibratedWhite: 1 alpha: 0.95] : [NSColor colorWithCalibratedWhite: 0 alpha: 0.85], *dim = dark ? [NSColor colorWithCalibratedWhite: 1 alpha: 0.5] : [NSColor colorWithCalibratedWhite: 0 alpha: 0.5];
+	Class fs = NSClassFromString(@"WsdFinderSupport"); NSRect b = [self bounds]; [[NSColor clearColor] setFill]; NSRectFill(b);       /* the material is the compositor's: nothing is filled here */
+	NSDictionary *qa = @{ NSFontAttributeName: [NSFont systemFontOfSize: 20], NSForegroundColorAttributeName: [query length] ? fg : dim };
+	NSString *shown = [query length] ? query : @"Search or Ask"; NSSize qs = [shown sizeWithAttributes: qa]; [shown drawAtPoint: NSMakePoint(38, SCAP / 2 - qs.height / 2) withAttributes: qa];
+	if ([query length] == 0) [fs drawSymbol: @"mic" inRect: NSMakeRect(SW - 62, SCAP / 2 - 12, 24, 24) size: 18 weight: 4 color: dim];
+	else if ([hits count]) { NSString *top = hits[0]; if ([[top pathExtension] isEqual: @"app"]) [[[NSWorkspace sharedWorkspace] iconForFile: top] drawInRect: NSMakeRect(SW - 66, SCAP / 2 - 15, 30, 30) fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; }
+	if (![query length]) return;
+	NSDictionary *tf = @{ NSFontAttributeName: [NSFont systemFontOfSize: 15], NSForegroundColorAttributeName: fg }, *sf = @{ NSFontAttributeName: [NSFont systemFontOfSize: 13], NSForegroundColorAttributeName: dim }, *hf = @{ NSFontAttributeName: [NSFont systemFontOfSize: 11], NSForegroundColorAttributeName: dim };
+	double y0 = SCAP + SGAP + SPAD;
+	for (NSInteger i = first; i < (NSInteger)[hits count] && i < first + SVIS; i++) {
+		double y = y0 + (i - first) * SROW; NSString *path = hits[i]; BOOL app = [[path pathExtension] isEqual: @"app"];
+		if (i == sel) { [[NSColor colorWithCalibratedWhite: dark ? 1 : 0 alpha: dark ? 0.12 : 0.08] setFill]; [[NSBezierPath bezierPathWithRoundedRect: NSMakeRect(12, y, SW - 24, SROW - 1) xRadius: 18 yRadius: 18] fill]; }
+		BOOL isDir = NO; [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDir];
+		if (app) [[[NSWorkspace sharedWorkspace] iconForFile: path] drawInRect: NSMakeRect(25, y + 11, 40, 40) fromRect: NSZeroRect operation: NSCompositeSourceOver fraction: 1]; else [fs drawIconOfName: path directory: isDir inRect: NSMakeRect(25, y + 11, 40, 40)];
+		NSString *name = app ? [[path lastPathComponent] stringByDeletingPathExtension] : [path lastPathComponent]; NSSize ns = [name sizeWithAttributes: tf];
+		if (app) [name drawAtPoint: NSMakePoint(79, y + (SROW - ns.height) / 2) withAttributes: tf];
+		else { [name drawAtPoint: NSMakePoint(79, y + 11) withAttributes: tf]; [[[path stringByDeletingLastPathComponent] lastPathComponent] drawAtPoint: NSMakePoint(79, y + 33) withAttributes: sf]; }
+		if (i == sel && app) { NSString *h = [@"Search " stringByAppendingString: [[path lastPathComponent] stringByDeletingPathExtension]]; NSSize hs = [h sizeWithAttributes: hf]; double kx = SW - 24 - 14 - 32; NSRect key = NSMakeRect(kx, y + (SROW - 17) / 2, 32, 17); [h drawAtPoint: NSMakePoint(kx - 8 - hs.width, y + (SROW - hs.height) / 2) withAttributes: hf]; [[NSColor colorWithCalibratedWhite: dark ? 1 : 0 alpha: 0.18] setFill]; [[NSBezierPath bezierPathWithRoundedRect: key xRadius: 5 yRadius: 5] fill]; NSSize ts = [@"tab" sizeWithAttributes: hf]; [@"tab" drawAtPoint: NSMakePoint(NSMidX(key) - ts.width / 2, NSMidY(key) - ts.height / 2) withAttributes: hf]; }
 	}
 }
 @end
@@ -83,10 +105,10 @@ void ToggleSpotlight(void)
 	static NSWindow *w; static SPView *v; NSRect scr = [[NSScreen mainScreen] frame];
 	if (w && [w isVisible]) { [w orderOut: nil]; return; }
 	if (!w) {
-		w = [[SPWindow alloc] initWithContentRect: NSMakeRect((scr.size.width - SW) / 2, scr.size.height - 0.30 * scr.size.height - 56, SW, 56) styleMask: NSBorderlessWindowMask backing: NSBackingStoreBuffered defer: NO];
-		[w setOpaque: NO]; [w setBackgroundColor: [NSColor clearColor]]; [w setHasShadow: NO]; [w setLevel: 22]; [w setHidesOnDeactivate: NO]; v = [[SPView alloc] initWithFrame: NSMakeRect(0, 0, SW, 56)]; v->win = w; [w setContentView: v];
+		w = [[SPWindow alloc] initWithContentRect: NSMakeRect((scr.size.width - SW) / 2, scr.size.height - 0.29 * scr.size.height - SCAP, SW, SCAP) styleMask: NSBorderlessWindowMask backing: NSBackingStoreBuffered defer: NO];
+		[w setOpaque: NO]; [w setBackgroundColor: [NSColor clearColor]]; [w setHasShadow: NO]; [w setLevel: 22]; [w setHidesOnDeactivate: NO]; v = [[SPView alloc] initWithFrame: NSMakeRect(0, 0, SW, SCAP)]; v->win = w; [w setContentView: v];
 	}
-	[v->query setString: @""]; [v search: @""]; [NSApp activateIgnoringOtherApps: YES]; [w makeKeyAndOrderFront: nil]; [w makeFirstResponder: v];
+	[v->query setString: @""]; [v search: @""]; [NSApp activateIgnoringOtherApps: YES]; [w makeKeyAndOrderFront: nil]; SPGlass(w, 0); [w makeFirstResponder: v];
 }
 
 /* Command-Space in any application: its back-end posts this notification (WsdResize.m) and the Spotlight window of the top bar toggles */
