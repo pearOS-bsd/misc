@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""screen_check.py PPM PNG: exit 0 when the QEMU screen shows a desktop (many colours, not dark), 1 otherwise; the PNG is a copy for the artifact."""
+"""screen_check.py PPM PNG [desktop]: exit 0 when the QEMU screen shows a desktop (many colours, not dark), 1 otherwise; the PNG is a copy for the artifact."""
 import sys
 from PIL import Image
 try:
@@ -16,4 +16,8 @@ im.save(sys.argv[2])
 top = im.crop((0, 0, w, 30)).convert('L'); bright = sum(1 for p in top.getdata() if p > 200)
 print('bright pixels in the bar', bright)
 # (the boot manager's own screen is light grey: a desktop is dark; the check used to take that screen for a desktop)
+left = im.crop((0, 0, min(w, 500), 30)).convert('L'); bright_left = sum(1 for p in left.getdata() if p > 200)
+print('bright pixels in the left of the bar', bright_left)
+need_menu = len(sys.argv) > 3 and sys.argv[3] == 'desktop'       # the login window has the wallpaper too: the desktop is the one with the menu bar's text on the left
+if need_menu and bright_left < 80: sys.exit(1)
 sys.exit(0 if (12 < lum < 140 and (colors > 400 or bright > 150)) else 1)

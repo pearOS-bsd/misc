@@ -114,7 +114,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        form: [usb, cd]
+        form: [usb, cd, login]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
@@ -133,6 +133,7 @@ jobs:
           CODE=$(ls /usr/share/OVMF/OVMF_CODE_4M.fd /usr/share/OVMF/OVMF_CODE.fd 2>/dev/null | head -1)
           VARS=$(ls /usr/share/OVMF/OVMF_VARS_4M.fd /usr/share/OVMF/OVMF_VARS.fd 2>/dev/null | head -1)
           cp "$VARS" vars.fd
+          PROD=wsbsd-ci; [ "${{ matrix.form }}" = login ] && PROD=wsbsd-login       # login: the real path (login window, the password typed), the others sign in by themselves
           if [ "${{ matrix.form }}" = usb ]; then
             DRIVE="-drive if=none,id=u,file=out/macbsd-amd64.iso,format=raw,snapshot=on -device ich9-ahci,id=ahci -device ide-hd,drive=u,bus=ahci.0,bootindex=1 -device qemu-xhci"       # the disk image as a SATA disk: what is tested is the image (GPT, ESP, UFS root); the USB mass storage of QEMU under software emulation gave I/O errors on a large read (a real stick is not that emulation)
           else
@@ -141,13 +142,14 @@ jobs:
           ACCEL="-accel tcg"; [ -w /dev/kvm ] && ACCEL="-accel kvm -cpu host"
           qemu-system-x86_64 $ACCEL -m 4096 -smp 2 -machine q35 -vga std -display none \
             -drive if=pflash,format=raw,readonly=on,file="$CODE" -drive if=pflash,format=raw,file=vars.fd \
-            $DRIVE -device usb-kbd -device usb-tablet -smbios type=1,product=wsbsd-ci -monitor unix:/tmp/mon,server,nowait -serial file:serial.log -daemonize
+            $DRIVE -device usb-kbd -device usb-tablet -smbios type=1,product=$PROD -monitor unix:/tmp/mon,server,nowait -serial file:serial.log -daemonize
           mkdir -p shots
           ok=0
           for i in $(seq 1 80); do
             sleep 15
+            if [ "${{ matrix.form }}" = login ] && [ $((i % 3)) -eq 0 ]; then for k in p e a r ret; do echo "sendkey $k" | socat - UNIX-CONNECT:/tmp/mon >/dev/null 2>&1; sleep 0.3; done; fi       # the password of the image's account (alex / pear): typed every 45 s until the desktop is there
             echo "screendump /tmp/s.ppm" | socat - UNIX-CONNECT:/tmp/mon >/dev/null 2>&1 || true; sleep 2
-            if python3 wsbsd/iso/tools/screen_check.py /tmp/s.ppm /tmp/last.png
+            if python3 wsbsd/iso/tools/screen_check.py /tmp/s.ppm /tmp/last.png desktop
             then ok=1; cp /tmp/last.png shots/desktop.png; break; fi
             [ $((i % 4)) -eq 0 ] && cp /tmp/last.png shots/progress-$i.png 2>/dev/null || true
           done
