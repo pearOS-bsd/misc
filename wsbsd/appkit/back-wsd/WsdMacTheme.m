@@ -1176,7 +1176,7 @@ static NSGradient *grad(int r0, int g0, int b0, int r1, int g1, int b1, int r2, 
 			NSString *rep = [window representedFilename]; BOOL dirIcon = NO;
 			if ([rep length] && [[NSFileManager defaultManager] fileExistsAtPath: rep isDirectory: &dirIcon]) {       /* the proxy icon of the document or folder the window stands for, before the title */
 				Class fs = NSClassFromString(@"WsdFinderSupport"); NSRect ir = NSMakeRect(x, b.size.height - TB + 8.0, 16, 16);
-				if ([fs respondsToSelector: @selector(drawIconOfName:directory:inRect:)]) { { [NSGraphicsContext saveGraphicsState]; NSAffineTransform *fl = [NSAffineTransform transform]; [fl translateXBy: 0 yBy: NSMidY(ir) * 2]; [fl scaleXBy: 1 yBy: -1]; [fl concat]; [fs drawIconOfName: [rep lastPathComponent] directory: dirIcon inRect: ir]; [NSGraphicsContext restoreGraphicsState]; } x += 20.0; }       /* the icon recipes are written for flipped views: mirrored here (the title bar is not flipped) */
+				if ([fs respondsToSelector: @selector(drawIconOfName:directory:inRect:)]) { { [NSGraphicsContext saveGraphicsState]; NSAffineTransform *fl = [NSAffineTransform transform]; [fl translateXBy: 0 yBy: NSMidY(ir) * 2]; [fl scaleXBy: 1 yBy: -1]; [fl concat]; [fs drawIconOfName: dirIcon ? rep : [rep lastPathComponent] directory: dirIcon inRect: ir]; [NSGraphicsContext restoreGraphicsState]; } x += 20.0; }       /* the icon recipes are written for flipped views: mirrored here (the title bar is not flipped) */
 			}
 			[[window title] drawInRect: NSMakeRect(x, b.size.height - TB + 8.0, b.size.width - x - 16.0, 16.0) withAttributes: at];
 		}

@@ -237,7 +237,23 @@ static void DrawDocPage(NSRect r)
 	[RGBA(0, 0, 0, 0.10) setStroke]; [fold setLineWidth: fmax(0.5, s * 0.8)]; [fold stroke];
 	#undef PT
 }
-static void DrawDirIcon(NSRect r, NSString *name) { if ([[[name pathExtension] lowercaseString] isEqual: @"app"]) DrawAppIcon(r); else DrawFolder(r); }
+/* the folders of the home directory carry a glyph on the folder, as on the Mac (NSWorkspace icons rendered at 128 px: the glyph centred at (64, 74) of the icon, about 50 px across, colour (65, 148, 188) over the folder body (83, 183, 231)); `name` is a full path to get it */
+static NSString *FolderGlyph(NSString *path)
+{
+	if (![path hasPrefix: @"/"]) return nil;
+	NSString *home = NSHomeDirectory(); if ([path isEqual: home]) return @"house.fill"; if ([path isEqual: @"/Applications"]) return @"a.square";
+	if (![[path stringByDeletingLastPathComponent] isEqual: home]) return nil;
+	static NSDictionary *g; if (!g) g = @{ @"Downloads": @"arrow.down.circle", @"Desktop": @"menubar.dock.rectangle", @"Documents": @"doc", @"Movies": @"film", @"Music": @"music.note", @"Pictures": @"photo", @"Library": @"building.columns", @"Public": @"figure.walk.diamond", @"Applications": @"a.square" };
+	return g[[path lastPathComponent]];
+}
+static void DrawDirIcon(NSRect r, NSString *name)
+{
+	if ([[[name pathExtension] lowercaseString] isEqual: @"app"]) { DrawAppIcon(r); return; }
+	DrawFolder(r); NSString *sym = FolderGlyph(name); if (!sym) return;
+	double s = fmin(r.size.width, r.size.height) / 128.0; if (s * 128 < 12) return;       /* the Mac draws the glyph down to its 16 pt (32 px) icons */
+	NSPoint c = NSMakePoint(r.origin.x + 64 * s, r.origin.y + 74 * s);
+	DrawSymbol(sym, NSMakeRect(c.x - 40 * s, c.y + 1 * s - 40 * s, 80 * s, 80 * s), (CGFloat)(48 * s), RGBA(65, 148, 188, 0.95));
+}
 static void DrawFileIcon(NSRect ic, NSString *name)
 {
 	NSString *ext = [[name pathExtension] lowercaseString]; int px = PxOf(ic); NSDictionary *spec = [ext length] ? IconSpecForExt(ext) : nil;
