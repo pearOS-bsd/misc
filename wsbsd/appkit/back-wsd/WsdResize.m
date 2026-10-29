@@ -91,6 +91,9 @@ static void wsdResizeSend(NSApplication *self, SEL _cmd, NSEvent *e)
 	if (t == NSKeyDown && ([e modifierFlags] & NSCommandKeyMask) && !([e modifierFlags] & (NSShiftKeyMask | NSAlternateKeyMask | NSControlKeyMask)) && [[e charactersIgnoringModifiers] isEqual: @" "]) {       /* Command-Space: Spotlight, wherever the keyboard is */
 		[[NSDistributedNotificationCenter defaultCenter] postNotificationName: @"com.wsbsd.spotlight.toggle" object: nil userInfo: nil deliverImmediately: YES]; return;
 	}
+	if (t == NSKeyDown && ([e modifierFlags] & NSCommandKeyMask) && ([e modifierFlags] & NSAlternateKeyMask) && [e keyCode] == 53) {       /* Command-Option-Escape: Force Quit Applications */
+		[[NSDistributedNotificationCenter defaultCenter] postNotificationName: @"com.wsbsd.forcequit.show" object: nil userInfo: nil deliverImmediately: YES]; return;
+	}
 	if (gWin) {
 		if (t == NSLeftMouseDragged) { Apply([NSEvent mouseLocation]); return; }
 		if (t == NSLeftMouseUp) { Apply([NSEvent mouseLocation]); if (gMove) EndMove(YES); gWin = nil; return; }

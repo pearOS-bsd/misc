@@ -82,7 +82,7 @@ static BOOL Confirm(NSString *msg, NSString *info, NSString *button)
 - (void)openSettings:(id)s { for (NSString *a in @[ @"/System/Applications/System Settings.app", @"/Applications/System Settings.app" ]) if ([[NSFileManager defaultManager] fileExistsAtPath: a]) { [[NSWorkspace sharedWorkspace] launchApplication: a]; return; } NSBeep(); }
 - (void)openAppStore:(id)s { for (NSString *a in @[ @"/System/Applications/App Store.app", @"/Applications/App Store.app" ]) if ([[NSFileManager defaultManager] fileExistsAtPath: a]) { [[NSWorkspace sharedWorkspace] launchApplication: a]; return; } NSBeep(); }
 - (void)clearRecents:(id)s { [[NSDocumentController sharedDocumentController] clearRecentDocuments: nil]; }
-- (void)forceQuit:(id)s { NSBeep(); }
+- (void)forceQuit:(id)s { [[NSDistributedNotificationCenter defaultCenter] postNotificationName: @"com.wsbsd.forcequit.show" object: nil userInfo: nil deliverImmediately: YES]; }       /* the Force Quit Applications window of the top bar */
 - (void)sleepNow:(id)s { Launch(@"/usr/sbin/acpiconf", @[ @"-s", @"3" ]); }
 - (void)restart:(id)s { if (Confirm(@"Are you sure you want to restart your computer now?", @"If you do nothing, your computer will restart automatically in 1 minute.", @"Restart")) Launch(@"/sbin/shutdown", @[ @"-r", @"now" ]); }
 - (void)shutDown:(id)s { if (Confirm(@"Are you sure you want to shut down your computer now?", @"If you do nothing, your computer will shut down automatically in 1 minute.", @"Shut Down")) Launch(@"/sbin/shutdown", @[ @"-p", @"now" ]); }
