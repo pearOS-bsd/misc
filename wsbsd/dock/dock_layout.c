@@ -7,13 +7,12 @@ static double pitch(const DockMetrics *m) { return m->tilesize + 4.0; }
 static double sep_width(const DockMetrics *m) { return pitch(m) * (28.0 / 62.0); }
 static double base_width(const DockMetrics *m, int kind) { return kind == DOCK_SEPARATOR ? sep_width(m) : kind == DOCK_SMALLSPACER ? pitch(m) * 0.5 : pitch(m); }
 
-/* the size factor of a tile whose centre is d points from the pointer: a Gaussian bell (3 tile sizes) cut off at 5.2 tile sizes, fitted to the real Dock in the expanded layout */
+/* the size factor of a tile whose centre is d points from the pointer, fitted to the real Dock (AX frames of every tile with the pointer at 9 places along a bar of tilesize 58, largesize 99: the tile box 62 grows to 102 at the pointer; rms 0.010 of the factor, the box is rounded to whole points): 1 + peak * (0.5 (1 + cos(pi d / R)))^0.40, R = 4.534 tile sizes (263 pt), peak = (largesize + 3) / (tilesize + 4) - 1 (the box, art + 4) */
 double dock_magnify_factor(const DockMetrics *m, double d)
 {
-	double sigma = 3.0 * m->tilesize, R = 5.2 * m->tilesize, peak = (double)m->largesize / m->tilesize - 1.0;
+	double R = 4.534 * m->tilesize, peak = ((double)m->largesize + 3.0) / (m->tilesize + 4.0) - 1.0;
 	if (d >= R) return 1.0;
-	double e0 = exp(-R * R / (2 * sigma * sigma));                                 /* the bell ends at R: the tiles beyond are not magnified at all */
-	return 1.0 + peak * (exp(-d * d / (2 * sigma * sigma)) - e0) / (1.0 - e0);
+	return 1.0 + peak * pow(0.5 * (1.0 + cos(3.14159265358979 * d / R)), 0.40);
 }
 
 static void place(const DockMetrics *m, const DockItem *items, int n, const double *scale, DockSlot *slots, double *total)
