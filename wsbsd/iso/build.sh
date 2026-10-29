@@ -3,7 +3,7 @@
 #   OUT=dir               where the ISO goes (default wsbsd/iso-out)
 #   PLOADER_DIR=dir       the Ploader build (ploader_x64.efi, theme/, drivers_x64/): from the `ploader` job of .github/workflows/iso.yml
 #   SKIP_SOFTWARE=1       the software (GNUstep stack, wsd, apps) is already built and installed under /usr/local
-# The result: macbsd-<arch>.iso, UEFI, Ploader first, FreeBSD's loader without screens, then the window server.
+# The result: pearOS-UltraC0re-<arch>-26.10.iso, UEFI, Ploader first, FreeBSD's loader without screens, then the window server.
 set -e
 HERE="$(cd "$(dirname "$0")" && pwd)"; WS="$(cd "$HERE/.." && pwd)"
 ARCH="$(uname -p)"; case "$ARCH" in amd64) EFINAME=BOOTX64.EFI; PLNAME=ploader_x64.efi; RELDIR=amd64 ;; aarch64) EFINAME=BOOTAA64.EFI; PLNAME=ploader_aa64.efi; RELDIR=arm64/aarch64 ;; *) echo "unsupported $ARCH"; exit 1 ;; esac
@@ -155,7 +155,7 @@ fi
 makefs -t msdos -o fat_type=16 -o volume_label=EFISYS -s 64m "$WORK/efiboot.img" "$ESP"
 
 echo "== 7. the ISO"
-ISO="$OUT/macbsd-$ARCH.iso"
+ISO="$OUT/pearOS-UltraC0re-$ARCH-26.10.iso"
 makefs -t cd9660 -o rockridge -o label=PEAROS -o publisher="wsbsd" -o bootimage="i386;$WORK/efiboot.img" -o no-emul-boot -o platformid=efi "$ISO" "$ROOT"
 # the ISO is also a disk image: a GPT over the EFI image inside it, so that a plain write to a USB stick (dd, Etcher) boots on a PC (iso/tools/hybrid.py)
 python3 "$HERE/tools/hybrid.py" "$ISO" "$(stat -f %z "$WORK/efiboot.img" 2>/dev/null || stat -c %s "$WORK/efiboot.img")"
