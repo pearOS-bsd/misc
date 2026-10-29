@@ -322,6 +322,7 @@ static IMP origComboDraw;
 static void wsdComboDraw(id self, SEL _cmd, NSRect f, NSView *v)
 {
 	f.origin.y += [v isFlipped] ? -3 : 3;
+	f.origin.x += 3; f.size.width -= 3;       /* measured on the Mac's UITest (combo box 132 x 28): the text starts 8 pt from the left edge of the field, GNUstep's 5 */
 	((void (*)(id, SEL, NSRect, NSView *))origComboDraw)(self, _cmd, f, v);
 }
 

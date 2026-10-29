@@ -260,6 +260,7 @@ static NSRange WsdRangeOfL(id self, SEL _cmd, NSString *s, NSUInteger mask, NSRa
 @end
 
 /* The pop-up list of a combo box (GSComboWindow with a GSComboBoxTableView): the row under the pointer is blue with white text, as on the Mac, without the pointer having to be pressed; the rows are drawn with an inset and the (empty) scroller is left out when everything fits. The row is found by a timer that looks at the pointer while such a window is on screen. */
+@interface GSDisplayServer (WsdCommit) - (void) wsdCommitWindow: (int)win; @end
 static NSInteger gComboHover = -1;
 static NSTimer *gComboTimer;
 @interface WsdComboFix : NSObject @end
@@ -285,9 +286,11 @@ static void WsdComboNoHighlight(id self, SEL _cmd, NSRect clip) {}
 	static int dbg; if (getenv("WSD_COMBO_DEBUG") && dbg++ < 5) NSLog(@"combo poll: window %@ windows %lu", cw, (unsigned long)[[NSApp windows] count]);
 	if (!cw) { gComboHover = -1; return; }
 	Ivar iv = class_getInstanceVariable(wc, "_tableView"); NSTableView *tv = iv ? object_getIvar(cw, iv) : nil; if (!tv) return;
-	NSScrollView *sv = [tv enclosingScrollView]; if (sv && [sv hasVerticalScroller] && [tv numberOfRows] <= 7) { [sv setHasVerticalScroller: NO]; [sv tile]; [tv sizeLastColumnToFit]; [cw display]; }
+	NSScrollView *sv = [tv enclosingScrollView];
+	static NSWindow *styled; if (styled != cw) { styled = cw; if (getenv("WSD_COMBO_DEBUG")) { NSLog(@"combo views: %@ style %lu", [[cw contentView] description], (unsigned long)[cw styleMask]); for (NSView *k in [[cw contentView] subviews]) NSLog(@"  sub %@ %@", NSStringFromClass([k class]), NSStringFromRect([k frame])); }       /* the look of the Mac's pop-up (measured on a combo box of macOS 27: a rounded panel filled (228, 228, 232), light edge, a soft shadow, no black outline) */
+		NSColor *fill = [NSColor colorWithCalibratedRed: 228 / 255.0 green: 228 / 255.0 blue: 232 / 255.0 alpha: 1]; [tv setBackgroundColor: fill]; [sv setBackgroundColor: fill]; [sv setBorderType: NSNoBorder]; [cw setOpaque: NO]; [cw setBackgroundColor: [NSColor clearColor]]; [cw setHasShadow: NO]; id box = [cw contentView]; if ([box isKindOfClass: [NSBox class]]) { [box setBoxType: NSBoxCustom]; [box setBorderType: NSLineBorder]; [box setBorderColor: [NSColor colorWithCalibratedWhite: 0.80 alpha: 1]]; [box setBorderWidth: 1]; [box setFillColor: fill]; [box setCornerRadius: 12]; [box setContentViewMargins: NSMakeSize(0, 0)]; } [tv setNeedsDisplay: YES]; [cw display]; { id srv = GSCurrentServer(); if ([srv respondsToSelector: @selector(wsdCommitWindow:)]) [srv wsdCommitWindow: (int)[cw windowNumber]]; } } if (sv && [sv hasVerticalScroller] && [tv numberOfRows] <= 7) { [sv setHasVerticalScroller: NO]; [sv tile]; [tv sizeLastColumnToFit]; [cw display]; }
 	NSPoint p = [tv convertPoint: [cw convertScreenToBase: [NSEvent mouseLocation]] fromView: nil]; NSInteger row = NSPointInRect(p, [tv bounds]) ? [tv rowAtPoint: p] : -1;
 	static NSInteger lastLogged = -99; if (getenv("WSD_COMBO_DEBUG") && row != lastLogged && (lastLogged = row) != -99) NSLog(@"combo hover: p=%@ bounds=%@ row=%ld mouse=%@ tvwin=%@", NSStringFromPoint(p), NSStringFromRect([tv bounds]), (long)row, NSStringFromPoint([NSEvent mouseLocation]), NSStringFromRect([cw frame]));
-	if (row != gComboHover) { gComboHover = row; if (row >= 0) [tv selectRowIndexes: [NSIndexSet indexSetWithIndex: (NSUInteger)row] byExtendingSelection: NO]; else [tv deselectAll: nil]; [tv setNeedsDisplay: YES]; [tv displayIfNeeded]; while (![cw isFlushWindowDisabled] == NO) [cw enableFlushWindow]; [cw flushWindow]; }
+	if (row != gComboHover) { gComboHover = row; if (row >= 0) [tv selectRowIndexes: [NSIndexSet indexSetWithIndex: (NSUInteger)row] byExtendingSelection: NO]; else [tv deselectAll: nil]; [tv setNeedsDisplay: YES]; [[cw contentView] setNeedsDisplay: YES]; [cw display]; while (![cw isFlushWindowDisabled] == NO) [cw enableFlushWindow]; [cw flushWindow]; { id srv = GSCurrentServer(); if ([srv respondsToSelector: @selector(wsdCommitWindow:)]) [srv wsdCommitWindow: (int)[cw windowNumber]]; } if (getenv("WSD_COMBO_DEBUG")) NSLog(@"combo: row %ld selected, window displayed", (long)row); }
 }
 @end
