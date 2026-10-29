@@ -109,7 +109,7 @@ Source: `buglist.txt`. `[ ]` = open, `[x]` = done and verified. Items marked *(p
 **Boot, installer and hardware**
 - [ ] Boot logo: a real boot logo with a progress bar, exactly as on this Mac (today it is only the compositor background painted grey, with a pear; no splash is wanted). *(partial: pear on black until the desktop picture exists)*
 - [ ] Ploader shows rEFInd's default UI with missing icons instead of our Ploader interface, and still does not boot directly without Alt-M. *(partial: `ploader.conf` now scans only external / optical disks and prefers `EFISYS`; not confirmed on hardware)*
-- [ ] Keyboard backlight driver for the NS50_70MU (Clevo) ported to BSD and working.
+- [ ] Keyboard backlight driver for the NS50_70MU (Clevo) ported to BSD and working. *(partial: `kmod/clevo_wmi` is a FreeBSD ACPI-WMI driver after the Linux clevo-wmi / tuxedo-keyboard behaviour (`dev.clevo_wmi.0.kb_brightness`, Fn keys as events), loaded by `wsbsd_kbdlight` when the image has it; NOT run on the laptop: the command numbers need checking on the real machine with a DSDT dump; the build needs /usr/src/sys on the build machine; the Control Center Keyboard slider writes the sysctl)*
 - [ ] Touch Bar sometimes starts with no way to turn it off.
 
 **Login and users**

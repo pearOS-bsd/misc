@@ -103,6 +103,9 @@ mkdir -p "$ROOT/System/Library/LaunchDaemons"
 (cd "$WORK/cw" && tar -cf - System usr 2>/dev/null) | tar -C "$ROOT" -xpf - || true
 install -d "$ROOT/System/Library/Desktop Pictures" && install -m 644 "$WS/desktop-pictures/dark-mode.jpg" "$WS/desktop-pictures/light-mode.jpg" "$ROOT/System/Library/Desktop Pictures/"; cp "$WS/desktop-pictures/README.md" "$ROOT/System/Library/Desktop Pictures/README.md"
 install -d "$ROOT/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources" && install -m 644 "$WS/launchservices/uti_table.json" "$ROOT/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/uti_table.json"
+for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_kbdlight" "$ROOT/$d/rc.d/wsbsd_kbdlight"; done
+# the keyboard backlight driver (needs the kernel sources of the build machine; without them the image simply has no such module)
+if [ -d /usr/src/sys/dev/acpica ]; then (cd "$WS/kmod/clevo_wmi" && make clean >/dev/null 2>&1; make >"$WORK/clevo_wmi.log" 2>&1 && install -d "$ROOT/boot/modules" && install -m 555 clevo_wmi.ko "$ROOT/boot/modules/clevo_wmi.ko") || echo "NOTE: clevo_wmi did not build (see $WORK/clevo_wmi.log)"; else echo "NOTE: no /usr/src/sys: no keyboard backlight module in this image"; fi
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_wifi" "$ROOT/$d/rc.d/wsbsd_wifi"; done
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-airportd" "$ROOT/$d/rc.d/airportd"; install -m 755 "$HERE/overlay/etc-rc.d-usernoted" "$ROOT/$d/rc.d/usernoted"; done
 # no text login on the screen: the window server owns it (the serial console keeps its login)

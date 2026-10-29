@@ -82,6 +82,9 @@ void SetDark(BOOL dark)
 - (void)drawKnob:(NSRect)r {}
 - (void)drawKnob {}
 @end
+/* keyboard backlight: the sysctl of the laptop's driver (clevo_wmi: dev.clevo_wmi.0.kb_brightness, 0 ... 255); a machine without one keeps the slider as it was (no effect) */
+static double KbdLevel(void) { int v = 0; size_t n = sizeof v; if (sysctlbyname("dev.clevo_wmi.0.kb_brightness", &v, &n, NULL, 0) == 0) return v / 255.0; return -1; }
+static void SetKbd(double x) { int v = (int)lround(x * 255); sysctlbyname("dev.clevo_wmi.0.kb_brightness", NULL, NULL, &v, sizeof v); }
 @interface CCView : NSView { NSMutableDictionary *on; NSString *drag; double volume, brightness, kbd; NSArray *tiles; NSSlider *sSound, *sBright, *sKbd; }
 - (void)applyGlass;
 @end
@@ -93,7 +96,7 @@ void SetDark(BOOL dark)
 	if (!(self = [super initWithFrame: f])) return nil;
 	on = [NSMutableDictionary dictionaryWithDictionary: @{ @"wifi": @YES, @"bluetooth": @YES, @"dark": @(DarkNow()), @"nightshift": @NO, @"airdrop": @NO, @"stage": @NO, @"mirror": @NO, @"truetone": @NO, @"focus": @NO }];
 	{ BOOL known; BOOL w = WifiPower(&known); if (known) on[@"wifi"] = @(w); }       /* without CoreWLAN/airportd the tile keeps its drawn state */
-	volume = MixerVolume(); brightness = Brightness(); kbd = 1; if (volume < 0) volume = 0.5625; if (brightness < 0) brightness = 1;
+	volume = MixerVolume(); brightness = Brightness(); kbd = KbdLevel() >= 0 ? KbdLevel() : 1; if (volume < 0) volume = 0.5625; if (brightness < 0) brightness = 1;
 	/* kind, id, column, row, columns, rows, symbol, title */
 	tiles = @[ @[ @"circle", @"wifi", @0, @0, @1, @1, @"wifi", @"" ], @[ @"circle", @"bluetooth", @1, @0, @1, @1, @"", @"" ], @[ @"nowplaying", @"np", @2, @0, @2, @2, @"", @"" ],
 		@[ @"circle", @"dark", @0, @1, @1, @1, @"circle.lefthalf.filled", @"" ], @[ @"circle", @"nightshift", @1, @1, @1, @1, @"sun.max", @"" ],
@@ -152,7 +155,7 @@ static void Bluetooth(NSPoint c, NSColor *col) { NSBezierPath *p = [NSBezierPath
 - (void)set:(NSString *)id_ at:(NSPoint)p inRect:(NSRect)r
 {
 	BOOL snd = [id_ isEqual: @"sound"], br = [id_ isEqual: @"bright"]; double lo = r.origin.x + (snd ? 34 : br ? 40 : 42), w = snd ? 181 : br ? 82 : 80, v = MAX(0, MIN(1, (p.x - lo) / w));
-	if (snd) { volume = v; SetMixerVolume(v); } else if (br) { brightness = v; SetBrightness(v); } else kbd = v;
+	if (snd) { volume = v; SetMixerVolume(v); } else if (br) { brightness = v; SetBrightness(v); } else { kbd = v; SetKbd(v); }
 	[self setNeedsDisplay: YES];
 }
 - (void)mouseDown:(NSEvent *)e
@@ -165,7 +168,7 @@ static void Bluetooth(NSPoint c, NSColor *col) { NSBezierPath *p = [NSBezierPath
 		return; }
 }
 - (void)rightMouseDown:(NSEvent *)e { NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; for (NSArray *t in tiles) if (([t[1] isEqual: @"wifi"] || [t[1] isEqual: @"bluetooth"]) && NSPointInRect(p, [self rectOf: t])) { [[self window] orderOut: nil]; if ([t[1] isEqual: @"wifi"]) ToggleWifiPanel(); else ToggleBluetoothPanel(); } }       /* the details of the Wi-Fi tile (AX: the custom action "show details") */
-- (void)sliderMoved:(NSSlider *)o { double v = [o doubleValue]; NSString *i = [o identifier]; if ([i isEqual: @"sound"]) { volume = v; SetMixerVolume(v); } else if ([i isEqual: @"bright"]) { brightness = v; SetBrightness(v); } else kbd = v; [self setNeedsDisplay: YES]; }
+- (void)sliderMoved:(NSSlider *)o { double v = [o doubleValue]; NSString *i = [o identifier]; if ([i isEqual: @"sound"]) { volume = v; SetMixerVolume(v); } else if ([i isEqual: @"bright"]) { brightness = v; SetBrightness(v); } else { kbd = v; SetKbd(v); } [self setNeedsDisplay: YES]; }
 - (void)mouseDragged:(NSEvent *)e { if (!drag) return; NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; for (NSArray *t in tiles) if ([t[1] isEqual: drag]) [self set: drag at: p inRect: [self rectOf: t]]; }
 - (void)mouseUp:(NSEvent *)e { drag = nil; }
 @end
