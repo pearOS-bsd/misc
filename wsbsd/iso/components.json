@@ -22,6 +22,7 @@
   "files": {
     "/System/Library/PrivateFrameworks/SkyLight.framework/Versions/A/Resources/WindowServer": "/usr/local/sbin/wsd",
     "/System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal": "/usr/local/bin/Terminal-gnustep",
+    "/System/Applications/TextEdit.app/Contents/MacOS/TextEdit": "/usr/local/bin/TextEdit-gnustep",
     "/Applications/UITest.app/Contents/MacOS/UITest": "/usr/local/bin/UITest-gnustep",
     "/System/Applications/Utilities/Keyboard Setup Assistant.app/Contents/MacOS/Keyboard Setup Assistant": "/usr/local/bin/KeyboardSetupAssistant-gnustep",
     "/System/Library/CoreServices/Dock.app/Contents/MacOS/Dock": "/usr/local/bin/Dock-gnustep",
