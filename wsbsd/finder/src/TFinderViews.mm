@@ -1206,9 +1206,11 @@ static void RedrawTree(NSView *v) { [v setNeedsDisplay: YES]; for (NSView *k in 
 - (BOOL)isZoomed { return _zoomed; }
 - (BOOL)performKeyEquivalent:(NSEvent *)e { if ([e type] == NSKeyDown && ![e modifierFlags] && [[e characters] isEqual: @" "]) return NO; return [super performKeyEquivalent: e]; }       /* a plain space is the views' (Quick Look), not a key equivalent of a control */
 - (BOOL)wsdIsResizable { return YES; }       /* the window's edges are resized by the application (WsdResize.m), live, with plain events */
+- (BOOL)_pointOnLights:(NSPoint)p { NSView *deco = [[self contentView] superview]; return [deco respondsToSelector: @selector(wsdPointInButtons:)] && ((BOOL (*)(id, SEL, NSPoint))objc_msgSend)(deco, @selector(wsdPointInButtons:), [deco convertPoint: p fromView: nil]); }       /* the traffic lights are the theme's: a press on them is not a move of the window */
 - (BOOL)wsdWantsMoveAt:(NSEvent *)e       /* a press on the toolbar's empty part moves the window (a double click zooms it: that one goes to sendEvent:) */
 {
-	if ([e clickCount] >= 2) return NO; NSPoint p = [e locationInWindow]; NSView *cv = [self contentView]; NSView *hit = [cv hitTest: [[cv superview] convertPoint: p fromView: nil]];
+	if ([e clickCount] >= 2) return NO; NSPoint p = [e locationInWindow]; NSView *cv = [self contentView]; NSView *deco = [cv superview];
+	if ([deco respondsToSelector: @selector(wsdPointInButtons:)] && ((BOOL (*)(id, SEL, NSPoint))objc_msgSend)(deco, @selector(wsdPointInButtons:), [deco convertPoint: p fromView: nil])) return NO;       /* a press on the traffic lights is theirs (hover, held, rubber), not the window's move */ NSView *hit = [cv hitTest: [[cv superview] convertPoint: p fromView: nil]];
 	return [hit respondsToSelector: @selector(isDragPoint:)] && [(id)hit isDragPoint: [hit convertPoint: p fromView: nil]];
 }
 - (void)_track:(int)m event:(NSEvent *)event                  /* m: 0 moves, else the edges (1 left, 2 right, 4 bottom, 8 top) */
@@ -1235,6 +1237,7 @@ static void RedrawTree(NSView *v) { [v setNeedsDisplay: YES]; for (NSView *k in 
 		if (p.x < ed) m |= 1; if (p.x > b.size.width - ed) m |= 2; if (p.y < ed) m |= 4; if (p.y > b.size.height - ed) m |= 8;
 		if (m == 1 || m == 2) { if (p.y < co) m |= 4; else if (p.y > b.size.height - co) m |= 8; } else if (m == 4 || m == 8) { if (p.x < co) m |= 1; else if (p.x > b.size.width - co) m |= 2; }
 		if (m) { [self _track: m event: e]; return; }
+		if ([self _pointOnLights: p]) { [super sendEvent: e]; return; }
 		NSView *cv = [self contentView]; NSView *hit = [cv hitTest: [[cv superview] convertPoint: p fromView: nil]];
 		if ([hit respondsToSelector: @selector(isDragPoint:)] && [(id)hit isDragPoint: [hit convertPoint: p fromView: nil]]) { if ([e clickCount] == 2) { [self performZoom: nil]; return; } [self _track: 0 event: e]; return; }
 	}
