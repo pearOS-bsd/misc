@@ -212,3 +212,20 @@ void WsdShowTilePopover(NSWindow *w, NSRect buttonInWindow)
 	}
 }
 @end
+
+/* "Reopen": the Dock asks a running application that has no window to open one (a click on its tile, as on the Mac; closing the last window leaves the process running). The application's delegate is asked first (applicationShouldHandleReopen:hasVisibleWindows:); if it has no opinion or says yes, the first of the usual "new window" actions that something answers is sent. */
+@interface WsdReopen : NSObject @end
+@implementation WsdReopen
++ (void)load
+{
+	[[NSNotificationCenter defaultCenter] addObserverForName: NSApplicationDidFinishLaunchingNotification object: nil queue: nil usingBlock: ^(NSNotification *n) {
+		[[NSDistributedNotificationCenter defaultCenter] addObserverForName: @"com.wsbsd.dock.reopen" object: nil queue: nil usingBlock: ^(NSNotification *m) {
+			if ([[m userInfo][@"pid"] intValue] != (int)getpid()) return; [NSApp activateIgnoringOtherApps: YES];
+			BOOL vis = NO; for (NSWindow *w in [NSApp windows]) if ([w isVisible] && [w level] == NSNormalWindowLevel && ![w isKindOfClass: NSClassFromString(@"NSMenuPanel")]) vis = YES;
+			for (NSWindow *w in [NSApp windows]) if ([w isMiniaturized]) [w deminiaturize: nil];
+			id d = [NSApp delegate]; BOOL go = YES; if ([d respondsToSelector: @selector(applicationShouldHandleReopen:hasVisibleWindows:)]) go = [d applicationShouldHandleReopen: NSApp hasVisibleWindows: vis];
+			if (go && !vis) for (NSString *a in @[ @"newDocument:", @"newWindow:", @"newTerminalWindow:", @"newBrowserWindow:" ]) if ([NSApp sendAction: NSSelectorFromString(a) to: nil from: nil]) break;
+		}];
+	}];
+}
+@end
