@@ -26,6 +26,7 @@
     "/System/Applications/Utilities/Keyboard Setup Assistant.app/Contents/MacOS/Keyboard Setup Assistant": "/usr/local/bin/KeyboardSetupAssistant-gnustep",
     "/System/Library/CoreServices/Dock.app/Contents/MacOS/Dock": "/usr/local/bin/Dock-gnustep",
     "/System/Library/CoreServices/SystemUIServer.app/Contents/MacOS/SystemUIServer": "/usr/local/bin/TopBar-gnustep",
+    "/System/Library/CoreServices/loginwindow.app/Contents/MacOS/loginwindow": "/usr/local/bin/loginwindow-gnustep",
     "/System/Applications/Utilities/Terminal.app/Contents/Resources/Terminal.icns": "/usr/local/share/wsbsd/icons/Terminal.icns",
     "/Applications/UITest.app/Contents/Resources/UITest.icns": "/usr/local/share/wsbsd/icons/UITest.icns",
     "/System/Applications/Utilities/Keyboard Setup Assistant.app/Contents/Resources/KeyboardSetupAssistant.icns": "/usr/local/share/wsbsd/icons/KeyboardSetupAssistant.icns",

@@ -15,6 +15,7 @@ mkdir -p "$WORK" "$OUT"; [ -d "$ROOT" ] && chflags -R noschg,nouchg "$ROOT" 2>/d
 
 echo "== 1. the software"
 pkg info -e zsh >/dev/null 2>&1 || pkg install -y zsh >/dev/null 2>&1 || true
+pkg info -e sudo >/dev/null 2>&1 || pkg install -y sudo >/dev/null 2>&1 || true
 pkg info -e zsh-autosuggestions >/dev/null 2>&1 || pkg install -y zsh-autosuggestions >/dev/null 2>&1 || true
 if [ -z "$SKIP_SOFTWARE" ]; then
 	pkg install -y python3 gmake pkgconf git >/dev/null 2>&1 || true
@@ -43,6 +44,7 @@ for c in CoreGlyphs CoreTypes; do [ -f "$WS/coreui/assets/$c.car" ] && install -
 ar rcs "$WORK/libwsclient.a" "$WORK"/ws_*.o
 COMPAT="$WORK/compat" WSCLIENT="$WORK/libwsclient.a" sh "$WS/dock/build.sh" "$WORK/dock" > "$WORK/dock.log" 2>&1; install -m 755 "$WORK/dock/Dock" /usr/local/bin/Dock-gnustep || { cat "$WORK/dock.log"; exit 1; }
 COMPAT="$WORK/compat" sh "$WS/topbar/build.sh" "$WORK/topbar" > "$WORK/topbar.log" 2>&1; install -m 755 "$WORK/topbar/TopBar" /usr/local/bin/TopBar-gnustep || { cat "$WORK/topbar.log"; exit 1; }
+COMPAT="$WORK/compat" sh "$WS/loginwindow/build.sh" "$WORK/loginwindow" > "$WORK/loginwindow.log" 2>&1; install -m 755 "$WORK/loginwindow/loginwindow" /usr/local/bin/loginwindow-gnustep || { cat "$WORK/loginwindow.log"; exit 1; }
 # the Finder: built from finder/, with the resources of the reference Mac's Finder imported when they are at hand (FINDER_APP=path of Finder.app, or finder/Resources copied in before the build); it lands as /System/Library/CoreServices/Finder.app
 echo "== the Finder"; COMPAT="$WORK/compat" sh "$WS/finder/build.sh" "$WORK/finder" > "$WORK/finder.log" 2>&1 || true; tail -5 "$WORK/finder.log"; FA="$WORK/finder/System/Library/CoreServices/Finder.app"; [ -x "$FA/Contents/MacOS/Finder" ] || { cat "$WORK/finder.log"; exit 1; }
 if [ -n "$FINDER_APP" ] && [ -d "$FINDER_APP" ]; then sh "$WS/finder/import-resources.sh" "$FINDER_APP" "$FA" >> "$WORK/finder.log" 2>&1 || true; fi
@@ -63,7 +65,7 @@ rm -f "$ROOT"/usr/lib/*.a "$ROOT"/usr/lib/*_p.a "$ROOT"/usr/bin/clang* "$ROOT"/u
 echo "== 3. what we built, with the libraries it needs"
 mkdir -p "$ROOT/usr/local"
 PDFLIBS="$(cd / && ls usr/local/lib/libpoppler-glib.so* 2>/dev/null)"   # dlopen'ed by PDFImage.m: the dependency scan below follows them
-tar -C / -cf - $PDFLIBS usr/local/GNUstep usr/local/sbin/wsd usr/local/sbin/spctl usr/local/bin usr/local/libexec/dyld usr/local/lib/libwsclient.so usr/local/lib/libwsbsdcompat.so usr/local/lib/libQuartzCore.so usr/local/share/fonts usr/local/etc/fonts usr/local/share/wsbsd usr/local/bin/zsh usr/local/share/zsh usr/local/share/zsh-autosuggestions usr/local/lib/zsh usr/local/share/icu usr/local/lib/libicudata.so usr/local/lib/libicudata.so.76 usr/local/lib/libicudata.so.76.1 2>/dev/null | tar -C "$ROOT" -xpf -
+tar -C / -cf - $PDFLIBS usr/local/GNUstep usr/local/sbin/wsd usr/local/sbin/spctl usr/local/bin usr/local/libexec/dyld usr/local/lib/libwsclient.so usr/local/lib/libwsbsdcompat.so usr/local/lib/libQuartzCore.so usr/local/share/fonts usr/local/etc/fonts usr/local/share/wsbsd usr/local/bin/zsh usr/local/bin/sudo usr/local/libexec/sudo usr/local/lib/sudo usr/local/share/zsh usr/local/share/zsh-autosuggestions usr/local/lib/zsh usr/local/share/icu usr/local/lib/libicudata.so usr/local/lib/libicudata.so.76 usr/local/lib/libicudata.so.76.1 2>/dev/null | tar -C "$ROOT" -xpf -
 # guest tools of VMware and VirtualBox (before the library scan, which then follows their dependencies)
 sh "$HERE/tools/guesttools.sh" "$ROOT" || echo "NOTE: guest tools failed"
 # every shared library below /usr/local that these programs need (ldd closure)
@@ -113,6 +115,13 @@ for d in etc private/etc usr/local/etc; do          # FreeBSD's zsh reads its gl
 	cp "$HERE/overlay/etc-zprofile" "$ROOT/$d/zprofile"; cp "$HERE/overlay/etc-zshrc" "$ROOT/$d/zshrc"
 done
 pw -R "$ROOT" usermod root -s /bin/zsh
+# the account of the image: alex, password "pear", administrator (wheel, sudo / doas without asking again is not given: the password is asked)
+pw -R "$ROOT" groupshow alex >/dev/null 2>&1 || pw -R "$ROOT" groupadd alex -g 501
+pw -R "$ROOT" usershow alex >/dev/null 2>&1 || { echo pear | pw -R "$ROOT" useradd alex -u 501 -g alex -G wheel,operator,video -c "Alex" -d /Users/alex -s /bin/zsh -h 0; }
+mkdir -p "$ROOT/Users/alex"
+for d in usr/local/etc etc; do mkdir -p "$ROOT/$d"; done
+if [ -x "$ROOT/usr/local/bin/sudo" ] || pkg info -e sudo >/dev/null 2>&1; then printf '%%wheel ALL=(ALL:ALL) ALL\n' > "$ROOT/usr/local/etc/sudoers"; chmod 440 "$ROOT/usr/local/etc/sudoers"; fi
+printf 'permit persist :wheel\npermit nopass root\n' > "$ROOT/usr/local/etc/doas.conf"; cp "$ROOT/usr/local/etc/doas.conf" "$ROOT/etc/doas.conf" 2>/dev/null
 # pkg is real and usable: the static pkg of the build machine is /usr/local/sbin/pkg (/usr/sbin/pkg, the bootstrapper, hands over to it), /usr/local is made writable at boot (wsbsd_overlay: a unionfs
 # over the read-only medium), the repository is FreeBSD's own (/etc/pkg/FreeBSD.conf), the database lives in /var/db/pkg (a memory file system on the live image)
 if [ -x /usr/local/sbin/pkg-static ]; then install -d "$ROOT/usr/local/sbin" "$ROOT/usr/local/etc"; install -m 755 /usr/local/sbin/pkg-static "$ROOT/usr/local/sbin/pkg"; cp /usr/local/etc/pkg.conf.sample "$ROOT/usr/local/etc/pkg.conf.sample" 2>/dev/null; else echo "NOTE: pkg-static is not on the build machine: pkg stays the bootstrapper"; fi
