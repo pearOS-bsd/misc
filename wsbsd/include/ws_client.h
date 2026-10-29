@@ -18,6 +18,7 @@ int ws_win_warp(ws_conn *, ws_win *, int cols, int rows, const float *mesh);   /
 int ws_win_set_key(ws_conn *, ws_win *);   /* private: the window becomes the key window of the session (the keys go to it) */
 int ws_win_set_space(ws_conn *, ws_win *, uint32_t space);   /* private: the window lives in a full-screen space (0: the desktop) */
 int ws_set_shutdown_splash(ws_conn *, int on);                  /* private, root only: the shutdown screen (the pear, no bar) */
+int ws_set_night_shift(ws_conn *, int percent);                  /* private: Night Shift 0..100 */
 int ws_set_active_space(ws_conn *, uint32_t space);           /* private: the space on the screen */
 int ws_get_active_space(ws_conn *, uint32_t *space);
 int ws_win_glass_slot(ws_conn *, ws_win *, int slot, ws_rect rect, int radius, int mode);   /* private: one of up to 16 glass shapes of the window (rounded rectangle, window-relative; style 1 regular / 2 clear; 0 removes it); shapes that touch melt together */

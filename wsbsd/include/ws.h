@@ -132,6 +132,7 @@ uint32_t ws_server_space(const ws_server *);
 void ws_server_set_shutdown_splash(ws_server *, int on);   /* the pear alone over everything (no bar): the machine is shutting down */
 int ws_server_shutdown_splash(void);
 int ws_server_cursor_animating(void);   /* shake to find the cursor: frames are wanted */
+void ws_server_set_night_shift(ws_server *, int percent);   /* Night Shift: the screen warmer (less blue, a little less green), 0 = off, 100 = the warmest */
 void ws_server_invalidate(ws_server *);   /* the scene changed from outside (the console moved to another session): compose again */
 void ws_server_set_compositor(ws_server *, ws_compositor *);  /* default: sw */
 int ws_server_set_zoom(ws_server *, float scale, int cx, int cy);   /* magnify the composed frame about (cx, cy); 1 = off */
