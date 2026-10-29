@@ -1033,7 +1033,6 @@ static NSFont *titleFont(void)
 
 extern NSImage *WsdWindowButtonImage(int kind, int state, BOOL dark);
 extern void WsdDrawWindowButton(NSImage *im, NSRect r, BOOL held, NSPoint pull);
-extern NSImage *WsdWindowButtonBare;       /* the disc without its glyph: the glyph fades while the button is stretched */
 static NSMutableSet *gDecoViews; static double wsdRelF;
 @interface WsdMacDecorationView (WsdOverlay) - (void) wsdDrawTrafficLights; - (NSRect) wsdGroupRect; - (BOOL) wsdPointInButtons: (NSPoint)p; @end
 @class WsdMacDecorationView;
@@ -1127,7 +1126,7 @@ static NSGradient *grad(int r0, int g0, int b0, int r1, int g1, int b1, int r2, 
 	if (en && (key || wsdBtnHover || pressed)) {
 		int kind = (i == 0 && [window isDocumentEdited]) ? 3 : i, state = pressed ? 2 : (wsdBtnHover ? 1 : 0);
 		NSImage *im = WsdWindowButtonImage(kind, state, dark);
-		if (im) { NSRect r = [self circleRect: i]; BOOL rel = wsdRelBtn == i && wsdRelTimer; WsdWindowButtonBare = WsdWindowButtonImage(kind, 0, dark); WsdDrawWindowButton(im, r, pressed || rel, pressed ? wsdPull : rel ? NSMakePoint(wsdRelPull.x * wsdRelF, wsdRelPull.y * wsdRelF) : NSZeroPoint); return; }
+		if (im) { NSRect r = [self circleRect: i]; BOOL rel = wsdRelBtn == i && wsdRelTimer; WsdDrawWindowButton(im, r, pressed || rel, pressed ? wsdPull : rel ? NSMakePoint(wsdRelPull.x * wsdRelF, wsdRelPull.y * wsdRelF) : NSZeroPoint); return; }
 	}
 	[self drawCircle: i key: key && en dark: dark];
 }

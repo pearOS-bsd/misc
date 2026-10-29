@@ -184,3 +184,21 @@ void WsdShowTilePopover(NSWindow *w, NSRect buttonInWindow)
 	NSWindow *pw = [v window]; if (pw) {       /* on the Mac the panel starts 27 left of the button's centre and hangs 12 below the button (the arrow points at the button) */
 		NSRect br = [w convertRectToScreen: buttonInWindow]; NSRect f = [pw frame]; f.origin.x = NSMidX(br) - 27; f.origin.y = NSMinY(br) - 12 - f.size.height; [pw setFrame: f display: YES]; }
 }
+
+/* GNUstep's autodisplay (+[NSWindow _handleAutodisplay:]) calls every window's -_handleAutodisplay and schedules itself again only at the end: when one window raises while it is drawn (the menu bar's panel did, at the start of every program: "NSRunLoop ignoring exception ... _handleAutodisplay:") the loop is never scheduled again and no window is redrawn by -setNeedsDisplay: any more (held window buttons did not stretch, hover did not follow). Every window's step is guarded: the exception is logged (five times) and the window's flush, disabled for the drawing, is enabled again. */
+@interface NSWindow (WsdAutodisplayGuard) @end
+@implementation NSWindow (WsdAutodisplayGuard)
++ (void) load
+{
+	Method a = class_getInstanceMethod(self, @selector(_handleAutodisplay)), b = class_getInstanceMethod(self, @selector(wsdGuardedAutodisplay));
+	if (a && b) method_exchangeImplementations(a, b);
+}
+- (void) wsdGuardedAutodisplay       /* after the exchange: this is the original -_handleAutodisplay, and the original name runs the guard */
+{
+	@try { [self wsdGuardedAutodisplay]; }
+	@catch (NSException *e) {
+		static int n; if (n++ < 5) NSLog(@"wsd: drawing %@ raised %@: %@", [self class], [e name], [e reason]);
+		@try { [self enableFlushWindow]; [self flushWindowIfNeeded]; } @catch (NSException *e2) {}
+	}
+}
+@end
