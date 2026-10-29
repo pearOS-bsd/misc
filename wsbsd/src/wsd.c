@@ -39,6 +39,14 @@
 #endif
 #include <fcntl.h>
 #include <math.h>
+#include <pwd.h>
+/* the uid of the account the session runs as (the login window writes its name to $WSD_SESSION_USER_FILE, default /var/run/wsbsd.user); -1 when there is none */
+static uid_t session_uid(void)
+{
+	const char *f = getenv("WSD_SESSION_USER_FILE"); char n[64] = ""; FILE *fp = fopen(f ? f : "/var/run/wsbsd.user", "r");
+	if (!fp) return (uid_t)-1; if (!fgets(n, sizeof n, fp)) n[0] = 0; fclose(fp); n[strcspn(n, "\r\n")] = 0;
+	struct passwd *pw = n[0] ? getpwnam(n) : NULL; return pw ? pw->pw_uid : (uid_t)-1;
+}
 
 #define DEFAULT_SOCKET ws_default_socket_path()
 #define MAXCONN 128
@@ -1332,7 +1340,7 @@ int main(int argc, char **argv)
 			if (fd == ls) {
 				int cfd = accept(ls, NULL, NULL);
 				if (cfd < 0) continue;
-				{ uid_t pu; gid_t pg; if (getpeereid(cfd, &pu, &pg) < 0 || (pu != geteuid() && pu != 0)) { close(cfd); continue; } }      /* defence in depth next to the socket's 0600 mode: only the server's user (or root) may connect */
+				{ uid_t pu; gid_t pg; if (getpeereid(cfd, &pu, &pg) < 0 || (pu != geteuid() && pu != 0 && pu != session_uid())) { close(cfd); continue; } }      /* defence in depth next to the socket's mode: the server's user, root, or the account that is signed in (named in /var/run/wsbsd.user by the session script) may connect */
 				conn *slot = conn_by_fd(-1);
 				if (!slot) { close(cfd); continue; }
 				memset(slot, 0, sizeof *slot); slot->fd = cfd; slot->efd = -1; slot->id = next_conn++; slot->pid = 0;
