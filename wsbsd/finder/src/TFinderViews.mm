@@ -295,7 +295,8 @@ static CGFloat TFDeskTab(const CGFloat *t, CGFloat text) { int i = (int)lround(t
 	if (vp) { _grid = [vp[@"gridSpacing"] doubleValue] >= 20 ? [vp[@"gridSpacing"] doubleValue] : 54; _textSize = [vp[@"textSize"] doubleValue] >= 8 ? [vp[@"textSize"] doubleValue] : 12; _showInfo = [vp[@"showItemInfo"] boolValue]; _showPreview = vp[@"showIconPreview"] ? [vp[@"showIconPreview"] boolValue] : YES; _labelRight = vp[@"labelOnBottom"] && ![vp[@"labelOnBottom"] boolValue]; }
 	for (NSString *p in paths) {
 		NSString *n = TFDisplayName(p); if ([[p lastPathComponent] hasPrefix: @"."] || ([filter length] && [n rangeOfString: filter options: NSCaseInsensitiveSearch].location == NSNotFound)) continue; BOOL isVol = [_prefix containsObject: p];
-		NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory] && !TFIsPackage(p); NSString *info = @"";
+		NSDictionary *at = [fm attributesOfItemAtPath: p error: NULL]; BOOL dir = [at[NSFileType] isEqual: NSFileTypeDirectory] && !TFIsPackage(p); if (!dir && [at[NSFileType] isEqual: NSFileTypeSymbolicLink]) { BOOL sd = NO; if ([fm fileExistsAtPath: p isDirectory: &sd] && sd && !TFIsPackage(p)) dir = YES; }       /* a link to a folder is a folder for the Finder (the Applications link of a disk image takes the dropped app) */
+		NSString *info = @"";
 		if (isVol) info = @""; else if (dir) { NSUInteger c = 0; for (NSString *s in [fm contentsOfDirectoryAtPath: p error: NULL]) if (![s hasPrefix: @"."]) c++; info = [NSString stringWithFormat: @"%lu item%s", (unsigned long)c, c == 1 ? "" : "s"]; }
 		else if (!TFIsPackage(p)) info = TFSizeString([at[NSFileSize] unsignedLongLongValue]);
 		NSMutableDictionary *it = [@{ @"name": TFShownName(n), @"path": p, @"info": info, @"tags": TFTagsOf(p), @"dir": @(dir), @"mod": at[NSFileModificationDate] ?: [NSDate distantPast], @"acc": at[@"NSFileAccessDate"] ?: at[NSFileModificationDate] ?: [NSDate distantPast], @"cre": at[NSFileCreationDate] ?: [NSDate distantPast], @"size": at[NSFileSize] ?: @0 } mutableCopy];
@@ -336,6 +337,7 @@ static CGFloat TFDeskTab(const CGFloat *t, CGFloat text) { int i = (int)lround(t
 	if (from && _animStart) { double k = ([NSDate timeIntervalSinceReferenceDate] - _animStart) / 0.28; if (k >= 1) k = 1; double e = 1 - pow(1 - k, 3); NSPoint f = [from pointValue]; t = NSMakePoint(f.x + (t.x - f.x) * e, f.y + (t.y - f.y) * e); }
 	return NSMakeRect(t.x, t.y, [self cw], [self ch]);
 }
+- (NSInteger)_indexBelowDragged:(NSPoint)p { for (NSInteger i = (NSInteger)[_items count] - 1; i >= 0; i--) { if ([_sel containsIndex: i]) continue; NSRect c = [self _cell: i]; if (NSPointInRect(p, NSMakeRect(c.origin.x + 12, c.origin.y, c.size.width - 24, _isz + 36))) return i; } return -1; }       /* the item under the pointer that is not one of the dragged ones (they follow the pointer and lie on top) */
 - (NSInteger)_index:(NSPoint)p { for (NSInteger i = (NSInteger)[_items count] - 1; i >= 0; i--) { NSRect c = [self _cell: i]; if (NSPointInRect(p, NSMakeRect(c.origin.x + 12, c.origin.y, c.size.width - 24, _isz + 36))) return i; } return -1; }
 - (void)_animateFrom:(NSArray *)old                                                       /* the icons glide from where they were to where they now belong */
 {
@@ -438,7 +440,7 @@ static CGFloat TFDeskTab(const CGFloat *t, CGFloat text) { int i = (int)lround(t
 		NSPoint q = [self convertPoint: [ev locationInWindow] fromView: nil]; q.y = q.y - topInset + off; if (!moved && hypot(q.x - start.x, q.y - start.y) < 4) continue;
 		moved = YES; _dragging = YES; _dropTarget = -1;
 		for (NSUInteger k = 0; k < [idx count]; k++) { NSPoint o = [orig[k] pointValue]; _items[[idx[k] integerValue]][@"pos"] = [NSValue valueWithPoint: NSMakePoint(o.x + q.x - start.x, o.y + q.y - start.y)]; }
-		NSInteger over = [self _index: q]; if (over >= 0 && [_items[over][@"dir"] boolValue] && ![_sel containsIndex: over]) _dropTarget = over;
+		NSInteger over = [self _indexBelowDragged: q]; if (over >= 0 && [_items[over][@"dir"] boolValue] && ![_sel containsIndex: over]) _dropTarget = over;
 		[self setNeedsDisplay: YES]; [self reveal: NSMakeRect(q.x - 20, q.y - 20, 40, 40)];
 	}
 	_dragging = NO; if (!moved) return;

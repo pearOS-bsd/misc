@@ -61,6 +61,7 @@ void TFSetOpenWith(NSString *path, NSString *app, BOOL all);
 NSString *TFDisplayName(NSString *path);
 NSString *TFShownName(NSString *name);
 BOOL TFEject(NSString *mount);
+NSString *TFMountDiskImage(NSString *dmg, NSString **err);       /* "mounts" a .dmg under /Volumes (off the main thread) */
 void TFPopupMenu(NSView *view, NSPoint p, NSMenu *menu);
 BOOL TFSymbol(NSString *name, NSRect cell, CGFloat pt, NSColor *tint);
 BOOL TFSymbolW(NSString *name, NSRect cell, CGFloat pt, int weight, NSColor *tint);
