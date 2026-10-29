@@ -92,10 +92,11 @@ static NSDictionary *Table(void)
 }
 BOOL WsdFallbackSymbolKnown(NSString *name) { return Table()[name] != nil; }
 NSSize WsdFallbackSymbolSize(NSString *name, CGFloat pt) { return Table()[name] ? NSMakeSize(pt * 1.15, pt * 1.15) : NSZeroSize; }
+int WsdSymbolFlip = -1;       /* a caller that knows the view it draws in sets this around the call (the context's own flag is not reliable in a menu row) */
 BOOL WsdFallbackSymbolDraw(NSString *name, NSRect cell, CGFloat pt, NSColor *tint)
 {
 	SymBuild b = Table()[name]; if (!b) return NO; CGFloat s = pt * 1.15; NSBezierPath *p = [NSBezierPath bezierPath]; BOOL fill = NO; b(p, &fill);
-	BOOL flipped = [[NSGraphicsContext currentContext] isFlipped];       /* the paths are drawn with y up: in a flipped view (the Finder's, the top bar's) they are mirrored, else the symbols come out upside down */
+	BOOL flipped = WsdSymbolFlip >= 0 ? (WsdSymbolFlip != 0) : [[NSGraphicsContext currentContext] isFlipped];       /* the paths are drawn with y up: in a flipped view (the Finder's, the top bar's) they are mirrored, else the symbols come out upside down */
 	NSAffineTransform *t = [NSAffineTransform transform]; [t translateXBy: NSMidX(cell) - s / 2 yBy: flipped ? NSMidY(cell) + s / 2 : NSMidY(cell) - s / 2]; [t scaleXBy: s yBy: flipped ? -s : s]; NSBezierPath *q = [t transformBezierPath: p];
 	[tint set]; if (fill) [q fill]; else { [q setLineWidth: MAX(1.0, s * 0.085)]; [q setLineCapStyle: NSRoundLineCapStyle]; [q setLineJoinStyle: NSRoundLineJoinStyle]; [q stroke]; }
 	return YES;

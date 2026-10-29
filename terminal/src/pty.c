@@ -36,6 +36,7 @@ int pty_spawn(const char *shell, int cols, int rows, pid_t *pid)
 	pid_t p = forkpty(&master, NULL, NULL, &ws);
 	if (p < 0) return -1;
 	if (p == 0) {
+		{ const char *cwd = getenv("TERMINAL_CWD"); if (cwd && *cwd) { if (chdir(cwd) == 0) setenv("PWD", cwd, 1); unsetenv("TERMINAL_CWD"); } }       /* a window opened for a folder (Finder: New Terminal at Folder) */
 		setenv("TERM", "xterm-256color", 1); setenv("COLORTERM", "truecolor", 1);
 		if (!shell || !*shell) { struct passwd *pw = getpwuid(getuid()); if (pw && pw->pw_shell && *pw->pw_shell) shell = pw->pw_shell; }      /* the user's login shell, as the Mac's Terminal does */
 		if (!shell || !*shell) shell = getenv("SHELL");

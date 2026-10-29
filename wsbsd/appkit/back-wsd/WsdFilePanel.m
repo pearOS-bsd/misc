@@ -590,7 +590,9 @@ static BOOL DrawSymbol(NSString *name, NSRect cell, CGFloat pointSize, NSColor *
 	id g = GlyphTable(AllSymbolNames())[name]; if (!g) g = GlyphTable(@[ name ])[name];
 	if (!g || g == [NSNull null]) { extern BOOL WsdFallbackSymbolDraw(NSString *, NSRect, CGFloat, NSColor *); return WsdFallbackSymbolDraw(name, cell, pointSize, tint); }
 	WsdGlyph *w = g; double k = pointSize / 13.0; NSAffineTransform *t = [NSAffineTransform transform];
-	[t translateXBy: NSMidX(cell) - w->size.width * k / 2 yBy: NSMidY(cell) - w->size.height * k / 2]; [t scaleBy: (CGFloat)k];
+	extern int WsdSymbolFlip; BOOL flipped = WsdSymbolFlip >= 0 ? (WsdSymbolFlip != 0) : [[NSGraphicsContext currentContext] isFlipped];       /* the catalogue's paths run y down: an unflipped view (a menu row) needs them mirrored */
+	if (flipped) { [t translateXBy: NSMidX(cell) - w->size.width * k / 2 yBy: NSMidY(cell) - w->size.height * k / 2]; [t scaleBy: (CGFloat)k]; }
+	else { [t translateXBy: NSMidX(cell) - w->size.width * k / 2 yBy: NSMidY(cell) + w->size.height * k / 2]; [t scaleXBy: (CGFloat)k yBy: -(CGFloat)k]; }
 	for (NSUInteger i = 0; i < [w->paths count]; i++) { NSBezierPath *p = [t transformBezierPath: w->paths[i]]; [p setWindingRule: NSEvenOddWindingRule]; [[tint colorWithAlphaComponent: [tint alphaComponent] * [w->alphas[i] doubleValue]] setFill]; [p fill]; }
 	return YES;
 }
@@ -604,7 +606,9 @@ BOOL WsdSymbolDraw(NSString *name, NSRect cell, CGFloat pointSize, int weight, N
 {
 	id g = GlyphTableW(@[ name ], weight)[name]; if (!g || g == [NSNull null]) { extern BOOL WsdFallbackSymbolDraw(NSString *, NSRect, CGFloat, NSColor *); return WsdFallbackSymbolDraw(name, cell, pointSize, tint); }
 	WsdGlyph *w = g; double k = pointSize / 13.0; NSAffineTransform *t = [NSAffineTransform transform];
-	[t translateXBy: NSMidX(cell) - w->size.width * k / 2 yBy: NSMidY(cell) - w->size.height * k / 2]; [t scaleBy: (CGFloat)k];
+	extern int WsdSymbolFlip; BOOL flipped = WsdSymbolFlip >= 0 ? (WsdSymbolFlip != 0) : [[NSGraphicsContext currentContext] isFlipped];       /* the catalogue's paths run y down: an unflipped view (a menu row) needs them mirrored */
+	if (flipped) { [t translateXBy: NSMidX(cell) - w->size.width * k / 2 yBy: NSMidY(cell) - w->size.height * k / 2]; [t scaleBy: (CGFloat)k]; }
+	else { [t translateXBy: NSMidX(cell) - w->size.width * k / 2 yBy: NSMidY(cell) + w->size.height * k / 2]; [t scaleXBy: (CGFloat)k yBy: -(CGFloat)k]; }
 	for (NSUInteger i = 0; i < [w->paths count]; i++) { NSBezierPath *p = [t transformBezierPath: w->paths[i]]; [p setWindingRule: NSEvenOddWindingRule]; [[tint colorWithAlphaComponent: [tint alphaComponent] * [w->alphas[i] doubleValue]] setFill]; [p fill]; }
 	return YES;
 }
