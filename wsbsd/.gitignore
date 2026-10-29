@@ -47,3 +47,5 @@ appkit/assets/
 !ploader/theme/
 !ploader/theme/**
 !ploader/theme/**/*.png
+/test_*
+!/test_*.c
