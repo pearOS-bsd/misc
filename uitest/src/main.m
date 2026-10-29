@@ -35,9 +35,9 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 }
 
 #ifdef UI_TB_BUILD
-@interface Del : NSObject <NSTouchBarDelegate, NSScrubberDataSource, NSScrubberDelegate> { NSWindow *w; }
+@interface Del : NSObject <NSTouchBarDelegate, NSScrubberDataSource, NSScrubberDelegate> { NSWindow *w; NSTextField *glassLabel; }
 #else
-@interface Del : NSObject { NSWindow *w; }
+@interface Del : NSObject { NSWindow *w; NSTextField *glassLabel; }
 #endif
 @end
 @interface Src : NSObject
@@ -89,7 +89,7 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 	NSSlider *sl = [[[NSSlider alloc] initWithFrame: NSMakeRect(0, 0, 160, 22)] autorelease]; [sl setMinValue: 0]; [sl setMaxValue: 100]; [sl setDoubleValue: 40]; CELL(@"slider", @"slider", sl);
 	sl = [[[NSSlider alloc] initWithFrame: NSMakeRect(0, 0, 160, 22)] autorelease]; [sl setMinValue: 0]; [sl setMaxValue: 100]; [sl setDoubleValue: 40]; [sl setEnabled: NO]; CELL(@"slider disabled", @"slider-disabled", sl);
 	NSPopUpButton *pu = [[[NSPopUpButton alloc] initWithFrame: NSMakeRect(0, 0, 130, 26) pullsDown: NO] autorelease]; [pu addItemsWithTitles: [NSArray arrayWithObjects: @"Item A", @"Item B", nil]]; CELL(@"pop-up", @"popup", pu);
-	NSComboBox *cb = [[[NSComboBox alloc] initWithFrame: NSMakeRect(0, 0, 130, 26)] autorelease]; [cb setStringValue: @"Combo"]; CELL(@"combo box", @"combobox", cb);
+	NSComboBox *cb = [[[NSComboBox alloc] initWithFrame: NSMakeRect(0, 0, 130, 26)] autorelease]; [cb addItemsWithObjectValues: [NSArray arrayWithObjects: @"First", @"Second", @"Third", nil]]; [cb setNumberOfVisibleItems: 3]; [cb setStringValue: @"Combo"]; CELL(@"combo box", @"combobox", cb);
 	NSSegmentedControl *sg = [[[NSSegmentedControl alloc] initWithFrame: NSMakeRect(0, 0, 190, 24)] autorelease]; [sg setSegmentCount: 3]; for (int i = 0; i < 3; i++) { [sg setLabel: [NSString stringWithFormat: @"Seg %d", i + 1] forSegment: i]; [sg setWidth: 63 forSegment: i]; } [sg setSelectedSegment: 1]; CELL(@"segmented", @"segmented", sg);
 	NSProgressIndicator *pi = [[[NSProgressIndicator alloc] initWithFrame: NSMakeRect(0, 0, 160, 8)] autorelease]; [pi setIndeterminate: NO]; [pi setMinValue: 0]; [pi setMaxValue: 100]; [pi setDoubleValue: 60]; CELL(@"progress bar", @"progress", pi);
 	NSStepper *st = [[[NSStepper alloc] initWithFrame: NSMakeRect(0, 0, 19, 27)] autorelease]; CELL(@"stepper", @"stepper", st);
@@ -122,6 +122,10 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 	if (getenv("UI_MODE") && !strcmp(getenv("UI_MODE"), "alert")) [self performSelector: @selector(showAlert:) withObject: nil afterDelay: 0.6];
 	if (getenv("UI_MODE") && !strcmp(getenv("UI_MODE"), "menu")) [self performSelector: @selector(showMenu:) withObject: nil afterDelay: 0.6];
 	if (getenv("UI_MODE") && !strcmp(getenv("UI_MODE"), "vibrancy")) [self performSelector: @selector(showVibrancy:) withObject: nil afterDelay: 0.6];
+#ifdef GNUSTEP
+	setenv("UI_SYSTEM", "1", 0);       /* on wsbsd the window with the system switches opens beside the gallery */
+#endif
+	if (getenv("UI_SYSTEM")) [self performSelector: @selector(showSystemWindow) withObject: nil afterDelay: 0.8];
 	const char *ex = getenv("UI_EXIT_AFTER"); if (ex) [NSTimer scheduledTimerWithTimeInterval: atof(ex) target: NSApp selector: @selector(terminate:) userInfo: nil repeats: NO];
 }
 
@@ -204,6 +208,32 @@ static NSButton *button(NSString *title, NSButtonType type, NSRect f)
 	[NSMenu popUpContextMenu: m withEvent: [NSEvent mouseEventWithType: NSRightMouseDown location: NSMakePoint([w frame].origin.x + 150, [w frame].origin.y + 150) modifierFlags: 0 timestamp: 0 windowNumber: 0 context: nil eventNumber: 0 clickCount: 1 pressure: 1] forView: [w contentView]];
 }
 - (BOOL) applicationShouldTerminateAfterLastWindowClosed: (NSApplication *)a { return YES; }
+/* ---- the system switches of wsbsd (a second window, the gallery stays the fixed layout the Mac is compared with): glass strength, Touch Bar, light / dark ---- */
+static NSString *GlobalPrefs(void) { return [NSHomeDirectory() stringByAppendingPathComponent: @"Library/Preferences/.GlobalPreferences.plist"]; }
+static void SetGlobal(NSString *key, id value)
+{
+	NSString *f = GlobalPrefs(); NSMutableDictionary *d = [[NSDictionary dictionaryWithContentsOfFile: f] mutableCopy]; if (!d) d = [NSMutableDictionary dictionary];
+	if (value) [d setObject: value forKey: key]; else [d removeObjectForKey: key];
+	[[NSFileManager defaultManager] createDirectoryAtPath: [f stringByDeletingLastPathComponent] withIntermediateDirectories: YES attributes: nil error: NULL]; [d writeToFile: f atomically: YES]; [d release];
+}
+- (void) glassMoved: (NSSlider *)s { [[NSString stringWithFormat: @"%.2f", [s doubleValue]] writeToFile: @"/var/tmp/wsd-glass-intensity" atomically: YES encoding: NSUTF8StringEncoding error: NULL]; [glassLabel setStringValue: [NSString stringWithFormat: @"%.0f %%", [s doubleValue] * 100]]; }
+- (void) touchBarToggled: (NSButton *)b { SetGlobal(@"WsbsdTouchBarEnabled", [NSNumber numberWithBool: [b state] == NSOnState]); }
+- (void) appearancePicked: (NSSegmentedControl *)sg { SetGlobal(@"AppleInterfaceStyle", [sg selectedSegment] == 1 ? @"Dark" : nil); }
+- (void) showSystemWindow
+{
+	@try { [self showSystemWindow2]; } @catch (NSException *e) { printf("SYSTEM window failed: %s\n", [[e description] UTF8String]); }
+}
+- (void) showSystemWindow2
+{
+	NSWindow *sw = [[NSWindow alloc] initWithContentRect: NSMakeRect(0, 0, 420, 190) styleMask: NSTitledWindowMask | NSClosableWindowMask backing: NSBackingStoreBuffered defer: NO]; [sw setTitle: @"UI Test: System"]; NSView *cv = [sw contentView];
+	NSTextField *l1 = [NSTextField labelWithString: @"Liquid Glass intensity"]; [l1 setFrame: NSMakeRect(20, 150, 170, 18)]; [cv addSubview: l1];
+	NSSlider *gs = [[[NSSlider alloc] initWithFrame: NSMakeRect(190, 148, 150, 22)] autorelease]; [gs setMinValue: 0]; [gs setMaxValue: 2]; [gs setDoubleValue: 1]; [gs setTarget: self]; [gs setAction: @selector(glassMoved:)]; [cv addSubview: gs];
+	glassLabel = [NSTextField labelWithString: @"100 %"]; [glassLabel setFrame: NSMakeRect(350, 150, 56, 18)]; [cv addSubview: glassLabel];
+	NSButton *tb = [NSButton checkboxWithTitle: @"Touch Bar emulation" target: self action: @selector(touchBarToggled:)]; [tb setState: NSOnState]; [tb setFrame: NSMakeRect(20, 108, 240, 22)]; [cv addSubview: tb];
+	NSTextField *l3 = [NSTextField labelWithString: @"System appearance"]; [l3 setFrame: NSMakeRect(20, 66, 170, 18)]; [cv addSubview: l3];
+	NSSegmentedControl *ap = [[[NSSegmentedControl alloc] initWithFrame: NSMakeRect(190, 62, 150, 24)] autorelease]; [ap setSegmentCount: 2]; [ap setLabel: @"Light" forSegment: 0]; [ap setLabel: @"Dark" forSegment: 1]; [ap setWidth: 74 forSegment: 0]; [ap setWidth: 74 forSegment: 1]; [ap setSelectedSegment: 1]; [ap setTarget: self]; [ap setAction: @selector(appearancePicked:)]; [cv addSubview: ap];
+	[sw center]; [sw makeKeyAndOrderFront: nil];
+}
 @end
 
 int main(void)
@@ -212,7 +242,7 @@ int main(void)
 	[NSApplication sharedApplication];
 	if ([NSApp respondsToSelector: @selector(setActivationPolicy:)]) [NSApp setActivationPolicy: NSApplicationActivationPolicyRegular];
 	setvbuf(stdout, NULL, _IOLBF, 0);
-	[NSApp setDelegate: [[Del alloc] init]];
+	Del *del = [[Del alloc] init]; [NSApp setDelegate: del]; 
 	[NSApp activateIgnoringOtherApps: YES];
 	[NSApp run];
 	[pool release];

@@ -378,6 +378,7 @@ static NSArray *BarChain(NSResponder *r)
 - (void)invalidate { _signature = nil; }
 - (void)_escape:(id)sender { [NSApp sendAction: @selector(cancelOperation:) to: nil from: sender]; }
 - (void)_close:(id)sender { [_overrides removeLastObject]; [self update]; }
+- (void)hide { if (_panel && [_panel isVisible]) [_panel orderOut: nil]; [_bar _wsSetVisible: NO]; _bar = nil; _signature = nil; }       /* the user switched the Touch Bar off */
 - (void)update
 {
 	NSArray *chain = [self _chain]; NSTouchBar *b = [chain firstObject];
@@ -405,7 +406,12 @@ static NSArray *BarChain(NSResponder *r)
 /* the host runs from the main queue as soon as there is an application (a constructor cannot touch Objective-C classes yet) */
 static void TBPoll(void *ctx)
 {
-	@autoreleasepool { const char *e = getenv("WSBSD_TOUCHBAR"); if (NSApp && !(e && !strcmp(e, "0"))) [[WsbsdTouchBarHost sharedHost] update]; }
+	@autoreleasepool {
+		const char *e = getenv("WSBSD_TOUCHBAR"); BOOL off = e && !strcmp(e, "0");
+		/* the user's setting: WsbsdTouchBarEnabled in the global preferences (UITest's switch, `defaults write -g WsbsdTouchBarEnabled -bool NO`); off hides the panel and keeps it hidden */
+		static NSDate *checked; static BOOL userOff; if (!checked || [checked timeIntervalSinceNow] < -1.0) { checked = [NSDate date]; NSDictionary *d = [NSDictionary dictionaryWithContentsOfFile: [NSHomeDirectory() stringByAppendingPathComponent: @"Library/Preferences/.GlobalPreferences.plist"]]; id v = d[@"WsbsdTouchBarEnabled"]; userOff = v && ![v boolValue]; }
+		if (userOff) { [[WsbsdTouchBarHost sharedHost] hide]; }
+		else if (NSApp && !off) [[WsbsdTouchBarHost sharedHost] update]; }
 	dispatch_after_f(dispatch_time(DISPATCH_TIME_NOW, 300 * NSEC_PER_MSEC), dispatch_get_main_queue(), NULL, TBPoll);
 }
 __attribute__((constructor)) static void TBStart(void) { dispatch_async_f(dispatch_get_main_queue(), NULL, TBPoll); }
