@@ -1,0 +1,32 @@
+
+    KEYBOARD = "<LUI2ControlSpecification 0x776726d490: symbol: keyboard, dimensions: {{0, 0}, {0, 0}}>";
+    "LUI2BUTTON_LOGIN" = "<LUI2ControlSpecification 0x776726d570: symbol: arrow.right.circle, dimensions: {{0, 0}, {22, 22}}>";
+    "LUIBUTTON_BACK" = "<LUI2ControlSpecification 0x776726d1f0: symbol: arrow.backward.circle, dimensions: {{0, 0}, {22, 22}}>";
+    "LUIBUTTON_CANCEL" = "<LUI2ControlSpecification 0x776726d260: symbol: xmark.circle, dimensions: {{0, 0}, {17, 17}}>";
+    "LUIBUTTON_CONTINUE" = "<LUI2ControlSpecification 0x776726d2d0: symbol: arrow.forward.circle.fill, dimensions: {{0, 0}, {13, 13}}>";
+    "LUIBUTTON_GO" = "<LUI2ControlSpecification 0x776726d340: symbol: arrow.forward.circle, dimensions: {{0, 0}, {22, 22}}>";
+    "LUIBUTTON_GUESTUSER" = "<LUI2ControlSpecification 0x776726d3b0: symbol: person.crop.circle, dimensions: {{0, 0}, {17, 17}}>";
+    "LUIBUTTON_PASSWORD_HINT" = "<LUI2ControlSpecification 0x776726d5e0: symbol: questionmark.circle, dimensions: {{0, 0}, {22, 22}}>";
+    "LUIBUTTON_RESTART" = "<LUI2ControlSpecification 0x776726d650: symbol: restart.circle, dimensions: {{0, 0}, {17, 17}}>";
+    "LUIBUTTON_RESTARTTOSAFARI" = "<LUI2ControlSpecification 0x776726d62026-10-29 10:26:42.484 lui_probe[13553:20123709]     style[4] = <AVTPreset 0x7766c1eee0 | category:age identifier:adult>
+2026-10-29 10:26:42.498 lui_probe[13553:20123709]     style[4] = <AVTPreset 0x7766e7ae40 | category:head identifier:triangle_medium>
+2026-10-29 10:26:42.498 lui_probe[13553:20123709]     color[4] = <AVTColorPreset 0x7766c24660 | name:Fitzpatrick 4.5 category:head variation:0.000000>
+2026-10-29 10:26:42.498 lui_probe[13553:20123709]     style[2] = <AVTPreset 0x7766e7eb20 | category:nose identifier:large>
+2026-10-29 10:26:42.498 lui_probe[13553:20123709]     style[4] = <AVTPreset 0x7766e7df40 | category:lips identifier:peak_medium>
+2026-10-29 10:26:42.498 lui_probe[13553:20123709]     color[4] = <AVTColorPreset 0x7766c277e0 | name:Orange category:lips variation:0.000000>
+2026-10-29 10:26:42.498 lui_probe[13553:20123709]     style[0] = <AVTPreset 0x7766e6ab20 | category:ears identifier:small>
+2026-10-29 10:26:42.498 lui_probe[13553:20123709]     style[55] = <AVTPreset 0x7766e77480 | category:hair identifier:wavy_medium_down_flapper>
+2026-10-29 10:26:42.498 lui_probe[13553:20123709]     color[55] = <AVTColorPreset 0x7766c24f60 | name:Red category:hair variation:0.000000>
+2026-10-29 10:26:42.498 lui_probe[13553:20123709]     style[1] = <AVTPreset 0x7766e6cd20 | category:eyes identifier:medium_straight>
+2026-10-29 10:26:42.498 lui_probe[13553:20123709]     color[1] = <AVTColorPreset 0x7766c26a60 | name:Artificial Red category:eyes variation:0.000000>
+2026-10-29 10:26:42.498 lui_probe[13553:20123709]     style[15] = <AVTPreset 0x7766e6b660 | category:eyebrows identifier:doubleCurve_angled_thin>
+2026-10-29 10:26:42.498 lui_probe[13553:20123709]     color[15] = <AVTColorPreset 0x7766c271e0 | name:Blue category:eyebrows variation:0.000000>
+c0: symbol: person.crop.circle, dimensions: {{0, 0}, {17, 17}}>";
+    "LUIBUTTON_SHIFTLEFT" = "<LUI2ControlSpecification 0x776726d7a0: symbol: chevron.backward.circle, dimensions: {{0, 0}, {22, 22}}>";
+    "LUIBUTTON_SHIFTRIGHT" = "<LUI2ControlSpecification 0x776726d810: symbol: chevron.forward.circle, dimensions: {{0, 0}, {22, 22}}>";
+    "LUIBUTTON_SHUTDOWN" = "<LUI2ControlSpecification 0x776726d880: symbol: power, dimensions: {{0, 0}, {17, 17}}>";
+    "LUIBUTTON_SLEEP" = "<LUI2ControlSpecification 0x776726d8f0: symbol: sleep, dimensions: {{0, 0}, {17, 17}}>";
+    "LUIBUTTON_SWITCHUSER" = "<LUI2ControlSpecification 0x776726d960: symbol: person.crop.circle, dimensions: {{0, 0}, {17, 17}}>";
+    "LUIIMAGE_LOGGEDINBADGE" = "<LUI2ControlSpecification 0x776726d500: symbol: checkmark.circle.fill, dimensions: {{0, 0}, {22, 22}}>";
+    POWER = "<LUI2ControlSpecification 0x776726d420: symbol: power, dimensions: {{0, 0}, {0, 0}}>";
+    SCREENSHARING = "<LUI2ControlSpecification 0x776726d730: symbol: rectangle.on.rectangle, dimensions: {{0, 0}, {0, 0}}>";
