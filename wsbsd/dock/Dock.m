@@ -482,6 +482,12 @@ static NSMutableDictionary *badgeStore;
 		}
 	}
 	[self relayout];
+	if (wsc) {                                                                  /* the pointer over the separator (or while its drag resizes the Dock): the resize cursor of the Dock's axis, as on the Mac */
+		static int sepShape; int want = 0;
+		if (resizing) want = orient ? 4 : 5;
+		else if (pointer >= 0 && !fanOpen && !ctxOpen) for (int k = 0; k < n; k++) if (items[k].kind == DOCK_SEPARATOR && pointer >= slots[k].x - 6 && pointer < slots[k].x + slots[k].w + 6) want = orient ? 4 : 5;
+		if (want != sepShape) { ws_cursor_set_shape(wsc, want); sepShape = want; }
+	}
 	if (wsc) {                                                                  /* the menus' material: slots 1 (menu) and 2 (submenu) of the window's glass, mode 5 = the context menu as measured on the Mac */
 		ws_win gw = { .id = (ws_wid)[[self window] windowNumber], .px = NULL }; double wh = [[self window] frame].size.height;
 		for (int k = 0; k < 2; k++) {
@@ -613,7 +619,7 @@ static NSMutableDictionary *badgeStore;
 	if (resizing && wsc) {
 		int px, py; if (ws_cursor_position(wsc, &px, &py) == 0) {
 			double d = orient == 0 ? resizeStart - py : orient == 1 ? px - resizeStart : resizeStart - px; int sz = (int)lround(resizeSize + d); if (sz < 16) sz = 16; if (sz > 128) sz = 128;
-			if (sz != m.tilesize) { m.tilesize = sz; if (m.largesize < sz) m.largesize = sz; prefs[@"tilesize"] = @(sz); [self relayout]; [self setNeedsDisplay: YES]; }
+			if (sz != m.tilesize) { m.tilesize = sz; if (m.largesize < sz) m.largesize = sz; prefs[@"tilesize"] = @(sz); winW = 0; [self relayout]; [self setNeedsDisplay: YES]; }       /* the window follows the new size at once (it was cut at the sides until the mouse was released) */
 		}
 		return;
 	}
