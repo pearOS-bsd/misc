@@ -131,20 +131,56 @@ void WsdToggleFullscreen(NSWindow *w)
 void WsdTileWindow(NSWindow *w, int where)       /* 0 left half, 1 right half, 2 fill, 3 center (a third smaller than the area) */
 {
 	NSRect v = VisibleArea(), f = v; if (!gSnapped) gSnapped = [[NSMutableDictionary alloc] init]; if (!gSnapped[@([w windowNumber])]) gSnapped[@([w windowNumber])] = [NSValue valueWithRect: [w frame]];
-	if (where == 0) f.size.width /= 2; else if (where == 1) { f.size.width /= 2; f.origin.x += f.size.width; } else if (where == 3) { f = [w frame]; f.origin.x = NSMidX(v) - f.size.width / 2; f.origin.y = NSMidY(v) - f.size.height / 2; }
+	if (where == 0) f.size.width /= 2; else if (where == 1) { f.size.width /= 2; f.origin.x += f.size.width; } else if (where == 4) { f.size.height /= 2; f.origin.y += f.size.height; } else if (where == 5) f.size.height /= 2; else if (where == 6) { f.size.width /= 2; f.size.height /= 2; f.origin.y += f.size.height; } else if (where == 3) { f = [w frame]; f.origin.x = NSMidX(v) - f.size.width / 2; f.origin.y = NSMidY(v) - f.size.height / 2; }
 	[w setFrame: f display: YES];
 }
-@interface WsdTilePopoverTarget : NSObject { @public NSWindow *w; NSPopover *pop; } @end
-@implementation WsdTilePopoverTarget
-- (void)pick:(NSButton *)b { NSInteger t = [b tag]; [pop close]; if (t == 10) WsdToggleFullscreen(w); else WsdTileWindow(w, (int)t); }
+/* the tiling popover of the green button, laid out from a capture of the real one (macOS 26, pixels at 1:1): a 270 wide panel; the headings "Move & Resize" and "Fill & Arrange" (11 pt bold, 40 % white) at x 17; under each a row of four window glyphs
+ * (24 x 20, a 1.5 pt outline and the part of the window that is taken filled) on a pitch of 61 from x 42; a line at x 17 ... 254; "Full Screen" (13 pt, a window icon at x 23, a chevron at x 246); with a second display a last row "Move to
+ * Built-in Display" (not shown on one display). The glyphs of arrangements that need several windows are dimmed (Left & Right, Left & Quarters). */
+@interface WsdTilePanel : NSView { @public NSWindow *w; NSPopover *pop; } @end
+@implementation WsdTilePanel
+- (BOOL)isFlipped { return YES; } - (BOOL)acceptsFirstMouse:(NSEvent *)e { return YES; }
+static NSRect GlyphRect(int row, int col) { return NSMakeRect(42 + 61 * col - 12, row == 0 ? 39 : 118, 24, 20); }
+static void DrawGlyph(NSRect r, int kind, BOOL dim)
+{
+	NSColor *line = [NSColor colorWithCalibratedWhite: 1 alpha: dim ? 0.40 : 0.92], *fill = [NSColor colorWithCalibratedWhite: 1 alpha: dim ? 0.40 : 0.90];
+	NSBezierPath *o = [NSBezierPath bezierPathWithRoundedRect: NSInsetRect(r, 0.75, 0.75) xRadius: 3.5 yRadius: 3.5]; [o setLineWidth: 1.5]; [line setStroke]; [o stroke]; [fill setFill];
+	NSRect in = NSInsetRect(r, 3.5, 3.5); CGFloat hw = in.size.width / 2 - 1, hh = in.size.height / 2 - 1;
+	switch (kind) {
+	case 0: NSRectFill(NSMakeRect(in.origin.x, in.origin.y, hw, in.size.height)); break;
+	case 1: NSRectFill(NSMakeRect(NSMidX(in) + 1, in.origin.y, hw, in.size.height)); break;
+	case 2: NSRectFill(NSMakeRect(in.origin.x, in.origin.y, in.size.width, hh)); break;
+	case 3: NSRectFill(NSMakeRect(in.origin.x, NSMidY(in) + 1, in.size.width, hh)); break;
+	case 4: NSRectFill(in); break;
+	case 5: NSRectFill(NSMakeRect(in.origin.x, in.origin.y, hw, in.size.height)); [[NSColor colorWithCalibratedWhite: 1 alpha: 0.35] setFill]; NSRectFill(NSMakeRect(NSMidX(in) + 1, in.origin.y, hw, in.size.height)); break;
+	case 6: NSRectFill(NSMakeRect(in.origin.x, in.origin.y, hw, in.size.height)); [[NSColor colorWithCalibratedWhite: 1 alpha: 0.35] setFill]; NSRectFill(NSMakeRect(NSMidX(in) + 1, in.origin.y, hw, hh)); NSRectFill(NSMakeRect(NSMidX(in) + 1, NSMidY(in) + 1, hw, hh)); break;
+	default: for (int i = 0; i < 4; i++) NSRectFill(NSMakeRect(in.origin.x + (i % 2) * (hw + 2), in.origin.y + (i / 2) * (hh + 2), hw, hh));
+	}
+}
+- (void)drawRect:(NSRect)r
+{
+	NSDictionary *hd = @{ NSFontAttributeName: [NSFont boldSystemFontOfSize: 11], NSForegroundColorAttributeName: [NSColor colorWithCalibratedWhite: 1 alpha: 0.40] }, *td = @{ NSFontAttributeName: [NSFont systemFontOfSize: 13], NSForegroundColorAttributeName: [NSColor colorWithCalibratedWhite: 1 alpha: 0.92] };
+	[@"Move & Resize" drawAtPoint: NSMakePoint(17, 11) withAttributes: hd]; [@"Fill & Arrange" drawAtPoint: NSMakePoint(17, 90) withAttributes: hd];
+	for (int i = 0; i < 4; i++) { DrawGlyph(GlyphRect(0, i), i, NO); DrawGlyph(GlyphRect(1, i), 4 + i, i == 1 || i == 2); }
+	[[NSColor colorWithCalibratedWhite: 1 alpha: 0.14] setFill]; NSRectFill(NSMakeRect(17, 76, 237, 1)); NSRectFill(NSMakeRect(17, 156, 237, 1));
+	[@"Full Screen" drawAtPoint: NSMakePoint(38, 165) withAttributes: td];
+	NSRect ir = NSMakeRect(22, 167, 12.5, 11); NSBezierPath *p = [NSBezierPath bezierPathWithRoundedRect: ir xRadius: 2 yRadius: 2]; [p setLineWidth: 1.2]; [[NSColor colorWithCalibratedWhite: 1 alpha: 0.85] setStroke]; [p stroke]; [[NSColor colorWithCalibratedWhite: 1 alpha: 0.85] setFill]; NSRectFill(NSMakeRect(NSMidX(ir) - 0.5, ir.origin.y + 1, 1, ir.size.height - 2));
+	NSBezierPath *ch = [NSBezierPath bezierPath]; [ch setLineWidth: 1.8]; [ch setLineCapStyle: NSRoundLineCapStyle]; [ch setLineJoinStyle: NSRoundLineJoinStyle]; [ch moveToPoint: NSMakePoint(243, 168)]; [ch lineToPoint: NSMakePoint(248, 173)]; [ch lineToPoint: NSMakePoint(243, 178)]; [ch stroke];
+}
+- (void)mouseDown:(NSEvent *)e
+{
+	NSPoint p = [self convertPoint: [e locationInWindow] fromView: nil]; int hit = -1; static const int row0[4] = { 0, 1, 4, 5 }, row1[4] = { 2, -1, -1, 6 };       /* WsdTileWindow: 0 left, 1 right, 4 top, 5 bottom, 2 fill, 6 top-left quarter */
+	for (int i = 0; i < 4; i++) { if (NSPointInRect(p, NSInsetRect(GlyphRect(0, i), -14, -10))) hit = row0[i]; if (NSPointInRect(p, NSInsetRect(GlyphRect(1, i), -14, -10))) hit = row1[i]; }
+	if (hit < 0 && p.y > 160 && p.y < 188) hit = 10;
+	if (hit < 0) return; [pop close]; if (hit == 10) WsdToggleFullscreen(w); else WsdTileWindow(w, hit);
+}
 @end
 void WsdShowTilePopover(NSWindow *w, NSRect buttonInWindow)
 {
-	static NSPopover *pop; static WsdTilePopoverTarget *tg; if (pop && [pop isShown]) return;
-	if (!tg) tg = [WsdTilePopoverTarget new]; tg->w = w;
-	NSArray *rows = @[ @[ WsdIsFullscreen(w) ? @"Exit Full Screen" : @"Enter Full Screen", @10 ], @[ @"Tile Window to Left of Screen", @0 ], @[ @"Tile Window to Right of Screen", @1 ], @[ @"Fill", @2 ], @[ @"Center", @3 ] ];
-	NSView *v = [[NSView alloc] initWithFrame: NSMakeRect(0, 0, 230, 8 + 24 * [rows count])];
-	for (NSUInteger i = 0; i < [rows count]; i++) { NSButton *b = [[NSButton alloc] initWithFrame: NSMakeRect(6, 4 + 24 * ([rows count] - 1 - i), 218, 24)]; [b setBordered: NO]; [b setAlignment: NSLeftTextAlignment]; [b setTitle: rows[i][0]]; [b setTag: [rows[i][1] integerValue]]; [b setTarget: tg]; [b setAction: @selector(pick:)]; [b setFont: [NSFont systemFontOfSize: 13]]; [v addSubview: b]; }
-	NSViewController *vc = [[NSViewController alloc] init]; [vc setView: v]; pop = [[NSPopover alloc] init]; [pop setContentViewController: vc]; [pop setBehavior: NSPopoverBehaviorTransient]; tg->pop = pop;
+	static NSPopover *pop; if (pop && [pop isShown]) return;
+	WsdTilePanel *v = [[WsdTilePanel alloc] initWithFrame: NSMakeRect(0, 0, 270, 190)]; v->w = w;
+	NSViewController *vc = [[NSViewController alloc] init]; [vc setView: v]; pop = [[NSPopover alloc] init]; [pop setContentViewController: vc]; [pop setBehavior: NSPopoverBehaviorTransient]; v->pop = pop;
 	[pop showRelativeToRect: buttonInWindow ofView: [[w contentView] superview] preferredEdge: NSMinYEdge];
+	NSWindow *pw = [v window]; if (pw) {       /* on the Mac the panel starts 27 left of the button's centre and hangs 12 below the button (the arrow points at the button) */
+		NSRect br = [w convertRectToScreen: buttonInWindow]; NSRect f = [pw frame]; f.origin.x = NSMidX(br) - 27; f.origin.y = NSMinY(br) - 12 - f.size.height; [pw setFrame: f display: YES]; }
 }
