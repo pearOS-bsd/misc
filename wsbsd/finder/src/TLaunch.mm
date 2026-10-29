@@ -33,5 +33,10 @@ void TFSetOpenWith(NSString *path, NSString *app, BOOL all)
 void TFOpenPath(NSString *path)
 {
 	NSString *ext = [[path pathExtension] lowercaseString]; NSString *app = TFPref(@"OpenWithFile", @{})[path] ?: ([ext length] ? TFPref(@"OpenWith", @{})[ext] : nil);
-	if (app && [[NSFileManager defaultManager] fileExistsAtPath: app]) [[NSWorkspace sharedWorkspace] openFile: path withApplication: app]; else [[NSWorkspace sharedWorkspace] openFile: path];
+	if (app && [[NSFileManager defaultManager] fileExistsAtPath: app]) { [[NSWorkspace sharedWorkspace] openFile: path withApplication: app]; return; }
+	/* text documents open in TextEdit, as on the Mac (the image carries it as /usr/local/bin/TextEdit-gnustep, not as a bundle the application scan finds) */
+	static NSSet *text; if (!text) text = [NSSet setWithObjects: @"txt", @"text", @"md", @"markdown", @"rtf", @"log", @"json", @"xml", @"csv", @"tsv", @"sh", @"zsh", @"conf", @"cfg", @"ini", @"yaml", @"yml", @"c", @"h", @"m", @"mm", @"py", @"js", @"css", @"html", @"htm", nil];
+	NSString *te = nil; for (NSString *c in @[ @"/usr/local/bin/TextEdit-gnustep", @"/System/Applications/TextEdit.app/Contents/MacOS/TextEdit" ]) if ([[NSFileManager defaultManager] isExecutableFileAtPath: c]) { te = c; break; }
+	if ([text containsObject: ext] && te) { NSTask *t = [[NSTask alloc] init]; [t setLaunchPath: te]; [t setArguments: @[ @"-NSOpen", path ]]; @try { [t launch]; return; } @catch (NSException *e) {} }
+	[[NSWorkspace sharedWorkspace] openFile: path];
 }
