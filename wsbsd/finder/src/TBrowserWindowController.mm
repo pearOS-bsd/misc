@@ -128,11 +128,11 @@ static NSString *StyleName(NSInteger m) { return @[ @"icnv", @"Nlsv", @"clmv", @
 	for (NSMenuItem *it in [m itemArray]) if ([[it title] isEqual: @"Quick Actions"] && [it submenu]) { NSMenu *sub = [it submenu]; while ([sub numberOfItems]) [sub removeItemAtIndex: 0]; BOOL imgs = [_selection count] > 0; for (NSString *p in _selection) if (![@[ @"png", @"jpg", @"jpeg", @"tif", @"tiff", @"gif", @"bmp" ] containsObject: [[p pathExtension] lowercaseString]]) imgs = NO;
 		if (imgs) { NSMenuItem *r = [sub addItemWithTitle: @"Rotate Left" action: @selector(cmdRotateLeft:) keyEquivalent: @""]; [r setTarget: self]; [r setToolTip: @"sym:rotate.left"]; [sub addItem: [NSMenuItem separatorItem]]; }
 		NSMenuItem *cz = [sub addItemWithTitle: @"Customize…" action: @selector(cmdOpenQuickActionsPrefPane:) keyEquivalent: @""]; [cz setTarget: self]; }
-	for (NSMenuItem *it in [m itemArray]) if ([[it title] isEqual: @"Open With"]) { NSMenu *sub = [it submenu]; while ([sub numberOfItems]) [sub removeItemAtIndex: 0]; NSString *p = [_selection firstObject]; if (!p) return;
+	for (NSMenuItem *it in [m itemArray]) if ([[it title] isEqual: @"Open With"] || [[it title] isEqual: @"Always Open With"]) { BOOL always = [[it title] isEqual: @"Always Open With"]; NSMenu *sub = [it submenu]; while ([sub numberOfItems]) [sub removeItemAtIndex: 0]; NSString *p = [_selection firstObject]; if (!p) return;
 		/* as the real menu is (read from its accessibility tree): the default application with "(default)", a separator, the others by name, a separator, "App Store…" and "Other…" */
-		NSArray *apps = TFAppsForFile(p); NSUInteger ai = 0; for (NSDictionary *a in apps) { NSString *t = ai == 0 ? [a[@"name"] stringByAppendingString: @" (default)"] : a[@"name"]; NSMenuItem *x = [sub addItemWithTitle: t action: @selector(cmdOpenWithApp:) keyEquivalent: @""]; [x setTarget: self]; [x setRepresentedObject: a[@"path"]]; if (ai++ == 0 && [apps count] > 1) [sub addItem: [NSMenuItem separatorItem]]; }
-		if ([apps count]) [sub addItem: [NSMenuItem separatorItem]]; NSMenuItem *st = [sub addItemWithTitle: @"App Store…" action: @selector(cmdOpenWithAppStore:) keyEquivalent: @""]; [st setTarget: self];
-		NSMenuItem *o = [sub addItemWithTitle: @"Other…" action: @selector(cmdOpenWithOther:) keyEquivalent: @""]; [o setTarget: self]; }
+		NSArray *apps = TFAppsForFile(p); NSUInteger ai = 0; for (NSDictionary *a in apps) { NSString *t = ai == 0 ? [a[@"name"] stringByAppendingString: @" (default)"] : a[@"name"]; NSMenuItem *x = [sub addItemWithTitle: t action: always ? @selector(cmdAlwaysOpenWithApp:) : @selector(cmdOpenWithApp:) keyEquivalent: @""]; [x setTarget: self]; [x setRepresentedObject: a[@"path"]]; if (ai++ == 0 && [apps count] > 1) [sub addItem: [NSMenuItem separatorItem]]; }
+		if ([apps count]) [sub addItem: [NSMenuItem separatorItem]]; NSMenuItem *st = [sub addItemWithTitle: @"App Store…" action: always ? NULL : @selector(cmdOpenWithAppStore:) keyEquivalent: @""]; [st setTarget: self];
+		NSMenuItem *o = [sub addItemWithTitle: @"Other…" action: always ? @selector(cmdAlwaysOpenWithOther:) : @selector(cmdOpenWithOther:) keyEquivalent: @""]; [o setTarget: self]; }
 }
 - (void)cmdOpenWithApp:(NSMenuItem *)it { NSString *app = [it representedObject]; for (NSString *p in _selection) [[NSWorkspace sharedWorkspace] openFile: p withApplication: app]; }
 - (void)cmdOpenWithAppStore:(id)s { for (NSString *a in @[ @"/System/Applications/App Store.app", @"/Applications/App Store.app" ]) if ([[NSFileManager defaultManager] fileExistsAtPath: a]) { [[NSWorkspace sharedWorkspace] launchApplication: a]; return; } NSBeep(); }
@@ -505,6 +505,8 @@ static NSString *const kListColumns[][2] = { { @"Date Modified", @"dateModified"
 - (void)cmdOpenParentAltBrowse:(id)s { [TBrowserWindowController newBrowserWithPath: [[_url path] stringByDeletingLastPathComponent]]; }
 - (void)cmdOpenWith:(id)s {}
 - (void)cmdAlwaysOpenWith:(id)s {}
+- (void)cmdAlwaysOpenWithApp:(NSMenuItem *)it { NSString *app = [it representedObject]; for (NSString *p in _selection) TFSetOpenWith(p, app, YES); [self cmdOpen: nil]; }       /* every file of this extension opens with it from now on */
+- (void)cmdAlwaysOpenWithOther:(id)s { NSOpenPanel *op = [NSOpenPanel openPanel]; [op setDirectoryURL: [NSURL fileURLWithPath: @"/Applications"]]; [op setAllowedFileTypes: @[ @"app" ]]; if ([op runModal] == NSOKButton) for (NSString *p in _selection) TFSetOpenWith(p, [[[op URLs] firstObject] path], YES); }
 - (void)cmdShowInspector:(id)s { [self cmdShowStaticInfo: s]; }
 - (void)cmdShowStaticInfoSummary:(id)s { [self cmdShowStaticInfo: s]; }
 - (void)cmdEditTags:(id)s { NSView *v = [self _view]; NSMenu *tm = [self tagMenu]; [self _markTagMenu: tm]; TFPopupMenu(v, NSMakePoint([v bounds].size.width / 2, 60), tm); }
