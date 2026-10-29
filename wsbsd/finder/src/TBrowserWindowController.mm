@@ -145,6 +145,12 @@ static NSString *StyleName(NSInteger m) { return @[ @"icnv", @"Nlsv", @"clmv", @
 			else if ([t isEqual: @"Open With"] || [t isEqual: @"Always Open With"]) { [x setTitle: alt ? @"Always Open With" : @"Open With"]; }
 			(void)t; }
 	}
+	{       /* a folder: the Services of the real menu, New Terminal at Folder / New Terminal Tab at Folder, at the end */
+		BOOL dirSel = NO; if ([_selection count] == 1) [[NSFileManager defaultManager] fileExistsAtPath: _selection[0] isDirectory: &dirSel]; dirSel = dirSel && !TFIsPackage(_selection[0]);
+		NSMenuItem *t1 = nil, *t2 = nil, *sp = nil; for (NSMenuItem *x in [m itemArray]) { if ([x tag] == 79) t1 = x; else if ([x tag] == 80) t2 = x; else if ([x tag] == 81) sp = x; }
+		if (!t1) { sp = [NSMenuItem separatorItem]; [sp setTag: 81]; [m addItem: sp]; t1 = [m addItemWithTitle: @"New Terminal at Folder" action: @selector(cmdNewTerminalAtFolder:) keyEquivalent: @""]; [t1 setTarget: self]; [t1 setTag: 79]; t2 = [m addItemWithTitle: @"New Terminal Tab at Folder" action: @selector(cmdNewTerminalAtFolder:) keyEquivalent: @""]; [t2 setTarget: self]; [t2 setTag: 80]; }
+		[sp setHidden: !dirSel]; [t1 setHidden: !dirSel]; [t2 setHidden: !dirSel];
+	}
 	NSString *one = [_selection count] == 1 ? [_selection[0] lastPathComponent] : nil; NSString *ext = [[_selection firstObject] pathExtension].lowercaseString; BOOL arch = [@[ @"zip", @"gz", @"tgz", @"bz2", @"xz", @"7z", @"rar", @"dmg", @"tar" ] containsObject: ext];
 	for (NSMenuItem *it in [m itemArray]) { if ([NSStringFromSelector([it action]) isEqual: @"cmdQuickLook:"]) [it setTitle: @"Quick Look"]; if ([NSStringFromSelector([it action]) isEqual: @"cmdCompress:"]) { [it setTitle: one ? [NSString stringWithFormat: @"Compress “%@”", one] : [NSString stringWithFormat: @"Compress %lu Items", (unsigned long)[_selection count]]]; [it setHidden: arch && [_selection count] == 1]; } }
 	if (getenv("FINDER_DEBUG")) for (NSMenuItem *it in [m itemArray]) NSLog(@"ctx item %@ action %@ sel %lu", [it title], NSStringFromSelector([it action]), (unsigned long)[_selection count]);
@@ -308,6 +314,10 @@ static void RememberOrigin(NSString *inTrash, NSString *origin) { NSMutableDicti
 - (void)selectTabAt:(NSNumber *)n { NSInteger i = [n integerValue]; if (i == _tabIx || i < 0 || i >= (NSInteger)[_tabs count]) return; _tabs[_tabIx] = [self _tabState]; [self _loadTab: i]; }
 - (void)closeTabAt:(NSNumber *)n { NSInteger i = [n integerValue]; if ([_tabs count] < 2 || i < 0 || i >= (NSInteger)[_tabs count]) return; if (i == _tabIx) { [_tabs removeObjectAtIndex: i]; [self _loadTab: MIN(i, (NSInteger)[_tabs count] - 1)]; } else { _tabs[_tabIx] = [self _tabState]; [_tabs removeObjectAtIndex: i]; _tabIx = i < _tabIx ? _tabIx - 1 : _tabIx; [self _syncTabBar]; } }
 - (BOOL)windowShouldClose:(id)w { if ([_tabs count] > 1) { [self closeTabAt: @(_tabIx)]; return NO; } return YES; }
+- (void)cmdNewTerminalAtFolder:(id)s { NSString *dir = [_selection firstObject]; if (![dir length]) return; NSString *dyld = @"/usr/lib/dyld", *tm = @"/System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal"; NSTask *t = [[NSTask alloc] init];
+	NSMutableDictionary *env = [[[NSProcessInfo processInfo] environment] mutableCopy]; env[@"TERMINAL_CWD"] = dir; [t setEnvironment: env];
+	if ([[NSFileManager defaultManager] isExecutableFileAtPath: dyld] && [[NSFileManager defaultManager] isExecutableFileAtPath: tm]) { [t setLaunchPath: dyld]; [t setArguments: @[ tm ]]; } else { tm = @"/usr/local/bin/Terminal-gnustep"; if (![[NSFileManager defaultManager] isExecutableFileAtPath: tm]) tm = @"/root/terminal/Terminal-gnustep"; [t setLaunchPath: tm]; }
+	@try { [t launch]; } @catch (NSException *e) { NSBeep(); } }
 - (void)cmdOpenInNewWindow:(id)s { for (NSString *p in [self _targets]) { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: p isDirectory: &d]; if (d) [TBrowserWindowController newBrowserWithPath: p]; } }
 - (void)cmdOpenInNewTab:(id)s { for (NSString *p in [self _targets]) { BOOL d = NO; [[NSFileManager defaultManager] fileExistsAtPath: p isDirectory: &d]; if (d) { [self cmdNewTab: nil]; [self goToPath: p]; } } }
 - (void)cmdCompress:(id)s { NSArray *t = [self _targets]; if (![t count]) return; __weak TBrowserWindowController *me = self; TFCompressItems(t, [_url path], ^(NSString *zip) { [me _changed: nil]; }); }

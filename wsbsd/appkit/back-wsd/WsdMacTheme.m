@@ -861,7 +861,9 @@ static void fillRound(NSRect r, CGFloat radius, NSColor *c) { [c set]; [[NSBezie
 	if (hot && ![[cell menuItem] view]) fillRound(NSInsetRect(cellFrame, 5, 0), 8.0, rgb(0, 122, 255, 1));       /* a row that holds a view (the Finder's tag colours) is not highlighted as a whole */
 	NSString *tip = [[cell menuItem] toolTip]; if ([tip hasPrefix: @"sym:"]) {                                       /* the icon of the row: a symbol named in the tool tip, 16 pt, 17 pt in from the edge of the row */
 		extern BOOL WsdSymbolDraw(NSString *name, NSRect cell, CGFloat pt, int weight, NSColor *tint); BOOL en = [[cell menuItem] isEnabled];
+		extern int WsdSymbolFlip; WsdSymbolFlip = 0;       /* the menu rows are drawn in unflipped coordinates */
 		WsdSymbolDraw([tip substringFromIndex: 4], NSMakeRect(cellFrame.origin.x + 16, NSMidY(cellFrame) - 9, 18, 18), 13, 4, hot ? [NSColor whiteColor] : (isDark() ? [NSColor colorWithCalibratedWhite: 1 alpha: en ? 0.85 : 0.25] : [NSColor colorWithCalibratedWhite: 0 alpha: en ? 0.85 : 0.25]));
+		WsdSymbolFlip = -1;
 	}
 }
 - (void) drawSeparatorItemForMenuItemCell: (NSMenuItemCell *)cell withFrame: (NSRect)cellFrame inView: (NSView *)controlView isHorizontal: (BOOL)horizontal
