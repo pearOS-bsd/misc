@@ -1,0 +1,30 @@
+#!/bin/sh
+# PROVIDE: wsbsd_wifi
+# REQUIRE: FILESYSTEMS kld
+# BEFORE: netif
+# KEYWORD: nojail
+# Brings up every Wi-Fi card the machine has, without the user running ifconfig / wpa_supplicant / dhclient: loads the drivers, creates a wlan interface on each card, starts wpa_supplicant
+# on it with a control socket (airportd and the Control Center join networks through that socket) and asks for an address as soon as the interface is associated.
+. /etc/rc.subr
+name="wsbsd_wifi"
+rcvar="wsbsd_wifi_enable"
+start_cmd="wsbsd_wifi_start"
+stop_cmd=":"
+wsbsd_wifi_start()
+{
+	kldload -n wlan wlan_wep wlan_ccmp wlan_tkip wlan_amrr >/dev/null 2>&1
+	for m in if_iwlwifi if_iwm if_iwn if_iwx if_rtw88 if_rtw89 if_rtwn if_ath if_ath_pci if_bwn if_bwi if_ral if_run if_urtwn if_mwl if_otus; do kldload -n $m >/dev/null 2>&1; done
+	[ -f /etc/wpa_supplicant.conf ] || printf 'ctrl_interface=/var/run/wpa_supplicant\nctrl_interface_group=wheel\nupdate_config=1\neapol_version=2\nap_scan=1\n' > /etc/wpa_supplicant.conf
+	mkdir -p /var/run/wpa_supplicant
+	( sleep 3
+	  n=0
+	  for parent in $(sysctl -n net.wlan.devices 2>/dev/null); do
+		ifn=wlan$n; n=$((n + 1))
+		ifconfig $ifn >/dev/null 2>&1 || ifconfig $ifn create wlandev $parent >/dev/null 2>&1 || continue
+		ifconfig $ifn up >/dev/null 2>&1
+		pgrep -qf "wpa_supplicant.*-i $ifn" || wpa_supplicant -B -s -i $ifn -c /etc/wpa_supplicant.conf >/dev/null 2>&1
+		( until ifconfig $ifn 2>/dev/null | grep -q "status: associated"; do sleep 2; done; dhclient $ifn >/dev/null 2>&1 ) &
+	  done ) &
+}
+load_rc_config $name
+run_rc_command "$1"

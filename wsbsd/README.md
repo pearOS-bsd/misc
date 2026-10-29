@@ -73,7 +73,7 @@ Source: `buglist.txt`. `[ ]` = open, `[x]` = done and verified. Items marked *(p
 - [x] Icons are no longer upside down (the symbol fallback of images without `CoreGlyphs.car` did not mirror its paths in flipped views).
 - [x] Control Center icons: the fallback has the symbols of every tile now (Wi-Fi, Bluetooth, Dark Mode, brightness, display, Focus, volume, media, battery, …). *(drawn from paths because the image has no SF Symbols catalogue; the shapes are approximations)*
 - [x] Control Center: the Dark Mode tile (circle.lefthalf.filled) was invisible on images without the symbol catalogue; it shows now. *(confirm on an image)*
-- [ ] Control Center: Wi-Fi has no real function. The image must come configured to bring up any Wi-Fi card by default, and our menu must join networks, so nobody has to run `dhclient` and friends by hand. *(CoreWLAN / airportd work is in "Required next")*
+- [ ] Control Center: Wi-Fi has no real function. *(partial: the image now brings up every Wi-Fi card by itself, `iso/overlay/etc-rc.d-wsbsd_wifi`: drivers, a wlan per card, wpa_supplicant with the control socket, dhclient once associated; the Wi-Fi panel already joins through CoreWLAN / airportd; untested on hardware, firmware packages for Intel cards are not in the image)* The image must come configured to bring up any Wi-Fi card by default, and our menu must join networks, so nobody has to run `dhclient` and friends by hand. *(CoreWLAN / airportd work is in "Required next")*
 
 **Windows, Dock and animations**
 - [x] Closing the last window of the Terminal no longer quits it (Command-Q does). *(other applications: their own delegates; GNUstep apps that quit on the last window need the same check)*
