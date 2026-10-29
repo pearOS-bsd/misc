@@ -98,7 +98,15 @@ void ws_server_set_compositor(ws_server *s, ws_compositor *c) { if (s && c) s->c
 static void bump(ws_server *s) { s->gen++; }
 static void refresh_menubars(ws_server *s);
 static void kf_remove_at_fwd(ws_server *s, int i);
-uint64_t ws_server_generation(const ws_server *s) { return s->gen; }
+static int g_splash, g_splash_visible = 1; static double splash_t0, splash_last;
+static double mono_now(void) { struct timespec ts; clock_gettime(CLOCK_MONOTONIC, &ts); return ts.tv_sec + ts.tv_nsec * 1e-9; }
+uint64_t ws_server_generation(const ws_server *s)
+{
+	if (g_splash && g_splash_visible) {       /* the boot screen's progress bar moves: the scene changes ten times a second while it is shown */
+		double t = mono_now(); if (t - splash_last > 0.1) { splash_last = t; ((ws_server *)s)->gen++; }
+	}
+	return s->gen;
+}
 
 static window *get(ws_server *s, ws_wid id)
 {
@@ -993,14 +1001,22 @@ static ws_surface *grow_edge(const ws_surface *src, int w, int h)
 }
 
 #include "splash_pear.inc"
-static int g_splash;
-void ws_server_set_splash(ws_server *s, int on) { (void)s; g_splash = on; }
+void ws_server_set_splash(ws_server *s, int on) { (void)s; g_splash = on; splash_t0 = mono_now(); }
 /* the boot screen: black with the pear of pearOS in the middle, shown while no window of the desktop picture's level (the Finder's desktop) is on the screen yet */
 static void draw_splash(ws_surface *screen)
 {
 	for (int y = 0; y < screen->h; y++) memset(screen->px + (size_t)y * screen->stride, 0, (size_t)screen->w * 4);
 	for (int y = 0; y < screen->h; y++) { uint32_t *p = (uint32_t *)(screen->px + (size_t)y * screen->stride); for (int x = 0; x < screen->w; x++) p[x] = 0xff000000u; }
 	int ox = (screen->w - (int)pear_w) / 2, oy = (screen->h - (int)pear_h) / 2 - screen->h / 14;
+	{       /* the progress bar under the logo: a rounded track (white 18 %) with a white fill that runs with the time since the window server started (the real progress of the boot is not known to it): fast at first, never quite full */
+		double t = mono_now() - splash_t0; double p = 1.0 - exp(-t / 7.0); if (p > 0.96) p = 0.96;
+		int bw = screen->w / 9, bh = screen->h / 160 > 4 ? screen->h / 160 : 4, bx = (screen->w - bw) / 2, by = oy + (int)pear_h + screen->h / 12, fill = (int)(bw * p);
+		for (int yy = 0; yy < bh; yy++) for (int xx = 0; xx < bw; xx++) {
+			int cx = bx + xx, cy = by + yy; if (cx < 0 || cy < 0 || cx >= screen->w || cy >= screen->h) continue;
+			double rx = xx < bh / 2 ? bh / 2 - xx : xx >= bw - bh / 2 ? xx - (bw - bh / 2 - 1) : 0, ry = yy - (bh - 1) / 2.0; if (rx > 0 && rx * rx + ry * ry > (bh / 2.0) * (bh / 2.0)) continue;       /* rounded ends */
+			unsigned v = xx < fill ? 255 : 46; *(uint32_t *)(screen->px + (size_t)cy * screen->stride + (size_t)cx * 4) = 0xff000000u | v << 16 | v << 8 | v;
+		}
+	}
 	for (unsigned y = 0; y < pear_h; y++) for (unsigned x = 0; x < pear_w; x++) { int dx = ox + (int)x, dy = oy + (int)y; if (dx < 0 || dy < 0 || dx >= screen->w || dy >= screen->h) continue; unsigned a = pear_a[y * pear_w + x]; *(uint32_t *)(screen->px + (size_t)dy * screen->stride + (size_t)dx * 4) = 0xff000000u | a << 16 | a << 8 | a; }
 }
 static void apply_zoom(ws_surface *screen);
@@ -1012,7 +1028,7 @@ void ws_compose_scene(ws_server *s, ws_surface *screen)
 	ws_wid act = ws_active_window(s);
 	s->comp->fill(s->comp, screen, all, 37.0f / 255.0f, 37.0f / 255.0f, 37.0f / 255.0f, 1.0f);   /* desktop: #252525 */
 	size_t n = sorted(s, v);
-	if (g_splash) { int desk = 0; for (size_t i = 0; i < n; i++) if (v[i]->level == -2147483603) desk = 1; if (!desk) { if (s->comp->flush) s->comp->flush(s->comp); draw_splash(screen); } }
+	if (g_splash) { int desk = 0; for (size_t i = 0; i < n; i++) if (v[i]->level == -2147483603) desk = 1; g_splash_visible = !desk; if (!desk) { if (s->comp->flush) s->comp->flush(s->comp); draw_splash(screen); } }
 	for (size_t i = 0; i < n; i++) {
 		if (v[i]->mesh) {}       /* a window drawn through its mesh (the genie): its blur / glass stays out, else the backdrop of the unwarped rectangle stayed blurred (a blur spot) and every frame paid for it */
 		else if (v[i]->nglass > 0) {                                               /* the glass material (the Dock's bar, the menu bar, glass views): the window's shapes melt into one */
