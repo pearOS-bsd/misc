@@ -35,3 +35,7 @@ alias la='ls -la'
 # tell the Terminal where the shell is (OSC 7), as macOS's /etc/zshrc_Apple_Terminal does: the window title and its proxy icon follow
 update_terminal_cwd() { printf '\e]7;file://%s%s\a' "$HOST" "$(printf '%s' "$PWD" | sed 's/ /%20/g')"; }
 autoload -Uz add-zsh-hook && add-zsh-hook chpwd update_terminal_cwd && update_terminal_cwd
+
+# As on the Mac, `shutdown now` and `shutdown -h now` switch the machine off. FreeBSD's shutdown without -p / -r only goes to single-user mode (the "Enter full pathname of shell" prompt) and -h halts without switching off:
+# without -p / -r the flags are made -p (-h becomes -p). The account is in group operator: no sudo needed.
+shutdown() { local a args=() p=0; for a in "$@"; do case "$a" in -r) p=2; args+=("$a");; -p) p=1; args+=("$a");; -h) [ $p = 0 ] && p=1; args+=(-p);; *) args+=("$a");; esac; done; [ $p = 0 ] && args=(-p "${args[@]}"); command /sbin/shutdown "${args[@]}"; }

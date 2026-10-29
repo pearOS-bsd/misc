@@ -1,4 +1,4 @@
-/* wsdrag x1 y1 x2 y2: presses the left button at (x1,y1), moves to (x2,y2) in steps and releases (through the wsd test injection) */
+/* wsdrag x1 y1 x2 y2 [hold_ms]: presses the left button at (x1,y1), moves to (x2,y2) in steps and releases (through the wsd test injection) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -11,6 +11,7 @@ int main(int argc, char **argv)
 	ws_inject_mouse(c, x1, y1, 0); usleep(100000);
 	ws_inject_mouse(c, x1, y1, 1); usleep(100000);
 	for (int i = 1; i <= 10; i++) { ws_inject_mouse(c, x1 + (x2 - x1) * i / 10, y1 + (y2 - y1) * i / 10, 1); usleep(60000); }
+	if (argc > 5) usleep(atoi(argv[5]) * 1000);       /* hold the button down at the end (a screenshot meanwhile) */
 	ws_inject_mouse(c, x2, y2, 0); usleep(100000);
 	ws_disconnect(c);
 	return 0;
