@@ -69,7 +69,7 @@ Source: `buglist.txt`. `[ ]` = open, `[x]` = done and verified. Items marked *(p
 - [x] Spotlight: a click opens a result, the wheel scrolls, Return opens a directory (NSWorkspace asks the running Finder, or starts it on the folder).
 - [ ] Launchpad is missing from the Dock; Command-Space should open Launchpad combined with Spotlight search, as on this Mac. *(plan: `handoff.md`, "Launchpad")*
 - [ ] About This Mac is invented; it must be rebuilt from the real one (decompile and measure).
-- [ ] Force Quit (window and menu item) is not implemented.
+- [x] Force Quit Applications (Apple menu item and Command-Option-Escape): the window is laid out from the real one (accessibility tree of the Mac's dialog: 370 x 320, hint, list of running applications, note, default button "Force Quit" / "Relaunch" for the Finder), with a confirmation alert; standard NSTableView / NSButton (`topbar/ForceQuit.m`).
 - [x] Icons are no longer upside down (the symbol fallback of images without `CoreGlyphs.car` did not mirror its paths in flipped views).
 - [x] Control Center icons: the fallback has the symbols of every tile now (Wi-Fi, Bluetooth, Dark Mode, brightness, display, Focus, volume, media, battery, …). *(drawn from paths because the image has no SF Symbols catalogue; the shapes are approximations)*
 - [x] Control Center: the Dark Mode tile (circle.lefthalf.filled) was invisible on images without the symbol catalogue; it shows now. *(confirm on an image)*
