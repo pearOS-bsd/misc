@@ -128,7 +128,7 @@ static BOOL Confirm(NSString *msg, NSString *info, NSString *button)
 - (void)shutDown:(id)s { if (Confirm(@"Are you sure you want to shut down your computer now?", @"If you do nothing, your computer will shut down automatically in 1 minute.", @"Shut Down")) Launch(@"/sbin/shutdown", @[ @"-p", @"now" ]); }
 - (void)lockScreen:(id)s       /* the login window over the running session, "after the first unlock": the account's password unlocks */
 {
-	if ([[NSFileManager defaultManager] fileExistsAtPath: @"/var/run/wsbsd/console"]) { [[NSData data] writeToFile: @"/var/run/wsbsd/lock" atomically: NO]; return; }       /* the session script (root, as loginwindow is on the Mac) shows the login window over this session */
+	if ([[NSFileManager defaultManager] fileExistsAtPath: @"/var/run/wsbsd/console"]) { [[NSData data] writeToFile: [NSString stringWithFormat: @"/var/run/wsbsd/lock.%u", (unsigned)getuid()] atomically: NO]; return; }       /* the session script (root, as loginwindow is on the Mac) shows the login window over this session */
 	NSString *lw = @"/System/Library/CoreServices/loginwindow.app/Contents/MacOS/loginwindow", *dyld = @"/usr/lib/dyld";
 	if (![[NSFileManager defaultManager] isExecutableFileAtPath: lw]) lw = @"/usr/local/bin/loginwindow-gnustep"; if (![[NSFileManager defaultManager] isExecutableFileAtPath: lw]) { NSBeep(); return; }
 	if (system("pgrep -x loginwindow >/dev/null 2>&1") == 0) return;       /* already locked */
