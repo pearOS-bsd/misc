@@ -382,7 +382,7 @@ static const char *Keep(int slot, const char *s) { free(labelBuf[slot]); labelBu
 {
 	for (int k = 0; k < nmini; k++) {
 		MiniWin *mw = &mini[k]; if (mw->phase == 2 || !wsc) continue;
-		double p = (Now() - mw->t0) / (mw->phase == 1 ? 0.75 : 0.5); if (p > 1) p = 1; if (mw->phase == 3) p = 1 - p;
+		double p = (Now() - mw->t0) / (mw->phase == 1 ? 0.5 : 0.4); if (p > 1) p = 1; if (mw->phase == 3) p = 1 - p;
 		int ti = mw->appItem >= 0 ? mw->appItem : mw->item; if (ti < 0 || ti >= n) continue;
 		const DockSlot *sl = &slots[ti]; ws_win w = { .id = mw->wid, .px = NULL };
 		double icon[4]; [self iconRect: ti into: icon]; int cols, rows; float done;

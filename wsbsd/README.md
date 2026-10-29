@@ -83,10 +83,10 @@ Source: `buglist.txt`. `[ ]` = open, `[x]` = done and verified. Items marked *(p
 - [x] Resting the pointer on the green button shows a popover with Enter / Exit Full Screen, Tile Window to Left / Right of Screen, Fill and Center. *(the Mac's popover has pictures of the layouts, not text rows; not measured)*
 - [x] Window tiling by dragging a title bar to the screen edges (halves, quarters at the corners, top edge fills), with a translucent preview; a tiled window dragged away gets its old size back. Geometry measured on the Mac with Window > Move & Resize (below the 30 pt menu bar, above an 84 pt Dock, no margins). *(Option-drag, the Move & Resize menu and the hover popover of the green button are not done)*
 - [x] Windows resize from every edge and corner, live, with plain events (`WsdResize.m`: no nested tracking loop; Finder and Terminal verified in the dev VM).
-- [ ] Resizing flickers and shows only an outline instead of resizing the application live.
-- [ ] After a resize, releasing the mouse sometimes leaves the window "stuck" as if the button were still down (one or two extra clicks are needed).
-- [ ] Moving windows lacks vsync (a faint tearing effect, almost imperceptible).
-- [ ] The Genie minimize animation is far too slow and leaves a blur spot where the window should appear (and during the animation). *(partial: a warped window no longer gets its blur / glass applied to the unwarped rectangle, which left the spot and cost a blur per frame; not seen on an image yet)*
+- [x] Resizing is live (the window is resized at every pointer event through `WsdResize.m`; no outline, no nested loop).
+- [x] A lost button release can no longer leave a window stuck in a resize or a move: the next pointer motion without the button ends it (`WsdResize.m`). *(confirm on hardware)*
+- [ ] Moving windows lacks vsync (a faint tearing effect, almost imperceptible). *(the images draw on the EFI / vt framebuffer, which has no vertical blank to wait for; vsync needs the KMS backend with a DRM driver (`gmake kms`: page flips are implemented, not verified on hardware))*
+- [ ] The Genie minimize animation is far too slow and leaves a blur spot where the window should appear (and during the animation). *(partial: the minimize now takes 0.5 s and the restore 0.4 s (0.75 / 0.5 before; the Mac's timing is not measured); a warped window no longer gets its blur / glass applied to the unwarped rectangle, which left the spot and cost a blur per frame; not seen on an image yet)*
 - [ ] Clicking Downloads in the Dock flickers.
 - [x] The Dock resizes by dragging its separator up or down (the "tilesize" preference, 16 to 128, saved when the button is released). *(the factor between pointer travel and size is 1:1, not measured on the Mac)*
 - [ ] Liquid Glass has an extra vertical offset: the lens samples the image too far away for the distortion.
