@@ -40,13 +40,18 @@
 #include <fcntl.h>
 #include <math.h>
 #include <pwd.h>
-/* the uid of the account the session runs as (the login window writes its name to $WSD_SESSION_USER_FILE, default /var/run/wsbsd.user); -1 when there is none */
-static uid_t session_uid(void)
+/* Fast user switching, as on the Mac: every account that is signed in has a session (listed in $WSD_SESSION_DIR/sessions, one uid per line, by the session script that is the login window's root side) and
+ * one of them owns the console ($WSD_SESSION_DIR/console: its uid, empty while the login window is shown). The windows of the other sessions keep running but are not on the screen and get no input
+ * (kCGSSessionOnConsoleKey); the windows of root (the login window) and of the server's user are always shown. A client of a session that is not listed is refused. */
+static uid_t sess_uids[32]; static int sess_n; static uid_t console_uid = (uid_t)-1; static int fus_active;       /* fus_active: the session script made the directory (without it every client is shown, as before) */
+static void sess_refresh(void)
 {
-	const char *f = getenv("WSD_SESSION_USER_FILE"); char n[64] = ""; FILE *fp = fopen(f ? f : "/var/run/wsbsd.user", "r");
-	if (!fp) return (uid_t)-1; if (!fgets(n, sizeof n, fp)) n[0] = 0; fclose(fp); n[strcspn(n, "\r\n")] = 0;
-	struct passwd *pw = n[0] ? getpwnam(n) : NULL; return pw ? pw->pw_uid : (uid_t)-1;
+	static double checked; struct timespec ts; clock_gettime(CLOCK_MONOTONIC, &ts); double now = ts.tv_sec + ts.tv_nsec * 1e-9; if (now - checked < 0.2) return; checked = now;
+	const char *d = getenv("WSD_SESSION_DIR"); if (!d) d = "/var/run/wsbsd"; char path[256], line[64]; FILE *fp;
+	snprintf(path, sizeof path, "%s/sessions", d); sess_n = 0; if ((fp = fopen(path, "r"))) { while (sess_n < 32 && fgets(line, sizeof line, fp)) if (line[0] >= '0' && line[0] <= '9') sess_uids[sess_n++] = (uid_t)strtoul(line, NULL, 10); fclose(fp); }
+	snprintf(path, sizeof path, "%s/console", d); console_uid = (uid_t)-1; fus_active = 0; if ((fp = fopen(path, "r"))) { fus_active = 1; if (fgets(line, sizeof line, fp) && line[0] >= '0' && line[0] <= '9') console_uid = (uid_t)strtoul(line, NULL, 10); fclose(fp); }
 }
+static int uid_has_session(uid_t u) { sess_refresh(); for (int i = 0; i < sess_n; i++) if (sess_uids[i] == u) return 1; return 0; }
 
 #define DEFAULT_SOCKET ws_default_socket_path()
 #define MAXCONN 128
@@ -63,7 +68,13 @@ static int fps_overlay;        /* -F: draw the system-wide frame rate on the scr
 static int test_mode;          /* -t: enables the private test requests (screenshot to a file, input injection, quit) */
 static uint8_t rbuf[WS_IPC_RECV_CAP];        /* receive buffer: requests are parsed in place, nothing is allocated per message */
 
+extern int (*ws_owner_visible_hook)(uint32_t owner);
 static conn conns[MAXCONN];
+static int owner_on_console(uint32_t owner)     /* the hook of the server: is a window of this connection shown (its session owns the console, or it is the login window / the server's own) */
+{
+	for (int i = 0; i < MAXCONN; i++) if (conns[i].fd >= 0 && conns[i].id == owner) { uid_t u = conns[i].uid; if (u == 0 || u == geteuid()) return 1; sess_refresh(); return !fus_active || u == console_uid; }
+	return 1;
+}
 static uint32_t next_conn = 1;
 
 #ifdef WS_GL
@@ -1252,7 +1263,7 @@ int main(int argc, char **argv)
 #endif
 	}
 	for (int i = 0; i < MAXCONN; i++) { conns[i].fd = -1; conns[i].efd = -1; }
-	ws_server_set_event_sink(srv, push_event, NULL);
+	ws_server_set_event_sink(srv, push_event, NULL); ws_owner_visible_hook = owner_on_console;
 	ws_server_set_key_filter(srv, tap_key_filter, NULL);
 
 	int ls = ws_ipc_listen(path);
@@ -1302,7 +1313,9 @@ int main(int argc, char **argv)
 		struct timespec scan_to = { 1, 0 };                                       /* USB keyboards and mice enumerate late (or are plugged in later): look for new input devices every second */
 		if (input && (!to || to->tv_sec > 0)) to = &scan_to;
 #endif
+		if (fus_active) { static struct timespec q = { 0, 250 * 1000 * 1000 }; if (!to || to->tv_sec > 0 || to->tv_nsec > q.tv_nsec) to = &q; }       /* the console may change at any time: look at it four times a second */
 		int n = kevent(kq, NULL, 0, out, 16, to);
+		{ static uid_t seen = (uid_t)-2; sess_refresh(); uid_t now_c = fus_active ? console_uid : (uid_t)-3; if (now_c != seen) { seen = now_c; ws_server_invalidate(srv); dirty = 1; } }
 		if (n < 0) { if (errno == EINTR) continue; perror("wsd: kevent"); break; }
 #ifdef WS_KMS
 		if (input) {
@@ -1340,10 +1353,10 @@ int main(int argc, char **argv)
 			if (fd == ls) {
 				int cfd = accept(ls, NULL, NULL);
 				if (cfd < 0) continue;
-				{ uid_t pu; gid_t pg; if (getpeereid(cfd, &pu, &pg) < 0 || (pu != geteuid() && pu != 0 && pu != session_uid())) { close(cfd); continue; } }      /* defence in depth next to the socket's mode: the server's user, root, or the account that is signed in (named in /var/run/wsbsd.user by the session script) may connect */
+				{ uid_t pu; gid_t pg; if (getpeereid(cfd, &pu, &pg) < 0 || (pu != geteuid() && pu != 0 && !uid_has_session(pu))) { close(cfd); continue; } }      /* defence in depth next to the socket's mode: the server's user, root, or an account that has a session may connect */
 				conn *slot = conn_by_fd(-1);
 				if (!slot) { close(cfd); continue; }
-				memset(slot, 0, sizeof *slot); slot->fd = cfd; slot->efd = -1; slot->id = next_conn++; slot->pid = 0;
+				memset(slot, 0, sizeof *slot); { uid_t pu2; gid_t pg2; slot->uid = getpeereid(cfd, &pu2, &pg2) == 0 ? pu2 : 0; } slot->fd = cfd; slot->efd = -1; slot->id = next_conn++; slot->pid = 0;
 				EV_SET(&ev, cfd, EVFILT_READ, EV_ADD, 0, 0, NULL);
 				if (kevent(kq, &ev, 1, NULL, 0, NULL) < 0) { close(cfd); slot->fd = -1; }
 				continue;

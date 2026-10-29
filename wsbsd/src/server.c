@@ -96,6 +96,8 @@ void ws_server_free(ws_server *s)
 void ws_server_set_compositor(ws_server *s, ws_compositor *c) { if (s && c) s->comp = c; }
 
 static void bump(ws_server *s) { s->gen++; }
+extern int (*ws_owner_visible_hook)(uint32_t owner);
+void ws_server_invalidate(ws_server *s) { bump(s); }
 static void refresh_menubars(ws_server *s);
 static void kf_remove_at_fwd(ws_server *s, int i);
 static int g_splash, g_splash_visible = 1; static double splash_t0, splash_last, splash_cost;
@@ -409,7 +411,7 @@ static int order_group(ws_server *s, ws_wid id, int mode, ws_wid rel, int depth)
 		w->on_screen = 0; bump(s);
 		if (depth == 0 && s->key_win == id) {                              /* the key window went away: the frontmost ordinary window takes the keyboard (as on a Mac), else nobody */
 			window *best = NULL;
-			for (size_t i = 0; i < s->n; i++) { window *c = &s->win[i]; if (c->on_screen && c->id != id && takes_key(c) && (!best || c->order > best->order)) best = c; }
+			for (size_t i = 0; i < s->n; i++) { window *c = &s->win[i]; if (c->on_screen && (!ws_owner_visible_hook || ws_owner_visible_hook(c->owner)) && c->id != id && takes_key(c) && (!best || c->order > best->order)) best = c; }
 			set_key_window(s, best ? best->id : 0);
 		}
 	} else {
@@ -614,10 +616,11 @@ static int back_to_front(const void *a, const void *b)
 	return x->id < y->id ? -1 : 1;
 }
 
+int (*ws_owner_visible_hook)(uint32_t owner) = 0;       /* fast user switching: the windows of a session that is not on the console are left out */
 static size_t sorted(ws_server *s, window **out)
 {
 	size_t n = 0;
-	for (size_t i = 0; i < s->n; i++) if (s->win[i].on_screen) out[n++] = &s->win[i];
+	for (size_t i = 0; i < s->n; i++) if (s->win[i].on_screen && (!ws_owner_visible_hook || ws_owner_visible_hook(s->win[i].owner))) out[n++] = &s->win[i];
 	qsort(out, n, sizeof *out, back_to_front);
 	return n;
 }

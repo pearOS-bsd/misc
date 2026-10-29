@@ -37,38 +37,58 @@ macdesktop_start()
 	rm -f $WS_SOCKET
 	daemon -f -o /var/log/WindowServer.log -p /var/run/WindowServer.pid $WS -b kms -c /dev/ttyv0 -t -F
 	sleep 2
-	# the session: the login window (before the first unlock) asks which account and its password; the programs of the desktop run as that account from launchd (the launch agents: Dock, SystemUIServer, Finder, as on the Mac),
-	# which also starts them again if they stop. Log Out ends the session and the login window comes back; Lock Screen (the top bar) puts the login window over the running session ("after the first unlock").
-	# A test run (the hypervisor's product name is wsbsd-ci, set by the CI boot tests), or an image without the login window, signs the first account in by itself.
-	( while true; do
-		U=""; LW=/System/Library/CoreServices/loginwindow.app/Contents/MacOS/loginwindow
-		if [ "$(kenv -q smbios.system.product 2>/dev/null)" = wsbsd-ci ] || [ ! -x $LW ]; then U=alex; id alex >/dev/null 2>&1 || U=root
-		else U=$(/usr/lib/dyld $LW 2>/dev/null | tail -1); fi
-		[ -n "$U" ] && id "$U" >/dev/null 2>&1 || { sleep 2; continue; }
-		H=/Users/$U; [ "$U" = root ] && H=/Users/root
+	# Sessions, as on the Mac (loginwindow is root and makes a session per account; fast user switching): each account that is signed in has its own launchd running the desktop programs; $SD/sessions lists their uids
+	# and $SD/console holds the uid whose session is on the screen (empty while the login window is shown). The window server shows only the windows of the console session and of root (the login window).
+	# Switching moves the console and leaves the other sessions running. Requests of the accounts (files made in $SD, honoured when the requester owns the console): "login" = the login window (Switch User, Login Window…),
+	# "lock" = Lock Screen (the login window over the session, run as root so that it can read the password hash). Log Out ends the account's launchd; its session goes away and the login window comes back.
+	# A test run (the hypervisor's product name is wsbsd-ci), or an image without the login window, signs the first account in by itself.
+	SD=/var/run/wsbsd; mkdir -p $SD; chmod 1777 $SD; : > $SD/sessions; : > $SD/console; rm -f $SD/login $SD/lock
+	LW=/System/Library/CoreServices/loginwindow.app/Contents/MacOS/loginwindow
+	session_start()
+	{
+		U=$1; H=/Users/$U; N=$(id -u $U)
 		mount | grep -q " $H " || mount -t tmpfs -o mode=755 tmpfs $H
 		if [ ! -d $H/Desktop ]; then [ -d "/Library/User Template" ] && cp -R "/Library/User Template/." $H/ 2>/dev/null; mkdir -p $H/Desktop $H/Documents $H/Downloads $H/Library/Preferences $H/Movies $H/Music $H/Pictures $H/Public $H/GNUstep; chown -R $U $H 2>/dev/null; fi
+		grep -qx $N $SD/sessions || echo $N >> $SD/sessions
 		chmod 666 $WS_SOCKET 2>/dev/null
-		echo $U > /var/run/wsbsd.user
-		export HOME=$H USER=$U LOGNAME=$U
 		if [ -x /usr/libexec/launchd ] && ls /System/Library/LaunchAgents/*.plist >/dev/null 2>&1; then
-			daemon -u $U -o /var/log/launchd.log -p /var/run/launchd.pid env HOME=$H USER=$U LOGNAME=$U /usr/libexec/launchd /System/Library/LaunchAgents
+			daemon -u $U -o /var/log/launchd.$U.log -p $SD/launchd.$U.pid env HOME=$H USER=$U LOGNAME=$U /usr/libexec/launchd /System/Library/LaunchAgents
 		else
+			echo $$ > $SD/launchd.$U.pid
 			for app in /System/Library/CoreServices/Dock.app/Contents/MacOS/Dock /System/Library/CoreServices/SystemUIServer.app/Contents/MacOS/SystemUIServer /System/Library/CoreServices/Finder.app/Contents/MacOS/Finder /System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal; do
 				[ -x $app ] && daemon -u $U -f -o /var/log/$(basename $app).log env HOME=$H USER=$U LOGNAME=$U /usr/lib/dyld $app
 			done
 		fi
-		# the session lasts until launchd ends (Log Out kills it and everything the account runs)
-		sleep 5; while [ -f /var/run/launchd.pid ] && kill -0 "$(cat /var/run/launchd.pid)" 2>/dev/null; do sleep 2; done
-		pkill -KILL -u $U 2>/dev/null; sleep 1
+		# the session lasts until its launchd ends (Log Out stops it): then what the account still runs is killed and the session is gone
+		( sleep 5; while [ -f $SD/launchd.$U.pid ] && kill -0 "$(cat $SD/launchd.$U.pid)" 2>/dev/null; do sleep 2; done
+		  pkill -KILL -u $U 2>/dev/null; sed -i '' "/^$N\$/d" $SD/sessions; rm -f $SD/launchd.$U.pid ) &
+	}
+	session_alive() { [ -f $SD/launchd.$1.pid ] && kill -0 "$(cat $SD/launchd.$1.pid)" 2>/dev/null; }
+	( while true; do
+		echo > $SD/console
+		if [ "$(kenv -q smbios.system.product 2>/dev/null)" = wsbsd-ci ] || [ ! -x $LW ]; then U=alex; id alex >/dev/null 2>&1 || U=root
+		else U=$(/usr/lib/dyld $LW 2>/dev/null | tail -1); fi
+		[ -n "$U" ] && id "$U" >/dev/null 2>&1 || { sleep 2; continue; }
+		N=$(id -u $U)
+		session_alive $U || session_start $U
+		echo $N > $SD/console; echo $U > /var/run/wsbsd.user
+		# the console stays with this session until it ends or the account asks for the login window
+		sleep 3
+		while session_alive $U; do
+			if [ -e $SD/login ] && [ "$(stat -f %u $SD/login)" = $N ]; then rm -f $SD/login; break; fi
+			if [ -e $SD/lock ] && [ "$(stat -f %u $SD/lock)" = $N ] && [ -x $LW ]; then rm -f $SD/lock; /usr/lib/dyld $LW --lock $U >/dev/null 2>&1; [ $? = 3 ] && break; fi
+			sleep 1
+		done
 	done ) >/var/log/session.log 2>&1 &
+	echo $! > $SD/supervisor.pid
 	# a report on the serial port (if there is one), 25 s after the start: the programs of the desktop that run, and the end of the log of the Finder and of every program that does not (the screen is the window server's and the console is muted)
-	( sleep 25; { echo "== desktop report"; echo "== session.log"; tail -15 /var/log/session.log 2>/dev/null; echo "== Dock by hand"; U=$(cat /var/run/wsbsd.user 2>/dev/null); su -m "${U:-root}" -c "env HOME=/Users/${U:-root} timeout 6 /usr/lib/dyld /System/Library/CoreServices/Dock.app/Contents/MacOS/Dock" 2>&1 | tail -15; echo "== launchd.log"; tail -15 /var/log/launchd.log 2>/dev/null; ps ax -o pid,stat,command | grep -E "launchd|loginwindow" | grep -v grep; ps ax -o pid,stat,command | grep -E "WindowServer|Dock|SystemUIServer|Finder|Terminal|usernoted|gdnc|gdomap" | grep -v grep; for a in Finder WindowServer Dock SystemUIServer Terminal; do pgrep -f "$a" >/dev/null 2>&1 || echo "== $a is not running"; echo "== tail of $a.log"; tail -12 /var/log/$a.log 2>/dev/null; done; ls /System/Library/Desktop\ Pictures 2>&1; } > /dev/ttyu0 2>/dev/null ) &
+	( sleep 25; { echo "== desktop report"; echo "== session.log"; tail -15 /var/log/session.log 2>/dev/null; echo "== Dock by hand"; U=$(cat /var/run/wsbsd.user 2>/dev/null); su -m "${U:-root}" -c "env HOME=/Users/${U:-root} timeout 6 /usr/lib/dyld /System/Library/CoreServices/Dock.app/Contents/MacOS/Dock" 2>&1 | tail -15; echo "== launchd.log"; tail -15 /var/log/launchd.*.log 2>/dev/null; ps ax -o pid,stat,command | grep -E "launchd|loginwindow" | grep -v grep; ps ax -o pid,stat,command | grep -E "WindowServer|Dock|SystemUIServer|Finder|Terminal|usernoted|gdnc|gdomap" | grep -v grep; for a in Finder WindowServer Dock SystemUIServer Terminal; do pgrep -f "$a" >/dev/null 2>&1 || echo "== $a is not running"; echo "== tail of $a.log"; tail -12 /var/log/$a.log 2>/dev/null; done; ls /System/Library/Desktop\ Pictures 2>&1; } > /dev/ttyu0 2>/dev/null ) &
 }
 macdesktop_stop()
 {
+	[ -f /var/run/wsbsd/supervisor.pid ] && kill "$(cat /var/run/wsbsd/supervisor.pid)" 2>/dev/null
 	# the applications first, then the window server (it clears the screen and gives the console back), then the console messages are shown again
-	[ -f /var/run/launchd.pid ] && kill "$(cat /var/run/launchd.pid)" 2>/dev/null; sleep 1
+	for f in /var/run/wsbsd/launchd.*.pid; do [ -f "$f" ] && kill "$(cat $f)" 2>/dev/null; done; sleep 1
 	for p in Terminal Finder Dock SystemUIServer; do pkill -x "$p" 2>/dev/null; done
 	[ -f /var/run/WindowServer.pid ] && kill "$(cat /var/run/WindowServer.pid)" 2>/dev/null
 	i=0; while [ $i -lt 30 ] && pgrep -f "WindowServer -b" >/dev/null 2>&1; do sleep 0.1; i=$((i+1)); done

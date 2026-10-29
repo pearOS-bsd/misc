@@ -18,10 +18,15 @@ static BOOL Authenticate(NSString *user, NSString *password)
 	struct passwd *p = getpwnam([user UTF8String]); if (!p) return NO; const char *h = p->pw_passwd; if (!h || !*h) return YES;       /* an account without a password */
 	if (h[0] == '*' || h[0] == '!') return NO; char *c = crypt([password UTF8String], h); return c && strcmp(c, h) == 0;
 }
+/* the accounts that are signed in (a session each, listed by the session script): they get the badge of the Mac's login window (checkmark.circle.fill) */
+static BOOL SignedIn(NSNumber *uid)
+{
+	NSString *t = [NSString stringWithContentsOfFile: @"/var/run/wsbsd/sessions" encoding: NSUTF8StringEncoding error: NULL]; for (NSString *l in [t componentsSeparatedByString: @"\n"]) if ([l length] && [l integerValue] == [uid integerValue]) return YES; return NO;
+}
 static NSArray *Accounts(void)
 {
 	NSMutableArray *r = [NSMutableArray array]; setpwent(); struct passwd *p;
-	while ((p = getpwent())) { if (p->pw_uid < 500 || p->pw_uid >= 60000) continue; if (!p->pw_shell || strstr(p->pw_shell, "nologin") || strstr(p->pw_shell, "false")) continue; NSString *full = p->pw_gecos && *p->pw_gecos ? @(p->pw_gecos) : @(p->pw_name); NSRange c = [full rangeOfString: @","]; if (c.location != NSNotFound) full = [full substringToIndex: c.location]; [r addObject: @{ @"user": @(p->pw_name), @"name": full }]; }
+	while ((p = getpwent())) { if (p->pw_uid < 500 || p->pw_uid >= 60000) continue; if (!p->pw_shell || strstr(p->pw_shell, "nologin") || strstr(p->pw_shell, "false")) continue; NSString *full = p->pw_gecos && *p->pw_gecos ? @(p->pw_gecos) : @(p->pw_name); NSRange c = [full rangeOfString: @","]; if (c.location != NSNotFound) full = [full substringToIndex: c.location]; [r addObject: @{ @"user": @(p->pw_name), @"name": full, @"uid": @(p->pw_uid) }]; }
 	endpwent(); return r;
 }
 /* ---- the design of pearOS (pearOS-archlinux/pkgbuilds, kscreenlocker/pearOS-dark: Main.qml, components/Clock.qml, screenshot.png), in 1080 p units scaled to the screen ----
@@ -106,6 +111,7 @@ static NSArray *Accounts(void)
 	for (NSUInteger i = 0; i < n; i++) {
 		CGFloat cx = 960 + ((CGFloat)i - (n - 1) / 2.0) * pitch;
 		LWFace *av = [[LWFace alloc] initWithFrame: [self rectCX: cx cy: 889 w: 80 h: 80]]; [cv addSubview: av]; [faces addObject: av];
+		if (SignedIn(accounts[i][@"uid"])) { LWClick *bd = [[LWClick alloc] initWithFrame: NSMakeRect(80 * sc - 22 * sc, 0, 22 * sc, 22 * sc)]; bd->symbol = @"checkmark.circle.fill"; [av addSubview: bd]; }
 		LWClick *b = [[LWClick alloc] initWithFrame: [av frame]]; b->target = self; b->action = @selector(choose:); b->index = (NSInteger)i; [cv addSubview: b];
 		NSTextField *l = [NSTextField labelWithString: accounts[i][@"name"]]; [l setFont: [NSFont boldSystemFontOfSize: 15 * sc]]; [l setTextColor: [NSColor whiteColor]]; [l setAlignment: NSCenterTextAlignment]; [l setFrame: [self rectCX: cx cy: 960 w: 140 h: 22]]; [cv addSubview: l]; [names addObject: l];
 	}
@@ -113,12 +119,13 @@ static NSArray *Accounts(void)
 	pw = [[LWSecure alloc] initWithFrame: NSMakeRect(14 * sc, 5 * sc, 222 * sc, 22 * sc)]; pw->target = self; pw->action = @selector(submit:); [pill addSubview: pw];
 	msg = [NSTextField labelWithString: @"Enter Password"]; [msg setTextColor: [NSColor colorWithCalibratedWhite: 1 alpha: 0.9]]; [msg setAlignment: NSCenterTextAlignment]; [msg setFont: [NSFont boldSystemFontOfSize: 12 * sc]]; [msg setFrame: [self rectCX: 960 cy: 1034 w: 320 h: 18]]; [cv addSubview: msg];
 	/* the icons at the top right: display (nothing to switch here), restart, power */
-	NSArray *icons = lock ? @[ @[ @"display", @1790 ], @[ @"power", @1888 ] ] : @[ @[ @"display", @1790 ], @[ @"arrow.clockwise", @1850 ], @[ @"power", @1890 ] ];
+	NSArray *icons = lock ? @[ @[ @"person.crop.circle", @1740 ], @[ @"display", @1790 ], @[ @"power", @1888 ] ] : @[ @[ @"display", @1790 ], @[ @"arrow.clockwise", @1850 ], @[ @"power", @1890 ] ];
 	for (NSArray *ic in icons) { NSRect ir = [self rectCX: 960 cy: 28 w: 24 h: 24]; ir.origin.x = sf.size.width - (1920 - [ic[1] doubleValue]) * sc - 12 * sc;       /* anchored to the right edge: the design is 16:9 */
-		LWClick *b = [[LWClick alloc] initWithFrame: ir]; b->symbol = ic[0]; b->target = self; b->action = [ic[0] isEqual: @"power"] ? @selector(shutdown:) : [ic[0] isEqual: @"arrow.clockwise"] ? @selector(restart:) : @selector(noop:); [cv addSubview: b]; }
+		LWClick *b = [[LWClick alloc] initWithFrame: ir]; b->symbol = ic[0]; b->target = self; b->action = [ic[0] isEqual: @"power"] ? @selector(shutdown:) : [ic[0] isEqual: @"arrow.clockwise"] ? @selector(restart:) : [ic[0] isEqual: @"person.crop.circle"] ? @selector(switchUser:) : @selector(noop:); [cv addSubview: b]; }
 	chosen = n == 1 ? 0 : -1; [self refresh]; [win makeKeyAndOrderFront: nil]; [win orderFrontRegardless]; [win display]; [NSApp activateIgnoringOtherApps: YES]; if (chosen >= 0) [win makeFirstResponder: pw];
 }
 - (void)noop:(id)s {}
+- (void)switchUser:(id)s { exit(3); }       /* Switch User: the session keeps running, the console goes to the login window (the session script sees the exit status 3) */
 
 - (void)tick:(NSTimer *)t { NSDateFormatter *f = [[NSDateFormatter alloc] init]; [f setLocale: [[NSLocale alloc] initWithLocaleIdentifier: @"en_US"]]; [f setDateFormat: @"EEEE, MMMM d"]; dateL->text = [f stringFromDate: [NSDate date]]; [dateL setNeedsDisplay: YES]; [f setDateFormat: @"HH:mm"]; timeL->text = [f stringFromDate: [NSDate date]]; [timeL setNeedsDisplay: YES]; }
 - (void)refresh

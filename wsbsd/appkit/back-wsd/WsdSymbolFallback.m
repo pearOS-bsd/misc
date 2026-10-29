@@ -36,6 +36,8 @@ static NSDictionary *Table(void)
 		@"battery.100percent": ^(NSBezierPath *p, BOOL *f) { RRect(p, .06, .3, .78, .4, .1); Line(p, .9, .44, .9, .56); RRect(p, .12, .36, .66, .28, .03); },
 		@"battery.100percent.bolt": ^(NSBezierPath *p, BOOL *f) { RRect(p, .06, .3, .78, .4, .1); Line(p, .9, .44, .9, .56); RRect(p, .12, .36, .66, .28, .03); },
 		@"person.fill": ^(NSBezierPath *p, BOOL *f) { *f = YES; [p appendBezierPath: Circle(.5, .68, .2)]; [p moveToPoint: NSMakePoint(.12, .08)]; [p curveToPoint: NSMakePoint(.88, .08) controlPoint1: NSMakePoint(.12, .56) controlPoint2: NSMakePoint(.88, .56)]; [p closePath]; },
+		@"person.crop.circle": ^(NSBezierPath *p, BOOL *f) { [p appendBezierPath: Circle(.5, .5, .42)]; [p appendBezierPath: Circle(.5, .62, .13)]; Arc(p, .5, .3, .22, 30, 150); },
+		@"checkmark.circle.fill": ^(NSBezierPath *p, BOOL *f) { *f = YES; [p appendBezierPath: Circle(.5, .5, .44)]; },
 		@"power": ^(NSBezierPath *p, BOOL *f) { Arc(p, .5, .48, .34, 125, 415); Line(p, .5, .5, .5, .94); },
 		@"arrow.clockwise": ^(NSBezierPath *p, BOOL *f) { Arc(p, .5, .5, .36, 80, 380); [p moveToPoint: NSMakePoint(.5, .94)]; [p lineToPoint: NSMakePoint(.68, .86)]; [p moveToPoint: NSMakePoint(.5, .94)]; [p lineToPoint: NSMakePoint(.62, 1.0)]; },
 		@"trash": ^(NSBezierPath *p, BOOL *f) { Line(p, .14, .78, .86, .78); Line(p, .38, .78, .38, .88); Line(p, .38, .88, .62, .88); Line(p, .62, .88, .62, .78); [p moveToPoint: NSMakePoint(.24, .78)]; [p lineToPoint: NSMakePoint(.3, .12)]; [p lineToPoint: NSMakePoint(.7, .12)]; [p lineToPoint: NSMakePoint(.76, .78)]; Line(p, .42, .6, .42, .3); Line(p, .58, .6, .58, .3); },
