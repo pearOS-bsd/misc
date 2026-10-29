@@ -388,6 +388,7 @@ static void WsdDismissMenus(void)
 - (void) wsdSetWindowSpace: (int)win : (unsigned)space { struct wsd_window *w = [self wsdWindow: win]; if (w) ws_win_set_space(conn, &w->win, space); }       /* full-screen spaces: 0 is the desktop */
 - (void) wsdSetNightShift: (int)percent { ws_set_night_shift(conn, percent); }
 - (void) wsdSetActiveSpace: (unsigned)space { ws_set_active_space(conn, space); }
+- (void) wsdCommitWindow: (int)win { struct wsd_window *w = [self wsdWindow: win]; if (w) [self commitWindow: w rect: NSZeroRect]; }       /* a window that is drawn but never flushed by AppKit (the pop-up of a combo box is not buffered: GNUstep draws into it and calls no flush) */
 - (void) wsdSetKeyWindow: (int)win { struct wsd_window *w = [self wsdWindow: win]; if (w) ws_win_set_key(conn, &w->win); }
 - (void) setinputfocus: (int)win
 {
