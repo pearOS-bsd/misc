@@ -76,13 +76,13 @@ Source: `buglist.txt`. `[ ]` = open, `[x]` = done and verified. Items marked *(p
 - [ ] Control Center: Wi-Fi has no real function. The image must come configured to bring up any Wi-Fi card by default, and our menu must join networks, so nobody has to run `dhclient` and friends by hand. *(CoreWLAN / airportd work is in "Required next")*
 
 **Windows, Dock and animations**
-- [ ] Closing a window with the red button must only close the window; the process keeps running until Command-Q, as on macOS.
+- [x] Closing the last window of the Terminal no longer quits it (Command-Q does). *(other applications: their own delegates; GNUstep apps that quit on the last window need the same check)*
 - [ ] Finder windows must use the system window decorations (some of ours are invented).
 - [ ] The rubber-band (stretch) effect and the hover glyphs are missing on close / minimize / maximize. *(partial: hover glyphs and the pressed state from `Aqua.car` exist; the stretch needs a finer capture on the Mac)*
 - [ ] The green button must move the window to its own full-screen Space (workspace), as on the Mac; only snapping to the top edge maximizes the window.
 - [ ] Hovering the green button must show the popover with the tiling / snapping options.
 - [ ] Window snapping does not work.
-- [ ] Finder windows cannot be resized.
+- [x] Windows resize from every edge and corner, live, with plain events (`WsdResize.m`: no nested tracking loop; Finder and Terminal verified in the dev VM).
 - [ ] Resizing flickers and shows only an outline instead of resizing the application live.
 - [ ] After a resize, releasing the mouse sometimes leaves the window "stuck" as if the button were still down (one or two extra clicks are needed).
 - [ ] Moving windows lacks vsync (a faint tearing effect, almost imperceptible).
@@ -101,10 +101,10 @@ Source: `buglist.txt`. `[ ]` = open, `[x]` = done and verified. Items marked *(p
 - [ ] `pkg` does nothing; it must be active and working so BSD utilities can be installed.
 
 **Terminal and shell**
-- [ ] After a resize the Terminal does not learn its new margins until Command-Plus is pressed.
-- [ ] The Terminal title and icon must update dynamically with the current directory.
-- [ ] zsh must be the default shell.
-- [ ] The zsh profile / prompt must match macOS; take it from <https://github.com/Pear-Project/dpkg/tree/main/pearos-zshconfig>.
+- [x] The Terminal grid follows a resize at once (the title shows the new size; the shell gets SIGWINCH).
+- [x] The Terminal title is "folder — process — columns×rows" and follows the shell's directory (OSC 7, else asked from the system); represented file set. *(the proxy icon in the title bar is not drawn yet)*
+- [x] zsh is the login shell the Terminal starts (the user's passwd shell; root's is /bin/zsh in the image).
+- [x] The zsh profile is pearOS's (`iso/overlay/etc-zshrc`, from Pear-Project/dpkg pearos-zshconfig: prompt, history, bindings, aliases, autosuggestions), plus an OSC 7 hook for the Terminal.
 
 **Boot, installer and hardware**
 - [ ] Boot logo: a real boot logo with a progress bar, exactly as on this Mac (today it is only the compositor background painted grey, with a pear; no splash is wanted). *(partial: pear on black until the desktop picture exists)*

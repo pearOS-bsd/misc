@@ -1,8 +1,37 @@
-# /etc/zshrc: interactive shells
-export PATH="$HOME/.local/bin:$PATH"                      # as in the user's ~/.zshrc on the Mac
-HISTFILE="$HOME/.zsh_history"; HISTSIZE=5000; SAVEHIST=5000
-setopt APPEND_HISTORY SHARE_HISTORY HIST_IGNORE_DUPS INTERACTIVE_COMMENTS
-bindkey -e
+# /etc/zshrc: interactive shells. The prompt, history, key bindings and aliases are those of pearOS (Pear-Project/dpkg, pearos-zshconfig/.zshrc)
+export PATH="$HOME/.local/bin:$PATH"
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+setopt appendhistory
+setopt sharehistory
+setopt hist_ignore_dups
+
+tty_dev=$(tty | sed -e "s:/dev/::")
+last_login=$(last -1 $USER 2>/dev/null | head -1 | awk '{ print $4, $5, $6, $7 }')
+[ -n "$last_login" ] && echo "Last login: $last_login on ${tty_dev}"
+
+PROMPT='%n@%m %1~ %f%# '
+
 autoload -Uz compinit && compinit -u -d "${TMPDIR:-/tmp}/.zcompdump" 2>/dev/null
-PROMPT='%n@%m %1~ %# '                                    # the macOS default prompt
-alias ls='ls -G'
+zstyle ':completion:*' menu select
+
+bindkey "^[[1;5D" backward-word
+bindkey "^[[1;5C" forward-word
+# search the history with the arrows (Up / Down)
+bindkey '^[[A' up-line-or-search
+bindkey '^[[B' down-line-or-search
+
+for f in /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh; do [ -r "$f" ] && { source "$f"; break; }; done
+
+bindkey '^[[C' forward-char
+
+alias ls='ls -GF'
+alias ll='ls -lh'
+alias dir='ls -F'
+alias cls='clear'
+alias la='ls -la'
+
+# tell the Terminal where the shell is (OSC 7), as macOS's /etc/zshrc_Apple_Terminal does: the window title and its proxy icon follow
+update_terminal_cwd() { printf '\e]7;file://%s%s\a' "$HOST" "$(printf '%s' "$PWD" | sed 's/ /%20/g')"; }
+autoload -Uz add-zsh-hook && add-zsh-hook chpwd update_terminal_cwd && update_terminal_cwd

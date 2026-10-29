@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 typedef struct { vt_cell *c; } vt_line_unused;
 
@@ -21,7 +22,7 @@ struct vt {
 	int state; int params[16]; int nparams; int private_mark; char inter; char osc[256]; int osc_n;
 	uint32_t utf; int utf_need;
 	vt_write_fn wr; void *wctx;
-	char title[256];
+	char title[256]; char cwd[1024];                                  /* the directory the shell announced with OSC 7 */
 	uint32_t gen;
 	uint64_t scrolled; uint64_t prompts[2048]; int nprompts;       /* lines pushed into the history so far; absolute line numbers of the prompts the shell announced (OSC 133;A) */
 	int mouse_mode, mouse_sgr, focus_events;     /* ?1000 / ?1002 / ?1003 (1, 2, 3), ?1006, ?1004 */
@@ -80,6 +81,7 @@ const vt_cell *vt_cell_at(const vt *t, int x, int y) { return (x < 0 || y < 0 ||
 void vt_cursor(const vt *t, int *c, int *r, int *v) { if (c) *c = t->cx; if (r) *r = t->cy; if (v) *v = t->cursor_visible; }
 int vt_alt_screen(const vt *t) { return t->on_alt; }
 const char *vt_title(const vt *t) { return t->title; }
+const char *vt_cwd(const vt *t) { return t->cwd; }
 uint32_t vt_dirty_gen(const vt *t) { return t->gen; }
 int vt_app_cursor_keys(const vt *t) { return t->app_cursor; }
 int vt_bracketed_paste(const vt *t) { return t->bracketed; }
@@ -268,6 +270,11 @@ static void osc_done(vt *t)
 {
 	t->osc[t->osc_n < 255 ? t->osc_n : 255] = 0; int code = atoi(t->osc); char *semi = strchr(t->osc, ';');
 	if (semi && (code == 0 || code == 2)) snprintf(t->title, sizeof t->title, "%s", semi + 1);
+	else if (semi && code == 7 && !strncmp(semi + 1, "file://", 7)) {         /* the shell's working directory: file://host/path, percent-encoded */
+		const char *u = strchr(semi + 8, '/'); size_t n = 0; if (!u) return;
+		for (; *u && n < sizeof t->cwd - 1; u++) { if (*u == '%' && isxdigit((unsigned char)u[1]) && isxdigit((unsigned char)u[2])) { char h[3] = { u[1], u[2], 0 }; t->cwd[n++] = (char)strtol(h, NULL, 16); u += 2; } else t->cwd[n++] = *u; }
+		t->cwd[n] = 0; t->gen++;
+	}
 	else if (semi && code == 133 && semi[1] == 'A') {                  /* the shell integration: a prompt starts on this line */
 		uint64_t abs = t->scrolled + (uint64_t)t->cy;
 		if (!t->nprompts || t->prompts[t->nprompts - 1] != abs) { if (t->nprompts == 2048) { memmove(t->prompts, t->prompts + 1, 2047 * sizeof t->prompts[0]); t->nprompts--; } t->prompts[t->nprompts++] = abs; }

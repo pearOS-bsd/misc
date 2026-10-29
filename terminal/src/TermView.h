@@ -14,15 +14,19 @@
 	int selStartX, selStartY, selEndX, selEndY; BOOL hasSel; int clickCount;
 	NSString *findQuery; BOOL findCase;    /* matches are highlighted while set */
 	id delegate; NSString *customTitle;
+	NSString *fgName, *fgCwd; NSTimeInterval fgPolled;   /* the foreground process and the shell's directory, polled once a second */
 	NSMutableArray *marks, *bookmarks;     /* absolute line numbers (vt_scrolled + row) of the marks and bookmarks the user set */
 }
 + (void)setAutoMarkPrompts:(BOOL)b; + (BOOL)autoMarkPrompts; + (void)setShowMarks:(BOOL)b; + (BOOL)showMarks;
 - (id)delegate; - (void)setDelegate:(id)d;                /* told about title changes and the end of the shell: -termViewChanged: / -termViewExited: */
 - (TermProfile *)profile;
 - (instancetype)initWithProfile:(TermProfile *)p command:(NSString *)cmd;
+- (void)syncGridToSize:(NSSize)size;
 - (void)applyProfile:(TermProfile *)p;
 - (NSSize)idealSizeForCols:(int)cols rows:(int)rows;
 - (int)cols; - (int)rows;
+- (NSString *)currentDirectory;                           /* the shell's directory: OSC 7 when the shell announces it, else asked from the system */
+- (NSString *)foregroundProcessName;                      /* "-zsh" for the login shell, else the name of the foreground process */
 - (NSString *)titleString;                                 /* the custom title when Edit Title set one, else the program's (OSC) title */
 - (void)setCustomTitle:(NSString *)t;
 - (BOOL)childExited;

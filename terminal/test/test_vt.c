@@ -60,6 +60,7 @@ int main(void)
 		vt_free(t2);
 	}
 	if (failures) { printf("%d failures\n", failures); return 1; }
+	{ vt *t = vt_new(80, 24, 100); const char *o = "\033]7;file://host/tmp/a%20b\007"; vt_feed(t, o, strlen(o)); if (strcmp(vt_cwd(t), "/tmp/a b")) { printf("FAIL: OSC 7 cwd '%s'\n", vt_cwd(t)); return 1; } vt_free(t); }
 	printf("vt emulator: all checks passed\n");
 	return 0;
 }
