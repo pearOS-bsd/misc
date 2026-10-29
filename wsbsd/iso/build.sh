@@ -113,8 +113,10 @@ for d in etc private/etc usr/local/etc; do          # FreeBSD's zsh reads its gl
 	cp "$HERE/overlay/etc-zprofile" "$ROOT/$d/zprofile"; cp "$HERE/overlay/etc-zshrc" "$ROOT/$d/zshrc"
 done
 pw -R "$ROOT" usermod root -s /bin/zsh
-# /usr/sbin/pkg is only the bootstrapper: without the real pkg it asks "fetch and install it now? [y/N]" on the terminal, and neofetch (which calls `pkg info` for its package count) hangs on it
-printf '#!/bin/sh\nexit 1\n' > "$ROOT/usr/sbin/pkg"; chmod 755 "$ROOT/usr/sbin/pkg"
+# pkg is real and usable: the static pkg of the build machine is /usr/local/sbin/pkg (/usr/sbin/pkg, the bootstrapper, hands over to it), /usr/local is made writable at boot (wsbsd_overlay: a unionfs
+# over the read-only medium), the repository is FreeBSD's own (/etc/pkg/FreeBSD.conf), the database lives in /var/db/pkg (a memory file system on the live image)
+if [ -x /usr/local/sbin/pkg-static ]; then install -d "$ROOT/usr/local/sbin" "$ROOT/usr/local/etc"; install -m 755 /usr/local/sbin/pkg-static "$ROOT/usr/local/sbin/pkg"; cp /usr/local/etc/pkg.conf.sample "$ROOT/usr/local/etc/pkg.conf.sample" 2>/dev/null; else echo "NOTE: pkg-static is not on the build machine: pkg stays the bootstrapper"; fi
+for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_overlay" "$ROOT/$d/rc.d/wsbsd_overlay"; done
 # the local time zone (GNUstep's NSTimeZone and ICU's date formats need one; the image has no /etc/localtime of its own)
 for d in etc private/etc; do cp "$ROOT/usr/share/zoneinfo/UTC" "$ROOT/$d/localtime" 2>/dev/null || true; done
 # what the desktop needs at run time and that earlier images lacked: ICU's data (NSDateFormatter crashed without it), a time zone, no getty on the screen's console
