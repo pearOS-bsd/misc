@@ -32,6 +32,7 @@ typedef struct {
 	ws_event ev[64];
 	unsigned ev_head, ev_tail;
 	uint32_t owner;
+	uint32_t space;         /* 0: the desktop; else the full-screen space this window lives in (the window id of the full-screen window) */
 	int sublevel, event_mask;
 	uint64_t tags;
 	ws_wid parent;          /* SetWindowParent: 0 = none */
@@ -65,6 +66,7 @@ struct ws_server {
 	uint64_t clock;
 	ws_compositor *comp;
 	int cx, cy, buttons, cursor_visible;
+	uint32_t active_space; int reveal_top, reveal_bottom;       /* the space on the screen (0: the desktop); in a full-screen space the menu bar and the Dock come back while the pointer rests at the top / bottom edge */
 	ws_wid grab, key_win; uint32_t active_owner;       /* the application that had key focus last: its menu bar is the one on the screen */
 	ws_event_sink sink; void *sink_ctx;
 	uint64_t gen;
@@ -96,6 +98,7 @@ void ws_server_free(ws_server *s)
 void ws_server_set_compositor(ws_server *s, ws_compositor *c) { if (s && c) s->comp = c; }
 
 static void bump(ws_server *s) { s->gen++; }
+static int space_shown(ws_server *s, const window *w);
 extern int (*ws_owner_visible_hook)(uint32_t owner);
 void ws_server_invalidate(ws_server *s) { bump(s); }
 static void refresh_menubars(ws_server *s);
@@ -411,7 +414,7 @@ static int order_group(ws_server *s, ws_wid id, int mode, ws_wid rel, int depth)
 		w->on_screen = 0; bump(s);
 		if (depth == 0 && s->key_win == id) {                              /* the key window went away: the frontmost ordinary window takes the keyboard (as on a Mac), else nobody */
 			window *best = NULL;
-			for (size_t i = 0; i < s->n; i++) { window *c = &s->win[i]; if (c->on_screen && (!ws_owner_visible_hook || ws_owner_visible_hook(c->owner)) && c->id != id && takes_key(c) && (!best || c->order > best->order)) best = c; }
+			for (size_t i = 0; i < s->n; i++) { window *c = &s->win[i]; if (c->on_screen && space_shown(s, c) && c->id != id && takes_key(c) && (!best || c->order > best->order)) best = c; }
 			set_key_window(s, best ? best->id : 0);
 		}
 	} else {
@@ -616,11 +619,26 @@ static int back_to_front(const void *a, const void *b)
 	return x->id < y->id ? -1 : 1;
 }
 
-int (*ws_owner_visible_hook)(uint32_t owner) = 0;       /* fast user switching: the windows of a session that is not on the console are left out */
+int (*ws_owner_visible_hook)(uint32_t owner) = 0;       /* fast user switching: the windows of a session that is not on the console are left out; bit 0 shown, bit 1 a system window (root's: always shown), bit 2 the Dock's */
+/* Spaces: the desktop (0) and the full-screen spaces. On the desktop the windows of full-screen spaces are away; in a full-screen space only its own window, the system's (the login window) and, while the pointer rests at the edge, the menu bar (level 20) and the Dock show */
+static int space_shown(ws_server *s, const window *w)
+{
+	int f = ws_owner_visible_hook ? ws_owner_visible_hook(w->owner) : 1;
+	if (!(f & 1)) return 0;
+	if (s->active_space == 0) return w->space == 0 || (f & 2);
+	if (w->space == s->active_space || (f & 2)) return 1;
+	if (f & 4) return s->reveal_bottom;
+	if (w->level == 20 && w->space == 0) return s->reveal_top;
+	return 0;
+}
+int ws_window_set_space(ws_server *s, ws_wid id, uint32_t space) { window *w = get(s, id); if (!w) return -1; w->space = space; bump(s); return 0; }
+void ws_server_set_space(ws_server *s, uint32_t space) { if (s->active_space == space) return; s->active_space = space; s->reveal_top = s->reveal_bottom = 0; bump(s); }
+uint32_t ws_server_space(const ws_server *s) { return s->active_space; }
 static size_t sorted(ws_server *s, window **out)
 {
 	size_t n = 0;
-	for (size_t i = 0; i < s->n; i++) if (s->win[i].on_screen && (!ws_owner_visible_hook || ws_owner_visible_hook(s->win[i].owner))) out[n++] = &s->win[i];
+	if (s->active_space) { int any = 0; for (size_t i = 0; i < s->n; i++) if (s->win[i].space == s->active_space && s->win[i].on_screen) { any = 1; break; } if (!any) { s->active_space = 0; s->reveal_top = s->reveal_bottom = 0; bump(s); } }       /* the window of the full-screen space went away: back to the desktop */
+	for (size_t i = 0; i < s->n; i++) if (s->win[i].on_screen && space_shown(s, &s->win[i])) out[n++] = &s->win[i];
 	qsort(out, n, sizeof *out, back_to_front);
 	return n;
 }
@@ -736,6 +754,7 @@ void ws_server_mouse(ws_server *s, int x, int y, int buttons)
 	y = y < 0 ? 0 : y >= s->h ? s->h - 1 : y;
 	int moved = x != s->cx || y != s->cy, pressed = buttons & ~s->buttons, released = s->buttons & ~buttons;
 	s->cx = x; s->cy = y;
+	if (s->active_space) { int rt = y <= (s->reveal_top ? 32 : 1), rb = y >= s->h - (s->reveal_bottom ? 96 : 2); if (rt != s->reveal_top || rb != s->reveal_bottom) { s->reveal_top = rt; s->reveal_bottom = rb; bump(s); } }
 	if (moved) track_update(s, x, y);
 	if (moved && s->obscured) { s->obscured = 0; s->cursor_serial++; }       /* an obscured cursor comes back when the mouse moves */
 	ws_wid target = s->grab ? s->grab : ws_find_window(s, x, y);

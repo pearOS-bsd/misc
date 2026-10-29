@@ -4,6 +4,7 @@
  * window server here has no window manager, so the application does it, with plain events (no nested loop: a lost mouse-up cannot leave the window stuck, a button
  * release outside the application ends it too). A window that wants to be resizable although it has no resizable style mask (the Finder's) answers YES to -wsdIsResizable, and one that has its own draggable area (the Finder's toolbar) answers YES to -wsdWantsMoveAt: for the mouse-down event. */
 #import <AppKit/AppKit.h>
+#import <GNUstepGUI/GSDisplayServer.h>
 #import <objc/runtime.h>
 #import <objc/message.h>
 
@@ -123,10 +124,19 @@ static NSMutableDictionary *gFullSaved;
 BOOL WsdIsFullscreen(NSWindow *w) { return gFullSaved && gFullSaved[@([w windowNumber])] != nil; }
 void WsdToggleFullscreen(NSWindow *w)
 {
+	/* Full screen is a Space of its own, as on the Mac: the window covers the whole screen (the menu bar's strip too) in a space that only it lives in; the desktop, the other windows, the menu bar and the Dock are away until the pointer rests at the top / bottom edge (they come back over it) or the window leaves full screen (the same button, Control-Command-F), or closes. */
 	if (!gFullSaved) gFullSaved = [[NSMutableDictionary alloc] init];
-	NSNumber *k = @([w windowNumber]);
-	if (gFullSaved[k]) { [w setFrame: [gFullSaved[k] rectValue] display: YES]; [gFullSaved removeObjectForKey: k]; return; }
-	gFullSaved[k] = [NSValue valueWithRect: [w frame]]; NSRect sc = [[NSScreen mainScreen] frame]; [w setFrame: NSMakeRect(sc.origin.x, sc.origin.y, sc.size.width, sc.size.height - kBarH) display: YES];
+	NSNumber *k = @([w windowNumber]); id srv = GSCurrentServer(); BOOL has = [srv respondsToSelector: @selector(wsdSetActiveSpace:)];
+	if (gFullSaved[k]) {
+		if (has) { ((void (*)(id, SEL, unsigned))objc_msgSend)(srv, @selector(wsdSetActiveSpace:), 0); ((void (*)(id, SEL, int, unsigned))objc_msgSend)(srv, @selector(wsdSetWindowSpace::), [w windowNumber], 0); }
+		[w setFrame: [gFullSaved[k] rectValue] display: YES]; [gFullSaved removeObjectForKey: k]; return;
+	}
+	gFullSaved[k] = [NSValue valueWithRect: [w frame]]; NSRect sc = [[NSScreen mainScreen] frame];
+	if (has) {
+		[w setFrame: sc display: YES];
+		unsigned sid = ((unsigned (*)(id, SEL, int))objc_msgSend)(srv, @selector(wsdServerWindowID:), [w windowNumber]);
+		((void (*)(id, SEL, int, unsigned))objc_msgSend)(srv, @selector(wsdSetWindowSpace::), [w windowNumber], sid); ((void (*)(id, SEL, unsigned))objc_msgSend)(srv, @selector(wsdSetActiveSpace:), sid);
+	} else [w setFrame: NSMakeRect(sc.origin.x, sc.origin.y, sc.size.width, sc.size.height - kBarH) display: YES];
 }
 void WsdTileWindow(NSWindow *w, int where)       /* 0 left half, 1 right half, 2 fill, 3 center (a third smaller than the area) */
 {

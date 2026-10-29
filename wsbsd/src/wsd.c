@@ -70,9 +70,10 @@ static uint8_t rbuf[WS_IPC_RECV_CAP];        /* receive buffer: requests are par
 
 extern int (*ws_owner_visible_hook)(uint32_t owner);
 static conn conns[MAXCONN];
+static int conn_is_dock(conn *c);
 static int owner_on_console(uint32_t owner)     /* the hook of the server: is a window of this connection shown (its session owns the console, or it is the login window / the server's own) */
 {
-	for (int i = 0; i < MAXCONN; i++) if (conns[i].fd >= 0 && conns[i].id == owner) { uid_t u = conns[i].uid; if (u == 0 || u == geteuid()) return 1; sess_refresh(); return !fus_active || u == console_uid; }
+	for (int i = 0; i < MAXCONN; i++) if (conns[i].fd >= 0 && conns[i].id == owner) { uid_t u = conns[i].uid; int dk = conn_is_dock(&conns[i]) ? 4 : 0; if (u == 0 || u == geteuid()) return (getenv("WSD_NO_SYSTEM_WINDOWS") ? 1 : 3) | dk;       /* root's windows (the login window) show in every space; the dev VM runs everything as root: WSD_NO_SYSTEM_WINDOWS=1 for tests */ sess_refresh(); return (!fus_active || u == console_uid) ? 1 | dk : 0; }
 	return 1;
 }
 static uint32_t next_conn = 1;
@@ -1171,6 +1172,9 @@ static int do_private(conn *c, const uint8_t *buf, size_t len)
 	case WSX_GET_FPS: r.a[0] = (int32_t)(ws_fps_rate() * 100 + 0.5); r.a[1] = (int32_t)(ws_fps_compose_ms() * 100 + 0.5); r.a[2] = (int32_t)(ws_fps_total() & 0x7fffffff); break;
 	case WSX_SET_CURSOR: ws_server_set_cursor_shape(srv, a[0]); break;
 	case WSX_SET_KEY: r.retcode = holds_rights(c, (uint32_t)a[0]) && !ws_set_key_window(srv, (ws_wid)a[0]) ? 0 : CGS_ERROR_FAILURE; break;
+	case WSX_SET_SPACE: r.retcode = holds_rights(c, (uint32_t)a[0]) ? ws_window_set_space(srv, (ws_wid)a[0], (uint32_t)a[1]) : CGS_ERROR_FAILURE; wsd_dirty = 1; break;
+	case WSX_SET_ACTIVE_SPACE: ws_server_set_space(srv, (uint32_t)a[0]); wsd_dirty = 1; break;
+	case WSX_GET_ACTIVE_SPACE: r.a[0] = (int32_t)ws_server_space(srv); break;
 	case WSX_SET_GLASS: r.retcode = holds_rights(c, (uint32_t)a[0]) ? ws_set_window_glass_slot(srv, (ws_wid)a[0], a[7], (ws_rect){ a[1], a[2], a[3], a[4] }, a[5], a[6]) : CGS_ERROR_FAILURE; break;
 	case WSX_QUIT: running = 0; break;
 	case WSX_GET_CONNECTION_ID: r.a[0] = (int32_t)c->id; break;
@@ -1189,7 +1193,7 @@ static int dispatch(conn *c, uint8_t *buf, size_t len, int *fds, int nfds)
 	for (int i = 0; i < nfds; i++) close(fds[i]);                       /* every other request takes no descriptors */
 	if (h->msgh_size < sizeof *h || h->msgh_size > len) return reply_mig_error(c->fd, h, MIG_BAD_ARGUMENTS);
 	h->msgh_local_port = c->id;                                         /* the connection the request arrived on */
-	if (h->msgh_id >= WSX_FLUSH && h->msgh_id <= WSX_SET_KEY) { dirty = 1; return do_private(c, buf, len); }
+	if (h->msgh_id >= WSX_FLUSH && h->msgh_id <= WSX_GET_ACTIVE_SPACE) { dirty = 1; return do_private(c, buf, len); }
 	if (h->msgh_id == SLS_MSG_CreateWindow) { dirty = 1; return do_create_window(c, buf, len); }
 	if (h->msgh_id == SLS_MSG_NewConnectionPort) return do_new_connection(c, buf, len);
 	if (h->msgh_id == SLS_MSG_FlushSurface) { dirty = 1; return do_flush_surface(c, buf, len); }
