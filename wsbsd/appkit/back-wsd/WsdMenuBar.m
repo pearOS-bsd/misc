@@ -5,6 +5,10 @@
 #import <AppKit/AppKit.h>
 #import <objc/runtime.h>
 #import <objc/message.h>
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#include <stdio.h>
+#include <string.h>
 
 extern BOOL WsdBarWantsLightText(void);
 static NSString *const kPearItem = @"wsd.pear";
@@ -58,6 +62,48 @@ void WsdDrawBarItem(NSMenuItemCell *cell, NSRect f, BOOL highlighted)
 	if (WsdIsPearItem([cell menuItem])) WsdDrawPear(NSMakeRect(f.origin.x, flipped ? -1 : 1, f.size.width, f.size.height), 16, WsdBarTextColor(YES), flipped);
 }
 
+/* About This Mac: the window of the real one, from its accessibility tree (280 x 503 with the title bar; the picture 194 x 194 at (43, 29), the name 20 pt bold centred, the model year below, the six rows
+ * with their labels right-aligned to x 120 and values from x 128 on a pitch of 16 from y 293, "More Info…" 94 x 26 at (93, 391), "Regulatory Certification" 131 x 16 at (75, 429), the copyright 169 x 30 at (56, 444)).
+ * The values are this machine's: the model from the firmware's product name, the chip from hw.model, the memory from hw.physmem, the serial number from the firmware, the system from SystemVersion.plist. Standard AppKit controls. */
+static NSString *KenvValue(NSString *k) { FILE *f = popen([[NSString stringWithFormat: @"kenv -q %@ 2>/dev/null", k] UTF8String], "r"); if (!f) return @""; char b[256] = { 0 }; if (fgets(b, sizeof b, f)) { size_t n = strlen(b); while (n && (b[n - 1] == '\n' || b[n - 1] == ' ')) b[--n] = 0; } pclose(f); return @(b); }
+static NSString *SysctlString(const char *name) { char b[256] = { 0 }; size_t n = sizeof b - 1; if (sysctlbyname(name, b, &n, NULL, 0) != 0) return @""; return @(b); }
+@interface WsdLaptopView : NSView @end
+@implementation WsdLaptopView
+- (void)drawRect:(NSRect)r
+{
+	NSRect b = [self bounds]; CGFloat w = b.size.width;
+	NSBezierPath *lid = [NSBezierPath bezierPathWithRoundedRect: NSMakeRect(w * 0.14, b.size.height * 0.30, w * 0.72, b.size.height * 0.52) xRadius: 8 yRadius: 8]; [[NSColor colorWithCalibratedWhite: 0.20 alpha: 1] setFill]; [lid fill];
+	NSBezierPath *scr = [NSBezierPath bezierPathWithRoundedRect: NSInsetRect(NSMakeRect(w * 0.14, b.size.height * 0.30, w * 0.72, b.size.height * 0.52), 6, 6) xRadius: 3 yRadius: 3]; [[NSColor colorWithCalibratedRed: 0.20 green: 0.52 blue: 0.90 alpha: 1] setFill]; [scr fill];
+	NSBezierPath *base = [NSBezierPath bezierPathWithRoundedRect: NSMakeRect(w * 0.06, b.size.height * 0.24, w * 0.88, b.size.height * 0.07) xRadius: 3 yRadius: 3]; [[NSColor colorWithCalibratedWhite: 0.78 alpha: 1] setFill]; [base fill];
+}
+@end
+@interface WsdAboutTarget : NSObject @end
+@implementation WsdAboutTarget
+- (void)wsdMoreInfo:(id)s { for (NSString *a in @[ @"/System/Applications/Utilities/System Information.app", @"/System/Applications/System Settings.app" ]) if ([[NSFileManager defaultManager] fileExistsAtPath: a]) { [[NSWorkspace sharedWorkspace] launchApplication: a]; return; } NSBeep(); }
+@end
+static void WsdShowAbout(id target)
+{
+	static WsdAboutTarget *tg; if (!tg) tg = [WsdAboutTarget new]; static NSWindow *w; if (w && [w isVisible]) { [w makeKeyAndOrderFront: nil]; return; }
+	NSString *model = KenvValue(@"smbios.system.product"), *maker = KenvValue(@"smbios.system.maker"), *serial = KenvValue(@"smbios.system.serial"), *cpu = SysctlString("hw.model");
+	if (![model length]) model = @"Computer"; if (![serial length] || [serial hasPrefix: @"Default"] || [serial hasPrefix: @"Not "] || [serial hasPrefix: @"System"]) serial = @"—";
+	uint64_t mem = 0; size_t n = sizeof mem; sysctlbyname("hw.physmem", &mem, &n, NULL, 0); double gb = ceil((double)mem / (1024.0 * 1024 * 1024)); int gbi = (int)gb; if (gbi > 4 && (gbi & 1)) gbi++;
+	NSDictionary *sv = [NSDictionary dictionaryWithContentsOfFile: @"/System/Library/CoreServices/SystemVersion.plist"]; NSString *osName = sv[@"ProductName"] ?: @"pearOS", *osVer = sv[@"ProductVersion"] ?: SysctlString("kern.osrelease");
+	NSString *disk = @"Macintosh HD";
+	w = [[NSWindow alloc] initWithContentRect: NSMakeRect(0, 0, 280, 475) styleMask: NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask backing: NSBackingStoreBuffered defer: NO]; [w setReleasedWhenClosed: NO]; [w setTitle: @""];
+	NSView *cv = [w contentView]; CGFloat H = 475;       /* the content: 503 less the title bar (28); y below is from the top of the window, as measured */
+	CGFloat (^Y)(CGFloat, CGFloat) = ^CGFloat(CGFloat top, CGFloat h) { return H - (top - 28) - h; };
+	WsdLaptopView *pic = [[WsdLaptopView alloc] initWithFrame: NSMakeRect(43, Y(29, 194), 194, 194)]; [cv addSubview: pic];
+	NSTextField *(^L)(NSString *, NSRect, NSFont *, NSColor *, NSTextAlignment) = ^NSTextField *(NSString *t, NSRect f, NSFont *fn, NSColor *c, NSTextAlignment al) { NSTextField *x = [NSTextField labelWithString: t]; [x setFrame: f]; [x setFont: fn]; [x setTextColor: c]; [x setAlignment: al]; [x setLineBreakMode: NSLineBreakByWordWrapping]; [cv addSubview: x]; return x; };
+	NSColor *sec = [NSColor secondaryLabelColor], *pri = [NSColor labelColor];
+	L(model, NSMakeRect(0, Y(231, 28), 280, 28), [NSFont boldSystemFontOfSize: 20], pri, NSCenterTextAlignment);
+	L([maker length] && ![maker hasPrefix: @"System"] ? maker : @"", NSMakeRect(0, Y(260, 15), 280, 15), [NSFont systemFontOfSize: 11], sec, NSCenterTextAlignment);
+	NSArray *rows = @[ @[ @"Processor", [cpu length] ? cpu : @"Unknown" ], @[ @"Memory", [NSString stringWithFormat: @"%d GB", gbi] ], @[ @"Startup disk", disk ], @[ @"Serial number", serial ], @[ osName, osVer ] ];
+	CGFloat top = 293; for (NSArray *r in rows) { L(r[0], NSMakeRect(0, Y(top, 16), 120, 16), [NSFont systemFontOfSize: 11], sec, NSRightTextAlignment); L(r[1], NSMakeRect(128, Y(top, 16), 140, 16), [NSFont systemFontOfSize: 11], pri, NSLeftTextAlignment); top += 16; }
+	NSButton *mi = [NSButton buttonWithTitle: @"More Info…" target: tg action: @selector(wsdMoreInfo:)]; [mi setFrame: NSMakeRect(93, Y(391, 26), 94, 26)]; [cv addSubview: mi];
+	L(@"™ and © 1983-2026 Apple Inc.\nAll Rights Reserved.", NSMakeRect(56, Y(444, 30), 169, 30), [NSFont systemFontOfSize: 9], sec, NSCenterTextAlignment);
+	NSRect sf = [[NSScreen mainScreen] frame]; [w setFrameOrigin: NSMakePoint(NSMidX(sf) - 140, NSMaxY(sf) - 30 - 60 - 503)]; [NSApp activateIgnoringOtherApps: YES]; [w makeKeyAndOrderFront: nil];
+}
+
 /* ---- the system menu (the Apple menu of the Mac): what its rows do ---- */
 @interface WsdSystemMenu : NSObject
 + (instancetype)shared;
@@ -72,13 +118,7 @@ static BOOL Confirm(NSString *msg, NSString *info, NSString *button)
 {
 	NSAlert *a = [[NSAlert alloc] init]; [a setMessageText: msg]; [a setInformativeText: info]; [a addButtonWithTitle: button]; [a addButtonWithTitle: @"Cancel"]; return [a runModal] == NSAlertFirstButtonReturn;
 }
-- (void)aboutThisMac:(id)s
-{
-	NSString *rel = [NSString stringWithContentsOfFile: @"/etc/os-release" encoding: NSUTF8StringEncoding error: NULL]; NSString *name = @"pearOS"; NSString *ver = @"";
-	for (NSString *l in [rel componentsSeparatedByString: @"\n"]) { if ([l hasPrefix: @"PRETTY_NAME="]) name = [[l substringFromIndex: 12] stringByTrimmingCharactersInSet: [NSCharacterSet characterSetWithCharactersInString: @"\""]]; }
-	NSTask *t = [[NSTask alloc] init]; NSPipe *p = [NSPipe pipe]; [t setLaunchPath: @"/usr/bin/uname"]; [t setArguments: @[ @"-sr" ]]; [t setStandardOutput: p]; @try { [t launch]; [t waitUntilExit]; ver = [[NSString alloc] initWithData: [[p fileHandleForReading] readDataToEndOfFile] encoding: NSUTF8StringEncoding]; } @catch (NSException *e) {}
-	NSAlert *a = [[NSAlert alloc] init]; [a setMessageText: name]; [a setInformativeText: [NSString stringWithFormat: @"%@\nHost: %@", [ver stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]], [[NSProcessInfo processInfo] hostName]]]; [a runModal];
-}
+- (void)aboutThisMac:(id)s { WsdShowAbout(self); }
 - (void)openSettings:(id)s { for (NSString *a in @[ @"/System/Applications/System Settings.app", @"/Applications/System Settings.app" ]) if ([[NSFileManager defaultManager] fileExistsAtPath: a]) { [[NSWorkspace sharedWorkspace] launchApplication: a]; return; } NSBeep(); }
 - (void)openAppStore:(id)s { for (NSString *a in @[ @"/System/Applications/App Store.app", @"/Applications/App Store.app" ]) if ([[NSFileManager defaultManager] fileExistsAtPath: a]) { [[NSWorkspace sharedWorkspace] launchApplication: a]; return; } NSBeep(); }
 - (void)clearRecents:(id)s { [[NSDocumentController sharedDocumentController] clearRecentDocuments: nil]; }
