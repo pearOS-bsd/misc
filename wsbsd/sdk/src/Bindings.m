@@ -55,6 +55,17 @@ static void WSBSelectItem(id self, SEL _cmd, NSMenuItem *it)
 	for (NSString *b in @[ @"selectedValue", @"selectedTag", @"selectedIndex" ]) WSBReverse(self, b);
 }
 
+/* NSTreeController -arrangedObjects: while there is no tree yet it calls -rearrangeObjects, which posts didChangeValueForKey:"arrangedObjects"; an observer that reads arrangedObjects (a binding of the outline view) then comes back here, the tree is still nil (the content is not an array yet) and the loop never ends: Sloth ate 2.4 GB and died. A call from inside the rearrangement returns what there is. */
+static IMP origArranged; static const void *kInArranged = &kInArranged;
+static id WSBArrangedObjects(id self, SEL _cmd)
+{
+	if (objc_getAssociatedObject(self, kInArranged)) { Ivar iv = class_getInstanceVariable([self class], "_arranged_objects"); return iv ? object_getIvar(self, iv) : nil; }
+	objc_setAssociatedObject(self, kInArranged, @YES, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+	id r = ((id (*)(id, SEL))origArranged)(self, _cmd);
+	objc_setAssociatedObject(self, kInArranged, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+	return r;
+}
+
 @interface WSBBindingsInit : NSObject @end
 @implementation WSBBindingsInit
 + (void)load
@@ -62,6 +73,7 @@ static void WSBSelectItem(id self, SEL _cmd, NSMenuItem *it)
 	[NSMenuItem exposeBinding: @"value"];
 	[NSTreeController exposeBinding: @"sortDescriptors"];
 	for (NSString *b in @[ @"selectedValue", @"selectedTag", @"selectedIndex" ]) [NSPopUpButtonCell exposeBinding: b];
+	{ Method ma = class_getInstanceMethod([NSTreeController class], @selector(arrangedObjects)); if (ma && !origArranged) origArranged = method_setImplementation(ma, (IMP)WSBArrangedObjects); }
 	Method m = class_getInstanceMethod([NSPopUpButtonCell class], @selector(selectItem:)); if (m && !origSelectItem) origSelectItem = method_setImplementation(m, (IMP)WSBSelectItem);
 }
 @end
