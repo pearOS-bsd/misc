@@ -1,0 +1,42 @@
+#!/bin/sh
+# PROVIDE: wsbsd_gpu
+# REQUIRE: FILESYSTEMS kld wsbsd_overlay
+# BEFORE: LOGIN macdesktop
+# KEYWORD: nojail
+# Loads the native graphics driver of the machine's GPU (drm-kmod: i915kms for Intel, amdgpu / radeonkms for AMD, with their firmware) before the window server starts. The console framebuffer
+# the window server draws on then comes from the driver (fbdev emulation): native resolution of the panel and of external displays instead of the EFI mode. NVIDIA has no driver here and keeps
+# the EFI framebuffer, like virtual GPUs (QEMU, VMware, VirtualBox, virtio) and the CI. Safety: the EFI partition (label EFISYS) holding a file `nogpu` skips this script, a driver that does
+# not load within 40 seconds is given up on.
+. /etc/rc.subr
+name="wsbsd_gpu"
+rcvar="wsbsd_gpu_enable"
+start_cmd="wsbsd_gpu_start"
+stop_cmd=":"
+wsbsd_gpu_try()
+{
+	for m in "$@"; do
+		[ -e /boot/modules/$m.ko ] || continue
+		timeout 40 kldload -n $m >/dev/null 2>&1 && { echo "wsbsd_gpu: $m loaded" > /dev/console 2>/dev/null; return 0; }
+	done
+	return 1
+}
+wsbsd_gpu_start()
+{
+	case "$(kenv -q smbios.system.product 2>/dev/null)" in wsbsd-ci*) return 0 ;; esac
+	M=/var/run/wsbsd_esp_gpu; mkdir -p $M
+	for dev in /dev/msdosfs/EFISYS $(ls /dev/ada*p1 /dev/da*p1 /dev/nvd*p1 /dev/nda*p1 /dev/mmcsd*p1 /dev/cd* 2>/dev/null); do
+		[ -e "$dev" ] || continue
+		mount -t msdosfs -o ro "$dev" $M 2>/dev/null || continue
+		if [ -f $M/nogpu ]; then umount $M 2>/dev/null; return 0; fi
+		umount $M 2>/dev/null
+	done
+	# display controllers (PCI class 03): vendor 8086 Intel, 1002 AMD; 10de NVIDIA and the virtual GPUs stay on the EFI framebuffer
+	gpus="$(pciconf -l 2>/dev/null | grep -E 'class=0x03(00|80)' )"
+	echo "$gpus" | grep -q 'chip=0x[0-9a-f]\{4\}8086' && wsbsd_gpu_try i915kms && return 0
+	if echo "$gpus" | grep -q 'chip=0x[0-9a-f]\{4\}1002'; then
+		wsbsd_gpu_try amdgpu radeonkms
+	fi
+	return 0
+}
+load_rc_config $name
+run_rc_command "$1"

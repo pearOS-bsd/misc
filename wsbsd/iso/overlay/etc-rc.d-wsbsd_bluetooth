@@ -1,0 +1,26 @@
+#!/bin/sh
+# PROVIDE: wsbsd_bluetooth
+# REQUIRE: FILESYSTEMS kld devd
+# BEFORE: bluetooth LOGIN
+# KEYWORD: nojail
+# Brings up every USB Bluetooth controller: loads the netgraph stack and ng_ubt, uploads the firmware the Intel and Realtek controllers need (iwmbtfw, rtlbtfw, firmware from the iwmbt-firmware and
+# rtlbt-firmware packages), and starts FreeBSD's own bluetooth service (hci, l2cap, hcsecd, sdpd) on each controller.
+. /etc/rc.subr
+name="wsbsd_bluetooth"
+rcvar="wsbsd_bluetooth_enable"
+start_cmd="wsbsd_bluetooth_start"
+stop_cmd=":"
+wsbsd_bluetooth_start()
+{
+	kldload -n netgraph ng_bluetooth ng_hci ng_l2cap ng_btsocket ng_ubt >/dev/null 2>&1
+	mkdir -p /var/db /var/run
+	[ -f /etc/bluetooth/hcsecd.conf ] || { mkdir -p /etc/bluetooth; : > /etc/bluetooth/hcsecd.conf; }
+	( sleep 2
+	  # controllers that need their firmware first (they show up as a ugen device until the firmware is in)
+	  if command -v iwmbtfw >/dev/null 2>&1; then for d in $(usbconfig list 2>/dev/null | grep -i -E 'vendor=0x8087|Intel' | sed 's/:.*//'); do iwmbtfw -d "$d" -f /usr/local/share/iwmbt-firmware >/dev/null 2>&1; done; fi
+	  if command -v rtlbtfw >/dev/null 2>&1; then for d in $(usbconfig list 2>/dev/null | grep -i -E 'vendor=0x0bda|Realtek' | sed 's/:.*//'); do rtlbtfw -d "$d" -f /usr/local/share/rtlbt-firmware >/dev/null 2>&1; done; fi
+	  sleep 1
+	  for n in $(ngctl list 2>/dev/null | sed -n 's/.*Name: *\(ubt[0-9]*\).*/\1/p'); do service bluetooth start "$n" >/dev/null 2>&1; done ) &
+}
+load_rc_config $name
+run_rc_command "$1"

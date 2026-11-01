@@ -13,17 +13,22 @@ stop_cmd=":"
 wsbsd_wifi_start()
 {
 	kldload -n wlan wlan_wep wlan_ccmp wlan_tkip wlan_amrr >/dev/null 2>&1
-	for m in if_iwlwifi if_iwm if_iwn if_iwx if_rtw88 if_rtw89 if_rtwn if_ath if_ath_pci if_bwn if_bwi if_ral if_run if_urtwn if_mwl if_otus; do kldload -n $m >/dev/null 2>&1; done
+	# every Wi-Fi driver FreeBSD 14 has (PCI: Intel, Realtek, Atheros, Broadcom, Ralink, Marvell; USB: Realtek, Ralink, Atheros, Zydas, Marvell); the ones without the card just do not attach
+	for m in if_iwlwifi if_iwm if_iwn if_iwx if_iwi if_ipw if_wpi if_rtw88 if_rtw89 if_rtwn if_rtwn_pci if_rtwn_usb if_rtwn_sdio if_rtw if_rsu if_urtw if_urtwn if_ath if_ath_pci if_ath_usb if_otus if_uath if_athp if_ath10k if_ath11k if_mt76 if_mt7921 if_bwn_pci if_bwn if_bwi if_ral if_rum if_run if_zyd if_upgt if_malo if_mwl if_mwifiex if_brcmfmac if_qtnfmac if_rtl8821cu; do kldload -n $m >/dev/null 2>&1; done
 	[ -f /etc/wpa_supplicant.conf ] || printf 'ctrl_interface=/var/run/wpa_supplicant\nctrl_interface_group=wheel\nupdate_config=1\neapol_version=2\nap_scan=1\n' > /etc/wpa_supplicant.conf
 	mkdir -p /var/run/wpa_supplicant
-	( sleep 3
-	  n=0
-	  for parent in $(sysctl -n net.wlan.devices 2>/dev/null); do
-		ifn=wlan$n; n=$((n + 1))
-		ifconfig $ifn >/dev/null 2>&1 || ifconfig $ifn create wlandev $parent >/dev/null 2>&1 || continue
-		ifconfig $ifn up >/dev/null 2>&1
-		pgrep -qf "wpa_supplicant.*-i $ifn" || wpa_supplicant -B -s -i $ifn -c /etc/wpa_supplicant.conf >/dev/null 2>&1
-		( until ifconfig $ifn 2>/dev/null | grep -q "status: associated"; do sleep 2; done; dhclient $ifn >/dev/null 2>&1 ) &
+	# cards that attach late (USB dongles, drivers devmatch loads after boot) are picked up for the first minute
+	( t=0
+	  while [ $t -lt 20 ]; do
+		sleep 3; t=$((t + 1))
+		for parent in $(sysctl -n net.wlan.devices 2>/dev/null); do
+			for w in $(ifconfig -l | tr ' ' '\n' | grep '^wlan'); do ifconfig $w 2>/dev/null | grep -q "parent interface: $parent" && continue 2; done
+			n=0; while ifconfig wlan$n >/dev/null 2>&1; do n=$((n + 1)); done; ifn=wlan$n
+			ifconfig $ifn create wlandev $parent >/dev/null 2>&1 || continue
+			ifconfig $ifn up >/dev/null 2>&1
+			pgrep -qf "wpa_supplicant.*-i $ifn" || wpa_supplicant -B -s -i $ifn -c /etc/wpa_supplicant.conf >/dev/null 2>&1
+			( until ifconfig $ifn 2>/dev/null | grep -q "status: associated"; do sleep 2; done; dhclient $ifn >/dev/null 2>&1 ) &
+		done
 	  done ) &
 }
 load_rc_config $name

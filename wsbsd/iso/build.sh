@@ -27,7 +27,10 @@ fi
 for need in /usr/local/GNUstep/System/Library/Libraries/libgnustep-gui.so.0.32 /usr/local/GNUstep/System/Library/Libraries/libgnustep-base.so.1.31 /usr/local/GNUstep/Local/Library/Libraries/libgnustep-corebase.so.0 /usr/local/GNUstep/Local/Library/Libraries/libopal.so.0; do
 	[ -f "$need" ] || { echo "missing after the software build: $need"; ls /usr/local/GNUstep/System/Library/Libraries /usr/local/GNUstep/Local/Library/Libraries 2>&1 | head -20; tail -20 "$WORK/gnustep.log" "$WORK/opal.log" 2>/dev/null; exit 1; }
 done
-(cd "$WS" && gmake fb >/dev/null && install -d /usr/local/sbin && install -m 755 wsd /usr/local/sbin/wsd && gmake wsspace wsshot wsclick wskey wsdrag wswins wsfps wsmove wscursor >/dev/null && install -d /usr/local/bin && install -m 755 wsspace wsshot wsclick wskey wsdrag wswins wsfps wsmove wscursor /usr/local/bin/)
+# the window server twice: wsd = DRM/KMS display + OpenGL ES compositor (Mesa; used when a GPU driver is loaded), wsd-fb = the console framebuffer + software compositor (no GPU driver: EFI GOP, VMs, NVIDIA).
+# The rc script starts wsd first and falls back to wsd-fb when it cannot get a display; wsd itself falls back to the software compositor when EGL / GLES2 cannot be initialised.
+pkg info -e mesa-libs >/dev/null 2>&1 || pkg install -y mesa-libs mesa-dri libdrm >/dev/null 2>&1 || true
+(cd "$WS" && gmake fb >/dev/null && install -d /usr/local/sbin && install -m 755 wsd /usr/local/sbin/wsd-fb && { gmake full >"$WORK/wsd-full.log" 2>&1 && install -m 755 wsd /usr/local/sbin/wsd || { echo "NOTE: gmake full failed (no Mesa / libdrm?), wsd is the framebuffer build"; tail -5 "$WORK/wsd-full.log"; install -m 755 wsd-fb /usr/local/sbin/wsd 2>/dev/null || cp /usr/local/sbin/wsd-fb /usr/local/sbin/wsd; }; } && gmake wsspace wsshot wsclick wskey wsdrag wswins wsfps wsmove wscursor >/dev/null && install -d /usr/local/bin && install -m 755 wsspace wsshot wsclick wskey wsdrag wswins wsfps wsmove wscursor /usr/local/bin/)
 (install -d /usr/local/bin; cc -O2 -o /usr/local/bin/dmgtool "$WS/dmg/dmgtool.c" -lz -lbz2 2>"$WORK/dmgtool.log" || echo "NOTE: dmgtool did not build"; cd "$WS/src" && for f in client compositor_sw region ipc evrec buffer; do cc -O2 -fPIC -std=c99 -D_DEFAULT_SOURCE -I"$WS/include" -c $f.c -o "$WORK/ws_$f.o"; done; cc -shared -o /usr/local/lib/libwsclient.so "$WORK"/ws_*.o -lm)
 sh "$WS/sdk/build-compat.sh" "$WORK/compat" > "$WORK/compat.log" 2>&1; install -m 755 "$WORK/compat/libwsbsdcompat.so" /usr/local/lib/libwsbsdcompat.so; install -m 755 "$WORK/compat/libQuartzCore.so" /usr/local/lib/libQuartzCore.so
 # Wi-Fi: CoreWLAN, CoreWiFi and airportd, laid out as on the Mac (installed below under /System and /usr/libexec)
@@ -68,10 +71,12 @@ rm -f "$ROOT"/usr/lib/*.a "$ROOT"/usr/lib/*_p.a "$ROOT"/usr/bin/clang* "$ROOT"/u
 echo "== 3. what we built, with the libraries it needs"
 mkdir -p "$ROOT/usr/local"
 PDFLIBS="$(cd / && ls usr/local/lib/libpoppler-glib.so* 2>/dev/null)"   # dlopen'ed by PDFImage.m: the dependency scan below follows them
-tar -C / -cf - $PDFLIBS usr/local/GNUstep usr/local/sbin/lsof usr/local/sbin/wsd usr/local/sbin/spctl usr/local/bin usr/local/libexec/dyld usr/local/lib/libwsclient.so usr/local/lib/libwsbsdcompat.so usr/local/lib/libQuartzCore.so usr/local/share/fonts usr/local/etc/fonts usr/local/share/wsbsd usr/local/bin/zsh usr/local/bin/sudo usr/local/libexec/sudo usr/local/lib/sudo usr/local/share/zsh usr/local/share/zsh-autosuggestions usr/local/lib/zsh usr/local/share/icu usr/local/lib/libicudata.so usr/local/lib/libicudata.so.76 usr/local/lib/libicudata.so.76.1 2>/dev/null | tar -C "$ROOT" -xpf -
+tar -C / -cf - $PDFLIBS usr/local/GNUstep usr/local/sbin/lsof usr/local/sbin/wsd usr/local/sbin/wsd-fb usr/local/lib/dri usr/local/lib/gbm usr/local/share/glvnd usr/local/share/drirc.d usr/local/sbin/spctl usr/local/bin usr/local/libexec/dyld usr/local/lib/libwsclient.so usr/local/lib/libwsbsdcompat.so usr/local/lib/libQuartzCore.so usr/local/share/fonts usr/local/etc/fonts usr/local/share/wsbsd usr/local/bin/zsh usr/local/bin/sudo usr/local/libexec/sudo usr/local/lib/sudo usr/local/share/zsh usr/local/share/zsh-autosuggestions usr/local/lib/zsh usr/local/share/icu usr/local/lib/libicudata.so usr/local/lib/libicudata.so.76 usr/local/lib/libicudata.so.76.1 2>/dev/null | tar -C "$ROOT" -xpf -
 mkdir -p "$ROOT/usr/sbin"; ln -sf /usr/local/sbin/lsof "$ROOT/usr/sbin/lsof"       # where the Mac's applications look for it
 # guest tools of VMware and VirtualBox (before the library scan, which then follows their dependencies)
 sh "$HERE/tools/guesttools.sh" "$ROOT" || echo "NOTE: guest tools failed"
+# Wi-Fi / Bluetooth firmware, usbmuxd + libimobiledevice (iPhone tethering)
+sh "$HERE/tools/drivers.sh" "$ROOT" || echo "NOTE: driver firmware failed"
 # every shared library below /usr/local that these programs need (ldd closure)
 find "$ROOT/usr/local" -type f \( -name '*.so*' -o -perm -u+x \) 2>/dev/null | sed "s|^$ROOT||" > "$WORK/elf.list"
 : > "$WORK/needed.list"
@@ -111,6 +116,8 @@ for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_kbdlig
 # the keyboard backlight driver (needs the kernel sources of the build machine; without them the image simply has no such module)
 if [ -d /usr/src/sys/dev/acpica ]; then (cd "$WS/kmod/clevo_wmi" && make clean >/dev/null 2>&1; make >"$WORK/clevo_wmi.log" 2>&1 && install -d "$ROOT/boot/modules" && install -m 555 clevo_wmi.ko "$ROOT/boot/modules/clevo_wmi.ko") || echo "NOTE: clevo_wmi did not build (see $WORK/clevo_wmi.log)"; else echo "NOTE: no /usr/src/sys: no keyboard backlight module in this image"; fi
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_wifi" "$ROOT/$d/rc.d/wsbsd_wifi"; done
+for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_bluetooth" "$ROOT/$d/rc.d/wsbsd_bluetooth"; done
+for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_gpu" "$ROOT/$d/rc.d/wsbsd_gpu"; done
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_ssh" "$ROOT/$d/rc.d/wsbsd_ssh"; done
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-airportd" "$ROOT/$d/rc.d/airportd"; install -m 755 "$HERE/overlay/etc-rc.d-usernoted" "$ROOT/$d/rc.d/usernoted"; done
 # no text login on the screen: the window server owns it (the serial console keeps its login)
