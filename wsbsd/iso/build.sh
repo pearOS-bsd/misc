@@ -90,6 +90,10 @@ for round in 1 2 3 4 5 6; do
 	cp "$WORK/n2.list" "$WORK/needed.list"
 done
 while read -r l; do [ -f "$l" ] && { mkdir -p "$ROOT$(dirname "$l")"; cp -L "$l" "$ROOT$l"; }; done < "$WORK/needed.list"
+# below GitHub's 2 GiB release limit: the Mesa drivers that need LLVM (llvmpipe / swrast, radeonsi, r600, zink) and LLVM itself (~150 MB) are not in the image. Intel (iris, crocus, i915) needs none of it; wsd
+# falls back to its software compositor where EGL finds no driver (AMD composes on the CPU, the display still comes from amdgpu)
+for d in swrast kms_swrast radeonsi r600 zink; do rm -f "$ROOT"/usr/local/lib/dri/${d}_dri.so "$ROOT"/usr/local/lib/dri/${d}_drv_video.so; done
+rm -rf "$ROOT"/usr/local/llvm[0-9]* "$ROOT"/usr/local/lib/libLLVM* "$ROOT"/usr/local/lib/libclang* 2>/dev/null
 mkdir -p "$ROOT/usr/local/etc"; [ -d /usr/local/etc/fonts ] && cp -R /usr/local/etc/fonts "$ROOT/usr/local/etc/" 2>/dev/null || true
 
 echo "== 4. the macOS layout"
