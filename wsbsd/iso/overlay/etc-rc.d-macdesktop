@@ -35,7 +35,21 @@ macdesktop_start()
 	pgrep -x gdnc >/dev/null || daemon -f -o /var/log/gdnc.log $GS/gdnc --auto --daemon
 	i=0; while [ $i -lt 60 ] && ! pgrep -x gdnc >/dev/null; do sleep 1; i=$((i+1)); done
 	rm -f $WS_SOCKET
-	daemon -f -o /var/log/WindowServer.log -p /var/run/WindowServer.pid $WS -b kms -c /dev/ttyv0 -t -F
+	# with a GPU driver loaded (wsbsd_gpu): the DRM/KMS display and the OpenGL ES compositor (wsd falls back to the software compositor by itself when EGL / GLES2 cannot start); when there is no
+	# /dev/dri/card0, a CI run, or wsd cannot take the display within a few seconds: the console framebuffer with the software compositor (wsd-fb)
+	gpu_ok=0
+	case "$(kenv -q smbios.system.product 2>/dev/null)" in wsbsd-ci*) ;; *)
+		if [ -e /dev/dri/card0 ] && [ -x /usr/local/sbin/wsd ] && [ ! -e /var/run/wsbsd/nokms ]; then
+			daemon -f -o /var/log/WindowServer.log -p /var/run/WindowServer.pid $WS -b kms -c /dev/dri/card0 -r gl -t -F
+			i=0; while [ $i -lt 40 ] && [ ! -S $WS_SOCKET ]; do sleep 0.25; i=$((i+1)); done
+			if [ -S $WS_SOCKET ] && pgrep -f "WindowServer -b kms" >/dev/null 2>&1; then gpu_ok=1; echo "macdesktop: KMS + GL display" > /dev/console 2>/dev/null
+			else pkill -f "WindowServer -b kms" 2>/dev/null; sleep 1; rm -f $WS_SOCKET; fi
+		fi ;;
+	esac
+	if [ $gpu_ok = 0 ]; then
+		FB=/usr/local/sbin/wsd-fb; [ -x $FB ] || FB=$WS
+		daemon -f -o /var/log/WindowServer.log -p /var/run/WindowServer.pid $FB -b kms -c /dev/ttyv0 -t -F
+	fi
 	sleep 2
 	# Sessions, as on the Mac (loginwindow is root and makes a session per account; fast user switching): each account that is signed in has its own launchd running the desktop programs; $SD/sessions lists their uids
 	# and $SD/console holds the uid whose session is on the screen (empty while the login window is shown). The window server shows only the windows of the console session and of root (the login window).
@@ -93,7 +107,7 @@ macdesktop_stop()
 	# the sessions end first, then the window server shows the pear alone (no bar) and keeps it on the screen until the power goes: the console stays muted, so nothing is drawn over it
 	for f in /var/run/wsbsd/launchd.*.pid; do [ -f "$f" ] && kill "$(cat $f)" 2>/dev/null; done; sleep 1
 	for p in Terminal Finder Dock SystemUIServer; do pkill -x "$p" 2>/dev/null; done
-	WS_SOCKET=/var/run/WindowServer.sock /usr/local/bin/wsspace shutdown >/dev/null 2>&1 || {       # an image without the tool: the old way (the console comes back)
+	WS_SOCKET=/var/run/WindowServer.sock /usr/local/bin/wsspace shutdown >/dev/null 2>&1 && { conscontrol mute on >/dev/null 2>&1; sysctl kern.consmute=1 >/dev/null 2>&1; } || {       # an image without the tool: the old way (the console comes back)
 		[ -f /var/run/WindowServer.pid ] && kill "$(cat /var/run/WindowServer.pid)" 2>/dev/null
 		i=0; while [ $i -lt 30 ] && pgrep -f "WindowServer -b" >/dev/null 2>&1; do sleep 0.1; i=$((i+1)); done
 		conscontrol mute off >/dev/null 2>&1; }

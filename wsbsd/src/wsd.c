@@ -1287,7 +1287,7 @@ int main(int argc, char **argv)
 			EV_SET(&ev, ws_evdev_fd(input, i), EVFILT_READ, EV_ADD, 0, 0, NULL);
 			kevent(kq, &ev, 1, NULL, 0, NULL);
 		}
-		vt_ok = wsd_vt_setup(card) == 0;                              /* console switching: SIGUSR1 = leave, SIGUSR2 = come back */
+		vt_ok = wsd_vt_setup(strncmp(card, "/dev/dri", 8) ? card : "/dev/ttyv0") == 0;                              /* console switching: SIGUSR1 = leave, SIGUSR2 = come back */
 		signal(SIGUSR1, SIG_IGN); signal(SIGUSR2, SIG_IGN); signal(SIGTERM, SIG_IGN); signal(SIGINT, SIG_IGN);
 		int sigs[4] = { SIGUSR1, SIGUSR2, SIGTERM, SIGINT };
 		for (int i = 0; i < 4; i++) { EV_SET(&ev, sigs[i], EVFILT_SIGNAL, EV_ADD, 0, 0, NULL); kevent(kq, &ev, 1, NULL, 0, NULL); }
