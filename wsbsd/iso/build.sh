@@ -73,6 +73,10 @@ mkdir -p "$ROOT/usr/local"
 PDFLIBS="$(cd / && ls usr/local/lib/libpoppler-glib.so* 2>/dev/null)"   # dlopen'ed by PDFImage.m: the dependency scan below follows them
 tar -C / -cf - $PDFLIBS usr/local/GNUstep usr/local/sbin/lsof usr/local/sbin/wsd usr/local/sbin/wsd-fb usr/local/lib/dri usr/local/lib/gbm usr/local/share/glvnd usr/local/share/drirc.d usr/local/sbin/spctl usr/local/bin usr/local/libexec/dyld usr/local/lib/libwsclient.so usr/local/lib/libwsbsdcompat.so usr/local/lib/libQuartzCore.so usr/local/share/fonts usr/local/etc/fonts usr/local/share/wsbsd usr/local/bin/zsh usr/local/bin/sudo usr/local/libexec/sudo usr/local/lib/sudo usr/local/share/zsh usr/local/share/zsh-autosuggestions usr/local/lib/zsh usr/local/share/icu usr/local/lib/libicudata.so usr/local/lib/libicudata.so.76 usr/local/lib/libicudata.so.76.1 2>/dev/null | tar -C "$ROOT" -xpf -
 mkdir -p "$ROOT/usr/sbin"; ln -sf /usr/local/sbin/lsof "$ROOT/usr/sbin/lsof"       # where the Mac's applications look for it
+# the image must stay below GitHub's 2 GiB limit for a release file: Mesa drivers that pull in LLVM (llvmpipe, radeonsi, r600: ~150 MB of libLLVM) stay out. Intel (iris / crocus) needs no LLVM; wsd falls back to
+# its software compositor when EGL finds no driver (AMD then composes on the CPU, the display itself still comes from amdgpu)
+for f in "$ROOT"/usr/local/lib/dri/*.so "$ROOT"/usr/local/lib/libgallium*.so* "$ROOT"/usr/local/lib/libMesa*.so*; do [ -f "$f" ] || continue; ldd "$f" 2>/dev/null | grep -q 'libLLVM' && { echo "NOTE: $(basename "$f") needs LLVM, left out of the image"; rm -f "$f"; }; done
+ls "$ROOT"/usr/local/lib/dri 2>/dev/null | sed 's/^/dri: /'
 # guest tools of VMware and VirtualBox (before the library scan, which then follows their dependencies)
 sh "$HERE/tools/guesttools.sh" "$ROOT" || echo "NOTE: guest tools failed"
 # Wi-Fi / Bluetooth firmware, usbmuxd + libimobiledevice (iPhone tethering)
@@ -165,6 +169,7 @@ makefs -t msdos -o fat_type=16 -o volume_label=EFISYS -s 64m "$WORK/efiboot.img"
 
 echo "== 7. the ISO"
 ISO="$OUT/pearOS-UltraC0re-$ARCH-26.10.iso"
+echo "== size of the image root (MB)"; du -sm "$ROOT"/* "$ROOT"/usr/* "$ROOT"/usr/local/* "$ROOT"/boot/* 2>/dev/null | sort -rn | head -14
 makefs -t cd9660 -o rockridge -o label=PEAROS -o publisher="wsbsd" -o bootimage="i386;$WORK/efiboot.img" -o no-emul-boot -o platformid=efi "$ISO" "$ROOT"
 # the ISO is also a disk image: a GPT over the EFI image inside it, so that a plain write to a USB stick (dd, Etcher) boots on a PC (iso/tools/hybrid.py)
 python3 "$HERE/tools/hybrid.py" "$ISO" "$(stat -f %z "$WORK/efiboot.img" 2>/dev/null || stat -c %s "$WORK/efiboot.img")"
