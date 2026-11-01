@@ -257,5 +257,8 @@ jobs:
           TAG="iso-latest"; TITLE="pearOS UltraC0re 26.10 (latest build)"
           if [ "${GITHUB_REF_TYPE}" = tag ]; then TAG="${GITHUB_REF_NAME}"; TITLE="pearOS UltraC0re ${GITHUB_REF_NAME}"; fi
           gh release delete "$TAG" --repo "$GITHUB_REPOSITORY" --cleanup-tag --yes 2>/dev/null || true
-          gh release create "$TAG" out/*.iso --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "$TITLE" --prerelease \
-            --notes "Bootable UEFI images, nothing else to unpack: write the .iso straight to a USB stick (dd, balenaEtcher, Rufus in DD mode) or attach it to a virtual machine as a CD. amd64 is for an x86-64 PC with UEFI, arm64 for aarch64 UEFI machines and VMs; Secure Boot off. The boot loader is Ploader (source: wsbsd/ploader); the desktop is the wsbsd window server with the Dock, the menu bar and the Finder."
+          # a release file may not exceed 2 GiB and the image is close to it: it is published compressed (xz); the SHA-256 is the one of the .iso inside
+          for f in out/*.iso; do sha256sum "$f" | sed 's|out/||' > "$f.sha256"; xz -T0 -6 -f "$f"; done
+          ls -l out
+          gh release create "$TAG" out/*.iso.xz out/*.iso.sha256 --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "$TITLE" --prerelease \
+            --notes "Bootable UEFI images, compressed with xz: balenaEtcher writes the .iso.xz straight to a USB stick; otherwise unpack it first (xz -d, 7-Zip) and write the .iso (dd, Rufus in DD mode) or attach it to a virtual machine as a CD. The .sha256 is the checksum of the unpacked .iso. amd64 is for an x86-64 PC with UEFI, arm64 for aarch64 UEFI machines and VMs; Secure Boot off. The boot loader is Ploader (source: wsbsd/ploader); the desktop is the wsbsd window server with the Dock, the menu bar and the Finder."
