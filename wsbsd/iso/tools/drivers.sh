@@ -3,7 +3,7 @@
 # usbmuxd + libimobiledevice (pairing for the iPhone's USB tethering, ipheth). Copied from the build machine's packages into the image root, like guesttools.sh.  sh drivers.sh ROOT
 # A package missing for this architecture or release is reported, not an error.
 ROOT="${1:?image root}"
-want="$(pkg search -q -x '^(drm-61-kmod|gpu-firmware-intel-kmod-.*|wifi-firmware-.*-kmod|.*(ath10k|ath11k|mt76|mt7921|rtl88|rtw8).*-kmod|bwn-firmware-kmod|iwi-firmware-kmod|ipw-firmware-kmod|iwmbt-firmware|rtlbt-firmware|usbmuxd|libimobiledevice|libusbmuxd|libplist)$' 2>/dev/null | sed 's/-[0-9][^-]*$//' | sort -u)"
+want="$(pkg search -q -x '^(drm-61-kmod|gpu-firmware-intel-kmod-.*|wifi-firmware-.*-kmod|.*(ath10k|ath11k|mt76|mt7921|rtl88|rtw8).*-kmod|bwn-firmware-kmod|iwi-firmware-kmod|ipw-firmware-kmod|iwmbt-firmware|rtlbt-firmware|usbmuxd|libimobiledevice|libusbmuxd|libplist)(-[0-9][^-]*)?$' 2>/dev/null | sed 's/-[0-9][^-]*$//' | sort -u)"
 [ -n "$want" ] || want="drm-61-kmod wifi-firmware-iwlwifi-kmod wifi-firmware-rtw88-kmod wifi-firmware-rtw89-kmod wifi-firmware-mt76-kmod iwmbt-firmware rtlbt-firmware usbmuxd libimobiledevice"
 for top in $want; do
 	pkg info -e "$top" 2>/dev/null || pkg install -y "$top" >/dev/null 2>&1 || true
@@ -14,3 +14,5 @@ done
 # the firmware modules sit in /boot/modules (kernel modules of the ports), the loader finds them there
 [ -d "$ROOT/boot/modules" ] && echo "drivers: $(ls "$ROOT/boot/modules" | wc -l) files in /boot/modules"
 # (AMD GPU firmware, gpu-firmware-amd-kmod-*, is several hundred MB for all chips: not in the image yet, amdgpu needs it; only the firmware of the common chips could be added)
+for need in drm-61-kmod usbmuxd iwmbt-firmware; do pkg info -e "$need" 2>/dev/null || echo "NOTE: $need is NOT in the image"; done
+ls "$ROOT"/boot/modules | grep -E -c 'iwlwifi|rtw8|mt76' | sed 's/^/drivers: Wi-Fi firmware modules: /'
