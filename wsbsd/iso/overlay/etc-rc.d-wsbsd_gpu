@@ -14,9 +14,13 @@ start_cmd="wsbsd_gpu_start"
 stop_cmd=":"
 wsbsd_gpu_try()
 {
+	# a module counts only when it took the card: kldload succeeds for a driver that attaches to nothing (amdgpu on a Radeon of the CIK / Kaveri generation, radeonkms on a recent one), so /dev/dri/card0 must appear
 	for m in "$@"; do
 		[ -e /boot/modules/$m.ko ] || continue
-		timeout 40 kldload -n $m >/dev/null 2>&1 && { echo "wsbsd_gpu: $m loaded" > /dev/console 2>/dev/null; return 0; }
+		timeout 40 kldload -n $m >/dev/null 2>&1 || continue
+		i=0; while [ $i -lt 20 ] && [ ! -e /dev/dri/card0 ]; do sleep 0.25; i=$((i + 1)); done
+		[ -e /dev/dri/card0 ] && { echo "wsbsd_gpu: $m loaded" > /dev/console 2>/dev/null; return 0; }
+		kldunload $m >/dev/null 2>&1
 	done
 	return 1
 }
@@ -34,7 +38,7 @@ wsbsd_gpu_start()
 	gpus="$(pciconf -l 2>/dev/null | grep -E 'class=0x03(00|80)' )"
 	echo "$gpus" | grep -q 'chip=0x[0-9a-f]\{4\}8086' && wsbsd_gpu_try i915kms && return 0
 	if echo "$gpus" | grep -q 'chip=0x[0-9a-f]\{4\}1002'; then
-		wsbsd_gpu_try amdgpu radeonkms
+		wsbsd_gpu_try radeonkms amdgpu
 	fi
 	return 0
 }
