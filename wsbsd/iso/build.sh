@@ -73,10 +73,6 @@ mkdir -p "$ROOT/usr/local"
 PDFLIBS="$(cd / && ls usr/local/lib/libpoppler-glib.so* 2>/dev/null)"   # dlopen'ed by PDFImage.m: the dependency scan below follows them
 tar -C / -cf - $PDFLIBS usr/local/GNUstep usr/local/sbin/lsof usr/local/sbin/wsd usr/local/sbin/wsd-fb usr/local/lib/dri usr/local/lib/gbm usr/local/share/glvnd usr/local/share/drirc.d usr/local/sbin/spctl usr/local/bin usr/local/libexec/dyld usr/local/lib/libwsclient.so usr/local/lib/libwsbsdcompat.so usr/local/lib/libQuartzCore.so usr/local/share/fonts usr/local/etc/fonts usr/local/share/wsbsd usr/local/bin/zsh usr/local/bin/sudo usr/local/libexec/sudo usr/local/lib/sudo usr/local/share/zsh usr/local/share/zsh-autosuggestions usr/local/lib/zsh usr/local/share/icu usr/local/lib/libicudata.so usr/local/lib/libicudata.so.76 usr/local/lib/libicudata.so.76.1 2>/dev/null | tar -C "$ROOT" -xpf -
 mkdir -p "$ROOT/usr/sbin"; ln -sf /usr/local/sbin/lsof "$ROOT/usr/sbin/lsof"       # where the Mac's applications look for it
-# the image must stay below GitHub's 2 GiB limit for a release file: Mesa drivers that pull in LLVM (llvmpipe, radeonsi, r600: ~150 MB of libLLVM) stay out. Intel (iris / crocus) needs no LLVM; wsd falls back to
-# its software compositor when EGL finds no driver (AMD then composes on the CPU, the display itself still comes from amdgpu)
-for f in "$ROOT"/usr/local/lib/dri/*.so "$ROOT"/usr/local/lib/libgallium*.so* "$ROOT"/usr/local/lib/libMesa*.so*; do [ -f "$f" ] || continue; ldd "$f" 2>/dev/null | grep -q 'libLLVM' && { echo "NOTE: $(basename "$f") needs LLVM, left out of the image"; rm -f "$f"; }; done
-ls "$ROOT"/usr/local/lib/dri 2>/dev/null | sed 's/^/dri: /'
 # guest tools of VMware and VirtualBox (before the library scan, which then follows their dependencies)
 sh "$HERE/tools/guesttools.sh" "$ROOT" || echo "NOTE: guest tools failed"
 # Wi-Fi / Bluetooth firmware, usbmuxd + libimobiledevice (iPhone tethering)
@@ -90,10 +86,6 @@ for round in 1 2 3 4 5 6; do
 	cp "$WORK/n2.list" "$WORK/needed.list"
 done
 while read -r l; do [ -f "$l" ] && { mkdir -p "$ROOT$(dirname "$l")"; cp -L "$l" "$ROOT$l"; }; done < "$WORK/needed.list"
-# below GitHub's 2 GiB release limit: the Mesa drivers that need LLVM (llvmpipe / swrast, radeonsi, r600, zink) and LLVM itself (~150 MB) are not in the image. Intel (iris, crocus, i915) needs none of it; wsd
-# falls back to its software compositor where EGL finds no driver (AMD composes on the CPU, the display still comes from amdgpu)
-for d in swrast kms_swrast radeonsi r600 zink; do rm -f "$ROOT"/usr/local/lib/dri/${d}_dri.so "$ROOT"/usr/local/lib/dri/${d}_drv_video.so; done
-rm -rf "$ROOT"/usr/local/llvm[0-9]* "$ROOT"/usr/local/lib/libLLVM* "$ROOT"/usr/local/lib/libclang* 2>/dev/null
 mkdir -p "$ROOT/usr/local/etc"; [ -d /usr/local/etc/fonts ] && cp -R /usr/local/etc/fonts "$ROOT/usr/local/etc/" 2>/dev/null || true
 
 echo "== 4. the macOS layout"
