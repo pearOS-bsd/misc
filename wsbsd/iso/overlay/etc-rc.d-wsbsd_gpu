@@ -12,34 +12,64 @@ name="wsbsd_gpu"
 rcvar="wsbsd_gpu_enable"
 start_cmd="wsbsd_gpu_start"
 stop_cmd=":"
+LOG=/var/log/wsbsd_gpu.log
+wsbsd_gpu_log() { echo "$*" >> $LOG; }
 wsbsd_gpu_try()
 {
 	# a module counts only when it took the card: kldload succeeds for a driver that attaches to nothing (amdgpu on a Radeon of the CIK / Kaveri generation, radeonkms on a recent one), so /dev/dri/card0 must appear
 	for m in "$@"; do
-		[ -e /boot/modules/$m.ko ] || continue
-		timeout 40 kldload -n $m >/dev/null 2>&1 || continue
+		if [ ! -e /boot/modules/$m.ko ]; then wsbsd_gpu_log "module $m: not installed (/boot/modules/$m.ko missing)"; continue; fi
+		wsbsd_gpu_log "module $m: installed"
+		if kldstat -q -n $m 2>/dev/null; then wsbsd_gpu_log "module $m: already loaded"; fi
+		timeout 40 kldload -n $m >/dev/null 2>&1; rc=$?
+		if [ $rc != 0 ]; then wsbsd_gpu_log "module $m: kldload failed (exit $rc$([ $rc = 124 ] && echo ', timed out after 40 s'))"; continue; fi
+		wsbsd_gpu_log "module $m: loaded"
 		i=0; while [ $i -lt 20 ] && [ ! -e /dev/dri/card0 ]; do sleep 0.25; i=$((i + 1)); done
-		[ -e /dev/dri/card0 ] && { echo "wsbsd_gpu: $m loaded" > /dev/console 2>/dev/null; return 0; }
+		if [ -e /dev/dri/card0 ]; then
+			wsbsd_gpu_log "module $m: attached, /dev/dri/card0 present"
+			echo "wsbsd_gpu: $m loaded" > /dev/console 2>/dev/null; return 0
+		fi
+		wsbsd_gpu_log "module $m: loaded but attached to no card (no /dev/dri/card0 within 5 s), unloading"
 		kldunload $m >/dev/null 2>&1
 	done
 	return 1
 }
+# what the kernel and the drivers said about the card (firmware that is missing shows up here)
+wsbsd_gpu_dmesg()
+{
+	wsbsd_gpu_log "-- kernel messages (drm / i915 / amdgpu / radeon / firmware)"
+	dmesg 2>/dev/null | grep -i -E 'drm|i915|amdgpu|radeon|\[drm|firmware' | tail -25 >> $LOG
+}
 wsbsd_gpu_start()
 {
-	case "$(kenv -q smbios.system.product 2>/dev/null)" in wsbsd-ci*) return 0 ;; esac
+	: > $LOG
+	wsbsd_gpu_log "== wsbsd GPU report $(date '+%Y-%m-%d %H:%M:%S') $(uname -sr)"
+	wsbsd_gpu_log "machine: $(kenv -q smbios.system.maker 2>/dev/null) $(kenv -q smbios.system.product 2>/dev/null)"
+	wsbsd_gpu_log "-- detected display controllers (PCI class 03)"
+	det="$(pciconf -lv 2>/dev/null | awk '/^[a-z]+[0-9]+@pci/ { if (blk ~ /class=0x03/) print blk; blk = $0; next } /^    / { blk = blk "\n" $0 } END { if (blk ~ /class=0x03/) print blk }')"
+	if [ -n "$det" ]; then wsbsd_gpu_log "$det"; else wsbsd_gpu_log "(none found)"; fi
+	case "$(kenv -q smbios.system.product 2>/dev/null)" in wsbsd-ci*) wsbsd_gpu_log "result: skipped (CI run), EFI framebuffer, software compositor"; return 0 ;; esac
 	M=/var/run/wsbsd_esp_gpu; mkdir -p $M
 	for dev in /dev/msdosfs/EFISYS $(ls /dev/ada*p1 /dev/da*p1 /dev/nvd*p1 /dev/nda*p1 /dev/mmcsd*p1 /dev/cd* 2>/dev/null); do
 		[ -e "$dev" ] || continue
 		mount -t msdosfs -o ro "$dev" $M 2>/dev/null || continue
-		if [ -f $M/nogpu ]; then umount $M 2>/dev/null; return 0; fi
+		if [ -f $M/nogpu ]; then umount $M 2>/dev/null; wsbsd_gpu_log "result: skipped (file nogpu on the EFI partition), EFI framebuffer, software compositor"; return 0; fi
 		umount $M 2>/dev/null
 	done
 	# display controllers (PCI class 03): vendor 8086 Intel, 1002 AMD; 10de NVIDIA and the virtual GPUs stay on the EFI framebuffer
 	gpus="$(pciconf -l 2>/dev/null | grep -E 'class=0x03(00|80)' )"
-	echo "$gpus" | grep -q 'chip=0x[0-9a-f]\{4\}8086' && wsbsd_gpu_try i915kms && return 0
-	if echo "$gpus" | grep -q 'chip=0x[0-9a-f]\{4\}1002'; then
-		wsbsd_gpu_try radeonkms amdgpu
+	if echo "$gpus" | grep -q 'chip=0x[0-9a-f]\{4\}8086'; then
+		wsbsd_gpu_log "vendor: Intel -> i915kms"
+		if wsbsd_gpu_try i915kms; then wsbsd_gpu_log "result: i915kms drives the GPU (DRM/KMS), the window server uses OpenGL ES if EGL starts"; wsbsd_gpu_dmesg; return 0; fi
 	fi
+	if echo "$gpus" | grep -q 'chip=0x[0-9a-f]\{4\}1002'; then
+		wsbsd_gpu_log "vendor: AMD -> radeonkms, then amdgpu"
+		if wsbsd_gpu_try radeonkms amdgpu; then wsbsd_gpu_log "result: AMD driver drives the GPU (DRM/KMS), the window server uses OpenGL ES if EGL starts"; wsbsd_gpu_dmesg; return 0; fi
+	fi
+	echo "$gpus" | grep -q 'chip=0x[0-9a-f]\{4\}10de' && wsbsd_gpu_log "vendor: NVIDIA, no driver on this image"
+	[ -n "$gpus" ] || wsbsd_gpu_log "no PCI display controller"
+	wsbsd_gpu_log "result: no GPU driver took a card, EFI framebuffer, software compositor (CPU)"
+	wsbsd_gpu_dmesg
 	return 0
 }
 load_rc_config $name

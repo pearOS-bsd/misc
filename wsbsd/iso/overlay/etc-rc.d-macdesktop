@@ -50,6 +50,16 @@ macdesktop_start()
 		FB=/usr/local/sbin/wsd-fb; [ -x $FB ] || FB=$WS
 		daemon -f -o /var/log/WindowServer.log -p /var/run/WindowServer.pid $FB -b kms -c /dev/ttyv0 -t -F
 	fi
+	# what the window server ended up with, appended to the GPU report (/var/log/wsbsd_gpu.log; also on the serial port with the desktop report): backend, driver, GPU or CPU compositing
+	( sleep 6; L=/var/log/wsbsd_gpu.log; W=/var/log/WindowServer.log
+	  { echo "-- window server"
+	    if [ $gpu_ok = 1 ]; then echo "display: KMS on /dev/dri/card0 (driver: $(kldstat 2>/dev/null | grep -o -E 'i915kms|radeonkms|amdgpu' | sort -u | tr '\n' ' '))"
+	    else echo "display: console framebuffer (EFI GOP / vt), no DRM display"; fi
+	    grep -E '^wsd: (framebuffer|[0-9]+x[0-9]+,|GL compositor|built without GL|DRM|KMS)' $W 2>/dev/null | head -8
+	    if grep -q 'wsd: GL compositor: ' $W 2>/dev/null && ! grep -q 'falling back to software' $W 2>/dev/null; then echo "acceleration: GPU (OpenGL ES compositor)"
+	    else echo "acceleration: CPU (software compositor)"; fi
+	  } >> $L
+	  { echo "== GPU report"; cat $L; } > /dev/ttyu0 2>/dev/null ) &
 	sleep 2
 	# Sessions, as on the Mac (loginwindow is root and makes a session per account; fast user switching): each account that is signed in has its own launchd running the desktop programs; $SD/sessions lists their uids
 	# and $SD/console holds the uid whose session is on the screen (empty while the login window is shown). The window server shows only the windows of the console session and of root (the login window).
