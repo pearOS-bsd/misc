@@ -22,7 +22,7 @@ static int addr(const char *path, struct sockaddr_un *sa)
 {
 	memset(sa, 0, sizeof *sa);
 	sa->sun_family = AF_UNIX;
-	if (strlen(path) >= sizeof sa->sun_path) return -1;
+	if (!path || strlen(path) >= sizeof sa->sun_path) return -1;
 	strcpy(sa->sun_path, path);
 	return 0;
 }
