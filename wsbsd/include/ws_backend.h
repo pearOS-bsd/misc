@@ -11,6 +11,7 @@ int ws_kms_fd(ws_kms *);                                    /* poll this for pag
 ws_surface *ws_kms_back(ws_kms *);                          /* surface to compose into (maps a dumb buffer) */
 int ws_kms_present_ready(ws_kms *);                         /* 1 if no flip is pending (a new frame may be queued) */
 int ws_kms_present(ws_kms *);                               /* queue a page flip of the back buffer: 0 queued, 1 skipped (flip pending), -1 error */
+int ws_kms_present_rect(ws_kms *, int x, int y, int w, int h);       /* the same when only this rectangle of the back buffer changed (the console framebuffer copies just that; a page flip is of the whole buffer) */
 /* Hardware cursor plane. The image is premultiplied BGRA (ARGB8888); only moving it needs no new frame. */
 int ws_kms_cursor_supported(ws_kms *);
 int ws_kms_cursor_set(ws_kms *, const ws_surface *img, int hot_x, int hot_y);

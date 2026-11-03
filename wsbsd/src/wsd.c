@@ -90,7 +90,7 @@ static void render_frame(ws_surface *dst, int with_cursor)
 	int done = 0;
 #ifdef WS_GL
 	if (glc) {
-		if (compositor_render_frame(glc, srv) == 0 && glc_read_pixels(glc, dst) == 0) { gl_failures = 0; done = 1; }
+		if (compositor_render_frame(glc, srv) == 0 && glc_read_pixels(glc, dst) == 0) { gl_failures = 0; done = 1; ws_server_force_full(srv); }
 		else if (++gl_failures >= 3) { fprintf(stderr, "wsd: GL compositor keeps failing, falling back to software\n"); glc_destroy(glc); glc = NULL; }
 	}
 #endif
@@ -1341,7 +1341,7 @@ int main(int argc, char **argv)
 #ifdef WS_KMS
 			if (out[i].filter == EVFILT_SIGNAL) {
 				if (fd == SIGUSR1) { vt_active = 0; if (kms) ws_kms_pause(kms); wsd_vt_release_ack(); }
-				else if (fd == SIGUSR2) { wsd_vt_acquire_ack(); if (kms && ws_kms_resume(kms) == 0) { vt_active = 1; last_gen = ~0ULL; last_cx = -1; last_cursor_serial = ~0u; hw_cursor = 0; dirty = 1; } }
+				else if (fd == SIGUSR2) { wsd_vt_acquire_ack(); if (kms && ws_kms_resume(kms) == 0) { vt_active = 1; last_gen = ~0ULL; ws_server_force_full(srv); last_cx = -1; last_cursor_serial = ~0u; hw_cursor = 0; dirty = 1; } }
 				else if (ws_server_shutdown_splash()) { }                /* going down: the pear stays on the screen until the power goes (nothing restores the console under it) */
 				else running = 0;                                         /* SIGTERM / SIGINT: leave the loop, restore the console */
 				continue;
@@ -1412,9 +1412,12 @@ int main(int argc, char **argv)
 			if (need && ws_kms_present_ready(kms)) {
 				struct timespec k0, k1; clock_gettime(CLOCK_MONOTONIC, &k0);
 				render_frame(ws_kms_back(kms), !hw_cursor && ws_cursor_visible(srv));
-				clock_gettime(CLOCK_MONOTONIC, &k1); ws_fps_frame((k1.tv_sec - k0.tv_sec) * 1e3 + (k1.tv_nsec - k0.tv_nsec) / 1e6);
-				if (fps_overlay) ws_draw_fps(ws_kms_back(kms));
-				if (ws_kms_present(kms) == 0) { last_gen = gen; last_cx = cx; last_cy = cy; last_cursor_serial = ws_cursor_serial(srv); }
+				ws_rect pr; int part = ws_server_present_rect(srv, &pr);            /* the software compositor says what it changed: nothing to draw over or to copy when that is nothing */
+				int nothing = part && pr.w <= 0;
+				if (fps_overlay && !nothing) { int fx, fy, fw, fh; ws_draw_fps(ws_kms_back(kms)); ws_fps_rect(ws_kms_back(kms)->w, &fx, &fy, &fw, &fh); ws_server_overdraw(srv, (ws_rect){ fx, fy, fw, fh }); part = ws_server_present_rect(srv, &pr); }
+				int pres = nothing ? 0 : part ? ws_kms_present_rect(kms, pr.x, pr.y, pr.w, pr.h) : ws_kms_present(kms);
+				clock_gettime(CLOCK_MONOTONIC, &k1); ws_fps_frame((k1.tv_sec - k0.tv_sec) * 1e3 + (k1.tv_nsec - k0.tv_nsec) / 1e6);       /* the whole frame: composition and the copy to the display */
+				if (pres == 0) { last_gen = gen; last_cx = cx; last_cy = cy; last_cursor_serial = ws_cursor_serial(srv); }
 			} else if (hw_cursor) { last_cx = cx; last_cy = cy; }
 		}
 #endif

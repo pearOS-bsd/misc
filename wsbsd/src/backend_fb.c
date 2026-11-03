@@ -58,21 +58,30 @@ int ws_kms_fd(ws_kms *k) { return k->pipe_r; }                                  
 ws_surface *ws_kms_back(ws_kms *k) { return k->back; }
 int ws_kms_present_ready(ws_kms *k) { (void)k; return 1; }
 
-int ws_kms_present(ws_kms *k)
+static int present_rows(ws_kms *k, int ya, int yb, int xa, int xb)
 {
-	if (!k->last) { k->last = calloc((size_t)k->w * (size_t)k->h, 4); if (!k->last) { size_t row = (size_t)k->w * 4; for (int y = 0; y < k->h; y++) memcpy(k->map + (size_t)y * (size_t)k->stride, k->back->px + (size_t)y * k->back->stride, row); return 0; } memset(k->last, 0xA5, (size_t)k->w * (size_t)k->h * 4); }
-	for (int y = 0; y < k->h; y++) {
+	if (!k->last) { k->last = calloc((size_t)k->w * (size_t)k->h, 4); if (!k->last) { size_t row = (size_t)k->w * 4; for (int y = 0; y < k->h; y++) memcpy(k->map + (size_t)y * (size_t)k->stride, k->back->px + (size_t)y * k->back->stride, row); return 0; } memset(k->last, 0xA5, (size_t)k->w * (size_t)k->h * 4); ya = 0; yb = k->h; xa = 0; xb = k->w; }
+	for (int y = ya; y < yb; y++) {
 		const uint32_t *src = (const uint32_t *)(k->back->px + (size_t)y * k->back->stride); uint32_t *old = k->last + (size_t)y * k->w; uint32_t *dst = (uint32_t *)(k->map + (size_t)y * (size_t)k->stride);
-		int x = 0; while (x < k->w) { while (x < k->w && src[x] == old[x]) x++; if (x >= k->w) break; int a = x; while (x < k->w && (src[x] != old[x] || (x + 1 < k->w && src[x + 1] != old[x + 1]))) x++; memcpy(dst + a, src + a, (size_t)(x - a) * 4); memcpy(old + a, src + a, (size_t)(x - a) * 4); }
+		int x = xa; while (x < xb) { while (x < xb && src[x] == old[x]) x++; if (x >= xb) break; int a = x; while (x < xb && (src[x] != old[x] || (x + 1 < xb && src[x + 1] != old[x + 1]))) x++; memcpy(dst + a, src + a, (size_t)(x - a) * 4); memcpy(old + a, src + a, (size_t)(x - a) * 4); }
 	}
 	return 0;
+}
+
+int ws_kms_present(ws_kms *k) { return present_rows(k, 0, k->h, 0, k->w); }
+
+int ws_kms_present_rect(ws_kms *k, int x, int y, int w, int h)
+{
+	int xa = x < 0 ? 0 : x, ya = y < 0 ? 0 : y, xb = x + w > k->w ? k->w : x + w, yb = y + h > k->h ? k->h : y + h;
+	if (xb <= xa || yb <= ya) return 0;
+	return present_rows(k, ya, yb, xa, xb);
 }
 
 int ws_kms_cursor_supported(ws_kms *k) { (void)k; return 0; }
 int ws_kms_cursor_set(ws_kms *k, const ws_surface *img, int hot_x, int hot_y) { (void)k; (void)img; (void)hot_x; (void)hot_y; return -1; }
 int ws_kms_cursor_move(ws_kms *k, int x, int y) { (void)k; (void)x; (void)y; return -1; }
 void ws_kms_pause(ws_kms *k) { (void)k; }
-int ws_kms_resume(ws_kms *k) { (void)k; return 0; }
+int ws_kms_resume(ws_kms *k) { if (k->last) memset(k->last, 0xA5, (size_t)k->w * (size_t)k->h * 4); return 0; }       /* the console drew over the framebuffer meanwhile: copy everything again */
 int ws_kms_handle_events(ws_kms *k) { char b[16]; return (int)read(k->pipe_r, b, sizeof b); }
 
 void ws_kms_close(ws_kms *k)

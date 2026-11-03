@@ -234,9 +234,16 @@ ws_surface *ws_cursor_shape_image(int shape, int *hot_x, int *hot_y);       /* N
 int ws_server_cursor_shape(const ws_server *);                    /* the standard shape in use (0: the arrow) */
 void ws_server_set_cursor_shape(ws_server *, int shape);   /* copies; NULL restores the default arrow */
 void ws_compose_scene(ws_server *, ws_surface *screen);                  /* windows only, no cursor */
+void ws_compose_scene_full(ws_server *, ws_surface *screen);             /* the same, every pixel and no damage tracking (the reference for tests) */
+/* The software compositor composes only what changed since the last frame on the same surface. After a frame: the rectangle that changed (the pointer and overlays drawn since included) so that a
+ * backend copies no more than that (returns 0 when the whole surface changed); ws_server_overdraw tells it about pixels drawn on the surface after the composition (the overlay); force_full makes the next frame whole. */
+int ws_server_present_rect(const ws_server *, ws_rect *r);
+void ws_server_overdraw(ws_server *, ws_rect r);
+void ws_server_force_full(ws_server *);
 void ws_server_desktop_color(ws_server *, float rgb[3]);
 /* system-wide frame rate (src/fps.c): every presented frame is reported, the rate is over the last second; ws_draw_fps puts "NN FPS | x.x ms" in the top right corner */
 void ws_fps_frame(double compose_ms);
+void ws_fps_rect(int screen_w, int *x, int *y, int *w, int *h);              /* the rectangle ws_draw_fps can draw in */
 double ws_fps_rate(void);
 double ws_fps_compose_ms(void);
 unsigned long ws_fps_total(void);

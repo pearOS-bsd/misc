@@ -55,6 +55,7 @@ typedef struct {
 	ws_rect *evshape; int nev;   /* SetWindowEventShape: where the window takes events, when different from where it is drawn */
 } window;
 #define EFFA(w) ((w)->menu_hidden ? 0.0f : (w)->alpha * (w)->sys_alpha)
+typedef struct { ws_wid id; ws_rect f; uint64_t h; } dsnap;   /* what a window looked like in the last frame composed on the tracked surface: footprint (frame + shadow + effect margin) and a hash of everything that changes its pixels */
 
 struct ws_server {
 	uint8_t gamma[3][256]; int gamma_on;   /* SetDisplayTransferByFormula / ByTable: a lookup table per channel (R, G, B) applied to the composed screen */
@@ -77,6 +78,10 @@ struct ws_server {
 	ws_rect lock; int locked;                                   /* SetCursorRegionLock: the pointer stays inside this rectangle (the bounds of the locked region) */
 	struct kf { uint32_t cid; int ids[8]; int n; } kf[32]; int nkf; int kf_next;      /* key focus list, [0] is the holder */
 	struct { uint32_t cid; int count; } hide[64]; int nhide; int obscured;
+	/* damage tracking of the software compositor: the surface holds the last frame, so only what changed since is composed again */
+	ws_surface *dm_screen; int dm_valid; dsnap *dm_snap; size_t dm_n, dm_cap; uint64_t dm_gsig;
+	ws_rect od; int has_od;                  /* pixels drawn onto the surface after the composition (the pointer, the frame-rate overlay): composed again by the next frame */
+	ws_rect present; int present_full;       /* what the last frame changed on the surface, the pointer included: all a backend has to copy */
 };
 
 ws_server *ws_server_new(int w, int h)
@@ -92,7 +97,7 @@ void ws_server_free(ws_server *s)
 	if (!s) return;
 	ws_surface_free(s->cursor_img);
 	for (size_t i = 0; i < s->n; i++) { ws_surface_free(s->win[i].backing); ws_surface_free(s->win[i].shadow); if (s->win[i].shm[0]) ws_shm_unlink(s->win[i].shm); }
-	free(s->win); free(s);
+	free(s->win); free(s->dm_snap); free(s);
 }
 
 void ws_server_set_compositor(ws_server *s, ws_compositor *c) { if (s && c) s->comp = c; }
@@ -934,6 +939,7 @@ static ws_surface *scale_surface(const ws_surface *src, float k)
 
 void ws_set_cursor_scale(ws_server *s, float k) { if (k > 0 && k < 16 && k != s->cursor_scale) { s->cursor_scale = k; s->cursor_serial++; } }
 
+void ws_server_overdraw(ws_server *s, ws_rect r);
 static void draw_cursor(ws_server *s, ws_surface *scr)
 {
 	int hx, hy;
@@ -946,6 +952,7 @@ static void draw_cursor(ws_server *s, ws_surface *scr)
 	}
 	ws_rect all = { 0, 0, scr->w, scr->h };
 	s->comp->over(s->comp, scr, s->cx - hx, s->cy - hy, img, 1.0f, all);
+	if (scr == s->dm_screen) ws_server_overdraw(s, (ws_rect){ s->cx - hx, s->cy - hy, img->w, img->h });       /* the next frame composes this place again */
 }
 
 static void ensure_shadow(ws_server *s, window *w, int active)
@@ -962,12 +969,11 @@ static void ensure_shadow(ws_server *s, window *w, int active)
 	}
 }
 
-static void draw_shadow(ws_server *s, window *w, ws_surface *screen, int active)
+static void draw_shadow(ws_server *s, window *w, ws_surface *screen, int active, ws_rect clip)
 {
 	ensure_shadow(s, w, active);
 	if (!w->shadow) return;
-	ws_rect all = { 0, 0, screen->w, screen->h };
-	s->comp->over(s->comp, screen, w->frame.x - w->shadow_pad, w->frame.y - w->shadow_pad, w->shadow, EFFA(w), all);
+	s->comp->over(s->comp, screen, w->frame.x - w->shadow_pad, w->frame.y - w->shadow_pad, w->shadow, EFFA(w), clip);
 }
 
 void ws_window_damage(ws_server *s, ws_wid id, const ws_rect *r)
@@ -1053,6 +1059,7 @@ static ws_surface *grow_edge(const ws_surface *src, int w, int h)
 void ws_server_set_splash(ws_server *s, int on) { (void)s; g_splash = on; splash_t0 = mono_now(); }
 void ws_server_set_shutdown_splash(ws_server *s, int on) { g_shutdown_splash = on; if (on) { g_splash = 1; s->cursor_visible = 0; } bump(s); }       /* the machine is going down: the pear alone, over everything, until the power goes */
 static int g_night; static uint8_t night_g[256], night_b[256];
+static float zoom_scale_v = 1.0f;
 void ws_server_set_night_shift(ws_server *s, int pct) { if (pct < 0) pct = 0; if (pct > 100) pct = 100; g_night = pct; for (int i = 0; i < 256; i++) { night_g[i] = (uint8_t)(i * (1.0 - 0.20 * pct / 100.0) + 0.5); night_b[i] = (uint8_t)(i * (1.0 - 0.50 * pct / 100.0) + 0.5); } bump(s); }
 int ws_server_shutdown_splash(void) { return g_shutdown_splash; }
 /* the boot screen: black with the pear of pearOS in the middle, shown while no window of the desktop picture's level (the Finder's desktop) is on the screen yet */
@@ -1073,16 +1080,127 @@ static void draw_splash(ws_surface *screen)
 	for (unsigned y = 0; y < pear_h; y++) for (unsigned x = 0; x < pear_w; x++) { int dx = ox + (int)x, dy = oy + (int)y; if (dx < 0 || dy < 0 || dx >= screen->w || dy >= screen->h) continue; unsigned a = pear_a[y * pear_w + x]; *(uint32_t *)(screen->px + (size_t)dy * screen->stride + (size_t)dx * 4) = 0xff000000u | a << 16 | a << 8 | a; }
 }
 static void apply_zoom(ws_surface *screen);
-void ws_compose_scene(ws_server *s, ws_surface *screen)
+static ws_rect r_union(ws_rect a, ws_rect b)
+{
+	if (a.w <= 0 || a.h <= 0) return b;
+	if (b.w <= 0 || b.h <= 0) return a;
+	int x0 = a.x < b.x ? a.x : b.x, y0 = a.y < b.y ? a.y : b.y, x1 = a.x + a.w > b.x + b.w ? a.x + a.w : b.x + b.w, y1 = a.y + a.h > b.y + b.h ? a.y + a.h : b.y + b.h;
+	return (ws_rect){ x0, y0, x1 - x0, y1 - y0 };
+}
+static ws_rect r_clip(ws_rect a, int W, int H)
+{
+	int x0 = a.x < 0 ? 0 : a.x, y0 = a.y < 0 ? 0 : a.y, x1 = a.x + a.w > W ? W : a.x + a.w, y1 = a.y + a.h > H ? H : a.y + a.h;
+	if (x1 <= x0 || y1 <= y0) return (ws_rect){ 0, 0, 0, 0 };
+	return (ws_rect){ x0, y0, x1 - x0, y1 - y0 };
+}
+static int r_meet(ws_rect a, ws_rect b) { return a.w > 0 && a.h > 0 && b.w > 0 && b.h > 0 && a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h; }
+static uint64_t fnv(uint64_t h, const void *p, size_t n) { const uint8_t *b = p; while (n--) { h ^= *b++; h *= 1099511628211ULL; } return h; }
+static int dm_off(void) { static int off = -1; if (off < 0) off = getenv("WSD_FULL_COMPOSE") != NULL; return off; }
+
+/* a hash of everything that decides how a window looks on the screen except the pixels of its content (their changes arrive as damage) */
+static uint64_t win_hash(const window *w, size_t idx, int is_act)
+{
+	struct { ws_rect fr; int level, filter, has_xf, ngclip, nglass, shadow_on, shadow_cr, corner_radius, appearance, blur_radius, blur_flag, menu_hidden, committed, nshape, idx, is_act, has_mesh;
+	         float alpha, sys_alpha, brightness, resolution, blur_amount, xf[6]; uint32_t content_id; const void *content, *front, *backing; } k;
+	memset(&k, 0, sizeof k);
+	k.fr = w->frame; k.level = w->level; k.filter = w->filter; k.has_xf = w->has_xf; k.ngclip = w->ngclip; k.nglass = w->nglass; k.shadow_on = w->shadow_on; k.shadow_cr = w->shadow_cr;
+	k.corner_radius = w->corner_radius; k.appearance = w->appearance; k.blur_radius = w->blur_radius; k.blur_flag = w->blur_flag; k.menu_hidden = w->menu_hidden; k.committed = w->committed;
+	k.nshape = w->nshape; k.idx = (int)idx; k.is_act = is_act; k.has_mesh = w->mesh != NULL; k.alpha = w->alpha; k.sys_alpha = w->sys_alpha; k.brightness = w->brightness; k.resolution = w->resolution;
+	k.blur_amount = w->blur_amount; memcpy(k.xf, w->xf, sizeof k.xf); k.content_id = w->content_id; k.content = w->content; k.front = w->front; k.backing = w->backing;
+	uint64_t h = fnv(1469598103934665603ULL, &k, sizeof k);
+	if (w->nglass > 0) h = fnv(h, w->glass, (size_t)w->nglass * sizeof w->glass[0]);
+	if (w->ngclip > 0) h = fnv(h, w->gclip, (size_t)w->ngclip * sizeof w->gclip[0]);
+	if (w->nshape > 0 && w->shape) h = fnv(h, w->shape, (size_t)w->nshape * sizeof w->shape[0]);
+	return h;
+}
+/* where the window can put pixels: its frame, its shadow, and the margin an effect reads around it (a blur, the lens of the glass); the whole screen for a warped or transformed window */
+static ws_rect win_footprint(ws_server *s, window *w, int is_act)
+{
+	if (w->mesh || w->has_xf) return (ws_rect){ 0, 0, s->w, s->h };
+	int pad = 0;
+	if (w->shadow_on) { ensure_shadow(s, w, is_act); pad = w->shadow ? w->shadow_pad : 96; }
+	if (w->nglass > 0 && pad < 96) pad = 96;
+	if (w->blur_radius > 0) { int m = (int)ceilf(3.0f * ws_blur_sigma(w->blur_radius)) + 2; if (m > pad) pad = m; }
+	return r_clip((ws_rect){ w->frame.x - pad, w->frame.y - pad, w->frame.w + 2 * pad, w->frame.h + 2 * pad }, s->w, s->h);
+}
+static int full_frame(ws_rect a, ws_rect scr) { return a.x == scr.x && a.y == scr.y && a.w == scr.w && a.h == scr.h; }
+static int has_fx(const window *w) { return w->nglass > 0 || w->blur_radius > 0; }
+
+/* what the last frame changed on the surface (the pointer and the overlay included): 1 and the rectangle, or 0 when the whole surface has to be copied */
+int ws_server_present_rect(const ws_server *s, ws_rect *r)
+{
+	if (s->present_full) return 0;
+	*r = s->present; return 1;
+}
+/* pixels put on the surface after the composition (the software pointer, the frame-rate overlay): the next frame composes them again, a backend copies them now */
+void ws_server_overdraw(ws_server *s, ws_rect r)
+{
+	r = r_clip(r, s->w, s->h); if (r.w <= 0) return;
+	s->od = s->has_od ? r_union(s->od, r) : r; s->has_od = 1;
+	s->present = r_union(s->present, r);
+}
+void ws_server_force_full(ws_server *s) { s->dm_valid = 0; s->present_full = 1; s->has_od = 0; }
+
+static void compose_impl(ws_server *s, ws_surface *screen, int reference);
+void ws_compose_scene(ws_server *s, ws_surface *screen) { compose_impl(s, screen, 0); }
+void ws_compose_scene_full(ws_server *s, ws_surface *screen) { compose_impl(s, screen, 1); }       /* every pixel, no tracking: the reference the damage path is tested against */
+
+static void compose_impl(ws_server *s, ws_surface *screen, int reference)
 {
 	window **v = malloc((s->n + 1) * sizeof *v);
 	if (!v) return;
-	ws_rect all = { 0, 0, screen->w, screen->h };
+	ws_rect scr = { 0, 0, screen->w, screen->h }, all = scr;
 	ws_wid act = ws_active_window(s);
-	s->comp->fill(s->comp, screen, all, 37.0f / 255.0f, 37.0f / 255.0f, 37.0f / 255.0f, 1.0f);   /* desktop: #252525 */
 	size_t n = sorted(s, v);
+	/* Damage: the surface holds the last frame composed on it, so only the rectangle that changed is composed again (a window that moved or was redrawn, its shadow, what an effect reads around it, the
+	 * pointer). Everything else is the full frame: another surface, a changed screen-wide setting, a warped / transformed window, the boot screen, a fade, a zoom. WSD_FULL_COMPOSE=1 turns this off. */
+	dsnap *cur = NULL; int track = !reference && !dm_off() && screen->w == s->w && screen->h == s->h;
+	int animated = g_splash || s->fade.on || zoom_scale_v > 1.0f;
+	int full = !track || s->dm_screen != screen || !s->dm_valid || g_splash || s->fade.on || zoom_scale_v > 1.0f;
+	uint64_t gsig = 0;
+	if (track) {
+		struct { int night, gon, w, h; } g = { g_night, s->gamma_on, screen->w, screen->h };
+		gsig = fnv(1469598103934665603ULL, &g, sizeof g); if (s->gamma_on) gsig = fnv(gsig, s->gamma, sizeof s->gamma);
+		if (gsig != s->dm_gsig) full = 1;
+		cur = malloc((n + 1) * sizeof *cur);
+		if (!cur) { track = 0; full = 1; }
+	}
+	if (track) {
+		for (size_t i = 0; i < n; i++) {
+			int ia = v[i]->id == act || v[i]->appearance;
+			cur[i].id = v[i]->id; cur[i].h = win_hash(v[i], i, ia); cur[i].f = win_footprint(s, v[i], ia);
+			if (v[i]->mesh || v[i]->has_xf) full = 1;
+		}
+		if (!full) {
+			ws_rect D = { 0, 0, 0, 0 };
+			for (size_t k = 0; k < s->dm_n; k++) {                              /* what was there and is gone or different */
+				size_t i = 0; while (i < n && cur[i].id != s->dm_snap[k].id) i++;
+				if (i == n || cur[i].h != s->dm_snap[k].h) D = r_union(D, s->dm_snap[k].f);
+			}
+			for (size_t i = 0; i < n; i++) {                                    /* what is new or different, and what its content redrew */
+				size_t k = 0; while (k < s->dm_n && s->dm_snap[k].id != cur[i].id) k++;
+				if (k == s->dm_n || s->dm_snap[k].h != cur[i].h) D = r_union(D, cur[i].f);
+				if (v[i]->full_dmg) D = r_union(D, cur[i].f);
+				else if (v[i]->has_dmg) D = r_union(D, r_clip((ws_rect){ v[i]->frame.x + v[i]->dmg.x, v[i]->frame.y + v[i]->dmg.y, v[i]->dmg.w, v[i]->dmg.h }, screen->w, screen->h));
+			}
+			if (s->has_od) D = r_union(D, s->od);
+			D = r_clip(D, screen->w, screen->h);
+			for (int again = 1; again && D.w > 0;) {                            /* an effect that meets the damage is composed whole (it reads the backdrop around it); that may reach another one */
+				again = 0;
+				for (size_t i = 0; i < n; i++) if (has_fx(v[i]) && r_meet(cur[i].f, D)) { ws_rect u = r_union(D, cur[i].f); if (u.x != D.x || u.y != D.y || u.w != D.w || u.h != D.h) { D = u; again = 1; } }
+			}
+			if (D.w <= 0) {                                                     /* nothing changed */
+				s->has_od = 0; s->present = (ws_rect){ 0, 0, 0, 0 }; s->present_full = 0;
+				ws_server_clear_damage(s); free(cur); free(v); return;
+			}
+			if ((long)D.w * D.h * 10 >= (long)scr.w * scr.h * 6) D = scr;
+			all = D;
+		}
+	}
+	s->comp->fill(s->comp, screen, all, 37.0f / 255.0f, 37.0f / 255.0f, 37.0f / 255.0f, 1.0f);   /* desktop: #252525 */
 	if (g_splash) { int desk = 0; for (size_t i = 0; i < n; i++) if (v[i]->level == -2147483603) desk = 1; if (g_shutdown_splash) { desk = 0; n = 0; } g_splash_visible = !desk; if (!desk) { if (s->comp->flush) s->comp->flush(s->comp); { double c0 = mono_now(); draw_splash(screen); splash_cost = mono_now() - c0; } } }
 	for (size_t i = 0; i < n; i++) {
+		if (cur && !full_frame(all, scr) && !r_meet(cur[i].f, all)) continue;       /* nothing of this window (shadow and effect margin included) lies in the damage */
 		if (v[i]->mesh) {}       /* a window drawn through its mesh (the genie): its blur / glass stays out, else the backdrop of the unwarped rectangle stayed blurred (a blur spot) and every frame paid for it */
 		else if (v[i]->nglass > 0) {                                               /* the glass material (the Dock's bar, the menu bar, glass views): the window's shapes melt into one */
 			if (s->comp->flush) s->comp->flush(s->comp);
@@ -1125,13 +1243,13 @@ void ws_compose_scene(ws_server *s, ws_surface *screen)
 			if (inv || rnd || brt || grown || gcl) { if (s->comp->flush) s->comp->flush(s->comp); ws_surface_free(inv); ws_surface_free(rnd); ws_surface_free(brt); ws_surface_free(grown); ws_surface_free(gcl); }
 		}
 		/* the shadow layer is rendered above its window (it is cut out of the window shape; the inner rim lies inside it); a window zoomed or moved by its transform (Quick Look's zoom from the icon) has none: it would stay at the frame as a ghost of the panel */
-		if (v[i]->shadow_on && !v[i]->mesh && !(v[i]->has_xf && (fabsf(v[i]->xf[0] - 1) > 0.05f || v[i]->xf[4] != 0 || v[i]->xf[5] != 0))) draw_shadow(s, v[i], screen, v[i]->id == act || v[i]->appearance);     /* a warped window (genie) has no shadow: it is not where the frame is */
+		if (v[i]->shadow_on && !v[i]->mesh && !(v[i]->has_xf && (fabsf(v[i]->xf[0] - 1) > 0.05f || v[i]->xf[4] != 0 || v[i]->xf[5] != 0))) draw_shadow(s, v[i], screen, v[i]->id == act || v[i]->appearance, all);     /* a warped window (genie) has no shadow: it is not where the frame is */
 	}
 	if (s->comp->flush) s->comp->flush(s->comp);
 	free(v);
 	apply_zoom(screen);
-	if (g_night > 0) for (int y = 0; y < screen->h; y++) { uint8_t *p = screen->px + (size_t)y * screen->stride; for (int x = 0; x < screen->w; x++, p += 4) { p[0] = night_b[p[0]]; p[1] = night_g[p[1]]; } }       /* Night Shift */
-	if (s->gamma_on) for (int y = 0; y < screen->h; y++) { uint8_t *p = screen->px + (size_t)y * screen->stride; for (int x = 0; x < screen->w; x++, p += 4) { p[0] = s->gamma[2][p[0]]; p[1] = s->gamma[1][p[1]]; p[2] = s->gamma[0][p[2]]; } }
+	if (g_night > 0) for (int y = all.y; y < all.y + all.h; y++) { uint8_t *p = screen->px + (size_t)y * screen->stride + (size_t)all.x * 4; for (int x = 0; x < all.w; x++, p += 4) { p[0] = night_b[p[0]]; p[1] = night_g[p[1]]; } }       /* Night Shift */
+	if (s->gamma_on) for (int y = all.y; y < all.y + all.h; y++) { uint8_t *p = screen->px + (size_t)y * screen->stride + (size_t)all.x * 4; for (int x = 0; x < all.w; x++, p += 4) { p[0] = s->gamma[2][p[0]]; p[1] = s->gamma[1][p[1]]; p[2] = s->gamma[0][p[2]]; } }
 	if (s->fade.on) {                                                      /* DisplayFade: every pixel moves toward the fade colour by the current blend */
 		struct timespec ts; clock_gettime(CLOCK_MONOTONIC, &ts); double now = ts.tv_sec + ts.tv_nsec * 1e-9, e = s->fade.secs > 0 ? (now - s->fade.t0) / s->fade.secs : 1;
 		if (e > 1) e = 1; double bl = s->fade.sb + (s->fade.eb - s->fade.sb) * e; if (bl < 0) bl = 0; if (bl > 1) bl = 1;
@@ -1141,10 +1259,16 @@ void ws_compose_scene(ws_server *s, ws_surface *screen)
 		}
 		if (e >= 1 && bl <= 0) s->fade.on = 0;
 	}
+	if (reference) return;
+	if (cur) {                                                              /* the surface now holds this frame: remember how every window looked */
+		free(s->dm_snap); s->dm_snap = cur; s->dm_n = n; s->dm_screen = screen; s->dm_gsig = gsig; s->dm_valid = !animated;
+		s->has_od = 0; s->present = all; s->present_full = full_frame(all, scr);
+		ws_server_clear_damage(s);
+	} else { s->dm_valid = 0; s->has_od = 0; s->present_full = 1; }
 }
 
 /* screen zoom (SetZoomParameters): the frame is magnified about the zoom centre, nearest sample; scale 1 is off */
-static float zoom_scale_v = 1.0f; static int zoom_cx, zoom_cy;
+static int zoom_cx, zoom_cy;
 int ws_server_set_zoom(ws_server *s, float scale, int cx, int cy) { (void)s; if (!(scale >= 1.0f) || scale > 64.0f) scale = 1.0f; zoom_scale_v = scale; zoom_cx = cx; zoom_cy = cy; return 0; }
 static void apply_zoom(ws_surface *screen)
 {
