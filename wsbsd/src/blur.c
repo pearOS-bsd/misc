@@ -197,8 +197,17 @@ void ws_glass_regions(ws_surface *img, const ws_glass *g, int n, int ox, int oy)
 	if (bl5) { memcpy(bl5->px, tmp->px, (size_t)tmp->stride * tmp->h); ws_blur_region(bl5, (ws_rect){ 0, 0, bl5->w, bl5->h }, (ws_rect){ 0, 0, bl5->w, bl5->h }, 7.0f); }
 	fx_off--;
 	int x0 = bx0 < 0 ? 0 : bx0, y0 = by0 < 0 ? 0 : by0, x1 = bx1 > img->w ? img->w : bx1, y1 = by1 > img->h ? img->h : by1;
+	/* a single regular / clear shape: the part of it that lies deeper than 26 px (and than the corner radius) inside is the backdrop tinted, whatever the edge does; found without the distance field */
+	int ix0 = 1 << 30, iy0 = 1 << 30, ix1 = -(1 << 30), iy1 = -(1 << 30);
+	if (n == 1 && (g[0].mode == 1 || g[0].mode == 2) && g[0].rect.w > 3 && g[0].rect.h > 3) { int in = 27 + (g[0].radius > 0 ? g[0].radius : 0); ix0 = ox + g[0].rect.x + in; iy0 = oy + g[0].rect.y + in; ix1 = ox + g[0].rect.x + g[0].rect.w - in; iy1 = oy + g[0].rect.y + g[0].rect.h - in; }
 	for (int y = y0; y < y1; y++) for (int x = x0; x < x1; x++) {
 		float fx = x + 0.5f, fy = y + 0.5f; int mode;
+		if (x >= ix0 && x < ix1 && y >= iy0 && y < iy1) {
+			const uint8_t *tp = tmp->px + (size_t)(y - cy0) * tmp->stride + (size_t)(x - cx0) * 4; uint8_t *dp = img->px + (size_t)y * img->stride + (size_t)x * 4;
+			float tint = g[0].mode == 2 ? 0.90f : 0.69f, lift = g[0].mode == 2 ? 0.0f : 0.012f;
+			for (int c = 0; c < 3; c++) { float v = tp[c] / 255.0f * tint + lift; if (v > 1) v = 1; dp[c] = (uint8_t)(dp[c] * 0.0f + v * 255.0f + 0.5f); }
+			continue;
+		}
 		float sdf = glass_field(g, n, ox, oy, fx, fy, &mode);
 		float cover = clampf(0.5f - sdf, 0, 1); if (cover <= 0) continue;
 		if ((mode == 5 || mode == 6 || mode == 7 || mode == 8) && bl5) {                                                              /* the context menu of the real Mac: out = f(L) + k (c - L) of the blurred backdrop (fitted to 23 measured backdrops, rms 3.8 / 255), f(L) = 0.1213 + 0.4825 (2L - L^2), L = .1886 r + .7455 g + .0659 b, k = 1.091; a 1 px highlight at the edge, strong on horizontal edges */
@@ -232,6 +241,12 @@ void ws_glass_regions(ws_surface *img, const ws_glass *g, int n, int ox, int oy)
 			continue;
 		}
 		float d = -sdf; if (d < 0) d = 0;
+		if (d >= 26.0f && mode <= 2) {                                                                  /* deep inside: the bevel (18 px) is over and the rim and the glow are below a quarter of a level, the pixel is the backdrop's, tinted: no gradient, no lens, no sampling */
+			const uint8_t *tp = tmp->px + (size_t)(y - cy0) * tmp->stride + (size_t)(x - cx0) * 4; uint8_t *dp = img->px + (size_t)y * img->stride + (size_t)x * 4;
+			float tint = mode == 2 ? 0.90f : 0.69f, lift = mode == 2 ? 0.0f : 0.012f;
+			for (int c = 0; c < 3; c++) { float v = tp[c] / 255.0f * tint + lift; if (v > 1) v = 1; dp[c] = (uint8_t)(dp[c] * (1 - cover) + v * 255.0f * cover + 0.5f); }
+			continue;
+		}
 		int dm; float gx = glass_field(g, n, ox, oy, fx + 1, fy, &dm) - glass_field(g, n, ox, oy, fx - 1, fy, &dm), gy = glass_field(g, n, ox, oy, fx, fy + 1, &dm) - glass_field(g, n, ox, oy, fx, fy - 1, &dm);
 		float gl = sqrtf(gx * gx + gy * gy); float nx = gl > 1e-4f ? gx / gl : 0, ny = gl > 1e-4f ? gy / gl : -1;      /* outward normal */
 		float L = mode == 2 ? 10.0f : Lbase, A = mode == 2 ? amp * 0.5f : amp;

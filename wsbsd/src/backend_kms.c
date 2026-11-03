@@ -82,6 +82,8 @@ int ws_kms_fd(ws_kms *k) { return k->fd; }
 ws_surface *ws_kms_back(ws_kms *k) { return k->buf[1 - k->front].s; }
 
 int ws_kms_present_ready(ws_kms *k) { return !k->flip_pending; }
+int ws_kms_present(ws_kms *k);
+int ws_kms_present_rect(ws_kms *k, int x, int y, int w, int h) { (void)x; (void)y; (void)w; (void)h; return ws_kms_present(k); }
 
 int ws_kms_present(ws_kms *k)
 {

@@ -71,3 +71,10 @@ void ws_draw_fps(ws_surface *img)
 	}
 	ws_draw_text_small(img, x0 + 4, y0 + 4, text, scale);
 }
+
+/* where ws_draw_fps puts its text at most (the width follows the digits): the part of the screen the overlay can touch */
+void ws_fps_rect(int screen_w, int *x, int *y, int *w, int *h)
+{
+	int scale = 2, ww = 24 * 6 * scale + 8;
+	*x = screen_w - ww - 6; *y = 34; *w = ww + 6; *h = 7 * scale + 8;
+}
