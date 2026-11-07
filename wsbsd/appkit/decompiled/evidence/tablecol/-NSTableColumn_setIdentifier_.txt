@@ -1,0 +1,127 @@
+### -[NSTableColumn setIdentifier:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTableColumn setIdentifier:]
+
+-[NSTableColumn setIdentifier:]:
+0x184f6ac38:  7f 23 03 d5   pacibsp
+0x184f6ac3c:  ff 43 01 d1   sub	sp, sp, #0x50
+0x184f6ac40:  f8 5f 01 a9   stp	x24, x23, [sp, #0x10]
+0x184f6ac44:  f6 57 02 a9   stp	x22, x21, [sp, #0x20]
+0x184f6ac48:  f4 4f 03 a9   stp	x20, x19, [sp, #0x30]
+0x184f6ac4c:  fd 7b 04 a9   stp	fp, lr, [sp, #0x40]
+0x184f6ac50:  fd 03 01 91   add	fp, sp, #0x40
+0x184f6ac54:  f5 03 02 aa   mov	x21, x2
+0x184f6ac58:  f6 03 00 aa   mov	x22, x0
+0x184f6ac5c:  e0 03 02 aa   mov	x0, x2
+0x184f6ac60:  04 c8 c5 94   bl	j__objc_retain_x0
+0x184f6ac64:  f3 03 00 aa   mov	x19, x0
+0x184f6ac68:  f4 03 16 aa   mov	x20, x22
+0x184f6ac6c:  88 0e 41 f8   ldr	x8, [x20, #0x10]!
+0x184f6ac70:  1f 01 00 eb   cmp	x8, x0
+0x184f6ac74:  20 09 00 54   b.eq	loc_184f6ad98 ; ⤵ 0x124
+0x184f6ac78:  e0 00 80 52   mov	w0, #0x7
+0x184f6ac7c:  fd 0f c6 94   bl	j___CFExecutableLinkedOnOrAfter
+0x184f6ac80:  60 08 00 34   cbz	w0, loc_184f6ad8c ; ⤵ 0x10c
+0x184f6ac84:  13 01 00 b4   cbz	x19, loc_184f6aca4 ; ⤵ 0x20
+0x184f6ac88:  08 92 2d 90   adrp	x8, 0x1e01aa000
+0x184f6ac8c:  00 c9 42 f9   ldr	x0, [x8, #0x590] ; _ptr.NSString
+0x184f6ac90:  d0 ca c5 94   bl	j__objc_opt_class
+0x184f6ac94:  e1 03 00 aa   mov	x1, x0
+0x184f6ac98:  e0 03 13 aa   mov	x0, x19
+0x184f6ac9c:  d1 ca c5 94   bl	j__objc_opt_isKindOfClass
+0x184f6aca0:  00 01 00 36   tbz	w0, #0, loc_184f6acc0 ; ⤵ 0x20
+0x184f6aca4:  ; loc_184f6aca4
+0x184f6aca4:  e0 03 13 aa   mov	x0, x19
+0x184f6aca8:  56 5f c2 94   bl	0x188002a00
+0x184f6acac:  88 02 40 f9   ldr	x8, [x20]
+0x184f6acb0:  80 02 00 f9   str	x0, [x20]
+0x184f6acb4:  e0 03 08 aa   mov	x0, x8
+0x184f6acb8:  ea c7 c5 94   bl	j__objc_release_x0
+0x184f6acbc:  37 00 00 14   b	loc_184f6ad98 ; ⤵ 0xdc
+0x184f6acc0:  ; loc_184f6acc0
+0x184f6acc0:  c0 22 00 91   add	x0, x22, #0x8
+0x184f6acc4:  b7 ca c5 94   bl	j__objc_loadWeakRetained
+0x184f6acc8:  f7 03 00 aa   mov	x23, x0
+0x184f6accc:  60 01 00 b4   cbz	x0, loc_184f6acf8 ; ⤵ 0x2c
+0x184f6acd0:  c0 22 00 91   add	x0, x22, #0x8
+0x184f6acd4:  b3 ca c5 94   bl	j__objc_loadWeakRetained
+0x184f6acd8:  f6 03 00 aa   mov	x22, x0
+0x184f6acdc:  bd ca c5 94   bl	j__objc_opt_class
+0x184f6ace0:  08 9b c3 94   bl	0x188051900
+0x184f6ace4:  f8 03 00 aa   mov	x24, x0
+0x184f6ace8:  e0 03 16 aa   mov	x0, x22
+0x184f6acec:  dd c7 c5 94   bl	j__objc_release_x0
+0x184f6acf0:  16 03 00 52   eor	w22, w24, #0x1
+0x184f6acf4:  02 00 00 14   b	loc_184f6acfc ; ⤵ 0x8
+0x184f6acf8:  ; loc_184f6acf8
+0x184f6acf8:  16 00 80 52   mov	w22, #0
+0x184f6acfc:  ; loc_184f6acfc
+0x184f6acfc:  e0 03 17 aa   mov	x0, x23
+0x184f6ad00:  d8 c7 c5 94   bl	j__objc_release_x0
+0x184f6ad04:  56 04 00 37   tbnz	w22, #0, loc_184f6ad8c ; ⤵ 0x88
+0x184f6ad08:  38 ae 2f d0   adrp	x24, 0x1e4530000
+0x184f6ad0c:  08 63 5c 39   ldrb	w8, [x24, #0x718] ; _setIdentifier:.sWarned
+0x184f6ad10:  e8 03 00 37   tbnz	w8, #0, loc_184f6ad8c ; ⤵ 0x7c
+0x184f6ad14:  d0 f6 31 94   bl	___AppKitLogWarnOnce
+0x184f6ad18:  7e d0 c5 94   bl	j__objc_claimAutoreleasedReturnValue
+0x184f6ad1c:  f6 03 00 aa   mov	x22, x0
+0x184f6ad20:  01 02 80 52   mov	w1, #0x10
+0x184f6ad24:  bf dd c5 94   bl	j__os_log_type_enabled
+0x184f6ad28:  a0 02 00 34   cbz	w0, loc_184f6ad7c ; ⤵ 0x54
+0x184f6ad2c:  e0 03 13 aa   mov	x0, x19
+0x184f6ad30:  a8 ca c5 94   bl	j__objc_opt_class
+0x184f6ad34:  a3 e7 c5 94   bl	j__NSStringFromClass
+0x184f6ad38:  76 d0 c5 94   bl	j__objc_claimAutoreleasedReturnValue
+0x184f6ad3c:  f7 03 00 aa   mov	x23, x0
+0x184f6ad40:  68 98 00 90   adrp	x8, 0x186276000
+0x184f6ad44:  00 55 43 fd   ldr	d0, [x8, #0x6a8]
+0x184f6ad48:  e0 03 00 bd   str	s0, [sp]
+0x184f6ad4c:  e0 43 00 f8   stur	x0, [sp, #0x4]
+0x184f6ad50:  c0 fa ff 90   adrp	x0, 0x184ec2000
+0x184f6ad54:  00 00 00 91   add	x0, x0, #0 ; "\xcf\xfa\xed\xfe\f"
+0x184f6ad58:  a3 a8 00 d0   adrp	x3, 0x186480000
+0x184f6ad5c:  63 a4 2d 91   add	x3, x3, #0xb69 ; "Setting a table column identifier of type '%{public}@'.  For applications linked on or after 10.7, NSTableColumns expect NSString identifiers.  This app should move to using NSString identifiers for t"...
+0x184f6ad60:  e4 03 00 91   mov	x4, sp
+0x184f6ad64:  e1 03 16 aa   mov	x1, x22
+0x184f6ad68:  02 02 80 52   mov	w2, #0x10
+0x184f6ad6c:  85 01 80 52   mov	w5, #0xc
+0x184f6ad70:  00 da c5 94   bl	j___os_log_impl
+0x184f6ad74:  e0 03 17 aa   mov	x0, x23
+0x184f6ad78:  ba c7 c5 94   bl	j__objc_release_x0
+0x184f6ad7c:  ; loc_184f6ad7c
+0x184f6ad7c:  e0 03 16 aa   mov	x0, x22
+0x184f6ad80:  b8 c7 c5 94   bl	j__objc_release_x0
+0x184f6ad84:  28 00 80 52   mov	w8, #0x1
+0x184f6ad88:  08 63 1c 39   strb	w8, [x24, #0x718]
+0x184f6ad8c:  ; loc_184f6ad8c
+0x184f6ad8c:  e0 03 14 aa   mov	x0, x20
+0x184f6ad90:  e1 03 15 aa   mov	x1, x21
+0x184f6ad94:  3b ec c5 94   bl	j__objc_storeStrong
+0x184f6ad98:  ; loc_184f6ad98
+0x184f6ad98:  e0 03 13 aa   mov	x0, x19
+0x184f6ad9c:  b1 c7 c5 94   bl	j__objc_release_x0
+0x184f6ada0:  fd 7b 44 a9   ldp	fp, lr, [sp, #0x40]
+0x184f6ada4:  f4 4f 43 a9   ldp	x20, x19, [sp, #0x30]
+0x184f6ada8:  f6 57 42 a9   ldp	x22, x21, [sp, #0x20]
+0x184f6adac:  f8 5f 41 a9   ldp	x24, x23, [sp, #0x10]
+0x184f6adb0:  ff 43 01 91   add	sp, sp, #0x50
+0x184f6adb4:  ff 0f 5f d6   retab
+0x184f6adb8:  f4 03 00 aa   mov	x20, x0
+0x184f6adbc:  e0 03 16 aa   mov	x0, x22
+0x184f6adc0:  06 00 00 14   b	loc_184f6add8 ; ⤵ 0x18
+0x184f6adc4:  07 00 00 14   b	loc_184f6ade0 ; ⤵ 0x1c
+0x184f6adc8:  f4 03 00 aa   mov	x20, x0
+0x184f6adcc:  e0 03 16 aa   mov	x0, x22
+0x184f6add0:  a4 c7 c5 94   bl	j__objc_release_x0
+0x184f6add4:  e0 03 17 aa   mov	x0, x23
+0x184f6add8:  ; loc_184f6add8
+0x184f6add8:  a2 c7 c5 94   bl	j__objc_release_x0
+0x184f6addc:  02 00 00 14   b	loc_184f6ade4 ; ⤵ 0x8
+0x184f6ade0:  ; loc_184f6ade0
+0x184f6ade0:  f4 03 00 aa   mov	x20, x0
+0x184f6ade4:  ; loc_184f6ade4
+0x184f6ade4:  e0 03 13 aa   mov	x0, x19
+0x184f6ade8:  9e c7 c5 94   bl	j__objc_release_x0
+0x184f6adec:  e0 03 14 aa   mov	x0, x20
+0x184f6adf0:  a8 c4 c5 94   bl	j___Unwind_Resume
+

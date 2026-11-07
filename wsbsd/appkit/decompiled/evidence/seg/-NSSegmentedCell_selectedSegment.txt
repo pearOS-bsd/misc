@@ -1,0 +1,37 @@
+### -[NSSegmentedCell selectedSegment]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSSegmentedCell selectedSegment]
+
+-[NSSegmentedCell selectedSegment]:
+0x18504a93c:  7f 23 03 d5   pacibsp
+0x18504a940:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x18504a944:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x18504a948:  fd 43 00 91   add	fp, sp, #0x10
+0x18504a94c:  f3 03 00 aa   mov	x19, x0
+0x18504a950:  e0 06 c0 94   bl	0x18804c4d0
+0x18504a954:  c8 9c 30 90   adrp	x8, 0x1e63e2000
+0x18504a958:  08 49 85 b9   ldrsw	x8, [x8, #0x548]
+0x18504a95c:  68 02 08 8b   add	x8, x19, x8
+0x18504a960:  08 01 40 b9   ldr	w8, [x8]
+0x18504a964:  08 05 1f 12   and	w8, w8, #0x6
+0x18504a968:  1f 09 00 71   cmp	w8, #0x2
+0x18504a96c:  a1 01 00 54   b.ne	loc_18504a9a0 ; ⤵ 0x34
+0x18504a970:  e0 03 13 aa   mov	x0, x19
+0x18504a974:  db 0f c1 94   bl	0x18808e8e0
+0x18504a978:  20 01 00 34   cbz	w0, loc_18504a99c ; ⤵ 0x24
+0x18504a97c:  e0 03 13 aa   mov	x0, x19
+0x18504a980:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x18504a984:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x18504a988:  ff 23 03 d5   autibsp
+0x18504a98c:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x18504a990:  50 00 f0 b6   tbz	x16, #0x3e, loc_18504a998 ; ⤵ 0x8
+0x18504a994:  20 8e 38 d4   brk	#0xc471
+0x18504a998:  ; loc_18504a998
+0x18504a998:  82 06 c0 14   b	0x18804c3a0
+0x18504a99c:  ; loc_18504a99c
+0x18504a99c:  00 00 80 92   mov	x0, #0xffffffffffffffff
+0x18504a9a0:  ; loc_18504a9a0
+0x18504a9a0:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x18504a9a4:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x18504a9a8:  ff 0f 5f d6   retab
+

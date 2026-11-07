@@ -1,0 +1,4 @@
+### -[NSTextFieldCell isBordered]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTextFieldCell isBordered]
+   ⨯ public symbol -[NSTextFieldCell isBordered] not found in image AppKit

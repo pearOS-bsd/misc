@@ -1,0 +1,215 @@
+### -[NSResponder setNextResponder:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSResponder setNextResponder:]
+
+-[NSResponder setNextResponder:]:
+0x184f11b6c:  7f 23 03 d5   pacibsp
+0x184f11b70:  ff 43 03 d1   sub	sp, sp, #0xd0
+0x184f11b74:  f8 5f 09 a9   stp	x24, x23, [sp, #0x90]
+0x184f11b78:  f6 57 0a a9   stp	x22, x21, [sp, #0xa0]
+0x184f11b7c:  f4 4f 0b a9   stp	x20, x19, [sp, #0xb0]
+0x184f11b80:  fd 7b 0c a9   stp	fp, lr, [sp, #0xc0]
+0x184f11b84:  fd 03 03 91   add	fp, sp, #0xc0
+0x184f11b88:  f3 03 02 aa   mov	x19, x2
+0x184f11b8c:  f5 03 01 aa   mov	x21, x1
+0x184f11b90:  f4 03 00 aa   mov	x20, x0
+0x184f11b94:  c8 97 2d d0   adrp	x8, 0x1e020b000
+0x184f11b98:  08 59 45 f9   ldr	x8, [x8, #0xab0] ; _ptr.___stack_chk_guard
+0x184f11b9c:  08 01 40 f9   ldr	x8, [x8]
+0x184f11ba0:  a8 83 1c f8   stur	x8, [fp, #-0x38]
+0x184f11ba4:  e2 03 00 b4   cbz	x2, loc_184f11c20 ; ⤵ 0x7c
+0x184f11ba8:  48 a7 30 b0   adrp	x8, 0x1e63fa000
+0x184f11bac:  08 91 32 91   add	x8, x8, #0xca4 ; data_1e63faca4 (AppKit/__DATA_DIRTY.__bss)
+0x184f11bb0:  08 fd df 08   ldarb	w8, [x8]
+0x184f11bb4:  1f 09 00 71   cmp	w8, #0x2
+0x184f11bb8:  a0 01 00 54   b.eq	loc_184f11bec ; ⤵ 0x34
+0x184f11bbc:  48 02 00 35   cbnz	w8, loc_184f11c04 ; ⤵ 0x48
+0x184f11bc0:  c0 ab 31 d0   adrp	x0, 0x1e848b000
+0x184f11bc4:  00 40 36 91   add	x0, x0, #0xd90 ; "NSResponderSetNextResponderAllowsDeallocatingResponders"
+0x184f11bc8:  42 a7 30 b0   adrp	x2, 0x1e63fa000
+0x184f11bcc:  42 90 32 91   add	x2, x2, #0xca4 ; data_1e63faca4 (AppKit/__DATA_DIRTY.__bss)
+0x184f11bd0:  10 3f 00 d0   adrp	x16, 0x1856f3000
+0x184f11bd4:  10 52 06 91   add	x16, x16, #0x194 ; _NSResponderSetNextResponderAllowsDeallocatingRespondersDefaultValueFunction
+0x184f11bd8:  f0 23 c1 da   paciza	x16
+0x184f11bdc:  e3 03 10 aa   mov	x3, x16
+0x184f11be0:  21 00 80 52   mov	w1, #0x1
+0x184f11be4:  d5 d7 fe 97   bl	__NSGetBoolAppConfig
+0x184f11be8:  e0 00 00 37   tbnz	w0, #0, loc_184f11c04 ; ⤵ 0x1c
+0x184f11bec:  ; loc_184f11bec
+0x184f11bec:  e0 03 13 aa   mov	x0, x19
+0x184f11bf0:  9c 2d c4 94   bl	0x18801d260
+0x184f11bf4:  40 13 00 35   cbnz	w0, loc_184f11e5c ; ⤵ 0x268
+0x184f11bf8:  e0 03 14 aa   mov	x0, x20
+0x184f11bfc:  99 2d c4 94   bl	0x18801d260
+0x184f11c00:  60 13 00 35   cbnz	w0, loc_184f11e6c ; ⤵ 0x26c
+0x184f11c04:  ; loc_184f11c04
+0x184f11c04:  48 c1 2d d0   adrp	x8, 0x1e073b000
+0x184f11c08:  00 91 44 f9   ldr	x0, [x8, #0x920] ; __got.class_NSResponder
+0x184f11c0c:  f1 2e c7 94   bl	j__objc_opt_class
+0x184f11c10:  e1 03 00 aa   mov	x1, x0
+0x184f11c14:  e0 03 13 aa   mov	x0, x19
+0x184f11c18:  f2 2e c7 94   bl	j__objc_opt_isKindOfClass
+0x184f11c1c:  60 06 00 36   tbz	w0, #0, loc_184f11ce8 ; ⤵ 0xcc
+0x184f11c20:  ; loc_184f11c20
+0x184f11c20:  88 06 40 f9   ldr	x8, [x20, #0x8]
+0x184f11c24:  1f 01 13 eb   cmp	x8, x19
+0x184f11c28:  80 04 00 54   b.eq	loc_184f11cb8 ; ⤵ 0x90
+0x184f11c2c:  e0 03 14 aa   mov	x0, x20
+0x184f11c30:  bc 78 1f 94   bl	-[NSResponder _clearNextResponderBackReference]
+0x184f11c34:  e0 03 14 aa   mov	x0, x20
+0x184f11c38:  e1 03 13 aa   mov	x1, x19
+0x184f11c3c:  f6 78 1f 94   bl	-[NSResponder _setNextResponderAndMakeBackReference:]
+0x184f11c40:  48 a7 30 b0   adrp	x8, 0x1e63fa000
+0x184f11c44:  08 95 32 91   add	x8, x8, #0xca5 ; data_1e63faca5 (AppKit/__DATA_DIRTY.__bss)
+0x184f11c48:  08 fd df 08   ldarb	w8, [x8]
+0x184f11c4c:  1f 09 00 71   cmp	w8, #0x2
+0x184f11c50:  40 03 00 54   b.eq	loc_184f11cb8 ; ⤵ 0x68
+0x184f11c54:  08 09 00 34   cbz	w8, loc_184f11d74 ; ⤵ 0x120
+0x184f11c58:  ; loc_184f11c58
+0x184f11c58:  48 94 2d f0   adrp	x8, 0x1e019c000
+0x184f11c5c:  00 ad 42 f9   ldr	x0, [x8, #0x558] ; _ptr.NSMutableArray
+0x184f11c60:  88 41 c7 94   bl	j__objc_opt_new
+0x184f11c64:  4b 41 c7 94   bl	j__objc_autorelease
+0x184f11c68:  f6 03 00 aa   mov	x22, x0
+0x184f11c6c:  e2 03 14 aa   mov	x2, x20
+0x184f11c70:  e0 c1 c3 94   bl	0x1880023f0
+0x184f11c74:  e0 03 14 aa   mov	x0, x20
+0x184f11c78:  ca 0a c6 94   bl	0x1880947a0
+0x184f11c7c:  e0 01 00 b4   cbz	x0, loc_184f11cb8 ; ⤵ 0x3c
+0x184f11c80:  f7 03 14 aa   mov	x23, x20
+0x184f11c84:  ; loc_184f11c84
+0x184f11c84:  e0 03 17 aa   mov	x0, x23
+0x184f11c88:  c6 0a c6 94   bl	0x1880947a0
+0x184f11c8c:  f7 03 00 aa   mov	x23, x0
+0x184f11c90:  e0 03 16 aa   mov	x0, x22
+0x184f11c94:  e2 03 17 aa   mov	x2, x23
+0x184f11c98:  4e c3 c3 94   bl	0x1880029d0
+0x184f11c9c:  e0 07 00 35   cbnz	w0, loc_184f11d98 ; ⤵ 0xfc
+0x184f11ca0:  e0 03 16 aa   mov	x0, x22
+0x184f11ca4:  e2 03 17 aa   mov	x2, x23
+0x184f11ca8:  d2 c1 c3 94   bl	0x1880023f0
+0x184f11cac:  e0 03 17 aa   mov	x0, x23
+0x184f11cb0:  bc 0a c6 94   bl	0x1880947a0
+0x184f11cb4:  80 fe ff b5   cbnz	x0, loc_184f11c84 ; ⤴ -0x30
+0x184f11cb8:  ; loc_184f11cb8
+0x184f11cb8:  a8 83 5c f8   ldur	x8, [fp, #-0x38]
+0x184f11cbc:  c9 97 2d d0   adrp	x9, 0x1e020b000
+0x184f11cc0:  29 59 45 f9   ldr	x9, [x9, #0xab0] ; _ptr.___stack_chk_guard
+0x184f11cc4:  29 01 40 f9   ldr	x9, [x9]
+0x184f11cc8:  3f 01 08 eb   cmp	x9, x8
+0x184f11ccc:  61 0c 00 54   b.ne	loc_184f11e58 ; ⤵ 0x18c
+0x184f11cd0:  fd 7b 4c a9   ldp	fp, lr, [sp, #0xc0]
+0x184f11cd4:  f4 4f 4b a9   ldp	x20, x19, [sp, #0xb0]
+0x184f11cd8:  f6 57 4a a9   ldp	x22, x21, [sp, #0xa0]
+0x184f11cdc:  f8 5f 49 a9   ldp	x24, x23, [sp, #0x90]
+0x184f11ce0:  ff 43 03 91   add	sp, sp, #0xd0
+0x184f11ce4:  ff 0f 5f d6   retab
+0x184f11ce8:  ; loc_184f11ce8
+0x184f11ce8:  ff 17 00 f9   str	xzr, [sp, #0x28]
+0x184f11cec:  00 e4 00 6f   movi	v0.2d, #0
+0x184f11cf0:  e0 03 03 ad   stp	q0, q0, [sp, #0x60]
+0x184f11cf4:  e0 03 02 ad   stp	q0, q0, [sp, #0x40]
+0x184f11cf8:  e0 0f 80 3d   str	q0, [sp, #0x30]
+0x184f11cfc:  d3 97 2d f0   adrp	x19, 0x1e020c000
+0x184f11d00:  73 0a 41 f9   ldr	x19, [x19, #0x210] ; _ptr.__os_log_default
+0x184f11d04:  e0 03 13 aa   mov	x0, x19
+0x184f11d08:  01 02 80 52   mov	w1, #0x10
+0x184f11d0c:  c5 41 c7 94   bl	j__os_log_type_enabled
+0x184f11d10:  1f 00 00 71   cmp	w0, #0
+0x184f11d14:  48 00 80 52   mov	w8, #0x2
+0x184f11d18:  00 05 88 1a   cinc	w0, w8, ne
+0x184f11d1c:  08 20 80 52   mov	w8, #0x100
+0x184f11d20:  08 00 a1 72   movk	w8, #0x800, lsl #0x10
+0x184f11d24:  e8 13 00 b9   str	w8, [sp, #0x10]
+0x184f11d28:  ff 43 01 f8   stur	xzr, [sp, #0x14]
+0x184f11d2c:  88 01 80 52   mov	w8, #0xc
+0x184f11d30:  e8 0b 00 b9   str	w8, [sp, #0x8]
+0x184f11d34:  e8 43 00 91   add	x8, sp, #0x10
+0x184f11d38:  e8 03 00 f9   str	x8, [sp]
+0x184f11d3c:  84 fd ff b0   adrp	x4, 0x184ec2000
+0x184f11d40:  84 00 00 91   add	x4, x4, #0 ; "\xcf\xfa\xed\xfe\f"
+0x184f11d44:  67 ab 00 b0   adrp	x7, 0x18647e000
+0x184f11d48:  e7 38 28 91   add	x7, x7, #0xa0e ; "assertion failure: \"aResponder == ((void*)0) || [aResponder isKindOfClass:[NSResponder class]]\" -> %llu"
+0x184f11d4c:  e1 a3 00 91   add	x1, sp, #0x28
+0x184f11d50:  e2 c3 00 91   add	x2, sp, #0x30
+0x184f11d54:  03 0a 80 52   mov	w3, #0x50
+0x184f11d58:  e5 03 13 aa   mov	x5, x19
+0x184f11d5c:  06 02 80 52   mov	w6, #0x10
+0x184f11d60:  a4 4e c7 94   bl	j___os_log_send_and_compose_impl
+0x184f11d64:  e1 03 00 aa   mov	x1, x0
+0x184f11d68:  e0 17 40 f9   ldr	x0, [sp, #0x28]
+0x184f11d6c:  9d 4e c7 94   bl	j___os_crash_msg
+0x184f11d70:  20 00 20 d4   brk	#0x1
+0x184f11d74:  ; loc_184f11d74
+0x184f11d74:  c0 ab 31 d0   adrp	x0, 0x1e848b000
+0x184f11d78:  00 c0 36 91   add	x0, x0, #0xdb0 ; "NSResponderDebugResponderLoops"
+0x184f11d7c:  42 a7 30 b0   adrp	x2, 0x1e63fa000
+0x184f11d80:  42 94 32 91   add	x2, x2, #0xca5 ; data_1e63faca5 (AppKit/__DATA_DIRTY.__bss)
+0x184f11d84:  01 00 80 52   mov	w1, #0
+0x184f11d88:  03 00 80 d2   mov	x3, #0
+0x184f11d8c:  6b d7 fe 97   bl	__NSGetBoolAppConfig
+0x184f11d90:  40 f6 ff 35   cbnz	w0, loc_184f11c58 ; ⤴ -0x138
+0x184f11d94:  c9 ff ff 17   b	loc_184f11cb8 ; ⤴ -0xdc
+0x184f11d98:  ; loc_184f11d98
+0x184f11d98:  39 58 33 94   bl	___AppKitLogResponder
+0x184f11d9c:  f6 03 00 aa   mov	x22, x0
+0x184f11da0:  01 02 80 52   mov	w1, #0x10
+0x184f11da4:  9f 41 c7 94   bl	j__os_log_type_enabled
+0x184f11da8:  60 04 00 34   cbz	w0, loc_184f11e34 ; ⤵ 0x8c
+0x184f11dac:  e0 03 14 aa   mov	x0, x20
+0x184f11db0:  88 2e c7 94   bl	j__objc_opt_class
+0x184f11db4:  83 4b c7 94   bl	j__NSStringFromClass
+0x184f11db8:  f7 03 00 aa   mov	x23, x0
+0x184f11dbc:  e0 03 15 aa   mov	x0, x21
+0x184f11dc0:  84 4b c7 94   bl	j__NSStringFromSelector
+0x184f11dc4:  f5 03 00 aa   mov	x21, x0
+0x184f11dc8:  e0 03 13 aa   mov	x0, x19
+0x184f11dcc:  81 2e c7 94   bl	j__objc_opt_class
+0x184f11dd0:  7c 4b c7 94   bl	j__NSStringFromClass
+0x184f11dd4:  28 9b 00 f0   adrp	x8, 0x186278000
+0x184f11dd8:  00 c1 47 fd   ldr	d0, [x8, #0xf80]
+0x184f11ddc:  e0 33 00 bd   str	s0, [sp, #0x30]
+0x184f11de0:  f7 43 03 f8   stur	x23, [sp, #0x34]
+0x184f11de4:  08 08 81 52   mov	w8, #0x840
+0x184f11de8:  e8 7b 00 79   strh	w8, [sp, #0x3c]
+0x184f11dec:  f5 e3 03 f8   stur	x21, [sp, #0x3e]
+0x184f11df0:  08 00 81 52   mov	w8, #0x800
+0x184f11df4:  e8 8f 00 79   strh	w8, [sp, #0x46]
+0x184f11df8:  f4 27 00 f9   str	x20, [sp, #0x48]
+0x184f11dfc:  49 08 81 52   mov	w9, #0x842
+0x184f11e00:  e9 a3 00 79   strh	w9, [sp, #0x50]
+0x184f11e04:  e0 23 05 f8   stur	x0, [sp, #0x52]
+0x184f11e08:  e8 b7 00 79   strh	w8, [sp, #0x5a]
+0x184f11e0c:  f3 c3 05 f8   stur	x19, [sp, #0x5c]
+0x184f11e10:  80 fd ff b0   adrp	x0, 0x184ec2000
+0x184f11e14:  00 00 00 91   add	x0, x0, #0 ; "\xcf\xfa\xed\xfe\f"
+0x184f11e18:  63 ab 00 b0   adrp	x3, 0x18647e000
+0x184f11e1c:  63 d8 29 91   add	x3, x3, #0xa76 ; "Responder chain loop detected! Calling [%{public}@ %@] self=%p, aResponder=%{public}@ %p"
+0x184f11e20:  e4 c3 00 91   add	x4, sp, #0x30
+0x184f11e24:  e1 03 16 aa   mov	x1, x22
+0x184f11e28:  02 02 80 52   mov	w2, #0x10
+0x184f11e2c:  85 06 80 52   mov	w5, #0x34
+0x184f11e30:  d0 3d c7 94   bl	j___os_log_impl
+0x184f11e34:  ; loc_184f11e34
+0x184f11e34:  48 94 2d f0   adrp	x8, 0x1e019c000
+0x184f11e38:  00 85 42 f9   ldr	x0, [x8, #0x508] ; _ptr.NSException
+0x184f11e3c:  e2 a9 31 d0   adrp	x2, 0x1e844f000
+0x184f11e40:  42 40 1c 91   add	x2, x2, #0x710 ; "NSError"
+0x184f11e44:  c3 ab 31 d0   adrp	x3, 0x1e848b000
+0x184f11e48:  63 c0 2e 91   add	x3, x3, #0xbb0 ; "You have a loop in the responder chain: this is a programming error"
+0x184f11e4c:  04 00 80 d2   mov	x4, #0
+0x184f11e50:  68 c4 c3 94   bl	0x188002ff0
+0x184f11e54:  e3 40 c7 94   bl	j__objc_exception_throw
+0x184f11e58:  ; loc_184f11e58
+0x184f11e58:  ba 28 c7 94   bl	j____stack_chk_fail
+0x184f11e5c:  ; loc_184f11e5c
+0x184f11e5c:  a0 9e 00 90   adrp	x0, 0x1862e5000
+0x184f11e60:  00 d0 15 91   add	x0, x0, #0x574 ; "Setting a deallocating nextResponder. This may result in memory corruption."
+0x184f11e64:  63 88 c7 94   bl	j___os_crash
+0x184f11e68:  20 00 20 d4   brk	#0x1
+0x184f11e6c:  ; loc_184f11e6c
+0x184f11e6c:  a0 9e 00 90   adrp	x0, 0x1862e5000
+0x184f11e70:  00 00 17 91   add	x0, x0, #0x5c0 ; "Setting a nextResponder on a deallocating responder. This may result in memory corruption."
+0x184f11e74:  5f 88 c7 94   bl	j___os_crash
+0x184f11e78:  20 00 20 d4   brk	#0x1
+

@@ -1,0 +1,66 @@
+### -[NSMenu itemAtIndex:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSMenu itemAtIndex:]
+
+-[NSMenu itemAtIndex:]:
+0x184eee020:  7f 23 03 d5   pacibsp
+0x184eee024:  ff 03 01 d1   sub	sp, sp, #0x40
+0x184eee028:  f6 57 01 a9   stp	x22, x21, [sp, #0x10]
+0x184eee02c:  f4 4f 02 a9   stp	x20, x19, [sp, #0x20]
+0x184eee030:  fd 7b 03 a9   stp	fp, lr, [sp, #0x30]
+0x184eee034:  fd c3 00 91   add	fp, sp, #0x30
+0x184eee038:  f3 03 02 aa   mov	x19, x2
+0x184eee03c:  f5 03 01 aa   mov	x21, x1
+0x184eee040:  f4 03 00 aa   mov	x20, x0
+0x184eee044:  02 02 f8 b7   tbnz	x2, #0x3f, loc_184eee084 ; ⤵ 0x40
+0x184eee048:  ; loc_184eee048
+0x184eee048:  80 0e 40 f9   ldr	x0, [x20, #0x18]
+0x184eee04c:  c1 52 c4 94   bl	0x188002b50
+0x184eee050:  7f 02 00 eb   cmp	x19, x0
+0x184eee054:  62 03 00 54   b.hs	loc_184eee0c0 ; ⤵ 0x6c
+0x184eee058:  ; loc_184eee058
+0x184eee058:  80 0e 40 f9   ldr	x0, [x20, #0x18]
+0x184eee05c:  e2 03 13 aa   mov	x2, x19
+0x184eee060:  fd 7b 43 a9   ldp	fp, lr, [sp, #0x30]
+0x184eee064:  f4 4f 42 a9   ldp	x20, x19, [sp, #0x20]
+0x184eee068:  f6 57 41 a9   ldp	x22, x21, [sp, #0x10]
+0x184eee06c:  ff 03 01 91   add	sp, sp, #0x40
+0x184eee070:  ff 23 03 d5   autibsp
+0x184eee074:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184eee078:  50 00 f0 b6   tbz	x16, #0x3e, loc_184eee080 ; ⤵ 0x8
+0x184eee07c:  20 8e 38 d4   brk	#0xc471
+0x184eee080:  ; loc_184eee080
+0x184eee080:  8c 58 c4 14   b	0x1880042b0
+0x184eee084:  ; loc_184eee084
+0x184eee084:  e8 95 2d 90   adrp	x8, 0x1e01aa000
+0x184eee088:  00 41 40 f9   ldr	x0, [x8, #0x80] ; _ptr.NSAssertionHandler
+0x184eee08c:  7d 66 c4 94   bl	0x188007a80
+0x184eee090:  48 ab 31 d0   adrp	x8, 0x1e8458000
+0x184eee094:  08 41 2c 91   add	x8, x8, #0xb10 ; "index >= 0"
+0x184eee098:  e8 03 00 f9   str	x8, [sp]
+0x184eee09c:  24 ac 31 b0   adrp	x4, 0x1e8473000
+0x184eee0a0:  84 40 22 91   add	x4, x4, #0x890 ; "NSMenu.m"
+0x184eee0a4:  46 aa 31 f0   adrp	x6, 0x1e8439000
+0x184eee0a8:  c6 40 2f 91   add	x6, x6, #0xbd0 ; "Invalid parameter not satisfying: %@"
+0x184eee0ac:  e2 03 15 aa   mov	x2, x21
+0x184eee0b0:  e3 03 14 aa   mov	x3, x20
+0x184eee0b4:  45 09 81 52   mov	w5, #0x84a
+0x184eee0b8:  e2 6a c4 94   bl	0x188008c40
+0x184eee0bc:  e3 ff ff 17   b	loc_184eee048 ; ⤴ -0x74
+0x184eee0c0:  ; loc_184eee0c0
+0x184eee0c0:  e8 95 2d 90   adrp	x8, 0x1e01aa000
+0x184eee0c4:  00 41 40 f9   ldr	x0, [x8, #0x80] ; _ptr.NSAssertionHandler
+0x184eee0c8:  6e 66 c4 94   bl	0x188007a80
+0x184eee0cc:  28 ac 31 b0   adrp	x8, 0x1e8473000
+0x184eee0d0:  08 c1 3a 91   add	x8, x8, #0xeb0 ; "index < [_itemArray count]"
+0x184eee0d4:  e8 03 00 f9   str	x8, [sp]
+0x184eee0d8:  24 ac 31 b0   adrp	x4, 0x1e8473000
+0x184eee0dc:  84 40 22 91   add	x4, x4, #0x890 ; "NSMenu.m"
+0x184eee0e0:  46 aa 31 f0   adrp	x6, 0x1e8439000
+0x184eee0e4:  c6 40 2f 91   add	x6, x6, #0xbd0 ; "Invalid parameter not satisfying: %@"
+0x184eee0e8:  e2 03 15 aa   mov	x2, x21
+0x184eee0ec:  e3 03 14 aa   mov	x3, x20
+0x184eee0f0:  65 09 81 52   mov	w5, #0x84b
+0x184eee0f4:  d3 6a c4 94   bl	0x188008c40
+0x184eee0f8:  d8 ff ff 17   b	loc_184eee058 ; ⤴ -0xa0
+

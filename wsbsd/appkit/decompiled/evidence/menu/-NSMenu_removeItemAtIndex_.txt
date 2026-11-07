@@ -1,0 +1,24 @@
+### -[NSMenu removeItemAtIndex:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSMenu removeItemAtIndex:]
+
+-[NSMenu removeItemAtIndex:]:
+0x184f046fc:  7f 23 03 d5   pacibsp
+0x184f04700:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x184f04704:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x184f04708:  fd 43 00 91   add	fp, sp, #0x10
+0x184f0470c:  f3 03 00 aa   mov	x19, x0
+0x184f04710:  28 95 2d d0   adrp	x8, 0x1e01aa000
+0x184f04714:  00 65 41 f9   ldr	x0, [x8, #0x2c8] ; _ptr.NSIndexSet
+0x184f04718:  42 80 c4 94   bl	0x188024820
+0x184f0471c:  e2 03 00 aa   mov	x2, x0
+0x184f04720:  e0 03 13 aa   mov	x0, x19
+0x184f04724:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184f04728:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184f0472c:  ff 23 03 d5   autibsp
+0x184f04730:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f04734:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f0473c ; ⤵ 0x8
+0x184f04738:  20 8e 38 d4   brk	#0xc471
+0x184f0473c:  ; loc_184f0473c
+0x184f0473c:  25 58 c5 14   b	0x18805a7d0
+

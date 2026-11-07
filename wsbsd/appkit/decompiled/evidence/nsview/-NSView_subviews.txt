@@ -1,0 +1,81 @@
+### -[NSView subviews]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSView subviews]
+
+-[NSView subviews]:
+0x184f17b18:  7f 23 03 d5   pacibsp
+0x184f17b1c:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x184f17b20:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x184f17b24:  fd 43 00 91   add	fp, sp, #0x10
+0x184f17b28:  f3 03 00 aa   mov	x19, x0
+0x184f17b2c:  e1 ab 31 90   adrp	x1, 0x1e8493000
+0x184f17b30:  21 40 2c 91   add	x1, x1, #0xb10 ; "subviews"
+0x184f17b34:  b2 e0 ff 97   bl	__NSAddKeyValueDependency
+0x184f17b38:  68 af 2f f0   adrp	x8, 0x1e4506000
+0x184f17b3c:  14 cd 8a b9   ldrsw	x20, [x8, #0xacc] ; _OBJC_IVAR_$_NSView._subviews
+0x184f17b40:  68 02 14 8b   add	x8, x19, x20
+0x184f17b44:  08 01 40 f9   ldr	x8, [x8]
+0x184f17b48:  48 01 00 b4   cbz	x8, loc_184f17b70 ; ⤵ 0x28
+0x184f17b4c:  68 b2 2f b0   adrp	x8, 0x1e4564000
+0x184f17b50:  08 49 16 91   add	x8, x8, #0x592 ; data_1e4564592 (AppKit/__DATA.__bss)
+0x184f17b54:  08 fd df 08   ldarb	w8, [x8]
+0x184f17b58:  1f 09 00 71   cmp	w8, #0x2
+0x184f17b5c:  60 02 00 54   b.eq	loc_184f17ba8 ; ⤵ 0x4c
+0x184f17b60:  e8 00 00 34   cbz	w8, loc_184f17b7c ; ⤵ 0x1c
+0x184f17b64:  ; loc_184f17b64
+0x184f17b64:  e0 03 13 aa   mov	x0, x19
+0x184f17b68:  be 15 c4 94   bl	0x18801d260
+0x184f17b6c:  e0 01 00 36   tbz	w0, #0, loc_184f17ba8 ; ⤵ 0x3c
+0x184f17b70:  ; loc_184f17b70
+0x184f17b70:  20 94 2d b0   adrp	x0, 0x1e019c000
+0x184f17b74:  00 7c 43 f9   ldr	x0, [x0, #0x6f8] ; _ptr.___NSArray0__struct
+0x184f17b78:  13 00 00 14   b	loc_184f17bc4 ; ⤵ 0x4c
+0x184f17b7c:  ; loc_184f17b7c
+0x184f17b7c:  60 ac 31 b0   adrp	x0, 0x1e84a4000
+0x184f17b80:  00 c0 2f 91   add	x0, x0, #0xbf0 ; "NSViewSuperviewIsWeak"
+0x184f17b84:  62 b2 2f b0   adrp	x2, 0x1e4564000
+0x184f17b88:  42 48 16 91   add	x2, x2, #0x592 ; data_1e4564592 (AppKit/__DATA.__bss)
+0x184f17b8c:  b0 50 00 f0   adrp	x16, 0x18592e000
+0x184f17b90:  10 a2 16 91   add	x16, x16, #0x5a8 ; _NSViewSuperviewIsWeakDefaultValueFunction
+0x184f17b94:  f0 23 c1 da   paciza	x16
+0x184f17b98:  e3 03 10 aa   mov	x3, x16
+0x184f17b9c:  01 00 80 52   mov	w1, #0
+0x184f17ba0:  e6 bf fe 97   bl	__NSGetBoolAppConfig
+0x184f17ba4:  00 fe ff 35   cbnz	w0, loc_184f17b64 ; ⤴ -0x40
+0x184f17ba8:  ; loc_184f17ba8
+0x184f17ba8:  68 b2 2f b0   adrp	x8, 0x1e4564000
+0x184f17bac:  08 4d 16 91   add	x8, x8, #0x593 ; data_1e4564593 (AppKit/__DATA.__bss)
+0x184f17bb0:  08 fd df 08   ldarb	w8, [x8]
+0x184f17bb4:  1f 09 00 71   cmp	w8, #0x2
+0x184f17bb8:  20 02 00 54   b.eq	loc_184f17bfc ; ⤵ 0x44
+0x184f17bbc:  a8 00 00 34   cbz	w8, loc_184f17bd0 ; ⤵ 0x14
+0x184f17bc0:  ; loc_184f17bc0
+0x184f17bc0:  60 6a 74 f8   ldr	x0, [x19, x20]
+0x184f17bc4:  ; loc_184f17bc4
+0x184f17bc4:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184f17bc8:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184f17bcc:  ff 0f 5f d6   retab
+0x184f17bd0:  ; loc_184f17bd0
+0x184f17bd0:  60 ac 31 b0   adrp	x0, 0x1e84a4000
+0x184f17bd4:  00 40 30 91   add	x0, x0, #0xc10 ; "NSViewSubviewsReturnsInternalMutableStorage"
+0x184f17bd8:  62 b2 2f b0   adrp	x2, 0x1e4564000
+0x184f17bdc:  42 4c 16 91   add	x2, x2, #0x593 ; data_1e4564593 (AppKit/__DATA.__bss)
+0x184f17be0:  b0 50 00 f0   adrp	x16, 0x18592e000
+0x184f17be4:  10 c2 16 91   add	x16, x16, #0x5b0 ; _NSViewSubviewsReturnsInternalMutableStorageDefaultValueFunction
+0x184f17be8:  f0 23 c1 da   paciza	x16
+0x184f17bec:  e3 03 10 aa   mov	x3, x16
+0x184f17bf0:  01 00 80 52   mov	w1, #0
+0x184f17bf4:  d1 bf fe 97   bl	__NSGetBoolAppConfig
+0x184f17bf8:  40 fe ff 35   cbnz	w0, loc_184f17bc0 ; ⤴ -0x38
+0x184f17bfc:  ; loc_184f17bfc
+0x184f17bfc:  60 6a 74 f8   ldr	x0, [x19, x20]
+0x184f17c00:  80 ab c3 94   bl	0x188002a00
+0x184f17c04:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184f17c08:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184f17c0c:  ff 23 03 d5   autibsp
+0x184f17c10:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f17c14:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f17c1c ; ⤵ 0x8
+0x184f17c18:  20 8e 38 d4   brk	#0xc471
+0x184f17c1c:  ; loc_184f17c1c
+0x184f17c1c:  5d 29 c7 14   b	j__objc_autorelease
+

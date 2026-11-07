@@ -1,0 +1,9 @@
+### -[NSMenuItem setTarget:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSMenuItem setTarget:]
+
+-[NSMenuItem setTarget:]:
+0x184ed7c10:  e1 03 02 aa   mov	x1, x2
+0x184ed7c14:  00 00 01 91   add	x0, x0, #0x40
+0x184ed7c18:  f6 16 c8 14   b	j__objc_storeWeak
+

@@ -1,0 +1,12 @@
+### -[NSView isFlipped]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSView isFlipped]
+
+-[NSView isFlipped]:
+0x184f14290:  88 af 2f d0   adrp	x8, 0x1e4506000
+0x184f14294:  08 c1 8a b9   ldrsw	x8, [x8, #0xac0] ; _OBJC_IVAR_$_NSView._vFlags
+0x184f14298:  08 00 08 8b   add	x8, x0, x8
+0x184f1429c:  08 05 40 39   ldrb	w8, [x8, #0x1]
+0x184f142a0:  00 0d 03 53   ubfx	w0, w8, #0x3, #0x1
+0x184f142a4:  c0 03 5f d6   ret
+

@@ -1,0 +1,13 @@
+### -[NSApplication isRunning]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSApplication isRunning]
+
+-[NSApplication isRunning]:
+0x184f00e74:  08 b0 2f b0   adrp	x8, 0x1e4501000
+0x184f00e78:  08 41 8e b9   ldrsw	x8, [x8, #0xe40] ; _OBJC_IVAR_$_NSApplication._running
+0x184f00e7c:  08 00 08 8b   add	x8, x0, x8
+0x184f00e80:  08 01 c0 79   ldrsh	w8, [x8]
+0x184f00e84:  1f 01 00 71   cmp	w8, #0
+0x184f00e88:  e0 d7 9f 1a   cset	w0, gt
+0x184f00e8c:  c0 03 5f d6   ret
+

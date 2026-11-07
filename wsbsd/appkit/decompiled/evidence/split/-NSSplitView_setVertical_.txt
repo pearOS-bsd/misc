@@ -1,0 +1,87 @@
+### -[NSSplitView setVertical:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSSplitView setVertical:]
+
+-[NSSplitView setVertical:]:
+0x184f5a928:  7f 23 03 d5   pacibsp
+0x184f5a92c:  f6 57 bd a9   stp	x22, x21, [sp, #-0x30]!
+0x184f5a930:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x184f5a934:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x184f5a938:  fd 83 00 91   add	fp, sp, #0x20
+0x184f5a93c:  48 a4 30 90   adrp	x8, 0x1e63e2000
+0x184f5a940:  08 dd 89 b9   ldrsw	x8, [x8, #0x9dc] ; __MergedGlobals
+0x184f5a944:  09 00 08 8b   add	x9, x0, x8
+0x184f5a948:  29 01 40 f9   ldr	x9, [x9]
+0x184f5a94c:  3f 01 6e f2   tst	x9, #0x40000
+0x184f5a950:  ea 17 9f 1a   cset	w10, eq
+0x184f5a954:  4a 00 0a 4a   eor	w10, w2, w10
+0x184f5a958:  aa 00 00 36   tbz	w10, #0, loc_184f5a96c ; ⤵ 0x14
+0x184f5a95c:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x184f5a960:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x184f5a964:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x184f5a968:  ff 0f 5f d6   retab
+0x184f5a96c:  ; loc_184f5a96c
+0x184f5a96c:  f3 03 00 aa   mov	x19, x0
+0x184f5a970:  5f 00 00 71   cmp	w2, #0
+0x184f5a974:  8a 00 a0 52   mov	w10, #0x40000
+0x184f5a978:  4a 11 9f 9a   csel	x10, x10, xzr, ne
+0x184f5a97c:  29 f9 6d 92   and	x9, x9, #0xfffffffffffbffff
+0x184f5a980:  29 01 0a aa   orr	x9, x9, x10
+0x184f5a984:  09 68 28 f8   str	x9, [x0, x8]
+0x184f5a988:  22 04 c4 94   bl	0x18805ba10
+0x184f5a98c:  e0 03 13 aa   mov	x0, x19
+0x184f5a990:  44 cd c3 94   bl	0x18804dea0
+0x184f5a994:  55 a4 30 90   adrp	x21, 0x1e63e2000
+0x184f5a998:  b5 12 28 91   add	x21, x21, #0xa04
+0x184f5a99c:  a8 02 80 b9   ldrsw	x8, [x21]
+0x184f5a9a0:  68 02 08 8b   add	x8, x19, x8
+0x184f5a9a4:  14 01 40 f9   ldr	x20, [x8]
+0x184f5a9a8:  e0 03 13 aa   mov	x0, x19
+0x184f5a9ac:  81 ed c4 94   bl	0x188095fb0
+0x184f5a9b0:  e2 03 00 aa   mov	x2, x0
+0x184f5a9b4:  e0 03 14 aa   mov	x0, x20
+0x184f5a9b8:  3e c7 c2 94   bl	0x18800c6b0
+0x184f5a9bc:  a8 06 80 b9   ldrsw	x8, [x21, #0x4]
+0x184f5a9c0:  68 02 08 8b   add	x8, x19, x8
+0x184f5a9c4:  14 01 40 f9   ldr	x20, [x8]
+0x184f5a9c8:  e0 03 13 aa   mov	x0, x19
+0x184f5a9cc:  79 ed c4 94   bl	0x188095fb0
+0x184f5a9d0:  e2 03 00 aa   mov	x2, x0
+0x184f5a9d4:  e0 03 14 aa   mov	x0, x20
+0x184f5a9d8:  36 c7 c2 94   bl	0x18800c6b0
+0x184f5a9dc:  e0 03 13 aa   mov	x0, x19
+0x184f5a9e0:  30 84 c3 94   bl	0x18803baa0
+0x184f5a9e4:  80 00 00 34   cbz	w0, loc_184f5a9f4 ; ⤵ 0x10
+0x184f5a9e8:  e0 03 13 aa   mov	x0, x19
+0x184f5a9ec:  25 44 c4 94   bl	0x18806ba80
+0x184f5a9f0:  04 00 00 14   b	loc_184f5aa00 ; ⤵ 0x10
+0x184f5a9f4:  ; loc_184f5a9f4
+0x184f5a9f4:  e0 03 13 aa   mov	x0, x19
+0x184f5a9f8:  22 00 80 52   mov	w2, #0x1
+0x184f5a9fc:  49 37 c5 94   bl	0x1880a8720
+0x184f5aa00:  ; loc_184f5aa00
+0x184f5aa00:  e0 03 13 aa   mov	x0, x19
+0x184f5aa04:  f3 53 c4 94   bl	0x18806f9d0
+0x184f5aa08:  40 01 00 34   cbz	w0, loc_184f5aa30 ; ⤵ 0x28
+0x184f5aa0c:  e0 03 13 aa   mov	x0, x19
+0x184f5aa10:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x184f5aa14:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x184f5aa18:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x184f5aa1c:  ff 23 03 d5   autibsp
+0x184f5aa20:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f5aa24:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f5aa2c ; ⤵ 0x8
+0x184f5aa28:  20 8e 38 d4   brk	#0xc471
+0x184f5aa2c:  ; loc_184f5aa2c
+0x184f5aa2c:  c5 2f c4 14   b	0x188066940
+0x184f5aa30:  ; loc_184f5aa30
+0x184f5aa30:  e0 03 13 aa   mov	x0, x19
+0x184f5aa34:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x184f5aa38:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x184f5aa3c:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x184f5aa40:  ff 23 03 d5   autibsp
+0x184f5aa44:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f5aa48:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f5aa50 ; ⤵ 0x8
+0x184f5aa4c:  20 8e 38 d4   brk	#0xc471
+0x184f5aa50:  ; loc_184f5aa50
+0x184f5aa50:  04 32 c4 14   b	0x188067260
+

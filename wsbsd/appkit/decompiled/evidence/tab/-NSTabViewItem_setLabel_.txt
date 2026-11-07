@@ -1,0 +1,42 @@
+### -[NSTabViewItem setLabel:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTabViewItem setLabel:]
+
+-[NSTabViewItem setLabel:]:
+0x185090b18:  7f 23 03 d5   pacibsp
+0x185090b1c:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x185090b20:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x185090b24:  fd 43 00 91   add	fp, sp, #0x10
+0x185090b28:  f4 03 02 aa   mov	x20, x2
+0x185090b2c:  02 08 40 f9   ldr	x2, [x0, #0x10]
+0x185090b30:  9f 02 02 eb   cmp	x20, x2
+0x185090b34:  a0 00 00 54   b.eq	loc_185090b48 ; ⤵ 0x14
+0x185090b38:  f3 03 00 aa   mov	x19, x0
+0x185090b3c:  e0 03 14 aa   mov	x0, x20
+0x185090b40:  5c cc bd 94   bl	0x188003cb0
+0x185090b44:  80 00 00 36   tbz	w0, #0, loc_185090b54 ; ⤵ 0x10
+0x185090b48:  ; loc_185090b48
+0x185090b48:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x185090b4c:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x185090b50:  ff 0f 5f d6   retab
+0x185090b54:  ; loc_185090b54
+0x185090b54:  e0 03 13 aa   mov	x0, x19
+0x185090b58:  e2 03 14 aa   mov	x2, x20
+0x185090b5c:  71 78 c0 94   bl	0x1880aed20
+0x185090b60:  e0 03 13 aa   mov	x0, x19
+0x185090b64:  5f f3 be 94   bl	0x18804d8e0
+0x185090b68:  60 1a 40 f9   ldr	x0, [x19, #0x30]
+0x185090b6c:  e2 03 13 aa   mov	x2, x19
+0x185090b70:  74 42 bf 94   bl	0x188061540
+0x185090b74:  60 1a 40 f9   ldr	x0, [x19, #0x30]
+0x185090b78:  92 00 bf 94   bl	0x188050dc0
+0x185090b7c:  60 1a 40 f9   ldr	x0, [x19, #0x30]
+0x185090b80:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x185090b84:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x185090b88:  ff 23 03 d5   autibsp
+0x185090b8c:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x185090b90:  50 00 f0 b6   tbz	x16, #0x3e, loc_185090b98 ; ⤵ 0x8
+0x185090b94:  20 8e 38 d4   brk	#0xc471
+0x185090b98:  ; loc_185090b98
+0x185090b98:  e2 0f c0 14   b	0x188094b20
+

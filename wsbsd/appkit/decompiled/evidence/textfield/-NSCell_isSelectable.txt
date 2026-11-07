@@ -1,0 +1,11 @@
+### -[NSCell isSelectable]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSCell isSelectable]
+
+-[NSCell isSelectable]:
+0x184fa571c:  08 81 80 52   mov	w8, #0x408
+0x184fa5720:  09 20 40 79   ldrh	w9, [x0, #0x10]
+0x184fa5724:  3f 01 08 6a   tst	w9, w8
+0x184fa5728:  e0 07 9f 1a   cset	w0, ne
+0x184fa572c:  c0 03 5f d6   ret
+

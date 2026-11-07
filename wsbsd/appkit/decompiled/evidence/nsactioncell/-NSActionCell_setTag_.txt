@@ -1,0 +1,11 @@
+### -[NSActionCell setTag:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSActionCell setTag:]
+
+-[NSActionCell setTag:]:
+0x1855f86d4:  68 78 2f 90   adrp	x8, 0x1e4504000
+0x1855f86d8:  08 79 86 b9   ldrsw	x8, [x8, #0x678] ; _OBJC_IVAR_$_NSActionCell._tag
+0x1855f86dc:  08 00 08 8b   add	x8, x0, x8
+0x1855f86e0:  02 01 00 f9   str	x2, [x8]
+0x1855f86e4:  c0 03 5f d6   ret
+

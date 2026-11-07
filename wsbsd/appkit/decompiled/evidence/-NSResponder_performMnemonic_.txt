@@ -1,0 +1,8 @@
+### -[NSResponder performMnemonic:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSResponder performMnemonic:]
+
+-[NSResponder performMnemonic:]:
+0x1856f0120:  00 00 80 52   mov	w0, #0
+0x1856f0124:  c0 03 5f d6   ret
+

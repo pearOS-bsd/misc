@@ -1,0 +1,8 @@
+### -[NSTableColumn width]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTableColumn width]
+
+-[NSTableColumn width]:
+0x184f6e968:  00 0c 40 fd   ldr	d0, [x0, #0x18]
+0x184f6e96c:  c0 03 5f d6   ret
+

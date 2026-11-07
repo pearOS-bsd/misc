@@ -1,0 +1,12 @@
+### -[NSTextField drawsBackground]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTextField drawsBackground]
+
+-[NSTextField drawsBackground]:
+0x185028fcc:  e8 a6 2f 90   adrp	x8, 0x1e4504000
+0x185028fd0:  08 d1 1e 91   add	x8, x8, #0x7b4 ; _OBJC_IVAR_$_NSControl._cell
+0x185028fd4:  08 01 80 b9   ldrsw	x8, [x8]
+0x185028fd8:  08 00 08 8b   add	x8, x0, x8
+0x185028fdc:  00 01 40 f9   ldr	x0, [x8]
+0x185028fe0:  a8 62 c1 14   b	0x188081a80
+

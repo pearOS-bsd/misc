@@ -1,0 +1,103 @@
+### -[NSCell doubleValue]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSCell doubleValue]
+
+-[NSCell doubleValue]:
+0x1855f9088:  7f 23 03 d5   pacibsp
+0x1855f908c:  ff c3 00 d1   sub	sp, sp, #0x30
+0x1855f9090:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x1855f9094:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x1855f9098:  fd 83 00 91   add	fp, sp, #0x20
+0x1855f909c:  f3 03 00 aa   mov	x19, x0
+0x1855f90a0:  44 0d aa 94   bl	0x18807c5b0
+0x1855f90a4:  f4 03 00 aa   mov	x20, x0
+0x1855f90a8:  e6 99 aa 94   bl	0x18809f840
+0x1855f90ac:  1f 00 13 eb   cmp	x0, x19
+0x1855f90b0:  a0 00 00 54   b.eq	loc_1855f90c4 ; ⤵ 0x14
+0x1855f90b4:  e0 03 14 aa   mov	x0, x20
+0x1855f90b8:  da ff a9 94   bl	0x188079020
+0x1855f90bc:  1f 00 13 eb   cmp	x0, x19
+0x1855f90c0:  61 00 00 54   b.ne	loc_1855f90cc ; ⤵ 0xc
+0x1855f90c4:  ; loc_1855f90c4
+0x1855f90c4:  e0 03 14 aa   mov	x0, x20
+0x1855f90c8:  c6 ff aa 94   bl	0x1880b8fe0
+0x1855f90cc:  ; loc_1855f90cc
+0x1855f90cc:  ff 07 00 f9   str	xzr, [sp, #0x8]
+0x1855f90d0:  68 0a 40 f9   ldr	x8, [x19, #0x10]
+0x1855f90d4:  09 05 7c 92   and	x9, x8, #0x30
+0x1855f90d8:  00 e4 00 6f   movi	v0.2d, #0
+0x1855f90dc:  3f 41 00 f1   cmp	x9, #0x10
+0x1855f90e0:  21 08 00 54   b.ne	loc_1855f91e4 ; ⤵ 0x104
+0x1855f90e4:  08 02 08 b6   tbz	x8, #0x21, loc_1855f9124 ; ⤵ 0x40
+0x1855f90e8:  a8 79 2f d0   adrp	x8, 0x1e452f000
+0x1855f90ec:  08 ed 2c 91   add	x8, x8, #0xb3b ; _sNSCellNumericValueHeedsValidationComputedValue
+0x1855f90f0:  08 fd df 08   ldarb	w8, [x8]
+0x1855f90f4:  1f 09 00 71   cmp	w8, #0x2
+0x1855f90f8:  60 01 00 54   b.eq	loc_1855f9124 ; ⤵ 0x2c
+0x1855f90fc:  48 07 00 35   cbnz	w8, loc_1855f91e4 ; ⤵ 0xe8
+0x1855f9100:  40 74 31 d0   adrp	x0, 0x1e8483000
+0x1855f9104:  00 c0 3b 91   add	x0, x0, #0xef0 ; "NSCellNumericValueHeedsValidation"
+0x1855f9108:  a2 79 2f d0   adrp	x2, 0x1e452f000
+0x1855f910c:  42 ec 2c 91   add	x2, x2, #0xb3b ; _sNSCellNumericValueHeedsValidationComputedValue
+0x1855f9110:  01 00 80 52   mov	w1, #0
+0x1855f9114:  03 00 80 d2   mov	x3, #0
+0x1855f9118:  88 3a e3 97   bl	__NSGetBoolAppConfig
+0x1855f911c:  00 e4 00 6f   movi	v0.2d, #0
+0x1855f9120:  20 06 00 37   tbnz	w0, #0, loc_1855f91e4 ; ⤵ 0xc4
+0x1855f9124:  ; loc_1855f9124
+0x1855f9124:  e0 03 13 aa   mov	x0, x19
+0x1855f9128:  e2 18 a9 94   bl	0x18803f4b0
+0x1855f912c:  f4 03 00 aa   mov	x20, x0
+0x1855f9130:  88 5d 2d b0   adrp	x8, 0x1e01aa000
+0x1855f9134:  00 01 42 f9   ldr	x0, [x8, #0x400] ; _ptr.NSNumber
+0x1855f9138:  a6 91 ab 94   bl	j__objc_opt_class
+0x1855f913c:  e1 03 00 aa   mov	x1, x0
+0x1855f9140:  e0 03 14 aa   mov	x0, x20
+0x1855f9144:  a7 91 ab 94   bl	j__objc_opt_isKindOfClass
+0x1855f9148:  40 01 00 36   tbz	w0, #0, loc_1855f9170 ; ⤵ 0x28
+0x1855f914c:  e0 03 14 aa   mov	x0, x20
+0x1855f9150:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x1855f9154:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x1855f9158:  ff c3 00 91   add	sp, sp, #0x30
+0x1855f915c:  ff 23 03 d5   autibsp
+0x1855f9160:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x1855f9164:  50 00 f0 b6   tbz	x16, #0x3e, loc_1855f916c ; ⤵ 0x8
+0x1855f9168:  20 8e 38 d4   brk	#0xc471
+0x1855f916c:  ; loc_1855f916c
+0x1855f916c:  a1 1f a8 14   b	0x188000ff0
+0x1855f9170:  ; loc_1855f9170
+0x1855f9170:  68 0a 40 f9   ldr	x8, [x19, #0x10]
+0x1855f9174:  03 85 61 d3   ubfx	x3, x8, #0x21, #0x1
+0x1855f9178:  e0 03 13 aa   mov	x0, x19
+0x1855f917c:  e2 03 14 aa   mov	x2, x20
+0x1855f9180:  9c 3e a9 94   bl	0x188048bf0
+0x1855f9184:  f3 03 00 aa   mov	x19, x0
+0x1855f9188:  88 5d 2d b0   adrp	x8, 0x1e01aa000
+0x1855f918c:  00 99 42 f9   ldr	x0, [x8, #0x530] ; _ptr.NSScanner
+0x1855f9190:  f8 a3 ab 94   bl	j__objc_allocWithZone
+0x1855f9194:  e2 03 13 aa   mov	x2, x19
+0x1855f9198:  22 2a a8 94   bl	0x188003a20
+0x1855f919c:  f3 03 00 aa   mov	x19, x0
+0x1855f91a0:  08 5d 2d f0   adrp	x8, 0x1e019c000
+0x1855f91a4:  00 09 43 f9   ldr	x0, [x8, #0x610] ; _ptr.NSUserDefaults
+0x1855f91a8:  22 30 a8 94   bl	0x188005230
+0x1855f91ac:  b9 a6 a8 94   bl	0x188022c90
+0x1855f91b0:  e2 03 00 aa   mov	x2, x0
+0x1855f91b4:  e0 03 13 aa   mov	x0, x19
+0x1855f91b8:  fa 2e a8 94   bl	0x188004da0
+0x1855f91bc:  e2 23 00 91   add	x2, sp, #0x8
+0x1855f91c0:  e0 03 13 aa   mov	x0, x19
+0x1855f91c4:  2f 2e a8 94   bl	0x188004a80
+0x1855f91c8:  f4 03 00 aa   mov	x20, x0
+0x1855f91cc:  e0 03 13 aa   mov	x0, x19
+0x1855f91d0:  a4 8e ab 94   bl	j__objc_release_x0
+0x1855f91d4:  e0 07 40 fd   ldr	d0, [sp, #0x8]
+0x1855f91d8:  9f 02 00 71   cmp	w20, #0
+0x1855f91dc:  01 e4 00 6f   movi	v1.2d, #0
+0x1855f91e0:  00 1c 61 1e   fcsel	d0, d0, d1, ne
+0x1855f91e4:  ; loc_1855f91e4
+0x1855f91e4:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x1855f91e8:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x1855f91ec:  ff c3 00 91   add	sp, sp, #0x30
+0x1855f91f0:  ff 0f 5f d6   retab
+

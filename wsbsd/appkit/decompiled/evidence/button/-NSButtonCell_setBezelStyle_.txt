@@ -1,0 +1,44 @@
+### -[NSButtonCell setBezelStyle:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSButtonCell setBezelStyle:]
+
+-[NSButtonCell setBezelStyle:]:
+0x184f494b4:  7f 23 03 d5   pacibsp
+0x184f494b8:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x184f494bc:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x184f494c0:  fd 43 00 91   add	fp, sp, #0x10
+0x184f494c4:  f4 03 02 aa   mov	x20, x2
+0x184f494c8:  f3 03 00 aa   mov	x19, x0
+0x184f494cc:  b9 b7 c4 94   bl	0x1880773b0
+0x184f494d0:  1f 00 14 eb   cmp	x0, x20
+0x184f494d4:  81 00 00 54   b.ne	loc_184f494e4 ; ⤵ 0x10
+0x184f494d8:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184f494dc:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184f494e0:  ff 0f 5f d6   retab
+0x184f494e4:  ; loc_184f494e4
+0x184f494e4:  c8 a4 30 b0   adrp	x8, 0x1e63e2000
+0x184f494e8:  08 e1 81 b9   ldrsw	x8, [x8, #0x1e0]
+0x184f494ec:  68 02 08 8b   add	x8, x19, x8
+0x184f494f0:  14 01 00 f9   str	x20, [x8]
+0x184f494f4:  e0 03 13 aa   mov	x0, x19
+0x184f494f8:  2e cc c4 94   bl	0x18807c5b0
+0x184f494fc:  85 56 c6 94   bl	j__objc_claimAutoreleasedReturnValue
+0x184f49500:  f4 03 00 aa   mov	x20, x0
+0x184f49504:  e0 03 13 aa   mov	x0, x19
+0x184f49508:  e2 03 14 aa   mov	x2, x20
+0x184f4950c:  91 10 c5 94   bl	0x18808d750
+0x184f49510:  e0 03 14 aa   mov	x0, x20
+0x184f49514:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184f49518:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184f4951c:  ff 23 03 d5   autibsp
+0x184f49520:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f49524:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f4952c ; ⤵ 0x8
+0x184f49528:  20 8e 38 d4   brk	#0xc471
+0x184f4952c:  ; loc_184f4952c
+0x184f4952c:  cd 4d c6 14   b	j__objc_release_x0
+0x184f49530:  f3 03 00 aa   mov	x19, x0
+0x184f49534:  e0 03 14 aa   mov	x0, x20
+0x184f49538:  ca 4d c6 94   bl	j__objc_release_x0
+0x184f4953c:  e0 03 13 aa   mov	x0, x19
+0x184f49540:  d4 4a c6 94   bl	j___Unwind_Resume
+

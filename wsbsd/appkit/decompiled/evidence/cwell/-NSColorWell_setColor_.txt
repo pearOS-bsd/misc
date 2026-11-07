@@ -1,0 +1,138 @@
+### -[NSColorWell setColor:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSColorWell setColor:]
+
+-[NSColorWell setColor:]:
+0x185157408:  7f 23 03 d5   pacibsp
+0x18515740c:  ff 03 01 d1   sub	sp, sp, #0x40
+0x185157410:  f6 57 01 a9   stp	x22, x21, [sp, #0x10]
+0x185157414:  f4 4f 02 a9   stp	x20, x19, [sp, #0x20]
+0x185157418:  fd 7b 03 a9   stp	fp, lr, [sp, #0x30]
+0x18515741c:  fd c3 00 91   add	fp, sp, #0x30
+0x185157420:  f5 03 01 aa   mov	x21, x1
+0x185157424:  f4 03 00 aa   mov	x20, x0
+0x185157428:  e0 03 02 aa   mov	x0, x2
+0x18515742c:  11 16 be 94   bl	j__objc_retain_x0
+0x185157430:  f3 03 00 aa   mov	x19, x0
+0x185157434:  e0 09 00 b4   cbz	x0, loc_185157570 ; ⤵ 0x13c
+0x185157438:  ; loc_185157438
+0x185157438:  68 9d 2f b0   adrp	x8, 0x1e4504000
+0x18515743c:  16 29 87 b9   ldrsw	x22, [x8, #0x728] ; _OBJC_IVAR_$_NSColorWell._color
+0x185157440:  88 02 16 8b   add	x8, x20, x22
+0x185157444:  02 01 40 f9   ldr	x2, [x8]
+0x185157448:  e0 03 13 aa   mov	x0, x19
+0x18515744c:  fd b1 ba 94   bl	0x188003c40
+0x185157450:  c0 07 00 37   tbnz	w0, #0, loc_185157548 ; ⤵ 0xf8
+0x185157454:  62 99 31 b0   adrp	x2, 0x1e8484000
+0x185157458:  42 c0 08 91   add	x2, x2, #0x230 ; "objectValue"
+0x18515745c:  e0 03 14 aa   mov	x0, x20
+0x185157460:  68 b8 ba 94   bl	0x188005600
+0x185157464:  e0 03 13 aa   mov	x0, x19
+0x185157468:  66 ad ba 94   bl	0x188002a00
+0x18515746c:  88 6a 76 f8   ldr	x8, [x20, x22]
+0x185157470:  80 6a 36 f8   str	x0, [x20, x22]
+0x185157474:  e0 03 08 aa   mov	x0, x8
+0x185157478:  fa 15 be 94   bl	j__objc_release_x0
+0x18515747c:  e0 03 14 aa   mov	x0, x20
+0x185157480:  f8 b9 bb 94   bl	0x188045c60
+0x185157484:  c0 01 00 37   tbnz	w0, #0, loc_1851574bc ; ⤵ 0x38
+0x185157488:  80 6a 76 f8   ldr	x0, [x20, x22]
+0x18515748c:  dd 74 bc 94   bl	0x188074800
+0x185157490:  01 10 6e 1e   fmov	d1, #1.00000000
+0x185157494:  00 20 61 1e   fcmp	d0, d1
+0x185157498:  20 01 00 54   b.eq	loc_1851574bc ; ⤵ 0x24
+0x18515749c:  80 6a 76 f8   ldr	x0, [x20, x22]
+0x1851574a0:  00 10 6e 1e   fmov	d0, #1.00000000
+0x1851574a4:  db 8c bc 94   bl	0x18807a810
+0x1851574a8:  9a 1e be 94   bl	j__objc_claimAutoreleasedReturnValue
+0x1851574ac:  88 6a 76 f8   ldr	x8, [x20, x22]
+0x1851574b0:  80 6a 36 f8   str	x0, [x20, x22]
+0x1851574b4:  e0 03 08 aa   mov	x0, x8
+0x1851574b8:  ea 15 be 94   bl	j__objc_release_x0
+0x1851574bc:  ; loc_1851574bc
+0x1851574bc:  48 94 30 f0   adrp	x8, 0x1e63e2000
+0x1851574c0:  08 25 82 b9   ldrsw	x8, [x8, #0x224]
+0x1851574c4:  88 02 08 8b   add	x8, x20, x8
+0x1851574c8:  00 01 40 f9   ldr	x0, [x8]
+0x1851574cc:  82 6a 76 f8   ldr	x2, [x20, x22]
+0x1851574d0:  a0 63 bb 94   bl	0x188030350
+0x1851574d4:  e0 03 14 aa   mov	x0, x20
+0x1851574d8:  22 00 80 52   mov	w2, #0x1
+0x1851574dc:  91 44 bd 94   bl	0x1880a8720
+0x1851574e0:  e0 03 14 aa   mov	x0, x20
+0x1851574e4:  f7 ea ba 94   bl	0x1880120c0
+0x1851574e8:  a0 01 00 34   cbz	w0, loc_18515751c ; ⤵ 0x34
+0x1851574ec:  35 af 2d 90   adrp	x21, 0x1e073b000
+0x1851574f0:  a0 02 40 f9   ldr	x0, [x21] ; __got.class_NSColorPanel
+0x1851574f4:  fb 5f bd 94   bl	0x1880af4e0
+0x1851574f8:  20 01 00 34   cbz	w0, loc_18515751c ; ⤵ 0x24
+0x1851574fc:  a0 02 40 f9   ldr	x0, [x21]
+0x185157500:  f4 5f bd 94   bl	0x1880af4d0
+0x185157504:  83 1e be 94   bl	j__objc_claimAutoreleasedReturnValue
+0x185157508:  f5 03 00 aa   mov	x21, x0
+0x18515750c:  82 6a 76 f8   ldr	x2, [x20, x22]
+0x185157510:  90 63 bb 94   bl	0x188030350
+0x185157514:  e0 03 15 aa   mov	x0, x21
+0x185157518:  d2 15 be 94   bl	j__objc_release_x0
+0x18515751c:  ; loc_18515751c
+0x18515751c:  88 ab 2d d0   adrp	x8, 0x1e06c9000
+0x185157520:  08 01 38 91   add	x8, x8, #0xe00 ; _NSAccessibilityValueChangedNotification
+0x185157524:  01 01 40 f9   ldr	x1, [x8]
+0x185157528:  22 82 2d b0   adrp	x2, 0x1e019c000
+0x18515752c:  42 84 43 f9   ldr	x2, [x2, #0x708] ; _ptr.___NSDictionary0__struct
+0x185157530:  e0 03 14 aa   mov	x0, x20
+0x185157534:  fc 96 f8 97   bl	_NSAccessibilityPostNotificationWithUserInfo
+0x185157538:  62 99 31 b0   adrp	x2, 0x1e8484000
+0x18515753c:  42 c0 08 91   add	x2, x2, #0x230 ; "objectValue"
+0x185157540:  e0 03 14 aa   mov	x0, x20
+0x185157544:  33 ae ba 94   bl	0x188002e10
+0x185157548:  ; loc_185157548
+0x185157548:  e0 03 13 aa   mov	x0, x19
+0x18515754c:  fd 7b 43 a9   ldp	fp, lr, [sp, #0x30]
+0x185157550:  f4 4f 42 a9   ldp	x20, x19, [sp, #0x20]
+0x185157554:  f6 57 41 a9   ldp	x22, x21, [sp, #0x10]
+0x185157558:  ff 03 01 91   add	sp, sp, #0x40
+0x18515755c:  ff 23 03 d5   autibsp
+0x185157560:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x185157564:  50 00 f0 b6   tbz	x16, #0x3e, loc_18515756c ; ⤵ 0x8
+0x185157568:  20 8e 38 d4   brk	#0xc471
+0x18515756c:  ; loc_18515756c
+0x18515756c:  bd 15 be 14   b	j__objc_release_x0
+0x185157570:  ; loc_185157570
+0x185157570:  88 82 2d f0   adrp	x8, 0x1e01aa000
+0x185157574:  00 41 40 f9   ldr	x0, [x8, #0x80] ; _ptr.NSAssertionHandler
+0x185157578:  42 c1 ba 94   bl	0x188007a80
+0x18515757c:  65 1e be 94   bl	j__objc_claimAutoreleasedReturnValue
+0x185157580:  f6 03 00 aa   mov	x22, x0
+0x185157584:  68 99 31 b0   adrp	x8, 0x1e8484000
+0x185157588:  08 41 08 91   add	x8, x8, #0x210 ; "aColor != nil"
+0x18515758c:  e8 03 00 f9   str	x8, [sp]
+0x185157590:  64 99 31 b0   adrp	x4, 0x1e8484000
+0x185157594:  84 c0 07 91   add	x4, x4, #0x1f0 ; "NSColorWell.m"
+0x185157598:  06 97 31 d0   adrp	x6, 0x1e8439000
+0x18515759c:  c6 40 2f 91   add	x6, x6, #0xbd0 ; "Invalid parameter not satisfying: %@"
+0x1851575a0:  e2 03 15 aa   mov	x2, x21
+0x1851575a4:  e3 03 14 aa   mov	x3, x20
+0x1851575a8:  c5 3e 80 52   mov	w5, #0x1f6
+0x1851575ac:  a5 c5 ba 94   bl	0x188008c40
+0x1851575b0:  e0 03 16 aa   mov	x0, x22
+0x1851575b4:  ab 15 be 94   bl	j__objc_release_x0
+0x1851575b8:  a0 ff ff 17   b	loc_185157438 ; ⤴ -0x180
+0x1851575bc:  f4 03 00 aa   mov	x20, x0
+0x1851575c0:  e0 03 16 aa   mov	x0, x22
+0x1851575c4:  03 00 00 14   b	loc_1851575d0 ; ⤵ 0xc
+0x1851575c8:  f4 03 00 aa   mov	x20, x0
+0x1851575cc:  e0 03 15 aa   mov	x0, x21
+0x1851575d0:  ; loc_1851575d0
+0x1851575d0:  a4 15 be 94   bl	j__objc_release_x0
+0x1851575d4:  04 00 00 14   b	loc_1851575e4 ; ⤵ 0x10
+0x1851575d8:  02 00 00 14   b	loc_1851575e0 ; ⤵ 0x8
+0x1851575dc:  01 00 00 14   b	loc_1851575e0 ; ⤵ 0x4
+0x1851575e0:  ; loc_1851575e0
+0x1851575e0:  f4 03 00 aa   mov	x20, x0
+0x1851575e4:  ; loc_1851575e4
+0x1851575e4:  e0 03 13 aa   mov	x0, x19
+0x1851575e8:  9e 15 be 94   bl	j__objc_release_x0
+0x1851575ec:  e0 03 14 aa   mov	x0, x20
+0x1851575f0:  a8 12 be 94   bl	j___Unwind_Resume
+

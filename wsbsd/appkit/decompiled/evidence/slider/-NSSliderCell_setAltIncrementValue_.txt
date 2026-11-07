@@ -1,0 +1,18 @@
+### -[NSSliderCell setAltIncrementValue:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSSliderCell setAltIncrementValue:]
+
+-[NSSliderCell setAltIncrementValue:]:
+0x1851b786c:  68 9a 2f b0   adrp	x8, 0x1e4504000
+0x1851b7870:  08 75 8d b9   ldrsw	x8, [x8, #0xd74] ; _OBJC_IVAR_$_NSSliderCell._maxValue
+0x1851b7874:  08 00 08 8b   add	x8, x0, x8
+0x1851b7878:  01 01 40 fd   ldr	d1, [x8]
+0x1851b787c:  00 20 61 1e   fcmp	d0, d1
+0x1851b7880:  a8 00 00 54   b.hi	loc_1851b7894 ; ⤵ 0x14
+0x1851b7884:  48 91 30 f0   adrp	x8, 0x1e63e2000
+0x1851b7888:  08 c1 85 b9   ldrsw	x8, [x8, #0x5c0] ; __MergedGlobals
+0x1851b788c:  08 00 08 8b   add	x8, x0, x8
+0x1851b7890:  00 01 00 fd   str	d0, [x8]
+0x1851b7894:  ; loc_1851b7894
+0x1851b7894:  c0 03 5f d6   ret
+

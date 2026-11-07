@@ -1,0 +1,43 @@
+### -[NSResponder init]
+   • parsing public symbols...
+   • parsing private symbols...
+      • cache does NOT contain local symbols
+   • parsing stub islands...  
+   • parsing objc info...     
+   • Saving symbol cache (21877170 symbols)...
+   • Locating symbol: -[NSResponder init]
+
+-[NSResponder init]:
+0x184ec8bdc:  7f 23 03 d5   pacibsp
+0x184ec8be0:  ff c3 00 d1   sub	sp, sp, #0x30
+0x184ec8be4:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x184ec8be8:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x184ec8bec:  fd 83 00 91   add	fp, sp, #0x20
+0x184ec8bf0:  48 c3 2d f0   adrp	x8, 0x1e0733000
+0x184ec8bf4:  08 ad 41 f9   ldr	x8, [x8, #0x358] ; NSResponder
+0x184ec8bf8:  e0 23 00 a9   stp	x0, x8, [sp]
+0x184ec8bfc:  08 c2 2d b0   adrp	x8, 0x1e0709000
+0x184ec8c00:  01 cd 47 f9   ldr	x1, [x8, #0xf98] ; sel_init
+0x184ec8c04:  e0 03 00 91   mov	x0, sp
+0x184ec8c08:  ee 52 c8 94   bl	j__objc_msgSendSuper2
+0x184ec8c0c:  f3 03 00 aa   mov	x19, x0
+0x184ec8c10:  a0 01 00 b4   cbz	x0, loc_184ec8c44 ; ⤵ 0x34
+0x184ec8c14:  e0 03 13 aa   mov	x0, x19
+0x184ec8c18:  ee 52 c8 94   bl	j__objc_opt_class
+0x184ec8c1c:  19 00 00 94   bl	__NSDPClassInfoForClass
+0x184ec8c20:  28 a9 30 f0   adrp	x8, 0x1e63ef000
+0x184ec8c24:  00 81 25 91   add	x0, x8, #0x960 ; class_NSKeyValueDependencyInfo
+0x184ec8c28:  ca 52 c8 94   bl	j__objc_alloc
+0x184ec8c2c:  e1 03 13 aa   mov	x1, x19
+0x184ec8c30:  51 05 00 94   bl	-[NSKeyValueDependencyInfo initWithOwner:]
+0x184ec8c34:  60 0a 00 f9   str	x0, [x19, #0x10]
+0x184ec8c38:  e0 03 13 aa   mov	x0, x19
+0x184ec8c3c:  22 00 80 52   mov	w2, #0x1
+0x184ec8c40:  c0 ce c5 94   bl	0x18803c740
+0x184ec8c44:  ; loc_184ec8c44
+0x184ec8c44:  e0 03 13 aa   mov	x0, x19
+0x184ec8c48:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x184ec8c4c:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x184ec8c50:  ff c3 00 91   add	sp, sp, #0x30
+0x184ec8c54:  ff 0f 5f d6   retab
+

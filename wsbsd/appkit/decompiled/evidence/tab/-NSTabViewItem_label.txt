@@ -1,0 +1,7 @@
+### -[NSTabViewItem label]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTabViewItem label]
+
+-[NSTabViewItem label]:
+0x185077458:  56 64 bf 14   b	0x1880505b0
+

@@ -1,0 +1,8 @@
+### -[NSResponder performKeyEquivalent:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSResponder performKeyEquivalent:]
+
+-[NSResponder performKeyEquivalent:]:
+0x1856f0118:  00 00 80 52   mov	w0, #0
+0x1856f011c:  c0 03 5f d6   ret
+

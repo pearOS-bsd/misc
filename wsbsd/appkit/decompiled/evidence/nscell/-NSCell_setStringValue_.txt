@@ -1,0 +1,52 @@
+### -[NSCell setStringValue:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSCell setStringValue:]
+
+-[NSCell setStringValue:]:
+0x184f2daac:  7f 23 03 d5   pacibsp
+0x184f2dab0:  ff 03 01 d1   sub	sp, sp, #0x40
+0x184f2dab4:  f6 57 01 a9   stp	x22, x21, [sp, #0x10]
+0x184f2dab8:  f4 4f 02 a9   stp	x20, x19, [sp, #0x20]
+0x184f2dabc:  fd 7b 03 a9   stp	fp, lr, [sp, #0x30]
+0x184f2dac0:  fd c3 00 91   add	fp, sp, #0x30
+0x184f2dac4:  f5 03 02 aa   mov	x21, x2
+0x184f2dac8:  f3 03 00 aa   mov	x19, x0
+0x184f2dacc:  ff 07 00 f9   str	xzr, [sp, #0x8]
+0x184f2dad0:  e2 23 00 91   add	x2, sp, #0x8
+0x184f2dad4:  e3 03 15 aa   mov	x3, x21
+0x184f2dad8:  22 9d c4 94   bl	0x188054f60
+0x184f2dadc:  f4 03 00 aa   mov	x20, x0
+0x184f2dae0:  1f 00 00 71   cmp	w0, #0
+0x184f2dae4:  68 0a 40 f9   ldr	x8, [x19, #0x10]
+0x184f2dae8:  08 05 7c 92   and	x8, x8, #0x30
+0x184f2daec:  e9 07 40 f9   ldr	x9, [sp, #0x8]
+0x184f2daf0:  22 11 95 9a   csel	x2, x9, x21, ne
+0x184f2daf4:  e0 03 13 aa   mov	x0, x19
+0x184f2daf8:  1f 41 00 f1   cmp	x8, #0x10
+0x184f2dafc:  61 00 00 54   b.ne	loc_184f2db08 ; ⤵ 0xc
+0x184f2db00:  f4 f5 c3 94   bl	0x18802b2d0
+0x184f2db04:  02 00 00 14   b	loc_184f2db0c ; ⤵ 0x8
+0x184f2db08:  ; loc_184f2db08
+0x184f2db08:  fe 47 c4 94   bl	0x18803fb00
+0x184f2db0c:  ; loc_184f2db0c
+0x184f2db0c:  35 a6 30 f0   adrp	x21, 0x1e63f4000
+0x184f2db10:  b5 42 06 91   add	x21, x21, #0x190 ; __cellCFlagsBitfieldLock
+0x184f2db14:  e0 03 15 aa   mov	x0, x21
+0x184f2db18:  62 d2 c6 94   bl	j__os_unfair_lock_lock
+0x184f2db1c:  68 0a 40 f9   ldr	x8, [x19, #0x10]
+0x184f2db20:  9f 02 00 71   cmp	w20, #0
+0x184f2db24:  49 00 c0 d2   mov	x9, #0x200000000
+0x184f2db28:  e9 13 89 9a   csel	x9, xzr, x9, ne
+0x184f2db2c:  08 f9 5e 92   and	x8, x8, #0xfffffffdffffffff
+0x184f2db30:  08 01 09 aa   orr	x8, x8, x9
+0x184f2db34:  68 0a 00 f9   str	x8, [x19, #0x10]
+0x184f2db38:  e0 03 15 aa   mov	x0, x21
+0x184f2db3c:  b1 ba c6 94   bl	j__os_unfair_lock_unlock
+0x184f2db40:  e0 03 13 aa   mov	x0, x19
+0x184f2db44:  5b 3d c4 94   bl	0x18803d0b0
+0x184f2db48:  fd 7b 43 a9   ldp	fp, lr, [sp, #0x30]
+0x184f2db4c:  f4 4f 42 a9   ldp	x20, x19, [sp, #0x20]
+0x184f2db50:  f6 57 41 a9   ldp	x22, x21, [sp, #0x10]
+0x184f2db54:  ff 03 01 91   add	sp, sp, #0x40
+0x184f2db58:  ff 0f 5f d6   retab
+

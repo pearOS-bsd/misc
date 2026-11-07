@@ -1,0 +1,52 @@
+### -[NSProgressIndicator setDoubleValue:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSProgressIndicator setDoubleValue:]
+
+-[NSProgressIndicator setDoubleValue:]:
+0x184f7823c:  7f 23 03 d5   pacibsp
+0x184f78240:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x184f78244:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x184f78248:  fd 43 00 91   add	fp, sp, #0x10
+0x184f7824c:  48 a3 30 d0   adrp	x8, 0x1e63e2000
+0x184f78250:  08 a1 1d 91   add	x8, x8, #0x768
+0x184f78254:  09 29 40 69   ldpsw	x9, x10, [x8]
+0x184f78258:  09 00 09 8b   add	x9, x0, x9
+0x184f7825c:  21 01 40 fd   ldr	d1, [x9]
+0x184f78260:  09 00 0a 8b   add	x9, x0, x10
+0x184f78264:  22 01 40 fd   ldr	d2, [x9]
+0x184f78268:  00 20 62 1e   fcmp	d0, d2
+0x184f7826c:  00 4c 62 1e   fcsel	d0, d0, d2, mi
+0x184f78270:  20 20 60 1e   fcmp	d1, d0
+0x184f78274:  00 4c 61 1e   fcsel	d0, d0, d1, mi
+0x184f78278:  08 09 80 b9   ldrsw	x8, [x8, #0x8]
+0x184f7827c:  09 00 08 8b   add	x9, x0, x8
+0x184f78280:  21 01 40 fd   ldr	d1, [x9]
+0x184f78284:  00 20 61 1e   fcmp	d0, d1
+0x184f78288:  c0 02 00 54   b.eq	loc_184f782e0 ; ⤵ 0x58
+0x184f7828c:  f3 03 00 aa   mov	x19, x0
+0x184f78290:  00 68 28 fc   str	d0, [x0, x8]
+0x184f78294:  c3 d1 c3 94   bl	0x18806c9a0
+0x184f78298:  e0 03 13 aa   mov	x0, x19
+0x184f7829c:  f9 59 c4 94   bl	0x18808ea80
+0x184f782a0:  00 02 00 37   tbnz	w0, #0, loc_184f782e0 ; ⤵ 0x40
+0x184f782a4:  4b d7 fe 97   bl	_NSAccessibilityIsAnyNotificationObserved
+0x184f782a8:  c0 01 00 34   cbz	w0, loc_184f782e0 ; ⤵ 0x38
+0x184f782ac:  88 ba 2d b0   adrp	x8, 0x1e06c9000
+0x184f782b0:  08 01 38 91   add	x8, x8, #0xe00 ; _NSAccessibilityValueChangedNotification
+0x184f782b4:  01 01 40 f9   ldr	x1, [x8]
+0x184f782b8:  22 91 2d 90   adrp	x2, 0x1e019c000
+0x184f782bc:  42 84 43 f9   ldr	x2, [x2, #0x708] ; _ptr.___NSDictionary0__struct
+0x184f782c0:  e0 03 13 aa   mov	x0, x19
+0x184f782c4:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184f782c8:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184f782cc:  ff 23 03 d5   autibsp
+0x184f782d0:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f782d4:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f782dc ; ⤵ 0x8
+0x184f782d8:  20 8e 38 d4   brk	#0xc471
+0x184f782dc:  ; loc_184f782dc
+0x184f782dc:  92 13 00 14   b	_NSAccessibilityPostNotificationWithUserInfo
+0x184f782e0:  ; loc_184f782e0
+0x184f782e0:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184f782e4:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184f782e8:  ff 0f 5f d6   retab
+

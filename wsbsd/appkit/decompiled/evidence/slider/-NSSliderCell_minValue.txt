@@ -1,0 +1,11 @@
+### -[NSSliderCell minValue]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSSliderCell minValue]
+
+-[NSSliderCell minValue]:
+0x1850e9868:  c8 a0 2f f0   adrp	x8, 0x1e4504000
+0x1850e986c:  08 71 8d b9   ldrsw	x8, [x8, #0xd70] ; _OBJC_IVAR_$_NSSliderCell._minValue
+0x1850e9870:  08 00 08 8b   add	x8, x0, x8
+0x1850e9874:  00 01 40 fd   ldr	d0, [x8]
+0x1850e9878:  c0 03 5f d6   ret
+

@@ -1,0 +1,12 @@
+### -[NSImageCell imageAlignment]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSImageCell imageAlignment]
+
+-[NSImageCell imageAlignment]:
+0x185079dc0:  48 9b 30 b0   adrp	x8, 0x1e63e2000
+0x185079dc4:  08 19 83 b9   ldrsw	x8, [x8, #0x318] ; __MergedGlobals
+0x185079dc8:  08 00 08 8b   add	x8, x0, x8
+0x185079dcc:  08 01 40 b9   ldr	w8, [x8]
+0x185079dd0:  00 65 56 d3   ubfx	x0, x8, #0x16, #0x4
+0x185079dd4:  c0 03 5f d6   ret
+

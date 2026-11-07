@@ -1,0 +1,7 @@
+### -[NSStackView arrangedSubviews]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSStackView arrangedSubviews]
+
+-[NSStackView arrangedSubviews]:
+0x184fc5d38:  66 cf c3 14   b	0x1880b9ad0
+

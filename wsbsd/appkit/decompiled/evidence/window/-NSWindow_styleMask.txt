@@ -1,0 +1,19 @@
+### -[NSWindow styleMask]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSWindow styleMask]
+
+-[NSWindow styleMask]:
+0x184f19958:  68 af 2f b0   adrp	x8, 0x1e4506000
+0x184f1995c:  08 29 8c b9   ldrsw	x8, [x8, #0xc28] ; _OBJC_IVAR_$_NSWindow._borderView
+0x184f19960:  08 00 08 8b   add	x8, x0, x8
+0x184f19964:  08 01 40 f9   ldr	x8, [x8]
+0x184f19968:  68 00 00 b4   cbz	x8, loc_184f19974 ; ⤵ 0xc
+0x184f1996c:  e0 03 08 aa   mov	x0, x8
+0x184f19970:  28 64 c6 14   b	0x1880b2a10
+0x184f19974:  ; loc_184f19974
+0x184f19974:  68 af 2f b0   adrp	x8, 0x1e4506000
+0x184f19978:  08 25 8c b9   ldrsw	x8, [x8, #0xc24] ; _OBJC_IVAR_$_NSWindow._styleMask
+0x184f1997c:  08 00 08 8b   add	x8, x0, x8
+0x184f19980:  00 01 40 39   ldrb	w0, [x8]
+0x184f19984:  c0 03 5f d6   ret
+

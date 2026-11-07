@@ -1,0 +1,8 @@
+### -[NSStackView setSpacing:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSStackView setSpacing:]
+
+-[NSStackView setSpacing:]:
+0x184fc4d6c:  02 00 80 52   mov	w2, #0
+0x184fc4d70:  00 77 c2 14   b	0x188062970
+

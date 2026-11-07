@@ -1,0 +1,12 @@
+### -[NSDatePicker minDate]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSDatePicker minDate]
+
+-[NSDatePicker minDate]:
+0x185616a4c:  68 77 2f d0   adrp	x8, 0x1e4504000
+0x185616a50:  08 d1 1e 91   add	x8, x8, #0x7b4 ; _OBJC_IVAR_$_NSControl._cell
+0x185616a54:  08 01 80 b9   ldrsw	x8, [x8]
+0x185616a58:  08 00 08 8b   add	x8, x0, x8
+0x185616a5c:  00 01 40 f9   ldr	x0, [x8]
+0x185616a60:  54 f2 a9 14   b	0x1880933b0
+

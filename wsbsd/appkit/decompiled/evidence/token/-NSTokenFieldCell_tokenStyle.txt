@@ -1,0 +1,12 @@
+### -[NSTokenFieldCell tokenStyle]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTokenFieldCell tokenStyle]
+
+-[NSTokenFieldCell tokenStyle]:
+0x1850f70ac:  48 97 30 f0   adrp	x8, 0x1e63e2000
+0x1850f70b0:  08 31 87 b9   ldrsw	x8, [x8, #0x730] ; __MergedGlobals
+0x1850f70b4:  08 00 08 8b   add	x8, x0, x8
+0x1850f70b8:  08 01 40 b9   ldr	w8, [x8]
+0x1850f70bc:  00 0d 40 92   and	x0, x8, #0xf
+0x1850f70c0:  c0 03 5f d6   ret
+

@@ -1,0 +1,9 @@
+### -[NSTableColumn isEditable]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTableColumn isEditable]
+
+-[NSTableColumn isEditable]:
+0x1857b4020:  08 90 40 79   ldrh	w8, [x0, #0x48]
+0x1857b4024:  00 05 01 53   ubfx	w0, w8, #0x1, #0x1
+0x1857b4028:  c0 03 5f d6   ret
+

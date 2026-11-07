@@ -1,0 +1,7 @@
+### +[NSScroller isCompatibleWithOverlayScrollers]
+   • Loading symbol cache file...
+   • Locating symbol: +[NSScroller isCompatibleWithOverlayScrollers]
+
++[NSScroller isCompatibleWithOverlayScrollers]:
+0x184f5faa4:  2f fc c4 14   b	0x18809eb60
+

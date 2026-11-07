@@ -1,0 +1,10 @@
+### -[NSWindow delegate]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSWindow delegate]
+
+-[NSWindow delegate]:
+0x184ff44c8:  88 a8 2f d0   adrp	x8, 0x1e4506000
+0x184ff44cc:  08 49 8c b9   ldrsw	x8, [x8, #0xc48] ; _OBJC_IVAR_$_NSWindow._delegate
+0x184ff44d0:  00 00 08 8b   add	x0, x0, x8
+0x184ff44d4:  5f b7 c3 14   b	j__objc_loadWeak
+

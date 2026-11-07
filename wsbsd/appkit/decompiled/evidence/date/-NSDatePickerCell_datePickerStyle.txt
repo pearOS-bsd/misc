@@ -1,0 +1,12 @@
+### -[NSDatePickerCell datePickerStyle]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSDatePickerCell datePickerStyle]
+
+-[NSDatePickerCell datePickerStyle]:
+0x185168c88:  c8 93 30 d0   adrp	x8, 0x1e63e2000
+0x185168c8c:  08 cd 82 b9   ldrsw	x8, [x8, #0x2cc]
+0x185168c90:  08 00 08 8b   add	x8, x0, x8
+0x185168c94:  08 05 40 79   ldrh	w8, [x8, #0x2]
+0x185168c98:  00 09 40 92   and	x0, x8, #0x7
+0x185168c9c:  c0 03 5f d6   ret
+

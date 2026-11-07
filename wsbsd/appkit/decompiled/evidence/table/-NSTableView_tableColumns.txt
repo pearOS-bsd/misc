@@ -1,0 +1,11 @@
+### -[NSTableView tableColumns]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTableView tableColumns]
+
+-[NSTableView tableColumns]:
+0x184f70c0c:  a8 ac 2f b0   adrp	x8, 0x1e4505000
+0x184f70c10:  08 fd 8e b9   ldrsw	x8, [x8, #0xefc] ; _OBJC_IVAR_$_NSTableView._tableColumns
+0x184f70c14:  08 00 08 8b   add	x8, x0, x8
+0x184f70c18:  00 01 40 f9   ldr	x0, [x8]
+0x184f70c1c:  8d d4 c5 14   b	j__objc_retainAutoreleaseReturnValue
+

@@ -1,0 +1,8 @@
+### -[NSColor alphaComponent]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSColor alphaComponent]
+
+-[NSColor alphaComponent]:
+0x185084310:  00 10 6e 1e   fmov	d0, #1.00000000
+0x185084314:  c0 03 5f d6   ret
+

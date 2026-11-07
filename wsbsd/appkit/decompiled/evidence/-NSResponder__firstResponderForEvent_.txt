@@ -1,0 +1,8 @@
+### -[NSResponder _firstResponderForEvent:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSResponder _firstResponderForEvent:]
+
+-[NSResponder _firstResponderForEvent:]:
+0x1856eff18:  00 00 80 d2   mov	x0, #0
+0x1856eff1c:  c0 03 5f d6   ret
+

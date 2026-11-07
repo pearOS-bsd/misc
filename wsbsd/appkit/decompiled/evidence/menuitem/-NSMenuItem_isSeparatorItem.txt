@@ -1,0 +1,9 @@
+### -[NSMenuItem isSeparatorItem]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSMenuItem isSeparatorItem]
+
+-[NSMenuItem isSeparatorItem]:
+0x184ed7c1c:  08 74 41 39   ldrb	w8, [x0, #0x5d]
+0x184ed7c20:  00 05 01 53   ubfx	w0, w8, #0x1, #0x1
+0x184ed7c24:  c0 03 5f d6   ret
+

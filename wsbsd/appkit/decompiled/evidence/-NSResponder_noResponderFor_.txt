@@ -1,0 +1,13 @@
+### -[NSResponder noResponderFor:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSResponder noResponderFor:]
+
+-[NSResponder noResponderFor:]:
+0x1850f00a4:  e8 ca 37 f0   adrp	x8, 0x1f4a4f000
+0x1850f00a8:  08 d1 21 91   add	x8, x8, #0x874 ; keyDown:
+0x1850f00ac:  5f 00 08 eb   cmp	x2, x8
+0x1850f00b0:  40 00 00 54   b.eq	loc_1850f00b8 ; ⤵ 0x8
+0x1850f00b4:  c0 03 5f d6   ret
+0x1850f00b8:  ; loc_1850f00b8
+0x1850f00b8:  bc 2a 02 14   b	_NSBeep
+

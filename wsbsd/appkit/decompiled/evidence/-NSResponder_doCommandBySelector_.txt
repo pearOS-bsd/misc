@@ -1,0 +1,144 @@
+### -[NSResponder doCommandBySelector:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSResponder doCommandBySelector:]
+
+-[NSResponder doCommandBySelector:]:
+0x18518cfb0:  7f 23 03 d5   pacibsp
+0x18518cfb4:  ff c3 01 d1   sub	sp, sp, #0x70
+0x18518cfb8:  f4 4f 05 a9   stp	x20, x19, [sp, #0x50]
+0x18518cfbc:  fd 7b 06 a9   stp	fp, lr, [sp, #0x60]
+0x18518cfc0:  fd 83 01 91   add	fp, sp, #0x60
+0x18518cfc4:  f3 03 02 aa   mov	x19, x2
+0x18518cfc8:  f4 03 00 aa   mov	x20, x0
+0x18518cfcc:  e8 83 2d f0   adrp	x8, 0x1e020b000
+0x18518cfd0:  08 59 45 f9   ldr	x8, [x8, #0xab0] ; _ptr.___stack_chk_guard
+0x18518cfd4:  08 01 40 f9   ldr	x8, [x8]
+0x18518cfd8:  a8 83 1e f8   stur	x8, [fp, #-0x18]
+0x18518cfdc:  e1 03 02 aa   mov	x1, x2
+0x18518cfe0:  58 44 bd 94   bl	j__objc_opt_respondsToSelector
+0x18518cfe4:  40 02 00 36   tbz	w0, #0, loc_18518d02c ; ⤵ 0x48
+0x18518cfe8:  a8 83 5e f8   ldur	x8, [fp, #-0x18]
+0x18518cfec:  e9 83 2d f0   adrp	x9, 0x1e020b000
+0x18518cff0:  29 59 45 f9   ldr	x9, [x9, #0xab0] ; _ptr.___stack_chk_guard
+0x18518cff4:  29 01 40 f9   ldr	x9, [x9]
+0x18518cff8:  3f 01 08 eb   cmp	x9, x8
+0x18518cffc:  61 0d 00 54   b.ne	loc_18518d1a8 ; ⤵ 0x1ac
+0x18518d000:  e0 03 14 aa   mov	x0, x20
+0x18518d004:  e2 03 13 aa   mov	x2, x19
+0x18518d008:  03 00 80 d2   mov	x3, #0
+0x18518d00c:  fd 7b 46 a9   ldp	fp, lr, [sp, #0x60]
+0x18518d010:  f4 4f 45 a9   ldp	x20, x19, [sp, #0x50]
+0x18518d014:  ff c3 01 91   add	sp, sp, #0x70
+0x18518d018:  ff 23 03 d5   autibsp
+0x18518d01c:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x18518d020:  50 00 f0 b6   tbz	x16, #0x3e, loc_18518d028 ; ⤵ 0x8
+0x18518d024:  20 8e 38 d4   brk	#0xc471
+0x18518d028:  ; loc_18518d028
+0x18518d028:  32 dd b9 14   b	0x1880044f0
+0x18518d02c:  ; loc_18518d02c
+0x18518d02c:  08 00 80 d2   mov	x8, #0
+0x18518d030:  09 00 80 d2   mov	x9, #0
+0x18518d034:  ea 44 38 90   adrp	x10, 0x1f5a29000
+0x18518d038:  4a 5d 2b 91   add	x10, x10, #0xad7 ; moveToLeftEndOfLine:
+0x18518d03c:  eb 44 38 90   adrp	x11, 0x1f5a29000
+0x18518d040:  6b 81 2c 91   add	x11, x11, #0xb20 ; moveToRightEndOfLine:
+0x18518d044:  ea af 02 a9   stp	x10, x11, [sp, #0x28]
+0x18518d048:  ea 44 38 90   adrp	x10, 0x1f5a29000
+0x18518d04c:  4a b1 2b 91   add	x10, x10, #0xaec ; moveToLeftEndOfLineAndModifySelection:
+0x18518d050:  eb 44 38 90   adrp	x11, 0x1f5a29000
+0x18518d054:  6b d9 2c 91   add	x11, x11, #0xb36 ; moveToRightEndOfLineAndModifySelection:
+0x18518d058:  ea af 03 a9   stp	x10, x11, [sp, #0x38]
+0x18518d05c:  ea 44 38 90   adrp	x10, 0x1f5a29000
+0x18518d060:  4a 4d 26 91   add	x10, x10, #0x993 ; moveToBeginningOfLine:
+0x18518d064:  eb 44 38 90   adrp	x11, 0x1f5a29000
+0x18518d068:  6b 65 29 91   add	x11, x11, #0xa59 ; moveToEndOfLine:
+0x18518d06c:  ea af 00 a9   stp	x10, x11, [sp, #0x8]
+0x18518d070:  ea 44 38 90   adrp	x10, 0x1f5a29000
+0x18518d074:  4a a9 26 91   add	x10, x10, #0x9aa ; moveToBeginningOfLineAndModifySelection:
+0x18518d078:  eb 44 38 90   adrp	x11, 0x1f5a29000
+0x18518d07c:  6b a9 29 91   add	x11, x11, #0xa6a ; moveToEndOfLineAndModifySelection:
+0x18518d080:  ea af 01 a9   stp	x10, x11, [sp, #0x18]
+0x18518d084:  ea a3 00 91   add	x10, sp, #0x28
+0x18518d088:  ; loc_18518d088
+0x18518d088:  4b 79 69 f8   ldr	x11, [x10, x9, lsl #0x3]
+0x18518d08c:  7f 02 0b eb   cmp	x19, x11
+0x18518d090:  c0 00 00 54   b.eq	loc_18518d0a8 ; ⤵ 0x18
+0x18518d094:  29 05 00 91   add	x9, x9, #0x1
+0x18518d098:  08 21 00 91   add	x8, x8, #0x8
+0x18518d09c:  1f 81 00 f1   cmp	x8, #0x20
+0x18518d0a0:  41 ff ff 54   b.ne	loc_18518d088 ; ⤴ -0x18
+0x18518d0a4:  0d 00 00 14   b	loc_18518d0d8 ; ⤵ 0x34
+0x18518d0a8:  ; loc_18518d0a8
+0x18518d0a8:  e9 23 00 91   add	x9, sp, #0x8
+0x18518d0ac:  28 01 08 8b   add	x8, x9, x8
+0x18518d0b0:  02 01 40 f9   ldr	x2, [x8]
+0x18518d0b4:  22 01 00 b4   cbz	x2, loc_18518d0d8 ; ⤵ 0x24
+0x18518d0b8:  a8 83 5e f8   ldur	x8, [fp, #-0x18]
+0x18518d0bc:  e9 83 2d d0   adrp	x9, 0x1e020b000
+0x18518d0c0:  29 59 45 f9   ldr	x9, [x9, #0xab0] ; _ptr.___stack_chk_guard
+0x18518d0c4:  29 01 40 f9   ldr	x9, [x9]
+0x18518d0c8:  3f 01 08 eb   cmp	x9, x8
+0x18518d0cc:  e1 06 00 54   b.ne	loc_18518d1a8 ; ⤵ 0xdc
+0x18518d0d0:  e0 03 14 aa   mov	x0, x20
+0x18518d0d4:  0a 00 00 14   b	loc_18518d0fc ; ⤵ 0x28
+0x18518d0d8:  ; loc_18518d0d8
+0x18518d0d8:  80 06 40 f9   ldr	x0, [x20, #0x8]
+0x18518d0dc:  00 02 00 b4   cbz	x0, loc_18518d11c ; ⤵ 0x40
+0x18518d0e0:  a8 83 5e f8   ldur	x8, [fp, #-0x18]
+0x18518d0e4:  e9 83 2d d0   adrp	x9, 0x1e020b000
+0x18518d0e8:  29 59 45 f9   ldr	x9, [x9, #0xab0] ; _ptr.___stack_chk_guard
+0x18518d0ec:  29 01 40 f9   ldr	x9, [x9]
+0x18518d0f0:  3f 01 08 eb   cmp	x9, x8
+0x18518d0f4:  a1 05 00 54   b.ne	loc_18518d1a8 ; ⤵ 0xb4
+0x18518d0f8:  e2 03 13 aa   mov	x2, x19
+0x18518d0fc:  ; loc_18518d0fc
+0x18518d0fc:  fd 7b 46 a9   ldp	fp, lr, [sp, #0x60]
+0x18518d100:  f4 4f 45 a9   ldp	x20, x19, [sp, #0x50]
+0x18518d104:  ff c3 01 91   add	sp, sp, #0x70
+0x18518d108:  ff 23 03 d5   autibsp
+0x18518d10c:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x18518d110:  50 00 f0 b6   tbz	x16, #0x3e, loc_18518d118 ; ⤵ 0x8
+0x18518d114:  20 8e 38 d4   brk	#0xc471
+0x18518d118:  ; loc_18518d118
+0x18518d118:  8a cd bb 14   b	0x188080740
+0x18518d11c:  ; loc_18518d11c
+0x18518d11c:  74 ad 2d d0   adrp	x20, 0x1e073b000
+0x18518d120:  80 92 44 f9   ldr	x0, [x20, #0x920] ; __got.class_NSResponder
+0x18518d124:  a8 42 38 d0   adrp	x8, 0x1f59e3000
+0x18518d128:  01 a5 19 91   add	x1, x8, #0x669 ; _viewBridgeDoCommandBySelector:sender:
+0x18518d12c:  05 44 bd 94   bl	j__objc_opt_respondsToSelector
+0x18518d130:  00 02 00 36   tbz	w0, #0, loc_18518d170 ; ⤵ 0x40
+0x18518d134:  80 92 44 f9   ldr	x0, [x20, #0x920]
+0x18518d138:  e2 03 13 aa   mov	x2, x19
+0x18518d13c:  03 00 80 d2   mov	x3, #0
+0x18518d140:  b0 87 bb 94   bl	0x18806f000
+0x18518d144:  60 01 00 36   tbz	w0, #0, loc_18518d170 ; ⤵ 0x2c
+0x18518d148:  a8 83 5e f8   ldur	x8, [fp, #-0x18]
+0x18518d14c:  e9 83 2d d0   adrp	x9, 0x1e020b000
+0x18518d150:  29 59 45 f9   ldr	x9, [x9, #0xab0] ; _ptr.___stack_chk_guard
+0x18518d154:  29 01 40 f9   ldr	x9, [x9]
+0x18518d158:  3f 01 08 eb   cmp	x9, x8
+0x18518d15c:  61 02 00 54   b.ne	loc_18518d1a8 ; ⤵ 0x4c
+0x18518d160:  fd 7b 46 a9   ldp	fp, lr, [sp, #0x60]
+0x18518d164:  f4 4f 45 a9   ldp	x20, x19, [sp, #0x50]
+0x18518d168:  ff c3 01 91   add	sp, sp, #0x70
+0x18518d16c:  ff 0f 5f d6   retab
+0x18518d170:  ; loc_18518d170
+0x18518d170:  a8 83 5e f8   ldur	x8, [fp, #-0x18]
+0x18518d174:  e9 83 2d d0   adrp	x9, 0x1e020b000
+0x18518d178:  29 59 45 f9   ldr	x9, [x9, #0xab0] ; _ptr.___stack_chk_guard
+0x18518d17c:  29 01 40 f9   ldr	x9, [x9]
+0x18518d180:  3f 01 08 eb   cmp	x9, x8
+0x18518d184:  21 01 00 54   b.ne	loc_18518d1a8 ; ⤵ 0x24
+0x18518d188:  fd 7b 46 a9   ldp	fp, lr, [sp, #0x60]
+0x18518d18c:  f4 4f 45 a9   ldp	x20, x19, [sp, #0x50]
+0x18518d190:  ff c3 01 91   add	sp, sp, #0x70
+0x18518d194:  ff 23 03 d5   autibsp
+0x18518d198:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x18518d19c:  50 00 f0 b6   tbz	x16, #0x3e, loc_18518d1a4 ; ⤵ 0x8
+0x18518d1a0:  20 8e 38 d4   brk	#0xc471
+0x18518d1a4:  ; loc_18518d1a4
+0x18518d1a4:  81 b6 ff 17   b	_NSBeep
+0x18518d1a8:  ; loc_18518d1a8
+0x18518d1a8:  e6 3b bd 94   bl	j____stack_chk_fail
+

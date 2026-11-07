@@ -1,0 +1,12 @@
+### -[NSCell state]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSCell state]
+
+-[NSCell state]:
+0x184f22870:  08 03 e0 d2   mov	x8, #0x18000000000000
+0x184f22874:  09 08 40 f9   ldr	x9, [x0, #0x10]
+0x184f22878:  2a 01 40 92   and	x10, x9, #0x1
+0x184f2287c:  1f 01 29 ea   bics	xzr, x8, x9
+0x184f22880:  40 11 9f da   csinv	x0, x10, xzr, ne
+0x184f22884:  c0 03 5f d6   ret
+

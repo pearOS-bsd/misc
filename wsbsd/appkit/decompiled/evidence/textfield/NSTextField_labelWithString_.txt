@@ -1,0 +1,4 @@
+### +[NSTextField labelWithString:]
+   • Loading symbol cache file...
+   • Locating symbol: +[NSTextField labelWithString:]
+   ⨯ public symbol +[NSTextField labelWithString:] not found in image AppKit

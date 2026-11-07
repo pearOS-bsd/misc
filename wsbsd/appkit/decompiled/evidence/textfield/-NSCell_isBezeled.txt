@@ -1,0 +1,9 @@
+### -[NSCell isBezeled]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSCell isBezeled]
+
+-[NSCell isBezeled]:
+0x184f2e940:  08 44 40 39   ldrb	w8, [x0, #0x11]
+0x184f2e944:  00 05 01 53   ubfx	w0, w8, #0x1, #0x1
+0x184f2e948:  c0 03 5f d6   ret
+

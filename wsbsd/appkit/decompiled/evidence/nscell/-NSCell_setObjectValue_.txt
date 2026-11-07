@@ -1,0 +1,140 @@
+### -[NSCell setObjectValue:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSCell setObjectValue:]
+
+-[NSCell setObjectValue:]:
+0x184f2dce4:  7f 23 03 d5   pacibsp
+0x184f2dce8:  f8 5f bc a9   stp	x24, x23, [sp, #-0x40]!
+0x184f2dcec:  f6 57 01 a9   stp	x22, x21, [sp, #0x10]
+0x184f2dcf0:  f4 4f 02 a9   stp	x20, x19, [sp, #0x20]
+0x184f2dcf4:  fd 7b 03 a9   stp	fp, lr, [sp, #0x30]
+0x184f2dcf8:  fd c3 00 91   add	fp, sp, #0x30
+0x184f2dcfc:  f5 03 02 aa   mov	x21, x2
+0x184f2dd00:  f3 03 00 aa   mov	x19, x0
+0x184f2dd04:  2b 3a c5 94   bl	0x18807c5b0
+0x184f2dd08:  f4 03 00 aa   mov	x20, x0
+0x184f2dd0c:  a0 b1 2f f0   adrp	x0, 0x1e4564000
+0x184f2dd10:  00 f0 05 91   add	x0, x0, #0x17c ; data_1e456417c (AppKit/__DATA.__bss)
+0x184f2dd14:  e3 d1 c6 94   bl	j__os_unfair_lock_lock
+0x184f2dd18:  60 06 40 f9   ldr	x0, [x19, #0x8]
+0x184f2dd1c:  1f 00 15 eb   cmp	x0, x21
+0x184f2dd20:  a0 00 00 54   b.eq	loc_184f2dd34 ; ⤵ 0x14
+0x184f2dd24:  e2 03 15 aa   mov	x2, x21
+0x184f2dd28:  c6 57 c3 94   bl	0x188003c40
+0x184f2dd2c:  17 00 00 52   eor	w23, w0, #0x1
+0x184f2dd30:  02 00 00 14   b	loc_184f2dd38 ; ⤵ 0x8
+0x184f2dd34:  ; loc_184f2dd34
+0x184f2dd34:  17 00 80 52   mov	w23, #0
+0x184f2dd38:  ; loc_184f2dd38
+0x184f2dd38:  a0 b1 2f f0   adrp	x0, 0x1e4564000
+0x184f2dd3c:  00 f0 05 91   add	x0, x0, #0x17c ; data_1e456417c (AppKit/__DATA.__bss)
+0x184f2dd40:  30 ba c6 94   bl	j__os_unfair_lock_unlock
+0x184f2dd44:  36 a6 30 f0   adrp	x22, 0x1e63f4000
+0x184f2dd48:  d6 42 06 91   add	x22, x22, #0x190 ; __cellCFlagsBitfieldLock
+0x184f2dd4c:  e0 03 16 aa   mov	x0, x22
+0x184f2dd50:  d4 d1 c6 94   bl	j__os_unfair_lock_lock
+0x184f2dd54:  68 0a 40 f9   ldr	x8, [x19, #0x10]
+0x184f2dd58:  08 f9 5e 92   and	x8, x8, #0xfffffffdffffffff
+0x184f2dd5c:  68 0a 00 f9   str	x8, [x19, #0x10]
+0x184f2dd60:  e0 03 16 aa   mov	x0, x22
+0x184f2dd64:  27 ba c6 94   bl	j__os_unfair_lock_unlock
+0x184f2dd68:  e0 03 13 aa   mov	x0, x19
+0x184f2dd6c:  e2 03 15 aa   mov	x2, x21
+0x184f2dd70:  24 c6 c4 94   bl	0x18805f600
+0x184f2dd74:  17 01 00 34   cbz	w23, loc_184f2dd94 ; ⤵ 0x20
+0x184f2dd78:  e8 bc 2d 90   adrp	x8, 0x1e06c9000
+0x184f2dd7c:  08 01 38 91   add	x8, x8, #0xe00 ; _NSAccessibilityValueChangedNotification
+0x184f2dd80:  02 01 40 f9   ldr	x2, [x8]
+0x184f2dd84:  e0 03 13 aa   mov	x0, x19
+0x184f2dd88:  c6 0f c5 94   bl	0x188071ca0
+0x184f2dd8c:  e0 03 13 aa   mov	x0, x19
+0x184f2dd90:  c8 3c c4 94   bl	0x18803d0b0
+0x184f2dd94:  ; loc_184f2dd94
+0x184f2dd94:  14 08 00 b4   cbz	x20, loc_184f2de94 ; ⤵ 0x100
+0x184f2dd98:  e0 03 14 aa   mov	x0, x20
+0x184f2dd9c:  a9 c6 c5 94   bl	0x18809f840
+0x184f2dda0:  1f 00 13 eb   cmp	x0, x19
+0x184f2dda4:  20 01 00 54   b.eq	loc_184f2ddc8 ; ⤵ 0x24
+0x184f2dda8:  e0 03 14 aa   mov	x0, x20
+0x184f2ddac:  9d 2c c5 94   bl	0x188079020
+0x184f2ddb0:  1f 00 13 eb   cmp	x0, x19
+0x184f2ddb4:  f6 17 9f 1a   cset	w22, eq
+0x184f2ddb8:  e8 16 9f 1a   csinc	w8, w23, wzr, ne
+0x184f2ddbc:  1f 05 00 71   cmp	w8, #0x1
+0x184f2ddc0:  60 00 00 54   b.eq	loc_184f2ddcc ; ⤵ 0xc
+0x184f2ddc4:  34 00 00 14   b	loc_184f2de94 ; ⤵ 0xd0
+0x184f2ddc8:  ; loc_184f2ddc8
+0x184f2ddc8:  36 00 80 52   mov	w22, #0x1
+0x184f2ddcc:  ; loc_184f2ddcc
+0x184f2ddcc:  e0 03 14 aa   mov	x0, x20
+0x184f2ddd0:  20 3e c5 94   bl	0x18807d650
+0x184f2ddd4:  f5 03 00 aa   mov	x21, x0
+0x184f2ddd8:  e0 03 13 aa   mov	x0, x19
+0x184f2dddc:  e2 03 15 aa   mov	x2, x21
+0x184f2dde0:  b0 82 c4 94   bl	0x18804e8a0
+0x184f2dde4:  00 01 00 34   cbz	w0, loc_184f2de04 ; ⤵ 0x20
+0x184f2dde8:  e0 03 13 aa   mov	x0, x19
+0x184f2ddec:  e2 03 15 aa   mov	x2, x21
+0x184f2ddf0:  b0 df c4 94   bl	0x188065cb0
+0x184f2ddf4:  80 00 00 37   tbnz	w0, #0, loc_184f2de04 ; ⤵ 0x10
+0x184f2ddf8:  e0 03 13 aa   mov	x0, x19
+0x184f2ddfc:  e2 03 15 aa   mov	x2, x21
+0x184f2de00:  24 e9 c4 94   bl	0x188068290
+0x184f2de04:  ; loc_184f2de04
+0x184f2de04:  b7 02 00 34   cbz	w23, loc_184f2de58 ; ⤵ 0x54
+0x184f2de08:  e0 03 14 aa   mov	x0, x20
+0x184f2de0c:  e2 03 13 aa   mov	x2, x19
+0x184f2de10:  04 7e c5 94   bl	0x18808d620
+0x184f2de14:  e0 03 14 aa   mov	x0, x20
+0x184f2de18:  0e 3e c5 94   bl	0x18807d650
+0x184f2de1c:  a8 b1 2f f0   adrp	x8, 0x1e4564000
+0x184f2de20:  08 e1 05 91   add	x8, x8, #0x178 ; __MergedGlobals.32
+0x184f2de24:  08 fd df 08   ldarb	w8, [x8]
+0x184f2de28:  1f 09 00 71   cmp	w8, #0x2
+0x184f2de2c:  e0 01 00 54   b.eq	loc_184f2de68 ; ⤵ 0x3c
+0x184f2de30:  f5 03 00 aa   mov	x21, x0
+0x184f2de34:  a8 03 00 34   cbz	w8, loc_184f2dea8 ; ⤵ 0x74
+0x184f2de38:  ; loc_184f2de38
+0x184f2de38:  e0 03 13 aa   mov	x0, x19
+0x184f2de3c:  e2 03 15 aa   mov	x2, x21
+0x184f2de40:  98 82 c4 94   bl	0x18804e8a0
+0x184f2de44:  20 01 00 34   cbz	w0, loc_184f2de68 ; ⤵ 0x24
+0x184f2de48:  e0 03 15 aa   mov	x0, x21
+0x184f2de4c:  22 00 80 52   mov	w2, #0x1
+0x184f2de50:  58 ea c5 94   bl	0x1880a87b0
+0x184f2de54:  05 00 00 14   b	loc_184f2de68 ; ⤵ 0x14
+0x184f2de58:  ; loc_184f2de58
+0x184f2de58:  f6 01 00 34   cbz	w22, loc_184f2de94 ; ⤵ 0x3c
+0x184f2de5c:  e0 03 13 aa   mov	x0, x19
+0x184f2de60:  38 db c4 94   bl	0x188064b40
+0x184f2de64:  80 01 00 34   cbz	w0, loc_184f2de94 ; ⤵ 0x30
+0x184f2de68:  ; loc_184f2de68
+0x184f2de68:  e0 03 14 aa   mov	x0, x20
+0x184f2de6c:  e2 03 13 aa   mov	x2, x19
+0x184f2de70:  fd 7b 43 a9   ldp	fp, lr, [sp, #0x30]
+0x184f2de74:  f4 4f 42 a9   ldp	x20, x19, [sp, #0x20]
+0x184f2de78:  f6 57 41 a9   ldp	x22, x21, [sp, #0x10]
+0x184f2de7c:  f8 5f c4 a8   ldp	x24, x23, [sp], #0x40
+0x184f2de80:  ff 23 03 d5   autibsp
+0x184f2de84:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f2de88:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f2de90 ; ⤵ 0x8
+0x184f2de8c:  20 8e 38 d4   brk	#0xc471
+0x184f2de90:  ; loc_184f2de90
+0x184f2de90:  80 26 c6 14   b	0x1880b7890
+0x184f2de94:  ; loc_184f2de94
+0x184f2de94:  fd 7b 43 a9   ldp	fp, lr, [sp, #0x30]
+0x184f2de98:  f4 4f 42 a9   ldp	x20, x19, [sp, #0x20]
+0x184f2de9c:  f6 57 41 a9   ldp	x22, x21, [sp, #0x10]
+0x184f2dea0:  f8 5f c4 a8   ldp	x24, x23, [sp], #0x40
+0x184f2dea4:  ff 0f 5f d6   retab
+0x184f2dea8:  ; loc_184f2dea8
+0x184f2dea8:  a0 aa 31 d0   adrp	x0, 0x1e8483000
+0x184f2deac:  00 40 3b 91   add	x0, x0, #0xed0 ; "NSCellShouldAskActiveFieldEditorForLayoutOnObjectValueChanges"
+0x184f2deb0:  a2 b1 2f f0   adrp	x2, 0x1e4564000
+0x184f2deb4:  42 e0 05 91   add	x2, x2, #0x178 ; __MergedGlobals.32
+0x184f2deb8:  01 00 80 52   mov	w1, #0
+0x184f2debc:  03 00 80 d2   mov	x3, #0
+0x184f2dec0:  1e 67 fe 97   bl	__NSGetBoolAppConfig
+0x184f2dec4:  a0 fb ff 35   cbnz	w0, loc_184f2de38 ; ⤴ -0x8c
+0x184f2dec8:  e8 ff ff 17   b	loc_184f2de68 ; ⤴ -0x60
+

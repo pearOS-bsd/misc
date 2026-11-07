@@ -1,0 +1,12 @@
+### -[NSBox boxType]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSBox boxType]
+
+-[NSBox boxType]:
+0x18502c5c4:  c8 a6 2f 90   adrp	x8, 0x1e4504000
+0x18502c5c8:  08 1d 89 b9   ldrsw	x8, [x8, #0x91c] ; _OBJC_IVAR_$_NSBox._bFlags
+0x18502c5cc:  08 00 08 8b   add	x8, x0, x8
+0x18502c5d0:  08 01 40 b9   ldr	w8, [x8]
+0x18502c5d4:  00 31 4a d3   ubfx	x0, x8, #0xa, #0x3
+0x18502c5d8:  c0 03 5f d6   ret
+

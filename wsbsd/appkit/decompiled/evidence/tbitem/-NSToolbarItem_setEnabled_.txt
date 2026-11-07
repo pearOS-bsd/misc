@@ -1,0 +1,74 @@
+### -[NSToolbarItem setEnabled:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSToolbarItem setEnabled:]
+
+-[NSToolbarItem setEnabled:]:
+0x184fcaa08:  7f 23 03 d5   pacibsp
+0x184fcaa0c:  f8 5f bc a9   stp	x24, x23, [sp, #-0x40]!
+0x184fcaa10:  f6 57 01 a9   stp	x22, x21, [sp, #0x10]
+0x184fcaa14:  f4 4f 02 a9   stp	x20, x19, [sp, #0x20]
+0x184fcaa18:  fd 7b 03 a9   stp	fp, lr, [sp, #0x30]
+0x184fcaa1c:  fd c3 00 91   add	fp, sp, #0x30
+0x184fcaa20:  f5 03 02 aa   mov	x21, x2
+0x184fcaa24:  f4 03 00 aa   mov	x20, x0
+0x184fcaa28:  b2 cb ff 97   bl	-[NSToolbarItem _loadViewIfNecessary]
+0x184fcaa2c:  80 22 00 91   add	x0, x20, #0x8
+0x184fcaa30:  5c 4b c4 94   bl	j__objc_loadWeakRetained
+0x184fcaa34:  f6 03 00 aa   mov	x22, x0
+0x184fcaa38:  22 7c c2 94   bl	0x188069ac0
+0x184fcaa3c:  35 51 c4 94   bl	j__objc_claimAutoreleasedReturnValue
+0x184fcaa40:  f3 03 00 aa   mov	x19, x0
+0x184fcaa44:  e0 03 16 aa   mov	x0, x22
+0x184fcaa48:  86 48 c4 94   bl	j__objc_release_x0
+0x184fcaa4c:  e0 03 13 aa   mov	x0, x19
+0x184fcaa50:  21 6f 24 94   bl	-[NSToolbarView _inConfigPanel]
+0x184fcaa54:  80 02 00 37   tbnz	w0, #0, loc_184fcaaa4 ; ⤵ 0x50
+0x184fcaa58:  e0 03 13 aa   mov	x0, x19
+0x184fcaa5c:  69 0b c1 94   bl	0x18800d800
+0x184fcaa60:  2c 51 c4 94   bl	j__objc_claimAutoreleasedReturnValue
+0x184fcaa64:  f6 03 00 aa   mov	x22, x0
+0x184fcaa68:  1a ad c2 94   bl	0x188075ed0
+0x184fcaa6c:  29 51 c4 94   bl	j__objc_claimAutoreleasedReturnValue
+0x184fcaa70:  f7 03 00 aa   mov	x23, x0
+0x184fcaa74:  7b 48 c4 94   bl	j__objc_release_x0
+0x184fcaa78:  e0 03 16 aa   mov	x0, x22
+0x184fcaa7c:  79 48 c4 94   bl	j__objc_release_x0
+0x184fcaa80:  37 01 00 b4   cbz	x23, loc_184fcaaa4 ; ⤵ 0x24
+0x184fcaa84:  88 66 40 f9   ldr	x8, [x20, #0xc8]
+0x184fcaa88:  bf 02 00 71   cmp	w21, #0
+0x184fcaa8c:  09 00 a2 52   mov	w9, #0x10000000
+0x184fcaa90:  e9 13 89 9a   csel	x9, xzr, x9, ne
+0x184fcaa94:  08 f9 63 92   and	x8, x8, #0xffffffffefffffff
+0x184fcaa98:  08 01 09 aa   orr	x8, x8, x9
+0x184fcaa9c:  88 66 00 f9   str	x8, [x20, #0xc8]
+0x184fcaaa0:  04 00 00 14   b	loc_184fcaab0 ; ⤵ 0x10
+0x184fcaaa4:  ; loc_184fcaaa4
+0x184fcaaa4:  e0 03 14 aa   mov	x0, x20
+0x184fcaaa8:  e1 03 15 aa   mov	x1, x21
+0x184fcaaac:  17 00 00 94   bl	-[NSToolbarItem _reallySetEnabled:]
+0x184fcaab0:  ; loc_184fcaab0
+0x184fcaab0:  e0 03 13 aa   mov	x0, x19
+0x184fcaab4:  fd 7b 43 a9   ldp	fp, lr, [sp, #0x30]
+0x184fcaab8:  f4 4f 42 a9   ldp	x20, x19, [sp, #0x20]
+0x184fcaabc:  f6 57 41 a9   ldp	x22, x21, [sp, #0x10]
+0x184fcaac0:  f8 5f c4 a8   ldp	x24, x23, [sp], #0x40
+0x184fcaac4:  ff 23 03 d5   autibsp
+0x184fcaac8:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184fcaacc:  50 00 f0 b6   tbz	x16, #0x3e, loc_184fcaad4 ; ⤵ 0x8
+0x184fcaad0:  20 8e 38 d4   brk	#0xc471
+0x184fcaad4:  ; loc_184fcaad4
+0x184fcaad4:  63 48 c4 14   b	j__objc_release_x0
+0x184fcaad8:  f4 03 00 aa   mov	x20, x0
+0x184fcaadc:  e0 03 16 aa   mov	x0, x22
+0x184fcaae0:  60 48 c4 94   bl	j__objc_release_x0
+0x184fcaae4:  05 00 00 14   b	loc_184fcaaf8 ; ⤵ 0x14
+0x184fcaae8:  f4 03 00 aa   mov	x20, x0
+0x184fcaaec:  f3 03 16 aa   mov	x19, x22
+0x184fcaaf0:  02 00 00 14   b	loc_184fcaaf8 ; ⤵ 0x8
+0x184fcaaf4:  f4 03 00 aa   mov	x20, x0
+0x184fcaaf8:  ; loc_184fcaaf8
+0x184fcaaf8:  e0 03 13 aa   mov	x0, x19
+0x184fcaafc:  59 48 c4 94   bl	j__objc_release_x0
+0x184fcab00:  e0 03 14 aa   mov	x0, x20
+0x184fcab04:  63 45 c4 94   bl	j___Unwind_Resume
+

@@ -1,0 +1,32 @@
+### -[NSPopUpButtonCell indexOfSelectedItem]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSPopUpButtonCell indexOfSelectedItem]
+
+-[NSPopUpButtonCell indexOfSelectedItem]:
+0x184f9780c:  7f 23 03 d5   pacibsp
+0x184f97810:  f6 57 bd a9   stp	x22, x21, [sp, #-0x30]!
+0x184f97814:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x184f97818:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x184f9781c:  fd 83 00 91   add	fp, sp, #0x20
+0x184f97820:  f3 03 00 aa   mov	x19, x0
+0x184f97824:  48 a2 30 f0   adrp	x8, 0x1e63e2000
+0x184f97828:  14 01 84 b9   ldrsw	x20, [x8, #0x400] ; __MergedGlobals
+0x184f9782c:  08 00 14 8b   add	x8, x0, x20
+0x184f97830:  15 01 80 b9   ldrsw	x21, [x8]
+0x184f97834:  6f cc c1 94   bl	0x18800a9f0
+0x184f97838:  0a 41 c2 94   bl	0x188027c60
+0x184f9783c:  1f 00 15 eb   cmp	x0, x21
+0x184f97840:  8d 00 00 54   b.le	loc_184f97850 ; ⤵ 0x10
+0x184f97844:  68 6a 74 b8   ldr	w8, [x19, x20]
+0x184f97848:  1f 09 00 31   cmn	w8, #0x2
+0x184f9784c:  6c 00 00 54   b.gt	loc_184f97858 ; ⤵ 0xc
+0x184f97850:  ; loc_184f97850
+0x184f97850:  08 00 80 12   mov	w8, #0xffffffff
+0x184f97854:  68 6a 34 b8   str	w8, [x19, x20]
+0x184f97858:  ; loc_184f97858
+0x184f97858:  00 7d 40 93   sxtw	x0, w8
+0x184f9785c:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x184f97860:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x184f97864:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x184f97868:  ff 0f 5f d6   retab
+

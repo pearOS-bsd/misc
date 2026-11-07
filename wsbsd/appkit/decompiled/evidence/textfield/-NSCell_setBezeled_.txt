@@ -1,0 +1,60 @@
+### -[NSCell setBezeled:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSCell setBezeled:]
+
+-[NSCell setBezeled:]:
+0x184f2edc0:  7f 23 03 d5   pacibsp
+0x184f2edc4:  f6 57 bd a9   stp	x22, x21, [sp, #-0x30]!
+0x184f2edc8:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x184f2edcc:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x184f2edd0:  fd 83 00 91   add	fp, sp, #0x20
+0x184f2edd4:  f4 03 02 aa   mov	x20, x2
+0x184f2edd8:  f3 03 00 aa   mov	x19, x0
+0x184f2eddc:  09 08 40 f9   ldr	x9, [x0, #0x10]
+0x184f2ede0:  3f 01 77 f2   tst	x9, #0x200
+0x184f2ede4:  e8 17 9f 1a   cset	w8, eq
+0x184f2ede8:  e9 00 40 37   tbnz	w9, #0x8, loc_184f2ee04 ; ⤵ 0x1c
+0x184f2edec:  88 02 08 4a   eor	w8, w20, w8
+0x184f2edf0:  a8 00 00 36   tbz	w8, #0, loc_184f2ee04 ; ⤵ 0x14
+0x184f2edf4:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x184f2edf8:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x184f2edfc:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x184f2ee00:  ff 0f 5f d6   retab
+0x184f2ee04:  ; loc_184f2ee04
+0x184f2ee04:  35 a6 30 d0   adrp	x21, 0x1e63f4000
+0x184f2ee08:  b5 42 06 91   add	x21, x21, #0x190 ; __cellCFlagsBitfieldLock
+0x184f2ee0c:  e0 03 15 aa   mov	x0, x21
+0x184f2ee10:  a4 cd c6 94   bl	j__os_unfair_lock_lock
+0x184f2ee14:  68 0a 40 f9   ldr	x8, [x19, #0x10]
+0x184f2ee18:  9f 02 00 71   cmp	w20, #0
+0x184f2ee1c:  09 40 80 52   mov	w9, #0x200
+0x184f2ee20:  29 11 9f 9a   csel	x9, x9, xzr, ne
+0x184f2ee24:  08 f9 76 92   and	x8, x8, #0xfffffffffffffdff
+0x184f2ee28:  08 01 09 aa   orr	x8, x8, x9
+0x184f2ee2c:  68 0a 00 f9   str	x8, [x19, #0x10]
+0x184f2ee30:  e0 03 15 aa   mov	x0, x21
+0x184f2ee34:  f3 b5 c6 94   bl	j__os_unfair_lock_unlock
+0x184f2ee38:  e0 03 15 aa   mov	x0, x21
+0x184f2ee3c:  99 cd c6 94   bl	j__os_unfair_lock_lock
+0x184f2ee40:  68 0a 40 f9   ldr	x8, [x19, #0x10]
+0x184f2ee44:  08 f9 77 92   and	x8, x8, #0xfffffffffffffeff
+0x184f2ee48:  68 0a 00 f9   str	x8, [x19, #0x10]
+0x184f2ee4c:  e0 03 15 aa   mov	x0, x21
+0x184f2ee50:  ec b5 c6 94   bl	j__os_unfair_lock_unlock
+0x184f2ee54:  e0 03 13 aa   mov	x0, x19
+0x184f2ee58:  d6 35 c5 94   bl	0x18807c5b0
+0x184f2ee5c:  e2 03 13 aa   mov	x2, x19
+0x184f2ee60:  88 22 c6 94   bl	0x1880b7880
+0x184f2ee64:  e0 03 13 aa   mov	x0, x19
+0x184f2ee68:  d2 35 c5 94   bl	0x18807c5b0
+0x184f2ee6c:  e2 03 13 aa   mov	x2, x19
+0x184f2ee70:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x184f2ee74:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x184f2ee78:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x184f2ee7c:  ff 23 03 d5   autibsp
+0x184f2ee80:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f2ee84:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f2ee8c ; ⤵ 0x8
+0x184f2ee88:  20 8e 38 d4   brk	#0xc471
+0x184f2ee8c:  ; loc_184f2ee8c
+0x184f2ee8c:  e5 79 c5 14   b	0x18808d620
+

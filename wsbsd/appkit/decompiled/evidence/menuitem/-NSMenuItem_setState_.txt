@@ -1,0 +1,57 @@
+### -[NSMenuItem setState:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSMenuItem setState:]
+
+-[NSMenuItem setState:]:
+0x184ee8804:  7f 23 03 d5   pacibsp
+0x184ee8808:  f6 57 bd a9   stp	x22, x21, [sp, #-0x30]!
+0x184ee880c:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x184ee8810:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x184ee8814:  fd 83 00 91   add	fp, sp, #0x20
+0x184ee8818:  f5 03 02 aa   mov	x21, x2
+0x184ee881c:  68 00 80 52   mov	w8, #0x3
+0x184ee8820:  09 c0 45 f8   ldur	x9, [x0, #0x5c]
+0x184ee8824:  0a 55 49 ea   ands	x10, x8, x9, lsr #0x15
+0x184ee8828:  5f 05 00 f1   cmp	x10, #0x1
+0x184ee882c:  4a 01 9f da   csinv	x10, x10, xzr, eq
+0x184ee8830:  1f 55 49 ea   tst	x8, x9, lsr #0x15
+0x184ee8834:  e2 03 8a 9a   csel	x2, xzr, x10, eq
+0x184ee8838:  5f 00 15 eb   cmp	x2, x21
+0x184ee883c:  e0 03 00 54   b.eq	loc_184ee88b8 ; ⤵ 0x7c
+0x184ee8840:  f3 03 00 aa   mov	x19, x0
+0x184ee8844:  d7 8c c5 94   bl	0x18804bba0
+0x184ee8848:  f4 03 00 aa   mov	x20, x0
+0x184ee884c:  08 08 a0 52   mov	w8, #0x400000
+0x184ee8850:  09 04 a0 52   mov	w9, #0x200000
+0x184ee8854:  bf 02 00 f1   cmp	x21, #0
+0x184ee8858:  28 c1 88 9a   csel	x8, x9, x8, gt
+0x184ee885c:  e8 03 88 9a   csel	x8, xzr, x8, eq
+0x184ee8860:  69 c2 45 f8   ldur	x9, [x19, #0x5c]
+0x184ee8864:  29 f5 69 92   and	x9, x9, #0xffffffffff9fffff
+0x184ee8868:  28 01 08 aa   orr	x8, x9, x8
+0x184ee886c:  68 c2 05 f8   stur	x8, [x19, #0x5c]
+0x184ee8870:  e8 d7 9f 9a   cset	x8, gt
+0x184ee8874:  02 a1 9f da   csinv	x2, x8, xzr, ge
+0x184ee8878:  e0 03 13 aa   mov	x0, x19
+0x184ee887c:  c9 8c c5 94   bl	0x18804bba0
+0x184ee8880:  9f 02 00 eb   cmp	x20, x0
+0x184ee8884:  a0 01 00 54   b.eq	loc_184ee88b8 ; ⤵ 0x34
+0x184ee8888:  e4 03 00 aa   mov	x4, x0
+0x184ee888c:  60 06 40 f9   ldr	x0, [x19, #0x8]
+0x184ee8890:  e2 03 13 aa   mov	x2, x19
+0x184ee8894:  e3 03 14 aa   mov	x3, x20
+0x184ee8898:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x184ee889c:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x184ee88a0:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x184ee88a4:  ff 23 03 d5   autibsp
+0x184ee88a8:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184ee88ac:  50 00 f0 b6   tbz	x16, #0x3e, loc_184ee88b4 ; ⤵ 0x8
+0x184ee88b0:  20 8e 38 d4   brk	#0xc471
+0x184ee88b4:  ; loc_184ee88b4
+0x184ee88b4:  87 a9 c5 14   b	0x188052ed0
+0x184ee88b8:  ; loc_184ee88b8
+0x184ee88b8:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x184ee88bc:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x184ee88c0:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x184ee88c4:  ff 0f 5f d6   retab
+

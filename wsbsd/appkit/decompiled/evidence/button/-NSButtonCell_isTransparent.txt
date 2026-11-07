@@ -1,0 +1,12 @@
+### -[NSButtonCell isTransparent]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSButtonCell isTransparent]
+
+-[NSButtonCell isTransparent]:
+0x184f91a38:  88 ab 2f f0   adrp	x8, 0x1e4504000
+0x184f91a3c:  08 bd 85 b9   ldrsw	x8, [x8, #0x5bc] ; _OBJC_IVAR_$_NSButtonCell._bcFlags
+0x184f91a40:  08 00 08 8b   add	x8, x0, x8
+0x184f91a44:  08 05 40 39   ldrb	w8, [x8, #0x1]
+0x184f91a48:  00 7d 07 53   lsr	w0, w8, #0x7
+0x184f91a4c:  c0 03 5f d6   ret
+

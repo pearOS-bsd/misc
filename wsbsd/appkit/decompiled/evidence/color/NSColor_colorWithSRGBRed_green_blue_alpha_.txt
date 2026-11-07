@@ -1,0 +1,39 @@
+### +[NSColor colorWithSRGBRed:green:blue:alpha:]
+   • Loading symbol cache file...
+   • Locating symbol: +[NSColor colorWithSRGBRed:green:blue:alpha:]
+
++[NSColor colorWithSRGBRed:green:blue:alpha:]:
+0x184eeba7c:  7f 23 03 d5   pacibsp
+0x184eeba80:  ff 43 01 d1   sub	sp, sp, #0x50
+0x184eeba84:  f4 4f 03 a9   stp	x20, x19, [sp, #0x30]
+0x184eeba88:  fd 7b 04 a9   stp	fp, lr, [sp, #0x40]
+0x184eeba8c:  fd 03 01 91   add	fp, sp, #0x40
+0x184eeba90:  08 99 2d 90   adrp	x8, 0x1e020b000
+0x184eeba94:  08 59 45 f9   ldr	x8, [x8, #0xab0] ; _ptr.___stack_chk_guard
+0x184eeba98:  08 01 40 f9   ldr	x8, [x8]
+0x184eeba9c:  a8 83 1e f8   stur	x8, [fp, #-0x18]
+0x184eebaa0:  68 c2 2d f0   adrp	x8, 0x1e073a000
+0x184eebaa4:  13 f5 47 f9   ldr	x19, [x8, #0xfe8] ; __got.class_NSColor
+0x184eebaa8:  e0 87 00 6d   stp	d0, d1, [sp, #0x8]
+0x184eebaac:  e2 8f 01 6d   stp	d2, d3, [sp, #0x18]
+0x184eebab0:  88 c2 2d 90   adrp	x8, 0x1e073b000
+0x184eebab4:  00 1d 40 f9   ldr	x0, [x8, #0x38] ; __got.class_NSColorSpace
+0x184eebab8:  76 c9 c6 94   bl	0x18809e090
+0x184eebabc:  e2 03 00 aa   mov	x2, x0
+0x184eebac0:  e3 23 00 91   add	x3, sp, #0x8
+0x184eebac4:  e0 03 13 aa   mov	x0, x19
+0x184eebac8:  84 00 80 52   mov	w4, #0x4
+0x184eebacc:  69 3b c6 94   bl	0x18807a870
+0x184eebad0:  08 99 2d 90   adrp	x8, 0x1e020b000
+0x184eebad4:  08 59 45 f9   ldr	x8, [x8, #0xab0] ; _ptr.___stack_chk_guard
+0x184eebad8:  08 01 40 f9   ldr	x8, [x8]
+0x184eebadc:  a9 83 5e f8   ldur	x9, [fp, #-0x18]
+0x184eebae0:  1f 01 09 eb   cmp	x8, x9
+0x184eebae4:  a1 00 00 54   b.ne	loc_184eebaf8 ; ⤵ 0x14
+0x184eebae8:  fd 7b 44 a9   ldp	fp, lr, [sp, #0x40]
+0x184eebaec:  f4 4f 43 a9   ldp	x20, x19, [sp, #0x30]
+0x184eebaf0:  ff 43 01 91   add	sp, sp, #0x50
+0x184eebaf4:  ff 0f 5f d6   retab
+0x184eebaf8:  ; loc_184eebaf8
+0x184eebaf8:  92 c1 c7 94   bl	j____stack_chk_fail
+

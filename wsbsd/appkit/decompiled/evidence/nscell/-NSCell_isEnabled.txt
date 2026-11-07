@@ -1,0 +1,10 @@
+### -[NSCell isEnabled]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSCell isEnabled]
+
+-[NSCell isEnabled]:
+0x184f24de4:  08 40 40 39   ldrb	w8, [x0, #0x10]
+0x184f24de8:  1f 01 1e 72   tst	w8, #0x4
+0x184f24dec:  e0 17 9f 1a   cset	w0, eq
+0x184f24df0:  c0 03 5f d6   ret
+

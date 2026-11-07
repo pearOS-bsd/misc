@@ -1,0 +1,11 @@
+### -[NSLevelIndicatorCell numberOfTickMarks]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSLevelIndicatorCell numberOfTickMarks]
+
+-[NSLevelIndicatorCell numberOfTickMarks]:
+0x185633b20:  68 6d 30 f0   adrp	x8, 0x1e63e2000
+0x185633b24:  08 9d 83 b9   ldrsw	x8, [x8, #0x39c]
+0x185633b28:  08 00 08 8b   add	x8, x0, x8
+0x185633b2c:  00 01 80 b9   ldrsw	x0, [x8]
+0x185633b30:  c0 03 5f d6   ret
+

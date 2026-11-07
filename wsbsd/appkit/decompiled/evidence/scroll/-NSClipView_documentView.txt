@@ -1,0 +1,21 @@
+### -[NSClipView documentView]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSClipView documentView]
+
+-[NSClipView documentView]:
+0x184f6302c:  7f 23 03 d5   pacibsp
+0x184f63030:  fd 7b bf a9   stp	fp, lr, [sp, #-0x10]!
+0x184f63034:  fd 03 00 91   mov	fp, sp
+0x184f63038:  e8 ac 2f f0   adrp	x8, 0x1e4502000
+0x184f6303c:  08 e9 83 b9   ldrsw	x8, [x8, #0x3e8] ; _OBJC_IVAR_$_NSClipView._docView
+0x184f63040:  08 00 08 8b   add	x8, x0, x8
+0x184f63044:  00 01 40 f9   ldr	x0, [x8]
+0x184f63048:  0a e7 c5 94   bl	j__objc_retain_x0
+0x184f6304c:  fd 7b c1 a8   ldp	fp, lr, [sp], #0x10
+0x184f63050:  ff 23 03 d5   autibsp
+0x184f63054:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f63058:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f63060 ; ⤵ 0x8
+0x184f6305c:  20 8e 38 d4   brk	#0xc471
+0x184f63060:  ; loc_184f63060
+0x184f63060:  4c fc c5 14   b	j__objc_autorelease
+

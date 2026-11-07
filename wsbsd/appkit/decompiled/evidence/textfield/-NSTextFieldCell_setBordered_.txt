@@ -1,0 +1,48 @@
+### -[NSTextFieldCell setBordered:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTextFieldCell setBordered:]
+
+-[NSTextFieldCell setBordered:]:
+0x1856bb1e0:  7f 23 03 d5   pacibsp
+0x1856bb1e4:  ff 03 01 d1   sub	sp, sp, #0x40
+0x1856bb1e8:  f6 57 01 a9   stp	x22, x21, [sp, #0x10]
+0x1856bb1ec:  f4 4f 02 a9   stp	x20, x19, [sp, #0x20]
+0x1856bb1f0:  fd 7b 03 a9   stp	fp, lr, [sp, #0x30]
+0x1856bb1f4:  fd c3 00 91   add	fp, sp, #0x30
+0x1856bb1f8:  f4 03 02 aa   mov	x20, x2
+0x1856bb1fc:  f3 03 00 aa   mov	x19, x0
+0x1856bb200:  00 4b a7 94   bl	0x18808de00
+0x1856bb204:  9f 02 00 6b   cmp	w20, w0
+0x1856bb208:  40 01 00 54   b.eq	loc_1856bb230 ; ⤵ 0x28
+0x1856bb20c:  c8 83 2d 90   adrp	x8, 0x1e0733000
+0x1856bb210:  08 c5 40 f9   ldr	x8, [x8, #0x188] ; NSTextFieldCell
+0x1856bb214:  f3 23 00 a9   stp	x19, x8, [sp]
+0x1856bb218:  48 1c 38 90   adrp	x8, 0x1f5a43000
+0x1856bb21c:  01 09 25 91   add	x1, x8, #0x942 ; setBordered:
+0x1856bb220:  e0 03 00 91   mov	x0, sp
+0x1856bb224:  e2 03 14 aa   mov	x2, x20
+0x1856bb228:  66 89 a8 94   bl	j__objc_msgSendSuper2
+0x1856bb22c:  0d 00 00 14   b	loc_1856bb260 ; ⤵ 0x34
+0x1856bb230:  ; loc_1856bb230
+0x1856bb230:  e0 03 13 aa   mov	x0, x19
+0x1856bb234:  e7 4a a7 94   bl	0x18808ddd0
+0x1856bb238:  f5 03 00 aa   mov	x21, x0
+0x1856bb23c:  c8 83 2d 90   adrp	x8, 0x1e0733000
+0x1856bb240:  08 c5 40 f9   ldr	x8, [x8, #0x188] ; NSTextFieldCell
+0x1856bb244:  f3 23 00 a9   stp	x19, x8, [sp]
+0x1856bb248:  48 1c 38 90   adrp	x8, 0x1f5a43000
+0x1856bb24c:  01 09 25 91   add	x1, x8, #0x942 ; setBordered:
+0x1856bb250:  e0 03 00 91   mov	x0, sp
+0x1856bb254:  e2 03 14 aa   mov	x2, x20
+0x1856bb258:  5a 89 a8 94   bl	j__objc_msgSendSuper2
+0x1856bb25c:  75 00 00 36   tbz	w21, #0, loc_1856bb268 ; ⤵ 0xc
+0x1856bb260:  ; loc_1856bb260
+0x1856bb260:  e0 03 13 aa   mov	x0, x19
+0x1856bb264:  e3 79 a6 94   bl	0x1880599f0
+0x1856bb268:  ; loc_1856bb268
+0x1856bb268:  fd 7b 43 a9   ldp	fp, lr, [sp, #0x30]
+0x1856bb26c:  f4 4f 42 a9   ldp	x20, x19, [sp, #0x20]
+0x1856bb270:  f6 57 41 a9   ldp	x22, x21, [sp, #0x10]
+0x1856bb274:  ff 03 01 91   add	sp, sp, #0x40
+0x1856bb278:  ff 0f 5f d6   retab
+

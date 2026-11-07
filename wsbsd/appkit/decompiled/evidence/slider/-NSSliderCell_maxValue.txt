@@ -1,0 +1,11 @@
+### -[NSSliderCell maxValue]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSSliderCell maxValue]
+
+-[NSSliderCell maxValue]:
+0x1850e9894:  c8 a0 2f f0   adrp	x8, 0x1e4504000
+0x1850e9898:  08 75 8d b9   ldrsw	x8, [x8, #0xd74] ; _OBJC_IVAR_$_NSSliderCell._maxValue
+0x1850e989c:  08 00 08 8b   add	x8, x0, x8
+0x1850e98a0:  00 01 40 fd   ldr	d0, [x8]
+0x1850e98a4:  c0 03 5f d6   ret
+

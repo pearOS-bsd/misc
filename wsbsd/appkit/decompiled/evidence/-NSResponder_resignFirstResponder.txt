@@ -1,0 +1,8 @@
+### -[NSResponder resignFirstResponder]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSResponder resignFirstResponder]
+
+-[NSResponder resignFirstResponder]:
+0x184fea2e4:  20 00 80 52   mov	w0, #0x1
+0x184fea2e8:  c0 03 5f d6   ret
+

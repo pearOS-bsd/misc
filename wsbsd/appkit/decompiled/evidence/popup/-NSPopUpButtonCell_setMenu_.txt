@@ -1,0 +1,174 @@
+### -[NSPopUpButtonCell setMenu:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSPopUpButtonCell setMenu:]
+
+-[NSPopUpButtonCell setMenu:]:
+0x184f96f54:  7f 23 03 d5   pacibsp
+0x184f96f58:  ff 43 01 d1   sub	sp, sp, #0x50
+0x184f96f5c:  f8 5f 01 a9   stp	x24, x23, [sp, #0x10]
+0x184f96f60:  f6 57 02 a9   stp	x22, x21, [sp, #0x20]
+0x184f96f64:  f4 4f 03 a9   stp	x20, x19, [sp, #0x30]
+0x184f96f68:  fd 7b 04 a9   stp	fp, lr, [sp, #0x40]
+0x184f96f6c:  fd 03 01 91   add	fp, sp, #0x40
+0x184f96f70:  f5 03 02 aa   mov	x21, x2
+0x184f96f74:  f3 03 00 aa   mov	x19, x0
+0x184f96f78:  68 a2 30 90   adrp	x8, 0x1e63e2000
+0x184f96f7c:  16 05 84 b9   ldrsw	x22, [x8, #0x404]
+0x184f96f80:  08 00 16 8b   add	x8, x0, x22
+0x184f96f84:  14 01 40 f9   ldr	x20, [x8]
+0x184f96f88:  37 bd 2d b0   adrp	x23, 0x1e073b000
+0x184f96f8c:  a2 02 00 b4   cbz	x2, loc_184f96fe0 ; ⤵ 0x54
+0x184f96f90:  e0 ee 42 f9   ldr	x0, [x23, #0x5d8]
+0x184f96f94:  0f 1a c5 94   bl	j__objc_opt_class
+0x184f96f98:  e1 03 00 aa   mov	x1, x0
+0x184f96f9c:  e0 03 15 aa   mov	x0, x21
+0x184f96fa0:  10 1a c5 94   bl	j__objc_opt_isKindOfClass
+0x184f96fa4:  e0 01 00 37   tbnz	w0, #0, loc_184f96fe0 ; ⤵ 0x3c
+0x184f96fa8:  80 a5 31 d0   adrp	x0, 0x1e8448000
+0x184f96fac:  00 40 03 91   add	x0, x0, #0xd0 ; "NSMenuTemplate"
+0x184f96fb0:  90 27 c5 94   bl	j__NSClassFromString
+0x184f96fb4:  e1 03 00 aa   mov	x1, x0
+0x184f96fb8:  e0 03 15 aa   mov	x0, x21
+0x184f96fbc:  09 1a c5 94   bl	j__objc_opt_isKindOfClass
+0x184f96fc0:  00 01 00 37   tbnz	w0, #0, loc_184f96fe0 ; ⤵ 0x20
+0x184f96fc4:  c0 a5 31 d0   adrp	x0, 0x1e8450000
+0x184f96fc8:  00 40 04 91   add	x0, x0, #0x110 ; "IBMenuEditor"
+0x184f96fcc:  89 27 c5 94   bl	j__NSClassFromString
+0x184f96fd0:  e1 03 00 aa   mov	x1, x0
+0x184f96fd4:  e0 03 15 aa   mov	x0, x21
+0x184f96fd8:  02 1a c5 94   bl	j__objc_opt_isKindOfClass
+0x184f96fdc:  20 0e 00 36   tbz	w0, #0, loc_184f971a0 ; ⤵ 0x1c4
+0x184f96fe0:  ; loc_184f96fe0
+0x184f96fe0:  e0 03 15 aa   mov	x0, x21
+0x184f96fe4:  23 17 c5 94   bl	j__objc_retain_x0
+0x184f96fe8:  60 6a 36 f8   str	x0, [x19, x22]
+0x184f96fec:  34 04 00 b4   cbz	x20, loc_184f97070 ; ⤵ 0x84
+0x184f96ff0:  e0 ee 42 f9   ldr	x0, [x23, #0x5d8]
+0x184f96ff4:  f7 19 c5 94   bl	j__objc_opt_class
+0x184f96ff8:  e1 03 00 aa   mov	x1, x0
+0x184f96ffc:  e0 03 14 aa   mov	x0, x20
+0x184f97000:  f8 19 c5 94   bl	j__objc_opt_isKindOfClass
+0x184f97004:  60 03 00 36   tbz	w0, #0, loc_184f97070 ; ⤵ 0x6c
+0x184f97008:  e0 03 13 aa   mov	x0, x19
+0x184f9700c:  e2 03 14 aa   mov	x2, x20
+0x184f97010:  6c 4f c3 94   bl	0x18806adc0
+0x184f97014:  e0 03 14 aa   mov	x0, x20
+0x184f97018:  02 00 80 d2   mov	x2, #0
+0x184f9701c:  a5 2a c3 94   bl	0x188061ab0
+0x184f97020:  e0 03 13 aa   mov	x0, x19
+0x184f97024:  e2 03 14 aa   mov	x2, x20
+0x184f97028:  16 99 c2 94   bl	0x18803d480
+0x184f9702c:  68 ab 2f b0   adrp	x8, 0x1e4504000
+0x184f97030:  08 e5 89 b9   ldrsw	x8, [x8, #0x9e4] ; _OBJC_IVAR_$_NSPopUpButtonCell._pbcFlags
+0x184f97034:  68 02 08 8b   add	x8, x19, x8
+0x184f97038:  08 01 40 39   ldrb	w8, [x8]
+0x184f9703c:  a8 01 38 37   tbnz	w8, #0x7, loc_184f97070 ; ⤵ 0x34
+0x184f97040:  e0 03 13 aa   mov	x0, x19
+0x184f97044:  d7 0a c4 94   bl	0x188099ba0
+0x184f97048:  40 01 00 34   cbz	w0, loc_184f97070 ; ⤵ 0x28
+0x184f9704c:  e0 03 14 aa   mov	x0, x20
+0x184f97050:  04 43 c2 94   bl	0x188027c60
+0x184f97054:  1f 04 00 f1   cmp	x0, #0x1
+0x184f97058:  cb 00 00 54   b.lt	loc_184f97070 ; ⤵ 0x18
+0x184f9705c:  e0 03 14 aa   mov	x0, x20
+0x184f97060:  02 00 80 d2   mov	x2, #0
+0x184f97064:  5b b3 c1 94   bl	0x188003dd0
+0x184f97068:  02 00 80 52   mov	w2, #0
+0x184f9706c:  31 b7 c1 94   bl	0x188004d30
+0x184f97070:  ; loc_184f97070
+0x184f97070:  e0 03 14 aa   mov	x0, x20
+0x184f97074:  fb 16 c5 94   bl	j__objc_release_x0
+0x184f97078:  74 6a 76 f8   ldr	x20, [x19, x22]
+0x184f9707c:  f4 09 00 b4   cbz	x20, loc_184f971b8 ; ⤵ 0x13c
+0x184f97080:  e0 ee 42 f9   ldr	x0, [x23, #0x5d8]
+0x184f97084:  d3 19 c5 94   bl	j__objc_opt_class
+0x184f97088:  e1 03 00 aa   mov	x1, x0
+0x184f9708c:  e0 03 14 aa   mov	x0, x20
+0x184f97090:  d4 19 c5 94   bl	j__objc_opt_isKindOfClass
+0x184f97094:  20 09 00 36   tbz	w0, #0, loc_184f971b8 ; ⤵ 0x124
+0x184f97098:  62 6a 76 f8   ldr	x2, [x19, x22]
+0x184f9709c:  e0 03 13 aa   mov	x0, x19
+0x184f970a0:  00 42 c3 94   bl	0x1880678a0
+0x184f970a4:  62 6a 76 f8   ldr	x2, [x19, x22]
+0x184f970a8:  e0 03 13 aa   mov	x0, x19
+0x184f970ac:  c9 c4 c2 94   bl	0x1880483d0
+0x184f970b0:  60 6a 76 f8   ldr	x0, [x19, x22]
+0x184f970b4:  e2 03 13 aa   mov	x2, x19
+0x184f970b8:  7e 2a c3 94   bl	0x188061ab0
+0x184f970bc:  68 ab 2f b0   adrp	x8, 0x1e4504000
+0x184f970c0:  08 e5 89 b9   ldrsw	x8, [x8, #0x9e4] ; _OBJC_IVAR_$_NSPopUpButtonCell._pbcFlags
+0x184f970c4:  68 02 08 8b   add	x8, x19, x8
+0x184f970c8:  08 01 40 39   ldrb	w8, [x8]
+0x184f970cc:  08 02 38 37   tbnz	w8, #0x7, loc_184f9710c ; ⤵ 0x40
+0x184f970d0:  e0 03 13 aa   mov	x0, x19
+0x184f970d4:  c3 35 c3 94   bl	0x1880647e0
+0x184f970d8:  a0 01 00 34   cbz	w0, loc_184f9710c ; ⤵ 0x34
+0x184f970dc:  e0 03 13 aa   mov	x0, x19
+0x184f970e0:  b0 0a c4 94   bl	0x188099ba0
+0x184f970e4:  40 01 00 34   cbz	w0, loc_184f9710c ; ⤵ 0x28
+0x184f970e8:  e0 03 13 aa   mov	x0, x19
+0x184f970ec:  dd 42 c2 94   bl	0x188027c60
+0x184f970f0:  1f 04 00 f1   cmp	x0, #0x1
+0x184f970f4:  cb 00 00 54   b.lt	loc_184f9710c ; ⤵ 0x18
+0x184f970f8:  60 6a 76 f8   ldr	x0, [x19, x22]
+0x184f970fc:  02 00 80 d2   mov	x2, #0
+0x184f97100:  34 b3 c1 94   bl	0x188003dd0
+0x184f97104:  22 00 80 52   mov	w2, #0x1
+0x184f97108:  0a b7 c1 94   bl	0x188004d30
+0x184f9710c:  ; loc_184f9710c
+0x184f9710c:  60 6a 76 f8   ldr	x0, [x19, x22]
+0x184f97110:  d4 42 c2 94   bl	0x188027c60
+0x184f97114:  1f 04 00 f1   cmp	x0, #0x1
+0x184f97118:  0b 05 00 54   b.lt	loc_184f971b8 ; ⤵ 0xa0
+0x184f9711c:  60 6a 76 f8   ldr	x0, [x19, x22]
+0x184f97120:  d0 42 c2 94   bl	0x188027c60
+0x184f97124:  1f 04 00 f1   cmp	x0, #0x1
+0x184f97128:  8b 01 00 54   b.lt	loc_184f97158 ; ⤵ 0x30
+0x184f9712c:  f5 03 00 aa   mov	x21, x0
+0x184f97130:  14 00 80 d2   mov	x20, #0
+0x184f97134:  ; loc_184f97134
+0x184f97134:  60 6a 76 f8   ldr	x0, [x19, x22]
+0x184f97138:  e2 03 14 aa   mov	x2, x20
+0x184f9713c:  25 b3 c1 94   bl	0x188003dd0
+0x184f97140:  40 b8 c1 94   bl	0x188005240
+0x184f97144:  1f 00 00 f1   cmp	x0, #0
+0x184f97148:  ac 00 00 54   b.gt	loc_184f9715c ; ⤵ 0x14
+0x184f9714c:  94 06 00 91   add	x20, x20, #0x1
+0x184f97150:  bf 02 14 eb   cmp	x21, x20
+0x184f97154:  01 ff ff 54   b.ne	loc_184f97134 ; ⤴ -0x20
+0x184f97158:  ; loc_184f97158
+0x184f97158:  14 00 80 d2   mov	x20, #0
+0x184f9715c:  ; loc_184f9715c
+0x184f9715c:  e0 03 13 aa   mov	x0, x19
+0x184f97160:  02 00 80 92   mov	x2, #0xffffffffffffffff
+0x184f97164:  7f 06 c3 94   bl	0x188058b60
+0x184f97168:  e0 03 13 aa   mov	x0, x19
+0x184f9716c:  e2 03 14 aa   mov	x2, x20
+0x184f97170:  10 21 c4 94   bl	0x18809f5b0
+0x184f97174:  e0 03 13 aa   mov	x0, x19
+0x184f97178:  fd 7b 44 a9   ldp	fp, lr, [sp, #0x40]
+0x184f9717c:  f4 4f 43 a9   ldp	x20, x19, [sp, #0x30]
+0x184f97180:  f6 57 42 a9   ldp	x22, x21, [sp, #0x20]
+0x184f97184:  f8 5f 41 a9   ldp	x24, x23, [sp, #0x10]
+0x184f97188:  ff 43 01 91   add	sp, sp, #0x50
+0x184f9718c:  ff 23 03 d5   autibsp
+0x184f97190:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f97194:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f9719c ; ⤵ 0x8
+0x184f97198:  20 8e 38 d4   brk	#0xc471
+0x184f9719c:  ; loc_184f9719c
+0x184f9719c:  c9 70 c4 14   b	0x1880b34c0
+0x184f971a0:  ; loc_184f971a0
+0x184f971a0:  e0 03 15 aa   mov	x0, x21
+0x184f971a4:  8b 19 c5 94   bl	j__objc_opt_class
+0x184f971a8:  e0 4f 00 a9   stp	x0, x19, [sp]
+0x184f971ac:  60 a7 31 f0   adrp	x0, 0x1e8486000
+0x184f971b0:  00 40 35 91   add	x0, x0, #0xd50 ; "Attempted to set object of class %@ as the menu of NSPopUpButtonCell %p.  Ignored."
+0x184f971b4:  77 3d c5 94   bl	j__NSLog
+0x184f971b8:  ; loc_184f971b8
+0x184f971b8:  fd 7b 44 a9   ldp	fp, lr, [sp, #0x40]
+0x184f971bc:  f4 4f 43 a9   ldp	x20, x19, [sp, #0x30]
+0x184f971c0:  f6 57 42 a9   ldp	x22, x21, [sp, #0x20]
+0x184f971c4:  f8 5f 41 a9   ldp	x24, x23, [sp, #0x10]
+0x184f971c8:  ff 43 01 91   add	sp, sp, #0x50
+0x184f971cc:  ff 0f 5f d6   retab
+

@@ -1,0 +1,51 @@
+### -[NSLevelIndicatorCell setMinValue:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSLevelIndicatorCell setMinValue:]
+
+-[NSLevelIndicatorCell setMinValue:]:
+0x1856336f8:  7f 23 03 d5   pacibsp
+0x1856336fc:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x185633700:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x185633704:  fd 43 00 91   add	fp, sp, #0x10
+0x185633708:  68 6d 30 f0   adrp	x8, 0x1e63e2000
+0x18563370c:  08 91 83 b9   ldrsw	x8, [x8, #0x390]
+0x185633710:  09 00 08 8b   add	x9, x0, x8
+0x185633714:  21 01 40 fd   ldr	d1, [x9]
+0x185633718:  20 20 60 1e   fcmp	d1, d0
+0x18563371c:  00 03 00 54   b.eq	loc_18563377c ; ⤵ 0x60
+0x185633720:  f4 03 00 aa   mov	x20, x0
+0x185633724:  00 68 28 fc   str	d0, [x0, x8]
+0x185633728:  a2 23 a9 94   bl	0x18807c5b0
+0x18563372c:  f9 ad aa 94   bl	j__objc_claimAutoreleasedReturnValue
+0x185633730:  f3 03 00 aa   mov	x19, x0
+0x185633734:  e2 03 14 aa   mov	x2, x20
+0x185633738:  52 10 aa 94   bl	0x1880b7880
+0x18563373c:  e0 03 13 aa   mov	x0, x19
+0x185633740:  48 a5 aa 94   bl	j__objc_release_x0
+0x185633744:  e0 03 14 aa   mov	x0, x20
+0x185633748:  9a 23 a9 94   bl	0x18807c5b0
+0x18563374c:  f1 ad aa 94   bl	j__objc_claimAutoreleasedReturnValue
+0x185633750:  f3 03 00 aa   mov	x19, x0
+0x185633754:  e2 03 14 aa   mov	x2, x20
+0x185633758:  b2 67 a9 94   bl	0x18808d620
+0x18563375c:  e0 03 13 aa   mov	x0, x19
+0x185633760:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x185633764:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x185633768:  ff 23 03 d5   autibsp
+0x18563376c:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x185633770:  50 00 f0 b6   tbz	x16, #0x3e, loc_185633778 ; ⤵ 0x8
+0x185633774:  20 8e 38 d4   brk	#0xc471
+0x185633778:  ; loc_185633778
+0x185633778:  3a a5 aa 14   b	j__objc_release_x0
+0x18563377c:  ; loc_18563377c
+0x18563377c:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x185633780:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x185633784:  ff 0f 5f d6   retab
+0x185633788:  01 00 00 14   b	loc_18563378c ; ⤵ 0x4
+0x18563378c:  ; loc_18563378c
+0x18563378c:  f4 03 00 aa   mov	x20, x0
+0x185633790:  e0 03 13 aa   mov	x0, x19
+0x185633794:  33 a5 aa 94   bl	j__objc_release_x0
+0x185633798:  e0 03 14 aa   mov	x0, x20
+0x18563379c:  3d a2 aa 94   bl	j___Unwind_Resume
+

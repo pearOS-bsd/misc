@@ -1,0 +1,7 @@
+### -[NSBox cornerRadius]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSBox cornerRadius]
+
+-[NSBox cornerRadius]:
+0x1850ddf98:  53 44 15 14   b	_box_cornerRadius
+

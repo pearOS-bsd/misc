@@ -1,0 +1,41 @@
+### -[NSTableColumn setMaxWidth:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTableColumn setMaxWidth:]
+
+-[NSTableColumn setMaxWidth:]:
+0x1850b77f8:  7f 23 03 d5   pacibsp
+0x1850b77fc:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x1850b7800:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x1850b7804:  fd 43 00 91   add	fp, sp, #0x10
+0x1850b7808:  01 2c 40 fd   ldr	d1, [x0, #0x58]
+0x1850b780c:  20 20 60 1e   fcmp	d1, d0
+0x1850b7810:  a0 00 00 54   b.eq	loc_1850b7824 ; ⤵ 0x14
+0x1850b7814:  00 2c 00 fd   str	d0, [x0, #0x58]
+0x1850b7818:  01 0c 40 fd   ldr	d1, [x0, #0x18]
+0x1850b781c:  20 20 60 1e   fcmp	d1, d0
+0x1850b7820:  8a 00 00 54   b.ge	loc_1850b7830 ; ⤵ 0x10
+0x1850b7824:  ; loc_1850b7824
+0x1850b7824:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x1850b7828:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x1850b782c:  ff 0f 5f d6   retab
+0x1850b7830:  ; loc_1850b7830
+0x1850b7830:  00 0c 00 fd   str	d0, [x0, #0x18]
+0x1850b7834:  00 20 00 91   add	x0, x0, #0x8
+0x1850b7838:  da 97 c0 94   bl	j__objc_loadWeakRetained
+0x1850b783c:  f3 03 00 aa   mov	x19, x0
+0x1850b7840:  c0 f6 bf 94   bl	0x1880b5340
+0x1850b7844:  e0 03 13 aa   mov	x0, x19
+0x1850b7848:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x1850b784c:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x1850b7850:  ff 23 03 d5   autibsp
+0x1850b7854:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x1850b7858:  50 00 f0 b6   tbz	x16, #0x3e, loc_1850b7860 ; ⤵ 0x8
+0x1850b785c:  20 8e 38 d4   brk	#0xc471
+0x1850b7860:  ; loc_1850b7860
+0x1850b7860:  00 95 c0 14   b	j__objc_release_x0
+0x1850b7864:  f4 03 00 aa   mov	x20, x0
+0x1850b7868:  e0 03 13 aa   mov	x0, x19
+0x1850b786c:  fd 94 c0 94   bl	j__objc_release_x0
+0x1850b7870:  e0 03 14 aa   mov	x0, x20
+0x1850b7874:  07 92 c0 94   bl	j___Unwind_Resume
+

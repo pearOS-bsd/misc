@@ -1,0 +1,60 @@
+### -[NSMenu initWithTitle:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSMenu initWithTitle:]
+
+-[NSMenu initWithTitle:]:
+0x184ef3f8c:  7f 23 03 d5   pacibsp
+0x184ef3f90:  ff 43 01 d1   sub	sp, sp, #0x50
+0x184ef3f94:  f6 57 02 a9   stp	x22, x21, [sp, #0x20]
+0x184ef3f98:  f4 4f 03 a9   stp	x20, x19, [sp, #0x30]
+0x184ef3f9c:  fd 7b 04 a9   stp	fp, lr, [sp, #0x40]
+0x184ef3fa0:  fd 03 01 91   add	fp, sp, #0x40
+0x184ef3fa4:  f3 03 02 aa   mov	x19, x2
+0x184ef3fa8:  f4 03 00 aa   mov	x20, x0
+0x184ef3fac:  62 03 00 b4   cbz	x2, loc_184ef4018 ; ⤵ 0x6c
+0x184ef3fb0:  ; loc_184ef3fb0
+0x184ef3fb0:  e8 c1 2d f0   adrp	x8, 0x1e0732000
+0x184ef3fb4:  08 91 43 f9   ldr	x8, [x8, #0x720] ; NSMenu
+0x184ef3fb8:  f4 23 01 a9   stp	x20, x8, [sp, #0x10]
+0x184ef3fbc:  a8 c0 2d d0   adrp	x8, 0x1e0709000
+0x184ef3fc0:  01 cd 47 f9   ldr	x1, [x8, #0xf98] ; sel_init
+0x184ef3fc4:  e0 43 00 91   add	x0, sp, #0x10
+0x184ef3fc8:  fe a5 c7 94   bl	j__objc_msgSendSuper2
+0x184ef3fcc:  f4 03 00 aa   mov	x20, x0
+0x184ef3fd0:  80 01 00 b4   cbz	x0, loc_184ef4000 ; ⤵ 0x30
+0x184ef3fd4:  e0 03 13 aa   mov	x0, x19
+0x184ef3fd8:  02 00 80 d2   mov	x2, #0
+0x184ef3fdc:  d1 3a c4 94   bl	0x188002b20
+0x184ef3fe0:  08 08 80 52   mov	w8, #0x40
+0x184ef3fe4:  08 88 a0 72   movk	w8, #0x440, lsl #0x10
+0x184ef3fe8:  80 7e 01 a9   stp	x0, xzr, [x20, #0x10]
+0x184ef3fec:  89 2a 40 b9   ldr	w9, [x20, #0x28]
+0x184ef3ff0:  28 01 08 2a   orr	w8, w9, w8
+0x184ef3ff4:  88 2a 00 b9   str	w8, [x20, #0x28]
+0x184ef3ff8:  e0 03 14 aa   mov	x0, x20
+0x184ef3ffc:  09 3b c5 94   bl	0x188042c20
+0x184ef4000:  ; loc_184ef4000
+0x184ef4000:  e0 03 14 aa   mov	x0, x20
+0x184ef4004:  fd 7b 44 a9   ldp	fp, lr, [sp, #0x40]
+0x184ef4008:  f4 4f 43 a9   ldp	x20, x19, [sp, #0x30]
+0x184ef400c:  f6 57 42 a9   ldp	x22, x21, [sp, #0x20]
+0x184ef4010:  ff 43 01 91   add	sp, sp, #0x50
+0x184ef4014:  ff 0f 5f d6   retab
+0x184ef4018:  ; loc_184ef4018
+0x184ef4018:  f5 03 01 aa   mov	x21, x1
+0x184ef401c:  a8 95 2d d0   adrp	x8, 0x1e01aa000
+0x184ef4020:  00 41 40 f9   ldr	x0, [x8, #0x80] ; _ptr.NSAssertionHandler
+0x184ef4024:  97 4e c4 94   bl	0x188007a80
+0x184ef4028:  e8 ab 31 f0   adrp	x8, 0x1e8473000
+0x184ef402c:  08 41 23 91   add	x8, x8, #0x8d0 ; "aTitle != nil"
+0x184ef4030:  e8 03 00 f9   str	x8, [sp]
+0x184ef4034:  e4 ab 31 f0   adrp	x4, 0x1e8473000
+0x184ef4038:  84 40 22 91   add	x4, x4, #0x890 ; "NSMenu.m"
+0x184ef403c:  26 aa 31 b0   adrp	x6, 0x1e8439000
+0x184ef4040:  c6 40 2f 91   add	x6, x6, #0xbd0 ; "Invalid parameter not satisfying: %@"
+0x184ef4044:  e2 03 15 aa   mov	x2, x21
+0x184ef4048:  e3 03 14 aa   mov	x3, x20
+0x184ef404c:  65 3a 80 52   mov	w5, #0x1d3
+0x184ef4050:  fc 52 c4 94   bl	0x188008c40
+0x184ef4054:  d7 ff ff 17   b	loc_184ef3fb0 ; ⤴ -0xa4
+

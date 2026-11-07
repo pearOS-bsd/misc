@@ -1,0 +1,12 @@
+### -[NSScrollView borderType]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSScrollView borderType]
+
+-[NSScrollView borderType]:
+0x185137a54:  88 9e 2f 90   adrp	x8, 0x1e4507000
+0x185137a58:  08 99 88 b9   ldrsw	x8, [x8, #0x898] ; _OBJC_IVAR_$_NSScrollView._sFlags
+0x185137a5c:  08 00 08 8b   add	x8, x0, x8
+0x185137a60:  08 01 40 b9   ldr	w8, [x8]
+0x185137a64:  00 69 59 d3   ubfx	x0, x8, #0x19, #0x2
+0x185137a68:  c0 03 5f d6   ret
+

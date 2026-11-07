@@ -1,0 +1,82 @@
+### -[NSMenuItem setTitle:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSMenuItem setTitle:]
+
+-[NSMenuItem setTitle:]:
+0x184ef0b24:  7f 23 03 d5   pacibsp
+0x184ef0b28:  ff 03 01 d1   sub	sp, sp, #0x40
+0x184ef0b2c:  f6 57 01 a9   stp	x22, x21, [sp, #0x10]
+0x184ef0b30:  f4 4f 02 a9   stp	x20, x19, [sp, #0x20]
+0x184ef0b34:  fd 7b 03 a9   stp	fp, lr, [sp, #0x30]
+0x184ef0b38:  fd c3 00 91   add	fp, sp, #0x30
+0x184ef0b3c:  f5 03 02 aa   mov	x21, x2
+0x184ef0b40:  f3 03 00 aa   mov	x19, x0
+0x184ef0b44:  c2 05 00 b4   cbz	x2, loc_184ef0bfc ; ⤵ 0xb8
+0x184ef0b48:  ; loc_184ef0b48
+0x184ef0b48:  60 0a 40 f9   ldr	x0, [x19, #0x10]
+0x184ef0b4c:  e2 03 15 aa   mov	x2, x21
+0x184ef0b50:  3c 4c c4 94   bl	0x188003c40
+0x184ef0b54:  c0 00 00 36   tbz	w0, #0, loc_184ef0b6c ; ⤵ 0x18
+0x184ef0b58:  fd 7b 43 a9   ldp	fp, lr, [sp, #0x30]
+0x184ef0b5c:  f4 4f 42 a9   ldp	x20, x19, [sp, #0x20]
+0x184ef0b60:  f6 57 41 a9   ldp	x22, x21, [sp, #0x10]
+0x184ef0b64:  ff 03 01 91   add	sp, sp, #0x40
+0x184ef0b68:  ff 0f 5f d6   retab
+0x184ef0b6c:  ; loc_184ef0b6c
+0x184ef0b6c:  74 0a 40 f9   ldr	x20, [x19, #0x10]
+0x184ef0b70:  e0 03 13 aa   mov	x0, x19
+0x184ef0b74:  e2 03 15 aa   mov	x2, x21
+0x184ef0b78:  8a 30 c6 94   bl	0x18807cda0
+0x184ef0b7c:  f5 03 13 aa   mov	x21, x19
+0x184ef0b80:  60 0a 00 f9   str	x0, [x19, #0x10]
+0x184ef0b84:  a8 8e 43 f8   ldr	x8, [x21, #0x38]!
+0x184ef0b88:  e8 00 00 b5   cbnz	x8, loc_184ef0ba4 ; ⤵ 0x1c
+0x184ef0b8c:  02 a8 31 f0   adrp	x2, 0x1e83f3000
+0x184ef0b90:  42 c0 31 91   add	x2, x2, #0xc70 ; ___block_literal_global.3482
+0x184ef0b94:  e0 03 15 aa   mov	x0, x21
+0x184ef0b98:  01 00 80 d2   mov	x1, #0
+0x184ef0b9c:  f1 5b c8 94   bl	j___NSFaultInObject
+0x184ef0ba0:  a8 02 40 f9   ldr	x8, [x21]
+0x184ef0ba4:  ; loc_184ef0ba4
+0x184ef0ba4:  00 f6 07 6f   fmov	v0.2d, #-1.00000000
+0x184ef0ba8:  00 81 8b 3c   stur	q0, [x8, #0xb8]
+0x184ef0bac:  60 92 40 a9   ldp	x0, x4, [x19, #0x8]
+0x184ef0bb0:  e2 03 13 aa   mov	x2, x19
+0x184ef0bb4:  e3 03 14 aa   mov	x3, x20
+0x184ef0bb8:  d6 88 c5 94   bl	0x188052f10
+0x184ef0bbc:  61 0a 40 f9   ldr	x1, [x19, #0x10]
+0x184ef0bc0:  e0 03 14 aa   mov	x0, x20
+0x184ef0bc4:  71 a7 ff 97   bl	_titlesMayBeInvolvedInKEPath
+0x184ef0bc8:  60 00 00 34   cbz	w0, loc_184ef0bd4 ; ⤵ 0xc
+0x184ef0bcc:  e0 03 13 aa   mov	x0, x19
+0x184ef0bd0:  d0 a2 c5 94   bl	0x188059710
+0x184ef0bd4:  ; loc_184ef0bd4
+0x184ef0bd4:  e0 03 14 aa   mov	x0, x20
+0x184ef0bd8:  fd 7b 43 a9   ldp	fp, lr, [sp, #0x30]
+0x184ef0bdc:  f4 4f 42 a9   ldp	x20, x19, [sp, #0x20]
+0x184ef0be0:  f6 57 41 a9   ldp	x22, x21, [sp, #0x10]
+0x184ef0be4:  ff 03 01 91   add	sp, sp, #0x40
+0x184ef0be8:  ff 23 03 d5   autibsp
+0x184ef0bec:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184ef0bf0:  50 00 f0 b6   tbz	x16, #0x3e, loc_184ef0bf8 ; ⤵ 0x8
+0x184ef0bf4:  20 8e 38 d4   brk	#0xc471
+0x184ef0bf8:  ; loc_184ef0bf8
+0x184ef0bf8:  1a b0 c7 14   b	j__objc_release_x0
+0x184ef0bfc:  ; loc_184ef0bfc
+0x184ef0bfc:  f4 03 01 aa   mov	x20, x1
+0x184ef0c00:  c8 95 2d d0   adrp	x8, 0x1e01aa000
+0x184ef0c04:  00 41 40 f9   ldr	x0, [x8, #0x80] ; _ptr.NSAssertionHandler
+0x184ef0c08:  9e 5b c4 94   bl	0x188007a80
+0x184ef0c0c:  08 ac 31 f0   adrp	x8, 0x1e8473000
+0x184ef0c10:  08 c1 2f 91   add	x8, x8, #0xbf0 ; "aString != nil"
+0x184ef0c14:  e8 03 00 f9   str	x8, [sp]
+0x184ef0c18:  24 ac 31 b0   adrp	x4, 0x1e8475000
+0x184ef0c1c:  84 c0 20 91   add	x4, x4, #0x830 ; "NSMenuItem.m"
+0x184ef0c20:  46 aa 31 b0   adrp	x6, 0x1e8439000
+0x184ef0c24:  c6 40 2f 91   add	x6, x6, #0xbd0 ; "Invalid parameter not satisfying: %@"
+0x184ef0c28:  e2 03 14 aa   mov	x2, x20
+0x184ef0c2c:  e3 03 13 aa   mov	x3, x19
+0x184ef0c30:  c5 d2 80 52   mov	w5, #0x696
+0x184ef0c34:  03 60 c4 94   bl	0x188008c40
+0x184ef0c38:  c4 ff ff 17   b	loc_184ef0b48 ; ⤴ -0xf0
+

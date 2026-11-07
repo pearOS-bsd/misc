@@ -1,0 +1,11 @@
+### -[NSScrollView contentView]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSScrollView contentView]
+
+-[NSScrollView contentView]:
+0x184f634dc:  28 ad 2f 90   adrp	x8, 0x1e4507000
+0x184f634e0:  08 91 88 b9   ldrsw	x8, [x8, #0x890] ; _OBJC_IVAR_$_NSScrollView._contentView
+0x184f634e4:  08 00 08 8b   add	x8, x0, x8
+0x184f634e8:  00 01 40 f9   ldr	x0, [x8]
+0x184f634ec:  c0 03 5f d6   ret
+

@@ -1,0 +1,83 @@
+### -[NSApplication setDelegate:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSApplication setDelegate:]
+
+-[NSApplication setDelegate:]:
+0x184ed14f0:  7f 23 03 d5   pacibsp
+0x184ed14f4:  f8 5f bc a9   stp	x24, x23, [sp, #-0x40]!
+0x184ed14f8:  f6 57 01 a9   stp	x22, x21, [sp, #0x10]
+0x184ed14fc:  f4 4f 02 a9   stp	x20, x19, [sp, #0x20]
+0x184ed1500:  fd 7b 03 a9   stp	fp, lr, [sp, #0x30]
+0x184ed1504:  fd c3 00 91   add	fp, sp, #0x30
+0x184ed1508:  f4 03 02 aa   mov	x20, x2
+0x184ed150c:  f3 03 00 aa   mov	x19, x0
+0x184ed1510:  88 b4 2f d0   adrp	x8, 0x1e4563000
+0x184ed1514:  08 f1 46 f9   ldr	x8, [x8, #0xde0] ; data_1e4563de0 (AppKit/__DATA.__bss)
+0x184ed1518:  1f 05 00 b1   cmn	x8, #0x1
+0x184ed151c:  21 07 00 54   b.ne	loc_184ed1600 ; ⤵ 0xe4
+0x184ed1520:  ; loc_184ed1520
+0x184ed1520:  88 b1 2f 90   adrp	x8, 0x1e4501000
+0x184ed1524:  16 29 8e b9   ldrsw	x22, [x8, #0xe28] ; _OBJC_IVAR_$_NSApplication._delegate
+0x184ed1528:  60 02 16 8b   add	x0, x19, x22
+0x184ed152c:  49 43 c8 94   bl	j__objc_loadWeak
+0x184ed1530:  1f 00 14 eb   cmp	x0, x20
+0x184ed1534:  c0 05 00 54   b.eq	loc_184ed15ec ; ⤵ 0xb8
+0x184ed1538:  c8 96 2d b0   adrp	x8, 0x1e01aa000
+0x184ed153c:  00 f5 41 f9   ldr	x0, [x8, #0x3e8] ; _ptr.NSNotificationCenter
+0x184ed1540:  18 da c4 94   bl	0x188007da0
+0x184ed1544:  f5 03 00 aa   mov	x21, x0
+0x184ed1548:  60 02 16 8b   add	x0, x19, x22
+0x184ed154c:  41 43 c8 94   bl	j__objc_loadWeak
+0x184ed1550:  e2 03 00 aa   mov	x2, x0
+0x184ed1554:  97 b4 2f d0   adrp	x23, 0x1e4563000
+0x184ed1558:  f7 92 35 91   add	x23, x23, #0xd64 ; data_1e4563d64 (AppKit/__DATA.__bss)
+0x184ed155c:  e3 42 47 f8   ldur	x3, [x23, #0x74]
+0x184ed1560:  e0 03 15 aa   mov	x0, x21
+0x184ed1564:  e4 03 13 aa   mov	x4, x19
+0x184ed1568:  ee 24 c6 94   bl	0x18805a920
+0x184ed156c:  60 02 16 8b   add	x0, x19, x22
+0x184ed1570:  e1 03 14 aa   mov	x1, x20
+0x184ed1574:  9f 30 c8 94   bl	j__objc_storeWeak
+0x184ed1578:  60 02 16 8b   add	x0, x19, x22
+0x184ed157c:  35 43 c8 94   bl	j__objc_loadWeak
+0x184ed1580:  e2 03 00 aa   mov	x2, x0
+0x184ed1584:  e3 42 47 f8   ldur	x3, [x23, #0x74]
+0x184ed1588:  e0 03 15 aa   mov	x0, x21
+0x184ed158c:  e4 03 13 aa   mov	x4, x19
+0x184ed1590:  74 96 c5 94   bl	0x188036f60
+0x184ed1594:  60 02 16 8b   add	x0, x19, x22
+0x184ed1598:  2e 43 c8 94   bl	j__objc_loadWeak
+0x184ed159c:  a8 5c 38 f0   adrp	x8, 0x1f5a68000
+0x184ed15a0:  01 79 23 91   add	x1, x8, #0x8de ; validRequestorForSendType:returnType:
+0x184ed15a4:  e7 32 c8 94   bl	j__objc_opt_respondsToSelector
+0x184ed15a8:  88 b1 2f 90   adrp	x8, 0x1e4501000
+0x184ed15ac:  08 0d 8e b9   ldrsw	x8, [x8, #0xe0c] ; _OBJC_IVAR_$_NSApplication._appFlags
+0x184ed15b0:  68 02 08 8b   add	x8, x19, x8
+0x184ed15b4:  09 01 40 f9   ldr	x9, [x8]
+0x184ed15b8:  1f 00 00 72   tst	w0, #0x1
+0x184ed15bc:  0a 04 80 52   mov	w10, #0x20
+0x184ed15c0:  4a 11 9f 9a   csel	x10, x10, xzr, ne
+0x184ed15c4:  29 f9 7a 92   and	x9, x9, #0xffffffffffffffdf
+0x184ed15c8:  29 01 0a aa   orr	x9, x9, x10
+0x184ed15cc:  09 01 00 f9   str	x9, [x8]
+0x184ed15d0:  60 02 16 8b   add	x0, x19, x22
+0x184ed15d4:  1f 43 c8 94   bl	j__objc_loadWeak
+0x184ed15d8:  08 59 38 b0   adrp	x8, 0x1f59f2000
+0x184ed15dc:  01 8d 21 91   add	x1, x8, #0x863 ; application:willEncodeRestorableState:
+0x184ed15e0:  d8 32 c8 94   bl	j__objc_opt_respondsToSelector
+0x184ed15e4:  08 00 00 12   and	w8, w0, #0x1
+0x184ed15e8:  e8 02 00 39   strb	w8, [x23]
+0x184ed15ec:  ; loc_184ed15ec
+0x184ed15ec:  fd 7b 43 a9   ldp	fp, lr, [sp, #0x30]
+0x184ed15f0:  f4 4f 42 a9   ldp	x20, x19, [sp, #0x20]
+0x184ed15f4:  f6 57 41 a9   ldp	x22, x21, [sp, #0x10]
+0x184ed15f8:  f8 5f c4 a8   ldp	x24, x23, [sp], #0x40
+0x184ed15fc:  ff 0f 5f d6   retab
+0x184ed1600:  ; loc_184ed1600
+0x184ed1600:  80 b4 2f d0   adrp	x0, 0x1e4563000
+0x184ed1604:  00 80 37 91   add	x0, x0, #0xde0 ; data_1e4563de0 (AppKit/__DATA.__bss)
+0x184ed1608:  c1 a8 31 90   adrp	x1, 0x1e83e9000
+0x184ed160c:  21 80 3f 91   add	x1, x1, #0xfe0 ; ___block_literal_global.476
+0x184ed1610:  14 41 c8 94   bl	j__dispatch_once
+0x184ed1614:  c3 ff ff 17   b	loc_184ed1520 ; ⤴ -0xf4
+

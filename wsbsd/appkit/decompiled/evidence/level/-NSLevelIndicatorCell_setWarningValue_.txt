@@ -1,0 +1,41 @@
+### -[NSLevelIndicatorCell setWarningValue:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSLevelIndicatorCell setWarningValue:]
+
+-[NSLevelIndicatorCell setWarningValue:]:
+0x185633870:  7f 23 03 d5   pacibsp
+0x185633874:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x185633878:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x18563387c:  fd 43 00 91   add	fp, sp, #0x10
+0x185633880:  68 6d 30 f0   adrp	x8, 0x1e63e2000
+0x185633884:  08 95 83 b9   ldrsw	x8, [x8, #0x394]
+0x185633888:  09 00 08 8b   add	x9, x0, x8
+0x18563388c:  21 01 40 fd   ldr	d1, [x9]
+0x185633890:  20 20 60 1e   fcmp	d1, d0
+0x185633894:  00 02 00 54   b.eq	loc_1856338d4 ; ⤵ 0x40
+0x185633898:  f3 03 00 aa   mov	x19, x0
+0x18563389c:  00 68 28 fc   str	d0, [x0, x8]
+0x1856338a0:  44 23 a9 94   bl	0x18807c5b0
+0x1856338a4:  9b ad aa 94   bl	j__objc_claimAutoreleasedReturnValue
+0x1856338a8:  f4 03 00 aa   mov	x20, x0
+0x1856338ac:  e2 03 13 aa   mov	x2, x19
+0x1856338b0:  f4 0f aa 94   bl	0x1880b7880
+0x1856338b4:  e0 03 14 aa   mov	x0, x20
+0x1856338b8:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x1856338bc:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x1856338c0:  ff 23 03 d5   autibsp
+0x1856338c4:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x1856338c8:  50 00 f0 b6   tbz	x16, #0x3e, loc_1856338d0 ; ⤵ 0x8
+0x1856338cc:  20 8e 38 d4   brk	#0xc471
+0x1856338d0:  ; loc_1856338d0
+0x1856338d0:  e4 a4 aa 14   b	j__objc_release_x0
+0x1856338d4:  ; loc_1856338d4
+0x1856338d4:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x1856338d8:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x1856338dc:  ff 0f 5f d6   retab
+0x1856338e0:  f3 03 00 aa   mov	x19, x0
+0x1856338e4:  e0 03 14 aa   mov	x0, x20
+0x1856338e8:  de a4 aa 94   bl	j__objc_release_x0
+0x1856338ec:  e0 03 13 aa   mov	x0, x19
+0x1856338f0:  e8 a1 aa 94   bl	j___Unwind_Resume
+

@@ -1,0 +1,44 @@
+### -[NSResponder _nextResponderForEvent:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSResponder _nextResponderForEvent:]
+
+-[NSResponder _nextResponderForEvent:]:
+0x18508f5bc:  7f 23 03 d5   pacibsp
+0x18508f5c0:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x18508f5c4:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x18508f5c8:  fd 43 00 91   add	fp, sp, #0x10
+0x18508f5cc:  f3 03 00 aa   mov	x19, x0
+0x18508f5d0:  28 9b 30 d0   adrp	x8, 0x1e63f5000
+0x18508f5d4:  08 21 01 91   add	x8, x8, #0x48 ; _sNSNextResponderForEventCallsAPIComputedValue
+0x18508f5d8:  08 fd df 08   ldarb	w8, [x8]
+0x18508f5dc:  1f 09 00 71   cmp	w8, #0x2
+0x18508f5e0:  a0 02 00 54   b.eq	loc_18508f634 ; ⤵ 0x54
+0x18508f5e4:  28 01 00 34   cbz	w8, loc_18508f608 ; ⤵ 0x24
+0x18508f5e8:  ; loc_18508f5e8
+0x18508f5e8:  e0 03 13 aa   mov	x0, x19
+0x18508f5ec:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x18508f5f0:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x18508f5f4:  ff 23 03 d5   autibsp
+0x18508f5f8:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x18508f5fc:  50 00 f0 b6   tbz	x16, #0x3e, loc_18508f604 ; ⤵ 0x8
+0x18508f600:  20 8e 38 d4   brk	#0xc471
+0x18508f604:  ; loc_18508f604
+0x18508f604:  67 14 c0 14   b	0x1880947a0
+0x18508f608:  ; loc_18508f608
+0x18508f608:  e0 9f 31 90   adrp	x0, 0x1e848b000
+0x18508f60c:  00 40 35 91   add	x0, x0, #0xd50 ; "NSNextResponderForEventCallsAPI"
+0x18508f610:  22 9b 30 d0   adrp	x2, 0x1e63f5000
+0x18508f614:  42 20 01 91   add	x2, x2, #0x48 ; _sNSNextResponderForEventCallsAPIComputedValue
+0x18508f618:  30 33 00 90   adrp	x16, 0x1856f3000
+0x18508f61c:  10 22 06 91   add	x16, x16, #0x188 ; _NSNextResponderForEventCallsAPIDefaultValueFunction
+0x18508f620:  f0 23 c1 da   paciza	x16
+0x18508f624:  e3 03 10 aa   mov	x3, x16
+0x18508f628:  21 00 80 52   mov	w1, #0x1
+0x18508f62c:  43 e1 f8 97   bl	__NSGetBoolAppConfig
+0x18508f630:  c0 fd ff 35   cbnz	w0, loc_18508f5e8 ; ⤴ -0x48
+0x18508f634:  ; loc_18508f634
+0x18508f634:  60 06 40 f9   ldr	x0, [x19, #0x8]
+0x18508f638:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x18508f63c:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x18508f640:  ff 0f 5f d6   retab
+

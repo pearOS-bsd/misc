@@ -1,0 +1,7 @@
+### -[NSToolbarItem setView:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSToolbarItem setView:]
+
+-[NSToolbarItem setView:]:
+0x184fb88ac:  99 40 c2 14   b	0x188048b10
+

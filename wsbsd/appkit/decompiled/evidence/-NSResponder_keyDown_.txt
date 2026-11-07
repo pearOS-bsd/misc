@@ -1,0 +1,7 @@
+### -[NSResponder keyDown:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSResponder keyDown:]
+
+-[NSResponder keyDown:]:
+0x18517ab1c:  d1 51 fc 17   b	_forwardMethod
+

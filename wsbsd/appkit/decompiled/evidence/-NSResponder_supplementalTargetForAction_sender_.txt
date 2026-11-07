@@ -1,0 +1,8 @@
+### -[NSResponder supplementalTargetForAction:sender:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSResponder supplementalTargetForAction:sender:]
+
+-[NSResponder supplementalTargetForAction:sender:]:
+0x184fceea8:  00 00 80 d2   mov	x0, #0
+0x184fceeac:  c0 03 5f d6   ret
+

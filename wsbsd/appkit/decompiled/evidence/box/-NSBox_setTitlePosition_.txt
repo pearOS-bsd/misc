@@ -1,0 +1,18 @@
+### -[NSBox setTitlePosition:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSBox setTitlePosition:]
+
+-[NSBox setTitlePosition:]:
+0x1850ddb54:  28 a1 2f f0   adrp	x8, 0x1e4504000
+0x1850ddb58:  08 1d 89 b9   ldrsw	x8, [x8, #0x91c] ; _OBJC_IVAR_$_NSBox._bFlags
+0x1850ddb5c:  09 00 08 8b   add	x9, x0, x8
+0x1850ddb60:  29 01 40 b9   ldr	w9, [x9]
+0x1850ddb64:  2a 11 42 d3   ubfx	x10, x9, #0x2, #0x3
+0x1850ddb68:  5f 00 0a eb   cmp	x2, x10
+0x1850ddb6c:  41 00 00 54   b.ne	loc_1850ddb74 ; ⤵ 0x8
+0x1850ddb70:  c0 03 5f d6   ret
+0x1850ddb74:  ; loc_1850ddb74
+0x1850ddb74:  49 08 1e 33   bfi	w9, w2, #0x2, #0x3
+0x1850ddb78:  09 68 28 b8   str	w9, [x0, x8]
+0x1850ddb7c:  c5 bf bd 14   b	0x18804da90
+

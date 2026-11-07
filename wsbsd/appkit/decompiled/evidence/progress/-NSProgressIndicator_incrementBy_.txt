@@ -1,0 +1,12 @@
+### -[NSProgressIndicator incrementBy:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSProgressIndicator incrementBy:]
+
+-[NSProgressIndicator incrementBy:]:
+0x1856d7f08:  48 68 30 f0   adrp	x8, 0x1e63e2000
+0x1856d7f0c:  08 71 87 b9   ldrsw	x8, [x8, #0x770]
+0x1856d7f10:  08 00 08 8b   add	x8, x0, x8
+0x1856d7f14:  01 01 40 fd   ldr	d1, [x8]
+0x1856d7f18:  00 28 61 1e   fadd	d0, d0, d1
+0x1856d7f1c:  09 31 a7 14   b	0x1880a4340
+

@@ -1,0 +1,55 @@
+### -[NSSplitView setDividerStyle:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSSplitView setDividerStyle:]
+
+-[NSSplitView setDividerStyle:]:
+0x184f5ad24:  7f 23 03 d5   pacibsp
+0x184f5ad28:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x184f5ad2c:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x184f5ad30:  fd 43 00 91   add	fp, sp, #0x10
+0x184f5ad34:  48 a4 30 90   adrp	x8, 0x1e63e2000
+0x184f5ad38:  08 e1 89 b9   ldrsw	x8, [x8, #0x9e0]
+0x184f5ad3c:  09 00 08 8b   add	x9, x0, x8
+0x184f5ad40:  29 01 40 f9   ldr	x9, [x9]
+0x184f5ad44:  5f 00 09 eb   cmp	x2, x9
+0x184f5ad48:  81 00 00 54   b.ne	loc_184f5ad58 ; ⤵ 0x10
+0x184f5ad4c:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184f5ad50:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184f5ad54:  ff 0f 5f d6   retab
+0x184f5ad58:  ; loc_184f5ad58
+0x184f5ad58:  f3 03 00 aa   mov	x19, x0
+0x184f5ad5c:  02 68 28 f8   str	x2, [x0, x8]
+0x184f5ad60:  50 83 c3 94   bl	0x18803baa0
+0x184f5ad64:  20 01 00 34   cbz	w0, loc_184f5ad88 ; ⤵ 0x24
+0x184f5ad68:  e0 03 13 aa   mov	x0, x19
+0x184f5ad6c:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184f5ad70:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184f5ad74:  ff 23 03 d5   autibsp
+0x184f5ad78:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f5ad7c:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f5ad84 ; ⤵ 0x8
+0x184f5ad80:  20 8e 38 d4   brk	#0xc471
+0x184f5ad84:  ; loc_184f5ad84
+0x184f5ad84:  3f 43 c4 14   b	0x18806ba80
+0x184f5ad88:  ; loc_184f5ad88
+0x184f5ad88:  e0 03 13 aa   mov	x0, x19
+0x184f5ad8c:  51 83 c3 94   bl	0x18803bad0
+0x184f5ad90:  a0 00 00 34   cbz	w0, loc_184f5ada4 ; ⤵ 0x14
+0x184f5ad94:  e0 03 13 aa   mov	x0, x19
+0x184f5ad98:  22 00 80 52   mov	w2, #0x1
+0x184f5ad9c:  85 36 c5 94   bl	0x1880a87b0
+0x184f5ada0:  04 00 00 14   b	loc_184f5adb0 ; ⤵ 0x10
+0x184f5ada4:  ; loc_184f5ada4
+0x184f5ada4:  e0 03 13 aa   mov	x0, x19
+0x184f5ada8:  22 00 80 52   mov	w2, #0x1
+0x184f5adac:  5d 36 c5 94   bl	0x1880a8720
+0x184f5adb0:  ; loc_184f5adb0
+0x184f5adb0:  e0 03 13 aa   mov	x0, x19
+0x184f5adb4:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184f5adb8:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184f5adbc:  ff 23 03 d5   autibsp
+0x184f5adc0:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f5adc4:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f5adcc ; ⤵ 0x8
+0x184f5adc8:  20 8e 38 d4   brk	#0xc471
+0x184f5adcc:  ; loc_184f5adcc
+0x184f5adcc:  39 cc c3 14   b	0x18804deb0
+

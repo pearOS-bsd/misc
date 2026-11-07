@@ -1,0 +1,12 @@
+### -[NSColorWell isBordered]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSColorWell isBordered]
+
+-[NSColorWell isBordered]:
+0x1856020e8:  08 78 2f d0   adrp	x8, 0x1e4504000
+0x1856020ec:  08 25 87 b9   ldrsw	x8, [x8, #0x724] ; _OBJC_IVAR_$_NSColorWell._cwFlags
+0x1856020f0:  08 00 08 8b   add	x8, x0, x8
+0x1856020f4:  08 01 40 39   ldrb	w8, [x8]
+0x1856020f8:  00 05 01 53   ubfx	w0, w8, #0x1, #0x1
+0x1856020fc:  c0 03 5f d6   ret
+

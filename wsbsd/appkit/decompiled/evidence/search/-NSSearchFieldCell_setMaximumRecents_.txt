@@ -1,0 +1,50 @@
+### -[NSSearchFieldCell setMaximumRecents:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSSearchFieldCell setMaximumRecents:]
+
+-[NSSearchFieldCell setMaximumRecents:]:
+0x1856adeb0:  7f 23 03 d5   pacibsp
+0x1856adeb4:  f6 57 bd a9   stp	x22, x21, [sp, #-0x30]!
+0x1856adeb8:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x1856adebc:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x1856adec0:  fd 83 00 91   add	fp, sp, #0x20
+0x1856adec4:  f3 03 00 aa   mov	x19, x0
+0x1856adec8:  c8 1f 80 52   mov	w8, #0xfe
+0x1856adecc:  5f f8 03 f1   cmp	x2, #0xfe
+0x1856aded0:  48 b0 88 9a   csel	x8, x2, x8, lt
+0x1856aded4:  08 79 1f 53   lsl	w8, w8, #0x1
+0x1856aded8:  5f 00 00 f1   cmp	x2, #0
+0x1856adedc:  c9 3f 80 52   mov	w9, #0x1fe
+0x1856adee0:  35 b1 88 1a   csel	w21, w9, w8, lt
+0x1856adee4:  14 74 2f f0   adrp	x20, 0x1e4530000
+0x1856adee8:  94 42 14 91   add	x20, x20, #0x510 ; __searchFieldCellBitfieldLock
+0x1856adeec:  e0 03 14 aa   mov	x0, x20
+0x1856adef0:  6c d1 a8 94   bl	j__os_unfair_lock_lock
+0x1856adef4:  a8 72 2f f0   adrp	x8, 0x1e4504000
+0x1856adef8:  08 69 8e b9   ldrsw	x8, [x8, #0xe68] ; _OBJC_IVAR_$_NSSearchFieldCell._sfFlags
+0x1856adefc:  68 02 08 8b   add	x8, x19, x8
+0x1856adf00:  09 01 40 b9   ldr	w9, [x8]
+0x1856adf04:  29 5d 17 12   and	w9, w9, #0xfffffe01
+0x1856adf08:  29 01 15 2a   orr	w9, w9, w21
+0x1856adf0c:  09 01 00 b9   str	w9, [x8]
+0x1856adf10:  e0 03 14 aa   mov	x0, x20
+0x1856adf14:  bb b9 a8 94   bl	j__os_unfair_lock_unlock
+0x1856adf18:  e0 03 13 aa   mov	x0, x19
+0x1856adf1c:  01 f1 a6 94   bl	0x18806a320
+0x1856adf20:  40 01 00 34   cbz	w0, loc_1856adf48 ; ⤵ 0x28
+0x1856adf24:  e0 03 13 aa   mov	x0, x19
+0x1856adf28:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x1856adf2c:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x1856adf30:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x1856adf34:  ff 23 03 d5   autibsp
+0x1856adf38:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x1856adf3c:  50 00 f0 b6   tbz	x16, #0x3e, loc_1856adf44 ; ⤵ 0x8
+0x1856adf40:  20 8e 38 d4   brk	#0xc471
+0x1856adf44:  ; loc_1856adf44
+0x1856adf44:  13 fc a6 14   b	0x18806cf90
+0x1856adf48:  ; loc_1856adf48
+0x1856adf48:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x1856adf4c:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x1856adf50:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x1856adf54:  ff 0f 5f d6   retab
+

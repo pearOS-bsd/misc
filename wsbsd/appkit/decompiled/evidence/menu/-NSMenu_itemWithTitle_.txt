@@ -1,0 +1,29 @@
+### -[NSMenu itemWithTitle:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSMenu itemWithTitle:]
+
+-[NSMenu itemWithTitle:]:
+0x184ef0608:  7f 23 03 d5   pacibsp
+0x184ef060c:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x184ef0610:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x184ef0614:  fd 43 00 91   add	fp, sp, #0x10
+0x184ef0618:  f3 03 00 aa   mov	x19, x0
+0x184ef061c:  b1 60 c6 94   bl	0x1880888e0
+0x184ef0620:  1f 04 00 b1   cmn	x0, #0x1
+0x184ef0624:  40 01 00 54   b.eq	loc_184ef064c ; ⤵ 0x28
+0x184ef0628:  e2 03 00 aa   mov	x2, x0
+0x184ef062c:  60 0e 40 f9   ldr	x0, [x19, #0x18]
+0x184ef0630:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184ef0634:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184ef0638:  ff 23 03 d5   autibsp
+0x184ef063c:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184ef0640:  50 00 f0 b6   tbz	x16, #0x3e, loc_184ef0648 ; ⤵ 0x8
+0x184ef0644:  20 8e 38 d4   brk	#0xc471
+0x184ef0648:  ; loc_184ef0648
+0x184ef0648:  1a 4f c4 14   b	0x1880042b0
+0x184ef064c:  ; loc_184ef064c
+0x184ef064c:  00 00 80 d2   mov	x0, #0
+0x184ef0650:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184ef0654:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184ef0658:  ff 0f 5f d6   retab
+

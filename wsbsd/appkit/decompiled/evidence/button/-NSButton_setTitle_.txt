@@ -1,0 +1,12 @@
+### -[NSButton setTitle:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSButton setTitle:]
+
+-[NSButton setTitle:]:
+0x184f50590:  a8 ad 2f 90   adrp	x8, 0x1e4504000
+0x184f50594:  08 d1 1e 91   add	x8, x8, #0x7b4 ; _OBJC_IVAR_$_NSControl._cell
+0x184f50598:  08 01 80 b9   ldrsw	x8, [x8]
+0x184f5059c:  08 00 08 8b   add	x8, x0, x8
+0x184f505a0:  00 01 40 f9   ldr	x0, [x8]
+0x184f505a4:  3f f1 c2 14   b	0x18800caa0
+

@@ -1,0 +1,11 @@
+### -[NSApplication mainMenu]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSApplication mainMenu]
+
+-[NSApplication mainMenu]:
+0x184ef1b3c:  88 b0 2f 90   adrp	x8, 0x1e4501000
+0x184ef1b40:  08 45 8e b9   ldrsw	x8, [x8, #0xe44] ; _OBJC_IVAR_$_NSApplication._mainMenu
+0x184ef1b44:  08 00 08 8b   add	x8, x0, x8
+0x184ef1b48:  00 01 40 f9   ldr	x0, [x8]
+0x184ef1b4c:  c0 03 5f d6   ret
+

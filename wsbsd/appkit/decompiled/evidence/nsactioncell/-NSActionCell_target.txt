@@ -1,0 +1,30 @@
+### -[NSActionCell target]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSActionCell target]
+
+-[NSActionCell target]:
+0x184f29170:  7f 23 03 d5   pacibsp
+0x184f29174:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x184f29178:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x184f2917c:  fd 43 00 91   add	fp, sp, #0x10
+0x184f29180:  f3 03 00 aa   mov	x19, x0
+0x184f29184:  52 ee ff 97   bl	_NSControlsUseWeakTargets
+0x184f29188:  e8 03 00 aa   mov	x8, x0
+0x184f2918c:  c9 ae 2f f0   adrp	x9, 0x1e4504000
+0x184f29190:  29 71 86 b9   ldrsw	x9, [x9, #0x670] ; _OBJC_IVAR_$_NSActionCell._target
+0x184f29194:  69 02 09 8b   add	x9, x19, x9
+0x184f29198:  20 01 40 f9   ldr	x0, [x9]
+0x184f2919c:  08 01 00 34   cbz	w8, loc_184f291bc ; ⤵ 0x20
+0x184f291a0:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184f291a4:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184f291a8:  ff 23 03 d5   autibsp
+0x184f291ac:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f291b0:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f291b8 ; ⤵ 0x8
+0x184f291b4:  20 8e 38 d4   brk	#0xc471
+0x184f291b8:  ; loc_184f291b8
+0x184f291b8:  be 10 c4 14   b	0x18802d4b0
+0x184f291bc:  ; loc_184f291bc
+0x184f291bc:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184f291c0:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184f291c4:  ff 0f 5f d6   retab
+

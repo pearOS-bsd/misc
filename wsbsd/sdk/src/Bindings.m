@@ -66,6 +66,31 @@ static id WSBArrangedObjects(id self, SEL _cmd)
 	return r;
 }
 
+/* NSTableView (and so NSOutlineView) has no intrinsic content size on the Mac; GNUstep's NSControl answers the size of the control's cell, (9, 15), and Auto Layout then made the table 9 wide inside its scroll view: the rows were 9 wide, the cells 845 wide, nothing was seen (Sloth) */
+static IMP origControlIntrinsic;
+static NSSize WSBNoIntrinsicSize(id self, SEL _cmd) { if ([self isKindOfClass: [NSTableView class]]) return NSMakeSize(-1, -1); return ((NSSize (*)(id, SEL))origControlIntrinsic)(self, _cmd); }
+
+/* The prototype cell view of a view-based table (the nib's NSTableCellView with its image view, text field and the bindings `objectValue.displayname` ...) is copied for every row. GNUstep's -[NSTableCellView copyWithZone:] makes an empty NSTableCellView that shares the prototype's outlets and has no subviews: the rows were drawn, the cells held nothing (Sloth). The copy is made as Cocoa makes a nib's view: archived and unarchived (subviews and outlets come with it), and the bindings, which are not archived, are made again on the matching subviews, a binding to the prototype itself going to the copy. */
+static IMP origCellCopy;
+static void WSBRebind(NSView *src, NSView *dst, NSView *srcRoot, NSView *dstRoot)
+{
+	for (NSString *b in [src exposedBindings]) {
+		NSDictionary *info = [src infoForBinding: b]; if (!info) continue;
+		id obs = info[NSObservedObjectKey]; if (obs == srcRoot) obs = dstRoot;
+		@try { [dst bind: b toObject: obs withKeyPath: info[NSObservedKeyPathKey] options: info[NSOptionsKey]]; } @catch (NSException *e) {}
+	}
+	NSArray *a = [src subviews], *d = [dst subviews];
+	for (NSUInteger i = 0; i < [a count] && i < [d count]; i++) WSBRebind(a[i], d[i], srcRoot, dstRoot);
+}
+static id WSBCellCopy(id self, SEL _cmd, NSZone *zone)
+{
+	NSView *copy = nil;
+	@try { copy = [NSKeyedUnarchiver unarchiveObjectWithData: [NSKeyedArchiver archivedDataWithRootObject: self]]; } @catch (NSException *e) { copy = nil; }
+	if (![copy isKindOfClass: [NSTableCellView class]]) return ((id (*)(id, SEL, NSZone *))origCellCopy)(self, _cmd, zone);
+	WSBRebind(self, copy, self, copy);
+	return copy;
+}
+
 @interface WSBBindingsInit : NSObject @end
 @implementation WSBBindingsInit
 + (void)load
@@ -74,6 +99,8 @@ static id WSBArrangedObjects(id self, SEL _cmd)
 	[NSTreeController exposeBinding: @"sortDescriptors"];
 	for (NSString *b in @[ @"selectedValue", @"selectedTag", @"selectedIndex" ]) [NSPopUpButtonCell exposeBinding: b];
 	{ Method ma = class_getInstanceMethod([NSTreeController class], @selector(arrangedObjects)); if (ma && !origArranged) origArranged = method_setImplementation(ma, (IMP)WSBArrangedObjects); }
+	{ Method mi = class_getInstanceMethod([NSControl class], @selector(intrinsicContentSize)); if (mi && !origControlIntrinsic) origControlIntrinsic = method_setImplementation(mi, (IMP)WSBNoIntrinsicSize); }
+	{ Method mc = class_getInstanceMethod([NSTableCellView class], @selector(copyWithZone:)); if (mc && !origCellCopy) origCellCopy = method_setImplementation(mc, (IMP)WSBCellCopy); }
 	Method m = class_getInstanceMethod([NSPopUpButtonCell class], @selector(selectItem:)); if (m && !origSelectItem) origSelectItem = method_setImplementation(m, (IMP)WSBSelectItem);
 }
 @end

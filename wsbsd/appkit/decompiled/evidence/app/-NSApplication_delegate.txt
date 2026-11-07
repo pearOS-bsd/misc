@@ -1,0 +1,10 @@
+### -[NSApplication delegate]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSApplication delegate]
+
+-[NSApplication delegate]:
+0x184eefb58:  88 b0 2f d0   adrp	x8, 0x1e4501000
+0x184eefb5c:  08 29 8e b9   ldrsw	x8, [x8, #0xe28] ; _OBJC_IVAR_$_NSApplication._delegate
+0x184eefb60:  00 00 08 8b   add	x0, x0, x8
+0x184eefb64:  bb c9 c7 14   b	j__objc_loadWeak
+

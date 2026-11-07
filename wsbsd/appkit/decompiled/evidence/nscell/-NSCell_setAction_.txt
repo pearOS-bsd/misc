@@ -1,0 +1,14 @@
+### -[NSCell setAction:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSCell setAction:]
+
+-[NSCell setAction:]:
+0x1855f891c:  28 5d 2d 90   adrp	x8, 0x1e019c000
+0x1855f8920:  00 85 42 f9   ldr	x0, [x8, #0x508] ; _ptr.NSException
+0x1855f8924:  08 5d 2d f0   adrp	x8, 0x1e019b000
+0x1855f8928:  08 61 47 f9   ldr	x8, [x8, #0xec0] ; _ptr._NSInternalInconsistencyException
+0x1855f892c:  02 01 40 f9   ldr	x2, [x8]
+0x1855f8930:  43 74 31 f0   adrp	x3, 0x1e8483000
+0x1855f8934:  63 40 2d 91   add	x3, x3, #0xb50 ; "Stub implementation of -setAction by NSCell does nothing."
+0x1855f8938:  72 4b a8 14   b	0x18800b700
+

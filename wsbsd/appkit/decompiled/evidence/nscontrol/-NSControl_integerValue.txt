@@ -1,0 +1,54 @@
+### -[NSControl integerValue]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSControl integerValue]
+
+-[NSControl integerValue]:
+0x185026888:  7f 23 03 d5   pacibsp
+0x18502688c:  f6 57 bd a9   stp	x22, x21, [sp, #-0x30]!
+0x185026890:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x185026894:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x185026898:  fd 83 00 91   add	fp, sp, #0x20
+0x18502689c:  f3 03 00 aa   mov	x19, x0
+0x1850268a0:  a0 f7 fb 97   bl	_NSControlDelegatesToCell
+0x1850268a4:  40 02 00 34   cbz	w0, loc_1850268ec ; ⤵ 0x48
+0x1850268a8:  e8 a6 2f d0   adrp	x8, 0x1e4504000
+0x1850268ac:  15 b5 87 b9   ldrsw	x21, [x8, #0x7b4] ; _OBJC_IVAR_$_NSControl._cell
+0x1850268b0:  68 02 15 8b   add	x8, x19, x21
+0x1850268b4:  00 01 40 f9   ldr	x0, [x8]
+0x1850268b8:  f4 03 00 aa   mov	x20, x0
+0x1850268bc:  c0 00 00 b5   cbnz	x0, loc_1850268d4 ; ⤵ 0x18
+0x1850268c0:  e0 03 13 aa   mov	x0, x19
+0x1850268c4:  df e3 c1 94   bl	0x18809f840
+0x1850268c8:  e0 02 00 b4   cbz	x0, loc_185026924 ; ⤵ 0x5c
+0x1850268cc:  f4 03 00 aa   mov	x20, x0
+0x1850268d0:  60 6a 75 f8   ldr	x0, [x19, x21]
+0x1850268d4:  ; loc_1850268d4
+0x1850268d4:  37 57 c1 94   bl	0x18807c5b0
+0x1850268d8:  1f 00 13 eb   cmp	x0, x19
+0x1850268dc:  20 01 00 54   b.eq	loc_185026900 ; ⤵ 0x24
+0x1850268e0:  e0 03 13 aa   mov	x0, x19
+0x1850268e4:  bf 49 c2 94   bl	0x1880b8fe0
+0x1850268e8:  06 00 00 14   b	loc_185026900 ; ⤵ 0x18
+0x1850268ec:  ; loc_1850268ec
+0x1850268ec:  e0 03 13 aa   mov	x0, x19
+0x1850268f0:  bc 49 c2 94   bl	0x1880b8fe0
+0x1850268f4:  e0 03 13 aa   mov	x0, x19
+0x1850268f8:  b6 63 c0 94   bl	0x18803f7d0
+0x1850268fc:  f4 03 00 aa   mov	x20, x0
+0x185026900:  ; loc_185026900
+0x185026900:  e0 03 14 aa   mov	x0, x20
+0x185026904:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x185026908:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x18502690c:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x185026910:  ff 23 03 d5   autibsp
+0x185026914:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x185026918:  50 00 f0 b6   tbz	x16, #0x3e, loc_185026920 ; ⤵ 0x8
+0x18502691c:  20 8e 38 d4   brk	#0xc471
+0x185026920:  ; loc_185026920
+0x185026920:  98 8c bf 14   b	0x188009b80
+0x185026924:  ; loc_185026924
+0x185026924:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x185026928:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x18502692c:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x185026930:  ff 0f 5f d6   retab
+

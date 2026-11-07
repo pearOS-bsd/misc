@@ -1,0 +1,53 @@
+### -[NSTextFieldCell setBezeled:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTextFieldCell setBezeled:]
+
+-[NSTextFieldCell setBezeled:]:
+0x184f2ec4c:  7f 23 03 d5   pacibsp
+0x184f2ec50:  ff c3 00 d1   sub	sp, sp, #0x30
+0x184f2ec54:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x184f2ec58:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x184f2ec5c:  fd 83 00 91   add	fp, sp, #0x20
+0x184f2ec60:  f3 03 02 aa   mov	x19, x2
+0x184f2ec64:  f4 03 00 aa   mov	x20, x0
+0x184f2ec68:  5a 7c c5 94   bl	0x18808ddd0
+0x184f2ec6c:  7f 02 00 6b   cmp	w19, w0
+0x184f2ec70:  81 00 00 54   b.ne	loc_184f2ec80 ; ⤵ 0x10
+0x184f2ec74:  e0 03 14 aa   mov	x0, x20
+0x184f2ec78:  62 7c c5 94   bl	0x18808de00
+0x184f2ec7c:  60 02 00 34   cbz	w0, loc_184f2ecc8 ; ⤵ 0x4c
+0x184f2ec80:  ; loc_184f2ec80
+0x184f2ec80:  93 00 00 34   cbz	w19, loc_184f2ec90 ; ⤵ 0x10
+0x184f2ec84:  e0 03 14 aa   mov	x0, x20
+0x184f2ec88:  22 00 80 52   mov	w2, #0x1
+0x184f2ec8c:  69 d6 c5 94   bl	0x1880a4630
+0x184f2ec90:  ; loc_184f2ec90
+0x184f2ec90:  e0 03 14 aa   mov	x0, x20
+0x184f2ec94:  47 36 c5 94   bl	0x18807c5b0
+0x184f2ec98:  86 97 c4 94   bl	0x188054ab0
+0x184f2ec9c:  28 c0 2d b0   adrp	x8, 0x1e0733000
+0x184f2eca0:  08 c5 40 f9   ldr	x8, [x8, #0x188] ; NSTextFieldCell
+0x184f2eca4:  f4 23 00 a9   stp	x20, x8, [sp]
+0x184f2eca8:  a8 58 38 b0   adrp	x8, 0x1f5a43000
+0x184f2ecac:  01 a5 20 91   add	x1, x8, #0x829 ; setBezeled:
+0x184f2ecb0:  e0 03 00 91   mov	x0, sp
+0x184f2ecb4:  e2 03 13 aa   mov	x2, x19
+0x184f2ecb8:  c2 ba c6 94   bl	j__objc_msgSendSuper2
+0x184f2ecbc:  e0 03 14 aa   mov	x0, x20
+0x184f2ecc0:  4c ab c4 94   bl	0x1880599f0
+0x184f2ecc4:  09 00 00 14   b	loc_184f2ece8 ; ⤵ 0x24
+0x184f2ecc8:  ; loc_184f2ecc8
+0x184f2ecc8:  28 c0 2d b0   adrp	x8, 0x1e0733000
+0x184f2eccc:  08 c5 40 f9   ldr	x8, [x8, #0x188] ; NSTextFieldCell
+0x184f2ecd0:  f4 23 00 a9   stp	x20, x8, [sp]
+0x184f2ecd4:  a8 58 38 b0   adrp	x8, 0x1f5a43000
+0x184f2ecd8:  01 a5 20 91   add	x1, x8, #0x829 ; setBezeled:
+0x184f2ecdc:  e0 03 00 91   mov	x0, sp
+0x184f2ece0:  e2 03 13 aa   mov	x2, x19
+0x184f2ece4:  b7 ba c6 94   bl	j__objc_msgSendSuper2
+0x184f2ece8:  ; loc_184f2ece8
+0x184f2ece8:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x184f2ecec:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x184f2ecf0:  ff c3 00 91   add	sp, sp, #0x30
+0x184f2ecf4:  ff 0f 5f d6   retab
+

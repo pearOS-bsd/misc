@@ -1,0 +1,11 @@
+### -[NSStepperCell valueWraps]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSStepperCell valueWraps]
+
+-[NSStepperCell valueWraps]:
+0x185693fb4:  88 73 2f b0   adrp	x8, 0x1e4504000
+0x185693fb8:  08 99 8d b9   ldrsw	x8, [x8, #0xd98] ; _OBJC_IVAR_$_NSStepperCell._stepperModel
+0x185693fbc:  08 00 08 8b   add	x8, x0, x8
+0x185693fc0:  00 01 40 f9   ldr	x0, [x8]
+0x185693fc4:  d7 94 a8 14   b	0x1880b9320
+

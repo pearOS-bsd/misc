@@ -1,0 +1,11 @@
+### -[NSSplitView dividerStyle]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSSplitView dividerStyle]
+
+-[NSSplitView dividerStyle]:
+0x184fa93f8:  c8 a1 30 b0   adrp	x8, 0x1e63e2000
+0x184fa93fc:  08 e1 89 b9   ldrsw	x8, [x8, #0x9e0]
+0x184fa9400:  08 00 08 8b   add	x8, x0, x8
+0x184fa9404:  00 01 40 f9   ldr	x0, [x8]
+0x184fa9408:  c0 03 5f d6   ret
+

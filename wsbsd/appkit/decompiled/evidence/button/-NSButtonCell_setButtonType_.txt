@@ -1,0 +1,8 @@
+### -[NSButtonCell setButtonType:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSButtonCell setButtonType:]
+
+-[NSButtonCell setButtonType:]:
+0x184f4c27c:  03 00 80 52   mov	w3, #0
+0x184f4c280:  c8 4b c4 14   b	0x18805f1a0
+

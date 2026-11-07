@@ -1,0 +1,43 @@
+### -[NSToolbarItem setPaletteLabel:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSToolbarItem setPaletteLabel:]
+
+-[NSToolbarItem setPaletteLabel:]:
+0x184fbf30c:  7f 23 03 d5   pacibsp
+0x184fbf310:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x184fbf314:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x184fbf318:  fd 43 00 91   add	fp, sp, #0x10
+0x184fbf31c:  f4 03 00 aa   mov	x20, x0
+0x184fbf320:  e0 03 02 aa   mov	x0, x2
+0x184fbf324:  53 76 c4 94   bl	j__objc_retain_x0
+0x184fbf328:  f3 03 00 aa   mov	x19, x0
+0x184fbf32c:  80 1e 40 f9   ldr	x0, [x20, #0x38]
+0x184fbf330:  1f 00 13 eb   cmp	x0, x19
+0x184fbf334:  80 01 00 54   b.eq	loc_184fbf364 ; ⤵ 0x30
+0x184fbf338:  e2 03 13 aa   mov	x2, x19
+0x184fbf33c:  5d 12 c1 94   bl	0x188003cb0
+0x184fbf340:  20 01 00 37   tbnz	w0, #0, loc_184fbf364 ; ⤵ 0x24
+0x184fbf344:  e0 03 13 aa   mov	x0, x19
+0x184fbf348:  ae 0d c1 94   bl	0x188002a00
+0x184fbf34c:  88 1e 40 f9   ldr	x8, [x20, #0x38]
+0x184fbf350:  80 1e 00 f9   str	x0, [x20, #0x38]
+0x184fbf354:  e0 03 08 aa   mov	x0, x8
+0x184fbf358:  42 76 c4 94   bl	j__objc_release_x0
+0x184fbf35c:  80 3a 40 f9   ldr	x0, [x20, #0x70]
+0x184fbf360:  0b 3c 00 94   bl	-[NSToolbarItemViewer _itemChangedLabelOrPaletteLabel]
+0x184fbf364:  ; loc_184fbf364
+0x184fbf364:  e0 03 13 aa   mov	x0, x19
+0x184fbf368:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184fbf36c:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184fbf370:  ff 23 03 d5   autibsp
+0x184fbf374:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184fbf378:  50 00 f0 b6   tbz	x16, #0x3e, loc_184fbf380 ; ⤵ 0x8
+0x184fbf37c:  20 8e 38 d4   brk	#0xc471
+0x184fbf380:  ; loc_184fbf380
+0x184fbf380:  38 76 c4 14   b	j__objc_release_x0
+0x184fbf384:  f4 03 00 aa   mov	x20, x0
+0x184fbf388:  e0 03 13 aa   mov	x0, x19
+0x184fbf38c:  35 76 c4 94   bl	j__objc_release_x0
+0x184fbf390:  e0 03 14 aa   mov	x0, x20
+0x184fbf394:  3f 73 c4 94   bl	j___Unwind_Resume
+

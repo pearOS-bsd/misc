@@ -1,0 +1,12 @@
+### -[NSBox isTransparent]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSBox isTransparent]
+
+-[NSBox isTransparent]:
+0x18502c734:  c8 a6 2f 90   adrp	x8, 0x1e4504000
+0x18502c738:  08 1d 89 b9   ldrsw	x8, [x8, #0x91c] ; _OBJC_IVAR_$_NSBox._bFlags
+0x18502c73c:  08 00 08 8b   add	x8, x0, x8
+0x18502c740:  08 05 40 39   ldrb	w8, [x8, #0x1]
+0x18502c744:  00 05 01 53   ubfx	w0, w8, #0x1, #0x1
+0x18502c748:  c0 03 5f d6   ret
+

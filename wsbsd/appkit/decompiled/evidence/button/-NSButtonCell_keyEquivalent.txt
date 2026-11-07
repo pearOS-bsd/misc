@@ -1,0 +1,15 @@
+### -[NSButtonCell keyEquivalent]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSButtonCell keyEquivalent]
+
+-[NSButtonCell keyEquivalent]:
+0x184f48fe8:  e8 ad 2f 90   adrp	x8, 0x1e4504000
+0x184f48fec:  08 d5 85 b9   ldrsw	x8, [x8, #0x5d4] ; _OBJC_IVAR_$_NSButtonCell._keyEquivalent
+0x184f48ff0:  08 00 08 8b   add	x8, x0, x8
+0x184f48ff4:  08 01 40 f9   ldr	x8, [x8]
+0x184f48ff8:  89 a7 31 b0   adrp	x9, 0x1e8439000
+0x184f48ffc:  29 c1 18 91   add	x9, x9, #0x630 ; _ptr.__NSCFConstantString
+0x184f49000:  1f 01 00 f1   cmp	x8, #0
+0x184f49004:  20 01 88 9a   csel	x0, x9, x8, eq
+0x184f49008:  92 73 c6 14   b	j__objc_retainAutoreleaseReturnValue
+

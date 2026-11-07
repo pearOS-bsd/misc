@@ -1,0 +1,126 @@
+### +[NSApplication sharedApplication]
+   • Loading symbol cache file...
+   • Locating symbol: +[NSApplication sharedApplication]
+
++[NSApplication sharedApplication]:
+0x184ec80c0:  7f 23 03 d5   pacibsp
+0x184ec80c4:  fa 67 bb a9   stp	x26, x25, [sp, #-0x50]!
+0x184ec80c8:  f8 5f 01 a9   stp	x24, x23, [sp, #0x10]
+0x184ec80cc:  f6 57 02 a9   stp	x22, x21, [sp, #0x20]
+0x184ec80d0:  f4 4f 03 a9   stp	x20, x19, [sp, #0x30]
+0x184ec80d4:  fd 7b 04 a9   stp	fp, lr, [sp, #0x40]
+0x184ec80d8:  fd 03 01 91   add	fp, sp, #0x40
+0x184ec80dc:  99 a9 30 90   adrp	x25, 0x1e63f8000
+0x184ec80e0:  28 53 6b 39   ldrb	w8, [x25, #0xad4] ; _sharedApplication._isSharedApplicationInited
+0x184ec80e4:  78 a9 30 90   adrp	x24, 0x1e63f4000
+0x184ec80e8:  18 e3 0b 91   add	x24, x24, #0x2f8 ; _NSApp
+0x184ec80ec:  48 08 00 37   tbnz	w8, #0, loc_184ec81f4 ; ⤵ 0x108
+0x184ec80f0:  f6 03 01 aa   mov	x22, x1
+0x184ec80f4:  f5 03 00 aa   mov	x21, x0
+0x184ec80f8:  41 9e 00 f0   adrp	x1, 0x186293000
+0x184ec80fc:  21 2c 3c 91   add	x1, x1, #0xf0b ; "/AppleInternal/Library/BuildRoots/4~CWGNugDnaGLhZtj9qprH45-y-Xwew1V4U9LG6uc/Library/Caches/com.apple.xbs/TemporaryDirectory.LvLSaU/Sources/AppKit/AppKit.subproj/NSApplication.m"
+0x184ec8100:  20 89 80 52   mov	w0, #0x449
+0x184ec8104:  5d 00 00 94   bl	__NSAppKitLock
+0x184ec8108:  28 53 6b 39   ldrb	w8, [x25, #0xad4]
+0x184ec810c:  68 00 00 36   tbz	w8, #0, loc_184ec8118 ; ⤵ 0xc
+0x184ec8110:  15 00 80 52   mov	w21, #0
+0x184ec8114:  33 00 00 14   b	loc_184ec81e0 ; ⤵ 0xcc
+0x184ec8118:  ; loc_184ec8118
+0x184ec8118:  00 00 80 52   mov	w0, #0
+0x184ec811c:  1f 20 03 d5   nop
+0x184ec8120:  00 00 80 d2   mov	x0, #0
+0x184ec8124:  5b f5 c8 94   bl	j__NSPushAutoreleasePool
+0x184ec8128:  f3 03 00 aa   mov	x19, x0
+0x184ec812c:  91 f4 c8 94   bl	j__NSDefaultMallocZone
+0x184ec8130:  e2 03 00 aa   mov	x2, x0
+0x184ec8134:  e0 03 15 aa   mov	x0, x21
+0x184ec8138:  d6 e8 c4 94   bl	0x188002490
+0x184ec813c:  5d ed c4 94   bl	0x1880036b0
+0x184ec8140:  f4 03 00 aa   mov	x20, x0
+0x184ec8144:  a8 c3 2d 90   adrp	x8, 0x1e073c000
+0x184ec8148:  00 81 46 f9   ldr	x0, [x8, #0xd00] ; __got.NSFont
+0x184ec814c:  a1 55 c8 94   bl	j__objc_opt_class
+0x184ec8150:  a8 96 2d 90   adrp	x8, 0x1e019c000
+0x184ec8154:  00 09 43 f9   ldr	x0, [x8, #0x610] ; _ptr.NSUserDefaults
+0x184ec8158:  36 f4 c4 94   bl	0x188005230
+0x184ec815c:  e2 ab 31 f0   adrp	x2, 0x1e8447000
+0x184ec8160:  42 40 1f 91   add	x2, x2, #0x7d0 ; "NSExceptionHandlingMask"
+0x184ec8164:  37 78 c5 94   bl	0x188026240
+0x184ec8168:  c0 02 00 b4   cbz	x0, loc_184ec81c0 ; ⤵ 0x58
+0x184ec816c:  a0 00 80 52   mov	w0, #0x5
+0x184ec8170:  01 01 80 52   mov	w1, #0x8
+0x184ec8174:  02 00 80 52   mov	w2, #0
+0x184ec8178:  8a 72 c8 94   bl	j__NSSearchPathForDirectoriesInDomains
+0x184ec817c:  f7 03 00 aa   mov	x23, x0
+0x184ec8180:  74 ea c4 94   bl	0x188002b50
+0x184ec8184:  60 04 00 b4   cbz	x0, loc_184ec8210 ; ⤵ 0x8c
+0x184ec8188:  ; loc_184ec8188
+0x184ec8188:  e0 03 17 aa   mov	x0, x23
+0x184ec818c:  02 00 80 d2   mov	x2, #0
+0x184ec8190:  48 f0 c4 94   bl	0x1880042b0
+0x184ec8194:  e2 ab 31 f0   adrp	x2, 0x1e8447000
+0x184ec8198:  42 40 20 91   add	x2, x2, #0x810 ; "Frameworks/ExceptionHandling.framework"
+0x184ec819c:  39 f4 c4 94   bl	0x188005280
+0x184ec81a0:  e2 03 00 aa   mov	x2, x0
+0x184ec81a4:  08 97 2d d0   adrp	x8, 0x1e01aa000
+0x184ec81a8:  00 6d 40 f9   ldr	x0, [x8, #0xd8] ; _ptr.NSBundle
+0x184ec81ac:  99 47 c5 94   bl	0x18801a010
+0x184ec81b0:  e2 ab 31 f0   adrp	x2, 0x1e8447000
+0x184ec81b4:  42 c0 20 91   add	x2, x2, #0x830 ; "NSExceptionHandler"
+0x184ec81b8:  ae 47 c5 94   bl	0x18801a070
+0x184ec81bc:  85 55 c8 94   bl	j__objc_opt_class
+0x184ec81c0:  ; loc_184ec81c0
+0x184ec81c0:  e0 03 13 aa   mov	x0, x19
+0x184ec81c4:  2f f5 c8 94   bl	j__NSPopAutoreleasePool
+0x184ec81c8:  33 00 80 52   mov	w19, #0x1
+0x184ec81cc:  20 00 80 52   mov	w0, #0x1
+0x184ec81d0:  1f 20 03 d5   nop
+0x184ec81d4:  15 00 80 52   mov	w21, #0
+0x184ec81d8:  14 03 00 f9   str	x20, [x24]
+0x184ec81dc:  33 53 2b 39   strb	w19, [x25, #0xad4]
+0x184ec81e0:  ; loc_184ec81e0
+0x184ec81e0:  41 9e 00 f0   adrp	x1, 0x186293000
+0x184ec81e4:  21 2c 3c 91   add	x1, x1, #0xf0b ; "/AppleInternal/Library/BuildRoots/4~CWGNugDnaGLhZtj9qprH45-y-Xwew1V4U9LG6uc/Library/Caches/com.apple.xbs/TemporaryDirectory.LvLSaU/Sources/AppKit/AppKit.subproj/NSApplication.m"
+0x184ec81e8:  a0 8c 80 52   mov	w0, #0x465
+0x184ec81ec:  d1 09 00 94   bl	__NSAppKitUnlock
+0x184ec81f0:  95 02 00 35   cbnz	w21, loc_184ec8240 ; ⤵ 0x50
+0x184ec81f4:  ; loc_184ec81f4
+0x184ec81f4:  00 03 40 f9   ldr	x0, [x24]
+0x184ec81f8:  fd 7b 44 a9   ldp	fp, lr, [sp, #0x40]
+0x184ec81fc:  f4 4f 43 a9   ldp	x20, x19, [sp, #0x30]
+0x184ec8200:  f6 57 42 a9   ldp	x22, x21, [sp, #0x20]
+0x184ec8204:  f8 5f 41 a9   ldp	x24, x23, [sp, #0x10]
+0x184ec8208:  fa 67 c5 a8   ldp	x26, x25, [sp], #0x50
+0x184ec820c:  ff 0f 5f d6   retab
+0x184ec8210:  ; loc_184ec8210
+0x184ec8210:  08 97 2d d0   adrp	x8, 0x1e01aa000
+0x184ec8214:  00 41 40 f9   ldr	x0, [x8, #0x80] ; _ptr.NSAssertionHandler
+0x184ec8218:  1a fe c4 94   bl	0x188007a80
+0x184ec821c:  e4 ab 31 f0   adrp	x4, 0x1e8447000
+0x184ec8220:  84 40 1e 91   add	x4, x4, #0x790 ; "NSApplication.m"
+0x184ec8224:  e6 ab 31 f0   adrp	x6, 0x1e8447000
+0x184ec8228:  c6 c0 1f 91   add	x6, x6, #0x7f0 ; "Library directory not found in System domain"
+0x184ec822c:  e2 03 16 aa   mov	x2, x22
+0x184ec8230:  e3 03 15 aa   mov	x3, x21
+0x184ec8234:  25 8b 80 52   mov	w5, #0x459
+0x184ec8238:  82 02 c5 94   bl	0x188008c40
+0x184ec823c:  d3 ff ff 17   b	loc_184ec8188 ; ⤴ -0xb4
+0x184ec8240:  ; loc_184ec8240
+0x184ec8240:  e4 67 c8 94   bl	j__objc_exception_rethrow
+0x184ec8244:  20 00 20 d4   brk	#0x1
+0x184ec8248:  f3 03 00 aa   mov	x19, x0
+0x184ec824c:  03 00 00 14   b	loc_184ec8258 ; ⤵ 0xc
+0x184ec8250:  f3 03 00 aa   mov	x19, x0
+0x184ec8254:  55 00 00 34   cbz	w21, loc_184ec825c ; ⤵ 0x8
+0x184ec8258:  ; loc_184ec8258
+0x184ec8258:  b6 57 c8 94   bl	j__objc_end_catch
+0x184ec825c:  ; loc_184ec825c
+0x184ec825c:  e0 03 13 aa   mov	x0, x19
+0x184ec8260:  8c 4f c8 94   bl	j___Unwind_Resume
+0x184ec8264:  bf 57 c8 94   bl	j__objc_terminate
+0x184ec8268:  01 00 00 14   b	loc_184ec826c ; ⤵ 0x4
+0x184ec826c:  ; loc_184ec826c
+0x184ec826c:  a9 57 c8 94   bl	j__objc_begin_catch
+0x184ec8270:  35 00 80 52   mov	w21, #0x1
+0x184ec8274:  db ff ff 17   b	loc_184ec81e0 ; ⤴ -0x94
+

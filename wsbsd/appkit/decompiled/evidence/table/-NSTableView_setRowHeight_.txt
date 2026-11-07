@@ -1,0 +1,84 @@
+### -[NSTableView setRowHeight:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTableView setRowHeight:]
+
+-[NSTableView setRowHeight:]:
+0x1850d2400:  7f 23 03 d5   pacibsp
+0x1850d2404:  ff 43 01 d1   sub	sp, sp, #0x50
+0x1850d2408:  e9 23 02 6d   stp	d9, d8, [sp, #0x20]
+0x1850d240c:  f4 4f 03 a9   stp	x20, x19, [sp, #0x30]
+0x1850d2410:  fd 7b 04 a9   stp	fp, lr, [sp, #0x40]
+0x1850d2414:  fd 03 01 91   add	fp, sp, #0x40
+0x1850d2418:  08 1c a0 4e   mov	v8.16b, v0.16b
+0x1850d241c:  08 20 60 1e   fcmp	d0, #0.00000000
+0x1850d2420:  2d 05 00 54   b.le	loc_1850d24c4 ; ⤵ 0xa4
+0x1850d2424:  f3 03 00 aa   mov	x19, x0
+0x1850d2428:  ff 0b 00 f9   str	xzr, [sp, #0x10]
+0x1850d242c:  e8 0f 00 fd   str	d8, [sp, #0x18]
+0x1850d2430:  e2 43 00 91   add	x2, sp, #0x10
+0x1850d2434:  47 b7 bd 94   bl	0x188040150
+0x1850d2438:  fd 03 1d aa   mov	fp, fp
+0x1850d243c:  95 4e c0 94   bl	j__objc_unsafeClaimAutoreleasedReturnValue
+0x1850d2440:  e8 0f 40 fd   ldr	d8, [sp, #0x18]
+0x1850d2444:  88 a1 2f f0   adrp	x8, 0x1e4505000
+0x1850d2448:  14 4d 8f b9   ldrsw	x20, [x8, #0xf4c] ; _OBJC_IVAR_$_NSTableView._rowHeight
+0x1850d244c:  68 02 14 8b   add	x8, x19, x20
+0x1850d2450:  00 01 40 fd   ldr	d0, [x8]
+0x1850d2454:  00 20 68 1e   fcmp	d0, d8
+0x1850d2458:  c0 02 00 54   b.eq	loc_1850d24b0 ; ⤵ 0x58
+0x1850d245c:  e0 03 13 aa   mov	x0, x19
+0x1850d2460:  e0 9f bd 94   bl	0x18803a3e0
+0x1850d2464:  68 6a 34 fc   str	d8, [x19, x20]
+0x1850d2468:  e0 03 13 aa   mov	x0, x19
+0x1850d246c:  29 56 be 94   bl	0x188067d10
+0x1850d2470:  c0 00 00 34   cbz	w0, loc_1850d2488 ; ⤵ 0x18
+0x1850d2474:  88 a1 2f f0   adrp	x8, 0x1e4505000
+0x1850d2478:  08 01 8f b9   ldrsw	x8, [x8, #0xf00] ; _OBJC_IVAR_$_NSTableView._rowHeightData
+0x1850d247c:  68 02 08 8b   add	x8, x19, x8
+0x1850d2480:  00 01 40 f9   ldr	x0, [x8]
+0x1850d2484:  dd 79 24 94   bl	-[NSTableRowHeightData invalidate]
+0x1850d2488:  ; loc_1850d2488
+0x1850d2488:  e0 03 13 aa   mov	x0, x19
+0x1850d248c:  39 d0 bd 94   bl	0x188046570
+0x1850d2490:  88 a1 2f f0   adrp	x8, 0x1e4505000
+0x1850d2494:  08 f9 8e b9   ldrsw	x8, [x8, #0xef8] ; _OBJC_IVAR_$_NSTableView._rowData
+0x1850d2498:  68 02 08 8b   add	x8, x19, x8
+0x1850d249c:  00 01 40 f9   ldr	x0, [x8]
+0x1850d24a0:  40 00 00 b4   cbz	x0, loc_1850d24a8 ; ⤵ 0x8
+0x1850d24a4:  57 00 fb 97   bl	-[NSTableRowData updateRowViewFrames]
+0x1850d24a8:  ; loc_1850d24a8
+0x1850d24a8:  e0 03 13 aa   mov	x0, x19
+0x1850d24ac:  8d 65 be 94   bl	0x18806bae0
+0x1850d24b0:  ; loc_1850d24b0
+0x1850d24b0:  fd 7b 44 a9   ldp	fp, lr, [sp, #0x40]
+0x1850d24b4:  f4 4f 43 a9   ldp	x20, x19, [sp, #0x30]
+0x1850d24b8:  e9 23 42 6d   ldp	d9, d8, [sp, #0x20]
+0x1850d24bc:  ff 43 01 91   add	sp, sp, #0x50
+0x1850d24c0:  ff 0f 5f d6   retab
+0x1850d24c4:  ; loc_1850d24c4
+0x1850d24c4:  e0 03 01 aa   mov	x0, x1
+0x1850d24c8:  c2 49 c0 94   bl	j__NSStringFromSelector
+0x1850d24cc:  91 32 c0 94   bl	j__objc_claimAutoreleasedReturnValue
+0x1850d24d0:  f3 03 00 aa   mov	x19, x0
+0x1850d24d4:  e8 07 00 fd   str	d8, [sp, #0x8]
+0x1850d24d8:  e0 03 00 f9   str	x0, [sp]
+0x1850d24dc:  20 9e 31 f0   adrp	x0, 0x1e8499000
+0x1850d24e0:  00 40 19 91   add	x0, x0, #0x650 ; "ERROR: Negative values for %@ not allowed (%.3f)"
+0x1850d24e4:  ab 50 c0 94   bl	j__NSLog
+0x1850d24e8:  e0 03 13 aa   mov	x0, x19
+0x1850d24ec:  fd 7b 44 a9   ldp	fp, lr, [sp, #0x40]
+0x1850d24f0:  f4 4f 43 a9   ldp	x20, x19, [sp, #0x30]
+0x1850d24f4:  e9 23 42 6d   ldp	d9, d8, [sp, #0x20]
+0x1850d24f8:  ff 43 01 91   add	sp, sp, #0x50
+0x1850d24fc:  ff 23 03 d5   autibsp
+0x1850d2500:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x1850d2504:  50 00 f0 b6   tbz	x16, #0x3e, loc_1850d250c ; ⤵ 0x8
+0x1850d2508:  20 8e 38 d4   brk	#0xc471
+0x1850d250c:  ; loc_1850d250c
+0x1850d250c:  d5 29 c0 14   b	j__objc_release_x0
+0x1850d2510:  f4 03 00 aa   mov	x20, x0
+0x1850d2514:  e0 03 13 aa   mov	x0, x19
+0x1850d2518:  d2 29 c0 94   bl	j__objc_release_x0
+0x1850d251c:  e0 03 14 aa   mov	x0, x20
+0x1850d2520:  dc 26 c0 94   bl	j___Unwind_Resume
+

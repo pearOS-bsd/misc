@@ -1,0 +1,35 @@
+### -[NSControl isContinuous]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSControl isContinuous]
+
+-[NSControl isContinuous]:
+0x1851b76a8:  7f 23 03 d5   pacibsp
+0x1851b76ac:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x1851b76b0:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x1851b76b4:  fd 43 00 91   add	fp, sp, #0x10
+0x1851b76b8:  f3 03 00 aa   mov	x19, x0
+0x1851b76bc:  19 b4 f5 97   bl	_NSControlDelegatesToCell
+0x1851b76c0:  80 01 00 34   cbz	w0, loc_1851b76f0 ; ⤵ 0x30
+0x1851b76c4:  68 9a 2f b0   adrp	x8, 0x1e4504000
+0x1851b76c8:  08 b5 87 b9   ldrsw	x8, [x8, #0x7b4] ; _OBJC_IVAR_$_NSControl._cell
+0x1851b76cc:  68 02 08 8b   add	x8, x19, x8
+0x1851b76d0:  00 01 40 f9   ldr	x0, [x8]
+0x1851b76d4:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x1851b76d8:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x1851b76dc:  ff 23 03 d5   autibsp
+0x1851b76e0:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x1851b76e4:  50 00 f0 b6   tbz	x16, #0x3e, loc_1851b76ec ; ⤵ 0x8
+0x1851b76e8:  20 8e 38 d4   brk	#0xc471
+0x1851b76ec:  ; loc_1851b76ec
+0x1851b76ec:  5d 5a bb 14   b	0x18808e060
+0x1851b76f0:  ; loc_1851b76f0
+0x1851b76f0:  e0 03 13 aa   mov	x0, x19
+0x1851b76f4:  d1 51 11 94   bl	-[NSControl _controlStorage]
+0x1851b76f8:  60 00 00 b4   cbz	x0, loc_1851b7704 ; ⤵ 0xc
+0x1851b76fc:  08 20 40 39   ldrb	w8, [x0, #0x8]
+0x1851b7700:  00 11 04 53   ubfx	w0, w8, #0x4, #0x1
+0x1851b7704:  ; loc_1851b7704
+0x1851b7704:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x1851b7708:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x1851b770c:  ff 0f 5f d6   retab
+

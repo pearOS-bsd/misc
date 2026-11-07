@@ -1,0 +1,13 @@
+### -[NSMenuItem setTag:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSMenuItem setTag:]
+
+-[NSMenuItem setTag:]:
+0x184f04608:  08 28 40 f9   ldr	x8, [x0, #0x50]
+0x184f0460c:  5f 00 08 eb   cmp	x2, x8
+0x184f04610:  41 00 00 54   b.ne	loc_184f04618 ; ⤵ 0x8
+0x184f04614:  c0 03 5f d6   ret
+0x184f04618:  ; loc_184f04618
+0x184f04618:  02 28 00 f9   str	x2, [x0, #0x50]
+0x184f0461c:  e0 0e 18 14   b	-[NSMenuItem updateDefaultActionImage]
+

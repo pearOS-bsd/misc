@@ -1,0 +1,13 @@
+### +[NSColor redColor]
+   • Loading symbol cache file...
+   • Locating symbol: +[NSColor redColor]
+
++[NSColor redColor]:
+0x184ec7584:  68 1f 38 f0   adrp	x8, 0x1f52b6000
+0x184ec7588:  02 01 0a 91   add	x2, x8, #0x280 ; dealloc
+0x184ec758c:  80 a9 30 d0   adrp	x0, 0x1e63f9000
+0x184ec7590:  00 a0 09 91   add	x0, x0, #0x268 ; _redColor.cached
+0x184ec7594:  41 ab 31 f0   adrp	x1, 0x1e8432000
+0x184ec7598:  21 00 3f 91   add	x1, x1, #0xfc0 ; ___block_literal_global.27
+0x184ec759c:  75 01 c9 14   b	j___NSFaultInObjectWithCleanup
+

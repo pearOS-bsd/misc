@@ -1,0 +1,12 @@
+### -[NSLevelIndicator minValue]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSLevelIndicator minValue]
+
+-[NSLevelIndicator minValue]:
+0x18562d3f8:  a8 76 2f f0   adrp	x8, 0x1e4504000
+0x18562d3fc:  08 d1 1e 91   add	x8, x8, #0x7b4 ; _OBJC_IVAR_$_NSControl._cell
+0x18562d400:  08 01 80 b9   ldrsw	x8, [x8]
+0x18562d404:  08 00 08 8b   add	x8, x0, x8
+0x18562d408:  00 01 40 f9   ldr	x0, [x8]
+0x18562d40c:  31 06 a8 14   b	0x18802ecd0
+

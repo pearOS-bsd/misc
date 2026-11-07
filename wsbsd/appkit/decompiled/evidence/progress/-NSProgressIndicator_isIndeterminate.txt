@@ -1,0 +1,11 @@
+### -[NSProgressIndicator isIndeterminate]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSProgressIndicator isIndeterminate]
+
+-[NSProgressIndicator isIndeterminate]:
+0x185005be0:  e8 9e 30 b0   adrp	x8, 0x1e63e2000
+0x185005be4:  08 75 87 b9   ldrsw	x8, [x8, #0x774]
+0x185005be8:  08 00 08 8b   add	x8, x0, x8
+0x185005bec:  00 01 40 f9   ldr	x0, [x8]
+0x185005bf0:  a4 23 c2 14   b	0x18808ea80
+

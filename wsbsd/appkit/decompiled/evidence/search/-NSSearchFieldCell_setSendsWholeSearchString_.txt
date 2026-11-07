@@ -1,0 +1,43 @@
+### -[NSSearchFieldCell setSendsWholeSearchString:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSSearchFieldCell setSendsWholeSearchString:]
+
+-[NSSearchFieldCell setSendsWholeSearchString:]:
+0x185111968:  7f 23 03 d5   pacibsp
+0x18511196c:  f6 57 bd a9   stp	x22, x21, [sp, #-0x30]!
+0x185111970:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x185111974:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x185111978:  fd 83 00 91   add	fp, sp, #0x20
+0x18511197c:  f4 03 02 aa   mov	x20, x2
+0x185111980:  f3 03 00 aa   mov	x19, x0
+0x185111984:  f5 a0 2f f0   adrp	x21, 0x1e4530000
+0x185111988:  b5 42 14 91   add	x21, x21, #0x510 ; __searchFieldCellBitfieldLock
+0x18511198c:  e0 03 15 aa   mov	x0, x21
+0x185111990:  c4 42 bf 94   bl	j__os_unfair_lock_lock
+0x185111994:  88 9f 2f f0   adrp	x8, 0x1e4504000
+0x185111998:  08 69 8e b9   ldrsw	x8, [x8, #0xe68] ; _OBJC_IVAR_$_NSSearchFieldCell._sfFlags
+0x18511199c:  76 02 08 8b   add	x22, x19, x8
+0x1851119a0:  c8 02 40 b9   ldr	w8, [x22]
+0x1851119a4:  08 79 1f 12   and	w8, w8, #0xfffffffe
+0x1851119a8:  08 01 14 2a   orr	w8, w8, w20
+0x1851119ac:  c8 02 00 b9   str	w8, [x22]
+0x1851119b0:  e0 03 15 aa   mov	x0, x21
+0x1851119b4:  13 2b bf 94   bl	j__os_unfair_lock_unlock
+0x1851119b8:  c8 02 40 39   ldrb	w8, [x22]
+0x1851119bc:  a8 00 00 37   tbnz	w8, #0, loc_1851119d0 ; ⤵ 0x14
+0x1851119c0:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x1851119c4:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x1851119c8:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x1851119cc:  ff 0f 5f d6   retab
+0x1851119d0:  ; loc_1851119d0
+0x1851119d0:  e0 03 13 aa   mov	x0, x19
+0x1851119d4:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x1851119d8:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x1851119dc:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x1851119e0:  ff 23 03 d5   autibsp
+0x1851119e4:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x1851119e8:  50 00 f0 b6   tbz	x16, #0x3e, loc_1851119f0 ; ⤵ 0x8
+0x1851119ec:  20 8e 38 d4   brk	#0xc471
+0x1851119f0:  ; loc_1851119f0
+0x1851119f0:  e4 5b bd 14   b	0x188068980
+

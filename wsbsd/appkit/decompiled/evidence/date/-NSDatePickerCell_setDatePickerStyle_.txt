@@ -1,0 +1,101 @@
+### -[NSDatePickerCell setDatePickerStyle:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSDatePickerCell setDatePickerStyle:]
+
+-[NSDatePickerCell setDatePickerStyle:]:
+0x18516888c:  7f 23 03 d5   pacibsp
+0x185168890:  f6 57 bd a9   stp	x22, x21, [sp, #-0x30]!
+0x185168894:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x185168898:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x18516889c:  fd 83 00 91   add	fp, sp, #0x20
+0x1851688a0:  5f 08 00 f1   cmp	x2, #0x2
+0x1851688a4:  08 03 00 54   b.hi	loc_185168904 ; ⤵ 0x60
+0x1851688a8:  f4 03 02 aa   mov	x20, x2
+0x1851688ac:  f3 03 00 aa   mov	x19, x0
+0x1851688b0:  c8 93 30 d0   adrp	x8, 0x1e63e2000
+0x1851688b4:  15 cd 82 b9   ldrsw	x21, [x8, #0x2cc]
+0x1851688b8:  08 00 15 8b   add	x8, x0, x21
+0x1851688bc:  08 05 40 79   ldrh	w8, [x8, #0x2]
+0x1851688c0:  08 09 40 92   and	x8, x8, #0x7
+0x1851688c4:  5f 00 08 eb   cmp	x2, x8
+0x1851688c8:  e0 01 00 54   b.eq	loc_185168904 ; ⤵ 0x3c
+0x1851688cc:  1f 09 00 71   cmp	w8, #0x2
+0x1851688d0:  a0 03 00 54   b.eq	loc_185168944 ; ⤵ 0x74
+0x1851688d4:  1f 05 00 71   cmp	w8, #0x1
+0x1851688d8:  e0 01 00 54   b.eq	loc_185168914 ; ⤵ 0x3c
+0x1851688dc:  28 04 00 35   cbnz	w8, loc_185168960 ; ⤵ 0x84
+0x1851688e0:  c8 93 30 d0   adrp	x8, 0x1e63e2000
+0x1851688e4:  08 f1 82 b9   ldrsw	x8, [x8, #0x2f0]
+0x1851688e8:  76 02 08 8b   add	x22, x19, x8
+0x1851688ec:  c0 02 40 f9   ldr	x0, [x22]
+0x1851688f0:  dc d0 bd 94   bl	j__objc_release_x0
+0x1851688f4:  df 02 00 f9   str	xzr, [x22]
+0x1851688f8:  9f 0a 00 f1   cmp	x20, #0x2
+0x1851688fc:  61 02 00 54   b.ne	loc_185168948 ; ⤵ 0x4c
+0x185168900:  18 00 00 14   b	loc_185168960 ; ⤵ 0x60
+0x185168904:  ; loc_185168904
+0x185168904:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x185168908:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x18516890c:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x185168910:  ff 0f 5f d6   retab
+0x185168914:  ; loc_185168914
+0x185168914:  d6 93 30 d0   adrp	x22, 0x1e63e2000
+0x185168918:  d6 c2 0b 91   add	x22, x22, #0x2f0
+0x18516891c:  c8 06 80 b9   ldrsw	x8, [x22, #0x4]
+0x185168920:  68 02 08 8b   add	x8, x19, x8
+0x185168924:  00 01 40 f9   ldr	x0, [x8]
+0x185168928:  ea c9 bc 94   bl	0x18809b0d0
+0x18516892c:  c8 02 80 b9   ldrsw	x8, [x22]
+0x185168930:  76 02 08 8b   add	x22, x19, x8
+0x185168934:  c0 02 40 f9   ldr	x0, [x22]
+0x185168938:  ca d0 bd 94   bl	j__objc_release_x0
+0x18516893c:  df 02 00 f9   str	xzr, [x22]
+0x185168940:  02 00 00 14   b	loc_185168948 ; ⤵ 0x8
+0x185168944:  ; loc_185168944
+0x185168944:  f4 00 00 b4   cbz	x20, loc_185168960 ; ⤵ 0x1c
+0x185168948:  ; loc_185168948
+0x185168948:  c8 93 30 d0   adrp	x8, 0x1e63e2000
+0x18516894c:  08 ed 82 b9   ldrsw	x8, [x8, #0x2ec]
+0x185168950:  76 02 08 8b   add	x22, x19, x8
+0x185168954:  c0 02 40 f9   ldr	x0, [x22]
+0x185168958:  c2 d0 bd 94   bl	j__objc_release_x0
+0x18516895c:  df 02 00 f9   str	xzr, [x22]
+0x185168960:  ; loc_185168960
+0x185168960:  68 6a 75 b8   ldr	w8, [x19, x21]
+0x185168964:  08 71 0d 12   and	w8, w8, #0xfff8ffff
+0x185168968:  08 41 14 2a   orr	w8, w8, w20, lsl #0x10
+0x18516896c:  68 6a 35 b8   str	w8, [x19, x21]
+0x185168970:  e0 03 13 aa   mov	x0, x19
+0x185168974:  9b 7e bb 94   bl	0x1880483e0
+0x185168978:  68 6a 75 b8   ldr	w8, [x19, x21]
+0x18516897c:  09 49 10 53   ubfx	w9, w8, #0x10, #0x3
+0x185168980:  3f 09 00 71   cmp	w9, #0x2
+0x185168984:  80 00 00 54   b.eq	loc_185168994 ; ⤵ 0x10
+0x185168988:  3f 05 00 71   cmp	w9, #0x1
+0x18516898c:  a0 00 00 54   b.eq	loc_1851689a0 ; ⤵ 0x14
+0x185168990:  c9 00 00 35   cbnz	w9, loc_1851689a8 ; ⤵ 0x18
+0x185168994:  ; loc_185168994
+0x185168994:  08 75 02 12   and	w8, w8, #0xcfffffff
+0x185168998:  68 6a 35 b8   str	w8, [x19, x21]
+0x18516899c:  03 00 00 14   b	loc_1851689a8 ; ⤵ 0xc
+0x1851689a0:  ; loc_1851689a0
+0x1851689a0:  e0 03 13 aa   mov	x0, x19
+0x1851689a4:  73 53 bb 94   bl	0x18803d770
+0x1851689a8:  ; loc_1851689a8
+0x1851689a8:  e0 03 13 aa   mov	x0, x19
+0x1851689ac:  01 4f bc 94   bl	0x18807c5b0
+0x1851689b0:  e2 03 13 aa   mov	x2, x19
+0x1851689b4:  b3 3b bd 94   bl	0x1880b7880
+0x1851689b8:  e0 03 13 aa   mov	x0, x19
+0x1851689bc:  fd 4e bc 94   bl	0x18807c5b0
+0x1851689c0:  e2 03 13 aa   mov	x2, x19
+0x1851689c4:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x1851689c8:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x1851689cc:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x1851689d0:  ff 23 03 d5   autibsp
+0x1851689d4:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x1851689d8:  50 00 f0 b6   tbz	x16, #0x3e, loc_1851689e0 ; ⤵ 0x8
+0x1851689dc:  20 8e 38 d4   brk	#0xc471
+0x1851689e0:  ; loc_1851689e0
+0x1851689e0:  10 93 bc 14   b	0x18808d620
+

@@ -1,0 +1,25 @@
+### -[NSTokenFieldCell tokenizingCharacterSet]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTokenFieldCell tokenizingCharacterSet]
+
+-[NSTokenFieldCell tokenizingCharacterSet]:
+0x18518c2e8:  a8 92 30 d0   adrp	x8, 0x1e63e2000
+0x18518c2ec:  08 35 87 b9   ldrsw	x8, [x8, #0x734]
+0x18518c2f0:  08 00 08 8b   add	x8, x0, x8
+0x18518c2f4:  08 01 40 f9   ldr	x8, [x8]
+0x18518c2f8:  68 00 00 b4   cbz	x8, loc_18518c304 ; ⤵ 0xc
+0x18518c2fc:  e0 03 08 aa   mov	x0, x8
+0x18518c300:  c0 03 5f d6   ret
+0x18518c304:  ; loc_18518c304
+0x18518c304:  7f 23 03 d5   pacibsp
+0x18518c308:  fd 7b bf a9   stp	fp, lr, [sp, #-0x10]!
+0x18518c30c:  fd 03 00 91   mov	fp, sp
+0x18518c310:  30 45 bd 94   bl	j__objc_opt_class
+0x18518c314:  fd 7b c1 a8   ldp	fp, lr, [sp], #0x10
+0x18518c318:  ff 23 03 d5   autibsp
+0x18518c31c:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x18518c320:  50 00 f0 b6   tbz	x16, #0x3e, loc_18518c328 ; ⤵ 0x8
+0x18518c324:  20 8e 38 d4   brk	#0xc471
+0x18518c328:  ; loc_18518c328
+0x18518c328:  76 c9 bb 14   b	0x18807e900
+

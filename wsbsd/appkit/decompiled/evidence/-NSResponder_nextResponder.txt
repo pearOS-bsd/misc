@@ -1,0 +1,68 @@
+### -[NSResponder nextResponder]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSResponder nextResponder]
+
+-[NSResponder nextResponder]:
+0x184f4f418:  7f 23 03 d5   pacibsp
+0x184f4f41c:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x184f4f420:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x184f4f424:  fd 43 00 91   add	fp, sp, #0x10
+0x184f4f428:  f3 03 00 aa   mov	x19, x0
+0x184f4f42c:  81 a9 31 90   adrp	x1, 0x1e847f000
+0x184f4f430:  21 40 21 91   add	x1, x1, #0x850 ; "nextResponder"
+0x184f4f434:  72 02 ff 97   bl	__NSAddKeyValueDependency
+0x184f4f438:  48 a5 30 f0   adrp	x8, 0x1e63fa000
+0x184f4f43c:  08 89 32 91   add	x8, x8, #0xca2 ; __MergedGlobals
+0x184f4f440:  08 fd df 08   ldarb	w8, [x8]
+0x184f4f444:  1f 09 00 71   cmp	w8, #0x2
+0x184f4f448:  e0 01 00 54   b.eq	loc_184f4f484 ; ⤵ 0x3c
+0x184f4f44c:  c8 00 00 34   cbz	w8, loc_184f4f464 ; ⤵ 0x18
+0x184f4f450:  ; loc_184f4f450
+0x184f4f450:  60 06 40 f9   ldr	x0, [x19, #0x8]
+0x184f4f454:  83 37 c3 94   bl	0x18801d260
+0x184f4f458:  60 01 00 36   tbz	w0, #0, loc_184f4f484 ; ⤵ 0x2c
+0x184f4f45c:  00 00 80 d2   mov	x0, #0
+0x184f4f460:  21 00 00 14   b	loc_184f4f4e4 ; ⤵ 0x84
+0x184f4f464:  ; loc_184f4f464
+0x184f4f464:  e0 a9 31 90   adrp	x0, 0x1e848b000
+0x184f4f468:  00 40 34 91   add	x0, x0, #0xd10 ; "NSResponderNextResponderIsWeak"
+0x184f4f46c:  42 a5 30 f0   adrp	x2, 0x1e63fa000
+0x184f4f470:  42 88 32 91   add	x2, x2, #0xca2 ; __MergedGlobals
+0x184f4f474:  01 00 80 52   mov	w1, #0
+0x184f4f478:  03 00 80 d2   mov	x3, #0
+0x184f4f47c:  af e1 fd 97   bl	__NSGetBoolAppConfig
+0x184f4f480:  80 fe ff 35   cbnz	w0, loc_184f4f450 ; ⤴ -0x30
+0x184f4f484:  ; loc_184f4f484
+0x184f4f484:  48 a5 30 f0   adrp	x8, 0x1e63fa000
+0x184f4f488:  08 8d 32 91   add	x8, x8, #0xca3 ; data_1e63faca3 (AppKit/__DATA_DIRTY.__bss)
+0x184f4f48c:  08 fd df 08   ldarb	w8, [x8]
+0x184f4f490:  1f 09 00 71   cmp	w8, #0x2
+0x184f4f494:  60 02 00 54   b.eq	loc_184f4f4e0 ; ⤵ 0x4c
+0x184f4f498:  48 01 00 34   cbz	w8, loc_184f4f4c0 ; ⤵ 0x28
+0x184f4f49c:  ; loc_184f4f49c
+0x184f4f49c:  60 06 40 f9   ldr	x0, [x19, #0x8]
+0x184f4f4a0:  f4 35 c6 94   bl	j__objc_retain_x0
+0x184f4f4a4:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184f4f4a8:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184f4f4ac:  ff 23 03 d5   autibsp
+0x184f4f4b0:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f4f4b4:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f4f4bc ; ⤵ 0x8
+0x184f4f4b8:  20 8e 38 d4   brk	#0xc471
+0x184f4f4bc:  ; loc_184f4f4bc
+0x184f4f4bc:  35 4b c6 14   b	j__objc_autorelease
+0x184f4f4c0:  ; loc_184f4f4c0
+0x184f4f4c0:  e0 a9 31 90   adrp	x0, 0x1e848b000
+0x184f4f4c4:  00 c0 34 91   add	x0, x0, #0xd30 ; "NSResponderNextResponderAutoreleases"
+0x184f4f4c8:  42 a5 30 f0   adrp	x2, 0x1e63fa000
+0x184f4f4cc:  42 8c 32 91   add	x2, x2, #0xca3 ; data_1e63faca3 (AppKit/__DATA_DIRTY.__bss)
+0x184f4f4d0:  21 00 80 52   mov	w1, #0x1
+0x184f4f4d4:  03 00 80 d2   mov	x3, #0
+0x184f4f4d8:  98 e1 fd 97   bl	__NSGetBoolAppConfig
+0x184f4f4dc:  00 fe ff 35   cbnz	w0, loc_184f4f49c ; ⤴ -0x40
+0x184f4f4e0:  ; loc_184f4f4e0
+0x184f4f4e0:  60 06 40 f9   ldr	x0, [x19, #0x8]
+0x184f4f4e4:  ; loc_184f4f4e4
+0x184f4f4e4:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184f4f4e8:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184f4f4ec:  ff 0f 5f d6   retab
+

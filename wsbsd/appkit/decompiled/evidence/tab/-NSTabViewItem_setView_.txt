@@ -1,0 +1,55 @@
+### -[NSTabViewItem setView:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTabViewItem setView:]
+
+-[NSTabViewItem setView:]:
+0x185077484:  7f 23 03 d5   pacibsp
+0x185077488:  f6 57 bd a9   stp	x22, x21, [sp, #-0x30]!
+0x18507748c:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x185077490:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x185077494:  fd 83 00 91   add	fp, sp, #0x20
+0x185077498:  08 0c 40 f9   ldr	x8, [x0, #0x18]
+0x18507749c:  1f 01 02 eb   cmp	x8, x2
+0x1850774a0:  00 02 00 54   b.eq	loc_1850774e0 ; ⤵ 0x40
+0x1850774a4:  f5 03 02 aa   mov	x21, x2
+0x1850774a8:  f3 03 00 aa   mov	x19, x0
+0x1850774ac:  a1 58 be 94   bl	0x18800d730
+0x1850774b0:  f4 03 00 aa   mov	x20, x0
+0x1850774b4:  e0 03 13 aa   mov	x0, x19
+0x1850774b8:  e2 03 15 aa   mov	x2, x21
+0x1850774bc:  0d df c0 94   bl	0x1880af0f0
+0x1850774c0:  e0 03 13 aa   mov	x0, x19
+0x1850774c4:  02 00 80 d2   mov	x2, #0
+0x1850774c8:  f2 dd c0 94   bl	0x1880aec90
+0x1850774cc:  7f 22 00 f9   str	xzr, [x19, #0x40]
+0x1850774d0:  60 1a 40 f9   ldr	x0, [x19, #0x30]
+0x1850774d4:  93 a1 c0 94   bl	0x18809fb20
+0x1850774d8:  1f 00 13 eb   cmp	x0, x19
+0x1850774dc:  a0 00 00 54   b.eq	loc_1850774f0 ; ⤵ 0x14
+0x1850774e0:  ; loc_1850774e0
+0x1850774e0:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x1850774e4:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x1850774e8:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x1850774ec:  ff 0f 5f d6   retab
+0x1850774f0:  ; loc_1850774f0
+0x1850774f0:  75 1a 40 f9   ldr	x21, [x19, #0x30]
+0x1850774f4:  76 0e 40 f9   ldr	x22, [x19, #0x18]
+0x1850774f8:  e0 03 13 aa   mov	x0, x19
+0x1850774fc:  cd 55 bf 94   bl	0x18804cc30
+0x185077500:  e6 03 00 aa   mov	x6, x0
+0x185077504:  67 22 40 f9   ldr	x7, [x19, #0x40]
+0x185077508:  e0 03 15 aa   mov	x0, x21
+0x18507750c:  e2 03 13 aa   mov	x2, x19
+0x185077510:  e3 03 14 aa   mov	x3, x20
+0x185077514:  e4 03 13 aa   mov	x4, x19
+0x185077518:  e5 03 16 aa   mov	x5, x22
+0x18507751c:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x185077520:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x185077524:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x185077528:  ff 23 03 d5   autibsp
+0x18507752c:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x185077530:  50 00 f0 b6   tbz	x16, #0x3e, loc_185077538 ; ⤵ 0x8
+0x185077534:  20 8e 38 d4   brk	#0xc471
+0x185077538:  ; loc_185077538
+0x185077538:  7e c2 bf 14   b	0x188067f30
+

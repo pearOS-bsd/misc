@@ -1,0 +1,57 @@
+### -[NSScrollView setHasVerticalScroller:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSScrollView setHasVerticalScroller:]
+
+-[NSScrollView setHasVerticalScroller:]:
+0x18507ba80:  68 a4 2f 90   adrp	x8, 0x1e4507000
+0x18507ba84:  08 99 88 b9   ldrsw	x8, [x8, #0x898] ; _OBJC_IVAR_$_NSScrollView._sFlags
+0x18507ba88:  09 00 08 8b   add	x9, x0, x8
+0x18507ba8c:  29 01 40 b9   ldr	w9, [x9]
+0x18507ba90:  3f 05 00 31   cmn	w9, #0x1
+0x18507ba94:  ea d7 9f 1a   cset	w10, gt
+0x18507ba98:  4a 00 0a 4a   eor	w10, w2, w10
+0x18507ba9c:  4a 00 00 36   tbz	w10, #0, loc_18507baa4 ; ⤵ 0x8
+0x18507baa0:  c0 03 5f d6   ret
+0x18507baa4:  ; loc_18507baa4
+0x18507baa4:  7f 23 03 d5   pacibsp
+0x18507baa8:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x18507baac:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x18507bab0:  fd 43 00 91   add	fp, sp, #0x10
+0x18507bab4:  f3 03 00 aa   mov	x19, x0
+0x18507bab8:  0a 00 b0 52   mov	w10, #0x80000000
+0x18507babc:  5f 00 00 71   cmp	w2, #0
+0x18507bac0:  4a 11 9f 1a   csel	w10, w10, wzr, ne
+0x18507bac4:  2a 79 00 33   bfxil	w10, w9, #0, #0x1f
+0x18507bac8:  0a 68 28 b8   str	w10, [x0, x8]
+0x18507bacc:  68 a4 2f 90   adrp	x8, 0x1e4507000
+0x18507bad0:  08 89 88 b9   ldrsw	x8, [x8, #0x888] ; _OBJC_IVAR_$_NSScrollView._vScroller
+0x18507bad4:  08 00 08 8b   add	x8, x0, x8
+0x18507bad8:  00 01 40 f9   ldr	x0, [x8]
+0x18507badc:  c2 00 00 34   cbz	w2, loc_18507baf4 ; ⤵ 0x18
+0x18507bae0:  20 01 00 b5   cbnz	x0, loc_18507bb04 ; ⤵ 0x24
+0x18507bae4:  e0 03 13 aa   mov	x0, x19
+0x18507bae8:  22 00 80 52   mov	w2, #0x1
+0x18507baec:  61 62 bf 94   bl	0x188054470
+0x18507baf0:  05 00 00 14   b	loc_18507bb04 ; ⤵ 0x14
+0x18507baf4:  ; loc_18507baf4
+0x18507baf4:  28 0b f8 d2   mov	x8, #0xc059000000000000
+0x18507baf8:  00 01 67 9e   fmov	d0, x8
+0x18507bafc:  01 1c a0 4e   mov	v1.16b, v0.16b
+0x18507bb00:  98 a6 c0 94   bl	0x1880a5560
+0x18507bb04:  ; loc_18507bb04
+0x18507bb04:  e1 a1 31 90   adrp	x1, 0x1e84b7000
+0x18507bb08:  21 c0 00 91   add	x1, x1, #0x30 ; "hasVerticalScroller"
+0x18507bb0c:  e0 03 13 aa   mov	x0, x19
+0x18507bb10:  9a 72 fa 97   bl	__NSInvalidateKeyValueDependencies
+0x18507bb14:  e0 03 13 aa   mov	x0, x19
+0x18507bb18:  33 34 27 94   bl	-[NSScrollView _updatePockets]
+0x18507bb1c:  e0 03 13 aa   mov	x0, x19
+0x18507bb20:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x18507bb24:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x18507bb28:  ff 23 03 d5   autibsp
+0x18507bb2c:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x18507bb30:  50 00 f0 b6   tbz	x16, #0x3e, loc_18507bb38 ; ⤵ 0x8
+0x18507bb34:  20 8e 38 d4   brk	#0xc471
+0x18507bb38:  ; loc_18507bb38
+0x18507bb38:  ba 90 be 14   b	0x18801fe20
+

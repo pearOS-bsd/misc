@@ -1,0 +1,8 @@
+### -[NSButtonCell title]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSButtonCell title]
+
+-[NSButtonCell title]:
+0x184f4a81c:  00 04 40 f9   ldr	x0, [x0, #0x8]
+0x184f4a820:  cb 9c 1a 14   b	__NSButtonTitleFromContents
+

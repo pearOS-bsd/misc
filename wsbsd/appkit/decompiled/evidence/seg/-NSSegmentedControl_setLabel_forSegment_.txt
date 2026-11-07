@@ -1,0 +1,28 @@
+### -[NSSegmentedControl setLabel:forSegment:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSSegmentedControl setLabel:forSegment:]
+
+-[NSSegmentedControl setLabel:forSegment:]:
+0x184fc04e8:  7f 23 03 d5   pacibsp
+0x184fc04ec:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x184fc04f0:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x184fc04f4:  fd 43 00 91   add	fp, sp, #0x10
+0x184fc04f8:  f3 03 03 aa   mov	x19, x3
+0x184fc04fc:  f4 03 00 aa   mov	x20, x0
+0x184fc0500:  28 aa 2f 90   adrp	x8, 0x1e4504000
+0x184fc0504:  08 d1 1e 91   add	x8, x8, #0x7b4 ; _OBJC_IVAR_$_NSControl._cell
+0x184fc0508:  08 01 80 b9   ldrsw	x8, [x8]
+0x184fc050c:  08 00 08 8b   add	x8, x0, x8
+0x184fc0510:  00 01 40 f9   ldr	x0, [x8]
+0x184fc0514:  ab 9b c3 94   bl	0x1880a73c0
+0x184fc0518:  e0 03 14 aa   mov	x0, x20
+0x184fc051c:  e2 03 13 aa   mov	x2, x19
+0x184fc0520:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184fc0524:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184fc0528:  ff 23 03 d5   autibsp
+0x184fc052c:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184fc0530:  50 00 f0 b6   tbz	x16, #0x3e, loc_184fc0538 ; ⤵ 0x8
+0x184fc0534:  20 8e 38 d4   brk	#0xc471
+0x184fc0538:  ; loc_184fc0538
+0x184fc0538:  72 5b c2 14   b	0x188057300
+

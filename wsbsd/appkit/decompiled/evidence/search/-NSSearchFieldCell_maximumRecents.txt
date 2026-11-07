@@ -1,0 +1,14 @@
+### -[NSSearchFieldCell maximumRecents]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSSearchFieldCell maximumRecents]
+
+-[NSSearchFieldCell maximumRecents]:
+0x1856adf58:  a8 72 2f f0   adrp	x8, 0x1e4504000
+0x1856adf5c:  08 69 8e b9   ldrsw	x8, [x8, #0xe68] ; _OBJC_IVAR_$_NSSearchFieldCell._sfFlags
+0x1856adf60:  08 00 08 8b   add	x8, x0, x8
+0x1856adf64:  08 01 40 b9   ldr	w8, [x8]
+0x1856adf68:  08 21 41 d3   ubfx	x8, x8, #0x1, #0x8
+0x1856adf6c:  1f fd 03 71   cmp	w8, #0xff
+0x1856adf70:  00 11 9f da   csinv	x0, x8, xzr, ne
+0x1856adf74:  c0 03 5f d6   ret
+

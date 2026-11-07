@@ -1,0 +1,13 @@
+### -[NSSplitView arrangesAllSubviews]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSSplitView arrangesAllSubviews]
+
+-[NSSplitView arrangesAllSubviews]:
+0x185757c88:  48 64 30 f0   adrp	x8, 0x1e63e2000
+0x185757c8c:  08 dd 89 b9   ldrsw	x8, [x8, #0x9dc] ; __MergedGlobals
+0x185757c90:  08 00 08 8b   add	x8, x0, x8
+0x185757c94:  08 09 40 39   ldrb	w8, [x8, #0x2]
+0x185757c98:  1f 01 1f 72   tst	w8, #0x2
+0x185757c9c:  e0 17 9f 1a   cset	w0, eq
+0x185757ca0:  c0 03 5f d6   ret
+

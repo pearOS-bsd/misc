@@ -1,0 +1,9 @@
+### -[NSCell isBordered]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSCell isBordered]
+
+-[NSCell isBordered]:
+0x184f80fb0:  08 44 40 39   ldrb	w8, [x0, #0x11]
+0x184f80fb4:  00 01 00 12   and	w0, w8, #0x1
+0x184f80fb8:  c0 03 5f d6   ret
+

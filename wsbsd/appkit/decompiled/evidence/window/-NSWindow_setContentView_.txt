@@ -1,0 +1,142 @@
+### -[NSWindow setContentView:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSWindow setContentView:]
+
+-[NSWindow setContentView:]:
+0x184f35aa8:  7f 23 03 d5   pacibsp
+0x184f35aac:  eb 2b bb 6d   stp	d11, d10, [sp, #-0x50]!
+0x184f35ab0:  e9 23 01 6d   stp	d9, d8, [sp, #0x10]
+0x184f35ab4:  f6 57 02 a9   stp	x22, x21, [sp, #0x20]
+0x184f35ab8:  f4 4f 03 a9   stp	x20, x19, [sp, #0x30]
+0x184f35abc:  fd 7b 04 a9   stp	fp, lr, [sp, #0x40]
+0x184f35ac0:  fd 03 01 91   add	fp, sp, #0x40
+0x184f35ac4:  f4 03 02 aa   mov	x20, x2
+0x184f35ac8:  f3 03 00 aa   mov	x19, x0
+0x184f35acc:  88 ae 2f b0   adrp	x8, 0x1e4506000
+0x184f35ad0:  16 2d 8c b9   ldrsw	x22, [x8, #0xc2c] ; _OBJC_IVAR_$_NSWindow._contentView
+0x184f35ad4:  08 00 16 8b   add	x8, x0, x22
+0x184f35ad8:  00 01 40 f9   ldr	x0, [x8]
+0x184f35adc:  1f 00 02 eb   cmp	x0, x2
+0x184f35ae0:  a0 0c 00 54   b.eq	loc_184f35c74 ; ⤵ 0x194
+0x184f35ae4:  60 01 00 b4   cbz	x0, loc_184f35b10 ; ⤵ 0x2c
+0x184f35ae8:  ; loc_184f35ae8
+0x184f35ae8:  62 9c c6 94   bl	j__objc_retain_x0
+0x184f35aec:  f5 03 00 aa   mov	x21, x0
+0x184f35af0:  9c 97 c5 94   bl	0x18809b960
+0x184f35af4:  e0 03 15 aa   mov	x0, x21
+0x184f35af8:  f2 da c4 94   bl	0x18806c6c0
+0x184f35afc:  e0 03 15 aa   mov	x0, x21
+0x184f35b00:  02 00 80 d2   mov	x2, #0
+0x184f35b04:  73 cb c5 94   bl	0x1880a88d0
+0x184f35b08:  e0 03 15 aa   mov	x0, x21
+0x184f35b0c:  55 9c c6 94   bl	j__objc_release_x0
+0x184f35b10:  ; loc_184f35b10
+0x184f35b10:  74 6a 36 f8   str	x20, [x19, x22]
+0x184f35b14:  88 ae 2f b0   adrp	x8, 0x1e4506000
+0x184f35b18:  15 29 8c b9   ldrsw	x21, [x8, #0xc28] ; _OBJC_IVAR_$_NSWindow._borderView
+0x184f35b1c:  68 02 15 8b   add	x8, x19, x21
+0x184f35b20:  00 01 40 f9   ldr	x0, [x8]
+0x184f35b24:  17 3d c5 94   bl	0x188084f80
+0x184f35b28:  08 1c a0 4e   mov	v8.16b, v0.16b
+0x184f35b2c:  29 1c a1 4e   mov	v9.16b, v1.16b
+0x184f35b30:  4a 1c a2 4e   mov	v10.16b, v2.16b
+0x184f35b34:  6b 1c a3 4e   mov	v11.16b, v3.16b
+0x184f35b38:  e0 03 13 aa   mov	x0, x19
+0x184f35b3c:  b5 f3 c5 94   bl	0x1880b2a10
+0x184f35b40:  e2 03 00 aa   mov	x2, x0
+0x184f35b44:  e0 03 13 aa   mov	x0, x19
+0x184f35b48:  00 1d a8 4e   mov	v0.16b, v8.16b
+0x184f35b4c:  21 1d a9 4e   mov	v1.16b, v9.16b
+0x184f35b50:  42 1d aa 4e   mov	v2.16b, v10.16b
+0x184f35b54:  63 1d ab 4e   mov	v3.16b, v11.16b
+0x184f35b58:  b2 18 c5 94   bl	0x18807be20
+0x184f35b5c:  08 1c a0 4e   mov	v8.16b, v0.16b
+0x184f35b60:  29 1c a1 4e   mov	v9.16b, v1.16b
+0x184f35b64:  4a 1c a2 4e   mov	v10.16b, v2.16b
+0x184f35b68:  6b 1c a3 4e   mov	v11.16b, v3.16b
+0x184f35b6c:  88 ae 2f b0   adrp	x8, 0x1e4506000
+0x184f35b70:  08 21 8c b9   ldrsw	x8, [x8, #0xc20] ; _OBJC_IVAR_$_NSWindow._wFlags
+0x184f35b74:  68 02 08 8b   add	x8, x19, x8
+0x184f35b78:  08 19 40 39   ldrb	w8, [x8, #0x6]
+0x184f35b7c:  88 00 00 36   tbz	w8, #0, loc_184f35b8c ; ⤵ 0x10
+0x184f35b80:  e0 03 14 aa   mov	x0, x20
+0x184f35b84:  42 02 80 52   mov	w2, #0x12
+0x184f35b88:  9a af c5 94   bl	0x1880a19f0
+0x184f35b8c:  ; loc_184f35b8c
+0x184f35b8c:  e0 03 14 aa   mov	x0, x20
+0x184f35b90:  22 00 80 52   mov	w2, #0x1
+0x184f35b94:  13 df c5 94   bl	0x1880ad7e0
+0x184f35b98:  60 6a 76 f8   ldr	x0, [x19, x22]
+0x184f35b9c:  00 1d a8 4e   mov	v0.16b, v8.16b
+0x184f35ba0:  21 1d a9 4e   mov	v1.16b, v9.16b
+0x184f35ba4:  42 1d aa 4e   mov	v2.16b, v10.16b
+0x184f35ba8:  63 1d ab 4e   mov	v3.16b, v11.16b
+0x184f35bac:  39 be c5 94   bl	0x1880a5490
+0x184f35bb0:  60 6a 75 f8   ldr	x0, [x19, x21]
+0x184f35bb4:  08 f0 37 f0   adrp	x8, 0x1f4d38000
+0x184f35bb8:  01 01 0c 91   add	x1, x8, #0x300 ; _setContentView:
+0x184f35bbc:  61 a1 c6 94   bl	j__objc_opt_respondsToSelector
+0x184f35bc0:  e8 03 00 aa   mov	x8, x0
+0x184f35bc4:  60 6a 75 f8   ldr	x0, [x19, x21]
+0x184f35bc8:  62 6a 76 f8   ldr	x2, [x19, x22]
+0x184f35bcc:  68 00 00 36   tbz	w8, #0, loc_184f35bd8 ; ⤵ 0xc
+0x184f35bd0:  80 a6 c4 94   bl	0x18805f5d0
+0x184f35bd4:  02 00 00 14   b	loc_184f35bdc ; ⤵ 0x8
+0x184f35bd8:  ; loc_184f35bd8
+0x184f35bd8:  ba f6 c4 94   bl	0x1880736c0
+0x184f35bdc:  ; loc_184f35bdc
+0x184f35bdc:  60 6a 76 f8   ldr	x0, [x19, x22]
+0x184f35be0:  e2 03 13 aa   mov	x2, x19
+0x184f35be4:  3b cb c5 94   bl	0x1880a88d0
+0x184f35be8:  60 6a 76 f8   ldr	x0, [x19, x22]
+0x184f35bec:  b5 da c4 94   bl	0x18806c6c0
+0x184f35bf0:  e0 03 13 aa   mov	x0, x19
+0x184f35bf4:  df 18 c5 94   bl	0x18807bf70
+0x184f35bf8:  c0 04 00 b4   cbz	x0, loc_184f35c90 ; ⤵ 0x98
+0x184f35bfc:  e0 03 13 aa   mov	x0, x19
+0x184f35c00:  dc 18 c5 94   bl	0x18807bf70
+0x184f35c04:  bb 67 c5 94   bl	0x18808faf0
+0x184f35c08:  40 04 00 34   cbz	w0, loc_184f35c90 ; ⤵ 0x88
+0x184f35c0c:  e0 03 13 aa   mov	x0, x19
+0x184f35c10:  d8 18 c5 94   bl	0x18807bf70
+0x184f35c14:  c7 5e c3 94   bl	0x18800d730
+0x184f35c18:  1f 00 14 eb   cmp	x0, x20
+0x184f35c1c:  a0 03 00 54   b.eq	loc_184f35c90 ; ⤵ 0x74
+0x184f35c20:  e0 03 13 aa   mov	x0, x19
+0x184f35c24:  8b d2 c4 94   bl	0x18806a650
+0x184f35c28:  88 ae 2f b0   adrp	x8, 0x1e4506000
+0x184f35c2c:  08 19 8c b9   ldrsw	x8, [x8, #0xc18] ; _OBJC_IVAR_$_NSWindow._auxiliaryStorage
+0x184f35c30:  73 02 08 8b   add	x19, x19, x8
+0x184f35c34:  60 02 40 f9   ldr	x0, [x19]
+0x184f35c38:  ce 18 c5 94   bl	0x18807bf70
+0x184f35c3c:  02 00 80 52   mov	w2, #0
+0x184f35c40:  a4 ab c4 94   bl	0x188060ad0
+0x184f35c44:  60 02 40 f9   ldr	x0, [x19]
+0x184f35c48:  02 00 80 d2   mov	x2, #0
+0x184f35c4c:  fd 7b 44 a9   ldp	fp, lr, [sp, #0x40]
+0x184f35c50:  f4 4f 43 a9   ldp	x20, x19, [sp, #0x30]
+0x184f35c54:  f6 57 42 a9   ldp	x22, x21, [sp, #0x20]
+0x184f35c58:  e9 23 41 6d   ldp	d9, d8, [sp, #0x10]
+0x184f35c5c:  eb 2b c5 6c   ldp	d11, d10, [sp], #0x50
+0x184f35c60:  ff 23 03 d5   autibsp
+0x184f35c64:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f35c68:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f35c70 ; ⤵ 0x8
+0x184f35c6c:  20 8e 38 d4   brk	#0xc471
+0x184f35c70:  ; loc_184f35c70
+0x184f35c70:  38 b5 c5 14   b	0x1880a3150
+0x184f35c74:  ; loc_184f35c74
+0x184f35c74:  e0 03 14 aa   mov	x0, x20
+0x184f35c78:  e2 5e c3 94   bl	0x18800d800
+0x184f35c7c:  1f 00 13 eb   cmp	x0, x19
+0x184f35c80:  80 00 00 54   b.eq	loc_184f35c90 ; ⤵ 0x10
+0x184f35c84:  60 6a 76 f8   ldr	x0, [x19, x22]
+0x184f35c88:  00 f3 ff b5   cbnz	x0, loc_184f35ae8 ; ⤴ -0x1a0
+0x184f35c8c:  a1 ff ff 17   b	loc_184f35b10 ; ⤴ -0x17c
+0x184f35c90:  ; loc_184f35c90
+0x184f35c90:  fd 7b 44 a9   ldp	fp, lr, [sp, #0x40]
+0x184f35c94:  f4 4f 43 a9   ldp	x20, x19, [sp, #0x30]
+0x184f35c98:  f6 57 42 a9   ldp	x22, x21, [sp, #0x20]
+0x184f35c9c:  e9 23 41 6d   ldp	d9, d8, [sp, #0x10]
+0x184f35ca0:  eb 2b c5 6c   ldp	d11, d10, [sp], #0x50
+0x184f35ca4:  ff 0f 5f d6   retab
+
