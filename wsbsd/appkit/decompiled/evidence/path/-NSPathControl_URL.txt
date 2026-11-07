@@ -1,0 +1,32 @@
+### -[NSPathControl URL]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSPathControl URL]
+
+-[NSPathControl URL]:
+0x1859ff190:  7f 23 03 d5   pacibsp
+0x1859ff194:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x1859ff198:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x1859ff19c:  fd 43 00 91   add	fp, sp, #0x10
+0x1859ff1a0:  a0 e7 99 94   bl	0x188079020
+0x1859ff1a4:  5b 7f 9b 94   bl	j__objc_claimAutoreleasedReturnValue
+0x1859ff1a8:  f3 03 00 aa   mov	x19, x0
+0x1859ff1ac:  5d 08 98 94   bl	0x188001320
+0x1859ff1b0:  58 7f 9b 94   bl	j__objc_claimAutoreleasedReturnValue
+0x1859ff1b4:  f4 03 00 aa   mov	x20, x0
+0x1859ff1b8:  e0 03 13 aa   mov	x0, x19
+0x1859ff1bc:  a9 76 9b 94   bl	j__objc_release_x0
+0x1859ff1c0:  e0 03 14 aa   mov	x0, x20
+0x1859ff1c4:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x1859ff1c8:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x1859ff1cc:  ff 23 03 d5   autibsp
+0x1859ff1d0:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x1859ff1d4:  50 00 f0 b6   tbz	x16, #0x3e, loc_1859ff1dc ; ⤵ 0x8
+0x1859ff1d8:  20 8e 38 d4   brk	#0xc471
+0x1859ff1dc:  ; loc_1859ff1dc
+0x1859ff1dc:  49 7f 9b 14   b	j__objc_autoreleaseReturnValue
+0x1859ff1e0:  f4 03 00 aa   mov	x20, x0
+0x1859ff1e4:  e0 03 13 aa   mov	x0, x19
+0x1859ff1e8:  9e 76 9b 94   bl	j__objc_release_x0
+0x1859ff1ec:  e0 03 14 aa   mov	x0, x20
+0x1859ff1f0:  a8 73 9b 94   bl	j___Unwind_Resume
+

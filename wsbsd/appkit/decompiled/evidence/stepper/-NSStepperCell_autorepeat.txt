@@ -1,0 +1,11 @@
+### -[NSStepperCell autorepeat]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSStepperCell autorepeat]
+
+-[NSStepperCell autorepeat]:
+0x185694010:  88 73 2f 90   adrp	x8, 0x1e4504000
+0x185694014:  08 99 8d b9   ldrsw	x8, [x8, #0xd98] ; _OBJC_IVAR_$_NSStepperCell._stepperModel
+0x185694018:  08 00 08 8b   add	x8, x0, x8
+0x18569401c:  00 01 40 f9   ldr	x0, [x8]
+0x185694020:  34 89 a7 14   b	0x1880764f0
+

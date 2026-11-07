@@ -1,0 +1,4 @@
+### -[NSButton performClick:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSButton performClick:]
+   ⨯ public symbol -[NSButton performClick:] not found in image AppKit

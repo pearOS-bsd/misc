@@ -1,0 +1,12 @@
+### -[NSToolbarItem label]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSToolbarItem label]
+
+-[NSToolbarItem label]:
+0x184fbf1f0:  c8 a3 31 d0   adrp	x8, 0x1e8439000
+0x184fbf1f4:  08 c1 18 91   add	x8, x8, #0x630 ; _ptr.__NSCFConstantString
+0x184fbf1f8:  09 18 40 f9   ldr	x9, [x0, #0x30]
+0x184fbf1fc:  3f 01 00 f1   cmp	x9, #0
+0x184fbf200:  00 01 89 9a   csel	x0, x8, x9, eq
+0x184fbf204:  13 9b c4 14   b	j__objc_retainAutoreleaseReturnValue
+

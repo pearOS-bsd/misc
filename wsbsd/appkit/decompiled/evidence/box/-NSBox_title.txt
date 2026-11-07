@@ -1,0 +1,11 @@
+### -[NSBox title]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSBox title]
+
+-[NSBox title]:
+0x18562f62c:  a8 76 2f b0   adrp	x8, 0x1e4504000
+0x18562f630:  08 19 89 b9   ldrsw	x8, [x8, #0x918] ; _OBJC_IVAR_$_NSBox._titleCell
+0x18562f634:  08 00 08 8b   add	x8, x0, x8
+0x18562f638:  00 01 40 f9   ldr	x0, [x8]
+0x18562f63c:  49 76 a7 14   b	0x18800cf60
+

@@ -1,0 +1,57 @@
+### -[NSApplication windows]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSApplication windows]
+
+-[NSApplication windows]:
+0x184eed530:  7f 23 03 d5   pacibsp
+0x184eed534:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x184eed538:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x184eed53c:  fd 43 00 91   add	fp, sp, #0x10
+0x184eed540:  f3 03 00 aa   mov	x19, x0
+0x184eed544:  48 a8 30 f0   adrp	x8, 0x1e63f8000
+0x184eed548:  08 95 2d 91   add	x8, x8, #0xb65 ; _sNSApplicationHideNSMenuWindowManagerWindowsComputedValue
+0x184eed54c:  08 fd df 08   ldarb	w8, [x8]
+0x184eed550:  1f 09 00 71   cmp	w8, #0x2
+0x184eed554:  a0 03 00 54   b.eq	loc_184eed5c8 ; ⤵ 0x74
+0x184eed558:  28 02 00 34   cbz	w8, loc_184eed59c ; ⤵ 0x44
+0x184eed55c:  ; loc_184eed55c
+0x184eed55c:  e0 03 13 aa   mov	x0, x19
+0x184eed560:  10 4a c5 94   bl	0x18803fda0
+0x184eed564:  f3 03 00 aa   mov	x19, x0
+0x184eed568:  22 aa 31 b0   adrp	x2, 0x1e8432000
+0x184eed56c:  42 00 27 91   add	x2, x2, #0x9c0 ; ___block_literal_global.853
+0x184eed570:  b8 dc c4 94   bl	0x188024850
+0x184eed574:  e2 03 00 aa   mov	x2, x0
+0x184eed578:  e0 03 13 aa   mov	x0, x19
+0x184eed57c:  69 5b c4 94   bl	0x188004320
+0x184eed580:  f4 03 00 aa   mov	x20, x0
+0x184eed584:  e0 03 13 aa   mov	x0, x19
+0x184eed588:  b6 bd c7 94   bl	j__objc_release_x0
+0x184eed58c:  e0 03 14 aa   mov	x0, x20
+0x184eed590:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184eed594:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184eed598:  ff 0f 5f d6   retab
+0x184eed59c:  ; loc_184eed59c
+0x184eed59c:  e0 aa 31 90   adrp	x0, 0x1e8449000
+0x184eed5a0:  00 c0 17 91   add	x0, x0, #0x5f0 ; "NSApplicationHideNSMenuWindowManagerWindows"
+0x184eed5a4:  42 a8 30 f0   adrp	x2, 0x1e63f8000
+0x184eed5a8:  42 94 2d 91   add	x2, x2, #0xb65 ; _sNSApplicationHideNSMenuWindowManagerWindowsComputedValue
+0x184eed5ac:  b0 1d 00 90   adrp	x16, 0x1852a1000
+0x184eed5b0:  10 c2 0b 91   add	x16, x16, #0x2f0 ; _NSApplicationHideNSMenuWindowManagerWindowsDefaultValueFunction
+0x184eed5b4:  f0 23 c1 da   paciza	x16
+0x184eed5b8:  e3 03 10 aa   mov	x3, x16
+0x184eed5bc:  01 00 80 52   mov	w1, #0
+0x184eed5c0:  5e 69 ff 97   bl	__NSGetBoolAppConfig
+0x184eed5c4:  c0 fc ff 35   cbnz	w0, loc_184eed55c ; ⤴ -0x68
+0x184eed5c8:  ; loc_184eed5c8
+0x184eed5c8:  e0 03 13 aa   mov	x0, x19
+0x184eed5cc:  f5 49 c5 94   bl	0x18803fda0
+0x184eed5d0:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184eed5d4:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184eed5d8:  ff 23 03 d5   autibsp
+0x184eed5dc:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184eed5e0:  50 00 f0 b6   tbz	x16, #0x3e, loc_184eed5e8 ; ⤵ 0x8
+0x184eed5e4:  20 8e 38 d4   brk	#0xc471
+0x184eed5e8:  ; loc_184eed5e8
+0x184eed5e8:  ea d2 c7 14   b	j__objc_autorelease
+

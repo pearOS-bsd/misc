@@ -1,0 +1,22 @@
+### -[NSScrollView hasVerticalScroller]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSScrollView hasVerticalScroller]
+
+-[NSScrollView hasVerticalScroller]:
+0x184f73e3c:  7f 23 03 d5   pacibsp
+0x184f73e40:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x184f73e44:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x184f73e48:  fd 43 00 91   add	fp, sp, #0x10
+0x184f73e4c:  f3 03 00 aa   mov	x19, x0
+0x184f73e50:  21 aa 31 90   adrp	x1, 0x1e84b7000
+0x184f73e54:  21 c0 00 91   add	x1, x1, #0x30 ; "hasVerticalScroller"
+0x184f73e58:  e9 6f fe 97   bl	__NSAddKeyValueDependency
+0x184f73e5c:  a8 ac 2f 90   adrp	x8, 0x1e4507000
+0x184f73e60:  08 99 88 b9   ldrsw	x8, [x8, #0x898] ; _OBJC_IVAR_$_NSScrollView._sFlags
+0x184f73e64:  68 02 08 8b   add	x8, x19, x8
+0x184f73e68:  08 01 40 b9   ldr	w8, [x8]
+0x184f73e6c:  00 7d 1f 53   lsr	w0, w8, #0x1f
+0x184f73e70:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184f73e74:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184f73e78:  ff 0f 5f d6   retab
+

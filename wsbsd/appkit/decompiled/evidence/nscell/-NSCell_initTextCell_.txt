@@ -1,0 +1,37 @@
+### -[NSCell initTextCell:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSCell initTextCell:]
+
+-[NSCell initTextCell:]:
+0x184f2da34:  7f 23 03 d5   pacibsp
+0x184f2da38:  ff c3 00 d1   sub	sp, sp, #0x30
+0x184f2da3c:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x184f2da40:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x184f2da44:  fd 83 00 91   add	fp, sp, #0x20
+0x184f2da48:  f3 03 02 aa   mov	x19, x2
+0x184f2da4c:  28 c0 2d b0   adrp	x8, 0x1e0732000
+0x184f2da50:  08 91 46 f9   ldr	x8, [x8, #0xd20] ; NSCell
+0x184f2da54:  e0 23 00 a9   stp	x0, x8, [sp]
+0x184f2da58:  e8 be 2d 90   adrp	x8, 0x1e0709000
+0x184f2da5c:  01 cd 47 f9   ldr	x1, [x8, #0xf98] ; sel_init
+0x184f2da60:  e0 03 00 91   mov	x0, sp
+0x184f2da64:  57 bf c6 94   bl	j__objc_msgSendSuper2
+0x184f2da68:  f4 03 00 aa   mov	x20, x0
+0x184f2da6c:  60 01 00 b4   cbz	x0, loc_184f2da98 ; ⤵ 0x2c
+0x184f2da70:  28 a6 30 f0   adrp	x8, 0x1e63f4000
+0x184f2da74:  08 e1 0b 91   add	x8, x8, #0x2f8 ; _NSApp
+0x184f2da78:  00 01 40 f9   ldr	x0, [x8]
+0x184f2da7c:  29 2c c6 94   bl	0x1880b8b20
+0x184f2da80:  e2 03 00 aa   mov	x2, x0
+0x184f2da84:  e0 03 14 aa   mov	x0, x20
+0x184f2da88:  82 00 c6 94   bl	0x1880adc90
+0x184f2da8c:  e0 03 14 aa   mov	x0, x20
+0x184f2da90:  e2 03 13 aa   mov	x2, x19
+0x184f2da94:  a3 f7 c3 94   bl	0x18802b920
+0x184f2da98:  ; loc_184f2da98
+0x184f2da98:  e0 03 14 aa   mov	x0, x20
+0x184f2da9c:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x184f2daa0:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x184f2daa4:  ff c3 00 91   add	sp, sp, #0x30
+0x184f2daa8:  ff 0f 5f d6   retab
+

@@ -1,0 +1,17 @@
+### -[NSTokenField completionDelay]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTokenField completionDelay]
+
+-[NSTokenField completionDelay]:
+0x1856bfcec:  7f 23 03 d5   pacibsp
+0x1856bfcf0:  fd 7b bf a9   stp	fp, lr, [sp, #-0x10]!
+0x1856bfcf4:  fd 03 00 91   mov	fp, sp
+0x1856bfcf8:  d2 7e a7 94   bl	0x18809f840
+0x1856bfcfc:  fd 7b c1 a8   ldp	fp, lr, [sp], #0x10
+0x1856bfd00:  ff 23 03 d5   autibsp
+0x1856bfd04:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x1856bfd08:  50 00 f0 b6   tbz	x16, #0x3e, loc_1856bfd10 ; ⤵ 0x8
+0x1856bfd0c:  20 8e 38 d4   brk	#0xc471
+0x1856bfd10:  ; loc_1856bfd10
+0x1856bfd10:  5c ec a6 14   b	0x18807ae80
+

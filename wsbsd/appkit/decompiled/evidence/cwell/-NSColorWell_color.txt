@@ -1,0 +1,11 @@
+### -[NSColorWell color]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSColorWell color]
+
+-[NSColorWell color]:
+0x18520e5b4:  a8 97 2f d0   adrp	x8, 0x1e4504000
+0x18520e5b8:  08 29 87 b9   ldrsw	x8, [x8, #0x728] ; _OBJC_IVAR_$_NSColorWell._color
+0x18520e5bc:  08 00 08 8b   add	x8, x0, x8
+0x18520e5c0:  00 01 40 f9   ldr	x0, [x8]
+0x18520e5c4:  23 5e bb 14   b	j__objc_retainAutoreleaseReturnValue
+

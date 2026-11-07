@@ -1,0 +1,66 @@
+### -[NSMenu removeItem:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSMenu removeItem:]
+
+-[NSMenu removeItem:]:
+0x184f04620:  7f 23 03 d5   pacibsp
+0x184f04624:  ff 03 01 d1   sub	sp, sp, #0x40
+0x184f04628:  f6 57 01 a9   stp	x22, x21, [sp, #0x10]
+0x184f0462c:  f4 4f 02 a9   stp	x20, x19, [sp, #0x20]
+0x184f04630:  fd 7b 03 a9   stp	fp, lr, [sp, #0x30]
+0x184f04634:  fd c3 00 91   add	fp, sp, #0x30
+0x184f04638:  f5 03 02 aa   mov	x21, x2
+0x184f0463c:  f4 03 01 aa   mov	x20, x1
+0x184f04640:  f3 03 00 aa   mov	x19, x0
+0x184f04644:  62 02 00 b4   cbz	x2, loc_184f04690 ; ⤵ 0x4c
+0x184f04648:  ; loc_184f04648
+0x184f04648:  60 0e 40 f9   ldr	x0, [x19, #0x18]
+0x184f0464c:  e2 03 15 aa   mov	x2, x21
+0x184f04650:  f4 fb c3 94   bl	0x188003620
+0x184f04654:  f5 03 00 aa   mov	x21, x0
+0x184f04658:  08 00 f0 92   mov	x8, #0x7fffffffffffffff
+0x184f0465c:  1f 00 08 eb   cmp	x0, x8
+0x184f04660:  60 03 00 54   b.eq	loc_184f046cc ; ⤵ 0x6c
+0x184f04664:  ; loc_184f04664
+0x184f04664:  e0 03 13 aa   mov	x0, x19
+0x184f04668:  e2 03 15 aa   mov	x2, x21
+0x184f0466c:  fd 7b 43 a9   ldp	fp, lr, [sp, #0x30]
+0x184f04670:  f4 4f 42 a9   ldp	x20, x19, [sp, #0x20]
+0x184f04674:  f6 57 41 a9   ldp	x22, x21, [sp, #0x10]
+0x184f04678:  ff 03 01 91   add	sp, sp, #0x40
+0x184f0467c:  ff 23 03 d5   autibsp
+0x184f04680:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f04684:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f0468c ; ⤵ 0x8
+0x184f04688:  20 8e 38 d4   brk	#0xc471
+0x184f0468c:  ; loc_184f0468c
+0x184f0468c:  09 5d c6 14   b	0x18809bab0
+0x184f04690:  ; loc_184f04690
+0x184f04690:  28 95 2d d0   adrp	x8, 0x1e01aa000
+0x184f04694:  00 41 40 f9   ldr	x0, [x8, #0x80] ; _ptr.NSAssertionHandler
+0x184f04698:  fa 0c c4 94   bl	0x188007a80
+0x184f0469c:  68 ab 31 f0   adrp	x8, 0x1e8473000
+0x184f046a0:  08 41 39 91   add	x8, x8, #0xe50 ; "item != nil"
+0x184f046a4:  e8 03 00 f9   str	x8, [sp]
+0x184f046a8:  64 ab 31 f0   adrp	x4, 0x1e8473000
+0x184f046ac:  84 40 22 91   add	x4, x4, #0x890 ; "NSMenu.m"
+0x184f046b0:  a6 a9 31 b0   adrp	x6, 0x1e8439000
+0x184f046b4:  c6 40 2f 91   add	x6, x6, #0xbd0 ; "Invalid parameter not satisfying: %@"
+0x184f046b8:  e2 03 14 aa   mov	x2, x20
+0x184f046bc:  e3 03 13 aa   mov	x3, x19
+0x184f046c0:  e5 ed 80 52   mov	w5, #0x76f
+0x184f046c4:  5f 11 c4 94   bl	0x188008c40
+0x184f046c8:  e0 ff ff 17   b	loc_184f04648 ; ⤴ -0x80
+0x184f046cc:  ; loc_184f046cc
+0x184f046cc:  28 95 2d d0   adrp	x8, 0x1e01aa000
+0x184f046d0:  00 41 40 f9   ldr	x0, [x8, #0x80] ; _ptr.NSAssertionHandler
+0x184f046d4:  eb 0c c4 94   bl	0x188007a80
+0x184f046d8:  64 ab 31 f0   adrp	x4, 0x1e8473000
+0x184f046dc:  84 40 22 91   add	x4, x4, #0x890 ; "NSMenu.m"
+0x184f046e0:  66 ab 31 f0   adrp	x6, 0x1e8473000
+0x184f046e4:  c6 c0 39 91   add	x6, x6, #0xe70 ; "Item to be removed is not in the menu in the first place"
+0x184f046e8:  e2 03 14 aa   mov	x2, x20
+0x184f046ec:  e3 03 13 aa   mov	x3, x19
+0x184f046f0:  25 ee 80 52   mov	w5, #0x771
+0x184f046f4:  53 11 c4 94   bl	0x188008c40
+0x184f046f8:  db ff ff 17   b	loc_184f04664 ; ⤴ -0x94
+

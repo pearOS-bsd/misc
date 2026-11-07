@@ -1,0 +1,349 @@
+### -[NSMenu insertItem:atIndex:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSMenu insertItem:atIndex:]
+
+-[NSMenu insertItem:atIndex:]:
+0x184ef0d98:  7f 23 03 d5   pacibsp
+0x184ef0d9c:  ff 83 03 d1   sub	sp, sp, #0xe0
+0x184ef0da0:  e9 23 08 6d   stp	d9, d8, [sp, #0x80]
+0x184ef0da4:  fa 67 09 a9   stp	x26, x25, [sp, #0x90]
+0x184ef0da8:  f8 5f 0a a9   stp	x24, x23, [sp, #0xa0]
+0x184ef0dac:  f6 57 0b a9   stp	x22, x21, [sp, #0xb0]
+0x184ef0db0:  f4 4f 0c a9   stp	x20, x19, [sp, #0xc0]
+0x184ef0db4:  fd 7b 0d a9   stp	fp, lr, [sp, #0xd0]
+0x184ef0db8:  fd 43 03 91   add	fp, sp, #0xd0
+0x184ef0dbc:  f4 03 03 aa   mov	x20, x3
+0x184ef0dc0:  f5 03 02 aa   mov	x21, x2
+0x184ef0dc4:  f6 03 01 aa   mov	x22, x1
+0x184ef0dc8:  f3 03 00 aa   mov	x19, x0
+0x184ef0dcc:  08 a0 40 39   ldrb	w8, [x0, #0x28]
+0x184ef0dd0:  c8 0a 08 36   tbz	w8, #0x1, loc_184ef0f28 ; ⤵ 0x158
+0x184ef0dd4:  c8 95 2d d0   adrp	x8, 0x1e01aa000
+0x184ef0dd8:  00 e9 42 f9   ldr	x0, [x8, #0x5d0] ; _ptr.NSThread
+0x184ef0ddc:  6d 64 c4 94   bl	0x188009f90
+0x184ef0de0:  40 0a 00 37   tbnz	w0, #0, loc_184ef0f28 ; ⤵ 0x148
+0x184ef0de4:  08 b2 2f 90   adrp	x8, 0x1e4530000
+0x184ef0de8:  08 51 0e 91   add	x8, x8, #0x394 ; _sNSMenuShouldRedispatchMainMenuModificationsComputedValue
+0x184ef0dec:  08 fd df 08   ldarb	w8, [x8]
+0x184ef0df0:  1f 09 00 71   cmp	w8, #0x2
+0x184ef0df4:  a0 09 00 54   b.eq	loc_184ef0f28 ; ⤵ 0x134
+0x184ef0df8:  28 08 00 34   cbz	w8, loc_184ef0efc ; ⤵ 0x104
+0x184ef0dfc:  ; loc_184ef0dfc
+0x184ef0dfc:  e0 03 13 aa   mov	x0, x19
+0x184ef0e00:  9b 0b 18 94   bl	-[NSMenu _logMainMenuMisuse]
+0x184ef0e04:  f6 63 00 91   add	x22, sp, #0x18
+0x184ef0e08:  d0 98 2d f0   adrp	x16, 0x1e020b000
+0x184ef0e0c:  10 4a 45 f9   ldr	x16, [x16, #0xa90] ; _ptr.__NSStackBlock__
+0x184ef0e10:  f1 03 16 aa   mov	x17, x22
+0x184ef0e14:  31 5c ed f2   movk	x17, #0x6ae1, lsl #0x30
+0x184ef0e18:  30 0a c1 da   pacda	x16, x17
+0x184ef0e1c:  f0 0f 00 f9   str	x16, [sp, #0x18]
+0x184ef0e20:  28 9c 00 d0   adrp	x8, 0x186276000
+0x184ef0e24:  08 89 41 fd   ldr	d8, [x8, #0x310]
+0x184ef0e28:  e8 13 00 fd   str	d8, [sp, #0x20]
+0x184ef0e2c:  d7 42 00 91   add	x23, x22, #0x10
+0x184ef0e30:  10 30 00 f0   adrp	x16, 0x1854f3000
+0x184ef0e34:  10 22 3a 91   add	x16, x16, #0xe88 ; ___29-[NSMenu insertItem:atIndex:]_block_invoke
+0x184ef0e38:  f0 02 c1 da   pacia	x16, x23
+0x184ef0e3c:  08 a8 31 b0   adrp	x8, 0x1e83f1000
+0x184ef0e40:  08 01 2c 91   add	x8, x8, #0xb00 ; ___block_descriptor_56_e8_32o40o_e5_v8?0l
+0x184ef0e44:  f0 a3 02 a9   stp	x16, x8, [sp, #0x28]
+0x184ef0e48:  f3 d7 03 a9   stp	x19, x21, [sp, #0x38]
+0x184ef0e4c:  f4 27 00 f9   str	x20, [sp, #0x48]
+0x184ef0e50:  48 dc c7 94   bl	j__CFRunLoopGetMain
+0x184ef0e54:  f3 03 00 aa   mov	x19, x0
+0x184ef0e58:  0e cd c7 94   bl	j__CFRunLoopGetCurrent
+0x184ef0e5c:  1f 00 13 eb   cmp	x0, x19
+0x184ef0e60:  60 04 00 54   b.eq	loc_184ef0eec ; ⤵ 0x8c
+0x184ef0e64:  e8 43 01 91   add	x8, sp, #0x50
+0x184ef0e68:  d0 98 2d f0   adrp	x16, 0x1e020b000
+0x184ef0e6c:  10 4a 45 f9   ldr	x16, [x16, #0xa90] ; _ptr.__NSStackBlock__
+0x184ef0e70:  f1 03 08 aa   mov	x17, x8
+0x184ef0e74:  31 5c ed f2   movk	x17, #0x6ae1, lsl #0x30
+0x184ef0e78:  30 0a c1 da   pacda	x16, x17
+0x184ef0e7c:  f0 2b 00 f9   str	x16, [sp, #0x50]
+0x184ef0e80:  e8 2f 00 fd   str	d8, [sp, #0x58]
+0x184ef0e84:  08 41 00 91   add	x8, x8, #0x10
+0x184ef0e88:  70 09 00 f0   adrp	x16, 0x18501f000
+0x184ef0e8c:  10 22 04 91   add	x16, x16, #0x108 ; ____NSMainRunLoopPerformBlockSync_block_invoke
+0x184ef0e90:  10 01 c1 da   pacia	x16, x8
+0x184ef0e94:  c8 a7 31 b0   adrp	x8, 0x1e83e9000
+0x184ef0e98:  08 c1 07 91   add	x8, x8, #0x1f0 ; ___block_descriptor_40_e8_32b_e5_v8?0l
+0x184ef0e9c:  f0 23 06 a9   stp	x16, x8, [sp, #0x60]
+0x184ef0ea0:  f6 3b 00 f9   str	x22, [sp, #0x70]
+0x184ef0ea4:  e1 43 01 91   add	x1, sp, #0x50
+0x184ef0ea8:  00 00 80 d2   mov	x0, #0
+0x184ef0eac:  b9 c2 c7 94   bl	j__dispatch_block_create
+0x184ef0eb0:  f4 03 00 aa   mov	x20, x0
+0x184ef0eb4:  68 95 2d b0   adrp	x8, 0x1e019d000
+0x184ef0eb8:  08 31 40 f9   ldr	x8, [x8, #0x60] ; _ptr._kCFRunLoopCommonModes
+0x184ef0ebc:  01 01 40 f9   ldr	x1, [x8]
+0x184ef0ec0:  e0 03 13 aa   mov	x0, x19
+0x184ef0ec4:  e2 03 14 aa   mov	x2, x20
+0x184ef0ec8:  f6 cc c7 94   bl	j__CFRunLoopPerformBlock
+0x184ef0ecc:  e0 03 13 aa   mov	x0, x19
+0x184ef0ed0:  08 cd c7 94   bl	j__CFRunLoopWakeUp
+0x184ef0ed4:  e0 03 14 aa   mov	x0, x20
+0x184ef0ed8:  01 00 80 92   mov	x1, #0xffffffffffffffff
+0x184ef0edc:  b1 c2 c7 94   bl	j__dispatch_block_wait
+0x184ef0ee0:  e0 03 14 aa   mov	x0, x20
+0x184ef0ee4:  53 ac c7 94   bl	j___Block_release
+0x184ef0ee8:  89 00 00 14   b	loc_184ef110c ; ⤵ 0x224
+0x184ef0eec:  ; loc_184ef0eec
+0x184ef0eec:  e8 17 40 f9   ldr	x8, [sp, #0x28]
+0x184ef0ef0:  e0 63 00 91   add	x0, sp, #0x18
+0x184ef0ef4:  17 09 3f d7   blraa	x8, x23
+0x184ef0ef8:  85 00 00 14   b	loc_184ef110c ; ⤵ 0x214
+0x184ef0efc:  ; loc_184ef0efc
+0x184ef0efc:  20 ac 31 90   adrp	x0, 0x1e8474000
+0x184ef0f00:  00 40 16 91   add	x0, x0, #0x590 ; "NSMenuShouldRedispatchMainMenuModifications"
+0x184ef0f04:  02 b2 2f 90   adrp	x2, 0x1e4530000
+0x184ef0f08:  42 50 0e 91   add	x2, x2, #0x394 ; _sNSMenuShouldRedispatchMainMenuModificationsComputedValue
+0x184ef0f0c:  50 30 00 f0   adrp	x16, 0x1854fb000
+0x184ef0f10:  10 a2 17 91   add	x16, x16, #0x5e8 ; _NSMenuShouldRedispatchMainMenuModificationsDefaultValueFunction
+0x184ef0f14:  f0 23 c1 da   paciza	x16
+0x184ef0f18:  e3 03 10 aa   mov	x3, x16
+0x184ef0f1c:  01 00 80 52   mov	w1, #0
+0x184ef0f20:  06 5b ff 97   bl	__NSGetBoolAppConfig
+0x184ef0f24:  c0 f6 ff 35   cbnz	w0, loc_184ef0dfc ; ⤴ -0x128
+0x184ef0f28:  ; loc_184ef0f28
+0x184ef0f28:  74 10 f8 b7   tbnz	x20, #0x3f, loc_184ef1134 ; ⤵ 0x20c
+0x184ef0f2c:  ; loc_184ef0f2c
+0x184ef0f2c:  60 0e 40 f9   ldr	x0, [x19, #0x18]
+0x184ef0f30:  08 47 c4 94   bl	0x188002b50
+0x184ef0f34:  9f 02 00 eb   cmp	x20, x0
+0x184ef0f38:  c8 11 00 54   b.hi	loc_184ef1170 ; ⤵ 0x238
+0x184ef0f3c:  ; loc_184ef0f3c
+0x184ef0f3c:  e0 03 15 aa   mov	x0, x21
+0x184ef0f40:  ac 66 c4 94   bl	0x18800a9f0
+0x184ef0f44:  40 13 00 b5   cbnz	x0, loc_184ef11ac ; ⤵ 0x268
+0x184ef0f48:  ; loc_184ef0f48
+0x184ef0f48:  68 0e 40 f9   ldr	x8, [x19, #0x18]
+0x184ef0f4c:  a8 00 00 b5   cbnz	x8, loc_184ef0f60 ; ⤵ 0x14
+0x184ef0f50:  68 95 2d 90   adrp	x8, 0x1e019c000
+0x184ef0f54:  00 ad 42 f9   ldr	x0, [x8, #0x558] ; _ptr.NSMutableArray
+0x184ef0f58:  02 b2 c7 94   bl	j__objc_alloc_init
+0x184ef0f5c:  60 0e 00 f9   str	x0, [x19, #0x18]
+0x184ef0f60:  ; loc_184ef0f60
+0x184ef0f60:  e0 03 13 aa   mov	x0, x19
+0x184ef0f64:  c3 86 c5 94   bl	0x188052a70
+0x184ef0f68:  f6 03 00 aa   mov	x22, x0
+0x184ef0f6c:  68 a2 40 39   ldrb	w8, [x19, #0x28]
+0x184ef0f70:  a8 00 08 36   tbz	w8, #0x1, loc_184ef0f84 ; ⤵ 0x14
+0x184ef0f74:  e0 03 15 aa   mov	x0, x21
+0x184ef0f78:  ce 06 c7 94   bl	0x1880b2ab0
+0x184ef0f7c:  22 00 80 52   mov	w2, #0x1
+0x184ef0f80:  c8 a1 c5 94   bl	0x1880596a0
+0x184ef0f84:  ; loc_184ef0f84
+0x184ef0f84:  48 c2 2d f0   adrp	x8, 0x1e073b000
+0x184ef0f88:  00 ed 42 f9   ldr	x0, [x8, #0x5d8] ; __got.class_NSMenu
+0x184ef0f8c:  e2 03 15 aa   mov	x2, x21
+0x184ef0f90:  e3 03 13 aa   mov	x3, x19
+0x184ef0f94:  cb a1 c5 94   bl	0x1880596c0
+0x184ef0f98:  e0 03 13 aa   mov	x0, x19
+0x184ef0f9c:  21 82 c5 94   bl	0x188051820
+0x184ef0fa0:  60 0e 40 f9   ldr	x0, [x19, #0x18]
+0x184ef0fa4:  e2 03 15 aa   mov	x2, x21
+0x184ef0fa8:  e3 03 14 aa   mov	x3, x20
+0x184ef0fac:  b9 4a c4 94   bl	0x188003a90
+0x184ef0fb0:  ; loc_184ef0fb0
+0x184ef0fb0:  e0 03 13 aa   mov	x0, x19
+0x184ef0fb4:  9f e6 c5 94   bl	0x18806aa30
+0x184ef0fb8:  e0 03 15 aa   mov	x0, x21
+0x184ef0fbc:  e2 03 13 aa   mov	x2, x19
+0x184ef0fc0:  64 dc c6 94   bl	0x1880a8150
+0x184ef0fc4:  e0 03 16 aa   mov	x0, x22
+0x184ef0fc8:  e2 03 15 aa   mov	x2, x21
+0x184ef0fcc:  e3 03 14 aa   mov	x3, x20
+0x184ef0fd0:  d8 87 c5 94   bl	0x188052f30
+0x184ef0fd4:  e0 03 15 aa   mov	x0, x21
+0x184ef0fd8:  da 64 c4 94   bl	0x18800a340
+0x184ef0fdc:  d5 3f c4 94   bl	0x188000f30
+0x184ef0fe0:  80 00 00 b5   cbnz	x0, loc_184ef0ff0 ; ⤵ 0x10
+0x184ef0fe4:  e0 03 15 aa   mov	x0, x21
+0x184ef0fe8:  d2 57 c6 94   bl	0x188086f30
+0x184ef0fec:  00 0a 00 34   cbz	w0, loc_184ef112c ; ⤵ 0x140
+0x184ef0ff0:  ; loc_184ef0ff0
+0x184ef0ff0:  64 00 80 52   mov	w4, #0x3
+0x184ef0ff4:  ; loc_184ef0ff4
+0x184ef0ff4:  e0 03 13 aa   mov	x0, x19
+0x184ef0ff8:  e2 03 14 aa   mov	x2, x20
+0x184ef0ffc:  23 00 80 52   mov	w3, #0x1
+0x184ef1000:  5c 73 c5 94   bl	0x18804dd70
+0x184ef1004:  60 0e 40 f9   ldr	x0, [x19, #0x18]
+0x184ef1008:  d2 46 c4 94   bl	0x188002b50
+0x184ef100c:  1f 08 00 f1   cmp	x0, #0x2
+0x184ef1010:  03 03 00 54   b.lo	loc_184ef1070 ; ⤵ 0x60
+0x184ef1014:  82 06 00 91   add	x2, x20, #0x1
+0x184ef1018:  5f 00 00 eb   cmp	x2, x0
+0x184ef101c:  c2 00 00 54   b.hs	loc_184ef1034 ; ⤵ 0x18
+0x184ef1020:  60 0e 40 f9   ldr	x0, [x19, #0x18]
+0x184ef1024:  a3 4c c4 94   bl	0x1880042b0
+0x184ef1028:  aa 72 c6 94   bl	0x18808dad0
+0x184ef102c:  f7 03 00 aa   mov	x23, x0
+0x184ef1030:  02 00 00 14   b	loc_184ef1038 ; ⤵ 0x8
+0x184ef1034:  ; loc_184ef1034
+0x184ef1034:  17 00 80 52   mov	w23, #0
+0x184ef1038:  ; loc_184ef1038
+0x184ef1038:  e0 03 15 aa   mov	x0, x21
+0x184ef103c:  e2 03 17 aa   mov	x2, x23
+0x184ef1040:  d0 c1 c5 94   bl	0x188061780
+0x184ef1044:  e0 03 15 aa   mov	x0, x21
+0x184ef1048:  a2 72 c6 94   bl	0x18808dad0
+0x184ef104c:  82 06 00 f1   subs	x2, x20, #0x1
+0x184ef1050:  0b 01 00 54   b.lt	loc_184ef1070 ; ⤵ 0x20
+0x184ef1054:  f8 03 00 aa   mov	x24, x0
+0x184ef1058:  e8 02 00 4a   eor	w8, w23, w0
+0x184ef105c:  a8 00 00 34   cbz	w8, loc_184ef1070 ; ⤵ 0x14
+0x184ef1060:  60 0e 40 f9   ldr	x0, [x19, #0x18]
+0x184ef1064:  93 4c c4 94   bl	0x1880042b0
+0x184ef1068:  e2 03 18 aa   mov	x2, x24
+0x184ef106c:  c5 c1 c5 94   bl	0x188061780
+0x184ef1070:  ; loc_184ef1070
+0x184ef1070:  e0 03 15 aa   mov	x0, x21
+0x184ef1074:  2b 88 c5 94   bl	0x188053120
+0x184ef1078:  60 00 00 34   cbz	w0, loc_184ef1084 ; ⤵ 0xc
+0x184ef107c:  e0 03 15 aa   mov	x0, x21
+0x184ef1080:  a4 a1 c5 94   bl	0x188059710
+0x184ef1084:  ; loc_184ef1084
+0x184ef1084:  e0 03 16 aa   mov	x0, x22
+0x184ef1088:  e2 03 14 aa   mov	x2, x20
+0x184ef108c:  65 7b c5 94   bl	0x18804fe20
+0x184ef1090:  e0 03 13 aa   mov	x0, x19
+0x184ef1094:  a2 00 80 52   mov	w2, #0x5
+0x184ef1098:  e3 03 14 aa   mov	x3, x20
+0x184ef109c:  91 a0 c5 94   bl	0x1880592e0
+0x184ef10a0:  c8 95 2d b0   adrp	x8, 0x1e01aa000
+0x184ef10a4:  00 f5 41 f9   ldr	x0, [x8, #0x3e8] ; _ptr.NSNotificationCenter
+0x184ef10a8:  3e 5b c4 94   bl	0x188007da0
+0x184ef10ac:  f5 03 00 aa   mov	x21, x0
+0x184ef10b0:  08 b1 2f 90   adrp	x8, 0x1e4511000
+0x184ef10b4:  16 01 41 f9   ldr	x22, [x8, #0x200] ; _NSMenuDidAddItemNotification
+0x184ef10b8:  48 95 2d f0   adrp	x8, 0x1e019c000
+0x184ef10bc:  17 79 42 f9   ldr	x23, [x8, #0x4f0] ; _ptr.NSDictionary
+0x184ef10c0:  c8 95 2d b0   adrp	x8, 0x1e01aa000
+0x184ef10c4:  00 01 42 f9   ldr	x0, [x8, #0x400] ; _ptr.NSNumber
+0x184ef10c8:  e2 03 14 aa   mov	x2, x20
+0x184ef10cc:  81 a4 c4 94   bl	0x18801a2d0
+0x184ef10d0:  e2 03 00 aa   mov	x2, x0
+0x184ef10d4:  08 ac 31 d0   adrp	x8, 0x1e8473000
+0x184ef10d8:  08 c1 38 91   add	x8, x8, #0xe30 ; "NSMenuItemIndex"
+0x184ef10dc:  e8 7f 00 a9   stp	x8, xzr, [sp]
+0x184ef10e0:  e0 03 17 aa   mov	x0, x23
+0x184ef10e4:  9f 5b c4 94   bl	0x188007f60
+0x184ef10e8:  e4 03 00 aa   mov	x4, x0
+0x184ef10ec:  e0 03 15 aa   mov	x0, x21
+0x184ef10f0:  e2 03 16 aa   mov	x2, x22
+0x184ef10f4:  e3 03 13 aa   mov	x3, x19
+0x184ef10f8:  26 de c4 94   bl	0x188028990
+0x184ef10fc:  e0 03 13 aa   mov	x0, x19
+0x184ef1100:  f4 8e c5 94   bl	0x188054cd0
+0x184ef1104:  e0 03 13 aa   mov	x0, x19
+0x184ef1108:  8a ed c5 94   bl	0x18806c730
+0x184ef110c:  ; loc_184ef110c
+0x184ef110c:  fd 7b 4d a9   ldp	fp, lr, [sp, #0xd0]
+0x184ef1110:  f4 4f 4c a9   ldp	x20, x19, [sp, #0xc0]
+0x184ef1114:  f6 57 4b a9   ldp	x22, x21, [sp, #0xb0]
+0x184ef1118:  f8 5f 4a a9   ldp	x24, x23, [sp, #0xa0]
+0x184ef111c:  fa 67 49 a9   ldp	x26, x25, [sp, #0x90]
+0x184ef1120:  e9 23 48 6d   ldp	d9, d8, [sp, #0x80]
+0x184ef1124:  ff 83 03 91   add	sp, sp, #0xe0
+0x184ef1128:  ff 0f 5f d6   retab
+0x184ef112c:  ; loc_184ef112c
+0x184ef112c:  44 00 80 52   mov	w4, #0x2
+0x184ef1130:  b1 ff ff 17   b	loc_184ef0ff4 ; ⤴ -0x13c
+0x184ef1134:  ; loc_184ef1134
+0x184ef1134:  c8 95 2d b0   adrp	x8, 0x1e01aa000
+0x184ef1138:  00 41 40 f9   ldr	x0, [x8, #0x80] ; _ptr.NSAssertionHandler
+0x184ef113c:  51 5a c4 94   bl	0x188007a80
+0x184ef1140:  28 ab 31 f0   adrp	x8, 0x1e8458000
+0x184ef1144:  08 41 2c 91   add	x8, x8, #0xb10 ; "index >= 0"
+0x184ef1148:  e8 03 00 f9   str	x8, [sp]
+0x184ef114c:  04 ac 31 d0   adrp	x4, 0x1e8473000
+0x184ef1150:  84 40 22 91   add	x4, x4, #0x890 ; "NSMenu.m"
+0x184ef1154:  46 aa 31 90   adrp	x6, 0x1e8439000
+0x184ef1158:  c6 40 2f 91   add	x6, x6, #0xbd0 ; "Invalid parameter not satisfying: %@"
+0x184ef115c:  e2 03 16 aa   mov	x2, x22
+0x184ef1160:  e3 03 13 aa   mov	x3, x19
+0x184ef1164:  e5 d2 80 52   mov	w5, #0x697
+0x184ef1168:  b6 5e c4 94   bl	0x188008c40
+0x184ef116c:  70 ff ff 17   b	loc_184ef0f2c ; ⤴ -0x240
+0x184ef1170:  ; loc_184ef1170
+0x184ef1170:  c8 95 2d b0   adrp	x8, 0x1e01aa000
+0x184ef1174:  00 41 40 f9   ldr	x0, [x8, #0x80] ; _ptr.NSAssertionHandler
+0x184ef1178:  42 5a c4 94   bl	0x188007a80
+0x184ef117c:  08 ac 31 d0   adrp	x8, 0x1e8473000
+0x184ef1180:  08 c1 37 91   add	x8, x8, #0xdf0 ; "index <= [_itemArray count]"
+0x184ef1184:  e8 03 00 f9   str	x8, [sp]
+0x184ef1188:  04 ac 31 d0   adrp	x4, 0x1e8473000
+0x184ef118c:  84 40 22 91   add	x4, x4, #0x890 ; "NSMenu.m"
+0x184ef1190:  46 aa 31 90   adrp	x6, 0x1e8439000
+0x184ef1194:  c6 40 2f 91   add	x6, x6, #0xbd0 ; "Invalid parameter not satisfying: %@"
+0x184ef1198:  e2 03 16 aa   mov	x2, x22
+0x184ef119c:  e3 03 13 aa   mov	x3, x19
+0x184ef11a0:  05 d3 80 52   mov	w5, #0x698
+0x184ef11a4:  a7 5e c4 94   bl	0x188008c40
+0x184ef11a8:  65 ff ff 17   b	loc_184ef0f3c ; ⤴ -0x26c
+0x184ef11ac:  ; loc_184ef11ac
+0x184ef11ac:  c8 95 2d b0   adrp	x8, 0x1e01aa000
+0x184ef11b0:  00 41 40 f9   ldr	x0, [x8, #0x80] ; _ptr.NSAssertionHandler
+0x184ef11b4:  33 5a c4 94   bl	0x188007a80
+0x184ef11b8:  04 ac 31 d0   adrp	x4, 0x1e8473000
+0x184ef11bc:  84 40 22 91   add	x4, x4, #0x890 ; "NSMenu.m"
+0x184ef11c0:  06 ac 31 d0   adrp	x6, 0x1e8473000
+0x184ef11c4:  c6 40 38 91   add	x6, x6, #0xe10 ; "Item to be inserted into menu already is in another menu"
+0x184ef11c8:  e2 03 16 aa   mov	x2, x22
+0x184ef11cc:  e3 03 13 aa   mov	x3, x19
+0x184ef11d0:  25 d3 80 52   mov	w5, #0x699
+0x184ef11d4:  9b 5e c4 94   bl	0x188008c40
+0x184ef11d8:  5c ff ff 17   b	loc_184ef0f48 ; ⤴ -0x290
+0x184ef11dc:  f7 03 00 aa   mov	x23, x0
+0x184ef11e0:  3f 04 00 71   cmp	w1, #0x1
+0x184ef11e4:  41 05 00 54   b.ne	loc_184ef128c ; ⤵ 0xa8
+0x184ef11e8:  e0 03 17 aa   mov	x0, x23
+0x184ef11ec:  c9 b3 c7 94   bl	j__objc_begin_catch
+0x184ef11f0:  f7 03 00 aa   mov	x23, x0
+0x184ef11f4:  48 c2 2d f0   adrp	x8, 0x1e073c000
+0x184ef11f8:  00 a9 41 f9   ldr	x0, [x8, #0x350] ; __got.class__NSAppKitLoggingExceptionDescriber
+0x184ef11fc:  55 b1 c7 94   bl	j__objc_alloc
+0x184ef1200:  e2 03 17 aa   mov	x2, x23
+0x184ef1204:  03 00 80 52   mov	w3, #0
+0x184ef1208:  a2 63 c6 94   bl	0x18808a090
+0x184ef120c:  f8 03 00 aa   mov	x24, x0
+0x184ef1210:  34 da 33 94   bl	___AppKitLogMenu
+0x184ef1214:  f9 03 00 aa   mov	x25, x0
+0x184ef1218:  01 02 80 52   mov	w1, #0x10
+0x184ef121c:  81 c4 c7 94   bl	j__os_log_type_enabled
+0x184ef1220:  20 02 00 34   cbz	w0, loc_184ef1264 ; ⤵ 0x44
+0x184ef1224:  28 9c 00 d0   adrp	x8, 0x186277000
+0x184ef1228:  00 69 45 fd   ldr	d0, [x8, #0xad0]
+0x184ef122c:  e0 53 00 bd   str	s0, [sp, #0x50]
+0x184ef1230:  f4 43 05 f8   stur	x20, [sp, #0x54]
+0x184ef1234:  28 08 81 52   mov	w8, #0x841
+0x184ef1238:  e8 bb 00 79   strh	w8, [sp, #0x5c]
+0x184ef123c:  f8 e3 05 f8   stur	x24, [sp, #0x5e]
+0x184ef1240:  80 fe ff b0   adrp	x0, 0x184ec2000
+0x184ef1244:  00 00 00 91   add	x0, x0, #0 ; "\xcf\xfa\xed\xfe\f"
+0x184ef1248:  43 ac 00 b0   adrp	x3, 0x18647a000
+0x184ef124c:  63 3c 28 91   add	x3, x3, #0xa0f ; "NSMenu: Exception raised while inserting item at index %lu. Exception: %{private}@"
+0x184ef1250:  e4 43 01 91   add	x4, sp, #0x50
+0x184ef1254:  e1 03 19 aa   mov	x1, x25
+0x184ef1258:  02 02 80 52   mov	w2, #0x10
+0x184ef125c:  c5 02 80 52   mov	w5, #0x16
+0x184ef1260:  c4 c0 c7 94   bl	j___os_log_impl
+0x184ef1264:  ; loc_184ef1264
+0x184ef1264:  e0 03 18 aa   mov	x0, x24
+0x184ef1268:  7e ae c7 94   bl	j__objc_release_x0
+0x184ef126c:  e0 03 17 aa   mov	x0, x23
+0x184ef1270:  e0 58 c8 94   bl	j___HIE_WillSwallowException
+0x184ef1274:  af b3 c7 94   bl	j__objc_end_catch
+0x184ef1278:  4e ff ff 17   b	loc_184ef0fb0 ; ⤴ -0x2c8
+0x184ef127c:  02 00 00 14   b	loc_184ef1284 ; ⤵ 0x8
+0x184ef1280:  01 00 00 14   b	loc_184ef1284 ; ⤵ 0x4
+0x184ef1284:  ; loc_184ef1284
+0x184ef1284:  f7 03 00 aa   mov	x23, x0
+0x184ef1288:  aa b3 c7 94   bl	j__objc_end_catch
+0x184ef128c:  ; loc_184ef128c
+0x184ef128c:  e0 03 17 aa   mov	x0, x23
+0x184ef1290:  80 ab c7 94   bl	j___Unwind_Resume
+

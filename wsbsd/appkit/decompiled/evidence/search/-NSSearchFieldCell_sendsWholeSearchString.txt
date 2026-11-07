@@ -1,0 +1,12 @@
+### -[NSSearchFieldCell sendsWholeSearchString]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSSearchFieldCell sendsWholeSearchString]
+
+-[NSSearchFieldCell sendsWholeSearchString]:
+0x18518cf98:  c8 9b 2f 90   adrp	x8, 0x1e4504000
+0x18518cf9c:  08 69 8e b9   ldrsw	x8, [x8, #0xe68] ; _OBJC_IVAR_$_NSSearchFieldCell._sfFlags
+0x18518cfa0:  08 00 08 8b   add	x8, x0, x8
+0x18518cfa4:  08 01 40 b9   ldr	w8, [x8]
+0x18518cfa8:  00 01 00 12   and	w0, w8, #0x1
+0x18518cfac:  c0 03 5f d6   ret
+

@@ -1,0 +1,8 @@
+### -[NSMenuItem keyEquivalent]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSMenuItem keyEquivalent]
+
+-[NSMenuItem keyEquivalent]:
+0x184ede844:  02 00 80 d2   mov	x2, #0
+0x184ede848:  a2 68 c5 14   b	0x188038ad0
+

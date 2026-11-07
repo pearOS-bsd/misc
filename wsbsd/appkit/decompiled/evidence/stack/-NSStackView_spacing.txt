@@ -1,0 +1,11 @@
+### -[NSStackView spacing]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSStackView spacing]
+
+-[NSStackView spacing]:
+0x184fa0b28:  28 a2 30 b0   adrp	x8, 0x1e63e5000
+0x184fa0b2c:  08 19 82 b9   ldrsw	x8, [x8, #0x218]
+0x184fa0b30:  08 00 08 8b   add	x8, x0, x8
+0x184fa0b34:  00 01 40 fd   ldr	d0, [x8]
+0x184fa0b38:  c0 03 5f d6   ret
+

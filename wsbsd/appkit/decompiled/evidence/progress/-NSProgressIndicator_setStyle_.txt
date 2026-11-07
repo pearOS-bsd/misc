@@ -1,0 +1,51 @@
+### -[NSProgressIndicator setStyle:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSProgressIndicator setStyle:]
+
+-[NSProgressIndicator setStyle:]:
+0x1850de6a4:  7f 23 03 d5   pacibsp
+0x1850de6a8:  f6 57 bd a9   stp	x22, x21, [sp, #-0x30]!
+0x1850de6ac:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x1850de6b0:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x1850de6b4:  fd 83 00 91   add	fp, sp, #0x20
+0x1850de6b8:  f4 03 02 aa   mov	x20, x2
+0x1850de6bc:  f3 03 00 aa   mov	x19, x0
+0x1850de6c0:  28 98 30 90   adrp	x8, 0x1e63e2000
+0x1850de6c4:  15 75 87 b9   ldrsw	x21, [x8, #0x774]
+0x1850de6c8:  08 00 15 8b   add	x8, x0, x21
+0x1850de6cc:  00 01 40 f9   ldr	x0, [x8]
+0x1850de6d0:  d8 37 bd 94   bl	0x18802c630
+0x1850de6d4:  1f 00 14 eb   cmp	x0, x20
+0x1850de6d8:  a1 00 00 54   b.ne	loc_1850de6ec ; ⤵ 0x14
+0x1850de6dc:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x1850de6e0:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x1850de6e4:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x1850de6e8:  ff 0f 5f d6   retab
+0x1850de6ec:  ; loc_1850de6ec
+0x1850de6ec:  60 6a 75 f8   ldr	x0, [x19, x21]
+0x1850de6f0:  e2 03 14 aa   mov	x2, x20
+0x1850de6f4:  93 34 bd 94   bl	0x18802b940
+0x1850de6f8:  e0 03 13 aa   mov	x0, x19
+0x1850de6fc:  bd ec bd 94   bl	0x1880599f0
+0x1850de700:  e0 03 13 aa   mov	x0, x19
+0x1850de704:  fb 43 be 94   bl	0x18806f6f0
+0x1850de708:  02 02 c0 94   bl	j__objc_claimAutoreleasedReturnValue
+0x1850de70c:  f4 03 00 aa   mov	x20, x0
+0x1850de710:  62 6a 75 f8   ldr	x2, [x19, x21]
+0x1850de714:  07 3a bd 94   bl	0x18802cf30
+0x1850de718:  e0 03 14 aa   mov	x0, x20
+0x1850de71c:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x1850de720:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x1850de724:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x1850de728:  ff 23 03 d5   autibsp
+0x1850de72c:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x1850de730:  50 00 f0 b6   tbz	x16, #0x3e, loc_1850de738 ; ⤵ 0x8
+0x1850de734:  20 8e 38 d4   brk	#0xc471
+0x1850de738:  ; loc_1850de738
+0x1850de738:  4a f9 bf 14   b	j__objc_release_x0
+0x1850de73c:  f3 03 00 aa   mov	x19, x0
+0x1850de740:  e0 03 14 aa   mov	x0, x20
+0x1850de744:  47 f9 bf 94   bl	j__objc_release_x0
+0x1850de748:  e0 03 13 aa   mov	x0, x19
+0x1850de74c:  51 f6 bf 94   bl	j___Unwind_Resume
+

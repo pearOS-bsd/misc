@@ -1,0 +1,7 @@
+### -[NSTableColumn minWidth]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTableColumn minWidth]
+
+-[NSTableColumn minWidth]:
+0x184f9d0dc:  19 e2 c2 14   b	0x188055940
+

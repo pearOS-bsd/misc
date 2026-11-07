@@ -1,0 +1,48 @@
+### -[NSTokenFieldCell setTokenizingCharacterSet:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTokenFieldCell setTokenizingCharacterSet:]
+
+-[NSTokenFieldCell setTokenizingCharacterSet:]:
+0x184fc26a0:  7f 23 03 d5   pacibsp
+0x184fc26a4:  f6 57 bd a9   stp	x22, x21, [sp, #-0x30]!
+0x184fc26a8:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x184fc26ac:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x184fc26b0:  fd 83 00 91   add	fp, sp, #0x20
+0x184fc26b4:  f5 03 02 aa   mov	x21, x2
+0x184fc26b8:  f3 03 00 aa   mov	x19, x0
+0x184fc26bc:  08 a1 30 90   adrp	x8, 0x1e63e2000
+0x184fc26c0:  16 35 87 b9   ldrsw	x22, [x8, #0x734]
+0x184fc26c4:  08 00 16 8b   add	x8, x0, x22
+0x184fc26c8:  14 01 40 f9   ldr	x20, [x8]
+0x184fc26cc:  40 01 80 52   mov	w0, #0xa
+0x184fc26d0:  68 b1 c4 94   bl	j___CFExecutableLinkedOnOrAfter
+0x184fc26d4:  80 00 00 34   cbz	w0, loc_184fc26e4 ; ⤵ 0x10
+0x184fc26d8:  e0 03 15 aa   mov	x0, x21
+0x184fc26dc:  c9 00 c1 94   bl	0x188002a00
+0x184fc26e0:  03 00 00 14   b	loc_184fc26ec ; ⤵ 0xc
+0x184fc26e4:  ; loc_184fc26e4
+0x184fc26e4:  e0 03 15 aa   mov	x0, x21
+0x184fc26e8:  62 69 c4 94   bl	j__objc_retain_x0
+0x184fc26ec:  ; loc_184fc26ec
+0x184fc26ec:  60 6a 36 f8   str	x0, [x19, x22]
+0x184fc26f0:  e0 03 14 aa   mov	x0, x20
+0x184fc26f4:  5b 69 c4 94   bl	j__objc_release_x0
+0x184fc26f8:  08 a1 30 90   adrp	x8, 0x1e63e2000
+0x184fc26fc:  14 39 87 b9   ldrsw	x20, [x8, #0x738]
+0x184fc2700:  68 02 14 8b   add	x8, x19, x20
+0x184fc2704:  00 01 40 f9   ldr	x0, [x8]
+0x184fc2708:  00 01 00 b4   cbz	x0, loc_184fc2728 ; ⤵ 0x20
+0x184fc270c:  62 6a 76 f8   ldr	x2, [x19, x22]
+0x184fc2710:  82 00 00 b4   cbz	x2, loc_184fc2720 ; ⤵ 0x10
+0x184fc2714:  ff 23 c1 94   bl	0x18800b710
+0x184fc2718:  81 00 00 b5   cbnz	x1, loc_184fc2728 ; ⤵ 0x10
+0x184fc271c:  60 6a 74 f8   ldr	x0, [x19, x20]
+0x184fc2720:  ; loc_184fc2720
+0x184fc2720:  50 69 c4 94   bl	j__objc_release_x0
+0x184fc2724:  7f 6a 34 f8   str	xzr, [x19, x20]
+0x184fc2728:  ; loc_184fc2728
+0x184fc2728:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x184fc272c:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x184fc2730:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x184fc2734:  ff 0f 5f d6   retab
+

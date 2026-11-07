@@ -1,0 +1,51 @@
+### -[NSView convertPoint:toView:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSView convertPoint:toView:]
+
+-[NSView convertPoint:toView:]:
+0x184f143c8:  7f 23 03 d5   pacibsp
+0x184f143cc:  e9 23 bc 6d   stp	d9, d8, [sp, #-0x40]!
+0x184f143d0:  f6 57 01 a9   stp	x22, x21, [sp, #0x10]
+0x184f143d4:  f4 4f 02 a9   stp	x20, x19, [sp, #0x20]
+0x184f143d8:  fd 7b 03 a9   stp	fp, lr, [sp, #0x30]
+0x184f143dc:  fd c3 00 91   add	fp, sp, #0x30
+0x184f143e0:  28 1c a1 4e   mov	v8.16b, v1.16b
+0x184f143e4:  09 1c a0 4e   mov	v9.16b, v0.16b
+0x184f143e8:  f4 03 00 aa   mov	x20, x0
+0x184f143ec:  a2 02 00 b4   cbz	x2, loc_184f14440 ; ⤵ 0x54
+0x184f143f0:  f3 03 02 aa   mov	x19, x2
+0x184f143f4:  e0 03 14 aa   mov	x0, x20
+0x184f143f8:  a2 81 c5 94   bl	0x188074a80
+0x184f143fc:  f5 03 00 aa   mov	x21, x0
+0x184f14400:  e0 03 14 aa   mov	x0, x20
+0x184f14404:  20 1d a9 4e   mov	v0.16b, v9.16b
+0x184f14408:  01 1d a8 4e   mov	v1.16b, v8.16b
+0x184f1440c:  e2 03 15 aa   mov	x2, x21
+0x184f14410:  78 ad c4 94   bl	0x18803f9f0
+0x184f14414:  e0 03 13 aa   mov	x0, x19
+0x184f14418:  e2 03 15 aa   mov	x2, x21
+0x184f1441c:  fd 7b 43 a9   ldp	fp, lr, [sp, #0x30]
+0x184f14420:  f4 4f 42 a9   ldp	x20, x19, [sp, #0x20]
+0x184f14424:  f6 57 41 a9   ldp	x22, x21, [sp, #0x10]
+0x184f14428:  e9 23 c4 6c   ldp	d9, d8, [sp], #0x40
+0x184f1442c:  ff 23 03 d5   autibsp
+0x184f14430:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f14434:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f1443c ; ⤵ 0x8
+0x184f14438:  20 8e 38 d4   brk	#0xc471
+0x184f1443c:  ; loc_184f1443c
+0x184f1443c:  69 ad c4 14   b	0x18803f9e0
+0x184f14440:  ; loc_184f14440
+0x184f14440:  e0 03 14 aa   mov	x0, x20
+0x184f14444:  20 1d a9 4e   mov	v0.16b, v9.16b
+0x184f14448:  01 1d a8 4e   mov	v1.16b, v8.16b
+0x184f1444c:  fd 7b 43 a9   ldp	fp, lr, [sp, #0x30]
+0x184f14450:  f4 4f 42 a9   ldp	x20, x19, [sp, #0x20]
+0x184f14454:  f6 57 41 a9   ldp	x22, x21, [sp, #0x10]
+0x184f14458:  e9 23 c4 6c   ldp	d9, d8, [sp], #0x40
+0x184f1445c:  ff 23 03 d5   autibsp
+0x184f14460:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f14464:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f1446c ; ⤵ 0x8
+0x184f14468:  20 8e 38 d4   brk	#0xc471
+0x184f1446c:  ; loc_184f1446c
+0x184f1446c:  61 ad c4 14   b	0x18803f9f0
+

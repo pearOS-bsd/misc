@@ -1,0 +1,58 @@
+### -[NSView initWithFrame:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSView initWithFrame:]
+
+-[NSView initWithFrame:]:
+0x184f0eec8:  7f 23 03 d5   pacibsp
+0x184f0eecc:  ff 43 01 d1   sub	sp, sp, #0x50
+0x184f0eed0:  eb 2b 01 6d   stp	d11, d10, [sp, #0x10]
+0x184f0eed4:  e9 23 02 6d   stp	d9, d8, [sp, #0x20]
+0x184f0eed8:  f4 4f 03 a9   stp	x20, x19, [sp, #0x30]
+0x184f0eedc:  fd 7b 04 a9   stp	fp, lr, [sp, #0x40]
+0x184f0eee0:  fd 03 01 91   add	fp, sp, #0x40
+0x184f0eee4:  f3 03 00 aa   mov	x19, x0
+0x184f0eee8:  c1 b6 32 94   bl	_NSViewValidateRect
+0x184f0eeec:  08 1c a0 4e   mov	v8.16b, v0.16b
+0x184f0eef0:  29 1c a1 4e   mov	v9.16b, v1.16b
+0x184f0eef4:  4a 1c a2 4e   mov	v10.16b, v2.16b
+0x184f0eef8:  6b 1c a3 4e   mov	v11.16b, v3.16b
+0x184f0eefc:  e0 03 13 aa   mov	x0, x19
+0x184f0ef00:  64 e5 ff 97   bl	_NSViewCommonPreInitialization
+0x184f0ef04:  28 c1 2d b0   adrp	x8, 0x1e0733000
+0x184f0ef08:  08 9d 47 f9   ldr	x8, [x8, #0xf38] ; NSView
+0x184f0ef0c:  f3 23 00 a9   stp	x19, x8, [sp]
+0x184f0ef10:  c8 bf 2d f0   adrp	x8, 0x1e0709000
+0x184f0ef14:  01 cd 47 f9   ldr	x1, [x8, #0xf98] ; sel_init
+0x184f0ef18:  e0 03 00 91   mov	x0, sp
+0x184f0ef1c:  29 3a c7 94   bl	j__objc_msgSendSuper2
+0x184f0ef20:  f3 03 00 aa   mov	x19, x0
+0x184f0ef24:  c8 af 2f 90   adrp	x8, 0x1e4506000
+0x184f0ef28:  08 d1 8a b9   ldrsw	x8, [x8, #0xad0] ; _OBJC_IVAR_$_NSView._frame
+0x184f0ef2c:  08 00 08 8b   add	x8, x0, x8
+0x184f0ef30:  08 25 00 6d   stp	d8, d9, [x8]
+0x184f0ef34:  0a 2d 01 6d   stp	d10, d11, [x8, #0x10]
+0x184f0ef38:  c9 af 2f 90   adrp	x9, 0x1e4506000
+0x184f0ef3c:  29 d5 8a b9   ldrsw	x9, [x9, #0xad4] ; _OBJC_IVAR_$_NSView._bounds
+0x184f0ef40:  09 00 09 8b   add	x9, x0, x9
+0x184f0ef44:  00 05 c0 3d   ldr	q0, [x8, #0x10]
+0x184f0ef48:  20 05 80 3d   str	q0, [x9, #0x10]
+0x184f0ef4c:  25 bc c4 94   bl	0x18803dfe0
+0x184f0ef50:  e0 03 13 aa   mov	x0, x19
+0x184f0ef54:  7b ca c4 94   bl	0x188041940
+0x184f0ef58:  e2 03 00 aa   mov	x2, x0
+0x184f0ef5c:  e0 03 13 aa   mov	x0, x19
+0x184f0ef60:  e4 61 c6 94   bl	0x1880a76f0
+0x184f0ef64:  c8 af 2f 90   adrp	x8, 0x1e4506000
+0x184f0ef68:  08 c1 8a b9   ldrsw	x8, [x8, #0xac0] ; _OBJC_IVAR_$_NSView._vFlags
+0x184f0ef6c:  68 02 08 8b   add	x8, x19, x8
+0x184f0ef70:  09 01 40 b9   ldr	w9, [x8]
+0x184f0ef74:  29 01 09 32   orr	w9, w9, #0x800000
+0x184f0ef78:  09 01 00 b9   str	w9, [x8]
+0x184f0ef7c:  e0 03 13 aa   mov	x0, x19
+0x184f0ef80:  fd 7b 44 a9   ldp	fp, lr, [sp, #0x40]
+0x184f0ef84:  f4 4f 43 a9   ldp	x20, x19, [sp, #0x30]
+0x184f0ef88:  e9 23 42 6d   ldp	d9, d8, [sp, #0x20]
+0x184f0ef8c:  eb 2b 41 6d   ldp	d11, d10, [sp, #0x10]
+0x184f0ef90:  ff 43 01 91   add	sp, sp, #0x50
+0x184f0ef94:  ff 0f 5f d6   retab
+

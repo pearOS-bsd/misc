@@ -1,0 +1,11 @@
+### -[NSProgressIndicator minValue]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSProgressIndicator minValue]
+
+-[NSProgressIndicator minValue]:
+0x1856d8460:  48 68 30 d0   adrp	x8, 0x1e63e2000
+0x1856d8464:  08 69 87 b9   ldrsw	x8, [x8, #0x768]
+0x1856d8468:  08 00 08 8b   add	x8, x0, x8
+0x1856d846c:  00 01 40 fd   ldr	d0, [x8]
+0x1856d8470:  c0 03 5f d6   ret
+

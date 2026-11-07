@@ -1,0 +1,4 @@
+### -[NSView acceptsFirstResponder]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSView acceptsFirstResponder]
+   ⨯ public symbol -[NSView acceptsFirstResponder] not found in image AppKit

@@ -1,0 +1,9 @@
+### -[NSCell type]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSCell type]
+
+-[NSCell type]:
+0x184f4cdfc:  08 08 40 f9   ldr	x8, [x0, #0x10]
+0x184f4ce00:  00 15 44 d3   ubfx	x0, x8, #0x4, #0x2
+0x184f4ce04:  c0 03 5f d6   ret
+

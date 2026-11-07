@@ -1,0 +1,137 @@
+### -[NSWindow setDelegate:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSWindow setDelegate:]
+
+-[NSWindow setDelegate:]:
+0x184f39694:  7f 23 03 d5   pacibsp
+0x184f39698:  f8 5f bc a9   stp	x24, x23, [sp, #-0x40]!
+0x184f3969c:  f6 57 01 a9   stp	x22, x21, [sp, #0x10]
+0x184f396a0:  f4 4f 02 a9   stp	x20, x19, [sp, #0x20]
+0x184f396a4:  fd 7b 03 a9   stp	fp, lr, [sp, #0x30]
+0x184f396a8:  fd c3 00 91   add	fp, sp, #0x30
+0x184f396ac:  f5 03 02 aa   mov	x21, x2
+0x184f396b0:  f3 03 00 aa   mov	x19, x0
+0x184f396b4:  48 b1 2f f0   adrp	x8, 0x1e4564000
+0x184f396b8:  08 a5 1d 91   add	x8, x8, #0x769 ; data_1e4564769 (AppKit/__DATA.__bss)
+0x184f396bc:  08 fd df 08   ldarb	w8, [x8]
+0x184f396c0:  1f 09 00 71   cmp	w8, #0x2
+0x184f396c4:  40 03 00 54   b.eq	loc_184f3972c ; ⤵ 0x68
+0x184f396c8:  c8 01 00 34   cbz	w8, loc_184f39700 ; ⤵ 0x38
+0x184f396cc:  ; loc_184f396cc
+0x184f396cc:  00 00 80 d2   mov	x0, #0
+0x184f396d0:  f0 2f c7 94   bl	j__NSPushAutoreleasePool
+0x184f396d4:  f7 03 00 aa   mov	x23, x0
+0x184f396d8:  68 ae 2f b0   adrp	x8, 0x1e4506000
+0x184f396dc:  08 49 8c b9   ldrsw	x8, [x8, #0xc48] ; _OBJC_IVAR_$_NSWindow._delegate
+0x184f396e0:  74 02 08 8b   add	x20, x19, x8
+0x184f396e4:  e0 03 14 aa   mov	x0, x20
+0x184f396e8:  da a2 c6 94   bl	j__objc_loadWeak
+0x184f396ec:  f6 03 00 aa   mov	x22, x0
+0x184f396f0:  b7 02 00 b4   cbz	x23, loc_184f39744 ; ⤵ 0x54
+0x184f396f4:  e0 03 17 aa   mov	x0, x23
+0x184f396f8:  e2 2f c7 94   bl	j__NSPopAutoreleasePool
+0x184f396fc:  12 00 00 14   b	loc_184f39744 ; ⤵ 0x48
+0x184f39700:  ; loc_184f39700
+0x184f39700:  60 ab 31 d0   adrp	x0, 0x1e84a7000
+0x184f39704:  00 c0 34 91   add	x0, x0, #0xd30 ; "NSWindowDelegateLifetimeBug"
+0x184f39708:  42 b1 2f f0   adrp	x2, 0x1e4564000
+0x184f3970c:  42 a4 1d 91   add	x2, x2, #0x769 ; data_1e4564769 (AppKit/__DATA.__bss)
+0x184f39710:  10 00 00 90   adrp	x16, 0x184f39000
+0x184f39714:  10 12 22 91   add	x16, x16, #0x884 ; _NSWindowDelegateLifetimeBugDefaultValueFunction
+0x184f39718:  f0 23 c1 da   paciza	x16
+0x184f3971c:  e3 03 10 aa   mov	x3, x16
+0x184f39720:  01 00 80 52   mov	w1, #0
+0x184f39724:  05 39 fe 97   bl	__NSGetBoolAppConfig
+0x184f39728:  20 fd 07 37   tbnz	w0, #0, loc_184f396cc ; ⤴ -0x5c
+0x184f3972c:  ; loc_184f3972c
+0x184f3972c:  68 ae 2f b0   adrp	x8, 0x1e4506000
+0x184f39730:  08 49 8c b9   ldrsw	x8, [x8, #0xc48] ; _OBJC_IVAR_$_NSWindow._delegate
+0x184f39734:  74 02 08 8b   add	x20, x19, x8
+0x184f39738:  e0 03 14 aa   mov	x0, x20
+0x184f3973c:  c5 a2 c6 94   bl	j__objc_loadWeak
+0x184f39740:  f6 03 00 aa   mov	x22, x0
+0x184f39744:  ; loc_184f39744
+0x184f39744:  df 02 15 eb   cmp	x22, x21
+0x184f39748:  80 08 00 54   b.eq	loc_184f39858 ; ⤵ 0x110
+0x184f3974c:  48 b1 2f f0   adrp	x8, 0x1e4564000
+0x184f39750:  08 d1 43 f9   ldr	x8, [x8, #0x7a0] ; data_1e45647a0 (AppKit/__DATA.__bss)
+0x184f39754:  1f 05 00 b1   cmn	x8, #0x1
+0x184f39758:  a1 08 00 54   b.ne	loc_184f3986c ; ⤵ 0x114
+0x184f3975c:  ; loc_184f3975c
+0x184f3975c:  88 93 2d b0   adrp	x8, 0x1e01aa000
+0x184f39760:  00 f5 41 f9   ldr	x0, [x8, #0x3e8] ; _ptr.NSNotificationCenter
+0x184f39764:  8f 39 c3 94   bl	0x188007da0
+0x184f39768:  f7 03 00 aa   mov	x23, x0
+0x184f3976c:  58 b1 2f f0   adrp	x24, 0x1e4564000
+0x184f39770:  03 cf 43 f9   ldr	x3, [x24, #0x798] ; data_1e4564798 (AppKit/__DATA.__bss)
+0x184f39774:  e2 03 16 aa   mov	x2, x22
+0x184f39778:  e4 03 13 aa   mov	x4, x19
+0x184f3977c:  69 84 c4 94   bl	0x18805a920
+0x184f39780:  e0 03 14 aa   mov	x0, x20
+0x184f39784:  e1 03 15 aa   mov	x1, x21
+0x184f39788:  1a 90 c6 94   bl	j__objc_storeWeak
+0x184f3978c:  e0 03 14 aa   mov	x0, x20
+0x184f39790:  b0 a2 c6 94   bl	j__objc_loadWeak
+0x184f39794:  e2 03 00 aa   mov	x2, x0
+0x184f39798:  03 cf 43 f9   ldr	x3, [x24, #0x798]
+0x184f3979c:  e0 03 17 aa   mov	x0, x23
+0x184f397a0:  e4 03 13 aa   mov	x4, x19
+0x184f397a4:  ef f5 c3 94   bl	0x188036f60
+0x184f397a8:  e0 03 14 aa   mov	x0, x20
+0x184f397ac:  a9 a2 c6 94   bl	j__objc_loadWeak
+0x184f397b0:  68 59 38 f0   adrp	x8, 0x1f5a68000
+0x184f397b4:  01 79 23 91   add	x1, x8, #0x8de ; validRequestorForSendType:returnType:
+0x184f397b8:  62 92 c6 94   bl	j__objc_opt_respondsToSelector
+0x184f397bc:  68 ae 2f b0   adrp	x8, 0x1e4506000
+0x184f397c0:  08 21 8c b9   ldrsw	x8, [x8, #0xc20] ; _OBJC_IVAR_$_NSWindow._wFlags
+0x184f397c4:  68 02 08 8b   add	x8, x19, x8
+0x184f397c8:  09 01 40 f9   ldr	x9, [x8]
+0x184f397cc:  1f 00 00 72   tst	w0, #0x1
+0x184f397d0:  2a 00 c0 d2   mov	x10, #0x100000000
+0x184f397d4:  4a 11 9f 9a   csel	x10, x10, xzr, ne
+0x184f397d8:  29 f9 5f 92   and	x9, x9, #0xfffffffeffffffff
+0x184f397dc:  29 01 0a aa   orr	x9, x9, x10
+0x184f397e0:  09 01 00 f9   str	x9, [x8]
+0x184f397e4:  e0 03 14 aa   mov	x0, x20
+0x184f397e8:  9a a2 c6 94   bl	j__objc_loadWeak
+0x184f397ec:  88 59 38 f0   adrp	x8, 0x1f5a6c000
+0x184f397f0:  01 25 0b 91   add	x1, x8, #0x2c9 ; windowWillReturnFieldEditor:toObject:
+0x184f397f4:  53 92 c6 94   bl	j__objc_opt_respondsToSelector
+0x184f397f8:  68 ae 2f b0   adrp	x8, 0x1e4506000
+0x184f397fc:  08 19 8c b9   ldrsw	x8, [x8, #0xc18] ; _OBJC_IVAR_$_NSWindow._auxiliaryStorage
+0x184f39800:  73 02 08 8b   add	x19, x19, x8
+0x184f39804:  68 02 40 f9   ldr	x8, [x19]
+0x184f39808:  09 75 40 f9   ldr	x9, [x8, #0xe8]
+0x184f3980c:  1f 00 00 72   tst	w0, #0x1
+0x184f39810:  0a 02 a0 52   mov	w10, #0x100000
+0x184f39814:  4a 11 9f 9a   csel	x10, x10, xzr, ne
+0x184f39818:  29 f9 6b 92   and	x9, x9, #0xffffffffffefffff
+0x184f3981c:  29 01 0a aa   orr	x9, x9, x10
+0x184f39820:  09 75 00 f9   str	x9, [x8, #0xe8]
+0x184f39824:  e0 03 14 aa   mov	x0, x20
+0x184f39828:  8a a2 c6 94   bl	j__objc_loadWeak
+0x184f3982c:  88 59 38 d0   adrp	x8, 0x1f5a6b000
+0x184f39830:  01 3d 15 91   add	x1, x8, #0x54f ; window:willEncodeRestorableState:
+0x184f39834:  43 92 c6 94   bl	j__objc_opt_respondsToSelector
+0x184f39838:  1f 00 00 72   tst	w0, #0x1
+0x184f3983c:  68 02 40 f9   ldr	x8, [x19]
+0x184f39840:  09 79 40 f9   ldr	x9, [x8, #0xf0]
+0x184f39844:  0a 08 e0 d2   mov	x10, #0x40000000000000
+0x184f39848:  4a 11 9f 9a   csel	x10, x10, xzr, ne
+0x184f3984c:  29 f9 49 92   and	x9, x9, #0xffbfffffffffffff
+0x184f39850:  29 01 0a aa   orr	x9, x9, x10
+0x184f39854:  09 79 00 f9   str	x9, [x8, #0xf0]
+0x184f39858:  ; loc_184f39858
+0x184f39858:  fd 7b 43 a9   ldp	fp, lr, [sp, #0x30]
+0x184f3985c:  f4 4f 42 a9   ldp	x20, x19, [sp, #0x20]
+0x184f39860:  f6 57 41 a9   ldp	x22, x21, [sp, #0x10]
+0x184f39864:  f8 5f c4 a8   ldp	x24, x23, [sp], #0x40
+0x184f39868:  ff 0f 5f d6   retab
+0x184f3986c:  ; loc_184f3986c
+0x184f3986c:  40 b1 2f f0   adrp	x0, 0x1e4564000
+0x184f39870:  00 80 1e 91   add	x0, x0, #0x7a0 ; data_1e45647a0 (AppKit/__DATA.__bss)
+0x184f39874:  e1 a7 31 b0   adrp	x1, 0x1e8436000
+0x184f39878:  21 c0 2c 91   add	x1, x1, #0xb30 ; ___block_literal_global
+0x184f3987c:  79 a0 c6 94   bl	j__dispatch_once
+0x184f39880:  b7 ff ff 17   b	loc_184f3975c ; ⤴ -0x124
+

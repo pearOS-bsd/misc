@@ -1,0 +1,29 @@
+### -[NSCell intValue]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSCell intValue]
+
+-[NSCell intValue]:
+0x1855f8fa0:  7f 23 03 d5   pacibsp
+0x1855f8fa4:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x1855f8fa8:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x1855f8fac:  fd 43 00 91   add	fp, sp, #0x10
+0x1855f8fb0:  f3 03 00 aa   mov	x19, x0
+0x1855f8fb4:  7f 0d aa 94   bl	0x18807c5b0
+0x1855f8fb8:  f4 03 00 aa   mov	x20, x0
+0x1855f8fbc:  21 9a aa 94   bl	0x18809f840
+0x1855f8fc0:  1f 00 13 eb   cmp	x0, x19
+0x1855f8fc4:  a0 00 00 54   b.eq	loc_1855f8fd8 ; ⤵ 0x14
+0x1855f8fc8:  e0 03 14 aa   mov	x0, x20
+0x1855f8fcc:  15 00 aa 94   bl	0x188079020
+0x1855f8fd0:  1f 00 13 eb   cmp	x0, x19
+0x1855f8fd4:  61 00 00 54   b.ne	loc_1855f8fe0 ; ⤵ 0xc
+0x1855f8fd8:  ; loc_1855f8fd8
+0x1855f8fd8:  e0 03 14 aa   mov	x0, x20
+0x1855f8fdc:  01 00 ab 94   bl	0x1880b8fe0
+0x1855f8fe0:  ; loc_1855f8fe0
+0x1855f8fe0:  e0 03 13 aa   mov	x0, x19
+0x1855f8fe4:  47 51 a9 94   bl	0x18804d500
+0x1855f8fe8:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x1855f8fec:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x1855f8ff0:  ff 0f 5f d6   retab
+

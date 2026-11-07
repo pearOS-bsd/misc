@@ -1,0 +1,18 @@
+### -[NSView isDescendantOf:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSView isDescendantOf:]
+
+-[NSView isDescendantOf:]:
+0x184f1d238:  5f 00 00 eb   cmp	x2, x0
+0x184f1d23c:  e0 00 00 54   b.eq	loc_184f1d258 ; ⤵ 0x1c
+0x184f1d240:  48 af 2f b0   adrp	x8, 0x1e4506000
+0x184f1d244:  08 d9 8a b9   ldrsw	x8, [x8, #0xad8] ; _OBJC_IVAR_$_NSView._superview
+0x184f1d248:  08 00 08 8b   add	x8, x0, x8
+0x184f1d24c:  00 01 40 f9   ldr	x0, [x8]
+0x184f1d250:  60 00 00 b4   cbz	x0, loc_184f1d25c ; ⤵ 0xc
+0x184f1d254:  bb c3 c5 14   b	0x18808e140
+0x184f1d258:  ; loc_184f1d258
+0x184f1d258:  20 00 80 52   mov	w0, #0x1
+0x184f1d25c:  ; loc_184f1d25c
+0x184f1d25c:  c0 03 5f d6   ret
+

@@ -1,0 +1,45 @@
+### -[NSMenuItem isEnabled]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSMenuItem isEnabled]
+
+-[NSMenuItem isEnabled]:
+0x184ed9738:  7f 23 03 d5   pacibsp
+0x184ed973c:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x184ed9740:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x184ed9744:  fd 43 00 91   add	fp, sp, #0x10
+0x184ed9748:  f3 03 00 aa   mov	x19, x0
+0x184ed974c:  c8 a8 30 f0   adrp	x8, 0x1e63f4000
+0x184ed9750:  08 e1 0b 91   add	x8, x8, #0x2f8 ; _NSApp
+0x184ed9754:  00 01 40 f9   ldr	x0, [x8]
+0x184ed9758:  52 e0 c5 94   bl	0x1880518a0
+0x184ed975c:  80 00 00 34   cbz	w0, loc_184ed976c ; ⤵ 0x10
+0x184ed9760:  e0 03 13 aa   mov	x0, x19
+0x184ed9764:  93 2a c6 94   bl	0x1880641b0
+0x184ed9768:  c0 00 00 37   tbnz	w0, #0, loc_184ed9780 ; ⤵ 0x18
+0x184ed976c:  ; loc_184ed976c
+0x184ed976c:  68 c2 45 f8   ldur	x8, [x19, #0x5c]
+0x184ed9770:  09 20 80 d2   mov	x9, #0x100
+0x184ed9774:  09 00 c8 f2   movk	x9, #0x4000, lsl #0x20
+0x184ed9778:  1f 01 09 ea   tst	x8, x9
+0x184ed977c:  a0 00 00 54   b.eq	loc_184ed9790 ; ⤵ 0x14
+0x184ed9780:  ; loc_184ed9780
+0x184ed9780:  00 00 80 52   mov	w0, #0
+0x184ed9784:  ; loc_184ed9784
+0x184ed9784:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184ed9788:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184ed978c:  ff 0f 5f d6   retab
+0x184ed9790:  ; loc_184ed9790
+0x184ed9790:  60 06 40 f9   ldr	x0, [x19, #0x8]
+0x184ed9794:  00 01 00 b4   cbz	x0, loc_184ed97b4 ; ⤵ 0x20
+0x184ed9798:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184ed979c:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184ed97a0:  ff 23 03 d5   autibsp
+0x184ed97a4:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184ed97a8:  50 00 f0 b6   tbz	x16, #0x3e, loc_184ed97b0 ; ⤵ 0x8
+0x184ed97ac:  20 8e 38 d4   brk	#0xc471
+0x184ed97b0:  ; loc_184ed97b0
+0x184ed97b0:  6c d4 c5 14   b	0x18804e960
+0x184ed97b4:  ; loc_184ed97b4
+0x184ed97b4:  20 00 80 52   mov	w0, #0x1
+0x184ed97b8:  f3 ff ff 17   b	loc_184ed9784 ; ⤴ -0x34
+

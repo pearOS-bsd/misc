@@ -1,0 +1,23 @@
+### -[NSTokenFieldCell setTokenStyle:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTokenFieldCell setTokenStyle:]
+
+-[NSTokenFieldCell setTokenStyle:]:
+0x1850f6484:  48 28 00 d1   sub	x8, x2, #0xa
+0x1850f6488:  1f 0d 00 b1   cmn	x8, #0x3
+0x1850f648c:  40 38 44 fa   ccmp	x2, #0x4, #0, cc
+0x1850f6490:  e8 83 82 9a   csel	x8, xzr, x2, hi
+0x1850f6494:  69 97 30 90   adrp	x9, 0x1e63e2000
+0x1850f6498:  29 31 87 b9   ldrsw	x9, [x9, #0x730] ; __MergedGlobals
+0x1850f649c:  0a 00 09 8b   add	x10, x0, x9
+0x1850f64a0:  4a 01 40 b9   ldr	w10, [x10]
+0x1850f64a4:  4b 0d 40 92   and	x11, x10, #0xf
+0x1850f64a8:  1f 01 0b eb   cmp	x8, x11
+0x1850f64ac:  a0 00 00 54   b.eq	loc_1850f64c0 ; ⤵ 0x14
+0x1850f64b0:  4a 69 1b 12   and	w10, w10, #0xffffffe0
+0x1850f64b4:  48 01 08 2a   orr	w8, w10, w8
+0x1850f64b8:  08 01 1c 32   orr	w8, w8, #0x10
+0x1850f64bc:  08 68 29 b8   str	w8, [x0, x9]
+0x1850f64c0:  ; loc_1850f64c0
+0x1850f64c0:  c0 03 5f d6   ret
+

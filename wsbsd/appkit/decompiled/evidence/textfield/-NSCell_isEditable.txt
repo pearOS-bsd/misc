@@ -1,0 +1,7 @@
+### -[NSCell isEditable]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSCell isEditable]
+
+-[NSCell isEditable]:
+0x184f30410:  f0 2f c4 14   b	0x18803c3d0
+

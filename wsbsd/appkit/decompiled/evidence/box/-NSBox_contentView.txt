@@ -1,0 +1,11 @@
+### -[NSBox contentView]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSBox contentView]
+
+-[NSBox contentView]:
+0x18511e4a4:  28 9f 2f d0   adrp	x8, 0x1e4504000
+0x18511e4a8:  08 25 89 b9   ldrsw	x8, [x8, #0x924] ; _OBJC_IVAR_$_NSBox._contentView
+0x18511e4ac:  08 00 08 8b   add	x8, x0, x8
+0x18511e4b0:  00 01 40 f9   ldr	x0, [x8]
+0x18511e4b4:  67 1e bf 14   b	j__objc_retainAutoreleaseReturnValue
+

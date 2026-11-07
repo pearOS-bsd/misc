@@ -1,0 +1,4 @@
+### -[NSTextFieldCell isBezeled]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTextFieldCell isBezeled]
+   ⨯ public symbol -[NSTextFieldCell isBezeled] not found in image AppKit

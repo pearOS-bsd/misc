@@ -1,0 +1,11 @@
+### -[NSPathCell pathStyle]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSPathCell pathStyle]
+
+-[NSPathCell pathStyle]:
+0x1859f9d84:  48 4f 30 d0   adrp	x8, 0x1e63e3000
+0x1859f9d88:  08 09 8a b9   ldrsw	x8, [x8, #0xa08]
+0x1859f9d8c:  08 00 08 8b   add	x8, x0, x8
+0x1859f9d90:  00 01 40 f9   ldr	x0, [x8]
+0x1859f9d94:  c0 03 5f d6   ret
+

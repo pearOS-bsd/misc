@@ -1,0 +1,12 @@
+### -[NSScroller scrollerStyle]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSScroller scrollerStyle]
+
+-[NSScroller scrollerStyle]:
+0x184f5f9d8:  28 ad 2f d0   adrp	x8, 0x1e4505000
+0x184f5f9dc:  08 4d 85 b9   ldrsw	x8, [x8, #0x54c] ; _OBJC_IVAR_$_NSScroller._sFlags2
+0x184f5f9e0:  08 00 08 8b   add	x8, x0, x8
+0x184f5f9e4:  08 01 40 b9   ldr	w8, [x8]
+0x184f5f9e8:  00 25 49 d3   ubfx	x0, x8, #0x9, #0x1
+0x184f5f9ec:  c0 03 5f d6   ret
+

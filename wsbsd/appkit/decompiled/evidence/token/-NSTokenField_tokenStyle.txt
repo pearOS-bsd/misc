@@ -1,0 +1,17 @@
+### -[NSTokenField tokenStyle]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTokenField tokenStyle]
+
+-[NSTokenField tokenStyle]:
+0x1856bfc8c:  7f 23 03 d5   pacibsp
+0x1856bfc90:  fd 7b bf a9   stp	fp, lr, [sp, #-0x10]!
+0x1856bfc94:  fd 03 00 91   mov	fp, sp
+0x1856bfc98:  ea 7e a7 94   bl	0x18809f840
+0x1856bfc9c:  fd 7b c1 a8   ldp	fp, lr, [sp], #0x10
+0x1856bfca0:  ff 23 03 d5   autibsp
+0x1856bfca4:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x1856bfca8:  50 00 f0 b6   tbz	x16, #0x3e, loc_1856bfcb0 ; ⤵ 0x8
+0x1856bfcac:  20 8e 38 d4   brk	#0xc471
+0x1856bfcb0:  ; loc_1856bfcb0
+0x1856bfcb0:  14 d8 a7 14   b	0x1880b5d00
+

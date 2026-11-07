@@ -1,0 +1,45 @@
+### -[NSStepper setMinValue:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSStepper setMinValue:]
+
+-[NSStepper setMinValue:]:
+0x185691ba4:  7f 23 03 d5   pacibsp
+0x185691ba8:  e9 23 bd 6d   stp	d9, d8, [sp, #-0x30]!
+0x185691bac:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x185691bb0:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x185691bb4:  fd 83 00 91   add	fp, sp, #0x20
+0x185691bb8:  08 1c a0 4e   mov	v8.16b, v0.16b
+0x185691bbc:  f3 03 00 aa   mov	x19, x0
+0x185691bc0:  d8 4a e2 97   bl	_NSControlDelegatesToCell
+0x185691bc4:  e0 01 00 34   cbz	w0, loc_185691c00 ; ⤵ 0x3c
+0x185691bc8:  88 73 2f f0   adrp	x8, 0x1e4504000
+0x185691bcc:  08 d1 1e 91   add	x8, x8, #0x7b4 ; _OBJC_IVAR_$_NSControl._cell
+0x185691bd0:  08 01 80 b9   ldrsw	x8, [x8]
+0x185691bd4:  68 02 08 8b   add	x8, x19, x8
+0x185691bd8:  00 01 40 f9   ldr	x0, [x8]
+0x185691bdc:  00 1d a8 4e   mov	v0.16b, v8.16b
+0x185691be0:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x185691be4:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x185691be8:  e9 23 c3 6c   ldp	d9, d8, [sp], #0x30
+0x185691bec:  ff 23 03 d5   autibsp
+0x185691bf0:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x185691bf4:  50 00 f0 b6   tbz	x16, #0x3e, loc_185691bfc ; ⤵ 0x8
+0x185691bf8:  20 8e 38 d4   brk	#0xc471
+0x185691bfc:  ; loc_185691bfc
+0x185691bfc:  69 76 a6 14   b	0x18802f5a0
+0x185691c00:  ; loc_185691c00
+0x185691c00:  e0 03 13 aa   mov	x0, x19
+0x185691c04:  f3 b6 a6 94   bl	0x18803f7d0
+0x185691c08:  00 1d a8 4e   mov	v0.16b, v8.16b
+0x185691c0c:  65 76 a6 94   bl	0x18802f5a0
+0x185691c10:  e0 03 13 aa   mov	x0, x19
+0x185691c14:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x185691c18:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x185691c1c:  e9 23 c3 6c   ldp	d9, d8, [sp], #0x30
+0x185691c20:  ff 23 03 d5   autibsp
+0x185691c24:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x185691c28:  50 00 f0 b6   tbz	x16, #0x3e, loc_185691c30 ; ⤵ 0x8
+0x185691c2c:  20 8e 38 d4   brk	#0xc471
+0x185691c30:  ; loc_185691c30
+0x185691c30:  fc 6f a7 14   b	0x18806dc20
+

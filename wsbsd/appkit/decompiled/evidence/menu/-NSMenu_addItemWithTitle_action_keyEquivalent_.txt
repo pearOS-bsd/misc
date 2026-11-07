@@ -1,0 +1,31 @@
+### -[NSMenu addItemWithTitle:action:keyEquivalent:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSMenu addItemWithTitle:action:keyEquivalent:]
+
+-[NSMenu addItemWithTitle:action:keyEquivalent:]:
+0x184f04c94:  7f 23 03 d5   pacibsp
+0x184f04c98:  f6 57 bd a9   stp	x22, x21, [sp, #-0x30]!
+0x184f04c9c:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x184f04ca0:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x184f04ca4:  fd 83 00 91   add	fp, sp, #0x20
+0x184f04ca8:  f3 03 04 aa   mov	x19, x4
+0x184f04cac:  f4 03 03 aa   mov	x20, x3
+0x184f04cb0:  f5 03 02 aa   mov	x21, x2
+0x184f04cb4:  f6 03 00 aa   mov	x22, x0
+0x184f04cb8:  00 0c 40 f9   ldr	x0, [x0, #0x18]
+0x184f04cbc:  a5 f7 c3 94   bl	0x188002b50
+0x184f04cc0:  e5 03 00 aa   mov	x5, x0
+0x184f04cc4:  e0 03 16 aa   mov	x0, x22
+0x184f04cc8:  e2 03 15 aa   mov	x2, x21
+0x184f04ccc:  e3 03 14 aa   mov	x3, x20
+0x184f04cd0:  e4 03 13 aa   mov	x4, x19
+0x184f04cd4:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x184f04cd8:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x184f04cdc:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x184f04ce0:  ff 23 03 d5   autibsp
+0x184f04ce4:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f04ce8:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f04cf0 ; ⤵ 0x8
+0x184f04cec:  20 8e 38 d4   brk	#0xc471
+0x184f04cf0:  ; loc_184f04cf0
+0x184f04cf0:  34 1f c6 14   b	0x18808c9c0
+

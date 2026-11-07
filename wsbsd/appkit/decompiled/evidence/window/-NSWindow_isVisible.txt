@@ -1,0 +1,22 @@
+### -[NSWindow isVisible]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSWindow isVisible]
+
+-[NSWindow isVisible]:
+0x184f1175c:  7f 23 03 d5   pacibsp
+0x184f11760:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x184f11764:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x184f11768:  fd 43 00 91   add	fp, sp, #0x10
+0x184f1176c:  f3 03 00 aa   mov	x19, x0
+0x184f11770:  61 a9 31 90   adrp	x1, 0x1e843d000
+0x184f11774:  21 40 07 91   add	x1, x1, #0x1d0 ; "visible"
+0x184f11778:  a1 f9 ff 97   bl	__NSAddKeyValueDependency
+0x184f1177c:  a8 af 2f b0   adrp	x8, 0x1e4506000
+0x184f11780:  08 21 8c b9   ldrsw	x8, [x8, #0xc20] ; _OBJC_IVAR_$_NSWindow._wFlags
+0x184f11784:  68 02 08 8b   add	x8, x19, x8
+0x184f11788:  08 01 40 39   ldrb	w8, [x8]
+0x184f1178c:  00 09 02 53   ubfx	w0, w8, #0x2, #0x1
+0x184f11790:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184f11794:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184f11798:  ff 0f 5f d6   retab
+

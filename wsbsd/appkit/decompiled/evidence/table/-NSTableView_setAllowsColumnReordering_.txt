@@ -1,0 +1,21 @@
+### -[NSTableView setAllowsColumnReordering:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTableView setAllowsColumnReordering:]
+
+-[NSTableView setAllowsColumnReordering:]:
+0x184f9bbdc:  48 ab 2f d0   adrp	x8, 0x1e4505000
+0x184f9bbe0:  08 09 8f b9   ldrsw	x8, [x8, #0xf08] ; _OBJC_IVAR_$_NSTableView._tvFlags
+0x184f9bbe4:  09 00 08 8b   add	x9, x0, x8
+0x184f9bbe8:  29 01 40 b9   ldr	w9, [x9]
+0x184f9bbec:  3f 05 00 31   cmn	w9, #0x1
+0x184f9bbf0:  ea d7 9f 1a   cset	w10, gt
+0x184f9bbf4:  4a 00 0a 4a   eor	w10, w2, w10
+0x184f9bbf8:  ca 00 00 37   tbnz	w10, #0, loc_184f9bc10 ; ⤵ 0x18
+0x184f9bbfc:  0a 00 b0 52   mov	w10, #0x80000000
+0x184f9bc00:  5f 00 00 71   cmp	w2, #0
+0x184f9bc04:  4a 11 9f 1a   csel	w10, w10, wzr, ne
+0x184f9bc08:  2a 79 00 33   bfxil	w10, w9, #0, #0x1f
+0x184f9bc0c:  0a 68 28 b8   str	w10, [x0, x8]
+0x184f9bc10:  ; loc_184f9bc10
+0x184f9bc10:  c0 03 5f d6   ret
+

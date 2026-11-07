@@ -1,0 +1,31 @@
+### -[NSControl action]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSControl action]
+
+-[NSControl action]:
+0x184f291c8:  7f 23 03 d5   pacibsp
+0x184f291cc:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x184f291d0:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x184f291d4:  fd 43 00 91   add	fp, sp, #0x10
+0x184f291d8:  f3 03 00 aa   mov	x19, x0
+0x184f291dc:  e8 e1 37 d0   adrp	x8, 0x1f4b67000
+0x184f291e0:  02 01 3e 91   add	x2, x8, #0xf80 ; action
+0x184f291e4:  73 ec c4 94   bl	0x1880643b0
+0x184f291e8:  c8 ae 2f f0   adrp	x8, 0x1e4504000
+0x184f291ec:  08 c1 1e 91   add	x8, x8, #0x7b0 ; _OBJC_IVAR_$_NSControl._aux
+0x184f291f0:  c9 ae 2f f0   adrp	x9, 0x1e4504000
+0x184f291f4:  29 d1 1e 91   add	x9, x9, #0x7b4 ; _OBJC_IVAR_$_NSControl._cell
+0x184f291f8:  1f 00 00 71   cmp	w0, #0
+0x184f291fc:  28 11 88 9a   csel	x8, x9, x8, ne
+0x184f29200:  08 01 80 b9   ldrsw	x8, [x8]
+0x184f29204:  68 02 08 8b   add	x8, x19, x8
+0x184f29208:  00 01 40 f9   ldr	x0, [x8]
+0x184f2920c:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184f29210:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184f29214:  ff 23 03 d5   autibsp
+0x184f29218:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f2921c:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f29224 ; ⤵ 0x8
+0x184f29220:  20 8e 38 d4   brk	#0xc471
+0x184f29224:  ; loc_184f29224
+0x184f29224:  f3 20 c4 14   b	0x1880315f0
+

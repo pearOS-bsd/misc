@@ -1,0 +1,50 @@
+### -[NSTabView addTabViewItem:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTabView addTabViewItem:]
+
+-[NSTabView addTabViewItem:]:
+0x185107c34:  7f 23 03 d5   pacibsp
+0x185107c38:  f6 57 bd a9   stp	x22, x21, [sp, #-0x30]!
+0x185107c3c:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x185107c40:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x185107c44:  fd 83 00 91   add	fp, sp, #0x20
+0x185107c48:  f3 03 02 aa   mov	x19, x2
+0x185107c4c:  f5 03 01 aa   mov	x21, x1
+0x185107c50:  f4 03 00 aa   mov	x20, x0
+0x185107c54:  cb ce bc 94   bl	0x18803b780
+0x185107c58:  80 02 00 36   tbz	w0, #0, loc_185107ca8 ; ⤵ 0x50
+0x185107c5c:  ; loc_185107c5c
+0x185107c5c:  c8 96 30 f0   adrp	x8, 0x1e63e2000
+0x185107c60:  08 f5 8b b9   ldrsw	x8, [x8, #0xbf4]
+0x185107c64:  95 02 08 8b   add	x21, x20, x8
+0x185107c68:  a0 02 40 f9   ldr	x0, [x21]
+0x185107c6c:  e2 03 13 aa   mov	x2, x19
+0x185107c70:  e0 e9 bb 94   bl	0x1880023f0
+0x185107c74:  a0 02 40 f9   ldr	x0, [x21]
+0x185107c78:  b6 eb bb 94   bl	0x188002b50
+0x185107c7c:  03 04 00 d1   sub	x3, x0, #0x1
+0x185107c80:  e0 03 14 aa   mov	x0, x20
+0x185107c84:  e2 03 13 aa   mov	x2, x19
+0x185107c88:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x185107c8c:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x185107c90:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x185107c94:  ff 23 03 d5   autibsp
+0x185107c98:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x185107c9c:  50 00 f0 b6   tbz	x16, #0x3e, loc_185107ca4 ; ⤵ 0x8
+0x185107ca0:  20 8e 38 d4   brk	#0xc471
+0x185107ca4:  ; loc_185107ca4
+0x185107ca4:  07 be bc 14   b	0x1880374c0
+0x185107ca8:  ; loc_185107ca8
+0x185107ca8:  08 85 2d f0   adrp	x8, 0x1e01aa000
+0x185107cac:  00 41 40 f9   ldr	x0, [x8, #0x80] ; _ptr.NSAssertionHandler
+0x185107cb0:  74 ff bb 94   bl	0x188007a80
+0x185107cb4:  64 9c 31 f0   adrp	x4, 0x1e8496000
+0x185107cb8:  84 40 17 91   add	x4, x4, #0x5d0 ; "NSTabView.m"
+0x185107cbc:  66 9c 31 f0   adrp	x6, 0x1e8496000
+0x185107cc0:  c6 c0 17 91   add	x6, x6, #0x5f0 ; "A TabView managed by a TabViewController cannot have tab view items added directly to it."
+0x185107cc4:  e2 03 15 aa   mov	x2, x21
+0x185107cc8:  e3 03 14 aa   mov	x3, x20
+0x185107ccc:  a5 6c 80 52   mov	w5, #0x365
+0x185107cd0:  dc 03 bc 94   bl	0x188008c40
+0x185107cd4:  e2 ff ff 17   b	loc_185107c5c ; ⤴ -0x78
+

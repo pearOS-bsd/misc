@@ -1,0 +1,26 @@
+### -[NSToolbarItem paletteLabel]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSToolbarItem paletteLabel]
+
+-[NSToolbarItem paletteLabel]:
+0x1858cba94:  7f 23 03 d5   pacibsp
+0x1858cba98:  fd 7b bf a9   stp	fp, lr, [sp, #-0x10]!
+0x1858cba9c:  fd 03 00 91   mov	fp, sp
+0x1858cbaa0:  e8 03 00 aa   mov	x8, x0
+0x1858cbaa4:  00 1c 40 f9   ldr	x0, [x0, #0x38]
+0x1858cbaa8:  60 00 00 b4   cbz	x0, loc_1858cbab4 ; ⤵ 0xc
+0x1858cbaac:  71 44 a0 94   bl	j__objc_retain_x0
+0x1858cbab0:  04 00 00 14   b	loc_1858cbac0 ; ⤵ 0x10
+0x1858cbab4:  ; loc_1858cbab4
+0x1858cbab4:  e0 03 08 aa   mov	x0, x8
+0x1858cbab8:  5a 1a 9d 94   bl	0x188012420
+0x1858cbabc:  15 4d a0 94   bl	j__objc_claimAutoreleasedReturnValue
+0x1858cbac0:  ; loc_1858cbac0
+0x1858cbac0:  fd 7b c1 a8   ldp	fp, lr, [sp], #0x10
+0x1858cbac4:  ff 23 03 d5   autibsp
+0x1858cbac8:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x1858cbacc:  50 00 f0 b6   tbz	x16, #0x3e, loc_1858cbad4 ; ⤵ 0x8
+0x1858cbad0:  20 8e 38 d4   brk	#0xc471
+0x1858cbad4:  ; loc_1858cbad4
+0x1858cbad4:  0b 4d a0 14   b	j__objc_autoreleaseReturnValue
+

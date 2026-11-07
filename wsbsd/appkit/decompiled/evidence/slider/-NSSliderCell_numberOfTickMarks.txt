@@ -1,0 +1,11 @@
+### -[NSSliderCell numberOfTickMarks]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSSliderCell numberOfTickMarks]
+
+-[NSSliderCell numberOfTickMarks]:
+0x1850e7c9c:  e8 a0 2f b0   adrp	x8, 0x1e4504000
+0x1850e7ca0:  08 79 8d b9   ldrsw	x8, [x8, #0xd78] ; _OBJC_IVAR_$_NSSliderCell._numberOfTickMarks
+0x1850e7ca4:  08 00 08 8b   add	x8, x0, x8
+0x1850e7ca8:  00 01 80 b9   ldrsw	x0, [x8]
+0x1850e7cac:  c0 03 5f d6   ret
+

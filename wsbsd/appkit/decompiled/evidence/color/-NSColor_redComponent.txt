@@ -1,0 +1,32 @@
+### -[NSColor redComponent]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSColor redComponent]
+
+-[NSColor redComponent]:
+0x185330d6c:  7f 23 03 d5   pacibsp
+0x185330d70:  ff 03 01 d1   sub	sp, sp, #0x40
+0x185330d74:  f6 57 01 a9   stp	x22, x21, [sp, #0x10]
+0x185330d78:  f4 4f 02 a9   stp	x20, x19, [sp, #0x20]
+0x185330d7c:  fd 7b 03 a9   stp	fp, lr, [sp, #0x30]
+0x185330d80:  fd c3 00 91   add	fp, sp, #0x30
+0x185330d84:  f3 03 00 aa   mov	x19, x0
+0x185330d88:  68 73 2d 90   adrp	x8, 0x1e019c000
+0x185330d8c:  14 85 42 f9   ldr	x20, [x8, #0x508] ; _ptr.NSException
+0x185330d90:  48 73 2d f0   adrp	x8, 0x1e019b000
+0x185330d94:  08 69 47 f9   ldr	x8, [x8, #0xed0] ; _ptr._NSInvalidArgumentException
+0x185330d98:  15 01 40 f9   ldr	x21, [x8]
+0x185330d9c:  e0 03 01 aa   mov	x0, x1
+0x185330da0:  8c cf b6 94   bl	j__NSStringFromSelector
+0x185330da4:  e0 4f 00 a9   stp	x0, x19, [sp]
+0x185330da8:  03 89 31 d0   adrp	x3, 0x1e8452000
+0x185330dac:  63 40 0d 91   add	x3, x3, #0x350 ; "*** -%@ not valid for the NSColor %@; need to first convert colorspace."
+0x185330db0:  e0 03 14 aa   mov	x0, x20
+0x185330db4:  e2 03 15 aa   mov	x2, x21
+0x185330db8:  52 6a b3 94   bl	0x18800b700
+0x185330dbc:  00 e4 00 6f   movi	v0.2d, #0
+0x185330dc0:  fd 7b 43 a9   ldp	fp, lr, [sp, #0x30]
+0x185330dc4:  f4 4f 42 a9   ldp	x20, x19, [sp, #0x20]
+0x185330dc8:  f6 57 41 a9   ldp	x22, x21, [sp, #0x10]
+0x185330dcc:  ff 03 01 91   add	sp, sp, #0x40
+0x185330dd0:  ff 0f 5f d6   retab
+

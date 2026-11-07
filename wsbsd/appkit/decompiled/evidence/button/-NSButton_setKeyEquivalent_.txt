@@ -1,0 +1,12 @@
+### -[NSButton setKeyEquivalent:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSButton setKeyEquivalent:]
+
+-[NSButton setKeyEquivalent:]:
+0x184f24b98:  08 af 2f 90   adrp	x8, 0x1e4504000
+0x184f24b9c:  08 d1 1e 91   add	x8, x8, #0x7b4 ; _OBJC_IVAR_$_NSControl._cell
+0x184f24ba0:  08 01 80 b9   ldrsw	x8, [x8]
+0x184f24ba4:  08 00 08 8b   add	x8, x0, x8
+0x184f24ba8:  00 01 40 f9   ldr	x0, [x8]
+0x184f24bac:  a9 09 c6 14   b	0x1880a7250
+

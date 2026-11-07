@@ -1,0 +1,19 @@
+### -[NSOutlineView setIndentationPerLevel:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSOutlineView setIndentationPerLevel:]
+
+-[NSOutlineView setIndentationPerLevel:]:
+0x184f6ec74:  08 00 64 9e   fcvtas	x8, d0
+0x184f6ec78:  08 fd a8 8a   bic	x8, x8, x8, asr #0x3f
+0x184f6ec7c:  a9 a3 30 90   adrp	x9, 0x1e63e2000
+0x184f6ec80:  29 21 80 b9   ldrsw	x9, [x9, #0x20]
+0x184f6ec84:  0a 00 09 8b   add	x10, x0, x9
+0x184f6ec88:  4a 01 40 f9   ldr	x10, [x10]
+0x184f6ec8c:  5f 01 08 eb   cmp	x10, x8
+0x184f6ec90:  41 00 00 54   b.ne	loc_184f6ec98 ; ⤵ 0x8
+0x184f6ec94:  c0 03 5f d6   ret
+0x184f6ec98:  ; loc_184f6ec98
+0x184f6ec98:  08 68 29 f8   str	x8, [x0, x9]
+0x184f6ec9c:  22 00 80 52   mov	w2, #0x1
+0x184f6eca0:  a0 e6 c4 14   b	0x1880a8720
+

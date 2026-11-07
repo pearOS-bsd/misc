@@ -1,0 +1,8 @@
+### -[NSPopUpButtonCell selectItemAtIndex:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSPopUpButtonCell selectItemAtIndex:]
+
+-[NSPopUpButtonCell selectItemAtIndex:]:
+0x184f975c0:  23 00 80 52   mov	w3, #0x1
+0x184f975c4:  07 19 c3 14   b	0x18805d9e0
+

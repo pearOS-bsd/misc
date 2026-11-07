@@ -1,0 +1,22 @@
+### -[NSMenuItem action]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSMenuItem action]
+
+-[NSMenuItem action]:
+0x184ed8320:  10 8c 44 f8   ldr	x16, [x0, #0x48]!
+0x184ed8324:  70 01 00 b4   cbz	x16, loc_184ed8350 ; ⤵ 0x2c
+0x184ed8328:  f1 03 00 aa   mov	x17, x0
+0x184ed832c:  51 f8 ea f2   movk	x17, #0x57c2, lsl #0x30
+0x184ed8330:  30 1e c1 da   autdb	x16, x17
+0x184ed8334:  f1 03 10 aa   mov	x17, x16
+0x184ed8338:  f1 47 c1 da   xpacd	x17
+0x184ed833c:  1f 02 11 eb   cmp	x16, x17
+0x184ed8340:  40 00 00 54   b.eq	loc_184ed8348 ; ⤵ 0x8
+0x184ed8344:  60 8e 38 d4   brk	#0xc473
+0x184ed8348:  ; loc_184ed8348
+0x184ed8348:  e0 03 10 aa   mov	x0, x16
+0x184ed834c:  c0 03 5f d6   ret
+0x184ed8350:  ; loc_184ed8350
+0x184ed8350:  00 00 80 d2   mov	x0, #0
+0x184ed8354:  c0 03 5f d6   ret
+

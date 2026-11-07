@@ -1,0 +1,14 @@
+### -[NSMenuItem state]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSMenuItem state]
+
+-[NSMenuItem state]:
+0x184ef5d58:  68 00 80 52   mov	w8, #0x3
+0x184ef5d5c:  09 c0 45 f8   ldur	x9, [x0, #0x5c]
+0x184ef5d60:  0a 55 49 ea   ands	x10, x8, x9, lsr #0x15
+0x184ef5d64:  5f 05 00 f1   cmp	x10, #0x1
+0x184ef5d68:  4a 01 9f da   csinv	x10, x10, xzr, eq
+0x184ef5d6c:  1f 55 49 ea   tst	x8, x9, lsr #0x15
+0x184ef5d70:  e0 03 8a 9a   csel	x0, xzr, x10, eq
+0x184ef5d74:  c0 03 5f d6   ret
+

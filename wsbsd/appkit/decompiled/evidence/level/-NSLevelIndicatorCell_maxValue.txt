@@ -1,0 +1,11 @@
+### -[NSLevelIndicatorCell maxValue]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSLevelIndicatorCell maxValue]
+
+-[NSLevelIndicatorCell maxValue]:
+0x1856337a0:  68 6d 30 f0   adrp	x8, 0x1e63e2000
+0x1856337a4:  08 89 83 b9   ldrsw	x8, [x8, #0x388]
+0x1856337a8:  08 00 08 8b   add	x8, x0, x8
+0x1856337ac:  00 01 40 fd   ldr	d0, [x8]
+0x1856337b0:  c0 03 5f d6   ret
+

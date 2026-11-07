@@ -1,0 +1,40 @@
+### -[NSButton setState:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSButton setState:]
+
+-[NSButton setState:]:
+0x184f51278:  7f 23 03 d5   pacibsp
+0x184f5127c:  f6 57 bd a9   stp	x22, x21, [sp, #-0x30]!
+0x184f51280:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x184f51284:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x184f51288:  fd 83 00 91   add	fp, sp, #0x20
+0x184f5128c:  f4 03 02 aa   mov	x20, x2
+0x184f51290:  f3 03 00 aa   mov	x19, x0
+0x184f51294:  88 ad 2f f0   adrp	x8, 0x1e4504000
+0x184f51298:  08 d1 1e 91   add	x8, x8, #0x7b4 ; _OBJC_IVAR_$_NSControl._cell
+0x184f5129c:  15 01 80 b9   ldrsw	x21, [x8]
+0x184f512a0:  08 00 15 8b   add	x8, x0, x21
+0x184f512a4:  00 01 40 f9   ldr	x0, [x8]
+0x184f512a8:  e6 cf c2 94   bl	0x188005240
+0x184f512ac:  1f 00 14 eb   cmp	x0, x20
+0x184f512b0:  a1 00 00 54   b.ne	loc_184f512c4 ; ⤵ 0x14
+0x184f512b4:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x184f512b8:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x184f512bc:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x184f512c0:  ff 0f 5f d6   retab
+0x184f512c4:  ; loc_184f512c4
+0x184f512c4:  60 6a 75 f8   ldr	x0, [x19, x21]
+0x184f512c8:  e2 03 14 aa   mov	x2, x20
+0x184f512cc:  c9 ed c2 94   bl	0x18800c9f0
+0x184f512d0:  62 6a 75 f8   ldr	x2, [x19, x21]
+0x184f512d4:  e0 03 13 aa   mov	x0, x19
+0x184f512d8:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x184f512dc:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x184f512e0:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x184f512e4:  ff 23 03 d5   autibsp
+0x184f512e8:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f512ec:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f512f4 ; ⤵ 0x8
+0x184f512f0:  20 8e 38 d4   brk	#0xc471
+0x184f512f4:  ; loc_184f512f4
+0x184f512f4:  63 99 c5 14   b	0x1880b7880
+

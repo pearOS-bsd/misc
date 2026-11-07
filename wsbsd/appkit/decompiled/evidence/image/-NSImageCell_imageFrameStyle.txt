@@ -1,0 +1,12 @@
+### -[NSImageCell imageFrameStyle]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSImageCell imageFrameStyle]
+
+-[NSImageCell imageFrameStyle]:
+0x184fba8f4:  48 a1 30 90   adrp	x8, 0x1e63e2000
+0x184fba8f8:  08 19 83 b9   ldrsw	x8, [x8, #0x318] ; __MergedGlobals
+0x184fba8fc:  08 00 08 8b   add	x8, x0, x8
+0x184fba900:  08 01 40 b9   ldr	w8, [x8]
+0x184fba904:  00 fd 5d d3   lsr	x0, x8, #0x1d
+0x184fba908:  c0 03 5f d6   ret
+

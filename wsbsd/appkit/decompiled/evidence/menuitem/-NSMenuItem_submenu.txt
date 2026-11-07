@@ -1,0 +1,8 @@
+### -[NSMenuItem submenu]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSMenuItem submenu]
+
+-[NSMenuItem submenu]:
+0x184eda7c4:  00 18 40 f9   ldr	x0, [x0, #0x30]
+0x184eda7c8:  c0 03 5f d6   ret
+

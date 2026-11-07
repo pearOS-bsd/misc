@@ -1,0 +1,7 @@
+### -[NSScroller setScrollerStyle:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSScroller setScrollerStyle:]
+
+-[NSScroller setScrollerStyle:]:
+0x184f62aac:  3d d9 c3 14   b	0x188058fa0
+

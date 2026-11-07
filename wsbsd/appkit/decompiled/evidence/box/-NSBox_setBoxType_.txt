@@ -1,0 +1,71 @@
+### -[NSBox setBoxType:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSBox setBoxType:]
+
+-[NSBox setBoxType:]:
+0x185093dd4:  7f 23 03 d5   pacibsp
+0x185093dd8:  f6 57 bd a9   stp	x22, x21, [sp, #-0x30]!
+0x185093ddc:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x185093de0:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x185093de4:  fd 83 00 91   add	fp, sp, #0x20
+0x185093de8:  f4 03 02 aa   mov	x20, x2
+0x185093dec:  88 a3 2f b0   adrp	x8, 0x1e4504000
+0x185093df0:  08 1d 89 b9   ldrsw	x8, [x8, #0x91c] ; _OBJC_IVAR_$_NSBox._bFlags
+0x185093df4:  08 00 08 8b   add	x8, x0, x8
+0x185093df8:  09 01 40 b9   ldr	w9, [x8]
+0x185093dfc:  35 31 4a d3   ubfx	x21, x9, #0xa, #0x3
+0x185093e00:  89 0a 16 33   bfi	w9, w20, #0xa, #0x3
+0x185093e04:  09 01 00 b9   str	w9, [x8]
+0x185093e08:  5f 00 15 eb   cmp	x2, x21
+0x185093e0c:  a1 00 00 54   b.ne	loc_185093e20 ; ⤵ 0x14
+0x185093e10:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x185093e14:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x185093e18:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x185093e1c:  ff 0f 5f d6   retab
+0x185093e20:  ; loc_185093e20
+0x185093e20:  f3 03 00 aa   mov	x19, x0
+0x185093e24:  08 01 80 52   mov	w8, #0x8
+0x185093e28:  9f 1a 00 f1   cmp	x20, #0x6
+0x185093e2c:  02 01 9f 9a   csel	x2, x8, xzr, eq
+0x185093e30:  c4 39 bf 94   bl	0x188062540
+0x185093e34:  bf 0a 00 71   cmp	w21, #0x2
+0x185093e38:  21 02 00 54   b.ne	loc_185093e7c ; ⤵ 0x44
+0x185093e3c:  e0 03 13 aa   mov	x0, x19
+0x185093e40:  44 a0 bf 94   bl	0x18807bf50
+0x185093e44:  33 2c c1 94   bl	j__objc_claimAutoreleasedReturnValue
+0x185093e48:  f4 03 00 aa   mov	x20, x0
+0x185093e4c:  85 23 c1 94   bl	j__objc_release_x0
+0x185093e50:  14 02 00 b5   cbnz	x20, loc_185093e90 ; ⤵ 0x40
+0x185093e54:  48 b5 2d b0   adrp	x8, 0x1e073c000
+0x185093e58:  00 d5 40 f9   ldr	x0, [x8, #0x1a8] ; __got.class_NSView
+0x185093e5c:  41 26 c1 94   bl	j__objc_alloc_init
+0x185093e60:  f4 03 00 aa   mov	x20, x0
+0x185093e64:  e0 03 13 aa   mov	x0, x19
+0x185093e68:  e2 03 14 aa   mov	x2, x20
+0x185093e6c:  b5 3c c0 94   bl	0x1880a3140
+0x185093e70:  e0 03 14 aa   mov	x0, x20
+0x185093e74:  7b 23 c1 94   bl	j__objc_release_x0
+0x185093e78:  06 00 00 14   b	loc_185093e90 ; ⤵ 0x18
+0x185093e7c:  ; loc_185093e7c
+0x185093e7c:  9f 0a 00 f1   cmp	x20, #0x2
+0x185093e80:  81 00 00 54   b.ne	loc_185093e90 ; ⤵ 0x10
+0x185093e84:  e0 03 13 aa   mov	x0, x19
+0x185093e88:  02 00 80 d2   mov	x2, #0
+0x185093e8c:  ad 3c c0 94   bl	0x1880a3140
+0x185093e90:  ; loc_185093e90
+0x185093e90:  e0 03 13 aa   mov	x0, x19
+0x185093e94:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x185093e98:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x185093e9c:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x185093ea0:  ff 23 03 d5   autibsp
+0x185093ea4:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x185093ea8:  50 00 f0 b6   tbz	x16, #0x3e, loc_185093eb0 ; ⤵ 0x8
+0x185093eac:  20 8e 38 d4   brk	#0xc471
+0x185093eb0:  ; loc_185093eb0
+0x185093eb0:  d0 16 bf 14   b	0x1880599f0
+0x185093eb4:  f3 03 00 aa   mov	x19, x0
+0x185093eb8:  e0 03 14 aa   mov	x0, x20
+0x185093ebc:  69 23 c1 94   bl	j__objc_release_x0
+0x185093ec0:  e0 03 13 aa   mov	x0, x19
+0x185093ec4:  73 20 c1 94   bl	j___Unwind_Resume
+

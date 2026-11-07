@@ -1,0 +1,179 @@
+### -[NSMenuItem setSubmenu:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSMenuItem setSubmenu:]
+
+-[NSMenuItem setSubmenu:]:
+0x184ed9474:  7f 23 03 d5   pacibsp
+0x184ed9478:  f8 5f bc a9   stp	x24, x23, [sp, #-0x40]!
+0x184ed947c:  f6 57 01 a9   stp	x22, x21, [sp, #0x10]
+0x184ed9480:  f4 4f 02 a9   stp	x20, x19, [sp, #0x20]
+0x184ed9484:  fd 7b 03 a9   stp	fp, lr, [sp, #0x30]
+0x184ed9488:  fd c3 00 91   add	fp, sp, #0x30
+0x184ed948c:  14 18 40 f9   ldr	x20, [x0, #0x30]
+0x184ed9490:  5f 00 14 eb   cmp	x2, x20
+0x184ed9494:  80 10 00 54   b.eq	loc_184ed96a4 ; ⤵ 0x210
+0x184ed9498:  f7 03 02 aa   mov	x23, x2
+0x184ed949c:  f5 03 01 aa   mov	x21, x1
+0x184ed94a0:  f3 03 00 aa   mov	x19, x0
+0x184ed94a4:  08 c3 2d d0   adrp	x8, 0x1e073b000
+0x184ed94a8:  00 ed 42 f9   ldr	x0, [x8, #0x5d8] ; __got.class_NSMenu
+0x184ed94ac:  c9 10 c8 94   bl	j__objc_opt_class
+0x184ed94b0:  e1 03 00 aa   mov	x1, x0
+0x184ed94b4:  e0 03 14 aa   mov	x0, x20
+0x184ed94b8:  ca 10 c8 94   bl	j__objc_opt_isKindOfClass
+0x184ed94bc:  f8 03 00 aa   mov	x24, x0
+0x184ed94c0:  e0 03 17 aa   mov	x0, x23
+0x184ed94c4:  d3 ce c4 94   bl	0x18800d010
+0x184ed94c8:  80 0f 00 b5   cbnz	x0, loc_184ed96b8 ; ⤵ 0x1f0
+0x184ed94cc:  ; loc_184ed94cc
+0x184ed94cc:  e0 03 13 aa   mov	x0, x19
+0x184ed94d0:  48 c5 c4 94   bl	0x18800a9f0
+0x184ed94d4:  f6 03 00 aa   mov	x22, x0
+0x184ed94d8:  2e d6 c5 94   bl	0x18804ed90
+0x184ed94dc:  f5 03 00 aa   mov	x21, x0
+0x184ed94e0:  b8 00 00 36   tbz	w24, #0, loc_184ed94f4 ; ⤵ 0x14
+0x184ed94e4:  e0 03 14 aa   mov	x0, x20
+0x184ed94e8:  ba 10 c8 94   bl	j__objc_opt_class
+0x184ed94ec:  e2 03 14 aa   mov	x2, x20
+0x184ed94f0:  80 00 c6 94   bl	0x1880596f0
+0x184ed94f4:  ; loc_184ed94f4
+0x184ed94f4:  e0 03 14 aa   mov	x0, x20
+0x184ed94f8:  02 00 80 d2   mov	x2, #0
+0x184ed94fc:  e9 4b c7 94   bl	0x1880ac4a0
+0x184ed9500:  e0 03 14 aa   mov	x0, x20
+0x184ed9504:  22 00 80 52   mov	w2, #0x1
+0x184ed9508:  1a 1a c6 94   bl	0x18805fd70
+0x184ed950c:  95 00 00 34   cbz	w21, loc_184ed951c ; ⤵ 0x10
+0x184ed9510:  e0 03 14 aa   mov	x0, x20
+0x184ed9514:  02 00 80 52   mov	w2, #0
+0x184ed9518:  62 00 c6 94   bl	0x1880596a0
+0x184ed951c:  ; loc_184ed951c
+0x184ed951c:  98 00 00 36   tbz	w24, #0, loc_184ed952c ; ⤵ 0x10
+0x184ed9520:  e0 03 14 aa   mov	x0, x20
+0x184ed9524:  02 00 80 d2   mov	x2, #0
+0x184ed9528:  42 1f c6 94   bl	0x188061230
+0x184ed952c:  ; loc_184ed952c
+0x184ed952c:  e0 03 17 aa   mov	x0, x23
+0x184ed9530:  d0 0d c8 94   bl	j__objc_retain_x0
+0x184ed9534:  60 1a 00 f9   str	x0, [x19, #0x30]
+0x184ed9538:  e0 03 14 aa   mov	x0, x20
+0x184ed953c:  15 23 c8 94   bl	j__objc_autorelease
+0x184ed9540:  60 1a 40 f9   ldr	x0, [x19, #0x30]
+0x184ed9544:  e8 03 13 aa   mov	x8, x19
+0x184ed9548:  10 8d 44 f8   ldr	x16, [x8, #0x48]!
+0x184ed954c:  c0 05 00 b4   cbz	x0, loc_184ed9604 ; ⤵ 0xb8
+0x184ed9550:  e9 03 08 aa   mov	x9, x8
+0x184ed9554:  49 f8 ea f2   movk	x9, #0x57c2, lsl #0x30
+0x184ed9558:  30 01 00 b4   cbz	x16, loc_184ed957c ; ⤵ 0x24
+0x184ed955c:  f1 03 09 aa   mov	x17, x9
+0x184ed9560:  30 1e c1 da   autdb	x16, x17
+0x184ed9564:  f1 03 10 aa   mov	x17, x16
+0x184ed9568:  f1 47 c1 da   xpacd	x17
+0x184ed956c:  1f 02 11 eb   cmp	x16, x17
+0x184ed9570:  40 00 00 54   b.eq	loc_184ed9578 ; ⤵ 0x8
+0x184ed9574:  60 8e 38 d4   brk	#0xc473
+0x184ed9578:  ; loc_184ed9578
+0x184ed9578:  f0 00 00 b5   cbnz	x16, loc_184ed9594 ; ⤵ 0x1c
+0x184ed957c:  ; loc_184ed957c
+0x184ed957c:  2a 5c 38 90   adrp	x10, 0x1f5a5d000
+0x184ed9580:  51 fd 19 91   add	x17, x10, #0x67f ; submenuAction:
+0x184ed9584:  71 00 00 b4   cbz	x17, loc_184ed9590 ; ⤵ 0xc
+0x184ed9588:  f0 03 09 aa   mov	x16, x9
+0x184ed958c:  11 0e c1 da   pacdb	x17, x16
+0x184ed9590:  ; loc_184ed9590
+0x184ed9590:  11 01 00 f9   str	x17, [x8]
+0x184ed9594:  ; loc_184ed9594
+0x184ed9594:  e2 03 16 aa   mov	x2, x22
+0x184ed9598:  c2 4b c7 94   bl	0x1880ac4a0
+0x184ed959c:  77 1a 40 f9   ldr	x23, [x19, #0x30]
+0x184ed95a0:  e0 03 13 aa   mov	x0, x19
+0x184ed95a4:  0f c2 c4 94   bl	0x188009de0
+0x184ed95a8:  e2 03 00 aa   mov	x2, x0
+0x184ed95ac:  e0 03 17 aa   mov	x0, x23
+0x184ed95b0:  f0 19 c6 94   bl	0x18805fd70
+0x184ed95b4:  77 1a 40 f9   ldr	x23, [x19, #0x30]
+0x184ed95b8:  e0 03 16 aa   mov	x0, x22
+0x184ed95bc:  b9 e6 c5 94   bl	0x1880530a0
+0x184ed95c0:  e2 03 00 aa   mov	x2, x0
+0x184ed95c4:  e0 03 17 aa   mov	x0, x23
+0x184ed95c8:  1a 1f c6 94   bl	0x188061230
+0x184ed95cc:  60 1a 40 f9   ldr	x0, [x19, #0x30]
+0x184ed95d0:  95 03 00 34   cbz	w21, loc_184ed9640 ; ⤵ 0x70
+0x184ed95d4:  22 00 80 52   mov	w2, #0x1
+0x184ed95d8:  32 00 c6 94   bl	0x1880596a0
+0x184ed95dc:  60 1a 40 f9   ldr	x0, [x19, #0x30]
+0x184ed95e0:  7c 10 c8 94   bl	j__objc_opt_class
+0x184ed95e4:  62 1a 40 f9   ldr	x2, [x19, #0x30]
+0x184ed95e8:  32 00 c6 94   bl	0x1880596b0
+0x184ed95ec:  e0 03 13 aa   mov	x0, x19
+0x184ed95f0:  84 e6 c6 94   bl	0x188093000
+0x184ed95f4:  c0 02 00 34   cbz	w0, loc_184ed964c ; ⤵ 0x58
+0x184ed95f8:  60 1a 40 f9   ldr	x0, [x19, #0x30]
+0x184ed95fc:  af bf 18 94   bl	_ScheduleKeyboardAwareShortcutUpdate
+0x184ed9600:  13 00 00 14   b	loc_184ed964c ; ⤵ 0x4c
+0x184ed9604:  ; loc_184ed9604
+0x184ed9604:  30 01 00 b4   cbz	x16, loc_184ed9628 ; ⤵ 0x24
+0x184ed9608:  f1 03 08 aa   mov	x17, x8
+0x184ed960c:  51 f8 ea f2   movk	x17, #0x57c2, lsl #0x30
+0x184ed9610:  30 1e c1 da   autdb	x16, x17
+0x184ed9614:  f1 03 10 aa   mov	x17, x16
+0x184ed9618:  f1 47 c1 da   xpacd	x17
+0x184ed961c:  1f 02 11 eb   cmp	x16, x17
+0x184ed9620:  40 00 00 54   b.eq	loc_184ed9628 ; ⤵ 0x8
+0x184ed9624:  60 8e 38 d4   brk	#0xc473
+0x184ed9628:  ; loc_184ed9628
+0x184ed9628:  29 5c 38 90   adrp	x9, 0x1f5a5d000
+0x184ed962c:  29 fd 19 91   add	x9, x9, #0x67f ; submenuAction:
+0x184ed9630:  1f 02 09 eb   cmp	x16, x9
+0x184ed9634:  c1 00 00 54   b.ne	loc_184ed964c ; ⤵ 0x18
+0x184ed9638:  1f 01 00 f9   str	xzr, [x8]
+0x184ed963c:  04 00 00 14   b	loc_184ed964c ; ⤵ 0x10
+0x184ed9640:  ; loc_184ed9640
+0x184ed9640:  64 10 c8 94   bl	j__objc_opt_class
+0x184ed9644:  62 1a 40 f9   ldr	x2, [x19, #0x30]
+0x184ed9648:  1a 00 c6 94   bl	0x1880596b0
+0x184ed964c:  ; loc_184ed964c
+0x184ed964c:  64 1a 40 f9   ldr	x4, [x19, #0x30]
+0x184ed9650:  9f 02 04 eb   cmp	x20, x4
+0x184ed9654:  a0 00 00 54   b.eq	loc_184ed9668 ; ⤵ 0x14
+0x184ed9658:  60 06 40 f9   ldr	x0, [x19, #0x8]
+0x184ed965c:  e2 03 13 aa   mov	x2, x19
+0x184ed9660:  e3 03 14 aa   mov	x3, x20
+0x184ed9664:  1f e6 c5 94   bl	0x188052ee0
+0x184ed9668:  ; loc_184ed9668
+0x184ed9668:  e0 03 13 aa   mov	x0, x19
+0x184ed966c:  ad e6 c5 94   bl	0x188053120
+0x184ed9670:  a0 01 00 34   cbz	w0, loc_184ed96a4 ; ⤵ 0x34
+0x184ed9674:  e0 03 14 aa   mov	x0, x20
+0x184ed9678:  26 00 c6 94   bl	0x188059710
+0x184ed967c:  60 1a 40 f9   ldr	x0, [x19, #0x30]
+0x184ed9680:  fd 7b 43 a9   ldp	fp, lr, [sp, #0x30]
+0x184ed9684:  f4 4f 42 a9   ldp	x20, x19, [sp, #0x20]
+0x184ed9688:  f6 57 41 a9   ldp	x22, x21, [sp, #0x10]
+0x184ed968c:  f8 5f c4 a8   ldp	x24, x23, [sp], #0x40
+0x184ed9690:  ff 23 03 d5   autibsp
+0x184ed9694:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184ed9698:  50 00 f0 b6   tbz	x16, #0x3e, loc_184ed96a0 ; ⤵ 0x8
+0x184ed969c:  20 8e 38 d4   brk	#0xc471
+0x184ed96a0:  ; loc_184ed96a0
+0x184ed96a0:  1c 00 c6 14   b	0x188059710
+0x184ed96a4:  ; loc_184ed96a4
+0x184ed96a4:  fd 7b 43 a9   ldp	fp, lr, [sp, #0x30]
+0x184ed96a8:  f4 4f 42 a9   ldp	x20, x19, [sp, #0x20]
+0x184ed96ac:  f6 57 41 a9   ldp	x22, x21, [sp, #0x10]
+0x184ed96b0:  f8 5f c4 a8   ldp	x24, x23, [sp], #0x40
+0x184ed96b4:  ff 0f 5f d6   retab
+0x184ed96b8:  ; loc_184ed96b8
+0x184ed96b8:  88 96 2d b0   adrp	x8, 0x1e01aa000
+0x184ed96bc:  00 41 40 f9   ldr	x0, [x8, #0x80] ; _ptr.NSAssertionHandler
+0x184ed96c0:  f0 b8 c4 94   bl	0x188007a80
+0x184ed96c4:  e4 ac 31 90   adrp	x4, 0x1e8475000
+0x184ed96c8:  84 c0 20 91   add	x4, x4, #0x830 ; "NSMenuItem.m"
+0x184ed96cc:  e6 ac 31 90   adrp	x6, 0x1e8475000
+0x184ed96d0:  c6 40 3f 91   add	x6, x6, #0xfd0 ; "Menu to be set as submenu is already a submenu of some menu."
+0x184ed96d4:  e2 03 15 aa   mov	x2, x21
+0x184ed96d8:  e3 03 13 aa   mov	x3, x19
+0x184ed96dc:  c5 c0 80 52   mov	w5, #0x606
+0x184ed96e0:  58 bd c4 94   bl	0x188008c40
+0x184ed96e4:  7a ff ff 17   b	loc_184ed94cc ; ⤴ -0x218
+

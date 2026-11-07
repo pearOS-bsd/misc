@@ -1,0 +1,132 @@
+### -[NSApplication setMainMenu:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSApplication setMainMenu:]
+
+-[NSApplication setMainMenu:]:
+0x184eed368:  7f 23 03 d5   pacibsp
+0x184eed36c:  ff 43 01 d1   sub	sp, sp, #0x50
+0x184eed370:  f8 5f 01 a9   stp	x24, x23, [sp, #0x10]
+0x184eed374:  f6 57 02 a9   stp	x22, x21, [sp, #0x20]
+0x184eed378:  f4 4f 03 a9   stp	x20, x19, [sp, #0x30]
+0x184eed37c:  fd 7b 04 a9   stp	fp, lr, [sp, #0x40]
+0x184eed380:  fd 03 01 91   add	fp, sp, #0x40
+0x184eed384:  f5 03 02 aa   mov	x21, x2
+0x184eed388:  f4 03 00 aa   mov	x20, x0
+0x184eed38c:  a8 b0 2f 90   adrp	x8, 0x1e4501000
+0x184eed390:  17 45 8e b9   ldrsw	x23, [x8, #0xe44] ; _OBJC_IVAR_$_NSApplication._mainMenu
+0x184eed394:  08 00 17 8b   add	x8, x0, x23
+0x184eed398:  13 01 40 f9   ldr	x19, [x8]
+0x184eed39c:  c2 00 00 b5   cbnz	x2, loc_184eed3b4 ; ⤵ 0x18
+0x184eed3a0:  e0 03 14 aa   mov	x0, x20
+0x184eed3a4:  df 4b c5 94   bl	0x188040320
+0x184eed3a8:  7a d3 c7 94   bl	j__objc_autorelease
+0x184eed3ac:  f5 03 00 aa   mov	x21, x0
+0x184eed3b0:  e0 02 00 b4   cbz	x0, loc_184eed40c ; ⤵ 0x5c
+0x184eed3b4:  ; loc_184eed3b4
+0x184eed3b4:  68 c2 2d d0   adrp	x8, 0x1e073b000
+0x184eed3b8:  00 ed 42 f9   ldr	x0, [x8, #0x5d8] ; __got.class_NSMenu
+0x184eed3bc:  05 c1 c7 94   bl	j__objc_opt_class
+0x184eed3c0:  e1 03 00 aa   mov	x1, x0
+0x184eed3c4:  e0 03 15 aa   mov	x0, x21
+0x184eed3c8:  06 c1 c7 94   bl	j__objc_opt_isKindOfClass
+0x184eed3cc:  00 01 00 37   tbnz	w0, #0, loc_184eed3ec ; ⤵ 0x20
+0x184eed3d0:  c0 aa 31 f0   adrp	x0, 0x1e8448000
+0x184eed3d4:  00 40 03 91   add	x0, x0, #0xd0 ; "NSMenuTemplate"
+0x184eed3d8:  86 ce c7 94   bl	j__NSClassFromString
+0x184eed3dc:  e1 03 00 aa   mov	x1, x0
+0x184eed3e0:  e0 03 15 aa   mov	x0, x21
+0x184eed3e4:  ff c0 c7 94   bl	j__objc_opt_isKindOfClass
+0x184eed3e8:  80 02 00 36   tbz	w0, #0, loc_184eed438 ; ⤵ 0x50
+0x184eed3ec:  ; loc_184eed3ec
+0x184eed3ec:  e0 03 15 aa   mov	x0, x21
+0x184eed3f0:  20 97 c5 94   bl	0x188053070
+0x184eed3f4:  e8 be 2d f0   adrp	x8, 0x1e06cc000
+0x184eed3f8:  08 81 24 91   add	x8, x8, #0x920 ; _NSMainMenuName
+0x184eed3fc:  16 01 40 f9   ldr	x22, [x8]
+0x184eed400:  e2 03 16 aa   mov	x2, x22
+0x184eed404:  2b 5a c4 94   bl	0x188003cb0
+0x184eed408:  e0 00 00 36   tbz	w0, #0, loc_184eed424 ; ⤵ 0x1c
+0x184eed40c:  ; loc_184eed40c
+0x184eed40c:  7f 02 15 eb   cmp	x19, x21
+0x184eed410:  20 02 00 54   b.eq	loc_184eed454 ; ⤵ 0x44
+0x184eed414:  e0 03 15 aa   mov	x0, x21
+0x184eed418:  16 be c7 94   bl	j__objc_retain_x0
+0x184eed41c:  80 6a 37 f8   str	x0, [x20, x23]
+0x184eed420:  0e 00 00 14   b	loc_184eed458 ; ⤵ 0x38
+0x184eed424:  ; loc_184eed424
+0x184eed424:  e0 03 13 aa   mov	x0, x19
+0x184eed428:  12 be c7 94   bl	j__objc_retain_x0
+0x184eed42c:  e0 03 15 aa   mov	x0, x21
+0x184eed430:  e2 03 16 aa   mov	x2, x22
+0x184eed434:  2d 00 00 14   b	loc_184eed4e8 ; ⤵ 0xb4
+0x184eed438:  ; loc_184eed438
+0x184eed438:  e0 03 15 aa   mov	x0, x21
+0x184eed43c:  e5 c0 c7 94   bl	j__objc_opt_class
+0x184eed440:  e0 03 00 f9   str	x0, [sp]
+0x184eed444:  c0 aa 31 f0   adrp	x0, 0x1e8448000
+0x184eed448:  00 c0 03 91   add	x0, x0, #0xf0 ; "Attempted to set object of class %@ as the menu of NSApp.  Ignored."
+0x184eed44c:  d1 e4 c7 94   bl	j__NSLog
+0x184eed450:  32 00 00 14   b	loc_184eed518 ; ⤵ 0xc8
+0x184eed454:  ; loc_184eed454
+0x184eed454:  80 6a 77 f8   ldr	x0, [x20, x23]
+0x184eed458:  ; loc_184eed458
+0x184eed458:  76 c2 2d d0   adrp	x22, 0x1e073b000
+0x184eed45c:  00 03 00 b4   cbz	x0, loc_184eed4bc ; ⤵ 0x60
+0x184eed460:  e0 03 14 aa   mov	x0, x20
+0x184eed464:  ef 36 c7 94   bl	0x1880bb020
+0x184eed468:  48 57 38 b0   adrp	x8, 0x1f59d6000
+0x184eed46c:  02 45 24 91   add	x2, x8, #0x911 ; _takeApplicationMenuIfNeeded:
+0x184eed470:  e3 03 14 aa   mov	x3, x20
+0x184eed474:  77 e7 c4 94   bl	0x188027250
+0x184eed478:  7f 02 15 eb   cmp	x19, x21
+0x184eed47c:  00 02 00 54   b.eq	loc_184eed4bc ; ⤵ 0x40
+0x184eed480:  a8 b0 2f 90   adrp	x8, 0x1e4501000
+0x184eed484:  08 0d 8e b9   ldrsw	x8, [x8, #0xe0c] ; _OBJC_IVAR_$_NSApplication._appFlags
+0x184eed488:  88 02 08 8b   add	x8, x20, x8
+0x184eed48c:  08 05 40 39   ldrb	w8, [x8, #0x1]
+0x184eed490:  68 01 30 36   tbz	w8, #0x6, loc_184eed4bc ; ⤵ 0x2c
+0x184eed494:  e0 03 14 aa   mov	x0, x20
+0x184eed498:  0e 4f c5 94   bl	0x1880410d0
+0x184eed49c:  c0 0e 43 f9   ldr	x0, [x22, #0x618]
+0x184eed4a0:  e2 03 15 aa   mov	x2, x21
+0x184eed4a4:  23 c4 c6 94   bl	0x18809e530
+0x184eed4a8:  68 c2 2d d0   adrp	x8, 0x1e073b000
+0x184eed4ac:  00 25 43 f9   ldr	x0, [x8, #0x648] ; __got._OBJC_CLASS_$_NSMenuProfileFilter
+0x184eed4b0:  7c 0f c5 94   bl	0x1880312a0
+0x184eed4b4:  82 6a 77 f8   ldr	x2, [x20, x23]
+0x184eed4b8:  da 67 c6 94   bl	0x188087420
+0x184eed4bc:  ; loc_184eed4bc
+0x184eed4bc:  c0 0e 43 f9   ldr	x0, [x22, #0x618]
+0x184eed4c0:  58 76 c5 94   bl	0x18804ae20
+0x184eed4c4:  60 00 00 34   cbz	w0, loc_184eed4d0 ; ⤵ 0xc
+0x184eed4c8:  80 6a 77 f8   ldr	x0, [x20, x23]
+0x184eed4cc:  91 b0 c5 94   bl	0x188059710
+0x184eed4d0:  ; loc_184eed4d0
+0x184eed4d0:  53 02 00 b4   cbz	x19, loc_184eed518 ; ⤵ 0x48
+0x184eed4d4:  88 6a 77 f8   ldr	x8, [x20, x23]
+0x184eed4d8:  7f 02 08 eb   cmp	x19, x8
+0x184eed4dc:  e0 01 00 54   b.eq	loc_184eed518 ; ⤵ 0x3c
+0x184eed4e0:  e0 03 13 aa   mov	x0, x19
+0x184eed4e4:  02 00 80 d2   mov	x2, #0
+0x184eed4e8:  ; loc_184eed4e8
+0x184eed4e8:  4e cf c5 94   bl	0x188061220
+0x184eed4ec:  e0 03 13 aa   mov	x0, x19
+0x184eed4f0:  fd 7b 44 a9   ldp	fp, lr, [sp, #0x40]
+0x184eed4f4:  f4 4f 43 a9   ldp	x20, x19, [sp, #0x30]
+0x184eed4f8:  f6 57 42 a9   ldp	x22, x21, [sp, #0x20]
+0x184eed4fc:  f8 5f 41 a9   ldp	x24, x23, [sp, #0x10]
+0x184eed500:  ff 43 01 91   add	sp, sp, #0x50
+0x184eed504:  ff 23 03 d5   autibsp
+0x184eed508:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184eed50c:  50 00 f0 b6   tbz	x16, #0x3e, loc_184eed514 ; ⤵ 0x8
+0x184eed510:  20 8e 38 d4   brk	#0xc471
+0x184eed514:  ; loc_184eed514
+0x184eed514:  d3 bd c7 14   b	j__objc_release_x0
+0x184eed518:  ; loc_184eed518
+0x184eed518:  fd 7b 44 a9   ldp	fp, lr, [sp, #0x40]
+0x184eed51c:  f4 4f 43 a9   ldp	x20, x19, [sp, #0x30]
+0x184eed520:  f6 57 42 a9   ldp	x22, x21, [sp, #0x20]
+0x184eed524:  f8 5f 41 a9   ldp	x24, x23, [sp, #0x10]
+0x184eed528:  ff 43 01 91   add	sp, sp, #0x50
+0x184eed52c:  ff 0f 5f d6   retab
+

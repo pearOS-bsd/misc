@@ -1,0 +1,4 @@
+### -[NSActionCell init]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSActionCell init]
+   ⨯ public symbol -[NSActionCell init] not found in image AppKit

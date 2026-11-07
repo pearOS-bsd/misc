@@ -1,0 +1,21 @@
+### -[NSMenu indexOfItem:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSMenu indexOfItem:]
+
+-[NSMenu indexOfItem:]:
+0x184ef1ce0:  00 0c 40 f9   ldr	x0, [x0, #0x18]
+0x184ef1ce4:  60 01 00 b4   cbz	x0, loc_184ef1d10 ; ⤵ 0x2c
+0x184ef1ce8:  7f 23 03 d5   pacibsp
+0x184ef1cec:  fd 7b bf a9   stp	fp, lr, [sp, #-0x10]!
+0x184ef1cf0:  fd 03 00 91   mov	fp, sp
+0x184ef1cf4:  4b 46 c4 94   bl	0x188003620
+0x184ef1cf8:  08 00 f0 92   mov	x8, #0x7fffffffffffffff
+0x184ef1cfc:  1f 00 08 eb   cmp	x0, x8
+0x184ef1d00:  00 10 9f da   csinv	x0, x0, xzr, ne
+0x184ef1d04:  fd 7b c1 a8   ldp	fp, lr, [sp], #0x10
+0x184ef1d08:  ff 23 03 d5   autibsp
+0x184ef1d0c:  c0 03 5f d6   ret
+0x184ef1d10:  ; loc_184ef1d10
+0x184ef1d10:  00 00 80 92   mov	x0, #0xffffffffffffffff
+0x184ef1d14:  c0 03 5f d6   ret
+

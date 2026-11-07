@@ -1,0 +1,7 @@
+### -[NSBox borderWidth]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSBox borderWidth]
+
+-[NSBox borderWidth]:
+0x1850dd3c4:  36 47 15 14   b	_box_borderWidth
+

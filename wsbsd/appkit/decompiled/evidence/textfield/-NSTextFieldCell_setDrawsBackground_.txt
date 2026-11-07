@@ -1,0 +1,59 @@
+### -[NSTextFieldCell setDrawsBackground:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTextFieldCell setDrawsBackground:]
+
+-[NSTextFieldCell setDrawsBackground:]:
+0x184f2ecf8:  7f 23 03 d5   pacibsp
+0x184f2ecfc:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x184f2ed00:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x184f2ed04:  fd 43 00 91   add	fp, sp, #0x10
+0x184f2ed08:  a8 ae 2f d0   adrp	x8, 0x1e4504000
+0x184f2ed0c:  08 29 8f b9   ldrsw	x8, [x8, #0xf28] ; _OBJC_IVAR_$_NSTextFieldCell._tfFlags
+0x184f2ed10:  09 00 08 8b   add	x9, x0, x8
+0x184f2ed14:  29 01 40 f9   ldr	x9, [x9]
+0x184f2ed18:  2a 01 00 12   and	w10, w9, #0x1
+0x184f2ed1c:  5f 00 0a 6b   cmp	w2, w10
+0x184f2ed20:  a0 04 00 54   b.eq	loc_184f2edb4 ; ⤵ 0x94
+0x184f2ed24:  f3 03 00 aa   mov	x19, x0
+0x184f2ed28:  ea 03 02 2a   mov	w10, w2
+0x184f2ed2c:  29 f9 7f 92   and	x9, x9, #0xfffffffffffffffe
+0x184f2ed30:  29 01 0a aa   orr	x9, x9, x10
+0x184f2ed34:  09 68 28 f8   str	x9, [x0, x8]
+0x184f2ed38:  de 38 c4 94   bl	0x18803d0b0
+0x184f2ed3c:  e0 03 13 aa   mov	x0, x19
+0x184f2ed40:  1c 36 c5 94   bl	0x18807c5b0
+0x184f2ed44:  b4 ae 2f d0   adrp	x20, 0x1e4504000
+0x184f2ed48:  88 36 8f b9   ldrsw	x8, [x20, #0xf34] ; _OBJC_IVAR_$_NSTextFieldCell._visualProvider
+0x184f2ed4c:  68 02 08 8b   add	x8, x19, x8
+0x184f2ed50:  08 01 40 f9   ldr	x8, [x8]
+0x184f2ed54:  28 01 00 b4   cbz	x8, loc_184f2ed78 ; ⤵ 0x24
+0x184f2ed58:  e2 03 00 aa   mov	x2, x0
+0x184f2ed5c:  e0 03 13 aa   mov	x0, x19
+0x184f2ed60:  00 2e c4 94   bl	0x18803a560
+0x184f2ed64:  e2 03 00 aa   mov	x2, x0
+0x184f2ed68:  88 36 8f b9   ldrsw	x8, [x20, #0xf34]
+0x184f2ed6c:  68 02 08 8b   add	x8, x19, x8
+0x184f2ed70:  00 01 40 f9   ldr	x0, [x8]
+0x184f2ed74:  a7 22 c6 94   bl	0x1880b7810
+0x184f2ed78:  ; loc_184f2ed78
+0x184f2ed78:  a8 ae 2f d0   adrp	x8, 0x1e4504000
+0x184f2ed7c:  08 2d 8f b9   ldrsw	x8, [x8, #0xf2c] ; _OBJC_IVAR_$_NSTextFieldCell._backgroundColor
+0x184f2ed80:  68 02 08 8b   add	x8, x19, x8
+0x184f2ed84:  08 01 40 f9   ldr	x8, [x8]
+0x184f2ed88:  68 01 00 b4   cbz	x8, loc_184f2edb4 ; ⤵ 0x2c
+0x184f2ed8c:  e0 03 13 aa   mov	x0, x19
+0x184f2ed90:  08 36 c5 94   bl	0x18807c5b0
+0x184f2ed94:  e2 03 13 aa   mov	x2, x19
+0x184f2ed98:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184f2ed9c:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184f2eda0:  ff 23 03 d5   autibsp
+0x184f2eda4:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f2eda8:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f2edb0 ; ⤵ 0x8
+0x184f2edac:  20 8e 38 d4   brk	#0xc471
+0x184f2edb0:  ; loc_184f2edb0
+0x184f2edb0:  b4 22 c6 14   b	0x1880b7880
+0x184f2edb4:  ; loc_184f2edb4
+0x184f2edb4:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184f2edb8:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184f2edbc:  ff 0f 5f d6   retab
+

@@ -1,0 +1,43 @@
+### -[NSControl font]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSControl font]
+
+-[NSControl font]:
+0x184fc82b4:  7f 23 03 d5   pacibsp
+0x184fc82b8:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x184fc82bc:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x184fc82c0:  fd 43 00 91   add	fp, sp, #0x10
+0x184fc82c4:  f3 03 00 aa   mov	x19, x0
+0x184fc82c8:  16 71 fd 97   bl	_NSControlDelegatesToCell
+0x184fc82cc:  80 01 00 34   cbz	w0, loc_184fc82fc ; ⤵ 0x30
+0x184fc82d0:  e8 a9 2f 90   adrp	x8, 0x1e4504000
+0x184fc82d4:  08 b5 87 b9   ldrsw	x8, [x8, #0x7b4] ; _OBJC_IVAR_$_NSControl._cell
+0x184fc82d8:  68 02 08 8b   add	x8, x19, x8
+0x184fc82dc:  00 01 40 f9   ldr	x0, [x8]
+0x184fc82e0:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184fc82e4:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184fc82e8:  ff 23 03 d5   autibsp
+0x184fc82ec:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184fc82f0:  50 00 f0 b6   tbz	x16, #0x3e, loc_184fc82f8 ; ⤵ 0x8
+0x184fc82f4:  20 8e 38 d4   brk	#0xc471
+0x184fc82f8:  ; loc_184fc82f8
+0x184fc82f8:  ea f1 c2 14   b	0x188084aa0
+0x184fc82fc:  ; loc_184fc82fc
+0x184fc82fc:  e0 03 13 aa   mov	x0, x19
+0x184fc8300:  ce 0e 19 94   bl	-[NSControl _controlStorage]
+0x184fc8304:  40 01 00 b4   cbz	x0, loc_184fc832c ; ⤵ 0x28
+0x184fc8308:  02 03 80 52   mov	w2, #0x18
+0x184fc830c:  23 00 80 52   mov	w3, #0x1
+0x184fc8310:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184fc8314:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184fc8318:  ff 23 03 d5   autibsp
+0x184fc831c:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184fc8320:  50 00 f0 b6   tbz	x16, #0x3e, loc_184fc8328 ; ⤵ 0x8
+0x184fc8324:  20 8e 38 d4   brk	#0xc471
+0x184fc8328:  ; loc_184fc8328
+0x184fc8328:  ba 67 c4 14   b	j__objc_getProperty
+0x184fc832c:  ; loc_184fc832c
+0x184fc832c:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184fc8330:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184fc8334:  ff 0f 5f d6   retab
+

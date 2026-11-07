@@ -1,0 +1,7 @@
+### -[NSResponder mouseDown:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSResponder mouseDown:]
+
+-[NSResponder mouseDown:]:
+0x1850ef6a0:  f0 7e fe 17   b	_forwardMethod
+

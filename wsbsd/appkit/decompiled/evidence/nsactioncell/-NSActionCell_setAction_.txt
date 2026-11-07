@@ -1,0 +1,20 @@
+### -[NSActionCell setAction:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSActionCell setAction:]
+
+-[NSActionCell setAction:]:
+0x184f248fc:  08 af 2f 90   adrp	x8, 0x1e4504000
+0x184f24900:  08 75 86 b9   ldrsw	x8, [x8, #0x674] ; _OBJC_IVAR_$_NSActionCell._action
+0x184f24904:  08 00 08 8b   add	x8, x0, x8
+0x184f24908:  c2 00 00 b4   cbz	x2, loc_184f24920 ; ⤵ 0x18
+0x184f2490c:  f0 03 08 aa   mov	x16, x8
+0x184f24910:  50 f8 ea f2   movk	x16, #0x57c2, lsl #0x30
+0x184f24914:  f1 03 02 aa   mov	x17, x2
+0x184f24918:  11 0e c1 da   pacdb	x17, x16
+0x184f2491c:  02 00 00 14   b	loc_184f24924 ; ⤵ 0x8
+0x184f24920:  ; loc_184f24920
+0x184f24920:  11 00 80 d2   mov	x17, #0
+0x184f24924:  ; loc_184f24924
+0x184f24924:  11 01 00 f9   str	x17, [x8]
+0x184f24928:  c0 03 5f d6   ret
+

@@ -1,0 +1,32 @@
+### -[NSActionCell setTarget:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSActionCell setTarget:]
+
+-[NSActionCell setTarget:]:
+0x184f24a68:  7f 23 03 d5   pacibsp
+0x184f24a6c:  f6 57 bd a9   stp	x22, x21, [sp, #-0x30]!
+0x184f24a70:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x184f24a74:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x184f24a78:  fd 83 00 91   add	fp, sp, #0x20
+0x184f24a7c:  f4 03 02 aa   mov	x20, x2
+0x184f24a80:  f3 03 00 aa   mov	x19, x0
+0x184f24a84:  12 00 00 94   bl	_NSControlsUseWeakTargets
+0x184f24a88:  08 af 2f 90   adrp	x8, 0x1e4504000
+0x184f24a8c:  15 71 86 b9   ldrsw	x21, [x8, #0x670] ; _OBJC_IVAR_$_NSActionCell._target
+0x184f24a90:  40 01 00 34   cbz	w0, loc_184f24ab8 ; ⤵ 0x28
+0x184f24a94:  60 6a 75 f8   ldr	x0, [x19, x21]
+0x184f24a98:  72 e0 c6 94   bl	j__objc_release_x0
+0x184f24a9c:  f4 00 00 b4   cbz	x20, loc_184f24ab8 ; ⤵ 0x1c
+0x184f24aa0:  28 94 2d d0   adrp	x8, 0x1e01aa000
+0x184f24aa4:  00 b5 43 f9   ldr	x0, [x8, #0x768] ; _ptr.NSValue
+0x184f24aa8:  e2 03 14 aa   mov	x2, x20
+0x184f24aac:  0d 22 c4 94   bl	0x18802d2e0
+0x184f24ab0:  70 e0 c6 94   bl	j__objc_retain_x0
+0x184f24ab4:  f4 03 00 aa   mov	x20, x0
+0x184f24ab8:  ; loc_184f24ab8
+0x184f24ab8:  74 6a 35 f8   str	x20, [x19, x21]
+0x184f24abc:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x184f24ac0:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x184f24ac4:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x184f24ac8:  ff 0f 5f d6   retab
+

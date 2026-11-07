@@ -1,0 +1,17 @@
+### -[NSPopUpButton indexOfSelectedItem]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSPopUpButton indexOfSelectedItem]
+
+-[NSPopUpButton indexOfSelectedItem]:
+0x1850e667c:  7f 23 03 d5   pacibsp
+0x1850e6680:  fd 7b bf a9   stp	fp, lr, [sp, #-0x10]!
+0x1850e6684:  fd 03 00 91   mov	fp, sp
+0x1850e6688:  66 4a be 94   bl	0x188079020
+0x1850e668c:  fd 7b c1 a8   ldp	fp, lr, [sp], #0x10
+0x1850e6690:  ff 23 03 d5   autibsp
+0x1850e6694:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x1850e6698:  50 00 f0 b6   tbz	x16, #0x3e, loc_1850e66a0 ; ⤵ 0x8
+0x1850e669c:  20 8e 38 d4   brk	#0xc471
+0x1850e66a0:  ; loc_1850e66a0
+0x1850e66a0:  2c 8a bc 14   b	0x188008f50
+

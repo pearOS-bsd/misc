@@ -1,0 +1,17 @@
+### -[NSScrollView documentView]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSScrollView documentView]
+
+-[NSScrollView documentView]:
+0x184f63004:  7f 23 03 d5   pacibsp
+0x184f63008:  fd 7b bf a9   stp	fp, lr, [sp, #-0x10]!
+0x184f6300c:  fd 03 00 91   mov	fp, sp
+0x184f63010:  d0 63 c4 94   bl	0x18807bf50
+0x184f63014:  fd 7b c1 a8   ldp	fp, lr, [sp], #0x10
+0x184f63018:  ff 23 03 d5   autibsp
+0x184f6301c:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f63020:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f63028 ; ⤵ 0x8
+0x184f63024:  20 8e 38 d4   brk	#0xc471
+0x184f63028:  ; loc_184f63028
+0x184f63028:  82 76 c4 14   b	0x188080a30
+

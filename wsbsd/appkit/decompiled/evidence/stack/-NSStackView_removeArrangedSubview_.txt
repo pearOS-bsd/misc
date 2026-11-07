@@ -1,0 +1,9 @@
+### -[NSStackView removeArrangedSubview:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSStackView removeArrangedSubview:]
+
+-[NSStackView removeArrangedSubview:]:
+0x185cc110c:  03 00 80 52   mov	w3, #0
+0x185cc1110:  04 00 80 52   mov	w4, #0
+0x185cc1114:  5f 67 8e 14   b	0x18805ae90
+

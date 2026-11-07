@@ -1,0 +1,11 @@
+### -[NSTabView indexOfTabViewItem:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTabView indexOfTabViewItem:]
+
+-[NSTabView indexOfTabViewItem:]:
+0x18507812c:  48 9b 30 d0   adrp	x8, 0x1e63e2000
+0x185078130:  08 f5 8b b9   ldrsw	x8, [x8, #0xbf4]
+0x185078134:  08 00 08 8b   add	x8, x0, x8
+0x185078138:  00 01 40 f9   ldr	x0, [x8]
+0x18507813c:  39 2d be 14   b	0x188003620
+

@@ -1,0 +1,75 @@
+### -[NSControl setStringValue:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSControl setStringValue:]
+
+-[NSControl setStringValue:]:
+0x184f898e8:  7f 23 03 d5   pacibsp
+0x184f898ec:  f6 57 bd a9   stp	x22, x21, [sp, #-0x30]!
+0x184f898f0:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x184f898f4:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x184f898f8:  fd 83 00 91   add	fp, sp, #0x20
+0x184f898fc:  f4 03 02 aa   mov	x20, x2
+0x184f89900:  f3 03 00 aa   mov	x19, x0
+0x184f89904:  87 6b fe 97   bl	_NSControlDelegatesToCell
+0x184f89908:  80 04 00 34   cbz	w0, loc_184f89998 ; ⤵ 0x90
+0x184f8990c:  c8 ab 2f f0   adrp	x8, 0x1e4504000
+0x184f89910:  08 b5 87 b9   ldrsw	x8, [x8, #0x7b4] ; _OBJC_IVAR_$_NSControl._cell
+0x184f89914:  68 02 08 8b   add	x8, x19, x8
+0x184f89918:  15 01 40 f9   ldr	x21, [x8]
+0x184f8991c:  b5 00 00 b5   cbnz	x21, loc_184f89930 ; ⤵ 0x14
+0x184f89920:  e0 03 13 aa   mov	x0, x19
+0x184f89924:  c7 57 c4 94   bl	0x18809f840
+0x184f89928:  f5 03 00 aa   mov	x21, x0
+0x184f8992c:  40 01 00 b4   cbz	x0, loc_184f89954 ; ⤵ 0x28
+0x184f89930:  ; loc_184f89930
+0x184f89930:  e0 03 15 aa   mov	x0, x21
+0x184f89934:  1f cb c3 94   bl	0x18807c5b0
+0x184f89938:  1f 00 13 eb   cmp	x0, x19
+0x184f8993c:  60 00 00 54   b.eq	loc_184f89948 ; ⤵ 0xc
+0x184f89940:  e0 03 13 aa   mov	x0, x19
+0x184f89944:  0b 9e c3 94   bl	0x188071170
+0x184f89948:  ; loc_184f89948
+0x184f89948:  e0 03 15 aa   mov	x0, x21
+0x184f8994c:  e2 03 14 aa   mov	x2, x20
+0x184f89950:  f4 87 c2 94   bl	0x18802b920
+0x184f89954:  ; loc_184f89954
+0x184f89954:  88 bd 2d b0   adrp	x8, 0x1e073a000
+0x184f89958:  00 7d 46 f9   ldr	x0, [x8, #0xcf8] ; __got.class_NSActionCell
+0x184f8995c:  9d 4f c5 94   bl	j__objc_opt_class
+0x184f89960:  e1 03 00 aa   mov	x1, x0
+0x184f89964:  e0 03 15 aa   mov	x0, x21
+0x184f89968:  9e 4f c5 94   bl	j__objc_opt_isKindOfClass
+0x184f8996c:  20 03 00 37   tbnz	w0, #0, loc_184f899d0 ; ⤵ 0x64
+0x184f89970:  e0 03 13 aa   mov	x0, x19
+0x184f89974:  22 00 80 52   mov	w2, #0x1
+0x184f89978:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x184f8997c:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x184f89980:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x184f89984:  ff 23 03 d5   autibsp
+0x184f89988:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f8998c:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f89994 ; ⤵ 0x8
+0x184f89990:  20 8e 38 d4   brk	#0xc471
+0x184f89994:  ; loc_184f89994
+0x184f89994:  63 7b c4 14   b	0x1880a8720
+0x184f89998:  ; loc_184f89998
+0x184f89998:  e0 03 13 aa   mov	x0, x19
+0x184f8999c:  8d d7 c2 94   bl	0x18803f7d0
+0x184f899a0:  e2 03 14 aa   mov	x2, x20
+0x184f899a4:  63 8a c4 94   bl	0x1880ac330
+0x184f899a8:  40 01 00 34   cbz	w0, loc_184f899d0 ; ⤵ 0x28
+0x184f899ac:  e0 03 13 aa   mov	x0, x19
+0x184f899b0:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x184f899b4:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x184f899b8:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x184f899bc:  ff 23 03 d5   autibsp
+0x184f899c0:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f899c4:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f899cc ; ⤵ 0x8
+0x184f899c8:  20 8e 38 d4   brk	#0xc471
+0x184f899cc:  ; loc_184f899cc
+0x184f899cc:  b9 d7 c2 14   b	0x18803f8b0
+0x184f899d0:  ; loc_184f899d0
+0x184f899d0:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x184f899d4:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x184f899d8:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x184f899dc:  ff 0f 5f d6   retab
+

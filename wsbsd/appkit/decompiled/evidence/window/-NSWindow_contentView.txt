@@ -1,0 +1,11 @@
+### -[NSWindow contentView]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSWindow contentView]
+
+-[NSWindow contentView]:
+0x184f34b34:  88 ae 2f d0   adrp	x8, 0x1e4506000
+0x184f34b38:  08 2d 8c b9   ldrsw	x8, [x8, #0xc2c] ; _OBJC_IVAR_$_NSWindow._contentView
+0x184f34b3c:  08 00 08 8b   add	x8, x0, x8
+0x184f34b40:  00 01 40 f9   ldr	x0, [x8]
+0x184f34b44:  c0 03 5f d6   ret
+

@@ -1,0 +1,8 @@
+### -[NSResponder validRequestorForSendType:returnType:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSResponder validRequestorForSendType:returnType:]
+
+-[NSResponder validRequestorForSendType:returnType:]:
+0x185217ee4:  00 04 40 f9   ldr	x0, [x0, #0x8]
+0x185217ee8:  26 84 ba 14   b	0x1880b8f80
+

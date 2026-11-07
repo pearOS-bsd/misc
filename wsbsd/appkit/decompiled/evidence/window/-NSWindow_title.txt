@@ -1,0 +1,66 @@
+### -[NSWindow title]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSWindow title]
+
+-[NSWindow title]:
+0x184feb99c:  7f 23 03 d5   pacibsp
+0x184feb9a0:  ff 43 01 d1   sub	sp, sp, #0x50
+0x184feb9a4:  f6 57 02 a9   stp	x22, x21, [sp, #0x20]
+0x184feb9a8:  f4 4f 03 a9   stp	x20, x19, [sp, #0x30]
+0x184feb9ac:  fd 7b 04 a9   stp	fp, lr, [sp, #0x40]
+0x184feb9b0:  fd 03 01 91   add	fp, sp, #0x40
+0x184feb9b4:  f4 03 00 aa   mov	x20, x0
+0x184feb9b8:  c8 a8 2f f0   adrp	x8, 0x1e4506000
+0x184feb9bc:  08 21 8c b9   ldrsw	x8, [x8, #0xc20] ; _OBJC_IVAR_$_NSWindow._wFlags
+0x184feb9c0:  08 00 08 8b   add	x8, x0, x8
+0x184feb9c4:  13 01 40 f9   ldr	x19, [x8]
+0x184feb9c8:  c8 a8 2f f0   adrp	x8, 0x1e4506000
+0x184feb9cc:  08 19 8c b9   ldrsw	x8, [x8, #0xc18] ; _OBJC_IVAR_$_NSWindow._auxiliaryStorage
+0x184feb9d0:  08 00 08 8b   add	x8, x0, x8
+0x184feb9d4:  00 01 40 f9   ldr	x0, [x8]
+0x184feb9d8:  f6 26 c3 94   bl	0x1880b55b0
+0x184feb9dc:  f3 00 d0 37   tbnz	w19, #0x1a, loc_184feb9f8 ; ⤵ 0x1c
+0x184feb9e0:  80 04 c1 94   bl	0x18802cbe0
+0x184feb9e4:  68 a2 31 d0   adrp	x8, 0x1e8439000
+0x184feb9e8:  08 c1 18 91   add	x8, x8, #0x630 ; _ptr.__NSCFConstantString
+0x184feb9ec:  1f 00 00 f1   cmp	x0, #0
+0x184feb9f0:  00 01 80 9a   csel	x0, x8, x0, eq
+0x184feb9f4:  1d 00 00 14   b	loc_184feba68 ; ⤵ 0x74
+0x184feb9f8:  ; loc_184feb9f8
+0x184feb9f8:  7a c3 c2 94   bl	0x18809c7e0
+0x184feb9fc:  f3 03 00 aa   mov	x19, x0
+0x184feba00:  e0 03 14 aa   mov	x0, x20
+0x184feba04:  1b 5f c1 94   bl	0x188043670
+0x184feba08:  e0 00 00 b4   cbz	x0, loc_184feba24 ; ⤵ 0x1c
+0x184feba0c:  02 a3 31 d0   adrp	x2, 0x1e844d000
+0x184feba10:  42 c0 39 91   add	x2, x2, #0xe70 ; "/"
+0x184feba14:  e3 a2 31 d0   adrp	x3, 0x1e8449000
+0x184feba18:  63 c0 3c 91   add	x3, x3, #0xf30 ; ":"
+0x184feba1c:  21 66 c0 94   bl	0x1880052a0
+0x184feba20:  04 00 00 14   b	loc_184feba30 ; ⤵ 0x10
+0x184feba24:  ; loc_184feba24
+0x184feba24:  e0 03 13 aa   mov	x0, x19
+0x184feba28:  82 62 c0 94   bl	0x188004430
+0x184feba2c:  1d 61 c0 94   bl	0x188003ea0
+0x184feba30:  ; loc_184feba30
+0x184feba30:  f4 03 00 aa   mov	x20, x0
+0x184feba34:  e8 8d 2d f0   adrp	x8, 0x1e01aa000
+0x184feba38:  15 c9 42 f9   ldr	x21, [x8, #0x590] ; _ptr.NSString
+0x184feba3c:  44 a2 26 94   bl	__NSFileDirTitleSeparator
+0x184feba40:  f6 03 00 aa   mov	x22, x0
+0x184feba44:  e0 03 13 aa   mov	x0, x19
+0x184feba48:  7a 62 c0 94   bl	0x188004430
+0x184feba4c:  11 66 c0 94   bl	0x188005290
+0x184feba50:  f6 83 00 a9   stp	x22, x0, [sp, #0x8]
+0x184feba54:  f4 03 00 f9   str	x20, [sp]
+0x184feba58:  a2 a4 31 f0   adrp	x2, 0x1e8482000
+0x184feba5c:  42 40 2e 91   add	x2, x2, #0xb90 ; "%@%@%@"
+0x184feba60:  e0 03 15 aa   mov	x0, x21
+0x184feba64:  4f 55 c0 94   bl	0x188000fa0
+0x184feba68:  ; loc_184feba68
+0x184feba68:  fd 7b 44 a9   ldp	fp, lr, [sp, #0x40]
+0x184feba6c:  f4 4f 43 a9   ldp	x20, x19, [sp, #0x30]
+0x184feba70:  f6 57 42 a9   ldp	x22, x21, [sp, #0x20]
+0x184feba74:  ff 43 01 91   add	sp, sp, #0x50
+0x184feba78:  ff 0f 5f d6   retab
+

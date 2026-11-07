@@ -1,0 +1,123 @@
+### -[NSView setFrame:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSView setFrame:]
+
+-[NSView setFrame:]:
+0x184f33d9c:  7f 23 03 d5   pacibsp
+0x184f33da0:  eb 2b ba 6d   stp	d11, d10, [sp, #-0x60]!
+0x184f33da4:  e9 23 01 6d   stp	d9, d8, [sp, #0x10]
+0x184f33da8:  f8 5f 02 a9   stp	x24, x23, [sp, #0x20]
+0x184f33dac:  f6 57 03 a9   stp	x22, x21, [sp, #0x30]
+0x184f33db0:  f4 4f 04 a9   stp	x20, x19, [sp, #0x40]
+0x184f33db4:  fd 7b 05 a9   stp	fp, lr, [sp, #0x50]
+0x184f33db8:  fd 43 01 91   add	fp, sp, #0x50
+0x184f33dbc:  f3 03 00 aa   mov	x19, x0
+0x184f33dc0:  0b 23 32 94   bl	_NSViewValidateRect
+0x184f33dc4:  0a 1c a0 4e   mov	v10.16b, v0.16b
+0x184f33dc8:  2b 1c a1 4e   mov	v11.16b, v1.16b
+0x184f33dcc:  48 1c a2 4e   mov	v8.16b, v2.16b
+0x184f33dd0:  69 1c a3 4e   mov	v9.16b, v3.16b
+0x184f33dd4:  88 ae 2f f0   adrp	x8, 0x1e4506000
+0x184f33dd8:  08 d1 8a b9   ldrsw	x8, [x8, #0xad0] ; _OBJC_IVAR_$_NSView._frame
+0x184f33ddc:  77 02 08 8b   add	x23, x19, x8
+0x184f33de0:  e0 0a 40 fd   ldr	d0, [x23, #0x10]
+0x184f33de4:  00 20 62 1e   fcmp	d0, d2
+0x184f33de8:  96 ae 2f f0   adrp	x22, 0x1e4506000
+0x184f33dec:  94 ae 2f f0   adrp	x20, 0x1e4506000
+0x184f33df0:  95 ae 2f f0   adrp	x21, 0x1e4506000
+0x184f33df4:  81 00 00 54   b.ne	loc_184f33e04 ; ⤵ 0x10
+0x184f33df8:  e0 0e 40 fd   ldr	d0, [x23, #0x18]
+0x184f33dfc:  00 20 69 1e   fcmp	d0, d9
+0x184f33e00:  40 05 00 54   b.eq	loc_184f33ea8 ; ⤵ 0xa8
+0x184f33e04:  ; loc_184f33e04
+0x184f33e04:  48 c0 2d b0   adrp	x8, 0x1e073c000
+0x184f33e08:  00 35 44 f9   ldr	x0, [x8, #0x868] ; __got._OBJC_CLASS_$__NSViewLayoutFeedbackLoopDebugger
+0x184f33e0c:  f6 85 ff 97   bl	+[_NSViewLayoutFeedbackLoopDebugger layoutFeedbackLoopDebugger]
+0x184f33e10:  40 1d aa 4e   mov	v0.16b, v10.16b
+0x184f33e14:  61 1d ab 4e   mov	v1.16b, v11.16b
+0x184f33e18:  02 1d a8 4e   mov	v2.16b, v8.16b
+0x184f33e1c:  23 1d a9 4e   mov	v3.16b, v9.16b
+0x184f33e20:  e1 03 13 aa   mov	x1, x19
+0x184f33e24:  86 24 17 94   bl	-[_NSViewLayoutFeedbackLoopDebugger willSendSetFrame:toLayerOfView:]
+0x184f33e28:  c8 c2 8a b9   ldrsw	x8, [x22, #0xac0]
+0x184f33e2c:  68 02 08 8b   add	x8, x19, x8
+0x184f33e30:  09 01 40 b9   ldr	w9, [x8]
+0x184f33e34:  29 01 00 32   orr	w9, w9, #0x1
+0x184f33e38:  09 01 00 b9   str	w9, [x8]
+0x184f33e3c:  e0 02 40 fd   ldr	d0, [x23]
+0x184f33e40:  00 20 6a 1e   fcmp	d0, d10
+0x184f33e44:  81 00 00 54   b.ne	loc_184f33e54 ; ⤵ 0x10
+0x184f33e48:  e0 06 40 fd   ldr	d0, [x23, #0x8]
+0x184f33e4c:  00 20 6b 1e   fcmp	d0, d11
+0x184f33e50:  c0 02 00 54   b.eq	loc_184f33ea8 ; ⤵ 0x58
+0x184f33e54:  ; loc_184f33e54
+0x184f33e54:  88 a5 30 90   adrp	x8, 0x1e63e3000
+0x184f33e58:  08 39 85 b9   ldrsw	x8, [x8, #0x538]
+0x184f33e5c:  68 02 08 8b   add	x8, x19, x8
+0x184f33e60:  08 01 40 39   ldrb	w8, [x8]
+0x184f33e64:  a8 00 28 37   tbnz	w8, #0x5, loc_184f33e78 ; ⤵ 0x14
+0x184f33e68:  a8 c6 8a b9   ldrsw	x8, [x21, #0xac4]
+0x184f33e6c:  68 02 08 8b   add	x8, x19, x8
+0x184f33e70:  08 01 40 39   ldrb	w8, [x8]
+0x184f33e74:  a8 01 00 37   tbnz	w8, #0, loc_184f33ea8 ; ⤵ 0x34
+0x184f33e78:  ; loc_184f33e78
+0x184f33e78:  97 ca 8a b9   ldrsw	x23, [x20, #0xac8]
+0x184f33e7c:  60 02 17 8b   add	x0, x19, x23
+0x184f33e80:  88 b9 c6 94   bl	j__os_unfair_lock_lock
+0x184f33e84:  a8 c6 8a b9   ldrsw	x8, [x21, #0xac4]
+0x184f33e88:  68 02 08 8b   add	x8, x19, x8
+0x184f33e8c:  09 01 40 b9   ldr	w9, [x8]
+0x184f33e90:  29 01 16 32   orr	w9, w9, #0x400
+0x184f33e94:  09 01 00 b9   str	w9, [x8]
+0x184f33e98:  60 02 17 8b   add	x0, x19, x23
+0x184f33e9c:  d9 a1 c6 94   bl	j__os_unfair_lock_unlock
+0x184f33ea0:  e0 03 13 aa   mov	x0, x19
+0x184f33ea4:  77 be c4 94   bl	0x188063880
+0x184f33ea8:  ; loc_184f33ea8
+0x184f33ea8:  e0 03 13 aa   mov	x0, x19
+0x184f33eac:  40 1d aa 4e   mov	v0.16b, v10.16b
+0x184f33eb0:  61 1d ab 4e   mov	v1.16b, v11.16b
+0x184f33eb4:  ab c5 c5 94   bl	0x1880a5560
+0x184f33eb8:  c8 c2 8a b9   ldrsw	x8, [x22, #0xac0]
+0x184f33ebc:  68 02 08 8b   add	x8, x19, x8
+0x184f33ec0:  09 01 40 b9   ldr	w9, [x8]
+0x184f33ec4:  29 79 1f 12   and	w9, w9, #0xfffffffe
+0x184f33ec8:  09 01 00 b9   str	w9, [x8]
+0x184f33ecc:  e0 03 13 aa   mov	x0, x19
+0x184f33ed0:  00 1d a8 4e   mov	v0.16b, v8.16b
+0x184f33ed4:  21 1d a9 4e   mov	v1.16b, v9.16b
+0x184f33ed8:  b2 c5 c5 94   bl	0x1880a55a0
+0x184f33edc:  b5 c6 8a b9   ldrsw	x21, [x21, #0xac4]
+0x184f33ee0:  68 02 15 8b   add	x8, x19, x21
+0x184f33ee4:  08 05 40 39   ldrb	w8, [x8, #0x1]
+0x184f33ee8:  08 01 10 37   tbnz	w8, #0x2, loc_184f33f08 ; ⤵ 0x20
+0x184f33eec:  fd 7b 45 a9   ldp	fp, lr, [sp, #0x50]
+0x184f33ef0:  f4 4f 44 a9   ldp	x20, x19, [sp, #0x40]
+0x184f33ef4:  f6 57 43 a9   ldp	x22, x21, [sp, #0x30]
+0x184f33ef8:  f8 5f 42 a9   ldp	x24, x23, [sp, #0x20]
+0x184f33efc:  e9 23 41 6d   ldp	d9, d8, [sp, #0x10]
+0x184f33f00:  eb 2b c6 6c   ldp	d11, d10, [sp], #0x60
+0x184f33f04:  ff 0f 5f d6   retab
+0x184f33f08:  ; loc_184f33f08
+0x184f33f08:  e0 03 13 aa   mov	x0, x19
+0x184f33f0c:  5d be c4 94   bl	0x188063880
+0x184f33f10:  94 ca 8a b9   ldrsw	x20, [x20, #0xac8]
+0x184f33f14:  60 02 14 8b   add	x0, x19, x20
+0x184f33f18:  62 b9 c6 94   bl	j__os_unfair_lock_lock
+0x184f33f1c:  68 6a 75 b8   ldr	w8, [x19, x21]
+0x184f33f20:  08 79 15 12   and	w8, w8, #0xfffffbff
+0x184f33f24:  68 6a 35 b8   str	w8, [x19, x21]
+0x184f33f28:  60 02 14 8b   add	x0, x19, x20
+0x184f33f2c:  fd 7b 45 a9   ldp	fp, lr, [sp, #0x50]
+0x184f33f30:  f4 4f 44 a9   ldp	x20, x19, [sp, #0x40]
+0x184f33f34:  f6 57 43 a9   ldp	x22, x21, [sp, #0x30]
+0x184f33f38:  f8 5f 42 a9   ldp	x24, x23, [sp, #0x20]
+0x184f33f3c:  e9 23 41 6d   ldp	d9, d8, [sp, #0x10]
+0x184f33f40:  eb 2b c6 6c   ldp	d11, d10, [sp], #0x60
+0x184f33f44:  ff 23 03 d5   autibsp
+0x184f33f48:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f33f4c:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f33f54 ; ⤵ 0x8
+0x184f33f50:  20 8e 38 d4   brk	#0xc471
+0x184f33f54:  ; loc_184f33f54
+0x184f33f54:  ab a1 c6 14   b	j__os_unfair_lock_unlock
+

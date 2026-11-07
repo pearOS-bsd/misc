@@ -1,0 +1,39 @@
+### -[NSResponder tryToPerform:with:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSResponder tryToPerform:with:]
+
+-[NSResponder tryToPerform:with:]:
+0x1850e6c7c:  7f 23 03 d5   pacibsp
+0x1850e6c80:  f6 57 bd a9   stp	x22, x21, [sp, #-0x30]!
+0x1850e6c84:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x1850e6c88:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x1850e6c8c:  fd 83 00 91   add	fp, sp, #0x20
+0x1850e6c90:  f3 03 03 aa   mov	x19, x3
+0x1850e6c94:  f4 03 02 aa   mov	x20, x2
+0x1850e6c98:  f5 03 00 aa   mov	x21, x0
+0x1850e6c9c:  e1 03 02 aa   mov	x1, x2
+0x1850e6ca0:  28 dd bf 94   bl	j__objc_opt_respondsToSelector
+0x1850e6ca4:  40 01 00 36   tbz	w0, #0, loc_1850e6ccc ; ⤵ 0x28
+0x1850e6ca8:  e0 03 15 aa   mov	x0, x21
+0x1850e6cac:  e2 03 14 aa   mov	x2, x20
+0x1850e6cb0:  e3 03 13 aa   mov	x3, x19
+0x1850e6cb4:  0f 76 bc 94   bl	0x1880044f0
+0x1850e6cb8:  20 00 80 52   mov	w0, #0x1
+0x1850e6cbc:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x1850e6cc0:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x1850e6cc4:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x1850e6cc8:  ff 0f 5f d6   retab
+0x1850e6ccc:  ; loc_1850e6ccc
+0x1850e6ccc:  a0 06 40 f9   ldr	x0, [x21, #0x8]
+0x1850e6cd0:  e2 03 14 aa   mov	x2, x20
+0x1850e6cd4:  e3 03 13 aa   mov	x3, x19
+0x1850e6cd8:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x1850e6cdc:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x1850e6ce0:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x1850e6ce4:  ff 23 03 d5   autibsp
+0x1850e6ce8:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x1850e6cec:  50 00 f0 b6   tbz	x16, #0x3e, loc_1850e6cf4 ; ⤵ 0x8
+0x1850e6cf0:  20 8e 38 d4   brk	#0xc471
+0x1850e6cf4:  ; loc_1850e6cf4
+0x1850e6cf4:  83 40 bf 14   b	0x1880b6f00
+

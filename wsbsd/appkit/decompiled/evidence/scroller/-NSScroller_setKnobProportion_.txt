@@ -1,0 +1,196 @@
+### -[NSScroller setKnobProportion:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSScroller setKnobProportion:]
+
+-[NSScroller setKnobProportion:]:
+0x184fafe44:  7f 23 03 d5   pacibsp
+0x184fafe48:  ff c3 01 d1   sub	sp, sp, #0x70
+0x184fafe4c:  ef 3b 01 6d   stp	d15, d14, [sp, #0x10]
+0x184fafe50:  ed 33 02 6d   stp	d13, d12, [sp, #0x20]
+0x184fafe54:  eb 2b 03 6d   stp	d11, d10, [sp, #0x30]
+0x184fafe58:  e9 23 04 6d   stp	d9, d8, [sp, #0x40]
+0x184fafe5c:  f4 4f 05 a9   stp	x20, x19, [sp, #0x50]
+0x184fafe60:  fd 7b 06 a9   stp	fp, lr, [sp, #0x60]
+0x184fafe64:  fd 83 01 91   add	fp, sp, #0x60
+0x184fafe68:  08 1c a0 4e   mov	v8.16b, v0.16b
+0x184fafe6c:  f4 03 01 aa   mov	x20, x1
+0x184fafe70:  f3 03 00 aa   mov	x19, x0
+0x184fafe74:  48 a2 30 b0   adrp	x8, 0x1e63f8000
+0x184fafe78:  08 01 30 91   add	x8, x8, #0xc00 ; data_1e63f8c00 (AppKit/__DATA_DIRTY.__bss)
+0x184fafe7c:  08 fd df 08   ldarb	w8, [x8]
+0x184fafe80:  1f 09 00 71   cmp	w8, #0x2
+0x184fafe84:  e0 01 00 54   b.eq	loc_184fafec0 ; ⤵ 0x3c
+0x184fafe88:  c8 00 00 34   cbz	w8, loc_184fafea0 ; ⤵ 0x18
+0x184fafe8c:  ; loc_184fafe8c
+0x184fafe8c:  00 10 6e 1e   fmov	d0, #1.00000000
+0x184fafe90:  00 79 60 1e   fminnm	d0, d8, d0
+0x184fafe94:  01 e4 00 6f   movi	v1.2d, #0
+0x184fafe98:  08 68 61 1e   fmaxnm	d8, d0, d1
+0x184fafe9c:  0b 00 00 14   b	loc_184fafec8 ; ⤵ 0x2c
+0x184fafea0:  ; loc_184fafea0
+0x184fafea0:  e0 a6 31 d0   adrp	x0, 0x1e848d000
+0x184fafea4:  00 40 34 91   add	x0, x0, #0xd10 ; "NSScrollerClampValues"
+0x184fafea8:  42 a2 30 b0   adrp	x2, 0x1e63f8000
+0x184fafeac:  42 00 30 91   add	x2, x2, #0xc00 ; data_1e63f8c00 (AppKit/__DATA_DIRTY.__bss)
+0x184fafeb0:  21 00 80 52   mov	w1, #0x1
+0x184fafeb4:  03 00 80 d2   mov	x3, #0
+0x184fafeb8:  20 5f fc 97   bl	__NSGetBoolAppConfig
+0x184fafebc:  80 fe ff 35   cbnz	w0, loc_184fafe8c ; ⤴ -0x30
+0x184fafec0:  ; loc_184fafec0
+0x184fafec0:  00 21 68 1e   fcmp	d8, d8
+0x184fafec4:  26 10 00 54   b.vs	loc_184fb00c8 ; ⤵ 0x204
+0x184fafec8:  ; loc_184fafec8
+0x184fafec8:  08 01 66 9e   fmov	x8, d8
+0x184fafecc:  08 f9 40 92   and	x8, x8, #0x7fffffffffffffff
+0x184fafed0:  09 fe ef d2   mov	x9, #0x7ff0000000000000
+0x184fafed4:  1f 01 09 eb   cmp	x8, x9
+0x184fafed8:  ea 09 00 54   b.ge	loc_184fb0014 ; ⤵ 0x13c
+0x184fafedc:  ; loc_184fafedc
+0x184fafedc:  08 21 60 1e   fcmp	d8, #0.00000000
+0x184fafee0:  8b 0b 00 54   b.lt	loc_184fb0050 ; ⤵ 0x170
+0x184fafee4:  ; loc_184fafee4
+0x184fafee4:  00 10 6e 1e   fmov	d0, #1.00000000
+0x184fafee8:  00 21 60 1e   fcmp	d8, d0
+0x184fafeec:  08 0d 00 54   b.hi	loc_184fb008c ; ⤵ 0x1a0
+0x184fafef0:  ; loc_184fafef0
+0x184fafef0:  a8 aa 2f d0   adrp	x8, 0x1e4505000
+0x184fafef4:  08 49 85 b9   ldrsw	x8, [x8, #0x548] ; _OBJC_IVAR_$_NSScroller.sFlags
+0x184fafef8:  68 02 08 8b   add	x8, x19, x8
+0x184fafefc:  08 01 40 39   ldrb	w8, [x8]
+0x184faff00:  c8 04 38 37   tbnz	w8, #0x7, loc_184faff98 ; ⤵ 0x98
+0x184faff04:  88 a1 30 f0   adrp	x8, 0x1e63e2000
+0x184faff08:  14 a9 88 b9   ldrsw	x20, [x8, #0x8a8]
+0x184faff0c:  68 02 14 8b   add	x8, x19, x20
+0x184faff10:  00 01 40 fd   ldr	d0, [x8]
+0x184faff14:  00 20 68 1e   fcmp	d0, d8
+0x184faff18:  00 04 00 54   b.eq	loc_184faff98 ; ⤵ 0x80
+0x184faff1c:  e0 03 13 aa   mov	x0, x19
+0x184faff20:  42 00 80 52   mov	w2, #0x2
+0x184faff24:  3b aa c3 94   bl	0x18809a810
+0x184faff28:  09 1c a0 4e   mov	v9.16b, v0.16b
+0x184faff2c:  2a 1c a1 4e   mov	v10.16b, v1.16b
+0x184faff30:  4b 1c a2 4e   mov	v11.16b, v2.16b
+0x184faff34:  6c 1c a3 4e   mov	v12.16b, v3.16b
+0x184faff38:  68 6a 34 fc   str	d8, [x19, x20]
+0x184faff3c:  88 a1 30 f0   adrp	x8, 0x1e63e2000
+0x184faff40:  08 99 88 b9   ldrsw	x8, [x8, #0x898]
+0x184faff44:  68 02 08 8b   add	x8, x19, x8
+0x184faff48:  00 01 40 f9   ldr	x0, [x8]
+0x184faff4c:  00 1d a8 4e   mov	v0.16b, v8.16b
+0x184faff50:  08 dd c3 94   bl	0x1880a7370
+0x184faff54:  e0 03 13 aa   mov	x0, x19
+0x184faff58:  42 00 80 52   mov	w2, #0x2
+0x184faff5c:  2d aa c3 94   bl	0x18809a810
+0x184faff60:  08 1c a0 4e   mov	v8.16b, v0.16b
+0x184faff64:  2d 1c a1 4e   mov	v13.16b, v1.16b
+0x184faff68:  4e 1c a2 4e   mov	v14.16b, v2.16b
+0x184faff6c:  6f 1c a3 4e   mov	v15.16b, v3.16b
+0x184faff70:  20 1d a9 4e   mov	v0.16b, v9.16b
+0x184faff74:  41 1d aa 4e   mov	v1.16b, v10.16b
+0x184faff78:  62 1d ab 4e   mov	v2.16b, v11.16b
+0x184faff7c:  83 1d ac 4e   mov	v3.16b, v12.16b
+0x184faff80:  04 1d a8 4e   mov	v4.16b, v8.16b
+0x184faff84:  a5 1d ad 4e   mov	v5.16b, v13.16b
+0x184faff88:  c6 1d ae 4e   mov	v6.16b, v14.16b
+0x184faff8c:  e7 1d af 4e   mov	v7.16b, v15.16b
+0x184faff90:  18 55 c5 94   bl	j__NSEqualRects
+0x184faff94:  20 01 00 36   tbz	w0, #0, loc_184faffb8 ; ⤵ 0x24
+0x184faff98:  ; loc_184faff98
+0x184faff98:  fd 7b 46 a9   ldp	fp, lr, [sp, #0x60]
+0x184faff9c:  f4 4f 45 a9   ldp	x20, x19, [sp, #0x50]
+0x184faffa0:  e9 23 44 6d   ldp	d9, d8, [sp, #0x40]
+0x184faffa4:  eb 2b 43 6d   ldp	d11, d10, [sp, #0x30]
+0x184faffa8:  ed 33 42 6d   ldp	d13, d12, [sp, #0x20]
+0x184faffac:  ef 3b 41 6d   ldp	d15, d14, [sp, #0x10]
+0x184faffb0:  ff c3 01 91   add	sp, sp, #0x70
+0x184faffb4:  ff 0f 5f d6   retab
+0x184faffb8:  ; loc_184faffb8
+0x184faffb8:  e0 03 13 aa   mov	x0, x19
+0x184faffbc:  20 1d a9 4e   mov	v0.16b, v9.16b
+0x184faffc0:  41 1d aa 4e   mov	v1.16b, v10.16b
+0x184faffc4:  62 1d ab 4e   mov	v2.16b, v11.16b
+0x184faffc8:  83 1d ac 4e   mov	v3.16b, v12.16b
+0x184faffcc:  69 c5 c2 94   bl	0x188061570
+0x184faffd0:  e0 03 13 aa   mov	x0, x19
+0x184faffd4:  00 1d a8 4e   mov	v0.16b, v8.16b
+0x184faffd8:  a1 1d ad 4e   mov	v1.16b, v13.16b
+0x184faffdc:  c2 1d ae 4e   mov	v2.16b, v14.16b
+0x184faffe0:  e3 1d af 4e   mov	v3.16b, v15.16b
+0x184faffe4:  fd 7b 46 a9   ldp	fp, lr, [sp, #0x60]
+0x184faffe8:  f4 4f 45 a9   ldp	x20, x19, [sp, #0x50]
+0x184faffec:  e9 23 44 6d   ldp	d9, d8, [sp, #0x40]
+0x184fafff0:  eb 2b 43 6d   ldp	d11, d10, [sp, #0x30]
+0x184fafff4:  ed 33 42 6d   ldp	d13, d12, [sp, #0x20]
+0x184fafff8:  ef 3b 41 6d   ldp	d15, d14, [sp, #0x10]
+0x184fafffc:  ff c3 01 91   add	sp, sp, #0x70
+0x184fb0000:  ff 23 03 d5   autibsp
+0x184fb0004:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184fb0008:  50 00 f0 b6   tbz	x16, #0x3e, loc_184fb0010 ; ⤵ 0x8
+0x184fb000c:  20 8e 38 d4   brk	#0xc471
+0x184fb0010:  ; loc_184fb0010
+0x184fb0010:  58 c5 c2 14   b	0x188061570
+0x184fb0014:  ; loc_184fb0014
+0x184fb0014:  c8 8f 2d d0   adrp	x8, 0x1e01aa000
+0x184fb0018:  00 41 40 f9   ldr	x0, [x8, #0x80] ; _ptr.NSAssertionHandler
+0x184fb001c:  99 5e c1 94   bl	0x188007a80
+0x184fb0020:  e8 a6 31 b0   adrp	x8, 0x1e848d000
+0x184fb0024:  08 c1 1c 91   add	x8, x8, #0x730 ; "isfinite(proportion)"
+0x184fb0028:  e8 03 00 f9   str	x8, [sp]
+0x184fb002c:  e4 a6 31 b0   adrp	x4, 0x1e848d000
+0x184fb0030:  84 c0 1b 91   add	x4, x4, #0x6f0 ; "NSScroller.m"
+0x184fb0034:  46 a4 31 b0   adrp	x6, 0x1e8439000
+0x184fb0038:  c6 40 2f 91   add	x6, x6, #0xbd0 ; "Invalid parameter not satisfying: %@"
+0x184fb003c:  e2 03 14 aa   mov	x2, x20
+0x184fb0040:  e3 03 13 aa   mov	x3, x19
+0x184fb0044:  e5 a1 80 52   mov	w5, #0x50f
+0x184fb0048:  fe 62 c1 94   bl	0x188008c40
+0x184fb004c:  a4 ff ff 17   b	loc_184fafedc ; ⤴ -0x170
+0x184fb0050:  ; loc_184fb0050
+0x184fb0050:  c8 8f 2d d0   adrp	x8, 0x1e01aa000
+0x184fb0054:  00 41 40 f9   ldr	x0, [x8, #0x80] ; _ptr.NSAssertionHandler
+0x184fb0058:  8a 5e c1 94   bl	0x188007a80
+0x184fb005c:  e8 a6 31 b0   adrp	x8, 0x1e848d000
+0x184fb0060:  08 41 1d 91   add	x8, x8, #0x750 ; "proportion >= 0"
+0x184fb0064:  e8 03 00 f9   str	x8, [sp]
+0x184fb0068:  e4 a6 31 b0   adrp	x4, 0x1e848d000
+0x184fb006c:  84 c0 1b 91   add	x4, x4, #0x6f0 ; "NSScroller.m"
+0x184fb0070:  46 a4 31 b0   adrp	x6, 0x1e8439000
+0x184fb0074:  c6 40 2f 91   add	x6, x6, #0xbd0 ; "Invalid parameter not satisfying: %@"
+0x184fb0078:  e2 03 14 aa   mov	x2, x20
+0x184fb007c:  e3 03 13 aa   mov	x3, x19
+0x184fb0080:  05 a2 80 52   mov	w5, #0x510
+0x184fb0084:  ef 62 c1 94   bl	0x188008c40
+0x184fb0088:  97 ff ff 17   b	loc_184fafee4 ; ⤴ -0x1a4
+0x184fb008c:  ; loc_184fb008c
+0x184fb008c:  c8 8f 2d d0   adrp	x8, 0x1e01aa000
+0x184fb0090:  00 41 40 f9   ldr	x0, [x8, #0x80] ; _ptr.NSAssertionHandler
+0x184fb0094:  7b 5e c1 94   bl	0x188007a80
+0x184fb0098:  e8 a6 31 b0   adrp	x8, 0x1e848d000
+0x184fb009c:  08 c1 1d 91   add	x8, x8, #0x770 ; "proportion <= 1"
+0x184fb00a0:  e8 03 00 f9   str	x8, [sp]
+0x184fb00a4:  e4 a6 31 b0   adrp	x4, 0x1e848d000
+0x184fb00a8:  84 c0 1b 91   add	x4, x4, #0x6f0 ; "NSScroller.m"
+0x184fb00ac:  46 a4 31 b0   adrp	x6, 0x1e8439000
+0x184fb00b0:  c6 40 2f 91   add	x6, x6, #0xbd0 ; "Invalid parameter not satisfying: %@"
+0x184fb00b4:  e2 03 14 aa   mov	x2, x20
+0x184fb00b8:  e3 03 13 aa   mov	x3, x19
+0x184fb00bc:  25 a2 80 52   mov	w5, #0x511
+0x184fb00c0:  e0 62 c1 94   bl	0x188008c40
+0x184fb00c4:  8b ff ff 17   b	loc_184fafef0 ; ⤴ -0x1d4
+0x184fb00c8:  ; loc_184fb00c8
+0x184fb00c8:  c8 8f 2d d0   adrp	x8, 0x1e01aa000
+0x184fb00cc:  00 41 40 f9   ldr	x0, [x8, #0x80] ; _ptr.NSAssertionHandler
+0x184fb00d0:  6c 5e c1 94   bl	0x188007a80
+0x184fb00d4:  e8 a6 31 b0   adrp	x8, 0x1e848d000
+0x184fb00d8:  08 41 1c 91   add	x8, x8, #0x710 ; "!isnan(proportion)"
+0x184fb00dc:  e8 03 00 f9   str	x8, [sp]
+0x184fb00e0:  e4 a6 31 b0   adrp	x4, 0x1e848d000
+0x184fb00e4:  84 c0 1b 91   add	x4, x4, #0x6f0 ; "NSScroller.m"
+0x184fb00e8:  46 a4 31 b0   adrp	x6, 0x1e8439000
+0x184fb00ec:  c6 40 2f 91   add	x6, x6, #0xbd0 ; "Invalid parameter not satisfying: %@"
+0x184fb00f0:  e2 03 14 aa   mov	x2, x20
+0x184fb00f4:  e3 03 13 aa   mov	x3, x19
+0x184fb00f8:  c5 a1 80 52   mov	w5, #0x50e
+0x184fb00fc:  d1 62 c1 94   bl	0x188008c40
+0x184fb0100:  72 ff ff 17   b	loc_184fafec8 ; ⤴ -0x238
+

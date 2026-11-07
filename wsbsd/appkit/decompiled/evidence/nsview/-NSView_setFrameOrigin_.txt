@@ -1,0 +1,253 @@
+### -[NSView setFrameOrigin:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSView setFrameOrigin:]
+
+-[NSView setFrameOrigin:]:
+0x184f2ba88:  7f 23 03 d5   pacibsp
+0x184f2ba8c:  ff 83 01 d1   sub	sp, sp, #0x60
+0x184f2ba90:  e9 23 01 6d   stp	d9, d8, [sp, #0x10]
+0x184f2ba94:  f8 5f 02 a9   stp	x24, x23, [sp, #0x20]
+0x184f2ba98:  f6 57 03 a9   stp	x22, x21, [sp, #0x30]
+0x184f2ba9c:  f4 4f 04 a9   stp	x20, x19, [sp, #0x40]
+0x184f2baa0:  fd 7b 05 a9   stp	fp, lr, [sp, #0x50]
+0x184f2baa4:  fd 43 01 91   add	fp, sp, #0x50
+0x184f2baa8:  29 1c a1 4e   mov	v9.16b, v1.16b
+0x184f2baac:  f3 03 00 aa   mov	x19, x0
+0x184f2bab0:  40 bd 2d b0   adrp	x0, 0x1e06d4000
+0x184f2bab4:  00 e0 11 91   add	x0, x0, #0x478 ; _NSViewOriginXValidationParams
+0x184f2bab8:  f2 bb 48 94   bl	__NSViewValidateGeometry
+0x184f2babc:  08 1c a0 4e   mov	v8.16b, v0.16b
+0x184f2bac0:  40 bd 2d b0   adrp	x0, 0x1e06d4000
+0x184f2bac4:  00 e0 12 91   add	x0, x0, #0x4b8 ; _NSViewOriginYValidationParams
+0x184f2bac8:  20 1d a9 4e   mov	v0.16b, v9.16b
+0x184f2bacc:  ed bb 48 94   bl	__NSViewValidateGeometry
+0x184f2bad0:  09 1c a0 4e   mov	v9.16b, v0.16b
+0x184f2bad4:  c8 ae 2f f0   adrp	x8, 0x1e4506000
+0x184f2bad8:  08 d1 8a b9   ldrsw	x8, [x8, #0xad0] ; _OBJC_IVAR_$_NSView._frame
+0x184f2badc:  75 02 08 8b   add	x21, x19, x8
+0x184f2bae0:  e8 03 00 6d   stp	d8, d0, [sp]
+0x184f2bae4:  a0 02 40 fd   ldr	d0, [x21]
+0x184f2bae8:  00 20 68 1e   fcmp	d0, d8
+0x184f2baec:  81 00 00 54   b.ne	loc_184f2bafc ; ⤵ 0x10
+0x184f2baf0:  a0 06 40 fd   ldr	d0, [x21, #0x8]
+0x184f2baf4:  00 20 69 1e   fcmp	d0, d9
+0x184f2baf8:  00 13 00 54   b.eq	loc_184f2bd58 ; ⤵ 0x260
+0x184f2bafc:  ; loc_184f2bafc
+0x184f2bafc:  88 c0 2d b0   adrp	x8, 0x1e073c000
+0x184f2bb00:  00 35 44 f9   ldr	x0, [x8, #0x868] ; __got._OBJC_CLASS_$__NSViewLayoutFeedbackLoopDebugger
+0x184f2bb04:  b8 a6 ff 97   bl	+[_NSViewLayoutFeedbackLoopDebugger layoutFeedbackLoopDebugger]
+0x184f2bb08:  00 1d a8 4e   mov	v0.16b, v8.16b
+0x184f2bb0c:  21 1d a9 4e   mov	v1.16b, v9.16b
+0x184f2bb10:  e1 03 13 aa   mov	x1, x19
+0x184f2bb14:  0c 45 17 94   bl	-[_NSViewLayoutFeedbackLoopDebugger willSendSetPosition:toLayerOfView:]
+0x184f2bb18:  77 c0 2d f0   adrp	x23, 0x1e073a000
+0x184f2bb1c:  e0 96 46 f9   ldr	x0, [x23, #0xd28] ; __got.class_NSAnimationContext
+0x184f2bb20:  d0 10 c4 94   bl	0x18802fe60
+0x184f2bb24:  f4 03 00 aa   mov	x20, x0
+0x184f2bb28:  c8 b1 2f b0   adrp	x8, 0x1e4564000
+0x184f2bb2c:  08 41 16 91   add	x8, x8, #0x590 ; data_1e4564590 (AppKit/__DATA.__bss)
+0x184f2bb30:  08 fd df 08   ldarb	w8, [x8]
+0x184f2bb34:  d6 a5 30 90   adrp	x22, 0x1e63e3000
+0x184f2bb38:  1f 09 00 71   cmp	w8, #0x2
+0x184f2bb3c:  c0 00 00 54   b.eq	loc_184f2bb54 ; ⤵ 0x18
+0x184f2bb40:  a8 11 00 34   cbz	w8, loc_184f2bd74 ; ⤵ 0x234
+0x184f2bb44:  ; loc_184f2bb44
+0x184f2bb44:  c8 26 85 b9   ldrsw	x8, [x22, #0x524]
+0x184f2bb48:  68 02 08 8b   add	x8, x19, x8
+0x184f2bb4c:  08 01 40 39   ldrb	w8, [x8]
+0x184f2bb50:  a8 12 28 37   tbnz	w8, #0x5, loc_184f2bda4 ; ⤵ 0x254
+0x184f2bb54:  ; loc_184f2bb54
+0x184f2bb54:  c8 26 85 b9   ldrsw	x8, [x22, #0x524]
+0x184f2bb58:  68 02 08 8b   add	x8, x19, x8
+0x184f2bb5c:  08 01 40 39   ldrb	w8, [x8]
+0x184f2bb60:  d6 ae 2f f0   adrp	x22, 0x1e4506000
+0x184f2bb64:  c8 05 28 37   tbnz	w8, #0x5, loc_184f2bc1c ; ⤵ 0xb8
+0x184f2bb68:  c8 a5 30 90   adrp	x8, 0x1e63e3000
+0x184f2bb6c:  08 a5 85 b9   ldrsw	x8, [x8, #0x5a4]
+0x184f2bb70:  68 02 08 8b   add	x8, x19, x8
+0x184f2bb74:  08 01 40 39   ldrb	w8, [x8]
+0x184f2bb78:  28 05 18 37   tbnz	w8, #0x3, loc_184f2bc1c ; ⤵ 0xa4
+0x184f2bb7c:  c8 b1 2f b0   adrp	x8, 0x1e4564000
+0x184f2bb80:  08 39 43 f9   ldr	x8, [x8, #0x670] ; data_1e4564670 (AppKit/__DATA.__bss)
+0x184f2bb84:  1f 05 00 b1   cmn	x8, #0x1
+0x184f2bb88:  e1 11 00 54   b.ne	loc_184f2bdc4 ; ⤵ 0x23c
+0x184f2bb8c:  ; loc_184f2bb8c
+0x184f2bb8c:  c8 b1 2f b0   adrp	x8, 0x1e4564000
+0x184f2bb90:  08 55 56 39   ldrb	w8, [x8, #0x595] ; data_1e4564595 (AppKit/__DATA.__bss)
+0x184f2bb94:  1f 05 00 71   cmp	w8, #0x1
+0x184f2bb98:  21 04 00 54   b.ne	loc_184f2bc1c ; ⤵ 0x84
+0x184f2bb9c:  e0 03 14 aa   mov	x0, x20
+0x184f2bba0:  8c 22 c5 94   bl	0x1880745d0
+0x184f2bba4:  c0 03 00 34   cbz	w0, loc_184f2bc1c ; ⤵ 0x78
+0x184f2bba8:  e0 03 13 aa   mov	x0, x19
+0x184f2bbac:  d1 08 c5 94   bl	0x18806def0
+0x184f2bbb0:  a0 00 00 37   tbnz	w0, #0, loc_184f2bbc4 ; ⤵ 0x14
+0x184f2bbb4:  c8 c2 8a b9   ldrsw	x8, [x22, #0xac0]
+0x184f2bbb8:  68 02 08 8b   add	x8, x19, x8
+0x184f2bbbc:  08 01 40 39   ldrb	w8, [x8]
+0x184f2bbc0:  88 00 00 37   tbnz	w8, #0, loc_184f2bbd0 ; ⤵ 0x10
+0x184f2bbc4:  ; loc_184f2bbc4
+0x184f2bbc4:  e0 03 14 aa   mov	x0, x20
+0x184f2bbc8:  de 21 c5 94   bl	0x188074340
+0x184f2bbcc:  80 02 00 37   tbnz	w0, #0, loc_184f2bc1c ; ⤵ 0x50
+0x184f2bbd0:  ; loc_184f2bbd0
+0x184f2bbd0:  e0 96 46 f9   ldr	x0, [x23, #0xd28]
+0x184f2bbd4:  a3 10 c4 94   bl	0x18802fe60
+0x184f2bbd8:  da dc c3 94   bl	0x188022f40
+0x184f2bbdc:  08 20 60 1e   fcmp	d0, #0.00000000
+0x184f2bbe0:  ed 01 00 54   b.le	loc_184f2bc1c ; ⤵ 0x3c
+0x184f2bbe4:  62 a9 31 b0   adrp	x2, 0x1e8458000
+0x184f2bbe8:  42 40 1d 91   add	x2, x2, #0x750 ; "frameOrigin"
+0x184f2bbec:  e0 03 13 aa   mov	x0, x19
+0x184f2bbf0:  c8 24 c5 94   bl	0x188074f10
+0x184f2bbf4:  40 01 00 b4   cbz	x0, loc_184f2bc1c ; ⤵ 0x28
+0x184f2bbf8:  e2 03 00 aa   mov	x2, x0
+0x184f2bbfc:  61 a9 31 b0   adrp	x1, 0x1e8458000
+0x184f2bc00:  21 40 1d 91   add	x1, x1, #0x750 ; "frameOrigin"
+0x184f2bc04:  c4 9b 00 b0   adrp	x4, 0x1862a4000
+0x184f2bc08:  84 40 22 91   add	x4, x4, #0x890 ; "{CGPoint=dd}"
+0x184f2bc0c:  e3 03 00 91   mov	x3, sp
+0x184f2bc10:  e0 03 13 aa   mov	x0, x19
+0x184f2bc14:  30 79 0d 94   bl	_NSAnimatablePropertyContainerResolveAndAnimateProperty
+0x184f2bc18:  00 0a 00 b5   cbnz	x0, loc_184f2bd58 ; ⤵ 0x140
+0x184f2bc1c:  ; loc_184f2bc1c
+0x184f2bc1c:  c8 ae 2f f0   adrp	x8, 0x1e4506000
+0x184f2bc20:  17 c5 8a b9   ldrsw	x23, [x8, #0xac4] ; _OBJC_IVAR_$_NSView._atomicFlags
+0x184f2bc24:  68 02 17 8b   add	x8, x19, x23
+0x184f2bc28:  14 01 40 b9   ldr	w20, [x8]
+0x184f2bc2c:  c8 a5 30 90   adrp	x8, 0x1e63e3000
+0x184f2bc30:  08 39 85 b9   ldrsw	x8, [x8, #0x538]
+0x184f2bc34:  68 02 08 8b   add	x8, x19, x8
+0x184f2bc38:  08 01 40 39   ldrb	w8, [x8]
+0x184f2bc3c:  08 02 28 37   tbnz	w8, #0x5, loc_184f2bc7c ; ⤵ 0x40
+0x184f2bc40:  f4 01 00 36   tbz	w20, #0, loc_184f2bc7c ; ⤵ 0x3c
+0x184f2bc44:  c8 ae 2f f0   adrp	x8, 0x1e4506000
+0x184f2bc48:  08 d9 8a b9   ldrsw	x8, [x8, #0xad8] ; _OBJC_IVAR_$_NSView._superview
+0x184f2bc4c:  68 02 08 8b   add	x8, x19, x8
+0x184f2bc50:  08 01 40 f9   ldr	x8, [x8]
+0x184f2bc54:  68 00 00 b4   cbz	x8, loc_184f2bc60 ; ⤵ 0xc
+0x184f2bc58:  e0 03 13 aa   mov	x0, x19
+0x184f2bc5c:  e5 ad ff 97   bl	_NSViewHierarchyInvalidateVisibleRect
+0x184f2bc60:  ; loc_184f2bc60
+0x184f2bc60:  e0 03 c0 3d   ldr	q0, [sp]
+0x184f2bc64:  a0 02 80 3d   str	q0, [x21]
+0x184f2bc68:  61 a9 31 b0   adrp	x1, 0x1e8458000
+0x184f2bc6c:  21 40 1d 91   add	x1, x1, #0x750 ; "frameOrigin"
+0x184f2bc70:  e0 03 13 aa   mov	x0, x19
+0x184f2bc74:  41 b2 ff 97   bl	__NSInvalidateKeyValueDependencies
+0x184f2bc78:  1a 00 00 14   b	loc_184f2bce0 ; ⤵ 0x68
+0x184f2bc7c:  ; loc_184f2bc7c
+0x184f2bc7c:  74 00 50 37   tbnz	w20, #0xa, loc_184f2bc88 ; ⤵ 0xc
+0x184f2bc80:  e0 03 13 aa   mov	x0, x19
+0x184f2bc84:  ff de c4 94   bl	0x188063880
+0x184f2bc88:  ; loc_184f2bc88
+0x184f2bc88:  c8 ae 2f f0   adrp	x8, 0x1e4506000
+0x184f2bc8c:  08 d9 8a b9   ldrsw	x8, [x8, #0xad8] ; _OBJC_IVAR_$_NSView._superview
+0x184f2bc90:  68 02 08 8b   add	x8, x19, x8
+0x184f2bc94:  08 01 40 f9   ldr	x8, [x8]
+0x184f2bc98:  68 00 00 b4   cbz	x8, loc_184f2bca4 ; ⤵ 0xc
+0x184f2bc9c:  e0 03 13 aa   mov	x0, x19
+0x184f2bca0:  d4 ad ff 97   bl	_NSViewHierarchyInvalidateVisibleRect
+0x184f2bca4:  ; loc_184f2bca4
+0x184f2bca4:  e0 03 c0 3d   ldr	q0, [sp]
+0x184f2bca8:  a0 02 80 3d   str	q0, [x21]
+0x184f2bcac:  61 a9 31 b0   adrp	x1, 0x1e8458000
+0x184f2bcb0:  21 40 1d 91   add	x1, x1, #0x750 ; "frameOrigin"
+0x184f2bcb4:  e0 03 13 aa   mov	x0, x19
+0x184f2bcb8:  30 b2 ff 97   bl	__NSInvalidateKeyValueDependencies
+0x184f2bcbc:  c8 c2 8a b9   ldrsw	x8, [x22, #0xac0]
+0x184f2bcc0:  68 02 08 8b   add	x8, x19, x8
+0x184f2bcc4:  08 01 40 39   ldrb	w8, [x8]
+0x184f2bcc8:  c8 00 00 37   tbnz	w8, #0, loc_184f2bce0 ; ⤵ 0x18
+0x184f2bccc:  68 02 17 8b   add	x8, x19, x23
+0x184f2bcd0:  08 05 40 39   ldrb	w8, [x8, #0x1]
+0x184f2bcd4:  68 00 10 37   tbnz	w8, #0x2, loc_184f2bce0 ; ⤵ 0xc
+0x184f2bcd8:  e0 03 13 aa   mov	x0, x19
+0x184f2bcdc:  e9 de c4 94   bl	0x188063880
+0x184f2bce0:  ; loc_184f2bce0
+0x184f2bce0:  e0 03 13 aa   mov	x0, x19
+0x184f2bce4:  4f 02 c5 94   bl	0x18806c620
+0x184f2bce8:  c8 c2 8a b9   ldrsw	x8, [x22, #0xac0]
+0x184f2bcec:  68 02 08 8b   add	x8, x19, x8
+0x184f2bcf0:  08 01 40 39   ldrb	w8, [x8]
+0x184f2bcf4:  28 03 00 37   tbnz	w8, #0, loc_184f2bd58 ; ⤵ 0x64
+0x184f2bcf8:  c8 ae 2f f0   adrp	x8, 0x1e4506000
+0x184f2bcfc:  15 e9 8a b9   ldrsw	x21, [x8, #0xae8] ; _OBJC_IVAR_$_NSView._window
+0x184f2bd00:  68 02 15 8b   add	x8, x19, x21
+0x184f2bd04:  00 01 40 f9   ldr	x0, [x8]
+0x184f2bd08:  e2 96 c4 94   bl	0x188051890
+0x184f2bd0c:  e0 03 13 aa   mov	x0, x19
+0x184f2bd10:  c8 87 c4 94   bl	0x18804dc30
+0x184f2bd14:  e0 03 13 aa   mov	x0, x19
+0x184f2bd18:  36 ad c4 94   bl	0x1880571f0
+0x184f2bd1c:  c8 a5 30 90   adrp	x8, 0x1e63e3000
+0x184f2bd20:  08 35 85 b9   ldrsw	x8, [x8, #0x534]
+0x184f2bd24:  68 02 08 8b   add	x8, x19, x8
+0x184f2bd28:  08 01 40 39   ldrb	w8, [x8]
+0x184f2bd2c:  68 00 10 37   tbnz	w8, #0x2, loc_184f2bd38 ; ⤵ 0xc
+0x184f2bd30:  e0 03 13 aa   mov	x0, x19
+0x184f2bd34:  d4 00 00 94   bl	_NSViewUpdateConstraintsForFrameChange
+0x184f2bd38:  ; loc_184f2bd38
+0x184f2bd38:  16 00 80 52   mov	w22, #0
+0x184f2bd3c:  ; loc_184f2bd3c
+0x184f2bd3c:  60 6a 75 f8   ldr	x0, [x19, x21]
+0x184f2bd40:  50 fb c4 94   bl	0x18806aa80
+0x184f2bd44:  d6 04 00 35   cbnz	w22, loc_184f2bddc ; ⤵ 0x98
+0x184f2bd48:  94 00 00 37   tbnz	w20, #0, loc_184f2bd58 ; ⤵ 0x10
+0x184f2bd4c:  e0 03 13 aa   mov	x0, x19
+0x184f2bd50:  42 00 80 52   mov	w2, #0x2
+0x184f2bd54:  eb dc c4 94   bl	0x188063100
+0x184f2bd58:  ; loc_184f2bd58
+0x184f2bd58:  fd 7b 45 a9   ldp	fp, lr, [sp, #0x50]
+0x184f2bd5c:  f4 4f 44 a9   ldp	x20, x19, [sp, #0x40]
+0x184f2bd60:  f6 57 43 a9   ldp	x22, x21, [sp, #0x30]
+0x184f2bd64:  f8 5f 42 a9   ldp	x24, x23, [sp, #0x20]
+0x184f2bd68:  e9 23 41 6d   ldp	d9, d8, [sp, #0x10]
+0x184f2bd6c:  ff 83 01 91   add	sp, sp, #0x60
+0x184f2bd70:  ff 0f 5f d6   retab
+0x184f2bd74:  ; loc_184f2bd74
+0x184f2bd74:  c0 ab 31 b0   adrp	x0, 0x1e84a4000
+0x184f2bd78:  00 c0 29 91   add	x0, x0, #0xa70 ; "NSViewManageLayerTreeLoosely"
+0x184f2bd7c:  c2 b1 2f b0   adrp	x2, 0x1e4564000
+0x184f2bd80:  42 40 16 91   add	x2, x2, #0x590 ; data_1e4564590 (AppKit/__DATA.__bss)
+0x184f2bd84:  30 ff ff 90   adrp	x16, 0x184f0f000
+0x184f2bd88:  10 a2 3a 91   add	x16, x16, #0xea8 ; _NSViewManageLayerTreeLooselyDefaultValueFunction
+0x184f2bd8c:  f0 23 c1 da   paciza	x16
+0x184f2bd90:  e3 03 10 aa   mov	x3, x16
+0x184f2bd94:  01 00 80 52   mov	w1, #0
+0x184f2bd98:  68 6f fe 97   bl	__NSGetBoolAppConfig
+0x184f2bd9c:  40 ed ff 35   cbnz	w0, loc_184f2bb44 ; ⤴ -0x258
+0x184f2bda0:  6d ff ff 17   b	loc_184f2bb54 ; ⤴ -0x24c
+0x184f2bda4:  ; loc_184f2bda4
+0x184f2bda4:  c0 9e 00 b0   adrp	x0, 0x186304000
+0x184f2bda8:  00 0c 19 91   add	x0, x0, #0x643 ; "NSViewIsInclusiveLayerBacked"
+0x184f2bdac:  a1 9e 00 d0   adrp	x1, 0x186301000
+0x184f2bdb0:  21 1c 39 91   add	x1, x1, #0xe47 ; _.str.228 ; "NSView.m"
+0x184f2bdb4:  c3 9e 00 b0   adrp	x3, 0x186304000
+0x184f2bdb8:  63 80 19 91   add	x3, x3, #0x660 ; "self->_isInclusiveLayerBacked == NO"
+0x184f2bdbc:  22 15 87 52   mov	w2, #0x38a9
+0x184f2bdc0:  4c d5 c6 94   bl	j____assert_rtn
+0x184f2bdc4:  ; loc_184f2bdc4
+0x184f2bdc4:  c0 b1 2f b0   adrp	x0, 0x1e4564000
+0x184f2bdc8:  00 c0 19 91   add	x0, x0, #0x670 ; data_1e4564670 (AppKit/__DATA.__bss)
+0x184f2bdcc:  81 a6 31 f0   adrp	x1, 0x1e83fe000
+0x184f2bdd0:  21 40 2e 91   add	x1, x1, #0xb90 ; ___block_literal_global.2884
+0x184f2bdd4:  23 d7 c6 94   bl	j__dispatch_once
+0x184f2bdd8:  6d ff ff 17   b	loc_184f2bb8c ; ⤴ -0x24c
+0x184f2bddc:  ; loc_184f2bddc
+0x184f2bddc:  fd d8 c6 94   bl	j__objc_exception_rethrow
+0x184f2bde0:  20 00 20 d4   brk	#0x1
+0x184f2bde4:  f3 03 00 aa   mov	x19, x0
+0x184f2bde8:  03 00 00 14   b	loc_184f2bdf4 ; ⤵ 0xc
+0x184f2bdec:  f3 03 00 aa   mov	x19, x0
+0x184f2bdf0:  56 00 00 34   cbz	w22, loc_184f2bdf8 ; ⤵ 0x8
+0x184f2bdf4:  ; loc_184f2bdf4
+0x184f2bdf4:  cf c8 c6 94   bl	j__objc_end_catch
+0x184f2bdf8:  ; loc_184f2bdf8
+0x184f2bdf8:  e0 03 13 aa   mov	x0, x19
+0x184f2bdfc:  a5 c0 c6 94   bl	j___Unwind_Resume
+0x184f2be00:  d8 c8 c6 94   bl	j__objc_terminate
+0x184f2be04:  c3 c8 c6 94   bl	j__objc_begin_catch
+0x184f2be08:  36 00 80 52   mov	w22, #0x1
+0x184f2be0c:  cc ff ff 17   b	loc_184f2bd3c ; ⤴ -0xd0
+

@@ -1,0 +1,41 @@
+### -[NSControl sendAction:to:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSControl sendAction:to:]
+
+-[NSControl sendAction:to:]:
+0x185098360:  7f 23 03 d5   pacibsp
+0x185098364:  f6 57 bd a9   stp	x22, x21, [sp, #-0x30]!
+0x185098368:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x18509836c:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x185098370:  fd 83 00 91   add	fp, sp, #0x20
+0x185098374:  f3 03 03 aa   mov	x19, x3
+0x185098378:  f4 03 02 aa   mov	x20, x2
+0x18509837c:  f5 03 00 aa   mov	x21, x0
+0x185098380:  02 00 84 52   mov	w2, #0x2000
+0x185098384:  e3 03 00 aa   mov	x3, x0
+0x185098388:  4e 17 bf 94   bl	0x18805e0c0
+0x18509838c:  e0 03 15 aa   mov	x0, x21
+0x185098390:  ac 88 be 94   bl	0x18803a640
+0x185098394:  e2 03 15 aa   mov	x2, x21
+0x185098398:  56 f4 bf 94   bl	0x1880954f0
+0x18509839c:  f6 9a 30 90   adrp	x22, 0x1e63f4000
+0x1850983a0:  d6 e2 0b 91   add	x22, x22, #0x2f8 ; _NSApp
+0x1850983a4:  c0 02 40 f9   ldr	x0, [x22]
+0x1850983a8:  e2 03 14 aa   mov	x2, x20
+0x1850983ac:  e3 03 13 aa   mov	x3, x19
+0x1850983b0:  e4 03 15 aa   mov	x4, x21
+0x1850983b4:  07 1f c0 94   bl	0x18809ffd0
+0x1850983b8:  f3 03 00 aa   mov	x19, x0
+0x1850983bc:  d4 00 00 b4   cbz	x20, loc_1850983d4 ; ⤵ 0x18
+0x1850983c0:  b3 00 00 37   tbnz	w19, #0, loc_1850983d4 ; ⤵ 0x14
+0x1850983c4:  c0 02 40 f9   ldr	x0, [x22]
+0x1850983c8:  8a dc be 94   bl	0x18804f5f0
+0x1850983cc:  40 00 00 34   cbz	w0, loc_1850983d4 ; ⤵ 0x8
+0x1850983d0:  f6 89 03 94   bl	_NSBeep
+0x1850983d4:  ; loc_1850983d4
+0x1850983d4:  e0 03 13 aa   mov	x0, x19
+0x1850983d8:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x1850983dc:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x1850983e0:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x1850983e4:  ff 0f 5f d6   retab
+

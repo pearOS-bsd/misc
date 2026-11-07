@@ -1,0 +1,119 @@
+### -[NSScrollView setDocumentView:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSScrollView setDocumentView:]
+
+-[NSScrollView setDocumentView:]:
+0x184f63e8c:  7f 23 03 d5   pacibsp
+0x184f63e90:  eb 2b ba 6d   stp	d11, d10, [sp, #-0x60]!
+0x184f63e94:  e9 23 01 6d   stp	d9, d8, [sp, #0x10]
+0x184f63e98:  f8 5f 02 a9   stp	x24, x23, [sp, #0x20]
+0x184f63e9c:  f6 57 03 a9   stp	x22, x21, [sp, #0x30]
+0x184f63ea0:  f4 4f 04 a9   stp	x20, x19, [sp, #0x40]
+0x184f63ea4:  fd 7b 05 a9   stp	fp, lr, [sp, #0x50]
+0x184f63ea8:  fd 43 01 91   add	fp, sp, #0x50
+0x184f63eac:  f4 03 02 aa   mov	x20, x2
+0x184f63eb0:  f3 03 00 aa   mov	x19, x0
+0x184f63eb4:  df 72 c4 94   bl	0x188080a30
+0x184f63eb8:  f5 03 00 aa   mov	x21, x0
+0x184f63ebc:  e0 03 13 aa   mov	x0, x19
+0x184f63ec0:  24 60 c4 94   bl	0x18807bf50
+0x184f63ec4:  f6 03 00 aa   mov	x22, x0
+0x184f63ec8:  e2 03 14 aa   mov	x2, x20
+0x184f63ecc:  05 01 c5 94   bl	0x1880a42e0
+0x184f63ed0:  28 ad 2f 90   adrp	x8, 0x1e4507000
+0x184f63ed4:  08 99 88 b9   ldrsw	x8, [x8, #0x898] ; _OBJC_IVAR_$_NSScrollView._sFlags
+0x184f63ed8:  68 02 08 8b   add	x8, x19, x8
+0x184f63edc:  08 09 40 39   ldrb	w8, [x8, #0x2]
+0x184f63ee0:  88 00 38 36   tbz	w8, #0x7, loc_184f63ef0 ; ⤵ 0x10
+0x184f63ee4:  e0 03 13 aa   mov	x0, x19
+0x184f63ee8:  22 00 80 52   mov	w2, #0x1
+0x184f63eec:  0d 12 c5 94   bl	0x1880a8720
+0x184f63ef0:  ; loc_184f63ef0
+0x184f63ef0:  e0 03 13 aa   mov	x0, x19
+0x184f63ef4:  23 91 c3 94   bl	0x188048380
+0x184f63ef8:  a0 00 00 34   cbz	w0, loc_184f63f0c ; ⤵ 0x14
+0x184f63efc:  e0 03 13 aa   mov	x0, x19
+0x184f63f00:  ec 97 2b 94   bl	-[NSScrollView _updateTitlebarAdjacencyState]
+0x184f63f04:  e0 03 13 aa   mov	x0, x19
+0x184f63f08:  02 15 c4 94   bl	0x188069310
+0x184f63f0c:  ; loc_184f63f0c
+0x184f63f0c:  96 05 00 b4   cbz	x22, loc_184f63fbc ; ⤵ 0xb0
+0x184f63f10:  28 ad 2f 90   adrp	x8, 0x1e4507000
+0x184f63f14:  17 a5 88 b9   ldrsw	x23, [x8, #0x8a4] ; _OBJC_IVAR_$_NSScrollView._headerClipView
+0x184f63f18:  68 02 17 8b   add	x8, x19, x23
+0x184f63f1c:  08 01 40 f9   ldr	x8, [x8]
+0x184f63f20:  e8 04 00 b4   cbz	x8, loc_184f63fbc ; ⤵ 0x9c
+0x184f63f24:  e0 03 13 aa   mov	x0, x19
+0x184f63f28:  b6 6c c3 94   bl	0x18803f200
+0x184f63f2c:  20 02 00 34   cbz	w0, loc_184f63f70 ; ⤵ 0x44
+0x184f63f30:  e0 03 16 aa   mov	x0, x22
+0x184f63f34:  93 4e c4 94   bl	0x188077980
+0x184f63f38:  28 1c a1 4e   mov	v8.16b, v1.16b
+0x184f63f3c:  e0 03 14 aa   mov	x0, x20
+0x184f63f40:  10 84 c4 94   bl	0x188084f80
+0x184f63f44:  00 21 61 1e   fcmp	d8, d1
+0x184f63f48:  41 01 00 54   b.ne	loc_184f63f70 ; ⤵ 0x28
+0x184f63f4c:  e0 03 16 aa   mov	x0, x22
+0x184f63f50:  8c 4e c4 94   bl	0x188077980
+0x184f63f54:  08 1c a0 4e   mov	v8.16b, v0.16b
+0x184f63f58:  e0 03 16 aa   mov	x0, x22
+0x184f63f5c:  5d 5f c4 94   bl	0x18807bcd0
+0x184f63f60:  01 40 61 1e   fneg	d1, d0
+0x184f63f64:  e0 03 16 aa   mov	x0, x22
+0x184f63f68:  00 1d a8 4e   mov	v0.16b, v8.16b
+0x184f63f6c:  0d f8 c4 94   bl	0x1880a1fa0
+0x184f63f70:  ; loc_184f63f70
+0x184f63f70:  60 6a 77 f8   ldr	x0, [x19, x23]
+0x184f63f74:  83 4e c4 94   bl	0x188077980
+0x184f63f78:  28 1c a1 4e   mov	v8.16b, v1.16b
+0x184f63f7c:  e0 03 16 aa   mov	x0, x22
+0x184f63f80:  80 4e c4 94   bl	0x188077980
+0x184f63f84:  09 1c a0 4e   mov	v9.16b, v0.16b
+0x184f63f88:  76 6a 77 f8   ldr	x22, [x19, x23]
+0x184f63f8c:  e0 03 16 aa   mov	x0, x22
+0x184f63f90:  7c 4e c4 94   bl	0x188077980
+0x184f63f94:  4a 1c a2 4e   mov	v10.16b, v2.16b
+0x184f63f98:  60 6a 77 f8   ldr	x0, [x19, x23]
+0x184f63f9c:  79 4e c4 94   bl	0x188077980
+0x184f63fa0:  e0 03 16 aa   mov	x0, x22
+0x184f63fa4:  20 1d a9 4e   mov	v0.16b, v9.16b
+0x184f63fa8:  01 1d a8 4e   mov	v1.16b, v8.16b
+0x184f63fac:  42 1d aa 4e   mov	v2.16b, v10.16b
+0x184f63fb0:  a4 6b c3 94   bl	0x18803ee40
+0x184f63fb4:  60 6a 77 f8   ldr	x0, [x19, x23]
+0x184f63fb8:  2e ea c4 94   bl	0x18809e870
+0x184f63fbc:  ; loc_184f63fbc
+0x184f63fbc:  9f 02 15 eb   cmp	x20, x21
+0x184f63fc0:  e0 02 00 54   b.eq	loc_184f6401c ; ⤵ 0x5c
+0x184f63fc4:  14 a4 30 90   adrp	x20, 0x1e63e3000
+0x184f63fc8:  88 42 8d b9   ldrsw	x8, [x20, #0xd40]
+0x184f63fcc:  68 02 08 8b   add	x8, x19, x8
+0x184f63fd0:  00 01 40 f9   ldr	x0, [x8]
+0x184f63fd4:  23 e3 c5 94   bl	j__objc_release_x0
+0x184f63fd8:  88 42 8d b9   ldrsw	x8, [x20, #0xd40]
+0x184f63fdc:  68 02 08 8b   add	x8, x19, x8
+0x184f63fe0:  1f 01 00 f9   str	xzr, [x8]
+0x184f63fe4:  e0 03 13 aa   mov	x0, x19
+0x184f63fe8:  01 00 80 d2   mov	x1, #0
+0x184f63fec:  62 00 80 52   mov	w2, #0x3
+0x184f63ff0:  fd 7b 45 a9   ldp	fp, lr, [sp, #0x50]
+0x184f63ff4:  f4 4f 44 a9   ldp	x20, x19, [sp, #0x40]
+0x184f63ff8:  f6 57 43 a9   ldp	x22, x21, [sp, #0x30]
+0x184f63ffc:  f8 5f 42 a9   ldp	x24, x23, [sp, #0x20]
+0x184f64000:  e9 23 41 6d   ldp	d9, d8, [sp, #0x10]
+0x184f64004:  eb 2b c6 6c   ldp	d11, d10, [sp], #0x60
+0x184f64008:  ff 23 03 d5   autibsp
+0x184f6400c:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f64010:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f64018 ; ⤵ 0x8
+0x184f64014:  20 8e 38 d4   brk	#0xc471
+0x184f64018:  ; loc_184f64018
+0x184f64018:  5d 9f 2b 14   b	-[NSScrollView __refreshScrollPocketBackgroundColorsMinEdge:maxEdge:]
+0x184f6401c:  ; loc_184f6401c
+0x184f6401c:  fd 7b 45 a9   ldp	fp, lr, [sp, #0x50]
+0x184f64020:  f4 4f 44 a9   ldp	x20, x19, [sp, #0x40]
+0x184f64024:  f6 57 43 a9   ldp	x22, x21, [sp, #0x30]
+0x184f64028:  f8 5f 42 a9   ldp	x24, x23, [sp, #0x20]
+0x184f6402c:  e9 23 41 6d   ldp	d9, d8, [sp, #0x10]
+0x184f64030:  eb 2b c6 6c   ldp	d11, d10, [sp], #0x60
+0x184f64034:  ff 0f 5f d6   retab
+

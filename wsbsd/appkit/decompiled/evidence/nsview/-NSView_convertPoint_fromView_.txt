@@ -1,0 +1,45 @@
+### -[NSView convertPoint:fromView:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSView convertPoint:fromView:]
+
+-[NSView convertPoint:fromView:]:
+0x184f2cd20:  7f 23 03 d5   pacibsp
+0x184f2cd24:  e9 23 bc 6d   stp	d9, d8, [sp, #-0x40]!
+0x184f2cd28:  f6 57 01 a9   stp	x22, x21, [sp, #0x10]
+0x184f2cd2c:  f4 4f 02 a9   stp	x20, x19, [sp, #0x20]
+0x184f2cd30:  fd 7b 03 a9   stp	fp, lr, [sp, #0x30]
+0x184f2cd34:  fd c3 00 91   add	fp, sp, #0x30
+0x184f2cd38:  28 1c a1 4e   mov	v8.16b, v1.16b
+0x184f2cd3c:  09 1c a0 4e   mov	v9.16b, v0.16b
+0x184f2cd40:  f3 03 00 aa   mov	x19, x0
+0x184f2cd44:  a2 01 00 b4   cbz	x2, loc_184f2cd78 ; ⤵ 0x34
+0x184f2cd48:  f5 03 02 aa   mov	x21, x2
+0x184f2cd4c:  e0 03 13 aa   mov	x0, x19
+0x184f2cd50:  4c 1f c5 94   bl	0x188074a80
+0x184f2cd54:  f4 03 00 aa   mov	x20, x0
+0x184f2cd58:  e0 03 15 aa   mov	x0, x21
+0x184f2cd5c:  20 1d a9 4e   mov	v0.16b, v9.16b
+0x184f2cd60:  01 1d a8 4e   mov	v1.16b, v8.16b
+0x184f2cd64:  e2 03 14 aa   mov	x2, x20
+0x184f2cd68:  22 4b c4 94   bl	0x18803f9f0
+0x184f2cd6c:  09 1c a0 4e   mov	v9.16b, v0.16b
+0x184f2cd70:  28 1c a1 4e   mov	v8.16b, v1.16b
+0x184f2cd74:  02 00 00 14   b	loc_184f2cd7c ; ⤵ 0x8
+0x184f2cd78:  ; loc_184f2cd78
+0x184f2cd78:  14 00 80 d2   mov	x20, #0
+0x184f2cd7c:  ; loc_184f2cd7c
+0x184f2cd7c:  e0 03 13 aa   mov	x0, x19
+0x184f2cd80:  20 1d a9 4e   mov	v0.16b, v9.16b
+0x184f2cd84:  01 1d a8 4e   mov	v1.16b, v8.16b
+0x184f2cd88:  e1 03 14 aa   mov	x1, x20
+0x184f2cd8c:  fd 7b 43 a9   ldp	fp, lr, [sp, #0x30]
+0x184f2cd90:  f4 4f 42 a9   ldp	x20, x19, [sp, #0x20]
+0x184f2cd94:  f6 57 41 a9   ldp	x22, x21, [sp, #0x10]
+0x184f2cd98:  e9 23 c4 6c   ldp	d9, d8, [sp], #0x40
+0x184f2cd9c:  ff 23 03 d5   autibsp
+0x184f2cda0:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f2cda4:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f2cdac ; ⤵ 0x8
+0x184f2cda8:  20 8e 38 d4   brk	#0xc471
+0x184f2cdac:  ; loc_184f2cdac
+0x184f2cdac:  7a b6 ff 17   b	__convertPoint_fromAncestor
+

@@ -1,0 +1,106 @@
+### -[NSTableView addTableColumn:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTableView addTableColumn:]
+
+-[NSTableView addTableColumn:]:
+0x1850b6b7c:  7f 23 03 d5   pacibsp
+0x1850b6b80:  f8 5f bc a9   stp	x24, x23, [sp, #-0x40]!
+0x1850b6b84:  f6 57 01 a9   stp	x22, x21, [sp, #0x10]
+0x1850b6b88:  f4 4f 02 a9   stp	x20, x19, [sp, #0x20]
+0x1850b6b8c:  fd 7b 03 a9   stp	fp, lr, [sp, #0x30]
+0x1850b6b90:  fd c3 00 91   add	fp, sp, #0x30
+0x1850b6b94:  f4 03 00 aa   mov	x20, x0
+0x1850b6b98:  e0 03 02 aa   mov	x0, x2
+0x1850b6b9c:  35 98 c0 94   bl	j__objc_retain_x0
+0x1850b6ba0:  f3 03 00 aa   mov	x19, x0
+0x1850b6ba4:  e2 03 14 aa   mov	x2, x20
+0x1850b6ba8:  3a d7 bf 94   bl	0x1880ac890
+0x1850b6bac:  68 a2 2f f0   adrp	x8, 0x1e4505000
+0x1850b6bb0:  17 2d 8f b9   ldrsw	x23, [x8, #0xf2c] ; _OBJC_IVAR_$_NSTableView._headerView
+0x1850b6bb4:  88 02 17 8b   add	x8, x20, x23
+0x1850b6bb8:  00 01 40 f9   ldr	x0, [x8]
+0x1850b6bbc:  e2 03 14 aa   mov	x2, x20
+0x1850b6bc0:  e3 03 13 aa   mov	x3, x19
+0x1850b6bc4:  ef c6 be 94   bl	0x188068780
+0x1850b6bc8:  68 a2 2f f0   adrp	x8, 0x1e4505000
+0x1850b6bcc:  08 fd 8e b9   ldrsw	x8, [x8, #0xefc] ; _OBJC_IVAR_$_NSTableView._tableColumns
+0x1850b6bd0:  88 02 08 8b   add	x8, x20, x8
+0x1850b6bd4:  00 01 40 f9   ldr	x0, [x8]
+0x1850b6bd8:  e2 03 13 aa   mov	x2, x19
+0x1850b6bdc:  05 2e bd 94   bl	0x1880023f0
+0x1850b6be0:  e0 03 14 aa   mov	x0, x20
+0x1850b6be4:  6f 5f be 94   bl	0x18804e9a0
+0x1850b6be8:  20 02 00 37   tbnz	w0, #0, loc_1850b6c2c ; ⤵ 0x44
+0x1850b6bec:  e0 03 13 aa   mov	x0, x19
+0x1850b6bf0:  4c 41 bf 94   bl	0x188087120
+0x1850b6bf4:  c7 a0 c0 94   bl	j__objc_claimAutoreleasedReturnValue
+0x1850b6bf8:  f5 03 00 aa   mov	x21, x0
+0x1850b6bfc:  02 00 80 52   mov	w2, #0
+0x1850b6c00:  1c 38 bd 94   bl	0x188004c70
+0x1850b6c04:  e0 03 15 aa   mov	x0, x21
+0x1850b6c08:  16 98 c0 94   bl	j__objc_release_x0
+0x1850b6c0c:  e0 03 13 aa   mov	x0, x19
+0x1850b6c10:  ec 1c bf 94   bl	0x18807dfc0
+0x1850b6c14:  bf a0 c0 94   bl	j__objc_claimAutoreleasedReturnValue
+0x1850b6c18:  f5 03 00 aa   mov	x21, x0
+0x1850b6c1c:  02 00 80 52   mov	w2, #0
+0x1850b6c20:  14 38 bd 94   bl	0x188004c70
+0x1850b6c24:  e0 03 15 aa   mov	x0, x21
+0x1850b6c28:  0e 98 c0 94   bl	j__objc_release_x0
+0x1850b6c2c:  ; loc_1850b6c2c
+0x1850b6c2c:  e0 03 14 aa   mov	x0, x20
+0x1850b6c30:  f0 67 bf 94   bl	0x188090bf0
+0x1850b6c34:  b7 a0 c0 94   bl	j__objc_claimAutoreleasedReturnValue
+0x1850b6c38:  f5 03 00 aa   mov	x21, x0
+0x1850b6c3c:  20 01 00 b4   cbz	x0, loc_1850b6c60 ; ⤵ 0x24
+0x1850b6c40:  e0 03 14 aa   mov	x0, x20
+0x1850b6c44:  13 0e c0 94   bl	0x1880ba490
+0x1850b6c48:  f6 03 00 aa   mov	x22, x0
+0x1850b6c4c:  e0 03 15 aa   mov	x0, x21
+0x1850b6c50:  04 98 c0 94   bl	j__objc_release_x0
+0x1850b6c54:  76 00 00 34   cbz	w22, loc_1850b6c60 ; ⤵ 0xc
+0x1850b6c58:  e0 03 14 aa   mov	x0, x20
+0x1850b6c5c:  85 90 be 94   bl	0x18805ae70
+0x1850b6c60:  ; loc_1850b6c60
+0x1850b6c60:  e0 03 14 aa   mov	x0, x20
+0x1850b6c64:  df 0d be 94   bl	0x18803a3e0
+0x1850b6c68:  e0 03 14 aa   mov	x0, x20
+0x1850b6c6c:  22 00 80 52   mov	w2, #0x1
+0x1850b6c70:  58 5b be 94   bl	0x18804d9d0
+0x1850b6c74:  80 6a 77 f8   ldr	x0, [x20, x23]
+0x1850b6c78:  e2 03 14 aa   mov	x2, x20
+0x1850b6c7c:  e3 03 13 aa   mov	x3, x19
+0x1850b6c80:  ac c6 be 94   bl	0x188068730
+0x1850b6c84:  68 a2 2f f0   adrp	x8, 0x1e4505000
+0x1850b6c88:  08 f9 8e b9   ldrsw	x8, [x8, #0xef8] ; _OBJC_IVAR_$_NSTableView._rowData
+0x1850b6c8c:  88 02 08 8b   add	x8, x20, x8
+0x1850b6c90:  00 01 40 f9   ldr	x0, [x8]
+0x1850b6c94:  e1 03 13 aa   mov	x1, x19
+0x1850b6c98:  d6 6e 00 94   bl	-[NSTableRowData didAddTableColumn:]
+0x1850b6c9c:  e0 03 14 aa   mov	x0, x20
+0x1850b6ca0:  34 3e be 94   bl	0x188046570
+0x1850b6ca4:  e0 03 13 aa   mov	x0, x19
+0x1850b6ca8:  fd 7b 43 a9   ldp	fp, lr, [sp, #0x30]
+0x1850b6cac:  f4 4f 42 a9   ldp	x20, x19, [sp, #0x20]
+0x1850b6cb0:  f6 57 41 a9   ldp	x22, x21, [sp, #0x10]
+0x1850b6cb4:  f8 5f c4 a8   ldp	x24, x23, [sp], #0x40
+0x1850b6cb8:  ff 23 03 d5   autibsp
+0x1850b6cbc:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x1850b6cc0:  50 00 f0 b6   tbz	x16, #0x3e, loc_1850b6cc8 ; ⤵ 0x8
+0x1850b6cc4:  20 8e 38 d4   brk	#0xc471
+0x1850b6cc8:  ; loc_1850b6cc8
+0x1850b6cc8:  e6 97 c0 14   b	j__objc_release_x0
+0x1850b6ccc:  02 00 00 14   b	loc_1850b6cd4 ; ⤵ 0x8
+0x1850b6cd0:  01 00 00 14   b	loc_1850b6cd4 ; ⤵ 0x4
+0x1850b6cd4:  ; loc_1850b6cd4
+0x1850b6cd4:  f4 03 00 aa   mov	x20, x0
+0x1850b6cd8:  e0 03 15 aa   mov	x0, x21
+0x1850b6cdc:  e1 97 c0 94   bl	j__objc_release_x0
+0x1850b6ce0:  02 00 00 14   b	loc_1850b6ce8 ; ⤵ 0x8
+0x1850b6ce4:  f4 03 00 aa   mov	x20, x0
+0x1850b6ce8:  ; loc_1850b6ce8
+0x1850b6ce8:  e0 03 13 aa   mov	x0, x19
+0x1850b6cec:  dd 97 c0 94   bl	j__objc_release_x0
+0x1850b6cf0:  e0 03 14 aa   mov	x0, x20
+0x1850b6cf4:  e7 94 c0 94   bl	j___Unwind_Resume
+

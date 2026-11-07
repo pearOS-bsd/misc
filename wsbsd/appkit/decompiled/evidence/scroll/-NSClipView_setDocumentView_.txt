@@ -1,0 +1,262 @@
+### -[NSClipView setDocumentView:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSClipView setDocumentView:]
+
+-[NSClipView setDocumentView:]:
+0x184f56364:  7f 23 03 d5   pacibsp
+0x184f56368:  ff 03 02 d1   sub	sp, sp, #0x80
+0x184f5636c:  e9 23 02 6d   stp	d9, d8, [sp, #0x20]
+0x184f56370:  fa 67 03 a9   stp	x26, x25, [sp, #0x30]
+0x184f56374:  f8 5f 04 a9   stp	x24, x23, [sp, #0x40]
+0x184f56378:  f6 57 05 a9   stp	x22, x21, [sp, #0x50]
+0x184f5637c:  f4 4f 06 a9   stp	x20, x19, [sp, #0x60]
+0x184f56380:  fd 7b 07 a9   stp	fp, lr, [sp, #0x70]
+0x184f56384:  fd c3 01 91   add	fp, sp, #0x70
+0x184f56388:  f4 03 02 aa   mov	x20, x2
+0x184f5638c:  f3 03 00 aa   mov	x19, x0
+0x184f56390:  f5 a4 30 f0   adrp	x21, 0x1e63f5000
+0x184f56394:  b5 d2 2e 91   add	x21, x21, #0xbb4 ; _sNSScrollViewSetDocumentViewRedundantlyComputedValue
+0x184f56398:  a8 fe df 08   ldarb	w8, [x21]
+0x184f5639c:  1f 09 00 71   cmp	w8, #0x2
+0x184f563a0:  a0 01 00 54   b.eq	loc_184f563d4 ; ⤵ 0x34
+0x184f563a4:  c8 01 00 35   cbnz	w8, loc_184f563dc ; ⤵ 0x38
+0x184f563a8:  c0 a7 31 f0   adrp	x0, 0x1e8451000
+0x184f563ac:  00 40 0f 91   add	x0, x0, #0x3d0 ; "NSScrollViewSetDocumentViewRedundantly"
+0x184f563b0:  e2 a4 30 f0   adrp	x2, 0x1e63f5000
+0x184f563b4:  42 d0 2e 91   add	x2, x2, #0xbb4 ; _sNSScrollViewSetDocumentViewRedundantlyComputedValue
+0x184f563b8:  10 00 00 90   adrp	x16, 0x184f56000
+0x184f563bc:  10 f2 1b 91   add	x16, x16, #0x6fc ; _NSScrollViewSetDocumentViewRedundantlyDefaultValueFunction
+0x184f563c0:  f0 23 c1 da   paciza	x16
+0x184f563c4:  e3 03 10 aa   mov	x3, x16
+0x184f563c8:  01 00 80 52   mov	w1, #0
+0x184f563cc:  db c5 fd 97   bl	__NSGetBoolAppConfig
+0x184f563d0:  60 00 00 37   tbnz	w0, #0, loc_184f563dc ; ⤵ 0xc
+0x184f563d4:  ; loc_184f563d4
+0x184f563d4:  e0 03 13 aa   mov	x0, x19
+0x184f563d8:  ea 10 c4 94   bl	0x18805a780
+0x184f563dc:  ; loc_184f563dc
+0x184f563dc:  68 ad 2f 90   adrp	x8, 0x1e4502000
+0x184f563e0:  17 e5 83 b9   ldrsw	x23, [x8, #0x3e4] ; _OBJC_IVAR_$_NSClipView._cvFlags
+0x184f563e4:  68 02 17 8b   add	x8, x19, x23
+0x184f563e8:  08 01 40 39   ldrb	w8, [x8]
+0x184f563ec:  76 ad 2f 90   adrp	x22, 0x1e4502000
+0x184f563f0:  a8 01 30 37   tbnz	w8, #0x6, loc_184f56424 ; ⤵ 0x34
+0x184f563f4:  d8 ea 83 b9   ldrsw	x24, [x22, #0x3e8]
+0x184f563f8:  68 02 18 8b   add	x8, x19, x24
+0x184f563fc:  08 01 40 f9   ldr	x8, [x8]
+0x184f56400:  9f 02 08 eb   cmp	x20, x8
+0x184f56404:  a1 00 00 54   b.ne	loc_184f56418 ; ⤵ 0x14
+0x184f56408:  a8 fe df 08   ldarb	w8, [x21]
+0x184f5640c:  1f 09 00 71   cmp	w8, #0x2
+0x184f56410:  00 14 00 54   b.eq	loc_184f56690 ; ⤵ 0x280
+0x184f56414:  88 12 00 34   cbz	w8, loc_184f56664 ; ⤵ 0x250
+0x184f56418:  ; loc_184f56418
+0x184f56418:  15 00 80 52   mov	w21, #0
+0x184f5641c:  38 00 80 52   mov	w24, #0x1
+0x184f56420:  03 00 00 14   b	loc_184f5642c ; ⤵ 0xc
+0x184f56424:  ; loc_184f56424
+0x184f56424:  15 00 80 52   mov	w21, #0
+0x184f56428:  ; loc_184f56428
+0x184f56428:  18 00 80 52   mov	w24, #0
+0x184f5642c:  ; loc_184f5642c
+0x184f5642c:  68 6a 77 b8   ldr	w8, [x19, x23]
+0x184f56430:  08 01 1a 32   orr	w8, w8, #0x40
+0x184f56434:  68 6a 37 b8   str	w8, [x19, x23]
+0x184f56438:  d9 ea 83 b9   ldrsw	x25, [x22, #0x3e8]
+0x184f5643c:  68 02 19 8b   add	x8, x19, x25
+0x184f56440:  08 01 40 f9   ldr	x8, [x8]
+0x184f56444:  a8 00 00 b4   cbz	x8, loc_184f56458 ; ⤵ 0x14
+0x184f56448:  e0 03 13 aa   mov	x0, x19
+0x184f5644c:  e9 51 c4 94   bl	0x18806abf0
+0x184f56450:  e0 03 13 aa   mov	x0, x19
+0x184f56454:  47 11 c4 94   bl	0x18805a970
+0x184f56458:  ; loc_184f56458
+0x184f56458:  e0 03 13 aa   mov	x0, x19
+0x184f5645c:  c9 f8 c4 94   bl	0x188094780
+0x184f56460:  f6 03 00 aa   mov	x22, x0
+0x184f56464:  94 04 00 b4   cbz	x20, loc_184f564f4 ; ⤵ 0x90
+0x184f56468:  e0 03 14 aa   mov	x0, x20
+0x184f5646c:  c5 f8 c4 94   bl	0x188094780
+0x184f56470:  80 01 00 b5   cbnz	x0, loc_184f564a0 ; ⤵ 0x30
+0x184f56474:  60 6a 79 f8   ldr	x0, [x19, x25]
+0x184f56478:  b6 00 00 b4   cbz	x22, loc_184f5648c ; ⤵ 0x14
+0x184f5647c:  df 02 14 eb   cmp	x22, x20
+0x184f56480:  60 00 00 54   b.eq	loc_184f5648c ; ⤵ 0xc
+0x184f56484:  df 02 00 eb   cmp	x22, x0
+0x184f56488:  61 00 00 54   b.ne	loc_184f56494 ; ⤵ 0xc
+0x184f5648c:  ; loc_184f5648c
+0x184f5648c:  bd f8 c4 94   bl	0x188094780
+0x184f56490:  f6 03 00 aa   mov	x22, x0
+0x184f56494:  ; loc_184f56494
+0x184f56494:  e0 03 14 aa   mov	x0, x20
+0x184f56498:  e2 03 16 aa   mov	x2, x22
+0x184f5649c:  09 49 c5 94   bl	0x1880a88c0
+0x184f564a0:  ; loc_184f564a0
+0x184f564a0:  c8 be 2d f0   adrp	x8, 0x1e0731000
+0x184f564a4:  08 8d 46 f9   ldr	x8, [x8, #0xd18] ; NSClipView
+0x184f564a8:  f3 23 01 a9   stp	x19, x8, [sp, #0x10]
+0x184f564ac:  68 50 38 90   adrp	x8, 0x1f5962000
+0x184f564b0:  01 4d 05 91   add	x1, x8, #0x153 ; setNextKeyView:
+0x184f564b4:  e0 43 00 91   add	x0, sp, #0x10
+0x184f564b8:  e2 03 14 aa   mov	x2, x20
+0x184f564bc:  ; loc_184f564bc
+0x184f564bc:  c1 1c c6 94   bl	j__objc_msgSendSuper2
+0x184f564c0:  ; loc_184f564c0
+0x184f564c0:  78 00 00 34   cbz	w24, loc_184f564cc ; ⤵ 0xc
+0x184f564c4:  60 6a 79 f8   ldr	x0, [x19, x25]
+0x184f564c8:  26 15 c5 94   bl	0x18809b960
+0x184f564cc:  ; loc_184f564cc
+0x184f564cc:  74 6a 39 f8   str	x20, [x19, x25]
+0x184f564d0:  14 04 00 b4   cbz	x20, loc_184f56550 ; ⤵ 0x80
+0x184f564d4:  e0 03 14 aa   mov	x0, x20
+0x184f564d8:  12 72 c5 94   bl	0x1880b2d20
+0x184f564dc:  1f 00 13 eb   cmp	x0, x19
+0x184f564e0:  40 02 00 54   b.eq	loc_184f56528 ; ⤵ 0x48
+0x184f564e4:  62 6a 79 f8   ldr	x2, [x19, x25]
+0x184f564e8:  e0 03 13 aa   mov	x0, x19
+0x184f564ec:  75 74 c4 94   bl	0x1880736c0
+0x184f564f0:  14 00 00 14   b	loc_184f56540 ; ⤵ 0x50
+0x184f564f4:  ; loc_184f564f4
+0x184f564f4:  76 fe ff b4   cbz	x22, loc_184f564c0 ; ⤴ -0x34
+0x184f564f8:  60 6a 79 f8   ldr	x0, [x19, x25]
+0x184f564fc:  df 02 00 eb   cmp	x22, x0
+0x184f56500:  01 fe ff 54   b.ne	loc_184f564c0 ; ⤴ -0x40
+0x184f56504:  9f f8 c4 94   bl	0x188094780
+0x184f56508:  e2 03 00 aa   mov	x2, x0
+0x184f5650c:  c8 be 2d f0   adrp	x8, 0x1e0731000
+0x184f56510:  08 8d 46 f9   ldr	x8, [x8, #0xd18] ; NSClipView
+0x184f56514:  f3 23 00 a9   stp	x19, x8, [sp]
+0x184f56518:  68 50 38 90   adrp	x8, 0x1f5962000
+0x184f5651c:  01 4d 05 91   add	x1, x8, #0x153 ; setNextKeyView:
+0x184f56520:  e0 03 00 91   mov	x0, sp
+0x184f56524:  e6 ff ff 17   b	loc_184f564bc ; ⤴ -0x68
+0x184f56528:  ; loc_184f56528
+0x184f56528:  d5 00 00 34   cbz	w21, loc_184f56540 ; ⤵ 0x18
+0x184f5652c:  60 6a 79 f8   ldr	x0, [x19, x25]
+0x184f56530:  e2 03 13 aa   mov	x2, x19
+0x184f56534:  37 8d c5 94   bl	0x1880b9a10
+0x184f56538:  60 6a 79 f8   ldr	x0, [x19, x25]
+0x184f5653c:  9d 8c c5 94   bl	0x1880b97b0
+0x184f56540:  ; loc_184f56540
+0x184f56540:  e0 03 13 aa   mov	x0, x19
+0x184f56544:  bb 0d c4 94   bl	0x188059c30
+0x184f56548:  e0 03 13 aa   mov	x0, x19
+0x184f5654c:  b1 82 c3 94   bl	0x188037010
+0x184f56550:  ; loc_184f56550
+0x184f56550:  e0 03 13 aa   mov	x0, x19
+0x184f56554:  a3 85 c3 94   bl	0x188037be0
+0x184f56558:  e0 03 13 aa   mov	x0, x19
+0x184f5655c:  19 01 c4 94   bl	0x1880569c0
+0x184f56560:  e0 03 13 aa   mov	x0, x19
+0x184f56564:  3f 1b c3 94   bl	0x18801d260
+0x184f56568:  e0 01 00 37   tbnz	w0, #0, loc_184f565a4 ; ⤵ 0x3c
+0x184f5656c:  54 01 00 94   bl	_NSScrollViewShouldFlipScrollerForRTL
+0x184f56570:  a0 00 00 34   cbz	w0, loc_184f56584 ; ⤵ 0x14
+0x184f56574:  68 02 17 8b   add	x8, x19, x23
+0x184f56578:  08 05 40 39   ldrb	w8, [x8, #0x1]
+0x184f5657c:  1f 09 1b 72   tst	w8, #0xe0
+0x184f56580:  a1 03 00 54   b.ne	loc_184f565f4 ; ⤵ 0x74
+0x184f56584:  ; loc_184f56584
+0x184f56584:  68 ad 2f 90   adrp	x8, 0x1e4502000
+0x184f56588:  14 ed 83 b9   ldrsw	x20, [x8, #0x3ec] ; _OBJC_IVAR_$_NSClipView._docRect
+0x184f5658c:  68 02 14 8b   add	x8, x19, x20
+0x184f56590:  00 01 40 fd   ldr	d0, [x8]
+0x184f56594:  ; loc_184f56594
+0x184f56594:  68 02 14 8b   add	x8, x19, x20
+0x184f56598:  01 05 40 fd   ldr	d1, [x8, #0x8]
+0x184f5659c:  e0 03 13 aa   mov	x0, x19
+0x184f565a0:  80 2e c5 94   bl	0x1880a1fa0
+0x184f565a4:  ; loc_184f565a4
+0x184f565a4:  68 6a 77 b8   ldr	w8, [x19, x23]
+0x184f565a8:  28 01 00 36   tbz	w8, #0, loc_184f565cc ; ⤵ 0x24
+0x184f565ac:  88 ad 2f 90   adrp	x8, 0x1e4506000
+0x184f565b0:  08 61 2b 91   add	x8, x8, #0xad8 ; _OBJC_IVAR_$_NSView._superview
+0x184f565b4:  08 01 80 b9   ldrsw	x8, [x8]
+0x184f565b8:  68 02 08 8b   add	x8, x19, x8
+0x184f565bc:  00 01 40 f9   ldr	x0, [x8]
+0x184f565c0:  e2 03 13 aa   mov	x2, x19
+0x184f565c4:  27 11 c5 94   bl	0x18809aa60
+0x184f565c8:  68 6a 77 b8   ldr	w8, [x19, x23]
+0x184f565cc:  ; loc_184f565cc
+0x184f565cc:  08 79 19 12   and	w8, w8, #0xffffffbf
+0x184f565d0:  68 6a 37 b8   str	w8, [x19, x23]
+0x184f565d4:  fd 7b 47 a9   ldp	fp, lr, [sp, #0x70]
+0x184f565d8:  f4 4f 46 a9   ldp	x20, x19, [sp, #0x60]
+0x184f565dc:  f6 57 45 a9   ldp	x22, x21, [sp, #0x50]
+0x184f565e0:  f8 5f 44 a9   ldp	x24, x23, [sp, #0x40]
+0x184f565e4:  fa 67 43 a9   ldp	x26, x25, [sp, #0x30]
+0x184f565e8:  e9 23 42 6d   ldp	d9, d8, [sp, #0x20]
+0x184f565ec:  ff 03 02 91   add	sp, sp, #0x80
+0x184f565f0:  ff 0f 5f d6   retab
+0x184f565f4:  ; loc_184f565f4
+0x184f565f4:  e0 03 13 aa   mov	x0, x19
+0x184f565f8:  ca 71 c5 94   bl	0x1880b2d20
+0x184f565fc:  f4 03 00 aa   mov	x20, x0
+0x184f56600:  28 bf 2d b0   adrp	x8, 0x1e073b000
+0x184f56604:  00 f1 44 f9   ldr	x0, [x8, #0x9e0] ; __got.class_NSScrollView
+0x184f56608:  72 1c c6 94   bl	j__objc_opt_class
+0x184f5660c:  e1 03 00 aa   mov	x1, x0
+0x184f56610:  e0 03 14 aa   mov	x0, x20
+0x184f56614:  73 1c c6 94   bl	j__objc_opt_isKindOfClass
+0x184f56618:  60 fb 07 36   tbz	w0, #0, loc_184f56584 ; ⤴ -0x94
+0x184f5661c:  e0 03 14 aa   mov	x0, x20
+0x184f56620:  4c 96 c4 94   bl	0x18807bf50
+0x184f56624:  7f 02 00 eb   cmp	x19, x0
+0x184f56628:  a0 00 00 54   b.eq	loc_184f5663c ; ⤵ 0x14
+0x184f5662c:  e0 03 14 aa   mov	x0, x20
+0x184f56630:  70 d2 c3 94   bl	0x18804aff0
+0x184f56634:  7f 02 00 eb   cmp	x19, x0
+0x184f56638:  61 fa ff 54   b.ne	loc_184f56584 ; ⤴ -0xb4
+0x184f5663c:  ; loc_184f5663c
+0x184f5663c:  68 ad 2f 90   adrp	x8, 0x1e4502000
+0x184f56640:  14 ed 83 b9   ldrsw	x20, [x8, #0x3ec] ; _OBJC_IVAR_$_NSClipView._docRect
+0x184f56644:  68 02 14 8b   add	x8, x19, x20
+0x184f56648:  00 01 40 fd   ldr	d0, [x8]
+0x184f5664c:  01 09 40 fd   ldr	d1, [x8, #0x10]
+0x184f56650:  08 28 61 1e   fadd	d8, d0, d1
+0x184f56654:  e0 03 13 aa   mov	x0, x19
+0x184f56658:  ca 84 c4 94   bl	0x188077980
+0x184f5665c:  00 39 62 1e   fsub	d0, d8, d2
+0x184f56660:  cd ff ff 17   b	loc_184f56594 ; ⤴ -0xcc
+0x184f56664:  ; loc_184f56664
+0x184f56664:  c0 a7 31 f0   adrp	x0, 0x1e8451000
+0x184f56668:  00 40 0f 91   add	x0, x0, #0x3d0 ; "NSScrollViewSetDocumentViewRedundantly"
+0x184f5666c:  e2 a4 30 f0   adrp	x2, 0x1e63f5000
+0x184f56670:  42 d0 2e 91   add	x2, x2, #0xbb4 ; _sNSScrollViewSetDocumentViewRedundantlyComputedValue
+0x184f56674:  10 00 00 90   adrp	x16, 0x184f56000
+0x184f56678:  10 f2 1b 91   add	x16, x16, #0x6fc ; _NSScrollViewSetDocumentViewRedundantlyDefaultValueFunction
+0x184f5667c:  f0 23 c1 da   paciza	x16
+0x184f56680:  e3 03 10 aa   mov	x3, x16
+0x184f56684:  01 00 80 52   mov	w1, #0
+0x184f56688:  2c c5 fd 97   bl	__NSGetBoolAppConfig
+0x184f5668c:  60 ec 07 37   tbnz	w0, #0, loc_184f56418 ; ⤴ -0x274
+0x184f56690:  ; loc_184f56690
+0x184f56690:  39 bf 2d d0   adrp	x25, 0x1e073c000
+0x184f56694:  20 d7 40 f9   ldr	x0, [x25, #0x1a8] ; __got.class_NSView
+0x184f56698:  4e 1c c6 94   bl	j__objc_opt_class
+0x184f5669c:  f5 03 00 aa   mov	x21, x0
+0x184f566a0:  60 6a 78 f8   ldr	x0, [x19, x24]
+0x184f566a4:  4b 1c c6 94   bl	j__objc_opt_class
+0x184f566a8:  e1 03 00 aa   mov	x1, x0
+0x184f566ac:  88 58 38 f0   adrp	x8, 0x1f5a69000
+0x184f566b0:  02 cd 27 91   add	x2, x8, #0x9f3 ; viewWillMoveToSuperview:
+0x184f566b4:  e0 03 15 aa   mov	x0, x21
+0x184f566b8:  00 07 fe 97   bl	__NSSubclassOverridesSelector
+0x184f566bc:  80 00 00 36   tbz	w0, #0, loc_184f566cc ; ⤵ 0x10
+0x184f566c0:  18 00 80 52   mov	w24, #0
+0x184f566c4:  35 00 80 52   mov	w21, #0x1
+0x184f566c8:  59 ff ff 17   b	loc_184f5642c ; ⤴ -0x29c
+0x184f566cc:  ; loc_184f566cc
+0x184f566cc:  20 d7 40 f9   ldr	x0, [x25, #0x1a8]
+0x184f566d0:  40 1c c6 94   bl	j__objc_opt_class
+0x184f566d4:  f5 03 00 aa   mov	x21, x0
+0x184f566d8:  60 6a 78 f8   ldr	x0, [x19, x24]
+0x184f566dc:  3d 1c c6 94   bl	j__objc_opt_class
+0x184f566e0:  e1 03 00 aa   mov	x1, x0
+0x184f566e4:  88 58 38 f0   adrp	x8, 0x1f5a69000
+0x184f566e8:  02 b1 17 91   add	x2, x8, #0x5ec ; viewDidMoveToSuperview
+0x184f566ec:  e0 03 15 aa   mov	x0, x21
+0x184f566f0:  f2 06 fe 97   bl	__NSSubclassOverridesSelector
+0x184f566f4:  f5 03 00 aa   mov	x21, x0
+0x184f566f8:  4c ff ff 17   b	loc_184f56428 ; ⤴ -0x2d0
+

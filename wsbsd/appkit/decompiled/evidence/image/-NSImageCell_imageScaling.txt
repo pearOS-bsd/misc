@@ -1,0 +1,12 @@
+### -[NSImageCell imageScaling]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSImageCell imageScaling]
+
+-[NSImageCell imageScaling]:
+0x184fba854:  48 a1 30 90   adrp	x8, 0x1e63e2000
+0x184fba858:  08 19 83 b9   ldrsw	x8, [x8, #0x318] ; __MergedGlobals
+0x184fba85c:  08 00 08 8b   add	x8, x0, x8
+0x184fba860:  08 01 40 b9   ldr	w8, [x8]
+0x184fba864:  00 71 5a d3   ubfx	x0, x8, #0x1a, #0x3
+0x184fba868:  c0 03 5f d6   ret
+

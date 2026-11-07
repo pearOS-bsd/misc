@@ -1,0 +1,35 @@
+### -[NSTextFieldCell drawsBackground]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTextFieldCell drawsBackground]
+
+-[NSTextFieldCell drawsBackground]:
+0x184f3025c:  7f 23 03 d5   pacibsp
+0x184f30260:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x184f30264:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x184f30268:  fd 43 00 91   add	fp, sp, #0x10
+0x184f3026c:  f3 03 00 aa   mov	x19, x0
+0x184f30270:  a8 ae 2f 90   adrp	x8, 0x1e4504000
+0x184f30274:  08 2d 8f b9   ldrsw	x8, [x8, #0xf2c] ; _OBJC_IVAR_$_NSTextFieldCell._backgroundColor
+0x184f30278:  08 00 08 8b   add	x8, x0, x8
+0x184f3027c:  14 01 40 f9   ldr	x20, [x8]
+0x184f30280:  48 c0 2d d0   adrp	x8, 0x1e073a000
+0x184f30284:  00 f5 47 f9   ldr	x0, [x8, #0xfe8] ; __got.class_NSColor
+0x184f30288:  8a 30 c5 94   bl	0x18807c4b0
+0x184f3028c:  9f 02 00 eb   cmp	x20, x0
+0x184f30290:  40 01 00 54   b.eq	loc_184f302b8 ; ⤵ 0x28
+0x184f30294:  a8 ae 2f 90   adrp	x8, 0x1e4504000
+0x184f30298:  08 29 8f b9   ldrsw	x8, [x8, #0xf28] ; _OBJC_IVAR_$_NSTextFieldCell._tfFlags
+0x184f3029c:  68 02 08 8b   add	x8, x19, x8
+0x184f302a0:  08 01 40 f9   ldr	x8, [x8]
+0x184f302a4:  09 09 7f 92   and	x9, x8, #0xe
+0x184f302a8:  3f 09 00 f1   cmp	x9, #0x2
+0x184f302ac:  08 01 00 12   and	w8, w8, #0x1
+0x184f302b0:  e0 03 88 1a   csel	w0, wzr, w8, eq
+0x184f302b4:  02 00 00 14   b	loc_184f302bc ; ⤵ 0x8
+0x184f302b8:  ; loc_184f302b8
+0x184f302b8:  00 00 80 52   mov	w0, #0
+0x184f302bc:  ; loc_184f302bc
+0x184f302bc:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184f302c0:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184f302c4:  ff 0f 5f d6   retab
+

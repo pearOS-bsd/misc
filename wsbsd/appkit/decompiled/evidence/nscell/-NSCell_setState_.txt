@@ -1,0 +1,47 @@
+### -[NSCell setState:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSCell setState:]
+
+-[NSCell setState:]:
+0x184f22888:  7f 23 03 d5   pacibsp
+0x184f2288c:  f6 57 bd a9   stp	x22, x21, [sp, #-0x30]!
+0x184f22890:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x184f22894:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x184f22898:  fd 83 00 91   add	fp, sp, #0x20
+0x184f2289c:  f4 03 02 aa   mov	x20, x2
+0x184f228a0:  f3 03 00 aa   mov	x19, x0
+0x184f228a4:  08 58 40 39   ldrb	w8, [x0, #0x16]
+0x184f228a8:  68 01 18 36   tbz	w8, #0x3, loc_184f228d4 ; ⤵ 0x2c
+0x184f228ac:  95 a6 30 d0   adrp	x21, 0x1e63f4000
+0x184f228b0:  b5 42 06 91   add	x21, x21, #0x190 ; __cellCFlagsBitfieldLock
+0x184f228b4:  e0 03 15 aa   mov	x0, x21
+0x184f228b8:  fa fe c6 94   bl	j__os_unfair_lock_lock
+0x184f228bc:  68 0a 40 f9   ldr	x8, [x19, #0x10]
+0x184f228c0:  89 fe 7f d3   lsr	x9, x20, #0x3f
+0x184f228c4:  28 01 4c b3   bfi	x8, x9, #0x34, #0x1
+0x184f228c8:  68 0a 00 f9   str	x8, [x19, #0x10]
+0x184f228cc:  e0 03 15 aa   mov	x0, x21
+0x184f228d0:  4c e7 c6 94   bl	j__os_unfair_lock_unlock
+0x184f228d4:  ; loc_184f228d4
+0x184f228d4:  95 a6 30 d0   adrp	x21, 0x1e63f4000
+0x184f228d8:  b5 42 06 91   add	x21, x21, #0x190 ; __cellCFlagsBitfieldLock
+0x184f228dc:  e0 03 15 aa   mov	x0, x21
+0x184f228e0:  f0 fe c6 94   bl	j__os_unfair_lock_lock
+0x184f228e4:  9f 02 00 f1   cmp	x20, #0
+0x184f228e8:  68 0a 40 f9   ldr	x8, [x19, #0x10]
+0x184f228ec:  08 f9 7f 92   and	x8, x8, #0xfffffffffffffffe
+0x184f228f0:  08 05 88 9a   cinc	x8, x8, ne
+0x184f228f4:  68 0a 00 f9   str	x8, [x19, #0x10]
+0x184f228f8:  e0 03 15 aa   mov	x0, x21
+0x184f228fc:  41 e7 c6 94   bl	j__os_unfair_lock_unlock
+0x184f22900:  e0 03 13 aa   mov	x0, x19
+0x184f22904:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x184f22908:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x184f2290c:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x184f22910:  ff 23 03 d5   autibsp
+0x184f22914:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f22918:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f22920 ; ⤵ 0x8
+0x184f2291c:  20 8e 38 d4   brk	#0xc471
+0x184f22920:  ; loc_184f22920
+0x184f22920:  e4 69 c4 14   b	0x18803d0b0
+

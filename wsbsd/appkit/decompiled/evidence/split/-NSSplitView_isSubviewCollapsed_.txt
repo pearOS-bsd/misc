@@ -1,0 +1,8 @@
+### -[NSSplitView isSubviewCollapsed:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSSplitView isSubviewCollapsed:]
+
+-[NSSplitView isSubviewCollapsed:]:
+0x184fa9ef0:  e0 03 02 aa   mov	x0, x2
+0x184fa9ef4:  7f 67 c1 14   b	0x188003cf0
+

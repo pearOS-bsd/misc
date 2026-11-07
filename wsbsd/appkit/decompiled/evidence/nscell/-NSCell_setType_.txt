@@ -1,0 +1,54 @@
+### -[NSCell setType:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSCell setType:]
+
+-[NSCell setType:]:
+0x184f25280:  08 08 40 f9   ldr	x8, [x0, #0x10]
+0x184f25284:  08 15 44 d3   ubfx	x8, x8, #0x4, #0x2
+0x184f25288:  1f 01 02 eb   cmp	x8, x2
+0x184f2528c:  41 00 00 54   b.ne	loc_184f25294 ; ⤵ 0x8
+0x184f25290:  c0 03 5f d6   ret
+0x184f25294:  ; loc_184f25294
+0x184f25294:  7f 23 03 d5   pacibsp
+0x184f25298:  f6 57 bd a9   stp	x22, x21, [sp, #-0x30]!
+0x184f2529c:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x184f252a0:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x184f252a4:  fd 83 00 91   add	fp, sp, #0x20
+0x184f252a8:  f4 03 02 aa   mov	x20, x2
+0x184f252ac:  f3 03 00 aa   mov	x19, x0
+0x184f252b0:  5f 08 00 f1   cmp	x2, #0x2
+0x184f252b4:  00 01 00 54   b.eq	loc_184f252d4 ; ⤵ 0x20
+0x184f252b8:  9f 06 00 f1   cmp	x20, #0x1
+0x184f252bc:  41 01 00 54   b.ne	loc_184f252e4 ; ⤵ 0x28
+0x184f252c0:  e2 aa 31 d0   adrp	x2, 0x1e8483000
+0x184f252c4:  42 40 2c 91   add	x2, x2, #0xb10 ; "Cell"
+0x184f252c8:  e0 03 13 aa   mov	x0, x19
+0x184f252cc:  0d 6a c4 94   bl	0x18803fb00
+0x184f252d0:  0e 00 00 14   b	loc_184f25308 ; ⤵ 0x38
+0x184f252d4:  ; loc_184f252d4
+0x184f252d4:  e0 03 13 aa   mov	x0, x19
+0x184f252d8:  02 00 80 d2   mov	x2, #0
+0x184f252dc:  4d 9c c3 94   bl	0x18800c410
+0x184f252e0:  0a 00 00 14   b	loc_184f25308 ; ⤵ 0x28
+0x184f252e4:  ; loc_184f252e4
+0x184f252e4:  75 a6 30 f0   adrp	x21, 0x1e63f4000
+0x184f252e8:  b5 42 06 91   add	x21, x21, #0x190 ; __cellCFlagsBitfieldLock
+0x184f252ec:  e0 03 15 aa   mov	x0, x21
+0x184f252f0:  6c f4 c6 94   bl	j__os_unfair_lock_lock
+0x184f252f4:  68 0a 40 f9   ldr	x8, [x19, #0x10]
+0x184f252f8:  88 06 7c b3   bfi	x8, x20, #0x4, #0x2
+0x184f252fc:  68 0a 00 f9   str	x8, [x19, #0x10]
+0x184f25300:  e0 03 15 aa   mov	x0, x21
+0x184f25304:  bf dc c6 94   bl	j__os_unfair_lock_unlock
+0x184f25308:  ; loc_184f25308
+0x184f25308:  e0 03 13 aa   mov	x0, x19
+0x184f2530c:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x184f25310:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x184f25314:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x184f25318:  ff 23 03 d5   autibsp
+0x184f2531c:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f25320:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f25328 ; ⤵ 0x8
+0x184f25324:  20 8e 38 d4   brk	#0xc471
+0x184f25328:  ; loc_184f25328
+0x184f25328:  62 5f c4 14   b	0x18803d0b0
+

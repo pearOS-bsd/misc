@@ -4,6 +4,7 @@ Method: REA (Ghidra) / the Objective-C runtime on this Mac, reimplement 1:1 (sam
 
 | Component | What is known | What is missing | Next step |
 |---|---|---|---|
+| AppKit (NS* classes) | ~230 NS* classes implemented, but on GNUstep + placeholder categories (72.1% of selectors real, 142 placeholder-only); behaviour diverges from Apple | 1:1 decompiled logic for every class; GNUstep must be retired class by class | decompile real AppKit.framework (dyld shared cache) with REA; reimplement highest-call / highest-divergence classes first (NSWindow, NSView, NSApplication, NSMenu, controls, text); CI test + retire GNUstep/placeholder per class |
 | WindowServer / SkyLight | wire protocol, ~270 of 728 routines with handlers (docs/SPEC-SLS-WIRE.md, skylight-*.txt) | the rest of the routines (192 generic acceptors), session switching as the Mac does it (CGSession) | continue the remaining-routines list |
 | loginwindow + LoginUIKit | class inventory, control specs, view metrics (docs/loginwindow/); fast user switching modelled on the Mac's sessions | logic of `LUI2UIController` (wrong-password shake, hint, battery, Wi-Fi menu), `LFSMSession` state machine, FileVault users, Platform SSO, absolute positions of the real views | instantiate LUI2 view controllers offscreen in one test process and read their frames; decompile LUI2UIController with REA |
 | CoreWLAN / airportd | docs/corewlan/ | scan / join paths on real cards, hotspot | after hardware test of the Wi-Fi image |

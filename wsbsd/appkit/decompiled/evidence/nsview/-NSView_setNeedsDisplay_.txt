@@ -1,0 +1,50 @@
+### -[NSView setNeedsDisplay:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSView setNeedsDisplay:]
+
+-[NSView setNeedsDisplay:]:
+0x184f13204:  7f 23 03 d5   pacibsp
+0x184f13208:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x184f1320c:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x184f13210:  fd 43 00 91   add	fp, sp, #0x10
+0x184f13214:  f3 03 00 aa   mov	x19, x0
+0x184f13218:  c2 01 00 34   cbz	w2, loc_184f13250 ; ⤵ 0x38
+0x184f1321c:  88 a6 30 90   adrp	x8, 0x1e63e3000
+0x184f13220:  08 8d 85 b9   ldrsw	x8, [x8, #0x58c]
+0x184f13224:  68 02 08 8b   add	x8, x19, x8
+0x184f13228:  08 01 40 39   ldrb	w8, [x8]
+0x184f1322c:  48 02 18 36   tbz	w8, #0x3, loc_184f13274 ; ⤵ 0x48
+0x184f13230:  e0 03 13 aa   mov	x0, x19
+0x184f13234:  67 29 c7 94   bl	j__objc_opt_class
+0x184f13238:  9e 9a c5 94   bl	0x188079cb0
+0x184f1323c:  c0 01 00 34   cbz	w0, loc_184f13274 ; ⤵ 0x38
+0x184f13240:  88 af 2f f0   adrp	x8, 0x1e4506000
+0x184f13244:  08 d5 8a b9   ldrsw	x8, [x8, #0xad4] ; _OBJC_IVAR_$_NSView._bounds
+0x184f13248:  68 02 08 8b   add	x8, x19, x8
+0x184f1324c:  0c 00 00 14   b	loc_184f1327c ; ⤵ 0x30
+0x184f13250:  ; loc_184f13250
+0x184f13250:  88 af 2f f0   adrp	x8, 0x1e4506000
+0x184f13254:  08 c1 8a b9   ldrsw	x8, [x8, #0xac0] ; _OBJC_IVAR_$_NSView._vFlags
+0x184f13258:  68 02 08 8b   add	x8, x19, x8
+0x184f1325c:  09 01 40 b9   ldr	w9, [x8]
+0x184f13260:  29 79 0a 12   and	w9, w9, #0xffdfffff
+0x184f13264:  09 01 00 b9   str	w9, [x8]
+0x184f13268:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184f1326c:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184f13270:  ff 0f 5f d6   retab
+0x184f13274:  ; loc_184f13274
+0x184f13274:  48 94 2d d0   adrp	x8, 0x1e019d000
+0x184f13278:  08 a1 44 f9   ldr	x8, [x8, #0x940] ; _ptr._CGRectInfinite
+0x184f1327c:  ; loc_184f1327c
+0x184f1327c:  00 05 40 6d   ldp	d0, d1, [x8]
+0x184f13280:  02 0d 41 6d   ldp	d2, d3, [x8, #0x10]
+0x184f13284:  e0 03 13 aa   mov	x0, x19
+0x184f13288:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184f1328c:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184f13290:  ff 23 03 d5   autibsp
+0x184f13294:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f13298:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f132a0 ; ⤵ 0x8
+0x184f1329c:  20 8e 38 d4   brk	#0xc471
+0x184f132a0:  ; loc_184f132a0
+0x184f132a0:  24 55 c6 14   b	0x1880a8730
+

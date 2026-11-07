@@ -1,0 +1,11 @@
+### -[NSSegmentedCell segmentCount]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSSegmentedCell segmentCount]
+
+-[NSSegmentedCell segmentCount]:
+0x184fb8898:  48 a1 30 d0   adrp	x8, 0x1e63e2000
+0x184fb889c:  08 51 85 b9   ldrsw	x8, [x8, #0x550]
+0x184fb88a0:  08 00 08 8b   add	x8, x0, x8
+0x184fb88a4:  00 01 40 f9   ldr	x0, [x8]
+0x184fb88a8:  aa 28 c1 14   b	0x188002b50
+

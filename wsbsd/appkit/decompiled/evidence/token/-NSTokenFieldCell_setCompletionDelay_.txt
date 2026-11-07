@@ -1,0 +1,11 @@
+### -[NSTokenFieldCell setCompletionDelay:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTokenFieldCell setCompletionDelay:]
+
+-[NSTokenFieldCell setCompletionDelay:]:
+0x1850f6a88:  68 97 30 90   adrp	x8, 0x1e63e2000
+0x1850f6a8c:  08 3d 87 b9   ldrsw	x8, [x8, #0x73c]
+0x1850f6a90:  08 00 08 8b   add	x8, x0, x8
+0x1850f6a94:  00 01 00 fd   str	d0, [x8]
+0x1850f6a98:  c0 03 5f d6   ret
+

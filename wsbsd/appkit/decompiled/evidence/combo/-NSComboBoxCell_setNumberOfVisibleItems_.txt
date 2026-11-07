@@ -1,0 +1,14 @@
+### -[NSComboBoxCell setNumberOfVisibleItems:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSComboBoxCell setNumberOfVisibleItems:]
+
+-[NSComboBoxCell setNumberOfVisibleItems:]:
+0x1851b21e8:  e8 ff 9f 52   mov	w8, #0xffff
+0x1851b21ec:  5f 00 08 eb   cmp	x2, x8
+0x1851b21f0:  48 b0 88 9a   csel	x8, x2, x8, lt
+0x1851b21f4:  89 9a 2f d0   adrp	x9, 0x1e4504000
+0x1851b21f8:  29 41 8e b9   ldrsw	x9, [x9, #0xe40] ; _OBJC_IVAR_$_NSComboBoxCell._cbcFlags
+0x1851b21fc:  09 00 09 8b   add	x9, x0, x9
+0x1851b2200:  28 05 00 79   strh	w8, [x9, #0x2]
+0x1851b2204:  c0 03 5f d6   ret
+

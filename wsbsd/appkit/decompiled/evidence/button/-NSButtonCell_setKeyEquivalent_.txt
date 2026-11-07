@@ -1,0 +1,134 @@
+### -[NSButtonCell setKeyEquivalent:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSButtonCell setKeyEquivalent:]
+
+-[NSButtonCell setKeyEquivalent:]:
+0x184f22c7c:  7f 23 03 d5   pacibsp
+0x184f22c80:  ff 43 01 d1   sub	sp, sp, #0x50
+0x184f22c84:  f8 5f 01 a9   stp	x24, x23, [sp, #0x10]
+0x184f22c88:  f6 57 02 a9   stp	x22, x21, [sp, #0x20]
+0x184f22c8c:  f4 4f 03 a9   stp	x20, x19, [sp, #0x30]
+0x184f22c90:  fd 7b 04 a9   stp	fp, lr, [sp, #0x40]
+0x184f22c94:  fd 03 01 91   add	fp, sp, #0x40
+0x184f22c98:  f5 03 01 aa   mov	x21, x1
+0x184f22c9c:  f4 03 00 aa   mov	x20, x0
+0x184f22ca0:  e0 03 02 aa   mov	x0, x2
+0x184f22ca4:  f3 e7 c6 94   bl	j__objc_retain_x0
+0x184f22ca8:  f3 03 00 aa   mov	x19, x0
+0x184f22cac:  60 08 00 b4   cbz	x0, loc_184f22db8 ; ⤵ 0x10c
+0x184f22cb0:  ; loc_184f22cb0
+0x184f22cb0:  08 af 2f d0   adrp	x8, 0x1e4504000
+0x184f22cb4:  18 d5 85 b9   ldrsw	x24, [x8, #0x5d4] ; _OBJC_IVAR_$_NSButtonCell._keyEquivalent
+0x184f22cb8:  96 02 18 8b   add	x22, x20, x24
+0x184f22cbc:  c0 02 40 f9   ldr	x0, [x22]
+0x184f22cc0:  ec e7 c6 94   bl	j__objc_retain_x0
+0x184f22cc4:  f5 03 00 aa   mov	x21, x0
+0x184f22cc8:  c0 02 40 f9   ldr	x0, [x22]
+0x184f22ccc:  c0 00 00 b4   cbz	x0, loc_184f22ce4 ; ⤵ 0x18
+0x184f22cd0:  1f 00 13 eb   cmp	x0, x19
+0x184f22cd4:  80 05 00 54   b.eq	loc_184f22d84 ; ⤵ 0xb0
+0x184f22cd8:  e2 03 13 aa   mov	x2, x19
+0x184f22cdc:  d9 83 c3 94   bl	0x188003c40
+0x184f22ce0:  20 05 00 37   tbnz	w0, #0, loc_184f22d84 ; ⤵ 0xa4
+0x184f22ce4:  ; loc_184f22ce4
+0x184f22ce4:  e0 03 13 aa   mov	x0, x19
+0x184f22ce8:  46 7f c3 94   bl	0x188002a00
+0x184f22cec:  88 6a 78 f8   ldr	x8, [x20, x24]
+0x184f22cf0:  80 6a 38 f8   str	x0, [x20, x24]
+0x184f22cf4:  e0 03 08 aa   mov	x0, x8
+0x184f22cf8:  da e7 c6 94   bl	j__objc_release_x0
+0x184f22cfc:  80 6a 78 f8   ldr	x0, [x20, x24]
+0x184f22d00:  22 a9 31 90   adrp	x2, 0x1e8446000
+0x184f22d04:  42 c0 10 91   add	x2, x2, #0x430 ; ""
+0x184f22d08:  ea 83 c3 94   bl	0x188003cb0
+0x184f22d0c:  c0 00 00 37   tbnz	w0, #0, loc_184f22d24 ; ⤵ 0x18
+0x184f22d10:  22 a9 31 90   adrp	x2, 0x1e8446000
+0x184f22d14:  42 c0 10 91   add	x2, x2, #0x430 ; ""
+0x184f22d18:  e0 03 15 aa   mov	x0, x21
+0x184f22d1c:  e5 83 c3 94   bl	0x188003cb0
+0x184f22d20:  20 03 00 34   cbz	w0, loc_184f22d84 ; ⤵ 0x64
+0x184f22d24:  ; loc_184f22d24
+0x184f22d24:  e0 03 14 aa   mov	x0, x20
+0x184f22d28:  22 66 c5 94   bl	0x18807c5b0
+0x184f22d2c:  79 f0 c6 94   bl	j__objc_claimAutoreleasedReturnValue
+0x184f22d30:  f6 03 00 aa   mov	x22, x0
+0x184f22d34:  b3 aa c3 94   bl	0x18800d800
+0x184f22d38:  76 f0 c6 94   bl	j__objc_claimAutoreleasedReturnValue
+0x184f22d3c:  f7 03 00 aa   mov	x23, x0
+0x184f22d40:  80 6a 78 f8   ldr	x0, [x20, x24]
+0x184f22d44:  22 a9 31 90   adrp	x2, 0x1e8446000
+0x184f22d48:  42 c0 10 91   add	x2, x2, #0x430 ; ""
+0x184f22d4c:  d9 83 c3 94   bl	0x188003cb0
+0x184f22d50:  1f 00 00 71   cmp	w0, #0
+0x184f22d54:  82 12 9f 9a   csel	x2, x20, xzr, ne
+0x184f22d58:  e0 03 17 aa   mov	x0, x23
+0x184f22d5c:  cd f2 c4 94   bl	0x18805f890
+0x184f22d60:  e0 03 17 aa   mov	x0, x23
+0x184f22d64:  bf e7 c6 94   bl	j__objc_release_x0
+0x184f22d68:  e0 03 16 aa   mov	x0, x22
+0x184f22d6c:  bd e7 c6 94   bl	j__objc_release_x0
+0x184f22d70:  e0 03 14 aa   mov	x0, x20
+0x184f22d74:  02 00 80 52   mov	w2, #0
+0x184f22d78:  a6 a9 c5 94   bl	0x18808d410
+0x184f22d7c:  e0 03 14 aa   mov	x0, x20
+0x184f22d80:  c8 f2 c4 94   bl	0x18805f8a0
+0x184f22d84:  ; loc_184f22d84
+0x184f22d84:  e0 03 15 aa   mov	x0, x21
+0x184f22d88:  b6 e7 c6 94   bl	j__objc_release_x0
+0x184f22d8c:  e0 03 13 aa   mov	x0, x19
+0x184f22d90:  fd 7b 44 a9   ldp	fp, lr, [sp, #0x40]
+0x184f22d94:  f4 4f 43 a9   ldp	x20, x19, [sp, #0x30]
+0x184f22d98:  f6 57 42 a9   ldp	x22, x21, [sp, #0x20]
+0x184f22d9c:  f8 5f 41 a9   ldp	x24, x23, [sp, #0x10]
+0x184f22da0:  ff 43 01 91   add	sp, sp, #0x50
+0x184f22da4:  ff 23 03 d5   autibsp
+0x184f22da8:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f22dac:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f22db4 ; ⤵ 0x8
+0x184f22db0:  20 8e 38 d4   brk	#0xc471
+0x184f22db4:  ; loc_184f22db4
+0x184f22db4:  ab e7 c6 14   b	j__objc_release_x0
+0x184f22db8:  ; loc_184f22db8
+0x184f22db8:  48 94 2d 90   adrp	x8, 0x1e01aa000
+0x184f22dbc:  00 41 40 f9   ldr	x0, [x8, #0x80] ; _ptr.NSAssertionHandler
+0x184f22dc0:  30 93 c3 94   bl	0x188007a80
+0x184f22dc4:  53 f0 c6 94   bl	j__objc_claimAutoreleasedReturnValue
+0x184f22dc8:  f6 03 00 aa   mov	x22, x0
+0x184f22dcc:  a8 aa 31 90   adrp	x8, 0x1e8476000
+0x184f22dd0:  08 41 00 91   add	x8, x8, #0x10 ; "aKeyEquivalent != nil"
+0x184f22dd4:  e8 03 00 f9   str	x8, [sp]
+0x184f22dd8:  04 ab 31 b0   adrp	x4, 0x1e8483000
+0x184f22ddc:  84 c0 11 91   add	x4, x4, #0x470 ; "NSButtonCell.m"
+0x184f22de0:  a6 a8 31 f0   adrp	x6, 0x1e8439000
+0x184f22de4:  c6 40 2f 91   add	x6, x6, #0xbd0 ; "Invalid parameter not satisfying: %@"
+0x184f22de8:  e2 03 15 aa   mov	x2, x21
+0x184f22dec:  e3 03 14 aa   mov	x3, x20
+0x184f22df0:  25 97 80 52   mov	w5, #0x4b9
+0x184f22df4:  93 97 c3 94   bl	0x188008c40
+0x184f22df8:  e0 03 16 aa   mov	x0, x22
+0x184f22dfc:  99 e7 c6 94   bl	j__objc_release_x0
+0x184f22e00:  ac ff ff 17   b	loc_184f22cb0 ; ⤴ -0x150
+0x184f22e04:  f4 03 00 aa   mov	x20, x0
+0x184f22e08:  e0 03 16 aa   mov	x0, x22
+0x184f22e0c:  0d 00 00 14   b	loc_184f22e40 ; ⤵ 0x34
+0x184f22e10:  f4 03 00 aa   mov	x20, x0
+0x184f22e14:  0c 00 00 14   b	loc_184f22e44 ; ⤵ 0x30
+0x184f22e18:  f4 03 00 aa   mov	x20, x0
+0x184f22e1c:  04 00 00 14   b	loc_184f22e2c ; ⤵ 0x10
+0x184f22e20:  f4 03 00 aa   mov	x20, x0
+0x184f22e24:  e0 03 17 aa   mov	x0, x23
+0x184f22e28:  8e e7 c6 94   bl	j__objc_release_x0
+0x184f22e2c:  ; loc_184f22e2c
+0x184f22e2c:  e0 03 16 aa   mov	x0, x22
+0x184f22e30:  8c e7 c6 94   bl	j__objc_release_x0
+0x184f22e34:  02 00 00 14   b	loc_184f22e3c ; ⤵ 0x8
+0x184f22e38:  f4 03 00 aa   mov	x20, x0
+0x184f22e3c:  ; loc_184f22e3c
+0x184f22e3c:  e0 03 15 aa   mov	x0, x21
+0x184f22e40:  ; loc_184f22e40
+0x184f22e40:  88 e7 c6 94   bl	j__objc_release_x0
+0x184f22e44:  ; loc_184f22e44
+0x184f22e44:  e0 03 13 aa   mov	x0, x19
+0x184f22e48:  86 e7 c6 94   bl	j__objc_release_x0
+0x184f22e4c:  e0 03 14 aa   mov	x0, x20
+0x184f22e50:  90 e4 c6 94   bl	j___Unwind_Resume
+

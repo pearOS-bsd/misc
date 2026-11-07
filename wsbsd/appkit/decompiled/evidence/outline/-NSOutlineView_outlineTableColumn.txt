@@ -1,0 +1,11 @@
+### -[NSOutlineView outlineTableColumn]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSOutlineView outlineTableColumn]
+
+-[NSOutlineView outlineTableColumn]:
+0x18519f34c:  08 92 30 f0   adrp	x8, 0x1e63e2000
+0x18519f350:  08 39 80 b9   ldrsw	x8, [x8, #0x38]
+0x18519f354:  08 00 08 8b   add	x8, x0, x8
+0x18519f358:  00 01 40 f9   ldr	x0, [x8]
+0x18519f35c:  c0 03 5f d6   ret
+

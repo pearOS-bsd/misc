@@ -1,0 +1,92 @@
+### -[NSMenu setTitle:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSMenu setTitle:]
+
+-[NSMenu setTitle:]:
+0x18510fdf0:  7f 23 03 d5   pacibsp
+0x18510fdf4:  ff 43 01 d1   sub	sp, sp, #0x50
+0x18510fdf8:  f8 5f 01 a9   stp	x24, x23, [sp, #0x10]
+0x18510fdfc:  f6 57 02 a9   stp	x22, x21, [sp, #0x20]
+0x18510fe00:  f4 4f 03 a9   stp	x20, x19, [sp, #0x30]
+0x18510fe04:  fd 7b 04 a9   stp	fp, lr, [sp, #0x40]
+0x18510fe08:  fd 03 01 91   add	fp, sp, #0x40
+0x18510fe0c:  f5 03 02 aa   mov	x21, x2
+0x18510fe10:  f3 03 00 aa   mov	x19, x0
+0x18510fe14:  e2 06 00 b4   cbz	x2, loc_18510fef0 ; ⤵ 0xdc
+0x18510fe18:  ; loc_18510fe18
+0x18510fe18:  74 0a 40 f9   ldr	x20, [x19, #0x10]
+0x18510fe1c:  e0 03 14 aa   mov	x0, x20
+0x18510fe20:  e2 03 15 aa   mov	x2, x21
+0x18510fe24:  a3 cf bb 94   bl	0x188003cb0
+0x18510fe28:  e0 00 00 36   tbz	w0, #0, loc_18510fe44 ; ⤵ 0x1c
+0x18510fe2c:  fd 7b 44 a9   ldp	fp, lr, [sp, #0x40]
+0x18510fe30:  f4 4f 43 a9   ldp	x20, x19, [sp, #0x30]
+0x18510fe34:  f6 57 42 a9   ldp	x22, x21, [sp, #0x20]
+0x18510fe38:  f8 5f 41 a9   ldp	x24, x23, [sp, #0x10]
+0x18510fe3c:  ff 43 01 91   add	sp, sp, #0x50
+0x18510fe40:  ff 0f 5f d6   retab
+0x18510fe44:  ; loc_18510fe44
+0x18510fe44:  e0 03 13 aa   mov	x0, x19
+0x18510fe48:  0e 0b bd 94   bl	0x188052a80
+0x18510fe4c:  f6 03 00 aa   mov	x22, x0
+0x18510fe50:  e0 03 15 aa   mov	x0, x21
+0x18510fe54:  02 00 80 d2   mov	x2, #0
+0x18510fe58:  32 cb bb 94   bl	0x188002b20
+0x18510fe5c:  60 0a 00 f9   str	x0, [x19, #0x10]
+0x18510fe60:  e0 03 13 aa   mov	x0, x19
+0x18510fe64:  6b f4 bb 94   bl	0x18800d010
+0x18510fe68:  f5 03 00 aa   mov	x21, x0
+0x18510fe6c:  95 fb bd 94   bl	0x18808ecc0
+0x18510fe70:  20 02 00 34   cbz	w0, loc_18510feb4 ; ⤵ 0x44
+0x18510fe74:  e0 03 15 aa   mov	x0, x21
+0x18510fe78:  e2 03 13 aa   mov	x2, x19
+0x18510fe7c:  8d e2 bd 94   bl	0x1880888b0
+0x18510fe80:  f6 03 00 aa   mov	x22, x0
+0x18510fe84:  e0 03 15 aa   mov	x0, x21
+0x18510fe88:  e2 03 16 aa   mov	x2, x22
+0x18510fe8c:  d1 cf bb 94   bl	0x188003dd0
+0x18510fe90:  f7 03 00 aa   mov	x23, x0
+0x18510fe94:  e0 03 15 aa   mov	x0, x21
+0x18510fe98:  fa 0a bd 94   bl	0x188052a80
+0x18510fe9c:  65 0a 40 f9   ldr	x5, [x19, #0x10]
+0x18510fea0:  e2 03 17 aa   mov	x2, x23
+0x18510fea4:  e3 03 16 aa   mov	x3, x22
+0x18510fea8:  e4 03 14 aa   mov	x4, x20
+0x18510feac:  8d 0b bd 94   bl	0x188052ce0
+0x18510feb0:  05 00 00 14   b	loc_18510fec4 ; ⤵ 0x14
+0x18510feb4:  ; loc_18510feb4
+0x18510feb4:  63 0a 40 f9   ldr	x3, [x19, #0x10]
+0x18510feb8:  e0 03 16 aa   mov	x0, x22
+0x18510febc:  e2 03 14 aa   mov	x2, x20
+0x18510fec0:  c4 0a bd 94   bl	0x1880529d0
+0x18510fec4:  ; loc_18510fec4
+0x18510fec4:  e0 03 14 aa   mov	x0, x20
+0x18510fec8:  fd 7b 44 a9   ldp	fp, lr, [sp, #0x40]
+0x18510fecc:  f4 4f 43 a9   ldp	x20, x19, [sp, #0x30]
+0x18510fed0:  f6 57 42 a9   ldp	x22, x21, [sp, #0x20]
+0x18510fed4:  f8 5f 41 a9   ldp	x24, x23, [sp, #0x10]
+0x18510fed8:  ff 43 01 91   add	sp, sp, #0x50
+0x18510fedc:  ff 23 03 d5   autibsp
+0x18510fee0:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x18510fee4:  50 00 f0 b6   tbz	x16, #0x3e, loc_18510feec ; ⤵ 0x8
+0x18510fee8:  20 8e 38 d4   brk	#0xc471
+0x18510feec:  ; loc_18510feec
+0x18510feec:  5d 33 bf 14   b	j__objc_release_x0
+0x18510fef0:  ; loc_18510fef0
+0x18510fef0:  f4 03 01 aa   mov	x20, x1
+0x18510fef4:  c8 84 2d f0   adrp	x8, 0x1e01aa000
+0x18510fef8:  00 41 40 f9   ldr	x0, [x8, #0x80] ; _ptr.NSAssertionHandler
+0x18510fefc:  e1 de bb 94   bl	0x188007a80
+0x18510ff00:  28 9b 31 90   adrp	x8, 0x1e8473000
+0x18510ff04:  08 c1 2f 91   add	x8, x8, #0xbf0 ; "aString != nil"
+0x18510ff08:  e8 03 00 f9   str	x8, [sp]
+0x18510ff0c:  24 9b 31 90   adrp	x4, 0x1e8473000
+0x18510ff10:  84 40 22 91   add	x4, x4, #0x890 ; "NSMenu.m"
+0x18510ff14:  46 99 31 d0   adrp	x6, 0x1e8439000
+0x18510ff18:  c6 40 2f 91   add	x6, x6, #0xbd0 ; "Invalid parameter not satisfying: %@"
+0x18510ff1c:  e2 03 14 aa   mov	x2, x20
+0x18510ff20:  e3 03 13 aa   mov	x3, x19
+0x18510ff24:  85 68 80 52   mov	w5, #0x344
+0x18510ff28:  46 e3 bb 94   bl	0x188008c40
+0x18510ff2c:  bb ff ff 17   b	loc_18510fe18 ; ⤴ -0x114
+

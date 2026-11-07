@@ -1,0 +1,12 @@
+### -[NSPopUpButtonCell pullsDown]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSPopUpButtonCell pullsDown]
+
+-[NSPopUpButtonCell pullsDown]:
+0x184f9e8dc:  28 ab 2f d0   adrp	x8, 0x1e4504000
+0x184f9e8e0:  08 e5 89 b9   ldrsw	x8, [x8, #0x9e4] ; _OBJC_IVAR_$_NSPopUpButtonCell._pbcFlags
+0x184f9e8e4:  08 00 08 8b   add	x8, x0, x8
+0x184f9e8e8:  08 01 40 b9   ldr	w8, [x8]
+0x184f9e8ec:  00 01 00 12   and	w0, w8, #0x1
+0x184f9e8f0:  c0 03 5f d6   ret
+

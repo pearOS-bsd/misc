@@ -1,0 +1,87 @@
+### -[NSColor colorSpaceName]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSColor colorSpaceName]
+
+-[NSColor colorSpaceName]:
+0x185331510:  7f 23 03 d5   pacibsp
+0x185331514:  ff 83 01 d1   sub	sp, sp, #0x60
+0x185331518:  f6 57 03 a9   stp	x22, x21, [sp, #0x30]
+0x18533151c:  f4 4f 04 a9   stp	x20, x19, [sp, #0x40]
+0x185331520:  fd 7b 05 a9   stp	fp, lr, [sp, #0x50]
+0x185331524:  fd 43 01 91   add	fp, sp, #0x50
+0x185331528:  f4 03 01 aa   mov	x20, x1
+0x18533152c:  f3 03 00 aa   mov	x19, x0
+0x185331530:  c8 76 2d d0   adrp	x8, 0x1e020b000
+0x185331534:  08 59 45 f9   ldr	x8, [x8, #0xab0] ; _ptr.___stack_chk_guard
+0x185331538:  08 01 40 f9   ldr	x8, [x8]
+0x18533153c:  e8 17 00 f9   str	x8, [sp, #0x28]
+0x185331540:  a4 b0 b6 94   bl	j__objc_opt_class
+0x185331544:  f5 03 00 aa   mov	x21, x0
+0x185331548:  56 a0 2d b0   adrp	x22, 0x1e073a000
+0x18533154c:  c0 f6 47 f9   ldr	x0, [x22, #0xfe8] ; __got.class_NSColor
+0x185331550:  a0 b0 b6 94   bl	j__objc_opt_class
+0x185331554:  bf 02 00 eb   cmp	x21, x0
+0x185331558:  40 04 00 54   b.eq	loc_1853315e0 ; ⤵ 0x88
+0x18533155c:  c0 f6 47 f9   ldr	x0, [x22, #0xfe8]
+0x185331560:  9c b0 b6 94   bl	j__objc_opt_class
+0x185331564:  a8 fd 37 90   adrp	x8, 0x1f52e5000
+0x185331568:  15 01 36 91   add	x21, x8, #0xd80 ; type
+0x18533156c:  e1 03 15 aa   mov	x1, x21
+0x185331570:  bc c0 b6 94   bl	j__class_getInstanceMethod
+0x185331574:  0b d2 b6 94   bl	j__method_getImplementation
+0x185331578:  f6 03 00 aa   mov	x22, x0
+0x18533157c:  e0 03 13 aa   mov	x0, x19
+0x185331580:  94 b0 b6 94   bl	j__objc_opt_class
+0x185331584:  e1 03 15 aa   mov	x1, x21
+0x185331588:  b6 c0 b6 94   bl	j__class_getInstanceMethod
+0x18533158c:  05 d2 b6 94   bl	j__method_getImplementation
+0x185331590:  df 02 00 eb   cmp	x22, x0
+0x185331594:  60 02 00 54   b.eq	loc_1853315e0 ; ⤵ 0x4c
+0x185331598:  e0 03 13 aa   mov	x0, x19
+0x18533159c:  a1 4f b3 94   bl	0x188005420
+0x1853315a0:  e8 8e 2f 90   adrp	x8, 0x1e450d000
+0x1853315a4:  08 61 05 91   add	x8, x8, #0x158 ; _NSCustomColorSpace
+0x1853315a8:  08 01 40 f9   ldr	x8, [x8]
+0x1853315ac:  e9 8e 2f 90   adrp	x9, 0x1e450d000
+0x1853315b0:  29 41 05 91   add	x9, x9, #0x150 ; _NSPatternColorSpace
+0x1853315b4:  29 01 40 f9   ldr	x9, [x9]
+0x1853315b8:  e8 27 01 a9   stp	x8, x9, [sp, #0x10]
+0x1853315bc:  e8 8e 2f 90   adrp	x8, 0x1e450d000
+0x1853315c0:  08 21 05 91   add	x8, x8, #0x148 ; _NSNamedColorSpace
+0x1853315c4:  08 01 40 f9   ldr	x8, [x8]
+0x1853315c8:  e8 13 00 f9   str	x8, [sp, #0x20]
+0x1853315cc:  1f 0c 00 f1   cmp	x0, #0x3
+0x1853315d0:  82 00 00 54   b.hs	loc_1853315e0 ; ⤵ 0x10
+0x1853315d4:  e8 43 00 91   add	x8, sp, #0x10
+0x1853315d8:  00 79 60 f8   ldr	x0, [x8, x0, lsl #0x3]
+0x1853315dc:  e0 01 00 b5   cbnz	x0, loc_185331618 ; ⤵ 0x3c
+0x1853315e0:  ; loc_1853315e0
+0x1853315e0:  48 73 2d f0   adrp	x8, 0x1e019c000
+0x1853315e4:  15 85 42 f9   ldr	x21, [x8, #0x508] ; _ptr.NSException
+0x1853315e8:  48 73 2d d0   adrp	x8, 0x1e019b000
+0x1853315ec:  08 69 47 f9   ldr	x8, [x8, #0xed0] ; _ptr._NSInvalidArgumentException
+0x1853315f0:  16 01 40 f9   ldr	x22, [x8]
+0x1853315f4:  e0 03 14 aa   mov	x0, x20
+0x1853315f8:  76 cd b6 94   bl	j__NSStringFromSelector
+0x1853315fc:  e0 4f 00 a9   stp	x0, x19, [sp]
+0x185331600:  03 89 31 b0   adrp	x3, 0x1e8452000
+0x185331604:  63 40 0d 91   add	x3, x3, #0x350 ; "*** -%@ not valid for the NSColor %@; need to first convert colorspace."
+0x185331608:  e0 03 15 aa   mov	x0, x21
+0x18533160c:  e2 03 16 aa   mov	x2, x22
+0x185331610:  3c 68 b3 94   bl	0x18800b700
+0x185331614:  00 00 80 d2   mov	x0, #0
+0x185331618:  ; loc_185331618
+0x185331618:  e8 17 40 f9   ldr	x8, [sp, #0x28]
+0x18533161c:  c9 76 2d d0   adrp	x9, 0x1e020b000
+0x185331620:  29 59 45 f9   ldr	x9, [x9, #0xab0] ; _ptr.___stack_chk_guard
+0x185331624:  29 01 40 f9   ldr	x9, [x9]
+0x185331628:  3f 01 08 eb   cmp	x9, x8
+0x18533162c:  c1 00 00 54   b.ne	loc_185331644 ; ⤵ 0x18
+0x185331630:  fd 7b 45 a9   ldp	fp, lr, [sp, #0x50]
+0x185331634:  f4 4f 44 a9   ldp	x20, x19, [sp, #0x40]
+0x185331638:  f6 57 43 a9   ldp	x22, x21, [sp, #0x30]
+0x18533163c:  ff 83 01 91   add	sp, sp, #0x60
+0x185331640:  ff 0f 5f d6   retab
+0x185331644:  ; loc_185331644
+0x185331644:  bf aa b6 94   bl	j____stack_chk_fail
+

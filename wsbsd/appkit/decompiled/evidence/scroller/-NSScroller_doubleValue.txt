@@ -1,0 +1,11 @@
+### -[NSScroller doubleValue]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSScroller doubleValue]
+
+-[NSScroller doubleValue]:
+0x184f60664:  08 a4 30 d0   adrp	x8, 0x1e63e2000
+0x184f60668:  08 8d 88 b9   ldrsw	x8, [x8, #0x88c] ; __MergedGlobals
+0x184f6066c:  08 00 08 8b   add	x8, x0, x8
+0x184f60670:  00 01 40 fd   ldr	d0, [x8]
+0x184f60674:  c0 03 5f d6   ret
+

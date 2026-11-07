@@ -1,0 +1,7 @@
+### -[NSView viewWillMoveToWindow:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSView viewWillMoveToWindow:]
+
+-[NSView viewWillMoveToWindow:]:
+0x184f1c874:  c0 03 5f d6   ret
+

@@ -1,0 +1,12 @@
+### -[NSComboBoxCell usesDataSource]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSComboBoxCell usesDataSource]
+
+-[NSComboBoxCell usesDataSource]:
+0x1851b2f84:  88 9a 2f d0   adrp	x8, 0x1e4504000
+0x1851b2f88:  08 41 8e b9   ldrsw	x8, [x8, #0xe40] ; _OBJC_IVAR_$_NSComboBoxCell._cbcFlags
+0x1851b2f8c:  08 00 08 8b   add	x8, x0, x8
+0x1851b2f90:  08 01 40 b9   ldr	w8, [x8]
+0x1851b2f94:  00 01 00 12   and	w0, w8, #0x1
+0x1851b2f98:  c0 03 5f d6   ret
+

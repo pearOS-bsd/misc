@@ -1,0 +1,14 @@
+### -[NSCell setTarget:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSCell setTarget:]
+
+-[NSCell setTarget:]:
+0x1855f88fc:  28 5d 2d 90   adrp	x8, 0x1e019c000
+0x1855f8900:  00 85 42 f9   ldr	x0, [x8, #0x508] ; _ptr.NSException
+0x1855f8904:  08 5d 2d f0   adrp	x8, 0x1e019b000
+0x1855f8908:  08 61 47 f9   ldr	x8, [x8, #0xec0] ; _ptr._NSInternalInconsistencyException
+0x1855f890c:  02 01 40 f9   ldr	x2, [x8]
+0x1855f8910:  43 74 31 f0   adrp	x3, 0x1e8483000
+0x1855f8914:  63 c0 2c 91   add	x3, x3, #0xb30 ; "Stub implementation of -setTarget by NSCell does nothing."
+0x1855f8918:  7a 4b a8 14   b	0x18800b700
+

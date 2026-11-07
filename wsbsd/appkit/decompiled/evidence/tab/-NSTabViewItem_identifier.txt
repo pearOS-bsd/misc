@@ -1,0 +1,9 @@
+### -[NSTabViewItem identifier]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTabViewItem identifier]
+
+-[NSTabViewItem identifier]:
+0x1850d34c8:  02 01 80 52   mov	w2, #0x8
+0x1850d34cc:  23 00 80 52   mov	w3, #0x1
+0x1850d34d0:  50 3b c0 14   b	j__objc_getProperty
+

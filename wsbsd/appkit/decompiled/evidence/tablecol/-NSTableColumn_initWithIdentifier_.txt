@@ -1,0 +1,128 @@
+### -[NSTableColumn initWithIdentifier:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTableColumn initWithIdentifier:]
+
+-[NSTableColumn initWithIdentifier:]:
+0x1850b660c:  7f 23 03 d5   pacibsp
+0x1850b6610:  ff 43 01 d1   sub	sp, sp, #0x50
+0x1850b6614:  f8 5f 01 a9   stp	x24, x23, [sp, #0x10]
+0x1850b6618:  f6 57 02 a9   stp	x22, x21, [sp, #0x20]
+0x1850b661c:  f4 4f 03 a9   stp	x20, x19, [sp, #0x30]
+0x1850b6620:  fd 7b 04 a9   stp	fp, lr, [sp, #0x40]
+0x1850b6624:  fd 03 01 91   add	fp, sp, #0x40
+0x1850b6628:  f4 03 00 aa   mov	x20, x0
+0x1850b662c:  e0 03 02 aa   mov	x0, x2
+0x1850b6630:  90 99 c0 94   bl	j__objc_retain_x0
+0x1850b6634:  f3 03 00 aa   mov	x19, x0
+0x1850b6638:  e8 b3 2d b0   adrp	x8, 0x1e0733000
+0x1850b663c:  08 51 44 f9   ldr	x8, [x8, #0x8a0] ; NSTableColumn
+0x1850b6640:  f4 23 00 a9   stp	x20, x8, [sp]
+0x1850b6644:  88 b2 2d f0   adrp	x8, 0x1e0709000
+0x1850b6648:  01 cd 47 f9   ldr	x1, [x8, #0xf98] ; sel_init
+0x1850b664c:  17 00 80 d2   mov	x23, #0
+0x1850b6650:  e0 03 00 91   mov	x0, sp
+0x1850b6654:  5b 9c c0 94   bl	j__objc_msgSendSuper2
+0x1850b6658:  f4 03 00 aa   mov	x20, x0
+0x1850b665c:  a0 09 00 b4   cbz	x0, loc_1850b6790 ; ⤵ 0x134
+0x1850b6660:  f7 03 14 aa   mov	x23, x20
+0x1850b6664:  e0 03 14 aa   mov	x0, x20
+0x1850b6668:  e2 03 13 aa   mov	x2, x19
+0x1850b666c:  9d f6 bd 94   bl	0x1880340e0
+0x1850b6670:  28 0b e8 d2   mov	x8, #0x4059000000000000
+0x1850b6674:  88 0e 00 f9   str	x8, [x20, #0x18]
+0x1850b6678:  08 8e 00 f0   adrp	x8, 0x186279000
+0x1850b667c:  00 21 c1 3d   ldr	q0, [x8, #0x480]
+0x1850b6680:  80 16 80 3d   str	q0, [x20, #0x50]
+0x1850b6684:  80 22 00 91   add	x0, x20, #0x8
+0x1850b6688:  01 00 80 d2   mov	x1, #0
+0x1850b668c:  59 9c c0 94   bl	j__objc_storeWeak
+0x1850b6690:  28 b4 2d b0   adrp	x8, 0x1e073b000
+0x1850b6694:  00 cd 46 f9   ldr	x0, [x8, #0xd98] ; __got.class_NSTableHeaderCell
+0x1850b6698:  f7 03 14 aa   mov	x23, x20
+0x1850b669c:  31 9c c0 94   bl	j__objc_alloc_init
+0x1850b66a0:  88 32 40 f9   ldr	x8, [x20, #0x60]
+0x1850b66a4:  80 32 00 f9   str	x0, [x20, #0x60]
+0x1850b66a8:  e0 03 08 aa   mov	x0, x8
+0x1850b66ac:  6d 99 c0 94   bl	j__objc_release_x0
+0x1850b66b0:  28 b4 2d b0   adrp	x8, 0x1e073b000
+0x1850b66b4:  00 1d 47 f9   ldr	x0, [x8, #0xe38] ; __got.class_NSTextFieldCell
+0x1850b66b8:  f7 03 14 aa   mov	x23, x20
+0x1850b66bc:  29 9c c0 94   bl	j__objc_alloc_init
+0x1850b66c0:  88 36 40 f9   ldr	x8, [x20, #0x68]
+0x1850b66c4:  80 36 00 f9   str	x0, [x20, #0x68]
+0x1850b66c8:  e0 03 08 aa   mov	x0, x8
+0x1850b66cc:  65 99 c0 94   bl	j__objc_release_x0
+0x1850b66d0:  80 36 40 f9   ldr	x0, [x20, #0x68]
+0x1850b66d4:  f7 03 14 aa   mov	x23, x20
+0x1850b66d8:  22 00 80 52   mov	w2, #0x1
+0x1850b66dc:  39 b8 bf 94   bl	0x1880a47c0
+0x1850b66e0:  80 36 40 f9   ldr	x0, [x20, #0x68]
+0x1850b66e4:  f7 03 14 aa   mov	x23, x20
+0x1850b66e8:  22 00 80 52   mov	w2, #0x1
+0x1850b66ec:  15 d1 bf 94   bl	0x1880aab40
+0x1850b66f0:  80 36 40 f9   ldr	x0, [x20, #0x68]
+0x1850b66f4:  f7 03 14 aa   mov	x23, x20
+0x1850b66f8:  02 00 80 52   mov	w2, #0
+0x1850b66fc:  cd b7 bf 94   bl	0x1880a4630
+0x1850b6700:  95 36 40 f9   ldr	x21, [x20, #0x68]
+0x1850b6704:  28 b4 2d d0   adrp	x8, 0x1e073c000
+0x1850b6708:  16 81 46 f9   ldr	x22, [x8, #0xd00] ; __got.NSFont
+0x1850b670c:  f7 03 14 aa   mov	x23, x20
+0x1850b6710:  e0 03 16 aa   mov	x0, x22
+0x1850b6714:  b3 f3 bf 94   bl	0x1880b35e0
+0x1850b6718:  f7 03 14 aa   mov	x23, x20
+0x1850b671c:  e0 03 16 aa   mov	x0, x22
+0x1850b6720:  a8 f3 bf 94   bl	0x1880b35c0
+0x1850b6724:  fb a1 c0 94   bl	j__objc_claimAutoreleasedReturnValue
+0x1850b6728:  f6 03 00 aa   mov	x22, x0
+0x1850b672c:  e0 03 15 aa   mov	x0, x21
+0x1850b6730:  e2 03 16 aa   mov	x2, x22
+0x1850b6734:  f3 ba bf 94   bl	0x1880a5300
+0x1850b6738:  e0 03 16 aa   mov	x0, x22
+0x1850b673c:  49 99 c0 94   bl	j__objc_release_x0
+0x1850b6740:  80 36 40 f9   ldr	x0, [x20, #0x68]
+0x1850b6744:  f7 03 14 aa   mov	x23, x20
+0x1850b6748:  82 00 80 52   mov	w2, #0x4
+0x1850b674c:  a9 c4 bf 94   bl	0x1880a79f0
+0x1850b6750:  95 36 40 f9   ldr	x21, [x20, #0x68]
+0x1850b6754:  28 b4 2d 90   adrp	x8, 0x1e073a000
+0x1850b6758:  00 f5 47 f9   ldr	x0, [x8, #0xfe8] ; __got.class_NSColor
+0x1850b675c:  f7 03 14 aa   mov	x23, x20
+0x1850b6760:  50 17 bf 94   bl	0x18807c4a0
+0x1850b6764:  eb a1 c0 94   bl	j__objc_claimAutoreleasedReturnValue
+0x1850b6768:  f6 03 00 aa   mov	x22, x0
+0x1850b676c:  e0 03 15 aa   mov	x0, x21
+0x1850b6770:  e2 03 16 aa   mov	x2, x22
+0x1850b6774:  ef ac bf 94   bl	0x1880a1b30
+0x1850b6778:  e0 03 16 aa   mov	x0, x22
+0x1850b677c:  39 99 c0 94   bl	j__objc_release_x0
+0x1850b6780:  88 92 40 79   ldrh	w8, [x20, #0x48]
+0x1850b6784:  69 00 83 52   mov	w9, #0x1803
+0x1850b6788:  08 01 09 2a   orr	w8, w8, w9
+0x1850b678c:  88 92 00 79   strh	w8, [x20, #0x48]
+0x1850b6790:  ; loc_1850b6790
+0x1850b6790:  e0 03 13 aa   mov	x0, x19
+0x1850b6794:  33 99 c0 94   bl	j__objc_release_x0
+0x1850b6798:  e0 03 14 aa   mov	x0, x20
+0x1850b679c:  fd 7b 44 a9   ldp	fp, lr, [sp, #0x40]
+0x1850b67a0:  f4 4f 43 a9   ldp	x20, x19, [sp, #0x30]
+0x1850b67a4:  f6 57 42 a9   ldp	x22, x21, [sp, #0x20]
+0x1850b67a8:  f8 5f 41 a9   ldp	x24, x23, [sp, #0x10]
+0x1850b67ac:  ff 43 01 91   add	sp, sp, #0x50
+0x1850b67b0:  ff 0f 5f d6   retab
+0x1850b67b4:  01 00 00 14   b	loc_1850b67b8 ; ⤵ 0x4
+0x1850b67b8:  ; loc_1850b67b8
+0x1850b67b8:  f5 03 00 aa   mov	x21, x0
+0x1850b67bc:  e0 03 16 aa   mov	x0, x22
+0x1850b67c0:  28 99 c0 94   bl	j__objc_release_x0
+0x1850b67c4:  03 00 00 14   b	loc_1850b67d0 ; ⤵ 0xc
+0x1850b67c8:  f5 03 00 aa   mov	x21, x0
+0x1850b67cc:  f4 03 17 aa   mov	x20, x23
+0x1850b67d0:  ; loc_1850b67d0
+0x1850b67d0:  e0 03 13 aa   mov	x0, x19
+0x1850b67d4:  23 99 c0 94   bl	j__objc_release_x0
+0x1850b67d8:  e0 03 14 aa   mov	x0, x20
+0x1850b67dc:  21 99 c0 94   bl	j__objc_release_x0
+0x1850b67e0:  e0 03 15 aa   mov	x0, x21
+0x1850b67e4:  2b 96 c0 94   bl	j___Unwind_Resume
+

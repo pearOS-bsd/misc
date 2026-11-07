@@ -1,0 +1,4 @@
+### -[NSApplication sendAction:to:from:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSApplication sendAction:to:from:]
+   ⨯ public symbol -[NSApplication sendAction:to:from:] not found in image AppKit

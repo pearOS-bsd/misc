@@ -1,0 +1,127 @@
+### -[NSToolbarItem initWithItemIdentifier:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSToolbarItem initWithItemIdentifier:]
+
+-[NSToolbarItem initWithItemIdentifier:]:
+0x184fb6f7c:  7f 23 03 d5   pacibsp
+0x184fb6f80:  ff 83 01 d1   sub	sp, sp, #0x60
+0x184fb6f84:  f6 57 03 a9   stp	x22, x21, [sp, #0x30]
+0x184fb6f88:  f4 4f 04 a9   stp	x20, x19, [sp, #0x40]
+0x184fb6f8c:  fd 7b 05 a9   stp	fp, lr, [sp, #0x50]
+0x184fb6f90:  fd 43 01 91   add	fp, sp, #0x50
+0x184fb6f94:  f4 03 00 aa   mov	x20, x0
+0x184fb6f98:  a8 92 2d b0   adrp	x8, 0x1e020b000
+0x184fb6f9c:  08 59 45 f9   ldr	x8, [x8, #0xab0] ; _ptr.___stack_chk_guard
+0x184fb6fa0:  08 01 40 f9   ldr	x8, [x8]
+0x184fb6fa4:  e8 17 00 f9   str	x8, [sp, #0x28]
+0x184fb6fa8:  e0 03 02 aa   mov	x0, x2
+0x184fb6fac:  31 97 c4 94   bl	j__objc_retain_x0
+0x184fb6fb0:  f3 03 00 aa   mov	x19, x0
+0x184fb6fb4:  e8 bb 2d b0   adrp	x8, 0x1e0733000
+0x184fb6fb8:  08 01 47 f9   ldr	x8, [x8, #0xe00] ; NSToolbarItem
+0x184fb6fbc:  f4 a3 00 a9   stp	x20, x8, [sp, #0x8]
+0x184fb6fc0:  88 ba 2d f0   adrp	x8, 0x1e0709000
+0x184fb6fc4:  01 cd 47 f9   ldr	x1, [x8, #0xf98] ; sel_init
+0x184fb6fc8:  15 00 80 d2   mov	x21, #0
+0x184fb6fcc:  e0 23 00 91   add	x0, sp, #0x8
+0x184fb6fd0:  fc 99 c4 94   bl	j__objc_msgSendSuper2
+0x184fb6fd4:  f4 03 00 aa   mov	x20, x0
+0x184fb6fd8:  e0 08 00 b4   cbz	x0, loc_184fb70f4 ; ⤵ 0x11c
+0x184fb6fdc:  80 22 00 91   add	x0, x20, #0x8
+0x184fb6fe0:  01 00 80 d2   mov	x1, #0
+0x184fb6fe4:  03 9a c4 94   bl	j__objc_storeWeak
+0x184fb6fe8:  80 16 40 f9   ldr	x0, [x20, #0x28]
+0x184fb6fec:  9f 16 00 f9   str	xzr, [x20, #0x28]
+0x184fb6ff0:  1c 97 c4 94   bl	j__objc_release_x0
+0x184fb6ff4:  80 12 40 f9   ldr	x0, [x20, #0x20]
+0x184fb6ff8:  08 a4 31 f0   adrp	x8, 0x1e8439000
+0x184fb6ffc:  08 c1 18 91   add	x8, x8, #0x630 ; _ptr.__NSCFConstantString
+0x184fb7000:  88 12 00 f9   str	x8, [x20, #0x20]
+0x184fb7004:  17 97 c4 94   bl	j__objc_release_x0
+0x184fb7008:  80 1a 40 f9   ldr	x0, [x20, #0x30]
+0x184fb700c:  9f 1a 00 f9   str	xzr, [x20, #0x30]
+0x184fb7010:  14 97 c4 94   bl	j__objc_release_x0
+0x184fb7014:  80 1e 40 f9   ldr	x0, [x20, #0x38]
+0x184fb7018:  9f 1e 00 f9   str	xzr, [x20, #0x38]
+0x184fb701c:  11 97 c4 94   bl	j__objc_release_x0
+0x184fb7020:  80 62 40 f9   ldr	x0, [x20, #0xc0]
+0x184fb7024:  9f 62 00 f9   str	xzr, [x20, #0xc0]
+0x184fb7028:  0e 97 c4 94   bl	j__objc_release_x0
+0x184fb702c:  80 26 40 f9   ldr	x0, [x20, #0x48]
+0x184fb7030:  9f 26 00 f9   str	xzr, [x20, #0x48]
+0x184fb7034:  0b 97 c4 94   bl	j__objc_release_x0
+0x184fb7038:  80 2a 40 f9   ldr	x0, [x20, #0x50]
+0x184fb703c:  9f 2a 00 f9   str	xzr, [x20, #0x50]
+0x184fb7040:  08 97 c4 94   bl	j__objc_release_x0
+0x184fb7044:  9f 2e 00 f9   str	xzr, [x20, #0x58]
+0x184fb7048:  80 56 40 f9   ldr	x0, [x20, #0xa8]
+0x184fb704c:  9f 56 00 f9   str	xzr, [x20, #0xa8]
+0x184fb7050:  04 97 c4 94   bl	j__objc_release_x0
+0x184fb7054:  9f 5a 00 f9   str	xzr, [x20, #0xb0]
+0x184fb7058:  88 66 40 f9   ldr	x8, [x20, #0xc8]
+0x184fb705c:  08 01 70 b2   orr	x8, x8, #0x10000
+0x184fb7060:  88 66 00 f9   str	x8, [x20, #0xc8]
+0x184fb7064:  80 3e 40 f9   ldr	x0, [x20, #0x78]
+0x184fb7068:  9f 3e 00 f9   str	xzr, [x20, #0x78]
+0x184fb706c:  fd 96 c4 94   bl	j__objc_release_x0
+0x184fb7070:  a8 04 38 90   adrp	x8, 0x1f504b000
+0x184fb7074:  08 01 20 91   add	x8, x8, #0x800 ; minSize
+0x184fb7078:  c9 26 38 d0   adrp	x9, 0x1f5491000
+0x184fb707c:  29 01 30 91   add	x9, x9, #0xc00 ; maxSize
+0x184fb7080:  e8 a7 01 a9   stp	x8, x9, [sp, #0x18]
+0x184fb7084:  28 bc 2d 90   adrp	x8, 0x1e073b000
+0x184fb7088:  00 dd 47 f9   ldr	x0, [x8, #0xfb8] ; __got.class_NSToolbarItem
+0x184fb708c:  f5 03 14 aa   mov	x21, x20
+0x184fb7090:  d0 99 c4 94   bl	j__objc_opt_class
+0x184fb7094:  f6 03 00 aa   mov	x22, x0
+0x184fb7098:  f5 03 14 aa   mov	x21, x20
+0x184fb709c:  e0 03 14 aa   mov	x0, x20
+0x184fb70a0:  cc 99 c4 94   bl	j__objc_opt_class
+0x184fb70a4:  e1 03 00 aa   mov	x1, x0
+0x184fb70a8:  e2 63 00 91   add	x2, sp, #0x18
+0x184fb70ac:  f5 03 14 aa   mov	x21, x20
+0x184fb70b0:  e0 03 16 aa   mov	x0, x22
+0x184fb70b4:  43 00 80 52   mov	w3, #0x2
+0x184fb70b8:  78 ce 01 94   bl	__NSSubclassOverridesAnyOfTheseSelectors
+0x184fb70bc:  88 66 40 f9   ldr	x8, [x20, #0xc8]
+0x184fb70c0:  1f 00 00 71   cmp	w0, #0
+0x184fb70c4:  09 40 c0 d2   mov	x9, #0x20000000000
+0x184fb70c8:  29 11 9f 9a   csel	x9, x9, xzr, ne
+0x184fb70cc:  08 f9 56 92   and	x8, x8, #0xfffffdffffffffff
+0x184fb70d0:  08 01 09 aa   orr	x8, x8, x9
+0x184fb70d4:  88 66 00 f9   str	x8, [x20, #0xc8]
+0x184fb70d8:  f5 03 14 aa   mov	x21, x20
+0x184fb70dc:  e0 03 13 aa   mov	x0, x19
+0x184fb70e0:  48 2e c1 94   bl	0x188002a00
+0x184fb70e4:  88 16 40 f9   ldr	x8, [x20, #0x28]
+0x184fb70e8:  80 16 00 f9   str	x0, [x20, #0x28]
+0x184fb70ec:  e0 03 08 aa   mov	x0, x8
+0x184fb70f0:  dc 96 c4 94   bl	j__objc_release_x0
+0x184fb70f4:  ; loc_184fb70f4
+0x184fb70f4:  e0 03 13 aa   mov	x0, x19
+0x184fb70f8:  da 96 c4 94   bl	j__objc_release_x0
+0x184fb70fc:  e8 17 40 f9   ldr	x8, [sp, #0x28]
+0x184fb7100:  a9 92 2d 90   adrp	x9, 0x1e020b000
+0x184fb7104:  29 59 45 f9   ldr	x9, [x9, #0xab0] ; _ptr.___stack_chk_guard
+0x184fb7108:  29 01 40 f9   ldr	x9, [x9]
+0x184fb710c:  3f 01 08 eb   cmp	x9, x8
+0x184fb7110:  e1 00 00 54   b.ne	loc_184fb712c ; ⤵ 0x1c
+0x184fb7114:  e0 03 14 aa   mov	x0, x20
+0x184fb7118:  fd 7b 45 a9   ldp	fp, lr, [sp, #0x50]
+0x184fb711c:  f4 4f 44 a9   ldp	x20, x19, [sp, #0x40]
+0x184fb7120:  f6 57 43 a9   ldp	x22, x21, [sp, #0x30]
+0x184fb7124:  ff 83 01 91   add	sp, sp, #0x60
+0x184fb7128:  ff 0f 5f d6   retab
+0x184fb712c:  ; loc_184fb712c
+0x184fb712c:  05 94 c4 94   bl	j____stack_chk_fail
+0x184fb7130:  f4 03 00 aa   mov	x20, x0
+0x184fb7134:  e0 03 13 aa   mov	x0, x19
+0x184fb7138:  ca 96 c4 94   bl	j__objc_release_x0
+0x184fb713c:  e0 03 15 aa   mov	x0, x21
+0x184fb7140:  c8 96 c4 94   bl	j__objc_release_x0
+0x184fb7144:  02 00 00 14   b	loc_184fb714c ; ⤵ 0x8
+0x184fb7148:  f4 03 00 aa   mov	x20, x0
+0x184fb714c:  ; loc_184fb714c
+0x184fb714c:  e0 03 14 aa   mov	x0, x20
+0x184fb7150:  d0 93 c4 94   bl	j___Unwind_Resume
+

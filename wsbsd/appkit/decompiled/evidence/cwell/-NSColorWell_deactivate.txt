@@ -1,0 +1,118 @@
+### -[NSColorWell deactivate]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSColorWell deactivate]
+
+-[NSColorWell deactivate]:
+0x1856030e4:  7f 23 03 d5   pacibsp
+0x1856030e8:  ff c3 01 d1   sub	sp, sp, #0x70
+0x1856030ec:  f8 5f 03 a9   stp	x24, x23, [sp, #0x30]
+0x1856030f0:  f6 57 04 a9   stp	x22, x21, [sp, #0x40]
+0x1856030f4:  f4 4f 05 a9   stp	x20, x19, [sp, #0x50]
+0x1856030f8:  fd 7b 06 a9   stp	fp, lr, [sp, #0x60]
+0x1856030fc:  fd 83 01 91   add	fp, sp, #0x60
+0x185603100:  f4 03 00 aa   mov	x20, x0
+0x185603104:  d5 89 2d 90   adrp	x21, 0x1e073b000
+0x185603108:  a0 02 40 f9   ldr	x0, [x21] ; __got.class_NSColorPanel
+0x18560310c:  f5 b0 aa 94   bl	0x1880af4e0
+0x185603110:  40 04 00 34   cbz	w0, loc_185603198 ; ⤵ 0x88
+0x185603114:  28 5d 2d f0   adrp	x8, 0x1e01aa000
+0x185603118:  00 f5 41 f9   ldr	x0, [x8, #0x3e8] ; _ptr.NSNotificationCenter
+0x18560311c:  21 13 a8 94   bl	0x188007da0
+0x185603120:  7c 6f ab 94   bl	j__objc_claimAutoreleasedReturnValue
+0x185603124:  f3 03 00 aa   mov	x19, x0
+0x185603128:  57 78 2f d0   adrp	x23, 0x1e450d000
+0x18560312c:  f7 62 0f 91   add	x23, x23, #0x3d8 ; _NSWindowWillCloseNotification
+0x185603130:  f6 02 40 f9   ldr	x22, [x23]
+0x185603134:  a0 02 40 f9   ldr	x0, [x21]
+0x185603138:  e6 b0 aa 94   bl	0x1880af4d0
+0x18560313c:  75 6f ab 94   bl	j__objc_claimAutoreleasedReturnValue
+0x185603140:  f5 03 00 aa   mov	x21, x0
+0x185603144:  e0 03 13 aa   mov	x0, x19
+0x185603148:  e2 03 14 aa   mov	x2, x20
+0x18560314c:  e3 03 16 aa   mov	x3, x22
+0x185603150:  e4 03 15 aa   mov	x4, x21
+0x185603154:  3f 9a a8 94   bl	0x188029a50
+0x185603158:  e0 03 15 aa   mov	x0, x21
+0x18560315c:  c1 66 ab 94   bl	j__objc_release_x0
+0x185603160:  e0 03 14 aa   mov	x0, x20
+0x185603164:  a7 29 a8 94   bl	0x18800d800
+0x185603168:  6a 6f ab 94   bl	j__objc_claimAutoreleasedReturnValue
+0x18560316c:  f5 03 00 aa   mov	x21, x0
+0x185603170:  c0 00 00 b4   cbz	x0, loc_185603188 ; ⤵ 0x18
+0x185603174:  e3 02 40 f9   ldr	x3, [x23]
+0x185603178:  e0 03 13 aa   mov	x0, x19
+0x18560317c:  e2 03 14 aa   mov	x2, x20
+0x185603180:  e4 03 15 aa   mov	x4, x21
+0x185603184:  33 9a a8 94   bl	0x188029a50
+0x185603188:  ; loc_185603188
+0x185603188:  e0 03 15 aa   mov	x0, x21
+0x18560318c:  b5 66 ab 94   bl	j__objc_release_x0
+0x185603190:  e0 03 13 aa   mov	x0, x19
+0x185603194:  b3 66 ab 94   bl	j__objc_release_x0
+0x185603198:  ; loc_185603198
+0x185603198:  e0 03 14 aa   mov	x0, x20
+0x18560319c:  b5 66 ab 94   bl	j__objc_retain_x0
+0x1856031a0:  e8 23 00 91   add	x8, sp, #0x8
+0x1856031a4:  50 60 2d 90   adrp	x16, 0x1e020b000
+0x1856031a8:  10 4a 45 f9   ldr	x16, [x16, #0xa90] ; _ptr.__NSStackBlock__
+0x1856031ac:  f1 03 08 aa   mov	x17, x8
+0x1856031b0:  31 5c ed f2   movk	x17, #0x6ae1, lsl #0x30
+0x1856031b4:  30 0a c1 da   pacda	x16, x17
+0x1856031b8:  f0 07 00 f9   str	x16, [sp, #0x8]
+0x1856031bc:  89 63 00 f0   adrp	x9, 0x186276000
+0x1856031c0:  20 89 41 fd   ldr	d0, [x9, #0x310]
+0x1856031c4:  e0 0b 00 fd   str	d0, [sp, #0x10]
+0x1856031c8:  08 41 00 91   add	x8, x8, #0x10
+0x1856031cc:  10 00 00 90   adrp	x16, 0x185603000
+0x1856031d0:  10 22 0a 91   add	x16, x16, #0x288 ; ___25-[NSColorWell deactivate]_block_invoke
+0x1856031d4:  10 01 c1 da   pacia	x16, x8
+0x1856031d8:  88 6f 31 f0   adrp	x8, 0x1e83f6000
+0x1856031dc:  08 a1 0a 91   add	x8, x8, #0x2a8 ; ___block_descriptor_40_ea8_32s_e24_v16?0"NSMutableArray"8l
+0x1856031e0:  f0 a3 01 a9   stp	x16, x8, [sp, #0x18]
+0x1856031e4:  a3 66 ab 94   bl	j__objc_retain_x0
+0x1856031e8:  f3 03 00 aa   mov	x19, x0
+0x1856031ec:  e0 17 00 f9   str	x0, [sp, #0x28]
+0x1856031f0:  e0 23 00 91   add	x0, sp, #0x8
+0x1856031f4:  7a f8 ff 97   bl	_withSharedWellList
+0x1856031f8:  e0 03 13 aa   mov	x0, x19
+0x1856031fc:  02 00 80 52   mov	w2, #0
+0x185603200:  ec 6d a9 94   bl	0x18805e9b0
+0x185603204:  d4 89 2d 90   adrp	x20, 0x1e073b000
+0x185603208:  80 2a 40 f9   ldr	x0, [x20, #0x50] ; __got.class_NSColorWell
+0x18560320c:  1d a8 a9 94   bl	0x18806d280
+0x185603210:  80 2a 40 f9   ldr	x0, [x20, #0x50]
+0x185603214:  17 a8 a9 94   bl	0x18806d270
+0x185603218:  e0 03 13 aa   mov	x0, x19
+0x18560321c:  22 00 80 52   mov	w2, #0x1
+0x185603220:  40 95 aa 94   bl	0x1880a8720
+0x185603224:  e0 03 13 aa   mov	x0, x19
+0x185603228:  8e 66 ab 94   bl	j__objc_release_x0
+0x18560322c:  e0 17 40 f9   ldr	x0, [sp, #0x28]
+0x185603230:  8c 66 ab 94   bl	j__objc_release_x0
+0x185603234:  fd 7b 46 a9   ldp	fp, lr, [sp, #0x60]
+0x185603238:  f4 4f 45 a9   ldp	x20, x19, [sp, #0x50]
+0x18560323c:  f6 57 44 a9   ldp	x22, x21, [sp, #0x40]
+0x185603240:  f8 5f 43 a9   ldp	x24, x23, [sp, #0x30]
+0x185603244:  ff c3 01 91   add	sp, sp, #0x70
+0x185603248:  ff 0f 5f d6   retab
+0x18560324c:  02 00 00 14   b	loc_185603254 ; ⤵ 0x8
+0x185603250:  04 00 00 14   b	loc_185603260 ; ⤵ 0x10
+0x185603254:  ; loc_185603254
+0x185603254:  f4 03 00 aa   mov	x20, x0
+0x185603258:  e0 03 15 aa   mov	x0, x21
+0x18560325c:  06 00 00 14   b	loc_185603274 ; ⤵ 0x18
+0x185603260:  ; loc_185603260
+0x185603260:  f4 03 00 aa   mov	x20, x0
+0x185603264:  05 00 00 14   b	loc_185603278 ; ⤵ 0x14
+0x185603268:  01 00 00 14   b	loc_18560326c ; ⤵ 0x4
+0x18560326c:  ; loc_18560326c
+0x18560326c:  f4 03 00 aa   mov	x20, x0
+0x185603270:  e0 17 40 f9   ldr	x0, [sp, #0x28]
+0x185603274:  ; loc_185603274
+0x185603274:  7b 66 ab 94   bl	j__objc_release_x0
+0x185603278:  ; loc_185603278
+0x185603278:  e0 03 13 aa   mov	x0, x19
+0x18560327c:  79 66 ab 94   bl	j__objc_release_x0
+0x185603280:  e0 03 14 aa   mov	x0, x20
+0x185603284:  83 63 ab 94   bl	j___Unwind_Resume
+

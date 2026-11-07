@@ -1,0 +1,49 @@
+### -[NSTabViewItem initWithIdentifier:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSTabViewItem initWithIdentifier:]
+
+-[NSTabViewItem initWithIdentifier:]:
+0x18507701c:  7f 23 03 d5   pacibsp
+0x185077020:  ff c3 00 d1   sub	sp, sp, #0x30
+0x185077024:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x185077028:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x18507702c:  fd 83 00 91   add	fp, sp, #0x20
+0x185077030:  f3 03 02 aa   mov	x19, x2
+0x185077034:  e8 b5 2d 90   adrp	x8, 0x1e0733000
+0x185077038:  08 f9 43 f9   ldr	x8, [x8, #0x7f0] ; NSTabViewItem
+0x18507703c:  e0 23 00 a9   stp	x0, x8, [sp]
+0x185077040:  88 b4 2d d0   adrp	x8, 0x1e0709000
+0x185077044:  01 cd 47 f9   ldr	x1, [x8, #0xf98] ; sel_init
+0x185077048:  e0 03 00 91   mov	x0, sp
+0x18507704c:  dd 99 c1 94   bl	j__objc_msgSendSuper2
+0x185077050:  f4 03 00 aa   mov	x20, x0
+0x185077054:  5f 03 bf 94   bl	0x188037dd0
+0x185077058:  28 b6 2d b0   adrp	x8, 0x1e073c000
+0x18507705c:  00 d5 40 f9   ldr	x0, [x8, #0x1a8] ; __got.class_NSView
+0x185077060:  c0 99 c1 94   bl	j__objc_alloc_init
+0x185077064:  80 0e 00 f9   str	x0, [x20, #0x18]
+0x185077068:  e0 03 13 aa   mov	x0, x19
+0x18507706c:  01 97 c1 94   bl	j__objc_retain_x0
+0x185077070:  80 06 00 f9   str	x0, [x20, #0x8]
+0x185077074:  00 9e 31 d0   adrp	x0, 0x1e8439000
+0x185077078:  00 c0 18 91   add	x0, x0, #0x630 ; _ptr.__NSCFConstantString
+0x18507707c:  fd 96 c1 94   bl	j__objc_retain_x0
+0x185077080:  08 b6 2d f0   adrp	x8, 0x1e073a000
+0x185077084:  08 f5 47 f9   ldr	x8, [x8, #0xfe8] ; __got.class_NSColor
+0x185077088:  80 0a 00 f9   str	x0, [x20, #0x10]
+0x18507708c:  e0 03 08 aa   mov	x0, x8
+0x185077090:  08 15 c0 94   bl	0x18807c4b0
+0x185077094:  f7 96 c1 94   bl	j__objc_retain_x0
+0x185077098:  80 16 00 f9   str	x0, [x20, #0x28]
+0x18507709c:  9f 22 00 f9   str	xzr, [x20, #0x40]
+0x1850770a0:  88 4a 40 b9   ldr	w8, [x20, #0x48]
+0x1850770a4:  08 01 1c 32   orr	w8, w8, #0x10
+0x1850770a8:  88 4a 00 b9   str	w8, [x20, #0x48]
+0x1850770ac:  e0 03 14 aa   mov	x0, x20
+0x1850770b0:  e4 1b bf 94   bl	0x18803e040
+0x1850770b4:  e0 03 14 aa   mov	x0, x20
+0x1850770b8:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x1850770bc:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x1850770c0:  ff c3 00 91   add	sp, sp, #0x30
+0x1850770c4:  ff 0f 5f d6   retab
+

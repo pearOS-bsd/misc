@@ -1,0 +1,7 @@
+### -[NSCell setTitle:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSCell setTitle:]
+
+-[NSCell setTitle:]:
+0x184fc609c:  21 96 c1 14   b	0x18802b920
+

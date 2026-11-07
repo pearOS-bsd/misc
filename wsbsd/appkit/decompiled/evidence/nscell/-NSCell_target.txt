@@ -1,0 +1,8 @@
+### -[NSCell target]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSCell target]
+
+-[NSCell target]:
+0x1851b0b10:  00 00 80 d2   mov	x0, #0
+0x1851b0b14:  c0 03 5f d6   ret
+

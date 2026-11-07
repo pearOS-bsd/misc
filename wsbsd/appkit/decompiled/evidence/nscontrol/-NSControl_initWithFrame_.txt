@@ -1,0 +1,118 @@
+### -[NSControl initWithFrame:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSControl initWithFrame:]
+
+-[NSControl initWithFrame:]:
+0x184f21824:  7f 23 03 d5   pacibsp
+0x184f21828:  ff 03 01 d1   sub	sp, sp, #0x40
+0x184f2182c:  f6 57 01 a9   stp	x22, x21, [sp, #0x10]
+0x184f21830:  f4 4f 02 a9   stp	x20, x19, [sp, #0x20]
+0x184f21834:  fd 7b 03 a9   stp	fp, lr, [sp, #0x30]
+0x184f21838:  fd c3 00 91   add	fp, sp, #0x30
+0x184f2183c:  88 c0 2d b0   adrp	x8, 0x1e0732000
+0x184f21840:  08 b9 46 f9   ldr	x8, [x8, #0xd70] ; NSControl
+0x184f21844:  e0 23 00 a9   stp	x0, x8, [sp]
+0x184f21848:  88 27 38 90   adrp	x8, 0x1f5411000
+0x184f2184c:  01 01 1c 91   add	x1, x8, #0x700 ; initWithFrame:
+0x184f21850:  e0 03 00 91   mov	x0, sp
+0x184f21854:  db ef c6 94   bl	j__objc_msgSendSuper2
+0x184f21858:  f3 03 00 aa   mov	x19, x0
+0x184f2185c:  c0 09 00 b4   cbz	x0, loc_184f21994 ; ⤵ 0x138
+0x184f21860:  e0 03 13 aa   mov	x0, x19
+0x184f21864:  db ef c6 94   bl	j__objc_opt_class
+0x184f21868:  b6 77 c4 94   bl	0x18803f740
+0x184f2186c:  f4 03 00 aa   mov	x20, x0
+0x184f21870:  e0 03 13 aa   mov	x0, x19
+0x184f21874:  d7 ef c6 94   bl	j__objc_opt_class
+0x184f21878:  0a 5e c5 94   bl	0x1880790a0
+0x184f2187c:  15 00 80 d2   mov	x21, #0
+0x184f21880:  40 01 00 b4   cbz	x0, loc_184f218a8 ; ⤵ 0x28
+0x184f21884:  34 01 00 37   tbnz	w20, #0, loc_184f218a8 ; ⤵ 0x24
+0x184f21888:  f6 03 00 aa   mov	x22, x0
+0x184f2188c:  e0 03 13 aa   mov	x0, x19
+0x184f21890:  d8 2f c4 94   bl	0x18802d7f0
+0x184f21894:  e2 03 00 aa   mov	x2, x0
+0x184f21898:  e0 03 16 aa   mov	x0, x22
+0x184f2189c:  fd 82 c3 94   bl	0x188002490
+0x184f218a0:  84 87 c3 94   bl	0x1880036b0
+0x184f218a4:  f5 03 00 aa   mov	x21, x0
+0x184f218a8:  ; loc_184f218a8
+0x184f218a8:  e0 03 13 aa   mov	x0, x19
+0x184f218ac:  e1 71 c4 94   bl	0x18803e030
+0x184f218b0:  e0 03 13 aa   mov	x0, x19
+0x184f218b4:  e2 03 15 aa   mov	x2, x21
+0x184f218b8:  7e 03 c6 94   bl	0x1880a26b0
+0x184f218bc:  68 b0 2f d0   adrp	x8, 0x1e452f000
+0x184f218c0:  08 ed 29 91   add	x8, x8, #0xa7b ; data_1e452fa7b (AppKit/__DATA.__bss)
+0x184f218c4:  08 fd df 08   ldarb	w8, [x8]
+0x184f218c8:  1f 09 00 71   cmp	w8, #0x2
+0x184f218cc:  a0 02 00 54   b.eq	loc_184f21920 ; ⤵ 0x54
+0x184f218d0:  e8 06 00 34   cbz	w8, loc_184f219ac ; ⤵ 0xdc
+0x184f218d4:  ; loc_184f218d4
+0x184f218d4:  68 b0 2f d0   adrp	x8, 0x1e452f000
+0x184f218d8:  08 41 2a 91   add	x8, x8, #0xa90 ; data_1e452fa90 (AppKit/__DATA.__bss)
+0x184f218dc:  29 00 80 52   mov	w9, #0x1
+0x184f218e0:  08 01 e9 f8   ldaddal	x9, x8, [x8]
+0x184f218e4:  bf 02 00 f1   cmp	x21, #0
+0x184f218e8:  e8 17 9f 1a   cset	w8, eq
+0x184f218ec:  08 01 14 0a   and	w8, w8, w20
+0x184f218f0:  1f 05 00 71   cmp	w8, #0x1
+0x184f218f4:  61 01 00 54   b.ne	loc_184f21920 ; ⤵ 0x2c
+0x184f218f8:  68 b0 2f d0   adrp	x8, 0x1e452f000
+0x184f218fc:  08 21 2a 91   add	x8, x8, #0xa88 ; data_1e452fa88 (AppKit/__DATA.__bss)
+0x184f21900:  29 00 80 52   mov	w9, #0x1
+0x184f21904:  08 01 e9 f8   ldaddal	x9, x8, [x8]
+0x184f21908:  08 af 2f f0   adrp	x8, 0x1e4504000
+0x184f2190c:  08 bd 87 b9   ldrsw	x8, [x8, #0x7bc] ; _OBJC_IVAR_$_NSControl._wasEverZeroCell
+0x184f21910:  68 02 08 8b   add	x8, x19, x8
+0x184f21914:  09 01 40 39   ldrb	w9, [x8]
+0x184f21918:  29 01 00 32   orr	w9, w9, #0x1
+0x184f2191c:  09 01 00 39   strb	w9, [x8]
+0x184f21920:  ; loc_184f21920
+0x184f21920:  e0 03 15 aa   mov	x0, x21
+0x184f21924:  cf ec c6 94   bl	j__objc_release_x0
+0x184f21928:  14 b2 2f f0   adrp	x20, 0x1e4564000
+0x184f2192c:  94 e2 2c 91   add	x20, x20, #0xb38 ; __controlBitfieldLock
+0x184f21930:  e0 03 14 aa   mov	x0, x20
+0x184f21934:  db 02 c7 94   bl	j__os_unfair_lock_lock
+0x184f21938:  08 af 2f f0   adrp	x8, 0x1e4504000
+0x184f2193c:  08 b9 87 b9   ldrsw	x8, [x8, #0x7b8] ; _OBJC_IVAR_$_NSControl._conFlags
+0x184f21940:  75 02 08 8b   add	x21, x19, x8
+0x184f21944:  a8 02 40 b9   ldr	w8, [x21]
+0x184f21948:  08 01 00 32   orr	w8, w8, #0x1
+0x184f2194c:  a8 02 00 b9   str	w8, [x21]
+0x184f21950:  e0 03 14 aa   mov	x0, x20
+0x184f21954:  2b eb c6 94   bl	j__os_unfair_lock_unlock
+0x184f21958:  e0 03 14 aa   mov	x0, x20
+0x184f2195c:  d1 02 c7 94   bl	j__os_unfair_lock_lock
+0x184f21960:  a8 02 40 b9   ldr	w8, [x21]
+0x184f21964:  08 01 1e 32   orr	w8, w8, #0x4
+0x184f21968:  a8 02 00 b9   str	w8, [x21]
+0x184f2196c:  e0 03 14 aa   mov	x0, x20
+0x184f21970:  24 eb c6 94   bl	j__os_unfair_lock_unlock
+0x184f21974:  08 af 2f f0   adrp	x8, 0x1e4504000
+0x184f21978:  08 b1 87 b9   ldrsw	x8, [x8, #0x7b0] ; _OBJC_IVAR_$_NSControl._aux
+0x184f2197c:  68 02 08 8b   add	x8, x19, x8
+0x184f21980:  00 01 40 f9   ldr	x0, [x8]
+0x184f21984:  22 00 80 52   mov	w2, #0x1
+0x184f21988:  d6 0d c6 94   bl	0x1880a50e0
+0x184f2198c:  e0 03 13 aa   mov	x0, x19
+0x184f21990:  a4 71 c4 94   bl	0x18803e020
+0x184f21994:  ; loc_184f21994
+0x184f21994:  e0 03 13 aa   mov	x0, x19
+0x184f21998:  fd 7b 43 a9   ldp	fp, lr, [sp, #0x30]
+0x184f2199c:  f4 4f 42 a9   ldp	x20, x19, [sp, #0x20]
+0x184f219a0:  f6 57 41 a9   ldp	x22, x21, [sp, #0x10]
+0x184f219a4:  ff 03 01 91   add	sp, sp, #0x40
+0x184f219a8:  ff 0f 5f d6   retab
+0x184f219ac:  ; loc_184f219ac
+0x184f219ac:  00 ab 31 f0   adrp	x0, 0x1e8484000
+0x184f219b0:  00 c0 2b 91   add	x0, x0, #0xaf0 ; "NSControlLogCellStatistics"
+0x184f219b4:  62 b0 2f d0   adrp	x2, 0x1e452f000
+0x184f219b8:  42 ec 29 91   add	x2, x2, #0xa7b ; data_1e452fa7b (AppKit/__DATA.__bss)
+0x184f219bc:  01 00 80 52   mov	w1, #0
+0x184f219c0:  03 00 80 d2   mov	x3, #0
+0x184f219c4:  5d 98 fe 97   bl	__NSGetBoolAppConfig
+0x184f219c8:  60 f8 ff 35   cbnz	w0, loc_184f218d4 ; ⤴ -0xf4
+0x184f219cc:  d5 ff ff 17   b	loc_184f21920 ; ⤴ -0xac
+
