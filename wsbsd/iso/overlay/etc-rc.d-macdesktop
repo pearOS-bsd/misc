@@ -40,7 +40,7 @@ macdesktop_start()
 	gpu_ok=0
 	case "$(kenv -q smbios.system.product 2>/dev/null)" in wsbsd-ci*) ;; *)
 		if [ -e /dev/dri/card0 ] && [ -x /usr/local/sbin/wsd ] && [ ! -e /var/run/wsbsd/nokms ]; then
-			daemon -f -o /var/log/WindowServer.log -p /var/run/WindowServer.pid $WS -b kms -c /dev/dri/card0 -r gl -t -F
+			env EGL_LOG_LEVEL=info MESA_DEBUG=1 LIBGL_DEBUG=verbose daemon -f -o /var/log/WindowServer.log -p /var/run/WindowServer.pid $WS -b kms -c /dev/dri/card0 -r gl -t -F
 			i=0; while [ $i -lt 40 ] && [ ! -S $WS_SOCKET ]; do sleep 0.25; i=$((i+1)); done
 			if [ -S $WS_SOCKET ] && pgrep -f "WindowServer -b kms" >/dev/null 2>&1; then gpu_ok=1; echo "macdesktop: KMS + GL display" > /dev/console 2>/dev/null
 			else pkill -f "WindowServer -b kms" 2>/dev/null; sleep 1; rm -f $WS_SOCKET; fi
@@ -55,11 +55,18 @@ macdesktop_start()
 	  { echo "-- window server"
 	    if [ $gpu_ok = 1 ]; then echo "display: KMS on /dev/dri/card0 (driver: $(kldstat 2>/dev/null | grep -o -E 'i915kms|radeonkms|amdgpu' | sort -u | tr '\n' ' '))"
 	    else echo "display: console framebuffer (EFI GOP / vt), no DRM display"; fi
-	    grep -E '^wsd: (framebuffer|[0-9]+x[0-9]+,|GL compositor|built without GL|DRM|KMS)' $W 2>/dev/null | head -8
+	    grep -E '^wsd: (framebuffer|[0-9]+x[0-9]+,|GL compositor|GL init|built without GL|DRM|KMS)' $W 2>/dev/null | head -12
 	    if grep -q 'wsd: GL compositor: ' $W 2>/dev/null && ! grep -q 'falling back to software' $W 2>/dev/null; then echo "acceleration: GPU (OpenGL ES compositor)"
 	    else echo "acceleration: CPU (software compositor)"; fi
 	  } >> $L
 	  { echo "== GPU report"; cat $L; } > /dev/ttyu0 2>/dev/null ) &
+	# the same report as a file on the desktop of every signed-in account ("GPU report.txt", opens in TextEdit with a double click): no commands to type to read it
+	( i=0; while [ $i -lt 120 ]; do sleep 5; i=$((i + 1))
+	    for H in /Users/*/Desktop; do [ -d "$H" ] || continue; mount | grep -q " ${H%/Desktop} " || continue
+	      for f in wsbsd_gpu.log WindowServer.log wsbsd_gl_diag.txt; do [ -f /var/log/$f ] && cp -f /var/log/$f "$H/$( case $f in wsbsd_gpu.log) echo 'GPU report.txt';; wsbsd_gl_diag.txt) echo 'GL diagnosis.txt';; *) echo 'WindowServer log.txt';; esac)" 2>/dev/null; done
+	      [ -f /var/log/wsbsd_gl_probe.out ] && cp -f /var/log/wsbsd_gl_probe.out "$H/GL probe output.txt" 2>/dev/null
+	      [ -f /var/run/wsbsd_gl_probe.truss ] && cp -f /var/run/wsbsd_gl_probe.truss "$H/GL probe truss.txt" 2>/dev/null
+	    done; done ) &
 	sleep 2
 	# Sessions, as on the Mac (loginwindow is root and makes a session per account; fast user switching): each account that is signed in has its own launchd running the desktop programs; $SD/sessions lists their uids
 	# and $SD/console holds the uid whose session is on the screen (empty while the login window is shown). The window server shows only the windows of the console session and of root (the login window).
