@@ -361,6 +361,8 @@ static void make_target(gl_compositor *c)
 	glBindFramebuffer(GL_FRAMEBUFFER, c->fbo);
 }
 
+#define GLFAIL(msg) do { fprintf(stderr, "wsd: GL init: %s (EGL error 0x%x)\n", msg, (unsigned)eglGetError()); goto fail; } while (0)
+
 gl_compositor *glc_create(const char *node, int width, int height)
 {
 	if (width <= 0 || height <= 0) return NULL;
@@ -368,25 +370,29 @@ gl_compositor *glc_create(const char *node, int width, int height)
 	if (!c) return NULL;
 	c->w = width; c->h = height; c->dpy = EGL_NO_DISPLAY; c->ctx = EGL_NO_CONTEXT; c->pbuf = EGL_NO_SURFACE;
 	c->dpy = pick_display(c, node);
+#ifdef WS_GBM
+	if (node && !c->gbm) fprintf(stderr, "wsd: GL init: gbm_create_device on %s failed, trying surfaceless / default display\n", node);
+#endif
 	EGLint major = 0, minor = 0;
-	if (c->dpy == EGL_NO_DISPLAY || !eglInitialize(c->dpy, &major, &minor)) goto fail;
-	if (!eglBindAPI(EGL_OPENGL_ES_API)) goto fail;
+	if (c->dpy == EGL_NO_DISPLAY) GLFAIL("no EGL display (GBM device on the render node, surfaceless and default all failed)");
+	if (!eglInitialize(c->dpy, &major, &minor)) GLFAIL("eglInitialize failed (the Mesa driver for this GPU did not load)");
+	if (!eglBindAPI(EGL_OPENGL_ES_API)) GLFAIL("eglBindAPI(OpenGL ES) failed");
 	const char *eext = eglQueryString(c->dpy, EGL_EXTENSIONS);
 	int surfaceless = has_ext(eext, "EGL_KHR_surfaceless_context");
 
 	EGLConfig cfg; EGLint ncfg = 0;
 	EGLint cattr[] = { EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT, EGL_SURFACE_TYPE, surfaceless ? EGL_DONT_CARE : EGL_PBUFFER_BIT,
 	                   EGL_RED_SIZE, 8, EGL_GREEN_SIZE, 8, EGL_BLUE_SIZE, 8, EGL_ALPHA_SIZE, 8, EGL_NONE };
-	if (!eglChooseConfig(c->dpy, cattr, &cfg, 1, &ncfg) || ncfg < 1) goto fail;
+	if (!eglChooseConfig(c->dpy, cattr, &cfg, 1, &ncfg) || ncfg < 1) GLFAIL("eglChooseConfig: no OpenGL ES 2 config");
 	EGLint xattr[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE };
 	c->ctx = eglCreateContext(c->dpy, cfg, EGL_NO_CONTEXT, xattr);
-	if (c->ctx == EGL_NO_CONTEXT) goto fail;
+	if (c->ctx == EGL_NO_CONTEXT) GLFAIL("eglCreateContext (OpenGL ES 2) failed");
 	if (!surfaceless) {
 		EGLint pb[] = { EGL_WIDTH, 1, EGL_HEIGHT, 1, EGL_NONE };
 		c->pbuf = eglCreatePbufferSurface(c->dpy, cfg, pb);
-		if (c->pbuf == EGL_NO_SURFACE) goto fail;
+		if (c->pbuf == EGL_NO_SURFACE) GLFAIL("eglCreatePbufferSurface failed");
 	}
-	if (!eglMakeCurrent(c->dpy, c->pbuf, c->pbuf, c->ctx)) goto fail;
+	if (!eglMakeCurrent(c->dpy, c->pbuf, c->pbuf, c->ctx)) GLFAIL("eglMakeCurrent failed");
 
 	/* runtime extension probing: no extension is required for the upload path */
 	const char *gext = (const char *)glGetString(GL_EXTENSIONS);
@@ -399,7 +405,7 @@ gl_compositor *glc_create(const char *node, int width, int height)
 	c->export_image = (PFNEGLEXPORTDMABUFIMAGEMESAPROC)eglGetProcAddress("eglExportDMABUFImageMESA");
 	c->have_export = has_ext(eext, "EGL_MESA_image_dma_buf_export") && c->export_query && c->export_image && c->create_image && c->destroy_image;
 
-	if (build_program(c)) goto fail;
+	if (build_program(c)) GLFAIL("shader program did not build");
 	static const GLfloat quad[8] = { 0, 0, 1, 0, 0, 1, 1, 1 };
 	glGenBuffers(1, &c->vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, c->vbo);

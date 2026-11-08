@@ -57,6 +57,8 @@ rm -rf /usr/local/share/wsbsd/Finder.app; install -d /usr/local/share/wsbsd/Find
 for a in terminal:Terminal-gnustep uitest:UITest-gnustep ksa:KeyboardSetupAssistant-gnustep; do d="${a%%:*}"; b="${a##*:}"; (cd "$WS/../$d" && make gnustep $( [ "$d" = uitest ] || echo COMPAT="$WORK/compat" ) WS="$WS" > "$WORK/$d.log" 2>&1 && install -m 755 "$b" /usr/local/bin/"$b") || { echo "== $d did not build"; grep -m12 "error" "$WORK/$d.log"; [ "$d" = uitest ] || exit 1; }; done
 cc -O2 -o /usr/local/libexec/dyld "$HERE/src/dyld.c"
 cc -O2 -I"$WS/sdk/include" -o /usr/local/bin/xattr "$HERE/src/xattr.c" "$WS/sdk/src/xattr.c"
+cc -O2 -I/usr/local/include/libdrm -I/usr/local/include -o /usr/local/bin/i915probe "$HERE/src/i915probe.c" 2>"$WORK/i915probe.log" || echo "NOTE: i915probe did not build"
+cc -O2 -I/usr/local/include -o /usr/local/bin/gbmprobe "$HERE/src/gbmprobe.c" -L/usr/local/lib -lgbm -lEGL 2>"$WORK/gbmprobe.log" || { echo "NOTE: gbmprobe did not build"; cat "$WORK/gbmprobe.log"; }
 install -d /usr/local/sbin; cc -O2 -I"$WS/sdk/include" -o /usr/local/sbin/spctl "$HERE/src/spctl.c" "$WS/sdk/src/xattr.c"
 
 echo "== 2. FreeBSD $REL base and kernel"
@@ -70,13 +72,17 @@ rm -f "$ROOT"/usr/lib/*.a "$ROOT"/usr/lib/*_p.a "$ROOT"/usr/bin/clang* "$ROOT"/u
 
 echo "== 3. what we built, with the libraries it needs"
 mkdir -p "$ROOT/usr/local"
-PDFLIBS="$(cd / && ls usr/local/lib/libpoppler-glib.so* 2>/dev/null)"   # dlopen'ed by PDFImage.m: the dependency scan below follows them
+PDFLIBS="$(cd / && ls usr/local/lib/libpoppler-glib.so* usr/local/lib/libEGL_mesa.so* usr/local/lib/libGLX_mesa.so* 2>/dev/null)"   # libEGL_mesa / libGLX_mesa: the Mesa vendor libraries libglvnd dlopens (without them eglGetPlatformDisplay fails with EGL_BAD_PARAMETER and no GL compositor starts)
+echo "$PDFLIBS" | grep -q libEGL_mesa || echo "NOTE: libEGL_mesa.so is not installed, the GL compositor cannot start"
+true   # dlopen'ed by PDFImage.m: the dependency scan below follows them
 tar -C / -cf - $PDFLIBS usr/local/GNUstep usr/local/sbin/lsof usr/local/sbin/wsd usr/local/sbin/wsd-fb usr/local/lib/dri usr/local/lib/gbm usr/local/share/glvnd usr/local/share/drirc.d usr/local/sbin/spctl usr/local/bin usr/local/libexec/dyld usr/local/lib/libwsclient.so usr/local/lib/libwsbsdcompat.so usr/local/lib/libQuartzCore.so usr/local/share/fonts usr/local/etc/fonts usr/local/share/wsbsd usr/local/bin/zsh usr/local/bin/sudo usr/local/libexec/sudo usr/local/lib/sudo usr/local/share/zsh usr/local/share/zsh-autosuggestions usr/local/lib/zsh usr/local/share/icu usr/local/lib/libicudata.so usr/local/lib/libicudata.so.76 usr/local/lib/libicudata.so.76.1 2>/dev/null | tar -C "$ROOT" -xpf -
 mkdir -p "$ROOT/usr/sbin"; ln -sf /usr/local/sbin/lsof "$ROOT/usr/sbin/lsof"       # where the Mac's applications look for it
 # guest tools of VMware and VirtualBox (before the library scan, which then follows their dependencies)
 sh "$HERE/tools/guesttools.sh" "$ROOT" || echo "NOTE: guest tools failed"
 # Wi-Fi / Bluetooth firmware, usbmuxd + libimobiledevice (iPhone tethering)
 sh "$HERE/tools/drivers.sh" "$ROOT" || echo "NOTE: driver firmware failed"
+# the modules of the ports (drm-kmod, firmware) need their own linker.hints: without it i915kms cannot find the module it depends on (drmn, provided by drm.ko) and kldload fails
+[ -d "$ROOT/boot/modules" ] && kldxref "$ROOT/boot/modules" && echo "kldxref: $(ls -l "$ROOT/boot/modules/linker.hints" | awk '{print $5}') bytes of hints for /boot/modules" || echo "NOTE: kldxref failed, the drm-kmod modules will not load"
 # every shared library below /usr/local that these programs need (ldd closure)
 find "$ROOT/usr/local" -type f \( -name '*.so*' -o -perm -u+x \) 2>/dev/null | sed "s|^$ROOT||" > "$WORK/elf.list"
 : > "$WORK/needed.list"

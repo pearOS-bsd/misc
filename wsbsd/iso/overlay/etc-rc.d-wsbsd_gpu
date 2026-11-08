@@ -34,6 +34,50 @@ wsbsd_gpu_try()
 	done
 	return 1
 }
+# a GL probe before the window server starts: the OpenGL ES compositor is started once on the render node in a throw-away headless wsd, with the driver's debug output on and every system call traced; what
+# failed (system calls, kernel messages, Mesa / EGL messages) goes into the report, so that a machine where EGL does not start explains itself without anyone typing commands
+wsbsd_gpu_probe()
+{
+	[ -x /usr/local/sbin/wsd ] || return 0
+	P=/var/log/wsbsd_gl_probe; T=/var/run/wsbsd_gl_probe.truss; rm -f $T
+	wsbsd_gpu_log "-- GL probe (headless wsd, GL compositor on /dev/dri/renderD128, drm debug core+driver, 8 s)"
+	wsbsd_gpu_log "i915 parameters: $(sysctl -n compat.linuxkpi.i915_enable_guc 2>/dev/null | sed 's/^/enable_guc=/') $(sysctl -n compat.linuxkpi.i915_reset 2>/dev/null | sed 's/^/reset=/') $(sysctl -n compat.linuxkpi.i915_modeset 2>/dev/null | sed 's/^/modeset=/')"
+	before=$(dmesg | wc -l)
+	sysctl compat.linuxkpi.drm_debug=0x03 >/dev/null 2>&1
+	WS_SOCKET=/var/run/wsbsd_gl_probe.sock LIBGL_DEBUG=verbose MESA_DEBUG=1 EGL_LOG_LEVEL=debug timeout 8 truss -f -o $T /usr/local/sbin/wsd -b headless -r gl -g 640x480 > $P.out 2>&1
+	sysctl compat.linuxkpi.drm_debug=0 >/dev/null 2>&1
+	rm -f /var/run/wsbsd_gl_probe.sock
+	# the same start with each Mesa driver forced in turn (what works tells where the fault is: iris = the Intel driver, zink = Vulkan on top, kms_swrast / swrast = software rendering through the same GBM / EGL path)
+	{ echo "-- Mesa drivers one by one (wsd: GL init / GL compositor lines)"
+	  for d in iris zink kms_swrast swrast; do
+	    echo "== MESA_LOADER_DRIVER_OVERRIDE=$d"
+	    WS_SOCKET=/var/run/wsbsd_gl_probe.sock MESA_LOADER_DRIVER_OVERRIDE=$d MESA_DEBUG=1 EGL_LOG_LEVEL=debug timeout 6 /usr/local/sbin/wsd -b headless -r gl -g 640x480 2>&1 | grep -E 'wsd: (GL|render)|libEGL|MESA|iris|zink|error|failed' | head -6
+	    rm -f /var/run/wsbsd_gl_probe.sock
+	  done
+	  echo "-- the last 60 system calls of the first probe (what Mesa did before it gave up)"
+	  tail -60 $T | cut -c1-200
+	} > $P.drivers 2>&1
+	# what the i915 driver answers to the questions Mesa asks first (slices, EUs, engines, a context): tells a GPU that is not set up from one that Mesa cannot use
+	{ echo "-- gbmprobe (render node)"; [ -x /usr/local/bin/gbmprobe ] && LIBGL_DEBUG=verbose MESA_DEBUG=1 EGL_LOG_LEVEL=debug truss -f -o $P.gbm.truss /usr/local/bin/gbmprobe /dev/dri/renderD128 2>&1 || echo "(gbmprobe missing)"
+	  echo "-- gbmprobe with swrast"; [ -x /usr/local/bin/gbmprobe ] && MESA_LOADER_DRIVER_OVERRIDE=swrast LIBGL_DEBUG=verbose /usr/local/bin/gbmprobe /dev/dri/renderD128 2>&1
+	  ls -l /usr/local/lib/gbm /usr/local/lib/dri 2>&1 | head -20
+	  echo "-- i915probe (render node)"; [ -x /usr/local/bin/i915probe ] && /usr/local/bin/i915probe /dev/dri/renderD128 2>&1 || echo "(i915probe missing)"
+	  echo "-- i915probe (card0)"; [ -x /usr/local/bin/i915probe ] && /usr/local/bin/i915probe /dev/dri/card0 2>&1 | head -45
+	} > $P.i915probe 2>&1
+	{ echo "== GL diagnosis $(date '+%H:%M:%S')"; sed -n '/^-- gbmprobe (render node)/,/^-- i915probe (render node)/p' $P.i915probe | grep -v '^-- i915probe'
+	  echo "-- gbmprobe truss: files opened / failed calls"; grep -E 'open\(|ERR#|gbm|dlopen' $P.gbm.truss | grep -E 'dri|gbm|gallium|mesa|EGL|ERR#' | grep -v -E 'drirc|ioctl' | cut -c1-170 | head -45
+	  echo "-- failed ioctls of gbmprobe"; grep -E 'ioctl\(.*ERR#' $P.gbm.truss | cut -c1-170 | head -15
+	  echo "-- last 25 calls of gbmprobe"; tail -25 $P.gbm.truss | cut -c1-170; } > /var/log/wsbsd_gl_diag.txt 2>&1
+	{ echo "-- GL probe: what wsd said"; grep -v drirc $P.out | head -20
+	  echo "-- GL probe: ioctls on the DRM nodes that failed (ERR#19 = no such device, #22 = invalid argument)"
+	  grep -E 'ioctl\(.*ERR#' $T | head -30
+	  cat $P.drivers
+	  cat $P.i915probe
+	  echo "-- GL probe: kernel messages during the probe (drm debug core+driver)"
+	  dmesg | tail -n +$((before + 1)) | grep -v -E 'drirc|atomic|power_well|tc_port|vblank' | head -80
+	  echo "-- GL probe: end"
+	} >> $LOG 2>&1
+}
 # what the kernel and the drivers said about the card (firmware that is missing shows up here)
 wsbsd_gpu_dmesg()
 {
@@ -58,15 +102,15 @@ wsbsd_gpu_start()
 	done
 	# display controllers (PCI class 03): vendor 8086 Intel, 1002 AMD; 10de NVIDIA and the virtual GPUs stay on the EFI framebuffer
 	gpus="$(pciconf -l 2>/dev/null | grep -E 'class=0x03(00|80)' )"
-	if echo "$gpus" | grep -q 'chip=0x[0-9a-f]\{4\}8086'; then
+	if echo "$gpus" | grep -q -E 'vendor=0x8086|chip=0x[0-9a-f]{4}8086'; then
 		wsbsd_gpu_log "vendor: Intel -> i915kms"
-		if wsbsd_gpu_try i915kms; then wsbsd_gpu_log "result: i915kms drives the GPU (DRM/KMS), the window server uses OpenGL ES if EGL starts"; wsbsd_gpu_dmesg; return 0; fi
+		if wsbsd_gpu_try i915kms; then wsbsd_gpu_log "result: i915kms drives the GPU (DRM/KMS), the window server uses OpenGL ES if EGL starts"; wsbsd_gpu_dmesg; wsbsd_gpu_probe; return 0; fi
 	fi
-	if echo "$gpus" | grep -q 'chip=0x[0-9a-f]\{4\}1002'; then
+	if echo "$gpus" | grep -q -E 'vendor=0x1002|chip=0x[0-9a-f]{4}1002'; then
 		wsbsd_gpu_log "vendor: AMD -> radeonkms, then amdgpu"
-		if wsbsd_gpu_try radeonkms amdgpu; then wsbsd_gpu_log "result: AMD driver drives the GPU (DRM/KMS), the window server uses OpenGL ES if EGL starts"; wsbsd_gpu_dmesg; return 0; fi
+		if wsbsd_gpu_try radeonkms amdgpu; then wsbsd_gpu_log "result: AMD driver drives the GPU (DRM/KMS), the window server uses OpenGL ES if EGL starts"; wsbsd_gpu_dmesg; wsbsd_gpu_probe; return 0; fi
 	fi
-	echo "$gpus" | grep -q 'chip=0x[0-9a-f]\{4\}10de' && wsbsd_gpu_log "vendor: NVIDIA, no driver on this image"
+	echo "$gpus" | grep -q -E 'vendor=0x10de|chip=0x[0-9a-f]{4}10de' && wsbsd_gpu_log "vendor: NVIDIA, no driver on this image"
 	[ -n "$gpus" ] || wsbsd_gpu_log "no PCI display controller"
 	wsbsd_gpu_log "result: no GPU driver took a card, EFI framebuffer, software compositor (CPU)"
 	wsbsd_gpu_dmesg
