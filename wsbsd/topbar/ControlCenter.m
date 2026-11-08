@@ -90,9 +90,9 @@ void SetDark(BOOL dark)
 - (void)drawKnob:(NSRect)r {}
 - (void)drawKnob {}
 @end
-/* keyboard backlight: the sysctl of the laptop's driver (clevo_wmi: dev.clevo_wmi.0.kb_brightness, 0 ... 255); a machine without one keeps the slider as it was (no effect) */
-static double KbdLevel(void) { int v = 0; size_t n = sizeof v; if (sysctlbyname("dev.clevo_wmi.0.kb_brightness", &v, &n, NULL, 0) == 0) return v / 255.0; return -1; }
-static void SetKbd(double x) { int v = (int)lround(x * 255); sysctlbyname("dev.clevo_wmi.0.kb_brightness", NULL, NULL, &v, sizeof v); }
+/* keyboard backlight: the sysctl of the laptop's driver (clevo_dchu: dev.clevo_dchu.0.kb_brightness, 0 ... 255); a machine without one keeps the slider as it was (no effect) */
+static double KbdLevel(void) { int v = 0; size_t n = sizeof v; if (sysctlbyname("dev.clevo_dchu.0.kb_brightness", &v, &n, NULL, 0) == 0) return v / 255.0; return -1; }
+static void SetKbd(double x) { int v = (int)lround(x * 255); sysctlbyname("dev.clevo_dchu.0.kb_brightness", NULL, NULL, &v, sizeof v); }
 @interface CCView : NSView { NSMutableDictionary *on; NSString *drag; double volume, brightness, kbd; NSArray *tiles; NSSlider *sSound, *sBright, *sKbd; }
 - (void)applyGlass;
 @end

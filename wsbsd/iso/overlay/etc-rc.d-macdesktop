@@ -40,7 +40,7 @@ macdesktop_start()
 	gpu_ok=0
 	case "$(kenv -q smbios.system.product 2>/dev/null)" in wsbsd-ci*) ;; *)
 		if [ -e /dev/dri/card0 ] && [ -x /usr/local/sbin/wsd ] && [ ! -e /var/run/wsbsd/nokms ]; then
-			env EGL_LOG_LEVEL=info MESA_DEBUG=1 LIBGL_DEBUG=verbose daemon -f -o /var/log/WindowServer.log -p /var/run/WindowServer.pid $WS -b kms -c /dev/dri/card0 -r gl -t -F
+			mkdir -p /var/tmp/mesa_shader_cache; env HOME=/root MESA_SHADER_CACHE_DIR=/var/tmp/mesa_shader_cache EGL_LOG_LEVEL=info daemon -f -o /var/log/WindowServer.log -p /var/run/WindowServer.pid $WS -b kms -c /dev/dri/card0 -r gl -t -F
 			i=0; while [ $i -lt 40 ] && [ ! -S $WS_SOCKET ]; do sleep 0.25; i=$((i+1)); done
 			if [ -S $WS_SOCKET ] && pgrep -f "WindowServer -b kms" >/dev/null 2>&1; then gpu_ok=1; echo "macdesktop: KMS + GL display" > /dev/console 2>/dev/null
 			else pkill -f "WindowServer -b kms" 2>/dev/null; sleep 1; rm -f $WS_SOCKET; fi
@@ -63,7 +63,7 @@ macdesktop_start()
 	# the same report as a file on the desktop of every signed-in account ("GPU report.txt", opens in TextEdit with a double click): no commands to type to read it
 	( i=0; while [ $i -lt 120 ]; do sleep 5; i=$((i + 1))
 	    for H in /Users/*/Desktop; do [ -d "$H" ] || continue; mount | grep -q " ${H%/Desktop} " || continue
-	      for f in wsbsd_gpu.log WindowServer.log wsbsd_gl_diag.txt; do [ -f /var/log/$f ] && cp -f /var/log/$f "$H/$( case $f in wsbsd_gpu.log) echo 'GPU report.txt';; wsbsd_gl_diag.txt) echo 'GL diagnosis.txt';; *) echo 'WindowServer log.txt';; esac)" 2>/dev/null; done
+	      for f in wsbsd_gpu.log WindowServer.log wsbsd_gl_diag.txt wsbsd_wifi.log wsbsd_hw.log; do [ -f /var/log/$f ] && cp -f /var/log/$f "$H/$( case $f in wsbsd_gpu.log) echo 'GPU report.txt';; wsbsd_gl_diag.txt) echo 'GL diagnosis.txt';; wsbsd_wifi.log) echo 'Wi-Fi report.txt';; wsbsd_hw.log) echo 'Hardware report.txt';; *) echo 'WindowServer log.txt';; esac)" 2>/dev/null; done
 	      [ -f /var/log/wsbsd_gl_probe.out ] && cp -f /var/log/wsbsd_gl_probe.out "$H/GL probe output.txt" 2>/dev/null
 	      [ -f /var/run/wsbsd_gl_probe.truss ] && cp -f /var/run/wsbsd_gl_probe.truss "$H/GL probe truss.txt" 2>/dev/null
 	    done; done ) &

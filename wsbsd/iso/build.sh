@@ -59,6 +59,7 @@ cc -O2 -o /usr/local/libexec/dyld "$HERE/src/dyld.c"
 cc -O2 -I"$WS/sdk/include" -o /usr/local/bin/xattr "$HERE/src/xattr.c" "$WS/sdk/src/xattr.c"
 cc -O2 -I/usr/local/include/libdrm -I/usr/local/include -o /usr/local/bin/i915probe "$HERE/src/i915probe.c" 2>"$WORK/i915probe.log" || echo "NOTE: i915probe did not build"
 cc -O2 -I/usr/local/include -o /usr/local/bin/gbmprobe "$HERE/src/gbmprobe.c" -L/usr/local/lib -lgbm -lEGL 2>"$WORK/gbmprobe.log" || { echo "NOTE: gbmprobe did not build"; cat "$WORK/gbmprobe.log"; }
+cc -O2 -o /usr/local/bin/evdevprobe "$HERE/src/evdevprobe.c" 2>"$WORK/evdevprobe.log" || { echo "NOTE: evdevprobe did not build"; cat "$WORK/evdevprobe.log"; }
 install -d /usr/local/sbin; cc -O2 -I"$WS/sdk/include" -o /usr/local/sbin/spctl "$HERE/src/spctl.c" "$WS/sdk/src/xattr.c"
 
 echo "== 2. FreeBSD $REL base and kernel"
@@ -120,7 +121,7 @@ install -d "$ROOT/System/Library/Desktop Pictures" && install -m 644 "$WS/deskto
 install -d "$ROOT/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources" && install -m 644 "$WS/launchservices/uti_table.json" "$ROOT/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/uti_table.json"
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_kbdlight" "$ROOT/$d/rc.d/wsbsd_kbdlight"; done
 # the keyboard backlight driver (needs the kernel sources of the build machine; without them the image simply has no such module)
-# the kernel module of the Clevo keyboard backlight and Fn keys (clevo_wmi): built against the kernel sources of the image's release (src.txz, only usr/src/sys is unpacked), the build machine need not have /usr/src
+# the kernel module of the Clevo keyboard backlight (clevo_dchu, the DCHU ACPI device CLV0001): built against the kernel sources of the image's release (src.txz, only usr/src/sys is unpacked), the build machine need not have /usr/src
 SYSDIR=/usr/src/sys
 if [ ! -d "$SYSDIR/dev/acpica" ]; then
 	SYSDIR="$WORK/src/usr/src/sys"
@@ -129,7 +130,7 @@ if [ ! -d "$SYSDIR/dev/acpica" ]; then
 		[ -f "$WORK/src.txz" ] && tar -xf "$WORK/src.txz" -C "$WORK/src" usr/src/sys 2>/dev/null; rm -f "$WORK/src.txz"
 	fi
 fi
-if [ -d "$SYSDIR/dev/acpica" ]; then (cd "$WS/kmod/clevo_wmi" && make SYSDIR="$SYSDIR" clean >/dev/null 2>&1; make SYSDIR="$SYSDIR" >"$WORK/clevo_wmi.log" 2>&1 && install -d "$ROOT/boot/modules" && install -m 555 clevo_wmi.ko "$ROOT/boot/modules/clevo_wmi.ko" && echo "clevo_wmi built against $SYSDIR") || { echo "NOTE: clevo_wmi did not build (see $WORK/clevo_wmi.log)"; tail -8 "$WORK/clevo_wmi.log"; }; else echo "NOTE: no kernel sources: no keyboard backlight module in this image"; fi
+if [ -d "$SYSDIR/dev/acpica" ]; then (cd "$WS/kmod/clevo_dchu" && make SYSDIR="$SYSDIR" clean >/dev/null 2>&1; make SYSDIR="$SYSDIR" >"$WORK/clevo_dchu.log" 2>&1 && install -d "$ROOT/boot/modules" && install -m 555 clevo_dchu.ko "$ROOT/boot/modules/clevo_dchu.ko" && echo "clevo_dchu built against $SYSDIR") || { echo "NOTE: clevo_dchu did not build (see $WORK/clevo_dchu.log)"; tail -8 "$WORK/clevo_dchu.log"; }; else echo "NOTE: no kernel sources: no keyboard backlight module in this image"; fi
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_wifi" "$ROOT/$d/rc.d/wsbsd_wifi"; done
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_bluetooth" "$ROOT/$d/rc.d/wsbsd_bluetooth"; done
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_gpu" "$ROOT/$d/rc.d/wsbsd_gpu"; done

@@ -2,7 +2,7 @@
 # PROVIDE: wsbsd_kbdlight
 # REQUIRE: FILESYSTEMS
 # KEYWORD: nojail
-# Keyboard backlight: loads the driver of the laptop (clevo_wmi for Clevo / Tongfang machines such as the NS50_70MU) when the module is in the image, and sets the level the user left.
+# Keyboard backlight: loads the driver of the laptop (clevo_dchu for Clevo / Tongfang machines such as the NS50_70MU) when the module is in the image, and sets the level the user left.
 . /etc/rc.subr
 name="wsbsd_kbdlight"
 rcvar="wsbsd_kbdlight_enable"
@@ -10,9 +10,22 @@ start_cmd="wsbsd_kbdlight_start"
 stop_cmd=":"
 wsbsd_kbdlight_start()
 {
-	kldload -n acpi_wmi >/dev/null 2>&1
-	[ -f /boot/modules/clevo_wmi.ko ] && kldload -n clevo_wmi >/dev/null 2>&1
-	sysctl dev.clevo_wmi.0.kb_brightness=128 >/dev/null 2>&1
+	kld1=$(kldload -n acpi_wmi 2>&1)
+	kld2=; [ -f /boot/modules/clevo_dchu.ko ] && kld2=$(kldload -n clevo_dchu 2>&1)
+	sysctl dev.clevo_dchu.0.kb_brightness=255 >/dev/null 2>&1
+	# what this machine has for the keyboard light and the touchpad, as a file on the desktop ("Hardware report.txt"): the WMI methods of the BIOS (_WDG), the USB keyboard controller, the input devices and what they report
+	( sleep 35; R=/var/log/wsbsd_hw.log; D=/var/tmp/wsbsd_acpi; mkdir -p $D
+	  { echo "== Hardware report $(date '+%H:%M:%S') $(kenv -q smbios.system.maker) $(kenv -q smbios.system.product) BIOS $(kenv -q smbios.bios.version)"
+	    echo "-- kldload acpi_wmi: ${kld1:-ok}"; echo "-- kldload clevo_dchu: ${kld2:-ok}"; kldstat | grep -i -E 'wmi|clevo|hid|iichid|ig4|evdev'
+	    echo "-- sysctl wmi / clevo"; sysctl dev.acpi_wmi dev.clevo_dchu 2>&1 | head -24
+	    echo "-- dmesg (wmi, clevo, input)"; dmesg | grep -i -E 'wmi|clevo|iichid|hms|hmt|hidbus|hkbd|ukbd|ums|psm|atkbd|ietp|cyapa|ig4|iicbus|elan|synaptics|touchpad' | head -30
+	    echo "-- ACPI device PNP0C14 (WMI)"; devinfo -v 2>/dev/null | grep -i -B2 -A3 -E 'pnp0c14|wmi' | head -30
+	    echo "-- USB devices"; usbconfig list 2>&1 | head -20
+	    echo "-- input devices (evdevprobe)"; /usr/local/bin/evdevprobe 2>&1
+	    echo "-- ACPI tables"; ( cd $D && acpidump -t 2>&1 | grep -E 'DSDT|SSDT' | head -12; acpidump -dt >/dev/null 2>&1; ls $D | head -20
+	      echo "-- WMI in the DSDT (_WDG buffers)"; for f in $D/*.dsl; do grep -n -A10 "_WDG" $f 2>/dev/null | head -45; done | head -80
+	      echo "-- WMI methods (WMBB / WMAA / WQ..)"; grep -h -n -E 'Method \((WMBB|WMAA|WMAB|WMI[A-Z]|WQ[A-Z0-9]+|_WED)' $D/*.dsl 2>/dev/null | head -12; ) 
+	  } > $R 2>&1 ) &
 }
 load_rc_config $name
 run_rc_command "$1"

@@ -36,5 +36,19 @@ int main(void)
 	t = 3000; ev(WSI_EV_KEY, 0x14d, 1); ev(WSI_EV_KEY, 0x14a, 1); abs_xy(500, 300); abs_xy(500, 360); abs_xy(500, 420);
 	ws_cursor_pos(s, &cx, &cy); CHECK(cx == px && cy == py);
 	CHECK(count(WS_EV_SCROLL) > 0);
+
+	/* three-finger swipe: Ctrl + arrow once per touch, no scroll, no click; four-finger pinch / spread: F4 / F11 */
+	{ ws_event e; int keys, ctrl_right, f4, f11, scrolls;
+	  #define COUNTKEYS() do { keys = ctrl_right = f4 = f11 = scrolls = 0; while (ws_next_event(s, w, &e)) { if (e.type == WS_EV_KEY_DOWN) { keys++; if (e.key == 124) ctrl_right++; if (e.key == 118) f4++; if (e.key == 103) f11++; } if (e.type == WS_EV_SCROLL) scrolls++; } } while (0)
+	  count(-1);
+	  t = 5000; ev(WSI_EV_KEY, 0x14e, 1); ev(WSI_EV_KEY, 0x14a, 1); abs_xy(700, 300); abs_xy(650, 300); abs_xy(550, 300); abs_xy(450, 300); abs_xy(350, 300);
+	  t = 5300; ev(WSI_EV_KEY, 0x14a, 0); ev(WSI_EV_KEY, 0x14e, 0); COUNTKEYS(); CHECK(ctrl_right == 1); CHECK(scrolls == 0); CHECK(count(WS_EV_MOUSE_DOWN) == 0);
+	  /* four fingers closing: slots 0..3 start apart and come together */
+	  t = 6000; ev(WSI_EV_KEY, 0x14f, 1); ev(WSI_EV_KEY, 0x14a, 1);
+	  for (int step = 0; step < 4; step++) { int d = 200 - step * 55; for (int i = 0; i < 4; i++) { ev(WSI_EV_ABS, 0x2f, i); ev(WSI_EV_ABS, 0x35, 500 + (i < 2 ? -d : d)); ev(WSI_EV_ABS, 0x36, 300 + (i % 2 ? -d : d)); } abs_xy(500 - d, 300 - d); }
+	  ev(WSI_EV_KEY, 0x14a, 0); ev(WSI_EV_KEY, 0x14f, 0); COUNTKEYS(); CHECK(f4 == 1); CHECK(keys == 1);
+	  t = 7000; ev(WSI_EV_KEY, 0x14f, 1); ev(WSI_EV_KEY, 0x14a, 1);
+	  for (int step = 0; step < 4; step++) { int d = 60 + step * 60; for (int i = 0; i < 4; i++) { ev(WSI_EV_ABS, 0x2f, i); ev(WSI_EV_ABS, 0x35, 500 + (i < 2 ? -d : d)); ev(WSI_EV_ABS, 0x36, 300 + (i % 2 ? -d : d)); } abs_xy(500 - d, 300 - d); }
+	  ev(WSI_EV_KEY, 0x14a, 0); ev(WSI_EV_KEY, 0x14f, 0); COUNTKEYS(); CHECK(f11 == 1); CHECK(keys == 1); }
 	if (failures) { printf("%d failure(s)\n", failures); return 1; } printf("test_touchpad: ok\n"); return 0;
 }
