@@ -131,6 +131,18 @@ if [ ! -d "$SYSDIR/dev/acpica" ]; then
 	fi
 fi
 if [ -d "$SYSDIR/dev/acpica" ]; then (cd "$WS/kmod/clevo_dchu" && make SYSDIR="$SYSDIR" clean >/dev/null 2>&1; make SYSDIR="$SYSDIR" >"$WORK/clevo_dchu.log" 2>&1 && install -d "$ROOT/boot/modules" && install -m 555 clevo_dchu.ko "$ROOT/boot/modules/clevo_dchu.ko" && echo "clevo_dchu built against $SYSDIR") || { echo "NOTE: clevo_dchu did not build (see $WORK/clevo_dchu.log)"; tail -8 "$WORK/clevo_dchu.log"; }; else echo "NOTE: no kernel sources: no keyboard backlight module in this image"; fi
+
+# virtio_gpu: the DRM driver of the virtio GPU of QEMU / KVM (virgl 3D), a port of Linux 6.1's virtio_gpu over drm-kmod (wsbsd/kmod/virtio_gpu); built against the sources of drm-kmod 6.1-lts, the drm.ko of the image is the drm-61-kmod package
+DRMKMOD="$WORK/drm-kmod"
+if [ ! -f "$DRMKMOD/kconfig.mk" ]; then
+	mkdir -p "$DRMKMOD"; [ -f "$WORK/drm-kmod.tgz" ] || fetch -q -o "$WORK/drm-kmod.tgz" "https://github.com/freebsd/drm-kmod/archive/refs/heads/6.1-lts.tar.gz" || true
+	[ -f "$WORK/drm-kmod.tgz" ] && tar -xzf "$WORK/drm-kmod.tgz" -C "$DRMKMOD" --strip-components=1 2>/dev/null
+fi
+if [ -d "$SYSDIR/dev/acpica" ] && [ -f "$DRMKMOD/kconfig.mk" ]; then
+	rm -rf "$DRMKMOD/virtio_gpu"; cp -R "$WS/kmod/virtio_gpu" "$DRMKMOD/virtio_gpu"
+	(cd "$DRMKMOD/virtio_gpu" && make SYSDIR="$SYSDIR" clean >/dev/null 2>&1; make SYSDIR="$SYSDIR" >"$WORK/virtio_gpu.log" 2>&1 && install -d "$ROOT/boot/modules" && install -m 555 virtio_gpu.ko "$ROOT/boot/modules/virtio_gpu.ko" && echo "virtio_gpu built against $SYSDIR") || { echo "NOTE: virtio_gpu did not build (see $WORK/virtio_gpu.log)"; tail -8 "$WORK/virtio_gpu.log"; }
+else echo "NOTE: virtio_gpu not built (no kernel sources or no drm-kmod sources)"; fi
+[ -d "$ROOT/boot/modules" ] && kldxref "$ROOT/boot/modules"
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_wifi" "$ROOT/$d/rc.d/wsbsd_wifi"; done
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_bluetooth" "$ROOT/$d/rc.d/wsbsd_bluetooth"; done
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_gpu" "$ROOT/$d/rc.d/wsbsd_gpu"; done
