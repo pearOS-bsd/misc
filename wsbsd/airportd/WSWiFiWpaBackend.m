@@ -45,15 +45,27 @@ static int gCounter;
 {
 	if ((self = [super init])) {
 		_dir = [dir copy]; _ifconfig = [ifconfig copy] ?: @"/sbin/ifconfig"; _ctrl = [NSMutableDictionary dictionary]; _lock = [NSLock new]; _waiters = [NSMutableDictionary dictionary];
-		for (NSString *n in [self interfaceNames]) { WSWpaCtrl *c = [[WSWpaCtrl alloc] initWithPath: [_dir stringByAppendingPathComponent: n]]; if (!c) continue; _ctrl[n] = c; [self _monitor: n]; }
+		[self _sync];
 	}
 	return self;
 }
-- (NSArray *)interfaceNames
+/* The control sockets are looked at again on every request: wpa_supplicant for a card that attaches late (Intel Wi-Fi, USB dongles) starts after airportd, and a restarted one has a new socket. */
+- (NSArray *)_socketNames
 {
 	NSMutableArray *a = [NSMutableArray array]; DIR *d = opendir([_dir fileSystemRepresentation]); if (!d) return a; struct dirent *e; while ((e = readdir(d))) { if (e->d_name[0] == '.') continue; struct stat st; NSString *p = [_dir stringByAppendingPathComponent: @(e->d_name)]; if (stat([p fileSystemRepresentation], &st) == 0 && S_ISSOCK(st.st_mode)) [a addObject: @(e->d_name)]; } closedir(d);
-	return [a sortedArrayUsingSelector: @selector(compare:)];
+	return a;
 }
+- (void)_sync
+{
+	NSArray *now = [self _socketNames]; NSMutableArray *fresh = [NSMutableArray array];
+	@synchronized (self) {
+		for (NSString *n in [_ctrl allKeys]) if (![now containsObject: n]) { [_ctrl[n] close]; [_ctrl removeObjectForKey: n]; }
+		for (NSString *n in now) { if (_ctrl[n]) continue; WSWpaCtrl *c = [[WSWpaCtrl alloc] initWithPath: [_dir stringByAppendingPathComponent: n]]; if (!c) continue; _ctrl[n] = c; [fresh addObject: n]; }
+	}
+	for (NSString *n in fresh) [self _monitor: n];
+}
+- (WSWpaCtrl *)_c:(NSString *)n { [self _sync]; @synchronized (self) { return _ctrl[n]; } }
+- (NSArray *)interfaceNames { [self _sync]; @synchronized (self) { return [[_ctrl allKeys] sortedArrayUsingSelector: @selector(compare:)]; } }
 - (NSString *)_run:(NSArray *)args { NSTask *t = [[NSTask alloc] init]; [t setLaunchPath: _ifconfig]; [t setArguments: args]; NSPipe *p = [NSPipe pipe]; [t setStandardOutput: p]; [t setStandardError: [NSPipe pipe]]; @try { [t launch]; } @catch (NSException *e) { return nil; } NSData *d = [[p fileHandleForReading] readDataToEndOfFile]; [t waitUntilExit]; return [[NSString alloc] initWithData: d encoding: NSUTF8StringEncoding]; }
 static NSDictionary *KV(NSString *text) { NSMutableDictionary *d = [NSMutableDictionary dictionary]; for (NSString *l in [text componentsSeparatedByString: @"\n"]) { NSRange r = [l rangeOfString: @"="]; if (r.location != NSNotFound) d[[l substringToIndex: r.location]] = [l substringFromIndex: NSMaxRange(r)]; } return d; }
 
@@ -91,7 +103,7 @@ static void *RunBlock(void *arg) { void (^b)(void) = (__bridge_transfer void (^)
 - (NSString *)_if:(NSString *)n { return [_ctrl[n] description] ? n : n; }
 - (NSDictionary *)stateForInterface:(NSString *)name
 {
-	WSWpaCtrl *c = _ctrl[name]; if (!c) return nil; NSMutableDictionary *st = [NSMutableDictionary dictionary];
+	WSWpaCtrl *c = [self _c: name]; if (!c) return nil; NSMutableDictionary *st = [NSMutableDictionary dictionary];
 	NSString *cfg = [self _run: @[ name ]]; BOOL up = [cfg containsString: @"<UP"] || [cfg containsString: @",UP"]; st[WSWiFiStatePower] = @(up);
 	NSDictionary *status = KV([c request: @"STATUS" timeout: 2] ?: @""); st[WSWiFiStateMAC] = status[@"address"] ?: @""; st[WSWiFiStateOpMode] = @1;
 	NSRange cr = [cfg rangeOfString: @"country "]; if (cr.location != NSNotFound) { NSString *rest = [cfg substringFromIndex: NSMaxRange(cr)]; if ([rest length] >= 2) st[WSWiFiStateCountry] = [rest substringToIndex: 2]; } else st[WSWiFiStateCountry] = @"";
@@ -107,12 +119,12 @@ static void *RunBlock(void *arg) { void (^b)(void) = (__bridge_transfer void (^)
 }
 - (BOOL)setPower:(BOOL)on forInterface:(NSString *)name error:(NSError **)error
 {
-	if (!_ctrl[name]) { if (error) *error = Err(-3900, @"no such interface"); return NO; } NSString *r = [self _run: @[ name, on ? @"up" : @"down" ]]; (void)r; BOOL now = [[self stateForInterface: name][WSWiFiStatePower] boolValue];
+	if (![self _c: name]) { if (error) *error = Err(-3900, @"no such interface"); return NO; } NSString *r = [self _run: @[ name, on ? @"up" : @"down" ]]; (void)r; BOOL now = [[self stateForInterface: name][WSWiFiStatePower] boolValue];
 	if (now != on) { if (error) *error = Err(-3906, @"ifconfig failed"); return NO; } [self _emit: @"power" iface: name info: nil]; return YES;
 }
 - (NSArray *)scanInterface:(NSString *)name ssid:(NSData *)ssid error:(NSError **)error
 {
-	WSWpaCtrl *c = _ctrl[name]; if (!c) { if (error) *error = Err(-3900, @"no such interface"); return nil; } if (![[self stateForInterface: name][WSWiFiStatePower] boolValue]) { if (error) *error = [NSError errorWithDomain: NSPOSIXErrorDomain code: 6 userInfo: nil]; return nil; }
+	WSWpaCtrl *c = [self _c: name]; if (!c) { if (error) *error = Err(-3900, @"no such interface"); return nil; } if (![[self stateForInterface: name][WSWiFiStatePower] boolValue]) { if (error) *error = [NSError errorWithDomain: NSPOSIXErrorDomain code: 6 userInfo: nil]; return nil; }
 	double since = [NSDate timeIntervalSinceReferenceDate]; NSString *r = [c request: @"SCAN" timeout: 3]; if (!r || (![r hasPrefix: @"OK"] && ![r hasPrefix: @"FAIL-BUSY"])) { if (error) *error = [NSError errorWithDomain: NSPOSIXErrorDomain code: 16 userInfo: nil]; return nil; }
 	[self _waitOutcome: name among: @[ @"scan" ] since: since timeout: 10]; NSString *results = [c request: @"SCAN_RESULTS" timeout: 5] ?: @""; NSMutableArray *out = [NSMutableArray array]; NSArray *lines = [results componentsSeparatedByString: @"\n"];
 	for (NSUInteger i = 1; i < [lines count]; i++) { NSArray *f = [lines[i] componentsSeparatedByString: @"\t"]; if ([f count] < 4) continue; NSString *bssid = f[0]; int freq = [f[1] intValue], level = [f[2] intValue]; NSString *flags = f[3];
@@ -126,7 +138,7 @@ static NSString *Quote(NSString *s) { return [[s stringByReplacingOccurrencesOfS
 static NSString *Hex(NSData *d) { NSMutableString *h = [NSMutableString string]; const unsigned char *b = [d bytes]; for (NSUInteger i = 0; i < [d length]; i++) [h appendFormat: @"%02x", b[i]]; return h; }
 - (BOOL)associateInterface:(NSString *)name toRecord:(NSDictionary *)rec password:(NSString *)pw error:(NSError **)error
 {
-	WSWpaCtrl *c = _ctrl[name]; if (!c) { if (error) *error = Err(-3900, @"no such interface"); return NO; }
+	WSWpaCtrl *c = [self _c: name]; if (!c) { if (error) *error = Err(-3900, @"no such interface"); return NO; }
 	NSDictionary *rsn = rec[@"RSN_IE"]; NSArray *akms = rsn[@"IE_KEY_RSN_AUTHSELS"]; BOOL sae = [akms containsObject: @8] || [akms containsObject: @9], psk = [akms containsObject: @2] || [akms containsObject: @4] || [akms containsObject: @6], owe = [akms containsObject: @18], ent = [akms containsObject: @1] || [akms containsObject: @5];
 	BOOL wpa = rec[@"WPA_IE"] != nil, open = !rsn && !wpa;
 	if (ent || [rec[@"WPA_IE"][@"IE_KEY_WPA_AUTHSELS"] containsObject: @1]) { if (error) *error = Err(-3903, @"enterprise networks need an EAP profile"); return NO; }
@@ -142,7 +154,7 @@ static NSString *Hex(NSData *d) { NSMutableString *h = [NSMutableString string];
 	NSString *o = [self _waitOutcome: name among: @[ @"connected", @"wrongkey", @"rejected" ] since: since timeout: 25];
 	if ([o isEqual: @"connected"]) return YES; if (error) *error = Err([o isEqual: @"wrongkey"] ? -3900 : o ? -3909 : -3905, o ?: @"timeout"); [c request: @"DISCONNECT" timeout: 2]; return NO;
 }
-- (void)disassociateInterface:(NSString *)name { [_ctrl[name] request: @"DISCONNECT" timeout: 2]; }
+- (void)disassociateInterface:(NSString *)name { [[self _c: name] request: @"DISCONNECT" timeout: 2]; }
 - (NSArray *)supportedChannelsForInterface:(NSString *)name
 {
 	NSString *t = [self _run: @[ name, @"list", @"chan" ]]; NSMutableArray *a = [NSMutableArray array]; NSMutableSet *seen = [NSMutableSet set];

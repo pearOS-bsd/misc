@@ -14,6 +14,9 @@ typedef struct {
 	int natural;                           /* scroll direction: 1 natural (default), 0 the wheel's */
 	double speed;                          /* the pointer moves this many screen widths for the pad's full width (default .5) */
 	int left_as_right;                     /* BTN_LEFT pressed with two fingers on the pad: reported as the right button until it is released */
+	/* multi-touch (slots) and the Mac's multi-finger gestures: three fingers swipe = Ctrl+arrows (Spaces, Mission Control, App Expose), four fingers pinch = F4 (Launchpad) / spread = F11 (Show Desktop) */
+	int mt_slot; struct { int x, y, active; } mt[5];
+	int g_ref, g_done; double g_cx, g_cy, g_spread;
 } ws_tp;
 
 void ws_tp_init(ws_tp *tp, int minx, int maxx, int miny, int maxy);

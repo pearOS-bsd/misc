@@ -62,6 +62,11 @@ int main(void)
 		sfd = socket(AF_UNIX, SOCK_DGRAM, 0); struct sockaddr_un a = { .sun_family = AF_UNIX }; snprintf(a.sun_path, sizeof a.sun_path, "%s/wlan0", [dir fileSystemRepresentation]); bind(sfd, (struct sockaddr *)&a, sizeof a);
 		pthread_t t; pthread_create(&t, NULL, Serve, NULL);
 		NSString *fake = [dir stringByAppendingPathComponent: @"ifconfig"]; [@"#!/bin/sh\necho 'wlan0: flags=8843<UP,BROADCAST,RUNNING,SIMPLEX,MULTICAST> metric 0 mtu 1500'\necho '\tcountry RO authmode WPA2/802.11i'\n" writeToFile: fake atomically: YES encoding: NSUTF8StringEncoding error: NULL]; chmod([fake fileSystemRepresentation], 0755);
+		/* wpa_supplicant that starts after airportd: the interface shows up without restarting the backend, and goes away with its socket */
+		{ NSString *d2 = @"/tmp/wsbsd-wpa-late"; [[NSFileManager defaultManager] removeItemAtPath: d2 error: NULL]; [[NSFileManager defaultManager] createDirectoryAtPath: d2 withIntermediateDirectories: YES attributes: nil error: NULL];
+		  WSWiFiWpaBackend *lb = [[WSWiFiWpaBackend alloc] initWithControlDirectory: d2 ifconfig: fake]; CHECK([[lb interfaceNames] count] == 0);
+		  int lfd = socket(AF_UNIX, SOCK_DGRAM, 0); struct sockaddr_un la = { .sun_family = AF_UNIX }; snprintf(la.sun_path, sizeof la.sun_path, "%s/wlan9", [d2 fileSystemRepresentation]); bind(lfd, (struct sockaddr *)&la, sizeof la);
+		  CHECK([[lb interfaceNames] isEqual: @[ @"wlan9" ]]); close(lfd); unlink(la.sun_path); CHECK([[lb interfaceNames] count] == 0); }
 		WSWiFiWpaBackend *b = [[WSWiFiWpaBackend alloc] initWithControlDirectory: dir ifconfig: fake];
 		CHECK([[b interfaceNames] isEqual: @[ @"wlan0" ]]);
 		NSDictionary *st = [b stateForInterface: @"wlan0"]; CHECK([st[WSWiFiStatePower] boolValue]); CHECK(![st[WSWiFiStateLinkUp] boolValue]); CHECK([st[WSWiFiStateMAC] isEqual: @"aa:bb:cc:dd:ee:ff"]); CHECK([st[WSWiFiStateCountry] isEqual: @"RO"]);

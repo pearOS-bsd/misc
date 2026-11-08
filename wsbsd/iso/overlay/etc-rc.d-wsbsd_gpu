@@ -78,6 +78,7 @@ wsbsd_gpu_probe()
 	  echo "-- GL probe: end"
 	} >> $LOG 2>&1
 }
+# the long GL probe (about 40 s of boot) runs only when the EFI partition holds a file gpu.debug
 # what the kernel and the drivers said about the card (firmware that is missing shows up here)
 wsbsd_gpu_dmesg()
 {
@@ -93,10 +94,11 @@ wsbsd_gpu_start()
 	det="$(pciconf -lv 2>/dev/null | awk '/^[a-z]+[0-9]+@pci/ { if (blk ~ /class=0x03/) print blk; blk = $0; next } /^    / { blk = blk "\n" $0 } END { if (blk ~ /class=0x03/) print blk }')"
 	if [ -n "$det" ]; then wsbsd_gpu_log "$det"; else wsbsd_gpu_log "(none found)"; fi
 	case "$(kenv -q smbios.system.product 2>/dev/null)" in wsbsd-ci*) wsbsd_gpu_log "result: skipped (CI run), EFI framebuffer, software compositor"; return 0 ;; esac
-	M=/var/run/wsbsd_esp_gpu; mkdir -p $M
+	M=/var/run/wsbsd_esp_gpu; mkdir -p $M; dbg=
 	for dev in /dev/msdosfs/EFISYS $(ls /dev/ada*p1 /dev/da*p1 /dev/nvd*p1 /dev/nda*p1 /dev/mmcsd*p1 /dev/cd* 2>/dev/null); do
 		[ -e "$dev" ] || continue
 		mount -t msdosfs -o ro "$dev" $M 2>/dev/null || continue
+		[ -f $M/gpu.debug ] && dbg=1
 		if [ -f $M/nogpu ]; then umount $M 2>/dev/null; wsbsd_gpu_log "result: skipped (file nogpu on the EFI partition), EFI framebuffer, software compositor"; return 0; fi
 		umount $M 2>/dev/null
 	done
@@ -104,11 +106,11 @@ wsbsd_gpu_start()
 	gpus="$(pciconf -l 2>/dev/null | grep -E 'class=0x03(00|80)' )"
 	if echo "$gpus" | grep -q -E 'vendor=0x8086|chip=0x[0-9a-f]{4}8086'; then
 		wsbsd_gpu_log "vendor: Intel -> i915kms"
-		if wsbsd_gpu_try i915kms; then wsbsd_gpu_log "result: i915kms drives the GPU (DRM/KMS), the window server uses OpenGL ES if EGL starts"; wsbsd_gpu_dmesg; wsbsd_gpu_probe; return 0; fi
+		if wsbsd_gpu_try i915kms; then wsbsd_gpu_log "result: i915kms drives the GPU (DRM/KMS), the window server uses OpenGL ES if EGL starts"; wsbsd_gpu_dmesg; [ -n "$dbg" ] && wsbsd_gpu_probe; return 0; fi
 	fi
 	if echo "$gpus" | grep -q -E 'vendor=0x1002|chip=0x[0-9a-f]{4}1002'; then
 		wsbsd_gpu_log "vendor: AMD -> radeonkms, then amdgpu"
-		if wsbsd_gpu_try radeonkms amdgpu; then wsbsd_gpu_log "result: AMD driver drives the GPU (DRM/KMS), the window server uses OpenGL ES if EGL starts"; wsbsd_gpu_dmesg; wsbsd_gpu_probe; return 0; fi
+		if wsbsd_gpu_try radeonkms amdgpu; then wsbsd_gpu_log "result: AMD driver drives the GPU (DRM/KMS), the window server uses OpenGL ES if EGL starts"; wsbsd_gpu_dmesg; [ -n "$dbg" ] && wsbsd_gpu_probe; return 0; fi
 	fi
 	echo "$gpus" | grep -q -E 'vendor=0x10de|chip=0x[0-9a-f]{4}10de' && wsbsd_gpu_log "vendor: NVIDIA, no driver on this image"
 	[ -n "$gpus" ] || wsbsd_gpu_log "no PCI display controller"
