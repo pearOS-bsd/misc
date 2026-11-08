@@ -1,0 +1,24 @@
+#!/bin/sh
+# PROVIDE: wsbsd_machrun
+# REQUIRE: mountcritlocal wsbsd_overlay
+# BEFORE: LOGIN
+# KEYWORD: nojail
+# Mac programs: a Mach-O executable (thin or universal) that is started like any other program is run through machrun (github.com/pearOS-bsd/darwinator, dyld/): a dyld for FreeBSD
+# that binds the imports of the program to FreeBSD's libraries and, for an application, to GNUstep's Foundation and AppKit.  The kernel hands the file over (imgact_binmisc, loaded by loader.conf);
+# `macapp APP.app` starts a whole application bundle.
+. /etc/rc.subr
+name="wsbsd_machrun"
+rcvar="wsbsd_machrun_enable"
+start_cmd="wsbsd_machrun_start"
+stop_cmd=":"
+wsbsd_machrun_start()
+{
+	[ -x /usr/local/bin/machrun ] || return 0
+	kldstat -q -m imgact_binmisc || kldload imgact_binmisc 2>/dev/null || return 0
+	binmiscctl lookup macho64 >/dev/null 2>&1 || binmiscctl add macho64 --interpreter /usr/local/bin/machrun --magic "\xcf\xfa\xed\xfe" --mask "\xff\xff\xff\xff" --size 4 --set-enabled
+	# universal files: "\xca\xfe\xba\xbe" and a count of architectures of 0..15 (a Java class file has the same first four bytes and a larger number after them)
+	binmiscctl lookup machofat >/dev/null 2>&1 || binmiscctl add machofat --interpreter /usr/local/bin/machrun --magic "\xca\xfe\xba\xbe\x00\x00\x00\x00" --mask "\xff\xff\xff\xff\xff\xff\xff\xf0" --size 8 --set-enabled
+}
+load_rc_config $name
+: ${wsbsd_machrun_enable:=YES}
+run_rc_command "$1"
