@@ -267,22 +267,22 @@ void virtio_gpu_dequeue_cursor_func(struct work_struct *work)
 	wake_up(&vgdev->cursorq.ack_queue);
 }
 
-/* Create sg_table from a vmalloc'd buffer. */
+/* Create sg_table from a vmalloc'd (or, on FreeBSD, any kernel virtual) buffer. LinuxKPI's is_vmalloc_addr() is true for malloc'd memory too, which
+ * need not start on a page boundary and need not be physically contiguous: the first entry carries the offset into its page. */
 static struct sg_table *vmalloc_to_sgt(char *data, uint32_t size, int *sg_ents)
 {
 	int ret, s, i;
 	struct sg_table *sgt;
 	struct scatterlist *sg;
 	struct page *pg;
+	uint32_t off = (uintptr_t)data & (PAGE_SIZE - 1);
 
-	if (WARN_ON(!PAGE_ALIGNED(data)))
-		return NULL;
-
+	data -= off;
 	sgt = kmalloc(sizeof(*sgt), GFP_KERNEL);
 	if (!sgt)
 		return NULL;
 
-	*sg_ents = DIV_ROUND_UP(size, PAGE_SIZE);
+	*sg_ents = DIV_ROUND_UP(size + off, PAGE_SIZE);
 	ret = sg_alloc_table(sgt, *sg_ents, GFP_KERNEL);
 	if (ret) {
 		kfree(sgt);
@@ -297,11 +297,12 @@ static struct sg_table *vmalloc_to_sgt(char *data, uint32_t size, int *sg_ents)
 			return NULL;
 		}
 
-		s = min_t(int, PAGE_SIZE, size);
-		sg_set_page(sg, pg, s, 0);
+		s = min_t(int, PAGE_SIZE - off, size);
+		sg_set_page(sg, pg, s, off);
 
 		size -= s;
-		data += s;
+		data += PAGE_SIZE;
+		off = 0;
 	}
 
 	return sgt;

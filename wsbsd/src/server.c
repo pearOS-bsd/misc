@@ -103,6 +103,16 @@ void ws_server_free(ws_server *s)
 void ws_server_set_compositor(ws_server *s, ws_compositor *c) { if (s && c) s->comp = c; }
 
 static void bump(ws_server *s) { s->gen++; }
+
+/* the screen changed size (display hotplug): the cursor stays on it, everything is composed again */
+void ws_server_resize(ws_server *s, int w, int h)
+{
+	s->w = w; s->h = h;
+	if (s->cx >= w) s->cx = w - 1;
+	if (s->cy >= h) s->cy = h - 1;
+	s->locked = 0;
+	ws_server_force_full(s); bump(s);
+}
 static int space_shown(ws_server *s, const window *w);
 extern int (*ws_owner_visible_hook)(uint32_t owner);
 void ws_server_invalidate(ws_server *s) { bump(s); }

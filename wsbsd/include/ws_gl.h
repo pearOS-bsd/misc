@@ -21,6 +21,7 @@ void glc_forget_buffer(gl_compositor *, uint32_t buffer_id);
 int compositor_render_frame(gl_compositor *, ws_server *);
 
 /* The finished frame as premultiplied BGRA (screenshots, headless runs, scanning out through a dumb buffer). dst must be width x height. */
+int glc_resize(gl_compositor *, int width, int height);       /* the screen changed size: new render targets */
 int glc_read_pixels(gl_compositor *, ws_surface *dst);
 /* Zero-copy hand-off to scan-out: the render target as a dma-buf (EGL_MESA_image_dma_buf_export). 0 on success. */
 int glc_export_target(gl_compositor *, int *fd, uint32_t *fourcc, uint32_t *stride, uint32_t *offset, uint64_t *modifier);

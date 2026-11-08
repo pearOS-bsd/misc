@@ -51,7 +51,8 @@ struct vp_device;
 struct vring_virtqueue {
 	struct virtqueue vq;
 	struct vp_device *vp;
-	unsigned int num, free_head, last_used;
+	unsigned int num, free_head;
+	u16 last_used;                                   /* wraps with used->idx at 65536 (an unsigned int here made more_used() true for ever after that) */
 	u16 avail_idx_shadow;
 	struct vring_desc *desc;
 	struct vring_avail *avail;
@@ -279,7 +280,7 @@ void *virtqueue_get_buf(struct virtqueue *_vq, unsigned int *len)
 	i = v->last_used & (v->num - 1);
 	id = le32_to_cpu(v->used->ring[i].id);
 	if (len) *len = le32_to_cpu(v->used->ring[i].len);
-	if (id >= v->num || !v->data[id]) return NULL;
+	if (id >= v->num || !v->data[id]) { v->last_used++; return NULL; }      /* a bogus entry is skipped, or more_used() would stay true */
 	ret = v->data[id]; v->data[id] = NULL;
 	{	/* give the chain back to the free list */
 		unsigned int j = id, cnt = 1;
