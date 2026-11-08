@@ -1424,7 +1424,7 @@ int main(int argc, char **argv)
 #ifdef WS_KMS
 		if (kms && vt_active) {
 			{ static struct timespec lp; struct timespec nw; clock_gettime(CLOCK_MONOTONIC, &nw); int w2, h2;
-			  if ((nw.tv_sec - lp.tv_sec) * 1000 + (nw.tv_nsec - lp.tv_nsec) / 1000000 >= 1000) { lp = nw; if (ws_kms_poll_mode(kms, &w2, &h2)) { w = w2; h = h2; display_changed(kms, &hw_cursor, &last_gen); } } }
+			  if ((nw.tv_sec - lp.tv_sec) * 1000 + (nw.tv_nsec - lp.tv_nsec) / 1000000 >= 1000) { lp = nw; if (ws_kms_poll_mode(kms, &w2, &h2)) { w = w2; h = h2; display_changed(kms, &hw_cursor, &last_gen); if (vnc_ls >= 0 && vin.sw > 0 && vin.sh > 0) { vin.x = vin.x * w / vin.sw; vin.y = vin.y * h / vin.sh; vin.sw = w; vin.sh = h; } } } }
 			int hx = 0, hy = 0, cx, cy;
 			const ws_surface *cimg = ws_cursor_image(srv, &hx, &hy);
 			ws_cursor_pos(srv, &cx, &cy);

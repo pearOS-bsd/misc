@@ -113,10 +113,10 @@ wsbsd_gpu_start()
 		if wsbsd_gpu_try radeonkms amdgpu; then wsbsd_gpu_log "result: AMD driver drives the GPU (DRM/KMS), the window server uses OpenGL ES if EGL starts"; wsbsd_gpu_dmesg; [ -n "$dbg" ] && wsbsd_gpu_probe; return 0; fi
 	fi
 	if echo "$gpus" | grep -q -E 'vendor=0x1af4 device=0x1050'; then
-		wsbsd_gpu_log "vendor: virtio GPU (QEMU / KVM) -> virtio_gpu (virgl 3D when the host offers it)"
+		wsbsd_gpu_log "vendor: virtio GPU (QEMU / KVM) -> pearOS Generic GPU Driver (virtio), module virtio_gpu (virgl 3D when the host offers it)"
 		# the module is a PCI driver of its own (it brings its own virtio transport): FreeBSD's virtio_pci must let go of the device first
 		for vp in $(pciconf -l 2>/dev/null | grep -E 'vendor=0x1af4 device=0x1050' | cut -d@ -f1 | grep '^virtio_pci'); do devctl detach $vp >/dev/null 2>&1; done
-		if wsbsd_gpu_try virtio_gpu; then wsbsd_gpu_log "result: virtio_gpu drives the GPU (DRM/KMS), the window server uses OpenGL ES (virgl) if the host has 3D, else the software compositor"; wsbsd_gpu_dmesg; [ -n "$dbg" ] && wsbsd_gpu_probe; return 0; fi
+		if wsbsd_gpu_try virtio_gpu; then wsbsd_gpu_log "result: the pearOS Generic GPU Driver (virtio) drives the GPU (DRM/KMS), the window server uses OpenGL ES (virgl) if the host has 3D, else the software compositor"; wsbsd_gpu_dmesg; [ -n "$dbg" ] && wsbsd_gpu_probe; return 0; fi
 	fi
 	echo "$gpus" | grep -q -E 'vendor=0x10de|chip=0x[0-9a-f]{4}10de' && wsbsd_gpu_log "vendor: NVIDIA, no driver on this image"
 	[ -n "$gpus" ] || wsbsd_gpu_log "no PCI display controller"

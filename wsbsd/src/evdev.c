@@ -76,6 +76,10 @@ int ws_evdev_dispatch(ws_evdev *e, int i, ws_server *srv, int sw, int sh)
 {
 	struct input_event ev[64];
 	if (!e->in_init) { ws_input_init(&e->in, sw, sh); e->in_init = 1; }
+	if (e->in.sw != sw || e->in.sh != sh) {                                  /* the screen changed size (display hotplug): absolute devices map to the new size, the pointer keeps its relative place */
+		if (e->in.sw > 0 && e->in.sh > 0) { e->in.x = e->in.x * sw / e->in.sw; e->in.y = e->in.y * sh / e->in.sh; }
+		e->in.sw = sw; e->in.sh = sh;
+	}
 	for (;;) {
 		ssize_t n = read(e->fd[i], ev, sizeof ev);
 		if (n < 0) return errno == EAGAIN ? 0 : -1;
