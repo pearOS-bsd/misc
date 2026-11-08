@@ -161,7 +161,7 @@ if pear_fetch darwinator "${PEAR_DARWINATOR_REF:-main}" "$WORK/darwinator"; then
 		install -d "$ROOT/usr/local/bin" "$ROOT/usr/local/lib" "$ROOT/usr/local/libexec"
 		install -m 755 "$WORK/darwinator/dyld/machrun" "$ROOT/usr/local/bin/machrun"
 		install -m 755 "$WORK/darwinator/dyld/libmachcompat.so" "$WORK/darwinator/dyld/libexctrace.so" "$ROOT/usr/local/lib/"
-		install -m 755 "$WORK/darwinator/tools/wrapapp.sh" "$ROOT/usr/local/libexec/wrapapp.sh"; install -m 755 "$WORK/darwinator/tools/macapp" "$ROOT/usr/local/bin/macapp"
+		install -m 755 "$WORK/darwinator/tools/wrapapp.sh" "$ROOT/usr/local/libexec/wrapapp.sh"; install -m 755 "$WORK/darwinator/tools/macapp" "$ROOT/usr/local/bin/macapp"; install -m 755 "$WORK/darwinator/tools/macapp-install" "$ROOT/usr/local/bin/macapp-install"
 		ldd "$WORK/darwinator/dyld/machrun" | awk '/=>/ { print $3 }' | while read -r lib; do [ -e "$ROOT$lib" ] || echo "NOTE: machrun needs $lib and the image does not have it"; done
 		for need in "$ROOT/usr/local/lib/libobjc.so.4.6" "$ROOT/usr/local/lib/libdispatch.so.1" "$ROOT/usr/lib/libBlocksRuntime.so.0"; do [ -e "$need" ] || echo "NOTE: Mac applications load $need at run time and the image does not have it"; done
 		echo "machrun built (darwinator $(cd "$WORK/darwinator" && ls -d .git >/dev/null 2>&1 && git rev-parse --short HEAD || echo "archive"))"

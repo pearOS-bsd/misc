@@ -29,10 +29,26 @@ void TFSetOpenWith(NSString *path, NSString *app, BOOL all)
 	NSString *key = all ? @"OpenWith" : @"OpenWithFile", *k = all ? [[path pathExtension] lowercaseString] : path; if (![k length]) return;
 	NSMutableDictionary *d = [TFPref(key, @{}) mutableCopy]; d[k] = app; TFSetPref(key, d);
 }
+/* an application of macOS (NAME.app/Contents/MacOS/NAME is a Mach-O file): it runs through macapp (darwinator's machrun) */
+static BOOL TFIsMacApp(NSString *path)
+{
+	if (![[[path pathExtension] lowercaseString] isEqual: @"app"]) return NO;
+	NSDictionary *info = [NSDictionary dictionaryWithContentsOfFile: [path stringByAppendingPathComponent: @"Contents/Info.plist"]]; NSString *exe = info[@"CFBundleExecutable"]; if (![exe length]) return NO;
+	NSString *bin = [path stringByAppendingPathComponent: [@"Contents/MacOS" stringByAppendingPathComponent: exe]];
+	FILE *f = fopen([bin fileSystemRepresentation], "r"); if (!f) return NO; unsigned char m[4] = { 0 }; BOOL ok = fread(m, 1, 4, f) == 4 && ((m[0] == 0xca && m[1] == 0xfe && m[2] == 0xba && m[3] == 0xbe) || (m[0] == 0xcf && m[1] == 0xfa && m[2] == 0xed && m[3] == 0xfe)); fclose(f);
+	return ok && [[NSFileManager defaultManager] isExecutableFileAtPath: @"/usr/local/bin/macapp"];
+}
+static void TFRunMacApp(NSString *app, NSString *file)
+{
+	NSTask *t = [[NSTask alloc] init]; [t setLaunchPath: @"/usr/local/bin/macapp"]; [t setArguments: file ? @[ app, file ] : @[ app ]];
+	@try { [t launch]; } @catch (NSException *e) {}
+}
 /* a double click: the application chosen in Get Info when there is one, else what the system opens it with */
 void TFOpenPath(NSString *path)
 {
+	if (TFIsMacApp(path)) { TFRunMacApp(path, nil); return; }
 	NSString *ext = [[path pathExtension] lowercaseString]; NSString *app = TFPref(@"OpenWithFile", @{})[path] ?: ([ext length] ? TFPref(@"OpenWith", @{})[ext] : nil);
+	if (app && TFIsMacApp(app)) { TFRunMacApp(app, path); return; }
 	if (app && [[NSFileManager defaultManager] fileExistsAtPath: app]) { [[NSWorkspace sharedWorkspace] openFile: path withApplication: app]; return; }
 	/* text documents open in TextEdit, as on the Mac (the image carries it as /usr/local/bin/TextEdit-gnustep, not as a bundle the application scan finds) */
 	static NSSet *text; if (!text) text = [NSSet setWithObjects: @"txt", @"text", @"md", @"markdown", @"rtf", @"log", @"json", @"xml", @"csv", @"tsv", @"sh", @"zsh", @"conf", @"cfg", @"ini", @"yaml", @"yml", @"c", @"h", @"m", @"mm", @"py", @"js", @"css", @"html", @"htm", nil];
