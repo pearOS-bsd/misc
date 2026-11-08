@@ -29,6 +29,7 @@
 #include "virtgpu_drv.h"
 
 static int virtio_gpu_virglrenderer_workaround = 1;
+MODULE_PARM_DESC(virglhack, "Enable the virglrenderer workaround");
 module_param_named(virglhack, virtio_gpu_virglrenderer_workaround, int, 0400);
 
 int virtio_gpu_resource_id_get(struct virtio_gpu_device *vgdev, uint32_t *resid)

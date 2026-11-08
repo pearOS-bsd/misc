@@ -429,6 +429,5 @@ MODULE_DEPEND(virtio_gpu, drmn, 2, 2, 2);
 MODULE_DEPEND(virtio_gpu, ttm, 1, 1, 1);
 MODULE_DEPEND(virtio_gpu, agp, 1, 1, 1);
 MODULE_DEPEND(virtio_gpu, linuxkpi, 1, 1, 1);
-MODULE_DEPEND(virtio_gpu, linuxkpi_gplv2, 1, 1, 1);
 MODULE_DEPEND(virtio_gpu, dmabuf, 1, 1, 1);
 MODULE_LICENSE("GPL");
