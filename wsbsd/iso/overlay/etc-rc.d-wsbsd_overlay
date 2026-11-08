@@ -11,6 +11,7 @@ start_cmd="wsbsd_overlay_start"
 stop_cmd=":"
 wsbsd_overlay_start()
 {
+	[ -s /var/run/resolv.conf ] || printf 'nameserver 10.0.2.3\nnameserver 1.1.1.1\nnameserver 8.8.8.8\n' > /var/run/resolv.conf
 	kldload -n unionfs >/dev/null 2>&1
 	mount | grep -q " on /usr/local (unionfs" && return 0
 	mkdir -p /var/overlay/usr_local && mount -t unionfs -o noatime /var/overlay/usr_local /usr/local

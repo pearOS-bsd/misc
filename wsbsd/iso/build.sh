@@ -170,6 +170,8 @@ if pear_fetch darwinator "${PEAR_DARWINATOR_REF:-main}" "$WORK/darwinator"; then
 		install -d "$ROOT/boot/modules" && install -m 555 "$WORK/darwinator/darwinator.ko" "$ROOT/boot/modules/darwinator.ko" && echo "darwinator.ko built against $SYSDIR"
 	else echo "NOTE: darwinator.ko not built (no kernel sources or it did not compile: see $WORK/darwinator_ko.log): only machrun runs Mach-O files"; fi
 else echo "NOTE: pearOS-bsd/darwinator could not be fetched: this image does not run Mac programs"; fi
+# the medium is read-only: the resolver file lives in memory (dhclient writes it; wsbsd_overlay gives it the name servers of public DNS when the network does not)
+for d in etc private/etc; do rm -f "$ROOT/$d/resolv.conf"; ln -s /var/run/resolv.conf "$ROOT/$d/resolv.conf"; done
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_machrun" "$ROOT/$d/rc.d/wsbsd_machrun"; done
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_wifi" "$ROOT/$d/rc.d/wsbsd_wifi"; done
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_bluetooth" "$ROOT/$d/rc.d/wsbsd_bluetooth"; done
