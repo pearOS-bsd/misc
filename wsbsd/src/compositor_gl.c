@@ -724,6 +724,18 @@ int compositor_render_frame(gl_compositor *c, ws_server *srv)
 	return glGetError() == GL_NO_ERROR ? 0 : -1;
 }
 
+int glc_resize(gl_compositor *c, int width, int height)
+{
+	if (!c || width <= 0 || height <= 0) return -1;
+	if (!eglMakeCurrent(c->dpy, c->pbuf, c->pbuf, c->ctx)) return -1;
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	GLuint tex[5] = { c->fbo_tex, c->tmp_tex, c->scene_tex, c->bl_tex, 0 }, fbo[3] = { c->fbo, c->tmp_fbo, c->bl_fbo };
+	glDeleteFramebuffers(3, fbo); glDeleteTextures(4, tex);
+	c->w = width; c->h = height;
+	make_target(c);
+	return glGetError() == GL_NO_ERROR ? 0 : -1;
+}
+
 int glc_read_pixels(gl_compositor *c, ws_surface *dst)
 {
 	if (!c || !dst || dst->w != c->w || dst->h != c->h) return -1;

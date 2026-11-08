@@ -53,6 +53,7 @@ typedef uint32_t ws_wid;
 enum { WS_BELOW = -1, WS_ABOVE = 1, WS_OUT = 0 };
 
 ws_server *ws_server_new(int screen_w, int screen_h);
+void ws_server_resize(ws_server *, int screen_w, int screen_h);   /* display hotplug: the screen has a new size */
 void ws_server_free(ws_server *);
 ws_wid ws_create_window(ws_server *, ws_rect frame);         /* heap backing store */
 ws_wid ws_create_window_shm(ws_server *, ws_rect frame, char name[32]); /* shm backing, name returned */

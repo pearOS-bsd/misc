@@ -1218,6 +1218,29 @@ int wsd_conns_for_pid(int pid, uint32_t *ids, int max) { int n = 0; for (int i =
 conn *wsd_conn_by_id(uint32_t id) { for (int i = 0; i < MAXCONN; i++) if (conns[i].fd >= 0 && conns[i].id == id) return &conns[i]; return NULL; }
 static conn *conn_by_fd(int fd) { for (int i = 0; i < MAXCONN; i++) if (conns[i].fd == fd) return &conns[i]; return NULL; }
 
+
+#ifdef WS_KMS
+/* Display hotplug: the connector's preferred mode changed (the host resized a virtual display, another monitor was plugged in). The screen gets a new size: new scan-out buffers,
+ * the server, the GL targets and the screen surface follow, and the clients that lay themselves out by the screen size (the Dock, the menu bar) are restarted (launchd brings them back). */
+static void display_changed(ws_kms *kms, int *hw_cursor, uint64_t *last_gen)
+{
+	int w = 0, h = 0;
+	if (ws_kms_set_mode(kms, &w, &h)) { fprintf(stderr, "wsd: display changed but the new mode could not be set\n"); return; }
+	fprintf(stderr, "wsd: display changed: %dx%d\n", w, h);
+	wsd_screen_w = w; wsd_screen_h = h;
+	ws_server_resize(srv, w, h);
+	ws_surface *ns = ws_surface_new(w, h); if (ns) { ws_surface_free(screen); screen = ns; }
+#ifdef WS_GL
+	if (glc && glc_resize(glc, w, h)) { fprintf(stderr, "wsd: GL targets for the new size failed, using the software compositor\n"); glc_destroy(glc); glc = NULL; }
+#endif
+	*hw_cursor = 0; *last_gen = ~0ULL;
+	if (!getenv("WSD_NO_RESTART_CLIENTS")) {
+		static const char *const names[] = { "Dock", "SystemUIServer" };
+		for (int i = 0; i < 2; i++) { pid_t p = fork(); if (p == 0) { execlp("pkill", "pkill", "-x", names[i], (char *)NULL); _exit(127); } }
+	}
+}
+#endif
+
 int main(int argc, char **argv)
 {
 	const char *path = getenv("WS_SOCKET") ? getenv("WS_SOCKET") : DEFAULT_SOCKET;
@@ -1310,6 +1333,7 @@ int main(int argc, char **argv)
 		struct timespec frame = { 0, 16 * 1000 * 1000 }, *to = NULL;
 #ifdef WS_KMS
 		if (kms && (ws_server_generation(srv) != last_gen || !hw_cursor)) to = &frame;
+		struct timespec tick = { 1, 0 }; if (kms && !to) to = &tick;             /* wake up once a second to look for a display change */
 #else
 		(void)frame;
 #endif
@@ -1399,6 +1423,8 @@ int main(int argc, char **argv)
 		}
 #ifdef WS_KMS
 		if (kms && vt_active) {
+			{ static struct timespec lp; struct timespec nw; clock_gettime(CLOCK_MONOTONIC, &nw); int w2, h2;
+			  if ((nw.tv_sec - lp.tv_sec) * 1000 + (nw.tv_nsec - lp.tv_nsec) / 1000000 >= 1000) { lp = nw; if (ws_kms_poll_mode(kms, &w2, &h2)) { w = w2; h = h2; display_changed(kms, &hw_cursor, &last_gen); } } }
 			int hx = 0, hy = 0, cx, cy;
 			const ws_surface *cimg = ws_cursor_image(srv, &hx, &hy);
 			ws_cursor_pos(srv, &cx, &cy);

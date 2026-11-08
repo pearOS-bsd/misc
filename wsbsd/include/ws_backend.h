@@ -19,6 +19,8 @@ int ws_kms_cursor_move(ws_kms *, int x, int y);              /* x, y: the top-le
 void ws_kms_pause(ws_kms *);                                /* the VT was switched away: drop DRM master */
 int ws_kms_resume(ws_kms *);                                /* the VT is back: take DRM master, show the front buffer again; -1 on failure */
 int ws_kms_handle_events(ws_kms *);                         /* call when ws_kms_fd is readable */
+int ws_kms_poll_mode(ws_kms *, int *w, int *h);              /* 1 when the connector's preferred mode differs from the current one (w, h: the new size) */
+int ws_kms_set_mode(ws_kms *, int *w, int *h);               /* switch to it: new buffers, new mode set; 0 on success */
 void ws_kms_close(ws_kms *);
 
 typedef struct ws_evdev ws_evdev;

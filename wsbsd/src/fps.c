@@ -2,6 +2,7 @@
  * draws it in the top right corner of the screen with a 5x7 bitmap font. */
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <time.h>
 #include "ws.h"
 
@@ -16,6 +17,7 @@ void ws_fps_frame(double compose_ms)
 	st.frames++; st.total++; st.compose_acc += compose_ms;
 	if (t - st.t0 >= 1.0) {
 		st.rate = st.frames / (t - st.t0); st.compose_ms = st.compose_acc / st.frames;
+		if (getenv("WSD_FPSLOG")) { fprintf(stderr, "wsd-fps: %.1f FPS, %.2f ms/frame\n", st.rate, st.compose_ms); fflush(stderr); }
 		st.frames = 0; st.compose_acc = 0; st.t0 = t;
 	}
 }

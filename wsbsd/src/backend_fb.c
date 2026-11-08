@@ -82,6 +82,8 @@ int ws_kms_cursor_set(ws_kms *k, const ws_surface *img, int hot_x, int hot_y) { 
 int ws_kms_cursor_move(ws_kms *k, int x, int y) { (void)k; (void)x; (void)y; return -1; }
 void ws_kms_pause(ws_kms *k) { (void)k; }
 int ws_kms_resume(ws_kms *k) { if (k->last) memset(k->last, 0xA5, (size_t)k->w * (size_t)k->h * 4); return 0; }       /* the console drew over the framebuffer meanwhile: copy everything again */
+int ws_kms_poll_mode(ws_kms *k, int *w, int *h) { (void)k; (void)w; (void)h; return 0; }
+int ws_kms_set_mode(ws_kms *k, int *w, int *h) { (void)k; (void)w; (void)h; return -1; }
 int ws_kms_handle_events(ws_kms *k) { char b[16]; return (int)read(k->pipe_r, b, sizeof b); }
 
 void ws_kms_close(ws_kms *k)
