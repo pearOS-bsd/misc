@@ -21,7 +21,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Ploader (a rEFInd fork, GPL; the source is in wsbsd/ploader, with the pear in place of the BSD logo): built on Linux with gnu-efi, for x86_64 and (cross-compiled) aarch64
+  # Ploader (a rEFInd fork, GPL; the source is in github.com/pearOS-bsd/ploader, with the pear in place of the BSD logo): built on Linux with gnu-efi, for x86_64 and (cross-compiled) aarch64
   ploader:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -32,6 +32,9 @@ jobs:
         arch: ${{ fromJSON(github.event.inputs.arm == 'false' && '["x86_64"]' || '["x86_64","aarch64"]') }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          repository: pearOS-bsd/ploader
+          path: ploader-src
       - name: Build Ploader
         run: |
           set -e
@@ -43,7 +46,7 @@ jobs:
           git clone --depth 1 --branch 4.0.4 https://github.com/ncroxon/gnu-efi ge
           make -C ge -j4 ARCH=${{ matrix.arch }} $CROSS > ge.log 2>&1 || { tail -30 ge.log; exit 1; }
           make -C ge install ARCH=${{ matrix.arch }} $CROSS PREFIX=/usr INSTALLROOT="$PWD/geroot" > ge-install.log 2>&1 || { tail -30 ge-install.log; exit 1; }
-          cd wsbsd/ploader
+          cd ploader-src
           GE="$GITHUB_WORKSPACE/geroot/usr"; EFIH=$(find "$GE" -name efi.h -path '*/efi/efi.h' | head -1)
           echo "efi.h: $EFIH"
           LIBD="$GE/lib"; [ -f "$LIBD/crt0-efi-${{ matrix.arch }}.o" ] || LIBD=$(dirname "$(find "$GE" -name 'crt0-efi-${{ matrix.arch }}.o' | head -1)")
@@ -52,9 +55,9 @@ jobs:
           # aarch64: objcopy has to write a PE file (efi-app-aarch64, binutils + gnu-efi >= 3.0.17); without it the .efi is a raw binary that no firmware loads
           make ARCH=${{ matrix.arch }} GNUEFI_ARM64_TARGET_SUPPORT=y $CROSS EFIINC="$EFIINC" GNUEFILIB="$LIBD" EFILIB="$LIBD" EFICRT0="$LIBD" 2>&1 | tail -15
           ls -l ploader/*.efi
-          mkdir -p ../../ploader-out
-          cp ploader/ploader_$X.efi ../../ploader-out/
-          cp -R theme ../../ploader-out/theme
+          mkdir -p ../ploader-out
+          cp ploader/ploader_$X.efi ../ploader-out/
+          cp -R theme ../ploader-out/theme
       - uses: actions/upload-artifact@v4
         with:
           name: ploader-${{ matrix.arch }}
