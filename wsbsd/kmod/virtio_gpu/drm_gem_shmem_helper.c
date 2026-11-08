@@ -23,6 +23,47 @@
 #include <drm/drm_prime.h>
 #include <drm/drm_print.h>
 
+#ifdef __FreeBSD__
+/* FreeBSD: the backing store of a GEM object is the vm_object of LinuxKPI's shmem file (drm_gem_object_init); drm_gem_get_pages() of drm-kmod is Linux-only. */
+#include <linux/shmem_fs.h>
+static struct page **bsd_gem_get_pages(struct drm_gem_object *obj)
+{
+	struct page **pages, *p;
+	int i, npages;
+
+	if (WARN_ON(!obj->filp))
+		return ERR_PTR(-EINVAL);
+	npages = obj->size >> PAGE_SHIFT;
+	pages = kvmalloc_array(npages, sizeof(struct page *), GFP_KERNEL);
+	if (pages == NULL)
+		return ERR_PTR(-ENOMEM);
+	for (i = 0; i < npages; i++) {
+		p = shmem_read_mapping_page(obj->filp->f_shmem, i);
+		if (IS_ERR(p)) {
+			while (i--)
+				put_page(pages[i]);
+			kvfree(pages);
+			return ERR_CAST(p);
+		}
+		pages[i] = p;
+	}
+	return pages;
+}
+static void bsd_gem_put_pages(struct drm_gem_object *obj, struct page **pages, bool dirty, bool accessed)
+{
+	int i, npages = obj->size >> PAGE_SHIFT;
+
+	for (i = 0; i < npages; i++) {
+		if (dirty)
+			vm_page_dirty((vm_page_t)pages[i]);
+		put_page(pages[i]);
+	}
+	kvfree(pages);
+}
+#define drm_gem_get_pages bsd_gem_get_pages
+#define drm_gem_put_pages bsd_gem_put_pages
+#endif
+
 MODULE_IMPORT_NS(DMA_BUF);
 
 /**
@@ -98,8 +139,10 @@ __drm_gem_shmem_create(struct drm_device *dev, size_t size, bool private)
 		 * why this is required _and_ expected if you're
 		 * going to pin these pages.
 		 */
+#ifdef __linux__
 		mapping_set_gfp_mask(obj->filp->f_mapping, GFP_HIGHUSER |
 				     __GFP_RETRY_MAYFAIL | __GFP_NOWARN);
+#endif
 	}
 
 	return shmem;
@@ -472,7 +515,9 @@ void drm_gem_shmem_purge_locked(struct drm_gem_shmem_object *shmem)
 
 	shmem->madv = -1;
 
+#ifdef __linux__
 	drm_vma_node_unmap(&obj->vma_node, dev->anon_inode->i_mapping);
+#endif
 	drm_gem_free_mmap_offset(obj);
 
 	/* Our goal here is to return as much of the memory as
@@ -480,9 +525,11 @@ void drm_gem_shmem_purge_locked(struct drm_gem_shmem_object *shmem)
 	 * To do this we must instruct the shmfs to drop all of its
 	 * backing pages, *now*.
 	 */
+#ifdef __linux__
 	shmem_truncate_range(file_inode(obj->filp), 0, (loff_t)-1);
 
 	invalidate_mapping_pages(file_inode(obj->filp)->i_mapping, 0, (loff_t)-1);
+#endif
 }
 EXPORT_SYMBOL(drm_gem_shmem_purge_locked);
 
@@ -559,7 +606,14 @@ static vm_fault_t drm_gem_shmem_fault(struct vm_fault *vmf)
 	} else {
 		page = shmem->pages[page_offset];
 
+#ifdef __linux__
 		ret = vmf_insert_pfn(vma, vmf->address, page_to_pfn(page));
+#else
+		/* LinuxKPI contract (see ttm_bo_vm.c): the fault handler takes the object lock of the mapping, inserts the page and leaves it unlocked */
+		VM_OBJECT_WLOCK(vma->vm_obj);
+		ret = lkpi_vmf_insert_pfn_prot_locked(vma, vmf->address, page_to_pfn(page), vma->vm_page_prot);
+		VM_OBJECT_WUNLOCK(vma->vm_obj);
+#endif
 	}
 
 	mutex_unlock(&shmem->pages_lock);
@@ -629,7 +683,11 @@ int drm_gem_shmem_mmap(struct drm_gem_shmem_object *shmem, struct vm_area_struct
 		vma->vm_private_data = NULL;
 		vma->vm_ops = NULL;
 
+#ifdef __linux__
 		ret = dma_buf_mmap(obj->dma_buf, vma, 0);
+#else
+		ret = -ENOSYS;          /* imported dma-bufs cannot be mapped yet */
+#endif
 
 		/* Drop the reference drm_gem_mmap_obj() acquired.*/
 		if (!ret)
