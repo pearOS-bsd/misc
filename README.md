@@ -43,6 +43,25 @@ WindowServer (SkyLight), looking like they do on a Mac. No X11, no Wayland, no A
 Rule of the project: upstream sources are never edited. What the platform lacks is added to the SDK layer (`wsbsd/sdk`); what cannot compile (Swift) is ported to an overlay
 (`wsbsd/ports/<app>/overlay`) and listed as such. Swift on FreeBSD has no Objective-C interoperability, so Swift classes that subclass `NSObject` or use AppKit cannot be built.
 
+## Original Mac applications (Mach-O) on the image
+
+The image runs programs that were built for macOS, without changes, through [darwinator](https://github.com/pearOS-bsd/darwinator) (built by `iso/build.sh`):
+`machrun` is a dyld in userland (it maps the Mach-O file, loads its dylibs and frameworks, binds the imports to FreeBSD's libraries and to GNUstep's
+Foundation and AppKit, and starts it), and the kernel module `darwinator.ko` runs static Mach-O programs and implements about 140 Darwin system calls.
+`imgact_binmisc` hands every Mach-O file that is started from a shell to `machrun`.
+
+| What | How |
+|---|---|
+| Install an application from its own site (not ours to ship) | `macapp-install keka appcleaner xld unarchiver`, or `macapp-install URL` (a `.zip` or `.dmg`), into `/Applications` |
+| Run it | `macapp "/Applications/Keka.app"` (window), `macapp "/Applications/Keka.app" file.zip` (open the file); the Finder starts a Mac `.app` through `macapp` on a double click |
+| Tried | Keka 1.6.8 (extracts), AppCleaner 3.7 (finds and trashes the files of an application), XLD (WAV to FLAC and back, byte for byte), FFmpeg dylibs; The Unarchiver 3.11 shows its window and extracts, but crashes in about half of its runs |
+| Not possible yet | Swift programs (IINA, System Settings, SwiftUI): the Swift runtime is not ported |
+
+The tests and the notes of every application are in the darwinator repository (`tests/`, `docs/`). The Finder's double click on a Mac `.app` is written
+(`finder/src/TLaunch.mm`) but was not seen working in a test: the mouse of the virtual machine could not be driven.
+
+The image is named `pearOS-UltraC0re-<arch>-YY.MM.iso` (the year and month of the build), also on the `iso-latest` release.
+
 ## Applications
 
 State on 2026-10-22, FreeBSD 14.5 aarch64 (QEMU, HVF; a real screen in the QEMU window and VNC) and the CI virtual machine (x86_64). "Unmodified" means no line of the application's own sources was changed.
