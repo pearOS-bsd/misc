@@ -4,7 +4,7 @@ Goal: `/dev/dri/card0` + `renderD128` on a QEMU `virtio-vga-gl` (or any virtio-g
 
 Source: Linux 6.1.128 `drivers/gpu/drm/virtio/*` and `drm_gem_shmem_helper.c` (GPL-2.0-only, kept as is; the module is a separate GPL work like drm-kmod itself). The build is `make SYSDIR=<src>/sys -C kmod/virtio_gpu` inside a checkout of freebsd/drm-kmod branch `6.1-lts` (copy this directory to `drm-kmod/virtio_gpu`).
 
-STATE: milestones 1-5 done (FPS measured, below); next: milestone 6 (image integration: build.sh builds and installs virtio_gpu.ko, wsbsd_gpu detaches virtio_pci and loads it), then cleanup (unload leaks BAR mappings, kldunload + kldload panics on duplicate devfs aliases).
+STATE: DONE (milestones 1-6). Follow-ups, not blocking: unload leaks the BAR mappings and `kldunload` then `kldload` panics on duplicate devfs aliases (do not unload); no indirect descriptors, no blob / host-visible memory (QEMU reports -resource_blob -host_visible: the shared memory region is not exposed by this transport yet), no context_init (Venus / native context).
 
 Design: the module is a LinuxKPI PCI driver (like i915) for the modern virtio GPU (1af4:1050) with its own virtio-pci transport written over the Linux API (`virtio_pci_shim.c`: capabilities, feature negotiation, split virtqueues without indirect descriptors, one MSI-X vector or INTx, shared memory regions, `virtio_dma_buf`). FreeBSD's virtio(4) is not used: it attaches the child before DRIVER_OK and gives no `struct pci_dev` to the DRM core. The device has to be free when the module loads: `devctl detach virtio_pci<N>` first (wsbsd_gpu does it). `include/linux/virtio*.h` replace Linux's headers with what virtio_gpu uses.
 
@@ -22,3 +22,5 @@ Milestone 5 (test/bench_fps.c, QEMU `-device virtio-vga-gl,xres=1920,yres=1080 -
 - GL on virgl: mean 91.3 FPS, 11.96 ms per frame, 878 frames
 - software compositor: mean 67.6 FPS, 14.63 ms per frame, 607 frames
 Lighter scene (4 windows of 560 px, 1280x800): GL 158 FPS / 6.2 ms, software 165 FPS / 4.3 ms: the benchmark is paced by its own move requests there, the GPU only wins when the scene is heavy.
+
+Milestone 6 (image integration): `iso/build.sh` fetches drm-kmod 6.1-lts, builds this directory against it and installs /boot/modules/virtio_gpu.ko (then kldxref); `iso/overlay/etc-rc.d-wsbsd_gpu` detects 1af4:1050, `devctl detach`es virtio_pci and loads virtio_gpu. Booting the image in QEMU (OVMF, `-device virtio-vga-gl,xres=1920,yres=1080 -display egl-headless`) the serial report says: `module virtio_gpu: attached, /dev/dri/card0 present`, `wsd: GL compositor: EGL 1.5, virgl (Mesa Intel(R) Iris(R) Xe Graphics (TGL GT2)), dma-buf import yes, export yes, GBM display`, `acceleration: GPU (OpenGL ES compositor)`.
