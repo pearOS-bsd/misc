@@ -369,9 +369,9 @@ static int vp_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 	vp->vdev.id.device = pdev->device - 0x1040; vp->vdev.id.vendor = pdev->subsystem_vendor;
 	vp->vdev.index = 0; dev_set_name(&vp->vdev.dev, "virtio0");
 	vp_one = vp;
+	vp->probed = true;                                             /* the driver talks to the device inside probe(): its answers must reach the callbacks */
 	err = drv->probe(&vp->vdev);                                   /* virtio_gpu_probe(): find_vqs, DRM registration */
-	if (err) { vp_one = NULL; free_irq(pci_irq_vector(pdev, 0), vp); pci_free_irq_vectors(pdev); goto err_fail; }
-	vp->probed = true;
+	if (err) { vp->probed = false; vp_one = NULL; free_irq(pci_irq_vector(pdev, 0), vp); pci_free_irq_vectors(pdev); goto err_fail; }
 	pci_set_drvdata(pdev, vp);
 	return 0;
 err_fail:
