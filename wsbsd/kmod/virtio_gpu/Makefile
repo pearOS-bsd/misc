@@ -2,7 +2,7 @@
 SRCDIR=	${.CURDIR}
 .PATH:	${SRCDIR}
 KMOD=	virtio_gpu
-SRCS=	virtio_pci_shim.c drm_simple_kms_helper.c virtgpu_drv.c virtgpu_kms.c virtgpu_gem.c virtgpu_vq.c virtgpu_fence.c virtgpu_object.c virtgpu_display.c virtgpu_plane.c virtgpu_ioctl.c virtgpu_prime.c virtgpu_vram.c drm_gem_shmem_helper.c
+SRCS=	virtio_pci_shim.c virtgpu_debugfs.c drm_simple_kms_helper.c virtgpu_drv.c virtgpu_kms.c virtgpu_gem.c virtgpu_vq.c virtgpu_fence.c virtgpu_object.c virtgpu_display.c virtgpu_plane.c virtgpu_ioctl.c virtgpu_prime.c virtgpu_vram.c drm_gem_shmem_helper.c
 SRCS+=	opt_acpi.h opt_drm.h opt_platform.h opt_splash.h opt_syscons.h opt_teken.h acpi_if.h bus_if.h fb_if.h device_if.h pci_if.h vnode_if.h
 .include <bsd.kmod.mk>
 .include "../linuxkpi_version.mk"
