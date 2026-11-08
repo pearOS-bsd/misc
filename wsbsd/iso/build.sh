@@ -122,6 +122,12 @@ install -d "$ROOT/System/Library/CoreServices/CoreTypes.bundle/Contents/Resource
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_kbdlight" "$ROOT/$d/rc.d/wsbsd_kbdlight"; done
 # the keyboard backlight driver (needs the kernel sources of the build machine; without them the image simply has no such module)
 # the kernel module of the Clevo keyboard backlight (clevo_dchu, the DCHU ACPI device CLV0001): built against the kernel sources of the image's release (src.txz, only usr/src/sys is unpacked), the build machine need not have /usr/src
+# the kernel modules written for pearOS live in their own repositories (github.com/pearOS-bsd/virtio, github.com/pearOS-bsd/clevo_wmi): fetched here, at the branch or tag in PEAR_VIRTIO_REF / PEAR_CLEVO_REF (default main)
+pear_fetch() {   # repo ref dir
+	rm -rf "$3"; mkdir -p "$3"
+	fetch -q -o "$WORK/$1.tgz" "https://github.com/pearOS-bsd/$1/archive/$2.tar.gz" 2>/dev/null && tar -xzf "$WORK/$1.tgz" -C "$3" --strip-components=1 2>/dev/null; rm -f "$WORK/$1.tgz"
+	[ -f "$3/Makefile" ]
+}
 SYSDIR=/usr/src/sys
 if [ ! -d "$SYSDIR/dev/acpica" ]; then
 	SYSDIR="$WORK/src/usr/src/sys"
@@ -130,18 +136,18 @@ if [ ! -d "$SYSDIR/dev/acpica" ]; then
 		[ -f "$WORK/src.txz" ] && tar -xf "$WORK/src.txz" -C "$WORK/src" usr/src/sys 2>/dev/null; rm -f "$WORK/src.txz"
 	fi
 fi
-if [ -d "$SYSDIR/dev/acpica" ]; then (cd "$WS/kmod/clevo_dchu" && make SYSDIR="$SYSDIR" clean >/dev/null 2>&1; make SYSDIR="$SYSDIR" >"$WORK/clevo_dchu.log" 2>&1 && install -d "$ROOT/boot/modules" && install -m 555 clevo_dchu.ko "$ROOT/boot/modules/clevo_dchu.ko" && echo "clevo_dchu built against $SYSDIR") || { echo "NOTE: clevo_dchu did not build (see $WORK/clevo_dchu.log)"; tail -8 "$WORK/clevo_dchu.log"; }; else echo "NOTE: no kernel sources: no keyboard backlight module in this image"; fi
+if [ -d "$SYSDIR/dev/acpica" ] && pear_fetch clevo_wmi "${PEAR_CLEVO_REF:-main}" "$WORK/clevo_dchu"; then (cd "$WORK/clevo_dchu" && make SYSDIR="$SYSDIR" clean >/dev/null 2>&1; make SYSDIR="$SYSDIR" >"$WORK/clevo_dchu.log" 2>&1 && install -d "$ROOT/boot/modules" && install -m 555 clevo_dchu.ko "$ROOT/boot/modules/clevo_dchu.ko" && echo "clevo_dchu built against $SYSDIR") || { echo "NOTE: clevo_dchu did not build (see $WORK/clevo_dchu.log)"; tail -8 "$WORK/clevo_dchu.log"; }; else echo "NOTE: no kernel sources or pearOS-bsd/clevo_wmi could not be fetched: no keyboard backlight module in this image"; fi
 
-# virtio_gpu: the DRM driver of the virtio GPU of QEMU / KVM (virgl 3D), a port of Linux 6.1's virtio_gpu over drm-kmod (wsbsd/kmod/virtio_gpu); built against the sources of drm-kmod 6.1-lts, the drm.ko of the image is the drm-61-kmod package
+# virtio_gpu: the DRM driver of the virtio GPU of QEMU / KVM (virgl 3D), a port of Linux 6.1's virtio_gpu over drm-kmod (github.com/pearOS-bsd/virtio); built against the sources of drm-kmod 6.1-lts, the drm.ko of the image is the drm-61-kmod package
 DRMKMOD="$WORK/drm-kmod"
 if [ ! -f "$DRMKMOD/kconfig.mk" ]; then
 	mkdir -p "$DRMKMOD"; [ -f "$WORK/drm-kmod.tgz" ] || fetch -q -o "$WORK/drm-kmod.tgz" "https://github.com/freebsd/drm-kmod/archive/refs/heads/6.1-lts.tar.gz" || true
 	[ -f "$WORK/drm-kmod.tgz" ] && tar -xzf "$WORK/drm-kmod.tgz" -C "$DRMKMOD" --strip-components=1 2>/dev/null
 fi
-if [ -d "$SYSDIR/dev/acpica" ] && [ -f "$DRMKMOD/kconfig.mk" ]; then
-	rm -rf "$DRMKMOD/virtio_gpu"; cp -R "$WS/kmod/virtio_gpu" "$DRMKMOD/virtio_gpu"
+if [ -d "$SYSDIR/dev/acpica" ] && [ -f "$DRMKMOD/kconfig.mk" ] && pear_fetch virtio "${PEAR_VIRTIO_REF:-main}" "$WORK/virtio_gpu_src"; then
+	rm -rf "$DRMKMOD/virtio_gpu"; cp -R "$WORK/virtio_gpu_src" "$DRMKMOD/virtio_gpu"
 	(cd "$DRMKMOD/virtio_gpu" && make SYSDIR="$SYSDIR" clean >/dev/null 2>&1; make SYSDIR="$SYSDIR" >"$WORK/virtio_gpu.log" 2>&1 && install -d "$ROOT/boot/modules" && install -m 555 virtio_gpu.ko "$ROOT/boot/modules/virtio_gpu.ko" && echo "virtio_gpu built against $SYSDIR") || { echo "NOTE: virtio_gpu did not build (see $WORK/virtio_gpu.log)"; tail -8 "$WORK/virtio_gpu.log"; }
-else echo "NOTE: virtio_gpu not built (no kernel sources or no drm-kmod sources)"; fi
+else echo "NOTE: virtio_gpu not built (no kernel sources, no drm-kmod sources, or pearOS-bsd/virtio could not be fetched)"; fi
 [ -d "$ROOT/boot/modules" ] && kldxref "$ROOT/boot/modules"
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_wifi" "$ROOT/$d/rc.d/wsbsd_wifi"; done
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_bluetooth" "$ROOT/$d/rc.d/wsbsd_bluetooth"; done
