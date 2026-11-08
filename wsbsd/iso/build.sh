@@ -148,6 +148,10 @@ if [ -d "$SYSDIR/dev/acpica" ] && [ -f "$DRMKMOD/kconfig.mk" ] && pear_fetch vir
 	rm -rf "$DRMKMOD/virtio_gpu"; cp -R "$WORK/virtio_gpu_src" "$DRMKMOD/virtio_gpu"
 	(cd "$DRMKMOD/virtio_gpu" && make SYSDIR="$SYSDIR" clean >/dev/null 2>&1; make SYSDIR="$SYSDIR" >"$WORK/virtio_gpu.log" 2>&1 && install -d "$ROOT/boot/modules" && install -m 555 virtio_gpu.ko "$ROOT/boot/modules/virtio_gpu.ko" && echo "virtio_gpu built against $SYSDIR") || { echo "NOTE: virtio_gpu did not build (see $WORK/virtio_gpu.log)"; tail -8 "$WORK/virtio_gpu.log"; }
 else echo "NOTE: virtio_gpu not built (no kernel sources, no drm-kmod sources, or pearOS-bsd/virtio could not be fetched)"; fi
+# the name neofetch, pciconf -lv and About This Mac show for the virtio GPU (PCI 1af4:1050) comes from FreeBSD's PCI database
+if [ -f "$ROOT/usr/share/misc/pci_vendors" ]; then
+	sed 's/^\t1050  Virtio 1\.0 GPU$/\t1050  pearOS Generic GPU (virtio)/' "$ROOT/usr/share/misc/pci_vendors" > "$WORK/pci_vendors.new" && cat "$WORK/pci_vendors.new" > "$ROOT/usr/share/misc/pci_vendors"; rm -f "$WORK/pci_vendors.new"
+fi
 [ -d "$ROOT/boot/modules" ] && kldxref "$ROOT/boot/modules"
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_wifi" "$ROOT/$d/rc.d/wsbsd_wifi"; done
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_bluetooth" "$ROOT/$d/rc.d/wsbsd_bluetooth"; done
