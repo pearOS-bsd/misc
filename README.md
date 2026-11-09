@@ -53,12 +53,11 @@ Foundation and AppKit, and starts it), and the kernel module `darwinator.ko` run
 | What | How |
 |---|---|
 | Install an application from its own site (not ours to ship) | `macapp-install keka appcleaner xld unarchiver`, or `macapp-install URL` (a `.zip` or `.dmg`), into `/Applications` |
-| Run it | `macapp "/Applications/Keka.app"` (window), `macapp "/Applications/Keka.app" file.zip` (open the file); the Finder starts a Mac `.app` through `macapp` on a double click |
+| Run it | `macapp "/Applications/Keka.app"` (window), `macapp "/Applications/Keka.app" file.zip` (open the file); the Finder starts a Mac `.app` through `macapp` on a double click (tested) |
 | Tried | Keka 1.6.8 (extracts), AppCleaner 3.7 (finds and trashes the files of an application), XLD (WAV to FLAC and back, byte for byte), FFmpeg dylibs; The Unarchiver 3.11 shows its window and extracts, but extracts them with a short archive path (a path of 27 to 33 characters makes it crash: not found yet) |
 | Not possible yet | Swift programs (IINA, System Settings, SwiftUI): the Swift runtime is not ported |
 
-The tests and the notes of every application are in the darwinator repository (`tests/`, `docs/`). The Finder's double click on a Mac `.app` is written
-(`finder/src/TLaunch.mm`) but was not seen working in a test: the mouse of the virtual machine could not be driven.
+The tests and the notes of every application are in the darwinator repository (`tests/`, `docs/`). The Finder's double click on a Mac `.app` (`finder/src/TLaunch.mm`) works: tested in QEMU with AppCleaner on the desktop (screenshot in the darwinator repository).
 
 The image is named `pearOS-UltraC0re-<arch>-YY.MM.iso` (the year and month of the build), also on the `iso-latest` release.
 
