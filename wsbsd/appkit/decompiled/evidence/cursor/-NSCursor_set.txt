@@ -1,0 +1,81 @@
+### -[NSCursor set]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSCursor set]
+
+-[NSCursor set]:
+0x185046098:  7f 23 03 d5   pacibsp
+0x18504609c:  f6 57 bd a9   stp	x22, x21, [sp, #-0x30]!
+0x1850460a0:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x1850460a4:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x1850460a8:  fd 83 00 91   add	fp, sp, #0x20
+0x1850460ac:  f3 03 00 aa   mov	x19, x0
+0x1850460b0:  95 9d 30 f0   adrp	x21, 0x1e63f9000
+0x1850460b4:  a0 7a 46 f9   ldr	x0, [x21, #0xcf0] ; data_1e63f9cf0 (AppKit/__DATA_DIRTY.__bss)
+0x1850460b8:  80 02 00 b5   cbnz	x0, loc_185046108 ; ⤵ 0x50
+0x1850460bc:  21 93 00 90   adrp	x1, 0x1862aa000
+0x1850460c0:  21 5c 11 91   add	x1, x1, #0x457 ; "/AppleInternal/Library/BuildRoots/4~CWGNugDnaGLhZtj9qprH45-y-Xwew1V4U9LG6uc/Library/Caches/com.apple.xbs/TemporaryDirectory.LvLSaU/Sources/AppKit/AppKit.subproj/NSCursor.m"
+0x1850460c4:  a0 11 80 52   mov	w0, #0x8d
+0x1850460c8:  6c 08 fa 97   bl	__NSAppKitLock
+0x1850460cc:  a8 7a 46 f9   ldr	x8, [x21, #0xcf0]
+0x1850460d0:  68 00 00 b4   cbz	x8, loc_1850460dc ; ⤵ 0xc
+0x1850460d4:  14 00 80 52   mov	w20, #0
+0x1850460d8:  06 00 00 14   b	loc_1850460f0 ; ⤵ 0x18
+0x1850460dc:  ; loc_1850460dc
+0x1850460dc:  28 8b 2d 90   adrp	x8, 0x1e01aa000
+0x1850460e0:  00 85 42 f9   ldr	x0, [x8, #0x508] ; _ptr.NSRecursiveLock
+0x1850460e4:  9f 5d c2 94   bl	j__objc_alloc_init
+0x1850460e8:  14 00 80 52   mov	w20, #0
+0x1850460ec:  a0 7a 06 f9   str	x0, [x21, #0xcf0]
+0x1850460f0:  ; loc_1850460f0
+0x1850460f0:  21 93 00 90   adrp	x1, 0x1862aa000
+0x1850460f4:  21 5c 11 91   add	x1, x1, #0x457 ; "/AppleInternal/Library/BuildRoots/4~CWGNugDnaGLhZtj9qprH45-y-Xwew1V4U9LG6uc/Library/Caches/com.apple.xbs/TemporaryDirectory.LvLSaU/Sources/AppKit/AppKit.subproj/NSCursor.m"
+0x1850460f8:  40 12 80 52   mov	w0, #0x92
+0x1850460fc:  0d 12 fa 97   bl	__NSAppKitUnlock
+0x185046100:  74 03 00 37   tbnz	w20, #0, loc_18504616c ; ⤵ 0x6c
+0x185046104:  a0 7a 46 f9   ldr	x0, [x21, #0xcf0]
+0x185046108:  ; loc_185046108
+0x185046108:  b6 f7 be 94   bl	0x188003fe0
+0x18504610c:  88 9d 30 f0   adrp	x8, 0x1e63f9000
+0x185046110:  08 05 47 f9   ldr	x8, [x8, #0xe08] ; data_1e63f9e08 (AppKit/__DATA_DIRTY.__bss)
+0x185046114:  1f 01 00 f1   cmp	x8, #0
+0x185046118:  04 11 53 fa   ccmp	x8, x19, #0x4, ne
+0x18504611c:  81 00 00 54   b.ne	loc_18504612c ; ⤵ 0x10
+0x185046120:  e0 03 13 aa   mov	x0, x19
+0x185046124:  8f 4b c0 94   bl	0x188058f60
+0x185046128:  08 00 00 14   b	loc_185046148 ; ⤵ 0x20
+0x18504612c:  ; loc_18504612c
+0x18504612c:  96 9d 30 f0   adrp	x22, 0x1e63f9000
+0x185046130:  d4 02 47 f9   ldr	x20, [x22, #0xe00] ; data_1e63f9e00 (AppKit/__DATA_DIRTY.__bss)
+0x185046134:  e0 03 13 aa   mov	x0, x19
+0x185046138:  ce 5a c2 94   bl	j__objc_retain_x0
+0x18504613c:  c0 02 07 f9   str	x0, [x22, #0xe00]
+0x185046140:  e0 03 14 aa   mov	x0, x20
+0x185046144:  c7 5a c2 94   bl	j__objc_release_x0
+0x185046148:  ; loc_185046148
+0x185046148:  a0 7a 46 f9   ldr	x0, [x21, #0xcf0]
+0x18504614c:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x185046150:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x185046154:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x185046158:  ff 23 03 d5   autibsp
+0x18504615c:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x185046160:  50 00 f0 b6   tbz	x16, #0x3e, loc_185046168 ; ⤵ 0x8
+0x185046164:  20 8e 38 d4   brk	#0xc471
+0x185046168:  ; loc_185046168
+0x185046168:  c6 fc be 14   b	0x188005480
+0x18504616c:  ; loc_18504616c
+0x18504616c:  19 70 c2 94   bl	j__objc_exception_rethrow
+0x185046170:  20 00 20 d4   brk	#0x1
+0x185046174:  e7 5f c2 94   bl	j__objc_begin_catch
+0x185046178:  34 00 80 52   mov	w20, #0x1
+0x18504617c:  dd ff ff 17   b	loc_1850460f0 ; ⤴ -0x8c
+0x185046180:  f3 03 00 aa   mov	x19, x0
+0x185046184:  03 00 00 14   b	loc_185046190 ; ⤵ 0xc
+0x185046188:  f3 03 00 aa   mov	x19, x0
+0x18504618c:  54 00 00 34   cbz	w20, loc_185046194 ; ⤵ 0x8
+0x185046190:  ; loc_185046190
+0x185046190:  e8 5f c2 94   bl	j__objc_end_catch
+0x185046194:  ; loc_185046194
+0x185046194:  e0 03 13 aa   mov	x0, x19
+0x185046198:  be 57 c2 94   bl	j___Unwind_Resume
+0x18504619c:  f1 5f c2 94   bl	j__objc_terminate
+

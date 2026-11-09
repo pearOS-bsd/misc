@@ -1,0 +1,7 @@
+### -[NSGestureRecognizer state]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSGestureRecognizer state]
+
+-[NSGestureRecognizer state]:
+0x185064de0:  86 15 2c 14   b	-[NSGestureRecognizer _state]
+

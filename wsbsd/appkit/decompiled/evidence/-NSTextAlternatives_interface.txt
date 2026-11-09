@@ -1,0 +1,15 @@
+@interface NSTextAlternatives : NSObject <NSSecureCoding> {
+    /* instance variables */
+    @"NSString" _primaryString;
+    @"NSArray" _alternativeStrings;
+    @ _internal;
+    B _isLowConfidence;
+}
+
+@property (TB,V_isLowConfidence) isLowConfidence;
+@property (T@"NSString",R,C) primaryString;
+@property (T@"NSArray",R,C) alternativeStrings;
+
+/* class methods */
++[NSTextAlternatives supportsSecureCoding];
+

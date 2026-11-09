@@ -1,0 +1,17 @@
+@interface NSGridColumn : NSObject <NSCoding> {
+    /* instance variables */
+    @"NSGridView" _owningGridView;
+    @"NSLayoutXAxisAnchor" _leading;
+    q _hasContentInGeneration;
+    q _xPlacement;
+    d _width;
+    d _trailingPadding;
+    d _leadingPadding;
+    B _hidden;
+}
+
+@property (T@"NSGridView",R,W) gridView;
+@property (Tq,R) numberOfCells;
+@property (Tq) xPlacement;
+@property (Td) width;
+@property (Td) leadingPadding;

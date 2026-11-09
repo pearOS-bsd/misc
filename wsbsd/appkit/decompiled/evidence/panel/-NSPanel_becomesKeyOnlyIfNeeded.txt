@@ -1,0 +1,13 @@
+### -[NSPanel becomesKeyOnlyIfNeeded]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSPanel becomesKeyOnlyIfNeeded]
+
+-[NSPanel becomesKeyOnlyIfNeeded]:
+0x185166a94:  08 9d 2f 90   adrp	x8, 0x1e4506000
+0x185166a98:  08 81 30 91   add	x8, x8, #0xc20 ; _OBJC_IVAR_$_NSWindow._wFlags
+0x185166a9c:  08 01 80 b9   ldrsw	x8, [x8]
+0x185166aa0:  08 00 08 8b   add	x8, x0, x8
+0x185166aa4:  08 05 40 39   ldrb	w8, [x8, #0x1]
+0x185166aa8:  00 7d 07 53   lsr	w0, w8, #0x7
+0x185166aac:  c0 03 5f d6   ret
+

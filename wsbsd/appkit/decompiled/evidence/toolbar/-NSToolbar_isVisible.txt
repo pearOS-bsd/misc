@@ -1,0 +1,26 @@
+### -[NSToolbar isVisible]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSToolbar isVisible]
+
+-[NSToolbar isVisible]:
+0x184fb3768:  7f 23 03 d5   pacibsp
+0x184fb376c:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x184fb3770:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x184fb3774:  fd 43 00 91   add	fp, sp, #0x10
+0x184fb3778:  7e 78 c2 94   bl	0x188051970
+0x184fb377c:  e5 ad c4 94   bl	j__objc_claimAutoreleasedReturnValue
+0x184fb3780:  f3 03 00 aa   mov	x19, x0
+0x184fb3784:  a7 d8 c2 94   bl	0x188069a20
+0x184fb3788:  f4 03 00 aa   mov	x20, x0
+0x184fb378c:  e0 03 13 aa   mov	x0, x19
+0x184fb3790:  34 a5 c4 94   bl	j__objc_release_x0
+0x184fb3794:  e0 03 14 aa   mov	x0, x20
+0x184fb3798:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x184fb379c:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x184fb37a0:  ff 0f 5f d6   retab
+0x184fb37a4:  f4 03 00 aa   mov	x20, x0
+0x184fb37a8:  e0 03 13 aa   mov	x0, x19
+0x184fb37ac:  2d a5 c4 94   bl	j__objc_release_x0
+0x184fb37b0:  e0 03 14 aa   mov	x0, x20
+0x184fb37b4:  37 a2 c4 94   bl	j___Unwind_Resume
+

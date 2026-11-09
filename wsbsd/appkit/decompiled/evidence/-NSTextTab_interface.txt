@@ -1,0 +1,29 @@
+@interface NSTextTab : NSObject <NSCopying, NSCoding, NSSecureCoding> {
+    /* instance variables */
+    {?="alignment"b4"refCount"b24"unused"b4} _flags;
+    d _location;
+    @ _reserved;
+}
+
+@property (Tq,R) alignment;
+@property (Td,R) location;
+@property (T@"NSDictionary",R) options;
+
+/* class methods */
++[NSTextTab allocWithZone:];
++[NSTextTab supportsSecureCoding];
++[NSTextTab initialize];
++[NSTextTab columnTerminatorsForLocale:];
+
+/* instance methods */
+-[NSTextTab hash];
+-[NSTextTab options];
+-[NSTextTab initWithCoder:];
+-[NSTextTab alignment];
+-[NSTextTab location];
+-[NSTextTab init];
+-[NSTextTab description];
+-[NSTextTab dealloc];
+-[NSTextTab isEqual:];
+-[NSTextTab copyWithZone:];
+-[NSTextTab encodeWithCoder:];

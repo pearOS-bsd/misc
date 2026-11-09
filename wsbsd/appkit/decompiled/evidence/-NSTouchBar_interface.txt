@@ -1,0 +1,19 @@
+@interface NSTouchBar : NSObject <NSAnimatablePropertyContainer, NSCoding> {
+    /* instance variables */
+    @ _configuration;
+    @"NSString" _principalItemIdentifier;
+    @"NSSet" _templateItems;
+    @"<NSTouchBarDelegate>" _delegate;
+    @"NSMutableDictionary" _itemCache;
+    q _visibilityCount;
+    b1 _isBuildingItems;
+    b1 _suppressesLessFocusedTouchBars;
+    b1 _suppressesMoreFocusedTouchBars;
+    b1 _suppressedByLessFocusedTouchBars;
+    b1 _suppressedByMoreFocusedTouchBars;
+    @ _fbReserved;
+}
+
+@property (TB) suppressesMoreFocusedBars;
+@property (TB) suppressesLessFocusedBars;
+@property (TB,GisSuppressedByLessFocusedTouchBars) suppressedByLessFocusedTouchBars;

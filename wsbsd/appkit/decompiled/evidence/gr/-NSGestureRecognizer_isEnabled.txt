@@ -1,0 +1,25 @@
+### -[NSGestureRecognizer isEnabled]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSGestureRecognizer isEnabled]
+
+-[NSGestureRecognizer isEnabled]:
+0x18513444c:  7f 23 03 d5   pacibsp
+0x185134450:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x185134454:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x185134458:  fd 43 00 91   add	fp, sp, #0x10
+0x18513445c:  f3 03 00 aa   mov	x19, x0
+0x185134460:  92 f0 2a 94   bl	__NSIsGesturesFrameworkEnabled
+0x185134464:  a0 00 00 34   cbz	w0, loc_185134478 ; ⤵ 0x14
+0x185134468:  60 06 40 f9   ldr	x0, [x19, #0x8]
+0x18513446c:  55 67 bd 94   bl	0x18808e1c0
+0x185134470:  00 00 00 52   eor	w0, w0, #0x1
+0x185134474:  04 00 00 14   b	loc_185134484 ; ⤵ 0x10
+0x185134478:  ; loc_185134478
+0x185134478:  68 6e 41 39   ldrb	w8, [x19, #0x5b]
+0x18513447c:  1f 01 1d 72   tst	w8, #0x8
+0x185134480:  e0 17 9f 1a   cset	w0, eq
+0x185134484:  ; loc_185134484
+0x185134484:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x185134488:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x18513448c:  ff 0f 5f d6   retab
+

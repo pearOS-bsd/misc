@@ -1,0 +1,17 @@
+@interface NSPasteboard : NSObject {
+    /* instance variables */
+    q _gen;
+    @"NSMutableSet" _uniformTypeIdentifierSet;
+    ^{__CFPasteboard=} _pboard;
+    q _gen_unshunted;
+    @"_NSPasteboardOwnersCollection" _owners;
+    @"_NSPasteboardOwnersCollection" _owners_unshunted;
+    q _cachedTypeNameChangeCount;
+    q _cachedTypeNameChangeCount_unshunted;
+    @"_NSPasteboardTypeCache" _cachedTypeNames;
+    @"_NSPasteboardTypeCache" _cachedTypeNames_unshunted;
+    @"NSMutableDictionary" _promiseTypeNamesByIdentifier;
+    @"NSMutableDictionary" _promiseTypeNamesByIdentifier_unshunted;
+    @"_NSPasteboardItemCollection" _pasteboardItems;
+    @"_NSPasteboardItemCollection" _pasteboardItems_unshunted;
+    @"NSMutableSet" _uniformTypeIdentifierSet_unshunted;

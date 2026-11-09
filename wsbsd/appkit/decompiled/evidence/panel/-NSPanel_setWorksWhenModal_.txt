@@ -1,0 +1,38 @@
+### -[NSPanel setWorksWhenModal:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSPanel setWorksWhenModal:]
+
+-[NSPanel setWorksWhenModal:]:
+0x1855baa24:  7f 23 03 d5   pacibsp
+0x1855baa28:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x1855baa2c:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x1855baa30:  fd 43 00 91   add	fp, sp, #0x10
+0x1855baa34:  5f 00 00 71   cmp	w2, #0
+0x1855baa38:  68 7a 2f 90   adrp	x8, 0x1e4506000
+0x1855baa3c:  08 81 30 91   add	x8, x8, #0xc20 ; _OBJC_IVAR_$_NSWindow._wFlags
+0x1855baa40:  08 01 80 b9   ldrsw	x8, [x8]
+0x1855baa44:  08 00 08 8b   add	x8, x0, x8
+0x1855baa48:  09 01 40 f9   ldr	x9, [x8]
+0x1855baa4c:  0a 00 88 52   mov	w10, #0x4000
+0x1855baa50:  4a 11 9f 9a   csel	x10, x10, xzr, ne
+0x1855baa54:  29 f9 71 92   and	x9, x9, #0xffffffffffffbfff
+0x1855baa58:  29 01 0a aa   orr	x9, x9, x10
+0x1855baa5c:  09 01 00 f9   str	x9, [x8]
+0x1855baa60:  08 5f 2d d0   adrp	x8, 0x1e019c000
+0x1855baa64:  08 7d 43 f9   ldr	x8, [x8, #0x6f8] ; _ptr.___NSArray0__struct
+0x1855baa68:  09 82 31 f0   adrp	x9, 0x1e85fd000
+0x1855baa6c:  29 c1 05 91   add	x9, x9, #0x170 ; _ptr.NSConstantArray
+0x1855baa70:  33 11 88 9a   csel	x19, x9, x8, ne
+0x1855baa74:  af 00 ac 94   bl	0x1880bad30
+0x1855baa78:  02 82 31 f0   adrp	x2, 0x1e85fd000
+0x1855baa7c:  42 20 06 91   add	x2, x2, #0x188 ; _ptr.NSConstantArray
+0x1855baa80:  e1 03 13 aa   mov	x1, x19
+0x1855baa84:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x1855baa88:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x1855baa8c:  ff 23 03 d5   autibsp
+0x1855baa90:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x1855baa94:  50 00 f0 b6   tbz	x16, #0x3e, loc_1855baa9c ; ⤵ 0x8
+0x1855baa98:  20 8e 38 d4   brk	#0xc471
+0x1855baa9c:  ; loc_1855baa9c
+0x1855baa9c:  ed 4b 10 14   b	__NSSetWindowTags
+

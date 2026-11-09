@@ -1,0 +1,11 @@
+### -[NSVisualEffectView material]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSVisualEffectView material]
+
+-[NSVisualEffectView material]:
+0x184f34dc4:  88 ae 2f f0   adrp	x8, 0x1e4507000
+0x184f34dc8:  08 41 81 b9   ldrsw	x8, [x8, #0x140] ; _OBJC_IVAR_$_NSVisualEffectView._material
+0x184f34dcc:  08 00 08 8b   add	x8, x0, x8
+0x184f34dd0:  00 01 40 f9   ldr	x0, [x8]
+0x184f34dd4:  c0 03 5f d6   ret
+

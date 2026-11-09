@@ -1,0 +1,64 @@
+### -[NSStatusItem setLength:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSStatusItem setLength:]
+
+-[NSStatusItem setLength:]:
+0x185768d4c:  7f 23 03 d5   pacibsp
+0x185768d50:  ff 43 01 d1   sub	sp, sp, #0x50
+0x185768d54:  e9 23 02 6d   stp	d9, d8, [sp, #0x20]
+0x185768d58:  f4 4f 03 a9   stp	x20, x19, [sp, #0x30]
+0x185768d5c:  fd 7b 04 a9   stp	fp, lr, [sp, #0x40]
+0x185768d60:  fd 03 01 91   add	fp, sp, #0x40
+0x185768d64:  08 1c a0 4e   mov	v8.16b, v0.16b
+0x185768d68:  f3 03 00 aa   mov	x19, x0
+0x185768d6c:  68 58 00 d0   adrp	x8, 0x186276000
+0x185768d70:  00 bd 42 fd   ldr	d0, [x8, #0x578]
+0x185768d74:  00 21 60 1e   fcmp	d8, d0
+0x185768d78:  4d 03 00 54   b.le	loc_185768de0 ; ⤵ 0x68
+0x185768d7c:  51 fd 11 94   bl	___AppKitLogStatusBar
+0x185768d80:  64 d8 a5 94   bl	j__objc_claimAutoreleasedReturnValue
+0x185768d84:  f4 03 00 aa   mov	x20, x0
+0x185768d88:  01 02 80 52   mov	w1, #0x10
+0x185768d8c:  a5 e5 a5 94   bl	j__os_log_type_enabled
+0x185768d90:  40 02 00 34   cbz	w0, loc_185768dd8 ; ⤵ 0x48
+0x185768d94:  68 58 00 d0   adrp	x8, 0x186276000
+0x185768d98:  00 61 43 fd   ldr	d0, [x8, #0x6c0]
+0x185768d9c:  e0 03 00 bd   str	s0, [sp]
+0x185768da0:  e8 43 00 fc   stur	d8, [sp, #0x4]
+0x185768da4:  08 00 81 52   mov	w8, #0x800
+0x185768da8:  e8 1b 00 79   strh	w8, [sp, #0xc]
+0x185768dac:  08 e2 84 52   mov	w8, #0x2710
+0x185768db0:  e8 e3 00 f8   stur	x8, [sp, #0xe]
+0x185768db4:  c0 ba ff d0   adrp	x0, 0x184ec2000
+0x185768db8:  00 00 00 91   add	x0, x0, #0 ; "\xcf\xfa\xed\xfe\f"
+0x185768dbc:  a3 68 00 f0   adrp	x3, 0x18647f000
+0x185768dc0:  63 44 26 91   add	x3, x3, #0x991 ; "attempt to set length of status bar item to %.2f (maximum is %ld)"
+0x185768dc4:  e4 03 00 91   mov	x4, sp
+0x185768dc8:  e1 03 14 aa   mov	x1, x20
+0x185768dcc:  02 02 80 52   mov	w2, #0x10
+0x185768dd0:  c5 02 80 52   mov	w5, #0x16
+0x185768dd4:  e7 e1 a5 94   bl	j___os_log_impl
+0x185768dd8:  ; loc_185768dd8
+0x185768dd8:  e0 03 14 aa   mov	x0, x20
+0x185768ddc:  a1 cf a5 94   bl	j__objc_release_x0
+0x185768de0:  ; loc_185768de0
+0x185768de0:  60 0a 40 fd   ldr	d0, [x19, #0x10]
+0x185768de4:  00 21 60 1e   fcmp	d8, d0
+0x185768de8:  40 01 00 54   b.eq	loc_185768e10 ; ⤵ 0x28
+0x185768dec:  68 0a 00 fd   str	d8, [x19, #0x10]
+0x185768df0:  08 21 60 1e   fcmp	d8, #0.00000000
+0x185768df4:  ad 00 00 54   b.le	loc_185768e08 ; ⤵ 0x14
+0x185768df8:  08 20 60 1e   fcmp	d0, #0.00000000
+0x185768dfc:  6d 00 00 54   b.le	loc_185768e08 ; ⤵ 0xc
+0x185768e00:  60 0e 40 f9   ldr	x0, [x19, #0x18]
+0x185768e04:  73 af a3 94   bl	0x188054bd0
+0x185768e08:  ; loc_185768e08
+0x185768e08:  e0 03 13 aa   mov	x0, x19
+0x185768e0c:  39 3a a3 94   bl	0x1880376f0
+0x185768e10:  ; loc_185768e10
+0x185768e10:  fd 7b 44 a9   ldp	fp, lr, [sp, #0x40]
+0x185768e14:  f4 4f 43 a9   ldp	x20, x19, [sp, #0x30]
+0x185768e18:  e9 23 42 6d   ldp	d9, d8, [sp, #0x20]
+0x185768e1c:  ff 43 01 91   add	sp, sp, #0x50
+0x185768e20:  ff 0f 5f d6   retab
+

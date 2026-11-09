@@ -1,0 +1,9 @@
+### -[NSSound isPlaying]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSSound isPlaying]
+
+-[NSSound isPlaying]:
+0x185730c14:  08 00 41 39   ldrb	w8, [x0, #0x40]
+0x185730c18:  00 05 01 53   ubfx	w0, w8, #0x1, #0x1
+0x185730c1c:  c0 03 5f d6   ret
+

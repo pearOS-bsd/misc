@@ -1,0 +1,20 @@
+### -[NSOpenPanel setCanChooseDirectories:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSOpenPanel setCanChooseDirectories:]
+
+-[NSOpenPanel setCanChooseDirectories:]:
+0x185af7454:  7f 23 03 d5   pacibsp
+0x185af7458:  ff 83 00 d1   sub	sp, sp, #0x20
+0x185af745c:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x185af7460:  fd 43 00 91   add	fp, sp, #0x10
+0x185af7464:  e8 61 2d b0   adrp	x8, 0x1e0734000
+0x185af7468:  08 dd 45 f9   ldr	x8, [x8, #0xbb8] ; NSOpenPanel
+0x185af746c:  e0 23 00 a9   stp	x0, x8, [sp]
+0x185af7470:  68 fa 37 90   adrp	x8, 0x1f5a43000
+0x185af7474:  01 29 3f 91   add	x1, x8, #0xfca ; setCanChooseDirectories:
+0x185af7478:  e0 03 00 91   mov	x0, sp
+0x185af747c:  d1 98 97 94   bl	j__objc_msgSendSuper2
+0x185af7480:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x185af7484:  ff 83 00 91   add	sp, sp, #0x20
+0x185af7488:  ff 0f 5f d6   retab
+

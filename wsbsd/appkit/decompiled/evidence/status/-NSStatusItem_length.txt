@@ -1,0 +1,8 @@
+### -[NSStatusItem length]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSStatusItem length]
+
+-[NSStatusItem length]:
+0x185768d44:  00 08 40 fd   ldr	d0, [x0, #0x10]
+0x185768d48:  c0 03 5f d6   ret
+

@@ -1,0 +1,8 @@
+### -[NSStatusBar isVertical]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSStatusBar isVertical]
+
+-[NSStatusBar isVertical]:
+0x18510d814:  00 00 80 52   mov	w0, #0
+0x18510d818:  c0 03 5f d6   ret
+

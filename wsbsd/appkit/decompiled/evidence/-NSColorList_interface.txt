@@ -1,0 +1,25 @@
+@interface NSColorList : NSObject <NSSecureCoding> {
+    /* instance variables */
+    @"NSMutableArray" _keyArray;
+    @"NSMutableArray" _colorArray;
+    ^{__CFDictionary=} _keyToIndexTable;
+    @"NSString" _name;
+    @"NSString" _printerType;
+    @"NSString" _fileName;
+    {_colorListFlags="colorsLoaded"b1"editable"b1"hasDeviceSpecificLists"b1"dirty"b1"hasFrozen"b1"notificationsDisabled"b1"hasAttemptedLoadingBundleForDirectory"b1"isProfileBased"b1""b24""b32} _flags;
+    @ _clAuxiliaryStorage;
+}
+
+@property (T@"NSString",R,C) name;
+@property (T@"NSArray",R,C) allKeys;
+@property (TB,R,GisEditable) editable;
+
+/* class methods */
++[NSColorList supportsSecureCoding];
++[NSColorList initialize];
++[NSColorList colorListNamed:];
++[NSColorList _colorListNamed:forDeviceType:];
++[NSColorList _colorSyncProfileRepositoryChanged:];
++[NSColorList _findColorListNamed:forDeviceType:];
++[NSColorList _loadSystemScreenColorList];
++[NSColorList _newWithName:fromPath:forDeviceType:];

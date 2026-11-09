@@ -1,0 +1,8 @@
+### -[NSStatusBar thickness]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSStatusBar thickness]
+
+-[NSStatusBar thickness]:
+0x18575e1ec:  00 90 66 1e   fmov	d0, #20.00000000
+0x18575e1f0:  c0 03 5f d6   ret
+

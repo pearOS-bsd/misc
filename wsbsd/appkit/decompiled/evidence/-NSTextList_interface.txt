@@ -1,0 +1,39 @@
+@interface NSTextList : NSObject <NSSecureCoding, NSCopying> {
+    /* instance variables */
+    @"NSString" _markerFormat;
+    Q _listFlags;
+    q _startIndex;
+    ^v _listSecondary;
+    @"NSTextAttachment" _markerTextAttachment;
+}
+
+@property (T@"NSTextAttachment",&,V_markerTextAttachment) markerTextAttachment;
+@property (T@"NSString",R) markerFormat;
+@property (TQ,R) listOptions;
+@property (Tq) startingItemNumber;
+@property (TB,R,GisOrdered) ordered;
+
+/* class methods */
++[NSTextList supportsSecureCoding];
++[NSTextList includesTextListMarkers];
++[NSTextList initialize];
++[NSTextList _standardMarkerAttributesForAttributes:];
+
+/* instance methods */
+-[NSTextList _isOrdered];
+-[NSTextList options];
+-[NSTextList initWithCoder:];
+-[NSTextList isOrdered];
+-[NSTextList init];
+-[NSTextList description];
+-[NSTextList dealloc];
+-[NSTextList copyWithZone:];
+-[NSTextList encodeWithCoder:];
+-[NSTextList _markerAtIndex:inText:];
+-[NSTextList _markerPrefix];
+-[NSTextList _markerSuffix];
+-[NSTextList _markerTitle];
+-[NSTextList _unaffixedMarkerForItemNumber:];
+-[NSTextList _unaffixedMarkerFormat];
+-[NSTextList _unaffixedMarkerTitle];
+-[NSTextList initWithMarkerFormat:options:];

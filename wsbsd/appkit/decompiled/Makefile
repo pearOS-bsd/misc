@@ -8,7 +8,7 @@ OBJCFLAGS ?= -fobjc-arc -Wall -Wno-objc-root-class -g -O0
 FOUNDATION_LDFLAGS ?= -framework Foundation -framework CoreGraphics
 
 .PHONY: test clean
-test: build/test_nsresponder build/test_nsview build/test_nscell build/test_nsactioncell build/test_nscontrol build/test_nsbutton build/test_nsmenuitem build/test_nsmenu build/test_nswindow build/test_nsapplication build/test_nstextfield build/test_nsbox build/test_nsstepper build/test_nsprogress build/test_nsslider build/test_nsimageview build/test_nslevelindicator build/test_nspopupbutton build/test_nstablecolumn build/test_nsscrollview build/test_nstabview build/test_nssplitview build/test_nscolorwell build/test_nssegmented build/test_nssearchfield build/test_nsdatepicker build/test_nsscroller build/test_nscombobox build/test_nstokenfield build/test_nsstackview build/test_nspathcontrol build/test_nstableview build/test_nsoutlineview build/test_nstoolbaritem
+test: build/test_nsresponder build/test_nsview build/test_nscell build/test_nsactioncell build/test_nscontrol build/test_nsbutton build/test_nsmenuitem build/test_nsmenu build/test_nswindow build/test_nsapplication build/test_nstextfield build/test_nsbox build/test_nsstepper build/test_nsprogress build/test_nsslider build/test_nsimageview build/test_nslevelindicator build/test_nspopupbutton build/test_nstablecolumn build/test_nsscrollview build/test_nstabview build/test_nssplitview build/test_nscolorwell build/test_nssegmented build/test_nssearchfield build/test_nsdatepicker build/test_nsscroller build/test_nscombobox build/test_nstokenfield build/test_nsstackview build/test_nspathcontrol build/test_nstableview build/test_nsoutlineview build/test_nstoolbaritem build/test_nstoolbar build/test_nsstatusitem build/test_nsalert build/test_nspopover build/test_nsvisualeffectview build/test_nsstatusbar build/test_nsgesturerecognizer build/test_nsclickgesture build/test_nspangesture build/test_nsmaggesture build/test_nsrotationgesture build/test_nspressgesture build/test_nssound build/test_nspanel build/test_nssavepanel build/test_nsopenpanel build/test_nscursor build/test_nsscreen build/test_nsbezierpath build/test_nscolorspace build/test_nsparagraphstyle build/test_nscolor build/test_nsgradient build/test_nsshadow build/test_nstexttab build/test_nsfont build/test_nsfontdescriptor build/test_nstextlist build/test_nstextattachment build/test_nsappearance build/test_nstextcontainer build/test_nstrackingarea build/test_nsimage build/test_nsimagerep build/test_nsgraphicscontext build/test_nslayoutguide build/test_nscolorlist build/test_nsbitmapimagerep build/test_nspasteboard build/test_nsevent build/test_nstreenode build/test_nsviewcontroller build/test_nswindowcontroller build/test_nsdocument build/test_nsdocumentcontroller build/test_nssplitviewitem build/test_nscollectionviewitem build/test_nstabviewcontroller build/test_nssplitviewcontroller build/test_nsstoryboardsegue build/test_nstoolbaritemgroup build/test_nsdocktile build/test_nstitlebaraccessoryvc build/test_nsmenutoolbaritem build/test_nssearchtoolbaritem build/test_nspathcontrolitem build/test_nstouchbar build/test_nstouchbaritem build/test_nscustomtouchbaritem build/test_nscvlayoutattrs build/test_nsanimationcontext build/test_nshelpmanager build/test_nstextalternatives build/test_nsglyphinfo build/test_nsdraggingimagecomponent build/test_nsdraggingitem build/test_nspasteboarditem build/test_nsuicompressionoptions build/test_nsgridcell build/test_nsgridcolumn build/test_nsgridrow build/test_nsgridview build/test_nsrulermarker build/test_nscvupdateitem build/test_nsprintinfo build/test_nswindowtab build/test_nssymbolconfig build/test_nstablerowaction build/test_nstintconfiguration build/test_nsstringdrawingcontext build/test_nstextblock build/test_nstexttable build/test_nstexttableblock build/test_nssharingservice build/test_nsmenuitembadge build/test_nsaxcustomaction build/test_nsslideraccessorybehavior build/test_nspressureconfiguration
 	./build/test_nsresponder
 	./build/test_nsview
 	./build/test_nscell
@@ -43,6 +43,378 @@ test: build/test_nsresponder build/test_nsview build/test_nscell build/test_nsac
 	./build/test_nstableview
 	./build/test_nsoutlineview
 	./build/test_nstoolbaritem
+	./build/test_nstoolbar
+	./build/test_nsstatusitem
+	./build/test_nsalert
+	./build/test_nspopover
+	./build/test_nsvisualeffectview
+	./build/test_nsstatusbar
+	./build/test_nsgesturerecognizer
+	./build/test_nsclickgesture
+	./build/test_nspangesture
+	./build/test_nsmaggesture
+	./build/test_nsrotationgesture
+	./build/test_nspressgesture
+	./build/test_nssound
+	./build/test_nspanel
+	./build/test_nssavepanel
+	./build/test_nsopenpanel
+	./build/test_nscursor
+	./build/test_nsscreen
+	./build/test_nsbezierpath
+	./build/test_nscolorspace
+	./build/test_nsparagraphstyle
+	./build/test_nscolor
+	./build/test_nsgradient
+	./build/test_nsshadow
+	./build/test_nstexttab
+	./build/test_nsfont
+	./build/test_nsfontdescriptor
+	./build/test_nstextlist
+	./build/test_nstextattachment
+	./build/test_nsappearance
+	./build/test_nstextcontainer
+	./build/test_nstrackingarea
+	./build/test_nsimage
+	./build/test_nsimagerep
+	./build/test_nsgraphicscontext
+	./build/test_nslayoutguide
+	./build/test_nscolorlist
+	./build/test_nsbitmapimagerep
+	./build/test_nspasteboard
+	./build/test_nsevent
+	./build/test_nstreenode
+	./build/test_nsviewcontroller
+	./build/test_nswindowcontroller
+	./build/test_nsdocument
+	./build/test_nsdocumentcontroller
+	./build/test_nssplitviewitem
+	./build/test_nscollectionviewitem
+	./build/test_nstabviewcontroller
+	./build/test_nssplitviewcontroller
+	./build/test_nsstoryboardsegue
+	./build/test_nstoolbaritemgroup
+	./build/test_nsdocktile
+	./build/test_nstitlebaraccessoryvc
+	./build/test_nsmenutoolbaritem
+	./build/test_nssearchtoolbaritem
+	./build/test_nspathcontrolitem
+	./build/test_nstouchbar
+	./build/test_nstouchbaritem
+	./build/test_nscustomtouchbaritem
+	./build/test_nscvlayoutattrs
+	./build/test_nsanimationcontext
+	./build/test_nshelpmanager
+	./build/test_nstextalternatives
+	./build/test_nsglyphinfo
+	./build/test_nsdraggingimagecomponent
+	./build/test_nsdraggingitem
+	./build/test_nspasteboarditem
+	./build/test_nsuicompressionoptions
+	./build/test_nsgridcell
+	./build/test_nsgridcolumn
+	./build/test_nsgridrow
+	./build/test_nsgridview
+	./build/test_nsrulermarker
+	./build/test_nscvupdateitem
+	./build/test_nsprintinfo
+	./build/test_nswindowtab
+	./build/test_nssymbolconfig
+	./build/test_nstablerowaction
+	./build/test_nstintconfiguration
+	./build/test_nsstringdrawingcontext
+	./build/test_nstextblock
+	./build/test_nstexttable
+	./build/test_nstexttableblock
+	./build/test_nssharingservice
+	./build/test_nsmenuitembadge
+	./build/test_nsaxcustomaction
+	./build/test_nsslideraccessorybehavior
+	./build/test_nspressureconfiguration
+
+build/test_nspressureconfiguration: src/NSPressureConfiguration.m src/NSPressureConfiguration.h test/test_nspressureconfiguration.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSPressureConfiguration.m test/test_nspressureconfiguration.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsslideraccessorybehavior: src/NSSliderAccessoryBehavior.m src/NSSliderAccessoryBehavior.h test/test_nsslideraccessorybehavior.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSSliderAccessoryBehavior.m test/test_nsslideraccessorybehavior.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsaxcustomaction: src/NSAccessibilityCustomAction.m src/NSAccessibilityCustomAction.h test/test_nsaccessibilitycustomaction.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSAccessibilityCustomAction.m test/test_nsaccessibilitycustomaction.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsmenuitembadge: src/NSMenuItemBadge.m src/NSMenuItemBadge.h test/test_nsmenuitembadge.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSMenuItemBadge.m test/test_nsmenuitembadge.m $(FOUNDATION_LDFLAGS)
+
+build/test_nssharingservice: src/NSSharingService.m src/NSSharingService.h test/test_nssharingservice.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSSharingService.m test/test_nssharingservice.m $(FOUNDATION_LDFLAGS)
+
+build/test_nstexttableblock: src/NSTextTableBlock.m src/NSTextTableBlock.h src/NSTextTable.m src/NSTextBlock.m test/test_nstexttableblock.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSTextTableBlock.m src/NSTextTable.m src/NSTextBlock.m test/test_nstexttableblock.m $(FOUNDATION_LDFLAGS)
+
+build/test_nstexttable: src/NSTextTable.m src/NSTextTable.h src/NSTextBlock.m test/test_nstexttable.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSTextTable.m src/NSTextBlock.m test/test_nstexttable.m $(FOUNDATION_LDFLAGS)
+
+build/test_nstextblock: src/NSTextBlock.m src/NSTextBlock.h test/test_nstextblock.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSTextBlock.m test/test_nstextblock.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsstringdrawingcontext: src/NSStringDrawingContext.m src/NSStringDrawingContext.h test/test_nsstringdrawingcontext.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSStringDrawingContext.m test/test_nsstringdrawingcontext.m $(FOUNDATION_LDFLAGS)
+
+build/test_nstintconfiguration: src/NSTintConfiguration.m src/NSTintConfiguration.h test/test_nstintconfiguration.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSTintConfiguration.m test/test_nstintconfiguration.m $(FOUNDATION_LDFLAGS)
+
+build/test_nstablerowaction: src/NSTableViewRowAction.m src/NSTableViewRowAction.h test/test_nstableviewrowaction.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSTableViewRowAction.m test/test_nstableviewrowaction.m $(FOUNDATION_LDFLAGS)
+
+build/test_nssymbolconfig: src/NSImageSymbolConfiguration.m src/NSImageSymbolConfiguration.h test/test_nsimagesymbolconfiguration.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSImageSymbolConfiguration.m test/test_nsimagesymbolconfiguration.m $(FOUNDATION_LDFLAGS)
+
+build/test_nswindowtab: src/NSWindowTab.m src/NSWindowTab.h test/test_nswindowtab.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSWindowTab.m test/test_nswindowtab.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsprintinfo: src/NSPrintInfo.m src/NSPrintInfo.h test/test_nsprintinfo.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSPrintInfo.m test/test_nsprintinfo.m $(FOUNDATION_LDFLAGS)
+
+build/test_nscvupdateitem: src/NSCollectionViewUpdateItem.m src/NSCollectionViewUpdateItem.h test/test_nscollectionviewupdateitem.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSCollectionViewUpdateItem.m test/test_nscollectionviewupdateitem.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsrulermarker: src/NSRulerMarker.m src/NSRulerMarker.h test/test_nsrulermarker.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSRulerMarker.m test/test_nsrulermarker.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsgridview: src/NSGridView.m src/NSGridView.h src/NSGridRow.m src/NSGridColumn.m src/NSGridCell.m src/NSView.m src/NSResponder.m test/test_nsgridview.m test/stubs.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSGridView.m src/NSGridRow.m src/NSGridColumn.m src/NSGridCell.m src/NSView.m src/NSResponder.m test/test_nsgridview.m test/stubs.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsgridrow: src/NSGridRow.m src/NSGridRow.h src/NSGridCell.m src/NSGridColumn.h test/test_nsgridrow.m src/NSView.m src/NSResponder.m test/stubs.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSGridRow.m src/NSGridCell.m src/NSView.m src/NSResponder.m test/test_nsgridrow.m test/stubs.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsgridcolumn: src/NSGridColumn.m src/NSGridColumn.h src/NSGridCell.h test/test_nsgridcolumn.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSGridColumn.m test/test_nsgridcolumn.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsgridcell: src/NSGridCell.m src/NSGridCell.h src/NSView.m src/NSResponder.m test/test_nsgridcell.m test/stubs.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSGridCell.m src/NSView.m src/NSResponder.m test/test_nsgridcell.m test/stubs.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsuicompressionoptions: src/NSUserInterfaceCompressionOptions.m src/NSUserInterfaceCompressionOptions.h test/test_nsuicompressionoptions.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSUserInterfaceCompressionOptions.m test/test_nsuicompressionoptions.m $(FOUNDATION_LDFLAGS)
+
+build/test_nspasteboarditem: src/NSPasteboardItem.m src/NSPasteboardItem.h test/test_nspasteboarditem.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSPasteboardItem.m test/test_nspasteboarditem.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsdraggingitem: src/NSDraggingItem.m src/NSDraggingItem.h src/NSDraggingImageComponent.m test/test_nsdraggingitem.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSDraggingItem.m src/NSDraggingImageComponent.m test/test_nsdraggingitem.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsdraggingimagecomponent: src/NSDraggingImageComponent.m src/NSDraggingImageComponent.h test/test_nsdraggingimagecomponent.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSDraggingImageComponent.m test/test_nsdraggingimagecomponent.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsglyphinfo: src/NSGlyphInfo.m src/NSGlyphInfo.h test/test_nsglyphinfo.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSGlyphInfo.m test/test_nsglyphinfo.m $(FOUNDATION_LDFLAGS)
+
+build/test_nstextalternatives: src/NSTextAlternatives.m src/NSTextAlternatives.h test/test_nstextalternatives.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSTextAlternatives.m test/test_nstextalternatives.m $(FOUNDATION_LDFLAGS)
+
+build/test_nshelpmanager: src/NSHelpManager.m src/NSHelpManager.h test/test_nshelpmanager.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSHelpManager.m test/test_nshelpmanager.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsanimationcontext: src/NSAnimationContext.m src/NSAnimationContext.h test/test_nsanimationcontext.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSAnimationContext.m test/test_nsanimationcontext.m $(FOUNDATION_LDFLAGS)
+
+build/test_nscvlayoutattrs: src/NSCollectionViewLayoutAttributes.m src/NSCollectionViewLayoutAttributes.h test/test_nscollectionviewlayoutattributes.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSCollectionViewLayoutAttributes.m test/test_nscollectionviewlayoutattributes.m $(FOUNDATION_LDFLAGS)
+
+build/test_nscustomtouchbaritem: src/NSCustomTouchBarItem.m src/NSCustomTouchBarItem.h src/NSTouchBarItem.m src/NSViewController.m src/NSView.m src/NSResponder.m test/test_nscustomtouchbaritem.m test/stubs.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSCustomTouchBarItem.m src/NSTouchBarItem.m src/NSViewController.m src/NSView.m src/NSResponder.m test/test_nscustomtouchbaritem.m test/stubs.m $(FOUNDATION_LDFLAGS)
+
+build/test_nstouchbaritem: src/NSTouchBarItem.m src/NSTouchBarItem.h test/test_nstouchbaritem.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSTouchBarItem.m test/test_nstouchbaritem.m $(FOUNDATION_LDFLAGS)
+
+build/test_nstouchbar: src/NSTouchBar.m src/NSTouchBar.h test/test_nstouchbar.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSTouchBar.m test/test_nstouchbar.m $(FOUNDATION_LDFLAGS)
+
+build/test_nspathcontrolitem: src/NSPathControlItem.m src/NSPathControlItem.h test/test_nspathcontrolitem.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSPathControlItem.m test/test_nspathcontrolitem.m $(FOUNDATION_LDFLAGS)
+
+build/test_nssearchtoolbaritem: src/NSSearchToolbarItem.m src/NSSearchToolbarItem.h src/NSToolbarItem.m test/test_nssearchtoolbaritem.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSSearchToolbarItem.m src/NSToolbarItem.m test/test_nssearchtoolbaritem.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsmenutoolbaritem: src/NSMenuToolbarItem.m src/NSMenuToolbarItem.h src/NSToolbarItem.m src/NSMenu.m src/NSMenuItem.m src/NSCell.m test/test_nsmenutoolbaritem.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSMenuToolbarItem.m src/NSToolbarItem.m src/NSMenu.m src/NSMenuItem.m src/NSCell.m test/test_nsmenutoolbaritem.m $(FOUNDATION_LDFLAGS)
+
+build/test_nstitlebaraccessoryvc: src/NSTitlebarAccessoryViewController.m src/NSTitlebarAccessoryViewController.h src/NSViewController.m src/NSView.m src/NSResponder.m test/test_nstitlebaraccessoryviewcontroller.m test/stubs.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSTitlebarAccessoryViewController.m src/NSViewController.m src/NSView.m src/NSResponder.m test/test_nstitlebaraccessoryviewcontroller.m test/stubs.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsdocktile: src/NSDockTile.m src/NSDockTile.h src/NSView.m src/NSResponder.m test/test_nsdocktile.m test/stubs.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSDockTile.m src/NSView.m src/NSResponder.m test/test_nsdocktile.m test/stubs.m $(FOUNDATION_LDFLAGS)
+
+build/test_nstoolbaritemgroup: src/NSToolbarItemGroup.m src/NSToolbarItemGroup.h src/NSToolbarItem.m test/test_nstoolbaritemgroup.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSToolbarItemGroup.m src/NSToolbarItem.m test/test_nstoolbaritemgroup.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsstoryboardsegue: src/NSStoryboardSegue.m src/NSStoryboardSegue.h test/test_nsstoryboardsegue.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSStoryboardSegue.m test/test_nsstoryboardsegue.m $(FOUNDATION_LDFLAGS)
+
+build/test_nssplitviewcontroller: src/NSSplitViewController.m src/NSSplitViewController.h src/NSSplitViewItem.m src/NSViewController.m src/NSView.m src/NSResponder.m test/test_nssplitviewcontroller.m test/stubs.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSSplitViewController.m src/NSSplitViewItem.m src/NSViewController.m src/NSView.m src/NSResponder.m test/test_nssplitviewcontroller.m test/stubs.m $(FOUNDATION_LDFLAGS)
+
+build/test_nstabviewcontroller: src/NSTabViewController.m src/NSTabViewController.h src/NSTabViewItem.m src/NSViewController.m src/NSView.m src/NSResponder.m test/test_nstabviewcontroller.m test/stubs.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSTabViewController.m src/NSTabViewItem.m src/NSViewController.m src/NSView.m src/NSResponder.m test/test_nstabviewcontroller.m test/stubs.m $(FOUNDATION_LDFLAGS)
+
+build/test_nscollectionviewitem: src/NSCollectionViewItem.m src/NSCollectionViewItem.h src/NSViewController.m src/NSView.m src/NSResponder.m test/test_nscollectionviewitem.m test/stubs.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSCollectionViewItem.m src/NSViewController.m src/NSView.m src/NSResponder.m test/test_nscollectionviewitem.m test/stubs.m $(FOUNDATION_LDFLAGS)
+
+build/test_nssplitviewitem: src/NSSplitViewItem.m src/NSSplitViewItem.h src/NSViewController.m src/NSView.m src/NSResponder.m test/test_nssplitviewitem.m test/stubs.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSSplitViewItem.m src/NSViewController.m src/NSView.m src/NSResponder.m test/test_nssplitviewitem.m test/stubs.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsdocumentcontroller: src/NSDocumentController.m src/NSDocumentController.h src/NSDocument.m src/NSWindowController.m src/NSWindow.m src/NSViewController.m src/NSView.m src/NSResponder.m test/test_nsdocumentcontroller.m test/stubs.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSDocumentController.m src/NSDocument.m src/NSWindowController.m src/NSWindow.m src/NSViewController.m src/NSView.m src/NSResponder.m test/test_nsdocumentcontroller.m test/stubs.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsdocument: src/NSDocument.m src/NSDocument.h src/NSWindowController.m src/NSWindow.m src/NSViewController.m src/NSView.m src/NSResponder.m test/test_nsdocument.m test/stubs.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSDocument.m src/NSWindowController.m src/NSWindow.m src/NSViewController.m src/NSView.m src/NSResponder.m test/test_nsdocument.m test/stubs.m $(FOUNDATION_LDFLAGS)
+
+build/test_nswindowcontroller: src/NSWindowController.m src/NSWindowController.h src/NSWindow.m src/NSViewController.m src/NSView.m src/NSResponder.m test/test_nswindowcontroller.m test/stubs.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSWindowController.m src/NSWindow.m src/NSViewController.m src/NSView.m src/NSResponder.m test/test_nswindowcontroller.m test/stubs.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsviewcontroller: src/NSViewController.m src/NSViewController.h src/NSView.m src/NSResponder.m test/test_nsviewcontroller.m test/stubs.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSViewController.m src/NSView.m src/NSResponder.m test/test_nsviewcontroller.m test/stubs.m $(FOUNDATION_LDFLAGS)
+
+build/test_nstreenode: src/NSTreeNode.m src/NSTreeNode.h test/test_nstreenode.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSTreeNode.m test/test_nstreenode.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsevent: src/NSEvent.m src/NSEvent.h test/test_nsevent.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSEvent.m test/test_nsevent.m $(FOUNDATION_LDFLAGS)
+
+build/test_nspasteboard: src/NSPasteboard.m src/NSPasteboard.h test/test_nspasteboard.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSPasteboard.m test/test_nspasteboard.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsbitmapimagerep: src/NSBitmapImageRep.m src/NSBitmapImageRep.h src/NSImageRep.m test/test_nsbitmapimagerep.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSBitmapImageRep.m src/NSImageRep.m test/test_nsbitmapimagerep.m $(FOUNDATION_LDFLAGS)
+
+build/test_nscolorlist: src/NSColorList.m src/NSColorList.h src/NSColor.m src/NSColorSpace.m test/test_nscolorlist.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSColorList.m src/NSColor.m src/NSColorSpace.m test/test_nscolorlist.m $(FOUNDATION_LDFLAGS)
+
+build/test_nslayoutguide: src/NSLayoutGuide.m src/NSLayoutGuide.h test/test_nslayoutguide.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSLayoutGuide.m test/test_nslayoutguide.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsgraphicscontext: src/NSGraphicsContext.m src/NSGraphicsContext.h test/test_nsgraphicscontext.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSGraphicsContext.m test/test_nsgraphicscontext.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsimagerep: src/NSImageRep.m src/NSImageRep.h src/NSImage.m src/NSImage.h test/test_nsimagerep.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSImageRep.m src/NSImage.m test/test_nsimagerep.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsimage: src/NSImage.m src/NSImage.h test/test_nsimage.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSImage.m test/test_nsimage.m $(FOUNDATION_LDFLAGS)
+
+build/test_nstrackingarea: src/NSTrackingArea.m src/NSTrackingArea.h test/test_nstrackingarea.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSTrackingArea.m test/test_nstrackingarea.m $(FOUNDATION_LDFLAGS)
+
+build/test_nstextcontainer: src/NSTextContainer.m src/NSTextContainer.h src/NSParagraphStyle.h test/test_nstextcontainer.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSTextContainer.m test/test_nstextcontainer.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsappearance: src/NSAppearance.m src/NSAppearance.h test/test_nsappearance.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSAppearance.m test/test_nsappearance.m $(FOUNDATION_LDFLAGS)
+
+build/test_nstextattachment: src/NSTextAttachment.m src/NSTextAttachment.h test/test_nstextattachment.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSTextAttachment.m test/test_nstextattachment.m $(FOUNDATION_LDFLAGS)
+
+build/test_nstextlist: src/NSTextList.m src/NSTextList.h test/test_nstextlist.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSTextList.m test/test_nstextlist.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsfontdescriptor: src/NSFontDescriptor.m src/NSFontDescriptor.h test/test_nsfontdescriptor.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSFontDescriptor.m test/test_nsfontdescriptor.m $(FOUNDATION_LDFLAGS) -framework CoreText
+
+build/test_nsfont: src/NSFont.m src/NSFont.h test/test_nsfont.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSFont.m test/test_nsfont.m $(FOUNDATION_LDFLAGS) -framework CoreText
+
+build/test_nstexttab: src/NSTextTab.m src/NSTextTab.h src/NSParagraphStyle.h test/test_nstexttab.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSTextTab.m test/test_nstexttab.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsshadow: src/NSShadow.m src/NSShadow.h src/NSColor.m src/NSColorSpace.m test/test_nsshadow.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSShadow.m src/NSColor.m src/NSColorSpace.m test/test_nsshadow.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsgradient: src/NSGradient.m src/NSGradient.h src/NSColor.m src/NSColorSpace.m test/test_nsgradient.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSGradient.m src/NSColor.m src/NSColorSpace.m test/test_nsgradient.m $(FOUNDATION_LDFLAGS)
+
+build/test_nscolor: src/NSColor.m src/NSColor.h src/NSColorSpace.m test/test_nscolor.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSColor.m src/NSColorSpace.m test/test_nscolor.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsparagraphstyle: src/NSParagraphStyle.m src/NSParagraphStyle.h test/test_nsparagraphstyle.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSParagraphStyle.m test/test_nsparagraphstyle.m $(FOUNDATION_LDFLAGS)
+
+build/test_nscolorspace: src/NSColorSpace.m src/NSColorSpace.h test/test_nscolorspace.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSColorSpace.m test/test_nscolorspace.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsbezierpath: src/NSBezierPath.m src/NSBezierPath.h test/test_nsbezierpath.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSBezierPath.m test/test_nsbezierpath.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsscreen: src/NSScreen.m src/NSScreen.h test/test_nsscreen.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSScreen.m test/test_nsscreen.m $(FOUNDATION_LDFLAGS)
 
 build/test_nsslider: src/NSSlider.m src/NSSliderCell.m $(CONTROL_SRC) test/test_nsslider.m test/stubs.m
 	@mkdir -p build
@@ -184,3 +556,71 @@ build/test_nsoutlineview: src/NSOutlineView.m src/NSTableView.m src/NSTableColum
 build/test_nstoolbaritem: src/NSToolbarItem.m src/NSToolbarItem.h test/test_nstoolbaritem.m
 	@mkdir -p build
 	$(CC) $(OBJCFLAGS) -o $@ src/NSToolbarItem.m test/test_nstoolbaritem.m $(FOUNDATION_LDFLAGS)
+
+build/test_nstoolbar: src/NSToolbar.m src/NSToolbar.h test/test_nstoolbar.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSToolbar.m test/test_nstoolbar.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsstatusitem: src/NSStatusItem.m src/NSMenu.m src/NSMenuItem.m test/test_nsstatusitem.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSStatusItem.m src/NSMenu.m src/NSMenuItem.m test/test_nsstatusitem.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsalert: src/NSAlert.m src/NSButton.m src/NSButtonCell.m $(CONTROL_SRC) test/test_nsalert.m test/stubs.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSAlert.m src/NSButton.m src/NSButtonCell.m $(CONTROL_SRC) test/test_nsalert.m test/stubs.m $(FOUNDATION_LDFLAGS)
+
+build/test_nspopover: src/NSPopover.m src/NSResponder.m test/test_nspopover.m test/stubs.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSPopover.m src/NSResponder.m test/test_nspopover.m test/stubs.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsvisualeffectview: src/NSVisualEffectView.m src/NSView.m src/NSResponder.m test/test_nsvisualeffectview.m test/stubs.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSVisualEffectView.m src/NSView.m src/NSResponder.m test/test_nsvisualeffectview.m test/stubs.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsstatusbar: src/NSStatusBar.m src/NSStatusItem.m src/NSMenu.m src/NSMenuItem.m test/test_nsstatusbar.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSStatusBar.m src/NSStatusItem.m src/NSMenu.m src/NSMenuItem.m test/test_nsstatusbar.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsgesturerecognizer: src/NSGestureRecognizer.m test/test_nsgesturerecognizer.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSGestureRecognizer.m test/test_nsgesturerecognizer.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsclickgesture: src/NSClickGestureRecognizer.m src/NSGestureRecognizer.m test/test_nsclickgesture.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSClickGestureRecognizer.m src/NSGestureRecognizer.m test/test_nsclickgesture.m $(FOUNDATION_LDFLAGS)
+
+build/test_nspangesture: src/NSPanGestureRecognizer.m src/NSGestureRecognizer.m test/test_nspangesture.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSPanGestureRecognizer.m src/NSGestureRecognizer.m test/test_nspangesture.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsmaggesture: src/NSMagnificationGestureRecognizer.m src/NSGestureRecognizer.m test/test_nsmaggesture.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSMagnificationGestureRecognizer.m src/NSGestureRecognizer.m test/test_nsmaggesture.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsrotationgesture: src/NSRotationGestureRecognizer.m src/NSGestureRecognizer.m test/test_nsrotationgesture.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSRotationGestureRecognizer.m src/NSGestureRecognizer.m test/test_nsrotationgesture.m $(FOUNDATION_LDFLAGS)
+
+build/test_nspressgesture: src/NSPressGestureRecognizer.m src/NSGestureRecognizer.m test/test_nspressgesture.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSPressGestureRecognizer.m src/NSGestureRecognizer.m test/test_nspressgesture.m $(FOUNDATION_LDFLAGS)
+
+build/test_nssound: src/NSSound.m src/NSSound.h test/test_nssound.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSSound.m test/test_nssound.m $(FOUNDATION_LDFLAGS)
+
+build/test_nspanel: src/NSPanel.m src/NSWindow.m src/NSView.m src/NSResponder.m test/test_nspanel.m test/stubs.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSPanel.m src/NSWindow.m src/NSView.m src/NSResponder.m test/test_nspanel.m test/stubs.m $(FOUNDATION_LDFLAGS)
+
+build/test_nssavepanel: src/NSSavePanel.m src/NSPanel.m src/NSWindow.m src/NSView.m src/NSResponder.m test/test_nssavepanel.m test/stubs.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSSavePanel.m src/NSPanel.m src/NSWindow.m src/NSView.m src/NSResponder.m test/test_nssavepanel.m test/stubs.m $(FOUNDATION_LDFLAGS)
+
+build/test_nsopenpanel: src/NSOpenPanel.m src/NSSavePanel.m src/NSPanel.m src/NSWindow.m src/NSView.m src/NSResponder.m test/test_nsopenpanel.m test/stubs.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSOpenPanel.m src/NSSavePanel.m src/NSPanel.m src/NSWindow.m src/NSView.m src/NSResponder.m test/test_nsopenpanel.m test/stubs.m $(FOUNDATION_LDFLAGS)
+
+build/test_nscursor: src/NSCursor.m src/NSCursor.h test/test_nscursor.m
+	@mkdir -p build
+	$(CC) $(OBJCFLAGS) -o $@ src/NSCursor.m test/test_nscursor.m $(FOUNDATION_LDFLAGS)

@@ -1,0 +1,15 @@
+@interface NSImageSymbolConfiguration : NSObject <NSCopying, NSSecureCoding> {
+    /* instance variables */
+    d _pointSize;
+    d _weight;
+    q _scale;
+    q _renderingStyle;
+    @"NSArray" _colors;
+    B _prefersMulticolor;
+    q _variableValueMode;
+    q _colorRenderingMode;
+}
+
+@property (Td,R,V_pointSize) pointSize;
+@property (Td,R,V_weight) weight;
+@property (Tq,R,V_scale) scale;

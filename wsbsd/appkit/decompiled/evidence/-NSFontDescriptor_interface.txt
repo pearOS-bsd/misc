@@ -1,0 +1,31 @@
+@interface NSFontDescriptor : NSObject <NSCopying, NSSecureCoding> {
+    /* instance variables */
+    @"NSMutableDictionary" _attributes;
+    @ _reserved1;
+    @ _reserved2;
+    @ _reserved3;
+    @ _reserved4;
+    @ _reserved5;
+}
+
+@property (T@"NSString",R,C) postscriptName;
+@property (Td,R) pointSize;
+@property (T@"NSAffineTransform",R,C) matrix;
+@property (TI,R) symbolicTraits;
+@property (TB,R) requiresFontAssetRequest;
+@property (T@"NSDictionary",R,C) fontAttributes;
+
+/* class methods */
++[NSFontDescriptor supportsSecureCoding];
++[NSFontDescriptor fontDescriptorWithFontAttributes:];
++[NSFontDescriptor fontDescriptorWithName:size:];
++[NSFontDescriptor _createMungledDictionary:];
++[NSFontDescriptor fontDescriptorWithFontAttributes:options:];
++[NSFontDescriptor fontDescriptorWithName:matrix:];
+
+/* instance methods */
+-[NSFontDescriptor _attributes];
+-[NSFontDescriptor classForCoder];
+-[NSFontDescriptor pointSize];
+-[NSFontDescriptor objectForKey:];
+-[NSFontDescriptor initWithCoder:];

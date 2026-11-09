@@ -1,0 +1,8 @@
+### -[NSToolbar identifier]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSToolbar identifier]
+
+-[NSToolbar identifier]:
+0x184fb0d80:  00 04 40 f9   ldr	x0, [x0, #0x8]
+0x184fb0d84:  33 d4 c4 14   b	j__objc_retainAutoreleaseReturnValue
+

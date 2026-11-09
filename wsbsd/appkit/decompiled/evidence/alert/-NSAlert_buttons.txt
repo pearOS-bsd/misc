@@ -1,0 +1,63 @@
+### -[NSAlert buttons]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSAlert buttons]
+
+-[NSAlert buttons]:
+0x185280a58:  02 14 40 f9   ldr	x2, [x0, #0x28]
+0x185280a5c:  e2 00 00 b4   cbz	x2, loc_185280a78 ; ⤵ 0x1c
+0x185280a60:  e8 78 2d 90   adrp	x8, 0x1e019c000
+0x185280a64:  00 4d 42 f9   ldr	x0, [x8, #0x498] ; _ptr.NSArray
+0x185280a68:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x185280a6c:  50 00 f0 b6   tbz	x16, #0x3e, loc_185280a74 ; ⤵ 0x8
+0x185280a70:  20 8e 38 d4   brk	#0xc471
+0x185280a74:  ; loc_185280a74
+0x185280a74:  e3 06 b6 14   b	0x188002600
+0x185280a78:  ; loc_185280a78
+0x185280a78:  7f 23 03 d5   pacibsp
+0x185280a7c:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x185280a80:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x185280a84:  fd 43 00 91   add	fp, sp, #0x10
+0x185280a88:  f3 03 00 aa   mov	x19, x0
+0x185280a8c:  e8 78 2d 90   adrp	x8, 0x1e019c000
+0x185280a90:  00 ad 42 f9   ldr	x0, [x8, #0x558] ; _ptr.NSMutableArray
+0x185280a94:  33 73 b9 94   bl	j__objc_alloc_init
+0x185280a98:  be 85 b9 94   bl	j__objc_autorelease
+0x185280a9c:  f4 03 00 aa   mov	x20, x0
+0x185280aa0:  e0 03 13 aa   mov	x0, x19
+0x185280aa4:  b7 1d b7 94   bl	0x188048180
+0x185280aa8:  c0 00 00 34   cbz	w0, loc_185280ac0 ; ⤵ 0x18
+0x185280aac:  e0 03 13 aa   mov	x0, x19
+0x185280ab0:  a0 1d b7 94   bl	0x188048130
+0x185280ab4:  e2 03 00 aa   mov	x2, x0
+0x185280ab8:  e0 03 14 aa   mov	x0, x20
+0x185280abc:  4d 06 b6 94   bl	0x1880023f0
+0x185280ac0:  ; loc_185280ac0
+0x185280ac0:  e0 03 13 aa   mov	x0, x19
+0x185280ac4:  ab a1 b7 94   bl	0x188069170
+0x185280ac8:  c0 00 00 34   cbz	w0, loc_185280ae0 ; ⤵ 0x18
+0x185280acc:  e0 03 13 aa   mov	x0, x19
+0x185280ad0:  a4 a1 b7 94   bl	0x188069160
+0x185280ad4:  e2 03 00 aa   mov	x2, x0
+0x185280ad8:  e0 03 14 aa   mov	x0, x20
+0x185280adc:  45 06 b6 94   bl	0x1880023f0
+0x185280ae0:  ; loc_185280ae0
+0x185280ae0:  e0 03 13 aa   mov	x0, x19
+0x185280ae4:  c7 72 b7 94   bl	0x18805d600
+0x185280ae8:  c0 00 00 34   cbz	w0, loc_185280b00 ; ⤵ 0x18
+0x185280aec:  e0 03 13 aa   mov	x0, x19
+0x185280af0:  c0 72 b7 94   bl	0x18805d5f0
+0x185280af4:  e2 03 00 aa   mov	x2, x0
+0x185280af8:  e0 03 14 aa   mov	x0, x20
+0x185280afc:  3d 06 b6 94   bl	0x1880023f0
+0x185280b00:  ; loc_185280b00
+0x185280b00:  e0 03 14 aa   mov	x0, x20
+0x185280b04:  5b 70 b9 94   bl	j__objc_retain_x0
+0x185280b08:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x185280b0c:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x185280b10:  ff 23 03 d5   autibsp
+0x185280b14:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x185280b18:  50 00 f0 b6   tbz	x16, #0x3e, loc_185280b20 ; ⤵ 0x8
+0x185280b1c:  20 8e 38 d4   brk	#0xc471
+0x185280b20:  ; loc_185280b20
+0x185280b20:  9c 85 b9 14   b	j__objc_autorelease
+

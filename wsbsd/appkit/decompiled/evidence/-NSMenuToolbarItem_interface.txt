@@ -1,0 +1,13 @@
+@interface NSMenuToolbarItem : NSToolbarItem {
+    /* instance variables */
+    @"NSMenu" _menu;
+    B _showsIndicator;
+    @"NSView<NSMenuToolbarItemControl>" _control;
+    @"NSImage" _image;
+    @"NSString" _title;
+    @ _target;
+    : _action;
+}
+
+@property (T@"NSMenu",&) menu;
+@property (TB) showsIndicator;

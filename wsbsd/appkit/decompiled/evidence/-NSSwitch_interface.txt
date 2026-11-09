@@ -1,0 +1,11 @@
+@interface NSSwitch : NSControl <NSAccessibilitySwitch> {
+    /* instance variables */
+    q _presentationStateOverride;
+    {?="startModelState"q"startPointInTrackCoordinates"{CGPoint="x"d"y"d}"everDraggedToDifferentState"B"mustToggleByDistance"B} _currentTrackingState;
+    @"<NSSwitchVisualProvider>" _visualProvider;
+    @"NSTouch" _trackingTouch;
+}
+
+@property (TB) usesAquaduck;
+@property (T@"<NSSwitchVisualProvider>",&,S_setVisualProvider:) _visualProvider;
+@property (Tq,S_setPresentationStateOverride:,V_presentationStateOverride) _presentationStateOverride;

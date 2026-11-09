@@ -1,0 +1,125 @@
+### -[NSStatusItem setVisible:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSStatusItem setVisible:]
+
+-[NSStatusItem setVisible:]:
+0x18576bff0:  7f 23 03 d5   pacibsp
+0x18576bff4:  ff 03 02 d1   sub	sp, sp, #0x80
+0x18576bff8:  f6 57 05 a9   stp	x22, x21, [sp, #0x50]
+0x18576bffc:  f4 4f 06 a9   stp	x20, x19, [sp, #0x60]
+0x18576c000:  fd 7b 07 a9   stp	fp, lr, [sp, #0x70]
+0x18576c004:  fd c3 01 91   add	fp, sp, #0x70
+0x18576c008:  f4 03 02 aa   mov	x20, x2
+0x18576c00c:  f5 03 01 aa   mov	x21, x1
+0x18576c010:  f3 03 00 aa   mov	x19, x0
+0x18576c014:  e8 51 2d d0   adrp	x8, 0x1e01aa000
+0x18576c018:  00 e9 42 f9   ldr	x0, [x8, #0x5d0] ; _ptr.NSThread
+0x18576c01c:  dd 77 a2 94   bl	0x188009f90
+0x18576c020:  a0 01 00 36   tbz	w0, #0, loc_18576c054 ; ⤵ 0x34
+0x18576c024:  e0 03 13 aa   mov	x0, x19
+0x18576c028:  e2 03 14 aa   mov	x2, x20
+0x18576c02c:  03 00 80 52   mov	w3, #0
+0x18576c030:  fd 7b 47 a9   ldp	fp, lr, [sp, #0x70]
+0x18576c034:  f4 4f 46 a9   ldp	x20, x19, [sp, #0x60]
+0x18576c038:  f6 57 45 a9   ldp	x22, x21, [sp, #0x50]
+0x18576c03c:  ff 03 02 91   add	sp, sp, #0x80
+0x18576c040:  ff 23 03 d5   autibsp
+0x18576c044:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x18576c048:  50 00 f0 b6   tbz	x16, #0x3e, loc_18576c050 ; ⤵ 0x8
+0x18576c04c:  20 8e 38 d4   brk	#0xc471
+0x18576c050:  ; loc_18576c050
+0x18576c050:  90 dd a3 14   b	0x188063690
+0x18576c054:  ; loc_18576c054
+0x18576c054:  e0 df df 92   mov	x0, #0xffff0100ffffffff
+0x18576c058:  20 fd e0 f2   movk	x0, #0x7e9, lsl #0x30
+0x18576c05c:  d1 c0 a5 94   bl	j__dyld_program_sdk_at_least
+0x18576c060:  60 03 00 34   cbz	w0, loc_18576c0cc ; ⤵ 0x6c
+0x18576c064:  e8 51 2d d0   adrp	x8, 0x1e01aa000
+0x18576c068:  00 41 40 f9   ldr	x0, [x8, #0x80] ; _ptr.NSAssertionHandler
+0x18576c06c:  85 6e a2 94   bl	0x188007a80
+0x18576c070:  a8 cb a5 94   bl	j__objc_claimAutoreleasedReturnValue
+0x18576c074:  f4 03 00 aa   mov	x20, x0
+0x18576c078:  08 5c 00 d0   adrp	x8, 0x1862ee000
+0x18576c07c:  08 a5 30 91   add	x8, x8, #0xc29 ; "-[NSStatusItem setVisible:]"
+0x18576c080:  e8 03 00 f9   str	x8, [sp]
+0x18576c084:  44 69 31 90   adrp	x4, 0x1e8494000
+0x18576c088:  84 40 3a 91   add	x4, x4, #0xe90 ; "NSStatusItem.m"
+0x18576c08c:  06 67 31 90   adrp	x6, 0x1e844c000
+0x18576c090:  c6 c0 1d 91   add	x6, x6, #0x770 ; "%s must be called on main thread only"
+0x18576c094:  e2 03 15 aa   mov	x2, x21
+0x18576c098:  e3 03 13 aa   mov	x3, x19
+0x18576c09c:  25 ab 80 52   mov	w5, #0x559
+0x18576c0a0:  e8 72 a2 94   bl	0x188008c40
+0x18576c0a4:  e0 03 14 aa   mov	x0, x20
+0x18576c0a8:  fd 7b 47 a9   ldp	fp, lr, [sp, #0x70]
+0x18576c0ac:  f4 4f 46 a9   ldp	x20, x19, [sp, #0x60]
+0x18576c0b0:  f6 57 45 a9   ldp	x22, x21, [sp, #0x50]
+0x18576c0b4:  ff 03 02 91   add	sp, sp, #0x80
+0x18576c0b8:  ff 23 03 d5   autibsp
+0x18576c0bc:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x18576c0c0:  50 00 f0 b6   tbz	x16, #0x3e, loc_18576c0c8 ; ⤵ 0x8
+0x18576c0c4:  20 8e 38 d4   brk	#0xc471
+0x18576c0c8:  ; loc_18576c0c8
+0x18576c0c8:  e6 c2 a5 14   b	j__objc_release_x0
+0x18576c0cc:  ; loc_18576c0cc
+0x18576c0cc:  7d f0 11 94   bl	___AppKitLogStatusBar
+0x18576c0d0:  90 cb a5 94   bl	j__objc_claimAutoreleasedReturnValue
+0x18576c0d4:  f5 03 00 aa   mov	x21, x0
+0x18576c0d8:  01 02 80 52   mov	w1, #0x10
+0x18576c0dc:  d1 d8 a5 94   bl	j__os_log_type_enabled
+0x18576c0e0:  60 01 00 34   cbz	w0, loc_18576c10c ; ⤵ 0x2c
+0x18576c0e4:  bf 03 1d 78   sturh	wzr, [fp, #-0x30]
+0x18576c0e8:  a0 ba ff d0   adrp	x0, 0x184ec2000
+0x18576c0ec:  00 00 00 91   add	x0, x0, #0 ; "\xcf\xfa\xed\xfe\f"
+0x18576c0f0:  83 68 00 f0   adrp	x3, 0x18647f000
+0x18576c0f4:  63 08 28 91   add	x3, x3, #0xa02 ; "setVisible: called on background thread. Redirecting to main thread as a courtesy."
+0x18576c0f8:  a4 c3 00 d1   sub	x4, fp, #0x30
+0x18576c0fc:  e1 03 15 aa   mov	x1, x21
+0x18576c100:  02 02 80 52   mov	w2, #0x10
+0x18576c104:  45 00 80 52   mov	w5, #0x2
+0x18576c108:  1a d5 a5 94   bl	j___os_log_impl
+0x18576c10c:  ; loc_18576c10c
+0x18576c10c:  e0 03 15 aa   mov	x0, x21
+0x18576c110:  d4 c2 a5 94   bl	j__objc_release_x0
+0x18576c114:  e8 43 00 91   add	x8, sp, #0x10
+0x18576c118:  f0 54 2d f0   adrp	x16, 0x1e020b000
+0x18576c11c:  10 4a 45 f9   ldr	x16, [x16, #0xa90] ; _ptr.__NSStackBlock__
+0x18576c120:  f1 03 08 aa   mov	x17, x8
+0x18576c124:  31 5c ed f2   movk	x17, #0x6ae1, lsl #0x30
+0x18576c128:  30 0a c1 da   pacda	x16, x17
+0x18576c12c:  f0 0b 00 f9   str	x16, [sp, #0x10]
+0x18576c130:  49 58 00 d0   adrp	x9, 0x186276000
+0x18576c134:  20 89 41 fd   ldr	d0, [x9, #0x310]
+0x18576c138:  e0 0f 00 fd   str	d0, [sp, #0x18]
+0x18576c13c:  08 41 00 91   add	x8, x8, #0x10
+0x18576c140:  10 00 00 90   adrp	x16, 0x18576c000
+0x18576c144:  10 d2 06 91   add	x16, x16, #0x1b4 ; ___27-[NSStatusItem setVisible:]_block_invoke
+0x18576c148:  10 01 c1 da   pacia	x16, x8
+0x18576c14c:  08 64 31 b0   adrp	x8, 0x1e83ed000
+0x18576c150:  08 41 36 91   add	x8, x8, #0xd90 ; ___block_descriptor_41_ea8_32s_e5_v8?0l
+0x18576c154:  f0 23 02 a9   stp	x16, x8, [sp, #0x20]
+0x18576c158:  f3 1b 00 f9   str	x19, [sp, #0x30]
+0x18576c15c:  f4 e3 00 39   strb	w20, [sp, #0x38]
+0x18576c160:  84 ef a5 94   bl	j__CFRunLoopGetMain
+0x18576c164:  f3 03 00 aa   mov	x19, x0
+0x18576c168:  88 51 2d b0   adrp	x8, 0x1e019d000
+0x18576c16c:  08 31 40 f9   ldr	x8, [x8, #0x60] ; _ptr._kCFRunLoopCommonModes
+0x18576c170:  01 01 40 f9   ldr	x1, [x8]
+0x18576c174:  e2 43 00 91   add	x2, sp, #0x10
+0x18576c178:  4a e0 a5 94   bl	j__CFRunLoopPerformBlock
+0x18576c17c:  e0 03 13 aa   mov	x0, x19
+0x18576c180:  5c e0 a5 94   bl	j__CFRunLoopWakeUp
+0x18576c184:  fd 7b 47 a9   ldp	fp, lr, [sp, #0x70]
+0x18576c188:  f4 4f 46 a9   ldp	x20, x19, [sp, #0x60]
+0x18576c18c:  f6 57 45 a9   ldp	x22, x21, [sp, #0x50]
+0x18576c190:  ff 03 02 91   add	sp, sp, #0x80
+0x18576c194:  ff 0f 5f d6   retab
+0x18576c198:  f3 03 00 aa   mov	x19, x0
+0x18576c19c:  e0 03 14 aa   mov	x0, x20
+0x18576c1a0:  b0 c2 a5 94   bl	j__objc_release_x0
+0x18576c1a4:  02 00 00 14   b	loc_18576c1ac ; ⤵ 0x8
+0x18576c1a8:  f3 03 00 aa   mov	x19, x0
+0x18576c1ac:  ; loc_18576c1ac
+0x18576c1ac:  e0 03 13 aa   mov	x0, x19
+0x18576c1b0:  b8 bf a5 94   bl	j___Unwind_Resume
+

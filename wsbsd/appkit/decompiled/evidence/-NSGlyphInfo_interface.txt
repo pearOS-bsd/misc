@@ -1,0 +1,17 @@
+@interface NSGlyphInfo : NSObject <NSCopying, NSSecureCoding> {
+    /* instance variables */
+    @"NSString" _baseString;
+}
+
+/* class methods */
++[NSGlyphInfo supportsSecureCoding];
++[NSGlyphInfo initialize];
++[NSGlyphInfo glyphInfoWithCharacterIdentifier:collection:baseString:];
++[NSGlyphInfo glyphInfoWithGlyph:forFont:baseString:];
++[NSGlyphInfo glyphInfoWithCGGlyph:forFont:baseString:];
++[NSGlyphInfo glyphInfoWithGlyphName:forFont:baseString:];
+
+/* instance methods */
+-[NSGlyphInfo initWithCoder:];
+-[NSGlyphInfo _baseString];
+-[NSGlyphInfo dealloc];

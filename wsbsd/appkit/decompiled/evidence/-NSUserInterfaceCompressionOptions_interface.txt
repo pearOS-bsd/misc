@@ -1,0 +1,13 @@
+@interface NSUserInterfaceCompressionOptions : NSObject <NSSecureCoding, NSCopying, NSCoding> {
+    /* instance variables */
+    @"NSSet" _identifiers;
+}
+
+@property (TB,R,GisEmpty) empty;
+
+/* class methods */
++[NSUserInterfaceCompressionOptions supportsSecureCoding];
++[NSUserInterfaceCompressionOptions standardOptions];
++[NSUserInterfaceCompressionOptions breakEqualWidthsOption];
++[NSUserInterfaceCompressionOptions hideImagesOption];
++[NSUserInterfaceCompressionOptions hideTextOption];

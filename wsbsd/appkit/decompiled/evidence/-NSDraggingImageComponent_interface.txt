@@ -1,0 +1,13 @@
+@interface NSDraggingImageComponent : NSObject {
+    /* instance variables */
+    @"NSString" _key;
+    @ _contents;
+    {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}} _frame;
+}
+
+@property (T@"NSString",C,V_key) key;
+@property (T@,&,V_contents) contents;
+@property (T{CGRect={CGPoint=dd}{CGSize=dd}},V_frame) frame;
+
+/* class methods */
++[NSDraggingImageComponent _imageComponentWithCoreDragComponent:];

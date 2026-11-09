@@ -1,0 +1,31 @@
+@interface NSTextContainer : NSObject <NSSecureCoding, NSTextLayoutOrientationProvider> {
+    /* instance variables */
+    @"NSLayoutManager" _layoutManager;
+    @"<NSTextContainerView>" _textView;
+    {CGSize="width"d"height"d} _size;
+    d _lineFragmentPadding;
+    Q _maximumLines;
+    {__tcFlags="widthTracksTextView"b1"heightTracksTextView"b1"observingFrameChanges"b1"lineBreakMode"b4"oldAPI"b1"_reserved"b8} _tcFlags;
+    @"NSTextLayoutManager" _textLayoutManager;
+    @"NSArray" _exclusionPaths;
+    ^{CGPath=} _cachedBoundingPath;
+    ^{__CFArray=} _cachedClippingAttributes;
+    ^{__CFArray=} _cachedBounds;
+    d _cacheBoundsMinY;
+    d _cacheBoundsMaxY;
+    d _minimumWidth;
+    q _layoutOrientation;
+    @"NSDictionary" _attributesForExtraLineFragment;
+    q _applicationFrameworkContext;
+    B _textViewSupportsAdaptiveColor;
+    B _textViewSupportsDowngrade;
+    B _textViewHasDefaultParagraphStyle;
+    B _textViewHasLinkTextAttributes;
+    B _textViewHasHighlightAttributes;
+    @"NSTextViewportLayoutController" _textViewportLayoutController;
+}
+
+@property (T@"NSTextLayoutManager",R,W) textLayoutManager;
+@property (T{CGSize=dd}) size;
+@property (TQ) lineBreakMode;
+@property (T@"NSArray",C) exclusionPaths;

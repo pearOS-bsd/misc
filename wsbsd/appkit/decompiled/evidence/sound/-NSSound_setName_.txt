@@ -1,0 +1,140 @@
+### -[NSSound setName:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSSound setName:]
+
+-[NSSound setName:]:
+0x18506ab70:  7f 23 03 d5   pacibsp
+0x18506ab74:  f6 57 bd a9   stp	x22, x21, [sp, #-0x30]!
+0x18506ab78:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x18506ab7c:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x18506ab80:  fd 83 00 91   add	fp, sp, #0x20
+0x18506ab84:  f4 03 02 aa   mov	x20, x2
+0x18506ab88:  f3 03 00 aa   mov	x19, x0
+0x18506ab8c:  88 9c 30 90   adrp	x8, 0x1e63fa000
+0x18506ab90:  08 a9 3e 91   add	x8, x8, #0xfaa ; data_1e63fafaa (AppKit/__DATA_DIRTY.__bss)
+0x18506ab94:  08 fd df 08   ldarb	w8, [x8]
+0x18506ab98:  28 0a 00 34   cbz	w8, loc_18506acdc ; ⤵ 0x144
+0x18506ab9c:  1f 09 00 71   cmp	w8, #0x2
+0x18506aba0:  e0 07 9f 1a   cset	w0, ne
+0x18506aba4:  34 01 00 b4   cbz	x20, loc_18506abc8 ; ⤵ 0x24
+0x18506aba8:  ; loc_18506aba8
+0x18506aba8:  00 01 00 34   cbz	w0, loc_18506abc8 ; ⤵ 0x20
+0x18506abac:  08 8a 2d 90   adrp	x8, 0x1e01aa000
+0x18506abb0:  00 c9 42 f9   ldr	x0, [x8, #0x590] ; _ptr.NSString
+0x18506abb4:  b7 dd c1 94   bl	j__objc_opt_self
+0x18506abb8:  e1 03 00 aa   mov	x1, x0
+0x18506abbc:  e0 03 14 aa   mov	x0, x20
+0x18506abc0:  08 cb c1 94   bl	j__objc_opt_isKindOfClass
+0x18506abc4:  e0 09 00 36   tbz	w0, #0, loc_18506ad00 ; ⤵ 0x13c
+0x18506abc8:  ; loc_18506abc8
+0x18506abc8:  80 9c 30 90   adrp	x0, 0x1e63fa000
+0x18506abcc:  00 c0 3e 91   add	x0, x0, #0xfb0 ; data_1e63fafb0 (AppKit/__DATA_DIRTY.__bss)
+0x18506abd0:  34 de c1 94   bl	j__os_unfair_lock_lock
+0x18506abd4:  76 02 41 39   ldrb	w22, [x19, #0x40]
+0x18506abd8:  60 0a 40 f9   ldr	x0, [x19, #0x10]
+0x18506abdc:  e0 00 00 b4   cbz	x0, loc_18506abf8 ; ⤵ 0x1c
+0x18506abe0:  e2 03 14 aa   mov	x2, x20
+0x18506abe4:  17 64 be 94   bl	0x188003c40
+0x18506abe8:  80 00 00 36   tbz	w0, #0, loc_18506abf8 ; ⤵ 0x10
+0x18506abec:  13 00 80 52   mov	w19, #0
+0x18506abf0:  34 00 80 52   mov	w20, #0x1
+0x18506abf4:  31 00 00 14   b	loc_18506acb8 ; ⤵ 0xc4
+0x18506abf8:  ; loc_18506abf8
+0x18506abf8:  95 9c 30 90   adrp	x21, 0x1e63fa000
+0x18506abfc:  54 01 00 b4   cbz	x20, loc_18506ac24 ; ⤵ 0x28
+0x18506ac00:  36 01 18 37   tbnz	w22, #0x3, loc_18506ac24 ; ⤵ 0x24
+0x18506ac04:  a0 de 47 f9   ldr	x0, [x21, #0xfb8]
+0x18506ac08:  e0 00 00 b4   cbz	x0, loc_18506ac24 ; ⤵ 0x1c
+0x18506ac0c:  e1 03 14 aa   mov	x1, x20
+0x18506ac10:  34 2a c2 94   bl	j__NSMapGet
+0x18506ac14:  80 00 00 b4   cbz	x0, loc_18506ac24 ; ⤵ 0x10
+0x18506ac18:  14 00 80 52   mov	w20, #0
+0x18506ac1c:  13 00 80 52   mov	w19, #0
+0x18506ac20:  26 00 00 14   b	loc_18506acb8 ; ⤵ 0x98
+0x18506ac24:  ; loc_18506ac24
+0x18506ac24:  61 0a 40 f9   ldr	x1, [x19, #0x10]
+0x18506ac28:  21 01 00 b4   cbz	x1, loc_18506ac4c ; ⤵ 0x24
+0x18506ac2c:  a0 de 47 f9   ldr	x0, [x21, #0xfb8]
+0x18506ac30:  80 00 00 b4   cbz	x0, loc_18506ac40 ; ⤵ 0x10
+0x18506ac34:  76 00 18 37   tbnz	w22, #0x3, loc_18506ac40 ; ⤵ 0xc
+0x18506ac38:  62 6a c2 94   bl	j__NSMapRemove
+0x18506ac3c:  61 0a 40 f9   ldr	x1, [x19, #0x10]
+0x18506ac40:  ; loc_18506ac40
+0x18506ac40:  e0 03 01 aa   mov	x0, x1
+0x18506ac44:  07 c8 c1 94   bl	j__objc_release_x0
+0x18506ac48:  7f 0a 00 f9   str	xzr, [x19, #0x10]
+0x18506ac4c:  ; loc_18506ac4c
+0x18506ac4c:  94 02 00 b4   cbz	x20, loc_18506ac9c ; ⤵ 0x50
+0x18506ac50:  e0 03 13 aa   mov	x0, x19
+0x18506ac54:  e7 0a bf 94   bl	0x18802d7f0
+0x18506ac58:  e2 03 00 aa   mov	x2, x0
+0x18506ac5c:  e0 03 14 aa   mov	x0, x20
+0x18506ac60:  b0 5f be 94   bl	0x188002b20
+0x18506ac64:  e1 03 00 aa   mov	x1, x0
+0x18506ac68:  61 0a 00 f9   str	x1, [x19, #0x10]
+0x18506ac6c:  56 02 18 37   tbnz	w22, #0x3, loc_18506acb4 ; ⤵ 0x48
+0x18506ac70:  a0 de 47 f9   ldr	x0, [x21, #0xfb8]
+0x18506ac74:  e0 00 00 b5   cbnz	x0, loc_18506ac90 ; ⤵ 0x1c
+0x18506ac78:  08 8a 2d 90   adrp	x8, 0x1e01aa000
+0x18506ac7c:  00 ad 41 f9   ldr	x0, [x8, #0x358] ; _ptr.NSMapTable
+0x18506ac80:  d4 9d c0 94   bl	0x1880923d0
+0x18506ac84:  fb c7 c1 94   bl	j__objc_retain_x0
+0x18506ac88:  a0 de 07 f9   str	x0, [x21, #0xfb8]
+0x18506ac8c:  61 0a 40 f9   ldr	x1, [x19, #0x10]
+0x18506ac90:  ; loc_18506ac90
+0x18506ac90:  e2 03 13 aa   mov	x2, x19
+0x18506ac94:  17 2a c2 94   bl	j__NSMapInsert
+0x18506ac98:  02 00 00 14   b	loc_18506aca0 ; ⤵ 0x8
+0x18506ac9c:  ; loc_18506ac9c
+0x18506ac9c:  d6 00 18 37   tbnz	w22, #0x3, loc_18506acb4 ; ⤵ 0x18
+0x18506aca0:  ; loc_18506aca0
+0x18506aca0:  68 02 41 39   ldrb	w8, [x19, #0x40]
+0x18506aca4:  1f 05 1c 72   tst	w8, #0x30
+0x18506aca8:  61 00 00 54   b.ne	loc_18506acb4 ; ⤵ 0xc
+0x18506acac:  08 01 1c 32   orr	w8, w8, #0x10
+0x18506acb0:  68 02 01 39   strb	w8, [x19, #0x40]
+0x18506acb4:  ; loc_18506acb4
+0x18506acb4:  33 00 80 52   mov	w19, #0x1
+0x18506acb8:  ; loc_18506acb8
+0x18506acb8:  80 9c 30 90   adrp	x0, 0x1e63fa000
+0x18506acbc:  00 c0 3e 91   add	x0, x0, #0xfb0 ; data_1e63fafb0 (AppKit/__DATA_DIRTY.__bss)
+0x18506acc0:  50 c6 c1 94   bl	j__os_unfair_lock_unlock
+0x18506acc4:  88 02 13 2a   orr	w8, w20, w19
+0x18506acc8:  00 01 00 12   and	w0, w8, #0x1
+0x18506accc:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x18506acd0:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x18506acd4:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x18506acd8:  ff 0f 5f d6   retab
+0x18506acdc:  ; loc_18506acdc
+0x18506acdc:  20 a1 31 b0   adrp	x0, 0x1e848f000
+0x18506ace0:  00 40 38 91   add	x0, x0, #0xe10 ; "NSSoundValidateNameType"
+0x18506ace4:  82 9c 30 90   adrp	x2, 0x1e63fa000
+0x18506ace8:  42 a8 3e 91   add	x2, x2, #0xfaa ; data_1e63fafaa (AppKit/__DATA_DIRTY.__bss)
+0x18506acec:  21 00 80 52   mov	w1, #0x1
+0x18506acf0:  03 00 80 d2   mov	x3, #0
+0x18506acf4:  91 73 f9 97   bl	__NSGetBoolAppConfig
+0x18506acf8:  94 f5 ff b5   cbnz	x20, loc_18506aba8 ; ⤴ -0x150
+0x18506acfc:  b3 ff ff 17   b	loc_18506abc8 ; ⤴ -0x134
+0x18506ad00:  ; loc_18506ad00
+0x18506ad00:  88 89 2d d0   adrp	x8, 0x1e019c000
+0x18506ad04:  00 85 42 f9   ldr	x0, [x8, #0x508] ; _ptr.NSException
+0x18506ad08:  88 89 2d b0   adrp	x8, 0x1e019b000
+0x18506ad0c:  08 69 47 f9   ldr	x8, [x8, #0xed0] ; _ptr._NSInvalidArgumentException
+0x18506ad10:  02 01 40 f9   ldr	x2, [x8]
+0x18506ad14:  23 a1 31 b0   adrp	x3, 0x1e848f000
+0x18506ad18:  63 40 31 91   add	x3, x3, #0xc50 ; "name must be an NSSoundName/NSString *"
+0x18506ad1c:  04 00 80 d2   mov	x4, #0
+0x18506ad20:  b4 60 be 94   bl	0x188002ff0
+0x18506ad24:  2f dd c1 94   bl	j__objc_exception_throw
+0x18506ad28:  fa cc c1 94   bl	j__objc_begin_catch
+0x18506ad2c:  80 9c 30 90   adrp	x0, 0x1e63fa000
+0x18506ad30:  00 c0 3e 91   add	x0, x0, #0xfb0 ; data_1e63fafb0 (AppKit/__DATA_DIRTY.__bss)
+0x18506ad34:  33 c6 c1 94   bl	j__os_unfair_lock_unlock
+0x18506ad38:  26 dd c1 94   bl	j__objc_exception_rethrow
+0x18506ad3c:  20 00 20 d4   brk	#0x1
+0x18506ad40:  f3 03 00 aa   mov	x19, x0
+0x18506ad44:  fb cc c1 94   bl	j__objc_end_catch
+0x18506ad48:  e0 03 13 aa   mov	x0, x19
+0x18506ad4c:  d1 c4 c1 94   bl	j___Unwind_Resume
+0x18506ad50:  04 cd c1 94   bl	j__objc_terminate
+

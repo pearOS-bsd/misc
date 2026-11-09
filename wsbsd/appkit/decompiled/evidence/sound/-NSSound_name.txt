@@ -1,0 +1,8 @@
+### -[NSSound name]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSSound name]
+
+-[NSSound name]:
+0x18506ad54:  00 08 40 f9   ldr	x0, [x0, #0x10]
+0x18506ad58:  c0 03 5f d6   ret
+

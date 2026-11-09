@@ -1,0 +1,17 @@
+@interface NSTreeNode : NSObject {
+    /* instance variables */
+    @ _childNodesProxy;
+    ^v _observationInfo;
+    {__NSTreeNodeFlags="ignoreObserving"b1"reserved"b31} _NSTreeNodeFlags;
+    @ _representedObject;
+    @"NSMutableArray" _childNodes;
+    @"NSTreeNode" _parentNode;
+}
+
+@property (T@,R) representedObject;
+@property (T@"NSIndexPath",R) indexPath;
+@property (TB,R,GisLeaf) leaf;
+@property (T@"NSArray",R,C) childNodes;
+@property (T@"NSMutableArray",R) mutableChildNodes;
+@property (T@"NSTreeNode",R,W) parentNode;
+

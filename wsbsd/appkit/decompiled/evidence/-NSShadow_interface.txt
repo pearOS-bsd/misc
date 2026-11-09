@@ -1,0 +1,34 @@
+@interface NSShadow : NSObject <NSCopying, NSSecureCoding> {
+    /* instance variables */
+    Q _shadowFlags;
+    {CGSize="width"d"height"d} _shadowOffset;
+    d _shadowBlurRadius;
+    @"NSColor" _shadowColor;
+}
+
+@property (T{CGSize=dd},V_shadowOffset) shadowOffset;
+@property (Td,V_shadowBlurRadius) shadowBlurRadius;
+@property (T@"NSColor",C) shadowColor;
+
+/* class methods */
++[NSShadow supportsSecureCoding];
++[NSShadow initialize];
++[NSShadow shadow];
++[NSShadow defaultShadowColor];
+
+/* instance methods */
+-[NSShadow setShadowColor:];
+-[NSShadow setShadowOffset:];
+-[NSShadow set];
+-[NSShadow shadowOffset];
+-[NSShadow shadowColor];
+-[NSShadow hash];
+-[NSShadow initWithCoder:];
+-[NSShadow init];
+-[NSShadow description];
+-[NSShadow dealloc];
+-[NSShadow isEqual:];
+-[NSShadow copyWithZone:];
+-[NSShadow encodeWithCoder:];
+-[NSShadow shadowBlurRadius];
+-[NSShadow setShadowBlurRadius:];

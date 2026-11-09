@@ -1,0 +1,85 @@
+### -[NSPopover setContentSize:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSPopover setContentSize:]
+
+-[NSPopover setContentSize:]:
+0x1850f5764:  7f 23 03 d5   pacibsp
+0x1850f5768:  ed 33 bb 6d   stp	d13, d12, [sp, #-0x50]!
+0x1850f576c:  eb 2b 01 6d   stp	d11, d10, [sp, #0x10]
+0x1850f5770:  e9 23 02 6d   stp	d9, d8, [sp, #0x20]
+0x1850f5774:  f4 4f 03 a9   stp	x20, x19, [sp, #0x30]
+0x1850f5778:  fd 7b 04 a9   stp	fp, lr, [sp, #0x40]
+0x1850f577c:  fd 03 01 91   add	fp, sp, #0x40
+0x1850f5780:  28 1c a1 4e   mov	v8.16b, v1.16b
+0x1850f5784:  09 1c a0 4e   mov	v9.16b, v0.16b
+0x1850f5788:  f3 03 00 aa   mov	x19, x0
+0x1850f578c:  75 62 be 94   bl	0x18808e160
+0x1850f5790:  a0 00 00 37   tbnz	w0, #0, loc_1850f57a4 ; ⤵ 0x14
+0x1850f5794:  e0 03 13 aa   mov	x0, x19
+0x1850f5798:  8e 85 bd 94   bl	0x188056dd0
+0x1850f579c:  1d 54 bd 94   bl	0x18804a810
+0x1850f57a0:  00 05 00 34   cbz	w0, loc_1850f5840 ; ⤵ 0xa0
+0x1850f57a4:  ; loc_1850f57a4
+0x1850f57a4:  e0 03 13 aa   mov	x0, x19
+0x1850f57a8:  96 85 bd 94   bl	0x188056e00
+0x1850f57ac:  f5 3d be 94   bl	0x188084f80
+0x1850f57b0:  0a 1c a0 4e   mov	v10.16b, v0.16b
+0x1850f57b4:  2b 1c a1 4e   mov	v11.16b, v1.16b
+0x1850f57b8:  88 a0 2f f0   adrp	x8, 0x1e4508000
+0x1850f57bc:  08 79 8a b9   ldrsw	x8, [x8, #0xa78] ; _OBJC_IVAR_$_NSPopover._contentSize
+0x1850f57c0:  68 02 08 8b   add	x8, x19, x8
+0x1850f57c4:  00 05 40 6d   ldp	d0, d1, [x8]
+0x1850f57c8:  20 39 60 1e   fsub	d0, d9, d0
+0x1850f57cc:  01 39 61 1e   fsub	d1, d8, d1
+0x1850f57d0:  4c 28 60 1e   fadd	d12, d2, d0
+0x1850f57d4:  6d 28 61 1e   fadd	d13, d3, d1
+0x1850f57d8:  e0 03 13 aa   mov	x0, x19
+0x1850f57dc:  89 85 bd 94   bl	0x188056e00
+0x1850f57e0:  88 a0 2f f0   adrp	x8, 0x1e4508000
+0x1850f57e4:  08 71 8a b9   ldrsw	x8, [x8, #0xa70] ; _OBJC_IVAR_$_NSPopover._flags
+0x1850f57e8:  68 02 08 8b   add	x8, x19, x8
+0x1850f57ec:  08 01 40 b9   ldr	w8, [x8]
+0x1850f57f0:  03 01 00 12   and	w3, w8, #0x1
+0x1850f57f4:  40 1d aa 4e   mov	v0.16b, v10.16b
+0x1850f57f8:  61 1d ab 4e   mov	v1.16b, v11.16b
+0x1850f57fc:  82 1d ac 4e   mov	v2.16b, v12.16b
+0x1850f5800:  a3 1d ad 4e   mov	v3.16b, v13.16b
+0x1850f5804:  22 00 80 52   mov	w2, #0x1
+0x1850f5808:  2a bf be 94   bl	0x1880a54b0
+0x1850f580c:  e0 03 13 aa   mov	x0, x19
+0x1850f5810:  20 1d a9 4e   mov	v0.16b, v9.16b
+0x1850f5814:  01 1d a8 4e   mov	v1.16b, v8.16b
+0x1850f5818:  fd 7b 44 a9   ldp	fp, lr, [sp, #0x40]
+0x1850f581c:  f4 4f 43 a9   ldp	x20, x19, [sp, #0x30]
+0x1850f5820:  e9 23 42 6d   ldp	d9, d8, [sp, #0x20]
+0x1850f5824:  eb 2b 41 6d   ldp	d11, d10, [sp, #0x10]
+0x1850f5828:  ed 33 c5 6c   ldp	d13, d12, [sp], #0x50
+0x1850f582c:  ff 23 03 d5   autibsp
+0x1850f5830:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x1850f5834:  50 00 f0 b6   tbz	x16, #0x3e, loc_1850f583c ; ⤵ 0x8
+0x1850f5838:  20 8e 38 d4   brk	#0xc471
+0x1850f583c:  ; loc_1850f583c
+0x1850f583c:  51 a7 bd 14   b	0x18805f580
+0x1850f5840:  ; loc_1850f5840
+0x1850f5840:  88 a0 2f f0   adrp	x8, 0x1e4508000
+0x1850f5844:  08 7d 8a b9   ldrsw	x8, [x8, #0xa7c] ; _OBJC_IVAR_$_NSPopover._visualRepresentation
+0x1850f5848:  68 02 08 8b   add	x8, x19, x8
+0x1850f584c:  00 01 40 f9   ldr	x0, [x8]
+0x1850f5850:  c0 19 be 94   bl	0x18807bf50
+0x1850f5854:  e2 03 00 aa   mov	x2, x0
+0x1850f5858:  e0 03 13 aa   mov	x0, x19
+0x1850f585c:  20 1d a9 4e   mov	v0.16b, v9.16b
+0x1850f5860:  01 1d a8 4e   mov	v1.16b, v8.16b
+0x1850f5864:  23 00 80 52   mov	w3, #0x1
+0x1850f5868:  fd 7b 44 a9   ldp	fp, lr, [sp, #0x40]
+0x1850f586c:  f4 4f 43 a9   ldp	x20, x19, [sp, #0x30]
+0x1850f5870:  e9 23 42 6d   ldp	d9, d8, [sp, #0x20]
+0x1850f5874:  eb 2b 41 6d   ldp	d11, d10, [sp, #0x10]
+0x1850f5878:  ed 33 c5 6c   ldp	d13, d12, [sp], #0x50
+0x1850f587c:  ff 23 03 d5   autibsp
+0x1850f5880:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x1850f5884:  50 00 f0 b6   tbz	x16, #0x3e, loc_1850f588c ; ⤵ 0x8
+0x1850f5888:  20 8e 38 d4   brk	#0xc471
+0x1850f588c:  ; loc_1850f588c
+0x1850f588c:  55 a7 bd 14   b	0x18805f5e0
+

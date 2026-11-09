@@ -1,0 +1,18 @@
+### -[NSVisualEffectView setState:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSVisualEffectView setState:]
+
+-[NSVisualEffectView setState:]:
+0x184f34cd8:  88 ae 2f f0   adrp	x8, 0x1e4507000
+0x184f34cdc:  08 49 81 b9   ldrsw	x8, [x8, #0x148] ; _OBJC_IVAR_$_NSVisualEffectView._state
+0x184f34ce0:  09 00 08 8b   add	x9, x0, x8
+0x184f34ce4:  29 01 40 f9   ldr	x9, [x9]
+0x184f34ce8:  3f 01 02 eb   cmp	x9, x2
+0x184f34cec:  41 00 00 54   b.ne	loc_184f34cf4 ; ⤵ 0x8
+0x184f34cf0:  c0 03 5f d6   ret
+0x184f34cf4:  ; loc_184f34cf4
+0x184f34cf4:  02 68 28 f8   str	x2, [x0, x8]
+0x184f34cf8:  22 00 80 52   mov	w2, #0x1
+0x184f34cfc:  23 00 80 52   mov	w3, #0x1
+0x184f34d00:  c0 8f c4 14   b	0x188058c00
+

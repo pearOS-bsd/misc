@@ -1,0 +1,46 @@
+@interface NSColorSpace : NSObject <NSSecureCoding> {
+    /* instance variables */
+    @ _profile;
+    {?="colorSpaceID"b8"storageType"b3"replacedDuringUnarchiving"b1""b20""b32} _flags;
+    A^{CGColorSpace} _cgColorSpace;
+    A^{CGColorTransform} _cgColorTransform;
+}
+
+@property (T@"NSColorGamut",R) colorGamut;
+@property (T@"NSData",R) ICCProfileData;
+@property (T^v,R) colorSyncProfile;
+@property (T^{CGColorSpace=},R) CGColorSpace;
+@property (Tq,R) numberOfColorComponents;
+@property (Tq,R) colorSpaceModel;
+@property (T@"NSString",R,C) localizedName;
+
+/* class methods */
++[NSColorSpace supportsSecureCoding];
++[NSColorSpace DCIP3ColorSpace];
++[NSColorSpace _invertedDeviceGrayColorSpace];
++[NSColorSpace _invertedGenericGrayColorSpace];
++[NSColorSpace adobeRGB1998ColorSpace];
++[NSColorSpace availableColorSpacesWithModel:];
++[NSColorSpace colorSpaceForCGColorSpace:];
++[NSColorSpace colorSpaceForColorSpaceName:];
++[NSColorSpace deviceCMYKColorSpace];
++[NSColorSpace deviceGrayColorSpace];
++[NSColorSpace deviceRGBColorSpace];
++[NSColorSpace displayP3ColorSpace];
++[NSColorSpace extendedGenericGamma22GrayColorSpace];
++[NSColorSpace extendedLinearSRGBColorSpace];
++[NSColorSpace extendedSRGBColorSpace];
++[NSColorSpace genericCMYKColorSpace];
++[NSColorSpace genericGamma22GrayColorSpace];
++[NSColorSpace genericGrayColorSpace];
++[NSColorSpace genericRGBColorSpace];
++[NSColorSpace linearSRGBColorSpace];
++[NSColorSpace okLABInterpolationColorSpace];
++[NSColorSpace sRGBColorSpace];
++[NSColorSpace specialColorSpaceWithID:];
+
+/* instance methods */
+-[NSColorSpace colorSpaceName];
+-[NSColorSpace localizedName];
+-[NSColorSpace colorGamut];
+-[NSColorSpace hash];

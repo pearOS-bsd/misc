@@ -1,0 +1,13 @@
+@interface NSCustomTouchBarItem : NSTouchBarItem {
+    /* instance variables */
+    @"NSView" _view;
+    @"NSViewController" _viewController;
+    @"NSString" _customizationLabel;
+    q _preferredPopoverTransposerPriority;
+    # _preferredPopoverTransposerClass;
+    d _preferredZOrder;
+}
+
+@property (T@"NSView",&) viewForCustomizationPalette;
+@property (T@"NSView",&) viewForCustomizationPreview;
+@property (T{CGSize=dd}) preferredSizeForCustomizationPalette;

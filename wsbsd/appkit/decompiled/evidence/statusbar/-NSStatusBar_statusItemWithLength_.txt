@@ -1,0 +1,8 @@
+### -[NSStatusBar statusItemWithLength:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSStatusBar statusItemWithLength:]
+
+-[NSStatusBar statusItemWithLength:]:
+0x18510b054:  02 7d 80 52   mov	w2, #0x3e8
+0x18510b058:  d6 6f bd 14   b	0x188066fb0
+

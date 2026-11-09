@@ -1,0 +1,60 @@
+### -[NSPopover setContentViewController:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSPopover setContentViewController:]
+
+-[NSPopover setContentViewController:]:
+0x184f9b1d8:  7f 23 03 d5   pacibsp
+0x184f9b1dc:  f6 57 bd a9   stp	x22, x21, [sp, #-0x30]!
+0x184f9b1e0:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x184f9b1e4:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x184f9b1e8:  fd 83 00 91   add	fp, sp, #0x20
+0x184f9b1ec:  48 a2 30 b0   adrp	x8, 0x1e63e4000
+0x184f9b1f0:  16 79 8b b9   ldrsw	x22, [x8, #0xb78]
+0x184f9b1f4:  08 00 16 8b   add	x8, x0, x22
+0x184f9b1f8:  08 01 40 f9   ldr	x8, [x8]
+0x184f9b1fc:  1f 01 02 eb   cmp	x8, x2
+0x184f9b200:  80 04 00 54   b.eq	loc_184f9b290 ; ⤵ 0x90
+0x184f9b204:  f4 03 02 aa   mov	x20, x2
+0x184f9b208:  f3 03 00 aa   mov	x19, x0
+0x184f9b20c:  68 ab 2f b0   adrp	x8, 0x1e4508000
+0x184f9b210:  15 71 8a b9   ldrsw	x21, [x8, #0xa70] ; _OBJC_IVAR_$_NSPopover._flags
+0x184f9b214:  08 00 15 8b   add	x8, x0, x21
+0x184f9b218:  09 01 40 b9   ldr	w9, [x8]
+0x184f9b21c:  29 01 13 32   orr	w9, w9, #0x2000
+0x184f9b220:  09 01 00 b9   str	w9, [x8]
+0x184f9b224:  00 68 76 f8   ldr	x0, [x0, x22]
+0x184f9b228:  8e 06 c5 94   bl	j__objc_release_x0
+0x184f9b22c:  e0 03 14 aa   mov	x0, x20
+0x184f9b230:  90 06 c5 94   bl	j__objc_retain_x0
+0x184f9b234:  60 6a 36 f8   str	x0, [x19, x22]
+0x184f9b238:  e0 03 13 aa   mov	x0, x19
+0x184f9b23c:  bd d0 c3 94   bl	0x18808f530
+0x184f9b240:  40 01 00 34   cbz	w0, loc_184f9b268 ; ⤵ 0x28
+0x184f9b244:  94 00 00 b4   cbz	x20, loc_184f9b254 ; ⤵ 0x10
+0x184f9b248:  e0 03 13 aa   mov	x0, x19
+0x184f9b24c:  79 41 c3 94   bl	0x18806b830
+0x184f9b250:  0d 00 00 14   b	loc_184f9b284 ; ⤵ 0x34
+0x184f9b254:  ; loc_184f9b254
+0x184f9b254:  68 90 2d f0   adrp	x8, 0x1e01aa000
+0x184f9b258:  08 21 40 f9   ldr	x8, [x8, #0x40] ; _ptr._NSZeroSize
+0x184f9b25c:  00 05 40 6d   ldp	d0, d1, [x8]
+0x184f9b260:  e0 03 13 aa   mov	x0, x19
+0x184f9b264:  c7 10 c3 94   bl	0x18805f580
+0x184f9b268:  ; loc_184f9b268
+0x184f9b268:  68 ab 2f b0   adrp	x8, 0x1e4508000
+0x184f9b26c:  08 7d 8a b9   ldrsw	x8, [x8, #0xa7c] ; _OBJC_IVAR_$_NSPopover._visualRepresentation
+0x184f9b270:  68 02 08 8b   add	x8, x19, x8
+0x184f9b274:  02 01 40 f9   ldr	x2, [x8]
+0x184f9b278:  e0 03 13 aa   mov	x0, x19
+0x184f9b27c:  03 00 80 d2   mov	x3, #0
+0x184f9b280:  7c 4a c3 94   bl	0x18806dc70
+0x184f9b284:  ; loc_184f9b284
+0x184f9b284:  68 6a 75 b8   ldr	w8, [x19, x21]
+0x184f9b288:  08 79 12 12   and	w8, w8, #0xffffdfff
+0x184f9b28c:  68 6a 35 b8   str	w8, [x19, x21]
+0x184f9b290:  ; loc_184f9b290
+0x184f9b290:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x184f9b294:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x184f9b298:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x184f9b29c:  ff 0f 5f d6   retab
+

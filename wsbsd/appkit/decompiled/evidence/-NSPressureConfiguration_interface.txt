@@ -1,0 +1,11 @@
+@interface NSPressureConfiguration : NSObject {
+    /* instance variables */
+    q _pressureBehavior;
+}
+
+@property (Tq,R,V_pressureBehavior) pressureBehavior;
+
+/* class methods */
++[NSPressureConfiguration _mtBehaviorIDForPressureBehavior:];
++[NSPressureConfiguration _mtConfigurationForGestureBehaviors:];
+

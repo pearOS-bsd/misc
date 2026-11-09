@@ -1,0 +1,23 @@
+@interface NSSplitViewItem : NSObject <NSAppearanceCustomization, NSAnimatablePropertyContainer, NSCoding> {
+    /* instance variables */
+    @"NSViewController" _viewController;
+    f _holdingPriority;
+    @"NSNumber" _overrideHoldingPriority;
+    @ _animator;
+    @ _animationsDictionary;
+    q _currentAnimationCount;
+    d _minimumThickness;
+    d _maximumThickness;
+    d _automaticMaximumThickness;
+    d _preferredThicknessFraction;
+    q _behavior;
+    q _collapseBehavior;
+    @"NSAppearance" _appearance;
+    q _titlebarSeparatorStyle;
+    @"NSSplitViewItemAccessoryViewController" _legacyAccessoryViewController;
+    @"NSMutableArray" _topAlignedAccessoryViewControllers;
+    @"NSMutableArray" _bottomAlignedAccessoryViewControllers;
+    @"_NSSplitViewItemViewWrapper" _wrapperView;
+    {?="collapsed"b1"canCollapse"b1"isOverlaid"b1"automaticallyAdjustsSafeAreaInsets"b1"isPeeking"b1"revealsOnEdgeHoverInFullscreen"b1"springLoaded"b1"forceWithinWindowBlending"b1"prefersCollapsesToOverlay"b1"hasUserSetSize"b1"canCollapseFromWindowResize"b1"hasBaseVibrancyEffect"b1"allowsFullHeightLayout"b1} _flags;
+}
+

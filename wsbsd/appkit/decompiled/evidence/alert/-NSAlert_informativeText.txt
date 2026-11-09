@@ -1,0 +1,8 @@
+### -[NSAlert informativeText]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSAlert informativeText]
+
+-[NSAlert informativeText]:
+0x1852808b8:  00 04 40 f9   ldr	x0, [x0, #0x8]
+0x1852808bc:  a9 31 b6 14   b	0x18800cf60
+

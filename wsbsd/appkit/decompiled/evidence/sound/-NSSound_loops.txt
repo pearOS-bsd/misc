@@ -1,0 +1,9 @@
+### -[NSSound loops]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSSound loops]
+
+-[NSSound loops]:
+0x185730fb8:  08 00 41 39   ldrb	w8, [x0, #0x40]
+0x185730fbc:  00 01 00 12   and	w0, w8, #0x1
+0x185730fc0:  c0 03 5f d6   ret
+

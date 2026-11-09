@@ -1,0 +1,9 @@
+### -[NSToolbar displayMode]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSToolbar displayMode]
+
+-[NSToolbar displayMode]:
+0x184fb375c:  08 44 40 f9   ldr	x8, [x0, #0x88]
+0x184fb3760:  00 5d 56 d3   ubfx	x0, x8, #0x16, #0x2
+0x184fb3764:  c0 03 5f d6   ret
+

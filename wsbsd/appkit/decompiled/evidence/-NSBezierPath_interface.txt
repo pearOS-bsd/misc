@@ -1,0 +1,41 @@
+@interface NSBezierPath : NSObject <NSCopying, NSSecureCoding> {
+    /* instance variables */
+    d _lineWidth;
+    d _miterLimit;
+    d _flatness;
+    ^d _dashedLinePattern;
+    Q _dashedLineCount;
+    d _dashedLinePhase;
+    ^{CGPath=} _cgPath;
+    ^{?=Q{CGPoint=dd}{CGPoint=dd}{CGPoint=dd}} _localPathCache;
+    {?="_flags"b8"_pathState"b2"_unused"b22} _bpFlags;
+}
+
+@property (T^{CGPath=},D,S_setCGPath:) _cgPath;
+@property (T^{CGPath=}) CGPath;
+@property (Td) lineWidth;
+@property (TQ) lineCapStyle;
+@property (TQ) lineJoinStyle;
+@property (TQ) windingRule;
+@property (Td) miterLimit;
+@property (Td) flatness;
+@property (T@"NSBezierPath",R,C) bezierPathByFlatteningPath;
+@property (T@"NSBezierPath",R,C) bezierPathByReversingPath;
+@property (TB,R,GisEmpty) empty;
+@property (T{CGPoint=dd},R) currentPoint;
+@property (T{CGRect={CGPoint=dd}{CGSize=dd}},R) controlPointBounds;
+@property (T{CGRect={CGPoint=dd}{CGSize=dd}},R) bounds;
+@property (Tq,R) elementCount;
+
+/* class methods */
++[NSBezierPath lineWidth];
++[NSBezierPath supportsSecureCoding];
++[NSBezierPath setLineWidth:];
++[NSBezierPath fillRect:];
++[NSBezierPath initialize];
++[NSBezierPath strokeRect:];
++[NSBezierPath defaultFlatness];
++[NSBezierPath setWindingRule:];
++[NSBezierPath _bezierPathWithCGPath:transform:];
++[NSBezierPath _bezierPathWithRoundedRect:radius:continuousCorners:];
++[NSBezierPath bezierPath];

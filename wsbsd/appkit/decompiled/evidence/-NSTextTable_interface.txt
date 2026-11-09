@@ -1,0 +1,13 @@
+@interface NSTextTable : NSTextBlock <NSSecureCoding> {
+    /* instance variables */
+    Q _numCols;
+    Q _tableFlags;
+}
+
+@property (Tq) numberOfColumns;
+@property (Tq) layoutAlgorithm;
+@property (TB) collapsesBorders;
+@property (TB) hidesEmptyCells;
+
+/* class methods */
++[NSTextTable supportsSecureCoding];

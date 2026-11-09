@@ -1,0 +1,15 @@
+@interface NSPrintInfo : NSObject <NSSecureCoding, NSCopying, NSCoding> {
+    /* instance variables */
+    @"NSMutableDictionary" _attributes;
+    @ _moreVars;
+}
+
+@property (T@"NSString",C) paperName;
+@property (T{CGSize=dd}) paperSize;
+@property (Tq) orientation;
+@property (Td) scalingFactor;
+@property (Td) leftMargin;
+@property (Td) rightMargin;
+@property (Td) topMargin;
+@property (Td) bottomMargin;
+@property (TB,GisHorizontallyCentered) horizontallyCentered;

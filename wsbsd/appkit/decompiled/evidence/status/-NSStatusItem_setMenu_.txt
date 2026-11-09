@@ -1,0 +1,60 @@
+### -[NSStatusItem setMenu:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSStatusItem setMenu:]
+
+-[NSStatusItem setMenu:]:
+0x1857698dc:  7f 23 03 d5   pacibsp
+0x1857698e0:  f6 57 bd a9   stp	x22, x21, [sp, #-0x30]!
+0x1857698e4:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x1857698e8:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x1857698ec:  fd 83 00 91   add	fp, sp, #0x20
+0x1857698f0:  f5 03 02 aa   mov	x21, x2
+0x1857698f4:  f4 03 00 aa   mov	x20, x0
+0x1857698f8:  e0 03 02 aa   mov	x0, x2
+0x1857698fc:  dd cc a5 94   bl	j__objc_retain_x0
+0x185769900:  f3 03 00 aa   mov	x19, x0
+0x185769904:  f6 03 14 aa   mov	x22, x20
+0x185769908:  c0 0e 43 f8   ldr	x0, [x22, #0x30]!
+0x18576990c:  7f 02 00 eb   cmp	x19, x0
+0x185769910:  80 02 00 54   b.eq	loc_185769960 ; ⤵ 0x50
+0x185769914:  02 00 80 d2   mov	x2, #0
+0x185769918:  46 de a3 94   bl	0x188061230
+0x18576991c:  e0 03 16 aa   mov	x0, x22
+0x185769920:  e1 03 15 aa   mov	x1, x21
+0x185769924:  57 f1 a5 94   bl	j__objc_storeStrong
+0x185769928:  80 1a 40 f9   ldr	x0, [x20, #0x30]
+0x18576992c:  e2 03 14 aa   mov	x2, x20
+0x185769930:  40 de a3 94   bl	0x188061230
+0x185769934:  96 1a 40 f9   ldr	x22, [x20, #0x30]
+0x185769938:  e0 03 14 aa   mov	x0, x20
+0x18576993c:  b5 44 a3 94   bl	0x18803ac10
+0x185769940:  74 d5 a5 94   bl	j__objc_claimAutoreleasedReturnValue
+0x185769944:  f5 03 00 aa   mov	x21, x0
+0x185769948:  e2 03 16 aa   mov	x2, x22
+0x18576994c:  51 0a a5 94   bl	0x1880ac290
+0x185769950:  e0 03 15 aa   mov	x0, x21
+0x185769954:  c3 cc a5 94   bl	j__objc_release_x0
+0x185769958:  e0 03 14 aa   mov	x0, x20
+0x18576995c:  a5 0a a4 94   bl	0x18806c3f0
+0x185769960:  ; loc_185769960
+0x185769960:  e0 03 13 aa   mov	x0, x19
+0x185769964:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x185769968:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x18576996c:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x185769970:  ff 23 03 d5   autibsp
+0x185769974:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x185769978:  50 00 f0 b6   tbz	x16, #0x3e, loc_185769980 ; ⤵ 0x8
+0x18576997c:  20 8e 38 d4   brk	#0xc471
+0x185769980:  ; loc_185769980
+0x185769980:  b8 cc a5 14   b	j__objc_release_x0
+0x185769984:  f4 03 00 aa   mov	x20, x0
+0x185769988:  e0 03 15 aa   mov	x0, x21
+0x18576998c:  b5 cc a5 94   bl	j__objc_release_x0
+0x185769990:  02 00 00 14   b	loc_185769998 ; ⤵ 0x8
+0x185769994:  f4 03 00 aa   mov	x20, x0
+0x185769998:  ; loc_185769998
+0x185769998:  e0 03 13 aa   mov	x0, x19
+0x18576999c:  b1 cc a5 94   bl	j__objc_release_x0
+0x1857699a0:  e0 03 14 aa   mov	x0, x20
+0x1857699a4:  bb c9 a5 94   bl	j___Unwind_Resume
+

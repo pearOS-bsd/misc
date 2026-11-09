@@ -1,0 +1,13 @@
+@interface NSSliderAccessoryBehavior : NSObject <NSCoding, NSCopying>
+
+/* class methods */
++[NSSliderAccessoryBehavior automaticBehavior];
++[NSSliderAccessoryBehavior behaviorWithHandler:];
++[NSSliderAccessoryBehavior behaviorWithTarget:action:];
++[NSSliderAccessoryBehavior valueResetBehavior];
++[NSSliderAccessoryBehavior valueStepBehavior];
+
+/* instance methods */
+-[NSSliderAccessoryBehavior initWithCoder:];
+-[NSSliderAccessoryBehavior copyWithZone:];
+-[NSSliderAccessoryBehavior encodeWithCoder:];

@@ -1,0 +1,15 @@
+@interface NSToolbarItemGroup : NSToolbarItem {
+    /* instance variables */
+    @"NSMutableArray" _groupItems;
+    q _controlRepresentation;
+    q _selectionMode;
+    @"NSString" _title;
+    @"NSImage" _image;
+    @ _target;
+    : _action;
+    Q _itemPosition;
+    d _minimumWidthForSegments;
+    @"NSMutableDictionary" _naturalSegmentWidthCache;
+    {?="automaticallyAdjustsForLabelLength"b1"isObservingSegmentedControl"b1"segmentWidthsNeedAdjusting"b1"role"b4} _giFlags;
+}
+

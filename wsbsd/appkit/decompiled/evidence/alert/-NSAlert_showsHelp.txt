@@ -1,0 +1,8 @@
+### -[NSAlert showsHelp]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSAlert showsHelp]
+
+-[NSAlert showsHelp]:
+0x1851925f0:  00 84 43 39   ldrb	w0, [x0, #0xe1]
+0x1851925f4:  c0 03 5f d6   ret
+

@@ -1,0 +1,15 @@
+@interface NSAccessibilityCustomAction : NSObject {
+    /* instance variables */
+    @"NSString" _name;
+    @"<NSObject>" _target;
+    @? _handler;
+    : _selector;
+}
+
+@property (T@"NSString",C,V_name) name;
+@property (T@?,C,V_handler) handler;
+@property (T@"<NSObject>",W) target;
+@property (T:,V_selector) selector;
+
+/* instance methods */
+-[NSAccessibilityCustomAction selector];

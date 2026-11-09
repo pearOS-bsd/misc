@@ -1,0 +1,31 @@
+@interface NSAppearance : NSObject <NSSecureCoding> {
+    /* instance variables */
+    @"NSString" _name;
+    @"NSBundle" _bundle;
+    ^{OpaqueCUIRendererRef=} _coreUIRenderer;
+    @"CUICatalog" _coreUICatalog;
+    i _defaultBlendMode;
+    @"NSColor" _tintColor;
+    @"NSColor" _cachedNormalizedBezelTintColor;
+    d _bezelBrightness;
+    d _glyphBrightness;
+    Q _colorTemperature;
+    @"<NSObject>" _functionRowAppearanceShouldChangeALSAttributesNotificationToken;
+    d _maxScaleFactor;
+    b1 _preventArchiving;
+    b1 _allowsVibrancy;
+    b1 _supportsWhitePointAdjustments;
+    b1 _supportsBrightnessAdjustments;
+    b1 _allowsSystemTintColors;
+    b1 _allowsCustomTintColors;
+    b1 _tintedWithSystemAccent;
+    b1 _hasLightTintColor;
+    b1 _calculatedHasLightTintColor;
+    b1 _wantsSolarium;
+    b1 _isFauxVibrant;
+}
+
+@property (TB,R) _backstoppedByFullAppearance;
+@property (TB,R) _isFauxVibrant;
+@property (TB,R) _wantsSolarium;
+@property (TB,R) _wantsSolariumUnderPageBackgroundColorOverride;

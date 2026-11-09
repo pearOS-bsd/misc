@@ -1,0 +1,13 @@
+### -[NSGestureRecognizer target]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSGestureRecognizer target]
+
+-[NSGestureRecognizer target]:
+0x184f63cf8:  08 e0 42 39   ldrb	w8, [x0, #0xb8]
+0x184f63cfc:  68 00 20 37   tbnz	w8, #0x4, loc_184f63d08 ; ⤵ 0xc
+0x184f63d00:  00 80 00 91   add	x0, x0, #0x20
+0x184f63d04:  53 f9 c5 14   b	j__objc_loadWeak
+0x184f63d08:  ; loc_184f63d08
+0x184f63d08:  00 00 42 f8   ldur	x0, [x0, #0x20]
+0x184f63d0c:  c0 03 5f d6   ret
+

@@ -1,0 +1,29 @@
+@interface NSTextAttachment : NSObject <NSTextAttachmentLayout, NSSecureCoding> {
+    /* instance variables */
+    @"NSData" _data;
+    @"UTType" _uti;
+    @"NSString" _cacheKey;
+    {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}} _bounds;
+    d _layoutPadding;
+    {?="_allowsTextAttachmentView"b1"_embeddingType"b4"_standaloneAlignment"b3"_allocatesTextContainer"b1"_prefersOldAttachmentBounds"b1"_prefersOldImageForBounds"b1"_cellWasExplicitlySet"b1"_ignoresOrientation"b1"_allowsEditingContents"b1"_viewProviderPriority"b1} _taFlags;
+    @"NSFileWrapper" _fileWrapperForContents;
+    @"NSImage" _image;
+    @"NSTextAttachmentView" _wrapperView;
+    @"<NSTextAttachmentCell>" _attachmentCell;
+    @"NSAdaptiveImageGlyph" _adaptiveImageGlyph;
+}
+
+@property (TB,R) _hasTextAttachmentViewCell;
+@property (T@"NSData",C,D) contents;
+@property (T@"NSString",C,D) fileType;
+@property (T@"NSImage",&,D) image;
+@property (T{CGRect={CGPoint=dd}{CGSize=dd}},D) bounds;
+@property (T@"NSFileWrapper",&) fileWrapper;
+@property (T@"<NSTextAttachmentCell>",&) attachmentCell;
+@property (Td) lineLayoutPadding;
+@property (TB) allowsTextAttachmentView;
+@property (TB,R) usesTextAttachmentView;
+@property (TQ,R) hash;
+@property (T#,R) superclass;
+@property (T@"NSString",R,C) description;
+@property (T@"NSString",?,R,C) debugDescription;

@@ -1,0 +1,14 @@
+### -[NSStatusItem isVisible]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSStatusItem isVisible]
+
+-[NSStatusItem isVisible]:
+0x18510c60c:  08 08 80 52   mov	w8, #0x40
+0x18510c610:  09 e8 40 b9   ldr	w9, [x0, #0xe8]
+0x18510c614:  3f 01 1b 72   tst	w9, #0x20
+0x18510c618:  0a 02 80 52   mov	w10, #0x10
+0x18510c61c:  48 01 88 1a   csel	w8, w10, w8, eq
+0x18510c620:  1f 01 09 6a   tst	w8, w9
+0x18510c624:  e0 07 9f 1a   cset	w0, ne
+0x18510c628:  c0 03 5f d6   ret
+

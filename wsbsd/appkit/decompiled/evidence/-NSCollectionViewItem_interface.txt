@@ -1,0 +1,15 @@
+@interface NSCollectionViewItem : NSViewController <NSCopying, NSCollectionViewElement> {
+    /* instance variables */
+    @ _reserved1;
+    {?="isSelected"b1"suppressSelectionChangedNotification"b1"connectionsCopied"b1"highlightState"b2"wasDequeued"b1"stayHiddenAwaitingReuse"b1"stayHiddenAfterReuse"b1"updateAnimationCount"b16"dragging"b1"isTransientAccessibilityElement"b1"shouldConstrainWidth"b1"shouldConstrainHeight"b1"reserved"b4} _cviFlags;
+    @"NSData" _cachedArchive;
+    @ _reserved2;
+}
+
+@property (T@"NSCollectionView",R,W) collectionView;
+@property (TB,GisSelected) selected;
+@property (Tq) highlightState;
+@property (T@"NSImageView",W) imageView;
+@property (T@"NSTextField",W) textField;
+@property (T@"NSArray",R) draggingImageComponents;
+@property (TQ,R) hash;

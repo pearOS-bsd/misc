@@ -1,0 +1,15 @@
+@interface NSDockTile : NSObject {
+    /* instance variables */
+    @ _owner;
+    ^v _dockContextRef;
+    @"NSView" _contentView;
+    @"NSView" _frameView;
+    @"NSView" _backstopView;
+    @"NSString" _badgeLabel;
+    {?="showsAppBadge"b1"reserved"b31} _dFlags;
+    {CGSize="width"d"height"d} _dockTileSize;
+    @ _miniViewController;
+    B _usesIconServices;
+}
+
+@property (T@"NSView",&,D) miniView;

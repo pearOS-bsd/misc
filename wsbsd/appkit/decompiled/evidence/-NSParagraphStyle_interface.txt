@@ -1,0 +1,53 @@
+@interface NSParagraphStyle : NSObject <_NSParagraphStyleMarkdownSettings, NSCopying, NSMutableCopying, NSSecureCoding> {
+    /* instance variables */
+    d _lineSpacing;
+    d _paragraphSpacing;
+    d _headIndent;
+    d _tailIndent;
+    d _firstLineHeadIndent;
+    d _minimumLineHeight;
+    d _maximumLineHeight;
+    @"NSArray" _tabStops;
+    {?="alignment"b4"lineBreakMode"b4"tabStopsIsMutable"b1"isNaturalDirection"b1"rightToLeftDirection"b1"fixedMultiple"b2"tightensForTruncation"b1"refCount"b18} _flags;
+    d _defaultTabInterval;
+    @"NSParagraphStyleExtraData" _extraData;
+}
+
+@property (T@"NSString",R,C) codeBlockIntentLanguageHint;
+@property (T@"NSArray",?,R,C) _presentationIntents;
+@property (T@"NSArray",?,R,C) presentationIntents;
+@property (Tq,?,R) _listIntentOrdinal;
+@property (Tq,?,R) listIntentOrdinal;
+@property (Tq,?,R) headerLevel;
+@property (TQ,R) hash;
+@property (T#,R) superclass;
+@property (T@"NSString",R,C) description;
+@property (T@"NSString",?,R,C) debugDescription;
+@property (Tq,R) alignment;
+@property (Td,R) lineSpacing;
+@property (Td,R) paragraphSpacing;
+@property (Td,R) headIndent;
+@property (Td,R) tailIndent;
+@property (Td,R) firstLineHeadIndent;
+@property (Td,R) minimumLineHeight;
+@property (Td,R) maximumLineHeight;
+@property (TQ,R) lineBreakMode;
+@property (Tq,R) baseWritingDirection;
+@property (Td,R) lineHeightMultiple;
+@property (Td,R) paragraphSpacingBefore;
+@property (Tf,R) hyphenationFactor;
+@property (TB,R) usesDefaultHyphenation;
+@property (T@"NSArray",R,C) tabStops;
+@property (Td,R) defaultTabInterval;
+@property (T@"NSArray",R,C) textLists;
+@property (T@"NSArray",R,C) textBlocks;
+@property (TB,R) allowsDefaultTighteningForTruncation;
+@property (TQ,R) lineBreakStrategy;
+@property (Tf,R) tighteningFactorForTruncation;
+@property (Tq,R) headerLevel;
+
+/* class methods */
++[NSParagraphStyle defaultParagraphStyle];
++[NSParagraphStyle supportsSecureCoding];
+
+=== NSMutableParagraphStyle ===

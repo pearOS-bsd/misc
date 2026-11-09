@@ -1,0 +1,28 @@
+### -[NSPopover setAnimates:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSPopover setAnimates:]
+
+-[NSPopover setAnimates:]:
+0x18515840c:  7f 23 03 d5   pacibsp
+0x185158410:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x185158414:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x185158418:  fd 43 00 91   add	fp, sp, #0x10
+0x18515841c:  f3 03 02 aa   mov	x19, x2
+0x185158420:  88 9d 2f 90   adrp	x8, 0x1e4508000
+0x185158424:  08 71 8a b9   ldrsw	x8, [x8, #0xa70] ; _OBJC_IVAR_$_NSPopover._flags
+0x185158428:  08 00 08 8b   add	x8, x0, x8
+0x18515842c:  09 01 40 b9   ldr	w9, [x8]
+0x185158430:  29 79 1f 12   and	w9, w9, #0xfffffffe
+0x185158434:  29 01 02 2a   orr	w9, w9, w2
+0x185158438:  09 01 00 b9   str	w9, [x8]
+0x18515843c:  71 fa bb 94   bl	0x188056e00
+0x185158440:  e2 03 13 aa   mov	x2, x19
+0x185158444:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x185158448:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x18515844c:  ff 23 03 d5   autibsp
+0x185158450:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x185158454:  50 00 f0 b6   tbz	x16, #0x3e, loc_18515845c ; ⤵ 0x8
+0x185158458:  20 8e 38 d4   brk	#0xc471
+0x18515845c:  ; loc_18515845c
+0x18515845c:  29 23 bd 14   b	0x1880a1100
+

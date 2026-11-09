@@ -1,0 +1,67 @@
+### -[NSGestureRecognizer setEnabled:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSGestureRecognizer setEnabled:]
+
+-[NSGestureRecognizer setEnabled:]:
+0x1850dd7bc:  7f 23 03 d5   pacibsp
+0x1850dd7c0:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x1850dd7c4:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x1850dd7c8:  fd 43 00 91   add	fp, sp, #0x10
+0x1850dd7cc:  f4 03 02 aa   mov	x20, x2
+0x1850dd7d0:  f3 03 00 aa   mov	x19, x0
+0x1850dd7d4:  b5 4b 2c 94   bl	__NSIsGesturesFrameworkEnabled
+0x1850dd7d8:  40 01 00 34   cbz	w0, loc_1850dd800 ; ⤵ 0x28
+0x1850dd7dc:  60 06 40 f9   ldr	x0, [x19, #0x8]
+0x1850dd7e0:  82 02 00 52   eor	w2, w20, #0x1
+0x1850dd7e4:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x1850dd7e8:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x1850dd7ec:  ff 23 03 d5   autibsp
+0x1850dd7f0:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x1850dd7f4:  50 00 f0 b6   tbz	x16, #0x3e, loc_1850dd7fc ; ⤵ 0x8
+0x1850dd7f8:  20 8e 38 d4   brk	#0xc471
+0x1850dd7fc:  ; loc_1850dd7fc
+0x1850dd7fc:  f5 19 bf 14   b	0x1880a3fd0
+0x1850dd800:  ; loc_1850dd800
+0x1850dd800:  68 2e 40 f9   ldr	x8, [x19, #0x58]
+0x1850dd804:  09 6d 5b d3   ubfx	x9, x8, #0x1b, #0x1
+0x1850dd808:  9f 02 09 6b   cmp	w20, w9
+0x1850dd80c:  80 00 00 54   b.eq	loc_1850dd81c ; ⤵ 0x10
+0x1850dd810:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x1850dd814:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x1850dd818:  ff 0f 5f d6   retab
+0x1850dd81c:  ; loc_1850dd81c
+0x1850dd81c:  9f 02 00 71   cmp	w20, #0
+0x1850dd820:  09 00 a1 52   mov	w9, #0x8000000
+0x1850dd824:  e9 13 89 9a   csel	x9, xzr, x9, ne
+0x1850dd828:  08 f9 64 92   and	x8, x8, #0xfffffffff7ffffff
+0x1850dd82c:  08 01 09 aa   orr	x8, x8, x9
+0x1850dd830:  68 2e 00 f9   str	x8, [x19, #0x58]
+0x1850dd834:  34 02 00 37   tbnz	w20, #0, loc_1850dd878 ; ⤵ 0x44
+0x1850dd838:  e0 03 13 aa   mov	x0, x19
+0x1850dd83c:  bd c3 bd 94   bl	0x18804e730
+0x1850dd840:  60 01 00 34   cbz	w0, loc_1850dd86c ; ⤵ 0x2c
+0x1850dd844:  a8 98 30 f0   adrp	x8, 0x1e63f4000
+0x1850dd848:  08 e1 0b 91   add	x8, x8, #0x2f8 ; _NSApp
+0x1850dd84c:  14 01 40 f9   ldr	x20, [x8]
+0x1850dd850:  e8 85 2d f0   adrp	x8, 0x1e019c000
+0x1850dd854:  00 4d 42 f9   ldr	x0, [x8, #0x498] ; _ptr.NSArray
+0x1850dd858:  e2 03 13 aa   mov	x2, x19
+0x1850dd85c:  6d 93 bc 94   bl	0x188002610
+0x1850dd860:  e2 03 00 aa   mov	x2, x0
+0x1850dd864:  e0 03 14 aa   mov	x0, x20
+0x1850dd868:  2a 79 bd 94   bl	0x18803bd10
+0x1850dd86c:  ; loc_1850dd86c
+0x1850dd86c:  60 3e 40 f9   ldr	x0, [x19, #0x78]
+0x1850dd870:  e2 03 13 aa   mov	x2, x19
+0x1850dd874:  a3 9f be 94   bl	0x188085700
+0x1850dd878:  ; loc_1850dd878
+0x1850dd878:  60 3e 40 f9   ldr	x0, [x19, #0x78]
+0x1850dd87c:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x1850dd880:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x1850dd884:  ff 23 03 d5   autibsp
+0x1850dd888:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x1850dd88c:  50 00 f0 b6   tbz	x16, #0x3e, loc_1850dd894 ; ⤵ 0x8
+0x1850dd890:  20 8e 38 d4   brk	#0xc471
+0x1850dd894:  ; loc_1850dd894
+0x1850dd894:  4b f6 be 14   b	0x18809b1c0
+

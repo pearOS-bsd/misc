@@ -1,0 +1,79 @@
+### -[NSPressGestureRecognizer minimumPressDuration]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSPressGestureRecognizer minimumPressDuration]
+
+-[NSPressGestureRecognizer minimumPressDuration]:
+0x185135264:  7f 23 03 d5   pacibsp
+0x185135268:  e9 23 bd 6d   stp	d9, d8, [sp, #-0x30]!
+0x18513526c:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x185135270:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x185135274:  fd 83 00 91   add	fp, sp, #0x20
+0x185135278:  f3 03 00 aa   mov	x19, x0
+0x18513527c:  39 b4 be 94   bl	j__objc_sync_enter
+0x185135280:  68 95 30 f0   adrp	x8, 0x1e63e4000
+0x185135284:  08 99 8c b9   ldrsw	x8, [x8, #0xc98]
+0x185135288:  68 02 08 8b   add	x8, x19, x8
+0x18513528c:  08 01 40 39   ldrb	w8, [x8]
+0x185135290:  e8 01 10 37   tbnz	w8, #0x2, loc_1851352cc ; ⤵ 0x3c
+0x185135294:  68 95 30 f0   adrp	x8, 0x1e63e4000
+0x185135298:  08 a9 8c b9   ldrsw	x8, [x8, #0xca8]
+0x18513529c:  68 02 08 8b   add	x8, x19, x8
+0x1851352a0:  08 01 40 f9   ldr	x8, [x8]
+0x1851352a4:  1f 05 00 f1   cmp	x8, #0x1
+0x1851352a8:  cb 01 00 54   b.lt	loc_1851352e0 ; ⤵ 0x38
+0x1851352ac:  02 96 30 f0   adrp	x2, 0x1e63f8000
+0x1851352b0:  42 24 25 91   add	x2, x2, #0x949 ; data_1e63f8949 (AppKit/__DATA_DIRTY.__bss)
+0x1851352b4:  48 fc df 08   ldarb	w8, [x2]
+0x1851352b8:  1f 05 00 71   cmp	w8, #0x1
+0x1851352bc:  21 03 00 54   b.ne	loc_185135320 ; ⤵ 0x64
+0x1851352c0:  08 96 30 f0   adrp	x8, 0x1e63f8000
+0x1851352c4:  08 61 25 91   add	x8, x8, #0x958 ; data_1e63f8958 (AppKit/__DATA_DIRTY.__bss)
+0x1851352c8:  0d 00 00 14   b	loc_1851352fc ; ⤵ 0x34
+0x1851352cc:  ; loc_1851352cc
+0x1851352cc:  68 95 30 f0   adrp	x8, 0x1e63e4000
+0x1851352d0:  08 91 8c b9   ldrsw	x8, [x8, #0xc90]
+0x1851352d4:  68 02 08 8b   add	x8, x19, x8
+0x1851352d8:  08 01 40 fd   ldr	d8, [x8]
+0x1851352dc:  0a 00 00 14   b	loc_185135304 ; ⤵ 0x28
+0x1851352e0:  ; loc_1851352e0
+0x1851352e0:  02 96 30 f0   adrp	x2, 0x1e63f8000
+0x1851352e4:  42 28 25 91   add	x2, x2, #0x94a ; data_1e63f894a (AppKit/__DATA_DIRTY.__bss)
+0x1851352e8:  48 fc df 08   ldarb	w8, [x2]
+0x1851352ec:  1f 05 00 71   cmp	w8, #0x1
+0x1851352f0:  41 02 00 54   b.ne	loc_185135338 ; ⤵ 0x48
+0x1851352f4:  08 96 30 f0   adrp	x8, 0x1e63f8000
+0x1851352f8:  08 81 25 91   add	x8, x8, #0x960 ; data_1e63f8960 (AppKit/__DATA_DIRTY.__bss)
+0x1851352fc:  ; loc_1851352fc
+0x1851352fc:  08 fd df c8   ldar	x8, [x8]
+0x185135300:  08 01 67 9e   fmov	d8, x8
+0x185135304:  ; loc_185135304
+0x185135304:  e0 03 13 aa   mov	x0, x19
+0x185135308:  1a b4 be 94   bl	j__objc_sync_exit
+0x18513530c:  00 1d a8 4e   mov	v0.16b, v8.16b
+0x185135310:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x185135314:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x185135318:  e9 23 c3 6c   ldp	d9, d8, [sp], #0x30
+0x18513531c:  ff 0f 5f d6   retab
+0x185135320:  ; loc_185135320
+0x185135320:  41 3c 00 91   add	x1, x2, #0xf
+0x185135324:  a0 9c 31 90   adrp	x0, 0x1e84c9000
+0x185135328:  00 40 24 91   add	x0, x0, #0x910 ; "NSPressGestureRecognizerLongPressDuration"
+0x18513532c:  28 8a 00 b0   adrp	x8, 0x18627a000
+0x185135330:  00 b9 43 fd   ldr	d0, [x8, #0x770]
+0x185135334:  05 00 00 14   b	loc_185135348 ; ⤵ 0x14
+0x185135338:  ; loc_185135338
+0x185135338:  41 58 00 91   add	x1, x2, #0x16
+0x18513533c:  00 10 6a 1e   fmov	d0, #0.25000000
+0x185135340:  a0 9c 31 90   adrp	x0, 0x1e84c9000
+0x185135344:  00 c0 24 91   add	x0, x0, #0x930 ; "NSPressGestureRecognizerMouseHoldDuration"
+0x185135348:  ; loc_185135348
+0x185135348:  03 00 80 d2   mov	x3, #0
+0x18513534c:  f0 64 f7 97   bl	__NSGetCGFloatAppConfig
+0x185135350:  08 1c a0 4e   mov	v8.16b, v0.16b
+0x185135354:  ec ff ff 17   b	loc_185135304 ; ⤴ -0x50
+0x185135358:  f4 03 00 aa   mov	x20, x0
+0x18513535c:  e0 03 13 aa   mov	x0, x19
+0x185135360:  04 b4 be 94   bl	j__objc_sync_exit
+0x185135364:  e0 03 14 aa   mov	x0, x20
+0x185135368:  4a 9b be 94   bl	j___Unwind_Resume
+
