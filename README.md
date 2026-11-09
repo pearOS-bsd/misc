@@ -47,7 +47,7 @@ Rule of the project: upstream sources are never edited. What the platform lacks 
 
 The image runs programs that were built for macOS, without changes, through [darwinator](https://github.com/pearOS-bsd/darwinator) (built by `iso/build.sh`):
 `machrun` is a dyld in userland (it maps the Mach-O file, loads its dylibs and frameworks, binds the imports to FreeBSD's libraries and to GNUstep's
-Foundation and AppKit, and starts it), and the kernel module `darwinator.ko` runs static Mach-O programs and implements about 140 Darwin system calls.
+Foundation and AppKit, and starts it), and the kernel module `darwinator.ko` runs static Mach-O programs and implements about 190 Darwin system calls and 22 Mach traps (148 checks, amd64 and arm64; Mach IPC only inside one process).
 `imgact_binmisc` hands every Mach-O file that is started from a shell to `machrun`.
 
 | What | How |
