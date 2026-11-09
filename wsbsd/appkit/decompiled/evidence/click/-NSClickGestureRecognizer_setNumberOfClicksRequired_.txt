@@ -1,0 +1,11 @@
+### -[NSClickGestureRecognizer setNumberOfClicksRequired:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSClickGestureRecognizer setNumberOfClicksRequired:]
+
+-[NSClickGestureRecognizer setNumberOfClicksRequired:]:
+0x1850d2fb8:  88 98 30 d0   adrp	x8, 0x1e63e4000
+0x1850d2fbc:  08 0d 8d b9   ldrsw	x8, [x8, #0xd0c]
+0x1850d2fc0:  08 00 08 8b   add	x8, x0, x8
+0x1850d2fc4:  02 01 00 f9   str	x2, [x8]
+0x1850d2fc8:  c0 03 5f d6   ret
+

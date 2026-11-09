@@ -1,0 +1,11 @@
+### -[NSPopover contentViewController]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSPopover contentViewController]
+
+-[NSPopover contentViewController]:
+0x1850f3c24:  88 97 30 b0   adrp	x8, 0x1e63e4000
+0x1850f3c28:  08 79 8b b9   ldrsw	x8, [x8, #0xb78]
+0x1850f3c2c:  08 00 08 8b   add	x8, x0, x8
+0x1850f3c30:  00 01 40 f9   ldr	x0, [x8]
+0x1850f3c34:  c0 03 5f d6   ret
+

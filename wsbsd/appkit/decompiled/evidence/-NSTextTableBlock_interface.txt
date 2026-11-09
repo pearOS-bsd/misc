@@ -1,0 +1,15 @@
+@interface NSTextTableBlock : NSTextBlock <NSSecureCoding> {
+    /* instance variables */
+    @"NSTextTable" _table;
+    q _rowNum;
+    q _colNum;
+    q _rowSpan;
+    q _colSpan;
+}
+
+@property (T@"NSTextTable",R) table;
+@property (Tq,R) startingRow;
+@property (Tq,R) rowSpan;
+@property (Tq,R) startingColumn;
+@property (Tq,R) columnSpan;
+

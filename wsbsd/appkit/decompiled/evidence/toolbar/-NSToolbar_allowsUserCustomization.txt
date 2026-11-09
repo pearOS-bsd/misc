@@ -1,0 +1,9 @@
+### -[NSToolbar allowsUserCustomization]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSToolbar allowsUserCustomization]
+
+-[NSToolbar allowsUserCustomization]:
+0x184fb2024:  08 88 40 b9   ldr	w8, [x0, #0x88]
+0x184fb2028:  00 01 00 12   and	w0, w8, #0x1
+0x184fb202c:  c0 03 5f d6   ret
+

@@ -1,0 +1,170 @@
+### -[NSSavePanel setNameFieldStringValue:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSSavePanel setNameFieldStringValue:]
+
+-[NSSavePanel setNameFieldStringValue:]:
+0x185b24e00:  7f 23 03 d5   pacibsp
+0x185b24e04:  ff 83 01 d1   sub	sp, sp, #0x60
+0x185b24e08:  f8 5f 02 a9   stp	x24, x23, [sp, #0x20]
+0x185b24e0c:  f6 57 03 a9   stp	x22, x21, [sp, #0x30]
+0x185b24e10:  f4 4f 04 a9   stp	x20, x19, [sp, #0x40]
+0x185b24e14:  fd 7b 05 a9   stp	fp, lr, [sp, #0x50]
+0x185b24e18:  fd 43 01 91   add	fp, sp, #0x50
+0x185b24e1c:  f5 03 01 aa   mov	x21, x1
+0x185b24e20:  f4 03 00 aa   mov	x20, x0
+0x185b24e24:  e0 03 02 aa   mov	x0, x2
+0x185b24e28:  92 df 96 94   bl	j__objc_retain_x0
+0x185b24e2c:  f3 03 00 aa   mov	x19, x0
+0x185b24e30:  e0 03 14 aa   mov	x0, x20
+0x185b24e34:  af df 94 94   bl	0x18805ccf0
+0x185b24e38:  c0 06 00 36   tbz	w0, #0, loc_185b24f10 ; ⤵ 0xd8
+0x185b24e3c:  53 0b 00 b4   cbz	x19, loc_185b24fa4 ; ⤵ 0x168
+0x185b24e40:  ; loc_185b24e40
+0x185b24e40:  e0 03 13 aa   mov	x0, x19
+0x185b24e44:  4b 5b ef 97   bl	__NSOSPStringByRemovingInvalidCharacters
+0x185b24e48:  32 e8 96 94   bl	j__objc_claimAutoreleasedReturnValue
+0x185b24e4c:  f5 03 00 aa   mov	x21, x0
+0x185b24e50:  63 4a 31 90   adrp	x3, 0x1e8470000
+0x185b24e54:  63 40 37 91   add	x3, x3, #0xdd0 ; "nameFieldStringValue"
+0x185b24e58:  e0 03 14 aa   mov	x0, x20
+0x185b24e5c:  e2 03 15 aa   mov	x2, x21
+0x185b24e60:  00 f7 94 94   bl	0x188062a60
+0x185b24e64:  e0 03 15 aa   mov	x0, x21
+0x185b24e68:  7a 7d 93 94   bl	0x188004450
+0x185b24e6c:  29 e8 96 94   bl	j__objc_claimAutoreleasedReturnValue
+0x185b24e70:  f6 03 00 aa   mov	x22, x0
+0x185b24e74:  17 00 80 d2   mov	x23, #0
+0x185b24e78:  2e 70 93 94   bl	0x188000f30
+0x185b24e7c:  60 03 00 b4   cbz	x0, loc_185b24ee8 ; ⤵ 0x6c
+0x185b24e80:  17 00 80 d2   mov	x23, #0
+0x185b24e84:  e0 03 14 aa   mov	x0, x20
+0x185b24e88:  fe 3c 95 94   bl	0x188074280
+0x185b24e8c:  21 e8 96 94   bl	j__objc_claimAutoreleasedReturnValue
+0x185b24e90:  f8 03 00 aa   mov	x24, x0
+0x185b24e94:  e0 03 16 aa   mov	x0, x22
+0x185b24e98:  e1 03 18 aa   mov	x1, x24
+0x185b24e9c:  3d 58 ef 97   bl	__NSOSPAllowedTypeForExtension
+0x185b24ea0:  1c e8 96 94   bl	j__objc_claimAutoreleasedReturnValue
+0x185b24ea4:  f7 03 00 aa   mov	x23, x0
+0x185b24ea8:  e0 03 18 aa   mov	x0, x24
+0x185b24eac:  6d df 96 94   bl	j__objc_release_x0
+0x185b24eb0:  f7 01 00 b5   cbnz	x23, loc_185b24eec ; ⤵ 0x3c
+0x185b24eb4:  e0 03 14 aa   mov	x0, x20
+0x185b24eb8:  3e 4c 94 94   bl	0x188037fb0
+0x185b24ebc:  60 01 00 34   cbz	w0, loc_185b24ee8 ; ⤵ 0x2c
+0x185b24ec0:  17 00 80 d2   mov	x23, #0
+0x185b24ec4:  e0 03 16 aa   mov	x0, x22
+0x185b24ec8:  e2 57 ef 97   bl	__NSOSPTypeFromExtension
+0x185b24ecc:  11 e8 96 94   bl	j__objc_claimAutoreleasedReturnValue
+0x185b24ed0:  f8 03 00 aa   mov	x24, x0
+0x185b24ed4:  f7 03 00 aa   mov	x23, x0
+0x185b24ed8:  be 93 93 94   bl	0x188009dd0
+0x185b24edc:  00 06 00 34   cbz	w0, loc_185b24f9c ; ⤵ 0xc0
+0x185b24ee0:  e0 03 18 aa   mov	x0, x24
+0x185b24ee4:  5f df 96 94   bl	j__objc_release_x0
+0x185b24ee8:  ; loc_185b24ee8
+0x185b24ee8:  17 00 80 d2   mov	x23, #0
+0x185b24eec:  ; loc_185b24eec
+0x185b24eec:  e0 03 14 aa   mov	x0, x20
+0x185b24ef0:  e2 03 17 aa   mov	x2, x23
+0x185b24ef4:  b7 f9 95 94   bl	0x1880a35d0
+0x185b24ef8:  e0 03 17 aa   mov	x0, x23
+0x185b24efc:  59 df 96 94   bl	j__objc_release_x0
+0x185b24f00:  e0 03 16 aa   mov	x0, x22
+0x185b24f04:  57 df 96 94   bl	j__objc_release_x0
+0x185b24f08:  e0 03 15 aa   mov	x0, x21
+0x185b24f0c:  1b 00 00 14   b	loc_185b24f78 ; ⤵ 0x6c
+0x185b24f10:  ; loc_185b24f10
+0x185b24f10:  5d 0b 03 94   bl	___AppKitLogOpenSavePanels
+0x185b24f14:  ff e7 96 94   bl	j__objc_claimAutoreleasedReturnValue
+0x185b24f18:  f6 03 00 aa   mov	x22, x0
+0x185b24f1c:  01 02 80 52   mov	w1, #0x10
+0x185b24f20:  40 f5 96 94   bl	j__os_log_type_enabled
+0x185b24f24:  80 02 00 34   cbz	w0, loc_185b24f74 ; ⤵ 0x50
+0x185b24f28:  e0 03 15 aa   mov	x0, x21
+0x185b24f2c:  29 ff 96 94   bl	j__NSStringFromSelector
+0x185b24f30:  f8 e7 96 94   bl	j__objc_claimAutoreleasedReturnValue
+0x185b24f34:  f4 03 00 aa   mov	x20, x0
+0x185b24f38:  88 3a 00 d0   adrp	x8, 0x186276000
+0x185b24f3c:  00 8d 41 fd   ldr	d0, [x8, #0x318]
+0x185b24f40:  e0 13 00 bd   str	s0, [sp, #0x10]
+0x185b24f44:  e0 43 01 f8   stur	x0, [sp, #0x14]
+0x185b24f48:  e0 9c ff d0   adrp	x0, 0x184ec2000
+0x185b24f4c:  00 00 00 91   add	x0, x0, #0 ; "\xcf\xfa\xed\xfe\f"
+0x185b24f50:  23 4b 00 f0   adrp	x3, 0x18648b000
+0x185b24f54:  63 04 0f 91   add	x3, x3, #0x3c1 ; "Ignoring NSSavePanel method sent to NSOpenPanel: %@"
+0x185b24f58:  e4 43 00 91   add	x4, sp, #0x10
+0x185b24f5c:  e1 03 16 aa   mov	x1, x22
+0x185b24f60:  02 02 80 52   mov	w2, #0x10
+0x185b24f64:  85 01 80 52   mov	w5, #0xc
+0x185b24f68:  82 f1 96 94   bl	j___os_log_impl
+0x185b24f6c:  e0 03 14 aa   mov	x0, x20
+0x185b24f70:  3c df 96 94   bl	j__objc_release_x0
+0x185b24f74:  ; loc_185b24f74
+0x185b24f74:  e0 03 16 aa   mov	x0, x22
+0x185b24f78:  ; loc_185b24f78
+0x185b24f78:  3a df 96 94   bl	j__objc_release_x0
+0x185b24f7c:  e0 03 13 aa   mov	x0, x19
+0x185b24f80:  38 df 96 94   bl	j__objc_release_x0
+0x185b24f84:  fd 7b 45 a9   ldp	fp, lr, [sp, #0x50]
+0x185b24f88:  f4 4f 44 a9   ldp	x20, x19, [sp, #0x40]
+0x185b24f8c:  f6 57 43 a9   ldp	x22, x21, [sp, #0x30]
+0x185b24f90:  f8 5f 42 a9   ldp	x24, x23, [sp, #0x20]
+0x185b24f94:  ff 83 01 91   add	sp, sp, #0x60
+0x185b24f98:  ff 0f 5f d6   retab
+0x185b24f9c:  ; loc_185b24f9c
+0x185b24f9c:  f7 03 18 aa   mov	x23, x24
+0x185b24fa0:  d3 ff ff 17   b	loc_185b24eec ; ⤴ -0xb4
+0x185b24fa4:  ; loc_185b24fa4
+0x185b24fa4:  28 34 2d d0   adrp	x8, 0x1e01aa000
+0x185b24fa8:  00 41 40 f9   ldr	x0, [x8, #0x80] ; _ptr.NSAssertionHandler
+0x185b24fac:  b5 8a 93 94   bl	0x188007a80
+0x185b24fb0:  d8 e7 96 94   bl	j__objc_claimAutoreleasedReturnValue
+0x185b24fb4:  f6 03 00 aa   mov	x22, x0
+0x185b24fb8:  68 4a 31 f0   adrp	x8, 0x1e8473000
+0x185b24fbc:  08 c1 2f 91   add	x8, x8, #0xbf0 ; "aString != nil"
+0x185b24fc0:  e8 03 00 f9   str	x8, [sp]
+0x185b24fc4:  e4 4c 31 f0   adrp	x4, 0x1e84c3000
+0x185b24fc8:  84 40 02 91   add	x4, x4, #0x90 ; "NSSavePanel.m"
+0x185b24fcc:  a6 48 31 b0   adrp	x6, 0x1e8439000
+0x185b24fd0:  c6 40 2f 91   add	x6, x6, #0xbd0 ; "Invalid parameter not satisfying: %@"
+0x185b24fd4:  e2 03 15 aa   mov	x2, x21
+0x185b24fd8:  e3 03 14 aa   mov	x3, x20
+0x185b24fdc:  c5 ac 80 52   mov	w5, #0x566
+0x185b24fe0:  18 8f 93 94   bl	0x188008c40
+0x185b24fe4:  e0 03 16 aa   mov	x0, x22
+0x185b24fe8:  1e df 96 94   bl	j__objc_release_x0
+0x185b24fec:  95 ff ff 17   b	loc_185b24e40 ; ⤴ -0x1ac
+0x185b24ff0:  01 00 00 14   b	loc_185b24ff4 ; ⤵ 0x4
+0x185b24ff4:  ; loc_185b24ff4
+0x185b24ff4:  f4 03 00 aa   mov	x20, x0
+0x185b24ff8:  e0 03 16 aa   mov	x0, x22
+0x185b24ffc:  11 00 00 14   b	loc_185b25040 ; ⤵ 0x44
+0x185b25000:  f4 03 00 aa   mov	x20, x0
+0x185b25004:  0a 00 00 14   b	loc_185b2502c ; ⤵ 0x28
+0x185b25008:  01 00 00 14   b	loc_185b2500c ; ⤵ 0x4
+0x185b2500c:  ; loc_185b2500c
+0x185b2500c:  f4 03 00 aa   mov	x20, x0
+0x185b25010:  0b 00 00 14   b	loc_185b2503c ; ⤵ 0x2c
+0x185b25014:  02 00 00 14   b	loc_185b2501c ; ⤵ 0x8
+0x185b25018:  01 00 00 14   b	loc_185b2501c ; ⤵ 0x4
+0x185b2501c:  ; loc_185b2501c
+0x185b2501c:  f4 03 00 aa   mov	x20, x0
+0x185b25020:  09 00 00 14   b	loc_185b25044 ; ⤵ 0x24
+0x185b25024:  f4 03 00 aa   mov	x20, x0
+0x185b25028:  f8 03 17 aa   mov	x24, x23
+0x185b2502c:  ; loc_185b2502c
+0x185b2502c:  e0 03 18 aa   mov	x0, x24
+0x185b25030:  0c df 96 94   bl	j__objc_release_x0
+0x185b25034:  e0 03 16 aa   mov	x0, x22
+0x185b25038:  0a df 96 94   bl	j__objc_release_x0
+0x185b2503c:  ; loc_185b2503c
+0x185b2503c:  e0 03 15 aa   mov	x0, x21
+0x185b25040:  ; loc_185b25040
+0x185b25040:  08 df 96 94   bl	j__objc_release_x0
+0x185b25044:  ; loc_185b25044
+0x185b25044:  e0 03 13 aa   mov	x0, x19
+0x185b25048:  06 df 96 94   bl	j__objc_release_x0
+0x185b2504c:  e0 03 14 aa   mov	x0, x20
+0x185b25050:  10 dc 96 94   bl	j___Unwind_Resume
+

@@ -1,0 +1,21 @@
+@interface NSTrackingArea : NSObject <NSCopying, NSCoding> {
+    /* instance variables */
+    {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}} _rect;
+    @ _owner;
+    @"NSDictionary" _userInfo;
+    Q _options;
+    {?="_installPending"b1"_uninstallPending"b1"_installed"b1"_enabled"b1"_removed"b1"_inside"b1"_mouseEnteredSent"b1"_suppressFirstMouseEntered"b1"_needsPressureConfigPushedToCG"b1"_pressureConfigPushedToCG"b1"_suppressPressureConfiguration"b1"_representsGestureRecognizers"b1"_reserved"b20} _privateFlags;
+    @ _reserved;
+}
+
+@property (T@"NSCursor",R) cursor;
+@property (T{CGRect={CGPoint=dd}{CGSize=dd}},R) rect;
+@property (TQ,R) options;
+@property (T@,R,W) owner;
+@property (T@"NSDictionary",R,C) userInfo;
+
+/* class methods */
++[NSTrackingArea initialize];
++[NSTrackingArea _areaSendingMouseEntered];
++[NSTrackingArea _autoreleaseTrackingTag:];
++[NSTrackingArea _isTrackingAreaObject:];

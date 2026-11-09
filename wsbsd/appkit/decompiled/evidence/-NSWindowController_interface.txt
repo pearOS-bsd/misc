@@ -1,0 +1,19 @@
+@interface NSWindowController : NSResponder <NSSeguePerforming> {
+    /* instance variables */
+    @"NSWindow" _window;
+    @"NSString" _windowNibName;
+    @"NSDocument" _document;
+    @"NSArray" _topLevelObjects;
+    @ _owner;
+    {__wcFlags="shouldCloseDocument"b1"shouldCascade"b1"isLoadingNib"b1"nibIsLoaded"b1"nibNameIsPath"b1"settingWindowsContentViewController"b1"didInitWithCoder"b1"nibIsMakingConnections"b1"sentWindowWillLoad"b1"RESERVED"b23} _wcFlags;
+    @"NSString" _frameAutosaveName;
+    @"NSWindowControllerMoreIVars" _moreVars;
+    @"NSArray" _previewRepresentableActivityItems;
+}
+
+@property (T@"NSViewController",R,W) presentingViewController;
+@property (T@"NSString",C,S_setFrameAutosaveName:,V_frameAutosaveName) _frameAutosaveName;
+@property (T@"NSString",R,C) windowNibName;
+@property (T@"NSString",R,C) windowNibPath;
+@property (T@,R,W) owner;
+@property (T@"NSString",C) windowFrameAutosaveName;

@@ -1,0 +1,7 @@
+### -[NSStatusItem menu]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSStatusItem menu]
+
+-[NSStatusItem menu]:
+0x18510c6ac:  3d 6a bd 14   b	0x188066fa0
+

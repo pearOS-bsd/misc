@@ -1,0 +1,109 @@
+### -[NSToolbar setAllowsUserCustomization:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSToolbar setAllowsUserCustomization:]
+
+-[NSToolbar setAllowsUserCustomization:]:
+0x184fb1258:  7f 23 03 d5   pacibsp
+0x184fb125c:  f6 57 bd a9   stp	x22, x21, [sp, #-0x30]!
+0x184fb1260:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x184fb1264:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x184fb1268:  fd 83 00 91   add	fp, sp, #0x20
+0x184fb126c:  08 88 40 b9   ldr	w8, [x0, #0x88]
+0x184fb1270:  08 01 00 12   and	w8, w8, #0x1
+0x184fb1274:  5f 00 08 6b   cmp	w2, w8
+0x184fb1278:  a0 06 00 54   b.eq	loc_184fb134c ; ⤵ 0xd4
+0x184fb127c:  f4 03 02 aa   mov	x20, x2
+0x184fb1280:  f3 03 00 aa   mov	x19, x0
+0x184fb1284:  82 01 00 34   cbz	w2, loc_184fb12b4 ; ⤵ 0x30
+0x184fb1288:  f5 03 01 aa   mov	x21, x1
+0x184fb128c:  a0 01 80 52   mov	w0, #0xd
+0x184fb1290:  78 f6 c4 94   bl	j___CFExecutableLinkedOnOrAfter
+0x184fb1294:  00 01 00 34   cbz	w0, loc_184fb12b4 ; ⤵ 0x20
+0x184fb1298:  60 06 40 f9   ldr	x0, [x19, #0x8]
+0x184fb129c:  42 a4 31 90   adrp	x2, 0x1e8439000
+0x184fb12a0:  42 c0 18 91   add	x2, x2, #0x630 ; _ptr.__NSCFConstantString
+0x184fb12a4:  83 4a c1 94   bl	0x188003cb0
+0x184fb12a8:  60 00 00 34   cbz	w0, loc_184fb12b4 ; ⤵ 0xc
+0x184fb12ac:  68 06 40 f9   ldr	x8, [x19, #0x8]
+0x184fb12b0:  88 06 00 b5   cbnz	x8, loc_184fb1380 ; ⤵ 0xd0
+0x184fb12b4:  ; loc_184fb12b4
+0x184fb12b4:  e8 03 14 2a   mov	w8, w20
+0x184fb12b8:  69 46 40 f9   ldr	x9, [x19, #0x88]
+0x184fb12bc:  29 f9 7f 92   and	x9, x9, #0xfffffffffffffffe
+0x184fb12c0:  28 01 08 aa   orr	x8, x9, x8
+0x184fb12c4:  68 46 00 f9   str	x8, [x19, #0x88]
+0x184fb12c8:  e8 ab 2f 90   adrp	x8, 0x1e452d000
+0x184fb12cc:  08 c1 3e 91   add	x8, x8, #0xfb0 ; _sNSToolbarSupportsIndependentDisplayModeCustomizationComputedValue
+0x184fb12d0:  08 fd df 08   ldarb	w8, [x8]
+0x184fb12d4:  1f 09 00 71   cmp	w8, #0x2
+0x184fb12d8:  a0 01 00 54   b.eq	loc_184fb130c ; ⤵ 0x34
+0x184fb12dc:  e8 01 00 35   cbnz	w8, loc_184fb1318 ; ⤵ 0x3c
+0x184fb12e0:  60 a7 31 d0   adrp	x0, 0x1e849f000
+0x184fb12e4:  00 c0 0b 91   add	x0, x0, #0x2f0 ; "NSToolbarSupportsIndependentDisplayModeCustomization"
+0x184fb12e8:  e2 ab 2f 90   adrp	x2, 0x1e452d000
+0x184fb12ec:  42 c0 3e 91   add	x2, x2, #0xfb0 ; _sNSToolbarSupportsIndependentDisplayModeCustomizationComputedValue
+0x184fb12f0:  b0 47 00 f0   adrp	x16, 0x1858a8000
+0x184fb12f4:  10 a2 32 91   add	x16, x16, #0xca8 ; _NSToolbarSupportsIndependentDisplayModeCustomizationDefaultValueFunction
+0x184fb12f8:  f0 23 c1 da   paciza	x16
+0x184fb12fc:  e3 03 10 aa   mov	x3, x16
+0x184fb1300:  21 00 80 52   mov	w1, #0x1
+0x184fb1304:  0d 5a fc 97   bl	__NSGetBoolAppConfig
+0x184fb1308:  80 00 00 37   tbnz	w0, #0, loc_184fb1318 ; ⤵ 0x10
+0x184fb130c:  ; loc_184fb130c
+0x184fb130c:  e0 03 13 aa   mov	x0, x19
+0x184fb1310:  e2 03 14 aa   mov	x2, x20
+0x184fb1314:  3f be c3 94   bl	0x1880a0c10
+0x184fb1318:  ; loc_184fb1318
+0x184fb1318:  e0 03 13 aa   mov	x0, x19
+0x184fb131c:  34 c6 23 94   bl	-[NSToolbar _updateWantsContextMenu]
+0x184fb1320:  68 22 42 39   ldrb	w8, [x19, #0x88]
+0x184fb1324:  c8 01 00 37   tbnz	w8, #0, loc_184fb135c ; ⤵ 0x38
+0x184fb1328:  e0 03 13 aa   mov	x0, x19
+0x184fb132c:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x184fb1330:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x184fb1334:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x184fb1338:  ff 23 03 d5   autibsp
+0x184fb133c:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184fb1340:  50 00 f0 b6   tbz	x16, #0x3e, loc_184fb1348 ; ⤵ 0x8
+0x184fb1344:  20 8e 38 d4   brk	#0xc471
+0x184fb1348:  ; loc_184fb1348
+0x184fb1348:  c7 c6 23 14   b	-[NSToolbar _safelyStopObservingAutosaveDefaults]
+0x184fb134c:  ; loc_184fb134c
+0x184fb134c:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x184fb1350:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x184fb1354:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x184fb1358:  ff 0f 5f d6   retab
+0x184fb135c:  ; loc_184fb135c
+0x184fb135c:  e0 03 13 aa   mov	x0, x19
+0x184fb1360:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x184fb1364:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x184fb1368:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x184fb136c:  ff 23 03 d5   autibsp
+0x184fb1370:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184fb1374:  50 00 f0 b6   tbz	x16, #0x3e, loc_184fb137c ; ⤵ 0x8
+0x184fb1378:  20 8e 38 d4   brk	#0xc471
+0x184fb137c:  ; loc_184fb137c
+0x184fb137c:  24 c7 23 14   b	-[NSToolbar _safelyBeginObservingAutosaveDefaults]
+0x184fb1380:  ; loc_184fb1380
+0x184fb1380:  c8 8f 2d b0   adrp	x8, 0x1e01aa000
+0x184fb1384:  00 41 40 f9   ldr	x0, [x8, #0x80] ; _ptr.NSAssertionHandler
+0x184fb1388:  be 59 c1 94   bl	0x188007a80
+0x184fb138c:  e1 b6 c4 94   bl	j__objc_claimAutoreleasedReturnValue
+0x184fb1390:  f6 03 00 aa   mov	x22, x0
+0x184fb1394:  64 a7 31 b0   adrp	x4, 0x1e849e000
+0x184fb1398:  84 c0 2f 91   add	x4, x4, #0xbf0 ; "NSToolbar.m"
+0x184fb139c:  66 a7 31 b0   adrp	x6, 0x1e849e000
+0x184fb13a0:  c6 40 34 91   add	x6, x6, #0xd10 ; "Customizable toolbars require unique toolbarIdentifiers. Please use initWithIdentifier: with a unique identifier."
+0x184fb13a4:  e2 03 15 aa   mov	x2, x21
+0x184fb13a8:  e3 03 13 aa   mov	x3, x19
+0x184fb13ac:  85 a8 80 52   mov	w5, #0x544
+0x184fb13b0:  24 5e c1 94   bl	0x188008c40
+0x184fb13b4:  e0 03 16 aa   mov	x0, x22
+0x184fb13b8:  2a ae c4 94   bl	j__objc_release_x0
+0x184fb13bc:  be ff ff 17   b	loc_184fb12b4 ; ⤴ -0x108
+0x184fb13c0:  f3 03 00 aa   mov	x19, x0
+0x184fb13c4:  e0 03 16 aa   mov	x0, x22
+0x184fb13c8:  26 ae c4 94   bl	j__objc_release_x0
+0x184fb13cc:  e0 03 13 aa   mov	x0, x19
+0x184fb13d0:  30 ab c4 94   bl	j___Unwind_Resume
+

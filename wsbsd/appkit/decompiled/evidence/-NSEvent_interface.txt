@@ -1,0 +1,17 @@
+=== factory ===
++[NSEvent keyEventWithType:location:modifierFlags:timestamp:windowNumber:context:characters:charactersIgnoringModifiers:isARepeat:keyCode:];
++[NSEvent mouseEventWithType:location:modifierFlags:timestamp:windowNumber:context:eventNumber:clickCount:pressure:];
++[NSEvent otherEventWithType:location:modifierFlags:timestamp:windowNumber:context:subtype:data1:data2:];
+=== accessors ===
+-[NSEvent characters];
+-[NSEvent timestamp];
+-[NSEvent clickCount];
+-[NSEvent locationInWindow];
+-[NSEvent modifierFlags];
+-[NSEvent charactersIgnoringModifiers];
+-[NSEvent type];
+-[NSEvent keyCode];
+-[NSEvent pressure];
+-[NSEvent buttonNumber];
+-[NSEvent isARepeat];
+-[NSEvent windowNumber];

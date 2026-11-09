@@ -1,0 +1,8 @@
+### -[NSAlert setAlertStyle:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSAlert setAlertStyle:]
+
+-[NSAlert setAlertStyle:]:
+0x185280eac:  02 68 00 f9   str	x2, [x0, #0xd0]
+0x185280eb0:  c0 03 5f d6   ret
+

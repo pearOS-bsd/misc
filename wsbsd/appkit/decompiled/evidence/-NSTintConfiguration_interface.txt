@@ -1,0 +1,15 @@
+@interface NSTintConfiguration : NSObject <NSCopying, NSSecureCoding> {
+    /* instance variables */
+    B _allowsAccentOverride;
+    q _type;
+    @"NSColor" _tintColor;
+}
+
+@property (Tq,S_setType:,V_type) _type;
+@property (T@"NSColor",C,S_setTintColor:,V_tintColor) _tintColor;
+@property (TB,S_setAllowsAccentOverride:,V_allowsAccentOverride) _allowsAccentOverride;
+@property (T@"NSColor",R) baseTintColor;
+@property (T@"NSColor",R) equivalentContentTintColor;
+@property (TB,R) adaptsToUserAccentColor;
+
+/* class methods */

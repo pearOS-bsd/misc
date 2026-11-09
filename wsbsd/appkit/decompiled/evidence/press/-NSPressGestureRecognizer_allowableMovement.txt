@@ -1,0 +1,55 @@
+### -[NSPressGestureRecognizer allowableMovement]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSPressGestureRecognizer allowableMovement]
+
+-[NSPressGestureRecognizer allowableMovement]:
+0x185bd1224:  7f 23 03 d5   pacibsp
+0x185bd1228:  e9 23 bd 6d   stp	d9, d8, [sp, #-0x30]!
+0x185bd122c:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x185bd1230:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x185bd1234:  fd 83 00 91   add	fp, sp, #0x20
+0x185bd1238:  f3 03 00 aa   mov	x19, x0
+0x185bd123c:  49 44 94 94   bl	j__objc_sync_enter
+0x185bd1240:  88 40 30 f0   adrp	x8, 0x1e63e4000
+0x185bd1244:  08 99 8c b9   ldrsw	x8, [x8, #0xc98]
+0x185bd1248:  68 02 08 8b   add	x8, x19, x8
+0x185bd124c:  08 01 40 39   ldrb	w8, [x8]
+0x185bd1250:  68 01 18 37   tbnz	w8, #0x3, loc_185bd127c ; ⤵ 0x2c
+0x185bd1254:  22 41 30 f0   adrp	x2, 0x1e63f8000
+0x185bd1258:  42 2c 25 91   add	x2, x2, #0x94b ; data_1e63f894b (AppKit/__DATA_DIRTY.__bss)
+0x185bd125c:  48 fc df 08   ldarb	w8, [x2]
+0x185bd1260:  1f 05 00 71   cmp	w8, #0x1
+0x185bd1264:  21 02 00 54   b.ne	loc_185bd12a8 ; ⤵ 0x44
+0x185bd1268:  28 41 30 f0   adrp	x8, 0x1e63f8000
+0x185bd126c:  08 a1 25 91   add	x8, x8, #0x968 ; data_1e63f8968 (AppKit/__DATA_DIRTY.__bss)
+0x185bd1270:  08 fd df c8   ldar	x8, [x8]
+0x185bd1274:  08 01 67 9e   fmov	d8, x8
+0x185bd1278:  05 00 00 14   b	loc_185bd128c ; ⤵ 0x14
+0x185bd127c:  ; loc_185bd127c
+0x185bd127c:  88 40 30 f0   adrp	x8, 0x1e63e4000
+0x185bd1280:  08 95 8c b9   ldrsw	x8, [x8, #0xc94]
+0x185bd1284:  68 02 08 8b   add	x8, x19, x8
+0x185bd1288:  08 01 40 fd   ldr	d8, [x8]
+0x185bd128c:  ; loc_185bd128c
+0x185bd128c:  e0 03 13 aa   mov	x0, x19
+0x185bd1290:  38 44 94 94   bl	j__objc_sync_exit
+0x185bd1294:  00 1d a8 4e   mov	v0.16b, v8.16b
+0x185bd1298:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x185bd129c:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x185bd12a0:  e9 23 c3 6c   ldp	d9, d8, [sp], #0x30
+0x185bd12a4:  ff 0f 5f d6   retab
+0x185bd12a8:  ; loc_185bd12a8
+0x185bd12a8:  c0 47 31 90   adrp	x0, 0x1e84c9000
+0x185bd12ac:  00 40 25 91   add	x0, x0, #0x950 ; "NSPressGestureRecognizerAllowableMovement"
+0x185bd12b0:  00 90 62 1e   fmov	d0, #5.00000000
+0x185bd12b4:  41 74 00 91   add	x1, x2, #0x1d
+0x185bd12b8:  03 00 80 d2   mov	x3, #0
+0x185bd12bc:  14 f5 cc 97   bl	__NSGetCGFloatAppConfig
+0x185bd12c0:  08 1c a0 4e   mov	v8.16b, v0.16b
+0x185bd12c4:  f2 ff ff 17   b	loc_185bd128c ; ⤴ -0x38
+0x185bd12c8:  f4 03 00 aa   mov	x20, x0
+0x185bd12cc:  e0 03 13 aa   mov	x0, x19
+0x185bd12d0:  28 44 94 94   bl	j__objc_sync_exit
+0x185bd12d4:  e0 03 14 aa   mov	x0, x20
+0x185bd12d8:  6e 2b 94 94   bl	j___Unwind_Resume
+

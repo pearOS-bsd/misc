@@ -1,0 +1,86 @@
+### +[NSCursor pop]
+   • Loading symbol cache file...
+   • Locating symbol: +[NSCursor pop]
+
++[NSCursor pop]:
+0x1850de1f8:  7f 23 03 d5   pacibsp
+0x1850de1fc:  f6 57 bd a9   stp	x22, x21, [sp, #-0x30]!
+0x1850de200:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x1850de204:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x1850de208:  fd 83 00 91   add	fp, sp, #0x20
+0x1850de20c:  61 8e 00 90   adrp	x1, 0x1862aa000
+0x1850de210:  21 5c 11 91   add	x1, x1, #0x457 ; "/AppleInternal/Library/BuildRoots/4~CWGNugDnaGLhZtj9qprH45-y-Xwew1V4U9LG6uc/Library/Caches/com.apple.xbs/TemporaryDirectory.LvLSaU/Sources/AppKit/AppKit.subproj/NSCursor.m"
+0x1850de214:  c0 9d 80 52   mov	w0, #0x4ee
+0x1850de218:  18 a8 f7 97   bl	__NSAppKitLock
+0x1850de21c:  73 a2 2f b0   adrp	x19, 0x1e452b000
+0x1850de220:  60 46 40 f9   ldr	x0, [x19, #0x88] ; _cursorStack
+0x1850de224:  60 01 00 b4   cbz	x0, loc_1850de250 ; ⤵ 0x2c
+0x1850de228:  4a 92 bc 94   bl	0x188002b50
+0x1850de22c:  20 01 00 b4   cbz	x0, loc_1850de250 ; ⤵ 0x24
+0x1850de230:  60 46 40 f9   ldr	x0, [x19, #0x88]
+0x1850de234:  2b b6 bc 94   bl	0x18800bae0
+0x1850de238:  60 46 40 f9   ldr	x0, [x19, #0x88]
+0x1850de23c:  59 b0 bc 94   bl	0x18800a3a0
+0x1850de240:  f3 03 00 aa   mov	x19, x0
+0x1850de244:  14 00 80 52   mov	w20, #0
+0x1850de248:  35 00 80 52   mov	w21, #0x1
+0x1850de24c:  04 00 00 14   b	loc_1850de25c ; ⤵ 0x10
+0x1850de250:  ; loc_1850de250
+0x1850de250:  13 00 80 d2   mov	x19, #0
+0x1850de254:  14 00 80 52   mov	w20, #0
+0x1850de258:  15 00 80 52   mov	w21, #0
+0x1850de25c:  ; loc_1850de25c
+0x1850de25c:  61 8e 00 90   adrp	x1, 0x1862aa000
+0x1850de260:  21 5c 11 91   add	x1, x1, #0x457 ; "/AppleInternal/Library/BuildRoots/4~CWGNugDnaGLhZtj9qprH45-y-Xwew1V4U9LG6uc/Library/Caches/com.apple.xbs/TemporaryDirectory.LvLSaU/Sources/AppKit/AppKit.subproj/NSCursor.m"
+0x1850de264:  80 9e 80 52   mov	w0, #0x4f4
+0x1850de268:  b2 b1 f7 97   bl	__NSAppKitUnlock
+0x1850de26c:  74 03 00 35   cbnz	w20, loc_1850de2d8 ; ⤵ 0x6c
+0x1850de270:  75 01 00 34   cbz	w21, loc_1850de29c ; ⤵ 0x2c
+0x1850de274:  d3 01 00 b4   cbz	x19, loc_1850de2ac ; ⤵ 0x38
+0x1850de278:  e0 03 13 aa   mov	x0, x19
+0x1850de27c:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x1850de280:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x1850de284:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x1850de288:  ff 23 03 d5   autibsp
+0x1850de28c:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x1850de290:  50 00 f0 b6   tbz	x16, #0x3e, loc_1850de298 ; ⤵ 0x8
+0x1850de294:  20 8e 38 d4   brk	#0xc471
+0x1850de298:  ; loc_1850de298
+0x1850de298:  1e 9a bc 14   b	0x188004b10
+0x1850de29c:  ; loc_1850de29c
+0x1850de29c:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x1850de2a0:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x1850de2a4:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x1850de2a8:  ff 0f 5f d6   retab
+0x1850de2ac:  ; loc_1850de2ac
+0x1850de2ac:  a8 98 30 d0   adrp	x8, 0x1e63f4000
+0x1850de2b0:  08 e1 0b 91   add	x8, x8, #0x2f8 ; _NSApp
+0x1850de2b4:  00 01 40 f9   ldr	x0, [x8]
+0x1850de2b8:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x1850de2bc:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x1850de2c0:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x1850de2c4:  ff 23 03 d5   autibsp
+0x1850de2c8:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x1850de2cc:  50 00 f0 b6   tbz	x16, #0x3e, loc_1850de2d4 ; ⤵ 0x8
+0x1850de2d0:  20 8e 38 d4   brk	#0xc471
+0x1850de2d4:  ; loc_1850de2d4
+0x1850de2d4:  2b f7 bd 14   b	0x18805bf80
+0x1850de2d8:  ; loc_1850de2d8
+0x1850de2d8:  be 0f c0 94   bl	j__objc_exception_rethrow
+0x1850de2dc:  20 00 20 d4   brk	#0x1
+0x1850de2e0:  f3 03 00 aa   mov	x19, x0
+0x1850de2e4:  03 00 00 14   b	loc_1850de2f0 ; ⤵ 0xc
+0x1850de2e8:  f3 03 00 aa   mov	x19, x0
+0x1850de2ec:  54 00 00 34   cbz	w20, loc_1850de2f4 ; ⤵ 0x8
+0x1850de2f0:  ; loc_1850de2f0
+0x1850de2f0:  90 ff bf 94   bl	j__objc_end_catch
+0x1850de2f4:  ; loc_1850de2f4
+0x1850de2f4:  e0 03 13 aa   mov	x0, x19
+0x1850de2f8:  66 f7 bf 94   bl	j___Unwind_Resume
+0x1850de2fc:  99 ff bf 94   bl	j__objc_terminate
+0x1850de300:  84 ff bf 94   bl	j__objc_begin_catch
+0x1850de304:  13 00 80 d2   mov	x19, #0
+0x1850de308:  15 00 80 52   mov	w21, #0
+0x1850de30c:  34 00 80 52   mov	w20, #0x1
+0x1850de310:  d3 ff ff 17   b	loc_1850de25c ; ⤴ -0xb4
+

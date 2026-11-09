@@ -1,0 +1,22 @@
+### -[NSPanGestureRecognizer buttonMask]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSPanGestureRecognizer buttonMask]
+
+-[NSPanGestureRecognizer buttonMask]:
+0x185134e40:  7f 23 03 d5   pacibsp
+0x185134e44:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x185134e48:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x185134e4c:  fd 43 00 91   add	fp, sp, #0x10
+0x185134e50:  f3 03 00 aa   mov	x19, x0
+0x185134e54:  43 b5 be 94   bl	j__objc_sync_enter
+0x185134e58:  68 95 30 b0   adrp	x8, 0x1e63e1000
+0x185134e5c:  08 85 82 b9   ldrsw	x8, [x8, #0x284]
+0x185134e60:  68 02 08 8b   add	x8, x19, x8
+0x185134e64:  14 01 40 f9   ldr	x20, [x8]
+0x185134e68:  e0 03 13 aa   mov	x0, x19
+0x185134e6c:  41 b5 be 94   bl	j__objc_sync_exit
+0x185134e70:  e0 03 14 aa   mov	x0, x20
+0x185134e74:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x185134e78:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x185134e7c:  ff 0f 5f d6   retab
+

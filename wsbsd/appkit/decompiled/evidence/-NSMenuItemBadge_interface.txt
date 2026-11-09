@@ -1,0 +1,15 @@
+@interface NSMenuItemBadge : NSObject <NSCopying> {
+    /* instance variables */
+    B _usesPreferredLocalization;
+    q _itemCount;
+    q _type;
+    @"NSString" _customStringValue;
+    @"NSString" _stringValue;
+}
+
+@property (T@"NSString",N,C) stringValue;
+@property (TB,N,R) isEmpty;
+@property (T@"NSString",C,V_customStringValue) _customStringValue;
+@property (Tq,R,V_itemCount) itemCount;
+@property (Tq,R,V_type) type;
+@property (T@"NSString",R,V_stringValue) stringValue;

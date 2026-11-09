@@ -1,0 +1,17 @@
+@interface NSGridRow : NSObject <NSCoding> {
+    /* instance variables */
+    @"NSGridView" _owningGridView;
+    @"NSMutableArray" _cells;
+    @"NSLayoutYAxisAnchor" _top;
+    q _yPlacement;
+    q _rowAlignment;
+    q _hasContentInGeneration;
+    d _height;
+    d _topPadding;
+    d _bottomPadding;
+    B _hidden;
+}
+
+@property (T@"NSGridView",R,W) gridView;
+@property (Tq,R) numberOfCells;
+@property (Tq) yPlacement;

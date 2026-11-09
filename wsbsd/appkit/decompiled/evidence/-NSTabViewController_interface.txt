@@ -1,0 +1,15 @@
+@interface NSTabViewController : NSViewController <NSTabViewDelegate, NSToolbarDelegate> {
+    /* instance variables */
+    @"NSTabView" _tabView;
+    @ _tabViewControllerPrivateData;
+    {?="_changingSelection"b1"_addingInitialTabViewItems"b1"_tabBarIsDrivingTabMove"b1"__extra"b29} _tabViewControllerFlags;
+}
+
+@property (Tq) tabStyle;
+@property (T@"NSTabView",&,V_tabView) tabView;
+@property (TQ) transitionOptions;
+@property (TB) canPropagateSelectedChildViewControllerTitle;
+@property (T@"NSArray",C) tabViewItems;
+@property (Tq) selectedTabViewItemIndex;
+@property (TQ,R) hash;
+@property (T#,R) superclass;

@@ -1,0 +1,8 @@
+### -[NSSound volume]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSSound volume]
+
+-[NSSound volume]:
+0x185730f98:  00 48 40 bd   ldr	s0, [x0, #0x48]
+0x185730f9c:  c0 03 5f d6   ret
+

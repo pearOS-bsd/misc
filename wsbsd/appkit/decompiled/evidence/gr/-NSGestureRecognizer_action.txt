@@ -1,0 +1,22 @@
+### -[NSGestureRecognizer action]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSGestureRecognizer action]
+
+-[NSGestureRecognizer action]:
+0x184f63d10:  10 14 40 f9   ldr	x16, [x0, #0x28]
+0x184f63d14:  70 01 00 b4   cbz	x16, loc_184f63d40 ; ⤵ 0x2c
+0x184f63d18:  11 a0 00 91   add	x17, x0, #0x28
+0x184f63d1c:  51 f8 ea f2   movk	x17, #0x57c2, lsl #0x30
+0x184f63d20:  30 1e c1 da   autdb	x16, x17
+0x184f63d24:  f1 03 10 aa   mov	x17, x16
+0x184f63d28:  f1 47 c1 da   xpacd	x17
+0x184f63d2c:  1f 02 11 eb   cmp	x16, x17
+0x184f63d30:  40 00 00 54   b.eq	loc_184f63d38 ; ⤵ 0x8
+0x184f63d34:  60 8e 38 d4   brk	#0xc473
+0x184f63d38:  ; loc_184f63d38
+0x184f63d38:  e0 03 10 aa   mov	x0, x16
+0x184f63d3c:  c0 03 5f d6   ret
+0x184f63d40:  ; loc_184f63d40
+0x184f63d40:  00 00 80 d2   mov	x0, #0
+0x184f63d44:  c0 03 5f d6   ret
+

@@ -1,0 +1,15 @@
+### -[NSSound setVolume:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSSound setVolume:]
+
+-[NSSound setVolume:]:
+0x1851cf408:  01 10 2e 1e   fmov	s1, #1.00000000
+0x1851cf40c:  08 20 20 1e   fcmp	s0, #0.00000000
+0x1851cf410:  02 e4 00 6f   movi	v2.2d, #0
+0x1851cf414:  02 5c 22 1e   fcsel	s2, s0, s2, pl
+0x1851cf418:  00 20 21 1e   fcmp	s0, s1
+0x1851cf41c:  20 cc 22 1e   fcsel	s0, s1, s2, gt
+0x1851cf420:  00 48 00 bd   str	s0, [x0, #0x48]
+0x1851cf424:  00 14 40 f9   ldr	x0, [x0, #0x28]
+0x1851cf428:  ee aa bb 14   b	0x1880b9fe0
+

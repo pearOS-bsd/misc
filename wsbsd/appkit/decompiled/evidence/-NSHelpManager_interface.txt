@@ -1,0 +1,13 @@
+@interface NSHelpManager : NSObject {
+    /* instance variables */
+    @"NSMapTable" _helpMapTable;
+    @"NSMapTable" _keyMapTable;
+    @"NSMapTable" _bundleMapTable;
+    @"NSWindow" _helpWindow;
+    @"NSWindow" _shadowWindow;
+    @"NSWindow" _evtWindow;
+    @"NSBundle" _helpBundle;
+}
+
+/* class methods */
++[NSHelpManager _activateHelpModeBasedOnEvent:];

@@ -1,0 +1,41 @@
+### -[NSPressGestureRecognizer setAllowableMovement:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSPressGestureRecognizer setAllowableMovement:]
+
+-[NSPressGestureRecognizer setAllowableMovement:]:
+0x18513cf20:  7f 23 03 d5   pacibsp
+0x18513cf24:  e9 23 bd 6d   stp	d9, d8, [sp, #-0x30]!
+0x18513cf28:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x18513cf2c:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x18513cf30:  fd 83 00 91   add	fp, sp, #0x20
+0x18513cf34:  08 1c a0 4e   mov	v8.16b, v0.16b
+0x18513cf38:  f3 03 00 aa   mov	x19, x0
+0x18513cf3c:  09 95 be 94   bl	j__objc_sync_enter
+0x18513cf40:  48 95 30 90   adrp	x8, 0x1e63e4000
+0x18513cf44:  08 51 32 91   add	x8, x8, #0xc94
+0x18513cf48:  09 05 80 b9   ldrsw	x9, [x8, #0x4]
+0x18513cf4c:  69 02 09 8b   add	x9, x19, x9
+0x18513cf50:  2a 01 40 b9   ldr	w10, [x9]
+0x18513cf54:  4a 01 1d 32   orr	w10, w10, #0x8
+0x18513cf58:  2a 01 00 b9   str	w10, [x9]
+0x18513cf5c:  08 01 80 b9   ldrsw	x8, [x8]
+0x18513cf60:  68 02 08 8b   add	x8, x19, x8
+0x18513cf64:  08 01 00 fd   str	d8, [x8]
+0x18513cf68:  e0 03 13 aa   mov	x0, x19
+0x18513cf6c:  65 bc bc 94   bl	0x18806c100
+0x18513cf70:  e0 03 13 aa   mov	x0, x19
+0x18513cf74:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x18513cf78:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x18513cf7c:  e9 23 c3 6c   ldp	d9, d8, [sp], #0x30
+0x18513cf80:  ff 23 03 d5   autibsp
+0x18513cf84:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x18513cf88:  50 00 f0 b6   tbz	x16, #0x3e, loc_18513cf90 ; ⤵ 0x8
+0x18513cf8c:  20 8e 38 d4   brk	#0xc471
+0x18513cf90:  ; loc_18513cf90
+0x18513cf90:  f8 94 be 14   b	j__objc_sync_exit
+0x18513cf94:  f4 03 00 aa   mov	x20, x0
+0x18513cf98:  e0 03 13 aa   mov	x0, x19
+0x18513cf9c:  f5 94 be 94   bl	j__objc_sync_exit
+0x18513cfa0:  e0 03 14 aa   mov	x0, x20
+0x18513cfa4:  3b 7c be 94   bl	j___Unwind_Resume
+

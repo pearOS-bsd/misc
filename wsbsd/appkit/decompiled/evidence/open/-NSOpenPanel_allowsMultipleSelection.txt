@@ -1,0 +1,20 @@
+### -[NSOpenPanel allowsMultipleSelection]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSOpenPanel allowsMultipleSelection]
+
+-[NSOpenPanel allowsMultipleSelection]:
+0x185af748c:  7f 23 03 d5   pacibsp
+0x185af7490:  ff 83 00 d1   sub	sp, sp, #0x20
+0x185af7494:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x185af7498:  fd 43 00 91   add	fp, sp, #0x10
+0x185af749c:  e8 61 2d b0   adrp	x8, 0x1e0734000
+0x185af74a0:  08 dd 45 f9   ldr	x8, [x8, #0xbb8] ; NSOpenPanel
+0x185af74a4:  e0 23 00 a9   stp	x0, x8, [sp]
+0x185af74a8:  28 cc 37 f0   adrp	x8, 0x1f547e000
+0x185af74ac:  01 a9 0c 91   add	x1, x8, #0x32a ; allowsMultipleSelection
+0x185af74b0:  e0 03 00 91   mov	x0, sp
+0x185af74b4:  c3 98 97 94   bl	j__objc_msgSendSuper2
+0x185af74b8:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x185af74bc:  ff 83 00 91   add	sp, sp, #0x20
+0x185af74c0:  ff 0f 5f d6   retab
+

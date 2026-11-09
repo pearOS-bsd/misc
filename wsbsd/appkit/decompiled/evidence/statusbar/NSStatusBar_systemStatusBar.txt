@@ -1,0 +1,30 @@
+### +[NSStatusBar systemStatusBar]
+   • Loading symbol cache file...
+   • Locating symbol: +[NSStatusBar systemStatusBar]
+
++[NSStatusBar systemStatusBar]:
+0x18510ae40:  88 97 30 b0   adrp	x8, 0x1e63fb000
+0x18510ae44:  08 3d 40 f9   ldr	x8, [x8, #0x78] ; data_1e63fb078 (AppKit/__DATA_DIRTY.__bss)
+0x18510ae48:  1f 05 00 b1   cmn	x8, #0x1
+0x18510ae4c:  e1 00 00 54   b.ne	loc_18510ae68 ; ⤵ 0x1c
+0x18510ae50:  ; loc_18510ae50
+0x18510ae50:  88 97 30 b0   adrp	x8, 0x1e63fb000
+0x18510ae54:  00 39 40 f9   ldr	x0, [x8, #0x70] ; __MergedGlobals
+0x18510ae58:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x18510ae5c:  50 00 f0 b6   tbz	x16, #0x3e, loc_18510ae64 ; ⤵ 0x8
+0x18510ae60:  20 8e 38 d4   brk	#0xc471
+0x18510ae64:  ; loc_18510ae64
+0x18510ae64:  fb 6b bf 14   b	j__objc_retainAutoreleaseReturnValue
+0x18510ae68:  ; loc_18510ae68
+0x18510ae68:  7f 23 03 d5   pacibsp
+0x18510ae6c:  fd 7b bf a9   stp	fp, lr, [sp, #-0x10]!
+0x18510ae70:  fd 03 00 91   mov	fp, sp
+0x18510ae74:  80 97 30 b0   adrp	x0, 0x1e63fb000
+0x18510ae78:  00 e0 01 91   add	x0, x0, #0x78 ; data_1e63fb078 (AppKit/__DATA_DIRTY.__bss)
+0x18510ae7c:  41 99 31 f0   adrp	x1, 0x1e8435000
+0x18510ae80:  21 40 33 91   add	x1, x1, #0xcd0 ; ___block_literal_global
+0x18510ae84:  f7 5a bf 94   bl	j__dispatch_once
+0x18510ae88:  fd 7b c1 a8   ldp	fp, lr, [sp], #0x10
+0x18510ae8c:  ff 23 03 d5   autibsp
+0x18510ae90:  f0 ff ff 17   b	loc_18510ae50 ; ⤴ -0x40
+

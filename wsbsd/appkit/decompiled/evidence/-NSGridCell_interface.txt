@@ -1,0 +1,17 @@
+@interface NSGridCell : NSObject <NSCoding> {
+    /* instance variables */
+    @"NSGridRow" _row;
+    @"NSGridColumn" _column;
+    @"NSView" _contentView;
+    @"NSGridCell" _headOfMergedCell;
+    @"NSArray" _customPlacementConstraints;
+    q _xPlacement;
+    q _yPlacement;
+    q _rowAlignment;
+}
+
+@property (T@"NSView",&,V_contentView) contentView;
+@property (T@"NSGridRow",R,W,V_row) row;
+@property (T@"NSGridColumn",R,W,V_column) column;
+@property (Tq) xPlacement;
+@property (Tq) yPlacement;

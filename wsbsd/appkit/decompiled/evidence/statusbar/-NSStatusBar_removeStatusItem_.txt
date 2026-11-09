@@ -1,0 +1,7 @@
+### -[NSStatusBar removeStatusItem:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSStatusBar removeStatusItem:]
+
+-[NSStatusBar removeStatusItem:]:
+0x18510afa4:  1f 3f bd 14   b	0x18805ac20
+

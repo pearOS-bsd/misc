@@ -1,0 +1,15 @@
+@interface NSSplitViewController : NSViewController <NSSplitViewDelegate, NSUserInterfaceValidations> {
+    /* instance variables */
+    @"NSSplitView" _splitView;
+    @"NSMutableArray" _splitViewItems;
+    d _minimumThicknessForInlineSidebars;
+    @ _localEdgeHoverEventMonitor;
+    @ _globalEdgeHoverEventMonitor;
+    Q _liveResizeCounter;
+    @"NSLayoutConstraint" _windowThicknessAnimationConstraint;
+    {?="hidesFirstDivider"b1"hidesLastDivider"b1"settingSplitViewItems"b1"hasItemToEdgeReveal"b1"considersWindowMinSizeWhenGrowing"b1} _flags;
+}
+
+@property (TB) considersWindowMinSizeWhenGrowing;
+@property (T@"NSSplitView",&) splitView;
+@property (T@"NSArray",C) splitViewItems;

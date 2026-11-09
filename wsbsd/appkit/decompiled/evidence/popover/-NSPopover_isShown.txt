@@ -1,0 +1,12 @@
+### -[NSPopover isShown]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSPopover isShown]
+
+-[NSPopover isShown]:
+0x184f9b2a0:  68 ab 2f b0   adrp	x8, 0x1e4508000
+0x184f9b2a4:  08 71 8a b9   ldrsw	x8, [x8, #0xa70] ; _OBJC_IVAR_$_NSPopover._flags
+0x184f9b2a8:  08 00 08 8b   add	x8, x0, x8
+0x184f9b2ac:  08 01 40 39   ldrb	w8, [x8]
+0x184f9b2b0:  00 11 04 53   ubfx	w0, w8, #0x4, #0x1
+0x184f9b2b4:  c0 03 5f d6   ret
+

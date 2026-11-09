@@ -1,0 +1,9 @@
+### -[NSSavePanel showsHiddenFiles]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSSavePanel showsHiddenFiles]
+
+-[NSSavePanel showsHiddenFiles]:
+0x185b250bc:  42 4b 31 d0   adrp	x2, 0x1e848f000
+0x185b250c0:  42 c0 08 91   add	x2, x2, #0x230 ; "showsHiddenFiles"
+0x185b250c4:  cb 55 94 14   b	0x18803a7f0
+

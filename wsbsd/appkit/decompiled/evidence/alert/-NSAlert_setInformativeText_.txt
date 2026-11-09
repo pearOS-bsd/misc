@@ -1,0 +1,30 @@
+### -[NSAlert setInformativeText:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSAlert setInformativeText:]
+
+-[NSAlert setInformativeText:]:
+0x185192064:  7f 23 03 d5   pacibsp
+0x185192068:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x18519206c:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x185192070:  fd 43 00 91   add	fp, sp, #0x10
+0x185192074:  f3 03 02 aa   mov	x19, x2
+0x185192078:  f4 03 00 aa   mov	x20, x0
+0x18519207c:  c8 80 2d 90   adrp	x8, 0x1e01aa000
+0x185192080:  00 49 40 f9   ldr	x0, [x8, #0x90] ; _ptr.NSAttributedString
+0x185192084:  b3 2d bd 94   bl	j__objc_alloc
+0x185192088:  e2 03 13 aa   mov	x2, x19
+0x18519208c:  65 c6 b9 94   bl	0x188003a20
+0x185192090:  f3 03 00 aa   mov	x19, x0
+0x185192094:  e0 03 14 aa   mov	x0, x20
+0x185192098:  e2 03 13 aa   mov	x2, x19
+0x18519209c:  85 3d bc 94   bl	0x1880a16b0
+0x1851920a0:  e0 03 13 aa   mov	x0, x19
+0x1851920a4:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x1851920a8:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x1851920ac:  ff 23 03 d5   autibsp
+0x1851920b0:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x1851920b4:  50 00 f0 b6   tbz	x16, #0x3e, loc_1851920bc ; ⤵ 0x8
+0x1851920b8:  20 8e 38 d4   brk	#0xc471
+0x1851920bc:  ; loc_1851920bc
+0x1851920bc:  e9 2a bd 14   b	j__objc_release_x0
+

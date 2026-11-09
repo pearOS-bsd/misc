@@ -1,0 +1,71 @@
+@interface NSScreen : NSObject <_NSDisplayLinkInfoProvider, _NSDisplayLinkCreatingWithOptions> {
+    /* instance variables */
+     _state;
+}
+
+@property (T@"<_NSDisplayLinkInfoProvider>",R) _parentDisplayLinkInfoProvider;
+@property (TB,R) _shouldPauseDisplayLink;
+@property (Ti,?,R) _displayIDForDisplayLink;
+@property (TQ,R) hash;
+@property (T#,R) superclass;
+@property (T@"NSString",R,C) description;
+@property (T@"NSString",?,R,C) debugDescription;
+@property (Tq,N,R) hash;
+@property (T@"NSString",N,R) debugDescription;
+@property (Tq,N,R) _screenNumber;
+@property (Ti,N,R) _displayID;
+@property (Ti,N,R) depth;
+@property (T@"NSColorSpace",N,R) colorSpace;
+@property (T{CGRect={CGPoint=dd}{CGSize=dd}},N,R) frame;
+@property (Td,N,R) backingScaleFactor;
+@property (Td,N,R) maximumExtendedDynamicRangeColorComponentValue;
+@property (Td,N,R) maximumPotentialExtendedDynamicRangeColorComponentValue;
+@property (Td,N,R) maximumReferenceExtendedDynamicRangeColorComponentValue;
+@property (Td,N,R) _maximumExtendedDynamicRangeColorComponentValueWithoutObserving;
+@property (Td,N,R) _maximumPotentialExtendedDynamicRangeColorComponentValueWithoutObserving;
+@property (Td,N,R) _maximumReferenceExtendedDynamicRangeColorComponentValueWithoutObserving;
+@property (T@"NSString",N,R) _UUIDString;
+@property (Tq,N,R) _dockOrientation;
+@property (TB,N,R) _dockHidden;
+@property (T{CGRect={CGPoint=dd}{CGSize=dd}},N,R) _dockRect;
+@property (TI,N,R) _fontAntialiasingFlags;
+@property (Td,N,R) _restingMenuBarHeight;
+@property (Td,N,R) _revealedMenuBarHeight;
+@property (Td,N,R) _layoutMenuBarHeight;
+@property (Td,N,R) _layoutForcingRevealedMenuBarHeight;
+@property (T{CGRect={CGPoint=dd}{CGSize=dd}},N,R) _layoutFrame;
+@property (T{CGRect={CGPoint=dd}{CGSize=dd}},N,R) visibleFrame;
+@property (T{NSEdgeInsets=dddd},N,R) safeAreaInsets;
+@property (T@"NSDictionary",N,R) deviceDescription;
+@property (Tr^i,N,R) supportedWindowDepths;
+@property (TB,N,R) _touchScreen;
+@property (TQ,N,R) touchCapabilities;
+@property (TB,N,R) _isActiveScreen;
+@property (T@"NSString",N,R) localizedName;
+@property (Tq,N,R) maximumFramesPerSecond;
+@property (Td,N,R) minimumRefreshInterval;
+@property (Td,N,R) maximumRefreshInterval;
+@property (Td,N,R) displayUpdateGranularity;
+@property (Td,N,R) lastDisplayUpdateTimestamp;
+@property (T{CGRect={CGPoint=dd}{CGSize=dd}},N,R) auxiliaryTopLeftArea;
+@property (T{CGRect={CGPoint=dd}{CGSize=dd}},N,R) auxiliaryTopRightArea;
+@property (TQ,N,R) _stageStyle;
+@property (T{CGRect={CGPoint=dd}{CGSize=dd}},N,R) _stageFrame;
+@property (TQ,N,R) _displayCapabilities;
+@property (T{CGRect={CGPoint=dd}{CGSize=dd}},N,R) _dockRectUnlessHidden;
+@property (T@"NSString",N,R) _hwModel;
+@property (TI,N,R) CGDirectDisplayID;
+@property (TB,N,R) _shouldConstrainSystemUIToSDR;
+
+/* class methods */
++[NSScreen screens];
++[NSScreen _screenAtPoint:];
++[NSScreen _setFallbackBackingScaleFactor:];
++[NSScreen _ambientOriginatingScreen];
++[NSScreen _backingScaleFactorForScreen:];
++[NSScreen _captureAllScreens:];
++[NSScreen _displayChangeSeed];
++[NSScreen _displayLinkInfoRequiresMainThread];
++[NSScreen _fallbackBackingScaleFactor];
++[NSScreen _focusCoordinateSpace];
++[NSScreen _localizedNamesForDisplayIDs:];

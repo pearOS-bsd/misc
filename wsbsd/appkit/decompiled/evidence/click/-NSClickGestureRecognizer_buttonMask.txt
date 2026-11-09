@@ -1,0 +1,22 @@
+### -[NSClickGestureRecognizer buttonMask]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSClickGestureRecognizer buttonMask]
+
+-[NSClickGestureRecognizer buttonMask]:
+0x185091ea0:  7f 23 03 d5   pacibsp
+0x185091ea4:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x185091ea8:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x185091eac:  fd 43 00 91   add	fp, sp, #0x10
+0x185091eb0:  f3 03 00 aa   mov	x19, x0
+0x185091eb4:  2b 41 c1 94   bl	j__objc_sync_enter
+0x185091eb8:  88 9a 30 f0   adrp	x8, 0x1e63e4000
+0x185091ebc:  08 09 8d b9   ldrsw	x8, [x8, #0xd08]
+0x185091ec0:  68 02 08 8b   add	x8, x19, x8
+0x185091ec4:  14 01 40 f9   ldr	x20, [x8]
+0x185091ec8:  e0 03 13 aa   mov	x0, x19
+0x185091ecc:  29 41 c1 94   bl	j__objc_sync_exit
+0x185091ed0:  e0 03 14 aa   mov	x0, x20
+0x185091ed4:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x185091ed8:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x185091edc:  ff 0f 5f d6   retab
+

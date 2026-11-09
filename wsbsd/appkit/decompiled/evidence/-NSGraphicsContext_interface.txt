@@ -1,0 +1,27 @@
+@interface NSGraphicsContext : NSObject
+
+@property (TB) shouldAntialias;
+@property (TQ) imageInterpolation;
+@property (T{CGPoint=dd}) patternPhase;
+@property (TQ) compositingOperation;
+@property (Tq) colorRenderingIntent;
+@property (T@"CIContext",R) CIContext;
+@property (T^v,R) graphicsPort;
+@property (T@"NSDictionary",R,C) attributes;
+@property (TB,R,GisDrawingToScreen) drawingToScreen;
+@property (T^{CGContext=},R) CGContext;
+@property (TB,R,GisFlipped) flipped;
+
+/* class methods */
++[NSGraphicsContext setCurrentContext:];
++[NSGraphicsContext currentContext];
++[NSGraphicsContext restoreGraphicsState];
++[NSGraphicsContext saveGraphicsState];
++[NSGraphicsContext isCurrentContextDrawingToScreen];
++[NSGraphicsContext _popGraphicsContext];
++[NSGraphicsContext _pushGraphicsContext:];
++[NSGraphicsContext colorFactory];
++[NSGraphicsContext configureGraphicsContextForCALayer:withCGContext:andRenderWithHandler:];
++[NSGraphicsContext currentContextDrawingToScreen];
++[NSGraphicsContext graphicsContextWithAttributes:];
++[NSGraphicsContext graphicsContextWithBitmapImageRep:];

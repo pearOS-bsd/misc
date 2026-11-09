@@ -1,0 +1,11 @@
+### -[NSVisualEffectView blendingMode]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSVisualEffectView blendingMode]
+
+-[NSVisualEffectView blendingMode]:
+0x184f1cc68:  48 af 2f f0   adrp	x8, 0x1e4507000
+0x184f1cc6c:  08 4d 81 b9   ldrsw	x8, [x8, #0x14c] ; _OBJC_IVAR_$_NSVisualEffectView._blendingMode
+0x184f1cc70:  08 00 08 8b   add	x8, x0, x8
+0x184f1cc74:  00 01 40 f9   ldr	x0, [x8]
+0x184f1cc78:  c0 03 5f d6   ret
+

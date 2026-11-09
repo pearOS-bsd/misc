@@ -1,0 +1,18 @@
+### -[NSRotationGestureRecognizer rotation]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSRotationGestureRecognizer rotation]
+
+-[NSRotationGestureRecognizer rotation]:
+0x1855ca1f0:  7f 23 03 d5   pacibsp
+0x1855ca1f4:  fd 7b bf a9   stp	fp, lr, [sp, #-0x10]!
+0x1855ca1f8:  fd 03 00 91   mov	fp, sp
+0x1855ca1fc:  99 4d ab 94   bl	0x18809d860
+0x1855ca200:  68 65 00 90   adrp	x8, 0x186276000
+0x1855ca204:  01 e5 43 fd   ldr	d1, [x8, #0x7c8]
+0x1855ca208:  00 08 61 1e   fmul	d0, d0, d1
+0x1855ca20c:  68 65 00 90   adrp	x8, 0x186276000
+0x1855ca210:  01 e9 43 fd   ldr	d1, [x8, #0x7d0]
+0x1855ca214:  00 18 61 1e   fdiv	d0, d0, d1
+0x1855ca218:  fd 7b c1 a8   ldp	fp, lr, [sp], #0x10
+0x1855ca21c:  ff 0f 5f d6   retab
+

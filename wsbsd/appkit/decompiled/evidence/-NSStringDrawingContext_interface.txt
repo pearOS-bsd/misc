@@ -1,0 +1,19 @@
+@interface NSStringDrawingContext : NSObject <NSLayoutManagerDelegate> {
+    /* instance variables */
+    d _minimumScaleFactor;
+    d _minimumTrackingAdjustment;
+    d _actualScaleFactor;
+    d _actualTrackingAdjustment;
+    {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}} _totalBounds;
+    @"CUICatalog" _CUICatalog;
+    @"CUIStyleEffectConfiguration" _CUIStyleEffects;
+    Q _numberOfLineFragments;
+    Q _maximumNumberOfLines;
+    d _baselineOffset;
+    d _scaledBaselineOffset;
+    d _scaledLineHeight;
+    d _firstBaselineOffset;
+    @ _layout;
+    {?="_wantsNumberOfLineFragments"b1"_wrapsForTruncationMode"b1"_wantsBaselineOffset"b1"_wantsScaledBaselineOffset"b1"_wantsScaledLineHeight"b1"_drawsDebugBaselines"b1"_wantsMultipleDeviceMetrics"b1"_cachesLayout"b1"_usesSimpleTextEffects"b1"_activeRenderers"b4"_applicationPlatformContext"b3} _sdcFlags;
+    B _hasTruncatedRanges;
+    @? _linkTextAttributesProvider;

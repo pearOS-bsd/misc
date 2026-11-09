@@ -1,0 +1,58 @@
+### -[NSCursor push]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSCursor push]
+
+-[NSCursor push]:
+0x185198250:  7f 23 03 d5   pacibsp
+0x185198254:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x185198258:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x18519825c:  fd 43 00 91   add	fp, sp, #0x10
+0x185198260:  f3 03 00 aa   mov	x19, x0
+0x185198264:  81 88 00 d0   adrp	x1, 0x1862aa000
+0x185198268:  21 5c 11 91   add	x1, x1, #0x457 ; "/AppleInternal/Library/BuildRoots/4~CWGNugDnaGLhZtj9qprH45-y-Xwew1V4U9LG6uc/Library/Caches/com.apple.xbs/TemporaryDirectory.LvLSaU/Sources/AppKit/AppKit.subproj/NSCursor.m"
+0x18519826c:  20 9c 80 52   mov	w0, #0x4e1
+0x185198270:  02 c0 f4 97   bl	__NSAppKitLock
+0x185198274:  94 9c 2f f0   adrp	x20, 0x1e452b000
+0x185198278:  80 46 40 f9   ldr	x0, [x20, #0x88] ; _cursorStack
+0x18519827c:  c0 00 00 b5   cbnz	x0, loc_185198294 ; ⤵ 0x18
+0x185198280:  28 80 2d 90   adrp	x8, 0x1e019c000
+0x185198284:  00 ad 42 f9   ldr	x0, [x8, #0x558] ; _ptr.NSMutableArray
+0x185198288:  ba 27 bd 94   bl	j__objc_allocWithZone
+0x18519828c:  09 ad b9 94   bl	0x1880036b0
+0x185198290:  80 46 00 f9   str	x0, [x20, #0x88]
+0x185198294:  ; loc_185198294
+0x185198294:  e2 03 13 aa   mov	x2, x19
+0x185198298:  56 a8 b9 94   bl	0x1880023f0
+0x18519829c:  14 00 80 52   mov	w20, #0
+0x1851982a0:  ; loc_1851982a0
+0x1851982a0:  81 88 00 d0   adrp	x1, 0x1862aa000
+0x1851982a4:  21 5c 11 91   add	x1, x1, #0x457 ; "/AppleInternal/Library/BuildRoots/4~CWGNugDnaGLhZtj9qprH45-y-Xwew1V4U9LG6uc/Library/Caches/com.apple.xbs/TemporaryDirectory.LvLSaU/Sources/AppKit/AppKit.subproj/NSCursor.m"
+0x1851982a8:  c0 9c 80 52   mov	w0, #0x4e6
+0x1851982ac:  a1 c9 f4 97   bl	__NSAppKitUnlock
+0x1851982b0:  34 01 00 35   cbnz	w20, loc_1851982d4 ; ⤵ 0x24
+0x1851982b4:  e0 03 13 aa   mov	x0, x19
+0x1851982b8:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x1851982bc:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x1851982c0:  ff 23 03 d5   autibsp
+0x1851982c4:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x1851982c8:  50 00 f0 b6   tbz	x16, #0x3e, loc_1851982d0 ; ⤵ 0x8
+0x1851982cc:  20 8e 38 d4   brk	#0xc471
+0x1851982d0:  ; loc_1851982d0
+0x1851982d0:  10 b2 b9 14   b	0x188004b10
+0x1851982d4:  ; loc_1851982d4
+0x1851982d4:  bf 27 bd 94   bl	j__objc_exception_rethrow
+0x1851982d8:  20 00 20 d4   brk	#0x1
+0x1851982dc:  f3 03 00 aa   mov	x19, x0
+0x1851982e0:  03 00 00 14   b	loc_1851982ec ; ⤵ 0xc
+0x1851982e4:  f3 03 00 aa   mov	x19, x0
+0x1851982e8:  54 00 00 34   cbz	w20, loc_1851982f0 ; ⤵ 0x8
+0x1851982ec:  ; loc_1851982ec
+0x1851982ec:  91 17 bd 94   bl	j__objc_end_catch
+0x1851982f0:  ; loc_1851982f0
+0x1851982f0:  e0 03 13 aa   mov	x0, x19
+0x1851982f4:  67 0f bd 94   bl	j___Unwind_Resume
+0x1851982f8:  9a 17 bd 94   bl	j__objc_terminate
+0x1851982fc:  85 17 bd 94   bl	j__objc_begin_catch
+0x185198300:  34 00 80 52   mov	w20, #0x1
+0x185198304:  e7 ff ff 17   b	loc_1851982a0 ; ⤴ -0x64
+

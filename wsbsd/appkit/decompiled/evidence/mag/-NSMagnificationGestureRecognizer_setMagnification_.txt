@@ -1,0 +1,11 @@
+### -[NSMagnificationGestureRecognizer setMagnification:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSMagnificationGestureRecognizer setMagnification:]
+
+-[NSMagnificationGestureRecognizer setMagnification:]:
+0x185376de8:  48 83 30 f0   adrp	x8, 0x1e63e1000
+0x185376dec:  08 c1 81 b9   ldrsw	x8, [x8, #0x1c0]
+0x185376df0:  08 00 08 8b   add	x8, x0, x8
+0x185376df4:  00 01 00 fd   str	d0, [x8]
+0x185376df8:  c0 03 5f d6   ret
+

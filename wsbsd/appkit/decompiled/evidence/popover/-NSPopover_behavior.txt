@@ -1,0 +1,11 @@
+### -[NSPopover behavior]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSPopover behavior]
+
+-[NSPopover behavior]:
+0x1851745c4:  88 93 30 90   adrp	x8, 0x1e63e4000
+0x1851745c8:  08 81 8b b9   ldrsw	x8, [x8, #0xb80]
+0x1851745cc:  08 00 08 8b   add	x8, x0, x8
+0x1851745d0:  00 01 40 f9   ldr	x0, [x8]
+0x1851745d4:  c0 03 5f d6   ret
+

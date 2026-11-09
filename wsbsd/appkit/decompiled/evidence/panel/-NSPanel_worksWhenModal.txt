@@ -1,0 +1,13 @@
+### -[NSPanel worksWhenModal]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSPanel worksWhenModal]
+
+-[NSPanel worksWhenModal]:
+0x185162518:  28 9d 2f 90   adrp	x8, 0x1e4506000
+0x18516251c:  08 81 30 91   add	x8, x8, #0xc20 ; _OBJC_IVAR_$_NSWindow._wFlags
+0x185162520:  08 01 80 b9   ldrsw	x8, [x8]
+0x185162524:  08 00 08 8b   add	x8, x0, x8
+0x185162528:  08 05 40 39   ldrb	w8, [x8, #0x1]
+0x18516252c:  00 19 06 53   ubfx	w0, w8, #0x6, #0x1
+0x185162530:  c0 03 5f d6   ret
+

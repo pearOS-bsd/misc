@@ -1,0 +1,17 @@
+@interface NSTextBlock : NSObject <NSSecureCoding, NSCopying> {
+    /* instance variables */
+    ^v _propVals;
+    Q _propMask;
+    Q _typeMask;
+    @ _primParamVal;
+    @ _otherParamVals;
+}
+
+@property (Td,R) contentWidth;
+@property (Tq,R) contentWidthValueType;
+@property (Tq) verticalAlignment;
+@property (T@"NSColor",C) backgroundColor;
+
+/* class methods */
++[NSTextBlock supportsSecureCoding];
++[NSTextBlock initialize];

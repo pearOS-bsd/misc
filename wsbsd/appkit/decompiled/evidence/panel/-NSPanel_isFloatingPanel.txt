@@ -1,0 +1,13 @@
+### -[NSPanel isFloatingPanel]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSPanel isFloatingPanel]
+
+-[NSPanel isFloatingPanel]:
+0x18521ab48:  68 97 2f 90   adrp	x8, 0x1e4506000
+0x18521ab4c:  08 81 30 91   add	x8, x8, #0xc20 ; _OBJC_IVAR_$_NSWindow._wFlags
+0x18521ab50:  08 01 80 b9   ldrsw	x8, [x8]
+0x18521ab54:  08 00 08 8b   add	x8, x0, x8
+0x18521ab58:  08 09 40 39   ldrb	w8, [x8, #0x2]
+0x18521ab5c:  00 19 06 53   ubfx	w0, w8, #0x6, #0x1
+0x18521ab60:  c0 03 5f d6   ret
+

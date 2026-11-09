@@ -1,0 +1,15 @@
+@interface NSPasteboardItem : NSObject <_NSPasteboardPromiseProviderAgency, NSPasteboardWriting_Private, NSPasteboardWriting, NSPasteboardReading> {
+    /* instance variables */
+    @"NSPasteboard" _pasteboard;
+    Q _index;
+    q _gen;
+    @ _auxObject;
+}
+
+@property (T@"NSArray",R,C) types;
+@property (TQ,R) hash;
+@property (T#,R) superclass;
+@property (T@"NSString",R,C) description;
+@property (T@"NSString",?,R,C) debugDescription;
+
+/* class methods */

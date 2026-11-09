@@ -1,0 +1,27 @@
+### +[NSCursor currentCursor]
+   • Loading symbol cache file...
+   • Locating symbol: +[NSCursor currentCursor]
+
++[NSCursor currentCursor]:
+0x1851592f8:  08 95 30 90   adrp	x8, 0x1e63f9000
+0x1851592fc:  00 01 47 f9   ldr	x0, [x8, #0xe00] ; data_1e63f9e00 (AppKit/__DATA_DIRTY.__bss)
+0x185159300:  40 00 00 b4   cbz	x0, loc_185159308 ; ⤵ 0x8
+0x185159304:  c0 03 5f d6   ret
+0x185159308:  ; loc_185159308
+0x185159308:  7f 23 03 d5   pacibsp
+0x18515930c:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x185159310:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x185159314:  fd 43 00 91   add	fp, sp, #0x10
+0x185159318:  13 95 30 90   adrp	x19, 0x1e63f9000
+0x18515931c:  60 6e 46 f9   ldr	x0, [x19, #0xcd8] ; data_1e63f9cd8 (AppKit/__DATA_DIRTY.__bss)
+0x185159320:  a0 00 00 b5   cbnz	x0, loc_185159334 ; ⤵ 0x14
+0x185159324:  08 af 2d d0   adrp	x8, 0x1e073b000
+0x185159328:  00 89 40 f9   ldr	x0, [x8, #0x110] ; __got.class_NSCursor
+0x18515932c:  25 e2 bb 94   bl	0x188051bc0
+0x185159330:  60 6e 46 f9   ldr	x0, [x19, #0xcd8]
+0x185159334:  ; loc_185159334
+0x185159334:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x185159338:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x18515933c:  ff 23 03 d5   autibsp
+0x185159340:  c0 03 5f d6   ret
+

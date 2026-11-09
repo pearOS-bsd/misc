@@ -1,0 +1,15 @@
+@interface NSTableViewRowAction : NSObject <NSCopying> {
+    /* instance variables */
+    q _style;
+    @"NSString" _title;
+    @? _handler;
+    @"NSColor" _backgroundColor;
+    @"NSImage" _image;
+    @"NSMenu" _menu;
+    B _allowsFullSwipe;
+}
+
+@property (T@?,R,N,G_handler,V_handler) handler;
+@property (Tq,V_style) style;
+@property (T@"NSMenu",&,V_menu) menu;
+@property (TB,V_allowsFullSwipe) allowsFullSwipe;

@@ -1,0 +1,44 @@
+### -[NSVisualEffectView setBlendingMode:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSVisualEffectView setBlendingMode:]
+
+-[NSVisualEffectView setBlendingMode:]:
+0x184f1b8f8:  7f 23 03 d5   pacibsp
+0x184f1b8fc:  f6 57 bd a9   stp	x22, x21, [sp, #-0x30]!
+0x184f1b900:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x184f1b904:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x184f1b908:  fd 83 00 91   add	fp, sp, #0x20
+0x184f1b90c:  68 af 2f 90   adrp	x8, 0x1e4507000
+0x184f1b910:  16 4d 81 b9   ldrsw	x22, [x8, #0x14c] ; _OBJC_IVAR_$_NSVisualEffectView._blendingMode
+0x184f1b914:  08 00 16 8b   add	x8, x0, x22
+0x184f1b918:  08 01 40 f9   ldr	x8, [x8]
+0x184f1b91c:  1f 01 02 eb   cmp	x8, x2
+0x184f1b920:  a1 00 00 54   b.ne	loc_184f1b934 ; ⤵ 0x14
+0x184f1b924:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x184f1b928:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x184f1b92c:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x184f1b930:  ff 0f 5f d6   retab
+0x184f1b934:  ; loc_184f1b934
+0x184f1b934:  f4 03 02 aa   mov	x20, x2
+0x184f1b938:  f3 03 00 aa   mov	x19, x0
+0x184f1b93c:  95 ab 31 d0   adrp	x21, 0x1e848d000
+0x184f1b940:  b5 42 1b 91   add	x21, x21, #0x6d0 ; "wantsLayer"
+0x184f1b944:  e2 03 15 aa   mov	x2, x21
+0x184f1b948:  2e a7 c3 94   bl	0x188005600
+0x184f1b94c:  74 6a 36 f8   str	x20, [x19, x22]
+0x184f1b950:  e0 03 13 aa   mov	x0, x19
+0x184f1b954:  e2 03 15 aa   mov	x2, x21
+0x184f1b958:  2e 9d c3 94   bl	0x188002e10
+0x184f1b95c:  e0 03 13 aa   mov	x0, x19
+0x184f1b960:  22 00 80 52   mov	w2, #0x1
+0x184f1b964:  23 00 80 52   mov	w3, #0x1
+0x184f1b968:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x184f1b96c:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x184f1b970:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x184f1b974:  ff 23 03 d5   autibsp
+0x184f1b978:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184f1b97c:  50 00 f0 b6   tbz	x16, #0x3e, loc_184f1b984 ; ⤵ 0x8
+0x184f1b980:  20 8e 38 d4   brk	#0xc471
+0x184f1b984:  ; loc_184f1b984
+0x184f1b984:  9f f4 c4 14   b	0x188058c00
+

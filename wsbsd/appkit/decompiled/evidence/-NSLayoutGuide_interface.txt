@@ -1,0 +1,25 @@
+@interface NSLayoutGuide : NSObject <NSLayoutSpacingItem, NSCoding, NSUserInterfaceItemIdentification> {
+    /* instance variables */
+    @ _owningView;
+    @"NSString" _identifier;
+    @"NSISVariable" _minYVariable;
+    @"NSISVariable" _minXVariable;
+    @"NSISVariable" _widthVariable;
+    @"NSISVariable" _heightVariable;
+    @"NSLayoutXAxisAnchor" _left;
+    @"NSLayoutXAxisAnchor" _right;
+    @"NSLayoutXAxisAnchor" _leading;
+    @"NSLayoutXAxisAnchor" _trailing;
+    @"NSLayoutYAxisAnchor" _top;
+    @"NSLayoutYAxisAnchor" _bottom;
+    @"NSLayoutDimension" _width;
+    @"NSLayoutDimension" _height;
+    @"NSLayoutXAxisAnchor" _centerX;
+    @"NSLayoutYAxisAnchor" _centerY;
+    {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}} _frame;
+    {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}} _internalFrame;
+    q _piercingToken;
+    @ _systemConstraints;
+    b1 _shouldBeArchived;
+    b1 _frameNeedsUpdate;
+    b1 _frameIsObserved;

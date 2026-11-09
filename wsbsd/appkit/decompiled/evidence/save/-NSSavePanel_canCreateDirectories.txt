@@ -1,0 +1,9 @@
+### -[NSSavePanel canCreateDirectories]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSSavePanel canCreateDirectories]
+
+-[NSSavePanel canCreateDirectories]:
+0x185b24bd8:  02 49 31 f0   adrp	x2, 0x1e8447000
+0x185b24bdc:  42 40 06 91   add	x2, x2, #0x190 ; "canCreateDirectories"
+0x185b24be0:  04 57 94 14   b	0x18803a7f0
+

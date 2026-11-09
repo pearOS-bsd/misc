@@ -1,0 +1,15 @@
+@interface NSDraggingItem : NSObject {
+    /* instance variables */
+    @ _item;
+    @ _localObject;
+    {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}} _frame;
+    @"NSArray" _components;
+    @? _componentsProvider;
+}
+
+@property (T@"NSArray",C) imageComponents;
+@property (T@,&,V_localObject) localObject;
+@property (T@,R,V_item) item;
+@property (T{CGRect={CGPoint=dd}{CGSize=dd}}) draggingFrame;
+@property (T@?,C,V_componentsProvider) imageComponentsProvider;
+

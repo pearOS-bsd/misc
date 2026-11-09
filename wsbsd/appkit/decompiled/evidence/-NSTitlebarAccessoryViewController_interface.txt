@@ -1,0 +1,17 @@
+@interface NSTitlebarAccessoryViewController : NSViewController <NSAnimationDelegate, NSAnimatablePropertyContainer> {
+    /* instance variables */
+    q _layoutAttribute;
+    d _fullScreenMinHeight;
+    @"NSTitlebarAccessoryContainerView" _containerView;
+    @"NSTitlebarSeparatorView" _separatorView;
+    d _revealAmount;
+    B _inFullScreen;
+    B _isToolbarAccessoryView;
+    B _allowsAutomaticSeparator;
+    B _automaticallyAdjustsSize;
+    @"NSScrollEdgeEffectStyle" _preferredScrollEdgeEffectStyle;
+    q _updateCount;
+    b1 _hidden;
+    b1 _unusedTVC2;
+    b1 _updatingFrame;
+    b1 _registered;

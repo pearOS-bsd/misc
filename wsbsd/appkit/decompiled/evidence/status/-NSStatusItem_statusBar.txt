@@ -1,0 +1,8 @@
+### -[NSStatusItem statusBar]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSStatusItem statusBar]
+
+-[NSStatusItem statusBar]:
+0x185768d3c:  00 04 40 f9   ldr	x0, [x0, #0x8]
+0x185768d40:  44 f4 a5 14   b	j__objc_retainAutoreleaseReturnValue
+

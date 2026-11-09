@@ -1,0 +1,15 @@
+@interface NSDocumentController : NSObject <NSWindowRestoration, NSCoding, NSMenuItemValidation, NSUserInterfaceValidations> {
+    /* instance variables */
+    @"NSMutableArray" _documents;
+    @"NSArray" _cachedTypeDescriptions;
+    @"_NSDocumentRecentItemsMenuController" _recentItemsController;
+    @"NSLock" _documentOpeningSessionLock;
+    @"NSString" _bundleIdentifierOfSourceAppForDocumentOpeningSession;
+    @"NSMutableSet" _pathsOfDocumentsForCurrentOpeningSession;
+    B _shouldCreateUI;
+    d _autosavingDelay;
+    i _cachedUTIUsage;
+    @"NSDocumentControllerSubMenuDelegate" _subMenuDelegate;
+    Q _isAutoreopening;
+    @"NSArray" _autoreopenRecordsBeingReopened;
+    @"NSMutableArray" _autoreopenRecordsForMissingDocuments;

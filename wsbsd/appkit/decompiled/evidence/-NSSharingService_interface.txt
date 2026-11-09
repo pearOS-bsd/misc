@@ -1,0 +1,17 @@
+@interface NSSharingService : NSObject {
+    /* instance variables */
+    @"NSSharingServiceReserved" _reserved;
+}
+
+@property (T@"<NSSharingServiceDelegate>",W) delegate;
+@property (T@"NSString",R,C) title;
+@property (T@"NSImage",R) image;
+@property (T@"NSImage",R) alternateImage;
+@property (T@"NSString",C) menuItemTitle;
+@property (T@"NSArray",C) recipients;
+@property (T@"NSString",C) subject;
+@property (T@"NSString",R,C) messageBody;
+@property (T@"NSURL",R,C) permanentLink;
+@property (T@"NSString",R,C) accountName;
+@property (T@"NSArray",R,C) attachmentFileURLs;
+

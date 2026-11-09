@@ -1,0 +1,23 @@
+@interface NSViewController : NSResponder <NSExtensionRequestHandling, NSNibFinishedLoadingDependent, NSEditor, NSSeguePerforming, NSUserInterfaceItemIdentification> {
+    /* instance variables */
+    @"NSString" _nibName;
+    @"NSBundle" _nibBundle;
+    @ _representedObject;
+    @"NSString" _title;
+    @"NSView" _view;
+    @"NSArray" _topLevelObjects;
+    @"NSPointerArray" _editors;
+    @ _autounbinder;
+    @"NSString" _designNibBundleIdentifier;
+    @ __privateData;
+    b1 _viewIsAppearing;
+    b1 _delayViewDidAppear;
+    b1 _isContentViewController;
+    b1 _shouldDirtyLayoutOnSizeChanges;
+    b1 _hasObservationTrackingDictionary;
+    b27 _reserved;
+}
+
+@property (T@"NSExtensionContext",R,&,D) extensionContext;
+@property (T@"NSView",&) sourceItemView;
+@property (T{CGPoint=dd}) preferredScreenOrigin;

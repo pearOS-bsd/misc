@@ -1,0 +1,21 @@
+@interface NSImage : NSObject <NSTextAttachmentImageContainer, NSItemProviderReading, NSItemProviderWriting, NSCopying, NSSecureCoding, NSPasteboardReading, NSPasteboardWriting> {
+    /* instance variables */
+    @"NSString" _name;
+    {CGSize="width"d"height"d} _size;
+    @"<NSImageRepProvider>" _reps;
+    @"NSColor" _backgroundColor;
+    @"<NSImageDelegate>" _imageDelegate;
+    {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}} _alignmentRectInNormalizedCoordinates;
+    @"NSString" _accessibilityDescriptionBacking;
+    {NSEdgeInsets="top"d"left"d"bottom"d"right"d} _capInsets;
+    q _resizingMode;
+    @"NSDictionary" _configuration;
+    @"NSColor" _tintColor;
+    {?="scalable"b1"dataRetained"b1"uniqueWindow"b1"sizeWasExplicitlySet"b1"builtIn"b1"needsToExpand"b1"useEPSOnResolutionMismatch"b1"matchesOnlyOnBestFittingAxis"b1"colorMatchPreferred"b1"multipleResolutionMatching"b1"focusedWhilePrinting"b1"archiveByName"b1"unboundedCacheDepth"b1"flipped"b1"aliased"b1"dirtied"b1"cacheMode"b2"sampleMode"b3"resMatchPreferred"b1"isTemplate"b1"hasTrivialEdges"b1""b8} _flags;
+}
+
+@property (TB,R) willProvideAdaptedImageForPresentation;
+@property (TQ,R) hash;
+@property (T#,R) superclass;
+@property (T@"NSString",R,C) description;
+@property (T@"NSString",?,R,C) debugDescription;

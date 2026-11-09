@@ -1,0 +1,15 @@
+@interface NSCollectionViewUpdateItem : NSObject <NSCopying> {
+    /* instance variables */
+    @"NSIndexPath" _initialIndexPath;
+    @"NSIndexPath" _finalIndexPath;
+    q _updateAction;
+    @ _gap;
+    [11@] _reserved;
+    B _isAppendingSectionInsert;
+    B _shouldReconfigure;
+    @"NSUUID" _identifier;
+}
+
+@property (Tq,R,N,G_action) action;
+@property (T@"NSIndexPath",R,N,G_indexPath) indexPath;
+@property (T@"NSUUID",&,N,V_identifier) identifier;

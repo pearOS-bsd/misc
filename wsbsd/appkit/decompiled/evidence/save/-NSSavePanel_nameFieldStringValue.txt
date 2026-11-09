@@ -1,0 +1,23 @@
+### -[NSSavePanel nameFieldStringValue]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSSavePanel nameFieldStringValue]
+
+-[NSSavePanel nameFieldStringValue]:
+0x185b25054:  7f 23 03 d5   pacibsp
+0x185b25058:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x185b2505c:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x185b25060:  fd 43 00 91   add	fp, sp, #0x10
+0x185b25064:  f3 03 00 aa   mov	x19, x0
+0x185b25068:  6e 50 94 94   bl	0x188039220
+0x185b2506c:  42 4a 31 f0   adrp	x2, 0x1e8470000
+0x185b25070:  42 40 37 91   add	x2, x2, #0xdd0 ; "nameFieldStringValue"
+0x185b25074:  e0 03 13 aa   mov	x0, x19
+0x185b25078:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x185b2507c:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x185b25080:  ff 23 03 d5   autibsp
+0x185b25084:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x185b25088:  50 00 f0 b6   tbz	x16, #0x3e, loc_185b25090 ; ⤵ 0x8
+0x185b2508c:  20 8e 38 d4   brk	#0xc471
+0x185b25090:  ; loc_185b25090
+0x185b25090:  60 09 95 14   b	0x188067610
+

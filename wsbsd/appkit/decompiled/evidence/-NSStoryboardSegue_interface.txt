@@ -1,0 +1,15 @@
+@interface NSStoryboardSegue : NSObject {
+    /* instance variables */
+    @? _performHandler;
+    @"NSString" _identifier;
+    @ _sourceController;
+    @ _destinationController;
+    @? _prepareHandler;
+}
+
+@property (T@?,C,V_prepareHandler) prepareHandler;
+@property (T@?,C,V_performHandler) performHandler;
+@property (T@"NSString",R,C,V_identifier) identifier;
+@property (T@,R,V_sourceController) sourceController;
+@property (T@,R,V_destinationController) destinationController;
+

@@ -1,0 +1,43 @@
+@interface NSGradient : NSObject <NSCopying, NSSecureCoding, NSCoding> {
+    /* instance variables */
+     _colors;
+     _locations;
+     _colorSpace;
+}
+
+@property (T^{CGGradient=},N,R) CGGradient;
+@property (Tq,N,R) hash;
+@property (T@"NSColorSpace",N,R) colorSpace;
+@property (Tq,N,R) numberOfColorStops;
+
+/* class methods */
++[NSGradient supportsSecureCoding];
++[NSGradient defaultColorSpace];
++[NSGradient intelligenceAmbientGradientWithStartColor:endColor:];
+
+/* instance methods */
+-[NSGradient hash];
+-[NSGradient initWithCoder:];
+-[NSGradient initWithColors:];
+-[NSGradient colorSpace];
+-[NSGradient CGGradient];
+-[NSGradient init];
+-[NSGradient isEqual:];
+-[NSGradient copyWithZone:];
+-[NSGradient encodeWithCoder:];
+-[NSGradient drawFromCenter:radius:toCenter:radius:options:];
+-[NSGradient drawFromPoint:toPoint:options:];
+-[NSGradient drawInBezierPath:angle:];
+-[NSGradient drawInBezierPath:relativeCenterPosition:];
+-[NSGradient drawInRect:angle:];
+-[NSGradient drawInRect:relativeCenterPosition:];
+-[NSGradient getColor:location:atIndex:];
+-[NSGradient initWithColors:atLocations:colorSpace:];
+-[NSGradient initWithColorsAndLocations:];
+-[NSGradient initWithStartingColor:endingColor:];
+-[NSGradient interpolatedColorAtLocation:];
+-[NSGradient numberOfColorStops];
+
+@end
+
+@interface NSGradientColor : NSColor {

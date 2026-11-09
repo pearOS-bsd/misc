@@ -1,0 +1,44 @@
+### -[NSPanGestureRecognizer setButtonMask:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSPanGestureRecognizer setButtonMask:]
+
+-[NSPanGestureRecognizer setButtonMask:]:
+0x1850643bc:  7f 23 03 d5   pacibsp
+0x1850643c0:  f6 57 bd a9   stp	x22, x21, [sp, #-0x30]!
+0x1850643c4:  f4 4f 01 a9   stp	x20, x19, [sp, #0x10]
+0x1850643c8:  fd 7b 02 a9   stp	fp, lr, [sp, #0x20]
+0x1850643cc:  fd 83 00 91   add	fp, sp, #0x20
+0x1850643d0:  f4 03 02 aa   mov	x20, x2
+0x1850643d4:  f3 03 00 aa   mov	x19, x0
+0x1850643d8:  e2 f7 c1 94   bl	j__objc_sync_enter
+0x1850643dc:  e8 9b 30 b0   adrp	x8, 0x1e63e1000
+0x1850643e0:  15 85 82 b9   ldrsw	x21, [x8, #0x284]
+0x1850643e4:  68 02 15 8b   add	x8, x19, x21
+0x1850643e8:  14 01 00 f9   str	x20, [x8]
+0x1850643ec:  82 02 00 12   and	w2, w20, #0x1
+0x1850643f0:  e0 03 13 aa   mov	x0, x19
+0x1850643f4:  4b fe c0 94   bl	0x1880a3d20
+0x1850643f8:  68 6a 75 f8   ldr	x8, [x19, x21]
+0x1850643fc:  02 05 41 d3   ubfx	x2, x8, #0x1, #0x1
+0x185064400:  e0 03 13 aa   mov	x0, x19
+0x185064404:  4f fe c0 94   bl	0x1880a3d40
+0x185064408:  68 6a 75 f8   ldr	x8, [x19, x21]
+0x18506440c:  02 09 42 d3   ubfx	x2, x8, #0x2, #0x1
+0x185064410:  e0 03 13 aa   mov	x0, x19
+0x185064414:  3f fe c0 94   bl	0x1880a3d10
+0x185064418:  e0 03 13 aa   mov	x0, x19
+0x18506441c:  fd 7b 42 a9   ldp	fp, lr, [sp, #0x20]
+0x185064420:  f4 4f 41 a9   ldp	x20, x19, [sp, #0x10]
+0x185064424:  f6 57 c3 a8   ldp	x22, x21, [sp], #0x30
+0x185064428:  ff 23 03 d5   autibsp
+0x18506442c:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x185064430:  50 00 f0 b6   tbz	x16, #0x3e, loc_185064438 ; ⤵ 0x8
+0x185064434:  20 8e 38 d4   brk	#0xc471
+0x185064438:  ; loc_185064438
+0x185064438:  ce f7 c1 14   b	j__objc_sync_exit
+0x18506443c:  f4 03 00 aa   mov	x20, x0
+0x185064440:  e0 03 13 aa   mov	x0, x19
+0x185064444:  cb f7 c1 94   bl	j__objc_sync_exit
+0x185064448:  e0 03 14 aa   mov	x0, x20
+0x18506444c:  11 df c1 94   bl	j___Unwind_Resume
+

@@ -1,0 +1,55 @@
+### -[NSCursor initWithImage:hotSpot:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSCursor initWithImage:hotSpot:]
+
+-[NSCursor initWithImage:hotSpot:]:
+0x185106e6c:  7f 23 03 d5   pacibsp
+0x185106e70:  ff 03 01 d1   sub	sp, sp, #0x40
+0x185106e74:  e9 23 01 6d   stp	d9, d8, [sp, #0x10]
+0x185106e78:  f4 4f 02 a9   stp	x20, x19, [sp, #0x20]
+0x185106e7c:  fd 7b 03 a9   stp	fp, lr, [sp, #0x30]
+0x185106e80:  fd c3 00 91   add	fp, sp, #0x30
+0x185106e84:  28 1c a1 4e   mov	v8.16b, v1.16b
+0x185106e88:  09 1c a0 4e   mov	v9.16b, v0.16b
+0x185106e8c:  f3 03 02 aa   mov	x19, x2
+0x185106e90:  f4 03 00 aa   mov	x20, x0
+0x185106e94:  24 00 00 94   bl	__NSCursorWantsFujiInitializerBehavior
+0x185106e98:  80 02 00 34   cbz	w0, loc_185106ee8 ; ⤵ 0x50
+0x185106e9c:  68 b1 2d 90   adrp	x8, 0x1e0732000
+0x185106ea0:  08 19 40 f9   ldr	x8, [x8, #0x30] ; NSCursor
+0x185106ea4:  f4 23 00 a9   stp	x20, x8, [sp]
+0x185106ea8:  08 b0 2d f0   adrp	x8, 0x1e0709000
+0x185106eac:  01 cd 47 f9   ldr	x1, [x8, #0xf98] ; sel_init
+0x185106eb0:  e0 03 00 91   mov	x0, sp
+0x185106eb4:  43 5a bf 94   bl	j__objc_msgSendSuper2
+0x185106eb8:  f4 03 00 aa   mov	x20, x0
+0x185106ebc:  a0 00 00 b4   cbz	x0, loc_185106ed0 ; ⤵ 0x14
+0x185106ec0:  e0 03 13 aa   mov	x0, x19
+0x185106ec4:  6b 57 bf 94   bl	j__objc_retain_x0
+0x185106ec8:  80 12 00 f9   str	x0, [x20, #0x20]
+0x185106ecc:  89 a2 00 6d   stp	d9, d8, [x20, #0x8]
+0x185106ed0:  ; loc_185106ed0
+0x185106ed0:  e0 03 14 aa   mov	x0, x20
+0x185106ed4:  fd 7b 43 a9   ldp	fp, lr, [sp, #0x30]
+0x185106ed8:  f4 4f 42 a9   ldp	x20, x19, [sp, #0x20]
+0x185106edc:  e9 23 41 6d   ldp	d9, d8, [sp, #0x10]
+0x185106ee0:  ff 03 01 91   add	sp, sp, #0x40
+0x185106ee4:  ff 0f 5f d6   retab
+0x185106ee8:  ; loc_185106ee8
+0x185106ee8:  e0 03 14 aa   mov	x0, x20
+0x185106eec:  e2 03 13 aa   mov	x2, x19
+0x185106ef0:  03 00 80 d2   mov	x3, #0
+0x185106ef4:  04 00 80 d2   mov	x4, #0
+0x185106ef8:  20 1d a9 4e   mov	v0.16b, v9.16b
+0x185106efc:  01 1d a8 4e   mov	v1.16b, v8.16b
+0x185106f00:  fd 7b 43 a9   ldp	fp, lr, [sp, #0x30]
+0x185106f04:  f4 4f 42 a9   ldp	x20, x19, [sp, #0x20]
+0x185106f08:  e9 23 41 6d   ldp	d9, d8, [sp, #0x10]
+0x185106f0c:  ff 03 01 91   add	sp, sp, #0x40
+0x185106f10:  ff 23 03 d5   autibsp
+0x185106f14:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x185106f18:  50 00 f0 b6   tbz	x16, #0x3e, loc_185106f20 ; ⤵ 0x8
+0x185106f1c:  20 8e 38 d4   brk	#0xc471
+0x185106f20:  ; loc_185106f20
+0x185106f20:  c0 0d be 14   b	0x18808a620
+

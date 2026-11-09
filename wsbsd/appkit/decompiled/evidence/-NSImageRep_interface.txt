@@ -1,0 +1,23 @@
+@interface NSImageRep : NSObject <NSSecureCoding, NSCopying, NSCoding> {
+    /* instance variables */
+    @"NSString" _colorSpaceName;
+    {__repFlags="hasAlpha"b1"isOpaque"b1""b2"loadState"b2""b2"bitsPerSample"b8"internalLayoutDirection"b2"gsaved"b14} _repFlags;
+    i _pixelsWide;
+    {CGSize="width"d"height"d} _size;
+    i _pixelsHigh;
+    @"NSMutableArray" _bitmapCache;
+    {os_unfair_lock_s="_os_unfair_lock_opaque"I} _bitmapCacheLock;
+}
+
+@property (TB,R) _incorporatesContentStyling;
+@property (T@"NSString",C,S_setAppearanceName:) _appearanceName;
+@property (T{CGRect={CGPoint=dd}{CGSize=dd}},R) alignmentRect;
+@property (T{NSEdgeInsets=dddd},R) capInsets;
+@property (Tq,R) resizingMode;
+@property (TB,R,GisTemplate) template;
+@property (TB,R) inheritsGeometryFromImage;
+@property (T{CGSize=dd}) size;
+@property (TB,GhasAlpha) alpha;
+@property (TB,GisOpaque) opaque;
+@property (T@"NSString",C) colorSpaceName;
+@property (Tq) bitsPerSample;

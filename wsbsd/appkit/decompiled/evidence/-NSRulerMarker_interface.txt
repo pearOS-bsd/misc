@@ -1,0 +1,23 @@
+@interface NSRulerMarker : NSObject <NSCopying, NSCoding> {
+    /* instance variables */
+    @"NSImage" _image;
+    {CGPoint="x"d"y"d} _imageOrigin;
+    @ _representedObject;
+    @"NSRulerView" _ruler;
+    d _location;
+    {__rFlags="movable"b1"removable"b1"dragging"b1"pinned"b1"_reserved"b28} _rFlags;
+    B _trackingIsAdding;
+    {CGSize="width"d"height"d} _trackingClickOffset;
+    d _trackingRulerLineLocation;
+    @"NSRulerView" _trackingRuler;
+    @"NSView" _trackingClient;
+    Q _trackingOrientation;
+    d _trackingBaselineLocation;
+    {CGSize="width"d"height"d} _trackingImageSize;
+    B _trackingFlippedRuler;
+    B _trackingIsTouch;
+    @"NSScrollView" _trackingScrollView;
+    B _trackingWillMoveOK;
+    B _trackingWillAddOK;
+    B _trackingShouldRemoveOK;
+    B _trackingLocationForPoint;

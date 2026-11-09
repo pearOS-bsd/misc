@@ -1,0 +1,15 @@
+@interface NSTouchBarItem : NSObject <NSCoding> {
+    /* instance variables */
+    @"NSString" _identifier;
+    f _visibilityPriority;
+    q _visibilityCount;
+    B _requiresTrueCenterLayout;
+}
+
+@property (T{CGSize=dd},R) preferredSizeForCustomizationPalette;
+@property (Tq,R) preferredPopoverTransposerPriority;
+@property (T#,R) preferredPopoverTransposerClass;
+@property (T@"NSString",R,C) identifier;
+@property (Tf) visibilityPriority;
+@property (T@"NSView",R) view;
+@property (T@"NSViewController",R) viewController;

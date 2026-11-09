@@ -1,0 +1,21 @@
+@interface NSAnimationContext : NSObject
+
+@property (T@?,N) animationProvider;
+@property (TB) allowsAsynchronousAnimation;
+@property (Td) duration;
+@property (T@"CAMediaTimingFunction",&) timingFunction;
+@property (T@?,C) completionHandler;
+@property (TB) allowsImplicitAnimation;
+
+/* class methods */
++[NSAnimationContext allocWithZone:];
++[NSAnimationContext currentContext];
++[NSAnimationContext flush];
++[NSAnimationContext initialize];
++[NSAnimationContext activate];
++[NSAnimationContext _hasActiveGrouping];
++[NSAnimationContext _runWithPreCommitCompletionHandlerAnimationGroup:completionHandler:];
++[NSAnimationContext addCommitHandler:];
++[NSAnimationContext beginGrouping];
++[NSAnimationContext completionHandlerSuspension];
++[NSAnimationContext endGrouping];

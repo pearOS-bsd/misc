@@ -1,0 +1,17 @@
+@interface NSBitmapImageRep : NSImageRep <NSSecureCoding> {
+    /* instance variables */
+    I _bytesPerRow;
+    {?="bitsPerPixel"b8"isPlanar"b1"explicitPlanes"b1"imageSourceIsIndexed"b1"dataLoaded"b1"colorModel"b4"tierTwoInfoIsLoaded"b1"respectO"b1"compressionFactor"b14"imageNumber"b8"bitmapFormat"b3"cgImageIsPrimary"b1"compression"b20} _moreRepFlags;
+    @"<NSObject>" _backing;
+    @"NSMutableData" _mutableDataBacking;
+    @"NSMutableArray" _previousMutableDataBackings;
+    @"NSMutableDictionary" _properties;
+    @"NSData" _tiffData;
+}
+
+@property (T@"<NSObject>",&,S_setBacking:,V_backing) _backing;
+@property (T*,R) bitmapData;
+@property (TB,R,GisPlanar) planar;
+@property (Tq,R) samplesPerPixel;
+@property (Tq,R) bitsPerPixel;
+@property (Tq,R) bytesPerRow;

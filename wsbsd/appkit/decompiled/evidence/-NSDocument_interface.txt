@@ -1,0 +1,15 @@
+@interface NSDocument : NSObject <NSPersistentUIEncodable, NSUIActivityProvider, NSDocumentTitlebarPopoverViewControllerDelegate, NSTitlebarPopoverViewControllerDataSource, NSEditorRegistration, NSFilePresenter, NSMenuItemValidation, NSUserInterfaceValidations> {
+    /* instance variables */
+    @"NSWindow" _window;
+    @ _windowControllers;
+    @"NSURL" _fileURL;
+    @"NSString" _fileType;
+    @"NSPrintInfo" _printInfo;
+    @ _displayName;
+    @ _privateData;
+    @"_NSDocumentFileAccess" _fileAccessBeingPerformed;
+    @"NSUndoManager" _undoManager;
+    {__docFlags="inClose"b1"hasUndoManager"b1"knowsTheSourceApp"b1"reconciledToFileName"b1"checkingDisplayName"b1"hasInvalidRestorableState"b1"hasEverHadInvalidRestorableState"b1"openedFromAppRequestingAutoDuplication"b1"documentFileStatePrecludesFileActions"b1"displayNameIsSmartNamingSuggestion"b1"displayNameCustomizedByClient"b1"settingDisplayNameInternally"b1"RESERVED"b20} _docFlags;
+    @"NSString" _savePanelSaveType;
+    @"_NSDocumentLifecycleHelper" _documentLifecycleHelper;
+    q _documentUniquingNumber;

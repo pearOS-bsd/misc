@@ -4,11 +4,13 @@
  * setLabel: 0x185090b18 (compare @0x10 then store), view 0x18507753c.
  */
 #import "NSTabViewItem.h"
+#import "NSViewController.h"
 
 @implementation NSTabViewItem {
     id _identifier;      /* 0x8 */
     NSString *_label;    /* 0x10 */
     NSView *_view;
+    NSViewController *_viewController;
 }
 
 - (instancetype)initWithIdentifier:(id)identifier
@@ -30,5 +32,20 @@
 
 - (NSView *)view { return _view; }
 - (void)setView:(NSView *)view { _view = view; }
+
+- (NSViewController *)viewController { return _viewController; }
+- (void)setViewController:(NSViewController *)vc
+{
+    _viewController = vc;
+    if (vc) { _view = vc.view; if (!_identifier) _identifier = vc; }
+}
+
++ (instancetype)tabViewItemWithViewController:(NSViewController *)viewController
+{
+    NSTabViewItem *item = [[self alloc] initWithIdentifier:nil];
+    item.viewController = viewController;   /* sets identifier to the controller (no copy) */
+    if (viewController.title) item.label = viewController.title;
+    return item;
+}
 
 @end

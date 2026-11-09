@@ -1,0 +1,22 @@
+### -[NSPressGestureRecognizer buttonMask]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSPressGestureRecognizer buttonMask]
+
+-[NSPressGestureRecognizer buttonMask]:
+0x185135120:  7f 23 03 d5   pacibsp
+0x185135124:  f4 4f be a9   stp	x20, x19, [sp, #-0x20]!
+0x185135128:  fd 7b 01 a9   stp	fp, lr, [sp, #0x10]
+0x18513512c:  fd 43 00 91   add	fp, sp, #0x10
+0x185135130:  f3 03 00 aa   mov	x19, x0
+0x185135134:  8b b4 be 94   bl	j__objc_sync_enter
+0x185135138:  68 95 30 f0   adrp	x8, 0x1e63e4000
+0x18513513c:  08 8d 8c b9   ldrsw	x8, [x8, #0xc8c] ; __MergedGlobals
+0x185135140:  68 02 08 8b   add	x8, x19, x8
+0x185135144:  14 01 40 f9   ldr	x20, [x8]
+0x185135148:  e0 03 13 aa   mov	x0, x19
+0x18513514c:  89 b4 be 94   bl	j__objc_sync_exit
+0x185135150:  e0 03 14 aa   mov	x0, x20
+0x185135154:  fd 7b 41 a9   ldp	fp, lr, [sp, #0x10]
+0x185135158:  f4 4f c2 a8   ldp	x20, x19, [sp], #0x20
+0x18513515c:  ff 0f 5f d6   retab
+

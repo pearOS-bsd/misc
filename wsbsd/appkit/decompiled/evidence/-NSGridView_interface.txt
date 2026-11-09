@@ -1,0 +1,21 @@
+@interface NSGridView : NSView {
+    /* instance variables */
+    q _xPlacement;
+    q _yPlacement;
+    q _rowAlignment;
+    d _rowSpacing;
+    d _colSpacing;
+    @"NSMutableArray" _columns;
+    @"NSMutableArray" _rows;
+    @"NSMapTable" _cellTable;
+    q _currentConstraintGeneration;
+    {?="isDecoding"b1"_unused"b31} _flags;
+}
+
+@property (Tq,R) numberOfRows;
+@property (Tq,R) numberOfColumns;
+@property (Tq,V_xPlacement) xPlacement;
+@property (Tq,V_yPlacement) yPlacement;
+@property (Tq,V_rowAlignment) rowAlignment;
+@property (Td) rowSpacing;
+@property (Td) columnSpacing;

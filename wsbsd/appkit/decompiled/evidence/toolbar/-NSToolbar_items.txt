@@ -1,0 +1,60 @@
+### -[NSToolbar items]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSToolbar items]
+
+-[NSToolbar items]:
+0x184fc3ea0:  7f 23 03 d5   pacibsp
+0x184fc3ea4:  ff 43 01 d1   sub	sp, sp, #0x50
+0x184fc3ea8:  f4 4f 03 a9   stp	x20, x19, [sp, #0x30]
+0x184fc3eac:  fd 7b 04 a9   stp	fp, lr, [sp, #0x40]
+0x184fc3eb0:  fd 03 01 91   add	fp, sp, #0x40
+0x184fc3eb4:  f3 03 00 aa   mov	x19, x0
+0x184fc3eb8:  08 24 42 39   ldrb	w8, [x0, #0x89]
+0x184fc3ebc:  28 01 38 37   tbnz	w8, #0x7, loc_184fc3ee0 ; ⤵ 0x24
+0x184fc3ec0:  e0 03 13 aa   mov	x0, x19
+0x184fc3ec4:  88 c8 ff 97   bl	-[NSToolbar _loadAllPlaceholderItems]
+0x184fc3ec8:  c8 8e 2d b0   adrp	x8, 0x1e019c000
+0x184fc3ecc:  00 4d 42 f9   ldr	x0, [x8, #0x498] ; _ptr.NSArray
+0x184fc3ed0:  62 0e 40 f9   ldr	x2, [x19, #0x18]
+0x184fc3ed4:  cb f9 c0 94   bl	0x188002600
+0x184fc3ed8:  0e 6c c4 94   bl	j__objc_claimAutoreleasedReturnValue
+0x184fc3edc:  1c 00 00 14   b	loc_184fc3f4c ; ⤵ 0x70
+0x184fc3ee0:  ; loc_184fc3ee0
+0x184fc3ee0:  c8 bb 2d b0   adrp	x8, 0x1e073c000
+0x184fc3ee4:  00 ed 43 f9   ldr	x0, [x8, #0x7d8] ; __got.class__NSToolbarItemPlaceholder
+0x184fc3ee8:  3a 66 c4 94   bl	j__objc_opt_class
+0x184fc3eec:  e9 23 00 91   add	x9, sp, #0x8
+0x184fc3ef0:  68 0e 40 f9   ldr	x8, [x19, #0x18]
+0x184fc3ef4:  50 92 2d 90   adrp	x16, 0x1e020b000
+0x184fc3ef8:  10 4a 45 f9   ldr	x16, [x16, #0xa90] ; _ptr.__NSStackBlock__
+0x184fc3efc:  f1 03 09 aa   mov	x17, x9
+0x184fc3f00:  31 5c ed f2   movk	x17, #0x6ae1, lsl #0x30
+0x184fc3f04:  30 0a c1 da   pacda	x16, x17
+0x184fc3f08:  f0 07 00 f9   str	x16, [sp, #0x8]
+0x184fc3f0c:  8a 95 00 f0   adrp	x10, 0x186276000
+0x184fc3f10:  40 91 41 fd   ldr	d0, [x10, #0x320]
+0x184fc3f14:  e0 0b 00 fd   str	d0, [sp, #0x10]
+0x184fc3f18:  29 41 00 91   add	x9, x9, #0x10
+0x184fc3f1c:  d0 09 00 b0   adrp	x16, 0x1850fc000
+0x184fc3f20:  10 92 3e 91   add	x16, x16, #0xfa4 ; ___33-[NSToolbar _nonPlaceholderItems]_block_invoke
+0x184fc3f24:  30 01 c1 da   pacia	x16, x9
+0x184fc3f28:  49 b8 2d f0   adrp	x9, 0x1e06ce000
+0x184fc3f2c:  29 21 1a 91   add	x9, x9, #0x688 ; ___block_descriptor_40_e8_16?08lu32l8
+0x184fc3f30:  f0 a7 01 a9   stp	x16, x9, [sp, #0x18]
+0x184fc3f34:  e0 17 00 f9   str	x0, [sp, #0x28]
+0x184fc3f38:  e2 23 00 91   add	x2, sp, #0x8
+0x184fc3f3c:  e0 03 08 aa   mov	x0, x8
+0x184fc3f40:  01 00 80 52   mov	w1, #0
+0x184fc3f44:  28 ea fc 97   bl	__NSMapAndFilter
+0x184fc3f48:  f2 6b c4 94   bl	j__objc_claimAutoreleasedReturnValue
+0x184fc3f4c:  ; loc_184fc3f4c
+0x184fc3f4c:  fd 7b 44 a9   ldp	fp, lr, [sp, #0x40]
+0x184fc3f50:  f4 4f 43 a9   ldp	x20, x19, [sp, #0x30]
+0x184fc3f54:  ff 43 01 91   add	sp, sp, #0x50
+0x184fc3f58:  ff 23 03 d5   autibsp
+0x184fc3f5c:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x184fc3f60:  50 00 f0 b6   tbz	x16, #0x3e, loc_184fc3f68 ; ⤵ 0x8
+0x184fc3f64:  20 8e 38 d4   brk	#0xc471
+0x184fc3f68:  ; loc_184fc3f68
+0x184fc3f68:  e6 6b c4 14   b	j__objc_autoreleaseReturnValue
+

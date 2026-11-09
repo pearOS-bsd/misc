@@ -1,0 +1,15 @@
+@interface NSSearchToolbarItem : NSToolbarItem <NSSearchFieldDelegate, _NSTextFieldHostingToolbarItem> {
+    /* instance variables */
+    B _isEditing;
+    B _forceVisbility;
+    B _inTemporaryIconDisplayMode;
+    B _prefersCompactRepresentation;
+    @"NSObject<NSSearchToolbarItemDelegate>" _delegate;
+    B _resignsFirstResponderWithCancel;
+    B _allowsButtonRepresentation;
+    B _usesNativeSearchField;
+    B _usesBridgedSearchField;
+    : _cancelButtonAction;
+    @ _cancelButtonTarget;
+    d _minimumWidthForSearchFieldRepresentation;
+    d _preferredWidthForSearchField;

@@ -1,0 +1,12 @@
+### -[NSVisualEffectView isEmphasized]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSVisualEffectView isEmphasized]
+
+-[NSVisualEffectView isEmphasized]:
+0x184ff6894:  88 a8 2f b0   adrp	x8, 0x1e4507000
+0x184ff6898:  08 45 81 b9   ldrsw	x8, [x8, #0x144] ; _OBJC_IVAR_$_NSVisualEffectView._emphasized
+0x184ff689c:  08 00 08 8b   add	x8, x0, x8
+0x184ff68a0:  08 01 40 39   ldrb	w8, [x8]
+0x184ff68a4:  00 05 01 53   ubfx	w0, w8, #0x1, #0x1
+0x184ff68a8:  c0 03 5f d6   ret
+

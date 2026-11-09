@@ -1,0 +1,9 @@
+### -[NSSavePanel setDirectoryURL:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSSavePanel setDirectoryURL:]
+
+-[NSSavePanel setDirectoryURL:]:
+0x185b2317c:  63 4a 31 d0   adrp	x3, 0x1e8471000
+0x185b23180:  63 40 05 91   add	x3, x3, #0x150 ; "directoryURL"
+0x185b23184:  fb 29 96 14   b	0x1880ad970
+

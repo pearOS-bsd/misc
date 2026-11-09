@@ -1,0 +1,61 @@
+### -[NSPopover setBehavior:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSPopover setBehavior:]
+
+-[NSPopover setBehavior:]:
+0x1851441f8:  7f 23 03 d5   pacibsp
+0x1851441fc:  ff 43 01 d1   sub	sp, sp, #0x50
+0x185144200:  f8 5f 01 a9   stp	x24, x23, [sp, #0x10]
+0x185144204:  f6 57 02 a9   stp	x22, x21, [sp, #0x20]
+0x185144208:  f4 4f 03 a9   stp	x20, x19, [sp, #0x30]
+0x18514420c:  fd 7b 04 a9   stp	fp, lr, [sp, #0x40]
+0x185144210:  fd 03 01 91   add	fp, sp, #0x40
+0x185144214:  08 95 30 90   adrp	x8, 0x1e63e4000
+0x185144218:  17 81 8b b9   ldrsw	x23, [x8, #0xb80]
+0x18514421c:  08 00 17 8b   add	x8, x0, x23
+0x185144220:  08 01 40 f9   ldr	x8, [x8]
+0x185144224:  1f 01 02 eb   cmp	x8, x2
+0x185144228:  40 04 00 54   b.eq	loc_1851442b0 ; ⤵ 0x88
+0x18514422c:  f4 03 02 aa   mov	x20, x2
+0x185144230:  f3 03 00 aa   mov	x19, x0
+0x185144234:  5f 0c 00 f1   cmp	x2, #0x3
+0x185144238:  c3 01 00 54   b.lo	loc_185144270 ; ⤵ 0x38
+0x18514423c:  c8 82 2d 90   adrp	x8, 0x1e019c000
+0x185144240:  15 85 42 f9   ldr	x21, [x8, #0x508] ; _ptr.NSException
+0x185144244:  a8 82 2d f0   adrp	x8, 0x1e019b000
+0x185144248:  08 61 47 f9   ldr	x8, [x8, #0xec0] ; _ptr._NSInternalInconsistencyException
+0x18514424c:  16 01 40 f9   ldr	x22, [x8]
+0x185144250:  e0 03 01 aa   mov	x0, x1
+0x185144254:  5f 82 be 94   bl	j__NSStringFromSelector
+0x185144258:  e0 03 00 f9   str	x0, [sp]
+0x18514425c:  23 9c 31 90   adrp	x3, 0x1e84c8000
+0x185144260:  63 c0 3d 91   add	x3, x3, #0xf70 ; "Invalid value to %@"
+0x185144264:  e0 03 15 aa   mov	x0, x21
+0x185144268:  e2 03 16 aa   mov	x2, x22
+0x18514426c:  25 1d bb 94   bl	0x18800b700
+0x185144270:  ; loc_185144270
+0x185144270:  74 6a 37 f8   str	x20, [x19, x23]
+0x185144274:  e0 03 13 aa   mov	x0, x19
+0x185144278:  ae 2c bd 94   bl	0x18808f530
+0x18514427c:  a0 01 00 34   cbz	w0, loc_1851442b0 ; ⤵ 0x34
+0x185144280:  e0 03 13 aa   mov	x0, x19
+0x185144284:  21 00 80 52   mov	w1, #0x1
+0x185144288:  fd 7b 44 a9   ldp	fp, lr, [sp, #0x40]
+0x18514428c:  f4 4f 43 a9   ldp	x20, x19, [sp, #0x30]
+0x185144290:  f6 57 42 a9   ldp	x22, x21, [sp, #0x20]
+0x185144294:  f8 5f 41 a9   ldp	x24, x23, [sp, #0x10]
+0x185144298:  ff 43 01 91   add	sp, sp, #0x50
+0x18514429c:  ff 23 03 d5   autibsp
+0x1851442a0:  d0 07 1e ca   eor	x16, lr, lr, lsl #0x1
+0x1851442a4:  50 00 f0 b6   tbz	x16, #0x3e, loc_1851442ac ; ⤵ 0x8
+0x1851442a8:  20 8e 38 d4   brk	#0xc471
+0x1851442ac:  ; loc_1851442ac
+0x1851442ac:  f2 1c 2a 14   b	__NSTransientUIElementRegisterForEvents
+0x1851442b0:  ; loc_1851442b0
+0x1851442b0:  fd 7b 44 a9   ldp	fp, lr, [sp, #0x40]
+0x1851442b4:  f4 4f 43 a9   ldp	x20, x19, [sp, #0x30]
+0x1851442b8:  f6 57 42 a9   ldp	x22, x21, [sp, #0x20]
+0x1851442bc:  f8 5f 41 a9   ldp	x24, x23, [sp, #0x10]
+0x1851442c0:  ff 43 01 91   add	sp, sp, #0x50
+0x1851442c4:  ff 0f 5f d6   retab
+

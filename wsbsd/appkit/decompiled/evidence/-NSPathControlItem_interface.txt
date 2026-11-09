@@ -1,0 +1,15 @@
+@interface NSPathControlItem : NSObject {
+    /* instance variables */
+    @"NSPathComponentCell" _cell;
+}
+
+@property (T@"NSString",C) title;
+@property (T@"NSAttributedString",C) attributedTitle;
+@property (T@"NSImage",&) image;
+@property (T@"NSURL",R) URL;
+
+/* class methods */
++[NSPathControlItem itemWithCell:];
+
+/* instance methods */
+-[NSPathControlItem setAttributedTitle:];

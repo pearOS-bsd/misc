@@ -1,0 +1,50 @@
+@interface NSFont : NSObject <NSCopying, NSSecureCoding>
+
+@property (T@"NSString",R,C) fontName;
+@property (Td,R) pointSize;
+@property (Tr^d,R) matrix;
+@property (T@"NSString",R,C) familyName;
+@property (T@"NSString",R,C) displayName;
+@property (T@"NSFontDescriptor",R) fontDescriptor;
+@property (T@"NSAffineTransform",R,C) textTransform;
+@property (TQ,R) numberOfGlyphs;
+@property (TQ,R) mostCompatibleStringEncoding;
+@property (T@"NSCharacterSet",R) coveredCharacterSet;
+@property (T{CGRect={CGPoint=dd}{CGSize=dd}},R) boundingRectForFont;
+@property (T{CGSize=dd},R) maximumAdvancement;
+@property (Td,R) ascender;
+@property (Td,R) descender;
+@property (Td,R) leading;
+@property (Td,R) underlinePosition;
+@property (Td,R) underlineThickness;
+@property (Td,R) italicAngle;
+@property (Td,R) capHeight;
+@property (Td,R) xHeight;
+@property (TB,R,GisFixedPitch) fixedPitch;
+@property (T@"NSFont",R,C) verticalFont;
+@property (TB,R,GisVertical) vertical;
+
+/* class methods */
++[NSFont titleBarFontOfSize:];
++[NSFont supportsSecureCoding];
++[NSFont availableFontFamilies];
++[NSFont _postFontSetChangedNotifications];
++[NSFont toolbarLabelFontOfSize:];
++[NSFont initialize];
++[NSFont userFontOfSize:];
++[NSFont monospacedDigitSystemFontOfSize:weight:];
++[NSFont coveredCharacterCache];
++[NSFont systemFontOfSize:width:];
++[NSFont setLocaleListForDefaultFontFallback:];
++[NSFont _refreshMenuFontsIfNeeded];
++[NSFont boldSystemFontOfSize:width:];
++[NSFont _registerForFontSetNotification];
+=== ctors ===
++[NSFont systemFontOfSize:width:];
++[NSFont boldSystemFontOfSize:width:];
++[NSFont systemFontOfSize:];
++[NSFont fontWithName:size:];
++[NSFont boldSystemFontOfSize:];
++[NSFont systemFontOfSize:weight:];
++[NSFont systemFontOfSize:weight:design:];
++[NSFont systemFontOfSize:weight:width:];

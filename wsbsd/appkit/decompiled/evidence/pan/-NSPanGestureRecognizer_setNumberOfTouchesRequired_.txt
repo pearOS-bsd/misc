@@ -1,0 +1,11 @@
+### -[NSPanGestureRecognizer setNumberOfTouchesRequired:]
+   • Loading symbol cache file...
+   • Locating symbol: -[NSPanGestureRecognizer setNumberOfTouchesRequired:]
+
+-[NSPanGestureRecognizer setNumberOfTouchesRequired:]:
+0x18538f39c:  88 82 30 d0   adrp	x8, 0x1e63e1000
+0x18538f3a0:  08 7d 82 b9   ldrsw	x8, [x8, #0x27c] ; __MergedGlobals
+0x18538f3a4:  08 00 08 8b   add	x8, x0, x8
+0x18538f3a8:  02 01 00 f9   str	x2, [x8]
+0x18538f3ac:  c0 03 5f d6   ret
+

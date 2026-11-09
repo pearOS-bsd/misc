@@ -1,0 +1,60 @@
+@interface NSColor : NSObject <NSAccessibilityColor, CAAnimatableValue, NSCopying, NSSecureCoding, NSPasteboardReading, NSPasteboardWriting>
+
+@property (Td,N,R) _luma;
+@property (TQ,R) hash;
+@property (T#,R) superclass;
+@property (T@"NSString",R,C) description;
+@property (T@"NSString",?,R,C) debugDescription;
+@property (T@"NSString",R) accessibilityName;
+@property (TB,R) _isSourceListColor;
+@property (Td,R) _luminance;
+@property (Td,R) contentHeadroom;
+@property (Tq,R) type;
+@property (T@"NSColor",R,C) standardDynamicRangeColor;
+@property (T@"NSString",R,C) catalogNameComponent;
+@property (T@"NSString",R,C) colorNameComponent;
+@property (T@"NSString",R,C) localizedCatalogNameComponent;
+@property (T@"NSString",R,C) localizedColorNameComponent;
+@property (Td,R) redComponent;
+@property (Td,R) greenComponent;
+@property (Td,R) blueComponent;
+@property (Td,R) hueComponent;
+@property (Td,R) saturationComponent;
+@property (Td,R) brightnessComponent;
+@property (Td,R) whiteComponent;
+@property (Td,R) cyanComponent;
+@property (Td,R) magentaComponent;
+@property (Td,R) yellowComponent;
+@property (Td,R) blackComponent;
+@property (T@"NSColorSpace",R) colorSpace;
+@property (Tq,R) numberOfComponents;
+@property (T@"NSImage",R,C) patternImage;
+@property (Td,R) alphaComponent;
+@property (Td,R) linearExposure;
+@property (T^{CGColor=},R) CGColor;
+@property (TQ,R) hash;
+@property (T#,R) superclass;
+@property (T@"NSString",R,C) description;
+@property (T@"NSString",?,R,C) debugDescription;
+
+/* class methods */
++[NSColor linkColor];
+=== selected class ctors ===
++[NSColor clearColor];
++[NSColor colorWithWhite:alpha:];
++[NSColor colorWithRed:green:blue:alpha:];
++[NSColor blackColor];
++[NSColor whiteColor];
++[NSColor colorWithCalibratedRed:green:blue:alpha:];
++[NSColor colorWithCalibratedWhite:alpha:];
++[NSColor blueColor];
++[NSColor colorWithCalibratedHue:saturation:brightness:alpha:];
++[NSColor colorWithColorSpace:components:count:];
++[NSColor colorWithColorSpace:hue:saturation:brightness:alpha:];
++[NSColor colorWithHue:saturation:brightness:alpha:];
++[NSColor colorWithRed:green:blue:alpha:exposure:];
++[NSColor colorWithRed:green:blue:alpha:linearExposure:];
++[NSColor colorWithSRGBRed:green:blue:alpha:];
++[NSColor grayColor];
++[NSColor greenColor];
++[NSColor redColor];
