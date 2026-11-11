@@ -1,0 +1,81 @@
+# NSPathComponentCell — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# : NSTextFieldCell. Own value model: image + URL (+ inherited title via stringValue). The drawing/geometry (drawInteriorWithFrame:/imageRectForBounds:/titleRectForBounds:/cellSizeForBounds:, navigation-bar arrow flags) is stage2.
+
+@interface NSPathComponentCell : NSTextFieldCell {
+    /* instance variables */
+    @"NSImage" _image;
+    d _minWidth;
+    d _fullWidth;
+    {?="shouldDrawArrow"b1"drawsAsNavigationBar"b1"isFirstItem"b1"isLastItem"b1"isDropTarget"b1"reserved"b27} _flags;
+    @"NSImage" _originalImage;
+    @"NSURL" _url;
+    d _resizedWidth;
+    d _currentWidth;
+}
+
+@property (Td,S_setResizedWidth:,V_resizedWidth) _resizedWidth;
+@property (Td,S_setCurrentWidth:,V_currentWidth) _currentWidth;
+@property (T@"NSImage",&) image;
+@property (T@"NSURL",C,V_url) URL;
+
+/* class methods */
++[NSPathComponentCell _iconSizeForControlSize:];
+
+/* instance methods */
+-[NSPathComponentCell setURL:];
+-[NSPathComponentCell initWithCoder:];
+-[NSPathComponentCell URL];
+-[NSPathComponentCell init];
+-[NSPathComponentCell description];
+-[NSPathComponentCell setBaseWritingDirection:];
+-[NSPathComponentCell image];
+-[NSPathComponentCell copyWithZone:];
+-[NSPathComponentCell encodeWithCoder:];
+-[NSPathComponentCell setImage:];
+-[NSPathComponentCell _compareToCell:];
+-[NSPathComponentCell _setIsLastItem:];
+-[NSPathComponentCell _contentBacking];
+-[NSPathComponentCell _imageToDisplay];
+-[NSPathComponentCell _pathControlContentStyleInView:];
+-[NSPathComponentCell _textAttributes];
+-[NSPathComponentCell _currentWidth];
+-[NSPathComponentCell _drawNavigationBarBackgroundWithFrame:inView:];
+-[NSPathComponentCell _drawsAsNavigationBar];
+-[NSPathComponentCell _effectiveContentStyleForArrowInView:];
+-[NSPathComponentCell _effectiveFontDidChangeTo:];
+-[NSPathComponentCell _fullWidth];
+-[NSPathComponentCell _iconSize];
+-[NSPathComponentCell _interiorContentStateInView:];
+-[NSPathComponentCell _interiorContentValueInView:];
+-[NSPathComponentCell _isDropTarget];
+-[NSPathComponentCell _isFirstItem];
+-[NSPathComponentCell _isLastItem];
+-[NSPathComponentCell _minWidth];
+-[NSPathComponentCell _overlapAmount];
+-[NSPathComponentCell _pathControlContentStyleForImageInView:];
+-[NSPathComponentCell _pathControlContentStyleForTextInView:];
+-[NSPathComponentCell _resizedWidth];
+-[NSPathComponentCell _setCurrentWidth:];
+-[NSPathComponentCell _setDrawsAsNavigationBar:];
+-[NSPathComponentCell _setIsDropTarget:];
+-[NSPathComponentCell _setIsFirstItem:];
+-[NSPathComponentCell _setResizedWidth:];
+-[NSPathComponentCell _setShouldDrawArrow:];
+-[NSPathComponentCell _setShouldDrawArrowYes];
+-[NSPathComponentCell _shouldDrawArrow];
+-[NSPathComponentCell _shouldDrawHighlightRect];
+-[NSPathComponentCell _shouldDrawRTL];
+-[NSPathComponentCell _shouldHighlightDropTarget];
+-[NSPathComponentCell _shouldStyleUneditableTextInView:];
+-[NSPathComponentCell _textDimsWhenDisabled];
+-[NSPathComponentCell cellSizeForBounds:];
+-[NSPathComponentCell drawInteriorWithFrame:inView:];
+-[NSPathComponentCell drawWithFrame:inView:];
+-[NSPathComponentCell imageRectForBounds:];
+-[NSPathComponentCell initImageCell:];
+-[NSPathComponentCell initTextCell:];
+-[NSPathComponentCell interiorBackgroundStyle];
+-[NSPathComponentCell titleRectForBounds:];
+-[NSPathComponentCell titleRectForBounds:imageRect:];
+
+@end
