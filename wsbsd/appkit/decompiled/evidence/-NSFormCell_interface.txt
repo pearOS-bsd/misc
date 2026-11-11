@@ -1,0 +1,85 @@
+# NSFormCell — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# Measured on-Mac: : NSActionCell; initTextCell: sets title; defaults titleAlignment=Right(2) [modern NSTextAlignment Left=0 Center=1 Right=2 Justified=3 Natural=4], titleBaseWritingDirection=Natural(-1), preferredTextFieldWidth=-1, placeholder nil. titleWidth with no explicit set is AUTO — AppKit returned the measured title-text width (43.0381 for 'Name:') computed from the title cell's font metrics = stage2; a stored titleWidth (incl. -1 sentinel) is honoured. Drawing/geometry (drawingRectForBounds:/cellSizeForBounds:/titleWidth:(size)) stage2.
+
+@interface NSFormCell : NSActionCell {
+    /* instance variables */
+    d _titleWidth;
+    d _titleEndPoint;
+    d _preferredTextFieldWidth;
+    @ _titleCell;
+}
+
+@property (Td) titleWidth;
+@property (T@"NSString",C) title;
+@property (T@"NSFont",&) titleFont;
+@property (TB,R,GisOpaque) opaque;
+@property (T@"NSString",C) placeholderString;
+@property (T@"NSAttributedString",C) placeholderAttributedString;
+@property (Tq) titleAlignment;
+@property (Tq) titleBaseWritingDirection;
+@property (Td) preferredTextFieldWidth;
+
+/* class methods */
++[NSFormCell initialize];
+
+/* instance methods */
+-[NSFormCell titleAlignment];
+-[NSFormCell setAttributedTitle:];
+-[NSFormCell attributedTitle];
+-[NSFormCell drawingRectForBounds:];
+-[NSFormCell setTitle:];
+-[NSFormCell setTitleFont:];
+-[NSFormCell initWithCoder:];
+-[NSFormCell isOpaque];
+-[NSFormCell init];
+-[NSFormCell setEnabled:];
+-[NSFormCell dealloc];
+-[NSFormCell acceptsFirstResponder];
+-[NSFormCell title];
+-[NSFormCell accessibilityHitTest:];
+-[NSFormCell copyWithZone:];
+-[NSFormCell encodeWithCoder:];
+-[NSFormCell titleFont];
+-[NSFormCell setTitleAlignment:];
+-[NSFormCell accessibilityActionDescription:];
+-[NSFormCell setPlaceholderAttributedString:];
+-[NSFormCell _accessibilityTitleRect];
+-[NSFormCell _layoutTitleRect:interiorChromeRect:interiorTextRect:withFrame:inView:];
+-[NSFormCell _selectOrEdit:inView:target:editor:event:start:end:];
+-[NSFormCell _titleRectForCellFrame:];
+-[NSFormCell _updateFormAlignmentForUserInterfaceLayoutDirection];
+-[NSFormCell accessibilityActionNames];
+-[NSFormCell accessibilityAttributeNames];
+-[NSFormCell accessibilityChildrenAttribute];
+-[NSFormCell accessibilityChildrenInNavigationOrderAttribute];
+-[NSFormCell accessibilityHelpStringForChild:];
+-[NSFormCell accessibilityIsChildFocusable:];
+-[NSFormCell accessibilityIsChildrenAttributeSettable];
+-[NSFormCell accessibilityIsPlaceholderValueAttributeSettable];
+-[NSFormCell accessibilityIsTitleUIElementAttributeSettable];
+-[NSFormCell accessibilityParameterizedAttributeNames];
+-[NSFormCell accessibilityPerformAction:];
+-[NSFormCell accessibilityPlaceholderValueAttribute];
+-[NSFormCell accessibilityPositionOfChild:];
+-[NSFormCell accessibilitySizeOfChild:];
+-[NSFormCell accessibilityTitleUIElementAttribute];
+-[NSFormCell cellSizeForBounds:];
+-[NSFormCell drawInteriorWithFrame:inView:];
+-[NSFormCell drawWithFrame:inView:];
+-[NSFormCell initTextCell:];
+-[NSFormCell placeholderAttributedString];
+-[NSFormCell placeholderString];
+-[NSFormCell preferredTextFieldWidth];
+-[NSFormCell resetCursorRect:inView:];
+-[NSFormCell setPlaceholderString:];
+-[NSFormCell setPreferredTextFieldWidth:];
+-[NSFormCell setTitleBaseWritingDirection:];
+-[NSFormCell setTitleWidth:];
+-[NSFormCell setTitleWithMnemonic:];
+-[NSFormCell setUserInterfaceLayoutDirection:];
+-[NSFormCell titleBaseWritingDirection];
+-[NSFormCell titleWidth];
+-[NSFormCell titleWidth:];
+-[NSFormCell trackMouse:inRect:ofView:untilMouseUp:];
+
+@end
