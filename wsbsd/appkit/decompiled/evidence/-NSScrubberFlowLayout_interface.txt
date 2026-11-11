@@ -1,0 +1,30 @@
+# NSScrubberFlowLayout — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# : NSScrubberLayout. Measured on-Mac: itemSpacing default 0, itemSize default {50,30}. layoutAttributesForItemAtIndex: returned nil on a standalone layout (gated by the installed scrubber) — the horizontal-flow geometry (x = index*(itemWidth+spacing), size=itemSize) is reproduced here directly and testably; scrubberContentSize needs the scrubber's item count (stage2 when no scrubber).
+
+@interface NSScrubberFlowLayout : NSScrubberLayout {
+    /* instance variables */
+    @ _support;
+    d _itemSpacing;
+    {CGSize="width"d"height"d} _itemSize;
+}
+
+@property (Td) itemSpacing;
+@property (T{CGSize=dd}) itemSize;
+
+/* instance methods */
+-[NSScrubberFlowLayout prepareLayout];
+-[NSScrubberFlowLayout itemSpacing];
+-[NSScrubberFlowLayout initWithCoder:];
+-[NSScrubberFlowLayout invalidateLayout];
+-[NSScrubberFlowLayout setItemSpacing:];
+-[NSScrubberFlowLayout init];
+-[NSScrubberFlowLayout dealloc];
+-[NSScrubberFlowLayout encodeWithCoder:];
+-[NSScrubberFlowLayout layoutAttributesForItemAtIndex:];
+-[NSScrubberFlowLayout layoutAttributesForItemsInRect:];
+-[NSScrubberFlowLayout invalidateLayoutForItemsAtIndexes:];
+-[NSScrubberFlowLayout itemSize];
+-[NSScrubberFlowLayout scrubberContentSize];
+-[NSScrubberFlowLayout setItemSize:];
+
+@end
