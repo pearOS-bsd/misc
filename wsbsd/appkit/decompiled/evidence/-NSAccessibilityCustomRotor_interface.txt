@@ -1,0 +1,33 @@
+# NSAccessibilityCustomRotor — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# Value/config object: type (NSAccessibilityCustomRotorType, Custom=0), label, weak itemSearchDelegate + itemLoadingDelegate. initWithLabel:itemSearchDelegate: -> type Custom; initWithRotorType:itemSearchDelegate: -> given type, empty label. The actual rotor navigation (VoiceOver querying the search delegate) is the AX-client runtime = stage2.
+
+@interface NSAccessibilityCustomRotor : NSObject {
+    /* instance variables */
+    q _type;
+    @"NSString" _label;
+    @"<NSAccessibilityCustomRotorItemSearchDelegate>" _itemSearchDelegate;
+    @"<NSAccessibilityElementLoading>" _itemLoadingDelegate;
+}
+
+@property (Tq,V_type) type;
+@property (T@"NSString",C,V_label) label;
+@property (T@"<NSAccessibilityCustomRotorItemSearchDelegate>",W,D) itemSearchDelegate;
+@property (T@"<NSAccessibilityElementLoading>",W,D) itemLoadingDelegate;
+
+/* instance methods */
+-[NSAccessibilityCustomRotor label];
+-[NSAccessibilityCustomRotor setLabel:];
+-[NSAccessibilityCustomRotor setType:];
+-[NSAccessibilityCustomRotor init];
+-[NSAccessibilityCustomRotor description];
+-[NSAccessibilityCustomRotor dealloc];
+-[NSAccessibilityCustomRotor type];
+-[NSAccessibilityCustomRotor _defaultLabelForType:];
+-[NSAccessibilityCustomRotor initWithLabel:itemSearchDelegate:];
+-[NSAccessibilityCustomRotor initWithRotorType:itemSearchDelegate:];
+-[NSAccessibilityCustomRotor itemLoadingDelegate];
+-[NSAccessibilityCustomRotor itemSearchDelegate];
+-[NSAccessibilityCustomRotor setItemLoadingDelegate:];
+-[NSAccessibilityCustomRotor setItemSearchDelegate:];
+
+@end
