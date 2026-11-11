@@ -1,0 +1,47 @@
+# NSFilePromiseReceiver — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# Measured on-Mac: +readableDraggedTypes / +readableTypesForPasteboard: return (in order) com.apple.NSFilePromiseItemMetaData, dyn.ah62d4rv4gu8yc6durvwwa3xmrvw1gkdusm1044pxqyuha2pxsvw0e55bsmwca7d3sbwu, com.apple.pasteboard.promised-file-content-type. +readingOptionsForType:pasteboard: returns 2 (NSPasteboardReadingAsPropertyList). fileTypes/fileNames are vended from the parsed pasteboard item and receivePromisedFilesAtDestination:options:operationQueue:reader: fetches via the provider = stage2.
+
+@interface NSFilePromiseReceiver : NSObject <NSFilePromiseCompletionTarget, NSPasteboardReading> {
+    /* instance variables */
+    @"NSPasteboard" _pasteboard;
+    @"NSPasteboardItem" _pasteboardItem;
+    @"NSArray" _fileTypes;
+    @"NSArray" _reservedA;
+    @"NSArray" _fileNames;
+    @"NSArray" _fileURLs;
+    @"NSOperationQueue" _operationQueue;
+    q _promiseType;
+    @? _readerBlock;
+    {?="usesFileCoordination"b1"registered"b1"reserved"b30} _flags;
+}
+
+@property (T@"NSArray",R,C,V_reservedA) alternateFileTypes;
+@property (T@"NSArray",R,C,V_fileTypes) fileTypes;
+@property (T@"NSArray",R,C,V_fileNames) fileNames;
+@property (TQ,R) hash;
+@property (T#,R) superclass;
+@property (T@"NSString",R,C) description;
+@property (T@"NSString",?,R,C) debugDescription;
+
+/* class methods */
++[NSFilePromiseReceiver acceptableDragTypes];
++[NSFilePromiseReceiver readableDraggedTypes];
++[NSFilePromiseReceiver readableTypesForPasteboard:];
++[NSFilePromiseReceiver readingOptionsForType:pasteboard:];
+
+/* instance methods */
+-[NSFilePromiseReceiver dealloc];
+-[NSFilePromiseReceiver fileNames];
+-[NSFilePromiseReceiver _setPasteboard:];
+-[NSFilePromiseReceiver providerIsUsingFileCoordination];
+-[NSFilePromiseReceiver _setPasteboardItem:];
+-[NSFilePromiseReceiver alternateFileTypes];
+-[NSFilePromiseReceiver draggingCancelled:];
+-[NSFilePromiseReceiver draggingEnded:];
+-[NSFilePromiseReceiver fileTypes];
+-[NSFilePromiseReceiver initWithPasteboardPropertyList:ofType:];
+-[NSFilePromiseReceiver receivePromisedFilesAtDestination:options:operationQueue:reader:];
+-[NSFilePromiseReceiver registerDesinationLocation:options:operationQueu:reader:];
+-[NSFilePromiseReceiver registerDestinationLocation:options:operationQueue:reader:];
+
+@end
