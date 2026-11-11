@@ -1,0 +1,113 @@
+# NSObjectController — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# Defaults measured on this Mac: editable=YES autoPrepares=NO objectClass=NSMutableDictionary content=nil canAdd=YES canRemove=NO; newObject=NSMutableDictionary; initWithContent: -> canRemove=YES selectedObjects.count=1
+
+@interface NSObjectController : NSController {
+    /* instance variables */
+    @ _content;
+    @ _objectHandler;
+    @ _managedProxy;
+    {__objectControllerFlags="_editable"b1"_automaticallyPreparesContent"b1"_hasLoadedData"b1"_explicitlyCannotAdd"b1"_explicitlyCannotRemove"b1"_isUsingManagedProxy"b1"_hasFetched"b1"_batches"b1"_reservedObjectController"b24} _objectControllerFlags;
+    @"NSString" _objectClassName;
+    # _objectClass;
+    @"NSArray" _contentObjectArray;
+}
+
+@property (T@"NSManagedObjectContext",&) managedObjectContext;
+@property (T@"NSString",C) entityName;
+@property (T@"NSPredicate",&) fetchPredicate;
+@property (TB) usesLazyFetching;
+@property (T@,&) content;
+@property (T@,R) selection;
+@property (T@"NSArray",R,C) selectedObjects;
+@property (TB) automaticallyPreparesContent;
+@property (T#) objectClass;
+@property (TB,GisEditable) editable;
+@property (TB,R) canAdd;
+@property (TB,R) canRemove;
+
+/* class methods */
++[NSObjectController initialize];
++[NSObjectController _defaultObjectClass];
++[NSObjectController _defaultObjectClassName];
++[NSObjectController _keyValueBindingAccessPoints];
++[NSObjectController _modelAndProxyKeys];
++[NSObjectController _nonAutomaticObservingKeys];
+
+/* instance methods */
+-[NSObjectController isEditable];
+-[NSObjectController managedObjectContext];
+-[NSObjectController awakeFromNib];
+-[NSObjectController selection];
+-[NSObjectController addObject:];
+-[NSObjectController add:];
+-[NSObjectController objectClass];
+-[NSObjectController remove:];
+-[NSObjectController _init];
+-[NSObjectController validateMenuItem:];
+-[NSObjectController initWithCoder:];
+-[NSObjectController removeObject:];
+-[NSObjectController _dealloc];
+-[NSObjectController entityName];
+-[NSObjectController init];
+-[NSObjectController description];
+-[NSObjectController setContent:];
+-[NSObjectController content];
+-[NSObjectController fetch:];
+-[NSObjectController setManagedObjectContext:];
+-[NSObjectController setEditable:];
+-[NSObjectController encodeWithCoder:];
+-[NSObjectController _controllerKeys];
+-[NSObjectController _fetchRequestForPerformingFetch];
+-[NSObjectController _setExplicitlyCannotAdd:remove:];
+-[NSObjectController selectedObjects];
+-[NSObjectController _singleMutableArrayValueForKey:];
+-[NSObjectController setObjectClass:];
+-[NSObjectController _canModifyManagedContent];
+-[NSObjectController _changeEditable:];
+-[NSObjectController _executeAdd:didCommitSuccessfully:actionSender:];
+-[NSObjectController _executeFetch:didCommitSuccessfully:actionSender:];
+-[NSObjectController _explicitlyCannotAdd];
+-[NSObjectController _explicitlyCannotRemove];
+-[NSObjectController _invokeSingleSelector:withArguments:onKeyPath:];
+-[NSObjectController _isManagedController];
+-[NSObjectController _isUsingManagedProxy];
+-[NSObjectController _lazyFetchResultProxyForObjects:];
+-[NSObjectController _managedProxy];
+-[NSObjectController _markHasLoadedData:];
+-[NSObjectController _needsLiveUpdates];
+-[NSObjectController _notifyEditorStateChanged:];
+-[NSObjectController _notifyManagedContextEditorStateChanged:];
+-[NSObjectController _notifyOfAnyContentChange];
+-[NSObjectController _objectClassName];
+-[NSObjectController _objectIDsFromManagedObjects:];
+-[NSObjectController _performFetchWithRequest:merge:error:];
+-[NSObjectController _prepareContentWithNewObject:];
+-[NSObjectController _reactToMatchingInsertions:deletions:refreshed:];
+-[NSObjectController _relationshipKeyPathsForPrefetching];
+-[NSObjectController _setObjectClassName:];
+-[NSObjectController _setObjectHandler:];
+-[NSObjectController _setSingleValue:forKey:];
+-[NSObjectController _setSingleValue:forKeyPath:];
+-[NSObjectController _setUsingManagedProxy:];
+-[NSObjectController _singleMutableArrayValueForKeyPath:];
+-[NSObjectController _singleValueForKey:];
+-[NSObjectController _singleValueForKeyPath:];
+-[NSObjectController _validateSingleValue:forKey:error:];
+-[NSObjectController _validateSingleValue:forKeyPath:error:];
+-[NSObjectController automaticallyPreparesContent];
+-[NSObjectController canAdd];
+-[NSObjectController canRemove];
+-[NSObjectController defaultFetchRequest];
+-[NSObjectController fetchPredicate];
+-[NSObjectController fetchWithRequest:merge:error:];
+-[NSObjectController initWithContent:];
+-[NSObjectController newObject];
+-[NSObjectController prepareContent];
+-[NSObjectController setAutomaticallyPreparesContent:];
+-[NSObjectController setEntityName:];
+-[NSObjectController setFetchPredicate:];
+-[NSObjectController setUsesLazyFetching:];
+-[NSObjectController usesLazyFetching];
+-[NSObjectController validateUserInterfaceItem:];
+
+@end
