@@ -1,0 +1,33 @@
+# NSSliderAccessory (+NSSliderAccessoryBehavior) — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# Measured on-Mac: accessoryWithImage: returns an object; isEnabled default YES. NSSliderAccessoryBehavior has class factories automaticBehavior/valueStepBehavior/valueResetBehavior (concrete _NSStandardSliderAccessoryBehavior) + behaviorWithTarget:action:/behaviorWithHandler:. repeatsOnLongPress is derived from the behavior. The vast tail is the inherited NSAccessibility protocol; the slider-bar rendering + enclosingSlider/container wiring are stage2.
+
+@interface NSSliderAccessory : NSObject <NSAccessibility, NSAccessibilityElement, NSCoding> {
+    /* instance variables */
+    @ _content;
+    @ _container;
+    @"NSSliderAccessoryBehavior" _behavior;
+    B _enabled;
+}
+
+@property (T@"NSImage",R,C) _image;
+@property (T@"NSSlider",W) enclosingSlider;
+@property (T@"<NSSliderAccessoryContainer>",W) container;
+@property (TB,R) repeatsOnLongPress;
+...
+@interface NSSliderAccessoryBehavior : NSObject <NSCoding, NSCopying>
+
+/* class methods */
++[NSSliderAccessoryBehavior automaticBehavior];
++[NSSliderAccessoryBehavior behaviorWithHandler:];
++[NSSliderAccessoryBehavior behaviorWithTarget:action:];
++[NSSliderAccessoryBehavior valueResetBehavior];
++[NSSliderAccessoryBehavior valueStepBehavior];
+
+/* instance methods */
+-[NSSliderAccessoryBehavior initWithCoder:];
+-[NSSliderAccessoryBehavior copyWithZone:];
+-[NSSliderAccessoryBehavior encodeWithCoder:];
+-[NSSliderAccessoryBehavior repeatsOnLongPressForAccessory:];
+-[NSSliderAccessoryBehavior handleAction:];
+
+@end
