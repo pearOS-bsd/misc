@@ -10,7 +10,15 @@
 
 @implementation NSSwitch {
     NSControlStateValue _state;
+    __weak id _target;   /* NSSwitch is not cell-backed, so it stores its own */
+    SEL _action;         /* target/action rather than delegating to a cell */
 }
+
+/* Override NSControl's cell-delegating target/action: NSSwitch has no cell. */
+- (id)target { return _target; }
+- (void)setTarget:(id)target { _target = target; }
+- (SEL)action { return _action; }
+- (void)setAction:(SEL)action { _action = action; }
 
 - (NSControlStateValue)state { return _state; }
 - (void)setState:(NSControlStateValue)state
