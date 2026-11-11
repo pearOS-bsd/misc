@@ -1,0 +1,115 @@
+# NSRunningApplication — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# Measured on-Mac: constants NSApplicationActivationPolicy Regular=0 Accessory=1 Prohibited=2; NSBundleExecutableArchitectureARM64=16777228 X86_64=16777223.
+# NOTE: in a plain CLI tool (not WindowServer-registered), +currentApplication returns a DEGENERATE instance (pid=-1, terminated=1, policy=-1, nil URLs) because the live identity comes from the app's ASN registration with the window server. That registration is stage2 on our stack; the documented behavior (populate from the running process) is what this core reproduces.
+
+@interface NSRunningApplication : NSObject {
+    /* instance variables */
+    ^v _asn;
+    ^^v _helpers;
+    @ _obsInfo;
+    @"NSLock" _lock;
+    @"NSString" _bundleID;
+    @"NSString" _localizedName;
+    @"NSURL" _bundleURL;
+    @"NSURL" _executableURL;
+    @"NSDate" _launchDate;
+    @"NSImage" _icon;
+    i _pid;
+    I _lastSeed;
+    I _activeSeed;
+    I _staleSeed;
+    Q _obsMask;
+    {?="fetchedDynamic"b1"deadToUs"b1"terminated"b1"finishedLaunching"b1"hidden"b1"active"b1"ownsMenuBar"b1"arch"b3"activationPolicy"b3"reserved1"b19} _aflags;
+}
+
+@property (TB,R,GisTerminated) terminated;
+@property (TB,R,GisFinishedLaunching) finishedLaunching;
+@property (TB,R,GisHidden) hidden;
+@property (TB,R,GisActive) active;
+@property (TB,R) ownsMenuBar;
+@property (Tq,R) activationPolicy;
+@property (T@"NSString",R,C) localizedName;
+@property (T@"NSString",R,C) bundleIdentifier;
+@property (T@"NSURL",R,C) bundleURL;
+@property (T@"NSURL",R,C) executableURL;
+@property (Ti,R) processIdentifier;
+@property (T@"NSDate",R,C) launchDate;
+@property (T@"NSImage",R) icon;
+@property (Tq,R) executableArchitecture;
+
+/* class methods */
++[NSRunningApplication initialize];
++[NSRunningApplication _TALTerminatedApplications];
++[NSRunningApplication _allApplications];
++[NSRunningApplication _allRunningApplications];
++[NSRunningApplication _dumpRunningApplicationObservationInfo];
++[NSRunningApplication _frontmostApplicationExcludingSelf];
++[NSRunningApplication _transformASNArrayToAppArrayWithRelease:];
++[NSRunningApplication _yieldToApplication:];
++[NSRunningApplication currentApplication];
++[NSRunningApplication runningApplicationWithAuditToken:];
++[NSRunningApplication runningApplicationWithProcessIdentifier:];
++[NSRunningApplication runningApplicationsWithBundleIdentifier:];
++[NSRunningApplication terminateAutomaticallyTerminableApplications];
+
+/* instance methods */
+-[NSRunningApplication executableURL];
+-[NSRunningApplication removeObserver:forKeyPath:];
+-[NSRunningApplication observationInfo];
+-[NSRunningApplication setObservationInfo:];
+-[NSRunningApplication addObserver:forKeyPath:options:context:];
+-[NSRunningApplication terminate];
+-[NSRunningApplication isHidden];
+-[NSRunningApplication localizedName];
+-[NSRunningApplication isTerminated];
+-[NSRunningApplication bundleURL];
+-[NSRunningApplication hash];
+-[NSRunningApplication unhide];
+-[NSRunningApplication icon];
+-[NSRunningApplication bundleIdentifier];
+-[NSRunningApplication isActive];
+-[NSRunningApplication processIdentifier];
+-[NSRunningApplication hide];
+-[NSRunningApplication description];
+-[NSRunningApplication dealloc];
+-[NSRunningApplication isEqual:];
+-[NSRunningApplication _isUnresponsive];
+-[NSRunningApplication _applyInformationFromLSDictionary:includeDynamicProperties:];
+-[NSRunningApplication _applyPropertyChanges:fromDictionary:];
+-[NSRunningApplication _changeObservingNotificationMask:to:];
+-[NSRunningApplication _checkForUnecessaryLSNotifications];
+-[NSRunningApplication _fetchDynamicProperties];
+-[NSRunningApplication _fetchDynamicPropertiesIfNecessary];
+-[NSRunningApplication _fetchDynamicPropertiesIfNecessaryOrAppSeedIsOutOfDate];
+-[NSRunningApplication _fetchStaticInformationWithAtLeastKey:];
+-[NSRunningApplication _fetchValueForKey:];
+-[NSRunningApplication _getProcessSerialNumber:];
+-[NSRunningApplication _hasASN:];
+-[NSRunningApplication _initDeadWithLSDictionary:forASN:];
+-[NSRunningApplication _isAppPropertyUpdatedByLSNotifications:];
+-[NSRunningApplication _isLSStopped];
+-[NSRunningApplication _isProxiedByTalagent];
+-[NSRunningApplication _observeChangeInKey:withDataRef:];
+-[NSRunningApplication _performWithPSN:];
+-[NSRunningApplication _postWillOrDidChangeNotificationsForKeyIndex:isWill:];
+-[NSRunningApplication _preserveStaleDynamicPropertiesForRemainderOfRunLoop];
+-[NSRunningApplication _preservingStaleProperties];
+-[NSRunningApplication _quittingWillBeNoisyOrLoseData];
+-[NSRunningApplication _reasonThatQuittingWillBeNoisyOrLoseData];
+-[NSRunningApplication _updateActiveAndMenuBarOwnerProperties];
+-[NSRunningApplication _updateObservationMask];
+-[NSRunningApplication _updateOrStaleProperty:];
+-[NSRunningApplication activateFromApplication:];
+-[NSRunningApplication activateFromApplication:options:];
+-[NSRunningApplication activateWithOptions:];
+-[NSRunningApplication activationPolicy];
+-[NSRunningApplication applicationSerialNumber];
+-[NSRunningApplication applyPendingPropertyChanges];
+-[NSRunningApplication executableArchitecture];
+-[NSRunningApplication forceTerminate];
+-[NSRunningApplication initWithApplicationSerialNumber:];
+-[NSRunningApplication isFinishedLaunching];
+-[NSRunningApplication launchDate];
+-[NSRunningApplication ownsMenuBar];
+
+@end
