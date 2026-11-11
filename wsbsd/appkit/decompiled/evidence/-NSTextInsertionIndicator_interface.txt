@@ -1,0 +1,17 @@
+# NSTextInsertionIndicator — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# Measured on-Mac: : NSView; automaticModeOptions default 1 (WhileTracking); default color = semantic 'System textInsertionPointColor' (catalog). DisplayMode enum Automatic=0 Hidden=1 Visible=2. NOTE: the -displayMode getter on a standalone indicator returned an internal current-state value (100) and did not echo setDisplayMode: — the getter reflects a current-state machine gated by the window/CALayer presentation (stage2). This core reproduces the documented set/get contract; the blink/glow CALayer animation + state machine + semantic color resolution are stage2.
+
+@interface NSTextInsertionIndicator : NSView <CAAnimationDelegate, NSTrailingGlowDelegate> {
+    /* instance variables */
+    @"NSColor" _color;
+    q _displayMode;
+    q _currentState;
+    Q _substate;
+    @"CALayer" _glowContainer;
+    @"CAShapeLayer" _glowLayer;
+    @"CALayer" _indicatorLayer;
+    @"TUIGlowEffect" _glowEffect;
+    @"NSTrailingGlow" _pendingTrailingGlow;
+    @"NSMutableArray" _animatingTrailingGlows;
+    ^{__CFRunLoopTimer=} _waitTimer;
+    ^{__CFRunLoopObserver=} _trackingLoopObserver;
