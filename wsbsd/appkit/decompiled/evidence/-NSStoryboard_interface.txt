@@ -1,0 +1,47 @@
+# NSStoryboard — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# Measured on-Mac: +storyboardWithName:bundle: RAISES NSInvalidArgumentException when the named storyboard is not in the bundle ('Could not find a storyboard named <name> in bundle <bundle> (loaded)'). The compiled-storyboard load (identifier->nib maps from the .storyboardc Info.plist) and controller instantiation (keyed-archive decode) are stage2.
+
+@interface NSStoryboard : NSObject {
+    /* instance variables */
+    @"NSBundle" _bundle;
+    @"NSString" _storyboardFileName;
+    @"NSDictionary" _identifierToNibNameMap;
+    @"NSDictionary" _identifierToExternalStoryboardReferenceMap;
+    @"NSDictionary" _identifierToUUIDMap;
+    @"NSString" _designatedEntryPointIdentifier;
+    @"NSMutableDictionary" _identifierToUINibMap;
+    @"NSString" _mainMenu;
+    @"NSArray" _topLevelObjects;
+    @"NSBundle" _ownerBundle;
+}
+
+/* class methods */
++[NSStoryboard mainStoryboard];
++[NSStoryboard storyboardWithName:bundle:];
+
+/* instance methods */
+-[NSStoryboard name];
+-[NSStoryboard description];
+-[NSStoryboard debugDescription];
+-[NSStoryboard containingBundle];
+-[NSStoryboard nibForControllerWithIdentifier:];
+-[NSStoryboard _hasInitialController];
+-[NSStoryboard _instantiateControllerWithIdentifier:creator:storyboardSegueTemplate:sender:];
+-[NSStoryboard _instantiateMainMenu:];
+-[NSStoryboard _referencedStoryboardForExternalReferenceInfo:];
+-[NSStoryboard containsNibNamed:];
+-[NSStoryboard initWithBundle:storyboardFileName:identifierToNibNameMap:identifierToExternalStoryboardReferenceMap:identifierToUUIDMap:designatedEntryPointIdentifier:mainMenu:];
+-[NSStoryboard initWithName:bundle:];
+-[NSStoryboard instantiateControllerReferencedByPlaceholderWithIdentifier:];
+-[NSStoryboard instantiateControllerReferencedByPlaceholderWithIdentifier:storyboardSegueTemplate:sender:];
+-[NSStoryboard instantiateControllerWithIdentifier:];
+-[NSStoryboard instantiateControllerWithIdentifier:creator:];
+-[NSStoryboard instantiateInitialController];
+-[NSStoryboard instantiateInitialControllerWithCreator:];
+-[NSStoryboard instantiateInitialControllerWithCreator:storyboardSegueTemplate:sender:];
+-[NSStoryboard nibForStoryboardNibNamed:];
+-[NSStoryboard storyboardBundle];
+-[NSStoryboard storyboardFileName];
+-[NSStoryboard uniqueIDForControllerIdentifier:];
+
+@end
