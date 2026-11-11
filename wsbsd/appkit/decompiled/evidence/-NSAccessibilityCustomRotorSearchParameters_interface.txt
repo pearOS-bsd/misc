@@ -1,0 +1,24 @@
+# NSAccessibilityCustomRotorSearchParameters — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# Pure value object passed to a custom-rotor item-search delegate: currentItem (the result to search from), searchDirection (NSAccessibilityCustomRotorSearchDirection Previous=0/Next=1), filterString. No stage2.
+
+@interface NSAccessibilityCustomRotorSearchParameters : NSObject {
+    /* instance variables */
+    @"NSAccessibilityCustomRotorItemResult" _currentItem;
+    q _searchDirection;
+    @"NSString" _filterString;
+}
+
+@property (T@"NSAccessibilityCustomRotorItemResult",&,V_currentItem) currentItem;
+@property (Tq,V_searchDirection) searchDirection;
+@property (T@"NSString",C,V_filterString) filterString;
+
+/* instance methods */
+-[NSAccessibilityCustomRotorSearchParameters dealloc];
+-[NSAccessibilityCustomRotorSearchParameters searchDirection];
+-[NSAccessibilityCustomRotorSearchParameters setCurrentItem:];
+-[NSAccessibilityCustomRotorSearchParameters currentItem];
+-[NSAccessibilityCustomRotorSearchParameters filterString];
+-[NSAccessibilityCustomRotorSearchParameters setFilterString:];
+-[NSAccessibilityCustomRotorSearchParameters setSearchDirection:];
+
+@end
