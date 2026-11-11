@@ -1,0 +1,42 @@
+# NSForm — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# : NSMatrix. A single-column matrix of NSFormCell rows. addEntry: appends a titled NSFormCell row (returns it); insertEntry:atIndex:/removeEntryAtIndex:; cellAtIndex:/indexOfCellWithTag:/indexOfSelectedItem; the set* bulk setters (titleAlignment/titleFont/textAlignment/textFont/bezeled/bordered/entryWidth/writing direction) apply to every form cell. Drawing (calcSize/drawCellAtIndex:), the field editor (selectTextAtIndex:) and layout are stage2.
+
+@interface NSForm : NSMatrix
+
+/* class methods */
++[NSForm initialize];
+
+/* instance methods */
+-[NSForm setTextAlignment:];
+-[NSForm font];
+-[NSForm addEntry:];
+-[NSForm setTitleFont:];
+-[NSForm setFont:];
+-[NSForm sizeToFit];
+-[NSForm initWithFrame:];
+-[NSForm setTitleAlignment:];
+-[NSForm indexOfSelectedItem];
+-[NSForm _maxWidth];
+-[NSForm _resetTitleWidths];
+-[NSForm accessibilityAttributeNames];
+-[NSForm accessibilityFocusedUIElement];
+-[NSForm accessibilityRoleAttribute];
+-[NSForm calcSize];
+-[NSForm cellAtIndex:];
+-[NSForm drawCellAtIndex:];
+-[NSForm indexOfCellWithTag:];
+-[NSForm insertEntry:atIndex:];
+-[NSForm preferredTextFieldWidth];
+-[NSForm removeEntryAtIndex:];
+-[NSForm selectTextAtIndex:];
+-[NSForm setBezeled:];
+-[NSForm setBordered:];
+-[NSForm setEntryWidth:];
+-[NSForm setFrameSize:];
+-[NSForm setInterlineSpacing:];
+-[NSForm setPreferredTextFieldWidth:];
+-[NSForm setTextBaseWritingDirection:];
+-[NSForm setTextFont:];
+-[NSForm setTitleBaseWritingDirection:];
+
+@end
