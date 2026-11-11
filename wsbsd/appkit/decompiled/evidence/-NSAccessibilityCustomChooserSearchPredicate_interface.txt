@@ -1,0 +1,47 @@
+# NSAccessibilityCustomChooserSearchPredicate + NSAccessibilityCustomChooserItemResult — AppKit.framework macOS 27 (26A5416b arm64e)
+# Pure value objects (custom accessibility chooser search). SearchPredicate: currentItem, searchDirection (Previous=0/Next=1), filterText. ItemResult: initWithTargetElement:targetRange:, targetElement(weak), targetRange(NSValue), descriptionOverride. No stage2.
+
+@interface NSAccessibilityCustomChooserSearchPredicate : NSObject {
+    /* instance variables */
+    @"NSAccessibilityCustomChooserItemResult" _currentItem;
+    q _searchDirection;
+    @"NSString" _filterText;
+}
+
+@property (T@"NSAccessibilityCustomChooserItemResult",&,N,V_currentItem) currentItem;
+@property (Tq,N,V_searchDirection) searchDirection;
+@property (T@"NSString",C,N,V_filterText) filterText;
+
+/* instance methods */
+-[NSAccessibilityCustomChooserSearchPredicate dealloc];
+-[NSAccessibilityCustomChooserSearchPredicate searchDirection];
+-[NSAccessibilityCustomChooserSearchPredicate setCurrentItem:];
+-[NSAccessibilityCustomChooserSearchPredicate currentItem];
+-[NSAccessibilityCustomChooserSearchPredicate filterText];
+-[NSAccessibilityCustomChooserSearchPredicate setFilterText:];
+-[NSAccessibilityCustomChooserSearchPredicate setSearchDirection:];
+
+@end
+
+@interface NSAccessibilityCustomChooserItemResult : NSObject {
+    /* instance variables */
+    @"<NSObject>" _targetElement;
+    @"NSValue" _targetRange;
+    @"NSString" _descriptionOverride;
+}
+
+@property (T@"<NSObject>",W,N) targetElement;
+@property (T@"NSValue",&,N,V_targetRange) targetRange;
+@property (T@"NSString",C,N,V_descriptionOverride) descriptionOverride;
+
+/* instance methods */
+-[NSAccessibilityCustomChooserItemResult dealloc];
+-[NSAccessibilityCustomChooserItemResult setTargetRange:];
+-[NSAccessibilityCustomChooserItemResult descriptionOverride];
+-[NSAccessibilityCustomChooserItemResult initWithTargetElement:targetRange:];
+-[NSAccessibilityCustomChooserItemResult setDescriptionOverride:];
+-[NSAccessibilityCustomChooserItemResult setTargetElement:];
+-[NSAccessibilityCustomChooserItemResult targetElement];
+-[NSAccessibilityCustomChooserItemResult targetRange];
+
+@end
