@@ -1,0 +1,51 @@
+# NSCollectionViewTransitionLayout — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# Measured on-Mac: initWithCurrentLayout:nextLayout: stores both; transitionProgress default 0 and NOT clamped (set 2.0->2, -1.0->-1). NOTE: on a standalone instance (no collection view) valueForAnimatedKey: returned 0 even after updateValue:forAnimatedKey: — the animated-key store is gated by the live layout engine (stage2). The documented store/retrieve contract is reproduced here.
+
+@interface NSCollectionViewTransitionLayout : NSCollectionViewLayout {
+    /* instance variables */
+    @"NSCollectionViewLayout" _fromLayout;
+    @"NSCollectionViewLayout" _toLayout;
+    {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}} _fromVisibleBounds;
+    {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}} _toVisibleBounds;
+    {CGSize="width"d"height"d} _contentSize;
+    B _haveValidInfos;
+    d _transitionProgress;
+    @"NSMutableDictionary" _transitionInformationsDict;
+    @"NSMutableDictionary" _currentLayoutInfos;
+    B _layoutIsValid;
+    @"NSMutableArray" _disappearingLayoutAttributes;
+    @"NSMutableArray" _appearingLayoutAttributes;
+    d _accuracy;
+}
+
+@property (Td,D) transitionProgress;
+@property (T@"NSCollectionViewLayout",R,V_fromLayout) currentLayout;
+@property (T@"NSCollectionViewLayout",R,V_toLayout) nextLayout;
+
+/* instance methods */
+-[NSCollectionViewTransitionLayout layoutAttributesForItemAtIndexPath:];
+-[NSCollectionViewTransitionLayout collectionViewContentSize];
+-[NSCollectionViewTransitionLayout prepareLayout];
+-[NSCollectionViewTransitionLayout layoutAttributesForElementsInRect:];
+-[NSCollectionViewTransitionLayout layoutAttributesForDecorationViewOfKind:atIndexPath:];
+-[NSCollectionViewTransitionLayout currentLayout];
+-[NSCollectionViewTransitionLayout invalidateLayout];
+-[NSCollectionViewTransitionLayout init];
+-[NSCollectionViewTransitionLayout layoutAttributesForSupplementaryViewOfKind:atIndexPath:];
+-[NSCollectionViewTransitionLayout _finalizeLayoutTransition];
+-[NSCollectionViewTransitionLayout _newVisibleBounds];
+-[NSCollectionViewTransitionLayout _oldVisibleBounds];
+-[NSCollectionViewTransitionLayout _prepareForTransitionFromLayout:];
+-[NSCollectionViewTransitionLayout _prepareForTransitionToLayout:];
+-[NSCollectionViewTransitionLayout _setCollectionViewCore:];
+-[NSCollectionViewTransitionLayout _supportsAdvancedTransitionAnimations];
+-[NSCollectionViewTransitionLayout initWithCurrentLayout:nextLayout:];
+-[NSCollectionViewTransitionLayout interpolatedLayoutAttributesFromLayoutAttributes:toLayoutAttributes:progress:];
+-[NSCollectionViewTransitionLayout nextLayout];
+-[NSCollectionViewTransitionLayout setTransitionProgress:];
+-[NSCollectionViewTransitionLayout targetContentOffsetForProposedContentOffset:];
+-[NSCollectionViewTransitionLayout transitionProgress];
+-[NSCollectionViewTransitionLayout updateValue:forAnimatedKey:];
+-[NSCollectionViewTransitionLayout valueForAnimatedKey:];
+
+@end
