@@ -1,0 +1,32 @@
+#!/bin/sh
+# PROVIDE: wsbsd_launchd
+# REQUIRE: mountcritlocal wsbsd_machrun
+# BEFORE: LOGIN
+# KEYWORD: nojail shutdown
+# The launchd of pearOS (github.com/pearOS-bsd/darwinator, launchd/): a Mach-O program that serves the bootstrap port of the system, like the launchd of a Mac: the services that Mac programs ask
+# libxpc for by name (com.apple.bsd.dirhelper, the per-user directories in /var/folders, ...).  It is started only when the kernel module runs Mach-O files through a real dyld
+# (kern.darwinator.dyld=1: it needs the dyld and the libraries of a Mac, which this image does not carry; they are the owner's, put under /usr/lib and /System).
+. /etc/rc.subr
+name="wsbsd_launchd"
+rcvar="wsbsd_launchd_enable"
+command="/sbin/launchd"
+pidfile="/var/run/launchd.pid"
+start_cmd="wsbsd_launchd_start"
+stop_cmd="wsbsd_launchd_stop"
+wsbsd_launchd_start()
+{
+	[ -x /sbin/launchd ] || return 0
+	kldstat -q -m darwinator || kldload darwinator 2>/dev/null || return 0
+	[ -e /usr/lib/dyld ] || return 0
+	sysctl kern.darwinator.dyld=1 >/dev/null 2>&1 || return 0
+	[ -x /usr/local/libexec/mkfolders.sh ] && /usr/local/libexec/mkfolders.sh
+	daemon -p $pidfile -o /var/log/launchd.log /sbin/launchd
+}
+wsbsd_launchd_stop()
+{
+	[ -f $pidfile ] && kill "$(cat $pidfile)" 2>/dev/null
+	rm -f $pidfile
+}
+load_rc_config $name
+: ${wsbsd_launchd_enable:=YES}
+run_rc_command "$1"
