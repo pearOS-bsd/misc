@@ -1,0 +1,36 @@
+# NSScrubberLayoutAttributes — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# Measured on-Mac: init -> itemIndex=-1, alpha=1.0, frame=zero, escapesFromScrollView=NO; +layoutAttributesForItemAtIndex: sets itemIndex; isEqual compares itemIndex+frame+alpha. Pure value object, no stage2.
+
+@interface NSScrubberLayoutAttributes : NSObject <NSCopying> {
+    /* instance variables */
+    q _itemIndex;
+    {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}} _frame;
+    d _alpha;
+    b1 _escapes;
+    b31 _reservedLayoutAttributeFlags;
+}
+
+@property (Tq,V_itemIndex) itemIndex;
+@property (T{CGRect={CGPoint=dd}{CGSize=dd}},V_frame) frame;
+@property (Td,V_alpha) alpha;
+
+/* class methods */
++[NSScrubberLayoutAttributes layoutAttributesForItemAtIndex:];
+
+/* instance methods */
+-[NSScrubberLayoutAttributes setFrame:];
+-[NSScrubberLayoutAttributes hash];
+-[NSScrubberLayoutAttributes setAlpha:];
+-[NSScrubberLayoutAttributes frame];
+-[NSScrubberLayoutAttributes init];
+-[NSScrubberLayoutAttributes description];
+-[NSScrubberLayoutAttributes isEqual:];
+-[NSScrubberLayoutAttributes copyWithZone:];
+-[NSScrubberLayoutAttributes alpha];
+-[NSScrubberLayoutAttributes _layoutAttributesByBlendingFraction:ofAttributes:];
+-[NSScrubberLayoutAttributes escapesFromScrollView];
+-[NSScrubberLayoutAttributes itemIndex];
+-[NSScrubberLayoutAttributes setEscapesFromScrollView:];
+-[NSScrubberLayoutAttributes setItemIndex:];
+
+@end
