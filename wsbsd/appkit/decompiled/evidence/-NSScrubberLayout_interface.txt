@@ -1,0 +1,46 @@
+# NSScrubberLayout — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# Measured on-Mac (abstract base): shouldInvalidateLayoutForSelectionChange/HighlightChange=NO, automaticallyMirrorsInRightToLeftLayout=YES, scrubberContentSize=zero, +layoutAttributesClass=NSScrubberLayoutAttributes. Concrete geometry (prepareLayout/layoutAttributesForItemAtIndex:/InRect:/content size) lives in NSScrubberFlowLayout/NSScrubberProportionalLayout = stage2 for the base.
+
+@interface NSScrubberLayout : NSObject <NSCoding> {
+    /* instance variables */
+    @ _private;
+    b1 _dirty;
+    b31 _reservedFlags;
+}
+
+@property (T@"NSScrubber",R,W) scrubber;
+@property (T{CGRect={CGPoint=dd}{CGSize=dd}},R) visibleRect;
+@property (T{CGSize=dd},R) scrubberContentSize;
+@property (TB,R) shouldInvalidateLayoutForSelectionChange;
+@property (TB,R) shouldInvalidateLayoutForHighlightChange;
+@property (TB,R) automaticallyMirrorsInRightToLeftLayout;
+
+/* class methods */
++[NSScrubberLayout layoutAttributesClass];
+
+/* instance methods */
+-[NSScrubberLayout numberOfItems];
+-[NSScrubberLayout prepareLayout];
+-[NSScrubberLayout visibleRect];
+-[NSScrubberLayout initWithCoder:];
+-[NSScrubberLayout invalidateLayout];
+-[NSScrubberLayout selectedItem];
+-[NSScrubberLayout init];
+-[NSScrubberLayout dealloc];
+-[NSScrubberLayout encodeWithCoder:];
+-[NSScrubberLayout layoutAttributesForItemAtIndex:];
+-[NSScrubberLayout layoutAttributesForItemsInRect:];
+-[NSScrubberLayout _layoutAttributesForItemAtIndex:withState:];
+-[NSScrubberLayout _layoutAttributesForItemsInRect:withState:];
+-[NSScrubberLayout _prepareLayoutIfNeeded];
+-[NSScrubberLayout _setScrubber:];
+-[NSScrubberLayout _shouldMirrorForRTL];
+-[NSScrubberLayout automaticallyMirrorsInRightToLeftLayout];
+-[NSScrubberLayout scrubber];
+-[NSScrubberLayout scrubberContentSize];
+-[NSScrubberLayout shouldInvalidateLayoutForChangeFromVisibleRect:toVisibleRect:];
+-[NSScrubberLayout shouldInvalidateLayoutForHighlightChange];
+-[NSScrubberLayout shouldInvalidateLayoutForSelectionChange];
+-[NSScrubberLayout visibleContentSize];
+
+@end
