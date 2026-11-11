@@ -1,0 +1,105 @@
+# NSDictionaryController (+NSDictionaryControllerKeyValuePair) — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# Measured on-Mac: initialKey default 'key'; includedKeys/excludedKeys empty; setContent:@{alpha:1,beta:2} -> arrangedObjects = 2 KeyValuePair objects (key/value from dict, localizedKey==key, explicitlyIncluded=NO); newObject -> empty pair (key=nil,value=nil); content readback = the dictionary.
+
+@interface NSDictionaryController : NSArrayController {
+    /* instance variables */
+    @ _contentDictionary;
+    @"NSString" _initialKey;
+    @ _initialValue;
+    Q _minimumInsertionKeyIndex;
+    @"NSString" _localizedKeyStringsFileName;
+    @"NSDictionary" _localizedKeyForKeyDictionary;
+    @"NSDictionary" _keyForLocalizedKeyDictionary;
+    @"NSArray" _includedKeys;
+    @"NSArray" _excludedKeys;
+    {__dictionaryControllerFlags="_deepCopiesValues"b1"_suppressBuildingDictionary"b1"_reservedDictionaryController"b30} _dictionaryControllerFlags;
+}
+
+@property (T@"NSString",C) initialKey;
+@property (T@,&) initialValue;
+@property (T@"NSArray",C) includedKeys;
+@property (T@"NSArray",C) excludedKeys;
+@property (T@"NSDictionary",C) localizedKeyDictionary;
+@property (T@"NSString",C) localizedKeyTable;
+
+/* class methods */
++[NSDictionaryController _defaultObjectClass];
++[NSDictionaryController _nonAutomaticObservingKeys];
+
+/* instance methods */
+-[NSDictionaryController _init];
+-[NSDictionaryController initWithCoder:];
+-[NSDictionaryController _dealloc];
+-[NSDictionaryController setContent:];
+-[NSDictionaryController content];
+-[NSDictionaryController setManagedObjectContext:];
+-[NSDictionaryController encodeWithCoder:];
+-[NSDictionaryController initialValue];
+-[NSDictionaryController setInitialValue:];
+-[NSDictionaryController _dictionaryForKeyValuePairArray:pullExcludedKeysFromDictionary:];
+-[NSDictionaryController _arrayContent];
+-[NSDictionaryController _buildAndAssignNewContentDictionary];
+-[NSDictionaryController _insertObject:atArrangedObjectIndex:objectHandler:];
+-[NSDictionaryController _insertObjects:atArrangedObjectIndexes:objectHandler:];
+-[NSDictionaryController _insertionKeyForDictionary:minimumIndex:];
+-[NSDictionaryController _invokeSingleSelector:withArguments:onKeyPath:];
+-[NSDictionaryController _keyForLocalizedKey:];
+-[NSDictionaryController _keyForLocalizedKeyDictionary];
+-[NSDictionaryController _keyValuePairArrayForDictionary:reuseKeyValuePairsFromArray:];
+-[NSDictionaryController _localizedKeyForKey:];
+-[NSDictionaryController _managedProxy];
+-[NSDictionaryController _newObject];
+-[NSDictionaryController _noteKeyValuePairChangedKey:];
+-[NSDictionaryController _noteKeyValuePairChangedValue:];
+-[NSDictionaryController _prepareContentWithNewObject:];
+-[NSDictionaryController _recomputeLocalizedKeys];
+-[NSDictionaryController _removeObjectAtArrangedObjectIndex:objectHandler:];
+-[NSDictionaryController _removeObjects:objectHandler:];
+-[NSDictionaryController _removeObjectsAtArrangedObjectIndexes:contentIndexes:objectHandler:];
+-[NSDictionaryController _sendsContentChangeNotifications];
+-[NSDictionaryController _setArrayContentInBackground:];
+-[NSDictionaryController _setContentInBackground:];
+-[NSDictionaryController _setSingleValue:forKey:];
+-[NSDictionaryController _setSingleValue:forKeyPath:];
+-[NSDictionaryController _transformationForString:dictionary:];
+-[NSDictionaryController _updateLocalizedDictionaryForNewLocalizedKeyTable];
+-[NSDictionaryController canRemove];
+-[NSDictionaryController deepCopiesValues];
+-[NSDictionaryController excludedKeys];
+-[NSDictionaryController includedKeys];
+-[NSDictionaryController initialKey];
+-[NSDictionaryController localizedKeyDictionary];
+-[NSDictionaryController localizedKeyTable];
+-[NSDictionaryController newObject];
+-[NSDictionaryController setDeepCopiesValues:];
+-[NSDictionaryController setEntityName:];
+-[NSDictionaryController setExcludedKeys:];
+-[NSDictionaryController setFetchPredicate:];
+-[NSDictionaryController setIncludedKeys:];
+-[NSDictionaryController setInitialKey:];
+-[NSDictionaryController setLocalizedKeyDictionary:];
+-[NSDictionaryController setLocalizedKeyTable:];
+
+@end
+
+@interface NSDictionaryControllerKeyValuePair : NSObject
+
+@property (T@"NSString",C,D) key;
+@property (T@,&,D) value;
+@property (T@"NSString",C,D) localizedKey;
+@property (TB,R,D,GisExplicitlyIncluded) explicitlyIncluded;
+
+/* instance methods */
+-[NSDictionaryControllerKeyValuePair setValue:];
+-[NSDictionaryControllerKeyValuePair _init];
+-[NSDictionaryControllerKeyValuePair value];
+-[NSDictionaryControllerKeyValuePair setKey:];
+-[NSDictionaryControllerKeyValuePair init];
+-[NSDictionaryControllerKeyValuePair description];
+-[NSDictionaryControllerKeyValuePair localizedKey];
+-[NSDictionaryControllerKeyValuePair isEqual:];
+-[NSDictionaryControllerKeyValuePair key];
+-[NSDictionaryControllerKeyValuePair setLocalizedKey:];
+-[NSDictionaryControllerKeyValuePair isExplicitlyIncluded];
+
+@end
