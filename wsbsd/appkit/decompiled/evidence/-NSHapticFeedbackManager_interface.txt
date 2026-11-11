@@ -1,0 +1,21 @@
+# NSHapticFeedbackManager (+NSHapticFeedbackPerformer) — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# +defaultPerformer returns an object conforming to NSHapticFeedbackPerformer (on hardware: NSTrackpadHapticFeedbackPerformer). NSHapticFeedbackPattern Generic=0/Alignment=1/LevelChange=2; NSHapticFeedbackPerformanceTime Default=0/Now=1/DrawCompleted=2. The actual trackpad haptic actuation is stage2 (no device in the build env).
+
+@interface NSHapticFeedbackManager : NSObject
+
+/* class methods */
++[NSHapticFeedbackManager _requestVisuallySynchronizedPerformance:feedbackPattern:];
++[NSHapticFeedbackManager defaultPerformer];
+
+@end
+
+@protocol NSHapticFeedbackPerformer <NSObject>
+
+@required
+
+/* required instance methods */
+-[NSHapticFeedbackPerformer performFeedbackPattern:performanceTime:];
+
+@optional
+
+@end
