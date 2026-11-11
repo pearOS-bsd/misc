@@ -1,0 +1,48 @@
+# NSNib — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# Measured on-Mac: initWithNibData:bundle: returns an object retaining the data; initWithNibNamed:bundle: with a nib not present in the bundle RAISES NSInternalInconsistencyException ('-[NSNib _initWithNibNamed:bundle:options:] could not load the nib <name> in bundle <bundle>'). Instantiation decodes the keyed IB archive (stage2).
+
+@interface NSNib : NSObject <NSCoding> {
+    /* instance variables */
+    @"NSData" _data;
+    @"NSArray" _images;
+    @"NSArray" _sounds;
+    @"NSBundle" _bundle;
+    {_NSNibFlags="_isKeyed"b1"_inheritsDecodeTimeBundle"b1"_inheritsDecodeTimePath"b1"_reserved"b29} _flags;
+    @"NSString" _path;
+    @ _reusableDecoder;
+}
+
+/* class methods */
++[NSNib _NSNibBindingDeprecationStringForUIItem:];
++[NSNib _NSNibBindingHelpStringForUIItem:binding:];
++[NSNib _NSNibObjectIDForUIItemIdentifier:];
++[NSNib _NSNibPathForNibID:];
++[NSNib _NSNibPathForUIItemIdentifier:];
++[NSNib _NSNibRegisterNIBPath:];
++[NSNib _NSNibShortcutNameForUIItemIdentifier:];
++[NSNib getNibName:objectID:forUserInterfaceItem:];
+
+/* instance methods */
+-[NSNib initWithContentsOfURL:];
+-[NSNib initWithCoder:];
+-[NSNib dealloc];
+-[NSNib encodeWithCoder:];
+-[NSNib _decoderWithZone:];
+-[NSNib _initWithNibNamed:bundle:options:];
+-[NSNib _initWithPath:bundle:];
+-[NSNib _instantiateNibWithExternalNameTable:options:];
+-[NSNib _instantiateWithOwner:options:topLevelObjects:];
+-[NSNib _loadNibData];
+-[NSNib _makeDecoderWithZone:];
+-[NSNib _reusableDecoder];
+-[NSNib _setReusableDecoder:];
+-[NSNib inheritsDecodeTimeBundlePath];
+-[NSNib initWithKeyedObjectsDataSettingBundleAtDecodeTime:];
+-[NSNib initWithNibData:bundle:];
+-[NSNib initWithNibNamed:bundle:];
+-[NSNib instantiateNibWithExternalNameTable:];
+-[NSNib instantiateNibWithOwner:topLevelObjects:];
+-[NSNib instantiateWithOwner:topLevelObjects:];
+-[NSNib setInheritsDecodeTimeBundlePath:];
+
+@end
