@@ -176,6 +176,9 @@ if [ -x /usr/local/llvm21/bin/ld64.lld ] && [ -d "$WORK/darwinator/launchd" ]; t
 	if (cd "$WORK/darwinator/launchd" && make clean >/dev/null 2>&1; make >"$WORK/launchd.log" 2>&1); then
 		install -m 755 "$WORK/darwinator/launchd/launchd" "$ROOT/sbin/launchd"; install -m 755 "$WORK/darwinator/launchd/mkfolders.sh" "$ROOT/usr/local/libexec/mkfolders.sh"
 		echo "launchd built"
+		if (cd "$WORK/darwinator/notifyd" && make clean >/dev/null 2>&1; make >"$WORK/notifyd.log" 2>&1); then
+			install -d "$ROOT/usr/sbin"; install -m 755 "$WORK/darwinator/notifyd/notifyd" "$ROOT/usr/sbin/notifyd"; echo "notifyd built"
+		else echo "NOTE: notifyd did not build (see $WORK/notifyd.log)"; fi
 	else echo "NOTE: launchd did not build (see $WORK/launchd.log)"; fi
 else echo "NOTE: launchd not built (no ld64.lld or no launchd/ in darwinator)"; fi
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_launchd" "$ROOT/$d/rc.d/wsbsd_launchd"; done
