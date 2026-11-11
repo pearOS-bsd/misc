@@ -1,0 +1,56 @@
+# NSUserDefaultsController — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# Measured on this Mac: shared+plain appliesImmediately=YES; defaults(nil)->[NSUserDefaults standardUserDefaults]; values.valueForKey: falls back default-then-initialValues (init); appliesImmediately write goes straight to defaults (hasUnapplied=NO); deferred (appliesImmediately=NO) write buffers (defaults untouched, hasUnapplied=YES, values reads buffered). NOTE: a standalone (non-bound) instance did NOT flush on save: (buffer stayed) — the binding-driven commit path is stage2; documented save:=flush-buffer is reproduced here.
+
+@interface NSUserDefaultsController : NSController {
+    /* instance variables */
+    @"NSUserDefaults" _defaults;
+    @"NSMutableDictionary" _valueBuffer;
+    @"NSDictionary" _initialValues;
+    {__userDefaultsControllerFlags="_sharedInstance"b1"_appliesImmediately"b1"_reservedUserDefaultsController"b30} _userDefaultsControllerFlags;
+}
+
+@property (T@"NSUserDefaults",R) defaults;
+@property (T@"NSDictionary",C) initialValues;
+@property (TB) appliesImmediately;
+@property (TB,R) hasUnappliedChanges;
+@property (T@,R) values;
+
+/* class methods */
++[NSUserDefaultsController _keyValueBindingAccessPoints];
++[NSUserDefaultsController _modelAndProxyKeys];
++[NSUserDefaultsController _nonAutomaticObservingKeys];
++[NSUserDefaultsController sharedUserDefaultsController];
+
+/* instance methods */
+-[NSUserDefaultsController defaults];
+-[NSUserDefaultsController save:];
+-[NSUserDefaultsController _init];
+-[NSUserDefaultsController _setDefaults:];
+-[NSUserDefaultsController initWithCoder:];
+-[NSUserDefaultsController _dealloc];
+-[NSUserDefaultsController init];
+-[NSUserDefaultsController description];
+-[NSUserDefaultsController awakeAfterUsingCoder:];
+-[NSUserDefaultsController encodeWithCoder:];
+-[NSUserDefaultsController values];
+-[NSUserDefaultsController _controllerKeys];
+-[NSUserDefaultsController initWithDefaults:initialValues:];
+-[NSUserDefaultsController _singleMutableArrayValueForKey:];
+-[NSUserDefaultsController revert:];
+-[NSUserDefaultsController _applyAllValuesFromValueBuffer];
+-[NSUserDefaultsController _applyValue:forKey:registrationDomain:];
+-[NSUserDefaultsController _executeSave:didCommitSuccessfully:actionSender:];
+-[NSUserDefaultsController _invokeSingleSelector:withArguments:onKeyPath:];
+-[NSUserDefaultsController _isSharedUserDefaultsControllerProxy];
+-[NSUserDefaultsController _setSharedUserDefaultsControllerProxy:];
+-[NSUserDefaultsController _setSingleValue:forKey:];
+-[NSUserDefaultsController _singleValueForKey:];
+-[NSUserDefaultsController _valueBuffer];
+-[NSUserDefaultsController appliesImmediately];
+-[NSUserDefaultsController hasUnappliedChanges];
+-[NSUserDefaultsController initialValues];
+-[NSUserDefaultsController revertToInitialValues:];
+-[NSUserDefaultsController setAppliesImmediately:];
+-[NSUserDefaultsController setInitialValues:];
+
+@end
