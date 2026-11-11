@@ -1,0 +1,73 @@
+# NSSpellChecker — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# Measured on-Mac: sharedSpellCheckerExists 0 before / 1 after sharedSpellChecker; uniqueSpellDocumentTag monotonic from 1 (1,2,3); automaticallyIdentifiesLanguages default YES. learnWord/hasLearnedWord/checkSpelling route through the NSSpellServer daemon (observed 'NSSpellServer isWord timed out' in the sandbox) + system dictionaries = stage2; the in-memory learned/ignored bookkeeping (documented contract) is reproduced here. userReplacementsDictionary/availableLanguages/userPreferredLanguages come from the user's system config = stage2.
+
+@interface NSSpellChecker : NSObject <NSWindowRestoration> {
+    /* instance variables */
+    @"NSArray" _topLevelPanels;
+    @"NSTableView" _guessesBrowser;
+    @"NSTextField" _wordField;
+    @"NSPopUpButton" _languagePopUp;
+    @"NSPanel" _spellingPanel;
+    @"NSButton" _correctButton;
+    @"NSButton" _guessButton;
+    @"NSButton" _ignoreButton;
+    @"NSPanel" _languagesPanel;
+    @"NSTableView" _languagesBrowser;
+    @"NSButton" _defineButton;
+    @"NSPanel" _substitutionsPanel;
+    @"NSButton" _learnButton;
+    @"NSTextView" _infoField;
+    @"NSButton" _grammarControl;
+    {__scFlags="autoShowGuesses"b1"needDelayedGuess"b1"unignoreInProgress"b1"wordFieldEdited"b1"inSpelling"b1"reconnectSpelling"b1"inGrammar"b1"reconnectGrammar"b1"languageIdentification"b1"languagesHidden"b1"quotesByLanguage"b1"quotesAreCustom"b1"_reserved"b20} _scFlags;
+}
+
+@property (T@"NSDictionary",R,C) userReplacementsDictionary;
+@property (T@"NSPanel",R) spellingPanel;
+@property (T@"NSView",&) accessoryView;
+@property (T@"NSPanel",R) substitutionsPanel;
+@property (T@"NSViewController",&) substitutionsPanelAccessoryViewController;
+@property (T@"NSArray",R,C) availableLanguages;
+@property (T@"NSArray",R,C) userPreferredLanguages;
+@property (TB) automaticallyIdentifiesLanguages;
+@property (TQ,R) hash;
+@property (T#,R) superclass;
+@property (T@"NSString",R,C) description;
+@property (T@"NSString",?,R,C) debugDescription;
+
+/* class methods */
++[NSSpellChecker suggestionForRange:originalString:detail:];
++[NSSpellChecker uniqueSpellDocumentTag];
++[NSSpellChecker grammarCheckingEnabled];
++[NSSpellChecker _doubleSpaceReplacementAfterString:];
++[NSSpellChecker _finishRecordingTypingSession];
++[NSSpellChecker _inputContextHistoryDictionary];
++[NSSpellChecker _keyEventArray];
++[NSSpellChecker _keyEventData];
++[NSSpellChecker _noteInputContextHistory:];
++[NSSpellChecker _noteTextInputContext:];
++[NSSpellChecker _recordAcceptanceType:language:charactersTyped:charactersAccepted:];
++[NSSpellChecker _recordAutocorrectionEventType:language:];
++[NSSpellChecker _recordKeyDownEvent:];
++[NSSpellChecker _recordTypedWord:misspelled:];
++[NSSpellChecker _shouldPerformDoubleSpaceReplacementAfterString:];
++[NSSpellChecker _shouldRecognizeDoubleSpaceForKeyDownEvent:];
++[NSSpellChecker _shouldRecognizeDoubleSpaceForKeyDownEvent:andKeyDownEvent:];
++[NSSpellChecker _shouldRecognizeDoubleSpaceForKeyDownEvents:];
++[NSSpellChecker _startLoadOfScanner:];
++[NSSpellChecker correctionIndicatorUnderlineColor];
++[NSSpellChecker isAutomaticCapitalizationEnabled];
++[NSSpellChecker isAutomaticDashSubstitutionEnabled];
++[NSSpellChecker isAutomaticGrammarCheckingEnabled];
++[NSSpellChecker isAutomaticInlineCompletionEnabled];
++[NSSpellChecker isAutomaticInlinePredictionBeingPresented];
++[NSSpellChecker isAutomaticInlinePredictionEnabled];
++[NSSpellChecker isAutomaticPeriodSubstitutionEnabled];
++[NSSpellChecker isAutomaticQuoteSubstitutionEnabled];
++[NSSpellChecker isAutomaticSpellingCorrectionEnabled];
++[NSSpellChecker isAutomaticTextCompletionCollapsed];
++[NSSpellChecker isAutomaticTextCompletionEnabled];
++[NSSpellChecker isAutomaticTextReplacementEnabled];
++[NSSpellChecker notifyInsertText:replacementRange:];
++[NSSpellChecker notifySetMarkedText:selectedRange:replacementRange:];
++[NSSpellChecker restoreWindowWithIdentifier:state:completionHandler:];
++[NSSpellChecker sharedSpellChecker];
