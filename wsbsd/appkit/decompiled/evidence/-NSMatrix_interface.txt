@@ -1,0 +1,63 @@
+# NSMatrix — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# Measured on-Mac: : NSControl; NSMatrixMode Radio=0 Highlight=1 List=2 Track=3; default initWithFrame: -> 0x0, mode Radio, allowsEmptySelection NO; initWithFrame:mode:prototype:numberOfRows:numberOfColumns: fills the grid (2x3 -> 6 cells); selectCellAtRow:column: sets selectedRow/selectedColumn/selectedCell. Cell geometry/drawing, mouse/keyboard tracking and autosizing are stage2.
+
+@interface NSMatrix : NSControl <NSUserInterfaceValidations, NSViewToolTipOwner> {
+    /* instance variables */
+    @ _reserved2;
+    : _reserved3;
+    : _doubleAction;
+    : _errorAction;
+    @ _selectedCell;
+    q _selectedRow;
+    q _selectedCol;
+    @ _private;
+    q _numRows;
+    {CGSize="width"d"height"d} _cellSize;
+    {CGSize="width"d"height"d} _intercell;
+    @ _delegate;
+    q _numCols;
+    @ _font;
+    @ _cellClass;
+    @"NSColor" _backgroundColor;
+    @"NSMutableArray" _cells;
+    {__MFlags="reservedMatrix"b2"cellSizeNeedsAutorecalc"b1"autorecalculatesCellSize"b1"drawingContextMenuHighlightOnAllSelectedRows"b1"drawingContextMenuHighlight"b1"browserOptimizationsEnabled"b1"reservedMatrix3"b1"tmpAllowNonVisibleCellsToBecomeFirstResponder"b1"reservedMatrix2"b3"checkForSimpleTrackingMode"b1"useSimpleTrackingMode"b1"refusesFirstResponder"b1"dontScroll"b1"changingSelectionWithKeyboard"b1"onlySetKeyCell"b1"currentlySelectingCell"b1"allowsIncrementalSearching"b1"tabKeyTraversesCellsExplicitlySet"b1"tabKeyTraversesCells"b1"drawingAncestor"b1"autosizeCells"b1"drawsBackground"b1"drawsCellBackground"b1"selectionByRect"b1"autoscroll"b1"allowEmptySel"b1"listMode"b1"radioMode"b1"highlightMode"b1} _mFlags;
+    @ _protoCell;
+}
+
+@property (T#) cellClass;
+@property (T@"NSCell",C) prototype;
+@property (TQ) mode;
+@property (TB) allowsEmptySelection;
+@property (T@"NSArray",R,C) cells;
+@property (T@"NSCell",R) selectedCell;
+@property (T@"NSArray",R,C) selectedCells;
+@property (Tq,R) selectedRow;
+@property (Tq,R) selectedColumn;
+@property (TB,GisSelectionByRect) selectionByRect;
+@property (T{CGSize=dd}) cellSize;
+@property (T{CGSize=dd}) intercellSpacing;
+@property (T@"NSColor",C) backgroundColor;
+@property (T@"NSColor",C) cellBackgroundColor;
+@property (TB) drawsCellBackground;
+@property (TB) drawsBackground;
+@property (Tq,R) numberOfRows;
+@property (Tq,R) numberOfColumns;
+@property (T:) doubleAction;
+@property (TB) autosizesCells;
+@property (TB,GisAutoscroll) autoscroll;
+@property (Tq,R) mouseDownFlags;
+@property (T@"<NSMatrixDelegate>",W) delegate;
+@property (TB) autorecalculatesCellSize;
+@property (TQ,R) hash;
+@property (T#,R) superclass;
+@property (T@"NSString",R,C) description;
+@property (T@"NSString",?,R,C) debugDescription;
+
+/* class methods */
++[NSMatrix initialize];
++[NSMatrix _classToCheckForRequiresConstraintBasedLayout];
++[NSMatrix _controlClassSupportsNoCell];
++[NSMatrix _dropHighlightColor];
++[NSMatrix accessibilityIsSingleCelled];
++[NSMatrix isCompatibleWithResponsiveScrolling];
+
