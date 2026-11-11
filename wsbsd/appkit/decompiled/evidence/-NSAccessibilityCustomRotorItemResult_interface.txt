@@ -1,0 +1,29 @@
+# NSAccessibilityCustomRotorItemResult — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# Measured on-Mac: targetRange default {NSNotFound,0}; initWithTargetElement: (weak targetElement) and initWithItemLoadingToken:customLabel: (token + customLabel). Pure value object — no stage2.
+
+@interface NSAccessibilityCustomRotorItemResult : NSObject {
+    /* instance variables */
+    @"<NSAccessibilityElement>" _targetElement;
+    {_NSRange="location"Q"length"Q} _targetRange;
+    @"NSString" _customLabel;
+    @"<NSSecureCoding><NSObject>" _itemLoadingToken;
+}
+
+@property (T@"<NSAccessibilityElement>",R,W) targetElement;
+@property (T@"<NSSecureCoding><NSObject>",R,V_itemLoadingToken) itemLoadingToken;
+@property (T{_NSRange=QQ},V_targetRange) targetRange;
+@property (T@"NSString",C,V_customLabel) customLabel;
+
+/* instance methods */
+-[NSAccessibilityCustomRotorItemResult customLabel];
+-[NSAccessibilityCustomRotorItemResult setCustomLabel:];
+-[NSAccessibilityCustomRotorItemResult description];
+-[NSAccessibilityCustomRotorItemResult dealloc];
+-[NSAccessibilityCustomRotorItemResult setTargetRange:];
+-[NSAccessibilityCustomRotorItemResult initWithItemLoadingToken:customLabel:];
+-[NSAccessibilityCustomRotorItemResult initWithTargetElement:];
+-[NSAccessibilityCustomRotorItemResult itemLoadingToken];
+-[NSAccessibilityCustomRotorItemResult targetElement];
+-[NSAccessibilityCustomRotorItemResult targetRange];
+
+@end
