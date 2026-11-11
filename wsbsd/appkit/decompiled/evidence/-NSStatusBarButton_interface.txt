@@ -1,0 +1,28 @@
+# NSStatusBarButton — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# : NSButton. Public: appearsDisabled (default NO) — dims the button while keeping it clickable. Also doubleAction/statusMenu/selectionInset/looksDisabled. initWithFrame:inStatusBar: is private (NSStatusBar builds it). The dimming draw (looksDisabled → reduced alpha) and status-bar hit/menu behaviour are stage2.
+
+@interface NSStatusBarButton : NSButton
+
+@property (TB) appearsDisabled;
+
+/* class methods */
++[NSStatusBarButton initialize];
+
+/* instance methods */
+-[NSStatusBarButton setBackgroundStyle:];
+-[NSStatusBarButton setImage:];
+-[NSStatusBarButton appearsDisabled];
+-[NSStatusBarButton rightMouseDown:];
+-[NSStatusBarButton _statusItem];
+-[NSStatusBarButton doubleAction];
+-[NSStatusBarButton initWithFrame:inStatusBar:];
+-[NSStatusBarButton looksDisabled];
+-[NSStatusBarButton selectionInset];
+-[NSStatusBarButton setAppearsDisabled:];
+-[NSStatusBarButton setDoubleAction:];
+-[NSStatusBarButton setLooksDisabled:];
+-[NSStatusBarButton setSelectionInset:];
+-[NSStatusBarButton setStatusMenu:];
+-[NSStatusBarButton statusMenu];
+
+@end
