@@ -1,0 +1,67 @@
+# NSTableCellView — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# Measured on-Mac: initWithFrame: -> backgroundStyle=Normal(0), rowSizeStyle=Custom(0), objectValue/textField/imageView nil, draggingImageComponents.count=1 (view-snapshot fallback). Enums: NSBackgroundStyle Normal=0 Emphasized=1 Raised=2 Lowered=3; NSTableViewRowSizeStyle Default=-1 Custom=0 Small=1 Medium=2 Large=3.
+
+@interface NSTableCellView : NSView {
+    /* instance variables */
+    @"NSAutounbinder" _autounbinder;
+    @"NSTextField" _textField;
+    @"NSImageView" _imageView;
+    @ _objectValue;
+    @"NSTintConfiguration" _tintConfiguration;
+    q _rowSizeStyle;
+    q _backgroundStyle;
+    {?="doingLayout"b1"isGroupRow"b1"isSourceList"b1"followsKeyState"b1} _cellFlags;
+}
+
+@property (T@,&,V_objectValue) objectValue;
+@property (T@"NSTextField") textField;
+@property (T@"NSImageView") imageView;
+@property (Tq) backgroundStyle;
+@property (Tq) rowSizeStyle;
+@property (T@"NSArray",R) draggingImageComponents;
+
+/* instance methods */
+-[NSTableCellView backgroundStyle];
+-[NSTableCellView didChangeValueForKey:];
+-[NSTableCellView viewDidMoveToWindow];
+-[NSTableCellView setObjectValue:];
+-[NSTableCellView setBackgroundStyle:];
+-[NSTableCellView firstBaselineOffsetFromTop];
+-[NSTableCellView layout];
+-[NSTableCellView isOpaque];
+-[NSTableCellView textField];
+-[NSTableCellView objectValue];
+-[NSTableCellView imageView];
+-[NSTableCellView dealloc];
+-[NSTableCellView initWithFrame:];
+-[NSTableCellView release];
+-[NSTableCellView setImageView:];
+-[NSTableCellView _imageViewFrame];
+-[NSTableCellView _textFieldFrame];
+-[NSTableCellView _autounbinder];
+-[NSTableCellView _enclosingRowView];
+-[NSTableCellView _enclosingTableView];
+-[NSTableCellView _imageToTextOffset];
+-[NSTableCellView _sendViewWillDraw];
+-[NSTableCellView _setBackgroundStyleForSubtree:];
+-[NSTableCellView _setIsGroupRow:isSourceList:followsKeyState:];
+-[NSTableCellView _textFieldForStyling];
+-[NSTableCellView _updateFont];
+-[NSTableCellView _updateGroupRowAttributesAndScheduleLayout];
+-[NSTableCellView _updateGroupRowAttributesInRowView:];
+-[NSTableCellView _updateSourceListAttributesIfNecessary];
+-[NSTableCellView _updateSourceListAttributesInRowView:];
+-[NSTableCellView _updateViewsForTintConfiguration];
+-[NSTableCellView _windowChangedKeyState];
+-[NSTableCellView draggingImageComponents];
+-[NSTableCellView preservesContentDuringLiveResize];
+-[NSTableCellView rowSizeStyle];
+-[NSTableCellView setFrameSize:];
+-[NSTableCellView setRowSizeStyle:];
+-[NSTableCellView setTextField:];
+-[NSTableCellView setTintConfiguration:];
+-[NSTableCellView tintConfiguration];
+-[NSTableCellView viewDidMoveToSuperview];
+-[NSTableCellView viewWillDraw];
+
+@end
