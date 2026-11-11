@@ -1,0 +1,113 @@
+# NSPageController — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# Measured on-Mac: : NSViewController; transitionStyle default 0 (StackHistory), selectedIndex 0, arrangedObjects empty. navigateForward: +1 clamped to count-1, navigateBack: -1 clamped to 0 (no raise). setSelectedIndex: RAISES NSInternalInconsistencyException 'index out of range' when the index is out of arrangedObjects bounds. Styles StackHistory=0 StackBook=1 HorizontalStrip=2. selectedViewController/currentIdentifier are delegate-driven (view creation) = stage2.
+
+@interface NSPageController : NSViewController <NSAnimatablePropertyContainer, NSCoding> {
+    /* instance variables */
+    @"NSView" _contentView;
+    @"NSViewController" _selectedViewController;
+    @"NSString" _currentIdentifier;
+    q _transitionStyle;
+    @"<NSPageControllerDelegate>" _delegate;
+    q _selectedIndex;
+    @"NSMutableArray" _arrangedObjects;
+    @"NSMutableArray" _snapshots;
+    {__pcDelegateFlags="delegateRespondsToIdentifierForRepresentedObject"b1"delegateRespondsToViewControllerForIdentifier"b1"delegateRespondsToFrameForRepresentedObject"b1"delegateRespondsToPrepareView"b1"delegateRespondsToDidTransition"b1"delegateRespondsToWillLiveTransition"b1"delegateRespondsToDidLiveTransition"b1"delegateRespondsToReserved1"b1"reserved"b24} _pcDelegateFlags;
+    {__pcFlags="templateCacheIsInvalid"b1"private1"b1"private2"b1"inSwipeGesture"b1"reserved"b28} _pcFlags;
+    ^B _cancelAnimation;
+    @"NSMutableDictionary" _reuseQueue;
+    @"NSMutableDictionary" _templateCache;
+    @"NSView" _transitionView;
+    @ _animator;
+    @"NSDictionary" _animationsDictionary;
+    @ _private;
+}
+
+@property (T@"NSString",&,V_currentIdentifier) currentIdentifier;
+@property (T@"NSView",V_contentView) contentView;
+@property (T@"NSViewController",&,V_selectedViewController) selectedViewController;
+@property (T@"<NSPageControllerDelegate>",W) delegate;
+@property (Tq,V_transitionStyle) transitionStyle;
+@property (T@"NSArray",C) arrangedObjects;
+@property (Tq) selectedIndex;
+@property (T@"NSDictionary",C) animations;
+
+/* class methods */
++[NSPageController _performWithoutAnimation:];
++[NSPageController defaultAnimationForKey:];
+
+/* instance methods */
+-[NSPageController setAnimations:];
+-[NSPageController animations];
+-[NSPageController setContentView:];
+-[NSPageController setDelegate:];
+-[NSPageController contentView];
+-[NSPageController initWithCoder:];
+-[NSPageController transitionStyle];
+-[NSPageController delegate];
+-[NSPageController setView:];
+-[NSPageController observeValueForKeyPath:ofObject:change:context:];
+-[NSPageController setSelectedIndex:];
+-[NSPageController init];
+-[NSPageController setTransitionStyle:];
+-[NSPageController selectedIndex];
+-[NSPageController dealloc];
+-[NSPageController animator];
+-[NSPageController selectedViewController];
+-[NSPageController initWithNibName:bundle:];
+-[NSPageController encodeWithCoder:];
+-[NSPageController _effectiveContentView];
+-[NSPageController _updateContentView];
+-[NSPageController arrangedObjects];
+-[NSPageController _animateImage:frame:toImage:frame:direction:];
+-[NSPageController _animateView:frame:toView:frame:direction:];
+-[NSPageController _animatorClass];
+-[NSPageController _cachePotentialViewControllers];
+-[NSPageController _cacheReusableViewController:identifier:];
+-[NSPageController _cacheViewController:withSize:toCompletionHandler:];
+-[NSPageController _cacheViewControllerForRepresentedObjectIfNeeded:];
+-[NSPageController _cgSnapshotOfView:];
+-[NSPageController _destinationAlphaOfDestinationTransitionViewForDirection:];
+-[NSPageController _destinationAlphaOfFilterTansitionViewForDirection:destinationValid:];
+-[NSPageController _destinationAlphaOfSourceTansitionViewForDirection:destinationValid:];
+-[NSPageController _destinationFrameOfSourceTansitionViewForDirection:destinationValid:];
+-[NSPageController _destinationTransitionView];
+-[NSPageController _frameOfRepresentedObjectFromDelegate:defaultFrame:];
+-[NSPageController _initializeTransitionViewHierarchy];
+-[NSPageController _isInSwipeGesture];
+-[NSPageController _makeViewControllerWithIdentifier:];
+-[NSPageController _navigateToIndex:animated:];
+-[NSPageController _performAnimationWithDirection:destinationFrame:];
+-[NSPageController _prepareViewController:withObject:];
+-[NSPageController _removeFromResponderChainOfView:];
+-[NSPageController _setShouldDrawEdgeShadow:];
+-[NSPageController _setupTransitionHierarchyWithSourceView:frame:destinationView:frame:forDirection:destinationValid:];
+-[NSPageController _shouldDrawEdgeShadow];
+-[NSPageController _snapshotOfView:];
+-[NSPageController _snapshotOfViewController:withSize:];
+-[NSPageController _sourceTransitionView];
+-[NSPageController _startObservingView:];
+-[NSPageController _stopObservingView:];
+-[NSPageController _teardownTransitionHierarchy];
+-[NSPageController _terminateCurrentAnimation];
+-[NSPageController _updateTemplateImageCache];
+-[NSPageController _useCachedImageViewsForTransition];
+-[NSPageController _viewFrameChanged:];
+-[NSPageController animationForKey:];
+-[NSPageController completeTransition];
+-[NSPageController currentIdentifier];
+-[NSPageController dontCacheViewControllers];
+-[NSPageController hideTransitionView];
+-[NSPageController navigateBack:];
+-[NSPageController navigateForward:];
+-[NSPageController navigateForwardToObject:];
+-[NSPageController removeForwardNavigableObjects];
+-[NSPageController scrollWheel:];
+-[NSPageController setArrangedObjects:];
+-[NSPageController setCurrentIdentifier:];
+-[NSPageController setDontCacheViewControllers:];
+-[NSPageController setSelectedViewController:];
+-[NSPageController takeSelectedIndexFrom:];
+-[NSPageController validateUserInterfaceItem:];
+-[NSPageController wantsScrollEventsForSwipeTrackingOnAxis:];
+
+@end
