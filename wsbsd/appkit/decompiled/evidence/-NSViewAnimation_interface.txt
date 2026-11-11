@@ -1,0 +1,28 @@
+# NSViewAnimation — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+
+@interface NSViewAnimation : NSAnimation {
+    /* instance variables */
+    @"NSArray" _viewAnimations;
+    @"NSMapTable" _viewAnimationInfo;
+    @"NSMapTable" _windowAnimationInfo;
+}
+
+@property (T@"NSArray",C) viewAnimations;
+
+/* instance methods */
+-[NSViewAnimation initWithCoder:];
+-[NSViewAnimation dealloc];
+-[NSViewAnimation copyWithZone:];
+-[NSViewAnimation encodeWithCoder:];
+-[NSViewAnimation setCurrentProgress:];
+-[NSViewAnimation _startAnimation];
+-[NSViewAnimation _stopAnimation:withDisplayLink:];
+-[NSViewAnimation _clearAnimationInfo];
+-[NSViewAnimation _displayLinkProvider];
+-[NSViewAnimation _freeViewAnimationInfo];
+-[NSViewAnimation _setupAnimationInfo];
+-[NSViewAnimation initWithViewAnimations:];
+-[NSViewAnimation setViewAnimations:];
+-[NSViewAnimation viewAnimations];
+
+@end
