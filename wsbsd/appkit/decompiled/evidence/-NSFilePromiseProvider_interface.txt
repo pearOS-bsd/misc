@@ -1,0 +1,72 @@
+# NSFilePromiseProvider — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# Measured on-Mac: initWithFileType:delegate: stores fileType + weak delegate; userInfo nil; writableTypesForPasteboard: returns exactly (in order): com.apple.NSFilePromiseItemMetaData, com.apple.pasteboard.promised-file-name, com.apple.pasteboard.promised-suggested-file-name, com.apple.pasteboard.promised-file-content-type, com.apple.pasteboard.NSFilePromiseID. The pasteboard data provisioning (pasteboardPropertyListForType:) + the delegate-driven file write (filePromiseProvider:writePromiseToURL:completionHandler:) are stage2.
+
+@interface NSFilePromiseProvider : NSObject <NSFileProvider, _NSPasteboardPromiseProviderAgency, NSFilePromiseCompletionTarget, NSPasteboardWriting_Private, NSPasteboardItemDataProvider_Private, NSPasteboardWriting> {
+    /* instance variables */
+    @"NSString" _fileType;
+    @"NSArray" _reservedA;
+    @ _reservedB;
+    @"<NSFilePromiseProviderDelegate>" _delegate;
+    @"<NSFilePromiseProviderDelegate>" _strongDelegate;
+    @ _userInfo;
+    @"NSURL" _destinationURL;
+    {?="valid"I"providedItem"b1"reserved"b30} _flags;
+    @ _private;
+}
+
+@property (T@"_NSFilePromiseProviderPrivate",R,N,V_private) private;
+@property (T@"NSArray",C,V_reservedA) alternateFileTypes;
+@property (T@"NSString",C) fileType;
+@property (T@"<NSFilePromiseProviderDelegate>",W,V_delegate) delegate;
+@property (T@,&,V_userInfo) userInfo;
+@property (T@"NSURL",R,C) _providedItemsURL;
+@property (T@"NSOperationQueue",R) _providedItemsOperationQueue;
+@property (T@"NSString",?,R,C) _fileReactorID;
+@property (TQ,R) hash;
+@property (T#,R) superclass;
+@property (T@"NSString",R,C) description;
+@property (T@"NSString",?,R,C) debugDescription;
+
+/* class methods */
++[NSFilePromiseProvider _provideItemNotifyQueue];
+
+/* instance methods */
+-[NSFilePromiseProvider _cancel];
+-[NSFilePromiseProvider setDelegate:];
+-[NSFilePromiseProvider setUserInfo:];
+-[NSFilePromiseProvider _providedItemsOperationQueue];
+-[NSFilePromiseProvider _provideItemAtURL:completionHandler:];
+-[NSFilePromiseProvider delegate];
+-[NSFilePromiseProvider _fileReactorID];
+-[NSFilePromiseProvider _provideItemAtURL:toReaderWithID:completionHandler:];
+-[NSFilePromiseProvider init];
+-[NSFilePromiseProvider _providedItemsURL];
+-[NSFilePromiseProvider dealloc];
+-[NSFilePromiseProvider setFileType:];
+-[NSFilePromiseProvider private];
+-[NSFilePromiseProvider fileType];
+-[NSFilePromiseProvider userInfo];
+-[NSFilePromiseProvider _destinationURL];
+-[NSFilePromiseProvider _coordinatelyWritePromiseToURL:completionHandler:];
+-[NSFilePromiseProvider _dataProviderForType:];
+-[NSFilePromiseProvider _fileNameForType:];
+-[NSFilePromiseProvider _pasteboard:item:provideDataForType:completionHandler:];
+-[NSFilePromiseProvider _pasteboardPropertyListForType:completionHandler:];
+-[NSFilePromiseProvider _setDestinationURL:];
+-[NSFilePromiseProvider _strongifyDelegate];
+-[NSFilePromiseProvider alternateFileTypes];
+-[NSFilePromiseProvider draggingCancelled:];
+-[NSFilePromiseProvider draggingEnded:];
+-[NSFilePromiseProvider initWithFileType:delegate:];
+-[NSFilePromiseProvider pasteboard:item:provideDataForType:];
+-[NSFilePromiseProvider pasteboardFinishedWithDataProvider:];
+-[NSFilePromiseProvider pasteboardPropertyListForType:];
+-[NSFilePromiseProvider setAlternateFileTypes:];
+-[NSFilePromiseProvider setData:forType:];
+-[NSFilePromiseProvider setDataProvider:forTypes:];
+-[NSFilePromiseProvider setPropertyList:forType:];
+-[NSFilePromiseProvider setString:forType:];
+-[NSFilePromiseProvider writableTypesForPasteboard:];
+-[NSFilePromiseProvider writingOptionsForType:pasteboard:];
+
+@end
