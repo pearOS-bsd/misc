@@ -1,0 +1,58 @@
+# NSScrubber — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# Measured on-Mac: : NSView; selectedIndex/highlightedIndex=-1, numberOfItems=0, mode=Fixed(0), itemAlignment=None(0), showsArrowButtons/continuous/floatsSelectionViews=NO, tag=0, backgroundColor=semantic controlBackgroundColor. NSScrubberMode Fixed=0 Free=1; NSScrubberAlignment None=0 Leading=1 Trailing=2 Center=3. The NSScrollView-backed item layout, gesture scrubbing/selection, arrow buttons, selection background/overlay rendering, item-view reuse and batch animations are stage2.
+
+@interface NSScrubber : NSView <NSScrollViewDelegate, NSGestureRecognizerDelegate> {
+    /* instance variables */
+    @"_NSBoxCustomView" _dividerLeft;
+    @"_NSBoxCustomView" _dividerRight;
+    @ _delegate;
+    @ _dataSource;
+    @ _tx;
+    @"NSScrollView" _scrollView;
+    @"NSView" _translationView;
+    @"NSPanGestureRecognizer" _scrubGestureRecognizer;
+    @"NSPanGestureRecognizer" _scrollGestureRecognizer;
+    @"NSPressGestureRecognizer" _pressGestureRecognizer;
+    B _showsArrowButtons;
+    @"NSButton" _arrowLeft;
+    @"NSButton" _arrowRight;
+    @"NSView" _backgroundView;
+    @"NSColor" _backgroundColor;
+    q _itemAlignment;
+    q _mode;
+    @"CADisplayLink" _autoscrollLink;
+    {CGPoint="x"d"y"d} _autoscrollEffectivePoint;
+    d _autoscrollRatio;
+    d _autoscrollVelocity;
+    d _autoscrollBasis;
+    b1 _isInteracting;
+    b1 _isMovingSelection;
+    b1 _continuous;
+    b1 _ignoresTouches;
+    b1 _trackingChangedItem;
+    b27 _reservedFlags;
+}
+
+@property (Tq) selectionIndex;
+@property (Tq) tag;
+@property (T@"NSScrubberSelectionStyle") selectionStyle;
+@property (T@"NSScrubberPendingChanges",&,V_tx) pendingChanges;
+@property (T@"NSTimer",&) selectionLensPopTimer;
+@property (T@"<NSScrubberDataSource>",W) dataSource;
+@property (T@"<NSScrubberDelegate>",W) delegate;
+@property (T@"NSScrubberLayout",&) scrubberLayout;
+@property (Tq,R) numberOfItems;
+@property (Tq,R) highlightedIndex;
+@property (Tq) selectedIndex;
+@property (Tq) mode;
+@property (Tq,V_itemAlignment) itemAlignment;
+@property (TB,GisContinuous) continuous;
+@property (TB) floatsSelectionViews;
+@property (T@"NSScrubberSelectionStyle",&) selectionBackgroundStyle;
+@property (T@"NSScrubberSelectionStyle",&) selectionOverlayStyle;
+@property (TB) showsArrowButtons;
+@property (TB) showsAdditionalContentIndicators;
+@property (T@"NSColor",C) backgroundColor;
+@property (T@"NSView",&) backgroundView;
+@property (TB,?,S_setWantsPageAlignedHorizontalAxis:) _wantsPageAlignedHorizontalAxis;
+@property (TB,?,S_setWantsPageAlignedVerticalAxis:) _wantsPageAlignedVerticalAxis;
