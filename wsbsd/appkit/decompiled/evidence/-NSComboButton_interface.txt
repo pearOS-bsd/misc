@@ -1,0 +1,77 @@
+# NSComboButton — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# Measured on-Mac: : NSControl; default title '' (null_resettable), style=Split(0), imageScaling=0, image nil; factories set title/image/menu/target/action; NSComboButtonStyle Split=0 Unified=1. The internal NSSegmentedControl, layout (intrinsicContentSize/alignmentRectInsets) and menu presentation on the arrow are stage2.
+
+@interface NSComboButton : NSControl {
+    /* instance variables */
+    q _style;
+    @"NSMenu" _menu;
+    @"NSString" _title;
+    @"NSImage" _image;
+    Q _imageScaling;
+    @"NSSegmentedControl" _segmentedControl;
+}
+
+@property (T@"NSSegmentedControl",&,N,V_segmentedControl) _segmentedControl;
+@property (T@"NSString",C) title;
+@property (T@"NSImage",&) image;
+@property (TQ) imageScaling;
+@property (T@"NSMenu",&) menu;
+@property (Tq) style;
+
+/* class methods */
++[NSComboButton cellClass];
++[NSComboButton _comboButtonWithTitle:image:menu:target:action:];
++[NSComboButton _controlClassSupportingNoCell];
++[NSComboButton _controlClassSupportsNoCell];
++[NSComboButton _defaultCellClass];
++[NSComboButton accessibilityIsSingleCelled];
++[NSComboButton comboButtonWithImage:menu:target:action:];
++[NSComboButton comboButtonWithTitle:image:menu:target:action:];
++[NSComboButton comboButtonWithTitle:menu:target:action:];
+
+/* instance methods */
+-[NSComboButton setAccessibilityLabel:];
+-[NSComboButton setAction:];
+-[NSComboButton setAccessibilityIdentifier:];
+-[NSComboButton alignmentRectInsets];
+-[NSComboButton menu];
+-[NSComboButton intrinsicContentSize];
+-[NSComboButton setStyle:];
+-[NSComboButton awakeFromNib];
+-[NSComboButton setImageScaling:];
+-[NSComboButton setMenu:];
+-[NSComboButton setTitle:];
+-[NSComboButton initWithCoder:];
+-[NSComboButton setAlignment:];
+-[NSComboButton style];
+-[NSComboButton _contentHuggingDefault_isUsuallyFixedHeight];
+-[NSComboButton setFont:];
+-[NSComboButton setLineBreakMode:];
+-[NSComboButton setHighlighted:];
+-[NSComboButton setEnabled:];
+-[NSComboButton title];
+-[NSComboButton initWithFrame:];
+-[NSComboButton setBaseWritingDirection:];
+-[NSComboButton image];
+-[NSComboButton imageScaling];
+-[NSComboButton _commonInit];
+-[NSComboButton _contentHuggingDefault_isUsuallyFixedWidth];
+-[NSComboButton encodeWithCoder:];
+-[NSComboButton setControlSize:];
+-[NSComboButton setImage:];
+-[NSComboButton setFormatter:];
+-[NSComboButton _allowsContextMenus];
+-[NSComboButton _configureAccessibility];
+-[NSComboButton _configureSegmentedControl];
+-[NSComboButton _forwardingAction:];
+-[NSComboButton _segmentedControl];
+-[NSComboButton _subscribeToNotificationsForMenu:];
+-[NSComboButton _unsubscribeFromNotificationsForMenu:];
+-[NSComboButton accessibilityIsIgnored];
+-[NSComboButton performClick:];
+-[NSComboButton setCell:];
+-[NSComboButton setFrameSize:];
+-[NSComboButton setUsesSingleLineMode:];
+-[NSComboButton set_segmentedControl:];
+
+@end
