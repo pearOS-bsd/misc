@@ -1,0 +1,73 @@
+# NSWorkspaceOpenConfiguration — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# Defaults measured on-Mac: promptsUserIfNeeded=YES addsToRecentItems=YES activates=YES hides=NO hidesOthers=NO forPrinting=NO createsNewApplicationInstance=NO allowsRunningApplicationSubstitution=YES requiresUniversalLinks=NO architecture=-1; arguments/environment empty; appleEvent nil.
+
+@interface NSWorkspaceOpenConfiguration : NSObject <NSCopying> {
+    /* instance variables */
+    B _promptsUserIfNeeded;
+    B _addsToRecentItems;
+    B _activates;
+    B _hides;
+    B _hidesOthers;
+    B _forPrinting;
+    B _createsNewApplicationInstance;
+    B _allowsRunningApplicationSubstitution;
+    B _requiresUniversalLinks;
+    i _architecture;
+    @"NSArray" _arguments;
+    @"NSDictionary" _environment;
+    @"NSAppleEventDescriptor" _appleEvent;
+    @"NSDictionary" _additionalLSOpenOptions;
+}
+
+@property (T@"NSDictionary",C,S_setAdditionalLSOpenOptions:,V_additionalLSOpenOptions) _additionalLSOpenOptions;
+@property (TB,V_promptsUserIfNeeded) promptsUserIfNeeded;
+@property (TB,V_addsToRecentItems) addsToRecentItems;
+@property (TB,V_activates) activates;
+@property (TB,V_hides) hides;
+@property (TB,V_hidesOthers) hidesOthers;
+@property (TB,GisForPrinting,V_forPrinting) forPrinting;
+@property (TB,V_createsNewApplicationInstance) createsNewApplicationInstance;
+@property (TB,V_allowsRunningApplicationSubstitution) allowsRunningApplicationSubstitution;
+@property (T@"NSArray",C,V_arguments) arguments;
+@property (T@"NSDictionary",C,V_environment) environment;
+@property (T@"NSAppleEventDescriptor",&,V_appleEvent) appleEvent;
+@property (Ti,V_architecture) architecture;
+@property (TB,V_requiresUniversalLinks) requiresUniversalLinks;
+
+/* class methods */
++[NSWorkspaceOpenConfiguration configuration];
+
+/* instance methods */
+-[NSWorkspaceOpenConfiguration architecture];
+-[NSWorkspaceOpenConfiguration setArguments:];
+-[NSWorkspaceOpenConfiguration setEnvironment:];
+-[NSWorkspaceOpenConfiguration arguments];
+-[NSWorkspaceOpenConfiguration init];
+-[NSWorkspaceOpenConfiguration dealloc];
+-[NSWorkspaceOpenConfiguration environment];
+-[NSWorkspaceOpenConfiguration copyWithZone:];
+-[NSWorkspaceOpenConfiguration requiresUniversalLinks];
+-[NSWorkspaceOpenConfiguration setRequiresUniversalLinks:];
+-[NSWorkspaceOpenConfiguration appleEvent];
+-[NSWorkspaceOpenConfiguration setForPrinting:];
+-[NSWorkspaceOpenConfiguration setHidesOthers:];
+-[NSWorkspaceOpenConfiguration _additionalLSOpenOptions];
+-[NSWorkspaceOpenConfiguration _setAdditionalLSOpenOptions:];
+-[NSWorkspaceOpenConfiguration activates];
+-[NSWorkspaceOpenConfiguration addsToRecentItems];
+-[NSWorkspaceOpenConfiguration allowsRunningApplicationSubstitution];
+-[NSWorkspaceOpenConfiguration createsNewApplicationInstance];
+-[NSWorkspaceOpenConfiguration hides];
+-[NSWorkspaceOpenConfiguration hidesOthers];
+-[NSWorkspaceOpenConfiguration isForPrinting];
+-[NSWorkspaceOpenConfiguration promptsUserIfNeeded];
+-[NSWorkspaceOpenConfiguration setActivates:];
+-[NSWorkspaceOpenConfiguration setAddsToRecentItems:];
+-[NSWorkspaceOpenConfiguration setAllowsRunningApplicationSubstitution:];
+-[NSWorkspaceOpenConfiguration setAppleEvent:];
+-[NSWorkspaceOpenConfiguration setArchitecture:];
+-[NSWorkspaceOpenConfiguration setCreatesNewApplicationInstance:];
+-[NSWorkspaceOpenConfiguration setHides:];
+-[NSWorkspaceOpenConfiguration setPromptsUserIfNeeded:];
+
+@end
