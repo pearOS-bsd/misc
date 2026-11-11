@@ -1,0 +1,91 @@
+# NSAnimation — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+
+@interface NSAnimation : NSObject <NSCopying, NSCoding> {
+    /* instance variables */
+    d _duration;
+    f _currentProgress;
+    f _framesPerSecond;
+    @"<NSAnimationDelegate>" _delegate;
+    @"CADisplayLink" _displayLink;
+    d _startTime;
+    @"NSMutableArray" _progressMarks;
+    @"NSAnimation" _startAnimation;
+    f _startProgressTrigger;
+    @"NSAnimation" _stopAnimation;
+    f _stopProgressTrigger;
+    @"NSRunLoop" _scheduledRunLoop;
+    @? _progressHandler;
+    i _nextProgressMark;
+    {?="delegateAnimationShouldStart"b1"delegateAnimationDidStop"b1"delegateAnimationDidEnd"b1"delegateAnimationValueForProgress"b1"delegateAnimationDidReachProgressMark"b1"animating"b1"blocking"b1"sendProgressAllTheTime"b1"animationCurve"b8"animationBlockingMode"b2""b14} _aFlags;
+}
+
+@property (T@?,G_progressHandler,S_setProgressHandler:) _progressHandler;
+@property (TB,R,GisAnimating) animating;
+@property (Tf) currentProgress;
+@property (Td) duration;
+@property (TQ) animationBlockingMode;
+@property (Tf) frameRate;
+@property (TQ) animationCurve;
+@property (Tf,R) currentValue;
+@property (T@"<NSAnimationDelegate>",W) delegate;
+@property (T@"NSArray",C) progressMarks;
+@property (T@"NSArray",R,C) runLoopModesForAnimating;
+
+/* class methods */
++[NSAnimation initialize];
+
+/* instance methods */
+-[NSAnimation currentValue];
+-[NSAnimation setDelegate:];
+-[NSAnimation setDuration:];
+-[NSAnimation setFrameRate:];
+-[NSAnimation _setStartTime:];
+-[NSAnimation initWithCoder:];
+-[NSAnimation delegate];
+-[NSAnimation startAnimation];
+-[NSAnimation animationCurve];
+-[NSAnimation init];
+-[NSAnimation frameRate];
+-[NSAnimation dealloc];
+-[NSAnimation copyWithZone:];
+-[NSAnimation isAnimating];
+-[NSAnimation encodeWithCoder:];
+-[NSAnimation duration];
+-[NSAnimation _createDisplayLink];
+-[NSAnimation setCurrentProgress:];
+-[NSAnimation currentProgress];
+-[NSAnimation _runInNewThread];
+-[NSAnimation _startAnimation];
+-[NSAnimation _stopAnimation:];
+-[NSAnimation _stopAnimation:withDisplayLink:];
+-[NSAnimation _addTargetAnimation:start:atProgress:];
+-[NSAnimation _advanceTimeWithDisplayLink:];
+-[NSAnimation _callHandlerWithProgress:didStop:didFinish:];
+-[NSAnimation _clearAllTargetAnimations];
+-[NSAnimation _createFallbackTimer];
+-[NSAnimation _destroyFallbackTimer:];
+-[NSAnimation _displayLinkProvider];
+-[NSAnimation _fallbackTimerFired:];
+-[NSAnimation _instantProgress];
+-[NSAnimation _progressHandler];
+-[NSAnimation _removeTargetAnimation:start:];
+-[NSAnimation _runBlocking];
+-[NSAnimation _setProgressHandler:];
+-[NSAnimation _setSendProgressAllTheTime:];
+-[NSAnimation _startRunningNonBlocking];
+-[NSAnimation addProgressMark:];
+-[NSAnimation animationBlockingMode];
+-[NSAnimation clearStartAnimation];
+-[NSAnimation clearStopAnimation];
+-[NSAnimation initWithDuration:animationCurve:];
+-[NSAnimation progressMarks];
+-[NSAnimation removeProgressMark:];
+-[NSAnimation runLoopModesForAnimating];
+-[NSAnimation setAnimationBlockingMode:];
+-[NSAnimation setAnimationCurve:];
+-[NSAnimation setProgressMarks:];
+-[NSAnimation startWhenAnimation:reachesProgress:];
+-[NSAnimation stopAnimation];
+-[NSAnimation stopWhenAnimation:reachesProgress:];
+
+@end
