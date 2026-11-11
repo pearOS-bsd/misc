@@ -1,0 +1,73 @@
+# NSPredicateEditorRowTemplate — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# Measured on-Mac: initWithLeftExpressions:rightExpressionAttributeType:modifier:operators:options: stores modifier/options/rightType (NSStringAttributeType=700)/operators(count)/leftExpressions, rightExpressions empty. matchForPredicate: returns 0 when the left expression isn't in the template (age== -> 0) and a POSITIVE score when left+operator match (name== -> 0.729, an internal weighting = stage2). initWithCompoundTypes: stores the types; matchForPredicate: of a matching NSCompoundPredicate -> 0.5, displayableSubpredicatesOfPredicate: -> its subpredicates (count 1). predicateWithSubpredicates: builds the predicate. Plain init templateViews count 0.
+
+@interface NSPredicateEditorRowTemplate : NSObject <NSCoding, NSCopying> {
+    /* instance variables */
+    q _templateType;
+    Q _predicateOptions;
+    Q _predicateModifier;
+    Q _leftAttributeType;
+    Q _rightAttributeType;
+    @"NSArray" _views;
+    {?="leftIsWildcard"b1"rightIsWildcard"b1"reserved"b30} _ptFlags;
+}
+
+@property (T@"NSArray",R,C) templateViews;
+@property (T@"NSArray",R,C) leftExpressions;
+@property (T@"NSArray",R,C) rightExpressions;
+@property (TQ,R) rightExpressionAttributeType;
+@property (TQ,R) modifier;
+@property (T@"NSArray",R,C) operators;
+@property (TQ,R) options;
+@property (T@"NSArray",R,C) compoundTypes;
+
+/* class methods */
++[NSPredicateEditorRowTemplate _attributeDescriptionForKeyPath:inEntity:];
++[NSPredicateEditorRowTemplate _bestMatchForPredicate:inTemplates:quality:];
++[NSPredicateEditorRowTemplate _operatorsForAttributeType:];
++[NSPredicateEditorRowTemplate templatesWithAttributeKeyPaths:inEntityDescription:];
+
+/* instance methods */
+-[NSPredicateEditorRowTemplate modifier];
+-[NSPredicateEditorRowTemplate setPredicate:];
+-[NSPredicateEditorRowTemplate _setOptions:];
+-[NSPredicateEditorRowTemplate options];
+-[NSPredicateEditorRowTemplate initWithCoder:];
+-[NSPredicateEditorRowTemplate init];
+-[NSPredicateEditorRowTemplate description];
+-[NSPredicateEditorRowTemplate dealloc];
+-[NSPredicateEditorRowTemplate copyWithZone:];
+-[NSPredicateEditorRowTemplate encodeWithCoder:];
+-[NSPredicateEditorRowTemplate _setModifier:];
+-[NSPredicateEditorRowTemplate leftExpressions];
+-[NSPredicateEditorRowTemplate _displayValueForCompoundPredicateType:];
+-[NSPredicateEditorRowTemplate _displayValueForConstantValue:];
+-[NSPredicateEditorRowTemplate _displayValueForKeyPath:];
+-[NSPredicateEditorRowTemplate _displayValueForPredicateOperator:];
+-[NSPredicateEditorRowTemplate _leftExpressionAttributeType];
+-[NSPredicateEditorRowTemplate _predicateIsNoneAreTrue:];
+-[NSPredicateEditorRowTemplate _rowType];
+-[NSPredicateEditorRowTemplate _setComparisonPredicate:];
+-[NSPredicateEditorRowTemplate _setCompoundPredicate:];
+-[NSPredicateEditorRowTemplate _setLeftExpressionObject:];
+-[NSPredicateEditorRowTemplate _setRightExpressionObject:];
+-[NSPredicateEditorRowTemplate _setTemplateViews:];
+-[NSPredicateEditorRowTemplate _templateType];
+-[NSPredicateEditorRowTemplate _viewFromAttributeType:];
+-[NSPredicateEditorRowTemplate _viewFromCompoundTypes:];
+-[NSPredicateEditorRowTemplate _viewFromExpressionObject:];
+-[NSPredicateEditorRowTemplate _viewFromExpressions:];
+-[NSPredicateEditorRowTemplate _viewFromOperatorTypes:];
+-[NSPredicateEditorRowTemplate compoundTypes];
+-[NSPredicateEditorRowTemplate displayableSubpredicatesOfPredicate:];
+-[NSPredicateEditorRowTemplate initWithCompoundTypes:];
+-[NSPredicateEditorRowTemplate initWithLeftExpressions:rightExpressionAttributeType:modifier:operators:options:];
+-[NSPredicateEditorRowTemplate initWithLeftExpressions:rightExpressions:modifier:operators:options:];
+-[NSPredicateEditorRowTemplate matchForPredicate:];
+-[NSPredicateEditorRowTemplate operators];
+-[NSPredicateEditorRowTemplate predicateWithSubpredicates:];
+-[NSPredicateEditorRowTemplate rightExpressionAttributeType];
+-[NSPredicateEditorRowTemplate rightExpressions];
+-[NSPredicateEditorRowTemplate templateViews];
+
+@end
