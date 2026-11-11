@@ -1,0 +1,85 @@
+# NSDraggingSession — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# Public: draggingSequenceNumber/draggingPasteboard (readonly), draggingLocation, draggingFormation, animatesToStartingPositionsOnCancelOrFail (documented default YES), draggingLeaderIndex, numberOfDraggedItems, enumerateDraggingItemsWithOptions:forView:classes:searchOptions:usingBlock:. There is no public initializer — AppKit creates it from -[NSView beginDraggingSessionWithItems:event:source:]; this core adds an internal initializer and vends the value model + item enumeration. The live drag tracking loop, slide-back and image compositing are stage2.
+
+@interface NSDraggingSession : NSObject {
+    /* instance variables */
+    Q _drag;
+    {CGPoint="x"d"y"d} _offset;
+    @"NSPasteboard" _pboard;
+    @"NSImage" _compositeImageCache;
+    B _animatesOnCancelOrFail;
+    Q _state;
+    B _asynchronous;
+    B _isDragging;
+    @ _localContext;
+    @"NSArray" _localItemObjects;
+    @"<NSDraggingSource>" _source;
+    @"<NSDraggingSource>" _filePromiseDragSource;
+    @ _alternateDragSource;
+    {CGPoint="x"d"y"d} _startLocation;
+}
+
+@property (Tq) numberOfDraggedItems;
+@property (T@,&,V_localContext) localContext;
+@property (T@"NSArray",C,V_localItemObjects) localItemObjects;
+@property (TQ) dragRef;
+@property (T{CGPoint=dd},V_startLocation) startLocation;
+@property (T@"<NSDraggingSource>",R,V_source) source;
+@property (T@"<NSDraggingSource>",R,V_filePromiseDragSource) filePromiseDragSource;
+@property (T@,&,V_alternateDragSource) alternateDragSource;
+@property (T{CGPoint=dd},V_offset) draggingImageOffset;
+@property (T{CGPoint=dd}) draggingLocation;
+@property (T@"NSImage",R) _compositeImage;
+@property (TB,GisAsynchronous,V_asynchronous) asynchronous;
+@property (TQ) state;
+@property (TB,R,V_isDragging) isDragging;
+@property (Tq) draggingFormation;
+@property (TB) animatesToStartingPositionsOnCancelOrFail;
+@property (Tq) draggingLeaderIndex;
+@property (T@"NSPasteboard",R) draggingPasteboard;
+@property (Tq,R) draggingSequenceNumber;
+
+/* instance methods */
+-[NSDraggingSession localContext];
+-[NSDraggingSession isAsynchronous];
+-[NSDraggingSession isDragging];
+-[NSDraggingSession state];
+-[NSDraggingSession dealloc];
+-[NSDraggingSession source];
+-[NSDraggingSession setState:];
+-[NSDraggingSession _compositeImage];
+-[NSDraggingSession dragRef];
+-[NSDraggingSession _commonInitWithPasteboard:source:];
+-[NSDraggingSession _initWithPasteboard:draggingItems:clippingRect:source:isTouch:];
+-[NSDraggingSession _initWithPasteboard:image:offset:source:];
+-[NSDraggingSession alternateDragSource];
+-[NSDraggingSession animatesToDraggingFormationOnBeginDrag];
+-[NSDraggingSession animatesToStartingPositionsOnCancelOrFail];
+-[NSDraggingSession draggingFormation];
+-[NSDraggingSession draggingImageOffset];
+-[NSDraggingSession draggingLeaderIndex];
+-[NSDraggingSession draggingLocation];
+-[NSDraggingSession draggingPasteboard];
+-[NSDraggingSession draggingSequenceNumber];
+-[NSDraggingSession enumerateDraggingItemsWithOptions:forView:classes:searchOptions:usingBlock:];
+-[NSDraggingSession filePromiseDragSource];
+-[NSDraggingSession localItemObjects];
+-[NSDraggingSession locationForSlideBack];
+-[NSDraggingSession numberOfDraggedItems];
+-[NSDraggingSession setAlternateDragSource:];
+-[NSDraggingSession setAnimatesToDraggingFormationOnBeginDrag:];
+-[NSDraggingSession setAnimatesToStartingPositionsOnCancelOrFail:];
+-[NSDraggingSession setAsynchronous:];
+-[NSDraggingSession setDragRef:];
+-[NSDraggingSession setDraggingFormation:];
+-[NSDraggingSession setDraggingImageOffset:];
+-[NSDraggingSession setDraggingLeaderIndex:];
+-[NSDraggingSession setDraggingLocation:];
+-[NSDraggingSession setLocalContext:];
+-[NSDraggingSession setLocalItemObjects:];
+-[NSDraggingSession setLocationForSlideBack:];
+-[NSDraggingSession setNumberOfDraggedItems:];
+-[NSDraggingSession setStartLocation:];
+-[NSDraggingSession startLocation];
+
+@end
