@@ -1,0 +1,43 @@
+# NSScrubberArrangedView / NSScrubberItemView / NSScrubberSelectionView — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# NSScrubberArrangedView : NSView — selected/highlighted flags (default NO), applyLayoutAttributes: sets the view frame from the attributes. NSScrubberItemView : NSScrubberArrangedView — selectionBackgroundView/selectionOverlayView + left/right mask CALayers, prepareForReuse resets selection/highlight. NSScrubberSelectionView : NSScrubberArrangedView (marker subclass). alpha application + CALayer masking + accessibility are stage2.
+
+@interface NSScrubberArrangedView : NSView {
+    /* instance variables */
+    {os_unfair_lock_s="_os_unfair_lock_opaque"I} _flagLock;
+    b1 _selected;
+    b1 _highlighted;
+}
+
+@property (TB,GisSelected) selected;
+@property (TB,GisHighlighted) highlighted;
+
+/* class methods */
++[NSScrubberArrangedView keyPathsForValuesInvalidatingDisplay];
+
+/* instance methods */
+-[NSScrubberArrangedView isHighlighted];
+-[NSScrubberArrangedView isSelected];
+-[NSScrubberArrangedView initWithCoder:];
+-[NSScrubberArrangedView setHighlighted:];
+-[NSScrubberArrangedView setSelected:];
+-[NSScrubberArrangedView initWithFrame:];
+-[NSScrubberArrangedView applyLayoutAttributes:];
+-[NSScrubberArrangedView _arrangedViewCommonInit];
+-[NSScrubberArrangedView _preferredAppearance];
+
+@end
+
+@interface NSScrubberItemView : NSScrubberArrangedView {
+    /* instance variables */
+    @ _background;
+    @ _foreground;
+    @ _maskOne;
+    @ _maskTwo;
+    b2 _edge;
+}
+
+@property (T@"NSScrubberSelectionView",&,V_background) selectionBackgroundView;
+@property (T@"NSScrubberSelectionView",&,V_foreground) selectionOverlayView;
+@property (T@"CALayer",&,V_maskOne) leftMaskLayer;
+@property (T@"CALayer",&,V_maskTwo) rightMaskLayer;
+
