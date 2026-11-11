@@ -1,0 +1,71 @@
+# NSSharingServicePicker — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# Measured on-Mac: initWithItems: accepts any array (empty too, no raise); standardShareMenuItem returns a non-nil NSMenuItem title='Share…' hasSubmenu=NO (submenu/services built lazily at present time → stage2).
+
+@interface NSSharingServicePicker : NSObject {
+    /* instance variables */
+    @"NSSharingServicePickerReserved" _reserved;
+    @"NSMenu" rolloverMenu;
+    @"CALayer" rolloverLayer;
+    @"CALayer" innerBorderLayer;
+    @"NSView" owner;
+    @"NSArray" shareServices;
+    @"NSArray" mainServices;
+    @"NSArray" _applicationServices;
+    @"NSArray" _excludedSharingServiceNames;
+    @"NSDictionary" _shareKitInfo;
+}
+
+@property (T@"NSArray",C) applicationServices;
+@property (T@"NSArray",C) excludedSharingServiceNames;
+@property (T@"NSDictionary",C) shareKitInfo;
+@property (T@"<NSSharingServicePickerDelegate>",W) delegate;
+@property (T@"NSMenuItem",R) standardShareMenuItem;
+
+/* class methods */
++[NSSharingServicePicker initialize];
++[NSSharingServicePicker openAppExtensionsPrefPane];
++[NSSharingServicePicker sharedMoreMenuImage];
+
+/* instance methods */
+-[NSSharingServicePicker close];
+-[NSSharingServicePicker menu];
+-[NSSharingServicePicker initWithItems:];
+-[NSSharingServicePicker actionForLayer:forKey:];
+-[NSSharingServicePicker setDelegate:];
+-[NSSharingServicePicker setStyle:];
+-[NSSharingServicePicker drawLayer:inContext:];
+-[NSSharingServicePicker style];
+-[NSSharingServicePicker delegate];
+-[NSSharingServicePicker hide];
+-[NSSharingServicePicker dealloc];
+-[NSSharingServicePicker setExcludedSharingServiceNames:];
+-[NSSharingServicePicker _prepareSHKSharingServicePicker];
+-[NSSharingServicePicker _alternateItemIdentifierFromRepresentedObject:];
+-[NSSharingServicePicker _openAppExtensionsPrefpane:];
+-[NSSharingServicePicker _queryServices];
+-[NSSharingServicePicker _representedObjectForService:alternateItemIdentifier:];
+-[NSSharingServicePicker _serviceFromRepresentedObject:];
+-[NSSharingServicePicker _serviceSelected:];
+-[NSSharingServicePicker _touchBarImageFromRepresentedObject:];
+-[NSSharingServicePicker _updateRolloverMenu:];
+-[NSSharingServicePicker _uppercaseString:];
+-[NSSharingServicePicker applicationServices];
+-[NSSharingServicePicker collaborationMode];
+-[NSSharingServicePicker displaysAsPopUpMenu];
+-[NSSharingServicePicker emptyMenuImage];
+-[NSSharingServicePicker excludedSharingServiceNames];
+-[NSSharingServicePicker getMenuWithCompletion:];
+-[NSSharingServicePicker menuItemFromService:];
+-[NSSharingServicePicker moreMenuImage];
+-[NSSharingServicePicker rectForBounds:preferredEdge:];
+-[NSSharingServicePicker rolloverButtonCell];
+-[NSSharingServicePicker setApplicationServices:];
+-[NSSharingServicePicker setCollaborationMode:];
+-[NSSharingServicePicker setShareKitInfo:];
+-[NSSharingServicePicker shareKitInfo];
+-[NSSharingServicePicker showPopoverRelativeToRect:ofView:preferredEdge:completion:];
+-[NSSharingServicePicker showRelativeToRect:ofView:preferredEdge:];
+-[NSSharingServicePicker standardShareMenuItem];
+-[NSSharingServicePicker standardShareMenuItemRelativeToRect:ofView:preferredEdge:];
+
+@end
