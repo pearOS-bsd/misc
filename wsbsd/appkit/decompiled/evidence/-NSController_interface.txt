@@ -1,0 +1,87 @@
+# NSController — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+
+@interface NSController : NSObject <NSCoding, NSEditor, NSEditorRegistration> {
+    /* instance variables */
+    @ _modelObservingTracker;
+    @ _expectedObservingInfo;
+    @ _singleValueAccessor;
+    i _specialPurposeType;
+    @ _bindingAdaptor;
+    @"NSMutableArray" _editors;
+    @"NSMutableArray" _declaredKeys;
+    @"NSMutableDictionary" _dependentKeyToModelKeyTable;
+    @"NSMutableDictionary" _modelKeyToDependentKeyTable;
+    @"NSMutableArray" _modelKeysToRefreshEachTime;
+    {__bindingsControllerFlags="_alwaysPresentsApplicationModalAlerts"b1"_refreshesAllModelKeys"b1"_multipleObservedModelObjects"b1"_isEditing"b1"_reservedController"b28} _bindingsControllerFlags;
+}
+
+@property (TB,R,GisEditing) editing;
+@property (TQ,R) hash;
+@property (T#,R) superclass;
+@property (T@"NSString",R,C) description;
+@property (T@"NSString",?,R,C) debugDescription;
+
+/* class methods */
++[NSController automaticallyNotifiesObserversForKey:];
++[NSController initialize];
++[NSController _shouldAddObservationForwardersForKey:];
++[NSController _keyValueBindingAccessPoints];
++[NSController _modelAndProxyKeys];
++[NSController _modelObservingTrackerClass];
++[NSController _nonAutomaticObservingKeys];
+
+/* instance methods */
+-[NSController didChangeValueForKey:];
+-[NSController removeObserver:forKeyPath:];
+-[NSController addObserver:forKeyPath:options:context:];
+-[NSController isEditing];
+-[NSController _init];
+-[NSController initWithCoder:];
+-[NSController _dealloc];
+-[NSController observeValueForKeyPath:ofObject:change:context:];
+-[NSController init];
+-[NSController dealloc];
+-[NSController willChangeValueForKey:];
+-[NSController encodeWithCoder:];
+-[NSController _notifyObserversForKeyPath:change:];
+-[NSController _shouldAddObservationForwardersForKey:];
+-[NSController _bindingAdaptor];
+-[NSController _controllerKeys];
+-[NSController _singleMutableArrayValueForKey:];
+-[NSController _addDeclaredKey:];
+-[NSController _controllerEditor:didCommit:contextInfo:];
+-[NSController _declaredKeys];
+-[NSController _finishEditingState];
+-[NSController _invokeSingleSelector:withArguments:onKeyPath:];
+-[NSController _modelAndProxyKeysObserved];
+-[NSController _modelKeysTriggeringChangeNotificationsForDependentKey:];
+-[NSController _notifyEditorStateChanged:];
+-[NSController _observesModelObjects];
+-[NSController _refreshesAllModelKeys];
+-[NSController _removeDeclaredKey:];
+-[NSController _setBindingAdaptor:];
+-[NSController _setDeclaredKeys:];
+-[NSController _setModelKeys:triggerChangeNotificationsForDependentKey:];
+-[NSController _setRefreshesAllModelKeys:];
+-[NSController _setSingleValue:forKey:];
+-[NSController _setSingleValue:forKeyPath:];
+-[NSController _setSpecialPurposeType:];
+-[NSController _shouldSendObserverNotificationForModelOrProxyKey:keyPath:ofObject:];
+-[NSController _shouldSuppressObserverNotificationFromObject:keyPath:];
+-[NSController _singleMutableArrayValueForKeyPath:];
+-[NSController _singleValueForKey:];
+-[NSController _singleValueForKeyPath:];
+-[NSController _singleValueForKeyPath:operationType:];
+-[NSController _specialPurposeType];
+-[NSController _validateSingleValue:forKey:error:];
+-[NSController _validateSingleValue:forKeyPath:error:];
+-[NSController alwaysPresentsApplicationModalAlerts];
+-[NSController commitEditing];
+-[NSController commitEditingAndReturnError:];
+-[NSController commitEditingWithDelegate:didCommitSelector:contextInfo:];
+-[NSController discardEditing];
+-[NSController objectDidBeginEditing:];
+-[NSController objectDidEndEditing:];
+-[NSController setAlwaysPresentsApplicationModalAlerts:];
+
+@end
