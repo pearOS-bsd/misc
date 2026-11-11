@@ -1,0 +1,68 @@
+# NSCollectionViewGridLayout — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# Defaults measured on this Mac (probe linking AppKit): maxRows=0 maxCols=0 minItem=0x0 maxItem=0x0 margins=0,0,0,0 interitem=0 line=0 bgColors=0
+
+@interface NSCollectionViewGridLayout : NSCollectionViewLayout {
+    /* instance variables */
+    Q _maxGridRows;
+    Q _maxGridColumns;
+    {CGSize="width"d"height"d} _minItemSize;
+    {CGSize="width"d"height"d} _maxItemSize;
+    {NSEdgeInsets="top"d"left"d"bottom"d"right"d} _margins;
+    d _minimumInteritemSpacing;
+    d _minimumLineSpacing;
+    @"NSArray" _backgroundColors;
+    [22@] _glReserved;
+}
+
+@property (T{NSEdgeInsets=dddd}) margins;
+@property (Td) minimumInteritemSpacing;
+@property (Td) minimumLineSpacing;
+@property (TQ) maximumNumberOfRows;
+@property (TQ) maximumNumberOfColumns;
+@property (T{CGSize=dd}) minimumItemSize;
+@property (T{CGSize=dd}) maximumItemSize;
+@property (T@"NSArray",C) backgroundColors;
+
+/* class methods */
++[NSCollectionViewGridLayout itemLayoutIsSequential];
+
+/* instance methods */
+-[NSCollectionViewGridLayout margins];
+-[NSCollectionViewGridLayout layoutAttributesForItemAtIndexPath:];
+-[NSCollectionViewGridLayout collectionViewContentSize];
+-[NSCollectionViewGridLayout prepareLayout];
+-[NSCollectionViewGridLayout shouldInvalidateLayoutForBoundsChange:];
+-[NSCollectionViewGridLayout layoutAttributesForElementsInRect:];
+-[NSCollectionViewGridLayout initWithCoder:];
+-[NSCollectionViewGridLayout scrollDirection];
+-[NSCollectionViewGridLayout init];
+-[NSCollectionViewGridLayout dealloc];
+-[NSCollectionViewGridLayout encodeWithCoder:];
+-[NSCollectionViewGridLayout maximumItemSize];
+-[NSCollectionViewGridLayout minimumItemSize];
+-[NSCollectionViewGridLayout _computeGridConfiguration];
+-[NSCollectionViewGridLayout _computeGridConfigurationWithCount:];
+-[NSCollectionViewGridLayout _computeGridConfigurationWithSize:];
+-[NSCollectionViewGridLayout _computeGridConfigurationWithSize:count:];
+-[NSCollectionViewGridLayout _currentGridConfiguration];
+-[NSCollectionViewGridLayout _filledViewShouldExtendVertically];
+-[NSCollectionViewGridLayout _hitTestPoint:usingBlock:];
+-[NSCollectionViewGridLayout _shouldRelayoutImmediatelyForNewCollectionViewSize];
+-[NSCollectionViewGridLayout _updateGridSettingsWithPrototype];
+-[NSCollectionViewGridLayout backgroundColors];
+-[NSCollectionViewGridLayout layoutAttributesForDropTargetAtPoint:];
+-[NSCollectionViewGridLayout layoutAttributesForInterItemGapBeforeIndexPath:];
+-[NSCollectionViewGridLayout maximumNumberOfColumns];
+-[NSCollectionViewGridLayout maximumNumberOfRows];
+-[NSCollectionViewGridLayout minimumInteritemSpacing];
+-[NSCollectionViewGridLayout minimumLineSpacing];
+-[NSCollectionViewGridLayout setBackgroundColors:];
+-[NSCollectionViewGridLayout setMargins:];
+-[NSCollectionViewGridLayout setMaximumItemSize:];
+-[NSCollectionViewGridLayout setMaximumNumberOfColumns:];
+-[NSCollectionViewGridLayout setMaximumNumberOfRows:];
+-[NSCollectionViewGridLayout setMinimumInteritemSpacing:];
+-[NSCollectionViewGridLayout setMinimumItemSize:];
+-[NSCollectionViewGridLayout setMinimumLineSpacing:];
+
+@end
