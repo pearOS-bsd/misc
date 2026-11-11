@@ -170,6 +170,15 @@ if pear_fetch darwinator "${PEAR_DARWINATOR_REF:-main}" "$WORK/darwinator"; then
 		install -d "$ROOT/boot/modules" && install -m 555 "$WORK/darwinator/darwinator.ko" "$ROOT/boot/modules/darwinator.ko" && echo "darwinator.ko built against $SYSDIR"
 	else echo "NOTE: darwinator.ko not built (no kernel sources or it did not compile: see $WORK/darwinator_ko.log): only machrun runs Mach-O files"; fi
 else echo "NOTE: pearOS-bsd/darwinator could not be fetched: this image does not run Mac programs"; fi
+# The launchd of pearOS (a Mach-O program from darwinator/launchd, built with clang and ld64.lld: the llvm package on the build machine): it serves the bootstrap port and the service
+# com.apple.bsd.dirhelper; started at boot by wsbsd_launchd when the module runs Mach-O files through a real dyld.
+if [ -x /usr/local/llvm21/bin/ld64.lld ] && [ -d "$WORK/darwinator/launchd" ]; then
+	if (cd "$WORK/darwinator/launchd" && make clean >/dev/null 2>&1; make >"$WORK/launchd.log" 2>&1); then
+		install -m 755 "$WORK/darwinator/launchd/launchd" "$ROOT/sbin/launchd"; install -m 755 "$WORK/darwinator/launchd/mkfolders.sh" "$ROOT/usr/local/libexec/mkfolders.sh"
+		echo "launchd built"
+	else echo "NOTE: launchd did not build (see $WORK/launchd.log)"; fi
+else echo "NOTE: launchd not built (no ld64.lld or no launchd/ in darwinator)"; fi
+for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_launchd" "$ROOT/$d/rc.d/wsbsd_launchd"; done
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_machrun" "$ROOT/$d/rc.d/wsbsd_machrun"; done
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_wifi" "$ROOT/$d/rc.d/wsbsd_wifi"; done
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_bluetooth" "$ROOT/$d/rc.d/wsbsd_bluetooth"; done
