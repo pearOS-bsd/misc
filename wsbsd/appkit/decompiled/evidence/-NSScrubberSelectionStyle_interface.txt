@@ -1,0 +1,19 @@
+# NSScrubberSelectionStyle — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# Factory object vending a selection view for an NSScrubber. Built-in styles (outlineOverlayStyle/nonHighlightingOutlineOverlayStyle/roundedBackgroundStyle(+WithTintColor:)) vend private NSScrubberSelectionView subclasses = stage2; selectionStyleWithViewClass: makeSelectionView instantiates the given class 1:1. NSCoding.
+
+@interface NSScrubberSelectionStyle : NSObject <NSCoding>
+
+/* class methods */
++[NSScrubberSelectionStyle nonHighlightingOutlineOverlayStyle];
++[NSScrubberSelectionStyle outlineOverlayStyle];
++[NSScrubberSelectionStyle roundedBackgroundStyle];
++[NSScrubberSelectionStyle roundedBackgroundStyleWithTintColor:];
++[NSScrubberSelectionStyle selectionStyleWithViewClass:];
+
+/* instance methods */
+-[NSScrubberSelectionStyle initWithCoder:];
+-[NSScrubberSelectionStyle init];
+-[NSScrubberSelectionStyle encodeWithCoder:];
+-[NSScrubberSelectionStyle makeSelectionView];
+
+@end
