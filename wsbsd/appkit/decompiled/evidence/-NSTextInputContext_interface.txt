@@ -1,0 +1,63 @@
+# NSTextInputContext — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# Measured on-Mac: initWithClient: stores client (weak); acceptsGlyphInfo default NO; allowedInputSourceLocales nil. currentInputContext nil before activate; -activate did NOT flip currentInputContext in a standalone tool (it is gated by TSM + the app's key window/first responder = stage2). keyboardInputSources came from the live TIS registry (['com.apple.keylayout.US']) and selectedKeyboardInputSource='com.apple.keylayout.US' — the input-source registry is stage2 on our stack. The bulk of the class is the TSM/RTI input-method engine (handleEvent:, marked text, candidates, touch-bar IM) = stage2.
+
+@interface NSTextInputContext : NSObject <RTIInputSystemSessionDelegate> {
+    /* instance variables */
+    @"TITextInputTraits" _tiTextInputTraits;
+    @ _client;
+    @"NSArray" _inputLocales;
+    ^v _documentID;
+    @ _keyBindings;
+    @ _keyBindingManager;
+    {CGAffineTransform="a"d"b"d"c"d"d"d"tx"d"ty"d} _documentStateScrollingTransform;
+    @"NSString" _commandCharacters;
+    q _documentRefcon;
+    @ _auxiliary;
+    {?="_acceptsGlyphInfo"b1"_secureInput"b1"_attributedString"b1"_fractionOfDistance"b1"_baselineDelta"b1"_windowLevel"b1"_drawsVertically"b1"_compatibilityMode"b1"_hasTS"b1"_hasLM"b1"_hasTLM"b1"_inputLocaleGeneration"b16"_blockTSM"b1"_keyProcess"b1"_preflight"b1"_bindingFound"b1"_unmarkbeforeinsert"b1"_completionHandlingClient"b1} _ticFlags;
+    B _markedTextWithRoundedUnderline;
+    B _hasMenuOpened;
+    B _hasMarkedTextForDictation;
+    @"NSBridgedTextTouchBarController" _bridgedTextTouchBarController;
+    @"NSBridgedTextCorrectionController" _bridgedTextCorrectionController;
+    @"NSBridgedTextSubstitutionController" _bridgedTextSubstitutionController;
+    @"NSInputContextHistory" _inputContextHistory;
+    @"NSInputMethodUICandidateTouchBarItemController" _inputMethodCandidateController;
+    @"NSWindow" _clientWindow;
+    {_NSRange="location"Q"length"Q} tiSelectedTextRange;
+}
+
+@property (T@"TITextInputTraits",R) tiTextInputTraits;
+@property (T{_NSRange=QQ},R) tiSelectedTextRange;
+@property (T{_NSRange=QQ},D,N,SsetRTISelectedTextRange:) rtiSelectedTextRange;
+@property (T@,R) bridgedTextCorrectionController;
+@property (TQ,R) hash;
+@property (T#,R) superclass;
+@property (T@"NSString",R,C) description;
+@property (T@"NSString",?,R,C) debugDescription;
+@property (TB,R) hasActiveTextInputFunctionRowItem;
+@property (TB) showsCursorAccessories;
+@property (T@"TITextInputTraits",&,D) tiTextInputTraits;
+@property (T{_NSRange=QQ},VtiSelectedTextRange) tiSelectedTextRange;
+@property (T@"NSBridgedTextTouchBarController",&,V_bridgedTextTouchBarController) bridgedTextTouchBarController;
+@property (T@"NSBridgedTextCorrectionController",&,V_bridgedTextCorrectionController) bridgedTextCorrectionController;
+@property (T@"NSBridgedTextSubstitutionController",&,V_bridgedTextSubstitutionController) bridgedTextSubstitutionController;
+@property (TB,R,V_markedTextWithRoundedUnderline) markedTextWithRoundedUnderline;
+@property (T@"NSInputContextHistory",&,N,V_inputContextHistory) inputContextHistory;
+@property (T@"NSWindow",W,N,V_clientWindow) clientWindow;
+@property (TB,R,V_hasMenuOpened) hasMenuOpened;
+@property (TB,R,V_hasMarkedTextForDictation) hasMarkedTextForDictation;
+@property (T@"NSInputMethodUICandidateTouchBarItemController",&,N,V_inputMethodCandidateController) inputMethodCandidateController;
+@property (T@"<NSTextInputClient>",R,W,V_client) client;
+@property (TB,D) acceptsGlyphInfo;
+@property (T@"NSArray",C,D) allowedInputSourceLocales;
+@property (T@"NSArray",R,D) keyboardInputSources;
+@property (T@"NSString",C,D) selectedKeyboardInputSource;
+
+/* class methods */
++[NSTextInputContext automaticallyNotifiesObserversForKey:];
++[NSTextInputContext initialize];
++[NSTextInputContext cycleToNextInputKeyboardLayout:];
++[NSTextInputContext catalystSession];
++[NSTextInputContext _TIPropertyValueIsValid:];
++[NSTextInputContext _applicationDeactivated:];
++[NSTextInputContext _currentKeyboardLayoutName];
