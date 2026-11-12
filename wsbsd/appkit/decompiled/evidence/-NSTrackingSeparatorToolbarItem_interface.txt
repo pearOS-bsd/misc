@@ -1,0 +1,73 @@
+@interface NSTrackingSeparatorToolbarItem : NSToolbarItem {
+    /* instance variables */
+    @"NSSeparatorToolbarItemView" _view;
+    {?="isAlignmentSatisfied"b1"alignmentIsAlwaysSatisfied"b1"fullHeightDividersDisabled"b1"alignmentNeedsUpdate"b1"alignmentRequired"b1"inPalette"b1} _flags;
+    B representsSidebar;
+    B representsTrailingSidebar;
+}
+
+@property (TB,R,GisAlignmentSatisfied) alignmentSatisfied;
+@property (TB) alignmentIsAlwaysSatisfied;
+@property (TB) fullHeightDividersDisabled;
+@property (Td,R) dividerWidth;
+@property (TB,VrepresentsSidebar) representsSidebar;
+@property (TB,VrepresentsTrailingSidebar) representsTrailingSidebar;
+@property (T@"NSSplitView",&) splitView;
+@property (Tq) dividerIndex;
+
+/* class methods */
++[NSTrackingSeparatorToolbarItem automaticallyNotifiesObserversOfAlignmentSatisfied];
++[NSTrackingSeparatorToolbarItem trackingSeparatorToolbarItemWithIdentifier:splitView:dividerIndex:];
+
+/* instance methods */
+-[NSTrackingSeparatorToolbarItem isCollapsed];
+-[NSTrackingSeparatorToolbarItem view];
+-[NSTrackingSeparatorToolbarItem observeValueForKeyPath:ofObject:change:context:];
+-[NSTrackingSeparatorToolbarItem minSize];
+-[NSTrackingSeparatorToolbarItem dealloc];
+-[NSTrackingSeparatorToolbarItem maxSize];
+-[NSTrackingSeparatorToolbarItem viewDidLayout];
+-[NSTrackingSeparatorToolbarItem debugDescription];
+-[NSTrackingSeparatorToolbarItem _allowToolbarToStealEvent:];
+-[NSTrackingSeparatorToolbarItem _isPartitionItem];
+-[NSTrackingSeparatorToolbarItem _logicalPartitionPosition];
+-[NSTrackingSeparatorToolbarItem _menuFormRepresentationForOverflowMenu];
+-[NSTrackingSeparatorToolbarItem _noteAlignmentValueNeedsUpdate];
+-[NSTrackingSeparatorToolbarItem _preferredTrailingPosition];
+-[NSTrackingSeparatorToolbarItem _setPartitionAdapter:];
+-[NSTrackingSeparatorToolbarItem _updateAlignmentValue];
+-[NSTrackingSeparatorToolbarItem _visualPartitionPosition];
+-[NSTrackingSeparatorToolbarItem alignmentIsAlwaysSatisfied];
+-[NSTrackingSeparatorToolbarItem configureForDisplayMode:andSizeMode:];
+-[NSTrackingSeparatorToolbarItem dividerIndex];
+-[NSTrackingSeparatorToolbarItem dividerWidth];
+-[NSTrackingSeparatorToolbarItem fullHeightDividersDisabled];
+-[NSTrackingSeparatorToolbarItem initWithItemIdentifier:];
+-[NSTrackingSeparatorToolbarItem isAlignmentRequired];
+-[NSTrackingSeparatorToolbarItem isAlignmentSatisfied];
+-[NSTrackingSeparatorToolbarItem isBordered];
+-[NSTrackingSeparatorToolbarItem isNavigational];
+-[NSTrackingSeparatorToolbarItem isTrackingSeparator];
+-[NSTrackingSeparatorToolbarItem participatesInOverflow];
+-[NSTrackingSeparatorToolbarItem representsSidebar];
+-[NSTrackingSeparatorToolbarItem representsTrailingSidebar];
+-[NSTrackingSeparatorToolbarItem setAlignmentIsAlwaysSatisfied:];
+-[NSTrackingSeparatorToolbarItem setAlignmentRequired:];
+-[NSTrackingSeparatorToolbarItem setAlignmentSatisfied:];
+-[NSTrackingSeparatorToolbarItem setDividerIndex:];
+-[NSTrackingSeparatorToolbarItem setFullHeightDividersDisabled:];
+-[NSTrackingSeparatorToolbarItem setNavigational:];
+-[NSTrackingSeparatorToolbarItem setRepresentsSidebar:];
+-[NSTrackingSeparatorToolbarItem setRepresentsTrailingSidebar:];
+-[NSTrackingSeparatorToolbarItem setSplitView:];
+-[NSTrackingSeparatorToolbarItem splitView];
+-[NSTrackingSeparatorToolbarItem visibilityPriority];
+-[NSTrackingSeparatorToolbarItem wantsHiddenLabelInDisplayMode:];
+-[NSTrackingSeparatorToolbarItem wantsToDrawIconInDisplayMode:];
+-[NSTrackingSeparatorToolbarItem wantsToDrawLabelInDisplayMode:];
+
+@end
+
+/* measured (real AppKit, macOS 27 26A5416b): superclass=NSToolbarItem;
+   factory trackingSeparatorToolbarItemWithIdentifier:splitView:dividerIndex:
+   stores both; plain initWithItemIdentifier: => splitView=nil, dividerIndex=0. */
