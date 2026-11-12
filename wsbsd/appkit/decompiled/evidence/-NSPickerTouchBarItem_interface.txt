@@ -1,0 +1,61 @@
+# NSPickerTouchBarItem — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# : NSTouchBarItem. Measured on-Mac: factory(labels A,B,C) -> numberOfOptions=3 selectedIndex=-1 selectionMode=0 controlRepresentation=0 enabled=YES labelAtIndex:1='B'; default init numberOfOptions=0 selectedIndex=-1. Enums: SelectionMode SelectOne=0/SelectAny=1/Momentary=2; ControlRepresentation Automatic=0/Expanded=1/Collapsed=2. Per-option label/image/enabled arrays sized to numberOfOptions. Backing picker view is stage2.
+
+@interface NSPickerTouchBarItem : NSTouchBarItem {
+    /* instance variables */
+    @"NSString" _customizationLabel;
+    @"NSPickerTouchBarItemView" _pickerView;
+}
+
+@property (Tq) controlRepresentation;
+@property (T@"NSString",C) collapsedRepresentationLabel;
+@property (T@"NSImage",&) collapsedRepresentationImage;
+@property (Tq) selectedIndex;
+@property (T@"NSColor",C) selectionColor;
+@property (Tq) selectionMode;
+@property (Tq) numberOfOptions;
+@property (T@,W) target;
+@property (T:) action;
+@property (TB,GisEnabled) enabled;
+@property (T@"NSString",C) customizationLabel;
+
+/* class methods */
++[NSPickerTouchBarItem pickerTouchBarItemWithIdentifier:images:selectionMode:target:action:];
++[NSPickerTouchBarItem pickerTouchBarItemWithIdentifier:labels:selectionMode:target:action:];
+
+/* instance methods */
+-[NSPickerTouchBarItem setAction:];
+-[NSPickerTouchBarItem action];
+-[NSPickerTouchBarItem view];
+-[NSPickerTouchBarItem initWithCoder:];
+-[NSPickerTouchBarItem setSelectedIndex:];
+-[NSPickerTouchBarItem initWithIdentifier:];
+-[NSPickerTouchBarItem target];
+-[NSPickerTouchBarItem setSelectionColor:];
+-[NSPickerTouchBarItem setTarget:];
+-[NSPickerTouchBarItem selectionColor];
+-[NSPickerTouchBarItem setEnabled:];
+-[NSPickerTouchBarItem selectedIndex];
+-[NSPickerTouchBarItem dealloc];
+-[NSPickerTouchBarItem isEnabled];
+-[NSPickerTouchBarItem encodeWithCoder:];
+-[NSPickerTouchBarItem numberOfOptions];
+-[NSPickerTouchBarItem collapsedRepresentationImage];
+-[NSPickerTouchBarItem collapsedRepresentationLabel];
+-[NSPickerTouchBarItem controlRepresentation];
+-[NSPickerTouchBarItem customizationLabel];
+-[NSPickerTouchBarItem imageAtIndex:];
+-[NSPickerTouchBarItem isEnabledAtIndex:];
+-[NSPickerTouchBarItem labelAtIndex:];
+-[NSPickerTouchBarItem selectionMode];
+-[NSPickerTouchBarItem setCollapsedRepresentationImage:];
+-[NSPickerTouchBarItem setCollapsedRepresentationLabel:];
+-[NSPickerTouchBarItem setControlRepresentation:];
+-[NSPickerTouchBarItem setCustomizationLabel:];
+-[NSPickerTouchBarItem setEnabled:atIndex:];
+-[NSPickerTouchBarItem setImage:atIndex:];
+-[NSPickerTouchBarItem setLabel:atIndex:];
+-[NSPickerTouchBarItem setNumberOfOptions:];
+-[NSPickerTouchBarItem setSelectionMode:];
+
+@end
