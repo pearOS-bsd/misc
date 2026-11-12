@@ -1,0 +1,43 @@
+# NSColorPickerTouchBarItem — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# : NSTouchBarItem. Measured on-Mac: showsAlpha default YES, enabled YES, default color black, allowedColorSpaces empty. Factories colorPickerWithIdentifier:(buttonTitle:)(buttonImage:) + strokeColorPickerWithIdentifier:/textColorPickerWithIdentifier:. The popover presentation (popoverTouchBar/showPopover:/isPresented), the color-picker view controller delegate callbacks and the semantic default colour are stage2.
+
+@interface NSColorPickerTouchBarItem : NSTouchBarItem <NSTouchBarColorPickerViewControllerDelegate, NSTouchBarItemTypePopover, NSGestureRecognizerDelegate> {
+    /* instance variables */
+    @ _overlay;
+    @"NSString" _customizationLabel;
+    @"NSColor" _color;
+    @ _target;
+    : _action;
+    q _mode;
+    @"NSView" _view;
+    @"NSString" _buttonTitle;
+    @"NSImage" _buttonImage;
+    @"NSColorList" _colorList;
+    @ _autounbinder;
+    @"NSArray" _allowedColorSpaces;
+    B _showsAlpha;
+    B _supportsPressAndHoldVariants;
+    B _enabled;
+}
+
+@property (T@"NSTouchBar",R) popoverTouchBar;
+@property (TB,R) supportsPressAndHold;
+@property (TB,R) showsCloseButton;
+@property (T@"NSTouchBarItemOverlay",R) _overlay;
+@property (TB,R) isPresented;
+@property (TQ,R) hash;
+@property (T#,R) superclass;
+@property (T@"NSString",R,C) description;
+@property (T@"NSString",?,R,C) debugDescription;
+@property (TQ,R) hash;
+@property (T#,R) superclass;
+@property (T@"NSString",R,C) description;
+@property (T@"NSString",?,R,C) debugDescription;
+@property (Tq) mode;
+@property (TB,V_supportsPressAndHoldVariants) colorListSupportsPressAndHoldVariants;
+@property (T@"NSColor",R,C) storedColor;
+@property (T@"NSColor",C) color;
+@property (TB,V_showsAlpha) showsAlpha;
+@property (T@"NSArray",C) allowedColorSpaces;
+@property (T@"NSColorList",&,V_colorList) colorList;
+@property (T@"NSString",C,V_customizationLabel) customizationLabel;
