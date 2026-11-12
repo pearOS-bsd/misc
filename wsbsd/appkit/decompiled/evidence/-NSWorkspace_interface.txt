@@ -1,0 +1,13 @@
+/* NSWorkspace — the shared workspace (file opening, app launching, metadata).
+ * Interface from the AppKit dyld --objc slice; measured (real AppKit, macOS 27
+ * 26A5416b):
+ *   +sharedWorkspace is a singleton; -notificationCenter is a DEDICATED
+ *   NSWorkspaceNotificationCenter (NOT +[NSNotificationCenter defaultCenter]).
+ * @interface NSWorkspace : NSObject
+ *   +sharedWorkspace; @property(readonly) NSNotificationCenter *notificationCenter;
+ *   -openURL: / -openFile: / -launchApplication: / -selectFile:inFileViewerRootedAtPath:
+ *   -iconForFile: / -fullPathForApplication: / -URLForApplicationToOpenURL: ...
+ *   Almost everything is backed by LaunchServices / the window server = stage2;
+ *   this core provides the singleton + a dedicated notification center and
+ *   stage2 stubs (actions return NO, metadata queries return nil).
+ */
