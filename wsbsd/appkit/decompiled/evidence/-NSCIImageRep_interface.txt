@@ -1,0 +1,30 @@
+@interface NSCIImageRep : NSImageRep {
+    /* instance variables */
+    @"CIImage" _ciImage;
+}
+
+@property (T@"CIImage",R) CIImage;
+
+/* class methods */
++[NSCIImageRep initialize];
++[NSCIImageRep imageRepWithCIImage:];
+
+/* instance methods */
+-[NSCIImageRep _isValid];
+-[NSCIImageRep init];
+-[NSCIImageRep description];
+-[NSCIImageRep dealloc];
+-[NSCIImageRep copyWithZone:];
+-[NSCIImageRep CGImageForProposedRect:context:hints:];
+-[NSCIImageRep CIImage];
+-[NSCIImageRep draw];
+-[NSCIImageRep drawAtPoint:];
+-[NSCIImageRep drawInRect:];
+-[NSCIImageRep drawInRect:fromRect:operation:fraction:respectFlipped:hints:];
+-[NSCIImageRep initWithCIImage:];
+
+@end
+
+/* measured (real AppKit, macOS 27 26A5416b):
+   initWithCIImage:/+imageRepWithCIImage: store the image (CIImage == input);
+   size = the CIImage extent size; bitsPerSample=0, isOpaque=NO. */
