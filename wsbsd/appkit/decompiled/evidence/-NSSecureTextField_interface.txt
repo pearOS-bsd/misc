@@ -1,0 +1,7 @@
+/* NSSecureTextField : NSTextField — a text field for password entry. Interface
+ * from the AppKit dyld --objc slice; it adds no public API of its own — it is an
+ * NSTextField whose +cellClass is NSSecureTextFieldCell, so typed text is echoed
+ * as bullets and not revealed. Measured: [NSSecureTextField cellClass] ==
+ * NSSecureTextFieldCell; a fresh instance is-a NSTextField.
+ * @interface NSSecureTextField : NSTextField @end
+ */
