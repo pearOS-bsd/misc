@@ -173,7 +173,7 @@ int sls_space_dispatch(conn *c, const uint8_t *buf, size_t len)
 		int ni = 0, ns = 0, nd = 0, nk = 0, first = -1, nsp = 0;
 		bp_node *spaces[MAXSP]; bp_node *cur = NULL;
 		bp_node *emptystr = &strs[ns++]; *emptystr = (bp_node){ BP_STR, "", 0, 0, NULL, NULL, 0, -1 };
-		for (int i = 0; i < MAXSP && nsp < MAXSP; i++) if (sp[i].used) {
+		for (int i = 0; i < MAXSP && nsp < MAXSP; i++) if (sp[i].used && (sp[i].type == 0 || sp[i].type == 4)) {	/* only the managed spaces: user (0) and full screen (4); the spaces that a program makes for itself (the system type 2 of the Dock, ...) are not listed (the Dock of the Mac aborts on "bad space data" when they are) */
 			for (int pass = 0; pass < 2; pass++) {                      /* pass 0: the entry in Spaces, pass 1: a second copy for Current Space when this is the shown space */
 				if (pass == 1 && !(sp[i].shown && first < 0)) break;
 				bp_node *a = &ints[ni++], *b = &ints[ni++], *t = &ints[ni++];
