@@ -1,0 +1,8 @@
+/* NSCollectionLayoutEdgeSpacing — per-edge NSCollectionLayoutSpacing (leading/
+ * top/trailing/bottom, each nullable). Class @interface not emitted in the dyld
+ * --objc slices; reconstructed from the public header + RUNTIME MEASUREMENT
+ * against real AppKit (macOS 27 26A5416b):
+ *   +spacingForLeading:top:trailing:bottom: keeps all four (same objects / nil).
+ * @interface NSCollectionLayoutEdgeSpacing : NSObject <NSCopying>
+ *   @property(readonly,nullable) NSCollectionLayoutSpacing *leading/top/trailing/bottom;
+ */
