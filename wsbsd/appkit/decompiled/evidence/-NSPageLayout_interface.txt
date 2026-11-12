@@ -1,0 +1,8 @@
+/* NSPageLayout — the Page Setup dialog controller. Interface from the AppKit
+ * dyld --objc slice; measured (real AppKit, macOS 27 26A5416b):
+ *   +pageLayout => accessoryControllers=@[], printInfo nil outside a run.
+ * @interface NSPageLayout : NSObject
+ *   +pageLayout; -addAccessoryController:; -(NSArray*)accessoryControllers;
+ *   @property(readonly) NSPrintInfo *printInfo;   // run-time = stage2
+ *   -beginSheetWithPrintInfo:... / -runModalWithPrintInfo: = stage2.
+ */
