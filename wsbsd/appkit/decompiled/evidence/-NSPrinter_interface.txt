@@ -1,0 +1,15 @@
+/* NSPrinter : NSObject <NSSecureCoding, NSCopying, NSCoding> — a print device.
+ * Interface from the AppKit dyld --objc slice; on the probe host no printers are
+ * installed, so +printerNames=@[] and +printerWithName: returns nil for unknown
+ * names (it validates against the installed CUPS printers). ivars include _name,
+ * _type, _orientation-free metadata, _attributes.
+ * @interface NSPrinter : NSObject
+ *   +printerNames / +printerTypes; +printerWithName: / +printerWithType:;
+ *   @property(readonly,copy) NSString *name/type; (readonly) NSInteger languageLevel;
+ *   @property(readonly,copy) NSDictionary *deviceDescription;
+ *   -pageSizeForPaper: / -imageRectForPaper: / -statusForTable:.
+ * For the BSD port this core builds an NSPrinter from a name/type (languageLevel
+ * default 2, empty deviceDescription) so apps can construct one; the installed-
+ * printer registry (CUPS) and PPD-driven metadata are stage2. (On stock macOS
+ * +printerWithName: returns nil for a name not in +printerNames.)
+ */
