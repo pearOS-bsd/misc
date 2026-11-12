@@ -1,0 +1,10 @@
+/* NSCollectionLayoutSpacing — compositional-layout spacing (fixed/flexible).
+ * Class @interface not emitted in the dyld --objc slices; reconstructed from the
+ * public header + RUNTIME MEASUREMENT against real AppKit (macOS 27 26A5416b):
+ *   +fixedSpacing:    -> isFixedSpacing=YES, spacing=value
+ *   +flexibleSpacing: -> isFlexibleSpacing=YES, spacing=value
+ *   the two kinds are mutually exclusive; -spacing returns the value.
+ * @interface NSCollectionLayoutSpacing : NSObject <NSCopying>
+ *   @property(readonly) CGFloat spacing;
+ *   @property(readonly) BOOL isFlexibleSpacing / isFixedSpacing;
+ */
