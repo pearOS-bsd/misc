@@ -1,0 +1,13 @@
+/* NSBrowser : NSControl — the column (Miller) browser. Interface from the AppKit
+ * dyld --objc slice; measured defaults (real AppKit, macOS 27 26A5416b, bare
+ * initWithFrame: browser, no delegate):
+ *   maxVisibleColumns=0, minColumnWidth=100, hasHorizontalScroller=NO,
+ *   allowsMultipleSelection=NO, allowsEmptySelection=YES, allowsBranchSelection=NO,
+ *   separatesColumns=YES, isTitled=YES, reusesColumns=NO, pathSeparator="/",
+ *   takesTitleFromPreviousColumn=YES, lastColumn=-1, selectedColumn=-1.
+ * @interface NSBrowser : NSControl
+ *   config properties above; @property(weak) id delegate;
+ *   -loadColumnZero; -addColumn; -setLastColumn:; -(NSInteger)lastColumn/selectedColumn;
+ *   -(NSInteger)numberOfVisibleColumns; -reloadColumn:; -selectRow:inColumn:.
+ *   The matrix/cell content, the delegate data source and drawing are stage2.
+ */
