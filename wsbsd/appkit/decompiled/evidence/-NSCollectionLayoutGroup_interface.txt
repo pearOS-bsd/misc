@@ -1,0 +1,13 @@
+/* NSCollectionLayoutGroup : NSCollectionLayoutItem — a container of subitems in a
+ * compositional layout (horizontal / vertical / custom). Class @interface not
+ * emitted in the dyld --objc slices; reconstructed from the public header +
+ * RUNTIME MEASUREMENT against real AppKit (macOS 27 26A5416b):
+ *   is-a NSCollectionLayoutItem; +horizontalGroupWithLayoutSize:subitems: and
+ *   +verticalGroupWithLayoutSize:subitems: store the subitems + the group's
+ *   layoutSize; interItemSpacing settable (nullable NSCollectionLayoutSpacing).
+ * @interface NSCollectionLayoutGroup : NSCollectionLayoutItem
+ *   +horizontalGroupWithLayoutSize:subitems: / +verticalGroupWithLayoutSize:subitems:
+ *   +customGroupWithLayoutSize:itemProvider:
+ *   @property(readonly,copy) NSArray<NSCollectionLayoutItem*> *subitems;
+ *   @property(nullable,copy) NSCollectionLayoutSpacing *interItemSpacing;
+ */
