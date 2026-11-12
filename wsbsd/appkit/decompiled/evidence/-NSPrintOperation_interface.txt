@@ -1,0 +1,17 @@
+/* NSPrintOperation — controls a print/PDF job. Interface from the AppKit dyld
+ * --objc slice; measured defaults (real AppKit, macOS 27 26A5416b):
+ *   +printOperationWithView: stores the view, printInfo defaults to a copy of
+ *   +[NSPrintInfo sharedPrintInfo] (non-nil); showsPrintPanel=YES,
+ *   showsProgressPanel=YES, jobTitle=nil, pageOrder=Ascending(1),
+ *   canSpawnSeparateThread=NO, isCopyingOperation=NO. +currentOperation is nil
+ *   outside a run (thread-local). PageOrder: Descending=-1, Special=0,
+ *   Ascending=1, Unknown=2.
+ * @interface NSPrintOperation : NSObject
+ *   +printOperationWithView:[printInfo:] / +currentOperation / +setCurrentOperation:
+ *   @property(copy) NSString *jobTitle; BOOL showsPrintPanel/showsProgressPanel;
+ *   @property BOOL canSpawnSeparateThread; NSPrintingPageOrder pageOrder;
+ *   @property(readonly) NSView *view; (copy) NSPrintInfo *printInfo;
+ *   @property(readonly,getter=isCopyingOperation) BOOL copyingOperation;
+ *   @property(readonly) NSRange pageRange; NSInteger currentPage;  // run-time = stage2
+ *   -runOperation / -runOperationModalForWindow:... = stage2 (actual printing).
+ */
