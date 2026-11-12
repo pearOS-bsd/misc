@@ -1,0 +1,40 @@
+@interface NSPDFInfo : NSObject <NSCopying, NSCoding> {
+    /* instance variables */
+    @"NSURL" _URL;
+    @"NSArray" _tagNames;
+    q _orientation;
+    {CGSize="width"d"height"d} _paperSize;
+    @"NSMutableDictionary" _attributes;
+    B _fileExtensionHidden;
+}
+
+@property (T@"NSURL",C,V_URL) URL;
+@property (TB,GisFileExtensionHidden) fileExtensionHidden;
+@property (T@"NSArray",C,V_tagNames) tagNames;
+@property (Tq,V_orientation) orientation;
+@property (T{CGSize=dd},V_paperSize) paperSize;
+@property (T@"NSMutableDictionary",R,V_attributes) attributes;
+
+/* instance methods */
+-[NSPDFInfo setURL:];
+-[NSPDFInfo initWithCoder:];
+-[NSPDFInfo attributes];
+-[NSPDFInfo URL];
+-[NSPDFInfo init];
+-[NSPDFInfo orientation];
+-[NSPDFInfo dealloc];
+-[NSPDFInfo setOrientation:];
+-[NSPDFInfo copyWithZone:];
+-[NSPDFInfo encodeWithCoder:];
+-[NSPDFInfo isFileExtensionHidden];
+-[NSPDFInfo paperSize];
+-[NSPDFInfo setFileExtensionHidden:];
+-[NSPDFInfo setPaperSize:];
+-[NSPDFInfo setTagNames:];
+-[NSPDFInfo tagNames];
+
+@end
+
+/* measured defaults (real AppKit, macOS 27 26A5416b):
+   URL=nil, tagNames=@[], orientation=0 (Portrait), paperSize={595,842},
+   isFileExtensionHidden=YES, attributes={} (mutable); copy: attributes is a fresh dict. */
