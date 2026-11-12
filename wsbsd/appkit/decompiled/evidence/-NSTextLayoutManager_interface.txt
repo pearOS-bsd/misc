@@ -1,0 +1,68 @@
+@interface NSTextLayoutManager : NSObject <NSSecureCoding, NSTextSelectionDataSource> {
+    /* instance variables */
+    @"NSTextContentManager" _textContentManager;
+    @"NSArray" _textContainers;
+    q _applicationFrameworkContext;
+    @"<NSTextLayoutManagerDelegatePrivate>" _delegate;
+    @"<_NSTextLayoutManagerPlatformDelegate>" _platformDelegate;
+    @"NSLayoutManager" _companion;
+    @"NSTextSelectionNavigation" _textSelectionNavigation;
+    @"_NSTextAttributeStorage" _temporaryAttributesTable;
+    @"NSTextHighlightShapeProvider" _textHighlightShapeProvider;
+    B _usesFontLeading;
+    B _limitsLayoutForSuspiciousContents;
+    B _usesHyphenation;
+    B _allowsFontSubstitutionAffectingVerticalMetrics;
+    B _breaksLinesForInteractiveText;
+    @"_NSTextLayoutFragmentStorage" _textLayoutFragmentStorage;
+    @"NSMapTable" _textLayoutFragmentTable;
+    q _maximumNumberOfCachedTextLayoutFragments;
+    @"NSArray" _textSelections;
+    @"NSTextParagraph" _textParagraphForEmptyDocument;
+    ^{?=@@dqq@BBB} _activeEnumerationCache;
+    B _isProcessingRenderingAttributesMethod;
+    @"_NSTextRunStorage" _textAnimationContextStorage;
+    B _viewProviderCreated;
+    B _delegateWithTextSelectionNotification;
+    B _delegateWithTextContainerQuery;
+    B _delegateWithSimpleTextContainerQuery;
+    B _delegateWithTruncationToken;
+    B _delegateWithViewProviderInvalidationNotification;
+    B _delegateWithCachedViewProviderForTextAttachment;
+    B _platformDelegateWithViewProviderInvalidationNotification;
+    B _platformDelegateWithCachedViewProviderForTextAttachment;
+    {?="textContainer"@"NSTextContainer""startLocation"@"<NSTextLocation>""textRange"@"NSTextRange""usageBounds"{CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}}"entryIndex"Q"containerFilled"B"anchoredLocation"B} _lastTextContainerEntry;
+    ^{?=@@@{CGRect={CGPoint=dd}{CGSize=dd}}QBB} _textContainerEntries;
+    ^{?=@@@{CGRect={CGPoint=dd}{CGSize=dd}}QBB} _textContainerEntriesAccessHint;
+    Q _textContainerEntriesSize;
+    Q _textContainerEntriesCount;
+    @"<NSTextLocation>" _softInvalidationLocation;
+    B _requiresCTLineRef;
+    B _hasTextAnimationContextsSnapshotting;
+    B _rendersBackgroundColorAttribute;
+    B _resolvesNaturalAlignmentWithBaseWritingDirection;
+    @? _isSelectionOverridableColor;
+    q _fallbackBaseWritingDirection;
+    @? _renderingAttributesValidator;
+    @"NSTextContainer" _templateTextContainer;
+    @"NSOperationQueue" _layoutQueue;
+}
+
+@property (T@?,C,V_isSelectionOverridableColor) isSelectionOverridableColor;
+@property (TB,R) lastContainerFilled;
+@property (Tq,R) maximumNumberOfLinesForLastContainer;
+@property (T@"NSTextLineFragment",R) _extraTextLineFragment;
+@property (TB,V_requiresCTLineRef) requiresCTLineRef;
+@property (TB,V_breaksLinesForInteractiveText) breaksLinesForInteractiveText;
+@property (T@"NSTextHighlightShapeProvider",R,D) _textHighlightShapeProvider;
+@property (TB,V_rendersBackgroundColorAttribute) rendersBackgroundColorAttribute;
+@property (TB,R) canSendViewProviderInvalidationNotification;
+@property (TB,V_hasTextAnimationContextsSnapshotting) _hasTextAnimationContextsSnapshotting;
+
+/* NSTextLayoutManager lives in UIFoundation (re-exported by AppKit). Measured
+   (AppKit runtime, macOS 27 26A5416b): -init => usesFontLeading=YES,
+   usesHyphenation=NO, limitsLayoutForSuspiciousContents=NO, textSelections=nil,
+   textContentManager=nil, textContainer=nil, usageBoundsForTextContainer=zero,
+   delegate=nil; textSelectionNavigation is lazily created. documentRange is the
+   content managers range (nil/degenerate without one). The glyph layout engine,
+   fragment enumeration and viewport controller are stage2. */
