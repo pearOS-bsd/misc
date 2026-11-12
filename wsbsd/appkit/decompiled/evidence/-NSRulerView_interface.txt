@@ -1,0 +1,18 @@
+/* NSRulerView : NSView — the ruler shown by an NSScrollView. Interface from the
+ * AppKit dyld --objc slice; measured defaults (real AppKit, macOS 27 26A5416b,
+ * horizontal ruler):
+ *   orientation from init; ruleThickness=17, reservedThicknessForMarkers=15,
+ *   reservedThicknessForAccessoryView=0, originOffset=0, markers=nil,
+ *   measurementUnits locale-derived ("Centimeters" on the probe host),
+ *   requiredThickness=32 == ruleThickness + reservedThicknessForMarkers +
+ *   reservedThicknessForAccessoryView. NSRulerOrientation: Horizontal=0, Vertical=1.
+ * @interface NSRulerView : NSView
+ *   -initWithScrollView:orientation:; +registerUnitWithName:...
+ *   @property NSRulerOrientation orientation; CGFloat ruleThickness/
+ *     reservedThicknessForMarkers/reservedThicknessForAccessoryView/originOffset;
+ *   @property(copy) NSString *measurementUnits; (weak) NSScrollView *scrollView;
+ *   @property(weak) NSView *clientView; (strong) NSView *accessoryView;
+ *   @property(copy) NSArray<NSRulerMarker*> *markers;  -addMarker:/-removeMarker:
+ *   @property(readonly) CGFloat requiredThickness/baselineLocation;
+ *   The ruler drawing + hash-mark layout are stage2.
+ */
