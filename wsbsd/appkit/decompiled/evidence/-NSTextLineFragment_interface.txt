@@ -1,0 +1,130 @@
+@interface NSTextLineFragment : NSObject <NSSecureCoding> {
+    /* instance variables */
+    q _applicationFrameworkContext;
+    {_NSRange="location"Q"length"Q} _characterRange;
+    ^{__CTLine=} _lineRef;
+    ^S _glyphs;
+    ^{CGSize=dd} _advances;
+    q _glyphCount;
+    q _elasticGlyphCount;
+    @"NSFont" _font;
+    ^{__CTRun=} _activeRun;
+    q _activeRunIndex;
+    {CGPoint="x"d"y"d} _glyphOrigin;
+    {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}} _typographicBounds;
+    {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}} _imageBounds;
+    {?="rendersTextCorrectionMarkers"b1"isRTLLine"b1"isHyphenated"b1"isTruncated"b1} _flags;
+    {CGPoint="x"d"y"d} _cachedPoint;
+    q _cachedCharacterIndex;
+    d _cachedFractionWithinGlyph;
+    @"NSAttributedString" _lineBadge;
+    B _isExtra;
+    @"NSTextLayoutFragment" _textLayoutFragment;
+    @? __renderingAttributeOverridesProvider;
+    @? _renderingAttributesProvider;
+    @"NSAttributedString" _attributedString;
+    d _padding;
+}
+
+@property (Td,V_padding) padding;
+@property (T@"NSTextLayoutFragment",W,V_textLayoutFragment) textLayoutFragment;
+@property (TB) rendersTextCorrectionMarkers;
+@property (T@?,C,V_renderingAttributesProvider) renderingAttributesProvider;
+@property (T@?,C,V__renderingAttributeOverridesProvider) _renderingAttributeOverridesProvider;
+@property (TB,V_isExtra) isExtra;
+@property (T@"NSAttributedString",R,V_attributedString) attributedString;
+@property (T{_NSRange=QQ},R,V_characterRange) characterRange;
+@property (T{CGRect={CGPoint=dd}{CGSize=dd}},R,D) typographicBounds;
+@property (T{CGPoint=dd},R,D) glyphOrigin;
+
+/* class methods */
++[NSTextLineFragment supportsSecureCoding];
++[NSTextLineFragment _hiddenContentRenderingAttributes];
+
+/* instance methods */
+-[NSTextLineFragment setApplicationFrameworkContext:];
+-[NSTextLineFragment applicationFrameworkContext];
+-[NSTextLineFragment imageBounds];
+-[NSTextLineFragment attributedString];
+-[NSTextLineFragment invalidateCache];
+-[NSTextLineFragment setTextLayoutFragment:];
+-[NSTextLineFragment initWithCoder:];
+-[NSTextLineFragment padding];
+-[NSTextLineFragment initWithAttributedString:range:];
+-[NSTextLineFragment setPadding:];
+-[NSTextLineFragment textLayoutFragment];
+-[NSTextLineFragment characterRange];
+-[NSTextLineFragment description];
+-[NSTextLineFragment dealloc];
+-[NSTextLineFragment drawAtPoint:inContext:];
+-[NSTextLineFragment encodeWithCoder:];
+-[NSTextLineFragment characterIndexForPoint:];
+-[NSTextLineFragment characterIndexForPoint:fractionOfDistanceThroughGlyph:];
+-[NSTextLineFragment fractionOfDistanceThroughGlyphForPoint:];
+-[NSTextLineFragment numberOfGlyphs];
+-[NSTextLineFragment textLineFragmentRange];
+-[NSTextLineFragment typographicBounds];
+-[NSTextLineFragment lineRef];
+-[NSTextLineFragment setIsTruncated:];
+-[NSTextLineFragment setRenderingAttributesProvider:];
+-[NSTextLineFragment _drawMarkedTextBackground:inTextRange:atOrigin:graphicsContext:];
+-[NSTextLineFragment isExtra];
+-[NSTextLineFragment setGlyphOrigin:];
+-[NSTextLineFragment _defaultRenderingAttributesAtCharacterIndex:effectiveRange:];
+-[NSTextLineFragment _drawMarkedTextUnderline:inTextRange:atOrigin:graphicsContext:];
+-[NSTextLineFragment _drawTextCorrectionMarker:characterRange:atOrigin:graphicsContext:];
+-[NSTextLineFragment _enumerateTextAttachmentFramesInCharacterRange:usingBlock:];
+-[NSTextLineFragment _enumerateTextSegmentsInCharacterRange:usingBlock:];
+-[NSTextLineFragment _findRunForStringIndex:runIndex:];
+-[NSTextLineFragment _getCaretPositionsForCharactersInRange:positionsCache:positionsCacheSize:block:];
+-[NSTextLineFragment _processCaretGlyphRunForTextSelectionProvider:baseLocation:runRange:glyphOffset:positionsCache:positionsCacheSize:stop:usingBlock:];
+-[NSTextLineFragment _rangeOfLigatureContainingCharacterIndex:];
+-[NSTextLineFragment _renderingAttributeOverridesProvider];
+-[NSTextLineFragment _selectionColorShouldOverrideColor:];
+-[NSTextLineFragment _setColor:inGraphicsContext:];
+-[NSTextLineFragment _setCurrentGraphicsContext:duringBlock:];
+-[NSTextLineFragment boundsForMarkedTextAtPoint:range:width:adjustmentCallback:];
+-[NSTextLineFragment boundsWithType:options:];
+-[NSTextLineFragment drawAtPoint:context:];
+-[NSTextLineFragment drawAtPoint:graphicsContext:];
+-[NSTextLineFragment drawMarkedTextBackgroundAtPoint:context:];
+-[NSTextLineFragment drawMarkedTextBackgroundAtPoint:context:adjustmentCallback:];
+-[NSTextLineFragment drawMarkedTextBackgroundAtPoint:graphicsContext:];
+-[NSTextLineFragment drawMarkedTextBackgroundAtPoint:graphicsContext:adjustmentCallback:];
+-[NSTextLineFragment drawMarkedTextIndicatorAtPoint:context:];
+-[NSTextLineFragment drawMarkedTextIndicatorAtPoint:context:adjustmentCallback:];
+-[NSTextLineFragment drawMarkedTextIndicatorAtPoint:graphicsContext:];
+-[NSTextLineFragment drawMarkedTextIndicatorAtPoint:graphicsContext:adjustmentCallback:];
+-[NSTextLineFragment drawMarkedTextIndicatorAtPoint:graphicsContext:backgroundOnly:adjustmentCallback:];
+-[NSTextLineFragment drawTextAttachmentsAtPoint:graphicsContext:];
+-[NSTextLineFragment drawTextCorrectionMarkersAtPoint:context:];
+-[NSTextLineFragment drawTextCorrectionMarkersAtPoint:graphicsContext:];
+-[NSTextLineFragment enumerateCaretOffsetsWithTextSelectionDataSource:baseLocation:usingBlock:];
+-[NSTextLineFragment enumerateTextSegmentBoundsInTextRange:dataSourceLocationsOnly:usingBlock:];
+-[NSTextLineFragment glyphOrigin];
+-[NSTextLineFragment initWithString:attributes:range:];
+-[NSTextLineFragment isHyphenated];
+-[NSTextLineFragment isTruncated];
+-[NSTextLineFragment lineBadge];
+-[NSTextLineFragment locationForCharacterAtIndex:];
+-[NSTextLineFragment renderingAttributesProvider];
+-[NSTextLineFragment rendersTextCorrectionMarkers];
+-[NSTextLineFragment setGlyphs:advances:count:elasticCount:font:];
+-[NSTextLineFragment setIsExtra:];
+-[NSTextLineFragment setIsHyphenated:];
+-[NSTextLineFragment setLineBadge:];
+-[NSTextLineFragment setLineRef:];
+-[NSTextLineFragment setRendersTextCorrectionMarkers:];
+-[NSTextLineFragment setTypographicBounds:];
+-[NSTextLineFragment set_renderingAttributeOverridesProvider:];
+-[NSTextLineFragment typographicUsedBounds];
+
+@end
+
+/* NSTextLineFragment lives in UIFoundation (re-exported by AppKit). Measured
+   (AppKit runtime, macOS 27 26A5416b): initWithAttributedString:range: stores
+   attributedString + characterRange; ALL geometry is zero until the layout
+   manager lays the fragment out (glyphOrigin={0,0}, typographicBounds=CGRectZero,
+   locationForCharacterAtIndex:->{0,0}, characterIndexForPoint:->0). glyphOrigin
+   and typographicBounds have setters the engine calls. The CoreText glyph layout
+   + drawing + hit-testing are stage2. */
