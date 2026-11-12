@@ -1,0 +1,46 @@
+@interface NSATSTypesetter : NSTypesetter {
+    /* instance variables */
+    @"NSAttributedString" attributedString;
+    {_NSRange="location"Q"length"Q} paragraphGlyphRange;
+    {_NSRange="location"Q"length"Q} paragraphSeparatorGlyphRange;
+    d lineFragmentPadding;
+    @"NSLayoutManager" layoutManager;
+    @"NSArray" textContainers;
+    @"NSTextContainer" currentTextContainer;
+    Q currentTextContainerIndex;
+    {CGSize="width"d"height"d} currentTextContainerSize;
+    @"NSParagraphStyle" currentParagraphStyle;
+    @ _private;
+}
+
+/* class methods */
++[NSATSTypesetter initialize];
++[NSATSTypesetter sharedInstance];
++[NSATSTypesetter _allowsScreenFontKerning];
++[NSATSTypesetter sharedTypesetter];
+
+/* instance methods */
+-[NSATSTypesetter baselineOffsetInLayoutManager:glyphIndex:];
+-[NSATSTypesetter beginParagraph];
+-[NSATSTypesetter _lineFragmentRectForProposedRectArgs];
+-[NSATSTypesetter limitsLayoutForSuspiciousContents];
+-[NSATSTypesetter setLimitsLayoutForSuspiciousContents:];
+-[NSATSTypesetter lineBreakStrategy];
+-[NSATSTypesetter setLineBreakStrategy:];
+-[NSATSTypesetter actionForControlCharacterAtIndex:];
+-[NSATSTypesetter beginLineWithGlyphAtIndex:];
+-[NSATSTypesetter endLineWithGlyphRange:];
+-[NSATSTypesetter layoutCharactersInRange:forLayoutManager:maximumNumberOfLineFragments:];
+-[NSATSTypesetter _baseWritingDirection];
+-[NSATSTypesetter layoutParagraphAtPoint:];
+-[NSATSTypesetter endParagraph];
+-[NSATSTypesetter _allocateAuxData];
+-[NSATSTypesetter layoutGlyphsInLayoutManager:startingAtGlyphIndex:maxNumberOfLineFragments:nextGlyphIndex:];
+-[NSATSTypesetter _forceWordWrapping];
+-[NSATSTypesetter _baselineRenderingMode];
+
+/* NSATSTypesetter lives in UIFoundation (re-exported by AppKit); concrete
+   NSTypesetter subclass. Measured (AppKit runtime, macOS 27 26A5416b):
+   +sharedTypesetter is a singleton (is-a NSTypesetter), inheriting the base
+   config defaults (usesFontLeading=YES, behavior=10_4, bidi=YES). The glyph
+   layout overrides are stage2. */
