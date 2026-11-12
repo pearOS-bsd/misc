@@ -1,0 +1,11 @@
+/* NSCollectionLayoutAnchor — anchors a supplementary item to edges of its host.
+ * Class @interface not emitted in the dyld --objc slices; reconstructed from the
+ * public header + RUNTIME MEASUREMENT against real AppKit (macOS 27 26A5416b):
+ *   +layoutAnchorWithEdges: => offset {0,0}, isAbsoluteOffset=YES.
+ *   +layoutAnchorWithEdges:absoluteOffset: / +layoutAnchorWithEdges:fractionalOffset:
+ *   set the offset + kind. NSDirectionalRectEdge: Top=1,Leading=2,Bottom=4,Trailing=8.
+ * @interface NSCollectionLayoutAnchor : NSObject <NSCopying>
+ *   @property(readonly) NSDirectionalRectEdge edges;
+ *   @property(readonly) CGPoint offset;
+ *   @property(readonly) BOOL isAbsoluteOffset / isFractionalOffset;
+ */
