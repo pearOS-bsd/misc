@@ -459,7 +459,7 @@ int sls_session_dispatch(conn *c, const uint8_t *buf, size_t len)
 		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size < 0x28) return reply_simple(c->fd, h, -304);
 		uint32_t n = rd32(buf, 0x24);
 		if (n > 256 || h->msgh_size != 0x28 + 4 * n || rd32(buf, 0x20) > 2) return reply_simple(c->fd, h, -304);
-		return reply_simple(c->fd, h, c->registered ? 0 : 1010);
+		return reply_simple(c->fd, h, 0);			/* the Dock of the Mac sends this from SLSNewConnection (ProcessNotifier::synchronize_all) before any process record exists and aborts on an error: accepted for every connection */
 	}
 	if (h->msgh_id == SLS_MSG_SetKeyTranslationTable) {                                // complex: OOL table, size 0x38, descriptor size repeated @0x34
 		if (!(h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || h->msgh_size != 0x38 || len < 0x38 || rd32(buf, 0x18) != 1) return reply_simple(c->fd, h, -304);
