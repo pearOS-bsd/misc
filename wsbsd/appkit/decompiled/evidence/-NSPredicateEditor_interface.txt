@@ -1,0 +1,9 @@
+/* NSPredicateEditor : NSRuleEditor — rule editor whose rows are driven by
+ * NSPredicateEditorRowTemplates. Interface from the AppKit dyld --objc slice;
+ * measured (real AppKit, macOS 27 26A5416b):
+ *   is-a NSRuleEditor; -init gives a rowTemplates array containing one auto-
+ *   created compound template (compound types [1,2,0]); nestingMode inherited
+ *   (Compound). rowTemplates is (copy) and settable.
+ * @interface NSPredicateEditor : NSRuleEditor
+ *   @property(copy) NSArray<NSPredicateEditorRowTemplate*> *rowTemplates;
+ */
