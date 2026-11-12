@@ -1,0 +1,43 @@
+@interface NSCustomImageRep : NSImageRep {
+    /* instance variables */
+    I _reserved;
+    : _drawMethod;
+    @ _drawObject;
+}
+
+@property (TB,GisFlipped) flipped;
+@property (T@?,R) drawHandler;
+@property (T@?,R,C) drawingHandler;
+@property (T:,R) drawSelector;
+@property (T@,R,W) delegate;
+
+/* class methods */
++[NSCustomImageRep initialize];
+
+/* instance methods */
+-[NSCustomImageRep isFlipped];
+-[NSCustomImageRep setFlipped:];
+-[NSCustomImageRep initWithCoder:];
+-[NSCustomImageRep delegate];
+-[NSCustomImageRep init];
+-[NSCustomImageRep dealloc];
+-[NSCustomImageRep copyWithZone:];
+-[NSCustomImageRep encodeWithCoder:];
+-[NSCustomImageRep initWithSize:flipped:drawingHandler:];
+-[NSCustomImageRep _imageRepsForEncodingWithCoder:];
+-[NSCustomImageRep _wantsToBeCached];
+-[NSCustomImageRep draw];
+-[NSCustomImageRep drawHandler];
+-[NSCustomImageRep drawSelector];
+-[NSCustomImageRep drawingHandler];
+-[NSCustomImageRep initWithDrawSelector:delegate:];
+-[NSCustomImageRep initWithDrawSelector:delegate:flipped:];
+-[NSCustomImageRep initWithSize:drawHandler:];
+-[NSCustomImageRep initWithSize:flipped:drawHandler:];
+
+@end
+
+/* measured (real AppKit, macOS 27 26A5416b):
+   initWithSize:flipped:drawingHandler: stores size, flipped, drawingHandler;
+   drawSelector=nil, delegate=nil. Plain -init raises (unrecognized selector) =
+   the modern class makes it unavailable; use the block or draw-selector inits. */
