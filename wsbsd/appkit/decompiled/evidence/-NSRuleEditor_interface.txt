@@ -1,0 +1,18 @@
+/* NSRuleEditor : NSControl — the rule-row editor (base for NSPredicateEditor).
+ * Interface from the AppKit dyld --objc slice; measured defaults (real AppKit,
+ * macOS 27 26A5416b):
+ *   nestingMode=Compound(2), rowHeight=32.0, isEditable=YES, canRemoveAllRows=YES,
+ *   numberOfRows=0, rowTypeKeyPath="rowType", criteriaKeyPath="criteria",
+ *   displayValuesKeyPath="displayValues", rowClass=NSMutableDictionary.
+ *   Nesting: Single=0,List=1,Compound=2,Simple=3. RowType: Simple=0,Compound=1.
+ * @interface NSRuleEditor : NSControl
+ *   @property(weak) id<NSRuleEditorDelegate> delegate;
+ *   @property(copy) NSString *formattingStringsFilename; (copy) NSDictionary *formattingDictionary;
+ *   @property NSRuleEditorNestingMode nestingMode; CGFloat rowHeight;
+ *   @property(getter=isEditable) BOOL editable; BOOL canRemoveAllRows;
+ *   @property(readonly) NSInteger numberOfRows; (readonly,copy) NSIndexSet *selectedRowIndexes;
+ *   @property Class rowClass; (copy) NSString *rowTypeKeyPath/criteriaKeyPath/displayValuesKeyPath;
+ *   -addRow: / -insertRowAtIndex:withType:asSubrowOfRow:animate: / -removeRowAtIndex: /
+ *   -rowTypeForRow: / -reloadCriteria.
+ *   The criteria/display-value population (delegate data source) + row views are stage2.
+ */
