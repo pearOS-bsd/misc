@@ -1,0 +1,67 @@
+@interface NSTextSelection : NSObject <NSSecureCoding> {
+    /* instance variables */
+    @"NSDictionary" _typingAttributes;
+    B _transient;
+    B _logical;
+    @"NSArray" _textRanges;
+    q _granularity;
+    q _affinity;
+    d _anchorPositionOffset;
+    @"<NSTextLocation>" _secondarySelectionLocation;
+    @"<NSTextLocation>" _selectionAnchorLocation;
+}
+
+@property (TB,GisTransient,V_transient) transient;
+@property (T@"<NSTextLocation>",&,V_selectionAnchorLocation) selectionAnchorLocation;
+@property (T@"NSArray",R,C,V_textRanges) textRanges;
+@property (Tq,R,V_granularity) granularity;
+@property (Tq,R,V_affinity) affinity;
+@property (Td,V_anchorPositionOffset) anchorPositionOffset;
+@property (TB,GisLogical,V_logical) logical;
+@property (T@"<NSTextLocation>",&,V_secondarySelectionLocation) secondarySelectionLocation;
+@property (T@"NSDictionary",C,D) typingAttributes;
+
+/* class methods */
++[NSTextSelection supportsSecureCoding];
++[NSTextSelection descriptionForAffinity:];
++[NSTextSelection descriptionForGranularity:];
+
+/* instance methods */
+-[NSTextSelection isTransient];
+-[NSTextSelection setTransient:];
+-[NSTextSelection setLogical:];
+-[NSTextSelection secondarySelectionLocation];
+-[NSTextSelection anchorPositionOffset];
+-[NSTextSelection setSecondarySelectionLocation:];
+-[NSTextSelection hash];
+-[NSTextSelection selectionAnchorLocation];
+-[NSTextSelection textRangeContainingLocation:];
+-[NSTextSelection initWithCoder:];
+-[NSTextSelection setSelectionAnchorLocation:];
+-[NSTextSelection affinity];
+-[NSTextSelection isEqualToTextSelection:];
+-[NSTextSelection isLogical];
+-[NSTextSelection initWithRange:affinity:granularity:];
+-[NSTextSelection initWithLocation:affinity:];
+-[NSTextSelection textSelectionWithTextRanges:];
+-[NSTextSelection setAnchorPositionOffset:];
+-[NSTextSelection textRanges];
+-[NSTextSelection description];
+-[NSTextSelection setTypingAttributes:];
+-[NSTextSelection dealloc];
+-[NSTextSelection granularity];
+-[NSTextSelection _containsLocation:rangeIndex:];
+-[NSTextSelection isEqual:];
+-[NSTextSelection typingAttributes];
+-[NSTextSelection encodeWithCoder:];
+-[NSTextSelection initWithRanges:affinity:granularity:];
+-[NSTextSelection containsLocation:];
+
+@end
+
+/* NSTextSelection lives in UIFoundation (re-exported by AppKit). Measured
+   (AppKit runtime, macOS 27 26A5416b): initWithRange:affinity:granularity:
+   => 1 range, stored granularity/affinity, transient=NO, logical=NO,
+   anchorPositionOffset=0, typingAttributes=nil. initWithLocation:affinity:
+   => 1 empty range at location, granularity=Character(0). Affinity: Upstream=0,
+   Downstream=1. Granularity: Character=0,Word=1,Paragraph=2,Line=3,Sentence=4. */
