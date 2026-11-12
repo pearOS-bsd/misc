@@ -1,0 +1,10 @@
+/* NSTableHeaderCell : NSTextFieldCell — the cell drawing a table column header.
+ * Interface from the AppKit dyld --objc slice; measured (real AppKit, macOS 27
+ * 26A5416b): initTextCell:@"Name" is-a NSTextFieldCell with that title;
+ * sortIndicatorRectForBounds:{0,0,80,20} => {{63,6},{9,9}} — a 9x9 indicator at
+ * the trailing edge (8pt trailing inset: x = maxX-9-8), vertically centered
+ * (y = round((height-9)/2)).
+ * @interface NSTableHeaderCell : NSTextFieldCell
+ *   -sortIndicatorRectForBounds:;
+ *   -drawSortIndicatorWithFrame:inView:ascending:priority:  (drawing = stage2).
+ */
