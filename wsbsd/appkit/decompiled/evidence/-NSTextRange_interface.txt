@@ -1,0 +1,57 @@
+@interface NSTextRange : NSObject {
+    /* instance variables */
+    @"<NSTextLocation>" _location;
+    @"<NSTextLocation>" _endLocation;
+}
+
+@property (TB,R,GisEmpty) empty;
+@property (T@"<NSTextLocation>",R,V_location) location;
+@property (T@"<NSTextLocation>",R,V_endLocation) endLocation;
+
+/* class methods */
++[NSTextRange combineTextRanges:withTextRanges:usingOperator:];
+
+/* instance methods */
+-[NSTextRange initWithLocation:];
+-[NSTextRange initWithLocation:endLocation:];
+-[NSTextRange terminator];
+-[NSTextRange isNotEmpty];
+-[NSTextRange containsRange:];
+-[NSTextRange endLocation];
+-[NSTextRange intersectsWithTextRange:];
+-[NSTextRange isEqualToTextRange:];
+-[NSTextRange textRangeWithAdjustment:rangeProvider:];
+-[NSTextRange isEmpty];
+-[NSTextRange textRangeByFormingUnionWithTextRange:];
+-[NSTextRange location];
+-[NSTextRange description];
+-[NSTextRange dealloc];
+-[NSTextRange isEqual:];
+-[NSTextRange textRangeByIntersectingWithTextRange:];
+-[NSTextRange debugDescription];
+-[NSTextRange containsLocation:];
+
+@end
+
+/* NSTextLocation protocol (UIFoundation): */
+@protocol NSTextLocation <NSObject>
+
+@required
+
+@property (TQ,R) hash;
+
+/* required instance methods */
+-[NSTextLocation hash];
+-[NSTextLocation compare:];
+-[NSTextLocation isEqual:];
+
+@optional
+
+@end
+
+/* Note: NSTextRange/NSTextLocation live in UIFoundation (re-exported by AppKit),
+   not the AppKit image. Measured semantics (AppKit runtime, macOS 27 26A5416b):
+   isEmpty = location==endLocation; containsLocation: start<=loc<end;
+   intersects = positive-length overlap; union = [min start,max end];
+   intersection = [max start,min end) or nil when disjoint;
+   containsRange: self.start<=other.start && other.end<=self.end. */
