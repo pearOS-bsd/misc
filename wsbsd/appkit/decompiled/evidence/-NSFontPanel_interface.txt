@@ -1,0 +1,12 @@
+/* NSFontPanel : NSPanel — the shared system font picker. Interface from the
+ * AppKit dyld --objc slice; measured defaults (real AppKit, macOS 27 26A5416b):
+ *   +sharedFontPanel is a singleton (is-a NSPanel); isEnabled=YES,
+ *   worksWhenModal=YES. +sharedFontPanelExists true after first access.
+ * @interface NSFontPanel : NSPanel
+ *   +sharedFontPanel / +sharedFontPanelExists
+ *   @property(strong) NSView *accessoryView; BOOL worksWhenModal;
+ *   @property(getter=isEnabled) BOOL enabled;
+ *   -setPanelFont:isMultiple:  (records the current selection)
+ *   -panelConvertFont:          (applies the selection to a font) = stage2
+ *   -reloadDefaultFontFamilies  = stage2.
+ */
