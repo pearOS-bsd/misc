@@ -1,0 +1,41 @@
+@interface NSColorPicker : NSObject <NSColorPickingDefault> {
+    /* instance variables */
+    @ _imageObject;
+    @"NSString" _buttonToolTip;
+    @"NSColorPanel" _colorPanel;
+}
+
+@property (T@"NSColorPanel",R) colorPanel;
+@property (T@"NSImage",R) provideNewButtonImage;
+@property (T@"NSString",R,C) buttonToolTip;
+@property (T{CGSize=dd},R) minContentSize;
+
+/* instance methods */
+-[NSColorPicker dealloc];
+-[NSColorPicker setMode:];
+-[NSColorPicker _insertionOrder];
+-[NSColorPicker _buttonImageToolTip];
+-[NSColorPicker _buttonToolTip];
+-[NSColorPicker _getTiffImage:ownedBy:];
+-[NSColorPicker _localizedNumberedNameWithString:integer:];
+-[NSColorPicker _setButtonToolTip:];
+-[NSColorPicker alphaControlAddedOrRemoved:];
+-[NSColorPicker attachColorList:];
+-[NSColorPicker buttonToolTip];
+-[NSColorPicker colorPanel];
+-[NSColorPicker detachColorList:];
+-[NSColorPicker initWithPickerMask:colorPanel:];
+-[NSColorPicker insertNewButtonImage:in:];
+-[NSColorPicker minContentSize];
+-[NSColorPicker provideNewButtonImage];
+-[NSColorPicker viewSizeChanged:];
+
+@end
+
+/* measured (real AppKit, macOS 27 26A5416b): NSColorPicker is the abstract base
+   adapter for NSColorPanel picker plug-ins (adopts NSColorPickingDefault).
+   initWithPickerMask:colorPanel: stores both; colorPanel getter returns it;
+   buttonToolTip defaults to the class name ("NSColorPicker"); setMode:/attach-
+   /detachColorList:/alphaControlAddedOrRemoved:/viewSizeChanged: are no-ops in
+   the base. minContentSize/provideNewButtonImage call the abstract
+   provideNewView: and THROW on the raw base = subclass responsibility (stage2). */
