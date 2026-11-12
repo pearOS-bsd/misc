@@ -455,6 +455,10 @@ int sls_session_dispatch(conn *c, const uint8_t *buf, size_t len)
 		c->notify_n = n; memcpy(c->notify, buf + 0x24, 4 * n);
 		return reply_simple(c->fd, h, 0);
 	}
+	if (h->msgh_id == SLS_MSG_SetUniversalOwner) {				/* SLSSetUniversalOwner: header only (the connection is the port that it was sent to); the Dock of the Mac calls it at start and exits when it fails */
+		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || h->msgh_size != 0x18) return reply_simple(c->fd, h, -304);
+		return reply_simple(c->fd, h, 0);
+	}
 	if (h->msgh_id == SLS_MSG_SetProcessNotifyInterests) {
 		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size < 0x28) return reply_simple(c->fd, h, -304);
 		uint32_t n = rd32(buf, 0x24);
