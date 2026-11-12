@@ -1,0 +1,15 @@
+/* NSTableRowView : NSView — the background/selection row behind an NSTableView
+ * row's cell views. Interface from the AppKit dyld --objc slice; measured
+ * defaults (real AppKit, macOS 27 26A5416b, bare initWithFrame:):
+ *   isSelected=NO, selectionHighlightStyle=Regular(0), isEmphasized=NO,
+ *   isFloating=NO, isGroupRowStyle=NO, numberOfColumns=0,
+ *   targetForDropOperation=NO, interiorBackgroundStyle=Normal(0),
+ *   draggingDestinationFeedbackStyle=0 (None for the row view).
+ * @interface NSTableRowView : NSView
+ *   @property(getter=isSelected) BOOL selected; NSTableViewSelectionHighlightStyle selectionHighlightStyle;
+ *   @property(getter=isEmphasized) BOOL emphasized; (getter=isFloating) BOOL floating;
+ *   @property(getter=isGroupRowStyle) BOOL groupRowStyle; (readonly) NSInteger numberOfColumns;
+ *   @property BOOL targetForDropOperation; NSInteger draggingDestinationFeedbackStyle;
+ *   @property(readonly) NSBackgroundStyle interiorBackgroundStyle; (strong) NSColor *backgroundColor.
+ *   The cell-view layout + selection drawing are stage2.
+ */
