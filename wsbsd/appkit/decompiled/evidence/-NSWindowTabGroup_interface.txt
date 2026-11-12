@@ -1,0 +1,37 @@
+# NSWindowTabGroup — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# The window tab group (window.tabGroup). Public: identifier, windows (readonly), selectedWindow, overviewVisible, tabBarVisible(readonly). addWindow:/insertWindow:atIndex:/removeWindow: and allowsDraggingTabs/allowsDetachingTabs are SPI (not dot-accessible in a standalone probe; drag/detach defaults assumed YES per NSWindow tabbing docs, could not be measured without a live tabbed window). tabBarVisible == (windows.count>1 || shouldShowTabBarWithOneItem). The tab-bar UI, overview animation, plusTab and window-server tabbing are stage2; the window-list + selection model is reproduced here.
+
+@interface NSWindowTabGroup : NSObject {
+    /* instance variables */
+    @"NSString" _identifier;
+    B _allowsDraggingTabs;
+    B _allowsDetachingTabs;
+}
+
+@property (T@"NSString",C,V_identifier) identifier;
+@property (TB,D,GisTabBarEnabled) tabBarEnabled;
+@property (TB,D) shouldShowTabBarWithOneItem;
+@property (TB,V_allowsDraggingTabs) allowsDraggingTabs;
+@property (TB,V_allowsDetachingTabs) allowsDetachingTabs;
+@property (T@"NSArray",R,C,D) windows;
+@property (TB,D,GisOverviewVisible) overviewVisible;
+@property (TB,R,D,GisTabBarVisible) tabBarVisible;
+@property (T@"NSWindow",W,D) selectedWindow;
+
+/* instance methods */
+-[NSWindowTabGroup setIdentifier:];
+-[NSWindowTabGroup init];
+-[NSWindowTabGroup identifier];
+-[NSWindowTabGroup isTabBarEnabled];
+-[NSWindowTabGroup plusTab];
+-[NSWindowTabGroup addWindow:];
+-[NSWindowTabGroup allowsDetachingTabs];
+-[NSWindowTabGroup allowsDraggingTabs];
+-[NSWindowTabGroup initWithTabbingIdentifier:];
+-[NSWindowTabGroup insertWindow:atIndex:];
+-[NSWindowTabGroup removeWindow:];
+-[NSWindowTabGroup setAllowsDetachingTabs:];
+-[NSWindowTabGroup setAllowsDraggingTabs:];
+-[NSWindowTabGroup setTabBarEnabled:];
+
+@end
