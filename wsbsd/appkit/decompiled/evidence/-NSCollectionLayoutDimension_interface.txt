@@ -1,0 +1,18 @@
+/* NSCollectionLayoutDimension — compositional-layout dimension value object.
+ * The class's @interface is not emitted in the AppKit or UIFoundation --objc
+ * dyld slices (it is referenced only as an ivar type), so the interface here is
+ * reconstructed from the public header + RUNTIME MEASUREMENT against the real
+ * AppKit (macOS 27 build 26A5416b, arm64e):
+ *
+ *   +fractionalWidthDimension:  -> isFractionalWidth=YES, dimension=value
+ *   +fractionalHeightDimension: -> isFractionalHeight=YES, dimension=value
+ *   +absoluteDimension:         -> isAbsolute=YES, dimension=value
+ *   +estimatedDimension:        -> isEstimated=YES, dimension=value
+ *   the four kinds are mutually exclusive; -dimension returns the raw value.
+ *
+ * @interface NSCollectionLayoutDimension : NSObject <NSCopying>
+ *   + fractionalWidthDimension: / fractionalHeightDimension:
+ *   + absoluteDimension: / estimatedDimension:
+ *   @property(readonly) BOOL isFractionalWidth/isFractionalHeight/isAbsolute/isEstimated;
+ *   @property(readonly) CGFloat dimension;
+ */
