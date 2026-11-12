@@ -1,0 +1,96 @@
+@interface NSPopoverTouchBarItem : NSTouchBarItem <NSTouchBarItemTypePopover, NSGestureRecognizerDelegate> {
+    /* instance variables */
+    @"NSTouchBar" _popoverTouchBar;
+    @"NSTouchBar" _pressAndHoldTouchBar;
+    @ _overlay;
+    @"NSString" _customizationLabel;
+    @"NSView" _collapsedRepresentation;
+    @"NSImage" _collapsedRepresentationImage;
+    @"NSString" _collapsedRepresentationLabel;
+    @? _closeButtonHandler;
+    b1 _showsCloseButton;
+    b1 _showsControlStrip;
+    b2 _collapsedRepresentationChevronBehavior;
+    b1 _preventUserDismissal;
+}
+
+@property (TQ,R) hash;
+@property (T#,R) superclass;
+@property (T@"NSString",R,C) description;
+@property (T@"NSString",?,R,C) debugDescription;
+@property (TB,R) isPresented;
+@property (TQ,R) hash;
+@property (T#,R) superclass;
+@property (T@"NSString",R,C) description;
+@property (T@"NSString",?,R,C) debugDescription;
+@property (T@"NSTouchBar",&) popoverTouchBar;
+@property (T@"NSString",C) customizationLabel;
+@property (T@"NSView",&) collapsedRepresentation;
+@property (T@"NSImage",&) collapsedRepresentationImage;
+@property (T@"NSString",&) collapsedRepresentationLabel;
+@property (T@"NSTouchBar",&) pressAndHoldTouchBar;
+@property (TB) showsCloseButton;
+
+/* class methods */
++[NSPopoverTouchBarItem keyPathsForValuesAffectingPresented];
++[NSPopoverTouchBarItem keyPathsForValuesAffectingView];
++[NSPopoverTouchBarItem makeStandardActivatePopoverGestureRecognizer];
+
+/* instance methods */
+-[NSPopoverTouchBarItem view];
+-[NSPopoverTouchBarItem gestureRecognizer:shouldBeRequiredToFailByGestureRecognizer:];
+-[NSPopoverTouchBarItem initWithCoder:];
+-[NSPopoverTouchBarItem gestureRecognizer:shouldRequireFailureOfGestureRecognizer:];
+-[NSPopoverTouchBarItem gestureRecognizerShouldBegin:];
+-[NSPopoverTouchBarItem initWithIdentifier:];
+-[NSPopoverTouchBarItem _type];
+-[NSPopoverTouchBarItem dealloc];
+-[NSPopoverTouchBarItem encodeWithCoder:];
+-[NSPopoverTouchBarItem isPresented];
+-[NSPopoverTouchBarItem popoverTouchBar];
+-[NSPopoverTouchBarItem setShowsControlStripForOverlay:];
+-[NSPopoverTouchBarItem dismissPopover:];
+-[NSPopoverTouchBarItem _gestureRecognizer:shouldReceiveTouch:event:];
+-[NSPopoverTouchBarItem _handleSwipe:];
+-[NSPopoverTouchBarItem _popoverSlide:];
+-[NSPopoverTouchBarItem _primarySliderTouchBarItem];
+-[NSPopoverTouchBarItem _showPressHoldPopup:];
+-[NSPopoverTouchBarItem _swipeLeftToRight:];
+-[NSPopoverTouchBarItem _swipeRightToLeft:];
+-[NSPopoverTouchBarItem closeButtonHandler];
+-[NSPopoverTouchBarItem collapsedRepresentation];
+-[NSPopoverTouchBarItem collapsedRepresentationChevronBehavior];
+-[NSPopoverTouchBarItem collapsedRepresentationImage];
+-[NSPopoverTouchBarItem collapsedRepresentationLabel];
+-[NSPopoverTouchBarItem collapsedRepresentationShowsChevron];
+-[NSPopoverTouchBarItem customizationLabel];
+-[NSPopoverTouchBarItem fingerBias];
+-[NSPopoverTouchBarItem makeStandardActivatePopoverGestureRecognizer];
+-[NSPopoverTouchBarItem makeStandardSliderPanGestureRecognizer];
+-[NSPopoverTouchBarItem makeStandardSwipeGestureRecognizers];
+-[NSPopoverTouchBarItem pressAndHoldTouchBar];
+-[NSPopoverTouchBarItem preventUserDismissal];
+-[NSPopoverTouchBarItem setCloseButtonHandler:];
+-[NSPopoverTouchBarItem setCollapsedRepresentation:];
+-[NSPopoverTouchBarItem setCollapsedRepresentationChevronBehavior:];
+-[NSPopoverTouchBarItem setCollapsedRepresentationImage:];
+-[NSPopoverTouchBarItem setCollapsedRepresentationLabel:];
+-[NSPopoverTouchBarItem setCollapsedRepresentationShowsChevron:];
+-[NSPopoverTouchBarItem setCustomizationLabel:];
+-[NSPopoverTouchBarItem setPopoverTouchBar:];
+-[NSPopoverTouchBarItem setPressAndHoldTouchBar:];
+-[NSPopoverTouchBarItem setPreventUserDismissal:];
+-[NSPopoverTouchBarItem setShowsCloseButton:];
+-[NSPopoverTouchBarItem setSupportsPressAndHold:];
+-[NSPopoverTouchBarItem showPopover:];
+-[NSPopoverTouchBarItem showsCloseButton];
+-[NSPopoverTouchBarItem showsControlStripForOverlay];
+-[NSPopoverTouchBarItem supportsPressAndHold];
+
+@end
+
+/* measured (real AppKit, macOS 27 26A5416b): superclass=NSTouchBarItem.
+   initWithIdentifier: => presented=NO, showsCloseButton=YES,
+   collapsedRepresentationShowsChevron=NO, popoverTouchBar auto-created (non-nil),
+   pressAndHoldTouchBar=nil, collapsedRepresentationLabel/Image=nil,
+   customizationLabel=@"". showPopover:/dismissPopover: toggle presented. */
