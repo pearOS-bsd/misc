@@ -1,0 +1,79 @@
+@interface NSCandidateListTouchBarItem : NSTouchBarItem <NSTouchBarItemPositionAnimationDelegate> {
+    /* instance variables */
+    @"NSCandidateListViewController" _candidateViewController;
+    @"NSString" _customizationLabel;
+    @"NSViewController" _inputContextViewController;
+    {?="_allowsIM"b1"_collapsed"b1"_isTextCompletionItem"b1"_reserved"b29} _clfbiFlags;
+}
+
+@property (T@"NSCandidateListViewController",R) candidateListViewController;
+@property (T@"NSView<NSTextInputClient>",W,D) client;
+@property (T@"<NSCandidateListTouchBarItemDelegate>",W,D) delegate;
+@property (TB,D,GisCollapsed) collapsed;
+@property (TB,D) allowsCollapsing;
+@property (TB,R,D,GisCandidateListVisible) candidateListVisible;
+@property (TB,D) allowsTextInputContextCandidates;
+@property (T@?,C) attributedStringForCandidate;
+@property (T@"NSArray",R,C,D) candidates;
+@property (T@"NSString",C,D) customizationLabel;
+@property (TQ,R) hash;
+@property (T#,R) superclass;
+@property (T@"NSString",R,C) description;
+@property (T@"NSString",?,R,C) debugDescription;
+
+/* class methods */
++[NSCandidateListTouchBarItem candidateBarAppearance];
++[NSCandidateListTouchBarItem keyPathsForValuesAffectingView];
++[NSCandidateListTouchBarItem standardWidth];
+
+/* instance methods */
+-[NSCandidateListTouchBarItem isCollapsed];
+-[NSCandidateListTouchBarItem setClient:];
+-[NSCandidateListTouchBarItem viewController];
+-[NSCandidateListTouchBarItem setDelegate:];
+-[NSCandidateListTouchBarItem candidates];
+-[NSCandidateListTouchBarItem view];
+-[NSCandidateListTouchBarItem initWithCoder:];
+-[NSCandidateListTouchBarItem delegate];
+-[NSCandidateListTouchBarItem observeValueForKeyPath:ofObject:change:context:];
+-[NSCandidateListTouchBarItem initWithIdentifier:];
+-[NSCandidateListTouchBarItem client];
+-[NSCandidateListTouchBarItem dealloc];
+-[NSCandidateListTouchBarItem _commonInit];
+-[NSCandidateListTouchBarItem encodeWithCoder:];
+-[NSCandidateListTouchBarItem setCollapsed:];
+-[NSCandidateListTouchBarItem _textInputContextViewController];
+-[NSCandidateListTouchBarItem formattingBlock];
+-[NSCandidateListTouchBarItem _automaticTextCompletionChanged:];
+-[NSCandidateListTouchBarItem _didChangeCandidateListVisibility];
+-[NSCandidateListTouchBarItem _setTextInputContextViewController:];
+-[NSCandidateListTouchBarItem allowsCollapsing];
+-[NSCandidateListTouchBarItem allowsTextInputContextCandidates];
+-[NSCandidateListTouchBarItem attributedStringForCandidate];
+-[NSCandidateListTouchBarItem candidateListViewController];
+-[NSCandidateListTouchBarItem customizationLabel];
+-[NSCandidateListTouchBarItem isCandidateListVisible];
+-[NSCandidateListTouchBarItem itemPosition];
+-[NSCandidateListTouchBarItem limitsNumberOfCandidates];
+-[NSCandidateListTouchBarItem runPositionAnimation];
+-[NSCandidateListTouchBarItem setAllowsCollapsing:];
+-[NSCandidateListTouchBarItem setAllowsTextInputContextCandidates:];
+-[NSCandidateListTouchBarItem setAttributedStringForCandidate:];
+-[NSCandidateListTouchBarItem setCandidates:forSelectedRange:inString:];
+-[NSCandidateListTouchBarItem setCandidates:forSelectedRange:inString:rect:view:completionHandler:];
+-[NSCandidateListTouchBarItem setCandidates:forSelectedRange:offset:inString:rect:view:completionHandler:];
+-[NSCandidateListTouchBarItem setCustomizationLabel:];
+-[NSCandidateListTouchBarItem setFormattingBlock:];
+-[NSCandidateListTouchBarItem setLimitsNumberOfCandidates:];
+-[NSCandidateListTouchBarItem shouldAnimateNextLayoutPass];
+-[NSCandidateListTouchBarItem updateWithInsertionPointVisibility:];
+
+@end
+
+/* measured (real AppKit, macOS 27 26A5416b): superclass=NSTouchBarItem.
+   initWithIdentifier: => collapsed=NO, allowsCollapsing=YES,
+   candidateListVisible=YES, allowsTextInputContextCandidates=YES,
+   candidates=@[], customizationLabel=@"", client=nil, delegate=nil,
+   attributedStringForCandidate=nil. setCandidates:forSelectedRange:inString:
+   stores the candidates. candidateListVisible == !isCollapsed (standalone;
+   full gating on bar presentation is stage2). */
