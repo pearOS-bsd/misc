@@ -1,0 +1,59 @@
+@interface NSPersistentDocument : NSDocument {
+    /* instance variables */
+    @"NSManagedObjectModel" _managedObjectModel;
+    @"NSManagedObjectContext" _managedObjectContext;
+    @ _store;
+    Q _pDocFlags;
+    @"NSMutableDictionary" _relatedRequestURLs;
+}
+
+@property (T@"NSManagedObjectContext",&) managedObjectContext;
+@property (T@"NSManagedObjectModel",R) managedObjectModel;
+
+/* class methods */
++[NSPersistentDocument _hasOverrideForSelector:fromBaseClass:];
+
+/* instance methods */
+-[NSPersistentDocument close];
+-[NSPersistentDocument setFileURL:];
+-[NSPersistentDocument managedObjectContext];
+-[NSPersistentDocument _persistentStoreCoordinator];
+-[NSPersistentDocument setUndoManager:];
+-[NSPersistentDocument observeValueForKeyPath:ofObject:change:context:];
+-[NSPersistentDocument init];
+-[NSPersistentDocument dealloc];
+-[NSPersistentDocument managedObjectModel];
+-[NSPersistentDocument setManagedObjectContext:];
+-[NSPersistentDocument _finishWritingToURL:byMovingItemAtURL:addingAttributes:error:];
+-[NSPersistentDocument _discardEditing];
+-[NSPersistentDocument persistentStoreTypeForFileType:];
+-[NSPersistentDocument _commitEditingThenContinue:];
+-[NSPersistentDocument _configurePersistentStoreCoordinatorForURL:ofType:error:];
+-[NSPersistentDocument _documentEditor:didCommit:withContext:];
+-[NSPersistentDocument _isAtomicPersistentStoreType:];
+-[NSPersistentDocument _isBeingEdited];
+-[NSPersistentDocument _movePersistentStore:fromURL:toURL:attributes:error:];
+-[NSPersistentDocument _releaseRelatedItemsForURL:];
+-[NSPersistentDocument _requestRelatedItemForURL:withLastComponent:];
+-[NSPersistentDocument _requestSQLiteRelatedItemsForURL:attributes:];
+-[NSPersistentDocument _revertToVersion:preservingFirst:error:];
+-[NSPersistentDocument _unlockAndReturnError:];
+-[NSPersistentDocument backupFileURL];
+-[NSPersistentDocument configurePersistentStoreCoordinatorForURL:ofType:error:];
+-[NSPersistentDocument configurePersistentStoreCoordinatorForURL:ofType:modelConfiguration:storeOptions:error:];
+-[NSPersistentDocument hasUndoManager];
+-[NSPersistentDocument isEntireFileLoaded];
+-[NSPersistentDocument moveToURL:completionHandler:];
+-[NSPersistentDocument readFromURL:ofType:error:];
+-[NSPersistentDocument revertToContentsOfURL:ofType:error:];
+-[NSPersistentDocument setHasUndoManager:];
+-[NSPersistentDocument writeSafelyToURL:ofType:forSaveOperation:error:];
+-[NSPersistentDocument writeToURL:ofType:forSaveOperation:originalContentsURL:error:];
+
+@end
+
+/* measured (real AppKit, macOS 27 26A5416b): NSPersistentDocument : NSDocument.
+   -init lazily auto-creates a main-queue managedObjectContext (non-nil) and a
+   managedObjectModel merged from the process bundles. Both require Core Data
+   (a separate framework), so in this AppKit-only core they are settable/stored
+   and the lazy Core Data construction + persistent store wiring is stage2. */
