@@ -1,0 +1,92 @@
+# NSSliderTouchBarItem — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# : NSTouchBarItem. Measured on-Mac: slider auto-created (minValue 0, maxValue 1); doubleValue/value delegate to the slider and CLAMP to [min,max] (set 5 -> 1); minimumSliderWidth=64, maximumSliderWidth=CGFLOAT_MAX, valueAccessoryWidth=36, label nil. min/max/increment back the slider range; minimumValueAccessory/maximumValueAccessory are NSSliderAccessory. Backing _NSSliderTouchBarItemView is stage2.
+
+@interface NSSliderTouchBarItem : NSTouchBarItem <NSSliderAccessoryContainer> {
+    /* instance variables */
+    @"NSView" _view;
+    @ _autounbinder;
+    @ _target;
+    : _action;
+    @"NSString" _customizationLabel;
+}
+
+@property (TB,R) _hasStepBehaviorContext;
+@property (Td) value;
+@property (Td) minimumValue;
+@property (Td) maximumValue;
+@property (Td) incrementValue;
+@property (T@"NSSliderAccessory",R) minimumValueAccessory;
+@property (T@"NSSliderAccessory",R) maximumValueAccessory;
+@property (TQ,R) hash;
+@property (T#,R) superclass;
+@property (T@"NSString",R,C) description;
+@property (T@"NSString",?,R,C) debugDescription;
+@property (T@"_NSSliderTouchBarItemView",R) _sliderItemView;
+@property (T@"NSView<NSUserInterfaceCompression>",R) view;
+@property (T@"NSSlider",&) slider;
+@property (Td) doubleValue;
+@property (Td) minimumSliderWidth;
+@property (Td) maximumSliderWidth;
+@property (T@"NSString",C) label;
+@property (T@"NSSliderAccessory",&) minimumValueAccessory;
+@property (T@"NSSliderAccessory",&) maximumValueAccessory;
+@property (Td) valueAccessoryWidth;
+@property (T@,W,V_target) target;
+@property (T:,V_action) action;
+@property (T@"NSString",C) customizationLabel;
+
+/* class methods */
++[NSSliderTouchBarItem keyPathsForValuesAffecting_hasStepBehaviorContext];
+
+/* instance methods */
+-[NSSliderTouchBarItem setAction:];
+-[NSSliderTouchBarItem label];
+-[NSSliderTouchBarItem action];
+-[NSSliderTouchBarItem maximumValue];
+-[NSSliderTouchBarItem setValue:];
+-[NSSliderTouchBarItem view];
+-[NSSliderTouchBarItem setDoubleValue:];
+-[NSSliderTouchBarItem doubleValue];
+-[NSSliderTouchBarItem value];
+-[NSSliderTouchBarItem initWithCoder:];
+-[NSSliderTouchBarItem setLabel:];
+-[NSSliderTouchBarItem setMinimumValue:];
+-[NSSliderTouchBarItem initWithIdentifier:];
+-[NSSliderTouchBarItem target];
+-[NSSliderTouchBarItem setTarget:];
+-[NSSliderTouchBarItem dealloc];
+-[NSSliderTouchBarItem setSlider:];
+-[NSSliderTouchBarItem minimumValue];
+-[NSSliderTouchBarItem release];
+-[NSSliderTouchBarItem slider];
+-[NSSliderTouchBarItem setMaximumValue:];
+-[NSSliderTouchBarItem encodeWithCoder:];
+-[NSSliderTouchBarItem _sliderItemView];
+-[NSSliderTouchBarItem preferredPopoverTransposerClass];
+-[NSSliderTouchBarItem _autounbinder];
+-[NSSliderTouchBarItem _hasStepBehaviorContext];
+-[NSSliderTouchBarItem _incrementValue:];
+-[NSSliderTouchBarItem _itemViewDidCancelTracking];
+-[NSSliderTouchBarItem _itemViewDidEndTracking];
+-[NSSliderTouchBarItem _itemViewWillBeginTracking];
+-[NSSliderTouchBarItem _loadViewIfNecessary];
+-[NSSliderTouchBarItem _sliderDidChange:];
+-[NSSliderTouchBarItem customizationLabel];
+-[NSSliderTouchBarItem incrementValue];
+-[NSSliderTouchBarItem makePressAndHoldTransposerWithSourceFrame:destinationContentView:frame:];
+-[NSSliderTouchBarItem maximumSliderWidth];
+-[NSSliderTouchBarItem maximumValueAccessory];
+-[NSSliderTouchBarItem minimumSliderWidth];
+-[NSSliderTouchBarItem minimumValueAccessory];
+-[NSSliderTouchBarItem preferredPopoverTransposerPriority];
+-[NSSliderTouchBarItem sendAction];
+-[NSSliderTouchBarItem setCustomizationLabel:];
+-[NSSliderTouchBarItem setIncrementValue:];
+-[NSSliderTouchBarItem setMaximumSliderWidth:];
+-[NSSliderTouchBarItem setMaximumValueAccessory:];
+-[NSSliderTouchBarItem setMinimumSliderWidth:];
+-[NSSliderTouchBarItem setMinimumValueAccessory:];
+-[NSSliderTouchBarItem setValueAccessoryWidth:];
+-[NSSliderTouchBarItem valueAccessoryWidth];
+
+@end
