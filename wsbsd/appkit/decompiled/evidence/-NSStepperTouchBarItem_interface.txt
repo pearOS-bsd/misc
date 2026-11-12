@@ -1,0 +1,51 @@
+# NSStepperTouchBarItem — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# : NSTouchBarItem. Measured on-Mac: minValue=0 maxValue=59 increment=1 value=0; formatter readonly (set by stepperTouchBarItemWithIdentifier:formatter:); also :drawingHandler: factory. The backing stepper view is stage2.
+
+@interface NSStepperTouchBarItem : NSTouchBarItem {
+    /* instance variables */
+    @"_NSStepperTouchBarItemView" _stepperView;
+    @ target;
+    : action;
+    @"NSString" _customizationLabel;
+}
+
+@property (T@"NSFormatter",R) formatter;
+@property (Td) maxValue;
+@property (Td) minValue;
+@property (Td) increment;
+@property (Td) value;
+@property (T@,W,Vtarget) target;
+@property (T:,Vaction) action;
+@property (T@"NSString",C,V_customizationLabel) customizationLabel;
+
+/* class methods */
++[NSStepperTouchBarItem stepperTouchBarItemWithIdentifier:drawingHandler:];
++[NSStepperTouchBarItem stepperTouchBarItemWithIdentifier:formatter:];
+
+/* instance methods */
+-[NSStepperTouchBarItem minValue];
+-[NSStepperTouchBarItem setAction:];
+-[NSStepperTouchBarItem increment];
+-[NSStepperTouchBarItem maxValue];
+-[NSStepperTouchBarItem action];
+-[NSStepperTouchBarItem setValue:];
+-[NSStepperTouchBarItem view];
+-[NSStepperTouchBarItem value];
+-[NSStepperTouchBarItem initWithCoder:];
+-[NSStepperTouchBarItem initWithIdentifier:];
+-[NSStepperTouchBarItem target];
+-[NSStepperTouchBarItem setTarget:];
+-[NSStepperTouchBarItem dealloc];
+-[NSStepperTouchBarItem setMinValue:];
+-[NSStepperTouchBarItem setMaxValue:];
+-[NSStepperTouchBarItem formatter];
+-[NSStepperTouchBarItem encodeWithCoder:];
+-[NSStepperTouchBarItem _commonStepperViewSetUp:];
+-[NSStepperTouchBarItem _configureAsGraphicalStepperWithDrawingHandler:];
+-[NSStepperTouchBarItem _configureAsTextualStepperWithFormatter:];
+-[NSStepperTouchBarItem _stepperValueDidChange:];
+-[NSStepperTouchBarItem customizationLabel];
+-[NSStepperTouchBarItem setCustomizationLabel:];
+-[NSStepperTouchBarItem setIncrement:];
+
+@end
