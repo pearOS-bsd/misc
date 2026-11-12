@@ -1,0 +1,11 @@
+/* NSCollectionViewCompositionalLayoutConfiguration — global config for a
+ * compositional layout. Class @interface not emitted in the dyld --objc slices;
+ * reconstructed from the public header + RUNTIME MEASUREMENT against real AppKit
+ * (macOS 27 26A5416b):
+ *   -init => scrollDirection=Vertical(0), interSectionSpacing=0,
+ *   boundarySupplementaryItems=@[].
+ * @interface NSCollectionViewCompositionalLayoutConfiguration : NSObject <NSCopying>
+ *   @property NSCollectionViewScrollDirection scrollDirection;
+ *   @property CGFloat interSectionSpacing;
+ *   @property(copy) NSArray<NSCollectionLayoutBoundarySupplementaryItem*> *boundarySupplementaryItems;
+ */
