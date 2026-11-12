@@ -1,0 +1,57 @@
+@interface NSTextLayoutFragment : NSObject <NSCoreTypesetterDelegateInternal, __NSTextRunStorageDataSource, NSSecureCoding, NSTextViewportRenderingSurfaceKey> {
+    /* instance variables */
+    @"NSTextLayoutManager" _textLayoutManager;
+    @"NSTextElement" _textElement;
+    @"NSTextRange" _rangeInElement;
+    @"NSTextRange" _contentRange;
+    @"_NSTextAttributeStorage" _renderingAttributesTable;
+    q _offsetFromElementLocation;
+    {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}} _layoutFragmentFrame;
+    @"_NSTextAttachmentLayoutContext" _textAttachmentLayoutContext;
+    @"NSMutableDictionary" _truncationTokenTable;
+    B _isTextParagraph;
+    {?="_effectiveAnimationContext"@"NSTextAnimationContext""_components"Q"_exclusiveComponents"Q"_ranges"(?="_inline"[5{_NSRange="location"Q"length"Q}]"_rangesPointer"^{_NSRange})"_inlineAnimationRanges"B} _textAnimationContextState;
+    @"<NSTextAnimationKeyframe>" _keyframe;
+    @"NSArray" _forcedLineBreaks;
+    @"NSTextContainer" _textContainerForAnchoredAttachmentViewProviderCache;
+    @"NSMapTable" _anchoredAttachmentViewProviders;
+    {_NSRange="location"Q"length"Q} _characterRange;
+    Q _sourceVerticalDelta;
+    Q _sourceRangeDelta;
+    {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}} _sourceBoundingRect;
+    {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}} _destinationBoundingRect;
+    Q _animationType;
+    @"NSLayoutManager" _destinationLayoutManager;
+    @"NSTextStorage" _destinationTextStorage;
+    d _destinationVerticalDelta;
+    {_NSRange="location"Q"length"Q} _destinationGlyphRange;
+    @"NSLayoutManager" _layoutManager;
+    B _renderingAttributesValidated;
+    B _rendersTextCorrectionMarkers;
+    B _hasPartialLayout;
+    @"NSArray" _textLineFragments;
+    @"NSOperationQueue" _layoutQueue;
+    Q _state;
+    @"NSDictionary" _extraLineFragmentAttributes;
+    @"NSArray" _truncatedRanges;
+    @"NSArray" _textLineFragmentsExcludingExtra;
+    {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}} _boundingRectForAnchoredAttachments;
+}
+
+@property (T@"NSLayoutManager") destinationLayoutManager;
+@property (T@"NSTextStorage",&) destinationTextStorage;
+@property (Td) destinationVerticalDelta;
+@property (T{_NSRange=QQ}) destinationGlyphRange;
+@property (T{CGRect={CGPoint=dd}{CGSize=dd}},D) destinationBoundingRect;
+@property (T@"NSArray",C,V_textLineFragments) textLineFragments;
+@property (T@"NSArray",&,V_textLineFragmentsExcludingExtra) textLineFragmentsExcludingExtra;
+@property (TQ,V_state) state;
+@property (T{CGRect={CGPoint=dd}{CGSize=dd}}) layoutFragmentFrame;
+@property (TB,G_isRenderingAttributesValidated,V_renderingAttributesValidated) _renderingAttributesValidated;
+
+/* NSTextLayoutFragment lives in UIFoundation (re-exported by AppKit). Measured
+   (AppKit runtime, macOS 27 26A5416b): initWithTextElement:range: stores the
+   SAME element + range; textLineFragments=nil, state=0 (None),
+   layoutFragmentFrame=zero, renderingSurfaceBounds=zero, textLayoutManager=nil
+   until laid out. State: None=0 ... LayoutAvailable=3. The glyph layout that
+   fills textLineFragments/frames is stage2. */
