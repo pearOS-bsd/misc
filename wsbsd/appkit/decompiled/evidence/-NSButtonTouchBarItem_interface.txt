@@ -1,0 +1,51 @@
+# NSButtonTouchBarItem — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# : NSTouchBarItem. Measured on-Mac: default title '' , enabled YES, image/bezelColor nil; factories buttonTouchBarItemWithIdentifier:(title:)(image:)target:action: + systemCloseButtonItemWithTarget:action:. The backing NSButton view is lazily built = stage2 (view nil in the core).
+
+@interface NSButtonTouchBarItem : NSTouchBarItem {
+    /* instance variables */
+    @"NSButton" _button;
+    @"NSImage" _image;
+    @ _target;
+    : _action;
+    @"NSString" _customizationLabel;
+}
+
+@property (T@"NSString",C) title;
+@property (T@"NSImage",&) image;
+@property (T@"NSColor",C) bezelColor;
+@property (T@,W,V_target) target;
+@property (T:,V_action) action;
+@property (TB,GisEnabled) enabled;
+@property (T@"NSString",C) customizationLabel;
+
+/* class methods */
++[NSButtonTouchBarItem buttonTouchBarItemWithIdentifier:image:target:action:];
++[NSButtonTouchBarItem buttonTouchBarItemWithIdentifier:title:image:target:action:];
++[NSButtonTouchBarItem buttonTouchBarItemWithIdentifier:title:target:action:];
++[NSButtonTouchBarItem systemCloseButtonItemWithTarget:action:];
+
+/* instance methods */
+-[NSButtonTouchBarItem setAction:];
+-[NSButtonTouchBarItem action];
+-[NSButtonTouchBarItem view];
+-[NSButtonTouchBarItem setTitle:];
+-[NSButtonTouchBarItem initWithCoder:];
+-[NSButtonTouchBarItem initWithIdentifier:];
+-[NSButtonTouchBarItem target];
+-[NSButtonTouchBarItem setTarget:];
+-[NSButtonTouchBarItem setEnabled:];
+-[NSButtonTouchBarItem dealloc];
+-[NSButtonTouchBarItem title];
+-[NSButtonTouchBarItem isEnabled];
+-[NSButtonTouchBarItem image];
+-[NSButtonTouchBarItem encodeWithCoder:];
+-[NSButtonTouchBarItem setImage:];
+-[NSButtonTouchBarItem _performAction];
+-[NSButtonTouchBarItem _setDisplayImage:];
+-[NSButtonTouchBarItem _updateTitleAndImageConfiguration];
+-[NSButtonTouchBarItem bezelColor];
+-[NSButtonTouchBarItem customizationLabel];
+-[NSButtonTouchBarItem setBezelColor:];
+-[NSButtonTouchBarItem setCustomizationLabel:];
+
+@end
