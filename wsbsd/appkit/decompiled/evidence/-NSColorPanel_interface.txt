@@ -1,0 +1,14 @@
+/* NSColorPanel : NSPanel — the shared system color picker. Interface from the
+ * AppKit dyld --objc slice; measured defaults (real AppKit, macOS 27 26A5416b):
+ *   +sharedColorPanel is a singleton (is-a NSPanel/NSWindow); mode=Wheel(6),
+ *   showsAlpha=YES, isContinuous=YES, color non-nil.
+ *   NSColorPanelMode: Gray=0,RGB=1,CMYK=2,HSB=3,CustomPalette=4,ColorList=5,
+ *   Wheel=6,Crayon=7.
+ * @interface NSColorPanel : NSPanel
+ *   +sharedColorPanel / +sharedColorPanelExists / +setPickerMode: / +setPickerMask:
+ *   @property(copy) NSColor *color; NSColorPanelMode mode;
+ *   @property BOOL showsAlpha; (getter=isContinuous) BOOL continuous;
+ *   @property(strong) NSView *accessoryView;
+ *   -setTarget:/-setAction:; -attachColorList:/-detachColorList:.
+ *   The panel UI + color-list wiring are stage2.
+ */
