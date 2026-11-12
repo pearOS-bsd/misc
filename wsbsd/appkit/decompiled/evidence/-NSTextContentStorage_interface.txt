@@ -1,0 +1,101 @@
+@interface NSTextContentStorage : NSTextContentManager <NSTextStorageObserving> {
+    /* instance variables */
+    @"NSAttributedString" _attributedString;
+    @"NSTextStorage" _textStorage;
+    @"NSCountableTextRange" _documentRange;
+    @"NSRunStorage" _indexTable;
+    @"NSStorage" _elements;
+    {_NSRange="location"Q"length"Q} _cachedRange;
+    {_NSRange="location"Q"length"Q} _modifiedRange;
+    q _modifiedDocumentLengthDelta;
+    {_NSRange="location"Q"length"Q} _invalidatedRange;
+    {_NSRange="location"Q"length"Q} _editedRange;
+    q _editedDelta;
+    Q _editedMask;
+    B _notifyingToFixSelection;
+    ^{?=^@{_NSRange=QQ}[64@]q{_NSRange=QQ}QqBB} _activeEnumerationCache;
+    B _copiesContentsInTextParagraphs;
+    B _includesTextListMarkers;
+    B __hasAnchoredTextAttachments;
+    B _supportsAnchoredTextAttachments;
+    Q _baseWritingDirectionResolutionStrategy;
+}
+
+@property (T@"NSCountableTextRange",R) documentRange;
+@property (TB,V_copiesContentsInTextParagraphs) copiesContentsInTextParagraphs;
+@property (TB,V__hasAnchoredTextAttachments) _hasAnchoredTextAttachments;
+@property (TB,V_supportsAnchoredTextAttachments) supportsAnchoredTextAttachments;
+@property (TQ,V_baseWritingDirectionResolutionStrategy) baseWritingDirectionResolutionStrategy;
+@property (T@"<NSTextContentStorageDelegate>",W,D) delegate;
+@property (TB,V_includesTextListMarkers) includesTextListMarkers;
+@property (T@"NSAttributedString",C,D) attributedString;
+@property (T@"NSTextStorage",&,D) textStorage;
+@property (TQ,R) hash;
+@property (T#,R) superclass;
+@property (T@"NSString",R,C) description;
+@property (T@"NSString",?,R,C) debugDescription;
+
+/* class methods */
++[NSTextContentStorage supportsSecureCoding];
++[NSTextContentStorage _includesTextListMarkers];
++[NSTextContentStorage _usesTextListElements];
++[NSTextContentStorage __isNotesTextContentStorageClass];
++[NSTextContentStorage registerEditedRangeValidator:];
+
+/* instance methods */
+-[NSTextContentStorage baseWritingDirectionResolutionStrategy];
+-[NSTextContentStorage set_hasAnchoredTextAttachments:];
+-[NSTextContentStorage enumerateTextElementsFromLocation:options:usingBlock:];
+-[NSTextContentStorage endEditingTransaction];
+-[NSTextContentStorage setTextStorage:];
+-[NSTextContentStorage documentRange];
+-[NSTextContentStorage textElementsForAttributedString:];
+-[NSTextContentStorage locationFromLocation:offset:];
+-[NSTextContentStorage attributedStringForTextElements:];
+-[NSTextContentStorage adjustedRangeFromRange:forEditingTextSelection:];
+-[NSTextContentStorage replaceContentsInRange:withTextElements:];
+-[NSTextContentStorage attributedString];
+-[NSTextContentStorage copiesContentsInTextParagraphs];
+-[NSTextContentStorage isCountableDataSource];
+-[NSTextContentStorage performEditingTransactionForTextStorage:usingBlock:];
+-[NSTextContentStorage setSupportsAnchoredTextAttachments:];
+-[NSTextContentStorage textElementForAttributedString:];
+-[NSTextContentStorage containsExtraLineFragment];
+-[NSTextContentStorage synchronizeTextLayoutManagers:];
+-[NSTextContentStorage setDelegate:];
+-[NSTextContentStorage includesTextListMarkers];
+-[NSTextContentStorage setBaseWritingDirectionResolutionStrategy:];
+-[NSTextContentStorage performEditingTransactionForTextStorage:withBlock:];
+-[NSTextContentStorage _applyEditedRangeAdjustmentsToRange:];
+-[NSTextContentStorage _hasAnchoredTextAttachments];
+-[NSTextContentStorage _supportsTextAttributesInRange:];
+-[NSTextContentStorage updateRangesForTextElement:locationDelta:];
+-[NSTextContentStorage synchronizeToBackingStore:];
+-[NSTextContentStorage attributedStringForTextElement:];
+-[NSTextContentStorage processEditingForTextStorage:edited:range:changeInLength:invalidatedRange:];
+-[NSTextContentStorage textStorage];
+-[NSTextContentStorage setCopiesContentsInTextParagraphs:];
+-[NSTextContentStorage setIncludesTextListMarkers:];
+-[NSTextContentStorage locationFromLocation:withOffset:];
+-[NSTextContentStorage offsetFromLocation:toLocation:];
+-[NSTextContentStorage supportsAnchoredTextAttachments];
+-[NSTextContentStorage _commonInitialization];
+-[NSTextContentStorage setAttributedString:];
+-[NSTextContentStorage beginEditingTransaction];
+-[NSTextContentStorage initWithCoder:];
+-[NSTextContentStorage delegate];
+-[NSTextContentStorage init];
+-[NSTextContentStorage dealloc];
+-[NSTextContentStorage encodeWithCoder:];
+
+@end
+
+/* NSTextContentStorage lives in UIFoundation (re-exported by AppKit); concrete
+   NSTextContentManager backed by an NSAttributedString/NSTextStorage. Measured
+   (AppKit runtime, macOS 27 26A5416b): -init => empty attributedString,
+   documentRange "0...0"; setting a 5-char string gives documentRange of length 5;
+   offsetFromLocation:toLocation: / locationFromLocation:withOffset: do integer
+   offset arithmetic; textElementsForRange: splits the text into one
+   NSTextParagraph per paragraph ("ab\ncd" -> 2 NSTextParagraph elements).
+   Locations are integer offsets (NSCountableTextRange internally). NSTextStorage
+   live observation + attachment handling = stage2. */
