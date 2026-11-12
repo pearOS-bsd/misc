@@ -1,0 +1,73 @@
+@interface NSTextViewportLayoutController : NSObject {
+    /* instance variables */
+    @"NSTextLayoutManager" _textLayoutManager;
+    @"NSTextContainer" _textContainer;
+    @"<NSTextViewportLayoutControllerDelegate_Internal>" _delegate;
+    {CGRect="origin"{CGPoint="x"d"y"d}"size"{CGSize="width"d"height"d}} _viewportBounds;
+    {CGPoint="x"d"y"d} _viewportOffset;
+    @"NSTextRange" _viewportRange;
+    @"NSMapTable" _renderingSurfaces;
+    @"NSArray" _viewportElements;
+    @"NSMutableArray" _viewportLayoutObservers;
+    {?="_layoutIsValid"b1"_needsLayout"b1"_shouldReset"b1"_updatingRenderingSurfaces"b1"_isTextLayoutManager"b1"_delegateRespondsToRequiredPublicAPI"b1"_delegateSupportsLocationPositionMapping"b1"_delegateSupportsRenderingSurfaces"b1"_delegateSupportsAuxiliaryRenderingSurfaces"b1"_delegateSupportsPresentationLayoutFragment"b1"_needsLayoutSelectorType"b2"_delegateSupportsControllerWillLayout"b1"_delegateSupportsControllerDidLayout"b1"_delegateSupportsControllerReceivedSetNeedsLayout"b1"_delegateSupportsCachingRenderingSurface"b1"_delegateSupportsRetrievingCachedRenderingSurface"b1} _viewportLayoutControllerFlags;
+    @? _renderingSurfaceUpdater;
+    @? _platformRenderingSurfaceUpdater;
+}
+
+@property (T@?,C,V_renderingSurfaceUpdater) renderingSurfaceUpdater;
+@property (T@?,C,V_platformRenderingSurfaceUpdater) _platformRenderingSurfaceUpdater;
+@property (T@"<NSTextViewportLayoutControllerDelegate>",W) delegate;
+@property (T@"NSTextLayoutManager",R,W,V_textLayoutManager) textLayoutManager;
+@property (T@"NSTextContainer",R,W,D) textContainer;
+@property (T{CGRect={CGPoint=dd}{CGSize=dd}},R) viewportBounds;
+@property (T@"NSTextRange",R) viewportRange;
+
+/* class methods */
++[NSTextViewportLayoutController flushesCachedViewportElements];
+
+/* instance methods */
+-[NSTextViewportLayoutController textContainer];
+-[NSTextViewportLayoutController enumerateViewportElementsFromLocation:options:usingBlock:];
+-[NSTextViewportLayoutController setNeedsLayout];
+-[NSTextViewportLayoutController setRenderingSurface:forKey:];
+-[NSTextViewportLayoutController addRenderingSurface:key:group:placement:];
+-[NSTextViewportLayoutController setDelegate:];
+-[NSTextViewportLayoutController viewportBounds];
+-[NSTextViewportLayoutController viewportRange];
+-[NSTextViewportLayoutController set_platformRenderingSurfaceUpdater:];
+-[NSTextViewportLayoutController layoutViewport];
+-[NSTextViewportLayoutController setRenderingSurfaceUpdater:];
+-[NSTextViewportLayoutController renderingSurfaceUpdater];
+-[NSTextViewportLayoutController _resetLayout];
+-[NSTextViewportLayoutController delegate];
+-[NSTextViewportLayoutController _platformRenderingSurfaceUpdater];
+-[NSTextViewportLayoutController adjustViewport:atLocation:verticalOffsetFromLocation:];
+-[NSTextViewportLayoutController textLayoutFragmentForLocation:];
+-[NSTextViewportLayoutController _viewportBounds];
+-[NSTextViewportLayoutController locationAtPoint:];
+-[NSTextViewportLayoutController removeViewportLayoutObserver:];
+-[NSTextViewportLayoutController relocateViewportToTextLocation:];
+-[NSTextViewportLayoutController dealloc];
+-[NSTextViewportLayoutController initWithTextLayoutManager:];
+-[NSTextViewportLayoutController textViewportElementForLocation:];
+-[NSTextViewportLayoutController adjustViewportByVerticalOffset:];
+-[NSTextViewportLayoutController initWithTextContainer:];
+-[NSTextViewportLayoutController renderingSurfaceForKey:];
+-[NSTextViewportLayoutController textLayoutFragmentsInRect:];
+-[NSTextViewportLayoutController enumerateTextViewportElementsInRect:options:usingBlock:];
+-[NSTextViewportLayoutController textLayoutManager];
+-[NSTextViewportLayoutController viewport];
+-[NSTextViewportLayoutController addViewportLayoutObserver:];
+-[NSTextViewportLayoutController textViewportElementsInRect:];
+-[NSTextViewportLayoutController textLayoutFragmentAtPoint:];
+-[NSTextViewportLayoutController enumerateTextLayoutFragmentsInRect:options:usingBlock:];
+-[NSTextViewportLayoutController elementProvider];
+-[NSTextViewportLayoutController textViewportElementAtPoint:];
+
+@end
+
+/* NSTextViewportLayoutController lives in UIFoundation (re-exported by AppKit).
+   Measured (AppKit runtime, macOS 27 26A5416b): initWithTextLayoutManager:
+   stores the layout manager (readonly weak); delegate=nil, viewportBounds=zero,
+   viewportRange=nil until layoutViewport runs. The viewport layout cycle
+   (layoutViewport, relocate/adjust) needs the layout engine = stage2. */
