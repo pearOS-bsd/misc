@@ -1,0 +1,19 @@
+@interface NSMediaLibraryBrowserController : NSObject
+
+@property (TB,D,GisVisible) visible;
+@property (T{CGRect={CGPoint=dd}{CGSize=dd}},D) frame;
+@property (TQ,D) mediaLibraries;
+
+/* class methods */
++[NSMediaLibraryBrowserController allocWithZone:];
++[NSMediaLibraryBrowserController sharedMediaLibraryBrowserController];
+
+/* instance methods */
+-[NSMediaLibraryBrowserController togglePanel:];
+
+@end
+
+/* measured (real AppKit, macOS 27 26A5416b): +sharedMediaLibraryBrowserController
+   is a singleton; visible=NO, frame=CGRectZero, mediaLibraries=0 at rest.
+   NSMediaLibrary options: Audio=1, Image=2, Movie=4. togglePanel: shows/hides
+   the floating media browser panel (window server = stage2). */
