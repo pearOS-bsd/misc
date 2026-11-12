@@ -1,0 +1,48 @@
+@interface NSPDFImageRep : NSImageRep {
+    /* instance variables */
+    @"NSData" _pdfData;
+    @"_NSPDFDocument" _private;
+}
+
+@property (T@"NSData",R) PDFRepresentation;
+@property (T{CGRect={CGPoint=dd}{CGSize=dd}},R) bounds;
+@property (Tq) currentPage;
+@property (Tq,R) pageCount;
+
+/* class methods */
++[NSPDFImageRep supportsSecureCoding];
++[NSPDFImageRep initialize];
++[NSPDFImageRep canInitWithData:];
++[NSPDFImageRep imageRepWithData:];
++[NSPDFImageRep imageUnfilteredFileTypes];
++[NSPDFImageRep imageUnfilteredPasteboardTypes];
++[NSPDFImageRep imageUnfilteredTypes];
+
+/* instance methods */
+-[NSPDFImageRep bounds];
+-[NSPDFImageRep initWithData:];
+-[NSPDFImageRep setCurrentPage:];
+-[NSPDFImageRep _isValid];
+-[NSPDFImageRep initWithCoder:];
+-[NSPDFImageRep init];
+-[NSPDFImageRep dealloc];
+-[NSPDFImageRep pageCount];
+-[NSPDFImageRep copyWithZone:];
+-[NSPDFImageRep encodeWithCoder:];
+-[NSPDFImageRep currentPage];
+-[NSPDFImageRep PDFRepresentation];
+-[NSPDFImageRep _createPatternForRect:context:];
+-[NSPDFImageRep _drawOnlyUsesOneDrawingOperation];
+-[NSPDFImageRep _pixelsHighOrResolutionIndependent];
+-[NSPDFImageRep _pixelsWideOrResolutionIndependent];
+-[NSPDFImageRep _uncachedSize];
+-[NSPDFImageRep draw];
+
+@end
+
+/* measured (real AppKit, macOS 27 26A5416b):
+   +canInitWithData: YES for %PDF data, NO otherwise.
+   initWithData: (valid) => pageCount=N, currentPage=0 (0-based), bounds=media
+   box of the current page, size=bounds.size, PDFRepresentation==input data.
+   setCurrentPage: updates bounds/size to that page. initWithData: (invalid)
+   returns a non-nil rep with pageCount=0 and zero size (not nil). */
