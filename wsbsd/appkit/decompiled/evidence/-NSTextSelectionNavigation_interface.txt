@@ -1,0 +1,80 @@
+@interface NSTextSelectionNavigation : NSObject {
+    /* instance variables */
+    @"<NSTextSelectionDataSource>" _textSelectionDataSource;
+    [8@"__NSTextSelectionLineFragmentInfo"] _lineFragmentInfoCache;
+    q _multipleSelectionAnchor;
+    B _supportsLayoutOrientation;
+    B _supportsContainer;
+    B _allowsNonContiguousRanges;
+    B _rotatesCoordinateSystemForLayoutOrientation;
+    B _prefersVisuallyContiguousNavigation;
+}
+
+@property (T@"<NSTextSelectionDataSource>",W,V_textSelectionDataSource) textSelectionDataSource;
+@property (T@"<NSTextSelectionDataSourcePrivate>",R,W) textSelectionDataSourcePrivate;
+@property (TB,V_prefersVisuallyContiguousNavigation) prefersVisuallyContiguousNavigation;
+@property (TB,R,D) _isVisuallyContiguousNavigation;
+@property (TB,V_allowsNonContiguousRanges) allowsNonContiguousRanges;
+@property (TB,V_rotatesCoordinateSystemForLayoutOrientation) rotatesCoordinateSystemForLayoutOrientation;
+
+/* class methods */
++[NSTextSelectionNavigation initialize];
++[NSTextSelectionNavigation _setupCharacterSets];
++[NSTextSelectionNavigation _substringRangeForEnumerationType:location:dataSource:string:enclosingRange:];
+
+/* instance methods */
+-[NSTextSelectionNavigation initWithDataSource:];
+-[NSTextSelectionNavigation textSelectionForSelectionGranularity:enclosingPoint:inContainerAtLocation:bounds:];
+-[NSTextSelectionNavigation _adjustLocationForNearestCaretPosition:direction:];
+-[NSTextSelectionNavigation textSelectionsInteractingAtPoint:inContainerAtLocation:anchors:modifiers:selecting:bounds:];
+-[NSTextSelectionNavigation _location:withAffinity:isAtBoundaryOfDestination:onSide:];
+-[NSTextSelectionNavigation flushLayoutCache];
+-[NSTextSelectionNavigation _copyRangeForTextLineFragmentAtLocation:affinity:copyEnclosingRange:];
+-[NSTextSelectionNavigation destinationForTextSelection:direction:destination:extending:];
+-[NSTextSelectionNavigation setPrefersVisuallyContiguousNavigation:];
+-[NSTextSelectionNavigation _lineFragmentInfoForPoint:inContainerAtLocation:bounds:layoutOrientation:beforeLineFragment:afterLineFragment:lineFragmentRange:];
+-[NSTextSelectionNavigation destinationSelectionForTextSelection:direction:destination:extending:confined:];
+-[NSTextSelectionNavigation setRotatesCoordinateSystemForLayoutOrientation:];
+-[NSTextSelectionNavigation prefersVisuallyContiguousNavigation];
+-[NSTextSelectionNavigation _bidiLevelAtLocation:affinity:];
+-[NSTextSelectionNavigation _copyRangeForTextLineFragmentAtLocation:affinity:];
+-[NSTextSelectionNavigation _findAnchorInfoForTextSelection:anchorPositionOffset:anchorLocation:];
+-[NSTextSelectionNavigation deletionRangesForTextSelection:direction:destination:allowsDecomposition:confined:];
+-[NSTextSelectionNavigation _mergeVisuallyContiguousRanges:withRanges:];
+-[NSTextSelectionNavigation _lineFragmentInfoForLocation:affinity:];
+-[NSTextSelectionNavigation setTextSelectionDataSource:];
+-[NSTextSelectionNavigation rotatesCoordinateSystemForLayoutOrientation];
+-[NSTextSelectionNavigation textSelectionDataSource];
+-[NSTextSelectionNavigation destinationForTextSelection:direction:destination:extending:confined:];
+-[NSTextSelectionNavigation _rangeOfCombinedLineFragmentsInRanges:];
+-[NSTextSelectionNavigation _lineFragmentInfoForRange:];
+-[NSTextSelectionNavigation textSelectionForSelectionGranularity:enclosingTextSelection:];
+-[NSTextSelectionNavigation _logicalDirectionForDirection:textSelection:];
+-[NSTextSelectionNavigation resolvedInsertionLocationForTextSelection:writingDirection:];
+-[NSTextSelectionNavigation allowsNonContiguousRanges];
+-[NSTextSelectionNavigation _rangesAreVisuallyContiguous:];
+-[NSTextSelectionNavigation dealloc];
+-[NSTextSelectionNavigation _rangesForSelectionStartingOffset:inLineFragmentInfo:endingOffset:inLineFragmentInfo:contiguous:];
+-[NSTextSelectionNavigation textSelectionsInteractingAtPoint:inContainerAtLocation:anchors:modifiers:selecting:];
+-[NSTextSelectionNavigation _rangesWithDirectionalFormatAdjustmentsForRanges:];
+-[NSTextSelectionNavigation _anchorPositionOffsetForLocation:textSelection:affinity:];
+-[NSTextSelectionNavigation setAllowsNonContiguousRanges:];
+-[NSTextSelectionNavigation deletionRangesForTextSelection:direction:destination:allowsDecomposition:];
+-[NSTextSelectionNavigation _isVisuallyContiguousNavigation];
+-[NSTextSelectionNavigation textSelectionsForPoint:inContainerAtLocation:anchors:modifiers:selecting:];
+-[NSTextSelectionNavigation textSelectionForSelectionGranularity:enclosingPoint:inContainerAtLocation:];
+-[NSTextSelectionNavigation _logicalDestinationLocationForTextSelection:originLocation:direction:destination:extending:confined:affinity:];
+-[NSTextSelectionNavigation _horizontalDirectionForDirection:location:];
+-[NSTextSelectionNavigation textSelectionDataSourcePrivate];
+-[NSTextSelectionNavigation _caretOffsetForTextLocation:affinity:];
+-[NSTextSelectionNavigation _visualDestinationLocationForTextSelection:originLocation:direction:destination:extending:confined:affinity:crossedLine:];
+
+@end
+
+/* NSTextSelectionNavigation lives in UIFoundation (re-exported by AppKit).
+   Measured (AppKit runtime, macOS 27 26A5416b): initWithDataSource:(nil) =>
+   textSelectionDataSource=nil, allowsNonContiguousRanges=YES,
+   rotatesCoordinateSystemForLayoutOrientation=NO. Direction Forward=0,
+   Destination Word=1. The geometric resolution (destinationSelectionForText-
+   Selection:..., deletionRangesForTextSelection:..., textSelectionsInteracting-
+   AtPoint:...) needs the layout engine = stage2 (returns nil/empty here). */
