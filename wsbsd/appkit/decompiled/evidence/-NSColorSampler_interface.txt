@@ -1,0 +1,21 @@
+# NSColorSampler — AppKit.framework macOS 27 (26A5416b arm64e) — ipsw dyld macho <dsc> AppKit --objc
+# showSamplerWithSelectionHandler: queues a completion handler and opens the screen color magnifier over an NSXPCConnection; selectedColor: is the ColorSamplerClientProtocol callback that fires the queued handlers with the picked color (nil if cancelled). The magnifier UI + XPC sampling are stage2; the handler queue/dispatch is reproduced here.
+
+@interface NSColorSampler : NSObject <ColorSamplerClientProtocol> {
+    /* instance variables */
+    @"NSXPCConnection" _xpcConnection;
+    @"NSPointerArray" _completionHandlers;
+}
+
+@property (TQ,R) hash;
+@property (T#,R) superclass;
+@property (T@"NSString",R,C) description;
+@property (T@"NSString",?,R,C) debugDescription;
+
+/* instance methods */
+-[NSColorSampler dealloc];
+-[NSColorSampler _ensureConnection];
+-[NSColorSampler selectedColor:];
+-[NSColorSampler showSamplerWithSelectionHandler:];
+
+@end
