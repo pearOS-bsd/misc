@@ -1,0 +1,11 @@
+/* NSTableHeaderView : NSView — the column-header bar of an NSTableView. Interface
+ * from the AppKit dyld --objc slice; measured defaults (real AppKit, macOS 27
+ * 26A5416b, bare initWithFrame:, no table):
+ *   tableView=nil, draggedColumn=-1, draggedDistance=0, resizedColumn=-1,
+ *   columnAtPoint:->-1, headerRectOfColumn:->CGRectZero.
+ * @interface NSTableHeaderView : NSView
+ *   @property(weak) NSTableView *tableView;
+ *   @property(readonly) NSInteger draggedColumn/resizedColumn; CGFloat draggedDistance;
+ *   -(NSInteger)columnAtPoint:; -(CGRect)headerRectOfColumn:.
+ *   All geometry derives from the table's columns (stage2).
+ */
