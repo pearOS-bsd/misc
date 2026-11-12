@@ -1,0 +1,68 @@
+@interface NSTypesetter : NSObject {
+    /* instance variables */
+    @"NSParagraphStyle" _defaultParagraphStyle;
+    ^{?=^{?}{_NSRange=QQ}{_NSRange=QQ}ff^?^?dddddd{CGRect={CGPoint=dd}{CGSize=dd}}{CGRect={CGPoint=dd}{CGSize=dd}}{_NSRange=QQ}@dq{?=b4b1b1b1b4b4b1b1b1b1b2b1b3b7}[0^v]} _reserved;
+}
+
+@property (TB) usesFontLeading;
+@property (Tq) typesetterBehavior;
+@property (Tf) hyphenationFactor;
+@property (Td) lineFragmentPadding;
+@property (TB) bidiProcessingEnabled;
+@property (T@"NSAttributedString") attributedString;
+@property (T{_NSRange=QQ},R) paragraphGlyphRange;
+@property (T{_NSRange=QQ},R) paragraphSeparatorGlyphRange;
+@property (T{_NSRange=QQ},R) paragraphCharacterRange;
+@property (T{_NSRange=QQ},R) paragraphSeparatorCharacterRange;
+@property (T@"NSDictionary",R,C) attributesForExtraLineFragment;
+@property (T@"NSLayoutManager",R) layoutManager;
+@property (T@"NSArray",R) textContainers;
+@property (T@"NSTextContainer",R) currentTextContainer;
+@property (T@"NSParagraphStyle",R,C) currentParagraphStyle;
+
+/* class methods */
++[NSTypesetter initialize];
++[NSTypesetter defaultStringDrawingTypesetterBehavior];
++[NSTypesetter defaultTypesetterBehavior];
++[NSTypesetter _usesATSTypesetter];
++[NSTypesetter defaultLineBreakStrategy];
++[NSTypesetter printingAdjustmentInLayoutManager:forNominallySpacedGlyphRange:packedGlyphs:count:];
++[NSTypesetter sharedSystemTypesetter];
++[NSTypesetter sharedSystemTypesetterForBehavior:];
+
+/* instance methods */
+-[NSTypesetter setHardInvalidation:forGlyphRange:];
+-[NSTypesetter setBidiProcessingEnabled:];
+-[NSTypesetter baselineOffsetInLayoutManager:glyphIndex:];
+-[NSTypesetter getLineFragmentRect:usedRect:forParagraphSeparatorGlyphRange:atProposedOrigin:];
+-[NSTypesetter setLocation:withAdvancements:forStartOfGlyphRange:];
+-[NSTypesetter tightenThresholdForTruncation];
+-[NSTypesetter setHyphenationFactor:];
+-[NSTypesetter currentParagraphStyle];
+-[NSTypesetter _isLineBreakModeOverridden];
+-[NSTypesetter setTypesetterBehavior:];
+-[NSTypesetter beginParagraph];
+-[NSTypesetter bidiProcessingEnabled];
+-[NSTypesetter characterRangeForGlyphRange:actualGlyphRange:];
+-[NSTypesetter paragraphCharacterRange];
+-[NSTypesetter substituteGlyphsInRange:withGlyphs:];
+-[NSTypesetter textTabForGlyphLocation:writingDirection:maxLocation:];
+-[NSTypesetter setApplicationFrameworkContext:];
+-[NSTypesetter getGlyphsInRange:glyphs:characterIndexes:glyphInscriptions:elasticBits:bidiLevels:];
+-[NSTypesetter _setLineBreakModeOverridden:];
+-[NSTypesetter textContainers];
+-[NSTypesetter _updateParagraphStyleCache:];
+-[NSTypesetter _lineFragmentRectForProposedRectArgs];
+-[NSTypesetter lineSpacingAfterGlyphAtIndex:withProposedLineFragmentRect:];
+-[NSTypesetter _ellipsisFontForFont:];
+-[NSTypesetter finalizeLineFragmentRect:lineFragmentUsedRect:baselineOffset:forGlyphRange:];
+-[NSTypesetter getLineFragmentRect:usedRect:remainingRect:forStartingGlyphAtIndex:proposedRect:lineSpacing:paragraphSpacingBefore:paragraphSpacingAfter:];
+-[NSTypesetter paragraphSpacingAfterGlyphAtIndex:withProposedLineFragmentRect:];
+
+/* NSTypesetter lives in UIFoundation (re-exported by AppKit); abstract TextKit1
+   typesetter base. Measured (AppKit runtime, macOS 27 26A5416b):
+   +sharedSystemTypesetter is a singleton; usesFontLeading=YES,
+   typesetterBehavior=4 (NSTypesetterBehavior_10_4, == +defaultTypesetterBehavior),
+   hyphenationFactor=0, lineFragmentPadding=0, bidiProcessingEnabled=YES,
+   attributedString=nil. NSTypesetterLatestBehavior=-1. The glyph layout engine
+   (layoutParagraphAtPoint:, lineFragmentRect..., etc.) is stage2. */
