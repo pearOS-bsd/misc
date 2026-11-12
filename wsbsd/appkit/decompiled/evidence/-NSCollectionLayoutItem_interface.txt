@@ -1,0 +1,14 @@
+/* NSCollectionLayoutItem — a leaf in a compositional layout. Class @interface not
+ * emitted in the dyld --objc slices; reconstructed from the public header +
+ * RUNTIME MEASUREMENT against real AppKit (macOS 27 26A5416b):
+ *   +itemWithLayoutSize:  COPIES the layout size (layoutSize != passed object).
+ *   contentInsets default NSDirectionalEdgeInsetsZero, settable.
+ *   edgeSpacing settable (nullable); supplementaryItems from the supplementary
+ *   factory, else empty.
+ * @interface NSCollectionLayoutItem : NSObject <NSCopying>
+ *   +itemWithLayoutSize: / +itemWithLayoutSize:supplementaryItems:
+ *   @property(readonly,copy) NSCollectionLayoutSize *layoutSize;
+ *   @property NSDirectionalEdgeInsets contentInsets;
+ *   @property(nullable,copy) NSCollectionLayoutEdgeSpacing *edgeSpacing;
+ *   @property(readonly,copy) NSArray<NSCollectionLayoutSupplementaryItem*> *supplementaryItems;
+ */
