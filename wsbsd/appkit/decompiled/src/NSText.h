@@ -16,19 +16,9 @@
 #import <Foundation/Foundation.h>
 #import <CoreGraphics/CoreGraphics.h>
 #import "NSView.h"
+#import "NSParagraphStyle.h"   /* NSTextAlignment (macOS ordering: Left0,Right1,Center2,Justified3,Natural4) */
 
 NS_ASSUME_NONNULL_BEGIN
-
-#ifndef NSTextAlignment_ENUM_DEFINED
-#define NSTextAlignment_ENUM_DEFINED
-typedef NS_ENUM(NSInteger, NSTextAlignment) {
-    NSTextAlignmentLeft = 0,
-    NSTextAlignmentCenter = 1,
-    NSTextAlignmentRight = 2,
-    NSTextAlignmentJustified = 3,
-    NSTextAlignmentNatural = 4,
-};
-#endif
 
 @class NSColor, NSFont;
 

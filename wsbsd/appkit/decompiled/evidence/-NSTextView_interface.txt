@@ -1,0 +1,16 @@
+/* NSTextView : NSText — the concrete rich text view. Interface from the AppKit
+ * dyld --objc slice; measured defaults (real AppKit, macOS 27 26A5416b, bare
+ * initWithFrame:):
+ *   allowsUndo=NO, isContinuousSpellCheckingEnabled=NO, isGrammarCheckingEnabled=YES,
+ *   isAutomaticQuoteSubstitutionEnabled=YES, isAutomaticLinkDetectionEnabled=NO,
+ *   isAutomaticDashSubstitutionEnabled=YES, isAutomaticTextReplacementEnabled=YES,
+ *   smartInsertDeleteEnabled=YES, usesRuler=YES, isRulerVisible=NO,
+ *   usesFindPanel=NO, usesFindBar=NO, usesInspectorBar=NO, textContainerInset={0,0},
+ *   textContainer auto-created (non-nil); inherits NSText (editable/richText YES).
+ * @interface NSTextView : NSText
+ *   -initWithFrame:textContainer:; @property(strong) NSTextContainer *textContainer;
+ *   @property NSSize textContainerInset; BOOL allowsUndo; the spell/substitution
+ *   flags above; BOOL usesRuler/usesFindPanel/usesFindBar/usesInspectorBar;
+ *   (getter=isRulerVisible) BOOL rulerVisible; (strong) NSColor *insertionPointColor.
+ *   Glyph layout, drawing, editing and the find/inspector UI are stage2.
+ */
