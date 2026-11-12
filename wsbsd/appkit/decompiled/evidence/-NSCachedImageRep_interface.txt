@@ -1,0 +1,10 @@
+/* NSCachedImageRep : NSImageRep — a deprecated image rep backed by an offscreen
+ * window/cache. Interface from the AppKit dyld --objc slice; measured (real
+ * AppKit, macOS 27 26A5416b): initWithSize:depth:separate:alpha: => size stored,
+ * rect={0,0,size}, an offscreen backing window auto-created (non-nil).
+ * @interface NSCachedImageRep : NSImageRep
+ *   -initWithSize:depth:separate:alpha: (deprecated); -initWithWindow:rect:;
+ *   @property(readonly) NSWindow *window; @property(readonly) NSRect rect.
+ * The offscreen backing window is window-server state = stage2 (size/rect are
+ * reproduced; -window is the passed window, else nil in this core).
+ */
