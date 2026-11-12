@@ -1,0 +1,44 @@
+@interface NSTextElement : NSObject {
+    /* instance variables */
+    @"NSTextContentManager" _textContentManager;
+    C _coalescingType;
+    @"NSTextRange" _elementRange;
+}
+
+@property (TC,V_coalescingType) coalescingType;
+@property (TB,R,D) isBeginningOfDocument;
+@property (TB,R,D) isEndOfDocument;
+@property (T@"NSTextContentManager",W,D) textContentManager;
+@property (T@"NSTextRange",&,V_elementRange) elementRange;
+@property (T@"NSArray",R,C) childElements;
+@property (T@"NSTextElement",R,W) parentElement;
+@property (TB,R) isRepresentedElement;
+
+/* class methods */
++[NSTextElement _searchElements:forLocation:];
+
+/* instance methods */
+-[NSTextElement setElementRange:];
+-[NSTextElement isBeginningOfDocument];
+-[NSTextElement textContentManager];
+-[NSTextElement parentElement];
+-[NSTextElement _firstRepresentableChildElement];
+-[NSTextElement isEndOfDocument];
+-[NSTextElement childTextElementForLocation:elementIndex:];
+-[NSTextElement setTextContentManager:];
+-[NSTextElement coalescingType];
+-[NSTextElement setCoalescingType:];
+-[NSTextElement childElements];
+-[NSTextElement estimatedIntrinsicContentSizeForTextLayoutManager:];
+-[NSTextElement init];
+-[NSTextElement dealloc];
+-[NSTextElement elementRange];
+-[NSTextElement isRepresentedElement];
+-[NSTextElement initWithTextContentManager:];
+
+@end
+
+/* NSTextElement lives in UIFoundation (re-exported by AppKit). Measured
+   (AppKit runtime, macOS 27 26A5416b): initWithTextContentManager:(nil) =>
+   elementRange=nil, childElements=@[] (empty, not nil), parentElement=nil,
+   isRepresentedElement=YES, textContentManager=nil, coalescingType=0. */
