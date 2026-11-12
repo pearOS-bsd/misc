@@ -1,0 +1,17 @@
+/* NSCollectionLayoutSection — a section of a compositional layout, built from a
+ * group. Class @interface not emitted in the dyld --objc slices; reconstructed
+ * from the public header + RUNTIME MEASUREMENT against real AppKit (macOS 27
+ * 26A5416b):
+ *   +sectionWithGroup: => interGroupSpacing=0, orthogonalScrollingBehavior=None(0),
+ *   supplementariesFollowContentInsets=YES, boundarySupplementaryItems=@[],
+ *   decorationItems=@[], contentInsets=zero.
+ *   Ortho enum: None=0, Continuous=1, ContinuousGroupLeadingBoundary=2,
+ *   Paging=3, GroupPaging=4, GroupPagingCentered=5.
+ * @interface NSCollectionLayoutSection : NSObject <NSCopying>
+ *   +sectionWithGroup:
+ *   @property NSDirectionalEdgeInsets contentInsets;
+ *   @property CGFloat interGroupSpacing;
+ *   @property NSCollectionLayoutSectionOrthogonalScrollingBehavior orthogonalScrollingBehavior;
+ *   @property BOOL supplementariesFollowContentInsets;
+ *   @property(copy) NSArray *boundarySupplementaryItems / decorationItems;
+ */
