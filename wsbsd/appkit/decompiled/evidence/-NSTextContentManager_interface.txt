@@ -1,0 +1,81 @@
+@interface NSTextContentManager : NSObject <NSTextElementProvider, NSSecureCoding> {
+    /* instance variables */
+    @"NSTextLayoutManager" _primaryTextLayoutManager;
+    AQ _transactionStack;
+    @"NSMutableArray" _editHistory;
+    Q _writingDirectionResolutionStrategy;
+    @"NSMutableArray" _textLayoutManagers;
+    B _automaticallySynchronizesTextLayoutManagers;
+    B _automaticallySynchronizesToBackingStore;
+    @"<NSTextContentManagerDelegate>" _delegate;
+    Q _maximumNumberOfUncachedElements;
+}
+
+@property (TQ,V_maximumNumberOfUncachedElements) maximumNumberOfUncachedElements;
+@property (T@"<NSTextContentManagerDelegate>",W,V_delegate) delegate;
+@property (T@"NSArray",R,C,D) textLayoutManagers;
+@property (T@"NSTextLayoutManager",&,D) primaryTextLayoutManager;
+@property (TB,R) hasEditingTransaction;
+@property (TB,V_automaticallySynchronizesTextLayoutManagers) automaticallySynchronizesTextLayoutManagers;
+@property (TB,V_automaticallySynchronizesToBackingStore) automaticallySynchronizesToBackingStore;
+@property (T@"NSTextRange",R) documentRange;
+@property (TQ,R) hash;
+@property (T#,R) superclass;
+@property (T@"NSString",R,C) description;
+@property (T@"NSString",?,R,C) debugDescription;
+
+/* class methods */
++[NSTextContentManager supportsSecureCoding];
++[NSTextContentManager defaultBaseWritingDirectionResolutionStrategy];
+
+/* instance methods */
+-[NSTextContentManager addTextLayoutManager:];
+-[NSTextContentManager baseWritingDirectionResolutionStrategy];
+-[NSTextContentManager enumerateTextElementsFromLocation:options:usingBlock:];
+-[NSTextContentManager documentRange];
+-[NSTextContentManager removeTextLayoutManager:];
+-[NSTextContentManager textLayoutManagers];
+-[NSTextContentManager replaceContentsInRange:withTextElements:];
+-[NSTextContentManager isCountableDataSource];
+-[NSTextContentManager containsExtraLineFragment];
+-[NSTextContentManager synchronizeTextLayoutManagers:];
+-[NSTextContentManager setDelegate:];
+-[NSTextContentManager _hasAnchoredTextAttachments];
+-[NSTextContentManager synchronizeToBackingStore:];
+-[NSTextContentManager locationFromLocation:withOffset:];
+-[NSTextContentManager offsetFromLocation:toLocation:];
+-[NSTextContentManager supportsAnchoredTextAttachments];
+-[NSTextContentManager setWritingDirectionResolutionStrategy:];
+-[NSTextContentManager initWithCoder:];
+-[NSTextContentManager delegate];
+-[NSTextContentManager init];
+-[NSTextContentManager dealloc];
+-[NSTextContentManager encodeWithCoder:];
+-[NSTextContentManager writingDirectionResolutionStrategy];
+-[NSTextContentManager performEditingTransactionUsingBlock:];
+-[NSTextContentManager primaryTextLayoutManager];
+-[NSTextContentManager textElementsForRange:];
+-[NSTextContentManager maximumNumberOfUncachedElements];
+-[NSTextContentManager _decrementTransactionStack];
+-[NSTextContentManager _incrementTransactionStack];
+-[NSTextContentManager automaticallySynchronizesTextLayoutManagers];
+-[NSTextContentManager automaticallySynchronizesToBackingStore];
+-[NSTextContentManager hasEditingTransaction];
+-[NSTextContentManager performEditingTransactionWithBlock:];
+-[NSTextContentManager recordEditActionInRange:newTextRange:];
+-[NSTextContentManager setAutomaticallySynchronizesTextLayoutManagers:];
+-[NSTextContentManager setAutomaticallySynchronizesToBackingStore:];
+-[NSTextContentManager setMaximumNumberOfUncachedElements:];
+-[NSTextContentManager setPrimaryTextLayoutManager:];
+
+@end
+
+/* NSTextContentManager lives in UIFoundation (re-exported by AppKit); abstract
+   base adopting NSTextElementProvider. Measured via NSTextContentStorage
+   (AppKit runtime, macOS 27 26A5416b): textLayoutManagers=@[],
+   primaryTextLayoutManager=nil (NOT auto-set on first add),
+   hasEditingTransaction=NO, automaticallySynchronizesTextLayoutManagers=YES,
+   automaticallySynchronizesToBackingStore=NO, delegate=nil.
+   performEditingTransactionUsingBlock: sets hasEditingTransaction=YES for the
+   block duration. documentRange/textElementsForRange:/enumerate are abstract
+   (subclass) = stage2. */
