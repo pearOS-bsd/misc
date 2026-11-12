@@ -1,0 +1,81 @@
+@interface NSTextListElement : NSTextParagraph {
+    /* instance variables */
+    q _indentLevel;
+    q _itemNumber;
+    q _contentsLocationOffset;
+    B _contentsOnly;
+    @"NSTextListElement" _parentElement;
+    @"NSTextList" _textList;
+    @"NSAttributedString" _contents;
+    @"NSArray" _childElements;
+    @? _markerTextAttributeOverrides;
+    @"NSDictionary" _markerAttributes;
+    @? _markerTextAttributesForTextList;
+}
+
+@property (T@"NSTextListElement",W,V_parentElement) parentElement;
+@property (T@?,C,V_markerTextAttributeOverrides) markerTextAttributeOverrides;
+@property (Tq,R) _contentsLocationOffset;
+@property (T@?,C,V_markerTextAttributesForTextList) markerTextAttributesForTextList;
+@property (T@"NSTextList",R,V_textList) textList;
+@property (T@"NSAttributedString",R,V_contents) contents;
+@property (T@"NSDictionary",R,V_markerAttributes) markerAttributes;
+@property (T@"NSAttributedString",R) attributedString;
+@property (T@"NSArray",R,C,V_childElements) childElements;
+
+/* class methods */
++[NSTextListElement initialize];
++[NSTextListElement _createChildElementsFromAttributedString:inRange:indentLevel:includesTextListMarkers:effectiveRange:textListElementInstantiationCallback:];
++[NSTextListElement _createElementWithChildElements:textList:nestingLevel:];
++[NSTextListElement _createTextListElementFromAttributedString:inRange:indentLevel:includesTextListMarkers:effectiveRange:textListElementInstantiationCallback:];
++[NSTextListElement _createUpdatedTextTabsForTextTabs:markerLocation:listLocation:];
++[NSTextListElement _fillTextListElement:toAttributedString:];
++[NSTextListElement _formattedAttributedStringForRootTextListElement:];
++[NSTextListElement _rootTextListElementFromAttributedString:atIndex:options:effectiveRange:textListElementInstantiationCallback:];
++[NSTextListElement _textListElementContentsRangeForRange:inAttributedString:hadMarker:];
++[NSTextListElement _validatedMarkerAttributesForAttributes:];
++[NSTextListElement textListElementWithChildElements:textList:nestingLevel:];
++[NSTextListElement textListElementWithContents:markerAttributes:textList:childElements:];
+
+/* instance methods */
+-[NSTextListElement parentElement];
+-[NSTextListElement childElements];
+-[NSTextListElement attributedString];
+-[NSTextListElement markerAttributedString];
+-[NSTextListElement contents];
+-[NSTextListElement rangeForLocation:allowsTrailingEdge:];
+-[NSTextListElement _contentsLocationOffset];
+-[NSTextListElement _appendsParagraphSeparator];
+-[NSTextListElement _markerOffset];
+-[NSTextListElement _indentLevel];
+-[NSTextListElement locationForCharacterIndex:dataSourceLocationsOnly:actualRange:];
+-[NSTextListElement textList];
+-[NSTextListElement _markerTextAttributesForTextList:attributes:];
+-[NSTextListElement setParagraphContentRange:];
+-[NSTextListElement _createConfiguredParagraphStyleForParagraphStyle:];
+-[NSTextListElement indentLevel];
+-[NSTextListElement setParentElement:];
+-[NSTextListElement markerTextAttributeOverrides];
+-[NSTextListElement textListElementWithChildElements:];
+-[NSTextListElement setMarkerTextAttributesForTextList:];
+-[NSTextListElement setMarkerTextAttributeOverrides:];
+-[NSTextListElement contentsOnly];
+-[NSTextListElement itemNumber];
+-[NSTextListElement dealloc];
+-[NSTextListElement markerTextAttributesForTextList];
+-[NSTextListElement _reparentWithTextListElement:itemNumber:];
+-[NSTextListElement initWithParentElement:textList:contents:markerAttributes:childElements:];
+-[NSTextListElement isRepresentedElement];
+-[NSTextListElement _markerString];
+-[NSTextListElement _indentOffset];
+-[NSTextListElement markerAttributes];
+
+@end
+
+/* NSTextListElement lives in UIFoundation (re-exported by AppKit); subclass of
+   NSTextParagraph. Measured (AppKit runtime, macOS 27 26A5416b):
+   +textListElementWithContents:markerAttributes:textList:childElements: stores
+   the SAME contents/textList/markerAttributes; childElements=nil for a leaf;
+   parentElement=nil; isRepresentedElement=YES. The real -attributedString
+   composes "<tab><marker><tab><contents>" from the text list marker + item
+   number (stage2); this core returns the contents and annotates that. */
