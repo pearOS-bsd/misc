@@ -1,0 +1,9 @@
+/* NSMovie — legacy movie wrapper (QTKit-era, long deprecated). Interface from the
+ * AppKit dyld --objc slice (appkit_objc.txt):
+ *   @interface NSMovie : NSObject <NSCoding> { @"NSData" _data; @"NSURL" _URL; }
+ *   -init -initWithMovie: -initWithCoder: -data -URL -QTMovie -encodeWithCoder:
+ * Measured: the modern class exposes only -data / -URL (both nil unless decoded
+ * from an archive); -QTMovie returns nil (QuickTime/QTKit removed). There is no
+ * public initWithData:/initWithContentsOfURL:, so a freshly -init'd instance is
+ * empty. NSCoding round-trips _data/_URL.
+ */
