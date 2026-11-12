@@ -1,0 +1,52 @@
+@interface NSSharingServicePickerToolbarItem : NSToolbarItem <NSSharingServicePickerDelegate, NSSharingServiceDelegate, NSMenuDelegate> {
+    /* instance variables */
+    B _isShowing;
+    @"<NSSharingServicePickerToolbarItemDelegate>" _delegate;
+    @"NSSharingServicePicker" _picker;
+    @"NSSharingServicePicker" _collapsedPicker;
+}
+
+@property (T@"NSSharingServicePicker",&,N,V_picker) picker;
+@property (T@"NSSharingServicePicker",&,N,V_collapsedPicker) collapsedPicker;
+@property (TB,N,V_isShowing) isShowing;
+@property (T@"<NSSharingServicePickerToolbarItemDelegate>",W,V_delegate) delegate;
+@property (TQ,R) hash;
+@property (T#,R) superclass;
+@property (T@"NSString",R,C) description;
+@property (T@"NSString",?,R,C) debugDescription;
+
+/* instance methods */
+-[NSSharingServicePickerToolbarItem setAction:];
+-[NSSharingServicePickerToolbarItem setDelegate:];
+-[NSSharingServicePickerToolbarItem validate];
+-[NSSharingServicePickerToolbarItem share:];
+-[NSSharingServicePickerToolbarItem initWithCoder:];
+-[NSSharingServicePickerToolbarItem sharingService:sourceWindowForShareItems:sharingContentScope:];
+-[NSSharingServicePickerToolbarItem delegate];
+-[NSSharingServicePickerToolbarItem setView:];
+-[NSSharingServicePickerToolbarItem setTarget:];
+-[NSSharingServicePickerToolbarItem dealloc];
+-[NSSharingServicePickerToolbarItem encodeWithCoder:];
+-[NSSharingServicePickerToolbarItem collapsedPicker];
+-[NSSharingServicePickerToolbarItem _computeDefaultMenuFormRepresentation];
+-[NSSharingServicePickerToolbarItem _isCustomItemType];
+-[NSSharingServicePickerToolbarItem _superSetAction:];
+-[NSSharingServicePickerToolbarItem _superSetTarget:];
+-[NSSharingServicePickerToolbarItem configureForDisplayMode:andSizeMode:];
+-[NSSharingServicePickerToolbarItem initWithItemIdentifier:];
+-[NSSharingServicePickerToolbarItem isShowing];
+-[NSSharingServicePickerToolbarItem picker];
+-[NSSharingServicePickerToolbarItem setCollapsedPicker:];
+-[NSSharingServicePickerToolbarItem setIsShowing:];
+-[NSSharingServicePickerToolbarItem setPicker:];
+-[NSSharingServicePickerToolbarItem sharingServicePicker:delegateForSharingService:];
+-[NSSharingServicePickerToolbarItem sharingServicePicker:didChooseSharingService:];
+-[NSSharingServicePickerToolbarItem sharingServicePicker:sharingServicesForItems:proposedSharingServices:];
+-[NSSharingServicePickerToolbarItem sharingServicePickerCollaborationModeRestrictions:];
+
+@end
+
+/* measured (real AppKit, macOS 27 26A5416b): superclass=NSToolbarItem,
+   delegate=nil default, itemIdentifier carried from initWithItemIdentifier:,
+   visibilityPriority=0. Public delegate protocol requires
+   -itemsForSharingServicePickerToolbarItem:. */
