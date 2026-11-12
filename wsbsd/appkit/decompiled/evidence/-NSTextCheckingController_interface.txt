@@ -1,0 +1,19 @@
+@interface NSTextCheckingController : NSObject { ... }  // see appkit_objc.txt (very large: ~230 methods, mostly private _*)
+@property (T@"<NSTextCheckingClient>",R) client;
+@property (Tq) spellCheckerDocumentTag;
+-[NSTextCheckingController validAnnotations];
+-[NSTextCheckingController invalidate];
+-[NSTextCheckingController initWithClient:];
+-[NSTextCheckingController client];
+-[NSTextCheckingController clientRecentlyReplacedCompletionPrefix];
+-[NSTextCheckingController didChangeSelectedRange];
+-[NSTextCheckingController didChangeText];
+-[NSTextCheckingController spellCheckerDocumentTag];
+
+/* measured (real AppKit, macOS 27 26A5416b): initWithClient: stores the client
+   (readonly weak), spellCheckerDocumentTag defaults to a unique NSSpellChecker
+   tag (1 for the first controller in a process), validAnnotations returns a
+   fixed list of ~33 NSAttributedString annotation keys (see the core). The
+   spell/grammar/substitution checking itself (checkSpelling:, didChangeText,
+   menuAtIndex:..., candidate handling) drives NSSpellChecker + the client and is
+   stage2. */
