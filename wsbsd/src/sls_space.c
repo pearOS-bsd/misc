@@ -12,7 +12,7 @@ static const uint8_t display_uuid_bytes[16] = { 0x07,0x23,0x0e,0xfa,0x7a,0x8d,0x
 
 #define MAXSP 64
 #define MAXMEM 512
-static struct { int used; uint64_t id; uint32_t type; char name[130]; uint8_t *values; uint32_t vlen; float alpha; int shown; uint32_t owners[32]; int nown; uint8_t *shape; uint32_t shape_len; } sp[MAXSP];
+static struct { int used; uint64_t id; uint32_t type; char name[130]; uint8_t *values; uint32_t vlen; float alpha; int shown; uint32_t owners[32]; int nown; uint32_t creator; uint8_t *shape; uint32_t shape_len; } sp[MAXSP];
 static struct { int used; uint32_t wid; uint64_t sid; } mem[MAXMEM];
 static uint64_t next_space = 2;
 static int sp_ready;
@@ -52,7 +52,7 @@ int sls_space_dispatch(conn *c, const uint8_t *buf, size_t len)
 		if ((uint32_t)osz != rd32(buf, 0x38)) return reply_simple(c->fd, h, -300);
 		for (int i = 0; i < MAXSP; i++) if (!sp[i].used) {
 			memset(&sp[i], 0, sizeof sp[i]);
-			sp[i].used = 1; sp[i].id = next_space++; sp[i].type = rd32(buf, 0x34); sp[i].alpha = 1.0f;
+			sp[i].used = 1; sp[i].creator = c->id; sp[i].id = next_space++; sp[i].type = rd32(buf, 0x34); sp[i].alpha = 1.0f;
 			return reply_u64(c, h, sp[i].id);
 		}
 		return reply_simple(c->fd, h, 1000);
@@ -426,4 +426,12 @@ int sls_space_dispatch(conn *c, const uint8_t *buf, size_t len)
 	return -2;
 }
 
-void sls_space_owner_cleanup(uint32_t owner) { (void)owner; for (int k = 0; k < MAXMEM; k++) if (mem[k].used && !ws_window_exists(srv, mem[k].wid)) mem[k].used = 0; }
+void sls_space_owner_cleanup(uint32_t owner)
+{
+	/* the spaces that a connection created go with it (a Dock that is started again must not find the table full) */
+	for (int i = 1; i < MAXSP; i++) if (sp[i].used && sp[i].creator == owner) {
+		free(sp[i].values); free(sp[i].shape);
+		for (int k = 0; k < MAXMEM; k++) if (mem[k].used && mem[k].sid == sp[i].id) mem[k].used = 0;
+		memset(&sp[i], 0, sizeof sp[i]);
+	}
+	for (int k = 0; k < MAXMEM; k++) if (mem[k].used && !ws_window_exists(srv, mem[k].wid)) mem[k].used = 0; }
