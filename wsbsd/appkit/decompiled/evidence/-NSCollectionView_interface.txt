@@ -1,0 +1,15 @@
+/* NSCollectionView : NSView — the collection view. Interface from the AppKit dyld
+ * --objc slice; measured defaults (real AppKit, macOS 27 26A5416b, bare
+ * initWithFrame:, no data source):
+ *   isSelectable=NO, allowsMultipleSelection=NO, allowsEmptySelection=YES,
+ *   numberOfSections=1, backgroundColors.count=1, collectionViewLayout=nil,
+ *   dataSource=nil.
+ * @interface NSCollectionView : NSView
+ *   @property(weak) id<NSCollectionViewDataSource> dataSource; (weak) id<..Delegate> delegate;
+ *   @property(strong) NSCollectionViewLayout *collectionViewLayout;
+ *   @property(getter=isSelectable) BOOL selectable; BOOL allowsMultipleSelection/allowsEmptySelection;
+ *   @property(copy) NSArray<NSColor*> *backgroundColors; (copy) NSSet<NSIndexPath*> *selectionIndexPaths;
+ *   -(NSInteger)numberOfSections; -(NSInteger)numberOfItemsInSection:; -reloadData.
+ *   numberOfSections = dataSource's count, else 1 (measured). The item views,
+ *   registration/dequeue and layout/drawing are stage2.
+ */
