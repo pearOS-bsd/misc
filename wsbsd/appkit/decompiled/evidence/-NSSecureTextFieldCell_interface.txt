@@ -1,0 +1,7 @@
+/* NSSecureTextFieldCell : NSTextFieldCell — the cell for a secure (password)
+ * text field. Interface from the AppKit dyld --objc slice; measured (real
+ * AppKit, macOS 27 26A5416b): initTextCell: is-a NSTextFieldCell, echosBullets=YES.
+ * @interface NSSecureTextFieldCell : NSTextFieldCell
+ *   @property BOOL echosBullets;   // YES
+ * The secure field editor (bullet echo, no-copy, secure input) is stage2.
+ */
