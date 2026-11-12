@@ -1,0 +1,53 @@
+@interface NSTextAttachmentViewProvider : NSObject {
+    /* instance variables */
+    @"NSView" _view;
+    B _tracksTextAttachmentViewBounds;
+    @"NSTextAttachment" _textAttachment;
+    @"NSTextLayoutManager" _textLayoutManager;
+    @"<NSTextLocation>" _location;
+    Q _characterIndex;
+    @"NSLayoutManager" _layoutManager;
+}
+
+@property (T@"NSTextAttachment",W,V_textAttachment) textAttachment;
+@property (TQ,R,V_characterIndex) characterIndex;
+@property (T@"NSTextLayoutManager",W,V_textLayoutManager) textLayoutManager;
+@property (T@"NSLayoutManager",W,V_layoutManager) layoutManager;
+@property (T@"<NSTextLocation>",&,V_location) location;
+@property (T@"NSView",&,D) view;
+@property (TB,V_tracksTextAttachmentViewBounds) tracksTextAttachmentViewBounds;
+
+/* class methods */
++[NSTextAttachmentViewProvider acceptsViewProviderForContext:];
+
+/* instance methods */
+-[NSTextAttachmentViewProvider textAttachment];
+-[NSTextAttachmentViewProvider layoutManager];
+-[NSTextAttachmentViewProvider setLocation:];
+-[NSTextAttachmentViewProvider view];
+-[NSTextAttachmentViewProvider loadView];
+-[NSTextAttachmentViewProvider attachmentBoundsForAttributes:location:textContainer:proposedLineFragment:position:];
+-[NSTextAttachmentViewProvider setView:];
+-[NSTextAttachmentViewProvider attachmentBoundsForTextContainer:proposedLineFragment:glyphPosition:characterIndex:];
+-[NSTextAttachmentViewProvider location];
+-[NSTextAttachmentViewProvider dealloc];
+-[NSTextAttachmentViewProvider textLayoutManager];
+-[NSTextAttachmentViewProvider characterIndex];
+-[NSTextAttachmentViewProvider initWithTextAttachment:parentView:characterIndex:layoutManager:];
+-[NSTextAttachmentViewProvider initWithTextAttachment:parentView:textLayoutManager:location:];
+-[NSTextAttachmentViewProvider previewImageForBounds:attributes:location:textContainer:];
+-[NSTextAttachmentViewProvider removeView];
+-[NSTextAttachmentViewProvider setLayoutManager:];
+-[NSTextAttachmentViewProvider setTracksTextAttachmentViewBounds:];
+-[NSTextAttachmentViewProvider setTextAttachment:];
+-[NSTextAttachmentViewProvider setTextLayoutManager:];
+-[NSTextAttachmentViewProvider tracksTextAttachmentViewBounds];
+
+@end
+
+/* NSTextAttachmentViewProvider lives in UIFoundation (re-exported by AppKit).
+   Measured (AppKit runtime, macOS 27 26A5416b):
+   initWithTextAttachment:parentView:textLayoutManager:location: stores the
+   attachment (weak) + location, textLayoutManager weak; tracks...=NO, view=nil
+   (loadView is the subclass override point), characterIndex=0. The base
+   -attachmentBounds... returns CGRectZero. */
