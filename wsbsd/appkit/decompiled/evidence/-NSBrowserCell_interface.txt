@@ -1,0 +1,13 @@
+/* NSBrowserCell : NSCell — the cell type an NSBrowser uses for each row.
+ * Interface from the AppKit dyld --objc slice; measured (real AppKit, macOS 27
+ * 26A5416b): initTextCell: gives isLeaf=NO, isLoaded=YES, the title set, image/
+ * alternateImage nil. +branchImage / +highlightedBranchImage are non-nil system
+ * disclosure images (stage2).
+ * @interface NSBrowserCell : NSCell
+ *   +branchImage / +highlightedBranchImage;
+ *   @property(getter=isLeaf) BOOL leaf; (getter=isLoaded) BOOL loaded;
+ *   @property(copy) NSString *stringValue; (strong) NSImage *image/alternateImage;
+ *   -reset / -set.
+ * (Our NSCell core keeps minimal value storage, so NSBrowserCell holds its own
+ * title/image; the branch disclosure images are stage2.)
+ */
