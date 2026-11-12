@@ -1,0 +1,72 @@
+@interface NSTextParagraph : NSTextElement {
+    /* instance variables */
+    @"NSAttributedString" _attributedString;
+    {_NSRange="location"Q"length"Q} _range;
+    @"NSTextRange" _paragraphContentRange;
+    @"NSTextRange" _paragraphSeparatorRange;
+    q _resolvedBaseDirection;
+    q _fallbackBaseDirection;
+    r* _bidiLevels;
+    @"NSMutableArray" _textLayoutFragments;
+    @"NSMapTable" _textElementLocationTable;
+    C _containsTextAttachments;
+    B _isBeginningOfParagraph;
+    B _isEndOfParagraph;
+    @"NSDictionary" _attributes;
+}
+
+@property (T@"NSDictionary",C,V_attributes) attributes;
+@property (TB,V_isBeginningOfParagraph) isBeginningOfParagraph;
+@property (TB,V_isEndOfParagraph) isEndOfParagraph;
+@property (T@"NSAttributedString",R,D) attributedString;
+@property (T@"NSTextRange",R,D) paragraphContentRange;
+@property (T@"NSTextRange",R,D) paragraphSeparatorRange;
+
+/* class methods */
++[NSTextParagraph textParagraphsForAttributedString:range:];
+
+/* instance methods */
+-[NSTextParagraph setElementRange:];
+-[NSTextParagraph estimatedIntrinsicContentSizeForTextLayoutManager:];
+-[NSTextParagraph paragraphContentRange];
+-[NSTextParagraph attributedString];
+-[NSTextParagraph anchoredTextAttachments];
+-[NSTextParagraph rangeForLocation:allowsTrailingEdge:];
+-[NSTextParagraph setAttributedString:];
+-[NSTextParagraph enumerateSubstringsInRange:options:usingBlock:];
+-[NSTextParagraph setAttributes:];
+-[NSTextParagraph locationForCharacterIndex:dataSourceLocationsOnly:actualRange:];
+-[NSTextParagraph _setElementTextLocation:forCharacterIndex:];
+-[NSTextParagraph attributes];
+-[NSTextParagraph setParagraphContentRange:];
+-[NSTextParagraph initWithAttributedString:range:];
+-[NSTextParagraph synchronizeDocumentRange];
+-[NSTextParagraph _setContainsTextAttachments:];
+-[NSTextParagraph locationForCharacterIndex:actualRange:];
+-[NSTextParagraph isEndOfParagraph];
+-[NSTextParagraph init];
+-[NSTextParagraph description];
+-[NSTextParagraph _resolvedBaseWritingDirectionWithFallbackDirection:];
+-[NSTextParagraph dealloc];
+-[NSTextParagraph initWithAttributedString:];
+-[NSTextParagraph setIsEndOfParagraph:];
+-[NSTextParagraph initWithTextAttachment:attributes:];
+-[NSTextParagraph _containsTextAttachments];
+-[NSTextParagraph _bidiLevelsForFallbackWritingDirection:resolvedBaseWritingDirectionPointer:];
+-[NSTextParagraph enumerateSubstringsFromLocation:options:usingBlock:];
+-[NSTextParagraph _textElementLocationForCharacterIndex:];
+-[NSTextParagraph paragraphRange];
+-[NSTextParagraph initWithString:attributes:];
+-[NSTextParagraph initWithTextContentManager:];
+-[NSTextParagraph isBeginningOfParagraph];
+-[NSTextParagraph setIsBeginningOfParagraph:];
+-[NSTextParagraph setParagraphSeparatorRange:];
+-[NSTextParagraph paragraphSeparatorRange];
+
+@end
+
+/* NSTextParagraph lives in UIFoundation (re-exported by AppKit); subclass of
+   NSTextElement. Measured (AppKit runtime, macOS 27 26A5416b):
+   initWithAttributedString: stores the SAME attributed string;
+   paragraphContentRange/paragraphSeparatorRange = nil until a content manager
+   assigns them; isRepresentedElement=YES (inherited). nil init => attributedString nil. */
