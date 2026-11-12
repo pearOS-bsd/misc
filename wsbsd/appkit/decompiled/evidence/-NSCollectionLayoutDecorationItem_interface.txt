@@ -1,0 +1,11 @@
+/* NSCollectionLayoutDecorationItem : NSCollectionLayoutItem — a background
+ * decoration (e.g. section background) in a compositional layout. Class
+ * @interface not emitted in the dyld --objc slices; reconstructed from the public
+ * header + RUNTIME MEASUREMENT against real AppKit (macOS 27 26A5416b):
+ *   is-a NSCollectionLayoutItem; +backgroundDecorationItemWithElementKind: stores
+ *   elementKind, zIndex default = 0 (note: differs from supplementary items' 1).
+ * @interface NSCollectionLayoutDecorationItem : NSCollectionLayoutItem
+ *   +backgroundDecorationItemWithElementKind:
+ *   @property NSInteger zIndex;             // default 0
+ *   @property(readonly,copy) NSString *elementKind;
+ */
