@@ -1,0 +1,71 @@
+@interface NSSpeechSynthesizer : NSObject {
+    /* instance variables */
+    @ _privateNSSpeechSynthesizerVars;
+}
+
+@property (TB,R,GisSpeaking) speaking;
+@property (T@"<NSSpeechSynthesizerDelegate>",W) delegate;
+@property (Tf) rate;
+@property (Tf) volume;
+@property (TB) usesFeedbackWindow;
+
+/* class methods */
++[NSSpeechSynthesizer availableVoices];
++[NSSpeechSynthesizer attributesForVoice:];
++[NSSpeechSynthesizer defaultVoice];
++[NSSpeechSynthesizer isAnyApplicationSpeaking];
+
+/* instance methods */
+-[NSSpeechSynthesizer rate];
+-[NSSpeechSynthesizer voice];
+-[NSSpeechSynthesizer setRate:];
+-[NSSpeechSynthesizer setDelegate:];
+-[NSSpeechSynthesizer setVolume:];
+-[NSSpeechSynthesizer volume];
+-[NSSpeechSynthesizer delegate];
+-[NSSpeechSynthesizer init];
+-[NSSpeechSynthesizer dealloc];
+-[NSSpeechSynthesizer setVoice:];
+-[NSSpeechSynthesizer _handleErrorCallbackWithParams:];
+-[NSSpeechSynthesizer _setupCallbacks];
+-[NSSpeechSynthesizer _volume];
+-[NSSpeechSynthesizer _handleSyncCallbackWithMessage:];
+-[NSSpeechSynthesizer _beginSpeakingString:optionallyToURL:];
+-[NSSpeechSynthesizer _continueSpeaking];
+-[NSSpeechSynthesizer _feedbackWindowIsVisible];
+-[NSSpeechSynthesizer _handleDefaultVoiceChange];
+-[NSSpeechSynthesizer _handlePhonemeCallbackWithOpcode:];
+-[NSSpeechSynthesizer _handleSpeechDoneCallback];
+-[NSSpeechSynthesizer _handleWordCallbackWithParams:];
+-[NSSpeechSynthesizer _normalSpeakingRate];
+-[NSSpeechSynthesizer _objectForProperty:usingDataSize:withRequestedObjectClass:];
+-[NSSpeechSynthesizer _pauseSpeakingAtBoundary:];
+-[NSSpeechSynthesizer _pitchBase];
+-[NSSpeechSynthesizer _rate];
+-[NSSpeechSynthesizer _setObject:forProperty:usingDataSize:];
+-[NSSpeechSynthesizer _setPitchBase:];
+-[NSSpeechSynthesizer _setRate:];
+-[NSSpeechSynthesizer _setVolume:];
+-[NSSpeechSynthesizer _stopSpeakingAtBoundary:];
+-[NSSpeechSynthesizer addSpeechDictionary:];
+-[NSSpeechSynthesizer continueSpeaking];
+-[NSSpeechSynthesizer initWithVoice:];
+-[NSSpeechSynthesizer isSpeaking];
+-[NSSpeechSynthesizer objectForProperty:error:];
+-[NSSpeechSynthesizer pauseSpeakingAtBoundary:];
+-[NSSpeechSynthesizer phonemesFromText:];
+-[NSSpeechSynthesizer setObject:forProperty:error:];
+-[NSSpeechSynthesizer setUsesFeedbackWindow:];
+-[NSSpeechSynthesizer startSpeakingString:];
+-[NSSpeechSynthesizer startSpeakingString:toURL:];
+-[NSSpeechSynthesizer stopSpeaking];
+-[NSSpeechSynthesizer stopSpeakingAtBoundary:];
+-[NSSpeechSynthesizer usesFeedbackWindow];
+
+@end
+
+/* measured (real AppKit, macOS 27 26A5416b):
+   rate=175.0, volume=1.0, speaking=NO, usesFeedbackWindow=NO, delegate=nil,
+   voice=defaultVoice=com.apple.voice.compact.en-US.Samantha,
+   availableVoices.count=184 (host-specific), isAnyApplicationSpeaking=NO.
+   NSSpeechBoundary: Immediate=0, Word=1, Sentence=2. */
