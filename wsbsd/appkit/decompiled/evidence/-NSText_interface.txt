@@ -1,0 +1,14 @@
+/* NSText : NSView — the abstract text-editing base (superclass of NSTextView).
+ * Interface from the AppKit dyld --objc slice; measured defaults (real AppKit,
+ * macOS 27 26A5416b, bare initWithFrame:):
+ *   isEditable=YES, isSelectable=YES, isRichText=YES, isFieldEditor=NO,
+ *   usesFontPanel=YES, drawsBackground=YES, isHorizontallyResizable=NO,
+ *   isVerticallyResizable=YES, alignment=Natural(4), string="", selectedRange={0,0}.
+ *   NSTextAlignment (modern): Left=0, Center=1, Right=2, Justified=3, Natural=4.
+ * @interface NSText : NSView
+ *   @property(copy) NSString *string; @property NSRange selectedRange;
+ *   editable/selectable/richText/fieldEditor/usesFontPanel/drawsBackground flags;
+ *   horizontallyResizable/verticallyResizable; NSTextAlignment alignment;
+ *   -setString:; -replaceCharactersInRange:withString:; -scrollRangeToVisible:.
+ *   The glyph layout, drawing and editing UI are stage2.
+ */
