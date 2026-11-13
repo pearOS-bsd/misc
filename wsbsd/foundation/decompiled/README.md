@@ -20,3 +20,4 @@ may sit on swift-corelibs-foundation where that is the cleaner real-Apple base).
 > NSKeyedUnarchiver) resolves to THAT class; tests therefore call our methods
 > directly. Full validation is on the FreeBSD/GNUstep (or swift-corelibs) stack
 > where our class IS Foundation.
+| NSIndexPath | ✅ | ✅ evidence/-NSIndexPath_interface.txt | ✅ src/NSIndexPath.m (immutable index list: +indexPathWithIndex:/WithIndexes:length:, length, indexAtPosition: (NSNotFound out of range — measured), getIndexes:range:, indexPathByAddingIndex:/RemovingLastIndex, lexicographic compare:, isEqual:/hash by contents, immutable copy; NSSecureCoding archive stage2) | ✅ 15/15 pass | pending integration |

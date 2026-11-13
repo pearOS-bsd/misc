@@ -1,0 +1,12 @@
+/* NSIndexPath — an immutable ordered list of indexes (tree/table paths).
+ * Base @interface (NSObject <NSCopying, NSSecureCoding>) from the public header.
+ * Measured (real Foundation, macOS 27 26A5416b):
+ *   +indexPathWithIndexes:length: / +indexPathWithIndex: store the indexes;
+ *   -init => length 0; -indexAtPosition: out of range => NSNotFound (NSUIntegerMax);
+ *   -indexPathByAddingIndex: => length+1; -indexPathByRemovingLastIndex: => length-1;
+ *   -compare: is lexicographic (equal paths => NSOrderedSame); -isEqual:/-hash by contents.
+ * @interface NSIndexPath : NSObject <NSCopying, NSSecureCoding>
+ *   +indexPathWithIndex: / +indexPathWithIndexes:length: ; -initWithIndex: / -initWithIndexes:length:
+ *   @property(readonly) NSUInteger length; -indexAtPosition: ; -getIndexes:range: ;
+ *   -indexPathByAddingIndex: / -indexPathByRemovingLastIndex ; -compare:.
+ */
