@@ -11,6 +11,9 @@ void ca_reset(void);
 int ca_feed(const uint8_t *msg, size_t n);		/* one commit message (as the render server received it, from the header on); returns the scene (one for each context) it went to, -1 if not understood */
 int ca_feed_key(uint32_t key, const uint8_t *msg, size_t n);	/* the same, with the key of the scene given (the pid of the client) */
 int ca_nscenes(void);
+int ca_scene_nroots(int scene);			/* the render contexts of a scene that have a root layer */
+uint32_t ca_scene_root_ctx(int scene, int i);	/* the context id of the i-th root */
+void ca_paint_root(int scene, int i, uint8_t *bgra, int w, int h, int stride);	/* the tree of one context on a transparent canvas */
 uint32_t ca_scene_ctx(int scene);
 void ca_scene_info(int scene, int *nlayers, int *nimages);
 void ca_paint_scene(int scene, uint8_t *bgra, int w, int h, int stride);	/* one scene on a transparent canvas (premultiplied BGRA) */
