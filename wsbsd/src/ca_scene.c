@@ -39,7 +39,21 @@ static layer_t L[MAXL]; static int nL;
 typedef struct { uint64_t id; img_t im; } imgent_t;
 static imgent_t IM[MAXL]; static int nIM;
 static const char *cadir = ".";
+static uint8_t *file_ool(void *ctx, int msg, int desc, size_t *sz)
+{
+	char nm[512]; snprintf(nm, sizeof nm, "%s/ca-ool-%02d-%d.bin", cadir, msg, desc);
+	FILE *f = fopen(nm, "rb"); long n; uint8_t *p;
+	(void)ctx;
+	if (!f) return NULL;
+	fseek(f, 0, SEEK_END); n = ftell(f); fseek(f, 0, SEEK_SET);
+	p = malloc(n > 0 ? n : 1);
+	if (!p || fread(p, 1, n, f) != (size_t)n) { free(p); fclose(f); return NULL; }
+	fclose(f); *sz = (size_t)n; return p;
+}
+static ca_ool_fn ool_loader = file_ool;
+static void *ool_ctx;
 void ca_set_dir(const char *d) { cadir = d; }
+void ca_set_ool_loader(ca_ool_fn fn, void *ctx) { ool_loader = fn ? fn : file_ool; ool_ctx = ctx; }
 int ca_nlayers(void) { return nL; }
 int ca_nimages(void) { return nIM; }
 
@@ -147,13 +161,11 @@ static void do_layer(rd *r, int depth, uint64_t id)
 	if (ct.kind) {
 		l->img = ct.imgid;
 		if (ct.kind == 1 && ct.attached && cur_ool_msg >= 0 && ool_taken < n_ool) {
-			char nm[512]; snprintf(nm, sizeof nm, "%s/ca-ool-%02d-%d.bin", cadir, cur_ool_msg, ool_desc[ool_taken++]);
-			FILE *f = fopen(nm, "rb");
-			if (f) {
-				fseek(f, 0, SEEK_END); long sz = ftell(f); fseek(f, 0, SEEK_SET);
-				img_t im; im.w = ct.w; im.h = ct.h; im.bpp = ct.bpp; im.px = malloc(sz > 0 ? sz : 1);
-				if (im.px && fread(im.px, 1, sz, f) == (size_t)sz && sz >= (long)ct.w * ct.h * ct.bpp) setimg(ct.imgid, &im); else free(im.px);
-				fclose(f);
+			size_t sz = 0;
+			uint8_t *px = ool_loader(ool_ctx, cur_ool_msg, ool_desc[ool_taken++], &sz);
+			if (px) {
+				img_t im; im.w = ct.w; im.h = ct.h; im.bpp = ct.bpp; im.px = px;
+				if (sz >= (size_t)ct.w * ct.h * ct.bpp) setimg(ct.imgid, &im); else free(px);
 			}
 		}
 	}
@@ -221,6 +233,14 @@ static void message(const uint8_t *m, size_t n, int *nmsg)
 	}
 }
 
+static int g_nmsg;		/* complex messages fed so far: the number of the out-of-line data of the next one */
+void ca_reset(void)
+{
+	memset(L, 0, sizeof L); nL = 0;
+	for (int i = 0; i < nIM; i++) free(IM[i].im.px);
+	nIM = 0; g_nmsg = 0; skipped = 0;
+}
+void ca_feed(const uint8_t *m, size_t n) { message(m, n, &g_nmsg); }
 int ca_load_file(const char *path)
 {
 	FILE *f = fopen(path, "rb");
@@ -229,14 +249,11 @@ int ca_load_file(const char *path)
 	uint8_t *d = malloc(sz + 1);
 	if (!d || fread(d, 1, sz, f) != (size_t)sz) { fclose(f); free(d); return -1; }
 	fclose(f);
-	memset(L, 0, sizeof L); nL = 0;
-	for (int i = 0; i < nIM; i++) free(IM[i].im.px);
-	nIM = 0;
-	int nmsg = 0; skipped = 0;
+	ca_reset();
 	for (long p = 0; p + 4 <= sz;) {
 		uint32_t n; memcpy(&n, d + p, 4); p += 4;
 		if (p + n > (unsigned long)sz) break;
-		message(d + p, n, &nmsg);
+		ca_feed(d + p, n);
 		p += n;
 	}
 	free(d);

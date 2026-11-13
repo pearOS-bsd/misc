@@ -4,7 +4,11 @@
 #define CA_SCENE_H
 #include <stdint.h>
 #include <stddef.h>
+typedef uint8_t *(*ca_ool_fn)(void *ctx, int msg, int desc, size_t *size);	/* the out-of-line data of descriptor desc of the msg-th complex message: malloc'd, or NULL */
 void ca_set_dir(const char *dir);
+void ca_set_ool_loader(ca_ool_fn fn, void *ctx);	/* default: files in the directory */
+void ca_reset(void);
+void ca_feed(const uint8_t *msg, size_t n);		/* one commit message (as the render server received it, from the header on) */
 int ca_load_file(const char *path);		/* the whole stream (u32 length + message, repeated): rebuilds the scene; 0 on success */
 void ca_paint(uint8_t *bgra, int w, int h, int stride);
 int ca_nlayers(void);

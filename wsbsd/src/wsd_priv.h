@@ -80,3 +80,9 @@ int sls_tap_filter_key(int key, int down);                                  /* 1
 void sls_tap_post_result(uint32_t tap_id, uint32_t seq, const uint8_t *data, size_t n);
 int sls_transition_poll(void);                                                 /* ends the due transitions; ms until the next one, -1 when none */
 int sls_tap_poll(void);                                                      /* ms until a held event times out, -1 when none */
+/* CoreAnimation render server (src/sls_carender.c) */
+int wsd_ca_listen(const char *path);                                         /* the listening descriptor, -1 on failure */
+int wsd_ca_accept(int ls);                                                   /* the descriptor of a new client to watch, -1 if none */
+int wsd_ca_client(int fd);
+struct ws_server;
+int wsd_ca_read(int fd, ws_server *srv, int sw, int sh);                     /* -1: the client went away */
