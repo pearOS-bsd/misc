@@ -1312,6 +1312,8 @@ int main(int argc, char **argv)
 	struct kevent ev;
 	EV_SET(&ev, ls, EVFILT_READ, EV_ADD, 0, 0, NULL);
 	if (kevent(kq, &ev, 1, NULL, 0, NULL) < 0) { perror("wsd: kevent"); return 1; }
+	int cals = wsd_ca_listen(getenv("WSD_CA_SOCKET") ? getenv("WSD_CA_SOCKET") : "/tmp/wsd-ca.sock");		/* the CoreAnimation commits of carender-stub */
+	if (cals >= 0) { EV_SET(&ev, cals, EVFILT_READ, EV_ADD, 0, 0, NULL); kevent(kq, &ev, 1, NULL, 0, NULL); }
 #ifdef WS_KMS
 	if (kms) {
 		EV_SET(&ev, ws_kms_fd(kms), EVFILT_READ, EV_ADD, 0, 0, NULL);
@@ -1393,6 +1395,8 @@ int main(int argc, char **argv)
 				}
 			}
 #endif
+			if (cals >= 0 && out[i].filter == EVFILT_READ && fd == cals) { int cfd = wsd_ca_accept(cals); if (cfd >= 0) { EV_SET(&ev, cfd, EVFILT_READ, EV_ADD, 0, 0, NULL); kevent(kq, &ev, 1, NULL, 0, NULL); } continue; }
+			if (cals >= 0 && wsd_ca_client(fd)) { if (wsd_ca_read(fd, srv, w, h) < 0) { EV_SET(&ev, fd, EVFILT_READ, EV_DELETE, 0, 0, NULL); kevent(kq, &ev, 1, NULL, 0, NULL); } dirty = 1; continue; }
 			if (fd == ls) {
 				int cfd = accept(ls, NULL, NULL);
 				if (cfd < 0) continue;
