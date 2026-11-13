@@ -111,6 +111,14 @@ static void ca_show(ws_server *srv, int sw, int sh, int scene, int slot, uint32_
 	if ((b = ws_window_backing(srv, ca_cwins[scene][slot])) == NULL) return;
 	if (root >= 0) ca_paint_root(scene, root, b->px, b->w, b->h, (int)b->stride);
 	else ca_paint_scene(scene, b->px, b->w, b->h, (int)b->stride);
+	if (!bound && !getenv("WSD_CA_LEVEL")) {
+		/* a context that no window of the window server is bound to and that covers the whole screen without a hole is the desktop picture (the Dock draws it: "WallpaperLayer"): it goes below everything else */
+		const uint8_t *p = b->px;
+		size_t st = b->stride;
+		int opaque = b->w > 0 && b->h > 0 && p[3] == 255 && p[(b->w - 1) * 4 + 3] == 255 && p[(b->h - 1) * st + 3] == 255 && p[(b->h - 1) * st + (b->w - 1) * 4 + 3] == 255 && p[(b->h / 2) * st + (b->w / 2) * 4 + 3] == 255;
+
+		ws_set_window_level(srv, ca_cwins[scene][slot], opaque ? -100 : 5);
+	}
 }
 
 static void repaint(ws_server *srv, int sw, int sh)
