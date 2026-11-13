@@ -436,11 +436,15 @@ static int do_create_window(conn *c, const uint8_t *buf, size_t len)
 	if (rq.body.msgh_descriptor_count != 1) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
 	if (rq.region.type != MACH_MSG_OOL_DESCRIPTOR || rq.region.size != rq.region_size || len != sizeof rq + rq.region.size)
 		return reply_simple(c->fd, h, MIG_TYPE_ERROR);
-	if (rq.window_type != 2 && rq.window_type != 3 && rq.window_type != 5)      /* mask 0x2c in the original */
+	if (rq.window_type != 2 && rq.window_type != 3 && rq.window_type != 5) {     /* mask 0x2c in the original */
+		fprintf(stderr, "wsd: CreateWindow refused: type %d\n", rq.window_type);
 		return reply_simple(c->fd, h, CGS_ERROR_ILLEGAL_ARGUMENT);
+	}
 	ws_rect *rects; int n; ws_rect bounds;
-	if (ws_region_parse(buf + sizeof rq, rq.region.size, &rects, &n, &bounds) || bounds.w <= 0 || bounds.h <= 0 || bounds.w > 8192 || bounds.h > 8192)
+	if (ws_region_parse(buf + sizeof rq, rq.region.size, &rects, &n, &bounds) || bounds.w <= 0 || bounds.h <= 0 || bounds.w > 8192 || bounds.h > 8192) {
+		fprintf(stderr, "wsd: CreateWindow refused: region of %u bytes, bounds %gx%g\n", rq.region.size, (double)bounds.w, (double)bounds.h);
 		return reply_simple(c->fd, h, CGS_ERROR_FAILURE);
+	}
 	{ int nw; double nb; ws_owner_usage(srv, c->id, &nw, &nb);                   /* a connection cannot exhaust the server: limits on windows and backing memory */
 	  if (nw >= WSD_MAX_WINDOWS_PER_CONN || nb + (double)bounds.w * bounds.h * 4.0 > WSD_MAX_BYTES_PER_CONN) { free(rects); return reply_simple(c->fd, h, CGS_ERROR_FAILURE); } }
 	int pfd = -1;
