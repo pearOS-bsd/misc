@@ -22,7 +22,9 @@
 #define CA_OOLN 128
 static struct { int fd; uint8_t *buf; size_t n, cap; } cl[CA_MAXC];
 static struct { int used, msg, desc; uint8_t *data; size_t size; } ool[CA_OOLN];
-static ws_wid ca_win;
+#define CA_WINS 16
+static ws_wid ca_wins[CA_WINS];		/* a window of wsd for each scene (render context) */
+static int ca_dirty[CA_WINS];
 
 static uint8_t *ool_take(void *ctx, int msg, int desc, size_t *sz)
 {
@@ -75,16 +77,21 @@ int wsd_ca_client(int fd) { for (int i = 0; i < CA_MAXC; i++) if (cl[i].fd == fd
 
 static void repaint(ws_server *srv, int sw, int sh)
 {
-	ws_surface *b;
-	if (!ca_win) {
-		const char *lv = getenv("WSD_CA_LEVEL");
-		ca_win = ws_create_window(srv, (ws_rect){ 0, 0, sw, sh });
-		if (!ca_win) return;
-		ws_set_window_level(srv, ca_win, lv ? atoi(lv) : 5);
-		ws_order_window(srv, ca_win, WS_ABOVE, 0);
+	for (int i = 0; i < ca_nscenes() && i < CA_WINS; i++) {
+		ws_surface *b;
+		if (!ca_dirty[i]) continue;
+		ca_dirty[i] = 0;
+		if (!ca_wins[i]) {
+			const char *lv = getenv("WSD_CA_LEVEL");
+			ca_wins[i] = ws_create_window(srv, (ws_rect){ 0, 0, sw, sh });
+			if (!ca_wins[i]) continue;
+			ws_set_window_level(srv, ca_wins[i], lv ? atoi(lv) : 5);
+			ws_order_window(srv, ca_wins[i], WS_ABOVE, 0);
+			fprintf(stderr, "wsd: render context %#x: window %u\n", (unsigned)ca_scene_ctx(i), (unsigned)ca_wins[i]);
+		}
+		if ((b = ws_window_backing(srv, ca_wins[i])) == NULL) continue;
+		ca_paint_scene(i, b->px, b->w, b->h, (int)b->stride);
 	}
-	if ((b = ws_window_backing(srv, ca_win)) == NULL) return;
-	ca_paint(b->px, b->w, b->h, (int)b->stride);
 	ws_server_invalidate(srv);
 }
 
@@ -110,7 +117,7 @@ int wsd_ca_read(int fd, ws_server *srv, int sw, int sh)
 			if (len > (64u << 20)) { close(fd); cl[ci].fd = -1; return -1; }
 			if (cl[ci].n - p - 8 < len) break;
 			const uint8_t *pl = cl[ci].buf + p + 8;
-			if (type == 1) { ca_feed(pl, len); fed = 1; }
+			if (type == 1) { int si = ca_feed(pl, len); if (si >= 0 && si < CA_WINS) { ca_dirty[si] = 1; fed = 1; } }
 			else if (type == 2 && len >= 8) { uint32_t m, d; memcpy(&m, pl, 4); memcpy(&d, pl + 4, 4); ool_put((int)m, (int)d, pl + 8, len - 8); }
 			p += 8 + len;
 		}
