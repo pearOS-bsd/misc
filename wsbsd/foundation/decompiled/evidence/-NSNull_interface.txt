@@ -1,0 +1,10 @@
+/* NSNull — the singleton null sentinel for collections. The base @interface
+ * (NSObject <NSCopying, NSSecureCoding>) comes from the public header; the dyld
+ * --objc slice shows only a scripting category. Measured (real Foundation,
+ * macOS 27 26A5416b):
+ *   +null returns a process-wide singleton; -copy returns the same instance
+ *   (immutable); conforms to NSCopying; -description == "<null>";
+ *   NSSecureCoding: +supportsSecureCoding == YES, decoding yields the singleton.
+ * @interface NSNull : NSObject <NSCopying, NSSecureCoding>
+ *   + (NSNull *)null;
+ */
