@@ -37,7 +37,8 @@ typedef struct {
 } layer_t;
 typedef struct { uint64_t id; img_t im; } imgent_t;
 #define MAXSCENES 16
-struct scene { layer_t layers[MAXL]; int nlayers; imgent_t images[MAXL]; int nimages; int nskipped; uint32_t ctx; };
+#define MAXROOTS 16
+struct scene { layer_t layers[MAXL]; int nlayers; imgent_t images[MAXL]; int nimages; int nskipped; uint32_t ctx; int nroots; uint32_t rootctx[MAXROOTS]; uint64_t rootid[MAXROOTS]; };		/* rootctx/rootid: the root layer of each render context (op 7 of its first commit) */
 static struct scene *S, *scenes[MAXSCENES]; static int nscenes;		/* S: the scene that is being fed or painted */
 #define L (S->layers)
 #define nL (S->nlayers)
@@ -230,7 +231,7 @@ static void message(const uint8_t *m, size_t n, int *nmsg)
 		cur_ool_msg = (*nmsg)++;
 	}
 	rd r = { m + st, n - st, 0, 0 };
-	u32(&r); u32(&r); u64(&r);
+	u32(&r); uint32_t msg_ctx = u32(&r); u64(&r);
 	while (!r.err && r.p < r.n) {
 		uint8_t op = u8(&r);
 		if (op == 0) break;
@@ -249,7 +250,12 @@ static void message(const uint8_t *m, size_t n, int *nmsg)
 				r.err = 0; r.p = q; skipped++;
 			}
 		}
-		else if (op == 3 || op == 7 || op == 0x1a || op == 0x1c || op == 0x1d || op == 0x1e || op == 0xb || op == 0xc) u64(&r);
+		else if (op == 7) {			/* the root layer of the context */
+			uint64_t rid = u64(&r); int k;
+			for (k = 0; k < S->nroots; k++) if (S->rootctx[k] == msg_ctx) break;
+			if (k < MAXROOTS) { S->rootctx[k] = msg_ctx; S->rootid[k] = rid; if (k == S->nroots) S->nroots++; }
+		}
+		else if (op == 3 || op == 0x1a || op == 0x1c || op == 0x1d || op == 0x1e || op == 0xb || op == 0xc) u64(&r);
 		else if (op == 9) { u8(&r); u8(&r); }
 		else if (op == 8 || op == 10) skip_cf(&r, 0);
 		else if (op == 0xd) u32(&r);
@@ -380,6 +386,17 @@ static void paint_scene(ca_canvas *win)
 		if (b->w * b->h > a->w * a->h) { uint64_t t = roots[i]; roots[i] = roots[k]; roots[k] = t; }
 	}
 	for (int i = 0; i < nr; i++) paint_layer(win, roots[i], 0, 0, 1.0, 0);
+}
+int ca_scene_nroots(int scene) { return scene >= 0 && scene < nscenes ? scenes[scene]->nroots : 0; }
+uint32_t ca_scene_root_ctx(int scene, int i) { return scene >= 0 && scene < nscenes && i >= 0 && i < scenes[scene]->nroots ? scenes[scene]->rootctx[i] : 0; }
+/* the tree of one context (its root layer) on a transparent canvas: the content of the window of that context */
+void ca_paint_root(int scene, int i, uint8_t *bgra, int w_, int h_, int stride)
+{
+	ca_canvas cv = { bgra, w_, h_, stride };
+	for (int j = 0; j < h_; j++) memset(bgra + (size_t)j * stride, 0, (size_t)w_ * 4);
+	if (scene < 0 || scene >= nscenes || i < 0 || i >= scenes[scene]->nroots) return;
+	S = scenes[scene];
+	paint_layer(&cv, S->rootid[i], 0, 0, 1.0, 0);
 }
 /* every scene over a dark background (opaque): for a viewer that shows the whole stream in one picture */
 void ca_paint(uint8_t *bgra, int w_, int h_, int stride)
