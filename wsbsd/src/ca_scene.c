@@ -63,6 +63,7 @@ void ca_set_ool_loader(ca_ool_fn fn, void *ctx) { ool_loader = fn ? fn : file_oo
 int ca_nlayers(void) { int n = 0; for (int i = 0; i < nscenes; i++) n += scenes[i]->nlayers; return n; }
 int ca_nimages(void) { int n = 0; for (int i = 0; i < nscenes; i++) n += scenes[i]->nimages; return n; }
 int ca_nscenes(void) { return nscenes; }
+void ca_scene_info(int i, int *nlayers, int *nimages) { *nlayers = i >= 0 && i < nscenes ? scenes[i]->nlayers : 0; *nimages = i >= 0 && i < nscenes ? scenes[i]->nimages : 0; }
 uint32_t ca_scene_ctx(int i) { return i >= 0 && i < nscenes ? scenes[i]->ctx : 0; }
 
 static layer_t *find(uint64_t id) { for (int i = 0; i < nL; i++) if (L[i].used && L[i].id == id) return &L[i]; return NULL; }
@@ -101,6 +102,25 @@ static void skip_cf(rd *r, int depth)
 	}
 }
 static void do_layer(rd *r, int depth, uint64_t id);
+/* CA::Render::Texture::decode (the end of an Image): colorspace, i32, 4 x i16, shape, i32, i32, and 0x14 bytes when the Image flags say so (decompilation of QuartzCore) */
+static void texture_tail(rd *r, uint32_t image_flags)
+{
+	uint8_t cs = u8(r);
+	switch (cs) {
+	case 0: case 3: break;
+	case 1: u8(r); break;
+	case 2: case 4: skip_cf(r, 0); break;
+	default: r->err = 1; return;
+	}
+	u32(r); for (int i = 0; i < 4; i++) u16(r);
+	{	/* the shape: -2 bounds (4 x i32), 0 none, -1 all, else a list of n words (3 are the header) */
+		int32_t n = (int32_t)u32(r);
+		if (n == -2) { for (int i = 0; i < 4; i++) u32(r); }
+		else if (n != 0 && n != -1) { if (n < 3 || n > 0x20000) { r->err = 1; return; } raw(r, (size_t)(n - 3) * 4); }
+	}
+	u32(r); u32(r);
+	if (image_flags & 0x1000) raw(r, 0x14);
+}
 static void skip_obj_(rd *r, int depth, contents_t *ct);
 static void skip_obj(rd *r, int depth, contents_t *ct)
 {
@@ -123,11 +143,12 @@ static void skip_obj_(rd *r, int depth, contents_t *ct)
 	case 0x34: { uint32_t fl = u32(r); if ((fl & 3) == 0) { uint64_t n = u64(r); if (n != 0xffffffffULL && n != ~0ULL) raw(r, n); else if (ct) ct->attached = 1; } else { u64(r); u64(r); } break; }
 	case 0x12: { uint32_t fl = u32(r); if ((fl >> 8) & 1) skip_atom(r); else { { uint8_t kind = u8(r); if (kind == 0) { skip_cf(r, 0); break; } if (kind != 1) { r->err = 1; break; } } skip_atom(r); skip_obj(r, depth + 1, NULL); skip_arr(r, depth, NULL, NULL); } break; }
 	case 0x17: {
-		u32(r); uint8_t fmt = u8(r); uint8_t np = u8(r); uint32_t w = u32(r), h = u32(r); uint64_t row0 = 0;
+		uint32_t flags_i = u32(r); uint8_t fmt = u8(r); uint8_t np = u8(r); uint32_t w = u32(r), h = u32(r); uint64_t row0 = 0;
 		(void)fmt;
 		for (int i = 0; i < np && !r->err; i++) { uint64_t v = u64(r); if (i == 0) row0 = v; }
 		if (u8(r)) { contents_t in; memset(&in, 0, sizeof in); skip_obj(r, depth + 1, &in); if (ct) { ct->kind = 1; ct->attached = in.attached; } }
 		else { uint64_t n = u64(r); if (n != 0xffffffffULL && n != ~0ULL) raw(r, n); else if (ct) { ct->kind = 1; ct->attached = 1; } }
+		texture_tail(r, flags_i);
 		if (ct) { ct->kind = 1; ct->w = (int)w; ct->h = (int)h; ct->bpp = w ? (int)(row0 / w) : 4; }
 		break; }
 	case 0x1f: u32(r); u32(r); u8(r); break;
@@ -152,7 +173,6 @@ static void do_layer(rd *r, int depth, uint64_t id)
 	contents_t ct; memset(&ct, 0, sizeof ct);
 	skip_obj(r, depth + 1, &ct);
 	if (r->err) return;
-	if (ct.kind) { uint8_t cb = u8(r); raw(r, 24 + ((cb & 0x20) ? 3 : 0)); }
 	uint64_t subs[MAXS]; int ns = 0, hassubs = 0;
 	{ size_t p0 = r->p; skip_arr(r, depth, subs, &ns); hassubs = r->p > p0 + 1; }
 	u64(r); skip_obj(r, depth + 1, NULL);
@@ -260,17 +280,23 @@ static struct scene *scene_for(uint32_t ctx, int *idx)
 	return n;
 }
 /* one commit message; returns the index of the scene it belongs to (the context is the second word of its body), -1 when it was not understood */
+int ca_feed_key(uint32_t key, const uint8_t *m, size_t n)
+{
+	int idx = -1;
+	if (n < 0x24) return -1;
+	if ((S = scene_for(key, &idx)) == NULL) return -1;
+	message(m, n, &g_nmsg);
+	return idx;
+}
 int ca_feed(const uint8_t *m, size_t n)
 {
-	size_t st = 0x1c; uint32_t bits, ctx = 0; int idx = -1;
+	size_t st = 0x1c; uint32_t bits, ctx = 0;
 	if (n < 0x24) return -1;
 	memcpy(&bits, m, 4);
 	if (bits & 0x80000000u) { uint32_t nd; memcpy(&nd, m + 0x18, 4); for (uint32_t i = 0; i < nd && st + 12 <= n; i++) st += m[st + 11] == 1 ? 16 : 12; }
 	if (st + 8 > n) return -1;
 	memcpy(&ctx, m + st + 4, 4);
-	if ((S = scene_for(ctx, &idx)) == NULL) return -1;
-	message(m, n, &g_nmsg);
-	return idx;
+	return ca_feed_key(ctx, m, n);
 }
 int ca_load_file(const char *path)
 {
