@@ -1203,6 +1203,8 @@ static int dispatch(conn *c, uint8_t *buf, size_t len, int *fds, int nfds)
 	for (int i = 0; i < nfds; i++) close(fds[i]);                       /* every other request takes no descriptors */
 	if (h->msgh_size < sizeof *h || h->msgh_size > len) return reply_mig_error(c->fd, h, MIG_BAD_ARGUMENTS);
 	h->msgh_local_port = c->id;                                         /* the connection the request arrived on */
+	static int trace = -1; if (trace < 0) trace = getenv("WSD_TRACE") != NULL;
+	if (trace) fprintf(stderr, "wsd: request id %u (conn %u, pid %d, %u bytes)\n", h->msgh_id, c->id, c->pid, h->msgh_size);
 	if (h->msgh_id >= WSX_FLUSH && h->msgh_id <= WSX_SET_NIGHT_SHIFT) { dirty = 1; return do_private(c, buf, len); }
 	if (h->msgh_id == SLS_MSG_CreateWindow) { dirty = 1; return do_create_window(c, buf, len); }
 	if (h->msgh_id == SLS_MSG_NewConnectionPort) return do_new_connection(c, buf, len);
@@ -1218,6 +1220,7 @@ static int dispatch(conn *c, uint8_t *buf, size_t len, int *fds, int nfds)
 		int rc = do_simple(c, buf, len);
 		if (rc != -2) { dirty = 1; return rc; }
 	}
+	if (trace) fprintf(stderr, "wsd: id %u is not implemented\n", h->msgh_id);
 	return reply_mig_error(c->fd, h, MIG_BAD_ID);                       /* known id we do not implement, or an unknown id */
 }
 
