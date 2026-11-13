@@ -1,0 +1,13 @@
+/* NSSortDescriptor — a key + direction (+ selector/comparator) sort rule.
+ * Base @interface (NSObject <NSSecureCoding, NSCopying>) from the public header.
+ * Measured (real Foundation, macOS 27 26A5416b):
+ *   +sortDescriptorWithKey:ascending: => key stored, selector defaults to
+ *   @selector(compare:); -reversedSortDescriptor flips ascending (same key);
+ *   -compareObject:toObject: reads valueForKey: on each and applies selector,
+ *   negating the result when !ascending (apple vs banana ascending => Ascending).
+ * @interface NSSortDescriptor : NSObject <NSSecureCoding, NSCopying>
+ *   +sortDescriptorWithKey:ascending:[selector:] ; -initWithKey:ascending:[selector:]
+ *   @property(readonly) NSString *key; BOOL ascending; SEL selector;
+ *   -reversedSortDescriptor ; -compareObject:toObject:.
+ * (The block-based comparator variant is stage2.)
+ */
