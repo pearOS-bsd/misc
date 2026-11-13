@@ -75,11 +75,18 @@ static void skip_cf(rd *r, int depth)
 	case 5: { uint64_t n = u64(r); if (n != 0xffffffffULL && n != ~0ULL) raw(r, n); break; }
 	case 6: { uint64_t n = u64(r); for (uint64_t i = 0; i < n && !r->err; i++) skip_cf(r, depth + 1); break; }
 	case 7: { uint64_t n = u64(r); for (uint64_t i = 0; i < n && !r->err; i++) { skip_cf(r, depth + 1); skip_cf(r, depth + 1); } break; }
-	default: r->err = 1;
+	default: if (getenv("CA_DEBUG")) fprintf(stderr, "ca_scene: unknown object type %#x at %zu\n", t, r->p - 1); r->err = 1;
 	}
 }
 static void do_layer(rd *r, int depth, uint64_t id);
+static void skip_obj_(rd *r, int depth, contents_t *ct);
 static void skip_obj(rd *r, int depth, contents_t *ct)
+{
+	size_t p0 = r->p; int e0 = r->err;
+	skip_obj_(r, depth, ct);
+	if (!e0 && r->err && getenv("CA_DEBUG")) fprintf(stderr, "ca_scene: object at %zu (type %#x) failed at %zu (depth %d)\n", p0, p0 < r->n ? r->b[p0] : 0, r->p, depth);
+}
+static void skip_obj_(rd *r, int depth, contents_t *ct)
 {
 	if (depth > 40) { r->err = 1; return; }
 	uint8_t t = u8(r);
@@ -92,7 +99,7 @@ static void skip_obj(rd *r, int depth, contents_t *ct)
 	case 0x36: { uint32_t n = u32(r); raw(r, n); break; }
 	case 0x3e: { uint32_t n = u32(r); raw(r, 8ULL * n); break; }
 	case 0x34: { uint32_t fl = u32(r); if ((fl & 3) == 0) { uint64_t n = u64(r); if (n != 0xffffffffULL && n != ~0ULL) raw(r, n); else if (ct) ct->attached = 1; } else { u64(r); u64(r); } break; }
-	case 0x12: { uint32_t fl = u32(r); if ((fl >> 8) & 1) skip_atom(r); else { if (u8(r) != 1) { r->err = 1; break; } skip_atom(r); skip_obj(r, depth + 1, NULL); skip_arr(r, depth, NULL, NULL); } break; }
+	case 0x12: { uint32_t fl = u32(r); if ((fl >> 8) & 1) skip_atom(r); else { { uint8_t kind = u8(r); if (kind == 0) { skip_cf(r, 0); break; } if (kind != 1) { r->err = 1; break; } } skip_atom(r); skip_obj(r, depth + 1, NULL); skip_arr(r, depth, NULL, NULL); } break; }
 	case 0x17: {
 		u32(r); uint8_t fmt = u8(r); uint8_t np = u8(r); uint32_t w = u32(r), h = u32(r); uint64_t row0 = 0;
 		(void)fmt;
@@ -102,6 +109,17 @@ static void skip_obj(rd *r, int depth, contents_t *ct)
 		if (ct) { ct->kind = 1; ct->w = (int)w; ct->h = (int)h; ct->bpp = w ? (int)(row0 / w) : 4; }
 		break; }
 	case 0x1f: u32(r); u32(r); u8(r); break;
+	/* the formats below come from the decompilation of QuartzCore (CA::Render::<Class>::<Class>(Decoder*), REA/Ghidra) */
+	case 3: {		/* BackdropLayer: Object flags, vm_size_t, String, 4 x i32, 0x20 bytes, i32, 0x20 bytes, i8 enum */
+		u32(r); u64(r); skip_obj(r, depth + 1, NULL);
+		for (int i = 0; i < 4; i++) u32(r);
+		raw(r, 0x20); u32(r); raw(r, 0x20); u8(r); break; }
+	case 0x1d: skip_atom(r); skip_obj(r, depth + 1, NULL); break;		/* KeyValue: atom, any object (no Object flags) */
+	case 0x3a: u32(r); u32(r); for (int i = 0; i < 5; i++) u64(r); break;	/* Timing: Object flags, i32, 5 x i64 */
+	case 0x3f:		/* WindowLayer: Object flags, vm_size_t, i64, i8 enum */
+		u32(r); u64(r); u64(r); u8(r); break;
+	case 0x19:		/* ImageQueue::decode: Shmem, i32, (a port: no bytes), i32, i32 */
+		skip_obj(r, depth + 1, NULL); u32(r); u32(r); u32(r); break;
 	default: r->err = 1;
 	}
 }
@@ -188,6 +206,7 @@ static void message(const uint8_t *m, size_t n, int *nmsg)
 				for (q = start + 1; q + 14 <= r.n; q++)
 					if (r.b[q] == 0x02 && r.b[q + 11] == 0 && r.b[q + 12] == 0 && r.b[q + 13] == 0x1e) break;
 				if (q + 14 > r.n) break;
+				if (getenv("CA_DEBUG")) fprintf(stderr, "ca_scene: record at %zu failed at %zu (id %llx), next record at %zu of %zu\n", start, r.p, (unsigned long long)id, q, r.n);
 				r.err = 0; r.p = q; skipped++;
 			}
 		}
