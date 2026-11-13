@@ -86,3 +86,4 @@ int wsd_ca_accept(int ls);                                                   /* 
 int wsd_ca_client(int fd);
 struct ws_server;
 int wsd_ca_read(int fd, ws_server *srv, int sw, int sh);                     /* -1: the client went away */
+uint32_t wsd_layer_ctx_window(uint32_t ctx);                                  /* src/sls_window.c: the window bound to a CA context, 0 if none */

@@ -75,23 +75,57 @@ int wsd_ca_accept(int ls)
 
 int wsd_ca_client(int fd) { for (int i = 0; i < CA_MAXC; i++) if (cl[i].fd == fd && fd >= 0) return 1; return 0; }
 
+/* a window of wsd for each scene (render context).  A context that a client bound to a window of the window server (SetWindowLayerContext) takes that window's place: its frame, level and
+ * order (the window of the client is where the application put it; the layers are drawn in the coordinates of the window).  A context with no window is the whole screen (the Dock's layers). */
+static int ca_fw[CA_WINS], ca_fh[CA_WINS];
+#define CA_CTXS 8
+static uint32_t ca_ctxs[CA_WINS][CA_CTXS];		/* the render contexts (ids that CASRegisterClient gave) whose commits went into a scene */
+static uint32_t ca_msg_ctx(const uint8_t *m, size_t n)
+{
+	size_t st = 0x1c; uint32_t bits, ctx = 0;
+	memcpy(&bits, m, 4);
+	if (bits & 0x80000000u) { uint32_t nd; memcpy(&nd, m + 0x18, 4); for (uint32_t i = 0; i < nd && st + 12 <= n; i++) st += m[st + 11] == 1 ? 16 : 12; }
+	if (st + 8 <= n) memcpy(&ctx, m + st + 4, 4);
+	return ctx;
+}
+static void ca_note_ctx(int scene, uint32_t ctx)
+{
+	if (scene < 0 || scene >= CA_WINS || ctx == 0) return;
+	for (int k = 0; k < CA_CTXS; k++) { if (ca_ctxs[scene][k] == ctx) return; if (ca_ctxs[scene][k] == 0) { ca_ctxs[scene][k] = ctx; return; } }
+}
 static void repaint(ws_server *srv, int sw, int sh)
 {
 	for (int i = 0; i < ca_nscenes() && i < CA_WINS; i++) {
 		ws_surface *b;
+		ws_rect fr = { 0, 0, sw, sh };
+		int lvl = 5;
+		ws_wid bound = 0;
+
+		for (int k = 0; k < CA_CTXS && !bound; k++) if (ca_ctxs[i][k]) bound = (ws_wid)wsd_layer_ctx_window(ca_ctxs[i][k]);		/* the window of the first of its contexts that has one */
+
 		if (!ca_dirty[i]) continue;
 		ca_dirty[i] = 0;
+		if (bound && ws_window_exists(srv, bound)) {
+			ws_rect r;
+			if (ws_window_frame(srv, bound, &r) == 0 && r.w > 1 && r.h > 1) fr = r;
+			ws_window_level(srv, bound, &lvl);
+		}
+		if (ca_wins[i] && (ca_fw[i] != fr.w || ca_fh[i] != fr.h)) { ws_release_window(srv, ca_wins[i]); ca_wins[i] = 0; }		/* another size: a new window (its backing has the size) */
 		if (!ca_wins[i]) {
 			const char *lv = getenv("WSD_CA_LEVEL");
-			ca_wins[i] = ws_create_window(srv, (ws_rect){ 0, 0, sw, sh });
+			ca_wins[i] = ws_create_window(srv, fr);
 			if (!ca_wins[i]) continue;
-			ws_set_window_level(srv, ca_wins[i], lv ? atoi(lv) : 5);
-			ws_order_window(srv, ca_wins[i], WS_ABOVE, 0);
-			fprintf(stderr, "wsd: render client (pid) %u: window %u\n", (unsigned)ca_scene_ctx(i), (unsigned)ca_wins[i]);
+			ca_fw[i] = fr.w; ca_fh[i] = fr.h;
+			ws_set_window_level(srv, ca_wins[i], bound ? lvl : (lv ? atoi(lv) : 5));
+			ws_order_window(srv, ca_wins[i], WS_ABOVE, bound ? bound : 0);
+			fprintf(stderr, "wsd: render client (pid) %u: window %u%s (%d,%d %dx%d)\n", (unsigned)ca_scene_ctx(i), (unsigned)ca_wins[i], bound ? " over the window of the client" : "", fr.x, fr.y, fr.w, fr.h);
+		} else if (bound) {
+			ws_move_window(srv, ca_wins[i], fr.x, fr.y);
+			ws_set_window_level(srv, ca_wins[i], lvl);
 		}
 		if ((b = ws_window_backing(srv, ca_wins[i])) == NULL) continue;
 		ca_paint_scene(i, b->px, b->w, b->h, (int)b->stride);
-		if (getenv("WSD_CA_DEBUG")) { int nl, ni; ca_scene_info(i, &nl, &ni); fprintf(stderr, "wsd: scene %d (pid %u): %d layers, %d images\n", i, (unsigned)ca_scene_ctx(i), nl, ni); }
+		if (getenv("WSD_CA_DEBUG")) { int nl, ni; ca_scene_info(i, &nl, &ni); fprintf(stderr, "wsd: scene %d (context %u): %d layers, %d images\n", i, (unsigned)ca_scene_ctx(i), nl, ni); }
 	}
 	ws_server_invalidate(srv);
 }
@@ -118,7 +152,7 @@ int wsd_ca_read(int fd, ws_server *srv, int sw, int sh)
 			if (len > (64u << 20)) { close(fd); cl[ci].fd = -1; return -1; }
 			if (cl[ci].n - p - 8 < len) break;
 			const uint8_t *pl = cl[ci].buf + p + 8;
-			if (type == 3 && len > 4) { uint32_t pid; memcpy(&pid, pl, 4); int si = ca_feed_key(pid, pl + 4, len - 4); if (si >= 0 && si < CA_WINS) { ca_dirty[si] = 1; fed = 1; } }
+			if (type == 3 && len > 4) { uint32_t pid; memcpy(&pid, pl, 4); int si = ca_feed_key(pid, pl + 4, len - 4); if (si >= 0 && len >= 4 + 0x24) { uint32_t cx = ca_msg_ctx(pl + 4, len - 4); ca_note_ctx(si, cx); } if (si >= 0 && si < CA_WINS) { ca_dirty[si] = 1; fed = 1; } }
 			else if (type == 1) { int si = ca_feed(pl, len); if (si >= 0 && si < CA_WINS) { ca_dirty[si] = 1; fed = 1; } }
 			else if (type == 2 && len >= 8) { uint32_t m, d; memcpy(&m, pl, 4); memcpy(&d, pl + 4, 4); ool_put((int)m, (int)d, pl + 8, len - 8); }
 			p += 8 + len;
