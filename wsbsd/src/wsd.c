@@ -441,7 +441,11 @@ static int do_create_window(conn *c, const uint8_t *buf, size_t len)
 		return reply_simple(c->fd, h, CGS_ERROR_ILLEGAL_ARGUMENT);
 	}
 	ws_rect *rects; int n; ws_rect bounds;
-	if (ws_region_parse(buf + sizeof rq, rq.region.size, &rects, &n, &bounds) || bounds.w <= 0 || bounds.h <= 0 || bounds.w > 8192 || bounds.h > 8192) {
+	int pr = ws_region_parse(buf + sizeof rq, rq.region.size, &rects, &n, &bounds);
+	if (pr == 0 && (bounds.w <= 0 || bounds.h <= 0) && n == 0) {	/* an empty region (a window that is sized later, as AppKit makes the windows of an application at launch): 1x1, the shape comes with SetWindowShape */
+		bounds.w = 1; bounds.h = 1;
+	}
+	if (pr || bounds.w <= 0 || bounds.h <= 0 || bounds.w > 8192 || bounds.h > 8192) {
 		fprintf(stderr, "wsd: CreateWindow refused: region of %u bytes, bounds %gx%g\n", rq.region.size, (double)bounds.w, (double)bounds.h);
 		return reply_simple(c->fd, h, CGS_ERROR_FAILURE);
 	}
