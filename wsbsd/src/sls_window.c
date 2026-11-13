@@ -11,6 +11,7 @@
 #define MAXPROPS 512
 static struct { int used; uint32_t wid; char key[130]; uint8_t *data; uint32_t len; } props[MAXPROPS];
 static struct { int used; uint32_t wid, ctx; } layer_ctx[256];
+uint32_t wsd_layer_ctx_window(uint32_t ctx) { for (int i = 0; i < 256; i++) if (layer_ctx[i].used && layer_ctx[i].ctx == ctx) return layer_ctx[i].wid; return 0; }	/* the window that a CA context was bound to (SetWindowLayerContext), 0: none */
 
 /* a copy of a named window value (SetWindowProperty); the length, or -1 when the window has no such value */
 int sls_window_property_copy(uint32_t wid, const char *key, uint8_t *out, size_t cap)
@@ -1102,6 +1103,7 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 	case SLS_MSG_SetWindowLayerContext: {                                          /* wid@0x20, CA context id@0x24: 1002 without rights, else 0 */
 		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
 		uint32_t wid = rd32(buf, 0x20), ctx = rd32(buf, 0x24);
+		if (getenv("WSD_TRACE")) fprintf(stderr, "wsd: SetWindowLayerContext window %u context %u (pid %d)\n", wid, ctx, c->pid);
 		if (!holds_rights(c, wid)) return reply_simple(c->fd, h, 1002);
 		int slot = -1;
 		for (int i = 0; i < 256; i++) if (layer_ctx[i].used && layer_ctx[i].wid == wid) slot = i;
