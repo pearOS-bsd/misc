@@ -87,10 +87,11 @@ static void repaint(ws_server *srv, int sw, int sh)
 			if (!ca_wins[i]) continue;
 			ws_set_window_level(srv, ca_wins[i], lv ? atoi(lv) : 5);
 			ws_order_window(srv, ca_wins[i], WS_ABOVE, 0);
-			fprintf(stderr, "wsd: render context %#x: window %u\n", (unsigned)ca_scene_ctx(i), (unsigned)ca_wins[i]);
+			fprintf(stderr, "wsd: render client (pid) %u: window %u\n", (unsigned)ca_scene_ctx(i), (unsigned)ca_wins[i]);
 		}
 		if ((b = ws_window_backing(srv, ca_wins[i])) == NULL) continue;
 		ca_paint_scene(i, b->px, b->w, b->h, (int)b->stride);
+		if (getenv("WSD_CA_DEBUG")) { int nl, ni; ca_scene_info(i, &nl, &ni); fprintf(stderr, "wsd: scene %d (pid %u): %d layers, %d images\n", i, (unsigned)ca_scene_ctx(i), nl, ni); }
 	}
 	ws_server_invalidate(srv);
 }
@@ -117,7 +118,8 @@ int wsd_ca_read(int fd, ws_server *srv, int sw, int sh)
 			if (len > (64u << 20)) { close(fd); cl[ci].fd = -1; return -1; }
 			if (cl[ci].n - p - 8 < len) break;
 			const uint8_t *pl = cl[ci].buf + p + 8;
-			if (type == 1) { int si = ca_feed(pl, len); if (si >= 0 && si < CA_WINS) { ca_dirty[si] = 1; fed = 1; } }
+			if (type == 3 && len > 4) { uint32_t pid; memcpy(&pid, pl, 4); int si = ca_feed_key(pid, pl + 4, len - 4); if (si >= 0 && si < CA_WINS) { ca_dirty[si] = 1; fed = 1; } }
+			else if (type == 1) { int si = ca_feed(pl, len); if (si >= 0 && si < CA_WINS) { ca_dirty[si] = 1; fed = 1; } }
 			else if (type == 2 && len >= 8) { uint32_t m, d; memcpy(&m, pl, 4); memcpy(&d, pl + 4, 4); ool_put((int)m, (int)d, pl + 8, len - 8); }
 			p += 8 + len;
 		}

@@ -9,8 +9,10 @@ void ca_set_dir(const char *dir);
 void ca_set_ool_loader(ca_ool_fn fn, void *ctx);	/* default: files in the directory */
 void ca_reset(void);
 int ca_feed(const uint8_t *msg, size_t n);		/* one commit message (as the render server received it, from the header on); returns the scene (one for each context) it went to, -1 if not understood */
+int ca_feed_key(uint32_t key, const uint8_t *msg, size_t n);	/* the same, with the key of the scene given (the pid of the client) */
 int ca_nscenes(void);
 uint32_t ca_scene_ctx(int scene);
+void ca_scene_info(int scene, int *nlayers, int *nimages);
 void ca_paint_scene(int scene, uint8_t *bgra, int w, int h, int stride);	/* one scene on a transparent canvas (premultiplied BGRA) */
 int ca_load_file(const char *path);		/* the whole stream (u32 length + message, repeated): rebuilds the scene; 0 on success */
 void ca_paint(uint8_t *bgra, int w, int h, int stride);
