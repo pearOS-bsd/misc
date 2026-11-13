@@ -35,9 +35,15 @@ typedef struct {
 	uint64_t subs[MAXS]; int nsubs;
 	uint64_t img;		/* id of the Image object, 0: none */
 } layer_t;
-static layer_t L[MAXL]; static int nL;
 typedef struct { uint64_t id; img_t im; } imgent_t;
-static imgent_t IM[MAXL]; static int nIM;
+#define MAXSCENES 16
+struct scene { layer_t layers[MAXL]; int nlayers; imgent_t images[MAXL]; int nimages; int nskipped; uint32_t ctx; };
+static struct scene *S, *scenes[MAXSCENES]; static int nscenes;		/* S: the scene that is being fed or painted */
+#define L (S->layers)
+#define nL (S->nlayers)
+#define IM (S->images)
+#define nIM (S->nimages)
+#define skipped (S->nskipped)
 static const char *cadir = ".";
 static uint8_t *file_ool(void *ctx, int msg, int desc, size_t *sz)
 {
@@ -54,8 +60,10 @@ static ca_ool_fn ool_loader = file_ool;
 static void *ool_ctx;
 void ca_set_dir(const char *d) { cadir = d; }
 void ca_set_ool_loader(ca_ool_fn fn, void *ctx) { ool_loader = fn ? fn : file_ool; ool_ctx = ctx; }
-int ca_nlayers(void) { return nL; }
-int ca_nimages(void) { return nIM; }
+int ca_nlayers(void) { int n = 0; for (int i = 0; i < nscenes; i++) n += scenes[i]->nlayers; return n; }
+int ca_nimages(void) { int n = 0; for (int i = 0; i < nscenes; i++) n += scenes[i]->nimages; return n; }
+int ca_nscenes(void) { return nscenes; }
+uint32_t ca_scene_ctx(int i) { return i >= 0 && i < nscenes ? scenes[i]->ctx : 0; }
 
 static layer_t *find(uint64_t id) { for (int i = 0; i < nL; i++) if (L[i].used && L[i].id == id) return &L[i]; return NULL; }
 static layer_t *get(uint64_t id) { layer_t *l = find(id); if (l) return l; for (int i = 0; i < nL; i++) if (!L[i].used) { l = &L[i]; goto init; } if (nL >= MAXL) return NULL; l = &L[nL++]; init: memset(l, 0, sizeof *l); l->used = 1; l->id = id; return l; }
@@ -187,8 +195,7 @@ static void do_layer(rd *r, int depth, uint64_t id)
 	}
 }
 
-static int skipped;		/* records that were not decoded to the end */
-int ca_resynced(void) { return skipped; }
+int ca_resynced(void) { int n = 0; for (int i = 0; i < nscenes; i++) n += scenes[i]->nskipped; return n; }
 static void message(const uint8_t *m, size_t n, int *nmsg)
 {
 	if (n < 0x1c) return;
@@ -236,11 +243,35 @@ static void message(const uint8_t *m, size_t n, int *nmsg)
 static int g_nmsg;		/* complex messages fed so far: the number of the out-of-line data of the next one */
 void ca_reset(void)
 {
-	memset(L, 0, sizeof L); nL = 0;
-	for (int i = 0; i < nIM; i++) free(IM[i].im.px);
-	nIM = 0; g_nmsg = 0; skipped = 0;
+	for (int k = 0; k < nscenes; k++) {
+		for (int i = 0; i < scenes[k]->nimages; i++) free(scenes[k]->images[i].im.px);
+		free(scenes[k]); scenes[k] = NULL;
+	}
+	nscenes = 0; S = NULL; g_nmsg = 0;
 }
-void ca_feed(const uint8_t *m, size_t n) { message(m, n, &g_nmsg); }
+/* the scene of a context (made when it is first seen) */
+static struct scene *scene_for(uint32_t ctx, int *idx)
+{
+	for (int i = 0; i < nscenes; i++) if (scenes[i]->ctx == ctx) { *idx = i; return scenes[i]; }
+	if (nscenes >= MAXSCENES) return NULL;
+	struct scene *n = calloc(1, sizeof *n);
+	if (!n) return NULL;
+	n->ctx = ctx; scenes[nscenes] = n; *idx = nscenes++;
+	return n;
+}
+/* one commit message; returns the index of the scene it belongs to (the context is the second word of its body), -1 when it was not understood */
+int ca_feed(const uint8_t *m, size_t n)
+{
+	size_t st = 0x1c; uint32_t bits, ctx = 0; int idx = -1;
+	if (n < 0x24) return -1;
+	memcpy(&bits, m, 4);
+	if (bits & 0x80000000u) { uint32_t nd; memcpy(&nd, m + 0x18, 4); for (uint32_t i = 0; i < nd && st + 12 <= n; i++) st += m[st + 11] == 1 ? 16 : 12; }
+	if (st + 8 > n) return -1;
+	memcpy(&ctx, m + st + 4, 4);
+	if ((S = scene_for(ctx, &idx)) == NULL) return -1;
+	message(m, n, &g_nmsg);
+	return idx;
+}
 int ca_load_file(const char *path)
 {
 	FILE *f = fopen(path, "rb");
@@ -275,7 +306,7 @@ static void blend(ca_canvas *win, int x, int y, int r, int g, int b, int a)
 	if (x < 0 || y < 0 || x >= win->w || y >= win->h || a <= 0) return;
 	uint8_t *p = win->px + (size_t)y * win->stride + x * 4;
 	if (a > 255) a = 255;
-	p[0] = (uint8_t)((p[0] * (255 - a) + b * a) / 255); p[1] = (uint8_t)((p[1] * (255 - a) + g * a) / 255); p[2] = (uint8_t)((p[2] * (255 - a) + r * a) / 255); p[3] = 255;
+	p[0] = (uint8_t)((p[0] * (255 - a) + b * a) / 255); p[1] = (uint8_t)((p[1] * (255 - a) + g * a) / 255); p[2] = (uint8_t)((p[2] * (255 - a) + r * a) / 255); p[3] = (uint8_t)(a + p[3] * (255 - a) / 255);
 }
 static void paint_layer(ca_canvas *win, uint64_t id, double ox, double oy, double op, int depth)
 {
@@ -309,12 +340,9 @@ static void paint_layer(ca_canvas *win, uint64_t id, double ox, double oy, doubl
 	}
 	for (int i = 0; i < l->nsubs; i++) paint_layer(win, l->subs[i], x, y, op2 > 0 ? op2 : op, depth + 1);
 }
-void ca_paint(uint8_t *bgra, int w_, int h_, int stride)
+static void paint_scene(ca_canvas *win)
 {
-	ca_canvas cv = { bgra, w_, h_, stride }, *win = &cv;
-	int W = w_, H = h_;
 	uint64_t roots[MAXL]; int nr = 0;
-	for (int j = 0; j < H; j++) for (int i = 0; i < W; i++) { uint8_t *p = win->px + (size_t)j * win->stride + i * 4; p[0] = 30; p[1] = 28; p[2] = 28; p[3] = 255; }
 	for (int i = 0; i < nL; i++) {
 		int child = 0;
 		if (!L[i].used) continue;
@@ -327,4 +355,18 @@ void ca_paint(uint8_t *bgra, int w_, int h_, int stride)
 	}
 	for (int i = 0; i < nr; i++) paint_layer(win, roots[i], 0, 0, 1.0, 0);
 }
-
+/* every scene over a dark background (opaque): for a viewer that shows the whole stream in one picture */
+void ca_paint(uint8_t *bgra, int w_, int h_, int stride)
+{
+	ca_canvas cv = { bgra, w_, h_, stride };
+	for (int j = 0; j < h_; j++) for (int i = 0; i < w_; i++) { uint8_t *p = bgra + (size_t)j * stride + i * 4; p[0] = 30; p[1] = 28; p[2] = 28; p[3] = 255; }
+	for (int k = 0; k < nscenes; k++) { S = scenes[k]; paint_scene(&cv); }
+}
+/* one scene on a transparent canvas (premultiplied BGRA): the content of a window of wsd */
+void ca_paint_scene(int idx, uint8_t *bgra, int w_, int h_, int stride)
+{
+	ca_canvas cv = { bgra, w_, h_, stride };
+	for (int j = 0; j < h_; j++) memset(bgra + (size_t)j * stride, 0, (size_t)w_ * 4);
+	if (idx < 0 || idx >= nscenes) return;
+	S = scenes[idx]; paint_scene(&cv);
+}
