@@ -134,7 +134,7 @@ DESTDIR ?=
 install: wsd tools_all
 	install -d $(DESTDIR)$(PREFIX)/sbin $(DESTDIR)$(PREFIX)/bin $(DESTDIR)$(PREFIX)/include/wsbsd $(DESTDIR)$(PREFIX)/lib $(DESTDIR)$(PREFIX)/etc/rc.d $(DESTDIR)$(PREFIX)/share/man/man8
 	install -m 0755 wsd $(DESTDIR)$(PREFIX)/sbin/wsd
-	install -m 0755 wsspace wsshot wsshow wsclick wskey wsdrag wswins wsfps wsmove wscursor $(DESTDIR)$(PREFIX)/bin/
+	install -m 0755 wsspace wsshot wsshow wscarender wsclick wskey wsdrag wswins wsfps wsmove wscursor $(DESTDIR)$(PREFIX)/bin/
 	sed 's|%%PREFIX%%|$(PREFIX)|g' dist/wsstart > $(DESTDIR)$(PREFIX)/bin/wsstart && chmod 0755 $(DESTDIR)$(PREFIX)/bin/wsstart
 	sed 's|%%PREFIX%%|$(PREFIX)|g' dist/wsd.rc > $(DESTDIR)$(PREFIX)/etc/rc.d/wsd && chmod 0555 $(DESTDIR)$(PREFIX)/etc/rc.d/wsd
 	install -d $(DESTDIR)$(PREFIX)/etc/xdg/fastfetch $(DESTDIR)$(PREFIX)/share/wsbsd $(DESTDIR)$(PREFIX)/etc/profile.d
@@ -160,6 +160,10 @@ wsshot: tools/wsshot.c libwsclient.a
 	$(CC) $(CFLAGS) -o $@ tools/wsshot.c libwsclient.a $(LDLIBS)
 wsshow: tools/wsshow.c libwsclient.a
 	$(CC) $(CFLAGS) -o $@ tools/wsshow.c libwsclient.a $(LDLIBS)
+wscarender: tools/wscarender.c libwsclient.a
+	$(CC) $(CFLAGS) -o $@ tools/wscarender.c libwsclient.a $(LDLIBS)
+wscarender: tools/wscarender.c libwsclient.a
+	$(CC) $(CFLAGS) -o $@ tools/wscarender.c libwsclient.a $(LDLIBS)
 wsclick: tools/wsclick.c libwsclient.a
 	$(CC) $(CFLAGS) -o $@ tools/wsclick.c libwsclient.a $(LDLIBS)
 wskey: tools/wskey.c libwsclient.a
@@ -178,7 +182,7 @@ wsmove: tools/wsmove.c libwsclient.a
 	$(CC) $(CFLAGS) -o $@ tools/wsmove.c libwsclient.a $(LDLIBS)
 wscursor: tools/wscursor.c libwsclient.a
 	$(CC) $(CFLAGS) -o $@ tools/wscursor.c libwsclient.a $(LDLIBS)
-tools_all: wsspace wsshot wsshow wsclick wskey wsdrag wswins wsfps wsmove wscursor
+tools_all: wsspace wsshot wsshow wscarender wsclick wskey wsdrag wswins wsfps wsmove wscursor
 
 # start wsd, draw the test window through the protocol, save window.ppm (window.png on macOS), stop wsd
 demo: wsd test_window
