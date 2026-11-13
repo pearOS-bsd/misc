@@ -113,21 +113,8 @@ static void do_layer(rd *r, int depth, uint64_t id)
 	uint64_t subs[MAXS]; int ns = 0, hassubs = 0;
 	{ size_t p0 = r->p; skip_arr(r, depth, subs, &ns); hassubs = r->p > p0 + 1; }
 	u64(r); skip_obj(r, depth + 1, NULL);
-	uint8_t ext = u8(r);
-	if (ext) {
-		for (int i = 0; i < 1 + 6 + 1 + 4; i++) skip_obj(r, depth + 1, NULL);
-		skip_arr(r, depth, NULL, NULL); skip_arr(r, depth, NULL, NULL);
-		for (int i = 0; i < 3; i++) skip_obj(r, depth + 1, NULL);
-		skip_arr(r, depth, NULL, NULL);
-		skip_obj(r, depth + 1, NULL); skip_obj(r, depth + 1, NULL);
-		skip_arr(r, depth, NULL, NULL);
-		raw(r, 16); raw(r, 16); u64(r); u64(r); raw(r, 0x14); raw(r, 8);
-		for (int i = 0; i < 4; i++) u32(r);
-		raw(r, 0x14); for (int i = 0; i < 5; i++) u32(r);
-		raw(r, 0x14); for (int i = 0; i < 5; i++) u32(r);
-		raw(r, 0x14); u32(r); u64(r); skip_obj(r, depth + 1, NULL); skip_obj(r, depth + 1, NULL); u8(r);
-	}
-	if (r->err || id == 0 || pod == NULL) return;
+	if (r->err) return;
+	if (id == 0 || pod == NULL) return;
 	layer_t *l = get(id);
 	if (!l) return;
 	double d[6]; memcpy(d, pod + 0x28, sizeof d);
@@ -149,8 +136,25 @@ static void do_layer(rd *r, int depth, uint64_t id)
 			}
 		}
 	}
+	{
+	uint8_t ext = u8(r);
+	if (ext) {
+		for (int i = 0; i < 1 + 6 + 1 + 4; i++) skip_obj(r, depth + 1, NULL);
+		skip_arr(r, depth, NULL, NULL); skip_arr(r, depth, NULL, NULL);
+		for (int i = 0; i < 3; i++) skip_obj(r, depth + 1, NULL);
+		skip_arr(r, depth, NULL, NULL);
+		skip_obj(r, depth + 1, NULL); skip_obj(r, depth + 1, NULL);
+		skip_arr(r, depth, NULL, NULL);
+		raw(r, 16); raw(r, 16); u64(r); u64(r); raw(r, 0x14); raw(r, 8);
+		for (int i = 0; i < 4; i++) u32(r);
+		raw(r, 0x14); for (int i = 0; i < 5; i++) u32(r);
+		raw(r, 0x14); for (int i = 0; i < 5; i++) u32(r);
+		raw(r, 0x14); u32(r); u64(r); skip_obj(r, depth + 1, NULL); skip_obj(r, depth + 1, NULL); u8(r);
+	}
+	}
 }
 
+static int skipped;		/* records that were not decoded to the end */
 static void message(const uint8_t *m, size_t n, int *nmsg)
 {
 	if (n < 0x1c) return;
@@ -170,7 +174,19 @@ static void message(const uint8_t *m, size_t n, int *nmsg)
 		uint8_t op = u8(&r);
 		if (op == 0) break;
 		else if (op == 1) { uint64_t id = u64(&r); u32(&r); layer_t *l = find(id); if (l) l->used = 0; }
-		else if (op == 2) { uint64_t id = u64(&r); u32(&r); uint8_t t = r.b[r.p < r.n ? r.p : 0]; if (t == 0x1e) { r.p++; do_layer(&r, 0, id); } else skip_obj(&r, 0, NULL); u32(&r); }
+		else if (op == 2) {
+			size_t start = r.p;
+			uint64_t id = u64(&r); u32(&r); uint8_t t = r.b[r.p < r.n ? r.p : 0];
+			if (t == 0x1e) { r.p++; do_layer(&r, 0, id); } else skip_obj(&r, 0, NULL);
+			u32(&r);
+			if (r.err) {		/* an object that is not decoded yet (types 3, 25, 63, 160...): go on at the next layer record (02 + id + generation + 0x1e) */
+				size_t q;
+				for (q = start + 1; q + 14 <= r.n; q++)
+					if (r.b[q] == 0x02 && r.b[q + 11] == 0 && r.b[q + 12] == 0 && r.b[q + 13] == 0x1e) break;
+				if (q + 14 > r.n) break;
+				r.err = 0; r.p = q; skipped++;
+			}
+		}
 		else if (op == 3 || op == 7 || op == 0x1a || op == 0x1c || op == 0x1d || op == 0x1e || op == 0xb || op == 0xc) u64(&r);
 		else if (op == 9) { u8(&r); u8(&r); }
 		else if (op == 8 || op == 10) skip_cf(&r, 0);
@@ -193,7 +209,7 @@ static int load_stream(const char *path)
 	memset(L, 0, sizeof L); nL = 0;
 	for (int i = 0; i < nIM; i++) free(IM[i].im.px);
 	nIM = 0;
-	int nmsg = 0;
+	int nmsg = 0; skipped = 0;
 	for (long p = 0; p + 4 <= sz;) {
 		uint32_t n; memcpy(&n, d + p, 4); p += 4;
 		if (p + n > (unsigned long)sz) break;
@@ -286,7 +302,7 @@ int main(int argc, char **argv)
 		if (stat(path, &st) == 0 && st.st_size != last) {
 			if (load_stream(path) == 0) {
 				paint(&win); ws_win_flush(c, &win);
-				fprintf(stderr, "wscarender: %ld bytes, %d layers, %d images\n", (long)st.st_size, nL, nIM);
+				fprintf(stderr, "wscarender: %ld bytes, %d layers, %d images, %d records resynchronised\n", (long)st.st_size, nL, nIM, skipped);
 				last = st.st_size;
 			}
 		}
