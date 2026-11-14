@@ -158,6 +158,14 @@ static void skip_obj_(rd *r, int depth, contents_t *ct)
 		u32(r); u64(r); skip_obj(r, depth + 1, NULL);
 		for (int i = 0; i < 4; i++) u32(r);
 		raw(r, 0x20); u32(r); raw(r, 0x20); u8(r); break; }
+	case 7: u32(r); break;		/* Object (QuartzCore decode_object: a bare Object: its flags) */
+	case 0x14: {		/* GradientLayer: Object flags, Gradient (vm_size_t n, i32 width = 5, i32 flags, n*5*4 bytes, locations n*4 if flags & 2, interpolations n*0x20-0x20 if flags & 4), 2 x 2 cgfloats, 2 x 2 cgfloats, atom, i32, a texture object if Object flags bit 11, colorspace */
+		uint32_t of = u32(r); uint64_t n = u64(r); u32(r); uint32_t fl = u32(r) & 0xff;
+		if (n) { raw(r, 20 * n); if (fl & 2) raw(r, 4 * n); if ((fl & 4) && n > 0) raw(r, 0x20 * n - 0x20); }
+		raw(r, 16); raw(r, 16); skip_atom(r); u32(r);
+		if ((of >> 8) & 8) skip_obj(r, depth + 1, NULL);
+		if (r->p < r->n && r->b[r->p] <= 4) { uint8_t cs = u8(r); switch (cs) { case 0: case 3: break; case 1: u8(r); break; case 2: case 4: skip_cf(r, 0); break; } }		/* the colorspace: absent in the streams seen (the next byte is the 0xfe of a following object) */
+		break; }
 	case 0x1d: skip_atom(r); skip_obj(r, depth + 1, NULL); break;		/* KeyValue: atom, any object (no Object flags) */
 	case 0x3a: u32(r); u32(r); for (int i = 0; i < 5; i++) u64(r); break;	/* Timing: Object flags, i32, 5 x i64 */
 	case 0x3f:		/* WindowLayer: Object flags, vm_size_t, i64, i8 enum */
