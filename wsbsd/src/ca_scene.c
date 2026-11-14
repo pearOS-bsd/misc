@@ -230,7 +230,13 @@ static void message(const uint8_t *m, size_t n, int *nmsg)
 		}
 		cur_ool_msg = (*nmsg)++;
 	}
-	rd r = { m + st, n - st, 0, 0 };
+	uint32_t mid; memcpy(&mid, m + 0x14, 4);
+	uint8_t *ool0 = NULL; size_t osz = 0;
+	if (mid == 0x9c43 && (bits & 0x80000000u) && n_ool >= 1 && cur_ool_msg >= 0) {	/* a large commit: its command stream is the first out-of-line descriptor, the images follow */
+		ool0 = ool_loader(ool_ctx, cur_ool_msg, ool_desc[0], &osz); ool_taken = 1;
+		if (ool0 == NULL) return;
+	}
+	rd r = ool0 ? (rd){ ool0, osz, 0, 0 } : (rd){ m + st, n - st, 0, 0 };
 	u32(&r); uint32_t msg_ctx = u32(&r); u64(&r);
 	while (!r.err && r.p < r.n) {
 		uint8_t op = u8(&r);
@@ -264,6 +270,7 @@ static void message(const uint8_t *m, size_t n, int *nmsg)
 		else if (op == 0x1f) u8(&r);
 		else break;
 	}
+	free(ool0);
 }
 
 static int g_nmsg;		/* complex messages fed so far: the number of the out-of-line data of the next one */
