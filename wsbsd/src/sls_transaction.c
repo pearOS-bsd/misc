@@ -10,6 +10,7 @@
 #include "ws_region.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 enum {
 	OP_ORDER_WINDOW = 1, OP_SET_ALPHA = 3, OP_SET_LEVEL = 6, OP_SET_OPAQUE_SHAPE = 7, OP_SET_RESOLUTION = 10, OP_SET_SHAPE = 11, OP_SET_SUBLEVEL = 12, OP_MOVE_WITH_GROUP = 22, OP_BIND_SURFACE = 51, OP_ORDER_SURFACE = 52, OP_SET_SURFACE_BOUNDS = 53, OP_SET_SURFACE_OPACITY = 54, OP_REMOVE_SURFACE = 95, OP_SET_CORNER_RADIUS = 105, OP_SET_TAGS = 118, OP_CONTENT_BLUR = 134,
@@ -42,6 +43,36 @@ static float get_float(rd_t *r)
 }
 static int get_byte(rd_t *r) { if (!r->n) { r->bad = 1; return 0; } r->n--; return *r->p++; }
 
+/* a CFString of the stream: a byte (0: none; 1: UTF-16, 2: 8 bit), a 32 bit length, the characters (2 bytes each for 1) */
+static void skip_cfstring(rd_t *r)
+{
+	uint8_t t = get_byte(r);
+	uint32_t n;
+
+	if (r->bad || t == 0) return;
+	if (t > 2 || r->n < 4) { r->bad = 1; return; }
+	memcpy(&n, r->p, 4); r->p += 4; r->n -= 4;
+	{ uint64_t bytes = (uint64_t)n << (t == 1); if (n == 0 || bytes > r->n) { r->bad = 1; return; } r->p += bytes; r->n -= bytes; }
+}
+
+/* The numbers of the operations are those of macOS 27.0 above (the table PKGTransactionOpcodeInfos of that SkyLight).  The SkyLight of macOS 26.7.2 (WSD_OPSET=26, read from its table) has the same numbers up to 54 and a few
+ * operations fewer in between after that: the ones that are decoded here are 93 (RemoveSurface), 102 (SetWindowCornerRadius), 113 (SetWindowTags) and 129 (SetWindowContentBlurRadius); any other number above 54 stays
+ * undecoded (shifted out of the way, so that it is not taken for another operation of the table of 27). */
+static int op_translate(int op)
+{
+	static int set = -1;
+
+	if (set < 0) { const char *e = getenv("WSD_OPSET"); set = e && atoi(e) == 26 ? 26 : 27; }
+	if (set != 26 || op <= 54) return op;
+	switch (op) {
+	case 93: return OP_REMOVE_SURFACE;
+	case 102: return OP_SET_CORNER_RADIUS;
+	case 113: return OP_SET_TAGS;
+	case 129: return OP_CONTENT_BLUR;
+	default: return op + 1000;
+	}
+}
+
 /* applies the operations; returns 0, or 1001 for a stream it cannot decode */
 static int run_stream(conn *c, const uint8_t *p, size_t n)
 {
@@ -49,8 +80,11 @@ static int run_stream(conn *c, const uint8_t *p, size_t n)
 	while (r.n) {
 		int op = get_byte(&r);
 		if (op == 0xff) return 0;
+		if (getenv("WSD_TRACE")) fprintf(stderr, "wsd: transaction op %#x (%zu bytes left, pid %d)\n", op, r.n, c->pid);
 		if (op < 1 || op > 0x8c) return 1001;                                    /* "invalid transaction opcode" */
+		op = op_translate(op);
 		switch (op) {
+		case 2:						/* OrderWindowGroup: the same arguments (the group is not kept) */
 		case OP_ORDER_WINDOW: {
 			uint32_t wid = (uint32_t)get_packed(&r); int mode = (int8_t)get_byte(&r); uint32_t rel = (uint32_t)get_packed(&r);
 			if (r.bad) return 1001;
@@ -92,6 +126,22 @@ static int run_stream(conn *c, const uint8_t *p, size_t n)
 			r.p += len; r.n -= len;
 			break;
 		}
+		case 1070: {					/* (macOS 26.7.2, number 70) SetWindowShadowProperties: wid, a count; each: CFString key, a kind byte (1: a float, 0: a flag byte) */
+			(void)get_packed(&r); uint64_t cnt = get_packed(&r);
+			for (uint64_t i = 0; i < cnt && !r.bad; i++) {
+				skip_cfstring(&r);
+				uint8_t k = get_byte(&r);
+				if (k == 1) (void)get_float(&r); else (void)get_byte(&r);
+			}
+			if (r.bad) return 1001;
+			break;
+		}
+		case 1066: {					/* (macOS 26.7.2, number 66) MoveWindowOnMatchingDisplayChangedSeed: wid, x, y (the new origin of the window), the display seed */
+			uint32_t wid = (uint32_t)get_packed(&r); double x = get_double(&r), y = get_double(&r); (void)get_packed(&r);
+			if (r.bad) return 1001;
+			if (holds_rights(c, wid)) ws_move_window(srv, wid, (int)x, (int)y);
+			break;
+		}
 		case OP_SET_TAGS: {
 			uint32_t wid = (uint32_t)get_packed(&r); uint64_t lo = get_packed(&r) & 0xffffffffu, hi = get_packed(&r); int clear = get_byte(&r) & 1;
 			if (r.bad) return 1001;
@@ -127,7 +177,7 @@ static int run_stream(conn *c, const uint8_t *p, size_t n)
 			(void)wid;                                                              /* content blur: accepted, drawn by the layer tree later */
 			break;
 		}
-		default: return 1001;                                                        /* a valid opcode this server does not decode yet */
+		default: if (getenv("WSD_TRACE")) fprintf(stderr, "wsd: transaction op %#x not decoded\n", op); return 1001;                                                        /* a valid opcode this server does not decode yet */
 		}
 	}
 	return 0;
