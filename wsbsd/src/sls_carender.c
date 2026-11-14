@@ -117,7 +117,7 @@ static void ca_show(ws_server *srv, int sw, int sh, int scene, int slot, uint32_
 		size_t st = b->stride;
 		int opaque = b->w > 0 && b->h > 0 && p[3] == 255 && p[(b->w - 1) * 4 + 3] == 255 && p[(b->h - 1) * st + 3] == 255 && p[(b->h - 1) * st + (b->w - 1) * 4 + 3] == 255 && p[(b->h / 2) * st + (b->w / 2) * 4 + 3] == 255;
 
-		ws_set_window_level(srv, ca_cwins[scene][slot], opaque ? -100 : 5);
+		ws_set_window_level(srv, ca_cwins[scene][slot], opaque ? -2147483623 /* kCGDesktopWindowLevel: the icons of the Finder (-2147483603) are above */ : 5);
 	}
 }
 
