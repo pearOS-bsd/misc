@@ -1247,9 +1247,9 @@ static int dispatch(conn *c, uint8_t *buf, size_t len, int *fds, int nfds)
 
 	if (set < 0) { const char *e = getenv("WSD_OPSET"); set = e && atoi(e) == 26 ? 26 : 27; }
 	if (set == 26 && len >= sizeof *h0 && h0->msgh_id >= 30521 && h0->msgh_id < 30700) {
-		int rc;
+		int rc, delta = h0->msgh_id < 30635 ? 1 : h0->msgh_id == 30636 ? 8 : 0;		/* the shift of one ends at 30634 (the stubs of the SkyLight of 26: 30634 is InvalidateLiveUserAdjustmentForPreset = 30635 in 27; 30636 is MenuBarPrivacyIndicatorInset = 30644 in 27); from 30637 on the numbers are not read yet and stay */
 
-		h0->msgh_id += 1; wsd_reply_id_delta = -1;
+		h0->msgh_id += delta; wsd_reply_id_delta = -delta;
 		rc = dispatch2(c, buf, len, fds, nfds);
 		wsd_reply_id_delta = 0;
 		if (h0->msgh_id == 30578 && getenv("WSD_TEST_DG") && atoi(getenv("WSD_TEST_DG")) == 2) { for (uint32_t q = 0; q < c->notify_n; q++) { uint32_t rec[3] = { c->notify[q], 0, 0 }; wsd_datagram_push(c, 1, rec, sizeof rec); } fprintf(stderr, "wsd: pushed %u notifications of the interests\n", c->notify_n); }
