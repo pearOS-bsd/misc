@@ -120,10 +120,59 @@ static int run_stream(conn *c, const uint8_t *p, size_t n)
 			if (r.bad || len > r.n) return 1001;
 			if (holds_rights(c, wid) && len) {
 				ws_rect *rc = NULL; int nr = 0; ws_rect bb;
-				if (ws_region_parse(r.p, (uint32_t)len, &rc, &nr, &bb) == 0 && bb.w > 0 && bb.h > 0) ws_set_window_frame(srv, wid, bb.x, bb.y, bb.w, bb.h);
+				if (ws_region_parse(r.p, (uint32_t)len, &rc, &nr, &bb) == 0 && bb.w > 0 && bb.h > 0) {
+					ws_rect cur;
+					/* the shape is in the coordinates of the window: it gives the size, the origin stays where the window was moved (op 66 comes before the shape) */
+					if (getenv("WSD_OPSET") && atoi(getenv("WSD_OPSET")) == 26 && ws_window_frame(srv, wid, &cur) == 0) ws_set_window_frame(srv, wid, cur.x, cur.y, bb.w, bb.h);
+					else ws_set_window_frame(srv, wid, bb.x, bb.y, bb.w, bb.h);
+				}
 				free(rc);
 			}
 			r.p += len; r.n -= len;
+			break;
+		}
+		case 1067: case 1073: case 1074: case 1075: case 1076: case 1077: case 1098: {	/* (macOS 26.7.2) SetWindowEventShape (67), Drag / Activation / Button / SpecialCommand region (73..76), CursorRestrictionShape (77), ResizeEventShape (98): wid, region length (0: none), region bytes: accepted, not used yet */
+			(void)get_packed(&r); uint64_t len = get_packed(&r);
+			if (r.bad || len > r.n) return 1001;
+			r.p += len; r.n -= len;
+			break;
+		}
+		case 1103: case 1105: {				/* (macOS 26.7.2) ClearWindowCornerRadius, ClearWindowSystemCornerRadius: wid (not used yet) */
+			(void)get_packed(&r);
+			if (r.bad) return 1001;
+			break;
+		}
+		case 1104: {					/* SetWindowSystemCornerRadius: wid, radius */
+			(void)get_packed(&r); (void)get_double(&r);
+			if (r.bad) return 1001;
+			break;
+		}
+		case 1118: {					/* (macOS 26.7.2) SetWindowBoundsPath: wid, a path id (0: none) */
+			(void)get_packed(&r); (void)get_packed(&r);
+			if (r.bad) return 1001;
+			break;
+		}
+		case 1078: case 1079: case 1115: case 1117: {	/* (macOS 26.7.2) HasKeyAppearance, HasMainAppearance, ShouldIgnoreHDR, IsActiveOffscreen: wid, a byte */
+			(void)get_packed(&r); (void)get_byte(&r);
+			if (r.bad) return 1001;
+			break;
+		}
+		case 1107: {					/* SetWindowOverlayContext: wid, context */
+			(void)get_packed(&r); (void)get_packed(&r);
+			if (r.bad) return 1001;
+			break;
+		}
+		case 1072: {					/* SetWindowCornerMask: wid, data length, width, height, a number, 4 doubles, the data */
+			(void)get_packed(&r); uint64_t len = get_packed(&r); (void)get_packed(&r); (void)get_packed(&r); (void)get_packed(&r);
+			(void)get_double(&r); (void)get_double(&r); (void)get_double(&r); (void)get_double(&r);
+			if (r.bad || len > r.n) return 1001;
+			r.p += len; r.n -= len;
+			break;
+		}
+		case 1091: {					/* (macOS 26.7.2) OrderWindowGroupFrontConditionally: 4 numbers, the first is the window: ordered to the front */
+			uint32_t wid = (uint32_t)get_packed(&r); (void)get_packed(&r); (void)get_packed(&r); (void)get_packed(&r);
+			if (r.bad) return 1001;
+			if (holds_rights(c, wid)) ws_order_window(srv, wid, WS_ABOVE, 0);
 			break;
 		}
 		case 1070: {					/* (macOS 26.7.2, number 70) SetWindowShadowProperties: wid, a count; each: CFString key, a kind byte (1: a float, 0: a flag byte) */
