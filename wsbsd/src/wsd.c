@@ -1086,7 +1086,43 @@ static int do_post_tap_data(conn *c, const uint8_t *buf, size_t len, int ool)
 	return reply_simple(c->fd, h, 0);
 }
 
-static int do_new_connection(conn *c, const uint8_t *buf, size_t len)
+
+/* The datagrams of a connection: the SkyLight of the Mac does not take the events from messages: it is woken (a message on its notification port) and asks for the stream with GetPortStreamOutofline (30117), whose
+ * reply holds the records [kind u32][length u32][payload padded to 4]; kind 0 and 1 select a handler of the client. */
+void wsd_datagram_push(conn *c, uint32_t kind, const void *payload, uint32_t n)
+{
+	uint32_t pad = (n + 3) & ~3u;
+
+	if (!c) return;
+	if (c->dgn + 8 + pad > c->dgcap) { size_t nc = (c->dgcap ? c->dgcap * 2 : 4096); while (nc < c->dgn + 8 + pad) nc *= 2; uint8_t *nb = realloc(c->dgq, nc); if (!nb) return; c->dgq = nb; c->dgcap = nc; }
+	memcpy(c->dgq + c->dgn, &kind, 4); memcpy(c->dgq + c->dgn + 4, &n, 4);
+	memset(c->dgq + c->dgn + 8, 0, pad); if (n) memcpy(c->dgq + c->dgn + 8, payload, n);
+	c->dgn += 8 + pad;
+	if (c->efd >= 0 && !c->dg_wake) {
+		mach_msg_header_t w; memset(&w, 0, sizeof w);
+		w.msgh_bits = MACH_MSG_TYPE_MOVE_SEND_ONCE; w.msgh_size = sizeof w; w.msgh_id = 0x4e5;
+		if (ws_ipc_send(c->efd, &(struct iovec){ &w, sizeof w }, 1, NULL, 0) >= 0) c->dg_wake = 1;
+	}
+}
+
+static int do_get_stream(conn *c, const uint8_t *buf, size_t len)
+{
+	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
+	(void)len;
+	uint8_t m[0x38]; memset(m, 0, sizeof m);
+	fill_reply_header((mach_msg_header_t *)m, h, sizeof m, 1);
+	memcpy(m, &(uint32_t){ 0 }, 0);
+	{ uint32_t one = 1; memcpy(m + 0x18, &one, 4); }
+	m[0x24] = 1; m[0x25] = 1; m[0x27] = 1;			/* OOL descriptor: no deallocate, a copy, type 1 */
+	{ uint32_t n = (uint32_t)c->dgn; memcpy(m + 0x28, &n, 4); memcpy(m + 0x34, &n, 4); }
+	memcpy(m + 0x2c, &WS_NDR, 8);
+	struct iovec v[2] = { { m, sizeof m }, { c->dgq, c->dgn } };
+	int rc = ws_ipc_send(c->fd, v, c->dgn ? 2 : 1, NULL, 0);
+	c->dgn = 0; c->dg_wake = 0;
+	return rc;
+}
+
+static int do_new_connection(conn *c, const uint8_t *buf, size_t len, int *fds, int nfds)
 {
 	const mach_msg_header_t *h = (const mach_msg_header_t *)buf;
 	if (!(h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len < sizeof(sls_new_connection_head) || len != h->msgh_size)
@@ -1100,9 +1136,14 @@ static int do_new_connection(conn *c, const uint8_t *buf, size_t len)
 	uint32_t n = hd.name_len, pad = (n + 3) & ~3u;
 	if (n > 0x400 || h->msgh_size - 0x54 < n || h->msgh_size != pad + 0x54) return reply_simple(c->fd, h, MIG_BAD_ARGUMENTS);
 	if (c->handshaken) return reply_simple(c->fd, h, CGS_ERROR_FAILURE);
-	int sv[2];
-	if (ws_ipc_socketpair(sv)) return reply_simple(c->fd, h, CGS_ERROR_FAILURE);
-	fcntl(sv[0], F_SETFL, fcntl(sv[0], F_GETFL) | O_NONBLOCK);
+	int sv[2] = { -1, -1 };
+	if (nfds >= 1) {		/* the front of the Mach programs (wsbridge) brings the event channel itself: the end that wsd writes to; the client wakes on its notification port when something is written */
+		sv[0] = fds[0]; for (int i = 1; i < nfds; i++) close(fds[i]);
+		fcntl(sv[0], F_SETFL, fcntl(sv[0], F_GETFL) | O_NONBLOCK);
+	} else {
+		if (ws_ipc_socketpair(sv)) return reply_simple(c->fd, h, CGS_ERROR_FAILURE);
+		fcntl(sv[0], F_SETFL, fcntl(sv[0], F_GETFL) | O_NONBLOCK);
+	}
 	memset(c->app, 0, sizeof c->app);
 	memcpy(c->app, buf + sizeof hd, n < sizeof c->app - 1 ? n : sizeof c->app - 1);
 	c->efd = sv[0]; c->handshaken = 1; c->pid = peer_pid(c->fd);
@@ -1113,8 +1154,8 @@ static int do_new_connection(conn *c, const uint8_t *buf, size_t len)
 	r.port2 = (mach_msg_port_descriptor_t){ .name = 1, .disposition = MACH_MSG_TYPE_MOVE_SEND, .type = MACH_MSG_PORT_DESCRIPTOR }; /* event channel */
 	r.ndr = WS_NDR; r.connection_id = c->id;
 	struct iovec v = { &r, sizeof r };
-	int rc = ws_ipc_send(c->fd, &v, 1, &sv[1], 1);
-	close(sv[1]);
+	int rc = ws_ipc_send(c->fd, &v, 1, sv[1] >= 0 ? &sv[1] : NULL, sv[1] >= 0 ? 1 : 0);
+	if (sv[1] >= 0) close(sv[1]);
 	return rc;
 }
 
@@ -1211,6 +1252,8 @@ static int dispatch(conn *c, uint8_t *buf, size_t len, int *fds, int nfds)
 		h0->msgh_id += 1; wsd_reply_id_delta = -1;
 		rc = dispatch2(c, buf, len, fds, nfds);
 		wsd_reply_id_delta = 0;
+		if (h0->msgh_id == 30578 && getenv("WSD_TEST_DG") && atoi(getenv("WSD_TEST_DG")) == 2) { for (uint32_t q = 0; q < c->notify_n; q++) { uint32_t rec[3] = { c->notify[q], 0, 0 }; wsd_datagram_push(c, 1, rec, sizeof rec); } fprintf(stderr, "wsd: pushed %u notifications of the interests\n", c->notify_n); }
+		else if (h0->msgh_id == 30578 && getenv("WSD_TEST_DG")) { uint8_t z[16]; memset(z, 0, sizeof z); wsd_datagram_push(c, atoi(getenv("WSD_TEST_DG")) & 1, z, sizeof z); fprintf(stderr, "wsd: test datagram pushed\n"); { uint8_t *b2 = (uint8_t *)buf; fprintf(stderr, "wsd: 30578 request:"); for (size_t q = 0x18; q < len && q < 0x48; q++) fprintf(stderr, " %02x", b2[q]); fprintf(stderr, "\n"); } }
 		return rc;
 	}
 	return dispatch2(c, buf, len, fds, nfds);
@@ -1220,6 +1263,7 @@ static int dispatch2(conn *c, uint8_t *buf, size_t len, int *fds, int nfds)
 	if (len < sizeof(mach_msg_header_t)) { for (int i = 0; i < nfds; i++) close(fds[i]); return -1; }
 	mach_msg_header_t *h = (mach_msg_header_t *)buf;
 	if (h->msgh_id == WSX_BUFFER_IMPORT && h->msgh_size <= len) { h->msgh_local_port = c->id; return do_buffer_import(c, buf, len, fds, nfds); }
+	if (h->msgh_id == SLS_MSG_NewConnectionPort) { h->msgh_local_port = c->id; return do_new_connection(c, buf, len, fds, nfds); }
 	for (int i = 0; i < nfds; i++) close(fds[i]);                       /* every other request takes no descriptors */
 	if (h->msgh_size < sizeof *h || h->msgh_size > len) return reply_mig_error(c->fd, h, MIG_BAD_ARGUMENTS);
 	h->msgh_local_port = c->id;                                         /* the connection the request arrived on */
@@ -1227,7 +1271,7 @@ static int dispatch2(conn *c, uint8_t *buf, size_t len, int *fds, int nfds)
 	if (trace) fprintf(stderr, "wsd: request id %u (conn %u, pid %d, %u bytes)\n", h->msgh_id, c->id, c->pid, h->msgh_size);
 	if (h->msgh_id >= WSX_FLUSH && h->msgh_id <= WSX_SET_NIGHT_SHIFT) { dirty = 1; return do_private(c, buf, len); }
 	if (h->msgh_id == SLS_MSG_CreateWindow) { dirty = 1; return do_create_window(c, buf, len); }
-	if (h->msgh_id == SLS_MSG_NewConnectionPort) return do_new_connection(c, buf, len);
+	if (h->msgh_id == SLS_MSG_GetPortStreamOutofline) return do_get_stream(c, buf, len);
 	if (h->msgh_id == SLS_MSG_FlushSurface) { dirty = 1; return do_flush_surface(c, buf, len); }
 	if (h->msgh_id == WSX_BUFFER_RELEASE) return do_buffer_release(c, buf, len);
 	if (h->msgh_id == SLS_MSG_PostEventRecord) { dirty = 1; return do_post_event(c, buf, len); }
