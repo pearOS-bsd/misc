@@ -26,9 +26,12 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)sendAction:(SEL)action to:(nullable id)target from:(nullable id)sender;
 - (nullable id)targetForAction:(SEL)action to:(nullable id)target from:(nullable id)sender;
 
+- (void)run;
 @end
 
 /* The process-wide application instance (set by +sharedApplication). */
 extern __weak NSApplication *NSApp;
+
+void NSRectFill(CGRect rect);
 
 NS_ASSUME_NONNULL_END
