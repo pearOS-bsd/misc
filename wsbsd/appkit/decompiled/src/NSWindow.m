@@ -59,6 +59,7 @@ enum : uint64_t { NSWindowWFlagVisible = 1u << 2 };  /* _wFlags bit 2 (isVisible
 - (void)setContentView:(NSView *)contentView
 {
     _contentView = contentView;
+    if ([contentView respondsToSelector:@selector(_setWindow:)]) [contentView performSelector:@selector(_setWindow:) withObject:self];
     /* TODO(stage2): swap under the border view and wire the subtree's window
      * link (NSView _setWindow:) so descendants report this window. */
 }

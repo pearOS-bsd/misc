@@ -4,10 +4,13 @@
 #import "NSView.h"
 #import "NSColor.h"
 #import "NSFont.h"
+#import "NSEvent.h"
 
-@interface V : NSView @end
+@interface V : NSView { BOOL on; } @end
 @implementation V
-- (void)drawRect:(CGRect)r { [[NSColor yellowColor] setFill]; NSRectFill([self bounds]); [[NSColor redColor] setFill]; NSRectFill(CGRectMake(20, 20, 120, 60));
+- (void)mouseDown:(NSEvent *)e { on = !on; fprintf(stderr, "open-hello: mouseDown at %g,%g\n", [e locationInWindow].x, [e locationInWindow].y); [self setNeedsDisplay:YES]; }
+- (void)keyDown:(NSEvent *)e { fprintf(stderr, "open-hello: keyDown %d\n", (int)[e keyCode]); }
+- (void)drawRect:(CGRect)r { [(on ? [NSColor greenColor] : [NSColor yellowColor]) setFill]; NSRectFill([self bounds]); [[NSColor redColor] setFill]; NSRectFill(CGRectMake(20, 20, 120, 60));
   [@"open: AppKit on wsd" drawAtPoint:CGPointMake(20, 200) withAttributes:@{ NSFontAttributeName: [NSFont systemFontOfSize:28], NSForegroundColorAttributeName: [NSColor blackColor] }]; }
 @end
 int main(void) { @autoreleasepool {

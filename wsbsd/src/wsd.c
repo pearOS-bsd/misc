@@ -271,12 +271,13 @@ static void push_event(void *ctx, uint32_t owner, const ws_event *e)
 	(void)ctx;
 	tap_deliver(e);
 	conn *c = conn_by_id(owner);
+	if (getenv("WSD_TRACE")) fprintf(stderr, "wsd: event %d for window %u -> owner %u (%s)\n", e->type, (unsigned)e->wid, owner, c ? (c->efd >= 0 ? "pushed" : "no event channel") : "no connection");
 	if (!c || c->efd < 0) return;
 	wsx_event_msg m; memset(&m, 0, sizeof m);
 	m.h.msgh_bits = MACH_MSG_TYPE_MOVE_SEND_ONCE; m.h.msgh_size = sizeof m; m.h.msgh_id = WSX_EVENT_PUSH;
 	m.ndr = WS_NDR; m.type = e->type; m.wid = e->wid; m.x = e->x; m.y = e->y; m.buttons = e->buttons; m.key = e->key; m.flags = e->flags; m.dx = e->dx; m.dy = e->dy; m.continuous = e->continuous;
 	struct iovec v = { &m, sizeof m };
-	ws_ipc_send(c->efd, &v, 1, NULL, 0);                     /* non-blocking: a full channel drops the event */
+	{ int rc = ws_ipc_send(c->efd, &v, 1, NULL, 0); if (getenv("WSD_TRACE")) fprintf(stderr, "wsd:   send on the event channel: %d (errno %d)\n", rc, rc ? errno : 0); }                     /* non-blocking: a full channel drops the event */
 }
 
 static int tap_key_filter(void *ctx, int key, int down) { (void)ctx; return sls_tap_filter_key(key, down); }

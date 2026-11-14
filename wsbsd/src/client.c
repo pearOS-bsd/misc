@@ -1,5 +1,6 @@
 /* Client library: builds the SkyLight-layout messages and exchanges them over the wsbsd transport. */
 #include "ws_client.h"
+#include <fcntl.h>
 #include "ws_ipc.h"
 #include "ws_region.h"
 #include "ws_evrec.h"
@@ -82,10 +83,19 @@ int ws_conn_event_fd(ws_conn *c) { return c->efd; }
 /* reads the event channel until something of the wanted kind has been queued (events and notifications share the channel) */
 static void drain_channel(ws_conn *c, int timeout_ms, int want_event)
 {
+	int orig_timeout = timeout_ms; (void)orig_timeout;
 	for (;;) {
 		if (want_event ? c->evh != c->evt : c->nh != c->nt) return;
+#ifdef WS_DARWIN_ON_BSD
+		{	/* a Mach-O client on the FreeBSD kernel (darwinator): the channel is read without poll (poll did not report the packets after the first): a non blocking read, and a short sleep when it is empty */
+			static int nb;
+			if (!nb) { fcntl(c->efd, F_SETFL, fcntl(c->efd, F_GETFL) | O_NONBLOCK); nb = 1; }
+		}
+		timeout_ms = 0;
+#else
 		struct pollfd p = { c->efd, POLLIN, 0 };
 		if (poll(&p, 1, timeout_ms) <= 0 || !(p.revents & POLLIN)) return;
+#endif
 		timeout_ms = 0;
 		union { wsx_event_msg e; wsx_notify_msg n; } m; int fds[WS_IPC_MAX_FDS], nfds = 0;
 		ssize_t got = ws_ipc_recv(c->efd, &m, sizeof m, fds, &nfds);
@@ -95,7 +105,12 @@ static void drain_channel(ws_conn *c, int timeout_ms, int want_event)
 		} else if (got == (ssize_t)sizeof m.n && m.n.h.msgh_id == WSX_NOTIFY_PUSH) {
 			if (c->nh - c->nt == 64) c->nt++;
 			ws_notif *q = &c->nq[c->nh++ % 64]; q->type = m.n.type; q->len = m.n.len; memcpy(q->data, m.n.data, sizeof q->data);
-		} else if (got <= 0) return;
+		} else if (got <= 0) {
+#ifdef WS_DARWIN_ON_BSD
+			if (orig_timeout > 0) usleep((useconds_t)(orig_timeout < 5 ? orig_timeout : 5) * 1000);
+#endif
+			return;
+		}
 	}
 }
 
