@@ -284,6 +284,7 @@ static int tap_key_filter(void *ctx, int key, int down) { (void)ctx; return sls_
 static float bits2f(uint32_t v) { float f; memcpy(&f, &v, sizeof f); return f; }
 
 /* ---- replies ---- */
+int wsd_reply_id_delta;		/* the request id was changed to the number of the table of macOS 27 (WSD_OPSET=26): the reply id keeps the number that the client sent */
 void fill_reply_header(mach_msg_header_t *r, const mach_msg_header_t *req, uint32_t size, int complex)
 {
 	/* as a Mach receiver sees a MIG reply (recorded from the real server): remote disposition 0, local disposition 0x12 (the consumed send-once right) */
@@ -291,7 +292,7 @@ void fill_reply_header(mach_msg_header_t *r, const mach_msg_header_t *req, uint3
 	r->msgh_size = size;
 	r->msgh_remote_port = 0; r->msgh_local_port = 0; r->msgh_voucher_port = 0;
 	(void)req;
-	r->msgh_id = req->msgh_id + 100;
+	r->msgh_id = req->msgh_id + 100 + wsd_reply_id_delta;
 }
 
 #undef ws_ipc_send
@@ -1195,7 +1196,26 @@ static int do_private(conn *c, const uint8_t *buf, size_t len)
 	return ws_ipc_send(c->fd, &v, 1, NULL, 0);
 }
 
+static int dispatch2(conn *c, uint8_t *buf, size_t len, int *fds, int nfds);
 static int dispatch(conn *c, uint8_t *buf, size_t len, int *fds, int nfds)
+{
+	/* The server routines of the SkyLight of macOS 26.7.2 are numbered one less than the ones of 27 (in the range after VirtualDisplayDestroy: 30577 is SetFrontProcessWithInfo there, 30578 here): with
+	 * WSD_OPSET=26 the request is taken for the routine of 27 and the reply keeps the number of the client. */
+	static int set = -1;
+	mach_msg_header_t *h0 = (mach_msg_header_t *)buf;
+
+	if (set < 0) { const char *e = getenv("WSD_OPSET"); set = e && atoi(e) == 26 ? 26 : 27; }
+	if (set == 26 && len >= sizeof *h0 && h0->msgh_id >= 30577 && h0->msgh_id < 30600) {
+		int rc;
+
+		h0->msgh_id += 1; wsd_reply_id_delta = -1;
+		rc = dispatch2(c, buf, len, fds, nfds);
+		wsd_reply_id_delta = 0;
+		return rc;
+	}
+	return dispatch2(c, buf, len, fds, nfds);
+}
+static int dispatch2(conn *c, uint8_t *buf, size_t len, int *fds, int nfds)
 {
 	if (len < sizeof(mach_msg_header_t)) { for (int i = 0; i < nfds; i++) close(fds[i]); return -1; }
 	mach_msg_header_t *h = (mach_msg_header_t *)buf;
