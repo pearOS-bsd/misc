@@ -684,6 +684,16 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 1);
 		wr32(r, 0x18, 1); wr32(r, 0x24, 0x110000u); memcpy(r + 0x28, &WS_NDR, sizeof WS_NDR);
 		wr32(r, 0x30, ws_window_owner(srv, wid)); wr32(r, 0x34, holds_rights(c, wid) ? 0x30007u : 0); wr32(r, 0x38, 1);
+		if (ws_window_owner(srv, wid) != c->id && holds_rights(c, wid)) {          /* a window of another connection that this one may change (the WindowManager: SLSSetWindowShape of macOS 26 asks for the mapping first and fails with 1000 without a memory): a page that stands for the state of the window */
+			int pfd = ws_shm_create_anon();
+			if (pfd >= 0 && ftruncate(pfd, 4096) == 0) {
+				wr32(r, 0x1c, 1);
+				int rc = ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, &pfd, 1);
+				close(pfd);
+				return rc;
+			}
+			if (pfd >= 0) close(pfd);
+		}
 		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
 	}
 	case SLS_MSG_CopyAssociatedWindows: {                                          /* wid@0x20, size 0x24; reply complex 0x38: OOL array of the other windows of its ordering group, count@0x34; 1010 for an unknown window */
