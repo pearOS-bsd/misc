@@ -3,10 +3,12 @@
 #import "NSWindow.h"
 #import "NSView.h"
 #import "NSColor.h"
+#import "NSFont.h"
 
 @interface V : NSView @end
 @implementation V
-- (void)drawRect:(CGRect)r { [[NSColor yellowColor] setFill]; NSRectFill([self bounds]); [[NSColor redColor] setFill]; NSRectFill(CGRectMake(20, 20, 120, 60)); }
+- (void)drawRect:(CGRect)r { [[NSColor yellowColor] setFill]; NSRectFill([self bounds]); [[NSColor redColor] setFill]; NSRectFill(CGRectMake(20, 20, 120, 60));
+  [@"open: AppKit on wsd" drawAtPoint:CGPointMake(20, 200) withAttributes:@{ NSFontAttributeName: [NSFont systemFontOfSize:28], NSForegroundColorAttributeName: [NSColor blackColor] }]; }
 @end
 int main(void) { @autoreleasepool {
   NSApplication *a = [NSApplication sharedApplication];

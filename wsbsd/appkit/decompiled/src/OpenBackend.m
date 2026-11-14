@@ -127,3 +127,76 @@ void NSRectFill(CGRect r)
     CGContextRef cg = [[NSGraphicsContext currentContext] CGContext];
     if (cg) CGContextFillRect(cg, r);
 }
+
+/* ---- text: attribute names and string drawing through CoreText ---- */
+#import "NSFont.h"
+#import <CoreText/CoreText.h>
+NSString *const NSFontAttributeName = @"NSFont";
+NSString *const NSForegroundColorAttributeName = @"NSColor";
+NSString *const NSParagraphStyleAttributeName = @"NSParagraphStyle";
+NSString *const NSBackgroundColorAttributeName = @"NSBackgroundColor";
+NSString *const NSUnderlineStyleAttributeName = @"NSUnderline";
+NSString *const NSKernAttributeName = @"NSKern";
+NSString *const NSShadowAttributeName = @"NSShadow";
+
+static CTLineRef OpenLine(NSString *s, NSDictionary *attrs, CGFloat *ascent, CGFloat *descent, CGFloat *width)
+{
+    NSFont *f = attrs[NSFontAttributeName] ?: [NSFont systemFontOfSize:13];
+    NSColor *c = attrs[NSForegroundColorAttributeName] ?: [NSColor blackColor];
+    CGFloat r = 0, g = 0, b = 0, a = [c alphaComponent];
+    if ([c numberOfComponents] == 2) r = g = b = [c whiteComponent]; else { r = [c redComponent]; g = [c greenComponent]; b = [c blueComponent]; }
+    CGColorRef cg = CGColorCreateSRGB(r, g, b, a);
+    NSDictionary *ca = @{ (id)kCTFontAttributeName: (__bridge id)[f CTFont], (id)kCTForegroundColorAttributeName: (__bridge id)cg };
+    CGColorRelease(cg);
+    CFAttributedStringRef as = CFAttributedStringCreate(kCFAllocatorDefault, (__bridge CFStringRef)(s ?: @""), (__bridge CFDictionaryRef)ca);
+    CTLineRef line = CTLineCreateWithAttributedString(as);
+    CFRelease(as);
+    CGFloat lead = 0;
+    double w = CTLineGetTypographicBounds(line, ascent, descent, &lead);
+    if (width) *width = (CGFloat)w;
+    return line;
+}
+
+@implementation NSString (OpenDrawing)
+- (void)drawAtPoint:(CGPoint)point withAttributes:(NSDictionary *)attrs
+{
+    NSGraphicsContext *gc = [NSGraphicsContext currentContext];
+    CGContextRef cg = [gc CGContext];
+    if (!cg) return;
+    CGFloat asc = 0, desc = 0, w = 0;
+    CTLineRef line = OpenLine(self, attrs, &asc, &desc, &w);
+    CGContextSaveGState(cg);
+    if ([gc isFlipped]) { CGContextSetTextMatrix(cg, CGAffineTransformMake(1, 0, 0, -1, 0, 0)); CGContextSetTextPosition(cg, point.x, point.y + asc); }
+    else { CGContextSetTextMatrix(cg, CGAffineTransformIdentity); CGContextSetTextPosition(cg, point.x, point.y + desc); }
+    CTLineDraw(line, cg);
+    CGContextRestoreGState(cg);
+    CFRelease(line);
+}
+- (void)drawInRect:(CGRect)rect withAttributes:(NSDictionary *)attrs
+{
+    NSGraphicsContext *gc = [NSGraphicsContext currentContext];
+    CGFloat asc = 0, desc = 0, w = 0;
+    CTLineRef line = OpenLine(self, attrs, &asc, &desc, &w); CFRelease(line);
+    CGPoint p = rect.origin;
+    if (![gc isFlipped]) p.y = rect.origin.y + rect.size.height - (asc + desc);	/* the top of the rect */
+    [self drawAtPoint:p withAttributes:attrs];
+}
+- (CGSize)sizeWithAttributes:(NSDictionary *)attrs
+{
+    CGFloat asc = 0, desc = 0, w = 0;
+    CTLineRef line = OpenLine(self, attrs, &asc, &desc, &w); CFRelease(line);
+    return CGSizeMake(w, asc + desc);
+}
+@end
+
+/* CoreText asks AppKit for the default writing direction of a language (GetDefaultWritingDirection) */
+#import "NSParagraphStyle.h"
+@interface NSParagraphStyle (OpenCoreText) + (NSInteger)defaultWritingDirectionForLanguage:(NSString *)language; @end
+@implementation NSParagraphStyle (OpenCoreText)
++ (NSInteger)defaultWritingDirectionForLanguage:(NSString *)language
+{
+    NSString *l = [language lowercaseString];
+    BOOL rtl = [l hasPrefix:@"ar"] || [l hasPrefix:@"he"] || [l hasPrefix:@"fa"] || [l hasPrefix:@"ur"];
+    return rtl ? 1 : 0;					/* NSWritingDirectionRightToLeft / LeftToRight */
+}
+@end
