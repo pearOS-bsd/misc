@@ -90,6 +90,7 @@ void OpenWindowOrderFront(NSWindow *w)
     OpenWindowDisplay(w);
     ws_win_order(sConn, &o->win, WS_ABOVE, 0);
     o->shown = YES;
+    ws_win_set_key(sConn, &o->win);
 }
 
 void OpenWindowOrderOut(NSWindow *w)
@@ -99,6 +100,16 @@ void OpenWindowOrderOut(NSWindow *w)
 }
 
 static NSView *sMouseView;				/* the view that took the mouse down: it gets the drag and the up */
+/* US layout: macOS virtual key code -> characters (plain, shifted) */
+static NSString *OpenKeyChars(unsigned short kc, BOOL shift)
+{
+    static const char *pl = "asdfhgzxcv\0bqweryt123465=97-80]ou[ip\0lj'k;\\,/nm.\0\0`";
+    static const char *sh = "ASDFHGZXCV\0BQWERYT!@#$^%+(&_*)}OU{IP\0LJ\"K:|<?NM>\0\0~";
+    if (kc == 36) return @"\r"; if (kc == 48) return @"\t"; if (kc == 49) return @" "; if (kc == 51) return @"\x7f"; if (kc == 53) return @"\x1b";
+    if (kc < 51) { char ch = (shift ? sh : pl)[kc]; if (ch) return [NSString stringWithFormat:@"%c", ch]; }
+    return @"";
+}
+
 static void OpenDispatch(const ws_event *e)
 {
     NSWindow *w = [sWindows objectForKey:@(e->wid)];
@@ -122,8 +133,9 @@ static void OpenDispatch(const ws_event *e)
         else [v mouseMoved:ev];
         break; }
     case WS_EV_KEY_DOWN: case WS_EV_KEY_UP: {
-        NSEvent *ev = [NSEvent keyEventWithType:e->type == WS_EV_KEY_DOWN ? NSEventTypeKeyDown : NSEventTypeKeyUp location:CGPointZero modifierFlags:fl timestamp:t windowNumber:e->wid context:nil characters:@"" charactersIgnoringModifiers:@"" isARepeat:NO keyCode:(unsigned short)e->key];
+        NSEvent *ev = [NSEvent keyEventWithType:e->type == WS_EV_KEY_DOWN ? NSEventTypeKeyDown : NSEventTypeKeyUp location:CGPointZero modifierFlags:fl timestamp:t windowNumber:e->wid context:nil characters:OpenKeyChars((unsigned short)e->key, (fl & NSEventModifierFlagShift) != 0) charactersIgnoringModifiers:OpenKeyChars((unsigned short)e->key, NO) isARepeat:NO keyCode:(unsigned short)e->key];
         NSResponder *r = [w firstResponder];
+        if (!r || r == (NSResponder *)w) r = cv;			/* no first responder set: the content view takes the keys */
         if (e->type == WS_EV_KEY_DOWN) [r keyDown:ev]; else [r keyUp:ev];
         break; }
     default: break;
