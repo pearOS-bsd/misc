@@ -1099,6 +1099,7 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		uint64_t *spaces = malloc(count * 8 + 8);
 		if (!spaces) return reply_simple(c->fd, h, 1000);
 		for (uint32_t i = 0; i < count; i++) spaces[i] = sls_space_of_window(rd32(buf, 0x3c + 4 * i));   /* the space each window was put in (the default one otherwise) */
+		if (getenv("WSD_TRACE") && count) { static int nt; if (nt++ < 12) fprintf(stderr, "wsd: CopySpacesForWindows n=%u w0=%u -> space %llu (conn %d)\n", count, rd32(buf, 0x3c), (unsigned long long)spaces[0], c->id); }
 		uint8_t m[0x38]; memset(m, 0, sizeof m);
 		fill_reply_header((mach_msg_header_t *)m, h, sizeof m, 1);
 		wr32(m, 0x18, 1); m[0x24] = 1; m[0x25] = 1; m[0x27] = 1; wr32(m, 0x28, count * 8); memcpy(m + 0x2c, &WS_NDR, 8); wr32(m, 0x34, count);
