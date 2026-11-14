@@ -10,7 +10,18 @@
 #include <sys/stat.h>
 #include <sys/un.h>
 
-#ifdef __APPLE__
+#if defined(__APPLE__) && defined(WS_DARWIN_ON_BSD)		/* the kernel is FreeBSD's: its control messages have the data at +16 and 8 byte alignment, Darwin's headers say +12 and 4 */
+#undef CMSG_SPACE
+#undef CMSG_LEN
+#undef CMSG_DATA
+#undef CMSG_NXTHDR
+#define WS_A8(x) (((size_t)(x) + 7) & ~(size_t)7)
+#define CMSG_SPACE(l) (WS_A8(sizeof(struct cmsghdr)) + WS_A8(l))
+#define CMSG_LEN(l) (WS_A8(sizeof(struct cmsghdr)) + (l))
+#define CMSG_DATA(c) ((unsigned char *)(c) + WS_A8(sizeof(struct cmsghdr)))
+#define CMSG_NXTHDR(m, c) ((char *)(c) + WS_A8((c)->cmsg_len) + WS_A8(sizeof(struct cmsghdr)) > (char *)(m)->msg_control + (m)->msg_controllen ? (struct cmsghdr *)0 : (struct cmsghdr *)((char *)(c) + WS_A8((c)->cmsg_len)))
+#endif
+#if defined(__APPLE__) && !defined(WS_DARWIN_ON_BSD)		/* WS_DARWIN_ON_BSD: a Mach-O program that runs on the FreeBSD kernel (darwinator) talks to wsd with the same sequenced packets as a native client */
 #define WS_STREAM 1
 #define WS_SOCKTYPE SOCK_STREAM
 #else
