@@ -88,7 +88,9 @@ static int run_stream(conn *c, const uint8_t *p, size_t n)
 		case OP_ORDER_WINDOW: {
 			uint32_t wid = (uint32_t)get_packed(&r); int mode = (int8_t)get_byte(&r); uint32_t rel = (uint32_t)get_packed(&r);
 			if (r.bad) return 1001;
+			if (getenv("WSD_TRACE")) fprintf(stderr, "wsd: transaction order window %u mode %d rel %u rights %d (conn %u pid %d app \"%s\" registered %d)\n", wid, mode, rel, holds_rights(c, wid) != 0, c->id, c->pid, c->app, c->registered);
 			if (holds_rights(c, wid)) ws_order_window(srv, wid, mode, rel);
+			if (getenv("WSD_TRACE")) fprintf(stderr, "wsd: window %u on screen: %d\n", wid, ws_window_on_screen(srv, wid));
 			break;
 		}
 		case OP_SET_ALPHA: {

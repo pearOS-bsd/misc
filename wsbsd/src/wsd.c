@@ -367,10 +367,10 @@ static int conn_is_dock(conn *c)
 	if (c->dock) return c->dock > 0;
 	c->dock = -1;
 #ifdef __FreeBSD__
-	struct xucred cr; socklen_t l = sizeof cr;
-	if (getsockopt(c->fd, 0, LOCAL_PEERCRED, &cr, &l) == 0 && cr.cr_pid > 0) {
-		int mib[4] = { CTL_KERN, KERN_PROC, KERN_PROC_PATHNAME, cr.cr_pid }; char path[1024]; size_t n = sizeof path;
-		if (sysctl(mib, 4, path, &n, NULL, 0) == 0) { const char *b = strrchr(path, '/'); b = b ? b + 1 : path; if (!strcmp(b, "Dock")) c->dock = 1; }
+	struct xucred cr; socklen_t l = sizeof cr; int cpid = c->cpid;
+	if (cpid > 0 || (getsockopt(c->fd, 0, LOCAL_PEERCRED, &cr, &l) == 0 && (cpid = cr.cr_pid) > 0)) {
+		int mib[4] = { CTL_KERN, KERN_PROC, KERN_PROC_PATHNAME, cpid }; char path[1024]; size_t n = sizeof path;
+		if (sysctl(mib, 4, path, &n, NULL, 0) == 0) { const char *b = strrchr(path, '/'); b = b ? b + 1 : path; if (!strcmp(b, "Dock") || !strcmp(b, "wm-stub")) c->dock = 1;                /* wm-stub: our WindowManager (com.apple.windowmanager.server), which orders the windows of the applications */ }
 	}
 #endif
 	return c->dock > 0;
@@ -1147,6 +1147,7 @@ static int do_new_connection(conn *c, const uint8_t *buf, size_t len, int *fds, 
 	memset(c->app, 0, sizeof c->app);
 	memcpy(c->app, buf + sizeof hd, n < sizeof c->app - 1 ? n : sizeof c->app - 1);
 	c->efd = sv[0]; c->handshaken = 1; c->pid = peer_pid(c->fd);
+	if (getenv("WSD_TRACE")) fprintf(stderr, "wsd: conn %u new connection, app \"%s\" (peer pid %d)\n", c->id, c->app, c->pid);
 	sls_new_connection_rep r; memset(&r, 0, sizeof r);
 	{ mach_msg_header_t rh; fill_reply_header(&rh, h, sizeof r, 1); memcpy(&r.h, &rh, sizeof rh); }
 	r.body.msgh_descriptor_count = 2;
@@ -1246,6 +1247,11 @@ static int dispatch(conn *c, uint8_t *buf, size_t len, int *fds, int nfds)
 	mach_msg_header_t *h0 = (mach_msg_header_t *)buf;
 
 	if (set < 0) { const char *e = getenv("WSD_OPSET"); set = e && atoi(e) == 26 ? 26 : 27; }
+	if (len >= 28 && h0->msgh_id == 0x50494400) {			/* the hello of the front of the Mach programs (wsbridge): the pid of the client that this socket belongs to (the peer of the socket is the front itself) */
+		c->cpid = (int)rd32(buf, 0x18); c->dock = 0;
+		if (getenv("WSD_TRACE")) fprintf(stderr, "wsd: conn %u is the process %d\n", c->id, c->cpid);
+		return 0;
+	}
 	if (set == 26 && len >= sizeof *h0 && h0->msgh_id >= 30521 && h0->msgh_id < 30700) {
 		int rc, delta = h0->msgh_id < 30635 ? 1 : h0->msgh_id == 30636 ? 8 : 0;		/* the shift of one ends at 30634 (the stubs of the SkyLight of 26: 30634 is InvalidateLiveUserAdjustmentForPreset = 30635 in 27; 30636 is MenuBarPrivacyIndicatorInset = 30644 in 27); from 30637 on the numbers are not read yet and stay */
 

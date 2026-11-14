@@ -13,7 +13,7 @@ int wsd_send(int sock, const struct iovec *iov, int iovcnt, const int *fds, int 
 
 #include <sys/types.h>
 typedef struct {
-	int fd; uint32_t id; int efd; int pid; char app[64]; int handshaken; uid_t uid;       /* the account the client runs as (getpeereid) */
+	int fd; uint32_t id; int efd; int pid; int cpid;       /* cpid: the process of the client when a front brings it (the hello of wsbridge) */ char app[64]; int handshaken; uid_t uid;       /* the account the client runs as (getpeereid) */
 	uint32_t notify_n, notify[256];                                           /* connection notification interests */
 	int registered; uint32_t psn_hi, psn_lo, session_id; int app_type;          /* process record made by CreateApplication */
 	uint32_t key_override;                                                       /* OverrideKeyRegistration bits (one per special key 0..6) */
