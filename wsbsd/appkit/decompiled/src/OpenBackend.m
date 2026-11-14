@@ -305,3 +305,32 @@ static CTLineRef OpenLine(NSString *s, NSDictionary *attrs, CGFloat *ascent, CGF
     return rtl ? 1 : 0;					/* NSWritingDirectionRightToLeft / LeftToRight */
 }
 @end
+
+/* ---- push button: rounded rectangle, radius 5, 24 pt high centred in the frame, white 8 % over the window (21 % pressed), the accent for the default button (docs/UI-MAC.md) ---- */
+#import "NSButton.h"
+static const void *kOpenPressed = &kOpenPressed;
+@implementation NSButton (OpenDrawing)
+- (void)drawRect:(CGRect)dirty
+{
+    CGContextRef cg = [[NSGraphicsContext currentContext] CGContext];
+    if (!cg) return;
+    CGRect b = [self bounds], r = CGRectMake(b.origin.x + 1, b.origin.y + (b.size.height - 24) / 2, b.size.width - 2, 24);
+    BOOL down = [objc_getAssociatedObject(self, kOpenPressed) boolValue], def = NO;
+    if (def) CGContextSetRGBFillColor(cg, down ? 30 / 255.0 : 0, down ? 138 / 255.0 : 122 / 255.0, 1, 1); else CGContextSetRGBFillColor(cg, 1, 1, 1, down ? 0.21 : 0.08);
+    CGPathRef p = CGPathCreateWithRoundedRect(r, 5, 5, NULL); CGContextAddPath(cg, p); CGContextFillPath(cg); CGPathRelease(p);
+    NSString *t = [self title];
+    NSDictionary *at = @{ NSFontAttributeName: [NSFont systemFontOfSize:13], NSForegroundColorAttributeName: [NSColor colorWithCalibratedWhite:1 alpha:def ? 1 : 0.85] };
+    CGSize ts = [t sizeWithAttributes:at];
+    [t drawAtPoint:CGPointMake(r.origin.x + (r.size.width - ts.width) / 2, r.origin.y + (r.size.height - ts.height) / 2) withAttributes:at];
+}
+- (void)mouseDown:(NSEvent *)e { objc_setAssociatedObject(self, kOpenPressed, @YES, OBJC_ASSOCIATION_RETAIN); [self display]; }
+- (void)mouseUp:(NSEvent *)e
+{
+    objc_setAssociatedObject(self, kOpenPressed, @NO, OBJC_ASSOCIATION_RETAIN);
+    CGPoint p = [e locationInWindow];
+    for (NSView *v = self; v && v != [[self window] contentView]; v = [v superview]) { p.x -= [v frame].origin.x; p.y -= [v frame].origin.y; }
+    if ([self window]) { CGRect cf = [[[self window] contentView] frame]; p.x -= cf.origin.x; p.y -= cf.origin.y; }
+    [self display];
+    if (CGRectContainsPoint([self bounds], p) && [self action]) [[self target] performSelector:[self action] withObject:self];
+}
+@end

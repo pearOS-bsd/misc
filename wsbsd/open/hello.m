@@ -4,9 +4,18 @@
 #import "NSView.h"
 #import "NSColor.h"
 #import "NSFont.h"
+#import "NSButton.h"
 #import "NSEvent.h"
 
 @interface V : NSView { BOOL on; } @end
+static id sT;
+@interface T : NSObject
+- (void)hit:(id)s;
+@end
+
+@implementation T
+- (void)hit:(id)s { fprintf(stderr, "open-hello: button action\n"); }
+@end
 @implementation V
 - (void)mouseDown:(NSEvent *)e { on = !on; fprintf(stderr, "open-hello: mouseDown at %g,%g\n", e ? [e locationInWindow].x : -1, e ? [e locationInWindow].y : -1); [self setNeedsDisplay:YES]; }
 - (void)keyDown:(NSEvent *)e { fprintf(stderr, "open-hello: keyDown %d chars='%s'\n", (int)[e keyCode], [[e characters] UTF8String]); }
@@ -17,6 +26,7 @@ int main(void) { @autoreleasepool {
   NSApplication *a = [NSApplication sharedApplication];
   NSWindow *w = [[NSWindow alloc] initWithContentRect:CGRectMake(200, 300, 420, 300) styleMask:NSWindowStyleMaskTitled backing:NSBackingStoreBuffered defer:NO]; [w setTitle:@"open: hello"];
   [w setContentView:[[V alloc] initWithFrame:CGRectMake(0, 0, 420, 300)]];
+  { NSButton *b = [NSButton buttonWithTitle:@"Click me" target:(sT = [T new]) action:@selector(hit:)]; [b setFrame:CGRectMake(250, 20, 120, 32)]; [[w contentView] addSubview:b]; }
   [w makeKeyAndOrderFront:nil];
   V *cv = (V *)[w contentView];
   [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:YES block:^(NSTimer *t) { static int n; fprintf(stderr, "open-hello: tick %d\n", ++n); [cv mouseDown:nil]; }];
