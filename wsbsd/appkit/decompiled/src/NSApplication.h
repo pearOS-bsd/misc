@@ -33,5 +33,11 @@ NS_ASSUME_NONNULL_BEGIN
 extern __weak NSApplication *NSApp;
 
 void NSRectFill(CGRect rect);
+extern NSString *const NSFontAttributeName, *const NSForegroundColorAttributeName, *const NSParagraphStyleAttributeName, *const NSBackgroundColorAttributeName, *const NSUnderlineStyleAttributeName, *const NSKernAttributeName, *const NSShadowAttributeName;
+@interface NSString (OpenDrawing)
+- (void)drawAtPoint:(CGPoint)point withAttributes:(nullable NSDictionary<NSString *, id> *)attrs;
+- (void)drawInRect:(CGRect)rect withAttributes:(nullable NSDictionary<NSString *, id> *)attrs;
+- (CGSize)sizeWithAttributes:(nullable NSDictionary<NSString *, id> *)attrs;
+@end
 
 NS_ASSUME_NONNULL_END
