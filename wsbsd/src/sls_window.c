@@ -684,7 +684,7 @@ int sls_window_dispatch(conn *c, const uint8_t *buf, size_t len)
 		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 1);
 		wr32(r, 0x18, 1); wr32(r, 0x24, 0x110000u); memcpy(r + 0x28, &WS_NDR, sizeof WS_NDR);
 		wr32(r, 0x30, ws_window_owner(srv, wid)); wr32(r, 0x34, holds_rights(c, wid) ? 0x30007u : 0); wr32(r, 0x38, 1);
-		if (ws_window_owner(srv, wid) != c->id && holds_rights(c, wid)) {          /* a window of another connection that this one may change (the WindowManager: SLSSetWindowShape of macOS 26 asks for the mapping first and fails with 1000 without a memory): a page that stands for the state of the window */
+		if (holds_rights(c, wid)) {          /* (the window of the caller too: without a memory the client makes no backing store layer for it) a window of another connection that this one may change (the WindowManager: SLSSetWindowShape of macOS 26 asks for the mapping first and fails with 1000 without a memory): a page that stands for the state of the window */
 			int pfd = ws_shm_create_anon();
 			if (pfd >= 0 && ftruncate(pfd, 4096) == 0) {
 				wr32(r, 0x1c, 1);
