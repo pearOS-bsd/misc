@@ -8,7 +8,7 @@
 
 @interface V : NSView { BOOL on; } @end
 @implementation V
-- (void)mouseDown:(NSEvent *)e { on = !on; fprintf(stderr, "open-hello: mouseDown at %g,%g\n", [e locationInWindow].x, [e locationInWindow].y); [self setNeedsDisplay:YES]; }
+- (void)mouseDown:(NSEvent *)e { on = !on; fprintf(stderr, "open-hello: mouseDown at %g,%g\n", e ? [e locationInWindow].x : -1, e ? [e locationInWindow].y : -1); [self setNeedsDisplay:YES]; }
 - (void)keyDown:(NSEvent *)e { fprintf(stderr, "open-hello: keyDown %d chars='%s'\n", (int)[e keyCode], [[e characters] UTF8String]); }
 - (void)drawRect:(CGRect)r { [(on ? [NSColor greenColor] : [NSColor yellowColor]) setFill]; NSRectFill([self bounds]); [[NSColor redColor] setFill]; NSRectFill(CGRectMake(20, 20, 120, 60));
   [@"open: AppKit on wsd" drawAtPoint:CGPointMake(20, 200) withAttributes:@{ NSFontAttributeName: [NSFont systemFontOfSize:28], NSForegroundColorAttributeName: [NSColor blackColor] }]; }
@@ -18,5 +18,7 @@ int main(void) { @autoreleasepool {
   NSWindow *w = [[NSWindow alloc] initWithContentRect:CGRectMake(200, 300, 420, 300) styleMask:NSWindowStyleMaskTitled backing:NSBackingStoreBuffered defer:NO]; [w setTitle:@"open: hello"];
   [w setContentView:[[V alloc] initWithFrame:CGRectMake(0, 0, 420, 300)]];
   [w makeKeyAndOrderFront:nil];
+  V *cv = (V *)[w contentView];
+  [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:YES block:^(NSTimer *t) { static int n; fprintf(stderr, "open-hello: tick %d\n", ++n); [cv mouseDown:nil]; }];
   [a run];
 } return 0; }
