@@ -82,7 +82,7 @@ void OpenWindowDisplay(NSWindow *w)
     CGContextSaveGState(o->cg);
     CGContextClearRect(o->cg, CGRectMake(0, 0, o->win.px->w, o->win.px->h));
     NSView *cv = [w contentView];
-    if (cv) OpenDrawView(cv, o->cg);
+    if (cv) { @try { OpenDrawView(cv, o->cg); } @catch (NSException *ex) { fprintf(stderr, "open: exception while drawing: %s: %s\n", [[ex name] UTF8String], [[ex reason] UTF8String]); } }
     if (o->tb) {
         CGFloat W = o->win.px->w, H = o->win.px->h, tb = o->tb;
         CGContextSetRGBFillColor(o->cg, 35 / 255.0, 35 / 255.0, 36 / 255.0, 1); CGContextFillRect(o->cg, CGRectMake(0, H - tb, W, tb));
@@ -332,5 +332,37 @@ static const void *kOpenPressed = &kOpenPressed;
     if ([self window]) { CGRect cf = [[[self window] contentView] frame]; p.x -= cf.origin.x; p.y -= cf.origin.y; }
     [self display];
     if (CGRectContainsPoint([self bounds], p) && [self action]) [[self target] performSelector:[self action] withObject:self];
+}
+@end
+
+/* ---- text field: bezel = 1 px border (window colour lightened 5 %) round the text background (23,24,25), radius 6 (WsdMacTheme.m); editing: click takes the keys, characters append, delete removes, return sends the action ---- */
+#import "NSTextField.h"
+@implementation NSTextField (OpenDrawing)
+- (BOOL)acceptsFirstResponder { return [self isEditable]; }
+- (void)drawRect:(CGRect)dirty
+{
+    CGContextRef cg = [[NSGraphicsContext currentContext] CGContext];
+    if (!cg) return;
+    CGRect b = [self bounds];
+    if ([self isBezeled]) {
+        CGPathRef p = CGPathCreateWithRoundedRect(CGRectInset(b, 0.5, 0.5), 6, 6, NULL);
+        CGContextSetRGBFillColor(cg, 23 / 255.0, 24 / 255.0, 25 / 255.0, 1); CGContextAddPath(cg, p); CGContextFillPath(cg);
+        CGContextSetRGBStrokeColor(cg, 1, 1, 1, 0.12); CGContextSetLineWidth(cg, 1); CGContextAddPath(cg, p); CGContextStrokePath(cg);
+        CGPathRelease(p);
+    }
+    NSDictionary *at = @{ NSFontAttributeName: [NSFont systemFontOfSize:13], NSForegroundColorAttributeName: [NSColor colorWithCalibratedWhite:1 alpha:0.85] };
+    NSString *t = [self stringValue]; CGSize ts = [t sizeWithAttributes:at];
+    CGFloat x = [self isBezeled] ? 5 : 0, y = b.origin.y + (b.size.height - ts.height) / 2;
+    if ([t length]) [t drawAtPoint:CGPointMake(x, y) withAttributes:at];
+    if ([[self window] firstResponder] == self) { CGContextSetRGBFillColor(cg, 0.3, 0.6, 1, 1); CGContextFillRect(cg, CGRectMake(x + ts.width + 1, y, 1.5, ts.height > 0 ? ts.height : 15)); }
+}
+- (void)mouseDown:(NSEvent *)e { if ([self isEditable]) { [[self window] makeFirstResponder:self]; [self display]; } }
+- (void)keyDown:(NSEvent *)e
+{
+    NSString *c = [e characters], *s = [self stringValue];
+    if ([c isEqualToString:@"\x7f"]) { if ([s length]) [self setStringValue:[s substringToIndex:[s length] - 1]]; }
+    else if ([c isEqualToString:@"\r"]) { if ([self action]) [[self target] performSelector:[self action] withObject:self]; }
+    else if ([c length] && [c characterAtIndex:0] >= 32) [self setStringValue:[s stringByAppendingString:c]];
+    [self display];
 }
 @end
