@@ -6,6 +6,7 @@
  * _styleMask 0xc24, _borderView 0xc28, _contentView 0xc2c, _delegate 0xc48 (weak).
  */
 #import "NSWindow.h"
+#import "OpenBackend.h"
 
 enum : uint64_t { NSWindowWFlagVisible = 1u << 2 };  /* _wFlags bit 2 (isVisible 0x184f1175c) */
 
@@ -69,8 +70,10 @@ enum : uint64_t { NSWindowWFlagVisible = 1u << 2 };  /* _wFlags bit 2 (isVisible
 /* -[NSWindow isVisible] 0x184f1175c (_wFlags bit 2). */
 - (BOOL)isVisible { return (_wFlags & NSWindowWFlagVisible) != 0; }
 
-- (void)makeKeyAndOrderFront:(id)sender { _wFlags |= NSWindowWFlagVisible; /* stage2: server order + key */ }
-- (void)orderOut:(id)sender { _wFlags &= ~NSWindowWFlagVisible; }
+- (void)makeKeyAndOrderFront:(id)sender { _wFlags |= NSWindowWFlagVisible; OpenWindowOrderFront(self); /* the window server (wsd) is reached by the open backend; key state: stage2 */ }
+- (void)orderOut:(id)sender { _wFlags &= ~NSWindowWFlagVisible; OpenWindowOrderOut(self); }
+/* the frame of the content in screen coordinates (origin lower left), for the open backend */
+- (CGRect)_openFrame { return _frame; }
 
 /* -[NSWindow firstResponder] 0x184f3676c: stored responder, or the window itself. */
 - (NSResponder *)firstResponder { return _firstResponder ?: self; }

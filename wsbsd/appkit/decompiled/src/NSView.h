@@ -46,6 +46,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)viewWillMoveToWindow:(nullable NSWindow *)newWindow;
 - (void)viewDidMoveToWindow;
 
+- (void)drawRect:(CGRect)dirtyRect;
+- (void)setNeedsDisplay:(BOOL)flag;
+- (void)display;
 @end
 
 NS_ASSUME_NONNULL_END

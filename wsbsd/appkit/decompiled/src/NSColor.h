@@ -82,6 +82,8 @@ typedef NS_ENUM(NSInteger, NSColorType) {
 
 @property (readonly) CGColorRef CGColor;
 
+- (void)setFill;
+- (void)set;
 @end
 
 NS_ASSUME_NONNULL_END
