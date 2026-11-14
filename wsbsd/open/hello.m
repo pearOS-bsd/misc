@@ -15,7 +15,7 @@
 @end
 int main(void) { @autoreleasepool {
   NSApplication *a = [NSApplication sharedApplication];
-  NSWindow *w = [[NSWindow alloc] initWithContentRect:CGRectMake(200, 300, 420, 300) styleMask:NSWindowStyleMaskTitled backing:NSBackingStoreBuffered defer:NO];
+  NSWindow *w = [[NSWindow alloc] initWithContentRect:CGRectMake(200, 300, 420, 300) styleMask:NSWindowStyleMaskTitled backing:NSBackingStoreBuffered defer:NO]; [w setTitle:@"open: hello"];
   [w setContentView:[[V alloc] initWithFrame:CGRectMake(0, 0, 420, 300)]];
   [w makeKeyAndOrderFront:nil];
   [a run];

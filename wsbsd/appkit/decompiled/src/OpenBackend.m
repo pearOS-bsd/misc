@@ -6,6 +6,7 @@
 #import "NSColor.h"
 #import "NSGraphicsContext.h"
 #import "NSEvent.h"
+#import "NSFont.h"
 #import <objc/runtime.h>
 #include "ws_client.h"
 #include <poll.h>
@@ -27,7 +28,8 @@ static ws_conn *OpenConn(void)
 }
 
 /* the wsd window of an NSWindow: kept with the object */
-@interface OpenWin : NSObject { @public ws_win win; CGContextRef cg; BOOL shown; } @end
+#define OPEN_TITLEBAR 28
+@interface OpenWin : NSObject { @public ws_win win; CGContextRef cg; BOOL shown; int tb; } @end
 @implementation OpenWin @end
 static const void *kOpenWinKey = &kOpenWinKey;
 static OpenWin *OpenWinOf(NSWindow *w, BOOL create)
@@ -37,9 +39,11 @@ static OpenWin *OpenWinOf(NSWindow *w, BOOL create)
     ws_conn *c = OpenConn();
     if (!c) return nil;
     CGRect f = [w _openFrame];
-    int top = sScreenH - (int)(f.origin.y + f.size.height);
+    int tb = (([w styleMask] & 1) ? OPEN_TITLEBAR : 0);
+    int top = sScreenH - (int)(f.origin.y + f.size.height) - tb;
     o = [OpenWin new];
-    if (ws_win_create(c, (ws_rect){ (int)f.origin.x, top, (int)f.size.width, (int)f.size.height }, 0, &o->win)) { NSLog(@"open: cannot create the window"); return nil; }
+    o->tb = tb;
+    if (ws_win_create(c, (ws_rect){ (int)f.origin.x, top, (int)f.size.width, (int)f.size.height + tb }, 0, &o->win)) { NSLog(@"open: cannot create the window"); return nil; }
     CGColorSpaceRef cs = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
     o->cg = CGBitmapContextCreate(o->win.px->px, o->win.px->w, o->win.px->h, 8, o->win.px->stride, cs, (CGBitmapInfo)kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little);
     CGColorSpaceRelease(cs);
@@ -79,6 +83,19 @@ void OpenWindowDisplay(NSWindow *w)
     CGContextClearRect(o->cg, CGRectMake(0, 0, o->win.px->w, o->win.px->h));
     NSView *cv = [w contentView];
     if (cv) OpenDrawView(cv, o->cg);
+    if (o->tb) {
+        CGFloat W = o->win.px->w, H = o->win.px->h, tb = o->tb;
+        CGContextSetRGBFillColor(o->cg, 0.91, 0.91, 0.92, 1); CGContextFillRect(o->cg, CGRectMake(0, H - tb, W, tb));
+        CGContextSetRGBFillColor(o->cg, 0.75, 0.75, 0.76, 1); CGContextFillRect(o->cg, CGRectMake(0, H - tb, W, 1));
+        static const CGFloat col[3][3] = { { 1.0, 0.37, 0.34 }, { 1.0, 0.74, 0.18 }, { 0.16, 0.79, 0.25 } };
+        for (int i = 0; i < 3; i++) { CGContextSetRGBFillColor(o->cg, col[i][0], col[i][1], col[i][2], 1); CGContextFillEllipseInRect(o->cg, CGRectMake(8 + i * 20, H - tb / 2 - 6, 12, 12)); }
+        NSGraphicsContext *gc = [NSGraphicsContext graphicsContextWithCGContext:o->cg flipped:NO];
+        NSGraphicsContext *old = [NSGraphicsContext currentContext]; [NSGraphicsContext setCurrentContext:gc];
+        NSString *t = [w title]; NSDictionary *at = @{ NSFontAttributeName: [NSFont systemFontOfSize:13], NSForegroundColorAttributeName: [NSColor blackColor] };
+        CGSize ts = [t sizeWithAttributes:at];
+        [t drawAtPoint:CGPointMake((W - ts.width) / 2, H - tb / 2 - ts.height / 2) withAttributes:at];
+        [NSGraphicsContext setCurrentContext:old];
+    }
     CGContextRestoreGState(o->cg);
     int fr_ = ws_win_flush(sConn, &o->win); if (getenv("OPEN_DEBUG")) fprintf(stderr, "open: display flush rc %d\n", fr_);
 }
@@ -100,6 +117,7 @@ void OpenWindowOrderOut(NSWindow *w)
 }
 
 static NSView *sMouseView;				/* the view that took the mouse down: it gets the drag and the up */
+static int sDragWid, sDragX, sDragY;
 /* US layout: macOS virtual key code -> characters (plain, shifted) */
 static NSString *OpenKeyChars(unsigned short kc, BOOL shift)
 {
@@ -116,6 +134,18 @@ static void OpenDispatch(const ws_event *e)
     if (!w) return;
     OpenWin *o = OpenWinOf(w, NO);
     CGFloat h = o ? o->win.px->h : 0;
+    if (o && o->tb && e->y < o->tb && (e->type == WS_EV_MOUSE_DOWN || e->type == WS_EV_MOUSE_MOVE || e->type == WS_EV_MOUSE_UP || sDragWid)) {	/* the title bar */
+        if (e->type == WS_EV_MOUSE_DOWN) {
+            int i = e->x / 20;
+            if (e->x < 62 && i < 3 && (e->x % 20) >= 8) { if (i == 0) { OpenWindowOrderOut(w); BOOL any = NO; for (NSNumber *k in [sWindows keyEnumerator]) { OpenWin *q = OpenWinOf([sWindows objectForKey:k], NO); if (q && q->shown) any = YES; } if (!any) exit(0); } return; }
+            sDragWid = e->wid; sDragX = e->x; sDragY = e->y;
+        }
+        return;
+    }
+    if (sDragWid && e->wid == sDragWid) {
+        if (e->type == WS_EV_MOUSE_MOVE && e->buttons) { const ws_win *wl[1] = { &o->win }; ws_win_move_list(OpenConn(), wl, 1, e->x - sDragX, e->y - sDragY); return; }
+        if (e->type == WS_EV_MOUSE_UP) { sDragWid = 0; return; }
+    }
     CGPoint p = CGPointMake(e->x, h - e->y);			/* wsd: origin top left; AppKit: lower left */
     NSEventModifierFlags fl = e->flags;
     NSTimeInterval t = CFAbsoluteTimeGetCurrent();
