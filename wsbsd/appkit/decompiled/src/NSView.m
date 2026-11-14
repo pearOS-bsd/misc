@@ -80,6 +80,9 @@ enum { NSViewVFlagInitialised = 0x00800000u };
     frameRect = _NSViewValidateRect(frameRect);
     if (CGRectEqualToRect(frameRect, _frame))
         return;
+    /* an unscaled view (bounds size = frame size) keeps its scale: the bounds follow the frame (as AppKit does) */
+    if (_bounds.size.width == _frame.size.width && _bounds.size.height == _frame.size.height)
+        _bounds.size = frameRect.size;
     _frame = frameRect;
 }
 
