@@ -28,7 +28,7 @@ static ws_conn *OpenConn(void)
 }
 
 /* the wsd window of an NSWindow: kept with the object */
-#define OPEN_TITLEBAR 28
+#define OPEN_TITLEBAR 32		/* measured on macOS (docs/UI-MAC.md) */
 @interface OpenWin : NSObject { @public ws_win win; CGContextRef cg; BOOL shown; int tb; } @end
 @implementation OpenWin @end
 static const void *kOpenWinKey = &kOpenWinKey;
@@ -85,15 +85,25 @@ void OpenWindowDisplay(NSWindow *w)
     if (cv) OpenDrawView(cv, o->cg);
     if (o->tb) {
         CGFloat W = o->win.px->w, H = o->win.px->h, tb = o->tb;
-        CGContextSetRGBFillColor(o->cg, 0.91, 0.91, 0.92, 1); CGContextFillRect(o->cg, CGRectMake(0, H - tb, W, tb));
-        CGContextSetRGBFillColor(o->cg, 0.75, 0.75, 0.76, 1); CGContextFillRect(o->cg, CGRectMake(0, H - tb, W, 1));
-        static const CGFloat col[3][3] = { { 1.0, 0.37, 0.34 }, { 1.0, 0.74, 0.18 }, { 0.16, 0.79, 0.25 } };
-        for (int i = 0; i < 3; i++) { CGContextSetRGBFillColor(o->cg, col[i][0], col[i][1], col[i][2], 1); CGContextFillEllipseInRect(o->cg, CGRectMake(8 + i * 20, H - tb / 2 - 6, 12, 12)); }
+        CGContextSetRGBFillColor(o->cg, 35 / 255.0, 35 / 255.0, 36 / 255.0, 1); CGContextFillRect(o->cg, CGRectMake(0, H - tb, W, tb));
+        /* traffic lights 14x14 at x = 9, 32, 55: gradient top / middle / bottom (docs/UI-MAC.md) */
+        static const int gr[3][3][3] = { { {247,94,85}, {244,83,70}, {239,104,97} }, { {251,180,1}, {253,193,1}, {254,207,48} }, { {51,194,1}, {0,188,0}, {78,194,58} } };
+        CGColorSpaceRef rgb = CGColorSpaceCreateDeviceRGB();
+        for (int i = 0; i < 3; i++) {
+            CGFloat c[12], loc[3] = { 0, 0.5, 1 };
+            for (int k = 0; k < 3; k++) { c[k * 4] = gr[i][2 - k][0] / 255.0; c[k * 4 + 1] = gr[i][2 - k][1] / 255.0; c[k * 4 + 2] = gr[i][2 - k][2] / 255.0; c[k * 4 + 3] = 1; }
+            CGGradientRef g = CGGradientCreateWithColorComponents(rgb, c, loc, 3);
+            CGRect r = CGRectMake(9 + i * 23, H - tb + 9, 14, 14);
+            CGContextSaveGState(o->cg); CGContextAddEllipseInRect(o->cg, r); CGContextClip(o->cg);
+            CGContextDrawLinearGradient(o->cg, g, CGPointMake(0, r.origin.y + 14), CGPointMake(0, r.origin.y), 0);
+            CGContextRestoreGState(o->cg); CGGradientRelease(g);
+        }
+        CGColorSpaceRelease(rgb);
         NSGraphicsContext *gc = [NSGraphicsContext graphicsContextWithCGContext:o->cg flipped:NO];
         NSGraphicsContext *old = [NSGraphicsContext currentContext]; [NSGraphicsContext setCurrentContext:gc];
-        NSString *t = [w title]; NSDictionary *at = @{ NSFontAttributeName: [NSFont systemFontOfSize:13], NSForegroundColorAttributeName: [NSColor blackColor] };
+        NSString *t = [w title]; NSDictionary *at = @{ NSFontAttributeName: [NSFont boldSystemFontOfSize:13], NSForegroundColorAttributeName: [NSColor colorWithCalibratedWhite:1 alpha:0.85] };
         CGSize ts = [t sizeWithAttributes:at];
-        [t drawAtPoint:CGPointMake((W - ts.width) / 2, H - tb / 2 - ts.height / 2) withAttributes:at];
+        [t drawAtPoint:CGPointMake(82, H - tb / 2 - ts.height / 2) withAttributes:at];
         [NSGraphicsContext setCurrentContext:old];
     }
     CGContextRestoreGState(o->cg);
@@ -136,8 +146,8 @@ static void OpenDispatch(const ws_event *e)
     CGFloat h = o ? o->win.px->h : 0;
     if (o && o->tb && e->y < o->tb && (e->type == WS_EV_MOUSE_DOWN || e->type == WS_EV_MOUSE_MOVE || e->type == WS_EV_MOUSE_UP || sDragWid)) {	/* the title bar */
         if (e->type == WS_EV_MOUSE_DOWN) {
-            int i = e->x / 20;
-            if (e->x < 62 && i < 3 && (e->x % 20) >= 8) { if (i == 0) { OpenWindowOrderOut(w); BOOL any = NO; for (NSNumber *k in [sWindows keyEnumerator]) { OpenWin *q = OpenWinOf([sWindows objectForKey:k], NO); if (q && q->shown) any = YES; } if (!any) exit(0); } return; }
+            int i = (e->x - 9) / 23;
+            if (e->x >= 9 && i < 3 && ((e->x - 9) % 23) < 14) { if (i == 0) { OpenWindowOrderOut(w); BOOL any = NO; for (NSNumber *k in [sWindows keyEnumerator]) { OpenWin *q = OpenWinOf([sWindows objectForKey:k], NO); if (q && q->shown) any = YES; } if (!any) exit(0); } return; }
             sDragWid = e->wid; sDragX = e->x; sDragY = e->y;
         }
         return;
