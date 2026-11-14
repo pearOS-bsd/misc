@@ -5,6 +5,7 @@
 #import "NSColor.h"
 #import "NSFont.h"
 #import "NSButton.h"
+#import "NSTextField.h"
 #import "NSEvent.h"
 
 @interface V : NSView { BOOL on; } @end
@@ -27,6 +28,7 @@ int main(void) { @autoreleasepool {
   NSWindow *w = [[NSWindow alloc] initWithContentRect:CGRectMake(200, 300, 420, 300) styleMask:NSWindowStyleMaskTitled backing:NSBackingStoreBuffered defer:NO]; [w setTitle:@"open: hello"];
   [w setContentView:[[V alloc] initWithFrame:CGRectMake(0, 0, 420, 300)]];
   { NSButton *b = [NSButton buttonWithTitle:@"Click me" target:(sT = [T new]) action:@selector(hit:)]; [b setFrame:CGRectMake(250, 20, 120, 32)]; [[w contentView] addSubview:b]; }
+  { NSTextField *tf = [[NSTextField alloc] initWithFrame:CGRectMake(20, 100, 200, 24)]; [tf setBezeled:YES]; [tf setEditable:YES]; [tf setStringValue:@""]; [[w contentView] addSubview:tf]; }
   [w makeKeyAndOrderFront:nil];
   V *cv = (V *)[w contentView];
   [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:YES block:^(NSTimer *t) { static int n; fprintf(stderr, "open-hello: tick %d\n", ++n); [cv mouseDown:nil]; }];
