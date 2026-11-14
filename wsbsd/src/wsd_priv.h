@@ -19,7 +19,9 @@ typedef struct {
 	uint32_t key_override;                                                       /* OverrideKeyRegistration bits (one per special key 0..6) */
 	int dock;                                                                    /* 0 not checked, 1 this connection is the Dock, -1 it is not */
 	uint64_t gesture_mask; uint32_t coalesce_mask, notes;                        /* SetGestureEventSubmask, CoalesceEventsInMask, SetNotifications */
+	uint8_t *dgq; size_t dgn, dgcap; int dg_wake;                                 /* the datagrams for the client (the real SkyLight pulls them with GetPortStreamOutofline), and whether the client was woken for them */
 } conn;
+void wsd_datagram_push(conn *c, uint32_t kind, const void *payload, uint32_t n);	/* a record [kind u32][length u32][payload, padded to 4] for the client, and a wake message on its event channel */
 
 extern ws_server *srv;
 extern int wsd_dirty;                                   /* set when something visible may have changed */

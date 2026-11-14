@@ -453,6 +453,7 @@ int sls_session_dispatch(conn *c, const uint8_t *buf, size_t len)
 		uint32_t n = rd32(buf, 0x20);
 		if (n > 256 || h->msgh_size != 0x24 + 4 * n) return reply_simple(c->fd, h, -304);
 		c->notify_n = n; memcpy(c->notify, buf + 0x24, 4 * n);
+		if (getenv("WSD_TRACE")) { fprintf(stderr, "wsd: conn %u (pid %d) connection notify interests:", c->id, c->pid); for (uint32_t q = 0; q < n; q++) fprintf(stderr, " %u", c->notify[q]); fprintf(stderr, "\n"); }
 		return reply_simple(c->fd, h, 0);
 	}
 	if (h->msgh_id == SLS_MSG_SetUniversalOwner) {				/* SLSSetUniversalOwner: header only (the connection is the port that it was sent to); the Dock of the Mac calls it at start and exits when it fails */
@@ -463,6 +464,7 @@ int sls_session_dispatch(conn *c, const uint8_t *buf, size_t len)
 		if ((h->msgh_bits & MACH_MSGH_BITS_COMPLEX) || len != h->msgh_size || h->msgh_size < 0x28) return reply_simple(c->fd, h, -304);
 		uint32_t n = rd32(buf, 0x24);
 		if (n > 256 || h->msgh_size != 0x28 + 4 * n || rd32(buf, 0x20) > 2) return reply_simple(c->fd, h, -304);
+		if (getenv("WSD_TRACE")) { fprintf(stderr, "wsd: conn %u (pid %d) process notify interests (mode %u):", c->id, c->pid, rd32(buf, 0x20)); for (uint32_t q = 0; q < n; q++) fprintf(stderr, " %u", rd32(buf, 0x28 + 4 * q)); fprintf(stderr, "\n"); }
 		return reply_simple(c->fd, h, 0);			/* the Dock of the Mac sends this from SLSNewConnection (ProcessNotifier::synchronize_all) before any process record exists and aborts on an error: accepted for every connection */
 	}
 	if (h->msgh_id == SLS_MSG_SetKeyTranslationTable) {                                // complex: OOL table, size 0x38, descriptor size repeated @0x34
