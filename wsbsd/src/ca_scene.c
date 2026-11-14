@@ -92,6 +92,7 @@ static void skip_cf(rd *r, int depth)
 	uint8_t t = u8(r);
 	if (depth > 20) { r->err = 1; return; }
 	switch (t) {
+	case 0: break;		/* a null CF object */
 	case 1: break;
 	case 2: if (u8(r)) { uint64_t n = u64(r); raw(r, n); } break;
 	case 3: u8(r); u64(r); break;
@@ -158,6 +159,7 @@ static void skip_obj_(rd *r, int depth, contents_t *ct)
 		u32(r); u64(r); skip_obj(r, depth + 1, NULL);
 		for (int i = 0; i < 4; i++) u32(r);
 		raw(r, 0x20); u32(r); raw(r, 0x20); u8(r); break; }
+	case 0x40: u32(r); u64(r); skip_cf(r, 0); u8(r); break;		/* SeparatedOptions: i32, i64, a CF dictionary, i8 */
 	case 7: u32(r); break;		/* Object (QuartzCore decode_object: a bare Object: its flags) */
 	case 0x14: {		/* GradientLayer: Object flags, Gradient (vm_size_t n, i32 width = 5, i32 flags, n*5*4 bytes, locations n*4 if flags & 2, interpolations n*0x20-0x20 if flags & 4), 2 x 2 cgfloats, 2 x 2 cgfloats, atom, i32, a texture object if Object flags bit 11, colorspace */
 		uint32_t of = u32(r); uint64_t n = u64(r); u32(r); uint32_t fl = u32(r) & 0xff;
