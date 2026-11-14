@@ -5,12 +5,15 @@
 #import "NSApplication.h"
 #import "NSColor.h"
 #import "NSGraphicsContext.h"
+#import "NSEvent.h"
 #import <objc/runtime.h>
 #include "ws_client.h"
+#include <poll.h>
 
 @interface NSWindow (OpenPrivate) - (CGRect)_openFrame; @end
 
 static ws_conn *sConn;
+static NSMapTable *sWindows;			/* wsd window id -> NSWindow (weak) */
 static int sScreenW = 1280, sScreenH = 800;
 
 static ws_conn *OpenConn(void)
@@ -41,6 +44,9 @@ static OpenWin *OpenWinOf(NSWindow *w, BOOL create)
     o->cg = CGBitmapContextCreate(o->win.px->px, o->win.px->w, o->win.px->h, 8, o->win.px->stride, cs, (CGBitmapInfo)kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little);
     CGColorSpaceRelease(cs);
     objc_setAssociatedObject(w, kOpenWinKey, o, OBJC_ASSOCIATION_RETAIN);
+    if (!sWindows) sWindows = [NSMapTable strongToWeakObjectsMapTable];
+    [sWindows setObject:w forKey:@(o->win.id)];
+    ws_win_set_event_mask(c, &o->win, -1);
     return o;
 }
 
@@ -74,7 +80,7 @@ void OpenWindowDisplay(NSWindow *w)
     NSView *cv = [w contentView];
     if (cv) OpenDrawView(cv, o->cg);
     CGContextRestoreGState(o->cg);
-    ws_win_flush(sConn, &o->win);
+    int fr_ = ws_win_flush(sConn, &o->win); if (getenv("OPEN_DEBUG")) fprintf(stderr, "open: display flush rc %d\n", fr_);
 }
 
 void OpenWindowOrderFront(NSWindow *w)
@@ -92,9 +98,56 @@ void OpenWindowOrderOut(NSWindow *w)
     if (o && o->shown) { ws_win_order(sConn, &o->win, WS_OUT, 0); o->shown = NO; }
 }
 
+static NSView *sMouseView;				/* the view that took the mouse down: it gets the drag and the up */
+static void OpenDispatch(const ws_event *e)
+{
+    NSWindow *w = [sWindows objectForKey:@(e->wid)];
+    if (!w) return;
+    OpenWin *o = OpenWinOf(w, NO);
+    CGFloat h = o ? o->win.px->h : 0;
+    CGPoint p = CGPointMake(e->x, h - e->y);			/* wsd: origin top left; AppKit: lower left */
+    NSEventModifierFlags fl = e->flags;
+    NSTimeInterval t = CFAbsoluteTimeGetCurrent();
+    NSView *cv = [w contentView];
+    switch (e->type) {
+    case WS_EV_MOUSE_DOWN: case WS_EV_MOUSE_UP: case WS_EV_MOUSE_MOVE: {
+        NSEventType ty = e->type == WS_EV_MOUSE_DOWN ? NSEventTypeLeftMouseDown : e->type == WS_EV_MOUSE_UP ? NSEventTypeLeftMouseUp : (e->buttons ? NSEventTypeLeftMouseDragged : NSEventTypeMouseMoved);
+        NSEvent *ev = [NSEvent mouseEventWithType:ty location:p modifierFlags:fl timestamp:t windowNumber:e->wid context:nil eventNumber:0 clickCount:1 pressure:1];
+        NSView *v = (ty == NSEventTypeLeftMouseDragged || ty == NSEventTypeLeftMouseUp) && sMouseView ? sMouseView : [cv hitTest:p];
+        if (ty == NSEventTypeLeftMouseDown) sMouseView = v;
+        if (ty == NSEventTypeLeftMouseUp) sMouseView = nil;
+        if (ty == NSEventTypeLeftMouseDown) [v mouseDown:ev];
+        else if (ty == NSEventTypeLeftMouseUp) [v mouseUp:ev];
+        else if (ty == NSEventTypeLeftMouseDragged) [v mouseDragged:ev];
+        else [v mouseMoved:ev];
+        break; }
+    case WS_EV_KEY_DOWN: case WS_EV_KEY_UP: {
+        NSEvent *ev = [NSEvent keyEventWithType:e->type == WS_EV_KEY_DOWN ? NSEventTypeKeyDown : NSEventTypeKeyUp location:CGPointZero modifierFlags:fl timestamp:t windowNumber:e->wid context:nil characters:@"" charactersIgnoringModifiers:@"" isARepeat:NO keyCode:(unsigned short)e->key];
+        NSResponder *r = [w firstResponder];
+        if (e->type == WS_EV_KEY_DOWN) [r keyDown:ev]; else [r keyUp:ev];
+        break; }
+    default: break;
+    }
+}
+
 void OpenRunLoop(void)
 {
-    for (;;) CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.05, false);	/* the events of wsd (the event channel of the connection) are the next step */
+    /* the events of wsd are read by a thread and handed to the main queue; the main thread sits in the run loop (which then also serves timers, dispatch and sources of the application) */
+    ws_conn *c = OpenConn();
+    if (c) {
+        dispatch_queue_t q = dispatch_queue_create("open.events", DISPATCH_QUEUE_SERIAL);
+        dispatch_async(q, ^{
+            for (;;) {
+                ws_event e;
+                if (ws_conn_next_pushed_event(c, 20, &e)) {
+                    ws_event ev = e;
+                    if (getenv("OPEN_DEBUG")) fprintf(stderr, "open: event type %d wid %d at %d,%d buttons %d\n", ev.type, (int)ev.wid, ev.x, ev.y, ev.buttons);
+                    dispatch_async(dispatch_get_main_queue(), ^{ OpenDispatch(&ev); });
+                }
+            }
+        });
+    }
+    CFRunLoopRun();
 }
 
 /* ---- what the views and colours need to draw ---- */
