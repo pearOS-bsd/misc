@@ -258,6 +258,20 @@ int sls_space_dispatch(conn *c, const uint8_t *buf, size_t len)
 		float one = 1.0f; memcpy(r + 0x24, &one, 4); memcpy(r + 0x30, &one, 4); r[0x3c] = 1;
 		return ws_ipc_send(c->fd, &(struct iovec){ r, sizeof r }, 1, NULL, 0);
 	}
+	case SLS_MSG_CopySessionSpaceState: {						/* size 0x18; reply 0x40, complex: one OOL descriptor (an array of 0x14 byte records: space id u64, display id u32, 8 more bytes), the NDR, a seed (8 bytes: it
+		 * names this state; the client keeps the array while the seed is the same) and the number of records (SkyLight's get_space_state_snapshot, read in the SkyLight of 26.7.2) */
+		if (!simple_ok(h, len, 0x18)) return reply_simple(c->fd, h, -304);
+		sp_init();
+		uint8_t rec[0x14]; memset(rec, 0, sizeof rec);
+		uint64_t cur = 1; memcpy(rec, &cur, 8);
+		{ uint32_t disp = 1; memcpy(rec + 8, &disp, 4); }
+		uint8_t r[0x40]; memset(r, 0, sizeof r);
+		fill_reply_header((mach_msg_header_t *)r, h, sizeof r, 1);
+		wr32(r, 0x18, 1); r[0x24] = 1; r[0x25] = 1; r[0x27] = 1; wr32(r, 0x28, sizeof rec); memcpy(r + 0x2c, &WS_NDR, 8);
+		{ uint64_t seed = 1; memcpy(r + 0x34, &seed, 8); } wr32(r, 0x3c, 1);
+		struct iovec v[2] = { { r, sizeof r }, { rec, sizeof rec } };
+		return ws_ipc_send(c->fd, v, 2, NULL, 0);
+	}
 	case SLS_MSG_IsMenuBarVisibleOnSpace: {                                         /* space id u64@0x20, size 0x28; reply 0x28: the flag byte@0x24 (0 for an unknown space, recorded; a known one shows the bar) */
 		if (!simple_ok(h, len, 0x28)) return reply_simple(c->fd, h, -304);
 		uint64_t id; memcpy(&id, buf + 0x20, 8);

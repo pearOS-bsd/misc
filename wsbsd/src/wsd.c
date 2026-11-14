@@ -1199,13 +1199,13 @@ static int do_private(conn *c, const uint8_t *buf, size_t len)
 static int dispatch2(conn *c, uint8_t *buf, size_t len, int *fds, int nfds);
 static int dispatch(conn *c, uint8_t *buf, size_t len, int *fds, int nfds)
 {
-	/* The server routines of the SkyLight of macOS 26.7.2 are numbered one less than the ones of 27 (in the range after VirtualDisplayDestroy: 30577 is SetFrontProcessWithInfo there, 30578 here): with
+	/* The server routines of the SkyLight of macOS 26.7.2 are numbered one less than the ones of 27 (from 30521 on, where the 27 has SetHeadroomLimit and 26 has not: 30552 is CopySessionSpaceState there, 30553 here; read from the stubs of the SkyLight of 26): with
 	 * WSD_OPSET=26 the request is taken for the routine of 27 and the reply keeps the number of the client. */
 	static int set = -1;
 	mach_msg_header_t *h0 = (mach_msg_header_t *)buf;
 
 	if (set < 0) { const char *e = getenv("WSD_OPSET"); set = e && atoi(e) == 26 ? 26 : 27; }
-	if (set == 26 && len >= sizeof *h0 && h0->msgh_id >= 30577 && h0->msgh_id < 30600) {
+	if (set == 26 && len >= sizeof *h0 && h0->msgh_id >= 30521 && h0->msgh_id < 30700) {
 		int rc;
 
 		h0->msgh_id += 1; wsd_reply_id_delta = -1;
