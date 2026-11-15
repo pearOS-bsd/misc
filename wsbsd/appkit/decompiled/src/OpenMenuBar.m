@@ -218,7 +218,8 @@ static NSMenuItem *FindKey(NSMenu *m, NSString *k)
 BOOL OpenMenuKeyEquivalent(int kc, BOOL shift)
 {
     static const char *pl = "asdfhgzxcv\0bqweryt123465=97-80]ou[ip\0lj'k;\\,/nm.\0\0`";
-    if (!sMenu || kc >= 51 || !pl[kc]) return NO;
-    NSMenuItem *it = FindKey(sMenu, [NSString stringWithFormat:@"%c", pl[kc]]); if (!it || ![it action]) return NO;
+    NSMenu *root = sMenu ?: [NSApp mainMenu];		/* the system bar publishes the main menu: the key equivalents are those of the app's menu */
+    if (!root || kc >= 51 || !pl[kc]) return NO;
+    NSMenuItem *it = FindKey(root, [NSString stringWithFormat:@"%c", pl[kc]]); if (getenv("OPEN_DEBUG")) fprintf(stderr, "open: keyequiv %c -> %s action %s\n", pl[kc], it ? [[it title] UTF8String] : "none", it && [it action] ? sel_getName([it action]) : "-"); if (!it || ![it action]) return NO;
     OpenSendAction([it action], [it target], it); return YES;
 }

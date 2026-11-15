@@ -4,6 +4,7 @@
 #import <CoreGraphics/CoreGraphics.h>
 #import <objc/runtime.h>
 #import <objc/message.h>
+#import "NSPasteboard.h"
 #import "NSColor.h"
 #import "NSGraphicsContext.h"
 #import "NSEvent.h"
@@ -229,6 +230,17 @@ static NSDictionary *AttrsFor(NSView *v) { return @{ NSFontAttributeName: [NSFon
     o->sel = NSMakeRange(o->sel.location + [s length], 0); o->anchor = o->sel.location;
     [self display];
 }
+- (void)copy:(id)sender
+{
+    OpenTV *o = TV(self); if (!o->sel.length) return;
+    NSString *t = [Str(o) substringWithRange:o->sel]; NSPasteboard *pb = [NSPasteboard generalPasteboard];
+    [pb clearContents]; [pb setString:t forType:NSPasteboardTypeString];
+}
+- (void)cut:(id)sender { [self copy:sender]; if (TV(self)->sel.length) [self _openReplace:@""]; }
+- (void)paste:(id)sender { NSString *t = [[NSPasteboard generalPasteboard] stringForType:NSPasteboardTypeString]; if ([t length]) [self _openReplace:t]; }
+- (void)pasteAsPlainText:(id)sender { [self paste:sender]; }
+- (void)selectAll:(id)sender { OpenTV *o = TV(self); o->sel = NSMakeRange(0, Len(o)); o->anchor = 0; [self display]; }
+- (void)delete:(id)sender { if (TV(self)->sel.length) [self _openReplace:@""]; }
 - (void)keyDown:(NSEvent *)e
 {
     OpenTV *o = TV(self);

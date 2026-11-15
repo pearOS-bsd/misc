@@ -58,9 +58,21 @@ static NSMutableDictionary<NSString *, NSPasteboard *> *NSPasteboardRegistry(voi
     return [self pasteboardWithName:@"Apple CFPasteboard general"];
 }
 
+/* the general pasteboard is shared between processes through a file (plain text) */
+#define OPEN_PB_FILE "/tmp/open-pasteboard"
+- (BOOL)_shared { return [_name isEqualToString:@"Apple CFPasteboard general"]; }
+- (void)_syncFromFile
+{
+    if (![self _shared]) return;
+    NSDictionary *a = [[NSFileManager defaultManager] attributesOfItemAtPath:@OPEN_PB_FILE error:nil]; NSDate *m = a[NSFileModificationDate];
+    static NSDate *last; if (!m || (last && [last isEqualToDate:m])) return;
+    last = m; NSData *d = [NSData dataWithContentsOfFile:@OPEN_PB_FILE]; if (!d) return;
+    [_types removeAllObjects]; [_store removeAllObjects]; [_types addObject:NSPasteboardTypeString]; _store[NSPasteboardTypeString] = d; _changeCount++;
+}
+- (void)_syncToFile { if ([self _shared]) { NSData *d = _store[NSPasteboardTypeString]; if (d) [d writeToFile:@OPEN_PB_FILE atomically:YES]; } }
 - (NSString *)name { return _name; }
-- (NSInteger)changeCount { return _changeCount; }
-- (NSArray<NSPasteboardType> *)types { return _types.count ? [_types copy] : nil; }
+- (NSInteger)changeCount { [self _syncFromFile]; return _changeCount; }
+- (NSArray<NSPasteboardType> *)types { [self _syncFromFile]; return _types.count ? [_types copy] : nil; }
 
 - (NSInteger)clearContents
 {
@@ -84,10 +96,11 @@ static NSMutableDictionary<NSString *, NSPasteboard *> *NSPasteboardRegistry(voi
         [_types addObject:dataType];
     }
     if (data) _store[dataType] = data; else [_store removeObjectForKey:dataType];
+    [self _syncToFile];
     return YES;
 }
 
-- (NSData *)dataForType:(NSPasteboardType)dataType { return _store[dataType]; }
+- (NSData *)dataForType:(NSPasteboardType)dataType { [self _syncFromFile]; return _store[dataType]; }
 
 - (BOOL)setString:(NSString *)string forType:(NSPasteboardType)dataType
 {
@@ -96,12 +109,13 @@ static NSMutableDictionary<NSString *, NSPasteboard *> *NSPasteboardRegistry(voi
 
 - (NSString *)stringForType:(NSPasteboardType)dataType
 {
-    NSData *d = _store[dataType];
+    [self _syncFromFile]; NSData *d = _store[dataType];
     return d ? [[NSString alloc] initWithData:d encoding:NSUTF8StringEncoding] : nil;
 }
 
 - (NSPasteboardType)availableTypeFromArray:(NSArray<NSPasteboardType> *)types
 {
+    [self _syncFromFile];
     for (NSPasteboardType t in types)
         if ([_types containsObject:t]) return t;
     return nil;
