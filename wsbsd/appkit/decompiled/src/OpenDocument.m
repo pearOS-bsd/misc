@@ -128,3 +128,19 @@ static char kUM;
 @implementation NSScroller (OpenStyle)
 + (NSInteger)preferredScrollerStyle { return 1; }
 @end
+
+@implementation NSDocumentController (OpenActions)
+- (void)newDocument:(id)sender { NSError *e = nil; [self openUntitledDocumentAndDisplay:YES error:&e]; }
+- (void)openDocument:(id)sender { fprintf(stderr, "open: openDocument: needs NSOpenPanel (not yet)\n"); }
+@end
+@implementation NSWindow (OpenClose)
+- (void)performClose:(id)sender { id d = [self delegate]; if ([d respondsToSelector:@selector(windowShouldClose:)] && !(BOOL)(NSInteger)[d performSelector:@selector(windowShouldClose:) withObject:self]) return; [self close]; }
+- (void)close
+{
+    id d = [self delegate]; if ([d respondsToSelector:@selector(windowWillClose:)]) [d performSelector:@selector(windowWillClose:) withObject:[NSNotification notificationWithName:@"NSWindowWillCloseNotification" object:self]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"NSWindowWillCloseNotification" object:self];
+    [self orderOut:nil];
+    id app = NSApp; BOOL any = NO; for (id w in [app respondsToSelector:@selector(windows)] ? [app performSelector:@selector(windows)] : @[]) if ([w isVisible] && w != self) any = YES;
+    if (!any && [[app delegate] respondsToSelector:@selector(applicationShouldTerminateAfterLastWindowClosed:)] && (BOOL)(NSInteger)[[app delegate] performSelector:@selector(applicationShouldTerminateAfterLastWindowClosed:) withObject:app]) exit(0);
+}
+@end

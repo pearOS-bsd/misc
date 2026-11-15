@@ -8,3 +8,5 @@ void OpenWindowOrderFront(NSWindow *w);
 void OpenWindowOrderOut(NSWindow *w);
 void OpenWindowDisplay(NSWindow *w);			/* draws the view tree into the buffer of the window and sends it to wsd */
 void OpenRunLoop(void);				/* the event loop of NSApplication run */
+NSWindow *OpenKeyWindow(void);
+void OpenMenuBarShow(void);			/* the main menu of the application as a bar at the top of the screen */

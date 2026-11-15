@@ -95,6 +95,11 @@ static CGSize ParseSize(NSString *s) { double a = 0, b = 0; sscanf([s UTF8String
     } else if ([cn isEqualToString:@"NSMenu"]) {
         NSMenu *m = [[NSMenu alloc] initWithTitle:[self get:@"NSTitle" of:i] ?: @""]; cache[key] = m; r = m;
         for (NSMenuItem *it in [self get:@"NSMenuItems" of:i] ?: @[]) if ([it isKindOfClass:[NSMenuItem class]]) [m addItem:it];
+        NSString *nm = [self get:@"NSName" of:i];		/* the menus the application knows by name */
+        if ([nm isEqualToString:@"_NSMainMenu"]) [NSApp setMainMenu:m];
+        else if ([nm isEqualToString:@"_NSWindowsMenu"] && [NSApp respondsToSelector:@selector(setWindowsMenu:)]) [NSApp performSelector:@selector(setWindowsMenu:) withObject:m];
+        else if ([nm isEqualToString:@"_NSServicesMenu"] && [NSApp respondsToSelector:@selector(setServicesMenu:)]) [NSApp performSelector:@selector(setServicesMenu:) withObject:m];
+        else if ([nm isEqualToString:@"_NSHelpMenu"] && [NSApp respondsToSelector:@selector(setHelpMenu:)]) [NSApp performSelector:@selector(setHelpMenu:) withObject:m];
     } else if ([cn isEqualToString:@"NSMenuItem"]) {
         NSMenuItem *it;
         if ([[self raw:@"NSIsSeparator" of:i] boolValue]) it = [NSMenuItem separatorItem];
