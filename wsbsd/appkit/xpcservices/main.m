@@ -38,6 +38,10 @@ static void Run(PanelClient *c, NSDictionary *r)
 	Reply(c, @{ @"id": r[@"id"] ?: @0, @"response": @(resp == NSOKButton ? 1 : 0), @"urls": urls });
 }
 
+/* the panel runs from a run loop timer, not from a block of the main queue: a modal loop inside a main queue block cannot be served by the events that come through that queue */
+@interface PanelRunner : NSObject + (void)run:(NSArray *)a; @end
+@implementation PanelRunner + (void)run:(NSArray *)a { Run(a[0], a[1]); } @end
+
 static void Drop(PanelClient *c) { dispatch_source_cancel(c->src); [sClients removeObject: c]; }
 static void Readable(PanelClient *c)
 {
@@ -46,7 +50,7 @@ static void Readable(PanelClient *c)
 	while ([c->buf length] >= 4) {
 		const unsigned char *p = [c->buf bytes]; NSUInteger len = ((NSUInteger)p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3]; if ([c->buf length] < 4 + len) return;
 		id o = [NSJSONSerialization JSONObjectWithData: [c->buf subdataWithRange: NSMakeRange(4, len)] options: 0 error: NULL]; [c->buf replaceBytesInRange: NSMakeRange(0, 4 + len) withBytes: NULL length: 0];
-		if ([o isKindOfClass: [NSDictionary class]]) Run(c, o);
+		if ([o isKindOfClass: [NSDictionary class]]) [PanelRunner performSelector: @selector(run:) withObject: @[c, o] afterDelay: 0];
 		if (![sClients containsObject: c]) return;
 	}
 }
@@ -70,6 +74,8 @@ int main(int argc, char *argv[])
 		});
 		dispatch_resume(src);
 		static dispatch_source_t keep; keep = src;
+		/* the windows of a modal session are redisplayed and flushed on a timer: otherwise a change shows only with the next event */
+		static NSTimer *tick; tick = [NSTimer scheduledTimerWithTimeInterval: 0.05 repeats: YES block: ^(NSTimer *t) { for (NSWindow *w in [NSApp windows]) { [w displayIfNeeded]; [w flushWindowIfNeeded]; } }];
 		[app run];
 	}
 	return 0;
