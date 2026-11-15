@@ -34,7 +34,7 @@ static ws_conn *OpenConn(void)
 
 /* the wsd window of an NSWindow: kept with the object */
 #define OPEN_TITLEBAR 32		/* measured on macOS (docs/UI-MAC.md) */
-@interface OpenWin : NSObject { @public ws_win win; CGContextRef cg; BOOL shown; int tb; BOOL hover; int pressed; } @end
+@interface OpenWin : NSObject { @public ws_win win; CGContextRef cg; BOOL shown; int tb; BOOL hover; int pressed; BOOL glassSet; } @end
 @implementation OpenWin @end
 static const void *kOpenWinKey = &kOpenWinKey;
 static OpenWin *OpenWinOf(NSWindow *w, BOOL create)
@@ -98,7 +98,9 @@ void OpenWindowDisplay(NSWindow *w)
     if (!o) return;
     CGContextSaveGState(o->cg);
     CGContextClearRect(o->cg, CGRectMake(0, 0, o->win.px->w, o->win.px->h));
-    CGContextSetRGBFillColor(o->cg, 30 / 255.0, 30 / 255.0, 30 / 255.0, 1); CGContextFillRect(o->cg, CGRectMake(0, 0, o->win.px->w, o->win.px->h - o->tb));		/* window background (dark) */
+    BOOL glass = !o->tb && [[w contentView] respondsToSelector:@selector(_openGlass)];
+    if (glass) { if (!o->glassSet) { ws_win_glass(sConn, &o->win, (ws_rect){ 0, 0, o->win.px->w, o->win.px->h }, 12, 5); o->glassSet = YES; } }
+    else { CGContextSetRGBFillColor(o->cg, 30 / 255.0, 30 / 255.0, 30 / 255.0, 1); CGContextFillRect(o->cg, CGRectMake(0, 0, o->win.px->w, o->win.px->h - o->tb)); }		/* window background (dark); menus: the material of the window server under a transparent window */
     NSView *cv = [w contentView];
     if (cv) { @try { OpenDrawView(cv, o->cg); } @catch (NSException *ex) { fprintf(stderr, "open: exception while drawing: %s: %s\n", [[ex name] UTF8String], [[ex reason] UTF8String]); } }
     if (o->tb) {

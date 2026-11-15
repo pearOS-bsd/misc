@@ -48,45 +48,45 @@ void OpenSendAction(SEL a, id target, id from)
 @interface OpenMenuList : NSView { @public NSArray *items; NSInteger hot; CGFloat W; } @end
 @implementation OpenMenuList
 - (BOOL)acceptsFirstResponder { return YES; }
-- (CGFloat)_rowY:(NSInteger)i { CGFloat y = 5; for (NSInteger k = 0; k < i; k++) y += [items[k] isSeparatorItem] ? 9 : 22; return y; }
-- (CGFloat)_rowH:(NSInteger)i { return [items[i] isSeparatorItem] ? 9 : 22; }
+- (BOOL)_openGlass { return YES; }			/* the window server draws the material under the (transparent) window */
+- (CGFloat)_rowY:(NSInteger)i { CGFloat y = 5; for (NSInteger k = 0; k < i; k++) y += [items[k] isSeparatorItem] ? 11 : 24; return y; }
+- (CGFloat)_rowH:(NSInteger)i { return [items[i] isSeparatorItem] ? 11 : 24; }
+/* the menus of the theme (WsdMacTheme.m): rows 24 pt, separators 11, 5 pt above and below, the highlighted row the accent 5 pt in from the sides with radius 8, separators 16 pt in (white 14 %), text controlText */
 - (void)drawRect:(CGRect)dirty
 {
     CGContextRef cg = [[NSGraphicsContext currentContext] CGContext]; if (!cg) return;
     CGRect b = [self bounds];
-    CGPathRef p = CGPathCreateWithRoundedRect(CGRectInset(b, 0.5, 0.5), 10, 10, NULL);
-    CGContextSetRGBFillColor(cg, 44 / 255.0, 44 / 255.0, 46 / 255.0, 1); CGContextAddPath(cg, p); CGContextFillPath(cg);
-    CGContextSetRGBStrokeColor(cg, 1, 1, 1, 0.14); CGContextAddPath(cg, p); CGContextStrokePath(cg); CGPathRelease(p);
     for (NSInteger i = 0; i < (NSInteger)[items count]; i++) {
         NSMenuItem *it = items[i]; CGFloat top = [self _rowY:i], h = [self _rowH:i];
-        CGRect r = CGRectMake(5, b.size.height - top - h, b.size.width - 10, h);
-        if ([it isSeparatorItem]) { CGContextSetRGBFillColor(cg, 1, 1, 1, 0.14); CGContextFillRect(cg, CGRectMake(14, r.origin.y + h / 2, b.size.width - 28, 1)); continue; }
-        if (i == hot) { CGPathRef hp = CGPathCreateWithRoundedRect(r, 5, 5, NULL); CGContextSetRGBFillColor(cg, 0, 122 / 255.0, 1, 1); CGContextAddPath(cg, hp); CGContextFillPath(cg); CGPathRelease(hp); }
-        CGFloat a = [it isEnabled] ? 0.92 : 0.35, cy = r.origin.y + h / 2;
-        if ([it state] == 1) Txt(cg, @"✓", 12, cy, NO, a);
-        Txt(cg, [it title] ?: @"", 26, cy, NO, a);
-        NSString *k = [it keyEquivalent]; if ([k length]) Txt(cg, [@"⌘" stringByAppendingString:[k uppercaseString]], b.size.width - 14 - TxtW([@"⌘" stringByAppendingString:[k uppercaseString]], NO), cy, NO, a * 0.7);
-        if ([it submenu]) Txt(cg, @"›", b.size.width - 20, cy, NO, a);
+        CGRect r = CGRectMake(0, b.size.height - top - h, b.size.width, h);
+        if ([it isSeparatorItem]) { CGContextSetRGBFillColor(cg, 1, 1, 1, 0.14); CGContextFillRect(cg, CGRectMake(16, r.origin.y + h / 2 - 0.5, b.size.width - 31, 1)); continue; }
+        BOOL en = [it isEnabled], isHot = i == hot && en;
+        if (isHot) { CGPathRef hp = CGPathCreateWithRoundedRect(CGRectInset(r, 5, 0), 8, 8, NULL); CGContextSetRGBFillColor(cg, 0, 122 / 255.0, 1, 1); CGContextAddPath(cg, hp); CGContextFillPath(cg); CGPathRelease(hp); }
+        CGFloat a = en ? (isHot ? 1.0 : 0.85) : 0.25, cy = r.origin.y + h / 2;
+        if ([it state] == 1) Txt(cg, @"✓", 7, cy, NO, a);
+        Txt(cg, [it title] ?: @"", 24, cy, NO, a);
+        NSString *k = [it keyEquivalent]; if ([k length]) { NSString *ks = [@"⌘" stringByAppendingString:[k uppercaseString]]; Txt(cg, ks, b.size.width - 16 - TxtW(ks, NO), cy, NO, a * 0.7); }
+        if ([it submenu]) Txt(cg, @"›", b.size.width - 22, cy, NO, isHot ? 1.0 : (en ? 0.6 : 0.25));
     }
 }
 - (NSInteger)_idx:(NSEvent *)e { CGPoint p = [e locationInWindow]; CGFloat y = [self frame].size.height - p.y; for (NSInteger i = 0; i < (NSInteger)[items count]; i++) { CGFloat t = [self _rowY:i]; if (y >= t && y < t + [self _rowH:i]) return [items[i] isSeparatorItem] ? -1 : i; } return -1; }
 - (void)mouseMoved:(NSEvent *)e { NSInteger i = [self _idx:e]; if (i != hot) { hot = i; [self display]; } }
-- (void)mouseDown:(NSEvent *)e { NSInteger i = [self _idx:e]; if (i >= 0 && [items[i] isEnabled]) [NSApp stopModalWithCode:1000 + i]; else if (i < 0) { } }
+- (void)mouseDown:(NSEvent *)e { NSInteger i = [self _idx:e]; if (i >= 0 && [items[i] isEnabled]) [NSApp stopModalWithCode:1000 + i]; }
 - (void)keyDown:(NSEvent *)e { if ([e keyCode] == 53) [NSApp stopModalWithCode:-1000]; }
 - (void)_openFocusOut { [NSApp stopModalWithCode:-1000]; }
 @end
 
 /* the item chosen in a menu shown at (x, y): y up, the top left corner of the list; submenus open to the right of their item */
-static NSMenuItem *PopupMenu(NSMenu *m, CGFloat x, CGFloat y)
+NSMenuItem *PopupMenu(NSMenu *m, CGFloat x, CGFloat y)
 {
     NSMutableArray *vis = [NSMutableArray new]; for (NSMenuItem *it in [m itemArray]) if (![it respondsToSelector:@selector(isHidden)] || ![it isHidden]) [vis addObject:it];
-    CGFloat W = 160; for (NSMenuItem *it in vis) { CGFloat w = 26 + TxtW([it title] ?: @"", NO) + ([[it keyEquivalent] length] ? 50 : 0) + ([it submenu] ? 20 : 0) + 16; if (w > W) W = w; }
-    CGFloat H = 10; for (NSMenuItem *it in vis) H += [it isSeparatorItem] ? 9 : 22;
+    CGFloat W = 120; for (NSMenuItem *it in vis) { CGFloat w = 21 + TxtW([it title] ?: @"", NO) + ([[it keyEquivalent] length] ? 44 : 0) + ([it submenu] ? 20 : 0) + 24; if (w > W) W = w; }
+    CGFloat H = 10; for (NSMenuItem *it in vis) H += [it isSeparatorItem] ? 11 : 24;
     NSWindow *w = [[NSWindow alloc] initWithContentRect:CGRectMake(x, y - H, W, H) styleMask:0 backing:NSBackingStoreBuffered defer:NO];
     OpenMenuList *v = [[OpenMenuList alloc] initWithFrame:CGRectMake(0, 0, W, H)]; v->items = vis; v->hot = -1; v->W = W; [w setContentView:v]; [w makeFirstResponder:v];
     NSInteger r = [NSApp runModalForWindow:w]; if (r < 1000) return nil;
     NSMenuItem *it = vis[r - 1000];
-    if ([it submenu]) { CGFloat top = 5; for (NSInteger k = 0; k < r - 1000; k++) top += [vis[k] isSeparatorItem] ? 9 : 22; return PopupMenu([it submenu], x + W - 4, y - top + 4); }
+    if ([it submenu]) { CGFloat top = 5; for (NSInteger k = 0; k < r - 1000; k++) top += [vis[k] isSeparatorItem] ? 11 : 24; return PopupMenu([it submenu], x + W - 4, y - top + 4); }
     return it;
 }
 
