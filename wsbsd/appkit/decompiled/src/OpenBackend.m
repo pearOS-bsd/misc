@@ -166,6 +166,7 @@ static void OpenDispatch(const ws_event *e)
         NSEventType ty = e->type == WS_EV_MOUSE_DOWN ? NSEventTypeLeftMouseDown : e->type == WS_EV_MOUSE_UP ? NSEventTypeLeftMouseUp : (e->buttons ? NSEventTypeLeftMouseDragged : NSEventTypeMouseMoved);
         NSEvent *ev = [NSEvent mouseEventWithType:ty location:p modifierFlags:fl timestamp:t windowNumber:e->wid context:nil eventNumber:0 clickCount:1 pressure:1];
         NSView *v = (ty == NSEventTypeLeftMouseDragged || ty == NSEventTypeLeftMouseUp) && sMouseView ? sMouseView : [cv hitTest:p];
+        if (getenv("OPEN_DEBUG")) fprintf(stderr, "open: hit %s at %g,%g\n", v ? class_getName([v class]) : "nil", p.x, p.y);
         if (ty == NSEventTypeLeftMouseDown) sMouseView = v;
         if (ty == NSEventTypeLeftMouseUp) sMouseView = nil;
         if (ty == NSEventTypeLeftMouseDown) [v mouseDown:ev];
@@ -206,8 +207,16 @@ void OpenRunLoop(void)
 /* ---- what the views and colours need to draw ---- */
 @implementation NSView (OpenDrawing)
 - (void)drawRect:(CGRect)dirtyRect { }
-- (void)setNeedsDisplay:(BOOL)flag { if (flag && [self window]) OpenWindowDisplay([self window]); }
-- (void)display { if ([self window]) OpenWindowDisplay([self window]); }
+- (NSWindow *)_openWindow
+{
+    NSWindow *w = [self window];
+    if (w) return w;
+    NSView *root = self; while ([root superview]) root = [root superview];			/* the window link of nested views is not kept by addSubview: yet: the root is the content view of a window */
+    for (NSNumber *k in [sWindows keyEnumerator]) { NSWindow *c = [sWindows objectForKey:k]; if ([c contentView] == root) return c; }
+    return nil;
+}
+- (void)setNeedsDisplay:(BOOL)flag { NSWindow *w = flag ? [self _openWindow] : nil; if (w) OpenWindowDisplay(w); }
+- (void)display { NSWindow *w = [self _openWindow]; if (w) OpenWindowDisplay(w); }
 @end
 
 @implementation NSColor (OpenDrawing)

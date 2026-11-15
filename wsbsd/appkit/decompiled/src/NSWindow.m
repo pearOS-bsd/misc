@@ -34,6 +34,7 @@ enum : uint64_t { NSWindowWFlagVisible = 1u << 2 };  /* _wFlags bit 2 (isVisible
         /* content view sized to the content rect; the border-view layer is stage2 */
         _contentView = [[NSView alloc] initWithFrame:CGRectMake(0, 0,
                                         contentRect.size.width, contentRect.size.height)];
+        [_contentView performSelector:@selector(_setWindow:) withObject:self];
         /* the window is its own first responder until one is set (firstResponder 0x184f3676c) */
         _firstResponder = self;
     }
