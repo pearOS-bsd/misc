@@ -7,6 +7,9 @@
 #import "NSDocument.h"
 #import "NSDocumentController.h"
 #import "NSWindowController.h"
+#import "OpenFilePanels.h"
+#import "NSMenuItem.h"
+#import "NSSavePanel.h"
 #import "NSScrollView.h"
 #import "NSScroller.h"
 
@@ -131,7 +134,12 @@ static char kUM;
 
 @implementation NSDocumentController (OpenActions)
 - (void)newDocument:(id)sender { NSError *e = nil; [self openUntitledDocumentAndDisplay:YES error:&e]; }
-- (void)openDocument:(id)sender { fprintf(stderr, "open: openDocument: needs NSOpenPanel (not yet)\n"); }
+- (void)openDocument:(id)sender
+{
+    NSOpenPanel *p = [NSOpenPanel openPanel]; [p setAllowsMultipleSelection:YES]; [p setCanChooseFiles:YES];
+    if ([p runModal] != 1) return;
+    for (NSURL *u in [p URLs]) { NSError *e = nil; id d = [self openDocumentWithContentsOfURL:u display:YES error:&e]; if (!d) fprintf(stderr, "open: cannot open %s: %s\n", [[u path] UTF8String], [[e localizedDescription] UTF8String] ?: "?"); }
+}
 @end
 @implementation NSWindow (OpenClose)
 - (void)performClose:(id)sender { id d = [self delegate]; if ([d respondsToSelector:@selector(windowShouldClose:)] && !(BOOL)(NSInteger)[d performSelector:@selector(windowShouldClose:) withObject:self]) return; [self close]; }
@@ -143,4 +151,43 @@ static char kUM;
     id app = NSApp; BOOL any = NO; for (id w in [app respondsToSelector:@selector(windows)] ? [app performSelector:@selector(windows)] : @[]) if ([w isVisible] && w != self) any = YES;
     if (!any && [[app delegate] respondsToSelector:@selector(applicationShouldTerminateAfterLastWindowClosed:)] && (BOOL)(NSInteger)[[app delegate] performSelector:@selector(applicationShouldTerminateAfterLastWindowClosed:) withObject:app]) exit(0);
 }
+@end
+
+/* ---- saving: the Save panel of the system, then the data of the program's document type ---- */
+@implementation NSDocument (OpenSave)
+- (BOOL)writeToURL:(NSURL *)u ofType:(NSString *)t error:(NSError **)e
+{
+    NSData *d = [self dataOfType:t error:e]; if (!d) return NO;
+    return [d writeToURL:u options:NSDataWritingAtomic error:e];
+}
+- (NSData *)dataOfType:(NSString *)t error:(NSError **)e { return nil; }
+- (void)_openFinishSave:(NSURL *)u type:(NSString *)t
+{
+    [self setValue:u forKey:@"fileURL"]; if (t) [self setValue:t forKey:@"fileType"];
+    [self setDisplayName:[[u lastPathComponent] copy]];
+    for (NSWindowController *wc in [self windowControllers]) { NSWindow *w = [wc valueForKey:@"window"]; if (w) [w setTitle:[self displayName]]; }
+}
+- (void)saveDocumentAs:(id)sender
+{
+    NSSavePanel *p = [NSSavePanel savePanel]; [p setNameFieldStringValue:[self displayName] ?: @"Untitled"];
+    if ([self fileURL]) [p setDirectoryURL:[[self fileURL] URLByDeletingLastPathComponent]];
+    if ([p runModal] != 1) return;
+    NSURL *u = [p URL]; NSError *e = nil; NSString *t = [self fileType] ?: @"";
+    if ([self writeToURL:u ofType:t error:&e]) [self _openFinishSave:u type:nil]; else fprintf(stderr, "open: save failed: %s\n", [[e localizedDescription] UTF8String] ?: "?");
+}
+- (void)saveDocument:(id)sender
+{
+    if (![self fileURL]) { [self saveDocumentAs:sender]; return; }
+    NSError *e = nil; if (![self writeToURL:[self fileURL] ofType:[self fileType] ?: @"" error:&e]) fprintf(stderr, "open: save failed: %s\n", [[e localizedDescription] UTF8String] ?: "?");
+}
+- (void)revertDocumentToSaved:(id)sender { }
+- (void)printDocument:(id)sender { }
+- (BOOL)validateMenuItem:(NSMenuItem *)it
+{
+    SEL a = [it action];
+    if (a == @selector(printDocument:) || a == @selector(runPageLayout:)) return NO;
+    if (a == @selector(revertDocumentToSaved:)) return [self fileURL] != nil;
+    return YES;
+}
+- (void)runPageLayout:(id)sender { }
 @end
