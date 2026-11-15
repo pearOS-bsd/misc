@@ -277,7 +277,7 @@ static CTLineRef OpenLine(NSString *s, NSDictionary *attrs, CGFloat *ascent, CGF
     CGFloat r = 0, g = 0, b = 0, a = [c alphaComponent];
     if ([c numberOfComponents] == 2) r = g = b = [c whiteComponent]; else { r = [c redComponent]; g = [c greenComponent]; b = [c blueComponent]; }
     CGColorRef cg = CGColorCreateSRGB(r, g, b, a);
-    NSDictionary *ca = @{ (id)kCTFontAttributeName: (__bridge id)[f CTFont], (id)kCTForegroundColorAttributeName: (__bridge id)cg };
+    NSDictionary *ca = @{ (id)kCTFontAttributeName: (id)f, (id)kCTForegroundColorAttributeName: (__bridge id)cg };
     CGColorRelease(cg);
     CFAttributedStringRef as = CFAttributedStringCreate(kCFAllocatorDefault, (__bridge CFStringRef)(s ?: @""), (__bridge CFDictionaryRef)ca);
     CTLineRef line = CTLineCreateWithAttributedString(as);
