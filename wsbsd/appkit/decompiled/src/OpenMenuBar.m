@@ -125,6 +125,24 @@ static NSMenu *sMenu; static NSMutableArray *sRects; static NSWindow *sBarWin;
 #include <sys/un.h>
 #include <unistd.h>
 static int sBarFd = -1; static NSMutableDictionary *sItemsById;
+static id TargetFor(SEL a, id explicit)
+{
+    if (explicit) return [explicit respondsToSelector:a] ? explicit : nil;
+    NSWindow *kw = OpenKeyWindow(); id r = [kw firstResponder];
+    for (int i = 0; r && i < 30; i++, r = [r nextResponder]) if ([r respondsToSelector:a]) return r;
+    id cands[6] = { kw, [kw delegate], [kw respondsToSelector:@selector(windowController)] ? [kw performSelector:@selector(windowController)] : nil, nil, NSApp, [NSApp delegate] };
+    id wc = cands[2]; if (wc && [wc respondsToSelector:@selector(document)]) cands[3] = [wc performSelector:@selector(document)];
+    for (int i = 0; i < 6; i++) if (cands[i] && [cands[i] respondsToSelector:a]) return cands[i];
+    Class dcc = NSClassFromString(@"NSDocumentController"); id dc = dcc ? [dcc performSelector:@selector(sharedDocumentController)] : nil; return dc && [dc respondsToSelector:a] ? dc : nil;
+}
+static BOOL ItemEnabled(NSMenuItem *it)
+{
+    if (![it isEnabled]) return NO;
+    if (![it action]) return YES;			/* a submenu title */
+    id t = TargetFor([it action], [it target]); if (!t) return NO;
+    if ([t respondsToSelector:@selector(validateMenuItem:)]) return ((BOOL(*)(id, SEL, id))objc_msgSend)(t, @selector(validateMenuItem:), it);
+    return YES;
+}
 static NSArray *Describe(NSMenu *m, NSMutableDictionary *ids)
 {
     NSMutableArray *out = [NSMutableArray new];
@@ -132,7 +150,7 @@ static NSArray *Describe(NSMenu *m, NSMutableDictionary *ids)
         if ([it isSeparatorItem]) { [out addObject:@{ @"sep": @YES }]; continue; }
         if ([it respondsToSelector:@selector(isHidden)] && [it isHidden]) continue;
         NSUInteger n = [ids count] + 1; ids[@(n)] = it;
-        NSMutableDictionary *d = [@{ @"id": @(n), @"title": [it title] ?: @"", @"key": [it keyEquivalent] ?: @"", @"mods": @(1048576), @"enabled": @([it isEnabled]), @"state": @([it state]) } mutableCopy];
+        NSMutableDictionary *d = [@{ @"id": @(n), @"title": [it title] ?: @"", @"key": [it keyEquivalent] ?: @"", @"mods": @(1048576), @"enabled": @(ItemEnabled(it)), @"state": @([it state]) } mutableCopy];
         if ([it submenu]) d[@"items"] = Describe([it submenu], ids);
         [out addObject:d];
     }
@@ -147,7 +165,6 @@ static void SendFrame(NSDictionary *o)
 void OpenMenuPublish(BOOL full)
 {
     if (sBarFd < 0) return;
-    if (!full) { SendFrame(@{ @"cmd": @"activate" }); return; }
     sItemsById = [NSMutableDictionary new]; NSMutableArray *tops = [NSMutableArray new];
     for (NSMenuItem *t in [[NSApp mainMenu] itemArray]) { NSString *ti = [t title]; if (![ti length] && [t submenu]) ti = [[t submenu] title]; if ([t submenu]) [tops addObject:@{ @"title": ti ?: @"", @"items": Describe([t submenu], sItemsById) }]; }
     NSString *name = [[NSProcessInfo processInfo] processName];
@@ -169,7 +186,7 @@ static BOOL ConnectBar(void)
                 id o = [NSJSONSerialization JSONObjectWithData:[buf subdataWithRange:NSMakeRange(4, len)] options:0 error:NULL]; [buf replaceBytesInRange:NSMakeRange(0, 4 + len) withBytes:NULL length:0];
                 if ([o isKindOfClass:[NSDictionary class]] && [o[@"cmd"] isEqualToString:@"action"]) {
                     NSNumber *idn = o[@"id"];
-                    CFRunLoopPerformBlock(CFRunLoopGetMain(), kCFRunLoopCommonModes, ^{ NSMenuItem *it = sItemsById[idn]; if (it && [it action]) OpenSendAction([it action], [it target], it); });
+                    CFRunLoopPerformBlock(CFRunLoopGetMain(), kCFRunLoopCommonModes, ^{ NSMenuItem *it = sItemsById[idn]; if (it && [it action]) OpenSendAction([it action], [it target], it); OpenMenuPublish(YES); });
                     CFRunLoopWakeUp(CFRunLoopGetMain());
                 }
             }

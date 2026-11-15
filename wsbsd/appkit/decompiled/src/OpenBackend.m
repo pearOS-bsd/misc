@@ -131,7 +131,7 @@ void OpenWindowOrderFront(NSWindow *w)
     OpenWindowDisplay(w);
     ws_win_order(sConn, &o->win, WS_ABOVE, 0);
     o->shown = YES;
-    ws_win_set_key(sConn, &o->win); sKeyWindow = w; OpenMenuPublish(NO);
+    ws_win_set_key(sConn, &o->win); sKeyWindow = w; OpenMenuPublish(YES);
 }
 
 void OpenWindowOrderOut(NSWindow *w)
@@ -162,7 +162,7 @@ static void OpenDispatch(const ws_event *e)
     if (o && o->tb && e->y < o->tb && (e->type == WS_EV_MOUSE_DOWN || e->type == WS_EV_MOUSE_MOVE || e->type == WS_EV_MOUSE_UP || sDragWid)) {	/* the title bar */
         if (e->type == WS_EV_MOUSE_DOWN) {
             int i = (e->x - 9) / 23;
-            if (e->x >= 9 && i < 3 && ((e->x - 9) % 23) < 14) { if (i == 0) { OpenWindowOrderOut(w); BOOL any = NO; for (NSNumber *k in [sWindows keyEnumerator]) { OpenWin *q = OpenWinOf([sWindows objectForKey:k], NO); if (q && q->shown) any = YES; } if (!any) exit(0); } return; }
+            if (e->x >= 9 && i < 3 && ((e->x - 9) % 23) < 14) { if (i == 0) { if ([w respondsToSelector:@selector(performClose:)]) [w performSelector:@selector(performClose:) withObject:nil]; else OpenWindowOrderOut(w); } return; }
             sDragWid = e->wid; sDragX = e->x; sDragY = e->y;
         }
         return;
@@ -188,6 +188,7 @@ static void OpenDispatch(const ws_event *e)
         else if (ty == NSEventTypeLeftMouseDragged) [v mouseDragged:ev];
         else [v mouseMoved:ev];
         break; }
+    case WS_EV_FOCUS_IN: { OpenWin *fo = OpenWinOf(w, NO); if (fo && fo->tb) { sKeyWindow = w; OpenMenuPublish(YES); } break; }
     case WS_EV_FOCUS_OUT: { if ([cv respondsToSelector:@selector(_openFocusOut)]) [cv performSelector:@selector(_openFocusOut)]; break; }
     case WS_EV_SCROLL: {
         NSView *v = [cv hitTest:p];
