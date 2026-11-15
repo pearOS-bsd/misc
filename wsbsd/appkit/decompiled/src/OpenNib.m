@@ -113,14 +113,17 @@ static CGSize ParseSize(NSString *s) { double a = 0, b = 0; sscanf([s UTF8String
         NSString *cc = ([cn isEqualToString:@"NSCustomView"] || [cn isEqualToString:@"NSClassSwapper"]) ? [self get:@"NSClassName" of:i] : cn; Class k = NSClassFromString(cc) ?: NSClassFromString(cn);
         id frameStr = [self get:@"NSFrame" of:i]; CGRect f = frameStr ? ParseRect(frameStr) : CGRectMake(0, 0, ParseSize([self get:@"NSFrameSize" of:i]).width, ParseSize([self get:@"NSFrameSize" of:i]).height);
         NSView *v = [[k alloc] initWithFrame:f]; cache[key] = v; r = v;
-        for (id sv in [self get:@"NSSubviews" of:i] ?: @[]) if ([sv isKindOfClass:[NSView class]]) [v addSubview:sv];
+        for (id sv in [self get:@"NSSubviews" of:i] ?: @[]) {
+            if (![sv isKindOfClass:[NSView class]]) continue;
+            if ([v isKindOfClass:[NSScrollView class]] && [sv isKindOfClass:NSClassFromString(@"NSClipView")]) { NSView *dv = [[sv subviews] firstObject]; if (dv) { [dv removeFromSuperview]; [(NSScrollView *)v setDocumentView:dv]; } continue; }		/* the scroll view has its own clip view */
+            [v addSubview:sv];
+        }
         id cell = [self get:@"NSCell" of:i]; id contents = [cell isKindOfClass:[NSDictionary class]] ? cell[@"title"] : nil; (void)contents;
         if ([v isKindOfClass:[NSButton class]] || [v isKindOfClass:[NSTextField class]]) {
             NSUInteger ci = [(OpenRef *)[self raw:@"NSCell" of:i] isKindOfClass:[OpenRef class]] ? ((OpenRef *)[self raw:@"NSCell" of:i])->i : NSNotFound;
             if (ci != NSNotFound) { id t = [self get:@"NSContents" of:ci]; if ([t isKindOfClass:[NSString class]]) { if ([v isKindOfClass:[NSButton class]]) [(NSButton *)v setTitle:t]; else [(NSTextField *)v setStringValue:t]; } }
         }
         { id doc = [self get:@"NSDocView" of:i]; if ([doc isKindOfClass:[NSView class]]) [v addSubview:doc]; }			/* the clip view holds the document view */
-        if ([v isKindOfClass:[NSScrollView class]]) { for (NSView *sv in [v subviews]) { NSView *dv = [[sv subviews] firstObject]; if ([sv isKindOfClass:NSClassFromString(@"NSClipView")] && dv) { [(NSScrollView *)v setDocumentView:dv]; break; } } }
     } else if ([cn isEqualToString:@"NSNibOutletConnector"] || [cn isEqualToString:@"NSNibControlConnector"] || [cn isEqualToString:@"IBClassReference"]) {
         r = nil;			/* applied after everything is built */
     } else { fprintf(stderr, "open: nib: unknown class %s\n", [cn UTF8String]); }
