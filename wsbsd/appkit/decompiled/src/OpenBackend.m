@@ -60,6 +60,7 @@ static OpenWin *OpenWinOf(NSWindow *w, BOOL create)
 /* a view and its subviews into the current CGContext: the origin of the view, flipped views get a y axis that goes down */
 static void OpenDrawView(NSView *v, CGContextRef cg)
 {
+    if ([v isKindOfClass:NSClassFromString(@"NSClipView")]) for (NSView *d in [v subviews]) if ([d frame].size.width <= 0 || [d frame].size.height <= 0) [d setFrame:[v bounds]];		/* a document view without a size takes the one of its clip view (as the scroll view does) */
     CGRect fr = [v frame], b = [v bounds];
     CGContextSaveGState(cg);
     CGContextTranslateCTM(cg, fr.origin.x, fr.origin.y);
@@ -78,8 +79,15 @@ static void OpenDrawView(NSView *v, CGContextRef cg)
     CGContextRestoreGState(cg);
 }
 
+static void OpenDump(NSView *v, int d)
+{
+    CGRect f = [v frame];
+    fprintf(stderr, "open: view %*s%s (%g,%g %gx%g) subviews %lu\n", d * 2, "", class_getName([v class]), f.origin.x, f.origin.y, f.size.width, f.size.height, (unsigned long)[[v subviews] count]);
+    for (NSView *s in [v subviews]) OpenDump(s, d + 1);
+}
 void OpenWindowDisplay(NSWindow *w)
 {
+    static int dumped; if (getenv("OPEN_DEBUG") && dumped++ < 2) OpenDump([w contentView], 0);
     OpenWin *o = OpenWinOf(w, NO);
     if (!o) return;
     CGContextSaveGState(o->cg);
