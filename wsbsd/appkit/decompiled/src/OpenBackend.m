@@ -31,7 +31,7 @@ static ws_conn *OpenConn(void)
 
 /* the wsd window of an NSWindow: kept with the object */
 #define OPEN_TITLEBAR 32		/* measured on macOS (docs/UI-MAC.md) */
-@interface OpenWin : NSObject { @public ws_win win; CGContextRef cg; BOOL shown; int tb; } @end
+@interface OpenWin : NSObject { @public ws_win win; CGContextRef cg; BOOL shown; int tb; BOOL hover; int pressed; } @end
 @implementation OpenWin @end
 static const void *kOpenWinKey = &kOpenWinKey;
 static OpenWin *OpenWinOf(NSWindow *w, BOOL create)
@@ -45,7 +45,7 @@ static OpenWin *OpenWinOf(NSWindow *w, BOOL create)
     int top = sScreenH - (int)(f.origin.y + f.size.height) - tb;
     if (tb && (top < 28 || top > sScreenH - 60)) top = 60 + (int)([[sWindows keyEnumerator] allObjects].count % 8) * 24;		/* a window from a nib may carry a position of another screen: keep it visible */
     if (tb && (f.origin.x < 0 || f.origin.x > 1000)) f.origin.x = 120 + top;
-    o = [OpenWin new];
+    o = [OpenWin new]; o->pressed = -1;
     o->tb = tb;
     if (ws_win_create(c, (ws_rect){ (int)f.origin.x, top, (int)f.size.width, (int)f.size.height + tb }, 0, &o->win)) { NSLog(@"open: cannot create the window"); return nil; }
     CGColorSpaceRef cs = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
@@ -55,6 +55,7 @@ static OpenWin *OpenWinOf(NSWindow *w, BOOL create)
     if (!sWindows) sWindows = [NSMapTable strongToWeakObjectsMapTable];
     [sWindows setObject:w forKey:@(o->win.id)];
     ws_win_set_event_mask(c, &o->win, -1);
+    ws_win_shadow(c, &o->win, tb ? 16 : 12, tb ? 1 : 2);		/* titled windows: the shadow and the rounded corners of the window server; borderless ones (menus, panels): the menu shadow */
     return o;
 }
 
@@ -86,6 +87,7 @@ static void OpenDump(NSView *v, int d)
     fprintf(stderr, "open: view %*s%s (%g,%g %gx%g) subviews %lu\n", d * 2, "", class_getName([v class]), f.origin.x, f.origin.y, f.size.width, f.size.height, (unsigned long)[[v subviews] count]);
     for (NSView *s in [v subviews]) OpenDump(s, d + 1);
 }
+extern void OpenDrawTitleBar(CGContextRef cg, CGFloat W, CGFloat H, NSString *title, BOOL key, BOOL hover, int pressed, BOOL edited, BOOL hasClose, BOOL hasMini, BOOL hasZoom);
 void OpenWindowDisplay(NSWindow *w)
 {
     static int dumped; if (getenv("OPEN_DEBUG") && dumped++ < 2) OpenDump([w contentView], 0);
@@ -97,26 +99,10 @@ void OpenWindowDisplay(NSWindow *w)
     NSView *cv = [w contentView];
     if (cv) { @try { OpenDrawView(cv, o->cg); } @catch (NSException *ex) { fprintf(stderr, "open: exception while drawing: %s: %s\n", [[ex name] UTF8String], [[ex reason] UTF8String]); } }
     if (o->tb) {
-        CGFloat W = o->win.px->w, H = o->win.px->h, tb = o->tb;
-        CGContextSetRGBFillColor(o->cg, 35 / 255.0, 35 / 255.0, 36 / 255.0, 1); CGContextFillRect(o->cg, CGRectMake(0, H - tb, W, tb));
-        /* traffic lights 14x14 at x = 9, 32, 55: gradient top / middle / bottom (docs/UI-MAC.md) */
-        static const int gr[3][3][3] = { { {247,94,85}, {244,83,70}, {239,104,97} }, { {251,180,1}, {253,193,1}, {254,207,48} }, { {51,194,1}, {0,188,0}, {78,194,58} } };
-        CGColorSpaceRef rgb = CGColorSpaceCreateDeviceRGB();
-        for (int i = 0; i < 3; i++) {
-            CGFloat c[12], loc[3] = { 0, 0.5, 1 };
-            for (int k = 0; k < 3; k++) { c[k * 4] = gr[i][2 - k][0] / 255.0; c[k * 4 + 1] = gr[i][2 - k][1] / 255.0; c[k * 4 + 2] = gr[i][2 - k][2] / 255.0; c[k * 4 + 3] = 1; }
-            CGGradientRef g = CGGradientCreateWithColorComponents(rgb, c, loc, 3);
-            CGRect r = CGRectMake(9 + i * 23, H - tb + 9, 14, 14);
-            CGContextSaveGState(o->cg); CGContextAddEllipseInRect(o->cg, r); CGContextClip(o->cg);
-            CGContextDrawLinearGradient(o->cg, g, CGPointMake(0, r.origin.y + 14), CGPointMake(0, r.origin.y), 0);
-            CGContextRestoreGState(o->cg); CGGradientRelease(g);
-        }
-        CGColorSpaceRelease(rgb);
         NSGraphicsContext *gc = [NSGraphicsContext graphicsContextWithCGContext:o->cg flipped:NO];
         NSGraphicsContext *old = [NSGraphicsContext currentContext]; [NSGraphicsContext setCurrentContext:gc];
-        NSString *t = [w title]; NSDictionary *at = @{ NSFontAttributeName: [NSFont boldSystemFontOfSize:13], NSForegroundColorAttributeName: [NSColor colorWithCalibratedWhite:1 alpha:0.85] };
-        CGSize ts = [t sizeWithAttributes:at];
-        [t drawAtPoint:CGPointMake(82, H - tb / 2 - ts.height / 2) withAttributes:at];
+        NSUInteger sm = [w styleMask];
+        OpenDrawTitleBar(o->cg, o->win.px->w, o->win.px->h, [w title], sKeyWindow == w, o->hover, o->pressed, [w respondsToSelector:@selector(isDocumentEdited)] && (BOOL)(NSInteger)[w performSelector:@selector(isDocumentEdited)], (sm & 2) != 0, (sm & 4) != 0, (sm & 8) != 0);
         [NSGraphicsContext setCurrentContext:old];
     }
     CGContextRestoreGState(o->cg);
@@ -159,13 +145,20 @@ static void OpenDispatch(const ws_event *e)
     if (!w) return;
     OpenWin *o = OpenWinOf(w, NO);
     CGFloat h = o ? o->win.px->h : 0;
-    if (o && o->tb && e->y < o->tb && (e->type == WS_EV_MOUSE_DOWN || e->type == WS_EV_MOUSE_MOVE || e->type == WS_EV_MOUSE_UP || sDragWid)) {	/* the title bar */
-        if (e->type == WS_EV_MOUSE_DOWN) {
-            int i = (e->x - 9) / 23;
-            if (e->x >= 9 && i < 3 && ((e->x - 9) % 23) < 14) { if (i == 0) { if ([w respondsToSelector:@selector(performClose:)]) [w performSelector:@selector(performClose:) withObject:nil]; else OpenWindowOrderOut(w); } return; }
-            sDragWid = e->wid; sDragX = e->x; sDragY = e->y;
+    if (o && o->tb && (e->type == WS_EV_MOUSE_DOWN || e->type == WS_EV_MOUSE_MOVE || e->type == WS_EV_MOUSE_UP)) {	/* the title bar: the three buttons (16 pt at x = 8, 31, 54), hover over the group, dragging */
+        BOOL inBar = e->y < o->tb, grp = inBar && e->x >= 4 && e->x < 8 + 23 * 2 + 16 + 4;
+        if (grp != o->hover) { o->hover = grp; OpenWindowDisplay(w); }
+        int bi = -1; for (int i = 0; i < 3; i++) if (inBar && e->x >= 8 + 23 * i && e->x < 8 + 23 * i + 16) bi = i;
+        if (e->type == WS_EV_MOUSE_DOWN && bi >= 0) { o->pressed = bi; OpenWindowDisplay(w); return; }
+        if (o->pressed >= 0) {
+            if (e->type == WS_EV_MOUSE_UP) {
+                int i = o->pressed; o->pressed = -1; OpenWindowDisplay(w);
+                if (bi == i) { if (i == 0 && [w respondsToSelector:@selector(performClose:)]) [w performSelector:@selector(performClose:) withObject:nil]; else if (i == 1 && [w respondsToSelector:@selector(performMiniaturize:)]) [w performSelector:@selector(performMiniaturize:) withObject:nil]; }
+            }
+            return;
         }
-        return;
+        if (e->type == WS_EV_MOUSE_DOWN && inBar) { sDragWid = e->wid; sDragX = e->x; sDragY = e->y; return; }
+        if (inBar && !sDragWid) return;
     }
     if (sDragWid && e->wid == sDragWid) {
         if (e->type == WS_EV_MOUSE_MOVE && e->buttons) { const ws_win *wl[1] = { &o->win }; ws_win_move_list(OpenConn(), wl, 1, e->x - sDragX, e->y - sDragY); return; }
