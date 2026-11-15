@@ -118,3 +118,30 @@ NSInteger OpenPopupMenu(NSView *anchor, NSArray *titles, NSInteger sel)
     NSInteger r = [NSApp runModalForWindow:w];
     return r >= 1000 ? r - 1000 : -1;
 }
+
+/* ---- entry point of every Cocoa program, and the fill/frame functions with an operation ---- */
+@interface NSBundle (OpenNib) - (BOOL)loadNibNamed:(NSString *)n owner:(id)o topLevelObjects:(NSArray **)t; @end
+int NSApplicationMain(int argc, const char *argv[])
+{
+    @autoreleasepool {
+        NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
+        Class pc = NSClassFromString(info[@"NSPrincipalClass"] ?: @"NSApplication") ?: [NSApplication class];
+        NSApplication *app = [pc sharedApplication];
+        NSString *nib = info[@"NSMainNibFile"];
+        if ([nib length]) { BOOL ok = [[NSBundle mainBundle] loadNibNamed:nib owner:app topLevelObjects:nil]; fprintf(stderr, "open: main nib %s: %s\n", [nib UTF8String], ok ? "loaded" : "NOT loaded (no nib loader yet)"); }
+        [app run];
+    }
+    return 0;
+}
+void NSRectFillUsingOperation(CGRect r, NSInteger op) { NSRectFill(r); }
+void NSFrameRectWithWidthUsingOperation(CGRect r, CGFloat w, NSInteger op)
+{
+    CGContextRef cg = [[NSGraphicsContext currentContext] CGContext]; if (!cg) return;
+    CGContextFillRect(cg, CGRectMake(r.origin.x, r.origin.y, r.size.width, w)); CGContextFillRect(cg, CGRectMake(r.origin.x, r.origin.y + r.size.height - w, r.size.width, w));
+    CGContextFillRect(cg, CGRectMake(r.origin.x, r.origin.y, w, r.size.height)); CGContextFillRect(cg, CGRectMake(r.origin.x + r.size.width - w, r.origin.y, w, r.size.height));
+}
+/* Swift overlay: CGRect.fill(using:) / CGRect.frame(withWidth:using:) — the arguments come in registers like in C (x y w h in xmm0-3, the operation in rdi) */
+void open_swift_fill(double x, double y, double w, double h, long op) __asm__("_$sSo6CGRectV6AppKitE4fill5usingySo22NSCompositingOperationV_tF");
+void open_swift_fill(double x, double y, double w, double h, long op) { NSRectFill(CGRectMake(x, y, w, h)); }
+void open_swift_frame(double x, double y, double w, double h, double fw, long op) __asm__("_$sSo6CGRectV6AppKitE5frame9withWidth5usingy12CoreGraphics7CGFloatV_So22NSCompositingOperationVtF");
+void open_swift_frame(double x, double y, double w, double h, double fw, long op) { NSFrameRectWithWidthUsingOperation(CGRectMake(x, y, w, h), fw, op); }
