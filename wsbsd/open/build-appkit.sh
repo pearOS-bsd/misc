@@ -5,6 +5,7 @@ set -e
 OUT="${1:?output directory}"; R="$(cd "$(dirname "$0")/.." && pwd)"; mkdir -p "$OUT/o"
 S="$R/appkit/decompiled/src"
 for f in "$S"/*.m; do b=$(basename "$f" .m); [ "$b" = NSSliderAccessoryBehavior ] && continue
+  grep -qx "$b" "$R/open/uifoundation-classes.txt" && continue		# these classes live in UIFoundation (the cache): the real ones are used
   cc -arch x86_64 -fobjc-arc -Wno-everything -I"$S" -I"$R/include" -c "$f" -o "$OUT/o/$b.o" || echo "FAILED $b"; done
 cc -arch x86_64 -fobjc-arc -Wno-everything -I"$S" -c "$R/appkit/decompiled/test/stubs.m" -o "$OUT/o/stubs.o"
 for c in client compositor_sw region ipc evrec buffer; do cc -arch x86_64 -Wno-everything -DWS_DARWIN_ON_BSD -I"$R/include" -c "$R/src/$c.c" -o "$OUT/o/ws_$c.o"; done
