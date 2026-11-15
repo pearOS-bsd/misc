@@ -174,6 +174,11 @@ static void OpenDispatch(const ws_event *e)
         else if (ty == NSEventTypeLeftMouseDragged) [v mouseDragged:ev];
         else [v mouseMoved:ev];
         break; }
+    case WS_EV_SCROLL: {
+        NSView *v = [cv hitTest:p];
+        while (v && ![v respondsToSelector:@selector(_openScrollBy:)]) v = [v superview];
+        if (v) [v performSelector:@selector(_openScrollBy:) withObject:@((double)e->dy)];
+        break; }
     case WS_EV_KEY_DOWN: case WS_EV_KEY_UP: {
         NSEvent *ev = [NSEvent keyEventWithType:e->type == WS_EV_KEY_DOWN ? NSEventTypeKeyDown : NSEventTypeKeyUp location:CGPointZero modifierFlags:fl timestamp:t windowNumber:e->wid context:nil characters:OpenKeyChars((unsigned short)e->key, (fl & NSEventModifierFlagShift) != 0) charactersIgnoringModifiers:OpenKeyChars((unsigned short)e->key, NO) isARepeat:NO keyCode:(unsigned short)e->key];
         NSResponder *r = [w firstResponder];

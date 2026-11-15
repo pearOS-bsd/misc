@@ -24,7 +24,7 @@ typedef CGRect (*RectFn)(id, SEL, ...);
 typedef CGPoint (*PtFn)(id, SEL, ...);
 typedef NSRange (*RangeFn)(id, SEL, ...);
 
-@interface OpenTV : NSObject { @public id ts, lm, tc; NSRange sel; NSUInteger anchor; } @end
+@interface OpenTV : NSObject { @public id ts, lm, tc; NSRange sel; NSUInteger anchor; CGFloat off; } @end
 @implementation OpenTV @end
 static char kTV;
 static const CGFloat kInsetX = 5, kInsetY = 4;
@@ -68,6 +68,7 @@ static NSDictionary *Attrs(void) { return @{ NSFontAttributeName: [NSFont system
     CGContextRef cg = [[NSGraphicsContext currentContext] CGContext]; if (!cg) return;
     OpenTV *o = TV(self); CGRect b = [self bounds];
     CGContextSetRGBFillColor(cg, 23 / 255.0, 24 / 255.0, 25 / 255.0, 1); CGContextFillRect(cg, b);
+    CGContextSaveGState(cg); CGContextClipToRect(cg, b); CGContextTranslateCTM(cg, 0, -o->off);
     CGSize sz = CGSizeMake(b.size.width - 2 * kInsetX, 1e7);
     ((void(*)(id, SEL, CGSize))objc_msgSend)(o->tc, SEL_("setSize:"), sz);
     CGPoint org = CGPointMake(kInsetX, kInsetY);
@@ -83,6 +84,22 @@ static NSDictionary *Attrs(void) { return @{ NSFontAttributeName: [NSFont system
         CGRect c = [self _openCaretRect];
         CGContextSetRGBFillColor(cg, 0.3, 0.6, 1, 1); CGContextFillRect(cg, c);
     }
+    CGContextRestoreGState(cg);
+    CGFloat ch = [self _openContentHeight], vh = b.size.height;		/* scroller: a thin thumb on the right */
+    if (ch > vh) { CGFloat th = vh * vh / ch, ty = (vh - th) * (o->off / (ch - vh)); CGContextSetRGBFillColor(cg, 1, 1, 1, 0.3); CGPathRef sp = CGPathCreateWithRoundedRect(CGRectMake(b.size.width - 8, ty + 2, 5, th - 4), 2.5, 2.5, NULL); CGContextAddPath(cg, sp); CGContextFillPath(cg); CGPathRelease(sp); }
+}
+- (CGFloat)_openContentHeight
+{
+    OpenTV *o = TV(self);
+    ((void(*)(id, SEL, CGSize))objc_msgSend)(o->tc, SEL_("setSize:"), CGSizeMake([self bounds].size.width - 2 * kInsetX, 1e7));
+    CGRect u = ((RectFn)objc_msgSend_stret)(o->lm, SEL_("usedRectForTextContainer:"), o->tc);
+    return u.size.height + 2 * kInsetY;
+}
+- (void)_openScrollBy:(NSNumber *)dy
+{
+    OpenTV *o = TV(self); CGFloat max = [self _openContentHeight] - [self bounds].size.height; if (max < 0) max = 0;
+    CGFloat n = o->off - [dy doubleValue]; if (n < 0) n = 0; if (n > max) n = max;
+    if (n != o->off) { o->off = n; [self display]; }
 }
 - (CGRect)_openCaretRect
 {
@@ -112,6 +129,7 @@ static NSDictionary *Attrs(void) { return @{ NSFontAttributeName: [NSFont system
     for (NSView *v = self; v && v != [[self window] contentView]; v = [v superview]) { p.x -= [v frame].origin.x; p.y -= [v frame].origin.y; }
     CGRect cf = [[[self window] contentView] frame]; p.x -= cf.origin.x; p.y -= cf.origin.y;
     p.y = [self frame].size.height - p.y;			/* flipped */
+    p.y += TV(self)->off;
     return p;
 }
 - (void)mouseDown:(NSEvent *)e
