@@ -10,3 +10,4 @@ void OpenWindowDisplay(NSWindow *w);			/* draws the view tree into the buffer of
 void OpenRunLoop(void);				/* the event loop of NSApplication run */
 NSWindow *OpenKeyWindow(void);
 void OpenMenuBarShow(void);			/* the main menu of the application as a bar at the top of the screen */
+void OpenMenuPublish(BOOL full);			/* the menus (or only the activation) of this program to the menu bar of the system */

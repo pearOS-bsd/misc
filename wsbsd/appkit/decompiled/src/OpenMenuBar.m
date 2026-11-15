@@ -120,8 +120,68 @@ static NSMenu *sMenu; static NSMutableArray *sRects; static NSWindow *sBarWin;
 }
 @end
 
+/* ---- the menu bar of the system (topbar/MenuMirror.m): the menus are published over /tmp/wsmenu.sock, the actions come back ---- */
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <unistd.h>
+static int sBarFd = -1; static NSMutableDictionary *sItemsById;
+static NSArray *Describe(NSMenu *m, NSMutableDictionary *ids)
+{
+    NSMutableArray *out = [NSMutableArray new];
+    for (NSMenuItem *it in [m itemArray]) {
+        if ([it isSeparatorItem]) { [out addObject:@{ @"sep": @YES }]; continue; }
+        if ([it respondsToSelector:@selector(isHidden)] && [it isHidden]) continue;
+        NSUInteger n = [ids count] + 1; ids[@(n)] = it;
+        NSMutableDictionary *d = [@{ @"id": @(n), @"title": [it title] ?: @"", @"key": [it keyEquivalent] ?: @"", @"mods": @(1048576), @"enabled": @([it isEnabled]), @"state": @([it state]) } mutableCopy];
+        if ([it submenu]) d[@"items"] = Describe([it submenu], ids);
+        [out addObject:d];
+    }
+    return out;
+}
+static void SendFrame(NSDictionary *o)
+{
+    NSData *j = [NSJSONSerialization dataWithJSONObject:o options:0 error:NULL]; if (!j || sBarFd < 0) return;
+    unsigned char h[4] = { (unsigned char)([j length] >> 24), (unsigned char)([j length] >> 16), (unsigned char)([j length] >> 8), (unsigned char)[j length] };
+    write(sBarFd, h, 4); write(sBarFd, [j bytes], [j length]);
+}
+void OpenMenuPublish(BOOL full)
+{
+    if (sBarFd < 0) return;
+    if (!full) { SendFrame(@{ @"cmd": @"activate" }); return; }
+    sItemsById = [NSMutableDictionary new]; NSMutableArray *tops = [NSMutableArray new];
+    for (NSMenuItem *t in [[NSApp mainMenu] itemArray]) { NSString *ti = [t title]; if (![ti length] && [t submenu]) ti = [[t submenu] title]; if ([t submenu]) [tops addObject:@{ @"title": ti ?: @"", @"items": Describe([t submenu], sItemsById) }]; }
+    NSString *name = [[NSProcessInfo processInfo] processName];
+    SendFrame(@{ @"cmd": @"menus", @"pid": @(getpid()), @"name": name, @"menus": tops });
+}
+static BOOL ConnectBar(void)
+{
+    const char *path = getenv("WSMENU_SOCKET") ?: "/tmp/wsmenu.sock";
+    int fd = socket(AF_UNIX, SOCK_STREAM, 0); struct sockaddr_un a; memset(&a, 0, sizeof a); a.sun_family = AF_UNIX; strlcpy(a.sun_path, path, sizeof a.sun_path);
+    if (connect(fd, (struct sockaddr *)&a, sizeof a) != 0) { close(fd); return NO; }
+    sBarFd = fd;
+    dispatch_async(dispatch_queue_create("open.menubar", DISPATCH_QUEUE_SERIAL), ^{
+        NSMutableData *buf = [NSMutableData new];
+        for (;;) {
+            char tmp[4096]; ssize_t n = read(sBarFd, tmp, sizeof tmp); if (n <= 0) { sBarFd = -1; return; }
+            [buf appendBytes:tmp length:(NSUInteger)n];
+            while ([buf length] >= 4) {
+                const unsigned char *p = [buf bytes]; NSUInteger len = ((NSUInteger)p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3]; if ([buf length] < 4 + len) break;
+                id o = [NSJSONSerialization JSONObjectWithData:[buf subdataWithRange:NSMakeRange(4, len)] options:0 error:NULL]; [buf replaceBytesInRange:NSMakeRange(0, 4 + len) withBytes:NULL length:0];
+                if ([o isKindOfClass:[NSDictionary class]] && [o[@"cmd"] isEqualToString:@"action"]) {
+                    NSNumber *idn = o[@"id"];
+                    CFRunLoopPerformBlock(CFRunLoopGetMain(), kCFRunLoopCommonModes, ^{ NSMenuItem *it = sItemsById[idn]; if (it && [it action]) OpenSendAction([it action], [it target], it); });
+                    CFRunLoopWakeUp(CFRunLoopGetMain());
+                }
+            }
+        }
+    });
+    return YES;
+}
+
 void OpenMenuBarShow(void)
 {
+    if (!sMenu && ConnectBar()) { OpenMenuPublish(YES); if (getenv("OPEN_DEBUG")) fprintf(stderr, "open: menus published to the system menu bar\n"); return; }
+    if (sBarFd >= 0) { OpenMenuPublish(YES); return; }
     sMenu = [NSApp mainMenu]; if (getenv("OPEN_DEBUG")) fprintf(stderr, "open: menubar: mainMenu %p items %lu\n", (__bridge void *)sMenu, (unsigned long)[[sMenu itemArray] count]);
     if (!sMenu || ![[sMenu itemArray] count]) return;
     NSWindow *w = [[NSWindow alloc] initWithContentRect:CGRectMake(0, 800 - 24, 1280, 24) styleMask:0 backing:NSBackingStoreBuffered defer:NO];
