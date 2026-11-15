@@ -33,7 +33,8 @@ static char kNibName, kNibOwner, kLoaded;
     objc_setAssociatedObject(self, &kLoaded, @YES, OBJC_ASSOCIATION_RETAIN);
     NSString *n = [self windowNibName]; if (!n) return;
     [self windowWillLoad];
-    [[NSBundle mainBundle] loadNibNamed:n owner:[self owner] topLevelObjects:nil];
+    NSArray *top = nil; [[NSBundle mainBundle] loadNibNamed:n owner:[self owner] topLevelObjects:&top];
+    if (![self valueForKey:@"window"]) for (id o in top) if ([o isKindOfClass:[NSWindow class]]) { [self setValue:o forKey:@"window"]; break; }		/* the window outlet is on the owner (the document), not on the controller: the first window of the nib is the one */
     [self windowDidLoad];
 }
 - (void)windowWillLoad { }
@@ -190,4 +191,61 @@ static char kUM;
     return YES;
 }
 - (void)runPageLayout:(id)sender { }
+@end
+
+/* ---- the rest of the document controller / application API programs call at launch ---- */
+@implementation NSDocumentController (OpenMore)
+- (void)setAutosavingDelay:(NSTimeInterval)t { }
+- (NSTimeInterval)autosavingDelay { return 0; }
+- (void)clearRecentDocuments:(id)s { }
+- (NSArray *)recentDocumentURLs { return @[]; }
+- (void)noteNewRecentDocument:(id)d { }
+- (NSString *)defaultType { return [[[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDocumentTypes"] firstObject] objectForKey:@"CFBundleTypeName"]; }
+- (NSArray *)documentClassNames { NSMutableArray *a = [NSMutableArray new]; for (NSDictionary *t in [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDocumentTypes"]) if (t[@"NSDocumentClass"]) [a addObject:t[@"NSDocumentClass"]]; return a; }
+- (BOOL)hasEditedDocuments { for (id d in [self documents]) if ([d isDocumentEdited]) return YES; return NO; }
+- (void)closeAllDocumentsWithDelegate:(id)d didCloseAllSelector:(SEL)s contextInfo:(void *)c { }
+- (void)reviewUnsavedDocumentsWithAlertTitle:(NSString *)t cancellable:(BOOL)c delegate:(id)d didReviewAllSelector:(SEL)s contextInfo:(void *)i { }
+@end
+static char kWinMenu;
+@implementation NSApplication (OpenServices)
+- (void)setServicesProvider:(id)p { }
+- (void)registerServicesMenuSendTypes:(NSArray *)s returnTypes:(NSArray *)r { }
+- (void)setServicesMenu:(id)m { }
+- (void)setWindowsMenu:(id)m { objc_setAssociatedObject(self, &kWinMenu, m, OBJC_ASSOCIATION_RETAIN); }
+- (id)windowsMenu { return objc_getAssociatedObject(self, &kWinMenu); }
+- (void)addWindowsItem:(id)w title:(NSString *)t filename:(BOOL)f { }
+- (void)changeWindowsItem:(id)w title:(NSString *)t filename:(BOOL)f { }
+- (void)removeWindowsItem:(id)w { }
+- (void)updateWindowsItem:(id)w { }
+- (void)setHelpMenu:(id)m { }
+@end
+
+/* ---- window attributes programs set and read (kept here; the level goes to wsd with the window) ---- */
+static char kWA;
+static NSMutableDictionary *WA(NSWindow *w) { NSMutableDictionary *d = objc_getAssociatedObject(w, &kWA); if (!d) { d = [NSMutableDictionary new]; objc_setAssociatedObject(w, &kWA, d, OBJC_ASSOCIATION_RETAIN); } return d; }
+@implementation NSWindow (OpenAttributes)
+- (CGFloat)alphaValue { NSNumber *n = WA(self)[@"alpha"]; return n ? [n doubleValue] : 1.0; }
+- (void)setAlphaValue:(CGFloat)a { WA(self)[@"alpha"] = @(a); }
+- (NSInteger)level { return [WA(self)[@"level"] integerValue]; }
+- (void)setLevel:(NSInteger)l { WA(self)[@"level"] = @(l); }
+- (BOOL)isOpaque { NSNumber *n = WA(self)[@"opaque"]; return n ? [n boolValue] : YES; }
+- (void)setOpaque:(BOOL)o { WA(self)[@"opaque"] = @(o); }
+- (BOOL)hasShadow { NSNumber *n = WA(self)[@"shadow"]; return n ? [n boolValue] : YES; }
+- (void)setHasShadow:(BOOL)b { WA(self)[@"shadow"] = @(b); }
+- (id)backgroundColor { return WA(self)[@"bg"]; }
+- (void)setBackgroundColor:(id)c { if (c) WA(self)[@"bg"] = c; }
+- (NSUInteger)collectionBehavior { return [WA(self)[@"cb"] unsignedIntegerValue]; }
+- (void)setCollectionBehavior:(NSUInteger)b { WA(self)[@"cb"] = @(b); }
+- (BOOL)isMovableByWindowBackground { return [WA(self)[@"mbwb"] boolValue]; }
+- (void)setMovableByWindowBackground:(BOOL)b { WA(self)[@"mbwb"] = @(b); }
+- (BOOL)isMovable { NSNumber *n = WA(self)[@"movable"]; return n ? [n boolValue] : YES; }
+- (void)setMovable:(BOOL)b { WA(self)[@"movable"] = @(b); }
+- (BOOL)hidesOnDeactivate { return [WA(self)[@"hod"] boolValue]; }
+- (void)setHidesOnDeactivate:(BOOL)b { WA(self)[@"hod"] = @(b); }
+- (BOOL)isReleasedWhenClosed { NSNumber *n = WA(self)[@"rwc"]; return n ? [n boolValue] : YES; }
+- (void)setReleasedWhenClosed:(BOOL)b { WA(self)[@"rwc"] = @(b); }
+- (CGSize)minSize { NSValue *v = WA(self)[@"min"]; CGSize s = CGSizeZero; if (v) [v getValue:&s]; return s; }
+- (void)setMinSize:(CGSize)s { WA(self)[@"min"] = [NSValue valueWithBytes:&s objCType:@encode(CGSize)]; }
+- (CGSize)maxSize { NSValue *v = WA(self)[@"max"]; CGSize s = CGSizeMake(1e7, 1e7); if (v) [v getValue:&s]; return s; }
+- (void)setMaxSize:(CGSize)s { WA(self)[@"max"] = [NSValue valueWithBytes:&s objCType:@encode(CGSize)]; }
 @end

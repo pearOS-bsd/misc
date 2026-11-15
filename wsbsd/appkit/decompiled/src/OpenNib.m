@@ -116,6 +116,7 @@ static CGSize ParseSize(NSString *s) { double a = 0, b = 0; sscanf([s UTF8String
                || [cn isEqualToString:@"NSTextField"] || [cn isEqualToString:@"NSButton"] || [cn isEqualToString:@"NSPopUpButton"] || [cn isEqualToString:@"NSSlider"] || [cn isEqualToString:@"NSProgressIndicator"] || [cn isEqualToString:@"NSTableView"]
                || [cn isEqualToString:@"NSClassSwapper"] || [cn isEqualToString:@"NSScroller"] || [cn isEqualToString:@"NSSplitView"] || [cn isEqualToString:@"NSTabView"] || [cn isEqualToString:@"NSImageView"] || [cn isEqualToString:@"NSSecureTextField"] || [cn isEqualToString:@"NSSearchField"] || [cn isEqualToString:@"NSStackView"]) {
         NSString *cc = ([cn isEqualToString:@"NSCustomView"] || [cn isEqualToString:@"NSClassSwapper"]) ? [self get:@"NSClassName" of:i] : cn; Class k = NSClassFromString(cc) ?: NSClassFromString(cn);
+        if (![k isSubclassOfClass:[NSView class]]) { r = k ? [[k alloc] init] : nil; cache[key] = r ?: [NSNull null]; return r; }			/* a class swapper can stand for a cell or another object that is no view */
         id frameStr = [self get:@"NSFrame" of:i]; CGRect f = frameStr ? ParseRect(frameStr) : CGRectMake(0, 0, ParseSize([self get:@"NSFrameSize" of:i]).width, ParseSize([self get:@"NSFrameSize" of:i]).height);
         NSView *v = [[k alloc] initWithFrame:f]; cache[key] = v; r = v;
         for (id sv in [self get:@"NSSubviews" of:i] ?: @[]) {
