@@ -131,7 +131,7 @@ void OpenWindowOrderFront(NSWindow *w)
     OpenWindowDisplay(w);
     ws_win_order(sConn, &o->win, WS_ABOVE, 0);
     o->shown = YES;
-    ws_win_set_key(sConn, &o->win); sKeyWindow = w;
+    ws_win_set_key(sConn, &o->win); sKeyWindow = w; OpenMenuPublish(NO);
 }
 
 void OpenWindowOrderOut(NSWindow *w)
