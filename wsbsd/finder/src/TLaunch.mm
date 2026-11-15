@@ -30,7 +30,7 @@ void TFSetOpenWith(NSString *path, NSString *app, BOOL all)
 	NSMutableDictionary *d = [TFPref(key, @{}) mutableCopy]; d[k] = app; TFSetPref(key, d);
 }
 static BOOL TFUsesOpenLayer(NSString *app);
-/* an application of macOS (NAME.app/Contents/MacOS/NAME is a Mach-O file): it runs through macapp (darwinator's machrun) or, for the applications of the system, openapp (the "open" layer) */
+/* an application of macOS (NAME.app/Contents/MacOS/NAME is a Mach-O file): it runs through macapp (darwinator's machrun) or, for the applications of the system, open (the "open" layer) */
 static BOOL TFIsMacApp(NSString *path)
 {
 	if (![[[path pathExtension] lowercaseString] isEqual: @"app"]) return NO;
@@ -39,16 +39,16 @@ static BOOL TFIsMacApp(NSString *path)
 	FILE *f = fopen([bin fileSystemRepresentation], "r"); if (!f) return NO; unsigned char m[4] = { 0 }; BOOL ok = fread(m, 1, 4, f) == 4 && ((m[0] == 0xca && m[1] == 0xfe && m[2] == 0xba && m[3] == 0xbe) || (m[0] == 0xcf && m[1] == 0xfa && m[2] == 0xed && m[3] == 0xfe)); fclose(f);
 	return ok && ([[NSFileManager defaultManager] isExecutableFileAtPath: @"/usr/local/bin/macapp"] || TFUsesOpenLayer(path));
 }
-/* the applications of the system (/System/Applications) and the ones listed in the preference OpenLayerApps run on the AppKit of the "open" layer (the real dyld of the Mac under darwinator, our AppKit): openapp; the others through macapp (machrun) */
+/* the applications of the system (/System/Applications) and the ones listed in the preference OpenLayerApps run on the AppKit of the "open" layer (the real dyld of the Mac under darwinator, our AppKit): open; the others through macapp (machrun) */
 static BOOL TFUsesOpenLayer(NSString *app)
 {
-	NSFileManager *fm = [NSFileManager defaultManager]; if (![fm isExecutableFileAtPath: @"/usr/local/bin/openapp"] || ![fm fileExistsAtPath: @"/open/AppKit"]) return NO;
+	NSFileManager *fm = [NSFileManager defaultManager]; if (![fm isExecutableFileAtPath: @"/usr/local/bin/open"] || ![fm fileExistsAtPath: @"/open/AppKit"]) return NO;
 	if ([app hasPrefix: @"/System/Applications/"]) return YES;
 	NSArray *l = TFPref(@"OpenLayerApps", @[]); return [l containsObject: [app lastPathComponent]] || [l containsObject: app];
 }
 static void TFRunMacApp(NSString *app, NSString *file)
 {
-	NSTask *t = [[NSTask alloc] init]; [t setLaunchPath: TFUsesOpenLayer(app) ? @"/usr/local/bin/openapp" : @"/usr/local/bin/macapp"]; [t setArguments: file ? @[ app, file ] : @[ app ]];
+	NSTask *t = [[NSTask alloc] init]; [t setLaunchPath: TFUsesOpenLayer(app) ? @"/usr/local/bin/open" : @"/usr/local/bin/macapp"]; [t setArguments: file ? @[ app, file ] : @[ app ]];
 	@try { [t launch]; } @catch (NSException *e) {}
 }
 /* a double click: the application chosen in Get Info when there is one, else what the system opens it with */
