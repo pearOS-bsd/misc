@@ -12,7 +12,7 @@
 #include <fcntl.h>
 #include <dispatch/dispatch.h>
 
-@interface MMClient : NSObject { @public int fd; dispatch_source_t src; NSMutableData *buf; NSArray *menus; NSString *name; } @end
+@interface MMClient : NSObject { @public int fd; dispatch_source_t src; NSMutableData *buf; NSArray *menus; NSString *name; NSMenu *bar; } @end
 @implementation MMClient @end
 
 @interface MenuMirror : NSObject
@@ -22,6 +22,7 @@
 
 static NSMutableArray *sClients;		/* in the order of activation: the last is the one shown */
 static MMClient *sShown;
+static NSMutableArray *sGrave;		/* menus that were shown stay alive: the libraries are not ARC and still hold them (a released main menu crashed the bar) */
 
 static NSMenu *MenuFromItems(NSArray *items, NSString *title, MenuMirror *target)
 {
@@ -40,7 +41,8 @@ static NSMenu *MenuFromItems(NSArray *items, NSString *title, MenuMirror *target
 static void MMShow(MMClient *c)
 {
 	sShown = c; if (!c || !c->menus) return;
-	NSMenu *bar = [[NSMenu alloc] initWithTitle: c->name ?: @"Main"];
+	if (c->bar) { if ([NSApp mainMenu] != c->bar) [NSApp setMainMenu: c->bar]; return; }
+	NSMenu *bar = [[NSMenu alloc] initWithTitle: c->name ?: @"Main"]; c->bar = bar; if (!sGrave) sGrave = [NSMutableArray new]; [sGrave addObject: bar];
 	for (NSDictionary *t in c->menus) {
 		NSMenuItem *top = [[NSMenuItem alloc] initWithTitle: t[@"title"] ?: @"" action: NULL keyEquivalent: @""];
 		[top setSubmenu: MenuFromItems(t[@"items"], t[@"title"], [MenuMirror shared])]; [bar addItem: top];
@@ -61,7 +63,7 @@ static void MMDrop(MMClient *c)
 static void MMHandle(MMClient *c, NSDictionary *msg)
 {
 	NSString *cmd = msg[@"cmd"];
-	if ([cmd isEqualToString: @"menus"]) { c->menus = msg[@"menus"]; c->name = msg[@"name"]; [sClients removeObject: c]; [sClients addObject: c]; MMShow(c); }
+	if ([cmd isEqualToString: @"menus"]) { if (!(c->bar && [msg[@"menus"] isEqual: c->menus])) { c->menus = msg[@"menus"]; c->bar = nil; } c->name = msg[@"name"]; [sClients removeObject: c]; [sClients addObject: c]; MMShow(c); }
 	else if ([cmd isEqualToString: @"activate"]) { [sClients removeObject: c]; [sClients addObject: c]; MMShow(c); }
 }
 
