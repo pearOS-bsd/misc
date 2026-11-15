@@ -97,10 +97,12 @@ static char kPTitles, kPSel;
 @end
 
 /* ---- check box / radio: the kind is kept in the button ---- */
-static char kBKind;
+static char kBKind, kBState;
 @implementation NSButton (OpenControls)
 + (instancetype)checkboxWithTitle:(NSString *)t target:(id)tg action:(SEL)a { NSButton *b = [[self alloc] initWithFrame:CGRectMake(0, 0, 100, 22)]; b.title = t; b.target = tg; b.action = a; PUT(b, kBKind, @1); return b; }
 + (instancetype)radioButtonWithTitle:(NSString *)t target:(id)tg action:(SEL)a { NSButton *b = [self checkboxWithTitle:t target:tg action:a]; PUT(b, kBKind, @2); return b; }
+- (NSControlStateValue)state { return [STORE(self, kBState) integerValue]; }
+- (void)setState:(NSControlStateValue)v { PUT(self, kBState, @(v)); [self display]; }
 - (NSInteger)_openKind { return [STORE(self, kBKind) integerValue]; }
 @end
 
