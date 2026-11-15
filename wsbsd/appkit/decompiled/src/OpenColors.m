@@ -56,3 +56,32 @@ static NSColor *C(int r, int g, int b, double a) { return [NSColor colorWithCali
 + (NSColor *)purpleColor { return C(128, 0, 128, 1); }
 + (NSColor *)brownColor { return C(153, 102, 51, 1); }
 @end
+
+/* ---- colours of the asset catalogue of the program (+colorNamed:): layout 1009 renditions, "RLOC" 1 colourspace count + doubles (r g b a, or gray a) ---- */
+#include "car.h"
+#include <string.h>
+static CarFile *CatalogOf(NSBundle *b)
+{
+    static NSMutableDictionary *cache; if (!cache) cache = [NSMutableDictionary new];
+    NSString *p = [[b resourcePath] stringByAppendingPathComponent:@"Assets.car"]; NSValue *v = cache[p]; if (v) return [v pointerValue];
+    CarFile *f = [[NSFileManager defaultManager] fileExistsAtPath:p] ? car_open([p fileSystemRepresentation]) : NULL; cache[p] = [NSValue valueWithPointer:f]; return f;
+}
+@implementation NSColor (OpenCatalog)
++ (NSColor *)colorNamed:(NSString *)name bundle:(NSBundle *)bundle
+{
+    NSBundle *b = bundle ?: [NSBundle mainBundle]; CarFile *f = CatalogOf(b);
+    if (f) {
+        int n = car_count(f);
+        for (int i = 0; i < n; i++) {
+            CarRendition r; if (car_rendition(f, i, &r) || r.layout != 1009 || strcmp(r.name, [name UTF8String])) continue;
+            if (r.payload_len < 16 || memcmp(r.payload, "RLOC", 4)) continue;
+            uint32_t cnt; memcpy(&cnt, r.payload + 12, 4); double c[4] = { 0, 0, 0, 1 };
+            if (cnt >= 4 && r.payload_len >= 16 + 32) memcpy(c, r.payload + 16, 32); else if (cnt >= 2 && r.payload_len >= 16 + 16) { double g[2]; memcpy(g, r.payload + 16, 16); c[0] = c[1] = c[2] = g[0]; c[3] = g[1]; }
+            return [NSColor colorWithCalibratedRed:c[0] green:c[1] blue:c[2] alpha:c[3]];
+        }
+    }
+    if (getenv("OPEN_DEBUG")) fprintf(stderr, "open: colour %s not in the catalogue\n", [name UTF8String]);
+    return nil;
+}
++ (NSColor *)colorNamed:(NSString *)name { return [self colorNamed:name bundle:nil]; }
+@end
