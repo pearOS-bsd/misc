@@ -220,17 +220,22 @@ void OpenRunLoop(void)
 @end
 
 @implementation NSColor (OpenDrawing)
-- (void)setFill
+/* the components as RGBA whatever the colour is made of (gray, RGB; anything else: light text colour) */
+- (void)_openRGBA:(CGFloat *)c
 {
-    CGContextRef cg = [[NSGraphicsContext currentContext] CGContext];
-    if (!cg) return;
-    NSColor *c = [self numberOfComponents] == 2 ? nil : self;			/* gray + alpha */
-    CGFloat r = 0, g = 0, b = 0, a = [self alphaComponent];
-    if (c) { r = [self redComponent]; g = [self greenComponent]; b = [self blueComponent]; }
-    else { r = g = b = [self whiteComponent]; }
-    CGContextSetRGBFillColor(cg, r, g, b, a);
+    @try {
+        CGFloat a = [self alphaComponent];
+        if ([self numberOfComponents] == 2) { CGFloat w = [self whiteComponent]; c[0] = c[1] = c[2] = w; c[3] = a; }
+        else { c[0] = [self redComponent]; c[1] = [self greenComponent]; c[2] = [self blueComponent]; c[3] = a; }
+    } @catch (NSException *e) { c[0] = c[1] = c[2] = 0.85; c[3] = 1; }
 }
-- (void)set { [self setFill]; CGContextRef cg = [[NSGraphicsContext currentContext] CGContext]; if (cg) { CGFloat a = [self alphaComponent]; CGContextSetRGBStrokeColor(cg, [self redComponent], [self greenComponent], [self blueComponent], a); } }
+- (void)setFill { CGContextRef cg = [[NSGraphicsContext currentContext] CGContext]; if (!cg) return; CGFloat c[4]; [self _openRGBA:c]; CGContextSetRGBFillColor(cg, c[0], c[1], c[2], c[3]); }
+- (void)setStroke { CGContextRef cg = [[NSGraphicsContext currentContext] CGContext]; if (!cg) return; CGFloat c[4]; [self _openRGBA:c]; CGContextSetRGBStrokeColor(cg, c[0], c[1], c[2], c[3]); }
+- (void)set { [self setFill]; [self setStroke]; }
+- (NSColor *)colorUsingColorSpace:(id)cs { return self; }
+- (NSColor *)colorUsingType:(NSInteger)t { return self; }
+- (CGColorRef)CGColor { CGFloat c[4]; [self _openRGBA:c]; CGColorSpaceRef sp = CGColorSpaceCreateDeviceRGB(); CGColorRef r = CGColorCreate(sp, c); CGColorSpaceRelease(sp); return (CGColorRef)CFAutorelease(r); }
+- (NSString *)_copyFormattingDescription:(id)x { return [self description]; }
 @end
 
 @protocol OpenAppDelegate <NSObject>
@@ -426,28 +431,9 @@ static id OpenZero(id self, SEL _cmd) { return nil; }
 }
 @end
 
-/* ---- text view (first version: one string, drawn wrapped in the bounds, typing at the end; the text system - NSTextStorage / NSLayoutManager - is not there yet) ---- */
-#import "NSTextView.h"
-static const void *kOpenText = &kOpenText;
-@implementation NSTextView (OpenDrawing)
-- (NSString *)string { return objc_getAssociatedObject(self, kOpenText) ?: @""; }
-- (void)setString:(NSString *)s { objc_setAssociatedObject(self, kOpenText, [s copy], OBJC_ASSOCIATION_RETAIN); [self display]; }
-- (BOOL)acceptsFirstResponder { return YES; }
-- (void)drawRect:(CGRect)dirty
-{
-    CGContextRef cg = [[NSGraphicsContext currentContext] CGContext];
-    if (!cg) return;
-    CGRect b = [self bounds];
-    CGContextSetRGBFillColor(cg, 23 / 255.0, 24 / 255.0, 25 / 255.0, 1); CGContextFillRect(cg, b);
-    NSDictionary *at = @{ NSFontAttributeName: [NSFont systemFontOfSize:13], NSForegroundColorAttributeName: [NSColor colorWithCalibratedWhite:1 alpha:0.85] };
-    [[self string] drawInRect:CGRectInset(b, 5, 4) withAttributes:at];
-}
-- (void)mouseDown:(NSEvent *)e { [[self window] makeFirstResponder:self]; }
-- (void)keyDown:(NSEvent *)e
-{
-    NSString *c = [e characters], *s = [self string];
-    if ([c isEqualToString:@"\x7f"]) { if ([s length]) [self setString:[s substringToIndex:[s length] - 1]]; }
-    else if ([c isEqualToString:@"\r"]) [self setString:[s stringByAppendingString:@"\n"]];
-    else if ([c length] && [c characterAtIndex:0] >= 32) [self setString:[s stringByAppendingString:c]];
-}
+@implementation NSGraphicsContext (OpenScreen)
+- (BOOL)isDrawingToScreen { return YES; }
+@end
+@implementation NSApplication (OpenEvent)
+- (NSEvent *)currentEvent { return nil; }
 @end
