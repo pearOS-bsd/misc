@@ -260,3 +260,41 @@ static char kDocWin;
 - (void)setWindow:(NSWindow *)w { objc_setAssociatedObject(self, &kDocWin, w, OBJC_ASSOCIATION_ASSIGN); for (NSWindowController *wc in [self windowControllers]) if (![wc valueForKey:@"window"]) [wc setValue:w forKey:@"window"]; }
 - (NSWindow *)window { NSWindow *w = objc_getAssociatedObject(self, &kDocWin); if (w) return w; return [[[self windowControllers] firstObject] valueForKey:@"window"]; }
 @end
+
+/* ---- a minimal layer (apps set layer.backgroundColor/cornerRadius on a view): kept as properties, the background is painted under the view ---- */
+@interface OpenLayer : NSObject { @public CGColorRef bg; CGFloat radius, opacity; }
+@end
+@implementation OpenLayer
+- (instancetype)init { self = [super init]; opacity = 1; return self; }
+- (CGColorRef)backgroundColor { return bg; }
+- (void)setBackgroundColor:(CGColorRef)c { if (c) CFRetain(c); if (bg) CFRelease(bg); bg = c; }
+- (CGFloat)cornerRadius { return radius; }
+- (void)setCornerRadius:(CGFloat)r { radius = r; }
+- (float)opacity { return opacity; }
+- (void)setOpacity:(float)o { opacity = o; }
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)s { NSMethodSignature *m = [super methodSignatureForSelector:s]; if (m) return m; return [NSMethodSignature signatureWithObjCTypes:(strncmp(sel_getName(s), "set", 3) == 0 ? "v@:@" : "@@:")]; }
+- (void)forwardInvocation:(NSInvocation *)i { }		/* the other properties (borders, shadows, masks) are not painted */
+@end
+static char kLayer;
+@implementation NSView (OpenLayer)
+- (id)layer { return objc_getAssociatedObject(self, &kLayer); }
+- (void)setLayer:(id)l { objc_setAssociatedObject(self, &kLayer, l, OBJC_ASSOCIATION_RETAIN); }
+- (BOOL)wantsLayer { return [self layer] != nil; }
+- (void)setWantsLayer:(BOOL)b { if (b && ![self layer]) [self setLayer:[OpenLayer new]]; }
+- (void)setToolTip:(NSString *)t { }
+@end
+@implementation NSWindowController (OpenMisc)
+- (void)setShouldCascadeWindows:(BOOL)b { }
+@end
+@implementation NSWindow (OpenMisc)
+- (void)orderFront:(id)s { [self makeKeyAndOrderFront:s]; }
+- (id)windowController { return objc_getAssociatedObject(self, "OpenWC"); }
+- (void)setWindowController:(id)c { objc_setAssociatedObject(self, "OpenWC", c, OBJC_ASSOCIATION_ASSIGN); }
+@end
+void OpenLayerPaint(NSView *v, CGContextRef cg, CGRect b)
+{
+    OpenLayer *l = [v layer]; if (![l isKindOfClass:[OpenLayer class]] || !l->bg) return;
+    CGContextSaveGState(cg); CGContextSetFillColorWithColor(cg, l->bg);
+    if (l->radius > 0) { CGPathRef p = CGPathCreateWithRoundedRect(b, l->radius, l->radius, NULL); CGContextAddPath(cg, p); CGContextFillPath(cg); CGPathRelease(p); } else CGContextFillRect(cg, b);
+    CGContextRestoreGState(cg);
+}

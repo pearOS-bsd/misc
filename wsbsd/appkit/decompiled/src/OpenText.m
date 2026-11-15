@@ -114,7 +114,8 @@ static NSDictionary *Attrs(void) { return @{ NSFontAttributeName: [NSFont system
 {
     CGContextRef cg = [[NSGraphicsContext currentContext] CGContext]; if (!cg) return;
     OpenTV *o = TV(self); CGRect b = [self bounds];
-    CGContextSetRGBFillColor(cg, 23 / 255.0, 24 / 255.0, 25 / 255.0, 1); CGContextFillRect(cg, b);
+    if ([self drawsBackground]) { id bc = [self backgroundColor]; BOOL wbg = [[[self window] performSelector:@selector(backgroundColor)] respondsToSelector:@selector(CGColor)];		/* no colour of its own over a window that has one (a note): the window shows through */
+        if ([bc respondsToSelector:@selector(CGColor)]) { CGContextSetFillColorWithColor(cg, [bc CGColor]); CGContextFillRect(cg, b); } else if (!wbg) { CGContextSetRGBFillColor(cg, 23 / 255.0, 24 / 255.0, 25 / 255.0, 1); CGContextFillRect(cg, b); } }
     CGContextSaveGState(cg); CGContextClipToRect(cg, b); CGContextTranslateCTM(cg, 0, -o->off);
     CGSize sz = CGSizeMake(b.size.width - 2 * kInsetX, 1e7);
     if (!o->tlm) ((void(*)(id, SEL, CGSize))objc_msgSend)(o->tc, SEL_("setSize:"), sz);

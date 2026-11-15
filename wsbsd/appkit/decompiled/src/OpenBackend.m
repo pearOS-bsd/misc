@@ -63,6 +63,7 @@ static OpenWin *OpenWinOf(NSWindow *w, BOOL create)
 }
 
 /* a view and its subviews into the current CGContext: the origin of the view, flipped views get a y axis that goes down */
+extern void OpenLayerPaint(NSView *v, CGContextRef cg, CGRect b);
 static void OpenDrawView(NSView *v, CGContextRef cg)
 {
     if ([v isKindOfClass:NSClassFromString(@"NSClipView")]) for (NSView *d in [v subviews]) if ([d frame].size.width <= 0 || [d frame].size.height <= 0) [d setFrame:[v bounds]];		/* a document view without a size takes the one of its clip view (as the scroll view does) */
@@ -74,6 +75,8 @@ static void OpenDrawView(NSView *v, CGContextRef cg)
     NSGraphicsContext *gc = [NSGraphicsContext graphicsContextWithCGContext:cg flipped:[v isFlipped]];
     NSGraphicsContext *old = [NSGraphicsContext currentContext];
     [NSGraphicsContext setCurrentContext:gc];
+    OpenLayerPaint(v, cg, b);
+    if (getenv("OPEN_DEBUG") && ([v isKindOfClass:NSClassFromString(@"NSText")] || [v isKindOfClass:NSClassFromString(@"NSScrollView")])) { static int n; if (n++ < 6) { id bc = [v respondsToSelector:@selector(backgroundColor)] ? [v performSelector:@selector(backgroundColor)] : nil; fprintf(stderr, "open: bg %s draws=%d color=%s\n", class_getName([v class]), [v respondsToSelector:@selector(drawsBackground)] ? ((BOOL(*)(id,SEL))objc_msgSend)(v, @selector(drawsBackground)) : -1, bc ? [[bc description] UTF8String] : "nil"); } }
     [v drawRect:b];
     [NSGraphicsContext setCurrentContext:old];
     CGContextRestoreGState(cg);
@@ -100,7 +103,7 @@ void OpenWindowDisplay(NSWindow *w)
     CGContextClearRect(o->cg, CGRectMake(0, 0, o->win.px->w, o->win.px->h));
     BOOL glass = !o->tb && [[w contentView] respondsToSelector:@selector(_openGlass)];
     if (glass) { if (!o->glassSet) { ws_win_glass(sConn, &o->win, (ws_rect){ 0, 0, o->win.px->w, o->win.px->h }, 12, 5); o->glassSet = YES; } }
-    else { CGContextSetRGBFillColor(o->cg, 30 / 255.0, 30 / 255.0, 30 / 255.0, 1); CGContextFillRect(o->cg, CGRectMake(0, 0, o->win.px->w, o->win.px->h - o->tb)); }		/* window background (dark); menus: the material of the window server under a transparent window */
+    else { id wbg = [w performSelector:@selector(backgroundColor)]; if (getenv("OPEN_DEBUG")) { static int n; if (n++ < 3) { CGFloat cr = -1, cg2 = -1, cb = -1, ca = -1; if ([wbg respondsToSelector:@selector(getRed:green:blue:alpha:)]) [wbg getRed:&cr green:&cg2 blue:&cb alpha:&ca]; fprintf(stderr, "open: window bg %g %g %g %g content layer %p\n", cr, cg2, cb, ca, (__bridge void *)[[w contentView] performSelector:@selector(layer)]); } } if ([wbg respondsToSelector:@selector(CGColor)]) CGContextSetFillColorWithColor(o->cg, [wbg CGColor]); else CGContextSetRGBFillColor(o->cg, 30 / 255.0, 30 / 255.0, 30 / 255.0, 1); CGContextFillRect(o->cg, CGRectMake(0, 0, o->win.px->w, o->win.px->h - o->tb)); }		/* window background (dark); menus: the material of the window server under a transparent window */
     NSView *cv = [w contentView];
     if (cv) { @try { OpenDrawView(cv, o->cg); } @catch (NSException *ex) { fprintf(stderr, "open: exception while drawing: %s: %s\n", [[ex name] UTF8String], [[ex reason] UTF8String]); } }
     if (o->tb) {
