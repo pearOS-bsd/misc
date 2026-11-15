@@ -197,6 +197,7 @@ static void OpenDispatch(const ws_event *e)
         if (v) [v performSelector:@selector(_openScrollBy:) withObject:@((double)e->dy)];
         break; }
     case WS_EV_KEY_DOWN: case WS_EV_KEY_UP: {
+        if (getenv("OPEN_DEBUG")) fprintf(stderr, "open: key %d flags %lx type %d\n", (int)e->key, (unsigned long)fl, (int)e->type);
         NSEvent *ev = [NSEvent keyEventWithType:e->type == WS_EV_KEY_DOWN ? NSEventTypeKeyDown : NSEventTypeKeyUp location:CGPointZero modifierFlags:fl timestamp:t windowNumber:e->wid context:nil characters:OpenKeyChars((unsigned short)e->key, (fl & NSEventModifierFlagShift) != 0) charactersIgnoringModifiers:OpenKeyChars((unsigned short)e->key, NO) isARepeat:NO keyCode:(unsigned short)e->key];
         if (e->type == WS_EV_KEY_DOWN && (fl & 0x100000) && OpenMenuKeyEquivalent(e->key, (fl & NSEventModifierFlagShift) != 0)) break;
         NSResponder *r = [w firstResponder];
