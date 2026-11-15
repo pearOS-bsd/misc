@@ -40,7 +40,7 @@ static int ConnectService(void)
 {
     NSMutableDictionary *s = State(self);
     NSMutableDictionary *r = [@{ @"id": @1, @"kind": kind, @"createDirs": @([self canCreateDirectories]), @"hidden": @([self showsHiddenFiles]), @"other": @([self allowsOtherFileTypes]) } mutableCopy];
-    if ([self directoryURL]) r[@"directory"] = [[self directoryURL] path];
+    r[@"directory"] = [self directoryURL] ? [[self directoryURL] path] : NSHomeDirectory();
     if ([[self nameFieldStringValue] length]) r[@"name"] = [self nameFieldStringValue];
     for (NSString *k in @[ @"types", @"prompt", @"message", @"files", @"dirs", @"multiple" ]) if (s[k]) r[k] = s[k];
     int fd = ConnectService(); if (fd < 0) { fprintf(stderr, "open: Open and Save Panel Service not available\n"); return 0; }
