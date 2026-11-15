@@ -8,6 +8,7 @@
 #import "NSEvent.h"
 #import "NSFont.h"
 #import <objc/runtime.h>
+#import <objc/message.h>
 #include "ws_client.h"
 #include <poll.h>
 
@@ -41,6 +42,8 @@ static OpenWin *OpenWinOf(NSWindow *w, BOOL create)
     CGRect f = [w _openFrame];
     int tb = (([w styleMask] & 1) ? OPEN_TITLEBAR : 0);
     int top = sScreenH - (int)(f.origin.y + f.size.height) - tb;
+    if (top < 28 || top > sScreenH - 60) top = 60 + (int)([[sWindows keyEnumerator] allObjects].count % 8) * 24;		/* a window from a nib may carry a position of another screen: keep it visible */
+    if (f.origin.x < 0 || f.origin.x > 1000) f.origin.x = 120 + top;
     o = [OpenWin new];
     o->tb = tb;
     if (ws_win_create(c, (ws_rect){ (int)f.origin.x, top, (int)f.size.width, (int)f.size.height + tb }, 0, &o->win)) { NSLog(@"open: cannot create the window"); return nil; }
@@ -260,6 +263,12 @@ void OpenRunLoop(void)
     n = [NSNotification notificationWithName:@"NSApplicationDidFinishLaunchingNotification" object:self];
     if ([d respondsToSelector:@selector(applicationDidFinishLaunching:)]) [d applicationDidFinishLaunching:n];
     [nc postNotification:n];
+    id dc = NSClassFromString(@"NSDocumentController");
+    if (dc && [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDocumentTypes"] count]) {		/* a document-based program opens an untitled document at launch */
+        id sdc = [dc performSelector:@selector(sharedDocumentController)];
+        BOOL should = ![(id)d respondsToSelector:@selector(applicationShouldOpenUntitledFile:)] || (BOOL)(NSInteger)[(id)d performSelector:@selector(applicationShouldOpenUntitledFile:) withObject:self];
+        if (should && ![[sdc performSelector:@selector(documents)] count]) { NSError *err = nil; ((id(*)(id, SEL, BOOL, NSError **))objc_msgSend)(sdc, @selector(openUntitledDocumentAndDisplay:error:), YES, &err); }
+    }
     OpenRunLoop();
 }
 @end
@@ -415,27 +424,68 @@ static const void *kOpenPressed = &kOpenPressed;
 }
 @end
 
-/* ---- the gaps of our AppKit: a selector of one of our classes that nobody implements is logged once and answers 0 (OPEN_STRICT=1: it stays an exception) ---- */
-static id OpenZero(id self, SEL _cmd) { return nil; }
-@interface NSObject (OpenGaps) @end
-@implementation NSObject (OpenGaps)
-+ (BOOL)resolveInstanceMethod:(SEL)sel
+/* ---- the gaps of our AppKit: a selector that a class of ours (or a subclass of one, e.g. the Document of an application) does not implement is logged once and answers 0 through the forwarding path
+ * (not resolveInstanceMethod: that one is also asked by respondsToSelector:, and the answer YES would be wrong; OPEN_STRICT=1 keeps the exception) ---- */
+static BOOL OpenInheritsOurs(Class c)
 {
-    const char *img = class_getImageName(self);
-    if (!img || !strstr(img, "/open/") || getenv("OPEN_STRICT")) return NO;
-    fprintf(stderr, "open: unimplemented -[%s %s]\n", class_getName(self), sel_getName(sel));
-    class_addMethod(self, sel, (IMP)OpenZero, "@@:");
-    return YES;
+    for (; c; c = class_getSuperclass(c)) { const char *img = class_getImageName(c); if (img && strstr(img, "/open/")) return YES; }
+    return NO;
 }
-+ (BOOL)resolveClassMethod:(SEL)sel
+static IMP sOrigSig, sOrigFwd, sOrigCSig, sOrigCFwd;
+static NSMutableSet *sLogged;
+static void OpenLogGap(Class c, SEL s, BOOL cls)
 {
-    const char *img = class_getImageName(self);
-    if (!img || !strstr(img, "/open/") || getenv("OPEN_STRICT")) return NO;
-    fprintf(stderr, "open: unimplemented +[%s %s]\n", class_getName(self), sel_getName(sel));
-    class_addMethod(object_getClass(self), sel, (IMP)OpenZero, "@@:");
-    return YES;
+    if (!sLogged) sLogged = [NSMutableSet new];
+    NSString *k = [NSString stringWithFormat:@"%c%s %s", cls ? '+' : '-', class_getName(c), sel_getName(s)];
+    if ([sLogged containsObject:k]) return; [sLogged addObject:k];
+    fprintf(stderr, "open: unimplemented %c[%s %s]\n", cls ? '+' : '-', class_getName(c), sel_getName(s));
 }
-@end
+static id OpenSig(id self, SEL _cmd, SEL s)
+{
+    id sig = ((id(*)(id, SEL, SEL))sOrigSig)(self, _cmd, s);
+    if (!sig && !getenv("OPEN_STRICT") && OpenInheritsOurs(object_getClass(self))) { OpenLogGap(object_getClass(self), s, NO); sig = [NSMethodSignature signatureWithObjCTypes:"@@:"]; }
+    return sig;
+}
+static void OpenFwd(id self, SEL _cmd, NSInvocation *inv)
+{
+    if (getenv("OPEN_DEBUG")) fprintf(stderr, "open: fwd %s on %s inherits=%d\n", sel_getName([inv selector]), class_getName(object_getClass(self)), (int)OpenInheritsOurs(object_getClass(self)));
+    if (!getenv("OPEN_STRICT") && OpenInheritsOurs(object_getClass(self)) ) { id zero = nil; if ([[inv methodSignature] methodReturnLength] == sizeof(id)) [inv setReturnValue:&zero]; return; }
+    ((void(*)(id, SEL, id))sOrigFwd)(self, _cmd, inv);
+}
+static id OpenCSig(id self, SEL _cmd, SEL s)
+{
+    id sig = ((id(*)(id, SEL, SEL))sOrigCSig)(self, _cmd, s);
+    if (!sig && !getenv("OPEN_STRICT") && OpenInheritsOurs((Class)self)) { OpenLogGap((Class)self, s, YES); sig = [NSMethodSignature signatureWithObjCTypes:"@@:"]; }
+    return sig;
+}
+static void OpenCFwd(id self, SEL _cmd, NSInvocation *inv)
+{
+    if (!getenv("OPEN_STRICT") && OpenInheritsOurs((Class)self) ) { id zero = nil; if ([[inv methodSignature] methodReturnLength] == sizeof(id)) [inv setReturnValue:&zero]; return; }
+    ((void(*)(id, SEL, id))sOrigCFwd)(self, _cmd, inv);
+}
+#define _XOPEN_SOURCE 600
+#include <signal.h>
+#include <execinfo.h>
+#include <dlfcn.h>
+#include <ucontext.h>
+static void OpenCrash(int sig, siginfo_t *si, void *uc)
+{
+    ucontext_t *u = uc; unsigned long long rip = u->uc_mcontext->__ss.__rip; Dl_info di;
+    fprintf(stderr, "open: CRASH signal %d at address %p, rip %#llx", sig, si->si_addr, rip);
+    if (dladdr((void *)rip, &di)) fprintf(stderr, " in %s (%s)", di.dli_sname ? di.dli_sname : "?", di.dli_fname);
+    fprintf(stderr, "\n"); void *bt[30]; int n = backtrace(bt, 30); backtrace_symbols_fd(bt, n, 2); _exit(139);
+}
+__attribute__((constructor)) static void OpenInstallGaps(void)
+{
+    struct sigaction sa; memset(&sa, 0, sizeof sa); sa.sa_sigaction = OpenCrash; sa.sa_flags = SA_SIGINFO;
+    sigaction(SIGSEGV, &sa, NULL); sigaction(SIGBUS, &sa, NULL); sigaction(SIGILL, &sa, NULL); sigaction(SIGTRAP, &sa, NULL); sigaction(SIGABRT, &sa, NULL);
+    Class no = [NSObject class], meta = object_getClass(no);
+    Method m;
+    m = class_getInstanceMethod(no, @selector(methodSignatureForSelector:)); sOrigSig = method_setImplementation(m, (IMP)OpenSig);
+    m = class_getInstanceMethod(no, @selector(forwardInvocation:)); sOrigFwd = method_setImplementation(m, (IMP)OpenFwd);
+    m = class_getClassMethod(no, @selector(methodSignatureForSelector:)); sOrigCSig = method_setImplementation(m, (IMP)OpenCSig); (void)meta;
+    m = class_getClassMethod(no, @selector(forwardInvocation:)); if (m) sOrigCFwd = method_setImplementation(m, (IMP)OpenCFwd);
+}
 
 @implementation NSGraphicsContext (OpenScreen)
 - (BOOL)isDrawingToScreen { return YES; }
@@ -443,3 +493,13 @@ static id OpenZero(id self, SEL _cmd) { return nil; }
 @implementation NSApplication (OpenEvent)
 - (NSEvent *)currentEvent { return nil; }
 @end
+
+/* ---- the real AppKit must not come in next to ours: UIFoundation dlopens /System/Library/Frameworks/AppKit.framework/AppKit to find NSAppearance and others.  The call is redirected to our AppKit
+ * (a dyld interposing tuple of this dylib) ---- */
+#include <dlfcn.h>
+static void *OpenDlopen(const char *p, int f)
+{
+    if (p && strstr(p, "/AppKit.framework/") && !strstr(p, "/open/")) { if (getenv("OPEN_DEBUG")) fprintf(stderr, "open: dlopen(%s) -> /open/AppKit\n", p); return dlopen("/open/AppKit", f); }
+    return dlopen(p, f);
+}
+__attribute__((used)) static struct { const void *r, *o; } sOpenInterpose[] __attribute__((section("__DATA,__interpose"))) = { { (const void *)OpenDlopen, (const void *)dlopen } };

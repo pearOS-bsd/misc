@@ -108,8 +108,9 @@ static CGSize ParseSize(NSString *s) { double a = 0, b = 0; sscanf([s UTF8String
         id title = [self get:@"NSWindowTitle" of:i]; if (title) [w setTitle:title];
         id cv = [self get:@"NSWindowView" of:i]; if ([cv isKindOfClass:[NSView class]]) { [cv setFrame:CGRectMake(0, 0, f.size.width, f.size.height)]; [w setContentView:cv]; }
     } else if ([cn isEqualToString:@"NSView"] || [cn isEqualToString:@"NSCustomView"] || [cn isEqualToString:@"NSBox"] || [cn isEqualToString:@"NSScrollView"] || [cn isEqualToString:@"NSClipView"] || [cn isEqualToString:@"NSTextView"]
-               || [cn isEqualToString:@"NSTextField"] || [cn isEqualToString:@"NSButton"] || [cn isEqualToString:@"NSPopUpButton"] || [cn isEqualToString:@"NSSlider"] || [cn isEqualToString:@"NSProgressIndicator"] || [cn isEqualToString:@"NSTableView"]) {
-        NSString *cc = [cn isEqualToString:@"NSCustomView"] ? [self get:@"NSClassName" of:i] : cn; Class k = NSClassFromString(cc) ?: NSClassFromString(cn);
+               || [cn isEqualToString:@"NSTextField"] || [cn isEqualToString:@"NSButton"] || [cn isEqualToString:@"NSPopUpButton"] || [cn isEqualToString:@"NSSlider"] || [cn isEqualToString:@"NSProgressIndicator"] || [cn isEqualToString:@"NSTableView"]
+               || [cn isEqualToString:@"NSClassSwapper"] || [cn isEqualToString:@"NSScroller"] || [cn isEqualToString:@"NSSplitView"] || [cn isEqualToString:@"NSTabView"] || [cn isEqualToString:@"NSImageView"] || [cn isEqualToString:@"NSSecureTextField"] || [cn isEqualToString:@"NSSearchField"] || [cn isEqualToString:@"NSStackView"]) {
+        NSString *cc = ([cn isEqualToString:@"NSCustomView"] || [cn isEqualToString:@"NSClassSwapper"]) ? [self get:@"NSClassName" of:i] : cn; Class k = NSClassFromString(cc) ?: NSClassFromString(cn);
         id frameStr = [self get:@"NSFrame" of:i]; CGRect f = frameStr ? ParseRect(frameStr) : CGRectMake(0, 0, ParseSize([self get:@"NSFrameSize" of:i]).width, ParseSize([self get:@"NSFrameSize" of:i]).height);
         NSView *v = [[k alloc] initWithFrame:f]; cache[key] = v; r = v;
         for (id sv in [self get:@"NSSubviews" of:i] ?: @[]) if ([sv isKindOfClass:[NSView class]]) [v addSubview:sv];
@@ -118,7 +119,8 @@ static CGSize ParseSize(NSString *s) { double a = 0, b = 0; sscanf([s UTF8String
             NSUInteger ci = [(OpenRef *)[self raw:@"NSCell" of:i] isKindOfClass:[OpenRef class]] ? ((OpenRef *)[self raw:@"NSCell" of:i])->i : NSNotFound;
             if (ci != NSNotFound) { id t = [self get:@"NSContents" of:ci]; if ([t isKindOfClass:[NSString class]]) { if ([v isKindOfClass:[NSButton class]]) [(NSButton *)v setTitle:t]; else [(NSTextField *)v setStringValue:t]; } }
         }
-        if ([v isKindOfClass:[NSScrollView class]]) { for (id sv in [v subviews]) (void)sv; }
+        { id doc = [self get:@"NSDocView" of:i]; if ([doc isKindOfClass:[NSView class]]) [v addSubview:doc]; }			/* the clip view holds the document view */
+        if ([v isKindOfClass:[NSScrollView class]]) { for (NSView *sv in [v subviews]) { NSView *dv = [[sv subviews] firstObject]; if ([sv isKindOfClass:NSClassFromString(@"NSClipView")] && dv) { [(NSScrollView *)v setDocumentView:dv]; break; } } }
     } else if ([cn isEqualToString:@"NSNibOutletConnector"] || [cn isEqualToString:@"NSNibControlConnector"] || [cn isEqualToString:@"IBClassReference"]) {
         r = nil;			/* applied after everything is built */
     } else { fprintf(stderr, "open: nib: unknown class %s\n", [cn UTF8String]); }
@@ -129,7 +131,7 @@ static CGSize ParseSize(NSString *s) { double a = 0, b = 0; sscanf([s UTF8String
 {
     NSUInteger root = 1;				/* the NSIBObjectData object */
     if (![objs[root][@"c"] isEqualToString:@"NSIBObjectData"]) { for (NSUInteger j = 0; j < [objs count]; j++) if ([objs[j][@"c"] isEqualToString:@"NSIBObjectData"]) root = j; }
-    id ownerObj = [self get:@"NSRoot" of:root]; (void)ownerObj;
+    { id rr = [self raw:@"NSRoot" of:root]; if ([rr isKindOfClass:[OpenRef class]] && owner) cache[@(((OpenRef *)rr)->i)] = owner; }		/* File's Owner is the object the caller passed */
     for (id o in [self get:@"NSObjectsKeys" of:root] ?: @[]) (void)o;		/* decoding walks the graph through the connections and the windows */
     NSArray *conns = [self get:@"NSConnections" of:root] ?: @[];
     NSUInteger n = [objs count];
