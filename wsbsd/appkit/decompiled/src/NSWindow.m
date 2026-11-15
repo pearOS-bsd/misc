@@ -76,6 +76,7 @@ enum : uint64_t { NSWindowWFlagVisible = 1u << 2 };  /* _wFlags bit 2 (isVisible
 - (void)orderOut:(id)sender { _wFlags &= ~NSWindowWFlagVisible; OpenWindowOrderOut(self); }
 /* the frame of the content in screen coordinates (origin lower left), for the open backend */
 - (CGRect)_openFrame { return _frame; }
+- (void)_openSetFrame:(CGRect)f { _frame = f; }
 
 /* -[NSWindow firstResponder] 0x184f3676c: stored responder, or the window itself. */
 - (NSResponder *)firstResponder { return _firstResponder ?: self; }

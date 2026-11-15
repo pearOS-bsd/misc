@@ -7,6 +7,8 @@
 #import "NSDocument.h"
 #import "NSDocumentController.h"
 #import "NSWindowController.h"
+#import "NSScrollView.h"
+#import "NSScroller.h"
 
 @interface NSBundle (OpenNibDecl2) - (BOOL)loadNibNamed:(NSString *)n owner:(id)o topLevelObjects:(NSArray **)t; @end
 static char kNibName, kNibOwner, kLoaded;
@@ -34,7 +36,8 @@ static char kNibName, kNibOwner, kLoaded;
 - (void)windowWillLoad { }
 - (void)windowDidLoad { }
 - (BOOL)isWindowLoaded { return [objc_getAssociatedObject(self, &kLoaded) boolValue] || [self windowNibName] == nil; }
-- (void)showWindow:(id)sender { [self loadWindow]; NSWindow *w = [self valueForKey:@"window"]; if (getenv("OPEN_DEBUG")) fprintf(stderr, "open: showWindow: %s window %p\n", class_getName([self class]), (__bridge void *)w); [w makeKeyAndOrderFront:sender]; }
+- (void)showWindow:(id)sender { [self loadWindow]; NSWindow *w = [self valueForKey:@"window"]; if (getenv("OPEN_DEBUG")) fprintf(stderr, "open: showWindow: %s window %p\n", class_getName([self class]), (__bridge void *)w); if (w && ![[w title] length]) { id doc = [self valueForKey:@"document"]; NSString *t = doc ? [doc displayName] : nil; if ([t length]) [w setTitle:t]; }
+    [w makeKeyAndOrderFront:sender]; }
 @end
 
 @implementation NSDocument (OpenCreate)
@@ -100,4 +103,28 @@ static char kUM;
 - (NSUndoManager *)undoManager { NSUndoManager *u = objc_getAssociatedObject(self, &kUM); if (!u) { u = [NSUndoManager new]; objc_setAssociatedObject(self, &kUM, u, OBJC_ASSOCIATION_RETAIN); } return u; }
 - (void)setUndoManager:(NSUndoManager *)u { objc_setAssociatedObject(self, &kUM, u, OBJC_ASSOCIATION_RETAIN); }
 - (BOOL)hasUndoManager { return YES; }
+@end
+
+/* ---- window geometry the programs ask for (the frame includes the title bar of 32 pt for titled windows) ---- */
+@interface NSWindow (OpenGeom) - (CGRect)_openFrame; - (void)_openSetFrame:(CGRect)f; @end
+@implementation NSWindow (OpenGeometry)
+- (CGRect)frame { return [self _openFrame]; }
+- (void)setFrame:(CGRect)f display:(BOOL)d { if (f.size.width > 1 && f.size.height > 1) [self _openSetFrame:f]; }
+- (void)setFrame:(CGRect)f display:(BOOL)d animate:(BOOL)a { [self setFrame:f display:d]; }
+- (void)setFrameOrigin:(CGPoint)p { CGRect f = [self _openFrame]; f.origin = p; [self _openSetFrame:f]; }
+- (void)setContentSize:(CGSize)s { if (s.width <= 1 || s.height <= 1) return; CGRect f = [self _openFrame]; f.size = s; [self _openSetFrame:f]; }
+- (CGRect)frameRectForContentRect:(CGRect)c { return c; }
+- (CGRect)contentRectForFrameRect:(CGRect)f { return f; }
++ (CGRect)frameRectForContentRect:(CGRect)c styleMask:(NSUInteger)m { return c; }
++ (CGRect)contentRectForFrameRect:(CGRect)f styleMask:(NSUInteger)m { return f; }
+- (void)center { }
+- (CGRect)contentLayoutRect { return [[self contentView] bounds]; }
+@end
+
+@implementation NSScrollView (OpenGeometry)
++ (CGSize)frameSizeForContentSize:(CGSize)c horizontalScrollerClass:(Class)h verticalScrollerClass:(Class)v borderType:(NSUInteger)b controlSize:(NSInteger)cs scrollerStyle:(NSInteger)st { return c; }
++ (CGSize)contentSizeForFrameSize:(CGSize)f horizontalScrollerClass:(Class)h verticalScrollerClass:(Class)v borderType:(NSUInteger)b controlSize:(NSInteger)cs scrollerStyle:(NSInteger)st { return f; }
+@end
+@implementation NSScroller (OpenStyle)
++ (NSInteger)preferredScrollerStyle { return 1; }
 @end
