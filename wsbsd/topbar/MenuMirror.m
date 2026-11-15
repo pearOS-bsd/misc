@@ -50,7 +50,7 @@ static void MMShow(MMClient *c)
 	[NSApp setMainMenu: bar];
 	/* GNUstep puts the icon and the name of this process ("TopBar") first: the bar belongs to the program that is shown, so that item goes */
 	NSString *pn = [[NSProcessInfo processInfo] processName]; NSMenu *mm = [NSApp mainMenu];
-	for (NSInteger k = (NSInteger)[mm numberOfItems] - 1; k >= 0; k--) { NSMenuItem *it = [mm itemAtIndex: k]; if ([[it title] isEqual: pn] && ![[it representedObject] isEqual: @"wsd.pear"]) [mm removeItemAtIndex: k]; }
+	for (NSInteger k = (NSInteger)[mm numberOfItems] - 1; k >= 0; k--) { NSMenuItem *it = [mm itemAtIndex: k]; if ([[it title] isEqual: pn] && ![[it representedObject] isEqual: @"wsd.pear"]) { if (!sGrave) sGrave = [NSMutableArray new]; [sGrave addObject: it]; [mm removeItemAtIndex: k]; }		/* WsdMenuBarPrepare keeps raw pointers of the items it has seen: they must stay alive */ }
 	[mm sizeToFit];
 }
 
