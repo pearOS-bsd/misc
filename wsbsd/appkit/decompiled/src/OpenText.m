@@ -24,7 +24,7 @@ typedef CGRect (*RectFn)(id, SEL, ...);
 typedef CGPoint (*PtFn)(id, SEL, ...);
 typedef NSRange (*RangeFn)(id, SEL, ...);
 
-@interface OpenTV : NSObject { @public id ts, lm, tc, tlm; id typing; NSRange sel; NSUInteger anchor; CGFloat off; } @end
+@interface OpenTV : NSObject { @public id ts, lm, tc, tlm; id typing; NSUInteger coloredLen; NSRange sel; NSUInteger anchor; CGFloat off; } @end
 @implementation OpenTV @end
 static char kTV;
 static const CGFloat kInsetX = 5, kInsetY = 4;
@@ -119,11 +119,21 @@ static NSDictionary *Attrs(void) { return @{ NSFontAttributeName: [NSFont system
     CGSize sz = CGSizeMake(b.size.width - 2 * kInsetX, 1e7);
     if (!o->tlm) ((void(*)(id, SEL, CGSize))objc_msgSend)(o->tc, SEL_("setSize:"), sz);
     CGPoint org = CGPointMake(kInsetX, kInsetY);
+    if (o->ts && Len(o) != o->coloredLen) {			/* text without a colour attribute (a file just read) gets the text colour of the appearance: AppKit draws it with the text view's colour */
+        o->coloredLen = Len(o);
+        NSColor *tc = [NSColor colorWithCalibratedWhite:1 alpha:0.85];
+        ((void(*)(id, SEL))objc_msgSend)(o->ts, SEL_("beginEditing"));
+        ((void(*)(id, SEL, id, NSRange, NSUInteger, id))objc_msgSend)(o->ts, SEL_("enumerateAttribute:inRange:options:usingBlock:"), NSForegroundColorAttributeName, NSMakeRange(0, Len(o)), 0, ^(id v, NSRange r, BOOL *stop) { if (!v) ((void(*)(id, SEL, id, id, NSRange))objc_msgSend)(o->ts, SEL_("addAttribute:value:range:"), NSForegroundColorAttributeName, tc, r); });
+        ((void(*)(id, SEL))objc_msgSend)(o->ts, SEL_("endEditing"));
+    }
     if (o->tlm) {			/* TextKit 2: every layout fragment draws itself */
         id cm = ((ID0)objc_msgSend)(o->tlm, SEL_("textContentManager")); id dr = ((ID0)objc_msgSend)(cm, SEL_("documentRange")); id loc = ((ID0)objc_msgSend)(dr, SEL_("location"));
         CGContextTranslateCTM(cg, org.x, org.y);
+        if (getenv("OPEN_DEBUG") && Len(o)) { id fg = ((id(*)(id, SEL, id, NSUInteger, NSRange *))objc_msgSend)(o->ts, SEL_("attribute:atIndex:effectiveRange:"), @"NSColor", 0, NULL); fprintf(stderr, "open: first char colour attr %s %s; textColor %s\n", fg ? class_getName([fg class]) : "none", fg ? [[fg description] UTF8String] : "", [[[NSColor performSelector:@selector(textColor)] description] UTF8String]); }
+        CGContextSetRGBFillColor(cg, 1, 1, 1, 0.85); CGContextSetRGBStrokeColor(cg, 1, 1, 1, 0.85);		/* text without a colour attribute is drawn with the fill colour of the context: the text colour of the dark appearance */
         if (o->sel.length) { CGContextSetRGBFillColor(cg, 63 / 255.0, 96 / 255.0, 130 / 255.0, 1); for (NSValue *v in TK2Rects(o, o->sel, 1)) { CGRect r; [v getValue:&r]; CGContextFillRect(cg, r); } }
-        BOOL (^blk)(id) = ^BOOL(id frag) { CGRect fr = ((RectFn)objc_msgSend_stret)(frag, SEL_("layoutFragmentFrame")); if (getenv("OPEN_DEBUG")) fprintf(stderr, "open: fragment %g,%g %gx%g\n", fr.origin.x, fr.origin.y, fr.size.width, fr.size.height); ((void(*)(id, SEL, CGPoint, CGContextRef))objc_msgSend)(frag, SEL_("drawAtPoint:inContext:"), fr.origin, cg); return YES; };
+        __block CGFloat ycur = 0;
+        BOOL (^blk)(id) = ^BOOL(id frag) { CGRect fr = ((RectFn)objc_msgSend_stret)(frag, SEL_("layoutFragmentFrame")); if (getenv("OPEN_DEBUG")) { fprintf(stderr, "open: fragment %g,%g %gx%g\n", fr.origin.x, fr.origin.y, fr.size.width, fr.size.height); id el = ((ID0)objc_msgSend)(frag, SEL_("textElement")); id as = [el respondsToSelector:SEL_("attributedString")] ? ((ID0)objc_msgSend)(el, SEL_("attributedString")) : nil; if ([as length]) fprintf(stderr, "open: attrs %s\n", [[[as attributesAtIndex:0 effectiveRange:NULL] description] UTF8String]); } CGFloat y = fr.origin.y < ycur ? ycur : fr.origin.y; ((void(*)(id, SEL, CGPoint, CGContextRef))objc_msgSend)(frag, SEL_("drawAtPoint:inContext:"), CGPointMake(fr.origin.x, y), cg); ycur = y + fr.size.height; return YES; };	/* a fragment whose frame says y = 0 under an earlier one is put below it */
         ((id(*)(id, SEL, id, NSUInteger, id))objc_msgSend)(o->tlm, SEL_("enumerateTextLayoutFragmentsFromLocation:options:usingBlock:"), loc, 2 /* ensures layout */, blk);
         if ([[self window] firstResponder] == self && !o->sel.length) { NSArray *cr = TK2Rects(o, o->sel, 0); CGRect r = CGRectMake(0, 0, 0, 16); if ([cr count]) [cr[0] getValue:&r]; CGContextSetRGBFillColor(cg, 0.3, 0.6, 1, 1); CGContextFillRect(cg, CGRectMake(r.origin.x, r.origin.y, 1.5, r.size.height > 0 ? r.size.height : 16)); }
         CGContextRestoreGState(cg);

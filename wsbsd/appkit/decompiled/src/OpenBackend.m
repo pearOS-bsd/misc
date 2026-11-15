@@ -278,6 +278,15 @@ void OpenRunLoop(void)
     if (dc && [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDocumentTypes"] count]) {		/* a document-based program opens an untitled document at launch */
         id sdc = [dc performSelector:@selector(sharedDocumentController)];
         BOOL should = ![(id)d respondsToSelector:@selector(applicationShouldOpenUntitledFile:)] || (BOOL)(NSInteger)[(id)d performSelector:@selector(applicationShouldOpenUntitledFile:) withObject:self];
+        NSMutableArray *files = [NSMutableArray new];			/* files given as arguments are opened instead of the untitled document */
+        for (NSString *a in [[NSProcessInfo processInfo] arguments]) if ([a hasPrefix:@"/"] && [[NSFileManager defaultManager] fileExistsAtPath:a] && ![a isEqualToString:[[NSBundle mainBundle] executablePath]]) [files addObject:a];
+        if ([files count]) {
+            for (NSString *f in files) {
+                if ([(id)d respondsToSelector:@selector(application:openFile:)]) ((BOOL(*)(id, SEL, id, id))objc_msgSend)(d, @selector(application:openFile:), self, f);
+                else { NSError *err = nil; ((id(*)(id, SEL, id, BOOL, NSError **))objc_msgSend)(sdc, @selector(openDocumentWithContentsOfURL:display:error:), [NSURL fileURLWithPath:f], YES, &err); }
+            }
+            should = NO;
+        }
         if (should && ![[sdc performSelector:@selector(documents)] count]) { NSError *err = nil; ((id(*)(id, SEL, BOOL, NSError **))objc_msgSend)(sdc, @selector(openUntitledDocumentAndDisplay:error:), YES, &err); }
     }
     OpenMenuBarShow();
