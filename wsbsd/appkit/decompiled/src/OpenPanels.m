@@ -120,7 +120,7 @@ NSInteger OpenPopupMenu(NSView *anchor, NSArray *titles, NSInteger sel)
 }
 
 /* ---- entry point of every Cocoa program, and the fill/frame functions with an operation ---- */
-@interface NSBundle (OpenNib) - (BOOL)loadNibNamed:(NSString *)n owner:(id)o topLevelObjects:(NSArray **)t; @end
+@interface NSBundle (OpenNibDecl) - (BOOL)loadNibNamed:(NSString *)n owner:(id)o topLevelObjects:(NSArray **)t; @end
 int NSApplicationMain(int argc, const char *argv[])
 {
     @autoreleasepool {
