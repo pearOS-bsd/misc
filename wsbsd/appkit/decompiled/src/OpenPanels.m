@@ -54,3 +54,24 @@ static BOOL sModalRunning; static NSInteger sModalCode;
     return [NSApp runModalForWindow:w];
 }
 @end
+
+/* ---- application: activation, termination ---- */
+static NSInteger sPolicy; static BOOL sActive = YES;
+@implementation NSApplication (OpenLifecycle)
+- (BOOL)setActivationPolicy:(NSInteger)p { sPolicy = p; return YES; }
+- (NSInteger)activationPolicy { return sPolicy; }
+- (void)activateIgnoringOtherApps:(BOOL)f { sActive = YES; }
+- (void)activate { sActive = YES; }
+- (BOOL)isActive { return sActive; }
+- (void)deactivate { sActive = NO; }
+- (void)hide:(id)s { }
+- (void)unhide:(id)s { }
+- (void)terminate:(id)sender
+{
+    id d = [self delegate];
+    if ([d respondsToSelector:@selector(applicationShouldTerminate:)]) { NSInteger r = (NSInteger)[d performSelector:@selector(applicationShouldTerminate:) withObject:self]; if (r == 0) return; }
+    if ([d respondsToSelector:@selector(applicationWillTerminate:)]) [d performSelector:@selector(applicationWillTerminate:) withObject:nil];
+    exit(0);
+}
+- (void)stop:(id)sender { CFRunLoopStop(CFRunLoopGetMain()); }
+@end
