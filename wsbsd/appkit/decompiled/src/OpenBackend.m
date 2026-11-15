@@ -196,7 +196,7 @@ void OpenRunLoop(void)
                 if (ws_conn_next_pushed_event(c, 20, &e)) {
                     ws_event ev = e;
                     if (getenv("OPEN_DEBUG")) fprintf(stderr, "open: event type %d wid %d at %d,%d buttons %d\n", ev.type, (int)ev.wid, ev.x, ev.y, ev.buttons);
-                    dispatch_async(dispatch_get_main_queue(), ^{ OpenDispatch(&ev); });
+                    CFRunLoopPerformBlock(CFRunLoopGetMain(), kCFRunLoopCommonModes, ^{ OpenDispatch(&ev); }); CFRunLoopWakeUp(CFRunLoopGetMain());		/* not the main queue: a nested (modal) run loop serves run loop blocks, not the busy main queue */
                 }
             }
         });
