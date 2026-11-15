@@ -15,6 +15,7 @@
 #import "NSProgressIndicator.h"
 #import "NSFont.h"
 #import "OpenBackend.h"
+extern NSInteger OpenPopupMenu(NSView *anchor, NSArray *titles, NSInteger sel);
 #import "NSApplication.h"
 @protocol OpenTableDS <NSObject>
 @optional
@@ -93,7 +94,7 @@ static char kPTitles, kPSel;
     Text([self titleOfSelectedItem] ?: @"", CGPointMake(10, b.size.height / 2), 13, 0.85);
     Text(@"⌃", CGPointMake(b.size.width - 18, b.size.height / 2), 11, 0.6);
 }
-- (void)mouseDown:(NSEvent *)e { NSArray *a = STORE(self, kPTitles); if ([a count]) [self selectItemAtIndex:([self indexOfSelectedItem] + 1) % [a count]]; if ([self action]) [[self target] performSelector:[self action] withObject:self]; }
+- (void)mouseDown:(NSEvent *)e { NSArray *a = STORE(self, kPTitles); if (![a count]) return; NSInteger i = OpenPopupMenu(self, a, [self indexOfSelectedItem]); if (i >= 0) { [self selectItemAtIndex:i]; if ([self action]) [[self target] performSelector:[self action] withObject:self]; } }
 @end
 
 /* ---- check box / radio: the kind is kept in the button ---- */
