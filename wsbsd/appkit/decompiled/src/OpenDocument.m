@@ -35,8 +35,12 @@ static char kNibName, kNibOwner, kLoaded;
     [self windowWillLoad];
     NSArray *top = nil; [[NSBundle mainBundle] loadNibNamed:n owner:[self owner] topLevelObjects:&top];
     if (![self valueForKey:@"window"]) for (id o in top) if ([o isKindOfClass:[NSWindow class]]) { [self setValue:o forKey:@"window"]; break; }		/* the window outlet is on the owner (the document), not on the controller: the first window of the nib is the one */
+    if (![self valueForKey:@"window"] && [[self owner] respondsToSelector:@selector(window)]) { id w = [[self owner] performSelector:@selector(window)]; if (w && w != (id)self) [self setValue:w forKey:@"window"]; }
+    if (getenv("OPEN_DEBUG")) { id o = [self owner]; fprintf(stderr, "open: loaded %s: owner %s window=%p wcs=%lu sticky=%p\n", [n UTF8String], class_getName([o class]), (__bridge void *)[self valueForKey:@"window"], (unsigned long)[[o respondsToSelector:@selector(windowControllers)] ? [o windowControllers] : @[] count], [o respondsToSelector:NSSelectorFromString(@"stickyWindow")] ? (__bridge void *)[o valueForKey:@"stickyWindow"] : NULL); }
+    { id d = [self valueForKey:@"document"]; if ([d respondsToSelector:@selector(windowControllerDidLoadNib:)]) [d performSelector:@selector(windowControllerDidLoadNib:) withObject:self]; }		/* the document learns that its nib is loaded */
     [self windowDidLoad];
 }
+- (NSWindow *)window { [self loadWindow]; return [self valueForKey:@"_window"]; }			/* the window of a controller with a nib is loaded when it is asked for (as AppKit does) */
 - (void)windowWillLoad { }
 - (void)windowDidLoad { }
 - (BOOL)isWindowLoaded { return [objc_getAssociatedObject(self, &kLoaded) boolValue] || [self windowNibName] == nil; }
@@ -248,4 +252,11 @@ static NSMutableDictionary *WA(NSWindow *w) { NSMutableDictionary *d = objc_getA
 - (void)setMinSize:(CGSize)s { WA(self)[@"min"] = [NSValue valueWithBytes:&s objCType:@encode(CGSize)]; }
 - (CGSize)maxSize { NSValue *v = WA(self)[@"max"]; CGSize s = CGSizeMake(1e7, 1e7); if (v) [v getValue:&s]; return s; }
 - (void)setMaxSize:(CGSize)s { WA(self)[@"max"] = [NSValue valueWithBytes:&s objCType:@encode(CGSize)]; }
+@end
+
+/* the nib of a document has its window on the document ("window" outlet of the File's Owner): kept here and handed to the window controller when it has none */
+static char kDocWin;
+@implementation NSDocument (OpenWindowOutlet)
+- (void)setWindow:(NSWindow *)w { objc_setAssociatedObject(self, &kDocWin, w, OBJC_ASSOCIATION_ASSIGN); for (NSWindowController *wc in [self windowControllers]) if (![wc valueForKey:@"window"]) [wc setValue:w forKey:@"window"]; }
+- (NSWindow *)window { NSWindow *w = objc_getAssociatedObject(self, &kDocWin); if (w) return w; return [[[self windowControllers] firstObject] valueForKey:@"window"]; }
 @end

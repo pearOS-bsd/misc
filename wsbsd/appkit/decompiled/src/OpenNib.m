@@ -149,6 +149,7 @@ static CGSize ParseSize(NSString *s) { double a = 0, b = 0; sscanf([s UTF8String
         NSString *c = objs[j][@"c"]; BOOL outlet = [c isEqualToString:@"NSNibOutletConnector"], control = [c isEqualToString:@"NSNibControlConnector"]; if (!outlet && !control) continue;
         id src = [self get:@"NSSource" of:j], dst = [self get:@"NSDestination" of:j]; NSString *label = [self get:@"NSLabel" of:j]; if (!src || !label) continue;
         @try {
+            if (getenv("OPEN_DEBUG")) fprintf(stderr, "open: nib: %s %s.%s = %s\n", outlet ? "outlet" : "action", src ? class_getName([src class]) : "nil", [label UTF8String], dst ? class_getName([dst class]) : "nil");
             if (outlet) [src setValue:dst forKey:label];
             else { SEL a = NSSelectorFromString(label); if ([src respondsToSelector:@selector(setTarget:)]) [src performSelector:@selector(setTarget:) withObject:dst]; if ([src respondsToSelector:@selector(setAction:)]) ((void(*)(id, SEL, SEL))objc_msgSend)(src, @selector(setAction:), a); }
         } @catch (NSException *e) { fprintf(stderr, "open: nib: connection %s failed: %s\n", [label UTF8String], [[e reason] UTF8String]); }
@@ -171,6 +172,8 @@ static CGSize ParseSize(NSString *s) { double a = 0, b = 0; sscanf([s UTF8String
     OpenNib *n = [[OpenNib alloc] initWithData:data owner:owner];
     if (!n) { fprintf(stderr, "open: nib %s: not a NIBArchive\n", [p UTF8String]); return NO; }
     NSArray *t = nil; BOOL ok = [n instantiate:&t]; if (top) *top = t;
+    if (owner) objc_setAssociatedObject(owner, (__bridge const void *)name, n, OBJC_ASSOCIATION_RETAIN);			/* the objects of the nib live as long as its owner (outlets are often weak) */
+    else { static NSMutableArray *keep; if (!keep) keep = [NSMutableArray new]; [keep addObject:n]; }
     fprintf(stderr, "open: nib %s loaded (%lu top-level objects)\n", [name UTF8String], (unsigned long)[t count]);
     return ok;
 }
