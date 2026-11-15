@@ -8,6 +8,9 @@
 #import "NSEvent.h"
 #import "NSFont.h"
 #import <objc/runtime.h>
+extern void OpenDrawPushButton(CGContextRef cg, CGRect frame, NSString *title, BOOL isDefault, BOOL enabled, BOOL pressed);
+extern void OpenDrawTextBezel(CGContextRef cg, CGRect frame);
+extern void OpenDrawCheck(CGContextRef cg, CGRect box, BOOL radio, BOOL on);
 #import <objc/message.h>
 #include "ws_client.h"
 #include <poll.h>
@@ -367,24 +370,17 @@ static const void *kOpenPressed = &kOpenPressed;
 {
     CGContextRef cg = [[NSGraphicsContext currentContext] CGContext];
     if (!cg) return;
-    CGRect b = [self bounds], r = CGRectMake(b.origin.x + 1, b.origin.y + (b.size.height - 24) / 2, b.size.width - 2, 24);
+    CGRect b = [self bounds];
     NSInteger kind = [self respondsToSelector:@selector(_openKind)] ? (NSInteger)[self performSelector:@selector(_openKind)] : 0;
-    if (kind) {		/* check box (1) / radio (2): 14 pt box, accent when on, then the title */
-        CGRect bx = CGRectMake(1, (b.size.height - 14) / 2, 14, 14); BOOL on = [self state] != 0;
-        if (on) CGContextSetRGBFillColor(cg, 0, 122 / 255.0, 1, 1); else CGContextSetRGBFillColor(cg, 1, 1, 1, 0.12);
-        CGPathRef pp = CGPathCreateWithRoundedRect(bx, kind == 2 ? 7 : 4, kind == 2 ? 7 : 4, NULL); CGContextAddPath(cg, pp); CGContextFillPath(cg); CGPathRelease(pp);
-        if (on) { CGContextSetRGBStrokeColor(cg, 1, 1, 1, 1); CGContextSetLineWidth(cg, 2); CGContextMoveToPoint(cg, 4, b.size.height / 2); CGContextAddLineToPoint(cg, 7, b.size.height / 2 - 3); CGContextAddLineToPoint(cg, 12, b.size.height / 2 + 3); CGContextStrokePath(cg); }
+    BOOL down = [objc_getAssociatedObject(self, kOpenPressed) boolValue];
+    if (kind) {		/* check box (1) / radio (2): the 16 pt box of the theme, then the title */
+        OpenDrawCheck(cg, CGRectMake(1, (b.size.height - 16) / 2, 16, 16), kind == 2, [self state] != 0);
         NSDictionary *a2 = @{ NSFontAttributeName: [NSFont systemFontOfSize:13], NSForegroundColorAttributeName: [NSColor colorWithCalibratedWhite:1 alpha:0.85] };
-        CGSize t2 = [[self title] sizeWithAttributes:a2]; [[self title] drawAtPoint:CGPointMake(22, (b.size.height - t2.height) / 2) withAttributes:a2];
+        CGSize t2 = [[self title] sizeWithAttributes:a2]; [[self title] drawAtPoint:CGPointMake(24, (b.size.height - t2.height) / 2) withAttributes:a2];
         return;
     }
-    BOOL down = [objc_getAssociatedObject(self, kOpenPressed) boolValue], def = NO;
-    if (def) CGContextSetRGBFillColor(cg, down ? 30 / 255.0 : 0, down ? 138 / 255.0 : 122 / 255.0, 1, 1); else CGContextSetRGBFillColor(cg, 1, 1, 1, down ? 0.21 : 0.08);
-    CGPathRef p = CGPathCreateWithRoundedRect(r, 5, 5, NULL); CGContextAddPath(cg, p); CGContextFillPath(cg); CGPathRelease(p);
-    NSString *t = [self title];
-    NSDictionary *at = @{ NSFontAttributeName: [NSFont systemFontOfSize:13], NSForegroundColorAttributeName: [NSColor colorWithCalibratedWhite:1 alpha:def ? 1 : 0.85] };
-    CGSize ts = [t sizeWithAttributes:at];
-    [t drawAtPoint:CGPointMake(r.origin.x + (r.size.width - ts.width) / 2, r.origin.y + (r.size.height - ts.height) / 2) withAttributes:at];
+    BOOL def = [self respondsToSelector:@selector(keyEquivalent)] && [[self performSelector:@selector(keyEquivalent)] isEqual:@"\r"];
+    OpenDrawPushButton(cg, CGRectInset(b, 1, 0), [self title], def, YES, down);
 }
 - (void)mouseDown:(NSEvent *)e { objc_setAssociatedObject(self, kOpenPressed, @YES, OBJC_ASSOCIATION_RETAIN); [self display]; }
 - (void)mouseUp:(NSEvent *)e
@@ -408,12 +404,7 @@ static const void *kOpenPressed = &kOpenPressed;
     CGContextRef cg = [[NSGraphicsContext currentContext] CGContext];
     if (!cg) return;
     CGRect b = [self bounds];
-    if ([self isBezeled]) {
-        CGPathRef p = CGPathCreateWithRoundedRect(CGRectInset(b, 0.5, 0.5), 6, 6, NULL);
-        CGContextSetRGBFillColor(cg, 23 / 255.0, 24 / 255.0, 25 / 255.0, 1); CGContextAddPath(cg, p); CGContextFillPath(cg);
-        CGContextSetRGBStrokeColor(cg, 1, 1, 1, 0.12); CGContextSetLineWidth(cg, 1); CGContextAddPath(cg, p); CGContextStrokePath(cg);
-        CGPathRelease(p);
-    }
+    if ([self isBezeled]) OpenDrawTextBezel(cg, b);
     NSDictionary *at = @{ NSFontAttributeName: [NSFont systemFontOfSize:13], NSForegroundColorAttributeName: [NSColor colorWithCalibratedWhite:1 alpha:0.85] };
     NSString *t = [self stringValue]; CGSize ts = [t sizeWithAttributes:at];
     CGFloat x = [self isBezeled] ? 5 : 0, y = b.origin.y + (b.size.height - ts.height) / 2;

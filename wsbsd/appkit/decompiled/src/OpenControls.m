@@ -15,6 +15,9 @@
 #import "NSProgressIndicator.h"
 #import "NSFont.h"
 #import "OpenBackend.h"
+extern void OpenDrawSlider(CGContextRef cg, CGRect b, double f, BOOL enabled);
+extern void OpenDrawProgress(CGContextRef cg, CGRect b, double f);
+extern void OpenDrawPopUp(CGContextRef cg, CGRect frame, NSString *title, BOOL enabled);
 extern NSInteger OpenPopupMenu(NSView *anchor, NSArray *titles, NSInteger sel);
 #import "NSApplication.h"
 @protocol OpenTableDS <NSObject>
@@ -48,11 +51,8 @@ static char kSV, kSMin, kSMax;
 - (void)drawRect:(CGRect)dirty
 {
     CGContextRef cg = CG(); if (!cg) return;
-    CGRect b = [self bounds]; double lo = [self minValue], hi = [self maxValue], f = hi > lo ? ([self doubleValue] - lo) / (hi - lo) : 0;
-    CGFloat x0 = 10, x1 = b.size.width - 10, y = b.size.height / 2, kx = x0 + (x1 - x0) * f;
-    CGContextSetRGBFillColor(cg, 1, 1, 1, 0.18); Round(cg, CGRectMake(x0, y - 2, x1 - x0, 4), 2); CGContextFillPath(cg);
-    CGContextSetRGBFillColor(cg, 0, 122 / 255.0, 1, 1); Round(cg, CGRectMake(x0, y - 2, kx - x0, 4), 2); CGContextFillPath(cg);
-    CGContextSetRGBFillColor(cg, 1, 1, 1, 1); CGContextFillEllipseInRect(cg, CGRectMake(kx - 9, y - 9, 18, 18));
+    double lo = [self minValue], hi = [self maxValue], f = hi > lo ? ([self doubleValue] - lo) / (hi - lo) : 0;
+    OpenDrawSlider(cg, [self bounds], f, YES);
 }
 - (void)_openSet:(NSEvent *)e
 {
@@ -70,10 +70,8 @@ static char kSV, kSMin, kSMax;
 - (void)drawRect:(CGRect)dirty
 {
     CGContextRef cg = CG(); if (!cg) return;
-    CGRect b = [self bounds], r = CGRectMake(0, (b.size.height - 6) / 2, b.size.width, 6);
     double lo = [self minValue], hi = [self maxValue], f = hi > lo ? ([self doubleValue] - lo) / (hi - lo) : 0;
-    CGContextSetRGBFillColor(cg, 1, 1, 1, 0.18); Round(cg, r, 3); CGContextFillPath(cg);
-    CGContextSetRGBFillColor(cg, 0, 122 / 255.0, 1, 1); Round(cg, CGRectMake(0, r.origin.y, r.size.width * f, 6), 3); CGContextFillPath(cg);
+    OpenDrawProgress(cg, [self bounds], f);
 }
 @end
 
@@ -89,10 +87,7 @@ static char kPTitles, kPSel;
 - (void)drawRect:(CGRect)dirty
 {
     CGContextRef cg = CG(); if (!cg) return;
-    CGRect b = [self bounds], r = CGRectMake(1, (b.size.height - 24) / 2, b.size.width - 2, 24);
-    CGContextSetRGBFillColor(cg, 1, 1, 1, 0.08); Round(cg, r, 5); CGContextFillPath(cg);
-    Text([self titleOfSelectedItem] ?: @"", CGPointMake(10, b.size.height / 2), 13, 0.85);
-    Text(@"⌃", CGPointMake(b.size.width - 18, b.size.height / 2), 11, 0.6);
+    OpenDrawPopUp(cg, CGRectInset([self bounds], 1, 0), [self titleOfSelectedItem], YES);
 }
 - (void)mouseDown:(NSEvent *)e { NSArray *a = STORE(self, kPTitles); if (![a count]) return; NSInteger i = OpenPopupMenu(self, a, [self indexOfSelectedItem]); if (i >= 0) { [self selectItemAtIndex:i]; if ([self action]) [[self target] performSelector:[self action] withObject:self]; } }
 @end

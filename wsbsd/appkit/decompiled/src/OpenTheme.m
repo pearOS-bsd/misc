@@ -77,3 +77,79 @@ void OpenDrawTitleBar(CGContextRef cg, CGFloat W, CGFloat H, NSString *title, BO
         GreyDisc(cg, CGRectInset(r, 1, 1));
     }
 }
+
+/* ---- the controls, ported from WsdMacTheme.m (dark appearance, window colour 30): every number is the one of the theme ---- */
+static int Mix(int base, int top, double a) { return (int)(base * (1 - a) + top * a + 0.5); }
+static void OnBG(double a, CGFloat *c) { int v = Mix(30, 255, a); c[0] = c[1] = c[2] = v / 255.0; }
+static void FillRound(CGContextRef cg, CGRect r, CGFloat rad, CGFloat R, CGFloat G, CGFloat B, CGFloat A)
+{
+    if (rad * 2 > r.size.height) rad = r.size.height / 2; if (rad * 2 > r.size.width) rad = r.size.width / 2;
+    CGPathRef p = CGPathCreateWithRoundedRect(r, rad, rad, NULL); CGContextSetRGBFillColor(cg, R, G, B, A); CGContextAddPath(cg, p); CGContextFillPath(cg); CGPathRelease(p);
+}
+static void Label(NSString *t, CGPoint left, CGFloat alpha, BOOL bold)
+{
+    NSDictionary *at = @{ NSFontAttributeName: bold ? [NSFont boldSystemFontOfSize:13] : [NSFont systemFontOfSize:13], NSForegroundColorAttributeName: [NSColor colorWithCalibratedWhite:1 alpha:alpha] };
+    CGSize ts = [t sizeWithAttributes:at]; [t drawAtPoint:CGPointMake(left.x, left.y - ts.height / 2) withAttributes:at];
+}
+/* push button: a rounded rectangle (radius 5) 24 pt high centred in the frame, filled with the window colour lightened by 8 % (17 % pressed), the accent for the default button */
+void OpenDrawPushButton(CGContextRef cg, CGRect frame, NSString *title, BOOL isDefault, BOOL enabled, BOOL pressed)
+{
+    CGRect r = frame; if (r.size.height > 24) { r.origin.y += (r.size.height - 24) / 2; r.size.height = 24; }
+    CGFloat c[3];
+    if (isDefault && enabled) { if (pressed) { c[0] = 25 / 255.0; c[1] = 135 / 255.0; c[2] = 1; } else { c[0] = 0; c[1] = 122 / 255.0; c[2] = 1; } }
+    else { double a = pressed ? 0.17 : 0.08; if (!enabled) a *= 0.5; OnBG(a, c); }
+    FillRound(cg, r, 5, c[0], c[1], c[2], 1);
+    NSDictionary *at = @{ NSFontAttributeName: [NSFont systemFontOfSize:13], NSForegroundColorAttributeName: [NSColor colorWithCalibratedWhite:1 alpha:(isDefault && enabled) ? 1 : (enabled ? 0.85 : 0.25)] };
+    CGSize ts = [title sizeWithAttributes:at]; [title drawAtPoint:CGPointMake(r.origin.x + (r.size.width - ts.width) / 2, r.origin.y + (r.size.height - ts.height) / 2) withAttributes:at];
+}
+/* text field bezel: a 1 px ring (the window colour lightened by 5 %) round a field of the text background (23,24,25), radius 6 */
+void OpenDrawTextBezel(CGContextRef cg, CGRect frame)
+{
+    CGFloat c[3]; OnBG(0.05, c); FillRound(cg, frame, 6, c[0], c[1], c[2], 1);
+    FillRound(cg, CGRectInset(frame, 1, 1), 5, 23 / 255.0, 24 / 255.0, 25 / 255.0, 1);
+}
+/* slider: a 6 pt capsule track (window colour + 12 %), the part before the knob in the accent colour, a 20 pt knob (218,220,222) with a soft shadow */
+void OpenDrawSlider(CGContextRef cg, CGRect b, double f, BOOL enabled)
+{
+    CGFloat cy = CGRectGetMidY(b), th = 6, c[3]; OnBG(0.12, c); CGRect track = CGRectMake(b.origin.x + 10, cy - th / 2, b.size.width - 20, th);
+    FillRound(cg, track, th / 2, c[0], c[1], c[2], 1);
+    CGFloat x = track.origin.x + f * track.size.width;
+    if (enabled) FillRound(cg, CGRectMake(track.origin.x, track.origin.y, x - track.origin.x, th), th / 2, 0, 122 / 255.0, 1, 1); else { OnBG(0.28, c); FillRound(cg, CGRectMake(track.origin.x, track.origin.y, x - track.origin.x, th), th / 2, c[0], c[1], c[2], 1); }
+    CGRect k = CGRectMake(x - 9, cy - 9, 18, 18);
+    CGContextSetRGBFillColor(cg, 0, 0, 0, 0.25); CGContextFillEllipseInRect(cg, CGRectOffset(k, 0, -1));
+    if (enabled) CGContextSetRGBFillColor(cg, 218 / 255.0, 220 / 255.0, 222 / 255.0, 1); else CGContextSetRGBFillColor(cg, 150 / 255.0, 152 / 255.0, 154 / 255.0, 1);
+    CGContextFillEllipseInRect(cg, k);
+}
+/* determinate progress bar: an 8 pt capsule (window colour + 10 %), the done part in the accent colour */
+void OpenDrawProgress(CGContextRef cg, CGRect b, double f)
+{
+    CGFloat h = b.size.height > 8 ? 8 : b.size.height, c[3]; OnBG(0.10, c); CGRect t = CGRectMake(b.origin.x, CGRectGetMidY(b) - h / 2, b.size.width, h);
+    FillRound(cg, t, h / 2, c[0], c[1], c[2], 1);
+    if (f > 0) { CGFloat w = t.size.width * (f > 1 ? 1 : f); if (w < h) w = h; FillRound(cg, CGRectMake(t.origin.x, t.origin.y, w, h), h / 2, 0, 122 / 255.0, 1, 1); }
+}
+/* check box (rounded square, radius 4) / radio button (disc) 16 x 16: window colour + 10 % off, the accent on; the mark white (the theme's segments, y down in the picture) */
+void OpenDrawCheck(CGContextRef cg, CGRect box, BOOL radio, BOOL on)
+{
+    CGFloat c[3]; OnBG(0.10, c);
+    CGRect r = CGRectMake(box.origin.x, box.origin.y, 16, 16);
+    if (radio) { if (on) CGContextSetRGBFillColor(cg, 0, 122 / 255.0, 1, 1); else CGContextSetRGBFillColor(cg, c[0], c[1], c[2], 1); CGContextFillEllipseInRect(cg, r); }
+    else FillRound(cg, r, 4, on ? 0 : c[0], on ? 122 / 255.0 : c[1], on ? 1 : c[2], 1);
+    if (!on) return;
+    CGContextSetRGBFillColor(cg, 1, 1, 1, 1); CGContextSetRGBStrokeColor(cg, 1, 1, 1, 1);
+    if (radio) CGContextFillEllipseInRect(cg, CGRectMake(r.origin.x + 5, r.origin.y + 5, 6, 6));
+    else {
+        CGContextSetLineWidth(cg, 1.8); CGContextSetLineCap(cg, kCGLineCapRound); CGContextSetLineJoin(cg, kCGLineJoinRound);
+        CGContextMoveToPoint(cg, r.origin.x + 4, r.origin.y + 16 - 7.8); CGContextAddLineToPoint(cg, r.origin.x + 6.9, r.origin.y + 16 - 11); CGContextAddLineToPoint(cg, r.origin.x + 12, r.origin.y + 16 - 4.8); CGContextStrokePath(cg);
+    }
+}
+/* pop-up button: the push button look with the title 11 pt in and the two chevrons (1.4 pt strokes) 14 pt from the right edge */
+void OpenDrawPopUp(CGContextRef cg, CGRect frame, NSString *title, BOOL enabled)
+{
+    CGRect r = frame; if (r.size.height > 24) { r.origin.y += (r.size.height - 24) / 2; r.size.height = 24; }
+    CGFloat c[3]; OnBG(enabled ? 0.08 : 0.04, c); FillRound(cg, r, 5, c[0], c[1], c[2], 1);
+    Label(title ?: @"", CGPointMake(r.origin.x + 11, CGRectGetMidY(r)), enabled ? 0.85 : 0.25, NO);
+    CGFloat cx = CGRectGetMaxX(r) - 14;
+    CGContextSetRGBStrokeColor(cg, 1, 1, 1, enabled ? 0.85 : 0.25); CGContextSetLineWidth(cg, 1.4); CGContextSetLineCap(cg, kCGLineCapRound); CGContextSetLineJoin(cg, kCGLineJoinRound);
+    for (int k = 0; k < 2; k++) { CGFloat cy = CGRectGetMidY(r) + (k == 0 ? 3.5 : -3.5), d = k == 0 ? 1 : -1;			/* y up: the upper chevron points up */
+        CGContextMoveToPoint(cg, cx - 3, cy - d * 1.5); CGContextAddLineToPoint(cg, cx, cy + d * 1.5); CGContextAddLineToPoint(cg, cx + 3, cy - d * 1.5); CGContextStrokePath(cg); }
+}
