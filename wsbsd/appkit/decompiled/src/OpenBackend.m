@@ -15,7 +15,8 @@
 @interface NSWindow (OpenPrivate) - (CGRect)_openFrame; @end
 
 static ws_conn *sConn;
-static NSMapTable *sWindows;			/* wsd window id -> NSWindow (weak) */
+static NSMapTable *sWindows;
+static NSWindow *sKeyWindow;			/* wsd window id -> NSWindow (weak) */
 static int sScreenW = 1280, sScreenH = 800;
 
 static ws_conn *OpenConn(void)
@@ -42,8 +43,8 @@ static OpenWin *OpenWinOf(NSWindow *w, BOOL create)
     CGRect f = [w _openFrame];
     int tb = (([w styleMask] & 1) ? OPEN_TITLEBAR : 0);
     int top = sScreenH - (int)(f.origin.y + f.size.height) - tb;
-    if (top < 28 || top > sScreenH - 60) top = 60 + (int)([[sWindows keyEnumerator] allObjects].count % 8) * 24;		/* a window from a nib may carry a position of another screen: keep it visible */
-    if (f.origin.x < 0 || f.origin.x > 1000) f.origin.x = 120 + top;
+    if (tb && (top < 28 || top > sScreenH - 60)) top = 60 + (int)([[sWindows keyEnumerator] allObjects].count % 8) * 24;		/* a window from a nib may carry a position of another screen: keep it visible */
+    if (tb && (f.origin.x < 0 || f.origin.x > 1000)) f.origin.x = 120 + top;
     o = [OpenWin new];
     o->tb = tb;
     if (ws_win_create(c, (ws_rect){ (int)f.origin.x, top, (int)f.size.width, (int)f.size.height + tb }, 0, &o->win)) { NSLog(@"open: cannot create the window"); return nil; }
@@ -122,6 +123,7 @@ void OpenWindowDisplay(NSWindow *w)
     int fr_ = ws_win_flush(sConn, &o->win); if (getenv("OPEN_DEBUG")) fprintf(stderr, "open: display flush rc %d\n", fr_);
 }
 
+NSWindow *OpenKeyWindow(void) { return sKeyWindow; }
 void OpenWindowOrderFront(NSWindow *w)
 {
     OpenWin *o = OpenWinOf(w, YES);
@@ -129,7 +131,7 @@ void OpenWindowOrderFront(NSWindow *w)
     OpenWindowDisplay(w);
     ws_win_order(sConn, &o->win, WS_ABOVE, 0);
     o->shown = YES;
-    ws_win_set_key(sConn, &o->win);
+    ws_win_set_key(sConn, &o->win); sKeyWindow = w;
 }
 
 void OpenWindowOrderOut(NSWindow *w)
@@ -139,6 +141,7 @@ void OpenWindowOrderOut(NSWindow *w)
 }
 
 static NSView *sMouseView;				/* the view that took the mouse down: it gets the drag and the up */
+extern BOOL OpenMenuKeyEquivalent(int keyCode, BOOL shift);
 static int sDragWid, sDragX, sDragY;
 /* US layout: macOS virtual key code -> characters (plain, shifted) */
 static NSString *OpenKeyChars(unsigned short kc, BOOL shift)
@@ -193,6 +196,7 @@ static void OpenDispatch(const ws_event *e)
         break; }
     case WS_EV_KEY_DOWN: case WS_EV_KEY_UP: {
         NSEvent *ev = [NSEvent keyEventWithType:e->type == WS_EV_KEY_DOWN ? NSEventTypeKeyDown : NSEventTypeKeyUp location:CGPointZero modifierFlags:fl timestamp:t windowNumber:e->wid context:nil characters:OpenKeyChars((unsigned short)e->key, (fl & NSEventModifierFlagShift) != 0) charactersIgnoringModifiers:OpenKeyChars((unsigned short)e->key, NO) isARepeat:NO keyCode:(unsigned short)e->key];
+        if (e->type == WS_EV_KEY_DOWN && (fl & 0x100000) && OpenMenuKeyEquivalent(e->key, (fl & NSEventModifierFlagShift) != 0)) break;
         NSResponder *r = [w firstResponder];
         if (!r || r == (NSResponder *)w) r = cv;			/* no first responder set: the content view takes the keys */
         if (e->type == WS_EV_KEY_DOWN) [r keyDown:ev]; else [r keyUp:ev];
@@ -277,6 +281,7 @@ void OpenRunLoop(void)
         BOOL should = ![(id)d respondsToSelector:@selector(applicationShouldOpenUntitledFile:)] || (BOOL)(NSInteger)[(id)d performSelector:@selector(applicationShouldOpenUntitledFile:) withObject:self];
         if (should && ![[sdc performSelector:@selector(documents)] count]) { NSError *err = nil; ((id(*)(id, SEL, BOOL, NSError **))objc_msgSend)(sdc, @selector(openUntitledDocumentAndDisplay:error:), YES, &err); }
     }
+    OpenMenuBarShow();
     OpenRunLoop();
 }
 @end
