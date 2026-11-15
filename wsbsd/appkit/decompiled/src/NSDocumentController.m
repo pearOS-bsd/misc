@@ -11,6 +11,7 @@
 #import "NSDocumentController.h"
 #import "NSDocument.h"
 
+static NSDocumentController *sSharedDC;			/* the first instance made (also of a subclass, e.g. from a nib) is the shared one */
 @implementation NSDocumentController {
     NSMutableArray<NSDocument *> *_documents;
     NSMutableArray<NSURL *> *_recentURLs;
@@ -23,16 +24,15 @@
     if (self) {
         _documents = [NSMutableArray array];
         _recentURLs = [NSMutableArray array];
+        if (!sSharedDC) sSharedDC = self;
     }
     return self;
 }
 
 + (NSDocumentController *)sharedDocumentController
 {
-    static NSDocumentController *shared;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{ shared = [[NSDocumentController alloc] init]; });
-    return shared;
+    if (!sSharedDC) { Class k = NSClassFromString([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSDocumentControllerClass"]) ?: [NSDocumentController class]; sSharedDC = [[k alloc] init]; }
+    return sSharedDC;
 }
 
 - (NSArray<NSDocument *> *)documents { return [_documents copy]; }

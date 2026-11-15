@@ -447,7 +447,7 @@ static void OpenLogGap(Class c, SEL s, BOOL cls)
     if (!sLogged) sLogged = [NSMutableSet new];
     NSString *k = [NSString stringWithFormat:@"%c%s %s", cls ? '+' : '-', class_getName(c), sel_getName(s)];
     if ([sLogged containsObject:k]) return; [sLogged addObject:k];
-    fprintf(stderr, "open: unimplemented %c[%s %s]\n", cls ? '+' : '-', class_getName(c), sel_getName(s));
+    { char ch[256] = ""; for (Class k = class_getSuperclass(c); k && strlen(ch) < 200; k = class_getSuperclass(k)) { strcat(ch, " < "); strcat(ch, class_getName(k)); } fprintf(stderr, "open: unimplemented %c[%s %s]  (%s)\n", cls ? '+' : '-', class_getName(c), sel_getName(s), ch); }
 }
 static id OpenSig(id self, SEL _cmd, SEL s)
 {
@@ -511,4 +511,27 @@ static void *OpenDlopen(const char *p, int f)
     if (p && strstr(p, "/AppKit.framework/") && !strstr(p, "/open/")) { if (getenv("OPEN_DEBUG")) fprintf(stderr, "open: dlopen(%s) -> /open/AppKit\n", p); return dlopen("/open/AppKit", f); }
     return dlopen(p, f);
 }
-__attribute__((used)) static struct { const void *r, *o; } sOpenInterpose[] __attribute__((section("__DATA,__interpose"))) = { { (const void *)OpenDlopen, (const void *)dlopen } };
+
+/* ---- the user database: the Mac's getpwuid asks the directory service, which is not there; the answer comes from /etc/passwd (programs take pw_dir without looking at the result) ---- */
+#include <pwd.h>
+static struct passwd sPw; static char sPwBuf[1024];
+static struct passwd *OpenPwLookup(const char *name, uid_t uid, BOOL byName)
+{
+    FILE *f = fopen("/etc/passwd", "r"); char line[512]; struct passwd *res = NULL;
+    while (f && fgets(line, sizeof line, f)) {
+        char *fld[7]; int n = 0; char *p = line; fld[n++] = p;
+        for (; *p && n < 7; p++) if (*p == ':') { *p = 0; fld[n++] = p + 1; } else if (*p == '\n') *p = 0;
+        if (n < 7) continue;
+        if (byName ? strcmp(fld[0], name) == 0 : (uid_t)atoi(fld[2]) == uid) {
+            snprintf(sPwBuf, sizeof sPwBuf, "%s%c%s%c%s%c%s%c%s", fld[0], 0, fld[1], 0, fld[4], 0, fld[5], 0, fld[6]);
+            char *q = sPwBuf; sPw.pw_name = q; q += strlen(q) + 1; sPw.pw_passwd = q; q += strlen(q) + 1; sPw.pw_gecos = q; q += strlen(q) + 1; sPw.pw_dir = q; q += strlen(q) + 1; sPw.pw_shell = q;
+            sPw.pw_uid = (uid_t)atoi(fld[2]); sPw.pw_gid = (gid_t)atoi(fld[3]); sPw.pw_change = 0; sPw.pw_expire = 0; sPw.pw_class = (char *)""; res = &sPw; break;
+        }
+    }
+    if (f) fclose(f);
+    if (!res) { snprintf(sPwBuf, sizeof sPwBuf, "user%c*%c%c%s%c/bin/sh", 0, 0, 0, getenv("HOME") ?: "/", 0); char *q = sPwBuf; sPw.pw_name = q; q += 5; sPw.pw_passwd = q; q += 2; sPw.pw_gecos = q; q += 1; sPw.pw_dir = q; q += strlen(q) + 1; sPw.pw_shell = q; sPw.pw_uid = uid; sPw.pw_gid = 0; sPw.pw_class = (char *)""; res = &sPw; }
+    return res;
+}
+static struct passwd *OpenGetpwuid(uid_t u) { return OpenPwLookup(NULL, u, NO); }
+static struct passwd *OpenGetpwnam(const char *n) { return OpenPwLookup(n, 0, YES); }
+__attribute__((used)) static struct { const void *r, *o; } sOpenInterpose[] __attribute__((section("__DATA,__interpose"))) = { { (const void *)OpenDlopen, (const void *)dlopen }, { (const void *)OpenGetpwuid, (const void *)getpwuid }, { (const void *)OpenGetpwnam, (const void *)getpwnam } };
