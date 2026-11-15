@@ -81,6 +81,7 @@ void OpenWindowDisplay(NSWindow *w)
     if (!o) return;
     CGContextSaveGState(o->cg);
     CGContextClearRect(o->cg, CGRectMake(0, 0, o->win.px->w, o->win.px->h));
+    CGContextSetRGBFillColor(o->cg, 30 / 255.0, 30 / 255.0, 30 / 255.0, 1); CGContextFillRect(o->cg, CGRectMake(0, 0, o->win.px->w, o->win.px->h - o->tb));		/* window background (dark) */
     NSView *cv = [w contentView];
     if (cv) { @try { OpenDrawView(cv, o->cg); } @catch (NSException *ex) { fprintf(stderr, "open: exception while drawing: %s: %s\n", [[ex name] UTF8String], [[ex reason] UTF8String]); } }
     if (o->tb) {
@@ -223,8 +224,24 @@ void OpenRunLoop(void)
 - (void)set { [self setFill]; CGContextRef cg = [[NSGraphicsContext currentContext] CGContext]; if (cg) { CGFloat a = [self alphaComponent]; CGContextSetRGBStrokeColor(cg, [self redComponent], [self greenComponent], [self blueComponent], a); } }
 @end
 
+@protocol OpenAppDelegate <NSObject>
+@optional
+- (void)applicationWillFinishLaunching:(NSNotification *)n;
+- (void)applicationDidFinishLaunching:(NSNotification *)n;
+@end
 @implementation NSApplication (OpenRun)
-- (void)run { OpenRunLoop(); }
+- (void)run
+{
+    id<OpenAppDelegate> d = [self delegate];
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    NSNotification *n = [NSNotification notificationWithName:@"NSApplicationWillFinishLaunchingNotification" object:self];
+    [nc postNotification:n];
+    if ([d respondsToSelector:@selector(applicationWillFinishLaunching:)]) [d applicationWillFinishLaunching:n];
+    n = [NSNotification notificationWithName:@"NSApplicationDidFinishLaunchingNotification" object:self];
+    if ([d respondsToSelector:@selector(applicationDidFinishLaunching:)]) [d applicationDidFinishLaunching:n];
+    [nc postNotification:n];
+    OpenRunLoop();
+}
 @end
 
 void NSRectFill(CGRect r)
@@ -364,5 +381,53 @@ static const void *kOpenPressed = &kOpenPressed;
     else if ([c isEqualToString:@"\r"]) { if ([self action]) [[self target] performSelector:[self action] withObject:self]; }
     else if ([c length] && [c characterAtIndex:0] >= 32) [self setStringValue:[s stringByAppendingString:c]];
     [self display];
+}
+@end
+
+/* ---- the gaps of our AppKit: a selector of one of our classes that nobody implements is logged once and answers 0 (OPEN_STRICT=1: it stays an exception) ---- */
+static id OpenZero(id self, SEL _cmd) { return nil; }
+@interface NSObject (OpenGaps) @end
+@implementation NSObject (OpenGaps)
++ (BOOL)resolveInstanceMethod:(SEL)sel
+{
+    const char *img = class_getImageName(self);
+    if (!img || !strstr(img, "/open/") || getenv("OPEN_STRICT")) return NO;
+    fprintf(stderr, "open: unimplemented -[%s %s]\n", class_getName(self), sel_getName(sel));
+    class_addMethod(self, sel, (IMP)OpenZero, "@@:");
+    return YES;
+}
++ (BOOL)resolveClassMethod:(SEL)sel
+{
+    const char *img = class_getImageName(self);
+    if (!img || !strstr(img, "/open/") || getenv("OPEN_STRICT")) return NO;
+    fprintf(stderr, "open: unimplemented +[%s %s]\n", class_getName(self), sel_getName(sel));
+    class_addMethod(object_getClass(self), sel, (IMP)OpenZero, "@@:");
+    return YES;
+}
+@end
+
+/* ---- text view (first version: one string, drawn wrapped in the bounds, typing at the end; the text system - NSTextStorage / NSLayoutManager - is not there yet) ---- */
+#import "NSTextView.h"
+static const void *kOpenText = &kOpenText;
+@implementation NSTextView (OpenDrawing)
+- (NSString *)string { return objc_getAssociatedObject(self, kOpenText) ?: @""; }
+- (void)setString:(NSString *)s { objc_setAssociatedObject(self, kOpenText, [s copy], OBJC_ASSOCIATION_RETAIN); [self display]; }
+- (BOOL)acceptsFirstResponder { return YES; }
+- (void)drawRect:(CGRect)dirty
+{
+    CGContextRef cg = [[NSGraphicsContext currentContext] CGContext];
+    if (!cg) return;
+    CGRect b = [self bounds];
+    CGContextSetRGBFillColor(cg, 23 / 255.0, 24 / 255.0, 25 / 255.0, 1); CGContextFillRect(cg, b);
+    NSDictionary *at = @{ NSFontAttributeName: [NSFont systemFontOfSize:13], NSForegroundColorAttributeName: [NSColor colorWithCalibratedWhite:1 alpha:0.85] };
+    [[self string] drawInRect:CGRectInset(b, 5, 4) withAttributes:at];
+}
+- (void)mouseDown:(NSEvent *)e { [[self window] makeFirstResponder:self]; }
+- (void)keyDown:(NSEvent *)e
+{
+    NSString *c = [e characters], *s = [self string];
+    if ([c isEqualToString:@"\x7f"]) { if ([s length]) [self setString:[s substringToIndex:[s length] - 1]]; }
+    else if ([c isEqualToString:@"\r"]) [self setString:[s stringByAppendingString:@"\n"]];
+    else if ([c length] && [c characterAtIndex:0] >= 32) [self setString:[s stringByAppendingString:c]];
 }
 @end
