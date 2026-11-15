@@ -86,7 +86,13 @@ static NSUInteger TK2Index(OpenTV *o, CGPoint p)
 }
 static NSUInteger Len(OpenTV *o) { return ((U0)objc_msgSend)(o->ts, SEL_("length")); }
 static NSString *Str(OpenTV *o) { return ((ID0)objc_msgSend)(o->ts, SEL_("string")); }
-static NSDictionary *Attrs(void) { return @{ NSFontAttributeName: [NSFont systemFontOfSize:13], NSForegroundColorAttributeName: [NSColor colorWithCalibratedWhite:1 alpha:0.85] }; }
+static NSColor *TextColorFor(NSView *v)		/* white on the dark theme; black on a window whose own background is light (a note) */
+{
+    id bg = [[v window] performSelector:@selector(backgroundColor)]; CGFloat r = 0, g = 0, b = 0, a = 0;
+    if ([bg respondsToSelector:@selector(getRed:green:blue:alpha:)]) { [bg getRed:&r green:&g blue:&b alpha:&a]; if (a > 0.5 && 0.299 * r + 0.587 * g + 0.114 * b > 0.6) return [NSColor colorWithCalibratedWhite:0.1 alpha:1]; }
+    return [NSColor colorWithCalibratedWhite:1 alpha:0.85];
+}
+static NSDictionary *AttrsFor(NSView *v) { return @{ NSFontAttributeName: [NSFont systemFontOfSize:13], NSForegroundColorAttributeName: TextColorFor(v) }; }
 
 @implementation NSTextView (OpenText)
 - (BOOL)isFlipped { return YES; }
@@ -95,7 +101,7 @@ static NSDictionary *Attrs(void) { return @{ NSFontAttributeName: [NSFont system
 - (void)setString:(NSString *)s
 {
     OpenTV *o = TV(self);
-    id as = ((id(*)(id, SEL, id, id))objc_msgSend)(((ID0)objc_msgSend)((id)objc_getClass("NSAttributedString"), SEL_("alloc")), SEL_("initWithString:attributes:"), s ?: @"", Attrs());
+    id as = ((id(*)(id, SEL, id, id))objc_msgSend)(((ID0)objc_msgSend)((id)objc_getClass("NSAttributedString"), SEL_("alloc")), SEL_("initWithString:attributes:"), s ?: @"", AttrsFor(self));
     ((void(*)(id, SEL, NSRange, id))objc_msgSend)(o->ts, SEL_("replaceCharactersInRange:withAttributedString:"), NSMakeRange(0, Len(o)), as);
     o->sel = NSMakeRange(Len(o), 0); o->anchor = o->sel.location;
     [self display];
@@ -106,7 +112,7 @@ static NSDictionary *Attrs(void) { return @{ NSFontAttributeName: [NSFont system
 - (id)textStorage { return TV(self)->ts; }
 - (id)layoutManager { return TV(self)->lm; }
 - (id)textLayoutManager { return TV(self)->tlm; }
-- (NSDictionary *)typingAttributes { return TV(self)->typing ?: Attrs(); }
+- (NSDictionary *)typingAttributes { return TV(self)->typing ?: AttrsFor(self); }
 - (void)setTypingAttributes:(NSDictionary *)a { TV(self)->typing = a; }
 - (void)setSelectedRange:(NSRange)r { OpenTV *o = TV(self); o->sel = r; o->anchor = r.location; [self display]; }
 
@@ -122,7 +128,7 @@ static NSDictionary *Attrs(void) { return @{ NSFontAttributeName: [NSFont system
     CGPoint org = CGPointMake(kInsetX, kInsetY);
     if (o->ts && Len(o) != o->coloredLen) {			/* text without a colour attribute (a file just read) gets the text colour of the appearance: AppKit draws it with the text view's colour */
         o->coloredLen = Len(o);
-        NSColor *tc = [NSColor colorWithCalibratedWhite:1 alpha:0.85];
+        NSColor *tc = TextColorFor(self);
         ((void(*)(id, SEL))objc_msgSend)(o->ts, SEL_("beginEditing"));
         ((void(*)(id, SEL, id, NSRange, NSUInteger, id))objc_msgSend)(o->ts, SEL_("enumerateAttribute:inRange:options:usingBlock:"), NSForegroundColorAttributeName, NSMakeRange(0, Len(o)), 0, ^(id v, NSRange r, BOOL *stop) { if (!v) ((void(*)(id, SEL, id, id, NSRange))objc_msgSend)(o->ts, SEL_("addAttribute:value:range:"), NSForegroundColorAttributeName, tc, r); });
         ((void(*)(id, SEL))objc_msgSend)(o->ts, SEL_("endEditing"));
@@ -218,7 +224,7 @@ static NSDictionary *Attrs(void) { return @{ NSFontAttributeName: [NSFont system
 - (void)_openReplace:(NSString *)s
 {
     OpenTV *o = TV(self);
-    id as = ((id(*)(id, SEL, id, id))objc_msgSend)(((ID0)objc_msgSend)((id)objc_getClass("NSAttributedString"), SEL_("alloc")), SEL_("initWithString:attributes:"), s, Attrs());
+    id as = ((id(*)(id, SEL, id, id))objc_msgSend)(((ID0)objc_msgSend)((id)objc_getClass("NSAttributedString"), SEL_("alloc")), SEL_("initWithString:attributes:"), s, AttrsFor(self));
     ((void(*)(id, SEL, NSRange, id))objc_msgSend)(o->ts, SEL_("replaceCharactersInRange:withAttributedString:"), o->sel, as);
     o->sel = NSMakeRange(o->sel.location + [s length], 0); o->anchor = o->sel.location;
     [self display];
