@@ -51,6 +51,39 @@ static OpenTV *TV(NSTextView *v)
     objc_setAssociatedObject(v, &kTV, o, OBJC_ASSOCIATION_RETAIN);
     return o;
 }
+
+static NSUInteger Len(OpenTV *o);
+/* ---- TextKit 2 geometry: the rectangles of a range (segments), the character at a point ---- */
+static id TK2Loc(OpenTV *o, NSUInteger off)
+{
+    id cm = ((ID0)objc_msgSend)(o->tlm, SEL_("textContentManager")); id dr = ((ID0)objc_msgSend)(cm, SEL_("documentRange"));
+    return ((id(*)(id, SEL, id, NSInteger))objc_msgSend)(cm, SEL_("locationFromLocation:withOffset:"), ((ID0)objc_msgSend)(dr, SEL_("location")), (NSInteger)off);
+}
+static NSArray *TK2Rects(OpenTV *o, NSRange r, NSInteger type)
+{
+    id a = TK2Loc(o, r.location), b = TK2Loc(o, r.location + r.length); if (!a) return @[];
+    id tr = r.length && b ? ((id(*)(id, SEL, id, id))objc_msgSend)(((ID0)objc_msgSend)((id)objc_getClass("NSTextRange"), SEL_("alloc")), SEL_("initWithLocation:endLocation:"), a, b)
+                          : ((ID1)objc_msgSend)(((ID0)objc_msgSend)((id)objc_getClass("NSTextRange"), SEL_("alloc")), SEL_("initWithLocation:"), a);
+    NSMutableArray *out = [NSMutableArray new];
+    BOOL (^blk)(id, CGRect, CGFloat, id) = ^BOOL(id rng, CGRect f, CGFloat base, id tc) { [out addObject:[NSValue valueWithBytes:&f objCType:@encode(CGRect)]]; return YES; };
+    ((void(*)(id, SEL, id, NSInteger, NSUInteger, id))objc_msgSend)(o->tlm, SEL_("enumerateTextSegmentsInRange:type:options:usingBlock:"), tr, type, 0, blk);
+    return out;
+}
+static NSUInteger TK2Index(OpenTV *o, CGPoint p)
+{
+    id frag = ((id(*)(id, SEL, CGPoint))objc_msgSend)(o->tlm, SEL_("textLayoutFragmentForPosition:"), p); if (!frag) return Len(o);
+    CGRect fr = ((RectFn)objc_msgSend_stret)(frag, SEL_("layoutFragmentFrame"));
+    id range = ((ID0)objc_msgSend)(frag, SEL_("rangeInElement")), start = ((ID0)objc_msgSend)(range, SEL_("location"));
+    id cm = ((ID0)objc_msgSend)(o->tlm, SEL_("textContentManager")); id dr = ((ID0)objc_msgSend)(cm, SEL_("documentRange"));
+    NSInteger base = ((NSInteger(*)(id, SEL, id, id))objc_msgSend)(cm, SEL_("offsetFromLocation:toLocation:"), ((ID0)objc_msgSend)(dr, SEL_("location")), start);
+    NSArray *lines = ((ID0)objc_msgSend)(frag, SEL_("textLineFragments")); NSInteger ci = 0;
+    for (id lf in lines) {
+        CGRect lr = ((RectFn)objc_msgSend_stret)(lf, SEL_("typographicBounds"));
+        if (p.y - fr.origin.y >= lr.origin.y && p.y - fr.origin.y < lr.origin.y + lr.size.height + 0.5) { ci = ((NSInteger(*)(id, SEL, CGPoint))objc_msgSend)(lf, SEL_("characterIndexForPoint:"), CGPointMake(p.x - fr.origin.x - lr.origin.x, p.y - fr.origin.y - lr.origin.y)); if (ci < 0) ci = 0; break; }
+        ci = (NSInteger)((NSRange(*)(id, SEL))objc_msgSend)(lf, SEL_("characterRange")).length;
+    }
+    NSInteger r = base + ci; if (r < 0) r = 0; if ((NSUInteger)r > Len(o)) r = Len(o); return (NSUInteger)r;
+}
 static NSUInteger Len(OpenTV *o) { return ((U0)objc_msgSend)(o->ts, SEL_("length")); }
 static NSString *Str(OpenTV *o) { return ((ID0)objc_msgSend)(o->ts, SEL_("string")); }
 static NSDictionary *Attrs(void) { return @{ NSFontAttributeName: [NSFont systemFontOfSize:13], NSForegroundColorAttributeName: [NSColor colorWithCalibratedWhite:1 alpha:0.85] }; }
@@ -89,9 +122,12 @@ static NSDictionary *Attrs(void) { return @{ NSFontAttributeName: [NSFont system
     if (o->tlm) {			/* TextKit 2: every layout fragment draws itself */
         id cm = ((ID0)objc_msgSend)(o->tlm, SEL_("textContentManager")); id dr = ((ID0)objc_msgSend)(cm, SEL_("documentRange")); id loc = ((ID0)objc_msgSend)(dr, SEL_("location"));
         CGContextTranslateCTM(cg, org.x, org.y);
+        if (o->sel.length) { CGContextSetRGBFillColor(cg, 63 / 255.0, 96 / 255.0, 130 / 255.0, 1); for (NSValue *v in TK2Rects(o, o->sel, 1)) { CGRect r; [v getValue:&r]; CGContextFillRect(cg, r); } }
         BOOL (^blk)(id) = ^BOOL(id frag) { CGRect fr = ((RectFn)objc_msgSend_stret)(frag, SEL_("layoutFragmentFrame")); if (getenv("OPEN_DEBUG")) fprintf(stderr, "open: fragment %g,%g %gx%g\n", fr.origin.x, fr.origin.y, fr.size.width, fr.size.height); ((void(*)(id, SEL, CGPoint, CGContextRef))objc_msgSend)(frag, SEL_("drawAtPoint:inContext:"), fr.origin, cg); return YES; };
         ((id(*)(id, SEL, id, NSUInteger, id))objc_msgSend)(o->tlm, SEL_("enumerateTextLayoutFragmentsFromLocation:options:usingBlock:"), loc, 2 /* ensures layout */, blk);
-        CGContextRestoreGState(cg); return;
+        if ([[self window] firstResponder] == self && !o->sel.length) { NSArray *cr = TK2Rects(o, o->sel, 0); CGRect r = CGRectMake(0, 0, 0, 16); if ([cr count]) [cr[0] getValue:&r]; CGContextSetRGBFillColor(cg, 0.3, 0.6, 1, 1); CGContextFillRect(cg, CGRectMake(r.origin.x, r.origin.y, 1.5, r.size.height > 0 ? r.size.height : 16)); }
+        CGContextRestoreGState(cg);
+        return;
     }
     NSRange gr = ((RangeFn)objc_msgSend)(o->lm, SEL_("glyphRangeForTextContainer:"), o->tc);
     if (o->sel.length) {		/* the selection: one rectangle per line */
@@ -124,7 +160,8 @@ static NSDictionary *Attrs(void) { return @{ NSFontAttributeName: [NSFont system
 }
 - (CGRect)_openCaretRect
 {
-    OpenTV *o = TV(self); NSUInteger ci = o->sel.location, len = Len(o);
+    OpenTV *o = TV(self);
+    if (o->tlm) { NSArray *cr = TK2Rects(o, o->sel, 0); CGRect r = CGRectMake(0, 0, 0, 16); if ([cr count]) [cr[0] getValue:&r]; return CGRectMake(r.origin.x + kInsetX, r.origin.y + kInsetY, 1.5, r.size.height > 0 ? r.size.height : 16); } NSUInteger ci = o->sel.location, len = Len(o);
     if (len == 0 || ci == 0 && len == 0) return CGRectMake(kInsetX, kInsetY, 1.5, 15);
     NSUInteger gi = ((NSUInteger(*)(id, SEL, NSUInteger))objc_msgSend)(o->lm, SEL_("glyphIndexForCharacterAtIndex:"), ci < len ? ci : len - 1);
     NSRange eff;
@@ -141,6 +178,7 @@ static NSDictionary *Attrs(void) { return @{ NSFontAttributeName: [NSFont system
 - (NSUInteger)_openIndexAt:(CGPoint)p
 {
     OpenTV *o = TV(self); CGFloat frac = 0;
+    if (o->tlm) return TK2Index(o, CGPointMake(p.x, p.y));
     CGPoint q = CGPointMake(p.x - kInsetX, p.y - kInsetY);
     return ((NSUInteger(*)(id, SEL, CGPoint, id, CGFloat *))objc_msgSend)(o->lm, SEL_("characterIndexForPoint:inTextContainer:fractionOfDistanceBetweenInsertionPoints:"), q, o->tc, &frac);
 }
