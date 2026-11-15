@@ -174,6 +174,7 @@ static void OpenDispatch(const ws_event *e)
         else if (ty == NSEventTypeLeftMouseDragged) [v mouseDragged:ev];
         else [v mouseMoved:ev];
         break; }
+    case WS_EV_FOCUS_OUT: { if ([cv respondsToSelector:@selector(_openFocusOut)]) [cv performSelector:@selector(_openFocusOut)]; break; }
     case WS_EV_SCROLL: {
         NSView *v = [cv hitTest:p];
         while (v && ![v respondsToSelector:@selector(_openScrollBy:)]) v = [v superview];
