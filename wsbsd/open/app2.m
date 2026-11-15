@@ -9,7 +9,7 @@
   w = [[NSWindow alloc] initWithContentRect:NSMakeRect(300, 300, 480, 320) styleMask:NSWindowStyleMaskTitled | NSWindowStyleMaskClosable | NSWindowStyleMaskResizable backing:NSBackingStoreBuffered defer:NO];
   [w setTitle:@"app2"];
   NSScrollView *sv = [[NSScrollView alloc] initWithFrame:NSMakeRect(10, 50, 460, 260)]; [sv setHasVerticalScroller:YES];
-  NSTextView *tv = [[NSTextView alloc] initWithFrame:NSMakeRect(0, 0, 440, 260)]; [tv setString:@"Hello from a typical Cocoa app. This text wraps around the width of the view because it is laid out by the real NSLayoutManager.\nSecond paragraph."]; [sv setDocumentView:tv];
+  NSTextView *tv = [[NSTextView alloc] initWithFrame:NSMakeRect(0, 0, 440, 260)]; [tv setString:@"Hello from a typical Cocoa app. This text wraps around the width of the view because it is laid out by the real NSLayoutManager.\nSecond paragraph.\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16"]; [sv setDocumentView:tv];
   [[w contentView] addSubview:sv];
   NSTextField *l = [NSTextField labelWithString:@"label"]; [l setFrame:NSMakeRect(10, 15, 200, 24)]; [[w contentView] addSubview:l];
   NSButton *b = [NSButton buttonWithTitle:@"OK" target:self action:@selector(ok:)]; [b setFrame:NSMakeRect(380, 10, 90, 32)]; [[w contentView] addSubview:b];
