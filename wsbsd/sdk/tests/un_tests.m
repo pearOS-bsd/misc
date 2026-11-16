@@ -6,7 +6,7 @@
 #import <wsbsd/NSXPCConnection.h>
 #import <Foundation/NSXPCConnection.h>
 #include <stdio.h>
-#import "../../usernoted/WSUserNotificationService.h"
+#import "WSUserNotificationService.h"		/* from d/bsd/usernoted (-I) */
 static int failures; static void Check(int ok, const char *what, int line) { if (!ok) { printf("FAIL %s:%d %s\n", __FILE__, line, what); failures++; } }
 #define CHECK(c) Check((c), #c, __LINE__)
 static void Spin(double s) { [[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: s]]; }
