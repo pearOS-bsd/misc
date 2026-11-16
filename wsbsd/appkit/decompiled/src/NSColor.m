@@ -147,6 +147,7 @@ static void NSColorRGBToHSB(CGFloat r, CGFloat g, CGFloat b, CGFloat *h, CGFloat
 
 - (void)getRed:(CGFloat *)r green:(CGFloat *)g blue:(CGFloat *)b alpha:(CGFloat *)a
 {
+    if ([self _isGray]) { if (r) *r = _c[0]; if (g) *g = _c[0]; if (b) *b = _c[0]; if (a) *a = _c[_nComponents]; return; }		/* open: lenient for grays (the system's text colours are grays; programs that convert them go through here) */
     [self _requireRGB:_cmd];
     if (r) *r = _c[0]; if (g) *g = _c[1]; if (b) *b = _c[2]; if (a) *a = _c[_nComponents];
 }
