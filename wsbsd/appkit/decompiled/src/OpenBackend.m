@@ -93,6 +93,13 @@ static void OpenDump(NSView *v, int d)
     fprintf(stderr, "open: view %*s%s (%g,%g %gx%g) subviews %lu\n", d * 2, "", class_getName([v class]), f.origin.x, f.origin.y, f.size.width, f.size.height, (unsigned long)[[v subviews] count]);
     for (NSView *s in [v subviews]) OpenDump(s, d + 1);
 }
+static BOOL OpenWindowEdited(NSWindow *w)		/* the edited marker: the window's own flag or the document of its controller */
+{
+    if ([w respondsToSelector:@selector(isDocumentEdited)] && (BOOL)(NSInteger)[w performSelector:@selector(isDocumentEdited)]) return YES;
+    id wc = [w respondsToSelector:NSSelectorFromString(@"windowController")] ? [w performSelector:NSSelectorFromString(@"windowController")] : nil;
+    id d = [wc respondsToSelector:@selector(document)] ? [wc performSelector:@selector(document)] : nil;
+    return [d respondsToSelector:@selector(isDocumentEdited)] && (BOOL)(NSInteger)[d performSelector:@selector(isDocumentEdited)];
+}
 extern void OpenDrawTitleBar(CGContextRef cg, CGFloat W, CGFloat H, NSString *title, BOOL key, BOOL hover, int pressed, BOOL edited, BOOL hasClose, BOOL hasMini, BOOL hasZoom);
 void OpenWindowDisplay(NSWindow *w)
 {
@@ -110,7 +117,7 @@ void OpenWindowDisplay(NSWindow *w)
         NSGraphicsContext *gc = [NSGraphicsContext graphicsContextWithCGContext:o->cg flipped:NO];
         NSGraphicsContext *old = [NSGraphicsContext currentContext]; [NSGraphicsContext setCurrentContext:gc];
         NSUInteger sm = [w styleMask];
-        OpenDrawTitleBar(o->cg, o->win.px->w, o->win.px->h, [w title], sKeyWindow == w, o->hover, o->pressed, [w respondsToSelector:@selector(isDocumentEdited)] && (BOOL)(NSInteger)[w performSelector:@selector(isDocumentEdited)], (sm & 2) != 0, (sm & 4) != 0, (sm & 8) != 0);
+        OpenDrawTitleBar(o->cg, o->win.px->w, o->win.px->h, [w title], sKeyWindow == w, o->hover, o->pressed, OpenWindowEdited(w), (sm & 2) != 0, (sm & 4) != 0, (sm & 8) != 0);
         [NSGraphicsContext setCurrentContext:old];
     }
     CGContextRestoreGState(o->cg);

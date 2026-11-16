@@ -228,6 +228,9 @@ static NSDictionary *AttrsFor(NSView *v) { return @{ NSFontAttributeName: [NSFon
     id as = ((id(*)(id, SEL, id, id))objc_msgSend)(((ID0)objc_msgSend)((id)objc_getClass("NSAttributedString"), SEL_("alloc")), SEL_("initWithString:attributes:"), s, AttrsFor(self));
     ((void(*)(id, SEL, NSRange, id))objc_msgSend)(o->ts, SEL_("replaceCharactersInRange:withAttributedString:"), o->sel, as);
     o->sel = NSMakeRange(o->sel.location + [s length], 0); o->anchor = o->sel.location;
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"NSTextDidChangeNotification" object:self];
+    id dg = [self respondsToSelector:@selector(delegate)] ? [self performSelector:@selector(delegate)] : nil; if ([dg respondsToSelector:@selector(textDidChange:)]) [dg performSelector:@selector(textDidChange:) withObject:[NSNotification notificationWithName:@"NSTextDidChangeNotification" object:self]];
+    { id wc = [[self window] respondsToSelector:NSSelectorFromString(@"windowController")] ? [[self window] performSelector:NSSelectorFromString(@"windowController")] : nil; id doc = [wc respondsToSelector:@selector(document)] ? [wc performSelector:@selector(document)] : nil; if ([doc respondsToSelector:@selector(updateChangeCount:)]) ((void(*)(id, SEL, NSInteger))objc_msgSend)(doc, @selector(updateChangeCount:), 0); }		/* the document is edited (NSChangeDone) */
     [self display];
 }
 - (void)copy:(id)sender

@@ -171,6 +171,7 @@ static char kUM;
 @end
 
 /* ---- saving: the Save panel of the system, then the data of the program's document type ---- */
+extern void OpenWindowDisplay(NSWindow *w);
 @implementation NSDocument (OpenSave)
 - (BOOL)writeToURL:(NSURL *)u ofType:(NSString *)t error:(NSError **)e
 {
@@ -192,8 +193,9 @@ static char kUM;
 - (NSData *)dataOfType:(NSString *)t error:(NSError **)e { return nil; }
 - (void)_openFinishSave:(NSURL *)u type:(NSString *)t
 {
-    [self setValue:u forKey:@"fileURL"]; if (t) [self setValue:t forKey:@"fileType"];
-    [self setDisplayName:[[u lastPathComponent] copy]];
+    BOOL same = [[self fileURL] isEqual:u];
+    [self setValue:u forKey:@"fileURL"]; if (t && !same) [self setValue:t forKey:@"fileType"];
+    if (!same) [self setDisplayName:[[u lastPathComponent] copy]];
     for (NSWindowController *wc in [self windowControllers]) { NSWindow *w = [wc valueForKey:@"window"]; if (w) [w setTitle:[self displayName]]; }
 }
 - (void)performAsynchronousFileAccessUsingBlock:(void (^)(void (^)(void)))b { if (b) b(^{ }); }
@@ -204,7 +206,7 @@ static char kUM;
     if (getenv("OPEN_DEBUG")) fprintf(stderr, "open: base saveToURL %s op %lu\n", [[u description] UTF8String], (unsigned long)op);
     NSError *e = nil; BOOL ok = [self writeToURL:u ofType:t error:&e];
     if (ok && op != 2) { [self _openFinishSave:u type:t]; }		/* 2: save to (a copy) */
-    if (ok && op != 2) [self updateChangeCount:2];
+    if (ok && op != 2) { [self updateChangeCount:2]; for (NSWindowController *wc in [self windowControllers]) { NSWindow *w = [wc valueForKey:@"window"]; if (w) OpenWindowDisplay(w); } }
     if (h) h(ok ? nil : (e ?: [NSError errorWithDomain:NSCocoaErrorDomain code:512 userInfo:nil]));
 }
 - (void)_openSaveTo:(NSURL *)u type:(NSString *)t op:(NSUInteger)op
