@@ -13,12 +13,13 @@ Cflags:
 EOP
 . /usr/local/GNUstep/System/Library/Makefiles/GNUstep.sh
 WS="${GITHUB_WORKSPACE:-$(cd "$(dirname "$0")/../.." && pwd)}/wsbsd"
+WSRV="${WINDOWSERVER_DIR:-$WS/../WindowServer}"
 [ -d "$WS" ] || WS="$(cd "$(dirname "$0")/.." && pwd)"
 
 # the wsd client library, position independent so the back bundle can link it
 mkdir -p /tmp/wsc && cd /tmp/wsc
 for f in client compositor_sw region ipc evrec buffer; do
-	cc -O2 -fPIC -std=c99 -D_DEFAULT_SOURCE -I"$WS/include" -I"${SKYLIGHT_DIR:-$WS/../SkyLight}/include" -c "$WS/src/$f.c" -o $f.o || exit 1
+	cc -O2 -fPIC -std=c99 -D_DEFAULT_SOURCE -I"$WSRV/include" -I"${SKYLIGHT_DIR:-$WS/../SkyLight}/include" -c "$WSRV/src/$f.c" -o $f.o || exit 1
 done
 ar rcs libwsclient.a *.o
 
@@ -54,7 +55,7 @@ mkdir -p Headers/wsd
 cp "$WS"/include/ws_xkb.h "$WS"/include/ws_input.h Headers/wsd/ 2>/dev/null; cp "$WS"/appkit/back-wsd/*.h "$WS"/include/ws.h "$WS"/include/ws_client.h "$WS"/include/ws_buffer.h Headers/wsd/
 cp "$WS"/appkit/back-wsd/*.m Source/headless/
 # the wsd client library is compiled straight into the headless subproject (a static archive is not picked up by the bundle link)
-for f in client compositor_sw region ipc evrec buffer keymap xkbmap; do cp "$WS/src/$f.c" Source/headless/wsc_$f.c; done
+for f in client compositor_sw region ipc evrec buffer keymap xkbmap; do cp "$WSRV/src/$f.c" Source/headless/wsc_$f.c; done
 printf 'ADDITIONAL_INCLUDE_DIRS += -I%s/include\nADDITIONAL_CFLAGS += -std=gnu99 -D_DEFAULT_SOURCE\nheadless_C_FILES += wsc_client.c wsc_compositor_sw.c wsc_region.c wsc_ipc.c wsc_evrec.c wsc_buffer.c wsc_keymap.c wsc_xkbmap.c\nADDITIONAL_CFLAGS += -DWSD_XKB -I/usr/local/include $(shell pkg-config --cflags xkbcommon)\nADDITIONAL_LDFLAGS += -L/usr/local/lib -lxkbcommon\n' "$WS" >> Source/headless/GNUmakefile.preamble
 # the asset catalogue reader (SF Symbols' vector glyphs for the file panels): coreui/car.c, bvg.c and the LZFSE decoder it uses, compiled into the same subproject
 mkdir -p Source/headless/lzfse; cp "$WS"/coreui/lzfse/*.h Source/headless/lzfse/; cp "$WS"/coreui/lzfse/*.h Source/headless/; cp "$WS"/coreui/car.h "$WS"/coreui/bvg.h Source/headless/
@@ -72,7 +73,7 @@ s=s.replace('#else\n#  error Invalid server for Cairo backend','#elif BUILD_SERV
 open(p,'w').write(s)
 p='Source/GNUmakefile.preamble'
 s=open(p).read()
-s+='\nADDITIONAL_INCLUDE_DIRS += -I$WS/include\n'
+s+='\nADDITIONAL_INCLUDE_DIRS += -I$WSRV/include\n'
 open(p,'w').write(s)
 PY
 # a bitmap of 3 samples in 32 bits per pixel (RGB and an unused byte: what GrandPerspective's tree image is) has no alpha: the unused byte must not become transparency

@@ -8,138 +8,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  # wsd under AddressSanitizer + UBSan, fuzzed with random and size-exact SkyLight requests (any sanitizer report or a dead server fails the job)
-  fuzz:
-    runs-on: macos-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@v4
-      - name: Sanitizer build and fuzz
-        run: |
-          cd wsbsd
-          SAN="-fsanitize=address,undefined -fno-omit-frame-pointer -g -O1"
-          cc $SAN -std=c99 -D_DEFAULT_SOURCE -Iinclude -o wsd_asan src/compositor_sw.c src/blur.c src/server.c src/shadow.c src/region.c src/ipc.c src/evrec.c src/buffer.c src/sls_*.c src/bplist.c src/sandbox.c src/vnc.c src/input.c src/keymap.c src/cursor.c src/fps.c src/wsd.c -lm -lz
-          cc -std=c99 -D_DEFAULT_SOURCE -Iinclude -Itest -o fuzz_wsd test/fuzz_wsd.c src/ipc.c src/client.c src/compositor_sw.c src/region.c src/evrec.c src/buffer.c -lm
-          export WS_SOCKET=/tmp/fuzz.sock
-          ./wsd_asan -t -g 640x480 > wsd.log 2>&1 &
-          W1=$!
-          sleep 1
-          for s in 1 2 3 4 5 6; do ./fuzz_wsd 100000 $s; done
-          cc -std=c99 -D_DEFAULT_SOURCE -Iinclude -o scen_wsd lab/scen_wsd.c src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c -lm
-          for f in lab/state1 lab/state2 lab/state3 lab/state4 lab/wq1 lab/wq2 lab/prop1 lab/harvest1 lab/harvest2 lab/harvest3 lab/harvest4 lab/hotkeys lab/disp1 lab/app1; do SCEN_MUTATE=300 ./scen_wsd $f.scen > /dev/null || { echo "mutation run failed on $f"; exit 1; }; done
-          cc -std=c99 -D_DEFAULT_SOURCE -Iinclude -o test_props test/test_props.c src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c -lm
-          WS_SOCKET=/tmp/fuzz2.sock ./wsd_asan -t -g 640x480 > wsd2.log 2>&1 &
-          W2=$!; sleep 1
-          WS_SOCKET=/tmp/fuzz2.sock TEST_MUTATE=40 ./test_props > /dev/null || true        # the mutants change state, so some assertions may fail: only the server's survival counts
-          wait $W2; code=$?
-          if [ $code -ne 0 ] || grep -q "runtime error\|AddressSanitizer" wsd2.log; then echo "wsd died under the test mutants (exit $code)"; cat wsd2.log; exit 1; fi
-          kill -0 $W1 && echo "wsd alive"
-          if grep -q "runtime error\|AddressSanitizer" wsd.log; then cat wsd.log; exit 1; fi
-
-  # The real target: FreeBSD on x86_64 (QEMU). Runs the whole test suite and renders the test window with the software compositor.
-  freebsd:
-    runs-on: ubuntu-latest
-    timeout-minutes: 40
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build, test and render on FreeBSD x86_64
-        uses: vmactions/freebsd-vm@v1
-        with:
-          release: "14.2"
-          arch: x86_64
-          usesh: true
-          prepare: |
-            pkg install -y gmake pkgconf python3
-          run: |
-            set -e
-            uname -a
-            cd wsbsd
-            gmake
-            gmake check
-            echo '--- wsd resource use (FreeBSD VM) ---'; sh test/run_bench.sh || true
-            echo '--- the same tests with wsd in Capsicum capability mode (-S)'
-            for t in test_props test_robust; do WSD_FLAGS=-S sh test/run_one.sh $t || exit 1; done
-            ./wsd -S -t -g 320x200 > /tmp/wsd-cap.log 2>&1 & W=$!; sleep 1; kill $W; grep -q 'capability mode' /tmp/wsd-cap.log || { cat /tmp/wsd-cap.log; echo 'wsd did not enter capability mode'; exit 1; }
-            gmake demo OUT=freebsd-sw
-            ls -l *.png *.ppm || true
-            gmake package
-            tar -tzf wsbsd-*.tar.gz | head -30
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: wsbsd-freebsd-package
-          path: wsbsd/wsbsd-*.tar.gz
-          if-no-files-found: warn
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: freebsd-screenshots
-          path: wsbsd/*.png
-          if-no-files-found: warn
-
-  # The OpenGL ES compositor on FreeBSD with Mesa software rendering (EGL surfaceless): compiles the GL, GBM and EGL paths and runs them.
-  # Experimental: the compositor has never run on a real EGL implementation, so a failure here is information, not a broken build.
-  freebsd-gl:
-    runs-on: ubuntu-latest
-    timeout-minutes: 40
-    continue-on-error: true
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build and run the GL compositor on FreeBSD x86_64
-        uses: vmactions/freebsd-vm@v1
-        with:
-          release: "14.2"
-          arch: x86_64
-          usesh: true
-          prepare: |
-            pkg install -y gmake pkgconf python3 libdrm mesa-libs mesa-dri libglvnd
-          run: |
-            set -e
-            cd wsbsd
-            pkg-config --modversion egl gbm glesv2 libdrm || true
-            gmake gl
-            export LIBGL_ALWAYS_SOFTWARE=1 EGL_PLATFORM=surfaceless
-            WSD_ARGS="-r gl" OUT=freebsd-gl sh test/run_demo.sh
-            WSD_ARGS="-r gl" OUT=freebsd-gl-interactive sh test/run_interactive.sh
-            for f in freebsd-gl-interactive-*.ppm; do python3 tools/ppm2png.py "$f" "${f%.ppm}.png" || true; done
-            ls -l *.png *.ppm || true
-            echo '--- the full build (KMS display + evdev input + GL): compiles and fails cleanly without a display device'
-            gmake full
-            ./wsd -b kms -g 64x64 > /tmp/kms.log 2>&1 || true
-            cat /tmp/kms.log
-            grep -q 'cannot open KMS device' /tmp/kms.log
-            echo '--- is there a DRM device in this VM? (information only)'
-            ls -l /dev/dri 2>&1 | head; pciconf -lv 2>&1 | grep -i -B1 -A3 'vga\|display' | head -12
-            pkg install -y drm-kmod >/dev/null 2>&1 && echo 'drm-kmod installed' || echo 'drm-kmod not installable'
-            for m in virtio_gpu vtgpu drm; do kldload $m 2>&1 | head -1; done; kldstat | head -20; ls -l /dev/dri 2>&1 | head
-            if [ -e /dev/dri/card0 ]; then ./wsd -b kms -g 640x480 -t > /tmp/kms2.log 2>&1 & KW=$!; sleep 3; kill $KW 2>/dev/null; cat /tmp/kms2.log | head -20; fi
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: freebsd-gl-screenshots
-          path: wsbsd/*.png
-          if-no-files-found: warn
-
-  # The development machine's platform (arm64 macOS): the same suite, headless.
-  macos:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build, test and render
-        run: |
-          cd wsbsd
-          make
-          make check
-          make demo OUT=macos
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: macos-screenshots
-          path: wsbsd/*.png
-          if-no-files-found: warn
-
   # CoreGraphics above wsd: GNUstep corebase + Opal (Quartz 2D over Cairo) built from source on FreeBSD, drawing into a wsd window.
   freebsd-opal:
+    if: false   # legacy GNUstep path: needs github.com/pearOS-bsd/WindowServer and SkyLight checked out next to the sources
     runs-on: ubuntu-latest
     timeout-minutes: 40
     continue-on-error: true
@@ -165,6 +36,7 @@ jobs:
 
   # AppKit above wsd: GNUstep gui with the wsd display backend (appkit/back-wsd), an AppKit window on the real compositor.
   freebsd-appkit:
+    if: false   # legacy GNUstep path: needs github.com/pearOS-bsd/WindowServer and SkyLight checked out next to the sources
     runs-on: ubuntu-latest
     timeout-minutes: 60
     continue-on-error: true
