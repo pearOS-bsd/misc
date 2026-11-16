@@ -3,13 +3,13 @@
 #   sh open/build-appkit.sh OUTDIR      (from the root of wsbsd)
 set -e
 OUT="${1:?output directory}"; R="$(cd "$(dirname "$0")/.." && pwd)"; mkdir -p "$OUT/o"
-S="$R/appkit/decompiled/src"
+S="$R/appkit/decompiled/src"; WSRV="${WINDOWSERVER_DIR:-$R/../WindowServer}"
 for f in "$S"/*.m; do b=$(basename "$f" .m); [ "$b" = NSSliderAccessoryBehavior ] && continue
   grep -qx "$b" "$R/open/uifoundation-classes.txt" && continue		# these classes live in UIFoundation (the cache): the real ones are used
-  cc -arch x86_64 -fobjc-arc -Wno-everything -I"$S" -I"$R/include" -I"$R/coreui" -c "$f" -o "$OUT/o/$b.o" || echo "FAILED $b"; done
+  cc -arch x86_64 -fobjc-arc -Wno-everything -I"$S" -I"$WSRV/include" -I"${SKYLIGHT_DIR:-$R/../SkyLight}/include" -I"$R/coreui" -c "$f" -o "$OUT/o/$b.o" || echo "FAILED $b"; done
 for f in car bvg bitmap lzfse/lzfse_decode lzfse/lzfse_decode_base lzfse/lzfse_fse lzfse/lzvn_decode_base; do cc -arch x86_64 -Wno-everything -std=c99 -D_DEFAULT_SOURCE -I"$R/coreui" -I"$R/coreui/lzfse" -c "$R/coreui/$f.c" -o "$OUT/o/coreui_$(basename $f).o" || echo "FAILED coreui $f"; done
 cc -arch x86_64 -fobjc-arc -Wno-everything -I"$S" -c "$R/appkit/decompiled/test/stubs.m" -o "$OUT/o/stubs.o"
-for c in client compositor_sw region ipc evrec buffer; do cc -arch x86_64 -Wno-everything -DWS_DARWIN_ON_BSD -I"$R/include" -I"${SKYLIGHT_DIR:-$R/../SkyLight}/include" -c "$R/src/$c.c" -o "$OUT/o/ws_$c.o"; done
+for c in client compositor_sw region ipc evrec buffer; do cc -arch x86_64 -Wno-everything -DWS_DARWIN_ON_BSD -I"$WSRV/include" -I"${SKYLIGHT_DIR:-$R/../SkyLight}/include" -c "$WSRV/src/$c.c" -o "$OUT/o/ws_$c.o"; done
 [ -f "$R/open/stubs-extra.m" ] && cc -arch x86_64 -fobjc-arc -Wno-everything -c "$R/open/stubs-extra.m" -o "$OUT/o/stubs_extra.o"
 cc -arch x86_64 -dynamiclib -install_name /open/AppKit -Wl,-reexport_framework,Foundation -framework Foundation -framework CoreGraphics -framework CoreFoundation -F/System/Library/PrivateFrameworks -Wl,-reexport_framework,UIFoundation -Wl,-undefined,dynamic_lookup -o "$OUT/AppKit" "$OUT"/o/*.o
 echo built "$OUT/AppKit"
