@@ -5,6 +5,8 @@ WS0="$(cd "$(dirname "$0")/.." && pwd)"
 # Opal (CoreGraphics) and corebase (CoreFoundation): built from source when this runner does not have them yet
 ls /usr/local/GNUstep/*/Library/Libraries/libopal.so >/dev/null 2>&1 || { sh "$WS0/ci/opal-libs.sh" > /tmp/opal-libs-sdk.log 2>&1; tail -3 /tmp/opal-libs-sdk.log; . /usr/local/GNUstep/System/Library/Makefiles/GNUstep.sh; }
 WS="$(cd "$(dirname "$0")/.." && pwd)"; O=/tmp/sdk-compat; mkdir -p $O
+# the daemons (usernoted, airportd) are in github.com/pearOS-bsd/d: D_DIR=a checkout, else cloned next to the build
+D_DIR="${D_DIR:-/tmp/pearos-d}"; [ -d "$D_DIR/bsd" ] || { rm -rf "$D_DIR"; git clone -q --depth 1 https://github.com/pearOS-bsd/d.git "$D_DIR"; }
 # the CoreFoundation headers of corebase are reached through the wrappers the application builds use
 sh "$WS/sdk/gen-cf-wrappers.sh" $O/cfwrap 2>&1 | tail -1
 export WSBSD_UTI_TABLE="$WS/launchservices/uti_table.json"      # the uniform type table (installed at /System/Library/CoreServices/CoreTypes.bundle/Contents/Resources in the image)
@@ -21,7 +23,7 @@ for t in rep_draw anim_test layer_demo sys_tests ql_tests sec_tests net_tests cf
 	grep -v '^20' $O/$t.out | tail -6
 done
 # usernoted + UserNotifications: the daemon and the client of the framework in one process (XPC over a unix socket)
-clang -x objective-c -fblocks -w -fobjc-arc -I"$WS/quartzcore/include" -I"$WS/sdk/include" -I"$WS/usernoted" -include "$WS/sdk/include/wsbsd/prelude.h" $(gnustep-config --objc-flags) "$WS/sdk/tests/un_tests.m" "$WS/usernoted/WSUserNotificationService.m" -o $O/un_tests \
+clang -x objective-c -fblocks -w -fobjc-arc -I"$WS/quartzcore/include" -I"$WS/sdk/include" -I"$D_DIR/bsd/usernoted" -include "$WS/sdk/include/wsbsd/prelude.h" $(gnustep-config --objc-flags) "$WS/sdk/tests/un_tests.m" "$D_DIR/bsd/usernoted/WSUserNotificationService.m" -o $O/un_tests \
 	-L$O -lwsbsdcompat -lQuartzCore -Wl,-rpath,$O $GSL -lopal -lgnustep-corebase -ldispatch -lcrypto -lcurl -lffi 2>&1 | grep error | head -3
 [ -x $O/un_tests ] || { echo "SDK TEST un_tests: did not build"; FAIL=1; }
 [ -x $O/un_tests ] && { LD_LIBRARY_PATH=$O:/usr/local/GNUstep/System/Library/Libraries:/usr/local/GNUstep/Local/Library/Libraries:/usr/local/lib timeout 90 $O/un_tests > $O/un_tests.out 2>&1 && echo "SDK TEST un_tests: ok" || { echo "SDK TEST un_tests: FAILED"; FAIL=1; }; grep -v '^20' $O/un_tests.out | tail -6; }
@@ -50,11 +52,11 @@ if [ -x "$O/dsstore_test" ]; then LD_LIBRARY_PATH=$O:/usr/local/GNUstep/System/L
 clang -x objective-c++ -fblocks -w -fobjc-arc -I"$WS/sdk/include" -I"$WS/finder/src" -include "$WS/sdk/include/wsbsd/prelude.h" $(gnustep-config --objc-flags) "$WS/tools/dsprobe/bulkrename_test.mm" "$WS/finder/src/TBulkRename.mm" -o "$O/bulkrename_test" -L$O -lwsbsdcompat -lQuartzCore -Wl,-rpath,$O $GSL $(gnustep-config --gui-libs) -lopal -lgnustep-corebase -ldispatch -lcrypto -lcurl -lffi 2>&1 | grep error | head -3
 if [ -x "$O/bulkrename_test" ]; then LD_LIBRARY_PATH=$O:/usr/local/GNUstep/System/Library/Libraries:/usr/local/GNUstep/Local/Library/Libraries:/usr/local/lib "$O/bulkrename_test" > "$O/bulkrename_test.out" 2>&1 && echo "SDK TEST bulkrename: $(cat $O/bulkrename_test.out)" || { echo "SDK TEST bulkrename: FAILED"; head -5 "$O/bulkrename_test.out"; FAIL=1; }; else echo "SDK TEST bulkrename: did not build"; FAIL=1; fi
 # wpa_supplicant backend of airportd against a fake control socket and the IE parser
-clang -x objective-c -fblocks -fobjc-arc -w -I"$WS/sdk/include" -I"$WS/airportd" -I/usr/local/include $(gnustep-config --objc-flags) "$WS/sdk/tests/wpa_backend_tests.m" "$WS/airportd/WSWiFiWpaBackend.m" "$WS/airportd/WSIEParser.m" "$WS/airportd/WSWiFiSimBackend.m" -o "$O/wpa_backend_tests" $(gnustep-config --base-libs) -L/usr/local/lib -ldispatch 2>&1 | grep error | head -5
+clang -x objective-c -fblocks -fobjc-arc -w -I"$WS/sdk/include" -I"$D_DIR/bsd/airportd" -I/usr/local/include $(gnustep-config --objc-flags) "$WS/sdk/tests/wpa_backend_tests.m" "$D_DIR/bsd/airportd/WSWiFiWpaBackend.m" "$D_DIR/bsd/airportd/WSIEParser.m" "$D_DIR/bsd/airportd/WSWiFiSimBackend.m" -o "$O/wpa_backend_tests" $(gnustep-config --base-libs) -L/usr/local/lib -ldispatch 2>&1 | grep error | head -5
 [ -x "$O/wpa_backend_tests" ] || { echo "SDK TEST wpa_backend_tests: did not build"; FAIL=1; }
 [ -x "$O/wpa_backend_tests" ] && { LD_LIBRARY_PATH=/usr/local/GNUstep/System/Library/Libraries:/usr/local/lib timeout 60 "$O/wpa_backend_tests" > "$O/wpa_backend_tests.out" 2>&1 && echo "SDK TEST wpa_backend_tests: ok" || { echo "SDK TEST wpa_backend_tests: FAILED"; FAIL=1; }; grep -v '^20' "$O/wpa_backend_tests.out" | tail -8; }
 # airportd with the simulated Wi-Fi world and CoreWLAN talking to it over XPC (scan, hotspot detection, join, events, auto-join)
-clang -x objective-c -fblocks -fobjc-arc -w -I"$WS/sdk/include" -I"$WS/airportd" -I/usr/local/include $(gnustep-config --objc-flags) "$WS/sdk/tests/cwlan_airportd_tests.m" "$WS/airportd/WSAirportService.m" "$WS/airportd/WSWiFiSimBackend.m" "$WS/sdk/src/XPC.m" -o "$O/cwlan_airportd_tests" $(gnustep-config --base-libs) -L"$CWL" -L"$CWF" -l:CoreWLAN -l:CoreWiFi -Wl,-rpath,"$CWL" -Wl,-rpath,"$CWF" -L/usr/local/lib -lffi -ldispatch 2>&1 | grep error | head -3
+clang -x objective-c -fblocks -fobjc-arc -w -I"$WS/sdk/include" -I"$D_DIR/bsd/airportd" -I/usr/local/include $(gnustep-config --objc-flags) "$WS/sdk/tests/cwlan_airportd_tests.m" "$D_DIR/bsd/airportd/WSAirportService.m" "$D_DIR/bsd/airportd/WSWiFiSimBackend.m" "$WS/sdk/src/XPC.m" -o "$O/cwlan_airportd_tests" $(gnustep-config --base-libs) -L"$CWL" -L"$CWF" -l:CoreWLAN -l:CoreWiFi -Wl,-rpath,"$CWL" -Wl,-rpath,"$CWF" -L/usr/local/lib -lffi -ldispatch 2>&1 | grep error | head -3
 [ -x "$O/cwlan_airportd_tests" ] || { echo "SDK TEST cwlan_airportd_tests: did not build"; FAIL=1; }
 [ -x "$O/cwlan_airportd_tests" ] && { rm -rf /tmp/wsbsd-airportd-test; LD_LIBRARY_PATH=/usr/local/GNUstep/System/Library/Libraries:/usr/local/lib timeout 120 "$O/cwlan_airportd_tests" > "$O/cwlan_airportd_tests.out" 2>&1 && echo "SDK TEST cwlan_airportd_tests: ok" || { echo "SDK TEST cwlan_airportd_tests: FAILED"; FAIL=1; }; grep -v '^20' "$O/cwlan_airportd_tests.out" | tail -6; }
 exit $FAIL

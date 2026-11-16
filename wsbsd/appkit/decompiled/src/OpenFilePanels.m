@@ -1,4 +1,4 @@
-/* OpenFilePanels.m — NSOpenPanel / NSSavePanel of the programs: as on the Mac they are served by the Open and Save Panel Service (com.apple.appkit.xpc.openAndSavePanelService, appkit/xpcservices/):
+/* OpenFilePanels.m — NSOpenPanel / NSSavePanel of the programs: as on the Mac they are served by the Open and Save Panel Service (com.apple.appkit.xpc.openAndSavePanelService, the pearOS-bsd/d repository (bsd/xpcservices/)):
  * the request goes over its socket (WSBSD_XPC_DIR, default /var/run/xpc), the answer comes back as URLs.  The program waits in a modal loop (its own windows keep being served). */
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>

@@ -3,7 +3,7 @@
 # REQUIRE: mountcritlocal wsbsd_machrun
 # BEFORE: LOGIN
 # KEYWORD: nojail shutdown
-# The launchd of pearOS (github.com/pearOS-bsd/darwinator, launchd/): a Mach-O program that serves the bootstrap port of the system, like the launchd of a Mac: the services that Mac programs ask
+# The launchd of pearOS (github.com/pearOS-bsd/d, darwin/launchd/): a Mach-O program that serves the bootstrap port of the system, like the launchd of a Mac: the services that Mac programs ask
 # libxpc for by name (com.apple.bsd.dirhelper, the per-user directories in /var/folders, ...).  It is started only when the kernel module runs Mach-O files through a real dyld
 # (kern.darwinator.dyld=1: it needs the dyld and the libraries of a Mac, which this image does not carry; they are the owner's, put under /usr/lib and /System).
 . /etc/rc.subr

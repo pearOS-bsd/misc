@@ -12,6 +12,13 @@ REL="${FREEBSD_RELEASE:-14.5-RELEASE}"
 WORK="${WORK:-/tmp/isowork}"; ROOT="$WORK/root"; OUT="${OUT:-$WS/iso-out}"
 export IGNORE_OSVERSION=yes GITHUB_WORKSPACE="${GITHUB_WORKSPACE:-$(dirname "$WS")}"
 mkdir -p "$WORK" "$OUT"; [ -d "$ROOT" ] && chflags -R noschg,nouchg "$ROOT" 2>/dev/null; rm -rf "$ROOT"; mkdir -p "$ROOT"
+pear_fetch() {   # repo ref dir
+	rm -rf "$3"; mkdir -p "$3"
+	fetch -q -o "$WORK/$1.tgz" "https://github.com/pearOS-bsd/$1/archive/$2.tar.gz" 2>/dev/null && tar -xzf "$WORK/$1.tgz" -C "$3" --strip-components=1 2>/dev/null; rm -f "$WORK/$1.tgz"
+	[ -f "$3/Makefile" ]
+}
+# the daemons of pearOS live in github.com/pearOS-bsd/d (darwin/: Mach-O daemons for darwinator, bsd/: GNUstep daemons, session/: the scripts); D_DIR=path uses a checkout, PEAR_D_REF the branch
+D_DIR="${D_DIR:-$WORK/d}"; [ -f "$D_DIR/Makefile" ] || pear_fetch d "${PEAR_D_REF:-main}" "$D_DIR" || { echo "pearOS-bsd/d could not be fetched"; exit 1; }
 
 echo "== 1. the software"
 pkg info -e zsh >/dev/null 2>&1 || pkg install -y zsh >/dev/null 2>&1 || true
@@ -34,11 +41,13 @@ pkg info -e mesa-libs >/dev/null 2>&1 || pkg install -y mesa-libs mesa-dri libdr
 (install -d /usr/local/bin; cc -O2 -o /usr/local/bin/dmgtool "$WS/dmg/dmgtool.c" -lz -lbz2 2>"$WORK/dmgtool.log" || echo "NOTE: dmgtool did not build"; cd "$WS/src" && for f in client compositor_sw region ipc evrec buffer; do cc -O2 -fPIC -std=c99 -D_DEFAULT_SOURCE -I"$WS/include" -c $f.c -o "$WORK/ws_$f.o"; done; cc -shared -o /usr/local/lib/libwsclient.so "$WORK"/ws_*.o -lm)
 sh "$WS/sdk/build-compat.sh" "$WORK/compat" > "$WORK/compat.log" 2>&1; install -m 755 "$WORK/compat/libwsbsdcompat.so" /usr/local/lib/libwsbsdcompat.so; install -m 755 "$WORK/compat/libQuartzCore.so" /usr/local/lib/libQuartzCore.so
 # Wi-Fi: CoreWLAN, CoreWiFi and airportd, laid out as on the Mac (installed below under /System and /usr/libexec)
-sh "$WS/sdk/build-corewlan.sh" "$WORK/cw" > "$WORK/corewlan.log" 2>&1; sh "$WS/sdk/build-airportd.sh" "$WORK/cw" >> "$WORK/corewlan.log" 2>&1; [ -x "$WORK/cw/usr/libexec/airportd" ] || { echo "airportd did not build"; tail -20 "$WORK/corewlan.log"; exit 1; }
+sh "$WS/sdk/build-corewlan.sh" "$WORK/cw" > "$WORK/corewlan.log" 2>&1; WSBSD="$WS" sh "$D_DIR/bsd/airportd/build.sh" "$WORK/cw" >> "$WORK/corewlan.log" 2>&1; [ -x "$WORK/cw/usr/libexec/airportd" ] || { echo "airportd did not build"; tail -20 "$WORK/corewlan.log"; exit 1; }
 # notifications: usernoted (the daemon) and wsnotify (a command line client), laid out like airportd; this build must not stop the image
-sh "$WS/sdk/build-usernoted.sh" "$WORK/cw" "$WORK/compat" > "$WORK/usernoted.log" 2>&1 || tail -5 "$WORK/usernoted.log"
+WSBSD="$WS" sh "$D_DIR/bsd/usernoted/build.sh" "$WORK/cw" "$WORK/compat" > "$WORK/usernoted.log" 2>&1 || tail -5 "$WORK/usernoted.log"
 # launchd and the launch agents of the desktop (Dock, SystemUIServer, Finder, Terminal): without them the rc script starts the programs by hand
-sh "$WS/launchd/build.sh" "$WORK/cw" > "$WORK/launchd.log" 2>&1 || tail -5 "$WORK/launchd.log"
+# the Open and Save Panel Service (as on the Mac, under AppKit.framework/Versions/C/XPCServices; the programs start it on the first panel)
+WSBSD="$WS" COMPAT="$WORK/compat" sh "$D_DIR/bsd/xpcservices/build.sh" "$WORK/cw/System/Library/Frameworks/AppKit.framework/Versions/C/XPCServices" > "$WORK/xpcservice.log" 2>&1 || tail -5 "$WORK/xpcservice.log"
+sh "$D_DIR/bsd/launchd/build.sh" "$WORK/cw" > "$WORK/launchd.log" 2>&1 || tail -5 "$WORK/launchd.log"
 install -d /usr/local/bin /usr/local/libexec
 install -d /usr/local/share/wsbsd/icons && install -m 644 "$HERE"/icons/*.icns /usr/local/share/wsbsd/icons/
 # the asset catalogues of the Mac that the file panels read (coreui): the small ones are in the repository, the big ones (SF Symbols 117 MB, CoreTypes 20 MB) are copied into coreui/assets before the build or are already in place
@@ -123,11 +132,6 @@ for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_kbdlig
 # the keyboard backlight driver (needs the kernel sources of the build machine; without them the image simply has no such module)
 # the kernel module of the Clevo keyboard backlight (clevo_dchu, the DCHU ACPI device CLV0001): built against the kernel sources of the image's release (src.txz, only usr/src/sys is unpacked), the build machine need not have /usr/src
 # the kernel modules written for pearOS live in their own repositories (github.com/pearOS-bsd/virtio, github.com/pearOS-bsd/clevo_wmi): fetched here, at the branch or tag in PEAR_VIRTIO_REF / PEAR_CLEVO_REF (default main)
-pear_fetch() {   # repo ref dir
-	rm -rf "$3"; mkdir -p "$3"
-	fetch -q -o "$WORK/$1.tgz" "https://github.com/pearOS-bsd/$1/archive/$2.tar.gz" 2>/dev/null && tar -xzf "$WORK/$1.tgz" -C "$3" --strip-components=1 2>/dev/null; rm -f "$WORK/$1.tgz"
-	[ -f "$3/Makefile" ]
-}
 SYSDIR=/usr/src/sys
 if [ ! -d "$SYSDIR/dev/acpica" ]; then
 	SYSDIR="$WORK/src/usr/src/sys"
@@ -170,17 +174,17 @@ if pear_fetch darwinator "${PEAR_DARWINATOR_REF:-main}" "$WORK/darwinator"; then
 		install -d "$ROOT/boot/modules" && install -m 555 "$WORK/darwinator/darwinator.ko" "$ROOT/boot/modules/darwinator.ko" && echo "darwinator.ko built against $SYSDIR"
 	else echo "NOTE: darwinator.ko not built (no kernel sources or it did not compile: see $WORK/darwinator_ko.log): only machrun runs Mach-O files"; fi
 else echo "NOTE: pearOS-bsd/darwinator could not be fetched: this image does not run Mac programs"; fi
-# The launchd of pearOS (a Mach-O program from darwinator/launchd, built with clang and ld64.lld: the llvm package on the build machine): it serves the bootstrap port and the service
+# The launchd of pearOS (a Mach-O program from d/darwin/launchd, built with clang and ld64.lld: the llvm package on the build machine): it serves the bootstrap port and the service
 # com.apple.bsd.dirhelper; started at boot by wsbsd_launchd when the module runs Mach-O files through a real dyld.
-if [ -x /usr/local/llvm21/bin/ld64.lld ] && [ -d "$WORK/darwinator/launchd" ]; then
-	if (cd "$WORK/darwinator/launchd" && make clean >/dev/null 2>&1; make >"$WORK/launchd.log" 2>&1); then
-		install -m 755 "$WORK/darwinator/launchd/launchd" "$ROOT/sbin/launchd"; install -m 755 "$WORK/darwinator/launchd/mkfolders.sh" "$ROOT/usr/local/libexec/mkfolders.sh"
+if [ -x /usr/local/llvm21/bin/ld64.lld ] && [ -d "$D_DIR/darwin/launchd" ]; then
+	if (cd "$D_DIR/darwin/launchd" && make clean >/dev/null 2>&1; make >"$WORK/launchd.log" 2>&1); then
+		install -m 755 "$D_DIR/darwin/launchd/launchd" "$ROOT/sbin/launchd"; install -m 755 "$D_DIR/darwin/launchd/mkfolders.sh" "$ROOT/usr/local/libexec/mkfolders.sh"
 		echo "launchd built"
-		if (cd "$WORK/darwinator/notifyd" && make clean >/dev/null 2>&1; make >"$WORK/notifyd.log" 2>&1); then
-			install -d "$ROOT/usr/sbin"; install -m 755 "$WORK/darwinator/notifyd/notifyd" "$ROOT/usr/sbin/notifyd"; echo "notifyd built"
+		if (cd "$D_DIR/darwin/notifyd" && make clean >/dev/null 2>&1; make >"$WORK/notifyd.log" 2>&1); then
+			install -d "$ROOT/usr/sbin"; install -m 755 "$D_DIR/darwin/notifyd/notifyd" "$ROOT/usr/sbin/notifyd"; echo "notifyd built"
 		else echo "NOTE: notifyd did not build (see $WORK/notifyd.log)"; fi
 	else echo "NOTE: launchd did not build (see $WORK/launchd.log)"; fi
-else echo "NOTE: launchd not built (no ld64.lld or no launchd/ in darwinator)"; fi
+else echo "NOTE: launchd not built (no ld64.lld or no darwin/launchd in the d repository)"; fi
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_launchd" "$ROOT/$d/rc.d/wsbsd_launchd"; done
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_machrun" "$ROOT/$d/rc.d/wsbsd_machrun"; done
 for d in etc private/etc; do install -m 755 "$HERE/overlay/etc-rc.d-wsbsd_wifi" "$ROOT/$d/rc.d/wsbsd_wifi"; done
