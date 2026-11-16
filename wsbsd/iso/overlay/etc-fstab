@@ -1,2 +1,0 @@
-# Device		Mountpoint	FStype	Options		Dump	Pass#
-/dev/iso9660/PEAROS	/		cd9660	ro		0	0
