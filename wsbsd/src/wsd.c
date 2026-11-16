@@ -265,6 +265,7 @@ static void tap_deliver(const ws_event *e)
 	if (n) sls_tap_deliver(cg, rec, n);
 }
 
+void wsd_datagram_push(conn *c, uint32_t kind, const void *payload, uint32_t n);
 /* events queued for a window are also pushed to its owner's event channel, if the connection opened one */
 static void push_event(void *ctx, uint32_t owner, const ws_event *e)
 {
@@ -273,6 +274,20 @@ static void push_event(void *ctx, uint32_t owner, const ws_event *e)
 	conn *c = conn_by_id(owner);
 	if (getenv("WSD_TRACE")) fprintf(stderr, "wsd: event %d for window %u -> owner %u (%s)\n", e->type, (unsigned)e->wid, owner, c ? (c->efd >= 0 ? "pushed" : "no event channel") : "no connection");
 	if (!c || c->efd < 0) return;
+	if (c->mach && getenv("WSD_MAC_DG")) {		/* the SkyLight of the Mac takes the events as serialized CGEvents from the datagram stream (woken by a message on its notification port) */
+		int cg; uint8_t rec[512]; size_t n = 0; ws_rect f = { 0, 0, 0, 0 }; ws_window_frame(srv, e->wid, &f);
+		float gx = (float)(f.x + e->x), gy = (float)(f.y + e->y);
+		switch (e->type) {
+		case WS_EV_MOUSE_MOVE: cg = 5; n = ws_evrec_make_mouse(rec, sizeof rec, cg, gx, gy, e->flags, 0, 0, 0); break;
+		case WS_EV_MOUSE_DOWN: cg = (e->buttons & 2) ? 3 : 1; n = ws_evrec_make_mouse(rec, sizeof rec, cg, gx, gy, e->flags, 1, (e->buttons & 2) ? 1 : 0, 0); break;
+		case WS_EV_MOUSE_UP: cg = (e->buttons & 2) ? 4 : 2; n = ws_evrec_make_mouse(rec, sizeof rec, cg, gx, gy, e->flags, 1, (e->buttons & 2) ? 1 : 0, 0); break;
+		case WS_EV_KEY_DOWN: cg = 10; n = ws_evrec_make_key(rec, sizeof rec, 1, e->key, e->flags, gx, gy, 0, 0, 0x0a); break;
+		case WS_EV_KEY_UP: cg = 11; n = ws_evrec_make_key(rec, sizeof rec, 0, e->key, e->flags, gx, gy, 0, 0, 0x0a); break;
+		default: break;
+		}
+		if (n) { wsd_datagram_push(c, 0, rec, (uint32_t)n); if (getenv("WSD_TRACE")) fprintf(stderr, "wsd:   datagram (kind 0) with a CGEvent record of %zu bytes for the Mac client\n", n); }
+		return;
+	}
 	wsx_event_msg m; memset(&m, 0, sizeof m);
 	m.h.msgh_bits = MACH_MSG_TYPE_MOVE_SEND_ONCE; m.h.msgh_size = sizeof m; m.h.msgh_id = WSX_EVENT_PUSH;
 	m.ndr = WS_NDR; m.type = e->type; m.wid = e->wid; m.x = e->x; m.y = e->y; m.buttons = e->buttons; m.key = e->key; m.flags = e->flags; m.dx = e->dx; m.dy = e->dy; m.continuous = e->continuous;
@@ -1147,7 +1162,7 @@ static int do_new_connection(conn *c, const uint8_t *buf, size_t len, int *fds, 
 	}
 	memset(c->app, 0, sizeof c->app);
 	memcpy(c->app, buf + sizeof hd, n < sizeof c->app - 1 ? n : sizeof c->app - 1);
-	c->efd = sv[0]; c->handshaken = 1; c->pid = peer_pid(c->fd);
+	c->efd = sv[0]; c->handshaken = 1; c->pid = peer_pid(c->fd); c->mach = nfds >= 1;		/* a program of the Mac (through wsbridge) */
 	if (getenv("WSD_TRACE")) fprintf(stderr, "wsd: conn %u new connection, app \"%s\" (peer pid %d)\n", c->id, c->app, c->pid);
 	sls_new_connection_rep r; memset(&r, 0, sizeof r);
 	{ mach_msg_header_t rh; fill_reply_header(&rh, h, sizeof r, 1); memcpy(&r.h, &rh, sizeof rh); }
