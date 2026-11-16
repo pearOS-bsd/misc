@@ -15,10 +15,13 @@ mkdir -p "$WORK" "$OUT"; [ -d "$ROOT" ] && chflags -R noschg,nouchg "$ROOT" 2>/d
 pear_fetch() {   # repo ref dir
 	rm -rf "$3"; mkdir -p "$3"
 	fetch -q -o "$WORK/$1.tgz" "https://github.com/pearOS-bsd/$1/archive/$2.tar.gz" 2>/dev/null && tar -xzf "$WORK/$1.tgz" -C "$3" --strip-components=1 2>/dev/null; rm -f "$WORK/$1.tgz"
-	[ -f "$3/Makefile" ]
+	[ -n "$(ls -A "$3" 2>/dev/null)" ]
 }
 # the daemons of pearOS live in github.com/pearOS-bsd/d (darwin/: Mach-O daemons for darwinator, bsd/: GNUstep daemons, session/: the scripts); D_DIR=path uses a checkout, PEAR_D_REF the branch
-D_DIR="${D_DIR:-$WORK/d}"; [ -f "$D_DIR/Makefile" ] || pear_fetch d "${PEAR_D_REF:-main}" "$D_DIR" || { echo "pearOS-bsd/d could not be fetched"; exit 1; }
+D_DIR="${D_DIR:-$WORK/d}"; [ -d "$D_DIR/bsd" ] || pear_fetch d "${PEAR_D_REF:-main}" "$D_DIR" || { echo "pearOS-bsd/d could not be fetched"; exit 1; }
+# SkyLight (the SLS wire headers, the server handlers wsd links, the client shim): github.com/pearOS-bsd/SkyLight; SKYLIGHT_DIR=path uses a checkout
+SKYLIGHT_DIR="${SKYLIGHT_DIR:-$WORK/SkyLight}"; [ -d "$SKYLIGHT_DIR/include" ] || pear_fetch SkyLight "${PEAR_SKYLIGHT_REF:-main}" "$SKYLIGHT_DIR" || { echo "pearOS-bsd/SkyLight could not be fetched"; exit 1; }
+export SKYLIGHT_DIR
 
 echo "== 1. the software"
 pkg info -e zsh >/dev/null 2>&1 || pkg install -y zsh >/dev/null 2>&1 || true
@@ -37,8 +40,8 @@ done
 # the window server twice: wsd = DRM/KMS display + OpenGL ES compositor (Mesa; used when a GPU driver is loaded), wsd-fb = the console framebuffer + software compositor (no GPU driver: EFI GOP, VMs, NVIDIA).
 # The rc script starts wsd first and falls back to wsd-fb when it cannot get a display; wsd itself falls back to the software compositor when EGL / GLES2 cannot be initialised.
 pkg info -e mesa-libs >/dev/null 2>&1 || pkg install -y mesa-libs mesa-dri libdrm >/dev/null 2>&1 || true
-(cd "$WS" && gmake fb >/dev/null && install -d /usr/local/sbin && install -m 755 wsd /usr/local/sbin/wsd-fb && { gmake full >"$WORK/wsd-full.log" 2>&1 && install -m 755 wsd /usr/local/sbin/wsd || { echo "NOTE: gmake full failed (no Mesa / libdrm?), wsd is the framebuffer build"; tail -5 "$WORK/wsd-full.log"; install -m 755 wsd-fb /usr/local/sbin/wsd 2>/dev/null || cp /usr/local/sbin/wsd-fb /usr/local/sbin/wsd; }; } && gmake wsspace wsshot wsclick wskey wsdrag wswins wsfps wsmove wscursor >/dev/null && install -d /usr/local/bin && install -m 755 wsspace wsshot wsclick wskey wsdrag wswins wsfps wsmove wscursor /usr/local/bin/)
-(install -d /usr/local/bin; cc -O2 -o /usr/local/bin/dmgtool "$WS/dmg/dmgtool.c" -lz -lbz2 2>"$WORK/dmgtool.log" || echo "NOTE: dmgtool did not build"; cd "$WS/src" && for f in client compositor_sw region ipc evrec buffer; do cc -O2 -fPIC -std=c99 -D_DEFAULT_SOURCE -I"$WS/include" -c $f.c -o "$WORK/ws_$f.o"; done; cc -shared -o /usr/local/lib/libwsclient.so "$WORK"/ws_*.o -lm)
+(cd "$WS" && gmake SKYLIGHT="$SKYLIGHT_DIR" fb >/dev/null && install -d /usr/local/sbin && install -m 755 wsd /usr/local/sbin/wsd-fb && { gmake SKYLIGHT="$SKYLIGHT_DIR" full >"$WORK/wsd-full.log" 2>&1 && install -m 755 wsd /usr/local/sbin/wsd || { echo "NOTE: gmake full failed (no Mesa / libdrm?), wsd is the framebuffer build"; tail -5 "$WORK/wsd-full.log"; install -m 755 wsd-fb /usr/local/sbin/wsd 2>/dev/null || cp /usr/local/sbin/wsd-fb /usr/local/sbin/wsd; }; } && gmake wsspace wsshot wsclick wskey wsdrag wswins wsfps wsmove wscursor >/dev/null && install -d /usr/local/bin && install -m 755 wsspace wsshot wsclick wskey wsdrag wswins wsfps wsmove wscursor /usr/local/bin/)
+(install -d /usr/local/bin; cc -O2 -o /usr/local/bin/dmgtool "$WS/dmg/dmgtool.c" -lz -lbz2 2>"$WORK/dmgtool.log" || echo "NOTE: dmgtool did not build"; cd "$WS/src" && for f in client compositor_sw region ipc evrec buffer; do cc -O2 -fPIC -std=c99 -D_DEFAULT_SOURCE -I"$WS/include" -I"$SKYLIGHT_DIR/include" -c $f.c -o "$WORK/ws_$f.o"; done; cc -shared -o /usr/local/lib/libwsclient.so "$WORK"/ws_*.o -lm)
 sh "$WS/sdk/build-compat.sh" "$WORK/compat" > "$WORK/compat.log" 2>&1; install -m 755 "$WORK/compat/libwsbsdcompat.so" /usr/local/lib/libwsbsdcompat.so; install -m 755 "$WORK/compat/libQuartzCore.so" /usr/local/lib/libQuartzCore.so
 # Wi-Fi: CoreWLAN, CoreWiFi and airportd, laid out as on the Mac (installed below under /System and /usr/libexec)
 sh "$WS/sdk/build-corewlan.sh" "$WORK/cw" > "$WORK/corewlan.log" 2>&1; WSBSD="$WS" sh "$D_DIR/bsd/airportd/build.sh" "$WORK/cw" >> "$WORK/corewlan.log" 2>&1; [ -x "$WORK/cw/usr/libexec/airportd" ] || { echo "airportd did not build"; tail -20 "$WORK/corewlan.log"; exit 1; }

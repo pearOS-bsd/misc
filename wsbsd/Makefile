@@ -1,14 +1,16 @@
 # Portable: works with BSD make and GNU make.
 CC      ?= cc
 CFLAGS  ?= -O2 -g
-CFLAGS  += -std=c99 -D_DEFAULT_SOURCE -D_BSD_SOURCE -Wall -Wextra -Iinclude
+# SkyLight (github.com/pearOS-bsd/SkyLight): the SLS wire headers, the server handlers (server/sls_*.c), the client shim (client/skylight.c)
+SKYLIGHT ?= ../SkyLight
+CFLAGS  += -std=c99 -D_DEFAULT_SOURCE -D_BSD_SOURCE -Wall -Wextra -Iinclude -Isrc -I$(SKYLIGHT)/include -I$(SKYLIGHT)/server
 LDLIBS   = -lm
 CORE     = src/input.c src/keymap.c src/cursor.c src/fps.c src/compositor_sw.c src/blur.c src/server.c src/shadow.c src/region.c src/ipc.c src/evrec.c src/buffer.c
-HDRS = include/ws_gl.h include/ws_buffer.h include/ws_evrec.h include/ws.h include/ws_client.h include/ws_backend.h include/ws_ipc.h include/ws_region.h include/mach_compat.h include/sls_wire.h include/sls_msgids.h src/wsd_priv.h src/sls_zero_ndr.h src/bplist.h
+HDRS = include/ws_gl.h include/ws_buffer.h include/ws_evrec.h include/ws.h include/ws_client.h include/ws_backend.h include/ws_ipc.h include/ws_region.h include/mach_compat.h $(SKYLIGHT)/include/sls_wire.h $(SKYLIGHT)/include/sls_msgids.h src/wsd_priv.h $(SKYLIGHT)/server/sls_zero_ndr.h src/bplist.h
 OUT          = window
 # set by the `kms` target
 EXTRA_SRC    =
-FAMILIES     = src/sls_ext.c src/sls_session.c src/sls_sessctl.c src/sls_cursor.c src/sls_transition.c src/sls_batch2.c src/sls_window.c src/sls_tap.c src/sls_transaction.c src/sls_golden.c src/sls_blobs.c src/sls_display.c src/sls_display_tpl.c src/sls_harvest.c src/sls_generic.c src/sls_hotkey.c src/sls_hotkey_defaults.c src/sls_space.c src/bplist.c src/sandbox.c src/vnc.c src/sls_carender.c src/ca_scene.c
+FAMILIES     = $(SKYLIGHT)/server/sls_ext.c $(SKYLIGHT)/server/sls_session.c $(SKYLIGHT)/server/sls_sessctl.c $(SKYLIGHT)/server/sls_cursor.c $(SKYLIGHT)/server/sls_transition.c $(SKYLIGHT)/server/sls_batch2.c $(SKYLIGHT)/server/sls_window.c $(SKYLIGHT)/server/sls_tap.c $(SKYLIGHT)/server/sls_transaction.c $(SKYLIGHT)/server/sls_golden.c $(SKYLIGHT)/server/sls_blobs.c $(SKYLIGHT)/server/sls_display.c $(SKYLIGHT)/server/sls_display_tpl.c $(SKYLIGHT)/server/sls_harvest.c $(SKYLIGHT)/server/sls_generic.c $(SKYLIGHT)/server/sls_hotkey.c $(SKYLIGHT)/server/sls_hotkey_defaults.c $(SKYLIGHT)/server/sls_space.c src/bplist.c src/sandbox.c src/vnc.c $(SKYLIGHT)/server/sls_carender.c src/ca_scene.c
 EXTRA_CFLAGS =
 EXTRA_LIBS   =
 
@@ -50,17 +52,17 @@ test_bplist: test/test_bplist.c src/bplist.c $(HDRS)
 test_props: src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_props.c $(HDRS)
 	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_props.c $(EXTRA_LIBS) $(LDLIBS)
 
-test_shim: shim/skylight.c src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_shim.c test/shim_api.inc include/SkyLight.h $(HDRS)
-	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ shim/skylight.c src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_shim.c $(EXTRA_LIBS) $(LDLIBS)
+test_shim: $(SKYLIGHT)/client/skylight.c src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_shim.c test/shim_api.inc $(SKYLIGHT)/include/SkyLight.h $(HDRS)
+	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ $(SKYLIGHT)/client/skylight.c src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_shim.c $(EXTRA_LIBS) $(LDLIBS)
 
-test_shim2: shim/skylight.c src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_shim2.c test/shim_api2.inc include/SkyLight.h $(HDRS)
-	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ shim/skylight.c src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_shim2.c $(EXTRA_LIBS) $(LDLIBS)
+test_shim2: $(SKYLIGHT)/client/skylight.c src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_shim2.c test/shim_api2.inc $(SKYLIGHT)/include/SkyLight.h $(HDRS)
+	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ $(SKYLIGHT)/client/skylight.c src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_shim2.c $(EXTRA_LIBS) $(LDLIBS)
 
-test_shim3: shim/skylight.c src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_shim3.c test/shim_api3.inc include/SkyLight.h $(HDRS)
-	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ shim/skylight.c src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_shim3.c $(EXTRA_LIBS) $(LDLIBS)
+test_shim3: $(SKYLIGHT)/client/skylight.c src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_shim3.c test/shim_api3.inc $(SKYLIGHT)/include/SkyLight.h $(HDRS)
+	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ $(SKYLIGHT)/client/skylight.c src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_shim3.c $(EXTRA_LIBS) $(LDLIBS)
 
-test_shim4: shim/skylight.c src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_shim4.c test/shim_api4.inc include/SkyLight.h $(HDRS)
-	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ shim/skylight.c src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_shim4.c $(EXTRA_LIBS) $(LDLIBS)
+test_shim4: $(SKYLIGHT)/client/skylight.c src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_shim4.c test/shim_api4.inc $(SKYLIGHT)/include/SkyLight.h $(HDRS)
+	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ $(SKYLIGHT)/client/skylight.c src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_shim4.c $(EXTRA_LIBS) $(LDLIBS)
 
 test_robust: src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_robust.c $(HDRS)
 	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $@ src/client.c src/compositor_sw.c src/region.c src/ipc.c src/evrec.c src/buffer.c test/test_robust.c $(EXTRA_LIBS) $(LDLIBS)
@@ -142,7 +144,7 @@ install: wsd tools_all
 	install -m 0644 dist/neofetch.conf $(DESTDIR)$(PREFIX)/share/wsbsd/neofetch.conf
 	install -m 0644 dist/wsd.sh $(DESTDIR)$(PREFIX)/etc/profile.d/wsd.sh
 	sed 's|%%PREFIX%%|$(PREFIX)|g' man/wsd.8 > $(DESTDIR)$(PREFIX)/share/man/man8/wsd.8
-	install -m 0644 include/ws.h include/ws_client.h include/ws_buffer.h include/ws_evrec.h include/ws_region.h include/ws_ipc.h include/sls_wire.h include/sls_msgids.h include/mach_compat.h include/SkyLight.h $(DESTDIR)$(PREFIX)/include/wsbsd/
+	install -m 0644 include/ws.h include/ws_client.h include/ws_buffer.h include/ws_evrec.h include/ws_region.h include/ws_ipc.h $(SKYLIGHT)/include/sls_wire.h $(SKYLIGHT)/include/sls_msgids.h include/mach_compat.h $(SKYLIGHT)/include/SkyLight.h $(DESTDIR)$(PREFIX)/include/wsbsd/
 	install -m 0644 libwsclient.a $(DESTDIR)$(PREFIX)/lib/libwsclient.a
 
 VERSION ?= 0.1

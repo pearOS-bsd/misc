@@ -18,7 +18,7 @@ WS="${GITHUB_WORKSPACE:-$(cd "$(dirname "$0")/../.." && pwd)}/wsbsd"
 # the wsd client library, position independent so the back bundle can link it
 mkdir -p /tmp/wsc && cd /tmp/wsc
 for f in client compositor_sw region ipc evrec buffer; do
-	cc -O2 -fPIC -std=c99 -D_DEFAULT_SOURCE -I"$WS/include" -c "$WS/src/$f.c" -o $f.o || exit 1
+	cc -O2 -fPIC -std=c99 -D_DEFAULT_SOURCE -I"$WS/include" -I"${SKYLIGHT_DIR:-$WS/../SkyLight}/include" -c "$WS/src/$f.c" -o $f.o || exit 1
 done
 ar rcs libwsclient.a *.o
 
