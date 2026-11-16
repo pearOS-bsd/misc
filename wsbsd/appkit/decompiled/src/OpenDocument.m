@@ -154,7 +154,8 @@ static char kUM;
 - (void)openDocument:(id)sender
 {
     NSOpenPanel *p = [NSOpenPanel openPanel]; [p setAllowsMultipleSelection:YES]; [p setCanChooseFiles:YES];
-    if ([p runModal] != 1) return;
+    NSInteger rc = [p runModal]; if (getenv("OPEN_DEBUG")) fprintf(stderr, "open: save panel -> %ld url %s\n", (long)rc, [[[p URL] description] UTF8String] ?: "nil");
+    if (rc != 1) return;
     for (NSURL *u in [p URLs]) { NSError *e = nil; id d = [self openDocumentWithContentsOfURL:u display:YES error:&e]; if (!d) fprintf(stderr, "open: cannot open %s: %s\n", [[u path] UTF8String], [[e localizedDescription] UTF8String] ?: "?"); }
 }
 @end
@@ -180,7 +181,11 @@ extern void OpenWindowDisplay(NSWindow *w);
     if (getenv("OPEN_DEBUG")) { unsigned int n = 0; Method *ms = class_copyMethodList([self class], &n); for (unsigned int i = 0; i < n; i++) { const char *nm = sel_getName(method_getName(ms[i])); if (strstr(nm, "rite") || strstr(nm, "ata") || strstr(nm, "rapper") || strstr(nm, "ave")) fprintf(stderr, "open: Document method %s\n", nm); } free(ms); }
     if (getenv("OPEN_DEBUG")) { id ts = nil; @try { ts = [self valueForKey:@"textStorage"]; } @catch (id x) { } fprintf(stderr, "open: doc textStorage %p (%s) len %lu; data %p\n", (__bridge void *)ts, ts ? class_getName([ts class]) : "-", ts ? (unsigned long)[[ts string] length] : 0, (__bridge void *)d); }
     if (!d && [self respondsToSelector:@selector(fileWrapperOfType:error:)]) {		/* programs with several formats (RTFD...) give a wrapper */
-        NSFileWrapper *fw = ((id(*)(id, SEL, id, NSError **))objc_msgSend)(self, @selector(fileWrapperOfType:error:), t, e);
+        NSFileWrapper *fw = nil; if (getenv("OPEN_DEBUG")) fprintf(stderr, "open: calling fileWrapperOfType %s\n", [t UTF8String]);
+        @try { fw = ((id(*)(id, SEL, id, NSError **))objc_msgSend)(self, @selector(fileWrapperOfType:error:), t, e); } @catch (NSException *x) { fprintf(stderr, "open: fileWrapperOfType exception %s: %s\n", [[x name] UTF8String], [[x reason] UTF8String]); if (e) *e = [NSError errorWithDomain:@"OpenSave" code:1 userInfo:@{ NSLocalizedDescriptionKey: [x reason] ?: @"exception" }]; }
+        if (getenv("OPEN_DEBUG")) { id ts = nil; @try { ts = [self valueForKey:@"textStorage"]; } @catch (id x) { }
+            fprintf(stderr, "open: fileWrapperOfType %s -> %p err %s\n", [t UTF8String], (__bridge void *)fw, e && *e ? [[*e description] UTF8String] : "nil");
+            if (ts) for (NSString *dt in @[@"NSRTF", @"NSPlainText"]) { NSError *e1 = nil; NSData *dd = ((id(*)(id, SEL, NSRange, id, NSError **))objc_msgSend)(ts, @selector(dataFromRange:documentAttributes:error:), NSMakeRange(0, [[ts string] length]), @{ @"DocumentType": dt }, &e1); fprintf(stderr, "open: probe %s -> %lu bytes err %s\n", [dt UTF8String], (unsigned long)[dd length], e1 ? [[e1 description] UTF8String] : "nil"); } }
         if (!fw && ([t isEqualToString:@"public.plain-text"] || [t isEqualToString:@"public.text"])) {		/* a plain text document the program's own writer refuses: its text as it is */
             id ts = nil; @try { ts = [self valueForKey:@"textStorage"]; } @catch (id x) { }
             if (ts) { if (e) *e = nil; return [[[ts string] dataUsingEncoding:NSUTF8StringEncoding] writeToURL:u options:NSDataWritingAtomic error:e]; }
@@ -224,11 +229,12 @@ extern void OpenWindowDisplay(NSWindow *w);
 }
 - (void)saveDocument:(id)sender
 {
+    if (getenv("OPEN_DEBUG")) { id rt = nil; @try { rt = [self valueForKey:@"richText"]; } @catch (id x) { } fprintf(stderr, "open: richText %s\n", rt ? [[rt description] UTF8String] : "?"); }
     if (getenv("OPEN_DEBUG")) fprintf(stderr, "open: saveDocument: %s url %s type %s\n", class_getName([self class]), [[[self fileURL] description] UTF8String] ?: "nil", [[self fileType] UTF8String] ?: "nil");
     if (![self fileURL]) { [self saveDocumentAs:sender]; return; }
     if (getenv("OPEN_DEBUG")) { id ts = nil; @try { ts = [self valueForKey:@"textStorage"]; } @catch (id x) { }
-        if (ts) { NSError *e1 = nil; NSData *dd = ((id(*)(id, SEL, NSRange, id, NSError **))objc_msgSend)(ts, @selector(dataFromRange:documentAttributes:error:), NSMakeRange(0, [[ts string] length]), @{ @"DocumentType": @"NSPlainText", @"CharacterEncoding": @4 }, &e1);
-            fprintf(stderr, "open: probe dataFromRange plain -> %lu bytes err %s\n", (unsigned long)[dd length], e1 ? [[e1 description] UTF8String] : "nil"); } }
+        if (ts) { NSError *e1 = nil; NSData *dd = ((id(*)(id, SEL, NSRange, id, NSError **))objc_msgSend)(ts, @selector(dataFromRange:documentAttributes:error:), NSMakeRange(0, [[ts string] length]), @{ @"DocumentType": @"NSRTF" }, &e1);
+            fprintf(stderr, "open: probe dataFromRange rtf -> %lu bytes err %s\n", (unsigned long)[dd length], e1 ? [[e1 description] UTF8String] : "nil"); } }
     if (getenv("OPEN_DEBUG")) { id rt = nil; @try { rt = [self valueForKey:@"richText"]; } @catch (id x) { } fprintf(stderr, "open: fileType is %s richText %s\n", [[self fileType] UTF8String], rt ? [[rt description] UTF8String] : "?"); }
     [self _openSaveTo:[self fileURL] type:([[self fileType] isEqualToString:@"public.text"] ? @"public.plain-text" : ([self fileType] ?: @"")) op:0];
 }

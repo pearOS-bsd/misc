@@ -26,8 +26,8 @@ static int ConnectService(void)
         if (attempt == 0) {		/* launchd would start the service on the first connection: start it here, from where the Mac keeps it */
             const char *bins[] = { "/System/Library/Frameworks/AppKit.framework/Versions/C/XPCServices/com.apple.appkit.xpc.openAndSavePanelService.xpc/Contents/MacOS/com.apple.appkit.xpc.openAndSavePanelService",
                                    "/usr/local/libexec/com.apple.appkit.xpc.openAndSavePanelService", NULL };
-            for (int i = 0; bins[i]; i++) if (access(bins[i], X_OK) == 0) { pid_t pid; char *av[] = { (char *)bins[i], NULL }; posix_spawn(&pid, bins[i], NULL, NULL, av, environ); break; }
-            for (int w = 0; w < 50; w++) { usleep(100000); int f2 = socket(AF_UNIX, SOCK_STREAM, 0); if (connect(f2, (struct sockaddr *)&a, sizeof a) == 0) return f2; close(f2); }
+            for (int i = 0; bins[i]; i++) if (access(bins[i], X_OK) == 0) { pid_t pid; char *av[] = { (char *)bins[i], NULL }; { setenv("LD_LIBRARY_PATH", "/usr/local/GNUstep/System/Library/Libraries:/usr/local/GNUstep/Local/Library/Libraries:/usr/local/lib", 0); posix_spawn_file_actions_t fa; posix_spawn_file_actions_init(&fa); posix_spawn_file_actions_addopen(&fa, 1, "/tmp/panelservice.log", O_WRONLY | O_CREAT | O_APPEND, 0644); posix_spawn_file_actions_adddup2(&fa, 1, 2); posix_spawn(&pid, bins[i], &fa, NULL, av, environ); } break; }
+            for (int w = 0; w < 300; w++) { usleep(100000); int f2 = socket(AF_UNIX, SOCK_STREAM, 0); if (connect(f2, (struct sockaddr *)&a, sizeof a) == 0) return f2; close(f2); }
             return -1;
         }
     }

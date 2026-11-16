@@ -90,8 +90,8 @@ static NSString *Str(OpenTV *o) { return ((ID0)objc_msgSend)(o->ts, SEL_("string
 static NSColor *TextColorFor(NSView *v)		/* white on the dark theme; black on a window whose own background is light (a note) */
 {
     id bg = [[v window] performSelector:@selector(backgroundColor)]; CGFloat r = 0, g = 0, b = 0, a = 0;
-    if ([bg respondsToSelector:@selector(getRed:green:blue:alpha:)]) { [bg getRed:&r green:&g blue:&b alpha:&a]; if (a > 0.5 && 0.299 * r + 0.587 * g + 0.114 * b > 0.6) return [NSColor colorWithCalibratedWhite:0.1 alpha:1]; }
-    return [NSColor colorWithCalibratedWhite:1 alpha:0.85];
+    if ([bg respondsToSelector:@selector(getRed:green:blue:alpha:)]) { [bg getRed:&r green:&g blue:&b alpha:&a]; if (a > 0.5 && 0.299 * r + 0.587 * g + 0.114 * b > 0.6) return [NSColor colorWithCalibratedRed:0.1 green:0.1 blue:0.1 alpha:1]; }
+    return [NSColor colorWithCalibratedRed:1 green:1 blue:1 alpha:0.85];
 }
 static NSDictionary *AttrsFor(NSView *v) { return @{ NSFontAttributeName: [NSFont systemFontOfSize:13], NSForegroundColorAttributeName: TextColorFor(v) }; }
 
